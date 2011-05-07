@@ -29,11 +29,12 @@ namespace p100q
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		UserRX_ = QRegExp ("(?:[^>/]|<br />)@([\\w\\-]+)", Qt::CaseInsensitive);
+		UserRX_ = QRegExp ("(?:[^>/]|<br />)@([\\w\\-]+)[\n :]", Qt::CaseInsensitive);
 		UserWithAvatarRX_ = QRegExp ("#([a-zA-Z0-9]+(?:/[0-9]+)?): @([\\w\\-]+)", Qt::CaseInsensitive);
-		PostRX_ = QRegExp ("#([a-zA-Z0-9]+): ", Qt::CaseInsensitive);
+		PostRX_ = QRegExp ("#([a-zA-Z0-9]+)[ ]", Qt::CaseInsensitive);
 		PostByUserRX_ = QRegExp ("\\s#([a-zA-Z0-9]+)", Qt::CaseInsensitive);
 		CommentRX_ = QRegExp ("#([a-zA-Z0-9]+)/([0-9]+)", Qt::CaseInsensitive);
+		TagRX_ = QRegExp ("<br />[*][ ]([^.*,\n]+)", Qt::CaseInsensitive);
 	}
 
 	void Plugin::SecondInit ()
@@ -92,20 +93,27 @@ namespace p100q
 
 	QString Plugin::FormatBody (QString body)
 	{
-		body.replace (UserWithAvatarRX_,
-				"#\\1: <a href=\"azoth://msgeditreplace/@\\2+\" style=\"clear:all\">@\\2</a>");
-		body.replace (UserRX_, " <a href=\"azoth://msgeditreplace/@\\1+\">@\\1</a>");
+		body.replace (TagRX_,
+				"<br />*<a href=\"azoth://msgeditreplace/S%20*\\1\">\\1</a> ");
+
 		body.replace (PostRX_,
 				" <a href=\"azoth://msgeditreplace/%23\\1\">#\\1</a> "
 				"("
 				"<a href=\"azoth://msgeditreplace/S%20%23\\1\">S</a> "
 				"<a href=\"azoth://msgeditreplace/%23\\1+\">+</a> "
 				"<a href=\"azoth://msgeditreplace/!%20%23\\1\">!</a> "
-				"): ");
-		body.replace (PostByUserRX_,
-				" <a href=\"azoth://msgeditreplace/%23\\1+\">#\\1</a> ");
+				") ");
+				
+		body.replace (UserWithAvatarRX_,
+				"#\\1: <a href=\"azoth://msgeditreplace/@\\2+\" style=\"clear:all\">@\\2</a>");
+		body.replace (UserRX_, " <a href=\"azoth://msgeditreplace/@\\1+\">@\\1</a> ");
+				
+				
 		body.replace (CommentRX_,
 				" <a href=\"azoth://msgeditreplace/%23\\1/\\2%20\">#\\1/\\2</a>");
+				
+		body.replace (PostByUserRX_,
+				" <a href=\"azoth://msgeditreplace/%23\\1+\">#\\1</a> ");
 
 		return body;
 	}
