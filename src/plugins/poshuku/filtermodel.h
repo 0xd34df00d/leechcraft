@@ -22,22 +22,18 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	class FilterModel : public Util::TagsFilterModel
 	{
-		namespace Poshuku
-		{
-			class FilterModel : public LeechCraft::Util::TagsFilterModel
-			{
-				Q_OBJECT
-			public:
-				FilterModel (QObject* = 0);
-				virtual ~FilterModel ();
-			protected:
-				virtual QStringList GetTagsForIndex (int) const;
-			};
-		};
+		Q_OBJECT
+	public:
+		FilterModel (QObject* = 0);
+		virtual ~FilterModel ();
+	protected:
+		virtual QStringList GetTagsForIndex (int) const;
 	};
-};
+}
+}
 
 #endif
-

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,42 +22,38 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	QDataStream& operator<< (QDataStream& out, const BrowserWidgetSettings& s)
 	{
-		namespace Poshuku
-		{
-			QDataStream& operator<< (QDataStream& out, const BrowserWidgetSettings& s)
-			{
-				qint8 version = 3;
-				out << version
-					<< s.ZoomFactor_
-					<< s.NotifyWhenFinished_
-					<< s.ReloadInterval_
-					<< s.WebHistorySerialized_
-					<< s.ScrollPosition_;
-				return out;
-			}
+		qint8 version = 3;
+		out << version
+			<< s.ZoomFactor_
+			<< s.NotifyWhenFinished_
+			<< s.ReloadInterval_
+			<< s.WebHistorySerialized_
+			<< s.ScrollPosition_;
+		return out;
+	}
 
-			QDataStream& operator>> (QDataStream& in, BrowserWidgetSettings& s)
-			{
-				qint8 version;
-				in >> version;
-				if (version >= 1)
-					in >> s.ZoomFactor_
-						>> s.NotifyWhenFinished_
-						>> s.ReloadInterval_;
-				if (version >= 2)
-					in >> s.WebHistorySerialized_;
-				if (version >= 3)
-					in >> s.ScrollPosition_;
+	QDataStream& operator>> (QDataStream& in, BrowserWidgetSettings& s)
+	{
+		qint8 version;
+		in >> version;
+		if (version >= 1)
+			in >> s.ZoomFactor_
+				>> s.NotifyWhenFinished_
+				>> s.ReloadInterval_;
+		if (version >= 2)
+			in >> s.WebHistorySerialized_;
+		if (version >= 3)
+			in >> s.ScrollPosition_;
 
-				if (version > 3 || version < 1)
-					qWarning () << Q_FUNC_INFO
-						<< "unknown version"
-						<< version;
-				return in;
-			}
-		};
-	};
-};
-
+		if (version > 3 || version < 1)
+			qWarning () << Q_FUNC_INFO
+				<< "unknown version"
+				<< version;
+		return in;
+	}
+}
+}

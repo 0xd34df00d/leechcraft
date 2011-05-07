@@ -328,6 +328,34 @@ QIcon MainLayout::GetIcon() const{
     return QIcon();
 }
 
+LeechCraft::TabClasses_t MainLayout::GetTabClasses () const {
+    static LeechCraft::TabClassInfo tinfo[ArenaWidget::NoRole] = {
+                                                {"DCPPHubFrame",            "EiskaltDC++",              "EiskaltDC++ Tab", QIcon(), 60, (LeechCraft::TabFeatures)LeechCraft::TFSingle},
+                                                {"DCPPHubManger",           "EiskaltDC++",              "EiskaltDC++ Tab", QIcon(), 60, (LeechCraft::TabFeatures)LeechCraft::TFSingle},
+                                                {"DCPPPrivateMessage",      "EiskaltDC++",              "EiskaltDC++ Tab", QIcon(), 60, (LeechCraft::TabFeatures)LeechCraft::TFSingle},
+                                                {"DCPPShareBrowser",        "EiskaltDC++",              "EiskaltDC++ Tab", QIcon(), 60, (LeechCraft::TabFeatures)LeechCraft::TFSingle},
+                                                {"DCPPFavoriteHubs",        "DC++ Favorite Hubs",       "EiskaltDC++ Tab", QIcon(), 60, (LeechCraft::TabFeatures)(LeechCraft::TFSingle | LeechCraft::TFOpenableByRequest)},
+                                                {"DCPPFavoriteUsers",       "DC++ Favorite Users",      "EiskaltDC++ Tab", QIcon(), 60, (LeechCraft::TabFeatures)(LeechCraft::TFSingle | LeechCraft::TFOpenableByRequest)},
+                                                {"DCPPSearchFrame",         "EiskaltDC++",              "EiskaltDC++ Tab", QIcon(), 60, (LeechCraft::TabFeatures)LeechCraft::TFSingle},
+                                                {"DCPPAdls",                "DC++ ADLS",                "EiskaltDC++ Tab", QIcon(), 60, (LeechCraft::TabFeatures)(LeechCraft::TFSingle | LeechCraft::TFOpenableByRequest)},
+                                                {"DCPPPublicHubs",          "DC++ Public Hubs",         "EiskaltDC++ Tab", QIcon(), 60, (LeechCraft::TabFeatures)(LeechCraft::TFSingle | LeechCraft::TFOpenableByRequest)},
+                                                {"DCPPDownloads",           "DC++ Downloads",           "EiskaltDC++ Tab", QIcon(), 60, (LeechCraft::TabFeatures)(LeechCraft::TFSingle | LeechCraft::TFOpenableByRequest)},
+                                                {"DCPPFinishedUploads",     "DC++ Finished Uploads",    "EiskaltDC++ Tab", QIcon(), 60, (LeechCraft::TabFeatures)(LeechCraft::TFSingle | LeechCraft::TFOpenableByRequest)},
+                                                {"DCPPFinishedDownloads",   "DC++ Finished Downloads",  "EiskaltDC++ Tab", QIcon(), 60, (LeechCraft::TabFeatures)(LeechCraft::TFSingle | LeechCraft::TFOpenableByRequest)},
+                                                {"DCPPSpy",                 "DC++ Spy",                 "EiskaltDC++ Tab", QIcon(), 60, (LeechCraft::TabFeatures)(LeechCraft::TFSingle | LeechCraft::TFOpenableByRequest)},
+                                                {"DCPPCustomWidget",        "EiskaltDC++",              "EiskaltDC++ Tab", QIcon(), 60, (LeechCraft::TabFeatures)LeechCraft::TFSingle},
+                                                {"DCPPQueuedusers",         "DC++ Queued Users",        "EiskaltDC++ Tab", QIcon(), 60, (LeechCraft::TabFeatures)(LeechCraft::TFSingle | LeechCraft::TFOpenableByRequest)}
+                                              };
+    static QList<LeechCraft::TabClassInfo> classes;
+
+    if (classes.isEmpty()){
+        for (int i = 0; i < (int)ArenaWidget::NoRole; i++)
+            classes.push_back(tinfo[i]);
+    }
+
+    return classes;
+}
+
 MainLayout::MainLayout (QWidget *parent):
         statusLabel(NULL),
         tBar(NULL),
@@ -1384,8 +1412,6 @@ void MainLayout::initToolbar(){
     fBar->setToolButtonStyle(static_cast<Qt::ToolButtonStyle>(WIGET(TOOLBUTTON_STYLE, Qt::ToolButtonIconOnly)));
 
     connect(fBar, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotToolbarCustomization()));
-
-    _lc_MW->addToolBar(fBar);
 
     if (!WBGET(WB_MAINWINDOW_USE_SIDEBAR) && WBGET(WB_MAINWINDOW_USE_M_TABBAR)){
 

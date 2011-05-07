@@ -462,4 +462,7 @@ INSTALL (DIRECTORY freedesktop/icons/ DESTINATION share/icons/hicolor
 IF (UNIX)
 	INSTALL (FILES freedesktop/leechcraft.desktop DESTINATION share/applications)
 	INSTALL (FILES data/leechcraft.1.gz DESTINATION share/man/man1)
+	INSTALL (FILES scripts/leechcraft-add-file DESTINATION bin PERMISSIONS
+		OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ
+		WORLD_EXECUTE WORLD_READ)
 ENDIF (UNIX)

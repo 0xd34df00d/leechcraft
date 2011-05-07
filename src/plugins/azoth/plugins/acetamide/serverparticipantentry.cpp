@@ -20,7 +20,10 @@
 #include <QAction>
 #include "clientconnection.h"
 #include "ircaccount.h"
+#include "ircserverclentry.h"
 #include "ircmessage.h"
+#include "ircserverhandler.h"
+
 
 namespace LeechCraft
 {
@@ -51,7 +54,8 @@ namespace Acetamide
 
 	QObject* ServerParticipantEntry::GetParentCLEntry () const
 	{
-		return NULL;
+		return Account_->GetClientConnection ()->
+				GetIrcServerHandler (ServerKey_)->GetCLEntry ();
 	}
 
 	ICLEntry::Features ServerParticipantEntry::GetEntryFeatures () const
@@ -61,7 +65,7 @@ namespace Acetamide
 
 	ICLEntry::EntryType ServerParticipantEntry::GetEntryType () const
 	{
-		return ETChat;
+		return ETPrivateChat;
 	}
 
 	QString ServerParticipantEntry::GetEntryName () const
@@ -72,7 +76,19 @@ namespace Acetamide
 	void ServerParticipantEntry::SetEntryName (const QString& nick)
 	{
 		NickName_ = nick;
-		emit nameChanged (NickName_);
+
+		Q_FOREACH (QObject *message, AllMessages_)
+		{
+			IrcMessage *msg = qobject_cast<IrcMessage*> (message);
+			if (!msg)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "is not an object of IrcMessage"
+						<< message;
+				continue;
+			}
+			msg->SetOtherVariant (nick);
+		}
 	}
 
 	QString ServerParticipantEntry::GetEntryID () const
@@ -110,7 +126,7 @@ namespace Acetamide
 			ServerParticipantEntry::CreateMessage (IMessage::MessageType,
 					const QString&, const QString& body)
 	{
-		IrcMessage *message = new IrcMessage (IMessage::MTMUCMessage,
+ 		IrcMessage *message = new IrcMessage (IMessage::MTChatMessage,
 				IMessage::DOut,
 				ServerKey_,
 				NickName_,
@@ -139,6 +155,17 @@ namespace Acetamide
 	bool ServerParticipantEntry::IsPrivateChat () const
 	{
 		return PrivateChat_;
+	}
+
+	ChannelRole ServerParticipantEntry::GetRole (const QString& ch) const
+	{
+		return Channel2Role_ [ch];
+	}
+
+	void ServerParticipantEntry::SetRole (const QString& ch,
+										  ChannelRole r)
+	{
+		Channel2Role_ [ch] = r;
 	}
 
 	void ServerParticipantEntry::closePrivateChat (bool)

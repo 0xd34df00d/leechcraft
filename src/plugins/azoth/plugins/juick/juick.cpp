@@ -136,32 +136,12 @@ namespace Juick
 
 	QString Plugin::FormatBody (QString body)
 	{
-		int index = AvatarRX_.indexIn (body);
-		QRegExp notBehind ("Recommended by ");
+		//fix this http://i.imgur.com/t579t.png
+		if (body.startsWith ("@"))
+			body.insert (0, "<br />");
 
-		// Workaround for negative lookbehind
-		while (index >= 0)
-		{
-			notBehind.indexIn (body);
-			int behindIndex = index - notBehind.matchedLength ();
-			
-			if (behindIndex >= 0 && 
-				notBehind.indexIn (body.mid (behindIndex, notBehind.matchedLength ())) != -1)
-			{
-				index = AvatarRX_.indexIn (body, index + 1);
-				continue;
-			}
-
-			QString avatar = QString (
-				"<img style='float:left;margin-right:4px' "
-				"width='32px' "
-				"height='32px' "
-				"src='http://api.juick.com/avatar?uname=%1&size=32'>").arg (AvatarRX_.cap (1));
-
-			body.insert (index, avatar);
-			index = AvatarRX_.indexIn (body, index + avatar.length () + AvatarRX_.matchedLength ());
-		}
-		body.replace (UserRX_,  "<a href=\"azoth://msgeditreplace/\\1+\">\\1</a>\\2");
+		InsertAvatars (body);
+		InsertNickLinks (body);
 		body.replace (PostRX_, 
 				"<br /> <a href=\"azoth://msgeditreplace/%23\\1%20\">#\\1</a> "
 				"("
@@ -240,30 +220,30 @@ namespace Juick
 			return;
 
 		Typo typos[] = {
-			Typo (text, QString::fromUtf8 ("!\\s+[#№]{2,}(\\d+)"), QString ("! #\\1")),  
-			Typo (text, "!\\s+(\\d+)", QString ("! #\\1")),
-			Typo (text, QString::fromUtf8 ("![#№](\\d+)"), QString ("! #\\1")),
-			Typo (text, "!(\\d+)", QString ("! #\\1")),
-			Typo (text, QString::fromUtf8 ("[SЫ]\\s+[#№]{2,}(\\d+)"), QString ("S #\\1")),  
-			Typo (text, QString::fromUtf8 ("[SЫ]\\s+(\\d+)"), QString ("S #\\1")),
-			Typo (text, QString::fromUtf8 ("[SЫ][#№](\\d+)"), QString ("S #\\1")),
-			Typo (text, QString::fromUtf8 ("[SЫ](\\d+)"), QString ("S #\\1")),
-			Typo (text, QString::fromUtf8 ("Ы [#№](\\d+)"), QString ("S #\\1")),
-			Typo (text, QString::fromUtf8 ("ЗЬ\\s+@(.*)"), QString ("PM @\\1")),
+			Typo (text, QString::fromUtf8 ("^!\\s+[#№]{2,}(\\d+)"), QString ("! #\\1")),  
+			Typo (text, "^!\\s+(\\d+)", QString ("! #\\1")),
+			Typo (text, QString::fromUtf8 ("^![#№](\\d+)"), QString ("! #\\1")),
+			Typo (text, "^!(\\d+)", QString ("! #\\1")),
+			Typo (text, QString::fromUtf8 ("^[SЫ]\\s+[#№]{2,}(\\d+)"), QString ("S #\\1")),  
+			Typo (text, QString::fromUtf8 ("^[SЫ]\\s+(\\d+)"), QString ("S #\\1")),
+			Typo (text, QString::fromUtf8 ("^[SЫ][#№](\\d+)"), QString ("S #\\1")),
+			Typo (text, QString::fromUtf8 ("^[SЫ](\\d+)"), QString ("S #\\1")),
+			Typo (text, QString::fromUtf8 ("^Ы [#№](\\d+)"), QString ("S #\\1")),
+			Typo (text, QString::fromUtf8 ("^ЗЬ\\s+@(.*)"), QString ("PM @\\1")),
 			Typo (text, "^(\\d+)\\s+(.*)", QString ("#\\1 \\2")),
 			Typo (text, "^(\\d+/\\d+)\\s+(.*)", QString ("#\\1 \\2")),
 			Typo (text, QString::fromUtf8 ("^№\\+$"), QString ("#+")),
 			Typo (text, QString::fromUtf8 ("^\"$"), QString ("@")),
 			Typo (text, QString::fromUtf8 ("^В\\s?Д$"), QString ("D L")),
 			Typo (text, QString::fromUtf8 ("$Ы^"), QString ("S")),
-			Typo (text, QString::fromUtf8 ("[UГ]\\s+[#№]{2,}(\\d+)"), QString ("U #\\1")),
-			Typo (text, QString::fromUtf8 ("[UГ]\\s+(\\d+)"), QString ("U #\\1")),
-			Typo (text, QString::fromUtf8 ("[UГ][#№](\\d+)"), QString ("U #\\1")),
-			Typo (text, QString::fromUtf8 ("[UГ](\\d+)"), QString ("U #\\1")),
-			Typo (text, QString::fromUtf8 ("Г [#№](\\d+)"), QString ("U #\\1")),
-			Typo (text, QString::fromUtf8 ("В [#№](\\d+)"), QString ("D #\\1")),
-			Typo (text, QString::fromUtf8 ("[DВ][#№](\\d+)"), QString ("D #\\1")),
-			Typo (text, QString::fromUtf8 ("[DВ](\\d+)"), QString ("D #\\1")),
+			Typo (text, QString::fromUtf8 ("^[UГ]\\s+[#№]{2,}(\\d+)"), QString ("U #\\1")),
+			Typo (text, QString::fromUtf8 ("^[UГ]\\s+(\\d+)"), QString ("U #\\1")),
+			Typo (text, QString::fromUtf8 ("^[UГ][#№](\\d+)"), QString ("U #\\1")),
+			Typo (text, QString::fromUtf8 ("^[UГ](\\d+)"), QString ("U #\\1")),
+			Typo (text, QString::fromUtf8 ("^Г [#№](\\d+)"), QString ("U #\\1")),
+			Typo (text, QString::fromUtf8 ("^В [#№](\\d+)"), QString ("D #\\1")),
+			Typo (text, QString::fromUtf8 ("^[DВ][#№](\\d+)"), QString ("D #\\1")),
+			Typo (text, QString::fromUtf8 ("^[DВ](\\d+)"), QString ("D #\\1")),
 			Typo (text, QString::fromUtf8 ("^РУДЗ$"), QString ("HELP")),
 			Typo (text, QString::fromUtf8 ("^ДЩПШТ$"), QString ("LOGIN")),
 			Typo (text, QString::fromUtf8 ("^ЩТ(\\+?)$"), QString ("ON\\1")),
@@ -324,6 +304,68 @@ namespace Juick
 			break;
 		}
 	}
+
+	
+	bool Plugin::IsBehind (const QString& text, int index, const QString& pattern) const
+	{
+		const QRegExp behind (pattern);
+
+		behind.indexIn (text);
+		const int behindIndex = index - behind.matchedLength ();
+		
+		return behindIndex >= 0 && 
+				behind.indexIn (text.mid (behindIndex, behind.matchedLength ())) != -1;	
+	}
+
+	void Plugin::InsertAvatars (QString& body)
+	{
+		int index = AvatarRX_.indexIn (body);
+		QRegExp notBehind ("Recommended by ");
+		QRegExp behind("Reply by ");
+
+		while (index >= 0)
+		{			
+			if (IsBehind (body, index, "Recommended by "))
+			{
+				index = AvatarRX_.indexIn (body, index + 1);
+				continue;
+			}
+
+			bool needNewLine = IsBehind (body, index, "Reply by ") || 
+					IsBehind (body, index, "Private message from ");			
+
+			const QString& avatar = 
+				QString ("%1<img style='float:left;margin-right:4px' "
+						"width='32px' "
+						"height='32px' "
+						"src='http://api.juick.com/avatar?uname=%2&size=32'>")
+					.arg (needNewLine ? "<br />" : "")
+					.arg (AvatarRX_.cap (1));
+			body.insert (index, avatar);
+			index = AvatarRX_.indexIn (body, index + avatar.length () + AvatarRX_.matchedLength ());
+		}
+	}
+
+	void Plugin::InsertNickLinks (QString& body)
+	{
+		int index = UserRX_.indexIn (body);
+
+		while (index >= 0)
+		{
+			const QString& userLink = 
+				QString (IsBehind (body, index, "Private message from .*size=32'>") ? 
+					"<a href=\"azoth://msgeditreplace/PM%20%1\">" :
+					"<a href=\"azoth://msgeditreplace/%1+\">")
+						.arg (UserRX_.cap (1));
+
+			body.insert (index, userLink);
+			index += userLink.length () + UserRX_.cap (1).length ();
+			body.insert (index, "</a>");
+			index = UserRX_.indexIn (body, index + sizeof ("</a>") - 1);
+		}
+
+	}
+
 }
 }
 }

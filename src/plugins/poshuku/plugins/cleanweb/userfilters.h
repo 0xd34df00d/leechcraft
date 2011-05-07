@@ -23,11 +23,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Poshuku
-{
-namespace Plugins
 {
 namespace CleanWeb
 {
@@ -43,8 +39,6 @@ namespace CleanWeb
 		void on_Modify__released ();
 		void on_Remove__released ();
 	};
-}
-}
 }
 }
 }

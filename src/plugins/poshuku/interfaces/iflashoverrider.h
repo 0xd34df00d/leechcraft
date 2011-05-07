@@ -24,23 +24,19 @@ class QUrl;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	class IFlashOverrider
 	{
-		namespace Poshuku
-		{
-			class IFlashOverrider
-			{
-			public:
-				virtual ~IFlashOverrider () {}
+	public:
+		virtual ~IFlashOverrider () {}
 
-				virtual bool WouldOverrideFlash (const QUrl&) const = 0;
-			};
-		};
+		virtual bool WouldOverrideFlash (const QUrl&) const = 0;
 	};
-};
+}
+}
 
-Q_DECLARE_INTERFACE (LeechCraft::Plugins::Poshuku::IFlashOverrider,
-		"org.Deviant.LeechCraft.Plugins.Poshuku.IFlashOverrider/1.0");
+Q_DECLARE_INTERFACE (LeechCraft::Poshuku::IFlashOverrider,
+		"org.Deviant.LeechCraft.Poshuku.IFlashOverrider/1.0");
 
 #endif
-

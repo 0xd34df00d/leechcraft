@@ -24,36 +24,28 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+namespace WYFV
+{
+	class VkontakteruPlayer : public Player
 	{
-		namespace Poshuku
-		{
-			namespace Plugins
-			{
-				namespace WYFV
-				{
-					class VkontakteruPlayer : public Player
-					{
-						Q_OBJECT
-					public:
-						VkontakteruPlayer (const QUrl&, const QStringList&, const QStringList&);
-						virtual ~VkontakteruPlayer ();
-					};
-
-					class VkontakteruPlayerCreator : public AbstractPlayerCreator
-					{
-					public:
-						virtual bool WouldRatherPlay (const QUrl&) const;
-						virtual Player* Create (const QUrl&,
-								const QStringList&,
-								const QStringList&) const;
-					};
-				};
-			};
-		};
+		Q_OBJECT
+	public:
+		VkontakteruPlayer (const QUrl&, const QStringList&, const QStringList&);
+		virtual ~VkontakteruPlayer ();
 	};
-};
+
+	class VkontakteruPlayerCreator : public AbstractPlayerCreator
+	{
+	public:
+		virtual bool WouldRatherPlay (const QUrl&) const;
+		virtual Player* Create (const QUrl&,
+				const QStringList&,
+				const QStringList&) const;
+	};
+}
+}
+}
 
 #endif
-
-

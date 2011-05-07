@@ -50,17 +50,17 @@ class ADLS :
         public dcpp::Singleton<ADLS>
 {
     Q_OBJECT
-    Q_INTERFACES(ArenaWidget IMultiTabsWidget)
+    Q_INTERFACES(ArenaWidget ITabWidget)
 
     friend class dcpp::Singleton<ADLS>;
 
     typedef QMap<QString,QVariant> StrMap;
 public:
     QWidget *getWidget();
-    QString getArenaTitle();
-    QString getArenaShortTitle();
+    QString getArenaTitle() const;
+    QString getArenaShortTitle() const;
     QMenu *getMenu();
-    const QPixmap &getPixmap(){ return WICON(WulforUtil::eiADLS); }
+    const QPixmap &getPixmap() const{ return WICON(WulforUtil::eiADLS); }
     ArenaWidget::Role role() const { return ArenaWidget::ADLS; }
 
 protected:

@@ -66,8 +66,10 @@ namespace Azoth
 	, LastSpacePosition_(-1)
 	, NumUnreadMsgs_ (0)
 	, IsMUC_ (false)
+	, PreviousTextHeight_ (0)
 	, XferManager_ (0)
 	, TypeTimer_ (new QTimer (this))
+	, PreviousState_ (CPSNone)
 	{
 		Ui_.setupUi (this);
 
@@ -178,6 +180,7 @@ namespace Azoth
 		XmlSettingsManager::Instance ().RegisterObject ("FontSize",
 				this, "handleFontSizeChanged");
 		handleFontSizeChanged ();
+		Ui_.View_->setFocusProxy (Ui_.MsgEdit_);
 	}
 	
 	ChatTab::~ChatTab ()
@@ -289,7 +292,7 @@ namespace Azoth
 		if (proxy->IsCancelled ())
 			return;
 
-		emit clearUnreadMsgCount (GetEntry<QObject> ());
+		emit entryMadeCurrent (GetEntry<QObject> ());
 
 		NumUnreadMsgs_ = 0;
 
@@ -1064,6 +1067,10 @@ namespace Azoth
 		Ui_.CharCounter_->setText (QString::number (Ui_.MsgEdit_->toPlainText ().size ()));
 
 		const int docHeight = Ui_.MsgEdit_->document ()->size ().toSize ().height ();
+		if (docHeight == PreviousTextHeight_)
+			return;
+		
+		PreviousTextHeight_ = docHeight;
 		const int fontHeight = Ui_.MsgEdit_->fontMetrics ().height ();
 		const int resHeight = std::min (height () / 3, std::max (docHeight, fontHeight));
 		Ui_.MsgEdit_->setMinimumHeight (resHeight);
@@ -1072,6 +1079,9 @@ namespace Azoth
 	
 	void ChatTab::SetChatPartState (ChatPartState state)
 	{
+		if (state == PreviousState_)
+			return;
+
 		if (IsMUC_)
 			return;
 		
@@ -1083,6 +1093,7 @@ namespace Azoth
 		if (!entry)
 			return;
 		
+		PreviousState_ = state;
 		entry->SetChatPartState (state, Ui_.VariantBox_->currentText ());
 	}
 

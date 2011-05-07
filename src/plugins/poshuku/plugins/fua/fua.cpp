@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,11 +32,7 @@ namespace Util
 {
 	class XmlSettingsDialog;
 };
-namespace Plugins
-{
 namespace Poshuku
-{
-namespace Plugins
 {
 namespace Fua
 {
@@ -111,7 +107,7 @@ namespace Fua
 		return "Poshuku FUA";
 	}
 
-	QString LeechCraft::Plugins::Poshuku::Plugins::Fua::FUA::GetInfo () const
+	QString LeechCraft::Poshuku::Fua::FUA::GetInfo () const
 	{
 		return tr ("Allows to set fake user agents for different sites.");
 	}
@@ -191,7 +187,5 @@ namespace Fua
 }
 }
 }
-}
-}
 
-Q_EXPORT_PLUGIN2 (leechcraft_poshuku_fua, LeechCraft::Plugins::Poshuku::Plugins::Fua::FUA);
+Q_EXPORT_PLUGIN2 (leechcraft_poshuku_fua, LeechCraft::Poshuku::Fua::FUA);

@@ -7,12 +7,12 @@
         <location filename="accounthandlerchooserdialog.ui" line="14"/>
         <source>Choose account</source>
         <oldsource>Chose account</oldsource>
-        <translation>Выбор аккаунта</translation>
+        <translation>Выбор учетной записи</translation>
     </message>
     <message>
         <location filename="accounthandlerchooserdialog.ui" line="29"/>
         <source>Accounts:</source>
-        <translation>Аккаунты:</translation>
+        <translation>Учетные записи:</translation>
     </message>
 </context>
 <context>
@@ -20,7 +20,7 @@
     <message>
         <location filename="accountslistdialog.ui" line="14"/>
         <source>Accounts</source>
-        <translation>Аккаунты</translation>
+        <translation>Учетные записи</translation>
     </message>
     <message>
         <location filename="accountslistdialog.ui" line="37"/>
@@ -43,17 +43,17 @@
     <message>
         <location filename="addaccountwizardfirstpage.ui" line="17"/>
         <source>Account name and type</source>
-        <translation>Имя и тип аккаунта</translation>
+        <translation>Имя и тип учетной записи</translation>
     </message>
     <message>
         <location filename="addaccountwizardfirstpage.ui" line="20"/>
         <source>Enter the name of the account to be created and select the protocol for which you would like to create the account.</source>
-        <translation>Введите имя создаваемого аккаунта и выберете протокол, которому принадлежит аккаунт.</translation>
+        <translation>Введите имя создаваемой учетной записи и выберете протокол, которому она принадлежит.</translation>
     </message>
     <message>
         <location filename="addaccountwizardfirstpage.ui" line="29"/>
         <source>Account name:</source>
-        <translation>Имя аккаунта:</translation>
+        <translation>Имя учетной записи:</translation>
     </message>
     <message>
         <location filename="addaccountwizardfirstpage.ui" line="39"/>
@@ -91,7 +91,7 @@
     <message>
         <location filename="addcontactdialog.ui" line="80"/>
         <source>Account:</source>
-        <translation>Аккаунт:</translation>
+        <translation>Учетная запись:</translation>
     </message>
     <message>
         <location filename="addcontactdialog.ui" line="87"/>
@@ -119,7 +119,7 @@
     <message>
         <location filename="bookmarksmanagerdialog.ui" line="29"/>
         <source>Account:</source>
-        <translation>Аккаунт:</translation>
+        <translation>Учетная запись:</translation>
     </message>
     <message>
         <location filename="bookmarksmanagerdialog.ui" line="56"/>
@@ -193,7 +193,7 @@
     <message>
         <location filename="joinconferencedialog.ui" line="53"/>
         <source>Account:</source>
-        <translation>Аккаунт:</translation>
+        <translation>Учетная запись:</translation>
     </message>
 </context>
 <context>
@@ -202,7 +202,7 @@
         <location filename="accountslistdialog.cpp" line="37"/>
         <location filename="accountslistdialog.cpp" line="72"/>
         <source>Add account</source>
-        <translation>Добавить аккаунт</translation>
+        <translation>Добавить учетную запись</translation>
     </message>
 </context>
 <context>
@@ -210,7 +210,7 @@
     <message>
         <location filename="addaccountwizardfirstpage.cpp" line="78"/>
         <source>%1 options</source>
-        <translation>Опции %1</translation>
+        <translation>Параметры %1</translation>
     </message>
 </context>
 <context>
@@ -241,7 +241,7 @@
     <message>
         <location filename="chattab.cpp" line="177"/>
         <source>Unable to load style, please check you&apos;ve enabled at least one styles plugin.</source>
-        <translation>Невозможно загрузить стиль. Проверьте, что включен хотя бы один стилевый плагин.</translation>
+        <translation>Невозможно загрузить стиль. Проверьте, что включён хотя бы один стилевой модуль.</translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="385"/>
@@ -390,7 +390,7 @@
     <message>
         <location filename="core.cpp" line="1260"/>
         <source>Rerequest authentication</source>
-        <translation>Перезапросить</translation>
+        <translation>Повторно запросить авторизацию</translation>
     </message>
     <message>
         <location filename="core.cpp" line="103"/>
@@ -405,7 +405,7 @@
     <message>
         <location filename="core.cpp" line="310"/>
         <source>Please select account to handle URI %1</source>
-        <translation>Пожалуйста, выберите аккаунт для обработки URI %1</translation>
+        <translation>Пожалуйста, выберите учетную запись для обработки URI %1</translation>
     </message>
     <message>
         <location filename="core.cpp" line="770"/>
@@ -425,7 +425,7 @@
     <message>
         <location filename="core.cpp" line="1265"/>
         <source>Rerequest authentication with reason...</source>
-        <translation>Перезапросить авторизацию с причиной...</translation>
+        <translation>Повторно запросить авторизацию с причиной...</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1273"/>
@@ -626,7 +626,7 @@
     <message>
         <location filename="core.cpp" line="2538"/>
         <source>Enter reason for rerequesting authorization from %1:</source>
-        <translation>Введите причину для перезапроса авторизации у %1:</translation>
+        <translation>Введите причину для повторного запроса авторизации у %1:</translation>
     </message>
     <message>
         <location filename="proxyobject.cpp" line="232"/>
@@ -641,7 +641,7 @@
     <message>
         <location filename="proxyobject.cpp" line="236"/>
         <source>Away</source>
-        <translation>Ушел</translation>
+        <translation>Ушёл</translation>
     </message>
     <message>
         <location filename="proxyobject.cpp" line="238"/>
@@ -651,7 +651,7 @@
     <message>
         <location filename="proxyobject.cpp" line="240"/>
         <source>Extended away</source>
-        <translation>Расширенный ушел</translation>
+        <translation>Расширенный ушёл</translation>
     </message>
     <message>
         <location filename="proxyobject.cpp" line="242"/>
@@ -702,7 +702,7 @@
     <message>
         <location filename="mainwidget.cpp" line="172"/>
         <source>Away</source>
-        <translation>Ушел</translation>
+        <translation>Ушёл</translation>
     </message>
     <message>
         <location filename="mainwidget.cpp" line="176"/>
@@ -712,7 +712,7 @@
     <message>
         <location filename="mainwidget.cpp" line="180"/>
         <source>Extended away</source>
-        <translation>Расширенный ушел</translation>
+        <translation>Расширенный ушёл</translation>
     </message>
     <message>
         <location filename="mainwidget.cpp" line="184"/>
@@ -737,7 +737,7 @@
     <message>
         <location filename="mainwidget.cpp" line="130"/>
         <source>Accounts...</source>
-        <translation>Аккаунты...</translation>
+        <translation>Учетные записи...</translation>
     </message>
     <message>
         <location filename="mainwidget.cpp" line="42"/>
@@ -808,7 +808,7 @@
     <message>
         <location filename="transferjobmanager.cpp" line="105"/>
         <source>Transferring %1 from %2</source>
-        <translation>Прием %1 от %2</translation>
+        <translation>Приём %1 от %2</translation>
     </message>
     <message>
         <location filename="transferjobmanager.cpp" line="106"/>
@@ -830,7 +830,7 @@
     <message>
         <location filename="transferjobmanager.cpp" line="151"/>
         <source>Default path for incoming files doesn&apos;t exist, is not a directory or is unwritable. Would you like to adjust the path now? Refusing will abort the transfer.</source>
-        <translation>Путь по умолчанию для входящих файлов не существует, не является директорией или не доступен на запись. Хотите изменить путь сейчас? В противном случае передача файла будет отменена.</translation>
+        <translation>Путь по умолчанию для входящих файлов не существует, не является каталогом или не доступен на запись. Хотите изменить путь сейчас? В противном случае передача файла будет отменена.</translation>
     </message>
     <message>
         <location filename="transferjobmanager.cpp" line="157"/>
@@ -905,7 +905,7 @@
     <message>
         <location filename="transferjobmanager.cpp" line="361"/>
         <source>Transfer of file %1 with %2 is finished.</source>
-        <translation>Обмен файлом %1 с %2 завершен.</translation>
+        <translation>Обмен файлом %1 с %2 завершён.</translation>
     </message>
 </context>
 <context>
@@ -913,7 +913,7 @@
     <message>
         <location filename="mainwidget.ui" line="73"/>
         <source>Add account</source>
-        <translation>Добавить аккаунт</translation>
+        <translation>Добавить учетную запись</translation>
     </message>
 </context>
 <context>
@@ -991,7 +991,7 @@
     <message>
         <location filename="setstatusdialog.ui" line="46"/>
         <source>Away</source>
-        <translation>Ушел</translation>
+        <translation>Ушёл</translation>
     </message>
     <message>
         <location filename="setstatusdialog.ui" line="51"/>
@@ -1001,7 +1001,7 @@
     <message>
         <location filename="setstatusdialog.ui" line="56"/>
         <source>Extended away</source>
-        <translation>Расширенный ушел</translation>
+        <translation>Расширенный ушёл</translation>
     </message>
     <message>
         <location filename="setstatusdialog.ui" line="61"/>
@@ -1019,7 +1019,7 @@
     <message>
         <location filename="dummy.cpp" line="4"/>
         <source>Status icons:</source>
-        <translation>Иконки статуса:</translation>
+        <translation>Значки статуса:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="5"/>
@@ -1029,7 +1029,7 @@
     <message>
         <location filename="dummy.cpp" line="8"/>
         <source>Client icons:</source>
-        <translation>Клиентские иконки:</translation>
+        <translation>Клиентские значки:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="9"/>
@@ -1055,7 +1055,7 @@
     <message>
         <location filename="dummy.cpp" line="10"/>
         <source>Affiliation icons:</source>
-        <translation>Иконки членства:</translation>
+        <translation>Значки членства:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="12"/>
@@ -1091,7 +1091,7 @@
     <message>
         <location filename="dummy.cpp" line="18"/>
         <source>Show client icons</source>
-        <translation>Показывать иконки клиентов</translation>
+        <translation>Показывать значки клиентов</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="19"/>
@@ -1117,7 +1117,7 @@
     <message>
         <location filename="dummy.cpp" line="24"/>
         <source>Autojoin allowed</source>
-        <translation>Автоджойн разрешен</translation>
+        <translation>Автоджойн разрешён</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="25"/>
@@ -1142,7 +1142,7 @@
     <message>
         <location filename="dummy.cpp" line="29"/>
         <source>Notify about highlights in conferences</source>
-        <translation>Уведомлять о подсветках в конференциях</translation>
+        <translation>Уведомлять об упоминаниях в конференциях</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="30"/>
@@ -1177,7 +1177,7 @@
     <message>
         <location filename="dummy.cpp" line="36"/>
         <source>Notify when someone grants us subscription</source>
-        <translation>Уведомлять, когда кто-то дает нам подписку</translation>
+        <translation>Уведомлять, когда кто-то даёт нам подписку</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="37"/>
@@ -1212,7 +1212,7 @@
     <message>
         <location filename="dummy.cpp" line="43"/>
         <source>Wanna chat :3</source>
-        <translation>Хочу чятики :3</translation>
+        <translation>Хочу чатики :3</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="44"/>
@@ -1222,12 +1222,12 @@
     <message>
         <location filename="dummy.cpp" line="45"/>
         <source>Oh, seems like I&apos;m away</source>
-        <translation>Ыа, похоже, я ушел</translation>
+        <translation>Хех, похоже, я ушёл</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="46"/>
         <source>Away:</source>
-        <translation>Ушел:</translation>
+        <translation>Ушёл:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="47"/>
@@ -1242,12 +1242,12 @@
     <message>
         <location filename="dummy.cpp" line="49"/>
         <source>Extended away is okay</source>
-        <translation>Расширенный ушел — это хорошо</translation>
+        <translation>Расширенный ушёл — это хорошо</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="50"/>
         <source>XA:</source>
-        <translation>Расширенный ушел:</translation>
+        <translation>Расширенный ушёл:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="51"/>

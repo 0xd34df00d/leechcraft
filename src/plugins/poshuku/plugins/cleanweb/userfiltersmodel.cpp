@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,11 +27,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Poshuku
-{
-namespace Plugins
 {
 namespace CleanWeb
 {
@@ -45,10 +41,10 @@ namespace CleanWeb
 			<< tr ("Case sensitive")
 			<< tr ("Domains");
 
-		qRegisterMetaType<RegExpsDict_t> ("LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::RegExpsDict_t");
-		qRegisterMetaType<OptionsDict_t> ("LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::OptionsDict_t");
-		qRegisterMetaTypeStreamOperators<RegExpsDict_t> ("LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::RegExpsDict_t");
-		qRegisterMetaTypeStreamOperators<OptionsDict_t> ("LeechCraft::Plugins::Poshuku::Plugins::CleanWeb::OptionsDict_t");
+		qRegisterMetaType<RegExpsDict_t> ("LeechCraft::Poshuku::CleanWeb::RegExpsDict_t");
+		qRegisterMetaType<OptionsDict_t> ("LeechCraft::Poshuku::CleanWeb::OptionsDict_t");
+		qRegisterMetaTypeStreamOperators<RegExpsDict_t> ("LeechCraft::Poshuku::CleanWeb::RegExpsDict_t");
+		qRegisterMetaTypeStreamOperators<OptionsDict_t> ("LeechCraft::Poshuku::CleanWeb::OptionsDict_t");
 	}
 
 	int UserFiltersModel::columnCount (const QModelIndex&) const
@@ -269,8 +265,6 @@ namespace CleanWeb
 
 		InitiateAdd (blockUrl.toString ());
 	}
-}
-}
 }
 }
 }

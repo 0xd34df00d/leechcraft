@@ -22,42 +22,5 @@ namespace LeechCraft
 {
 namespace Azoth
 {
-	QString AffToString (IMUCEntry::MUCAffiliation aff)
-	{
-		switch (aff)
-		{
-		case IMUCEntry::MUCAInvalid:
-			return QObject::tr ("invalid");
-		case IMUCEntry::MUCANone:
-			return QObject::tr ("none");
-		case IMUCEntry::MUCAOutcast:
-			return QObject::tr ("banned");
-		case IMUCEntry::MUCAMember:
-			return QObject::tr ("member");
-		case IMUCEntry::MUCAAdmin:
-			return QObject::tr ("admin");
-		case IMUCEntry::MUCAOwner:
-			return QObject::tr ("owner");
-		}
-		return QString ();
-	}
-	
-	QString RoleToString (IMUCEntry::MUCRole role)
-	{
-		switch (role)
-		{
-		case IMUCEntry::MUCRInvalid:
-			return QObject::tr ("invalid");
-		case IMUCEntry::MUCRNone:
-			return QObject::tr ("none");
-		case IMUCEntry::MUCRVisitor:
-			return QObject::tr ("visitor");
-		case IMUCEntry::MUCRParticipant:
-			return QObject::tr ("participant");
-		case IMUCEntry::MUCRModerator:
-			return QObject::tr ("moderator");
-		}
-		return QString ();
-	}
 }
 }

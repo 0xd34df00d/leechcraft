@@ -34,7 +34,7 @@
     <message>
         <location filename="glooxaccountconfigurationdialog.ui" line="14"/>
         <source>Account configuration</source>
-        <translation>Настройки аккаунта</translation>
+        <translation>Параметры учетной записи</translation>
     </message>
 </context>
 <context>
@@ -178,7 +178,7 @@
     <message>
         <location filename="clientconnection.cpp" line="871"/>
         <source>Data is not acceptable.</source>
-        <translation>Неприемлимые данные.</translation>
+        <translation>Неприемлемые данные.</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="873"/>
@@ -193,7 +193,7 @@
     <message>
         <location filename="clientconnection.cpp" line="878"/>
         <source>Payment required.</source>
-        <translation>Требуется денюжка.</translation>
+        <translation>Требуется оплата.</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="880"/>
@@ -203,7 +203,7 @@
     <message>
         <location filename="clientconnection.cpp" line="882"/>
         <source>Got redirect.</source>
-        <translation>Получил редирект.</translation>
+        <translation>Получено перенаправление.</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="884"/>
@@ -213,7 +213,7 @@
     <message>
         <location filename="clientconnection.cpp" line="886"/>
         <source>Remote server not found.</source>
-        <translation>Удаленный сервер не найден.</translation>
+        <translation>Удалённый сервер не найден.</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="888"/>
@@ -246,7 +246,7 @@
     <message>
         <location filename="entrybase.cpp" line="99"/>
         <source>Can&apos;t view info while offline</source>
-        <translation>Невозможно просматрить инфо в оффлайне</translation>
+        <translation>Невозможно просматривать информацию в оффлайне</translation>
     </message>
     <message>
         <location filename="entrybase.cpp" line="181"/>
@@ -305,7 +305,7 @@
     <message>
         <location filename="glooxprotocol.cpp" line="101"/>
         <source>Enter new account name</source>
-        <translation>Введите имя нового аккаунта</translation>
+        <translation>Введите имя новой учетной записи</translation>
     </message>
 </context>
 <context>
@@ -334,12 +334,12 @@
     <message>
         <location filename="roomhandler.cpp" line="121"/>
         <source>%1 joined the room as %2 and %3</source>
-        <translation>%1 вошел в комнату как %2 и %3</translation>
+        <translation>%1 вошёл в комнату как %2 и %3</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="126"/>
         <source>%1 (%2) joined the room as %3 and %4</source>
-        <translation>%1 (%2) вошел в комнату как %3 и %4</translation>
+        <translation>%1 (%2) вошёл в комнату как %3 и %4</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="148"/>
@@ -410,7 +410,7 @@
     <message>
         <location filename="roomhandler.cpp" line="323"/>
         <source>access forbidden</source>
-        <translation>доступ запрещен</translation>
+        <translation>доступ запрещён</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="326"/>

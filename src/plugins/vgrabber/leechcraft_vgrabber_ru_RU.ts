@@ -131,7 +131,7 @@
     <message>
         <location filename="vgrabber.cpp" line="88"/>
         <source>vkontakte.ru audio/video grabber.</source>
-        <translation>Скачивание и проигрывание медиа-файлов В Контакте.</translation>
+        <translation>Скачивание и проигрывание медиафайлов В Контакте.</translation>
     </message>
 </context>
 <context>
@@ -139,7 +139,7 @@
     <message>
         <location filename="dummy.cpp" line="2"/>
         <source>General settings</source>
-        <translation>Общие настройки</translation>
+        <translation>Общие параметры</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="3"/>

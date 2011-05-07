@@ -11,12 +11,12 @@
     <message>
         <location filename="editorpage.ui" line="45"/>
         <source>Inject</source>
-        <translation>Впилить</translation>
+        <translation>Загрузить</translation>
     </message>
     <message>
         <location filename="editorpage.ui" line="52"/>
         <source>Release</source>
-        <translation>Отпустить</translation>
+        <translation>Выгрузить</translation>
     </message>
     <message>
         <location filename="editorpage.ui" line="80"/>
@@ -239,7 +239,7 @@
     <message>
         <location filename="replacedialog.ui" line="47"/>
         <source>Case sensitive</source>
-        <translation>Регистрочувствительный поиск</translation>
+        <translation>Учитывать регистр</translation>
     </message>
     <message>
         <location filename="replacedialog.ui" line="57"/>
@@ -316,7 +316,7 @@
     <message>
         <location filename="dummy.cpp" line="16"/>
         <source>Indentation of wrapped line</source>
-        <translation>Отступ перенесенной строки</translation>
+        <translation>Отступ перенесённой строки</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="17"/>

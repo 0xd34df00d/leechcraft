@@ -31,31 +31,31 @@
 %WebKitVersion% is expanded to WebKit version.
 %AppVersion% is expanded to the application&apos;s version.</source>
         <translation>%Platform% и %Subplatform% заменяются оконной подсистемой и операционной системой.
-%Security% заменяется на U, если SSL включен, в противном случае на N.
+%Security% заменяется на U при доступности SSL, а в противном случае на N.
 %Locale% заменяется именем текущей локали.
 %WebKitVersion% заменяется версией движка WebKit.
 %AppVersion% заменяется версией приложения.</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Poshuku::Plugins::Fua::FUA</name>
+    <name>LeechCraft::Poshuku::Fua::FUA</name>
     <message>
-        <location filename="fua.cpp" line="70"/>
+        <location filename="fua.cpp" line="66"/>
         <source>Domain</source>
         <translation>Домен</translation>
     </message>
     <message>
-        <location filename="fua.cpp" line="71"/>
+        <location filename="fua.cpp" line="67"/>
         <source>Agent</source>
         <translation>Агент</translation>
     </message>
     <message>
-        <location filename="fua.cpp" line="72"/>
+        <location filename="fua.cpp" line="68"/>
         <source>Identification string</source>
         <translation>Строка идентификации</translation>
     </message>
     <message>
-        <location filename="fua.cpp" line="116"/>
+        <location filename="fua.cpp" line="112"/>
         <source>Allows to set fake user agents for different sites.</source>
         <translation>Позволяет устанавливать поддельные user-agent для различных сайтов.</translation>
     </message>
@@ -88,7 +88,7 @@
     <message>
         <location filename="dummy.cpp" line="2"/>
         <source>FUA settings</source>
-        <translation>Настройки FUA</translation>
+        <translation>Параметры FUA</translation>
     </message>
 </context>
 </TS>

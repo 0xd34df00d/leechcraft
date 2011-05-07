@@ -25,11 +25,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Poshuku
-{
-namespace Plugins
 {
 namespace OnlineBookmarks
 {
@@ -48,8 +44,9 @@ namespace OnlineBookmarks
 	const QString tag = "tags";
 	const QString list = "list";
 	
-	ReadItLaterBookmarksService::ReadItLaterBookmarksService (QWidget *parent)
-	: ApiUrl_ (QUrl (LoginUrl))
+	ReadItLaterBookmarksService::ReadItLaterBookmarksService (QObject *parent)
+	: AbstractBookmarksService (parent)
+	, ApiUrl_ (QUrl (LoginUrl))
 	{
 	}
 
@@ -254,6 +251,3 @@ namespace OnlineBookmarks
 }
 }
 }
-}
-}
-

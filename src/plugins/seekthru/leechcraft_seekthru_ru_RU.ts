@@ -51,7 +51,7 @@
     <message>
         <location filename="core.cpp" line="480"/>
         <source>XML parse error %1 at %2:%3.</source>
-        <translation>Ошибка парсинга XML %1 в %2:%3.</translation>
+        <translation>Ошибка разбора XML %1 в %2:%3.</translation>
     </message>
 </context>
 <context>
@@ -94,7 +94,7 @@
     <message>
         <location filename="searchhandler.cpp" line="297"/>
         <source>Search request for URL&lt;br /&gt;%1&lt;br /&gt;was delegated, but it failed.</source>
-        <translation>Поисковый запрос к URL&lt;br /&gt;%1&lt;br /&gt;был делегирван, но не удался.</translation>
+        <translation>Поисковый запрос к URL&lt;br /&gt;%1&lt;br /&gt;был делегирован, но не удался.</translation>
     </message>
 </context>
 <context>
@@ -280,7 +280,7 @@
     <message>
         <location filename="dummy.cpp" line="2"/>
         <source>SeekThru settings</source>
-        <translation>Настройки SeekThru</translation>
+        <translation>Параметры SeekThru</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="3"/>

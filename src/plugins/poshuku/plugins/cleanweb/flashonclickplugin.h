@@ -23,11 +23,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Poshuku
-{
-namespace Plugins
 {
 namespace CleanWeb
 {
@@ -36,7 +32,7 @@ namespace CleanWeb
 	{
 		Q_OBJECT
 
-		Q_INTERFACES (LeechCraft::Plugins::Poshuku::IWebPlugin)
+		Q_INTERFACES (LeechCraft::Poshuku::IWebPlugin)
 	public:
 		FlashOnClickPlugin (QObject* = 0);
 
@@ -46,8 +42,6 @@ namespace CleanWeb
 				const QStringList&,
 				const QStringList&);
 	};
-}
-}
 }
 }
 }

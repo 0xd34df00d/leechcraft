@@ -63,7 +63,7 @@
     </layout>
    </item>
    <item>
-    <widget class="LeechCraft::Plugins::Poshuku::FavoritesTreeView" name="FavoritesView_">
+    <widget class="LeechCraft::Poshuku::FavoritesTreeView" name="FavoritesView_">
      <property name="contextMenuPolicy">
       <enum>Qt::ActionsContextMenu</enum>
      </property>
@@ -106,7 +106,7 @@
    <header location="global">plugininterface/tagslineedit.h</header>
   </customwidget>
   <customwidget>
-   <class>LeechCraft::Plugins::Poshuku::FavoritesTreeView</class>
+   <class>LeechCraft::Poshuku::FavoritesTreeView</class>
    <extends>QTreeView</extends>
    <header>favoritestreeview.h</header>
   </customwidget>

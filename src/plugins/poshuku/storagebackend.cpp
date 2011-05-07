@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,34 +22,30 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	StorageBackend::StorageBackend (QObject *parent)
+	: QObject (parent)
 	{
-		namespace Poshuku
+	}
+	
+	StorageBackend::~StorageBackend ()
+	{
+	}
+	
+	boost::shared_ptr<StorageBackend> StorageBackend::Create (Type type)
+	{
+		boost::shared_ptr<StorageBackend> result;
+		switch (type)
 		{
-			StorageBackend::StorageBackend (QObject *parent)
-			: QObject (parent)
-			{
-			}
-			
-			StorageBackend::~StorageBackend ()
-			{
-			}
-			
-			boost::shared_ptr<StorageBackend> StorageBackend::Create (Type type)
-			{
-				boost::shared_ptr<StorageBackend> result;
-				switch (type)
-				{
-					case SBSQLite:
-					case SBPostgres:
-						result.reset (new SQLStorageBackend (type));
-                        break;
-                    case SBMysql:
-						result.reset (new SQLStorageBackendMysql (type));
-				}
-				return result;
-			}
-		};
-	};
-};
-
+			case SBSQLite:
+			case SBPostgres:
+				result.reset (new SQLStorageBackend (type));
+				break;
+			case SBMysql:
+				result.reset (new SQLStorageBackendMysql (type));
+		}
+		return result;
+	}
+}
+}

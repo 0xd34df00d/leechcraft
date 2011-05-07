@@ -40,6 +40,7 @@
 #include "interfaces/iaccount.h"
 #include "interfaces/iclentry.h"
 #include "interfaces/imucentry.h"
+#include "interfaces/imucperms.h"
 #include "interfaces/iauthable.h"
 #include "interfaces/iresourceplugin.h"
 #include "interfaces/iurihandler.h"
@@ -52,6 +53,7 @@
 #include "transferjobmanager.h"
 #include "accounthandlerchooserdialog.h"
 #include "util.h"
+#include "eventsnotifier.h"
 
 uint qHash (const QImage& image)
 {
@@ -105,6 +107,7 @@ namespace Azoth
 	, PluginManager_ (new PluginManager)
 	, PluginProxyObject_ (new ProxyObject)
 	, XferJobManager_ (new TransferJobManager)
+	, EventsNotifier_ (new EventsNotifier)
 	{
 		connect (ChatTabsManager_,
 				SIGNAL (clearUnreadMsgCount (QObject*)),
@@ -114,6 +117,14 @@ namespace Azoth
 				SIGNAL (jobNoLongerOffered (QObject*)),
 				this,
 				SLOT (handleJobDeoffered (QObject*)));
+		connect (EventsNotifier_.get (),
+				SIGNAL (gotEntity (const LeechCraft::Entity&)),
+				this,
+				SIGNAL (gotEntity (const LeechCraft::Entity&)));
+		connect (ChatTabsManager_,
+				SIGNAL (entryMadeCurrent (QObject*)),
+				EventsNotifier_.get (),
+				SLOT (handleEntryMadeCurrent (QObject*)));
 
 		PluginManager_->RegisterHookable (this);
 
@@ -807,6 +818,8 @@ namespace Azoth
 				SIGNAL (avatarChanged (const QImage&)),
 				this,
 				SLOT (updateItem ()));
+		
+		EventsNotifier_->RegisterEntry (clEntry);
 
 		const QString& id = clEntry->GetEntryID ();
 		ID2Entry_ [id] = clEntry->GetObject ();
@@ -900,26 +913,32 @@ namespace Azoth
 			tip += tr ("In groups: ") + entry->Groups ().join ("; ");
 		}
 
-		IMUCEntry *mucEntry = qobject_cast<IMUCEntry*> (entry->GetParentCLEntry ());
+		IMUCPerms *mucEntry = qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ());
 		if (mucEntry)
 		{
-			QObject *entryObj = entry->GetObject ();
 			tip += "<hr />";
-			tip += tr ("Affiliation:") + ' ' +
-					AffToString (mucEntry->GetAffiliation (entryObj));
-			tip += "<br />";
-			tip += tr ("Role:") + ' ' +
-					RoleToString (mucEntry->GetRole (entryObj));
+			const QMap<QByteArray, QByteArray>& perms =
+					mucEntry->GetPerms (entry->GetObject ());
+			Q_FOREACH (const QByteArray& permClass, perms.keys ())
+			{
+				tip += mucEntry->GetUserString (permClass);
+				tip += ": ";
+				tip += mucEntry->GetUserString (perms [permClass]);
+				tip += "<br />";
+			}
 		}
 				
 		const QStringList& variants = entry->Variants ();
 		Q_FOREACH (const QString& variant, variants)
 		{
-			if (variant.isEmpty ())
+			const QMap<QString, QVariant>& info = entry->GetClientInfo (variant);
+			if (info.isEmpty ())
 				continue;
 
-			const QMap<QString, QVariant>& info = entry->GetClientInfo (variant);
-			tip += "<hr /><strong>" + variant + "</strong>";
+			tip += "<hr />";
+			if (!variant.isEmpty ())
+				tip += "<strong>" + variant + "</strong>";
+
 			if (info.contains ("priority"))
 				tip += " (" + QString::number (info.value ("priority").toInt ()) + ")";
 			tip += ": ";
@@ -929,6 +948,13 @@ namespace Azoth
 				tip += "<br />" + info.value ("client_name").toString ();
 			if (info.contains ("client_version"))
 				tip += " " + info.value ("client_version").toString ();
+
+			if (info.contains ("custom_user_visible_map"))
+			{
+				const QVariantMap& map = info ["custom_user_visible_map"].toMap ();
+				Q_FOREACH (const QString& key, map.keys ())
+					tip += "<br />" + key + ": " + map [key].toString () + "<br />";
+			}
 		}
 		return tip;
 	}
@@ -1036,33 +1062,12 @@ namespace Azoth
 		return QIcon (path);
 	}
 	
-	QIcon Core::GetAffIcon (IMUCEntry::MUCAffiliation aff) const
+	QIcon Core::GetAffIcon (const QByteArray& affName) const
 	{
-		QString iconName;
-		switch (aff)
-		{
-		case IMUCEntry::MUCAInvalid:
-		case IMUCEntry::MUCANone:
-			iconName = "noaffiliation";
-			break;
-		case IMUCEntry::MUCAOutcast:
-			iconName = "outcast";
-			break;
-		case IMUCEntry::MUCAMember:
-			iconName = "member";
-			break;
-		case IMUCEntry::MUCAAdmin:
-			iconName = "admin";
-			break;
-		case IMUCEntry::MUCAOwner:
-			iconName = "owner";
-			break;
-		}
-		
 		QString filename = XmlSettingsManager::Instance ()
 				.property ("AffIcons").toString ();
 		filename += '/';
-		filename += iconName;
+		filename += affName;
 		
 		const QString& path = AffIconLoader_->GetIconPath (filename);
 		return QIcon (path);
@@ -1123,11 +1128,10 @@ namespace Azoth
 		result << id2action.value ("changegroups");
 		result << id2action.value ("remove");
 		result << id2action.value ("authorization");
-		result << id2action.value ("kick");
-		result << id2action.value ("ban");
-		result << id2action.value ("sep_afterban");
-		result << id2action.value ("changerole");
-		result << id2action.value ("changeaffiliation");
+		IMUCPerms *perms = qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ());
+		if (perms)
+			Q_FOREACH (const QByteArray& permClass, perms->GetPossiblePerms ().keys ())
+				result << id2action.value (permClass);
 		result << id2action.value ("sep_afterroles");
 		result << id2action.value ("vcard");
 		result << id2action.value ("leave");
@@ -1280,101 +1284,30 @@ namespace Azoth
 			Action2Areas_ [vcard] << CLEAAContactListCtxtMenu;
 		}
 
-		if (entry->GetEntryType () == ICLEntry::ETPrivateChat)
+		IMUCPerms *perms = qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ());
+		if (entry->GetEntryType () == ICLEntry::ETPrivateChat &&
+				perms)
 		{
-			QAction *kick = new QAction (tr ("Kick"), entry->GetObject ());
-			connect (kick,
-					SIGNAL (triggered ()),
-					this,
-					SLOT (handleActionRoleTriggered ()));
-			kick->setProperty ("ActionIcon", "azoth_kick");
-			kick->setProperty ("Azoth/TargetRole",
-					QVariant::fromValue<IMUCEntry::MUCRole> (IMUCEntry::MUCRNone));
-			Entry2Actions_ [entry] ["kick"] = kick;
-			Action2Areas_ [kick] << CLEAAContactListCtxtMenu;
-
-			QAction *ban = new QAction (tr ("Ban"), entry->GetObject ());
-			connect (ban,
-					SIGNAL (triggered ()),
-					this,
-					SLOT (handleActionAffTriggered ()));
-			ban->setProperty ("ActionIcon", "azoth_ban");
-			ban->setProperty ("Azoth/TargetAffiliation",
-					QVariant::fromValue<IMUCEntry::MUCAffiliation> (IMUCEntry::MUCAOutcast));
-			Entry2Actions_ [entry] ["ban"] = ban;
-			Action2Areas_ [ban] << CLEAAContactListCtxtMenu;
+			const QMap<QByteArray, QList<QByteArray> >& possible = perms->GetPossiblePerms ();
+			Q_FOREACH (const QByteArray& permClass, possible.keys ())
+			{
+				QMenu *changeClass = new QMenu (perms->GetUserString (permClass));
+				Entry2Actions_ [entry] [permClass] = changeClass->menuAction ();
+				Action2Areas_ [changeClass->menuAction ()] << CLEAAContactListCtxtMenu;
+				
+				Q_FOREACH (const QByteArray& perm, possible [permClass])
+				{
+					QAction *permAct = changeClass->addAction (perms->GetUserString (perm),
+							this,
+							SLOT (handleActionPermTriggered ()));
+					permAct->setParent (entry->GetObject ());
+					permAct->setCheckable (true);
+					permAct->setProperty ("Azoth/TargetPermClass", permClass);
+					permAct->setProperty ("Azoth/TargetPerm", perm);
+				}
+			}
 
 			QAction *sep = Util::CreateSeparator (entry->GetObject ());
-			Entry2Actions_ [entry] ["sep_afterban"] = sep;
-			Action2Areas_ [sep] << CLEAAContactListCtxtMenu;
-
-			QMenu *changeRole = new QMenu (tr ("Change role"));
-			changeRole->menuAction ()->setProperty ("ActionIcon", "azoth_menu_changerole");
-			Entry2Actions_ [entry] ["changerole"] = changeRole->menuAction ();
-			Action2Areas_ [changeRole->menuAction ()] << CLEAAContactListCtxtMenu;
-
-			QAction *visitorRole = changeRole->addAction (tr ("Visitor"),
-					this, SLOT (handleActionRoleTriggered ()));
-			visitorRole->setProperty ("ActionIcon", "azoth_role_visitor");
-			visitorRole->setParent (entry->GetObject ());
-			visitorRole->setCheckable (true);
-			visitorRole->setProperty ("Azoth/TargetRole",
-					QVariant::fromValue<IMUCEntry::MUCRole> (IMUCEntry::MUCRVisitor));
-
-			QAction *participantRole = changeRole->addAction (tr ("Participant"),
-					this, SLOT (handleActionRoleTriggered ()));
-			participantRole->setProperty ("ActionIcon", "azoth_role_participant");
-			participantRole->setParent (entry->GetObject ());
-			participantRole->setCheckable (true);
-			participantRole->setProperty ("Azoth/TargetRole",
-					QVariant::fromValue<IMUCEntry::MUCRole> (IMUCEntry::MUCRParticipant));
-
-			QAction *moderatorRole = changeRole->addAction (tr ("Moderator"),
-					this, SLOT (handleActionRoleTriggered ()));
-			moderatorRole->setProperty ("ActionIcon", "azoth_role_moderator");
-			moderatorRole->setParent (entry->GetObject ());
-			moderatorRole->setCheckable (true);
-			moderatorRole->setProperty ("Azoth/TargetRole",
-					QVariant::fromValue<IMUCEntry::MUCRole> (IMUCEntry::MUCRModerator));
-
-			QMenu *changeAff = new QMenu (tr ("Change affiliation"));
-			changeAff->menuAction ()->setProperty ("ActionIcon", "azoth_menu_changeaffiliation");
-			Entry2Actions_ [entry] ["changeaffiliation"] = changeAff->menuAction ();
-			Action2Areas_ [changeAff->menuAction ()] << CLEAAContactListCtxtMenu;
-
-			QAction *noneAff = changeAff->addAction (tr ("None"),
-					this, SLOT (handleActionAffTriggered ()));
-			noneAff->setProperty ("ActionIcon", "azoth_affiliation_none");
-			noneAff->setParent (entry->GetObject ());
-			noneAff->setCheckable (true);
-			noneAff->setProperty ("Azoth/TargetAffiliation",
-					QVariant::fromValue<IMUCEntry::MUCAffiliation> (IMUCEntry::MUCANone));
-
-			QAction *memberAff = changeAff->addAction (tr ("Member"),
-					this, SLOT (handleActionAffTriggered ()));
-			memberAff->setProperty ("ActionIcon", "azoth_affiliation_member");
-			memberAff->setParent (entry->GetObject ());
-			memberAff->setCheckable (true);
-			memberAff->setProperty ("Azoth/TargetAffiliation",
-					QVariant::fromValue<IMUCEntry::MUCAffiliation> (IMUCEntry::MUCAMember));
-
-			QAction *adminAff = changeAff->addAction (tr ("Admin"),
-					this, SLOT (handleActionAffTriggered ()));
-			adminAff->setProperty ("ActionIcon", "azoth_affiliation_admin");
-			adminAff->setParent (entry->GetObject ());
-			adminAff->setCheckable (true);
-			adminAff->setProperty ("Azoth/TargetAffiliation",
-					QVariant::fromValue<IMUCEntry::MUCAffiliation> (IMUCEntry::MUCAAdmin));
-
-			QAction *ownerAff = changeAff->addAction (tr ("Owner"),
-					this, SLOT (handleActionAffTriggered ()));
-			ownerAff->setProperty ("ActionIcon", "azoth_affiliation_owner");
-			ownerAff->setParent (entry->GetObject ());
-			ownerAff->setCheckable (true);
-			ownerAff->setProperty ("Azoth/TargetAffiliation",
-					QVariant::fromValue<IMUCEntry::MUCAffiliation> (IMUCEntry::MUCAOwner));
-
-			sep = Util::CreateSeparator (entry->GetObject ());
 			Entry2Actions_ [entry] ["sep_afterroles"] = sep;
 			Action2Areas_ [sep] << CLEAAContactListCtxtMenu;
 		}
@@ -1478,31 +1411,21 @@ namespace Azoth
 					<< entry->GetParentCLEntry ()
 					<< "doesn't implement IMUCEntry";
 
+		IMUCPerms *mucPerms = qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ());
 		if (entry->GetEntryType () == ICLEntry::ETPrivateChat &&
-				mucEntry)
+				mucPerms)
 		{
-			QList<QAction*> changeRoleActions;
-			changeRoleActions << Entry2Actions_ [entry] ["kick"];
-			changeRoleActions << Entry2Actions_ [entry] ["changerole"]->menu ()->actions ();
-			Q_FOREACH (QAction *act, changeRoleActions)
-			{
-				IMUCEntry::MUCRole target =
-						act->property ("Azoth/TargetRole").value<IMUCEntry::MUCRole> ();
-				act->setEnabled (mucEntry->MayChangeRole (entry->GetObject (), target));
-				act->setChecked (mucEntry->GetRole (entry->GetObject ()) == target);
-			}
-
-			QList<QAction*> changeAffActions;
-			changeAffActions << Entry2Actions_ [entry] ["ban"];
-			changeAffActions << Entry2Actions_ [entry] ["changeaffiliation"]->menu ()->actions ();
-
-			Q_FOREACH (QAction *act, changeAffActions)
-			{
-				IMUCEntry::MUCAffiliation target =
-						act->property ("Azoth/TargetAffiliation").value<IMUCEntry::MUCAffiliation> ();
-				act->setEnabled (mucEntry->MayChangeAffiliation (entry->GetObject (), target));
-				act->setChecked (mucEntry->GetAffiliation (entry->GetObject ()) == target);
-			}
+			const QMap<QByteArray, QList<QByteArray> > possible = mucPerms->GetPossiblePerms ();
+			QObject *entryObj = entry->GetObject ();
+			Q_FOREACH (const QByteArray& permClass, possible.keys ())
+				Q_FOREACH (QAction *action,
+						Entry2Actions_ [entry] [permClass]->menu ()->actions ())
+				{
+					const QByteArray& perm = action->property ("Azoth/TargetPerm").toByteArray ();
+					action->setEnabled (mucPerms->MayChangePerm (entryObj,
+								permClass, perm));
+					action->setChecked (perm == mucPerms->GetPerms (entryObj) [permClass]);
+				}
 		}
 	}
 
@@ -1847,18 +1770,23 @@ namespace Azoth
 						<< "is not a valid ICLEntry";
 				continue;
 			}
+			
+			disconnect (clitem,
+					0,
+					this,
+					0);
 
-			ChatTabsManager_->SetChatEnabled (entry->GetEntryID (), false);
+			ChatTabsManager_->HandleEntryRemoved (entry);
 
 			Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
 				RemoveCLItem (item);
 
 			Entry2Items_.remove (entry);
-
 			Entry2Actions_.remove (entry);
 
 			ID2Entry_.remove (entry->GetEntryID ());
 
+			Entry2SmoothAvatarCache_.remove (entry);
 			invalidateClientsIconCache (clitem);
 		}
 	}
@@ -1989,24 +1917,15 @@ namespace Azoth
 		}
 		
 		QObject *entryObj = entry->GetObject ();
-		IMUCEntry *mucEntry = qobject_cast<IMUCEntry*> (entry->GetParentCLEntry ());
-		if (!mucEntry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "entry's parent CL entry doesn't implement IMUCEntry"
-					<< entryObj
-					<< entry->GetParentCLEntry ();
+		IMUCPerms *mucPerms = qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ());
+		if (!mucPerms)
 			return;
-		}
 		
 		const QString& tip = MakeTooltipString (entry);
-		
-		const IMUCEntry::MUCRole role = mucEntry->GetRole (entryObj);
-		const IMUCEntry::MUCAffiliation aff = mucEntry->GetAffiliation (entryObj);
+		const QString& name = mucPerms->GetAffName (entryObj);
 		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
 		{
-			item->setData (role, CLRRole);
-			item->setData (aff, CLRAffiliation);
+			item->setData (name, CLRAffiliation);
 			item->setToolTip (tip);
 		}
 	}
@@ -2634,7 +2553,8 @@ namespace Azoth
 		DenyAuthForEntry (entry);
 	}
 
-	void Core::handleActionRoleTriggered ()
+
+	void Core::handleActionPermTriggered ()
 	{
 		QAction *action = qobject_cast<QAction*> (sender ());
 		if (!action)
@@ -2645,79 +2565,30 @@ namespace Azoth
 			return;
 		}
 
-		QVariant property = action->property ("Azoth/TargetRole");
-		if (!property.canConvert<IMUCEntry::MUCRole> ())
+		const QByteArray& permClass = action->property ("Azoth/TargetPermClass").toByteArray ();
+		const QByteArray& perm = action->property ("Azoth/TargetPerm").toByteArray ();
+		if (permClass.isEmpty () || perm.isEmpty ())
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "can't convert"
-					<< property
-					<< "to MUCRole";
+					<< "invalid perms set"
+					<< action->property ("Azoth/TargetPermClass")
+					<< action->property ("Azoth/TargetPerm");
 			return;
 		}
-
-		IMUCEntry::MUCRole role =
-				property.value<IMUCEntry::MUCRole> ();
 
 		ICLEntry *entry = action->
 				property ("Azoth/Entry").value<ICLEntry*> ();
-		IMUCEntry *mucEntry =
-				qobject_cast<IMUCEntry*> (entry->GetParentCLEntry ());
-		if (!mucEntry)
+		IMUCPerms *mucPerms =
+				qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ());
+		if (!mucPerms)
 		{
-			int idx = metaObject ()->indexOfEnumerator ("MUCRole");
 			qWarning () << Q_FUNC_INFO
 					<< entry->GetParentCLEntry ()
-					<< "doesn't implement IMUCEntry, tried role "
-					<< (idx >= 0 ?
-							metaObject ()->enumerator (idx).valueToKey (role) :
-							"<unknown enum>");
+					<< "doesn't implement IMUCPerms";
 			return;
 		}
 
-		mucEntry->SetRole (entry->GetObject (), role);
-	}
-
-	void Core::handleActionAffTriggered ()
-	{
-		QAction *action = qobject_cast<QAction*> (sender ());
-		if (!action)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< sender ()
-					<< "is not a QAction";
-			return;
-		}
-
-		QVariant property = action->property ("Azoth/TargetAffiliation");
-		if (!property.canConvert<IMUCEntry::MUCAffiliation> ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "can't convert"
-					<< property
-					<< "to MUCAffiliation";
-			return;
-		}
-
-		IMUCEntry::MUCAffiliation aff =
-				property.value<IMUCEntry::MUCAffiliation> ();
-
-		ICLEntry *entry = action->
-				property ("Azoth/Entry").value<ICLEntry*> ();
-		IMUCEntry *mucEntry =
-				qobject_cast<IMUCEntry*> (entry->GetParentCLEntry ());
-		if (!mucEntry)
-		{
-			int idx = metaObject ()->indexOfEnumerator ("MUCAffiliation");
-			qWarning () << Q_FUNC_INFO
-					<< entry->GetParentCLEntry ()
-					<< "doesn't implement IMUCEntry, tried role "
-					<< (idx >= 0 ?
-							metaObject ()->enumerator (idx).valueToKey (aff) :
-							"<unknown enum>");
-			return;
-		}
-
-		mucEntry->SetAffiliation (entry->GetObject (), aff);
+		mucPerms->SetPerm (entry->GetObject (), permClass, perm, QString ());
 	}
 }
 }

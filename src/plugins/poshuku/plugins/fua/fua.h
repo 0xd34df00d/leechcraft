@@ -36,11 +36,7 @@ namespace Util
 {
 	class XmlSettingsDialog;
 };
-namespace Plugins
-{
 namespace Poshuku
-{
-namespace Plugins
 {
 namespace Fua
 {
@@ -84,8 +80,5 @@ namespace Fua
 }
 }
 }
-}
-}
 
 #endif
-

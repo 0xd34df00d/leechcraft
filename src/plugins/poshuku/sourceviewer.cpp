@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2009  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,25 +22,21 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	SourceViewer::SourceViewer (QWidget *parent)
+	: QMainWindow (parent)
 	{
-		namespace Poshuku
-		{
-			SourceViewer::SourceViewer (QWidget *parent)
-			: QMainWindow (parent)
-			{
-				Ui_.setupUi (this);
-				QRect frect = frameGeometry ();
-				frect.moveCenter (QDesktopWidget ().availableGeometry ().center ());
-				move (frect.topLeft ());
-				new HtmlHighlighter (Ui_.HtmlEdit_);
-			}
-			
-			void SourceViewer::SetHtml (const QString& html)
-			{
-				Ui_.HtmlEdit_->setPlainText (html);
-			}
-		};
-	};
-};
-
+		Ui_.setupUi (this);
+		QRect frect = frameGeometry ();
+		frect.moveCenter (QDesktopWidget ().availableGeometry ().center ());
+		move (frect.topLeft ());
+		new HtmlHighlighter (Ui_.HtmlEdit_);
+	}
+	
+	void SourceViewer::SetHtml (const QString& html)
+	{
+		Ui_.HtmlEdit_->setPlainText (html);
+	}
+}
+}

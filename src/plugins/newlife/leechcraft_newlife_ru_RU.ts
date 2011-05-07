@@ -17,7 +17,7 @@
         <location filename="feedssettingsimportpage.ui" line="45"/>
         <source>Import %1 settings as well</source>
         <extracomment>Application&apos;s name will be placed instead of %1, so please leave it where appropriate.</extracomment>
-        <translation>Также импортировать настройки %1</translation>
+        <translation>Также импортировать параметры %1</translation>
     </message>
 </context>
 <context>
@@ -53,7 +53,7 @@
     <message>
         <location filename="firstpage.ui" line="20"/>
         <source>Choose appication that you want your data to be imported from</source>
-        <translation>Выберите приложение, из которого будет произведен импорт</translation>
+        <translation>Выберите приложение, из которого будет произведён импорт</translation>
     </message>
     <message>
         <location filename="firstpage.ui" line="28"/>
@@ -66,12 +66,12 @@
     <message>
         <location filename="importwizard.ui" line="14"/>
         <source>Settings Import Wizard</source>
-        <translation>Мастер импорта настроек</translation>
+        <translation>Мастер импорта параметров</translation>
     </message>
     <message>
         <location filename="importwizard.ui" line="35"/>
         <source>Now please prepare for the import of data from the selected application.</source>
-        <translation>Теперь, пожалуйста, приготовтесь к импорту данных из выбранного приложения.</translation>
+        <translation>Теперь, пожалуйста, приготовьтесь к импорту данных из выбранного приложения.</translation>
     </message>
 </context>
 <context>
@@ -79,12 +79,12 @@
     <message>
         <location filename="akregatorimportpage.cpp" line="40"/>
         <source>Akregator&apos;s feeds import</source>
-        <translation>Импорт фидов из Akregator</translation>
+        <translation>Импорт лент из Akregator</translation>
     </message>
     <message>
         <location filename="akregatorimportpage.cpp" line="41"/>
         <source>Select Akregator&apos;s feeds file and options</source>
-        <translation>Выберите файл с фидами Akregator&apos;а и опции</translation>
+        <translation>Выберите файл с лентами Akregator&apos;а и опции</translation>
     </message>
     <message>
         <location filename="akregatorimportpage.cpp" line="103"/>
@@ -99,17 +99,17 @@
     <message>
         <location filename="akregatorimportpage.cpp" line="112"/>
         <source>The file you&apos;ve selected is not a valid OPML file.</source>
-        <translation>Файл, выбранный вами, не является валидным OPML-файлом.</translation>
+        <translation>Файл, выбранный вами, не является корректным OPML-файлом.</translation>
     </message>
     <message>
         <location filename="akregatorimportpage.cpp" line="155"/>
         <source>Akregator settings</source>
-        <translation>Настройки Akregator</translation>
+        <translation>Параметры Akregator</translation>
     </message>
     <message>
         <location filename="akregatorimportpage.cpp" line="160"/>
         <source>Could not access or parse Akregator settings.</source>
-        <translation>Невозможно получить доступ либо разобрать настройки Akregator.</translation>
+        <translation>Невозможно получить доступ либо разобрать параметры Akregator.</translation>
     </message>
 </context>
 <context>
@@ -189,12 +189,12 @@
     <message>
         <location filename="ktorrentimportpage.cpp" line="182"/>
         <source>KTorrent settings</source>
-        <translation>Настройки KTorrent</translation>
+        <translation>Параметры KTorrent</translation>
     </message>
     <message>
         <location filename="ktorrentimportpage.cpp" line="187"/>
         <source>Could not access or parse KTorrent settings.</source>
-        <translation>Невозможно прочесть настройки KTorrent.</translation>
+        <translation>Невозможно прочесть параметры KTorrent.</translation>
     </message>
 </context>
 <context>
@@ -202,22 +202,22 @@
     <message>
         <location filename="lifereaimportpage.cpp" line="40"/>
         <source>Liferea&apos;s feeds import</source>
-        <translation>Импорт фидов из Liferea</translation>
+        <translation>Импорт лент из Liferea</translation>
     </message>
     <message>
         <location filename="lifereaimportpage.cpp" line="41"/>
         <source>Select Liferea&apos;s base location and options</source>
-        <translation>Выберите базовое положение директории Liferea и настройки</translation>
+        <translation>Выберите базовое положение каталога Liferea и параметры</translation>
     </message>
     <message>
         <location filename="lifereaimportpage.cpp" line="108"/>
         <source>Select Liferea&apos;s directory</source>
-        <translation>Выбор директории Liferea</translation>
+        <translation>Выбор каталога Liferea</translation>
     </message>
     <message>
         <location filename="lifereaimportpage.cpp" line="117"/>
         <source>The directory you&apos;ve selected is not Liferea&apos;s directory.</source>
-        <translation>Выбранная вами директория не является директорией LIferea.</translation>
+        <translation>Выбранный вами каталог не является каталогом LIferea.</translation>
     </message>
 </context>
 <context>
@@ -225,12 +225,12 @@
     <message>
         <location filename="newlife.cpp" line="68"/>
         <source>The settings importer.</source>
-        <translation>Импортер настроек.</translation>
+        <translation>Импортёр параметров.</translation>
     </message>
     <message>
         <location filename="newlife.cpp" line="37"/>
         <source>Import settings...</source>
-        <translation>Импортировать настройки...</translation>
+        <translation>Импортировать параметры...</translation>
     </message>
 </context>
 </TS>

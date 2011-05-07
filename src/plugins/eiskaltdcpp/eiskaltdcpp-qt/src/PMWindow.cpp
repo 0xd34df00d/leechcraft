@@ -299,20 +299,12 @@ void PMWindow::slotActivate(){
     plainTextEdit_INPUT->setFocus();
 }
 
-QString PMWindow::getArenaTitle(){
-    QString nick = (cid.length() > 24)? _q(ClientManager::getInstance()->getNicks(CID(cid.toStdString()), _tq(hubUrl)).at(0)) : cid;
-
-    nick_ = nick.isEmpty()? nick_ : nick;
-
-    return (tr("%1 on hub %2").arg(nick_).arg(hubUrl));
+QString PMWindow::getArenaTitle() const{
+    return getArenaShortTitle();
 }
 
-QString PMWindow::getArenaShortTitle(){
-    QString nick = (cid.length() > 24)? _q(ClientManager::getInstance()->getNicks(CID(cid.toStdString()), _tq(hubUrl)).at(0)) : cid;
-
-    nick_ = nick.isEmpty()? nick_ : nick;
-
-    return nick_;
+QString PMWindow::getArenaShortTitle() const{
+    return (cid.length() > 24)? _q(ClientManager::getInstance()->getNicks(CID(cid.toStdString()), _tq(hubUrl)).at(0)) : cid;
 }
 
 QWidget *PMWindow::getWidget(){
@@ -323,7 +315,7 @@ QMenu *PMWindow::getMenu(){
     return arena_menu;
 }
 
-const QPixmap &PMWindow::getPixmap(){
+const QPixmap &PMWindow::getPixmap() const{
     if (hasHighlightMessages)
         return WICON(WulforUtil::eiMESSAGE);
     else if (hasMessages)

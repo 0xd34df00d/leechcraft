@@ -51,6 +51,18 @@ namespace Acetamide
 		NotConnected
 	};
 
+	enum ChannelRole
+	{
+		Outcast,
+		NoRole,
+		Participant,
+		Voiced,
+		HalfOperator,
+		Operator,
+		Admin,
+		Owner
+	};
+
 	struct IrcMessageOptions
 	{
 		QString Nick_;

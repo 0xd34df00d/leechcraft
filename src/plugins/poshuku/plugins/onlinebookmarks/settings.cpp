@@ -30,11 +30,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Poshuku
-{
-namespace Plugins
 {
 namespace OnlineBookmarks
 {
@@ -307,8 +303,6 @@ namespace OnlineBookmarks
 			if (model->item (i)->text () == Ui_.Services_->currentText ())
 				model->item (i)->setCheckState (Qt::Checked);
 	}
-}
-}
 }
 }
 }

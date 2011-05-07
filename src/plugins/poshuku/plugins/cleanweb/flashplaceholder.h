@@ -24,11 +24,7 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Poshuku
-{
-namespace Plugins
 {
 namespace CleanWeb
 {
@@ -52,8 +48,5 @@ namespace CleanWeb
 }
 }
 }
-}
-}
 
 #endif
-

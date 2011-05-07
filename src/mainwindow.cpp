@@ -128,7 +128,11 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	setUpdatesEnabled (true);
 
 	if (!qobject_cast<Application*> (qApp)->GetVarMap ().count ("minimized"))
+	{
 		show ();
+		activateWindow ();
+		raise ();
+	}
 	else
 	{
 		IsShown_ = false;

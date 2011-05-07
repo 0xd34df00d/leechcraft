@@ -24,8 +24,10 @@
 #include <QObject>
 #include <QTcpSocket>
 #include <interfaces/imessage.h>
+#include "ircserverconsole.h"
 #include "localtypes.h"
 #include "serverparticipantentry.h"
+#include "invitechannelsdialog.h"
 
 namespace LeechCraft
 {
@@ -49,25 +51,34 @@ class IrcMessage;
 		IrcAccount *Account_;
 		IrcParser *IrcParser_;
 		IrcServerCLEntry *ServerCLEntry_;
+		IrcServerConsole_ptr Console_;
+		bool IsConsoleEnabled_;
+		bool ChannelJoined_;
+		bool IsInviteDialogActive_;
+		std::auto_ptr<InviteChannelsDialog> InviteChannelsDialog_;
+
 		ServerOptions ServerOptions_;
 		QString ServerID_;
 		boost::shared_ptr<QTcpSocket> TcpSocket_ptr;
 		ConnectionState ServerConnectionState_;
 		QHash<QString, ChannelHandler*> ChannelHandlers_;
-		QHash<QString,
-				boost::function<void (void)> > Error2Action_;
-		QHash<QString,
-				boost::function<void (const QString&,
-					QList<std::string>,
-					const QString&)> > Command2Action_;
+		QHash<QString, boost::function<void (void)> > Error2Action_;
+		QHash<QString, boost::function<void (const QString&,
+				QList<std::string>, const QString&)> > Command2Action_;
+		QHash<QString, boost::function<void (const QStringList&)> >
+				Name2Command_;
 		QHash<QString, ServerParticipantEntry_ptr> Nick2Entry_;
 		QString NickName_;
+		QString OldNickName_;
 		QList<ChannelOptions> ChannelsQueue_;
+		QVariantMap ISupport_;
 	public:
 		IrcServerHandler (const ServerOptions&, IrcAccount*);
 		IrcServerCLEntry* GetCLEntry () const;
 		IrcAccount* GetAccount () const;
 		QString GetNickName () const;
+
+		IrcServerConsole_ptr GetIrcServerConsole () const;
 
 		QString GetServerID_ () const;
 		ServerOptions GetServerOptions () const;
@@ -79,20 +90,28 @@ class IrcMessage;
 
 		void SendPublicMessage (const QString&, const QString&);
 		void SendPrivateMessage (IrcMessage*);
+		void ParseMessageForCommand (const QString&, const QString&);
+
+		QList<QObject*> GetCLEntries () const;
 
 		void LeaveChannel (const QString&, const QString&);
-
+		QStringList GetPrivateChats () const;
 		void ClosePrivateChat (const QString&);
 
 		ChannelHandler* GetChannelHandler (const QString&);
 		QList<ChannelHandler*> GetChannelHandlers () const;
+		QList<ServerParticipantEntry_ptr>
+				GetParticipants (const QString&);
+
+		bool IsRoleAvailable (ChannelRole);
 
 		IrcMessage* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);
 
-		bool ConnectToServer ();
+		void ConnectToServer ();
 		bool DisconnectFromServer ();
 		bool JoinChannel (const ChannelOptions&);
+		void JoinChannelByCmd (const QStringList&);
 		void SendCommand (const QString&);
 		void IncomingMessage2Server ();
 		void IncomingMessage2Channel ();
@@ -101,10 +120,12 @@ class IrcMessage;
 
 		void UnregisterChannel (ChannelHandler*);
 	private:
+		void SendToConsole (const QString&);
 		void InitErrorsReplys ();
 		void InitCommandResponses ();
 		void InitSocket ();
 		bool IsErrorReply (const QString&);
+		bool IsCTCPMessage (const QString&);
 
 		void NoSuchNickError ();
 		void NickCmdError ();
@@ -114,6 +135,7 @@ class IrcMessage;
 		ServerParticipantEntry_ptr
 				CreateParticipantEntry (const QString&);
 
+		// RPL
 		void JoinFromQueue (const QString&,
 				const QList<std::string>&, const QString&);
 		void SetTopic (const QString&,
@@ -128,10 +150,24 @@ class IrcMessage;
 				const QList<std::string>&, const QString&);
 		void PongMessage (const QString&,
 				const QList<std::string>&, const QString&);
+		void SetISupport (const QString&,
+				const QList<std::string>&, const QString&);
+		void ChangeNickname (const QString&,
+				const QList<std::string>&, const QString&);
+		void CTCPReply (const QString&,
+				const QList<std::string>&, const QString&);
+		void CTCPRequestResult (const QString&,
+				const QList<std::string>&, const QString&);
+		void InviteToChannel (const QString&,
+				const QList<std::string>&, const QString&);
+		void KickFromChannel (const QString&,
+				const QList<std::string>&, const QString&);
 	private slots:
 		void readReply ();
+		void connectionEstablished ();
+		void joinAfterInvite ();
 	signals:
-		void gotCLItems (const QList<QObject*>&);
+		void connected (const QString&);
 	};
 };
 };

@@ -23,34 +23,27 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+namespace WYFV
+{
+	class WYFVPlugin : public QObject
+						, public IWebPlugin
 	{
-		namespace Poshuku
-		{
-			namespace Plugins
-			{
-				namespace WYFV
-				{
-					class WYFVPlugin : public QObject
-									 , public IWebPlugin
-					{
-						Q_OBJECT
+		Q_OBJECT
 
-						Q_INTERFACES (LeechCraft::Plugins::Poshuku::IWebPlugin)
-					public:
-						WYFVPlugin (QObject* = 0);
+		Q_INTERFACES (LeechCraft::Poshuku::IWebPlugin)
+	public:
+		WYFVPlugin (QObject* = 0);
 
-						QWebPluginFactory::Plugin Plugin (bool) const;
-						QWidget* Create (const QString&,
-								const QUrl&,
-								const QStringList&,
-								const QStringList&);
-					};
-				};
-			};
-		};
+		QWebPluginFactory::Plugin Plugin (bool) const;
+		QWidget* Create (const QString&,
+				const QUrl&,
+				const QStringList&,
+				const QStringList&);
 	};
-};
+}
+}
+}
 
 #endif
-

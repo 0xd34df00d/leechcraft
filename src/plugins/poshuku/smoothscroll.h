@@ -26,52 +26,48 @@ class QMouseEvent;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Poshuku
+{
+	class SmoothScrollTicker;
+
+	class SmoothScroll
 	{
-		namespace Poshuku
-		{
-			class SmoothScrollTicker;
+		friend class SmoothScrollTicker;
 
-			class SmoothScroll
-			{
-				friend class SmoothScrollTicker;
+		enum State {
+			SSteady,
+			SPressed,
+			SManualScroll,
+			SAutoScroll,
+			SStop
+		} State_;
 
-				enum State {
-					SSteady,
-					SPressed,
-					SManualScroll,
-					SAutoScroll,
-					SStop
-				} State_;
+		int Threshold_;
+		QPoint PressPos_;
+		QPoint Offset_;
+		QPoint Delta_;
+		QPoint Speed_;
+		SmoothScrollTicker *Ticker_;
+		QTime Timestamp_;
+		QWebFrame *Target_;
+		QList<QEvent*> IgnoreList_;
+	public:
+		SmoothScroll ();
 
-				int Threshold_;
-				QPoint PressPos_;
-				QPoint Offset_;
-				QPoint Delta_;
-				QPoint Speed_;
-				SmoothScrollTicker *Ticker_;
-				QTime Timestamp_;
-				QWebFrame *Target_;
-				QList<QEvent*> IgnoreList_;
-			public:
-				SmoothScroll ();
+		int GetThreshold () const;
+		void SetThreshold (int);
 
-				int GetThreshold () const;
-				void SetThreshold (int);
+		void SetTarget (QWebFrame*);
 
-				void SetTarget (QWebFrame*);
-
-				void HandleMousePress (QMouseEvent*);
-				void HandleMouseMove (QMouseEvent*);
-				void HandleMouseRelease (QMouseEvent*);
-			private:
-				QPoint GetScrollOffset () const;
-				void SetScrollOffset (const QPoint&);
-				void Tick ();
-			};
-		};
+		void HandleMousePress (QMouseEvent*);
+		void HandleMouseMove (QMouseEvent*);
+		void HandleMouseRelease (QMouseEvent*);
+	private:
+		QPoint GetScrollOffset () const;
+		void SetScrollOffset (const QPoint&);
+		void Tick ();
 	};
-};
+}
+}
 
 #endif
-

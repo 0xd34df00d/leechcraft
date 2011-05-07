@@ -53,17 +53,17 @@ class FavoriteHubs :
         public dcpp::Singleton<FavoriteHubs>
 {
     Q_OBJECT
-    Q_INTERFACES(ArenaWidget IMultiTabsWidget)
+    Q_INTERFACES(ArenaWidget ITabWidget)
 
     friend class dcpp::Singleton<FavoriteHubs>;
 
     typedef QMap<QString,QVariant> StrMap;
 public:
     QWidget *getWidget();
-    QString getArenaTitle();
-    QString getArenaShortTitle();
+    QString getArenaTitle() const;
+    QString getArenaShortTitle() const;
     QMenu *getMenu();
-    const QPixmap &getPixmap(){ return WICON(WulforUtil::eiFAVSERVER); }
+    const QPixmap &getPixmap() const{ return WICON(WulforUtil::eiFAVSERVER); }
     ArenaWidget::Role role() const { return ArenaWidget::FavoriteHubs; }
 
 protected:

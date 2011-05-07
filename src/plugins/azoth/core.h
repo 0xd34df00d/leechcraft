@@ -52,6 +52,7 @@ namespace Azoth
 	class PluginManager;
 	class ProxyObject;
 	class TransferJobManager;
+	class EventsNotifier;
 
 	class Core : public QObject
 	{
@@ -98,6 +99,7 @@ namespace Azoth
 		boost::shared_ptr<ProxyObject> PluginProxyObject_;
 
 		boost::shared_ptr<TransferJobManager> XferJobManager_;
+		boost::shared_ptr<EventsNotifier> EventsNotifier_;
 
 		Core ();
 	public:
@@ -219,7 +221,7 @@ namespace Azoth
 		/** Returns an icon from the current iconset for the given
 		 * affiliation.
 		 */
-		QIcon GetAffIcon (IMUCEntry::MUCAffiliation aff) const;
+		QIcon GetAffIcon (const QByteArray& affName) const;
 
 		/** @brief Returns icons for the given CL entry.
 		 *
@@ -509,8 +511,7 @@ namespace Azoth
 		void handleActionAuthorizeTriggered ();
 		void handleActionDenyAuthTriggered ();
 
-		void handleActionRoleTriggered ();
-		void handleActionAffTriggered ();
+		void handleActionPermTriggered ();
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);

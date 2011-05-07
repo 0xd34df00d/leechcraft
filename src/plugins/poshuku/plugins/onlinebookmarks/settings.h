@@ -31,11 +31,7 @@ class QModelIndex;
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Poshuku
-{
-namespace Plugins
 {
 namespace OnlineBookmarks
 {
@@ -70,8 +66,6 @@ namespace OnlineBookmarks
 		void on_AccountsView__clicked (const QModelIndex&);
 		void checkServiceAnswer (bool);
 	};
-}
-}
 }
 }
 }

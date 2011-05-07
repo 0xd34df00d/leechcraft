@@ -18,6 +18,10 @@
 
 #include "vcarddialog.h"
 #include <QXmppVCardIq.h>
+#include "entrybase.h"
+#include "glooxaccount.h"
+#include "clientconnection.h"
+#include "capsmanager.h"
 
 namespace LeechCraft
 {
@@ -30,6 +34,34 @@ namespace Xoox
 	{
 		Ui_.setupUi (this);
 		Ui_.EditBirthday_->setVisible (false);
+	}
+	
+	VCardDialog::VCardDialog (EntryBase *entry, QWidget *parent)
+	: QDialog (parent)
+	{
+		Ui_.setupUi (this);
+		Ui_.EditBirthday_->setVisible (false);
+		
+		GlooxAccount *acc = qobject_cast<GlooxAccount*> (entry->GetParentAccount ());
+		CapsManager *mgr = acc->GetClientConnection ()->GetCapsManager ();
+		
+		QString html;
+		Q_FOREACH (const QString& variant, entry->Variants ())
+		{
+			const QMap<QString, QVariant>& info = entry->GetClientInfo (variant);
+			const QString& client = info ["client_name"].toString ();
+			
+			html += "<strong>" + client + "</strong> (" +
+					QString::number (info ["priority"].toInt ()) + ")<br />";
+					
+			const QStringList& caps =
+					mgr->GetCaps (entry->GetVariantVerString (variant));
+			if (caps.size ())
+				html += "<strong>" + tr ("Capabilities") +
+						"</strong>:<ul><li>" + caps.join ("</li><li>") + "</li></ul>";
+		}
+		
+		Ui_.ClientInfo_->setHtml (html);
 	}
 
 	void VCardDialog::UpdateInfo (const QXmppVCardIq& vcard)
