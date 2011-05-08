@@ -17,9 +17,6 @@
  **********************************************************************/
 
 #include "p100q.h"
-#include <QIcon>
-#include <interfaces/imessage.h>
-#include <interfaces/iclentry.h>
 
 namespace LeechCraft
 {
@@ -29,12 +26,12 @@ namespace p100q
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		UserRX_ = QRegExp ("(?:[^>/]|<br />)@([\\w\\-]+)[\n :]", Qt::CaseInsensitive);
+		UserRX_ = QRegExp ("(?:[^>/]|<br />)@([\\w\\-]+)[ :]", Qt::CaseInsensitive);
 		UserWithAvatarRX_ = QRegExp ("#([a-zA-Z0-9]+(?:/[0-9]+)?): @([\\w\\-]+)", Qt::CaseInsensitive);
-		PostRX_ = QRegExp ("#([a-zA-Z0-9]+)[ ]", Qt::CaseInsensitive);
+		PostRX_ = QRegExp ("#([a-zA-Z0-9]+) ", Qt::CaseInsensitive);
 		PostByUserRX_ = QRegExp ("\\s#([a-zA-Z0-9]+)", Qt::CaseInsensitive);
 		CommentRX_ = QRegExp ("#([a-zA-Z0-9]+)/([0-9]+)", Qt::CaseInsensitive);
-		TagRX_ = QRegExp ("<br />[*][ ]([^.*,\n]+)", Qt::CaseInsensitive);
+		TagRX_ = QRegExp ("<br />[*] (([^*,<]+)(, [^*,<]+)*)");
 	}
 
 	void Plugin::SecondInit ()
@@ -57,7 +54,7 @@ namespace p100q
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("p100q is plugin for nicer support of the psto.net microblogging service.");
+		return tr ("p100q is plugin for nicer suppQString ort of the psto.net microblogging service.");
 	}
 
 	QIcon Plugin::GetIcon () const
@@ -93,9 +90,25 @@ namespace p100q
 
 	QString Plugin::FormatBody (QString body)
 	{
-		body.replace (TagRX_,
-				"<br />*<a href=\"azoth://msgeditreplace/S%20*\\1\">\\1</a> ");
-
+		QString tags;
+		if (TagRX_.indexIn (body, 0) != -1)
+		{
+			tags += "<br />* ";
+			QStringList tagslist = TagRX_.cap (1).split (", ");
+			
+			if (tagslist.size () > 1)
+			{
+				QStringList::iterator itr = tagslist.begin ();
+				while (itr != tagslist.end ())
+				{
+					tags += QString (" <a href=\"azoth://msgeditreplace/S *%1\">%1</a> ").arg (*itr);
+					++itr;
+				}
+			}
+				
+			body.replace (TagRX_, tags);
+		}
+				
 		body.replace (PostRX_,
 				" <a href=\"azoth://msgeditreplace/%23\\1\">#\\1</a> "
 				"("
@@ -114,7 +127,6 @@ namespace p100q
 				
 		body.replace (PostByUserRX_,
 				" <a href=\"azoth://msgeditreplace/%23\\1+\">#\\1</a> ");
-
 		return body;
 	}
 

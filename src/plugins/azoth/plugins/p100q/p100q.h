@@ -20,8 +20,12 @@
 #define PLUGINS_AZOTH_PLUGINS_P100Q_P100Q_H
 #include <QObject>
 #include <QRegExp>
+#include <QIcon>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
+#include <interfaces/imessage.h>
+#include <interfaces/iclentry.h>
+#include <QMessageBox>
 
 namespace LeechCraft
 {
