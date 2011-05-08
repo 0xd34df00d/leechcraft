@@ -65,8 +65,6 @@ namespace Azoth
 			break;
 		case Core::CLETContact:
 			o.rect.adjust (-1.2 * View_->indentation (), 0, 0, 0);
-			if (o.rect.height () < 24)
-				o.rect.setHeight (24);
 			DrawContact (painter, o, index);
 			break;
 		}
@@ -77,6 +75,9 @@ namespace Azoth
 	QSize ContactListDelegate::sizeHint (const QStyleOptionViewItem& option, const QModelIndex& index) const
 	{
 		QSize size = QStyledItemDelegate::sizeHint (option, index);
+		if (index.data (Core::CLREntryType).value<Core::CLEntryType> () == Core::CLETContact &&
+				size.height () < 24)
+			size.setHeight (24);
 		return size;
 	}
 
