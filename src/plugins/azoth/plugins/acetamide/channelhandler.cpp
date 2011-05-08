@@ -320,6 +320,12 @@ namespace Acetamide
 
 	void ChannelHandler::LeaveChannel (const QString& msg, bool cmd)
 	{
+		if (cmd)
+		{
+			ISH_->LeaveChannel (ChannelOptions_.ChannelName_, QString ());
+			return;
+		}
+
 		Q_FOREACH (ServerParticipantEntry_ptr entry,
 				ISH_->GetParticipants (ChannelOptions_.ChannelName_))
 		{
@@ -340,9 +346,6 @@ namespace Acetamide
 					entry->SetGroups (list);
 			}
 		}
-
-		if (cmd)
-			ISH_->LeaveChannel (ChannelOptions_.ChannelName_, msg);
 
 		RemoveThis ();
 	}

@@ -177,7 +177,7 @@ namespace Acetamide
 			const QString& msg)
 	{
 		IrcParser_->PartCommand (QStringList () << channels
-				<< QString (":" + msg));
+				<< QString (" :" + msg));
 	}
 
 	QStringList IrcServerHandler::GetPrivateChats () const
@@ -744,7 +744,8 @@ namespace Acetamide
 		QString channelID = (msg + "@" + ServerOptions_.ServerName_)
 				.toLower ();
 
-		ChannelHandlers_ [channelID]->SetChannelUser (nick);
+		if (ChannelHandlers_.contains (channelID))
+			ChannelHandlers_ [channelID]->SetChannelUser (nick);
 	}
 
 	void IrcServerHandler::LeaveParticipant (const QString& nick,
@@ -753,7 +754,7 @@ namespace Acetamide
 		QString channelID = (QString::fromUtf8 (params.last ().c_str ())
 				+ "@" + ServerOptions_.ServerName_).toLower ();
 		if (nick == NickName_)
-			ChannelHandlers_ [channelID]->LeaveChannel (msg, false);
+			ChannelHandlers_ [channelID]->LeaveChannel (msg);
 		else
 			ChannelHandlers_ [channelID]->RemoveChannelUser (nick
 					, msg
