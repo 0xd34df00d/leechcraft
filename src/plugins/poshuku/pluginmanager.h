@@ -62,7 +62,7 @@ namespace Poshuku
 		 * QWebPage::acceptNavigationRequest(), from which this hook is
 		 * called.
 		 * 
-		 * @param proxy The standard hook proxy class.
+		 * @param proxy The standard hook proxy object.
 		 * @param page The QWebPage from which this request originates.
 		 * @param frame The frame to navigate, or null pointer if
 		 * navigating to new window is requested.
@@ -83,7 +83,7 @@ namespace Poshuku
 		 * doesn't make sense. Refer to hookAddToFavoritesRequested()
 		 * if you need to modify these.
 		 * 
-		 * @param proxy The standard hook proxy class.
+		 * @param proxy The standard hook proxy object.
 		 * @param title The title of the item just added.
 		 * @param url The URL of the item just added.
 		 * @param tags The list of tags of the item added.
@@ -95,7 +95,7 @@ namespace Poshuku
 
 		/** @brief Called when an entry is going to be added to history.
 		 *
-		 * If the proxy is cancelled, no addition takes place at all,
+		 * If the proxy is canceled, no addition takes place at all,
 		 * otherwise, the return value from the proxy is considered to
 		 * be a list of QVariants. First element (if any) is converted
 		 * to string and overrides the history entry title, second one
@@ -103,7 +103,7 @@ namespace Poshuku
 		 * and third element (if any) is converted to QDateTime and
 		 * overrides the date.
 		 *
-		 * @param proxy The standard hook proxy class.
+		 * @param proxy The standard hook proxy object.
 		 * @param title The title of the item that's going to be added
 		 * to history.
 		 * @param url The URL of the item.
@@ -114,7 +114,20 @@ namespace Poshuku
 		void hookAddingToHistory (LeechCraft::IHookProxy_ptr proxy,
 				QString title, QString url, QDateTime date, QObject *browserWidget);
 
-		void hookAddToFavoritesRequested (LeechCraft::IHookProxy_ptr,
+		/** @brief Called when item addition to favorites is requested.
+		 * 
+		 * If the default handler is canceled, the item won't be added
+		 * to the favorites. Otherwise, title and url may be overridden
+		 * inside the hook by calling IHookProxy::SetValue with names
+		 * "title" and "url" respectively, both of type QString.
+		 * 
+		 * @param proxy The standard hook proxy object.
+		 * @param title The title of the item to be added.
+		 * @param url The URL of the item to be added.
+		 * 
+		 * @sa hookAddedToFavorites().
+		 */
+		void hookAddToFavoritesRequested (LeechCraft::IHookProxy_ptr proxy,
 				QString title, QString url);
 		
 		/** @brief Called inside QWebPage::chooseFile().
@@ -127,7 +140,7 @@ namespace Poshuku
 		 * filename by using IHookProxy::SetValue with the key
 		 * "suggested" and value of type QString.
 		 * 
-		 * @param proxy The standard hook proxy class.
+		 * @param proxy The standard hook proxy object.
 		 * @param page The web page that this request originated from.
 		 * @param frame The frame that this request originated from.
 		 * @param suggested The suggested filename.
@@ -139,7 +152,7 @@ namespace Poshuku
 		
 		/** @brief This hook is called whenever page contents change.
 		 * 
-		 * @param proxy The standard hook proxy class.
+		 * @param proxy The standard hook proxy object.
 		 * @param page The web page whose contents changed.
 		 */
 		void hookContentsChanged (LeechCraft::IHookProxy_ptr proxy,
@@ -160,7 +173,7 @@ namespace Poshuku
 		 * - "params" of type QStringList
 		 * - "values" of type QStringList
 		 * 
-		 * @param proxy The standard hook proxy class.
+		 * @param proxy The standard hook proxy object.
 		 * @param page The web page on which the element was
 		 * encountered.
 		 * @param clsid Original class ID.
@@ -186,7 +199,7 @@ namespace Poshuku
 		 * the new window would be created, otherwise (or if a null
 		 * pointer is returned) the window won't be created.
 		 * 
-		 * @param proxy The standard hook proxy class.
+		 * @param proxy The standard hook proxy object.
 		 * @param page The page originating the new window request.
 		 * @param type The type of the new window.
 		 */
@@ -196,7 +209,7 @@ namespace Poshuku
 		
 		/** @brief Called from QWebPage::databaseQuotaExceeded().
 		 * 
-		 * @param proxy The standard hook proxy class.
+		 * @param proxy The standard hook proxy object.
 		 * @param sourcePage The page originating the error.
 		 * @param sourceFrame The frame with the site trying to store
 		 * excessive data.
@@ -206,17 +219,62 @@ namespace Poshuku
 				QWebPage *sourcePage,
 				QWebFrame *sourceFrame,
 				QString databaseName);
+		
+		/** @brief Called from QWebPage::downloadRequested().
+		 * 
+		 * If the default handler is canceled, nothing is done at all.
+		 * Otherwise, the entity with the given request would be emitted
+		 * to be downloaded by some other LeechCraft plugin. The hook
+		 * may override the request by IHookProxy::SetValue() method
+		 * with the name "request" and value of type QNetworkRequest.
+		 * 
+		 * @param proxy The standard hook proxy object.
+		 * @param sourcePage The page originating the request.
+		 * @param request The original download request.
+		 */
 		void hookDownloadRequested (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *sourcePage,
-				QNetworkRequest downloadRequest);
+				QNetworkRequest request);
+		
+		/** @brief Called from QWebPage::extension().
+		 * 
+		 * If the default handler is canceled, the return value of the
+		 * hook proxy is converted to bool and returned from the 
+		 * QWebPage::extension() method, otherwise the default handler
+		 * is used.
+		 * 
+		 * @param proxy The standard hook proxy object.
+		 * @param page The page for which the extension should be
+		 * handled.
+		 * @param extension The extension.
+		 * @param extensionOption The struct with options of the
+		 * extension.
+		 * @param extensionReturn The struct with return value of the
+		 * extension.
+		 */
 		void hookExtension (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QWebPage::Extension extension,
 				const QWebPage::ExtensionOption* extensionOption,
 				QWebPage::ExtensionReturn* extensionReturn);
+		
+		/** @brief Called when user wants to find the given text.s
+		 * 
+		 * This hook is called when the user wants to find the given
+		 * text on the given browserWidget. The hook may cancel the
+		 * default handler or modify the text by calling the
+		 * IHookProxy::SetValue() method with the "text" key and a value
+		 * of type QString.
+		 * 
+		 * @param proxy The standard hook proxy object.
+		 * @param browserWidget The browser widget originating the text
+		 * find request.
+		 * @param text The original text to be found by the user.
+		 * @param findFlags The text find options.
+		 */
 		void hookFindText (LeechCraft::IHookProxy_ptr proxy,
 				QObject *browserWidget,
-				QString findText,
+				QString text,
 				QWebPage::FindFlags findFlags);
 		
 		/** @brief Called whenever a new frame is created.
@@ -224,7 +282,7 @@ namespace Poshuku
 		 * This hook is called whenever a new frame is created on the
 		 * given page.
 		 * 
-		 * @param proxy The standard hook proxy class.
+		 * @param proxy The standard hook proxy object.
 		 * @param page The page on which the frame is created.
 		 * @param frameCreated The newly created frame.
 		 */
@@ -338,6 +396,15 @@ namespace Poshuku
 				const QWebHitTestResult& hitTestResult,
 				QMenu *menuBeingBuilt,
 				WebViewCtxMenuStage menuBuildStage);
+		
+		/** @brief Called from QWebPage::windowCloseRequested().
+		 * 
+		 * This signal is called when the window close is requested by 
+		 * the page.
+		 * 
+		 * @param proxy The standard hook proxy object.
+		 * @param page The web page originating the request.
+		 */
 		void hookWindowCloseRequested (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page);
 	};
