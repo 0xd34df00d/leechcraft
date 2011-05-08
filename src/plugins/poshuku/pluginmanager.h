@@ -116,21 +116,92 @@ namespace Poshuku
 
 		void hookAddToFavoritesRequested (LeechCraft::IHookProxy_ptr,
 				QString *title, QString *url);
+		
+		/** @brief Called inside QWebPage::chooseFile().
+		 * 
+		 * This hook is called when the web content requests a a file
+		 * name. If default handler is canceled, the proxy's return
+		 * value is converted to QString and returned from the
+		 * QWebPage::chooseFile() method, otherwise default handler is
+		 * used. In the latter case, the hook may override the suggested
+		 * filename by using IHookProxy::SetValue with the key
+		 * "suggested" and value of type QString.
+		 * 
+		 * @param proxy The standard hook proxy class.
+		 * @param page The web page that this request originated from.
+		 * @param frame The frame that this request originated from.
+		 * @param suggested The suggested filename.
+		 */
 		void hookChooseFile (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QWebFrame *frame,
 				QString suggested);
+		
+		/** @brief This hook is called whenever page contents change.
+		 * 
+		 * @param proxy The standard hook proxy class.
+		 * @param page The web page whose contents changed.
+		 */
 		void hookContentsChanged (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page);
+		
+		/** @brief Called whenever an HTML object element is encountered.
+		 * 
+		 * This hook is called inside QWebPage::createPlugin().
+		 * 
+		 * If the default handler is canceled, the return value of the
+		 * proxy is casted to QObject* and returned from the
+		 * QWebPage::createPlugin(), otherwise the default handler is
+		 * used. In the latter case, the hook may override the
+		 * parameters by using IHookProxy::SetValue() with the following
+		 * keys and values of corresponding types:
+		 * - "clsid" of type QString
+		 * - "url" of type QUrl
+		 * - "params" of type QStringList
+		 * - "values" of type QStringList
+		 * 
+		 * @param proxy The standard hook proxy class.
+		 * @param page The web page on which the element was
+		 * encountered.
+		 * @param clsid Original class ID.
+		 * @param url Original URL of the object.
+		 * @param params List of parameters to the plugin.
+		 * @param values List of values of the parameters.
+		 */
 		void hookCreatePlugin (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QString clsid,
 				QUrl url,
 				QStringList params,
 				QStringList values);
+		
+		/** @brief Called from QWebPage::createWindow().
+		 * 
+		 * This hook is called whenever a new window of the given type
+		 * should be created.
+		 * 
+		 * If the default handler is canceled, the return value of the
+		 * proxy is casted to QWebPage* and returned from the
+		 * QWebPage::createWindow(). If the cast is successful, then
+		 * the new window would be created, otherwise (or if a null
+		 * pointer is returned) the window won't be created.
+		 * 
+		 * @param proxy The standard hook proxy class.
+		 * @param page The page originating the new window request.
+		 * @param type The type of the new window.
+		 */
 		void hookCreateWindow (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QWebPage::WebWindowType type);
+		
+		/** @brief Called from QWebPage::databaseQuotaExceeded().
+		 * 
+		 * @param proxy The standard hook proxy class.
+		 * @param sourcePage The page originating the error.
+		 * @param sourceFrame The frame with the site trying to store
+		 * excessive data.
+		 * @param databaseName The name of the database.
+		 */
 		void hookDatabaseQuotaExceeded (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *sourcePage,
 				QWebFrame *sourceFrame,
@@ -147,6 +218,16 @@ namespace Poshuku
 				QObject *browserWidget,
 				QString *findText,
 				QWebPage::FindFlags *findFlags);
+		
+		/** @brief Called whenever a new frame is created.
+		 * 
+		 * This hook is called whenever a new frame is created on the
+		 * given page.
+		 * 
+		 * @param proxy The standard hook proxy class.
+		 * @param page The page on which the frame is created.
+		 * @param frameCreated The newly created frame.
+		 */
 		void hookFrameCreated (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QWebFrame *frameCreated);
