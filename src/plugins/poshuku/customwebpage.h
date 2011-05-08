@@ -21,6 +21,7 @@
 #include <boost/shared_ptr.hpp>
 #include <qwebpage.h>
 #include <QUrl>
+#include <QNetworkRequest>
 #include <interfaces/structures.h>
 #include <interfaces/iinfo.h>
 #include "pageformsdata.h"
@@ -100,7 +101,7 @@ namespace Poshuku
 		void hookAcceptNavigationRequest (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QWebFrame *frame,
-				QNetworkRequest *request,
+				QNetworkRequest request,
 				QWebPage::NavigationType type);
 		void hookChooseFile (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,

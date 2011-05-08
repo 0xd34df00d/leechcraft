@@ -546,9 +546,11 @@ namespace Poshuku
 	{
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 		QNetworkRequest request = other;
-		emit hookAcceptNavigationRequest (proxy, this, frame, &request, type);
+		emit hookAcceptNavigationRequest (proxy, this, frame, request, type);
 		if (proxy->IsCancelled ())
 			return proxy->GetReturnValue ().toBool ();
+		
+		proxy->FillValue ("request", request);
 
 		QString scheme = request.url ().scheme ();
 		if (scheme == "mailto" ||

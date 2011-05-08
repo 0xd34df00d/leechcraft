@@ -22,6 +22,7 @@
 #include <boost/shared_ptr.hpp>
 #include <QWebPage>
 #include <QDateTime>
+#include <QNetworkRequest>
 #include <plugininterface/basehookinterconnector.h>
 #include <interfaces/iinfo.h>
 #include "interfaces/poshukutypes.h"
@@ -49,6 +50,9 @@ namespace Poshuku
 		/** @brief Called whenever WebKit requests to navigate frame to
 		 * the resource specified by request.
 		 * 
+		 * The hook may modify the request, by using the
+		 * IHookProxy::SetValue method with the name "request".
+		 * 
 		 * If default handler is canceled, then its return value is
 		 * converted to bool and is used as the return value of the
 		 * QWebPage::acceptNavigationRequest() method, otherwise
@@ -68,7 +72,7 @@ namespace Poshuku
 		void hookAcceptNavigationRequest (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QWebFrame *frame,
-				QNetworkRequest *request,
+				QNetworkRequest request,
 				QWebPage::NavigationType type);
 		
 		/** @brief Called when an entry is just added to the favorites.
