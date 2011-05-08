@@ -106,15 +106,15 @@ namespace Poshuku
 		void hookChooseFile (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QWebFrame *frame,
-				QString *suggested);
+				QString suggested);
 		void hookContentsChanged (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page);
 		void hookCreatePlugin (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
-				QString *clsid,
-				QUrl *url,
-				QStringList *params,
-				QStringList *values);
+				QString clsid,
+				QUrl url,
+				QStringList params,
+				QStringList values);
 		void hookCreateWindow (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QWebPage::WebWindowType type);
