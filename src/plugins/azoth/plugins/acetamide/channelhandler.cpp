@@ -126,8 +126,9 @@ namespace Acetamide
 			return;
 		if (msg.startsWith ('/'))
 		{
-			SendCommand_ << msg.split (" ").first ().toLower ();
+			SendCommand_ << msg.mid (1).split (" ").first ().toLower ();
 			ISH_->ParseMessageForCommand (msg, ChannelID_);
+			return;
 		}
 		else
 			ISH_->SendPublicMessage (msg, ChannelID_);

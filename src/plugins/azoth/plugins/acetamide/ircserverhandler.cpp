@@ -535,7 +535,9 @@ namespace Acetamide
 		Command2Action_ ["kick"] =
 				boost::bind (&IrcServerHandler::KickFromChannel,
 					 this, _1, _2, _3);
-
+		Command2Action_ ["302"] =
+				boost::bind (&IrcServerHandler::GetUserHost,
+					 this, _1, _2, _3);
 
 		Name2Command_ ["nick"] = boost::bind (&IrcParser::NickCommand,
 				IrcParser_, _1);
@@ -1001,6 +1003,24 @@ namespace Acetamide
 				, EncodedMessage (msg, IMessage::DIn)
 				, 1
 				, nick);
+	}
+
+	void IrcServerHandler::GetUserHost (const QString&,
+			const QList<std::string>&, const QString& msg)
+	{
+		QStringList params = msg.split (' ');
+		Q_FOREACH (const QString& param, params)
+			if (!param.isEmpty ())
+			{
+				int pos = param.indexOf ("=");
+				QString message = param.left (pos) +
+						tr (" is a ") + param.mid (pos + 1);
+				Q_FOREACH (ChannelHandler *ch, ChannelHandlers_)
+					if (ch->IsSendCommand ("userhost"))
+						ch->ShowServiceMessage (message,
+								IMessage::MTServiceMessage,
+								IMessage::MSTOther);
+			}
 	}
 
 	void IrcServerHandler::InitSocket ()
