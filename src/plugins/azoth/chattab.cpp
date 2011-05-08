@@ -180,6 +180,7 @@ namespace Azoth
 		XmlSettingsManager::Instance ().RegisterObject ("FontSize",
 				this, "handleFontSizeChanged");
 		handleFontSizeChanged ();
+		Ui_.View_->setFocusProxy (Ui_.MsgEdit_);
 	}
 	
 	ChatTab::~ChatTab ()

@@ -27,6 +27,7 @@
 #include "ircserverconsole.h"
 #include "localtypes.h"
 #include "serverparticipantentry.h"
+#include "invitechannelsdialog.h"
 
 namespace LeechCraft
 {
@@ -52,17 +53,20 @@ class IrcMessage;
 		IrcServerCLEntry *ServerCLEntry_;
 		IrcServerConsole_ptr Console_;
 		bool IsConsoleEnabled_;
+		bool ChannelJoined_;
+		bool IsInviteDialogActive_;
+		std::auto_ptr<InviteChannelsDialog> InviteChannelsDialog_;
+
 		ServerOptions ServerOptions_;
 		QString ServerID_;
 		boost::shared_ptr<QTcpSocket> TcpSocket_ptr;
 		ConnectionState ServerConnectionState_;
 		QHash<QString, ChannelHandler*> ChannelHandlers_;
-		QHash<QString,
-				boost::function<void (void)> > Error2Action_;
-		QHash<QString,
-				boost::function<void (const QString&,
-					QList<std::string>,
-					const QString&)> > Command2Action_;
+		QHash<QString, boost::function<void (void)> > Error2Action_;
+		QHash<QString, boost::function<void (const QString&,
+				QList<std::string>, const QString&)> > Command2Action_;
+		QHash<QString, boost::function<void (const QStringList&)> >
+				Name2Command_;
 		QHash<QString, ServerParticipantEntry_ptr> Nick2Entry_;
 		QString NickName_;
 		QString OldNickName_;
@@ -88,6 +92,8 @@ class IrcMessage;
 		void SendPrivateMessage (IrcMessage*);
 		void ParseMessageForCommand (const QString&, const QString&);
 
+		QList<QObject*> GetCLEntries () const;
+
 		void LeaveChannel (const QString&, const QString&);
 		QStringList GetPrivateChats () const;
 		void ClosePrivateChat (const QString&);
@@ -105,6 +111,7 @@ class IrcMessage;
 		void ConnectToServer ();
 		bool DisconnectFromServer ();
 		bool JoinChannel (const ChannelOptions&);
+		void JoinChannelByCmd (const QStringList&);
 		void SendCommand (const QString&);
 		void IncomingMessage2Server ();
 		void IncomingMessage2Channel ();
@@ -118,6 +125,7 @@ class IrcMessage;
 		void InitCommandResponses ();
 		void InitSocket ();
 		bool IsErrorReply (const QString&);
+		bool IsCTCPMessage (const QString&);
 
 		void NoSuchNickError ();
 		void NickCmdError ();
@@ -146,9 +154,18 @@ class IrcMessage;
 				const QList<std::string>&, const QString&);
 		void ChangeNickname (const QString&,
 				const QList<std::string>&, const QString&);
+		void CTCPReply (const QString&,
+				const QList<std::string>&, const QString&);
+		void CTCPRequestResult (const QString&,
+				const QList<std::string>&, const QString&);
+		void InviteToChannel (const QString&,
+				const QList<std::string>&, const QString&);
+		void KickFromChannel (const QString&,
+				const QList<std::string>&, const QString&);
 	private slots:
 		void readReply ();
 		void connectionEstablished ();
+		void joinAfterInvite ();
 	signals:
 		void connected (const QString&);
 	};

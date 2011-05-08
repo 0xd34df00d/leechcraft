@@ -34,6 +34,7 @@ namespace Acetamide
 	: ISH_ (ish)
 	, ChannelOptions_ (channel)
 	, ChannelID_ (channel.ChannelName_ + "@" + channel.ServerName_)
+	, IsRosterReceived_ (false)
 	{
 		ChannelCLEntry_ = new ChannelCLEntry (this);
 	}
@@ -93,25 +94,43 @@ namespace Acetamide
 		return msg;
 	}
 
-	void ChannelHandler::ShowServiceMessage (const QString& msg)
+	bool ChannelHandler::IsRosterReceived () const
+	{
+		return IsRosterReceived_;
+	}
+
+	void ChannelHandler::SetRosterReceived (bool status)
+	{
+		IsRosterReceived_ = status;
+	}
+
+	bool ChannelHandler::IsSendCommand (const QString& cmd)
+	{
+		return SendCommand_.contains (cmd);
+	}
+
+	void ChannelHandler::ShowServiceMessage (const QString& msg,
+			IMessage::MessageType mt, IMessage::MessageSubType mst)
 	{
 		ChannelPublicMessage *message = new ChannelPublicMessage (msg,
 				IMessage::DIn,
 				ChannelCLEntry_,
-				IMessage::MTStatusMessage,
-				IMessage::MSTParticipantNickChange);
+				mt,
+				mst);
 		ChannelCLEntry_->HandleMessage (message);
 	}
 
 	void ChannelHandler::SendPublicMessage (const QString& msg)
 	{
+		if (GetSelf () == ServerParticipantEntry_ptr ())
+			return;
 		if (msg.startsWith ('/'))
 		{
+			SendCommand_ << msg.split (" ").first ().toLower ();
 			ISH_->ParseMessageForCommand (msg, ChannelID_);
-			return;
 		}
-
-		ISH_->SendPublicMessage (msg, ChannelID_);
+		else
+			ISH_->SendPublicMessage (msg, ChannelID_);
 
 		ServerParticipantEntry_ptr entry =
 				ISH_->GetParticipantEntry (ISH_->GetNickName ());
@@ -189,7 +208,7 @@ namespace Acetamide
 	}
 
 	void ChannelHandler::RemoveChannelUser (const QString& nick,
-			const QString& msg)
+			const QString& msg, int type, const QString& who)
 	{
 		ServerParticipantEntry_ptr entry =
 				ISH_->GetParticipantEntry (nick);
@@ -201,7 +220,18 @@ namespace Acetamide
 		{
 			if (groups.removeOne (ChannelOptions_.ChannelName_))
 			{
-				MakeLeaveMessage (nick, msg);
+				switch (type)
+				{
+				case 0:
+					MakeLeaveMessage (nick, msg);
+					break;
+				case 1:
+					MakeKickMessage (nick, msg, who);
+					break;
+// 				case 2:
+// 					MakeBanMessage (nick, msg);
+// 					break;
+				}
 				ISH_->GetAccount ()->handleEntryRemoved (entry.get ());
 				if (!groups.count () && !entry->IsPrivateChat ())
 					ISH_->RemoveParticipantEntry (nick);
@@ -243,6 +273,32 @@ namespace Acetamide
 		ChannelCLEntry_->HandleMessage (message);
 	}
 
+	void ChannelHandler::MakeKickMessage (const QString& nick,
+			const QString& msg, const QString& who)
+	{
+		QString mess;
+		QString reason = QString ();
+		if (!msg.isEmpty ())
+			reason = ":" + msg;
+
+		if (nick == ISH_->GetNickName ())
+			mess = tr ("You have been kicked by %1 %2")
+					.arg (who, reason);
+		else if (who == ISH_->GetNickName ())
+			mess = tr ("You kicked %1 %2")
+					.arg (nick, reason);
+		else
+			mess = tr ("%1 has been kicked by %2 %3")
+					.arg (nick, who, reason);
+
+		ChannelPublicMessage *message = new ChannelPublicMessage (mess,
+				IMessage::DIn,
+				ChannelCLEntry_,
+				IMessage::MTStatusMessage,
+				IMessage::MSTKickNotification);
+		ChannelCLEntry_->HandleMessage (message);
+	}
+
 	void ChannelHandler::SetMUCSubject (const QString& subject)
 	{
 		Subject_ = subject;
@@ -261,7 +317,7 @@ namespace Acetamide
 		return Subject_;
 	}
 
-	void ChannelHandler::LeaveChannel (const QString& msg)
+	void ChannelHandler::LeaveChannel (const QString& msg, bool cmd)
 	{
 		Q_FOREACH (ServerParticipantEntry_ptr entry,
 				ISH_->GetParticipants (ChannelOptions_.ChannelName_))
@@ -284,7 +340,9 @@ namespace Acetamide
 			}
 		}
 
-		ISH_->LeaveChannel (ChannelOptions_.ChannelName_, msg);
+		if (cmd)
+			ISH_->LeaveChannel (ChannelOptions_.ChannelName_, msg);
+
 		RemoveThis ();
 	}
 

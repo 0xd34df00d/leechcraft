@@ -43,6 +43,7 @@ namespace Juick
 		QRegExp UnsubRX_;
 		QRegExp ReplyRX_;
 		QRegExp AvatarRX_;
+		QRegExp TagRX_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -62,7 +63,7 @@ namespace Juick
 		void InsertAvatars (QString& body);
 		void InsertNickLinks (QString& body);
 		bool ShouldHandle (QObject* msgObj, int direction, int type);
-		bool IsBehind (const QString& text, const int index, const QString& pattern) const;
+		bool IsBehind (const QString& text, int index, const QString& pattern) const;
 	public slots:
 		void hookFormatBodyEnd (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab,

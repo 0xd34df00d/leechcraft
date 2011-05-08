@@ -171,26 +171,19 @@ namespace LeechCraft
 		return Handlers_.empty () ? 0 : Handlers_.begin ()->second;
 	}
 
-	QString HandlerChoiceDialog::GetFilename () const
+	QString HandlerChoiceDialog::GetFilename ()
 	{
 		const QString& name = Buttons_->checkedButton ()->
 			property ("PluginName").toString ();
 
 		QString result;
-		if (Ui_.LocationsBox_->currentIndex () == 0)
-		{
-			if (Suggestion_.isEmpty ())
-				Suggestion_ = GetPluginSavePaths (name).value (0, QDir::homePath ());
+		if (Ui_.LocationsBox_->currentIndex () == 0 &&
+				Ui_.LocationsBox_->currentText ().isEmpty ())
+			on_BrowseButton__released ();
 
-			result = QFileDialog::getExistingDirectory (0,
-					tr ("Select save location"),
-					Suggestion_,
-					QFileDialog::Option (~QFileDialog::ShowDirsOnly));
-			if (result.isEmpty ())
-				return QString ();
-		}
-		else
-			result = Ui_.LocationsBox_->currentText ();
+		result = Ui_.LocationsBox_->currentText ();
+		if (result.isEmpty ())
+			return QString ();
 
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName ());
@@ -235,9 +228,11 @@ namespace LeechCraft
 		if (checked->property ("AddedAs").toString () == "IEntityHandler")
 		{
 			Ui_.LocationsBox_->setEnabled (false);
+			Ui_.BrowseButton_->setEnabled (false);
 			return;
 		}
 		Ui_.LocationsBox_->setEnabled (true);
+		Ui_.BrowseButton_->setEnabled (true);
 
 		Ui_.LocationsBox_->insertSeparator (1);
 
@@ -304,5 +299,24 @@ namespace LeechCraft
 				Ui_.LocationsBox_->setCurrentIndex (2);
 		}
 	}
-};
+	
+	void HandlerChoiceDialog::on_BrowseButton__released ()
+	{
+		const QString& name = Buttons_->checkedButton ()->
+			property ("PluginName").toString ();
+
+		if (Suggestion_.isEmpty ())
+			Suggestion_ = GetPluginSavePaths (name).value (0, QDir::homePath ());
+
+		const QString& result = QFileDialog::getExistingDirectory (0,
+				tr ("Select save location"),
+				Suggestion_,
+				QFileDialog::Option (~QFileDialog::ShowDirsOnly));
+		if (result.isEmpty ())
+			return;
+		
+		Ui_.LocationsBox_->setCurrentIndex (0);
+		Ui_.LocationsBox_->setItemText (0, result);
+	}
+}
 

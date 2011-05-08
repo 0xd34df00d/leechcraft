@@ -47,6 +47,8 @@ namespace Acetamide
 	, ServerConnectionState_ (NotConnected)
 	, NickName_ (server.ServerNickName_)
 	, IsConsoleEnabled_ (false)
+	, IsInviteDialogActive_ (false)
+	, ChannelJoined_ (false)
 	{
 		IrcParser_ = new IrcParser (this);
 		InitErrorsReplys ();
@@ -127,16 +129,55 @@ namespace Acetamide
 	void IrcServerHandler::ParseMessageForCommand (const QString& msg,
 			const QString& channelID)
 	{
-		QString commandMessage = msg.mid (1);
+		QString commandMessage = EncodedMessage (msg.mid (1),
+				IMessage::DOut);
+		QString outputMessage = QString ();
 		QStringList commandWithParams = commandMessage.split (' ');
-		if (commandWithParams.at (0).toLower () == "nick")
-			IrcParser_->NickCommand (commandWithParams.at (1));
+		if (Name2Command_.contains (commandWithParams.at (0).toLower ()))
+		{
+			if (commandWithParams.at (0).toLower () == "invite")
+				outputMessage = "You invite " + commandWithParams.at (1)
+						+ " to a channel " + commandWithParams.at (2);
+			else if (commandWithParams.at (0).toLower () == "quit")
+				commandWithParams.append (ServerID_);
+			else if (commandWithParams.at (0).toLower () == "me")
+			{
+
+				commandWithParams.insert (1, channelID
+						.left (channelID.indexOf ('@')));
+				commandWithParams.insert (2, "ACTION");
+			}
+
+			Name2Command_ [commandWithParams.at (0).toLower ()]
+					(commandWithParams.mid (1));
+		}
+		else
+			IrcParser_->RawCommand (commandWithParams);
+
+		if (!outputMessage.isEmpty ())
+			Q_FOREACH (ChannelHandler *ich, ChannelHandlers_.values ())
+				ich->ShowServiceMessage (outputMessage,
+						IMessage::MTEventMessage,
+						IMessage::MSTOther);
+	}
+
+	QList<QObject*> IrcServerHandler::GetCLEntries () const
+	{
+		QList<QObject*> result;
+		Q_FOREACH (ChannelHandler *ich, ChannelHandlers_.values ())
+			result << ich->GetCLEntry ();
+
+		Q_FOREACH (ServerParticipantEntry_ptr spe, Nick2Entry_.values ())
+			result << spe.get ();
+
+		return result;
 	}
 
 	void IrcServerHandler::LeaveChannel (const QString& channels,
 			const QString& msg)
 	{
-		IrcParser_->PartCommand (channels, msg);
+		IrcParser_->PartCommand (QStringList () << channels
+				<< QString (":" + msg));
 	}
 
 	QStringList IrcServerHandler::GetPrivateChats () const
@@ -223,7 +264,7 @@ namespace Acetamide
 		{
 			TcpSocket_ptr->disconnectFromHost ();
 			if (TcpSocket_ptr->state ()
-				== QAbstractSocket::UnconnectedState &&
+					== QAbstractSocket::UnconnectedState &&
 				TcpSocket_ptr->waitForDisconnected (1000))
 			{
 				ServerConnectionState_ = NotConnected;
@@ -261,6 +302,19 @@ namespace Acetamide
 			Add2ChannelsQueue (channel);
 
 		return true;
+	}
+
+	void IrcServerHandler::JoinChannelByCmd (const QStringList& cmd)
+	{
+		Q_FOREACH (const QString& channel, cmd.at (0).split (','))
+		{
+			ChannelOptions co;
+			co.ChannelName_ = channel;
+			co.ChannelPassword_ = QString ();
+			co.ServerName_ = ServerOptions_.ServerName_;
+
+			JoinChannel (co);
+		}
 	}
 
 	void IrcServerHandler::SendCommand (const QString& cmd)
@@ -305,9 +359,16 @@ namespace Acetamide
 	{
 		IrcMessageOptions imo = IrcParser_->GetIrcMessageOptions ();
 		QString cmd = imo.Command_.toLower ();
-		if (Command2Action_.contains (cmd))
+		if (cmd == "privmsg" && IsCTCPMessage (imo.Message_))
+			Command2Action_ ["ctcp_rpl"] (imo.Nick_, imo.Parameters_,
+					imo.Message_);
+		else if (cmd == "notice" && IsCTCPMessage (imo.Message_))
+			Command2Action_ ["ctcp_rqst"] (imo.Nick_, imo.Parameters_,
+					imo.Message_);
+		else if (Command2Action_.contains (cmd))
 			Command2Action_ [cmd] (imo.Nick_, imo.Parameters_,
 					imo.Message_);
+
 	}
 
 	void IrcServerHandler::SendToConsole (const QString& message)
@@ -462,6 +523,100 @@ namespace Acetamide
 		Command2Action_ ["nick"] =
 				boost::bind (&IrcServerHandler::ChangeNickname,
 					this, _1, _2, _3);
+		Command2Action_ ["ctcp_rpl"] =
+				boost::bind (&IrcServerHandler::CTCPReply,
+					this, _1, _2, _3);
+		Command2Action_ ["ctcp_rqst"] =
+				boost::bind (&IrcServerHandler::CTCPRequestResult,
+					 this, _1, _2, _3);
+		Command2Action_ ["invite"] =
+				boost::bind (&IrcServerHandler::InviteToChannel,
+					 this, _1, _2, _3);
+		Command2Action_ ["kick"] =
+				boost::bind (&IrcServerHandler::KickFromChannel,
+					 this, _1, _2, _3);
+
+
+		Name2Command_ ["nick"] = boost::bind (&IrcParser::NickCommand,
+				IrcParser_, _1);
+		Name2Command_ ["quote"] = boost::bind (&IrcParser::RawCommand,
+				IrcParser_, _1);
+		Name2Command_ ["ctcp"] = boost::bind (&IrcParser::CTCPRequest,
+				IrcParser_, _1);
+		Name2Command_ ["topic"] = boost::bind (&IrcParser::TopicCommand,
+				IrcParser_, _1);
+		Name2Command_ ["names"] = boost::bind (&IrcParser::NamesCommand,
+				IrcParser_, _1);
+		Name2Command_ ["invite"] =
+				boost::bind (&IrcParser::InviteCommand, IrcParser_, _1);
+		Name2Command_ ["quit"] =
+				boost::bind (&ClientConnection::QuitServer,
+						Account_->GetClientConnection ().get (),
+						_1);
+		Name2Command_ ["join"] =
+				boost::bind (&IrcServerHandler::JoinChannelByCmd, this,
+						_1);
+		Name2Command_ ["part"] =
+				boost::bind (&IrcParser::PartCommand, IrcParser_, _1);
+		Name2Command_ ["kick"] = boost::bind (&IrcParser::KickCommand,
+				IrcParser_, _1);
+		Name2Command_ ["me"] = boost::bind (&IrcParser::CTCPRequest,
+				IrcParser_, _1);
+		Name2Command_ ["oper"] = boost::bind (&IrcParser::OperCommand,
+				IrcParser_, _1);
+		Name2Command_ ["squit"] = boost::bind (&IrcParser::SQuitCommand,
+				IrcParser_, _1);
+		Name2Command_ ["motd"] = boost::bind (&IrcParser::MOTDCommand,
+				IrcParser_, _1);
+		Name2Command_ ["lusers"] =
+				boost::bind (&IrcParser::LusersCommand, IrcParser_, _1);
+		Name2Command_ ["version"] =
+				boost::bind (&IrcParser::VersionCommand, IrcParser_, _1);
+		Name2Command_ ["stats"] = boost::bind (&IrcParser::StatsCommand,
+				IrcParser_, _1);
+		Name2Command_ ["links"] = boost::bind (&IrcParser::LinksCommand,
+				IrcParser_, _1);
+		Name2Command_ ["time"] = boost::bind (&IrcParser::TimeCommand,
+				IrcParser_, _1);
+		Name2Command_ ["connect"] =
+				boost::bind (&IrcParser::ConnectCommand, IrcParser_, _1);
+		Name2Command_ ["trace"] = boost::bind (&IrcParser::TraceCommand,
+				IrcParser_, _1);
+		Name2Command_ ["admin"] = boost::bind (&IrcParser::AdminCommand,
+				IrcParser_, _1);
+		Name2Command_ ["info"] = boost::bind (&IrcParser::InfoCommand,
+				IrcParser_, _1);
+		Name2Command_ ["who"] = boost::bind (&IrcParser::WhoCommand,
+				IrcParser_, _1);
+		Name2Command_ ["whois"] = boost::bind (&IrcParser::WhoisCommand,
+				IrcParser_, _1);
+		Name2Command_ ["whowas"] =
+				boost::bind (&IrcParser::WhowasCommand, IrcParser_, _1);
+		Name2Command_ ["kill"] = boost::bind (&IrcParser::KillCommand,
+				IrcParser_, _1);
+		Name2Command_ ["ping"] = boost::bind (&IrcParser::PingCommand,
+				IrcParser_, _1);
+		Name2Command_ ["pong"] = boost::bind (&IrcParser::PongCommand,
+				IrcParser_, _1);
+		Name2Command_ ["away"] = boost::bind (&IrcParser::AwayCommand,
+				IrcParser_, _1);
+		Name2Command_ ["rehash"] =
+				boost::bind (&IrcParser::RehashCommand, IrcParser_, _1);
+		Name2Command_ ["die"] = boost::bind (&IrcParser::DieCommand,
+				IrcParser_, _1);
+		Name2Command_ ["restart"] =
+				boost::bind (&IrcParser::RestartCommand, IrcParser_, _1);
+		Name2Command_ ["summon"] =
+				boost::bind (&IrcParser::SummonCommand, IrcParser_, _1);
+		Name2Command_ ["users"] =
+				boost::bind (&IrcParser::UsersCommand, IrcParser_, _1);
+		Name2Command_ ["userhost"] =
+				boost::bind (&IrcParser::UserhostCommand,
+						IrcParser_, _1);
+		Name2Command_ ["wallops"] =
+				boost::bind (&IrcParser::WallopsCommand, IrcParser_, _1);
+		Name2Command_ ["ison"] =
+				boost::bind (&IrcParser::IsonCommand, IrcParser_, _1);
 	}
 
 	void IrcServerHandler::NoSuchNickError ()
@@ -474,7 +629,7 @@ namespace Acetamide
 		if (index < Account_->GetNickNames ().count ())
 		{
 			NickName_ = Account_->GetNickNames ().at (++index);
-			IrcParser_->NickCommand (NickName_);
+			IrcParser_->NickCommand (QStringList () << NickName_);
 		}
 	}
 
@@ -525,33 +680,6 @@ namespace Acetamide
 		return entry;
 	}
 
-	void IrcServerHandler::ChangeNickname (const QString& nick,
-			const QList<std::string>&, const QString& msg)
-	{
-
-		Q_FOREACH (const QString& channel,
-				Nick2Entry_ [nick]->GetChannels ())
-		{
-			QString id = (channel + "@" + ServerOptions_.ServerName_)
-					.toLower ();
-			QString mess = tr ("%1 changed nickname to %2").arg(nick).arg(msg);
-			if (ChannelHandlers_.contains (id))
-				ChannelHandlers_ [id]->ShowServiceMessage (mess);
-		}
-
-		Account_->handleEntryRemoved (Nick2Entry_ [nick].get ());
-
-		ServerParticipantEntry_ptr entry = Nick2Entry_.take (nick);
-
-		entry->SetEntryName (msg);
-		Account_->handleGotRosterItems (QList<QObject*> ()
-				<< entry.get ());
-
-		Nick2Entry_ [msg] = entry;
-		if (nick == NickName_)
-			NickName_ = msg;
-	}
-
 	void IrcServerHandler::JoinFromQueue (const QString&,
 			const QList<std::string>&, const QString&)
 	{
@@ -583,16 +711,34 @@ namespace Acetamide
 		QString channelID = (QString::fromUtf8 (params.last ().c_str ())
 				+ "@" + ServerOptions_.ServerName_).toLower ();
 		QStringList participants = message.split (' ');
-		Q_FOREACH (QString nick, participants)
-			ChannelHandlers_ [channelID]->SetChannelUser (nick);
+
+		if (!ChannelHandlers_ [channelID]->IsRosterReceived ())
+		{
+			Q_FOREACH (QString nick, participants)
+				ChannelHandlers_ [channelID]->SetChannelUser (nick);
+
+			ChannelHandlers_ [channelID]->SetRosterReceived (true);
+		}
+		else
+		{
+			QString cmd = "names " +
+					QString::fromUtf8 (params.last ().c_str ());
+
+			Q_FOREACH (ChannelHandler *ich, ChannelHandlers_.values ())
+				ich->ShowServiceMessage (message,
+						IMessage::MTEventMessage,
+						IMessage::MSTOther);
+		}
 	}
 
 	void IrcServerHandler::JoinParticipant (const QString& nick,
 			const QList<std::string>&, const QString& msg)
 	{
 		if (nick == NickName_)
+		{
+			ChannelJoined_ = true;
 			return;
-
+		}
 		QString channelID = (msg + "@" + ServerOptions_.ServerName_)
 				.toLower ();
 
@@ -602,11 +748,14 @@ namespace Acetamide
 	void IrcServerHandler::LeaveParticipant (const QString& nick,
 			const QList<std::string>& params, const QString& msg)
 	{
-		if (nick == NickName_)
-			return;
 		QString channelID = (QString::fromUtf8 (params.last ().c_str ())
 				+ "@" + ServerOptions_.ServerName_).toLower ();
-		ChannelHandlers_ [channelID]->RemoveChannelUser (nick, msg);
+		if (nick == NickName_)
+			ChannelHandlers_ [channelID]->LeaveChannel (msg, false);
+		else
+			ChannelHandlers_ [channelID]->RemoveChannelUser (nick
+					, msg
+					, 0);
 	}
 
 	void IrcServerHandler::HandleIncomingMessage (const QString& nick,
@@ -645,13 +794,12 @@ namespace Acetamide
 	void IrcServerHandler::PongMessage (const QString&,
 			const QList<std::string>&, const QString& msg)
 	{
-		IrcParser_->PongCommand (msg);
+		IrcParser_->PongCommand (QStringList () << msg);
 	}
 
 	void IrcServerHandler::SetISupport (const QString&,
 			const QList<std::string>& params, const QString&)
 	{
-
 		Q_FOREACH (std::string str, params)
 		{
 			QString string = QString::fromUtf8 (str.c_str ());
@@ -667,6 +815,192 @@ namespace Acetamide
 				ISupport_ [key] = value;
 			}
 		}
+	}
+
+	void IrcServerHandler::ChangeNickname (const QString& nick,
+			const QList<std::string>&, const QString& msg)
+	{
+		Q_FOREACH (const QString& channel,
+				Nick2Entry_ [nick]->GetChannels ())
+		{
+			QString id = (channel + "@" + ServerOptions_.ServerName_)
+					.toLower ();
+			QString mess =
+					tr ("%1 changed nickname to %2").arg (nick, msg);
+			if (ChannelHandlers_.contains (id))
+				ChannelHandlers_ [id]->ShowServiceMessage (mess,
+						IMessage::MTStatusMessage,
+						IMessage::MSTParticipantNickChange);
+		}
+
+		Account_->handleEntryRemoved (Nick2Entry_ [nick].get ());
+
+		ServerParticipantEntry_ptr entry = Nick2Entry_.take (nick);
+
+		entry->SetEntryName (msg);
+		Account_->handleGotRosterItems (QList<QObject*> ()
+				<< entry.get ());
+
+		Nick2Entry_ [msg] = entry;
+		if (nick == NickName_)
+			NickName_ = msg;
+	}
+
+	void IrcServerHandler::CTCPReply (const QString& nick,
+			const QList<std::string>& params, const QString& msg)
+	{
+		QString cmd;
+		QString outputMessage;
+		QString version = QString ("%1 %2 %3").arg ("Acetamide",
+				"2.0",
+				"(C) 2011 by the LeechCraft team");
+		QDateTime currentDT = QDateTime::currentDateTime ();
+		QString mess = msg.mid (1, msg.length () - 2);
+		QStringList ctcpList = mess.split (' ');
+		QString firstPartOutput = QString ("%1 %2 - %3").arg ("Acetamide"
+				, "2.0"
+				, "http://www.leechcraft.org");
+
+		if (ctcpList.at (0).toLower () == "version")
+		{
+			cmd = QString ("%1 %2%3").arg ("\001VERSION"
+					, version
+					, QChar ('\001'));
+			outputMessage = tr ("Received request %1 from %2,"
+					" sending response").arg ("VERSION", nick);
+		}
+		else if (ctcpList.at (0).toLower () == "ping")
+		{
+			cmd = QString ("%1 %2%3").arg ("\001PING "
+					, QString::number (currentDT.toTime_t ())
+					, QChar ('\001'));
+			outputMessage = tr ("Received request %1 from %2,"
+					" sending response").arg ("PING", nick);
+		}
+		else if (ctcpList.at (0).toLower () == "time")
+		{
+			cmd = QString ("%1 %2%3").arg ("\001TIME"
+					, currentDT.toString ("ddd MMM dd hh:mm:ss yyyy")
+					, QChar ('\001'));
+			outputMessage = tr ("Received request %1 from %2,"
+					" sending response").arg ("TIME", nick);
+		}
+		else if (ctcpList.at (0).toLower () == "source")
+		{
+			cmd = QString ("%1 %2 %3").arg ("\001SOURCE"
+					, firstPartOutput
+					, QChar ('\001'));
+			outputMessage = tr ("Received request %1 from %2,"
+					" sending response").arg ("SOURCE", nick);
+		}
+		else if (ctcpList.at (0).toLower () == "clientinfo")
+		{
+			cmd = QString ("%1 %2 - %3 %4 %5").arg ("\001CLIENTINFO"
+					, firstPartOutput
+					, "Supported tags:"
+					, "VERSION PING TIME SOURCE CLIENTINFO"
+					, QChar ('\001'));
+			outputMessage = tr ("Received request %1 from %2,"
+					" sending response").arg ("CLIENTINFO", nick);
+		}
+		else if (ctcpList.at (0).toLower () == "action")
+		{
+			QString mess = "/me " + QStringList (ctcpList.mid (1))
+					.join (" ");
+			HandleIncomingMessage (nick, params, mess);
+			return;
+		}
+		else
+			outputMessage.clear ();
+
+		if (outputMessage.isEmpty ())
+			return;
+
+		Q_FOREACH (ChannelHandler *ich, ChannelHandlers_.values ())
+			ich->ShowServiceMessage (outputMessage,
+					IMessage::MTEventMessage,
+					IMessage::MSTOther);
+
+		IrcParser_->CTCPReply (QStringList () << nick << cmd);
+	}
+
+	void IrcServerHandler::CTCPRequestResult (const QString& nick, const
+			QList<std::string>& params, const QString& msg)
+	{
+		if (QString::fromUtf8 (params.first ().c_str ()) != NickName_)
+			return;
+		QString mess = msg.mid (1, msg.length () - 2);
+		QStringList ctcpList = mess.split (' ');
+
+		QString output = tr ("Received answer CTCP-%1 from %2: %3")
+				.arg (ctcpList.at (0), nick,
+					(QStringList (ctcpList.mid (1)))
+						.join (" "));
+
+		QString cmd = "ctcp " + nick + " " + ctcpList.at (0).toLower ();
+		Q_FOREACH (ChannelHandler *ich, ChannelHandlers_.values ())
+			ich->ShowServiceMessage (output,
+					IMessage::MTEventMessage,
+					IMessage::MSTOther);
+	}
+
+	void IrcServerHandler::InviteToChannel (const QString& nick,
+			const QList<std::string>& , const QString& msg)
+	{
+		if (XmlSettingsManager::Instance ()
+				.property ("ShowInviteDialog").toBool ())
+			XmlSettingsManager::Instance ()
+					.setProperty ("InviteActionByDefault", 0);
+
+		if (!XmlSettingsManager::Instance ()
+				.property ("InviteActionByDefault").toInt ())
+		{
+			if (IsInviteDialogActive_)
+				InviteChannelsDialog_->AddInvitation (msg, nick);
+			else
+			{
+				std::auto_ptr<InviteChannelsDialog> dic
+						(new InviteChannelsDialog (msg, nick, 0));
+				IsInviteDialogActive_ = true;
+				InviteChannelsDialog_ = dic;
+				InviteChannelsDialog_->setModal (true);
+
+				connect (InviteChannelsDialog_.get (),
+						SIGNAL (accepted ()),
+						this,
+						SLOT (joinAfterInvite ()));
+			}
+			InviteChannelsDialog_->show ();
+		}
+		else if (XmlSettingsManager::Instance ()
+				.property ("InviteActionByDefault").toInt () == 1)
+		{
+			ChannelOptions co;
+			co.ChannelName_ = msg;
+			co.ChannelPassword_ = QString ();
+			co.ServerName_ = ServerOptions_.ServerName_;
+			JoinChannel (co);
+		}
+
+		QString outputMessage = nick + tr (" invites you to a channel ")
+				+ msg;
+		Q_FOREACH (ChannelHandler *ich, ChannelHandlers_.values ())
+			ich->ShowServiceMessage (outputMessage,
+					IMessage::MTEventMessage,
+					IMessage::MSTOther);
+	}
+
+	void IrcServerHandler::KickFromChannel (const QString& nick,
+			const QList<std::string>& params, const QString& msg)
+	{
+		QString channelID = (QString::fromUtf8 (params.first ().c_str ())
+				+ "@" + ServerOptions_.ServerName_).toLower ();
+
+		ChannelHandlers_ [channelID]->RemoveChannelUser (
+				QString::fromUtf8 (params.last ().c_str ())
+				, EncodedMessage (msg, IMessage::DIn)
+				, 1
+				, nick);
 	}
 
 	void IrcServerHandler::InitSocket ()
@@ -692,22 +1026,27 @@ namespace Acetamide
 		return Error2Action_.contains (cmd);
 	}
 
+	bool IrcServerHandler::IsCTCPMessage (const QString& msg)
+	{
+		return msg.startsWith ('\001') && msg.endsWith ('\001');
+	}
+
 	void IrcServerHandler::readReply ()
 	{
 		while (TcpSocket_ptr->canReadLine ())
 		{
 			QString str = TcpSocket_ptr->readLine ();
 			SendToConsole (str.trimmed ());
-// 			qDebug () << str;
+			qDebug () << str;
 			if (!IrcParser_->ParseMessage (str))
 				return;
 
 			QString cmd = IrcParser_->GetIrcMessageOptions ()
 					.Command_.toLower ();
-					if (IsErrorReply (cmd))
+			if (IsErrorReply (cmd))
 			{
 				QString msg = IrcParser_->GetIrcMessageOptions ()
-						.Message_ + QString::fromUtf8 (IrcParser_->
+						.Message_ + " " + QString::fromUtf8 (IrcParser_->
 							GetIrcMessageOptions ().Parameters_.last ()
 								.c_str ());
 				Entity e = Util::MakeNotification ("Azoth",
@@ -716,7 +1055,7 @@ namespace Acetamide
 				Core::Instance ().SendEntity (e);
 				Error2Action_ [cmd] ();
 			}
-			else if (!ChannelHandlers_.values ().count ())
+			else if ((cmd != "join") && (!ChannelJoined_))
 				IncomingMessage2Server ();
 
 			IncomingMessage2Channel ();
@@ -741,6 +1080,20 @@ namespace Acetamide
 		ServerCLEntry_->SetStatus (EntryStatus (SOnline, QString ()));
 		IrcParser_->AuthCommand ();
 	}
+
+	void IrcServerHandler::joinAfterInvite ()
+	{
+		Q_FOREACH (const QString& channel,
+				InviteChannelsDialog_->GetChannels ())
+		{
+			ChannelOptions co;
+			co.ChannelName_ = channel;
+			co.ChannelPassword_ = QString ();
+			co.ServerName_ = ServerOptions_.ServerName_;
+			JoinChannel (co);
+		}
+	}
+
 };
 };
 };

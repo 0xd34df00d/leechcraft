@@ -86,6 +86,10 @@ namespace Poshuku
 				SIGNAL (urlChanged (const QUrl&)),
 				this,
 				SIGNAL (loadingURL (const QUrl&)));
+		connect (mainFrame (),
+				SIGNAL (initialLayoutCompleted ()),
+				this,
+				SLOT (handleInitialLayoutCompleted ()));
 		connect (this,
 				SIGNAL (contentsChanged ()),
 				this,
@@ -326,9 +330,11 @@ namespace Poshuku
 	{
 		QNetworkRequest request = other;
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-		emit hookDownloadRequested (proxy, this, &request);
+		emit hookDownloadRequested (proxy, this, request);
 		if (proxy->IsCancelled ())
 			return;
+		
+		proxy->FillValue ("request", request);
 
 		LeechCraft::Entity e = Util::MakeEntity (request.url (),
 				QString (),
@@ -340,6 +346,12 @@ namespace Poshuku
 	{
 		emit hookFrameCreated (IHookProxy_ptr (new Util::DefaultHookProxy),
 				this, frame);
+	}
+	
+	void CustomWebPage::handleInitialLayoutCompleted ()
+	{
+		emit hookInitialLayoutCompleted (IHookProxy_ptr (new Util::DefaultHookProxy),
+				this, mainFrame ());
 	}
 
 	void CustomWebPage::handleJavaScriptWindowObjectCleared ()
@@ -536,9 +548,11 @@ namespace Poshuku
 	{
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 		QNetworkRequest request = other;
-		emit hookAcceptNavigationRequest (proxy, this, frame, &request, type);
+		emit hookAcceptNavigationRequest (proxy, this, frame, request, type);
 		if (proxy->IsCancelled ())
 			return proxy->GetReturnValue ().toBool ();
+		
+		proxy->FillValue ("request", request);
 
 		QString scheme = request.url ().scheme ();
 		if (scheme == "mailto" ||
@@ -585,9 +599,11 @@ namespace Poshuku
 	{
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 		QString suggested = thsuggested;
-		emit hookChooseFile (proxy, this, frame, &suggested);
+		emit hookChooseFile (proxy, this, frame, suggested);
 		if (proxy->IsCancelled ())
 			return proxy->GetReturnValue ().toString ();
+		
+		proxy->FillValue ("suggested", suggested);
 
 		return QWebPage::chooseFile (frame, suggested);
 	}
@@ -601,9 +617,14 @@ namespace Poshuku
 		QStringList names = thnames;
 		QStringList values = thvalues;
 		emit hookCreatePlugin (proxy, this,
-				&clsid, &url, &names, &values);
+				clsid, url, names, values);
 		if (proxy->IsCancelled ())
 			return proxy->GetReturnValue ().value<QObject*> ();
+		
+		proxy->FillValue ("clsid", clsid);
+		proxy->FillValue ("url", url);
+		proxy->FillValue ("names", names);
+		proxy->FillValue ("values", values);
 
 		return QWebPage::createPlugin (clsid, url, names, values);
 	}

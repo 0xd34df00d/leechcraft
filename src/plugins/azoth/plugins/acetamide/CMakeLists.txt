@@ -23,6 +23,7 @@ SET (ACETAMIDE_SRCS
 	ircserverclentry.cpp
 	ircserverconsole.cpp
 	ircserverhandler.cpp
+	invitechannelsdialog.cpp
 	localtypes.cpp
 	serverparticipantentry.cpp
 	xmlsettingsmanager.cpp
@@ -46,6 +47,7 @@ SET (ACETAMIDE_HEADERS
 	ircserverclentry.h
 	ircserverconsole.h
 	ircserverhandler.h
+	invitechannelsdialog.h
 	localtypes.h
 	serverparticipantentry.h
 	xmlsettingsmanager.h
@@ -55,6 +57,7 @@ SET (ACETAMIDE_FORMS
 	ircaccountconfigurationdialog.ui
 	ircaccountconfigurationwidget.ui
 	ircjoingroupchat.ui
+	invitechannelsdialog.ui
 	)
 
 SET (ACETAMIDE_TRANSLATIONS

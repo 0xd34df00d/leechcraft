@@ -49,25 +49,26 @@ namespace Acetamide
 		}
 
 		UserCommand ();
-		NickCommand (ISH_->GetNickName ());
+		NickCommand (QStringList () << ISH_->GetNickName ());
 	}
 
 	void IrcParser::UserCommand ()
 	{
 		QString userCmd = QString ("USER " +
-				ISH_->GetAccount ()->GetUserName () + " 0 * :" +
+				ISH_->GetAccount ()->GetUserName () + " 8 * :" +
 				ISH_->GetAccount ()->GetRealName () + "\r\n");
 		ISH_->SendCommand (userCmd);
 	}
 
-	void IrcParser::NickCommand (const QString& nick)
+	void IrcParser::NickCommand (const QStringList& nick)
 	{
-		QString nickCmd = QString ("NICK " + nick + "\r\n");
+		QString nickCmd = QString ("NICK " + nick.at (0) + "\r\n");
 		ISH_->SendCommand (nickCmd);
 	}
 
 	void IrcParser::JoinCommand (const QString& channel)
 	{
+		//TODO Password
 		QString joinCmd = QString ("JOIN " + channel + "\r\n");
 		ISH_->SendCommand (joinCmd);
 	}
@@ -80,21 +81,271 @@ namespace Acetamide
 		ISH_->SendCommand (privmsgCmd);
 	}
 
-	void IrcParser::PartCommand (const QString& target,
-			const QString& msg)
+	void IrcParser::PartCommand (const QStringList& cmd)
 	{
-		QString partCmd;
-		if (!msg.isEmpty ())
-			partCmd = QString ("PART " + target + " :" + msg + "\r\n");
-		else
-			partCmd = QString ("PART " + target + "\r\n");
+		QString partCmd = QString ("PART " + cmd.first () + " :" +
+				QStringList (cmd.mid (1)).join (" ") + "\r\n");
 		ISH_->SendCommand (partCmd);
 	}
 
-	void IrcParser::PongCommand (const QString& msg)
+	void IrcParser::PongCommand (const QStringList& msg)
 	{
-		QString pongCmd = QString ("PONG :" + msg + "\r\n");
+		QString pongCmd = QString ("PONG :" + msg.join (" ") + "\r\n");
 		ISH_->SendCommand (pongCmd);
+	}
+
+	void IrcParser::RawCommand (const QStringList& cmd)
+	{
+		QString rawCmd = cmd.join (" ") + "\r\n";
+		ISH_->SendCommand (rawCmd);
+	}
+
+	void IrcParser::CTCPRequest (const QStringList& cmd)
+	{
+		if (!cmd.count ())
+			return;
+		QString ctcpCmd;
+		if (cmd.count () > 2)
+			ctcpCmd = "PRIVMSG " + cmd.first () + " :\001" +
+					cmd.at (1) + " " + QStringList (cmd.mid (2))
+							.join (" ") + "\001\r\n";
+		else
+			ctcpCmd = "PRIVMSG " + cmd.first () + " :\001" +
+					cmd.at (1) + "\001\r\n";
+		ISH_->SendCommand (ctcpCmd);
+	}
+
+	void IrcParser::CTCPReply (const QStringList& cmd)
+	{
+		if (!cmd.count ())
+			return;
+
+		QString ctcpCmd = QString ("NOTICE " + cmd.first () + " :" +
+				cmd.last () + "\r\n");
+		ISH_->SendCommand (ctcpCmd);
+	}
+
+	void IrcParser::TopicCommand (const QStringList& cmd)
+	{
+		if (!cmd.count ())
+			return;
+
+		QString topicCmd;
+		switch (cmd.count ())
+		{
+		case 1:
+			topicCmd = QString ("TOPIC " + cmd.first () + "\r\n");
+			break;
+		case 2:
+			topicCmd = QString ("TOPIC " + cmd.first () + " " +
+					cmd.last () + "\r\n");
+			break;
+		default:
+			topicCmd = QString ("TOPIC " + cmd.first () + " :" +
+					QStringList (cmd.mid (1)).join (" ") + "\r\n");
+		}
+		ISH_->SendCommand (topicCmd);
+	}
+
+	void IrcParser::NamesCommand (const QStringList& cmd)
+	{
+		QString target = QString ();
+		if (cmd.count ())
+			target =  cmd.first ();
+
+		QString namesCmd = QString ("NAMES " + target + "\r\n");
+		ISH_->SendCommand (namesCmd);
+	}
+
+	void IrcParser::InviteCommand (const QStringList& cmd)
+	{
+		QString inviteCmd = QString ("INVITE " + cmd.join (" ") +
+				"\r\n");
+		ISH_->SendCommand (inviteCmd);
+	}
+
+	void IrcParser::KickCommand (const QStringList& cmd)
+	{
+		QString kickCmd = QString ("KICK " + cmd.first () + " " +
+				cmd.at (1) + " :" + QStringList (cmd.mid (2)).join (" ")
+				+ "\r\n");
+		ISH_->SendCommand (kickCmd);
+	}
+
+	void IrcParser::OperCommand (const QStringList& cmd)
+	{
+		QString operCmd = QString ("OPER " + cmd.at (0) + " :" +
+				QStringList (cmd.mid (1)).join (" ") + "\r\n");
+		ISH_->SendCommand (operCmd);
+	}
+
+	void IrcParser::SQuitCommand (const QStringList& cmd)
+	{
+		QString squitCmd = QString ("SQUIT " + cmd.first () + " :" +
+				QStringList (cmd.mid (1)).join (" ") + "\r\n");
+		ISH_->SendCommand (squitCmd);
+	}
+
+	void IrcParser::MOTDCommand (const QStringList& cmd)
+	{
+		QString motdCmd;
+		if (!cmd.count ())
+			motdCmd = QString ("MOTD\r\n");
+		else
+			motdCmd = QString ("MOTD " + cmd.first () + "\r\n");
+
+		ISH_->SendCommand (motdCmd);
+	}
+
+	void IrcParser::LusersCommand (const QStringList& cmd)
+	{
+		QString lusersCmd = QString ("LUSERS " + cmd.join (" ") +
+				"\r\n");
+		ISH_->SendCommand (lusersCmd);
+	}
+
+	void IrcParser::VersionCommand (const QStringList& cmd)
+	{
+		QString versionCmd = QString ("VERSION " + cmd.join (" ") +
+				"\r\n");
+		ISH_->SendCommand (versionCmd);
+	}
+
+	void IrcParser::StatsCommand (const QStringList& cmd)
+	{
+		QString statsCmd = QString ("STATS " + cmd.join (" ") + "\r\n");
+		ISH_->SendCommand (statsCmd);
+	}
+
+	void IrcParser::LinksCommand (const QStringList& cmd)
+	{
+		QString linksCmd = QString ("LINKS " + cmd.join (" ") + "\r\n");
+		ISH_->SendCommand (linksCmd);
+	}
+
+	void IrcParser::TimeCommand (const QStringList& cmd)
+	{
+		QString timeCmd = QString ("TIME " + cmd.join (" ") + "\r\n");
+		ISH_->SendCommand (timeCmd);
+	}
+
+	void IrcParser::ConnectCommand (const QStringList& cmd)
+	{
+		QString connectCmd = QString ("CONNECT " + cmd.join (" ") +
+				"\r\n");
+		ISH_->SendCommand (connectCmd);
+	}
+
+	void IrcParser::TraceCommand (const QStringList& cmd)
+	{
+		QString traceCmd = QString ("TRACE " + cmd.join (" ") + "\r\n");
+		ISH_->SendCommand (traceCmd);
+	}
+
+	void IrcParser::AdminCommand (const QStringList& cmd)
+	{
+		QString adminCmd = QString ("ADMIN " + cmd.join (" ") + "\r\n");
+		ISH_->SendCommand (adminCmd);
+	}
+
+	void IrcParser::InfoCommand (const QStringList& cmd)
+	{
+		QString infoCmd = QString ("INFO " + cmd.join (" ") + "\r\n");
+		ISH_->SendCommand (infoCmd);
+	}
+
+	void IrcParser::WhoCommand (const QStringList& cmd)
+	{
+		QString whoCmd = QString ("WHO " + cmd.join (" ") + "\r\n");
+		ISH_->SendCommand (whoCmd);
+	}
+
+	void IrcParser::WhoisCommand (const QStringList& cmd)
+	{
+		QString whoisCmd = QString ("WHOIS" + cmd.join (" ") + "\r\n");
+		ISH_->SendCommand (whoisCmd);
+	}
+
+	void IrcParser::WhowasCommand (const QStringList& cmd)
+	{
+		QString whowasCmd = QString ("WHOWAS " + cmd.join (" ") +
+				"\r\n");
+		ISH_->SendCommand (whowasCmd);
+	}
+
+	void IrcParser::KillCommand (const QStringList& cmd)
+	{
+		QString killCmd = QString ("KILL " + cmd.first () + " :" +
+				QStringList (cmd.mid (1)).join (" ") + "\r\n");
+		ISH_->SendCommand (killCmd);
+	}
+
+	void IrcParser::PingCommand (const QStringList& cmd)
+	{
+		QString pingCmd = QString ("PING " + cmd.join (" ") + "\r\n");
+		ISH_->SendCommand (pingCmd);
+	}
+
+	void IrcParser::AwayCommand (const QStringList& cmd)
+	{
+		QString awayCmd;
+		if (cmd.count ())
+			awayCmd = QString ("AWAY :" + cmd.join (" ") + "\r\n");
+		else
+			awayCmd = QString ("AWAY\r\n");
+		ISH_->SendCommand (awayCmd);
+	}
+
+	void IrcParser::RehashCommand (const QStringList&)
+	{
+		QString rehashCmd = QString ("REHASH\r\n");
+		ISH_->SendCommand (rehashCmd);
+	}
+
+	void IrcParser::DieCommand (const QStringList&)
+	{
+		QString dieCmd = QString ("DIE\r\n");
+		ISH_->SendCommand (dieCmd);
+	}
+
+	void IrcParser::RestartCommand (const QStringList&)
+	{
+		QString dieCmd = QString ("RESTART\r\n");
+		ISH_->SendCommand (dieCmd);
+	}
+
+	void IrcParser::SummonCommand (const QStringList& cmd)
+	{
+		QString summonCmd = QString ("SUMMON " + cmd.first () +
+				QStringList (cmd.mid (1)).join (" ") + "\r\n");
+		ISH_->SendCommand (summonCmd);
+	}
+
+	void IrcParser::UsersCommand (const QStringList& cmd)
+	{
+		QString usersCmd = QString ("USERS " + cmd.first () + "\r\n");
+		ISH_->SendCommand (usersCmd);
+	}
+
+	void IrcParser::UserhostCommand (const QStringList& cmd)
+	{
+		QString userhostCmd = QString ("USERHOST " + cmd.join (" ") +
+				"\r\n");
+		ISH_->SendCommand (userhostCmd);
+	}
+
+	void IrcParser::WallopsCommand (const QStringList& cmd)
+	{
+		QString wallopsCmd = QString ("WALLOPS :" + cmd.join (" ") +
+				"\r\n");
+		ISH_->SendCommand (wallopsCmd);
+	}
+
+	void IrcParser::IsonCommand (const QStringList& cmd)
+	{
+		QString isonCmd = QString ("ISON " + cmd.join (" ") +
+				"\r\n");
+		ISH_->SendCommand (isonCmd);
 	}
 
 	bool IrcParser::ParseMessage (const QString& message)
