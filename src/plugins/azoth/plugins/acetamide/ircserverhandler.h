@@ -130,6 +130,8 @@ class IrcMessage;
 		void NoSuchNickError ();
 		void NickCmdError ();
 
+		void SendAnswerToChannel (const QString&, const QString&);
+
 		QString EncodedMessage (const QString&, IMessage::Direction);
 
 		ServerParticipantEntry_ptr
@@ -163,6 +165,8 @@ class IrcMessage;
 		void KickFromChannel (const QString&,
 				const QList<std::string>&, const QString&);
 		void GetUserHost (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetIson (const QString&,
 				const QList<std::string>&, const QString&);
 	private slots:
 		void readReply ();
