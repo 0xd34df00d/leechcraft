@@ -78,6 +78,7 @@ namespace Juick
 		ReplyRX_ = QRegExp ("#(\\d+/\\d+)\\s?", Qt::CaseInsensitive);
 		UnsubRX_ = QRegExp ("#(\\d+)/(\\d+)\\s(<a href)", Qt::CaseInsensitive);
 		AvatarRX_ = QRegExp ("@([\\w\\-\\.@\\|]*):", Qt::CaseInsensitive);
+		TagRX_ = QRegExp ("( [*][^*,<]*[^*, <])");
 	}
 
 	void Plugin::SecondInit ()
@@ -139,7 +140,10 @@ namespace Juick
 		//fix this http://i.imgur.com/t579t.png
 		if (body.startsWith ("@"))
 			body.insert (0, "<br />");
-
+		
+		body.replace(TagRX_,
+			     " <a href=\"azoth://msgeditreplace/\\1\">\\1</a> ");
+			
 		InsertAvatars (body);
 		InsertNickLinks (body);
 		body.replace (PostRX_, 
