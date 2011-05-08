@@ -1,15 +1,18 @@
 INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	)
+
 SET (NATIVEEMOTICONS_SRCS
 	nativeemoticons.cpp
 	nativeemoticonssource.cpp
 	kopeteemoticonssource.cpp
+	psiplusemoticonssource.cpp
 	)
 SET (NATIVEEMOTICONS_HEADERS
 	nativeemoticons.h
 	nativeemoticonssource.h
 	kopeteemoticonssource.h
+	psiplusemoticonssource.h
 	)
 QT4_WRAP_CPP (NATIVEEMOTICONS_MOC_SRCS ${NATIVEEMOTICONS_HEADERS})
 
