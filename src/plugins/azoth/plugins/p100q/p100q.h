@@ -41,6 +41,7 @@ namespace p100q
 		QRegExp PostRX_;
 		QRegExp PostByUserRX_;
 		QRegExp CommentRX_;
+		QRegExp TagRX_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
