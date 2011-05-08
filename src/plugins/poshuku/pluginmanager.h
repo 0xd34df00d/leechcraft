@@ -46,33 +46,67 @@ namespace Poshuku
 
 		virtual void AddPlugin (QObject*);
 	signals:
+		/** @brief Called whenever WebKit requests to navigate frame to
+		 * the resource specified by request.
+		 * 
+		 * If default handler is canceled, then its return value is
+		 * converted to bool and is used as the return value of the
+		 * QWebPage::acceptNavigationRequest() method, otherwise
+		 * standard LeechCraft handler is used.
+		 * 
+		 * Refer also to the documentation of the
+		 * QWebPage::acceptNavigationRequest(), from which this hook is
+		 * called.
+		 * 
+		 * @param proxy The standard hook proxy class.
+		 * @param page The QWebPage from which this request originates.
+		 * @param frame The frame to navigate, or null pointer if
+		 * navigating to new window is requested.
+		 * @param request The original network request.
+		 * @param type The navigation type.
+		 */
 		void hookAcceptNavigationRequest (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QWebFrame *frame,
 				QNetworkRequest *request,
 				QWebPage::NavigationType type);
-		void hookAddedToFavorites (LeechCraft::IHookProxy_ptr,
+		
+		/** @brief Called when an entry is just added to the favorites.
+		 * 
+		 * This hook is emitted just after an entry with given title,
+		 * url and tags is added to favorites. At this point, canceling
+		 * the default handler or trying to change other parameters
+		 * doesn't make sense. Refer to hookAddToFavoritesRequested()
+		 * if you need to modify these.
+		 * 
+		 * @param proxy The standard hook proxy class.
+		 * @param title The title of the item just added.
+		 * @param url The URL of the item just added.
+		 * @param tags The list of tags of the item added.
+		 * 
+		 * @sa hookAddToFavoritesRequested().
+		 */
+		void hookAddedToFavorites (LeechCraft::IHookProxy_ptr proxy,
 				QString title, QString url, QStringList tags);
 
-		/** @brief Called when an entry is going to be added to
-			* history.
-			*
-			* If the proxy is cancelled, no addition takes place
-			* at all. If it is not, the return value from the proxy
-			* is considered as a list of QVariants. First element
-			* (if any) would be converted to string and replace
-			* title, second element (if any) would be converted to
-			* string and replace url, third element (if any) would
-			* be converted to QDateTime and replace the date.
-			*
-			* @param proxy The standard hook proxy class.
-			* @param title The title of the item that's going to be
-			* added to history.
-			* @param url The URL of the item.
-			* @param date Datetime of visit (usually current one).
-			* @param browserWidget The BrowserWidget from which
-			* this request came.
-			*/
+		/** @brief Called when an entry is going to be added to history.
+		 *
+		 * If the proxy is cancelled, no addition takes place at all,
+		 * otherwise, the return value from the proxy is considered to
+		 * be a list of QVariants. First element (if any) is converted
+		 * to string and overrides the history entry title, second one
+		 * (if any) is converted to string as well and overrides url,
+		 * and third element (if any) is converted to QDateTime and
+		 * overrides the date.
+		 *
+		 * @param proxy The standard hook proxy class.
+		 * @param title The title of the item that's going to be added
+		 * to history.
+		 * @param url The URL of the item.
+		 * @param date Datetime of visit (usually current one).
+		 * @param browserWidget The BrowserWidget from which this
+		 * request originates.
+		 */
 		void hookAddingToHistory (LeechCraft::IHookProxy_ptr proxy,
 				QString title, QString url, QDateTime date, QObject *browserWidget);
 
