@@ -17,6 +17,9 @@
  **********************************************************************/
 
 #include "p100q.h"
+#include <QIcon>
+#include <interfaces/imessage.h>
+#include <interfaces/iclentry.h>
 
 namespace LeechCraft
 {
@@ -31,7 +34,7 @@ namespace p100q
 		PostRX_ = QRegExp ("#([a-zA-Z0-9]+) ", Qt::CaseInsensitive);
 		PostByUserRX_ = QRegExp ("\\s#([a-zA-Z0-9]+)", Qt::CaseInsensitive);
 		CommentRX_ = QRegExp ("#([a-zA-Z0-9]+)/([0-9]+)", Qt::CaseInsensitive);
-		TagRX_ = QRegExp ("<br />[*] (([^*,<]+)(, [^*,<]+)*)");
+		TagRX_ = QRegExp ("<br />[*] ([^*,<]+(, [^*,<]+)*)");
 	}
 
 	void Plugin::SecondInit ()
@@ -90,23 +93,25 @@ namespace p100q
 
 	QString Plugin::FormatBody (QString body)
 	{
-		QString tags;
-		if (TagRX_.indexIn (body, 0) != -1)
+		QString tags, tag;
+		int pos = 0;
+		int delta = 0;
+		while ((pos = TagRX_.indexIn (body, pos)) != -1)
 		{
+			tags.clear();
 			tags += "<br />* ";
-			QStringList tagslist = TagRX_.cap (1).split (", ");
+			tag = TagRX_.cap(0);
+			QStringList tagslist = TagRX_.cap(1).split (", ");
 			
-			if (tagslist.size () > 1)
+			QStringList::iterator itr = tagslist.begin ();
+			while (itr != tagslist.end ())
 			{
-				QStringList::iterator itr = tagslist.begin ();
-				while (itr != tagslist.end ())
-				{
-					tags += QString (" <a href=\"azoth://msgeditreplace/S *%1\">%1</a> ").arg (*itr);
-					++itr;
-				}
+				tags += QString (" <a href=\"azoth://msgeditreplace/S *%1\">%1</a> ").arg (*itr);
+				++itr;
 			}
-				
-			body.replace (TagRX_, tags);
+			delta = body.length ();
+			body.replace (tag, tags);
+			pos += body.length () - delta;
 		}
 				
 		body.replace (PostRX_,
