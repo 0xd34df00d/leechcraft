@@ -116,7 +116,7 @@ namespace LeechCraft
 		contribs << ContributorInfo (QString (), "ForNeVeR",
 				"revenrof@jabber.ru", QString (),
 				QStringList ("Maintainer for the Microsoft Windows."),
-				QList<int> () << 2009 << 2010);
+				QList<int> () << 2009 << 2010 << 2011);
 		contribs << ContributorInfo (QString (), "lk4d4",
 				QString (), "lk4d4@yander.ru",
 				QStringList ("Initial ebuilds for Gentoo Linux."),
