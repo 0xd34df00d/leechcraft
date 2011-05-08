@@ -181,8 +181,8 @@ namespace Poshuku
 		// Hook support
 		void hookFindText (LeechCraft::IHookProxy_ptr proxy,
 				QObject *browserWidget,
-				QString *findText,
-				QWebPage::FindFlags *findFlags);
+				QString findText,
+				QWebPage::FindFlags findFlags);
 		void hookIconChanged (LeechCraft::IHookProxy_ptr proxy,
 				QObject *browserWidget);
 		void hookLoadProgress (LeechCraft::IHookProxy_ptr proxy,

@@ -19,6 +19,7 @@
 #include "nativeemoticons.h"
 #include <QIcon>
 #include "nativeemoticonssource.h"
+#include "kopeteemoticonssource.h"
 
 namespace LeechCraft
 {
@@ -29,35 +30,35 @@ namespace NativeEmoticons
 	void Plugin::Init (ICoreProxy_ptr)
 	{
 	}
-	
+
 	void Plugin::SecondInit ()
 	{
 	}
-	
+
 	void Plugin::Release ()
 	{
 	}
-	
+
 	QByteArray Plugin::GetUniqueID () const
 	{
 		return "org.LeechCraft.Azoth.NativeEmoticons";
 	}
-	
+
 	QString Plugin::GetName () const
 	{
 		return "Azoth NativeEmoticons";
 	}
-	
+
 	QString Plugin::GetInfo () const
 	{
 		return tr ("Support for native Azoth emoticons packs");
 	}
-	
+
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon ();
 	}
-	
+
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
 		QSet<QByteArray> result;
@@ -65,10 +66,13 @@ namespace NativeEmoticons
 		result << "org.LeechCraft.Plugins.Azoth.Plugins.IResourceSourcePlugin";
 		return result;
 	}
-	
+
 	QList<QObject*> Plugin::GetResourceSources () const
 	{
-		return QObjectList () << new NativeEmoticonsSource ();
+		QObjectList result;
+		result << new NativeEmoticonsSource ();
+		result << new KopeteEmoticonsSource ();
+		return result;
 	}
 }
 }

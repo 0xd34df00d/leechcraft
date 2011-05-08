@@ -950,9 +950,12 @@ namespace Poshuku
 	void Core::handleAddToFavorites (QString title, QString url)
 	{
 		Util::DefaultHookProxy_ptr proxy = Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy ());
-		emit hookAddToFavoritesRequested (proxy, &title, &url);
+		emit hookAddToFavoritesRequested (proxy, title, url);
 		if (proxy->IsCancelled ())
 			return;
+		
+		proxy->FillValue ("title", title);
+		proxy->FillValue ("url", url);
 
 		std::auto_ptr<AddToFavoritesDialog> dia (new AddToFavoritesDialog (title,
 					url,
