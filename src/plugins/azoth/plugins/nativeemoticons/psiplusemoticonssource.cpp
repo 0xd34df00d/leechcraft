@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "kopeteemoticonssource.h"
+#include "psiplusemoticonssource.h"
 #include <QtDebug>
 #include <QDomComment>
 #include <plugininterface/resourceloader.h>
@@ -27,16 +27,16 @@ namespace Azoth
 {
 namespace NativeEmoticons
 {
-	KopeteEmoticonsSource::KopeteEmoticonsSource (QObject *parent)
+	PsiPlusEmoticonsSource::PsiPlusEmoticonsSource (QObject *parent)
 	: QObject (parent)
 	, EmoLoader_ (new Util::ResourceLoader
-			("azoth/emoticons/custome/kopete", this))
+			("azoth/emoticons/custome/psiplus", this))
 	{
 		EmoLoader_->AddGlobalPrefix ();
 		EmoLoader_->AddLocalPrefix ();
 	}
 
-	QByteArray KopeteEmoticonsSource::GetImage (const QString& pack,
+	QByteArray PsiPlusEmoticonsSource::GetImage (const QString& pack,
 			const QString& smile) const
 	{
 		const String2Filename_t& hash = ParseFile (pack);
@@ -45,6 +45,7 @@ namespace NativeEmoticons
 
 		const QString& path = EmoLoader_->GetIconPath (pack + "/" +
 				hash [smile]);
+		qDebug () << pack << hash [smile];
 		QFile file (path);
 		if (!file.open (QIODevice::ReadOnly))
 		{
@@ -61,7 +62,7 @@ namespace NativeEmoticons
 		return file.readAll ();
 	}
 
-	QHash<QImage, QString> KopeteEmoticonsSource::GetReprImages (const QString& pack) const
+	QHash<QImage, QString> PsiPlusEmoticonsSource::GetReprImages (const QString& pack) const
 	{
 		QHash<QImage, QString> result;
 
@@ -89,24 +90,24 @@ namespace NativeEmoticons
 		return result;
 	}
 
-	QSet<QString> KopeteEmoticonsSource::GetEmoticonStrings (const QString& pack) const
+	QSet<QString> PsiPlusEmoticonsSource::GetEmoticonStrings (const QString& pack) const
 	{
 		return ParseFile (pack).keys ().toSet ();
 	}
 
-	QAbstractItemModel* KopeteEmoticonsSource::GetOptionsModel () const
+	QAbstractItemModel* PsiPlusEmoticonsSource::GetOptionsModel () const
 	{
 		return EmoLoader_->GetSubElemModel ();
 	}
 
-	KopeteEmoticonsSource::String2Filename_t
-			KopeteEmoticonsSource::ParseFile (const QString& pack) const
+	PsiPlusEmoticonsSource::String2Filename_t
+			PsiPlusEmoticonsSource::ParseFile (const QString& pack) const
 	{
-		if (CachedPack_ == pack && !IconCache_.isEmpty ())
+  if (CachedPack_ == pack && !IconCache_.isEmpty ())
 			return IconCache_;
 
 		Util::QIODevice_ptr dev = EmoLoader_->Load (pack + "/" +
-				"emoticons.xml");
+				"icondef.xml");
 		if (!dev)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -119,7 +120,7 @@ namespace NativeEmoticons
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unable to open QIODevice for"
-					<< pack + "/" + "emoticons.xml:"
+					<< pack + "/" + "icondef.xml:"
 					<< dev->errorString ();
 			return QHash<QString, QString> ();
 		}
@@ -139,14 +140,26 @@ namespace NativeEmoticons
 		while (!n.isNull ())
 		{
 			QDomElement e = n.toElement ();
-			if (!e.isNull ())
+			if (!e.isNull () && (e.tagName () != "meta"))
 			{
 				QDomNode chn = e.firstChild ();
+				QStringList smiles = QStringList ();
 				while (!chn.isNull ())
 				{
 					QDomElement smileElem = chn.toElement ();
-					IconCache_ [smileElem.text ()] =
-							e.attribute ("file");
+					if (smileElem.tagName () == "text")
+						smiles << smileElem.text ();
+					else if (smileElem.tagName () == "object")
+					{
+						QString name = smileElem.text ();
+						Q_FOREACH (const QString& str, smiles)
+						{
+							if (name.endsWith (".png") ||
+									name.endsWith (".gif"))
+							name.chop (4);
+							IconCache_ [str] = name;
+						}
+					}
 					chn = chn.nextSibling ();
 				}
 			}
@@ -160,3 +173,4 @@ namespace NativeEmoticons
 };
 };
 };
+

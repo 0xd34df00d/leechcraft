@@ -20,6 +20,7 @@
 #include <QIcon>
 #include "nativeemoticonssource.h"
 #include "kopeteemoticonssource.h"
+#include "psiplusemoticonssource.h"
 
 namespace LeechCraft
 {
@@ -72,6 +73,7 @@ namespace NativeEmoticons
 		QObjectList result;
 		result << new NativeEmoticonsSource ();
 		result << new KopeteEmoticonsSource ();
+		result << new PsiPlusEmoticonsSource ();
 		return result;
 	}
 }
