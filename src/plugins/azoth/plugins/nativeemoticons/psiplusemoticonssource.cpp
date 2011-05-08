@@ -20,7 +20,6 @@
 #include <QtDebug>
 #include <QDomComment>
 #include <plugininterface/resourceloader.h>
-#include <quazip/quazip.h>
 
 namespace LeechCraft
 {
@@ -63,8 +62,7 @@ namespace NativeEmoticons
 		return file.readAll ();
 	}
 
-	QHash<QImage, QString> PsiPlusEmoticonsSource::GetReprImages
-			(const QString& pack) const
+	QHash<QImage, QString> PsiPlusEmoticonsSource::GetReprImages (const QString& pack) const
 	{
 		QHash<QImage, QString> result;
 
@@ -92,8 +90,7 @@ namespace NativeEmoticons
 		return result;
 	}
 
-	QSet<QString> PsiPlusEmoticonsSource::GetEmoticonStrings
-			(const QString& pack) const
+	QSet<QString> PsiPlusEmoticonsSource::GetEmoticonStrings (const QString& pack) const
 	{
 		return ParseFile (pack).keys ().toSet ();
 	}

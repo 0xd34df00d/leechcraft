@@ -61,8 +61,7 @@ namespace NativeEmoticons
 		return file.readAll ();
 	}
 
-	QHash<QImage, QString> KopeteEmoticonsSource::GetReprImages
-			(const QString& pack) const
+	QHash<QImage, QString> KopeteEmoticonsSource::GetReprImages (const QString& pack) const
 	{
 		QHash<QImage, QString> result;
 
@@ -90,8 +89,7 @@ namespace NativeEmoticons
 		return result;
 	}
 
-	QSet<QString> KopeteEmoticonsSource::GetEmoticonStrings
-			(const QString& pack) const
+	QSet<QString> KopeteEmoticonsSource::GetEmoticonStrings (const QString& pack) const
 	{
 		return ParseFile (pack).keys ().toSet ();
 	}
