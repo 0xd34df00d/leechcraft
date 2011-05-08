@@ -115,7 +115,7 @@ namespace Poshuku
 				QString title, QString url, QDateTime date, QObject *browserWidget);
 
 		void hookAddToFavoritesRequested (LeechCraft::IHookProxy_ptr,
-				QString *title, QString *url);
+				QString title, QString url);
 		
 		/** @brief Called inside QWebPage::chooseFile().
 		 * 
@@ -208,7 +208,7 @@ namespace Poshuku
 				QString databaseName);
 		void hookDownloadRequested (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *sourcePage,
-				QNetworkRequest *downloadRequest);
+				QNetworkRequest downloadRequest);
 		void hookExtension (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QWebPage::Extension extension,
@@ -216,8 +216,8 @@ namespace Poshuku
 				QWebPage::ExtensionReturn* extensionReturn);
 		void hookFindText (LeechCraft::IHookProxy_ptr proxy,
 				QObject *browserWidget,
-				QString *findText,
-				QWebPage::FindFlags *findFlags);
+				QString findText,
+				QWebPage::FindFlags findFlags);
 		
 		/** @brief Called whenever a new frame is created.
 		 * 

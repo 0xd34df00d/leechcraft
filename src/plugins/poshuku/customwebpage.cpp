@@ -330,9 +330,11 @@ namespace Poshuku
 	{
 		QNetworkRequest request = other;
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-		emit hookDownloadRequested (proxy, this, &request);
+		emit hookDownloadRequested (proxy, this, request);
 		if (proxy->IsCancelled ())
 			return;
+		
+		proxy->FillValue ("request", request);
 
 		LeechCraft::Entity e = Util::MakeEntity (request.url (),
 				QString (),

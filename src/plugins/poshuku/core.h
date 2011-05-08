@@ -190,7 +190,7 @@ namespace Poshuku
 
 		// Hook support signals
 		void hookAddToFavoritesRequested (LeechCraft::IHookProxy_ptr,
-				QString *title, QString *url);
+				QString title, QString url);
 		void hookIconRequested (LeechCraft::IHookProxy_ptr,
 				const QUrl& url) const;
 		void hookUserAgentForUrlRequested (LeechCraft::IHookProxy_ptr,

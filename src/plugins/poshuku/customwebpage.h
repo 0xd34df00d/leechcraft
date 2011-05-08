@@ -124,7 +124,7 @@ namespace Poshuku
 				QString databaseName);
 		void hookDownloadRequested (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *sourcePage,
-				QNetworkRequest *downloadRequest);
+				QNetworkRequest downloadRequest);
 		void hookExtension (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QWebPage::Extension extension,
