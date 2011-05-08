@@ -4,10 +4,12 @@ INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
 SET (NATIVEEMOTICONS_SRCS
 	nativeemoticons.cpp
 	nativeemoticonssource.cpp
+	kopeteemoticonssource.cpp
 	)
 SET (NATIVEEMOTICONS_HEADERS
 	nativeemoticons.h
 	nativeemoticonssource.h
+	kopeteemoticonssource.h
 	)
 QT4_WRAP_CPP (NATIVEEMOTICONS_MOC_SRCS ${NATIVEEMOTICONS_HEADERS})
 
