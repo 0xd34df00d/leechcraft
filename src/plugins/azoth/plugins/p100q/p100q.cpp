@@ -106,7 +106,10 @@ namespace p100q
 			QStringList::iterator itr = tagslist.begin ();
 			while (itr != tagslist.end ())
 			{
-				tags += QString (" <a href=\"azoth://msgeditreplace/S *%1\">%1</a> ").arg (*itr);
+				tags += QString (" <a href=\"azoth://msgeditreplace/S *%1\">%2</a> ")
+						.arg (QString (QUrl::toPercentEncoding (*itr)))
+						.arg (*itr);
+			
 				++itr;
 			}
 			delta = body.length ();
