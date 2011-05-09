@@ -666,13 +666,17 @@ namespace Acetamide
 	}
 
 	void IrcServerHandler::SendAnswerToChannel (const QString& cmd,
-			const QString& message)
+			const QString& message, bool remove)
 	{
 		Q_FOREACH (ChannelHandler *ch, ChannelHandlers_)
 			if (ch->IsSendCommand (cmd))
+			{
 				ch->ShowServiceMessage (message,
 						IMessage::MTServiceMessage,
 						IMessage::MSTOther);
+				if (remove)
+					ch->RemoveCommand (cmd);
+			}
 	}
 
 	QString IrcServerHandler::EncodedMessage (const QString& msg,
@@ -1056,22 +1060,31 @@ namespace Acetamide
 				int pos = param.indexOf ("=");
 				QString message = param.left (pos) +
 						tr (" is a ") + param.mid (pos + 1);
-				SendAnswerToChannel ("userhost", message);
+				if (param == params.at (params.count () - 1))
+					SendAnswerToChannel ("userhost", message, true);
+				else
+					SendAnswerToChannel ("userhost", message);
 			}
 	}
 
 	void IrcServerHandler::GetIson (const QString&,
-			const QList<std::string>& , const QString& msg)
+			const QList<std::string>&, const QString& msg)
 	{
-		Q_FOREACH (const QString& nick, msg.split (' '))
+		QStringList list = msg.split (' ');
+		Q_FOREACH (const QString& nick, list)
 			if (!nick.isEmpty ())
-				SendAnswerToChannel ("ison", nick + tr (" is online"));
+				if (nick == list.at (list.count () - 1))
+					SendAnswerToChannel ("ison",
+							nick + tr (" is online"), true);
+				else
+					SendAnswerToChannel ("ison",
+							nick + tr (" is online"));
 	}
 
 	void IrcServerHandler::GetAway (const QString&,
 			const QList<std::string>& , const QString& msg)
 	{
-		SendAnswerToChannel ("away", msg);
+		SendAnswerToChannel ("away", msg, true);
 	}
 
 	void IrcServerHandler::GetWhoIsUser (const QString&,
@@ -1081,7 +1094,7 @@ namespace Acetamide
 				" - " + QString::fromUtf8 (params.at (2).c_str ()) +
 				QString::fromUtf8 (params.at (3).c_str ()) +
 				" (" + msg + ")";
-		SendAnswerToChannel ("whois", message);
+		SendAnswerToChannel ("whois", message, true);
 	}
 
 	void IrcServerHandler::GetWhoIsServer (const QString&,
@@ -1115,7 +1128,7 @@ namespace Acetamide
 	void IrcServerHandler::GetWhoIsEnd (const QString&,
 			const QList<std::string>& , const QString& msg)
 	{
-		SendAnswerToChannel ("whois", msg);
+		SendAnswerToChannel ("whois", msg, true);
 	}
 
 	void IrcServerHandler::GetWhoIsChannels (const QString&,

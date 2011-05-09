@@ -109,6 +109,11 @@ namespace Acetamide
 		return SendCommand_.contains (cmd);
 	}
 
+	void ChannelHandler::RemoveCommand (const QString& cmd)
+	{
+		SendCommand_.removeOne (cmd);
+	}
+
 	void ChannelHandler::ShowServiceMessage (const QString& msg,
 			IMessage::MessageType mt, IMessage::MessageSubType mst)
 	{

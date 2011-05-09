@@ -64,6 +64,7 @@ namespace Acetamide
 		void SetRosterReceived (bool);
 
 		bool IsSendCommand (const QString&);
+		void RemoveCommand (const QString&);
 
 		void ShowServiceMessage (const QString&, IMessage::MessageType,
 				IMessage::MessageSubType);

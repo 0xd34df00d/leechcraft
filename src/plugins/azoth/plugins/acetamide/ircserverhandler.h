@@ -130,7 +130,8 @@ class IrcMessage;
 		void NoSuchNickError ();
 		void NickCmdError ();
 
-		void SendAnswerToChannel (const QString&, const QString&);
+		void SendAnswerToChannel (const QString&, const QString&,
+				bool remove = false);
 
 		QString EncodedMessage (const QString&, IMessage::Direction);
 
