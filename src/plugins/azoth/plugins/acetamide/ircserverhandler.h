@@ -170,6 +170,18 @@ class IrcMessage;
 				const QList<std::string>&, const QString&);
 		void GetAway (const QString&,
 				const QList<std::string>&, const QString&);
+		void GetWhoIsUser (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetWhoIsServer (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetWhoIsOperator (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetWhoIsIdle (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetWhoIsEnd (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetWhoIsChannels (const QString&,
+				const QList<std::string>&, const QString&);
 	private slots:
 		void readReply ();
 		void connectionEstablished ();

@@ -547,7 +547,27 @@ namespace Acetamide
 		Command2Action_ ["306"] =
 				boost::bind (&IrcServerHandler::GetAway,
 					 this, _1, _2, _3);
-
+		Command2Action_ ["311"] =
+				boost::bind (&IrcServerHandler::GetWhoIsUser,
+					 this, _1, _2, _3);
+		Command2Action_ ["311"] =
+				boost::bind (&IrcServerHandler::GetWhoIsUser,
+					 this, _1, _2, _3);
+		Command2Action_ ["312"] =
+				boost::bind (&IrcServerHandler::GetWhoIsServer,
+					 this, _1, _2, _3);
+		Command2Action_ ["313"] =
+				boost::bind (&IrcServerHandler::GetWhoIsOperator,
+					 this, _1, _2, _3);
+		Command2Action_ ["317"] =
+				boost::bind (&IrcServerHandler::GetWhoIsIdle,
+					 this, _1, _2, _3);
+		Command2Action_ ["318"] =
+				boost::bind (&IrcServerHandler::GetWhoIsEnd,
+					 this, _1, _2, _3);
+		Command2Action_ ["319"] =
+				boost::bind (&IrcServerHandler::GetWhoIsChannels,
+					 this, _1, _2, _3);
 
 		Name2Command_ ["nick"] = boost::bind (&IrcParser::NickCommand,
 				IrcParser_, _1);
@@ -1052,6 +1072,58 @@ namespace Acetamide
 			const QList<std::string>& , const QString& msg)
 	{
 		SendAnswerToChannel ("away", msg);
+	}
+
+	void IrcServerHandler::GetWhoIsUser (const QString&,
+			const QList<std::string>& params, const QString& msg)
+	{
+		QString message = QString::fromUtf8 (params.at (1).c_str ()) +
+				" - " + QString::fromUtf8 (params.at (2).c_str ()) +
+				QString::fromUtf8 (params.at (3).c_str ()) +
+				" (" + msg + ")";
+		SendAnswerToChannel ("whois", message);
+	}
+
+	void IrcServerHandler::GetWhoIsServer (const QString&,
+			const QList<std::string>& params, const QString& msg)
+	{
+		QString message = QString::fromUtf8 (params.at (1).c_str ()) +
+				tr (" connected via ") +
+				QString::fromUtf8 (params.at (2).c_str ()) +
+				" (" + msg + ")";
+		SendAnswerToChannel ("whois", message);
+		SendAnswerToChannel ("whowas", message);
+	}
+
+	void IrcServerHandler::GetWhoIsOperator (const QString&,
+			const QList<std::string>& params, const QString& msg)
+	{
+		QString message = QString::fromUtf8 (params.at (1).c_str ()) +
+				+ " " + msg;
+		SendAnswerToChannel ("whois", message);
+	}
+
+	void IrcServerHandler::GetWhoIsIdle (const QString&,
+			const QList<std::string>& params, const QString& msg)
+	{
+		QString message = QString::fromUtf8 (params.at (1).c_str ()) +
+				+ " " + QString::fromUtf8 (params.at (1).c_str ()) +
+				" " + msg;
+		SendAnswerToChannel ("whois", message);
+	}
+
+	void IrcServerHandler::GetWhoIsEnd (const QString&,
+			const QList<std::string>& , const QString& msg)
+	{
+		SendAnswerToChannel ("whois", msg);
+	}
+
+	void IrcServerHandler::GetWhoIsChannels (const QString&,
+			const QList<std::string>& params, const QString& msg)
+	{
+		QString message = QString::fromUtf8 (params.at (1).c_str ()) +
+				tr (" on the channels : ") + msg;
+		SendAnswerToChannel ("whois", message);
 	}
 
 	void IrcServerHandler::InitSocket ()
