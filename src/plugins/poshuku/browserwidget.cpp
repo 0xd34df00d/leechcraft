@@ -873,7 +873,11 @@ namespace Poshuku
 	{
 		QString text = thtext;
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-		emit hookFindText (proxy, this, &text, &flags);
+		emit hookFindText (proxy, this, text, flags);
+		if (proxy->IsCancelled ())
+			return;
+		
+		proxy->FillValue ("text", text);
 
 		if (PreviousFindText_ != text)
 		{

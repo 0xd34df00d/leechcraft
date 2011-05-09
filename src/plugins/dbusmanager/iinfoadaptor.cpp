@@ -19,7 +19,7 @@
 #include "iinfoadaptor.h"
 #include <interfaces/iinfo.h>
 
-using namespace LeechCract::Plugins::DBusManager;
+using namespace LeechCraft::Plugins::DBusManager;
 
 IInfoAdaptor::IInfoAdaptor (QObject *info)
 : QDBusAbstractAdaptor (info)

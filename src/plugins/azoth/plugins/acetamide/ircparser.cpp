@@ -83,7 +83,7 @@ namespace Acetamide
 
 	void IrcParser::PartCommand (const QStringList& cmd)
 	{
-		QString partCmd = QString ("PART " + cmd.first () + " :" +
+		QString partCmd = QString ("PART " + cmd.first () +
 				QStringList (cmd.mid (1)).join (" ") + "\r\n");
 		ISH_->SendCommand (partCmd);
 	}
@@ -262,7 +262,7 @@ namespace Acetamide
 
 	void IrcParser::WhoisCommand (const QStringList& cmd)
 	{
-		QString whoisCmd = QString ("WHOIS" + cmd.join (" ") + "\r\n");
+		QString whoisCmd = QString ("WHOIS " + cmd.join (" ") + "\r\n");
 		ISH_->SendCommand (whoisCmd);
 	}
 

@@ -29,7 +29,7 @@
      <item row="0" column="1">
       <widget class="QLineEdit" name="Server_">
        <property name="text">
-        <string>chat.freenode.net</string>
+        <string/>
        </property>
       </widget>
      </item>
@@ -46,7 +46,7 @@
         <number>65535</number>
        </property>
        <property name="value">
-        <number>8001</number>
+        <number>0</number>
        </property>
       </widget>
      </item>
@@ -60,7 +60,7 @@
      <item row="2" column="1">
       <widget class="QLineEdit" name="Channel_">
        <property name="text">
-        <string>#leechcraft</string>
+        <string/>
        </property>
       </widget>
      </item>

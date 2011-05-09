@@ -130,6 +130,9 @@ class IrcMessage;
 		void NoSuchNickError ();
 		void NickCmdError ();
 
+		void SendAnswerToChannel (const QString&, const QString&,
+				bool remove = false);
+
 		QString EncodedMessage (const QString&, IMessage::Direction);
 
 		ServerParticipantEntry_ptr
@@ -161,6 +164,28 @@ class IrcMessage;
 		void InviteToChannel (const QString&,
 				const QList<std::string>&, const QString&);
 		void KickFromChannel (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetUserHost (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetIson (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetAway (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetWhoIsUser (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetWhoIsServer (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetWhoIsOperator (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetWhoIsIdle (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetWhoIsEnd (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetWhoIsChannels (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetWhoWas (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetWhoWasEnd (const QString&,
 				const QList<std::string>&, const QString&);
 	private slots:
 		void readReply ();
