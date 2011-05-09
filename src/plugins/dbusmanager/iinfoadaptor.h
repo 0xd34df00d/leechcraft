@@ -23,7 +23,7 @@
 class IInfo;
 class QObject;
 
-namespace LeechCract
+namespace LeechCraft
 {
 	namespace Plugins
 	{
