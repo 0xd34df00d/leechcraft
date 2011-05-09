@@ -262,7 +262,7 @@ namespace Acetamide
 
 	void IrcParser::WhoisCommand (const QStringList& cmd)
 	{
-		QString whoisCmd = QString ("WHOIS" + cmd.join (" ") + "\r\n");
+		QString whoisCmd = QString ("WHOIS " + cmd.join (" ") + "\r\n");
 		ISH_->SendCommand (whoisCmd);
 	}
 
