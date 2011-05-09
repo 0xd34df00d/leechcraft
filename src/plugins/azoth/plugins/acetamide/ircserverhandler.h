@@ -168,6 +168,8 @@ class IrcMessage;
 				const QList<std::string>&, const QString&);
 		void GetIson (const QString&,
 				const QList<std::string>&, const QString&);
+		void GetAway (const QString&,
+				const QList<std::string>&, const QString&);
 	private slots:
 		void readReply ();
 		void connectionEstablished ();

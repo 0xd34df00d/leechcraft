@@ -541,6 +541,13 @@ namespace Acetamide
 		Command2Action_ ["303"] =
 				boost::bind (&IrcServerHandler::GetIson,
 					 this, _1, _2, _3);
+		Command2Action_ ["305"] =
+				boost::bind (&IrcServerHandler::GetAway,
+					 this, _1, _2, _3);
+		Command2Action_ ["306"] =
+				boost::bind (&IrcServerHandler::GetAway,
+					 this, _1, _2, _3);
+
 
 		Name2Command_ ["nick"] = boost::bind (&IrcParser::NickCommand,
 				IrcParser_, _1);
@@ -1039,6 +1046,12 @@ namespace Acetamide
 		Q_FOREACH (const QString& nick, msg.split (' '))
 			if (!nick.isEmpty ())
 				SendAnswerToChannel ("ison", nick + tr (" is online"));
+	}
+
+	void IrcServerHandler::GetAway (const QString&,
+			const QList<std::string>& , const QString& msg)
+	{
+		SendAnswerToChannel ("away", msg);
 	}
 
 	void IrcServerHandler::InitSocket ()

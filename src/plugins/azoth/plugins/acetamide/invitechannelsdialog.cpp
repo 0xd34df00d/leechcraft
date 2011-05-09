@@ -113,7 +113,7 @@ namespace Acetamide
 				.setProperty ("InviteActionByDefault",
 				ActionsModel_->item (Ui_.AlwaysAction_->
 					currentIndex ())->data (ActionRole).toInt ());
-		QDialog::accept();
+		QDialog::accept ();
 	}
 
 };
