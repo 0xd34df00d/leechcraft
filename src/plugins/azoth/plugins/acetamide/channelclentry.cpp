@@ -202,7 +202,7 @@ namespace Acetamide
 
 	void ChannelCLEntry::Leave (const QString& msg)
 	{
-		ICH_->LeaveChannel (msg);
+		ICH_->LeaveChannel (msg, true);
 	}
 
 	QString ChannelCLEntry::GetNick () const

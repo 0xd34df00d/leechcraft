@@ -177,7 +177,7 @@ namespace Acetamide
 			const QString& msg)
 	{
 		IrcParser_->PartCommand (QStringList () << channels
-				<< QString (":" + msg));
+				<< QString (" :" + msg));
 	}
 
 	QStringList IrcServerHandler::GetPrivateChats () const
@@ -535,7 +535,12 @@ namespace Acetamide
 		Command2Action_ ["kick"] =
 				boost::bind (&IrcServerHandler::KickFromChannel,
 					 this, _1, _2, _3);
-
+		Command2Action_ ["302"] =
+				boost::bind (&IrcServerHandler::GetUserHost,
+					 this, _1, _2, _3);
+		Command2Action_ ["303"] =
+				boost::bind (&IrcServerHandler::GetIson,
+					 this, _1, _2, _3);
 
 		Name2Command_ ["nick"] = boost::bind (&IrcParser::NickCommand,
 				IrcParser_, _1);
@@ -631,6 +636,16 @@ namespace Acetamide
 			NickName_ = Account_->GetNickNames ().at (++index);
 			IrcParser_->NickCommand (QStringList () << NickName_);
 		}
+	}
+
+	void IrcServerHandler::SendAnswerToChannel (const QString& cmd,
+			const QString& message)
+	{
+		Q_FOREACH (ChannelHandler *ch, ChannelHandlers_)
+			if (ch->IsSendCommand (cmd))
+				ch->ShowServiceMessage (message,
+						IMessage::MTServiceMessage,
+						IMessage::MSTOther);
 	}
 
 	QString IrcServerHandler::EncodedMessage (const QString& msg,
@@ -742,7 +757,8 @@ namespace Acetamide
 		QString channelID = (msg + "@" + ServerOptions_.ServerName_)
 				.toLower ();
 
-		ChannelHandlers_ [channelID]->SetChannelUser (nick);
+		if (ChannelHandlers_.contains (channelID))
+			ChannelHandlers_ [channelID]->SetChannelUser (nick);
 	}
 
 	void IrcServerHandler::LeaveParticipant (const QString& nick,
@@ -751,7 +767,7 @@ namespace Acetamide
 		QString channelID = (QString::fromUtf8 (params.last ().c_str ())
 				+ "@" + ServerOptions_.ServerName_).toLower ();
 		if (nick == NickName_)
-			ChannelHandlers_ [channelID]->LeaveChannel (msg, false);
+			ChannelHandlers_ [channelID]->LeaveChannel (msg);
 		else
 			ChannelHandlers_ [channelID]->RemoveChannelUser (nick
 					, msg
@@ -1001,6 +1017,28 @@ namespace Acetamide
 				, EncodedMessage (msg, IMessage::DIn)
 				, 1
 				, nick);
+	}
+
+	void IrcServerHandler::GetUserHost (const QString&,
+			const QList<std::string>&, const QString& msg)
+	{
+		QStringList params = msg.split (' ');
+		Q_FOREACH (const QString& param, params)
+			if (!param.isEmpty ())
+			{
+				int pos = param.indexOf ("=");
+				QString message = param.left (pos) +
+						tr (" is a ") + param.mid (pos + 1);
+				SendAnswerToChannel ("userhost", message);
+			}
+	}
+
+	void IrcServerHandler::GetIson (const QString&,
+			const QList<std::string>& , const QString& msg)
+	{
+		Q_FOREACH (const QString& nick, msg.split (' '))
+			if (!nick.isEmpty ())
+				SendAnswerToChannel ("ison", nick + tr (" is online"));
 	}
 
 	void IrcServerHandler::InitSocket ()

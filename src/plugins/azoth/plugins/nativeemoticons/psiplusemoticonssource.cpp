@@ -45,7 +45,6 @@ namespace NativeEmoticons
 
 		const QString& path = EmoLoader_->GetIconPath (pack + "/" +
 				hash [smile]);
-		qDebug () << pack << hash [smile];
 		QFile file (path);
 		if (!file.open (QIODevice::ReadOnly))
 		{
