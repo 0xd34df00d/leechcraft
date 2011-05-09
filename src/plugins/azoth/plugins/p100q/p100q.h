@@ -20,6 +20,7 @@
 #define PLUGINS_AZOTH_PLUGINS_P100Q_P100Q_H
 #include <QObject>
 #include <QRegExp>
+#include <QUrl>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 
