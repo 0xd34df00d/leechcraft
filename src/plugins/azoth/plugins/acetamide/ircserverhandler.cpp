@@ -1097,8 +1097,8 @@ namespace Acetamide
 			const QList<std::string>& params, const QString& msg)
 	{
 		QString message = QString::fromUtf8 (params.at (1).c_str ()) +
-				" - " + QString::fromUtf8 (params.at (2).c_str ()) +
-				QString::fromUtf8 (params.at (3).c_str ()) +
+				" - " + QString::fromUtf8 (params.at (2).c_str ()) + "@"
+				+ QString::fromUtf8 (params.at (3).c_str ()) +
 				" (" + msg + ")";
 		SendAnswerToChannel ("whois", message, true);
 	}
