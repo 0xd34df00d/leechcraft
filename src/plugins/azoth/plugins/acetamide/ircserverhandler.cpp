@@ -568,6 +568,12 @@ namespace Acetamide
 		Command2Action_ ["319"] =
 				boost::bind (&IrcServerHandler::GetWhoIsChannels,
 					 this, _1, _2, _3);
+		Command2Action_ ["314"] =
+				boost::bind (&IrcServerHandler::GetWhoWas,
+					 this, _1, _2, _3);
+		Command2Action_ ["369"] =
+				boost::bind (&IrcServerHandler::GetWhoWasEnd,
+					 this, _1, _2, _3);
 
 		Name2Command_ ["nick"] = boost::bind (&IrcParser::NickCommand,
 				IrcParser_, _1);
@@ -1137,6 +1143,22 @@ namespace Acetamide
 		QString message = QString::fromUtf8 (params.at (1).c_str ()) +
 				tr (" on the channels : ") + msg;
 		SendAnswerToChannel ("whois", message);
+	}
+
+	void IrcServerHandler::GetWhoWas (const QString&,
+			const QList<std::string>& params, const QString& msg)
+	{
+		QString message = QString::fromUtf8 (params.at (1).c_str ()) +
+				" - " + QString::fromUtf8 (params.at (2).c_str ()) + "@"
+				+ QString::fromUtf8 (params.at (3).c_str ()) +
+				" (" + msg + ")";
+		SendAnswerToChannel ("whowas", message);
+	}
+
+	void IrcServerHandler::GetWhoWasEnd (const QString&,
+			const QList<std::string>&, const QString& msg)
+	{
+		SendAnswerToChannel ("whowas", msg, true);
 	}
 
 	void IrcServerHandler::InitSocket ()
