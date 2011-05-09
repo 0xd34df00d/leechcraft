@@ -783,7 +783,7 @@
     </message>
     <message>
         <source>&lt;br /&gt;&lt;br /&gt;of type &lt;code&gt;%1&lt;/code&gt;</source>
-        <translation>&lt;br /&gt;&lt;br /&gt;типа&lt;code&gt;%1&lt;/code&gt;</translation>
+        <translation>&lt;br /&gt;&lt;br /&gt;типа &lt;code&gt;%1&lt;/code&gt;</translation>
     </message>
     <message>
         <source>&lt;br /&gt;from %1</source>
