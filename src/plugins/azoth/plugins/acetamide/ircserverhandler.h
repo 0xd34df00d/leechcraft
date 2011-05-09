@@ -187,6 +187,8 @@ class IrcMessage;
 				const QList<std::string>&, const QString&);
 		void GetWhoWasEnd (const QString&,
 				const QList<std::string>&, const QString&);
+		void GetNoTopic (const QString&,
+				const QList<std::string>&, const QString&);
 	private slots:
 		void readReply ();
 		void connectionEstablished ();
