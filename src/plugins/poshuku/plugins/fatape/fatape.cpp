@@ -22,6 +22,7 @@
 #include <QDir>
 #include <QIcon>
 #include <QStringList>
+#include <plugininterface/util.h>
 
 namespace LeechCraft
 {
@@ -30,13 +31,11 @@ namespace Poshuku
 namespace FatApe
 {
 	template<typename Iter, typename Pred, typename Func>
-	void apply_if(Iter first, Iter last, Pred pred, Func func)
+	void apply_if (Iter first, Iter last, Pred pred, Func func)
 	{
 		for (; first != last; ++first)
-		{
 			if (pred (*first))
-				func(*first);
-		}
+				func (*first);
 	}
 
 	void Plugin::Init (ICoreProxy_ptr)
@@ -45,18 +44,15 @@ namespace FatApe
 	
 	void Plugin::SecondInit ()
 	{
-		QDir scriptsDir(QDir::homePath () + "/.leechcraft/data/poshuku/fatape/scripts/");
+		QDir scriptsDir (Util::CreateIfNotExists ("data/poshuku/fatape/scripts"));
 
-		if (scriptsDir.exists ())
-		{
-			QStringList filter;
+		if (!scriptsDir.exists ())
+			return;
+		
+		QStringList filter ("*.user.js");
 
-			filter << "*.user.js";
-			Q_FOREACH(QString script, scriptsDir.entryList (filter, QDir::Files))
-			{
-				UserScripts_.append (UserScript (scriptsDir.absoluteFilePath (script)));
-			}
-		}
+		Q_FOREACH(const QString& script, scriptsDir.entryList (filter, QDir::Files))
+			UserScripts_.append (UserScript (scriptsDir.absoluteFilePath (script)));
 	}
 	
 	void Plugin::Release ()
@@ -90,17 +86,17 @@ namespace FatApe
 		return result;
 	}
 
-	void Plugin::hookJavaScriptWindowObjectCleared (LeechCraft::IHookProxy_ptr proxy, 
-			QWebPage *sourcePage, QWebFrame *frameCleared )
+	void Plugin::hookInitialLayoutCompleted( LeechCraft::IHookProxy_ptr proxy, 
+			QWebPage *page, QWebFrame *frame )
 	{
-		boost::function<bool (const UserScript&)> match = boost::bind (
-				&UserScript::MatchToPage,
-				_1,
-				frameCleared->url ().toString ());
-		boost::function<void (const UserScript&)> inject = boost::bind(
-				&UserScript::Inject,
-				_1,
-				frameCleared);
+		boost::function<bool (const UserScript&)> match = 
+			boost::bind (&UserScript::MatchToPage, 
+			_1,
+			frame->url ().toString ());
+		boost::function<void (const UserScript&)> inject = 
+			boost::bind (&UserScript::Inject,
+			_1,
+			frame);
 
 		apply_if (UserScripts_.begin (), UserScripts_.end (), match, inject);
 

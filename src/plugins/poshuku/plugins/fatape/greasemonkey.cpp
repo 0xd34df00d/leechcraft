@@ -16,11 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_FATAPE_USERSCRIPT_H
-#define PLUGINS_POSHUKU_PLUGINS_FATAPE_USERSCRIPT_H
-#include <QMultiMap>
-#include <QRegExp>
-#include <QWebFrame>
+#include "greasemonkey.h"
+#include <QWebElement>
+
 
 namespace LeechCraft
 {
@@ -28,24 +26,22 @@ namespace Poshuku
 {
 namespace FatApe
 {
-	class UserScript
+
+	void GreaseMonkey::addStyle (QString css)
 	{
-		QString ScriptPath_;
-		QRegExp MetadataRX_;
-		QMultiMap<QString, QString> Metadata_;
-		
-		void ParseMetadata ();
-		void BuildPatternsList (QList<QRegExp>& list, bool include = true) const;
-	public:
-		UserScript (const QString& scriptPath);
-		UserScript (const UserScript& script);
-		bool MatchToPage (const QString& pageUrl) const;
-		void Inject (QWebFrame* frame) const;
-		const QString Name () const;
-		const QString Description () const;
-		const QString Namespace () const;
-    };
+		QWebElement body = Frame_->findFirstElement ("body");
+
+		body.appendInside ( QString ("<style type=\"text/css\">%1</style>").arg (css));
+	}
+
+	GreaseMonkey::GreaseMonkey (QWebFrame* frame, 
+		const QString& scriptNamespace, const QString& scriptName )
+	: Frame_ (frame)
+	, ScriptNamespace_ (scriptNamespace)
+	, ScriptName_ (scriptName)
+	{
+	}
 }
 }
 }
-#endif
+

@@ -19,8 +19,12 @@
 #include "userscript.h"
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
+#include <QtDebug>
 #include <QFile>
+#include <QHash>
 #include <QTextStream>
+#include "greasemonkey.h"
+
 
 namespace LeechCraft
 {
@@ -28,19 +32,16 @@ namespace Poshuku
 {
 namespace FatApe
 {
-	const char* MetadataStart = "// ==UserScript==";
-	const char* MetadataEnd = "// ==/UserScript==";
+	const QString MetadataStart = "// ==UserScript==";
+	const QString MetadataEnd = "// ==/UserScript==";
 
 	template<typename InputIterator, typename Function>
-	bool any(InputIterator first, InputIterator last, Function f)
+	bool any (InputIterator first, InputIterator last, Function f)
 	{
 		for (; first != last; ++first)
-		{
 			if (f (*first))
 				return true;
-		}
 		return false;
-
 	}
 
 	UserScript::UserScript (const QString& scriptPath)
@@ -48,13 +49,11 @@ namespace FatApe
 	, MetadataRX_ ("//\\s+@(\\S*)\\s+(.*)", Qt::CaseInsensitive)
 	{
 		ParseMetadata ();
-		if (Metadata_.count ("include") == 0)
-		{
+		if (!Metadata_.count ("include"))
 			Metadata_.insert ("include", "*");
-		}
 	}
 
-	UserScript::UserScript( const UserScript& script )
+	UserScript::UserScript (const UserScript& script)
 	: MetadataRX_ ("//\\s+@(\\S*)\\s+(.*)", Qt::CaseInsensitive)
 	{
 		ScriptPath_ = script.ScriptPath_;
@@ -65,50 +64,54 @@ namespace FatApe
 	{
 		QFile script (ScriptPath_);
 
-		if (script.open (QFile::ReadOnly))
+		if (!script.open (QFile::ReadOnly))
 		{
-			QTextStream content (&script);
-			QString line;
-
-			if (content.readLine () != MetadataStart)
-				return;
-
-			while((line = content.readLine ()) != MetadataEnd && !content.atEnd ())
-			{
-				MetadataRX_.indexIn (line);
-				QString key (MetadataRX_.cap (1));
-				QString value (MetadataRX_.cap (2));
-
-				Metadata_.insert (key, value);
-			}			
-
-		}	
-	}
-
-	void UserScript::BuildPatternsList( QList<QRegExp>& list, bool include /*= true*/ ) const
-	{
-		Q_FOREACH(const QString& pattern, Metadata_.values (include ? "include" : "exclude"))
-		{
-			list.append (QRegExp (pattern, Qt::CaseInsensitive, QRegExp::Wildcard));
+			qWarning () << Q_FUNC_INFO
+				<< "unable to open file"
+				<< script.fileName ()
+				<< "for reading:"
+				<< script.errorString ();
+			return;
 		}
 
+		QTextStream content (&script);
+		QString line;
+
+		if (content.readLine () != MetadataStart)
+			return;
+
+		while((line = content.readLine ()) != MetadataEnd && !content.atEnd ())
+		{
+			MetadataRX_.indexIn (line);
+			QString key (MetadataRX_.cap (1).trimmed ());
+			QString value (MetadataRX_.cap (2).trimmed ());
+
+			Metadata_.insert (key, value);
+		}			
+	
+	}
+
+	void UserScript::BuildPatternsList (QList<QRegExp>& list, bool include) const
+	{
+		Q_FOREACH (const QString& pattern, Metadata_.values (include ? "include" : "exclude"))
+			list.append (QRegExp (pattern, Qt::CaseInsensitive, QRegExp::Wildcard));
 	}
 
 	bool UserScript::MatchToPage (const QString& pageUrl) const
 	{
 		QList<QRegExp> include;
 		QList<QRegExp> exclude;
-		boost::function<bool (QRegExp&)> match = boost::bind (
-				&QRegExp::indexIn,
+		boost::function<bool (QRegExp&)> match = 
+			boost::bind (&QRegExp::indexIn,
 				_1,
 				pageUrl,
 				0,
 				QRegExp::CaretAtZero
 			) != -1;
-
+				
 		BuildPatternsList (include);
 		BuildPatternsList (exclude, false);
-
+		
 		return	any (include.begin (), include.end (), match) && 
 				!any (exclude.begin (), exclude.end (), match);
 
@@ -122,12 +125,36 @@ namespace FatApe
 		if (script.open (QFile::ReadOnly))
 		{
 			QTextStream content (&script);
-			QString toInject = QString("(function(){%1})()").arg (content.readAll ());
+			QString gmLayerId = QString ("Greasemonkey%1%2")
+					.arg (qHash (Namespace ()))
+					.arg (qHash (Name ()));
+			QString toInject = QString ("(function (){"
+				"var GM_addStyle = %1.addStyle;"
+				"%2})()")
+					.arg (gmLayerId)
+					.arg (content.readAll ());
 
+
+			frame->addToJavaScriptWindowObject (gmLayerId, 
+					new GreaseMonkey (frame, Namespace (), Name ()));
 			frame->evaluateJavaScript (toInject);
 		}
 	}
 
+	const QString UserScript::Name () const
+	{
+		return Metadata_.value ("name", "");
+	}
+
+	const QString UserScript::Description () const
+	{
+		return Metadata_.value ("description", "");
+	}
+
+	const QString UserScript::Namespace () const
+	{
+		return Metadata_.value ("namespace", "Default namespace");
+	}
 }
 }
 }

@@ -3,10 +3,12 @@ INCLUDE_DIRECTORIES (${POSHUKU_INCLUDE_DIR}
 SET (FATAPE_SRCS
 	fatape.cpp
     userscript.cpp
+    greasemonkey.cpp
 	)
 SET (FATAPE_HEADERS
 	fatape.h
     userscript.h
+    greasemonkey.h
 	)
 
 QT4_WRAP_CPP (FATAPE_MOC_SRCS ${FATAPE_HEADERS})

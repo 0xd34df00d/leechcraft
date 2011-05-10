@@ -16,10 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_FATAPE_USERSCRIPT_H
-#define PLUGINS_POSHUKU_PLUGINS_FATAPE_USERSCRIPT_H
-#include <QMultiMap>
-#include <QRegExp>
+#ifndef PLUGINS_POSHUKU_PLUGINS_FATAPE_GREASEMONKEY_H
+#define PLUGINS_POSHUKU_PLUGINS_FATAPE_GREASEMONKEY_H
+#include <QObject>
 #include <QWebFrame>
 
 namespace LeechCraft
@@ -28,23 +27,19 @@ namespace Poshuku
 {
 namespace FatApe
 {
-	class UserScript
+	class GreaseMonkey : 
+		public QObject
 	{
-		QString ScriptPath_;
-		QRegExp MetadataRX_;
-		QMultiMap<QString, QString> Metadata_;
+		Q_OBJECT
 		
-		void ParseMetadata ();
-		void BuildPatternsList (QList<QRegExp>& list, bool include = true) const;
+		QWebFrame* Frame_;
+		QString ScriptNamespace_;
+		QString ScriptName_;
 	public:
-		UserScript (const QString& scriptPath);
-		UserScript (const UserScript& script);
-		bool MatchToPage (const QString& pageUrl) const;
-		void Inject (QWebFrame* frame) const;
-		const QString Name () const;
-		const QString Description () const;
-		const QString Namespace () const;
-    };
+		GreaseMonkey (QWebFrame* frame, const QString& scriptNamespace, const QString& scriptName);
+	public slots:
+		void addStyle (QString css);
+	};
 }
 }
 }
