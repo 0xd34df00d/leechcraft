@@ -135,10 +135,7 @@ namespace Acetamide
 		QStringList commandWithParams = commandMessage.split (' ');
 		if (Name2Command_.contains (commandWithParams.at (0).toLower ()))
 		{
-			if (commandWithParams.at (0).toLower () == "invite")
-				outputMessage = "You invite " + commandWithParams.at (1)
-						+ " to a channel " + commandWithParams.at (2);
-			else if (commandWithParams.at (0).toLower () == "quit")
+			if (commandWithParams.at (0).toLower () == "quit")
 				commandWithParams.append (ServerID_);
 			else if (commandWithParams.at (0).toLower () == "me")
 			{
@@ -528,55 +525,58 @@ namespace Acetamide
 					this, _1, _2, _3);
 		Command2Action_ ["ctcp_rqst"] =
 				boost::bind (&IrcServerHandler::CTCPRequestResult,
-					 this, _1, _2, _3);
+					this, _1, _2, _3);
 		Command2Action_ ["invite"] =
 				boost::bind (&IrcServerHandler::InviteToChannel,
-					 this, _1, _2, _3);
+					this, _1, _2, _3);
 		Command2Action_ ["kick"] =
 				boost::bind (&IrcServerHandler::KickFromChannel,
-					 this, _1, _2, _3);
+					this, _1, _2, _3);
 		Command2Action_ ["302"] =
 				boost::bind (&IrcServerHandler::GetUserHost,
-					 this, _1, _2, _3);
+					this, _1, _2, _3);
 		Command2Action_ ["303"] =
 				boost::bind (&IrcServerHandler::GetIson,
-					 this, _1, _2, _3);
+					this, _1, _2, _3);
 		Command2Action_ ["305"] =
 				boost::bind (&IrcServerHandler::GetAway,
-					 this, _1, _2, _3);
+					this, _1, _2, _3);
 		Command2Action_ ["306"] =
 				boost::bind (&IrcServerHandler::GetAway,
-					 this, _1, _2, _3);
+					this, _1, _2, _3);
 		Command2Action_ ["311"] =
 				boost::bind (&IrcServerHandler::GetWhoIsUser,
-					 this, _1, _2, _3);
+					this, _1, _2, _3);
 		Command2Action_ ["311"] =
 				boost::bind (&IrcServerHandler::GetWhoIsUser,
-					 this, _1, _2, _3);
+					this, _1, _2, _3);
 		Command2Action_ ["312"] =
 				boost::bind (&IrcServerHandler::GetWhoIsServer,
-					 this, _1, _2, _3);
+					this, _1, _2, _3);
 		Command2Action_ ["313"] =
 				boost::bind (&IrcServerHandler::GetWhoIsOperator,
-					 this, _1, _2, _3);
+					this, _1, _2, _3);
 		Command2Action_ ["317"] =
 				boost::bind (&IrcServerHandler::GetWhoIsIdle,
-					 this, _1, _2, _3);
+					this, _1, _2, _3);
 		Command2Action_ ["318"] =
 				boost::bind (&IrcServerHandler::GetWhoIsEnd,
-					 this, _1, _2, _3);
+					this, _1, _2, _3);
 		Command2Action_ ["319"] =
 				boost::bind (&IrcServerHandler::GetWhoIsChannels,
-					 this, _1, _2, _3);
+					this, _1, _2, _3);
 		Command2Action_ ["314"] =
 				boost::bind (&IrcServerHandler::GetWhoWas,
-					 this, _1, _2, _3);
+					this, _1, _2, _3);
 		Command2Action_ ["369"] =
 				boost::bind (&IrcServerHandler::GetWhoWasEnd,
-					 this, _1, _2, _3);
+					this, _1, _2, _3);
 		Command2Action_ ["331"] =
 				boost::bind (&IrcServerHandler::GetNoTopic,
-					 this, _1, _2, _3);
+					this, _1, _2, _3);
+		Command2Action_ ["341"] =
+				boost::bind (&IrcServerHandler::GetInviting,
+					this, _1, _2, _3);
 
 		Name2Command_ ["nick"] = boost::bind (&IrcParser::NickCommand,
 				IrcParser_, _1);
@@ -1169,6 +1169,17 @@ namespace Acetamide
 	{
 		SendAnswerToChannel ("topic", msg, true);
 	}
+
+	void IrcServerHandler::GetInviting (const QString&,
+			const QList<std::string>& params, const QString&)
+	{
+		QString msg = "You invite " +
+				QString::fromUtf8 (params.at (1).c_str ()) +
+				" to a channel " +
+				QString::fromUtf8 (params.at (2).c_str ());
+		SendAnswerToChannel ("invite", msg, true);
+	}
+
 
 	void IrcServerHandler::InitSocket ()
 	{

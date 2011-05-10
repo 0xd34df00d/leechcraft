@@ -189,6 +189,8 @@ class IrcMessage;
 				const QList<std::string>&, const QString&);
 		void GetNoTopic (const QString&,
 				const QList<std::string>&, const QString&);
+		void GetInviting (const QString&,
+				const QList<std::string>&, const QString&);
 	private slots:
 		void readReply ();
 		void connectionEstablished ();
