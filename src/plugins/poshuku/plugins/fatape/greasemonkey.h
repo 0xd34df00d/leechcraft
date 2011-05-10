@@ -19,6 +19,8 @@
 #ifndef PLUGINS_POSHUKU_PLUGINS_FATAPE_GREASEMONKEY_H
 #define PLUGINS_POSHUKU_PLUGINS_FATAPE_GREASEMONKEY_H
 #include <QObject>
+#include <QStringList>
+#include <QVariant>
 #include <QWebFrame>
 
 namespace LeechCraft
@@ -27,8 +29,7 @@ namespace Poshuku
 {
 namespace FatApe
 {
-	class GreaseMonkey : 
-		public QObject
+	class GreaseMonkey : public QObject
 	{
 		Q_OBJECT
 		
@@ -38,7 +39,12 @@ namespace FatApe
 	public:
 		GreaseMonkey (QWebFrame* frame, const QString& scriptNamespace, const QString& scriptName);
 	public slots:
-		void addStyle (QString css);
+		void addStyle (const QString& css);
+		void deleteValue (const QString& name);
+		QVariant getValue (const QString& name);
+		QVariant getValue (const QString& name, QVariant default);
+		QVariant listValues ();
+		void setValue (const QString& name, QVariant value);
 	};
 }
 }

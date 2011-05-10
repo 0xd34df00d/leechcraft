@@ -130,6 +130,11 @@ namespace FatApe
 					.arg (qHash (Name ()));
 			QString toInject = QString ("(function (){"
 				"var GM_addStyle = %1.addStyle;"
+				"var GM_deleteValue = %1.deleteValue;"
+				"var GM_getValue = %1.getValue;"
+				"var GM_listValues = %1.listValues;"
+				"var GM_setValue = %1.setValue;"
+				"var GM_log = function(){console.log.apply(console, arguments)};"
 				"%2})()")
 					.arg (gmLayerId)
 					.arg (content.readAll ());
@@ -141,17 +146,17 @@ namespace FatApe
 		}
 	}
 
-	const QString UserScript::Name () const
+	QString UserScript::Name () const
 	{
 		return Metadata_.value ("name", "");
 	}
 
-	const QString UserScript::Description () const
+	QString UserScript::Description () const
 	{
 		return Metadata_.value ("description", "");
 	}
 
-	const QString UserScript::Namespace () const
+	QString UserScript::Namespace () const
 	{
 		return Metadata_.value ("namespace", "Default namespace");
 	}

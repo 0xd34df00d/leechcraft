@@ -17,7 +17,10 @@
  **********************************************************************/
 
 #include "greasemonkey.h"
+#include <QCoreApplication>
+#include <QSettings>
 #include <QWebElement>
+
 
 
 namespace LeechCraft
@@ -27,19 +30,78 @@ namespace Poshuku
 namespace FatApe
 {
 
-	void GreaseMonkey::addStyle (QString css)
+	void GreaseMonkey::addStyle (const QString& css)
 	{
 		QWebElement body = Frame_->findFirstElement ("body");
 
-		body.appendInside ( QString ("<style type=\"text/css\">%1</style>").arg (css));
+		body.appendInside (QString ("<style type=\"text/css\">%1</style>").arg (css));
 	}
 
 	GreaseMonkey::GreaseMonkey (QWebFrame* frame, 
-		const QString& scriptNamespace, const QString& scriptName )
+		const QString& scriptNamespace, const QString& scriptName)
 	: Frame_ (frame)
 	, ScriptNamespace_ (scriptNamespace)
 	, ScriptName_ (scriptName)
 	{
+	}
+
+	void GreaseMonkey::deleteValue (const QString& name)
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+			QCoreApplication::applicationName () + "_Poshuku_FatApe");
+
+		settings.beginGroup (ScriptNamespace_);
+		settings.beginGroup (ScriptName_);
+		settings.remove (name);
+		settings.endGroup ();
+		settings.endGroup ();
+
+	}
+
+	QVariant GreaseMonkey::getValue (const QString& name )
+	{
+		return getValue (name, 0);
+	}
+
+	QVariant GreaseMonkey::getValue (const QString& name, QVariant default)
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+			QCoreApplication::applicationName () + "_Poshuku_FatApe");
+		QVariant value;
+
+		settings.beginGroup (ScriptNamespace_);
+		settings.beginGroup (ScriptName_);
+		value = settings.value (name, default);
+		settings.endGroup ();
+		settings.endGroup ();
+		return value;
+	}
+
+	QVariant GreaseMonkey::listValues ()
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+			QCoreApplication::applicationName () + "_Poshuku_FatApe");
+		QStringList values;
+
+		settings.beginGroup (ScriptNamespace_);
+		settings.beginGroup (ScriptName_);
+		values = settings.allKeys ();
+		settings.endGroup ();
+		settings.endGroup ();
+		
+		return QVariant(values);
+	}
+
+	void GreaseMonkey::setValue (const QString& name, QVariant value)
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+			QCoreApplication::applicationName () + "_Poshuku_FatApe");
+
+		settings.beginGroup (ScriptNamespace_);
+		settings.beginGroup (ScriptName_);
+		settings.setValue (name, value);
+		settings.endGroup ();
+		settings.endGroup ();
 	}
 }
 }

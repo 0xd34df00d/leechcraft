@@ -41,9 +41,9 @@ namespace FatApe
 		UserScript (const UserScript& script);
 		bool MatchToPage (const QString& pageUrl) const;
 		void Inject (QWebFrame* frame) const;
-		const QString Name () const;
-		const QString Description () const;
-		const QString Namespace () const;
+		QString Name () const;
+		QString Description () const;
+		QString Namespace () const;
     };
 }
 }
