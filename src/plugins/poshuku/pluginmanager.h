@@ -289,6 +289,17 @@ namespace Poshuku
 		void hookFrameCreated (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QWebFrame *frameCreated);
+		
+		/** @brief Called from QWebPage::geometryChangeRequested().
+		 * 
+		 * This hook is called whenever the document want to change the
+		 * page's position and size.
+		 * 
+		 * @param proxy The standard hook proxy object.
+		 * @param page The page that wants its position and size to be
+		 * changed.
+		 * @param rect The new position and size rect.
+		 */
 		void hookGeometryChangeRequested (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QRect rect);
@@ -296,45 +307,183 @@ namespace Poshuku
 				QObject *browserWidget);
 		void hookIconRequested (LeechCraft::IHookProxy_ptr,
 				const QUrl& url);
+		
+		/** @brief Called when the frame is laid out for the first time.
+		 * 
+		 * This hook is called whenever the frame is laid out for the
+		 * first time during web page load.
+		 * 
+		 * @param proxy The standard hook proxy object.
+		 * @param page The page where the frame being laid out is.
+		 * @param frame The frame that's laid out for the first time.
+		 */
 		void hookInitialLayoutCompleted (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QWebFrame *frame);
+		
+		/** @brief Called from QWebPage::javaScriptAlert().
+		 * 
+		 * This hook is called whenever a JS in the given frame wants to
+		 * alert() the given message.
+		 * 
+		 * The default implementation may be canceled inside the hook.
+		 * Alternatively, the hook may override the message with
+		 * IHookProxy::SetValue() with the key "message" and value of
+		 * type QString.
+		 * 
+		 * @param proxy The standard hook proxy object.
+		 * @param page The page where the frame is.
+		 * @param frame The frame containing the JS that wants to
+		 * alert() a message.
+		 * @param message The original message text.
+		 */
 		void hookJavaScriptAlert (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QWebFrame *frame,
-				QString msg);
+				QString message);
+		
+		/** @brief Called from QWebPage::javaScriptConfirm().
+		 * 
+		 * This hook is called whenever a JS program in the given frame
+		 * calls confirm() with the given message.
+		 * 
+		 * If the default implementation is canceled from the hook, the
+		 * proxy's return value is converted to bool and returned from
+		 * the QWebPage::javaScriptConfirm() method. Otherwise, the hook
+		 * may override the message with IHookProxy::SetValue() with the
+		 * key "message and value of type QString.
+		 * 
+		 * @param proxy The standard hook proxy object.
+		 * @param page The page containing the frame.
+		 * @param frame The frame containing the JS that wants to
+		 * confirm() something.
+		 * @param message The original message text.
+		 */
 		void hookJavaScriptConfirm (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QWebFrame *frame,
-				QString msg);
+				QString message);
+		
+		/** @brief Called from QWebPage::javaScriptConsoleMessage().
+		 * 
+		 * This hook is called whenever a JS program wants to print a
+		 * message to the web browser console.
+		 * 
+		 * If the default implementation isn't canceled, the hook may
+		 * override the message, line and sourceId using
+		 * IHookProxy::SetValue() method with following keys and values,
+		 * respectively:
+		 * - "message" of type QString
+		 * - "line" of type int
+		 * - "sourceID" of type QString
+		 * 
+		 * @param proxy The standard hook proxy object.
+		 * @param page The page containing the frame.
+		 * @param message The original message text.
+		 * @param line The line, if applicable.
+		 * @param sourceId The ID of the source, if applicable.
+		 */
 		void hookJavaScriptConsoleMessage (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
-				QString msg,
+				QString message,
 				int line,
 				QString sourceId);
+		
+		/** @brief Called from QWebPage::javaScriptPrompt().
+		 * 
+		 * This hook is called whenever a JS program in the given frame
+		 * wants user to input a string via prompt().
+		 * 
+		 * If the default handler is canceled, the proxy's return value
+		 * is converted to bool and returned from the
+		 * QWebPage::javaScriptPrompt(), while the value set using
+		 * IHookProxy::SetValue() with the key "result" is converted to
+		 * QString and is considered to be the result. Otherwise, other
+		 * parameters may be overridden in the hook in addition to
+		 * "result", respectively:
+		 * - "message" of type QString
+		 * - "default" of type QString
+		 * 
+		 * @param proxy The standard hook proxy object.
+		 * @param page The page containing the frame.
+		 * @param frame The frame containing the JS that called
+		 * prompt().
+		 * @param message The original message text.
+		 * @param defValue The default value suggested by the JS.
+		 * @param resultString The result string.
+		 */
 		void hookJavaScriptPrompt (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QWebFrame *frame,
-				QString msg,
+				QString message,
 				QString defValue,
 				QString resultString);
+		
+		/** @brief Called when the global window object of the JS
+		 * environment is cleared in the given frame.
+		 * 
+		 * To ensure that objects added to a QWebFrame via the
+		 * QWebFrame::addToJavaScriptWindowObject() method are
+		 * accessible when loading new URLs, they should be readded
+		 * in the corresponding hook.
+		 * 
+		 * If the default handler is canceled, the "window.JSProxy" and
+		 * "window.external" objects won't be added to the frame.
+		 * 
+		 * @param proxy The standard hook proxy object.
+		 * @param sourcePage The page containing the frame.
+		 * @param frame The frame whose window object is cleared.
+		 */
 		void hookJavaScriptWindowObjectCleared (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *sourcePage,
-				QWebFrame *frameCleared);
+				QWebFrame *frame);
+		
+		/** @brief Called whenever the given link is clicked.
+		 * @deprecated
+		 * 
+		 * Seems like this hook is no longer used.
+		 * 
+		 * @param proxy The standard hook proxy object.
+		 * @param page The page where the link is clicked.
+		 * @param url The URL of the link.
+		 */
 		void hookLinkClicked (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QUrl url);
+		
+		/** @brief Called whenever a given link is hovered by the mouse.
+		 * 
+		 * @param proxy The standard hook proxy object.
+		 * @param page The page where the link is hovered.
+		 * @param link The URL of the link.
+		 * @param title The HTML link element title, if specified in the
+		 * markup.
+		 * @param textContext The text within the HTML link element.
+		 */
 		void hookLinkHovered (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QString link,
 				QString title,
 				QString textContent);
+		
+		/** @brief Called when the given page finishes loading.
+		 * 
+		 * @param proxy The standard hook proxy object.
+		 * @param page The page that has finished loading.
+		 * @param result Whether the page loaded successfully.
+		 */
 		void hookLoadFinished (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
 				bool result);
 		void hookLoadProgress (LeechCraft::IHookProxy_ptr proxy,
 				QObject *browserWidget,
 				int *progress);
+		
+		/** @brief Called when the given page begins loading.
+		 * 
+		 * @param proxy The standard hook proxy object.
+		 * @param page The page that has started loading.
+		 */
 		void hookLoadStarted (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page);
 		void hookMoreMenuFillBegin (LeechCraft::IHookProxy_ptr proxy,
