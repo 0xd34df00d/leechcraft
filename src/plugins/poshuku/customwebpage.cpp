@@ -366,34 +366,29 @@ namespace Poshuku
 		frame->addToJavaScriptWindowObject ("external", ExternalProxy_.get ());
 	}
 
-	void CustomWebPage::handleGeometryChangeRequested (const QRect& threct)
+	void CustomWebPage::handleGeometryChangeRequested (const QRect& rect)
 	{
-		QRect rect = threct;
 		emit hookGeometryChangeRequested (IHookProxy_ptr (new Util::DefaultHookProxy),
-				this, &rect);
+				this, rect);
 	}
 
-	void CustomWebPage::handleLinkClicked (const QUrl& thurl)
+	void CustomWebPage::handleLinkClicked (const QUrl& url)
 	{
-		QUrl url = thurl;
 		emit hookLinkClicked (IHookProxy_ptr (new Util::DefaultHookProxy),
-				this, &url);
+				this, url);
 	}
 
-	void CustomWebPage::handleLinkHovered (const QString& thlink,
-			const QString& thtitle, const QString& thcontext)
+	void CustomWebPage::handleLinkHovered (const QString& link,
+			const QString& title, const QString& context)
 	{
-		QString link = thlink;
-		QString title = thtitle;
-		QString context = thcontext;
 		emit hookLinkHovered (IHookProxy_ptr (new Util::DefaultHookProxy),
-				this, &link, &title, &context);
+				this, link, title, context);
 	}
 
 	void CustomWebPage::handleLoadFinished (bool ok)
 	{
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
-		emit hookLoadFinished (proxy, this, &ok);
+		emit hookLoadFinished (proxy, this, ok);
 		if (proxy->IsCancelled ())
 			return;
 
@@ -666,9 +661,11 @@ namespace Poshuku
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 		QString msg = thmsg;
 		emit hookJavaScriptAlert (proxy,
-				this, frame, &msg);
+				this, frame, msg);
 		if (proxy->IsCancelled ())
 			return;
+		
+		proxy->FillValue ("message", msg);
 
 		QWebPage::javaScriptAlert (frame, msg);
 	}
@@ -678,9 +675,11 @@ namespace Poshuku
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 		QString msg = thmsg;
 		emit hookJavaScriptConfirm (proxy,
-				this, frame, &msg);
+				this, frame, msg);
 		if (proxy->IsCancelled ())
 			return proxy->GetReturnValue ().toBool ();
+		
+		proxy->FillValue ("message", msg);
 
 		return QWebPage::javaScriptConfirm (frame, msg);
 	}
@@ -692,9 +691,13 @@ namespace Poshuku
 		QString msg = thmsg;
 		QString sid = thsid;
 		emit hookJavaScriptConsoleMessage (proxy,
-				this, &msg, &line, &sid);
+				this, msg, line, sid);
 		if (proxy->IsCancelled ())
 			return;
+		
+		proxy->FillValue ("message", msg);
+		proxy->FillValue ("line", line);
+		proxy->FillValue ("sourceID", sid);
 
 		QWebPage::javaScriptConsoleMessage (msg, line, sid);
 	}
@@ -706,9 +709,13 @@ namespace Poshuku
 		QString pr = thpr;
 		QString def = thdef;
 		emit hookJavaScriptPrompt (proxy,
-				this, frame, &pr, &def, result);
+				this, frame, pr, def, *result);
+		proxy->FillValue ("result", *result);
 		if (proxy->IsCancelled ())
 			return proxy->GetReturnValue ().toBool ();
+
+		proxy->FillValue ("message", pr);
+		proxy->FillValue ("default", def);
 
 		return QWebPage::javaScriptPrompt (frame, pr, def, result);
 	}

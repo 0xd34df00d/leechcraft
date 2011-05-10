@@ -135,43 +135,43 @@ namespace Poshuku
 				QWebFrame *frameCreated);
 		void hookGeometryChangeRequested (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
-				QRect *rect);
+				QRect rect);
 		void hookInitialLayoutCompleted (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QWebFrame *frame);
 		void hookJavaScriptAlert (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QWebFrame *frame,
-				QString *msg);
+				QString msg);
 		void hookJavaScriptConfirm (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QWebFrame *frame,
-				QString *msg);
+				QString msg);
 		void hookJavaScriptConsoleMessage (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
-				QString *msg,
-				int *line,
-				QString *sourceId);
+				QString msg,
+				int line,
+				QString sourceId);
 		void hookJavaScriptPrompt (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QWebFrame *frame,
-				QString *msg,
-				QString *defValue,
-				QString *resultString);
+				QString msg,
+				QString defValue,
+				QString resultString);
 		void hookJavaScriptWindowObjectCleared (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *sourcePage,
 				QWebFrame *frameCleared);
 		void hookLinkClicked (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
-				QUrl *url);
+				QUrl url);
 		void hookLinkHovered (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
-				QString *link,
-				QString *title,
-				QString *textContent);
+				QString link,
+				QString title,
+				QString textContent);
 		void hookLoadFinished (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
-				bool *result);
+				bool result);
 		void hookLoadStarted (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page);
 		void hookSupportsExtension (LeechCraft::IHookProxy_ptr proxy,
