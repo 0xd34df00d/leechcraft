@@ -130,9 +130,18 @@ namespace Xoox
 				this,
 				SLOT (handleRosterReceived ()));
 		connect (&Client_->rosterManager (),
-				SIGNAL (rosterChanged (const QString&)),
+				SIGNAL (itemAdded (const QString&)),
 				this,
 				SLOT (handleRosterChanged (const QString&)));
+		connect (&Client_->rosterManager (),
+				SIGNAL (itemChanged (const QString&)),
+				this,
+				SLOT (handleRosterChanged (const QString&)));
+		connect (&Client_->rosterManager (),
+				SIGNAL (itemAdded (const QString&)),
+				&Core::Instance (),
+				SLOT (saveRoster ()),
+				Qt::QueuedConnection);
 		connect (&Client_->rosterManager (),
 				SIGNAL (itemRemoved (const QString&)),
 				this,
@@ -591,7 +600,6 @@ namespace Xoox
 			entry->SetStatus (PresenceToStatus (pres), resource);
 		}
 		entry->UpdateRI (rm.getRosterEntry (bareJid));
-		Core::Instance ().saveRoster ();
 	}
 
 	void ClientConnection::handleRosterItemRemoved (const QString& bareJid)
