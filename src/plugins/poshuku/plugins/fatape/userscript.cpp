@@ -17,10 +17,12 @@
  **********************************************************************/
 
 #include "userscript.h"
+#include <algorithm>
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
 #include <QtDebug>
 #include <QFile>
+#include <QFileInfo>
 #include <QHash>
 #include <QTextStream>
 #include "greasemonkey.h"
@@ -37,10 +39,7 @@ namespace FatApe
 	template<typename InputIterator, typename Function>
 	bool any (InputIterator first, InputIterator last, Function f)
 	{
-		for (; first != last; ++first)
-			if (f (*first))
-				return true;
-		return false;
+		return std::find_if (first, last, f) != last;
 	}
 
 	UserScript::UserScript (const QString& scriptPath)
@@ -114,7 +113,7 @@ namespace FatApe
 				!any (exclude.begin (), exclude.end (), match);
 	}
 
-	void UserScript::Inject (QWebFrame *frame) const
+	void UserScript::Inject (QWebFrame *frame, IProxyObject* proxy) const
 	{
 		QFile script (ScriptPath_);
 
@@ -138,24 +137,25 @@ namespace FatApe
 			"var GM_getValue = %1.getValue;"
 			"var GM_listValues = %1.listValues;"
 			"var GM_setValue = %1.setValue;"
+			"var GM_openInTab = %1.openInTab;"
 			"var GM_log = function(){console.log.apply(console, arguments)};"
 			"%2})()")
 				.arg (gmLayerId)
 				.arg (content.readAll ());
 
 		frame->addToJavaScriptWindowObject (gmLayerId, 
-				new GreaseMonkey (frame, Namespace (), Name ()));
+				new GreaseMonkey (frame, proxy, Namespace (), Name ()));
 		frame->evaluateJavaScript (toInject);
 	}
 
 	QString UserScript::Name () const
 	{
-		return Metadata_.value ("name", "");
+		return Metadata_.value ("name", QFileInfo (ScriptPath_).baseName ());
 	}
 
 	QString UserScript::Description () const
 	{
-		return Metadata_.value ("description", "");
+		return Metadata_.value ("description");
 	}
 
 	QString UserScript::Namespace () const

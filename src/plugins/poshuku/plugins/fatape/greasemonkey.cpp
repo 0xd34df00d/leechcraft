@@ -18,6 +18,7 @@
 
 #include "greasemonkey.h"
 #include <QCoreApplication>
+#include <QHash>
 #include <QSettings>
 #include <QWebElement>
 
@@ -27,9 +28,10 @@ namespace Poshuku
 {
 namespace FatApe
 {
-	GreaseMonkey::GreaseMonkey (QWebFrame *frame, 
+	GreaseMonkey::GreaseMonkey (QWebFrame *frame, IProxyObject* proxy,
 			const QString& scriptNamespace, const QString& scriptName)
 	: Frame_ (frame)
+	, Proxy_ (proxy)
 	, ScriptNamespace_ (scriptNamespace)
 	, ScriptName_ (scriptName)
 	{
@@ -47,30 +49,30 @@ namespace FatApe
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Poshuku_FatApe");
 
-		settings.beginGroup (ScriptNamespace_);
-		settings.beginGroup (ScriptName_);
-		settings.remove (name);
-		settings.endGroup ();
-		settings.endGroup ();
+		settings.remove (QString("%1/%2/%3")
+				.arg (qHash (ScriptNamespace_))
+				.arg (ScriptName_)
+				.arg(name));
+		
 	}
 
 	QVariant GreaseMonkey::getValue (const QString& name)
 	{
-		return getValue (name, 0);
+		return getValue (name, QVariant());
 	}
 
 	QVariant GreaseMonkey::getValue (const QString& name, QVariant defVal)
 	{
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Poshuku_FatApe");
-		QVariant value;
 
-		settings.beginGroup (ScriptNamespace_);
-		settings.beginGroup (ScriptName_);
-		value = settings.value (name, defVal);
-		settings.endGroup ();
-		settings.endGroup ();
-		return value;
+
+		return settings.value (QString("%1/%2/%3")
+				.arg (qHash (ScriptNamespace_))
+				.arg (ScriptName_)
+				.arg (name), defVal);
+		
+
 	}
 
 	QVariant GreaseMonkey::listValues ()
@@ -78,8 +80,9 @@ namespace FatApe
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Poshuku_FatApe");
 		QStringList values;
+		
 
-		settings.beginGroup (ScriptNamespace_);
+		settings.beginGroup (QString::number (qHash (ScriptNamespace_)));
 		settings.beginGroup (ScriptName_);
 		values = settings.allKeys ();
 		settings.endGroup ();
@@ -93,11 +96,20 @@ namespace FatApe
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Poshuku_FatApe");
 
-		settings.beginGroup (ScriptNamespace_);
-		settings.beginGroup (ScriptName_);
-		settings.setValue (name, value);
-		settings.endGroup ();
-		settings.endGroup ();
+		settings.setValue (QString("%1/%2/%3")
+				.arg (qHash (ScriptNamespace_))
+				.arg (ScriptName_)
+				.arg (name), value);
+
+	}
+
+	void GreaseMonkey::openInTab( const QString& url )
+	{
+		if (Proxy_)
+		{
+			Proxy_->OpenInNewTab (url);
+		}
+
 	}
 }
 }
