@@ -50,8 +50,8 @@ namespace FatApe
 		QSet<QByteArray> GetPluginClasses () const;
 	public slots:
 		void hookInitialLayoutCompleted (LeechCraft::IHookProxy_ptr proxy,
-			QWebPage *page,
-			QWebFrame *frame);
+				QWebPage *page,
+				QWebFrame *frame);
 	};
 }
 }

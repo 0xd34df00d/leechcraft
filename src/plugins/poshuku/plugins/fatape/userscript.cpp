@@ -25,7 +25,6 @@
 #include <QTextStream>
 #include "greasemonkey.h"
 
-
 namespace LeechCraft
 {
 namespace Poshuku
@@ -80,20 +79,20 @@ namespace FatApe
 		if (content.readLine () != MetadataStart)
 			return;
 
-		while((line = content.readLine ()) != MetadataEnd && !content.atEnd ())
+		while ((line = content.readLine ()) != MetadataEnd && !content.atEnd ())
 		{
 			MetadataRX_.indexIn (line);
 			QString key (MetadataRX_.cap (1).trimmed ());
 			QString value (MetadataRX_.cap (2).trimmed ());
 
 			Metadata_.insert (key, value);
-		}			
-	
+		}
 	}
 
 	void UserScript::BuildPatternsList (QList<QRegExp>& list, bool include) const
 	{
-		Q_FOREACH (const QString& pattern, Metadata_.values (include ? "include" : "exclude"))
+		Q_FOREACH (const QString& pattern,
+				Metadata_.values (include ? "include" : "exclude"))
 			list.append (QRegExp (pattern, Qt::CaseInsensitive, QRegExp::Wildcard));
 	}
 
@@ -103,47 +102,50 @@ namespace FatApe
 		QList<QRegExp> exclude;
 		boost::function<bool (QRegExp&)> match = 
 			boost::bind (&QRegExp::indexIn,
-				_1,
-				pageUrl,
-				0,
-				QRegExp::CaretAtZero
-			) != -1;
+					_1,
+					pageUrl,
+					0,
+					QRegExp::CaretAtZero) != -1;
 				
 		BuildPatternsList (include);
 		BuildPatternsList (exclude, false);
 		
-		return	any (include.begin (), include.end (), match) && 
+		return any (include.begin (), include.end (), match) && 
 				!any (exclude.begin (), exclude.end (), match);
-
-
 	}
 
-	void UserScript::Inject( QWebFrame* frame ) const
+	void UserScript::Inject (QWebFrame *frame) const
 	{
 		QFile script (ScriptPath_);
 
-		if (script.open (QFile::ReadOnly))
+		if (!script.open (QFile::ReadOnly))
 		{
-			QTextStream content (&script);
-			QString gmLayerId = QString ("Greasemonkey%1%2")
-					.arg (qHash (Namespace ()))
-					.arg (qHash (Name ()));
-			QString toInject = QString ("(function (){"
-				"var GM_addStyle = %1.addStyle;"
-				"var GM_deleteValue = %1.deleteValue;"
-				"var GM_getValue = %1.getValue;"
-				"var GM_listValues = %1.listValues;"
-				"var GM_setValue = %1.setValue;"
-				"var GM_log = function(){console.log.apply(console, arguments)};"
-				"%2})()")
-					.arg (gmLayerId)
-					.arg (content.readAll ());
-
-
-			frame->addToJavaScriptWindowObject (gmLayerId, 
-					new GreaseMonkey (frame, Namespace (), Name ()));
-			frame->evaluateJavaScript (toInject);
+			qWarning () << Q_FUNC_INFO
+				<< "unable to open file"
+				<< script.fileName ()
+				<< "for reading:"
+				<< script.errorString ();
+			return;
 		}
+
+		QTextStream content (&script);
+		QString gmLayerId = QString ("Greasemonkey%1%2")
+				.arg (qHash (Namespace ()))
+				.arg (qHash (Name ()));
+		QString toInject = QString ("(function (){"
+			"var GM_addStyle = %1.addStyle;"
+			"var GM_deleteValue = %1.deleteValue;"
+			"var GM_getValue = %1.getValue;"
+			"var GM_listValues = %1.listValues;"
+			"var GM_setValue = %1.setValue;"
+			"var GM_log = function(){console.log.apply(console, arguments)};"
+			"%2})()")
+				.arg (gmLayerId)
+				.arg (content.readAll ());
+
+		frame->addToJavaScriptWindowObject (gmLayerId, 
+				new GreaseMonkey (frame, Namespace (), Name ()));
+		frame->evaluateJavaScript (toInject);
 	}
 
 	QString UserScript::Name () const

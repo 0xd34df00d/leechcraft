@@ -33,11 +33,12 @@ namespace FatApe
 	{
 		Q_OBJECT
 		
-		QWebFrame* Frame_;
+		QWebFrame *Frame_;
 		QString ScriptNamespace_;
 		QString ScriptName_;
 	public:
-		GreaseMonkey (QWebFrame* frame, const QString& scriptNamespace, const QString& scriptName);
+		GreaseMonkey (QWebFrame *frame,
+				const QString& scriptNamespace, const QString& scriptName);
 	public slots:
 		void addStyle (const QString& css);
 		void deleteValue (const QString& name);

@@ -51,7 +51,7 @@ namespace FatApe
 		
 		QStringList filter ("*.user.js");
 
-		Q_FOREACH(const QString& script, scriptsDir.entryList (filter, QDir::Files))
+		Q_FOREACH (const QString& script, scriptsDir.entryList (filter, QDir::Files))
 			UserScripts_.append (UserScript (scriptsDir.absoluteFilePath (script)));
 	}
 	
@@ -86,20 +86,19 @@ namespace FatApe
 		return result;
 	}
 
-	void Plugin::hookInitialLayoutCompleted( LeechCraft::IHookProxy_ptr proxy, 
-			QWebPage *page, QWebFrame *frame )
+	void Plugin::hookInitialLayoutCompleted (LeechCraft::IHookProxy_ptr proxy, 
+			QWebPage *page, QWebFrame *frame)
 	{
 		boost::function<bool (const UserScript&)> match = 
 			boost::bind (&UserScript::MatchToPage, 
-			_1,
-			frame->url ().toString ());
+					_1,
+					frame->url ().toString ());
 		boost::function<void (const UserScript&)> inject = 
 			boost::bind (&UserScript::Inject,
-			_1,
-			frame);
+					_1,
+					frame);
 
 		apply_if (UserScripts_.begin (), UserScripts_.end (), match, inject);
-
 	}
 }
 }

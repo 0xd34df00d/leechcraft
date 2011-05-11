@@ -33,17 +33,17 @@ namespace FatApe
 		QString ScriptPath_;
 		QRegExp MetadataRX_;
 		QMultiMap<QString, QString> Metadata_;
-		
-		void ParseMetadata ();
-		void BuildPatternsList (QList<QRegExp>& list, bool include = true) const;
 	public:
 		UserScript (const QString& scriptPath);
 		UserScript (const UserScript& script);
 		bool MatchToPage (const QString& pageUrl) const;
-		void Inject (QWebFrame* frame) const;
+		void Inject (QWebFrame *frame) const;
 		QString Name () const;
 		QString Description () const;
 		QString Namespace () const;
+	private:
+		void ParseMetadata ();
+		void BuildPatternsList (QList<QRegExp>& list, bool include = true) const;
     };
 }
 }
