@@ -33,6 +33,7 @@
 #include "itemsfiltermodel.h"
 #include "itemslistmodel.h"
 #include "channelsmodel.h"
+#include "uistatepersist.h"
 
 namespace LeechCraft
 {
@@ -131,7 +132,8 @@ namespace LeechCraft
 						SIGNAL (currentChannelChanged (const QModelIndex&)),
 						this,
 						SLOT (channelChanged (const QModelIndex&)));
-
+				LoadColumnWidth(Impl_->Ui_.Items_,"items");
+				
 				QHeaderView *itemsHeader = Impl_->Ui_.Items_->header ();
 				QFontMetrics fm = fontMetrics ();
 				int dateTimeSize = fm.width (QDateTime::currentDateTime ()
@@ -188,6 +190,7 @@ namespace LeechCraft
 			ItemsWidget::~ItemsWidget ()
 			{
 				on_CategoriesSplitter__splitterMoved ();
+				SaveColumnWidth(Impl_->Ui_.Items_,"items");
 
 				disconnect (Impl_->ItemsFilterModel_.get (),
 						0,

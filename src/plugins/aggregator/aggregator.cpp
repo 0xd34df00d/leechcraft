@@ -60,6 +60,7 @@
 #include "export2fb2dialog.h"
 #include "actionsstructs.h"
 #include <boost/graph/graph_concepts.hpp>
+#include "uistatepersist.h"
 
 namespace LeechCraft
 {
@@ -227,6 +228,8 @@ namespace LeechCraft
 						SIGNAL (customContextMenuRequested (const QPoint&)),
 						this,
 						SLOT (handleFeedsContextMenuRequested (const QPoint&)));
+				LoadColumnWidth(Impl_->Ui_.Feeds_,"feeds");
+
 				QHeaderView *channelsHeader = Impl_->Ui_.Feeds_->header ();
 
 				QMenu *contextMenu = new QMenu (tr ("Feeds actions"));
@@ -288,6 +291,7 @@ namespace LeechCraft
 
 			void Aggregator::Release ()
 			{
+			        SaveColumnWidth(Impl_->Ui_.Feeds_,"feeds");
 				disconnect (&Core::Instance (), 0, this, 0);
 				if (Core::Instance ().GetChannelsModel ())
 					disconnect (Core::Instance ().GetChannelsModel (), 0, this, 0);
