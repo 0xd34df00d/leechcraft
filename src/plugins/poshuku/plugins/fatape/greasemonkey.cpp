@@ -18,8 +18,10 @@
 
 #include "greasemonkey.h"
 #include <QCoreApplication>
+#include <QFile>
 #include <QHash>
 #include <QSettings>
+#include <QTextStream>
 #include <QWebElement>
 
 namespace LeechCraft
@@ -28,12 +30,10 @@ namespace Poshuku
 {
 namespace FatApe
 {
-	GreaseMonkey::GreaseMonkey (QWebFrame *frame, IProxyObject* proxy,
-			const QString& scriptNamespace, const QString& scriptName)
+	GreaseMonkey::GreaseMonkey (QWebFrame *frame, IProxyObject* proxy, const UserScript& script)
 	: Frame_ (frame)
 	, Proxy_ (proxy)
-	, ScriptNamespace_ (scriptNamespace)
-	, ScriptName_ (scriptName)
+	, Script_ (script)
 	{
 	}
 
@@ -50,8 +50,8 @@ namespace FatApe
 				QCoreApplication::applicationName () + "_Poshuku_FatApe");
 
 		settings.remove (QString("%1/%2/%3")
-				.arg (qHash (ScriptNamespace_))
-				.arg (ScriptName_)
+				.arg (qHash (Script_.Namespace ()))
+				.arg (Script_.Name ())
 				.arg(name));
 		
 	}
@@ -68,8 +68,8 @@ namespace FatApe
 
 
 		return settings.value (QString("%1/%2/%3")
-				.arg (qHash (ScriptNamespace_))
-				.arg (ScriptName_)
+				.arg (qHash (Script_.Namespace ()))
+				.arg (Script_.Name())
 				.arg (name), defVal);
 		
 
@@ -82,8 +82,8 @@ namespace FatApe
 		QStringList values;
 		
 
-		settings.beginGroup (QString::number (qHash (ScriptNamespace_)));
-		settings.beginGroup (ScriptName_);
+		settings.beginGroup (QString::number (qHash (Script_.Namespace ())));
+		settings.beginGroup (Script_.Name());
 		values = settings.allKeys ();
 		settings.endGroup ();
 		settings.endGroup ();
@@ -97,8 +97,8 @@ namespace FatApe
 				QCoreApplication::applicationName () + "_Poshuku_FatApe");
 
 		settings.setValue (QString("%1/%2/%3")
-				.arg (qHash (ScriptNamespace_))
-				.arg (ScriptName_)
+				.arg (qHash (Script_.Namespace()))
+				.arg (Script_.Name())
 				.arg (name), value);
 
 	}
@@ -111,6 +111,15 @@ namespace FatApe
 		}
 
 	}
+
+	QString GreaseMonkey::getResourceText( const QString& resourceName )
+	{
+		QFile resource(Script_.GetResourcePath (resourceName));
+
+		return resource.open (QFile::ReadOnly) ? QTextStream (&resource).readAll ()
+				: QString();
+	}
+	
 }
 }
 }

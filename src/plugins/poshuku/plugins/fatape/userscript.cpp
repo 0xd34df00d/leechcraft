@@ -25,7 +25,10 @@
 #include <QFileInfo>
 #include <QHash>
 #include <QTextStream>
+#include <plugininterface/util.h>
 #include "greasemonkey.h"
+
+namespace Util = LeechCraft::Util;
 
 namespace LeechCraft
 {
@@ -138,13 +141,14 @@ namespace FatApe
 			"var GM_listValues = %1.listValues;"
 			"var GM_setValue = %1.setValue;"
 			"var GM_openInTab = %1.openInTab;"
+			"var GM_getResourceText = %1.getResourceText;"
 			"var GM_log = function(){console.log.apply(console, arguments)};"
 			"%2})()")
 				.arg (gmLayerId)
 				.arg (content.readAll ());
 
 		frame->addToJavaScriptWindowObject (gmLayerId, 
-				new GreaseMonkey (frame, proxy, Namespace (), Name ()));
+				new GreaseMonkey (frame, proxy, *this));
 		frame->evaluateJavaScript (toInject);
 	}
 
@@ -161,6 +165,24 @@ namespace FatApe
 	QString UserScript::Namespace () const
 	{
 		return Metadata_.value ("namespace", "Default namespace");
+	}
+
+	QString UserScript::GetResourcePath (const QString& resourceName) const
+	{
+		QString resource = QStringList (Metadata_.values ("resource"))
+				.filter (QRegExp (QString("%1\\s.*").arg (resourceName)))
+				.value (0, QString())
+				.mid(resourceName.length ())
+				.trimmed ();
+		QUrl resourceUrl = QUrl (resource);
+		QString resourceFile = QFileInfo (resourceUrl.path ()).fileName ();
+		
+		return resourceFile.isEmpty () ? QString()
+			: QFileInfo (Util::CreateIfNotExists ("data/poshuku/fatape/scripts/resources"),
+				QString ("%1%2_%3")
+					.arg (qHash (Namespace ()))
+					.arg (qHash (Name ()))
+					.arg (resourceFile)).absoluteFilePath ();		
 	}
 }
 }

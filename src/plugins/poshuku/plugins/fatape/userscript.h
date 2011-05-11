@@ -42,6 +42,7 @@ namespace FatApe
 		QString Name () const;
 		QString Description () const;
 		QString Namespace () const;
+		QString GetResourcePath (const QString& resourceName) const;
 	private:
 		void ParseMetadata ();
 		void BuildPatternsList (QList<QRegExp>& list, bool include = true) const;

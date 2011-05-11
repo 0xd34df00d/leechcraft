@@ -23,6 +23,7 @@
 #include <QVariant>
 #include <QWebFrame>
 #include <interfaces/iproxyobject.h>
+#include "userscript.h"
 
 namespace LeechCraft
 {
@@ -36,11 +37,9 @@ namespace FatApe
 		
 		QWebFrame *Frame_;
 		IProxyObject* Proxy_;
-		QString ScriptNamespace_;
-		QString ScriptName_;
+		UserScript Script_;
 	public:
-		GreaseMonkey (QWebFrame *frame, IProxyObject* proxy,
-				const QString& scriptNamespace, const QString& scriptName);
+		GreaseMonkey (QWebFrame *frame, IProxyObject* proxy, const UserScript& script);
 	public slots:
 		void addStyle (const QString& css);
 		void deleteValue (const QString& name);
@@ -49,6 +48,7 @@ namespace FatApe
 		QVariant listValues ();
 		void setValue (const QString& name, QVariant value);
 		void openInTab (const QString& url);
+		QString getResourceText (const QString& resourceName);
 	};
 }
 }
