@@ -5,14 +5,16 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
-namespace Aggregator
-{
-void SaveColumnWidth(const QTreeView * tree,const QString &keyName);
-void LoadColumnWidth(const QTreeView * tree,const QString &keyName);
-}
-}
+      namespace Plugins
+      {
+	    namespace Aggregator
+	    {
+		  /* Save column width of tree to aggregator`s section of settings */
+		  void SaveColumnWidth(const QTreeView * tree,const QString &keyName);
+		  /* Try to load column width of tree from aggregator`s section of settings */
+		  void LoadColumnWidth(QTreeView * tree,const QString &keyName);
+	    }
+      }
 }
 
 #endif
