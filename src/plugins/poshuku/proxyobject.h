@@ -33,6 +33,7 @@ namespace Poshuku
 	public slots:
 		QObject* GetHistoryModel () const;
 		QObject* GetFavoritesModel () const;
+		QObject* OpenInNewTab (const QUrl&, bool) const;
 	};
 }
 }

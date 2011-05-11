@@ -18,6 +18,8 @@
 
 #include "proxyobject.h"
 #include "core.h"
+#include "xmlsettingsmanager.h"
+#include "browserwidget.h"
 
 namespace LeechCraft
 {
@@ -31,6 +33,15 @@ namespace Poshuku
 	QObject* ProxyObject::GetFavoritesModel () const
 	{
 		return Core::Instance ().GetFavoritesModel ();
+	}
+	
+	QObject* ProxyObject::OpenInNewTab (const QUrl& url, bool inverted) const
+	{
+		bool raise = XmlSettingsManager::Instance ()->
+				property ("BackgroundNewTabs").toBool ();
+		if (inverted)
+			raise = !raise;
+		return Core::Instance ().NewURL (url, raise);
 	}
 }
 }
