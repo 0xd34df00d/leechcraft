@@ -63,7 +63,7 @@ namespace FatApe
 		return getValue (name, 0);
 	}
 
-	QVariant GreaseMonkey::getValue (const QString& name, QVariant default)
+	QVariant GreaseMonkey::getValue (const QString& name, QVariant defVal)
 	{
 		QSettings settings (QCoreApplication::organizationName (),
 			QCoreApplication::applicationName () + "_Poshuku_FatApe");
@@ -71,7 +71,7 @@ namespace FatApe
 
 		settings.beginGroup (ScriptNamespace_);
 		settings.beginGroup (ScriptName_);
-		value = settings.value (name, default);
+		value = settings.value (name, defVal);
 		settings.endGroup ();
 		settings.endGroup ();
 		return value;

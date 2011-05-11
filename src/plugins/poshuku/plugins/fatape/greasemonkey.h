@@ -42,7 +42,7 @@ namespace FatApe
 		void addStyle (const QString& css);
 		void deleteValue (const QString& name);
 		QVariant getValue (const QString& name);
-		QVariant getValue (const QString& name, QVariant default);
+		QVariant getValue (const QString& name, QVariant defVal);
 		QVariant listValues ();
 		void setValue (const QString& name, QVariant value);
 	};
