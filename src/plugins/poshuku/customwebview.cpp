@@ -232,14 +232,14 @@ namespace Poshuku
 
 	void CustomWebView::contextMenuEvent (QContextMenuEvent *e)
 	{
-		std::auto_ptr<QMenu> menu (new QMenu (this));
+		QPointer<QMenu> menu (new QMenu (this));
 		QWebHitTestResult r = page ()->
 			mainFrame ()->hitTestContent (e->pos ());
 
 		IHookProxy_ptr proxy (new Util::DefaultHookProxy ());
 
 		emit hookWebViewContextMenu (proxy, this, e, r,
-				menu.get (), WVSStart);
+				menu, WVSStart);
 
 		if (!r.linkUrl ().isEmpty ())
 		{
@@ -315,7 +315,7 @@ namespace Poshuku
 		}
 
 		emit hookWebViewContextMenu (proxy, this, e, r,
-				menu.get (), WVSAfterLink);
+				menu, WVSAfterLink);
 
 		if (!r.imageUrl ().isEmpty ())
 		{
@@ -335,7 +335,7 @@ namespace Poshuku
 		}
 
 		emit hookWebViewContextMenu (proxy, this, e, r,
-				menu.get (), WVSAfterImage);
+				menu, WVSAfterImage);
 
 		bool hasSelected = !page ()->selectedText ().isEmpty ();
 		if (hasSelected)
@@ -357,10 +357,10 @@ namespace Poshuku
 		}
 
 		emit hookWebViewContextMenu (proxy, this, e, r,
-				menu.get (), WVSAfterSelectedText);
+				menu, WVSAfterSelectedText);
 
 		if (menu->isEmpty ())
-			menu.reset (page ()->createStandardContextMenu ());
+			menu = page ()->createStandardContextMenu ();
 
 		if (!menu->isEmpty ())
 			menu->addSeparator ();
@@ -381,15 +381,15 @@ namespace Poshuku
 		menu->addAction (Browser_->RecentlyClosedAction_);
 
 		emit hookWebViewContextMenu (proxy, this, e, r,
-				menu.get (), WVSAfterFinish);
+				menu, WVSAfterFinish);
 
 		if (!menu->isEmpty ())
-		{
 			menu->exec (mapToGlobal (e->pos ()));
-			return;
-		}
-
-		QWebView::contextMenuEvent (e);
+		else
+			QWebView::contextMenuEvent (e);
+		
+		if (menu)
+			delete menu;
 	}
 
 	void CustomWebView::keyReleaseEvent (QKeyEvent *event)
