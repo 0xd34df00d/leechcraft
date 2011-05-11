@@ -16,14 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_FATAPE_FATAPE_H
-#define PLUGINS_POSHUKU_PLUGINS_FATAPE_FATAPE_H
-#include "userscript.h"
+#ifndef PLUGINS_POSHUKU_PLUGINS_FATAPE_GREASEMONKEY_H
+#define PLUGINS_POSHUKU_PLUGINS_FATAPE_GREASEMONKEY_H
 #include <QObject>
-#include <QList>
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-
+#include <QStringList>
+#include <QVariant>
+#include <QWebFrame>
 
 namespace LeechCraft
 {
@@ -31,30 +29,24 @@ namespace Poshuku
 {
 namespace FatApe
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IPlugin2
+	class GreaseMonkey : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2)
-
-		QList<UserScript> UserScripts_;
+		
+		QWebFrame* Frame_;
+		QString ScriptNamespace_;
+		QString ScriptName_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-		QSet<QByteArray> GetPluginClasses () const;
+		GreaseMonkey (QWebFrame* frame, const QString& scriptNamespace, const QString& scriptName);
 	public slots:
-		void hookInitialLayoutCompleted (LeechCraft::IHookProxy_ptr proxy,
-			QWebPage *page,
-			QWebFrame *frame);
+		void addStyle (const QString& css);
+		void deleteValue (const QString& name);
+		QVariant getValue (const QString& name);
+		QVariant getValue (const QString& name, QVariant default);
+		QVariant listValues ();
+		void setValue (const QString& name, QVariant value);
 	};
 }
 }
 }
-
 #endif

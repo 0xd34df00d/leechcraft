@@ -16,14 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_FATAPE_FATAPE_H
-#define PLUGINS_POSHUKU_PLUGINS_FATAPE_FATAPE_H
-#include "userscript.h"
-#include <QObject>
-#include <QList>
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-
+#ifndef PLUGINS_POSHUKU_PLUGINS_FATAPE_USERSCRIPT_H
+#define PLUGINS_POSHUKU_PLUGINS_FATAPE_USERSCRIPT_H
+#include <QMultiMap>
+#include <QRegExp>
+#include <QWebFrame>
 
 namespace LeechCraft
 {
@@ -31,30 +28,24 @@ namespace Poshuku
 {
 namespace FatApe
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IPlugin2
+	class UserScript
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2)
-
-		QList<UserScript> UserScripts_;
+		QString ScriptPath_;
+		QRegExp MetadataRX_;
+		QMultiMap<QString, QString> Metadata_;
+		
+		void ParseMetadata ();
+		void BuildPatternsList (QList<QRegExp>& list, bool include = true) const;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-		QSet<QByteArray> GetPluginClasses () const;
-	public slots:
-		void hookInitialLayoutCompleted (LeechCraft::IHookProxy_ptr proxy,
-			QWebPage *page,
-			QWebFrame *frame);
-	};
+		UserScript (const QString& scriptPath);
+		UserScript (const UserScript& script);
+		bool MatchToPage (const QString& pageUrl) const;
+		void Inject (QWebFrame* frame) const;
+		QString Name () const;
+		QString Description () const;
+		QString Namespace () const;
+    };
 }
 }
 }
-
 #endif
