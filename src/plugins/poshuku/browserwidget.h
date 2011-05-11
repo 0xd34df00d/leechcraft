@@ -184,10 +184,12 @@ namespace Poshuku
 				QString findText,
 				QWebPage::FindFlags findFlags);
 		void hookIconChanged (LeechCraft::IHookProxy_ptr proxy,
+				QWebPage *page,
 				QObject *browserWidget);
 		void hookLoadProgress (LeechCraft::IHookProxy_ptr proxy,
+				QWebPage *page,
 				QObject *browserWidget,
-				int *progress);
+				int progress);
 		void hookMoreMenuFillBegin (LeechCraft::IHookProxy_ptr proxy,
 				QMenu *menu,
 				QWebView *webView,
@@ -196,28 +198,25 @@ namespace Poshuku
 				QMenu *menu,
 				QWebView *webView,
 				QObject *browserWidget);
-		void hookNotificationActionTriggered (LeechCraft::IHookProxy_ptr proxy,
-				QObject *browserWidget,
-				int *index);
 		void hookNotifyLoadFinished (LeechCraft::IHookProxy_ptr proxy,
+				QWebView *view,
 				QObject *browserWidget,
-				bool *ok,
+				bool ok,
 				bool notifyWhenFinished,
 				bool own,
 				bool htmlMode);
 		void hookPrint (LeechCraft::IHookProxy_ptr proxy,
 				QObject *browserWidget,
-				bool *preview,
+				bool preview,
 				QWebFrame *frame);
 		void hookSetURL (LeechCraft::IHookProxy_ptr proxy,
 				QObject *browserWidget,
-				QUrl *url);
+				QUrl url);
 		void hookStatusBarMessage (LeechCraft::IHookProxy_ptr proxy,
 				QObject *browserWidget,
-				QString *message);
+				QString message);
 		void hookTabBarContextMenuActions (LeechCraft::IHookProxy_ptr proxy,
-				const QObject *browserWidget,
-				QList<QAction*>*) const;
+				const QObject *browserWidget) const;
 		void hookUpdateLogicalPath (LeechCraft::IHookProxy_ptr proxy,
 				QObject *browserWidget);
 		void hookURLEditReturnPressed (LeechCraft::IHookProxy_ptr proxy,

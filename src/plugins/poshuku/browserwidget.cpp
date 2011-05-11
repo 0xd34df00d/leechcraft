@@ -64,6 +64,8 @@
 #include "bookmarkswidget.h"
 #include "historywidget.h"
 
+Q_DECLARE_METATYPE (QList<QObject*>);
+
 namespace LeechCraft
 {
 namespace Poshuku
@@ -568,9 +570,11 @@ namespace Poshuku
 	{
 		QUrl url = thurl;
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-		emit hookSetURL (proxy, this, &url);
+		emit hookSetURL (proxy, this, url);
 		if (proxy->IsCancelled ())
 			return;
+		
+		proxy->FillValue ("url", url);
 
 		if (!url.isEmpty () && url.isValid ())
 		{
@@ -679,10 +683,26 @@ namespace Poshuku
 
 	QList<QAction*> BrowserWidget::GetTabBarContextMenuActions () const
 	{
-		QList<QAction*> result;
+		QList<QObject*> plugResult;
 
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-		emit hookTabBarContextMenuActions (proxy, this, &result);
+		emit hookTabBarContextMenuActions (proxy, this);
+		proxy->FillValue ("actions", plugResult);
+		
+		QList<QAction*> result;
+		Q_FOREACH (QObject *obj, plugResult)
+		{
+			QAction *act = qobject_cast<QAction*> (obj);
+			if (!act)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to cast"
+						<< obj
+						<< "from plugins to QAction*";
+				continue;
+			}
+			result << act;
+		}
 
 		if (!proxy->IsCancelled ())
 			result << Reload_
@@ -718,9 +738,11 @@ namespace Poshuku
 	void BrowserWidget::PrintImpl (bool preview, QWebFrame *frame)
 	{
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-		emit hookPrint (proxy, this, &preview, frame);
+		emit hookPrint (proxy, this, preview, frame);
 		if (proxy->IsCancelled ())
 			return;
+		
+		proxy->FillValue ("preview", preview);
 
 		std::auto_ptr<QPrinter> printer (new QPrinter ());
 
@@ -761,11 +783,6 @@ namespace Poshuku
 
 	void BrowserWidget::notificationActionTriggered (int idx)
 	{
-		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-		emit hookNotificationActionTriggered (proxy, this, &idx);
-		if (proxy->IsCancelled ())
-			return;
-
 		switch (idx)
 		{
 			case 0:
@@ -781,7 +798,7 @@ namespace Poshuku
 	void BrowserWidget::handleIconChanged ()
 	{
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-		emit hookIconChanged (proxy, this);
+		emit hookIconChanged (proxy, Ui_.WebView_->page (), this);
 		if (proxy->IsCancelled ())
 			return;
 
@@ -798,9 +815,11 @@ namespace Poshuku
 	{
 		QString msg = thmsg;
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-		emit hookStatusBarMessage (proxy, this, &msg);
+		emit hookStatusBarMessage (proxy, this, msg);
 		if (proxy->IsCancelled ())
 			return;
+		
+		proxy->FillValue ("message", msg);
 
 		emit statusBarChanged (msg);
 	}
@@ -1186,9 +1205,11 @@ namespace Poshuku
 	void BrowserWidget::handleLoadProgress (int p)
 	{
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-		emit hookLoadProgress (proxy, this, &p);
+		emit hookLoadProgress (proxy, Ui_.WebView_->page (), this, p);
 		if (proxy->IsCancelled ())
 			return;
+		
+		proxy->FillValue ("progress", p);
 
 		QString title = Ui_.WebView_->title ();
 		if (p > 0 && p < 100)
@@ -1227,8 +1248,15 @@ namespace Poshuku
 	void BrowserWidget::notifyLoadFinished (bool ok)
 	{
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-		emit hookNotifyLoadFinished (proxy, this, &ok,
-				NotifyWhenFinished_->isChecked (), Own_, HtmlMode_);
+		emit hookNotifyLoadFinished (proxy,
+				Ui_.WebView_,
+				this,
+				ok,
+				NotifyWhenFinished_->isChecked (),
+				Own_,
+				HtmlMode_);
+		
+		proxy->FillValue ("ok", ok);
 
 		if (!NotifyWhenFinished_->isChecked () ||
 				!Own_ ||
