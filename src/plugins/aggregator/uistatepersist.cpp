@@ -13,12 +13,14 @@ namespace LeechCraft
 		{
 			void SaveColumnWidth(const QTreeView* tree, const QString& keyName)
 			{
-			      qDebug() << Q_FUNC_INFO << keyName;
 			      // get & convert to relative width
 			      double w= tree->width();
 			      QList<QVariant> sizes;
 			      for (int i=0;i<tree->model()->columnCount();i++)
-				  sizes += tree->columnWidth(i)/w;
+			      {
+				      sizes += tree->columnWidth(i)/w;
+			      }
+			      qDebug() << Q_FUNC_INFO << keyName << "sizes=" << sizes;
 			      // save (relative) column width
 			      QSettings settings(QApplication::organizationName(),QApplication::applicationName()+" Aggregator");
 			      settings.beginGroup("tabs-width");
@@ -26,14 +28,14 @@ namespace LeechCraft
 			      settings.endGroup();
 			}
 
-			void LoadColumnWidth(QTreeView* tree, const QString& keyName)
+			void LoadColumnWidth(const QTreeView* tree, const QString& keyName)
 			{
-			      qDebug() << Q_FUNC_INFO << keyName;
 			      // load (relative) column width
 			      QSettings settings(QApplication::organizationName(),QApplication::applicationName()+" Aggregator");
 			      settings.beginGroup("tabs-width");
 			      QList<QVariant> sizes=settings.value(keyName).toList();
 			      settings.endGroup();
+			      qDebug() << Q_FUNC_INFO << keyName << "sizes=" << sizes;
 			      // some checks 
 			      if (sizes.size() != tree->model()->columnCount())
 			      {
@@ -46,14 +48,16 @@ namespace LeechCraft
 			      double w= tree->width();
 			      for (int i=0;i<sizes.size();i++)
 			      {
-				    if(!sizes.at(i).canConvert(QVariant::Double))
-				    {
-					  qWarning()<< Q_FUNC_INFO <<
-					      "Can`t convert QVariant to double, (sizes["<<i<<"]="<<sizes.at(i) <<")";
-					  return;
-				    }
-				  tree->setColumnWidth(i,static_cast<int>(sizes.at(i).toDouble()*w));
+				      if(!sizes.at(i).canConvert(QVariant::Double))
+				      {
+					      qWarning()<< Q_FUNC_INFO <<
+						  "Can`t convert QVariant to double, (sizes["<<i<<"]="<<sizes.at(i) <<")";
+					      return;
+				      }
+				      // TODO: remove const modifier
+				      const_cast<QTreeView*>(tree)->setColumnWidth(i,static_cast<int>(sizes.at(i).toDouble()*w));
 			      }
+			      qDebug() << Q_FUNC_INFO << keyName<< ": loaded successful";
 			}
 		}
 	}
