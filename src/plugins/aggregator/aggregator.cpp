@@ -291,7 +291,7 @@ namespace LeechCraft
 
 			void Aggregator::Release ()
 			{
-			        SaveColumnWidth(Impl_->Ui_.Feeds_,"feeds");
+				SaveColumnWidth(Impl_->Ui_.Feeds_,"feeds");
 				disconnect (&Core::Instance (), 0, this, 0);
 				if (Core::Instance ().GetChannelsModel ())
 					disconnect (Core::Instance ().GetChannelsModel (), 0, this, 0);
