@@ -36,10 +36,10 @@ namespace FatApe
 		Q_OBJECT
 		
 		QWebFrame *Frame_;
-		IProxyObject* Proxy_;
+		IProxyObject *Proxy_;
 		UserScript Script_;
 	public:
-		GreaseMonkey (QWebFrame *frame, IProxyObject* proxy, const UserScript& script);
+		GreaseMonkey (QWebFrame *frame, IProxyObject *proxy, const UserScript& script);
 	public slots:
 		void addStyle (const QString& css);
 		void deleteValue (const QString& name);
@@ -49,6 +49,7 @@ namespace FatApe
 		void setValue (const QString& name, QVariant value);
 		void openInTab (const QString& url);
 		QString getResourceText (const QString& resourceName);
+		QString getResourceURL (const QString& resourceName);
 	};
 }
 }

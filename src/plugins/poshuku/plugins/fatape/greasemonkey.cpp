@@ -58,7 +58,7 @@ namespace FatApe
 
 	QVariant GreaseMonkey::getValue (const QString& name)
 	{
-		return getValue (name, QVariant());
+		return getValue (name, QVariant ());
 	}
 
 	QVariant GreaseMonkey::getValue (const QString& name, QVariant defVal)
@@ -69,7 +69,7 @@ namespace FatApe
 
 		return settings.value (QString("%1/%2/%3")
 				.arg (qHash (Script_.Namespace ()))
-				.arg (Script_.Name())
+				.arg (Script_.Name ())
 				.arg (name), defVal);
 		
 
@@ -83,12 +83,12 @@ namespace FatApe
 		
 
 		settings.beginGroup (QString::number (qHash (Script_.Namespace ())));
-		settings.beginGroup (Script_.Name());
+		settings.beginGroup (Script_.Name ());
 		values = settings.allKeys ();
 		settings.endGroup ();
 		settings.endGroup ();
 		
-		return QVariant(values);
+		return QVariant(values.filter (QRegExp ("^(?!resources/).*")));
 	}
 
 	void GreaseMonkey::setValue (const QString& name, QVariant value)
@@ -98,28 +98,49 @@ namespace FatApe
 
 		settings.setValue (QString("%1/%2/%3")
 				.arg (qHash (Script_.Namespace()))
-				.arg (Script_.Name())
+				.arg (Script_.Name ())
 				.arg (name), value);
 
 	}
 
-	void GreaseMonkey::openInTab( const QString& url )
+	void GreaseMonkey::openInTab (const QString& url)
 	{
 		if (Proxy_)
-		{
 			Proxy_->OpenInNewTab (url);
-		}
-
 	}
 
-	QString GreaseMonkey::getResourceText( const QString& resourceName )
+	QString GreaseMonkey::getResourceText (const QString& resourceName)
 	{
 		QFile resource(Script_.GetResourcePath (resourceName));
 
-		return resource.open (QFile::ReadOnly) ? QTextStream (&resource).readAll ()
-				: QString();
+		return resource.open (QFile::ReadOnly) ? 
+			QTextStream (&resource).readAll () :
+			QString ();
 	}
-	
+
+	QString GreaseMonkey::getResourceURL (const QString& resourceName)
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+			QCoreApplication::applicationName () + "_Poshuku_FatApe");
+		QString mimeType = settings.value (QString ("%1/%2/resources/%3")
+				.arg (qHash (Script_.Namespace ()))
+				.arg (Script_.Name ())
+				.arg (resourceName)).toString ();
+		QFile resource(Script_.GetResourcePath (resourceName));
+		
+		return resource.open (QFile::ReadOnly) ?
+			QString ("data:%1;base64,%2")
+				.arg (mimeType)
+				.arg (QString (resource.readAll ().toBase64 ())
+						//The result is a base64 encoded URI, which is then also URI encoded, 
+						//as suggested by Wikipedia(http://en.wikipedia.org/wiki/Base64#URL_applications), 
+						//because of "+" and "/" characters in the base64 alphabet.
+						//http://wiki.greasespot.net/GM_getResourceURL#Returns
+						.replace ("+", "%2B")  
+						.replace ("/", "%2F")) :
+			QString();
+	}
+
 }
 }
 }

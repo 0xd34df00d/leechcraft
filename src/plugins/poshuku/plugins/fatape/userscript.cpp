@@ -28,7 +28,6 @@
 #include <plugininterface/util.h>
 #include "greasemonkey.h"
 
-namespace Util = LeechCraft::Util;
 
 namespace LeechCraft
 {
@@ -116,7 +115,7 @@ namespace FatApe
 				!any (exclude.begin (), exclude.end (), match);
 	}
 
-	void UserScript::Inject (QWebFrame *frame, IProxyObject* proxy) const
+	void UserScript::Inject (QWebFrame *frame, IProxyObject *proxy) const
 	{
 		QFile script (ScriptPath_);
 
@@ -142,6 +141,7 @@ namespace FatApe
 			"var GM_setValue = %1.setValue;"
 			"var GM_openInTab = %1.openInTab;"
 			"var GM_getResourceText = %1.getResourceText;"
+			"var GM_getResourceURL = %1.getResourceURL;"
 			"var GM_log = function(){console.log.apply(console, arguments)};"
 			"%2})()")
 				.arg (gmLayerId)
@@ -169,16 +169,17 @@ namespace FatApe
 
 	QString UserScript::GetResourcePath (const QString& resourceName) const
 	{
-		QString resource = QStringList (Metadata_.values ("resource"))
-				.filter (QRegExp (QString("%1\\s.*").arg (resourceName)))
-				.value (0, QString())
-				.mid(resourceName.length ())
+		const QString& resource = QStringList (Metadata_.values ("resource"))
+				.filter (QRegExp (QString ("%1\\s.*").arg (resourceName)))
+				.value (0)
+				.mid (resourceName.length ())
 				.trimmed ();
-		QUrl resourceUrl = QUrl (resource);
-		QString resourceFile = QFileInfo (resourceUrl.path ()).fileName ();
+		QUrl resourceUrl (resource);
+		const QString& resourceFile = QFileInfo (resourceUrl.path ()).fileName ();
 		
-		return resourceFile.isEmpty () ? QString()
-			: QFileInfo (Util::CreateIfNotExists ("data/poshuku/fatape/scripts/resources"),
+		return resourceFile.isEmpty () ? 
+			QString() :
+			QFileInfo (Util::CreateIfNotExists ("data/poshuku/fatape/scripts/resources"),
 				QString ("%1%2_%3")
 					.arg (qHash (Namespace ()))
 					.arg (qHash (Name ()))
