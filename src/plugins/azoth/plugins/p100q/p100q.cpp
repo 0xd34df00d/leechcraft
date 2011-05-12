@@ -57,7 +57,7 @@ namespace p100q
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("p100q is plugin for nicer suppQString ort of the psto.net microblogging service.");
+		return tr ("p100q is plugin for nicer support of the psto.net microblogging service.");
 	}
 
 	QIcon Plugin::GetIcon () const
