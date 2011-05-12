@@ -28,7 +28,7 @@ namespace LeechCraft
 				settings.endGroup ();
 			}
 
-			void LoadColumnWidth (const QTreeView* tree, const QString& keyName)
+			void LoadColumnWidth (QTreeView* tree, const QString& keyName)
 			{
 				// load (relative) column width
 				QSettings settings (QApplication::organizationName (), QApplication::applicationName () + " Aggregator");
@@ -54,8 +54,7 @@ namespace LeechCraft
 							"(sizes[" << i << "]=" << sizes.at (i) << ")";
 						return;
 					}
-					// TODO: remove const modifier
-					const_cast<QTreeView*> (tree)->setColumnWidth (i, static_cast<int> (sizes.at (i).toDouble () * w));
+					tree->setColumnWidth (i, static_cast<int> (sizes.at (i).toDouble () * w));
 				}
 				qDebug() << Q_FUNC_INFO << keyName<< ": loaded successful";
 			}
