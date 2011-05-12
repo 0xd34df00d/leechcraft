@@ -55,11 +55,6 @@
 #include "util.h"
 #include "eventsnotifier.h"
 
-uint qHash (const QImage& image)
-{
-	return image.cacheKey ();
-}
-
 namespace LeechCraft
 {
 namespace Azoth
