@@ -100,7 +100,7 @@ namespace FatApe
 		apply_if (UserScripts_.begin (), UserScripts_.end (), match, inject);
 	}
 
-	void Plugin::initPlugin (QObject* proxy)
+	void Plugin::initPlugin (QObject *proxy)
 	{
 		Proxy_ = qobject_cast<IProxyObject*>(proxy);
 

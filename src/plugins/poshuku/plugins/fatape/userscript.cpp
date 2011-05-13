@@ -28,7 +28,6 @@
 #include <plugininterface/util.h>
 #include "greasemonkey.h"
 
-
 namespace LeechCraft
 {
 namespace Poshuku
@@ -178,7 +177,7 @@ namespace FatApe
 		const QString& resourceFile = QFileInfo (resourceUrl.path ()).fileName ();
 		
 		return resourceFile.isEmpty () ? 
-			QString() :
+			QString () :
 			QFileInfo (Util::CreateIfNotExists ("data/poshuku/fatape/scripts/resources"),
 				QString ("%1%2_%3")
 					.arg (qHash (Namespace ()))

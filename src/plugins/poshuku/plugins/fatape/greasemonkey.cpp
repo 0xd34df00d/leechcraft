@@ -30,7 +30,7 @@ namespace Poshuku
 {
 namespace FatApe
 {
-	GreaseMonkey::GreaseMonkey (QWebFrame *frame, IProxyObject* proxy, const UserScript& script)
+	GreaseMonkey::GreaseMonkey (QWebFrame *frame, IProxyObject *proxy, const UserScript& script)
 	: Frame_ (frame)
 	, Proxy_ (proxy)
 	, Script_ (script)
@@ -52,8 +52,7 @@ namespace FatApe
 		settings.remove (QString("%1/%2/%3")
 				.arg (qHash (Script_.Namespace ()))
 				.arg (Script_.Name ())
-				.arg(name));
-		
+				.arg (name));
 	}
 
 	QVariant GreaseMonkey::getValue (const QString& name)
@@ -66,29 +65,24 @@ namespace FatApe
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Poshuku_FatApe");
 
-
 		return settings.value (QString("%1/%2/%3")
 				.arg (qHash (Script_.Namespace ()))
 				.arg (Script_.Name ())
 				.arg (name), defVal);
-		
-
 	}
 
 	QVariant GreaseMonkey::listValues ()
 	{
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Poshuku_FatApe");
-		QStringList values;
 		
-
 		settings.beginGroup (QString::number (qHash (Script_.Namespace ())));
 		settings.beginGroup (Script_.Name ());
-		values = settings.allKeys ();
+		QStringList values = settings.allKeys ();
 		settings.endGroup ();
 		settings.endGroup ();
-		
-		return QVariant(values.filter (QRegExp ("^(?!resources/).*")));
+
+		return values.filter (QRegExp ("^(?!resources/).*"));
 	}
 
 	void GreaseMonkey::setValue (const QString& name, QVariant value)
@@ -100,7 +94,6 @@ namespace FatApe
 				.arg (qHash (Script_.Namespace()))
 				.arg (Script_.Name ())
 				.arg (name), value);
-
 	}
 
 	void GreaseMonkey::openInTab (const QString& url)
@@ -111,7 +104,7 @@ namespace FatApe
 
 	QString GreaseMonkey::getResourceText (const QString& resourceName)
 	{
-		QFile resource(Script_.GetResourcePath (resourceName));
+		QFile resource (Script_.GetResourcePath (resourceName));
 
 		return resource.open (QFile::ReadOnly) ? 
 			QTextStream (&resource).readAll () :
@@ -126,7 +119,7 @@ namespace FatApe
 				.arg (qHash (Script_.Namespace ()))
 				.arg (Script_.Name ())
 				.arg (resourceName)).toString ();
-		QFile resource(Script_.GetResourcePath (resourceName));
+		QFile resource (Script_.GetResourcePath (resourceName));
 		
 		return resource.open (QFile::ReadOnly) ?
 			QString ("data:%1;base64,%2")
@@ -138,9 +131,8 @@ namespace FatApe
 						//http://wiki.greasespot.net/GM_getResourceURL#Returns
 						.replace ("+", "%2B")  
 						.replace ("/", "%2F")) :
-			QString();
+			QString ();
 	}
-
 }
 }
 }

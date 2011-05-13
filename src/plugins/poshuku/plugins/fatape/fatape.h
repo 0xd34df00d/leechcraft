@@ -40,7 +40,7 @@ namespace FatApe
 		Q_INTERFACES (IInfo IPlugin2)
 
 		QList<UserScript> UserScripts_;
-		IProxyObject* Proxy_;
+		IProxyObject *Proxy_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -54,7 +54,7 @@ namespace FatApe
 		void hookInitialLayoutCompleted (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QWebFrame *frame);
-		void initPlugin (QObject* proxy);
+		void initPlugin (QObject *proxy);
 	};
 }
 }
