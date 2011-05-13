@@ -20,9 +20,11 @@
 #include <QCoreApplication>
 #include <QFile>
 #include <QHash>
-#include <QSettings>
 #include <QTextStream>
 #include <QWebElement>
+#include <QWebPage>
+#include <QWebSettings>
+#include <QWebSecurityOrigin>
 
 namespace LeechCraft
 {
@@ -34,7 +36,12 @@ namespace FatApe
 	: Frame_ (frame)
 	, Proxy_ (proxy)
 	, Script_ (script)
+	, Storage_ (QCoreApplication::organizationName (),
+		QCoreApplication::applicationName () + "_Poshuku_FatApe")
 	{
+		Storage_.beginGroup (QString ("storage/%1/%2")
+				.arg (qHash (Script_.Namespace ()))
+				.arg (Script_.Name ()));
 	}
 
 	void GreaseMonkey::addStyle (const QString& css)
@@ -46,13 +53,7 @@ namespace FatApe
 
 	void GreaseMonkey::deleteValue (const QString& name)
 	{
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Poshuku_FatApe");
-
-		settings.remove (QString("%1/%2/%3")
-				.arg (qHash (Script_.Namespace ()))
-				.arg (Script_.Name ())
-				.arg (name));
+		Storage_.remove (name);
 	}
 
 	QVariant GreaseMonkey::getValue (const QString& name)
@@ -62,38 +63,17 @@ namespace FatApe
 
 	QVariant GreaseMonkey::getValue (const QString& name, QVariant defVal)
 	{
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Poshuku_FatApe");
-
-		return settings.value (QString("%1/%2/%3")
-				.arg (qHash (Script_.Namespace ()))
-				.arg (Script_.Name ())
-				.arg (name), defVal);
+		return Storage_.value (name, defVal);
 	}
 
 	QVariant GreaseMonkey::listValues ()
 	{
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Poshuku_FatApe");
-		
-		settings.beginGroup (QString::number (qHash (Script_.Namespace ())));
-		settings.beginGroup (Script_.Name ());
-		QStringList values = settings.allKeys ();
-		settings.endGroup ();
-		settings.endGroup ();
-
-		return values.filter (QRegExp ("^(?!resources/).*"));
+		return Storage_.allKeys ();
 	}
 
 	void GreaseMonkey::setValue (const QString& name, QVariant value)
 	{
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Poshuku_FatApe");
-
-		settings.setValue (QString("%1/%2/%3")
-				.arg (qHash (Script_.Namespace()))
-				.arg (Script_.Name ())
-				.arg (name), value);
+		Storage_.setValue (name, value);
 	}
 
 	void GreaseMonkey::openInTab (const QString& url)
@@ -115,7 +95,7 @@ namespace FatApe
 	{
 		QSettings settings (QCoreApplication::organizationName (),
 			QCoreApplication::applicationName () + "_Poshuku_FatApe");
-		QString mimeType = settings.value (QString ("%1/%2/resources/%3")
+		QString mimeType = settings.value (QString ("resources/%1/%2/%3")
 				.arg (qHash (Script_.Namespace ()))
 				.arg (Script_.Name ())
 				.arg (resourceName)).toString ();

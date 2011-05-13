@@ -20,6 +20,7 @@
 #define PLUGINS_POSHUKU_PLUGINS_FATAPE_GREASEMONKEY_H
 #include <QObject>
 #include <QStringList>
+#include <QSettings>
 #include <QVariant>
 #include <QWebFrame>
 #include <interfaces/iproxyobject.h>
@@ -38,6 +39,7 @@ namespace FatApe
 		QWebFrame *Frame_;
 		IProxyObject *Proxy_;
 		UserScript Script_;
+		QSettings Storage_;
 	public:
 		GreaseMonkey (QWebFrame *frame, IProxyObject *proxy, const UserScript& script);
 	public slots:
