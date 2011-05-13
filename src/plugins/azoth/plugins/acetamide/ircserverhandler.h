@@ -209,7 +209,10 @@ class IrcMessage;
 				const QList<std::string>&, const QString&);
 		void GetInfoEnd (const QString&,
 				const QList<std::string>&, const QString&);
-
+		void GetMotd (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetMotdEnd (const QString&,
+				const QList<std::string>&, const QString&);
 	private slots:
 		void readReply ();
 		void connectionEstablished ();

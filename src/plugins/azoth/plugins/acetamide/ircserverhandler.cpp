@@ -601,6 +601,15 @@ namespace Acetamide
 		Command2Action_ ["374"] =
 				boost::bind (&IrcServerHandler::GetInfoEnd,
 					this, _1, _2, _3);
+		Command2Action_ ["372"] =
+				boost::bind (&IrcServerHandler::GetMotd,
+					this, _1, _2, _3);
+		Command2Action_ ["375"] =
+				boost::bind (&IrcServerHandler::GetMotd,
+					this, _1, _2, _3);
+		Command2Action_ ["376"] =
+				boost::bind (&IrcServerHandler::GetMotdEnd,
+					this, _1, _2, _3);
 
 		Name2Command_ ["nick"] = boost::bind (&IrcParser::NickCommand,
 				IrcParser_, _1);
@@ -1261,6 +1270,18 @@ namespace Acetamide
 			const QList<std::string>& , const QString& msg)
 	{
 		SendAnswerToChannel ("info", msg, true);
+	}
+
+	void IrcServerHandler::GetMotd (const QString&,
+			const QList<std::string>&, const QString& msg)
+	{
+		SendAnswerToChannel ("motd", msg);
+	}
+
+	void IrcServerHandler::GetMotdEnd (const QString&,
+			const QList<std::string>&, const QString& msg)
+	{
+		SendAnswerToChannel ("motd", msg, true);
 	}
 
 	void IrcServerHandler::InitSocket ()
