@@ -22,9 +22,6 @@
 #include <QHash>
 #include <QTextStream>
 #include <QWebElement>
-#include <QWebPage>
-#include <QWebSettings>
-#include <QWebSecurityOrigin>
 
 namespace LeechCraft
 {
