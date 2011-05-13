@@ -22,10 +22,6 @@
 #include "ui_itemswidget.h"
 #include "item.h"
 #include "channel.h"
-#include <plugininterface/mergemodel.h>
-#include <plugininterface/categoryselector.h>
-#include "itemsfiltermodel.h"
-#include "itemslistmodel.h"
 
 class QModelIndex;
 class QToolBar;
@@ -38,34 +34,7 @@ namespace LeechCraft
 	{
 		namespace Aggregator
 		{
-			using LeechCraft::Util::CategorySelector;
-			struct ItemsWidget_Impl
-			{
-				Ui::ItemsWidget Ui_;
-				
-				QToolBar *ControlToolBar_;
-				QAction *ActionHideReadItems_;
-				QAction *ActionShowAsTape_;
-				
-				QAction *ActionMarkItemAsUnread_;
-				QAction *ActionMarkItemAsRead_;
-				QAction *ActionItemCommentsSubscribe_;
-				QAction *ActionItemLinkOpen_;
-				
-				bool TapeMode_;
-				bool MergeMode_;
-				
-				QSortFilterProxyModel *ChannelsFilter_;
-				
-				std::auto_ptr<ItemsListModel> CurrentItemsModel_;
-				QList<boost::shared_ptr<ItemsListModel> > SupplementaryModels_;
-				std::auto_ptr<Util::MergeModel> ItemLists_;
-				std::auto_ptr<ItemsFilterModel> ItemsFilterModel_;
-				std::auto_ptr<CategorySelector> ItemCategorySelector_;
-				
-				QTimer *SelectedChecker_;
-				QModelIndex LastSelectedIndex_;
-			};
+			struct ItemsWidget_Impl;
 			struct ChannelActions;
 			class Aggregator;
 			class ItemsFilterModel;
@@ -114,6 +83,7 @@ namespace LeechCraft
 				QStringList GetItemCategories (int) const;
 				void SubscribeToComments (const QModelIndex&) const;
 				void CurrentChannelChanged (const QModelIndex&);
+				QTreeView* GetItemsTreeView ();
 			private:
 				void ClearSupplementaryModels ();
 				void AddSupplementaryModelFor (const ChannelShort&);

@@ -43,6 +43,34 @@ namespace LeechCraft
 		{
 			using LeechCraft::Util::CategorySelector;
 
+			struct ItemsWidget_Impl
+			{
+				Ui::ItemsWidget Ui_;
+
+				QToolBar *ControlToolBar_;
+				QAction *ActionHideReadItems_;
+				QAction *ActionShowAsTape_;
+
+				QAction *ActionMarkItemAsUnread_;
+				QAction *ActionMarkItemAsRead_;
+				QAction *ActionItemCommentsSubscribe_;
+				QAction *ActionItemLinkOpen_;
+
+				bool TapeMode_;
+				bool MergeMode_;
+
+				QSortFilterProxyModel *ChannelsFilter_;
+
+				std::auto_ptr<ItemsListModel> CurrentItemsModel_;
+				QList<boost::shared_ptr<ItemsListModel> > SupplementaryModels_;
+				std::auto_ptr<Util::MergeModel> ItemLists_;
+				std::auto_ptr<ItemsFilterModel> ItemsFilterModel_;
+				std::auto_ptr<CategorySelector> ItemCategorySelector_;
+				
+				QTimer *SelectedChecker_;
+				QModelIndex LastSelectedIndex_;
+			};
+
 			ItemsWidget::ItemsWidget (QWidget *parent)
 			: QWidget (parent)
 			, Impl_ (new ItemsWidget_Impl)
@@ -104,7 +132,7 @@ namespace LeechCraft
 						SIGNAL (currentChannelChanged (const QModelIndex&)),
 						this,
 						SLOT (channelChanged (const QModelIndex&)));
-				
+
 				QHeaderView *itemsHeader = Impl_->Ui_.Items_->header ();
 				QFontMetrics fm = fontMetrics ();
 				int dateTimeSize = fm.width (QDateTime::currentDateTime ()
@@ -412,6 +440,11 @@ namespace LeechCraft
 					Impl_->CurrentItemsModel_->Reset (-1);
 				}
 				emit currentChannelChanged (index);
+			}
+
+			QTreeView* ItemsWidget::GetItemsTreeView (void)
+			{
+				return Impl_->Ui_.Items_;
 			}
 
 			void ItemsWidget::ClearSupplementaryModels ()

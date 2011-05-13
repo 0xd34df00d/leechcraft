@@ -61,6 +61,7 @@
 #include "actionsstructs.h"
 #include <boost/graph/graph_concepts.hpp>
 #include "uistatepersist.h"
+#include "itemswidget.h"
 
 namespace LeechCraft
 {
@@ -228,7 +229,6 @@ namespace LeechCraft
 						SIGNAL (customContextMenuRequested (const QPoint&)),
 						this,
 						SLOT (handleFeedsContextMenuRequested (const QPoint&)));
-
 				QHeaderView *channelsHeader = Impl_->Ui_.Feeds_->header ();
 
 				QMenu *contextMenu = new QMenu (tr ("Feeds actions"));
@@ -287,13 +287,13 @@ namespace LeechCraft
 			void Aggregator::SecondInit ()
 			{
 				LoadColumnWidth (Impl_->Ui_.Feeds_, "feeds");
-				LoadColumnWidth (Impl_->Ui_.ItemsWidget_->Impl_->Ui_.Items_, "items");
+				LoadColumnWidth (Impl_->Ui_.ItemsWidget_->GetItemsTreeView(), "items");
 			}
 
 			void Aggregator::Release ()
 			{
-				SaveColumnWidth(Impl_->Ui_.Feeds_,"feeds");
-				SaveColumnWidth (Impl_->Ui_.ItemsWidget_->Impl_->Ui_.Items_, "items");
+				SaveColumnWidth (Impl_->Ui_.Feeds_, "feeds");
+				SaveColumnWidth (Impl_->Ui_.ItemsWidget_->GetItemsTreeView (), "items");
 				disconnect (&Core::Instance (), 0, this, 0);
 				if (Core::Instance ().GetChannelsModel ())
 					disconnect (Core::Instance ().GetChannelsModel (), 0, this, 0);
