@@ -547,8 +547,8 @@ namespace Acetamide
 		Command2Action_ ["311"] =
 				boost::bind (&IrcServerHandler::GetWhoIsUser,
 					this, _1, _2, _3);
-		Command2Action_ ["311"] =
-				boost::bind (&IrcServerHandler::GetWhoIsUser,
+		Command2Action_ ["315"] =
+				boost::bind (&IrcServerHandler::GetWhoEnd,
 					this, _1, _2, _3);
 		Command2Action_ ["312"] =
 				boost::bind (&IrcServerHandler::GetWhoIsServer,
@@ -582,6 +582,33 @@ namespace Acetamide
 					this, _1, _2, _3);
 		Command2Action_ ["351"] =
 				boost::bind (&IrcServerHandler::GetVersion,
+					this, _1, _2, _3);
+		Command2Action_ ["352"] =
+				boost::bind (&IrcServerHandler::GetWho,
+					this, _1, _2, _3);
+		Command2Action_ ["366"] =
+				boost::bind (&IrcServerHandler::GetNamesEnd,
+					this, _1, _2, _3);
+		Command2Action_ ["364"] =
+				boost::bind (&IrcServerHandler::GetLinks,
+					this, _1, _2, _3);
+		Command2Action_ ["365"] =
+				boost::bind (&IrcServerHandler::GetLinksEnd,
+					this, _1, _2, _3);
+		Command2Action_ ["371"] =
+				boost::bind (&IrcServerHandler::GetInfo,
+					this, _1, _2, _3);
+		Command2Action_ ["374"] =
+				boost::bind (&IrcServerHandler::GetInfoEnd,
+					this, _1, _2, _3);
+		Command2Action_ ["372"] =
+				boost::bind (&IrcServerHandler::GetMotd,
+					this, _1, _2, _3);
+		Command2Action_ ["375"] =
+				boost::bind (&IrcServerHandler::GetMotd,
+					this, _1, _2, _3);
+		Command2Action_ ["376"] =
+				boost::bind (&IrcServerHandler::GetMotdEnd,
 					this, _1, _2, _3);
 
 		Name2Command_ ["nick"] = boost::bind (&IrcParser::NickCommand,
@@ -781,15 +808,7 @@ namespace Acetamide
 			ChannelHandlers_ [channelID]->SetRosterReceived (true);
 		}
 		else
-		{
-			QString cmd = "names " +
-					QString::fromUtf8 (params.last ().c_str ());
-
-			Q_FOREACH (ChannelHandler *ich, ChannelHandlers_.values ())
-				ich->ShowServiceMessage (message,
-						IMessage::MTEventMessage,
-						IMessage::MSTOther);
-		}
+			SendAnswerToChannel ("names", message);
 	}
 
 	void IrcServerHandler::JoinParticipant (const QString& nick,
@@ -1202,6 +1221,67 @@ namespace Acetamide
 			list << QString::fromUtf8 (str.c_str ());
 		list << msg;
 		SendAnswerToChannel ("version", list.join (" "), true);
+	}
+
+	void IrcServerHandler::GetWho (const QString&,
+			const QList<std::string>& params, const QString& msg)
+	{
+		QString message = QString::fromUtf8 (params
+				.at (params.count () - 1).c_str ()) +
+				" - " + QString::fromUtf8 (params.at (2).c_str ()) + "@"
+				+ QString::fromUtf8 (params.at (3).c_str ()) +
+				" (" + msg.split (' ').at (1) + ")";
+		SendAnswerToChannel ("who", message);
+	}
+
+	void IrcServerHandler::GetWhoEnd (const QString&,
+			const QList<std::string>&, const QString& msg)
+	{
+		SendAnswerToChannel ("who", msg, true);
+	}
+
+	void IrcServerHandler::GetNamesEnd (const QString&,
+			const QList<std::string>&, const QString& msg)
+	{
+		SendAnswerToChannel ("names", msg, true);
+	}
+
+	void IrcServerHandler::GetLinks (const QString&,
+			const QList<std::string>& params, const QString& msg)
+	{
+		QString message = QString::fromUtf8 (params.last ().c_str ()) +
+				" :" + msg;
+		SendAnswerToChannel ("links", message);
+	}
+
+	void IrcServerHandler::GetLinksEnd (const QString&,
+			const QList<std::string>& , const QString& msg)
+	{
+		SendAnswerToChannel ("links", msg, true);
+	}
+
+	void IrcServerHandler::GetInfo(const QString&,
+			const QList<std::string>& params, const QString& msg)
+	{
+		SendAnswerToChannel ("info", msg);
+	}
+
+	void IrcServerHandler::GetInfoEnd (const QString&,
+			const QList<std::string>& , const QString& msg)
+	{
+		SendAnswerToChannel ("info", msg, true);
+	}
+
+	void IrcServerHandler::GetMotd (const QString&,
+			const QList<std::string>&, const QString& msg)
+	{
+		SendAnswerToChannel ("motd", msg);
+	}
+
+	void IrcServerHandler::GetMotdEnd (const QString&,
+			const QList<std::string>&, const QString& msg)
+	{
+		SendAnswerToChannel ("motd", msg, true);
 	}
 
 	void IrcServerHandler::InitSocket ()
