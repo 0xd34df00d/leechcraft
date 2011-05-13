@@ -26,7 +26,10 @@
 class QAbstractItemModel;
 class QWebFrame;
 
-uint qHash (const QImage&);
+inline uint qHash (const QImage& image)
+{
+	return image.cacheKey ();
+}
 
 namespace LeechCraft
 {
