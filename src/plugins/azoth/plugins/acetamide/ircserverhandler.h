@@ -204,6 +204,8 @@ class IrcMessage;
 				const QList<std::string>&, const QString&);
 		void GetRehash (const QString&,
 				const QList<std::string>&, const QString&);
+		void GetTime (const QString&,
+				const QList<std::string>&, const QString&);
 	private slots:
 		void readReply ();
 		void connectionEstablished ();

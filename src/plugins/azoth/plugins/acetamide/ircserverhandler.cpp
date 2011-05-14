@@ -616,6 +616,9 @@ namespace Acetamide
 		Command2Action_ ["382"] =
 				boost::bind (&IrcServerHandler::GetRehash,
 					this, _1, _2, _3);
+		Command2Action_ ["391"] =
+				boost::bind (&IrcServerHandler::GetTime,
+					this, _1, _2, _3);
 
 		Name2Command_ ["nick"] = boost::bind (&IrcParser::NickCommand,
 				IrcParser_, _1);
@@ -1267,6 +1270,14 @@ namespace Acetamide
 		QString message = QString::fromUtf8 (params.last ().c_str ()) +
 				" :" + msg;
 		SendAnswerToChannel ("rehash", message, true);
+	}
+
+	void IrcServerHandler::GetTime (const QString&,
+			const QList<std::string>& params, const QString& msg)
+	{
+		QString message = QString::fromUtf8 (params.last ().c_str ()) +
+				" :" + msg;
+		SendAnswerToChannel ("time", message, true);
 	}
 
 	void IrcServerHandler::InitSocket ()
