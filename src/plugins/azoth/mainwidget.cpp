@@ -47,10 +47,19 @@ namespace Azoth
 
 		Ui_.setupUi (this);
 		Ui_.BottomLayout_->insertWidget (0, MenuButton_);
+#ifdef QT_VERSION >= 0x040700
+		Ui_.FilterLine_->setPlaceholderText (tr ("Search..."));
+#endif
+		Ui_.CLTree_->setFocusProxy (Ui_.FilterLine_);
 
 		Ui_.CLTree_->setItemDelegate (new ContactListDelegate (Ui_.CLTree_));
 		ProxyModel_->setSourceModel (Core::Instance ().GetCLModel ());
 		Ui_.CLTree_->setModel (ProxyModel_);
+		
+		connect (Ui_.FilterLine_,
+				SIGNAL (textChanged (const QString&)),
+				ProxyModel_,
+				SLOT (setFilterFixedString (const QString&)));
 
 		connect (ProxyModel_,
 				SIGNAL (rowsInserted (const QModelIndex&, int, int)),

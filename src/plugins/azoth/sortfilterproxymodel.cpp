@@ -30,6 +30,7 @@ namespace Azoth
 	, ShowOffline_ (true)
 	{
 		setDynamicSortFilter (true);
+		setFilterCaseSensitivity (Qt::CaseInsensitive);
 	}
 
 	namespace
@@ -58,6 +59,11 @@ namespace Azoth
 		if (!ShowOffline_)
 		{
 			const QModelIndex& idx = sourceModel ()->index (row, 0, parent);
+			if (!filterRegExp ().isEmpty ())
+				return GetType (idx) == Core::CLETContact ?
+						idx.data ().toString ().contains (filterRegExp ()) :
+						true;
+
 			if (GetType (idx) == Core::CLETContact)
 			{
 				ICLEntry *entry = GetEntry (idx);
