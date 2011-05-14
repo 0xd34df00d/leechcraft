@@ -1506,6 +1506,39 @@ namespace Acetamide
 		SendAnswerToChannel ("stats", message);
 	}
 
+	void IrcServerHandler::GetLuserClient (const QString&,
+			const QList<std::string>&, const QString& msg)
+	{
+		SendAnswerToChannel ("lusers", msg);
+	}
+
+	void IrcServerHandler::GetLuserOp (const QString&,
+			const QList<std::string>& params, const QString& msg)
+	{
+		SendAnswerToChannel ("lusers", QString::fromUtf8 (params
+				.last ().c_str ()) + ":" + msg);
+	}
+
+	void IrcServerHandler::GetLuserUnknown (const QString&,
+			const QList<std::string>& params, const QString& msg)
+	{
+		SendAnswerToChannel ("lusers", QString::fromUtf8 (params
+				.last ().c_str ()) + ":" + msg);
+	}
+
+	void IrcServerHandler::GetLuserChannels (const QString&,
+			const QList<std::string>& params, const QString& msg)
+	{
+		SendAnswerToChannel ("lusers", QString::fromUtf8 (params
+				.last ().c_str ()) + ":" + msg);
+	}
+
+	void IrcServerHandler::GetLuserMe (const QString&,
+			const QList<std::string>&, const QString& msg)
+	{
+		SendAnswerToChannel ("lusers", msg, true);
+	}
+
 	void IrcServerHandler::InitSocket ()
 	{
 		connect (TcpSocket_ptr.get (),
