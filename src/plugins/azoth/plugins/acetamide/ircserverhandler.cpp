@@ -610,6 +610,12 @@ namespace Acetamide
 		Command2Action_ ["376"] =
 				boost::bind (&IrcServerHandler::GetEndMessage,
 					this, _1, QList<std::string> () << "motd", _3);
+		Command2Action_ ["381"] =
+				boost::bind (&IrcServerHandler::GetYoureOper,
+					this, _1, _2, _3);
+		Command2Action_ ["382"] =
+				boost::bind (&IrcServerHandler::GetRehash,
+					this, _1, _2, _3);
 
 		Name2Command_ ["nick"] = boost::bind (&IrcParser::NickCommand,
 				IrcParser_, _1);
@@ -1247,6 +1253,20 @@ namespace Acetamide
 		SendAnswerToChannel (params.first ().c_str (), msg, true);
 		if (params.first ().c_str () == "motd")
 			JoinFromQueue ();
+	}
+
+	void IrcServerHandler::GetYoureOper (const QString&,
+			const QList<std::string>& , const QString& msg)
+	{
+		SendAnswerToChannel ("oper", msg, true);
+	}
+
+	void IrcServerHandler::GetRehash (const QString&,
+			const QList<std::string>& params, const QString& msg)
+	{
+		QString message = QString::fromUtf8 (params.last ().c_str ()) +
+				" :" + msg;
+		SendAnswerToChannel ("rehash", message, true);
 	}
 
 	void IrcServerHandler::InitSocket ()
