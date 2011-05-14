@@ -47,7 +47,7 @@ namespace Azoth
 
 		Ui_.setupUi (this);
 		Ui_.BottomLayout_->insertWidget (0, MenuButton_);
-#ifdef QT_VERSION >= 0x040700
+#if QT_VERSION >= 0x040700
 		Ui_.FilterLine_->setPlaceholderText (tr ("Search..."));
 #endif
 		Ui_.CLTree_->setFocusProxy (Ui_.FilterLine_);
