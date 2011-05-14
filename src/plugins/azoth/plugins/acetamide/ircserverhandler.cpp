@@ -383,109 +383,161 @@ namespace Acetamide
 	void IrcServerHandler::InitErrorsReplys ()
 	{
 		Error2Action_ ["401"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["402"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["403"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["404"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["405"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["406"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["407"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["408"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["409"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithoutParam,
+						this, _1, _2);
 		Error2Action_ ["411"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithoutParam,
+						this, _1, _2);
 		Error2Action_ ["412"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithoutParam,
+						this, _1, _2);
 		Error2Action_ ["413"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["414"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["415"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["421"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["422"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithoutParam,
+						this, _1, _2);
 		Error2Action_ ["424"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithoutParam,
+						this, _1, _2);
 		Error2Action_ ["431"] =
-				boost::bind (&IrcServerHandler::NickCmdError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithoutParam,
+						this, _1, _2);
 		Error2Action_ ["432"] =
-				boost::bind (&IrcServerHandler::NickCmdError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["433"] =
-				boost::bind (&IrcServerHandler::NickCmdError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["436"] =
-				boost::bind (&IrcServerHandler::NickCmdError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["437"] =
-				boost::bind (&IrcServerHandler::NickCmdError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["441"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["442"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["443"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["444"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["445"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithoutParam,
+						this, _1, _2);
 		Error2Action_ ["446"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithoutParam,
+						this, _1, _2);
 		Error2Action_ ["451"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithoutParam,
+						this, _1, _2);
 		Error2Action_ ["461"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["462"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithoutParam,
+						this, _1, _2);
 		Error2Action_ ["463"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithoutParam,
+						this, _1, _2);
 		Error2Action_ ["464"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithoutParam,
+						this, _1, _2);
 		Error2Action_ ["465"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithoutParam,
+						this, _1, _2);
 		Error2Action_ ["466"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithoutParam,
+						this, _1, "You are banned!");
 		Error2Action_ ["467"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["471"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["472"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["473"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["474"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["475"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["476"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["477"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["478"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["481"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithoutParam,
+						this, _1, _2);
 		Error2Action_ ["482"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["483"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithoutParam,
+						this, _1, _2);
 		Error2Action_ ["484"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithoutParam,
+						this, _1, _2);
 		Error2Action_ ["485"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithoutParam,
+						this, _1, _2);
 		Error2Action_ ["491"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithoutParam,
+						this, _1, _2);
 		Error2Action_ ["501"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithoutParam,
+						this, _1, _2);
 		Error2Action_ ["502"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithoutParam,
+						this, _1, _2);
 	}
 
 	void IrcServerHandler::InitCommandResponses ()
@@ -1359,12 +1411,12 @@ namespace Acetamide
 				EncodedMessage (msg, IMessage::DIn));
 	}
 
-	void IrcServerHandler::GetEndMessage(const QString&,
+	void IrcServerHandler::GetEndMessage (const QString&,
 			const QList<std::string>& params, const QString& msg)
 	{
 		SendAnswerToChannel (params.first ().c_str (),
 				EncodedMessage (msg, IMessage::DIn), true);
-		if (params.first ().c_str () == "motd")
+		if (params.first () == "motd")
 			JoinFromQueue ();
 	}
 
@@ -1640,6 +1692,27 @@ namespace Acetamide
 				EncodedMessage (msg, IMessage::DIn));
 	}
 
+	void IrcServerHandler::GetErrorWithParam (const QList<std::string>& params,
+			const QString& msg)
+	{
+		QString message;
+		Q_FOREACH (const std::string& str, params.mid (1))
+			message += QString::fromUtf8 (str.c_str ()) + " ";
+		Entity e = Util::MakeNotification ("Azoth",
+				message + ": " + EncodedMessage (msg, IMessage::DIn),
+				PWarning_);
+		Core::Instance ().SendEntity (e);
+	}
+
+	void IrcServerHandler::GetErrorWithoutParam (const QList<std::string>&,
+			const QString& msg)
+	{
+		Entity e = Util::MakeNotification ("Azoth",
+				EncodedMessage (msg, IMessage::DIn),
+				PWarning_);
+		Core::Instance ().SendEntity (e);
+	}
+
 	void IrcServerHandler::InitSocket ()
 	{
 		connect (TcpSocket_ptr.get (),
@@ -1682,15 +1755,12 @@ namespace Acetamide
 					.Command_.toLower ();
 			if (IsErrorReply (cmd))
 			{
-				QString msg = IrcParser_->GetIrcMessageOptions ()
-						.Message_ + " " + QString::fromUtf8 (IrcParser_->
-							GetIrcMessageOptions ().Parameters_.last ()
-								.c_str ());
-				Entity e = Util::MakeNotification ("Azoth",
-						msg,
-						PInfo_);
-				Core::Instance ().SendEntity (e);
-				Error2Action_ [cmd] ();
+				Error2Action_ [cmd] (IrcParser_->GetIrcMessageOptions ()
+							.Parameters_
+						, IrcParser_->GetIrcMessageOptions ()
+							.Message_);
+				if (cmd == "433")
+					NickCmdError ();
 			}
 			else if ((cmd != "join") && (!ChannelJoined_))
 				IncomingMessage2Server ();

@@ -62,9 +62,10 @@ class IrcMessage;
 		boost::shared_ptr<QTcpSocket> TcpSocket_ptr;
 		ConnectionState ServerConnectionState_;
 		QHash<QString, ChannelHandler*> ChannelHandlers_;
-		QHash<QString, boost::function<void (void)> > Error2Action_;
+		QHash<QString, boost::function<void (const QList<std::string>&,
+				const QString&)> > Error2Action_;
 		QHash<QString, boost::function<void (const QString&,
-				QList<std::string>, const QString&)> > Command2Action_;
+				const QList<std::string>&, const QString&)> > Command2Action_;
 		QHash<QString, boost::function<void (const QStringList&)> >
 				Name2Command_;
 		QHash<QString, ServerParticipantEntry_ptr> Nick2Entry_;
@@ -266,6 +267,10 @@ class IrcMessage;
 				const QList<std::string>&, const QString&);
 		void GetTryAgain (const QString&,
 				const QList<std::string>&, const QString&);
+		void GetErrorWithParam (const QList<std::string>&,
+				const QString&);
+		void GetErrorWithoutParam (const QList<std::string>&,
+				const QString&);
 	private slots:
 		void readReply ();
 		void connectionEstablished ();
