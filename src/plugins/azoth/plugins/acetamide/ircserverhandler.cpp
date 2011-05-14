@@ -619,6 +619,18 @@ namespace Acetamide
 		Command2Action_ ["391"] =
 				boost::bind (&IrcServerHandler::GetTime,
 					this, _1, _2, _3);
+		Command2Action_ ["392"] =
+				boost::bind (&IrcServerHandler::GetUsersStart,
+					this, _1, _2, _3);
+		Command2Action_ ["393"] =
+				boost::bind (&IrcServerHandler::GetUsers,
+					this, _1, _2, _3);
+		Command2Action_ ["394"] =
+				boost::bind (&IrcServerHandler::GetEndMessage,
+					this, _1, QList<std::string> () << "users", _3);
+		Command2Action_ ["395"] =
+				boost::bind (&IrcServerHandler::GetNoUser,
+					this, _1, _2, _3);
 
 		Name2Command_ ["nick"] = boost::bind (&IrcParser::NickCommand,
 				IrcParser_, _1);
@@ -1278,6 +1290,24 @@ namespace Acetamide
 		QString message = QString::fromUtf8 (params.last ().c_str ()) +
 				" :" + msg;
 		SendAnswerToChannel ("time", message, true);
+	}
+
+	void IrcServerHandler::GetUsersStart (const QString&,
+			const QList<std::string>&, const QString& msg)
+	{
+		SendAnswerToChannel ("users", msg);
+	}
+
+	void IrcServerHandler::GetUsers (const QString&,
+			const QList<std::string>&, const QString& msg)
+	{
+		SendAnswerToChannel ("users", msg);
+	}
+
+	void IrcServerHandler::GetNoUser (const QString&,
+			const QList<std::string>&, const QString& msg)
+	{
+		SendAnswerToChannel ("users", msg);
 	}
 
 	void IrcServerHandler::InitSocket ()
