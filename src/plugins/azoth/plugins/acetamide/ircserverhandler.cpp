@@ -499,9 +499,9 @@ namespace Acetamide
 		Command2Action_ ["topic"] =
 				boost::bind (&IrcServerHandler::SetTopic,
 					this, _1, _2, _3);
-		Command2Action_ ["376"] =
-				boost::bind (&IrcServerHandler::JoinFromQueue,
-					this, _1, _2, _3);
+// 		Command2Action_ ["376"] =
+// 				boost::bind (&IrcServerHandler::JoinFromQueue,
+// 					this, _1, _2, _3);
 		Command2Action_ ["353"] =
 				boost::bind (&IrcServerHandler::AddParticipants,
 					this, _1, _2, _3);
@@ -548,8 +548,8 @@ namespace Acetamide
 				boost::bind (&IrcServerHandler::GetWhoIsUser,
 					this, _1, _2, _3);
 		Command2Action_ ["315"] =
-				boost::bind (&IrcServerHandler::GetWhoEnd,
-					this, _1, _2, _3);
+				boost::bind (&IrcServerHandler::GetEndMessage,
+					this, _1, QList<std::string> () << "who", _3);
 		Command2Action_ ["312"] =
 				boost::bind (&IrcServerHandler::GetWhoIsServer,
 					this, _1, _2, _3);
@@ -560,17 +560,17 @@ namespace Acetamide
 				boost::bind (&IrcServerHandler::GetWhoIsIdle,
 					this, _1, _2, _3);
 		Command2Action_ ["318"] =
-				boost::bind (&IrcServerHandler::GetWhoIsEnd,
-					this, _1, _2, _3);
+				boost::bind (&IrcServerHandler::GetEndMessage,
+					this, _1, QList<std::string> () << "whois", _3);
 		Command2Action_ ["319"] =
 				boost::bind (&IrcServerHandler::GetWhoIsChannels,
 					this, _1, _2, _3);
 		Command2Action_ ["314"] =
 				boost::bind (&IrcServerHandler::GetWhoWas,
 					this, _1, _2, _3);
-		Command2Action_ ["369"] =
-				boost::bind (&IrcServerHandler::GetWhoWasEnd,
-					this, _1, _2, _3);
+		Command2Action_ ["366"] =
+				boost::bind (&IrcServerHandler::GetEndMessage,
+					this, _1, QList<std::string> () << "whowas", _3);
 		Command2Action_ ["331"] =
 				boost::bind (&IrcServerHandler::GetNoTopic,
 					this, _1, _2, _3);
@@ -587,20 +587,20 @@ namespace Acetamide
 				boost::bind (&IrcServerHandler::GetWho,
 					this, _1, _2, _3);
 		Command2Action_ ["366"] =
-				boost::bind (&IrcServerHandler::GetNamesEnd,
-					this, _1, _2, _3);
+				boost::bind (&IrcServerHandler::GetEndMessage,
+					this, _1, QList<std::string> () << "names", _3);
 		Command2Action_ ["364"] =
 				boost::bind (&IrcServerHandler::GetLinks,
 					this, _1, _2, _3);
 		Command2Action_ ["365"] =
-				boost::bind (&IrcServerHandler::GetLinksEnd,
-					this, _1, _2, _3);
+				boost::bind (&IrcServerHandler::GetEndMessage,
+					this, _1, QList<std::string> () << "links", _3);
 		Command2Action_ ["371"] =
 				boost::bind (&IrcServerHandler::GetInfo,
 					this, _1, _2, _3);
 		Command2Action_ ["374"] =
-				boost::bind (&IrcServerHandler::GetInfoEnd,
-					this, _1, _2, _3);
+				boost::bind (&IrcServerHandler::GetEndMessage,
+					this, _1, QList<std::string> () << "info", _3);
 		Command2Action_ ["372"] =
 				boost::bind (&IrcServerHandler::GetMotd,
 					this, _1, _2, _3);
@@ -608,7 +608,28 @@ namespace Acetamide
 				boost::bind (&IrcServerHandler::GetMotd,
 					this, _1, _2, _3);
 		Command2Action_ ["376"] =
-				boost::bind (&IrcServerHandler::GetMotdEnd,
+				boost::bind (&IrcServerHandler::GetEndMessage,
+					this, _1, QList<std::string> () << "motd", _3);
+		Command2Action_ ["381"] =
+				boost::bind (&IrcServerHandler::GetYoureOper,
+					this, _1, _2, _3);
+		Command2Action_ ["382"] =
+				boost::bind (&IrcServerHandler::GetRehash,
+					this, _1, _2, _3);
+		Command2Action_ ["391"] =
+				boost::bind (&IrcServerHandler::GetTime,
+					this, _1, _2, _3);
+		Command2Action_ ["392"] =
+				boost::bind (&IrcServerHandler::GetUsersStart,
+					this, _1, _2, _3);
+		Command2Action_ ["393"] =
+				boost::bind (&IrcServerHandler::GetUsers,
+					this, _1, _2, _3);
+		Command2Action_ ["394"] =
+				boost::bind (&IrcServerHandler::GetEndMessage,
+					this, _1, QList<std::string> () << "users", _3);
+		Command2Action_ ["395"] =
+				boost::bind (&IrcServerHandler::GetNoUser,
 					this, _1, _2, _3);
 
 		Name2Command_ ["nick"] = boost::bind (&IrcParser::NickCommand,
@@ -768,8 +789,7 @@ namespace Acetamide
 		return entry;
 	}
 
-	void IrcServerHandler::JoinFromQueue (const QString&,
-			const QList<std::string>&, const QString&)
+	void IrcServerHandler::JoinFromQueue ()
 	{
 		Q_FOREACH (const ChannelOptions& co, ChannelsQueue_)
 		{
@@ -1159,12 +1179,6 @@ namespace Acetamide
 		SendAnswerToChannel ("whois", message);
 	}
 
-	void IrcServerHandler::GetWhoIsEnd (const QString&,
-			const QList<std::string>& , const QString& msg)
-	{
-		SendAnswerToChannel ("whois", msg, true);
-	}
-
 	void IrcServerHandler::GetWhoIsChannels (const QString&,
 			const QList<std::string>& params, const QString& msg)
 	{
@@ -1181,12 +1195,6 @@ namespace Acetamide
 				+ QString::fromUtf8 (params.at (3).c_str ()) +
 				" (" + msg + ")";
 		SendAnswerToChannel ("whowas", message);
-	}
-
-	void IrcServerHandler::GetWhoWasEnd (const QString&,
-			const QList<std::string>&, const QString& msg)
-	{
-		SendAnswerToChannel ("whowas", msg, true);
 	}
 
 	void IrcServerHandler::GetNoTopic (const QString&,
@@ -1234,18 +1242,6 @@ namespace Acetamide
 		SendAnswerToChannel ("who", message);
 	}
 
-	void IrcServerHandler::GetWhoEnd (const QString&,
-			const QList<std::string>&, const QString& msg)
-	{
-		SendAnswerToChannel ("who", msg, true);
-	}
-
-	void IrcServerHandler::GetNamesEnd (const QString&,
-			const QList<std::string>&, const QString& msg)
-	{
-		SendAnswerToChannel ("names", msg, true);
-	}
-
 	void IrcServerHandler::GetLinks (const QString&,
 			const QList<std::string>& params, const QString& msg)
 	{
@@ -1254,22 +1250,10 @@ namespace Acetamide
 		SendAnswerToChannel ("links", message);
 	}
 
-	void IrcServerHandler::GetLinksEnd (const QString&,
-			const QList<std::string>& , const QString& msg)
-	{
-		SendAnswerToChannel ("links", msg, true);
-	}
-
 	void IrcServerHandler::GetInfo(const QString&,
 			const QList<std::string>& params, const QString& msg)
 	{
 		SendAnswerToChannel ("info", msg);
-	}
-
-	void IrcServerHandler::GetInfoEnd (const QString&,
-			const QList<std::string>& , const QString& msg)
-	{
-		SendAnswerToChannel ("info", msg, true);
 	}
 
 	void IrcServerHandler::GetMotd (const QString&,
@@ -1278,10 +1262,52 @@ namespace Acetamide
 		SendAnswerToChannel ("motd", msg);
 	}
 
-	void IrcServerHandler::GetMotdEnd (const QString&,
+	void IrcServerHandler::GetEndMessage(const QString&,
+			const QList<std::string>& params, const QString& msg)
+	{
+		SendAnswerToChannel (params.first ().c_str (), msg, true);
+		if (params.first ().c_str () == "motd")
+			JoinFromQueue ();
+	}
+
+	void IrcServerHandler::GetYoureOper (const QString&,
+			const QList<std::string>& , const QString& msg)
+	{
+		SendAnswerToChannel ("oper", msg, true);
+	}
+
+	void IrcServerHandler::GetRehash (const QString&,
+			const QList<std::string>& params, const QString& msg)
+	{
+		QString message = QString::fromUtf8 (params.last ().c_str ()) +
+				" :" + msg;
+		SendAnswerToChannel ("rehash", message, true);
+	}
+
+	void IrcServerHandler::GetTime (const QString&,
+			const QList<std::string>& params, const QString& msg)
+	{
+		QString message = QString::fromUtf8 (params.last ().c_str ()) +
+				" :" + msg;
+		SendAnswerToChannel ("time", message, true);
+	}
+
+	void IrcServerHandler::GetUsersStart (const QString&,
 			const QList<std::string>&, const QString& msg)
 	{
-		SendAnswerToChannel ("motd", msg, true);
+		SendAnswerToChannel ("users", msg);
+	}
+
+	void IrcServerHandler::GetUsers (const QString&,
+			const QList<std::string>&, const QString& msg)
+	{
+		SendAnswerToChannel ("users", msg);
+	}
+
+	void IrcServerHandler::GetNoUser (const QString&,
+			const QList<std::string>&, const QString& msg)
+	{
+		SendAnswerToChannel ("users", msg);
 	}
 
 	void IrcServerHandler::InitSocket ()

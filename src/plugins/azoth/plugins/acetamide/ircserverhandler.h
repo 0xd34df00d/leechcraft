@@ -139,8 +139,7 @@ class IrcMessage;
 				CreateParticipantEntry (const QString&);
 
 		// RPL
-		void JoinFromQueue (const QString&,
-				const QList<std::string>&, const QString&);
+		void JoinFromQueue ();
 		void SetTopic (const QString&,
 				const QList<std::string>&, const QString&);
 		void AddParticipants (const QString&,
@@ -179,13 +178,9 @@ class IrcMessage;
 				const QList<std::string>&, const QString&);
 		void GetWhoIsIdle (const QString&,
 				const QList<std::string>&, const QString&);
-		void GetWhoIsEnd (const QString&,
-				const QList<std::string>&, const QString&);
 		void GetWhoIsChannels (const QString&,
 				const QList<std::string>&, const QString&);
 		void GetWhoWas (const QString&,
-				const QList<std::string>&, const QString&);
-		void GetWhoWasEnd (const QString&,
 				const QList<std::string>&, const QString&);
 		void GetNoTopic (const QString&,
 				const QList<std::string>&, const QString&);
@@ -197,21 +192,25 @@ class IrcMessage;
 				const QList<std::string>&, const QString&);
 		void GetWho (const QString&,
 				const QList<std::string>&, const QString&);
-		void GetWhoEnd (const QString&,
-				const QList<std::string>&, const QString&);
-		void GetNamesEnd (const QString&,
-				const QList<std::string>&, const QString&);
 		void GetLinks (const QString&,
-				const QList<std::string>&, const QString&);
-		void GetLinksEnd (const QString&,
 				const QList<std::string>&, const QString&);
 		void GetInfo (const QString&,
 				const QList<std::string>&, const QString&);
-		void GetInfoEnd (const QString&,
-				const QList<std::string>&, const QString&);
 		void GetMotd (const QString&,
 				const QList<std::string>&, const QString&);
-		void GetMotdEnd (const QString&,
+		void GetEndMessage (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetYoureOper (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetRehash (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetTime (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetUsersStart (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetUsers (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetNoUser (const QString&,
 				const QList<std::string>&, const QString&);
 	private slots:
 		void readReply ();
