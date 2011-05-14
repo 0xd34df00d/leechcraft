@@ -906,7 +906,8 @@ namespace Acetamide
 			ChannelHandlers_ [channelID]->SetRosterReceived (true);
 		}
 		else
-			SendAnswerToChannel ("names", message);
+			SendAnswerToChannel ("names",
+					EncodedMessage (message, IMessage::DIn));
 	}
 
 	void IrcServerHandler::JoinParticipant (const QString& nick,
@@ -933,7 +934,7 @@ namespace Acetamide
 			ChannelHandlers_ [channelID]->LeaveChannel (msg);
 		else
 			ChannelHandlers_ [channelID]->RemoveChannelUser (nick
-					, msg
+					, EncodedMessage (msg, IMessage::DIn)
 					, 0);
 	}
 
@@ -1005,7 +1006,8 @@ namespace Acetamide
 			QString id = (channel + "@" + ServerOptions_.ServerName_)
 					.toLower ();
 			QString mess =
-					tr ("%1 changed nickname to %2").arg (nick, msg);
+					tr ("%1 changed nickname to %2").arg (nick,
+							EncodedMessage (msg, IMessage::DIn));
 			if (ChannelHandlers_.contains (id))
 				ChannelHandlers_ [id]->ShowServiceMessage (mess,
 						IMessage::MTStatusMessage,
@@ -1193,9 +1195,12 @@ namespace Acetamide
 				QString message = param.left (pos) +
 						tr (" is a ") + param.mid (pos + 1);
 				if (param == params.at (params.count () - 1))
-					SendAnswerToChannel ("userhost", message, true);
+					SendAnswerToChannel ("userhost",
+							EncodedMessage (message, IMessage::DIn),
+									true);
 				else
-					SendAnswerToChannel ("userhost", message);
+					SendAnswerToChannel ("userhost",
+							EncodedMessage (message, IMessage::DIn));
 			}
 	}
 
@@ -1216,7 +1221,8 @@ namespace Acetamide
 	void IrcServerHandler::GetAway (const QString&,
 			const QList<std::string>& , const QString& msg)
 	{
-		SendAnswerToChannel ("away", msg, true);
+		SendAnswerToChannel ("away",
+				EncodedMessage (msg, IMessage::DIn), true);
 	}
 
 	void IrcServerHandler::GetWhoIsUser (const QString&,
@@ -1226,7 +1232,8 @@ namespace Acetamide
 				" - " + QString::fromUtf8 (params.at (2).c_str ()) + "@"
 				+ QString::fromUtf8 (params.at (3).c_str ()) +
 				" (" + msg + ")";
-		SendAnswerToChannel ("whois", message, true);
+		SendAnswerToChannel ("whois",
+				EncodedMessage (message, IMessage::DIn), true);
 	}
 
 	void IrcServerHandler::GetWhoIsServer (const QString&,
@@ -1236,8 +1243,10 @@ namespace Acetamide
 				tr (" connected via ") +
 				QString::fromUtf8 (params.at (2).c_str ()) +
 				" (" + msg + ")";
-		SendAnswerToChannel ("whois", message);
-		SendAnswerToChannel ("whowas", message);
+		SendAnswerToChannel ("whois",
+				EncodedMessage (message, IMessage::DIn));
+		SendAnswerToChannel ("whowas",
+				EncodedMessage (message, IMessage::DIn));
 	}
 
 	void IrcServerHandler::GetWhoIsOperator (const QString&,
@@ -1245,7 +1254,8 @@ namespace Acetamide
 	{
 		QString message = QString::fromUtf8 (params.at (1).c_str ()) +
 				+ " " + msg;
-		SendAnswerToChannel ("whois", message);
+		SendAnswerToChannel ("whois",
+				EncodedMessage (message, IMessage::DIn));
 	}
 
 	void IrcServerHandler::GetWhoIsIdle (const QString&,
@@ -1254,7 +1264,8 @@ namespace Acetamide
 		QString message = QString::fromUtf8 (params.at (1).c_str ()) +
 				+ " " + QString::fromUtf8 (params.at (1).c_str ()) +
 				" " + msg;
-		SendAnswerToChannel ("whois", message);
+		SendAnswerToChannel ("whois",
+				EncodedMessage (message, IMessage::DIn));
 	}
 
 	void IrcServerHandler::GetWhoIsChannels (const QString&,
@@ -1262,7 +1273,8 @@ namespace Acetamide
 	{
 		QString message = QString::fromUtf8 (params.at (1).c_str ()) +
 				tr (" on the channels : ") + msg;
-		SendAnswerToChannel ("whois", message);
+		SendAnswerToChannel ("whois",
+				EncodedMessage (message, IMessage::DIn));
 	}
 
 	void IrcServerHandler::GetWhoWas (const QString&,
@@ -1272,13 +1284,15 @@ namespace Acetamide
 				" - " + QString::fromUtf8 (params.at (2).c_str ()) + "@"
 				+ QString::fromUtf8 (params.at (3).c_str ()) +
 				" (" + msg + ")";
-		SendAnswerToChannel ("whowas", message);
+		SendAnswerToChannel ("whowas",
+				EncodedMessage (message, IMessage::DIn));
 	}
 
 	void IrcServerHandler::GetNoTopic (const QString&,
 			const QList<std::string>&, const QString& msg)
 	{
-		SendAnswerToChannel ("topic", msg, true);
+		SendAnswerToChannel ("topic",
+				EncodedMessage (msg, IMessage::DIn), true);
 	}
 
 	void IrcServerHandler::GetInviting (const QString&,
@@ -1288,7 +1302,8 @@ namespace Acetamide
 				QString::fromUtf8 (params.at (1).c_str ()) +
 				" to a channel " +
 				QString::fromUtf8 (params.at (2).c_str ());
-		SendAnswerToChannel ("invite", msg, true);
+		SendAnswerToChannel ("invite",
+				EncodedMessage (msg, IMessage::DIn), true);
 	}
 
 	void IrcServerHandler::GetSummoning (const QString&,
@@ -1317,7 +1332,8 @@ namespace Acetamide
 				" - " + QString::fromUtf8 (params.at (2).c_str ()) + "@"
 				+ QString::fromUtf8 (params.at (3).c_str ()) +
 				" (" + msg.split (' ').at (1) + ")";
-		SendAnswerToChannel ("who", message);
+		SendAnswerToChannel ("who",
+				EncodedMessage (message, IMessage::DIn));
 	}
 
 	void IrcServerHandler::GetLinks (const QString&,
@@ -1325,25 +1341,29 @@ namespace Acetamide
 	{
 		QString message = QString::fromUtf8 (params.last ().c_str ()) +
 				" :" + msg;
-		SendAnswerToChannel ("links", message);
+		SendAnswerToChannel ("links",
+				EncodedMessage (message, IMessage::DIn));
 	}
 
 	void IrcServerHandler::GetInfo(const QString&,
 			const QList<std::string>& params, const QString& msg)
 	{
-		SendAnswerToChannel ("info", msg);
+		SendAnswerToChannel ("info",
+				EncodedMessage (msg, IMessage::DIn));
 	}
 
 	void IrcServerHandler::GetMotd (const QString&,
 			const QList<std::string>&, const QString& msg)
 	{
-		SendAnswerToChannel ("motd", msg);
+		SendAnswerToChannel ("motd",
+				EncodedMessage (msg, IMessage::DIn));
 	}
 
 	void IrcServerHandler::GetEndMessage(const QString&,
 			const QList<std::string>& params, const QString& msg)
 	{
-		SendAnswerToChannel (params.first ().c_str (), msg, true);
+		SendAnswerToChannel (params.first ().c_str (),
+				EncodedMessage (msg, IMessage::DIn), true);
 		if (params.first ().c_str () == "motd")
 			JoinFromQueue ();
 	}
@@ -1351,7 +1371,8 @@ namespace Acetamide
 	void IrcServerHandler::GetYoureOper (const QString&,
 			const QList<std::string>& , const QString& msg)
 	{
-		SendAnswerToChannel ("oper", msg, true);
+		SendAnswerToChannel ("oper",
+				EncodedMessage (msg, IMessage::DIn), true);
 	}
 
 	void IrcServerHandler::GetRehash (const QString&,
@@ -1359,7 +1380,8 @@ namespace Acetamide
 	{
 		QString message = QString::fromUtf8 (params.last ().c_str ()) +
 				" :" + msg;
-		SendAnswerToChannel ("rehash", message, true);
+		SendAnswerToChannel ("rehash",
+				EncodedMessage (message, IMessage::DIn), true);
 	}
 
 	void IrcServerHandler::GetTime (const QString&,
@@ -1367,25 +1389,29 @@ namespace Acetamide
 	{
 		QString message = QString::fromUtf8 (params.last ().c_str ()) +
 				" :" + msg;
-		SendAnswerToChannel ("time", message, true);
+		SendAnswerToChannel ("time",
+				EncodedMessage (message, IMessage::DIn), true);
 	}
 
 	void IrcServerHandler::GetUsersStart (const QString&,
 			const QList<std::string>&, const QString& msg)
 	{
-		SendAnswerToChannel ("users", msg);
+		SendAnswerToChannel ("users",
+				EncodedMessage (msg, IMessage::DIn));
 	}
 
 	void IrcServerHandler::GetUsers (const QString&,
 			const QList<std::string>&, const QString& msg)
 	{
-		SendAnswerToChannel ("users", msg);
+		SendAnswerToChannel ("users",
+				EncodedMessage (msg, IMessage::DIn));
 	}
 
 	void IrcServerHandler::GetNoUser (const QString&,
 			const QList<std::string>&, const QString& msg)
 	{
-		SendAnswerToChannel ("users", msg);
+		SendAnswerToChannel ("users",
+				EncodedMessage (msg, IMessage::DIn));
 	}
 
 	void IrcServerHandler::GetTraceLink (const QString&,
@@ -1492,7 +1518,8 @@ namespace Acetamide
 	{
 		QString server = QString::fromUtf8 (params
 				.at (params.count () - 1).c_str ());
-		SendAnswerToChannel ("trace", server + " " + msg, true);
+		SendAnswerToChannel ("trace", server + " " +
+				EncodedMessage (msg, IMessage::DIn), true);
 	}
 
 	void IrcServerHandler::GetStatsLinkInfo (const QString&,
@@ -1518,13 +1545,15 @@ namespace Acetamide
 	{
 		QString letter = QString::fromUtf8 (params
 				.at (params.count () - 1).c_str ());
-		SendAnswerToChannel ("stats", letter + " " + msg, true);
+		SendAnswerToChannel ("stats", letter + " " +
+				EncodedMessage (msg, IMessage::DIn), true);
 	}
 
 	void IrcServerHandler::GetStatsUptime (const QString&,
 			const QList<std::string>& , const QString& msg)
 	{
-		SendAnswerToChannel ("stats", msg);
+		SendAnswerToChannel ("stats",
+				EncodedMessage (msg, IMessage::DIn));
 	}
 
 	void IrcServerHandler::GetStatsOline (const QString&,
@@ -1539,66 +1568,76 @@ namespace Acetamide
 	void IrcServerHandler::GetLuserClient (const QString&,
 			const QList<std::string>&, const QString& msg)
 	{
-		SendAnswerToChannel ("lusers", msg);
+		SendAnswerToChannel ("lusers",
+				EncodedMessage (msg, IMessage::DIn));
 	}
 
 	void IrcServerHandler::GetLuserOp (const QString&,
 			const QList<std::string>& params, const QString& msg)
 	{
 		SendAnswerToChannel ("lusers", QString::fromUtf8 (params
-				.last ().c_str ()) + ":" + msg);
+				.last ().c_str ()) + ":" +
+						EncodedMessage (msg, IMessage::DIn));
 	}
 
 	void IrcServerHandler::GetLuserUnknown (const QString&,
 			const QList<std::string>& params, const QString& msg)
 	{
 		SendAnswerToChannel ("lusers", QString::fromUtf8 (params
-				.last ().c_str ()) + ":" + msg);
+				.last ().c_str ()) + ":" +
+						EncodedMessage (msg, IMessage::DIn));
 	}
 
 	void IrcServerHandler::GetLuserChannels (const QString&,
 			const QList<std::string>& params, const QString& msg)
 	{
 		SendAnswerToChannel ("lusers", QString::fromUtf8 (params
-				.last ().c_str ()) + ":" + msg);
+				.last ().c_str ()) + ":" +
+						EncodedMessage (msg, IMessage::DIn));
 	}
 
 	void IrcServerHandler::GetLuserMe (const QString&,
 			const QList<std::string>&, const QString& msg)
 	{
-		SendAnswerToChannel ("lusers", msg, true);
+		SendAnswerToChannel ("lusers",
+					EncodedMessage (msg, IMessage::DIn), true);
 	}
 
 	void IrcServerHandler::GetAdmineMe (const QString&,
 			const QList<std::string>& params, const QString& msg)
 	{
 		SendAnswerToChannel ("admin", QString::fromUtf8 (params
-				.last ().c_str ()) + ":" + msg);
+				.last ().c_str ()) + ":" +
+						EncodedMessage (msg, IMessage::DIn));
 	}
 
 	void IrcServerHandler::GetAdminLoc1 (const QString&,
 			const QList<std::string>&, const QString& msg)
 	{
-		SendAnswerToChannel ("admin", msg);
+		SendAnswerToChannel ("admin",
+				EncodedMessage (msg, IMessage::DIn));
 	}
 
 	void IrcServerHandler::GetAdminLoc2 (const QString&,
 			const QList<std::string>&, const QString& msg)
 	{
-		SendAnswerToChannel ("admin", msg);
+		SendAnswerToChannel ("admin",
+				EncodedMessage (msg, IMessage::DIn));
 	}
 
 	void IrcServerHandler::GetAdminEmail (const QString&,
 			const QList<std::string>&, const QString& msg)
 	{
-		SendAnswerToChannel ("admin", msg, true);
+		SendAnswerToChannel ("admin",
+				EncodedMessage (msg, IMessage::DIn), true);
 	}
 
 	void IrcServerHandler::GetTryAgain (const QString&,
 			const QList<std::string>& params, const QString& msg)
 	{
 		QString cmd = QString::fromUtf8 (params.last ().c_str ());
-		SendAnswerToChannel (cmd, cmd + ":" + msg);
+		SendAnswerToChannel (cmd, cmd + ":" +
+				EncodedMessage (msg, IMessage::DIn));
 	}
 
 	void IrcServerHandler::InitSocket ()
