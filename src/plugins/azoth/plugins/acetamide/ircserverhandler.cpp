@@ -679,6 +679,36 @@ namespace Acetamide
 		Command2Action_ ["243"] =
 				boost::bind (&IrcServerHandler::GetStatsOline,
 					this, _1, _2, _3);
+		Command2Action_ ["251"] =
+				boost::bind (&IrcServerHandler::GetLuserClient,
+					this, _1, _2, _3);
+		Command2Action_ ["252"] =
+				boost::bind (&IrcServerHandler::GetLuserOp,
+					this, _1, _2, _3);
+		Command2Action_ ["253"] =
+				boost::bind (&IrcServerHandler::GetLuserUnknown,
+					this, _1, _2, _3);
+		Command2Action_ ["254"] =
+				boost::bind (&IrcServerHandler::GetLuserChannels,
+					this, _1, _2, _3);
+		Command2Action_ ["255"] =
+				boost::bind (&IrcServerHandler::GetLuserMe,
+					this, _1, _2, _3);
+		Command2Action_ ["256"] =
+				boost::bind (&IrcServerHandler::GetAdmineMe,
+					this, _1, _2, _3);
+		Command2Action_ ["257"] =
+				boost::bind (&IrcServerHandler::GetAdminLoc1,
+					this, _1, _2, _3);
+		Command2Action_ ["258"] =
+				boost::bind (&IrcServerHandler::GetAdminLoc2,
+					this, _1, _2, _3);
+		Command2Action_ ["259"] =
+				boost::bind (&IrcServerHandler::GetAdminEmail,
+					this, _1, _2, _3);
+		Command2Action_ ["263"] =
+				boost::bind (&IrcServerHandler::GetTryAgain,
+					this, _1, _2, _3);
 
 		Name2Command_ ["nick"] = boost::bind (&IrcParser::NickCommand,
 				IrcParser_, _1);
@@ -1537,6 +1567,38 @@ namespace Acetamide
 			const QList<std::string>&, const QString& msg)
 	{
 		SendAnswerToChannel ("lusers", msg, true);
+	}
+
+	void IrcServerHandler::GetAdmineMe (const QString&,
+			const QList<std::string>& params, const QString& msg)
+	{
+		SendAnswerToChannel ("admin", QString::fromUtf8 (params
+				.last ().c_str ()) + ":" + msg);
+	}
+
+	void IrcServerHandler::GetAdminLoc1 (const QString&,
+			const QList<std::string>&, const QString& msg)
+	{
+		SendAnswerToChannel ("admin", msg);
+	}
+
+	void IrcServerHandler::GetAdminLoc2 (const QString&,
+			const QList<std::string>&, const QString& msg)
+	{
+		SendAnswerToChannel ("admin", msg);
+	}
+
+	void IrcServerHandler::GetAdminEmail (const QString&,
+			const QList<std::string>&, const QString& msg)
+	{
+		SendAnswerToChannel ("admin", msg, true);
+	}
+
+	void IrcServerHandler::GetTryAgain (const QString&,
+			const QList<std::string>& params, const QString& msg)
+	{
+		QString cmd = QString::fromUtf8 (params.last ().c_str ());
+		SendAnswerToChannel (cmd, cmd + ":" + msg);
 	}
 
 	void IrcServerHandler::InitSocket ()

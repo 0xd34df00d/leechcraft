@@ -256,6 +256,16 @@ class IrcMessage;
 				const QList<std::string>&, const QString&);
 		void GetLuserMe (const QString&,
 				const QList<std::string>&, const QString&);
+		void GetAdmineMe (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetAdminLoc1 (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetAdminLoc2 (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetAdminEmail (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetTryAgain (const QString&,
+				const QList<std::string>&, const QString&);
 	private slots:
 		void readReply ();
 		void connectionEstablished ();
