@@ -212,6 +212,30 @@ class IrcMessage;
 				const QList<std::string>&, const QString&);
 		void GetNoUser (const QString&,
 				const QList<std::string>&, const QString&);
+		void GetTraceLink (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetTraceConnecting (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetTraceHandshake (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetTraceUnknown (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetTraceOperator (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetTraceUser (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetTraceServer (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetTraceService (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetTraceNewType (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetTraceClass (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetTraceLog (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetTraceEnd (const QString&,
+				const QList<std::string>&, const QString&);
 	private slots:
 		void readReply ();
 		void connectionEstablished ();

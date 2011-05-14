@@ -499,9 +499,6 @@ namespace Acetamide
 		Command2Action_ ["topic"] =
 				boost::bind (&IrcServerHandler::SetTopic,
 					this, _1, _2, _3);
-// 		Command2Action_ ["376"] =
-// 				boost::bind (&IrcServerHandler::JoinFromQueue,
-// 					this, _1, _2, _3);
 		Command2Action_ ["353"] =
 				boost::bind (&IrcServerHandler::AddParticipants,
 					this, _1, _2, _3);
@@ -630,6 +627,42 @@ namespace Acetamide
 					this, _1, QList<std::string> () << "users", _3);
 		Command2Action_ ["395"] =
 				boost::bind (&IrcServerHandler::GetNoUser,
+					this, _1, _2, _3);
+		Command2Action_ ["200"] =
+				boost::bind (&IrcServerHandler::GetTraceLink,
+					this, _1, _2, _3);
+		Command2Action_ ["201"] =
+				boost::bind (&IrcServerHandler::GetTraceConnecting,
+					this, _1, _2, _3);
+		Command2Action_ ["202"] =
+				boost::bind (&IrcServerHandler::GetTraceHandshake,
+					this, _1, _2, _3);
+		Command2Action_ ["203"] =
+				boost::bind (&IrcServerHandler::GetTraceUnknown,
+					this, _1, _2, _3);
+		Command2Action_ ["204"] =
+				boost::bind (&IrcServerHandler::GetTraceOperator,
+					this, _1, _2, _3);
+		Command2Action_ ["205"] =
+				boost::bind (&IrcServerHandler::GetTraceUser,
+					this, _1, _2, _3);
+		Command2Action_ ["206"] =
+				boost::bind (&IrcServerHandler::GetTraceServer,
+					this, _1, _2, _3);
+		Command2Action_ ["207"] =
+				boost::bind (&IrcServerHandler::GetTraceService,
+					this, _1, _2, _3);
+		Command2Action_ ["208"] =
+				boost::bind (&IrcServerHandler::GetTraceNewType,
+					this, _1, _2, _3);
+		Command2Action_ ["209"] =
+				boost::bind (&IrcServerHandler::GetTraceClass,
+					this, _1, _2, _3);
+		Command2Action_ ["261"] =
+				boost::bind (&IrcServerHandler::GetTraceLog,
+					this, _1, _2, _3);
+		Command2Action_ ["262"] =
+				boost::bind (&IrcServerHandler::GetTraceEnd,
 					this, _1, _2, _3);
 
 		Name2Command_ ["nick"] = boost::bind (&IrcParser::NickCommand,
@@ -1308,6 +1341,113 @@ namespace Acetamide
 			const QList<std::string>&, const QString& msg)
 	{
 		SendAnswerToChannel ("users", msg);
+	}
+
+	void IrcServerHandler::GetTraceLink (const QString&,
+			const QList<std::string>& params, const QString&)
+	{
+		QString message;
+		Q_FOREACH (const std::string& str, params.mid (1))
+			message += QString::fromUtf8 (str.c_str ()) + " ";
+		SendAnswerToChannel ("trace", message);
+	}
+
+	void IrcServerHandler::GetTraceConnecting (const QString&,
+			const QList<std::string>& params, const QString&)
+	{
+		QString message;
+		Q_FOREACH (const std::string& str, params.mid (1))
+			message += QString::fromUtf8 (str.c_str ()) + " ";
+		SendAnswerToChannel ("trace", message);
+	}
+
+	void IrcServerHandler::GetTraceHandshake (const QString&,
+			const QList<std::string>& params, const QString&)
+	{
+		QString message;
+		Q_FOREACH (const std::string& str, params.mid (1))
+			message += QString::fromUtf8 (str.c_str ()) + " ";
+		SendAnswerToChannel ("trace", message);
+	}
+
+	void IrcServerHandler::GetTraceUnknown (const QString&,
+			const QList<std::string>& params, const QString&)
+	{
+		QString message;
+		Q_FOREACH (const std::string& str, params.mid (1))
+			message += QString::fromUtf8 (str.c_str ()) + " ";
+		SendAnswerToChannel ("trace", message);
+	}
+
+	void IrcServerHandler::GetTraceOperator (const QString&,
+			const QList<std::string>& params, const QString&)
+	{
+		QString message;
+		Q_FOREACH (const std::string& str, params.mid (1))
+			message += QString::fromUtf8 (str.c_str ()) + " ";
+		SendAnswerToChannel ("trace", message);
+	}
+
+	void IrcServerHandler::GetTraceUser (const QString&,
+			const QList<std::string>& params, const QString&)
+	{
+		QString message;
+		Q_FOREACH (const std::string& str, params.mid (1))
+			message += QString::fromUtf8 (str.c_str ()) + " ";
+		SendAnswerToChannel ("trace", message);
+	}
+
+	void IrcServerHandler::GetTraceServer (const QString&,
+			const QList<std::string>& params, const QString&)
+	{
+		QString message;
+		Q_FOREACH (const std::string& str, params.mid (1))
+			message += QString::fromUtf8 (str.c_str ()) + " ";
+		SendAnswerToChannel ("trace", message);
+	}
+
+	void IrcServerHandler::GetTraceService (const QString&,
+			const QList<std::string>& params, const QString&)
+	{
+		QString message;
+		Q_FOREACH (const std::string& str, params.mid (1))
+			message += QString::fromUtf8 (str.c_str ()) + " ";
+		SendAnswerToChannel ("trace", message);
+	}
+
+	void IrcServerHandler::GetTraceNewType (const QString&,
+			const QList<std::string>& params, const QString&)
+	{
+		QString message;
+		Q_FOREACH (const std::string& str, params.mid (1))
+			message += QString::fromUtf8 (str.c_str ()) + " ";
+		SendAnswerToChannel ("trace", message);
+	}
+
+	void IrcServerHandler::GetTraceClass (const QString&,
+			const QList<std::string>& params, const QString&)
+	{
+		QString message;
+		Q_FOREACH (const std::string& str, params.mid (1))
+			message += QString::fromUtf8 (str.c_str ()) + " ";
+		SendAnswerToChannel ("trace", message);
+	}
+
+	void IrcServerHandler::GetTraceLog (const QString&,
+			const QList<std::string>& params, const QString&)
+	{
+		QString message;
+		Q_FOREACH (const std::string& str, params.mid (1))
+			message += QString::fromUtf8 (str.c_str ()) + " ";
+		SendAnswerToChannel ("trace", message);
+	}
+
+	void IrcServerHandler::GetTraceEnd (const QString&,
+			const QList<std::string>& params, const QString& msg)
+	{
+		QString server = QString::fromUtf8 (params
+				.at (params.count () - 1).c_str ());
+		SendAnswerToChannel ("trace", server + " " + msg, true);
 	}
 
 	void IrcServerHandler::InitSocket ()
