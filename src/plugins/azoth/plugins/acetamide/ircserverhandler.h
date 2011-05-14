@@ -236,6 +236,26 @@ class IrcMessage;
 				const QList<std::string>&, const QString&);
 		void GetTraceEnd (const QString&,
 				const QList<std::string>&, const QString&);
+		void GetStatsLinkInfo (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetStatsCommands (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetStatsEnd (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetStatsUptime (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetStatsOline (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetLuserClient (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetLuserOp (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetLuserUnknown (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetLuserChannels (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetLuserMe (const QString&,
+				const QList<std::string>&, const QString&);
 	private slots:
 		void readReply ();
 		void connectionEstablished ();

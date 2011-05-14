@@ -664,6 +664,21 @@ namespace Acetamide
 		Command2Action_ ["262"] =
 				boost::bind (&IrcServerHandler::GetTraceEnd,
 					this, _1, _2, _3);
+		Command2Action_ ["211"] =
+				boost::bind (&IrcServerHandler::GetStatsLinkInfo,
+					this, _1, _2, _3);
+		Command2Action_ ["212"] =
+				boost::bind (&IrcServerHandler::GetStatsCommands,
+					this, _1, _2, _3);
+		Command2Action_ ["219"] =
+				boost::bind (&IrcServerHandler::GetStatsEnd,
+					this, _1, _2, _3);
+		Command2Action_ ["242"] =
+				boost::bind (&IrcServerHandler::GetStatsUptime,
+					this, _1, _2, _3);
+		Command2Action_ ["243"] =
+				boost::bind (&IrcServerHandler::GetStatsOline,
+					this, _1, _2, _3);
 
 		Name2Command_ ["nick"] = boost::bind (&IrcParser::NickCommand,
 				IrcParser_, _1);
@@ -1448,6 +1463,47 @@ namespace Acetamide
 		QString server = QString::fromUtf8 (params
 				.at (params.count () - 1).c_str ());
 		SendAnswerToChannel ("trace", server + " " + msg, true);
+	}
+
+	void IrcServerHandler::GetStatsLinkInfo (const QString&,
+			const QList<std::string>& params, const QString&)
+	{
+		QString message;
+		Q_FOREACH (const std::string& str, params.mid (1))
+			message += QString::fromUtf8 (str.c_str ()) + " ";
+		SendAnswerToChannel ("stats", message);
+	}
+
+	void IrcServerHandler::GetStatsCommands (const QString&,
+			const QList<std::string>& params, const QString&)
+	{
+		QString message;
+		Q_FOREACH (const std::string& str, params.mid (1))
+			message += QString::fromUtf8 (str.c_str ()) + " ";
+		SendAnswerToChannel ("stats", message);
+	}
+
+	void IrcServerHandler::GetStatsEnd (const QString&,
+			const QList<std::string>& params, const QString& msg)
+	{
+		QString letter = QString::fromUtf8 (params
+				.at (params.count () - 1).c_str ());
+		SendAnswerToChannel ("stats", letter + " " + msg, true);
+	}
+
+	void IrcServerHandler::GetStatsUptime (const QString&,
+			const QList<std::string>& , const QString& msg)
+	{
+		SendAnswerToChannel ("stats", msg);
+	}
+
+	void IrcServerHandler::GetStatsOline (const QString&,
+			const QList<std::string>& params, const QString&)
+	{
+		QString message;
+		Q_FOREACH (const std::string& str, params.mid (1))
+			message += QString::fromUtf8 (str.c_str ()) + " ";
+		SendAnswerToChannel ("stats", message);
 	}
 
 	void IrcServerHandler::InitSocket ()
