@@ -56,6 +56,11 @@ namespace Azoth
 		ProxyModel_->setSourceModel (Core::Instance ().GetCLModel ());
 		Ui_.CLTree_->setModel (ProxyModel_);
 		
+		connect (Ui_.CLTree_,
+				SIGNAL (activated (const QModelIndex&)),
+				this,
+				SLOT (clearFilter ()));
+		
 		connect (Ui_.FilterLine_,
 				SIGNAL (textChanged (const QString&)),
 				ProxyModel_,
@@ -498,8 +503,13 @@ namespace Azoth
 	void MainWidget::handleShowOffline (bool show)
 	{
 		XmlSettingsManager::Instance ().setProperty ("ShowOfflineContacts", show);
-
 		ProxyModel_->showOfflineContacts (show);
+	}
+	
+	void MainWidget::clearFilter ()
+	{
+		if (!Ui_.FilterLine_->text ().isEmpty ())
+			Ui_.FilterLine_->setText (QString ());
 	}
 
 	void MainWidget::menuBarVisibilityToggled ()
