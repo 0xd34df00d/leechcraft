@@ -94,11 +94,23 @@ namespace FatApe
 					_1,
 					frame->url ().toString ());
 		boost::function<void (const UserScript&)> inject = 
-			boost::bind (&UserScript::Inject,
-					_1,
-					frame);
+			boost::bind (&UserScript::Inject, _1, frame, Proxy_);
+		
 
 		apply_if (UserScripts_.begin (), UserScripts_.end (), match, inject);
+	}
+
+	void Plugin::initPlugin (QObject *proxy)
+	{
+		Proxy_ = qobject_cast<IProxyObject*>(proxy);
+
+		if (!Proxy_)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "unable to cast"
+				<< proxy
+				<< "to IProxyObject";
+		}
 	}
 }
 }

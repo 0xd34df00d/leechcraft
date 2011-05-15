@@ -47,10 +47,24 @@ namespace Azoth
 
 		Ui_.setupUi (this);
 		Ui_.BottomLayout_->insertWidget (0, MenuButton_);
+#if QT_VERSION >= 0x040700
+		Ui_.FilterLine_->setPlaceholderText (tr ("Search..."));
+#endif
+		Ui_.CLTree_->setFocusProxy (Ui_.FilterLine_);
 
 		Ui_.CLTree_->setItemDelegate (new ContactListDelegate (Ui_.CLTree_));
 		ProxyModel_->setSourceModel (Core::Instance ().GetCLModel ());
 		Ui_.CLTree_->setModel (ProxyModel_);
+		
+		connect (Ui_.CLTree_,
+				SIGNAL (activated (const QModelIndex&)),
+				this,
+				SLOT (clearFilter ()));
+		
+		connect (Ui_.FilterLine_,
+				SIGNAL (textChanged (const QString&)),
+				ProxyModel_,
+				SLOT (setFilterFixedString (const QString&)));
 
 		connect (ProxyModel_,
 				SIGNAL (rowsInserted (const QModelIndex&, int, int)),
@@ -489,8 +503,13 @@ namespace Azoth
 	void MainWidget::handleShowOffline (bool show)
 	{
 		XmlSettingsManager::Instance ().setProperty ("ShowOfflineContacts", show);
-
 		ProxyModel_->showOfflineContacts (show);
+	}
+	
+	void MainWidget::clearFilter ()
+	{
+		if (!Ui_.FilterLine_->text ().isEmpty ())
+			Ui_.FilterLine_->setText (QString ());
 	}
 
 	void MainWidget::menuBarVisibilityToggled ()

@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "resourceloader.h"
+#include <QApplication>
 #include <QFile>
 #include <QDir>
 #include <QStandardItemModel>
@@ -84,7 +85,7 @@ namespace LeechCraft
 #ifdef Q_WS_MAC
 			QStringList prefixes = QStringList (QApplication::applicationDirPath () + "/../Resources/");
 #elif defined (Q_WS_WIN)
-			QStringList prefixes = QStringList ("share/");
+			QStringList prefixes = QStringList (QApplication::applicationDirPath () + "/share/");
 #elif defined (INSTALL_PREFIX)
 			QStringList prefixes = QStringList (INSTALL_PREFIX "/share/leechcraft/");
 #else

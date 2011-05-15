@@ -20,8 +20,11 @@
 #define PLUGINS_POSHUKU_PLUGINS_FATAPE_GREASEMONKEY_H
 #include <QObject>
 #include <QStringList>
+#include <QSettings>
 #include <QVariant>
 #include <QWebFrame>
+#include <interfaces/iproxyobject.h>
+#include "userscript.h"
 
 namespace LeechCraft
 {
@@ -34,11 +37,11 @@ namespace FatApe
 		Q_OBJECT
 		
 		QWebFrame *Frame_;
-		QString ScriptNamespace_;
-		QString ScriptName_;
+		IProxyObject *Proxy_;
+		UserScript Script_;
+		QSettings Storage_;
 	public:
-		GreaseMonkey (QWebFrame *frame,
-				const QString& scriptNamespace, const QString& scriptName);
+		GreaseMonkey (QWebFrame *frame, IProxyObject *proxy, const UserScript& script);
 	public slots:
 		void addStyle (const QString& css);
 		void deleteValue (const QString& name);
@@ -46,6 +49,9 @@ namespace FatApe
 		QVariant getValue (const QString& name, QVariant defVal);
 		QVariant listValues ();
 		void setValue (const QString& name, QVariant value);
+		void openInTab (const QString& url);
+		QString getResourceText (const QString& resourceName);
+		QString getResourceURL (const QString& resourceName);
 	};
 }
 }
