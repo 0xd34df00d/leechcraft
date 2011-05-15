@@ -126,7 +126,7 @@ namespace p100q
 				") ");
 		
 		body.replace (PostAuthorRX_,
-				"<img style='float:left;margin-right:4px' "
+				"<br /><img style='float:left;margin-right:4px' "
 						"width='32px' "
 						"height='32px' "
 						"src='http://psto.net/img/a/40/\\1.png'>"
