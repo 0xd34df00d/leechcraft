@@ -123,21 +123,6 @@
     </message>
 </context>
 <context>
-    <name>DataViewWidget</name>
-    <message>
-        <source>Add...</source>
-        <translation type="obsolete">Добавить...</translation>
-    </message>
-    <message>
-        <source>Modify...</source>
-        <translation type="obsolete">Изменить...</translation>
-    </message>
-    <message>
-        <source>Remove</source>
-        <translation type="obsolete">Удалить</translation>
-    </message>
-</context>
-<context>
     <name>HandlerChoiceDialog</name>
     <message>
         <source>Choose entity handler</source>
@@ -209,10 +194,6 @@
         <translation>Лог</translation>
     </message>
     <message>
-        <source>F11</source>
-        <translation type="obsolete">F11</translation>
-    </message>
-    <message>
         <source>exit</source>
         <translation>Выход</translation>
     </message>
@@ -229,18 +210,6 @@
         <translation>Ctrl+T</translation>
     </message>
     <message>
-        <source>General</source>
-        <translation type="obsolete">Общее</translation>
-    </message>
-    <message>
-        <source>Tools</source>
-        <translation type="obsolete">Инструменты</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">Помощь</translation>
-    </message>
-    <message>
         <source>About LeechCraft...</source>
         <translation>О LeechCraft...</translation>
     </message>
@@ -249,16 +218,8 @@
         <translation>О Qt...</translation>
     </message>
     <message>
-        <source>View</source>
-        <translation type="obsolete">Вид</translation>
-    </message>
-    <message>
         <source>Menu</source>
         <translation>Меню</translation>
-    </message>
-    <message>
-        <source>menu</source>
-        <translation>меню</translation>
     </message>
     <message>
         <source>Show status bar</source>
@@ -342,6 +303,10 @@
     <message>
         <source>Aggregator fixes and improvements.</source>
         <translation>Исправления и улучшения в Aggregator.</translation>
+    </message>
+    <message>
+        <source>FatApe plugin, the GreaseMonkey support layer for Poshuku.</source>
+        <translation>Модуль FatApe, обеспечивающий поддержку GreaseMonkey-скриптов для Poshuku.</translation>
     </message>
 </context>
 <context>
@@ -491,10 +456,6 @@
         <translation>Меню LeechCraft</translation>
     </message>
     <message>
-        <source>Actions</source>
-        <translation type="obsolete">Действия</translation>
-    </message>
-    <message>
         <source>Always</source>
         <translation>Всегда</translation>
     </message>
@@ -518,6 +479,14 @@
     <message>
         <source>Tools</source>
         <translation>Инструменты</translation>
+    </message>
+    <message>
+        <source>Initializing LeechCraft...</source>
+        <translation>Инициализация LeechCraft...</translation>
+    </message>
+    <message>
+        <source>Finalizing...</source>
+        <translation>Последние штрихи...</translation>
     </message>
 </context>
 <context>
@@ -553,14 +522,6 @@
         <translation>Имя</translation>
     </message>
     <message>
-        <source>File</source>
-        <translation type="obsolete">Файл</translation>
-    </message>
-    <message>
-        <source>Release of one or more plugins failed.</source>
-        <translation type="obsolete">Завершение работы одного или нескольких плагинов не удалось.</translation>
-    </message>
-    <message>
         <source>Refusing to load plugin from %1 because it&apos;s not a file.</source>
         <translation>Отказ загрузки модуля из %1, так как он не является файлом.</translation>
     </message>
@@ -591,6 +552,14 @@
     <message>
         <source>Description</source>
         <translation>Описание</translation>
+    </message>
+    <message>
+        <source>Initializing %1: stage one...</source>
+        <translation>Инициализация %1: первая стадия...</translation>
+    </message>
+    <message>
+        <source>Initializing %1: stage two...</source>
+        <translation>Инициализация %1: вторая стадия...</translation>
     </message>
 </context>
 <context>
@@ -684,26 +653,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::TabContainer</name>
-    <message>
-        <source>Close all but this</source>
-        <translation type="obsolete">Закрыть все кроме этой</translation>
-    </message>
-    <message>
-        <source>New tab menu</source>
-        <translation type="obsolete">Меню создания вкладки</translation>
-    </message>
-    <message>
-        <source>Restore tabs</source>
-        <translation type="obsolete">Восстановить вкладки</translation>
-    </message>
-</context>
-<context>
     <name>LeechCraft::TabManager</name>
-    <message>
-        <source>New tab menu</source>
-        <translation type="obsolete">Меню создания вкладки</translation>
-    </message>
     <message>
         <source>Close all but this</source>
         <translation>Закрыть все кроме этой</translation>
@@ -911,309 +861,6 @@
     <message>
         <source>Advanced setup</source>
         <translation>Продвинутая настройка</translation>
-    </message>
-</context>
-<context>
-    <name>coresettings</name>
-    <message>
-        <source>Appearance</source>
-        <translation>Внешний вид</translation>
-    </message>
-    <message>
-        <source>Use tab scroll buttons</source>
-        <translation>Использовать кнопки прокрутки вкладок</translation>
-    </message>
-    <message>
-        <source>Show menu bar as button</source>
-        <translation type="obsolete">Показывать панель меню в виде кнопки</translation>
-    </message>
-    <message>
-        <source>Try smarter tabs width calculation</source>
-        <translation type="obsolete">Пытаться использовать умный алгоритм расчета ширины вкладок</translation>
-    </message>
-    <message>
-        <source>Icon size</source>
-        <translation>Размер значков</translation>
-    </message>
-    <message>
-        <source>System default</source>
-        <translation>Системный</translation>
-    </message>
-    <message>
-        <source>16x16</source>
-        <translation>16x16</translation>
-    </message>
-    <message>
-        <source>24x24</source>
-        <translation>24x24</translation>
-    </message>
-    <message>
-        <source>32x32</source>
-        <translation>32x32</translation>
-    </message>
-    <message>
-        <source>Tool button style:</source>
-        <translation>Стиль панелей инструментов:</translation>
-    </message>
-    <message>
-        <source>Only display the icon</source>
-        <translation>Показывать только значок</translation>
-    </message>
-    <message>
-        <source>Only display the text</source>
-        <translation>Показывать только текст</translation>
-    </message>
-    <message>
-        <source>The text appears beside the icon</source>
-        <translation>Текст рядом со значком</translation>
-    </message>
-    <message>
-        <source>The text appears under the icon</source>
-        <translation>Текст под значком</translation>
-    </message>
-    <message>
-        <source>Tab bar location:</source>
-        <translation>Положение вкладок:</translation>
-    </message>
-    <message>
-        <source>Top</source>
-        <translation>Сверху</translation>
-    </message>
-    <message>
-        <source>Bottom</source>
-        <translation>Снизу</translation>
-    </message>
-    <message>
-        <source>Left</source>
-        <translation>Слева</translation>
-    </message>
-    <message>
-        <source>Right</source>
-        <translation>Справа</translation>
-    </message>
-    <message>
-        <source>Icon set:</source>
-        <translation>Набор значков:</translation>
-    </message>
-    <message>
-        <source>Style:</source>
-        <translation>Стиль:</translation>
-    </message>
-    <message>
-        <source>Language:</source>
-        <translation>Язык:</translation>
-    </message>
-    <message>
-        <source>System</source>
-        <translation>Системный</translation>
-    </message>
-    <message>
-        <source>Arabic (Ø§ÙØ¹Ø±Ø¨ÙØ©)</source>
-        <translation type="obsolete">Arabic (ﺎﻠﻋﺮﺒﻳﺓ)</translation>
-    </message>
-    <message>
-        <source>German (Deutsch)</source>
-        <translation type="obsolete">German (Deutsch)</translation>
-    </message>
-    <message>
-        <source>English</source>
-        <translation type="obsolete">English</translation>
-    </message>
-    <message>
-        <source>Esperanto</source>
-        <translation type="obsolete">Esperanto</translation>
-    </message>
-    <message>
-        <source>Spanish</source>
-        <translation type="obsolete">Spanish</translation>
-    </message>
-    <message>
-        <source>Italian (Italiano)</source>
-        <translation type="obsolete">Italian (Italiano)</translation>
-    </message>
-    <message>
-        <source>Polish (Polski)</source>
-        <translation type="obsolete">Polish (Polski)</translation>
-    </message>
-    <message>
-        <source>Russian (Ð ÑÑÑÐºÐ¸Ð¹)</source>
-        <translation type="obsolete">Russian (Русский)</translation>
-    </message>
-    <message>
-        <source>Spanish (EspaÃ±ol)</source>
-        <translation type="obsolete">Spanish (Español)</translation>
-    </message>
-    <message>
-        <source>Ukrainian (Ð£ÐºÑÐ°ÑÐ½ÑÑÐºÐ°)</source>
-        <translation type="obsolete">Ukrainian (Українська)</translation>
-    </message>
-    <message>
-        <source>Maximum log lines:</source>
-        <translation>Максимум строк в журнале:</translation>
-    </message>
-    <message>
-        <source>Shortcuts</source>
-        <translation>Комбинации клавиш</translation>
-    </message>
-    <message>
-        <source>Behavior</source>
-        <translation>Поведение</translation>
-    </message>
-    <message>
-        <source>Watch clipboard</source>
-        <translation>Следить за буфером обмена</translation>
-    </message>
-    <message>
-        <source>Ask quit confirmation</source>
-        <translation>Запрашивать подтверждение выхода</translation>
-    </message>
-    <message>
-        <source>Exit on close</source>
-        <translation>Выходить при закрытии</translation>
-    </message>
-    <message>
-        <source>Open new tab next to current</source>
-        <translation>Открывать вкладку после текущей</translation>
-    </message>
-    <message>
-        <source>Automatically accept task when there is only one handler</source>
-        <translation>Автоматически добавлять задачу, когда есть только один обработчик</translation>
-    </message>
-    <message>
-        <source>Watch directory:</source>
-        <translation>Следить за каталогом:</translation>
-    </message>
-    <message>
-        <source>Show plugin-dependent actions in tab bar context menu</source>
-        <translation>Показывать действия модуля в меню панели вкладок</translation>
-    </message>
-    <message>
-        <source>Show as a submenu</source>
-        <translation>Показывать как подменю</translation>
-    </message>
-    <message>
-        <source>Show messages in tray</source>
-        <translation>Показывать сообщения в системном лотке</translation>
-    </message>
-    <message>
-        <source>Message timeout:</source>
-        <translation>Время показа:</translation>
-    </message>
-    <message>
-        <source> s</source>
-        <translation> с</translation>
-    </message>
-    <message>
-        <source>Tags</source>
-        <translation>Теги</translation>
-    </message>
-    <message>
-        <source>Tags manager</source>
-        <translation>Менеджер тегов</translation>
-    </message>
-    <message>
-        <source>Network</source>
-        <translation>Сеть</translation>
-    </message>
-    <message>
-        <source>Cache size:</source>
-        <translation>Размер кэша:</translation>
-    </message>
-    <message>
-        <source> MB</source>
-        <translation> МиБ</translation>
-    </message>
-    <message>
-        <source>Filter tracking cookies</source>
-        <translation>Фильтровать отслеживающие cookies</translation>
-    </message>
-    <message>
-        <source>Clear cache</source>
-        <translation>Очистить кэш</translation>
-    </message>
-    <message>
-        <source>Clear cookies</source>
-        <translation>Очистить cookies</translation>
-    </message>
-    <message>
-        <source>Application-wide proxy</source>
-        <translation>Глобальный прокси</translation>
-    </message>
-    <message>
-        <source>Host:</source>
-        <translation>Хост:</translation>
-    </message>
-    <message>
-        <source>Port:</source>
-        <translation>Порт:</translation>
-    </message>
-    <message>
-        <source>Login:</source>
-        <translation>Логин:</translation>
-    </message>
-    <message>
-        <source>Password:</source>
-        <translation>Пароль:</translation>
-    </message>
-    <message>
-        <source>Proxy type:</source>
-        <translation>Тип прокси:</translation>
-    </message>
-    <message>
-        <source>SOCKS5</source>
-        <translation>SOCKS5</translation>
-    </message>
-    <message>
-        <source>Transparent HTTP</source>
-        <translation>Прозрачный HTTP</translation>
-    </message>
-    <message>
-        <source>Caching HTTP</source>
-        <translation>Кэширующий HTTP</translation>
-    </message>
-    <message>
-        <source>Caching FTP</source>
-        <translation>Кэширующий FTP</translation>
-    </message>
-    <message>
-        <source>Plugins</source>
-        <translation>Модули</translation>
-    </message>
-    <message>
-        <source>Plugins manager</source>
-        <translation>Менеджер модулей</translation>
-    </message>
-    <message>
-        <source>Arabic (العربية)</source>
-        <translation type="obsolete">Arabic (العربية)</translation>
-    </message>
-    <message>
-        <source>Russian (Русский)</source>
-        <translation type="obsolete">Russian (Русский)</translation>
-    </message>
-    <message>
-        <source>Spanish (Español)</source>
-        <translation type="obsolete">Spanish (Español)</translation>
-    </message>
-    <message>
-        <source>Ukrainian (Українська)</source>
-        <translation type="obsolete">Ukrainian (Українська)</translation>
-    </message>
-    <message>
-        <source>Default new tab contents:</source>
-        <translation>Тип новой вкладки по умолчанию:</translation>
-    </message>
-    <message>
-        <source>Context-dependent</source>
-        <translation>В зависимости от контекста</translation>
-    </message>
-    <message>
-        <source>Oxygen</source>
-        <translation>Oxygen</translation>
-    </message>
-    <message>
-        <source>Plastique</source>
-        <translation>Plastique</translation>
     </message>
 </context>
 </TS>

@@ -18,7 +18,9 @@
 
 #include "greasemonkey.h"
 #include <QCoreApplication>
-#include <QSettings>
+#include <QFile>
+#include <QHash>
+#include <QTextStream>
 #include <QWebElement>
 
 namespace LeechCraft
@@ -27,12 +29,16 @@ namespace Poshuku
 {
 namespace FatApe
 {
-	GreaseMonkey::GreaseMonkey (QWebFrame *frame, 
-			const QString& scriptNamespace, const QString& scriptName)
+	GreaseMonkey::GreaseMonkey (QWebFrame *frame, IProxyObject *proxy, const UserScript& script)
 	: Frame_ (frame)
-	, ScriptNamespace_ (scriptNamespace)
-	, ScriptName_ (scriptName)
+	, Proxy_ (proxy)
+	, Script_ (script)
+	, Storage_ (QCoreApplication::organizationName (),
+		QCoreApplication::applicationName () + "_Poshuku_FatApe")
 	{
+		Storage_.beginGroup (QString ("storage/%1/%2")
+				.arg (qHash (Script_.Namespace ()))
+				.arg (Script_.Name ()));
 	}
 
 	void GreaseMonkey::addStyle (const QString& css)
@@ -44,60 +50,65 @@ namespace FatApe
 
 	void GreaseMonkey::deleteValue (const QString& name)
 	{
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Poshuku_FatApe");
-
-		settings.beginGroup (ScriptNamespace_);
-		settings.beginGroup (ScriptName_);
-		settings.remove (name);
-		settings.endGroup ();
-		settings.endGroup ();
+		Storage_.remove (name);
 	}
 
 	QVariant GreaseMonkey::getValue (const QString& name)
 	{
-		return getValue (name, 0);
+		return getValue (name, QVariant ());
 	}
 
 	QVariant GreaseMonkey::getValue (const QString& name, QVariant defVal)
 	{
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Poshuku_FatApe");
-		QVariant value;
-
-		settings.beginGroup (ScriptNamespace_);
-		settings.beginGroup (ScriptName_);
-		value = settings.value (name, defVal);
-		settings.endGroup ();
-		settings.endGroup ();
-		return value;
+		return Storage_.value (name, defVal);
 	}
 
 	QVariant GreaseMonkey::listValues ()
 	{
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Poshuku_FatApe");
-		QStringList values;
-
-		settings.beginGroup (ScriptNamespace_);
-		settings.beginGroup (ScriptName_);
-		values = settings.allKeys ();
-		settings.endGroup ();
-		settings.endGroup ();
-		
-		return QVariant(values);
+		return Storage_.allKeys ();
 	}
 
 	void GreaseMonkey::setValue (const QString& name, QVariant value)
 	{
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Poshuku_FatApe");
+		Storage_.setValue (name, value);
+	}
 
-		settings.beginGroup (ScriptNamespace_);
-		settings.beginGroup (ScriptName_);
-		settings.setValue (name, value);
-		settings.endGroup ();
-		settings.endGroup ();
+	void GreaseMonkey::openInTab (const QString& url)
+	{
+		if (Proxy_)
+			Proxy_->OpenInNewTab (url);
+	}
+
+	QString GreaseMonkey::getResourceText (const QString& resourceName)
+	{
+		QFile resource (Script_.GetResourcePath (resourceName));
+
+		return resource.open (QFile::ReadOnly) ? 
+			QTextStream (&resource).readAll () :
+			QString ();
+	}
+
+	QString GreaseMonkey::getResourceURL (const QString& resourceName)
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+			QCoreApplication::applicationName () + "_Poshuku_FatApe");
+		QString mimeType = settings.value (QString ("resources/%1/%2/%3")
+				.arg (qHash (Script_.Namespace ()))
+				.arg (Script_.Name ())
+				.arg (resourceName)).toString ();
+		QFile resource (Script_.GetResourcePath (resourceName));
+		
+		return resource.open (QFile::ReadOnly) ?
+			QString ("data:%1;base64,%2")
+				.arg (mimeType)
+				.arg (QString (resource.readAll ().toBase64 ())
+						//The result is a base64 encoded URI, which is then also URI encoded, 
+						//as suggested by Wikipedia(http://en.wikipedia.org/wiki/Base64#URL_applications), 
+						//because of "+" and "/" characters in the base64 alphabet.
+						//http://wiki.greasespot.net/GM_getResourceURL#Returns
+						.replace ("+", "%2B")  
+						.replace ("/", "%2F")) :
+			QString ();
 	}
 }
 }

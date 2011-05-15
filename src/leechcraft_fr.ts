@@ -155,17 +155,6 @@
     </message>
 </context>
 <context>
-    <name>DataViewWidget</name>
-    <message>
-        <source>Add...</source>
-        <translation type="obsolete">Ajouter...</translation>
-    </message>
-    <message>
-        <source>Remove</source>
-        <translation type="obsolete">Enlever</translation>
-    </message>
-</context>
-<context>
     <name>HandlerChoiceDialog</name>
     <message>
         <location filename="handlerchoicedialog.ui" line="14"/>
@@ -193,7 +182,7 @@
         <translation>Enregistrer sous :</translation>
     </message>
     <message>
-        <location filename="handlerchoicedialog.ui" line="73"/>
+        <location filename="handlerchoicedialog.ui" line="81"/>
         <source>Browse...</source>
         <translation>Parcourir…</translation>
     </message>
@@ -259,27 +248,27 @@
         <translation>sortir</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="174"/>
+        <location filename="leechcraft.ui" line="175"/>
         <source>Show status bar</source>
         <translation>Afficher la barre d&apos;état</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="179"/>
+        <location filename="leechcraft.ui" line="180"/>
         <source>Close tab</source>
         <translation>Fermer l&apos;onglet</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="182"/>
+        <location filename="leechcraft.ui" line="183"/>
         <source>Ctrl+W</source>
         <translation>Ctrl+W</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="187"/>
+        <location filename="leechcraft.ui" line="188"/>
         <source>Glance...</source>
         <translation>Jetter un coup d&apos;œil à...</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="190"/>
+        <location filename="leechcraft.ui" line="191"/>
         <source>Show a quick overview of tabs</source>
         <translation>Afficher une vue rapide des onglets</translation>
     </message>
@@ -296,17 +285,17 @@
         <translation>Journal</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="193"/>
+        <location filename="leechcraft.ui" line="194"/>
         <source>Ctrl+G</source>
         <translation>Ctrl+G</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="198"/>
+        <location filename="leechcraft.ui" line="199"/>
         <source>New tab</source>
         <translation>Nouvel onglet</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="201"/>
+        <location filename="leechcraft.ui" line="202"/>
         <source>Ctrl+T</source>
         <translation>Ctrl+T</translation>
     </message>
@@ -321,14 +310,9 @@
         <translation>À propos de Qt...</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="160"/>
+        <location filename="leechcraft.ui" line="164"/>
         <source>Menu</source>
         <translation>Menu</translation>
-    </message>
-    <message>
-        <location filename="leechcraft.ui" line="163"/>
-        <source>menu</source>
-        <translation>menu</translation>
     </message>
 </context>
 <context>
@@ -361,8 +345,8 @@
     <message>
         <location filename="aboutdialog.cpp" line="100"/>
         <location filename="aboutdialog.cpp" line="106"/>
-        <location filename="aboutdialog.cpp" line="130"/>
-        <location filename="aboutdialog.cpp" line="147"/>
+        <location filename="aboutdialog.cpp" line="139"/>
+        <location filename="aboutdialog.cpp" line="156"/>
         <source>Various patches.</source>
         <translation>Divers correctifs.</translation>
     </message>
@@ -373,27 +357,32 @@
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="114"/>
-        <location filename="aboutdialog.cpp" line="148"/>
+        <location filename="aboutdialog.cpp" line="157"/>
         <source>Ukrainian translations.</source>
         <translation>Traductions en ukrainien.</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="134"/>
+        <location filename="aboutdialog.cpp" line="135"/>
+        <source>FatApe plugin, the GreaseMonkey support layer for Poshuku.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="aboutdialog.cpp" line="143"/>
         <source>Graphical artwork.</source>
         <translation>Graphique illustration.</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="138"/>
+        <location filename="aboutdialog.cpp" line="147"/>
         <source>Arabic translations.</source>
         <translation>Traductions en arabe.</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="142"/>
+        <location filename="aboutdialog.cpp" line="151"/>
         <source>Esperanto translations</source>
         <translation>Traductions en espéranto</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="146"/>
+        <location filename="aboutdialog.cpp" line="155"/>
         <source>Aggregator fixes and improvements.</source>
         <translation>Correctifs et des améliorations pour Aggregator.</translation>
     </message>
@@ -401,7 +390,7 @@
 <context>
     <name>LeechCraft::Application</name>
     <message>
-        <location filename="application.cpp" line="96"/>
+        <location filename="application.cpp" line="101"/>
         <source>Could not create path %1/.leechcraft</source>
         <translation>Impossible de créer le chemin %1/.leechcraft</translation>
     </message>
@@ -430,43 +419,43 @@
 <context>
     <name>LeechCraft::Core</name>
     <message>
-        <location filename="core.cpp" line="311"/>
+        <location filename="core.cpp" line="294"/>
         <source>No plugins are able to download &quot;%1&quot;</source>
         <translation>Aucun plugin n&apos;est capable de télécharger &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="482"/>
+        <location filename="core.cpp" line="465"/>
         <source>Do you really want to clear the network cache?</source>
         <translation>Voulez-vous vraiment effacer le cache du résau ?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="494"/>
+        <location filename="core.cpp" line="477"/>
         <source>Do you really want to clear cookies?</source>
         <translation>Voulez-vous vraiment effacer les cookies ?</translation>
     </message>
     <message>
+        <location filename="core.cpp" line="708"/>
         <location filename="core.cpp" line="725"/>
-        <location filename="core.cpp" line="742"/>
         <source>Error</source>
         <translation>Erreur</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="726"/>
+        <location filename="core.cpp" line="709"/>
         <source>Could not add task to the selected downloader, would you like to try another one?</source>
         <translation>Impossible d&apos;ajouter la tâche au gestionnaire de téléchargements sélectionné, voulez-vous essayer avec un autre gestionnaire de téléchargements ?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="743"/>
+        <location filename="core.cpp" line="726"/>
         <source>Could not handle task with the selected handler, would you like to try another one?</source>
         <translation>Impossible de superviser la tâche avec le superviseur sélectionné, voulez-vous essayer avec un autre superviseur ?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="774"/>
+        <location filename="core.cpp" line="757"/>
         <source>Could not handle download entity %1.</source>
         <translation>Impossible de superviser l&apos;entité de téléchargement %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="801"/>
+        <location filename="core.cpp" line="784"/>
         <source>Plugin load error</source>
         <translation>Erreur de chargement de plugin</translation>
     </message>
@@ -539,7 +528,7 @@
 <context>
     <name>LeechCraft::HandlerChoiceDialog</name>
     <message>
-        <location filename="handlerchoicedialog.cpp" line="186"/>
+        <location filename="handlerchoicedialog.cpp" line="312"/>
         <source>Select save location</source>
         <translation>Sélectionnez l&apos;emplacement d&apos;enregistrement</translation>
     </message>
@@ -547,66 +536,76 @@
 <context>
     <name>LeechCraft::MainWindow</name>
     <message>
-        <location filename="mainwindow.cpp" line="125"/>
+        <location filename="mainwindow.cpp" line="83"/>
+        <source>Initializing LeechCraft...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="106"/>
+        <source>Finalizing...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="150"/>
         <source>F11</source>
         <comment>FullScreen</comment>
         <translation>F11</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="268"/>
+        <location filename="mainwindow.cpp" line="299"/>
         <source>View</source>
         <translation>Vue</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="271"/>
+        <location filename="mainwindow.cpp" line="302"/>
         <source>Tools</source>
         <translation>Outils</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="368"/>
+        <location filename="mainwindow.cpp" line="397"/>
         <source>/s	</source>
         <translation>/s	</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="371"/>
-        <location filename="mainwindow.cpp" line="375"/>
-        <location filename="mainwindow.cpp" line="695"/>
-        <location filename="mainwindow.cpp" line="696"/>
+        <location filename="mainwindow.cpp" line="400"/>
+        <location filename="mainwindow.cpp" line="404"/>
+        <location filename="mainwindow.cpp" line="762"/>
+        <location filename="mainwindow.cpp" line="763"/>
         <source>/s</source>
         <translation>/s</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="514"/>
+        <location filename="mainwindow.cpp" line="581"/>
         <source>Do you really want to quit?</source>
         <translation>Voulez-vous réellement quitter ?</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="519"/>
+        <location filename="mainwindow.cpp" line="586"/>
         <source>Always</source>
         <translation>Toujours</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="598"/>
+        <location filename="mainwindow.cpp" line="665"/>
         <source>This change requires restarting LeechCraft. Do you want to restart now?</source>
         <translation>Ce changement requiert de redémarrer LeechCraft. Voulez-vous redémarrer maintenant?</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="702"/>
+        <location filename="mainwindow.cpp" line="769"/>
         <source>%1 down, %2 up</source>
         <translation>%1 téléchargement (download), %2 téléchargement (upload)</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="784"/>
+        <location filename="mainwindow.cpp" line="856"/>
         <source>Context-dependent</source>
         <translation>Dépendant du contexte</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="811"/>
+        <location filename="mainwindow.cpp" line="887"/>
         <source>LeechCraft menu</source>
         <translation>Menu LeechCraft</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="955"/>
+        <location filename="mainwindow.cpp" line="1031"/>
         <source>System</source>
         <translation>Système</translation>
     </message>
@@ -638,7 +637,7 @@
 <context>
     <name>LeechCraft::NewTabMenuManager</name>
     <message>
-        <location filename="newtabmenumanager.cpp" line="29"/>
+        <location filename="newtabmenumanager.cpp" line="30"/>
         <source>New tab menu</source>
         <translation>Nouveau menu de l&apos;onglet</translation>
     </message>
@@ -656,37 +655,47 @@
         <translation>Description</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="541"/>
+        <location filename="pluginmanager.cpp" line="224"/>
+        <source>Initializing %1: stage one...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="pluginmanager.cpp" line="293"/>
+        <source>Initializing %1: stage two...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="pluginmanager.cpp" line="543"/>
         <source>Refusing to load plugin from %1 because it&apos;s not a file.</source>
         <translation>Refusant de charger le plugin à partir de%1 car ce n&apos;est pas un fichier.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="554"/>
+        <location filename="pluginmanager.cpp" line="556"/>
         <source>Could not load plugin from %1: %2.</source>
         <translation>Impossible de charger le plugin à partir de  %1: %2.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="573"/>
+        <location filename="pluginmanager.cpp" line="575"/>
         <source>Could not load plugin from %1: failed to construct plugin instance with exception %2.</source>
         <translation>Impossible de charger le plugin à partir de%1: pas de construire plugin par exemple avec %2 d&apos;exception.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="585"/>
+        <location filename="pluginmanager.cpp" line="587"/>
         <source>Could not load plugin from %1: failed to construct plugin instance.</source>
         <translation>Impossible de charger le plugin à partir de%1: pas de construire instance du plugin.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="597"/>
+        <location filename="pluginmanager.cpp" line="599"/>
         <source>Could not load plugin from %1: unable to cast plugin instance to IInfo*.</source>
         <translation>Impossible de charger le plugin à partir de%1: impossible de lancer le plugin exemple pour IINFO *.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="620"/>
+        <location filename="pluginmanager.cpp" line="622"/>
         <source>Could not load plugin from %1: unable to get name/info/icon with exception %2.</source>
         <translation>Impossible de charger le plugin à partir de%1: impossible d&apos;obtenir le nom / info / icône avec %2 d&apos;exception.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="632"/>
+        <location filename="pluginmanager.cpp" line="634"/>
         <source>Could not load plugin from %1: unable to get name/info/icon.</source>
         <translation>Impossible de charger le plugin à partir de %1: impossible d&apos;obtenir le nom / info / icône.</translation>
     </message>
@@ -811,7 +820,7 @@
 <context>
     <name>LeechCraft::TabManager</name>
     <message>
-        <location filename="tabmanager.cpp" line="70"/>
+        <location filename="tabmanager.cpp" line="64"/>
         <source>Close all but this</source>
         <translation>Fermez toutes, mais cette</translation>
     </message>
@@ -1059,307 +1068,6 @@
         <location filename="wizardtypechoicepage.ui" line="49"/>
         <source>Advanced setup</source>
         <translation>Réglages avancés</translation>
-    </message>
-</context>
-<context>
-    <name>coresettings</name>
-    <message>
-        <location filename="dummy.cpp" line="2"/>
-        <location filename="dummy.cpp" line="3"/>
-        <source>Appearance</source>
-        <translation>Apparence</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="4"/>
-        <source>Use tab scroll buttons</source>
-        <translation>Utilisez l&apos;onglet touches de défilement</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="5"/>
-        <source>Icon size</source>
-        <translation>Taille des icônes</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="6"/>
-        <source>System default</source>
-        <translation>Par défaut du système</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="7"/>
-        <source>16x16</source>
-        <translation>16x16</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="8"/>
-        <source>24x24</source>
-        <translation>24x24</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="9"/>
-        <source>32x32</source>
-        <translation>32x32</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="10"/>
-        <source>Tool button style:</source>
-        <translation>Outil bouton de style:</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="11"/>
-        <source>Only display the icon</source>
-        <translation>Icône seul</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="12"/>
-        <source>Only display the text</source>
-        <translation>Texte seul</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="13"/>
-        <source>The text appears beside the icon</source>
-        <translation>Texte sous les icône</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="14"/>
-        <source>The text appears under the icon</source>
-        <translation>Teste contre les icônes</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="15"/>
-        <source>Tab bar location:</source>
-        <translation>Emplacement barre d&apos;onglets:</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="16"/>
-        <source>Top</source>
-        <translation>Haut</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="17"/>
-        <source>Bottom</source>
-        <translation>Bas</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="18"/>
-        <source>Left</source>
-        <translation>Gauche</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="19"/>
-        <source>Right</source>
-        <translation>Droit</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="20"/>
-        <source>Icon set:</source>
-        <translation>Ensamble les icônes:</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="21"/>
-        <source>Oxygen</source>
-        <translation>Oxygen</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="22"/>
-        <source>Style:</source>
-        <translation>Style:</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="23"/>
-        <source>Plastique</source>
-        <translation>Plastique</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="24"/>
-        <source>Language:</source>
-        <translation>Langue:</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="25"/>
-        <source>System</source>
-        <translation>Système</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="26"/>
-        <source>Default new tab contents:</source>
-        <translation>Contenu par défaut nouvel onglet:</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="27"/>
-        <source>Context-dependent</source>
-        <translation>Dépendant du contexte</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="28"/>
-        <source>Maximum log lines:</source>
-        <translation>Lignes maximale du journal:</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="29"/>
-        <source>Shortcuts</source>
-        <translation>Raccourcis</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="30"/>
-        <location filename="dummy.cpp" line="31"/>
-        <location filename="dummy.cpp" line="32"/>
-        <source>Behavior</source>
-        <translation>Comportement</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="33"/>
-        <source>Watch clipboard</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="34"/>
-        <source>Ask quit confirmation</source>
-        <translation>Demandez à quitter la confirmation</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="35"/>
-        <source>Exit on close</source>
-        <translation>Demandez à quitter la confirmation</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="36"/>
-        <source>Open new tab next to current</source>
-        <translation>Ouvriez un nouvel onglet à côté de cours</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="37"/>
-        <source>Automatically accept task when there is only one handler</source>
-        <translation>Accepter automatiquement tâche quand il ya un seul gestionnaire</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="38"/>
-        <source>Watch directory:</source>
-        <translation>Réviser un dossier:</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="39"/>
-        <source>Show plugin-dependent actions in tab bar context menu</source>
-        <translation>Afficher actions plugin-dépendante dans le menu contextuel barre d&apos;onglets</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="40"/>
-        <source>Show as a submenu</source>
-        <translation>Afficher en tant que sous-menu</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="41"/>
-        <source>Show messages in tray</source>
-        <translation>Afficher les messages dans le bac</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="42"/>
-        <source>Message timeout:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="43"/>
-        <source> s</source>
-        <translation> s</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="44"/>
-        <source>Tags</source>
-        <translation>Tags</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="45"/>
-        <source>Tags manager</source>
-        <translation>Gestionnaire de tags</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="46"/>
-        <source>Network</source>
-        <translation>Réseau</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="47"/>
-        <source>Cache size:</source>
-        <translation>Taille du cache:</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="48"/>
-        <source> MB</source>
-        <translation> MB</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="49"/>
-        <source>Filter tracking cookies</source>
-        <translation>Filtrer les cookies de suivi</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="50"/>
-        <source>Clear cache</source>
-        <translation>Vider le cache</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="51"/>
-        <source>Clear cookies</source>
-        <translation>Effacer les cookies</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="52"/>
-        <source>Application-wide proxy</source>
-        <translation>Effacer les cookies</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="53"/>
-        <source>Host:</source>
-        <translation>Nom de l&apos;hôte :</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="54"/>
-        <source>Port:</source>
-        <translation>Port :</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="55"/>
-        <source>Login:</source>
-        <translation>Identifiant :</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="56"/>
-        <source>Password:</source>
-        <translation>Mot de passe :</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="57"/>
-        <source>Proxy type:</source>
-        <translation>Type de proxy:</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="58"/>
-        <source>SOCKS5</source>
-        <translation>SOCKS5</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="59"/>
-        <source>Transparent HTTP</source>
-        <translation>Transparent HTTP</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="60"/>
-        <source>Caching HTTP</source>
-        <translation>La mise en cache HTTP</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="61"/>
-        <source>Caching FTP</source>
-        <translation>La mise en cache FTP</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="62"/>
-        <source>Plugins</source>
-        <translation>Greffons</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="63"/>
-        <source>Plugins manager</source>
-        <translation>Gestionnaire de greffons</translation>
     </message>
 </context>
 </TS>
