@@ -23,6 +23,10 @@
 #include <QIcon>
 #include <QStringList>
 #include <plugininterface/util.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include "xmlsettingsmanager.h"
+#include "userscriptsmanager.h"
+
 
 namespace LeechCraft
 {
@@ -40,19 +44,41 @@ namespace FatApe
 
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-	}
-	
-	void Plugin::SecondInit ()
-	{
 		QDir scriptsDir (Util::CreateIfNotExists ("data/poshuku/fatape/scripts"));
 
 		if (!scriptsDir.exists ())
 			return;
-		
+
 		QStringList filter ("*.user.js");
 
 		Q_FOREACH (const QString& script, scriptsDir.entryList (filter, QDir::Files))
 			UserScripts_.append (UserScript (scriptsDir.absoluteFilePath (script)));
+
+		Model_.reset (new QStandardItemModel);
+		Model_->setHorizontalHeaderLabels (QStringList (tr ("Name")) 
+				<< tr ("Description"));
+		Q_FOREACH (const UserScript& script, UserScripts_)
+		{
+			QList<QStandardItem*> items;
+			QStandardItem* name = new QStandardItem (script.Name ());
+			QStandardItem* description = new QStandardItem (script.Description ());
+
+			name->setEditable (false);
+			description->setEditable (false);
+			description->setToolTip (script.Description ());
+			items << name << description;
+			Model_->appendRow (items);
+		}
+		
+		SettingsDialog_.reset (new Util::XmlSettingsDialog);
+		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
+				"poshukufatapesettings.xml");
+		SettingsDialog_->SetCustomWidget ("UserScriptsManager",
+				new UserScriptsManager (Model_.get ()));
+	}
+	
+	void Plugin::SecondInit ()
+	{
 	}
 	
 	void Plugin::Release ()
@@ -84,6 +110,11 @@ namespace FatApe
 		QSet<QByteArray> result;
 		result << "org.LeechCraft.Poshuku.Plugins/1.0";
 		return result;
+	}
+
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return SettingsDialog_;
 	}
 
 	void Plugin::hookInitialLayoutCompleted (LeechCraft::IHookProxy_ptr proxy, 

@@ -24,6 +24,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QHash>
+#include <QTextCodec>
 #include <QTextStream>
 #include <plugininterface/util.h>
 #include "greasemonkey.h"
@@ -76,6 +77,7 @@ namespace FatApe
 		QTextStream content (&script);
 		QString line;
 
+		content.setCodec (QTextCodec::codecForName ("UTF-8"));
 		if (content.readLine () != MetadataStart)
 			return;
 

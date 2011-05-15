@@ -21,9 +21,12 @@
 #include "userscript.h"
 #include <QObject>
 #include <QList>
+#include <QStandardItemModel>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/iproxyobject.h>
+#include <interfaces/ihavesettings.h>
+
 
 
 namespace LeechCraft
@@ -35,12 +38,15 @@ namespace FatApe
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
+				 , public IHaveSettings
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2)
+		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
 
 		QList<UserScript> UserScripts_;
 		IProxyObject *Proxy_;
+		boost::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
+		boost::shared_ptr<QStandardItemModel> Model_; 
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -50,6 +56,7 @@ namespace FatApe
 		QString GetInfo () const;
 		QIcon GetIcon () const;
 		QSet<QByteArray> GetPluginClasses () const;
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	public slots:
 		void hookInitialLayoutCompleted (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
