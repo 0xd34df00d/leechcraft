@@ -153,6 +153,8 @@ namespace Azoth
 				QObject *chatTab,
 				QString body,
 				QObject *message);
+		void hookIsHighlightMessage (LeechCraft::IHookProxy_ptr proxy,
+				QObject *message);
 		void hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QObject *entry,
