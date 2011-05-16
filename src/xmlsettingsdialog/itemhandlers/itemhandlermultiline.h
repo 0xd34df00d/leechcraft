@@ -18,11 +18,11 @@
 
 #ifndef XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERMULTILINE_H
 #define XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERMULTILINE_H
-#include "itemhandlerstringgetvalue.h"
+#include "itemhandlerbase.h"
 
 namespace LeechCraft
 {
-	class ItemHandlerMultiLine : public ItemHandlerStringGetValue
+	class ItemHandlerMultiLine : public ItemHandlerBase
 	{
 	public:
 		ItemHandlerMultiLine ();
@@ -31,6 +31,10 @@ namespace LeechCraft
 		bool CanHandle (const QDomElement&) const;
 		void Handle (const QDomElement&, QWidget*);
 		void SetValue (QWidget*, const QVariant&) const;
+		QVariant GetValue (const QDomElement& element,
+				QVariant value) const;
+		void UpdateValue (QDomElement& element,
+				const QVariant& value) const;
 	protected:
 		QVariant GetValue (QObject*) const;
 	};

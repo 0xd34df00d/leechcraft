@@ -47,7 +47,8 @@ namespace LeechCraft
 
 		QVariant value = XSD_->GetValue (item);
 
-		QTextEdit *edit = new QTextEdit (value.toString ());
+		QTextEdit *edit = new QTextEdit ();
+		edit->setPlainText (value.toStringList ().join ("\n"));
 		edit->setObjectName (item.attribute ("property"));
 		edit->setMinimumWidth (QApplication::fontMetrics ()
 				.width ("thisismaybeadefaultsetting"));
@@ -60,7 +61,7 @@ namespace LeechCraft
 				QVariant::fromValue<QObject*> (this));
 
 		int row = lay->rowCount ();
-		lay->addWidget (label, row, 0, Qt::AlignRight);
+		lay->addWidget (label, row, 0, Qt::AlignRight | Qt::AlignTop);
 		lay->addWidget (edit, row, 1);
 	}
 
@@ -74,7 +75,23 @@ namespace LeechCraft
 				<< widget;
 			return;
 		}
-		edit->setText (value.toString ());
+		edit->setPlainText (value.toStringList ().join ("\n"));
+	}
+	
+	QVariant ItemHandlerMultiLine::GetValue (const QDomElement& item,
+			QVariant value) const
+	{
+		QString def = item.attribute ("default");
+		if (item.attribute ("translatable") == "true")
+			def = QCoreApplication::translate (qPrintable (XSD_->GetBasename ()),
+					def.toUtf8 ().constData ());
+		return def;
+	}
+	
+	void ItemHandlerMultiLine::UpdateValue (QDomElement& element,
+			const QVariant& value) const
+	{
+		element.setAttribute ("default", value.toString ());
 	}
 
 	QVariant ItemHandlerMultiLine::GetValue (QObject *object) const
@@ -87,6 +104,6 @@ namespace LeechCraft
 				<< object;
 			return QVariant ();
 		}
-		return edit->toPlainText ();
+		return edit->toPlainText ().split ('\n', QString::SkipEmptyParts);
 	}
 }
