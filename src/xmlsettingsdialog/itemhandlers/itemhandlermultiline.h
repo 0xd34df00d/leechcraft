@@ -16,28 +16,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERSTRINGGETVALUE_H
-#define XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERSTRINGGETVALUE_H
-#include "itemhandlerstringsetvalue.h"
+#ifndef XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERMULTILINE_H
+#define XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERMULTILINE_H
+#include "itemhandlerstringgetvalue.h"
 
 namespace LeechCraft
 {
-	/** This is for those whose value is always a plain string.
-	 * These are:
-	 * - lineedit
-	 * - multiline
-	 * - spinbox
-	 * - doublespinbox
-	 */
-	class ItemHandlerStringGetValue : public ItemHandlerStringSetValue
+	class ItemHandlerMultiLine : public ItemHandlerStringGetValue
 	{
 	public:
-		ItemHandlerStringGetValue ();
-		virtual ~ItemHandlerStringGetValue ();
+		ItemHandlerMultiLine ();
+		virtual ~ItemHandlerMultiLine ();
 
-		virtual QVariant GetValue (const QDomElement& element,
-				QVariant value) const;
+		bool CanHandle (const QDomElement&) const;
+		void Handle (const QDomElement&, QWidget*);
+		void SetValue (QWidget*, const QVariant&) const;
+	protected:
+		QVariant GetValue (QObject*) const;
 	};
-};
+}
 
 #endif

@@ -35,6 +35,7 @@ SET (SRCS
 	itemhandlers/itemhandlerradio.cpp
 	itemhandlers/itemhandlercombobox.cpp
 	itemhandlers/itemhandlerlineedit.cpp
+	itemhandlers/itemhandlermultiline.cpp
 	itemhandlers/itemhandlerspinbox.cpp
 	itemhandlers/itemhandlerspinboxdouble.cpp
 	itemhandlers/itemhandlernovalue.cpp
@@ -73,6 +74,7 @@ SET (HEADERS
 	itemhandlers/itemhandlerradio.h
 	itemhandlers/itemhandlercombobox.h
 	itemhandlers/itemhandlerlineedit.h
+	itemhandlers/itemhandlermultiline.h
 	itemhandlers/itemhandlerspinboxbase.h
 	itemhandlers/itemhandlerspinbox.h
 	itemhandlers/itemhandlerspinboxdouble.h
