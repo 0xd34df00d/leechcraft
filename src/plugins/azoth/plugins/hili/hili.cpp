@@ -40,6 +40,7 @@ namespace HiLi
 		
 		XmlSettingsManager::Instance ().RegisterObject ("HighlightRegexps",
 				this, "handleRegexpsChanged");
+		handleRegexpsChanged ();
 	}
 
 	void Plugin::SecondInit ()
@@ -111,8 +112,7 @@ namespace HiLi
 	{
 		RegexpsCache_.clear ();
 		const QStringList& strings = XmlSettingsManager::Instance ()
-				.property ("HighlightRegexps").toString ()
-					.split ('\n', QString::SkipEmptyParts);
+				.property ("HighlightRegexps").toStringList ();
 		Q_FOREACH (QString string, strings)
 		{
 			string = string.trimmed ();
