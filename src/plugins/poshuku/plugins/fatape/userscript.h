@@ -34,6 +34,7 @@ namespace FatApe
 		QString ScriptPath_;
 		QRegExp MetadataRX_;
 		QMultiMap<QString, QString> Metadata_;
+		bool Enabled_;
 	public:
 		UserScript (const QString& scriptPath);
 		UserScript (const UserScript& script);
@@ -43,6 +44,11 @@ namespace FatApe
 		QString Description () const;
 		QString Namespace () const;
 		QString GetResourcePath (const QString& resourceName) const;
+		QString Path () const;
+		bool Enabled () const;
+		void Enable ();
+		void Disable ();
+		void Delete ();
 	private:
 		void ParseMetadata ();
 		void BuildPatternsList (QList<QRegExp>& list, bool include = true) const;

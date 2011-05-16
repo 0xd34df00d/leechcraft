@@ -16,9 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "userscriptsmanager.h"
-#include <QDebug>
+#ifndef PLUGINS_POSHUKU_PLUGINS_FATAPE_USERSCRIPTSMANAGER_H
+#define PLUGINS_POSHUKU_PLUGINS_FATAPE_USERSCRIPTSMANAGER_H
 #include <QStandardItemModel> 
+#include <QList>
+#include <QWidget>
+#include "ui_userscriptsmanagerwidget.h"
 
 namespace LeechCraft
 {
@@ -26,40 +29,28 @@ namespace Poshuku
 {
 namespace FatApe
 {
-
-	UserScriptsManager::UserScriptsManager (QStandardItemModel* model)
-	: Model_ (model)
+	enum CustomRoles
 	{
-		Ui_.setupUi (this);
-		Ui_.Items_->setModel (model);
-	}
-
-	void UserScriptsManager::on_Edit__released ()
+		EnabledRole = Qt::UserRole + 0xdead
+	};
+	class Plugin;
+	class UserScriptsManagerWidget : public QWidget
 	{
-		QModelIndex selected = Ui_.Items_->currentIndex ();
-	}
+		Q_OBJECT
 
-	void UserScriptsManager::on_Disable__released ()
-	{
-		QModelIndex selected = Ui_.Items_->currentIndex ();
-
-		if (selected.isValid ())
-		{
-			
-		}
-
-	}
-
-	void UserScriptsManager::on_Remove__released ()
-	{
-		QModelIndex selected = Ui_.Items_->currentIndex ();
-
-		if (selected.isValid ())
-		{
-			Ui_.Items_->model ()->removeRow (selected.row ());
-		}
-	}
+		Ui::UserScriptsManagerWidget Ui_;
+		QStandardItemModel *Model_;
+		Plugin *Plugin_;
+	public:
+		UserScriptsManagerWidget(QStandardItemModel *model, Plugin *plugin);
+	public slots:
+		void on_Edit__released ();
+		void on_Disable__released ();
+		void on_Remove__released ();
+		void on_Items__currentChanged (const QModelIndex& current, const QModelIndex& previous);
+	};
 }
 }
 }
 
+#endif

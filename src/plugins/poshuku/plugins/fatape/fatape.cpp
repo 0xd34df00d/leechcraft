@@ -21,11 +21,12 @@
 #include <boost/function.hpp>
 #include <QDir>
 #include <QIcon>
+#include <QProcess>
 #include <QStringList>
 #include <plugininterface/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
-#include "userscriptsmanager.h"
+#include "userscriptsmanagerwidget.h"
 
 
 namespace LeechCraft
@@ -64,8 +65,11 @@ namespace FatApe
 			QStandardItem* description = new QStandardItem (script.Description ());
 
 			name->setEditable (false);
+			name->setData (script.Enabled (), EnabledRole);
 			description->setEditable (false);
 			description->setToolTip (script.Description ());
+			description->setData (script.Enabled (), EnabledRole);
+
 			items << name << description;
 			Model_->appendRow (items);
 		}
@@ -73,8 +77,8 @@ namespace FatApe
 		SettingsDialog_.reset (new Util::XmlSettingsDialog);
 		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				"poshukufatapesettings.xml");
-		SettingsDialog_->SetCustomWidget ("UserScriptsManager",
-				new UserScriptsManager (Model_.get ()));
+		SettingsDialog_->SetCustomWidget ("UserScriptsManagerWidget",
+				new UserScriptsManagerWidget (Model_.get (), this));
 	}
 	
 	void Plugin::SecondInit ()
@@ -142,6 +146,35 @@ namespace FatApe
 				<< proxy
 				<< "to IProxyObject";
 		}
+	}
+
+	void Plugin::EditScript (int scriptIndex)
+	{
+		const UserScript& script = UserScripts_.at (scriptIndex);
+		QSettings settings (QCoreApplication::organizationName (),
+			QCoreApplication::applicationName () + "_Poshuku_FatApe");
+		const QString& editor = settings.value ("editor").toString ();
+
+		if (editor.isEmpty ())
+			return;
+
+		QProcess::execute (editor, QStringList (script.Path ()));
+	}
+
+	void Plugin::DeleteScript (int scriptIndex)
+	{
+		UserScripts_[scriptIndex].Delete ();
+		UserScripts_.removeAt (scriptIndex);
+	}
+
+	void Plugin::DisableScript (int scriptIndex)
+	{
+		UserScripts_[scriptIndex].Disable ();
+	}
+
+	void Plugin::EnableScript (int scriptIndex)
+	{
+		UserScripts_[scriptIndex].Enable ();
 	}
 }
 }

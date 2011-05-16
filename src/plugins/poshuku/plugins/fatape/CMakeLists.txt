@@ -5,17 +5,17 @@ SET (FATAPE_SRCS
     userscript.cpp
     greasemonkey.cpp
     xmlsettingsmanager.cpp
-    userscriptsmanager.cpp
+    userscriptsmanagerwidget.cpp
 	)
 SET (FATAPE_HEADERS
 	fatape.h
     userscript.h
     greasemonkey.h
     xmlsettingsmanager.h
-    userscriptsmanager.h
+    userscriptsmanagerwidget.h
 	)
 SET (FATAPE_FORMS
-    userscripts.ui
+    userscriptsmanagerwidget.ui
     )
 
 QT4_WRAP_CPP (FATAPE_MOC_SRCS ${FATAPE_HEADERS})

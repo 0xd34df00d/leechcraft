@@ -45,7 +45,7 @@ namespace FatApe
 
 		QList<UserScript> UserScripts_;
 		IProxyObject *Proxy_;
-		boost::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
+		Util::XmlSettingsDialog_ptr SettingsDialog_;
 		boost::shared_ptr<QStandardItemModel> Model_; 
 	public:
 		void Init (ICoreProxy_ptr);
@@ -57,6 +57,10 @@ namespace FatApe
 		QIcon GetIcon () const;
 		QSet<QByteArray> GetPluginClasses () const;
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+		void EditScript (int scriptIndex);
+		void DeleteScript (int scriptIndex);
+		void DisableScript (int scriptIndex);
+		void EnableScript (int scriptIndex);
 	public slots:
 		void hookInitialLayoutCompleted (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
