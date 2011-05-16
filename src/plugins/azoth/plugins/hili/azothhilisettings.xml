@@ -2,11 +2,11 @@
 <settings>
 	<page>
 		<label value="HiLi" />
-			<groupbox>
-				<label value="HiLi" />
-				<item type="multiline" property="HighlightRegexps">
-					<label value="Regexps triggering highlights:" />
-				</item>
-			</groupbox>
+		<groupbox>
+			<label value="HiLi" />
+			<item type="multiline" property="HighlightRegexps">
+				<label value="Regexps triggering highlights:" />
+			</item>
+		</groupbox>
 	</page>
 </settings>
