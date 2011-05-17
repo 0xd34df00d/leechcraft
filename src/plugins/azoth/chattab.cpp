@@ -231,6 +231,9 @@ namespace Azoth
 			Ui_.View_->page ()->mainFrame ()->evaluateJavaScript (scrollerJS.readAll ());
 			Ui_.View_->page ()->mainFrame ()->evaluateJavaScript ("InstallEventListeners(); ScrollToBottom();");
 		}
+		
+		emit hookThemeReloaded (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy),
+				this, Ui_.View_, GetEntry<QObject> ());
 	}
 
 	void ChatTab::HasBeenAdded ()
