@@ -30,7 +30,7 @@ namespace p100q
 	void Plugin::Init (ICoreProxy_ptr)
 	{
 		UserRX_ = QRegExp ("(?:[^>/]|<br />)@([\\w\\-]+)[ :]", Qt::CaseInsensitive);
-		UserWithAvatarRX_ = QRegExp ("#([a-zA-Z0-9]+(?:/[0-9]+)?): @([\\w\\-]+)", Qt::CaseInsensitive);
+		PostAuthorRX_ = QRegExp ("<br />@([\\w\\-]+)[ :]", Qt::CaseInsensitive);
 		PostRX_ = QRegExp ("#([a-zA-Z0-9]+) ", Qt::CaseInsensitive);
 		PostByUserRX_ = QRegExp ("\\s#([a-zA-Z0-9]+)", Qt::CaseInsensitive);
 		CommentRX_ = QRegExp ("#([a-zA-Z0-9]+)/([0-9]+)", Qt::CaseInsensitive);
@@ -57,7 +57,7 @@ namespace p100q
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("p100q is plugin for nicer suppQString ort of the psto.net microblogging service.");
+		return tr ("p100q is plugin for nicer support of the psto.net microblogging service.");
 	}
 
 	QIcon Plugin::GetIcon () const
@@ -124,11 +124,16 @@ namespace p100q
 				"<a href=\"azoth://msgeditreplace/%23\\1+\">+</a> "
 				"<a href=\"azoth://msgeditreplace/!%20%23\\1\">!</a> "
 				") ");
-				
-		body.replace (UserWithAvatarRX_,
-				"#\\1: <a href=\"azoth://msgeditreplace/@\\2+\" style=\"clear:all\">@\\2</a>");
-		body.replace (UserRX_, " <a href=\"azoth://msgeditreplace/@\\1+\">@\\1</a> ");
-				
+		
+		body.replace (PostAuthorRX_,
+				"<br /><img style='float:left;margin-right:4px' "
+						"width='32px' "
+						"height='32px' "
+						"src='http://psto.net/img/a/40/\\1.png'>"
+				" <a href=\"azoth://msgeditreplace/@\\1+\">@\\1</a> ");
+		
+		body.replace(UserRX_,
+				" <a href=\"azoth://msgeditreplace/@\\1+\">@\\1</a> ");
 				
 		body.replace (CommentRX_,
 				" <a href=\"azoth://msgeditreplace/%23\\1/\\2%20\">#\\1/\\2</a>");

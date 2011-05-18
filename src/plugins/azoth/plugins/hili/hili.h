@@ -16,28 +16,50 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERSTRINGGETVALUE_H
-#define XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERSTRINGGETVALUE_H
-#include "itemhandlerstringsetvalue.h"
+#ifndef PLUGINS_AZOTH_PLUGINS_HILI_HILI_H
+#define PLUGINS_AZOTH_PLUGINS_HILI_HILI_H
+#include <QObject>
+#include <QRegExp>
+#include <interfaces/iinfo.h>
+#include <interfaces/iplugin2.h>
+#include <interfaces/ihavesettings.h>
 
 namespace LeechCraft
 {
-	/** This is for those whose value is always a plain string.
-	 * These are:
-	 * - lineedit
-	 * - multiline
-	 * - spinbox
-	 * - doublespinbox
-	 */
-	class ItemHandlerStringGetValue : public ItemHandlerStringSetValue
+namespace Azoth
+{
+namespace HiLi
+{
+	class Plugin : public QObject
+				 , public IInfo
+				 , public IPlugin2
+				 , public IHaveSettings
 	{
+		Q_OBJECT
+		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
+		
+		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
+		QList<QRegExp> RegexpsCache_;
 	public:
-		ItemHandlerStringGetValue ();
-		virtual ~ItemHandlerStringGetValue ();
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		QByteArray GetUniqueID () const;
+		void Release ();
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
 
-		virtual QVariant GetValue (const QDomElement& element,
-				QVariant value) const;
+		QSet<QByteArray> GetPluginClasses () const;
+		
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+	public slots:
+		void hookIsHighlightMessage (LeechCraft::IHookProxy_ptr,
+				QObject*);
+	private slots:
+		void handleRegexpsChanged ();
 	};
-};
+}
+}
+}
 
 #endif

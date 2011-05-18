@@ -7,10 +7,6 @@
         <source>About LeechCraft</source>
         <translation>Informazione su LeechCraft</translation>
     </message>
-    <message>
-        <source>LeechCraft</source>
-        <translation type="obsolete">LeechCraft</translation>
-    </message>
     <message utf8="true">
         <source>LeechCraft — a crossplatform modular internet-client, featuring plugins for a web browser, news feed reader, BitTorrent, FTP and lots of others.</source>
         <translation>LeechCraft - uno multipiattaforma modulare internet-client, con i plugin per il browser web, feed lettore di notizie, BitTorrent, FTP e molti altri.</translation>
@@ -121,23 +117,8 @@
         <translation>Sfoglia...</translation>
     </message>
     <message>
-        <source>Paste</source>
-        <translation type="obsolete">Incolla</translation>
-    </message>
-    <message>
-        <source>Location:</source>
-        <translation type="obsolete">Locazione:</translation>
-    </message>
-    <message>
         <source>Enter URL or file name or any other thing you believe LeechCraft can handle.</source>
         <translation>Inserisci l&apos;URL o il nome file o qualsiasi altra cosa credi LeechCraft grado di gestire.</translation>
-    </message>
-</context>
-<context>
-    <name>DataViewWidget</name>
-    <message>
-        <source>Remove</source>
-        <translation type="obsolete">Rimuovi</translation>
     </message>
 </context>
 <context>
@@ -149,10 +130,6 @@
     <message>
         <source>LeechCraft has detected an entity:</source>
         <translation>LeechCraft ha rilevato una entità:</translation>
-    </message>
-    <message>
-        <source>TextLabel</source>
-        <translation type="obsolete">EtichettaTesto</translation>
     </message>
     <message>
         <source>It could be downloaded by:</source>
@@ -193,14 +170,6 @@
         <translation>LeechCraft</translation>
     </message>
     <message>
-        <source>Summary</source>
-        <translation type="obsolete">Sommario</translation>
-    </message>
-    <message>
-        <source>toolBar</source>
-        <translation type="obsolete">toolBar</translation>
-    </message>
-    <message>
         <source>Add task</source>
         <translation>Aggiungi task</translation>
     </message>
@@ -217,16 +186,8 @@
         <translation>esci</translation>
     </message>
     <message>
-        <source>Plugin manager</source>
-        <translation type="obsolete">Plugin manager</translation>
-    </message>
-    <message>
         <source>Fullscreen mode</source>
         <translation>Modalità schermo intero</translation>
-    </message>
-    <message>
-        <source>F11</source>
-        <translation type="obsolete">F11</translation>
     </message>
     <message>
         <source>Log</source>
@@ -263,10 +224,6 @@
     <message>
         <source>Menu</source>
         <translation>Menu</translation>
-    </message>
-    <message>
-        <source>menu</source>
-        <translation>menu</translation>
     </message>
     <message>
         <source>Show status bar</source>
@@ -343,47 +300,16 @@
         <source>Aggregator fixes and improvements.</source>
         <translation>Aggregator correzioni e miglioramenti.</translation>
     </message>
+    <message>
+        <source>FatApe plugin, the GreaseMonkey support layer for Poshuku.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::Application</name>
     <message>
         <source>Could not create path %1/.leechcraft</source>
         <translation>Non può creare il percorso %1/.leechcraft</translation>
-    </message>
-    <message>
-        <source>bytes</source>
-        <translation type="obsolete">bytes</translation>
-    </message>
-    <message>
-        <source>KB</source>
-        <translation type="obsolete">KB</translation>
-    </message>
-    <message>
-        <source>MB</source>
-        <translation type="obsolete">MB</translation>
-    </message>
-    <message>
-        <source>GB</source>
-        <translation type="obsolete">GB</translation>
-    </message>
-    <message>
-        <source>LeechCraft</source>
-        <translation type="obsolete">LeechCraft</translation>
-    </message>
-</context>
-<context>
-    <name>LeechCraft::CategoryMerger</name>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Nome</translation>
-    </message>
-    <message>
-        <source>State</source>
-        <translation type="obsolete">Stato</translation>
-    </message>
-    <message>
-        <source>Progress</source>
-        <translation type="obsolete">Progresso</translation>
     </message>
 </context>
 <context>
@@ -407,36 +333,8 @@
 <context>
     <name>LeechCraft::Core</name>
     <message>
-        <source>Name</source>
-        <translation type="obsolete">Nome</translation>
-    </message>
-    <message>
-        <source>State</source>
-        <translation type="obsolete">Stato</translation>
-    </message>
-    <message>
-        <source>Progress</source>
-        <translation type="obsolete">Progresso</translation>
-    </message>
-    <message>
-        <source>Calculating dependencies...</source>
-        <translation type="obsolete">Calcolando le dipendenze...</translation>
-    </message>
-    <message>
-        <source>Setting up %1...</source>
-        <translation type="obsolete">Settando %1...</translation>
-    </message>
-    <message>
         <source>No plugins are able to download &quot;%1&quot;</source>
         <translation>Nessun plugin è in grado di scaricare &quot;%1&quot;</translation>
-    </message>
-    <message>
-        <source>Too long to show</source>
-        <translation type="obsolete">Troppo lungo da mostrare</translation>
-    </message>
-    <message>
-        <source>Select save location</source>
-        <translation type="obsolete">Seleziona la locazione di salvataggio</translation>
     </message>
     <message>
         <source>Error</source>
@@ -453,10 +351,6 @@
     <message>
         <source>Could not handle task with the selected handler, would you like to try another one?</source>
         <translation>Impossibile compito di gestire con il gestore scelto, ti piacerebbe provare un altro?</translation>
-    </message>
-    <message>
-        <source>LeechCraft</source>
-        <translation type="obsolete">LeechCraft</translation>
     </message>
     <message>
         <source>Do you really want to clear the network cache?</source>
@@ -534,22 +428,6 @@
 <context>
     <name>LeechCraft::MainWindow</name>
     <message>
-        <source>Initializing core and plugins...</source>
-        <translation type="obsolete">Inizializzando base e plugins...</translation>
-    </message>
-    <message>
-        <source>Plugins</source>
-        <translation type="obsolete">Plugins</translation>
-    </message>
-    <message>
-        <source>Initializing interface...</source>
-        <translation type="obsolete">Inizializzando l&apos;interfaccia</translation>
-    </message>
-    <message>
-        <source>LeechCraft</source>
-        <translation type="obsolete">LeechCraft</translation>
-    </message>
-    <message>
         <source>/s	</source>
         <translation>/s	</translation>
     </message>
@@ -560,10 +438,6 @@
     <message>
         <source>Do you really want to quit?</source>
         <translation>Vuoi veramente abbandonare?</translation>
-    </message>
-    <message>
-        <source>Plugin control</source>
-        <translation type="obsolete">Controllo plugin</translation>
     </message>
     <message>
         <source>%1 down, %2 up</source>
@@ -602,6 +476,14 @@
         <source>Tools</source>
         <translation>Strumenti</translation>
     </message>
+    <message>
+        <source>Initializing LeechCraft...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Finalizing...</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::NetworkAccessManager</name>
@@ -630,37 +512,10 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::OperationalModel</name>
-    <message>
-        <source>Entity</source>
-        <translation type="obsolete">Entità</translation>
-    </message>
-    <message>
-        <source>Category</source>
-        <translation type="obsolete">Categoria</translation>
-    </message>
-    <message>
-        <source>Information</source>
-        <translation type="obsolete">Informazione</translation>
-    </message>
-</context>
-<context>
     <name>LeechCraft::PluginManager</name>
     <message>
         <source>Name</source>
         <translation>Nome</translation>
-    </message>
-    <message>
-        <source>File</source>
-        <translation type="obsolete">File</translation>
-    </message>
-    <message>
-        <source>Release of one or more plugins failed.</source>
-        <translation type="obsolete">Rilascio di uno o più plugin fallito.</translation>
-    </message>
-    <message>
-        <source>LeechCraft</source>
-        <translation type="obsolete">LeechCraft</translation>
     </message>
     <message>
         <source>Description</source>
@@ -694,32 +549,13 @@
         <source>Could not load plugin from %1: unable to get name/info/icon.</source>
         <translation>Impossibile caricare il plugin da%1: impossibile ottenere il nome / info / icona.</translation>
     </message>
-</context>
-<context>
-    <name>LeechCraft::RequestNormalizer</name>
     <message>
-        <source>Name</source>
-        <translation type="obsolete">Nome</translation>
+        <source>Initializing %1: stage one...</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>State</source>
-        <translation type="obsolete">Stato</translation>
-    </message>
-    <message>
-        <source>Progress</source>
-        <translation type="obsolete">Progresso</translation>
-    </message>
-    <message>
-        <source>Request validation error: %1</source>
-        <translation type="obsolete">Errore nella validazione della richiesta: %1</translation>
-    </message>
-    <message>
-        <source>Request parsing error: %1</source>
-        <translation type="obsolete">Errore nella analisi della richiesta.</translation>
-    </message>
-    <message>
-        <source>Open/close braces mismatch</source>
-        <translation type="obsolete">Apertura/chiusura delle parentesi non coincide</translation>
+        <source>Initializing %1: stage two...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -810,13 +646,6 @@
     <message>
         <source>Would you like to set advanced options?</source>
         <translation>Volete impostare le opzioni avanzate?</translation>
-    </message>
-</context>
-<context>
-    <name>LeechCraft::TabContentsManager</name>
-    <message>
-        <source>Summary</source>
-        <translation type="obsolete">Sommario</translation>
     </message>
 </context>
 <context>
@@ -992,20 +821,6 @@
     </message>
 </context>
 <context>
-    <name>TabContents</name>
-    <message>
-        <source>Form</source>
-        <translation type="obsolete">Form</translation>
-    </message>
-</context>
-<context>
-    <name>TagsManager</name>
-    <message>
-        <source>untagged</source>
-        <translation type="obsolete">non taggato</translation>
-    </message>
-</context>
-<context>
     <name>TagsViewer</name>
     <message>
         <source>Form</source>
@@ -1041,245 +856,6 @@
     <message>
         <source>Advanced setup</source>
         <translation>Configurazione avanzata</translation>
-    </message>
-</context>
-<context>
-    <name>coresettings</name>
-    <message>
-        <source>Appearance</source>
-        <translation>Apparenza</translation>
-    </message>
-    <message>
-        <source>Use tab scroll buttons</source>
-        <translation>Scheda usa pulsanti di scorrimento</translation>
-    </message>
-    <message>
-        <source>Icon size</source>
-        <translation>Icona dimensione</translation>
-    </message>
-    <message>
-        <source>System default</source>
-        <translation>Valori predefiniti</translation>
-    </message>
-    <message>
-        <source>16x16</source>
-        <translation>16x16</translation>
-    </message>
-    <message>
-        <source>24x24</source>
-        <translation>24x24</translation>
-    </message>
-    <message>
-        <source>32x32</source>
-        <translation>32x32</translation>
-    </message>
-    <message>
-        <source>Tool button style:</source>
-        <translation>Tool pulsante dello stille:</translation>
-    </message>
-    <message>
-        <source>Only display the icon</source>
-        <translation>Visualizza solo icona</translation>
-    </message>
-    <message>
-        <source>Only display the text</source>
-        <translation>Visualizza solo il testo</translation>
-    </message>
-    <message>
-        <source>The text appears beside the icon</source>
-        <translation>Testo accanto alle icone</translation>
-    </message>
-    <message>
-        <source>The text appears under the icon</source>
-        <translation>Testo sotto le icone</translation>
-    </message>
-    <message>
-        <source>Tab bar location:</source>
-        <translation>Tab barra degli indirizzi:</translation>
-    </message>
-    <message>
-        <source>Top</source>
-        <translation>In alto</translation>
-    </message>
-    <message>
-        <source>Bottom</source>
-        <translation>Fondo </translation>
-    </message>
-    <message>
-        <source>Left</source>
-        <translation>Sinistro</translation>
-    </message>
-    <message>
-        <source>Right</source>
-        <translation>Destro</translation>
-    </message>
-    <message>
-        <source>Icon set:</source>
-        <translation>Set di icone:</translation>
-    </message>
-    <message>
-        <source>Oxygen</source>
-        <translation>Oxygen</translation>
-    </message>
-    <message>
-        <source>Style:</source>
-        <translation>Stile:</translation>
-    </message>
-    <message>
-        <source>Plastique</source>
-        <translation>Plastique</translation>
-    </message>
-    <message>
-        <source>Language:</source>
-        <translation>Lingue:</translation>
-    </message>
-    <message>
-        <source>System</source>
-        <translation>Systemico</translation>
-    </message>
-    <message>
-        <source>Default new tab contents:</source>
-        <translation>Contenuti scheda nuova:</translation>
-    </message>
-    <message>
-        <source>Context-dependent</source>
-        <translation>Dipendente dal contesto</translation>
-    </message>
-    <message>
-        <source>Maximum log lines:</source>
-        <translation>Massima log linee:</translation>
-    </message>
-    <message>
-        <source>Shortcuts</source>
-        <translation>Tasti di scelta rapida</translation>
-    </message>
-    <message>
-        <source>Behavior</source>
-        <translation>Comportamento</translation>
-    </message>
-    <message>
-        <source>Watch clipboard</source>
-        <translation>Guarda appunti</translation>
-    </message>
-    <message>
-        <source>Ask quit confirmation</source>
-        <translation>Chiedi conferma chiudere</translation>
-    </message>
-    <message>
-        <source>Exit on close</source>
-        <translation>Esci dal vicino</translation>
-    </message>
-    <message>
-        <source>Open new tab next to current</source>
-        <translation>Apri scheda nuovo accanto a corrente</translation>
-    </message>
-    <message>
-        <source>Automatically accept task when there is only one handler</source>
-        <translation>Accetta automaticamente i task quando c&apos;è un solo gestore</translation>
-    </message>
-    <message>
-        <source>Watch directory:</source>
-        <translation>Guarda directory:</translation>
-    </message>
-    <message>
-        <source>Show plugin-dependent actions in tab bar context menu</source>
-        <translation>Mostra le azioni plugin-dipendente nel menu contestuale barra delle schede</translation>
-    </message>
-    <message>
-        <source>Show as a submenu</source>
-        <translation>Mostra come un sottomenu</translation>
-    </message>
-    <message>
-        <source>Show messages in tray</source>
-        <translation>Mostra i messaggi nel vassoio</translation>
-    </message>
-    <message>
-        <source>Message timeout:</source>
-        <translation>Messaggio di timeout:</translation>
-    </message>
-    <message>
-        <source> s</source>
-        <translation>s</translation>
-    </message>
-    <message>
-        <source>Tags</source>
-        <translation>Tagi</translation>
-    </message>
-    <message>
-        <source>Tags manager</source>
-        <translation>Tags manager</translation>
-    </message>
-    <message>
-        <source>Network</source>
-        <translation>Rete</translation>
-    </message>
-    <message>
-        <source>Cache size:</source>
-        <translation>Dimensioni di cache:</translation>
-    </message>
-    <message>
-        <source> MB</source>
-        <translation> MB</translation>
-    </message>
-    <message>
-        <source>Filter tracking cookies</source>
-        <translation>Filtro tracking cookie</translation>
-    </message>
-    <message>
-        <source>Clear cache</source>
-        <translation>Cancellare la cache</translation>
-    </message>
-    <message>
-        <source>Clear cookies</source>
-        <translation>Cancellare i cookie</translation>
-    </message>
-    <message>
-        <source>Application-wide proxy</source>
-        <translation>Proxy a livello di applicazione</translation>
-    </message>
-    <message>
-        <source>Host:</source>
-        <translation>Host:</translation>
-    </message>
-    <message>
-        <source>Port:</source>
-        <translation>Port:</translation>
-    </message>
-    <message>
-        <source>Login:</source>
-        <translation>Accesso:</translation>
-    </message>
-    <message>
-        <source>Password:</source>
-        <translation>Parola chiave:</translation>
-    </message>
-    <message>
-        <source>Proxy type:</source>
-        <translation>Tipo di proxy:</translation>
-    </message>
-    <message>
-        <source>SOCKS5</source>
-        <translation>SOCKS5</translation>
-    </message>
-    <message>
-        <source>Transparent HTTP</source>
-        <translation>Trasparente HTTP</translation>
-    </message>
-    <message>
-        <source>Caching HTTP</source>
-        <translation>Cache HTTP</translation>
-    </message>
-    <message>
-        <source>Caching FTP</source>
-        <translation>Chache FTP</translation>
-    </message>
-    <message>
-        <source>Plugins</source>
-        <translation>Plugins</translation>
-    </message>
-    <message>
-        <source>Plugins manager</source>
-        <translation>Plugin manager</translation>
     </message>
 </context>
 </TS>

@@ -1,0 +1,23 @@
+INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
+	${CMAKE_CURRENT_BINARY_DIR}
+	)
+SET (HILI_SRCS
+	hili.cpp
+	xmlsettingsmanager.cpp
+	)
+SET (HILI_HEADERS
+	hili.h
+	xmlsettingsmanager.h
+	)
+QT4_WRAP_CPP (HILI_MOC_SRCS ${HILI_HEADERS})
+
+ADD_LIBRARY (leechcraft_azoth_hili SHARED
+	${HILI_SRCS}
+	${HILI_MOC_SRCS}
+	)
+TARGET_LINK_LIBRARIES (leechcraft_azoth_hili
+	${QT_LIBRARIES}
+	${LEECHCRAFT_LIBRARIES}
+	)
+INSTALL (TARGETS leechcraft_azoth_hili DESTINATION ${LC_PLUGINS_DEST})
+INSTALL (FILES azothhilisettings.xml DESTINATION ${LC_SETTINGS_DEST})
