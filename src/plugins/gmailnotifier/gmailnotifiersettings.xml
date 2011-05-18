@@ -21,5 +21,11 @@
 				<suffix value=" s" />
 			</item>
 		</groupbox>
+		<groupbox>
+			<label value="Appearance" />
+			<item type="spinbox" property="ShowLastNMessages" default="5">
+				<label value="Number of messages shown:" />
+			</item>
+		</groupbox>
 	</page>
 </settings>

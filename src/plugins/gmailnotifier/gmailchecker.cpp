@@ -119,18 +119,13 @@ namespace GmailNotifier
 
 		QString title = root.firstChildElement ("title")
 				.text ().replace ("Gmail - ", "Gmail Notifier: ");
-
-		if (fullCount > 5)
-		{
-			emit newConversationsAvailable (title,
-					tr ("You have %1 unread conversations")
-						.arg (fullCount));
-			return;
-		}
-
+		int i = 0;
+		const int fullShow = XmlSettingsManager::Instance ()->
+				property ("ShowLastNMessages").toInt ();
 		QString result;
+		qDebug () << "GMAIL" << fullCount << fullShow;
 		for (QDomElement elem = root.firstChildElement ("entry");
-				!elem.isNull (); elem = elem.nextSiblingElement ("entry"))
+				!elem.isNull () && i < fullShow; elem = elem.nextSiblingElement ("entry"), ++i)
 		{
 			const QString& dateText = elem.firstChildElement ("issued").text ();
 			const QDateTime& dt = QDateTime::fromString (dateText, Qt::ISODate);
@@ -147,9 +142,13 @@ namespace GmailNotifier
 			result += elem.firstChildElement ("author").firstChildElement ("email").text () + "\">";
 			result += elem.firstChildElement ("author").firstChildElement ("name").text () + "</a><br/>";
 			result += tr ("at") + " " + dt.toLocalTime ().toString (Qt::SystemLocaleLongDate);
-			result += "</p><p><font color=\"#444444\">";
-			result += summary + "</font></p>";
+			result += "</p><p class=\"additionaltext\">";
+			result += summary + "</p>";
 		}
+		if (fullCount > fullShow)
+			result += "<p><em>&hellip;" +
+					tr ("and %1 more").arg (fullCount - fullShow) +
+					"</em></p>";
 		emit newConversationsAvailable (title, result);
 	}
 
