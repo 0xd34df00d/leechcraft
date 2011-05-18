@@ -284,6 +284,15 @@ namespace LeechCraft
 				REPLACE1 (Button);
 				REPLACE1 (ButtonText);
 				REPLACE1 (BrightText);
+				REPLACE1 (Light);
+				REPLACE1 (Midlight);
+				REPLACE1 (Dark);
+				REPLACE1 (Mid);
+				REPLACE1 (Shadow);
+				REPLACE1 (Link);
+				REPLACE1 (LinkVisited);
+				REPLACE1 (Highlight);
+				REPLACE1 (HighlightedText);
 #undef REPLACE1
 
 				QDir imgDir (themePath + "/img");
