@@ -441,8 +441,13 @@ namespace Azoth
 				 msg->GetMessageType () == IMessage::MTMUCMessage);
 	}
 
-	bool Core::IsHighlightMessage (const IMessage *msg)
+	bool Core::IsHighlightMessage (IMessage *msg)
 	{
+		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		emit hookIsHighlightMessage (proxy, msg->GetObject ());
+		if (proxy->IsCancelled ())
+			return proxy->GetReturnValue ().toBool ();
+
 		IMUCEntry *mucEntry =
 				qobject_cast<IMUCEntry*> (msg->ParentCLEntry ());
 		if (!mucEntry)

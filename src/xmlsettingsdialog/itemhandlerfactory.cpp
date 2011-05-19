@@ -28,6 +28,7 @@
 #include "itemhandlers/itemhandlerradio.h"
 #include "itemhandlers/itemhandlercombobox.h"
 #include "itemhandlers/itemhandlerlineedit.h"
+#include "itemhandlers/itemhandlermultiline.h"
 #include "itemhandlers/itemhandlerspinboxbase.h"
 #include "itemhandlers/itemhandlerspinboxdouble.h"
 #include "itemhandlers/itemhandlerspinbox.h"
@@ -42,6 +43,7 @@ namespace LeechCraft
 	{
 		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerCheckbox ());
 		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerLineEdit ());
+		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerMultiLine ());
 		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerGroupbox ());
 		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerSpinbox ());
 		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerSpinboxDouble ());

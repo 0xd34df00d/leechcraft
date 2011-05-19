@@ -16,28 +16,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERSTRINGGETVALUE_H
-#define XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERSTRINGGETVALUE_H
-#include "itemhandlerstringsetvalue.h"
+#ifndef PLUGINS_AZOTH_HILI_XMLSETTINGSMANAGER_H
+#define PLUGINS_AZOTH_HILI_XMLSETTINGSMANAGER_H
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
-	/** This is for those whose value is always a plain string.
-	 * These are:
-	 * - lineedit
-	 * - multiline
-	 * - spinbox
-	 * - doublespinbox
-	 */
-	class ItemHandlerStringGetValue : public ItemHandlerStringSetValue
+namespace Azoth
+{
+namespace HiLi
+{
+	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
-	public:
-		ItemHandlerStringGetValue ();
-		virtual ~ItemHandlerStringGetValue ();
+		Q_OBJECT
 
-		virtual QVariant GetValue (const QDomElement& element,
-				QVariant value) const;
+		XmlSettingsManager ();
+	public:
+		static XmlSettingsManager& Instance ();
+	protected:
+		virtual QSettings* BeginSettings () const;
+		virtual void EndSettings (QSettings*) const;
 	};
-};
+}
+}
+}
 
 #endif
