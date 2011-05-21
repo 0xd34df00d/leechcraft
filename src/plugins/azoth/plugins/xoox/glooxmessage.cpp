@@ -39,6 +39,7 @@ namespace Xoox
 	, Direction_ (dir)
 	, BareJID_ (jid)
 	, Variant_ (variant)
+	, DateTime_ (QDateTime::currentDateTime ())
 	, Connection_ (conn)
 	{
 		const QString& remoteJid = variant.isEmpty () ?
@@ -50,7 +51,6 @@ namespace Xoox
 			Variant_ = qobject_cast<ICLEntry*> (object)->Variants ().value (0);
 		}
 		Message_.setTo (dir == DIn ? conn->GetOurJID () : remoteJid);
-		Message_.setStamp (QDateTime::currentDateTime ());
 	}
 
 	GlooxMessage::GlooxMessage (const QXmppMessage& message,
@@ -61,10 +61,12 @@ namespace Xoox
 	, Connection_ (conn)
 	{
 		Connection_->Split (message.from (), &BareJID_, &Variant_);
+
 		if (!Message_.stamp ().isValid ())
 			Message_.setStamp (QDateTime::currentDateTime ());
 		else
 			Message_.setStamp (Message_.stamp ().toLocalTime ());
+		DateTime_ = Message_.stamp ();
 	}
 
 	QObject* GlooxMessage::GetObject ()
@@ -86,7 +88,7 @@ namespace Xoox
 		case MTChatMessage:
 		case MTMUCMessage:
 			Connection_->GetClient ()->sendPacket (Message_);
-			return;
+			break;
 		default:
 			qWarning () << Q_FUNC_INFO
 					<< this
@@ -138,12 +140,14 @@ namespace Xoox
 
 	QDateTime GlooxMessage::GetDateTime () const
 	{
-		return Message_.stamp ();
+		return DateTime_;
 	}
 
 	void GlooxMessage::SetDateTime (const QDateTime& dateTime)
 	{
-		Message_.setStamp (dateTime);
+		DateTime_ = dateTime;
+		if (Direction_ == DIn)
+			Message_.setStamp (dateTime);
 	}
 }
 }
