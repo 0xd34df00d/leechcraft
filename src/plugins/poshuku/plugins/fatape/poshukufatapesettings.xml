@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
 	<page>
-		<label lang="en" value="FatApe scripts management" />
+        <label lang="en" value="FatApe scripts management" />
         <item type="customwidget" name="UserScriptsManagerWidget" label="own" /> 
+        <item type="path" pickerType="openFileName" property="editor">
+            <label lang="en" value="Script editor path:" />
+        </item>
 	</page>
 </settings>

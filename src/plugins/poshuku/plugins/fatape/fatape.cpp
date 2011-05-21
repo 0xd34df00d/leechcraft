@@ -43,6 +43,24 @@ namespace FatApe
 				func (*first);
 	}
 
+	void WrapText (QString& text, int width = 80)
+	{
+		int curWidth = width;
+
+		while (curWidth < text.length ())
+		{
+			int spacePos = text.lastIndexOf (' ', curWidth);
+
+			if (spacePos == -1)
+				spacePos = text.indexOf (' ', curWidth);
+			if (spacePos != -1)
+			{
+				text [spacePos] = '\n';
+				curWidth = spacePos + width + 1;
+			}
+		}
+	}
+
 	void Plugin::Init (ICoreProxy_ptr)
 	{
 		QDir scriptsDir (Util::CreateIfNotExists ("data/poshuku/fatape/scripts"));
@@ -172,24 +190,6 @@ namespace FatApe
 	void Plugin::SetScriptEnabled (int scriptIndex, bool value)
 	{
 		UserScripts_ [scriptIndex].SetEnabled (value);
-	}
-
-	void Plugin::WrapText (QString& text, int width)
-	{
-		int curWidth = width;
-
-		while (curWidth < text.length ())
-		{
-			int spacePos = text.lastIndexOf (' ', curWidth);
-
-			if (spacePos == -1)
-				spacePos = text.indexOf (' ', curWidth);
-			if (spacePos != -1)
-			{
-				text[spacePos] = '\n';
-				curWidth = spacePos + width + 1;
-			}
-		}
 	}
 }
 }

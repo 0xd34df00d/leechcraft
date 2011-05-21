@@ -60,7 +60,6 @@ namespace FatApe
 		void EditScript (int scriptIndex);
 		void DeleteScript (int scriptIndex);
 		void SetScriptEnabled(int scriptIndex, bool value);
-		static void WrapText (QString& text, int width = 80);
 	public slots:
 		void hookInitialLayoutCompleted (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
