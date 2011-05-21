@@ -305,6 +305,7 @@ namespace Azoth
 	
 	void ChatTab::TabLostCurrent ()
 	{
+		TypeTimer_->stop ();
 		SetChatPartState (CPSInactive);
 	}
 	
