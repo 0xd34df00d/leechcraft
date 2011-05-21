@@ -45,9 +45,8 @@ namespace FatApe
 		QString Namespace () const;
 		QString GetResourcePath (const QString& resourceName) const;
 		QString Path () const;
-		bool Enabled () const;
-		void Enable ();
-		void Disable ();
+		bool IsEnabled () const;
+		void SetEnabled (bool value);
 		void Delete ();
 	private:
 		void ParseMetadata ();

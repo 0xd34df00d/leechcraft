@@ -42,7 +42,7 @@ namespace FatApe
 		QStandardItemModel *Model_;
 		Plugin *Plugin_;
 	public:
-		UserScriptsManagerWidget(QStandardItemModel *model, Plugin *plugin);
+		UserScriptsManagerWidget (QStandardItemModel *model, Plugin *plugin);
 	public slots:
 		void on_Edit__released ();
 		void on_Disable__released ();

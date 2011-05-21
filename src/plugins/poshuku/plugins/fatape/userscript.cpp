@@ -204,37 +204,27 @@ namespace FatApe
 		return ScriptPath_;
 	}
 
-	bool UserScript::Enabled() const
+	bool UserScript::IsEnabled () const
 	{
 		return Enabled_;
 	}
 
-	void UserScript::Enable()
-	{
-		QSettings settings(QCoreApplication::organizationName (),
-			QCoreApplication::applicationName () + "_Poshuku_FatApe");
 
-		settings.remove (QString ("disabled/%1%2")
-				.arg (qHash (Namespace ()))
-				.arg (qHash (Name ())));
-		Enabled_ = true;
-	}
-
-	void UserScript::Disable()
+	void UserScript::SetEnabled (bool value)
 	{
-		QSettings settings(QCoreApplication::organizationName (),
+		QSettings settings (QCoreApplication::organizationName (),
 			QCoreApplication::applicationName () + "_Poshuku_FatApe");
 
 		settings.setValue (QString ("disabled/%1%2")
-				.arg (qHash (Namespace ()))
-				.arg (qHash (Name ())), true);
-		Enabled_ = false;
+			.arg (qHash (Namespace ()))
+			.arg (qHash (Name ())), !value);
+		Enabled_ = value;
 
 	}
 
 	void UserScript::Delete ()
 	{
-		QSettings settings(QCoreApplication::organizationName (),
+		QSettings settings (QCoreApplication::organizationName (),
 			QCoreApplication::applicationName () + "_Poshuku_FatApe");
 
 		settings.remove (QString ("storage/%1/%2")
@@ -246,10 +236,12 @@ namespace FatApe
 		settings.remove (QString ("disabled/%1%2")
 				.arg (qHash (Namespace ()))
 				.arg (Name ()));
-		Q_FOREACH(const QString& resource, Metadata_.values ("resource"))
+		Q_FOREACH (const QString& resource, Metadata_.values ("resource"))
 			QFile::remove (GetResourcePath (resource.mid (0, resource.indexOf (" "))));
 		QFile::remove (ScriptPath_);
 	}
+
+
 }
 }
 }

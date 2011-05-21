@@ -61,14 +61,16 @@ namespace FatApe
 		Q_FOREACH (const UserScript& script, UserScripts_)
 		{
 			QList<QStandardItem*> items;
+			QString scriptDesc = script.Description ();
 			QStandardItem* name = new QStandardItem (script.Name ());
-			QStandardItem* description = new QStandardItem (script.Description ());
+			QStandardItem* description = new QStandardItem (scriptDesc);
 
 			name->setEditable (false);
-			name->setData (script.Enabled (), EnabledRole);
+			name->setData (script.IsEnabled (), EnabledRole);
 			description->setEditable (false);
-			description->setToolTip (script.Description ());
-			description->setData (script.Enabled (), EnabledRole);
+			WrapText (scriptDesc);
+			description->setToolTip (scriptDesc);
+			description->setData (script.IsEnabled (), EnabledRole);
 
 			items << name << description;
 			Model_->appendRow (items);
@@ -163,18 +165,31 @@ namespace FatApe
 
 	void Plugin::DeleteScript (int scriptIndex)
 	{
-		UserScripts_[scriptIndex].Delete ();
+		UserScripts_ [scriptIndex].Delete ();
 		UserScripts_.removeAt (scriptIndex);
 	}
 
-	void Plugin::DisableScript (int scriptIndex)
+	void Plugin::SetScriptEnabled (int scriptIndex, bool value)
 	{
-		UserScripts_[scriptIndex].Disable ();
+		UserScripts_ [scriptIndex].SetEnabled (value);
 	}
 
-	void Plugin::EnableScript (int scriptIndex)
+	void Plugin::WrapText (QString& text, int width)
 	{
-		UserScripts_[scriptIndex].Enable ();
+		int curWidth = width;
+
+		while (curWidth < text.length ())
+		{
+			int spacePos = text.lastIndexOf (' ', curWidth);
+
+			if (spacePos == -1)
+				spacePos = text.indexOf (' ', curWidth);
+			if (spacePos != -1)
+			{
+				text[spacePos] = '\n';
+				curWidth = spacePos + width + 1;
+			}
+		}
 	}
 }
 }

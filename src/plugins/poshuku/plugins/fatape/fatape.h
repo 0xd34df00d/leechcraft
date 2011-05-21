@@ -59,8 +59,8 @@ namespace FatApe
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 		void EditScript (int scriptIndex);
 		void DeleteScript (int scriptIndex);
-		void DisableScript (int scriptIndex);
-		void EnableScript (int scriptIndex);
+		void SetScriptEnabled(int scriptIndex, bool value);
+		static void WrapText (QString& text, int width = 80);
 	public slots:
 		void hookInitialLayoutCompleted (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
