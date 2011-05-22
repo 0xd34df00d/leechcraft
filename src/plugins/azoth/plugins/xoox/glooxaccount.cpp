@@ -31,6 +31,7 @@
 #include "roomclentry.h"
 #include "unauthclentry.h"
 #include "transfermanager.h"
+#include "sdsession.h"
 
 namespace LeechCraft
 {
@@ -288,6 +289,11 @@ namespace Xoox
 	QObject* GlooxAccount::GetTransferManager () const
 	{
 		return TransferManager_.get ();
+	}
+	
+	QObject* GlooxAccount::CreateSDSession ()
+	{
+		return new SDSession (this);
 	}
 
 	QString GlooxAccount::GetJID () const

@@ -19,9 +19,12 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_XOOX_SDSESSION_H
 #define PLUGINS_AZOTH_PLUGINS_XOOX_SDSESSION_H
 #include <QObject>
+#include <QHash>
 #include <interfaces/ihaveservicediscovery.h>
 
 class QStandardItemModel;
+class QStandardItem;
+class QXmppDiscoveryIq;
 
 namespace LeechCraft
 {
@@ -29,6 +32,8 @@ namespace Azoth
 {
 namespace Xoox
 {
+	class GlooxAccount;
+
 	class SDSession : public QObject
 					, public ISDSession
 	{
@@ -36,11 +41,23 @@ namespace Xoox
 		Q_INTERFACES (LeechCraft::Azoth::ISDSession)
 		
 		QStandardItemModel *Model_;
+		GlooxAccount *Account_;
+		QHash<QString, QHash<QString, QStandardItem*> > JID2Node2Item_;
+		
+		enum Columns
+		{
+			CName,
+			CJID,
+			CNode
+		};
 	public:
-		SDSession ();
+		SDSession (GlooxAccount*);
 		
 		void SetQuery (const QString&);
 		QAbstractItemModel* GetRepresentationModel () const;
+		
+		void HandleInfo (const QXmppDiscoveryIq&);
+		void HandleItems (const QXmppDiscoveryIq&);
 	};
 }
 }

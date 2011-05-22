@@ -151,6 +151,14 @@ namespace Xoox
 				SIGNAL (itemsReceived (const QXmppDiscoveryIq&)),
 				CapsManager_,
 				SLOT (handleItemsReceived (const QXmppDiscoveryIq&)));
+		connect (DiscoveryManager_,
+				SIGNAL (infoReceived (const QXmppDiscoveryIq&)),
+				this,
+				SLOT (handleDiscoInfo (const QXmppDiscoveryIq&)));
+		connect (DiscoveryManager_,
+				SIGNAL (itemsReceived (const QXmppDiscoveryIq&)),
+				this,
+				SLOT (handleDiscoItems (const QXmppDiscoveryIq&)));
 
 		connect (MUCManager_,
 				SIGNAL (roomParticipantNickChanged (const QString&, const QString&, const QString&)),
@@ -297,6 +305,11 @@ namespace Xoox
 	{
 		return MUCManager_;
 	}
+	
+	QXmppDiscoveryManager* ClientConnection::GetDiscoveryManager () const
+	{
+		return DiscoveryManager_;
+	}
 
 	QXmppTransferManager* ClientConnection::GetTransferManager () const
 	{
@@ -315,6 +328,22 @@ namespace Xoox
 				DiscoveryManager_->requestInfo (jid + '/' + variant);
 		else
 			DiscoveryManager_->requestInfo (jid);
+	}
+	
+	void ClientConnection::RequestInfo (const QString& jid,
+			DiscoCallback_t callback, const QString& node)
+	{
+		AwaitingDiscoInfo_ [jid] = callback;
+		
+		DiscoveryManager_->requestInfo (jid, node);
+	}
+	
+	void ClientConnection::RequestItems (const QString& jid,
+			DiscoCallback_t callback, const QString& node)
+	{
+		AwaitingDiscoItems_ [jid] = callback;
+		
+		DiscoveryManager_->requestItems (jid, node);
 	}
 
 	void ClientConnection::Update (const QXmppRosterIq::Item& item)
@@ -774,6 +803,20 @@ namespace Xoox
 			entries << JoinRoom (item.RoomJID_, item.Nickname_);
 		emit gotRosterItems (entries);
 		JoinQueue_.clear ();
+	}
+	
+	void ClientConnection::handleDiscoInfo (const QXmppDiscoveryIq& iq)
+	{
+		const QString& jid = iq.from ();
+		if (AwaitingDiscoInfo_.contains (jid))
+			AwaitingDiscoInfo_ [jid] (iq);
+	}
+	
+	void ClientConnection::handleDiscoItems (const QXmppDiscoveryIq& iq)
+	{
+		const QString& jid = iq.from ();
+		if (AwaitingDiscoItems_.contains (jid))
+			AwaitingDiscoItems_ [jid] (iq);
 	}
 	
 	void ClientConnection::decrementErrAccumulators ()

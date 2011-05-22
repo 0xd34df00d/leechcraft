@@ -24,6 +24,7 @@
 #include <QXmppRosterIq.h>
 #include <QXmppBookmarkSet.h>
 #include <interfaces/iaccount.h>
+#include <interfaces/ihaveservicediscovery.h>
 #include <interfaces/imessage.h>
 #include "glooxclentry.h"
 
@@ -50,9 +51,10 @@ namespace Xoox
 
 	class GlooxAccount : public QObject
 					   , public IAccount
+					   , public IHaveServiceDiscovery
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IAccount);
+		Q_INTERFACES (LeechCraft::Azoth::IAccount LeechCraft::Azoth::IHaveServiceDiscovery);
 
 		QString Name_;
 		GlooxProtocol *ParentProtocol_;
@@ -95,6 +97,8 @@ namespace Xoox
 				const QString&, const QStringList&);
 		void RemoveEntry (QObject*);
 		QObject* GetTransferManager () const;
+		
+		QObject* CreateSDSession ();
 
 		QString GetJID () const;
 		QString GetNick () const;

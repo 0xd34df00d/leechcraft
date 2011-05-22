@@ -17,7 +17,12 @@
  **********************************************************************/
 
 #include "sdsession.h"
+#include <boost/bind.hpp>
 #include <QStandardItemModel>
+#include <QtDebug>
+#include <QXmppDiscoveryIq.h>
+#include "glooxaccount.h"
+#include "clientconnection.h"
 
 namespace LeechCraft
 {
@@ -25,18 +30,89 @@ namespace Azoth
 {
 namespace Xoox
 {
-	SDSession::SDSession ()
+	SDSession::SDSession (GlooxAccount *account)
 	: Model_ (new QStandardItemModel (this))
+	, Account_ (account)
 	{
+	}
+	
+	namespace
+	{
+		template<typename T>
+		QList<QStandardItem*> AppendRow (T *parent, const QStringList& strings)
+		{
+			QList<QStandardItem*> items;
+			Q_FOREACH (const QString& string, strings)
+			{
+				QStandardItem *item = new QStandardItem (string);
+				items << item;
+				item->setEditable (false);
+			}
+			parent->appendRow (items);
+			return items;
+		}
 	}
 	
 	void SDSession::SetQuery (const QString& query)
 	{
+		Model_->clear ();
+		Model_->setHorizontalHeaderLabels (QStringList (tr ("Name")) << tr ("JID") << tr ("Node"));
+
+		QList<QStandardItem*> items = AppendRow (Model_, QStringList (query) << query << QString ());
+		JID2Node2Item_ [query] [""] = items.at (0);
+
+		Account_->GetClientConnection ()->RequestItems (query,
+				boost::bind (&SDSession::HandleItems, this, _1));
 	}
 	
 	QAbstractItemModel* SDSession::GetRepresentationModel () const
 	{
 		return Model_;
+	}
+	
+	void SDSession::HandleInfo (const QXmppDiscoveryIq& iq)
+	{
+		QStandardItem *item = JID2Node2Item_ [iq.from ()] [iq.queryNode ()];;
+		if (!item)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no parent node for"
+					<< iq.from ();
+			return;
+		}
+		
+		if (iq.identities ().size () != 1)
+			return;
+
+		const QString& text = iq.identities ().at (0).name ();
+		if (text.isEmpty ())
+			return;
+
+		const QModelIndex& index = item->index ();
+		const QModelIndex& sibling = index.sibling (index.row (), CName);
+		Model_->itemFromIndex (sibling)->setText (text);
+	}
+	
+	void SDSession::HandleItems (const QXmppDiscoveryIq& iq)
+	{
+		QStandardItem *parentItem = JID2Node2Item_ [iq.from ()] [iq.queryNode ()];
+		if (!parentItem)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no parent node for"
+					<< iq.from ();
+			return;
+		}
+		
+		Q_FOREACH (const QXmppDiscoveryIq::Item& item, iq.items ())
+		{
+			QList<QStandardItem*> items = AppendRow (parentItem,
+					QStringList (item.name ()) << item.jid () << item.node ());
+			JID2Node2Item_ [item.jid ()] [item.node ()] = items.at (0);
+			
+			Account_->GetClientConnection ()->RequestInfo (item.jid (),
+					boost::bind (&SDSession::HandleInfo, this, _1), item.node ());
+		}
 	}
 }
 }

@@ -32,6 +32,7 @@ SET (XOOX_SRCS
 	roomconfigwidget.cpp
 	capsmanager.cpp
 	capsdatabase.cpp
+	sdsession.cpp
 	)
 SET (XOOX_HEADERS
 	xoox.h
@@ -59,6 +60,7 @@ SET (XOOX_HEADERS
 	roomconfigwidget.h
 	capsmanager.h
 	capsdatabase.h
+	sdsession.h
 	)
 SET (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui
