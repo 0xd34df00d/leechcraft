@@ -63,6 +63,10 @@ namespace Azoth
 				SIGNAL (returnPressed ()),
 				this,
 				SLOT (discover ()));
+		connect (DiscoveryTimer_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (discover ()));
 		
 		Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
 		{
