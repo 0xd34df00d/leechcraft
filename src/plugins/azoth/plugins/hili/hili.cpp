@@ -22,8 +22,10 @@
 #include <QMessageBox>
 #include <QPushButton>
 #include <QSettings>
+#include <QTranslator>
 #include <interfaces/imessage.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <plugininterface/util.h>
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -34,6 +36,8 @@ namespace HiLi
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		Translator_.reset (Util::InstallTranslator ("azoth_hili"));
+
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"azothhilisettings.xml");
