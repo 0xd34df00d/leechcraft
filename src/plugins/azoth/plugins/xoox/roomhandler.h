@@ -104,6 +104,7 @@ namespace Xoox
 				QXmppMucAdminIq::Item::Role,
 				const QString&);
 		void HandleNickConflict ();
+		void HandlePasswordRequired ();
 
 		void RemoveThis ();
 	};
