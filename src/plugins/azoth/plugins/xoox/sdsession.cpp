@@ -23,6 +23,7 @@
 #include <QXmppDiscoveryIq.h>
 #include "glooxaccount.h"
 #include "clientconnection.h"
+#include "sdmodel.h"
 
 namespace LeechCraft
 {
@@ -31,7 +32,7 @@ namespace Azoth
 namespace Xoox
 {
 	SDSession::SDSession (GlooxAccount *account)
-	: Model_ (new QStandardItemModel (this))
+	: Model_ (new SDModel (this))
 	, Account_ (account)
 	{
 	}
@@ -39,7 +40,10 @@ namespace Xoox
 	namespace
 	{
 		template<typename T>
-		QList<QStandardItem*> AppendRow (T *parent, const QStringList& strings)
+		QList<QStandardItem*> AppendRow (T *parent,
+				const QStringList& strings,
+				const QString& jid,
+				const QString& node)
 		{
 			QList<QStandardItem*> items;
 			Q_FOREACH (const QString& string, strings)
@@ -48,6 +52,8 @@ namespace Xoox
 				items << item;
 				item->setEditable (false);
 			}
+			items.at (0)->setData (jid, SDSession::DRJID);
+			items.at (0)->setData (node, SDSession::DRNode);
 			parent->appendRow (items);
 			return items;
 		}
@@ -58,8 +64,13 @@ namespace Xoox
 		Model_->clear ();
 		Model_->setHorizontalHeaderLabels (QStringList (tr ("Name")) << tr ("JID") << tr ("Node"));
 
-		QList<QStandardItem*> items = AppendRow (Model_, QStringList (query) << query << QString ());
+		QList<QStandardItem*> items = AppendRow (Model_,
+				QStringList (query) << query << "",
+				query,
+				"");
 		JID2Node2Item_ [query] [""] = items.at (0);
+		
+		items.at (0)->setData (true, DRFetchedMore);
 
 		Account_->GetClientConnection ()->RequestItems (query,
 				boost::bind (&SDSession::HandleItems, this, _1));
@@ -107,12 +118,24 @@ namespace Xoox
 		Q_FOREACH (const QXmppDiscoveryIq::Item& item, iq.items ())
 		{
 			QList<QStandardItem*> items = AppendRow (parentItem,
-					QStringList (item.name ()) << item.jid () << item.node ());
+					QStringList (item.name ()) << item.jid () << item.node (),
+					item.jid (),
+					item.node ());
 			JID2Node2Item_ [item.jid ()] [item.node ()] = items.at (0);
 			
 			Account_->GetClientConnection ()->RequestInfo (item.jid (),
 					boost::bind (&SDSession::HandleInfo, this, _1), item.node ());
 		}
+	}
+	
+	void SDSession::QueryItem (QStandardItem *item)
+	{
+		item->setData (true, DRFetchedMore);
+
+		const QString& jid = item->data (DRJID).toString ();
+		const QString& node = item->data (DRNode).toString ();
+		Account_->GetClientConnection ()->RequestItems (jid,
+				boost::bind (&SDSession::HandleItems, this, _1), node);
 	}
 }
 }

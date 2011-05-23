@@ -16,15 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_SDSESSION_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_SDSESSION_H
-#include <QObject>
-#include <QHash>
-#include <interfaces/ihaveservicediscovery.h>
-
-class QStandardItemModel;
-class QStandardItem;
-class QXmppDiscoveryIq;
+#include "sdmodel.h"
+#include <QtDebug>
+#include "sdsession.h"
 
 namespace LeechCraft
 {
@@ -32,44 +26,35 @@ namespace Azoth
 {
 namespace Xoox
 {
-	class GlooxAccount;
-	class SDModel;
-
-	class SDSession : public QObject
-					, public ISDSession
+	SDModel::SDModel (SDSession *session)
+	: QStandardItemModel (session)
+	, Session_ (session)
 	{
-		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ISDSession)
-		
-		SDModel *Model_;
-		GlooxAccount *Account_;
-		QHash<QString, QHash<QString, QStandardItem*> > JID2Node2Item_;
-		
-		enum Columns
-		{
-			CName,
-			CJID,
-			CNode
-		};
-	public:
-		enum DataRoles
-		{
-			DRFetchedMore = Qt::UserRole + 1,
-			DRJID,
-			DRNode
-		};
-		SDSession (GlooxAccount*);
-		
-		void SetQuery (const QString&);
-		QAbstractItemModel* GetRepresentationModel () const;
-		
-		void HandleInfo (const QXmppDiscoveryIq&);
-		void HandleItems (const QXmppDiscoveryIq&);
-		
-		void QueryItem (QStandardItem*);
-	};
-}
-}
-}
+	}
+	
+	bool SDModel::canFetchMore (const QModelIndex& p) const
+	{
+		return true;
+	}
+	
+	void SDModel::fetchMore (const QModelIndex& parent)
+	{
+		if (!parent.isValid () ||
+				parent.data (SDSession::DRFetchedMore).toBool ())
+			return;
 
-#endif
+		Session_->QueryItem (itemFromIndex (parent.sibling (parent.row (), 0)));
+	}
+	
+	bool SDModel::hasChildren (const QModelIndex& parent) const
+	{
+		if (!parent.isValid ())
+			return true;
+		
+		return parent.data (SDSession::DRFetchedMore).toBool () ?
+				QStandardItemModel::hasChildren (parent) :
+				true;
+	}
+}
+}
+}
