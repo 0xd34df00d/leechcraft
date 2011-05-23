@@ -120,6 +120,8 @@ namespace HiLi
 		Q_FOREACH (QString string, strings)
 		{
 			string = string.trimmed ();
+			if (string.isEmpty ())
+				continue;
 			string.prepend (".*");
 			string.append (".*");
 			RegexpsCache_ << QRegExp (string, Qt::CaseInsensitive, QRegExp::RegExp2);
