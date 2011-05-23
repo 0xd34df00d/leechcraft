@@ -35,6 +35,7 @@ namespace p100q
 		PostByUserRX_ = QRegExp ("\\s#([a-zA-Z0-9]+)", Qt::CaseInsensitive);
 		CommentRX_ = QRegExp ("#([a-zA-Z0-9]+)/([0-9]+)", Qt::CaseInsensitive);
 		TagRX_ = QRegExp ("<br />[*] ([^*,<]+(, [^*,<]+)*)");
+		ImgRX_ = QRegExp ("<a href=\"(http://[^<>\"]+[.](png|jpg|gif))\">http://[^<>\"]+[.](png|jpg|gif)</a>", Qt::CaseInsensitive);
 	}
 
 	void Plugin::SecondInit ()
@@ -93,6 +94,9 @@ namespace p100q
 
 	QString Plugin::FormatBody (QString body)
 	{
+		body.replace (ImgRX_,
+				"<p><a href=\"\\1\"><img style='max-height: 300px; max-width:300px;' src=\"\\1\"/></a><p/>");
+				
 		QString tags, tag;
 		int pos = 0;
 		int delta = 0;
@@ -156,6 +160,11 @@ namespace p100q
 			return;
 
 		proxy->SetValue ("body", FormatBody (body));
+	}
+	
+	void Plugin::hookThemeReloaded (LeechCraft::IHookProxy_ptr proxy,
+			QObject *chatTab, QWebView *view, QObject *entry)
+	{
 	}
 }
 }
