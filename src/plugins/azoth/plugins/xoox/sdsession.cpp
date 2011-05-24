@@ -24,6 +24,7 @@
 #include "glooxaccount.h"
 #include "clientconnection.h"
 #include "sdmodel.h"
+#include "capsmanager.h"
 
 namespace LeechCraft
 {
@@ -72,6 +73,8 @@ namespace Xoox
 		
 		items.at (0)->setData (true, DRFetchedMore);
 
+		Account_->GetClientConnection ()->RequestInfo (query,
+				boost::bind (&SDSession::HandleInfo, this, _1));
 		Account_->GetClientConnection ()->RequestItems (query,
 				boost::bind (&SDSession::HandleItems, this, _1));
 	}
@@ -81,9 +84,34 @@ namespace Xoox
 		return Model_;
 	}
 	
+	namespace
+	{
+		struct Appender
+		{
+			QString S_;
+			
+			Appender ()
+			{
+			}
+			
+			Appender& operator() (const QString& text, const QString& name)
+			{
+				if (!text.isEmpty ())
+					S_ += name + ' ' + text + "<br />";
+				
+				return *this;
+			}
+			
+			QString operator() () const
+			{
+				return S_;
+			}
+		};
+	}
+	
 	void SDSession::HandleInfo (const QXmppDiscoveryIq& iq)
 	{
-		QStandardItem *item = JID2Node2Item_ [iq.from ()] [iq.queryNode ()];;
+		QStandardItem *item = JID2Node2Item_ [iq.from ()] [iq.queryNode ()];
 		if (!item)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -92,16 +120,43 @@ namespace Xoox
 			return;
 		}
 		
-		if (iq.identities ().size () != 1)
-			return;
-
-		const QString& text = iq.identities ().at (0).name ();
-		if (text.isEmpty ())
-			return;
-
 		const QModelIndex& index = item->index ();
 		const QModelIndex& sibling = index.sibling (index.row (), CName);
-		Model_->itemFromIndex (sibling)->setText (text);
+		QStandardItem *targetItem = Model_->itemFromIndex (sibling);
+		
+		if (iq.identities ().size () == 1)
+		{
+			const QXmppDiscoveryIq::Identity& id = iq.identities ().at (0);
+			const QString& text = id.name ();
+			if (!text.isEmpty ())
+				targetItem->setText (text);
+		}
+		
+		QString tooltip;
+		Q_FOREACH (const QXmppDiscoveryIq::Identity& id, iq.identities ())
+		{
+			if (id.name ().isEmpty ())
+				continue;
+
+			tooltip += Appender ()
+					(id.name (), tr ("Identity name:"))
+					(id.category (), tr ("Category:"))
+					(id.type (), tr ("Type:"))
+					(id.language (), tr ("Language:"))
+					();
+		}
+							
+		const QStringList& caps = Account_->GetClientConnection ()->
+				GetCapsManager ()->GetCaps (iq.features ());
+		if (!caps.isEmpty ())
+		{
+			tooltip += "<br />" + tr ("Capabilities:");
+			tooltip += "<ul><li>";
+			tooltip += caps.join ("</li><li>");
+			tooltip += "</li></ul>";
+		}
+
+		targetItem->setToolTip (tooltip);
 	}
 	
 	void SDSession::HandleItems (const QXmppDiscoveryIq& iq)
