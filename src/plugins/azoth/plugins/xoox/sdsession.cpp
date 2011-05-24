@@ -23,6 +23,8 @@
 #include <QXmppDiscoveryIq.h>
 #include "glooxaccount.h"
 #include "clientconnection.h"
+#include "sdmodel.h"
+#include "capsmanager.h"
 
 namespace LeechCraft
 {
@@ -31,7 +33,7 @@ namespace Azoth
 namespace Xoox
 {
 	SDSession::SDSession (GlooxAccount *account)
-	: Model_ (new QStandardItemModel (this))
+	: Model_ (new SDModel (this))
 	, Account_ (account)
 	{
 	}
@@ -39,7 +41,10 @@ namespace Xoox
 	namespace
 	{
 		template<typename T>
-		QList<QStandardItem*> AppendRow (T *parent, const QStringList& strings)
+		QList<QStandardItem*> AppendRow (T *parent,
+				const QStringList& strings,
+				const QString& jid,
+				const QString& node)
 		{
 			QList<QStandardItem*> items;
 			Q_FOREACH (const QString& string, strings)
@@ -48,6 +53,8 @@ namespace Xoox
 				items << item;
 				item->setEditable (false);
 			}
+			items.at (0)->setData (jid, SDSession::DRJID);
+			items.at (0)->setData (node, SDSession::DRNode);
 			parent->appendRow (items);
 			return items;
 		}
@@ -58,9 +65,16 @@ namespace Xoox
 		Model_->clear ();
 		Model_->setHorizontalHeaderLabels (QStringList (tr ("Name")) << tr ("JID") << tr ("Node"));
 
-		QList<QStandardItem*> items = AppendRow (Model_, QStringList (query) << query << QString ());
+		QList<QStandardItem*> items = AppendRow (Model_,
+				QStringList (query) << query << "",
+				query,
+				"");
 		JID2Node2Item_ [query] [""] = items.at (0);
+		
+		items.at (0)->setData (true, DRFetchedMore);
 
+		Account_->GetClientConnection ()->RequestInfo (query,
+				boost::bind (&SDSession::HandleInfo, this, _1));
 		Account_->GetClientConnection ()->RequestItems (query,
 				boost::bind (&SDSession::HandleItems, this, _1));
 	}
@@ -70,9 +84,34 @@ namespace Xoox
 		return Model_;
 	}
 	
+	namespace
+	{
+		struct Appender
+		{
+			QString S_;
+			
+			Appender ()
+			{
+			}
+			
+			Appender& operator() (const QString& text, const QString& name)
+			{
+				if (!text.isEmpty ())
+					S_ += name + ' ' + text + "<br />";
+				
+				return *this;
+			}
+			
+			QString operator() () const
+			{
+				return S_;
+			}
+		};
+	}
+	
 	void SDSession::HandleInfo (const QXmppDiscoveryIq& iq)
 	{
-		QStandardItem *item = JID2Node2Item_ [iq.from ()] [iq.queryNode ()];;
+		QStandardItem *item = JID2Node2Item_ [iq.from ()] [iq.queryNode ()];
 		if (!item)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -81,16 +120,43 @@ namespace Xoox
 			return;
 		}
 		
-		if (iq.identities ().size () != 1)
-			return;
-
-		const QString& text = iq.identities ().at (0).name ();
-		if (text.isEmpty ())
-			return;
-
 		const QModelIndex& index = item->index ();
 		const QModelIndex& sibling = index.sibling (index.row (), CName);
-		Model_->itemFromIndex (sibling)->setText (text);
+		QStandardItem *targetItem = Model_->itemFromIndex (sibling);
+		
+		if (iq.identities ().size () == 1)
+		{
+			const QXmppDiscoveryIq::Identity& id = iq.identities ().at (0);
+			const QString& text = id.name ();
+			if (!text.isEmpty ())
+				targetItem->setText (text);
+		}
+		
+		QString tooltip;
+		Q_FOREACH (const QXmppDiscoveryIq::Identity& id, iq.identities ())
+		{
+			if (id.name ().isEmpty ())
+				continue;
+
+			tooltip += Appender ()
+					(id.name (), tr ("Identity name:"))
+					(id.category (), tr ("Category:"))
+					(id.type (), tr ("Type:"))
+					(id.language (), tr ("Language:"))
+					();
+		}
+							
+		const QStringList& caps = Account_->GetClientConnection ()->
+				GetCapsManager ()->GetCaps (iq.features ());
+		if (!caps.isEmpty ())
+		{
+			tooltip += "<br />" + tr ("Capabilities:");
+			tooltip += "<ul><li>";
+			tooltip += caps.join ("</li><li>");
+			tooltip += "</li></ul>";
+		}
+
+		targetItem->setToolTip (tooltip);
 	}
 	
 	void SDSession::HandleItems (const QXmppDiscoveryIq& iq)
@@ -107,12 +173,24 @@ namespace Xoox
 		Q_FOREACH (const QXmppDiscoveryIq::Item& item, iq.items ())
 		{
 			QList<QStandardItem*> items = AppendRow (parentItem,
-					QStringList (item.name ()) << item.jid () << item.node ());
+					QStringList (item.name ()) << item.jid () << item.node (),
+					item.jid (),
+					item.node ());
 			JID2Node2Item_ [item.jid ()] [item.node ()] = items.at (0);
 			
 			Account_->GetClientConnection ()->RequestInfo (item.jid (),
 					boost::bind (&SDSession::HandleInfo, this, _1), item.node ());
 		}
+	}
+	
+	void SDSession::QueryItem (QStandardItem *item)
+	{
+		item->setData (true, DRFetchedMore);
+
+		const QString& jid = item->data (DRJID).toString ();
+		const QString& node = item->data (DRNode).toString ();
+		Account_->GetClientConnection ()->RequestItems (jid,
+				boost::bind (&SDSession::HandleItems, this, _1), node);
 	}
 }
 }

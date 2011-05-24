@@ -112,6 +112,7 @@ OPTION (ENABLE_POTORCHU "Build Potorchu, the new generation audio/video player" 
 OPTION (ENABLE_TRANSPARENTARCH "Build TransparentArch, the plugin for transparent access to archives in various formats" OFF)
 OPTION (ENABLE_JUFFED "Build JuffEd, the advanced text editor" OFF)
 OPTION (ENABLE_GMAILNOTIFIER "Build GMail Notifier which notifies about new mail in your GMail inbox" OFF)
+OPTION (ENABLE_OTZERKALU "Build Otzerkalu, which allows to download web sites recursively" OFF)
 ENABLE_TESTING ()
 
 FUNCTION (CreateTrVars PlugName Langs TranVar CompiledTranVar)
@@ -246,6 +247,10 @@ ENDIF (ENABLE_JUFFED)
 IF (ENABLE_GMAILNOTIFIER)
 	ADD_SUBDIRECTORY (plugins/gmailnotifier)
 ENDIF (ENABLE_GMAILNOTIFIER)
+
+IF (ENABLE_OTZERKALU)
+	ADD_SUBDIRECTORY (plugins/otzerkalu)
+ENDIF (ENABLE_OTZERKALU)
 
 SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTXML TRUE)

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,40 +16,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_CAPSMANAGER_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_CAPSMANAGER_H
+#ifndef PLUGINS_OTZERKALU_OTZERKALU_H
+#define PLUGINS_OTZERKALU_OTZERKALU_H
 #include <QObject>
-#include <QXmppDiscoveryIq.h>
+#include <interfaces/iinfo.h>
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace Otzerkalu
 {
-namespace Xoox
-{
-	class ClientConnection;
-	class CapsDatabase;
-
-	class CapsManager : public QObject
+	class Plugin : public QObject
+				 , public IInfo
 	{
 		Q_OBJECT
-		
-		ClientConnection *Connection_;
-		CapsDatabase *DB_;
-		QHash<QString, QString> Caps2String_;
+		Q_INTERFACES (IInfo)
 	public:
-		CapsManager (ClientConnection*);
-		
-		void FetchCaps (const QString&, const QByteArray&);
-		QStringList GetRawCaps (const QByteArray&) const;
-		QStringList GetCaps (const QByteArray&) const;
-		QStringList GetCaps (const QStringList&) const;
-	public slots:
-		void handleInfoReceived (const QXmppDiscoveryIq&);
-		void handleItemsReceived (const QXmppDiscoveryIq&);
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		QByteArray GetUniqueID () const;
+		void Release ();
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
+
 	};
-}
 }
 }
 
 #endif
+

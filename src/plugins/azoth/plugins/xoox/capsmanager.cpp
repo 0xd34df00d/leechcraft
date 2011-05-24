@@ -80,8 +80,13 @@ namespace Xoox
 	
 	QStringList CapsManager::GetCaps (const QByteArray& verNode) const
 	{
+		return GetCaps (GetRawCaps (verNode));
+	}
+	
+	QStringList CapsManager::GetCaps (const QStringList& features) const
+	{
 		QStringList result;
-		Q_FOREACH (const QString& raw, GetRawCaps (verNode))
+		Q_FOREACH (const QString& raw, features)
 			result << Caps2String_.value (raw, raw);
 		result.removeAll (QString ());
 		return result;

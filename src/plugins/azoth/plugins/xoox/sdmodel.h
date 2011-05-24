@@ -16,15 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_SDSESSION_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_SDSESSION_H
-#include <QObject>
-#include <QHash>
-#include <interfaces/ihaveservicediscovery.h>
-
-class QStandardItemModel;
-class QStandardItem;
-class QXmppDiscoveryIq;
+#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_SDMODEL_H
+#define PLUGINS_AZOTH_PLUGINS_XOOX_SDMODEL_H
+#include <QStandardItemModel>
 
 namespace LeechCraft
 {
@@ -32,41 +26,19 @@ namespace Azoth
 {
 namespace Xoox
 {
-	class GlooxAccount;
-	class SDModel;
+	class SDSession;
 
-	class SDSession : public QObject
-					, public ISDSession
+	class SDModel : public QStandardItemModel
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ISDSession)
 		
-		SDModel *Model_;
-		GlooxAccount *Account_;
-		QHash<QString, QHash<QString, QStandardItem*> > JID2Node2Item_;
-		
-		enum Columns
-		{
-			CName,
-			CJID,
-			CNode
-		};
+		SDSession *Session_;
 	public:
-		enum DataRoles
-		{
-			DRFetchedMore = Qt::UserRole + 1,
-			DRJID,
-			DRNode
-		};
-		SDSession (GlooxAccount*);
+		SDModel (SDSession*);
 		
-		void SetQuery (const QString&);
-		QAbstractItemModel* GetRepresentationModel () const;
-		
-		void HandleInfo (const QXmppDiscoveryIq&);
-		void HandleItems (const QXmppDiscoveryIq&);
-		
-		void QueryItem (QStandardItem*);
+		bool canFetchMore (const QModelIndex&) const;
+		void fetchMore (const QModelIndex&);
+		bool hasChildren (const QModelIndex&) const;
 	};
 }
 }
