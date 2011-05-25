@@ -17,7 +17,6 @@ namespace LeechCraft
 				QList<QVariant> sizes;
 				for (int i = 0, count = tree->model ()->columnCount (); i < count; ++i)
 					sizes += tree->columnWidth (i);
-				qDebug() << Q_FUNC_INFO << keyName << "sizes=" << sizes;
 				// save column width
 				QSettings settings (QApplication::organizationName (), QApplication::applicationName () + " Aggregator");
 				settings.beginGroup ("tabs-width");
@@ -32,7 +31,6 @@ namespace LeechCraft
 				settings.beginGroup ("tabs-width");
 				QList<QVariant> sizes = settings.value (keyName).toList ();
 				settings.endGroup ();
-				qDebug () << Q_FUNC_INFO << keyName << "sizes=" << sizes;
 				// some checks 
 				if (sizes.size () != tree->model ()->columnCount ())
 				{
@@ -61,7 +59,6 @@ namespace LeechCraft
 					}
 					tree->setColumnWidth (i, s);
 				}
-				qDebug() << Q_FUNC_INFO << keyName<< ": loaded successful";
 			}
 		}
 	}
