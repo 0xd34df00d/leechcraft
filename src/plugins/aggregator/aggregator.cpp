@@ -287,13 +287,13 @@ namespace LeechCraft
 			void Aggregator::SecondInit ()
 			{
 				LoadColumnWidth (Impl_->Ui_.Feeds_, "feeds");
-				LoadColumnWidth (Impl_->Ui_.ItemsWidget_->GetItemsTreeView(), "items");
+				Impl_->Ui_.ItemsWidget_->LoadUIState ();
 			}
 
 			void Aggregator::Release ()
 			{
 				SaveColumnWidth (Impl_->Ui_.Feeds_, "feeds");
-				SaveColumnWidth (Impl_->Ui_.ItemsWidget_->GetItemsTreeView (), "items");
+				Impl_->Ui_.ItemsWidget_->SaveUIState ();
 				disconnect (&Core::Instance (), 0, this, 0);
 				if (Core::Instance ().GetChannelsModel ())
 					disconnect (Core::Instance ().GetChannelsModel (), 0, this, 0);

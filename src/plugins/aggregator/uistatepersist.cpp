@@ -1,9 +1,9 @@
+#include "uistatepersist.h"
 #include <QTreeView>
 #include <QString>
 #include <QSettings>
 #include <QDebug>
 #include <QApplication>
-#include "uistatepersist.h"
 
 namespace LeechCraft
 {
@@ -11,14 +11,12 @@ namespace LeechCraft
 	{
 		namespace Aggregator
 		{
-			void SaveColumnWidth (const QTreeView* tree, const QString& keyName)
+			void SaveColumnWidth (const QTreeView *tree, const QString &keyName)
 			{
 				// get width
 				QList<QVariant> sizes;
-				for (int i = 0; i < tree->model ()->columnCount (); i++)
-				{
+				for (int i = 0, count = tree->model ()->columnCount (); i < count; ++i)
 					sizes += tree->columnWidth (i);
-				}
 				qDebug() << Q_FUNC_INFO << keyName << "sizes=" << sizes;
 				// save column width
 				QSettings settings (QApplication::organizationName (), QApplication::applicationName () + " Aggregator");
@@ -27,7 +25,7 @@ namespace LeechCraft
 				settings.endGroup ();
 			}
 
-			void LoadColumnWidth (QTreeView* tree, const QString& keyName)
+			void LoadColumnWidth (QTreeView *tree, const QString &keyName)
 			{
 				// load column width
 				QSettings settings (QApplication::organizationName (), QApplication::applicationName () + " Aggregator");
@@ -44,7 +42,7 @@ namespace LeechCraft
 					return;
 				}
 				// set width
-				const int MIN_COLUMN_SIZE=4;
+				const int minColumnSize=4;
 				for (int i = 0; i < sizes.size (); i++)
 				{
 					// checks
@@ -55,10 +53,10 @@ namespace LeechCraft
 						return;
 					}
 					int s = sizes.at (i).toInt ();
-					if (s < MIN_COLUMN_SIZE)
+					if (s < minColumnSize)
 					{
 						qWarning() << Q_FUNC_INFO << "Size of column #" << i <<
-							"(" << s << ") is too small (min." << MIN_COLUMN_SIZE << ")";
+							"(" << s << ") is too small (min." << minColumnSize << ")";
 						continue;
 					}
 					tree->setColumnWidth (i, s);

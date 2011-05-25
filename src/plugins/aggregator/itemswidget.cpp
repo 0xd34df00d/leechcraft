@@ -442,9 +442,14 @@ namespace LeechCraft
 				emit currentChannelChanged (index);
 			}
 
-			QTreeView* ItemsWidget::GetItemsTreeView (void)
+			void ItemsWidget::LoadUIState ()
 			{
-				return Impl_->Ui_.Items_;
+				LoadColumnWidth (Impl_->Ui_.Items_, "items");
+			}
+
+			void ItemsWidget::SaveUIState ()
+			{
+				SaveColumnWidth (Impl_->Ui_.Items_, "items");
 			}
 
 			void ItemsWidget::ClearSupplementaryModels ()

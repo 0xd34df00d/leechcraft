@@ -1,5 +1,5 @@
-#ifndef UISTATEPERSIST_H
-#define UISTATEPERSIST_H
+#ifndef PLUGINS_AGGREGATOR_UISTATEPERSIST_H
+#define PLUGINS_AGGREGATOR_UISTATEPERSIST_H
 #include <QTreeView>
 #include <QString>
 
@@ -9,10 +9,10 @@ namespace LeechCraft
 	{
 		namespace Aggregator
 		{
-			/* Save column width of tree to aggregator`s section of settings */
-			void SaveColumnWidth (const QTreeView * tree, const QString &keyName);
-			/* Try to load column width of tree from aggregator`s section of settings */
-			void LoadColumnWidth (QTreeView * tree, const QString &keyName);
+			/** Save column width of tree to aggregator`s section of settings */
+			void SaveColumnWidth (const QTreeView *tree, const QString &keyName);
+			/** Try to load column width of tree from aggregator`s section of settings */
+			void LoadColumnWidth (QTreeView *tree, const QString &keyName);
 		}
 	}
 }
