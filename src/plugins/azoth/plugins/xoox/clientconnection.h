@@ -19,6 +19,7 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_XOOX_CLIENTCONNECTION_H
 #define PLUGINS_AZOTH_PLUGINS_XOOX_CLIENTCONNECTION_H
 #include <boost/shared_ptr.hpp>
+#include <boost/function.hpp>
 #include <QObject>
 #include <QMap>
 #include <QHash>
@@ -99,6 +100,11 @@ namespace Xoox
 		
 		QHash<QString, QPointer<VCardDialog> > AwaitingVCardDialogs_;
 	public:
+		typedef boost::function<void (const QXmppDiscoveryIq&)> DiscoCallback_t;
+	private:
+		QHash<QString, DiscoCallback_t> AwaitingDiscoInfo_;
+		QHash<QString, DiscoCallback_t> AwaitingDiscoItems_;
+	public:
 		ClientConnection (const QString&,
 				const GlooxAccountState&,
 				GlooxAccount*);
@@ -119,10 +125,14 @@ namespace Xoox
 		void Unregister (RoomHandler*);
 
 		QXmppMucManager* GetMUCManager () const;
+		QXmppDiscoveryManager* GetDiscoveryManager () const;
 		QXmppTransferManager* GetTransferManager () const;
 		CapsManager* GetCapsManager () const;
 
 		void RequestInfo (const QString&) const;
+		
+		void RequestInfo (const QString&, DiscoCallback_t, const QString& = "");
+		void RequestItems (const QString&, DiscoCallback_t, const QString& = "");
 
 		void Update (const QXmppRosterIq::Item&);
 		void Update (const QXmppMucAdminIq::Item&, const QString& room);
@@ -175,6 +185,9 @@ namespace Xoox
 		
 		void handleBookmarksReceived (const QXmppBookmarkSet&);
 		void handleAutojoinQueue ();
+		
+		void handleDiscoInfo (const QXmppDiscoveryIq&);
+		void handleDiscoItems (const QXmppDiscoveryIq&);
 		
 		void decrementErrAccumulators ();
 		

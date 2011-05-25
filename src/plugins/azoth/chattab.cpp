@@ -305,6 +305,7 @@ namespace Azoth
 	
 	void ChatTab::TabLostCurrent ()
 	{
+		TypeTimer_->stop ();
 		SetChatPartState (CPSInactive);
 	}
 	
@@ -1017,9 +1018,7 @@ namespace Azoth
 			if (!part)
 			{
 				qWarning () << Q_FUNC_INFO
-						<< "unable to cast message from"
-						<< part->GetEntryID ()
-						<< "to ICLEntry"
+						<< "unable to cast item to ICLEntry"
 						<< item;
 				return QStringList ();
 			}

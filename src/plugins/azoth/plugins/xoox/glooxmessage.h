@@ -42,6 +42,7 @@ namespace Xoox
 		Direction Direction_;
 		QString BareJID_;
 		QString Variant_;
+		QDateTime DateTime_;
 		QXmppMessage Message_;
 		ClientConnection *Connection_;
 	public:

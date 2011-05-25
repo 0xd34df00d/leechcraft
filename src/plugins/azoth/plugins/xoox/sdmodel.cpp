@@ -16,40 +16,45 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "itemhandlercustomwidget.h"
-#include <QGridLayout>
-#include <QLabel>
+#include "sdmodel.h"
+#include <QtDebug>
+#include "sdsession.h"
 
 namespace LeechCraft
 {
-	ItemHandlerCustomWidget::ItemHandlerCustomWidget ()
+namespace Azoth
+{
+namespace Xoox
+{
+	SDModel::SDModel (SDSession *session)
+	: QStandardItemModel (session)
+	, Session_ (session)
 	{
 	}
-
-	ItemHandlerCustomWidget::~ItemHandlerCustomWidget ()
+	
+	bool SDModel::canFetchMore (const QModelIndex& p) const
 	{
+		return true;
 	}
-
-	bool ItemHandlerCustomWidget::CanHandle (const QDomElement& element) const
+	
+	void SDModel::fetchMore (const QModelIndex& parent)
 	{
-		return element.attribute ("type") == "customwidget";
-	}
+		if (!parent.isValid () ||
+				parent.data (SDSession::DRFetchedMore).toBool ())
+			return;
 
-	void ItemHandlerCustomWidget::Handle (const QDomElement& item, QWidget *pwidget)
+		Session_->QueryItem (itemFromIndex (parent.sibling (parent.row (), 0)));
+	}
+	
+	bool SDModel::hasChildren (const QModelIndex& parent) const
 	{
-		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
-		QWidget *widget = new QWidget (XSD_);
-		widget->setObjectName (item.attribute ("name"));
-		QVBoxLayout *layout = new QVBoxLayout ();
-		layout->setContentsMargins (0, 0, 0, 0);
-		widget->setLayout (layout);
-		widget->setSizePolicy (QSizePolicy::Expanding,
-				QSizePolicy::Expanding);
-
-		if (item.attribute ("label") == "own")
-		{
-			lay->setRowStretch (0, 1);
-			lay->addWidget (widget, 0, 0, 1, -1);
-		}
+		if (!parent.isValid ())
+			return true;
+		
+		return parent.data (SDSession::DRFetchedMore).toBool () ?
+				QStandardItemModel::hasChildren (parent) :
+				true;
 	}
-};
+}
+}
+}

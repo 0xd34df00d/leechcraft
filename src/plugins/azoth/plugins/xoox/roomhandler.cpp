@@ -312,6 +312,26 @@ namespace Xoox
 		Account_->GetClientConnection ()->GetMUCManager ()->joinRoom (RoomJID_, OurNick_);
 	}
 	
+	void RoomHandler::HandlePasswordRequired ()
+	{
+		bool ok = false;
+		const QString& pass = QInputDialog::getText (0,
+				tr ("Authorization required"),
+				tr ("This room is password-protected. Please enter the "
+					"password required to join this room."),
+				QLineEdit::Normal,
+				QString (),
+				&ok);
+		if (!ok ||
+			pass.isEmpty ())
+		{
+			Leave (QString ());
+			return;
+		}
+		
+		Account_->GetClientConnection ()->GetMUCManager ()->joinRoom (RoomJID_, OurNick_, pass);
+	}
+	
 	void RoomHandler::HandleErrorPresence (const QXmppPresence& pres, const QString& nick)
 	{
 		const QString& errorText = pres.error ().text ();
@@ -324,6 +344,9 @@ namespace Xoox
 		case QXmppStanza::Error::Forbidden:
 		case QXmppStanza::Error::NotAllowed:
 			hrText = tr ("access forbidden");
+			break;
+		case QXmppStanza::Error::NotAuthorized:
+			hrText = tr ("password required");
 			break;
 		default:
 			hrText = tr ("unknown condition %1 (please report to developers)")
@@ -347,6 +370,9 @@ namespace Xoox
 		{
 		case QXmppStanza::Error::Conflict:
 			HandleNickConflict ();
+			break;
+		case QXmppStanza::Error::NotAuthorized:
+			HandlePasswordRequired ();
 			break;
 		default:
 			break;

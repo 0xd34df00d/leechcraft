@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,58 +16,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_FATAPE_FATAPE_H
-#define PLUGINS_POSHUKU_PLUGINS_FATAPE_FATAPE_H
-#include "userscript.h"
+#ifndef PLUGINS_OTZERKALU_OTZERKALU_H
+#define PLUGINS_OTZERKALU_OTZERKALU_H
 #include <QObject>
-#include <QList>
-#include <QStandardItemModel>
 #include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-#include <interfaces/iproxyobject.h>
-#include <interfaces/ihavesettings.h>
-
-
 
 namespace LeechCraft
 {
-namespace Poshuku
-{
-namespace FatApe
+namespace Otzerkalu
 {
 	class Plugin : public QObject
 				 , public IInfo
-				 , public IPlugin2
-				 , public IHaveSettings
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
-
-		QList<UserScript> UserScripts_;
-		IProxyObject *Proxy_;
-		Util::XmlSettingsDialog_ptr SettingsDialog_;
-		boost::shared_ptr<QStandardItemModel> Model_; 
+		Q_INTERFACES (IInfo)
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
-		void Release ();
 		QByteArray GetUniqueID () const;
+		void Release ();
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
-		QSet<QByteArray> GetPluginClasses () const;
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-		void EditScript (int scriptIndex);
-		void DeleteScript (int scriptIndex);
-		void SetScriptEnabled(int scriptIndex, bool value);
-	public slots:
-		void hookInitialLayoutCompleted (LeechCraft::IHookProxy_ptr proxy,
-				QWebPage *page,
-				QWebFrame *frame);
-		void initPlugin (QObject *proxy);
+
 	};
-}
 }
 }
 
 #endif
+

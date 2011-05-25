@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,40 +16,46 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_CAPSMANAGER_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_CAPSMANAGER_H
-#include <QObject>
-#include <QXmppDiscoveryIq.h>
+#include "otzerkalu.h"
+#include <QIcon>
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace Otzerkalu
 {
-namespace Xoox
-{
-	class ClientConnection;
-	class CapsDatabase;
-
-	class CapsManager : public QObject
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Q_OBJECT
-		
-		ClientConnection *Connection_;
-		CapsDatabase *DB_;
-		QHash<QString, QString> Caps2String_;
-	public:
-		CapsManager (ClientConnection*);
-		
-		void FetchCaps (const QString&, const QByteArray&);
-		QStringList GetRawCaps (const QByteArray&) const;
-		QStringList GetCaps (const QByteArray&) const;
-		QStringList GetCaps (const QStringList&) const;
-	public slots:
-		void handleInfoReceived (const QXmppDiscoveryIq&);
-		void handleItemsReceived (const QXmppDiscoveryIq&);
-	};
-}
+	}
+
+	void Plugin::SecondInit ()
+	{
+	}
+
+	QByteArray Plugin::GetUniqueID () const
+	{
+		return "org.LeechCraft.Otzerkalu";
+	}
+
+	void Plugin::Release ()
+	{
+	}
+
+	QString Plugin::GetName () const
+	{
+		return "Otzerkalu";
+	}
+
+	QString Plugin::GetInfo () const
+	{
+		return tr ("Otzerkalu allows to recursively download a web site.");
+	}
+
+	QIcon Plugin::GetIcon () const
+	{
+		return QIcon ();
+	}
 }
 }
 
-#endif
+Q_EXPORT_PLUGIN2 (leechcraft_otzerkalu, LeechCraft::Otzerkalu::Plugin);
+

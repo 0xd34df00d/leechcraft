@@ -88,6 +88,9 @@ namespace LeechCraft
 				Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("iBash.Org.Ru"),
 						"fun; it",
 						"http://ibash.org.ru/rss.xml");
+				Sets_ ["ru"] << FeedInfo (QString::fromUtf8 ("WeLinux.ru"),
+						"it; linux",
+						"http://feeds.feedburner.com/welinux");
 
 				Ui_.setupUi (this);
 				Ui_.Tree_->header ()->setResizeMode (0, QHeaderView::ResizeToContents);

@@ -16,40 +16,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "itemhandlercustomwidget.h"
-#include <QGridLayout>
-#include <QLabel>
+#include "xmlsettingsmanager.h"
+#include <QCoreApplication>
+
 
 namespace LeechCraft
 {
-	ItemHandlerCustomWidget::ItemHandlerCustomWidget ()
+namespace Poshuku
+{
+namespace FatApe
+{
+    XmlSettingsManager::XmlSettingsManager ()
+	{
+		Util::BaseSettingsManager::Init ();
+	}
+
+	XmlSettingsManager* XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager xsm;
+		return &xsm;
+	}
+
+	QSettings* XmlSettingsManager::BeginSettings () const
+	{
+		return new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Poshuku_FatApe");
+	}
+
+	void XmlSettingsManager::EndSettings (QSettings*) const
 	{
 	}
 
-	ItemHandlerCustomWidget::~ItemHandlerCustomWidget ()
-	{
-	}
+}
+}
+}
 
-	bool ItemHandlerCustomWidget::CanHandle (const QDomElement& element) const
-	{
-		return element.attribute ("type") == "customwidget";
-	}
-
-	void ItemHandlerCustomWidget::Handle (const QDomElement& item, QWidget *pwidget)
-	{
-		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
-		QWidget *widget = new QWidget (XSD_);
-		widget->setObjectName (item.attribute ("name"));
-		QVBoxLayout *layout = new QVBoxLayout ();
-		layout->setContentsMargins (0, 0, 0, 0);
-		widget->setLayout (layout);
-		widget->setSizePolicy (QSizePolicy::Expanding,
-				QSizePolicy::Expanding);
-
-		if (item.attribute ("label") == "own")
-		{
-			lay->setRowStretch (0, 1);
-			lay->addWidget (widget, 0, 0, 1, -1);
-		}
-	}
-};

@@ -16,40 +16,41 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "itemhandlercustomwidget.h"
-#include <QGridLayout>
-#include <QLabel>
+#ifndef PLUGINS_POSHUKU_PLUGINS_FATAPE_USERSCRIPTSMANAGER_H
+#define PLUGINS_POSHUKU_PLUGINS_FATAPE_USERSCRIPTSMANAGER_H
+#include <QStandardItemModel> 
+#include <QList>
+#include <QWidget>
+#include "ui_userscriptsmanagerwidget.h"
 
 namespace LeechCraft
 {
-	ItemHandlerCustomWidget::ItemHandlerCustomWidget ()
+namespace Poshuku
+{
+namespace FatApe
+{
+	enum CustomRoles
 	{
-	}
-
-	ItemHandlerCustomWidget::~ItemHandlerCustomWidget ()
+		EnabledRole = Qt::UserRole + 0xdead
+	};
+	class Plugin;
+	class UserScriptsManagerWidget : public QWidget
 	{
-	}
+		Q_OBJECT
 
-	bool ItemHandlerCustomWidget::CanHandle (const QDomElement& element) const
-	{
-		return element.attribute ("type") == "customwidget";
-	}
+		Ui::UserScriptsManagerWidget Ui_;
+		QStandardItemModel *Model_;
+		Plugin *Plugin_;
+	public:
+		UserScriptsManagerWidget (QStandardItemModel *model, Plugin *plugin);
+	public slots:
+		void on_Edit__released ();
+		void on_Disable__released ();
+		void on_Remove__released ();
+		void on_Items__currentChanged (const QModelIndex& current, const QModelIndex& previous);
+	};
+}
+}
+}
 
-	void ItemHandlerCustomWidget::Handle (const QDomElement& item, QWidget *pwidget)
-	{
-		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
-		QWidget *widget = new QWidget (XSD_);
-		widget->setObjectName (item.attribute ("name"));
-		QVBoxLayout *layout = new QVBoxLayout ();
-		layout->setContentsMargins (0, 0, 0, 0);
-		widget->setLayout (layout);
-		widget->setSizePolicy (QSizePolicy::Expanding,
-				QSizePolicy::Expanding);
-
-		if (item.attribute ("label") == "own")
-		{
-			lay->setRowStretch (0, 1);
-			lay->addWidget (widget, 0, 0, 1, -1);
-		}
-	}
-};
+#endif

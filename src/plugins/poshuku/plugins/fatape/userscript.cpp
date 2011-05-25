@@ -20,10 +20,12 @@
 #include <algorithm>
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
+#include <QCoreApplication>
 #include <QtDebug>
 #include <QFile>
 #include <QFileInfo>
 #include <QHash>
+#include <QTextCodec>
 #include <QTextStream>
 #include <plugininterface/util.h>
 #include "greasemonkey.h"
@@ -50,6 +52,13 @@ namespace FatApe
 		ParseMetadata ();
 		if (!Metadata_.count ("include"))
 			Metadata_.insert ("include", "*");
+
+		QSettings settings(QCoreApplication::organizationName (),
+			QCoreApplication::applicationName () + "_Poshuku_FatApe");
+
+		Enabled_ = !settings.value (QString("disabled/%1%2")
+				.arg (qHash (Namespace ()))
+				.arg (qHash (Name ())), false).toBool ();;
 	}
 
 	UserScript::UserScript (const UserScript& script)
@@ -57,6 +66,7 @@ namespace FatApe
 	{
 		ScriptPath_ = script.ScriptPath_;
 		Metadata_ = script.Metadata_;
+		Enabled_ = script.Enabled_;
 	}
 
 	void UserScript::ParseMetadata ()
@@ -76,6 +86,7 @@ namespace FatApe
 		QTextStream content (&script);
 		QString line;
 
+		content.setCodec (QTextCodec::codecForName ("UTF-8"));
 		if (content.readLine () != MetadataStart)
 			return;
 
@@ -116,6 +127,9 @@ namespace FatApe
 
 	void UserScript::Inject (QWebFrame *frame, IProxyObject *proxy) const
 	{
+		if (!Enabled_)
+			return;
+		
 		QFile script (ScriptPath_);
 
 		if (!script.open (QFile::ReadOnly))
@@ -184,6 +198,50 @@ namespace FatApe
 					.arg (qHash (Name ()))
 					.arg (resourceFile)).absoluteFilePath ();		
 	}
+
+	QString UserScript::Path() const
+	{
+		return ScriptPath_;
+	}
+
+	bool UserScript::IsEnabled () const
+	{
+		return Enabled_;
+	}
+
+
+	void UserScript::SetEnabled (bool value)
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+			QCoreApplication::applicationName () + "_Poshuku_FatApe");
+
+		settings.setValue (QString ("disabled/%1%2")
+			.arg (qHash (Namespace ()))
+			.arg (qHash (Name ())), !value);
+		Enabled_ = value;
+
+	}
+
+	void UserScript::Delete ()
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+			QCoreApplication::applicationName () + "_Poshuku_FatApe");
+
+		settings.remove (QString ("storage/%1/%2")
+				.arg (qHash (Namespace ()))
+				.arg (Name ()));
+		settings.remove (QString ("resources/%1/%2")
+				.arg (qHash (Namespace ()))
+				.arg (Name ()));
+		settings.remove (QString ("disabled/%1%2")
+				.arg (qHash (Namespace ()))
+				.arg (Name ()));
+		Q_FOREACH (const QString& resource, Metadata_.values ("resource"))
+			QFile::remove (GetResourcePath (resource.mid (0, resource.indexOf (" "))));
+		QFile::remove (ScriptPath_);
+	}
+
+
 }
 }
 }

@@ -21,8 +21,13 @@
 #include <boost/function.hpp>
 #include <QDir>
 #include <QIcon>
+#include <QProcess>
 #include <QStringList>
 #include <plugininterface/util.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include "xmlsettingsmanager.h"
+#include "userscriptsmanagerwidget.h"
+
 
 namespace LeechCraft
 {
@@ -38,21 +43,66 @@ namespace FatApe
 				func (*first);
 	}
 
-	void Plugin::Init (ICoreProxy_ptr)
+	void WrapText (QString& text, int width = 80)
 	{
+		int curWidth = width;
+
+		while (curWidth < text.length ())
+		{
+			int spacePos = text.lastIndexOf (' ', curWidth);
+
+			if (spacePos == -1)
+				spacePos = text.indexOf (' ', curWidth);
+			if (spacePos != -1)
+			{
+				text [spacePos] = '\n';
+				curWidth = spacePos + width + 1;
+			}
+		}
 	}
-	
-	void Plugin::SecondInit ()
+
+	void Plugin::Init (ICoreProxy_ptr)
 	{
 		QDir scriptsDir (Util::CreateIfNotExists ("data/poshuku/fatape/scripts"));
 
 		if (!scriptsDir.exists ())
 			return;
-		
+
 		QStringList filter ("*.user.js");
 
 		Q_FOREACH (const QString& script, scriptsDir.entryList (filter, QDir::Files))
 			UserScripts_.append (UserScript (scriptsDir.absoluteFilePath (script)));
+
+		Model_.reset (new QStandardItemModel);
+		Model_->setHorizontalHeaderLabels (QStringList (tr ("Name")) 
+				<< tr ("Description"));
+		Q_FOREACH (const UserScript& script, UserScripts_)
+		{
+			QList<QStandardItem*> items;
+			QString scriptDesc = script.Description ();
+			QStandardItem* name = new QStandardItem (script.Name ());
+			QStandardItem* description = new QStandardItem (scriptDesc);
+
+			name->setEditable (false);
+			name->setData (script.IsEnabled (), EnabledRole);
+			description->setEditable (false);
+			WrapText (scriptDesc);
+			description->setToolTip (scriptDesc);
+			description->setData (script.IsEnabled (), EnabledRole);
+
+			items << name << description;
+			Model_->appendRow (items);
+		}
+		
+		SettingsDialog_.reset (new Util::XmlSettingsDialog);
+		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
+				"poshukufatapesettings.xml");
+		SettingsDialog_->SetCustomWidget ("UserScriptsManagerWidget",
+				new UserScriptsManagerWidget (Model_.get (), this));
+	}
+	
+	void Plugin::SecondInit ()
+	{
 	}
 	
 	void Plugin::Release ()
@@ -86,6 +136,11 @@ namespace FatApe
 		return result;
 	}
 
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return SettingsDialog_;
+	}
+
 	void Plugin::hookInitialLayoutCompleted (LeechCraft::IHookProxy_ptr proxy, 
 			QWebPage *page, QWebFrame *frame)
 	{
@@ -111,6 +166,30 @@ namespace FatApe
 				<< proxy
 				<< "to IProxyObject";
 		}
+	}
+
+	void Plugin::EditScript (int scriptIndex)
+	{
+		const UserScript& script = UserScripts_.at (scriptIndex);
+		QSettings settings (QCoreApplication::organizationName (),
+			QCoreApplication::applicationName () + "_Poshuku_FatApe");
+		const QString& editor = settings.value ("editor").toString ();
+
+		if (editor.isEmpty ())
+			return;
+
+		QProcess::execute (editor, QStringList (script.Path ()));
+	}
+
+	void Plugin::DeleteScript (int scriptIndex)
+	{
+		UserScripts_ [scriptIndex].Delete ();
+		UserScripts_.removeAt (scriptIndex);
+	}
+
+	void Plugin::SetScriptEnabled (int scriptIndex, bool value)
+	{
+		UserScripts_ [scriptIndex].SetEnabled (value);
 	}
 }
 }

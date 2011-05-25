@@ -16,10 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_CAPSMANAGER_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_CAPSMANAGER_H
+#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_SDSESSION_H
+#define PLUGINS_AZOTH_PLUGINS_XOOX_SDSESSION_H
 #include <QObject>
-#include <QXmppDiscoveryIq.h>
+#include <QHash>
+#include <interfaces/ihaveservicediscovery.h>
+
+class QStandardItemModel;
+class QStandardItem;
+class QXmppDiscoveryIq;
 
 namespace LeechCraft
 {
@@ -27,26 +32,41 @@ namespace Azoth
 {
 namespace Xoox
 {
-	class ClientConnection;
-	class CapsDatabase;
+	class GlooxAccount;
+	class SDModel;
 
-	class CapsManager : public QObject
+	class SDSession : public QObject
+					, public ISDSession
 	{
 		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Azoth::ISDSession)
 		
-		ClientConnection *Connection_;
-		CapsDatabase *DB_;
-		QHash<QString, QString> Caps2String_;
+		SDModel *Model_;
+		GlooxAccount *Account_;
+		QHash<QString, QHash<QString, QStandardItem*> > JID2Node2Item_;
+		
+		enum Columns
+		{
+			CName,
+			CJID,
+			CNode
+		};
 	public:
-		CapsManager (ClientConnection*);
+		enum DataRoles
+		{
+			DRFetchedMore = Qt::UserRole + 1,
+			DRJID,
+			DRNode
+		};
+		SDSession (GlooxAccount*);
 		
-		void FetchCaps (const QString&, const QByteArray&);
-		QStringList GetRawCaps (const QByteArray&) const;
-		QStringList GetCaps (const QByteArray&) const;
-		QStringList GetCaps (const QStringList&) const;
-	public slots:
-		void handleInfoReceived (const QXmppDiscoveryIq&);
-		void handleItemsReceived (const QXmppDiscoveryIq&);
+		void SetQuery (const QString&);
+		QAbstractItemModel* GetRepresentationModel () const;
+		
+		void HandleInfo (const QXmppDiscoveryIq&);
+		void HandleItems (const QXmppDiscoveryIq&);
+		
+		void QueryItem (QStandardItem*);
 	};
 }
 }
