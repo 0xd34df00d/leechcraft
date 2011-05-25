@@ -83,7 +83,6 @@ namespace LeechCraft
 				QStringList GetItemCategories (int) const;
 				void SubscribeToComments (const QModelIndex&) const;
 				void CurrentChannelChanged (const QModelIndex&);
-				QTreeView* GetItemsTreeView ();
 				void LoadUIState();
 				void SaveUIState();
 			private:
