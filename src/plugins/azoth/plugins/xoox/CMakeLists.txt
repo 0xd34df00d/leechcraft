@@ -34,6 +34,7 @@ SET (XOOX_SRCS
 	capsdatabase.cpp
 	sdsession.cpp
 	sdmodel.cpp
+	affiliationselectordialog.cpp
 	)
 SET (XOOX_HEADERS
 	xoox.h
@@ -63,6 +64,7 @@ SET (XOOX_HEADERS
 	capsdatabase.h
 	sdsession.h
 	sdmodel.h
+	affiliationselectordialog.h
 	)
 SET (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui
@@ -71,6 +73,7 @@ SET (XOOX_FORMS
 	vcarddialog.ui
 	bookmarkeditwidget.ui
 	roomconfigwidget.ui
+	affiliationselectordialog.ui
 	)
 SET (XOOX_TRANSLATIONS
 	leechcraft_azoth_xoox_ru_RU.ts
