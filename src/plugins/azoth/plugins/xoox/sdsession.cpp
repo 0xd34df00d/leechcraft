@@ -38,6 +38,7 @@ namespace Xoox
 	, Account_ (account)
 	{
 		ID2Action_ ["view-vcard"] = boost::bind (&SDSession::ViewVCard, this, _1);
+		ID2Action_ ["add-to-roster"] = boost::bind (&SDSession::AddToRoster, this, _1);
 	}
 	
 	namespace
@@ -99,7 +100,9 @@ namespace Xoox
 		if (info.Caps_.contains ("vcard-temp") &&
 				!info.JID_.isEmpty ())
 			result << QPair<QByteArray, QString> ("view-vcard", tr ("View VCard..."));
-	
+		if (!info.JID_.isEmpty ())
+			result << QPair<QByteArray, QString> ("add-to-roster", tr ("Add to roster..."));
+
 		return result;
 	}
 	
@@ -132,6 +135,15 @@ namespace Xoox
 		VCardDialog *dia = new VCardDialog;
 		dia->show ();
 		Account_->GetClientConnection ()->FetchVCard (jid, dia);
+	}
+	
+	void SDSession::AddToRoster (const SDSession::ItemInfo& info)
+	{
+		const QString& jid = info.JID_;
+		if (jid.isEmpty ())
+			return;
+		
+		Account_->AddEntry (jid, QString (), QStringList ());
 	}
 	
 	namespace

@@ -85,6 +85,7 @@ namespace Xoox
 		void QueryItem (QStandardItem*);
 	private:
 		void ViewVCard (const ItemInfo&);
+		void AddToRoster (const ItemInfo&);
 	};
 }
 }
