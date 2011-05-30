@@ -302,6 +302,7 @@ message (STATUS "Translations: ${LANGUAGES}")
 add_subdirectory(extra)
 
 add_subdirectory (dcpp)
+add_subdirectory (dht)
 add_subdirectory (eiskaltdcpp-qt)
 
 CONFIGURE_FILE(
