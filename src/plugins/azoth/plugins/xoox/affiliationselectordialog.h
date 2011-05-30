@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_ROOMCONFIGWIDGET_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_ROOMCONFIGWIDGET_H
+#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_AFFILIATIONSELECTORDIALOG_H
+#define PLUGINS_AZOTH_PLUGINS_XOOX_AFFILIATIONSELECTORDIALOG_H
 #include <QDialog>
 #include "ui_affiliationselectordialog.h"
 #include <QXmppMucIq.h>
