@@ -18,13 +18,15 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_XOOX_SDSESSION_H
 #define PLUGINS_AZOTH_PLUGINS_XOOX_SDSESSION_H
+#include <boost/function.hpp>
 #include <QObject>
 #include <QHash>
+#include <QStringList>
+#include <QXmppDiscoveryIq.h>
 #include <interfaces/ihaveservicediscovery.h>
 
 class QStandardItemModel;
 class QStandardItem;
-class QXmppDiscoveryIq;
 
 namespace LeechCraft
 {
@@ -45,6 +47,17 @@ namespace Xoox
 		GlooxAccount *Account_;
 		QHash<QString, QHash<QString, QStandardItem*> > JID2Node2Item_;
 		
+		struct ItemInfo
+		{
+			QStringList Caps_;
+			QList<QXmppDiscoveryIq::Identity> Identities_;
+			QString JID_;
+		};
+		QHash<QStandardItem*, ItemInfo> Item2Info_;
+		
+		typedef boost::function<void (const ItemInfo&)> ItemAction_t;
+		QHash<QByteArray, ItemAction_t> ID2Action_;
+		
 		enum Columns
 		{
 			CName,
@@ -58,6 +71,7 @@ namespace Xoox
 			DRJID,
 			DRNode
 		};
+
 		SDSession (GlooxAccount*);
 		
 		void SetQuery (const QString&);
@@ -69,6 +83,8 @@ namespace Xoox
 		void HandleItems (const QXmppDiscoveryIq&);
 		
 		void QueryItem (QStandardItem*);
+	private:
+		void ViewVCard (const ItemInfo&);
 	};
 }
 }

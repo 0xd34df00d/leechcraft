@@ -25,6 +25,7 @@
 #include "clientconnection.h"
 #include "sdmodel.h"
 #include "capsmanager.h"
+#include "vcarddialog.h"
 
 namespace LeechCraft
 {
@@ -36,6 +37,7 @@ namespace Xoox
 	: Model_ (new SDModel (this))
 	, Account_ (account)
 	{
+		ID2Action_ ["view-vcard"] = boost::bind (&SDSession::ViewVCard, this, _1);
 	}
 	
 	namespace
@@ -87,11 +89,49 @@ namespace Xoox
 	QList<QPair<QByteArray, QString> > SDSession::GetActionsFor (const QModelIndex& index)
 	{
 		QList<QPair<QByteArray, QString> > result;
+		if (!index.isValid ())
+			return result;
+		
+		const QModelIndex& sibling = index.sibling (index.row (), CName);
+		QStandardItem *item = Model_->itemFromIndex (sibling);
+		const ItemInfo& info = Item2Info_ [item];
+
+		if (info.Caps_.contains ("vcard-temp") &&
+				!info.JID_.isEmpty ())
+			result << QPair<QByteArray, QString> ("view-vcard", tr ("View VCard..."));
+	
 		return result;
 	}
 	
 	void SDSession::ExecuteAction (const QModelIndex& index, const QByteArray& id)
 	{
+		if (!index.isValid ())
+			return;
+		
+		const QModelIndex& sibling = index.sibling (index.row (), CName);
+		QStandardItem *item = Model_->itemFromIndex (sibling);
+		const ItemInfo& info = Item2Info_ [item];
+		
+		if (!ID2Action_.contains (id))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown ID"
+					<< id;
+			return;
+		}
+		
+		ID2Action_ [id] (info);
+	}
+	
+	void SDSession::ViewVCard (const SDSession::ItemInfo& info)
+	{
+		const QString& jid = info.JID_;
+		if (jid.isEmpty ())
+			return;
+		
+		VCardDialog *dia = new VCardDialog;
+		dia->show ();
+		Account_->GetClientConnection ()->FetchVCard (jid, dia);
 	}
 	
 	namespace
@@ -155,7 +195,7 @@ namespace Xoox
 					(id.language (), tr ("Language:"))
 					();
 		}
-							
+
 		const QStringList& caps = Account_->GetClientConnection ()->
 				GetCapsManager ()->GetCaps (iq.features ());
 		if (!caps.isEmpty ())
@@ -167,6 +207,14 @@ namespace Xoox
 		}
 
 		targetItem->setToolTip (tooltip);
+		
+		ItemInfo info =
+		{
+			iq.features (),
+			iq.identities (),
+			iq.from ()
+		};
+		Item2Info_ [targetItem] = info;
 	}
 	
 	void SDSession::HandleItems (const QXmppDiscoveryIq& iq)
