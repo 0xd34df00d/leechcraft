@@ -140,11 +140,10 @@ namespace Azoth
 			return;
 		
 		QMenu *menu = new QMenu (tr ("Discovery actions"));
-#define COMMA ,
-		Q_FOREACH (const QPair<QByteArray COMMA QString>& act, actions)
-			menu->addAction (act.second)->
-					setProperty ("Azoth/ID", act.first);
-#undef COMMA
+		// C++0x: move on to 0x's foreach construct.
+		for (QList<QPair<QByteArray, QString> >::const_iterator i = actions.begin (),
+					end = actions.end (); i != end; ++i)
+			 menu->addAction (i->second)->setProperty ("Azoth/ID", i->first);
 
 		QAction *result = menu->exec (Ui_.DiscoveryTree_->
 					viewport ()->mapToGlobal (point));
