@@ -62,6 +62,8 @@ namespace Xoox
 		
 		void SetQuery (const QString&);
 		QAbstractItemModel* GetRepresentationModel () const;
+		QList<QPair<QByteArray, QString> > GetActionsFor (const QModelIndex&);
+		void ExecuteAction (const QModelIndex&, const QByteArray&);
 		
 		void HandleInfo (const QXmppDiscoveryIq&);
 		void HandleItems (const QXmppDiscoveryIq&);

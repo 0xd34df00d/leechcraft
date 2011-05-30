@@ -84,6 +84,16 @@ namespace Xoox
 		return Model_;
 	}
 	
+	QList<QPair<QByteArray, QString> > SDSession::GetActionsFor (const QModelIndex& index)
+	{
+		QList<QPair<QByteArray, QString> > result;
+		return result;
+	}
+	
+	void SDSession::ExecuteAction (const QModelIndex& index, const QByteArray& id)
+	{
+	}
+	
 	namespace
 	{
 		struct Appender
