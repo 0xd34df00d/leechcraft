@@ -224,107 +224,123 @@
 <context>
     <name>LeechCraft::Azoth::ChatTab</name>
     <message>
-        <location filename="chattab.cpp" line="58"/>
+        <location filename="chattab.cpp" line="60"/>
         <source>Azoth chat window</source>
         <translation>Azoth chat window</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="74"/>
+        <location filename="chattab.cpp" line="79"/>
         <source>Events</source>
         <translation>Events</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="77"/>
+        <location filename="chattab.cpp" line="82"/>
         <source>Clear chat window</source>
         <translation>Clear chat window</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="177"/>
+        <location filename="chattab.cpp" line="196"/>
         <source>Unable to load style, please check you&apos;ve enabled at least one styles plugin.</source>
         <translation>Unable to load style, please check you&apos;ve enabled at least one styles plugin.</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="385"/>
+        <location filename="chattab.cpp" line="250"/>
+        <source>A tab with a chat session</source>
+        <translation>A tab with a chat session</translation>
+    </message>
+    <message>
+        <location filename="chattab.cpp" line="424"/>
         <source>Select file to send</source>
         <translation>Select file to send</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="420"/>
+        <location filename="chattab.cpp" line="459"/>
         <source>File offered: %1.</source>
         <translation>File offered: %1.</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="455"/>
+        <location filename="chattab.cpp" line="494"/>
         <source>File transfer request</source>
         <translation>File transfer request</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="456"/>
+        <location filename="chattab.cpp" line="495"/>
         <source>Would you like to accept or deny file transfer request for file %1?</source>
         <translation>Would you like to accept or deny file transfer request for file %1?</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="464"/>
+        <location filename="chattab.cpp" line="503"/>
         <source>Select save path for incoming file</source>
         <translation>Select save path for incoming file</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="573"/>
+        <location filename="chattab.cpp" line="612"/>
         <source>participating</source>
         <translation>participating</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="576"/>
+        <location filename="chattab.cpp" line="615"/>
         <source>inactive</source>
         <translation>inactive</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="579"/>
+        <location filename="chattab.cpp" line="618"/>
         <source>composing</source>
         <translation>composing</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="582"/>
+        <location filename="chattab.cpp" line="621"/>
         <source>paused composing</source>
         <translation>paused composing</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="585"/>
+        <location filename="chattab.cpp" line="624"/>
         <source>left the conversation</source>
         <translation>left the conversation</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="704"/>
+        <location filename="chattab.cpp" line="700"/>
+        <source>Room configuration</source>
+        <translation>Room configuration</translation>
+    </message>
+    <message>
+        <location filename="chattab.cpp" line="774"/>
         <source>Send file...</source>
         <translation>Send file...</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="728"/>
+        <location filename="chattab.cpp" line="798"/>
         <source>Add to bookmarks...</source>
         <translation>Add to bookmarks...</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="802"/>
+        <location filename="chattab.cpp" line="809"/>
+        <source>Configure MUC...</source>
+        <translation>Configure MUC...</translation>
+    </message>
+    <message>
+        <location filename="chattab.cpp" line="884"/>
         <source>MUC&apos;s participants: </source>
         <translation>MUC&apos;s participants: </translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="969"/>
+        <location filename="chattab.cpp" line="249"/>
+        <location filename="chattab.cpp" line="1049"/>
         <source>Chat</source>
         <translation>Chat</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="972"/>
+        <location filename="chattab.cpp" line="1052"/>
         <source>Conference</source>
         <translation>Conference</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="975"/>
+        <location filename="chattab.cpp" line="1055"/>
         <source>Private chat</source>
         <translation>Private chat</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="978"/>
+        <location filename="chattab.cpp" line="1058"/>
         <source>Unauthorized user</source>
         <translation>Unauthorized user</translation>
     </message>
@@ -332,299 +348,234 @@
 <context>
     <name>LeechCraft::Azoth::Core</name>
     <message>
-        <location filename="core.cpp" line="764"/>
+        <location filename="core.cpp" line="775"/>
         <source>Unauthorized users</source>
         <translation>Unauthorized users</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="832"/>
+        <location filename="core.cpp" line="845"/>
         <source>General</source>
         <translation>General</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="900"/>
+        <location filename="core.cpp" line="913"/>
         <source>In groups: </source>
         <translation>In groups: </translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1200"/>
-        <location filename="core.cpp" line="2113"/>
+        <location filename="core.cpp" line="1204"/>
+        <location filename="core.cpp" line="2032"/>
         <source>Open chat</source>
         <translation>Open chat</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1211"/>
+        <location filename="core.cpp" line="1215"/>
         <source>Rename</source>
         <translation>Rename</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1223"/>
+        <location filename="core.cpp" line="1227"/>
         <source>Change groups...</source>
         <translation>Change groups...</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1235"/>
+        <location filename="core.cpp" line="1239"/>
         <source>Authorization</source>
         <translation>Authorization</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1240"/>
+        <location filename="core.cpp" line="1244"/>
         <source>Revoke</source>
         <translation>Revoke</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1245"/>
+        <location filename="core.cpp" line="1249"/>
         <source>Revoke with reason...</source>
         <translation>Revoke with reason...</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1250"/>
+        <location filename="core.cpp" line="1254"/>
         <source>Unsubscribe</source>
         <translation>Unsubscribe</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1255"/>
+        <location filename="core.cpp" line="1259"/>
         <source>Unsubscribe with reason...</source>
         <translation>Unsubscribe with reason...</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1260"/>
+        <location filename="core.cpp" line="1264"/>
         <source>Rerequest authentication</source>
         <translation>Rerequest authentication</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="103"/>
+        <location filename="core.cpp" line="100"/>
         <source>Smile pack</source>
         <translation>Smile pack</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="104"/>
+        <location filename="core.cpp" line="101"/>
         <source>Chat style</source>
         <translation>Chat style</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="310"/>
+        <location filename="core.cpp" line="316"/>
         <source>Please select account to handle URI %1</source>
         <translation>Please select account to handle URI %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="770"/>
+        <location filename="core.cpp" line="781"/>
         <source>Contacts</source>
         <translation>Contacts</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="908"/>
-        <source>Affiliation:</source>
-        <translation>Affiliation:</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="911"/>
-        <source>Role:</source>
-        <translation>Role:</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="1265"/>
+        <location filename="core.cpp" line="1269"/>
         <source>Rerequest authentication with reason...</source>
         <translation>Rerequest authentication with reason...</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1273"/>
+        <location filename="core.cpp" line="1277"/>
         <source>VCard</source>
         <translation>VCard</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1285"/>
-        <source>Kick</source>
-        <translation>Kick</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="1296"/>
-        <source>Ban</source>
-        <translation>Ban</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="1311"/>
-        <source>Change role</source>
-        <translation>Change role</translation>
-    </message>
-    <message>
         <location filename="core.cpp" line="1316"/>
-        <source>Visitor</source>
-        <translation>Visitor</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="1324"/>
-        <source>Participant</source>
-        <translation>Participant</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="1332"/>
-        <source>Moderator</source>
-        <translation>Moderator</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="1340"/>
-        <source>Change affiliation</source>
-        <translation>Change affiliation</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="1345"/>
-        <source>None</source>
-        <translation>None</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="1353"/>
-        <source>Member</source>
-        <translation>Member</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="1361"/>
-        <source>Admin</source>
-        <translation>Admin</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="1369"/>
-        <source>Owner</source>
-        <translation>Owner</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="1383"/>
         <source>Leave</source>
         <translation>Leave</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1395"/>
-        <location filename="core.cpp" line="2187"/>
+        <location filename="core.cpp" line="1328"/>
+        <location filename="core.cpp" line="2106"/>
         <source>Authorize</source>
         <translation>Authorize</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1404"/>
+        <location filename="core.cpp" line="1337"/>
         <source>Deny authorization</source>
         <translation>Deny authorization</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1415"/>
+        <location filename="core.cpp" line="1348"/>
         <source>Remove</source>
         <translation>Remove</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1512"/>
+        <location filename="core.cpp" line="1435"/>
         <source>Enter reason</source>
         <translation>Enter reason</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2063"/>
+        <location filename="core.cpp" line="1982"/>
         <source>Incoming chat message from &lt;em&gt;%1&lt;/em&gt;.</source>
         <translation>Incoming chat message from &lt;em&gt;%1&lt;/em&gt;.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2071"/>
+        <location filename="core.cpp" line="1990"/>
         <source>Incoming chat message from &lt;em&gt;%1&lt;/em&gt;: &lt;em&gt;%2&lt;/em&gt;.</source>
         <translation>Incoming chat message from &lt;em&gt;%1&lt;/em&gt;: &lt;em&gt;%2&lt;/em&gt;.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2083"/>
+        <location filename="core.cpp" line="2002"/>
         <source>Highlighted in conference &lt;em&gt;%1&lt;/em&gt; by &lt;em&gt;%2&lt;/em&gt;.</source>
         <translation>Highlighted in conference &lt;em&gt;%1&lt;/em&gt; by &lt;em&gt;%2&lt;/em&gt;.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2092"/>
+        <location filename="core.cpp" line="2011"/>
         <source>Highlighted in conference &lt;em&gt;%1&lt;/em&gt; by &lt;em&gt;%2&lt;/em&gt;: &lt;em&gt;%3&lt;/em&gt;.</source>
         <translation>Highlighted in conference &lt;em&gt;%1&lt;/em&gt; by &lt;em&gt;%2&lt;/em&gt;: &lt;em&gt;%3&lt;/em&gt;.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2179"/>
+        <location filename="core.cpp" line="2098"/>
         <source>Subscription requested by %1.</source>
         <translation>Subscription requested by %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2181"/>
+        <location filename="core.cpp" line="2100"/>
         <source>Subscription requested by %1: %2.</source>
         <translation>Subscription requested by %1: %2.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2190"/>
+        <location filename="core.cpp" line="2109"/>
         <source>Deny</source>
         <translation>Deny</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2193"/>
+        <location filename="core.cpp" line="2112"/>
         <source>View info</source>
         <translation>View info</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2233"/>
+        <location filename="core.cpp" line="2152"/>
         <source>%1 (%2) subscribed to us.</source>
         <translation>%1 (%2) subscribed to us.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2234"/>
+        <location filename="core.cpp" line="2153"/>
         <source>%1 (%2) subscribed to us: %3.</source>
         <translation>%1 (%2) subscribed to us: %3.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2246"/>
+        <location filename="core.cpp" line="2165"/>
         <source>%1 (%2) unsubscribed from us.</source>
         <translation>%1 (%2) unsubscribed from us.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2247"/>
+        <location filename="core.cpp" line="2166"/>
         <source>%1 (%2) unsubscribed from us: %3.</source>
         <translation>%1 (%2) unsubscribed from us: %3.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2260"/>
+        <location filename="core.cpp" line="2179"/>
         <source>%1 unsubscribed from us.</source>
         <translation>%1 unsubscribed from us.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2262"/>
+        <location filename="core.cpp" line="2181"/>
         <source>%1 unsubscribed from us: %2.</source>
         <translation>%1 unsubscribed from us: %2.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2275"/>
+        <location filename="core.cpp" line="2194"/>
         <source>%1 (%2) cancelled our subscription.</source>
         <translation>%1 (%2) cancelled our subscription.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2276"/>
+        <location filename="core.cpp" line="2195"/>
         <source>%1 (%2) cancelled our subscription: %3.</source>
         <translation>%1 (%2) cancelled our subscription: %3.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2286"/>
+        <location filename="core.cpp" line="2205"/>
         <source>%1 (%2) granted subscription.</source>
         <translation>%1 (%2) granted subscription.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2287"/>
+        <location filename="core.cpp" line="2206"/>
         <source>%1 (%2) granted subscription: %3.</source>
         <translation>%1 (%2) granted subscription: %3.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2457"/>
+        <location filename="core.cpp" line="2376"/>
         <source>Rename contact</source>
         <translation>Rename contact</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2458"/>
+        <location filename="core.cpp" line="2377"/>
         <source>Please enter new name for the contact %1:</source>
         <translation>Please enter new name for the contact %1:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2524"/>
+        <location filename="core.cpp" line="2443"/>
         <source>Enter reason for revoking authorization from %1:</source>
         <translation>Enter reason for revoking authorization from %1:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2531"/>
+        <location filename="core.cpp" line="2450"/>
         <source>Enter reason for unsubscribing from %1:</source>
         <translation>Enter reason for unsubscribing from %1:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2538"/>
+        <location filename="core.cpp" line="2457"/>
         <source>Enter reason for rerequesting authorization from %1:</source>
         <translation>Enter reason for rerequesting authorization from %1:</translation>
     </message>
@@ -665,6 +616,19 @@
     </message>
 </context>
 <context>
+    <name>LeechCraft::Azoth::EventsNotifier</name>
+    <message>
+        <location filename="eventsnotifier.cpp" line="74"/>
+        <source>%1 started composing a message to you.</source>
+        <translation>%1 started composing a message to you.</translation>
+    </message>
+    <message>
+        <location filename="eventsnotifier.cpp" line="81"/>
+        <source>Open chat</source>
+        <translation>Open chat</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::Azoth::JoinConferenceDialog</name>
     <message>
         <location filename="joinconferencedialog.cpp" line="77"/>
@@ -675,67 +639,67 @@
 <context>
     <name>LeechCraft::Azoth::MainWidget</name>
     <message>
-        <location filename="mainwidget.cpp" line="90"/>
+        <location filename="mainwidget.cpp" line="104"/>
         <source>Set status</source>
         <translation>Set status</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="141"/>
+        <location filename="mainwidget.cpp" line="155"/>
         <source>Manage bookmarks...</source>
         <translation>Manage bookmarks...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="162"/>
+        <location filename="mainwidget.cpp" line="176"/>
         <source>Change status</source>
         <translation>Change status</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="164"/>
+        <location filename="mainwidget.cpp" line="178"/>
         <source>Online</source>
         <translation>Online</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="168"/>
+        <location filename="mainwidget.cpp" line="182"/>
         <source>Free to chat</source>
         <translation>Free to chat</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="172"/>
+        <location filename="mainwidget.cpp" line="186"/>
         <source>Away</source>
         <translation>Away</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="176"/>
+        <location filename="mainwidget.cpp" line="190"/>
         <source>DND</source>
         <translation>DND</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="180"/>
+        <location filename="mainwidget.cpp" line="194"/>
         <source>Extended away</source>
         <translation>Extended away</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="184"/>
+        <location filename="mainwidget.cpp" line="198"/>
         <source>Offline</source>
         <translation>Offline</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="191"/>
+        <location filename="mainwidget.cpp" line="205"/>
         <source>Custom...</source>
         <translation>Custom...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="394"/>
+        <location filename="mainwidget.cpp" line="408"/>
         <source>Rename group</source>
         <translation>Rename group</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="395"/>
+        <location filename="mainwidget.cpp" line="409"/>
         <source>Enter new group name for %1:</source>
         <translation>Enter new group name for %1:</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="130"/>
+        <location filename="mainwidget.cpp" line="144"/>
         <source>Accounts...</source>
         <translation>Accounts...</translation>
     </message>
@@ -745,29 +709,34 @@
         <translation>Azoth menu</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="107"/>
-        <location filename="mainwidget.cpp" line="134"/>
+        <location filename="mainwidget.cpp" line="121"/>
+        <location filename="mainwidget.cpp" line="148"/>
         <source>Add contact...</source>
         <translation>Add contact...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="101"/>
-        <location filename="mainwidget.cpp" line="137"/>
+        <location filename="mainwidget.cpp" line="115"/>
+        <location filename="mainwidget.cpp" line="151"/>
         <source>Join conference...</source>
         <translation>Join conference...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="147"/>
+        <location filename="mainwidget.cpp" line="51"/>
+        <source>Search...</source>
+        <translation>Search...</translation>
+    </message>
+    <message>
+        <location filename="mainwidget.cpp" line="161"/>
         <source>Show offline contacts</source>
         <translation>Show offline contacts</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="266"/>
+        <location filename="mainwidget.cpp" line="280"/>
         <source>Rename group...</source>
         <translation>Rename group...</translation>
     </message>
     <message>
-        <location filename="mainwidget.cpp" line="309"/>
+        <location filename="mainwidget.cpp" line="323"/>
         <source>Entry context menu</source>
         <translation>Entry context menu</translation>
     </message>
@@ -775,7 +744,38 @@
 <context>
     <name>LeechCraft::Azoth::Plugin</name>
     <message>
-        <location filename="azoth.cpp" line="125"/>
+        <location filename="azoth.cpp" line="103"/>
+        <source>Chat</source>
+        <translation>Chat</translation>
+    </message>
+    <message>
+        <location filename="azoth.cpp" line="104"/>
+        <source>A tab with a chat session</source>
+        <translation>A tab with a chat session</translation>
+    </message>
+    <message>
+        <location filename="azoth.cpp" line="112"/>
+        <source>MUC</source>
+        <translation>MUC</translation>
+    </message>
+    <message>
+        <location filename="azoth.cpp" line="113"/>
+        <source>A multiuser conference</source>
+        <translation>A multiuser conference</translation>
+    </message>
+    <message>
+        <location filename="azoth.cpp" line="121"/>
+        <location filename="azoth.cpp" line="239"/>
+        <source>Service discovery</source>
+        <translation>Service discovery</translation>
+    </message>
+    <message>
+        <location filename="azoth.cpp" line="122"/>
+        <source>A service discovery tab that allows to discover capabilities of remote entries</source>
+        <translation>A service discovery tab that allows to discover capabilities of remote entries</translation>
+    </message>
+    <message>
+        <location filename="azoth.cpp" line="159"/>
         <source>Extensible IM client for LeechCraft.</source>
         <translation>Extensible IM client for LeechCraft.</translation>
     </message>
@@ -796,6 +796,24 @@
         <location filename="proxyobject.cpp" line="346"/>
         <source>%1 changed status to %2 (%3)</source>
         <translation>%1 changed status to %2 (%3)</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Azoth::ServiceDiscoveryWidget</name>
+    <message>
+        <location filename="servicediscoverywidget.cpp" line="99"/>
+        <source>Service discovery</source>
+        <translation>Service discovery</translation>
+    </message>
+    <message>
+        <location filename="servicediscoverywidget.cpp" line="100"/>
+        <source>A service discovery tab that allows to discover capabilities of remote entries</source>
+        <translation>A service discovery tab that allows to discover capabilities of remote entries</translation>
+    </message>
+    <message>
+        <location filename="servicediscoverywidget.cpp" line="142"/>
+        <source>Discovery actions</source>
+        <translation>Discovery actions</translation>
     </message>
 </context>
 <context>
@@ -911,59 +929,9 @@
 <context>
     <name>MainWidget</name>
     <message>
-        <location filename="mainwidget.ui" line="73"/>
+        <location filename="mainwidget.ui" line="76"/>
         <source>Add account</source>
         <translation>Add account</translation>
-    </message>
-</context>
-<context>
-    <name>QObject</name>
-    <message>
-        <location filename="util.cpp" line="30"/>
-        <location filename="util.cpp" line="50"/>
-        <source>invalid</source>
-        <translation>invalid</translation>
-    </message>
-    <message>
-        <location filename="util.cpp" line="32"/>
-        <location filename="util.cpp" line="52"/>
-        <source>none</source>
-        <translation>none</translation>
-    </message>
-    <message>
-        <location filename="util.cpp" line="34"/>
-        <source>banned</source>
-        <translation>banned</translation>
-    </message>
-    <message>
-        <location filename="util.cpp" line="36"/>
-        <source>member</source>
-        <translation>member</translation>
-    </message>
-    <message>
-        <location filename="util.cpp" line="38"/>
-        <source>admin</source>
-        <translation>admin</translation>
-    </message>
-    <message>
-        <location filename="util.cpp" line="40"/>
-        <source>owner</source>
-        <translation>owner</translation>
-    </message>
-    <message>
-        <location filename="util.cpp" line="54"/>
-        <source>visitor</source>
-        <translation>visitor</translation>
-    </message>
-    <message>
-        <location filename="util.cpp" line="56"/>
-        <source>participant</source>
-        <translation>participant</translation>
-    </message>
-    <message>
-        <location filename="util.cpp" line="58"/>
-        <source>moderator</source>
-        <translation>moderator</translation>
     </message>
 </context>
 <context>
@@ -1121,141 +1089,161 @@
     </message>
     <message>
         <location filename="dummy.cpp" line="25"/>
+        <source>Send chat state events</source>
+        <translation>Send chat state events</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="26"/>
         <source>Default file transfers save path:</source>
         <translation>Default file transfers save path:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="26"/>
+        <location filename="dummy.cpp" line="27"/>
         <source>Notifications</source>
         <translation>Notifications</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="27"/>
+        <location filename="dummy.cpp" line="28"/>
         <source>Incoming messages</source>
         <translation>Incoming messages</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="28"/>
+        <location filename="dummy.cpp" line="29"/>
         <source>Notify about incoming messages</source>
         <translation>Notify about incoming messages</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="29"/>
+        <location filename="dummy.cpp" line="31"/>
+        <source>always</source>
+        <translation>always</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="32"/>
+        <source>in opened chats</source>
+        <translation>in opened chats</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="33"/>
+        <source>never</source>
+        <translation>never</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="34"/>
         <source>Notify about highlights in conferences</source>
         <translation>Notify about highlights in conferences</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="30"/>
+        <location filename="dummy.cpp" line="35"/>
         <source>Show triggering message in notifications</source>
         <translation>Show triggering message in notifications</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="31"/>
+        <location filename="dummy.cpp" line="36"/>
         <source>Contacts</source>
         <translation>Contacts</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="32"/>
+        <location filename="dummy.cpp" line="37"/>
         <source>Notify when someone not present in contact-list unsubscribes</source>
         <translation>Notify when someone not present in contact-list unsubscribes</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="33"/>
+        <location filename="dummy.cpp" line="38"/>
         <source>Notify when someone subscribes to us</source>
         <translation>Notify when someone subscribes to us</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="34"/>
+        <location filename="dummy.cpp" line="39"/>
         <source>Notify when someone unsubscribes from us</source>
         <translation>Notify when someone unsubscribes from us</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="35"/>
+        <location filename="dummy.cpp" line="40"/>
         <source>Notify when someone cancels our subscription</source>
         <translation>Notify when someone cancels our subscription</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="36"/>
+        <location filename="dummy.cpp" line="41"/>
         <source>Notify when someone grants us subscription</source>
         <translation>Notify when someone grants us subscription</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="37"/>
+        <location filename="dummy.cpp" line="42"/>
         <source>Chat windows</source>
         <translation>Chat windows</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="38"/>
+        <location filename="dummy.cpp" line="43"/>
         <source>Show status changes</source>
         <translation>Show status changes</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="39"/>
+        <location filename="dummy.cpp" line="44"/>
         <source>Statuses</source>
         <translation>Statuses</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="40"/>
+        <location filename="dummy.cpp" line="45"/>
         <source>Default status texts</source>
         <translation>Default status texts</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="41"/>
+        <location filename="dummy.cpp" line="46"/>
         <source>I&apos;m online!</source>
         <translation>I&apos;m online!</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="42"/>
+        <location filename="dummy.cpp" line="47"/>
         <source>Online:</source>
         <translation>Online:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="43"/>
+        <location filename="dummy.cpp" line="48"/>
         <source>Wanna chat :3</source>
         <translation>Wanna chat :3</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="44"/>
+        <location filename="dummy.cpp" line="49"/>
         <source>Free to chat:</source>
         <translation>Free to chat:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="45"/>
+        <location filename="dummy.cpp" line="50"/>
         <source>Oh, seems like I&apos;m away</source>
         <translation>Oh, seems like I&apos;m away</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="46"/>
+        <location filename="dummy.cpp" line="51"/>
         <source>Away:</source>
         <translation>Away:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="47"/>
+        <location filename="dummy.cpp" line="52"/>
         <source>Please leave me alone now</source>
         <translation>Please leave me alone now</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="48"/>
+        <location filename="dummy.cpp" line="53"/>
         <source>DND:</source>
         <translation>DND:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="49"/>
+        <location filename="dummy.cpp" line="54"/>
         <source>Extended away is okay</source>
         <translation>Extended away is okay</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="50"/>
+        <location filename="dummy.cpp" line="55"/>
         <source>XA:</source>
         <translation>XA:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="51"/>
+        <location filename="dummy.cpp" line="56"/>
         <source>I turned off my machine to get some life</source>
         <translation>I turned off my machine to get some life</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="52"/>
+        <location filename="dummy.cpp" line="57"/>
         <source>Offline:</source>
         <translation>Offline:</translation>
     </message>
