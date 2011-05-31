@@ -150,7 +150,7 @@ namespace Xoox
 	{
 		struct Appender
 		{
-			QString S_;
+			QStringList Strings_;
 			
 			Appender ()
 			{
@@ -159,14 +159,14 @@ namespace Xoox
 			Appender& operator() (const QString& text, const QString& name)
 			{
 				if (!text.isEmpty ())
-					S_ += name + ' ' + text + "<br />";
+					Strings_ << name + ' ' + text;
 				
 				return *this;
 			}
 			
 			QString operator() () const
 			{
-				return S_;
+				return Strings_.join ("<br/>");
 			}
 		};
 	}
@@ -194,26 +194,29 @@ namespace Xoox
 				targetItem->setText (text);
 		}
 		
-		QString tooltip;
+		QString tooltip = "<strong>" + tr ("Identities:") + "</strong><ul>";
 		Q_FOREACH (const QXmppDiscoveryIq::Identity& id, iq.identities ())
 		{
 			if (id.name ().isEmpty ())
 				continue;
 
+			tooltip += "<li>";
 			tooltip += Appender ()
 					(id.name (), tr ("Identity name:"))
 					(id.category (), tr ("Category:"))
 					(id.type (), tr ("Type:"))
 					(id.language (), tr ("Language:"))
 					();
+			tooltip += "</li>";
 		}
+		tooltip += "</ul>";
 
 		const QStringList& caps = Account_->GetClientConnection ()->
 				GetCapsManager ()->GetCaps (iq.features ());
 		if (!caps.isEmpty ())
 		{
-			tooltip += "<br />" + tr ("Capabilities:");
-			tooltip += "<ul><li>";
+			tooltip += "<strong>" + tr ("Capabilities:");
+			tooltip += "</strong><ul><li>";
 			tooltip += caps.join ("</li><li>");
 			tooltip += "</li></ul>";
 		}
