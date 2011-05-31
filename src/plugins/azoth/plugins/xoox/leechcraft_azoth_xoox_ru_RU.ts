@@ -2,6 +2,49 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
+    <name>AffiliationSelectorDialog</name>
+    <message>
+        <location filename="affiliationselectordialog.ui" line="14"/>
+        <source>Select affiliation</source>
+        <translation>Выбор членства</translation>
+    </message>
+    <message>
+        <location filename="affiliationselectordialog.ui" line="22"/>
+        <source>JID:</source>
+        <translation>JID:</translation>
+    </message>
+    <message>
+        <location filename="affiliationselectordialog.ui" line="32"/>
+        <source>Affiliation:</source>
+        <translation>Членство:</translation>
+    </message>
+    <message>
+        <location filename="affiliationselectordialog.ui" line="41"/>
+        <source>Banned</source>
+        <translation>Забаненный</translation>
+    </message>
+    <message>
+        <location filename="affiliationselectordialog.ui" line="48"/>
+        <source>None</source>
+        <translation>Без членства</translation>
+    </message>
+    <message>
+        <location filename="affiliationselectordialog.ui" line="55"/>
+        <source>Member</source>
+        <translation>Член</translation>
+    </message>
+    <message>
+        <location filename="affiliationselectordialog.ui" line="65"/>
+        <source>Admin</source>
+        <translation>Админ</translation>
+    </message>
+    <message>
+        <location filename="affiliationselectordialog.ui" line="72"/>
+        <source>Owner</source>
+        <translation>Владелец</translation>
+    </message>
+</context>
+<context>
     <name>BookmarkEditWidget</name>
     <message>
         <location filename="bookmarkeditwidget.ui" line="38"/>
@@ -116,127 +159,127 @@
         <translation>Вы уже в этой комнате.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="549"/>
+        <location filename="clientconnection.cpp" line="556"/>
         <source>Socket error %1.</source>
         <translation>Ошибка сокета %1.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="554"/>
+        <location filename="clientconnection.cpp" line="561"/>
         <source>Keep-alive error.</source>
         <translation>Ошибка поддержания связи.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="557"/>
+        <location filename="clientconnection.cpp" line="564"/>
         <source>Error while connecting: </source>
         <translation>Ошибка при соединении: </translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="884"/>
+        <location filename="clientconnection.cpp" line="893"/>
         <source>Error from %1: </source>
         <translation>Ошибка от %1: </translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="889"/>
+        <location filename="clientconnection.cpp" line="898"/>
         <source>Error text: %1.</source>
         <translation>Текст ошибки: %1.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="903"/>
+        <location filename="clientconnection.cpp" line="930"/>
         <source>Bad request.</source>
         <translation>Плохой запрос.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="905"/>
+        <location filename="clientconnection.cpp" line="932"/>
         <source>Conflict (possibly, resource conflict).</source>
         <translation>Конфликт (возможно, конфликт ресурсов).</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="907"/>
+        <location filename="clientconnection.cpp" line="934"/>
         <source>Feature not implemented.</source>
         <translation>Функция не реализована.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="909"/>
+        <location filename="clientconnection.cpp" line="936"/>
         <source>Forbidden.</source>
         <translation>Запрещено.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="912"/>
+        <location filename="clientconnection.cpp" line="939"/>
         <source>Internal server error.</source>
         <translation>Внутренняя ошибка сервера.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="914"/>
+        <location filename="clientconnection.cpp" line="941"/>
         <source>Item not found.</source>
         <translation>Запись не найдена.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="916"/>
+        <location filename="clientconnection.cpp" line="943"/>
         <source>JID is malformed.</source>
         <translation>JID неправильный.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="918"/>
+        <location filename="clientconnection.cpp" line="945"/>
         <source>Data is not acceptable.</source>
         <translation>Неприемлемые данные.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="920"/>
+        <location filename="clientconnection.cpp" line="947"/>
         <source>Action is not allowed.</source>
         <translation>Непозволительные действия.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="923"/>
+        <location filename="clientconnection.cpp" line="950"/>
         <source>Not authorized.</source>
         <translation>Не авторизован.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="925"/>
+        <location filename="clientconnection.cpp" line="952"/>
         <source>Payment required.</source>
         <translation>Требуется оплата.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="927"/>
+        <location filename="clientconnection.cpp" line="954"/>
         <source>Recipient unavailable.</source>
         <translation>Получатель недоступен.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="929"/>
+        <location filename="clientconnection.cpp" line="956"/>
         <source>Got redirect.</source>
         <translation>Получено перенаправление.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="931"/>
+        <location filename="clientconnection.cpp" line="958"/>
         <source>Registration required.</source>
         <translation>Требуется регистрация.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="933"/>
+        <location filename="clientconnection.cpp" line="960"/>
         <source>Remote server not found.</source>
         <translation>Удалённый сервер не найден.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="935"/>
+        <location filename="clientconnection.cpp" line="962"/>
         <source>Timeout contacting remote server.</source>
         <translation>Превышено время ожидания подключения к серверу.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="937"/>
+        <location filename="clientconnection.cpp" line="964"/>
         <source>Error due to resource constraint.</source>
         <translation>Ошибка из-за превышения ограничения ресурсов.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="939"/>
+        <location filename="clientconnection.cpp" line="966"/>
         <source>Service is unavailable at the moment.</source>
         <translation>Сервис недоступен в данный момент.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="941"/>
+        <location filename="clientconnection.cpp" line="968"/>
         <source>Subscription is required to perform this action.</source>
         <translation>Требуется подписка для произведения этого действия.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="945"/>
+        <location filename="clientconnection.cpp" line="972"/>
         <source>Other error.</source>
         <translation>Другая ошибка.</translation>
     </message>
@@ -382,28 +425,28 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::RoomConfigWidget</name>
     <message>
-        <location filename="roomconfigwidget.cpp" line="65"/>
-        <location filename="roomconfigwidget.cpp" line="75"/>
+        <location filename="roomconfigwidget.cpp" line="66"/>
+        <location filename="roomconfigwidget.cpp" line="76"/>
         <source>Reason</source>
         <translation>Причина</translation>
     </message>
     <message>
-        <location filename="roomconfigwidget.cpp" line="67"/>
+        <location filename="roomconfigwidget.cpp" line="68"/>
         <source>Banned</source>
         <translation>Забаненные</translation>
     </message>
     <message>
-        <location filename="roomconfigwidget.cpp" line="68"/>
+        <location filename="roomconfigwidget.cpp" line="69"/>
         <source>Members</source>
         <translation>Члены</translation>
     </message>
     <message>
-        <location filename="roomconfigwidget.cpp" line="69"/>
+        <location filename="roomconfigwidget.cpp" line="70"/>
         <source>Admins</source>
         <translation>Админы</translation>
     </message>
     <message>
-        <location filename="roomconfigwidget.cpp" line="70"/>
+        <location filename="roomconfigwidget.cpp" line="71"/>
         <source>Owners</source>
         <translation>Владельцы</translation>
     </message>
@@ -543,54 +586,69 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::SDSession</name>
     <message>
-        <location filename="sdsession.cpp" line="69"/>
+        <location filename="sdsession.cpp" line="72"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="69"/>
+        <location filename="sdsession.cpp" line="72"/>
         <source>JID</source>
         <translation>JID</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="69"/>
+        <location filename="sdsession.cpp" line="72"/>
         <source>Node</source>
         <translation>Узел</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="102"/>
+        <location filename="sdsession.cpp" line="105"/>
         <source>View VCard...</source>
         <translation>Просмотреть VCard...</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="104"/>
+        <location filename="sdsession.cpp" line="107"/>
         <source>Add to roster...</source>
         <translation>Добавить в ростер...</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="204"/>
-        <source>Identity name:</source>
-        <translation>Имя личности:</translation>
+        <location filename="sdsession.cpp" line="109"/>
+        <source>Register...</source>
+        <translation>Зарегистрироваться...</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="205"/>
+        <location filename="sdsession.cpp" line="182"/>
+        <source>Identities:</source>
+        <translation>Сущности:</translation>
+    </message>
+    <message>
+        <location filename="sdsession.cpp" line="190"/>
+        <source>Identity name:</source>
+        <translation>Имя сущности:</translation>
+    </message>
+    <message>
+        <location filename="sdsession.cpp" line="191"/>
         <source>Category:</source>
         <translation>Категория:</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="206"/>
+        <location filename="sdsession.cpp" line="192"/>
         <source>Type:</source>
         <translation>Тип:</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="207"/>
+        <location filename="sdsession.cpp" line="193"/>
         <source>Language:</source>
         <translation>Язык:</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="215"/>
+        <location filename="sdsession.cpp" line="203"/>
         <source>Capabilities:</source>
         <translation>Возможности:</translation>
+    </message>
+    <message>
+        <location filename="sdsession.cpp" line="358"/>
+        <source>Gateways</source>
+        <translation>Транспорты</translation>
     </message>
 </context>
 <context>
