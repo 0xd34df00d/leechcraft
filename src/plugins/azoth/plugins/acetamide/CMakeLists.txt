@@ -60,17 +60,7 @@ SET (ACETAMIDE_FORMS
 	invitechannelsdialog.ui
 	)
 
-SET (ACETAMIDE_TRANSLATIONS
-	leechcraft_azoth_acetamide_ru_RU.ts
-	leechcraft_azoth_acetamide_uk_UA.ts
-	leechcraft_azoth_acetamide_en.ts
-	)
-
-SET (ACETAMIDE_COMPILED_TRANSLATIONS
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_azoth_acetamide_ru_RU.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_azoth_acetamide_uk_UA.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_azoth_acetamide_en.qm
-	)
+CreateTrVars ("azoth_acetamide" "de;en;fr;it;ru_RU;uk_UA" ACETAMIDE_TRANSLATIONS ACETAMIDE_COMPILED_TRANSLATIONS)
 
 QT4_WRAP_CPP (ACETAMIDE_MOC_SRCS ${ACETAMIDE_HEADERS})
 QT4_WRAP_UI (ACETAMIDE_UIS_H ${ACETAMIDE_FORMS})
