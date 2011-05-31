@@ -4,7 +4,7 @@
 <context>
     <name>LeechCraft::Plugins::TabPP::Core</name>
     <message>
-        <location filename="core.cpp" line="281"/>
+        <location filename="core.cpp" line="283"/>
         <source>unknown</source>
         <translation>unknown</translation>
     </message>
@@ -12,12 +12,12 @@
 <context>
     <name>LeechCraft::Plugins::TabPP::Plugin</name>
     <message>
-        <location filename="tabpp.cpp" line="72"/>
+        <location filename="tabpp.cpp" line="69"/>
         <source>Enhances user experience with tabs.</source>
         <translation>Enhances user experience with tabs.</translation>
     </message>
     <message>
-        <location filename="tabpp.cpp" line="123"/>
+        <location filename="tabpp.cpp" line="100"/>
         <source>Show tab switcher</source>
         <translation>Show tab switcher</translation>
     </message>
@@ -25,7 +25,7 @@
 <context>
     <name>LeechCraft::Plugins::TabPP::TabPPWidget</name>
     <message>
-        <location filename="tabppwidget.cpp" line="44"/>
+        <location filename="tabppwidget.cpp" line="51"/>
         <source>F9</source>
         <translation>F9</translation>
     </message>

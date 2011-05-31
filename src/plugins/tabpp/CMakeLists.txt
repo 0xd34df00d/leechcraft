@@ -38,23 +38,8 @@ SET (HEADERS
 SET (FORMS
 	tabppwidget.ui
 	)
-SET (TRANSLATIONS
-	leechcraft_tabpp_uk_UA.ts
-	leechcraft_tabpp_ru_RU.ts
-	leechcraft_tabpp_de.ts
-	leechcraft_tabpp_en.ts
-	leechcraft_tabpp_oc.ts
-	leechcraft_tabpp_fr.ts
-	)
-SET (COMPILED_TRANSLATIONS
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_tabpp_uk_UA.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_tabpp_ru_RU.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_tabpp_de.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_tabpp_en.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_tabpp_oc.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_tabpp_fr.qm
-	)
 SET (RESOURCES tabppresources.qrc)
+CreateTrVars ("tabpp" "de;en;fr;it;oc;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})

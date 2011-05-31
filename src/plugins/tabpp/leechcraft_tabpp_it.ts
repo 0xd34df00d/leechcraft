@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="oc">
+<TS version="2.0" language="it_IT">
 <context>
     <name>LeechCraft::Plugins::TabPP::Core</name>
     <message>
         <location filename="core.cpp" line="283"/>
         <source>unknown</source>
-        <translation>desconegut</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -27,7 +27,7 @@
     <message>
         <location filename="tabppwidget.cpp" line="51"/>
         <source>F9</source>
-        <translation>F9</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
