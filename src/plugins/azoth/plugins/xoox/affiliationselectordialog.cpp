@@ -66,7 +66,7 @@ namespace Xoox
 			Ui_.Admin_->setChecked (true);
 			break;
 		case QXmppMucAdminIq::Item::MemberAffiliation:
-			Ui_.Admin_->setChecked (true);
+			Ui_.Member_->setChecked (true);
 			break;
 		case QXmppMucAdminIq::Item::NoAffiliation:
 			Ui_.None_->setChecked (true);
