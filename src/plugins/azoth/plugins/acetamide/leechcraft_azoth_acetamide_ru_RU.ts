@@ -2,6 +2,24 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
+    <name>InviteChannelsDialog</name>
+    <message>
+        <location filename="invitechannelsdialog.ui" line="14"/>
+        <source>Invites</source>
+        <translation>Приглашения</translation>
+    </message>
+    <message>
+        <location filename="invitechannelsdialog.ui" line="20"/>
+        <source>You have received invites for the following channels. Select the channels you want to join:</source>
+        <translation>Вы были приглашены на следующие каналы. Выберите каналы, на которые вы хотите зайти:</translation>
+    </message>
+    <message>
+        <location filename="invitechannelsdialog.ui" line="39"/>
+        <source>From now on: </source>
+        <translation>Начиная с этого момента:</translation>
+    </message>
+</context>
+<context>
     <name>IrcAccountConfigurationDialog</name>
     <message>
         <location filename="ircaccountconfigurationdialog.ui" line="14"/>
@@ -18,13 +36,15 @@
     </message>
     <message>
         <location filename="ircaccountconfigurationwidget.ui" line="35"/>
-        <source>Real Name</source>
-        <translation>Настоящее имя</translation>
+        <source>Real Name:</source>
+        <oldsource>Real Name</oldsource>
+        <translation>Настоящее имя:</translation>
     </message>
     <message>
         <location filename="ircaccountconfigurationwidget.ui" line="49"/>
-        <source>User name</source>
-        <translation>Имя пользователя</translation>
+        <source>User name:</source>
+        <oldsource>User name</oldsource>
+        <translation>Имя пользователя:</translation>
     </message>
     <message>
         <location filename="ircaccountconfigurationwidget.ui" line="63"/>
@@ -38,11 +58,6 @@
         <location filename="ircjoingroupchat.ui" line="25"/>
         <source>Server:</source>
         <translation>Сервер:</translation>
-    </message>
-    <message>
-        <location filename="ircjoingroupchat.ui" line="32"/>
-        <source>chat.freenode.net</source>
-        <translation>chat.freenode.net</translation>
     </message>
     <message>
         <location filename="ircjoingroupchat.ui" line="39"/>
@@ -68,11 +83,6 @@
         <location filename="ircjoingroupchat.ui" line="94"/>
         <source>Encoding:</source>
         <translation>Кодировка:</translation>
-    </message>
-    <message>
-        <location filename="ircjoingroupchat.ui" line="63"/>
-        <source>#leechcraft</source>
-        <translation>#leechcraft</translation>
     </message>
     <message>
         <location filename="ircjoingroupchat.ui" line="106"/>
@@ -136,19 +146,34 @@
 <context>
     <name>LeechCraft::Azoth::Acetamide::ChannelHandler</name>
     <message>
-        <location filename="channelhandler.cpp" line="216"/>
+        <location filename="channelhandler.cpp" line="252"/>
         <source>%1 joined the channel</source>
         <translation>%1 зашёл на канал</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="232"/>
+        <location filename="channelhandler.cpp" line="268"/>
         <source>%1 has left the channel (%2)</source>
         <translation>%1 покинул канал (%2)</translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="234"/>
+        <location filename="channelhandler.cpp" line="270"/>
         <source>%1 has left the channel</source>
         <translation>%1 покинул канал</translation>
+    </message>
+    <message>
+        <location filename="channelhandler.cpp" line="291"/>
+        <source>You have been kicked by %1 %2</source>
+        <translation>Вы были кикнуты %1 %2</translation>
+    </message>
+    <message>
+        <location filename="channelhandler.cpp" line="294"/>
+        <source>You kicked %1 %2</source>
+        <translation>Вы кикнули %1 %2</translation>
+    </message>
+    <message>
+        <location filename="channelhandler.cpp" line="297"/>
+        <source>%1 has been kicked by %2 %3</source>
+        <translation>%1 был кикнут %2 %3</translation>
     </message>
 </context>
 <context>
@@ -163,6 +188,39 @@
         <location filename="clientconnection.cpp" line="111"/>
         <source>Unable to join the channel.</source>
         <translation>Невозможно зайти на канал.</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Azoth::Acetamide::InviteChannelsDialog</name>
+    <message>
+        <location filename="invitechannelsdialog.cpp" line="43"/>
+        <source>Join</source>
+        <translation>Заходить</translation>
+    </message>
+    <message>
+        <location filename="invitechannelsdialog.cpp" line="44"/>
+        <source>Channel name</source>
+        <translation>Канал</translation>
+    </message>
+    <message>
+        <location filename="invitechannelsdialog.cpp" line="45"/>
+        <source>Nickname</source>
+        <translation>Ник</translation>
+    </message>
+    <message>
+        <location filename="invitechannelsdialog.cpp" line="59"/>
+        <source>Always ask</source>
+        <translation>Всегда спрашивать</translation>
+    </message>
+    <message>
+        <location filename="invitechannelsdialog.cpp" line="64"/>
+        <source>Always join</source>
+        <translation>Всегда заходить</translation>
+    </message>
+    <message>
+        <location filename="invitechannelsdialog.cpp" line="69"/>
+        <source>Always ignore</source>
+        <translation>Всегда игнорировать</translation>
     </message>
 </context>
 <context>
@@ -182,11 +240,59 @@
     </message>
 </context>
 <context>
+    <name>LeechCraft::Azoth::Acetamide::IrcServerConsole</name>
+    <message>
+        <location filename="ircserverconsole.cpp" line="79"/>
+        <source>Server consoles</source>
+        <translation>Консоли сервера</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::Azoth::Acetamide::IrcServerHandler</name>
     <message>
-        <location filename="ircserverhandler.cpp" line="523"/>
-        <source> changed nickname to </source>
-        <translation> сменил ник на </translation>
+        <location filename="ircserverhandler.cpp" line="1061"/>
+        <source>%1 changed nickname to %2</source>
+        <translation>%1 сменил ник на %2</translation>
+    </message>
+    <message>
+        <location filename="ircserverhandler.cpp" line="1102"/>
+        <location filename="ircserverhandler.cpp" line="1110"/>
+        <location filename="ircserverhandler.cpp" line="1118"/>
+        <location filename="ircserverhandler.cpp" line="1126"/>
+        <location filename="ircserverhandler.cpp" line="1136"/>
+        <source>Received request %1 from %2, sending response</source>
+        <translation>Получен запрос %1 от %2, посылается ответ</translation>
+    </message>
+    <message>
+        <location filename="ircserverhandler.cpp" line="1168"/>
+        <source>Received answer CTCP-%1 from %2: %3</source>
+        <translation>Получен ответ CTCP-%1 от %2: %3</translation>
+    </message>
+    <message>
+        <location filename="ircserverhandler.cpp" line="1218"/>
+        <source> invites you to a channel </source>
+        <translation> приглашает вас на канал </translation>
+    </message>
+    <message>
+        <location filename="ircserverhandler.cpp" line="1248"/>
+        <source> is a </source>
+        <translation> </translation>
+    </message>
+    <message>
+        <location filename="ircserverhandler.cpp" line="1267"/>
+        <location filename="ircserverhandler.cpp" line="1270"/>
+        <source> is online</source>
+        <translation> онлайн</translation>
+    </message>
+    <message>
+        <location filename="ircserverhandler.cpp" line="1295"/>
+        <source> connected via </source>
+        <translation> подключен через </translation>
+    </message>
+    <message>
+        <location filename="ircserverhandler.cpp" line="1327"/>
+        <source> on the channels : </source>
+        <translation> на каналах : </translation>
     </message>
 </context>
 <context>
@@ -217,6 +323,16 @@
         <location filename="dummy.cpp" line="4"/>
         <source>Autodisconnect from server when no channels are active</source>
         <translation>Автоматически отключаться от сервера при отсутствии активных каналов</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="5"/>
+        <source>Enable server console</source>
+        <translation>Включить консоль сервера</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="6"/>
+        <source>Show invite dialog</source>
+        <translation>Показать диалог приглашения</translation>
     </message>
 </context>
 </TS>
