@@ -1,3 +1,22 @@
+/**********************************************************************
+ * LeechCraft - modular cross-platform feature rich internet client.
+ * Copyright (C) 2011  Alexander Konovalov
+ * Copyright (C) 2006-2011  Georg Rudoy
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ **********************************************************************/
+
 #include "uistatepersist.h"
 #include <QTreeView>
 #include <QString>
@@ -11,27 +30,27 @@ namespace LeechCraft
 	{
 		namespace Aggregator
 		{
-			void SaveColumnWidth (const QTreeView *tree, const QString &keyName)
+			void SaveColumnWidth (const QTreeView *tree, const QString& keyName)
 			{
 				// get width
 				QList<QVariant> sizes;
 				for (int i = 0, count = tree->model ()->columnCount (); i < count; ++i)
 					sizes += tree->columnWidth (i);
 				// save column width
-				QSettings settings (QApplication::organizationName (), QApplication::applicationName () + " Aggregator");
+				QSettings settings (QApplication::organizationName (), QApplication::applicationName () + "_Aggregator");
 				settings.beginGroup ("tabs-width");
 				settings.setValue (keyName, sizes);
 				settings.endGroup ();
 			}
 
-			void LoadColumnWidth (QTreeView *tree, const QString &keyName)
+			void LoadColumnWidth (QTreeView *tree, const QString& keyName)
 			{
 				// load column width
-				QSettings settings (QApplication::organizationName (), QApplication::applicationName () + " Aggregator");
+				QSettings settings (QApplication::organizationName (), QApplication::applicationName () + "_Aggregator");
 				settings.beginGroup ("tabs-width");
 				QList<QVariant> sizes = settings.value (keyName).toList ();
 				settings.endGroup ();
-				// some checks 
+				// column count check
 				if (sizes.size () != tree->model ()->columnCount ())
 				{
 					qWarning () << Q_FUNC_INFO <<
@@ -40,16 +59,18 @@ namespace LeechCraft
 					return;
 				}
 				// set width
-				const int minColumnSize=4;
+				const int minColumnSize = 4;
 				for (int i = 0; i < sizes.size (); i++)
 				{
-					// checks
-					if (!sizes.at (i).canConvert (QVariant::Int))
+					// type check
+					if (!sizes.at (i).canConvert<int> ())
 					{
 						qWarning() << Q_FUNC_INFO << "Can`t convert QVariant to int, "
 							"(sizes[" << i << "]=" << sizes.at (i) << ")";
 						return;
 					}
+					
+					// min.size check
 					int s = sizes.at (i).toInt ();
 					if (s < minColumnSize)
 					{
@@ -57,6 +78,7 @@ namespace LeechCraft
 							"(" << s << ") is too small (min." << minColumnSize << ")";
 						continue;
 					}
+					
 					tree->setColumnWidth (i, s);
 				}
 			}

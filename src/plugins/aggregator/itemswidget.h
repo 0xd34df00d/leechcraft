@@ -83,8 +83,8 @@ namespace LeechCraft
 				QStringList GetItemCategories (int) const;
 				void SubscribeToComments (const QModelIndex&) const;
 				void CurrentChannelChanged (const QModelIndex&);
-				void LoadUIState();
-				void SaveUIState();
+				void LoadUIState ();
+				void SaveUIState ();
 			private:
 				void ClearSupplementaryModels ();
 				void AddSupplementaryModelFor (const ChannelShort&);
