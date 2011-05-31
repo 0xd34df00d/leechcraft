@@ -1113,6 +1113,11 @@
         <translation>Notify about incoming messages</translation>
     </message>
     <message>
+        <location filename="dummy.cpp" line="30"/>
+        <source>Notify when remote contact starts composing a message:</source>
+        <translation>Notify when remote contact starts composing a message:</translation>
+    </message>
+    <message>
         <location filename="dummy.cpp" line="31"/>
         <source>always</source>
         <translation>always</translation>

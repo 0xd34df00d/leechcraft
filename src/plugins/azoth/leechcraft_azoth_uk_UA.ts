@@ -1113,6 +1113,11 @@
         <translation>Сповіщувати про вхідні повідомлення</translation>
     </message>
     <message>
+        <location filename="dummy.cpp" line="30"/>
+        <source>Notify when remote contact starts composing a message:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="dummy.cpp" line="31"/>
         <source>always</source>
         <translation type="unfinished"></translation>
