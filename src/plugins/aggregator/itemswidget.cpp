@@ -33,6 +33,7 @@
 #include "itemsfiltermodel.h"
 #include "itemslistmodel.h"
 #include "channelsmodel.h"
+#include "uistatepersist.h"
 
 namespace LeechCraft
 {
@@ -439,6 +440,16 @@ namespace LeechCraft
 					Impl_->CurrentItemsModel_->Reset (-1);
 				}
 				emit currentChannelChanged (index);
+			}
+
+			void ItemsWidget::LoadUIState ()
+			{
+				LoadColumnWidth (Impl_->Ui_.Items_, "items");
+			}
+
+			void ItemsWidget::SaveUIState ()
+			{
+				SaveColumnWidth (Impl_->Ui_.Items_, "items");
 			}
 
 			void ItemsWidget::ClearSupplementaryModels ()

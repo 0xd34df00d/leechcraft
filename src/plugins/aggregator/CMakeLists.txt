@@ -42,6 +42,7 @@ SET (SRCS
     channel.cpp
     feed.cpp
     xmlsettingsmanager.cpp
+    uistatepersist.cpp
     channelsmodel.cpp
     channelsfiltermodel.cpp
 	regexpmatcherui.cpp
@@ -85,6 +86,7 @@ SET (HEADERS
     atom03parser.h
     channelsmodel.h
     xmlsettingsmanager.h
+    uistatepersist.h
     channelsfiltermodel.h
 	regexpmatcherui.h
 	singleregexp.h

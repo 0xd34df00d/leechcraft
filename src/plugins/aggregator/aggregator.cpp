@@ -60,6 +60,8 @@
 #include "export2fb2dialog.h"
 #include "actionsstructs.h"
 #include <boost/graph/graph_concepts.hpp>
+#include "uistatepersist.h"
+#include "itemswidget.h"
 
 namespace LeechCraft
 {
@@ -284,10 +286,14 @@ namespace LeechCraft
 
 			void Aggregator::SecondInit ()
 			{
+				LoadColumnWidth (Impl_->Ui_.Feeds_, "feeds");
+				Impl_->Ui_.ItemsWidget_->LoadUIState ();
 			}
 
 			void Aggregator::Release ()
 			{
+				SaveColumnWidth (Impl_->Ui_.Feeds_, "feeds");
+				Impl_->Ui_.ItemsWidget_->SaveUIState ();
 				disconnect (&Core::Instance (), 0, this, 0);
 				if (Core::Instance ().GetChannelsModel ())
 					disconnect (Core::Instance ().GetChannelsModel (), 0, this, 0);
