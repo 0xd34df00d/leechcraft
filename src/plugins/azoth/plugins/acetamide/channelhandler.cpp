@@ -327,7 +327,7 @@ namespace Acetamide
 	{
 		if (cmd)
 		{
-			ISH_->LeaveChannel (ChannelOptions_.ChannelName_, QString ());
+			ISH_->LeaveChannel (ChannelOptions_.ChannelName_, msg);
 			return;
 		}
 
