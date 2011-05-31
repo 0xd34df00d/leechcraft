@@ -19,6 +19,7 @@
 #include "sdsession.h"
 #include <boost/bind.hpp>
 #include <QStandardItemModel>
+#include <QDomElement>
 #include <QtDebug>
 #include <QXmppDiscoveryIq.h>
 #include "glooxaccount.h"
@@ -26,6 +27,7 @@
 #include "sdmodel.h"
 #include "capsmanager.h"
 #include "vcarddialog.h"
+#include "formbuilder.h"
 
 namespace LeechCraft
 {
@@ -288,6 +290,72 @@ namespace Xoox
 	
 	void SDSession::handleRegistrationForm (const QXmppIq& iq)
 	{
+		QXmppDataForm form;
+		Q_FOREACH (const QXmppElement& elem, iq.extensions ())
+		{
+			if (elem.tagName () != "query" ||
+					elem.attribute ("xmlns") != "jabber:iq:register")
+				continue;
+			
+			QByteArray arr;
+			const QXmppElement& x = elem.firstChildElement ("x");
+			QXmlStreamWriter w (&arr);
+			x.toXml (&w);
+
+			QDomDocument doc;
+			doc.setContent (arr);
+			form.parse (doc.documentElement ());
+			if (!form.isNull ())
+				break;
+		}
+		
+		if (form.isNull ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no form found, sorry";
+			return;
+		}
+		
+		FormBuilder builder;
+		QWidget *widget = builder.CreateForm (form);
+		std::auto_ptr<QDialog> dialog (new QDialog ());
+		dialog->setWindowTitle (widget->windowTitle ());
+		dialog->setLayout (new QVBoxLayout ());
+		dialog->layout ()->addWidget (widget);
+		QDialogButtonBox *box = new QDialogButtonBox (QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+		dialog->layout ()->addWidget (box);
+		connect (box,
+				SIGNAL (accepted ()),
+				dialog.get (),
+				SLOT (accept ()));
+		connect (box,
+				SIGNAL (rejected ()),
+				dialog.get (),
+				SLOT (reject ()));
+		
+		if (dialog->exec () != QDialog::Accepted)
+			return;
+		
+		form = builder.GetForm ();
+		
+		QXmppIq regIq;
+		regIq.setType (QXmppIq::Set);
+		regIq.setTo (iq.from ());
+		QXmppElement elem;
+		elem.setTagName ("query");
+		elem.setAttribute ("xmlns", "jabber:iq:register");
+		
+		QByteArray formData;
+		QXmlStreamWriter w (&formData);
+		form.toXml (&w);
+		QDomDocument doc;
+		doc.setContent (formData);
+		elem.appendChild (doc.documentElement ());
+
+		regIq.setExtensions (QXmppElementList (elem));
+		
+		Account_->GetClientConnection ()->GetClient ()->sendPacket (regIq);
+		Account_->AddEntry (iq.from (), QString (), QStringList (tr ("Gateways")));
 	}
 }
 }
