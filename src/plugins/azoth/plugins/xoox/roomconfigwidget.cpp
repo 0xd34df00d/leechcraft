@@ -25,6 +25,7 @@
 #include "clientconnection.h"
 #include "roomhandler.h"
 #include "formbuilder.h"
+#include "affiliationselectordialog.h"
 
 namespace LeechCraft
 {
@@ -80,11 +81,114 @@ namespace Xoox
 		return aff2cat;
 	}
 	
+	void RoomConfigWidget::SendItem (const QXmppMucAdminIq::Item& item)
+	{
+		QList<QXmppMucAdminIq::Item> items;
+		items << item;
+		QXmppMucAdminIq iq;
+		iq.setTo (JID_);
+		iq.setType (QXmppIq::Set);
+		iq.setItems (items);
+		
+		GlooxAccount *account = qobject_cast<GlooxAccount*> (Room_->GetParentAccount ());
+		account->GetClientConnection ()->GetClient ()->sendPacket (iq);
+	}
+	
+	QStandardItem* RoomConfigWidget::GetCurrentItem () const
+	{
+		const QModelIndex& index = Ui_.PermsTree_->currentIndex ();
+		if (!index.isValid ())
+			return 0;
+		
+		const QModelIndex& sibling = index.sibling (index.row (), 0);
+		return PermsModel_->itemFromIndex (sibling);
+	}
+	
 	void RoomConfigWidget::accept ()
 	{
 		QXmppDataForm form = FB_->GetForm ();
 		form.setType (QXmppDataForm::Submit);
 		MUCManager_->setRoomConfiguration (JID_, form);
+	}
+	
+	void RoomConfigWidget::on_AddPerm__released ()
+	{
+		std::auto_ptr<AffiliationSelectorDialog> dia (new AffiliationSelectorDialog (this));
+		if (dia->exec () != QDialog::Accepted)
+			return;
+		
+		const QString& jid = dia->GetJID ();
+		if (jid.isEmpty ())
+			return;
+
+		QXmppMucAdminIq::Item item;
+		item.setJid (jid);
+		item.setAffiliation (dia->GetAffiliation ());
+		SendItem (item);
+		
+		handlePermsReceived (JID_, QList<QXmppMucAdminIq::Item> () << item);
+	}
+	
+	void RoomConfigWidget::on_ModifyPerm__released ()
+	{
+		QStandardItem *stdItem = GetCurrentItem ();
+		if (!stdItem)
+			return;
+		
+		QStandardItem *parent = stdItem->parent ();
+		if (!Aff2Cat_.values ().contains (parent))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "bad parent"
+					<< parent
+					<< "for"
+					<< stdItem;
+			return;
+		}
+		
+		const QXmppMucAdminIq::Item::Affiliation aff = Aff2Cat_.key (parent);		
+		const QString& jid = stdItem->text ();
+
+		std::auto_ptr<AffiliationSelectorDialog> dia (new AffiliationSelectorDialog (this));
+		dia->SetJID (jid);
+		dia->SetAffiliation (aff);
+		if (dia->exec () != QDialog::Accepted)
+			return;
+		
+		const QString& newJid = dia->GetJID ();
+		if (newJid.isEmpty ())
+			return;
+		
+		parent->removeRow (stdItem->row ());
+		
+		QXmppMucAdminIq::Item item;
+		item.setJid (newJid);
+		item.setAffiliation (dia->GetAffiliation ());
+		SendItem (item);
+		
+		handlePermsReceived (JID_, QList<QXmppMucAdminIq::Item> () << item);
+	}
+	
+	void RoomConfigWidget::on_RemovePerm__released ()
+	{
+		QStandardItem *stdItem = GetCurrentItem ();
+		if (!stdItem)
+			return;
+		
+		const QString& jid = stdItem->text ();
+		if (jid.isEmpty ())
+			return;
+		
+		QStandardItem *parent = stdItem->parent ();
+		if (!parent)
+			return;
+		
+		parent->removeRow (stdItem->row ());
+		
+		QXmppMucAdminIq::Item item;
+		item.setJid (jid);
+		item.setAffiliation (QXmppMucAdminIq::Item::NoAffiliation);
+		SendItem (item);
 	}
 	
 	void RoomConfigWidget::handleConfigurationReceived (const QString& jid,
