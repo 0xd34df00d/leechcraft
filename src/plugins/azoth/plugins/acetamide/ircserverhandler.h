@@ -35,8 +35,7 @@ namespace Azoth
 {
 namespace Acetamide
 {
-
-class IrcMessage;
+	class IrcMessage;
 
 	class ChannelCLEntry;
 	class ChannelHandler;
@@ -66,8 +65,7 @@ class IrcMessage;
 				const QString&)> > Error2Action_;
 		QHash<QString, boost::function<void (const QString&,
 				const QList<std::string>&, const QString&)> > Command2Action_;
-		QHash<QString, boost::function<void (const QStringList&)> >
-				Name2Command_;
+		QHash<QString, boost::function<void (const QStringList&)> > Name2Command_;
 		QHash<QString, ServerParticipantEntry_ptr> Nick2Entry_;
 		QString NickName_;
 		QString OldNickName_;

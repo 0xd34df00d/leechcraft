@@ -16,9 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-
 #include "kinotifywidget.h"
-
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QWebFrame>
@@ -33,6 +31,7 @@
 #include <QFinalState>
 #include <QWebHitTestResult>
 #include <plugininterface/resourceloader.h>
+#include <plugininterface/util.h>
 #include "notificationaction.h"
 #include "xmlsettingsmanager.h"
 
@@ -48,6 +47,11 @@ namespace LeechCraft
 			, AnimationTime_ (animationTimout)
 			, Action_ (new NotificationAction (this))
 			{
+				page ()->setLinkDelegationPolicy (QWebPage::DelegateAllLinks);
+				connect (this,
+						SIGNAL (linkClicked (const QUrl&)),
+						this,
+						SLOT (handleLinkClicked (const QUrl&)));
 				CloseTimer_ = new QTimer (this);
 				CheckTimer_ = new QTimer (this);
 				CloseTimer_->setSingleShot (true);
@@ -152,7 +156,14 @@ namespace LeechCraft
 
 			void KinotifyWidget::mousePressEvent (QMouseEvent *event)
 			{
-				QWebElement elem = page ()->mainFrame ()->hitTestContent (event->pos ()).element ();
+				const QWebHitTestResult& r = page ()->mainFrame ()->hitTestContent (event->pos ());
+				if (!r.linkUrl ().isEmpty ())
+				{
+					QWebView::mousePressEvent (event);
+					return;
+				}
+
+				QWebElement elem = r.element ();
 				if (elem.isNull () || elem.attribute ("type") != "button")
 				{
 					disconnect (CheckTimer_,
@@ -169,7 +180,7 @@ namespace LeechCraft
 					closeNotification ();
 				}
 				else
-					mouseReleaseEvent (event);
+					QWebView::mousePressEvent (event);
 			}
 
 			void KinotifyWidget::showEvent (QShowEvent*)
@@ -195,38 +206,6 @@ namespace LeechCraft
 			{
 				ActionsNames_ = actions;
 				Action_->SetActionObject (object);
-			}
-
-			void KinotifyWidget::stateMachinePause ()
-			{
-				CloseTimer_->start (Timeout_);
-				CheckTimer_->start (Timeout_);
-			}
-
-			void KinotifyWidget::closeNotificationWidget()
-			{
-				disconnect (CheckTimer_,
-						SIGNAL (timeout ()),
-						this,
-						SIGNAL (checkNotificationQueue ()));
-
-				disconnect (&Machine_,
-						SIGNAL (finished ()),
-						this,
-						SLOT (closeNotification()));
-
-				emit checkNotificationQueue ();
-				closeNotification ();
-			}
-
-			void KinotifyWidget::closeNotification ()
-			{
-				close ();
-			}
-
-			void KinotifyWidget::initJavaScript ()
-			{
-				page ()->mainFrame ()->addToJavaScriptWindowObject ("Action", Action_);
 			}
 
 			void KinotifyWidget::CreateWidget ()
@@ -348,6 +327,48 @@ namespace LeechCraft
 				setWindowOpacity (0.0);
 				Machine_.start ();
 			}
-		};
-	};
-};
+			
+						void KinotifyWidget::stateMachinePause ()
+			{
+				CloseTimer_->start (Timeout_);
+				CheckTimer_->start (Timeout_);
+			}
+
+			void KinotifyWidget::closeNotificationWidget()
+			{
+				disconnect (CheckTimer_,
+						SIGNAL (timeout ()),
+						this,
+						SIGNAL (checkNotificationQueue ()));
+
+				disconnect (&Machine_,
+						SIGNAL (finished ()),
+						this,
+						SLOT (closeNotification()));
+
+				emit checkNotificationQueue ();
+				closeNotification ();
+			}
+
+			void KinotifyWidget::closeNotification ()
+			{
+				close ();
+			}
+
+			void KinotifyWidget::initJavaScript ()
+			{
+				page ()->mainFrame ()->addToJavaScriptWindowObject ("Action", Action_);
+			}
+			
+			void KinotifyWidget::handleLinkClicked (const QUrl& url)
+			{
+				if (!url.isValid ())
+					return;
+				
+				emit gotEntity (Util::MakeEntity (url,
+							QString (),
+							FromUserInitiated | OnlyHandle));
+			}
+		}
+	}
+}

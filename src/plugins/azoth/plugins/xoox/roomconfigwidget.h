@@ -59,9 +59,14 @@ namespace Xoox
 		RoomConfigWidget (RoomCLEntry*, QWidget* = 0);
 	private:
 		QMap<QXmppMucAdminIq::Item::Affiliation, QStandardItem*> InitModel () const;
+		void SendItem (const QXmppMucAdminIq::Item&);
+		QStandardItem* GetCurrentItem () const;
 	public slots:
 		void accept ();
 	private slots:
+		void on_AddPerm__released ();
+		void on_ModifyPerm__released ();
+		void on_RemovePerm__released ();
 		void handleConfigurationReceived (const QString&, const QXmppDataForm&);
 		void handlePermsReceived (const QString&, const QList<QXmppMucAdminIq::Item>&);
 	signals:

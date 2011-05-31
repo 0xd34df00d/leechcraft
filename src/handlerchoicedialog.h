@@ -18,8 +18,8 @@
 
 #ifndef HANDLERCHOICEDIALOG_H
 #define HANDLERCHOICEDIALOG_H
-#include <map>
 #include <memory>
+#include <QMap>
 #include <QDialog>
 #include <QButtonGroup>
 #include "ui_handlerchoicedialog.h"
@@ -46,9 +46,9 @@ namespace LeechCraft
 
 		Ui::HandlerChoiceDialog Ui_;
 		std::auto_ptr<QButtonGroup> Buttons_;
-		typedef std::map<QString, IDownload*> downloaders_t;
+		typedef QMap<QString, IDownload*> downloaders_t;
 		downloaders_t Downloaders_;
-		typedef std::map<QString, IEntityHandler*> handlers_t;
+		typedef QMap<QString, IEntityHandler*> handlers_t;
 		handlers_t Handlers_;
 		mutable QString Suggestion_;
 	public:
@@ -116,6 +116,13 @@ namespace LeechCraft
 		 * handlers were added.
 		 */
 		IEntityHandler* GetFirstEntityHandler ();
+		
+		/** Returns the list of all entity handlers that were added to
+		 * this dialog.
+		 * 
+		 * @return All entity handlers added to this dialog.
+		 */
+		QList<IEntityHandler*> GetAllEntityHandlers ();
 
 		/** Returns the selected file name. If "Browse" item was
 		 * selected, this function automatically requests the save

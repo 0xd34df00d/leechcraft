@@ -67,7 +67,7 @@ namespace OnlineBookmarks
 
 	void BookmarksDialog::sendBookmarkWithoutConfirm (bool checked)
 	{
-		XmlSettingsManager::Instance ()->setProperty ("ConfirmSend", true);
+		XmlSettingsManager::Instance ()->setProperty ("ConfirmSend", checked);
 	}
 }
 }

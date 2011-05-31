@@ -19,12 +19,15 @@
 #include "sdsession.h"
 #include <boost/bind.hpp>
 #include <QStandardItemModel>
+#include <QDomElement>
 #include <QtDebug>
 #include <QXmppDiscoveryIq.h>
 #include "glooxaccount.h"
 #include "clientconnection.h"
 #include "sdmodel.h"
 #include "capsmanager.h"
+#include "vcarddialog.h"
+#include "formbuilder.h"
 
 namespace LeechCraft
 {
@@ -36,6 +39,9 @@ namespace Xoox
 	: Model_ (new SDModel (this))
 	, Account_ (account)
 	{
+		ID2Action_ ["view-vcard"] = boost::bind (&SDSession::ViewVCard, this, _1);
+		ID2Action_ ["add-to-roster"] = boost::bind (&SDSession::AddToRoster, this, _1);
+		ID2Action_ ["register"] = boost::bind (&SDSession::Register, this, _1);
 	}
 	
 	namespace
@@ -84,11 +90,52 @@ namespace Xoox
 		return Model_;
 	}
 	
+	QList<QPair<QByteArray, QString> > SDSession::GetActionsFor (const QModelIndex& index)
+	{
+		QList<QPair<QByteArray, QString> > result;
+		if (!index.isValid ())
+			return result;
+		
+		const QModelIndex& sibling = index.sibling (index.row (), CName);
+		QStandardItem *item = Model_->itemFromIndex (sibling);
+		const ItemInfo& info = Item2Info_ [item];
+
+		if (info.Caps_.contains ("vcard-temp") &&
+				!info.JID_.isEmpty ())
+			result << QPair<QByteArray, QString> ("view-vcard", tr ("View VCard..."));
+		if (!info.JID_.isEmpty ())
+			result << QPair<QByteArray, QString> ("add-to-roster", tr ("Add to roster..."));
+		if (info.Caps_.contains ("jabber:iq:register"))
+			result << QPair<QByteArray, QString> ("register", tr ("Register..."));
+
+		return result;
+	}
+	
+	void SDSession::ExecuteAction (const QModelIndex& index, const QByteArray& id)
+	{
+		if (!index.isValid ())
+			return;
+		
+		const QModelIndex& sibling = index.sibling (index.row (), CName);
+		QStandardItem *item = Model_->itemFromIndex (sibling);
+		const ItemInfo& info = Item2Info_ [item];
+		
+		if (!ID2Action_.contains (id))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown ID"
+					<< id;
+			return;
+		}
+		
+		ID2Action_ [id] (info);
+	}
+	
 	namespace
 	{
 		struct Appender
 		{
-			QString S_;
+			QStringList Strings_;
 			
 			Appender ()
 			{
@@ -97,14 +144,14 @@ namespace Xoox
 			Appender& operator() (const QString& text, const QString& name)
 			{
 				if (!text.isEmpty ())
-					S_ += name + ' ' + text + "<br />";
+					Strings_ << name + ' ' + text;
 				
 				return *this;
 			}
 			
 			QString operator() () const
 			{
-				return S_;
+				return Strings_.join ("<br/>");
 			}
 		};
 	}
@@ -132,31 +179,42 @@ namespace Xoox
 				targetItem->setText (text);
 		}
 		
-		QString tooltip;
+		QString tooltip = "<strong>" + tr ("Identities:") + "</strong><ul>";
 		Q_FOREACH (const QXmppDiscoveryIq::Identity& id, iq.identities ())
 		{
 			if (id.name ().isEmpty ())
 				continue;
 
+			tooltip += "<li>";
 			tooltip += Appender ()
 					(id.name (), tr ("Identity name:"))
 					(id.category (), tr ("Category:"))
 					(id.type (), tr ("Type:"))
 					(id.language (), tr ("Language:"))
 					();
+			tooltip += "</li>";
 		}
-							
+		tooltip += "</ul>";
+
 		const QStringList& caps = Account_->GetClientConnection ()->
 				GetCapsManager ()->GetCaps (iq.features ());
 		if (!caps.isEmpty ())
 		{
-			tooltip += "<br />" + tr ("Capabilities:");
-			tooltip += "<ul><li>";
+			tooltip += "<strong>" + tr ("Capabilities:");
+			tooltip += "</strong><ul><li>";
 			tooltip += caps.join ("</li><li>");
 			tooltip += "</li></ul>";
 		}
 
 		targetItem->setToolTip (tooltip);
+		
+		ItemInfo info =
+		{
+			iq.features (),
+			iq.identities (),
+			iq.from ()
+		};
+		Item2Info_ [targetItem] = info;
 	}
 	
 	void SDSession::HandleItems (const QXmppDiscoveryIq& iq)
@@ -191,6 +249,113 @@ namespace Xoox
 		const QString& node = item->data (DRNode).toString ();
 		Account_->GetClientConnection ()->RequestItems (jid,
 				boost::bind (&SDSession::HandleItems, this, _1), node);
+	}
+	
+	void SDSession::ViewVCard (const SDSession::ItemInfo& info)
+	{
+		const QString& jid = info.JID_;
+		if (jid.isEmpty ())
+			return;
+		
+		VCardDialog *dia = new VCardDialog;
+		dia->show ();
+		Account_->GetClientConnection ()->FetchVCard (jid, dia);
+	}
+	
+	void SDSession::AddToRoster (const SDSession::ItemInfo& info)
+	{
+		const QString& jid = info.JID_;
+		if (jid.isEmpty ())
+			return;
+		
+		Account_->AddEntry (jid, QString (), QStringList ());
+	}
+	
+	void SDSession::Register (const SDSession::ItemInfo& info)
+	{
+		const QString& jid = info.JID_;
+		if (jid.isEmpty ())
+			return;
+		
+		QXmppIq iq;
+		iq.setType (QXmppIq::Get);
+		iq.setTo (jid);
+		QXmppElement elem;
+		elem.setTagName ("query");
+		elem.setAttribute ("xmlns", "jabber:iq:register");
+		iq.setExtensions (QXmppElementList (elem));
+
+		Account_->GetClientConnection ()->SendPacketWCallback (iq, this, "handleRegistrationForm");
+	}
+	
+	void SDSession::handleRegistrationForm (const QXmppIq& iq)
+	{
+		QXmppDataForm form;
+		Q_FOREACH (const QXmppElement& elem, iq.extensions ())
+		{
+			if (elem.tagName () != "query" ||
+					elem.attribute ("xmlns") != "jabber:iq:register")
+				continue;
+			
+			QByteArray arr;
+			const QXmppElement& x = elem.firstChildElement ("x");
+			QXmlStreamWriter w (&arr);
+			x.toXml (&w);
+
+			QDomDocument doc;
+			doc.setContent (arr);
+			form.parse (doc.documentElement ());
+			if (!form.isNull ())
+				break;
+		}
+		
+		if (form.isNull ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no form found, sorry";
+			return;
+		}
+		
+		FormBuilder builder;
+		QWidget *widget = builder.CreateForm (form);
+		std::auto_ptr<QDialog> dialog (new QDialog ());
+		dialog->setWindowTitle (widget->windowTitle ());
+		dialog->setLayout (new QVBoxLayout ());
+		dialog->layout ()->addWidget (widget);
+		QDialogButtonBox *box = new QDialogButtonBox (QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+		dialog->layout ()->addWidget (box);
+		connect (box,
+				SIGNAL (accepted ()),
+				dialog.get (),
+				SLOT (accept ()));
+		connect (box,
+				SIGNAL (rejected ()),
+				dialog.get (),
+				SLOT (reject ()));
+		
+		if (dialog->exec () != QDialog::Accepted)
+			return;
+		
+		form = builder.GetForm ();
+		
+		QXmppIq regIq;
+		regIq.setType (QXmppIq::Set);
+		regIq.setTo (iq.from ());
+		QXmppElement elem;
+		elem.setTagName ("query");
+		elem.setAttribute ("xmlns", "jabber:iq:register");
+		
+		QByteArray formData;
+		QXmlStreamWriter w (&formData);
+		form.toXml (&w);
+		QDomDocument doc;
+		doc.setContent (formData);
+		elem.appendChild (doc.documentElement ());
+
+		regIq.setExtensions (QXmppElementList (elem));
+		
+		Account_->GetClientConnection ()->GetClient ()->sendPacket (regIq);
+		Account_->AddEntry (iq.from (), QString (), QStringList (tr ("Gateways")));
 	}
 }
 }

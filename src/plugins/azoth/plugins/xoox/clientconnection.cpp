@@ -428,6 +428,13 @@ namespace Xoox
 		if (ODSEntries_.contains (jid))
 			delete ODSEntries_.take (jid);
 	}
+	
+	void ClientConnection::SendPacketWCallback (const QXmppIq& packet,
+			QObject *obj, const QByteArray& method)
+	{
+		AwaitingPacketCallbacks_ [packet.to ()] [packet.id ()] = PacketCallback_t (obj, method);
+		Client_->sendPacket (packet);
+	}
 
 	QXmppClient* ClientConnection::GetClient () const
 	{
@@ -580,6 +587,8 @@ namespace Xoox
 	{
 		if (iq.error ().isValid ())
 			HandleError (iq);
+		
+		InvokeCallbacks (iq);
 	}
 
 	void ClientConnection::handleRosterReceived ()
@@ -893,6 +902,24 @@ namespace Xoox
 				typeText,
 				PCritical_);
 		Core::Instance ().SendEntity (e);
+	}
+	
+	void ClientConnection::InvokeCallbacks (const QXmppIq& iq)
+	{
+		if (!AwaitingPacketCallbacks_.contains (iq.from ()))
+			return;
+		
+		const PacketID2Callback_t& cbs = AwaitingPacketCallbacks_ [iq.from ()];
+		if (!cbs.contains (iq.id ()))
+			return;
+	
+		const PacketCallback_t& cb = cbs [iq.id ()];
+		if (!cb.first)
+			return;
+		
+		QMetaObject::invokeMethod (cb.first,
+				cb.second,
+				Q_ARG (QXmppIq, iq));
 	}
 
 	QString ClientConnection::HandleErrorCondition (const QXmppStanza::Error::Condition& condition)

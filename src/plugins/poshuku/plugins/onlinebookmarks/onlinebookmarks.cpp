@@ -99,26 +99,6 @@ namespace OnlineBookmarks
 		return QIcon ();
 	}
 
-	QStringList OnlineBookmarks::Provides () const
-	{
-		return QStringList ();
-	}
-
-	QStringList OnlineBookmarks::Needs () const
-	{
-		return QStringList ();
-	}
-
-	QStringList OnlineBookmarks::Uses () const
-	{
-		return QStringList ();
-	}
-
-	void OnlineBookmarks::SetProvider (QObject *object, const QString& feature)
-	{
-
-	}
-
 	Util::XmlSettingsDialog_ptr OnlineBookmarks::GetSettingsDialog () const
 	{
 		return SettingsDialog_;
@@ -131,7 +111,7 @@ namespace OnlineBookmarks
 		return result;
 	}
 
-	void OnlineBookmarks::hookMoreMenuFillEnd (IHookProxy_ptr proxy, QMenu *menu, QWebView *view, QObject *parent)
+	void OnlineBookmarks::hookMoreMenuFillEnd (IHookProxy_ptr, QMenu *menu, QWebView*, QObject*)
 	{
 		QMenu *menuBookmarksSyn = menu->addMenu (tr ("Bookmarks Sync"));
 		QAction *sync = menuBookmarksSyn->addAction (tr ("Sync"));
@@ -169,10 +149,11 @@ namespace OnlineBookmarks
 		Core::Instance ().SetPluginProxy (proxy);
 	}
 
-	void OnlineBookmarks::hookAddedToFavorites (IHookProxy_ptr proxy, QString title, QString url, QStringList tags)
+	void OnlineBookmarks::hookAddedToFavorites (IHookProxy_ptr,
+			QString title, QString url, QStringList tags)
 	{
 		if (XmlSettingsManager::Instance ()->Property ("ConfirmSend", 0).toBool () &&
-				(!Core::Instance ().GetBookmarksSyncManager ()->IsUrlInUploadFile (url)))
+				!Core::Instance ().GetBookmarksSyncManager ()->IsUrlInUploadFile (url))
 		{
 			BookmarksDialog bd;
 			bd.SetBookmark (title, url, tags);

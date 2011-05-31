@@ -240,12 +240,6 @@ namespace Acetamide
 		return 0;
 	}
 
-	QObject* IrcAccount::CreateMessage (IMessage::MessageType type
-			, const QString& resource, const QString& body)
-	{
-		return 0;
-	}
-
 	QByteArray IrcAccount::Serialize () const
 	{
 		quint16 version = 2;
