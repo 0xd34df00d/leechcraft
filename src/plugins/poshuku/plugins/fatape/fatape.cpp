@@ -23,11 +23,11 @@
 #include <QIcon>
 #include <QProcess>
 #include <QStringList>
+#include <QTranslator>
 #include <plugininterface/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "userscriptsmanagerwidget.h"
-
 
 namespace LeechCraft
 {
@@ -63,6 +63,8 @@ namespace FatApe
 
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		Translator_.reset (Util::InstallTranslator ("poshuku_fatape"));
+
 		QDir scriptsDir (Util::CreateIfNotExists ("data/poshuku/fatape/scripts"));
 
 		if (!scriptsDir.exists ())
