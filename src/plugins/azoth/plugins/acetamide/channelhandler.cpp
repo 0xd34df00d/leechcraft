@@ -31,8 +31,8 @@ namespace Acetamide
 {
 	ChannelHandler::ChannelHandler (IrcServerHandler *ish, const
 			ChannelOptions& channel)
-	: ISH_ (ish)
-	, ChannelID_ (channel.ChannelName_ + "@" + channel.ServerName_)
+	: ChannelID_ (channel.ChannelName_ + "@" + channel.ServerName_)
+	, ISH_ (ish)
 	, ChannelOptions_ (channel)
 	, IsRosterReceived_ (false)
 	{

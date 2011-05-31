@@ -34,11 +34,11 @@ namespace Acetamide
 			const QString& nickname,
 			ClientConnection *conn)
 	: Type_ (type)
+	, SubType_ (MSTOther)
 	, Direction_ (dir)
-	, Connection_ (conn)
 	, ID_ (id)
 	, NickName_ (nickname)
-	, SubType_ (MSTOther)
+	, Connection_ (conn)
 	{
 		Message_.Stamp_ = QDateTime::currentDateTime ();
 		Message_.Nickname_ = NickName_;
@@ -47,11 +47,11 @@ namespace Acetamide
 	IrcMessage::IrcMessage (const Message& msg,
 			const QString& id, ClientConnection* conn)
 	: Type_ (MTMUCMessage)
+	, SubType_ (MSTOther)
 	, Direction_ (DIn)
+	, ID_ (id)
 	, Message_ (msg)
 	, Connection_ (conn)
-	, ID_ (id)
-	, SubType_ (MSTOther)
 	{
 		if (!Message_.Stamp_.isValid ())
 			Message_.Stamp_ = QDateTime::currentDateTime ();
@@ -78,6 +78,8 @@ namespace Acetamide
 				Connection_->GetIrcServerHandler (ID_)->
 						SendPrivateMessage (this);
 			return;
+		case MTStatusMessage:
+		case MTEventMessage:
 		case MTServiceMessage:
 			qWarning () << Q_FUNC_INFO
 					<< this

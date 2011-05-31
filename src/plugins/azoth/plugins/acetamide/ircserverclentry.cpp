@@ -30,8 +30,8 @@ namespace Acetamide
 	IrcServerCLEntry::IrcServerCLEntry (IrcServerHandler *handler,
 			IrcAccount *account)
 	: EntryBase (account)
-	, Account_ (account)
 	, ISH_ (handler)
+	, Account_ (account)
 	{
 	}
 

@@ -40,15 +40,16 @@ namespace Acetamide
 	IrcServerHandler::IrcServerHandler (const ServerOptions& server,
 			IrcAccount *account )
 	: Account_ (account)
-	, ServerOptions_ (server)
+	, IrcParser_ (0)
 	, ServerCLEntry_ (new IrcServerCLEntry (this, account))
+	, IsConsoleEnabled_ (false)
+	, ChannelJoined_ (false)
+	, IsInviteDialogActive_ (false)
+	, ServerOptions_ (server)
 	, ServerID_ (server.ServerName_ + ":" +
 			QString::number (server.ServerPort_))
 	, ServerConnectionState_ (NotConnected)
 	, NickName_ (server.ServerNickName_)
-	, IsConsoleEnabled_ (false)
-	, IsInviteDialogActive_ (false)
-	, ChannelJoined_ (false)
 	{
 		IrcParser_ = new IrcParser (this);
 		InitErrorsReplys ();
@@ -1262,12 +1263,14 @@ namespace Acetamide
 		QStringList list = msg.split (' ');
 		Q_FOREACH (const QString& nick, list)
 			if (!nick.isEmpty ())
+			{
 				if (nick == list.at (list.count () - 1))
 					SendAnswerToChannel ("ison",
 							nick + tr (" is online"), true);
 				else
 					SendAnswerToChannel ("ison",
 							nick + tr (" is online"));
+			}
 	}
 
 	void IrcServerHandler::GetAway (const QString&,
@@ -1397,8 +1400,8 @@ namespace Acetamide
 				EncodedMessage (message, IMessage::DIn));
 	}
 
-	void IrcServerHandler::GetInfo(const QString&,
-			const QList<std::string>& params, const QString& msg)
+	void IrcServerHandler::GetInfo (const QString&,
+			const QList<std::string>&, const QString& msg)
 	{
 		SendAnswerToChannel ("info",
 				EncodedMessage (msg, IMessage::DIn));
