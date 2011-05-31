@@ -115,7 +115,7 @@ namespace OnlineBookmarks
 			downloadBookmarks (service, QDateTime::fromString ("01.01.1970", "dd.MM.yyyy"));
 	}
 
-	void SyncBookmarks::readDownloadReply (const QList<QVariant>& importBookmarks, const QUrl &url)
+	void SyncBookmarks::readDownloadReply (const QList<QVariant>& importBookmarks, const QUrl&)
 	{
 		Entity eBookmarks = Util::MakeEntity (QVariant (),
 				QString (),
