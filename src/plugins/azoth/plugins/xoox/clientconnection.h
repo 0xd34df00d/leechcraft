@@ -104,6 +104,10 @@ namespace Xoox
 	private:
 		QHash<QString, DiscoCallback_t> AwaitingDiscoInfo_;
 		QHash<QString, DiscoCallback_t> AwaitingDiscoItems_;
+		
+		typedef QPair<QPointer<QObject>, QByteArray> PacketCallback_t;
+		typedef QHash<QString, PacketCallback_t> PacketID2Callback_t;
+		QHash<QString, PacketID2Callback_t> AwaitingPacketCallbacks_;
 	public:
 		ClientConnection (const QString&,
 				const GlooxAccountState&,
@@ -146,6 +150,7 @@ namespace Xoox
 		void Unsubscribe (const QString&, const QString&);
 		void Remove (GlooxCLEntry*);
 
+		void SendPacketWCallback (const QXmppIq&, QObject*, const QByteArray&);
 		QXmppClient* GetClient () const;
 		QObject* GetCLEntry (const QString& bareJid, const QString& variant) const;
 		GlooxCLEntry* AddODSCLEntry (GlooxCLEntry::OfflineDataSource_ptr);
@@ -163,6 +168,7 @@ namespace Xoox
 		EntryStatus PresenceToStatus (const QXmppPresence&) const;
 		void HandleOtherPresence (const QXmppPresence&);
 		void HandleError (const QXmppIq&);
+		void InvokeCallbacks (const QXmppIq&);
 		QString HandleErrorCondition (const QXmppStanza::Error::Condition&);
 	private slots:
 		void handleConnected ();
