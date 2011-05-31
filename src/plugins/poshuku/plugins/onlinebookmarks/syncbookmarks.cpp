@@ -45,11 +45,8 @@ namespace OnlineBookmarks
 
 	bool SyncBookmarks::IsUrlInUploadFile (const QString& url)
 	{
-		const QStringList& urls = GetUrlsFromUploadFile();
-		Q_FOREACH (const QVariant& var, urls)
-			if (urls.contains (url, Qt::CaseInsensitive))
-				return true;
-		return false;
+		const QStringList& urls = GetUrlsFromUploadFile ();
+		return urls.contains (url, Qt::CaseInsensitive);
 	}
 
 	namespace
