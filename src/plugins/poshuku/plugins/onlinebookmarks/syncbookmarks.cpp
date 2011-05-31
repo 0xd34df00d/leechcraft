@@ -32,7 +32,8 @@ namespace Poshuku
 namespace OnlineBookmarks
 {
 	SyncBookmarks::SyncBookmarks (QObject *parent)
-	: IsSync_ (false)
+	: QObject (parent)
+	, IsSync_ (false)
 	{
 	}
 
