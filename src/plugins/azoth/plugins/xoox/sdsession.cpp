@@ -39,6 +39,7 @@ namespace Xoox
 	{
 		ID2Action_ ["view-vcard"] = boost::bind (&SDSession::ViewVCard, this, _1);
 		ID2Action_ ["add-to-roster"] = boost::bind (&SDSession::AddToRoster, this, _1);
+		ID2Action_ ["register"] = boost::bind (&SDSession::Register, this, _1);
 	}
 	
 	namespace
@@ -102,6 +103,8 @@ namespace Xoox
 			result << QPair<QByteArray, QString> ("view-vcard", tr ("View VCard..."));
 		if (!info.JID_.isEmpty ())
 			result << QPair<QByteArray, QString> ("add-to-roster", tr ("Add to roster..."));
+		if (info.Caps_.contains ("jabber:iq:register"))
+			result << QPair<QByteArray, QString> ("register", tr ("Register..."));
 
 		return result;
 	}
@@ -124,26 +127,6 @@ namespace Xoox
 		}
 		
 		ID2Action_ [id] (info);
-	}
-	
-	void SDSession::ViewVCard (const SDSession::ItemInfo& info)
-	{
-		const QString& jid = info.JID_;
-		if (jid.isEmpty ())
-			return;
-		
-		VCardDialog *dia = new VCardDialog;
-		dia->show ();
-		Account_->GetClientConnection ()->FetchVCard (jid, dia);
-	}
-	
-	void SDSession::AddToRoster (const SDSession::ItemInfo& info)
-	{
-		const QString& jid = info.JID_;
-		if (jid.isEmpty ())
-			return;
-		
-		Account_->AddEntry (jid, QString (), QStringList ());
 	}
 	
 	namespace
@@ -264,6 +247,47 @@ namespace Xoox
 		const QString& node = item->data (DRNode).toString ();
 		Account_->GetClientConnection ()->RequestItems (jid,
 				boost::bind (&SDSession::HandleItems, this, _1), node);
+	}
+	
+	void SDSession::ViewVCard (const SDSession::ItemInfo& info)
+	{
+		const QString& jid = info.JID_;
+		if (jid.isEmpty ())
+			return;
+		
+		VCardDialog *dia = new VCardDialog;
+		dia->show ();
+		Account_->GetClientConnection ()->FetchVCard (jid, dia);
+	}
+	
+	void SDSession::AddToRoster (const SDSession::ItemInfo& info)
+	{
+		const QString& jid = info.JID_;
+		if (jid.isEmpty ())
+			return;
+		
+		Account_->AddEntry (jid, QString (), QStringList ());
+	}
+	
+	void SDSession::Register (const SDSession::ItemInfo& info)
+	{
+		const QString& jid = info.JID_;
+		if (jid.isEmpty ())
+			return;
+		
+		QXmppIq iq;
+		iq.setType (QXmppIq::Get);
+		iq.setTo (jid);
+		QXmppElement elem;
+		elem.setTagName ("query");
+		elem.setAttribute ("xmlns", "jabber:iq:register");
+		iq.setExtensions (QXmppElementList (elem));
+
+		Account_->GetClientConnection ()->SendPacketWCallback (iq, this, "handleRegistrationForm");
+	}
+	
+	void SDSession::handleRegistrationForm (const QXmppIq& iq)
+	{
 	}
 }
 }

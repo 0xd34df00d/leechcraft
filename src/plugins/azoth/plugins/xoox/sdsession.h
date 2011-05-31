@@ -86,6 +86,9 @@ namespace Xoox
 	private:
 		void ViewVCard (const ItemInfo&);
 		void AddToRoster (const ItemInfo&);
+		void Register (const ItemInfo&);
+	private slots:
+		void handleRegistrationForm (const QXmppIq&);
 	};
 }
 }
