@@ -20,6 +20,7 @@
 #define PLUGINS_AZOTH_INTERFACES_AZOTHUTIL_H
 #include <QList>
 #include <QDateTime>
+#include <QtDebug>
 #include <interfaces/imessage.h>
 
 namespace LeechCraft
