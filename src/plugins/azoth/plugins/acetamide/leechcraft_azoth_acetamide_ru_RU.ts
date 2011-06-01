@@ -24,7 +24,7 @@
     <message>
         <location filename="ircaccountconfigurationdialog.ui" line="14"/>
         <source>Create account</source>
-        <translation>Создать аккаунт</translation>
+        <translation>Создать учетную запись</translation>
     </message>
 </context>
 <context>
@@ -287,7 +287,7 @@
     <message>
         <location filename="ircserverhandler.cpp" line="1295"/>
         <source> connected via </source>
-        <translation> подключен через </translation>
+        <translation> подключён через </translation>
     </message>
     <message>
         <location filename="ircserverhandler.cpp" line="1327"/>

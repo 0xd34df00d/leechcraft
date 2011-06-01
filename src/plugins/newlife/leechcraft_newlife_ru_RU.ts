@@ -84,7 +84,7 @@
     <message>
         <location filename="akregatorimportpage.cpp" line="41"/>
         <source>Select Akregator&apos;s feeds file and options</source>
-        <translation>Выберите файл с лентами Akregator&apos;а и опции</translation>
+        <translation>Выберите файл с лентами Akregator&apos;а и параметры</translation>
     </message>
     <message>
         <location filename="akregatorimportpage.cpp" line="103"/>

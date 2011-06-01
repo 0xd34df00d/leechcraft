@@ -7,12 +7,12 @@
         <location filename="accounthandlerchooserdialog.ui" line="14"/>
         <source>Choose account</source>
         <oldsource>Chose account</oldsource>
-        <translation>Выбор учетной записи</translation>
+        <translation>Выбор учётной записи</translation>
     </message>
     <message>
         <location filename="accounthandlerchooserdialog.ui" line="29"/>
         <source>Accounts:</source>
-        <translation>Учетные записи:</translation>
+        <translation>Учётные записи:</translation>
     </message>
 </context>
 <context>
@@ -20,7 +20,7 @@
     <message>
         <location filename="accountslistdialog.ui" line="14"/>
         <source>Accounts</source>
-        <translation>Учетные записи</translation>
+        <translation>Учётные записи</translation>
     </message>
     <message>
         <location filename="accountslistdialog.ui" line="37"/>
@@ -43,17 +43,17 @@
     <message>
         <location filename="addaccountwizardfirstpage.ui" line="17"/>
         <source>Account name and type</source>
-        <translation>Имя и тип учетной записи</translation>
+        <translation>Имя и тип учётной записи</translation>
     </message>
     <message>
         <location filename="addaccountwizardfirstpage.ui" line="20"/>
         <source>Enter the name of the account to be created and select the protocol for which you would like to create the account.</source>
-        <translation>Введите имя создаваемой учетной записи и выберете протокол, которому она принадлежит.</translation>
+        <translation>Введите имя создаваемой учётной записи и выберите протокол, которому она принадлежит.</translation>
     </message>
     <message>
         <location filename="addaccountwizardfirstpage.ui" line="29"/>
         <source>Account name:</source>
-        <translation>Имя учетной записи:</translation>
+        <translation>Имя учётной записи:</translation>
     </message>
     <message>
         <location filename="addaccountwizardfirstpage.ui" line="39"/>
@@ -91,7 +91,7 @@
     <message>
         <location filename="addcontactdialog.ui" line="80"/>
         <source>Account:</source>
-        <translation>Учетная запись:</translation>
+        <translation>Учётная запись:</translation>
     </message>
     <message>
         <location filename="addcontactdialog.ui" line="87"/>
@@ -119,7 +119,7 @@
     <message>
         <location filename="bookmarksmanagerdialog.ui" line="29"/>
         <source>Account:</source>
-        <translation>Учетная запись:</translation>
+        <translation>Учётная запись:</translation>
     </message>
     <message>
         <location filename="bookmarksmanagerdialog.ui" line="56"/>
@@ -193,7 +193,7 @@
     <message>
         <location filename="joinconferencedialog.ui" line="53"/>
         <source>Account:</source>
-        <translation>Учетная запись:</translation>
+        <translation>Учётная запись:</translation>
     </message>
 </context>
 <context>
@@ -202,7 +202,7 @@
         <location filename="accountslistdialog.cpp" line="37"/>
         <location filename="accountslistdialog.cpp" line="72"/>
         <source>Add account</source>
-        <translation>Добавить учетную запись</translation>
+        <translation>Добавить учётную запись</translation>
     </message>
 </context>
 <context>
@@ -226,7 +226,7 @@
     <message>
         <location filename="chattab.cpp" line="60"/>
         <source>Azoth chat window</source>
-        <translation>Окно чата Azoth</translation>
+        <translation>Окно разговора Azoth</translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="79"/>
@@ -236,7 +236,7 @@
     <message>
         <location filename="chattab.cpp" line="82"/>
         <source>Clear chat window</source>
-        <translation>Очистить окно чата</translation>
+        <translation>Очистить окно разговора</translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="196"/>
@@ -246,7 +246,7 @@
     <message>
         <location filename="chattab.cpp" line="250"/>
         <source>A tab with a chat session</source>
-        <translation>Вкладка с чатом</translation>
+        <translation>Вкладка с разговором</translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="424"/>
@@ -327,7 +327,7 @@
         <location filename="chattab.cpp" line="249"/>
         <location filename="chattab.cpp" line="1049"/>
         <source>Chat</source>
-        <translation>Чат</translation>
+        <translation>Разговор</translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="1052"/>
@@ -366,7 +366,7 @@
         <location filename="core.cpp" line="1204"/>
         <location filename="core.cpp" line="2032"/>
         <source>Open chat</source>
-        <translation>Открыть чат</translation>
+        <translation>Начать разговор</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1215"/>
@@ -416,12 +416,12 @@
     <message>
         <location filename="core.cpp" line="101"/>
         <source>Chat style</source>
-        <translation>Стиль чата</translation>
+        <translation>Стиль окна разговора</translation>
     </message>
     <message>
         <location filename="core.cpp" line="316"/>
         <source>Please select account to handle URI %1</source>
-        <translation>Пожалуйста, выберите учетную запись для обработки URI %1</translation>
+        <translation>Пожалуйста, выберите учётную запись для обработки URI %1</translation>
     </message>
     <message>
         <location filename="core.cpp" line="781"/>
@@ -467,12 +467,12 @@
     <message>
         <location filename="core.cpp" line="1982"/>
         <source>Incoming chat message from &lt;em&gt;%1&lt;/em&gt;.</source>
-        <translation>Входящее сообщение в чате с &lt;em&gt;%1&lt;/em&gt;.</translation>
+        <translation>Входящее сообщение в разговоре с &lt;em&gt;%1&lt;/em&gt;.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1990"/>
         <source>Incoming chat message from &lt;em&gt;%1&lt;/em&gt;: &lt;em&gt;%2&lt;/em&gt;.</source>
-        <translation>Входящее сообщение в чате с &lt;em&gt;%1&lt;/em&gt;: &lt;em&gt;%2&lt;/em&gt;.</translation>
+        <translation>Входящее сообщение в разговоре с &lt;em&gt;%1&lt;/em&gt;: &lt;em&gt;%2&lt;/em&gt;.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="2002"/>
@@ -625,7 +625,7 @@
     <message>
         <location filename="eventsnotifier.cpp" line="81"/>
         <source>Open chat</source>
-        <translation>Открыть чат</translation>
+        <translation>Начать разговор</translation>
     </message>
 </context>
 <context>
@@ -701,7 +701,7 @@
     <message>
         <location filename="mainwidget.cpp" line="144"/>
         <source>Accounts...</source>
-        <translation>Учетные записи...</translation>
+        <translation>Учётные записи...</translation>
     </message>
     <message>
         <location filename="mainwidget.cpp" line="42"/>
@@ -746,12 +746,12 @@
     <message>
         <location filename="azoth.cpp" line="103"/>
         <source>Chat</source>
-        <translation>Чат</translation>
+        <translation>Разговор</translation>
     </message>
     <message>
         <location filename="azoth.cpp" line="104"/>
         <source>A tab with a chat session</source>
-        <translation>Вкладка с чатом</translation>
+        <translation>Вкладка с разговором</translation>
     </message>
     <message>
         <location filename="azoth.cpp" line="112"/>
@@ -931,7 +931,7 @@
     <message>
         <location filename="mainwidget.ui" line="76"/>
         <source>Add account</source>
-        <translation>Добавить учетную запись</translation>
+        <translation>Добавить учётную запись</translation>
     </message>
 </context>
 <context>
@@ -1028,7 +1028,7 @@
     <message>
         <location filename="dummy.cpp" line="12"/>
         <source>Chat window style:</source>
-        <translation>Стиль окна чата:</translation>
+        <translation>Стиль окна разговора:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="13"/>
@@ -1090,7 +1090,7 @@
     <message>
         <location filename="dummy.cpp" line="25"/>
         <source>Send chat state events</source>
-        <translation>Посылать информацию об участии в чате</translation>
+        <translation>Посылать информацию об участии в разговоре</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="26"/>
@@ -1125,7 +1125,7 @@
     <message>
         <location filename="dummy.cpp" line="32"/>
         <source>in opened chats</source>
-        <translation>в открытых чатах</translation>
+        <translation>в открытых разговорах</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="33"/>
@@ -1175,7 +1175,7 @@
     <message>
         <location filename="dummy.cpp" line="42"/>
         <source>Chat windows</source>
-        <translation>Окно чата</translation>
+        <translation>Окно разговора</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="43"/>
@@ -1205,7 +1205,7 @@
     <message>
         <location filename="dummy.cpp" line="48"/>
         <source>Wanna chat :3</source>
-        <translation>Хочу чатики :3</translation>
+        <translation>Хочу поговорить :3</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="49"/>
