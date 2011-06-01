@@ -36,6 +36,7 @@ namespace LeechCraft
 		{
 			struct ItemsWidget_Impl;
 			struct ChannelActions;
+			struct AppWideActions;
 			class Aggregator;
 			class ItemsFilterModel;
 
@@ -49,6 +50,7 @@ namespace LeechCraft
 				ItemsWidget (QWidget* = 0);
 				virtual ~ItemsWidget ();
 
+				void SetAppWideActions (const AppWideActions&);
 				void SetChannelActions (const ChannelActions&);
 				void SetChannelsFilter (QSortFilterProxyModel*);
 

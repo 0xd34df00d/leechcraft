@@ -200,6 +200,14 @@ namespace LeechCraft
 						0);
 				delete Impl_;
 			}
+			
+			void ItemsWidget::SetAppWideActions (const AppWideActions& awa)
+			{
+				QAction *first = Impl_->ControlToolBar_->actions ().first ();
+				Impl_->ControlToolBar_->insertAction (first,
+						awa.ActionUpdateFeeds_);
+				Impl_->ControlToolBar_->insertSeparator (first);
+			}
 
 			void ItemsWidget::SetChannelActions (const ChannelActions& ca)
 			{

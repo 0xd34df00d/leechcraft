@@ -170,6 +170,7 @@ namespace LeechCraft
 				}
 
 				Impl_->Ui_.setupUi (this);
+				Impl_->Ui_.ItemsWidget_->SetAppWideActions (Impl_->AppWideActions_);
 				Impl_->Ui_.ItemsWidget_->SetChannelActions (Impl_->ChannelActions_);
 
 				if (initFailed)
@@ -187,6 +188,7 @@ namespace LeechCraft
 					SetChannelsFilter (Core::Instance ()
 							.GetChannelsModel ());
 				Core::Instance ().GetJobHolderRepresentation ()->setParent (this);
+				Core::Instance ().GetReprWidget ()->SetAppWideActions (Impl_->AppWideActions_);
 				Core::Instance ().GetReprWidget ()->SetChannelActions (Impl_->ChannelActions_);
 
 				Impl_->Ui_.MergeItems_->setChecked (XmlSettingsManager::Instance ()->
