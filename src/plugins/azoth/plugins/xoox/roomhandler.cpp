@@ -622,9 +622,9 @@ namespace Xoox
 			PendingNickChanges_ << item.nick ();
 			return;
 		}
-		else if (item.affiliation () != entry->GetAffiliation ())
+		else if (pres.mucStatusCodes ().contains (301))
 			MakeBanMessage (nick, item.reason ());
-		else if (item.role () != entry->GetRole ())
+		else if (pres.mucStatusCodes ().contains (307))
 			MakeKickMessage (nick, item.reason ());
 		else
 			MakeLeaveMessage (pres, nick);
