@@ -28,6 +28,7 @@
 #include <QInputDialog>
 #include <QMainWindow>
 #include <QStringListModel>
+#include <QMessageBox>
 #include <QtDebug>
 #include <plugininterface/resourceloader.h>
 #include <plugininterface/util.h>
@@ -818,6 +819,14 @@ namespace Azoth
 				SIGNAL (avatarChanged (const QImage&)),
 				this,
 				SLOT (updateItem ()));
+		
+		if (qobject_cast<IMUCEntry*> (clEntry->GetObject ()))
+		{
+			connect (clEntry->GetObject (),
+					SIGNAL (nicknameConflict (const QString&)),
+					this,
+					SLOT (handleNicknameConflict (const QString&)));
+		}
 		
 		EventsNotifier_->RegisterEntry (clEntry);
 
@@ -2114,7 +2123,41 @@ namespace Azoth
 						entry));
 		emit gotEntity (e);
 	}
+	
+	void Core::handleNicknameConflict (const QString& usedNick)
+	{
+		ICLEntry *clEntry = qobject_cast<ICLEntry*> (sender ());
+		IMUCEntry *entry = qobject_cast<IMUCEntry*> (sender ());
+		if (!entry || !clEntry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< sender ()
+					<< "doesn't implement ICLEntry or IMUCEntry";
+			return;
+		}
+		
+		if (QMessageBox::question (0,
+				tr ("Nickname conflict"),
+				tr ("You have specified a nickname for the conference "
+					"%1 that's already used. Would you like to try to "
+					"join with another nick?")
+					.arg (clEntry->GetEntryName ()),
+				QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+			return;
 
+		const QString& newNick = QInputDialog::getText (0,
+				tr ("Enter new nick"),
+				tr ("Enter new nick for joining the room %1 (%2 is already used):")
+					.arg (clEntry->GetEntryName ())
+					.arg (usedNick),
+				QLineEdit::Normal,
+				usedNick);
+		if (newNick.isEmpty ())
+			return;
+		
+		entry->SetNick (newNick);
+		entry->Join ();
+	}
 
 	void Core::NotifyWithReason (QObject *entryObj, const QString& msg,
 			const char *func,

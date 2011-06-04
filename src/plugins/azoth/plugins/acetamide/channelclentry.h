@@ -75,8 +75,7 @@ namespace Acetamide
 		QList<QAction*> GetActions () const;
 		QMap<QString, QVariant> GetClientInfo (const QString&) const;
 
-		EntryStatus
-				GetStatus (const QString& variant = QString ()) const;
+		EntryStatus GetStatus (const QString& variant = QString ()) const;
 		QImage GetAvatar () const;
 		QString GetRawInfo () const;
 		void ShowInfo ();
@@ -86,6 +85,7 @@ namespace Acetamide
 		QString GetMUCSubject () const;
 		void SetMUCSubject (const QString&);
 		QList<QObject*> GetParticipants ();
+		void Join ();
 		void Leave (const QString&);
 		QString GetNick () const;
 		void SetNick (const QString&);
@@ -120,6 +120,8 @@ namespace Acetamide
 		void groupsChanged (const QStringList&);
 		void chatPartStateChanged (const ChatPartState&, const QString&);
 		void permsChanged ();
+		// TODO emit this signal on nickname conflict on join.
+		void nicknameConflict (const QString&);
 	};
 };
 };

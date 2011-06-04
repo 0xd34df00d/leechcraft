@@ -450,6 +450,10 @@ namespace Azoth
 		/** Handles the authorization requests from accounts.
 		 */
 		void handleAuthorizationRequested (QObject*, const QString&);
+		
+		/** Handles nick conflict.
+		 */
+		void handleNicknameConflict (const QString&);
 
 		void handleItemSubscribed (QObject*, const QString&);
 		void handleItemUnsubscribed (QObject*, const QString&);

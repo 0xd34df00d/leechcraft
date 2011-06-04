@@ -199,6 +199,12 @@ namespace Acetamide
 	{
 		return ICH_->GetParticipants ();
 	}
+	
+	// TODO implement this
+	void ChannelCLEntry::Join ()
+	{
+		qWarning () << Q_FUNC_INFO << "implement me!";
+	}
 
 	void ChannelCLEntry::Leave (const QString& msg)
 	{
