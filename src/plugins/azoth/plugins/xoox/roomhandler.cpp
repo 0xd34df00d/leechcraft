@@ -281,7 +281,7 @@ namespace Xoox
 			return;
 		}
 		
-		Password_ = pass;
+		Room_->setPassword (pass);
 		Join ();
 	}
 	
