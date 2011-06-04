@@ -563,6 +563,9 @@ namespace Xoox
 		QString nick;
 		ClientConnection::Split (jid, 0, &nick);
 		
+		if (PendingNickChanges_.remove (nick))
+			return;
+		
 		RoomParticipantEntry_ptr entry = GetParticipantEntry (nick);
 		entry->SetAffiliation (pres.mucItem ().affiliation ());
 		entry->SetRole (pres.mucItem ().role ());
@@ -610,7 +613,16 @@ namespace Xoox
 
 		RoomParticipantEntry_ptr entry = GetParticipantEntry (nick);
 		const QXmppMucItem& item = pres.mucItem ();
-		if (item.affiliation () != entry->GetAffiliation ())
+		if (!item.nick ().isEmpty () &&
+				item.nick () != nick)
+		{
+			entry->SetEntryName (item.nick ());
+			Nick2Entry_ [item.nick ()] = Nick2Entry_ [nick];
+			MakeNickChangeMessage (nick, item.nick ());
+			PendingNickChanges_ << item.nick ();
+			return;
+		}
+		else if (item.affiliation () != entry->GetAffiliation ())
 			MakeBanMessage (nick, item.reason ());
 		else if (item.role () != entry->GetRole ())
 			MakeKickMessage (nick, item.reason ());
