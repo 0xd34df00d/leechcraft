@@ -28,6 +28,7 @@
 class QStandardItemModel;
 class QStandardItem;
 class QXmppMucManager;
+class QXmppMucRoom;
 
 namespace LeechCraft
 {
@@ -50,16 +51,15 @@ namespace Xoox
 		boost::shared_ptr<FormBuilder> FB_;
 		RoomCLEntry *Room_;
 		QString JID_;
+		QXmppMucRoom *RoomHandler_;
 		
 		QStandardItemModel *PermsModel_;
-		QMap<QXmppMucAdminIq::Item::Affiliation, QStandardItem*> Aff2Cat_;
-		
-		QXmppMucManager *MUCManager_;
+		QMap<QXmppMucItem::Affiliation, QStandardItem*> Aff2Cat_;
 	public:
 		RoomConfigWidget (RoomCLEntry*, QWidget* = 0);
 	private:
-		QMap<QXmppMucAdminIq::Item::Affiliation, QStandardItem*> InitModel () const;
-		void SendItem (const QXmppMucAdminIq::Item&);
+		QMap<QXmppMucItem::Affiliation, QStandardItem*> InitModel () const;
+		void SendItem (const QXmppMucItem&);
 		QStandardItem* GetCurrentItem () const;
 	public slots:
 		void accept ();
@@ -67,8 +67,8 @@ namespace Xoox
 		void on_AddPerm__released ();
 		void on_ModifyPerm__released ();
 		void on_RemovePerm__released ();
-		void handleConfigurationReceived (const QString&, const QXmppDataForm&);
-		void handlePermsReceived (const QString&, const QList<QXmppMucAdminIq::Item>&);
+		void handleConfigurationReceived (const QXmppDataForm&);
+		void handlePermsReceived (const QList<QXmppMucItem>&);
 	signals:
 		void dataReady ();
 	};

@@ -37,8 +37,8 @@ namespace Xoox
 	, Nick_ (nick)
 	, RoomHandler_ (rh)
 	, ID_ (rh->GetRoomJID () + "/" + nick)
-	, Affiliation_ (QXmppMucAdminIq::Item::UnspecifiedAffiliation)
-	, Role_ (QXmppMucAdminIq::Item::UnspecifiedRole)
+	, Affiliation_ (QXmppMucItem::UnspecifiedAffiliation)
+	, Role_ (QXmppMucItem::UnspecifiedRole)
 	{
 	}
 
@@ -116,23 +116,23 @@ namespace Xoox
 		return Nick_;
 	}
 
-	QXmppMucAdminIq::Item::Affiliation RoomParticipantEntry::GetAffiliation () const
+	QXmppMucItem::Affiliation RoomParticipantEntry::GetAffiliation () const
 	{
 		return Affiliation_;
 	}
 
-	void RoomParticipantEntry::SetAffiliation (QXmppMucAdminIq::Item::Affiliation aff)
+	void RoomParticipantEntry::SetAffiliation (QXmppMucItem::Affiliation aff)
 	{
 		Affiliation_ = aff;
 		emit permsChanged ();
 	}
 
-	QXmppMucAdminIq::Item::Role RoomParticipantEntry::GetRole () const
+	QXmppMucItem::Role RoomParticipantEntry::GetRole () const
 	{
 		return Role_;
 	}
 
-	void RoomParticipantEntry::SetRole (QXmppMucAdminIq::Item::Role role)
+	void RoomParticipantEntry::SetRole (QXmppMucItem::Role role)
 	{
 		Role_ = role;
 		emit permsChanged ();

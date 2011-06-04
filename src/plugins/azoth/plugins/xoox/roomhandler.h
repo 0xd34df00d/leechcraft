@@ -26,6 +26,7 @@
 
 class QXmppVCardIq;
 class QXmppMucManager;
+class QXmppMucRoom;
 
 namespace LeechCraft
 {
@@ -43,11 +44,10 @@ namespace Xoox
 
 		GlooxAccount *Account_;
 		QXmppMucManager *MUCManager_;
+		QXmppMucRoom *Room_;
 		RoomCLEntry *CLEntry_;
 		QHash<QString, RoomParticipantEntry_ptr> Nick2Entry_;
 		QString Subject_;
-		QString RoomJID_;
-		QString OurNick_;
 		QString Password_;
 		// contains new nicks
 		QSet<QString> PendingNickChanges_;
@@ -72,25 +72,29 @@ namespace Xoox
 		void SetOurNick (const QString&);
 
 		void SetAffiliation (RoomParticipantEntry*,
-				QXmppMucAdminIq::Item::Affiliation, const QString&);
+				QXmppMucItem::Affiliation, const QString&);
 		void SetRole (RoomParticipantEntry*,
-				QXmppMucAdminIq::Item::Role, const QString&);
+				QXmppMucItem::Role, const QString&);
 
-		void HandlePresence (const QXmppPresence&, const QString&);
 		void HandleErrorPresence (const QXmppPresence&, const QString&);
 		void HandlePermsChanged (const QString&,
-				QXmppMucAdminIq::Item::Affiliation,
-				QXmppMucAdminIq::Item::Role,
+				QXmppMucItem::Affiliation,
+				QXmppMucItem::Role,
 				const QString&);
 		void HandleNickChange (const QString&, const QString&);
 		void HandleMessage (const QXmppMessage&, const QString&);
-		void UpdatePerms (const QList<QXmppMucAdminIq::Item>&);
+		void UpdatePerms (const QList<QXmppMucItem>&);
 		/** Creates a new entry for the given nick if it
 		 * doesn't exist already (and does so by calling
 		 * CreateParticipantEntry()) or just returns the
 		 * already existing one.
 		 */
 		RoomParticipantEntry_ptr GetParticipantEntry (const QString& nick, bool announce = true);
+	private slots:
+		void handleMessageReceived (const QXmppMessage&);
+		void handleParticipantAdded (const QString&);
+		void handleParticipantChanged (const QString&);
+		void handleParticipantRemoved (const QString&);
 	private:
 		/** Creates a new entry for the given nick.
 		 */
@@ -102,8 +106,8 @@ namespace Xoox
 		void MakeKickMessage (const QString&, const QString&);
 		void MakeBanMessage (const QString&, const QString&);
 		void MakePermsChangedMessage (const QString&,
-				QXmppMucAdminIq::Item::Affiliation,
-				QXmppMucAdminIq::Item::Role,
+				QXmppMucItem::Affiliation,
+				QXmppMucItem::Role,
 				const QString&);
 		void HandleNickConflict ();
 		void HandlePasswordRequired ();

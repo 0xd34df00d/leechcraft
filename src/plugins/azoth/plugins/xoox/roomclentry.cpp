@@ -54,16 +54,16 @@ namespace Xoox
 		Perms_ ["permclass_aff"] << "admin";
 		Perms_ ["permclass_aff"] << "owner";
 		
-		Role2Str_ [QXmppMucAdminIq::Item::NoRole] = "norole";
-		Role2Str_ [QXmppMucAdminIq::Item::VisitorRole] = "visitor";
-		Role2Str_ [QXmppMucAdminIq::Item::ParticipantRole] = "participant";
-		Role2Str_ [QXmppMucAdminIq::Item::ModeratorRole] = "moderator";
+		Role2Str_ [QXmppMucItem::NoRole] = "norole";
+		Role2Str_ [QXmppMucItem::VisitorRole] = "visitor";
+		Role2Str_ [QXmppMucItem::ParticipantRole] = "participant";
+		Role2Str_ [QXmppMucItem::ModeratorRole] = "moderator";
 		
-		Aff2Str_ [QXmppMucAdminIq::Item::OutcastAffiliation] = "outcast";
-		Aff2Str_ [QXmppMucAdminIq::Item::NoAffiliation] = "noaffiliation";
-		Aff2Str_ [QXmppMucAdminIq::Item::MemberAffiliation] = "member";
-		Aff2Str_ [QXmppMucAdminIq::Item::AdminAffiliation] = "admin";
-		Aff2Str_ [QXmppMucAdminIq::Item::OwnerAffiliation] = "owner";
+		Aff2Str_ [QXmppMucItem::OutcastAffiliation] = "outcast";
+		Aff2Str_ [QXmppMucItem::NoAffiliation] = "noaffiliation";
+		Aff2Str_ [QXmppMucItem::MemberAffiliation] = "member";
+		Aff2Str_ [QXmppMucItem::AdminAffiliation] = "admin";
+		Aff2Str_ [QXmppMucItem::OwnerAffiliation] = "owner";
 		
 		Translations_ ["permclass_role"] = tr ("Role");
 		Translations_ ["permclass_aff"] = tr ("Affiliation");
@@ -292,22 +292,22 @@ namespace Xoox
 	
 	namespace
 	{
-		bool MayChange (QXmppMucAdminIq::Item::Role ourRole,
-				QXmppMucAdminIq::Item::Affiliation ourAff,
+		bool MayChange (QXmppMucItem::Role ourRole,
+				QXmppMucItem::Affiliation ourAff,
 				RoomParticipantEntry *entry,
-				QXmppMucAdminIq::Item::Role newRole)
+				QXmppMucItem::Role newRole)
 		{
-			QXmppMucAdminIq::Item::Affiliation aff = entry->GetAffiliation ();
-			QXmppMucAdminIq::Item::Role role = entry->GetRole ();
+			QXmppMucItem::Affiliation aff = entry->GetAffiliation ();
+			QXmppMucItem::Role role = entry->GetRole ();
 
-			if (role == QXmppMucAdminIq::Item::UnspecifiedRole ||
-					ourRole == QXmppMucAdminIq::Item::UnspecifiedRole ||
-					newRole == QXmppMucAdminIq::Item::UnspecifiedRole ||
-					aff == QXmppMucAdminIq::Item::UnspecifiedAffiliation ||
-					ourAff == QXmppMucAdminIq::Item::UnspecifiedAffiliation)
+			if (role == QXmppMucItem::UnspecifiedRole ||
+					ourRole == QXmppMucItem::UnspecifiedRole ||
+					newRole == QXmppMucItem::UnspecifiedRole ||
+					aff == QXmppMucItem::UnspecifiedAffiliation ||
+					ourAff == QXmppMucItem::UnspecifiedAffiliation)
 				return false;
 
-			if (ourRole != QXmppMucAdminIq::Item::ModeratorRole)
+			if (ourRole != QXmppMucItem::ModeratorRole)
 				return false;
 
 			if (ourAff <= aff)
@@ -316,22 +316,22 @@ namespace Xoox
 			return true;
 		}
 		
-		bool MayChange (QXmppMucAdminIq::Item::Role ourRole,
-				QXmppMucAdminIq::Item::Affiliation ourAff,
+		bool MayChange (QXmppMucItem::Role ourRole,
+				QXmppMucItem::Affiliation ourAff,
 				RoomParticipantEntry *entry,
-				QXmppMucAdminIq::Item::Affiliation aff)
+				QXmppMucItem::Affiliation aff)
 		{
-			if (ourAff < QXmppMucAdminIq::Item::AdminAffiliation)
+			if (ourAff < QXmppMucItem::AdminAffiliation)
 				return false;
 
-			if (ourAff == QXmppMucAdminIq::Item::OwnerAffiliation)
+			if (ourAff == QXmppMucItem::OwnerAffiliation)
 				return true;
 
-			QXmppMucAdminIq::Item::Affiliation partAff = entry->GetAffiliation ();
+			QXmppMucItem::Affiliation partAff = entry->GetAffiliation ();
 			if (partAff >= ourAff)
 				return false;
 
-			if (aff >= QXmppMucAdminIq::Item::AdminAffiliation)
+			if (aff >= QXmppMucItem::AdminAffiliation)
 				return false;
 
 			return true;
@@ -350,9 +350,9 @@ namespace Xoox
 			return false;
 		}
 		
-		const QXmppMucAdminIq::Item::Role ourRole =
+		const QXmppMucItem::Role ourRole =
 				RH_->GetSelf ()->GetRole ();
-		const QXmppMucAdminIq::Item::Affiliation ourAff =
+		const QXmppMucItem::Affiliation ourAff =
 				RH_->GetSelf ()->GetAffiliation ();
 		
 		if (permClass == "permclass_role")

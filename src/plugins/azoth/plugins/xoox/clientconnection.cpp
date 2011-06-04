@@ -168,25 +168,6 @@ namespace Xoox
 				SIGNAL (itemsReceived (const QXmppDiscoveryIq&)),
 				this,
 				SLOT (handleDiscoItems (const QXmppDiscoveryIq&)));
-
-		connect (MUCManager_,
-				SIGNAL (roomParticipantNickChanged (const QString&, const QString&, const QString&)),
-				this,
-				SLOT (handleRoomPartNickChange (const QString&, const QString&, const QString&)));
-		connect (MUCManager_,
-				SIGNAL (roomPresenceChanged (const QString&, const QString&, const QXmppPresence&)),
-				this,
-				SLOT (handleRoomPresenceChanged (const QString&, const QString&, const QXmppPresence&)));
-		connect (MUCManager_,
-				SIGNAL (roomParticipantPermsChanged (const QString&, const QString&,
-						QXmppMucAdminIq::Item::Affiliation,
-						QXmppMucAdminIq::Item::Role,
-						const QString&)),
-				this,
-				SLOT (handleRoomParticipantPermsChanged (const QString&, const QString&,
-						QXmppMucAdminIq::Item::Affiliation,
-						QXmppMucAdminIq::Item::Role,
-						const QString&)));
 		
 		connect (Client_->reconnectionManager (),
 				SIGNAL (reconnectingIn (int)),
@@ -298,10 +279,7 @@ namespace Xoox
 		}
 
 		RoomHandler *rh = new RoomHandler (jid, nick, Account_);
-		MUCManager_->joinRoom (jid, nick);
-
 		RoomHandlers_ [jid] = rh;
-
 		return rh->GetCLEntry ();
 	}
 
@@ -363,12 +341,12 @@ namespace Xoox
 		Client_->sendPacket (iq);
 	}
 
-	void ClientConnection::Update (const QXmppMucAdminIq::Item& item, const QString& room)
+	void ClientConnection::Update (const QXmppMucItem& item, const QString& room)
 	{
 		QXmppMucAdminIq iq;
 		iq.setTo (room);
 		iq.setType (QXmppIq::Set);
-		iq.setItems (QList<QXmppMucAdminIq::Item> () << item);
+		iq.setItems (QList<QXmppMucItem> () << item);
 		Client_->sendPacket (iq);
 	}
 
@@ -389,11 +367,11 @@ namespace Xoox
 
 		if (ack)
 		{
-			Client_->rosterManager ().grantSubscription (jid);
+			Client_->rosterManager ().acceptSubscription (jid);
 			Subscribe (jid, QString (), entry->GetEntryName (), entry->Groups ());
 		}
 		else
-			Client_->rosterManager ().cancelSubscription (jid);
+			Client_->rosterManager ().refuseSubscription (jid);
 
 		emit rosterItemRemoved (entry);
 		entry->deleteLater ();
@@ -419,7 +397,7 @@ namespace Xoox
 	void ClientConnection::RevokeSubscription (const QString& jid, const QString& reason)
 	{
 		qDebug () << "RevokeSubscription" << jid;
-		Client_->rosterManager ().cancelSubscription (jid, reason);
+		Client_->rosterManager ().refuseSubscription (jid, reason);
 	}
 
 	void ClientConnection::Unsubscribe (const QString& jid, const QString& reason)
@@ -432,7 +410,7 @@ namespace Xoox
 	{
 		const QString& jid = entry->GetJID ();
 
-		Client_->rosterManager ().removeRosterEntry (jid);
+		Client_->rosterManager ().removeItem (jid);
 
 		if (ODSEntries_.contains (jid))
 			delete ODSEntries_.take (jid);
@@ -528,8 +506,10 @@ namespace Xoox
 			QString *bare, QString *resource)
 	{
 		const int pos = jid.indexOf ('/');
-		*bare = jid.left (pos);
-		*resource = (pos >= 0 ? jid.mid (pos + 1) : QString ());
+		if (bare)
+			*bare = jid.left (pos);
+		if (resource)
+			*resource = (pos >= 0 ? jid.mid (pos + 1) : QString ());
 	}
 
 	void ClientConnection::handleConnected ()
@@ -544,7 +524,7 @@ namespace Xoox
 				Qt::UniqueConnection);
 		
 		Q_FOREACH (RoomHandler *rh, RoomHandlers_)
-			MUCManager_->joinRoom (rh->GetRoomJID (), rh->GetOurNick ());
+			rh->Join ();
 	}
 	
 	void ClientConnection::handleReconnecting (int timeout)
@@ -697,21 +677,6 @@ namespace Xoox
 		JID2CLEntry_ [jid]->SetClientInfo (resource, pres);
 		JID2CLEntry_ [jid]->SetStatus (PresenceToStatus (pres), resource);
 	}
-	
-	void ClientConnection::handleRoomPresenceChanged (const QString& room,
-			const QString& nick, const QXmppPresence& pres)
-	{
-		if (!RoomHandlers_.contains (room))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "no room handler for"
-					<< room
-					<< nick;
-			return;
-		}
-		
-		RoomHandlers_ [room]->HandlePresence (pres, nick);
-	}
 
 	void ClientConnection::handleMessageReceived (const QXmppMessage& msg)
 	{
@@ -748,37 +713,6 @@ namespace Xoox
 					<< msg.from ();
 	}
 
-	void ClientConnection::handleRoomPartNickChange (const QString& roomJid,
-			const QString& oldNick, const QString& newNick)
-	{
-		if (!RoomHandlers_.contains (roomJid))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "no RoomHandler for"
-					<< roomJid
-					<< RoomHandlers_.keys ();
-			return;
-		}
-		
-		RoomHandlers_ [roomJid]->HandleNickChange (oldNick, newNick);
-	}
-	
-	void ClientConnection::handleRoomParticipantPermsChanged (const QString& roomJid,
-			const QString& nick, QXmppMucAdminIq::Item::Affiliation aff,
-			QXmppMucAdminIq::Item::Role role, const QString& reason)
-	{
-		if (!RoomHandlers_.contains (roomJid))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "no RoomHandler for"
-					<< roomJid
-					<< RoomHandlers_.keys ();
-			return;
-		}
-		
-		RoomHandlers_ [roomJid]->HandlePermsChanged (nick, aff, role, reason);
-	}
-	
 	void ClientConnection::handleBookmarksReceived (const QXmppBookmarkSet& set)
 	{
 		disconnect (BMManager_,

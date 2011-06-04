@@ -41,37 +41,37 @@ namespace Xoox
 		Ui_.JIDEdit_->setText (jid);
 	}
 	
-	QXmppMucAdminIq::Item::Affiliation AffiliationSelectorDialog::GetAffiliation () const
+	QXmppMucItem::Affiliation AffiliationSelectorDialog::GetAffiliation () const
 	{
 		if (Ui_.Owner_->isChecked ())
-			return QXmppMucAdminIq::Item::OwnerAffiliation;
+			return QXmppMucItem::OwnerAffiliation;
 		else if (Ui_.Admin_->isChecked ())
-			return QXmppMucAdminIq::Item::AdminAffiliation;
+			return QXmppMucItem::AdminAffiliation;
 		else if (Ui_.Member_->isChecked ())
-			return QXmppMucAdminIq::Item::MemberAffiliation;
+			return QXmppMucItem::MemberAffiliation;
 		else if (Ui_.Banned_->isChecked ())
-			return QXmppMucAdminIq::Item::OutcastAffiliation;
+			return QXmppMucItem::OutcastAffiliation;
 		else
-			return QXmppMucAdminIq::Item::NoAffiliation;
+			return QXmppMucItem::NoAffiliation;
 	}
 	
-	void AffiliationSelectorDialog::SetAffiliation (QXmppMucAdminIq::Item::Affiliation aff)
+	void AffiliationSelectorDialog::SetAffiliation (QXmppMucItem::Affiliation aff)
 	{
 		switch (aff)
 		{
-		case QXmppMucAdminIq::Item::OwnerAffiliation:
+		case QXmppMucItem::OwnerAffiliation:
 			Ui_.Owner_->setChecked (true);
 			break;
-		case QXmppMucAdminIq::Item::AdminAffiliation:
+		case QXmppMucItem::AdminAffiliation:
 			Ui_.Admin_->setChecked (true);
 			break;
-		case QXmppMucAdminIq::Item::MemberAffiliation:
+		case QXmppMucItem::MemberAffiliation:
 			Ui_.Member_->setChecked (true);
 			break;
-		case QXmppMucAdminIq::Item::NoAffiliation:
+		case QXmppMucItem::NoAffiliation:
 			Ui_.None_->setChecked (true);
 			break;
-		case QXmppMucAdminIq::Item::OutcastAffiliation:
+		case QXmppMucItem::OutcastAffiliation:
 			Ui_.Banned_->setChecked (true);
 			break;
 		default:

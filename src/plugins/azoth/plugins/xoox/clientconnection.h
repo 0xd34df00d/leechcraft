@@ -139,7 +139,7 @@ namespace Xoox
 		void RequestItems (const QString&, DiscoCallback_t, const QString& = "");
 
 		void Update (const QXmppRosterIq::Item&);
-		void Update (const QXmppMucAdminIq::Item&, const QString& room);
+		void Update (const QXmppMucItem&, const QString& room);
 
 		void AckAuth (QObject*, bool);
 		void AddEntry (const QString&, const QString&, const QStringList&);
@@ -180,14 +180,7 @@ namespace Xoox
 		void handleRosterItemRemoved (const QString&);
 		void handleVCardReceived (const QXmppVCardIq&);
 		void handlePresenceChanged (const QXmppPresence&);
-		void handleRoomPresenceChanged (const QString&,
-				const QString&, const QXmppPresence&);
 		void handleMessageReceived (const QXmppMessage&);
-		void handleRoomPartNickChange (const QString&, const QString&, const QString&);
-		void handleRoomParticipantPermsChanged (const QString&, const QString&,
-				QXmppMucAdminIq::Item::Affiliation,
-				QXmppMucAdminIq::Item::Role,
-				const QString&);
 		
 		void handleBookmarksReceived (const QXmppBookmarkSet&);
 		void handleAutojoinQueue ();

@@ -55,8 +55,8 @@ namespace Xoox
 		QList<QObject*> AllMessages_;
 		RoomHandler *RH_;
 		QMap<QByteArray, QList<QByteArray> > Perms_;
-		QMap<QXmppMucAdminIq::Item::Role, QByteArray> Role2Str_;
-		QMap<QXmppMucAdminIq::Item::Affiliation, QByteArray> Aff2Str_;
+		QMap<QXmppMucItem::Role, QByteArray> Role2Str_;
+		QMap<QXmppMucItem::Affiliation, QByteArray> Aff2Str_;
 		QMap<QByteArray, QString> Translations_;
 	public:
 		RoomCLEntry (RoomHandler*, GlooxAccount*);

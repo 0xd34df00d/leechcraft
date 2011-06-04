@@ -38,8 +38,8 @@ namespace Xoox
 		
 		QString GetJID () const;
 		void SetJID (const QString&);
-		QXmppMucAdminIq::Item::Affiliation GetAffiliation () const;
-		void SetAffiliation (QXmppMucAdminIq::Item::Affiliation);
+		QXmppMucItem::Affiliation GetAffiliation () const;
+		void SetAffiliation (QXmppMucItem::Affiliation);
 	};
 }
 }

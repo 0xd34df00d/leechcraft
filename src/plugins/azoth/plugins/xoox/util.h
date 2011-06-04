@@ -29,8 +29,8 @@ namespace Xoox
 {
 namespace Util
 {
-	QString RoleToString (const QXmppMucAdminIq::Item::Role&);
-	QString AffiliationToString (const QXmppMucAdminIq::Item::Affiliation&);
+	QString RoleToString (const QXmppMucItem::Role&);
+	QString AffiliationToString (const QXmppMucItem::Affiliation&);
 
 	QString GetClientIDName (const QString&);
 	QString GetClientHRName (const QString&);
