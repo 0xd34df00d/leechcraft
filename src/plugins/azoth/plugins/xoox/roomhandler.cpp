@@ -609,11 +609,16 @@ namespace Xoox
 		ClientConnection::Split (jid, 0, &nick);
 
 		RoomParticipantEntry_ptr entry = GetParticipantEntry (nick);
-		MakeLeaveMessage (pres, nick);
+		const QXmppMucItem& item = pres.mucItem ();
+		if (item.affiliation () != entry->GetAffiliation ())
+			MakeBanMessage (nick, item.reason ());
+		else if (item.role () != entry->GetRole ())
+			MakeKickMessage (nick, item.reason ());
+		else
+			MakeLeaveMessage (pres, nick);
 
 		Account_->handleEntryRemoved (entry.get ());
 		Nick2Entry_.remove (nick);
-		return;
 	}
 
 	void RoomHandler::RemoveThis ()
