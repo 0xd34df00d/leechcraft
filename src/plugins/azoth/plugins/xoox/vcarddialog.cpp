@@ -67,8 +67,9 @@ namespace Xoox
 	void VCardDialog::UpdateInfo (const QXmppVCardIq& vcard)
 	{
 		setWindowTitle (tr ("VCard for %1")
-					.arg (vcard.nickName()));
-
+					.arg (vcard.nickName ()));
+		
+		Ui_.EditJID_->setText (vcard.from ());
 		Ui_.EditRealName_->setText (vcard.fullName ());
 		Ui_.EditNick_->setText (vcard.nickName ());
 		const QDate& date = vcard.birthday ();
@@ -77,7 +78,6 @@ namespace Xoox
 		Ui_.EditBirthday_->setVisible (date.isValid ());
 
 		Ui_.EditPhone_->setText ("<phones not supported yet>");
-
 		Ui_.EditURL_->setText (vcard.url ());
 
 		QPixmap px = QPixmap::fromImage (QImage::fromData (vcard.photo ()));
@@ -91,6 +91,11 @@ namespace Xoox
 		}
 		else
 			Ui_.LabelPhoto_->setText (tr ("No photo"));
+		
+		Ui_.OrgName_->setText (vcard.orgName ());
+		Ui_.OrgUnit_->setText (vcard.orgUnit ());
+		Ui_.Title_->setText (vcard.title ());
+		Ui_.Role_->setText (vcard.role ());
 	}
 }
 }
