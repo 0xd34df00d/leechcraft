@@ -258,7 +258,7 @@ namespace Xoox
 	void RoomHandler::HandleNickConflict ()
 	{
 		// The room is already joined, should do nothing special here.
-		if (!Nick2Entry_.isEmpty ())
+		if (Room_->isJoined ())
 			return;
 		
 		emit CLEntry_->nicknameConflict (Room_->nickName ());
@@ -469,9 +469,9 @@ namespace Xoox
 	
 	void RoomHandler::Join ()
 	{
-		if (!Nick2Entry_.isEmpty ())
+		if (Room_->isJoined ())
 			return;
-		
+
 		Room_->join ();
 	}
 
