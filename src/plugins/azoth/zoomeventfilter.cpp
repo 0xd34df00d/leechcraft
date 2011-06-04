@@ -19,6 +19,7 @@
 #include "zoomeventfilter.h"
 #include <QWheelEvent>
 #include "chattab.h"
+#include <QWebFrame>
 
 namespace LeechCraft
 {
@@ -39,9 +40,12 @@ namespace Azoth
 			return false;
 
 		int degrees = e->delta () / 8;
-		qreal delta = static_cast<qreal> (degrees) / 150;
+		int steps = static_cast<qreal> (degrees) / 15;
 		QWebView *view = qobject_cast<QWebView*> (viewObj);
-		view->setZoomFactor (view->zoomFactor () + delta);
+		QWebSettings *settings = view->settings ();
+		settings->setFontSize (QWebSettings::DefaultFontSize,
+				std::max (6, settings->fontSize (QWebSettings::DefaultFontSize) + steps));
+		view->page ()->mainFrame ()->evaluateJavaScript ("setTimeout(ScrollToBottom,0);");
 		return true;
 	}
 }
