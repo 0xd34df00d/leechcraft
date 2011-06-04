@@ -301,6 +301,12 @@ namespace Xoox
 		case QXmppStanza::Error::NotAuthorized:
 			hrText = tr ("password required");
 			break;
+		case QXmppStanza::Error::JidMalformed:
+			hrText = tr ("malformed JID");
+			break;
+		case QXmppStanza::Error::RegistrationRequired:
+			hrText = tr ("only registered users can enter this room");
+			break;
 		default:
 			hrText = tr ("unknown condition %1 (please report to developers)")
 				.arg (pres.error ().condition ());
