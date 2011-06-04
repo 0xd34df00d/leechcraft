@@ -70,6 +70,12 @@
 			<item type="checkbox" property="SendChatStates" default="true">
 				<label value="Send chat state events" />
 			</item>
+			<item type="checkbox" property="UseAltNick" default="true">
+				<label value="Use alternative nickname" />
+			</item>
+			<item type="lineedit" property="AlternativeNickname">
+				<label value="Alternative nickname for chat rooms:" />
+			</item>
 			<item type="path" property="DefaultXferSavePath" default="{DOCUMENTS}/Downloads">
 				<label value="Default file transfers save path:" />
 			</item>

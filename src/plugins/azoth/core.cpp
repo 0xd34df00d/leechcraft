@@ -2136,22 +2136,34 @@ namespace Azoth
 			return;
 		}
 		
-		if (QMessageBox::question (0,
-				tr ("Nickname conflict"),
-				tr ("You have specified a nickname for the conference "
-					"%1 that's already used. Would you like to try to "
-					"join with another nick?")
-					.arg (clEntry->GetEntryName ()),
-				QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+		QString altNick;
+		if (XmlSettingsManager::Instance ().property ("UseAltNick").toBool ())
+		{
+			altNick = XmlSettingsManager::Instance ()
+				.property ("AlternativeNickname").toString ();
+			if (altNick.isEmpty ())
+				altNick = usedNick + "_azoth";
+		}
+				
+		if ((altNick.isEmpty () || altNick == usedNick) &&
+				QMessageBox::question (0,
+						tr ("Nickname conflict"),
+						tr ("You have specified a nickname for %1 that's "
+							"already used. Would you like to try to "
+							"join with another nick?")
+							.arg (clEntry->GetEntryName ()),
+						QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 			return;
 
-		const QString& newNick = QInputDialog::getText (0,
-				tr ("Enter new nick"),
-				tr ("Enter new nick for joining the room %1 (%2 is already used):")
-					.arg (clEntry->GetEntryName ())
-					.arg (usedNick),
-				QLineEdit::Normal,
-				usedNick);
+		const QString& newNick = altNick.isEmpty () || altNick == usedNick ?
+				QInputDialog::getText (0,
+						tr ("Enter new nick"),
+						tr ("Enter new nick for joining %1 (%2 is already used):")
+							.arg (clEntry->GetEntryName ())
+							.arg (usedNick),
+						QLineEdit::Normal,
+						usedNick) :
+				altNick;
 		if (newNick.isEmpty ())
 			return;
 		
