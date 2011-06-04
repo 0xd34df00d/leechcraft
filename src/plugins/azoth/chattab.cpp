@@ -42,6 +42,7 @@
 #include "transferjobmanager.h"
 #include "bookmarksmanagerdialog.h"
 #include "simpledialog.h"
+#include "zoomeventfilter.h"
 
 namespace LeechCraft
 {
@@ -72,6 +73,7 @@ namespace Azoth
 	, PreviousState_ (CPSNone)
 	{
 		Ui_.setupUi (this);
+		Ui_.View_->installEventFilter (new ZoomEventFilter (Ui_.View_));
 
 		Ui_.SubjBox_->setVisible (false);
 		Ui_.SubjChange_->setEnabled (false);
