@@ -16,11 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
+#include "pieceswidget.h"
 #include <QPainter>
 #include <QPaintEvent>
 #include <QVector>
 #include <QtDebug>
-#include "pieceswidget.h"
+#include <QApplication>
+#include <QPalette>
 
 namespace LeechCraft
 {
@@ -79,16 +81,20 @@ namespace LeechCraft
 					return;
 				}
 			
+				const QPalette& palette = QApplication::palette ();
+				const QColor& backgroundColor = palette.color (QPalette::Base);
+				const QColor& downloadedPieceColor = palette.color (QPalette::Highlight);
+
 				QPixmap tempPicture (s, 1);
 				QPainter tempPainter (&tempPicture);
-				tempPainter.setPen (Qt::red);
+				tempPainter.setPen (backgroundColor);
 				tempPainter.drawLine (0, 0, s, 0);
 				QList<QPair<int, int> > trues = FindTrues (Pieces_);
 				for (int i = 0; i < trues.size (); ++i)
 				{
 					QPair<int, int> pair = trues.at (i);
 			
-					tempPainter.setPen (Qt::darkGreen);
+					tempPainter.setPen (downloadedPieceColor);
 					tempPainter.drawLine (pair.first, 0, pair.second, 0);
 				}
 				tempPainter.end ();
