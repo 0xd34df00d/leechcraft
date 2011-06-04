@@ -9,49 +9,15 @@
         <source>About LeechCraft</source>
         <translation>Pri Leechcrafto</translation>
     </message>
-    <message>
-        <source>LeechCraft</source>
-        <translation type="obsolete">Leechcrafto</translation>
-    </message>
     <message utf8="true">
         <location filename="aboutdialog.ui" line="70"/>
         <source>LeechCraft — a crossplatform modular internet-client, featuring plugins for a web browser, news feed reader, BitTorrent, FTP and lots of others.</source>
         <translation>LeechCrafto estas plursistema modula interreta kleinto, trajtarante kromaĵojn por retfoliumilo, abonflua legilo, BitTorrent, FTP kaj multe da alioj.</translation>
     </message>
     <message>
-        <source>&lt;a href=&quot;http://leechcraft.org&quot;&gt;http://leechcraft.org&lt;/a&gt;</source>
-        <translation type="obsolete">&lt;a href=&quot;http://leechcraft.org&quot;&gt;http://leechcraft.org&lt;/a&gt;</translation>
-    </message>
-    <message>
         <location filename="aboutdialog.ui" line="104"/>
         <source>Authors</source>
         <translation>Aŭtoro</translation>
-    </message>
-    <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;0xd34df00d&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  E-mail: &lt;a href=&quot;mailto:0xd34df00d@gmail.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#154071;&quot;&gt;0xd34df00d@gmail.com&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  Lead developer and original author&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  2006-2009&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Voker57&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  Chatter plugin writer and maintainer&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  2008-2009&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;0xd34df00d&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  E-mail: &lt;a href=&quot;mailto:0xd34df00d@gmail.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#154071;&quot;&gt;0xd34df00d@gmail.com&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt; Ĉefa programisto kaj originala aŭtoro&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  2006-2009&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Voker57&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  Verkisto kaj prizorgulo de babila kromprogramo&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;  2008-2009&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="aboutdialog.ui" line="118"/>
@@ -166,13 +132,6 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>CategorySelector</name>
-    <message>
-        <source>Tags selector</source>
-        <translation type="obsolete">Selektilo de markoj</translation>
-    </message>
-</context>
-<context>
     <name>CommonJobAdder</name>
     <message>
         <location filename="commonjobadder.ui" line="14"/>
@@ -194,21 +153,6 @@ p, li { white-space: pre-wrap; }
         <source>Browse...</source>
         <translation>Foliumu...</translation>
     </message>
-    <message>
-        <source>Paste</source>
-        <translation type="obsolete">Algluu</translation>
-    </message>
-    <message>
-        <source>Location:</source>
-        <translation type="obsolete">Loko:</translation>
-    </message>
-</context>
-<context>
-    <name>DataViewWidget</name>
-    <message>
-        <source>Remove</source>
-        <translation type="obsolete">Viŝi</translation>
-    </message>
 </context>
 <context>
     <name>HandlerChoiceDialog</name>
@@ -221,10 +165,6 @@ p, li { white-space: pre-wrap; }
         <location filename="handlerchoicedialog.ui" line="20"/>
         <source>LeechCraft has detected an entity:</source>
         <translation>Leechcrafto detektis aĵon:</translation>
-    </message>
-    <message>
-        <source>TextLabel</source>
-        <translation type="obsolete">Teksta etikedo</translation>
     </message>
     <message>
         <location filename="handlerchoicedialog.ui" line="34"/>
@@ -242,7 +182,7 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="handlerchoicedialog.ui" line="73"/>
+        <location filename="handlerchoicedialog.ui" line="81"/>
         <source>Browse...</source>
         <translation type="unfinished">Foliumu...</translation>
     </message>
@@ -274,25 +214,9 @@ p, li { white-space: pre-wrap; }
         <translation>Leechcrafto</translation>
     </message>
     <message>
-        <source>Summary</source>
-        <translation type="obsolete">Resгmo</translation>
-    </message>
-    <message>
         <location filename="leechcraft.ui" line="88"/>
         <source>Main toolbar</source>
         <translation>Ĉefa ilobreto</translation>
-    </message>
-    <message>
-        <source>General</source>
-        <translation type="obsolete">Ĝenerala</translation>
-    </message>
-    <message>
-        <source>Tools</source>
-        <translation type="obsolete">Ilaro</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">Helpilo</translation>
     </message>
     <message>
         <location filename="leechcraft.ui" line="101"/>
@@ -325,43 +249,34 @@ p, li { white-space: pre-wrap; }
         <translation>eliri</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="160"/>
+        <location filename="leechcraft.ui" line="164"/>
         <source>Menu</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="163"/>
-        <source>menu</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="leechcraft.ui" line="174"/>
+        <location filename="leechcraft.ui" line="175"/>
         <source>Show status bar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="179"/>
+        <location filename="leechcraft.ui" line="180"/>
         <source>Close tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="182"/>
+        <location filename="leechcraft.ui" line="183"/>
         <source>Ctrl+W</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="187"/>
+        <location filename="leechcraft.ui" line="188"/>
         <source>Glance...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="190"/>
+        <location filename="leechcraft.ui" line="191"/>
         <source>Show a quick overview of tabs</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Plugin manager</source>
-        <translation type="obsolete">Kromaĵa mastrumilo</translation>
     </message>
     <message>
         <location filename="leechcraft.ui" line="134"/>
@@ -370,27 +285,23 @@ p, li { white-space: pre-wrap; }
         <translation>Tutekrana reĝimo</translation>
     </message>
     <message>
-        <source>F11</source>
-        <translation type="obsolete">F11</translation>
-    </message>
-    <message>
         <location filename="leechcraft.ui" line="142"/>
         <location filename="leechcraft.ui" line="145"/>
         <source>Log</source>
         <translation>Protokolo</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="193"/>
+        <location filename="leechcraft.ui" line="194"/>
         <source>Ctrl+G</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="198"/>
+        <location filename="leechcraft.ui" line="199"/>
         <source>New tab</source>
         <translation>Nova langeto</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="201"/>
+        <location filename="leechcraft.ui" line="202"/>
         <source>Ctrl+T</source>
         <translation>Ctrl+T</translation>
     </message>
@@ -407,10 +318,6 @@ p, li { white-space: pre-wrap; }
 </context>
 <context>
     <name>LeechCraft::AboutDialog</name>
-    <message>
-        <source>LeechCraft %1</source>
-        <translation type="obsolete">Leechcrafto %1</translation>
-    </message>
     <message>
         <location filename="aboutdialog.cpp" line="74"/>
         <source>Years: %1</source>
@@ -439,8 +346,8 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="aboutdialog.cpp" line="100"/>
         <location filename="aboutdialog.cpp" line="106"/>
-        <location filename="aboutdialog.cpp" line="130"/>
-        <location filename="aboutdialog.cpp" line="147"/>
+        <location filename="aboutdialog.cpp" line="139"/>
+        <location filename="aboutdialog.cpp" line="156"/>
         <source>Various patches.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -451,27 +358,32 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="114"/>
-        <location filename="aboutdialog.cpp" line="148"/>
+        <location filename="aboutdialog.cpp" line="157"/>
         <source>Ukrainian translations.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="134"/>
+        <location filename="aboutdialog.cpp" line="135"/>
+        <source>FatApe plugin, the GreaseMonkey support layer for Poshuku.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="aboutdialog.cpp" line="143"/>
         <source>Graphical artwork.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="138"/>
+        <location filename="aboutdialog.cpp" line="147"/>
         <source>Arabic translations.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="142"/>
+        <location filename="aboutdialog.cpp" line="151"/>
         <source>Esperanto translations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="146"/>
+        <location filename="aboutdialog.cpp" line="155"/>
         <source>Aggregator fixes and improvements.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -479,44 +391,9 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>LeechCraft::Application</name>
     <message>
-        <source>LeechCraft</source>
-        <translation type="obsolete">Leechcrafto</translation>
-    </message>
-    <message>
-        <location filename="application.cpp" line="96"/>
+        <location filename="application.cpp" line="101"/>
         <source>Could not create path %1/.leechcraft</source>
         <translation>Ne povis krei la vojon %1/.leechcrafto</translation>
-    </message>
-    <message>
-        <source>bytes</source>
-        <translation type="obsolete">bajtoj</translation>
-    </message>
-    <message>
-        <source>KB</source>
-        <translation type="obsolete">KB</translation>
-    </message>
-    <message>
-        <source>MB</source>
-        <translation type="obsolete">MB</translation>
-    </message>
-    <message>
-        <source>GB</source>
-        <translation type="obsolete">GB</translation>
-    </message>
-</context>
-<context>
-    <name>LeechCraft::CategoryMerger</name>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Nomo</translation>
-    </message>
-    <message>
-        <source>State</source>
-        <translation type="obsolete">Ŝtato</translation>
-    </message>
-    <message>
-        <source>Progress</source>
-        <translation type="obsolete">Progreso</translation>
     </message>
 </context>
 <context>
@@ -543,80 +420,44 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>LeechCraft::Core</name>
     <message>
-        <source>Name</source>
-        <translation type="obsolete">Nomo</translation>
-    </message>
-    <message>
-        <source>State</source>
-        <translation type="obsolete">Ŝtato</translation>
-    </message>
-    <message>
-        <source>Progress</source>
-        <translation type="obsolete">Progreso</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="311"/>
+        <location filename="core.cpp" line="294"/>
         <source>No plugins are able to download &quot;%1&quot;</source>
         <translatorcomment>Плагины загружают что-то или что-то загружает плагины?</translatorcomment>
         <translation>Kromaĵoj ne ebla elŝuti &quot;%1&quot;</translation>
     </message>
     <message>
-        <source>LeechCraft</source>
-        <translation type="obsolete">Leechcrafto</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="482"/>
+        <location filename="core.cpp" line="465"/>
         <source>Do you really want to clear the network cache?</source>
         <translation>Ĉu vi vere volas klarigi retan kaŝmemoron?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="494"/>
+        <location filename="core.cpp" line="477"/>
         <source>Do you really want to clear cookies?</source>
         <translation>Ĉu vi vere volas klarigi kuketon?</translation>
     </message>
     <message>
-        <source>Too long to show</source>
-        <translation type="obsolete">Tro longe por montri</translation>
-    </message>
-    <message>
-        <source>Binary entity</source>
-        <translation type="obsolete">Binara ento</translation>
-    </message>
-    <message>
-        <source>&lt;br /&gt;&lt;br /&gt;of type &lt;code&gt;%1&lt;/code&gt;</source>
-        <translation type="obsolete">&lt;br /&gt;&lt;br /&gt;de tipo &lt;code&gt;%1&lt;/code&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br /&gt;from %1</source>
-        <translation type="obsolete">&lt;br /&gt;el %1</translation>
-    </message>
-    <message>
-        <source>Select save location</source>
-        <translation type="obsolete">Selektu lokon por savi</translation>
-    </message>
-    <message>
+        <location filename="core.cpp" line="708"/>
         <location filename="core.cpp" line="725"/>
-        <location filename="core.cpp" line="742"/>
         <source>Error</source>
         <translation>Eraro</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="726"/>
+        <location filename="core.cpp" line="709"/>
         <source>Could not add task to the selected downloader, would you like to try another one?</source>
         <translation>Ne povis aldonl la taskon al la selektita elŝutilo, ĉu vi volas provi alian?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="743"/>
+        <location filename="core.cpp" line="726"/>
         <source>Could not handle task with the selected handler, would you like to try another one?</source>
         <translation>Ne povis traktl la taskon al la selektita traktilo, ĉu vi volas provi alian?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="774"/>
+        <location filename="core.cpp" line="757"/>
         <source>Could not handle download entity %1.</source>
         <translation>Ne povis traktl la elŝuta ento %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="801"/>
+        <location filename="core.cpp" line="784"/>
         <source>Plugin load error</source>
         <translation type="unfinished"></translation>
     </message>
@@ -689,7 +530,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>LeechCraft::HandlerChoiceDialog</name>
     <message>
-        <location filename="handlerchoicedialog.cpp" line="186"/>
+        <location filename="handlerchoicedialog.cpp" line="312"/>
         <source>Select save location</source>
         <translation type="unfinished">Selektu lokon por savi</translation>
     </message>
@@ -697,74 +538,76 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>LeechCraft::MainWindow</name>
     <message>
-        <source>LeechCraft</source>
-        <translation type="obsolete">Leechcrafto</translation>
+        <location filename="mainwindow.cpp" line="83"/>
+        <source>Initializing LeechCraft...</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>%1 - LeechCraft</source>
-        <translation type="obsolete">%1 - Leechcrafto</translation>
+        <location filename="mainwindow.cpp" line="106"/>
+        <source>Finalizing...</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="125"/>
+        <location filename="mainwindow.cpp" line="150"/>
         <source>F11</source>
         <comment>FullScreen</comment>
         <translation type="unfinished">F11</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="268"/>
+        <location filename="mainwindow.cpp" line="299"/>
         <source>View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="271"/>
+        <location filename="mainwindow.cpp" line="302"/>
         <source>Tools</source>
         <translation type="unfinished">Ilaro</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="368"/>
+        <location filename="mainwindow.cpp" line="397"/>
         <source>/s	</source>
         <translation>/s	</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="371"/>
-        <location filename="mainwindow.cpp" line="375"/>
-        <location filename="mainwindow.cpp" line="695"/>
-        <location filename="mainwindow.cpp" line="696"/>
+        <location filename="mainwindow.cpp" line="400"/>
+        <location filename="mainwindow.cpp" line="404"/>
+        <location filename="mainwindow.cpp" line="762"/>
+        <location filename="mainwindow.cpp" line="763"/>
         <source>/s</source>
         <translation>/s</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="514"/>
+        <location filename="mainwindow.cpp" line="581"/>
         <source>Do you really want to quit?</source>
         <translation>Ĉu vi vere volas forlasi?</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="519"/>
+        <location filename="mainwindow.cpp" line="586"/>
         <source>Always</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="598"/>
+        <location filename="mainwindow.cpp" line="665"/>
         <source>This change requires restarting LeechCraft. Do you want to restart now?</source>
         <translation>Tia ŝanĝo bezonas restarton de Leechcrafto. Ĉu vi volas restarti nun?</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="702"/>
+        <location filename="mainwindow.cpp" line="769"/>
         <source>%1 down, %2 up</source>
         <translation>%1 suben, %2 supren</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="784"/>
+        <location filename="mainwindow.cpp" line="856"/>
         <source>Context-dependent</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="811"/>
+        <location filename="mainwindow.cpp" line="887"/>
         <source>LeechCraft menu</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="955"/>
+        <location filename="mainwindow.cpp" line="1031"/>
         <source>System</source>
         <translation type="unfinished"></translation>
     </message>
@@ -797,24 +640,9 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>LeechCraft::NewTabMenuManager</name>
     <message>
-        <location filename="newtabmenumanager.cpp" line="29"/>
+        <location filename="newtabmenumanager.cpp" line="30"/>
         <source>New tab menu</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>LeechCraft::OperationalModel</name>
-    <message>
-        <source>Entity</source>
-        <translation type="obsolete">Ento</translation>
-    </message>
-    <message>
-        <source>Category</source>
-        <translation type="obsolete">Kategorio</translation>
-    </message>
-    <message>
-        <source>Information</source>
-        <translation type="obsolete">Informoj</translation>
     </message>
 </context>
 <context>
@@ -830,78 +658,49 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="541"/>
+        <location filename="pluginmanager.cpp" line="224"/>
+        <source>Initializing %1: stage one...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="pluginmanager.cpp" line="293"/>
+        <source>Initializing %1: stage two...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="pluginmanager.cpp" line="543"/>
         <source>Refusing to load plugin from %1 because it&apos;s not a file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="554"/>
+        <location filename="pluginmanager.cpp" line="556"/>
         <source>Could not load plugin from %1: %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="573"/>
+        <location filename="pluginmanager.cpp" line="575"/>
         <source>Could not load plugin from %1: failed to construct plugin instance with exception %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="585"/>
+        <location filename="pluginmanager.cpp" line="587"/>
         <source>Could not load plugin from %1: failed to construct plugin instance.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="597"/>
+        <location filename="pluginmanager.cpp" line="599"/>
         <source>Could not load plugin from %1: unable to cast plugin instance to IInfo*.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="620"/>
+        <location filename="pluginmanager.cpp" line="622"/>
         <source>Could not load plugin from %1: unable to get name/info/icon with exception %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="632"/>
+        <location filename="pluginmanager.cpp" line="634"/>
         <source>Could not load plugin from %1: unable to get name/info/icon.</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>File</source>
-        <translation type="obsolete">Dosiero</translation>
-    </message>
-    <message>
-        <source>LeechCraft</source>
-        <translation type="obsolete">Leechcrafto</translation>
-    </message>
-    <message>
-        <source>Release of one or more plugins failed.</source>
-        <translation type="obsolete">Eldono de unu aŭ plu kromaĵoj fiaskis.</translation>
-    </message>
-</context>
-<context>
-    <name>LeechCraft::RequestNormalizer</name>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Nomo</translation>
-    </message>
-    <message>
-        <source>State</source>
-        <translation type="obsolete">Ŝtato</translation>
-    </message>
-    <message>
-        <source>Progress</source>
-        <translation type="obsolete">Progreso</translation>
-    </message>
-    <message>
-        <source>Request validation error: %1</source>
-        <translation type="obsolete">Eraro de peta valideco: %1</translation>
-    </message>
-    <message>
-        <source>Request parsing error: %1</source>
-        <translation type="obsolete">Eraro de sintaksa analizilode peto: %1</translation>
-    </message>
-    <message>
-        <source>Open/close braces mismatch</source>
-        <translation type="obsolete">Miskongruo de fermaj/malfermaj krampoj</translation>
     </message>
 </context>
 <context>
@@ -1023,16 +822,9 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>LeechCraft::TabContentsManager</name>
-    <message>
-        <source>Summary</source>
-        <translation type="obsolete">Resumo</translation>
-    </message>
-</context>
-<context>
     <name>LeechCraft::TabManager</name>
     <message>
-        <location filename="tabmanager.cpp" line="70"/>
+        <location filename="tabmanager.cpp" line="64"/>
         <source>Close all but this</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1108,17 +900,6 @@ p, li { white-space: pre-wrap; }
         <location filename="pluginmanagerdialog.ui" line="20"/>
         <source>Plugin Manager</source>
         <translation>Kromaĵa mastrumilo</translation>
-    </message>
-</context>
-<context>
-    <name>Proxy</name>
-    <message numerus="yes">
-        <source>%n day(s), </source>
-        <translation type="obsolete">
-            <numerusform>%n tago, </numerusform>
-            <numerusform>%n tagon, </numerusform>
-            <numerusform></numerusform>
-        </translation>
     </message>
 </context>
 <context>
@@ -1250,20 +1031,6 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>TabContents</name>
-    <message>
-        <source>Form</source>
-        <translation type="obsolete">Formular</translation>
-    </message>
-</context>
-<context>
-    <name>TagsManager</name>
-    <message>
-        <source>untagged</source>
-        <translation type="obsolete">Nemarkita</translation>
-    </message>
-</context>
-<context>
     <name>TagsViewer</name>
     <message>
         <location filename="tagsviewer.ui" line="14"/>
@@ -1306,307 +1073,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="wizardtypechoicepage.ui" line="49"/>
         <source>Advanced setup</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>coresettings</name>
-    <message>
-        <location filename="dummy.cpp" line="2"/>
-        <location filename="dummy.cpp" line="3"/>
-        <source>Appearance</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="4"/>
-        <source>Use tab scroll buttons</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="5"/>
-        <source>Icon size</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="6"/>
-        <source>System default</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="7"/>
-        <source>16x16</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="8"/>
-        <source>24x24</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="9"/>
-        <source>32x32</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="10"/>
-        <source>Tool button style:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="11"/>
-        <source>Only display the icon</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="12"/>
-        <source>Only display the text</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="13"/>
-        <source>The text appears beside the icon</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="14"/>
-        <source>The text appears under the icon</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="15"/>
-        <source>Tab bar location:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="16"/>
-        <source>Top</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="17"/>
-        <source>Bottom</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="18"/>
-        <source>Left</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="19"/>
-        <source>Right</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="20"/>
-        <source>Icon set:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="21"/>
-        <source>Oxygen</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="22"/>
-        <source>Style:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="23"/>
-        <source>Plastique</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="24"/>
-        <source>Language:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="25"/>
-        <source>System</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="26"/>
-        <source>Default new tab contents:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="27"/>
-        <source>Context-dependent</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="28"/>
-        <source>Maximum log lines:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="29"/>
-        <source>Shortcuts</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="30"/>
-        <location filename="dummy.cpp" line="31"/>
-        <location filename="dummy.cpp" line="32"/>
-        <source>Behavior</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="33"/>
-        <source>Watch clipboard</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="34"/>
-        <source>Ask quit confirmation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="35"/>
-        <source>Exit on close</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="36"/>
-        <source>Open new tab next to current</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="37"/>
-        <source>Automatically accept task when there is only one handler</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="38"/>
-        <source>Watch directory:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="39"/>
-        <source>Show plugin-dependent actions in tab bar context menu</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="40"/>
-        <source>Show as a submenu</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="41"/>
-        <source>Show messages in tray</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="42"/>
-        <source>Message timeout:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="43"/>
-        <source> s</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="44"/>
-        <source>Tags</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="45"/>
-        <source>Tags manager</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="46"/>
-        <source>Network</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="47"/>
-        <source>Cache size:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="48"/>
-        <source> MB</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="49"/>
-        <source>Filter tracking cookies</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="50"/>
-        <source>Clear cache</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="51"/>
-        <source>Clear cookies</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="52"/>
-        <source>Application-wide proxy</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="53"/>
-        <source>Host:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="54"/>
-        <source>Port:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="55"/>
-        <source>Login:</source>
-        <translation type="unfinished">Salutnomo:</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="56"/>
-        <source>Password:</source>
-        <translation type="unfinished">Pasvorto:</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="57"/>
-        <source>Proxy type:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="58"/>
-        <source>SOCKS5</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="59"/>
-        <source>Transparent HTTP</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="60"/>
-        <source>Caching HTTP</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="61"/>
-        <source>Caching FTP</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="62"/>
-        <source>Plugins</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="63"/>
-        <source>Plugins manager</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

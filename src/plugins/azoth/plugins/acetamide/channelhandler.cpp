@@ -31,9 +31,9 @@ namespace Acetamide
 {
 	ChannelHandler::ChannelHandler (IrcServerHandler *ish, const
 			ChannelOptions& channel)
-	: ISH_ (ish)
+	: ChannelID_ (channel.ChannelName_ + "@" + channel.ServerName_)
+	, ISH_ (ish)
 	, ChannelOptions_ (channel)
-	, ChannelID_ (channel.ChannelName_ + "@" + channel.ServerName_)
 	, IsRosterReceived_ (false)
 	{
 		ChannelCLEntry_ = new ChannelCLEntry (this);
@@ -327,7 +327,7 @@ namespace Acetamide
 	{
 		if (cmd)
 		{
-			ISH_->LeaveChannel (ChannelOptions_.ChannelName_, QString ());
+			ISH_->LeaveChannel (ChannelOptions_.ChannelName_, msg);
 			return;
 		}
 

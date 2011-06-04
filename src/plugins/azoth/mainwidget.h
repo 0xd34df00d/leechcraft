@@ -72,6 +72,7 @@ namespace Azoth
 		void handleAddContactRequested ();
 
 		void handleShowOffline (bool);
+		void clearFilter ();
 		
 		void menuBarVisibilityToggled ();
 

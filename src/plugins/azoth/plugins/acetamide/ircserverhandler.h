@@ -35,8 +35,7 @@ namespace Azoth
 {
 namespace Acetamide
 {
-
-class IrcMessage;
+	class IrcMessage;
 
 	class ChannelCLEntry;
 	class ChannelHandler;
@@ -62,11 +61,11 @@ class IrcMessage;
 		boost::shared_ptr<QTcpSocket> TcpSocket_ptr;
 		ConnectionState ServerConnectionState_;
 		QHash<QString, ChannelHandler*> ChannelHandlers_;
-		QHash<QString, boost::function<void (void)> > Error2Action_;
+		QHash<QString, boost::function<void (const QList<std::string>&,
+				const QString&)> > Error2Action_;
 		QHash<QString, boost::function<void (const QString&,
-				QList<std::string>, const QString&)> > Command2Action_;
-		QHash<QString, boost::function<void (const QStringList&)> >
-				Name2Command_;
+				const QList<std::string>&, const QString&)> > Command2Action_;
+		QHash<QString, boost::function<void (const QStringList&)> > Name2Command_;
 		QHash<QString, ServerParticipantEntry_ptr> Nick2Entry_;
 		QString NickName_;
 		QString OldNickName_;
@@ -139,8 +138,7 @@ class IrcMessage;
 				CreateParticipantEntry (const QString&);
 
 		// RPL
-		void JoinFromQueue (const QString&,
-				const QList<std::string>&, const QString&);
+		void JoinFromQueue ();
 		void SetTopic (const QString&,
 				const QList<std::string>&, const QString&);
 		void AddParticipants (const QString&,
@@ -179,14 +177,98 @@ class IrcMessage;
 				const QList<std::string>&, const QString&);
 		void GetWhoIsIdle (const QString&,
 				const QList<std::string>&, const QString&);
-		void GetWhoIsEnd (const QString&,
-				const QList<std::string>&, const QString&);
 		void GetWhoIsChannels (const QString&,
 				const QList<std::string>&, const QString&);
 		void GetWhoWas (const QString&,
 				const QList<std::string>&, const QString&);
-		void GetWhoWasEnd (const QString&,
+		void GetNoTopic (const QString&,
 				const QList<std::string>&, const QString&);
+		void GetInviting (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetSummoning (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetVersion (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetWho (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetLinks (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetInfo (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetMotd (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetEndMessage (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetYoureOper (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetRehash (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetTime (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetUsersStart (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetUsers (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetNoUser (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetTraceLink (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetTraceConnecting (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetTraceHandshake (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetTraceUnknown (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetTraceOperator (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetTraceUser (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetTraceServer (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetTraceService (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetTraceNewType (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetTraceClass (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetTraceLog (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetTraceEnd (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetStatsLinkInfo (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetStatsCommands (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetStatsEnd (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetStatsUptime (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetStatsOline (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetLuserClient (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetLuserOp (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetLuserUnknown (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetLuserChannels (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetLuserMe (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetAdmineMe (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetAdminLoc1 (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetAdminLoc2 (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetAdminEmail (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetTryAgain (const QString&,
+				const QList<std::string>&, const QString&);
+		void GetErrorWithParam (const QList<std::string>&,
+				const QString&);
+		void GetErrorWithoutParam (const QList<std::string>&,
+				const QString&);
 	private slots:
 		void readReply ();
 		void connectionEstablished ();

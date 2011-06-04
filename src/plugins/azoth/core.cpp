@@ -28,6 +28,7 @@
 #include <QInputDialog>
 #include <QMainWindow>
 #include <QStringListModel>
+#include <QMessageBox>
 #include <QtDebug>
 #include <plugininterface/resourceloader.h>
 #include <plugininterface/util.h>
@@ -54,11 +55,6 @@
 #include "accounthandlerchooserdialog.h"
 #include "util.h"
 #include "eventsnotifier.h"
-
-uint qHash (const QImage& image)
-{
-	return image.cacheKey ();
-}
 
 namespace LeechCraft
 {
@@ -446,8 +442,13 @@ namespace Azoth
 				 msg->GetMessageType () == IMessage::MTMUCMessage);
 	}
 
-	bool Core::IsHighlightMessage (const IMessage *msg)
+	bool Core::IsHighlightMessage (IMessage *msg)
 	{
+		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		emit hookIsHighlightMessage (proxy, msg->GetObject ());
+		if (proxy->IsCancelled ())
+			return proxy->GetReturnValue ().toBool ();
+
 		IMUCEntry *mucEntry =
 				qobject_cast<IMUCEntry*> (msg->ParentCLEntry ());
 		if (!mucEntry)
@@ -818,6 +819,14 @@ namespace Azoth
 				SIGNAL (avatarChanged (const QImage&)),
 				this,
 				SLOT (updateItem ()));
+		
+		if (qobject_cast<IMUCEntry*> (clEntry->GetObject ()))
+		{
+			connect (clEntry->GetObject (),
+					SIGNAL (nicknameConflict (const QString&)),
+					this,
+					SLOT (handleNicknameConflict (const QString&)));
+		}
 		
 		EventsNotifier_->RegisterEntry (clEntry);
 
@@ -2114,7 +2123,53 @@ namespace Azoth
 						entry));
 		emit gotEntity (e);
 	}
+	
+	void Core::handleNicknameConflict (const QString& usedNick)
+	{
+		ICLEntry *clEntry = qobject_cast<ICLEntry*> (sender ());
+		IMUCEntry *entry = qobject_cast<IMUCEntry*> (sender ());
+		if (!entry || !clEntry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< sender ()
+					<< "doesn't implement ICLEntry or IMUCEntry";
+			return;
+		}
+		
+		QString altNick;
+		if (XmlSettingsManager::Instance ().property ("UseAltNick").toBool ())
+		{
+			altNick = XmlSettingsManager::Instance ()
+				.property ("AlternativeNickname").toString ();
+			if (altNick.isEmpty ())
+				altNick = usedNick + "_azoth";
+		}
+				
+		if ((altNick.isEmpty () || altNick == usedNick) &&
+				QMessageBox::question (0,
+						tr ("Nickname conflict"),
+						tr ("You have specified a nickname for %1 that's "
+							"already used. Would you like to try to "
+							"join with another nick?")
+							.arg (clEntry->GetEntryName ()),
+						QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+			return;
 
+		const QString& newNick = altNick.isEmpty () || altNick == usedNick ?
+				QInputDialog::getText (0,
+						tr ("Enter new nick"),
+						tr ("Enter new nick for joining %1 (%2 is already used):")
+							.arg (clEntry->GetEntryName ())
+							.arg (usedNick),
+						QLineEdit::Normal,
+						usedNick) :
+				altNick;
+		if (newNick.isEmpty ())
+			return;
+		
+		entry->SetNick (newNick);
+		entry->Join ();
+	}
 
 	void Core::NotifyWithReason (QObject *entryObj, const QString& msg,
 			const char *func,

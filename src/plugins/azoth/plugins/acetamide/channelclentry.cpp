@@ -199,6 +199,12 @@ namespace Acetamide
 	{
 		return ICH_->GetParticipants ();
 	}
+	
+	// TODO implement this
+	void ChannelCLEntry::Join ()
+	{
+		qWarning () << Q_FUNC_INFO << "implement me!";
+	}
 
 	void ChannelCLEntry::Leave (const QString& msg)
 	{
@@ -259,7 +265,7 @@ namespace Acetamide
 		emit mucSubjectChanged (subj);
 	}
 
-	QByteArray ChannelCLEntry::GetAffName (QObject *participant) const
+	QByteArray ChannelCLEntry::GetAffName (QObject*) const
 	{
 		return QByteArray ();
 	}
@@ -290,9 +296,9 @@ namespace Acetamide
 	}
 
 	void ChannelCLEntry::SetPerm (QObject *participant,
-			const QByteArray& permClass,
-			const QByteArray& perm,
-			const QString& reason)
+			const QByteArray&,
+			const QByteArray&,
+			const QString&)
 	{
 		ServerParticipantEntry *entry =
 				qobject_cast<ServerParticipantEntry*> (participant);

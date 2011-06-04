@@ -67,11 +67,6 @@ namespace LeechCraft
 			protected:
 				virtual void mousePressEvent (QMouseEvent*);
 				virtual void showEvent (QShowEvent*);
-			public slots:
-				void stateMachinePause ();
-				void closeNotification ();
-				void closeNotificationWidget ();
-				void initJavaScript ();
 			private:
 				const QByteArray MakeImage (const QString& imgPath = QString ());
 				const QByteArray MakeImage (const QPixmap&);
@@ -80,12 +75,19 @@ namespace LeechCraft
 				void SetData ();
 				void SetWidgetPlace ();
 				void ShowNotification ();
+			public slots:
+				void stateMachinePause ();
+				void closeNotification ();
+				void closeNotificationWidget ();
+				void initJavaScript ();
+				void handleLinkClicked (const QUrl&);
 			signals:
 				void initiateCloseNotification ();
 				void checkNotificationQueue ();
+				void gotEntity (const LeechCraft::Entity&);
 			};
-		};
-	};
-};
+		}
+	}
+}
 
 #endif // PLUGINS_KINOTIFY_KINOTIFYWIDGET_H

@@ -19,6 +19,7 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_XOOX_CLIENTCONNECTION_H
 #define PLUGINS_AZOTH_PLUGINS_XOOX_CLIENTCONNECTION_H
 #include <boost/shared_ptr.hpp>
+#include <boost/function.hpp>
 #include <QObject>
 #include <QMap>
 #include <QHash>
@@ -99,6 +100,15 @@ namespace Xoox
 		
 		QHash<QString, QPointer<VCardDialog> > AwaitingVCardDialogs_;
 	public:
+		typedef boost::function<void (const QXmppDiscoveryIq&)> DiscoCallback_t;
+	private:
+		QHash<QString, DiscoCallback_t> AwaitingDiscoInfo_;
+		QHash<QString, DiscoCallback_t> AwaitingDiscoItems_;
+		
+		typedef QPair<QPointer<QObject>, QByteArray> PacketCallback_t;
+		typedef QHash<QString, PacketCallback_t> PacketID2Callback_t;
+		QHash<QString, PacketID2Callback_t> AwaitingPacketCallbacks_;
+	public:
 		ClientConnection (const QString&,
 				const GlooxAccountState&,
 				GlooxAccount*);
@@ -119,10 +129,14 @@ namespace Xoox
 		void Unregister (RoomHandler*);
 
 		QXmppMucManager* GetMUCManager () const;
+		QXmppDiscoveryManager* GetDiscoveryManager () const;
 		QXmppTransferManager* GetTransferManager () const;
 		CapsManager* GetCapsManager () const;
 
 		void RequestInfo (const QString&) const;
+		
+		void RequestInfo (const QString&, DiscoCallback_t, const QString& = "");
+		void RequestItems (const QString&, DiscoCallback_t, const QString& = "");
 
 		void Update (const QXmppRosterIq::Item&);
 		void Update (const QXmppMucAdminIq::Item&, const QString& room);
@@ -136,6 +150,7 @@ namespace Xoox
 		void Unsubscribe (const QString&, const QString&);
 		void Remove (GlooxCLEntry*);
 
+		void SendPacketWCallback (const QXmppIq&, QObject*, const QByteArray&);
 		QXmppClient* GetClient () const;
 		QObject* GetCLEntry (const QString& bareJid, const QString& variant) const;
 		GlooxCLEntry* AddODSCLEntry (GlooxCLEntry::OfflineDataSource_ptr);
@@ -153,6 +168,7 @@ namespace Xoox
 		EntryStatus PresenceToStatus (const QXmppPresence&) const;
 		void HandleOtherPresence (const QXmppPresence&);
 		void HandleError (const QXmppIq&);
+		void InvokeCallbacks (const QXmppIq&);
 		QString HandleErrorCondition (const QXmppStanza::Error::Condition&);
 	private slots:
 		void handleConnected ();
@@ -175,6 +191,9 @@ namespace Xoox
 		
 		void handleBookmarksReceived (const QXmppBookmarkSet&);
 		void handleAutojoinQueue ();
+		
+		void handleDiscoInfo (const QXmppDiscoveryIq&);
+		void handleDiscoItems (const QXmppDiscoveryIq&);
 		
 		void decrementErrAccumulators ();
 		

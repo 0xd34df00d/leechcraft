@@ -18,7 +18,6 @@
 
 #ifndef XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERSTRINGGETVALUE_H
 #define XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERSTRINGGETVALUE_H
-
 #include "itemhandlerstringsetvalue.h"
 
 namespace LeechCraft
@@ -26,6 +25,7 @@ namespace LeechCraft
 	/** This is for those whose value is always a plain string.
 	 * These are:
 	 * - lineedit
+	 * - multiline
 	 * - spinbox
 	 * - doublespinbox
 	 */

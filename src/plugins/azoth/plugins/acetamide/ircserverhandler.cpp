@@ -40,15 +40,16 @@ namespace Acetamide
 	IrcServerHandler::IrcServerHandler (const ServerOptions& server,
 			IrcAccount *account )
 	: Account_ (account)
-	, ServerOptions_ (server)
+	, IrcParser_ (0)
 	, ServerCLEntry_ (new IrcServerCLEntry (this, account))
+	, IsConsoleEnabled_ (false)
+	, ChannelJoined_ (false)
+	, IsInviteDialogActive_ (false)
+	, ServerOptions_ (server)
 	, ServerID_ (server.ServerName_ + ":" +
 			QString::number (server.ServerPort_))
 	, ServerConnectionState_ (NotConnected)
 	, NickName_ (server.ServerNickName_)
-	, IsConsoleEnabled_ (false)
-	, IsInviteDialogActive_ (false)
-	, ChannelJoined_ (false)
 	{
 		IrcParser_ = new IrcParser (this);
 		InitErrorsReplys ();
@@ -135,10 +136,7 @@ namespace Acetamide
 		QStringList commandWithParams = commandMessage.split (' ');
 		if (Name2Command_.contains (commandWithParams.at (0).toLower ()))
 		{
-			if (commandWithParams.at (0).toLower () == "invite")
-				outputMessage = "You invite " + commandWithParams.at (1)
-						+ " to a channel " + commandWithParams.at (2);
-			else if (commandWithParams.at (0).toLower () == "quit")
+			if (commandWithParams.at (0).toLower () == "quit")
 				commandWithParams.append (ServerID_);
 			else if (commandWithParams.at (0).toLower () == "me")
 			{
@@ -386,109 +384,161 @@ namespace Acetamide
 	void IrcServerHandler::InitErrorsReplys ()
 	{
 		Error2Action_ ["401"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["402"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["403"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["404"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["405"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["406"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["407"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["408"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["409"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithoutParam,
+						this, _1, _2);
 		Error2Action_ ["411"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithoutParam,
+						this, _1, _2);
 		Error2Action_ ["412"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithoutParam,
+						this, _1, _2);
 		Error2Action_ ["413"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["414"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["415"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["421"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["422"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithoutParam,
+						this, _1, _2);
 		Error2Action_ ["424"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithoutParam,
+						this, _1, _2);
 		Error2Action_ ["431"] =
-				boost::bind (&IrcServerHandler::NickCmdError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithoutParam,
+						this, _1, _2);
 		Error2Action_ ["432"] =
-				boost::bind (&IrcServerHandler::NickCmdError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["433"] =
-				boost::bind (&IrcServerHandler::NickCmdError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["436"] =
-				boost::bind (&IrcServerHandler::NickCmdError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["437"] =
-				boost::bind (&IrcServerHandler::NickCmdError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["441"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["442"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["443"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["444"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["445"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithoutParam,
+						this, _1, _2);
 		Error2Action_ ["446"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithoutParam,
+						this, _1, _2);
 		Error2Action_ ["451"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithoutParam,
+						this, _1, _2);
 		Error2Action_ ["461"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["462"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithoutParam,
+						this, _1, _2);
 		Error2Action_ ["463"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithoutParam,
+						this, _1, _2);
 		Error2Action_ ["464"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithoutParam,
+						this, _1, _2);
 		Error2Action_ ["465"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithoutParam,
+						this, _1, _2);
 		Error2Action_ ["466"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithoutParam,
+						this, _1, "You are banned!");
 		Error2Action_ ["467"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["471"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["472"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["473"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["474"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["475"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["476"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["477"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["478"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["481"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithoutParam,
+						this, _1, _2);
 		Error2Action_ ["482"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithParam,
+						this, _1, _2);
 		Error2Action_ ["483"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithoutParam,
+						this, _1, _2);
 		Error2Action_ ["484"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithoutParam,
+						this, _1, _2);
 		Error2Action_ ["485"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithoutParam,
+						this, _1, _2);
 		Error2Action_ ["491"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithoutParam,
+						this, _1, _2);
 		Error2Action_ ["501"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithoutParam,
+						this, _1, _2);
 		Error2Action_ ["502"] =
-				boost::bind (&IrcServerHandler::NoSuchNickError, this);
+				boost::bind (&IrcServerHandler::GetErrorWithoutParam,
+						this, _1, _2);
 	}
 
 	void IrcServerHandler::InitCommandResponses ()
@@ -501,9 +551,6 @@ namespace Acetamide
 					this, _1, _2, _3);
 		Command2Action_ ["topic"] =
 				boost::bind (&IrcServerHandler::SetTopic,
-					this, _1, _2, _3);
-		Command2Action_ ["376"] =
-				boost::bind (&IrcServerHandler::JoinFromQueue,
 					this, _1, _2, _3);
 		Command2Action_ ["353"] =
 				boost::bind (&IrcServerHandler::AddParticipants,
@@ -528,52 +575,193 @@ namespace Acetamide
 					this, _1, _2, _3);
 		Command2Action_ ["ctcp_rqst"] =
 				boost::bind (&IrcServerHandler::CTCPRequestResult,
-					 this, _1, _2, _3);
+					this, _1, _2, _3);
 		Command2Action_ ["invite"] =
 				boost::bind (&IrcServerHandler::InviteToChannel,
-					 this, _1, _2, _3);
+					this, _1, _2, _3);
 		Command2Action_ ["kick"] =
 				boost::bind (&IrcServerHandler::KickFromChannel,
-					 this, _1, _2, _3);
+					this, _1, _2, _3);
 		Command2Action_ ["302"] =
 				boost::bind (&IrcServerHandler::GetUserHost,
-					 this, _1, _2, _3);
+					this, _1, _2, _3);
 		Command2Action_ ["303"] =
 				boost::bind (&IrcServerHandler::GetIson,
-					 this, _1, _2, _3);
+					this, _1, _2, _3);
 		Command2Action_ ["305"] =
 				boost::bind (&IrcServerHandler::GetAway,
-					 this, _1, _2, _3);
+					this, _1, _2, _3);
 		Command2Action_ ["306"] =
 				boost::bind (&IrcServerHandler::GetAway,
-					 this, _1, _2, _3);
+					this, _1, _2, _3);
 		Command2Action_ ["311"] =
 				boost::bind (&IrcServerHandler::GetWhoIsUser,
-					 this, _1, _2, _3);
-		Command2Action_ ["311"] =
-				boost::bind (&IrcServerHandler::GetWhoIsUser,
-					 this, _1, _2, _3);
+					this, _1, _2, _3);
+		Command2Action_ ["315"] =
+				boost::bind (&IrcServerHandler::GetEndMessage,
+					this, _1, QList<std::string> () << "who", _3);
 		Command2Action_ ["312"] =
 				boost::bind (&IrcServerHandler::GetWhoIsServer,
-					 this, _1, _2, _3);
+					this, _1, _2, _3);
 		Command2Action_ ["313"] =
 				boost::bind (&IrcServerHandler::GetWhoIsOperator,
-					 this, _1, _2, _3);
+					this, _1, _2, _3);
 		Command2Action_ ["317"] =
 				boost::bind (&IrcServerHandler::GetWhoIsIdle,
-					 this, _1, _2, _3);
+					this, _1, _2, _3);
 		Command2Action_ ["318"] =
-				boost::bind (&IrcServerHandler::GetWhoIsEnd,
-					 this, _1, _2, _3);
+				boost::bind (&IrcServerHandler::GetEndMessage,
+					this, _1, QList<std::string> () << "whois", _3);
 		Command2Action_ ["319"] =
 				boost::bind (&IrcServerHandler::GetWhoIsChannels,
-					 this, _1, _2, _3);
+					this, _1, _2, _3);
 		Command2Action_ ["314"] =
 				boost::bind (&IrcServerHandler::GetWhoWas,
-					 this, _1, _2, _3);
-		Command2Action_ ["369"] =
-				boost::bind (&IrcServerHandler::GetWhoWasEnd,
-					 this, _1, _2, _3);
+					this, _1, _2, _3);
+		Command2Action_ ["366"] =
+				boost::bind (&IrcServerHandler::GetEndMessage,
+					this, _1, QList<std::string> () << "whowas", _3);
+		Command2Action_ ["331"] =
+				boost::bind (&IrcServerHandler::GetNoTopic,
+					this, _1, _2, _3);
+		Command2Action_ ["341"] =
+				boost::bind (&IrcServerHandler::GetInviting,
+					this, _1, _2, _3);
+		Command2Action_ ["342"] =
+				boost::bind (&IrcServerHandler::GetSummoning,
+					this, _1, _2, _3);
+		Command2Action_ ["351"] =
+				boost::bind (&IrcServerHandler::GetVersion,
+					this, _1, _2, _3);
+		Command2Action_ ["352"] =
+				boost::bind (&IrcServerHandler::GetWho,
+					this, _1, _2, _3);
+		Command2Action_ ["366"] =
+				boost::bind (&IrcServerHandler::GetEndMessage,
+					this, _1, QList<std::string> () << "names", _3);
+		Command2Action_ ["364"] =
+				boost::bind (&IrcServerHandler::GetLinks,
+					this, _1, _2, _3);
+		Command2Action_ ["365"] =
+				boost::bind (&IrcServerHandler::GetEndMessage,
+					this, _1, QList<std::string> () << "links", _3);
+		Command2Action_ ["371"] =
+				boost::bind (&IrcServerHandler::GetInfo,
+					this, _1, _2, _3);
+		Command2Action_ ["374"] =
+				boost::bind (&IrcServerHandler::GetEndMessage,
+					this, _1, QList<std::string> () << "info", _3);
+		Command2Action_ ["372"] =
+				boost::bind (&IrcServerHandler::GetMotd,
+					this, _1, _2, _3);
+		Command2Action_ ["375"] =
+				boost::bind (&IrcServerHandler::GetMotd,
+					this, _1, _2, _3);
+		Command2Action_ ["376"] =
+				boost::bind (&IrcServerHandler::GetEndMessage,
+					this, _1, QList<std::string> () << "motd", _3);
+		Command2Action_ ["381"] =
+				boost::bind (&IrcServerHandler::GetYoureOper,
+					this, _1, _2, _3);
+		Command2Action_ ["382"] =
+				boost::bind (&IrcServerHandler::GetRehash,
+					this, _1, _2, _3);
+		Command2Action_ ["391"] =
+				boost::bind (&IrcServerHandler::GetTime,
+					this, _1, _2, _3);
+		Command2Action_ ["392"] =
+				boost::bind (&IrcServerHandler::GetUsersStart,
+					this, _1, _2, _3);
+		Command2Action_ ["393"] =
+				boost::bind (&IrcServerHandler::GetUsers,
+					this, _1, _2, _3);
+		Command2Action_ ["394"] =
+				boost::bind (&IrcServerHandler::GetEndMessage,
+					this, _1, QList<std::string> () << "users", _3);
+		Command2Action_ ["395"] =
+				boost::bind (&IrcServerHandler::GetNoUser,
+					this, _1, _2, _3);
+		Command2Action_ ["200"] =
+				boost::bind (&IrcServerHandler::GetTraceLink,
+					this, _1, _2, _3);
+		Command2Action_ ["201"] =
+				boost::bind (&IrcServerHandler::GetTraceConnecting,
+					this, _1, _2, _3);
+		Command2Action_ ["202"] =
+				boost::bind (&IrcServerHandler::GetTraceHandshake,
+					this, _1, _2, _3);
+		Command2Action_ ["203"] =
+				boost::bind (&IrcServerHandler::GetTraceUnknown,
+					this, _1, _2, _3);
+		Command2Action_ ["204"] =
+				boost::bind (&IrcServerHandler::GetTraceOperator,
+					this, _1, _2, _3);
+		Command2Action_ ["205"] =
+				boost::bind (&IrcServerHandler::GetTraceUser,
+					this, _1, _2, _3);
+		Command2Action_ ["206"] =
+				boost::bind (&IrcServerHandler::GetTraceServer,
+					this, _1, _2, _3);
+		Command2Action_ ["207"] =
+				boost::bind (&IrcServerHandler::GetTraceService,
+					this, _1, _2, _3);
+		Command2Action_ ["208"] =
+				boost::bind (&IrcServerHandler::GetTraceNewType,
+					this, _1, _2, _3);
+		Command2Action_ ["209"] =
+				boost::bind (&IrcServerHandler::GetTraceClass,
+					this, _1, _2, _3);
+		Command2Action_ ["261"] =
+				boost::bind (&IrcServerHandler::GetTraceLog,
+					this, _1, _2, _3);
+		Command2Action_ ["262"] =
+				boost::bind (&IrcServerHandler::GetTraceEnd,
+					this, _1, _2, _3);
+		Command2Action_ ["211"] =
+				boost::bind (&IrcServerHandler::GetStatsLinkInfo,
+					this, _1, _2, _3);
+		Command2Action_ ["212"] =
+				boost::bind (&IrcServerHandler::GetStatsCommands,
+					this, _1, _2, _3);
+		Command2Action_ ["219"] =
+				boost::bind (&IrcServerHandler::GetStatsEnd,
+					this, _1, _2, _3);
+		Command2Action_ ["242"] =
+				boost::bind (&IrcServerHandler::GetStatsUptime,
+					this, _1, _2, _3);
+		Command2Action_ ["243"] =
+				boost::bind (&IrcServerHandler::GetStatsOline,
+					this, _1, _2, _3);
+		Command2Action_ ["251"] =
+				boost::bind (&IrcServerHandler::GetLuserClient,
+					this, _1, _2, _3);
+		Command2Action_ ["252"] =
+				boost::bind (&IrcServerHandler::GetLuserOp,
+					this, _1, _2, _3);
+		Command2Action_ ["253"] =
+				boost::bind (&IrcServerHandler::GetLuserUnknown,
+					this, _1, _2, _3);
+		Command2Action_ ["254"] =
+				boost::bind (&IrcServerHandler::GetLuserChannels,
+					this, _1, _2, _3);
+		Command2Action_ ["255"] =
+				boost::bind (&IrcServerHandler::GetLuserMe,
+					this, _1, _2, _3);
+		Command2Action_ ["256"] =
+				boost::bind (&IrcServerHandler::GetAdmineMe,
+					this, _1, _2, _3);
+		Command2Action_ ["257"] =
+				boost::bind (&IrcServerHandler::GetAdminLoc1,
+					this, _1, _2, _3);
+		Command2Action_ ["258"] =
+				boost::bind (&IrcServerHandler::GetAdminLoc2,
+					this, _1, _2, _3);
+		Command2Action_ ["259"] =
+				boost::bind (&IrcServerHandler::GetAdminEmail,
+					this, _1, _2, _3);
+		Command2Action_ ["263"] =
+				boost::bind (&IrcServerHandler::GetTryAgain,
+					this, _1, _2, _3);
 
 		Name2Command_ ["nick"] = boost::bind (&IrcParser::NickCommand,
 				IrcParser_, _1);
@@ -732,8 +920,7 @@ namespace Acetamide
 		return entry;
 	}
 
-	void IrcServerHandler::JoinFromQueue (const QString&,
-			const QList<std::string>&, const QString&)
+	void IrcServerHandler::JoinFromQueue ()
 	{
 		Q_FOREACH (const ChannelOptions& co, ChannelsQueue_)
 		{
@@ -772,15 +959,8 @@ namespace Acetamide
 			ChannelHandlers_ [channelID]->SetRosterReceived (true);
 		}
 		else
-		{
-			QString cmd = "names " +
-					QString::fromUtf8 (params.last ().c_str ());
-
-			Q_FOREACH (ChannelHandler *ich, ChannelHandlers_.values ())
-				ich->ShowServiceMessage (message,
-						IMessage::MTEventMessage,
-						IMessage::MSTOther);
-		}
+			SendAnswerToChannel ("names",
+					EncodedMessage (message, IMessage::DIn));
 	}
 
 	void IrcServerHandler::JoinParticipant (const QString& nick,
@@ -807,7 +987,7 @@ namespace Acetamide
 			ChannelHandlers_ [channelID]->LeaveChannel (msg);
 		else
 			ChannelHandlers_ [channelID]->RemoveChannelUser (nick
-					, msg
+					, EncodedMessage (msg, IMessage::DIn)
 					, 0);
 	}
 
@@ -879,7 +1059,8 @@ namespace Acetamide
 			QString id = (channel + "@" + ServerOptions_.ServerName_)
 					.toLower ();
 			QString mess =
-					tr ("%1 changed nickname to %2").arg (nick, msg);
+					tr ("%1 changed nickname to %2").arg (nick,
+							EncodedMessage (msg, IMessage::DIn));
 			if (ChannelHandlers_.contains (id))
 				ChannelHandlers_ [id]->ShowServiceMessage (mess,
 						IMessage::MTStatusMessage,
@@ -1067,9 +1248,12 @@ namespace Acetamide
 				QString message = param.left (pos) +
 						tr (" is a ") + param.mid (pos + 1);
 				if (param == params.at (params.count () - 1))
-					SendAnswerToChannel ("userhost", message, true);
+					SendAnswerToChannel ("userhost",
+							EncodedMessage (message, IMessage::DIn),
+									true);
 				else
-					SendAnswerToChannel ("userhost", message);
+					SendAnswerToChannel ("userhost",
+							EncodedMessage (message, IMessage::DIn));
 			}
 	}
 
@@ -1079,18 +1263,21 @@ namespace Acetamide
 		QStringList list = msg.split (' ');
 		Q_FOREACH (const QString& nick, list)
 			if (!nick.isEmpty ())
+			{
 				if (nick == list.at (list.count () - 1))
 					SendAnswerToChannel ("ison",
 							nick + tr (" is online"), true);
 				else
 					SendAnswerToChannel ("ison",
 							nick + tr (" is online"));
+			}
 	}
 
 	void IrcServerHandler::GetAway (const QString&,
 			const QList<std::string>& , const QString& msg)
 	{
-		SendAnswerToChannel ("away", msg, true);
+		SendAnswerToChannel ("away",
+				EncodedMessage (msg, IMessage::DIn), true);
 	}
 
 	void IrcServerHandler::GetWhoIsUser (const QString&,
@@ -1100,7 +1287,8 @@ namespace Acetamide
 				" - " + QString::fromUtf8 (params.at (2).c_str ()) + "@"
 				+ QString::fromUtf8 (params.at (3).c_str ()) +
 				" (" + msg + ")";
-		SendAnswerToChannel ("whois", message, true);
+		SendAnswerToChannel ("whois",
+				EncodedMessage (message, IMessage::DIn), true);
 	}
 
 	void IrcServerHandler::GetWhoIsServer (const QString&,
@@ -1110,8 +1298,10 @@ namespace Acetamide
 				tr (" connected via ") +
 				QString::fromUtf8 (params.at (2).c_str ()) +
 				" (" + msg + ")";
-		SendAnswerToChannel ("whois", message);
-		SendAnswerToChannel ("whowas", message);
+		SendAnswerToChannel ("whois",
+				EncodedMessage (message, IMessage::DIn));
+		SendAnswerToChannel ("whowas",
+				EncodedMessage (message, IMessage::DIn));
 	}
 
 	void IrcServerHandler::GetWhoIsOperator (const QString&,
@@ -1119,7 +1309,8 @@ namespace Acetamide
 	{
 		QString message = QString::fromUtf8 (params.at (1).c_str ()) +
 				+ " " + msg;
-		SendAnswerToChannel ("whois", message);
+		SendAnswerToChannel ("whois",
+				EncodedMessage (message, IMessage::DIn));
 	}
 
 	void IrcServerHandler::GetWhoIsIdle (const QString&,
@@ -1128,13 +1319,8 @@ namespace Acetamide
 		QString message = QString::fromUtf8 (params.at (1).c_str ()) +
 				+ " " + QString::fromUtf8 (params.at (1).c_str ()) +
 				" " + msg;
-		SendAnswerToChannel ("whois", message);
-	}
-
-	void IrcServerHandler::GetWhoIsEnd (const QString&,
-			const QList<std::string>& , const QString& msg)
-	{
-		SendAnswerToChannel ("whois", msg, true);
+		SendAnswerToChannel ("whois",
+				EncodedMessage (message, IMessage::DIn));
 	}
 
 	void IrcServerHandler::GetWhoIsChannels (const QString&,
@@ -1142,7 +1328,8 @@ namespace Acetamide
 	{
 		QString message = QString::fromUtf8 (params.at (1).c_str ()) +
 				tr (" on the channels : ") + msg;
-		SendAnswerToChannel ("whois", message);
+		SendAnswerToChannel ("whois",
+				EncodedMessage (message, IMessage::DIn));
 	}
 
 	void IrcServerHandler::GetWhoWas (const QString&,
@@ -1152,13 +1339,381 @@ namespace Acetamide
 				" - " + QString::fromUtf8 (params.at (2).c_str ()) + "@"
 				+ QString::fromUtf8 (params.at (3).c_str ()) +
 				" (" + msg + ")";
-		SendAnswerToChannel ("whowas", message);
+		SendAnswerToChannel ("whowas",
+				EncodedMessage (message, IMessage::DIn));
 	}
 
-	void IrcServerHandler::GetWhoWasEnd (const QString&,
+	void IrcServerHandler::GetNoTopic (const QString&,
 			const QList<std::string>&, const QString& msg)
 	{
-		SendAnswerToChannel ("whowas", msg, true);
+		SendAnswerToChannel ("topic",
+				EncodedMessage (msg, IMessage::DIn), true);
+	}
+
+	void IrcServerHandler::GetInviting (const QString&,
+			const QList<std::string>& params, const QString&)
+	{
+		QString msg = "You invite " +
+				QString::fromUtf8 (params.at (1).c_str ()) +
+				" to a channel " +
+				QString::fromUtf8 (params.at (2).c_str ());
+		SendAnswerToChannel ("invite",
+				EncodedMessage (msg, IMessage::DIn), true);
+	}
+
+	void IrcServerHandler::GetSummoning (const QString&,
+			const QList<std::string>& params, const QString&)
+	{
+		QString messag = QString::fromUtf8 (params.at (1).c_str ()) +
+				" summoning to IRC";
+		SendAnswerToChannel ("summon", messag, true);
+	}
+
+	void IrcServerHandler::GetVersion (const QString&,
+			const QList<std::string>& params, const QString& msg)
+	{
+		QStringList list;
+		Q_FOREACH (std::string str, params)
+			list << QString::fromUtf8 (str.c_str ());
+		list << msg;
+		SendAnswerToChannel ("version", list.join (" "), true);
+	}
+
+	void IrcServerHandler::GetWho (const QString&,
+			const QList<std::string>& params, const QString& msg)
+	{
+		QString message = QString::fromUtf8 (params
+				.at (params.count () - 1).c_str ()) +
+				" - " + QString::fromUtf8 (params.at (2).c_str ()) + "@"
+				+ QString::fromUtf8 (params.at (3).c_str ()) +
+				" (" + msg.split (' ').at (1) + ")";
+		SendAnswerToChannel ("who",
+				EncodedMessage (message, IMessage::DIn));
+	}
+
+	void IrcServerHandler::GetLinks (const QString&,
+			const QList<std::string>& params, const QString& msg)
+	{
+		QString message = QString::fromUtf8 (params.last ().c_str ()) +
+				" :" + msg;
+		SendAnswerToChannel ("links",
+				EncodedMessage (message, IMessage::DIn));
+	}
+
+	void IrcServerHandler::GetInfo (const QString&,
+			const QList<std::string>&, const QString& msg)
+	{
+		SendAnswerToChannel ("info",
+				EncodedMessage (msg, IMessage::DIn));
+	}
+
+	void IrcServerHandler::GetMotd (const QString&,
+			const QList<std::string>&, const QString& msg)
+	{
+		SendAnswerToChannel ("motd",
+				EncodedMessage (msg, IMessage::DIn));
+	}
+
+	void IrcServerHandler::GetEndMessage (const QString&,
+			const QList<std::string>& params, const QString& msg)
+	{
+		SendAnswerToChannel (params.first ().c_str (),
+				EncodedMessage (msg, IMessage::DIn), true);
+		if (params.first () == "motd")
+			JoinFromQueue ();
+	}
+
+	void IrcServerHandler::GetYoureOper (const QString&,
+			const QList<std::string>& , const QString& msg)
+	{
+		SendAnswerToChannel ("oper",
+				EncodedMessage (msg, IMessage::DIn), true);
+	}
+
+	void IrcServerHandler::GetRehash (const QString&,
+			const QList<std::string>& params, const QString& msg)
+	{
+		QString message = QString::fromUtf8 (params.last ().c_str ()) +
+				" :" + msg;
+		SendAnswerToChannel ("rehash",
+				EncodedMessage (message, IMessage::DIn), true);
+	}
+
+	void IrcServerHandler::GetTime (const QString&,
+			const QList<std::string>& params, const QString& msg)
+	{
+		QString message = QString::fromUtf8 (params.last ().c_str ()) +
+				" :" + msg;
+		SendAnswerToChannel ("time",
+				EncodedMessage (message, IMessage::DIn), true);
+	}
+
+	void IrcServerHandler::GetUsersStart (const QString&,
+			const QList<std::string>&, const QString& msg)
+	{
+		SendAnswerToChannel ("users",
+				EncodedMessage (msg, IMessage::DIn));
+	}
+
+	void IrcServerHandler::GetUsers (const QString&,
+			const QList<std::string>&, const QString& msg)
+	{
+		SendAnswerToChannel ("users",
+				EncodedMessage (msg, IMessage::DIn));
+	}
+
+	void IrcServerHandler::GetNoUser (const QString&,
+			const QList<std::string>&, const QString& msg)
+	{
+		SendAnswerToChannel ("users",
+				EncodedMessage (msg, IMessage::DIn));
+	}
+
+	void IrcServerHandler::GetTraceLink (const QString&,
+			const QList<std::string>& params, const QString&)
+	{
+		QString message;
+		Q_FOREACH (const std::string& str, params.mid (1))
+			message += QString::fromUtf8 (str.c_str ()) + " ";
+		SendAnswerToChannel ("trace", message);
+	}
+
+	void IrcServerHandler::GetTraceConnecting (const QString&,
+			const QList<std::string>& params, const QString&)
+	{
+		QString message;
+		Q_FOREACH (const std::string& str, params.mid (1))
+			message += QString::fromUtf8 (str.c_str ()) + " ";
+		SendAnswerToChannel ("trace", message);
+	}
+
+	void IrcServerHandler::GetTraceHandshake (const QString&,
+			const QList<std::string>& params, const QString&)
+	{
+		QString message;
+		Q_FOREACH (const std::string& str, params.mid (1))
+			message += QString::fromUtf8 (str.c_str ()) + " ";
+		SendAnswerToChannel ("trace", message);
+	}
+
+	void IrcServerHandler::GetTraceUnknown (const QString&,
+			const QList<std::string>& params, const QString&)
+	{
+		QString message;
+		Q_FOREACH (const std::string& str, params.mid (1))
+			message += QString::fromUtf8 (str.c_str ()) + " ";
+		SendAnswerToChannel ("trace", message);
+	}
+
+	void IrcServerHandler::GetTraceOperator (const QString&,
+			const QList<std::string>& params, const QString&)
+	{
+		QString message;
+		Q_FOREACH (const std::string& str, params.mid (1))
+			message += QString::fromUtf8 (str.c_str ()) + " ";
+		SendAnswerToChannel ("trace", message);
+	}
+
+	void IrcServerHandler::GetTraceUser (const QString&,
+			const QList<std::string>& params, const QString&)
+	{
+		QString message;
+		Q_FOREACH (const std::string& str, params.mid (1))
+			message += QString::fromUtf8 (str.c_str ()) + " ";
+		SendAnswerToChannel ("trace", message);
+	}
+
+	void IrcServerHandler::GetTraceServer (const QString&,
+			const QList<std::string>& params, const QString&)
+	{
+		QString message;
+		Q_FOREACH (const std::string& str, params.mid (1))
+			message += QString::fromUtf8 (str.c_str ()) + " ";
+		SendAnswerToChannel ("trace", message);
+	}
+
+	void IrcServerHandler::GetTraceService (const QString&,
+			const QList<std::string>& params, const QString&)
+	{
+		QString message;
+		Q_FOREACH (const std::string& str, params.mid (1))
+			message += QString::fromUtf8 (str.c_str ()) + " ";
+		SendAnswerToChannel ("trace", message);
+	}
+
+	void IrcServerHandler::GetTraceNewType (const QString&,
+			const QList<std::string>& params, const QString&)
+	{
+		QString message;
+		Q_FOREACH (const std::string& str, params.mid (1))
+			message += QString::fromUtf8 (str.c_str ()) + " ";
+		SendAnswerToChannel ("trace", message);
+	}
+
+	void IrcServerHandler::GetTraceClass (const QString&,
+			const QList<std::string>& params, const QString&)
+	{
+		QString message;
+		Q_FOREACH (const std::string& str, params.mid (1))
+			message += QString::fromUtf8 (str.c_str ()) + " ";
+		SendAnswerToChannel ("trace", message);
+	}
+
+	void IrcServerHandler::GetTraceLog (const QString&,
+			const QList<std::string>& params, const QString&)
+	{
+		QString message;
+		Q_FOREACH (const std::string& str, params.mid (1))
+			message += QString::fromUtf8 (str.c_str ()) + " ";
+		SendAnswerToChannel ("trace", message);
+	}
+
+	void IrcServerHandler::GetTraceEnd (const QString&,
+			const QList<std::string>& params, const QString& msg)
+	{
+		QString server = QString::fromUtf8 (params
+				.at (params.count () - 1).c_str ());
+		SendAnswerToChannel ("trace", server + " " +
+				EncodedMessage (msg, IMessage::DIn), true);
+	}
+
+	void IrcServerHandler::GetStatsLinkInfo (const QString&,
+			const QList<std::string>& params, const QString&)
+	{
+		QString message;
+		Q_FOREACH (const std::string& str, params.mid (1))
+			message += QString::fromUtf8 (str.c_str ()) + " ";
+		SendAnswerToChannel ("stats", message);
+	}
+
+	void IrcServerHandler::GetStatsCommands (const QString&,
+			const QList<std::string>& params, const QString&)
+	{
+		QString message;
+		Q_FOREACH (const std::string& str, params.mid (1))
+			message += QString::fromUtf8 (str.c_str ()) + " ";
+		SendAnswerToChannel ("stats", message);
+	}
+
+	void IrcServerHandler::GetStatsEnd (const QString&,
+			const QList<std::string>& params, const QString& msg)
+	{
+		QString letter = QString::fromUtf8 (params
+				.at (params.count () - 1).c_str ());
+		SendAnswerToChannel ("stats", letter + " " +
+				EncodedMessage (msg, IMessage::DIn), true);
+	}
+
+	void IrcServerHandler::GetStatsUptime (const QString&,
+			const QList<std::string>& , const QString& msg)
+	{
+		SendAnswerToChannel ("stats",
+				EncodedMessage (msg, IMessage::DIn));
+	}
+
+	void IrcServerHandler::GetStatsOline (const QString&,
+			const QList<std::string>& params, const QString&)
+	{
+		QString message;
+		Q_FOREACH (const std::string& str, params.mid (1))
+			message += QString::fromUtf8 (str.c_str ()) + " ";
+		SendAnswerToChannel ("stats", message);
+	}
+
+	void IrcServerHandler::GetLuserClient (const QString&,
+			const QList<std::string>&, const QString& msg)
+	{
+		SendAnswerToChannel ("lusers",
+				EncodedMessage (msg, IMessage::DIn));
+	}
+
+	void IrcServerHandler::GetLuserOp (const QString&,
+			const QList<std::string>& params, const QString& msg)
+	{
+		SendAnswerToChannel ("lusers", QString::fromUtf8 (params
+				.last ().c_str ()) + ":" +
+						EncodedMessage (msg, IMessage::DIn));
+	}
+
+	void IrcServerHandler::GetLuserUnknown (const QString&,
+			const QList<std::string>& params, const QString& msg)
+	{
+		SendAnswerToChannel ("lusers", QString::fromUtf8 (params
+				.last ().c_str ()) + ":" +
+						EncodedMessage (msg, IMessage::DIn));
+	}
+
+	void IrcServerHandler::GetLuserChannels (const QString&,
+			const QList<std::string>& params, const QString& msg)
+	{
+		SendAnswerToChannel ("lusers", QString::fromUtf8 (params
+				.last ().c_str ()) + ":" +
+						EncodedMessage (msg, IMessage::DIn));
+	}
+
+	void IrcServerHandler::GetLuserMe (const QString&,
+			const QList<std::string>&, const QString& msg)
+	{
+		SendAnswerToChannel ("lusers",
+					EncodedMessage (msg, IMessage::DIn), true);
+	}
+
+	void IrcServerHandler::GetAdmineMe (const QString&,
+			const QList<std::string>& params, const QString& msg)
+	{
+		SendAnswerToChannel ("admin", QString::fromUtf8 (params
+				.last ().c_str ()) + ":" +
+						EncodedMessage (msg, IMessage::DIn));
+	}
+
+	void IrcServerHandler::GetAdminLoc1 (const QString&,
+			const QList<std::string>&, const QString& msg)
+	{
+		SendAnswerToChannel ("admin",
+				EncodedMessage (msg, IMessage::DIn));
+	}
+
+	void IrcServerHandler::GetAdminLoc2 (const QString&,
+			const QList<std::string>&, const QString& msg)
+	{
+		SendAnswerToChannel ("admin",
+				EncodedMessage (msg, IMessage::DIn));
+	}
+
+	void IrcServerHandler::GetAdminEmail (const QString&,
+			const QList<std::string>&, const QString& msg)
+	{
+		SendAnswerToChannel ("admin",
+				EncodedMessage (msg, IMessage::DIn), true);
+	}
+
+	void IrcServerHandler::GetTryAgain (const QString&,
+			const QList<std::string>& params, const QString& msg)
+	{
+		QString cmd = QString::fromUtf8 (params.last ().c_str ());
+		SendAnswerToChannel (cmd, cmd + ":" +
+				EncodedMessage (msg, IMessage::DIn));
+	}
+
+	void IrcServerHandler::GetErrorWithParam (const QList<std::string>& params,
+			const QString& msg)
+	{
+		QString message;
+		Q_FOREACH (const std::string& str, params.mid (1))
+			message += QString::fromUtf8 (str.c_str ()) + " ";
+		Entity e = Util::MakeNotification ("Azoth",
+				message + ": " + EncodedMessage (msg, IMessage::DIn),
+				PWarning_);
+		Core::Instance ().SendEntity (e);
+	}
+
+	void IrcServerHandler::GetErrorWithoutParam (const QList<std::string>&,
+			const QString& msg)
+	{
+		Entity e = Util::MakeNotification ("Azoth",
+				EncodedMessage (msg, IMessage::DIn),
+				PWarning_);
+		Core::Instance ().SendEntity (e);
 	}
 
 	void IrcServerHandler::InitSocket ()
@@ -1203,15 +1758,12 @@ namespace Acetamide
 					.Command_.toLower ();
 			if (IsErrorReply (cmd))
 			{
-				QString msg = IrcParser_->GetIrcMessageOptions ()
-						.Message_ + " " + QString::fromUtf8 (IrcParser_->
-							GetIrcMessageOptions ().Parameters_.last ()
-								.c_str ());
-				Entity e = Util::MakeNotification ("Azoth",
-						msg,
-						PInfo_);
-				Core::Instance ().SendEntity (e);
-				Error2Action_ [cmd] ();
+				Error2Action_ [cmd] (IrcParser_->GetIrcMessageOptions ()
+							.Parameters_
+						, IrcParser_->GetIrcMessageOptions ()
+							.Message_);
+				if (cmd == "433")
+					NickCmdError ();
 			}
 			else if ((cmd != "join") && (!ChannelJoined_))
 				IncomingMessage2Server ();

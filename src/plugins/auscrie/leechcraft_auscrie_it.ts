@@ -6,22 +6,22 @@
     <message>
         <location filename="auscrie.cpp" line="45"/>
         <source>Make a screenshot</source>
-        <translation type="unfinished"></translation>
+        <translation>Fai una foto</translation>
     </message>
     <message>
         <location filename="auscrie.cpp" line="73"/>
         <source>Simple auto screenshoter.</source>
-        <translation type="unfinished"></translation>
+        <translation>Semplice auto catturare schermate.</translation>
     </message>
     <message>
         <location filename="auscrie.cpp" line="121"/>
         <source>Save as</source>
-        <translation type="unfinished"></translation>
+        <translation>Salva come</translation>
     </message>
     <message>
         <location filename="auscrie.cpp" line="123"/>
         <source>%1 files (*.%1);;All files (*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 files (*.%1);;Tutii files (*.*)</translation>
     </message>
 </context>
 <context>
@@ -29,17 +29,17 @@
     <message>
         <location filename="poster.cpp" line="189"/>
         <source>Page parse failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Pagina parse fallito</translation>
     </message>
     <message>
         <location filename="poster.cpp" line="196"/>
         <source>Image pasted: %1, the URL was copied to the clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Immagine incollata: %1, l&apos;URL è stato copiato nella appunti</translation>
     </message>
     <message>
         <location filename="poster.cpp" line="208"/>
         <source>Upload of screenshot failed: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Carica di foto fallito: %1</translation>
     </message>
 </context>
 <context>
@@ -47,62 +47,62 @@
     <message>
         <location filename="shooterdialog.ui" line="14"/>
         <source>Make a screenshot</source>
-        <translation type="unfinished"></translation>
+        <translation>Fai una foto</translation>
     </message>
     <message>
         <location filename="shooterdialog.ui" line="23"/>
         <source>Action:</source>
-        <translation type="unfinished"></translation>
+        <translation>Azione:</translation>
     </message>
     <message>
         <location filename="shooterdialog.ui" line="31"/>
         <source>upload to dump.bitcheese.net</source>
-        <translation type="unfinished"></translation>
+        <translation>caricare dump.bitcheese.net</translation>
     </message>
     <message>
         <location filename="shooterdialog.ui" line="36"/>
         <source>upload to Savepic.ru</source>
-        <translation type="unfinished"></translation>
+        <translation>caricare Savepic.ru</translation>
     </message>
     <message>
         <location filename="shooterdialog.ui" line="41"/>
         <source>upload to Imagebin.ca</source>
-        <translation type="unfinished"></translation>
+        <translation>caricare Imagebin.ca</translation>
     </message>
     <message>
         <location filename="shooterdialog.ui" line="46"/>
         <source>save</source>
-        <translation type="unfinished"></translation>
+        <translation>salve</translation>
     </message>
     <message>
         <location filename="shooterdialog.ui" line="54"/>
         <source>Timeout:</source>
-        <translation type="unfinished"></translation>
+        <translation>Timeout:</translation>
     </message>
     <message>
         <location filename="shooterdialog.ui" line="61"/>
         <source> s</source>
-        <translation type="unfinished"></translation>
+        <translation> s</translation>
     </message>
     <message>
         <location filename="shooterdialog.ui" line="68"/>
         <source>Format:</source>
-        <translation type="unfinished"></translation>
+        <translation>Formato:</translation>
     </message>
     <message>
         <location filename="shooterdialog.ui" line="76"/>
         <source>JPG</source>
-        <translation type="unfinished"></translation>
+        <translation>JPG</translation>
     </message>
     <message>
         <location filename="shooterdialog.ui" line="81"/>
         <source>PNG</source>
-        <translation type="unfinished"></translation>
+        <translation>PNG</translation>
     </message>
     <message>
         <location filename="shooterdialog.ui" line="89"/>
         <source>Quality:</source>
-        <translation type="unfinished"></translation>
+        <translation>Qualita:</translation>
     </message>
 </context>
 </TS>

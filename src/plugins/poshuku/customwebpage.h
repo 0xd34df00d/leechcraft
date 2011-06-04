@@ -180,9 +180,9 @@ namespace Poshuku
 		void hookUnsupportedContent (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QNetworkReply *reply);
-		void hookWebPageConstructionFinished (LeechCraft::IHookProxy_ptr proxy,
+		void hookWebPageConstructionBegin (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page);
-		void hookWebPageConstructionStarted (LeechCraft::IHookProxy_ptr proxy,
+		void hookWebPageConstructionEnd (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page);
 		void hookWindowCloseRequested (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page);

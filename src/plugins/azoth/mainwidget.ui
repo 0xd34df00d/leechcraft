@@ -21,6 +21,9 @@
     <number>1</number>
    </property>
    <item>
+    <widget class="QLineEdit" name="FilterLine_"/>
+   </item>
+   <item>
     <widget class="QTreeView" name="CLTree_">
      <property name="contextMenuPolicy">
       <enum>Qt::CustomContextMenu</enum>

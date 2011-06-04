@@ -117,6 +117,10 @@ namespace LeechCraft
 				"revenrof@jabber.ru", QString (),
 				QStringList ("Maintainer for the Microsoft Windows."),
 				QList<int> () << 2009 << 2010 << 2011);
+		contribs << ContributorInfo (QString (), "Ignotus",
+				"ignotusp@jabber.kiev.ua", QString (),
+				QStringList ("Improvements in Psto.net plugin for Azoth."),
+				QList<int> () << 2011);
 		contribs << ContributorInfo (QString (), "lk4d4",
 				QString (), "lk4d4@yander.ru",
 				QStringList ("Initial ebuilds for Gentoo Linux."),
@@ -127,7 +131,8 @@ namespace LeechCraft
 				QList<int> () << 2009);
 		contribs << ContributorInfo (QString (), "nobodyzzz",
 				QString (), "nobodyzzz666@gmail.com",
-				QStringList ("Juick plugin."),
+				QStringList ("Juick plugin.")
+					<< tr ("FatApe plugin, the GreaseMonkey support layer for Poshuku."),
 				QList<int> () << 2011);
 		contribs << ContributorInfo (QString (), "PanteR",
 				"panter_dsd@jabber.ru", "panter.dsd@gmail.com",

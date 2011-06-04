@@ -211,7 +211,7 @@ namespace Azoth
 		/** Whether this message should be considered as a the one that
 		 * highlights the participant.
 		 */
-		bool IsHighlightMessage (const IMessage*);
+		bool IsHighlightMessage (IMessage*);
 
 		/** Returns an icon from the current iconset for the given
 		 * contact list entry state.
@@ -450,6 +450,10 @@ namespace Azoth
 		/** Handles the authorization requests from accounts.
 		 */
 		void handleAuthorizationRequested (QObject*, const QString&);
+		
+		/** Handles nick conflict.
+		 */
+		void handleNicknameConflict (const QString&);
 
 		void handleItemSubscribed (QObject*, const QString&);
 		void handleItemUnsubscribed (QObject*, const QString&);
@@ -554,6 +558,8 @@ namespace Azoth
 				QString body,
 				QObject *message);
 		void hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
+				QObject *message);
+		void hookIsHighlightMessage (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message);
 	};
 }

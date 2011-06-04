@@ -668,6 +668,8 @@ bool LeechCraft::Core::handleGotEntity (Entity p, int *id, QObject **pr)
 
 	if (!(numHandlers + numDownloaders))
 		return false;
+	
+	const bool bcastCandidate = !id && !pr && numHandlers;
 
 	if (p.Parameters_ & FromUserInitiated &&
 			!(p.Parameters_ & AutoAccept))
@@ -733,6 +735,13 @@ bool LeechCraft::Core::handleGotEntity (Entity p, int *id, QObject **pr)
 			else
 				return true;
 		}
+	}
+	else if (bcastCandidate)
+	{
+		bool success = false;
+		Q_FOREACH (IEntityHandler *ieh, dia->GetAllEntityHandlers ())
+			success = DoHandle (ieh, p) || success;
+		return success;
 	}
 	else if (dia->GetDownload ())
 	{

@@ -468,13 +468,11 @@ void LeechCraft::MainWindow::on_ActionNewTab__triggered ()
 	if (combined != "contextdependent")
 	{
 		QList<QByteArray> parts = combined.split ('|');
-		if (!parts.size () != 2)
-		{
+		if (parts.size () != 2)
 			qWarning () << Q_FUNC_INFO
 					<< "incorrect split"
 					<< parts
 					<< combined;
-		}
 		else
 		{
 			const QByteArray& newTabId = parts.at (0);

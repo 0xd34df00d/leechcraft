@@ -55,9 +55,14 @@
         <translation>Action:</translation>
     </message>
     <message>
+        <location filename="shooterdialog.ui" line="31"/>
+        <source>upload to dump.bitcheese.net</source>
+        <translation>upload to dump.bitcheese.net</translation>
+    </message>
+    <message>
         <location filename="shooterdialog.ui" line="36"/>
         <source>upload to Savepic.ru</source>
-        <translation type="unfinished"></translation>
+        <translation>upload to Savepic.ru</translation>
     </message>
     <message>
         <location filename="shooterdialog.ui" line="41"/>

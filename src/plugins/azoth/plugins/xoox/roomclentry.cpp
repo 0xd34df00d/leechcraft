@@ -209,6 +209,11 @@ namespace Xoox
 	{
 		return RH_->GetParticipants ();
 	}
+	
+	void RoomCLEntry::Join ()
+	{
+		RH_->Join ();
+	}
 
 	void RoomCLEntry::Leave (const QString& msg)
 	{

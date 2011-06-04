@@ -508,7 +508,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="core.cpp" line="964"/>
         <source>Torrent %1 could not be reannounced at the moment, try again later.</source>
-        <translation>Торрент %1 не может быть еще раз объявлен прямо сейчас, попробуйте позже.</translation>
+        <translation>Торрент %1 не может быть ещё раз объявлен прямо сейчас, попробуйте позже.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1970"/>
@@ -1382,7 +1382,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="newtorrentthirdstep.ui" line="134"/>
         <source>URL seeds:</source>
-        <translation>URL web-сидов:</translation>
+        <translation>URL веб-сидов:</translation>
     </message>
     <message>
         <location filename="newtorrentthirdstep.ui" line="163"/>
@@ -1527,7 +1527,7 @@ IPv6 input mask</extracomment>
         <location filename="tabwidget.ui" line="841"/>
         <location filename="tabwidget.ui" line="873"/>
         <source> kb/s</source>
-        <translation> кб/с</translation>
+        <translation> КиБ/с</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="150"/>
@@ -1812,7 +1812,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="tabwidget.ui" line="1837"/>
         <source>Remote DL speed:</source>
-        <translation>Удаленная скорость скачивания:</translation>
+        <translation>Удалённая скорость скачивания:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="1865"/>
@@ -2600,7 +2600,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="dummy.cpp" line="87"/>
         <source>Web seed timeout:</source>
-        <translation>Тайм-аут связи с web-сидом:</translation>
+        <translation>Тайм-аут связи с веб-сидом:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="89"/>
@@ -2635,7 +2635,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="dummy.cpp" line="98"/>
         <source>Web seed retry wait:</source>
-        <translation>Задержка перед повторным соединением с web-сидом:</translation>
+        <translation>Задержка перед повторным соединением с веб-сидом:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="100"/>
@@ -2731,7 +2731,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="dummy.cpp" line="124"/>
         <source>Web seed pipeline size:</source>
-        <translation>Размер конвейера web-сида:</translation>
+        <translation>Размер конвейера веб-сида:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="125"/>
@@ -2787,12 +2787,12 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="dummy.cpp" line="140"/>
         <source>Accurate but slow file progress calculation</source>
-        <translation>Точный, но медленный расчет прогресса файлов</translation>
+        <translation>Точный, но медленный расчёт прогресса файлов</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="141"/>
         <source>Use read cache</source>
-        <translation>Использовать кеш чтения</translation>
+        <translation>Использовать кэш чтения</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="142"/>
@@ -2802,7 +2802,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="dummy.cpp" line="143"/>
         <source>Prevent disk cache from swapping out</source>
-        <translation>Предотвращать сброс кеша в своп</translation>
+        <translation>Предотвращать сброс кэша в своп</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="144"/>
@@ -2812,7 +2812,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="dummy.cpp" line="145"/>
         <source>Cache expiry:</source>
-        <translation>Годность кеша:</translation>
+        <translation>Годность кэша:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="147"/>
@@ -2932,7 +2932,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="dummy.cpp" line="173"/>
         <source>Cache stats</source>
-        <translation>Статистика кеша</translation>
+        <translation>Статистика кэша</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="174"/>

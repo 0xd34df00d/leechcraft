@@ -57,7 +57,7 @@ namespace Poshuku
 
 		{
 			Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
-			emit hookWebPageConstructionStarted (proxy, this);
+			emit hookWebPageConstructionBegin (proxy, this);
 			if (proxy->IsCancelled ())
 				return;
 		}
@@ -225,7 +225,7 @@ namespace Poshuku
 
 		{
 			Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
-			emit hookWebPageConstructionFinished (proxy, this);
+			emit hookWebPageConstructionEnd (proxy, this);
 			if (proxy->IsCancelled ())
 				return;
 		}

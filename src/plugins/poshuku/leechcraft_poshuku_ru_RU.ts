@@ -1128,7 +1128,7 @@
     <message>
         <location filename="dummy.cpp" line="12"/>
         <source>Notify about finished loads by default</source>
-        <translation>По умолчанию уведомлять о завершенных загрузках</translation>
+        <translation>По умолчанию уведомлять о завершённых загрузках</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="13"/>
@@ -1297,7 +1297,7 @@
     <message>
         <location filename="dummy.cpp" line="49"/>
         <source>Allow plugins</source>
-        <translation>Разрешить плагины</translation>
+        <translation type="unfinished">Разрешить плагины</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="50"/>

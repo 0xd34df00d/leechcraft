@@ -356,6 +356,37 @@ LeechCraft::TabClasses_t MainLayout::GetTabClasses () const {
     return classes;
 }
 
+void MainLayout::TabOpenRequested (const QByteArray &arr){
+    QStringList classes;
+
+    classes     << "DCPPHubFrame"
+                << "DCPPHubManger"
+                << "DCPPPrivateMessage"
+                << "DCPPShareBrowser"
+                << "DCPPFavoriteHubs"
+                << "DCPPFavoriteUsers"
+                << "DCPPSearchFrame"
+                << "DCPPAdls"
+                << "DCPPPublicHubs"
+                << "DCPPDownloads"
+                << "DCPPFinishedUploads"
+                << "DCPPFinishedDownloads"
+                << "DCPPSpy"
+                << "DCPPCustomWidget"
+                << "DCPPQueuedusers";
+
+    if (!classes.contains(QString(arr)))
+        return;
+
+    ArenaWidget::Role role = static_cast<ArenaWidget::Role>(classes.indexOf(QString(arr)));
+    ArenaWidget *awgt = widgetForRole(role);
+
+    if (awgt){
+        mapWidgetOnArena(awgt);
+        addArenaWidgetOnToolbar(awgt, false);
+    }
+}
+
 MainLayout::MainLayout (QWidget *parent):
         statusLabel(NULL),
         tBar(NULL),

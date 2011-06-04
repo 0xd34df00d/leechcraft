@@ -38,7 +38,7 @@ namespace p100q
 		Q_INTERFACES (IInfo IPlugin2)
 
 		QRegExp UserRX_;
-		QRegExp UserWithAvatarRX_;
+		QRegExp PostAuthorRX_;
 		QRegExp PostRX_;
 		QRegExp PostByUserRX_;
 		QRegExp CommentRX_;

@@ -49,6 +49,8 @@ namespace Xoox
 						LeechCraft::Azoth::IMUCPerms
 						LeechCraft::Azoth::IConfigurableMUC);
 
+		friend class RoomHandler;
+
 		GlooxAccount *Account_;
 		QList<QObject*> AllMessages_;
 		RoomHandler *RH_;
@@ -90,6 +92,7 @@ namespace Xoox
 		QString GetMUCSubject () const;
 		void SetMUCSubject (const QString&);
 		QList<QObject*> GetParticipants ();
+		void Join ();
 		void Leave (const QString&);
 		QString GetNick () const;
 		void SetNick (const QString&);
@@ -126,6 +129,7 @@ namespace Xoox
 
 		void gotNewParticipants (const QList<QObject*>&);
 		void mucSubjectChanged (const QString&);
+		void nicknameConflict (const QString&);
 	};
 }
 }

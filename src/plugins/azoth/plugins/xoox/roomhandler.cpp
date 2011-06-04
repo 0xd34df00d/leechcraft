@@ -285,31 +285,29 @@ namespace Xoox
 		// The room is already joined, should do nothing special here.
 		if (!Nick2Entry_.isEmpty ())
 			return;
-
-		if (QMessageBox::question (0,
-				tr ("Nickname conflict"),
-				tr ("You have specified a nickname for the conference "
-					"%1 that's already used. Would you like to try to "
-					"join with another nick?")
-					.arg (RoomJID_),
-				QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+		
+		emit CLEntry_->nicknameConflict (OurNick_);
+	}
+	
+	void RoomHandler::HandlePasswordRequired ()
+	{
+		bool ok = false;
+		const QString& pass = QInputDialog::getText (0,
+				tr ("Authorization required"),
+				tr ("This room is password-protected. Please enter the "
+					"password required to join this room."),
+				QLineEdit::Normal,
+				QString (),
+				&ok);
+		if (!ok ||
+			pass.isEmpty ())
 		{
 			Leave (QString ());
 			return;
 		}
-
-		const QString& newNick = QInputDialog::getText (0,
-				tr ("Enter new nick"),
-				tr ("Enter new nick for joining the conference %1 (%2 is already used):")
-					.arg (RoomJID_)
-					.arg (OurNick_),
-				QLineEdit::Normal,
-				OurNick_);
-		if (newNick.isEmpty ())
-			return;
 		
-		OurNick_ = newNick;
-		Account_->GetClientConnection ()->GetMUCManager ()->joinRoom (RoomJID_, OurNick_);
+		Password_ = pass;
+		Join ();
 	}
 	
 	void RoomHandler::HandleErrorPresence (const QXmppPresence& pres, const QString& nick)
@@ -324,6 +322,9 @@ namespace Xoox
 		case QXmppStanza::Error::Forbidden:
 		case QXmppStanza::Error::NotAllowed:
 			hrText = tr ("access forbidden");
+			break;
+		case QXmppStanza::Error::NotAuthorized:
+			hrText = tr ("password required");
 			break;
 		default:
 			hrText = tr ("unknown condition %1 (please report to developers)")
@@ -347,6 +348,9 @@ namespace Xoox
 		{
 		case QXmppStanza::Error::Conflict:
 			HandleNickConflict ();
+			break;
+		case QXmppStanza::Error::NotAuthorized:
+			HandlePasswordRequired ();
 			break;
 		default:
 			break;
@@ -489,6 +493,14 @@ namespace Xoox
 	{
 		return Subject_;
 	}
+	
+	void RoomHandler::Join ()
+	{
+		if (!Nick2Entry_.isEmpty ())
+			return;
+		
+		MUCManager_->joinRoom (RoomJID_, OurNick_, Password_);
+	}
 
 	void RoomHandler::SetSubject (const QString& subj)
 	{
@@ -528,9 +540,13 @@ namespace Xoox
 
 	void RoomHandler::SetOurNick (const QString& nick)
 	{
-		QXmppPresence pres;
-		pres.setTo (RoomJID_ + '/' + nick);
-		Account_->GetClientConnection ()->GetClient ()->sendPacket (pres);
+		OurNick_ = nick;
+		if (!Nick2Entry_.isEmpty ())
+		{
+			QXmppPresence pres;
+			pres.setTo (RoomJID_ + '/' + nick);
+			Account_->GetClientConnection ()->GetClient ()->sendPacket (pres);
+		}
 	}
 
 	void RoomHandler::SetAffiliation (RoomParticipantEntry *entry,

@@ -28,7 +28,6 @@ namespace Azoth
 {
 namespace Acetamide
 {
-
 	struct Message
 	{
 		QString Body_;

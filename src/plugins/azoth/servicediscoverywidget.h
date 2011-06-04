@@ -18,14 +18,19 @@
 
 #ifndef PLUGINS_AZOTH_SERVICEDISCOVERYWIDGET_H
 #define PLUGINS_AZOTH_SERVICEDISCOVERYWIDGET_H
+#include <boost/shared_ptr.hpp>
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
 #include "ui_servicediscoverywidget.h"
+
+class QComboBox;
 
 namespace LeechCraft
 {
 namespace Azoth
 {
+	class ISDSession;
+
 	class ServiceDiscoveryWidget : public QWidget
 								 , public ITabWidget
 	{
@@ -36,6 +41,10 @@ namespace Azoth
 		
 		Ui::ServiceDiscoveryWidget Ui_;
 		QToolBar *Toolbar_;
+		QComboBox *AccountBox_;
+		QLineEdit *AddressLine_;
+		QTimer *DiscoveryTimer_;
+		boost::shared_ptr<ISDSession> SDSession_;
 	public:
 		static void SetParentMultiTabs (QObject*);
 
@@ -45,6 +54,10 @@ namespace Azoth
 		QObject* ParentMultiTabs ();
 		void Remove ();
 		QToolBar* GetToolBar () const;
+	private slots:
+		void handleDiscoveryAddressChanged ();
+		void on_DiscoveryTree__customContextMenuRequested (const QPoint&);
+		void discover ();
 	signals:
 		void removeTab (QWidget*);
 	};

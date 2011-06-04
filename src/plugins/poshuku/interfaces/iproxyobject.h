@@ -20,8 +20,7 @@
 #define PLUGINS_POSHUKU_INTERFACES_IPROXYOBJECT_H
 #include <QtPlugin>
 
-class QMenu;
-class QNetworkAccessManager;
+class QUrl;
 
 namespace LeechCraft
 {
@@ -32,6 +31,8 @@ namespace Poshuku
 	public:
 		virtual QObject* GetHistoryModel () const = 0;
 		virtual QObject* GetFavoritesModel () const = 0;
+		virtual QObject* OpenInNewTab (const QUrl& url,
+				bool inverted = false) const = 0;
 	};
 }
 }

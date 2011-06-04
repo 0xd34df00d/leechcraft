@@ -48,6 +48,7 @@ namespace Xoox
 		QString Subject_;
 		QString RoomJID_;
 		QString OurNick_;
+		QString Password_;
 		// contains new nicks
 		QSet<QString> PendingNickChanges_;
 	public:
@@ -64,6 +65,7 @@ namespace Xoox
 		QList<QObject*> GetParticipants () const;
 		QString GetSubject () const;
 		void SetSubject (const QString&);
+		void Join ();
 		void Leave (const QString& msg, bool remove = true);
 		RoomParticipantEntry* GetSelf () const;
 		QString GetOurNick () const;
@@ -104,6 +106,7 @@ namespace Xoox
 				QXmppMucAdminIq::Item::Role,
 				const QString&);
 		void HandleNickConflict ();
+		void HandlePasswordRequired ();
 
 		void RemoveThis ();
 	};

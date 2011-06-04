@@ -149,26 +149,29 @@ namespace LeechCraft
 					property ("AddedAs").toString () != "IDownload")
 			return 0;
 
-		const downloaders_t::const_iterator& rit = Downloaders_.find (Buttons_->
-				checkedButton ()->text ());
-		return rit != Downloaders_.end () ? rit->second : 0;
+		return Downloaders_.value (Buttons_->
+				checkedButton ()->text (), 0);
 	}
 
 	IDownload* HandlerChoiceDialog::GetFirstDownload ()
 	{
-		return Downloaders_.empty () ? 0 : Downloaders_.begin ()->second;
+		return Downloaders_.empty () ? 0 : Downloaders_.begin ().value ();
 	}
 
 	IEntityHandler* HandlerChoiceDialog::GetEntityHandler ()
 	{
-		const handlers_t::const_iterator& rit = Handlers_.find (Buttons_->
-				checkedButton ()->text ());
-		return rit != Handlers_.end () ? rit->second : 0;
+		return Handlers_.value (Buttons_->
+				checkedButton ()->text (), 0);
 	}
 
 	IEntityHandler* HandlerChoiceDialog::GetFirstEntityHandler ()
 	{
-		return Handlers_.empty () ? 0 : Handlers_.begin ()->second;
+		return Handlers_.empty () ? 0 : Handlers_.begin ().value ();
+	}
+	
+	QList<IEntityHandler*> HandlerChoiceDialog::GetAllEntityHandlers ()
+	{
+		return Handlers_.values ();
 	}
 
 	QString HandlerChoiceDialog::GetFilename ()

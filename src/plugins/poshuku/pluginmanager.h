@@ -251,6 +251,8 @@ namespace Poshuku
 		 * extension.
 		 * @param extensionReturn The struct with return value of the
 		 * extension.
+		 * 
+		 * @sa hookSupportsExtension().
 		 */
 		void hookExtension (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
@@ -303,9 +305,31 @@ namespace Poshuku
 		void hookGeometryChangeRequested (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QRect rect);
+		
+		/** @brief Called whenever the icon of the page changes.
+		 * 
+		 * The hook may cancel the default implementation.
+		 * 
+		 * @param proxy The standard hook proxy object.
+		 * @param page The web page that has its icon changed.
+		 * @param browserWidget The widget with the browser.
+		 */
 		void hookIconChanged (LeechCraft::IHookProxy_ptr proxy,
+				QWebPage *page,
 				QObject *browserWidget);
-		void hookIconRequested (LeechCraft::IHookProxy_ptr,
+		
+		/** @brief Called whenever an icon is requested for url.
+		 * 
+		 * This hook may be used to override an icon for some URLs, for
+		 * example. To do this, the hook should cancel the default
+		 * implementation, and set the return value of the proxy to
+		 * the corresponding QIcon. So, the return value of the proxy
+		 * is converted to QIcon if the hook is canceled.
+		 * 
+		 * @param proxy The standard hook proxy object.
+		 * @param url The URL for which the icon is requested.
+		 */
+		void hookIconRequested (LeechCraft::IHookProxy_ptr proxy,
 				const QUrl& url);
 		
 		/** @brief Called when the frame is laid out for the first time.
@@ -475,9 +499,24 @@ namespace Poshuku
 		void hookLoadFinished (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
 				bool result);
+		
+		/** @brief Called when the given page load progress changes.
+		 * 
+		 * The hook may cancel the default implementation, which updates
+		 * the load progress indicator. Alternatively, the hook may
+		 * change the reported load progress percentage by using
+		 * IHookProxy::SetValue() with the key "progress" and the value
+		 * of type int.
+		 * 
+		 * @param proxy The standard hook proxy object.
+		 * @param page The page whose load progress changed.
+		 * @param browserWidget The widget with the page.
+		 * @param progress The load progress, in percents.
+		 */
 		void hookLoadProgress (LeechCraft::IHookProxy_ptr proxy,
+				QWebPage *page,
 				QObject *browserWidget,
-				int *progress);
+				int progress);
 		
 		/** @brief Called when the given page begins loading.
 		 * 
@@ -486,39 +525,180 @@ namespace Poshuku
 		 */
 		void hookLoadStarted (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page);
+		
+		/** @brief Called when the "More" menu begins filling.
+		 * 
+		 * This hook is called when the "More" menu begins filling for
+		 * the given webView in the given browserWidget. The hook may
+		 * add new items to the menu, for example. Please note that the
+		 * menu would be empty before calling the hook, but if another
+		 * hook added items to it before your one, your hook would get
+		 * a menu with some items already existent.
+		 * 
+		 * Typically, this hook is called whenever a new browser widget
+		 * is constructed, and only once during the lifetime of the
+		 * widget. The menu won't change during that lifetime, so
+		 * you may safely store it in case you need.
+		 * 
+		 * @param proxy The standard hook proxy object.
+		 * @param menu The menu that's going to be filled.
+		 * @param webView The QWebView the menu is associated with.
+		 * @param browserWidget The browser widget with the webView.
+		 * 
+		 * @sa hookMoreMenuFillEnd()
+		 */
 		void hookMoreMenuFillBegin (LeechCraft::IHookProxy_ptr proxy,
 				QMenu *menu,
 				QWebView *webView,
 				QObject *browserWidget);
+		
+		/** @brief Called when the "More" menu ends filling.
+		 * 
+		 * This method is analogous to hookMoreMenuFillBegin(), but,
+		 * instead, it is called after the default implementation has
+		 * finished filling the menu.
+		 * 
+		 * @param proxy The standard hook proxy object.
+		 * @param menu The menu that's finishing being filled.
+		 * @param webView The QWebView the menu is associated with.
+		 * @param browserWidget The browser widget containing webView.
+		 * 
+		 * @sa hookMoreMenuFillBegin()
+		 */
 		void hookMoreMenuFillEnd (LeechCraft::IHookProxy_ptr proxy,
 				QMenu *menu,
 				QWebView *webView,
 				QObject *browserWidget);
-		void hookNotificationActionTriggered (LeechCraft::IHookProxy_ptr proxy,
-				QObject *browserWidget,
-				int *index);
+		
+		/** @brief Called when a page finishes loading and user
+		 * notification is being prepared.
+		 * 
+		 * The hook may only override the value of the ok parameter by
+		 * IHookProxy::SetValue() with name "ok" and value of type bool.
+		 * 
+		 * @param proxy The standard hook proxy object.
+		 * @param view The QWebView whose contents finished loading.
+		 * @param browserWidget The browser widget containing the view.
+		 * @param ok Whether the page finished loading successfully.
+		 * @param notifyWhenFinished Whether user chose to be notified
+		 * about finished page loads.
+		 * @param own Whether the browserWidget is exported to another
+		 * plugin.
+		 * @param htmlMode Whether the contents of the browserWidget
+		 * were obtained by setting the HTML contents directly instead
+		 * of loading them from an URL.
+		 */
 		void hookNotifyLoadFinished (LeechCraft::IHookProxy_ptr proxy,
+				QWebView *view,
 				QObject *browserWidget,
-				bool *ok,
+				bool ok,
 				bool notifyWhenFinished,
 				bool own,
 				bool htmlMode);
+		
+		/** @brief Called when the frame is to be printed.
+		 * 
+		 * The print action could either be requested by the user
+		 * directly or, for example, by some JS running on the page.
+		 * 
+		 * The hook may cancel the default handler (and no printing
+		 * would take place), or, alternatively, it may override the
+		 * value of preview by IHookProxy::SetValue() with the name
+		 * "preview" and value of type bool.
+		 * 
+		 * @param proxy The standard hook proxy object.
+		 * @param browserWidget The browser widget containing the frame
+		 * to be printed.
+		 * @param preview Whether preview should be done before the
+		 * actual printing takes place.
+		 * @param frame The frame to be printed.
+		 */
 		void hookPrint (LeechCraft::IHookProxy_ptr proxy,
 				QObject *browserWidget,
-				bool *preview,
+				bool preview,
 				QWebFrame *frame);
+		
+		/** @brief This hook is called when the given URL should be set.
+		 * 
+		 * For example, this hook is called when the browser reacts to
+		 * the user input, or some other plugin in LeechCraft wants this
+		 * browser widget to navigate to the given URL.
+		 * 
+		 * The hook may cancel the default implementation, or,
+		 * alternatively, it may override the URL by calling
+		 * IHookProxy::SetValue() with the name "url" and value of type
+		 * QUrl.
+		 * 
+		 * @param proxy The standard hook proxy object.
+		 * @param browserWidget The widget whose URL is to be set.
+		 * @param url The original URL.
+		 */
 		void hookSetURL (LeechCraft::IHookProxy_ptr proxy,
 				QObject *browserWidget,
-				QUrl *url);
+				QUrl url);
+		
+		/** @brief Called when the given status bar message is to be
+		 * displayed for the given browserWidget.
+		 * 
+		 * The hook may cancel the default implementation, or,
+		 * alternatively, override the message to be shown by calling
+		 * IHookProxy::SetValue() with the name "message" and value of
+		 * type QString.
+		 * 
+		 * @param proxy The standard hook proxy object.
+		 * @param browserWidget The browser widget for which the message
+		 * is to be displayed.
+		 * @param message The original message to be displayed.
+		 */
 		void hookStatusBarMessage (LeechCraft::IHookProxy_ptr proxy,
 				QObject *browserWidget,
-				QString *message);
+				QString message);
+		
+		/** @brief Called from QWebPage::supportsExtension().
+		 * 
+		 * The hook may cancel the default implementation.
+		 * 
+		 * @param proxy The standard hook proxy object.
+		 * @param page The page whose contents triggered the query for
+		 * the given extension support.
+		 * @param extension The extension to be queried.
+		 * 
+		 * @sa hookExtension().
+		 */
 		void hookSupportsExtension (LeechCraft::IHookProxy_ptr proxy,
 				const QWebPage *page,
 				QWebPage::Extension extension);
+		
+		/** @brief Called when tabbar context menu is requested.
+		 * 
+		 * The hook may choose to add new actions to the context menu,
+		 * in this case it should use the IHookProxy::SetValue() with
+		 * the name "actions", and a list of actions (QList<QObject*>)
+		 * should be inserted there.
+		 * 
+		 * Please note that other hooks may have already inserted hooks
+		 * into the list, so a well-written hook should first extract
+		 * the list of already-added actions and append new ones to that
+		 * list.
+		 * 
+		 * @param proxy The standard hook proxy object.
+		 * @param browserWidget The browser widget for which tabbar
+		 * actions are requested.
+		 */
 		void hookTabBarContextMenuActions (LeechCraft::IHookProxy_ptr proxy,
-				const QObject *browserWidget,
-				QList<QAction*>*) const;
+				const QObject *browserWidget) const;
+				
+		/** @brief Called when the given page encounters unsupported
+		 * content.
+		 * 
+		 * The hook may choose to handle the reply and cancel the
+		 * default implementation.
+		 * 
+		 * @param proxy The standard hook proxy object.
+		 * @param page The page that encountered the unsupported
+		 * content.
+		 * @param reply The QNetworkReply with the unsupported content.
+		 */
 		void hookUnsupportedContent (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QNetworkReply *reply);
@@ -533,17 +713,69 @@ namespace Poshuku
 		void hookUserAgentForUrlRequested (LeechCraft::IHookProxy_ptr proxy,
 				const QUrl& url,
 				const QWebPage* sourcePage);
-		void hookWebPageConstructionFinished (LeechCraft::IHookProxy_ptr proxy,
+		
+		/** @brief Called when the given page begins constructing.
+		 * 
+		 * This hook is useful for doing actions that should be done for
+		 * each page constructed.
+		 * 
+		 * @param proxy The standard hook proxy object.
+		 * @param page The QWebPage that begins constructing.
+		 */
+		void hookWebPageConstructionBegin (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page);
-		void hookWebPageConstructionStarted (LeechCraft::IHookProxy_ptr proxy,
+		
+		/** @brief Called when the given page finishes constructing.
+		 * 
+		 * This hook is analogous to hookWebPageConstructionBegin(), but
+		 * it is called in the end of initialization process.
+		 * 
+		 * @param proxy The standard hook proxy object.
+		 * @param page The QWebPage that finished constructing.
+		 * 
+		 * @sa hookWebPageConstructionBegin().
+		 */
+		void hookWebPageConstructionEnd (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page);
+		
+		/** @brief Called from QWebPluginFactory::refreshPlugins().
+		 * 
+		 * This hook may be used to inject plugins derived from
+		 * IWebPlugin into the WebKit's QWebPluginFactory. Just append
+		 * the required plugins to the plugins list.
+		 * 
+		 * @param proxy The standard hook proxy object.
+		 * @param plugins The list of plugins.
+		 */
 		void hookWebPluginFactoryReload (LeechCraft::IHookProxy_ptr proxy,
 				QList<IWebPlugin*>& plugins);
+		
+		/** @brief Called when context menu for the view is requested.
+		 * 
+		 * This hook is called when building the context menu after user
+		 * has requested it.
+		 * 
+		 * The building has several different stages in which actions of
+		 * different semantics are added to the menu, so the hook may
+		 * choose the most appropriate build stage for injecting its
+		 * actions, for example. Consecutively, the hook is called
+		 * multiple times for the given menu.
+		 * 
+		 * @param proxy The standard hook proxy object.
+		 * @param view The QWebView for which the context menu is
+		 * requested.
+		 * @param event The event object that triggered the context
+		 * menu.
+		 * @param hitTestResult The result of the
+		 * QWebFrame::hitTestContent().
+		 * @param menu The menu being built.
+		 * @param menuBuildStage The stage of the menu being built.
+		 */
 		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr proxy,
-				QWebView *sourceView,
+				QWebView *view,
 				QContextMenuEvent *event,
 				const QWebHitTestResult& hitTestResult,
-				QMenu *menuBeingBuilt,
+				QMenu *menu,
 				WebViewCtxMenuStage menuBuildStage);
 		
 		/** @brief Called from QWebPage::windowCloseRequested().

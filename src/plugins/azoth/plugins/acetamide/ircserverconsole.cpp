@@ -29,8 +29,8 @@ namespace Acetamide
 	IrcServerConsole::IrcServerConsole (IrcServerHandler *ish,
 			IrcAccount *acc)
 	: EntryBase (acc)
-	, Account_ (acc)
 	, ISH_ (ish)
+	, Account_ (acc)
 	{
 	}
 

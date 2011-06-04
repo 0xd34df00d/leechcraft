@@ -32,7 +32,8 @@ namespace Poshuku
 namespace OnlineBookmarks
 {
 	SyncBookmarks::SyncBookmarks (QObject *parent)
-	: IsSync_ (false)
+	: QObject (parent)
+	, IsSync_ (false)
 	{
 	}
 
@@ -44,11 +45,8 @@ namespace OnlineBookmarks
 
 	bool SyncBookmarks::IsUrlInUploadFile (const QString& url)
 	{
-		const QStringList& urls = GetUrlsFromUploadFile();
-		Q_FOREACH (const QVariant& var, urls)
-			if (urls.contains (url, Qt::CaseInsensitive))
-				return true;
-		return false;
+		const QStringList& urls = GetUrlsFromUploadFile ();
+		return urls.contains (url, Qt::CaseInsensitive);
 	}
 
 	namespace
@@ -114,7 +112,7 @@ namespace OnlineBookmarks
 			downloadBookmarks (service, QDateTime::fromString ("01.01.1970", "dd.MM.yyyy"));
 	}
 
-	void SyncBookmarks::readDownloadReply (const QList<QVariant>& importBookmarks, const QUrl &url)
+	void SyncBookmarks::readDownloadReply (const QList<QVariant>& importBookmarks, const QUrl&)
 	{
 		Entity eBookmarks = Util::MakeEntity (QVariant (),
 				QString (),

@@ -42,6 +42,7 @@
 #include "transferjobmanager.h"
 #include "bookmarksmanagerdialog.h"
 #include "simpledialog.h"
+#include "zoomeventfilter.h"
 
 namespace LeechCraft
 {
@@ -72,6 +73,7 @@ namespace Azoth
 	, PreviousState_ (CPSNone)
 	{
 		Ui_.setupUi (this);
+		Ui_.View_->installEventFilter (new ZoomEventFilter (Ui_.View_));
 
 		Ui_.SubjBox_->setVisible (false);
 		Ui_.SubjChange_->setEnabled (false);
@@ -231,6 +233,9 @@ namespace Azoth
 			Ui_.View_->page ()->mainFrame ()->evaluateJavaScript (scrollerJS.readAll ());
 			Ui_.View_->page ()->mainFrame ()->evaluateJavaScript ("InstallEventListeners(); ScrollToBottom();");
 		}
+		
+		emit hookThemeReloaded (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy),
+				this, Ui_.View_, GetEntry<QObject> ());
 	}
 
 	void ChatTab::HasBeenAdded ()
@@ -302,6 +307,7 @@ namespace Azoth
 	
 	void ChatTab::TabLostCurrent ()
 	{
+		TypeTimer_->stop ();
 		SetChatPartState (CPSInactive);
 	}
 	
@@ -1014,9 +1020,7 @@ namespace Azoth
 			if (!part)
 			{
 				qWarning () << Q_FUNC_INFO
-						<< "unable to cast message from"
-						<< part->GetEntryID ()
-						<< "to ICLEntry"
+						<< "unable to cast item to ICLEntry"
 						<< item;
 				return QStringList ();
 			}

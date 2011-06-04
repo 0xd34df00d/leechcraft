@@ -18,9 +18,16 @@
 
 #ifndef PLUGINS_POSHUKU_PLUGINS_FATAPE_FATAPE_H
 #define PLUGINS_POSHUKU_PLUGINS_FATAPE_FATAPE_H
+#include "userscript.h"
 #include <QObject>
+#include <QList>
+#include <QStandardItemModel>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
+#include <interfaces/iproxyobject.h>
+#include <interfaces/ihavesettings.h>
+
+class QTranslator;
 
 namespace LeechCraft
 {
@@ -31,9 +38,16 @@ namespace FatApe
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
+				 , public IHaveSettings
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2)
+		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
+
+		boost::shared_ptr<QTranslator> Translator_;
+		QList<UserScript> UserScripts_;
+		IProxyObject *Proxy_;
+		Util::XmlSettingsDialog_ptr SettingsDialog_;
+		boost::shared_ptr<QStandardItemModel> Model_; 
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -43,6 +57,15 @@ namespace FatApe
 		QString GetInfo () const;
 		QIcon GetIcon () const;
 		QSet<QByteArray> GetPluginClasses () const;
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+		void EditScript (int scriptIndex);
+		void DeleteScript (int scriptIndex);
+		void SetScriptEnabled(int scriptIndex, bool value);
+	public slots:
+		void hookInitialLayoutCompleted (LeechCraft::IHookProxy_ptr proxy,
+				QWebPage *page,
+				QWebFrame *frame);
+		void initPlugin (QObject *proxy);
 	};
 }
 }

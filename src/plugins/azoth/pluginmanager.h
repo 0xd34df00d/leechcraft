@@ -153,6 +153,8 @@ namespace Azoth
 				QObject *chatTab,
 				QString body,
 				QObject *message);
+		void hookIsHighlightMessage (LeechCraft::IHookProxy_ptr proxy,
+				QObject *message);
 		void hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QObject *entry,
@@ -162,6 +164,10 @@ namespace Azoth
 		void hookMessageCreated (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QObject *message);
+		void hookThemeReloaded (LeechCraft::IHookProxy_ptr proxy,
+				QObject *chatTab,
+				QWebView *view,
+				QObject *entry);
 	};
 }
 }

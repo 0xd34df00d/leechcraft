@@ -53,6 +53,7 @@ SET (SRCS
 	simpledialog.cpp
 	servicediscoverywidget.cpp
 	eventsnotifier.cpp
+	zoomeventfilter.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -79,6 +80,7 @@ SET (HEADERS
 	simpledialog.h
 	servicediscoverywidget.h
 	eventsnotifier.h
+	zoomeventfilter.h
 	sourcetrackingmodel.h
 	interfaces/iprotocolplugin.h
 	interfaces/iaccount.h
@@ -131,10 +133,11 @@ SET (AZOTH_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 OPTION (ENABLE_AZOTH_ACETAMIDE "Build Acetamide, IRC support for Azoth" ON)
 OPTION (ENABLE_AZOTH_CHATHISTORY "Build ChatHistory which keeps, well, chat history" ON)
-OPTION (ENABLE_AZOTH_NATIVEEMOTICONS "Build support for Azoth's own emoticons packs" ON)
-OPTION (ENABLE_AZOTH_STANDARDSTYLES "Build support for standard Azoth styles" ON)
-OPTION (ENABLE_AZOTH_P100Q "Build plugin for the psto.net microblogging service" ON)
+OPTION (ENABLE_AZOTH_HILI "Build HiLi, plugin for customizing conference highlights" ON)
 OPTION (ENABLE_AZOTH_JUICK "Build plugin for the juick.com microblogging service" ON)
+OPTION (ENABLE_AZOTH_NATIVEEMOTICONS "Build support for Azoth's own emoticons packs" ON)
+OPTION (ENABLE_AZOTH_P100Q "Build plugin for the psto.net microblogging service" ON)
+OPTION (ENABLE_AZOTH_STANDARDSTYLES "Build support for standard Azoth styles" ON)
 OPTION (ENABLE_AZOTH_XOOX "Build Xoox, the QXmpp-aided XMPP support for Azoth" ON)
 
 IF (ENABLE_AZOTH_ACETAMIDE)
@@ -143,6 +146,12 @@ ENDIF (ENABLE_AZOTH_ACETAMIDE)
 IF (ENABLE_AZOTH_CHATHISTORY)
 	ADD_SUBDIRECTORY (plugins/chathistory)
 ENDIF (ENABLE_AZOTH_CHATHISTORY)
+IF (ENABLE_AZOTH_HILI)
+	ADD_SUBDIRECTORY (plugins/hili)
+ENDIF (ENABLE_AZOTH_HILI)
+IF (ENABLE_AZOTH_JUICK)
+	ADD_SUBDIRECTORY (plugins/juick)
+ENDIF (ENABLE_AZOTH_JUICK)
 IF (ENABLE_AZOTH_NATIVEEMOTICONS)
 	ADD_SUBDIRECTORY (plugins/nativeemoticons)
 ENDIF (ENABLE_AZOTH_NATIVEEMOTICONS)
@@ -152,9 +161,6 @@ ENDIF (ENABLE_AZOTH_STANDARDSTYLES)
 IF (ENABLE_AZOTH_P100Q)
 	ADD_SUBDIRECTORY (plugins/p100q)
 ENDIF (ENABLE_AZOTH_P100Q)
-IF (ENABLE_AZOTH_JUICK)
-	ADD_SUBDIRECTORY (plugins/juick)
-ENDIF (ENABLE_AZOTH_JUICK)
 IF (ENABLE_AZOTH_XOOX)
 	ADD_SUBDIRECTORY (plugins/xoox)
 ENDIF (ENABLE_AZOTH_XOOX)

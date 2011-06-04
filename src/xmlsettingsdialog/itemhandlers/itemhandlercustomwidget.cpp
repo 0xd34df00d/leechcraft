@@ -49,7 +49,7 @@ namespace LeechCraft
 		if (item.attribute ("label") == "own")
 		{
 			lay->setRowStretch (0, 1);
-			lay->addWidget (widget, 0, 0);
+			lay->addWidget (widget, 0, 0, 1, -1);
 		}
 	}
 };

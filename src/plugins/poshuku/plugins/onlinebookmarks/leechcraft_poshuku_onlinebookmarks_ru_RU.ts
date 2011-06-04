@@ -80,7 +80,7 @@
     <message>
         <location filename="onlinebookmarks.cpp" line="94"/>
         <source>Sync local bookmarks with your account in online bookmark services like Read It Later</source>
-        <translation>Синхронизация локальных закладок с вашей учетной записью в сервисах онлайн-закладок типа Read It Later</translation>
+        <translation>Синхронизация локальных закладок с вашей учётной записью в сервисах онлайн-закладок типа Read It Later</translation>
     </message>
     <message>
         <location filename="onlinebookmarks.cpp" line="136"/>
@@ -127,7 +127,7 @@
     <message>
         <location filename="settings.cpp" line="265"/>
         <source>Invalid account data</source>
-        <translation>Неправильные данные учетной записи</translation>
+        <translation>Неправильные данные учётной записи</translation>
     </message>
 </context>
 <context>
@@ -160,7 +160,7 @@
     <message>
         <location filename="dummy.cpp" line="3"/>
         <source>Accounts</source>
-        <translation>Учетные записи</translation>
+        <translation>Учётные записи</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="4"/>

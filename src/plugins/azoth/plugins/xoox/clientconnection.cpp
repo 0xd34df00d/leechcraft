@@ -160,6 +160,14 @@ namespace Xoox
 				SIGNAL (itemsReceived (const QXmppDiscoveryIq&)),
 				CapsManager_,
 				SLOT (handleItemsReceived (const QXmppDiscoveryIq&)));
+		connect (DiscoveryManager_,
+				SIGNAL (infoReceived (const QXmppDiscoveryIq&)),
+				this,
+				SLOT (handleDiscoInfo (const QXmppDiscoveryIq&)));
+		connect (DiscoveryManager_,
+				SIGNAL (itemsReceived (const QXmppDiscoveryIq&)),
+				this,
+				SLOT (handleDiscoItems (const QXmppDiscoveryIq&)));
 
 		connect (MUCManager_,
 				SIGNAL (roomParticipantNickChanged (const QString&, const QString&, const QString&)),
@@ -306,6 +314,11 @@ namespace Xoox
 	{
 		return MUCManager_;
 	}
+	
+	QXmppDiscoveryManager* ClientConnection::GetDiscoveryManager () const
+	{
+		return DiscoveryManager_;
+	}
 
 	QXmppTransferManager* ClientConnection::GetTransferManager () const
 	{
@@ -324,6 +337,22 @@ namespace Xoox
 				DiscoveryManager_->requestInfo (jid + '/' + variant);
 		else
 			DiscoveryManager_->requestInfo (jid);
+	}
+	
+	void ClientConnection::RequestInfo (const QString& jid,
+			DiscoCallback_t callback, const QString& node)
+	{
+		AwaitingDiscoInfo_ [jid] = callback;
+		
+		DiscoveryManager_->requestInfo (jid, node);
+	}
+	
+	void ClientConnection::RequestItems (const QString& jid,
+			DiscoCallback_t callback, const QString& node)
+	{
+		AwaitingDiscoItems_ [jid] = callback;
+		
+		DiscoveryManager_->requestItems (jid, node);
 	}
 
 	void ClientConnection::Update (const QXmppRosterIq::Item& item)
@@ -407,6 +436,13 @@ namespace Xoox
 
 		if (ODSEntries_.contains (jid))
 			delete ODSEntries_.take (jid);
+	}
+	
+	void ClientConnection::SendPacketWCallback (const QXmppIq& packet,
+			QObject *obj, const QByteArray& method)
+	{
+		AwaitingPacketCallbacks_ [packet.to ()] [packet.id ()] = PacketCallback_t (obj, method);
+		Client_->sendPacket (packet);
 	}
 
 	QXmppClient* ClientConnection::GetClient () const
@@ -560,6 +596,8 @@ namespace Xoox
 	{
 		if (iq.error ().isValid ())
 			HandleError (iq);
+		
+		InvokeCallbacks (iq);
 	}
 
 	void ClientConnection::handleRosterReceived ()
@@ -784,6 +822,20 @@ namespace Xoox
 		JoinQueue_.clear ();
 	}
 	
+	void ClientConnection::handleDiscoInfo (const QXmppDiscoveryIq& iq)
+	{
+		const QString& jid = iq.from ();
+		if (AwaitingDiscoInfo_.contains (jid))
+			AwaitingDiscoInfo_ [jid] (iq);
+	}
+	
+	void ClientConnection::handleDiscoItems (const QXmppDiscoveryIq& iq)
+	{
+		const QString& jid = iq.from ();
+		if (AwaitingDiscoItems_.contains (jid))
+			AwaitingDiscoItems_ [jid] (iq);
+	}
+	
 	void ClientConnection::decrementErrAccumulators ()
 	{
 		if (SocketErrorAccumulator_ > 0)
@@ -858,6 +910,24 @@ namespace Xoox
 				typeText,
 				PCritical_);
 		Core::Instance ().SendEntity (e);
+	}
+	
+	void ClientConnection::InvokeCallbacks (const QXmppIq& iq)
+	{
+		if (!AwaitingPacketCallbacks_.contains (iq.from ()))
+			return;
+		
+		const PacketID2Callback_t& cbs = AwaitingPacketCallbacks_ [iq.from ()];
+		if (!cbs.contains (iq.id ()))
+			return;
+	
+		const PacketCallback_t& cb = cbs [iq.id ()];
+		if (!cb.first)
+			return;
+		
+		QMetaObject::invokeMethod (cb.first,
+				cb.second,
+				Q_ARG (QXmppIq, iq));
 	}
 
 	QString ClientConnection::HandleErrorCondition (const QXmppStanza::Error::Condition& condition)

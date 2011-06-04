@@ -118,6 +118,10 @@ namespace LeechCraft
 						SIGNAL (checkNotificationQueue ()),
 						this,
 						SLOT (pushNotification ()));
+				connect (notificationWidget,
+						SIGNAL (gotEntity (const LeechCraft::Entity&)),
+						this,
+						SIGNAL (gotEntity (const LeechCraft::Entity&)));
 
 				QString mi = "information";
 				switch (prio)
