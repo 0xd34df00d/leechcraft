@@ -481,11 +481,18 @@ namespace LeechCraft
 							QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
 					return;
 
+				int roptions = libtorrent::session::none;
+				if (QMessageBox::question (Core::Instance ()->GetProxy ()->GetMainWindow (),
+							"LeechCraft BitTorrent",
+							tr ("Do you want to leave this torrent's files?"),
+							QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+					roptions |= libtorrent::session::delete_files;
+
 				std::sort (rows.begin (), rows.end (),
 						std::greater<int> ());
 
 				Q_FOREACH (int row, rows)
-					Core::Instance ()->RemoveTorrent (row);
+					Core::Instance ()->RemoveTorrent (row, roptions);
 				TabWidget_->InvalidateSelection ();
 				setActionsEnabled ();
 			}
