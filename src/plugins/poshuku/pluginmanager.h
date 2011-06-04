@@ -674,7 +674,9 @@ namespace Poshuku
 		 * The hook may choose to add new actions to the context menu,
 		 * in this case it should use the IHookProxy::SetValue() with
 		 * the name "actions", and a list of actions (QList<QObject*>)
-		 * should be inserted there.
+		 * should be inserted there. Value with the name "endActions"
+		 * may also be used, and the corresponding actions would be
+		 * appended to the end of the menu.
 		 * 
 		 * Please note that other hooks may have already inserted hooks
 		 * into the list, so a well-written hook should first extract
@@ -687,6 +689,9 @@ namespace Poshuku
 		 */
 		void hookTabBarContextMenuActions (LeechCraft::IHookProxy_ptr proxy,
 				const QObject *browserWidget) const;
+				
+		void hookTabRemoveRequested (LeechCraft::IHookProxy_ptr proxy,
+				QObject *browserWidget);
 				
 		/** @brief Called when the given page encounters unsupported
 		 * content.

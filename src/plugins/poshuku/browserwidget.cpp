@@ -673,12 +673,37 @@ namespace Poshuku
 
 	void BrowserWidget::Remove ()
 	{
+		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		emit hookTabRemoveRequested (proxy, this);
+		if (proxy->IsCancelled ())
+			return;
+
 		emit needToClose ();
 	}
 
 	QToolBar* BrowserWidget::GetToolBar () const
 	{
 		return Own_ ? ToolBar_ : 0;
+	}
+	
+	namespace
+	{
+		void Append (QList<QAction*>& result, const QList<QObject*>& objs)
+		{
+			Q_FOREACH (QObject *obj, objs)
+			{
+				QAction *act = qobject_cast<QAction*> (obj);
+				if (!act)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "unable to cast"
+							<< obj
+							<< "from plugins to QAction*";
+					continue;
+				}
+				result << act;
+			}
+		}
 	}
 
 	QList<QAction*> BrowserWidget::GetTabBarContextMenuActions () const
@@ -690,19 +715,7 @@ namespace Poshuku
 		proxy->FillValue ("actions", plugResult);
 		
 		QList<QAction*> result;
-		Q_FOREACH (QObject *obj, plugResult)
-		{
-			QAction *act = qobject_cast<QAction*> (obj);
-			if (!act)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "unable to cast"
-						<< obj
-						<< "from plugins to QAction*";
-				continue;
-			}
-			result << act;
-		}
+		Append (result, plugResult);
 
 		if (!proxy->IsCancelled ())
 			result << Reload_
@@ -711,6 +724,10 @@ namespace Poshuku
 				<< RecentlyClosedAction_
 				<< Print_
 				<< Back_;
+				
+		plugResult.clear ();
+		proxy->FillValue ("endActions", plugResult);
+		Append (result, plugResult);
 
 		return result;
 	}
