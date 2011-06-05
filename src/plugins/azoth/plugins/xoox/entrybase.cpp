@@ -140,6 +140,7 @@ namespace Xoox
 		QXmppMessage msg;
 		msg.setBody (text);
 		msg.setTo (to);
+		msg.setType (QXmppMessage::Headline);
 		msg.setAttention (true);
 		Account_->GetClientConnection ()->GetClient ()->sendPacket (msg);
 	}
