@@ -56,6 +56,7 @@
 #include "accounthandlerchooserdialog.h"
 #include "util.h"
 #include "eventsnotifier.h"
+#include "drawattentiondialog.h"
 
 namespace LeechCraft
 {
@@ -1142,6 +1143,7 @@ namespace Azoth
 		const QHash<QByteArray, QAction*>& id2action = Entry2Actions_ [entry];
 		QList<QAction*> result;
 		result << id2action.value ("openchat");
+		result << id2action.value ("drawattention");
 		result << id2action.value ("rename");
 		result << id2action.value ("changegroups");
 		result << id2action.value ("remove");
@@ -1210,6 +1212,8 @@ namespace Azoth
 	{
 		if (!entry)
 			return;
+		
+		IAdvancedCLEntry *advEntry = qobject_cast<IAdvancedCLEntry*> (entry->GetObject ());
 
 		if (Entry2Actions_.contains (entry))
 			Q_FOREACH (const QAction *action,
@@ -1227,6 +1231,18 @@ namespace Azoth
 				SLOT (handleActionOpenChatTriggered ()));
 		Entry2Actions_ [entry] ["openchat"] = openChat;
 		Action2Areas_ [openChat] << CLEAAContactListCtxtMenu;
+		
+		if (advEntry)
+		{
+			QAction *drawAtt = new QAction (tr ("Draw attention..."), entry->GetObject ());
+			connect (drawAtt,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (handleActionDrawAttention ()));
+			drawAtt->setProperty ("ActionIcon", "draw_attention");
+			Entry2Actions_ [entry] ["drawattention"] = drawAtt;
+			Action2Areas_ [drawAtt] << CLEAAContactListCtxtMenu;
+		}
 
 		if (entry->GetEntryFeatures () & ICLEntry::FSupportsRenames)
 		{
@@ -1401,6 +1417,8 @@ namespace Azoth
 	{
 		if (!entry)
 			return;
+		
+		IAdvancedCLEntry *advEntry = qobject_cast<IAdvancedCLEntry*> (entry->GetObject ());
 
 		IAccount *account = qobject_cast<IAccount*> (entry->GetParentAccount ());
 		const bool isOnline = account->GetState ().State_ != SOffline;
@@ -1410,6 +1428,12 @@ namespace Azoth
 					account->GetAccountFeatures () & IAccount::FCanViewContactsInfoInOffline ||
 					isOnline;
 			Entry2Actions_ [entry] ["vcard"]->setEnabled (enableVCard);
+		}
+		
+		if (advEntry)
+		{
+			bool suppAtt = advEntry->GetAdvancedFeatures () & IAdvancedCLEntry::AFSupportsAttention;
+			Entry2Actions_ [entry] ["drawattention"]->setEnabled (suppAtt);
 		}
 
 		if (entry->GetEntryType () == ICLEntry::ETChat)
@@ -2446,6 +2470,48 @@ namespace Azoth
 		ICLEntry *entry = action->
 				property ("Azoth/Entry").value<ICLEntry*> ();
 		ChatTabsManager_->OpenChat (entry);
+	}
+	
+	void Core::handleActionDrawAttention ()
+	{
+		QAction *action = qobject_cast<QAction*> (sender ());
+		if (!action)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< sender ()
+					<< "is not a QAction";
+			return;
+		}
+
+		ICLEntry *entry = action->
+				property ("Azoth/Entry").value<ICLEntry*> ();
+		IAdvancedCLEntry *advEntry = qobject_cast<IAdvancedCLEntry*> (entry->GetObject ());
+		if (!advEntry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< entry->GetObject ()
+					<< "doesn't implement IAdvancedCLEntry";
+			return;
+		}
+		
+		const QStringList& vars = entry->Variants ();
+		DrawAttentionDialog dia (vars);
+		if (dia.exec () != QDialog::Accepted)
+			return;
+		
+		const QString& variant = dia.GetResource ();
+		const QString& text = dia.GetText ();
+		
+		QStringList varsToDraw;
+		if (!variant.isEmpty ())
+			varsToDraw << variant;
+		else if (vars.isEmpty ())
+			varsToDraw << QString ();
+		else
+			varsToDraw = vars;
+
+		Q_FOREACH (const QString& var, varsToDraw)
+			advEntry->DrawAttention (text, var);
 	}
 
 	void Core::handleActionRenameTriggered ()

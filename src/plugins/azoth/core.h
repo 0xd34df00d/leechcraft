@@ -506,6 +506,7 @@ namespace Azoth
 
 		void invalidateSmoothAvatarCache ();
 
+		void handleActionDrawAttention ();
 		void handleActionRenameTriggered ();
 		void handleActionChangeGroupsTriggered ();
 		void handleActionRemoveTriggered ();
