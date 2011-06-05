@@ -40,6 +40,7 @@
 #include "interfaces/iprotocol.h"
 #include "interfaces/iaccount.h"
 #include "interfaces/iclentry.h"
+#include "interfaces/iadvancedclentry.h"
 #include "interfaces/imucentry.h"
 #include "interfaces/imucperms.h"
 #include "interfaces/iauthable.h"
@@ -826,6 +827,14 @@ namespace Azoth
 					SIGNAL (nicknameConflict (const QString&)),
 					this,
 					SLOT (handleNicknameConflict (const QString&)));
+		}
+		
+		if (qobject_cast<IAdvancedCLEntry*> (clEntry->GetObject ()))
+		{
+			connect (clEntry->GetObject (),
+					SIGNAL (attentionDrawn (const QString&, const QString&)),
+					this,
+					SLOT (handleAttentionDrawn (const QString&, const QString&)));
 		}
 		
 		EventsNotifier_->RegisterEntry (clEntry);
@@ -2120,6 +2129,33 @@ namespace Azoth
 						entry));
 		nh->AddFunction (tr ("View info"),
 				boost::bind (&ICLEntry::ShowInfo,
+						entry));
+		emit gotEntity (e);
+	}
+	
+	void Core::handleAttentionDrawn (const QString& text, const QString& variant)
+	{
+		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< sender ()
+					<< "doesn't implement ICLEntry";
+			return;
+		}
+		
+		const QString& str = text.isEmpty () ?
+				tr ("%1 requests your attention")
+					.arg (entry->GetEntryName ()) :
+				tr ("%1 requests your attention: %2")
+					.arg (entry->GetEntryName ())
+					.arg (text);
+		Entity e = Util::MakeNotification ("Azoth", str, PInfo_);
+		Util::NotificationActionHandler *nh =
+				new Util::NotificationActionHandler (e, this);
+		nh->AddFunction (tr ("Open chat"),
+				boost::bind (static_cast<void (ChatTabsManager::*) (const ICLEntry*)> (&ChatTabsManager::OpenChat),
+						ChatTabsManager_,
 						entry));
 		emit gotEntity (e);
 	}

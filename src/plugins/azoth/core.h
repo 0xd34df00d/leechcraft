@@ -451,6 +451,10 @@ namespace Azoth
 		 */
 		void handleAuthorizationRequested (QObject*, const QString&);
 		
+		/** Handles the IAdvancedCLEntry::attentionDrawn().
+		 */
+		void handleAttentionDrawn (const QString&, const QString&);
+		
 		/** Handles nick conflict.
 		 */
 		void handleNicknameConflict (const QString&);
