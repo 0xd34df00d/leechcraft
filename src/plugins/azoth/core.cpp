@@ -2159,6 +2159,10 @@ namespace Azoth
 	
 	void Core::handleAttentionDrawn (const QString& text, const QString& variant)
 	{
+		if (XmlSettingsManager::Instance ()
+				.property ("IgnoreDrawAttentions").toBool ())
+			return;
+
 		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
 		if (!entry)
 		{
