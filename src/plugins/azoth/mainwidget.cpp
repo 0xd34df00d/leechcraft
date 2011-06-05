@@ -32,6 +32,8 @@
 #include "addcontactdialog.h"
 #include "joinconferencedialog.h"
 #include "bookmarksmanagerdialog.h"
+#include "chattabsmanager.h"
+#include <QTimer>
 
 namespace LeechCraft
 {
@@ -42,6 +44,7 @@ namespace Azoth
 	, MainMenu_ (new QMenu (tr ("Azoth menu")))
 	, MenuButton_ (new QToolButton (this))
 	, ProxyModel_ (new SortFilterProxyModel ())
+	, MUCProxyModel_ (new SortFilterProxyModel ())
 	{
 		MainMenu_->setIcon (QIcon (":/plugins/azoth/resources/images/azoth.svg"));
 
@@ -55,6 +58,16 @@ namespace Azoth
 		Ui_.CLTree_->setItemDelegate (new ContactListDelegate (Ui_.CLTree_));
 		ProxyModel_->setSourceModel (Core::Instance ().GetCLModel ());
 		Ui_.CLTree_->setModel (ProxyModel_);
+		
+		Ui_.MUCCLTree_->setItemDelegate (new ContactListDelegate (Ui_.MUCCLTree_));
+		MUCProxyModel_->SetMUCMode (true);
+		MUCProxyModel_->setSourceModel (Core::Instance ().GetCLModel ());
+		Ui_.MUCCLTree_->setModel (MUCProxyModel_);
+		
+		connect (Core::Instance ().GetChatTabsManager (),
+				SIGNAL (entryMadeCurrent (QObject*)),
+				this,
+				SLOT (handleEntryMadeCurrent (QObject*)));
 		
 		connect (Ui_.CLTree_,
 				SIGNAL (activated (const QModelIndex&)),
@@ -510,6 +523,17 @@ namespace Azoth
 	{
 		if (!Ui_.FilterLine_->text ().isEmpty ())
 			Ui_.FilterLine_->setText (QString ());
+	}
+	
+	void MainWidget::handleEntryMadeCurrent (QObject *obj)
+	{
+		if (qobject_cast<IMUCEntry*> (obj))
+		{
+			MUCProxyModel_->SetMUC (obj);
+			QTimer::singleShot (100,
+					Ui_.MUCCLTree_,
+					SLOT (expandAll ()));
+		}
 	}
 
 	void MainWidget::menuBarVisibilityToggled ()

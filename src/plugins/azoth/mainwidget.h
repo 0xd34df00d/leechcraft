@@ -40,6 +40,7 @@ namespace Azoth
 		QMenu *MainMenu_;
 		QToolButton *MenuButton_;
 		SortFilterProxyModel *ProxyModel_;
+		SortFilterProxyModel *MUCProxyModel_;
 
 		QMenu *MenuChangeStatus_;
 		QMenu *TrayChangeStatus_;
@@ -73,6 +74,8 @@ namespace Azoth
 
 		void handleShowOffline (bool);
 		void clearFilter ();
+		
+		void handleEntryMadeCurrent (QObject*);
 		
 		void menuBarVisibilityToggled ();
 

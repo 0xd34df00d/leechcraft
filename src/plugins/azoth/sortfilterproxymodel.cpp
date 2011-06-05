@@ -28,11 +28,31 @@ namespace Azoth
 	SortFilterProxyModel::SortFilterProxyModel (QObject *parent)
 	: QSortFilterProxyModel (parent)
 	, ShowOffline_ (true)
+	, MUCEntry_ (0)
+	, MUCMode_ (false)
 	{
 		setDynamicSortFilter (true);
 		setFilterCaseSensitivity (Qt::CaseInsensitive);
 	}
+	
+	void SortFilterProxyModel::SetMUCMode (bool muc)
+	{
+		MUCMode_ = muc;
+		invalidate ();
+	}
+	
+	void SortFilterProxyModel::SetMUC (QObject *mucEntry)
+	{
+		MUCEntry_ = qobject_cast<IMUCEntry*> (mucEntry) ? mucEntry : 0;
+		invalidate ();
+	}
 
+	void SortFilterProxyModel::showOfflineContacts (bool show)
+	{
+		ShowOffline_ = show;
+		invalidate ();
+	}
+	
 	namespace
 	{
 		Core::CLEntryType GetType (const QModelIndex& idx)
@@ -47,16 +67,28 @@ namespace Azoth
 		}
 	}
 
-	void SortFilterProxyModel::showOfflineContacts (bool show)
-	{
-		ShowOffline_ = show;
-
-		invalidate ();
-	}
-
 	bool SortFilterProxyModel::filterAcceptsRow (int row, const QModelIndex& parent) const
 	{
-		if (!ShowOffline_)
+		if (MUCMode_)
+		{
+			if (!MUCEntry_)
+				return false;
+
+			const QModelIndex& idx = sourceModel ()->index (row, 0, parent);
+			switch (GetType (idx))
+			{
+			case Core::CLETAccount:
+			{
+				QObject *acc = qobject_cast<ICLEntry*> (MUCEntry_)->GetParentAccount ();
+				return acc == idx.data (Core::CLRAccountObject).value<QObject*> ();
+			}
+			case Core::CLETCategory:
+				return idx.data ().toString () == qobject_cast<IMUCEntry*> (MUCEntry_)->GetGroupName ();
+			default:
+				break;
+			}
+		}
+		else if (!ShowOffline_)
 		{
 			const QModelIndex& idx = sourceModel ()->index (row, 0, parent);
 			if (!filterRegExp ().isEmpty ())
