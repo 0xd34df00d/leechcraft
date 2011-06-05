@@ -365,6 +365,11 @@ namespace Poshuku
 
 		if (raise)
 			emit raiseTab (widget);
+		
+		emit hookTabAdded (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy),
+				widget,
+				widget->getWebView (),
+				url);
 
 		return widget;
 	}
