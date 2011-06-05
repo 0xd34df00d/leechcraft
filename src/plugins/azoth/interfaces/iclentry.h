@@ -123,7 +123,11 @@ namespace Azoth
 
 			/** This entry supports moving between different groups.
 			 */
-			FSupportsGrouping = 0x0100
+			FSupportsGrouping = 0x0100,
+			
+			/** This entry supports attention.
+			 */
+			FSupportsAttention = 0x0200
 		};
 
 		Q_DECLARE_FLAGS (Features, Feature);
