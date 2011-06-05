@@ -22,13 +22,17 @@
 #include <boost/function.hpp>
 #include <QCoreApplication>
 #include <QtDebug>
+#include <QDesktopServices>
 #include <QFile>
 #include <QFileInfo>
 #include <QHash>
+#include <QNetworkReply>
+#include <QNetworkRequest>
 #include <QTextCodec>
 #include <QTextStream>
 #include <plugininterface/util.h>
 #include "greasemonkey.h"
+#include "resourcedownloadhandler.h"
 
 namespace LeechCraft
 {
@@ -66,7 +70,8 @@ namespace FatApe
 	{
 		ScriptPath_ = script.ScriptPath_;
 		Metadata_ = script.Metadata_;
-		Enabled_ = script.Enabled_;
+		MetadataEndOffset_ = script.MetadataEndOffset_;
+		Enabled_ = script.Enabled_;		
 	}
 
 	void UserScript::ParseMetadata ()
@@ -98,6 +103,7 @@ namespace FatApe
 
 			Metadata_.insert (key, value);
 		}
+		MetadataEndOffset_ = content.pos ();
 	}
 
 	void UserScript::BuildPatternsList (QList<QRegExp>& list, bool include) const
@@ -241,6 +247,100 @@ namespace FatApe
 		QFile::remove (ScriptPath_);
 	}
 
+	QStringList UserScript::Include () const
+	{
+		return Metadata_.values ("include");
+	}
+
+	QStringList UserScript::Exclude() const
+	{
+		return Metadata_.values ("exclude");
+	}
+
+	void UserScript::Install (QNetworkAccessManager *networkManager)
+	{
+		const QString& temp = QDesktopServices::storageLocation (QDesktopServices::TempLocation);
+
+		if (!ScriptPath_.startsWith (temp))
+			return;
+
+		QFile tempScript (ScriptPath_);
+		QFileInfo installPath (Util::CreateIfNotExists ("data/poshuku/fatape/scripts/"),
+				QFileInfo(ScriptPath_).fileName ());
+
+		tempScript.copy (installPath.absoluteFilePath ());
+		ScriptPath_ = installPath.absoluteFilePath ();
+		Q_FOREACH (const QString& resource, Metadata_.values ("resource"))
+			DownloadResource (resource, networkManager);
+		Q_FOREACH (const QString& required, Metadata_.values ("require"))
+			DownloadRequired (required, networkManager);
+	}
+
+	void UserScript::DownloadResource (const QString& resource, 
+			QNetworkAccessManager *networkManager)
+	{
+		const QString& resourceName = resource.mid (0, resource.indexOf (" "));
+		const QString& resourceUrl = resource.mid (resource.indexOf (" ") + 1);
+		QNetworkRequest resourceRequest;
+
+		resourceRequest.setUrl (QUrl (resourceUrl));
+		QNetworkReply *reply = networkManager->get (resourceRequest);
+		QObject::connect (reply, 
+				SIGNAL (finished ()), 
+				new ResourceDownloadHandler(resourceName, this, reply), 
+				SLOT (handleFinished ()));
+		
+	}
+
+	void UserScript::DownloadRequired (const QString& required, 
+			QNetworkAccessManager *networkManager)
+	{
+		QNetworkRequest requiredRequest;
+
+		requiredRequest.setUrl (required);
+		QNetworkReply *reply = networkManager->get (requiredRequest);
+		QObject::connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleRequiredDownloadFinished ()));
+	}
+
+	void UserScript::handleRequiredDownloadFinished ()
+	{
+		QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender ());
+
+		if (!reply)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "unable to cast"
+				<< sender ()
+				<< "to QNetworkReply";
+			return;
+		}
+
+		QFile script (ScriptPath_);
+
+		if (!script.open (QFile::ReadWrite))
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "unable to save required script"
+				<< "from"
+				<< reply->url ().toString ();
+			return;
+		}
+		
+		QTextStream content (&script);
+		QString scriptContent = content.readAll ();
+
+		scriptContent.insert (MetadataEndOffset_, reply->readAll ());
+		
+		RequiredLock_.lockForWrite ();
+		script.write (QString ("//require %1\n").arg (reply->url ().toString ()).toAscii ());
+		script.write (reply->readAll ());
+		script.close ();
+		RequiredLock_.unlock ();
+		reply->deleteLater ();
+	}
 
 }
 }

@@ -22,6 +22,8 @@
 #include <QObject>
 #include <QList>
 #include <QStandardItemModel>
+#include <QNetworkRequest>
+#include <QWebPage>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/iproxyobject.h>
@@ -46,10 +48,13 @@ namespace FatApe
 		boost::shared_ptr<QTranslator> Translator_;
 		QList<UserScript> UserScripts_;
 		IProxyObject *Proxy_;
+		ICoreProxy_ptr CoreProxy_;
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
 		boost::shared_ptr<QStandardItemModel> Model_; 
 	public:
 		void Init (ICoreProxy_ptr);
+
+		void AddScriptToManager (const UserScript& script);
 		void SecondInit ();
 		void Release ();
 		QByteArray GetUniqueID () const;
@@ -65,6 +70,11 @@ namespace FatApe
 		void hookInitialLayoutCompleted (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QWebFrame *frame);
+		void hookAcceptNavigationRequest (LeechCraft::IHookProxy_ptr proxy,
+				QWebPage *page,
+				QWebFrame *frame,
+				QNetworkRequest request,
+				QWebPage::NavigationType type);
 		void initPlugin (QObject *proxy);
 	};
 }
