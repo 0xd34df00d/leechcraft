@@ -126,6 +126,23 @@ namespace Xoox
 	{
 		return Variant2ClientInfo_ [var];
 	}
+	
+	IAdvancedCLEntry::AdvancedFeatures EntryBase::GetAdvancedFeatures () const
+	{
+		return AFSupportsAttention;
+	}
+	
+	void EntryBase::DrawAttention (const QString& text, const QString& variant)
+	{
+		const QString& to = variant.isEmpty () ?
+				GetJID () :
+				GetJID () + '/' + variant;
+		QXmppMessage msg;
+		msg.setBody (text);
+		msg.setTo (to);
+		msg.setAttention (true);
+		Account_->GetClientConnection ()->GetClient ()->sendPacket (msg);
+	}
 
 	void EntryBase::HandleMessage (GlooxMessage *msg)
 	{
@@ -135,6 +152,15 @@ namespace Xoox
 
 		AllMessages_ << msg;
 		emit gotMessage (msg);
+	}
+	
+	void EntryBase::HandleAttentionMessage (const QXmppMessage& msg)
+	{
+		QString jid;
+		QString resource;
+		ClientConnection::Split (msg.from (), &jid, &resource);
+		
+		emit attentionDrawn (msg.body (), resource);
 	}
 
 	void EntryBase::UpdateChatState (QXmppMessage::State state, const QString& variant)

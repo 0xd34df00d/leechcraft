@@ -378,6 +378,9 @@ namespace Xoox
 		RoomParticipantEntry_ptr entry = GetParticipantEntry (nick, false);
 		if (msg.type () == QXmppMessage::Chat && !nick.isEmpty ())
 		{
+			if (msg.isAttention ())
+				entry->HandleAttentionMessage (msg);
+
 			if (msg.state ())
 				entry->UpdateChatState (msg.state (), QString ());
 

@@ -735,6 +735,9 @@ namespace Xoox
 				GlooxMessage *gm = new GlooxMessage (msg, this);
 				JID2CLEntry_ [jid]->HandleMessage (gm);
 			}
+			
+			if (msg.isAttention ())
+				JID2CLEntry_ [jid]->HandleAttentionMessage (msg);
 		}
 		else if (!Client_->rosterManager ().isRosterReceived ())
 			OfflineMsgQueue_ << msg;
