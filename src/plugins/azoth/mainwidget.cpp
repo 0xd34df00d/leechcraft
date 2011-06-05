@@ -44,7 +44,6 @@ namespace Azoth
 	, MainMenu_ (new QMenu (tr ("Azoth menu")))
 	, MenuButton_ (new QToolButton (this))
 	, ProxyModel_ (new SortFilterProxyModel ())
-	, MUCProxyModel_ (new SortFilterProxyModel ())
 	{
 		MainMenu_->setIcon (QIcon (":/plugins/azoth/resources/images/azoth.svg"));
 
@@ -59,15 +58,11 @@ namespace Azoth
 		ProxyModel_->setSourceModel (Core::Instance ().GetCLModel ());
 		Ui_.CLTree_->setModel (ProxyModel_);
 		
-		Ui_.MUCCLTree_->setItemDelegate (new ContactListDelegate (Ui_.MUCCLTree_));
-		MUCProxyModel_->SetMUCMode (true);
-		MUCProxyModel_->setSourceModel (Core::Instance ().GetCLModel ());
-		Ui_.MUCCLTree_->setModel (MUCProxyModel_);
-		
 		connect (Core::Instance ().GetChatTabsManager (),
 				SIGNAL (entryMadeCurrent (QObject*)),
 				this,
-				SLOT (handleEntryMadeCurrent (QObject*)));
+				SLOT (handleEntryMadeCurrent (QObject*)),
+				Qt::QueuedConnection);
 		
 		connect (Ui_.CLTree_,
 				SIGNAL (activated (const QModelIndex&)),
@@ -529,11 +524,17 @@ namespace Azoth
 	{
 		if (qobject_cast<IMUCEntry*> (obj))
 		{
-			MUCProxyModel_->SetMUC (obj);
-			QTimer::singleShot (100,
-					Ui_.MUCCLTree_,
-					SLOT (expandAll ()));
+			ProxyModel_->SetMUC (obj);
+			if (Ui_.RosterMode_->currentIndex () == 1)
+				QTimer::singleShot (100,
+						Ui_.CLTree_,
+						SLOT (expandAll ()));
 		}
+	}
+	
+	void MainWidget::on_RosterMode__currentIndexChanged (int index)
+	{
+		ProxyModel_->SetMUCMode (index == 1);
 	}
 
 	void MainWidget::menuBarVisibilityToggled ()

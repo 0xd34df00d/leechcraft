@@ -40,7 +40,6 @@ namespace Azoth
 		QMenu *MainMenu_;
 		QToolButton *MenuButton_;
 		SortFilterProxyModel *ProxyModel_;
-		SortFilterProxyModel *MUCProxyModel_;
 
 		QMenu *MenuChangeStatus_;
 		QMenu *TrayChangeStatus_;
@@ -76,7 +75,7 @@ namespace Azoth
 		void clearFilter ();
 		
 		void handleEntryMadeCurrent (QObject*);
-		
+		void on_RosterMode__currentIndexChanged (int);
 		void menuBarVisibilityToggled ();
 
 		void handleRowsInserted (const QModelIndex&, int, int);
