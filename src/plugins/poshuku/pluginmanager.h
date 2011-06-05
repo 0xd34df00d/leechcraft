@@ -618,6 +618,24 @@ namespace Poshuku
 				bool preview,
 				QWebFrame *frame);
 		
+		/** @brief Called when session restore is scheduled.
+		 * 
+		 * The urls contains the list of URLs that were chosen to be
+		 * restored. If the hook cancels the default handler, then no
+		 * URLs may be restored. The hook may choose to open other URLs
+		 * after a short amount of time to simulate session restore,
+		 * though.
+		 * 
+		 * @note This hook is called before any actual session restore
+		 * takes place.
+		 * 
+		 * @param proxy The standard hook proxy object.
+		 * @param urls The list of URLs originally scheduled to be
+		 * restored.
+		 */
+		void hookSessionRestoreScheduled (LeechCraft::IHookProxy_ptr proxy,
+				const QList<QUrl>& urls);
+		
 		/** @brief This hook is called when the given URL should be set.
 		 * 
 		 * For example, this hook is called when the browser reacts to

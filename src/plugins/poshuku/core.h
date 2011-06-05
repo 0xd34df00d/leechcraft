@@ -193,6 +193,8 @@ namespace Poshuku
 				QString title, QString url);
 		void hookIconRequested (LeechCraft::IHookProxy_ptr,
 				const QUrl& url) const;
+		void hookSessionRestoreScheduled (LeechCraft::IHookProxy_ptr,
+				const QList<QUrl>& urls);
 		void hookUserAgentForUrlRequested (LeechCraft::IHookProxy_ptr,
 				const QUrl&, const QWebPage*) const;
 	};

@@ -776,6 +776,19 @@ namespace Poshuku
 			}
 			QTimer::singleShot (2000, this, SLOT (restorePages ()));
 		}
+		
+		QList<QUrl> toRestore;
+		Q_FOREACH (int idx, RestoredURLs_)
+			toRestore << SavedSessionState_ [idx].second;
+		
+		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		emit hookSessionRestoreScheduled (proxy,
+				toRestore);
+		if (proxy->IsCancelled ())
+		{
+			RestoredURLs_.clear ();
+			SavedSessionState_.clear ();
+		}
 	}
 
 	void Core::HandleHistory (CustomWebView *view)
