@@ -34,6 +34,7 @@
 #include <QXmppPubSubManager.h>
 #include <QXmppActivityItem.h>
 #include <QXmppPubSubIq.h>
+#include <QXmppDeliveryReceiptsManager.h>
 #include <plugininterface/util.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <interfaces/iprotocol.h>
@@ -68,6 +69,7 @@ namespace Xoox
 	, EntityTimeManager_ (new QXmppEntityTimeManager)
 	, ArchiveManager_ (new QXmppArchiveManager)
 	, PubSubManager_ (new QXmppPubSubManager)
+	, DeliveryReceiptsManager_ (new QXmppDeliveryReceiptsManager)
 	, OurJID_ (jid)
 	, Account_ (account)
 	, ProxyObject_ (0)
@@ -95,6 +97,7 @@ namespace Xoox
 					GetParentProtocol ())->GetProxyObject ();
 		ProxyObject_ = qobject_cast<IProxyObject*> (proxyObj);
 
+		Client_->addExtension (DeliveryReceiptsManager_);
 		Client_->addExtension (MUCManager_);
 		Client_->addExtension (XferManager_);
 		Client_->addExtension (BMManager_);
@@ -156,6 +159,11 @@ namespace Xoox
 				SIGNAL (vCardReceived (const QXmppVCardIq&)),
 				this,
 				SLOT (handleVCardReceived (const QXmppVCardIq&)));
+		
+		connect (DeliveryReceiptsManager_,
+				SIGNAL (messageDelivered (const QString&)),
+				this,
+				SLOT (handleMessageDelivered (const QString&)));
 
 		connect (DiscoveryManager_,
 				SIGNAL (infoReceived (const QXmppDiscoveryIq&)),
@@ -734,6 +742,10 @@ namespace Xoox
 			qWarning () << Q_FUNC_INFO
 					<< "could not find source for"
 					<< msg.from ();
+	}
+	
+	void ClientConnection::handleMessageDelivered (const QString& msgId)
+	{
 	}
 
 	void ClientConnection::handleBookmarksReceived (const QXmppBookmarkSet& set)

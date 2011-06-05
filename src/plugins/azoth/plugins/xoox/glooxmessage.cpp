@@ -86,6 +86,7 @@ namespace Xoox
 		switch (Type_)
 		{
 		case MTChatMessage:
+			Message_.setRequestReceipt (true);
 		case MTMUCMessage:
 			Connection_->GetClient ()->sendPacket (Message_);
 			break;

@@ -41,6 +41,7 @@ class QXmppBookmarkManager;
 class QXmppArchiveManager;
 class QXmppEntityTimeManager;
 class QXmppPubSubManager;
+class QXmppDeliveryReceiptsManager;
 
 namespace LeechCraft
 {
@@ -70,6 +71,7 @@ namespace Xoox
 		QXmppEntityTimeManager *EntityTimeManager_;
 		QXmppArchiveManager *ArchiveManager_;
 		QXmppPubSubManager *PubSubManager_;
+		QXmppDeliveryReceiptsManager *DeliveryReceiptsManager_;
 
 		QString OurJID_;
 
@@ -184,7 +186,7 @@ namespace Xoox
 		void handleVCardReceived (const QXmppVCardIq&);
 		void handlePresenceChanged (const QXmppPresence&);
 		void handleMessageReceived (const QXmppMessage&);
-		void handleItemsReceived (const QString&, const QString&, const QList<QXmppPubSubItem>&);
+		void handleMessageDelivered (const QString&);
 		
 		void handleBookmarksReceived (const QXmppBookmarkSet&);
 		void handleAutojoinQueue ();
