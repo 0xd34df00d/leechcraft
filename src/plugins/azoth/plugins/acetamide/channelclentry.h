@@ -38,9 +38,9 @@ namespace Acetamide
 	class ServerParticipantEntry;
 
 	class ChannelCLEntry : public QObject
-						, public ICLEntry
-						, public IMUCEntry
-						, public IMUCPerms
+						 , public ICLEntry
+						 , public IMUCEntry
+						 , public IMUCPerms
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IMUCEntry
@@ -89,6 +89,7 @@ namespace Acetamide
 		void Leave (const QString&);
 		QString GetNick () const;
 		void SetNick (const QString&);
+		QString GetGroupName () const;
 		QVariantMap GetIdentifyingData () const;
 
 		void HandleMessage (ChannelPublicMessage*);

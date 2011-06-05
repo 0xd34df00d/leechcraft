@@ -229,6 +229,11 @@ namespace Xoox
 	{
 		RH_->SetOurNick (nick);
 	}
+	
+	QString RoomCLEntry::GetGroupName () const
+	{
+		return tr ("%1 participants").arg (RH_->GetRoomJID ());
+	}
 
 	QVariantMap RoomCLEntry::GetIdentifyingData () const
 	{

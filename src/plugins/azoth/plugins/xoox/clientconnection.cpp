@@ -31,6 +31,9 @@
 #include <QXmppBookmarkManager.h>
 #include <QXmppEntityTimeManager.h>
 #include <QXmppArchiveManager.h>
+#include <QXmppPubSubManager.h>
+#include <QXmppActivityItem.h>
+#include <QXmppPubSubIq.h>
 #include <plugininterface/util.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <interfaces/iprotocol.h>
@@ -64,6 +67,7 @@ namespace Xoox
 	, BMManager_ (new QXmppBookmarkManager (Client_))
 	, EntityTimeManager_ (new QXmppEntityTimeManager)
 	, ArchiveManager_ (new QXmppArchiveManager)
+	, PubSubManager_ (new QXmppPubSubManager)
 	, OurJID_ (jid)
 	, Account_ (account)
 	, ProxyObject_ (0)
@@ -96,6 +100,7 @@ namespace Xoox
 		Client_->addExtension (BMManager_);
 		Client_->addExtension (EntityTimeManager_);
 		Client_->addExtension (ArchiveManager_);
+		Client_->addExtension (PubSubManager_);
 
 		DiscoveryManager_ = Client_->findExtension<QXmppDiscoveryManager> ();
 		DiscoveryManager_->setClientCapabilitiesNode ("http://leechcraft.org/azoth");
@@ -576,6 +581,24 @@ namespace Xoox
 	{
 		if (iq.error ().isValid ())
 			HandleError (iq);
+		
+		try
+		{
+			dynamic_cast<const QXmppActivityItem&> (iq);
+			qDebug () << "got activity item" << iq.id ();
+		}
+		catch (...)
+		{
+		}
+		
+		try
+		{
+			dynamic_cast<const QXmppPubSubIq&> (iq);
+			qDebug () << "got pubsub item" << iq.id ();
+		}
+		catch (...)
+		{
+		}
 		
 		InvokeCallbacks (iq);
 	}

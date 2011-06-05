@@ -132,6 +132,15 @@ namespace Azoth
 		 * this room.
 		 */
 		virtual void SetNick (const QString& nick) = 0;
+		
+		/** @brief Returns human-readable name of participants' group.
+		 * 
+		 * This function should return the human-readable name of the
+		 * group which holds the participants of this room.
+		 * 
+		 * @return The human-readable name.
+		 */
+		virtual QString GetGroupName () const = 0;
 				
 		/** @brief Returns the data identifying this room.
 		 * 

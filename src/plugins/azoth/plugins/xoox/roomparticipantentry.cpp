@@ -85,8 +85,7 @@ namespace Xoox
 
 	QStringList RoomParticipantEntry::Groups () const
 	{
-		return QStringList (tr ("%1 participants")
-				.arg (RoomHandler_->GetRoomJID ()));
+		return QStringList (RoomHandler_->GetCLEntry ()->GetGroupName ());
 	}
 
 	void RoomParticipantEntry::SetGroups (const QStringList&)

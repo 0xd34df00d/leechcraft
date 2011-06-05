@@ -1,4 +1,4 @@
-	/**********************************************************************
+/**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
  * Copyright (C) 2006-2011  Georg Rudoy
  *
@@ -26,6 +26,7 @@
 #include <QSet>
 #include <QXmppClient.h>
 #include <QXmppMucIq.h>
+#include <QXmppPubSubIq.h>
 #include <interfaces/imessage.h>
 #include "glooxclentry.h"
 #include "glooxaccount.h"
@@ -39,6 +40,7 @@ class QXmppDiscoveryIq;
 class QXmppBookmarkManager;
 class QXmppArchiveManager;
 class QXmppEntityTimeManager;
+class QXmppPubSubManager;
 
 namespace LeechCraft
 {
@@ -67,6 +69,7 @@ namespace Xoox
 		QXmppBookmarkManager *BMManager_;
 		QXmppEntityTimeManager *EntityTimeManager_;
 		QXmppArchiveManager *ArchiveManager_;
+		QXmppPubSubManager *PubSubManager_;
 
 		QString OurJID_;
 
@@ -181,6 +184,7 @@ namespace Xoox
 		void handleVCardReceived (const QXmppVCardIq&);
 		void handlePresenceChanged (const QXmppPresence&);
 		void handleMessageReceived (const QXmppMessage&);
+		void handleItemsReceived (const QString&, const QString&, const QList<QXmppPubSubItem>&);
 		
 		void handleBookmarksReceived (const QXmppBookmarkSet&);
 		void handleAutojoinQueue ();

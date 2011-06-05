@@ -96,6 +96,7 @@ namespace Xoox
 		void Leave (const QString&);
 		QString GetNick () const;
 		void SetNick (const QString&);
+		QString GetGroupName () const;
 		QVariantMap GetIdentifyingData () const;
 		
 		// IMUCPerms
