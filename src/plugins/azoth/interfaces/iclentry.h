@@ -81,6 +81,12 @@ namespace Azoth
 	 * about their chat widgets at all. Instead, such entry would need
 	 * to implement IMultiTabsWidget, for example, and the corresponding
 	 * plugin would need to be a IMultiTabs.
+	 * 
+	 * This interface provides only more or less basic functionality.
+	 * Advanced features, like drawing attention and such, are in
+	 * IAdvancedCLEntry.
+	 * 
+	 * @sa IAdvancedCLEntry
 	 */
 	class ICLEntry
 	{
@@ -123,11 +129,7 @@ namespace Azoth
 
 			/** This entry supports moving between different groups.
 			 */
-			FSupportsGrouping = 0x0100,
-			
-			/** This entry supports attention.
-			 */
-			FSupportsAttention = 0x0200
+			FSupportsGrouping = 0x0100
 		};
 
 		Q_DECLARE_FLAGS (Features, Feature);
