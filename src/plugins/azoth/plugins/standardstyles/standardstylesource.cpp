@@ -112,7 +112,6 @@ namespace StandardStyles
 		{
 		case IMessage::DIn:
 		{
-			statusIconName = "notification_chat_receive";
 			switch (msg->GetMessageType ())
 			{
 			case IMessage::MTChatMessage:
@@ -194,12 +193,15 @@ namespace StandardStyles
 		}
 		}
 
-		const QString& statusIconPath = Proxy_->
-				GetResourceLoader (IProxyObject::PRLSystemIcons)->GetIconPath (statusIconName);
-		const QImage& img = QImage (statusIconPath);
-		string.prepend (QString ("<img src='%1' style='max-width: 1em; max-height: 1em;' id='%2'/>")
-				.arg (Util::GetAsBase64Src (img))
-				.arg (msgId));
+		if (!statusIconName.isEmpty ())
+		{
+			const QString& statusIconPath = Proxy_->
+					GetResourceLoader (IProxyObject::PRLSystemIcons)->GetIconPath (statusIconName);
+			const QImage& img = QImage (statusIconPath);
+			string.prepend (QString ("<img src='%1' style='max-width: 1em; max-height: 1em;' id='%2'/>")
+					.arg (Util::GetAsBase64Src (img))
+					.arg (msgId));
+		}
 		string.append (body);
 
 		QWebElement elem = frame->findFirstElement ("body");
