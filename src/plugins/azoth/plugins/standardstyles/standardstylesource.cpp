@@ -24,6 +24,7 @@
 #include <plugininterface/resourceloader.h>
 #include <plugininterface/util.h>
 #include <interfaces/imessage.h>
+#include <interfaces/iadvancedmessage.h>
 #include <interfaces/iaccount.h>
 #include <interfaces/imucentry.h>
 #include <interfaces/iproxyobject.h>
@@ -92,13 +93,28 @@ namespace StandardStyles
 		const bool isHighlightMsg = info.IsHighlightMsg_;
 		const bool isActiveChat = info.IsActiveChat_;
 		
-		const QString& msgId = QString::number (reinterpret_cast<long int> (msgObj));
+		const QString& msgId = GetMessageID (msgObj);
 
 		IMessage *msg = qobject_cast<IMessage*> (msgObj);
 		ICLEntry *other = qobject_cast<ICLEntry*> (msg->OtherPart ());
 		QString entryName = other ?
 				Qt::escape (other->GetEntryName ()) :
 				QString ();
+
+		IAdvancedMessage *advMsg = qobject_cast<IAdvancedMessage*> (msgObj);
+		if (advMsg)
+		{
+			connect (msgObj,
+					SIGNAL (messageDelivered ()),
+					this,
+					SLOT (handleMessageDelivered ()));
+			connect (frame,
+					SIGNAL (destroyed (QObject*)),
+					this,
+					SLOT (handleFrameDestroyed ()),
+					Qt::UniqueConnection);
+			Msg2Frame_ [msgObj] = frame;
+		}
 				
 		const QString& nickColor = Proxy_->GetNickColor (entryName, colors);
 		
@@ -163,6 +179,9 @@ namespace StandardStyles
 		case IMessage::DOut:
 		{
 			statusIconName = "notification_chat_send";
+			if (advMsg && advMsg->IsDelivered ())
+				statusIconName = "notification_chat_delivery_ok";
+
 			IMUCEntry *entry = qobject_cast<IMUCEntry*> (other->GetParentCLEntry ());
 			IAccount *acc = qobject_cast<IAccount*> (other->GetParentAccount ());
 			const QString& nick = entry ?
@@ -194,14 +213,9 @@ namespace StandardStyles
 		}
 
 		if (!statusIconName.isEmpty ())
-		{
-			const QString& statusIconPath = Proxy_->
-					GetResourceLoader (IProxyObject::PRLSystemIcons)->GetIconPath (statusIconName);
-			const QImage& img = QImage (statusIconPath);
 			string.prepend (QString ("<img src='%1' style='max-width: 1em; max-height: 1em;' id='%2'/>")
-					.arg (Util::GetAsBase64Src (img))
+					.arg (GetStatusImage (statusIconName))
 					.arg (msgId));
-		}
 		string.append (body);
 
 		QWebElement elem = frame->findFirstElement ("body");
@@ -234,6 +248,41 @@ namespace StandardStyles
 			Coloring2Colors_ [scheme] = Proxy_->GenerateColors (scheme);
 		
 		return Coloring2Colors_ [scheme];
+	}
+	
+	QString StandardStyleSource::GetMessageID (QObject *msgObj)
+	{
+		return QString::number (reinterpret_cast<long int> (msgObj));
+	}
+	
+	QString StandardStyleSource::GetStatusImage (const QString& statusIconName)
+	{
+		const QString& statusIconPath = Proxy_->
+				GetResourceLoader (IProxyObject::PRLSystemIcons)->GetIconPath (statusIconName);
+		const QImage& img = QImage (statusIconPath);
+		return Util::GetAsBase64Src (img);
+	}
+	
+	void StandardStyleSource::handleMessageDelivered ()
+	{
+		QWebFrame *frame = Msg2Frame_ [sender ()];
+		if (!frame)
+			return;
+		
+		const QString& msgId = GetMessageID (sender ());
+		QWebElement elem = frame->findFirstElement ("img[id=\"" + msgId + "\"]");
+		elem.setAttribute ("src", GetStatusImage ("notification_chat_delivery_ok"));
+	}
+	
+	void StandardStyleSource::handleFrameDestroyed ()
+	{
+		QWebFrame *source = qobject_cast<QWebFrame*> (sender ());
+		for (QHash<QObject*, QWebFrame*>::iterator i = Msg2Frame_.begin ();
+				i != Msg2Frame_.end (); )
+			if (i.value () == source)
+				i = Msg2Frame_.erase (i);
+			else
+				++i;
 	}
 }
 }

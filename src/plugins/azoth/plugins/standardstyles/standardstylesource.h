@@ -52,6 +52,8 @@ namespace StandardStyles
 		
 		mutable QHash<QString, QList<QColor> > Coloring2Colors_;
 		mutable QString LastPack_;
+		
+		QHash<QObject*, QWebFrame*> Msg2Frame_;
 	public:
 		StandardStyleSource (IProxyObject*, QObject* = 0);
 		
@@ -61,6 +63,11 @@ namespace StandardStyles
 		void FrameFocused (QWebFrame*);
 	private:
 		QList<QColor> CreateColors (const QString&);
+		QString GetMessageID (QObject*);
+		QString GetStatusImage (const QString&);
+	private slots:
+		void handleMessageDelivered ();
+		void handleFrameDestroyed ();
 	};
 }
 }
