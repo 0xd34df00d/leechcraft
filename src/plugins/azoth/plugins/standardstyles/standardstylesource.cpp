@@ -49,6 +49,12 @@ namespace StandardStyles
 	
 	QString StandardStyleSource::GetHTMLTemplate (const QString& pack, QObject *entryObj) const
 	{
+		if (pack != LastPack_)
+		{
+			Coloring2Colors_.clear ();
+			LastPack_ = pack;
+		}
+
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 		
 		Util::QIODevice_ptr dev;
@@ -77,14 +83,21 @@ namespace StandardStyles
 		return dev->readAll ();
 	}
 	
-	bool StandardStyleSource::AppendMessage (QWebFrame *frame, QObject *msgObj,
-			const QString& nickColor, bool isHighlightMsg, bool isActiveChat)
+	bool StandardStyleSource::AppendMessage (QWebFrame *frame,
+			QObject *msgObj, const ChatMsgAppendInfo& info)
 	{
+		const QList<QColor>& colors = CreateColors (frame->metaData ().value ("coloring"));
+
+		const bool isHighlightMsg = info.IsHighlightMsg_;
+		const bool isActiveChat = info.IsActiveChat_;
+
 		IMessage *msg = qobject_cast<IMessage*> (msgObj);
 		ICLEntry *other = qobject_cast<ICLEntry*> (msg->OtherPart ());
 		QString entryName = other ?
 				Qt::escape (other->GetEntryName ()) :
 				QString ();
+				
+		const QString& nickColor = Proxy_->GetNickColor (entryName, colors);
 		
 		QString body = Proxy_->FormatBody (msg->GetBody (), msg->GetObject ());
 
@@ -195,6 +208,14 @@ namespace StandardStyles
 	void StandardStyleSource::FrameFocused (QWebFrame *frame)
 	{
 		HasBeenAppended_ [frame] = false;
+	}
+	
+	QList<QColor> StandardStyleSource::CreateColors (const QString& scheme)
+	{
+		if (!Coloring2Colors_.contains (scheme))
+			Coloring2Colors_ [scheme] = Proxy_->GenerateColors (scheme);
+		
+		return Coloring2Colors_ [scheme];
 	}
 }
 }

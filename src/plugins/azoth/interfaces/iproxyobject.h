@@ -139,8 +139,6 @@ namespace Azoth
 		
 		virtual QString GetSelectedChatTemplate (QObject*) const = 0;
 		
-		virtual void AppendMessageByTemplate (QWebFrame*, QObject*, const QString&, bool, bool) const = 0;
-		
 		virtual QList<QColor> GenerateColors (const QString& scheme) const = 0;
 		virtual QString GetNickColor (const QString& nick, const QList<QColor>& colors) const = 0;
 

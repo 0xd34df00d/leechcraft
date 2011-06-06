@@ -35,6 +35,7 @@
 #include "interfaces/imucentry.h"
 #include "interfaces/itransfermanager.h"
 #include "interfaces/iconfigurablemuc.h"
+#include "interfaces/ichatstyleresourcesource.h"
 #include "core.h"
 #include "textedit.h"
 #include "chattabsmanager.h"
@@ -206,8 +207,6 @@ namespace Azoth
 		data.replace ("LINKCOLOR",
 				QApplication::palette ().color (QPalette::Link).name ());
 		Ui_.View_->setHtml (data);
-		
-		GenerateColors ();
 
 		ICLEntry *e = GetEntry<ICLEntry> ();
 		Q_FOREACH (QObject *msgObj, e->GetAllMessages ())
@@ -840,14 +839,14 @@ namespace Azoth
 
 		QWebFrame *frame = Ui_.View_->page ()->mainFrame ();
 		
-		QString entryName = other ?
-				Qt::escape (other->GetEntryName ()) :
-				QString ();
+		ChatMsgAppendInfo info =
+		{
+			Core::Instance ().IsHighlightMessage (msg),
+			Core::Instance ().GetChatTabsManager ()->IsActiveChat (GetEntry<ICLEntry> ())
+		};
 
-		if (!Core::Instance ().AppendMessageByTemplate (frame, msg->GetObject (),
-					Core::Instance ().GetNickColor (entryName, NickColors_),
-					Core::Instance ().IsHighlightMessage (msg),
-					Core::Instance ().GetChatTabsManager ()->IsActiveChat (GetEntry<ICLEntry> ())))
+		if (!Core::Instance ().AppendMessageByTemplate (frame,
+				msg->GetObject (), info))
 			qWarning () << Q_FUNC_INFO
 					<< "unhandled append message :(";
 	}
@@ -890,13 +889,6 @@ namespace Azoth
 		}
 
 		return false;
-	}
-
-	void ChatTab::GenerateColors ()
-	{
-		const QMultiMap<QString, QString>& metadata =
-				Ui_.View_->page ()->mainFrame ()->metaData ();
-		NickColors_ = Core::Instance ().GenerateColors (metadata.value ("coloring"));
 	}
 
 	void ChatTab::nickComplete ()

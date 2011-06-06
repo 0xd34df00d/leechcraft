@@ -554,8 +554,8 @@ namespace Azoth
 		return src->GetHTMLTemplate (opt, entry);
 	}
 	
-	bool Core::AppendMessageByTemplate (QWebFrame *frame, QObject *message,
-			const QString& color, bool isHighlightMsg, bool isActiveChat)
+	bool Core::AppendMessageByTemplate (QWebFrame *frame,
+			QObject *message, const ChatMsgAppendInfo& info)
 	{
 		const QString& opt = XmlSettingsManager::Instance ()
 				.property ("ChatWindowStyle").toString ();
@@ -568,8 +568,7 @@ namespace Azoth
 			return false;
 		}
 		
-		return src->AppendMessage (frame, message, color,
-				isHighlightMsg, isActiveChat);
+		return src->AppendMessage (frame, message, info);
 	}
 	
 	void Core::FrameFocused (QWebFrame *frame)

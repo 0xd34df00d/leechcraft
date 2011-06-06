@@ -52,7 +52,6 @@ namespace Azoth
 		QString EntryID_;
 
 		QColor BgColor_;
-		QList<QColor> NickColors_;
 
 		QList<QString> MsgHistory_;
 		int CurrentHistoryPosition_;
@@ -145,8 +144,6 @@ namespace Azoth
 		 * otherwise.
 		 */
 		bool ProcessOutgoingMsg (ICLEntry*, QString&);
-
-		void GenerateColors ();
 
 		/** Updates the tab icon and other usages of state icon from the
 		 * TabIcon_.

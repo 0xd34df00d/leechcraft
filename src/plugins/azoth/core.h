@@ -28,6 +28,7 @@
 #include "interfaces/imucentry.h"
 #include "interfaces/iprotocol.h"
 #include "interfaces/iauthable.h"
+#include "interfaces/ichatstyleresourcesource.h"
 #include "sourcetrackingmodel.h"
 
 class QStandardItemModel;
@@ -265,8 +266,7 @@ namespace Azoth
 		
 		QString GetSelectedChatTemplate (QObject *entry) const;
 		
-		bool AppendMessageByTemplate (QWebFrame*, QObject*, const QString&,
-				bool, bool);
+		bool AppendMessageByTemplate (QWebFrame*, QObject*, const ChatMsgAppendInfo&);
 		
 		void FrameFocused (QWebFrame*);
 		

@@ -136,19 +136,6 @@ namespace Azoth
 		 */
 		virtual QByteArray GetImage (const QString& pack, const QString& string) const = 0;
 	};
-	
-	class IChatStyleResourceSource : public IResourceSource
-	{
-	public:
-		virtual ~IChatStyleResourceSource () {}
-		
-		virtual QString GetHTMLTemplate (const QString& style, QObject *entry) const = 0;
-		
-		virtual bool AppendMessage (QWebFrame *frame, QObject *message,
-				const QString& color, bool isHightlightMsg, bool isActiveChat) = 0;
-				
-		virtual void FrameFocused (QWebFrame *frame) = 0;
-	};
 
 	/** @brief Interface for plugins having resource sources, like smile
 	 * support or chat window styles.
@@ -183,8 +170,6 @@ namespace Azoth
 
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::IEmoticonResourceSource,
 		"org.Deviant.LeechCraft.Azoth.IEmoticonResourceSource/1.0");
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IChatStyleResourceSource,
-		"org.Deviant.LeechCraft.Azoth.IChatStyleResourceSource/1.0");
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::IResourcePlugin,
 		"org.Deviant.LeechCraft.Azoth.IResourcePlugin/1.0");
 
