@@ -31,6 +31,7 @@ namespace Xoox
 	: QObject (parent)
 	, SaveScheduled_ (false)
 	{
+		Load ();
 	}
 	
 	bool CapsDatabase::Contains (const QByteArray& hash) const

@@ -284,12 +284,6 @@ namespace Azoth
 		return Core::Instance ().GetSelectedChatTemplate (entry);
 	}
 	
-	void ProxyObject::AppendMessageByTemplate (QWebFrame *frame,
-			QObject *msg, const QString& color, bool isHighlight, bool isActive) const
-	{
-		Core::Instance ().AppendMessageByTemplate (frame, msg, color, isHighlight, isActive);
-	}
-	
 	QList<QColor> ProxyObject::GenerateColors (const QString& scheme) const
 	{
 		return Core::Instance ().GenerateColors (scheme);
@@ -353,6 +347,19 @@ namespace Azoth
 		}
 		default:
 			break;
+		}
+	}
+	
+	Util::ResourceLoader* ProxyObject::GetResourceLoader (IProxyObject::PublicResourceLoader loader) const
+	{
+		switch (loader)
+		{
+		case PRLClientIcons:
+			return Core::Instance ().GetResourceLoader (Core::RLTClientIconLoader);
+		case PRLStatusIcons:
+			return Core::Instance ().GetResourceLoader (Core::RLTStatusIconLoader);
+		case PRLSystemIcons:
+			return Core::Instance ().GetResourceLoader (Core::RLTSystemIconLoader);
 		}
 	}
 }

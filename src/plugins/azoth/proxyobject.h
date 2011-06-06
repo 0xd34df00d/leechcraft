@@ -49,13 +49,13 @@ namespace Azoth
 		QObject* GetAccount (const QString&) const;
 		QObject* GetEntry (const QString&, const QString&) const;
 		QString GetSelectedChatTemplate (QObject*) const;
-		void AppendMessageByTemplate (QWebFrame*, QObject*, const QString&, bool, bool) const;
 		QList<QColor> GenerateColors (const QString&) const;
 		QString GetNickColor (const QString&, const QList<QColor>&) const;
 		QString FormatDate (QDateTime, QObject*) const;
 		QString FormatNickname (QString, QObject*, const QString&) const;
 		QString FormatBody (QString, QObject*) const;
 		void PreprocessMessage (QObject*);
+		Util::ResourceLoader* GetResourceLoader (PublicResourceLoader) const;
 	};
 }
 }

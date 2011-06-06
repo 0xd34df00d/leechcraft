@@ -28,6 +28,7 @@
 #include "interfaces/imucentry.h"
 #include "interfaces/iprotocol.h"
 #include "interfaces/iauthable.h"
+#include "interfaces/ichatstyleresourcesource.h"
 #include "sourcetrackingmodel.h"
 
 class QStandardItemModel;
@@ -92,6 +93,7 @@ namespace Azoth
 		boost::shared_ptr<Util::ResourceLoader> StatusIconLoader_;
 		boost::shared_ptr<Util::ResourceLoader> ClientIconLoader_;
 		boost::shared_ptr<Util::ResourceLoader> AffIconLoader_;
+		boost::shared_ptr<Util::ResourceLoader> SystemIconLoader_;
 		boost::shared_ptr<SourceTrackingModel<IEmoticonResourceSource> > SmilesOptionsModel_;
 		boost::shared_ptr<SourceTrackingModel<IChatStyleResourceSource> > ChatStylesOptionsModel_;
 
@@ -131,7 +133,8 @@ namespace Azoth
 		{
 			RLTStatusIconLoader,
 			RLTClientIconLoader,
-			RLTAffIconLoader
+			RLTAffIconLoader,
+			RLTSystemIconLoader
 		};
 
 		enum CLEntryActionArea
@@ -265,8 +268,7 @@ namespace Azoth
 		
 		QString GetSelectedChatTemplate (QObject *entry) const;
 		
-		bool AppendMessageByTemplate (QWebFrame*, QObject*, const QString&,
-				bool, bool);
+		bool AppendMessageByTemplate (QWebFrame*, QObject*, const ChatMsgAppendInfo&);
 		
 		void FrameFocused (QWebFrame*);
 		
@@ -451,6 +453,10 @@ namespace Azoth
 		 */
 		void handleAuthorizationRequested (QObject*, const QString&);
 		
+		/** Handles the IAdvancedCLEntry::attentionDrawn().
+		 */
+		void handleAttentionDrawn (const QString&, const QString&);
+		
 		/** Handles nick conflict.
 		 */
 		void handleNicknameConflict (const QString&);
@@ -502,6 +508,7 @@ namespace Azoth
 
 		void invalidateSmoothAvatarCache ();
 
+		void handleActionDrawAttention ();
 		void handleActionRenameTriggered ();
 		void handleActionChangeGroupsTriggered ();
 		void handleActionRemoveTriggered ();

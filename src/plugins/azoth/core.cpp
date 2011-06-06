@@ -40,6 +40,7 @@
 #include "interfaces/iprotocol.h"
 #include "interfaces/iaccount.h"
 #include "interfaces/iclentry.h"
+#include "interfaces/iadvancedclentry.h"
 #include "interfaces/imucentry.h"
 #include "interfaces/imucperms.h"
 #include "interfaces/iauthable.h"
@@ -55,6 +56,7 @@
 #include "accounthandlerchooserdialog.h"
 #include "util.h"
 #include "eventsnotifier.h"
+#include "drawattentiondialog.h"
 
 namespace LeechCraft
 {
@@ -98,6 +100,7 @@ namespace Azoth
 	, StatusIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/contactlist/", this))
 	, ClientIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/clients/", this))
 	, AffIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/affiliations/", this))
+	, SystemIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/system/", this))
 	, SmilesOptionsModel_ (new SourceTrackingModel<IEmoticonResourceSource> (QStringList (tr ("Smile pack"))))
 	, ChatStylesOptionsModel_ (new SourceTrackingModel<IChatStyleResourceSource> (QStringList (tr ("Chat style"))))
 	, PluginManager_ (new PluginManager)
@@ -133,6 +136,9 @@ namespace Azoth
 		AffIconLoader_->AddLocalPrefix ();
 		AffIconLoader_->AddGlobalPrefix ();
 		
+		SystemIconLoader_->AddLocalPrefix ();
+		SystemIconLoader_->AddGlobalPrefix ();
+		
 		SmilesOptionsModel_->AddModel (new QStringListModel (QStringList (QString ())));
 
 		qRegisterMetaType<IMessage*> ("LeechCraft::Azoth::IMessage*");
@@ -155,6 +161,7 @@ namespace Azoth
 		StatusIconLoader_.reset ();
 		ClientIconLoader_.reset ();
 		AffIconLoader_.reset ();
+		SystemIconLoader_.reset ();
 	}
 
 	void Core::SetProxy (ICoreProxy_ptr proxy)
@@ -177,6 +184,8 @@ namespace Azoth
 			return ClientIconLoader_.get ();
 		case RLTAffIconLoader:
 			return AffIconLoader_.get ();
+		case RLTSystemIconLoader:
+			return SystemIconLoader_.get ();
 		}
 		
 		return 0;
@@ -552,8 +561,8 @@ namespace Azoth
 		return src->GetHTMLTemplate (opt, entry);
 	}
 	
-	bool Core::AppendMessageByTemplate (QWebFrame *frame, QObject *message,
-			const QString& color, bool isHighlightMsg, bool isActiveChat)
+	bool Core::AppendMessageByTemplate (QWebFrame *frame,
+			QObject *message, const ChatMsgAppendInfo& info)
 	{
 		const QString& opt = XmlSettingsManager::Instance ()
 				.property ("ChatWindowStyle").toString ();
@@ -566,8 +575,7 @@ namespace Azoth
 			return false;
 		}
 		
-		return src->AppendMessage (frame, message, color,
-				isHighlightMsg, isActiveChat);
+		return src->AppendMessage (frame, message, info);
 	}
 	
 	void Core::FrameFocused (QWebFrame *frame)
@@ -826,6 +834,14 @@ namespace Azoth
 					SIGNAL (nicknameConflict (const QString&)),
 					this,
 					SLOT (handleNicknameConflict (const QString&)));
+		}
+		
+		if (qobject_cast<IAdvancedCLEntry*> (clEntry->GetObject ()))
+		{
+			connect (clEntry->GetObject (),
+					SIGNAL (attentionDrawn (const QString&, const QString&)),
+					this,
+					SLOT (handleAttentionDrawn (const QString&, const QString&)));
 		}
 		
 		EventsNotifier_->RegisterEntry (clEntry);
@@ -1133,6 +1149,7 @@ namespace Azoth
 		const QHash<QByteArray, QAction*>& id2action = Entry2Actions_ [entry];
 		QList<QAction*> result;
 		result << id2action.value ("openchat");
+		result << id2action.value ("drawattention");
 		result << id2action.value ("rename");
 		result << id2action.value ("changegroups");
 		result << id2action.value ("remove");
@@ -1201,6 +1218,8 @@ namespace Azoth
 	{
 		if (!entry)
 			return;
+		
+		IAdvancedCLEntry *advEntry = qobject_cast<IAdvancedCLEntry*> (entry->GetObject ());
 
 		if (Entry2Actions_.contains (entry))
 			Q_FOREACH (const QAction *action,
@@ -1218,6 +1237,18 @@ namespace Azoth
 				SLOT (handleActionOpenChatTriggered ()));
 		Entry2Actions_ [entry] ["openchat"] = openChat;
 		Action2Areas_ [openChat] << CLEAAContactListCtxtMenu;
+		
+		if (advEntry)
+		{
+			QAction *drawAtt = new QAction (tr ("Draw attention..."), entry->GetObject ());
+			connect (drawAtt,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (handleActionDrawAttention ()));
+			drawAtt->setProperty ("ActionIcon", "draw_attention");
+			Entry2Actions_ [entry] ["drawattention"] = drawAtt;
+			Action2Areas_ [drawAtt] << CLEAAContactListCtxtMenu;
+		}
 
 		if (entry->GetEntryFeatures () & ICLEntry::FSupportsRenames)
 		{
@@ -1392,6 +1423,8 @@ namespace Azoth
 	{
 		if (!entry)
 			return;
+		
+		IAdvancedCLEntry *advEntry = qobject_cast<IAdvancedCLEntry*> (entry->GetObject ());
 
 		IAccount *account = qobject_cast<IAccount*> (entry->GetParentAccount ());
 		const bool isOnline = account->GetState ().State_ != SOffline;
@@ -1401,6 +1434,12 @@ namespace Azoth
 					account->GetAccountFeatures () & IAccount::FCanViewContactsInfoInOffline ||
 					isOnline;
 			Entry2Actions_ [entry] ["vcard"]->setEnabled (enableVCard);
+		}
+		
+		if (advEntry)
+		{
+			bool suppAtt = advEntry->GetAdvancedFeatures () & IAdvancedCLEntry::AFSupportsAttention;
+			Entry2Actions_ [entry] ["drawattention"]->setEnabled (suppAtt);
 		}
 
 		if (entry->GetEntryType () == ICLEntry::ETChat)
@@ -2124,6 +2163,37 @@ namespace Azoth
 		emit gotEntity (e);
 	}
 	
+	void Core::handleAttentionDrawn (const QString& text, const QString& variant)
+	{
+		if (XmlSettingsManager::Instance ()
+				.property ("IgnoreDrawAttentions").toBool ())
+			return;
+
+		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< sender ()
+					<< "doesn't implement ICLEntry";
+			return;
+		}
+		
+		const QString& str = text.isEmpty () ?
+				tr ("%1 requests your attention")
+					.arg (entry->GetEntryName ()) :
+				tr ("%1 requests your attention: %2")
+					.arg (entry->GetEntryName ())
+					.arg (text);
+		Entity e = Util::MakeNotification ("Azoth", str, PInfo_);
+		Util::NotificationActionHandler *nh =
+				new Util::NotificationActionHandler (e, this);
+		nh->AddFunction (tr ("Open chat"),
+				boost::bind (static_cast<void (ChatTabsManager::*) (const ICLEntry*)> (&ChatTabsManager::OpenChat),
+						ChatTabsManager_,
+						entry));
+		emit gotEntity (e);
+	}
+	
 	void Core::handleNicknameConflict (const QString& usedNick)
 	{
 		ICLEntry *clEntry = qobject_cast<ICLEntry*> (sender ());
@@ -2410,6 +2480,48 @@ namespace Azoth
 		ICLEntry *entry = action->
 				property ("Azoth/Entry").value<ICLEntry*> ();
 		ChatTabsManager_->OpenChat (entry);
+	}
+	
+	void Core::handleActionDrawAttention ()
+	{
+		QAction *action = qobject_cast<QAction*> (sender ());
+		if (!action)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< sender ()
+					<< "is not a QAction";
+			return;
+		}
+
+		ICLEntry *entry = action->
+				property ("Azoth/Entry").value<ICLEntry*> ();
+		IAdvancedCLEntry *advEntry = qobject_cast<IAdvancedCLEntry*> (entry->GetObject ());
+		if (!advEntry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< entry->GetObject ()
+					<< "doesn't implement IAdvancedCLEntry";
+			return;
+		}
+		
+		const QStringList& vars = entry->Variants ();
+		DrawAttentionDialog dia (vars);
+		if (dia.exec () != QDialog::Accepted)
+			return;
+		
+		const QString& variant = dia.GetResource ();
+		const QString& text = dia.GetText ();
+		
+		QStringList varsToDraw;
+		if (!variant.isEmpty ())
+			varsToDraw << variant;
+		else if (vars.isEmpty ())
+			varsToDraw << QString ();
+		else
+			varsToDraw = vars;
+
+		Q_FOREACH (const QString& var, varsToDraw)
+			advEntry->DrawAttention (text, var);
 	}
 
 	void Core::handleActionRenameTriggered ()
