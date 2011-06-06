@@ -34,6 +34,9 @@ namespace Poshuku
 {
 namespace PinTab
 {
+	//TODO: 
+	//- hide close button on pinned tabs
+	//- move pinned tabs to left
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
@@ -45,20 +48,20 @@ namespace PinTab
 		QMap<const QObject*, QAction*> ActionsMap_;
 		QMap<QObject*, QString> Pinned_;
 		QStringList PinnedUrls_;
-		void ChangeTabTitle (QObject *widget, const QString& title);
-		void SetPinned (QObject* widget, QAction* action, bool pinned);
-		QWebView* GetWebView (QObject *browserWidget);
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
 		void Release ();
-
-		void SavePinned ();
 		QByteArray GetUniqueID () const;
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
 		QSet<QByteArray> GetPluginClasses () const;
+	private:
+		void ChangeTabTitle (QObject *widget, const QString& title);
+		void SetPinned (QObject *widget, QAction *action, bool pinned);
+		QWebView* GetWebView (QObject *browserWidget);
+		void SavePinned ();
 	private slots:
 		void handlePinTabTriggered ();
 		void handlePinnedTitleChanged (const QString& title);
