@@ -93,6 +93,7 @@ namespace Azoth
 		boost::shared_ptr<Util::ResourceLoader> StatusIconLoader_;
 		boost::shared_ptr<Util::ResourceLoader> ClientIconLoader_;
 		boost::shared_ptr<Util::ResourceLoader> AffIconLoader_;
+		boost::shared_ptr<Util::ResourceLoader> SystemIconLoader_;
 		boost::shared_ptr<SourceTrackingModel<IEmoticonResourceSource> > SmilesOptionsModel_;
 		boost::shared_ptr<SourceTrackingModel<IChatStyleResourceSource> > ChatStylesOptionsModel_;
 
@@ -132,7 +133,8 @@ namespace Azoth
 		{
 			RLTStatusIconLoader,
 			RLTClientIconLoader,
-			RLTAffIconLoader
+			RLTAffIconLoader,
+			RLTSystemIconLoader
 		};
 
 		enum CLEntryActionArea

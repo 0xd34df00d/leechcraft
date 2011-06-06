@@ -28,6 +28,12 @@
 					<label value="default" />
 				</option>
 			</item>
+			<item type="combobox" property="SystemIcons" mayHaveDataSource="true">
+				<label value="General icons:" />
+				<option name="default" default="true">
+					<label value="default" />
+				</option>
+			</item>
 			<item type="combobox" property="ChatWindowStyle" mayHaveDataSource="true">
 				<label value="Chat window style:" />
 				<option name="Basic" default="true">

@@ -100,6 +100,7 @@ namespace Azoth
 	, StatusIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/contactlist/", this))
 	, ClientIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/clients/", this))
 	, AffIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/affiliations/", this))
+	, SystemIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/system/", this))
 	, SmilesOptionsModel_ (new SourceTrackingModel<IEmoticonResourceSource> (QStringList (tr ("Smile pack"))))
 	, ChatStylesOptionsModel_ (new SourceTrackingModel<IChatStyleResourceSource> (QStringList (tr ("Chat style"))))
 	, PluginManager_ (new PluginManager)
@@ -135,6 +136,9 @@ namespace Azoth
 		AffIconLoader_->AddLocalPrefix ();
 		AffIconLoader_->AddGlobalPrefix ();
 		
+		SystemIconLoader_->AddLocalPrefix ();
+		SystemIconLoader_->AddGlobalPrefix ();
+		
 		SmilesOptionsModel_->AddModel (new QStringListModel (QStringList (QString ())));
 
 		qRegisterMetaType<IMessage*> ("LeechCraft::Azoth::IMessage*");
@@ -157,6 +161,7 @@ namespace Azoth
 		StatusIconLoader_.reset ();
 		ClientIconLoader_.reset ();
 		AffIconLoader_.reset ();
+		SystemIconLoader_.reset ();
 	}
 
 	void Core::SetProxy (ICoreProxy_ptr proxy)
@@ -179,6 +184,8 @@ namespace Azoth
 			return ClientIconLoader_.get ();
 		case RLTAffIconLoader:
 			return AffIconLoader_.get ();
+		case RLTSystemIconLoader:
+			return SystemIconLoader_.get ();
 		}
 		
 		return 0;
