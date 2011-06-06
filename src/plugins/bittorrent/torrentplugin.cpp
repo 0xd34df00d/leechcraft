@@ -475,16 +475,17 @@ namespace LeechCraft
 						rows << mapped.row ();
 				}
 
-				QMessageBox confirm (
-						QMessageBox::Question,
+				QMessageBox confirm (QMessageBox::Question,
 						"LeechCraft BitTorrent",
 						tr ("Do you really want to delete %n torrent(s)?", 0, rows.size ()),
 						QMessageBox::Cancel,
 						Core::Instance ()->GetProxy ()->GetMainWindow ());
 				QPushButton *deleteTorrentsButton =
-						confirm.addButton (tr ("Delete &torrent(s)"), QMessageBox::ActionRole);
+						confirm.addButton (tr ("Delete &torrent(s)", 0, rows.size ()),
+								QMessageBox::ActionRole);
 				QPushButton *deleteTorrentsAndFilesButton =
-						confirm.addButton (tr ("Delete torrent(s) and &files"), QMessageBox::ActionRole);
+						confirm.addButton (tr ("Delete torrent(s) and their &files", 0, rows.size ()),
+								QMessageBox::ActionRole);
 				confirm.setDefaultButton (QMessageBox::Cancel);
 
 				confirm.exec ();
