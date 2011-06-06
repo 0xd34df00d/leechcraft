@@ -24,8 +24,12 @@ namespace LeechCraft
 {
 namespace Azoth
 {
-	/** This interface is to be implemented by CL entries that can more
-	 * that basic ICLEntry interface exposes.
+	/** This interface defines some advanced actions and signals on
+	 * contact list entries, like methods for drawing attention and
+	 * such.
+	 * 
+	 * Entries implementing this interface should, of course, implement
+	 * plain ICLEntry as well.
 	 * 
 	 * @sa ICLEntry
 	 */
@@ -46,10 +50,46 @@ namespace Azoth
 		
 		Q_DECLARE_FLAGS (AdvancedFeatures, AdvancedFeature);
 		
+		/** Returns the OR-ed combination of advanced features supported
+		 * by this contact list entry.
+		 * 
+		 * @return The advanced features supported by this entry.
+		 */
 		virtual AdvancedFeatures GetAdvancedFeatures () const = 0;
 		
+		/** @brief Requests attention of the user behind this entry.
+		 * 
+		 * This method, if called, should send request for attention to
+		 * this entry, if supported by the protocol. An optional text
+		 * message may be added to the attention request.
+		 * 
+		 * If variant is an empty string, the variant with the highest
+		 * priority should be used.
+		 * 
+		 * @param[in] text Optional accompanying text.
+		 * @param[in] variant The entry variant to buzz, or a null
+		 * string for variant with highest priority.
+		 * 
+		 * @sa attentionDrawn()
+		 */
 		virtual void DrawAttention (const QString& text, const QString& variant) = 0;
 
+		/** @brief Notifies about attention request from this entry.
+		 * 
+		 * This signal should be emitted by the entry whenever the user
+		 * behind the entry decides to request our own attention.
+		 * 
+		 * Depending on Azoth settings, the request may be displayed in
+		 * some way or ignored completely.
+		 * 
+		 * @note This function is expected to be a signal.
+		 * 
+		 * @param[out] text Optional accompanying text.
+		 * @param[out] variant Source variant of the entry that has
+		 * requested our attention.
+		 * 
+		 * @sa DrawAttention()
+		 */
 		virtual void attentionDrawn (const QString& text, const QString& variant) = 0;
 	};
 }
