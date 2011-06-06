@@ -276,10 +276,10 @@ namespace StandardStyles
 	
 	void StandardStyleSource::handleFrameDestroyed ()
 	{
-		QWebFrame *source = qobject_cast<QWebFrame*> (sender ());
+		const QObject *snd = sender ();
 		for (QHash<QObject*, QWebFrame*>::iterator i = Msg2Frame_.begin ();
 				i != Msg2Frame_.end (); )
-			if (i.value () == source)
+			if (i.value () == snd)
 				i = Msg2Frame_.erase (i);
 			else
 				++i;
