@@ -102,7 +102,9 @@ namespace StandardStyles
 				QString ();
 
 		IAdvancedMessage *advMsg = qobject_cast<IAdvancedMessage*> (msgObj);
-		if (advMsg)
+		if (msg->GetDirection () == IMessage::DOut &&
+				advMsg &&
+				!advMsg->IsDelivered ())
 		{
 			connect (msgObj,
 					SIGNAL (messageDelivered ()),
@@ -265,13 +267,18 @@ namespace StandardStyles
 	
 	void StandardStyleSource::handleMessageDelivered ()
 	{
-		QWebFrame *frame = Msg2Frame_ [sender ()];
+		QWebFrame *frame = Msg2Frame_.take (sender ());
 		if (!frame)
 			return;
 		
 		const QString& msgId = GetMessageID (sender ());
 		QWebElement elem = frame->findFirstElement ("img[id=\"" + msgId + "\"]");
 		elem.setAttribute ("src", GetStatusImage ("notification_chat_delivery_ok"));
+		
+		disconnect (sender (),
+				SIGNAL (messageDelivered ()),
+				this,
+				SLOT (handleMessageDelivered ()));
 	}
 	
 	void StandardStyleSource::handleFrameDestroyed ()
