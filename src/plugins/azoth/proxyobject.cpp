@@ -349,5 +349,18 @@ namespace Azoth
 			break;
 		}
 	}
+	
+	Util::ResourceLoader* ProxyObject::GetResourceLoader (IProxyObject::PublicResourceLoader loader) const
+	{
+		switch (loader)
+		{
+		case PRLClientIcons:
+			return Core::Instance ().GetResourceLoader (Core::RLTClientIconLoader);
+		case PRLStatusIcons:
+			return Core::Instance ().GetResourceLoader (Core::RLTStatusIconLoader);
+		case PRLSystemIcons:
+			return Core::Instance ().GetResourceLoader (Core::RLTSystemIconLoader);
+		}
+	}
 }
 }

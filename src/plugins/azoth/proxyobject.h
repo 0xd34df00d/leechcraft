@@ -55,6 +55,7 @@ namespace Azoth
 		QString FormatNickname (QString, QObject*, const QString&) const;
 		QString FormatBody (QString, QObject*) const;
 		void PreprocessMessage (QObject*);
+		Util::ResourceLoader* GetResourceLoader (PublicResourceLoader) const;
 	};
 }
 }

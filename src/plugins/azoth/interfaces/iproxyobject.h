@@ -26,12 +26,24 @@ class QWebFrame;
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class ResourceLoader;
+}
+
 namespace Azoth
 {
 	class IProxyObject
 	{
 	public:
 		virtual ~IProxyObject () {}
+		
+		enum PublicResourceLoader
+		{
+			PRLClientIcons,
+			PRLStatusIcons,
+			PRLSystemIcons
+		};
 
 		/** @brief Retrieves the password for the given account.
 		 *
@@ -147,6 +159,8 @@ namespace Azoth
 		virtual QString FormatBody (QString, QObject*) const = 0;
 		
 		virtual void PreprocessMessage (QObject*) = 0;
+		
+		virtual Util::ResourceLoader* GetResourceLoader (PublicResourceLoader loader) const = 0;
 	};
 }
 }
