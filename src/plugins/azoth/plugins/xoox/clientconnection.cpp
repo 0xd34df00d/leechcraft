@@ -35,6 +35,7 @@
 #include <QXmppActivityItem.h>
 #include <QXmppPubSubIq.h>
 #include <QXmppDeliveryReceiptsManager.h>
+#include <QXmppCaptchaManager.h>
 #include <plugininterface/util.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <interfaces/iprotocol.h>
@@ -50,6 +51,7 @@
 #include "unauthclentry.h"
 #include "vcarddialog.h"
 #include "capsmanager.h"
+#include "formbuilder.h"
 
 namespace LeechCraft
 {
@@ -70,6 +72,7 @@ namespace Xoox
 	, ArchiveManager_ (new QXmppArchiveManager)
 	, PubSubManager_ (new QXmppPubSubManager)
 	, DeliveryReceiptsManager_ (new QXmppDeliveryReceiptsManager)
+	, CaptchaManager_ (new QXmppCaptchaManager)
 	, OurJID_ (jid)
 	, Account_ (account)
 	, ProxyObject_ (0)
@@ -104,6 +107,7 @@ namespace Xoox
 		Client_->addExtension (EntityTimeManager_);
 		Client_->addExtension (ArchiveManager_);
 		Client_->addExtension (PubSubManager_);
+		Client_->addExtension (CaptchaManager_);
 
 		DiscoveryManager_ = Client_->findExtension<QXmppDiscoveryManager> ();
 		DiscoveryManager_->setClientCapabilitiesNode ("http://leechcraft.org/azoth");
@@ -165,6 +169,11 @@ namespace Xoox
 				this,
 				SLOT (handleMessageDelivered (const QString&)));
 
+		connect (CaptchaManager_,
+				SIGNAL (captchaFormReceived (const QXmppDataForm&)),
+				this,
+				SLOT (handleCaptchaReceived (const QXmppDataForm&)));
+		
 		connect (DiscoveryManager_,
 				SIGNAL (infoReceived (const QXmppDiscoveryIq&)),
 				CapsManager_,
@@ -749,6 +758,32 @@ namespace Xoox
 	
 	void ClientConnection::handleMessageDelivered (const QString& msgId)
 	{
+	}
+
+	void ClientConnection::handleCaptchaReceived (const QXmppDataForm& dataForm)
+	{
+		FormBuilder builder;
+		
+		std::auto_ptr<QDialog> dialog (new QDialog ());
+		QWidget *widget = builder.CreateForm (dataForm, dialog.get ());
+		dialog->setWindowTitle (widget->windowTitle ());
+		dialog->setLayout (new QVBoxLayout ());
+		dialog->layout ()->addWidget (widget);
+		QDialogButtonBox *box = new QDialogButtonBox (QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+		dialog->layout ()->addWidget (box);
+		
+		connect (box,
+				SIGNAL (accepted ()),
+				dialog.get (),
+				SLOT (accept ()));
+		connect (box,
+				SIGNAL (rejected ()),
+				dialog.get (),
+				SLOT (reject ()));
+		
+		if (dialog->exec () != QDialog::Accepted)
+			return;
+		
 	}
 
 	void ClientConnection::handleBookmarksReceived (const QXmppBookmarkSet& set)
