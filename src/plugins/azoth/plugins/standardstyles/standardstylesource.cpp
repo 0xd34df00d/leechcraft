@@ -22,6 +22,7 @@
 #include <QWebFrame>
 #include <QtDebug>
 #include <plugininterface/resourceloader.h>
+#include <plugininterface/util.h>
 #include <interfaces/imessage.h>
 #include <interfaces/iaccount.h>
 #include <interfaces/imucentry.h>
@@ -90,6 +91,8 @@ namespace StandardStyles
 
 		const bool isHighlightMsg = info.IsHighlightMsg_;
 		const bool isActiveChat = info.IsActiveChat_;
+		
+		const QString& msgId = QString::number (reinterpret_cast<long int> (msgObj));
 
 		IMessage *msg = qobject_cast<IMessage*> (msgObj);
 		ICLEntry *other = qobject_cast<ICLEntry*> (msg->OtherPart ());
@@ -102,20 +105,24 @@ namespace StandardStyles
 		QString body = Proxy_->FormatBody (msg->GetBody (), msg->GetObject ());
 
 		QString divClass;
+		QString statusIconName;
 		QString string = Proxy_->FormatDate (msg->GetDateTime (), msg->GetObject ());
 		string.append (' ');
 		switch (msg->GetDirection ())
 		{
 		case IMessage::DIn:
 		{
+			statusIconName = "notification_chat_receive";
 			switch (msg->GetMessageType ())
 			{
 			case IMessage::MTChatMessage:
+				statusIconName = "notification_chat_receive";
 				divClass = msg->GetDirection () == IMessage::DIn ?
 					"msgin" :
 					"msgout";
 			case IMessage::MTMUCMessage:
 			{
+				statusIconName = "notification_chat_receive";
 				entryName = Proxy_->FormatNickname (entryName, msg->GetObject (), nickColor);
 
 				if (body.startsWith ("/me "))
@@ -138,10 +145,12 @@ namespace StandardStyles
 				break;
 			}
 			case IMessage::MTEventMessage:
+				statusIconName = "notification_chat_info";
 				string.append ("! ");
 				divClass = "eventmsg";
 				break;
 			case IMessage::MTStatusMessage:
+				statusIconName = "notification_chat_info";
 				string.append ("* ");
 				divClass = "statusmsg";
 				break;
@@ -154,6 +163,7 @@ namespace StandardStyles
 		}
 		case IMessage::DOut:
 		{
+			statusIconName = "notification_chat_send";
 			IMUCEntry *entry = qobject_cast<IMUCEntry*> (other->GetParentCLEntry ());
 			IAccount *acc = qobject_cast<IAccount*> (other->GetParentAccount ());
 			const QString& nick = entry ?
@@ -184,6 +194,12 @@ namespace StandardStyles
 		}
 		}
 
+		const QString& statusIconPath = Proxy_->
+				GetResourceLoader (IProxyObject::PRLSystemIcons)->GetIconPath (statusIconName);
+		const QImage& img = QImage (statusIconPath);
+		string.prepend (QString ("<img src='%1' style='max-width: 1em; max-height: 1em;' id='%2'/>")
+				.arg (Util::GetAsBase64Src (img))
+				.arg (msgId));
 		string.append (body);
 
 		QWebElement elem = frame->findFirstElement ("body");
