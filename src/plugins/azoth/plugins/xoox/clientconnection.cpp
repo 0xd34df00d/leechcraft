@@ -435,6 +435,15 @@ namespace Xoox
 		AwaitingPacketCallbacks_ [packet.to ()] [packet.id ()] = PacketCallback_t (obj, method);
 		Client_->sendPacket (packet);
 	}
+	
+	void ClientConnection::SendMessage (GlooxMessage *msgObj)
+	{
+		const QXmppMessage& msg = msgObj->GetMessage ();
+		if (msg.requestReceipt ())
+			UndeliveredMessages_ [msg.id ()] = msgObj;
+		
+		Client_->sendPacket (msg);
+	}
 
 	QXmppClient* ClientConnection::GetClient () const
 	{
@@ -749,6 +758,9 @@ namespace Xoox
 	
 	void ClientConnection::handleMessageDelivered (const QString& msgId)
 	{
+		QPointer<GlooxMessage> msg = UndeliveredMessages_.take (msgId);
+		if (msg)
+			msg->SetDelivered (true);
 	}
 
 	void ClientConnection::handleBookmarksReceived (const QXmppBookmarkSet& set)

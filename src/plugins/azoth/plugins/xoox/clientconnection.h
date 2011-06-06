@@ -104,6 +104,8 @@ namespace Xoox
 		QList<QXmppMessage> OfflineMsgQueue_;
 		
 		QHash<QString, QPointer<VCardDialog> > AwaitingVCardDialogs_;
+		
+		QHash<QString, QPointer<GlooxMessage> > UndeliveredMessages_;
 	public:
 		typedef boost::function<void (const QXmppDiscoveryIq&)> DiscoCallback_t;
 	private:
@@ -156,6 +158,7 @@ namespace Xoox
 		void Remove (GlooxCLEntry*);
 
 		void SendPacketWCallback (const QXmppIq&, QObject*, const QByteArray&);
+		void SendMessage (GlooxMessage*);
 		QXmppClient* GetClient () const;
 		QObject* GetCLEntry (const QString& bareJid, const QString& variant) const;
 		GlooxCLEntry* AddODSCLEntry (GlooxCLEntry::OfflineDataSource_ptr);
