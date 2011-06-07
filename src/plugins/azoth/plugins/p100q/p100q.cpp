@@ -144,6 +144,9 @@ namespace p100q
 				
 		body.replace (PostByUserRX_,
 				" <a href=\"azoth://msgeditreplace/%23\\1+\">#\\1</a> ");
+		
+		body.prepend("<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\"><tbody><tr><td>");
+		body += "</td></tr></tbody></table>";
 		return body;
 	}
 
