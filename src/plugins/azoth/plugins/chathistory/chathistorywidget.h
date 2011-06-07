@@ -41,10 +41,10 @@ namespace ChatHistory
 		Q_INTERFACES (ITabWidget);
 
 		Ui::ChatHistoryWidget Ui_;
-		QStandardItemModel *HistoryViewModel_;
 		QStandardItemModel *ContactsModel_;
 		QSortFilterProxyModel *SortFilter_;
 		int Backpages_;
+		int Amount_;
 		QString CurrentAccount_;
 		QString CurrentEntry_;
 		QToolBar *Toolbar_;

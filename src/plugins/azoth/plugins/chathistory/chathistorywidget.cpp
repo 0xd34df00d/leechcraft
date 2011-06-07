@@ -42,15 +42,14 @@ namespace ChatHistory
 
 	ChatHistoryWidget::ChatHistoryWidget (ICLEntry *entry, QWidget *parent)
 	: QWidget (parent)
-	, HistoryViewModel_ (new QStandardItemModel (this))
 	, ContactsModel_ (new QStandardItemModel (this))
 	, SortFilter_ (new QSortFilterProxyModel (this))
 	, Backpages_ (0)
+	, Amount_ (0)
 	, Toolbar_ (new QToolBar (tr ("Chat history")))
 	, EntryToFocus_ (entry)
 	{
 		Ui_.setupUi (this);
-		Ui_.HistView_->setModel (HistoryViewModel_);
 
 		SortFilter_->setDynamicSortFilter (true);
 		SortFilter_->setSourceModel (ContactsModel_);
@@ -213,57 +212,55 @@ namespace ChatHistory
 					itemData (Ui_.AccountBox_->currentIndex ()).toString () ||
 				entryId != selectedEntry)
 			return;
-		
-		HistoryViewModel_->clear ();
-		HistoryViewModel_->setHorizontalHeaderLabels (QStringList (tr ("Date"))
-					<< tr ("Name")
-					<< tr ("Message"));
-		
+
+		Amount_ = 0;
+		Ui_.HistView_->clear ();		
 		ICLEntry *entry = qobject_cast<ICLEntry*> (Core::Instance ()->
 					GetPluginProxy ()->GetEntry (entryId, accountId));
 		const QString& name = entry ?
 				entry->GetEntryName () :
 				entryId;
-				
+
 		QList<QColor> colors = Core::Instance ()->
 				GetPluginProxy ()->GenerateColors ("hash");
-		
+
 		Q_FOREACH (const QVariant& logVar, logsVar.toList ())
 		{
 			const QVariantMap& map = logVar.toMap ();
-			
+
 			const bool isChat = map ["Type"] == "CHAT";
 			
-			QList<QStandardItem*> items;
-			items << new QStandardItem (map ["Date"].toDateTime ().toString ());
+			QString html;
+			html += "[" + map ["Date"].toDateTime ().toString () + "] ";
 			const QString& var = map ["Variant"].toString ();
 			if (isChat)
-				items << new QStandardItem (var.isEmpty () ?
-							name :
-							name + '/' + var);
-			else
-				items << new QStandardItem (var);
-			items << new QStandardItem (map ["Message"].toString ());
-
-			if (isChat)
 			{
-				const QBrush& brush = map ["Direction"] == "IN" ?
-						QBrush (Qt::blue) :
-						QBrush (Qt::red);
-				Q_FOREACH (QStandardItem *item, items)
-					item->setForeground (brush);
+				if (!entry && !var.isEmpty ())
+					html += var;
+				else if (entry && var.isEmpty ())
+					html += name;
+				else
+					html += name + '/' + var;
 			}
 			else
 			{
 				const QString& color = Core::Instance ()->
 						GetPluginProxy ()->GetNickColor (var, colors);
-				items [1]->setForeground (QColor (color));
+				html += "<font color=\"" + color + "\">" + var + "</font>";
 			}
+			
+			html += ": " + map ["Message"].toString ().replace ('\n', "<br/>");;
 
-			Q_FOREACH (QStandardItem *item, items)
-				item->setEditable (false);
-				
-			HistoryViewModel_->appendRow (items);
+			if (isChat)
+			{
+				html.prepend (QString ("<font color=\"#") + 
+						(map ["Direction"] == "IN" ? "0000dd" : "dd0000") +
+						"\">");
+				html += "</font>";
+			}
+			Ui_.HistView_->append (html);
+			
+			++Amount_;
 		}
 	}
 
@@ -285,7 +282,7 @@ namespace ChatHistory
 	
 	void ChatHistoryWidget::previousHistory ()
 	{
-		if (HistoryViewModel_->rowCount () < Amount)
+		if (Amount_ < Amount)
 			return;
 		
 		++Backpages_;
