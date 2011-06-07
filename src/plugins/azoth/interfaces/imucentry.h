@@ -94,6 +94,14 @@ namespace Azoth
 		 * @return The list of participants of this MUC.
 		 */
 		virtual QList<QObject*> GetParticipants () = 0;
+		
+		/** @brief Requests to join the room.
+		 * 
+		 * If the we aren't joined to this MUC (for example, there was a
+		 * nick conflict, or this entry represents a bookmark), the room
+		 * should be tried to be joined.
+		 */
+		virtual void Join () = 0;
 
 		/** @brief Requests to leave the room.
 		 *
@@ -124,6 +132,15 @@ namespace Azoth
 		 * this room.
 		 */
 		virtual void SetNick (const QString& nick) = 0;
+		
+		/** @brief Returns human-readable name of participants' group.
+		 * 
+		 * This function should return the human-readable name of the
+		 * group which holds the participants of this room.
+		 * 
+		 * @return The human-readable name.
+		 */
+		virtual QString GetGroupName () const = 0;
 				
 		/** @brief Returns the data identifying this room.
 		 * 
@@ -142,8 +159,10 @@ namespace Azoth
 		 * room.
 		 *
 		 * @note This function is expected to be a signal.
+		 * 
+		 * @param[out] parts The list of participants that joined.
 		 */
-		virtual void gotNewParticipants (const QList<QObject*>&) = 0;
+		virtual void gotNewParticipants (const QList<QObject*>& parts) = 0;
 
 		/** @brief Notifies about subject change.
 		 *
@@ -151,8 +170,30 @@ namespace Azoth
 		 * to newSubj.
 		 *
 		 * @note This function is expected to be a signal.
+		 * 
+		 * @param[out] newSubj The new subject of this room.
 		 */
 		virtual void mucSubjectChanged (const QString& newSubj) = 0;
+		
+		/** @brief Notifies about nick conflict.
+		 * 
+		 * This signal should be emitted when room gets the error from
+		 * the server that the nickname is already in use.
+		 * 
+		 * The signal handler could either call SetNick() with some
+		 * other nickname (in this case the room should automatically
+		 * try to rejoin) or do nothing it all (in this case the room
+		 * should, well, do nothing as well).
+		 * 
+		 * This signal should be emitted only if the error arises while
+		 * joining, not as result of SetNick().
+		 * 
+		 * @note This function is expected to be a signal.
+		 * 
+		 * @param[out] usedNick The nickname that was used to join the
+		 * room.
+		 */
+		virtual void nicknameConflict (const QString& usedNick) = 0;
 	};
 
 	Q_DECLARE_OPERATORS_FOR_FLAGS (IMUCEntry::MUCFeatures);

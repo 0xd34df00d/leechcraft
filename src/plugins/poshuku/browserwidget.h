@@ -217,6 +217,8 @@ namespace Poshuku
 				QString message);
 		void hookTabBarContextMenuActions (LeechCraft::IHookProxy_ptr proxy,
 				const QObject *browserWidget) const;
+		void hookTabRemoveRequested (LeechCraft::IHookProxy_ptr proxy,
+				QObject *browserWidget);
 		void hookUpdateLogicalPath (LeechCraft::IHookProxy_ptr proxy,
 				QObject *browserWidget);
 		void hookURLEditReturnPressed (LeechCraft::IHookProxy_ptr proxy,

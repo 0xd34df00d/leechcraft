@@ -53,6 +53,8 @@ SET (SRCS
 	simpledialog.cpp
 	servicediscoverywidget.cpp
 	eventsnotifier.cpp
+	zoomeventfilter.cpp
+	drawattentiondialog.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -79,6 +81,8 @@ SET (HEADERS
 	simpledialog.h
 	servicediscoverywidget.h
 	eventsnotifier.h
+	zoomeventfilter.h
+	drawattentiondialog.h
 	sourcetrackingmodel.h
 	interfaces/iprotocolplugin.h
 	interfaces/iaccount.h
@@ -98,6 +102,7 @@ SET (FORMS
 	accounthandlerchooserdialog.ui
 	simpledialog.ui
 	servicediscoverywidget.ui
+	drawattentiondialog.ui
 	)
 SET (RESOURCES azothresources.qrc)
 CreateTrVars ("azoth" "en;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)

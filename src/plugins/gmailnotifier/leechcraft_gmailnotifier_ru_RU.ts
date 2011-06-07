@@ -6,7 +6,7 @@
     <message>
         <location filename="gmailchecker.cpp" line="79"/>
         <location filename="gmailchecker.cpp" line="103"/>
-        <location filename="gmailchecker.cpp" line="162"/>
+        <location filename="gmailchecker.cpp" line="161"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
@@ -21,37 +21,37 @@
         <translation>Не удалось разобрать данные XML</translation>
     </message>
     <message>
-        <location filename="gmailchecker.cpp" line="126"/>
-        <source>You have %1 unread conversations</source>
-        <translation>У вас %1 непрочитанных разговоров</translation>
-    </message>
-    <message>
-        <location filename="gmailchecker.cpp" line="138"/>
+        <location filename="gmailchecker.cpp" line="133"/>
         <source>No subject</source>
         <translation>Без темы</translation>
     </message>
     <message>
-        <location filename="gmailchecker.cpp" line="141"/>
+        <location filename="gmailchecker.cpp" line="136"/>
         <source>No content</source>
         <translation>Без содержимого</translation>
     </message>
     <message>
-        <location filename="gmailchecker.cpp" line="145"/>
+        <location filename="gmailchecker.cpp" line="140"/>
         <source>from</source>
         <translation>от</translation>
     </message>
     <message>
-        <location filename="gmailchecker.cpp" line="149"/>
+        <location filename="gmailchecker.cpp" line="144"/>
         <source>at</source>
         <translation>в</translation>
     </message>
     <message>
-        <location filename="gmailchecker.cpp" line="167"/>
+        <location filename="gmailchecker.cpp" line="150"/>
+        <source>and %1 more</source>
+        <translation>и еще %1</translation>
+    </message>
+    <message>
+        <location filename="gmailchecker.cpp" line="166"/>
         <source>The username or password is incorrect</source>
         <translation>Имя пользователя или пароль не верны</translation>
     </message>
     <message>
-        <location filename="gmailchecker.cpp" line="169"/>
+        <location filename="gmailchecker.cpp" line="168"/>
         <source>Connection timeout</source>
         <translation>Время ожидания истекло</translation>
     </message>
@@ -105,6 +105,16 @@
         <location filename="dummy.cpp" line="9"/>
         <source> s</source>
         <translation> с</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="10"/>
+        <source>Appearance</source>
+        <translation>Внешний вид</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="11"/>
+        <source>Number of messages shown:</source>
+        <translation>Показывать столько сообщений:</translation>
     </message>
 </context>
 </TS>

@@ -167,7 +167,7 @@ friend class dcpp::Singleton<MainLayout>;
         QStringList Provides () const { return QStringList ("directconnect"); }
 
         /** IHaveTabs interface */
-        virtual void TabOpenRequested (const QByteArray&){}
+        virtual void TabOpenRequested (const QByteArray&);
         virtual LeechCraft::TabClasses_t GetTabClasses () const;
 
     public Q_SLOTS:

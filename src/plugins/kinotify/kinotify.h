@@ -65,6 +65,8 @@ namespace LeechCraft
 				Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 			public slots:
 				void pushNotification ();
+			signals:
+				void gotEntity (const LeechCraft::Entity&);
 			};
 		};
 	};

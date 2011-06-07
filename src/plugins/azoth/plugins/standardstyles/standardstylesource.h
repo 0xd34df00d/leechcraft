@@ -21,7 +21,9 @@
 #include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <QDateTime>
-#include <interfaces/iresourceplugin.h>
+#include <QHash>
+#include <QColor>
+#include <interfaces/ichatstyleresourcesource.h>
 
 namespace LeechCraft
 {
@@ -47,13 +49,25 @@ namespace StandardStyles
 
 		QMap<QWebFrame*, bool> HasBeenAppended_;
 		IProxyObject *Proxy_;
+		
+		mutable QHash<QString, QList<QColor> > Coloring2Colors_;
+		mutable QString LastPack_;
+		
+		QHash<QObject*, QWebFrame*> Msg2Frame_;
 	public:
 		StandardStyleSource (IProxyObject*, QObject* = 0);
 		
 		QAbstractItemModel* GetOptionsModel () const;
 		QString GetHTMLTemplate (const QString&, QObject*) const;
-		bool AppendMessage (QWebFrame*, QObject*, const QString&, bool, bool);
+		bool AppendMessage (QWebFrame*, QObject*, const ChatMsgAppendInfo&);
 		void FrameFocused (QWebFrame*);
+	private:
+		QList<QColor> CreateColors (const QString&);
+		QString GetMessageID (QObject*);
+		QString GetStatusImage (const QString&);
+	private slots:
+		void handleMessageDelivered ();
+		void handleFrameDestroyed ();
 	};
 }
 }

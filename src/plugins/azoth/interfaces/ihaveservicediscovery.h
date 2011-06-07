@@ -21,6 +21,7 @@
 #include <QMetaType>
 
 class QAbstractItemModel;
+class QModelIndex;
 class QString;
 
 namespace LeechCraft
@@ -34,6 +35,8 @@ namespace Azoth
 		
 		virtual void SetQuery (const QString& query) = 0;
 		virtual QAbstractItemModel* GetRepresentationModel () const = 0;
+		virtual QList<QPair<QByteArray, QString> > GetActionsFor (const QModelIndex&) = 0;
+		virtual void ExecuteAction (const QModelIndex&, const QByteArray&) = 0;
 	};
 
 	class IHaveServiceDiscovery

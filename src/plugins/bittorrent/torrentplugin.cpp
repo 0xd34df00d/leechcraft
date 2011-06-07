@@ -475,17 +475,33 @@ namespace LeechCraft
 						rows << mapped.row ();
 				}
 
-				if (QMessageBox::question (Core::Instance ()->GetProxy ()->GetMainWindow (),
-							"LeechCraft",
-							tr ("Do you really want to delete %n torrent(s)?", 0, rows.size ()),
-							QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
-					return;
+				QMessageBox confirm (QMessageBox::Question,
+						"LeechCraft BitTorrent",
+						tr ("Do you really want to delete %n torrent(s)?", 0, rows.size ()),
+						QMessageBox::Cancel,
+						Core::Instance ()->GetProxy ()->GetMainWindow ());
+				QPushButton *deleteTorrentsButton =
+						confirm.addButton (tr ("Delete &torrent(s)", 0, rows.size ()),
+								QMessageBox::ActionRole);
+				QPushButton *deleteTorrentsAndFilesButton =
+						confirm.addButton (tr ("Delete torrent(s) and their &files", 0, rows.size ()),
+								QMessageBox::ActionRole);
+				confirm.setDefaultButton (QMessageBox::Cancel);
+
+				confirm.exec ();
+
+				int roptions = libtorrent::session::none;
+				if (confirm.clickedButton () == deleteTorrentsAndFilesButton)
+					roptions |= libtorrent::session::delete_files;
+				else if (confirm.clickedButton () == deleteTorrentsButton)
+					;// do nothing
+				else return;
 
 				std::sort (rows.begin (), rows.end (),
 						std::greater<int> ());
 
 				Q_FOREACH (int row, rows)
-					Core::Instance ()->RemoveTorrent (row);
+					Core::Instance ()->RemoveTorrent (row, roptions);
 				TabWidget_->InvalidateSelection ();
 				setActionsEnabled ();
 			}

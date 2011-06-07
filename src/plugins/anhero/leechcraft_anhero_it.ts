@@ -4,9 +4,9 @@
 <context>
     <name>LeechCraft::Plugins::AnHero::Plugin</name>
     <message>
-        <location filename="anhero.cpp" line="70"/>
+        <location filename="anhero.cpp" line="72"/>
         <source>Crash handler</source>
-        <translation type="unfinished"></translation>
+        <translation>Crash gestore</translation>
     </message>
 </context>
 </TS>

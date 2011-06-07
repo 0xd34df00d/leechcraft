@@ -365,6 +365,11 @@ namespace Poshuku
 
 		if (raise)
 			emit raiseTab (widget);
+		
+		emit hookTabAdded (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy),
+				widget,
+				widget->getWebView (),
+				url);
 
 		return widget;
 	}
@@ -775,6 +780,19 @@ namespace Poshuku
 				RestoredURLs_ << i;
 			}
 			QTimer::singleShot (2000, this, SLOT (restorePages ()));
+		}
+		
+		QList<QUrl> toRestore;
+		Q_FOREACH (int idx, RestoredURLs_)
+			toRestore << SavedSessionState_ [idx].second;
+		
+		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		emit hookSessionRestoreScheduled (proxy,
+				toRestore);
+		if (proxy->IsCancelled ())
+		{
+			RestoredURLs_.clear ();
+			SavedSessionState_.clear ();
 		}
 	}
 

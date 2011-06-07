@@ -618,6 +618,24 @@ namespace Poshuku
 				bool preview,
 				QWebFrame *frame);
 		
+		/** @brief Called when session restore is scheduled.
+		 * 
+		 * The urls contains the list of URLs that were chosen to be
+		 * restored. If the hook cancels the default handler, then no
+		 * URLs may be restored. The hook may choose to open other URLs
+		 * after a short amount of time to simulate session restore,
+		 * though.
+		 * 
+		 * @note This hook is called before any actual session restore
+		 * takes place.
+		 * 
+		 * @param proxy The standard hook proxy object.
+		 * @param urls The list of URLs originally scheduled to be
+		 * restored.
+		 */
+		void hookSessionRestoreScheduled (LeechCraft::IHookProxy_ptr proxy,
+				const QList<QUrl>& urls);
+		
 		/** @brief This hook is called when the given URL should be set.
 		 * 
 		 * For example, this hook is called when the browser reacts to
@@ -674,7 +692,9 @@ namespace Poshuku
 		 * The hook may choose to add new actions to the context menu,
 		 * in this case it should use the IHookProxy::SetValue() with
 		 * the name "actions", and a list of actions (QList<QObject*>)
-		 * should be inserted there.
+		 * should be inserted there. Value with the name "endActions"
+		 * may also be used, and the corresponding actions would be
+		 * appended to the end of the menu.
 		 * 
 		 * Please note that other hooks may have already inserted hooks
 		 * into the list, so a well-written hook should first extract
@@ -687,6 +707,14 @@ namespace Poshuku
 		 */
 		void hookTabBarContextMenuActions (LeechCraft::IHookProxy_ptr proxy,
 				const QObject *browserWidget) const;
+				
+		void hookTabAdded (LeechCraft::IHookProxy_ptr proxy,
+				QObject *browserWidget,
+				QWebView *view,
+				const QUrl& url);
+				
+		void hookTabRemoveRequested (LeechCraft::IHookProxy_ptr proxy,
+				QObject *browserWidget);
 				
 		/** @brief Called when the given page encounters unsupported
 		 * content.

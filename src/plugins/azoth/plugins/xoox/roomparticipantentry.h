@@ -43,8 +43,8 @@ namespace Xoox
 		RoomHandler *RoomHandler_;
 		const QString ID_;
 
-		QXmppMucAdminIq::Item::Affiliation Affiliation_;
-		QXmppMucAdminIq::Item::Role Role_;
+		QXmppMucItem::Affiliation Affiliation_;
+		QXmppMucItem::Role Role_;
 	public:
 		RoomParticipantEntry (const QString&, RoomHandler*, GlooxAccount*);
 
@@ -65,10 +65,10 @@ namespace Xoox
 		QString GetJID () const;
 		QString GetNick () const;
 
-		QXmppMucAdminIq::Item::Affiliation GetAffiliation () const;
-		void SetAffiliation (QXmppMucAdminIq::Item::Affiliation);
-		QXmppMucAdminIq::Item::Role GetRole () const;
-		void SetRole (QXmppMucAdminIq::Item::Role);
+		QXmppMucItem::Affiliation GetAffiliation () const;
+		void SetAffiliation (QXmppMucItem::Affiliation);
+		QXmppMucItem::Role GetRole () const;
+		void SetRole (QXmppMucItem::Role);
 	};
 
 	typedef boost::shared_ptr<RoomParticipantEntry> RoomParticipantEntry_ptr;

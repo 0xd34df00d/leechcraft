@@ -74,6 +74,8 @@ namespace Azoth
 		void handleShowOffline (bool);
 		void clearFilter ();
 		
+		void handleEntryMadeCurrent (QObject*);
+		void on_RosterMode__currentIndexChanged (int);
 		void menuBarVisibilityToggled ();
 
 		void handleRowsInserted (const QModelIndex&, int, int);

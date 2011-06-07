@@ -31,6 +31,10 @@
 #include <QXmppBookmarkManager.h>
 #include <QXmppEntityTimeManager.h>
 #include <QXmppArchiveManager.h>
+#include <QXmppPubSubManager.h>
+#include <QXmppActivityItem.h>
+#include <QXmppPubSubIq.h>
+#include <QXmppDeliveryReceiptsManager.h>
 #include <plugininterface/util.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <interfaces/iprotocol.h>
@@ -64,6 +68,8 @@ namespace Xoox
 	, BMManager_ (new QXmppBookmarkManager (Client_))
 	, EntityTimeManager_ (new QXmppEntityTimeManager)
 	, ArchiveManager_ (new QXmppArchiveManager)
+	, PubSubManager_ (new QXmppPubSubManager)
+	, DeliveryReceiptsManager_ (new QXmppDeliveryReceiptsManager)
 	, OurJID_ (jid)
 	, Account_ (account)
 	, ProxyObject_ (0)
@@ -91,11 +97,13 @@ namespace Xoox
 					GetParentProtocol ())->GetProxyObject ();
 		ProxyObject_ = qobject_cast<IProxyObject*> (proxyObj);
 
+		Client_->addExtension (DeliveryReceiptsManager_);
 		Client_->addExtension (MUCManager_);
 		Client_->addExtension (XferManager_);
 		Client_->addExtension (BMManager_);
 		Client_->addExtension (EntityTimeManager_);
 		Client_->addExtension (ArchiveManager_);
+		Client_->addExtension (PubSubManager_);
 
 		DiscoveryManager_ = Client_->findExtension<QXmppDiscoveryManager> ();
 		DiscoveryManager_->setClientCapabilitiesNode ("http://leechcraft.org/azoth");
@@ -130,9 +138,18 @@ namespace Xoox
 				this,
 				SLOT (handleRosterReceived ()));
 		connect (&Client_->rosterManager (),
-				SIGNAL (rosterChanged (const QString&)),
+				SIGNAL (itemAdded (const QString&)),
 				this,
 				SLOT (handleRosterChanged (const QString&)));
+		connect (&Client_->rosterManager (),
+				SIGNAL (itemChanged (const QString&)),
+				this,
+				SLOT (handleRosterChanged (const QString&)));
+		connect (&Client_->rosterManager (),
+				SIGNAL (itemAdded (const QString&)),
+				&Core::Instance (),
+				SLOT (saveRoster ()),
+				Qt::QueuedConnection);
 		connect (&Client_->rosterManager (),
 				SIGNAL (itemRemoved (const QString&)),
 				this,
@@ -142,6 +159,11 @@ namespace Xoox
 				SIGNAL (vCardReceived (const QXmppVCardIq&)),
 				this,
 				SLOT (handleVCardReceived (const QXmppVCardIq&)));
+		
+		connect (DeliveryReceiptsManager_,
+				SIGNAL (messageDelivered (const QString&)),
+				this,
+				SLOT (handleMessageDelivered (const QString&)));
 
 		connect (DiscoveryManager_,
 				SIGNAL (infoReceived (const QXmppDiscoveryIq&)),
@@ -159,25 +181,6 @@ namespace Xoox
 				SIGNAL (itemsReceived (const QXmppDiscoveryIq&)),
 				this,
 				SLOT (handleDiscoItems (const QXmppDiscoveryIq&)));
-
-		connect (MUCManager_,
-				SIGNAL (roomParticipantNickChanged (const QString&, const QString&, const QString&)),
-				this,
-				SLOT (handleRoomPartNickChange (const QString&, const QString&, const QString&)));
-		connect (MUCManager_,
-				SIGNAL (roomPresenceChanged (const QString&, const QString&, const QXmppPresence&)),
-				this,
-				SLOT (handleRoomPresenceChanged (const QString&, const QString&, const QXmppPresence&)));
-		connect (MUCManager_,
-				SIGNAL (roomParticipantPermsChanged (const QString&, const QString&,
-						QXmppMucAdminIq::Item::Affiliation,
-						QXmppMucAdminIq::Item::Role,
-						const QString&)),
-				this,
-				SLOT (handleRoomParticipantPermsChanged (const QString&, const QString&,
-						QXmppMucAdminIq::Item::Affiliation,
-						QXmppMucAdminIq::Item::Role,
-						const QString&)));
 		
 		connect (Client_->reconnectionManager (),
 				SIGNAL (reconnectingIn (int)),
@@ -289,10 +292,7 @@ namespace Xoox
 		}
 
 		RoomHandler *rh = new RoomHandler (jid, nick, Account_);
-		MUCManager_->joinRoom (jid, nick);
-
 		RoomHandlers_ [jid] = rh;
-
 		return rh->GetCLEntry ();
 	}
 
@@ -354,12 +354,12 @@ namespace Xoox
 		Client_->sendPacket (iq);
 	}
 
-	void ClientConnection::Update (const QXmppMucAdminIq::Item& item, const QString& room)
+	void ClientConnection::Update (const QXmppMucItem& item, const QString& room)
 	{
 		QXmppMucAdminIq iq;
 		iq.setTo (room);
 		iq.setType (QXmppIq::Set);
-		iq.setItems (QList<QXmppMucAdminIq::Item> () << item);
+		iq.setItems (QList<QXmppMucItem> () << item);
 		Client_->sendPacket (iq);
 	}
 
@@ -380,11 +380,11 @@ namespace Xoox
 
 		if (ack)
 		{
-			Client_->rosterManager ().grantSubscription (jid);
+			Client_->rosterManager ().acceptSubscription (jid);
 			Subscribe (jid, QString (), entry->GetEntryName (), entry->Groups ());
 		}
 		else
-			Client_->rosterManager ().cancelSubscription (jid);
+			Client_->rosterManager ().refuseSubscription (jid);
 
 		emit rosterItemRemoved (entry);
 		entry->deleteLater ();
@@ -410,7 +410,7 @@ namespace Xoox
 	void ClientConnection::RevokeSubscription (const QString& jid, const QString& reason)
 	{
 		qDebug () << "RevokeSubscription" << jid;
-		Client_->rosterManager ().cancelSubscription (jid, reason);
+		Client_->rosterManager ().refuseSubscription (jid, reason);
 	}
 
 	void ClientConnection::Unsubscribe (const QString& jid, const QString& reason)
@@ -423,10 +423,26 @@ namespace Xoox
 	{
 		const QString& jid = entry->GetJID ();
 
-		Client_->rosterManager ().removeRosterEntry (jid);
+		Client_->rosterManager ().removeItem (jid);
 
 		if (ODSEntries_.contains (jid))
 			delete ODSEntries_.take (jid);
+	}
+	
+	void ClientConnection::SendPacketWCallback (const QXmppIq& packet,
+			QObject *obj, const QByteArray& method)
+	{
+		AwaitingPacketCallbacks_ [packet.to ()] [packet.id ()] = PacketCallback_t (obj, method);
+		Client_->sendPacket (packet);
+	}
+	
+	void ClientConnection::SendMessage (GlooxMessage *msgObj)
+	{
+		const QXmppMessage& msg = msgObj->GetMessage ();
+		if (msg.requestReceipt ())
+			UndeliveredMessages_ [msg.id ()] = msgObj;
+		
+		Client_->sendPacket (msg);
 	}
 
 	QXmppClient* ClientConnection::GetClient () const
@@ -512,8 +528,10 @@ namespace Xoox
 			QString *bare, QString *resource)
 	{
 		const int pos = jid.indexOf ('/');
-		*bare = jid.left (pos);
-		*resource = (pos >= 0 ? jid.mid (pos + 1) : QString ());
+		if (bare)
+			*bare = jid.left (pos);
+		if (resource)
+			*resource = (pos >= 0 ? jid.mid (pos + 1) : QString ());
 	}
 
 	void ClientConnection::handleConnected ()
@@ -528,7 +546,7 @@ namespace Xoox
 				Qt::UniqueConnection);
 		
 		Q_FOREACH (RoomHandler *rh, RoomHandlers_)
-			MUCManager_->joinRoom (rh->GetRoomJID (), rh->GetOurNick ());
+			rh->Join ();
 	}
 	
 	void ClientConnection::handleReconnecting (int timeout)
@@ -580,6 +598,26 @@ namespace Xoox
 	{
 		if (iq.error ().isValid ())
 			HandleError (iq);
+		
+		try
+		{
+			dynamic_cast<const QXmppActivityItem&> (iq);
+			qDebug () << "got activity item" << iq.id ();
+		}
+		catch (...)
+		{
+		}
+		
+		try
+		{
+			dynamic_cast<const QXmppPubSubIq&> (iq);
+			qDebug () << "got pubsub item" << iq.id ();
+		}
+		catch (...)
+		{
+		}
+		
+		InvokeCallbacks (iq);
 	}
 
 	void ClientConnection::handleRosterReceived ()
@@ -620,7 +658,6 @@ namespace Xoox
 			entry->SetStatus (PresenceToStatus (pres), resource);
 		}
 		entry->UpdateRI (rm.getRosterEntry (bareJid));
-		Core::Instance ().saveRoster ();
 	}
 
 	void ClientConnection::handleRosterItemRemoved (const QString& bareJid)
@@ -680,21 +717,6 @@ namespace Xoox
 		JID2CLEntry_ [jid]->SetClientInfo (resource, pres);
 		JID2CLEntry_ [jid]->SetStatus (PresenceToStatus (pres), resource);
 	}
-	
-	void ClientConnection::handleRoomPresenceChanged (const QString& room,
-			const QString& nick, const QXmppPresence& pres)
-	{
-		if (!RoomHandlers_.contains (room))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "no room handler for"
-					<< room
-					<< nick;
-			return;
-		}
-		
-		RoomHandlers_ [room]->HandlePresence (pres, nick);
-	}
 
 	void ClientConnection::handleMessageReceived (const QXmppMessage& msg)
 	{
@@ -722,6 +744,9 @@ namespace Xoox
 				GlooxMessage *gm = new GlooxMessage (msg, this);
 				JID2CLEntry_ [jid]->HandleMessage (gm);
 			}
+			
+			if (msg.isAttention ())
+				JID2CLEntry_ [jid]->HandleAttentionMessage (msg);
 		}
 		else if (!Client_->rosterManager ().isRosterReceived ())
 			OfflineMsgQueue_ << msg;
@@ -730,38 +755,14 @@ namespace Xoox
 					<< "could not find source for"
 					<< msg.from ();
 	}
+	
+	void ClientConnection::handleMessageDelivered (const QString& msgId)
+	{
+		QPointer<GlooxMessage> msg = UndeliveredMessages_.take (msgId);
+		if (msg)
+			msg->SetDelivered (true);
+	}
 
-	void ClientConnection::handleRoomPartNickChange (const QString& roomJid,
-			const QString& oldNick, const QString& newNick)
-	{
-		if (!RoomHandlers_.contains (roomJid))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "no RoomHandler for"
-					<< roomJid
-					<< RoomHandlers_.keys ();
-			return;
-		}
-		
-		RoomHandlers_ [roomJid]->HandleNickChange (oldNick, newNick);
-	}
-	
-	void ClientConnection::handleRoomParticipantPermsChanged (const QString& roomJid,
-			const QString& nick, QXmppMucAdminIq::Item::Affiliation aff,
-			QXmppMucAdminIq::Item::Role role, const QString& reason)
-	{
-		if (!RoomHandlers_.contains (roomJid))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "no RoomHandler for"
-					<< roomJid
-					<< RoomHandlers_.keys ();
-			return;
-		}
-		
-		RoomHandlers_ [roomJid]->HandlePermsChanged (nick, aff, role, reason);
-	}
-	
 	void ClientConnection::handleBookmarksReceived (const QXmppBookmarkSet& set)
 	{
 		disconnect (BMManager_,
@@ -893,6 +894,24 @@ namespace Xoox
 				typeText,
 				PCritical_);
 		Core::Instance ().SendEntity (e);
+	}
+	
+	void ClientConnection::InvokeCallbacks (const QXmppIq& iq)
+	{
+		if (!AwaitingPacketCallbacks_.contains (iq.from ()))
+			return;
+		
+		const PacketID2Callback_t& cbs = AwaitingPacketCallbacks_ [iq.from ()];
+		if (!cbs.contains (iq.id ()))
+			return;
+	
+		const PacketCallback_t& cb = cbs [iq.id ()];
+		if (!cb.first)
+			return;
+		
+		QMetaObject::invokeMethod (cb.first,
+				cb.second,
+				Q_ARG (QXmppIq, iq));
 	}
 
 	QString ClientConnection::HandleErrorCondition (const QXmppStanza::Error::Condition& condition)

@@ -31,7 +31,6 @@ namespace Azoth
 {
 namespace Acetamide
 {
-
 	class ChannelCLEntry;
 	class IrcMessage;
 	class IrcServerHandler;

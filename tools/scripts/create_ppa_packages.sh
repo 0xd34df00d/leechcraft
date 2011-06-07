@@ -32,3 +32,4 @@ build_for_distr(){
 
 build_for_distr lucid ubuntu
 build_for_distr maverick ubuntu_10.10
+build_for_distr natty ubuntu_11.04

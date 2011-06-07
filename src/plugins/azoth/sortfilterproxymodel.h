@@ -29,8 +29,12 @@ namespace Azoth
 		Q_OBJECT
 
 		bool ShowOffline_;
+		bool MUCMode_;
+		QObject *MUCEntry_;
 	public:
 		SortFilterProxyModel (QObject* = 0);
+		void SetMUCMode (bool);
+		void SetMUC (QObject*);
 	public slots:
 		void showOfflineContacts (bool);
 	protected:

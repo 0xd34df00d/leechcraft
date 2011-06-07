@@ -60,6 +60,8 @@
 #include "export2fb2dialog.h"
 #include "actionsstructs.h"
 #include <boost/graph/graph_concepts.hpp>
+#include "uistatepersist.h"
+#include "itemswidget.h"
 
 namespace LeechCraft
 {
@@ -168,6 +170,7 @@ namespace LeechCraft
 				}
 
 				Impl_->Ui_.setupUi (this);
+				Impl_->Ui_.ItemsWidget_->SetAppWideActions (Impl_->AppWideActions_);
 				Impl_->Ui_.ItemsWidget_->SetChannelActions (Impl_->ChannelActions_);
 
 				if (initFailed)
@@ -185,6 +188,7 @@ namespace LeechCraft
 					SetChannelsFilter (Core::Instance ()
 							.GetChannelsModel ());
 				Core::Instance ().GetJobHolderRepresentation ()->setParent (this);
+				Core::Instance ().GetReprWidget ()->SetAppWideActions (Impl_->AppWideActions_);
 				Core::Instance ().GetReprWidget ()->SetChannelActions (Impl_->ChannelActions_);
 
 				Impl_->Ui_.MergeItems_->setChecked (XmlSettingsManager::Instance ()->
@@ -284,10 +288,14 @@ namespace LeechCraft
 
 			void Aggregator::SecondInit ()
 			{
+				LoadColumnWidth (Impl_->Ui_.Feeds_, "feeds");
+				Impl_->Ui_.ItemsWidget_->LoadUIState ();
 			}
 
 			void Aggregator::Release ()
 			{
+				SaveColumnWidth (Impl_->Ui_.Feeds_, "feeds");
+				Impl_->Ui_.ItemsWidget_->SaveUIState ();
 				disconnect (&Core::Instance (), 0, this, 0);
 				if (Core::Instance ().GetChannelsModel ())
 					disconnect (Core::Instance ().GetChannelsModel (), 0, this, 0);

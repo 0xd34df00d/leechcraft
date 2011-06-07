@@ -26,12 +26,24 @@ class QWebFrame;
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class ResourceLoader;
+}
+
 namespace Azoth
 {
 	class IProxyObject
 	{
 	public:
 		virtual ~IProxyObject () {}
+		
+		enum PublicResourceLoader
+		{
+			PRLClientIcons,
+			PRLStatusIcons,
+			PRLSystemIcons
+		};
 
 		/** @brief Retrieves the password for the given account.
 		 *
@@ -139,8 +151,6 @@ namespace Azoth
 		
 		virtual QString GetSelectedChatTemplate (QObject*) const = 0;
 		
-		virtual void AppendMessageByTemplate (QWebFrame*, QObject*, const QString&, bool, bool) const = 0;
-		
 		virtual QList<QColor> GenerateColors (const QString& scheme) const = 0;
 		virtual QString GetNickColor (const QString& nick, const QList<QColor>& colors) const = 0;
 
@@ -149,6 +159,8 @@ namespace Azoth
 		virtual QString FormatBody (QString, QObject*) const = 0;
 		
 		virtual void PreprocessMessage (QObject*) = 0;
+		
+		virtual Util::ResourceLoader* GetResourceLoader (PublicResourceLoader loader) const = 0;
 	};
 }
 }

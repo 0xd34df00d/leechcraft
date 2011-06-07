@@ -182,14 +182,14 @@ namespace Acetamide
 				ServerHandlers_ [serverId]->GetCLEntry ());
 	}
 
-	void ClientConnection::handleError (QAbstractSocket::SocketError er)
+	void ClientConnection::handleError (QAbstractSocket::SocketError)
 	{
 		QTcpSocket *socket = qobject_cast<QTcpSocket*> (sender ());
 		if (!socket)
 		{
 			qWarning () << Q_FUNC_INFO
-			<< "is not an object of TcpSocket"
-			<< sender ();
+					<< "is not an object of TcpSocket"
+					<< sender ();
 			return;
 		}
 

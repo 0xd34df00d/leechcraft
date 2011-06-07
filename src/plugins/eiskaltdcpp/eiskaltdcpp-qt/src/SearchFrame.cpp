@@ -661,20 +661,6 @@ void SearchFrame::removeSource(const VarMap &params){
 }
 
 void SearchFrame::timerTick(){
-    int32_t waitFor = SearchManager::getInstance()->timeToSearch();
-
-    if (waitFor > 0){
-        QString msg = tr("Searching too soon, next search in %1 second").arg(waitFor);
-
-        status->setText(msg);
-
-        arena_title = tr("Search - %1").arg(msg);
-
-        timer->start();
-    }
-    else {
-        status->setText(tr("Ready to search..."));
-    }
 }
 
 void SearchFrame::onHubAdded(const QString &info){
@@ -971,7 +957,7 @@ void SearchFrame::slotStartSearch(){
         ftype = SearchManager::TYPE_ANY;
     }
 
-    if(SearchManager::getInstance()->okToSearch()) {
+    //if(SearchManager::getInstance()->okToSearch()) {
         SearchManager::getInstance()->search(clients, s.toStdString(), llsize, (SearchManager::TypeModes)ftype,
                                              searchMode, token.toStdString(), exts);
 
@@ -989,8 +975,8 @@ void SearchFrame::slotStartSearch(){
 
         arena_title = tr("Search - %1").arg(s);
 
-    }
-    else {
+    //}
+    /*else {
         int32_t waitFor = SearchManager::getInstance()->timeToSearch();
         QString msg = tr("Searching too soon, next search in %1 second").arg(waitFor);
 
@@ -999,7 +985,7 @@ void SearchFrame::slotStartSearch(){
         arena_title = tr("Search - %1").arg(msg);
         // Start the countdown timer
         initSecond();
-    }
+    }*/
 
     MW->redrawToolPanel();
 }

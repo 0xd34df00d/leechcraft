@@ -40,18 +40,34 @@ namespace Azoth
 namespace Xoox
 {
 	RoomHandler::RoomHandler (const QString& jid,
-			const QString& ourNick, GlooxAccount* account)
+			const QString& ourNick,
+			GlooxAccount* account)
 	: Account_ (account)
 	, MUCManager_ (Account_->GetClientConnection ()->GetMUCManager ())
+	, Room_ (MUCManager_->addRoom (jid))
 	, CLEntry_ (new RoomCLEntry (this, Account_))
-	, RoomJID_ (jid)
-	, OurNick_ (ourNick)
 	{
+		Room_->setNickName (ourNick);
+		
+		connect (Room_,
+				SIGNAL (participantChanged (const QString&)),
+				this,
+				SLOT (handleParticipantChanged (const QString&)));
+		connect (Room_,
+				SIGNAL (participantAdded (const QString&)),
+				this,
+				SLOT (handleParticipantAdded (const QString&)));
+		connect (Room_,
+				SIGNAL (participantRemoved (const QString&)),
+				this,
+				SLOT (handleParticipantRemoved (const QString&)));
+		
+		Room_->join ();
 	}
 
 	QString RoomHandler::GetRoomJID () const
 	{
-		return RoomJID_;
+		return Room_->jid ();
 	}
 
 	RoomCLEntry* RoomHandler::GetCLEntry ()
@@ -110,11 +126,11 @@ namespace Xoox
 
 	/** @todo Detect the role, affiliation and real jid, if applicable.
 	 */
-	void RoomHandler::MakeJoinMessage (const QXmppPresence& , const QString& nick)
+	void RoomHandler::MakeJoinMessage (const QXmppPresence& pres, const QString& nick)
 	{
-		QString affiliation = Util::AffiliationToString (MUCManager_->getAffiliation (RoomJID_, nick));
-		QString role = Util::RoleToString (MUCManager_->getRole (RoomJID_, nick));
-		QString realJid = MUCManager_->getRealJid (RoomJID_, nick);
+		QString affiliation = Util::AffiliationToString (pres.mucItem ().affiliation ());
+		QString role = Util::RoleToString (pres.mucItem ().role ());
+		QString realJid = pres.mucItem ().jid ();
 		QString msg;
 		if (realJid.isEmpty ())
 			msg = tr ("%1 joined the room as %2 and %3")
@@ -213,8 +229,8 @@ namespace Xoox
 	}
 	
 	void RoomHandler::MakePermsChangedMessage (const QString& nick,
-			QXmppMucAdminIq::Item::Affiliation aff,
-			QXmppMucAdminIq::Item::Role role, const QString& reason)
+			QXmppMucItem::Affiliation aff,
+			QXmppMucItem::Role role, const QString& reason)
 	{
 		const QString& affStr = Util::AffiliationToString (aff);
 		const QString& roleStr = Util::RoleToString (role);
@@ -238,78 +254,14 @@ namespace Xoox
 				IMessage::MSTParticipantRoleAffiliationChange);
 		CLEntry_->HandleMessage (message);
 	}
-
-	void RoomHandler::HandlePresence (const QXmppPresence& pres, const QString& nick)
-	{
-		if (pres.type () == QXmppPresence::Unavailable &&
-				PendingNickChanges_.remove (nick))
-			return;
-		const bool existed = Nick2Entry_.contains (nick);
-		RoomParticipantEntry_ptr entry = GetParticipantEntry (nick);
-
-		if (pres.type () == QXmppPresence::Unavailable)
-		{
-			MakeLeaveMessage (pres, nick);
-
-			Account_->handleEntryRemoved (entry.get ());
-			Nick2Entry_.remove (nick);
-			return;
-		}
-
-		entry->SetClientInfo ("", pres);
-
-		const QXmppPresence::Status& xmppSt = pres.status ();
-		EntryStatus status (static_cast<State> (xmppSt.type ()),
-				xmppSt.statusText ());
-		const bool statusChanged = (status != entry->GetStatus (QString ()));
-		if (statusChanged)
-			entry->SetStatus (status, QString ());
-
-		if (!PendingNickChanges_.remove (nick))
-		{
-			if (!existed)
-			{	
-				Account_->GetClientConnection ()->
-					FetchVCard (RoomJID_ + "/" + nick);
-				MakeJoinMessage (pres, nick);
-				entry->SetAffiliation (MUCManager_->getAffiliation (RoomJID_, nick));
-				entry->SetRole (MUCManager_->getRole (RoomJID_, nick));
-			}
-			else if (statusChanged)
-				MakeStatusChangedMessage (pres, nick);
-		}
-	}
 	
 	void RoomHandler::HandleNickConflict ()
 	{
 		// The room is already joined, should do nothing special here.
-		if (!Nick2Entry_.isEmpty ())
-			return;
-
-		if (QMessageBox::question (0,
-				tr ("Nickname conflict"),
-				tr ("You have specified a nickname for the conference "
-					"%1 that's already used. Would you like to try to "
-					"join with another nick?")
-					.arg (RoomJID_),
-				QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
-		{
-			Leave (QString ());
-			return;
-		}
-
-		const QString& newNick = QInputDialog::getText (0,
-				tr ("Enter new nick"),
-				tr ("Enter new nick for joining the conference %1 (%2 is already used):")
-					.arg (RoomJID_)
-					.arg (OurNick_),
-				QLineEdit::Normal,
-				OurNick_);
-		if (newNick.isEmpty ())
+		if (Room_->isJoined ())
 			return;
 		
-		OurNick_ = newNick;
-		Account_->GetClientConnection ()->GetMUCManager ()->joinRoom (RoomJID_, OurNick_);
+		emit CLEntry_->nicknameConflict (Room_->nickName ());
 	}
 	
 	void RoomHandler::HandlePasswordRequired ()
@@ -329,7 +281,8 @@ namespace Xoox
 			return;
 		}
 		
-		Account_->GetClientConnection ()->GetMUCManager ()->joinRoom (RoomJID_, OurNick_, pass);
+		Room_->setPassword (pass);
+		Join ();
 	}
 	
 	void RoomHandler::HandleErrorPresence (const QXmppPresence& pres, const QString& nick)
@@ -347,6 +300,12 @@ namespace Xoox
 			break;
 		case QXmppStanza::Error::NotAuthorized:
 			hrText = tr ("password required");
+			break;
+		case QXmppStanza::Error::JidMalformed:
+			hrText = tr ("malformed JID");
+			break;
+		case QXmppStanza::Error::RegistrationRequired:
+			hrText = tr ("only registered users can enter this room");
 			break;
 		default:
 			hrText = tr ("unknown condition %1 (please report to developers)")
@@ -380,21 +339,22 @@ namespace Xoox
 	}
 	
 	void RoomHandler::HandlePermsChanged (const QString& nick,
-			QXmppMucAdminIq::Item::Affiliation aff,
-			QXmppMucAdminIq::Item::Role role, const QString& reason)
+			QXmppMucItem::Affiliation aff,
+			QXmppMucItem::Role role,
+			const QString& reason)
 	{
 		RoomParticipantEntry_ptr entry = GetParticipantEntry (nick);
-		if (aff == QXmppMucAdminIq::Item::OutcastAffiliation ||
-			role == QXmppMucAdminIq::Item::NoRole)
+		if (aff == QXmppMucItem::OutcastAffiliation ||
+			role == QXmppMucItem::NoRole)
 		{
 			Account_->handleEntryRemoved (entry.get ());
 			Nick2Entry_.remove (nick);
-			
-			if (aff == QXmppMucAdminIq::Item::OutcastAffiliation)
+
+			if (aff == QXmppMucItem::OutcastAffiliation)
 				MakeBanMessage (nick, reason);
 			else
 				MakeKickMessage (nick, reason);
-			
+
 			return;
 		}
 		
@@ -410,9 +370,6 @@ namespace Xoox
 		Nick2Entry_ [newNick]->SetEntryName (newNick);
 		PendingNickChanges_ << oldNick;
 		PendingNickChanges_ << newNick;
-		
-		if (oldNick == OurNick_)
-			OurNick_ = newNick;
 	}
 
 	void RoomHandler::HandleMessage (const QXmppMessage& msg, const QString& nick)
@@ -421,6 +378,9 @@ namespace Xoox
 		RoomParticipantEntry_ptr entry = GetParticipantEntry (nick, false);
 		if (msg.type () == QXmppMessage::Chat && !nick.isEmpty ())
 		{
+			if (msg.isAttention ())
+				entry->HandleAttentionMessage (msg);
+
 			if (msg.state ())
 				entry->UpdateChatState (msg.state (), QString ());
 
@@ -472,9 +432,9 @@ namespace Xoox
 		}
 	}
 
-	void RoomHandler::UpdatePerms (const QList<QXmppMucAdminIq::Item>& perms)
+	void RoomHandler::UpdatePerms (const QList<QXmppMucItem>& perms)
 	{
-		Q_FOREACH (const QXmppMucAdminIq::Item& item, perms)
+		Q_FOREACH (const QXmppMucItem& item, perms)
 		{
 			if (!Nick2Entry_.contains (item.nick ()))
 			{
@@ -515,21 +475,27 @@ namespace Xoox
 	{
 		return Subject_;
 	}
+	
+	void RoomHandler::Join ()
+	{
+		if (Room_->isJoined ())
+			return;
+
+		Room_->join ();
+	}
 
 	void RoomHandler::SetSubject (const QString& subj)
 	{
-		MUCManager_->setRoomSubject (GetRoomJID (), subj);
+		Room_->setSubject (subj);
 	}
 
-	void RoomHandler::Leave (const QString&, bool remove)
+	void RoomHandler::Leave (const QString& msg, bool remove)
 	{
 		Q_FOREACH (RoomParticipantEntry_ptr entry, Nick2Entry_.values ())
 			Account_->handleEntryRemoved (entry.get ());
 			
 		Nick2Entry_.clear ();
-
-		// TODO use msg
-		MUCManager_->leaveRoom (GetRoomJID ());
+		Room_->leave (msg);
 
 		if (remove)
 			RemoveThis ();
@@ -541,7 +507,7 @@ namespace Xoox
 		{
 			RoomParticipantEntry *part =
 					qobject_cast<RoomParticipantEntry*> (partObj);
-			if (part->GetEntryName () == OurNick_)
+			if (part->GetEntryName () == Room_->nickName ())
 				return part;
 		}
 		return 0;
@@ -549,34 +515,32 @@ namespace Xoox
 
 	QString RoomHandler::GetOurNick () const
 	{
-		return OurNick_;
+		return Room_->nickName ();
 	}
 
 	void RoomHandler::SetOurNick (const QString& nick)
 	{
-		QXmppPresence pres;
-		pres.setTo (RoomJID_ + '/' + nick);
-		Account_->GetClientConnection ()->GetClient ()->sendPacket (pres);
+		Room_->setNickName (nick);
 	}
 
 	void RoomHandler::SetAffiliation (RoomParticipantEntry *entry,
-			QXmppMucAdminIq::Item::Affiliation newAff, const QString& reason)
+			QXmppMucItem::Affiliation newAff, const QString& reason)
 	{
-		QXmppMucAdminIq::Item item;
+		QXmppMucItem item;
 		item.setNick (entry->GetNick ());
 		item.setReason (reason);
 		item.setAffiliation (newAff);
-		Account_->GetClientConnection ()->Update (item, RoomJID_);
+		Account_->GetClientConnection ()->Update (item, Room_->jid ());
 	}
 
 	void RoomHandler::SetRole (RoomParticipantEntry *entry,
-			QXmppMucAdminIq::Item::Role newRole, const QString& reason)
+			QXmppMucItem::Role newRole, const QString& reason)
 	{
-		QXmppMucAdminIq::Item item;
+		QXmppMucItem item;
 		item.setNick (entry->GetNick ());
 		item.setReason (reason);
 		item.setRole (newRole);
-		Account_->GetClientConnection ()->Update (item, RoomJID_);
+		Account_->GetClientConnection ()->Update (item, Room_->jid ());
 	}
 
 	RoomParticipantEntry_ptr RoomHandler::CreateParticipantEntry (const QString& nick, bool announce)
@@ -600,13 +564,88 @@ namespace Xoox
 		else
 			return Nick2Entry_ [nick];
 	}
+	
+	void RoomHandler::handleParticipantAdded (const QString& jid)
+	{
+		const QXmppPresence& pres = Room_->participantPresence (jid);
+		
+		QString nick;
+		ClientConnection::Split (jid, 0, &nick);
+		
+		if (PendingNickChanges_.remove (nick))
+			return;
+		
+		RoomParticipantEntry_ptr entry = GetParticipantEntry (nick);
+		entry->SetAffiliation (pres.mucItem ().affiliation ());
+		entry->SetRole (pres.mucItem ().role ());
+		const QXmppPresence::Status& xmppSt = pres.status ();
+		entry->SetStatus (EntryStatus (static_cast<State> (xmppSt.type ()),
+					xmppSt.statusText ()),
+				QString ());
+		entry->SetClientInfo ("", pres);
+		
+		Account_->GetClientConnection ()->FetchVCard (jid);
+		MakeJoinMessage (pres, nick);
+	}
+	
+	void RoomHandler::handleParticipantChanged (const QString& jid)
+	{
+		const QXmppPresence& pres = Room_->participantPresence (jid);
+		
+		QString nick;
+		ClientConnection::Split (jid, 0, &nick);
+		
+		RoomParticipantEntry_ptr entry = GetParticipantEntry (nick);
+
+		const QXmppPresence::Status& xmppSt = pres.status ();
+		EntryStatus status (static_cast<State> (xmppSt.type ()),
+				xmppSt.statusText ());
+		if (status != entry->GetStatus (QString ()))
+		{
+			entry->SetStatus (status, QString ());
+			MakeStatusChangedMessage (pres, nick);
+		}
+		
+		const QXmppMucItem& item = pres.mucItem ();
+		if (item.affiliation () != entry->GetAffiliation () ||
+				item.role () != entry->GetRole ())
+			HandlePermsChanged (nick,
+					item.affiliation (), item.role (), item.reason ());
+	}
+	
+	void RoomHandler::handleParticipantRemoved (const QString& jid)
+	{
+		const QXmppPresence& pres = Room_->participantPresence (jid);
+
+		QString nick;
+		ClientConnection::Split (jid, 0, &nick);
+
+		RoomParticipantEntry_ptr entry = GetParticipantEntry (nick);
+		const QXmppMucItem& item = pres.mucItem ();
+		if (!item.nick ().isEmpty () &&
+				item.nick () != nick)
+		{
+			entry->SetEntryName (item.nick ());
+			Nick2Entry_ [item.nick ()] = Nick2Entry_ [nick];
+			MakeNickChangeMessage (nick, item.nick ());
+			PendingNickChanges_ << item.nick ();
+			return;
+		}
+		else if (pres.mucStatusCodes ().contains (301))
+			MakeBanMessage (nick, item.reason ());
+		else if (pres.mucStatusCodes ().contains (307))
+			MakeKickMessage (nick, item.reason ());
+		else
+			MakeLeaveMessage (pres, nick);
+
+		Account_->handleEntryRemoved (entry.get ());
+		Nick2Entry_.remove (nick);
+	}
 
 	void RoomHandler::RemoveThis ()
 	{
 		Account_->handleEntryRemoved (CLEntry_);
-
 		Account_->GetClientConnection ()->Unregister (this);
-
 		deleteLater ();
 	}
 }

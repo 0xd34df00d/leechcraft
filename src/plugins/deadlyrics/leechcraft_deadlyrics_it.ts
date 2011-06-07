@@ -7,7 +7,7 @@
         <location filename="core.cpp" line="73"/>
         <location filename="core.cpp" line="78"/>
         <source>lyrics</source>
-        <translation type="unfinished"></translation>
+        <translation>Testo della canzone</translation>
     </message>
 </context>
 <context>
@@ -15,7 +15,7 @@
     <message>
         <location filename="deadlyrics.cpp" line="64"/>
         <source>Lyrics Searcher</source>
-        <translation type="unfinished"></translation>
+        <translation>Testo della canzone ricerca</translation>
     </message>
 </context>
 <context>
@@ -23,7 +23,7 @@
     <message>
         <location filename="findproxy.cpp" line="151"/>
         <source>Searching...</source>
-        <translation type="unfinished"></translation>
+        <translation>Ricerca in corso...</translation>
     </message>
 </context>
 <context>
@@ -39,17 +39,17 @@
     <message>
         <location filename="dummy.cpp" line="2"/>
         <source>Appearance</source>
-        <translation type="unfinished"></translation>
+        <translation>Aspetto</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="3"/>
         <source>Lyrics view</source>
-        <translation type="unfinished"></translation>
+        <translation>Testo della canzone vista</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="4"/>
         <source>Use a web browser (if available)</source>
-        <translation type="unfinished"></translation>
+        <translation>Utilizzare un browser (se disponibile)</translation>
     </message>
 </context>
 </TS>

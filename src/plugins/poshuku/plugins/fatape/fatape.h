@@ -27,7 +27,7 @@
 #include <interfaces/iproxyobject.h>
 #include <interfaces/ihavesettings.h>
 
-
+class QTranslator;
 
 namespace LeechCraft
 {
@@ -43,6 +43,7 @@ namespace FatApe
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
 
+		boost::shared_ptr<QTranslator> Translator_;
 		QList<UserScript> UserScripts_;
 		IProxyObject *Proxy_;
 		Util::XmlSettingsDialog_ptr SettingsDialog_;

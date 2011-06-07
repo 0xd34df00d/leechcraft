@@ -1,0 +1,101 @@
+/**********************************************************************
+ * LeechCraft - modular cross-platform feature rich internet client.
+ * Copyright (C) 2006-2011  Georg Rudoy
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ **********************************************************************/
+
+#ifndef PLUGINS_AZOTH_INTERFACES_IADVANCEDCLENTRY_H
+#define PLUGINS_AZOTH_INTERFACES_IADVANCEDCLENTRY_H
+#include "imucbookmarkeditorwidget.h"
+
+namespace LeechCraft
+{
+namespace Azoth
+{
+	/** This interface defines some advanced actions and signals on
+	 * contact list entries, like methods for drawing attention and
+	 * such.
+	 * 
+	 * Entries implementing this interface should, of course, implement
+	 * plain ICLEntry as well.
+	 * 
+	 * @sa ICLEntry
+	 */
+	class IAdvancedCLEntry
+	{
+	public:		
+		virtual ~IAdvancedCLEntry () {}
+		
+		/** This enum represents some advanced features that may or may
+		 * be not supported by advanced CL entries.
+		 */
+		enum AdvancedFeature
+		{
+			/** This entry supports drawing attention.
+			 */
+			AFSupportsAttention = 0x0001
+		};
+		
+		Q_DECLARE_FLAGS (AdvancedFeatures, AdvancedFeature);
+		
+		/** Returns the OR-ed combination of advanced features supported
+		 * by this contact list entry.
+		 * 
+		 * @return The advanced features supported by this entry.
+		 */
+		virtual AdvancedFeatures GetAdvancedFeatures () const = 0;
+		
+		/** @brief Requests attention of the user behind this entry.
+		 * 
+		 * This method, if called, should send request for attention to
+		 * this entry, if supported by the protocol. An optional text
+		 * message may be added to the attention request.
+		 * 
+		 * If variant is an empty string, the variant with the highest
+		 * priority should be used.
+		 * 
+		 * @param[in] text Optional accompanying text.
+		 * @param[in] variant The entry variant to buzz, or a null
+		 * string for variant with highest priority.
+		 * 
+		 * @sa attentionDrawn()
+		 */
+		virtual void DrawAttention (const QString& text, const QString& variant) = 0;
+
+		/** @brief Notifies about attention request from this entry.
+		 * 
+		 * This signal should be emitted by the entry whenever the user
+		 * behind the entry decides to request our own attention.
+		 * 
+		 * Depending on Azoth settings, the request may be displayed in
+		 * some way or ignored completely.
+		 * 
+		 * @note This function is expected to be a signal.
+		 * 
+		 * @param[out] text Optional accompanying text.
+		 * @param[out] variant Source variant of the entry that has
+		 * requested our attention.
+		 * 
+		 * @sa DrawAttention()
+		 */
+		virtual void attentionDrawn (const QString& text, const QString& variant) = 0;
+	};
+}
+}
+
+Q_DECLARE_INTERFACE (LeechCraft::Azoth::IAdvancedCLEntry,
+		"org.Deviant.LeechCraft.Azoth.IAdvancedCLEntry/1.0");
+
+#endif

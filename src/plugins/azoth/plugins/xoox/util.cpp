@@ -28,36 +28,36 @@ namespace Xoox
 {
 namespace Util
 {
-	QString RoleToString (const QXmppMucAdminIq::Item::Role& role)
+	QString RoleToString (const QXmppMucItem::Role& role)
 	{
 		switch (role)
 		{
-		case QXmppMucAdminIq::Item::NoRole:
+		case QXmppMucItem::NoRole:
 			return QObject::tr ("guest");
-		case QXmppMucAdminIq::Item::VisitorRole:
+		case QXmppMucItem::VisitorRole:
 			return QObject::tr ("visitor");
-		case QXmppMucAdminIq::Item::ParticipantRole:
+		case QXmppMucItem::ParticipantRole:
 			return QObject::tr ("participant");
-		case QXmppMucAdminIq::Item::ModeratorRole:
+		case QXmppMucItem::ModeratorRole:
 			return QObject::tr ("moderator");
 		default:
 			return QObject::tr ("unspecified");
 		}
 	}
 
-	QString AffiliationToString (const QXmppMucAdminIq::Item::Affiliation& affiliation)
+	QString AffiliationToString (const QXmppMucItem::Affiliation& affiliation)
 	{
 		switch (affiliation)
 		{
-		case QXmppMucAdminIq::Item::OutcastAffiliation:
+		case QXmppMucItem::OutcastAffiliation:
 			return QObject::tr ("outcast");
-		case QXmppMucAdminIq::Item::NoAffiliation:
+		case QXmppMucItem::NoAffiliation:
 			return QObject::tr ("newcomer");
-		case QXmppMucAdminIq::Item::MemberAffiliation:
+		case QXmppMucItem::MemberAffiliation:
 			return QObject::tr ("member");
-		case QXmppMucAdminIq::Item::AdminAffiliation:
+		case QXmppMucItem::AdminAffiliation:
 			return QObject::tr ("admin");
-		case QXmppMucAdminIq::Item::OwnerAffiliation:
+		case QXmppMucItem::OwnerAffiliation:
 			return QObject::tr ("owner");
 		default:
 			return QObject::tr ("unspecified");

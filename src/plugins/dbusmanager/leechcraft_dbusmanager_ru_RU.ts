@@ -30,7 +30,7 @@
     <name>LeechCraft::Plugins::DBusManager::Tasks</name>
     <message>
         <source>Not found job holder %1.</source>
-        <translation>Не найден плагин %1 с задачами.</translation>
+        <translation>Не найден модуль %1 с задачами.</translation>
     </message>
 </context>
 <context>

@@ -34,10 +34,10 @@ namespace Acetamide
 	ServerParticipantEntry::ServerParticipantEntry (const QString& nick,
 			const QString& server, IrcAccount *acc)
 	: EntryBase (acc)
-	, Account_ (acc)
-	, ServerKey_ (server)
 	, NickName_ (nick)
+	, ServerKey_ (server)
 	, PrivateChat_ (false)
+	, Account_ (acc)
 	{
 		QAction *closeChat = new QAction (tr ("Quit chat"), this);
 		connect (closeChat,

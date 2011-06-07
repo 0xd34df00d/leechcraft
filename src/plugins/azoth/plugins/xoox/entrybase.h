@@ -24,6 +24,7 @@
 #include <QVariant>
 #include <QXmppMessage.h>
 #include <interfaces/iclentry.h>
+#include <interfaces/iadvancedclentry.h>
 
 class QXmppVCardIq;
 class QXmppPresence;
@@ -47,9 +48,10 @@ namespace Xoox
 	 */
 	class EntryBase : public QObject
 					, public ICLEntry
+					, public IAdvancedCLEntry
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ICLEntry)
+		Q_INTERFACES (LeechCraft::Azoth::ICLEntry LeechCraft::Azoth::IAdvancedCLEntry)
 	protected:
 		QList<QObject*> AllMessages_;
 		QMap<QString, EntryStatus> CurrentStatus_;
@@ -65,8 +67,9 @@ namespace Xoox
 	public:
 		EntryBase (GlooxAccount* = 0);
 
-		virtual QObject* GetObject ();
-		virtual QList<QObject*> GetAllMessages () const;
+		// ICLEntry
+		QObject* GetObject ();
+		QList<QObject*> GetAllMessages () const;
 		void PurgeMessages (const QDateTime&);
 		void SetChatPartState (ChatPartState, const QString&);
 		EntryStatus GetStatus (const QString&) const;
@@ -75,10 +78,15 @@ namespace Xoox
 		QString GetRawInfo () const;
 		void ShowInfo ();
 		QMap<QString, QVariant> GetClientInfo (const QString&) const;
+		
+		// IAdvancedCLEntry
+		AdvancedFeatures GetAdvancedFeatures () const;
+		void DrawAttention (const QString&, const QString&);
 
 		virtual QString GetJID () const = 0;
 
 		void HandleMessage (GlooxMessage*);
+		void HandleAttentionMessage (const QXmppMessage&);
 		void UpdateChatState (QXmppMessage::State, const QString&);
 		void SetStatus (const EntryStatus&, const QString&);
 		void SetAvatar (const QByteArray&);
@@ -102,6 +110,8 @@ namespace Xoox
 		void groupsChanged (const QStringList&);
 		void chatPartStateChanged (const ChatPartState&, const QString&);
 		void permsChanged ();
+		
+		void attentionDrawn (const QString&, const QString&);
 	};
 }
 }

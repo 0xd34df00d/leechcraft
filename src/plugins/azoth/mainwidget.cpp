@@ -32,6 +32,8 @@
 #include "addcontactdialog.h"
 #include "joinconferencedialog.h"
 #include "bookmarksmanagerdialog.h"
+#include "chattabsmanager.h"
+#include <QTimer>
 
 namespace LeechCraft
 {
@@ -55,6 +57,12 @@ namespace Azoth
 		Ui_.CLTree_->setItemDelegate (new ContactListDelegate (Ui_.CLTree_));
 		ProxyModel_->setSourceModel (Core::Instance ().GetCLModel ());
 		Ui_.CLTree_->setModel (ProxyModel_);
+		
+		connect (Core::Instance ().GetChatTabsManager (),
+				SIGNAL (entryMadeCurrent (QObject*)),
+				this,
+				SLOT (handleEntryMadeCurrent (QObject*)),
+				Qt::QueuedConnection);
 		
 		connect (Ui_.CLTree_,
 				SIGNAL (activated (const QModelIndex&)),
@@ -510,6 +518,23 @@ namespace Azoth
 	{
 		if (!Ui_.FilterLine_->text ().isEmpty ())
 			Ui_.FilterLine_->setText (QString ());
+	}
+	
+	void MainWidget::handleEntryMadeCurrent (QObject *obj)
+	{
+		if (qobject_cast<IMUCEntry*> (obj))
+		{
+			ProxyModel_->SetMUC (obj);
+			if (Ui_.RosterMode_->currentIndex () == 1)
+				QTimer::singleShot (100,
+						Ui_.CLTree_,
+						SLOT (expandAll ()));
+		}
+	}
+	
+	void MainWidget::on_RosterMode__currentIndexChanged (int index)
+	{
+		ProxyModel_->SetMUCMode (index == 1);
 	}
 
 	void MainWidget::menuBarVisibilityToggled ()

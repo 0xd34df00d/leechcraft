@@ -56,6 +56,7 @@ namespace Azoth
 		QToolBar* GetToolBar () const;
 	private slots:
 		void handleDiscoveryAddressChanged ();
+		void on_DiscoveryTree__customContextMenuRequested (const QPoint&);
 		void discover ();
 	signals:
 		void removeTab (QWidget*);

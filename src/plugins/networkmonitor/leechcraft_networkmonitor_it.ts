@@ -6,12 +6,12 @@
     <message>
         <location filename="headermodel.cpp" line="26"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nome</translation>
     </message>
     <message>
         <location filename="headermodel.cpp" line="27"/>
         <source>Value</source>
-        <translation type="unfinished"></translation>
+        <translation>Valore</translation>
     </message>
 </context>
 <context>
@@ -19,12 +19,12 @@
     <message>
         <location filename="networkmonitor.cpp" line="79"/>
         <source>Network monitor...</source>
-        <translation type="unfinished"></translation>
+        <translation>Network Monitor ...</translation>
     </message>
     <message>
         <location filename="networkmonitor.cpp" line="110"/>
         <source>Monitors HTTP network requests and responses.</source>
-        <translation type="unfinished"></translation>
+        <translation>Monitor richieste di rete e le risposte HTTP.</translation>
     </message>
 </context>
 <context>
@@ -32,27 +32,27 @@
     <message>
         <location filename="requestmodel.cpp" line="35"/>
         <source>Date started</source>
-        <translation type="unfinished"></translation>
+        <translation>Data di inizio</translation>
     </message>
     <message>
         <location filename="requestmodel.cpp" line="36"/>
         <source>Date finished</source>
-        <translation type="unfinished"></translation>
+        <translation>Data finito</translation>
     </message>
     <message>
         <location filename="requestmodel.cpp" line="37"/>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo</translation>
     </message>
     <message>
         <location filename="requestmodel.cpp" line="38"/>
         <source>Host</source>
-        <translation type="unfinished"></translation>
+        <translation>Host</translation>
     </message>
     <message>
         <location filename="requestmodel.cpp" line="93"/>
         <source>In progress</source>
-        <translation type="unfinished"></translation>
+        <translation>En gestión</translation>
     </message>
 </context>
 <context>
@@ -60,42 +60,42 @@
     <message>
         <location filename="networkmonitor.ui" line="14"/>
         <source>Network Monitor</source>
-        <translation type="unfinished"></translation>
+        <translation>Network Monitor</translation>
     </message>
     <message>
         <location filename="networkmonitor.ui" line="20"/>
         <source>Clear finished items</source>
-        <translation type="unfinished"></translation>
+        <translation>Cancella elementi finiti</translation>
     </message>
     <message>
         <location filename="networkmonitor.ui" line="36"/>
         <source>String</source>
-        <translation type="unfinished"></translation>
+        <translation>Stringa</translation>
     </message>
     <message>
         <location filename="networkmonitor.ui" line="41"/>
         <source>Wildcard</source>
-        <translation type="unfinished"></translation>
+        <translation>Sagoma</translation>
     </message>
     <message>
         <location filename="networkmonitor.ui" line="46"/>
         <source>Regexp</source>
-        <translation type="unfinished"></translation>
+        <translation>Regexp</translation>
     </message>
     <message>
         <location filename="networkmonitor.ui" line="58"/>
         <source>Requests</source>
-        <translation type="unfinished"></translation>
+        <translation>Domandi</translation>
     </message>
     <message>
         <location filename="networkmonitor.ui" line="74"/>
         <source>Request headers</source>
-        <translation type="unfinished"></translation>
+        <translation>Le intestazioni di richiesta</translation>
     </message>
     <message>
         <location filename="networkmonitor.ui" line="92"/>
         <source>Response headers</source>
-        <translation type="unfinished"></translation>
+        <translation>Risposta intestazioni</translation>
     </message>
 </context>
 </TS>

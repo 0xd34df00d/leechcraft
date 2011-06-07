@@ -353,62 +353,67 @@
 <context>
     <name>LeechCraft::Plugins::LackMan::Plugin</name>
     <message>
-        <location filename="lackman.cpp" line="153"/>
+        <location filename="lackman.cpp" line="47"/>
+        <source>LackMan</source>
+        <translation>LackMan</translation>
+    </message>
+    <message>
+        <location filename="lackman.cpp" line="160"/>
         <source>LeechCraft Package Manager.</source>
         <translation>Пакетний менеджер для LeechCraft.</translation>
     </message>
     <message>
-        <location filename="lackman.cpp" line="225"/>
+        <location filename="lackman.cpp" line="259"/>
         <source>Package information: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Інформація про пакет: %1</translation>
     </message>
     <message>
-        <location filename="lackman.cpp" line="227"/>
+        <location filename="lackman.cpp" line="261"/>
         <source>Package information</source>
-        <translation type="unfinished">Інформація про пакет</translation>
+        <translation>Інформація про пакет</translation>
     </message>
     <message>
-        <location filename="lackman.cpp" line="232"/>
+        <location filename="lackman.cpp" line="266"/>
         <source>not installed</source>
         <translation>не встановлено</translation>
     </message>
     <message>
-        <location filename="lackman.cpp" line="234"/>
+        <location filename="lackman.cpp" line="268"/>
         <source>installed; upgradable</source>
         <translation>встановлено; можливе оновлення</translation>
     </message>
     <message>
-        <location filename="lackman.cpp" line="236"/>
+        <location filename="lackman.cpp" line="270"/>
         <source>installed</source>
         <translation>встановлено</translation>
     </message>
     <message>
-        <location filename="lackman.cpp" line="242"/>
+        <location filename="lackman.cpp" line="276"/>
         <source>unknown</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="lackman.cpp" line="260"/>
+        <location filename="lackman.cpp" line="294"/>
         <source>Total size to be downloaded: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="lackman.cpp" line="267"/>
+        <location filename="lackman.cpp" line="301"/>
         <source>Update all repos</source>
         <translation>Оновити всі репозиторії</translation>
     </message>
     <message>
-        <location filename="lackman.cpp" line="274"/>
+        <location filename="lackman.cpp" line="308"/>
         <source>Upgrade all packages</source>
         <translation>Оновити всі пакети</translation>
     </message>
     <message>
-        <location filename="lackman.cpp" line="281"/>
+        <location filename="lackman.cpp" line="315"/>
         <source>Apply</source>
         <translation>Застосувати</translation>
     </message>
     <message>
-        <location filename="lackman.cpp" line="288"/>
+        <location filename="lackman.cpp" line="322"/>
         <source>Cancel</source>
         <translation>Відмінити</translation>
     </message>
@@ -573,7 +578,7 @@
         <location filename="dummy.cpp" line="2"/>
         <location filename="dummy.cpp" line="3"/>
         <source>Packages</source>
-        <translation type="unfinished">Пакети</translation>
+        <translation>Пакети</translation>
     </message>
 </context>
 </TS>

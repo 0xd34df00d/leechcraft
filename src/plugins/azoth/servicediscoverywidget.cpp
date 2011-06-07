@@ -21,6 +21,7 @@
 #include <QComboBox>
 #include <QLineEdit>
 #include <QTimer>
+#include <QMenu>
 #include "interfaces/iaccount.h"
 #include "interfaces/ihaveservicediscovery.h"
 #include "core.h"
@@ -125,6 +126,32 @@ namespace Azoth
 	{
 		DiscoveryTimer_->stop ();
 		DiscoveryTimer_->start ();
+	}
+	
+	void ServiceDiscoveryWidget::on_DiscoveryTree__customContextMenuRequested (const QPoint& point)
+	{
+		const QModelIndex& idx = Ui_.DiscoveryTree_->indexAt (point);
+		if (!idx.isValid ())
+			return;
+		
+		const QList<QPair<QByteArray, QString> >& actions =
+				SDSession_->GetActionsFor (idx);
+		if (actions.isEmpty ())
+			return;
+		
+		QMenu *menu = new QMenu (tr ("Discovery actions"));
+		// C++0x: move on to 0x's foreach construct.
+		for (QList<QPair<QByteArray, QString> >::const_iterator i = actions.begin (),
+					end = actions.end (); i != end; ++i)
+			 menu->addAction (i->second)->setProperty ("Azoth/ID", i->first);
+
+		QAction *result = menu->exec (Ui_.DiscoveryTree_->
+					viewport ()->mapToGlobal (point));
+		if (!result)
+			return;
+		
+		const QByteArray& id = result->property ("Azoth/ID").toByteArray ();
+		SDSession_->ExecuteAction (idx, id);
 	}
 	
 	void ServiceDiscoveryWidget::discover ()

@@ -25,6 +25,7 @@
 #include "clientconnection.h"
 #include "roomhandler.h"
 #include "formbuilder.h"
+#include "affiliationselectordialog.h"
 
 namespace LeechCraft
 {
@@ -38,36 +39,38 @@ namespace Xoox
 	, FB_ (new FormBuilder)
 	, Room_ (room)
 	, JID_ (room->GetRoomHandler ()->GetRoomJID ())
+	, RoomHandler_ (0)
 	, PermsModel_ (new QStandardItemModel)
 	, Aff2Cat_ (InitModel ())
-	, MUCManager_ (0)
 	{
 		Ui_.setupUi (this);
 		Ui_.PermsTree_->setModel (PermsModel_);
 
 		GlooxAccount *acc = qobject_cast<GlooxAccount*> (room->GetParentAccount ());
-		MUCManager_ = acc->GetClientConnection ()->GetMUCManager ();
-		connect (MUCManager_,
-				SIGNAL (roomConfigurationReceived (const QString&, const QXmppDataForm&)),
+		QXmppMucManager *mgr = acc->GetClientConnection ()->GetMUCManager ();
+
+		RoomHandler_ = mgr->addRoom (JID_);
+		connect (RoomHandler_,
+				SIGNAL (configurationReceived (const QXmppDataForm&)),
 				this,
-				SLOT (handleConfigurationReceived (const QString&, const QXmppDataForm&)));
-		connect (MUCManager_,
-				SIGNAL (roomPermissionsReceived (const QString&, const QList<QXmppMucAdminIq::Item>&)),
+				SLOT (handleConfigurationReceived (const QXmppDataForm&)));
+		connect (RoomHandler_,
+				SIGNAL (permissionsReceived (const QList<QXmppMucItem>&)),
 				this,
-				SLOT (handlePermsReceived (const QString&, const QList<QXmppMucAdminIq::Item>&)));
-		MUCManager_->requestRoomConfiguration (JID_);
-		MUCManager_->requestRoomPermissions (JID_);
+				SLOT (handlePermsReceived (const QList<QXmppMucItem>&)));
+		RoomHandler_->requestConfiguration ();
+		RoomHandler_->requestPermissions ();
 	}
 	
-	QMap<QXmppMucAdminIq::Item::Affiliation, QStandardItem*> RoomConfigWidget::InitModel () const
+	QMap<QXmppMucItem::Affiliation, QStandardItem*> RoomConfigWidget::InitModel () const
 	{
 		PermsModel_->clear ();
 		PermsModel_->setHorizontalHeaderLabels (QStringList ("JID") << tr ("Reason"));
-		QMap<QXmppMucAdminIq::Item::Affiliation, QStandardItem*> aff2cat;
-		aff2cat [QXmppMucAdminIq::Item::OutcastAffiliation] = new QStandardItem (tr ("Banned"));
-		aff2cat [QXmppMucAdminIq::Item::MemberAffiliation] = new QStandardItem (tr ("Members"));
-		aff2cat [QXmppMucAdminIq::Item::AdminAffiliation] = new QStandardItem (tr ("Admins"));
-		aff2cat [QXmppMucAdminIq::Item::OwnerAffiliation] = new QStandardItem (tr ("Owners"));
+		QMap<QXmppMucItem::Affiliation, QStandardItem*> aff2cat;
+		aff2cat [QXmppMucItem::OutcastAffiliation] = new QStandardItem (tr ("Banned"));
+		aff2cat [QXmppMucItem::MemberAffiliation] = new QStandardItem (tr ("Members"));
+		aff2cat [QXmppMucItem::AdminAffiliation] = new QStandardItem (tr ("Admins"));
+		aff2cat [QXmppMucItem::OwnerAffiliation] = new QStandardItem (tr ("Owners"));
 		Q_FOREACH (QStandardItem *item, aff2cat.values ())
 		{
 			QList<QStandardItem*> rootItems;
@@ -80,17 +83,119 @@ namespace Xoox
 		return aff2cat;
 	}
 	
+	void RoomConfigWidget::SendItem (const QXmppMucItem& item)
+	{
+		QList<QXmppMucItem> items;
+		items << item;
+		QXmppMucAdminIq iq;
+		iq.setTo (JID_);
+		iq.setType (QXmppIq::Set);
+		iq.setItems (items);
+		
+		GlooxAccount *account = qobject_cast<GlooxAccount*> (Room_->GetParentAccount ());
+		account->GetClientConnection ()->GetClient ()->sendPacket (iq);
+	}
+	
+	QStandardItem* RoomConfigWidget::GetCurrentItem () const
+	{
+		const QModelIndex& index = Ui_.PermsTree_->currentIndex ();
+		if (!index.isValid ())
+			return 0;
+		
+		const QModelIndex& sibling = index.sibling (index.row (), 0);
+		return PermsModel_->itemFromIndex (sibling);
+	}
+	
 	void RoomConfigWidget::accept ()
 	{
 		QXmppDataForm form = FB_->GetForm ();
 		form.setType (QXmppDataForm::Submit);
-		MUCManager_->setRoomConfiguration (JID_, form);
+		RoomHandler_->setConfiguration (form);
 	}
 	
-	void RoomConfigWidget::handleConfigurationReceived (const QString& jid,
-			const QXmppDataForm& form)
+	void RoomConfigWidget::on_AddPerm__released ()
 	{
-		if (jid != JID_)
+		std::auto_ptr<AffiliationSelectorDialog> dia (new AffiliationSelectorDialog (this));
+		if (dia->exec () != QDialog::Accepted)
+			return;
+		
+		const QString& jid = dia->GetJID ();
+		if (jid.isEmpty ())
+			return;
+
+		QXmppMucItem item;
+		item.setJid (jid);
+		item.setAffiliation (dia->GetAffiliation ());
+		SendItem (item);
+		
+		handlePermsReceived (QList<QXmppMucItem> () << item);
+	}
+	
+	void RoomConfigWidget::on_ModifyPerm__released ()
+	{
+		QStandardItem *stdItem = GetCurrentItem ();
+		if (!stdItem)
+			return;
+		
+		QStandardItem *parent = stdItem->parent ();
+		if (!Aff2Cat_.values ().contains (parent))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "bad parent"
+					<< parent
+					<< "for"
+					<< stdItem;
+			return;
+		}
+		
+		const QXmppMucItem::Affiliation aff = Aff2Cat_.key (parent);		
+		const QString& jid = stdItem->text ();
+
+		std::auto_ptr<AffiliationSelectorDialog> dia (new AffiliationSelectorDialog (this));
+		dia->SetJID (jid);
+		dia->SetAffiliation (aff);
+		if (dia->exec () != QDialog::Accepted)
+			return;
+		
+		const QString& newJid = dia->GetJID ();
+		if (newJid.isEmpty ())
+			return;
+		
+		parent->removeRow (stdItem->row ());
+		
+		QXmppMucItem item;
+		item.setJid (newJid);
+		item.setAffiliation (dia->GetAffiliation ());
+		SendItem (item);
+		
+		handlePermsReceived (QList<QXmppMucItem> () << item);
+	}
+	
+	void RoomConfigWidget::on_RemovePerm__released ()
+	{
+		QStandardItem *stdItem = GetCurrentItem ();
+		if (!stdItem)
+			return;
+		
+		const QString& jid = stdItem->text ();
+		if (jid.isEmpty ())
+			return;
+		
+		QStandardItem *parent = stdItem->parent ();
+		if (!parent)
+			return;
+		
+		parent->removeRow (stdItem->row ());
+		
+		QXmppMucItem item;
+		item.setJid (jid);
+		item.setAffiliation (QXmppMucItem::NoAffiliation);
+		SendItem (item);
+	}
+	
+	void RoomConfigWidget::handleConfigurationReceived (const QXmppDataForm& form)
+	{
+		if (sender () != RoomHandler_)
 			return;
 
 		FormWidget_ = FB_->CreateForm (form);
@@ -98,13 +203,13 @@ namespace Xoox
 		emit dataReady ();
 	}
 	
-	void RoomConfigWidget::handlePermsReceived (const QString& jid,
-			const QList<QXmppMucAdminIq::Item>& perms)
+	void RoomConfigWidget::handlePermsReceived (const QList<QXmppMucItem>& perms)
 	{
-		if (jid != JID_)
+		if (qobject_cast<QXmppMucRoom*> (sender ()) &&
+				sender () != RoomHandler_)
 			return;
 
-		Q_FOREACH (const QXmppMucAdminIq::Item& perm, perms)
+		Q_FOREACH (const QXmppMucItem& perm, perms)
 		{
 			QStandardItem *parentItem = Aff2Cat_ [perm.affiliation ()];
 			if (!parentItem)

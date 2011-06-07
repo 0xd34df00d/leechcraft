@@ -41,6 +41,7 @@ namespace Xoox
 	, Variant_ (variant)
 	, DateTime_ (QDateTime::currentDateTime ())
 	, Connection_ (conn)
+	, IsDelivered_ (false)
 	{
 		const QString& remoteJid = variant.isEmpty () ?
 				jid :
@@ -59,6 +60,7 @@ namespace Xoox
 	, Direction_ (DIn)
 	, Message_ (message)
 	, Connection_ (conn)
+	, IsDelivered_ (false)
 	{
 		Connection_->Split (message.from (), &BareJID_, &Variant_);
 
@@ -86,8 +88,9 @@ namespace Xoox
 		switch (Type_)
 		{
 		case MTChatMessage:
+			Message_.setRequestReceipt (true);
 		case MTMUCMessage:
-			Connection_->GetClient ()->sendPacket (Message_);
+			Connection_->SendMessage (this);
 			break;
 		default:
 			qWarning () << Q_FUNC_INFO
@@ -148,6 +151,23 @@ namespace Xoox
 		DateTime_ = dateTime;
 		if (Direction_ == DIn)
 			Message_.setStamp (dateTime);
+	}
+	
+	bool GlooxMessage::IsDelivered () const
+	{
+		return IsDelivered_;
+	}
+	
+	void GlooxMessage::SetDelivered (bool delivered)
+	{
+		IsDelivered_ = delivered;
+		if (delivered)
+			emit messageDelivered ();
+	}
+	
+	QXmppMessage GlooxMessage::GetMessage () const
+	{
+		return Message_;
 	}
 }
 }

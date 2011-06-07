@@ -18,6 +18,8 @@
 
 #include "externalproxy.h"
 #include <interfaces/structures.h>
+#include <plugininterface/util.h>
+#include <QUrl>
 
 namespace LeechCraft
 {
@@ -30,11 +32,10 @@ namespace Poshuku
 
 	void ExternalProxy::AddSearchProvider (const QString& url)
 	{
-		LeechCraft::Entity e;
-		e.Entity_ = url.toUtf8 ();
-		e.Mime_ = "application/opensearchdescription+xml";
-		e.Location_ = url;
-		e.Parameters_ = LeechCraft::FromUserInitiated;
+		const Entity& e = Util::MakeEntity (QUrl (url),
+				url,
+				FromUserInitiated | OnlyHandle,
+				"application/opensearchdescription+xml");
 		emit gotEntity (e);
 	}	
 }

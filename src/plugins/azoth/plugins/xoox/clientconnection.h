@@ -1,4 +1,4 @@
-	/**********************************************************************
+/**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
  * Copyright (C) 2006-2011  Georg Rudoy
  *
@@ -26,6 +26,7 @@
 #include <QSet>
 #include <QXmppClient.h>
 #include <QXmppMucIq.h>
+#include <QXmppPubSubIq.h>
 #include <interfaces/imessage.h>
 #include "glooxclentry.h"
 #include "glooxaccount.h"
@@ -39,6 +40,8 @@ class QXmppDiscoveryIq;
 class QXmppBookmarkManager;
 class QXmppArchiveManager;
 class QXmppEntityTimeManager;
+class QXmppPubSubManager;
+class QXmppDeliveryReceiptsManager;
 
 namespace LeechCraft
 {
@@ -67,6 +70,8 @@ namespace Xoox
 		QXmppBookmarkManager *BMManager_;
 		QXmppEntityTimeManager *EntityTimeManager_;
 		QXmppArchiveManager *ArchiveManager_;
+		QXmppPubSubManager *PubSubManager_;
+		QXmppDeliveryReceiptsManager *DeliveryReceiptsManager_;
 
 		QString OurJID_;
 
@@ -99,11 +104,17 @@ namespace Xoox
 		QList<QXmppMessage> OfflineMsgQueue_;
 		
 		QHash<QString, QPointer<VCardDialog> > AwaitingVCardDialogs_;
+		
+		QHash<QString, QPointer<GlooxMessage> > UndeliveredMessages_;
 	public:
 		typedef boost::function<void (const QXmppDiscoveryIq&)> DiscoCallback_t;
 	private:
 		QHash<QString, DiscoCallback_t> AwaitingDiscoInfo_;
 		QHash<QString, DiscoCallback_t> AwaitingDiscoItems_;
+		
+		typedef QPair<QPointer<QObject>, QByteArray> PacketCallback_t;
+		typedef QHash<QString, PacketCallback_t> PacketID2Callback_t;
+		QHash<QString, PacketID2Callback_t> AwaitingPacketCallbacks_;
 	public:
 		ClientConnection (const QString&,
 				const GlooxAccountState&,
@@ -135,7 +146,7 @@ namespace Xoox
 		void RequestItems (const QString&, DiscoCallback_t, const QString& = "");
 
 		void Update (const QXmppRosterIq::Item&);
-		void Update (const QXmppMucAdminIq::Item&, const QString& room);
+		void Update (const QXmppMucItem&, const QString& room);
 
 		void AckAuth (QObject*, bool);
 		void AddEntry (const QString&, const QString&, const QStringList&);
@@ -146,6 +157,8 @@ namespace Xoox
 		void Unsubscribe (const QString&, const QString&);
 		void Remove (GlooxCLEntry*);
 
+		void SendPacketWCallback (const QXmppIq&, QObject*, const QByteArray&);
+		void SendMessage (GlooxMessage*);
 		QXmppClient* GetClient () const;
 		QObject* GetCLEntry (const QString& bareJid, const QString& variant) const;
 		GlooxCLEntry* AddODSCLEntry (GlooxCLEntry::OfflineDataSource_ptr);
@@ -163,6 +176,7 @@ namespace Xoox
 		EntryStatus PresenceToStatus (const QXmppPresence&) const;
 		void HandleOtherPresence (const QXmppPresence&);
 		void HandleError (const QXmppIq&);
+		void InvokeCallbacks (const QXmppIq&);
 		QString HandleErrorCondition (const QXmppStanza::Error::Condition&);
 	private slots:
 		void handleConnected ();
@@ -174,14 +188,8 @@ namespace Xoox
 		void handleRosterItemRemoved (const QString&);
 		void handleVCardReceived (const QXmppVCardIq&);
 		void handlePresenceChanged (const QXmppPresence&);
-		void handleRoomPresenceChanged (const QString&,
-				const QString&, const QXmppPresence&);
 		void handleMessageReceived (const QXmppMessage&);
-		void handleRoomPartNickChange (const QString&, const QString&, const QString&);
-		void handleRoomParticipantPermsChanged (const QString&, const QString&,
-				QXmppMucAdminIq::Item::Affiliation,
-				QXmppMucAdminIq::Item::Role,
-				const QString&);
+		void handleMessageDelivered (const QString&);
 		
 		void handleBookmarksReceived (const QXmppBookmarkSet&);
 		void handleAutojoinQueue ();

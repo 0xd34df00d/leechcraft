@@ -55,6 +55,11 @@
         <translation>Дія:</translation>
     </message>
     <message>
+        <location filename="shooterdialog.ui" line="31"/>
+        <source>upload to dump.bitcheese.net</source>
+        <translation>завантажити на dump.bitcheese.net</translation>
+    </message>
+    <message>
         <location filename="shooterdialog.ui" line="36"/>
         <source>upload to Savepic.ru</source>
         <translation>завантажити на Savepic.ru</translation>

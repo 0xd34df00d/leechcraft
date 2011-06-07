@@ -93,8 +93,6 @@ namespace Acetamide
 				const QString&, const QStringList&);
 		void RemoveEntry (QObject*);
 		QObject* GetTransferManager () const;
-		QObject* CreateMessage (IMessage::MessageType,
-				const QString&, const QString&);
 	public:
 		QByteArray Serialize () const;
 		static IrcAccount* Deserialize (const QByteArray&, QObject*);

@@ -38,7 +38,7 @@ SET(SRCS
 SET(RESOURCES
 	res/resources.qrc
 )
-CreateTrVars("gmailnotifier" "en;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
+CreateTrVars("gmailnotifier" "de;en;fr;it;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
 
 QT4_WRAP_CPP(MOC_SRCS ${HEADERS})
 QT4_ADD_RESOURCES(RCCS ${RESOURCES})
