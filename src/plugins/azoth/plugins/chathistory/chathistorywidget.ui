@@ -54,17 +54,7 @@
    <item>
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
-      <widget class="QTreeView" name="HistView_">
-       <property name="alternatingRowColors">
-        <bool>true</bool>
-       </property>
-       <property name="rootIsDecorated">
-        <bool>false</bool>
-       </property>
-       <property name="wordWrap">
-        <bool>true</bool>
-       </property>
-      </widget>
+      <widget class="QTextBrowser" name="HistView_"/>
      </item>
     </layout>
    </item>

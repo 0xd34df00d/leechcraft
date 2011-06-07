@@ -37,6 +37,12 @@ namespace Azoth
 	 * 
 	 * The message should not be sent upon creation, only call to Send()
 	 * should trigger the sending.
+	 * 
+	 * This interface provides only more or less basic functionality.
+	 * Advanced features like delivery receipts and such, are in
+	 * IAdvancedMessage.
+	 * 
+	 * @sa IAdvancedMessage
 	 */
 	class IMessage
 	{
