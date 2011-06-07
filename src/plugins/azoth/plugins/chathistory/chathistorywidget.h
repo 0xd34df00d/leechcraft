@@ -49,6 +49,8 @@ namespace ChatHistory
 		QString CurrentEntry_;
 		QToolBar *Toolbar_;
 		
+		QHash<QString, QString> EntryID2NameCache_;
+		
 		ICLEntry *EntryToFocus_;
 
 		static Plugin *S_ParentMultiTabs_;

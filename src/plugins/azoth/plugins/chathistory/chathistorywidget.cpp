@@ -186,6 +186,8 @@ namespace ChatHistory
 					(nameCache.value (i).isEmpty () ? 
 						user :
 						nameCache.value (i));
+					
+			EntryID2NameCache_ [user] = name;
 
 			QStandardItem *item = new QStandardItem (name);
 			item->setData (user, MRIDRole);
@@ -194,6 +196,7 @@ namespace ChatHistory
 			if (!ourFocus && user == focusId)
 				ourFocus = item;
 		}
+		
 		
 		if (ourFocus)
 		{
@@ -219,7 +222,7 @@ namespace ChatHistory
 					GetPluginProxy ()->GetEntry (entryId, accountId));
 		const QString& name = entry ?
 				entry->GetEntryName () :
-				entryId;
+				EntryID2NameCache_.value (entryId, entryId);
 
 		QList<QColor> colors = Core::Instance ()->
 				GetPluginProxy ()->GenerateColors ("hash");
