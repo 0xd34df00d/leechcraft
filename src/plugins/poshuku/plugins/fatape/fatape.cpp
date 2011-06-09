@@ -30,7 +30,7 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "userscriptsmanagerwidget.h"
-#include "userscriptinstallerwidget.h"
+#include "userscriptinstallerdialog.h"
 
 namespace LeechCraft
 {

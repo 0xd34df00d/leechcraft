@@ -287,9 +287,8 @@ namespace FatApe
 		QNetworkReply *reply = networkManager->get (resourceRequest);
 		QObject::connect (reply, 
 				SIGNAL (finished ()), 
-				new ResourceDownloadHandler(resourceName, this, reply), 
-				SLOT (handleFinished ()));
-		
+				new ResourceDownloadHandler (resourceName, this, reply), 
+				SLOT (handleFinished ()));		
 	}
 
 	void UserScript::DownloadRequired (const QString& required, 

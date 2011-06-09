@@ -6,7 +6,7 @@ SET (FATAPE_SRCS
     greasemonkey.cpp
     xmlsettingsmanager.cpp
     userscriptsmanagerwidget.cpp
-    userscriptinstallerwidget.cpp
+    userscriptinstallerdialog.cpp
     resourcedownloadhandler.cpp
 	)
 SET (FATAPE_HEADERS
@@ -15,12 +15,12 @@ SET (FATAPE_HEADERS
     greasemonkey.h
     xmlsettingsmanager.h
     userscriptsmanagerwidget.h
-    userscriptinstallerwidget.h
+    userscriptinstallerdialog.h
     resourcedownloadhandler.h
 	)
 SET (FATAPE_FORMS
     userscriptsmanagerwidget.ui
-    userscriptinstallerwidget.ui
+    userscriptinstallerdialog.ui
     )
 CreateTrVars ("poshuku_fatape" "en;ru_RU;uk_UA" FATAPE_TRANSLATIONS FATAPE_COMPILED_TRANSLATIONS)
 

@@ -57,8 +57,6 @@ namespace FatApe
 			return;
 		}
 
-		resource.write (Reply_->readAll ());
-		resource.close ();
 		settings.setValue (QString ("resources/%1/%2/%3")
 				.arg (qHash (Script_->Namespace ()))
 				.arg (Script_->Name ())
