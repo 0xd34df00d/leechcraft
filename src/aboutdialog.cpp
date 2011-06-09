@@ -118,8 +118,10 @@ namespace LeechCraft
 				QStringList ("Maintainer for the Microsoft Windows."),
 				QList<int> () << 2009 << 2010 << 2011);
 		contribs << ContributorInfo (QString (), "Ignotus",
-				"ignotusp@jabber.kiev.ua", QString (),
-				QStringList ("Improvements in Psto.net plugin for Azoth."),
+				"nlminhtl@gmail.com", QString (),
+				QStringList ("Improvements in Psto.net plugin for Azoth.")
+					<< tr ("openSUSE package maintainer")
+					<< tr ("Fedora package maintainer"),
 				QList<int> () << 2011);
 		contribs << ContributorInfo (QString (), "lk4d4",
 				QString (), "lk4d4@yander.ru",

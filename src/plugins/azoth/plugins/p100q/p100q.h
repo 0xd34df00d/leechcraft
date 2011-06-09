@@ -21,6 +21,8 @@
 #include <QObject>
 #include <QRegExp>
 #include <QUrl>
+#include <QWebView>
+#include <QFile>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 
@@ -43,6 +45,7 @@ namespace p100q
 		QRegExp PostByUserRX_;
 		QRegExp CommentRX_;
 		QRegExp TagRX_;
+		QRegExp ImgRX_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -64,10 +67,13 @@ namespace p100q
 				QObject *chatTab,
 				QString body,
 				QObject *message);
+		void hookThemeReloaded (LeechCraft::IHookProxy_ptr proxy,
+				QObject *chatTab,
+				QWebView *view,
+				QObject *entry);
 	};
 }
 }
 }
 
 #endif
-
