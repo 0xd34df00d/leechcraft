@@ -34,7 +34,7 @@ namespace Acetamide
 	class IrcAccount;
 	
 	class IrcJoinGroupChat : public QWidget
-							, public IMUCJoinWidget
+						   , public IMUCJoinWidget
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IMUCJoinWidget)
@@ -61,9 +61,11 @@ namespace Acetamide
 
 		ServerOptions GetServerOptions () const;
 		ChannelOptions GetChannelOptions () const;
+	signals:
+		void validityChanged (bool);
 	};
-};
-};
-};
+}
+}
+}
 
 #endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCJOINGROUPCHAT_H
