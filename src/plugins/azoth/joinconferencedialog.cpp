@@ -18,6 +18,7 @@
 
 #include "joinconferencedialog.h"
 #include <QSet>
+#include <QPushButton>
 #include <QtDebug>
 #include "interfaces/iprotocol.h"
 #include "interfaces/imucjoinwidget.h"
@@ -190,6 +191,10 @@ namespace Azoth
 		while (Ui_.JoinWidgetFrameLayout_->count ())
 		{
 			QLayoutItem *item = Ui_.JoinWidgetFrameLayout_->takeAt (0);
+			disconnect (item->widget (),
+					SIGNAL (validityChanged (bool)),
+					this,
+					SLOT (handleValidityChanged (bool)));
 			item->widget ()->hide ();
 		}
 
@@ -219,6 +224,10 @@ namespace Azoth
 		QWidget *joiner = Proto2Joiner_ [proto];
 		Ui_.JoinWidgetFrameLayout_->addWidget (joiner);
 		joiner->show ();
+		connect (joiner,
+				SIGNAL (validityChanged (bool)),
+				this,
+				SLOT (handleValidityChanged (bool)));
 		
 		adjustSize ();
 
@@ -235,6 +244,11 @@ namespace Azoth
 	{
 		const QVariantMap& map = Ui_.HistoryBox_->itemData (idx).toMap ();
 		FillWidget (map);
+	}
+	
+	void JoinConferenceDialog::handleValidityChanged (bool isValid)
+	{
+		Ui_.ButtonBox_->button (QDialogButtonBox::Ok)->setEnabled (isValid);
 	}
 	
 	void JoinConferenceDialog::FillWidget (const QVariantMap& map)

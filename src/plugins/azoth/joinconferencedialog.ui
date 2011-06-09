@@ -79,7 +79,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="buttonBox">
+    <widget class="QDialogButtonBox" name="ButtonBox_">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
@@ -93,7 +93,7 @@
  <resources/>
  <connections>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>ButtonBox_</sender>
    <signal>accepted()</signal>
    <receiver>JoinConferenceDialog</receiver>
    <slot>accept()</slot>
@@ -109,7 +109,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>ButtonBox_</sender>
    <signal>rejected()</signal>
    <receiver>JoinConferenceDialog</receiver>
    <slot>reject()</slot>

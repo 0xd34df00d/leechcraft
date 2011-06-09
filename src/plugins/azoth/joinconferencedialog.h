@@ -39,9 +39,10 @@ namespace Azoth
 		virtual void accept ();
 		virtual void reject ();
 	private slots:
-		virtual void on_AccountBox__currentIndexChanged (int);
-		virtual void on_BookmarksBox__currentIndexChanged (int);
-		virtual void on_HistoryBox__currentIndexChanged (int);
+		void on_AccountBox__currentIndexChanged (int);
+		void on_BookmarksBox__currentIndexChanged (int);
+		void on_HistoryBox__currentIndexChanged (int);
+		void handleValidityChanged (bool);
 	private:
 		void FillWidget (const QVariantMap&);
 	};
