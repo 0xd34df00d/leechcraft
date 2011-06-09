@@ -19,8 +19,10 @@
 #include "fatape.h"
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
+#include <QDesktopServices>
 #include <QDir>
 #include <QIcon>
+#include <QNetworkRequest>
 #include <QProcess>
 #include <QStringList>
 #include <QTranslator>
@@ -28,6 +30,7 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "userscriptsmanagerwidget.h"
+#include "userscriptinstallerdialog.h"
 
 namespace LeechCraft
 {
@@ -61,8 +64,9 @@ namespace FatApe
 		}
 	}
 
-	void Plugin::Init (ICoreProxy_ptr)
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		CoreProxy_ = proxy;
 		Translator_.reset (Util::InstallTranslator ("poshuku_fatape"));
 
 		QDir scriptsDir (Util::CreateIfNotExists ("data/poshuku/fatape/scripts"));
@@ -79,22 +83,7 @@ namespace FatApe
 		Model_->setHorizontalHeaderLabels (QStringList (tr ("Name")) 
 				<< tr ("Description"));
 		Q_FOREACH (const UserScript& script, UserScripts_)
-		{
-			QList<QStandardItem*> items;
-			QString scriptDesc = script.Description ();
-			QStandardItem* name = new QStandardItem (script.Name ());
-			QStandardItem* description = new QStandardItem (scriptDesc);
-
-			name->setEditable (false);
-			name->setData (script.IsEnabled (), EnabledRole);
-			description->setEditable (false);
-			WrapText (scriptDesc);
-			description->setToolTip (scriptDesc);
-			description->setData (script.IsEnabled (), EnabledRole);
-
-			items << name << description;
-			Model_->appendRow (items);
-		}
+			AddScriptToManager (script);
 		
 		SettingsDialog_.reset (new Util::XmlSettingsDialog);
 		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
@@ -193,6 +182,56 @@ namespace FatApe
 	{
 		UserScripts_ [scriptIndex].SetEnabled (value);
 	}
+
+	void Plugin::hookAcceptNavigationRequest (LeechCraft::IHookProxy_ptr proxy, QWebPage *page, 
+			QWebFrame *frame, QNetworkRequest request, QWebPage::NavigationType type)
+	{
+		if (!request.url ().toString ().endsWith ("user.js", Qt::CaseInsensitive) ||
+			request.url ().scheme () == "file")
+			return;
+
+		UserScriptInstallerDialog installer (this, 
+				CoreProxy_->GetNetworkAccessManager (), request.url ());
+
+		switch (installer.exec ())
+		{
+		case UserScriptInstallerDialog::Install:
+			UserScripts_.append (UserScript (installer.TempScriptPath ()));
+			UserScripts_.last ().Install (CoreProxy_->GetNetworkAccessManager ());
+			AddScriptToManager (UserScripts_.last ());
+			break;
+		case UserScriptInstallerDialog::ShowSource:
+			Proxy_->OpenInNewTab (QUrl::fromLocalFile (installer.TempScriptPath ()));
+			break;
+		case UserScriptInstallerDialog::Cancel:
+			QFile::remove (installer.TempScriptPath ());
+			break;
+		default:
+			break;
+		}
+		
+		proxy->CancelDefault ();
+	}
+
+	void Plugin::AddScriptToManager (const UserScript& script)
+	{
+		QString scriptDesc = script.Description ();
+		QStandardItem* name = new QStandardItem (script.Name ());
+		QStandardItem* description = new QStandardItem (scriptDesc);
+
+		name->setEditable (false);
+		name->setData (script.IsEnabled (), EnabledRole);
+		description->setEditable (false);
+		WrapText (scriptDesc);
+		description->setToolTip (scriptDesc);
+		description->setData (script.IsEnabled (), EnabledRole);
+		
+		QList<QStandardItem*> items;
+		items << name << description;
+		Model_->appendRow (items);
+	}
+
+
 }
 }
 }
