@@ -529,6 +529,8 @@ namespace LeechCraft
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "-pg");
 		settings.beginGroup ("Plugins");
+		
+		QHash<QByteArray, QString> id2source;
 
 		for (int i = 0; i < PluginContainers_.size (); ++i)
 		{
@@ -582,11 +584,11 @@ namespace LeechCraft
 			catch (...)
 			{
 				qWarning () << Q_FUNC_INFO
-					<< "failed to construct the instance for"
-					<< file;
+						<< "failed to construct the instance for"
+						<< file;
 				PluginLoadErrors_ << tr ("Could not load plugin from %1: "
-							"failed to construct plugin instance.")
-						.arg (QFileInfo (file).fileName ());
+						"failed to construct plugin instance.")
+					.arg (QFileInfo (file).fileName ());
 				PluginContainers_.removeAt (i--);
 				continue;
 			}
@@ -597,8 +599,44 @@ namespace LeechCraft
 				qWarning () << "Casting to IInfo failed:"
 						<< file;
 				PluginLoadErrors_ << tr ("Could not load plugin from %1: "
-							"unable to cast plugin instance to IInfo*.")
-						.arg (QFileInfo (file).fileName ());
+						"unable to cast plugin instance to IInfo*.")
+					.arg (QFileInfo (file).fileName ());
+				PluginContainers_.removeAt (i--);
+				continue;
+			}
+			
+			try
+			{
+				const QByteArray& id = info->GetUniqueID ();
+				if (id2source.contains (id))
+				{
+					PluginLoadErrors_ << tr ("Plugin with ID %1 is "
+							"already loaded from %2; aborting load "
+							"from %3.")
+						.arg (QString::fromUtf8 (id.constData ()))
+						.arg (id2source [id])
+						.arg (file);
+					PluginContainers_.removeAt (i--);
+				}
+				else
+					id2source [id] = file;
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "failed to obtain plugin ID for plugin from"
+						<< file
+						<< "with error:"
+						<< e.what ();
+				PluginContainers_.removeAt (i--);
+				continue;
+			}
+			catch (...)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "failed to obtain plugin ID for plugin from"
+						<< file
+						<< "with unknown error";
 				PluginContainers_.removeAt (i--);
 				continue;
 			}
