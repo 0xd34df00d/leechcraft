@@ -147,7 +147,7 @@ namespace Xoox
 
 	QString GlooxAccount::GetOurNick () const
 	{
-		return Nick_;
+		return Nick_.isEmpty () ? JID_ : Nick_;
 	}
 
 	QString GlooxAccount::GetHost () const
