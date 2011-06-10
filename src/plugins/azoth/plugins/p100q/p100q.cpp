@@ -18,9 +18,9 @@
 
 #include "p100q.h"
 #include <QIcon>
+#include <QString>
 #include <interfaces/imessage.h>
 #include <interfaces/iclentry.h>
-#include <QtCore/QString>
 
 namespace LeechCraft
 {
@@ -37,7 +37,7 @@ namespace p100q
 		PostByUserRX_ = QRegExp ("\\s#([a-zA-Z0-9]+)", Qt::CaseInsensitive);
 		CommentRX_ = QRegExp ("#([a-zA-Z0-9]+)/([0-9]+)", Qt::CaseInsensitive);
 		TagRX_ = QRegExp ("<br />[*] ([^*,<]+(, [^*,<]+)*)");
-		ImgRX_ = QRegExp ("<a href=\"(http://[^<>\"]+[.](png|jpg|gif))\">http://[^<>\"]+[.](png|jpg|gif)</a>", Qt::CaseInsensitive);
+		ImgRX_ = QRegExp ("<a href=\"(http://[^<>\"]+[.](png|jpg|gif|jpeg))\">http://[^<>\"]+[.](png|jpg|gif|jpeg)</a>", Qt::CaseInsensitive);
 	}
 
 	void Plugin::SecondInit ()
@@ -101,21 +101,18 @@ namespace p100q
 			QString tags, tag;
 			int pos = 0;
 			int delta = 0;
+			QStringList::iterator itr;
 			while ((pos = TagRX_.indexIn (body, pos)) != -1)
 			{
-				tags.clear();
-				tags += "<br />* ";
-				tag = TagRX_.cap(0);
-				QStringList tagslist = TagRX_.cap(1).split (", ");
+				tags += "* ";
+				tag = TagRX_.cap (0);
+				QStringList tagslist = TagRX_.cap (1).split (", ");
 			
-				QStringList::iterator itr = tagslist.begin ();
-				while (itr != tagslist.end ())
+				for (itr = tagslist.begin (); itr != tagslist.end (); ++itr) 
 				{
 					tags += QString (" <a href=\"azoth://msgeditreplace/S *%1\">%2</a> ")
 							.arg (QString (QUrl::toPercentEncoding (*itr)))
 							.arg (*itr);
-			
-					++itr;
 				}
 				delta = body.length ();
 				body.replace (tag, tags);
@@ -135,7 +132,7 @@ namespace p100q
 				") ");
 		
 		body.replace (PostAuthorRX_,
-				"<br /><img style='float:left;margin-right:4px' "
+				"<img style='float:left;margin-right:4px' "
 						"width='32px' "
 						"height='32px' "
 						"src='http://psto.net/img/a/40/\\1.png'>"
