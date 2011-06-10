@@ -20,6 +20,7 @@
 #include <QIcon>
 #include <interfaces/imessage.h>
 #include <interfaces/iclentry.h>
+#include <QtCore/QString>
 
 namespace LeechCraft
 {
@@ -29,6 +30,7 @@ namespace p100q
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		PstoCommentRX_ =  QRegExp ("#[a-z]+/[0-9]+[:]", Qt::CaseInsensitive);
 		UserRX_ = QRegExp ("(?:[^>/]|<br />)@([\\w\\-]+)[ :]", Qt::CaseInsensitive);
 		PostAuthorRX_ = QRegExp ("<br />@([\\w\\-]+)[ :]", Qt::CaseInsensitive);
 		PostRX_ = QRegExp ("#([a-zA-Z0-9]+) ", Qt::CaseInsensitive);
@@ -93,33 +95,36 @@ namespace p100q
 	}
 
 	QString Plugin::FormatBody (QString body)
-	{
+	{	
+		if (body.indexOf (PstoCommentRX_, 0) != 6)
+		{
+			QString tags, tag;
+			int pos = 0;
+			int delta = 0;
+			while ((pos = TagRX_.indexIn (body, pos)) != -1)
+			{
+				tags.clear();
+				tags += "<br />* ";
+				tag = TagRX_.cap(0);
+				QStringList tagslist = TagRX_.cap(1).split (", ");
+			
+				QStringList::iterator itr = tagslist.begin ();
+				while (itr != tagslist.end ())
+				{
+					tags += QString (" <a href=\"azoth://msgeditreplace/S *%1\">%2</a> ")
+							.arg (QString (QUrl::toPercentEncoding (*itr)))
+							.arg (*itr);
+			
+					++itr;
+				}
+				delta = body.length ();
+				body.replace (tag, tags);
+				pos += body.length () - delta;
+			}
+		}
+		
 		body.replace (ImgRX_,
 				"<p><a href=\"\\1\"><img style='max-height: 300px; max-width:300px;' src=\"\\1\"/></a><p/>");
-				
-		QString tags, tag;
-		int pos = 0;
-		int delta = 0;
-		while ((pos = TagRX_.indexIn (body, pos)) != -1)
-		{
-			tags.clear();
-			tags += "<br />* ";
-			tag = TagRX_.cap(0);
-			QStringList tagslist = TagRX_.cap(1).split (", ");
-			
-			QStringList::iterator itr = tagslist.begin ();
-			while (itr != tagslist.end ())
-			{
-				tags += QString (" <a href=\"azoth://msgeditreplace/S *%1\">%2</a> ")
-						.arg (QString (QUrl::toPercentEncoding (*itr)))
-						.arg (*itr);
-			
-				++itr;
-			}
-			delta = body.length ();
-			body.replace (tag, tags);
-			pos += body.length () - delta;
-		}
 				
 		body.replace (PostRX_,
 				" <a href=\"azoth://msgeditreplace/%23\\1\">#\\1</a> "

@@ -46,6 +46,7 @@ namespace p100q
 		QRegExp CommentRX_;
 		QRegExp TagRX_;
 		QRegExp ImgRX_;
+		QRegExp PstoCommentRX_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
