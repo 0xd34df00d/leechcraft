@@ -188,6 +188,18 @@ namespace ChatHistory
 				Q_ARG (int, amount));
 	}
 	
+	void Core::Search (const QString& accountId, const QString& entryId,
+			const QString& text, int shift)
+	{
+		QMetaObject::invokeMethod (StorageThread_->GetStorage (),
+				"search",
+				Qt::QueuedConnection,
+				Q_ARG (QString, accountId),
+				Q_ARG (QString, entryId),
+				Q_ARG (QString, text),
+				Q_ARG (int, shift));
+	}
+	
 	void Core::ClearHistory (const QString& accountId, const QString& entryId)
 	{
 		QMetaObject::invokeMethod (StorageThread_->GetStorage (),

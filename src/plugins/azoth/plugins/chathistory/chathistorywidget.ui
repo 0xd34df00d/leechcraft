@@ -54,6 +54,9 @@
    <item>
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
+      <widget class="QLineEdit" name="HistorySearch_"/>
+     </item>
+     <item>
       <widget class="QTextBrowser" name="HistView_"/>
      </item>
     </layout>

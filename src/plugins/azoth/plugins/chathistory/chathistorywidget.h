@@ -45,8 +45,11 @@ namespace ChatHistory
 		QSortFilterProxyModel *SortFilter_;
 		int Backpages_;
 		int Amount_;
+		int SearchShift_;
+		int SearchResultPosition_;
 		QString CurrentAccount_;
 		QString CurrentEntry_;
+		QString PreviousSearchText_;
 		QToolBar *Toolbar_;
 		
 		QHash<QString, QString> EntryID2NameCache_;
@@ -73,13 +76,16 @@ namespace ChatHistory
 		void handleGotOurAccounts (const QStringList&);
 		void handleGotUsersForAccount (const QStringList&, const QString&, const QStringList&);
 		void handleGotChatLogs (const QString&, const QString&, int, int, const QVariant&);
+		void handleGotSearchPosition (const QString&, const QString&, int);
 		void on_AccountBox__currentIndexChanged (int);
 		void handleContactSelected (const QModelIndex&);
+		void on_HistorySearch__returnPressed ();
 		void previousHistory ();
 		void nextHistory ();
 		void clearHistory ();
 	private:
 		void RequestLogs ();
+		void RequestSearch ();
 	signals:
 		void removeSelf (QWidget*);
 	};
