@@ -104,7 +104,7 @@ namespace p100q
 			QStringList::iterator itr;
 			while ((pos = TagRX_.indexIn (body, pos)) != -1)
 			{
-				tags += "* ";
+				tags = "* ";
 				tag = TagRX_.cap (0);
 				QStringList tagslist = TagRX_.cap (1).split (", ");
 			
