@@ -317,6 +317,8 @@ namespace ChatHistory
 	{
 		const QString& id = Ui_.AccountBox_->itemData (idx).toString ();
 		Core::Instance ()->GetUsersForAccount (id);
+		
+		Ui_.HistorySearch_->clear ();
 	}
 	
 	void ChatHistoryWidget::handleContactSelected (const QModelIndex& index)
@@ -326,6 +328,8 @@ namespace ChatHistory
 		CurrentEntry_ = index.data (MRIDRole).toString ();
 		Backpages_ = 0;
 		SearchResultPosition_ = -1;
+		
+		Ui_.HistorySearch_->clear ();
 
 		RequestLogs ();
 	}
