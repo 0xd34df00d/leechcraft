@@ -19,6 +19,7 @@
 #ifndef PLUGINS_POSHUKU_PLUGINS_FATAPE_USERSCRIPT_H
 #define PLUGINS_POSHUKU_PLUGINS_FATAPE_USERSCRIPT_H
 #include <QMultiMap>
+#include <QReadWriteLock>
 #include <QRegExp>
 #include <QWebFrame>
 #include <interfaces/iproxyobject.h>
@@ -29,12 +30,16 @@ namespace Poshuku
 {
 namespace FatApe
 {
-	class UserScript
+	class UserScript : QObject
 	{
+		Q_OBJECT
+
 		QString ScriptPath_;
 		QRegExp MetadataRX_;
 		QMultiMap<QString, QString> Metadata_;
 		bool Enabled_;
+		QReadWriteLock RequiredLock_;
+		qint64 MetadataEndOffset_;
 	public:
 		UserScript (const QString& scriptPath);
 		UserScript (const UserScript& script);
@@ -45,12 +50,19 @@ namespace FatApe
 		QString Namespace () const;
 		QString GetResourcePath (const QString& resourceName) const;
 		QString Path () const;
+		QStringList Include () const;
+		QStringList Exclude () const;
 		bool IsEnabled () const;
 		void SetEnabled (bool value);
+		void Install (QNetworkAccessManager *networkManager);
 		void Delete ();
 	private:
 		void ParseMetadata ();
 		void BuildPatternsList (QList<QRegExp>& list, bool include = true) const;
+		void DownloadResource (const QString& resource, QNetworkAccessManager *networkManager);
+		void DownloadRequired (const QString& required, QNetworkAccessManager *networkManager);
+	private slots:
+		void handleRequiredDownloadFinished ();
     };
 }
 }

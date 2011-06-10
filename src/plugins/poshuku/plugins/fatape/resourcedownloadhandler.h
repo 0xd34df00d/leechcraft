@@ -16,47 +16,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_JOINGROUPCHATWIDGET_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_JOINGROUPCHATWIDGET_H
-#include <QDialog>
-#include <interfaces/imucjoinwidget.h>
-#include "ui_joingroupchatwidget.h"
+#ifndef PLUGINS_POSHUKU_PLUGINS_FATAPE_RESOURCEDOWNLOADHANDLER_H
+#define PLUGINS_POSHUKU_PLUGINS_FATAPE_RESOURCEDOWNLOADHANDLER_H
+#include <QNetworkReply>
+#include "userscript.h"
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace Poshuku
 {
-namespace Xoox
+namespace FatApe
 {
-	class GlooxAccount;
-
-	class JoinGroupchatWidget : public QWidget
-							  , public IMUCJoinWidget
+	class ResourceDownloadHandler : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMUCJoinWidget);
-
-		Ui::JoinGroupchatWidget Ui_;
-		GlooxAccount *SelectedAccount_;
+		
+		QString ResourceName_;
+		UserScript *Script_;
+		QNetworkReply *Reply_;
 	public:
-		JoinGroupchatWidget (QWidget* = 0);
-
-		QString GetServer () const;
-		QString GetRoom () const;
-		QString GetNickname () const;
-
-		void AccountSelected (QObject *account);
-		void Join (QObject *account);
-		void Cancel ();
-
-		QVariantMap GetIdentifyingData () const;
-		QVariantList GetBookmarkedMUCs () const;
-		void SetBookmarkedMUCs (QObject*, const QVariantList&);
-		void SetIdentifyingData (const QVariantMap& data);
-	private slots:
-		void checkValidity ();
-	signals:
-		void validityChanged (bool);
+		ResourceDownloadHandler (const QString& resourceName, 
+				UserScript *script, QNetworkReply *reply);
+	public slots:
+		void handleFinished ();
 	};
 }
 }

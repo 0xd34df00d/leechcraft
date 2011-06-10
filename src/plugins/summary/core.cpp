@@ -310,10 +310,6 @@ namespace LeechCraft
 						this,
 						SLOT (handleChangeTabName (const QString&)));
 				connect (result,
-						SIGNAL (newTabRequested ()),
-						this,
-						SLOT (handleNewTabRequested ()));
-				connect (result,
 						SIGNAL (needToClose ()),
 						this,
 						SLOT (handleNeedToClose ()));

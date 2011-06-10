@@ -22,6 +22,7 @@
 #include "glooxaccount.h"
 #include "clientconnection.h"
 #include "capsmanager.h"
+#include "annotationsmanager.h"
 
 namespace LeechCraft
 {
@@ -31,8 +32,14 @@ namespace Xoox
 {
 	VCardDialog::VCardDialog (QWidget *parent)
 	: QDialog (parent)
+	, Account_ (0)
 	{
 		Ui_.setupUi (this);
+		connect (this,
+				SIGNAL (accepted ()),
+				this,
+				SLOT (setNote ()));
+
 		Ui_.EditBirthday_->setVisible (false);
 	}
 	
@@ -40,6 +47,14 @@ namespace Xoox
 	: QDialog (parent)
 	{
 		Ui_.setupUi (this);
+		connect (this,
+				SIGNAL (accepted ()),
+				this,
+				SLOT (setNote ()));
+
+		UpdateNote (qobject_cast<GlooxAccount*> (entry->GetParentAccount ()),
+				entry->GetJID ());
+
 		Ui_.EditBirthday_->setVisible (false);
 		
 		GlooxAccount *acc = qobject_cast<GlooxAccount*> (entry->GetParentAccount ());
@@ -96,6 +111,30 @@ namespace Xoox
 		Ui_.OrgUnit_->setText (vcard.orgUnit ());
 		Ui_.Title_->setText (vcard.title ());
 		Ui_.Role_->setText (vcard.role ());
+	}
+	
+	void VCardDialog::setNote ()
+	{
+		if (!Account_)
+			return;
+		
+		Note_.setJid (JID_);
+		Note_.setNote (Ui_.NotesEdit_->toPlainText ());
+		Note_.setMdate (QDateTime::currentDateTime ());
+		Account_->GetClientConnection ()->
+				GetAnnotationsManager ()->SetNote (JID_, Note_);
+	}
+	
+	void VCardDialog::UpdateNote (GlooxAccount *acc, const QString& jid)
+	{
+		if (!acc)
+			return;
+
+		Account_ = acc;
+		JID_ = jid;
+		Note_ = acc->GetClientConnection ()->
+				GetAnnotationsManager ()->GetNote (jid);
+		Ui_.NotesEdit_->setPlainText (Note_.note ());
 	}
 }
 }

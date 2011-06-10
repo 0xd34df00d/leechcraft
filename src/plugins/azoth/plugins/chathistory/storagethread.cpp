@@ -55,6 +55,11 @@ namespace ChatHistory
 				Core::Instance ().get (),
 				SIGNAL (gotChatLogs (const QString&, const QString&, int, int, const QVariant&)),
 				Qt::QueuedConnection);
+		connect (Storage_.get (),
+				SIGNAL (gotSearchPosition (const QString&, const QString&, int)),
+				Core::Instance ().get (),
+				SIGNAL (gotSearchPosition (const QString&, const QString&, int)),
+				Qt::QueuedConnection);
 
 		QThread::run ();
 		Storage_.reset ();

@@ -16,11 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_JOINGROUPCHATWIDGET_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_JOINGROUPCHATWIDGET_H
-#include <QDialog>
-#include <interfaces/imucjoinwidget.h>
-#include "ui_joingroupchatwidget.h"
+#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_ANNOTATIONSMANAGER_H
+#define PLUGINS_AZOTH_PLUGINS_XOOX_ANNOTATIONSMANAGER_H
+#include <QObject>
+#include <QHash>
+#include <QXmppAnnotationsIq.h>
+
+class QXmppAnnotationsManager;
 
 namespace LeechCraft
 {
@@ -28,35 +30,25 @@ namespace Azoth
 {
 namespace Xoox
 {
-	class GlooxAccount;
+	class ClientConnection;
 
-	class JoinGroupchatWidget : public QWidget
-							  , public IMUCJoinWidget
+	class AnnotationsManager : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMUCJoinWidget);
-
-		Ui::JoinGroupchatWidget Ui_;
-		GlooxAccount *SelectedAccount_;
+		
+		ClientConnection *ClientConn_;
+		QXmppAnnotationsManager *XMPPAnnManager_;
+		
+		QHash<QString, QXmppAnnotationsIq::NoteItem> JID2Note_;
 	public:
-		JoinGroupchatWidget (QWidget* = 0);
-
-		QString GetServer () const;
-		QString GetRoom () const;
-		QString GetNickname () const;
-
-		void AccountSelected (QObject *account);
-		void Join (QObject *account);
-		void Cancel ();
-
-		QVariantMap GetIdentifyingData () const;
-		QVariantList GetBookmarkedMUCs () const;
-		void SetBookmarkedMUCs (QObject*, const QVariantList&);
-		void SetIdentifyingData (const QVariantMap& data);
+		AnnotationsManager (ClientConnection*);
+		
+		QXmppAnnotationsIq::NoteItem GetNote (const QString&) const;
+		void SetNote (const QString&, const QXmppAnnotationsIq::NoteItem&);
+	public slots:
+		void refetchNotes ();
 	private slots:
-		void checkValidity ();
-	signals:
-		void validityChanged (bool);
+		void handleNotesReceived (const QList<QXmppAnnotationsIq::NoteItem>&);
 	};
 }
 }

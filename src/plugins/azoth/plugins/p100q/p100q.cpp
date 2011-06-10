@@ -161,6 +161,15 @@ namespace p100q
 			return;
 
 		ICLEntry *other = qobject_cast<ICLEntry*> (msg->OtherPart ());
+		if (!other)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "NULL other part for message"
+					<< msgObj
+					<< msg->GetBody ();
+			return;
+		}
+
 		if (!other->GetEntryID ().contains ("psto@psto.net"))
 			return;
 

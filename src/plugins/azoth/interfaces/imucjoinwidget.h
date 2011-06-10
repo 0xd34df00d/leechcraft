@@ -126,6 +126,18 @@ namespace Azoth
 		 * @sa GetIdentifyingData()
 		 */
 		virtual void SetIdentifyingData (const QVariantMap& data) = 0;
+		
+		/** @brief Notifies about validity of the input.
+		 * 
+		 * This signal should be emitted whenever the validity of the
+		 * input data is changed.
+		 * 
+		 * @note This function is expected to be a signal.
+		 * 
+		 * @param[out] isValid Whether the data given by the user is
+		 * valid.
+		 */
+		virtual void validityChanged (bool isValid) = 0;
 	};
 }
 }

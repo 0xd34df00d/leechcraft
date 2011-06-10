@@ -16,45 +16,42 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_FATAPE_FATAPE_H
-#define PLUGINS_POSHUKU_PLUGINS_FATAPE_FATAPE_H
-#include "userscript.h"
+#ifndef PLUGINS_POSHUKU_PLUGINS_PINTAB_PINTAB_H
+#define PLUGINS_POSHUKU_PLUGINS_PINTAB_PINTAB_H
 #include <QObject>
+#include <QAction>
 #include <QList>
-#include <QStandardItemModel>
-#include <QNetworkRequest>
-#include <QWebPage>
+#include <QMap>
+#include <QString>
+#include <QStringList>
+#include <QWebView>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
-#include <interfaces/iproxyobject.h>
-#include <interfaces/ihavesettings.h>
 
-class QTranslator;
+Q_DECLARE_METATYPE(QList<QObject*>)
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
-namespace FatApe
+namespace PinTab
 {
+	//TODO: 
+	//- hide close button on pinned tabs
+	//- move pinned tabs to left
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
-				 , public IHaveSettings
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
+		Q_INTERFACES (IInfo IPlugin2)
 
-		boost::shared_ptr<QTranslator> Translator_;
-		QList<UserScript> UserScripts_;
-		IProxyObject *Proxy_;
 		ICoreProxy_ptr CoreProxy_;
-		Util::XmlSettingsDialog_ptr SettingsDialog_;
-		boost::shared_ptr<QStandardItemModel> Model_; 
+		QMap<const QObject*, QAction*> ActionsMap_;
+		QMap<QObject*, QString> Pinned_;
+		QStringList PinnedUrls_;
 	public:
 		void Init (ICoreProxy_ptr);
-
-		void AddScriptToManager (const UserScript& script);
 		void SecondInit ();
 		void Release ();
 		QByteArray GetUniqueID () const;
@@ -62,20 +59,29 @@ namespace FatApe
 		QString GetInfo () const;
 		QIcon GetIcon () const;
 		QSet<QByteArray> GetPluginClasses () const;
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-		void EditScript (int scriptIndex);
-		void DeleteScript (int scriptIndex);
-		void SetScriptEnabled(int scriptIndex, bool value);
+	private:
+		void ChangeTabTitle (QObject *widget, const QString& title);
+		void SetPinned (QObject *widget, QAction *action, bool pinned);
+		QWebView* GetWebView (QObject *browserWidget);
+		void SavePinned ();
+	private slots:
+		void handlePinTabTriggered ();
+		void handlePinnedTitleChanged (const QString& title);
 	public slots:
-		void hookInitialLayoutCompleted (LeechCraft::IHookProxy_ptr proxy,
-				QWebPage *page,
-				QWebFrame *frame);
-		void hookAcceptNavigationRequest (LeechCraft::IHookProxy_ptr proxy,
-				QWebPage *page,
-				QWebFrame *frame,
-				QNetworkRequest request,
-				QWebPage::NavigationType type);
-		void initPlugin (QObject *proxy);
+		void hookMoreMenuFillEnd (LeechCraft::IHookProxy_ptr proxy,
+			QMenu *menu,
+			QWebView *webView,
+			QObject *browserWidget);
+		void hookTabBarContextMenuActions (LeechCraft::IHookProxy_ptr proxy,
+			const QObject *browserWidget) const;
+		void hookTabRemoveRequested (LeechCraft::IHookProxy_ptr proxy,
+			QObject *browserWidget);
+		void hookTabAdded (LeechCraft::IHookProxy_ptr,
+			QObject *browserWidget,
+			QWebView *view,
+			const QUrl& url);
+
+
 	};
 }
 }

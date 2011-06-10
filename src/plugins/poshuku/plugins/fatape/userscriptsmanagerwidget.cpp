@@ -27,7 +27,6 @@ namespace Poshuku
 {
 namespace FatApe
 {
-
 	UserScriptsManagerWidget::UserScriptsManagerWidget (QStandardItemModel *model, Plugin *plugin)
 	: Model_ (model)
 	, Plugin_ (plugin)

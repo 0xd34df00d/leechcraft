@@ -30,7 +30,7 @@ namespace NativeEmoticons
 	KopeteEmoticonsSource::KopeteEmoticonsSource (QObject *parent)
 	: QObject (parent)
 	, EmoLoader_ (new Util::ResourceLoader
-			("azoth/emoticons/custome/kopete", this))
+			("azoth/emoticons/custom/kopete", this))
 	{
 		EmoLoader_->AddGlobalPrefix ();
 		EmoLoader_->AddLocalPrefix ();

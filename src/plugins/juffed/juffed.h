@@ -50,6 +50,7 @@ namespace JuffEd
 		void removeTab (QWidget *tabContents);
 		void changeTabName (QWidget *tabContents, const QString& name);
 		void changeTabIcon (QWidget *tabContents, const QIcon& icon);
+		void changeTooltip (QWidget*, QWidget*);
 		void statusBarChanged (QWidget *tabContents, const QString& text);
 		void raiseTab (QWidget *tabContents);
 	};

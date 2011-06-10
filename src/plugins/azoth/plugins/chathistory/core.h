@@ -72,6 +72,8 @@ namespace ChatHistory
 		void GetUsersForAccount (const QString&);
 		void GetChatLogs (const QString& accountId, const QString& entryId,
 				int backpages, int amount);
+		void Search (const QString& accountId, const QString& entryId,
+				const QString& text, int shift);
 		void ClearHistory (const QString& accountId, const QString& entryId);
 	private:
 		void LoadDisabled ();
@@ -82,6 +84,7 @@ namespace ChatHistory
 		/** The variant is a list of QVariantMaps.
 		 */
 		void gotChatLogs (const QString&, const QString&, int, int, const QVariant&);
+		void gotSearchPosition (const QString&, const QString&, int);
 	};
 }
 }

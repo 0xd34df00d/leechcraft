@@ -92,18 +92,25 @@ namespace LeechCraft
 			QStringList prefixes = QStringList ("/usr/local/share/leechcraft/")
 					<< "/usr/share/leechcraft/";
 #endif
+			bool hasBeenAdded = false;
 			Q_FOREACH (const QString& prefix, prefixes)
 			{
 				GlobalPrefixesChain_ << prefix;
 				ScanPath (prefix + RelativePath_);
 
-				if (!QFile::exists (prefix + RelativePath_))
-					qWarning () << Q_FUNC_INFO
-							<< prefix + RelativePath_
-							<< "doesn't exist, not adding it";
-				else
+				if (QFile::exists (prefix + RelativePath_))
+				{
 					Watcher_->addPath (prefix + RelativePath_);
+					hasBeenAdded = true;
+				}
 			}
+
+			if (!hasBeenAdded)
+				qWarning () << Q_FUNC_INFO
+						<< "no prefixes have been added:"
+						<< prefixes
+						<< "; rel path:"
+						<< RelativePath_;
 		}
 
 		QString ResourceLoader::GetPath (const QStringList& pathVariants) const
