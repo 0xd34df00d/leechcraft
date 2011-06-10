@@ -28,6 +28,7 @@ namespace Azoth
 {
 namespace p100q
 {
+	const int PstoCommentPos = 6;
 	void Plugin::Init (ICoreProxy_ptr)
 	{
 		PstoCommentRX_ =  QRegExp ("#[a-z]+/[0-9]+[:]", Qt::CaseInsensitive);
@@ -108,11 +109,10 @@ namespace p100q
 				QStringList tagslist = TagRX_.cap (1).split (", ");
 				
 				Q_FOREACH (const QString& tagval, tagslist)
-				{
 					tags += QString (" <a href=\"azoth://msgeditreplace/S *%1\">%2</a> ")
 							.arg (QString (QUrl::toPercentEncoding (tagval)))
 							.arg (tagval);
-				}
+
 				delta = body.length ();
 				body.replace (tag, tags);
 				pos += body.length () - delta;
