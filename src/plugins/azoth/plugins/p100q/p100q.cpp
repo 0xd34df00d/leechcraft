@@ -96,23 +96,22 @@ namespace p100q
 
 	QString Plugin::FormatBody (QString body)
 	{	
-		if (body.indexOf (PstoCommentRX_, 0) != 6)
+		if (body.indexOf (PstoCommentRX_, 0) != PstoCommentPos)
 		{
 			QString tags, tag;
 			int pos = 0;
 			int delta = 0;
-			QStringList::iterator itr;
 			while ((pos = TagRX_.indexIn (body, pos)) != -1)
 			{
 				tags = "* ";
 				tag = TagRX_.cap (0);
 				QStringList tagslist = TagRX_.cap (1).split (", ");
-			
-				for (itr = tagslist.begin (); itr != tagslist.end (); ++itr) 
+				
+				Q_FOREACH (const QString& tagval, tagslist)
 				{
 					tags += QString (" <a href=\"azoth://msgeditreplace/S *%1\">%2</a> ")
-							.arg (QString (QUrl::toPercentEncoding (*itr)))
-							.arg (*itr);
+							.arg (QString (QUrl::toPercentEncoding (tagval)))
+							.arg (tagval);
 				}
 				delta = body.length ();
 				body.replace (tag, tags);

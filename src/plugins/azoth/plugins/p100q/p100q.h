@@ -32,6 +32,7 @@ namespace Azoth
 {
 namespace p100q
 {
+	static const int PstoCommentPos = 6;
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
