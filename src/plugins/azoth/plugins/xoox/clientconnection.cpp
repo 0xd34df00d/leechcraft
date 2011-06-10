@@ -50,6 +50,7 @@
 #include "unauthclentry.h"
 #include "vcarddialog.h"
 #include "capsmanager.h"
+#include "annotationsmanager.h"
 
 namespace LeechCraft
 {
@@ -70,6 +71,7 @@ namespace Xoox
 	, ArchiveManager_ (new QXmppArchiveManager)
 	, PubSubManager_ (new QXmppPubSubManager)
 	, DeliveryReceiptsManager_ (new QXmppDeliveryReceiptsManager)
+	, AnnotationsManager_ (0)
 	, OurJID_ (jid)
 	, Account_ (account)
 	, ProxyObject_ (0)
@@ -104,6 +106,8 @@ namespace Xoox
 		Client_->addExtension (EntityTimeManager_);
 		Client_->addExtension (ArchiveManager_);
 		Client_->addExtension (PubSubManager_);
+		
+		AnnotationsManager_ = new AnnotationsManager (this);
 
 		DiscoveryManager_ = Client_->findExtension<QXmppDiscoveryManager> ();
 		DiscoveryManager_->setClientCapabilitiesNode ("http://leechcraft.org/azoth");
@@ -319,6 +323,11 @@ namespace Xoox
 	CapsManager* ClientConnection::GetCapsManager () const
 	{
 		return CapsManager_;
+	}
+	
+	AnnotationsManager* ClientConnection::GetAnnotationsManager () const
+	{
+		return AnnotationsManager_;
 	}
 
 	void ClientConnection::RequestInfo (const QString& jid) const
@@ -544,6 +553,8 @@ namespace Xoox
 				this,
 				SLOT (handleBookmarksReceived (const QXmppBookmarkSet&)),
 				Qt::UniqueConnection);
+		
+		AnnotationsManager_->refetchNotes ();
 		
 		Q_FOREACH (RoomHandler *rh, RoomHandlers_)
 			rh->Join ();
