@@ -19,6 +19,7 @@
 #ifndef VCARDDIALOG_H
 #define VCARDDIALOG_H
 #include <QDialog>
+#include <QXmppAnnotationsIq.h>
 #include "ui_vcarddialog.h"
 
 class QXmppVCardIq;
@@ -30,17 +31,25 @@ namespace Azoth
 namespace Xoox
 {
 	class EntryBase;
+	class GlooxAccount;
 
 	class VCardDialog : public QDialog
 	{
 		Q_OBJECT
 
 		Ui::VCardDialog Ui_;
+		GlooxAccount *Account_;
+		QString JID_;
+		QXmppAnnotationsIq::NoteItem Note_;
 	public:
 		VCardDialog (QWidget* = 0);
 		VCardDialog (EntryBase*, QWidget* = 0);
 
 		void UpdateInfo (const QXmppVCardIq&);
+	private slots:
+		void setNote ();
+	private:
+		void UpdateNote (GlooxAccount*, const QString&);
 	};
 }
 }
