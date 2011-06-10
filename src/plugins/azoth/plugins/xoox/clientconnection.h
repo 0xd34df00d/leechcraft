@@ -58,6 +58,7 @@ namespace Xoox
 	class RoomCLEntry;
 	class RoomHandler;
 	class CapsManager;
+	class AnnotationsManager;
 
 	class ClientConnection : public QObject
 	{
@@ -72,6 +73,8 @@ namespace Xoox
 		QXmppArchiveManager *ArchiveManager_;
 		QXmppPubSubManager *PubSubManager_;
 		QXmppDeliveryReceiptsManager *DeliveryReceiptsManager_;
+		
+		AnnotationsManager *AnnotationsManager_;
 
 		QString OurJID_;
 
@@ -139,6 +142,7 @@ namespace Xoox
 		QXmppDiscoveryManager* GetDiscoveryManager () const;
 		QXmppTransferManager* GetTransferManager () const;
 		CapsManager* GetCapsManager () const;
+		AnnotationsManager* GetAnnotationsManager () const;
 
 		void RequestInfo (const QString&) const;
 		

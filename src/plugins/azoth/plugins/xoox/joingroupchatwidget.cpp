@@ -33,6 +33,18 @@ namespace Xoox
 	, SelectedAccount_ (0)
 	{
 		Ui_.setupUi (this);
+		connect (Ui_.Nickname_,
+				SIGNAL (textChanged (const QString&)),
+				this,
+				SLOT (checkValidity ()));
+		connect (Ui_.Server_,
+				SIGNAL (textChanged (const QString&)),
+				this,
+				SLOT (checkValidity ()));
+		connect (Ui_.Room_,
+				SIGNAL (textChanged (const QString&)),
+				this,
+				SLOT (checkValidity ()));
 	}
 
 	QString JoinGroupchatWidget::GetNickname () const
@@ -177,6 +189,16 @@ namespace Xoox
 			Ui_.Room_->setText (room);
 		if (!server.isEmpty ())
 			Ui_.Server_->setText (server);
+		
+		checkValidity ();
+	}
+	
+	void JoinGroupchatWidget::checkValidity ()
+	{
+		bool notOk = Ui_.Nickname_->text ().isEmpty () ||
+				Ui_.Room_->text ().isEmpty () ||
+				Ui_.Server_->text ().isEmpty ();
+		emit validityChanged (!notOk);
 	}
 }
 }

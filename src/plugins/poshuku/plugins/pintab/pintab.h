@@ -28,6 +28,8 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 
+Q_DECLARE_METATYPE(QList<QObject*>)
+
 namespace LeechCraft
 {
 namespace Poshuku
@@ -81,7 +83,6 @@ namespace PinTab
 
 
 	};
-	Q_DECLARE_METATYPE(QList<QObject*>)
 }
 }
 }

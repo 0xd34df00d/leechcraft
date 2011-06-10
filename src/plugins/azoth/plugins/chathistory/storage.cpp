@@ -50,32 +50,54 @@ namespace ChatHistory
 
 		UserSelector_ = QSqlQuery (*DB_);
 		UserSelector_.prepare ("SELECT Id, EntryID FROM azoth_users");
+
 		AccountSelector_ = QSqlQuery (*DB_);
 		AccountSelector_.prepare ("SELECT Id, AccountID FROM azoth_accounts");
+
 		UserIDSelector_ = QSqlQuery (*DB_);
 		UserIDSelector_.prepare ("SELECT Id FROM azoth_users WHERE EntryID = :entry_id");
+
 		AccountIDSelector_ = QSqlQuery (*DB_);
 		AccountIDSelector_.prepare ("SELECT Id FROM azoth_accounts WHERE AccountID = :account_id");
+
 		UserInserter_ = QSqlQuery (*DB_);
 		UserInserter_.prepare ("INSERT INTO azoth_users (EntryID) VALUES (:entry_id);");
+
 		AccountInserter_ = QSqlQuery (*DB_);
 		AccountInserter_.prepare ("INSERT INTO azoth_accounts (AccountID) VALUES (:account_id);");
+
 		MessageDumper_ = QSqlQuery (*DB_);
 		MessageDumper_.prepare ("INSERT INTO azoth_history (Id, AccountID, Date, Direction, Message, Variant, Type) "
 				"VALUES (:id, :account_id, :date, :direction, :message, :variant, :type);");
+
 		UsersForAccountGetter_ = QSqlQuery (*DB_);
 		UsersForAccountGetter_.prepare ("SELECT DISTINCT azoth_history.Id, EntryID FROM azoth_users, azoth_history "
 				"WHERE azoth_history.Id = azoth_users.Id AND AccountID = :account_id;");
+
+		LogsSearcher_ = QSqlQuery (*DB_);
+		LogsSearcher_.prepare ("SELECT COUNT(1) FROM azoth_history "
+				"WHERE Id = :entry_id "
+				"AND AccountID = :account_id "
+				"AND Date >= (SELECT Date FROM azoth_history "
+				"	WHERE Id = :inner_entry_id "
+				"	AND AccountID = :inner_account_id "
+				"	AND Message LIKE :text "
+				"	ORDER BY Date DESC "
+				"	LIMIT 1 OFFSET :offset);");
+
 		HistoryGetter_ = QSqlQuery (*DB_);
 		HistoryGetter_.prepare ("SELECT Date, Direction, Message, Variant, Type "
 				"FROM azoth_history "
 				"WHERE Id = :entry_id "
 				"AND AccountID = :account_id "
 				"ORDER BY Date DESC LIMIT :limit OFFSET :offset;");
+
 		HistoryClearer_ = QSqlQuery (*DB_);
 		HistoryClearer_.prepare ("DELETE FROM azoth_history WHERE Id = :entry_id AND AccountID = :account_id;");
+
 		EntryCacheGetter_ = QSqlQuery (*DB_);
 		EntryCacheGetter_.prepare ("SELECT VisibleName FROM azoth_entrycache WHERE Id = :id;");
+
 		EntryCacheSetter_ = QSqlQuery (*DB_);
 		EntryCacheSetter_.prepare ("INSERT INTO azoth_entrycache (Id, VisibleName) "
 				"VALUES (:id, :visible_name);");
@@ -449,6 +471,52 @@ namespace ChatHistory
 		}
 		
 		emit gotChatLogs (accountId, entryId, backpages, amount, result);
+	}
+	
+	void Storage::search (const QString& accountId,
+			const QString& entryId, const QString& text, int shift)
+	{
+		if (!Accounts_.contains (accountId))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "Accounts_ doesn't contain"
+					<< accountId
+					<< "; raw contents"
+					<< Accounts_;
+			return;
+		}
+		if (!Users_.contains (entryId))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "Users_ doesn't contain"
+					<< entryId
+					<< "; raw contents"
+					<< Users_;
+			return;
+		}
+
+		LogsSearcher_.bindValue (":entry_id", Users_ [entryId]);
+		LogsSearcher_.bindValue (":account_id", Accounts_ [accountId]);
+		LogsSearcher_.bindValue (":inner_entry_id", Users_ [entryId]);
+		LogsSearcher_.bindValue (":inner_account_id", Accounts_ [accountId]);
+		LogsSearcher_.bindValue (":text", '%' + text + '%');
+		LogsSearcher_.bindValue (":offset", shift);
+		if (!LogsSearcher_.exec ())
+		{
+			Util::DBLock::DumpError (LogsSearcher_);
+			return;
+		}
+
+		if (!LogsSearcher_.next ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to move to the next entry";
+			return;
+		}
+		
+		const int index = LogsSearcher_.value (0).toInt ();
+		
+		emit gotSearchPosition (accountId, entryId, index);
 	}
 	
 	void Storage::clearHistory (const QString& accountId, const QString& entryId)
