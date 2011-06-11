@@ -988,6 +988,9 @@ namespace Xoox
 	
 	void ClientConnection::ScheduleFetchVCard (const QString& jid)
 	{
+		if (VCardFetchQueue_.contains (jid))
+			return;
+
 		if (!JID2CLEntry_.contains (jid) ||
 				JID2CLEntry_ [jid]->GetStatus (QString ()).State_ == SOffline)
 			VCardFetchQueue_ << jid;
