@@ -492,7 +492,7 @@ namespace Xoox
 
 	void ClientConnection::FetchVCard (const QString& jid)
 	{
-		Client_->vCardManager ().requestVCard (jid);
+		ScheduleFetchVCard (jid);
 	}
 	
 	void ClientConnection::FetchVCard (const QString& jid, VCardDialog *dia)
@@ -980,7 +980,7 @@ namespace Xoox
 	{
 		int num = std::min (3, VCardFetchQueue_.size ());
 		while (num--)
-			FetchVCard (VCardFetchQueue_.takeFirst ());
+			Client_->vCardManager ().requestVCard (VCardFetchQueue_.takeFirst ());
 		
 		if (VCardFetchQueue_.isEmpty ())
 			VCardFetchTimer_->stop ();
