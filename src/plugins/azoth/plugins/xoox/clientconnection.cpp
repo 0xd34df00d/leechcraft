@@ -998,7 +998,10 @@ namespace Xoox
 			VCardFetchQueue_.prepend (jid);
 
 		if (!VCardFetchTimer_->isActive ())
+		{
+			Client_->vCardManager ().requestVCard (VCardFetchQueue_.takeFirst ());
 			VCardFetchTimer_->start (5000);
+		}
 	}
 
 	GlooxCLEntry* ClientConnection::CreateCLEntry (const QString& jid)
