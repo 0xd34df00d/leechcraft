@@ -30,10 +30,8 @@ namespace Poshuku
 {
 namespace FatApe
 {
-	class UserScript : QObject
+	class UserScript
 	{
-		Q_OBJECT
-
 		QString ScriptPath_;
 		QRegExp MetadataRX_;
 		QMultiMap<QString, QString> Metadata_;
@@ -61,8 +59,6 @@ namespace FatApe
 		void BuildPatternsList (QList<QRegExp>& list, bool include = true) const;
 		void DownloadResource (const QString& resource, QNetworkAccessManager *networkManager);
 		void DownloadRequired (const QString& required, QNetworkAccessManager *networkManager);
-	private slots:
-		void handleRequiredDownloadFinished ();
     };
 }
 }
