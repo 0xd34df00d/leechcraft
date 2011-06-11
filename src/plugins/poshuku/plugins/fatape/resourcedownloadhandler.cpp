@@ -56,6 +56,7 @@ namespace FatApe
 				<< Reply_->url ().toString ();
 			return;
 		}
+		resource.write (Reply_->readAll ());
 
 		settings.setValue (QString ("resources/%1/%2/%3")
 				.arg (qHash (Script_->Namespace ()))

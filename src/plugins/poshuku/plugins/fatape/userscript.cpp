@@ -294,53 +294,8 @@ namespace FatApe
 	void UserScript::DownloadRequired (const QString& required, 
 			QNetworkAccessManager *networkManager)
 	{
-		QNetworkRequest requiredRequest;
-
-		requiredRequest.setUrl (required);
-		QNetworkReply *reply = networkManager->get (requiredRequest);
-		QObject::connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleRequiredDownloadFinished ()));
+		//TODO
 	}
-
-	void UserScript::handleRequiredDownloadFinished ()
-	{
-		QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender ());
-
-		if (!reply)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "unable to cast"
-				<< sender ()
-				<< "to QNetworkReply";
-			return;
-		}
-
-		QFile script (ScriptPath_);
-
-		if (!script.open (QFile::ReadWrite))
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "unable to save required script"
-				<< "from"
-				<< reply->url ().toString ();
-			return;
-		}
-		
-		QTextStream content (&script);
-		QString scriptContent = content.readAll ();
-
-		scriptContent.insert (MetadataEndOffset_, reply->readAll ());
-		
-		RequiredLock_.lockForWrite ();
-		script.write (QString ("//require %1\n").arg (reply->url ().toString ()).toAscii ());
-		script.write (reply->readAll ());
-		script.close ();
-		RequiredLock_.unlock ();
-		reply->deleteLater ();
-	}
-
 }
 }
 }
