@@ -481,10 +481,10 @@ namespace LeechCraft
 						QMessageBox::Cancel,
 						Core::Instance ()->GetProxy ()->GetMainWindow ());
 				QPushButton *deleteTorrentsButton =
-						confirm.addButton (tr ("Delete &torrent(s)", 0, rows.size ()),
+						confirm.addButton (tr ("&Delete"),
 								QMessageBox::ActionRole);
 				QPushButton *deleteTorrentsAndFilesButton =
-						confirm.addButton (tr ("Delete torrent(s) and their &files", 0, rows.size ()),
+						confirm.addButton (tr ("Delete with &files"),
 								QMessageBox::ActionRole);
 				confirm.setDefaultButton (QMessageBox::Cancel);
 

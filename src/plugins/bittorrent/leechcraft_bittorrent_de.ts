@@ -1025,22 +1025,16 @@ IPv6 input mask</extracomment>
             <numerusform>Wollen Sie wirklich %n Torrents löschen?</numerusform>
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <location filename="torrentplugin.cpp" line="484"/>
-        <source>Delete &amp;torrent(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <source>&amp;Delete</source>
+        <translation type="unfinished"></translation>
     </message>
-    <message numerus="yes">
+    <message>
         <location filename="torrentplugin.cpp" line="487"/>
-        <source>Delete torrent(s) and their &amp;files</source>
-        <oldsource>Delete torrent(s) and &amp;files</oldsource>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <source>Delete with &amp;files</source>
+        <oldsource>Delete torrent(s) and their &amp;files</oldsource>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="torrentplugin.cpp" line="805"/>

@@ -1020,6 +1020,11 @@ IPv6 input mask</extracomment>
         <translation>Полнофункциональный BitTorrent-клиент.</translation>
     </message>
     <message>
+        <location filename="torrentplugin.cpp" line="484"/>
+        <source>&amp;Delete</source>
+        <translation>&amp;Удалить</translation>
+    </message>
+    <message>
         <location filename="torrentplugin.cpp" line="805"/>
         <source>Failed to move torrent&apos;s files from %1 to %2</source>
         <translation>Ошибка при перемещении файлов торрента из %1 в %2</translation>
@@ -1054,24 +1059,11 @@ IPv6 input mask</extracomment>
             <numerusform>Вы действительно хотите удалить %n торрентов?</numerusform>
         </translation>
     </message>
-    <message numerus="yes">
-        <location filename="torrentplugin.cpp" line="484"/>
-        <source>Delete &amp;torrent(s)</source>
-        <translation>
-            <numerusform>Удалить %n &amp;торрент</numerusform>
-            <numerusform>Удалить %n &amp;торрента</numerusform>
-            <numerusform>Удалить %n &amp;торрентов</numerusform>
-        </translation>
-    </message>
-    <message numerus="yes">
+    <message>
         <location filename="torrentplugin.cpp" line="487"/>
-        <source>Delete torrent(s) and their &amp;files</source>
-        <oldsource>Delete torrent(s) and &amp;files</oldsource>
-        <translation>
-            <numerusform>Удалить %n торрент и его &amp;файлы</numerusform>
-            <numerusform>Удалить %n торрента и их &amp;файлы</numerusform>
-            <numerusform>Удалить %n торрент и их &amp;файлы</numerusform>
-        </translation>
+        <source>Delete with &amp;files</source>
+        <oldsource>Delete torrent(s) and their &amp;files</oldsource>
+        <translation>Удалить с &amp;файлами</translation>
     </message>
     <message>
         <location filename="torrentplugin.cpp" line="820"/>
