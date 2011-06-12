@@ -1036,6 +1036,11 @@ IPv6 input mask</extracomment>
         </translation>
     </message>
     <message>
+        <location filename="torrentplugin.cpp" line="484"/>
+        <source>&amp;Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="torrentplugin.cpp" line="974"/>
         <source>Open torrent...</source>
         <translation>Відкрити торрент...</translation>
@@ -1055,24 +1060,11 @@ IPv6 input mask</extracomment>
         <source>Create torrent...</source>
         <translation>Створити торрент...</translation>
     </message>
-    <message numerus="yes">
-        <location filename="torrentplugin.cpp" line="484"/>
-        <source>Delete &amp;torrent(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
-    <message numerus="yes">
+    <message>
         <location filename="torrentplugin.cpp" line="487"/>
-        <source>Delete torrent(s) and their &amp;files</source>
-        <oldsource>Delete torrent(s) and &amp;files</oldsource>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <source>Delete with &amp;files</source>
+        <oldsource>Delete torrent(s) and their &amp;files</oldsource>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="torrentplugin.cpp" line="820"/>

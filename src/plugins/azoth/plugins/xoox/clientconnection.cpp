@@ -492,7 +492,7 @@ namespace Xoox
 
 	void ClientConnection::FetchVCard (const QString& jid)
 	{
-		Client_->vCardManager ().requestVCard (jid);
+		ScheduleFetchVCard (jid);
 	}
 	
 	void ClientConnection::FetchVCard (const QString& jid, VCardDialog *dia)
@@ -980,7 +980,7 @@ namespace Xoox
 	{
 		int num = std::min (3, VCardFetchQueue_.size ());
 		while (num--)
-			FetchVCard (VCardFetchQueue_.takeFirst ());
+			Client_->vCardManager ().requestVCard (VCardFetchQueue_.takeFirst ());
 		
 		if (VCardFetchQueue_.isEmpty ())
 			VCardFetchTimer_->stop ();
@@ -988,6 +988,9 @@ namespace Xoox
 	
 	void ClientConnection::ScheduleFetchVCard (const QString& jid)
 	{
+		if (VCardFetchQueue_.contains (jid))
+			return;
+
 		if (!JID2CLEntry_.contains (jid) ||
 				JID2CLEntry_ [jid]->GetStatus (QString ()).State_ == SOffline)
 			VCardFetchQueue_ << jid;
@@ -995,7 +998,10 @@ namespace Xoox
 			VCardFetchQueue_.prepend (jid);
 
 		if (!VCardFetchTimer_->isActive ())
+		{
+			Client_->vCardManager ().requestVCard (VCardFetchQueue_.takeFirst ());
 			VCardFetchTimer_->start (5000);
+		}
 	}
 
 	GlooxCLEntry* ClientConnection::CreateCLEntry (const QString& jid)
