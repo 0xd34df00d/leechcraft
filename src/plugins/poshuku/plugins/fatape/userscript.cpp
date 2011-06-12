@@ -70,7 +70,6 @@ namespace FatApe
 	{
 		ScriptPath_ = script.ScriptPath_;
 		Metadata_ = script.Metadata_;
-		MetadataEndOffset_ = script.MetadataEndOffset_;
 		Enabled_ = script.Enabled_;		
 	}
 
@@ -103,7 +102,6 @@ namespace FatApe
 
 			Metadata_.insert (key, value);
 		}
-		MetadataEndOffset_ = content.pos ();
 	}
 
 	void UserScript::BuildPatternsList (QList<QRegExp>& list, bool include) const

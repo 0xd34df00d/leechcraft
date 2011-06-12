@@ -36,8 +36,6 @@ namespace FatApe
 		QRegExp MetadataRX_;
 		QMultiMap<QString, QString> Metadata_;
 		bool Enabled_;
-		QReadWriteLock RequiredLock_;
-		qint64 MetadataEndOffset_;
 	public:
 		UserScript (const QString& scriptPath);
 		UserScript (const UserScript& script);
