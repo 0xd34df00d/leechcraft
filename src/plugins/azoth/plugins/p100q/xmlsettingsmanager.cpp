@@ -45,7 +45,7 @@ namespace p100q
 	QSettings* XmlSettingsManager::BeginSettings () const
 	{
 		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
-		QCoreApplication::applicationName () + "_Azoth_p100q");
+				QCoreApplication::applicationName () + "_Azoth_p100q");
 		return settings;
 	}
 

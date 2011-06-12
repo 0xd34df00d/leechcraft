@@ -130,7 +130,7 @@ namespace p100q
 				pos += body.length () - delta;
 			}
 		}
-		const bool &showImg = XmlSettingsManager::Instance ().property ("ShowImage").toBool ();
+		const bool showImg = XmlSettingsManager::Instance ().property ("ShowImage").toBool ();
 		if (showImg)
 			body.replace (ImgRX_,
 					"<p><a href=\"\\1\"><img style='max-height: 300px; max-width:300px;' src=\"\\1\"/></a><p/>");
