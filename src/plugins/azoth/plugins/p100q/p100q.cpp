@@ -1,6 +1,7 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
  * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2011 Minh Ngo
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +22,7 @@
 #include <QString>
 #include <interfaces/imessage.h>
 #include <interfaces/iclentry.h>
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -31,6 +33,10 @@ namespace p100q
 	const int PstoCommentPos = 6;
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
+		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
+				"azothp100qsettings.xml");
+		
 		PstoCommentRX_ =  QRegExp ("#[a-z]+/[0-9]+[:]", Qt::CaseInsensitive);
 		UserRX_ = QRegExp ("(?:[^>/]|<br />)@([\\w\\-]+)[ :]", Qt::CaseInsensitive);
 		PostAuthorRX_ = QRegExp ("<br />@([\\w\\-]+)[ :]", Qt::CaseInsensitive);
@@ -40,6 +46,12 @@ namespace p100q
 		TagRX_ = QRegExp ("<br />[*] ([^*,<]+(, [^*,<]+)*)");
 		ImgRX_ = QRegExp ("<a href=\"(http://[^<>\"]+[.](png|jpg|gif|jpeg))\">http://[^<>\"]+[.](png|jpg|gif|jpeg)</a>", Qt::CaseInsensitive);
 	}
+	
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XmlSettingsDialog_;
+	}
+
 
 	void Plugin::SecondInit ()
 	{
@@ -118,9 +130,10 @@ namespace p100q
 				pos += body.length () - delta;
 			}
 		}
-		
-		body.replace (ImgRX_,
-				"<p><a href=\"\\1\"><img style='max-height: 300px; max-width:300px;' src=\"\\1\"/></a><p/>");
+		const bool &showImg = XmlSettingsManager::Instance ().property ("ShowImage").toBool ();
+		if (showImg)
+			body.replace (ImgRX_,
+					"<p><a href=\"\\1\"><img style='max-height: 300px; max-width:300px;' src=\"\\1\"/></a><p/>");
 				
 		body.replace (PostRX_,
 				" <a href=\"azoth://msgeditreplace/%23\\1\">#\\1</a> "
