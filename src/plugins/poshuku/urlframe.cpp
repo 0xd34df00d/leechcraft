@@ -27,17 +27,17 @@ namespace Poshuku
 	{
 		Ui_.setupUi (this);
 		clearButton = new ClearButton (this);
-		connect(clearButton,
-				SIGNAL(clicked()),
+		connect (clearButton,
+				SIGNAL (clicked ()),
 				Ui_.URLEdit_,
-				SLOT(clear()));
+				SLOT (clear ()));
 		
-		connect(Ui_.URLEdit_,
-				SIGNAL(textChanged(const QString&)),
+		connect (Ui_.URLEdit_,
+				SIGNAL (textChanged (const QString&)),
 				clearButton,
-				SLOT(textChanged(const QString&)));
-		clearButton->hide();
-		AddWidget(clearButton);
+				SLOT (textChanged (const QString&)));
+		clearButton->hide ();
+		AddWidget (clearButton);
 	}
 
 	QLineEdit* URLFrame::GetEdit () const

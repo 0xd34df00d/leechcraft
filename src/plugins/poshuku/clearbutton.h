@@ -31,10 +31,10 @@ namespace Poshuku
 	{
 		Q_OBJECT
 	public:
-		ClearButton(QWidget* parent = 0);
+		ClearButton (QWidget* parent = 0);
 
 	public slots:
-		void textChanged(const QString &text);
+		void textChanged (const QString &text);
 	};
 };
 };

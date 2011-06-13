@@ -24,21 +24,21 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
-	ClearButton::ClearButton(QWidget *parent)
-		: QToolButton(parent)
+	ClearButton::ClearButton (QWidget *parent)
+		: QToolButton (parent)
 	{
-		setCursor(Qt::ArrowCursor);
-		setToolTip(tr("Clear"));
-		setToolButtonStyle(Qt::ToolButtonIconOnly);
-		setVisible(false);
-		setFocusPolicy(Qt::NoFocus);
-		setBackgroundRole(QPalette::Light);
+		setCursor (Qt::ArrowCursor);
+		setToolTip (tr ("Clear"));
+		setToolButtonStyle (Qt::ToolButtonIconOnly);
+		setVisible (false);
+		setFocusPolicy (Qt::NoFocus);
+		setBackgroundRole (QPalette::Light);
 		setProperty ("ActionIcon", QVariant ("clear"));
 	}
 
-	void ClearButton::textChanged(const QString &text)
+	void ClearButton::textChanged (const QString &text)
 	{
-		setVisible(!text.isEmpty());
+		setVisible (!text.isEmpty ());
 	}
 
 };
