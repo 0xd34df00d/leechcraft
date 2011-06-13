@@ -308,6 +308,14 @@
         <source>FatApe plugin, the GreaseMonkey support layer for Poshuku.</source>
         <translation>Модуль FatApe, обеспечивающий поддержку GreaseMonkey-скриптов для Poshuku.</translation>
     </message>
+    <message>
+        <source>openSUSE package maintainer</source>
+        <translation>Мейнтейнер под openSUSE</translation>
+    </message>
+    <message>
+        <source>Fedora package maintainer</source>
+        <translation>Мейнтейнер под Fedora</translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::Application</name>
@@ -367,6 +375,21 @@
     <message>
         <source>Plugin load error</source>
         <translation>Ошибка загрузки модуля</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::CoreInstanceObject</name>
+    <message>
+        <source>LeechCraft Core module.</source>
+        <translation>Модуль ядра LeechCraft.</translation>
+    </message>
+    <message>
+        <source>Settings</source>
+        <translation>Параметры</translation>
+    </message>
+    <message>
+        <source>Context-dependent</source>
+        <translation>В зависимости от контекста</translation>
     </message>
 </context>
 <context>
@@ -461,11 +484,11 @@
     </message>
     <message>
         <source>Context-dependent</source>
-        <translation>В зависимости от контекста</translation>
+        <translation type="obsolete">В зависимости от контекста</translation>
     </message>
     <message>
         <source>System</source>
-        <translation>Системный</translation>
+        <translation type="obsolete">Системный</translation>
     </message>
     <message>
         <source>F11</source>
@@ -560,6 +583,57 @@
     <message>
         <source>Initializing %1: stage two...</source>
         <translation>Инициализация %1: вторая стадия...</translation>
+    </message>
+    <message>
+        <source>Plugin with ID %1 is already loaded from %2; aborting load from %3.</source>
+        <translation>Модуль с ID %1 уже загружен из %2, так что не грузим из %3.</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::SettingsTab</name>
+    <message>
+        <source>Settings bar</source>
+        <translation>Панель инструментов параметров</translation>
+    </message>
+    <message>
+        <source>Back</source>
+        <translation>Назад</translation>
+    </message>
+    <message>
+        <source>Apply</source>
+        <translation>Применить</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Отмена</translation>
+    </message>
+    <message>
+        <source>Plugins for %1</source>
+        <translation>Модули %1</translation>
+    </message>
+    <message>
+        <source>General second-level plugins</source>
+        <translation>Общие модули второго уровня</translation>
+    </message>
+    <message>
+        <source>LeechCraft</source>
+        <translation>LeechCraft</translation>
+    </message>
+    <message>
+        <source>General plugins</source>
+        <translation>Общие модули</translation>
+    </message>
+    <message>
+        <source>Settings</source>
+        <translation>Параметры</translation>
+    </message>
+    <message>
+        <source>LeechCraft-wide settings dashboard</source>
+        <translation>Панель управления LeechCraft</translation>
+    </message>
+    <message>
+        <source>Settings for %1</source>
+        <translation>Параметры %1</translation>
     </message>
 </context>
 <context>
@@ -771,12 +845,16 @@
         <source>Could not create %1</source>
         <translation>Невозможно создать %1</translation>
     </message>
+    <message>
+        <source>System</source>
+        <translation>Системный</translation>
+    </message>
 </context>
 <context>
     <name>SettingsSink</name>
     <message>
         <source>Preferences</source>
-        <translation>Параметры</translation>
+        <translation type="obsolete">Параметры</translation>
     </message>
 </context>
 <context>
@@ -861,6 +939,245 @@
     <message>
         <source>Advanced setup</source>
         <translation>Продвинутая настройка</translation>
+    </message>
+</context>
+<context>
+    <name>coresettings</name>
+    <message>
+        <source>Appearance</source>
+        <translation>Внешний вид</translation>
+    </message>
+    <message>
+        <source>Use tab scroll buttons</source>
+        <translation>Использовать кнопки прокрути вкладок</translation>
+    </message>
+    <message>
+        <source>Icon size</source>
+        <translation>Размер значков</translation>
+    </message>
+    <message>
+        <source>System default</source>
+        <translation>По умолчанию</translation>
+    </message>
+    <message>
+        <source>16x16</source>
+        <translation>16x16</translation>
+    </message>
+    <message>
+        <source>24x24</source>
+        <translation>24x24</translation>
+    </message>
+    <message>
+        <source>32x32</source>
+        <translation>32x32</translation>
+    </message>
+    <message>
+        <source>Tool button style:</source>
+        <translation>Стиль кнопок на панели управления:</translation>
+    </message>
+    <message>
+        <source>Only display the icon</source>
+        <translation>Только значок</translation>
+    </message>
+    <message>
+        <source>Only display the text</source>
+        <translation>Только текст</translation>
+    </message>
+    <message>
+        <source>The text appears beside the icon</source>
+        <translation>Текст рядом со значком</translation>
+    </message>
+    <message>
+        <source>The text appears under the icon</source>
+        <translation>Текст под значком</translation>
+    </message>
+    <message>
+        <source>Tab bar location:</source>
+        <translation>Положение панели вкладок:</translation>
+    </message>
+    <message>
+        <source>Top</source>
+        <translation>Сверху</translation>
+    </message>
+    <message>
+        <source>Bottom</source>
+        <translation>Снизу</translation>
+    </message>
+    <message>
+        <source>Left</source>
+        <translation>Слева</translation>
+    </message>
+    <message>
+        <source>Right</source>
+        <translation>Справа</translation>
+    </message>
+    <message>
+        <source>Icon set:</source>
+        <translation>Набор значков:</translation>
+    </message>
+    <message>
+        <source>Oxygen</source>
+        <translation>Oxygen</translation>
+    </message>
+    <message>
+        <source>Style:</source>
+        <translation>Стиль:</translation>
+    </message>
+    <message>
+        <source>Plastique</source>
+        <translation>Plastique</translation>
+    </message>
+    <message>
+        <source>Language:</source>
+        <translation>Язык:</translation>
+    </message>
+    <message>
+        <source>System</source>
+        <translation>Системный</translation>
+    </message>
+    <message>
+        <source>Default new tab contents:</source>
+        <translation>Содержимое новой вкладки по умолчанию:</translation>
+    </message>
+    <message>
+        <source>Context-dependent</source>
+        <translation>В зависимости от контекста</translation>
+    </message>
+    <message>
+        <source>Maximum log lines:</source>
+        <translation>Максимум строк в журнале:</translation>
+    </message>
+    <message>
+        <source>Shortcuts</source>
+        <translation>Клавиатурные сочетания</translation>
+    </message>
+    <message>
+        <source>Behavior</source>
+        <translation>Поведение</translation>
+    </message>
+    <message>
+        <source>Watch clipboard</source>
+        <translation>Следить за буфером обмена</translation>
+    </message>
+    <message>
+        <source>Ask quit confirmation</source>
+        <translation>Запрашивать подтверждение выхода</translation>
+    </message>
+    <message>
+        <source>Exit on close</source>
+        <translation>Выходить при закрытии</translation>
+    </message>
+    <message>
+        <source>Open new tab next to current</source>
+        <translation>Открывать новую вкладку рядом с текущей</translation>
+    </message>
+    <message>
+        <source>Automatically accept task when there is only one handler</source>
+        <translation>Автоматически принимать задание при одном обработчике</translation>
+    </message>
+    <message>
+        <source>Watch directory:</source>
+        <translation>Директория для слежения:</translation>
+    </message>
+    <message>
+        <source>Show plugin-dependent actions in tab bar context menu</source>
+        <translation>Показывать действия модуля в контекстном меню вкладки</translation>
+    </message>
+    <message>
+        <source>Show as a submenu</source>
+        <translation>Показывать как подменю</translation>
+    </message>
+    <message>
+        <source>Show messages in tray</source>
+        <translation>Показывать сообщения в системном лотке</translation>
+    </message>
+    <message>
+        <source>Message timeout:</source>
+        <translation>Таймаут сообщений:</translation>
+    </message>
+    <message>
+        <source> s</source>
+        <translation> с</translation>
+    </message>
+    <message>
+        <source>Tags</source>
+        <translation>Метки</translation>
+    </message>
+    <message>
+        <source>Tags manager</source>
+        <translation>Менеджер меток</translation>
+    </message>
+    <message>
+        <source>Network</source>
+        <translation>Сеть</translation>
+    </message>
+    <message>
+        <source>Cache size:</source>
+        <translation>Размер кэша:</translation>
+    </message>
+    <message>
+        <source> MB</source>
+        <translation> МиБ</translation>
+    </message>
+    <message>
+        <source>Filter tracking cookies</source>
+        <translation>Фильтровать отслеживающие cookies</translation>
+    </message>
+    <message>
+        <source>Clear cache</source>
+        <translation>Очистить кэш</translation>
+    </message>
+    <message>
+        <source>Clear cookies</source>
+        <translation>Очистить cookies</translation>
+    </message>
+    <message>
+        <source>Application-wide proxy</source>
+        <translation>Прокси приложения</translation>
+    </message>
+    <message>
+        <source>Host:</source>
+        <translation>Хост:</translation>
+    </message>
+    <message>
+        <source>Port:</source>
+        <translation>Порт:</translation>
+    </message>
+    <message>
+        <source>Login:</source>
+        <translation>Логин:</translation>
+    </message>
+    <message>
+        <source>Password:</source>
+        <translation>Пароль:</translation>
+    </message>
+    <message>
+        <source>Proxy type:</source>
+        <translation>Тип прокси:</translation>
+    </message>
+    <message>
+        <source>SOCKS5</source>
+        <translation>SOCKS5</translation>
+    </message>
+    <message>
+        <source>Transparent HTTP</source>
+        <translation>Прозрачный HTTP</translation>
+    </message>
+    <message>
+        <source>Caching HTTP</source>
+        <translation>Кэширующий HTTP</translation>
+    </message>
+    <message>
+        <source>Caching FTP</source>
+        <translation>Кэширующий FTP</translation>
+    </message>
+    <message>
+        <source>Plugins</source>
+        <translation>Модули</translation>
+    </message>
+    <message>
+        <source>Plugins manager</source>
+        <translation>Менеджер модулей</translation>
     </message>
 </context>
 </TS>

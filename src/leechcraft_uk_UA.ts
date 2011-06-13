@@ -308,6 +308,14 @@
         <source>FatApe plugin, the GreaseMonkey support layer for Poshuku.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>openSUSE package maintainer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fedora package maintainer</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::Application</name>
@@ -367,6 +375,21 @@
     <message>
         <source>Plugin load error</source>
         <translation>Помилка завантаження плагіну</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::CoreInstanceObject</name>
+    <message>
+        <source>LeechCraft Core module.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Settings</source>
+        <translation type="unfinished">Налаштування</translation>
+    </message>
+    <message>
+        <source>Context-dependent</source>
+        <translation type="unfinished">В залежності від контексту</translation>
     </message>
 </context>
 <context>
@@ -461,11 +484,11 @@
     </message>
     <message>
         <source>Context-dependent</source>
-        <translation>В залежності від контексту</translation>
+        <translation type="obsolete">В залежності від контексту</translation>
     </message>
     <message>
         <source>System</source>
-        <translation>Системний</translation>
+        <translation type="obsolete">Системний</translation>
     </message>
     <message>
         <source>F11</source>
@@ -559,6 +582,57 @@
     </message>
     <message>
         <source>Initializing %1: stage two...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plugin with ID %1 is already loaded from %2; aborting load from %3.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::SettingsTab</name>
+    <message>
+        <source>Settings bar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Back</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Apply</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plugins for %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>General second-level plugins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>LeechCraft</source>
+        <translation type="unfinished">LeechCraft</translation>
+    </message>
+    <message>
+        <source>General plugins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Settings</source>
+        <translation type="unfinished">Налаштування</translation>
+    </message>
+    <message>
+        <source>LeechCraft-wide settings dashboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Settings for %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -771,12 +845,16 @@
             <numerusform>%n днів, </numerusform>
         </translation>
     </message>
+    <message>
+        <source>System</source>
+        <translation type="unfinished">Системний</translation>
+    </message>
 </context>
 <context>
     <name>SettingsSink</name>
     <message>
         <source>Preferences</source>
-        <translation>Налаштування</translation>
+        <translation type="obsolete">Налаштування</translation>
     </message>
 </context>
 <context>
@@ -861,6 +939,245 @@
     <message>
         <source>Advanced setup</source>
         <translation>Розширені параметри</translation>
+    </message>
+</context>
+<context>
+    <name>coresettings</name>
+    <message>
+        <source>Appearance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use tab scroll buttons</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Icon size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>System default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>16x16</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>24x24</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>32x32</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tool button style:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Only display the icon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Only display the text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The text appears beside the icon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The text appears under the icon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tab bar location:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Top</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bottom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Right</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Icon set:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Oxygen</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Style:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plastique</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Language:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>System</source>
+        <translation type="unfinished">Системний</translation>
+    </message>
+    <message>
+        <source>Default new tab contents:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Context-dependent</source>
+        <translation type="unfinished">В залежності від контексту</translation>
+    </message>
+    <message>
+        <source>Maximum log lines:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shortcuts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Behavior</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Watch clipboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ask quit confirmation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Exit on close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open new tab next to current</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Automatically accept task when there is only one handler</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Watch directory:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show plugin-dependent actions in tab bar context menu</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show as a submenu</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show messages in tray</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Message timeout:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> s</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tags</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tags manager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Network</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cache size:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> MB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filter tracking cookies</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clear cache</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clear cookies</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Application-wide proxy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Host:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Port:</source>
+        <translation type="unfinished">Порт:</translation>
+    </message>
+    <message>
+        <source>Login:</source>
+        <translation type="unfinished">Логін:</translation>
+    </message>
+    <message>
+        <source>Password:</source>
+        <translation type="unfinished">Пароль:</translation>
+    </message>
+    <message>
+        <source>Proxy type:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SOCKS5</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transparent HTTP</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Caching HTTP</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Caching FTP</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plugins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plugins manager</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
