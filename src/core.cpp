@@ -84,22 +84,22 @@ namespace LeechCraft
 	, CoreInstanceObject_ (new CoreInstanceObject)
 	{
 		connect (LocalSocketHandler_.get (),
-				SIGNAL (gotEntity (const Entity&)),
+				SIGNAL (gotEntity (const LeechCraft::Entity&)),
 				this,
-				SLOT (queueEntity (const Entity&)));
+				SLOT (queueEntity (const LeechCraft::Entity&)));
 		connect (NetworkAccessManager_.get (),
 				SIGNAL (error (const QString&)),
 				this,
 				SIGNAL (error (const QString&)));
 
 		connect (DirectoryWatcher_.get (),
-				SIGNAL (gotEntity (const Entity&)),
+				SIGNAL (gotEntity (const LeechCraft::Entity&)),
 				this,
-				SLOT (handleGotEntity (Entity)));
+				SLOT (handleGotEntity (LeechCraft::Entity)));
 		connect (ClipboardWatcher_.get (),
-				SIGNAL (gotEntity (const Entity&)),
+				SIGNAL (gotEntity (const LeechCraft::Entity&)),
 				this,
-				SLOT (handleGotEntity (Entity)));
+				SLOT (handleGotEntity (LeechCraft::Entity)));
 
 		StorageBackend_->Prepare ();
 
@@ -254,14 +254,14 @@ namespace LeechCraft
 		NewTabMenuManager_->SetToolbarActions (GetActions2Embed ());
 
 		disconnect (LocalSocketHandler_.get (),
-				SIGNAL (gotEntity (const Entity&)),
+				SIGNAL (gotEntity (const LeechCraft::Entity&)),
 				this,
-				SLOT (queueEntity (const Entity&)));
+				SLOT (queueEntity (const LeechCraft::Entity&)));
 
 		connect (LocalSocketHandler_.get (),
-				SIGNAL (gotEntity (const Entity&)),
+				SIGNAL (gotEntity (const LeechCraft::Entity&)),
 				this,
-				SLOT (handleGotEntity (const Entity&)));
+				SLOT (handleGotEntity (const LeechCraft::Entity&)));
 
 		QTimer::singleShot (1000,
 				LocalSocketHandler_.get (),
@@ -874,30 +874,30 @@ namespace LeechCraft
 		const QMetaObject *qmo = plugin->metaObject ();
 
 		if (qmo->indexOfSignal (QMetaObject::normalizedSignature (
-						"couldHandle (const Entity&, bool*)"
+						"couldHandle (const LeechCraft::Entity&, bool*)"
 						).constData ()) != -1)
 			connect (plugin,
-					SIGNAL (couldHandle (const Entity&, bool*)),
+					SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)),
 					this,
-					SLOT (handleCouldHandle (const Entity&, bool*)));
+					SLOT (handleCouldHandle (const LeechCraft::Entity&, bool*)));
 
 		if (qmo->indexOfSignal (QMetaObject::normalizedSignature (
-						"gotEntity (const Entity&)"
+						"gotEntity (const LeechCraft::Entity&)"
 						).constData ()) != -1)
 			connect (plugin,
-					SIGNAL (gotEntity (const Entity&)),
+					SIGNAL (gotEntity (const LeechCraft::Entity&)),
 					this,
-					SLOT (handleGotEntity (Entity)),
+					SLOT (handleGotEntity (LeechCraft::Entity)),
 					Qt::QueuedConnection);
 
 		if (qmo->indexOfSignal (QMetaObject::normalizedSignature (
-						"delegateEntity (const Entity&, int*, QObject**)"
+						"delegateEntity (const LeechCraft::Entity&, int*, QObject**)"
 						).constData ()) != -1)
 			connect (plugin,
-					SIGNAL (delegateEntity (const Entity&,
+					SIGNAL (delegateEntity (const LeechCraft::Entity&,
 							int*, QObject**)),
 					this,
-					SLOT (handleGotEntity (Entity,
+					SLOT (handleGotEntity (LeechCraft::Entity,
 							int*, QObject**)));
 	}
 
