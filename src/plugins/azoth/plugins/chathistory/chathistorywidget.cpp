@@ -264,7 +264,9 @@ namespace ChatHistory
 				html += "<font color=\"" + color + "\">" + var + "</font>";
 			}
 			
-			html += ": " + map ["Message"].toString ().replace ('\n', "<br/>");;
+			html += ": " + map ["Message"].toString ()
+					.replace ('<', "&lt;")
+					.replace ('\n', "<br/>");
 
 			if (isChat)
 			{
