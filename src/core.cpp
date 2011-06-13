@@ -151,6 +151,8 @@ namespace LeechCraft
 
 		PluginManager_->Release ();
 		delete PluginManager_;
+		
+		CoreInstanceObject_.reset ();
 
 		NetworkAccessManager_.reset ();
 

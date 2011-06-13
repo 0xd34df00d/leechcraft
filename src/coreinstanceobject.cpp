@@ -162,6 +162,7 @@ namespace LeechCraft
 	
 	void CoreInstanceObject::Release ()
 	{
+		XmlSettingsDialog_.reset ();
 	}
 
 	QByteArray CoreInstanceObject::GetUniqueID () const
