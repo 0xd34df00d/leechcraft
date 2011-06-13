@@ -28,7 +28,7 @@ namespace p100q
 {
 	XmlSettingsManager::XmlSettingsManager ()
 	{
-		LeechCraft::Util::BaseSettingsManager::Init ();
+		Util::BaseSettingsManager::Init ();
 	}
 	
 	XmlSettingsManager& XmlSettingsManager::Instance ()

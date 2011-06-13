@@ -17,9 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-
-#ifndef XMLSETTINGSMANAGER_H
-#define XMLSETTINGSMANAGER_H
+#ifndef PLUGINS_AZOTH_PLUGINS_P100Q_XMLSETTINGSMANAGER_H
+#define PLUGINS_AZOTH_PLUGINS_P100Q_XMLSETTINGSMANAGER_H
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
@@ -39,8 +38,8 @@ namespace p100q
 		virtual QSettings* BeginSettings () const;
 		virtual void EndSettings (QSettings*) const;
 	};
-};
-
+}
+}
 }
 
 #endif // XMLSETTINGSMANAGER_H
