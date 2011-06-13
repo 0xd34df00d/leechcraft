@@ -58,6 +58,7 @@
 #include "glanceshower.h"
 #include "newtabmenumanager.h"
 #include "tabmanager.h"
+#include "coreinstanceobject.h"
 
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
@@ -82,6 +83,8 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	Splash_->setUpdatesEnabled (true);
 	Splash_->showMessage (tr ("Initializing LeechCraft..."), Qt::AlignLeft | Qt::AlignBottom);
 	QApplication::processEvents ();
+	
+	Core::Instance ();
 
 	InitializeInterface ();
 	hide ();
@@ -331,24 +334,11 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	bar->addWidget (NewTabButton_);
 	Ui_.MainTabWidget_->setCornerWidget (bar, Qt::TopRightCorner);
 
-	XmlSettingsDialog_ = new XmlSettingsDialog ();
-	XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
-			"coresettings.xml");
-	InitializeDataSources ();
-	connect (XmlSettingsDialog_,
-			SIGNAL (pushButtonClicked (const QString&)),
-			&Core::Instance (),
-			SLOT (handleSettingClicked (const QString&)));
-
 	XmlSettingsManager::Instance ()->RegisterObject ("AppQStyle",
 			this, "handleAppStyle");
-	QStringList appQStype = QStyleFactory::keys ();
-	appQStype.prepend("Default");
-	XmlSettingsDialog_->SetDataSource ("AppQStyle",
-			new QStringListModel (appQStype));
 	handleAppStyle ();
 
-	XmlSettingsDialog_->SetCustomWidget ("TagsViewer", new TagsViewer);
+	Core::Instance ().GetCoreInstanceObject ()->GetSettingsDialog ()->SetCustomWidget ("TagsViewer", new TagsViewer);
 
 	XmlSettingsManager::Instance ()->RegisterObject ("Language",
 			this, "handleLanguage");
@@ -375,14 +365,12 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	Ui_.ActionMenu_->setMenu (menu);
 
 	XmlSettingsManager::Instance ()->RegisterObject ("IconSet", this, "updateIconSet");
-	XmlSettingsDialog_->SetDataSource ("IconSet",
+	Core::Instance ().GetCoreInstanceObject ()->GetSettingsDialog ()->SetDataSource ("IconSet",
 			new QStringListModel (SkinEngine::Instance ().ListIcons ()));
 
-	SettingsSink_ = new SettingsSink ("LeechCraft",
-			XmlSettingsDialog_,
-			this);
+	SettingsSink_ = new SettingsSink ("LeechCraft", this);
 	ShortcutManager_ = new ShortcutManager (this);
-	XmlSettingsDialog_->SetCustomWidget ("ShortcutManager", ShortcutManager_);
+	Core::Instance ().GetCoreInstanceObject ()->GetSettingsDialog ()->SetCustomWidget ("ShortcutManager", ShortcutManager_);
 
 	SetStatusBar ();
 	ReadSettings ();
@@ -624,7 +612,6 @@ void LeechCraft::MainWindow::handleQuit ()
 #ifdef QT_DEBUG
 	qDebug () << "Releasing XmlSettingsManager";
 #endif
-	delete XmlSettingsDialog_;
 	delete SettingsSink_;
 	XmlSettingsManager::Instance ()->Release ();
 #ifdef QT_DEBUG
@@ -804,7 +791,7 @@ void LeechCraft::MainWindow::updateIconSet ()
 void LeechCraft::MainWindow::doDelayedInit ()
 {
 	PluginManagerDialog *pm = new PluginManagerDialog ();
-	XmlSettingsDialog_->SetCustomWidget ("PluginManager", pm);
+	Core::Instance ().GetCoreInstanceObject ()->GetSettingsDialog ()->SetCustomWidget ("PluginManager", pm);
 
 	QObjectList settable = Core::Instance ().GetSettables ();
 	for (QObjectList::const_iterator i = settable.begin (),
@@ -876,7 +863,7 @@ void LeechCraft::MainWindow::SetNewTabDataSource ()
 			<< "DefaultNewTab"
 			<< XmlSettingsManager::Instance ()->property ("DefaultNewTab");
 
-	XmlSettingsDialog_->SetDataSource ("DefaultNewTab", newTabsModel);
+	Core::Instance ().GetCoreInstanceObject ()->GetSettingsDialog ()->SetDataSource ("DefaultNewTab", newTabsModel);
 }
 
 void LeechCraft::MainWindow::FillTray ()
@@ -964,85 +951,6 @@ void LeechCraft::MainWindow::InitializeShortcuts ()
 				Core::Instance ().GetTabManager (),
 				SLOT (navigateToTabNumber ()));
 	}
-}
-
-namespace
-{
-	QMap<QString, QString> GetInstalledLanguages ()
-	{
-		QStringList filenames;
-
-#ifdef Q_WS_WIN
-		filenames << QDir (QCoreApplication::applicationDirPath () + "/translations")
-				.entryList (QStringList ("leechcraft_*.qm"));
-#elif defined (Q_WS_MAC)
-		filenames << QDir (QCoreApplication::applicationDirPath () + "/../Resources/translations")
-				.entryList (QStringList ("leechcraft_*.qm"));
-#elif defined (INSTALL_PREFIX)
-		filenames << QDir (INSTALL_PREFIX "/share/leechcraft/translations")
-				.entryList (QStringList ("leechcraft_*.qm"));
-#else
-		filenames << QDir ("/usr/local/share/leechcraft/translations")
-				.entryList (QStringList ("leechcraft_*.qm"));
-		filenames << QDir ("/usr/share/leechcraft/translations")
-				.entryList (QStringList ("leechcraft_*.qm"));
-#endif
-
-		int length = QString ("leechcraft_").size ();
-		QMap<QString, QString> languages;
-		Q_FOREACH (QString fname, filenames)
-		{
-			fname = fname.mid (length);
-			fname.chop (3);					// for .qm
-			QStringList parts = fname.split ('_', QString::SkipEmptyParts);
-
-			QString language;
-			Q_FOREACH (const QString& part, parts)
-			{
-				if (part.size () != 2)
-					continue;
-				if (!part.at (0).isLower ())
-					continue;
-
-				QLocale locale (part);
-				if (locale.language () == QLocale::C)
-					continue;
-
-				language = QLocale::languageToString (locale.language ());
-
-				while (part != parts.at (0))
-					parts.pop_front ();
-
-				languages [language] = parts.join ("_");
-				break;
-			}
-		}
-
-		return languages;
-	}
-
-	QAbstractItemModel* GetInstalledLangsModel ()
-	{
-		QMap<QString, QString> languages = GetInstalledLanguages ();
-
-		QStandardItemModel *model = new QStandardItemModel ();
-		QStandardItem *systemItem = new QStandardItem (LeechCraft::MainWindow::tr ("System"));
-		systemItem->setData ("system", Qt::UserRole);
-		model->appendRow (systemItem);
-		Q_FOREACH (const QString& language, languages.keys ())
-		{
-			QStandardItem *item = new QStandardItem (language);
-			item->setData (languages [language], Qt::UserRole);
-			model->appendRow (item);
-		}
-		return model;
-	}
-}
-
-void LeechCraft::MainWindow::InitializeDataSources ()
-{
-	XmlSettingsDialog_->SetDataSource ("Language",
-			GetInstalledLangsModel ());
 }
 
 namespace

@@ -29,20 +29,12 @@ namespace LeechCraft
 {
 	using namespace Util;
 
-	SettingsSink::SettingsSink (const QString& name,
-			XmlSettingsDialog* dialog,
-			QWidget *parent)
+	SettingsSink::SettingsSink (const QString& name, QWidget *parent)
 	: QDialog (parent)
 	{
 		Ui_.setupUi (this);
 		// Because Qt Designer inserts one.
 		Ui_.Dialogs_->removeWidget (Ui_.Dialogs_->currentWidget ());
-
-		Add (name, windowIcon (), dialog);
-	}
-
-	SettingsSink::~SettingsSink ()
-	{
 	}
 
 	void SettingsSink::AddDialog (const QObject *object)

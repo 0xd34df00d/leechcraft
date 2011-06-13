@@ -18,12 +18,102 @@
 
 #include "coreinstanceobject.h"
 #include <QIcon>
+#include <QDir>
+#include <QStandardItemModel>
+#include <QStringListModel>
+#include <QStyleFactory>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
+	namespace
+	{
+		QMap<QString, QString> GetInstalledLanguages ()
+		{
+			QStringList filenames;
+
+	#ifdef Q_WS_WIN
+			filenames << QDir (QCoreApplication::applicationDirPath () + "/translations")
+					.entryList (QStringList ("leechcraft_*.qm"));
+	#elif defined (Q_WS_MAC)
+			filenames << QDir (QCoreApplication::applicationDirPath () + "/../Resources/translations")
+					.entryList (QStringList ("leechcraft_*.qm"));
+	#elif defined (INSTALL_PREFIX)
+			filenames << QDir (INSTALL_PREFIX "/share/leechcraft/translations")
+					.entryList (QStringList ("leechcraft_*.qm"));
+	#else
+			filenames << QDir ("/usr/local/share/leechcraft/translations")
+					.entryList (QStringList ("leechcraft_*.qm"));
+			filenames << QDir ("/usr/share/leechcraft/translations")
+					.entryList (QStringList ("leechcraft_*.qm"));
+	#endif
+
+			int length = QString ("leechcraft_").size ();
+			QMap<QString, QString> languages;
+			Q_FOREACH (QString fname, filenames)
+			{
+				fname = fname.mid (length);
+				fname.chop (3);					// for .qm
+				QStringList parts = fname.split ('_', QString::SkipEmptyParts);
+
+				QString language;
+				Q_FOREACH (const QString& part, parts)
+				{
+					if (part.size () != 2)
+						continue;
+					if (!part.at (0).isLower ())
+						continue;
+
+					QLocale locale (part);
+					if (locale.language () == QLocale::C)
+						continue;
+
+					language = QLocale::languageToString (locale.language ());
+
+					while (part != parts.at (0))
+						parts.pop_front ();
+
+					languages [language] = parts.join ("_");
+					break;
+				}
+			}
+
+			return languages;
+		}
+
+		QAbstractItemModel* GetInstalledLangsModel ()
+		{
+			QMap<QString, QString> languages = GetInstalledLanguages ();
+
+			QStandardItemModel *model = new QStandardItemModel ();
+			QStandardItem *systemItem = new QStandardItem (QObject::tr ("System"));
+			systemItem->setData ("system", Qt::UserRole);
+			model->appendRow (systemItem);
+			Q_FOREACH (const QString& language, languages.keys ())
+			{
+				QStandardItem *item = new QStandardItem (language);
+				item->setData (languages [language], Qt::UserRole);
+				model->appendRow (item);
+			}
+			return model;
+		}
+	}
+
 	CoreInstanceObject::CoreInstanceObject (QObject *parent)
 	: QObject (parent)
+	, XmlSettingsDialog_ (new Util::XmlSettingsDialog ())
 	{
+		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
+				"coresettings.xml");
+		
+		XmlSettingsDialog_->SetDataSource ("Language",
+			GetInstalledLangsModel ());
+		
+		QStringList appQStype = QStyleFactory::keys ();
+		appQStype.prepend ("Default");
+		XmlSettingsDialog_->SetDataSource ("AppQStyle",
+				new QStringListModel (appQStype));
 	}
 	
 	void CoreInstanceObject::Init (ICoreProxy_ptr proxy)
@@ -45,7 +135,7 @@ namespace LeechCraft
 	
 	QString CoreInstanceObject::GetName () const
 	{
-		return "LCCore";
+		return "LeechCraft";
 	}
 	
 	QString CoreInstanceObject::GetInfo () const
@@ -56,5 +146,10 @@ namespace LeechCraft
 	QIcon CoreInstanceObject::GetIcon () const
 	{
 		return QIcon (":/resources/images/leechcraft.svg");
+	}
+	
+	Util::XmlSettingsDialog_ptr CoreInstanceObject::GetSettingsDialog () const
+	{
+		return XmlSettingsDialog_;
 	}
 }

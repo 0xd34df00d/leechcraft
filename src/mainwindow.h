@@ -73,7 +73,6 @@ namespace LeechCraft
 		QLabel *UploadSpeed_;
 		QLabel *Clock_;
 		Util::GraphWidget *SpeedGraph_;
-		Util::XmlSettingsDialog *XmlSettingsDialog_;
 		SettingsSink *SettingsSink_;
 		ShortcutManager *ShortcutManager_;
 		FancyPopupManager *FancyPopupManager_;
@@ -146,7 +145,6 @@ namespace LeechCraft
 		void FillTray ();
 		void FillToolMenu ();
 		void InitializeShortcuts ();
-		void InitializeDataSources ();
 		void ShowMenuAndBar (bool);
 	};
 };

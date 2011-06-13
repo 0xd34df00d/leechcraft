@@ -40,6 +40,7 @@
 #include <plugininterface/util.h>
 #include <plugininterface/customcookiejar.h>
 #include <plugininterface/defaulthookproxy.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/idownload.h>
 #include <interfaces/ientityhandler.h>
@@ -83,6 +84,11 @@ namespace LeechCraft
 	, NewTabMenuManager_ (new NewTabMenuManager)
 	, CoreInstanceObject_ (new CoreInstanceObject)
 	{
+		connect (CoreInstanceObject_->GetSettingsDialog ().get (),
+				SIGNAL (pushButtonClicked (const QString&)),
+				this,
+				SLOT (handleSettingClicked (const QString&)));
+
 		connect (LocalSocketHandler_.get (),
 				SIGNAL (gotEntity (const LeechCraft::Entity&)),
 				this,

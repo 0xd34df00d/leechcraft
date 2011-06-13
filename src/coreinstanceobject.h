@@ -20,14 +20,18 @@
 #define COREINSTANCEOBJECT_H
 #include <QObject>
 #include "interfaces/iinfo.h"
+#include "interfaces/ihavesettings.h"
 
 namespace LeechCraft
 {
 	class CoreInstanceObject : public QObject
 							 , public IInfo
+							 , public IHaveSettings
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo)
+		Q_INTERFACES (IInfo IHaveSettings)
+		
+		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 	public:
 		CoreInstanceObject (QObject* = 0);
 		
@@ -38,6 +42,8 @@ namespace LeechCraft
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+		
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	};
 }
 

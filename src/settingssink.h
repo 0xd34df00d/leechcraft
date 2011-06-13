@@ -38,10 +38,7 @@ namespace LeechCraft
 			RDialog = 100
 		};
 	public:
-		SettingsSink (const QString&,
-				Util::XmlSettingsDialog*,
-				QWidget* = 0);
-		virtual ~SettingsSink ();
+		SettingsSink (const QString&, QWidget* = 0);
 
 		void AddDialog (const QObject*);
 	private:
