@@ -1,6 +1,7 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
  * Copyright (C) 2011 Minh Ngo
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,8 +40,7 @@ namespace p100q
 		virtual void EndSettings (QSettings*) const;
 	};
 };
-};
-};
 
+}
 
 #endif // XMLSETTINGSMANAGER_H
