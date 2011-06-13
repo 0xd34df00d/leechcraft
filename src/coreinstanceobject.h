@@ -21,6 +21,7 @@
 #include <QObject>
 #include "interfaces/iinfo.h"
 #include "interfaces/ihavesettings.h"
+#include "interfaces/ihavetabs.h"
 
 namespace LeechCraft
 {

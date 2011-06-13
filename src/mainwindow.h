@@ -141,7 +141,6 @@ namespace LeechCraft
 		void doDelayedInit ();
 		void handleLoadProgress (const QString&);
 	private:
-		void SetNewTabDataSource ();
 		void FillTray ();
 		void FillToolMenu ();
 		void InitializeShortcuts ();

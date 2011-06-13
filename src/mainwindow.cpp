@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
+#include "mainwindow.h"
 #include <iostream>
 #include <algorithm>
 #include <QMessageBox>
@@ -24,8 +25,6 @@
 #include <QChildEvent>
 #include <QToolButton>
 #include <QStandardItemModel>
-#include <QStringListModel>
-#include <QStyleFactory>
 #include <QCursor>
 #include <QCheckBox>
 #include <QShortcut>
@@ -37,12 +36,10 @@
 #include <plugininterface/util.h>
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/ihavetabs.h>
-#include "mainwindow.h"
 #include "view.h"
 #include "core.h"
 #include "commonjobadder.h"
 #include "xmlsettingsmanager.h"
-#include "pluginmanagerdialog.h"
 #include "fancypopupmanager.h"
 #include "skinengine.h"
 #include "childactioneventfilter.h"
@@ -338,8 +335,6 @@ void LeechCraft::MainWindow::InitializeInterface ()
 			this, "handleAppStyle");
 	handleAppStyle ();
 
-	Core::Instance ().GetCoreInstanceObject ()->GetSettingsDialog ()->SetCustomWidget ("TagsViewer", new TagsViewer);
-
 	XmlSettingsManager::Instance ()->RegisterObject ("Language",
 			this, "handleLanguage");
 	XmlSettingsManager::Instance ()->RegisterObject ("ToolButtonStyle",
@@ -365,8 +360,6 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	Ui_.ActionMenu_->setMenu (menu);
 
 	XmlSettingsManager::Instance ()->RegisterObject ("IconSet", this, "updateIconSet");
-	Core::Instance ().GetCoreInstanceObject ()->GetSettingsDialog ()->SetDataSource ("IconSet",
-			new QStringListModel (SkinEngine::Instance ().ListIcons ()));
 
 	SettingsSink_ = new SettingsSink ("LeechCraft", this);
 	ShortcutManager_ = new ShortcutManager (this);
@@ -790,9 +783,6 @@ void LeechCraft::MainWindow::updateIconSet ()
 
 void LeechCraft::MainWindow::doDelayedInit ()
 {
-	PluginManagerDialog *pm = new PluginManagerDialog ();
-	Core::Instance ().GetCoreInstanceObject ()->GetSettingsDialog ()->SetCustomWidget ("PluginManager", pm);
-
 	QObjectList settable = Core::Instance ().GetSettables ();
 	for (QObjectList::const_iterator i = settable.begin (),
 			end = settable.end (); i != end; ++i)
@@ -825,45 +815,12 @@ void LeechCraft::MainWindow::doDelayedInit ()
 
 	setAcceptDrops (true);
 
-	SetNewTabDataSource ();
-
 	new StartupWizard (this);
 }
 
 void LeechCraft::MainWindow::handleLoadProgress (const QString& str)
 {
 	Splash_->showMessage (str, Qt::AlignLeft | Qt::AlignBottom);
-}
-
-void LeechCraft::MainWindow::SetNewTabDataSource ()
-{
-	QStandardItemModel *newTabsModel = new QStandardItemModel (this);
-	QStandardItem *defaultItem = new QStandardItem (tr ("Context-dependent"));
-	defaultItem->setData ("contextdependent", Qt::UserRole);
-	newTabsModel->appendRow (defaultItem);
-
-	QObjectList multitabs = Core::Instance ()
-			.GetPluginManager ()->GetAllCastableRoots<IHaveTabs*> ();
-	Q_FOREACH (QObject *object, multitabs)
-	{
-		IInfo *ii = qobject_cast<IInfo*> (object);
-		IHaveTabs *iht = qobject_cast<IHaveTabs*> (object);
-		Q_FOREACH (const TabClassInfo& info, iht->GetTabClasses ())
-		{
-			QStandardItem *item =
-					new QStandardItem (ii->GetName () + ": " + info.VisibleName_);
-			item->setToolTip (info.Description_);
-			item->setIcon (info.Icon_);
-			item->setData (ii->GetUniqueID () + '|' + info.TabClass_, Qt::UserRole);
-			newTabsModel->appendRow (item);
-		}
-	}
-
-	qDebug () << Q_FUNC_INFO
-			<< "DefaultNewTab"
-			<< XmlSettingsManager::Instance ()->property ("DefaultNewTab");
-
-	Core::Instance ().GetCoreInstanceObject ()->GetSettingsDialog ()->SetDataSource ("DefaultNewTab", newTabsModel);
 }
 
 void LeechCraft::MainWindow::FillTray ()
