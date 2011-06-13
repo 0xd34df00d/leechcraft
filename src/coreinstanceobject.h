@@ -25,14 +25,20 @@
 
 namespace LeechCraft
 {
+	class SettingsTab;
+
 	class CoreInstanceObject : public QObject
 							 , public IInfo
 							 , public IHaveSettings
+							 , public IHaveTabs
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveSettings)
+		Q_INTERFACES (IInfo IHaveSettings IHaveTabs)
 		
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
+		TabClasses_t Classes_;
+		
+		SettingsTab *SettingsTab_;
 	public:
 		CoreInstanceObject (QObject* = 0);
 		
@@ -45,6 +51,18 @@ namespace LeechCraft
 		QIcon GetIcon () const;
 		
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+		
+		TabClasses_t GetTabClasses () const;
+		void TabOpenRequested (const QByteArray&);
+	private:
+		void BuildNewTabModel ();
+	signals:
+		void addNewTab (const QString&, QWidget*);
+		void removeTab (QWidget*);
+		void changeTabName (QWidget*, const QString&);
+		void changeTabIcon (QWidget*, const QIcon&);
+		void statusBarChanged (QWidget*, const QString&);
+		void raiseTab (QWidget*);
 	};
 }
 

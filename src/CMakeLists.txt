@@ -308,6 +308,8 @@ SET (SRCS
 	newtabmenumanager.cpp
 	plugintreebuilder.cpp
 	coreinstanceobject.cpp
+	settingstab.cpp
+	flowlayout.cpp
 	)
 SET (HEADERS
 	mainwindow.h
@@ -352,6 +354,8 @@ SET (HEADERS
 	wizardtypechoicepage.h
 	plugintreebuilder.h
 	coreinstanceobject.h
+	settingstab.h
+	flowlayout.h
 	3dparty/qxttooltip.h
 	3dparty/qxttooltip_p.h
 	interfaces/structures.h
@@ -370,6 +374,7 @@ SET (FORMS
 	tagsviewer.ui
 	aboutdialog.ui
 	wizardtypechoicepage.ui
+	settingstab.ui
 	)
 SET (RESOURCES mainresources.qrc)
 

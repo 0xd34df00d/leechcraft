@@ -98,5 +98,4 @@ namespace LeechCraft
 		Ui_.Dialogs_->setCurrentWidget (dialog);
 		dialog->SetPage (pindex);
 	}
-};
-
+}

@@ -28,6 +28,7 @@
 #include "skinengine.h"
 #include "tagsviewer.h"
 #include "core.h"
+#include "settingstab.h"
 
 namespace LeechCraft
 {
@@ -107,13 +108,21 @@ namespace LeechCraft
 	CoreInstanceObject::CoreInstanceObject (QObject *parent)
 	: QObject (parent)
 	, XmlSettingsDialog_ (new Util::XmlSettingsDialog ())
+	, SettingsTab_ (new SettingsTab)
 	{
 		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				"coresettings.xml");
+		
+		connect (SettingsTab_,
+				SIGNAL (remove (QWidget*)),
+				this,
+				SIGNAL (removeTab (QWidget*)));
 	}
 	
 	void CoreInstanceObject::Init (ICoreProxy_ptr proxy)
 	{
+		Classes_ << SettingsTab_->GetTabClassInfo ();
+
 		XmlSettingsDialog_->SetCustomWidget ("PluginManager", new PluginManagerDialog);
 		XmlSettingsDialog_->SetCustomWidget ("TagsViewer", new TagsViewer);
 		
@@ -130,34 +139,8 @@ namespace LeechCraft
 	
 	void CoreInstanceObject::SecondInit ()
 	{
-		QStandardItemModel *newTabsModel = new QStandardItemModel (this);
-		QStandardItem *defaultItem = new QStandardItem (tr ("Context-dependent"));
-		defaultItem->setData ("contextdependent", Qt::UserRole);
-		newTabsModel->appendRow (defaultItem);
-
-		QObjectList multitabs = Core::Instance ()
-				.GetPluginManager ()->GetAllCastableRoots<IHaveTabs*> ();
-		Q_FOREACH (QObject *object, multitabs)
-		{
-			IInfo *ii = qobject_cast<IInfo*> (object);
-			IHaveTabs *iht = qobject_cast<IHaveTabs*> (object);
-			Q_FOREACH (const TabClassInfo& info, iht->GetTabClasses ())
-			{
-				QStandardItem *item =
-						new QStandardItem (ii->GetName () + ": " + info.VisibleName_);
-				item->setToolTip (info.Description_);
-				item->setIcon (info.Icon_);
-				item->setData (ii->GetUniqueID () + '|' + info.TabClass_, Qt::UserRole);
-				newTabsModel->appendRow (item);
-			}
-		}
-
-		qDebug () << Q_FUNC_INFO
-				<< "DefaultNewTab"
-				<< XmlSettingsManager::Instance ()->property ("DefaultNewTab");
-
-		Core::Instance ().GetCoreInstanceObject ()->
-				GetSettingsDialog ()->SetDataSource ("DefaultNewTab", newTabsModel);
+		BuildNewTabModel ();
+		SettingsTab_->Initialize ();
 	}
 	
 	void CoreInstanceObject::Release ()
@@ -188,5 +171,55 @@ namespace LeechCraft
 	Util::XmlSettingsDialog_ptr CoreInstanceObject::GetSettingsDialog () const
 	{
 		return XmlSettingsDialog_;
+	}
+	
+	TabClasses_t CoreInstanceObject::GetTabClasses () const
+	{
+		return Classes_;
+	}
+	
+	void CoreInstanceObject::TabOpenRequested (const QByteArray& tabClass)
+	{
+		if (tabClass != "org.LeechCraft.SettingsPane")
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown tab class"
+					<< tabClass;
+			return;
+		}
+		
+		emit addNewTab (tr ("Settings"), SettingsTab_);
+	}
+	
+	void CoreInstanceObject::BuildNewTabModel ()
+	{
+		QStandardItemModel *newTabsModel = new QStandardItemModel (this);
+		QStandardItem *defaultItem = new QStandardItem (tr ("Context-dependent"));
+		defaultItem->setData ("contextdependent", Qt::UserRole);
+		newTabsModel->appendRow (defaultItem);
+
+		QObjectList multitabs = Core::Instance ()
+				.GetPluginManager ()->GetAllCastableRoots<IHaveTabs*> ();
+		Q_FOREACH (QObject *object, multitabs)
+		{
+			IInfo *ii = qobject_cast<IInfo*> (object);
+			IHaveTabs *iht = qobject_cast<IHaveTabs*> (object);
+			Q_FOREACH (const TabClassInfo& info, iht->GetTabClasses ())
+			{
+				QStandardItem *item =
+						new QStandardItem (ii->GetName () + ": " + info.VisibleName_);
+				item->setToolTip (info.Description_);
+				item->setIcon (info.Icon_);
+				item->setData (ii->GetUniqueID () + '|' + info.TabClass_, Qt::UserRole);
+				newTabsModel->appendRow (item);
+			}
+		}
+
+		qDebug () << Q_FUNC_INFO
+				<< "DefaultNewTab"
+				<< XmlSettingsManager::Instance ()->property ("DefaultNewTab");
+
+		Core::Instance ().GetCoreInstanceObject ()->
+				GetSettingsDialog ()->SetDataSource ("DefaultNewTab", newTabsModel);
 	}
 }
