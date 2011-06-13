@@ -276,7 +276,6 @@ SET (SRCS
 	childactioneventfilter.cpp
 	tabmanager.cpp
 	logtoolbox.cpp
-	settingssink.cpp
 	authenticationdialog.cpp
 	sslerrorsdialog.cpp
 	storagebackend.cpp
@@ -322,7 +321,6 @@ SET (HEADERS
 	childactioneventfilter.h
 	tabmanager.h
 	logtoolbox.h
-	settingssink.h
 	authenticationdialog.h
 	sslerrorsdialog.h
 	storagebackend.h
@@ -363,7 +361,6 @@ SET (FORMS
 	leechcraft.ui
 	pluginmanagerdialog.ui
 	logtoolbox.ui
-	settingssink.ui
 	authenticationdialog.ui
 	sslerrorsdialog.ui
 	handlerchoicedialog.ui

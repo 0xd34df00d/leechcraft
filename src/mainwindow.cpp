@@ -44,7 +44,6 @@
 #include "skinengine.h"
 #include "childactioneventfilter.h"
 #include "logtoolbox.h"
-#include "settingssink.h"
 #include "graphwidget.h"
 #include "shortcutmanager.h"
 #include "tagsviewer.h"
@@ -361,7 +360,6 @@ void LeechCraft::MainWindow::InitializeInterface ()
 
 	XmlSettingsManager::Instance ()->RegisterObject ("IconSet", this, "updateIconSet");
 
-	SettingsSink_ = new SettingsSink ("LeechCraft", this);
 	ShortcutManager_ = new ShortcutManager (this);
 	Core::Instance ().GetCoreInstanceObject ()->GetSettingsDialog ()->SetCustomWidget ("ShortcutManager", ShortcutManager_);
 
@@ -541,7 +539,7 @@ void LeechCraft::MainWindow::on_ActionGlance__triggered ()
 
 void LeechCraft::MainWindow::on_ActionSettings__triggered ()
 {
-	SettingsSink_->show ();
+	Core::Instance ().GetCoreInstanceObject ()->TabOpenRequested ("org.LeechCraft.SettingsPane");
 }
 
 void LeechCraft::MainWindow::on_ActionAboutLeechCraft__triggered ()
@@ -605,7 +603,6 @@ void LeechCraft::MainWindow::handleQuit ()
 #ifdef QT_DEBUG
 	qDebug () << "Releasing XmlSettingsManager";
 #endif
-	delete SettingsSink_;
 	XmlSettingsManager::Instance ()->Release ();
 #ifdef QT_DEBUG
 	qDebug () << "Destroyed fine";
@@ -783,11 +780,6 @@ void LeechCraft::MainWindow::updateIconSet ()
 
 void LeechCraft::MainWindow::doDelayedInit ()
 {
-	QObjectList settable = Core::Instance ().GetSettables ();
-	for (QObjectList::const_iterator i = settable.begin (),
-			end = settable.end (); i != end; ++i)
-		SettingsSink_->AddDialog (*i);
-
 	QObjectList shortcuts = Core::Instance ().GetShortcuts ();
 	for (QObjectList::const_iterator i = shortcuts.begin (),
 			end = shortcuts.end (); i != end; ++i)

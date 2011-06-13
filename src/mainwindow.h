@@ -48,7 +48,6 @@ namespace LeechCraft
 	class PluginInfo;
 	class PluginManagerDialog;
 	class FancyPopupManager;
-	class SettingsSink;
 	class ShortcutManager;
 	class LogToolBox;
 	class ToolbarGuard;
@@ -73,7 +72,6 @@ namespace LeechCraft
 		QLabel *UploadSpeed_;
 		QLabel *Clock_;
 		Util::GraphWidget *SpeedGraph_;
-		SettingsSink *SettingsSink_;
 		ShortcutManager *ShortcutManager_;
 		FancyPopupManager *FancyPopupManager_;
 		LogToolBox *LogToolBox_;
