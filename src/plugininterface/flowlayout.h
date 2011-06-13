@@ -20,12 +20,13 @@
 #define PLUGININTERFACE_FLOWLAYOUT_H
 #include <QLayout>
 #include <QStyle>
+#include "piconfig.h"
 
 namespace LeechCraft
 {
 namespace Util
 {
-	class FlowLayout : public QLayout
+	class PLUGININTERFACE_API FlowLayout : public QLayout
 	{
 		QList<QLayoutItem*> ItemList_;
 		int HSpace_;

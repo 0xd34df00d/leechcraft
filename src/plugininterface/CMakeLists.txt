@@ -32,6 +32,7 @@ SET (SRCS
 	customnetworkreply.cpp
 	resourceloader.cpp
 	notificationactionhandler.cpp
+	flowlayout.cpp
 	)
 SET (HEADERS
 	tagscompleter.h
@@ -58,6 +59,7 @@ SET (HEADERS
 	customnetworkreply.h
 	resourceloader.h
 	notificationactionhandler.h
+	flowlayout.h
 	idpool.h
 	)
 SET (FORMS

@@ -31,6 +31,12 @@ namespace LeechCraft
 		Q_INTERFACES (ITabWidget)
 		
 		Ui::SettingsTab Ui_;
+		QToolBar *Toolbar_;
+		QAction *ActionBack_;
+		QAction *ActionApply_;
+		QAction *ActionCancel_;
+		
+		QObject *CurrentIHS_;
 	public:
 		SettingsTab (QWidget* = 0);
 		
@@ -40,6 +46,12 @@ namespace LeechCraft
 		QObject* ParentMultiTabs ();
 		void Remove ();
 		QToolBar* GetToolBar () const;
+	private slots:
+		void handleSettingsCalled ();
+		void handleBackRequested ();
+		void handleApply ();
+		void handleCancel ();
+		void on_Cats__currentItemChanged (QTreeWidgetItem*);
 	signals:
 		void remove (QWidget*);
 	};

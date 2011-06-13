@@ -20,21 +20,45 @@
 #include <QVBoxLayout>
 #include <QGroupBox>
 #include <QToolButton>
+#include "plugininterface/flowlayout.h"
+#include "xmlsettingsdialog/xmlsettingsdialog.h"
 #include "interfaces/ihavesettings.h"
 #include "interfaces/iplugin2.h"
 #include "interfaces/ipluginready.h"
 #include "core.h"
 #include "coreinstanceobject.h"
-#include "flowlayout.h"
-#include "plugins/eiskaltdcpp/eiskaltdcpp-qt/src/FlowLayout.h"
 
 namespace LeechCraft
 {
 	SettingsTab::SettingsTab (QWidget *parent)
 	: QWidget (parent)
+	, Toolbar_ (new QToolBar (tr ("Settings bar")))
+	, ActionBack_ (new QAction (tr ("Back"), this))
+	, ActionApply_ (new QAction (tr ("Apply"), this))
+	, ActionCancel_ (new QAction (tr ("Cancel"), this))
+	, CurrentIHS_ (0)
 	{
 		Ui_.setupUi (this);
 		Ui_.ListContents_->setLayout (new QVBoxLayout);
+		Ui_.DialogContents_->setLayout (new QVBoxLayout);
+		
+		ActionBack_->setProperty ("ActionIcon", "back");
+		connect (ActionBack_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleBackRequested ()));
+		
+		ActionApply_->setProperty ("ActionIcon", "apply");
+		connect (ActionApply_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleApply ()));
+		
+		ActionCancel_->setProperty ("ActionIcon", "cancel");
+		connect (ActionCancel_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleCancel ()));
 	}
 	
 	namespace
@@ -108,7 +132,6 @@ namespace LeechCraft
 			
 		Q_FOREACH (QObject *obj, settables)
 		{
-			IHaveSettings *ihs = qobject_cast<IHaveSettings*> (obj);
 			IInfo *ii = qobject_cast<IInfo*> (obj);
 			const QIcon& icon = ii->GetIcon ().isNull () ?
 					QIcon (":/resources/images/defaultpluginicon.svg") :
@@ -121,6 +144,12 @@ namespace LeechCraft
 				butt->setToolTip (ii->GetInfo ());
 				butt->setIconSize (QSize (64, 64));
 				butt->setIcon (icon);
+				butt->setProperty ("SettableObject",
+						QVariant::fromValue<QObject*> (obj));
+				connect (butt,
+						SIGNAL (released ()),
+						this,
+						SLOT (handleSettingsCalled ()));
 				group2box [group]->layout ()->addWidget (butt);
 			}
 		}
@@ -152,6 +181,76 @@ namespace LeechCraft
 	
 	QToolBar* SettingsTab::GetToolBar () const
 	{
-		return 0;
+		return Toolbar_;
+	}
+	
+	void SettingsTab::handleSettingsCalled ()
+	{
+		QObject *obj = sender ()->property ("SettableObject").value<QObject*> ();
+		if (!obj)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "empty object"
+					<< sender ();
+			return;
+		}
+		
+		CurrentIHS_ = obj;
+		
+		IInfo *ii = qobject_cast<IInfo*> (obj);
+		Ui_.SectionName_->setText (tr ("Settings for %1")
+				.arg (ii->GetName ()));
+		
+		IHaveSettings *ihs = qobject_cast<IHaveSettings*> (obj);
+		Ui_.DialogContents_->layout ()->addWidget (ihs->GetSettingsDialog ().get ());
+		ihs->GetSettingsDialog ()->show ();
+		
+		Q_FOREACH (const QString& page, ihs->GetSettingsDialog ()->GetPages ())
+			Ui_.Cats_->addTopLevelItem (new QTreeWidgetItem (QStringList (page)));
+		
+		Ui_.StackedWidget_->setCurrentIndex (1);
+		Toolbar_->addAction (ActionBack_);
+		Toolbar_->addSeparator ();
+		Toolbar_->addAction (ActionApply_);
+		Toolbar_->addAction (ActionCancel_);
+	}
+	
+	void SettingsTab::handleBackRequested ()
+	{
+		Toolbar_->clear ();
+		Ui_.StackedWidget_->setCurrentIndex (0);
+
+		Ui_.Cats_->clear ();
+		if (Ui_.DialogContents_->layout ()->count ())
+		{
+			QLayoutItem *item = Ui_.DialogContents_->layout ()->takeAt (0);
+			item->widget ()->hide ();
+			delete item;
+		}
+		
+		CurrentIHS_ = 0;
+	}
+	
+	void SettingsTab::handleApply ()
+	{
+		qobject_cast<IHaveSettings*> (CurrentIHS_)->GetSettingsDialog ()->accept ();
+	}
+	
+	void SettingsTab::handleCancel()
+	{
+		qobject_cast<IHaveSettings*> (CurrentIHS_)->GetSettingsDialog ()->reject ();
+	}
+	
+	void SettingsTab::on_Cats__currentItemChanged (QTreeWidgetItem *current)
+	{
+		if (!CurrentIHS_)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "called with null CurrentIHS_";
+			return;
+		}
+		
+		const int idx = Ui_.Cats_->indexOfTopLevelItem (current);
+		qobject_cast<IHaveSettings*> (CurrentIHS_)->GetSettingsDialog ()->SetPage (idx);
 	}
 }
