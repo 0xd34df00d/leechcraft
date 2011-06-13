@@ -42,6 +42,7 @@ class QXmppArchiveManager;
 class QXmppEntityTimeManager;
 class QXmppPubSubManager;
 class QXmppDeliveryReceiptsManager;
+class QXmppCaptchaManager;
 
 namespace LeechCraft
 {
@@ -73,6 +74,7 @@ namespace Xoox
 		QXmppArchiveManager *ArchiveManager_;
 		QXmppPubSubManager *PubSubManager_;
 		QXmppDeliveryReceiptsManager *DeliveryReceiptsManager_;
+		QXmppCaptchaManager *CaptchaManager_;
 		
 		AnnotationsManager *AnnotationsManager_;
 
@@ -194,6 +196,7 @@ namespace Xoox
 		void handlePresenceChanged (const QXmppPresence&);
 		void handleMessageReceived (const QXmppMessage&);
 		void handleMessageDelivered (const QString&);
+		void handleCaptchaReceived (const QXmppDataForm&);
 		
 		void handleBookmarksReceived (const QXmppBookmarkSet&);
 		void handleAutojoinQueue ();
