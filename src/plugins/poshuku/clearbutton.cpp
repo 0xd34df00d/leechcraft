@@ -1,7 +1,7 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
- *
+ * Copyright (C) 2011 Minh Ngo
+ * Copyright (C) 2007-2008 Trolltech ASA. All rights reserved.
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -16,35 +16,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_URLFRAME_H
-#define PLUGINS_POSHUKU_URLFRAME_H
-#include <QFrame>
 #include "clearbutton.h"
-#include "ui_urlframe.h"
+#include <QPainter>
+#include <QVariant>
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
-	class URLFrame : public QFrame
+	ClearButton::ClearButton(QWidget *parent)
+		: QToolButton(parent)
 	{
-		Q_OBJECT
+		setCursor(Qt::ArrowCursor);
+		setToolTip(tr("Clear"));
+		setToolButtonStyle(Qt::ToolButtonIconOnly);
+		setVisible(false);
+		setFocusPolicy(Qt::NoFocus);
+		setBackgroundRole(QPalette::Light);
+		setProperty ("ActionIcon", QVariant ("clear"));
+	}
 
-		Ui::URLFrame Ui_;
-		ClearButton *clearButton;
-	public:
-		URLFrame (QWidget* = 0);
+	void ClearButton::textChanged(const QString &text)
+	{
+		setVisible(!text.isEmpty());
+	}
 
-		QLineEdit* GetEdit () const;
-		void SetFavicon (const QIcon&);
-		void AddWidget (QWidget*);
-		void RemoveWidget (QWidget*);
-	private slots:
-		void on_URLEdit__returnPressed ();
-	signals:
-		void load (const QString&);
-	};
-}
-}
-
-#endif
+};
+};

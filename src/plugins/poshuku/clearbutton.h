@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2011 Minh Ngo
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,35 +16,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_URLFRAME_H
-#define PLUGINS_POSHUKU_URLFRAME_H
-#include <QFrame>
-#include "clearbutton.h"
-#include "ui_urlframe.h"
+
+#ifndef PLUGINS_POSHUKU_CLEARBUTTON_H
+#define PLUGINS_POSHUKU_CLEARBUTTON_H
+
+#include <QtGui/QToolButton>
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
-	class URLFrame : public QFrame
+	
+	class ClearButton : public QToolButton
 	{
 		Q_OBJECT
-
-		Ui::URLFrame Ui_;
-		ClearButton *clearButton;
 	public:
-		URLFrame (QWidget* = 0);
+		ClearButton(QWidget* parent = 0);
 
-		QLineEdit* GetEdit () const;
-		void SetFavicon (const QIcon&);
-		void AddWidget (QWidget*);
-		void RemoveWidget (QWidget*);
-	private slots:
-		void on_URLEdit__returnPressed ();
-	signals:
-		void load (const QString&);
+	public slots:
+		void textChanged(const QString &text);
 	};
-}
-}
+};
+};
 
 #endif
