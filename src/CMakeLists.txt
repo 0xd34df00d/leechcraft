@@ -307,6 +307,7 @@ SET (SRCS
 	fullscreenspacerlabel.cpp
 	newtabmenumanager.cpp
 	plugintreebuilder.cpp
+	coreinstanceobject.cpp
 	)
 SET (HEADERS
 	mainwindow.h
@@ -350,6 +351,7 @@ SET (HEADERS
 	newtabmenumanager.h
 	wizardtypechoicepage.h
 	plugintreebuilder.h
+	coreinstanceobject.h
 	3dparty/qxttooltip.h
 	3dparty/qxttooltip_p.h
 	interfaces/structures.h

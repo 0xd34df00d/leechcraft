@@ -38,6 +38,7 @@
 #include "coreproxy.h"
 #include "plugintreebuilder.h"
 #include "config.h"
+#include "coreinstanceobject.h"
 
 namespace LeechCraft
 {
@@ -264,6 +265,8 @@ namespace LeechCraft
 	{
 		CheckPlugins ();
 		FillInstances ();
+		
+		Plugins_.prepend (Core::Instance ().GetCoreInstanceObject ());
 
 		PluginTreeBuilder_->AddObjects (Plugins_);
 		PluginTreeBuilder_->Calculate ();

@@ -68,896 +68,904 @@
 #include "clipboardwatcher.h"
 #include "localsockethandler.h"
 #include "storagebackend.h"
+#include "coreinstanceobject.h"
 
-using namespace LeechCraft;
 using namespace LeechCraft::Util;
 
-LeechCraft::Core::Core ()
-: NetworkAccessManager_ (new NetworkAccessManager)
-, StorageBackend_ (new SQLStorageBackend)
-, DirectoryWatcher_ (new DirectoryWatcher)
-, ClipboardWatcher_ (new ClipboardWatcher)
-, LocalSocketHandler_ (new LocalSocketHandler)
-, NewTabMenuManager_ (new NewTabMenuManager)
+namespace LeechCraft
 {
-	connect (LocalSocketHandler_.get (),
-			SIGNAL (gotEntity (const LeechCraft::Entity&)),
-			this,
-			SLOT (queueEntity (const LeechCraft::Entity&)));
-	connect (NetworkAccessManager_.get (),
-			SIGNAL (error (const QString&)),
-			this,
-			SIGNAL (error (const QString&)));
-
-	connect (DirectoryWatcher_.get (),
-			SIGNAL (gotEntity (const LeechCraft::Entity&)),
-			this,
-			SLOT (handleGotEntity (LeechCraft::Entity)));
-	connect (ClipboardWatcher_.get (),
-			SIGNAL (gotEntity (const LeechCraft::Entity&)),
-			this,
-			SLOT (handleGotEntity (LeechCraft::Entity)));
-
-	StorageBackend_->Prepare ();
-
-	QStringList paths;
-	boost::program_options::variables_map map = qobject_cast<Application*> (qApp)->GetVarMap ();
-	if (map.count ("plugin"))
+	Core::Core ()
+	: NetworkAccessManager_ (new NetworkAccessManager)
+	, StorageBackend_ (new SQLStorageBackend)
+	, DirectoryWatcher_ (new DirectoryWatcher)
+	, ClipboardWatcher_ (new ClipboardWatcher)
+	, LocalSocketHandler_ (new LocalSocketHandler)
+	, NewTabMenuManager_ (new NewTabMenuManager)
+	, CoreInstanceObject_ (new CoreInstanceObject)
 	{
-		const std::vector<std::string>& plugins = map ["plugin"].as<std::vector<std::string> > ();
-		Q_FOREACH (const std::string& plugin, plugins)
-			paths << QDir (QString::fromUtf8 (plugin.c_str ())).absolutePath ();
-	}
-	PluginManager_ = new PluginManager (paths, this);
+		connect (LocalSocketHandler_.get (),
+				SIGNAL (gotEntity (const Entity&)),
+				this,
+				SLOT (queueEntity (const Entity&)));
+		connect (NetworkAccessManager_.get (),
+				SIGNAL (error (const QString&)),
+				this,
+				SIGNAL (error (const QString&)));
 
-	QList<QByteArray> proxyProperties;
-	proxyProperties << "ProxyEnabled"
-		<< "ProxyHost"
-		<< "ProxyPort"
-		<< "ProxyLogin"
-		<< "ProxyPassword"
-		<< "ProxyType";
-	XmlSettingsManager::Instance ()->RegisterObject (proxyProperties,
-			this, "handleProxySettings");
+		connect (DirectoryWatcher_.get (),
+				SIGNAL (gotEntity (const Entity&)),
+				this,
+				SLOT (handleGotEntity (Entity)));
+		connect (ClipboardWatcher_.get (),
+				SIGNAL (gotEntity (const Entity&)),
+				this,
+				SLOT (handleGotEntity (Entity)));
 
-	handleProxySettings ();
-}
+		StorageBackend_->Prepare ();
 
-LeechCraft::Core::~Core ()
-{
-}
-
-Core& LeechCraft::Core::Instance ()
-{
-	static Core core;
-	return core;
-}
-
-void LeechCraft::Core::Release ()
-{
-	LocalSocketHandler_.reset ();
-	XmlSettingsManager::Instance ()->setProperty ("FirstStart", "false");
-	ClipboardWatcher_.reset ();
-	DirectoryWatcher_.reset ();
-
-	PluginManager_->Release ();
-	delete PluginManager_;
-
-	NetworkAccessManager_.reset ();
-
-	StorageBackend_.reset ();
-}
-
-void LeechCraft::Core::SetReallyMainWindow (MainWindow *win)
-{
-	ReallyMainWindow_ = win;
-	ReallyMainWindow_->GetTabWidget ()->installEventFilter (this);
-	ReallyMainWindow_->installEventFilter (this);
-
-	LocalSocketHandler_->SetMainWindow (win);
-}
-
-MainWindow* LeechCraft::Core::GetReallyMainWindow ()
-{
-	return ReallyMainWindow_;
-}
-
-const IShortcutProxy* LeechCraft::Core::GetShortcutProxy () const
-{
-	return ReallyMainWindow_->GetShortcutProxy ();
-}
-
-QObjectList LeechCraft::Core::GetSettables () const
-{
-	return PluginManager_->GetAllCastableRoots<IHaveSettings*> ();
-}
-
-QObjectList LeechCraft::Core::GetShortcuts () const
-{
-	return PluginManager_->GetAllCastableRoots<IHaveShortcuts*> ();
-}
-
-QList<QList<QAction*> > LeechCraft::Core::GetActions2Embed () const
-{
-	const QList<IActionsExporter*>& plugins =
-			PluginManager_->GetAllCastableTo<IActionsExporter*> ();
-	QList<QList<QAction*> > actions;
-	Q_FOREACH (const IActionsExporter *plugin, plugins)
-	{
-		const QList<QAction*>& list = plugin->GetActions (AEPCommonContextMenu);
-		if (!list.size ())
-			continue;
-		actions << list;
-	}
-	return actions;
-}
-
-QAbstractItemModel* LeechCraft::Core::GetPluginsModel () const
-{
-	return PluginManager_;
-}
-
-PluginManager* LeechCraft::Core::GetPluginManager () const
-{
-	return PluginManager_;
-}
-
-StorageBackend* LeechCraft::Core::GetStorageBackend () const
-{
-	return StorageBackend_.get ();
-}
-
-QToolBar* LeechCraft::Core::GetToolBar (int index) const
-{
-	return TabManager_->GetToolBar (index);
-}
-
-void LeechCraft::Core::Setup (QObject *plugin)
-{
-	const IJobHolder *ijh = qobject_cast<IJobHolder*> (plugin);
-
-	InitDynamicSignals (plugin);
-
-	if (ijh)
-		InitJobHolder (plugin);
-
-	if (qobject_cast<IHaveTabs*> (plugin))
-		InitMultiTab (plugin);
-}
-
-void LeechCraft::Core::PostSecondInit (QObject *plugin)
-{
-	if (qobject_cast<IHaveTabs*> (plugin))
-		GetNewTabMenuManager ()->AddObject (plugin);
-}
-
-void LeechCraft::Core::DelayedInit ()
-{
-	connect (this,
-			SIGNAL (error (QString)),
-			ReallyMainWindow_,
-			SLOT (catchError (QString)));
-
-	TabManager_.reset (new TabManager (ReallyMainWindow_->GetTabWidget (),
-				ReallyMainWindow_->GetTabWidget ()));
-
-	PluginManager_->Init ();
-
-	NewTabMenuManager_->SetToolbarActions (GetActions2Embed ());
-
-	disconnect (LocalSocketHandler_.get (),
-			SIGNAL (gotEntity (const LeechCraft::Entity&)),
-			this,
-			SLOT (queueEntity (const LeechCraft::Entity&)));
-
-	connect (LocalSocketHandler_.get (),
-			SIGNAL (gotEntity (const LeechCraft::Entity&)),
-			this,
-			SLOT (handleGotEntity (const LeechCraft::Entity&)));
-
-	QTimer::singleShot (1000,
-			LocalSocketHandler_.get (),
-			SLOT (pullCommandLine ()));
-
-	QTimer::singleShot (2000,
-			this,
-			SLOT (pullEntityQueue ()));
-
-	QTimer::singleShot (10000,
-			this,
-			SLOT (handlePluginLoadErrors ()));
-}
-
-void LeechCraft::Core::TryToAddJob (QString name)
-{
-	DefaultHookProxy_ptr proxy (new DefaultHookProxy);
-	Q_FOREACH (HookSignature<HIDManualJobAddition>::Signature_t f,
-			GetHooks<HIDManualJobAddition> ())
-	{
-		f (proxy, &name);
-
-		if (proxy->IsCancelled ())
-			return;
-	}
-
-	Entity e;
-	if (QFile::exists (name))
-		e.Entity_ = QUrl::fromLocalFile (name);
-	else
-	{
-		const QUrl url (name);
-		e.Entity_ = url.isValid () ? url : name;
-	}
-	e.Parameters_ = FromUserInitiated;
-
-	if (!handleGotEntity (e))
-		emit error (tr ("No plugins are able to download \"%1\"").arg (name));
-}
-
-QPair<qint64, qint64> LeechCraft::Core::GetSpeeds () const
-{
-	qint64 download = 0;
-	qint64 upload = 0;
-
-	Q_FOREACH (QObject *plugin, PluginManager_->GetAllPlugins ())
-	{
-		IDownload *di = qobject_cast<IDownload*> (plugin);
-		if (di)
+		QStringList paths;
+		boost::program_options::variables_map map = qobject_cast<Application*> (qApp)->GetVarMap ();
+		if (map.count ("plugin"))
 		{
+			const std::vector<std::string>& plugins = map ["plugin"].as<std::vector<std::string> > ();
+			Q_FOREACH (const std::string& plugin, plugins)
+				paths << QDir (QString::fromUtf8 (plugin.c_str ())).absolutePath ();
+		}
+		PluginManager_ = new PluginManager (paths, this);
+
+		QList<QByteArray> proxyProperties;
+		proxyProperties << "ProxyEnabled"
+			<< "ProxyHost"
+			<< "ProxyPort"
+			<< "ProxyLogin"
+			<< "ProxyPassword"
+			<< "ProxyType";
+		XmlSettingsManager::Instance ()->RegisterObject (proxyProperties,
+				this, "handleProxySettings");
+
+		handleProxySettings ();
+	}
+
+	Core::~Core ()
+	{
+	}
+
+	Core& Core::Instance ()
+	{
+		static Core core;
+		return core;
+	}
+
+	void Core::Release ()
+	{
+		LocalSocketHandler_.reset ();
+		XmlSettingsManager::Instance ()->setProperty ("FirstStart", "false");
+		ClipboardWatcher_.reset ();
+		DirectoryWatcher_.reset ();
+
+		PluginManager_->Release ();
+		delete PluginManager_;
+
+		NetworkAccessManager_.reset ();
+
+		StorageBackend_.reset ();
+	}
+
+	void Core::SetReallyMainWindow (MainWindow *win)
+	{
+		ReallyMainWindow_ = win;
+		ReallyMainWindow_->GetTabWidget ()->installEventFilter (this);
+		ReallyMainWindow_->installEventFilter (this);
+
+		LocalSocketHandler_->SetMainWindow (win);
+	}
+
+	MainWindow* Core::GetReallyMainWindow ()
+	{
+		return ReallyMainWindow_;
+	}
+
+	const IShortcutProxy* Core::GetShortcutProxy () const
+	{
+		return ReallyMainWindow_->GetShortcutProxy ();
+	}
+
+	QObjectList Core::GetSettables () const
+	{
+		return PluginManager_->GetAllCastableRoots<IHaveSettings*> ();
+	}
+
+	QObjectList Core::GetShortcuts () const
+	{
+		return PluginManager_->GetAllCastableRoots<IHaveShortcuts*> ();
+	}
+
+	QList<QList<QAction*> > Core::GetActions2Embed () const
+	{
+		const QList<IActionsExporter*>& plugins =
+				PluginManager_->GetAllCastableTo<IActionsExporter*> ();
+		QList<QList<QAction*> > actions;
+		Q_FOREACH (const IActionsExporter *plugin, plugins)
+		{
+			const QList<QAction*>& list = plugin->GetActions (AEPCommonContextMenu);
+			if (!list.size ())
+				continue;
+			actions << list;
+		}
+		return actions;
+	}
+
+	QAbstractItemModel* Core::GetPluginsModel () const
+	{
+		return PluginManager_;
+	}
+
+	PluginManager* Core::GetPluginManager () const
+	{
+		return PluginManager_;
+	}
+
+	StorageBackend* Core::GetStorageBackend () const
+	{
+		return StorageBackend_.get ();
+	}
+	
+	CoreInstanceObject* Core::GetCoreInstanceObject () const
+	{
+		return CoreInstanceObject_.get ();
+	}
+
+	QToolBar* Core::GetToolBar (int index) const
+	{
+		return TabManager_->GetToolBar (index);
+	}
+
+	void Core::Setup (QObject *plugin)
+	{
+		const IJobHolder *ijh = qobject_cast<IJobHolder*> (plugin);
+
+		InitDynamicSignals (plugin);
+
+		if (ijh)
+			InitJobHolder (plugin);
+
+		if (qobject_cast<IHaveTabs*> (plugin))
+			InitMultiTab (plugin);
+	}
+
+	void Core::PostSecondInit (QObject *plugin)
+	{
+		if (qobject_cast<IHaveTabs*> (plugin))
+			GetNewTabMenuManager ()->AddObject (plugin);
+	}
+
+	void Core::DelayedInit ()
+	{
+		connect (this,
+				SIGNAL (error (QString)),
+				ReallyMainWindow_,
+				SLOT (catchError (QString)));
+
+		TabManager_.reset (new TabManager (ReallyMainWindow_->GetTabWidget (),
+					ReallyMainWindow_->GetTabWidget ()));
+
+		PluginManager_->Init ();
+
+		NewTabMenuManager_->SetToolbarActions (GetActions2Embed ());
+
+		disconnect (LocalSocketHandler_.get (),
+				SIGNAL (gotEntity (const Entity&)),
+				this,
+				SLOT (queueEntity (const Entity&)));
+
+		connect (LocalSocketHandler_.get (),
+				SIGNAL (gotEntity (const Entity&)),
+				this,
+				SLOT (handleGotEntity (const Entity&)));
+
+		QTimer::singleShot (1000,
+				LocalSocketHandler_.get (),
+				SLOT (pullCommandLine ()));
+
+		QTimer::singleShot (2000,
+				this,
+				SLOT (pullEntityQueue ()));
+
+		QTimer::singleShot (10000,
+				this,
+				SLOT (handlePluginLoadErrors ()));
+	}
+
+	void Core::TryToAddJob (QString name)
+	{
+		DefaultHookProxy_ptr proxy (new DefaultHookProxy);
+		Q_FOREACH (HookSignature<HIDManualJobAddition>::Signature_t f,
+				GetHooks<HIDManualJobAddition> ())
+		{
+			f (proxy, &name);
+
+			if (proxy->IsCancelled ())
+				return;
+		}
+
+		Entity e;
+		if (QFile::exists (name))
+			e.Entity_ = QUrl::fromLocalFile (name);
+		else
+		{
+			const QUrl url (name);
+			e.Entity_ = url.isValid () ? url : name;
+		}
+		e.Parameters_ = FromUserInitiated;
+
+		if (!handleGotEntity (e))
+			emit error (tr ("No plugins are able to download \"%1\"").arg (name));
+	}
+
+	QPair<qint64, qint64> Core::GetSpeeds () const
+	{
+		qint64 download = 0;
+		qint64 upload = 0;
+
+		Q_FOREACH (QObject *plugin, PluginManager_->GetAllPlugins ())
+		{
+			IDownload *di = qobject_cast<IDownload*> (plugin);
+			if (di)
+			{
+				try
+				{
+					download += di->GetDownloadSpeed ();
+					upload += di->GetUploadSpeed ();
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+						<< "unable to get speeds"
+						<< e.what ()
+						<< plugin;
+				}
+				catch (...)
+				{
+					qWarning () << Q_FUNC_INFO
+						<< "unable to get speeds"
+						<< plugin;
+				}
+			}
+		}
+
+		return QPair<qint64, qint64> (download, upload);
+	}
+
+	QNetworkAccessManager* Core::GetNetworkAccessManager () const
+	{
+		return NetworkAccessManager_.get ();
+	}
+
+	QModelIndex Core::MapToSource (const QModelIndex& index) const
+	{
+		const QList<ISummaryRepresentation*>& summaries =
+			PluginManager_->GetAllCastableTo<ISummaryRepresentation*> ();
+		Q_FOREACH (const ISummaryRepresentation *summary, summaries)
+		{
+			const QModelIndex& mapped = summary->MapToSource (index);
+			if (mapped.isValid ())
+				return mapped;
+		}
+		return QModelIndex ();
+	}
+
+	TabManager* Core::GetTabManager () const
+	{
+		return TabManager_.get ();
+	}
+
+	NewTabMenuManager* Core::GetNewTabMenuManager () const
+	{
+		return NewTabMenuManager_.get ();
+	}
+
+	#define LC_APPENDER(a) a##_.Functors_.append (functor)
+	#define LC_GETTER(a) a##_.Functors_
+	#define LC_DEFINE_REGISTER(a) \
+	void Core::RegisterHook (HookSignature<a>::Signature_t functor) \
+	{ \
+		LC_APPENDER(a); \
+	} \
+	template<> \
+		HooksContainer<a>::Functors_t Core::GetHooks<a> () const \
+	{ \
+		return LC_GETTER(a); \
+	}
+	#define LC_TRAVERSER(z,i,array) LC_DEFINE_REGISTER (BOOST_PP_SEQ_ELEM(i, array))
+	#define LC_EXPANDER(Names) BOOST_PP_REPEAT (BOOST_PP_SEQ_SIZE (Names), LC_TRAVERSER, Names)
+		LC_EXPANDER (HOOKS_TYPES_LIST);
+	#undef LC_EXPANDER
+	#undef LC_TRAVERSER
+	#undef LC_DEFINE_REGISTER
+	#undef LC_GETTER
+	#undef LC_APPENDER
+
+	bool Core::eventFilter (QObject *watched, QEvent *e)
+	{
+		if (ReallyMainWindow_ &&
+				watched == ReallyMainWindow_)
+		{
+			if (e->type () == QEvent::DragEnter)
+			{
+				QDragEnterEvent *event = static_cast<QDragEnterEvent*> (e);
+
+				Q_FOREACH (const QString& format, event->mimeData ()->formats ())
+				{
+					const Entity& e = Util::MakeEntity (event->
+								mimeData ()->data (format),
+							QString (),
+							FromUserInitiated,
+							format);
+
+					if (CouldHandle (e))
+					{
+						event->acceptProposedAction ();
+						break;
+					}
+				}
+
+				return true;
+			}
+			else if (e->type () == QEvent::Drop)
+			{
+				QDropEvent *event = static_cast<QDropEvent*> (e);
+
+				Q_FOREACH (const QString& format, event->mimeData ()->formats ())
+				{
+					const Entity& e = Util::MakeEntity (event->
+								mimeData ()->data (format),
+							QString (),
+							FromUserInitiated,
+							format);
+
+					if (handleGotEntity (e))
+					{
+						event->acceptProposedAction ();
+						break;
+					}
+				}
+
+				return true;
+			}
+		}
+		return QObject::eventFilter (watched, e);
+	}
+
+	void Core::handleProxySettings () const
+	{
+		const bool enabled = XmlSettingsManager::Instance ()->property ("ProxyEnabled").toBool ();
+		QNetworkProxy pr;
+		if (enabled)
+		{
+			pr.setHostName (XmlSettingsManager::Instance ()->property ("ProxyHost").toString ());
+			pr.setPort (XmlSettingsManager::Instance ()->property ("ProxyPort").toInt ());
+			pr.setUser (XmlSettingsManager::Instance ()->property ("ProxyLogin").toString ());
+			pr.setPassword (XmlSettingsManager::Instance ()->property ("ProxyPassword").toString ());
+			const QString& type = XmlSettingsManager::Instance ()->property ("ProxyType").toString ();
+			QNetworkProxy::ProxyType pt = QNetworkProxy::HttpProxy;
+			if (type == "socks5")
+				pt = QNetworkProxy::Socks5Proxy;
+			else if (type == "tphttp")
+				pt = QNetworkProxy::HttpProxy;
+			else if (type == "chttp")
+				pr = QNetworkProxy::HttpCachingProxy;
+			else if (type == "cftp")
+				pr = QNetworkProxy::FtpCachingProxy;
+			pr.setType (pt);
+		}
+		else
+			pr.setType (QNetworkProxy::NoProxy);
+		QNetworkProxy::setApplicationProxy (pr);
+		NetworkAccessManager_->setProxy (pr);
+	}
+
+	void Core::handleSettingClicked (const QString& name)
+	{
+		if (name == "ClearCache")
+		{
+			if (QMessageBox::question (ReallyMainWindow_,
+						"LeechCraft",
+						tr ("Do you really want to clear the network cache?"),
+						QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+				return;
+
+			QAbstractNetworkCache *cache = NetworkAccessManager_->cache ();
+			if (cache)
+				cache->clear ();
+		}
+		else if (name == "ClearCookies")
+		{
+			if (QMessageBox::question (ReallyMainWindow_,
+						"LeechCraft",
+						tr ("Do you really want to clear cookies?"),
+						QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+				return;
+
+			CustomCookieJar *jar = static_cast<CustomCookieJar*> (NetworkAccessManager_->cookieJar ());
+			jar->setAllCookies (QList<QNetworkCookie> ());
+			jar->Save ();
+		}
+	}
+
+	bool Core::CouldHandle (Entity e) const
+	{
+		DefaultHookProxy_ptr proxy (new DefaultHookProxy);
+		Q_FOREACH (const HookSignature<HIDCouldHandle>::Signature_t& f,
+				GetHooks<HIDCouldHandle> ())
+		{
+			const bool result = f (proxy, &e);
+
+			if (proxy->IsCancelled ())
+				return result;
+		}
+
+		if (!(e.Parameters_ & OnlyHandle))
+			if (GetObjects (e, OTDownloaders, true).size ())
+				return true;
+
+		if (!(e.Parameters_ & OnlyDownload))
+			if (GetObjects (e, OTHandlers, true).size ())
+				return true;
+
+		return false;
+	}
+
+	namespace
+	{
+		bool DoDownload (IDownload *sd,
+				Entity p,
+				int *id,
+				QObject **pr)
+		{
+			int l = -1;
 			try
 			{
-				download += di->GetDownloadSpeed ();
-				upload += di->GetUploadSpeed ();
+				l = sd->AddJob (p);
 			}
 			catch (const std::exception& e)
 			{
 				qWarning () << Q_FUNC_INFO
-					<< "unable to get speeds"
-					<< e.what ()
-					<< plugin;
+					<< "could not add job"
+					<< e.what ();
+				return false;
 			}
 			catch (...)
 			{
 				qWarning () << Q_FUNC_INFO
-					<< "unable to get speeds"
-					<< plugin;
+					<< "could not add job";
+				return false;
 			}
-		}
-	}
 
-	return QPair<qint64, qint64> (download, upload);
-}
-
-QNetworkAccessManager* LeechCraft::Core::GetNetworkAccessManager () const
-{
-	return NetworkAccessManager_.get ();
-}
-
-QModelIndex LeechCraft::Core::MapToSource (const QModelIndex& index) const
-{
-	const QList<ISummaryRepresentation*>& summaries =
-		PluginManager_->GetAllCastableTo<ISummaryRepresentation*> ();
-	Q_FOREACH (const ISummaryRepresentation *summary, summaries)
-	{
-		const QModelIndex& mapped = summary->MapToSource (index);
-		if (mapped.isValid ())
-			return mapped;
-	}
-	return QModelIndex ();
-}
-
-TabManager* LeechCraft::Core::GetTabManager () const
-{
-	return TabManager_.get ();
-}
-
-NewTabMenuManager* LeechCraft::Core::GetNewTabMenuManager () const
-{
-	return NewTabMenuManager_.get ();
-}
-
-#define LC_APPENDER(a) a##_.Functors_.append (functor)
-#define LC_GETTER(a) a##_.Functors_
-#define LC_DEFINE_REGISTER(a) \
-void LeechCraft::Core::RegisterHook (LeechCraft::HookSignature<a>::Signature_t functor) \
-{ \
-	LC_APPENDER(a); \
-} \
-template<> \
-	LeechCraft::HooksContainer<LeechCraft::a>::Functors_t LeechCraft::Core::GetHooks<a> () const \
-{ \
-	return LC_GETTER(a); \
-}
-#define LC_TRAVERSER(z,i,array) LC_DEFINE_REGISTER (BOOST_PP_SEQ_ELEM(i, array))
-#define LC_EXPANDER(Names) BOOST_PP_REPEAT (BOOST_PP_SEQ_SIZE (Names), LC_TRAVERSER, Names)
-	LC_EXPANDER (HOOKS_TYPES_LIST);
-#undef LC_EXPANDER
-#undef LC_TRAVERSER
-#undef LC_DEFINE_REGISTER
-#undef LC_GETTER
-#undef LC_APPENDER
-
-bool LeechCraft::Core::eventFilter (QObject *watched, QEvent *e)
-{
-	if (ReallyMainWindow_ &&
-			watched == ReallyMainWindow_)
-	{
-		if (e->type () == QEvent::DragEnter)
-		{
-			QDragEnterEvent *event = static_cast<QDragEnterEvent*> (e);
-
-			Q_FOREACH (const QString& format, event->mimeData ()->formats ())
+			if (id)
+				*id = l;
+			if (pr)
 			{
-				const Entity& e = Util::MakeEntity (event->
-							mimeData ()->data (format),
-						QString (),
-						LeechCraft::FromUserInitiated,
-						format);
-
-				if (CouldHandle (e))
-				{
-					event->acceptProposedAction ();
-					break;
-				}
+				const QObjectList& plugins = Core::Instance ().GetPluginManager ()->
+					GetAllCastableRoots<IDownload*> ();
+				*pr = *std::find_if (plugins.begin (), plugins.end (),
+						boost::bind (std::equal_to<IDownload*> (),
+							sd,
+							boost::bind<IDownload*> (
+								static_cast<IDownload* (*) (const QObject*)> (qobject_cast<IDownload*>),
+								_1
+								)));
 			}
 
 			return true;
 		}
-		else if (e->type () == QEvent::Drop)
-		{
-			QDropEvent *event = static_cast<QDropEvent*> (e);
 
-			Q_FOREACH (const QString& format, event->mimeData ()->formats ())
+		bool DoHandle (IEntityHandler *sh,
+				Entity p)
+		{
+			try
 			{
-				const Entity& e = Util::MakeEntity (event->
-							mimeData ()->data (format),
-						QString (),
-						LeechCraft::FromUserInitiated,
-						format);
-
-				if (handleGotEntity (e))
-				{
-					event->acceptProposedAction ();
-					break;
-				}
+				sh->Handle (p);
 			}
-
-			return true;
-		}
-	}
-	return QObject::eventFilter (watched, e);
-}
-
-void LeechCraft::Core::handleProxySettings () const
-{
-	const bool enabled = XmlSettingsManager::Instance ()->property ("ProxyEnabled").toBool ();
-	QNetworkProxy pr;
-	if (enabled)
-	{
-		pr.setHostName (XmlSettingsManager::Instance ()->property ("ProxyHost").toString ());
-		pr.setPort (XmlSettingsManager::Instance ()->property ("ProxyPort").toInt ());
-		pr.setUser (XmlSettingsManager::Instance ()->property ("ProxyLogin").toString ());
-		pr.setPassword (XmlSettingsManager::Instance ()->property ("ProxyPassword").toString ());
-		const QString& type = XmlSettingsManager::Instance ()->property ("ProxyType").toString ();
-		QNetworkProxy::ProxyType pt = QNetworkProxy::HttpProxy;
-		if (type == "socks5")
-			pt = QNetworkProxy::Socks5Proxy;
-		else if (type == "tphttp")
-			pt = QNetworkProxy::HttpProxy;
-		else if (type == "chttp")
-			pr = QNetworkProxy::HttpCachingProxy;
-		else if (type == "cftp")
-			pr = QNetworkProxy::FtpCachingProxy;
-		pr.setType (pt);
-	}
-	else
-		pr.setType (QNetworkProxy::NoProxy);
-	QNetworkProxy::setApplicationProxy (pr);
-	NetworkAccessManager_->setProxy (pr);
-}
-
-void LeechCraft::Core::handleSettingClicked (const QString& name)
-{
-	if (name == "ClearCache")
-	{
-		if (QMessageBox::question (ReallyMainWindow_,
-					"LeechCraft",
-					tr ("Do you really want to clear the network cache?"),
-					QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
-			return;
-
-		QAbstractNetworkCache *cache = NetworkAccessManager_->cache ();
-		if (cache)
-			cache->clear ();
-	}
-	else if (name == "ClearCookies")
-	{
-		if (QMessageBox::question (ReallyMainWindow_,
-					"LeechCraft",
-					tr ("Do you really want to clear cookies?"),
-					QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
-			return;
-
-		CustomCookieJar *jar = static_cast<CustomCookieJar*> (NetworkAccessManager_->cookieJar ());
-		jar->setAllCookies (QList<QNetworkCookie> ());
-		jar->Save ();
-	}
-}
-
-bool LeechCraft::Core::CouldHandle (LeechCraft::Entity e) const
-{
-	DefaultHookProxy_ptr proxy (new DefaultHookProxy);
-	Q_FOREACH (const HookSignature<HIDCouldHandle>::Signature_t& f,
-			GetHooks<HIDCouldHandle> ())
-	{
-		const bool result = f (proxy, &e);
-
-		if (proxy->IsCancelled ())
-			return result;
-	}
-
-	if (!(e.Parameters_ & LeechCraft::OnlyHandle))
-		if (GetObjects (e, OTDownloaders, true).size ())
-			return true;
-
-	if (!(e.Parameters_ & LeechCraft::OnlyDownload))
-		if (GetObjects (e, OTHandlers, true).size ())
-			return true;
-
-	return false;
-}
-
-namespace
-{
-	bool DoDownload (IDownload *sd,
-			LeechCraft::Entity p,
-			int *id,
-			QObject **pr)
-	{
-		int l = -1;
-		try
-		{
-			l = sd->AddJob (p);
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "could not add job"
-				<< e.what ();
-			return false;
-		}
-		catch (...)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "could not add job";
-			return false;
-		}
-
-		if (id)
-			*id = l;
-		if (pr)
-		{
-			const QObjectList& plugins = Core::Instance ().GetPluginManager ()->
-				GetAllCastableRoots<IDownload*> ();
-			*pr = *std::find_if (plugins.begin (), plugins.end (),
-					boost::bind (std::equal_to<IDownload*> (),
-						sd,
-						boost::bind<IDownload*> (
-							static_cast<IDownload* (*) (const QObject*)> (qobject_cast<IDownload*>),
-							_1
-							)));
-		}
-
-		return true;
-	}
-
-	bool DoHandle (IEntityHandler *sh,
-			LeechCraft::Entity p)
-	{
-		try
-		{
-			sh->Handle (p);
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "could not handle job"
-				<< e.what ();
-			return false;
-		}
-		catch (...)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "could not add job";
-			return false;
-		}
-		return true;
-	}
-};
-
-QList<QObject*> LeechCraft::Core::GetObjects (const Entity& p,
-		LeechCraft::Core::ObjectType type, bool detectOnly) const
-{
-	QObjectList plugins;
-	switch (type)
-	{
-		case OTDownloaders:
-			plugins = PluginManager_->GetAllCastableRoots<IDownload*> ();
-			break;
-		case OTHandlers:
-			plugins = PluginManager_->GetAllCastableRoots<IEntityHandler*> ();
-			break;
-	}
-
-	QObjectList result;
-	for (QObjectList::const_iterator it = plugins.begin (), end = plugins.end (); it != end; ++it)
-	{
-		if (*it == sender () &&
-				!(p.Parameters_ & ShouldQuerySource))
-			continue;
-
-		try
-		{
-			switch (type)
+			catch (const std::exception& e)
 			{
-				case OTDownloaders:
-					{
-						IDownload *id = qobject_cast<IDownload*> (*it);
-						if (id->CouldDownload (p))
-							result.append (*it);
-					}
-					break;
-				case OTHandlers:
-					{
-						IEntityHandler *ih = qobject_cast<IEntityHandler*> (*it);
-						if (ih->CouldHandle (p))
-							result.append (*it);
-					}
-					break;
+				qWarning () << Q_FUNC_INFO
+					<< "could not handle job"
+					<< e.what ();
+				return false;
 			}
+			catch (...)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "could not add job";
+				return false;
+			}
+			return true;
+		}
+	};
 
-			if (detectOnly && result.size ())
+	QList<QObject*> Core::GetObjects (const Entity& p,
+			Core::ObjectType type, bool detectOnly) const
+	{
+		QObjectList plugins;
+		switch (type)
+		{
+			case OTDownloaders:
+				plugins = PluginManager_->GetAllCastableRoots<IDownload*> ();
+				break;
+			case OTHandlers:
+				plugins = PluginManager_->GetAllCastableRoots<IEntityHandler*> ();
 				break;
 		}
-		catch (const std::exception& e)
+
+		QObjectList result;
+		for (QObjectList::const_iterator it = plugins.begin (), end = plugins.end (); it != end; ++it)
 		{
-			qWarning () << Q_FUNC_INFO
-				<< "could not query"
-				<< e.what ()
-				<< *it;
+			if (*it == sender () &&
+					!(p.Parameters_ & ShouldQuerySource))
+				continue;
+
+			try
+			{
+				switch (type)
+				{
+					case OTDownloaders:
+						{
+							IDownload *id = qobject_cast<IDownload*> (*it);
+							if (id->CouldDownload (p))
+								result.append (*it);
+						}
+						break;
+					case OTHandlers:
+						{
+							IEntityHandler *ih = qobject_cast<IEntityHandler*> (*it);
+							if (ih->CouldHandle (p))
+								result.append (*it);
+						}
+						break;
+				}
+
+				if (detectOnly && result.size ())
+					break;
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "could not query"
+					<< e.what ()
+					<< *it;
+			}
+			catch (...)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< "could not query"
+					<< *it;
+			}
 		}
-		catch (...)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "could not query"
-				<< *it;
-		}
+
+		return result;
 	}
 
-	return result;
-}
-
-bool LeechCraft::Core::handleGotEntity (Entity p, int *id, QObject **pr)
-{
-	DefaultHookProxy_ptr proxy (new DefaultHookProxy);
-	Q_FOREACH (const HookSignature<HIDGotEntity>::Signature_t& f,
-			GetHooks<HIDGotEntity> ())
+	bool Core::handleGotEntity (Entity p, int *id, QObject **pr)
 	{
-		const bool result = f (proxy, &p, id, pr, sender ());
-
-		if (proxy->IsCancelled ())
-			return result;
-	}
-
-	const QString& string = Util::GetUserText (p);
-
-	std::auto_ptr<HandlerChoiceDialog> dia (new HandlerChoiceDialog (string, ReallyMainWindow_));
-
-	int numDownloaders = 0;
-	if (!(p.Parameters_ & LeechCraft::OnlyHandle))
-		Q_FOREACH (QObject *plugin, GetObjects (p, OTDownloaders, false))
-			numDownloaders +=
-				dia->Add (qobject_cast<IInfo*> (plugin), qobject_cast<IDownload*> (plugin));
-
-	int numHandlers = 0;
-	// Handlers don't fit when we want to delegate.
-	if (!id && !(p.Parameters_ & LeechCraft::OnlyDownload))
-		Q_FOREACH (QObject *plugin, GetObjects (p, OTHandlers, false))
-			numHandlers +=
-				dia->Add (qobject_cast<IInfo*> (plugin), qobject_cast<IEntityHandler*> (plugin));
-
-	if (!(numHandlers + numDownloaders))
-		return false;
-	
-	const bool bcastCandidate = !id && !pr && numHandlers;
-
-	if (p.Parameters_ & FromUserInitiated &&
-			!(p.Parameters_ & AutoAccept))
-	{
-		bool ask = true;
-		if (XmlSettingsManager::Instance ()->
-				property ("DontAskWhenSingle").toBool ())
-			ask = (numDownloaders || numHandlers != 1);
-
-		IDownload *sd = 0;
-		IEntityHandler *sh = 0;
-		if (ask)
+		DefaultHookProxy_ptr proxy (new DefaultHookProxy);
+		Q_FOREACH (const HookSignature<HIDGotEntity>::Signature_t& f,
+				GetHooks<HIDGotEntity> ())
 		{
-			dia->SetFilenameSuggestion (p.Location_);
-			if (dia->exec () == QDialog::Rejected)
-				return false;
-			sd = dia->GetDownload ();
-			sh = dia->GetEntityHandler ();
+			const bool result = f (proxy, &p, id, pr, sender ());
+
+			if (proxy->IsCancelled ())
+				return result;
+		}
+
+		const QString& string = Util::GetUserText (p);
+
+		std::auto_ptr<HandlerChoiceDialog> dia (new HandlerChoiceDialog (string, ReallyMainWindow_));
+
+		int numDownloaders = 0;
+		if (!(p.Parameters_ & OnlyHandle))
+			Q_FOREACH (QObject *plugin, GetObjects (p, OTDownloaders, false))
+				numDownloaders +=
+					dia->Add (qobject_cast<IInfo*> (plugin), qobject_cast<IDownload*> (plugin));
+
+		int numHandlers = 0;
+		// Handlers don't fit when we want to delegate.
+		if (!id && !(p.Parameters_ & OnlyDownload))
+			Q_FOREACH (QObject *plugin, GetObjects (p, OTHandlers, false))
+				numHandlers +=
+					dia->Add (qobject_cast<IInfo*> (plugin), qobject_cast<IEntityHandler*> (plugin));
+
+		if (!(numHandlers + numDownloaders))
+			return false;
+		
+		const bool bcastCandidate = !id && !pr && numHandlers;
+
+		if (p.Parameters_ & FromUserInitiated &&
+				!(p.Parameters_ & AutoAccept))
+		{
+			bool ask = true;
+			if (XmlSettingsManager::Instance ()->
+					property ("DontAskWhenSingle").toBool ())
+				ask = (numDownloaders || numHandlers != 1);
+
+			IDownload *sd = 0;
+			IEntityHandler *sh = 0;
+			if (ask)
+			{
+				dia->SetFilenameSuggestion (p.Location_);
+				if (dia->exec () == QDialog::Rejected)
+					return false;
+				sd = dia->GetDownload ();
+				sh = dia->GetEntityHandler ();
+			}
+			else
+			{
+				sd = dia->GetFirstDownload ();
+				sh = dia->GetFirstEntityHandler ();
+			}
+
+			if (sd)
+			{
+				const QString& dir = dia->GetFilename ();
+				if (dir.isEmpty ())
+					return false;
+
+				p.Location_ = dir;
+
+				if (!DoDownload (sd, p, id, pr))
+				{
+					if (dia->NumChoices () > 1 &&
+							QMessageBox::question (ReallyMainWindow_,
+							tr ("Error"),
+							tr ("Could not add task to the selected downloader, "
+								"would you like to try another one?"),
+							QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+						return handleGotEntity (p, id, pr);
+					else
+						return false;
+				}
+				else
+					return true;
+			}
+			if (sh)
+			{
+				if (!DoHandle (sh, p))
+				{
+					if (dia->NumChoices () > 1 &&
+							QMessageBox::question (ReallyMainWindow_,
+							tr ("Error"),
+							tr ("Could not handle task with the selected handler, "
+								"would you like to try another one?"),
+							QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+						return handleGotEntity (p, id, pr);
+					else
+						return false;
+				}
+				else
+					return true;
+			}
+		}
+		else if (bcastCandidate)
+		{
+			bool success = false;
+			Q_FOREACH (IEntityHandler *ieh, dia->GetAllEntityHandlers ())
+				success = DoHandle (ieh, p) || success;
+			return success;
+		}
+		else if (dia->GetDownload ())
+		{
+			IDownload *sd = dia->GetDownload ();
+			if (p.Location_.isEmpty ())
+				p.Location_ = QDir::tempPath ();
+			return DoDownload (sd, p, id, pr);
+		}
+		else if (((p.Parameters_ & AutoAccept) ||
+					(numHandlers == 1 &&
+					XmlSettingsManager::Instance ()->
+						property ("DontAskWhenSingle").toBool ())) &&
+				dia->GetFirstEntityHandler ())
+			return DoHandle (dia->GetFirstEntityHandler (), p);
+		else if (p.Mime_ == "x-leechcraft/notification")
+		{
+			HandleNotify (p);
+			return true;
 		}
 		else
 		{
-			sd = dia->GetFirstDownload ();
-			sh = dia->GetFirstEntityHandler ();
+			emit log (tr ("Could not handle download entity %1.")
+					.arg (string));
+			return false;
 		}
-
-		if (sd)
-		{
-			const QString& dir = dia->GetFilename ();
-			if (dir.isEmpty ())
-				return false;
-
-			p.Location_ = dir;
-
-			if (!DoDownload (sd, p, id, pr))
-			{
-				if (dia->NumChoices () > 1 &&
-						QMessageBox::question (ReallyMainWindow_,
-						tr ("Error"),
-						tr ("Could not add task to the selected downloader, "
-							"would you like to try another one?"),
-						QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
-					return handleGotEntity (p, id, pr);
-				else
-					return false;
-			}
-			else
-				return true;
-		}
-		if (sh)
-		{
-			if (!DoHandle (sh, p))
-			{
-				if (dia->NumChoices () > 1 &&
-						QMessageBox::question (ReallyMainWindow_,
-						tr ("Error"),
-						tr ("Could not handle task with the selected handler, "
-							"would you like to try another one?"),
-						QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
-					return handleGotEntity (p, id, pr);
-				else
-					return false;
-			}
-			else
-				return true;
-		}
-	}
-	else if (bcastCandidate)
-	{
-		bool success = false;
-		Q_FOREACH (IEntityHandler *ieh, dia->GetAllEntityHandlers ())
-			success = DoHandle (ieh, p) || success;
-		return success;
-	}
-	else if (dia->GetDownload ())
-	{
-		IDownload *sd = dia->GetDownload ();
-		if (p.Location_.isEmpty ())
-			p.Location_ = QDir::tempPath ();
-		return DoDownload (sd, p, id, pr);
-	}
-	else if (((p.Parameters_ & LeechCraft::AutoAccept) ||
-				(numHandlers == 1 &&
-				 XmlSettingsManager::Instance ()->
-					property ("DontAskWhenSingle").toBool ())) &&
-			dia->GetFirstEntityHandler ())
-		return DoHandle (dia->GetFirstEntityHandler (), p);
-	else if (p.Mime_ == "x-leechcraft/notification")
-	{
-		HandleNotify (p);
 		return true;
 	}
-	else
+
+	void Core::handleCouldHandle (const Entity& e, bool *could)
 	{
-		emit log (tr ("Could not handle download entity %1.")
-				.arg (string));
-		return false;
+		*could = CouldHandle (e);
 	}
-	return true;
-}
 
-void LeechCraft::Core::handleCouldHandle (const LeechCraft::Entity& e, bool *could)
-{
-	*could = CouldHandle (e);
-}
-
-void LeechCraft::Core::queueEntity (LeechCraft::Entity e)
-{
-	QueuedEntities_ << e;
-}
-
-void LeechCraft::Core::pullEntityQueue ()
-{
-	Q_FOREACH (const Entity& e, QueuedEntities_)
-		handleGotEntity (e);
-	QueuedEntities_.clear ();
-}
-
-void LeechCraft::Core::handlePluginLoadErrors ()
-{
-	Q_FOREACH (const QString& error, PluginManager_->GetPluginLoadErrors ())
-		handleGotEntity (Util::MakeNotification (tr ("Plugin load error"),
-				error, PCritical_));
-}
-
-void LeechCraft::Core::handleStatusBarChanged (QWidget *contents, const QString& origMessage)
-{
-	QString msg = origMessage;
-	DefaultHookProxy_ptr proxy (new DefaultHookProxy);
-	Q_FOREACH (const HookSignature<HIDStatusBarChanged>::Signature_t& f,
-			GetHooks<HIDStatusBarChanged> ())
+	void Core::queueEntity (Entity e)
 	{
-		f (proxy, contents, &msg);
+		QueuedEntities_ << e;
+	}
 
-		if (proxy->IsCancelled ())
+	void Core::pullEntityQueue ()
+	{
+		Q_FOREACH (const Entity& e, QueuedEntities_)
+			handleGotEntity (e);
+		QueuedEntities_.clear ();
+	}
+
+	void Core::handlePluginLoadErrors ()
+	{
+		Q_FOREACH (const QString& error, PluginManager_->GetPluginLoadErrors ())
+			handleGotEntity (Util::MakeNotification (tr ("Plugin load error"),
+					error, PCritical_));
+	}
+
+	void Core::handleStatusBarChanged (QWidget *contents, const QString& origMessage)
+	{
+		QString msg = origMessage;
+		DefaultHookProxy_ptr proxy (new DefaultHookProxy);
+		Q_FOREACH (const HookSignature<HIDStatusBarChanged>::Signature_t& f,
+				GetHooks<HIDStatusBarChanged> ())
+		{
+			f (proxy, contents, &msg);
+
+			if (proxy->IsCancelled ())
+				return;
+		}
+
+		if (contents->visibleRegion ().isEmpty ())
 			return;
+
+		ReallyMainWindow_->statusBar ()->showMessage (msg, 30000);
 	}
 
-	if (contents->visibleRegion ().isEmpty ())
-		return;
+	void Core::HandleNotify (const Entity& entity)
+	{
+		const bool show = XmlSettingsManager::Instance ()->
+			property ("ShowFinishedDownloadMessages").toBool ();
 
-	ReallyMainWindow_->statusBar ()->showMessage (msg, 30000);
-}
+		QString pname;
+		IInfo *ii = qobject_cast<IInfo*> (sender ());
+		if (ii)
+		{
+			try
+			{
+				pname = ii->GetName ();
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< e.what ()
+					<< sender ();
+			}
+			catch (...)
+			{
+				qWarning () << Q_FUNC_INFO
+					<< sender ();
+			}
+		}
 
-void LeechCraft::Core::HandleNotify (const LeechCraft::Entity& entity)
-{
-	const bool show = XmlSettingsManager::Instance ()->
-		property ("ShowFinishedDownloadMessages").toBool ();
+		const QString& nheader = entity.Entity_.toString ();
+		const QString& ntext = entity.Additional_ ["Text"].toString ();
+		const int priority = entity.Additional_ ["Priority"].toInt ();
 
-	QString pname;
-	IInfo *ii = qobject_cast<IInfo*> (sender ());
-	if (ii)
+		QString header;
+
+		const QString str ("%1: %2");
+
+		if (pname.isEmpty () || nheader.isEmpty ())
+			header = pname + nheader;
+		else
+			header = str.arg (pname).arg (nheader);
+
+		const QString& text = str.arg (header).arg (ntext);
+
+		emit log (text);
+
+		if (priority != PLog_ &&
+				show)
+			ReallyMainWindow_->GetFancyPopupManager ()->ShowMessage (entity);
+	}
+
+	void Core::InitDynamicSignals (QObject *plugin)
+	{
+		const QMetaObject *qmo = plugin->metaObject ();
+
+		if (qmo->indexOfSignal (QMetaObject::normalizedSignature (
+						"couldHandle (const Entity&, bool*)"
+						).constData ()) != -1)
+			connect (plugin,
+					SIGNAL (couldHandle (const Entity&, bool*)),
+					this,
+					SLOT (handleCouldHandle (const Entity&, bool*)));
+
+		if (qmo->indexOfSignal (QMetaObject::normalizedSignature (
+						"gotEntity (const Entity&)"
+						).constData ()) != -1)
+			connect (plugin,
+					SIGNAL (gotEntity (const Entity&)),
+					this,
+					SLOT (handleGotEntity (Entity)),
+					Qt::QueuedConnection);
+
+		if (qmo->indexOfSignal (QMetaObject::normalizedSignature (
+						"delegateEntity (const Entity&, int*, QObject**)"
+						).constData ()) != -1)
+			connect (plugin,
+					SIGNAL (delegateEntity (const Entity&,
+							int*, QObject**)),
+					this,
+					SLOT (handleGotEntity (Entity,
+							int*, QObject**)));
+	}
+
+	void Core::InitJobHolder (QObject *plugin)
 	{
 		try
 		{
-			pname = ii->GetName ();
+			IJobHolder *ijh = qobject_cast<IJobHolder*> (plugin);
+			QAbstractItemModel *model = ijh->GetRepresentation ();
 		}
 		catch (const std::exception& e)
 		{
 			qWarning () << Q_FUNC_INFO
 				<< e.what ()
-				<< sender ();
+				<< plugin;
 		}
 		catch (...)
 		{
 			qWarning () << Q_FUNC_INFO
-				<< sender ();
+				<< plugin;
 		}
 	}
 
-	const QString& nheader = entity.Entity_.toString ();
-	const QString& ntext = entity.Additional_ ["Text"].toString ();
-	const int priority = entity.Additional_ ["Priority"].toInt ();
-
-	QString header;
-
-	const QString str ("%1: %2");
-
-	if (pname.isEmpty () || nheader.isEmpty ())
-		header = pname + nheader;
-	else
-		header = str.arg (pname).arg (nheader);
-
-	const QString& text = str.arg (header).arg (ntext);
-
-	emit log (text);
-
-	if (priority != PLog_ &&
-			show)
-		ReallyMainWindow_->GetFancyPopupManager ()->ShowMessage (entity);
-}
-
-void LeechCraft::Core::InitDynamicSignals (QObject *plugin)
-{
-	const QMetaObject *qmo = plugin->metaObject ();
-
-	if (qmo->indexOfSignal (QMetaObject::normalizedSignature (
-					"couldHandle (const LeechCraft::Entity&, bool*)"
-					).constData ()) != -1)
-		connect (plugin,
-				SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)),
-				this,
-				SLOT (handleCouldHandle (const LeechCraft::Entity&, bool*)));
-
-	if (qmo->indexOfSignal (QMetaObject::normalizedSignature (
-					"gotEntity (const LeechCraft::Entity&)"
-					).constData ()) != -1)
-		connect (plugin,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
-				this,
-				SLOT (handleGotEntity (LeechCraft::Entity)),
-				Qt::QueuedConnection);
-
-	if (qmo->indexOfSignal (QMetaObject::normalizedSignature (
-					"delegateEntity (const LeechCraft::Entity&, int*, QObject**)"
-					).constData ()) != -1)
-		connect (plugin,
-				SIGNAL (delegateEntity (const LeechCraft::Entity&,
-						int*, QObject**)),
-				this,
-				SLOT (handleGotEntity (LeechCraft::Entity,
-						int*, QObject**)));
-}
-
-void LeechCraft::Core::InitJobHolder (QObject *plugin)
-{
-	try
+	void Core::InitEmbedTab (QObject *plugin)
 	{
-		IJobHolder *ijh = qobject_cast<IJobHolder*> (plugin);
-		QAbstractItemModel *model = ijh->GetRepresentation ();
+		InitCommonTab (plugin);
 	}
-	catch (const std::exception& e)
+
+	void Core::InitMultiTab (QObject *plugin)
 	{
-		qWarning () << Q_FUNC_INFO
-			<< e.what ()
-			<< plugin;
+		connect (plugin,
+				SIGNAL (addNewTab (const QString&, QWidget*)),
+				TabManager_.get (),
+				SLOT (add (const QString&, QWidget*)));
+		connect (plugin,
+				SIGNAL (removeTab (QWidget*)),
+				TabManager_.get (),
+				SLOT (remove (QWidget*)));
+
+		InitCommonTab (plugin);
 	}
-	catch (...)
+
+	void Core::InitCommonTab (QObject *plugin)
 	{
-		qWarning () << Q_FUNC_INFO
-			<< plugin;
+		connect (plugin,
+				SIGNAL (changeTabName (QWidget*, const QString&)),
+				TabManager_.get (),
+				SLOT (changeTabName (QWidget*, const QString&)),
+				Qt::UniqueConnection);
+		connect (plugin,
+				SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
+				TabManager_.get (),
+				SLOT (changeTabIcon (QWidget*, const QIcon&)),
+				Qt::UniqueConnection);
+		connect (plugin,
+				SIGNAL (changeTooltip (QWidget*, QWidget*)),
+				TabManager_.get (),
+				SLOT (changeTooltip (QWidget*, QWidget*)),
+				Qt::UniqueConnection);
+		connect (plugin,
+				SIGNAL (statusBarChanged (QWidget*, const QString&)),
+				this,
+				SLOT (handleStatusBarChanged (QWidget*, const QString&)),
+				Qt::UniqueConnection);
+		connect (plugin,
+				SIGNAL (raiseTab (QWidget*)),
+				TabManager_.get (),
+				SLOT (bringToFront (QWidget*)),
+				Qt::UniqueConnection);
 	}
 }
-
-void LeechCraft::Core::InitEmbedTab (QObject *plugin)
-{
-	InitCommonTab (plugin);
-}
-
-void LeechCraft::Core::InitMultiTab (QObject *plugin)
-{
-	connect (plugin,
-			SIGNAL (addNewTab (const QString&, QWidget*)),
-			TabManager_.get (),
-			SLOT (add (const QString&, QWidget*)));
-	connect (plugin,
-			SIGNAL (removeTab (QWidget*)),
-			TabManager_.get (),
-			SLOT (remove (QWidget*)));
-
-	InitCommonTab (plugin);
-}
-
-void LeechCraft::Core::InitCommonTab (QObject *plugin)
-{
-	connect (plugin,
-			SIGNAL (changeTabName (QWidget*, const QString&)),
-			TabManager_.get (),
-			SLOT (changeTabName (QWidget*, const QString&)),
-			Qt::UniqueConnection);
-	connect (plugin,
-			SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
-			TabManager_.get (),
-			SLOT (changeTabIcon (QWidget*, const QIcon&)),
-			Qt::UniqueConnection);
-	connect (plugin,
-			SIGNAL (changeTooltip (QWidget*, QWidget*)),
-			TabManager_.get (),
-			SLOT (changeTooltip (QWidget*, QWidget*)),
-			Qt::UniqueConnection);
-	connect (plugin,
-			SIGNAL (statusBarChanged (QWidget*, const QString&)),
-			this,
-			SLOT (handleStatusBarChanged (QWidget*, const QString&)),
-			Qt::UniqueConnection);
-	connect (plugin,
-			SIGNAL (raiseTab (QWidget*)),
-			TabManager_.get (),
-			SLOT (bringToFront (QWidget*)),
-			Qt::UniqueConnection);
-}
-
