@@ -59,6 +59,7 @@ namespace Xoox
 	class RoomHandler;
 	class CapsManager;
 	class AnnotationsManager;
+	class FetchQueue;
 
 	class ClientConnection : public QObject
 	{
@@ -98,9 +99,9 @@ namespace Xoox
 			QString Nickname_;
 		};
 		QList<JoinQueueItem> JoinQueue_;
-		
-		QList<QString> VCardFetchQueue_;
-		QTimer *VCardFetchTimer_;
+
+		FetchQueue *VCardQueue_;
+		FetchQueue *CapsQueue_;
 		
 		int SocketErrorAccumulator_;
 		
@@ -202,8 +203,6 @@ namespace Xoox
 		void handleDiscoItems (const QXmppDiscoveryIq&);
 		
 		void decrementErrAccumulators ();
-		
-		void handleVCardFetchingQueue ();
 	private:
 		void ScheduleFetchVCard (const QString&);
 		GlooxCLEntry* CreateCLEntry (const QString&);

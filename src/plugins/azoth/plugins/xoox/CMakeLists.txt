@@ -36,6 +36,7 @@ SET (XOOX_SRCS
 	sdmodel.cpp
 	affiliationselectordialog.cpp
 	annotationsmanager.cpp
+	fetchqueue.cpp
 	)
 SET (XOOX_HEADERS
 	xoox.h
@@ -67,6 +68,7 @@ SET (XOOX_HEADERS
 	sdmodel.h
 	affiliationselectordialog.h
 	annotationsmanager.h
+	fetchqueue.h
 	)
 SET (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui

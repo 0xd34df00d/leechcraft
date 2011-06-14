@@ -51,6 +51,7 @@
 #include "vcarddialog.h"
 #include "capsmanager.h"
 #include "annotationsmanager.h"
+#include "fetchqueue.h"
 
 namespace LeechCraft
 {
@@ -65,7 +66,7 @@ namespace Xoox
 	: Client_ (new QXmppClient (this))
 	, MUCManager_ (new QXmppMucManager)
 	, XferManager_ (new QXmppTransferManager)
-	, DiscoveryManager_ (0)
+	, DiscoveryManager_ (Client_->findExtension<QXmppDiscoveryManager> ())
 	, BMManager_ (new QXmppBookmarkManager (Client_))
 	, EntityTimeManager_ (new QXmppEntityTimeManager)
 	, ArchiveManager_ (new QXmppArchiveManager)
@@ -78,7 +79,10 @@ namespace Xoox
 	, CapsManager_ (new CapsManager (this))
 	, IsConnected_ (false)
 	, FirstTimeConnect_ (true)
-	, VCardFetchTimer_ (new QTimer (this))
+	, VCardQueue_ (new FetchQueue (boost::bind (&QXmppVCardManager::requestVCard, &Client_->vCardManager (), _1),
+				1700, 1, this))
+	, CapsQueue_ (new FetchQueue (boost::bind (&QXmppDiscoveryManager::requestInfo, DiscoveryManager_, _1, ""),
+				1000, 1, this))
 	, SocketErrorAccumulator_ (0)
 	{
 		LastState_.State_ = SOffline;
@@ -89,11 +93,6 @@ namespace Xoox
 				this,
 				SLOT (decrementErrAccumulators ()));
 		decrTimer->start (15000);
-		
-		connect (VCardFetchTimer_,
-				SIGNAL (timeout ()),
-				this,
-				SLOT (handleVCardFetchingQueue ()));
 
 		QObject *proxyObj = qobject_cast<GlooxProtocol*> (account->
 					GetParentProtocol ())->GetProxyObject ();
@@ -109,7 +108,6 @@ namespace Xoox
 		
 		AnnotationsManager_ = new AnnotationsManager (this);
 
-		DiscoveryManager_ = Client_->findExtension<QXmppDiscoveryManager> ();
 		DiscoveryManager_->setClientCapabilitiesNode ("http://leechcraft.org/azoth");
 
 		Client_->versionManager ().setClientName ("LeechCraft Azoth");
@@ -334,9 +332,9 @@ namespace Xoox
 	{
 		if (JID2CLEntry_.contains (jid))
 			Q_FOREACH (const QString& variant, JID2CLEntry_ [jid]->Variants ())
-				DiscoveryManager_->requestInfo (jid + '/' + variant);
+				CapsQueue_->Schedule (jid + '/' + variant, FetchQueue::PHigh);
 		else
-			DiscoveryManager_->requestInfo (jid);
+			CapsQueue_->Schedule (jid, FetchQueue::PLow);
 	}
 	
 	void ClientConnection::RequestInfo (const QString& jid,
@@ -975,33 +973,14 @@ namespace Xoox
 			return tr ("Other error.");
 		}
 	}
-	
-	void ClientConnection::handleVCardFetchingQueue ()
-	{
-		int num = std::min (3, VCardFetchQueue_.size ());
-		while (num--)
-			Client_->vCardManager ().requestVCard (VCardFetchQueue_.takeFirst ());
-		
-		if (VCardFetchQueue_.isEmpty ())
-			VCardFetchTimer_->stop ();
-	}
-	
+
 	void ClientConnection::ScheduleFetchVCard (const QString& jid)
 	{
-		if (VCardFetchQueue_.contains (jid))
-			return;
-
-		if (!JID2CLEntry_.contains (jid) ||
-				JID2CLEntry_ [jid]->GetStatus (QString ()).State_ == SOffline)
-			VCardFetchQueue_ << jid;
-		else
-			VCardFetchQueue_.prepend (jid);
-
-		if (!VCardFetchTimer_->isActive ())
-		{
-			Client_->vCardManager ().requestVCard (VCardFetchQueue_.takeFirst ());
-			VCardFetchTimer_->start (5000);
-		}
+		FetchQueue::Priority prio = !JID2CLEntry_.contains (jid) ||
+					JID2CLEntry_ [jid]->GetStatus (QString ()).State_ == SOffline ?
+				FetchQueue::PLow :
+				FetchQueue::PHigh;
+		VCardQueue_->Schedule (jid, prio);
 	}
 
 	GlooxCLEntry* ClientConnection::CreateCLEntry (const QString& jid)
