@@ -180,15 +180,15 @@ namespace LeechCraft
 	
 	void CoreInstanceObject::TabOpenRequested (const QByteArray& tabClass)
 	{
-		if (tabClass != "org.LeechCraft.SettingsPane")
+		if (tabClass == "org.LeechCraft.SettingsPane")
 		{
+			emit addNewTab (tr ("Settings"), SettingsTab_);
+			emit raiseTab (SettingsTab_);
+		}
+		else
 			qWarning () << Q_FUNC_INFO
 					<< "unknown tab class"
 					<< tabClass;
-			return;
-		}
-		
-		emit addNewTab (tr ("Settings"), SettingsTab_);
 	}
 	
 	void CoreInstanceObject::BuildNewTabModel ()
