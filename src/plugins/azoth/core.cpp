@@ -990,10 +990,7 @@ namespace Azoth
 		invalidateClientsIconCache (entry);
 		const QString& tip = MakeTooltipString (entry);
 
-		State state = SOffline;
-		const QStringList& variants = entry->Variants ();
-		if (variants.size ())
-			state = entry->GetStatus (variants.first ()).State_;
+		const State state = entry->GetStatus ().State_;
 		const QIcon& icon = GetIconForState (state);
 
 		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
