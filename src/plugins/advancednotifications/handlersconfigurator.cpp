@@ -16,41 +16,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_ADVANCEDNOTIFICATIONS_H
-#define PLUGINS_ADVANCEDNOTIFICATIONS_ADVANCEDNOTIFICATIONS_H
-#include <boost/shared_ptr.hpp>
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/ientityhandler.h>
+#include "handlersconfigurator.h"
+#include <interfaces/structures.h>
 
 namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
-	class GeneralHandler;
-
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IEntityHandler
+	HandlersConfigurator::HandlersConfigurator (QObject *parent)
+	: QObject (parent)
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IEntityHandler)
-		
-		ICoreProxy_ptr Proxy_;
-		boost::shared_ptr<GeneralHandler> GeneralHandler_;
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-		
-		bool CouldHandle (const Entity&) const;
-		void Handle (Entity);
-	};
-}
-}
+	}
+	
+	QSet<ConcreteHandlerBase::HandlerType> HandlersConfigurator::GetEnabledHandlers (const Entity& e) const
+	{
+		QSet<ConcreteHandlerBase::HandlerType> result;
 
-#endif
+		if (e.Additional_ ["org.LC.AdvNotifications.EventCategory"] == "org.LC.AdvNotifications.IM" &&
+				(e.Additional_ ["org.LC.AdvNotifications.EventType"] == "org.LC.AdvNotifications.IM.IncomingMessage" ||
+				 e.Additional_ ["org.LC.AdvNotifications.EventType"] == "org.LC.AdvNotifications.IM.MUCHighlightMessage"))
+		{
+			result << ConcreteHandlerBase::HTSystemTray;
+			result << ConcreteHandlerBase::HTAudioNotification;
+		}
+		
+		return result;
+	}
+}
+}

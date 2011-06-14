@@ -16,40 +16,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_ADVANCEDNOTIFICATIONS_H
-#define PLUGINS_ADVANCEDNOTIFICATIONS_ADVANCEDNOTIFICATIONS_H
+#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_CONCRETEHANDLERBASE_H
+#define PLUGINS_ADVANCEDNOTIFICATIONS_CONCRETEHANDLERBASE_H
 #include <boost/shared_ptr.hpp>
 #include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/ientityhandler.h>
 
 namespace LeechCraft
 {
+struct Entity;
+
 namespace AdvancedNotifications
 {
 	class GeneralHandler;
 
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IEntityHandler
+	class ConcreteHandlerBase : public QObject
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IEntityHandler)
-		
-		ICoreProxy_ptr Proxy_;
-		boost::shared_ptr<GeneralHandler> GeneralHandler_;
+	protected:
+		GeneralHandler *GH_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-		
-		bool CouldHandle (const Entity&) const;
-		void Handle (Entity);
+		enum HandlerType
+		{
+			HTSystemTray,
+			HTLCTray,
+			HTAudioNotification
+		};
+
+		void SetGeneralHandler (GeneralHandler*);
+
+		virtual HandlerType GetHandlerType () const = 0;
+		virtual void Handle (const Entity&) = 0;
 	};
+	
+	typedef boost::shared_ptr<ConcreteHandlerBase> ConcreteHandlerBase_ptr;
 }
 }
 

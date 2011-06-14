@@ -16,62 +16,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "advancednotifications.h"
-#include <QIcon>
+#include "systemtrayhandler.h"
+#include <interfaces/structures.h>
+#include <QSystemTrayIcon>
 #include "generalhandler.h"
 
 namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	SystemTrayHandler::SystemTrayHandler ()
 	{
-		Proxy_ = proxy;
+	}
+
+	ConcreteHandlerBase::HandlerType SystemTrayHandler::GetHandlerType () const
+	{
+		return HTSystemTray;
+	}
+
+	void SystemTrayHandler::Handle (const Entity& e)
+	{
+		const QString& cat = e.Additional_ ["org.LC.AdvNotifications.EventCategory"].toString ();
 		
-		GeneralHandler_.reset (new GeneralHandler (proxy));
-	}
-
-	void Plugin::SecondInit ()
-	{
-	}
-
-	QByteArray Plugin::GetUniqueID () const
-	{
-		return "org.LeechCraft.AdvancedNotifications";
-	}
-
-	void Plugin::Release ()
-	{
-		GeneralHandler_.reset ();
-	}
-
-	QString Plugin::GetName () const
-	{
-		return "Advanced Notifications";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("Module for the advanced notifications framework.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
+		PrepareSysTrayIcon (cat);
 	}
 	
-	bool Plugin::CouldHandle (const Entity& e) const
+	void SystemTrayHandler::PrepareSysTrayIcon (const QString& category)
 	{
-		return e.Mime_ == "x-leechcraft/notification" &&
-			e.Additional_.contains ("org.LC.AdvNotifications.SenderID") &&
-			e.Additional_.contains ("org.LC.AdvNotifications.EventID");
-	}
-	
-	void Plugin::Handle (Entity e)
-	{
-		GeneralHandler_->Handle (e);
+		if (Category2Icon_.contains (category))
+			return;
+		
+		Category2Icon_ [category] = new QSystemTrayIcon (GH_->GetIconForCategory (category));
+		Category2Icon_ [category]->show ();
 	}
 }
 }
-
-Q_EXPORT_PLUGIN2 (leechcraft_advancednotifications, LeechCraft::AdvancedNotifications::Plugin);

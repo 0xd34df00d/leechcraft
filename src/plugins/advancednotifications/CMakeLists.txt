@@ -23,9 +23,17 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	advancednotifications.cpp
+	generalhandler.cpp
+	concretehandlerbase.cpp
+	systemtrayhandler.cpp
+	handlersconfigurator.cpp
 	)
 SET (HEADERS
 	advancednotifications.h
+	generalhandler.h
+	concretehandlerbase.h
+	systemtrayhandler.h
+	handlersconfigurator.h
 	)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 

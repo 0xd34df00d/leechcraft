@@ -16,39 +16,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_ADVANCEDNOTIFICATIONS_H
-#define PLUGINS_ADVANCEDNOTIFICATIONS_ADVANCEDNOTIFICATIONS_H
-#include <boost/shared_ptr.hpp>
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/ientityhandler.h>
+#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_SYSTEMTRAYHANDLER_H
+#define PLUGINS_ADVANCEDNOTIFICATIONS_SYSTEMTRAYHANDLER_H
+#include <QMap>
+#include "concretehandlerbase.h"
+
+class QSystemTrayIcon;
 
 namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
-	class GeneralHandler;
-
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IEntityHandler
+	class SystemTrayHandler : public ConcreteHandlerBase
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IEntityHandler)
-		
-		ICoreProxy_ptr Proxy_;
-		boost::shared_ptr<GeneralHandler> GeneralHandler_;
+		QMap<QString, QSystemTrayIcon*> Category2Icon_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-		
-		bool CouldHandle (const Entity&) const;
-		void Handle (Entity);
+		SystemTrayHandler ();
+
+		HandlerType GetHandlerType () const;
+		void Handle (const Entity&);
+	private:
+		void PrepareSysTrayIcon (const QString&);
 	};
 }
 }

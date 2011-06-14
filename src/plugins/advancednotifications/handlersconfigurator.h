@@ -16,39 +16,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_ADVANCEDNOTIFICATIONS_H
-#define PLUGINS_ADVANCEDNOTIFICATIONS_ADVANCEDNOTIFICATIONS_H
-#include <boost/shared_ptr.hpp>
+#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_HANDLERSCONFIGURATOR_H
+#define PLUGINS_ADVANCEDNOTIFICATIONS_HANDLERSCONFIGURATOR_H
 #include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/ientityhandler.h>
+#include <QSet>
+#include "concretehandlerbase.h"
 
 namespace LeechCraft
 {
+struct Entity;
+
 namespace AdvancedNotifications
 {
-	class GeneralHandler;
-
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IEntityHandler
+	class HandlersConfigurator : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IEntityHandler)
-		
-		ICoreProxy_ptr Proxy_;
-		boost::shared_ptr<GeneralHandler> GeneralHandler_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		HandlersConfigurator (QObject* = 0);
 		
-		bool CouldHandle (const Entity&) const;
-		void Handle (Entity);
+		QSet<ConcreteHandlerBase::HandlerType> GetEnabledHandlers (const Entity&) const;
 	};
 }
 }
