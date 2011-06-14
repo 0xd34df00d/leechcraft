@@ -31,7 +31,7 @@ namespace Poshuku
 		Q_OBJECT
 
 		Ui::URLFrame Ui_;
-		ClearButton *clearButton;
+		ClearButton *ClearButton_;
 	public:
 		URLFrame (QWidget* = 0);
 

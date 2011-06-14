@@ -1,6 +1,7 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
  * Copyright (C) 2011 Minh Ngo
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +21,7 @@
 #ifndef PLUGINS_POSHUKU_CLEARBUTTON_H
 #define PLUGINS_POSHUKU_CLEARBUTTON_H
 
-#include <QtGui/QToolButton>
+#include <QToolButton>
 
 namespace LeechCraft
 {
@@ -32,7 +33,6 @@ namespace Poshuku
 		Q_OBJECT
 	public:
 		ClearButton (QWidget* parent = 0);
-
 	public slots:
 		void textChanged (const QString &text);
 	};
