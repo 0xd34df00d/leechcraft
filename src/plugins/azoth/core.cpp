@@ -1977,6 +1977,23 @@ namespace Azoth
 			item->setToolTip (tip);
 		}
 	}
+	
+	namespace
+	{
+		void BuildNotification (Entity& e, ICLEntry *other)
+		{
+			e.Additional_ ["NotificationPixmap"] =
+					QVariant::fromValue<QPixmap> (QPixmap::fromImage (other->GetAvatar ()));
+			e.Additional_ ["org.LC.AdvNotifications.SenderID"] = "org.LeechCraft.Azoth";
+			e.Additional_ ["org.LC.AdvNotifications.EventCategory"] =
+					"org.LC.AdvNotifications.IM";
+
+			e.Additional_ ["org.LC.AdvNotifications.VisualPath"] = QStringList (other->GetEntryName ());
+
+			e.Additional_ ["org.LC.Plugins.Azoth.SourceName"] = other->GetEntryName ();
+			e.Additional_ ["org.LC.Plugins.Azoth.SourceID"] = other->GetEntryID ();
+		}
+	}
 
 	void Core::handleEntryGotMessage (QObject *msgObj)
 	{
@@ -2074,9 +2091,7 @@ namespace Azoth
 		Entity e = Util::MakeNotification ("Azoth",
 				msgString,
 				PInfo_);
-		e.Additional_ ["NotificationPixmap"] =
-				QVariant::fromValue<QPixmap> (QPixmap::fromImage (other->GetAvatar ()));
-		e.Additional_ ["org.LC.AdvNotifications.SenderID"] = "org.LeechCraft.Azoth";
+		BuildNotification (e, other);
 		e.Additional_ ["org.LC.AdvNotifications.EventID"] =
 				"org.LC.Plugins.Azoth.IncomingMessageFrom/" + other->GetEntryID ();
 		QStandardItem *someItem = Entry2Items_ [other].value (0);
@@ -2084,19 +2099,18 @@ namespace Azoth
 				someItem->data (CLRUnreadMsgCount).toInt () :
 				0;
 		e.Additional_ ["org.LC.AdvNotifications.Count"] = count;
-		e.Additional_ ["org.LC.AdvNotifications.EventCategory"] =
-				"org.LC.AdvNotifications.IM";
-		e.Additional_ ["org.LC.AdvNotifications.EventType"] =
-				msg->GetMessageType () == IMessage::MTMUCMessage ?
-					isHighlightMsg ?
-						"org.LC.AdvNotifications.IM.MUCHighlightMessage" :
-						"org.LC.AdvNotifications.IM.MUCMessage" :
-					"org.LC.AdvNotifications.IM.IncomingMessage";
-		e.Additional_ ["org.LC.AdvNotifications.VisualPath"] = QStringList (other->GetEntryName ());
-		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = tr ("%n message(s) from %1", 0, count)
-				.arg (other->GetEntryName ());
-		e.Additional_ ["org.LC.Plugins.Azoth.SourceName"] = other->GetEntryName ();
-		e.Additional_ ["org.LC.Plugins.Azoth.SourceID"] = other->GetEntryID ();
+
+		if (msg->GetMessageType () == IMessage::MTMUCMessage)
+		{
+			e.Additional_ ["org.LC.AdvNotifications.VisualPath"] = QStringList (parentCL->GetEntryName ());
+			e.Additional_ ["org.LC.AdvNotifications.EventType"] = isHighlightMsg ?
+					"org.LC.AdvNotifications.IM.MUCHighlightMessage" :
+					"org.LC.AdvNotifications.IM.MUCMessage";
+		}
+		else
+			e.Additional_ ["org.LC.AdvNotifications.EventType"] = "org.LC.AdvNotifications.IM.IncomingMessage";
+
+		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = tr ("%n message(s)", 0, count);
 		e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = msg->GetBody ();
 
 		Util::NotificationActionHandler *nh =
@@ -2206,13 +2220,24 @@ namespace Azoth
 				tr ("%1 requests your attention: %2")
 					.arg (entry->GetEntryName ())
 					.arg (text);
+
 		Entity e = Util::MakeNotification ("Azoth", str, PInfo_);
+		BuildNotification (e, entry);
+		e.Additional_ ["org.LC.AdvNotifications.EventID"] =
+				"org.LC.Plugins.Azoth.AttentionDrawnBy/" + entry->GetEntryID ();
+		e.Additional_ ["org.LC.AdvNotifications.DeltaCount"] = 1;
+		e.Additional_ ["org.LC.AdvNotifications.EventType"] =
+				"org.LC.AdvNotifications.IM.AttentionDrawn";
+		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = tr ("Attention requested");
+		e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = text;
+
 		Util::NotificationActionHandler *nh =
 				new Util::NotificationActionHandler (e, this);
 		nh->AddFunction (tr ("Open chat"),
 				boost::bind (static_cast<void (ChatTabsManager::*) (const ICLEntry*)> (&ChatTabsManager::OpenChat),
 						ChatTabsManager_,
 						entry));
+
 		emit gotEntity (e);
 	}
 	
@@ -2427,6 +2452,11 @@ namespace Azoth
 		e.Additional_ ["org.LC.AdvNotifications.EventCategory"] =
 				"org.LC.AdvNotifications.Cancel";
 		
+		emit gotEntity (e);
+		
+		e.Additional_ ["org.LC.AdvNotifications.EventID"] =
+				"org.LC.Plugins.Azoth.AttentionDrawnBy/" + entry->GetEntryID ();
+				
 		emit gotEntity (e);
 	}
 	
