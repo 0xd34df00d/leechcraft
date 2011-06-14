@@ -19,6 +19,9 @@
 #ifndef PLUGINS_ADVANCEDNOTIFICATIONS_SYSTEMTRAYHANDLER_H
 #define PLUGINS_ADVANCEDNOTIFICATIONS_SYSTEMTRAYHANDLER_H
 #include <QMap>
+#include <QStringList>
+#include <QPixmap>
+#include <QPointer>
 #include "concretehandlerbase.h"
 
 class QSystemTrayIcon;
@@ -29,7 +32,23 @@ namespace AdvancedNotifications
 {
 	class SystemTrayHandler : public ConcreteHandlerBase
 	{
+		Q_OBJECT
+
 		QMap<QString, QSystemTrayIcon*> Category2Icon_;
+		
+		struct EventData
+		{
+			int Count_;
+			QString Category_;
+			QStringList VisualPath_;
+			QString ExtendedText_;
+			QPixmap Pixmap_;
+
+			QPointer<QObject> HandlingObject_;
+			QStringList ActionIDs_;
+			QStringList Actions_;
+		};
+		QMap<QString, EventData> Events_;
 	public:
 		SystemTrayHandler ();
 
@@ -37,6 +56,9 @@ namespace AdvancedNotifications
 		void Handle (const Entity&);
 	private:
 		void PrepareSysTrayIcon (const QString&);
+		void RebuildState ();
+	private slots:
+		void dismissNotification ();
 	};
 }
 }

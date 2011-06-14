@@ -32,9 +32,14 @@ namespace AdvancedNotifications
 	{
 		QSet<ConcreteHandlerBase::HandlerType> result;
 
+		if (e.Additional_ ["org.LC.AdvNotifications.EventCategory"] == "org.LC.AdvNotifications.Cancel")
+		{
+			result << ConcreteHandlerBase::HTSystemTray;
+			result << ConcreteHandlerBase::HTLCTray;
+		}
+
 		if (e.Additional_ ["org.LC.AdvNotifications.EventCategory"] == "org.LC.AdvNotifications.IM" &&
-				(e.Additional_ ["org.LC.AdvNotifications.EventType"] == "org.LC.AdvNotifications.IM.IncomingMessage" ||
-				 e.Additional_ ["org.LC.AdvNotifications.EventType"] == "org.LC.AdvNotifications.IM.MUCHighlightMessage"))
+				e.Additional_ ["org.LC.AdvNotifications.EventType"] != "org.LC.AdvNotifications.IM.MUCMessage")
 		{
 			result << ConcreteHandlerBase::HTSystemTray;
 			result << ConcreteHandlerBase::HTAudioNotification;

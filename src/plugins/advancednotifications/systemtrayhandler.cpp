@@ -19,6 +19,7 @@
 #include "systemtrayhandler.h"
 #include <interfaces/structures.h>
 #include <QSystemTrayIcon>
+#include <QMenu>
 #include "generalhandler.h"
 
 namespace LeechCraft
@@ -37,8 +38,27 @@ namespace AdvancedNotifications
 	void SystemTrayHandler::Handle (const Entity& e)
 	{
 		const QString& cat = e.Additional_ ["org.LC.AdvNotifications.EventCategory"].toString ();
+		const QString& eventId = e.Additional_ ["org.LC.AdvNotifications.EventID"].toString ();
+
+		if (cat != "org.LC.AdvNotifications.Cancel")
+		{
+			PrepareSysTrayIcon (cat);
+			if (!Events_.contains (eventId))
+			{
+				EventData data;
+				data.Category_ = cat;
+				data.VisualPath_ = e.Additional_ ["org.LC.AdvNotifications.VisualPath"].toStringList ();
+				data.Pixmap_ = e.Additional_ ["NotificationPixmap"].value<QPixmap> ();
+				Events_ [eventId] = data;
+			}
+
+			Events_ [eventId].Count_ = e.Additional_.value ("org.LC.AdvNotifications.Count", 1).toInt ();
+			Events_ [eventId].ExtendedText_ = e.Additional_ ["org.LC.AdvNotifications.ExtendedText"].toString ();
+		}
+		else
+			Events_.remove (eventId);
 		
-		PrepareSysTrayIcon (cat);
+		RebuildState ();
 	}
 	
 	void SystemTrayHandler::PrepareSysTrayIcon (const QString& category)
@@ -46,8 +66,43 @@ namespace AdvancedNotifications
 		if (Category2Icon_.contains (category))
 			return;
 		
-		Category2Icon_ [category] = new QSystemTrayIcon (GH_->GetIconForCategory (category));
-		Category2Icon_ [category]->show ();
+		QSystemTrayIcon *trayIcon = new QSystemTrayIcon (GH_->GetIconForCategory (category));
+		trayIcon->setContextMenu (new QMenu ());
+		Category2Icon_ [category] = trayIcon;
+	}
+	
+	void SystemTrayHandler::RebuildState ()
+	{
+		Q_FOREACH (QSystemTrayIcon *icon, Category2Icon_.values ())
+		{
+			icon->hide ();
+			icon->contextMenu ()->clear ();
+		}
+
+		Q_FOREACH (const QString& event, Events_.keys ())
+		{
+			const EventData& data = Events_ [event];
+			QSystemTrayIcon *icon = Category2Icon_ [data.Category_];
+			icon->show ();
+
+			QMenu *menu = icon->contextMenu ();
+			Q_FOREACH (const QString& pathItem, data.VisualPath_)
+				menu = menu->addMenu (pathItem);
+				
+			QAction *dismiss = menu->addAction (tr ("Dismiss"));
+			dismiss->setProperty ("EventID", event);
+			connect (dismiss,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (dismissNotification ()));
+		}
+	}
+	
+	void SystemTrayHandler::dismissNotification ()
+	{
+		const QString& event = sender ()->property ("EventID").toString ();
+		if (Events_.remove (event))
+			RebuildState ();
 	}
 }
 }
