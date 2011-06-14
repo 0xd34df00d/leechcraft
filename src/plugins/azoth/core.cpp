@@ -1987,6 +1987,8 @@ namespace Azoth
 			e.Additional_ ["org.LC.AdvNotifications.SenderID"] = "org.LeechCraft.Azoth";
 			e.Additional_ ["org.LC.AdvNotifications.EventCategory"] =
 					"org.LC.AdvNotifications.IM";
+			e.Additional_ ["org.LC.AdvNotifications.EventID"] =
+					"org.LC.Plugins.Azoth.IncomingMessageFrom/" + other->GetEntryID ();
 
 			e.Additional_ ["org.LC.AdvNotifications.VisualPath"] = QStringList (other->GetEntryName ());
 
@@ -2091,24 +2093,30 @@ namespace Azoth
 		Entity e = Util::MakeNotification ("Azoth",
 				msgString,
 				PInfo_);
-		BuildNotification (e, other);
-		e.Additional_ ["org.LC.AdvNotifications.EventID"] =
-				"org.LC.Plugins.Azoth.IncomingMessageFrom/" + other->GetEntryID ();
-		QStandardItem *someItem = Entry2Items_ [other].value (0);
+
+		QStandardItem *someItem = 0;
+		if (msg->GetMessageType () == IMessage::MTMUCMessage)
+		{
+			BuildNotification (e, parentCL);
+			e.Additional_ ["org.LC.AdvNotifications.EventType"] = isHighlightMsg ?
+					"org.LC.AdvNotifications.IM.MUCHighlightMessage" :
+					"org.LC.AdvNotifications.IM.MUCMessage";
+			e.Additional_ ["NotificationPixmap"] =
+					QVariant::fromValue<QPixmap> (QPixmap::fromImage (other->GetAvatar ()));
+			someItem = Entry2Items_ [parentCL].value (0);
+		}
+		else
+		{
+			BuildNotification (e, other);
+			e.Additional_ ["org.LC.AdvNotifications.EventType"] =
+					"org.LC.AdvNotifications.IM.IncomingMessage";
+			someItem = Entry2Items_ [other].value (0);
+		}
+		
 		const int count = someItem ?
 				someItem->data (CLRUnreadMsgCount).toInt () :
 				0;
 		e.Additional_ ["org.LC.AdvNotifications.Count"] = count;
-
-		if (msg->GetMessageType () == IMessage::MTMUCMessage)
-		{
-			e.Additional_ ["org.LC.AdvNotifications.VisualPath"] = QStringList (parentCL->GetEntryName ());
-			e.Additional_ ["org.LC.AdvNotifications.EventType"] = isHighlightMsg ?
-					"org.LC.AdvNotifications.IM.MUCHighlightMessage" :
-					"org.LC.AdvNotifications.IM.MUCMessage";
-		}
-		else
-			e.Additional_ ["org.LC.AdvNotifications.EventType"] = "org.LC.AdvNotifications.IM.IncomingMessage";
 
 		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = tr ("%n message(s)", 0, count);
 		e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = msg->GetBody ();
