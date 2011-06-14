@@ -55,6 +55,7 @@ namespace LeechCraft
 				NotificationAction *Action_;
 				boost::shared_ptr<Util::ResourceLoader> ThemeLoader_;
 				QPixmap OverridePixmap_;
+				QObject_ptr HandlerGuard_;
 			public:
 				KinotifyWidget (int timeout = 0, QWidget *widget = 0, int animationTimeout = 300);
 				void SetThemeLoader (boost::shared_ptr<Util::ResourceLoader>);
@@ -63,7 +64,7 @@ namespace LeechCraft
 						const QString&, const QSize& size = QSize (350, 70));
 				void OverrideImage (const QPixmap&);
 				void PrepareNotification ();
-				void SetActions (const QStringList&, QObject*);
+				void SetActions (const QStringList&, QObject_ptr);
 			protected:
 				virtual void mousePressEvent (QMouseEvent*);
 				virtual void showEvent (QShowEvent*);

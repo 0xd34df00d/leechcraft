@@ -131,7 +131,7 @@ void NotificationManager::DoNotify (const Entity& e, bool hasActions)
 
 	ActionData ad =
 	{
-		e.Additional_ ["HandlingObject"].value<QObject*> (),
+		e.Additional_ ["HandlingObject"].value<QObject_ptr> (),
 		actions
 	};
 
@@ -192,7 +192,7 @@ void NotificationManager::handleActionInvoked (uint id, QString action)
 
 	int idx = action.toInt ();
 
-	QMetaObject::invokeMethod (ad.Handler_,
+	QMetaObject::invokeMethod (ad.Handler_.get (),
 			"notificationActionTriggered",
 			Qt::QueuedConnection,
 			Q_ARG (int, idx));

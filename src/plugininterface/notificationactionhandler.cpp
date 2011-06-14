@@ -23,11 +23,9 @@ namespace LeechCraft
 namespace Util
 {
 	NotificationActionHandler::NotificationActionHandler (Entity& e, QObject *parent)
-	: QObject (parent)
-	, Entity_ (e)
+	: Entity_ (e)
 	{
-		Entity_.Additional_ ["HandlingObject"] = QVariant::fromValue<QObject*> (this);
-		Entity_.Additional_ ["HandlingObjectXferOwnership"] = true;
+		Entity_.Additional_ ["HandlingObject"] = QVariant::fromValue<QObject_ptr> (QObject_ptr (this));
 	}
 
 	void NotificationActionHandler::AddFunction (const QString& name, NotificationActionHandler::Callback_t callback)

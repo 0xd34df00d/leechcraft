@@ -46,7 +46,7 @@ namespace LeechCraft
 
 				struct ActionData
 				{
-					QPointer<QObject> Handler_;
+					QObject_ptr Handler_;
 					QStringList Actions_;
 				};
 				QMap<QDBusPendingCallWatcher*, ActionData> Watcher2AD_;
