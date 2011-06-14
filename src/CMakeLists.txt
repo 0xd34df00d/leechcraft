@@ -113,6 +113,7 @@ OPTION (ENABLE_TRANSPARENTARCH "Build TransparentArch, the plugin for transparen
 OPTION (ENABLE_JUFFED "Build JuffEd, the advanced text editor" OFF)
 OPTION (ENABLE_GMAILNOTIFIER "Build GMail Notifier which notifies about new mail in your GMail inbox" OFF)
 OPTION (ENABLE_OTZERKALU "Build Otzerkalu, which allows to download web sites recursively" OFF)
+OPTION (ENABLE_ADVANCEDNOTIFICATIONS "Build Advanced Notifications module for more customizable notifications" OFF)
 ENABLE_TESTING ()
 
 FUNCTION (CreateTrVars PlugName Langs TranVar CompiledTranVar)
@@ -252,6 +253,10 @@ IF (ENABLE_OTZERKALU)
 	ADD_SUBDIRECTORY (plugins/otzerkalu)
 ENDIF (ENABLE_OTZERKALU)
 
+IF (ENABLE_ADVANCEDNOTIFICATIONS)
+	ADD_SUBDIRECTORY (plugins/advancednotifications)
+ENDIF (ENABLE_ADVANCEDNOTIFICATIONS)
+
 SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTXML TRUE)
 SET (QT_USE_QTSQL TRUE)
@@ -276,7 +281,6 @@ SET (SRCS
 	childactioneventfilter.cpp
 	tabmanager.cpp
 	logtoolbox.cpp
-	settingssink.cpp
 	authenticationdialog.cpp
 	sslerrorsdialog.cpp
 	storagebackend.cpp
@@ -307,6 +311,8 @@ SET (SRCS
 	fullscreenspacerlabel.cpp
 	newtabmenumanager.cpp
 	plugintreebuilder.cpp
+	coreinstanceobject.cpp
+	settingstab.cpp
 	)
 SET (HEADERS
 	mainwindow.h
@@ -320,7 +326,6 @@ SET (HEADERS
 	childactioneventfilter.h
 	tabmanager.h
 	logtoolbox.h
-	settingssink.h
 	authenticationdialog.h
 	sslerrorsdialog.h
 	storagebackend.h
@@ -350,6 +355,8 @@ SET (HEADERS
 	newtabmenumanager.h
 	wizardtypechoicepage.h
 	plugintreebuilder.h
+	coreinstanceobject.h
+	settingstab.h
 	3dparty/qxttooltip.h
 	3dparty/qxttooltip_p.h
 	interfaces/structures.h
@@ -359,7 +366,6 @@ SET (FORMS
 	leechcraft.ui
 	pluginmanagerdialog.ui
 	logtoolbox.ui
-	settingssink.ui
 	authenticationdialog.ui
 	sslerrorsdialog.ui
 	handlerchoicedialog.ui
@@ -368,6 +374,7 @@ SET (FORMS
 	tagsviewer.ui
 	aboutdialog.ui
 	wizardtypechoicepage.ui
+	settingstab.ui
 	)
 SET (RESOURCES mainresources.qrc)
 

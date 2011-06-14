@@ -1,6 +1,5 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011 Minh Ngo
  * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,29 +16,57 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_P100Q_XMLSETTINGSMANAGER_H
-#define PLUGINS_AZOTH_PLUGINS_P100Q_XMLSETTINGSMANAGER_H
-#include <xmlsettingsdialog/basesettingsmanager.h>
+#include "advancednotifications.h"
+#include <QIcon>
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace AdvancedNotifications
 {
-namespace p100q
-{
-	class XmlSettingsManager : public Util::BaseSettingsManager
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Q_OBJECT
+		Proxy_ = proxy;
+	}
 
-		XmlSettingsManager ();
-	public:
-		static XmlSettingsManager& Instance ();
-	protected:
-		virtual QSettings* BeginSettings () const;
-		virtual void EndSettings (QSettings*) const;
-	};
-}
+	void Plugin::SecondInit ()
+	{
+	}
+
+	QByteArray Plugin::GetUniqueID () const
+	{
+		return "org.LeechCraft.AdvancedNotifications";
+	}
+
+	void Plugin::Release ()
+	{
+	}
+
+	QString Plugin::GetName () const
+	{
+		return "Advanced Notifications";
+	}
+
+	QString Plugin::GetInfo () const
+	{
+		return tr ("Module for the advanced notifications framework.");
+	}
+
+	QIcon Plugin::GetIcon () const
+	{
+		return QIcon ();
+	}
+	
+	bool Plugin::CouldHandle (const Entity& e) const
+	{
+		return e.Mime_ == "x-leechcraft/notification" &&
+			e.Additional_.contains ("org.LC.AdvNotifications.SenderID") &&
+			e.Additional_.contains ("org.LC.AdvNotifications.EventID");
+	}
+	
+	void Plugin::Handle (Entity e)
+	{
+	}
 }
 }
 
-#endif // XMLSETTINGSMANAGER_H
+Q_EXPORT_PLUGIN2 (leechcraft_advancednotifications, LeechCraft::AdvancedNotifications::Plugin);

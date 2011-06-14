@@ -1,6 +1,5 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011 Minh Ngo
  * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,29 +16,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_P100Q_XMLSETTINGSMANAGER_H
-#define PLUGINS_AZOTH_PLUGINS_P100Q_XMLSETTINGSMANAGER_H
-#include <xmlsettingsdialog/basesettingsmanager.h>
+#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_ADVANCEDNOTIFICATIONS_H
+#define PLUGINS_ADVANCEDNOTIFICATIONS_ADVANCEDNOTIFICATIONS_H
+#include <QObject>
+#include <interfaces/iinfo.h>
+#include <interfaces/ientityhandler.h>
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace AdvancedNotifications
 {
-namespace p100q
-{
-	class XmlSettingsManager : public Util::BaseSettingsManager
+	class Plugin : public QObject
+				 , public IInfo
+				 , public IEntityHandler
 	{
 		Q_OBJECT
-
-		XmlSettingsManager ();
+		Q_INTERFACES (IInfo)
+		
+		ICoreProxy_ptr Proxy_;
 	public:
-		static XmlSettingsManager& Instance ();
-	protected:
-		virtual QSettings* BeginSettings () const;
-		virtual void EndSettings (QSettings*) const;
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		QByteArray GetUniqueID () const;
+		void Release ();
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
+		
+		bool CouldHandle (const Entity&) const;
+		void Handle (Entity);
 	};
 }
 }
-}
 
-#endif // XMLSETTINGSMANAGER_H
+#endif

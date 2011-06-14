@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
 	<page>
-		<label value="p100q" />
+		<label value="Azoth p100q" />
 		<groupbox>
 			<label value="p100q" />
 			<item type="checkbox" property="ShowImage" state="off">

@@ -60,7 +60,8 @@ bool NotificationManager::CouldNotify (const Entity& e) const
 		Connection_.get () &&
 		Connection_->isValid () &&
 		e.Mime_ == "x-leechcraft/notification" &&
-		e.Additional_ ["Priority"].toInt () != PLog_;
+		e.Additional_ ["Priority"].toInt () != PLog_ &&
+		!e.Additional_ ["Text"].toString ().isEmpty ();
 }
 
 void NotificationManager::HandleNotification (const Entity& e)

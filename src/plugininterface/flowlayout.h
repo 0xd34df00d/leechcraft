@@ -1,6 +1,5 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011 Minh Ngo
  * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,29 +16,43 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_P100Q_XMLSETTINGSMANAGER_H
-#define PLUGINS_AZOTH_PLUGINS_P100Q_XMLSETTINGSMANAGER_H
-#include <xmlsettingsdialog/basesettingsmanager.h>
+#ifndef PLUGININTERFACE_FLOWLAYOUT_H
+#define PLUGININTERFACE_FLOWLAYOUT_H
+#include <QLayout>
+#include <QStyle>
+#include "piconfig.h"
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace Util
 {
-namespace p100q
-{
-	class XmlSettingsManager : public Util::BaseSettingsManager
+	class PLUGININTERFACE_API FlowLayout : public QLayout
 	{
-		Q_OBJECT
-
-		XmlSettingsManager ();
+		QList<QLayoutItem*> ItemList_;
+		int HSpace_;
+		int VSpace_;
 	public:
-		static XmlSettingsManager& Instance ();
-	protected:
-		virtual QSettings* BeginSettings () const;
-		virtual void EndSettings (QSettings*) const;
+		FlowLayout (QWidget*, int = -1, int = -1, int = -1);
+		FlowLayout (int = -1, int = -1, int = -1);
+		virtual ~FlowLayout ();
+		
+		void addItem (QLayoutItem*);
+		int horizontalSpacing () const;
+		int verticalSpacing () const;
+		Qt::Orientations expandingDirections () const;
+		bool hasHeightForWidth () const;
+		int heightForWidth (int) const;
+		int count () const;
+		QLayoutItem* itemAt (int) const;
+		QLayoutItem* takeAt (int);
+		QSize minimumSize () const;
+		void setGeometry (const QRect&);
+		QSize sizeHint () const;
+	private:
+		int DoLayout (const QRect&, bool) const;
+		int SmartSpacing (QStyle::PixelMetric) const;
 	};
 }
 }
-}
 
-#endif // XMLSETTINGSMANAGER_H
+#endif

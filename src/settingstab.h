@@ -16,40 +16,45 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef SETTINGSSINK_H
-#define SETTINGSSINK_H
-#include <QDialog>
-#include "ui_settingssink.h"
+#ifndef SETTINGSTAB_H
+#define SETTINGSTAB_H
+#include <QWidget>
+#include "interfaces/ihavetabs.h"
+#include "ui_settingstab.h"
 
 namespace LeechCraft
 {
-	namespace Util
-	{
-		class XmlSettingsDialog;
-	};
-
-	class SettingsSink : public QDialog
+	class SettingsTab : public QWidget
+					  , public ITabWidget
 	{
 		Q_OBJECT
-
-		Ui::SettingsSink Ui_;
-		enum
-		{
-			RDialog = 100
-		};
+		Q_INTERFACES (ITabWidget)
+		
+		Ui::SettingsTab Ui_;
+		QToolBar *Toolbar_;
+		QAction *ActionBack_;
+		QAction *ActionApply_;
+		QAction *ActionCancel_;
+		
+		QObject *CurrentIHS_;
 	public:
-		SettingsSink (const QString&,
-				Util::XmlSettingsDialog*,
-				QWidget* = 0);
-		virtual ~SettingsSink ();
-
-		void AddDialog (const QObject*);
-	private:
-		void Add (const QString&, const QIcon&, Util::XmlSettingsDialog*);
+		SettingsTab (QWidget* = 0);
+		
+		void Initialize ();
+		
+		TabClassInfo GetTabClassInfo () const;
+		QObject* ParentMultiTabs ();
+		void Remove ();
+		QToolBar* GetToolBar () const;
 	private slots:
-		void on_Tree__currentItemChanged (QTreeWidgetItem*);
+		void handleSettingsCalled ();
+		void handleBackRequested ();
+		void handleApply ();
+		void handleCancel ();
+		void on_Cats__currentItemChanged (QTreeWidgetItem*);
+	signals:
+		void remove (QWidget*);
 	};
-};
+}
 
 #endif
-
