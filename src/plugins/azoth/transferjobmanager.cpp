@@ -242,7 +242,6 @@ namespace Azoth
 					<< "could not be casted to ITransferJob";
 			return;
 		}
-		
 
 		if (Entry2Incoming_ [job->GetSourceID ()].removeAll (jobObj))
 		{
