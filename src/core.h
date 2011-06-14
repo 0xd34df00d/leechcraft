@@ -44,6 +44,7 @@ namespace LeechCraft
 	class ClipboardWatcher;
 	class LocalSocketHandler;
 	class DirectoryWatcher;
+	class CoreInstanceObject;
 
 	/** Contains all the plugins' models, maps from end-user's tree view
 	 * to plugins' models and much more.
@@ -61,6 +62,7 @@ namespace LeechCraft
 		boost::shared_ptr<ClipboardWatcher> ClipboardWatcher_;
 		boost::shared_ptr<LocalSocketHandler> LocalSocketHandler_;
 		boost::shared_ptr<NewTabMenuManager> NewTabMenuManager_;
+		boost::shared_ptr<CoreInstanceObject> CoreInstanceObject_;
 		QList<Entity> QueuedEntities_;
 
 		Core ();
@@ -130,6 +132,15 @@ namespace LeechCraft
 		/** Returns pointer to the storage backend of the Core.
 		 */
 		StorageBackend* GetStorageBackend () const;
+		
+		/** @brief Returns the pointer to the core instance.
+		 * 
+		 * The core instance object is inserted into the plugin manager
+		 * to simulate the plugin-like behavior of the Core: some of its
+		 * functions are better and shorter expressed as if we consider
+		 * the Core to be a plugin for itself.
+		 */
+		CoreInstanceObject* GetCoreInstanceObject () const;
 
 		/** Returns toolbar for plugin that represents the tab widget's
 		 * page with given index. If the index is invalid or plugin

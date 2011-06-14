@@ -79,7 +79,8 @@ namespace LeechCraft
 			bool Plugin::CouldHandle (const LeechCraft::Entity& e) const
 			{
 				return e.Mime_ == "x-leechcraft/notification" &&
-						e.Additional_ ["Priority"].toInt () != PLog_;
+						e.Additional_ ["Priority"].toInt () != PLog_ &&
+						!e.Additional_ ["Text"].toString ().isEmpty ();
 			}
 
 			void Plugin::Handle (LeechCraft::Entity e)

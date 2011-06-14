@@ -1,7 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
  * Copyright (C) 2006-2011  Georg Rudoy
- * Copyright (C) 2011 Minh Ngo
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,42 +16,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_P100Q_P100Q_H
-#define PLUGINS_AZOTH_PLUGINS_P100Q_P100Q_H
+#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_ADVANCEDNOTIFICATIONS_H
+#define PLUGINS_ADVANCEDNOTIFICATIONS_ADVANCEDNOTIFICATIONS_H
 #include <QObject>
-#include <QRegExp>
-#include <QUrl>
-#include <QWebView>
-#include <QFile>
 #include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-#include <interfaces/ihavesettings.h>
-#include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <interfaces/ientityhandler.h>
 
 namespace LeechCraft
 {
-namespace Azoth
-{
-namespace p100q
+namespace AdvancedNotifications
 {
 	class Plugin : public QObject
 				 , public IInfo
-				 , public IPlugin2
-				 , public IHaveSettings
+				 , public IEntityHandler
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
-
-		QRegExp UserRX_;
-		QRegExp PostAuthorRX_;
-		QRegExp PostRX_;
-		QRegExp PostByUserRX_;
-		QRegExp CommentRX_;
-		QRegExp TagRX_;
-		QRegExp ImgRX_;
-		QRegExp PstoCommentRX_;
+		Q_INTERFACES (IInfo)
 		
-		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
+		ICoreProxy_ptr Proxy_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -61,28 +42,10 @@ namespace p100q
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
-		QStringList Provides () const;
-		QStringList Needs () const;
-		QStringList Uses () const;
-		void SetProvider (QObject*, const QString&);
-
-		QSet<QByteArray> GetPluginClasses () const;
 		
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-		
-	private:
-		QString FormatBody (QString);
-	public slots:
-		void hookFormatBodyEnd (LeechCraft::IHookProxy_ptr proxy,
-				QObject *chatTab,
-				QString body,
-				QObject *message);
-		void hookThemeReloaded (LeechCraft::IHookProxy_ptr proxy,
-				QObject *chatTab,
-				QWebView *view,
-				QObject *entry);
+		bool CouldHandle (const Entity&) const;
+		void Handle (Entity);
 	};
-}
 }
 }
 
