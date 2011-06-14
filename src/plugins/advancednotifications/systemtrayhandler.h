@@ -22,6 +22,7 @@
 #include <QStringList>
 #include <QPixmap>
 #include <QPointer>
+#include <interfaces/structures.h>
 #include "concretehandlerbase.h"
 
 class QSystemTrayIcon;
@@ -44,8 +45,7 @@ namespace AdvancedNotifications
 			QString ExtendedText_;
 			QPixmap Pixmap_;
 
-			QPointer<QObject> HandlingObject_;
-			QStringList ActionIDs_;
+			QObject_ptr HandlingObject_;
 			QStringList Actions_;
 		};
 		QMap<QString, EventData> Events_;
@@ -58,6 +58,7 @@ namespace AdvancedNotifications
 		void PrepareSysTrayIcon (const QString&);
 		void RebuildState ();
 	private slots:
+		void handleActionTriggered ();
 		void dismissNotification ();
 	};
 }

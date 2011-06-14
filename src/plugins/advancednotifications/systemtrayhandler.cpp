@@ -49,6 +49,8 @@ namespace AdvancedNotifications
 				data.Category_ = cat;
 				data.VisualPath_ = e.Additional_ ["org.LC.AdvNotifications.VisualPath"].toStringList ();
 				data.Pixmap_ = e.Additional_ ["NotificationPixmap"].value<QPixmap> ();
+				data.HandlingObject_ = e.Additional_ ["HandlingObject"].value<QObject_ptr> ();
+				data.Actions_ = e.Additional_ ["NotificationActions"].toStringList ();
 				Events_ [eventId] = data;
 			}
 
@@ -89,6 +91,18 @@ namespace AdvancedNotifications
 			Q_FOREACH (const QString& pathItem, data.VisualPath_)
 				menu = menu->addMenu (pathItem);
 				
+			int actionIdx = 0;
+			Q_FOREACH (const QString& actionName, data.Actions_)
+			{
+				QAction *action = menu->addAction (actionName);
+				action->setProperty ("Index", actionIdx++);
+				action->setProperty ("EventID", event);
+				connect (action,
+						SIGNAL (triggered ()),
+						this,
+						SLOT (handleActionTriggered ()));
+			}
+				
 			QAction *dismiss = menu->addAction (tr ("Dismiss"));
 			dismiss->setProperty ("EventID", event);
 			connect (dismiss,
@@ -96,6 +110,23 @@ namespace AdvancedNotifications
 					this,
 					SLOT (dismissNotification ()));
 		}
+	}
+	
+	void SystemTrayHandler::handleActionTriggered ()
+	{
+		const QString& event = sender ()->property ("EventID").toString ();
+		const int index = sender ()->property ("Index").toInt ();
+		if (!Events_.contains (event))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no such event"
+					<< event;
+			return;
+		}
+		
+		QMetaObject::invokeMethod (Events_ [event].HandlingObject_.get (),
+				"notificationActionTriggered",
+				Q_ARG (int, index));
 	}
 	
 	void SystemTrayHandler::dismissNotification ()
