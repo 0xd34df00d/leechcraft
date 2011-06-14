@@ -1977,25 +1977,6 @@ namespace Azoth
 			item->setToolTip (tip);
 		}
 	}
-	
-	namespace
-	{
-		void BuildNotification (Entity& e, ICLEntry *other)
-		{
-			e.Additional_ ["NotificationPixmap"] =
-					QVariant::fromValue<QPixmap> (QPixmap::fromImage (other->GetAvatar ()));
-			e.Additional_ ["org.LC.AdvNotifications.SenderID"] = "org.LeechCraft.Azoth";
-			e.Additional_ ["org.LC.AdvNotifications.EventCategory"] =
-					"org.LC.AdvNotifications.IM";
-			e.Additional_ ["org.LC.AdvNotifications.EventID"] =
-					"org.LC.Plugins.Azoth.IncomingMessageFrom/" + other->GetEntryID ();
-
-			e.Additional_ ["org.LC.AdvNotifications.VisualPath"] = QStringList (other->GetEntryName ());
-
-			e.Additional_ ["org.LC.Plugins.Azoth.SourceName"] = other->GetEntryName ();
-			e.Additional_ ["org.LC.Plugins.Azoth.SourceID"] = other->GetEntryID ();
-		}
-	}
 
 	void Core::handleEntryGotMessage (QObject *msgObj)
 	{

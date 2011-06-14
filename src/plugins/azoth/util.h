@@ -18,12 +18,16 @@
 
 #ifndef PLUGINS_AZOTH_UTIL_H
 #define PLUGINS_AZOTH_UTIL_H
-#include "interfaces/imucentry.h"
 
 namespace LeechCraft
 {
+struct Entity;
+
 namespace Azoth
 {
+	class ICLEntry;
+
+	void BuildNotification (Entity&, ICLEntry*);
 }
 }
 
