@@ -113,6 +113,7 @@ OPTION (ENABLE_TRANSPARENTARCH "Build TransparentArch, the plugin for transparen
 OPTION (ENABLE_JUFFED "Build JuffEd, the advanced text editor" OFF)
 OPTION (ENABLE_GMAILNOTIFIER "Build GMail Notifier which notifies about new mail in your GMail inbox" OFF)
 OPTION (ENABLE_OTZERKALU "Build Otzerkalu, which allows to download web sites recursively" OFF)
+OPTION (ENABLE_ADVANCEDNOTIFICATIONS "Build Advanced Notifications module for more customizable notifications" OFF)
 ENABLE_TESTING ()
 
 FUNCTION (CreateTrVars PlugName Langs TranVar CompiledTranVar)
@@ -251,6 +252,10 @@ ENDIF (ENABLE_GMAILNOTIFIER)
 IF (ENABLE_OTZERKALU)
 	ADD_SUBDIRECTORY (plugins/otzerkalu)
 ENDIF (ENABLE_OTZERKALU)
+
+IF (ENABLE_ADVANCEDNOTIFICATIONS)
+	ADD_SUBDIRECTORY (plugins/advancednotifications)
+ENDIF (ENABLE_ADVANCEDNOTIFICATIONS)
 
 SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTXML TRUE)
