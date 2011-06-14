@@ -69,7 +69,8 @@ namespace Xoox
 	
 	void CapsManager::FetchCaps (const QString& jid, const QByteArray& verNode)
 	{
-		if (!DB_->Contains (verNode))
+		if (!DB_->Contains (verNode) &&
+				verNode.size () > 17)	// 17 is some random number a bit less than 15
 			Connection_->RequestInfo (jid);
 	}
 	
