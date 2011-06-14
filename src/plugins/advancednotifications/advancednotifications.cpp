@@ -18,6 +18,7 @@
 
 #include "advancednotifications.h"
 #include <QIcon>
+#include "generalhandler.h"
 
 namespace LeechCraft
 {
@@ -26,6 +27,8 @@ namespace AdvancedNotifications
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
+		
+		GeneralHandler_.reset (new GeneralHandler (proxy));
 	}
 
 	void Plugin::SecondInit ()
@@ -39,6 +42,7 @@ namespace AdvancedNotifications
 
 	void Plugin::Release ()
 	{
+		GeneralHandler_.reset ();
 	}
 
 	QString Plugin::GetName () const
@@ -65,6 +69,7 @@ namespace AdvancedNotifications
 	
 	void Plugin::Handle (Entity e)
 	{
+		GeneralHandler_->Handle (e);
 	}
 }
 }

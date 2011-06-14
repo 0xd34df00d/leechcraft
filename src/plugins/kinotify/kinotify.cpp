@@ -102,16 +102,14 @@ namespace LeechCraft
 				QStringList actionsNames = e.Additional_ ["NotificationActions"].toStringList ();
 				if (!actionsNames.isEmpty ())
 				{
-					QObject *actionObject = e.Additional_ ["HandlingObject"].value<QObject*> ();
-					if (!actionObject)
+					if (!e.Additional_ ["HandlingObject"].canConvert<QObject_ptr> ())
 						qWarning () << Q_FUNC_INFO
-								<< "value is not QObject*"
+								<< "value is not QObject_ptr"
 								<< e.Additional_ ["HandlingObject"];
 					else
 					{
+						QObject_ptr actionObject = e.Additional_ ["HandlingObject"].value<QObject_ptr> ();
 						notificationWidget->SetActions (actionsNames, actionObject);
-						if (e.Additional_ ["HandlingObjectXferOwnership"].toBool ())
-							actionObject->setParent (notificationWidget);
 					}
 				}
 

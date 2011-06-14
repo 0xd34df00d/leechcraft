@@ -16,18 +16,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_UTIL_H
-#define PLUGINS_AZOTH_UTIL_H
+#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_HANDLERSCONFIGURATOR_H
+#define PLUGINS_ADVANCEDNOTIFICATIONS_HANDLERSCONFIGURATOR_H
+#include <QObject>
+#include <QSet>
+#include "concretehandlerbase.h"
 
 namespace LeechCraft
 {
 struct Entity;
 
-namespace Azoth
+namespace AdvancedNotifications
 {
-	class ICLEntry;
-
-	void BuildNotification (Entity&, ICLEntry*);
+	class HandlersConfigurator : public QObject
+	{
+		Q_OBJECT
+	public:
+		HandlersConfigurator (QObject* = 0);
+		
+		QSet<ConcreteHandlerBase::HandlerType> GetEnabledHandlers (const Entity&) const;
+	};
 }
 }
 

@@ -18,6 +18,8 @@
 
 #ifndef INTERFACES_STRUCTURES_H
 #define INTERFACES_STRUCTURES_H
+#include <boost/shared_ptr.hpp>
+#include <QPointer>
 #include <QMetaType>
 #include <QVariant>
 #include <QString>
@@ -245,11 +247,15 @@ namespace LeechCraft
 	};
 };
 
+typedef boost::shared_ptr<QObject> QObject_ptr;
+
 Q_DECLARE_METATYPE (LeechCraft::Entity);
 Q_DECLARE_METATYPE (QNetworkReply*);
 Q_DECLARE_METATYPE (QIODevice*);
 Q_DECLARE_METATYPE (QToolBar*);
 Q_DECLARE_METATYPE (QMenu*);
+Q_DECLARE_METATYPE (QObject_ptr);
+Q_DECLARE_METATYPE (QPointer<QObject*>);
 Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::TaskParameters);
 
 #endif

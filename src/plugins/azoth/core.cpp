@@ -2013,79 +2013,104 @@ namespace Azoth
 		if (ShouldCountUnread (parentCL, msg))
 			IncreaseUnreadCount (parentCL);
 
-		if (msg->GetDirection () == IMessage::DIn &&
-				!ChatTabsManager_->IsActiveChat (parentCL))
+		if (!msg->GetDirection () == IMessage::DIn ||
+				ChatTabsManager_->IsActiveChat (parentCL))
+			return;
+
+		bool showMsg = XmlSettingsManager::Instance ()
+				.property ("ShowMsgInNotifications").toBool ();
+
+		QString msgString;
+		bool isHighlightMsg = false;
+		switch (msg->GetMessageType ())
 		{
-			bool showMsg = XmlSettingsManager::Instance ()
-					.property ("ShowMsgInNotifications").toBool ();
-
-			QString msgString;
-			switch (msg->GetMessageType ())
+		case IMessage::MTChatMessage:
+			if (XmlSettingsManager::Instance ()
+					.property ("NotifyAboutIncomingMessages").toBool ())
 			{
-			case IMessage::MTChatMessage:
-				if (XmlSettingsManager::Instance ()
-						.property ("NotifyAboutIncomingMessages").toBool ())
+				if (!showMsg)
+					msgString = tr ("Incoming chat message from <em>%1</em>.")
+							.arg (other->GetEntryName ());
+				else
 				{
-					if (!showMsg)
-						msgString = tr ("Incoming chat message from <em>%1</em>.")
-								.arg (other->GetEntryName ());
-					else
-					{
-						const QString& body = msg->GetBody ();
-						const QString& notifMsg = body.size () > 50 ?
-								body.left (50) + "..." :
-								body;
-						msgString = tr ("Incoming chat message from <em>%1</em>: <em>%2</em>.")
-								.arg (other->GetEntryName ())
-								.arg (notifMsg);
-					}
+					const QString& body = msg->GetBody ();
+					const QString& notifMsg = body.size () > 50 ?
+							body.left (50) + "..." :
+							body;
+					msgString = tr ("Incoming chat message from <em>%1</em>: <em>%2</em>.")
+							.arg (other->GetEntryName ())
+							.arg (notifMsg);
 				}
-				break;
-			case IMessage::MTMUCMessage:
+			}
+			break;
+		case IMessage::MTMUCMessage:
+		{
+			isHighlightMsg = IsHighlightMessage (msg);
+			if (isHighlightMsg && XmlSettingsManager::Instance ()
+					.property ("NotifyAboutConferenceHighlights").toBool ())
 			{
-				if (IsHighlightMessage (msg) && XmlSettingsManager::Instance ()
-						.property ("NotifyAboutConferenceHighlights").toBool ())
+				if (!showMsg)
+					msgString = tr ("Highlighted in conference <em>%1</em> by <em>%2</em>.")
+							.arg (parentCL->GetEntryName ())
+							.arg (other->GetEntryName ());
+				else
 				{
-					if (!showMsg)
-						msgString = tr ("Highlighted in conference <em>%1</em> by <em>%2</em>.")
-								.arg (parentCL->GetEntryName ())
-								.arg (other->GetEntryName ());
-					else
-					{
-						const QString& body = msg->GetBody ();
-						const QString& notifMsg = body.size () > 50 ?
-								body.left (50) + "..." :
-								body;
-						msgString = tr ("Highlighted in conference <em>%1</em> by <em>%2</em>: <em>%3</em>.")
-								.arg (parentCL->GetEntryName ())
-								.arg (other->GetEntryName ())
-								.arg (notifMsg);
-					}
+					const QString& body = msg->GetBody ();
+					const QString& notifMsg = body.size () > 50 ?
+							body.left (50) + "..." :
+							body;
+					msgString = tr ("Highlighted in conference <em>%1</em> by <em>%2</em>: <em>%3</em>.")
+							.arg (parentCL->GetEntryName ())
+							.arg (other->GetEntryName ())
+							.arg (notifMsg);
 				}
-				break;
 			}
-			default:
-				break;
-			}
-
-			if (msgString.size ())
-			{
-				Entity e = Util::MakeNotification ("Azoth",
-						msgString,
-						PInfo_);
-				e.Additional_ ["NotificationPixmap"] =
-						QVariant::fromValue<QPixmap> (QPixmap::fromImage (other->GetAvatar ()));
-				Util::NotificationActionHandler *nh =
-						new Util::NotificationActionHandler (e, this);
-				nh->AddFunction (tr ("Open chat"),
-						boost::bind (static_cast<void (ChatTabsManager::*) (const ICLEntry*)> (&ChatTabsManager::OpenChat),
-								ChatTabsManager_,
-								parentCL));
-				emit gotEntity (e);
-			}
+			break;
 		}
-	}
+		default:
+			return;
+		}
 
+		Entity e = Util::MakeNotification ("Azoth",
+				msgString,
+				PInfo_);
+
+		QStandardItem *someItem = 0;
+		if (msg->GetMessageType () == IMessage::MTMUCMessage)
+		{
+			BuildNotification (e, parentCL);
+			e.Additional_ ["org.LC.AdvNotifications.EventType"] = isHighlightMsg ?
+					"org.LC.AdvNotifications.IM.MUCHighlightMessage" :
+					"org.LC.AdvNotifications.IM.MUCMessage";
+			e.Additional_ ["NotificationPixmap"] =
+					QVariant::fromValue<QPixmap> (QPixmap::fromImage (other->GetAvatar ()));
+			someItem = Entry2Items_ [parentCL].value (0);
+		}
+		else
+		{
+			BuildNotification (e, other);
+			e.Additional_ ["org.LC.AdvNotifications.EventType"] =
+					"org.LC.AdvNotifications.IM.IncomingMessage";
+			someItem = Entry2Items_ [other].value (0);
+		}
+		
+		const int count = someItem ?
+				someItem->data (CLRUnreadMsgCount).toInt () :
+				0;
+		e.Additional_ ["org.LC.AdvNotifications.Count"] = count;
+
+		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = tr ("%n message(s)", 0, count);
+		e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = msg->GetBody ();
+
+		Util::NotificationActionHandler *nh =
+				new Util::NotificationActionHandler (e, this);
+		nh->AddFunction (tr ("Open chat"),
+				boost::bind (static_cast<void (ChatTabsManager::*) (const ICLEntry*)> (&ChatTabsManager::OpenChat),
+						ChatTabsManager_,
+						parentCL));
+
+		emit gotEntity (e);
+	}
 
 	namespace
 	{
@@ -2184,13 +2209,24 @@ namespace Azoth
 				tr ("%1 requests your attention: %2")
 					.arg (entry->GetEntryName ())
 					.arg (text);
+
 		Entity e = Util::MakeNotification ("Azoth", str, PInfo_);
+		BuildNotification (e, entry);
+		e.Additional_ ["org.LC.AdvNotifications.EventID"] =
+				"org.LC.Plugins.Azoth.AttentionDrawnBy/" + entry->GetEntryID ();
+		e.Additional_ ["org.LC.AdvNotifications.DeltaCount"] = 1;
+		e.Additional_ ["org.LC.AdvNotifications.EventType"] =
+				"org.LC.AdvNotifications.IM.AttentionDrawn";
+		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = tr ("Attention requested");
+		e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = text;
+
 		Util::NotificationActionHandler *nh =
 				new Util::NotificationActionHandler (e, this);
 		nh->AddFunction (tr ("Open chat"),
 				boost::bind (static_cast<void (ChatTabsManager::*) (const ICLEntry*)> (&ChatTabsManager::OpenChat),
 						ChatTabsManager_,
 						entry));
+
 		emit gotEntity (e);
 	}
 	
@@ -2397,6 +2433,20 @@ namespace Azoth
 			item->setData (0, CLRUnreadMsgCount);
 			RecalculateUnreadForParents (item);
 		}
+		
+		Entity e = Util::MakeNotification ("Azoth", QString (), PInfo_);
+		e.Additional_ ["org.LC.AdvNotifications.SenderID"] = "org.LeechCraft.Azoth";
+		e.Additional_ ["org.LC.AdvNotifications.EventID"] =
+				"org.LC.Plugins.Azoth.IncomingMessageFrom/" + entry->GetEntryID ();
+		e.Additional_ ["org.LC.AdvNotifications.EventCategory"] =
+				"org.LC.AdvNotifications.Cancel";
+		
+		emit gotEntity (e);
+		
+		e.Additional_ ["org.LC.AdvNotifications.EventID"] =
+				"org.LC.Plugins.Azoth.AttentionDrawnBy/" + entry->GetEntryID ();
+				
+		emit gotEntity (e);
 	}
 	
 	void Core::handleFileOffered (QObject *jobObj)

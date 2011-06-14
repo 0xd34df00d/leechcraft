@@ -16,18 +16,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_UTIL_H
-#define PLUGINS_AZOTH_UTIL_H
+#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_CONCRETEHANDLERBASE_H
+#define PLUGINS_ADVANCEDNOTIFICATIONS_CONCRETEHANDLERBASE_H
+#include <boost/shared_ptr.hpp>
+#include <QObject>
 
 namespace LeechCraft
 {
 struct Entity;
 
-namespace Azoth
+namespace AdvancedNotifications
 {
-	class ICLEntry;
+	class GeneralHandler;
 
-	void BuildNotification (Entity&, ICLEntry*);
+	class ConcreteHandlerBase : public QObject
+	{
+	protected:
+		GeneralHandler *GH_;
+	public:
+		enum HandlerType
+		{
+			HTSystemTray,
+			HTLCTray,
+			HTAudioNotification
+		};
+
+		void SetGeneralHandler (GeneralHandler*);
+
+		virtual HandlerType GetHandlerType () const = 0;
+		virtual void Handle (const Entity&) = 0;
+	};
+	
+	typedef boost::shared_ptr<ConcreteHandlerBase> ConcreteHandlerBase_ptr;
 }
 }
 

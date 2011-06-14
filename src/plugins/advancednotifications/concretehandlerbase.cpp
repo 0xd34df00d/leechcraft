@@ -16,19 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_UTIL_H
-#define PLUGINS_AZOTH_UTIL_H
+#include "concretehandlerbase.h"
 
 namespace LeechCraft
 {
-struct Entity;
-
-namespace Azoth
+namespace AdvancedNotifications
 {
-	class ICLEntry;
-
-	void BuildNotification (Entity&, ICLEntry*);
+	void ConcreteHandlerBase::SetGeneralHandler (GeneralHandler *gh)
+	{
+		GH_ = gh;
+	}
 }
 }
-
-#endif

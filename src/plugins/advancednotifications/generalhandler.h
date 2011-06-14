@@ -16,18 +16,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_UTIL_H
-#define PLUGINS_AZOTH_UTIL_H
+#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_GENERALHANDLER_H
+#define PLUGINS_ADVANCEDNOTIFICATIONS_GENERALHANDLER_H
+#include <QList>
+#include <QIcon>
+#include <interfaces/iinfo.h>
+#include "concretehandlerbase.h"
 
 namespace LeechCraft
 {
-struct Entity;
-
-namespace Azoth
+namespace AdvancedNotifications
 {
-	class ICLEntry;
+	class HandlersConfigurator;
 
-	void BuildNotification (Entity&, ICLEntry*);
+	class GeneralHandler
+	{
+		QList<ConcreteHandlerBase_ptr> Handlers_;
+		
+		ICoreProxy_ptr Proxy_;
+		HandlersConfigurator *HandlersConfigurator_;
+		QMap<QString, QString> Cat2IconName_;
+	public:
+		GeneralHandler (ICoreProxy_ptr);
+		
+		void Handle (const Entity&);		
+		HandlersConfigurator* GetHandlersConfigurator () const;
+		
+		QIcon GetIconForCategory (const QString&) const;
+	};
 }
 }
 

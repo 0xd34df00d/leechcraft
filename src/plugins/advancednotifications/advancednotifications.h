@@ -18,6 +18,7 @@
 
 #ifndef PLUGINS_ADVANCEDNOTIFICATIONS_ADVANCEDNOTIFICATIONS_H
 #define PLUGINS_ADVANCEDNOTIFICATIONS_ADVANCEDNOTIFICATIONS_H
+#include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/ientityhandler.h>
@@ -26,14 +27,17 @@ namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
+	class GeneralHandler;
+
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IEntityHandler
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo)
+		Q_INTERFACES (IInfo IEntityHandler)
 		
 		ICoreProxy_ptr Proxy_;
+		boost::shared_ptr<GeneralHandler> GeneralHandler_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

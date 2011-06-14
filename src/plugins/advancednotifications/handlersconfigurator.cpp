@@ -16,19 +16,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_UTIL_H
-#define PLUGINS_AZOTH_UTIL_H
+#include "handlersconfigurator.h"
+#include <interfaces/structures.h>
 
 namespace LeechCraft
 {
-struct Entity;
-
-namespace Azoth
+namespace AdvancedNotifications
 {
-	class ICLEntry;
+	HandlersConfigurator::HandlersConfigurator (QObject *parent)
+	: QObject (parent)
+	{
+	}
+	
+	QSet<ConcreteHandlerBase::HandlerType> HandlersConfigurator::GetEnabledHandlers (const Entity& e) const
+	{
+		QSet<ConcreteHandlerBase::HandlerType> result;
 
-	void BuildNotification (Entity&, ICLEntry*);
+		if (e.Additional_ ["org.LC.AdvNotifications.EventCategory"] == "org.LC.AdvNotifications.Cancel")
+		{
+			result << ConcreteHandlerBase::HTSystemTray;
+			result << ConcreteHandlerBase::HTLCTray;
+		}
+
+		if (e.Additional_ ["org.LC.AdvNotifications.EventCategory"] == "org.LC.AdvNotifications.IM" &&
+				e.Additional_ ["org.LC.AdvNotifications.EventType"] != "org.LC.AdvNotifications.IM.MUCMessage")
+		{
+			result << ConcreteHandlerBase::HTSystemTray;
+			result << ConcreteHandlerBase::HTAudioNotification;
+		}
+		
+		return result;
+	}
 }
 }
-
-#endif
