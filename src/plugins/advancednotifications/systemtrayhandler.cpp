@@ -54,11 +54,15 @@ namespace AdvancedNotifications
 				Events_ [eventId] = data;
 			}
 
-			Events_ [eventId].Count_ = e.Additional_.value ("org.LC.AdvNotifications.Count", 1).toInt ();
+			const int delta = e.Additional_.value ("org.LC.AdvNotifications.DeltaCount", 0).toInt ();
+			if (delta)
+				Events_ [eventId].Count_ += delta;
+			else
+				Events_ [eventId].Count_ = e.Additional_.value ("org.LC.AdvNotifications.Count", 1).toInt ();
 			Events_ [eventId].ExtendedText_ = e.Additional_ ["org.LC.AdvNotifications.ExtendedText"].toString ();
 		}
-		else
-			Events_.remove (eventId);
+		else if (!Events_.remove (eventId))
+			return;
 		
 		RebuildState ();
 	}
@@ -91,6 +95,10 @@ namespace AdvancedNotifications
 			Q_FOREACH (const QString& pathItem, data.VisualPath_)
 				menu = menu->addMenu (pathItem);
 				
+			if (!data.Pixmap_.isNull ())
+				menu->setIcon (data.Pixmap_);
+			menu->setToolTip (data.ExtendedText_);
+				
 			int actionIdx = 0;
 			Q_FOREACH (const QString& actionName, data.Actions_)
 			{
@@ -109,6 +117,9 @@ namespace AdvancedNotifications
 					SIGNAL (triggered ()),
 					this,
 					SLOT (dismissNotification ()));
+			
+			menu->addSeparator ();
+			menu->addAction (data.ExtendedText_)->setEnabled (false);
 		}
 	}
 	
