@@ -90,7 +90,6 @@ namespace Xoox
 		 */
 		RoomParticipantEntry_ptr GetParticipantEntry (const QString& nick, bool announce = true);
 	private slots:
-		void handleMessageReceived (const QXmppMessage&);
 		void handleParticipantAdded (const QString&);
 		void handleParticipantChanged (const QString&);
 		void handleParticipantRemoved (const QString&);
