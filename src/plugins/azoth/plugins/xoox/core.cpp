@@ -20,6 +20,7 @@
 #include <QFile>
 #include <QXmlStreamWriter>
 #include <QDomDocument>
+#include <QTimer>
 #include <QXmppLogger.h>
 #include <plugininterface/util.h>
 #include <interfaces/iaccount.h>
@@ -36,6 +37,7 @@ namespace Xoox
 {
 	Core::Core ()
 	: PluginProxy_ (0)
+	, SaveRosterScheduled_ (false)
 	{
 		QXmppLogger::getLogger ()->setLoggingType (QXmppLogger::FileLogging);
 		QXmppLogger::getLogger ()->setLogFilePath (Util::CreateIfNotExists ("azoth").filePath ("qxmpp.log"));
@@ -92,6 +94,17 @@ namespace Xoox
 	void Core::SendEntity (const Entity& e)
 	{
 		emit gotEntity (e);
+	}
+	
+	void Core::ScheduleSaveRoster (int hint)
+	{
+		if (SaveRosterScheduled_)
+			return;
+		
+		SaveRosterScheduled_ = true;
+		QTimer::singleShot (hint,
+				this,
+				SLOT (saveRoster ()));
 	}
 
 	namespace
@@ -175,6 +188,10 @@ namespace Xoox
 						QByteArray::fromPercentEncoding (entry
 								.firstChildElement ("id").text ().toLatin1 ());
 				const QString& name = entry.firstChildElement ("name").text ();
+				
+				QByteArray vcardData = entry.firstChildElement ("vcard").text ().toAscii ();
+				QDomDocument vcardDoc;
+				vcardDoc.setContent (QByteArray::fromBase64 (vcardData));
 
 				QStringList groups;
 				QDomElement group = entry
@@ -199,6 +216,8 @@ namespace Xoox
 					ods->Groups_ = groups;
 					ods->AuthStatus_ = qobject_cast<IProxyObject*> (PluginProxy_)->
 							AuthStatusFromString (entry.firstChildElement ("authstatus").text ());
+					ods->VCardIq_.parse (vcardDoc.documentElement ());
+
 					GlooxCLEntry *clEntry = id2account [id]->CreateFromODS (ods);
 
 					const QString& path = Util::CreateIfNotExists ("azoth/xoox/avatars")
@@ -214,6 +233,7 @@ namespace Xoox
 
 	void Core::saveRoster ()
 	{
+		SaveRosterScheduled_ = false;
 		QFile rosterFile (Util::CreateIfNotExists ("azoth/xoox")
 					.absoluteFilePath ("roster.xml"));
 		if (!rosterFile.open (QIODevice::WriteOnly | QIODevice::Truncate))
@@ -251,10 +271,18 @@ namespace Xoox
 						w.writeTextElement ("authstatus",
 								qobject_cast<IProxyObject*> (PluginProxy_)->
 									AuthStatusToString (entry->GetAuthStatus ()));
+
 						w.writeStartElement ("groups");
 						Q_FOREACH (const QString& group, entry->Groups ())
 							w.writeTextElement ("group", group);
 						w.writeEndElement ();
+						
+						QByteArray vcardData;
+						{
+							QXmlStreamWriter vcardWriter (&vcardData);
+							entry->GetVCard ().toXml (&vcardWriter);
+						}
+						w.writeTextElement ("vcard", vcardData.toBase64 ());
 					w.writeEndElement ();
 
 					saveAvatarFor (entry);

@@ -23,10 +23,10 @@
 #include <QMap>
 #include <QVariant>
 #include <QXmppMessage.h>
+#include <QXmppVCardIq.h>
 #include <interfaces/iclentry.h>
 #include <interfaces/iadvancedclentry.h>
 
-class QXmppVCardIq;
 class QXmppPresence;
 
 namespace LeechCraft
@@ -60,6 +60,7 @@ namespace Xoox
 		QImage Avatar_;
 		QString RawInfo_;
 		GlooxAccount *Account_;
+		QXmppVCardIq VCardIq_;
 		QPointer<VCardDialog> VCardDialog_;
 
 		QMap<QString, QMap<QString, QVariant> > Variant2ClientInfo_;
@@ -91,6 +92,7 @@ namespace Xoox
 		void SetStatus (const EntryStatus&, const QString&);
 		void SetAvatar (const QByteArray&);
 		void SetAvatar (const QImage&);
+		QXmppVCardIq GetVCard () const;
 		void SetVCard (const QXmppVCardIq&);
 		void SetRawInfo (const QString&);
 

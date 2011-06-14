@@ -1018,7 +1018,15 @@ namespace Xoox
 		entry->UpdateRI (ri);
 		JID2CLEntry_ [bareJID] = entry;
 		if (entry->GetAvatar ().isNull ())
-			ScheduleFetchVCard (bareJID);
+		{
+			const QXmppVCardIq& vcard = entry->GetVCard ();
+			if (vcard.nickName ().isEmpty () &&
+					vcard.birthday ().isNull () &&
+					vcard.email ().isEmpty () &&
+					vcard.firstName ().isEmpty () &&
+					vcard.lastName ().isEmpty ())
+				ScheduleFetchVCard (bareJID);
+		}
 		return entry;
 	}
 }

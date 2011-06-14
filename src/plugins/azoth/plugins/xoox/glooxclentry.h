@@ -22,6 +22,7 @@
 #include <QObject>
 #include <QStringList>
 #include <QXmppRosterIq.h>
+#include <QXmppVCardIq.h>
 #include <interfaces/iauthable.h>
 #include "entrybase.h"
 
@@ -49,6 +50,7 @@ namespace Xoox
 			QString Name_;
 			QStringList Groups_;
 			AuthStatus AuthStatus_;
+			QXmppVCardIq VCardIq_;
 		};
 		typedef boost::shared_ptr<OfflineDataSource> OfflineDataSource_ptr;
 	private:

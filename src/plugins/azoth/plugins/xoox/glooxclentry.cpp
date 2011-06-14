@@ -55,6 +55,8 @@ namespace Xoox
 					<< ods->ID_;
 			BareJID_ = ods->ID_;
 		}
+		
+		SetVCard (ods->VCardIq_);
 	}
 
 	GlooxCLEntry::OfflineDataSource_ptr GlooxCLEntry::ToOfflineDataSource () const
@@ -67,6 +69,7 @@ namespace Xoox
 		ods->Name_ = GetEntryName ();
 		ods->Groups_ = Groups ();
 		ods->AuthStatus_ = GetAuthStatus ();
+		ods->VCardIq_ = GetVCard ();
 
 		return ods;
 	}

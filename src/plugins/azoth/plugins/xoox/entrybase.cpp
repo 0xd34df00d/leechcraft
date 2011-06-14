@@ -238,9 +238,16 @@ namespace Xoox
 
 		emit avatarChanged (Avatar_);
 	}
+	
+	QXmppVCardIq EntryBase::GetVCard () const
+	{
+		return VCardIq_;
+	}
 
 	void EntryBase::SetVCard (const QXmppVCardIq& vcard)
 	{
+		VCardIq_ = vcard;
+
 		QString text = FormatRawInfo (vcard);
 		if (!text.isEmpty ())
 			text = QString ("gloox VCard:\n") + text;
@@ -249,6 +256,8 @@ namespace Xoox
 
 		if (VCardDialog_)
 			VCardDialog_->UpdateInfo (vcard);
+		
+		Core::Instance ().ScheduleSaveRoster (10000);
 	}
 
 	void EntryBase::SetRawInfo (const QString& rawinfo)

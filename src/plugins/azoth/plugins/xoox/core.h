@@ -38,6 +38,7 @@ namespace Xoox
 		ICoreProxy_ptr Proxy_;
 		boost::shared_ptr<GlooxProtocol> GlooxProtocol_;
 		QObject *PluginProxy_;
+		bool SaveRosterScheduled_;
 
 		Core ();
 	public:
@@ -52,6 +53,8 @@ namespace Xoox
 		ICoreProxy_ptr GetProxy () const;
 
 		void SendEntity (const Entity&);
+		
+		void ScheduleSaveRoster (int = 2000);
 	private:
 		void LoadRoster ();
 	public slots:
