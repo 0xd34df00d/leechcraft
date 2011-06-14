@@ -250,6 +250,10 @@ namespace ChatHistory
 			const QString& var = map ["Variant"].toString ();
 			if (isChat)
 			{
+				html += map ["Direction"] == "IN" ?
+						QString::fromUtf8 ("← ") :
+						QString::fromUtf8 ("→ ");
+
 				if (!entry && !var.isEmpty ())
 					html += var;
 				else if (entry && var.isEmpty ())
