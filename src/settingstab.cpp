@@ -91,7 +91,7 @@ namespace LeechCraft
 			{
 				IPlugin2 *ip2 = qobject_cast<IPlugin2*> (obj);
 				if (obj == Core::Instance ().GetCoreInstanceObject ())
-					result [obj] << SettingsTab::tr ("LeechCraft");
+					result [obj] << "LeechCraft";
 				else if (ip2)
 					result [obj] = GetFirstClassPlugins (ip2);
 				else
