@@ -66,6 +66,8 @@ namespace CleanWeb
 		QMap<int, PendingJob> PendingJobs_;
 
 		QList<QString> Blocked_;
+		
+		QHash<QWebFrame*, QStringList> MoreDelayedURLs_;
 
 		ICoreProxy_ptr Proxy_;
 
@@ -158,6 +160,7 @@ namespace CleanWeb
 		void handleJobFinished (int);
 		void handleJobError (int, IDownload::Error);
 		void delayedRemoveElements (QWebFrame*, const QString&);
+		void moreDelayedRemoveElements ();
 	signals:
 		void delegateEntity (const LeechCraft::Entity&,
 				int*, QObject**);
