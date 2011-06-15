@@ -156,6 +156,8 @@ namespace LeechCraft
 				group2box [group]->layout ()->addWidget (butt);
 			}
 		}
+		
+		qobject_cast<QBoxLayout*> (Ui_.ListContents_->layout ())->addStretch ();
 	}
 	
 	TabClassInfo SettingsTab::GetTabClassInfo () const
