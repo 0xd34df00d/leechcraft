@@ -22,10 +22,10 @@
 #include <QVBoxLayout>
 #include <QToolButton>
 #include <QInputDialog>
+#include <QTimer>
 #include "interfaces/iclentry.h"
 #include "core.h"
 #include "sortfilterproxymodel.h"
-#include "accountslistdialog.h"
 #include "setstatusdialog.h"
 #include "contactlistdelegate.h"
 #include "xmlsettingsmanager.h"
@@ -33,7 +33,6 @@
 #include "joinconferencedialog.h"
 #include "bookmarksmanagerdialog.h"
 #include "chattabsmanager.h"
-#include <QTimer>
 
 namespace LeechCraft
 {
@@ -149,9 +148,6 @@ namespace Azoth
 
 	void MainWidget::CreateMenu ()
 	{
-		MainMenu_->addAction (tr ("Accounts..."),
-				this,
-				SLOT (showAccountsList ()));
 		MainMenu_->addSeparator ();
 		MainMenu_->addAction (tr ("Add contact..."),
 				this,
@@ -480,13 +476,6 @@ namespace Azoth
 					dia->GetReason (),
 					dia->GetNick (),
 					dia->GetGroups ());
-	}
-
-	void MainWidget::showAccountsList ()
-	{
-		AccountsListDialog *dia = new AccountsListDialog (this);
-		dia->setAttribute (Qt::WA_DeleteOnClose, true);
-		dia->exec ();
 	}
 	
 	void MainWidget::handleManageBookmarks ()

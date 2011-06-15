@@ -35,7 +35,7 @@ SET (SRCS
 	chattabsmanager.cpp
 	chattab.cpp
 	sortfilterproxymodel.cpp
-	accountslistdialog.cpp
+	accountslistwidget.cpp
 	setstatusdialog.cpp
 	pluginmanager.cpp
 	proxyobject.cpp
@@ -63,7 +63,7 @@ SET (HEADERS
 	chattabsmanager.h
 	chattab.h
 	sortfilterproxymodel.h
-	accountslistdialog.h
+	accountslistwidget.h
 	setstatusdialog.h
 	pluginmanager.h
 	proxyobject.h
@@ -92,7 +92,7 @@ SET (HEADERS
 SET (FORMS
 	mainwidget.ui
 	chattab.ui
-	accountslistdialog.ui
+	accountslistwidget.ui
 	setstatusdialog.ui
 	addcontactdialog.ui
 	joinconferencedialog.ui

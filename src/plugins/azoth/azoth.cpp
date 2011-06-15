@@ -32,6 +32,7 @@
 #include "xmlsettingsmanager.h"
 #include "transferjobmanager.h"
 #include "servicediscoverywidget.h"
+#include "accountslistwidget.h"
 
 namespace LeechCraft
 {
@@ -61,6 +62,8 @@ namespace Azoth
 		XmlSettingsDialog_->SetDataSource ("SystemIcons",
 				Core::Instance ().GetResourceLoader (Core::RLTSystemIconLoader)->
 					GetSubElemModel ());
+		
+		XmlSettingsDialog_->SetCustomWidget ("AccountsWidget", new AccountsListWidget);
 
 		QMainWindow *mainWin = proxy->GetMainWindow ();
 		QDockWidget *dw = new QDockWidget (mainWin);

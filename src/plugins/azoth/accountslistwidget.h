@@ -16,11 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_ACCOUNTSLISTDIALOG_H
-#define PLUGINS_AZOTH_ACCOUNTSLISTDIALOG_H
-#include <QDialog>
+#ifndef PLUGINS_AZOTH_ACCOUNTSLISTWIDGET_H
+#define PLUGINS_AZOTH_ACCOUNTSLISTWIDGET_H
+#include <QWidget>
 #include <QHash>
-#include "ui_accountslistdialog.h"
+#include "ui_accountslistwidget.h"
 
 class QStandardItemModel;
 class QStandardItem;
@@ -31,11 +31,11 @@ namespace Azoth
 {
 	class IAccount;
 
-	class AccountsListDialog : public QDialog
+	class AccountsListWidget : public QWidget
 	{
 		Q_OBJECT
 
-		Ui::AccountsListDialog Ui_;
+		Ui::AccountsListWidget Ui_;
 		QStandardItemModel *AccModel_;
 		QHash<IAccount*, QStandardItem*> Account2Item_;
 
@@ -44,7 +44,7 @@ namespace Azoth
 			RAccObj = Qt::UserRole + 1
 		};
 	public:
-		AccountsListDialog (QWidget* = 0);
+		AccountsListWidget (QWidget* = 0);
 	private slots:
 		void addAccount (IAccount*);
 		void on_Add__released ();
