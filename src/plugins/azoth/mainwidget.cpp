@@ -526,9 +526,7 @@ namespace Azoth
 		{
 			ProxyModel_->SetMUC (obj);
 			if (Ui_.RosterMode_->currentIndex () == 1)
-				QTimer::singleShot (100,
-						Ui_.CLTree_,
-						SLOT (expandAll ()));
+				Ui_.CLTree_->expandAll ();
 		}
 	}
 	
