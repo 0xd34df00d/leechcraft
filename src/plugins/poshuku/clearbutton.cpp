@@ -32,6 +32,7 @@ namespace Poshuku
 		setCursor (Qt::ArrowCursor);
 		setToolTip (tr ("Clear"));
 		setToolButtonStyle (Qt::ToolButtonIconOnly);
+		setStyleSheet ("QToolButton { border: none; padding: 0px; background-color: white; }");
 		setVisible (false);
 		setFocusPolicy (Qt::NoFocus);
 		setBackgroundRole (QPalette::Light);
