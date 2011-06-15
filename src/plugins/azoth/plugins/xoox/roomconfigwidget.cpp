@@ -168,7 +168,8 @@ namespace Xoox
 		item.setAffiliation (dia->GetAffiliation ());
 		SendItem (item);
 		
-		handlePermsReceived (QList<QXmppMucItem> () << item);
+		if (item.affiliation () != QXmppMucItem::NoAffiliation)
+			handlePermsReceived (QList<QXmppMucItem> () << item);
 	}
 	
 	void RoomConfigWidget::on_RemovePerm__released ()
@@ -213,7 +214,12 @@ namespace Xoox
 		{
 			QStandardItem *parentItem = Aff2Cat_ [perm.affiliation ()];
 			if (!parentItem)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "no parent item for"
+						<< perm.affiliation ();
 				continue;
+			}
 			
 			QList<QStandardItem*> items;
 			items << new QStandardItem (perm.jid ());
