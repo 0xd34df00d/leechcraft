@@ -126,6 +126,9 @@ namespace LeechCraft
 			keys.removeAll (tr ("General plugins"));
 			keys.prepend (tr ("General plugins"));
 		}
+		
+		if (keys.removeAll ("LeechCraft"))
+			keys.prepend ("LeechCraft");
 
 		Q_FOREACH (const QString& key, keys)
 			Ui_.ListContents_->layout ()->addWidget (group2box [key]);
