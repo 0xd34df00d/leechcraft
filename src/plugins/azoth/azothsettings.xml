@@ -83,6 +83,18 @@
 			<item type="checkbox" property="UseAltNick" default="true">
 				<label value="Use alternative nickname" />
 			</item>
+			<item type="combobox" property="SendOnModifier">
+				<label value="Send message on:" />
+				<option name="Enter" default="true">
+					<label value="Enter" />
+				</option>
+				<option name="ShiftEnter">
+					<label value="Shift+Enter" />
+				</option>
+				<option name="CtrlEnter">
+					<label value="Ctrl+Enter" />
+				</option>
+			</item>
 			<item type="lineedit" property="AlternativeNickname">
 				<label value="Alternative nickname for chat rooms:" />
 			</item>
