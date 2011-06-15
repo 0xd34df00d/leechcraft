@@ -39,6 +39,8 @@ namespace Azoth
 	{
 		MUCMode_ = muc;
 		invalidateFilter ();
+		
+		emit newMUCMode(MUCEntry_);
 	}
 	
 	void SortFilterProxyModel::SetMUC (QObject *mucEntry)
