@@ -22,6 +22,9 @@
 #include <QString>
 #include <QRegExp>
 #include <QAction>
+#include <qwebview.h>
+#include <qwebframe.h>
+#include <qwebelement.h>
 #include <QtDebug>
 #include "ruleoptiondialog.h"
 
@@ -137,18 +140,18 @@ namespace CleanWeb
 		return Filter_;
 	}
 
-	void UserFiltersModel::InitiateAdd (const QString& suggested)
+	bool UserFiltersModel::InitiateAdd (const QString& suggested)
 	{
 		RuleOptionDialog dia;
 		dia.SetString (suggested);
 		dia.setWindowTitle (tr ("Add a filter"));
 		if (dia.exec () != QDialog::Accepted)
-			return;
+			return false;
 
-		Add (dia);
+		return Add (dia);
 	}
 	
-	void UserFiltersModel::Add (const RuleOptionDialog& dia)
+	bool UserFiltersModel::Add (const RuleOptionDialog& dia)
 	{
 		QString rule = dia.GetString ();
 		int size = 0;
@@ -175,6 +178,8 @@ namespace CleanWeb
 		endInsertRows ();
 
 		WriteSettings ();
+		
+		return !dia.IsException ();
 	}
 
 	void UserFiltersModel::Modify (int index)
@@ -261,9 +266,16 @@ namespace CleanWeb
 			return;
 		}
 
-		QUrl blockUrl = blocker->data ().value<QUrl> ();
-
-		InitiateAdd (blockUrl.toString ());
+		QUrl blockUrl = blocker->property ("CleanWeb/URL").value<QUrl> ();
+		QWebView *view = qobject_cast<QWebView*> (blocker->
+					property ("CleanWeb/View").value<QObject*> ());
+		if (InitiateAdd (blockUrl.toString ()) && view)
+		{
+			QWebFrame *frame = view->page ()->mainFrame ();
+			QWebElement elem = frame->findFirstElement ("img[src=\"" + blockUrl.toEncoded () + "\"]");
+			if (!elem.isNull ())
+				elem.removeFromDocument ();
+		}
 	}
 }
 }

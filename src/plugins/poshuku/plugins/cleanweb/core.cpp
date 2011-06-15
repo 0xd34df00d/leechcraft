@@ -30,6 +30,7 @@
 #include <qwebframe.h>
 #include <qwebpage.h>
 #include <qwebelement.h>
+#include <qwebview.h>
 #include <QCoreApplication>
 #include <QMenu>
 #include <QMainWindow>
@@ -450,14 +451,19 @@ namespace CleanWeb
 	}
 
 	void Core::HandleContextMenu (const QWebHitTestResult& r,
-		QMenu *menu, LeechCraft::Poshuku::WebViewCtxMenuStage stage)
+		QWebView *view, QMenu *menu,
+		LeechCraft::Poshuku::WebViewCtxMenuStage stage)
 	{
 		QUrl iurl = r.imageUrl ();
 		if (stage == WVSAfterImage &&
 				!iurl.isEmpty ())
-			menu->addAction (tr ("Block image..."),
+		{
+			QAction *action = menu->addAction (tr ("Block image..."),
 					UserFilters_,
-					SLOT (blockImage ()))->setData (iurl);
+					SLOT (blockImage ()));
+			action->setProperty ("CleanWeb/URL", iurl);
+			action->setProperty ("CleanWeb/View", QVariant::fromValue<QObject*> (view));
+		}
 	}
 
 	UserFiltersModel* Core::GetUserFiltersModel () const
