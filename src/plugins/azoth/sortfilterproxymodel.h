@@ -41,7 +41,7 @@ namespace Azoth
 		bool filterAcceptsRow (int, const QModelIndex&) const;
 		bool lessThan (const QModelIndex&, const QModelIndex&) const;
 	signals:
-		void newMUCMode(QObject*);
+		void MUCMode (QObject*);
 	};
 }
 }
