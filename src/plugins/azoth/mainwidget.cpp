@@ -85,6 +85,14 @@ namespace Azoth
 				SIGNAL (modelReset ()),
 				this,
 				SLOT (rebuildTreeExpansions ()));
+		/*connect (ProxyModel_,
+				SIGNAL (newMUCMode (QObject*)),
+				this,
+				SLOT (handleEntryMadeCurrent (QObject*)));*/
+		connect (ProxyModel_,
+				SIGNAL (MUCMode (QObject*)),
+				Ui_.CLTree_,
+				SLOT (expandAll ()));
 
 		QMetaObject::invokeMethod (Ui_.CLTree_,
 				"expandToDepth",
@@ -512,13 +520,7 @@ namespace Azoth
 	void MainWidget::handleEntryMadeCurrent (QObject *obj)
 	{
 		if (qobject_cast<IMUCEntry*> (obj))
-		{
 			ProxyModel_->SetMUC (obj);
-			if (Ui_.RosterMode_->currentIndex () == 1)
-				QTimer::singleShot (100,
-						Ui_.CLTree_,
-						SLOT (expandAll ()));
-		}
 	}
 	
 	void MainWidget::on_RosterMode__currentIndexChanged (int index)

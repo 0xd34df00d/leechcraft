@@ -38,19 +38,22 @@ namespace Azoth
 	void SortFilterProxyModel::SetMUCMode (bool muc)
 	{
 		MUCMode_ = muc;
-		invalidate ();
+		invalidateFilter ();
+		
+		if (muc)
+		  emit MUCMode (MUCEntry_);
 	}
 	
 	void SortFilterProxyModel::SetMUC (QObject *mucEntry)
 	{
 		MUCEntry_ = qobject_cast<IMUCEntry*> (mucEntry) ? mucEntry : 0;
-		invalidate ();
+		invalidateFilter ();
 	}
 
 	void SortFilterProxyModel::showOfflineContacts (bool show)
 	{
 		ShowOffline_ = show;
-		invalidate ();
+		invalidateFilter ();
 	}
 	
 	namespace

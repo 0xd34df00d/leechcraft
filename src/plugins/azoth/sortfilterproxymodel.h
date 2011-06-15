@@ -40,6 +40,8 @@ namespace Azoth
 	protected:
 		bool filterAcceptsRow (int, const QModelIndex&) const;
 		bool lessThan (const QModelIndex&, const QModelIndex&) const;
+	signals:
+		void MUCMode (QObject*);
 	};
 }
 }
