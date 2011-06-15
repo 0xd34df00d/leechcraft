@@ -43,6 +43,10 @@ namespace Azoth
 			else
 				event->ignore ();
 		}
+		else if (event->modifiers () & Qt::ShiftModifier &&
+				(event->key () == Qt::Key_PageUp ||
+				 event->key () == Qt::Key_PageDown))
+			emit scroll (event->key () == Qt::Key_PageUp ? -1 : 1);
 		else
 		{
 			emit clearAvailableNicks ();
@@ -51,4 +55,3 @@ namespace Azoth
 	}
 }
 }
-

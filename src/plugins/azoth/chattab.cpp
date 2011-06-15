@@ -157,11 +157,14 @@ namespace Azoth
 				SIGNAL (keyReturnPressed ()),
 				this,
 				SLOT (messageSend ()));
- 
 		connect (Ui_.MsgEdit_,
 				SIGNAL (keyTabPressed ()),
 				this,
 				SLOT (nickComplete ()));
+		connect (Ui_.MsgEdit_,
+				SIGNAL (scroll (int)),
+				this,
+				SLOT (handleEditScroll (int)));
 
 		Ui_.EntryInfo_->setText (e->GetEntryName ());
 
@@ -1101,6 +1104,12 @@ namespace Azoth
 			AvailableNickList_.clear ();
 			CurrentNickIndex_ = 0;
 		}
+	}
+	
+	void ChatTab::handleEditScroll (int direction)
+	{
+		int distance = Ui_.View_->size ().height () / 2 - 5;
+		Ui_.View_->page ()->mainFrame ()->scroll (0, distance * direction);
 	}
 
 	void ChatTab::UpdateStateIcon ()

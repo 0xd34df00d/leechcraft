@@ -97,6 +97,7 @@ namespace Azoth
 		QObject* GetCLEntry () const;
 	private slots:
 		void clearAvailableNick ();
+		void handleEditScroll (int);
 		void messageSend ();
 		void nickComplete ();
 		void on_MsgEdit__textChanged ();
