@@ -20,12 +20,14 @@
 #include "clearbutton.h"
 #include <QPainter>
 #include <QVariant>
+#include "core.h"
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
-	ClearButton::ClearButton (QWidget *parent) : QToolButton (parent)
+	ClearButton::ClearButton (QWidget *parent)
+	: QToolButton (parent)
 	{
 		setCursor (Qt::ArrowCursor);
 		setToolTip (tr ("Clear"));
@@ -33,12 +35,12 @@ namespace Poshuku
 		setVisible (false);
 		setFocusPolicy (Qt::NoFocus);
 		setBackgroundRole (QPalette::Light);
-		setProperty ("ActionIcon", QVariant ("clear"));
+		setIcon (Core::Instance ().GetProxy ()->GetIcon ("clearall"));
 	}
 
-	void ClearButton::textChanged (const QString &text)
+	void ClearButton::textChanged (const QString& text)
 	{
 		setVisible (!text.isEmpty ());
 	}
-};
-};
+}
+}

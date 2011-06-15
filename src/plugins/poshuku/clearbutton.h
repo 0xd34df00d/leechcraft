@@ -17,26 +17,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-
 #ifndef PLUGINS_POSHUKU_CLEARBUTTON_H
 #define PLUGINS_POSHUKU_CLEARBUTTON_H
-
 #include <QToolButton>
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
-	
 	class ClearButton : public QToolButton
 	{
 		Q_OBJECT
 	public:
 		ClearButton (QWidget* parent = 0);
 	public slots:
-		void textChanged (const QString &text);
+		void textChanged (const QString& text);
 	};
-};
-};
+}
+}
 
 #endif

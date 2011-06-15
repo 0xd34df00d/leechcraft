@@ -19,13 +19,14 @@
 #ifndef PLUGINS_POSHUKU_URLFRAME_H
 #define PLUGINS_POSHUKU_URLFRAME_H
 #include <QFrame>
-#include "clearbutton.h"
 #include "ui_urlframe.h"
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
+	class ClearButton;
+
 	class URLFrame : public QFrame
 	{
 		Q_OBJECT
