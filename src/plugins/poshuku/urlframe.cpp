@@ -26,6 +26,18 @@ namespace Poshuku
 	: QFrame (parent)
 	{
 		Ui_.setupUi (this);
+		ClearButton_ = new ClearButton (this);
+		connect (ClearButton_,
+				SIGNAL (clicked ()),
+				Ui_.URLEdit_,
+				SLOT (clear ()));
+		
+		connect (Ui_.URLEdit_,
+				SIGNAL (textChanged (const QString&)),
+				ClearButton_,
+				SLOT (textChanged (const QString&)));
+		ClearButton_->hide ();
+		AddWidget (ClearButton_);
 	}
 
 	QLineEdit* URLFrame::GetEdit () const

@@ -1,5 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
+ * Copyright (C) 2011 Minh Ngo
  * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,35 +17,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_URLFRAME_H
-#define PLUGINS_POSHUKU_URLFRAME_H
-#include <QFrame>
 #include "clearbutton.h"
-#include "ui_urlframe.h"
+#include <QPainter>
+#include <QVariant>
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
-	class URLFrame : public QFrame
+	ClearButton::ClearButton (QWidget *parent) : QToolButton (parent)
 	{
-		Q_OBJECT
+		setCursor (Qt::ArrowCursor);
+		setToolTip (tr ("Clear"));
+		setToolButtonStyle (Qt::ToolButtonIconOnly);
+		setVisible (false);
+		setFocusPolicy (Qt::NoFocus);
+		setBackgroundRole (QPalette::Light);
+		setProperty ("ActionIcon", QVariant ("clear"));
+	}
 
-		Ui::URLFrame Ui_;
-		ClearButton *ClearButton_;
-	public:
-		URLFrame (QWidget* = 0);
-
-		QLineEdit* GetEdit () const;
-		void SetFavicon (const QIcon&);
-		void AddWidget (QWidget*);
-		void RemoveWidget (QWidget*);
-	private slots:
-		void on_URLEdit__returnPressed ();
-	signals:
-		void load (const QString&);
-	};
-}
-}
-
-#endif
+	void ClearButton::textChanged (const QString &text)
+	{
+		setVisible (!text.isEmpty ());
+	}
+};
+};
