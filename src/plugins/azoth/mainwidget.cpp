@@ -86,12 +86,8 @@ namespace Azoth
 				SIGNAL (modelReset ()),
 				this,
 				SLOT (rebuildTreeExpansions ()));
-		/*connect (ProxyModel_,
-				SIGNAL (newMUCMode (QObject*)),
-				this,
-				SLOT (handleEntryMadeCurrent (QObject*)));*/
 		connect (ProxyModel_,
-				SIGNAL (MUCMode (QObject*)),
+				SIGNAL (mucMode ()),
 				Ui_.CLTree_,
 				SLOT (expandAll ()));
 
