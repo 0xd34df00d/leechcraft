@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "accountslistdialog.h"
+#include "accountslistwidget.h"
 #include <QMenu>
 #include <QWizard>
 #include <QStandardItemModel>
@@ -29,8 +29,8 @@ namespace LeechCraft
 {
 namespace Azoth
 {
-	AccountsListDialog::AccountsListDialog (QWidget* parent)
-	: QDialog (parent)
+	AccountsListWidget::AccountsListWidget (QWidget* parent)
+	: QWidget (parent)
 	, AccModel_ (new QStandardItemModel ())
 	{
 		Ui_.setupUi (this);
@@ -56,7 +56,7 @@ namespace Azoth
 		Ui_.Accounts_->setModel (AccModel_);
 	}
 
-	void AccountsListDialog::addAccount (IAccount *acc)
+	void AccountsListWidget::addAccount (IAccount *acc)
 	{
 		QStandardItem *item = new QStandardItem (acc->GetAccountName ());
 		item->setData (QVariant::fromValue<IAccount*> (acc), RAccObj);
@@ -66,7 +66,7 @@ namespace Azoth
 		Account2Item_ [acc] = item;
 	}
 	
-	void AccountsListDialog::on_Add__released ()
+	void AccountsListWidget::on_Add__released ()
 	{
 		QWizard *wizard = new QWizard (this);
 		wizard->setWindowTitle (tr ("Add account"));
@@ -75,7 +75,7 @@ namespace Azoth
 		wizard->show ();
 	}
 
-	void AccountsListDialog::on_Modify__released ()
+	void AccountsListWidget::on_Modify__released ()
 	{
 		QModelIndex index = Ui_.Accounts_->
 				selectionModel ()->currentIndex ();
@@ -87,7 +87,7 @@ namespace Azoth
 		acc->OpenConfigurationDialog ();
 	}
 
-	void AccountsListDialog::on_Delete__released()
+	void AccountsListWidget::on_Delete__released()
 	{
 		QModelIndex index = Ui_.Accounts_->
 		selectionModel ()->currentIndex ();
@@ -109,7 +109,7 @@ namespace Azoth
 		proto->RemoveAccount (acc->GetObject ());
 	}
 
-	void AccountsListDialog::handleAccountRemoved (IAccount *acc)
+	void AccountsListWidget::handleAccountRemoved (IAccount *acc)
 	{
 		if (!Account2Item_.contains (acc))
 		{

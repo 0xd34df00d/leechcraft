@@ -67,7 +67,6 @@ namespace Azoth
 		void joinAccountConference ();
 		void addAccountContact ();
 
-		void showAccountsList ();
 		void handleManageBookmarks ();
 		void handleAddContactRequested ();
 

@@ -186,7 +186,7 @@ namespace Azoth
 
 		const QIcon& stateIcon = index.data (Qt::DecorationRole).value<QIcon> ();
 		QString name = index.data (Qt::DisplayRole).value<QString> ();
-		const QString& status = entry->GetStatus ().StatusString_;
+		const QString status = entry->GetStatus ().StatusString_.replace ('\n', ' ');
 		const QImage& avatarImg = ShowAvatars_ ?
 				Core::Instance ().GetAvatar (entry, iconSize - AvatarPaddingBottom) :
 				QImage ();

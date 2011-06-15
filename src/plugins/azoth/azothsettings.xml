@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
 	<page>
+		<label value="Accounts" />
+		<item type="customwidget" name="AccountsWidget" label="own" />
+	</page>
+	<page>
 		<label value="Appearance" />
 		<tab>
 			<label value="Themes" />
