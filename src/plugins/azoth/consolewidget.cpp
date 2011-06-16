@@ -129,5 +129,10 @@ namespace Azoth
 	{
 		Ui_.PacketsBrowser_->clear ();
 	}
+	
+	void ConsoleWidget::on_EnabledBox__toggled (bool enable)
+	{
+		AsConsole_->SetConsoleEnabled (enable);
+	}
 }
 }

@@ -56,6 +56,7 @@ namespace Azoth
 	private slots:
 		void handleConsolePacket (QByteArray, int);
 		void on_ClearButton__released ();
+		void on_EnabledBox__toggled (bool);
 	signals:
 		void removeTab (QWidget*);
 	};
