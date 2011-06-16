@@ -536,6 +536,10 @@ namespace Azoth
 			++NumUnreadMsgs_;
 			ReformatTitle ();
 		}
+		
+		const int idx = Ui_.VariantBox_->findText (msg->GetOtherVariant ());
+		if (idx != -1)
+			Ui_.VariantBox_->setCurrentIndex (idx);
 
 		AppendMessage (msg);
 	}
