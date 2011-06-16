@@ -308,7 +308,7 @@ namespace Xoox
 	
 	void GlooxAccount::SetConsoleEnabled (bool enabled)
 	{
-		ClientConnection_;
+		ClientConnection_->SetSignaledLog (enabled);
 	}
 
 	QString GlooxAccount::GetJID () const
