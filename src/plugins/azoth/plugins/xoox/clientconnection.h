@@ -144,6 +144,8 @@ namespace Xoox
 		QXmppTransferManager* GetTransferManager () const;
 		CapsManager* GetCapsManager () const;
 		AnnotationsManager* GetAnnotationsManager () const;
+		
+		void SetSignaledLog (bool);
 
 		void RequestInfo (const QString&) const;
 		
@@ -202,6 +204,8 @@ namespace Xoox
 		void handleDiscoInfo (const QXmppDiscoveryIq&);
 		void handleDiscoItems (const QXmppDiscoveryIq&);
 		
+		void handleLog (QXmppLogger::MessageType, const QString&);
+		
 		void decrementErrAccumulators ();
 	private:
 		void ScheduleFetchVCard (const QString&);
@@ -219,6 +223,8 @@ namespace Xoox
 		void rosterItemCancelledSubscription (QObject*, const QString&);
 		void rosterItemGrantedSubscription (QObject*, const QString&);
 		void gotSubscriptionRequest (QObject*, const QString&);
+
+		void gotConsoleLog (const QByteArray&, int);
 
 		void serverAuthFailed ();
 		void needPassword ();

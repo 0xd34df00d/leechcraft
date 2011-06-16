@@ -64,6 +64,11 @@ namespace Xoox
 		TransferManager_.reset (new TransferManager (ClientConnection_->
 						GetTransferManager (),
 					this));
+		
+		connect (ClientConnection_.get (),
+				SIGNAL (gotConsoleLog (const QByteArray&, int)),
+				this,
+				SIGNAL (gotConsolePacket (const QByteArray&, int)));
 
 		connect (ClientConnection_.get (),
 				SIGNAL (serverAuthFailed ()),
@@ -294,6 +299,16 @@ namespace Xoox
 	QObject* GlooxAccount::CreateSDSession ()
 	{
 		return new SDSession (this);
+	}
+	
+	IHaveConsole::PacketFormat GlooxAccount::GetPacketFormat () const
+	{
+		return PFPlainText;
+	}
+	
+	void GlooxAccount::SetConsoleEnabled (bool enabled)
+	{
+		ClientConnection_;
 	}
 
 	QString GlooxAccount::GetJID () const

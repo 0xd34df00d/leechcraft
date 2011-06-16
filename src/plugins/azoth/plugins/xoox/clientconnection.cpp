@@ -327,6 +327,27 @@ namespace Xoox
 	{
 		return AnnotationsManager_;
 	}
+	
+	void ClientConnection::SetSignaledLog (bool signaled)
+	{
+		if (signaled)
+		{
+			connect (Client_->logger (),
+					SIGNAL (message (QXmppLogger::MessageType, const QString&)),
+					this,
+					SLOT (handleLog (QXmppLogger::MessageType, const QString&)),
+					Qt::UniqueConnection);
+			Client_->logger ()->setLoggingType (QXmppLogger::SignalLogging);
+		}
+		else
+		{
+			disconnect (Client_->logger (),
+					SIGNAL (message (QXmppLogger::MessageType, const QString&)),
+					this,
+					SLOT (handleLog (QXmppLogger::MessageType, const QString&)));
+			Client_->logger ()->setLoggingType (QXmppLogger::FileLogging);
+		}
+	}
 
 	void ClientConnection::RequestInfo (const QString& jid) const
 	{
@@ -827,6 +848,21 @@ namespace Xoox
 		const QString& jid = iq.from ();
 		if (AwaitingDiscoItems_.contains (jid))
 			AwaitingDiscoItems_ [jid] (iq);
+	}
+	
+	void ClientConnection::handleLog (QXmppLogger::MessageType type, const QString& msg)
+	{
+		switch (type)
+		{
+		case QXmppLogger::SentMessage:
+			emit gotConsoleLog (msg.toUtf8 (), IHaveConsole::PDOut);
+			break;
+		case QXmppLogger::ReceivedMessage:
+			emit gotConsoleLog (msg.toUtf8 (), IHaveConsole::PDIn);
+			break;
+		default:
+			break;
+		}
 	}
 	
 	void ClientConnection::decrementErrAccumulators ()

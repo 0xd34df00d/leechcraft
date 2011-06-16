@@ -26,6 +26,7 @@
 #include <interfaces/iaccount.h>
 #include <interfaces/ihaveservicediscovery.h>
 #include <interfaces/imessage.h>
+#include <interfaces/ihaveconsole.h>
 #include "glooxclentry.h"
 
 namespace LeechCraft
@@ -52,9 +53,12 @@ namespace Xoox
 	class GlooxAccount : public QObject
 					   , public IAccount
 					   , public IHaveServiceDiscovery
+					   , public IHaveConsole
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IAccount LeechCraft::Azoth::IHaveServiceDiscovery);
+		Q_INTERFACES (LeechCraft::Azoth::IAccount
+				LeechCraft::Azoth::IHaveServiceDiscovery
+				LeechCraft::Azoth::IHaveConsole);
 
 		QString Name_;
 		GlooxProtocol *ParentProtocol_;
@@ -99,6 +103,9 @@ namespace Xoox
 		QObject* GetTransferManager () const;
 		
 		QObject* CreateSDSession ();
+		
+		PacketFormat GetPacketFormat () const;
+		void SetConsoleEnabled (bool);
 
 		QString GetJID () const;
 		QString GetNick () const;
@@ -135,6 +142,8 @@ namespace Xoox
 		void itemCancelledSubscription (QObject*, const QString&);
 		void itemGrantedSubscription (QObject*, const QString&);
 		void statusChanged (const EntryStatus&);
+		
+		void gotConsolePacket (const QByteArray&, int);
 
 		void accountSettingsChanged ();
 
