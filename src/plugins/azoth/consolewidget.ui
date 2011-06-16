@@ -20,7 +20,11 @@
    <item>
     <widget class="QTextBrowser" name="PacketsBrowser_">
      <property name="styleSheet">
-      <string notr="true">background-color: rgb(0, 0, 0);</string>
+      <string notr="true">QTextEdit
+{
+	background-color: rgb(0, 0, 0);
+	font-family: &quot;DejaVu Sans Mono&quot;;
+}</string>
      </property>
     </widget>
    </item>
