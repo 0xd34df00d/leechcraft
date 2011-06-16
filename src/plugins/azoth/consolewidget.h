@@ -55,6 +55,7 @@ namespace Azoth
 		QString GetTitle () const;
 	private slots:
 		void handleConsolePacket (QByteArray, int);
+		void on_ClearButton__released ();
 	signals:
 		void removeTab (QWidget*);
 	};

@@ -124,5 +124,10 @@ namespace Azoth
 		
 		Ui_.PacketsBrowser_->append (html);
 	}
+	
+	void ConsoleWidget::on_ClearButton__released ()
+	{
+		Ui_.PacketsBrowser_->clear ();
+	}
 }
 }
