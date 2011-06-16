@@ -24,6 +24,7 @@
 #include <QInputDialog>
 #include <QTimer>
 #include "interfaces/iclentry.h"
+#include "interfaces/ihaveconsole.h"
 #include "core.h"
 #include "sortfilterproxymodel.h"
 #include "setstatusdialog.h"
@@ -33,6 +34,7 @@
 #include "joinconferencedialog.h"
 #include "bookmarksmanagerdialog.h"
 #include "chattabsmanager.h"
+#include "consolewidget.h"
 
 namespace LeechCraft
 {
@@ -134,6 +136,12 @@ namespace Azoth
 				SIGNAL (triggered ()),
 				this,
 				SLOT (addAccountContact ()));
+		
+		AccountConsole_ = new QAction (tr ("Console..."), this);
+		connect (AccountConsole_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleAccountConsole ()));
 		
 		XmlSettingsManager::Instance ().RegisterObject ("ShowMenuBar",
 				this, "menuBarVisibilityToggled");
@@ -320,6 +328,12 @@ namespace Azoth
 				}
 			}
 			actions << MenuChangeStatus_->menuAction ();
+			
+			if (qobject_cast<IHaveConsole*> (objVar.value<QObject*> ()))
+			{
+				AccountConsole_->setProperty ("Azoth/AccountObject", objVar);
+				actions << AccountConsole_;
+			}
 			break;
 		}
 		default:
@@ -480,6 +494,16 @@ namespace Azoth
 					dia->GetReason (),
 					dia->GetNick (),
 					dia->GetGroups ());
+	}
+	
+	void MainWidget::handleAccountConsole ()
+	{
+		IAccount *account = GetAccountFromSender (Q_FUNC_INFO);
+		if (!account)
+			return;
+		
+		ConsoleWidget *cw = new ConsoleWidget (account->GetObject ());
+		emit gotConsoleWidget (cw);
 	}
 	
 	void MainWidget::handleManageBookmarks ()

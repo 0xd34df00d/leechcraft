@@ -55,6 +55,7 @@ SET (SRCS
 	eventsnotifier.cpp
 	zoomeventfilter.cpp
 	drawattentiondialog.cpp
+	consolewidget.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -83,6 +84,7 @@ SET (HEADERS
 	eventsnotifier.h
 	zoomeventfilter.h
 	drawattentiondialog.h
+	consolewidget.h
 	sourcetrackingmodel.h
 	interfaces/iprotocolplugin.h
 	interfaces/iaccount.h
@@ -103,6 +105,7 @@ SET (FORMS
 	simpledialog.ui
 	servicediscoverywidget.ui
 	drawattentiondialog.ui
+	consolewidget.ui
 	)
 SET (RESOURCES azothresources.qrc)
 CreateTrVars ("azoth" "en;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
