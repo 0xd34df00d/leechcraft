@@ -38,7 +38,10 @@ namespace Azoth
 	 * supports some XMPP's service discovery-like functionality. Look
 	 * at that documentation for more information.
 	 * 
-	 * @sa IHaveServiceDiscovery
+	 * If the account supports something similar to XML console, it can
+	 * also implement the IHaveConsole interface.
+	 * 
+	 * @sa IHaveServiceDiscovery, IHaveConsole
 	 */
 	class IAccount
 	{
