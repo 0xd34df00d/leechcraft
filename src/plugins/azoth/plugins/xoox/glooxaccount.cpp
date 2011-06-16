@@ -303,7 +303,7 @@ namespace Xoox
 	
 	IHaveConsole::PacketFormat GlooxAccount::GetPacketFormat () const
 	{
-		return PFPlainText;
+		return PFXML;
 	}
 	
 	void GlooxAccount::SetConsoleEnabled (bool enabled)
