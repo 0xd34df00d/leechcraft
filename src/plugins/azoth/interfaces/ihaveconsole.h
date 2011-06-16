@@ -31,6 +31,7 @@ namespace Azoth
 		
 		enum PacketFormat
 		{
+			PFXML,
 			PFPlainText,
 			PFBinary
 		};
