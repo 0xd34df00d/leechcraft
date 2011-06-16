@@ -95,9 +95,9 @@ namespace Azoth
 	
 	void ConsoleWidget::handleConsolePacket (QByteArray data, int direction)
 	{
-		const QString& color = direction == IHaveConsole::PDIn ?
-				"yellow" :
-				"red";
+		const QString& color = direction == IHaveConsole::PDOut ?
+				"#56ED56" :			// rather green
+				"#ED55ED";			// violet or something
 		
 		QString html = "<font color=\"" + color + "\">";
 		switch (Format_)
