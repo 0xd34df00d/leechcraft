@@ -110,18 +110,6 @@ namespace Azoth
 		 */
 		virtual QByteArray GetProtocolID () const = 0;
 
-		/** @brief Notifies the protocol that a new account should be
-		 * registered.
-		 *
-		 * Protocol plugin is expected to ask the user for
-		 * account details, register the account and emit
-		 * the accountAdded(QObject*) signal.
-		 * 
-		 * @deprecated This method of registering accounts is superseded
-		 * by GetAccountRegistrationWidgets()/RegisterAccount() pair.
-		 */
-		virtual void InitiateAccountRegistration () = 0;
-		
 		/** @brief Returns the widgets used for account registration.
 		 * 
 		 * The widgets from the returned list are shown in the account

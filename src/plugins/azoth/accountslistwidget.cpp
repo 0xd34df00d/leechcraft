@@ -34,11 +34,6 @@ namespace Azoth
 	, AccModel_ (new QStandardItemModel ())
 	{
 		Ui_.setupUi (this);
-		QMenu *addMenu = new QMenu (tr ("Add account"));
-
-		addMenu->addActions (Core::Instance ().GetAccountCreatorActions ());
-
-		//Ui_.Add_->setMenu (addMenu);
 
 		connect (&Core::Instance (),
 				SIGNAL (accountAdded (IAccount*)),

@@ -345,11 +345,6 @@ namespace Azoth
 		return ProtocolPlugins_;
 	}
 
-	QList<QAction*> Core::GetAccountCreatorActions () const
-	{
-		return AccountCreatorActions_;
-	}
-
 	QAbstractItemModel* Core::GetCLModel () const
 	{
 		return CLModel_;
@@ -480,19 +475,9 @@ namespace Azoth
 			ProtocolPlugins_ << plugin;
 
 			QIcon icon = qobject_cast<IInfo*> (plugin)->GetIcon ();
-			QList<QAction*> creators;
 			Q_FOREACH (QObject *protoObj, ipp->GetProtocols ())
 			{
 				IProtocol *proto = qobject_cast<IProtocol*> (protoObj);
-				QAction *accountCreator = new QAction (icon,
-						proto->GetProtocolName (), this);
-				accountCreator->setData (QVariant::fromValue<QObject*> (proto->GetObject ()));
-				connect (accountCreator,
-						SIGNAL (triggered ()),
-						this,
-						SLOT (handleAccountCreatorTriggered ()));
-
-				creators << accountCreator;
 
 				Q_FOREACH (QObject *accObj,
 						proto->GetRegisteredAccounts ())
@@ -506,12 +491,6 @@ namespace Azoth
 						SIGNAL (accountRemoved (QObject*)),
 						this,
 						SLOT (handleAccountRemoved (QObject*)));
-			}
-
-			if (creators.size ())
-			{
-				emit accountCreatorActionsAdded (creators);
-				AccountCreatorActions_ += creators;
 			}
 		}
 	}
@@ -1556,39 +1535,6 @@ namespace Azoth
 					<< "empty result for"
 					<< opt;
 		return src;
-	}
-
-	void Core::handleAccountCreatorTriggered ()
-	{
-		QAction *sa = qobject_cast<QAction*> (sender ());
-		if (!sa)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "sender is not an action"
-					<< sender ();
-			return;
-		}
-
-		QObject *protoObject = sa->data ().value<QObject*> ();
-		if (!protoObject)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "sender data is not QObject"
-					<< sa->data ();
-			return;
-		}
-
-		IProtocol *proto =
-				qobject_cast<IProtocol*> (protoObject);
-		if (!proto)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to cast protoObject to proto"
-					<< protoObject;
-			return;
-		}
-
-		proto->InitiateAccountRegistration ();
 	}
 
 	void Core::handleMucJoinRequested ()

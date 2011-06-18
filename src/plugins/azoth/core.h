@@ -167,7 +167,6 @@ namespace Azoth
 
 		const QObjectList& GetProtocolPlugins () const;
 
-		QList<QAction*> GetAccountCreatorActions () const;
 		QAbstractItemModel* GetCLModel () const;
 		ChatTabsManager* GetChatTabsManager () const;
 		QList<IAccount*> GetAccounts () const;
@@ -379,10 +378,6 @@ namespace Azoth
 		
 		IChatStyleResourceSource* GetCurrentChatStyle () const;
 	public slots:
-		/** Initiates account registration process.
-		 */
-		void handleAccountCreatorTriggered ();
-
 		/** Initiates MUC join by calling the corresponding protocol
 		 * plugin's IProtocol::InitiateMUCJoin() function.
 		 */
@@ -526,11 +521,6 @@ namespace Azoth
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
-
-		/** Emitted after some new account creation actions have been
-		 * received from a plugin and thus should be shown in the UI.
-		 */
-		void accountCreatorActionsAdded (const QList<QAction*>&);
 
 		/** Convenient signal for rethrowing the event of an account
 		 * being added.
