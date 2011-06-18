@@ -35,7 +35,7 @@ namespace EmbedMedia
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		QFile embederJS (":/plugins/azoth/plugins/embedmedia/resources/scripts/embedmedia.js");
+		QFile embederJS (":/plugins/azoth/plugins/embedmedia/resources/scripts/embedder.js");
 
 		if (!embederJS.open (QIODevice::ReadOnly))
 		{
@@ -89,6 +89,7 @@ namespace EmbedMedia
 	void Plugin::hookChatTabCreated (LeechCraft::IHookProxy_ptr proxy, 
 			QObject *chatTab, QObject *entry, QWebView *webView)
 	{
+		qDebug () << Q_FUNC_INFO << "gonna evaluate script" << ScriptContent_.size ();
 		webView->page ()->mainFrame ()->evaluateJavaScript (ScriptContent_);
 	}
 }
