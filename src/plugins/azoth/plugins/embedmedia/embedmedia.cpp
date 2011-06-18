@@ -44,6 +44,7 @@ namespace EmbedMedia
 					<< embederJS.errorString ();
 			return;
 		}
+
 		QTextStream content (&embederJS); 
 
 		content.setCodec (QTextCodec::codecForName ("UTF-8")); 
@@ -70,31 +71,12 @@ namespace EmbedMedia
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("Allow embedin media in chat tabs");
+		return tr ("Enables displaying media objects right in chat windows.");
 	}
 
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon ();
-	}
-
-	QStringList Plugin::Provides () const
-	{
-		return QStringList ();
-	}
-
-	QStringList Plugin::Needs () const
-	{
-		return QStringList ();
-	}
-
-	QStringList Plugin::Uses () const
-	{
-		return QStringList ();
-	}
-
-	void Plugin::SetProvider (QObject*, const QString&)
-	{
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
@@ -104,12 +86,9 @@ namespace EmbedMedia
 		return result;
 	}
 
-	void Plugin::hookChatTabCreated( LeechCraft::IHookProxy_ptr proxy, 
-			QObject *chatTab, QObject *entry, QWebView *webView )
+	void Plugin::hookChatTabCreated (LeechCraft::IHookProxy_ptr proxy, 
+			QObject *chatTab, QObject *entry, QWebView *webView)
 	{
-		if (ScriptContent_.isEmpty ())
-			return;
-
 		webView->page ()->mainFrame ()->evaluateJavaScript (ScriptContent_);
 	}
 }
