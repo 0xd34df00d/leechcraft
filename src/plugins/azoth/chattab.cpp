@@ -656,6 +656,20 @@ namespace Azoth
 			Ui_.MsgEdit_->moveCursor (QTextCursor::End);
 			Ui_.MsgEdit_->setFocus ();
 		}
+		else if (url.host () == "insertnick")
+		{
+			const QByteArray& encoded = url.encodedQueryItemValue ("nick");
+			InsertNick (QUrl::fromPercentEncoding (encoded));
+		}
+	}
+
+	void ChatTab::InsertNick (const QString& nicknameHtml)
+	{
+		QTextCursor cursor = Ui_.MsgEdit_->textCursor ();
+		cursor.insertHtml (cursor.atStart () ?
+				nicknameHtml + ": " :
+				" &nbsp;" + nicknameHtml + " ");
+		Ui_.MsgEdit_->setFocus ();
 	}
 
 	void ChatTab::handleHistoryUp ()
