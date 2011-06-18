@@ -150,6 +150,12 @@ namespace Azoth
 		 * TabIcon_.
 		 */
 		void UpdateStateIcon ();
+
+		/** Insert nick in message edit field
+		 * @param nickname a nick to insert
+		 */
+		void InsertNick (const QString& nickname);
+
 	signals:
 		void changeTabName (QWidget*, const QString&);
 		void changeTabIcon (QWidget*, const QIcon&);

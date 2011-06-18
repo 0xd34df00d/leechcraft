@@ -681,11 +681,10 @@ namespace Azoth
 
 		if (msg->GetMessageType () == IMessage::MTMUCMessage)
 		{
-			QUrl url (QString ("azoth://msgeditreplace/%1")
-					.arg (nick + ":"));
+			QUrl url ("azoth://insertnick/" + nick);
 
 			string.append ("<span class='nickname'><a href='");
-			string.append (url.toString () + "%20");
+			string.append (url.toString ());
 			string.append ("' class='nicklink' style='text-decoration:none; color:");
 			string.append (color);
 			string.append ("'>");
