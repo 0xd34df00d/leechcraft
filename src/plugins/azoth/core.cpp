@@ -91,7 +91,7 @@ namespace Azoth
 	}
 
 	Core::Core ()
-	: LinkRegexp_ ("(\\b(?:(?:https?|ftp)://|www.|xmpp:)[\\w\\d/\\?.=:@&%#_;\\(?:\\)\\+\\-\\~\\*\\,]+)",
+	: LinkRegexp_ ("((?:(?:\\w+://)|(?:xmpp:|mailto:|www\\.|magnet:|irc:))\\S+)",
 			Qt::CaseInsensitive, QRegExp::RegExp2)
 	, ImageRegexp_ ("(\\b(?:data:image/)[\\w\\d/\\?.=:@&%#_;\\(?:\\)\\+\\-\\~\\*\\,]+)",
 			Qt::CaseInsensitive, QRegExp::RegExp2)
@@ -660,12 +660,12 @@ namespace Azoth
 
 		if (msg->GetMessageType () == IMessage::MTMUCMessage)
 		{
-			QUrl url (QString ("azoth://msgeditreplace/%1")
-					.arg (nick + ":"));
+			QUrl url ("azoth://insertnick/");
+			url.addEncodedQueryItem ("nick", QUrl::toPercentEncoding (nick));
 
-			string.append ("<span class='nickname'><a href='");
-			string.append (url.toString () + "%20");
-			string.append ("' class='nicklink' style='text-decoration:none; color:");
+			string.append ("<span class='nickname'><a href=\"");
+			string.append (url.toEncoded ());
+			string.append ("\" class='nicklink' style='text-decoration:none; color:");
 			string.append (color);
 			string.append ("'>");
 			string.append (nick);
