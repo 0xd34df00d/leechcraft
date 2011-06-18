@@ -32,6 +32,17 @@ namespace LeechCraft
 		{
 			void SaveColumnWidth (const QTreeView *tree, const QString& keyName)
 			{
+				// check that we can work with 'tree' argument
+				if (tree == 0)
+				{
+					qWarning() << Q_FUNC_INFO << "tree == 0, not saving widths";
+					return;
+				}
+				if (tree->model () == 0)
+				{
+					qWarning() << Q_FUNC_INFO << "tree->model () == 0, not saving widths";
+					return;
+				}
 				// get width
 				QList<QVariant> sizes;
 				for (int i = 0, count = tree->model ()->columnCount (); i < count; ++i)
@@ -45,6 +56,17 @@ namespace LeechCraft
 
 			void LoadColumnWidth (QTreeView *tree, const QString& keyName)
 			{
+				// check that we can work with 'tree' argument
+				if (tree == 0)
+				{
+					qWarning() << Q_FUNC_INFO << "tree == 0, not loading widths";
+					return;
+				}
+				if (tree->model () == 0)
+				{
+					qWarning() << Q_FUNC_INFO << "tree->model () == 0, not loading widths";
+					return;
+				}
 				// load column width
 				QSettings settings (QApplication::organizationName (), QApplication::applicationName () + "_Aggregator");
 				settings.beginGroup ("tabs-width");
