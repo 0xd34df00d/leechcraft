@@ -93,30 +93,6 @@ namespace Xoox
 	{
 		return "Xoox.Gloox.XMPP";
 	}
-
-	void GlooxProtocol::InitiateAccountRegistration ()
-	{
-		QString name = QInputDialog::getText (0,
-				"LeechCraft",
-				tr ("Enter new account name"));
-		if (name.isEmpty ())
-			return;
-
-		GlooxAccount *account = new GlooxAccount (name, this);
-		account->OpenConfigurationDialog ();
-
-		connect (account,
-				SIGNAL (accountSettingsChanged ()),
-				this,
-				SLOT (saveAccounts ()));
-
-		Accounts_ << account;
-		saveAccounts ();
-
-		emit accountAdded (account);
-
-		account->ChangeState (EntryStatus (SOnline, QString ()));
-	}
 	
 	QList<QWidget*> GlooxProtocol::GetAccountRegistrationWidgets ()
 	{
