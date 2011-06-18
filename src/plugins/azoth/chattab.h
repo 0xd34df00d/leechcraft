@@ -151,8 +151,8 @@ namespace Azoth
 		 */
 		void UpdateStateIcon ();
 
-		/** Insert nick in message edit field
-		 * @param nickname a nick to insert
+		/** Insert nickname into message edit field.
+		 * @param nickname a nick to insert.
 		 */
 		void InsertNick (const QString& nickname);
 

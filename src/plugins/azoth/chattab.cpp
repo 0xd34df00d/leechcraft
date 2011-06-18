@@ -657,12 +657,10 @@ namespace Azoth
 			Ui_.MsgEdit_->setFocus ();
 		}
 		else if (url.host () == "insertnick")
-		{
-			InsertNick(url.path ().mid (1));
-		}
+			InsertNick (url.path ().mid (1));
 	}
 
-	void ChatTab::InsertNick(const QString& nickname)
+	void ChatTab::InsertNick (const QString& nickname)
 	{
 		QTextCursor cursor = Ui_.MsgEdit_->textCursor ();
 		cursor.insertText (cursor.atStart () ? 
