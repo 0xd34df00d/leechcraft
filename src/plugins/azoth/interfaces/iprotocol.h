@@ -56,10 +56,16 @@ namespace Azoth
 		{
 			/** Multiuser chats are possible in this proto.
 			 */
-			PFSupportsMUCs,
+			PFSupportsMUCs = 0x01,
+
 			/** One could join MUCs as he wishes.
 			 */
-			PFMUCsJoinable
+			PFMUCsJoinable = 0x02,
+			
+			/** This protocol supports in-band registration: accounts
+			 * could be registered right from the client.
+			 */
+			PFSupportsInBandRegistration = 0x04
 		};
 
 		Q_DECLARE_FLAGS (ProtocolFeatures, ProtocolFeature);
