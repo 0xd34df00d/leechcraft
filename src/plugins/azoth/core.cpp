@@ -681,11 +681,12 @@ namespace Azoth
 
 		if (msg->GetMessageType () == IMessage::MTMUCMessage)
 		{
-			QUrl url ("azoth://insertnick/" + nick);
+			QUrl url ("azoth://insertnick/");
+			url.addEncodedQueryItem ("nick", QUrl::toPercentEncoding (nick));
 
-			string.append ("<span class='nickname'><a href='");
-			string.append (url.toString ());
-			string.append ("' class='nicklink' style='text-decoration:none; color:");
+			string.append ("<span class='nickname'><a href=\"");
+			string.append (url.toEncoded ());
+			string.append ("\" class='nicklink' style='text-decoration:none; color:");
 			string.append (color);
 			string.append ("'>");
 			string.append (nick);
