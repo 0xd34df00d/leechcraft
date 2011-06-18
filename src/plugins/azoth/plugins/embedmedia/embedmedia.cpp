@@ -35,17 +35,17 @@ namespace EmbedMedia
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		QFile embederJS (":/plugins/azoth/plugins/embedmedia/resources/scripts/embedder.js");
+		QFile embedderJS (":/plugins/azoth/plugins/embedmedia/resources/scripts/embedder.js");
 
-		if (!embederJS.open (QIODevice::ReadOnly))
+		if (!embedderJS.open (QIODevice::ReadOnly))
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unable to open script file"
-					<< embederJS.errorString ();
+					<< embedderJS.errorString ();
 			return;
 		}
 
-		QTextStream content (&embederJS); 
+		QTextStream content (&embedderJS); 
 
 		content.setCodec (QTextCodec::codecForName ("UTF-8")); 
 		ScriptContent_ = content.readAll ();
@@ -66,7 +66,7 @@ namespace EmbedMedia
 
 	QString Plugin::GetName () const
 	{
-		return "Embed media";
+		return "Azoth Embed media";
 	}
 
 	QString Plugin::GetInfo () const
@@ -86,10 +86,9 @@ namespace EmbedMedia
 		return result;
 	}
 
-	void Plugin::hookChatTabCreated (LeechCraft::IHookProxy_ptr proxy, 
-			QObject *chatTab, QObject *entry, QWebView *webView)
+	void Plugin::hookChatTabCreated (LeechCraft::IHookProxy_ptr, 
+			QObject*, QObject*, QWebView *webView)
 	{
-		qDebug () << Q_FUNC_INFO << "gonna evaluate script" << ScriptContent_.size ();
 		webView->page ()->mainFrame ()->evaluateJavaScript (ScriptContent_);
 	}
 }
