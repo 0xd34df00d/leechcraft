@@ -823,10 +823,6 @@ namespace Azoth
 				SIGNAL (avatarChanged (const QImage&)),
 				this,
 				SLOT (invalidateSmoothAvatarCache ()));
-		connect (clEntry->GetObject (),
-				SIGNAL (avatarChanged (const QImage&)),
-				this,
-				SLOT (updateItem ()));
 		
 		if (qobject_cast<IMUCEntry*> (clEntry->GetObject ()))
 		{
@@ -1124,9 +1120,9 @@ namespace Azoth
 					Entry2SmoothAvatarCache_ [entry].height () == size))
 			return Entry2SmoothAvatarCache_ [entry];
 
-		const QImage& avatar = entry->GetAvatar ();
+		QImage avatar = entry->GetAvatar ();
 		if (avatar.isNull () || !avatar.width ())
-			return avatar;
+			avatar = QImage (SystemIconLoader_->GetIconPath ("default_avatar"));
 
 		const QImage& scaled = avatar.scaled (size, size,
 				Qt::KeepAspectRatio, Qt::SmoothTransformation);
@@ -2511,6 +2507,7 @@ namespace Azoth
 		}
 
 		Entry2SmoothAvatarCache_.remove (entry);
+		updateItem ();
 	}
 
 	void Core::handleActionOpenChatTriggered ()
