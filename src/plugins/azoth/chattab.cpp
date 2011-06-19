@@ -373,7 +373,6 @@ namespace Azoth
 			return;
 
 		msg->Send ();
-		AppendMessage (msg);
 	}
 
 	void ChatTab::on_MsgEdit__textChanged ()
@@ -536,7 +535,7 @@ namespace Azoth
 			++NumUnreadMsgs_;
 			ReformatTitle ();
 		}
-		
+
 		const int idx = Ui_.VariantBox_->findText (msg->GetOtherVariant ());
 		if (idx != -1)
 			Ui_.VariantBox_->setCurrentIndex (idx);
@@ -1112,6 +1111,16 @@ namespace Azoth
 		
 		PreviousState_ = state;
 		entry->SetChatPartState (state, Ui_.VariantBox_->currentText ());
+	}
+	
+	void ChatTab::prepareMessageText (const QString& text)
+	{
+		Ui_.MsgEdit_->setText (text);
+	}
+	
+	void ChatTab::appendMessageText (const QString& text)
+	{
+		Ui_.MsgEdit_->setText (Ui_.MsgEdit_->toPlainText () + text);
 	}
 
 	void ChatTab::clearAvailableNick ()

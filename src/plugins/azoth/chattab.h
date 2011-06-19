@@ -95,6 +95,9 @@ namespace Azoth
 		void TabLostCurrent ();
 		
 		QObject* GetCLEntry () const;
+	public slots:
+		void prepareMessageText (const QString&);
+		void appendMessageText (const QString&);
 	private slots:
 		void clearAvailableNick ();
 		void handleEditScroll (int);
