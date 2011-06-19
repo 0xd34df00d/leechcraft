@@ -31,7 +31,6 @@
 #include <QXmppBookmarkManager.h>
 #include <QXmppEntityTimeManager.h>
 #include <QXmppArchiveManager.h>
-#include <QXmppPubSubManager.h>
 #include <QXmppActivityItem.h>
 #include <QXmppPubSubIq.h>
 #include <QXmppDeliveryReceiptsManager.h>
@@ -53,6 +52,7 @@
 #include "annotationsmanager.h"
 #include "fetchqueue.h"
 #include "legacyentitytimeext.h"
+#include "pubsubmanager.h"
 
 namespace LeechCraft
 {
@@ -71,8 +71,8 @@ namespace Xoox
 	, BMManager_ (new QXmppBookmarkManager (Client_))
 	, EntityTimeManager_ (new QXmppEntityTimeManager)
 	, ArchiveManager_ (new QXmppArchiveManager)
-	, PubSubManager_ (new QXmppPubSubManager)
 	, DeliveryReceiptsManager_ (new QXmppDeliveryReceiptsManager)
+	, PubSubManager_ (new PubSubManager)
 	, AnnotationsManager_ (0)
 	, OurJID_ (jid)
 	, Account_ (account)

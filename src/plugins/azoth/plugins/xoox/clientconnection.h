@@ -26,7 +26,6 @@
 #include <QSet>
 #include <QXmppClient.h>
 #include <QXmppMucIq.h>
-#include <QXmppPubSubIq.h>
 #include <interfaces/imessage.h>
 #include "glooxclentry.h"
 #include "glooxaccount.h"
@@ -40,7 +39,6 @@ class QXmppDiscoveryIq;
 class QXmppBookmarkManager;
 class QXmppArchiveManager;
 class QXmppEntityTimeManager;
-class QXmppPubSubManager;
 class QXmppDeliveryReceiptsManager;
 
 namespace LeechCraft
@@ -60,6 +58,7 @@ namespace Xoox
 	class CapsManager;
 	class AnnotationsManager;
 	class FetchQueue;
+	class PubSubManager;
 
 	class ClientConnection : public QObject
 	{
@@ -72,8 +71,8 @@ namespace Xoox
 		QXmppBookmarkManager *BMManager_;
 		QXmppEntityTimeManager *EntityTimeManager_;
 		QXmppArchiveManager *ArchiveManager_;
-		QXmppPubSubManager *PubSubManager_;
 		QXmppDeliveryReceiptsManager *DeliveryReceiptsManager_;
+		PubSubManager *PubSubManager_;
 		
 		AnnotationsManager *AnnotationsManager_;
 
