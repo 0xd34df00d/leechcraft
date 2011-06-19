@@ -22,6 +22,7 @@
 #include <QNetworkReply>
 #include <QClipboard>
 #include <QApplication>
+#include <QMessageBox>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <plugininterface/util.h>
 #include <interfaces/imessage.h>
@@ -141,6 +142,17 @@ namespace Autopaste
 		
 		if (!XmlSettingsManager::Instance ()
 				.property (propName).toBool ())
+			return;
+		
+		const bool shouldConfirm = XmlSettingsManager::Instance ()
+				.property ("ConfirmPasting").toBool ();
+		if (shouldConfirm &&
+			QMessageBox::question (qobject_cast<QWidget*> (chatTab),
+					tr ("Confirm pasting"),
+					tr ("This message is too long according to current "
+						"settings. Would you like to paste it on a "
+						"pastebin?"),
+					QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
 			return;
 		
 		Paste (text, entry);
