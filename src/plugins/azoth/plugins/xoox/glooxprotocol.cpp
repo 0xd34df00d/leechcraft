@@ -28,6 +28,7 @@
 #include "joingroupchatwidget.h"
 #include "glooxaccountconfigurationwidget.h"
 #include "bookmarkeditwidget.h"
+#include "inbandaccountregfirstpage.h"
 
 namespace LeechCraft
 {
@@ -99,7 +100,7 @@ namespace Xoox
 		QList<QWidget*> result;
 		if (options & AAORegisterNewAccount)
 		{
-			
+			result << new InBandAccountRegFirstPage ();
 		}
 		else
 			result << new GlooxAccountConfigurationWidget ();
