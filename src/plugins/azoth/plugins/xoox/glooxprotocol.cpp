@@ -29,6 +29,7 @@
 #include "glooxaccountconfigurationwidget.h"
 #include "bookmarkeditwidget.h"
 #include "inbandaccountregfirstpage.h"
+#include "inbandaccountregsecondpage.h"
 
 namespace LeechCraft
 {
@@ -100,7 +101,10 @@ namespace Xoox
 		QList<QWidget*> result;
 		if (options & AAORegisterNewAccount)
 		{
-			result << new InBandAccountRegFirstPage ();
+			InBandAccountRegFirstPage *first = new InBandAccountRegFirstPage ();
+			InBandAccountRegSecondPage *second = new InBandAccountRegSecondPage (first);
+			result << first;
+			result << second;
 		}
 		else
 			result << new GlooxAccountConfigurationWidget ();
