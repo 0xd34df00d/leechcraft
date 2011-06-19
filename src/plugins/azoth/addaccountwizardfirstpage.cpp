@@ -61,6 +61,8 @@ namespace Azoth
 			return;
 		}
 		
+		Ui_.RegisterAccount_->setEnabled (proto->GetFeatures () & IProtocol::PFSupportsInBandRegistration);
+		
 		const int currentId = wizard ()->currentId ();
 		Q_FOREACH (const int id, wizard ()->pageIds ())
 			if (id > currentId)
