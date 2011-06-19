@@ -688,8 +688,6 @@ namespace Azoth
 		{
 			proxy->FillValue ("body", body);
 			body = Qt::escape (body);
-			body.replace ('\n', "<br />");
-			body.replace ("  ", "&nbsp; ");
 
 			int pos = 0;
 			while ((pos = LinkRegexp_.indexIn (body, pos)) != -1)
@@ -715,7 +713,10 @@ namespace Azoth
 				body.replace (pos, image.length (), str);
 				pos += str.length ();
 			}
-			
+
+			body.replace ('\n', "<br />");
+			body.replace ("  ", "&nbsp; ");
+
 			body = HandleSmiles (body);
 
 			proxy.reset (new Util::DefaultHookProxy);
