@@ -166,18 +166,17 @@ namespace Xoox
 		qDeleteAll (findChildren<QWidget*> ());
 
 		const QXmppElement& formElem = queryElem.firstChildElement ("x");
-		QWidget *widget = 0;
 		if (formElem.attribute ("xmlns") == NsRegister &&
 				formElem.attribute ("type") == "form")
 		{
 			QXmppDataForm form;
 			form.parse (Util::XmppElem2DomElem (formElem));
-			widget = FB_.CreateForm (form);
+			Widget_ = FB_.CreateForm (form);
 		}
 		else
-			widget = LFB_.CreateForm (queryElem);
+			Widget_ = LFB_.CreateForm (queryElem);
 
-		if (!widget)
+		if (!Widget_)
 		{
 			SetState (SError);
 			qWarning () << Q_FUNC_INFO
@@ -185,7 +184,7 @@ namespace Xoox
 			return;
 		}
 
-		layout ()->addWidget (widget);
+		layout ()->addWidget (Widget_);
 		Q_FOREACH (QLineEdit *edit, Widget_->findChildren<QLineEdit*> ())
 			connect (edit,
 					SIGNAL (textChanged (const QString&)),
