@@ -90,11 +90,15 @@ namespace Azoth
 		const QString& protoName = proto->GetProtocolName ();
 		Q_FOREACH (QWidget *widget, Widgets_)
 		{
-			QWizardPage *page = new QWizardPage (wizard ());
-			page->setTitle (tr ("%1 options")
-					.arg (protoName));
-			page->setLayout (new QVBoxLayout ());
-			page->layout ()->addWidget (widget);
+			QWizardPage *page = qobject_cast<QWizardPage*> (widget);
+			if (!page)
+			{
+				page = new QWizardPage (wizard ());
+				page->setTitle (tr ("%1 options")
+						.arg (protoName));
+				page->setLayout (new QVBoxLayout ());
+				page->layout ()->addWidget (widget);
+			}
 			wizard ()->addPage (page);
 		}
 		
