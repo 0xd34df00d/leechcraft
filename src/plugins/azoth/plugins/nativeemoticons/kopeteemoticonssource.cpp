@@ -39,8 +39,7 @@ namespace NativeEmoticons
 		if (CachedPack_ == pack && !IconCache_.isEmpty ())
 			return IconCache_;
 
-		Util::QIODevice_ptr dev = EmoLoader_->Load (pack + "/" +
-				"emoticons.xml");
+		Util::QIODevice_ptr dev = EmoLoader_->Load (pack + "/emoticons.xml");
 		if (!dev)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -62,29 +61,26 @@ namespace NativeEmoticons
 
 		if (!smileXml.setContent (dev.get ()))
 		{
-			qDebug () << "Unable to read xml from file";
-			dev->close ();
+			qWarning () << "Unable to read xml from file";
 			return QHash<QString, QString> ();
 		}
-		dev->close ();
 
 		QDomElement docElem = smileXml.documentElement ();
 		QDomNode n = docElem.firstChild ();
 		while (!n.isNull ())
 		{
 			QDomElement e = n.toElement ();
-			if (!e.isNull ())
-			{
-				QDomNode chn = e.firstChild ();
-				while (!chn.isNull ())
-				{
-					QDomElement smileElem = chn.toElement ();
-					IconCache_ [smileElem.text ()] =
-							e.attribute ("file");
-					chn = chn.nextSibling ();
-				}
-			}
 			n = n.nextSibling ();
+			if (e.isNull ())
+				continue;
+
+			QDomNode chn = e.firstChild ();
+			while (!chn.isNull ())
+			{
+				QDomElement smileElem = chn.toElement ();
+				IconCache_ [smileElem.text ()] = e.attribute ("file");
+				chn = chn.nextSibling ();
+			}
 		}
 
 		CachedPack_ = pack;

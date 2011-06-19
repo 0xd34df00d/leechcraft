@@ -60,7 +60,7 @@ namespace NativeEmoticons
 
 		if (!smileXml.setContent (dev.get ()))
 		{
-			qDebug () << "Unable to read xml from file";
+			qWarning () << "Unable to read xml from file";
 			return QHash<QString, QString> ();
 		}
 
@@ -69,30 +69,31 @@ namespace NativeEmoticons
 		while (!n.isNull ())
 		{
 			QDomElement e = n.toElement ();
-			if (!e.isNull () && (e.tagName () != "meta"))
-			{
-				QDomNode chn = e.firstChild ();
-				QStringList smiles = QStringList ();
-				while (!chn.isNull ())
-				{
-					QDomElement smileElem = chn.toElement ();
-					if (smileElem.tagName () == "text")
-						smiles << smileElem.text ();
-					else if (smileElem.tagName () == "object")
-					{
-						QString name = smileElem.text ();
-						Q_FOREACH (const QString& str, smiles)
-						{
-							if (name.endsWith (".png") ||
-									name.endsWith (".gif"))
-							name.chop (4);
-							IconCache_ [str] = name;
-						}
-					}
-					chn = chn.nextSibling ();
-				}
-			}
 			n = n.nextSibling ();
+
+			if (e.isNull () || e.tagName () == "meta")
+				continue;
+
+			QDomNode chn = e.firstChild ();
+			QStringList smiles = QStringList ();
+			while (!chn.isNull ())
+			{
+				QDomElement smileElem = chn.toElement ();
+				if (smileElem.tagName () == "text")
+					smiles << smileElem.text ();
+				else if (smileElem.tagName () == "object")
+				{
+					QString name = smileElem.text ();
+					Q_FOREACH (const QString& str, smiles)
+					{
+						if (name.endsWith (".png") ||
+								name.endsWith (".gif"))
+						name.chop (4);
+						IconCache_ [str] = name;
+					}
+				}
+				chn = chn.nextSibling ();
+			}
 		}
 
 		CachedPack_ = pack;
