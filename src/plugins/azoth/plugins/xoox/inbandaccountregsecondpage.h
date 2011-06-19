@@ -39,6 +39,16 @@ namespace Xoox
 		InBandAccountRegFirstPage *FirstPage_;
 		LegacyFormBuilder LFB_;
 		FormBuilder FB_;
+		QWidget *Widget_;
+		
+		enum State
+		{
+			SError,
+			SIdle,
+			SConnecting,
+			SFetchingForm,
+			SAwaitingUserInput
+		} State_;
 	public:
 		InBandAccountRegSecondPage (InBandAccountRegFirstPage*, QWidget* = 0);
 
@@ -46,6 +56,7 @@ namespace Xoox
 		void initializePage ();
 	private:
 		void ShowMessage (const QString&);
+		void SetState (State);
 	private slots:
 		void handleConnected ();
 		void handleError (QXmppClient::Error);

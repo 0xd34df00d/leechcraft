@@ -19,7 +19,10 @@
 #include "inbandaccountregsecondpage.h"
 #include <QVBoxLayout>
 #include <QLabel>
+#include <QDomElement>
+#include <QLineEdit>
 #include "inbandaccountregfirstpage.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -33,6 +36,8 @@ namespace Xoox
 	: QWizardPage (parent)
 	, Client_ (new QXmppClient (this))
 	, FirstPage_ (first)
+	, Widget_ (0)
+	, State_ (SIdle)
 	{
 		Q_FOREACH (QXmppClientExtension *ext, Client_->extensions ())
 			Client_->removeExtension (ext);
@@ -55,7 +60,21 @@ namespace Xoox
 	
 	bool InBandAccountRegSecondPage::isComplete () const
 	{
-		return QWizardPage::isComplete ();
+		switch (State_)
+		{
+		case SError:
+		case SIdle:
+		case SConnecting:
+		case SFetchingForm:
+			return false;
+		case SAwaitingUserInput:
+			if (!Widget_)
+				return false;
+			Q_FOREACH (QLineEdit *edit, Widget_->findChildren<QLineEdit*> ())
+				if (edit->text ().isEmpty ())
+					return false;
+			return true;
+		}
 	}
 	
 	void InBandAccountRegSecondPage::initializePage ()
@@ -63,8 +82,7 @@ namespace Xoox
 		QWizardPage::initializePage ();
 		
 		const QString& server = FirstPage_->GetServerName ();
-		ShowMessage (tr ("Please wait while registration "
-				"information is fetched from %1...").arg (server));
+		ShowMessage (tr ("Connecting to %1...").arg (server));
 		
 		if (Client_->isConnected ())
 			Client_->disconnectFromServer ();
@@ -74,6 +92,8 @@ namespace Xoox
 		conf.setSASLAuthMechanism (QXmppConfiguration::SASLAnonymous);
 		conf.setIgnoreAuth (true);
 		Client_->connectToServer (conf);
+		
+		SetState (SConnecting);
 	}
 	
 	void InBandAccountRegSecondPage::ShowMessage (const QString& msg)
@@ -83,9 +103,15 @@ namespace Xoox
 		layout ()->addWidget (new QLabel (msg));
 	}
 	
+	void InBandAccountRegSecondPage::SetState (InBandAccountRegSecondPage::State state)
+	{
+		State_ = state;
+		emit completeChanged ();
+	}
+	
 	void InBandAccountRegSecondPage::handleConnected ()
 	{
-		ShowMessage ("Connected!");
+		ShowMessage ("Fetching registration form...");
 
 		QXmppElement queryElem;
 		queryElem.setTagName ("query");
@@ -94,11 +120,29 @@ namespace Xoox
 		QXmppIq iq;
 		iq.setExtensions (queryElem);
 		Client_->sendPacket (iq);
+		
+		SetState (SFetchingForm);
 	}
 	
 	void InBandAccountRegSecondPage::handleError (QXmppClient::Error error)
 	{
-		ShowMessage (tr ("Error"));
+		QString msg;
+		switch (error)
+		{
+		case QXmppClient::SocketError:
+			msg = tr ("Socket error:") + ' ' + QString::number (Client_->socketError ()) + '.';
+			break;
+		case QXmppClient::KeepAliveError:
+			msg = tr ("Keep alive error.");
+			break;
+		case QXmppClient::XmppStreamError:
+			msg = tr ("XMPP error:") + ' ' + QString::number (Client_->xmppStreamError ()) + '.';
+			break;
+		}
+		
+		ShowMessage (msg);
+		
+		SetState (SError);
 	}
 	
 	void InBandAccountRegSecondPage::handleIqReceived (const QXmppIq& iq)
@@ -111,16 +155,44 @@ namespace Xoox
 				queryElem = elem;
 				break;
 			}
-			
+
 		if (queryElem.isNull ())
 		{
+			SetState (SError);
 			ShowMessage (tr ("Service unavailable"));
 			return;
 		}
-		
+
 		qDeleteAll (findChildren<QWidget*> ());
-		QWidget *widget = LFB_.CreateForm (queryElem);
+
+		const QXmppElement& formElem = queryElem.firstChildElement ("x");
+		QWidget *widget = 0;
+		if (formElem.attribute ("xmlns") == NsRegister &&
+				formElem.attribute ("type") == "form")
+		{
+			QXmppDataForm form;
+			form.parse (Util::XmppElem2DomElem (formElem));
+			widget = FB_.CreateForm (form);
+		}
+		else
+			widget = LFB_.CreateForm (queryElem);
+
+		if (!widget)
+		{
+			SetState (SError);
+			qWarning () << Q_FUNC_INFO
+					<< "got null widget";
+			return;
+		}
+
 		layout ()->addWidget (widget);
+		Q_FOREACH (QLineEdit *edit, Widget_->findChildren<QLineEdit*> ())
+			connect (edit,
+					SIGNAL (textChanged (const QString&)),
+					this,
+					SIGNAL (completeChanged ()));
+		
+		SetState (SAwaitingUserInput);
 	}
 }
 }
