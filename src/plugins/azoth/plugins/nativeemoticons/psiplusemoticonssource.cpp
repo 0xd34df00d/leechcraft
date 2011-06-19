@@ -1,6 +1,7 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010  Oleg Linkin
+ * Copyright (C) 2011  Oleg Linkin
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,85 +29,16 @@ namespace Azoth
 namespace NativeEmoticons
 {
 	PsiPlusEmoticonsSource::PsiPlusEmoticonsSource (QObject *parent)
-	: QObject (parent)
-	, EmoLoader_ (new Util::ResourceLoader
-			("azoth/emoticons/custom/psiplus", this))
+	: BaseEmoticonsSource ("custom/psiplus/", parent)
 	{
-		EmoLoader_->AddGlobalPrefix ();
-		EmoLoader_->AddLocalPrefix ();
 	}
 
-	QByteArray PsiPlusEmoticonsSource::GetImage (const QString& pack,
-			const QString& smile) const
+	PsiPlusEmoticonsSource::String2Filename_t PsiPlusEmoticonsSource::ParseFile (const QString& pack) const
 	{
-		const String2Filename_t& hash = ParseFile (pack);
-		if (!hash.contains (smile))
-			return QByteArray ();
-
-		const QString& path = EmoLoader_->GetIconPath (pack + "/" +
-				hash [smile]);
-		QFile file (path);
-		if (!file.open (QIODevice::ReadOnly))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to open file"
-					<< file.fileName ()
-					<< "for"
-					<< pack
-					<< smile
-					<< file.errorString ();
-			return QByteArray ();
-		}
-
-		return file.readAll ();
-	}
-
-	QHash<QImage, QString> PsiPlusEmoticonsSource::GetReprImages (const QString& pack) const
-	{
-		QHash<QImage, QString> result;
-
-		const String2Filename_t& hash = ParseFile (pack);
-		const QSet<QString>& uniqueImgs = hash.values ().toSet ();
-		Q_FOREACH (const QString& imgPath, uniqueImgs)
-		{
-			const QString& fullPath =
-					EmoLoader_->GetIconPath (pack + "/" + imgPath);
-			const QImage& img = QImage (fullPath);
-			if (img.isNull ())
-			{
-				qWarning () << Q_FUNC_INFO
-						<< imgPath
-						<< "in pack"
-						<< pack
-						<< "is null, got path:"
-						<< fullPath;
-				continue;
-			}
-
-			result [img] = hash.key (imgPath);
-		}
-
-		return result;
-	}
-
-	QSet<QString> PsiPlusEmoticonsSource::GetEmoticonStrings (const QString& pack) const
-	{
-		return ParseFile (pack).keys ().toSet ();
-	}
-
-	QAbstractItemModel* PsiPlusEmoticonsSource::GetOptionsModel () const
-	{
-		return EmoLoader_->GetSubElemModel ();
-	}
-
-	PsiPlusEmoticonsSource::String2Filename_t
-			PsiPlusEmoticonsSource::ParseFile (const QString& pack) const
-	{
-  if (CachedPack_ == pack && !IconCache_.isEmpty ())
+		if (CachedPack_ == pack && !IconCache_.isEmpty ())
 			return IconCache_;
 
-		Util::QIODevice_ptr dev = EmoLoader_->Load (pack + "/" +
-				"icondef.xml");
+		Util::QIODevice_ptr dev = EmoLoader_->Load (pack + "/icondef.xml");
 		if (!dev)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -119,7 +51,7 @@ namespace NativeEmoticons
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unable to open QIODevice for"
-					<< pack + "/" + "icondef.xml:"
+					<< pack + "/icondef.xml:"
 					<< dev->errorString ();
 			return QHash<QString, QString> ();
 		}
@@ -129,10 +61,8 @@ namespace NativeEmoticons
 		if (!smileXml.setContent (dev.get ()))
 		{
 			qDebug () << "Unable to read xml from file";
-			dev->close ();
 			return QHash<QString, QString> ();
 		}
-		dev->close ();
 
 		QDomElement docElem = smileXml.documentElement ();
 		QDomNode n = docElem.firstChild ();
@@ -168,8 +98,6 @@ namespace NativeEmoticons
 		CachedPack_ = pack;
 		return IconCache_;
 	}
-
-};
-};
-};
-
+}
+}
+}

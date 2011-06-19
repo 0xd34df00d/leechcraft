@@ -16,29 +16,41 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_NATIVEEMOTICONS_NATIVEEMOTICONSSOURCE_H
-#define PLUGINS_AZOTH_PLUGINS_NATIVEEMOTICONS_NATIVEEMOTICONSSOURCE_H
+#ifndef PLUGINS_AZOTH_PLUGINS_NATIVEEMOTICONS_BASEEMOTICONSSOURCE_H
+#define PLUGINS_AZOTH_PLUGINS_NATIVEEMOTICONS_BASEEMOTICONSSOURCE_H
+#include <boost/shared_ptr.hpp>
 #include <QObject>
-#include <QHash>
-#include "baseemoticonssource.h"
+#include <QSet>
+#include <interfaces/iresourceplugin.h>
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class ResourceLoader;
+}
 namespace Azoth
 {
 namespace NativeEmoticons
 {
-	class NativeEmoticonsSource : public BaseEmoticonsSource
+	class BaseEmoticonsSource : public QObject
+							  , public IEmoticonResourceSource
 	{
 		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Azoth::IEmoticonResourceSource);
+	protected:
+		boost::shared_ptr<Util::ResourceLoader> EmoLoader_;
 		
-		mutable String2Filename_t IconCache_;
-		mutable QString CachedPack_;
+		typedef QHash<QString, QString> String2Filename_t;
 	public:
-		NativeEmoticonsSource (QObject* = 0);
-	private:
-		// Hash is chat string → filename.
-		String2Filename_t ParseFile (const QString&) const;
+		BaseEmoticonsSource (const QString&, QObject* = 0);
+		
+		QAbstractItemModel* GetOptionsModel () const;
+		QSet<QString> GetEmoticonStrings (const QString&) const;
+		QHash<QImage, QString> GetReprImages (const QString&) const;
+		QByteArray GetImage (const QString&, const QString&) const;
+	protected:
+		virtual String2Filename_t ParseFile (const QString&) const = 0;
 	};
 }
 }

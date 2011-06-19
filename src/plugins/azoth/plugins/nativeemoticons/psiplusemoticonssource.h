@@ -1,6 +1,7 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010  Oleg Linkin
+ * Copyright (C) 2011  Oleg Linkin
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,42 +19,30 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_NATIVEEMOTICONS_PSIPLUSEMOTICONSSOURCE_H
 #define PLUGINS_AZOTH_PLUGINS_NATIVEEMOTICONS_PSIPLUSEMOTICONSSOURCE_H
-
-#include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <QHash>
-#include <interfaces/iresourceplugin.h>
+#include "baseemoticonssource.h"
 
 namespace LeechCraft
 {
-namespace Util
-{
-	class ResourceLoader;
-}
 namespace Azoth
 {
 namespace NativeEmoticons
 {
-	class PsiPlusEmoticonsSource : public QObject
-								, public IEmoticonResourceSource
+	class PsiPlusEmoticonsSource : public BaseEmoticonsSource
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IEmoticonResourceSource);
-		boost::shared_ptr<Util::ResourceLoader> EmoLoader_;
-		typedef QHash<QString, QString> String2Filename_t;
+
 		mutable String2Filename_t IconCache_;
 		mutable QString CachedPack_;
 	public:
 		PsiPlusEmoticonsSource (QObject* = 0);
-		QByteArray GetImage (const QString&, const QString&) const;
-		QHash<QImage, QString> GetReprImages (const QString&) const;
-		QSet<QString> GetEmoticonStrings (const QString&) const;
-		QAbstractItemModel* GetOptionsModel () const;
 	private:
 		// Hash is chat string → filename.
 		String2Filename_t ParseFile (const QString&) const;
 	};
-};
-};
-};
-#endif // PLUGINS_AZOTH_PLUGINS_NATIVEEMOTICONS_PSIPLUSEMOTICONSSOURCE_H
+}
+}
+}
+
+#endif
