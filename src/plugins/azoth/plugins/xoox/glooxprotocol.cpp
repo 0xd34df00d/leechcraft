@@ -68,7 +68,7 @@ namespace Xoox
 
 	IProtocol::ProtocolFeatures GlooxProtocol::GetFeatures() const
 	{
-		return PFSupportsMUCs | PFMUCsJoinable;
+		return PFSupportsMUCs | PFMUCsJoinable | PFSupportsInBandRegistration;
 	}
 
 	QList<QObject*> GlooxProtocol::GetRegisteredAccounts ()
