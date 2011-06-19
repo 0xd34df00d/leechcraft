@@ -52,6 +52,7 @@
 #include "capsmanager.h"
 #include "annotationsmanager.h"
 #include "fetchqueue.h"
+#include "legacyentitytimeext.h"
 
 namespace LeechCraft
 {
@@ -105,6 +106,7 @@ namespace Xoox
 		Client_->addExtension (EntityTimeManager_);
 		Client_->addExtension (ArchiveManager_);
 		Client_->addExtension (PubSubManager_);
+		Client_->addExtension (new LegacyEntityTimeExt);
 		
 		AnnotationsManager_ = new AnnotationsManager (this);
 

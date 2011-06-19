@@ -41,6 +41,7 @@ SET (XOOX_SRCS
 	inbandaccountregfirstpage.cpp
 	inbandaccountregsecondpage.cpp
 	inbandaccountregthirdpage.cpp
+	legacyentitytimeext.cpp
 	)
 SET (XOOX_HEADERS
 	xoox.h
@@ -77,6 +78,7 @@ SET (XOOX_HEADERS
 	inbandaccountregfirstpage.h
 	inbandaccountregsecondpage.h
 	inbandaccountregthirdpage.h
+	legacyentitytimeext.h
 	)
 SET (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui
