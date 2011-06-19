@@ -1,0 +1,23 @@
+INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
+	${CMAKE_CURRENT_BINARY_DIR}
+	)
+SET (AUTOPASTE_SRCS
+	autopaste.cpp
+	xmlsettingsmanager.cpp
+	)
+SET (AUTOPASTE_HEADERS
+	autopaste.h
+	xmlsettingsmanager.h
+	)
+QT4_WRAP_CPP (AUTOPASTE_MOC_SRCS ${AUTOPASTE_HEADERS})
+
+ADD_LIBRARY (leechcraft_azoth_autopaste SHARED
+	${AUTOPASTE_SRCS}
+	${AUTOPASTE_MOC_SRCS}
+	)
+TARGET_LINK_LIBRARIES (leechcraft_azoth_autopaste
+	${QT_LIBRARIES}
+	${LEECHCRAFT_LIBRARIES}
+	)
+INSTALL (TARGETS leechcraft_azoth_autopaste DESTINATION ${LC_PLUGINS_DEST})
+INSTALL (FILES azothautopastesettings.xml DESTINATION ${LC_SETTINGS_DEST})

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="Azoth Autopaste" />
+		<groupbox>
+			<label value="Detection" />
+			<item type="checkbox" property="EnableForNormalChats" default="off">
+				<label value="Enable for normal one-to-one chats" />
+			</item>
+			<item type="checkbox" property="EnableForMUCChats" default="on">
+				<label value="Enable for multiuser conferences" />
+			</item>
+			<item type="checkbox" property="EnableForPrivateChats" default="off">
+				<label value="Enable for private chats in conferences" />
+			</item>
+			<item type="spinbox" property="LineCount" default="4">
+				<label value="Number of lines to be detected as paste:" />
+			</item>
+		</groupbox>
+	</page>
+</settings>
