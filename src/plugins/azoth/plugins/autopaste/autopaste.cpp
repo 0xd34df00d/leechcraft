@@ -23,6 +23,7 @@
 #include <QClipboard>
 #include <QApplication>
 #include <QMessageBox>
+#include <QTranslator>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <plugininterface/util.h>
 #include <interfaces/imessage.h>
@@ -37,6 +38,8 @@ namespace Autopaste
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Translator_.reset (Util::InstallTranslator ("azoth_autopaste"));
+
 		Proxy_ = proxy;
 
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog);
