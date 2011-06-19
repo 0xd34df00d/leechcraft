@@ -27,12 +27,22 @@ namespace Azoth
 	: QWizardPage (parent)
 	{
 		Ui_.setupUi (this);
+
+		connect (Ui_.ProtoBox_,
+				SIGNAL (currentIndexChanged (int)),
+				this,
+				SLOT (readdWidgets ()));
+		connect (Ui_.RegisterAccount_,
+				SIGNAL (toggled (bool)),
+				this,
+				SLOT (readdWidgets ()));
 	}
 	
 	void AddAccountWizardFirstPage::initializePage ()
 	{
 		registerField ("AccountName*", Ui_.NameEdit_);
 		registerField ("AccountProto", Ui_.ProtoBox_);
+		registerField ("RegisterNewAccount", Ui_.RegisterAccount_);
 
 		const QList<IProtocol*>& protos = Core::Instance ().GetProtocols ();
 		Q_FOREACH (IProtocol *proto, protos)
@@ -45,8 +55,9 @@ namespace Azoth
 				SLOT (handleAccepted ()));
 	}
 	
-	void AddAccountWizardFirstPage::on_ProtoBox__currentIndexChanged (int idx)
+	void AddAccountWizardFirstPage::readdWidgets ()
 	{
+		const int idx = Ui_.ProtoBox_->currentIndex ();
 		if (idx == -1)
 			return;
 
@@ -69,7 +80,10 @@ namespace Azoth
 				wizard ()->removePage (id);
 		qDeleteAll (Widgets_);
 
-		Widgets_ = proto->GetAccountRegistrationWidgets ();
+		IProtocol::AccountAddOptions options = IProtocol::AAONoOptions;
+		if (Ui_.RegisterAccount_->isChecked ())
+			options |= IProtocol::AAORegisterNewAccount;
+		Widgets_ = proto->GetAccountRegistrationWidgets (options);
 		if (!Widgets_.size ())
 			return;
 		

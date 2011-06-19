@@ -94,10 +94,15 @@ namespace Xoox
 		return "Xoox.Gloox.XMPP";
 	}
 	
-	QList<QWidget*> GlooxProtocol::GetAccountRegistrationWidgets ()
+	QList<QWidget*> GlooxProtocol::GetAccountRegistrationWidgets (AccountAddOptions options)
 	{
 		QList<QWidget*> result;
-		result << new GlooxAccountConfigurationWidget ();
+		if (options & AAORegisterNewAccount)
+		{
+			
+		}
+		else
+			result << new GlooxAccountConfigurationWidget ();
 		return result;
 	}
 	

@@ -93,31 +93,7 @@ namespace Acetamide
 		return "Acetamide.IRC";
 	}
 
-	void IrcProtocol::InitiateAccountRegistration ()
-	{
-		QString name = QInputDialog::getText (0,
-				"LeechCraft",
-				tr ("Enter new account name"));
-		if (name.isEmpty ())
-			return;
-
-		IrcAccount *account = new IrcAccount (name, this);
-		account->OpenConfigurationDialog ();
-
-		connect (account,
-				SIGNAL (accountSettingsChanged ()),
-				this,
-				SLOT (saveAccounts ()));
-
-		IrcAccounts_ << account;
-		saveAccounts ();
-
-		emit accountAdded (account);
-
-		account->ChangeState (EntryStatus (SOnline, QString ()));
-	}
-
-	QList<QWidget*> IrcProtocol::GetAccountRegistrationWidgets ()
+	QList<QWidget*> IrcProtocol::GetAccountRegistrationWidgets (IProtocol::AccountAddOptions)
 	{
 		QList<QWidget*> result;
 		result << new IrcAccountConfigurationWidget ();

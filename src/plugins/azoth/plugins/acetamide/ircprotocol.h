@@ -56,8 +56,7 @@ namespace Acetamide
 		QObject* GetParentProtocolPlugin () const;
 		QString GetProtocolName () const;
 		QByteArray GetProtocolID () const;
-		void InitiateAccountRegistration ();
-		QList<QWidget*> GetAccountRegistrationWidgets ();
+		QList<QWidget*> GetAccountRegistrationWidgets (AccountAddOptions);
 		void RegisterAccount (const QString&, const QList<QWidget*>&);
 		QWidget* GetMUCJoinWidget ();
 		QWidget* GetMUCBookmarkEditorWidget ();
