@@ -106,6 +106,27 @@ namespace Xoox
 		
 		return result;
 	}
+	
+	QString LegacyFormBuilder::GetUsername () const
+	{
+		if (!Widget_)
+			return QString ();
+		
+		Q_FOREACH (QLineEdit *edit, Widget_->findChildren<QLineEdit*> ("field"))
+			if (edit->property ("FieldName").toString () == "username")
+				return edit->text ();
+
+		return QString ();
+	}
+	
+	QString LegacyFormBuilder::GetPassword () const
+	{
+		Q_FOREACH (QLineEdit *edit, Widget_->findChildren<QLineEdit*> ("field"))
+			if (edit->property ("FieldName").toString () == "password")
+				return edit->text ();
+
+		return QString ();
+	}
 }
 }
 }

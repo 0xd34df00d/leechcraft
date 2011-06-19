@@ -41,26 +41,43 @@ namespace Xoox
 		FormBuilder FB_;
 		QWidget *Widget_;
 		
+		enum FormType
+		{
+			FTLegacy,
+			FTNew
+		} FormType_;
+		
 		enum State
 		{
 			SError,
 			SIdle,
 			SConnecting,
 			SFetchingForm,
-			SAwaitingUserInput
+			SAwaitingUserInput,
+			SAwaitingRegistrationResult
 		} State_;
 	public:
 		InBandAccountRegSecondPage (InBandAccountRegFirstPage*, QWidget* = 0);
+		
+		void Register ();
+		
+		QString GetJID () const;
+		QString GetPassword () const;
 
 		bool isComplete () const;
 		void initializePage ();
 	private:
 		void ShowMessage (const QString&);
 		void SetState (State);
+		void HandleRegForm (const QXmppIq&);
+		void HandleRegResult (const QXmppIq&);
 	private slots:
 		void handleConnected ();
 		void handleError (QXmppClient::Error);
 		void handleIqReceived (const QXmppIq&);
+	signals:
+		void successfulReg ();
+		void regError (const QString&);
 	};
 }
 }

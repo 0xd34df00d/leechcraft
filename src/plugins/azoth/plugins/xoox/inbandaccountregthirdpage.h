@@ -16,14 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_LEGACYFORMBUILDER_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_LEGACYFORMBUILDER_H
-#include <boost/function.hpp>
-#include <QObject>
-#include <QHash>
-#include <QXmppElement.h>
+#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_INBANDACCOUNTREGTHIRDPAGE_H
+#define PLUGINS_AZOTH_PLUGINS_XOOX_INBANDACCOUNTREGTHIRDPAGE_H
+#include <QWizardPage>
 
-class QWidget;
+class QLabel;
 
 namespace LeechCraft
 {
@@ -31,20 +28,36 @@ namespace Azoth
 {
 namespace Xoox
 {
-	class LegacyFormBuilder : public QObject
-	{
-		QWidget *Widget_;
+	class InBandAccountRegSecondPage;
+	class GlooxAccountConfigurationWidget;
 
-		typedef boost::function<void (QWidget*, const QXmppElement&)> ElementActor_t;
-		QHash<QString, ElementActor_t> Tag2Actor_;
+	class InBandAccountRegThirdPage : public QWizardPage
+	{
+		Q_OBJECT
+
+		InBandAccountRegSecondPage *SecondPage_;
+		GlooxAccountConfigurationWidget *ConfWidget_;
+		QLabel *StateLabel_;
+
+		enum RegState
+		{
+			RSIdle,
+			RSAwaitingResult,
+			RSSuccess,
+			RSError
+		} RegState_;
 	public:
-		LegacyFormBuilder ();
+		InBandAccountRegThirdPage (InBandAccountRegSecondPage*, QWidget* = 0);
 		
-		QWidget* CreateForm (const QXmppElement&, QWidget* = 0);
-		QList<QXmppElement> GetFilledChildren () const;
-		
-		QString GetUsername () const;
-		QString GetPassword () const;
+		void SetConfWidget (GlooxAccountConfigurationWidget*);
+
+		bool isComplete () const;
+		void initializePage ();
+	private:
+		void SetState (RegState);
+	private slots:
+		void handleSuccessfulReg ();
+		void handleRegError (const QString&);
 	};
 }
 }

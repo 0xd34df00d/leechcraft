@@ -40,6 +40,7 @@ SET (XOOX_SRCS
 	legacyformbuilder.cpp
 	inbandaccountregfirstpage.cpp
 	inbandaccountregsecondpage.cpp
+	inbandaccountregthirdpage.cpp
 	)
 SET (XOOX_HEADERS
 	xoox.h
@@ -75,6 +76,7 @@ SET (XOOX_HEADERS
 	legacyformbuilder.h
 	inbandaccountregfirstpage.h
 	inbandaccountregsecondpage.h
+	inbandaccountregthirdpage.h
 	)
 SET (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui

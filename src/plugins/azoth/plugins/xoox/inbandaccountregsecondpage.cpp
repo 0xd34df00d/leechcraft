@@ -58,6 +58,53 @@ namespace Xoox
 				SLOT (handleIqReceived (const QXmppIq&)));
 	}
 	
+	void InBandAccountRegSecondPage::Register ()
+	{
+		QXmppElement queryElem;
+		queryElem.setTagName ("query");
+		queryElem.setAttribute ("xmlns", NsRegister);
+		
+		switch (FormType_)
+		{
+		case FTLegacy:
+			Q_FOREACH (const QXmppElement& elem, LFB_.GetFilledChildren ())
+				queryElem.appendChild (elem);
+			break;
+		case FTNew:
+		{
+			QByteArray arr;
+			{
+				QXmlStreamWriter w (&arr);
+				FB_.GetForm ().toXml (&w);
+			}
+			QDomDocument dom;
+			dom.setContent (arr);
+			queryElem.appendChild (QXmppElement (dom.documentElement ()));
+			break;
+		}
+		}
+
+		QXmppIq iq (QXmppIq::Set);
+		iq.setExtensions (queryElem);
+		Client_->sendPacket (iq);
+		
+		SetState (SAwaitingRegistrationResult);
+	}
+	
+	QString InBandAccountRegSecondPage::GetJID () const
+	{
+		if (FormType_ != FTLegacy)
+			return QString ();
+		return LFB_.GetUsername () + '@' + FirstPage_->GetServerName ();
+	}
+	
+	QString InBandAccountRegSecondPage::GetPassword () const
+	{
+		if (FormType_ != FTLegacy)
+			return QString ();
+		return LFB_.GetPassword ();
+	}
+	
 	bool InBandAccountRegSecondPage::isComplete () const
 	{
 		switch (State_)
@@ -66,6 +113,7 @@ namespace Xoox
 		case SIdle:
 		case SConnecting:
 		case SFetchingForm:
+		case SAwaitingRegistrationResult:
 			return false;
 		case SAwaitingUserInput:
 			if (!Widget_)
@@ -109,6 +157,90 @@ namespace Xoox
 		emit completeChanged ();
 	}
 	
+	void InBandAccountRegSecondPage::HandleRegForm (const QXmppIq& iq)
+	{
+		QXmppElement queryElem;
+		Q_FOREACH (const QXmppElement& elem, iq.extensions ())
+			if (elem.tagName () == "query" &&
+					elem.attribute ("xmlns") == NsRegister)
+			{
+				queryElem = elem;
+				break;
+			}
+
+		if (queryElem.isNull ())
+		{
+			SetState (SError);
+			ShowMessage (tr ("Service unavailable"));
+			return;
+		}
+
+		qDeleteAll (findChildren<QWidget*> ());
+
+		const QXmppElement& formElem = queryElem.firstChildElement ("x");
+		if (formElem.attribute ("xmlns") == NsRegister &&
+				formElem.attribute ("type") == "form")
+		{
+			QXmppDataForm form;
+			form.parse (Util::XmppElem2DomElem (formElem));
+			Widget_ = FB_.CreateForm (form);
+			FormType_ = FTNew;
+		}
+		else
+		{
+			Widget_ = LFB_.CreateForm (queryElem);
+			FormType_ = FTLegacy;
+		}
+
+		if (!Widget_)
+		{
+			SetState (SError);
+			qWarning () << Q_FUNC_INFO
+					<< "got null widget";
+			return;
+		}
+
+		layout ()->addWidget (Widget_);
+		Q_FOREACH (QLineEdit *edit, Widget_->findChildren<QLineEdit*> ())
+			connect (edit,
+					SIGNAL (textChanged (const QString&)),
+					this,
+					SIGNAL (completeChanged ()));
+		
+		SetState (SAwaitingUserInput);
+	}
+	
+	void InBandAccountRegSecondPage::HandleRegResult (const QXmppIq& iq)
+	{
+		if (iq.type () == QXmppIq::Result)
+			emit successfulReg ();
+		else if (iq.type () != QXmppIq::Error)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "strange iq type"
+					<< iq.type ();
+			return;
+		}
+
+		QString msg;
+		Q_FOREACH (const QXmppElement& elem, iq.extensions ())
+		{
+			if (elem.tagName () != "error")
+				continue;
+			
+			if (!elem.firstChildElement ("conflict").isNull ())
+				msg = tr ("data conflict");
+			else if (!elem.firstChildElement ("not-acceptable").isNull ())
+				msg = tr ("data is not acceptable");
+			else
+				msg = tr ("general error:") +
+					' ' + elem.firstChildElement ().tagName ();
+		}
+		if (msg.isEmpty ())
+			msg = tr ("general registration error");
+		emit regError (msg);
+	}
+	
 	void InBandAccountRegSecondPage::handleConnected ()
 	{
 		ShowMessage ("Fetching registration form...");
@@ -147,51 +279,19 @@ namespace Xoox
 	
 	void InBandAccountRegSecondPage::handleIqReceived (const QXmppIq& iq)
 	{
-		QXmppElement queryElem;
-		Q_FOREACH (const QXmppElement& elem, iq.extensions ())
-			if (elem.tagName () == "query" &&
-					elem.attribute ("xmlns") == NsRegister)
-			{
-				queryElem = elem;
-				break;
-			}
-
-		if (queryElem.isNull ())
+		switch (State_)
 		{
-			SetState (SError);
-			ShowMessage (tr ("Service unavailable"));
-			return;
-		}
-
-		qDeleteAll (findChildren<QWidget*> ());
-
-		const QXmppElement& formElem = queryElem.firstChildElement ("x");
-		if (formElem.attribute ("xmlns") == NsRegister &&
-				formElem.attribute ("type") == "form")
-		{
-			QXmppDataForm form;
-			form.parse (Util::XmppElem2DomElem (formElem));
-			Widget_ = FB_.CreateForm (form);
-		}
-		else
-			Widget_ = LFB_.CreateForm (queryElem);
-
-		if (!Widget_)
-		{
-			SetState (SError);
+		case SFetchingForm:
+			HandleRegForm (iq);
+			break;
+		case SAwaitingRegistrationResult:
+			HandleRegResult (iq);
+			break;
+		default:
 			qWarning () << Q_FUNC_INFO
-					<< "got null widget";
-			return;
+					<< "wrong state for incoming iq";
+			break;
 		}
-
-		layout ()->addWidget (Widget_);
-		Q_FOREACH (QLineEdit *edit, Widget_->findChildren<QLineEdit*> ())
-			connect (edit,
-					SIGNAL (textChanged (const QString&)),
-					this,
-					SIGNAL (completeChanged ()));
-		
-		SetState (SAwaitingUserInput);
 	}
 }
 }
