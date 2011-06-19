@@ -86,7 +86,6 @@ namespace Autopaste
 	
 	void Plugin::Paste (const QString& text, QObject *entry)
 	{
-		qDebug () << Q_FUNC_INFO;
 		QNetworkRequest req (QUrl ("http://paste.pocoo.org/"));
 		req.setHeader (QNetworkRequest::ContentTypeHeader,
 				"application/x-www-form-urlencoded");
