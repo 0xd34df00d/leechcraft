@@ -55,6 +55,7 @@
 #include "legacyentitytimeext.h"
 #include "pubsubmanager.h"
 #include "useractivity.h"
+#include "usermood.h"
 
 namespace LeechCraft
 {
@@ -103,7 +104,9 @@ namespace Xoox
 		ProxyObject_ = qobject_cast<IProxyObject*> (proxyObj);
 		
 		PubSubManager_->RegisterCreator<UserActivity> ();
+		PubSubManager_->RegisterCreator<UserMood> ();
 		PubSubManager_->SetAutosubscribe<UserActivity> (true);
+		PubSubManager_->SetAutosubscribe<UserMood> (true);
 
 		Client_->addExtension (PubSubManager_);
 		Client_->addExtension (DeliveryReceiptsManager_);
