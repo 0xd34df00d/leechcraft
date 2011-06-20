@@ -61,6 +61,8 @@ namespace Xoox
 		if (event.namespaceURI () != NsPubSubEvent)
 			return false;
 		
+		const QString& from = elem.attribute ("from");
+		
 		QDomElement items = event.firstChildElement ("items");
 		while (!items.isNull ())
 		{
@@ -77,7 +79,7 @@ namespace Xoox
 				PEPEventBase *eventObj = Node2Creator_ [node] ();
 				eventObj->Parse (item);
 				
-				emit gotEvent (eventObj);
+				emit gotEvent (from, eventObj);
 				
 				delete eventObj;
 				

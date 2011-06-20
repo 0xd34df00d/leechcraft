@@ -56,7 +56,7 @@ namespace Xoox
 		QStringList discoveryFeatures () const;
 		bool handleStanza (const QDomElement& elem);
 	signals:
-		void gotEvent (PEPEventBase*);
+		void gotEvent (const QString&, PEPEventBase*);
 	};
 }
 }
