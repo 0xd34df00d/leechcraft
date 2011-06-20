@@ -198,6 +198,11 @@ namespace Xoox
 		}
 	}
 	
+	PEPEventBase* UserActivity::Clone () const
+	{
+		return new UserActivity (*this);
+	}
+	
 	UserActivity::General UserActivity::GetGeneral () const
 	{
 		return General_;

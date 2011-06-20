@@ -684,8 +684,15 @@ namespace Xoox
 		
 		Q_FOREACH (const QXmppMessage& msg, OfflineMsgQueue_)
 			handleMessageReceived (msg);
-
 		OfflineMsgQueue_.clear ();
+		
+		QPair<QString, PEPEventBase*> initialEvent;
+		Q_FOREACH (initialEvent, InitialEventQueue_)
+		{
+			handlePEPEvent (initialEvent.first, initialEvent.second);
+			delete initialEvent.second;
+		}
+		InitialEventQueue_.clear ();
 	}
 
 	void ClientConnection::handleRosterChanged (const QString& bareJid)
@@ -810,9 +817,13 @@ namespace Xoox
 		
 		if (!JID2CLEntry_.contains (bare))
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown PEP event source"
-					<< from;
+			if (JID2CLEntry_.isEmpty ())
+				InitialEventQueue_ << qMakePair (from, event->Clone ());
+			else
+				qWarning () << Q_FUNC_INFO
+						<< "unknown PEP event source"
+						<< from
+						<< JID2CLEntry_.keys ();
 			return;
 		}
 		

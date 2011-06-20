@@ -127,6 +127,8 @@ namespace Xoox
 		QXmppElement ToXML () const;
 		void Parse (const QDomElement&);
 		
+		PEPEventBase* Clone () const;
+		
 		General GetGeneral () const;
 		void SetGeneral (General);
 		QString GetGeneralStr () const;

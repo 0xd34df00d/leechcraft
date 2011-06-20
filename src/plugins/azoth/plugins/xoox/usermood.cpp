@@ -175,6 +175,11 @@ namespace Xoox
 		}
 	}
 	
+	PEPEventBase* UserMood::Clone () const
+	{
+		return new UserMood (*this);
+	}
+	
 	UserMood::Mood UserMood::GetMood () const
 	{
 		return Mood_;

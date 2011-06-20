@@ -127,6 +127,8 @@ namespace Xoox
 		QXmppElement ToXML () const;
 		void Parse (const QDomElement&);
 		
+		PEPEventBase* Clone () const;
+		
 		Mood GetMood () const;
 		void SetMood (Mood);
 		QString GetMoodStr () const;

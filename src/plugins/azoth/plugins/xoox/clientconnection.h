@@ -105,6 +105,7 @@ namespace Xoox
 		int SocketErrorAccumulator_;
 		
 		QList<QXmppMessage> OfflineMsgQueue_;
+		QList<QPair<QString, PEPEventBase*> > InitialEventQueue_;
 		
 		QHash<QString, QPointer<VCardDialog> > AwaitingVCardDialogs_;
 		

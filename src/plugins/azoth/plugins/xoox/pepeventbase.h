@@ -33,6 +33,8 @@ namespace Xoox
 	public:
 		virtual QXmppElement ToXML () const = 0;
 		virtual void Parse (const QDomElement&) = 0;
+		
+		virtual PEPEventBase* Clone () const = 0;
 	};
 	
 	template<typename T>
