@@ -157,8 +157,12 @@ namespace Xoox
 		emit gotMessage (msg);
 	}
 	
-	void EntryBase::HandlePEPEvent (const QString& variant, PEPEventBase *event)
+	void EntryBase::HandlePEPEvent (QString variant, PEPEventBase *event)
 	{
+		const QStringList& vars = Variants ();
+		if (!vars.isEmpty () && !vars.contains (variant))
+			variant = vars.first ();
+
 		UserActivity *activity = dynamic_cast<UserActivity*> (event);
 		if (activity)
 		{
