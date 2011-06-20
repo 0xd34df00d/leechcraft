@@ -17,6 +17,8 @@
  **********************************************************************/
 
 #include "pubsubmanager.h"
+#include <QDomElement>
+#include <QtDebug>
 
 namespace LeechCraft
 {
@@ -24,14 +26,69 @@ namespace Azoth
 {
 namespace Xoox
 {
-	QStringList PubSubManager::discoveryFeatures () const
+	const QString NsPubSubEvent = "http://jabber.org/protocol/pubsub#event";
+
+	void PubSubManager::RegisterCreator (const QString& node,
+			boost::function<PEPEventBase* ()> creator)
 	{
-		return QStringList ();
+		Node2Creator_ [node] = creator;
+		SetAutosubscribe (node, false);
 	}
 	
-	bool PubSubManager::handleStanza (const QDomElement&)
+	void PubSubManager::SetAutosubscribe (const QString& node, bool enabled)
 	{
-		return false;
+		AutosubscribeNodes_ [node] = enabled;
+	}
+
+	QStringList PubSubManager::discoveryFeatures () const
+	{
+		QStringList result;
+		result << "http://jabber.org/protocol/pubsub";
+		Q_FOREACH (const QString& node, Node2Creator_.keys ())
+		{
+			result << node;
+			if (AutosubscribeNodes_ [node])
+				result << node + "+notify";
+		}
+		return result;
+	}
+	
+	bool PubSubManager::handleStanza (const QDomElement& elem)
+	{
+		if (elem.tagName () != "message" || elem.attribute ("type") != "headline")
+			return false;
+		
+		const QDomElement& event = elem.firstChildElement ("event");
+		if (event.namespaceURI () != NsPubSubEvent)
+			return false;
+		
+		QDomElement items = event.firstChildElement ("items");
+		while (!items.isNull ())
+		{
+			const QString& node = items.attribute ("node");
+			if (!Node2Creator_.contains (node))
+			{
+				items = items.nextSiblingElement ("items");
+				continue;
+			}
+			
+			QDomElement item = items.firstChildElement ("item");
+			while (!item.isNull ())
+			{
+				PEPEventBase *eventObj = Node2Creator_ [node] ();
+				eventObj->Parse (item);
+				
+				emit gotEvent (eventObj);
+				
+				delete eventObj;
+				
+				item = item.nextSiblingElement ("item");
+			}
+
+			items = items.nextSiblingElement ("items");
+		}
+		
+		return true;
 	}
 }
 }

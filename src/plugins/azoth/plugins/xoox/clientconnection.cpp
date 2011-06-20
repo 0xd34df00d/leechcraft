@@ -18,6 +18,7 @@
 
 #include "clientconnection.h"
 #include <boost/bind.hpp>
+#include <boost/fusion/container.hpp>
 #include <QTimer>
 #include <QtDebug>
 #include <QXmppClient.h>
@@ -53,6 +54,7 @@
 #include "fetchqueue.h"
 #include "legacyentitytimeext.h"
 #include "pubsubmanager.h"
+#include "useractivity.h"
 
 namespace LeechCraft
 {
@@ -61,6 +63,7 @@ namespace Azoth
 namespace Xoox
 {
 	const int ErrorLimit = 5;
+
 	ClientConnection::ClientConnection (const QString& jid,
 			const GlooxAccountState& state,
 			GlooxAccount *account)
@@ -98,14 +101,17 @@ namespace Xoox
 		QObject *proxyObj = qobject_cast<GlooxProtocol*> (account->
 					GetParentProtocol ())->GetProxyObject ();
 		ProxyObject_ = qobject_cast<IProxyObject*> (proxyObj);
+		
+		PubSubManager_->RegisterCreator<UserActivity> ();
+		PubSubManager_->SetAutosubscribe<UserActivity> (true);
 
+		Client_->addExtension (PubSubManager_);
 		Client_->addExtension (DeliveryReceiptsManager_);
 		Client_->addExtension (MUCManager_);
 		Client_->addExtension (XferManager_);
 		Client_->addExtension (BMManager_);
 		Client_->addExtension (EntityTimeManager_);
 		Client_->addExtension (ArchiveManager_);
-		Client_->addExtension (PubSubManager_);
 		Client_->addExtension (new LegacyEntityTimeExt);
 		
 		AnnotationsManager_ = new AnnotationsManager (this);

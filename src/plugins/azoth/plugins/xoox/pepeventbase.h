@@ -16,11 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_PUBSUBMANAGER_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_PUBSUBMANAGER_H
-#include <boost/function.hpp>
-#include <QXmppClientExtension.h>
-#include "pepeventbase.h"
+#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_PEPEVENTBASE_H
+#define PLUGINS_AZOTH_PLUGINS_XOOX_PEPEVENTBASE_H
+
+class QXmppElement;
+class QDomElement;
 
 namespace LeechCraft
 {
@@ -28,36 +28,18 @@ namespace Azoth
 {
 namespace Xoox
 {
-	class PEPEventBase;
-
-	class PubSubManager : public QXmppClientExtension
+	class PEPEventBase
 	{
-		Q_OBJECT
-
-		typedef boost::function<PEPEventBase* ()> Creator_t;
-		QMap<QString, Creator_t> Node2Creator_;
-		
-		QMap<QString, bool> AutosubscribeNodes_;
 	public:
-		template<typename T>
-		void RegisterCreator ()
-		{
-			RegisterCreator (T::GetNodeString (), StandardCreator<T>);
-		}
-		void RegisterCreator (const QString&, boost::function<PEPEventBase* ()>);
-		
-		template<typename T>
-		void SetAutosubscribe (bool enabled)
-		{
-			SetAutosubscribe (T::GetNodeString (), enabled);
-		}
-		void SetAutosubscribe (const QString&, bool);
-
-		QStringList discoveryFeatures () const;
-		bool handleStanza (const QDomElement& elem);
-	signals:
-		void gotEvent (PEPEventBase*);
+		virtual QXmppElement ToXML () const = 0;
+		virtual void Parse (const QDomElement&) = 0;
 	};
+	
+	template<typename T>
+	PEPEventBase* StandardCreator ()
+	{
+		return new T ();
+	}
 }
 }
 }

@@ -16,10 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_PUBSUBMANAGER_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_PUBSUBMANAGER_H
-#include <boost/function.hpp>
-#include <QXmppClientExtension.h>
 #include "pepeventbase.h"
 
 namespace LeechCraft
@@ -28,38 +24,6 @@ namespace Azoth
 {
 namespace Xoox
 {
-	class PEPEventBase;
-
-	class PubSubManager : public QXmppClientExtension
-	{
-		Q_OBJECT
-
-		typedef boost::function<PEPEventBase* ()> Creator_t;
-		QMap<QString, Creator_t> Node2Creator_;
-		
-		QMap<QString, bool> AutosubscribeNodes_;
-	public:
-		template<typename T>
-		void RegisterCreator ()
-		{
-			RegisterCreator (T::GetNodeString (), StandardCreator<T>);
-		}
-		void RegisterCreator (const QString&, boost::function<PEPEventBase* ()>);
-		
-		template<typename T>
-		void SetAutosubscribe (bool enabled)
-		{
-			SetAutosubscribe (T::GetNodeString (), enabled);
-		}
-		void SetAutosubscribe (const QString&, bool);
-
-		QStringList discoveryFeatures () const;
-		bool handleStanza (const QDomElement& elem);
-	signals:
-		void gotEvent (PEPEventBase*);
-	};
 }
 }
 }
-
-#endif

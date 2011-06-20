@@ -43,6 +43,8 @@ SET (XOOX_SRCS
 	inbandaccountregthirdpage.cpp
 	legacyentitytimeext.cpp
 	pubsubmanager.cpp
+	pepeventbase.cpp
+	useractivity.cpp
 	)
 SET (XOOX_HEADERS
 	xoox.h
@@ -81,6 +83,8 @@ SET (XOOX_HEADERS
 	inbandaccountregthirdpage.h
 	legacyentitytimeext.h
 	pubsubmanager.h
+	pepeventbase.h
+	useractivity.h
 	)
 SET (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui
