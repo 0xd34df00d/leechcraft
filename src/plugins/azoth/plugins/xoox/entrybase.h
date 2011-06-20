@@ -114,6 +114,8 @@ namespace Xoox
 		void permsChanged ();
 		
 		void attentionDrawn (const QString&, const QString&);
+		void moodChanged (const QString&);
+		void activityChanged (const QString&);
 	};
 }
 }
