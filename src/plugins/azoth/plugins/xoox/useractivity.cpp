@@ -208,6 +208,13 @@ namespace Xoox
 		General_ = general;
 	}
 	
+	QString UserActivity::GetGeneralStr () const
+	{
+		return General_ == GeneralEmpty ?
+				QString () :
+				activity_general [General_];
+	}
+	
 	UserActivity::Specific UserActivity::GetSpecific () const
 	{
 		return Specific_;
@@ -216,6 +223,13 @@ namespace Xoox
 	void UserActivity::SetSpecific (UserActivity::Specific specific)
 	{
 		Specific_ = specific;
+	}
+	
+	QString UserActivity::GetSpecificStr () const
+	{
+		return Specific_ == SpecificEmpty ?
+				QString () :
+				activity_specific [Specific_];
 	}
 	
 	QString UserActivity::GetText () const

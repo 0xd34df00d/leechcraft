@@ -129,6 +129,7 @@ namespace Xoox
 		
 		Mood GetMood () const;
 		void SetMood (Mood);
+		QString GetMoodStr () const;
 		
 		QString GetText () const;
 		void SetText (const QString&);

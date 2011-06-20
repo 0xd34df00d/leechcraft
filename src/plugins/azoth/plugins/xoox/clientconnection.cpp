@@ -107,6 +107,11 @@ namespace Xoox
 		PubSubManager_->RegisterCreator<UserMood> ();
 		PubSubManager_->SetAutosubscribe<UserActivity> (true);
 		PubSubManager_->SetAutosubscribe<UserMood> (true);
+		
+		connect (PubSubManager_,
+				SIGNAL (gotEvent (const QString&, PEPEventBase*)),
+				this,
+				SLOT (handlePEPEvent (const QString&, PEPEventBase*)));
 
 		Client_->addExtension (PubSubManager_);
 		Client_->addExtension (DeliveryReceiptsManager_);
@@ -795,6 +800,23 @@ namespace Xoox
 			qWarning () << Q_FUNC_INFO
 					<< "could not find source for"
 					<< msg.from ();
+	}
+	
+	void ClientConnection::handlePEPEvent (const QString& from, PEPEventBase *event)
+	{
+		QString bare;
+		QString resource;
+		Split (from, &bare, &resource);
+		
+		if (!JID2CLEntry_.contains (bare))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown PEP event source"
+					<< from;
+			return;
+		}
+		
+		JID2CLEntry_ [bare]->HandlePEPEvent (resource, event);
 	}
 	
 	void ClientConnection::handleMessageDelivered (const QString& msgId)

@@ -185,6 +185,13 @@ namespace Xoox
 		Mood_ = mood;
 	}
 	
+	QString UserMood::GetMoodStr () const
+	{
+		return Mood_ == MoodEmpty ?
+				QString () :
+				MoodStr [Mood_];
+	}
+	
 	QString UserMood::GetText () const
 	{
 		return Text_;

@@ -35,6 +35,7 @@ namespace Azoth
 {
 namespace Xoox
 {
+	class PEPEventBase;
 	class GlooxMessage;
 	class VCardDialog;
 	class GlooxAccount;
@@ -87,6 +88,7 @@ namespace Xoox
 		virtual QString GetJID () const = 0;
 
 		void HandleMessage (GlooxMessage*);
+		void HandlePEPEvent (const QString&, PEPEventBase*);
 		void HandleAttentionMessage (const QXmppMessage&);
 		void UpdateChatState (QXmppMessage::State, const QString&);
 		void SetStatus (const EntryStatus&, const QString&);

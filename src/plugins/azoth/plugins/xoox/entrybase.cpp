@@ -22,6 +22,8 @@
 #include <QtDebug>
 #include <QXmppVCardIq.h>
 #include <QXmppPresence.h>
+#include <QXmppClient.h>
+#include <QXmppRosterManager.h>
 #include <plugininterface/util.h>
 #include <interfaces/iproxyobject.h>
 #include <interfaces/azothutil.h>
@@ -33,9 +35,9 @@
 #include "clientconnection.h"
 #include "util.h"
 #include "core.h"
-#include <QXmppClient.h>
-#include <QXmppRosterManager.h>
 #include "capsmanager.h"
+#include "useractivity.h"
+#include "usermood.h"
 
 namespace LeechCraft
 {
@@ -153,6 +155,40 @@ namespace Xoox
 
 		AllMessages_ << msg;
 		emit gotMessage (msg);
+	}
+	
+	void EntryBase::HandlePEPEvent (const QString& variant, PEPEventBase *event)
+	{
+		UserActivity *activity = dynamic_cast<UserActivity*> (event);
+		if (activity)
+		{
+			QMap<QString, QVariant> activityMap;
+			activityMap ["general"] = activity->GetGeneralStr ();
+			activityMap ["specific"] = activity->GetSpecificStr ();
+			activityMap ["text"] = activity->GetText ();
+			Variant2ClientInfo_ [variant] ["user_activity"] = activityMap;
+
+			emit activityChanged (variant);
+			return;
+		}
+		
+		UserMood *mood = dynamic_cast<UserMood*> (event);
+		if (mood)
+		{
+			QMap<QString, QVariant> moodMap;
+			moodMap ["mood"] = mood->GetMoodStr ();
+			moodMap ["text"] = mood->GetText ();
+			Variant2ClientInfo_ [variant] ["user_mood"] = moodMap;
+			
+			emit moodChanged (variant);
+			return;
+		}
+		
+		qWarning () << Q_FUNC_INFO
+				<< "unhandled PEP event from"
+				<< GetJID ()
+				<< "resource"
+				<< variant;
 	}
 	
 	void EntryBase::HandleAttentionMessage (const QXmppMessage& msg)
