@@ -32,6 +32,18 @@
 					<label value="default" />
 				</option>
 			</item>
+			<item type="combobox" property="MoodIcons" mayHaveDataSource="true">
+				<label value="User mood icons:" />
+				<option name="default" default="true">
+					<label value="default" />
+				</option>
+			</item>
+			<item type="combobox" property="ActivityIcons" mayHaveDataSource="true">
+				<label value="User activity icons:" />
+				<option name="default" default="true">
+					<label value="default" />
+				</option>
+			</item>
 			<item type="combobox" property="SystemIcons" mayHaveDataSource="true">
 				<label value="General icons:" />
 				<option name="default" default="true">
