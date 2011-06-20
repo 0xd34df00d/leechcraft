@@ -421,6 +421,14 @@ namespace Azoth
 		/** Handles the status change of a CL entry to new status.
 		 */
 		void handleStatusChanged (const EntryStatus& status, const QString& variant);
+		
+		/** Handles user activity change of a CL entry.
+		 */
+		void handleActivityChanged (const QString& variant);
+		
+		/** Handles user mood change of a CL entry.
+		 */
+		void handleMoodChanged (const QString& variant);
 
 		/** Handles the event of name changes in plugin.
 		 */

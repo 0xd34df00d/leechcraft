@@ -800,6 +800,14 @@ namespace Azoth
 					SIGNAL (attentionDrawn (const QString&, const QString&)),
 					this,
 					SLOT (handleAttentionDrawn (const QString&, const QString&)));
+			connect (clEntry->GetObject (),
+					SIGNAL (activityChanged (const QString&)),
+					this,
+					SLOT (handleActivityChanged (const QString&)));
+			connect (clEntry->GetObject (),
+					SIGNAL (moodChanged (const QString&)),
+					this,
+					SLOT (handleMoodChanged (const QString&)));
 		}
 		
 		EventsNotifier_->RegisterEntry (clEntry);
@@ -928,9 +936,30 @@ namespace Azoth
 			tip += Status2Str (entry->GetStatus (variant), PluginProxyObject_);
 
 			if (info.contains ("client_name"))
-				tip += "<br />" + info.value ("client_name").toString ();
+				tip += "<br />" + tr ("Using:") + ' ' + info.value ("client_name").toString ();
 			if (info.contains ("client_version"))
 				tip += " " + info.value ("client_version").toString ();
+			
+			if (info.contains ("user_mood"))
+			{
+				const QMap<QString, QVariant>& moodInfo = info ["user_mood"].toMap ();
+				tip += "<br />" + tr ("Mood:") + ' ' + moodInfo ["mood"].toString ();
+				const QString& text = moodInfo ["text"].toString ();
+				if (!text.isEmpty ())
+					tip += " (" + text + ")";
+			}
+			
+			if (info.contains ("user_activity"))
+			{
+				const QMap<QString, QVariant>& actInfo = info ["user_activity"].toMap ();
+				tip += "<br />" + tr ("Activity:") + ' ' + actInfo ["general"].toString ();
+				const QString& specific = actInfo ["specific"].toString ();
+				if (!specific.isEmpty ())
+					tip += " (" + specific + ")";
+				const QString& text = actInfo ["text"].toString ();
+				if (!text.isEmpty ())
+					tip += " (" + text + ")";
+			}
 
 			if (info.contains ("custom_user_visible_map"))
 			{
@@ -1818,6 +1847,38 @@ namespace Azoth
 		}
 
 		HandleStatusChanged (status, entry, variant);
+	}
+	
+	void Core::handleActivityChanged (const QString&)
+	{
+		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "sender is not a ICLEntry"
+					<< sender ();
+			return;
+		}
+
+		const QString& tip = MakeTooltipString (entry);
+		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
+			item->setToolTip (tip);
+	}
+	
+	void Core::handleMoodChanged (const QString&)
+	{
+		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "sender is not a ICLEntry"
+					<< sender ();
+			return;
+		}
+		
+		const QString& tip = MakeTooltipString (entry);
+		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
+			item->setToolTip (tip);
 	}
 
 	void Core::handleEntryNameChanged (const QString& newName)
