@@ -89,11 +89,18 @@ namespace Azoth
 
 		typedef QHash<ICLEntry*, QImage> Entry2SmoothAvatarCache_t;
 		Entry2SmoothAvatarCache_t Entry2SmoothAvatarCache_;
-
-		boost::shared_ptr<Util::ResourceLoader> StatusIconLoader_;
-		boost::shared_ptr<Util::ResourceLoader> ClientIconLoader_;
-		boost::shared_ptr<Util::ResourceLoader> AffIconLoader_;
-		boost::shared_ptr<Util::ResourceLoader> SystemIconLoader_;
+	public:
+		enum ResourceLoaderType
+		{
+			RLTStatusIconLoader,
+			RLTClientIconLoader,
+			RLTAffIconLoader,
+			RLTSystemIconLoader,
+			RLTActivityIconLoader,
+			RLTMoodIconLoader
+		};
+	private:
+		QMap<ResourceLoaderType, boost::shared_ptr<Util::ResourceLoader> > ResourceLoaders_;
 		boost::shared_ptr<SourceTrackingModel<IEmoticonResourceSource> > SmilesOptionsModel_;
 		boost::shared_ptr<SourceTrackingModel<IChatStyleResourceSource> > ChatStylesOptionsModel_;
 
@@ -127,14 +134,6 @@ namespace Azoth
 			/** Remote contact.
 				*/
 			CLETContact
-		};
-
-		enum ResourceLoaderType
-		{
-			RLTStatusIconLoader,
-			RLTClientIconLoader,
-			RLTAffIconLoader,
-			RLTSystemIconLoader
 		};
 
 		enum CLEntryActionArea

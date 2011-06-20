@@ -97,10 +97,6 @@ namespace Azoth
 			Qt::CaseInsensitive, QRegExp::RegExp2)
 	, CLModel_ (new QStandardItemModel (this))
 	, ChatTabsManager_ (new ChatTabsManager (this))
-	, StatusIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/contactlist/", this))
-	, ClientIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/clients/", this))
-	, AffIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/affiliations/", this))
-	, SystemIconLoader_ (new Util::ResourceLoader ("azoth/iconsets/system/", this))
 	, SmilesOptionsModel_ (new SourceTrackingModel<IEmoticonResourceSource> (QStringList (tr ("Smile pack"))))
 	, ChatStylesOptionsModel_ (new SourceTrackingModel<IChatStyleResourceSource> (QStringList (tr ("Chat style"))))
 	, PluginManager_ (new PluginManager)
@@ -108,6 +104,19 @@ namespace Azoth
 	, XferJobManager_ (new TransferJobManager)
 	, EventsNotifier_ (new EventsNotifier)
 	{
+		ResourceLoaders_ [RLTStatusIconLoader].reset (new Util::ResourceLoader ("azoth/iconsets/contactlist/", this));
+		ResourceLoaders_ [RLTClientIconLoader].reset (new Util::ResourceLoader ("azoth/iconsets/clients/", this));
+		ResourceLoaders_ [RLTAffIconLoader].reset (new Util::ResourceLoader ("azoth/iconsets/affiliations/", this));
+		ResourceLoaders_ [RLTSystemIconLoader].reset (new Util::ResourceLoader ("azoth/iconsets/system/", this));
+		ResourceLoaders_ [RLTActivityIconLoader].reset (new Util::ResourceLoader ("azoth/iconsets/activities/", this));
+		ResourceLoaders_ [RLTMoodIconLoader].reset (new Util::ResourceLoader ("azoth/iconsets/moods/", this));
+		
+		Q_FOREACH (boost::shared_ptr<Util::ResourceLoader> rl, ResourceLoaders_.values ())
+		{
+			rl->AddLocalPrefix ();
+			rl->AddGlobalPrefix ();
+		}
+
 		connect (ChatTabsManager_,
 				SIGNAL (clearUnreadMsgCount (QObject*)),
 				this,
@@ -126,18 +135,6 @@ namespace Azoth
 				SLOT (handleEntryMadeCurrent (QObject*)));
 
 		PluginManager_->RegisterHookable (this);
-
-		StatusIconLoader_->AddLocalPrefix ();
-		StatusIconLoader_->AddGlobalPrefix ();
-
-		ClientIconLoader_->AddLocalPrefix ();
-		ClientIconLoader_->AddGlobalPrefix ();
-		
-		AffIconLoader_->AddLocalPrefix ();
-		AffIconLoader_->AddGlobalPrefix ();
-		
-		SystemIconLoader_->AddLocalPrefix ();
-		SystemIconLoader_->AddGlobalPrefix ();
 		
 		SmilesOptionsModel_->AddModel (new QStringListModel (QStringList (QString ())));
 
@@ -158,10 +155,7 @@ namespace Azoth
 
 	void Core::Release ()
 	{
-		StatusIconLoader_.reset ();
-		ClientIconLoader_.reset ();
-		AffIconLoader_.reset ();
-		SystemIconLoader_.reset ();
+		ResourceLoaders_.clear ();
 	}
 
 	void Core::SetProxy (ICoreProxy_ptr proxy)
@@ -176,19 +170,7 @@ namespace Azoth
 
 	Util::ResourceLoader* Core::GetResourceLoader (Core::ResourceLoaderType type) const
 	{
-		switch (type)
-		{
-		case RLTStatusIconLoader:
-			return StatusIconLoader_.get ();
-		case RLTClientIconLoader:
-			return ClientIconLoader_.get ();
-		case RLTAffIconLoader:
-			return AffIconLoader_.get ();
-		case RLTSystemIconLoader:
-			return SystemIconLoader_.get ();
-		}
-		
-		return 0;
+		return ResourceLoaders_ [type].get ();
 	}
 	
 	QAbstractItemModel* Core::GetSmilesOptionsModel () const
@@ -1000,7 +982,7 @@ namespace Azoth
 		
 		const QString& filename = XmlSettingsManager::Instance ()
 				.property ("StatusIcons").toString () + "/file";
-		const QIcon& fileIcon = QIcon (StatusIconLoader_->GetIconPath (filename));
+		const QIcon& fileIcon = QIcon (ResourceLoaders_ [RLTStatusIconLoader]->GetIconPath (filename));
 
 		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
 			item->setIcon (fileIcon);
@@ -1056,7 +1038,7 @@ namespace Azoth
 				<< filename + ".png"
 				<< filename + ".jpg";
 
-		const QString& path = StatusIconLoader_->GetPath (variants);
+		const QString& path = ResourceLoaders_ [RLTStatusIconLoader]->GetPath (variants);
 		return QIcon (path);
 	}
 	
@@ -1067,7 +1049,7 @@ namespace Azoth
 		filename += '/';
 		filename += affName;
 		
-		const QString& path = AffIconLoader_->GetIconPath (filename);
+		const QString& path = ResourceLoaders_ [RLTAffIconLoader]->GetIconPath (filename);
 		return QIcon (path);
 	}
 
@@ -1086,7 +1068,7 @@ namespace Azoth
 			variants << filename + ".svg"
 					<< filename + ".png"
 					<< filename + ".jpg";
-			result [variant] = QIcon (ClientIconLoader_->GetPath (variants));
+			result [variant] = QIcon (ResourceLoaders_ [RLTClientIconLoader]->GetPath (variants));
 		}
 
 		EntryClientIconCache_ [entry] = result;
@@ -1102,7 +1084,7 @@ namespace Azoth
 
 		QImage avatar = entry->GetAvatar ();
 		if (avatar.isNull () || !avatar.width ())
-			avatar = QImage (SystemIconLoader_->GetIconPath ("default_avatar"));
+			avatar = QImage (ResourceLoaders_ [RLTSystemIconLoader]->GetIconPath ("default_avatar"));
 
 		const QImage& scaled = avatar.scaled (size, size,
 				Qt::KeepAspectRatio, Qt::SmoothTransformation);
