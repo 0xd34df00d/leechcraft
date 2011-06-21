@@ -24,6 +24,7 @@
 #include <interfaces/iproxyobject.h>
 #include "tunesourcebase.h"
 #include "xmlsettingsmanager.h"
+#include "filesource.h"
 
 #ifdef HAVE_DBUS
 #include "mprissource.h"
@@ -47,6 +48,7 @@ namespace Xtazy
 #ifdef HAVE_DBUS
 		TuneSources_ << new MPRISSource (this);
 #endif
+		TuneSources_ << new FileSource (this);
 		
 		Q_FOREACH (TuneSourceBase *base, TuneSources_)
 			connect (base,

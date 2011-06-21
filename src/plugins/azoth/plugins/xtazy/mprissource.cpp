@@ -91,6 +91,8 @@ namespace Xtazy
 	: TuneSourceBase (parent)
 	, SB_ (QDBusConnection::sessionBus ())
 	{
+		setObjectName ("MPRISSource");
+
 		qDBusRegisterMetaType<PlayerStatus> ();
 
 		Players_ = SB_.interface ()->registeredServiceNames ()

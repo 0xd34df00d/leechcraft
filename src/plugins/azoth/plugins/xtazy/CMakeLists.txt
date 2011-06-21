@@ -4,11 +4,13 @@ INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
 SET (XTAZY_SRCS
 	xtazy.cpp
 	tunesourcebase.cpp
+	filesource.cpp
 	xmlsettingsmanager.cpp
 	)
 SET (XTAZY_HEADERS
 	xtazy.h
 	tunesourcebase.h
+	filesource.h
 	xmlsettingsmanager.h
 	)
 
