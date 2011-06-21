@@ -33,6 +33,7 @@
 #include "transfermanager.h"
 #include "sdsession.h"
 #include "usertune.h"
+#include "pubsubmanager.h"
 
 namespace LeechCraft
 {
@@ -320,7 +321,7 @@ namespace Xoox
 		tune.SetSource (tuneInfo ["source"].toString ());
 		tune.SetLength (tuneInfo ["length"].toInt ());
 		
-		ClientConnection_->GetPubSubManager ();
+		ClientConnection_->GetPubSubManager ()->PublishEvent (&tune);
 	}
 
 	QString GlooxAccount::GetJID () const
