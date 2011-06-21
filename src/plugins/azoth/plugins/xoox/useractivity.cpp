@@ -61,6 +61,7 @@ namespace Xoox
 		"having_breakfast",
 		"having_dinner",
 		"having_lunch",
+		"cycling",
 		"dancing",
 		"hiking",
 		"jogging",
