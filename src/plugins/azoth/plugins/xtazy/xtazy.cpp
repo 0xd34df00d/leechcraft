@@ -18,10 +18,12 @@
 
 #include "xtazy.h"
 #include <QIcon>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/iaccount.h>
 #include <interfaces/isupporttune.h>
 #include <interfaces/iproxyobject.h>
 #include "tunesourcebase.h"
+#include "xmlsettingsmanager.h"
 
 #ifdef HAVE_DBUS
 #include "mprissource.h"
@@ -35,7 +37,12 @@ namespace Xtazy
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		AzothProxy_ = 0;
 		Proxy_ = proxy;
+		
+		SettingsDialog_.reset (new Util::XmlSettingsDialog);
+		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
+				"azothxtazysettings.xml");
 		
 #ifdef HAVE_DBUS
 		TuneSources_ << new MPRISSource (this);
@@ -84,6 +91,11 @@ namespace Xtazy
 		return result;
 	}
 	
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return SettingsDialog_;
+	}
+	
 	void Plugin::initPlugin (QObject *proxy)
 	{
 		AzothProxy_ = qobject_cast<IProxyObject*> (proxy);
@@ -109,3 +121,4 @@ namespace Xtazy
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_azoth_xtazy, LeechCraft::Azoth::Xtazy::Plugin);
+

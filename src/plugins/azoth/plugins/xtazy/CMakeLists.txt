@@ -4,10 +4,12 @@ INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
 SET (XTAZY_SRCS
 	xtazy.cpp
 	tunesourcebase.cpp
+	xmlsettingsmanager.cpp
 	)
 SET (XTAZY_HEADERS
 	xtazy.h
 	tunesourcebase.h
+	xmlsettingsmanager.h
 	)
 
 IF (QT_QTDBUS_FOUND)
@@ -34,3 +36,4 @@ TARGET_LINK_LIBRARIES (leechcraft_azoth_xtazy
 	${LEECHCRAFT_LIBRARIES}
 	)
 INSTALL (TARGETS leechcraft_azoth_xtazy DESTINATION ${LC_PLUGINS_DEST})
+INSTALL (FILES azothxtazysettings.xml DESTINATION ${LC_SETTINGS_DEST})
