@@ -266,398 +266,398 @@
 <context>
     <name>LeechCraft::Azoth::ActivityDialog</name>
     <message>
-        <location filename="activitydialog.cpp" line="35"/>
+        <location filename="activitydialog.cpp" line="40"/>
         <source>doing_chores</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="36"/>
+        <location filename="activitydialog.cpp" line="41"/>
         <source>drinking</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="37"/>
+        <location filename="activitydialog.cpp" line="42"/>
         <source>eating</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="38"/>
+        <location filename="activitydialog.cpp" line="43"/>
         <source>exercising</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="39"/>
+        <location filename="activitydialog.cpp" line="44"/>
         <source>grooming</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="40"/>
+        <location filename="activitydialog.cpp" line="45"/>
         <source>having_appointment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="41"/>
+        <location filename="activitydialog.cpp" line="46"/>
         <source>inactive</source>
         <translation type="unfinished">неактивний</translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="42"/>
+        <location filename="activitydialog.cpp" line="47"/>
         <source>relaxing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="43"/>
+        <location filename="activitydialog.cpp" line="48"/>
         <source>talking</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="44"/>
+        <location filename="activitydialog.cpp" line="49"/>
         <source>traveling</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="45"/>
+        <location filename="activitydialog.cpp" line="50"/>
         <source>working</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="50"/>
+        <location filename="activitydialog.cpp" line="55"/>
         <source>buying_groceries</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="51"/>
+        <location filename="activitydialog.cpp" line="56"/>
         <source>cleaning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="52"/>
+        <location filename="activitydialog.cpp" line="57"/>
         <source>cooking</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="53"/>
+        <location filename="activitydialog.cpp" line="58"/>
         <source>doing_maintenance</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="54"/>
+        <location filename="activitydialog.cpp" line="59"/>
         <source>doing_the_dishes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="55"/>
+        <location filename="activitydialog.cpp" line="60"/>
         <source>doing_the_laundry</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="56"/>
+        <location filename="activitydialog.cpp" line="61"/>
         <source>gardening</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="57"/>
+        <location filename="activitydialog.cpp" line="62"/>
         <source>running_an_errand</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="58"/>
+        <location filename="activitydialog.cpp" line="63"/>
         <source>walking_the_dog</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="59"/>
+        <location filename="activitydialog.cpp" line="64"/>
         <source>having_a_beer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="60"/>
+        <location filename="activitydialog.cpp" line="65"/>
         <source>having_coffee</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="61"/>
+        <location filename="activitydialog.cpp" line="66"/>
         <source>having_tea</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="62"/>
+        <location filename="activitydialog.cpp" line="67"/>
         <source>having_a_snack</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="63"/>
+        <location filename="activitydialog.cpp" line="68"/>
         <source>having_breakfast</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="64"/>
+        <location filename="activitydialog.cpp" line="69"/>
         <source>having_dinner</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="65"/>
+        <location filename="activitydialog.cpp" line="70"/>
         <source>having_lunch</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="66"/>
-        <location filename="activitydialog.cpp" line="105"/>
+        <location filename="activitydialog.cpp" line="71"/>
+        <location filename="activitydialog.cpp" line="110"/>
         <source>cycling</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="67"/>
+        <location filename="activitydialog.cpp" line="72"/>
         <source>dancing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="68"/>
+        <location filename="activitydialog.cpp" line="73"/>
         <source>hiking</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="69"/>
+        <location filename="activitydialog.cpp" line="74"/>
         <source>jogging</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="70"/>
+        <location filename="activitydialog.cpp" line="75"/>
         <source>playing_sports</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="71"/>
+        <location filename="activitydialog.cpp" line="76"/>
         <source>running</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="72"/>
+        <location filename="activitydialog.cpp" line="77"/>
         <source>skiing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="73"/>
+        <location filename="activitydialog.cpp" line="78"/>
         <source>swimming</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="74"/>
+        <location filename="activitydialog.cpp" line="79"/>
         <source>working_out</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="75"/>
+        <location filename="activitydialog.cpp" line="80"/>
         <source>at_the_spa</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="76"/>
+        <location filename="activitydialog.cpp" line="81"/>
         <source>brushing_teeth</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="77"/>
+        <location filename="activitydialog.cpp" line="82"/>
         <source>getting_a_haircut</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="78"/>
+        <location filename="activitydialog.cpp" line="83"/>
         <source>shaving</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="79"/>
+        <location filename="activitydialog.cpp" line="84"/>
         <source>taking_a_bath</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="80"/>
+        <location filename="activitydialog.cpp" line="85"/>
         <source>taking_a_shower</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="81"/>
+        <location filename="activitydialog.cpp" line="86"/>
         <source>day_off</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="82"/>
+        <location filename="activitydialog.cpp" line="87"/>
         <source>hanging_out</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="83"/>
+        <location filename="activitydialog.cpp" line="88"/>
         <source>hiding</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="84"/>
+        <location filename="activitydialog.cpp" line="89"/>
         <source>on_vacation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="85"/>
+        <location filename="activitydialog.cpp" line="90"/>
         <source>praying</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="86"/>
+        <location filename="activitydialog.cpp" line="91"/>
         <source>scheduled_holiday</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="87"/>
+        <location filename="activitydialog.cpp" line="92"/>
         <source>sleeping</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="88"/>
+        <location filename="activitydialog.cpp" line="93"/>
         <source>thinking</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="89"/>
+        <location filename="activitydialog.cpp" line="94"/>
         <source>fishing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="90"/>
+        <location filename="activitydialog.cpp" line="95"/>
         <source>gaming</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="91"/>
+        <location filename="activitydialog.cpp" line="96"/>
         <source>going_out</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="92"/>
+        <location filename="activitydialog.cpp" line="97"/>
         <source>partying</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="93"/>
+        <location filename="activitydialog.cpp" line="98"/>
         <source>reading</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="94"/>
+        <location filename="activitydialog.cpp" line="99"/>
         <source>rehearsing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="95"/>
+        <location filename="activitydialog.cpp" line="100"/>
         <source>shopping</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="96"/>
+        <location filename="activitydialog.cpp" line="101"/>
         <source>smoking</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="97"/>
+        <location filename="activitydialog.cpp" line="102"/>
         <source>socializing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="98"/>
+        <location filename="activitydialog.cpp" line="103"/>
         <source>sunbathing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="99"/>
+        <location filename="activitydialog.cpp" line="104"/>
         <source>watching_tv</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="100"/>
+        <location filename="activitydialog.cpp" line="105"/>
         <source>watching_a_movie</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="101"/>
+        <location filename="activitydialog.cpp" line="106"/>
         <source>in_real_life</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="102"/>
+        <location filename="activitydialog.cpp" line="107"/>
         <source>on_the_phone</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="103"/>
+        <location filename="activitydialog.cpp" line="108"/>
         <source>on_video_phone</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="104"/>
+        <location filename="activitydialog.cpp" line="109"/>
         <source>commuting</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="106"/>
+        <location filename="activitydialog.cpp" line="111"/>
         <source>driving</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="107"/>
+        <location filename="activitydialog.cpp" line="112"/>
         <source>in_a_car</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="108"/>
+        <location filename="activitydialog.cpp" line="113"/>
         <source>on_a_bus</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="109"/>
+        <location filename="activitydialog.cpp" line="114"/>
         <source>on_a_plane</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="110"/>
+        <location filename="activitydialog.cpp" line="115"/>
         <source>on_a_train</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="111"/>
+        <location filename="activitydialog.cpp" line="116"/>
         <source>on_a_trip</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="112"/>
+        <location filename="activitydialog.cpp" line="117"/>
         <source>walking</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="113"/>
+        <location filename="activitydialog.cpp" line="118"/>
         <source>coding</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="114"/>
+        <location filename="activitydialog.cpp" line="119"/>
         <source>in_a_meeting</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="115"/>
+        <location filename="activitydialog.cpp" line="120"/>
         <source>studying</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="116"/>
+        <location filename="activitydialog.cpp" line="121"/>
         <source>writing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="117"/>
+        <location filename="activitydialog.cpp" line="122"/>
         <source>other</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="activitydialog.cpp" line="130"/>
+        <location filename="activitydialog.cpp" line="135"/>
         <source>&lt;clear&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -823,175 +823,175 @@
 <context>
     <name>LeechCraft::Azoth::Core</name>
     <message>
-        <location filename="core.cpp" line="100"/>
+        <location filename="core.cpp" line="102"/>
         <source>Smile pack</source>
         <translation>Набір емоційок</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="101"/>
+        <location filename="core.cpp" line="103"/>
         <source>Chat style</source>
         <translation>Стиль чату</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="308"/>
+        <location filename="core.cpp" line="310"/>
         <source>Please select account to handle URI %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="746"/>
+        <location filename="core.cpp" line="748"/>
         <source>Unauthorized users</source>
         <translation>Неавторизовані користувачі</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="752"/>
+        <location filename="core.cpp" line="754"/>
         <source>Contacts</source>
         <translation type="unfinished">Контакти</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="840"/>
+        <location filename="core.cpp" line="842"/>
         <source>General</source>
         <translation>Загальне</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="904"/>
+        <location filename="core.cpp" line="906"/>
         <source>Mood:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="912"/>
+        <location filename="core.cpp" line="915"/>
         <source>Activity:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="927"/>
+        <location filename="core.cpp" line="931"/>
         <source>Now listening to:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="936"/>
+        <location filename="core.cpp" line="942"/>
         <source>from</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="952"/>
+        <location filename="core.cpp" line="959"/>
         <source>In groups: </source>
         <translation>У групах:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="987"/>
+        <location filename="core.cpp" line="994"/>
         <source>Using:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1254"/>
-        <location filename="core.cpp" line="2112"/>
-        <location filename="core.cpp" line="2230"/>
+        <location filename="core.cpp" line="1261"/>
+        <location filename="core.cpp" line="2119"/>
+        <location filename="core.cpp" line="2237"/>
         <source>Open chat</source>
         <translation>Відкрити чат</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1265"/>
+        <location filename="core.cpp" line="1272"/>
         <source>Draw attention...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1277"/>
+        <location filename="core.cpp" line="1284"/>
         <source>Rename</source>
         <translation>Перейменувати</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1289"/>
+        <location filename="core.cpp" line="1296"/>
         <source>Change groups...</source>
         <translation>Змінити групи...</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1301"/>
+        <location filename="core.cpp" line="1308"/>
         <source>Authorization</source>
         <translation>Авторизація</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1306"/>
+        <location filename="core.cpp" line="1313"/>
         <source>Revoke</source>
         <translation>Відкликати</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1311"/>
+        <location filename="core.cpp" line="1318"/>
         <source>Revoke with reason...</source>
         <translation>Відкликати з причиною...</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1316"/>
+        <location filename="core.cpp" line="1323"/>
         <source>Unsubscribe</source>
         <translation>Відписатись</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1321"/>
+        <location filename="core.cpp" line="1328"/>
         <source>Unsubscribe with reason...</source>
         <translation>Відписатись з причиною...</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1326"/>
+        <location filename="core.cpp" line="1333"/>
         <source>Rerequest authentication</source>
         <translation>Перезапросити авторизацію</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1331"/>
+        <location filename="core.cpp" line="1338"/>
         <source>Rerequest authentication with reason...</source>
         <translation>Перезапросити авторизацію з причиною...</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1339"/>
+        <location filename="core.cpp" line="1346"/>
         <source>VCard</source>
         <translation>VCard</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1378"/>
+        <location filename="core.cpp" line="1385"/>
         <source>Leave</source>
         <translation>Покинути</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1390"/>
-        <location filename="core.cpp" line="2184"/>
+        <location filename="core.cpp" line="1397"/>
+        <location filename="core.cpp" line="2191"/>
         <source>Authorize</source>
         <translation>Авторизувати</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1399"/>
+        <location filename="core.cpp" line="1406"/>
         <source>Deny authorization</source>
         <translation>Відхилити авторизацію</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1410"/>
+        <location filename="core.cpp" line="1417"/>
         <source>Remove</source>
         <translation>Видалити</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1505"/>
+        <location filename="core.cpp" line="1512"/>
         <source>Enter reason</source>
         <translation>Ввести причину</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2037"/>
+        <location filename="core.cpp" line="2044"/>
         <source>Incoming chat message from &lt;em&gt;%1&lt;/em&gt;.</source>
         <translation>Вхідне повідомлення від &lt;em&gt;%1&lt;/em&gt;.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2045"/>
+        <location filename="core.cpp" line="2052"/>
         <source>Incoming chat message from &lt;em&gt;%1&lt;/em&gt;: &lt;em&gt;%2&lt;/em&gt;.</source>
         <translation>Вхідне повідомлення від &lt;em&gt;%1&lt;/em&gt;: &lt;em&gt;%2&lt;/em&gt;.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2058"/>
+        <location filename="core.cpp" line="2065"/>
         <source>Highlighted in conference &lt;em&gt;%1&lt;/em&gt; by &lt;em&gt;%2&lt;/em&gt;.</source>
         <translation>&lt;em&gt;%2&lt;/em&gt; потребує вашої уваги в конференції &lt;em&gt;%1&lt;/em&gt;.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2067"/>
+        <location filename="core.cpp" line="2074"/>
         <source>Highlighted in conference &lt;em&gt;%1&lt;/em&gt; by &lt;em&gt;%2&lt;/em&gt;: &lt;em&gt;%3&lt;/em&gt;.</source>
         <translation>&lt;em&gt;%2&lt;/em&gt; потребує вашої уваги в конференції &lt;em&gt;%1&lt;/em&gt;: &lt;em&gt;%3&lt;/em&gt;.</translation>
     </message>
     <message numerus="yes">
-        <location filename="core.cpp" line="2107"/>
+        <location filename="core.cpp" line="2114"/>
         <source>%n message(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -1000,132 +1000,132 @@
         </translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2176"/>
+        <location filename="core.cpp" line="2183"/>
         <source>Subscription requested by %1.</source>
         <translation>Запит підписки від %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2178"/>
+        <location filename="core.cpp" line="2185"/>
         <source>Subscription requested by %1: %2.</source>
         <translation>Запит підписки від %1: %2.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2187"/>
+        <location filename="core.cpp" line="2194"/>
         <source>Deny</source>
         <translation>Відхилити</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2190"/>
+        <location filename="core.cpp" line="2197"/>
         <source>View info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2212"/>
+        <location filename="core.cpp" line="2219"/>
         <source>%1 requests your attention</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2214"/>
+        <location filename="core.cpp" line="2221"/>
         <source>%1 requests your attention: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2225"/>
+        <location filename="core.cpp" line="2232"/>
         <source>Attention requested</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2261"/>
+        <location filename="core.cpp" line="2268"/>
         <source>Nickname conflict</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2262"/>
+        <location filename="core.cpp" line="2269"/>
         <source>You have specified a nickname for %1 that&apos;s already used. Would you like to try to join with another nick?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2271"/>
+        <location filename="core.cpp" line="2278"/>
         <source>Enter new nick</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2272"/>
+        <location filename="core.cpp" line="2279"/>
         <source>Enter new nick for joining %1 (%2 is already used):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2318"/>
+        <location filename="core.cpp" line="2325"/>
         <source>%1 (%2) subscribed to us.</source>
         <translation>%1 (%2) підписався на нас.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2319"/>
+        <location filename="core.cpp" line="2326"/>
         <source>%1 (%2) subscribed to us: %3.</source>
         <translation>%1 (%2) підписався на нас: %3.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2331"/>
+        <location filename="core.cpp" line="2338"/>
         <source>%1 (%2) unsubscribed from us.</source>
         <translation>%1 (%2) відписався від нас.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2332"/>
+        <location filename="core.cpp" line="2339"/>
         <source>%1 (%2) unsubscribed from us: %3.</source>
         <translation>%1 (%2) відписався від нас: %3.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2345"/>
+        <location filename="core.cpp" line="2352"/>
         <source>%1 unsubscribed from us.</source>
         <translation>%1 відписався від нас.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2347"/>
+        <location filename="core.cpp" line="2354"/>
         <source>%1 unsubscribed from us: %2.</source>
         <translation>%1 відписався від нас: %2.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2360"/>
+        <location filename="core.cpp" line="2367"/>
         <source>%1 (%2) cancelled our subscription.</source>
         <translation>%1 (%2) скасував нашу підписку.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2361"/>
+        <location filename="core.cpp" line="2368"/>
         <source>%1 (%2) cancelled our subscription: %3.</source>
         <translation>%1 (%2) скасував нашу підписку: %3.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2371"/>
+        <location filename="core.cpp" line="2378"/>
         <source>%1 (%2) granted subscription.</source>
         <translation>%1 (%2) дозволив підписку.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2372"/>
+        <location filename="core.cpp" line="2379"/>
         <source>%1 (%2) granted subscription: %3.</source>
         <translation>%1 (%2) дозволив підписку: %3.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2599"/>
+        <location filename="core.cpp" line="2606"/>
         <source>Rename contact</source>
         <translation>Перейменувати контакт</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2600"/>
+        <location filename="core.cpp" line="2607"/>
         <source>Please enter new name for the contact %1:</source>
         <translation>Будь ласка, введіть нове ім&apos;я для контакту %1:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2666"/>
+        <location filename="core.cpp" line="2673"/>
         <source>Enter reason for revoking authorization from %1:</source>
         <translation>Введіть причину для відклику авторизації від %1:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2673"/>
+        <location filename="core.cpp" line="2680"/>
         <source>Enter reason for unsubscribing from %1:</source>
         <translation>Введіть причину відписки від %1:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2680"/>
+        <location filename="core.cpp" line="2687"/>
         <source>Enter reason for rerequesting authorization from %1:</source>
         <translation>Введіть причину запиту авторизації від %1:</translation>
     </message>
@@ -1312,427 +1312,427 @@
 <context>
     <name>LeechCraft::Azoth::MoodDialog</name>
     <message>
-        <location filename="mooddialog.cpp" line="35"/>
+        <location filename="mooddialog.cpp" line="40"/>
         <source>afraid</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="36"/>
+        <location filename="mooddialog.cpp" line="41"/>
         <source>amazed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="37"/>
+        <location filename="mooddialog.cpp" line="42"/>
         <source>amorous</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="38"/>
+        <location filename="mooddialog.cpp" line="43"/>
         <source>angry</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="39"/>
+        <location filename="mooddialog.cpp" line="44"/>
         <source>annoyed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="40"/>
+        <location filename="mooddialog.cpp" line="45"/>
         <source>anxious</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="41"/>
+        <location filename="mooddialog.cpp" line="46"/>
         <source>aroused</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="42"/>
+        <location filename="mooddialog.cpp" line="47"/>
         <source>ashamed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="43"/>
+        <location filename="mooddialog.cpp" line="48"/>
         <source>bored</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="44"/>
+        <location filename="mooddialog.cpp" line="49"/>
         <source>brave</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="45"/>
+        <location filename="mooddialog.cpp" line="50"/>
         <source>calm</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="46"/>
+        <location filename="mooddialog.cpp" line="51"/>
         <source>cautious</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="47"/>
+        <location filename="mooddialog.cpp" line="52"/>
         <source>cold</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="48"/>
+        <location filename="mooddialog.cpp" line="53"/>
         <source>confident</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="49"/>
+        <location filename="mooddialog.cpp" line="54"/>
         <source>confused</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="50"/>
+        <location filename="mooddialog.cpp" line="55"/>
         <source>contemplative</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="51"/>
+        <location filename="mooddialog.cpp" line="56"/>
         <source>contented</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="52"/>
+        <location filename="mooddialog.cpp" line="57"/>
         <source>cranky</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="53"/>
+        <location filename="mooddialog.cpp" line="58"/>
         <source>crazy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="54"/>
+        <location filename="mooddialog.cpp" line="59"/>
         <source>creative</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="55"/>
+        <location filename="mooddialog.cpp" line="60"/>
         <source>curious</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="56"/>
+        <location filename="mooddialog.cpp" line="61"/>
         <source>dejected</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="57"/>
+        <location filename="mooddialog.cpp" line="62"/>
         <source>depressed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="58"/>
+        <location filename="mooddialog.cpp" line="63"/>
         <source>disappointed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="59"/>
+        <location filename="mooddialog.cpp" line="64"/>
         <source>disgusted</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="60"/>
+        <location filename="mooddialog.cpp" line="65"/>
         <source>dismayed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="61"/>
+        <location filename="mooddialog.cpp" line="66"/>
         <source>distracted</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="62"/>
+        <location filename="mooddialog.cpp" line="67"/>
         <source>embarrassed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="63"/>
+        <location filename="mooddialog.cpp" line="68"/>
         <source>envious</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="64"/>
+        <location filename="mooddialog.cpp" line="69"/>
         <source>excited</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="65"/>
+        <location filename="mooddialog.cpp" line="70"/>
         <source>flirtatious</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="66"/>
+        <location filename="mooddialog.cpp" line="71"/>
         <source>frustrated</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="67"/>
+        <location filename="mooddialog.cpp" line="72"/>
         <source>grateful</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="68"/>
+        <location filename="mooddialog.cpp" line="73"/>
         <source>grieving</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="69"/>
+        <location filename="mooddialog.cpp" line="74"/>
         <source>grumpy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="70"/>
+        <location filename="mooddialog.cpp" line="75"/>
         <source>guilty</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="71"/>
+        <location filename="mooddialog.cpp" line="76"/>
         <source>happy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="72"/>
+        <location filename="mooddialog.cpp" line="77"/>
         <source>hopeful</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="73"/>
+        <location filename="mooddialog.cpp" line="78"/>
         <source>hot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="74"/>
+        <location filename="mooddialog.cpp" line="79"/>
         <source>humbled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="75"/>
+        <location filename="mooddialog.cpp" line="80"/>
         <source>humiliated</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="76"/>
+        <location filename="mooddialog.cpp" line="81"/>
         <source>hungry</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="77"/>
+        <location filename="mooddialog.cpp" line="82"/>
         <source>hurt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="78"/>
+        <location filename="mooddialog.cpp" line="83"/>
         <source>impressed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="79"/>
+        <location filename="mooddialog.cpp" line="84"/>
         <source>in_awe</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="80"/>
+        <location filename="mooddialog.cpp" line="85"/>
         <source>in_love</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="81"/>
+        <location filename="mooddialog.cpp" line="86"/>
         <source>indignant</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="82"/>
+        <location filename="mooddialog.cpp" line="87"/>
         <source>interested</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="83"/>
+        <location filename="mooddialog.cpp" line="88"/>
         <source>intoxicated</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="84"/>
+        <location filename="mooddialog.cpp" line="89"/>
         <source>invincible</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="85"/>
+        <location filename="mooddialog.cpp" line="90"/>
         <source>jealous</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="86"/>
+        <location filename="mooddialog.cpp" line="91"/>
         <source>lonely</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="87"/>
+        <location filename="mooddialog.cpp" line="92"/>
         <source>lost</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="88"/>
+        <location filename="mooddialog.cpp" line="93"/>
         <source>lucky</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="89"/>
+        <location filename="mooddialog.cpp" line="94"/>
         <source>mean</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="90"/>
+        <location filename="mooddialog.cpp" line="95"/>
         <source>moody</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="91"/>
+        <location filename="mooddialog.cpp" line="96"/>
         <source>nervous</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="92"/>
+        <location filename="mooddialog.cpp" line="97"/>
         <source>neutral</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="93"/>
+        <location filename="mooddialog.cpp" line="98"/>
         <source>offended</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="94"/>
+        <location filename="mooddialog.cpp" line="99"/>
         <source>outraged</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="95"/>
+        <location filename="mooddialog.cpp" line="100"/>
         <source>playful</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="96"/>
+        <location filename="mooddialog.cpp" line="101"/>
         <source>proud</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="97"/>
+        <location filename="mooddialog.cpp" line="102"/>
         <source>relaxed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="98"/>
+        <location filename="mooddialog.cpp" line="103"/>
         <source>relieved</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="99"/>
+        <location filename="mooddialog.cpp" line="104"/>
         <source>remorseful</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="100"/>
+        <location filename="mooddialog.cpp" line="105"/>
         <source>restless</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="101"/>
+        <location filename="mooddialog.cpp" line="106"/>
         <source>sad</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="102"/>
+        <location filename="mooddialog.cpp" line="107"/>
         <source>sarcastic</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="103"/>
+        <location filename="mooddialog.cpp" line="108"/>
         <source>satisfied</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="104"/>
+        <location filename="mooddialog.cpp" line="109"/>
         <source>serious</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="105"/>
+        <location filename="mooddialog.cpp" line="110"/>
         <source>shocked</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="106"/>
+        <location filename="mooddialog.cpp" line="111"/>
         <source>shy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="107"/>
+        <location filename="mooddialog.cpp" line="112"/>
         <source>sick</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="108"/>
+        <location filename="mooddialog.cpp" line="113"/>
         <source>sleepy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="109"/>
+        <location filename="mooddialog.cpp" line="114"/>
         <source>spontaneous</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="110"/>
+        <location filename="mooddialog.cpp" line="115"/>
         <source>stressed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="111"/>
+        <location filename="mooddialog.cpp" line="116"/>
         <source>strong</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="112"/>
+        <location filename="mooddialog.cpp" line="117"/>
         <source>surprised</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="113"/>
+        <location filename="mooddialog.cpp" line="118"/>
         <source>thankful</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="114"/>
+        <location filename="mooddialog.cpp" line="119"/>
         <source>thirsty</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="115"/>
+        <location filename="mooddialog.cpp" line="120"/>
         <source>tired</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="116"/>
+        <location filename="mooddialog.cpp" line="121"/>
         <source>undefined</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="117"/>
+        <location filename="mooddialog.cpp" line="122"/>
         <source>weak</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="118"/>
+        <location filename="mooddialog.cpp" line="123"/>
         <source>worried</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.cpp" line="126"/>
+        <location filename="mooddialog.cpp" line="131"/>
         <source>&lt;clear&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1968,7 +1968,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mooddialog.ui" line="35"/>
+        <location filename="mooddialog.ui" line="39"/>
         <source>Text:</source>
         <translation type="unfinished"></translation>
     </message>
