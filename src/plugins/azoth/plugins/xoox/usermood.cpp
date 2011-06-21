@@ -175,6 +175,11 @@ namespace Xoox
 		}
 	}
 	
+	QString UserMood::Node () const
+	{
+		return GetNodeString ();
+	}
+	
 	PEPEventBase* UserMood::Clone () const
 	{
 		return new UserMood (*this);

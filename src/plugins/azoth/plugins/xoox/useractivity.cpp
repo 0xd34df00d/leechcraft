@@ -198,6 +198,11 @@ namespace Xoox
 		}
 	}
 	
+	QString UserActivity::Node () const
+	{
+		return GetNodeString ();
+	}
+
 	PEPEventBase* UserActivity::Clone () const
 	{
 		return new UserActivity (*this);

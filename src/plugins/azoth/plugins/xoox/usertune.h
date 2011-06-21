@@ -42,6 +42,7 @@ namespace Xoox
 		
 		QXmppElement ToXML () const;
 		void Parse (const QDomElement&);
+		QString Node () const;
 		
 		PEPEventBase* Clone () const;
 		

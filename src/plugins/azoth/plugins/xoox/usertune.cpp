@@ -84,6 +84,11 @@ namespace Xoox
 		Rating_ = tune.firstChildElement ("rating").text ().toInt ();
 	}
 	
+	QString UserTune::Node () const
+	{
+		return GetNodeString ();
+	}
+	
 	PEPEventBase* UserTune::Clone () const
 	{
 		return new UserTune (*this);
