@@ -144,6 +144,7 @@ namespace Xoox
 		QXmppTransferManager* GetTransferManager () const;
 		CapsManager* GetCapsManager () const;
 		AnnotationsManager* GetAnnotationsManager () const;
+		PubSubManager* GetPubSubManager () const;
 		
 		void SetSignaledLog (bool);
 

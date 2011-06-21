@@ -347,6 +347,11 @@ namespace Xoox
 		return AnnotationsManager_;
 	}
 	
+	PubSubManager* ClientConnection::GetPubSubManager () const
+	{
+		return PubSubManager_;
+	}
+	
 	void ClientConnection::SetSignaledLog (bool signaled)
 	{
 		if (signaled)
