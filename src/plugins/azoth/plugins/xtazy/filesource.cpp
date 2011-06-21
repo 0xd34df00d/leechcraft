@@ -43,7 +43,6 @@ namespace Xtazy
 	
 	void FileSource::handleFileChanged (const QString& filePath)
 	{
-		qDebug () << "changed";
 		QFile file (filePath);
 		if (!file.exists () ||
 				!file.open (QIODevice::ReadOnly))
@@ -53,28 +52,23 @@ namespace Xtazy
 		}
 
 		const QString& data = QString::fromUtf8 (file.readAll ());
-		qDebug () << data;
 		if (data.isEmpty ())
 		{
 			emit tuneInfoChanged (TuneInfo_t ());
 			return;
 		}
 		
-		qDebug () << "survived";
-
 		TuneInfo_t result;
 
 		Q_FOREACH (QString line, data.split ('\n', QString::SkipEmptyParts))
 		{
 			line = line.trimmed ();
 			const int idx = line.indexOf (' ');
-			qDebug () << idx << line;
 			if (idx == -1)
 				continue;
 
 			const QString& key = line.left (idx);
 			const QString& val = line.mid (idx + 1);
-			qDebug () << key << val;
 			result [key.toLower ()] = val;
 		}
 
