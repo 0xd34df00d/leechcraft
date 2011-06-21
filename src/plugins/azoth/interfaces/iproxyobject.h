@@ -148,6 +148,12 @@ namespace Azoth
 		 */
 		virtual QObject* GetAccount (const QString& accID) const = 0;
 		
+		/** @brief Returns all the accounts registered in Azoth.
+		 * 
+		 * @return The list of objects implementing IAccount.
+		 */
+		virtual QList<QObject*> GetAllAccounts () const = 0;
+		
 		/** @brief Returns the entry object for the given entry ID.
 		 * 
 		 * @param[in] entryID The entry ID.

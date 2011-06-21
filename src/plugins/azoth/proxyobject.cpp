@@ -279,6 +279,14 @@ namespace Azoth
 		return 0;
 	}
 	
+	QList<QObject*> ProxyObject::GetAllAccounts () const
+	{
+		QList<QObject*> result;
+		Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
+			result << acc->GetObject ();
+		return result;
+	}
+	
 	QObject* ProxyObject::GetEntry (const QString& entryID, const QString&) const
 	{
 		return Core::Instance ().GetEntry (entryID);
