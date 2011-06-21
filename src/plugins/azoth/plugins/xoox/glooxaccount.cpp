@@ -32,6 +32,7 @@
 #include "unauthclentry.h"
 #include "transfermanager.h"
 #include "sdsession.h"
+#include "usertune.h"
 
 namespace LeechCraft
 {
@@ -309,6 +310,17 @@ namespace Xoox
 	void GlooxAccount::SetConsoleEnabled (bool enabled)
 	{
 		ClientConnection_->SetSignaledLog (enabled);
+	}
+	
+	void GlooxAccount::PublishTune (const QMap<QString, QVariant>& tuneInfo)
+	{
+		UserTune tune;
+		tune.SetArtist (tuneInfo ["artist"].toString ());
+		tune.SetTitle (tuneInfo ["title"].toString ());
+		tune.SetSource (tuneInfo ["source"].toString ());
+		tune.SetLength (tuneInfo ["length"].toInt ());
+		
+		ClientConnection_->GetPubSubManager ();
 	}
 
 	QString GlooxAccount::GetJID () const

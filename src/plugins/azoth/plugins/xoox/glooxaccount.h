@@ -27,6 +27,7 @@
 #include <interfaces/ihaveservicediscovery.h>
 #include <interfaces/imessage.h>
 #include <interfaces/ihaveconsole.h>
+#include <interfaces/isupporttune.h>
 #include "glooxclentry.h"
 
 namespace LeechCraft
@@ -54,11 +55,13 @@ namespace Xoox
 					   , public IAccount
 					   , public IHaveServiceDiscovery
 					   , public IHaveConsole
+					   , public ISupportTune
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IAccount
 				LeechCraft::Azoth::IHaveServiceDiscovery
-				LeechCraft::Azoth::IHaveConsole);
+				LeechCraft::Azoth::IHaveConsole
+				LeechCraft::Azoth::ISupportTune);
 
 		QString Name_;
 		GlooxProtocol *ParentProtocol_;
@@ -106,6 +109,8 @@ namespace Xoox
 		
 		PacketFormat GetPacketFormat () const;
 		void SetConsoleEnabled (bool);
+		
+		void PublishTune (const QMap<QString, QVariant>&);
 
 		QString GetJID () const;
 		QString GetNick () const;
