@@ -44,6 +44,15 @@ namespace Azoth
 			PRLStatusIcons,
 			PRLSystemIcons
 		};
+		
+		/** @brief Returns the Core's settings manager object.
+		 * 
+		 * The returned object's properties could be queried to find out
+		 * the settings and parameters of Core's settings.
+		 * 
+		 * @return Core's settings manager object.
+		 */
+		virtual QObject* GetSettingsManager () = 0;
 
 		/** @brief Retrieves the password for the given account.
 		 *

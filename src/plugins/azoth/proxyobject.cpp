@@ -42,6 +42,11 @@ namespace Azoth
 		SerializedStr2AuthStatus_ ["From"] = ASFrom;
 		SerializedStr2AuthStatus_ ["Both"] = ASBoth;
 	}
+	
+	QObject* ProxyObject::GetSettingsManager ()
+	{
+		return &XmlSettingsManager::Instance ();
+	}
 
 	QString ProxyObject::GetPassword (QObject *accObj)
 	{
