@@ -18,6 +18,14 @@
 
 #include "xtazy.h"
 #include <QIcon>
+#include <interfaces/iaccount.h>
+#include <interfaces/isupporttune.h>
+#include <interfaces/iproxyobject.h>
+#include "tunesourcebase.h"
+
+#ifdef HAVE_DBUS
+#include "mprissource.h"
+#endif
 
 namespace LeechCraft
 {
@@ -28,11 +36,21 @@ namespace Xtazy
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
+		
+#ifdef HAVE_DBUS
+		TuneSources_ << new MPRISSource (this);
+#endif
+		
+		Q_FOREACH (TuneSourceBase *base, TuneSources_)
+			connect (base,
+					SIGNAL (tuneInfoChanged (const QMap<QString, QVariant>&)),
+					this,
+					SLOT (publish (const QMap<QString, QVariant>&)));
 	}
 
 	void Plugin::SecondInit ()
 	{
-	}	
+	}
 
 	QByteArray Plugin::GetUniqueID () const
 	{
@@ -41,6 +59,7 @@ namespace Xtazy
 
 	void Plugin::Release ()
 	{
+		qDeleteAll (TuneSources_);
 	}
 
 	QString Plugin::GetName () const
@@ -63,6 +82,27 @@ namespace Xtazy
 		QSet<QByteArray> result;
 		result << "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin";
 		return result;
+	}
+	
+	void Plugin::initPlugin (QObject *proxy)
+	{
+		AzothProxy_ = qobject_cast<IProxyObject*> (proxy);
+	}
+	
+	void Plugin::publish (const QMap<QString, QVariant>& info)
+	{
+		Q_FOREACH (QObject *accObj, AzothProxy_->GetAllAccounts ())
+		{
+			IAccount *acc = qobject_cast<IAccount*> (accObj);
+			if (!acc)
+				continue;
+			if (acc->GetState ().State_ == SOffline)
+				continue;
+
+			ISupportTune *tune = qobject_cast<ISupportTune*> (accObj);
+			if (tune)
+				tune->PublishTune (info);
+		}
 	}
 }
 }

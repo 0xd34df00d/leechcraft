@@ -16,48 +16,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XTAZY_XTAZY_H
-#define PLUGINS_AZOTH_PLUGINS_XTAZY_XTAZY_H
+#ifndef PLUGINS_AZOTH_PLUGINS_XTAZY_TUNESOURCEBASE_H
+#define PLUGINS_AZOTH_PLUGINS_XTAZY_TUNESOURCEBASE_H
 #include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-
-class QTranslator;
+#include <QMap>
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-class IProxyObject;
-
 namespace Xtazy
 {
-	class TuneSourceBase;
-
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IPlugin2
+	class TuneSourceBase : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2)
-		
-		ICoreProxy_ptr Proxy_;
-		IProxyObject *AzothProxy_;
-		QList<TuneSourceBase*> TuneSources_;
+	protected:
+		typedef QMap<QString, QVariant> TuneInfo_t;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-
-		QSet<QByteArray> GetPluginClasses () const;
-	public slots:
-		void initPlugin (QObject*);
-	private slots:
-		void publish (const QMap<QString, QVariant>&);
+		TuneSourceBase (QObject* = 0);
+	signals:
+		void tuneInfoChanged (const QMap<QString, QVariant>&);
 	};
 }
 }

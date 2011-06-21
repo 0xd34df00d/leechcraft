@@ -16,51 +16,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XTAZY_XTAZY_H
-#define PLUGINS_AZOTH_PLUGINS_XTAZY_XTAZY_H
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-
-class QTranslator;
+#include "tunesourcebase.h"
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-class IProxyObject;
-
 namespace Xtazy
 {
-	class TuneSourceBase;
-
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IPlugin2
+	TuneSourceBase::TuneSourceBase (QObject *parent)
+	: QObject (parent)
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2)
-		
-		ICoreProxy_ptr Proxy_;
-		IProxyObject *AzothProxy_;
-		QList<TuneSourceBase*> TuneSources_;
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-
-		QSet<QByteArray> GetPluginClasses () const;
-	public slots:
-		void initPlugin (QObject*);
-	private slots:
-		void publish (const QMap<QString, QVariant>&);
-	};
+	}
 }
 }
 }
-
-#endif

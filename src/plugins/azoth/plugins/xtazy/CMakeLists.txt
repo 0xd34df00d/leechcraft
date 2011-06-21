@@ -3,10 +3,26 @@ INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
 	)
 SET (XTAZY_SRCS
 	xtazy.cpp
+	tunesourcebase.cpp
 	)
 SET (XTAZY_HEADERS
 	xtazy.h
+	tunesourcebase.h
 	)
+
+IF (QT_QTDBUS_FOUND)
+	ADD_DEFINITIONS (-DHAVE_DBUS)
+
+	SET (XTAZY_SRCS
+		${XTAZY_SRCS}
+		mprissource.cpp
+		)
+	SET (XTAZY_HEADERS
+		${XTAZY_HEADERS}
+		mprissource.h
+		)
+ENDIF (QT_QTDBUS_FOUND)
+
 QT4_WRAP_CPP (XTAZY_MOC_SRCS ${XTAZY_HEADERS})
 
 ADD_LIBRARY (leechcraft_azoth_xtazy SHARED

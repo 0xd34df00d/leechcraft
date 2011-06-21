@@ -16,51 +16,50 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XTAZY_XTAZY_H
-#define PLUGINS_AZOTH_PLUGINS_XTAZY_XTAZY_H
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-
-class QTranslator;
+#ifndef PLUGINS_AZOTH_PLUGINS_XTAZY_MPRISSOURCE_H
+#define PLUGINS_AZOTH_PLUGINS_XTAZY_MPRISSOURCE_H
+#include "tunesourcebase.h"
+#include <QStringList>
+#include <QDBusConnection>
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-class IProxyObject;
-
 namespace Xtazy
 {
-	class TuneSourceBase;
+	struct PlayerStatus
+	{
+		int PlayStatus_;
+		int PlayOrder_;
+		int PlayRepeat_;
+		int StopOnce_;
+	};
 
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IPlugin2
+	class MPRISSource : public TuneSourceBase
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2)
 		
-		ICoreProxy_ptr Proxy_;
-		IProxyObject *AzothProxy_;
-		QList<TuneSourceBase*> TuneSources_;
+		QStringList Players_;
+		QDBusConnection SB_;
+		TuneInfo_t Tune_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-
-		QSet<QByteArray> GetPluginClasses () const;
-	public slots:
-		void initPlugin (QObject*);
+		MPRISSource (QObject* = 0);
+		virtual ~MPRISSource ();
+	private:
+		void ConnectToBus (const QString&);
+		void DisconnectFromBus (const QString&);
+		TuneInfo_t GetTuneMV2 (const QVariantMap&);
 	private slots:
-		void publish (const QMap<QString, QVariant>&);
+		void handlePropertyChange (const QDBusMessage&);
+		void handlePlayerStatusChange (PlayerStatus);
+		void handleTrackChange (const QVariantMap&);
+		void checkMPRISService (QString, QString, QString);
 	};
 }
 }
 }
+
+Q_DECLARE_METATYPE (LeechCraft::Azoth::Xtazy::PlayerStatus);
 
 #endif
