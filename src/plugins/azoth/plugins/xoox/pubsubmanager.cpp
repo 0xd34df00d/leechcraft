@@ -62,6 +62,7 @@ namespace Xoox
 	QStringList PubSubManager::discoveryFeatures () const
 	{
 		QStringList result;
+		result << NsPubSub;
 		Q_FOREACH (const QString& node, Node2Creator_.keys ())
 		{
 			result << node;
