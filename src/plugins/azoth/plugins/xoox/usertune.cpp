@@ -66,6 +66,8 @@ namespace Xoox
 		if (Rating_)
 			AppendTxt (tune, "rating", QString::number (Rating_));
 		
+		result.appendChild (tune);
+		
 		return result;
 	}
 	
