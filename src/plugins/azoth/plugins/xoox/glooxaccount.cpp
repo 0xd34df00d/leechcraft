@@ -32,8 +32,10 @@
 #include "unauthclentry.h"
 #include "transfermanager.h"
 #include "sdsession.h"
-#include "usertune.h"
 #include "pubsubmanager.h"
+#include "usertune.h"
+#include "usermood.h"
+#include "useractivity.h"
 
 namespace LeechCraft
 {
@@ -322,6 +324,24 @@ namespace Xoox
 		tune.SetLength (tuneInfo ["length"].toInt ());
 		
 		ClientConnection_->GetPubSubManager ()->PublishEvent (&tune);
+	}
+	
+	void GlooxAccount::SetMood (const QString& moodStr, const QString& text)
+	{
+		UserMood mood;
+		mood.SetMoodStr (moodStr);
+		mood.SetText (text);
+		
+		ClientConnection_->GetPubSubManager ()->PublishEvent (&mood);
+	}
+	
+	void GlooxAccount::SetActivity (const QString& general,
+			const QString& specific, const QString& text)
+	{
+		UserActivity activity;
+		activity.SetText (text);
+		
+		ClientConnection_->GetPubSubManager ()->PublishEvent (&activity);
 	}
 
 	QString GlooxAccount::GetJID () const
