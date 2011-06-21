@@ -32,6 +32,10 @@ namespace Azoth
 		
 		bool ShowAvatars_;
 		bool ShowClientIcons_;
+		QString ActivityIconset_;
+		QString MoodIconset_;
+		mutable QHash<QString, QIcon> ActivityIconCache_;
+		mutable QHash<QString, QIcon> MoodIconCache_;
 		QTreeView *View_;
 	public:
 		ContactListDelegate (QTreeView* = 0);
@@ -49,6 +53,8 @@ namespace Azoth
 	private slots:
 		void handleShowAvatarsChanged ();
 		void handleShowClientIconsChanged ();
+		void handleActivityIconsetChanged ();
+		void handleMoodIconsetChanged ();
 	};
 }
 }
