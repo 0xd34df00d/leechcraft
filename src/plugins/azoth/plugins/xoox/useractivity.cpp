@@ -184,12 +184,7 @@ namespace Xoox
 
 				const QDomElement& specific = child.firstChildElement ();
 				if (!specific.isNull ())
-					for (int s = SpecificEmpty + 1; s <= Other; ++s)
-						if (specific.tagName () == activity_specific [s])
-						{
-							Specific_ = static_cast<Specific> (s);
-							break;
-						}
+					SetSpecificStr (specific.tagName ());
 
 				break;
 			}
@@ -225,6 +220,18 @@ namespace Xoox
 				activity_general [General_];
 	}
 	
+	void UserActivity::SetGeneralStr (const QString& str)
+	{
+		General_ = GeneralEmpty;
+
+		for (int g = GeneralEmpty + 1; g <= Working; ++g)
+			if (str == activity_general [g])
+			{
+				General_ = static_cast<General> (g);
+				break;
+			}
+	}
+	
 	UserActivity::Specific UserActivity::GetSpecific () const
 	{
 		return Specific_;
@@ -233,6 +240,18 @@ namespace Xoox
 	void UserActivity::SetSpecific (UserActivity::Specific specific)
 	{
 		Specific_ = specific;
+	}
+	
+	void UserActivity::SetSpecificStr (const QString& str)
+	{
+		Specific_ = SpecificEmpty;
+		
+		for (int s = SpecificEmpty + 1; s <= Other; ++s)
+			if (str == activity_specific [s])
+			{
+				Specific_ = static_cast<Specific> (s);
+				break;
+			}
 	}
 	
 	QString UserActivity::GetSpecificStr () const

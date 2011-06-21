@@ -339,6 +339,8 @@ namespace Xoox
 			const QString& specific, const QString& text)
 	{
 		UserActivity activity;
+		activity.SetGeneralStr (general);
+		activity.SetSpecificStr (specific);
 		activity.SetText (text);
 		
 		ClientConnection_->GetPubSubManager ()->PublishEvent (&activity);
