@@ -103,7 +103,8 @@ namespace Azoth
 		 * @param[out] variant Variant of the entry whose mood has
 		 * changed.
 		 * 
-		 * @sa activityChanged(), ICLEntry::GetClientInfo()
+		 * @sa activityChanged(), tuneChanged()
+		 * @sa ICLEntry::GetClientInfo()
 		 */
 		virtual void moodChanged (const QString& variant) = 0;
 		
@@ -118,9 +119,26 @@ namespace Azoth
 		 * @param[out] variant Variant of the entry whose activity has
 		 * changed.
 		 * 
-		 * @sa moodChanged(), ICLEntry::GetClientInfo()
+		 * @sa moodChanged(), tuneChanged()
+		 * @sa ICLEntry::GetClientInfo()
 		 */
 		virtual void activityChanged (const QString& variant) = 0;
+		
+		/** @brief Notifies that entity's user tune has changed.
+		 * 
+		 * The actual tune information should be contained in the map
+		 * returned from ICLEntry::GetClientInfo(). Please refer to its
+		 * documentation for information about user tunes.
+		 * 
+		 * @note This function is expected to be a signal.
+		 * 
+		 * @param[out] variant Variant of the entry whose tune has
+		 * changed.
+		 * 
+		 * @sa moodChanged(), activityChanged()
+		 * @sa ICLEntry::GetClientInfo()
+		 */
+		virtual void tuneChanged (const QString& variant) = 0;
 	};
 }
 }

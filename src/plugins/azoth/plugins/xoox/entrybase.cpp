@@ -38,6 +38,7 @@
 #include "capsmanager.h"
 #include "useractivity.h"
 #include "usermood.h"
+#include "usertune.h"
 
 namespace LeechCraft
 {
@@ -185,6 +186,28 @@ namespace Xoox
 			Variant2ClientInfo_ [variant] ["user_mood"] = moodMap;
 			
 			emit moodChanged (variant);
+			return;
+		}
+		
+		UserTune *tune = dynamic_cast<UserTune*> (event);
+		if (tune)
+		{
+			if (tune->IsNull ())
+				Variant2ClientInfo_ [variant].remove ("user_tune");
+			else
+			{
+				QMap<QString, QVariant> tuneMap;
+				tuneMap ["artist"] = tune->GetArtist ();
+				tuneMap ["source"] = tune->GetSource ();
+				tuneMap ["title"] = tune->GetTitle ();
+				tuneMap ["track"] = tune->GetTrack ();
+				tuneMap ["URI"] = tune->GetURI ();
+				tuneMap ["length"] = tune->GetLength ();
+				tuneMap ["rating"] = tune->GetRating ();
+				Variant2ClientInfo_ [variant] ["user_tune"] = tuneMap;
+			}
+			
+			emit tuneChanged (variant);
 			return;
 		}
 		
