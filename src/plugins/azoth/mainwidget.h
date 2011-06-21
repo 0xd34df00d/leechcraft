@@ -47,6 +47,8 @@ namespace Azoth
 		
 		QAction *AccountJoinConference_;
 		QAction *AccountAddContact_;
+		QAction *AccountSetActivity_;
+		QAction *AccountSetMood_;
 		QAction *AccountConsole_;
 	public:
 		MainWidget (QWidget* = 0);
@@ -68,6 +70,8 @@ namespace Azoth
 		void handleCatRenameTriggered ();
 		void joinAccountConference ();
 		void addAccountContact ();
+		void handleAccountSetActivity ();
+		void handleAccountSetMood ();
 		void handleAccountConsole ();
 
 		void handleManageBookmarks ();

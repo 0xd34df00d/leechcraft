@@ -16,26 +16,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_INTERFACES_ISUPPORTACTIVITY_H
-#define PLUGINS_AZOTH_INTERFACES_ISUPPORTACTIVITY_H
-#include <QtGlobal>
+#ifndef PLUGINS_AZOTH_ACTIVITYDIALOG_H
+#define PLUGINS_AZOTH_ACTIVITYDIALOG_H
+#include <QDialog>
+#include "ui_activitydialog.h"
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-	class ISupportActivity
+	class ActivityDialog : public QDialog
 	{
-	public:
-		virtual ~ISupportActivity () {}
+		Q_OBJECT
 		
-		virtual void SetActivity (const QString&,
-				const QString&, const QString&) = 0;
+		Ui::ActivityDialog Ui_;
+		QMap<QString, QStringList> Gen2Specific_;
+	public:
+		ActivityDialog (QWidget* = 0);
+		
+		QString GetGeneral () const;
+		void SetGeneral (const QString&);
+		
+		QString GetSpecific () const;
+		void SetSpecific (const QString&);
+		
+		QString GetText () const;
+		void SetText (const QString&);
+	private slots:
+		void on_General__currentIndexChanged (int);
 	};
 }
 }
-
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::ISupportActivity,
-		"org.Deviant.LeechCraft.Azoth.ISupportActivity/1.0");
 
 #endif

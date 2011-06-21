@@ -20,6 +20,8 @@
 #define PLUGINS_AZOTH_INTERFACES_ISUPPORTMOOD_H
 #include <QtGlobal>
 
+class QString;
+
 namespace LeechCraft
 {
 namespace Azoth
@@ -28,6 +30,8 @@ namespace Azoth
 	{
 	public:
 		virtual ~ISupportMood () {}
+		
+		virtual void SetMood (const QString&, const QString&) = 0;
 	};
 }
 }
