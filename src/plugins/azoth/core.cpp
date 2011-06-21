@@ -57,6 +57,8 @@
 #include "util.h"
 #include "eventsnotifier.h"
 #include "drawattentiondialog.h"
+#include "activitydialog.h"
+#include "mooddialog.h"
 
 namespace LeechCraft
 {
@@ -901,7 +903,8 @@ namespace Azoth
 	{
 		void FormatMood (QString& tip, const QMap<QString, QVariant>& moodInfo)
 		{
-			tip += "<br />" + Core::tr ("Mood:") + ' ' + moodInfo ["mood"].toString ();
+			tip += "<br />" + Core::tr ("Mood:") + ' ';
+			tip += MoodDialog::ToHumanReadable (moodInfo ["mood"].toString ());
 			const QString& text = moodInfo ["text"].toString ();
 			if (!text.isEmpty ())
 				tip += " (" + text + ")";
@@ -909,8 +912,9 @@ namespace Azoth
 		
 		void FormatActivity (QString& tip, const QMap<QString, QVariant>& actInfo)
 		{
-			tip += "<br />" + Core::tr ("Activity:") + ' ' + actInfo ["general"].toString ();
-			const QString& specific = actInfo ["specific"].toString ();
+			tip += "<br />" + Core::tr ("Activity:") + ' ';
+			tip += ActivityDialog::ToHumanReadable (actInfo ["general"].toString ());
+			const QString& specific = ActivityDialog::ToHumanReadable (actInfo ["specific"].toString ());
 			if (!specific.isEmpty ())
 				tip += " (" + specific + ")";
 			const QString& text = actInfo ["text"].toString ();

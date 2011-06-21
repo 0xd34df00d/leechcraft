@@ -25,6 +25,11 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+	QString ActivityDialog::ToHumanReadable (const QString& str)
+	{
+		return tr (str.toLatin1 ());
+	}
+
 	ActivityDialog::ActivityDialog (QWidget *parent)
 	: QDialog (parent)
 	{

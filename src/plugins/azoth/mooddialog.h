@@ -31,6 +31,8 @@ namespace Azoth
 
 		Ui::MoodDialog Ui_;
 	public:
+		static QString ToHumanReadable (const QString&);
+
 		MoodDialog (QWidget* = 0);
 		
 		QString GetMood () const;
