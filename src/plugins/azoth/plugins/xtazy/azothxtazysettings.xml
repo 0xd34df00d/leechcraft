@@ -4,7 +4,7 @@
 		<label value="Azoth Xtazy" />
 		<groupbox>
 			<label value="Tune fetching" />
-			<item type="checkbox" property="EnableMPRIS" default="on">
+			<item type="checkbox" property="EnableMPRISSource" default="on">
 				<label value="Fetch from MPRIS-compatible players" />
 			</item>
 			<item type="checkbox" property="EnableFileSource" default="off">

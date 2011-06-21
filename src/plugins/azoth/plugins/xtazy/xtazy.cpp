@@ -105,6 +105,12 @@ namespace Xtazy
 	
 	void Plugin::publish (const QMap<QString, QVariant>& info)
 	{
+		const QByteArray& objName = sender ()->objectName ().toLatin1 ();
+		
+		if (!XmlSettingsManager::Instance ()
+				.property ("Enable" + objName).toBool ())
+			return;
+
 		Q_FOREACH (QObject *accObj, AzothProxy_->GetAllAccounts ())
 		{
 			IAccount *acc = qobject_cast<IAccount*> (accObj);
