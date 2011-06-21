@@ -29,6 +29,7 @@ namespace LeechCraft
 			: QDialog (parent)
 			{
 				Ui_.setupUi (this);
+				on_Format__currentIndexChanged (Ui_.Format_->currentText ());
 			}
 
 			ShooterDialog::Action ShooterDialog::GetAction () const
@@ -79,9 +80,19 @@ namespace LeechCraft
 
 			int ShooterDialog::GetQuality () const
 			{
-				return Ui_.QualityBox_->value ();
+				const int val = Ui_.QualityBox_->value ();
+				return Ui_.Format_->currentText () == "JPG" ?
+						val :
+						100 - val;
 			}
-		};
-	};
-};
-
+			
+			void ShooterDialog::on_Format__currentIndexChanged (const QString& str)
+			{
+				if (str == "JPG")
+					Ui_.SettingLabel_->setText ("Quality:");
+				else
+					Ui_.SettingLabel_->setText ("Compression:");
+			}
+		}
+	}
+}
