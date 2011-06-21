@@ -803,11 +803,15 @@ namespace Azoth
 			connect (clEntry->GetObject (),
 					SIGNAL (activityChanged (const QString&)),
 					this,
-					SLOT (handleActivityChanged (const QString&)));
+					SLOT (handleEntryPEPEvent (const QString&)));
 			connect (clEntry->GetObject (),
 					SIGNAL (moodChanged (const QString&)),
 					this,
-					SLOT (handleMoodChanged (const QString&)));
+					SLOT (handleEntryPEPEvent (const QString&)));
+			connect (clEntry->GetObject (),
+					SIGNAL (tuneChanged (const QString&)),
+					this,
+					SLOT (handleEntryPEPEvent (const QString&)));
 		}
 		
 		EventsNotifier_->RegisterEntry (clEntry);
@@ -893,6 +897,50 @@ namespace Azoth
 		}
 	}
 	
+	namespace
+	{
+		void FormatMood (QString& tip, const QMap<QString, QVariant>& moodInfo)
+		{
+			tip += "<br />" + Core::tr ("Mood:") + ' ' + moodInfo ["mood"].toString ();
+			const QString& text = moodInfo ["text"].toString ();
+			if (!text.isEmpty ())
+				tip += " (" + text + ")";
+		}
+		
+		void FormatActivity (QString& tip, const QMap<QString, QVariant>& actInfo)
+		{
+			tip += "<br />" + Core::tr ("Activity:") + ' ' + actInfo ["general"].toString ();
+			const QString& specific = actInfo ["specific"].toString ();
+			if (!specific.isEmpty ())
+				tip += " (" + specific + ")";
+			const QString& text = actInfo ["text"].toString ();
+			if (!text.isEmpty ())
+				tip += " (" + text + ")";
+		}
+		
+		void FormatTune (QString& tip, const QMap<QString, QVariant>& tuneInfo)
+		{
+			const QString& artist = tuneInfo ["artist"].toString ();
+			const QString& source = tuneInfo ["source"].toString ();
+			const QString& title = tuneInfo ["title"].toString ();
+
+			tip += "<br />" + Core::tr ("Now listening to:") + ' ';
+			if (!artist.isEmpty () && !title.isEmpty ())
+				tip += artist + QString::fromUtf8 (" — ") + title;
+			else if (!artist.isEmpty ())
+				tip += artist;
+			else if (!title.isEmpty ())
+				tip += title;
+			
+			if (!source.isEmpty ())
+				tip += ' ' + Core::tr ("from") + ' ' + source;
+			
+			const int length = tuneInfo ["length"].toInt ();
+			if (length)
+				tip += " (" + Util::MakeTimeFromLong (length) + ")";
+		}
+	}
+	
 	QString Core::MakeTooltipString (ICLEntry *entry) const
 	{
 		QString tip = "<strong>" + entry->GetEntryName () + "</strong>";
@@ -941,25 +989,11 @@ namespace Azoth
 				tip += " " + info.value ("client_version").toString ();
 			
 			if (info.contains ("user_mood"))
-			{
-				const QMap<QString, QVariant>& moodInfo = info ["user_mood"].toMap ();
-				tip += "<br />" + tr ("Mood:") + ' ' + moodInfo ["mood"].toString ();
-				const QString& text = moodInfo ["text"].toString ();
-				if (!text.isEmpty ())
-					tip += " (" + text + ")";
-			}
-			
+				FormatMood (tip, info ["user_mood"].toMap ());
 			if (info.contains ("user_activity"))
-			{
-				const QMap<QString, QVariant>& actInfo = info ["user_activity"].toMap ();
-				tip += "<br />" + tr ("Activity:") + ' ' + actInfo ["general"].toString ();
-				const QString& specific = actInfo ["specific"].toString ();
-				if (!specific.isEmpty ())
-					tip += " (" + specific + ")";
-				const QString& text = actInfo ["text"].toString ();
-				if (!text.isEmpty ())
-					tip += " (" + text + ")";
-			}
+				FormatActivity (tip, info ["user_activity"].toMap ());
+			if (info.contains ("user_tune"))
+				FormatTune (tip, info ["user_tune"].toMap ());
 
 			if (info.contains ("custom_user_visible_map"))
 			{
@@ -1849,7 +1883,7 @@ namespace Azoth
 		HandleStatusChanged (status, entry, variant);
 	}
 	
-	void Core::handleActivityChanged (const QString&)
+	void Core::handleEntryPEPEvent (const QString&)
 	{
 		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
 		if (!entry)
@@ -1860,22 +1894,6 @@ namespace Azoth
 			return;
 		}
 
-		const QString& tip = MakeTooltipString (entry);
-		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
-			item->setToolTip (tip);
-	}
-	
-	void Core::handleMoodChanged (const QString&)
-	{
-		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "sender is not a ICLEntry"
-					<< sender ();
-			return;
-		}
-		
 		const QString& tip = MakeTooltipString (entry);
 		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
 			item->setToolTip (tip);

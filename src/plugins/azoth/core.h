@@ -422,13 +422,10 @@ namespace Azoth
 		 */
 		void handleStatusChanged (const EntryStatus& status, const QString& variant);
 		
-		/** Handles user activity change of a CL entry.
+		/** Handles ICLEntry's PEP-like (XEP-0163) event from the given
+		 * variant.
 		 */
-		void handleActivityChanged (const QString& variant);
-		
-		/** Handles user mood change of a CL entry.
-		 */
-		void handleMoodChanged (const QString& variant);
+		void handleEntryPEPEvent (const QString& variant);
 
 		/** Handles the event of name changes in plugin.
 		 */
