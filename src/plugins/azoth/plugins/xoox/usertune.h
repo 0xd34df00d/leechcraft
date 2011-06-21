@@ -65,6 +65,8 @@ namespace Xoox
 
 		int GetRating () const;
 		void SetRating (int);
+		
+		bool IsNull () const;
 	};
 }
 }

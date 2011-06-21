@@ -158,6 +158,14 @@ namespace Xoox
 	{
 		Rating_ = rating;
 	}
+	
+	bool UserTune::IsNull () const
+	{
+		return Artist_.isEmpty () &&
+				Title_.isEmpty () &&
+				Track_.isEmpty () &&
+				Source_.isEmpty ();
+	}
 }
 }
 }
