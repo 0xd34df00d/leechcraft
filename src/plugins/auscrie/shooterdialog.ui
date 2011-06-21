@@ -73,12 +73,12 @@
     <widget class="QComboBox" name="Format_">
      <item>
       <property name="text">
-       <string>JPG</string>
+       <string>PNG</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>PNG</string>
+       <string>JPG</string>
       </property>
      </item>
     </widget>
