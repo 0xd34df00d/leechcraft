@@ -926,14 +926,17 @@ namespace Azoth
 
 			tip += "<br />" + Core::tr ("Now listening to:") + ' ';
 			if (!artist.isEmpty () && !title.isEmpty ())
-				tip += artist + QString::fromUtf8 (" — ") + title;
+				tip += "<em>" + artist + "</em>" +
+						QString::fromUtf8 (" — ") + 
+						"<em>" + title + "</em>";
 			else if (!artist.isEmpty ())
-				tip += artist;
+				tip += "<em>" + artist + "</em>";
 			else if (!title.isEmpty ())
-				tip += title;
+				tip += "<em>" + title + "</em>";
 			
 			if (!source.isEmpty ())
-				tip += ' ' + Core::tr ("from") + ' ' + source;
+				tip += ' ' + Core::tr ("from") +
+						" <em>" + source + "</em>";
 			
 			const int length = tuneInfo ["length"].toInt ();
 			if (length)
