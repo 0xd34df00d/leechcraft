@@ -89,11 +89,18 @@ namespace Azoth
 
 		typedef QHash<ICLEntry*, QImage> Entry2SmoothAvatarCache_t;
 		Entry2SmoothAvatarCache_t Entry2SmoothAvatarCache_;
-
-		boost::shared_ptr<Util::ResourceLoader> StatusIconLoader_;
-		boost::shared_ptr<Util::ResourceLoader> ClientIconLoader_;
-		boost::shared_ptr<Util::ResourceLoader> AffIconLoader_;
-		boost::shared_ptr<Util::ResourceLoader> SystemIconLoader_;
+	public:
+		enum ResourceLoaderType
+		{
+			RLTStatusIconLoader,
+			RLTClientIconLoader,
+			RLTAffIconLoader,
+			RLTSystemIconLoader,
+			RLTActivityIconLoader,
+			RLTMoodIconLoader
+		};
+	private:
+		QMap<ResourceLoaderType, boost::shared_ptr<Util::ResourceLoader> > ResourceLoaders_;
 		boost::shared_ptr<SourceTrackingModel<IEmoticonResourceSource> > SmilesOptionsModel_;
 		boost::shared_ptr<SourceTrackingModel<IChatStyleResourceSource> > ChatStylesOptionsModel_;
 
@@ -129,14 +136,6 @@ namespace Azoth
 			CLETContact
 		};
 
-		enum ResourceLoaderType
-		{
-			RLTStatusIconLoader,
-			RLTClientIconLoader,
-			RLTAffIconLoader,
-			RLTSystemIconLoader
-		};
-
 		enum CLEntryActionArea
 		{
 			CLEAATabCtxtMenu,
@@ -167,7 +166,6 @@ namespace Azoth
 
 		const QObjectList& GetProtocolPlugins () const;
 
-		QList<QAction*> GetAccountCreatorActions () const;
 		QAbstractItemModel* GetCLModel () const;
 		ChatTabsManager* GetChatTabsManager () const;
 		QList<IAccount*> GetAccounts () const;
@@ -379,10 +377,6 @@ namespace Azoth
 		
 		IChatStyleResourceSource* GetCurrentChatStyle () const;
 	public slots:
-		/** Initiates account registration process.
-		 */
-		void handleAccountCreatorTriggered ();
-
 		/** Initiates MUC join by calling the corresponding protocol
 		 * plugin's IProtocol::InitiateMUCJoin() function.
 		 */
@@ -427,6 +421,11 @@ namespace Azoth
 		/** Handles the status change of a CL entry to new status.
 		 */
 		void handleStatusChanged (const EntryStatus& status, const QString& variant);
+		
+		/** Handles ICLEntry's PEP-like (XEP-0163) event from the given
+		 * variant.
+		 */
+		void handleEntryPEPEvent (const QString& variant);
 
 		/** Handles the event of name changes in plugin.
 		 */
@@ -526,11 +525,6 @@ namespace Azoth
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
-
-		/** Emitted after some new account creation actions have been
-		 * received from a plugin and thus should be shown in the UI.
-		 */
-		void accountCreatorActionsAdded (const QList<QAction*>&);
 
 		/** Convenient signal for rethrowing the event of an account
 		 * being added.

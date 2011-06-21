@@ -418,8 +418,7 @@ namespace Poshuku
 				else
 				{
 					reply->abort ();
-					LeechCraft::Entity e =
-						LeechCraft::Util::MakeEntity (reply->url (),
+					Entity e =  Util::MakeEntity (reply->url (),
 							QString (),
 							LeechCraft::FromUserInitiated);
 					emit gotEntity (e);
@@ -434,20 +433,19 @@ namespace Poshuku
 					QWebFrame *found = FindFrame (reply->url ());
 					if (!found)
 					{
+						const QString& mime = reply->
+								header (QNetworkRequest::ContentTypeHeader).toString ();
 						if (XmlSettingsManager::Instance ()->
 								property ("ParanoidDownloadsDetection").toBool () ||
-								reply->header (QNetworkRequest::ContentTypeHeader).isValid ())
+								!mime.isEmpty ())
 						{
-							LeechCraft::Entity e =
-								LeechCraft::Util::MakeEntity (
-										QVariant::fromValue<QNetworkReply*> (reply),
+							Entity e =
+								Util::MakeEntity (QVariant::fromValue<QNetworkReply*> (reply),
 										QString (),
-										LeechCraft::FromUserInitiated
-										);
+										LeechCraft::FromUserInitiated,
+										mime);
 
 							e.Additional_ ["SourceURL"] = reply->url ();
-							e.Mime_ = reply->
-								header (QNetworkRequest::ContentTypeHeader).toString ();
 
 							emit gotEntity (e);
 							if (XmlSettingsManager::Instance ()->

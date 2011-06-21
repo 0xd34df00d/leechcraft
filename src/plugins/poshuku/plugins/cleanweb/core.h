@@ -31,6 +31,7 @@
 
 class QNetworkRequest;
 class QWebPage;
+class QWebView;
 class QWebHitTestResult;
 
 namespace LeechCraft
@@ -65,6 +66,8 @@ namespace CleanWeb
 		QMap<int, PendingJob> PendingJobs_;
 
 		QList<QString> Blocked_;
+		
+		QHash<QWebFrame*, QStringList> MoreDelayedURLs_;
 
 		ICoreProxy_ptr Proxy_;
 
@@ -98,7 +101,8 @@ namespace CleanWeb
 				const QWebPage::ExtensionOption*,
 				QWebPage::ExtensionReturn*);
 		void HandleContextMenu (const QWebHitTestResult&,
-				QMenu*, WebViewCtxMenuStage);
+				QWebView*, QMenu*,
+				WebViewCtxMenuStage);
 		bool ShouldReject (const QNetworkRequest&, QString*) const;
 
 		UserFiltersModel* GetUserFiltersModel () const;
@@ -156,6 +160,7 @@ namespace CleanWeb
 		void handleJobFinished (int);
 		void handleJobError (int, IDownload::Error);
 		void delayedRemoveElements (QWebFrame*, const QString&);
+		void moreDelayedRemoveElements ();
 	signals:
 		void delegateEntity (const LeechCraft::Entity&,
 				int*, QObject**);

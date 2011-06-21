@@ -157,11 +157,14 @@ namespace Azoth
 				SIGNAL (keyReturnPressed ()),
 				this,
 				SLOT (messageSend ()));
- 
 		connect (Ui_.MsgEdit_,
 				SIGNAL (keyTabPressed ()),
 				this,
 				SLOT (nickComplete ()));
+		connect (Ui_.MsgEdit_,
+				SIGNAL (scroll (int)),
+				this,
+				SLOT (handleEditScroll (int)));
 
 		Ui_.EntryInfo_->setText (e->GetEntryName ());
 
@@ -370,7 +373,6 @@ namespace Azoth
 			return;
 
 		msg->Send ();
-		AppendMessage (msg);
 	}
 
 	void ChatTab::on_MsgEdit__textChanged ()
@@ -534,6 +536,10 @@ namespace Azoth
 			ReformatTitle ();
 		}
 
+		const int idx = Ui_.VariantBox_->findText (msg->GetOtherVariant ());
+		if (idx != -1)
+			Ui_.VariantBox_->setCurrentIndex (idx);
+
 		AppendMessage (msg);
 	}
 
@@ -649,6 +655,20 @@ namespace Azoth
 			Ui_.MsgEdit_->moveCursor (QTextCursor::End);
 			Ui_.MsgEdit_->setFocus ();
 		}
+		else if (url.host () == "insertnick")
+		{
+			const QByteArray& encoded = url.encodedQueryItemValue ("nick");
+			InsertNick (QUrl::fromPercentEncoding (encoded));
+		}
+	}
+
+	void ChatTab::InsertNick (const QString& nicknameHtml)
+	{
+		QTextCursor cursor = Ui_.MsgEdit_->textCursor ();
+		cursor.insertHtml (cursor.atStart () ?
+				nicknameHtml + ": " :
+				" &nbsp;" + nicknameHtml + " ");
+		Ui_.MsgEdit_->setFocus ();
 	}
 
 	void ChatTab::handleHistoryUp ()
@@ -1092,6 +1112,16 @@ namespace Azoth
 		PreviousState_ = state;
 		entry->SetChatPartState (state, Ui_.VariantBox_->currentText ());
 	}
+	
+	void ChatTab::prepareMessageText (const QString& text)
+	{
+		Ui_.MsgEdit_->setText (text);
+	}
+	
+	void ChatTab::appendMessageText (const QString& text)
+	{
+		Ui_.MsgEdit_->setText (Ui_.MsgEdit_->toPlainText () + text);
+	}
 
 	void ChatTab::clearAvailableNick ()
 	{
@@ -1101,6 +1131,12 @@ namespace Azoth
 			AvailableNickList_.clear ();
 			CurrentNickIndex_ = 0;
 		}
+	}
+	
+	void ChatTab::handleEditScroll (int direction)
+	{
+		int distance = Ui_.View_->size ().height () / 2 - 5;
+		Ui_.View_->page ()->mainFrame ()->scroll (0, distance * direction);
 	}
 
 	void ChatTab::UpdateStateIcon ()

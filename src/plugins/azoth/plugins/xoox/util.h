@@ -21,6 +21,8 @@
 #include <QString>
 #include <QXmppMucIq.h>
 
+class QDomElement;
+
 namespace LeechCraft
 {
 namespace Azoth
@@ -34,7 +36,8 @@ namespace Util
 
 	QString GetClientIDName (const QString&);
 	QString GetClientHRName (const QString&);
-	//QString GetClientVersion (const QString&, const QString&);
+	
+	QDomElement XmppElem2DomElem (const QXmppElement&);
 }
 }
 }

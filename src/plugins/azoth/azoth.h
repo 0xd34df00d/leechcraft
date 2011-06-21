@@ -34,6 +34,7 @@ namespace LeechCraft
 namespace Azoth
 {
 	class MainWidget;
+	class ConsoleWidget;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -78,6 +79,8 @@ namespace Azoth
 		void TabOpenRequested (const QByteArray&);
 	public slots:
 		void handleTasksTreeSelectionCurrentRowChanged (const QModelIndex&, const QModelIndex&);
+	private slots:
+		void handleConsoleWidget (ConsoleWidget*);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);

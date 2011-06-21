@@ -79,9 +79,10 @@ namespace AdvancedNotifications
 	
 	void SystemTrayHandler::RebuildState ()
 	{
+		QSet<QSystemTrayIcon*> icons2hide;
 		Q_FOREACH (QSystemTrayIcon *icon, Category2Icon_.values ())
 		{
-			icon->hide ();
+			icons2hide << icon;
 			icon->contextMenu ()->clear ();
 		}
 
@@ -89,7 +90,9 @@ namespace AdvancedNotifications
 		{
 			const EventData& data = Events_ [event];
 			QSystemTrayIcon *icon = Category2Icon_ [data.Category_];
-			icon->show ();
+			if (!icon->isVisible ())
+				icon->show ();
+			icons2hide.remove (icon);
 
 			QMenu *menu = icon->contextMenu ();
 			Q_FOREACH (const QString& pathItem, data.VisualPath_)
@@ -121,6 +124,9 @@ namespace AdvancedNotifications
 			menu->addSeparator ();
 			menu->addAction (data.ExtendedText_)->setEnabled (false);
 		}
+		
+		Q_FOREACH (QSystemTrayIcon *icon, icons2hide)
+			icon->hide ();
 	}
 	
 	void SystemTrayHandler::handleActionTriggered ()

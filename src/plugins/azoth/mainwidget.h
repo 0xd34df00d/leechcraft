@@ -30,6 +30,7 @@ namespace LeechCraft
 namespace Azoth
 {
 	class SortFilterProxyModel;
+	class ConsoleWidget;
 
 	class MainWidget : public QWidget
 	{
@@ -46,6 +47,7 @@ namespace Azoth
 		
 		QAction *AccountJoinConference_;
 		QAction *AccountAddContact_;
+		QAction *AccountConsole_;
 	public:
 		MainWidget (QWidget* = 0);
 		
@@ -66,8 +68,8 @@ namespace Azoth
 		void handleCatRenameTriggered ();
 		void joinAccountConference ();
 		void addAccountContact ();
+		void handleAccountConsole ();
 
-		void showAccountsList ();
 		void handleManageBookmarks ();
 		void handleAddContactRequested ();
 
@@ -82,6 +84,8 @@ namespace Azoth
 		void rebuildTreeExpansions ();
 		void on_CLTree__expanded (const QModelIndex&);
 		void on_CLTree__collapsed (const QModelIndex&);
+	signals:
+		void gotConsoleWidget (ConsoleWidget*);
 	};
 }
 }

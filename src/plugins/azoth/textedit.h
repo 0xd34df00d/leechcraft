@@ -38,7 +38,9 @@ namespace Azoth
 		void keyReturnPressed ();
 		void keyTabPressed ();
 		void clearAvailableNicks ();
+		void scroll (int);
 	};
 }
 }
+
 #endif // PLUGINS_AZOTH_TEXTEDIT_H

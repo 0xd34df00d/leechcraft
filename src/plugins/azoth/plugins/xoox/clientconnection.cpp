@@ -18,6 +18,7 @@
 
 #include "clientconnection.h"
 #include <boost/bind.hpp>
+#include <boost/fusion/container.hpp>
 #include <QTimer>
 #include <QtDebug>
 #include <QXmppClient.h>
@@ -31,7 +32,6 @@
 #include <QXmppBookmarkManager.h>
 #include <QXmppEntityTimeManager.h>
 #include <QXmppArchiveManager.h>
-#include <QXmppPubSubManager.h>
 #include <QXmppActivityItem.h>
 #include <QXmppPubSubIq.h>
 #include <QXmppDeliveryReceiptsManager.h>
@@ -52,6 +52,11 @@
 #include "capsmanager.h"
 #include "annotationsmanager.h"
 #include "fetchqueue.h"
+#include "legacyentitytimeext.h"
+#include "pubsubmanager.h"
+#include "useractivity.h"
+#include "usermood.h"
+#include "usertune.h"
 
 namespace LeechCraft
 {
@@ -60,6 +65,7 @@ namespace Azoth
 namespace Xoox
 {
 	const int ErrorLimit = 5;
+
 	ClientConnection::ClientConnection (const QString& jid,
 			const GlooxAccountState& state,
 			GlooxAccount *account)
@@ -70,8 +76,8 @@ namespace Xoox
 	, BMManager_ (new QXmppBookmarkManager (Client_))
 	, EntityTimeManager_ (new QXmppEntityTimeManager)
 	, ArchiveManager_ (new QXmppArchiveManager)
-	, PubSubManager_ (new QXmppPubSubManager)
 	, DeliveryReceiptsManager_ (new QXmppDeliveryReceiptsManager)
+	, PubSubManager_ (new PubSubManager)
 	, AnnotationsManager_ (0)
 	, OurJID_ (jid)
 	, Account_ (account)
@@ -97,14 +103,27 @@ namespace Xoox
 		QObject *proxyObj = qobject_cast<GlooxProtocol*> (account->
 					GetParentProtocol ())->GetProxyObject ();
 		ProxyObject_ = qobject_cast<IProxyObject*> (proxyObj);
+		
+		PubSubManager_->RegisterCreator<UserActivity> ();
+		PubSubManager_->RegisterCreator<UserMood> ();
+		PubSubManager_->RegisterCreator<UserTune> ();
+		PubSubManager_->SetAutosubscribe<UserActivity> (true);
+		PubSubManager_->SetAutosubscribe<UserMood> (true);
+		PubSubManager_->SetAutosubscribe<UserTune> (true);
+		
+		connect (PubSubManager_,
+				SIGNAL (gotEvent (const QString&, PEPEventBase*)),
+				this,
+				SLOT (handlePEPEvent (const QString&, PEPEventBase*)));
 
+		Client_->addExtension (PubSubManager_);
 		Client_->addExtension (DeliveryReceiptsManager_);
 		Client_->addExtension (MUCManager_);
 		Client_->addExtension (XferManager_);
 		Client_->addExtension (BMManager_);
 		Client_->addExtension (EntityTimeManager_);
 		Client_->addExtension (ArchiveManager_);
-		Client_->addExtension (PubSubManager_);
+		Client_->addExtension (new LegacyEntityTimeExt);
 		
 		AnnotationsManager_ = new AnnotationsManager (this);
 
@@ -326,6 +345,32 @@ namespace Xoox
 	AnnotationsManager* ClientConnection::GetAnnotationsManager () const
 	{
 		return AnnotationsManager_;
+	}
+	
+	PubSubManager* ClientConnection::GetPubSubManager () const
+	{
+		return PubSubManager_;
+	}
+	
+	void ClientConnection::SetSignaledLog (bool signaled)
+	{
+		if (signaled)
+		{
+			connect (Client_->logger (),
+					SIGNAL (message (QXmppLogger::MessageType, const QString&)),
+					this,
+					SLOT (handleLog (QXmppLogger::MessageType, const QString&)),
+					Qt::UniqueConnection);
+			Client_->logger ()->setLoggingType (QXmppLogger::SignalLogging);
+		}
+		else
+		{
+			disconnect (Client_->logger (),
+					SIGNAL (message (QXmppLogger::MessageType, const QString&)),
+					this,
+					SLOT (handleLog (QXmppLogger::MessageType, const QString&)));
+			Client_->logger ()->setLoggingType (QXmppLogger::FileLogging);
+		}
 	}
 
 	void ClientConnection::RequestInfo (const QString& jid) const
@@ -647,8 +692,15 @@ namespace Xoox
 		
 		Q_FOREACH (const QXmppMessage& msg, OfflineMsgQueue_)
 			handleMessageReceived (msg);
-
 		OfflineMsgQueue_.clear ();
+		
+		QPair<QString, PEPEventBase*> initialEvent;
+		Q_FOREACH (initialEvent, InitialEventQueue_)
+		{
+			handlePEPEvent (initialEvent.first, initialEvent.second);
+			delete initialEvent.second;
+		}
+		InitialEventQueue_.clear ();
 	}
 
 	void ClientConnection::handleRosterChanged (const QString& bareJid)
@@ -765,6 +817,27 @@ namespace Xoox
 					<< msg.from ();
 	}
 	
+	void ClientConnection::handlePEPEvent (const QString& from, PEPEventBase *event)
+	{
+		QString bare;
+		QString resource;
+		Split (from, &bare, &resource);
+		
+		if (!JID2CLEntry_.contains (bare))
+		{
+			if (JID2CLEntry_.isEmpty ())
+				InitialEventQueue_ << qMakePair (from, event->Clone ());
+			else
+				qWarning () << Q_FUNC_INFO
+						<< "unknown PEP event source"
+						<< from
+						<< JID2CLEntry_.keys ();
+			return;
+		}
+		
+		JID2CLEntry_ [bare]->HandlePEPEvent (resource, event);
+	}
+	
 	void ClientConnection::handleMessageDelivered (const QString& msgId)
 	{
 		QPointer<GlooxMessage> msg = UndeliveredMessages_.take (msgId);
@@ -827,6 +900,21 @@ namespace Xoox
 		const QString& jid = iq.from ();
 		if (AwaitingDiscoItems_.contains (jid))
 			AwaitingDiscoItems_ [jid] (iq);
+	}
+	
+	void ClientConnection::handleLog (QXmppLogger::MessageType type, const QString& msg)
+	{
+		switch (type)
+		{
+		case QXmppLogger::SentMessage:
+			emit gotConsoleLog (msg.toUtf8 (), IHaveConsole::PDOut);
+			break;
+		case QXmppLogger::ReceivedMessage:
+			emit gotConsoleLog (msg.toUtf8 (), IHaveConsole::PDIn);
+			break;
+		default:
+			break;
+		}
 	}
 	
 	void ClientConnection::decrementErrAccumulators ()

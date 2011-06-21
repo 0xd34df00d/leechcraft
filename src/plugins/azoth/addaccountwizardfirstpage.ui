@@ -47,6 +47,13 @@
      </property>
     </widget>
    </item>
+   <item row="2" column="1">
+    <widget class="QCheckBox" name="RegisterAccount_">
+     <property name="text">
+      <string>Register new account</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <resources/>

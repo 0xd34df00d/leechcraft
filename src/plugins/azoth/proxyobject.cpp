@@ -42,6 +42,11 @@ namespace Azoth
 		SerializedStr2AuthStatus_ ["From"] = ASFrom;
 		SerializedStr2AuthStatus_ ["Both"] = ASBoth;
 	}
+	
+	QObject* ProxyObject::GetSettingsManager ()
+	{
+		return &XmlSettingsManager::Instance ();
+	}
 
 	QString ProxyObject::GetPassword (QObject *accObj)
 	{
@@ -272,6 +277,14 @@ namespace Azoth
 				return acc->GetObject ();
 
 		return 0;
+	}
+	
+	QList<QObject*> ProxyObject::GetAllAccounts () const
+	{
+		QList<QObject*> result;
+		Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
+			result << acc->GetObject ();
+		return result;
 	}
 	
 	QObject* ProxyObject::GetEntry (const QString& entryID, const QString&) const

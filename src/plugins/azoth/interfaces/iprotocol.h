@@ -52,17 +52,44 @@ namespace Azoth
 	public:
 		virtual ~IProtocol () {}
 
+		/** This enum describes the features that may be supported by a
+		 * protocol.
+		 */
 		enum ProtocolFeature
 		{
 			/** Multiuser chats are possible in this proto.
 			 */
-			PFSupportsMUCs,
+			PFSupportsMUCs = 0x01,
+
 			/** One could join MUCs as he wishes.
 			 */
-			PFMUCsJoinable
+			PFMUCsJoinable = 0x02,
+			
+			/** This protocol supports in-band registration: accounts
+			 * could be registered right from the client.
+			 */
+			PFSupportsInBandRegistration = 0x04
 		};
 
 		Q_DECLARE_FLAGS (ProtocolFeatures, ProtocolFeature);
+		
+		/** This enum describes the options that may be selected by the
+		 * user when adding a new account.
+		 */
+		enum AccountAddOption
+		{
+			/** No custom options.
+			 */
+			AAONoOptions = 0,
+
+			/** User has chosen to register a new account (if the
+			 * protocol advertises PFSupportsInBandRegistration
+			 * feature).
+			 */
+			AAORegisterNewAccount = 0x01
+		};
+		
+		Q_DECLARE_FLAGS (AccountAddOptions, AccountAddOption);
 
 		/** @brief Returns the protocol object as a QObject.
 		 *
@@ -104,23 +131,11 @@ namespace Azoth
 		 */
 		virtual QByteArray GetProtocolID () const = 0;
 
-		/** @brief Notifies the protocol that a new account should be
-		 * registered.
-		 *
-		 * Protocol plugin is expected to ask the user for
-		 * account details, register the account and emit
-		 * the accountAdded(QObject*) signal.
-		 * 
-		 * @deprecated This method of registering accounts is superseded
-		 * by GetAccountRegistrationWidgets()/RegisterAccount() pair.
-		 */
-		virtual void InitiateAccountRegistration () = 0;
-		
-		/** @brief Returns the widgets used for account registration.
+		/** @brief Returns the widgets used for account addition.
 		 * 
 		 * The widgets from the returned list are shown in the account
-		 * registration wizard in the same order they appear in the
-		 * returned list.
+		 * addition wizard in the same order they appear in the returned
+		 * list.
 		 * 
 		 * If the user accepts registering the account, the
 		 * RegisterAccount() method would be called with the same set of
@@ -128,11 +143,14 @@ namespace Azoth
 		 * 
 		 * The ownership is transferred to the caller.
 		 * 
+		 * @param[in] options The options selected by the user to
+		 * perform the account addition.
+		 * 
 		 * @return The widgets to be shown and filled by the user.
 		 * 
 		 * @sa RegisterAccount()
 		 */
-		virtual QList<QWidget*> GetAccountRegistrationWidgets () = 0;
+		virtual QList<QWidget*> GetAccountRegistrationWidgets (AccountAddOptions options) = 0;
 		
 		/** @brief Adds an account with the given name and widgets.
 		 * 

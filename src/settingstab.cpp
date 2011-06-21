@@ -91,7 +91,7 @@ namespace LeechCraft
 			{
 				IPlugin2 *ip2 = qobject_cast<IPlugin2*> (obj);
 				if (obj == Core::Instance ().GetCoreInstanceObject ())
-					result [obj] << SettingsTab::tr ("LeechCraft");
+					result [obj] << "LeechCraft";
 				else if (ip2)
 					result [obj] = GetFirstClassPlugins (ip2);
 				else
@@ -126,6 +126,9 @@ namespace LeechCraft
 			keys.removeAll (tr ("General plugins"));
 			keys.prepend (tr ("General plugins"));
 		}
+		
+		if (keys.removeAll ("LeechCraft"))
+			keys.prepend ("LeechCraft");
 
 		Q_FOREACH (const QString& key, keys)
 			Ui_.ListContents_->layout ()->addWidget (group2box [key]);
@@ -153,6 +156,8 @@ namespace LeechCraft
 				group2box [group]->layout ()->addWidget (butt);
 			}
 		}
+		
+		qobject_cast<QBoxLayout*> (Ui_.ListContents_->layout ())->addStretch ();
 	}
 	
 	TabClassInfo SettingsTab::GetTabClassInfo () const

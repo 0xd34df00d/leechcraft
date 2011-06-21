@@ -7,12 +7,14 @@ SET (NATIVEEMOTICONS_SRCS
 	nativeemoticonssource.cpp
 	kopeteemoticonssource.cpp
 	psiplusemoticonssource.cpp
+	baseemoticonssource.cpp
 	)
 SET (NATIVEEMOTICONS_HEADERS
 	nativeemoticons.h
 	nativeemoticonssource.h
 	kopeteemoticonssource.h
 	psiplusemoticonssource.h
+	baseemoticonssource.h
 	)
 QT4_WRAP_CPP (NATIVEEMOTICONS_MOC_SRCS ${NATIVEEMOTICONS_HEADERS})
 

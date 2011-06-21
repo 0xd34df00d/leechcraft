@@ -32,6 +32,8 @@
 #include "unauthclentry.h"
 #include "transfermanager.h"
 #include "sdsession.h"
+#include "usertune.h"
+#include "pubsubmanager.h"
 
 namespace LeechCraft
 {
@@ -64,6 +66,11 @@ namespace Xoox
 		TransferManager_.reset (new TransferManager (ClientConnection_->
 						GetTransferManager (),
 					this));
+		
+		connect (ClientConnection_.get (),
+				SIGNAL (gotConsoleLog (const QByteArray&, int)),
+				this,
+				SIGNAL (gotConsolePacket (const QByteArray&, int)));
 
 		connect (ClientConnection_.get (),
 				SIGNAL (serverAuthFailed ()),
@@ -294,6 +301,27 @@ namespace Xoox
 	QObject* GlooxAccount::CreateSDSession ()
 	{
 		return new SDSession (this);
+	}
+	
+	IHaveConsole::PacketFormat GlooxAccount::GetPacketFormat () const
+	{
+		return PFXML;
+	}
+	
+	void GlooxAccount::SetConsoleEnabled (bool enabled)
+	{
+		ClientConnection_->SetSignaledLog (enabled);
+	}
+	
+	void GlooxAccount::PublishTune (const QMap<QString, QVariant>& tuneInfo)
+	{
+		UserTune tune;
+		tune.SetArtist (tuneInfo ["artist"].toString ());
+		tune.SetTitle (tuneInfo ["title"].toString ());
+		tune.SetSource (tuneInfo ["source"].toString ());
+		tune.SetLength (tuneInfo ["length"].toInt ());
+		
+		ClientConnection_->GetPubSubManager ()->PublishEvent (&tune);
 	}
 
 	QString GlooxAccount::GetJID () const

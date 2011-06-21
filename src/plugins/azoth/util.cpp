@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "util.h"
+#include <QString>
 #include <interfaces/structures.h>
 #include "interfaces/iclentry.h"
 
@@ -38,6 +39,11 @@ namespace Azoth
 
 		e.Additional_ ["org.LC.Plugins.Azoth.SourceName"] = other->GetEntryName ();
 		e.Additional_ ["org.LC.Plugins.Azoth.SourceID"] = other->GetEntryID ();
+	}
+	
+	QString GetActivityIconName (const QString& general, const QString& specific)
+	{
+		return (general + ' ' + specific).trimmed ().replace (' ', '_');
 	}
 }
 }

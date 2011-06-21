@@ -18,38 +18,24 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_NATIVEEMOTICONS_NATIVEEMOTICONSSOURCE_H
 #define PLUGINS_AZOTH_PLUGINS_NATIVEEMOTICONS_NATIVEEMOTICONSSOURCE_H
-#include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <QHash>
-#include <interfaces/iresourceplugin.h>
+#include "baseemoticonssource.h"
 
 namespace LeechCraft
 {
-namespace Util
-{
-	class ResourceLoader;
-}
 namespace Azoth
 {
 namespace NativeEmoticons
 {
-	class NativeEmoticonsSource : public QObject
-								, public IEmoticonResourceSource
+	class NativeEmoticonsSource : public BaseEmoticonsSource
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IEmoticonResourceSource);
 		
-		boost::shared_ptr<Util::ResourceLoader> EmoLoader_;
-		typedef QHash<QString, QString> String2Filename_t;
 		mutable String2Filename_t IconCache_;
 		mutable QString CachedPack_;
 	public:
 		NativeEmoticonsSource (QObject* = 0);
-		
-		QAbstractItemModel* GetOptionsModel () const;
-		QSet<QString> GetEmoticonStrings (const QString&) const;
-		QHash<QImage, QString> GetReprImages (const QString&) const;
-		QByteArray GetImage (const QString&, const QString&) const;
 	private:
 		// Hash is chat string → filename.
 		String2Filename_t ParseFile (const QString&) const;

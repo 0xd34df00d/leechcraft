@@ -38,7 +38,13 @@ namespace Azoth
 	 * supports some XMPP's service discovery-like functionality. Look
 	 * at that documentation for more information.
 	 * 
-	 * @sa IHaveServiceDiscovery
+	 * If the account supports something similar to XML console, it can
+	 * also implement the IHaveConsole interface.
+	 * 
+	 * If the account supports publishing user tune, it may implement
+	 * ISupportTune.
+	 * 
+	 * @sa IHaveServiceDiscovery, IHaveConsole, ISupportTune
 	 */
 	class IAccount
 	{

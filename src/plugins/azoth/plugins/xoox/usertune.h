@@ -16,43 +16,60 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_ACCOUNTSLISTDIALOG_H
-#define PLUGINS_AZOTH_ACCOUNTSLISTDIALOG_H
-#include <QDialog>
-#include <QHash>
-#include "ui_accountslistdialog.h"
-
-class QStandardItemModel;
-class QStandardItem;
+#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_USERTUNE_H
+#define PLUGINS_AZOTH_PLUGINS_XOOX_USERTUNE_H
+#include <QString>
+#include <QUrl>
+#include "pepeventbase.h"
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-	class IAccount;
-
-	class AccountsListDialog : public QDialog
+namespace Xoox
+{
+	class UserTune : public PEPEventBase
 	{
-		Q_OBJECT
-
-		Ui::AccountsListDialog Ui_;
-		QStandardItemModel *AccModel_;
-		QHash<IAccount*, QStandardItem*> Account2Item_;
-
-		enum Roles
-		{
-			RAccObj = Qt::UserRole + 1
-		};
+		QString Artist_;
+		QString Source_;
+		QString Title_;
+		QString Track_;
+		QUrl URI_;
+		int Length_;
+		int Rating_;
 	public:
-		AccountsListDialog (QWidget* = 0);
-	private slots:
-		void addAccount (IAccount*);
-		void on_Add__released ();
-		void on_Modify__released ();
-		void on_Delete__released ();
+		static QString GetNodeString ();
+		
+		QXmppElement ToXML () const;
+		void Parse (const QDomElement&);
+		QString Node () const;
+		
+		PEPEventBase* Clone () const;
+		
+		QString GetArtist () const;
+		void SetArtist (const QString&);
 
-		void handleAccountRemoved (IAccount*);
+		QString GetSource () const;
+		void SetSource (const QString&);
+
+		QString GetTitle () const;
+		void SetTitle (const QString&);
+
+		QString GetTrack () const;
+		void SetTrack (const QString&);
+
+		QUrl GetURI () const;
+		void SetURI (const QUrl&);
+
+		int GetLength () const;
+		void SetLength (int);
+
+		int GetRating () const;
+		void SetRating (int);
+		
+		bool IsNull () const;
 	};
+}
 }
 }
 

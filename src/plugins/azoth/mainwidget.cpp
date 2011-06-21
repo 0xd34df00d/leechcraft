@@ -22,10 +22,11 @@
 #include <QVBoxLayout>
 #include <QToolButton>
 #include <QInputDialog>
+#include <QTimer>
 #include "interfaces/iclentry.h"
+#include "interfaces/ihaveconsole.h"
 #include "core.h"
 #include "sortfilterproxymodel.h"
-#include "accountslistdialog.h"
 #include "setstatusdialog.h"
 #include "contactlistdelegate.h"
 #include "xmlsettingsmanager.h"
@@ -33,7 +34,7 @@
 #include "joinconferencedialog.h"
 #include "bookmarksmanagerdialog.h"
 #include "chattabsmanager.h"
-#include <QTimer>
+#include "consolewidget.h"
 
 namespace LeechCraft
 {
@@ -86,6 +87,10 @@ namespace Azoth
 				SIGNAL (modelReset ()),
 				this,
 				SLOT (rebuildTreeExpansions ()));
+		connect (ProxyModel_,
+				SIGNAL (mucMode ()),
+				Ui_.CLTree_,
+				SLOT (expandAll ()));
 
 		QMetaObject::invokeMethod (Ui_.CLTree_,
 				"expandToDepth",
@@ -132,6 +137,12 @@ namespace Azoth
 				this,
 				SLOT (addAccountContact ()));
 		
+		AccountConsole_ = new QAction (tr ("Console..."), this);
+		connect (AccountConsole_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleAccountConsole ()));
+		
 		XmlSettingsManager::Instance ().RegisterObject ("ShowMenuBar",
 				this, "menuBarVisibilityToggled");
 		menuBarVisibilityToggled ();
@@ -149,9 +160,6 @@ namespace Azoth
 
 	void MainWidget::CreateMenu ()
 	{
-		MainMenu_->addAction (tr ("Accounts..."),
-				this,
-				SLOT (showAccountsList ()));
 		MainMenu_->addSeparator ();
 		MainMenu_->addAction (tr ("Add contact..."),
 				this,
@@ -320,6 +328,12 @@ namespace Azoth
 				}
 			}
 			actions << MenuChangeStatus_->menuAction ();
+			
+			if (qobject_cast<IHaveConsole*> (objVar.value<QObject*> ()))
+			{
+				AccountConsole_->setProperty ("Azoth/AccountObject", objVar);
+				actions << AccountConsole_;
+			}
 			break;
 		}
 		default:
@@ -481,12 +495,15 @@ namespace Azoth
 					dia->GetNick (),
 					dia->GetGroups ());
 	}
-
-	void MainWidget::showAccountsList ()
+	
+	void MainWidget::handleAccountConsole ()
 	{
-		AccountsListDialog *dia = new AccountsListDialog (this);
-		dia->setAttribute (Qt::WA_DeleteOnClose, true);
-		dia->exec ();
+		IAccount *account = GetAccountFromSender (Q_FUNC_INFO);
+		if (!account)
+			return;
+		
+		ConsoleWidget *cw = new ConsoleWidget (account->GetObject ());
+		emit gotConsoleWidget (cw);
 	}
 	
 	void MainWidget::handleManageBookmarks ()
@@ -523,13 +540,7 @@ namespace Azoth
 	void MainWidget::handleEntryMadeCurrent (QObject *obj)
 	{
 		if (qobject_cast<IMUCEntry*> (obj))
-		{
 			ProxyModel_->SetMUC (obj);
-			if (Ui_.RosterMode_->currentIndex () == 1)
-				QTimer::singleShot (100,
-						Ui_.CLTree_,
-						SLOT (expandAll ()));
-		}
 	}
 	
 	void MainWidget::on_RosterMode__currentIndexChanged (int index)

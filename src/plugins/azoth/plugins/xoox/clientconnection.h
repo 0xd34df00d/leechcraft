@@ -26,7 +26,6 @@
 #include <QSet>
 #include <QXmppClient.h>
 #include <QXmppMucIq.h>
-#include <QXmppPubSubIq.h>
 #include <interfaces/imessage.h>
 #include "glooxclentry.h"
 #include "glooxaccount.h"
@@ -40,7 +39,6 @@ class QXmppDiscoveryIq;
 class QXmppBookmarkManager;
 class QXmppArchiveManager;
 class QXmppEntityTimeManager;
-class QXmppPubSubManager;
 class QXmppDeliveryReceiptsManager;
 
 namespace LeechCraft
@@ -60,6 +58,7 @@ namespace Xoox
 	class CapsManager;
 	class AnnotationsManager;
 	class FetchQueue;
+	class PubSubManager;
 
 	class ClientConnection : public QObject
 	{
@@ -72,8 +71,8 @@ namespace Xoox
 		QXmppBookmarkManager *BMManager_;
 		QXmppEntityTimeManager *EntityTimeManager_;
 		QXmppArchiveManager *ArchiveManager_;
-		QXmppPubSubManager *PubSubManager_;
 		QXmppDeliveryReceiptsManager *DeliveryReceiptsManager_;
+		PubSubManager *PubSubManager_;
 		
 		AnnotationsManager *AnnotationsManager_;
 
@@ -106,6 +105,7 @@ namespace Xoox
 		int SocketErrorAccumulator_;
 		
 		QList<QXmppMessage> OfflineMsgQueue_;
+		QList<QPair<QString, PEPEventBase*> > InitialEventQueue_;
 		
 		QHash<QString, QPointer<VCardDialog> > AwaitingVCardDialogs_;
 		
@@ -144,6 +144,9 @@ namespace Xoox
 		QXmppTransferManager* GetTransferManager () const;
 		CapsManager* GetCapsManager () const;
 		AnnotationsManager* GetAnnotationsManager () const;
+		PubSubManager* GetPubSubManager () const;
+		
+		void SetSignaledLog (bool);
 
 		void RequestInfo (const QString&) const;
 		
@@ -194,6 +197,7 @@ namespace Xoox
 		void handleVCardReceived (const QXmppVCardIq&);
 		void handlePresenceChanged (const QXmppPresence&);
 		void handleMessageReceived (const QXmppMessage&);
+		void handlePEPEvent (const QString&, PEPEventBase*);
 		void handleMessageDelivered (const QString&);
 		
 		void handleBookmarksReceived (const QXmppBookmarkSet&);
@@ -201,6 +205,8 @@ namespace Xoox
 		
 		void handleDiscoInfo (const QXmppDiscoveryIq&);
 		void handleDiscoItems (const QXmppDiscoveryIq&);
+		
+		void handleLog (QXmppLogger::MessageType, const QString&);
 		
 		void decrementErrAccumulators ();
 	private:
@@ -219,6 +225,8 @@ namespace Xoox
 		void rosterItemCancelledSubscription (QObject*, const QString&);
 		void rosterItemGrantedSubscription (QObject*, const QString&);
 		void gotSubscriptionRequest (QObject*, const QString&);
+
+		void gotConsoleLog (const QByteArray&, int);
 
 		void serverAuthFailed ();
 		void needPassword ();
