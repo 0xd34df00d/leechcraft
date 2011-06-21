@@ -46,6 +46,7 @@ SET (XOOX_SRCS
 	pepeventbase.cpp
 	useractivity.cpp
 	usermood.cpp
+	usertune.cpp
 	)
 SET (XOOX_HEADERS
 	xoox.h
@@ -87,6 +88,7 @@ SET (XOOX_HEADERS
 	pepeventbase.h
 	useractivity.h
 	usermood.h
+	usertune.h
 	)
 SET (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui

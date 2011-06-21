@@ -56,6 +56,7 @@
 #include "pubsubmanager.h"
 #include "useractivity.h"
 #include "usermood.h"
+#include "usertune.h"
 
 namespace LeechCraft
 {
@@ -105,8 +106,10 @@ namespace Xoox
 		
 		PubSubManager_->RegisterCreator<UserActivity> ();
 		PubSubManager_->RegisterCreator<UserMood> ();
+		PubSubManager_->RegisterCreator<UserTune> ();
 		PubSubManager_->SetAutosubscribe<UserActivity> (true);
 		PubSubManager_->SetAutosubscribe<UserMood> (true);
+		PubSubManager_->SetAutosubscribe<UserTune> (true);
 		
 		connect (PubSubManager_,
 				SIGNAL (gotEvent (const QString&, PEPEventBase*)),
