@@ -19,6 +19,7 @@
 #include "pubsubmanager.h"
 #include <QDomElement>
 #include <QtDebug>
+#include <QXmppClient.h>
 
 namespace LeechCraft
 {
@@ -26,6 +27,7 @@ namespace Azoth
 {
 namespace Xoox
 {
+	const QString NsPubSub = "http://jabber.org/protocol/pubsub";
 	const QString NsPubSubEvent = "http://jabber.org/protocol/pubsub#event";
 
 	void PubSubManager::RegisterCreator (const QString& node,
@@ -38,6 +40,23 @@ namespace Xoox
 	void PubSubManager::SetAutosubscribe (const QString& node, bool enabled)
 	{
 		AutosubscribeNodes_ [node] = enabled;
+	}
+	
+	void PubSubManager::PublishEvent (PEPEventBase *event)
+	{
+		QXmppElement publish;
+		publish.setTagName ("publish");
+		publish.setAttribute ("node", event->Node ());
+		publish.appendChild (event->ToXML ());
+
+		QXmppElement pubsub;
+		pubsub.setTagName ("pubsub");
+		pubsub.setAttribute ("xmlns", NsPubSub);
+		pubsub.appendChild (publish);
+
+		QXmppIq iq (QXmppIq::Set);
+		iq.setExtensions (pubsub);
+		client ()->sendPacket (iq);
 	}
 
 	QStringList PubSubManager::discoveryFeatures () const

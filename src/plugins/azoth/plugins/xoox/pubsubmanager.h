@@ -52,6 +52,8 @@ namespace Xoox
 			SetAutosubscribe (T::GetNodeString (), enabled);
 		}
 		void SetAutosubscribe (const QString&, bool);
+		
+		void PublishEvent (PEPEventBase*);
 
 		QStringList discoveryFeatures () const;
 		bool handleStanza (const QDomElement& elem);
