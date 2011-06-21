@@ -60,6 +60,12 @@ namespace Azoth
 		XmlSettingsDialog_->SetDataSource ("AffIcons",
 				Core::Instance ().GetResourceLoader (Core::RLTAffIconLoader)->
 					GetSubElemModel ());
+		XmlSettingsDialog_->SetDataSource ("MoodIcons",
+				Core::Instance ().GetResourceLoader (Core::RLTMoodIconLoader)->
+					GetSubElemModel ());
+		XmlSettingsDialog_->SetDataSource ("ActivityIcons",
+				Core::Instance ().GetResourceLoader (Core::RLTActivityIconLoader)->
+					GetSubElemModel ());
 		XmlSettingsDialog_->SetDataSource ("SystemIcons",
 				Core::Instance ().GetResourceLoader (Core::RLTSystemIconLoader)->
 					GetSubElemModel ());

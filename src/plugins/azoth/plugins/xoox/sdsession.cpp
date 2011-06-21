@@ -28,6 +28,7 @@
 #include "capsmanager.h"
 #include "vcarddialog.h"
 #include "formbuilder.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -297,14 +298,8 @@ namespace Xoox
 					elem.attribute ("xmlns") != "jabber:iq:register")
 				continue;
 			
-			QByteArray arr;
 			const QXmppElement& x = elem.firstChildElement ("x");
-			QXmlStreamWriter w (&arr);
-			x.toXml (&w);
-
-			QDomDocument doc;
-			doc.setContent (arr);
-			form.parse (doc.documentElement ());
+			form.parse (Util::XmppElem2DomElem (x));
 			if (!form.isNull ())
 				break;
 		}

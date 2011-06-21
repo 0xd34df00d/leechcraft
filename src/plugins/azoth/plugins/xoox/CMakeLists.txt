@@ -38,6 +38,15 @@ SET (XOOX_SRCS
 	annotationsmanager.cpp
 	fetchqueue.cpp
 	legacyformbuilder.cpp
+	inbandaccountregfirstpage.cpp
+	inbandaccountregsecondpage.cpp
+	inbandaccountregthirdpage.cpp
+	legacyentitytimeext.cpp
+	pubsubmanager.cpp
+	pepeventbase.cpp
+	useractivity.cpp
+	usermood.cpp
+	usertune.cpp
 	)
 SET (XOOX_HEADERS
 	xoox.h
@@ -71,6 +80,15 @@ SET (XOOX_HEADERS
 	annotationsmanager.h
 	fetchqueue.h
 	legacyformbuilder.h
+	inbandaccountregfirstpage.h
+	inbandaccountregsecondpage.h
+	inbandaccountregthirdpage.h
+	legacyentitytimeext.h
+	pubsubmanager.h
+	pepeventbase.h
+	useractivity.h
+	usermood.h
+	usertune.h
 	)
 SET (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui
@@ -80,6 +98,7 @@ SET (XOOX_FORMS
 	bookmarkeditwidget.ui
 	roomconfigwidget.ui
 	affiliationselectordialog.ui
+	inbandaccountregfirstpage.ui
 	)
 CreateTrVars ("azoth_xoox" "de;en;fr;it;ru_RU;uk_UA" XOOX_TRANSLATIONS XOOX_COMPILED_TRANSLATIONS)
 QT4_WRAP_CPP (XOOX_MOC_SRCS ${XOOX_HEADERS})

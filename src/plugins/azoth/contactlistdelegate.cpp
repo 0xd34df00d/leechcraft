@@ -22,9 +22,11 @@
 #include <QApplication>
 #include <QAbstractProxyModel>
 #include <QTreeView>
+#include <plugininterface/resourceloader.h>
 #include "interfaces/iclentry.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -40,11 +42,20 @@ namespace Azoth
 	{
 		handleShowAvatarsChanged ();
 		handleShowClientIconsChanged ();
+		handleActivityIconsetChanged ();
+		handleMoodIconsetChanged ();
+		handleSystemIconsetChanged ();
 
 		XmlSettingsManager::Instance ().RegisterObject ("ShowAvatars",
 				this, "handleShowAvatarsChanged");
 		XmlSettingsManager::Instance ().RegisterObject ("ShowClientIcons",
 				this, "handleShowClientIconsChanged");
+		XmlSettingsManager::Instance ().RegisterObject ("ActivityIcons",
+				this, "handleActivityIconsetChanged");
+		XmlSettingsManager::Instance ().RegisterObject ("MoodIcons",
+				this, "handleMoodIconsetChanged");
+		XmlSettingsManager::Instance ().RegisterObject ("SystemIcons",
+				this, "handleSystemIconsetChanged");
 	}
 
 	void ContactListDelegate::paint (QPainter *painter,
@@ -225,6 +236,64 @@ namespace Azoth
 			if (!icon.isNull ())
 				clientIcons.prepend (icon);
 		}
+		const QStringList& vars = entry->Variants ();
+		if (!vars.isEmpty ())
+		{
+			const QMap<QString, QVariant>& addInfo = entry->GetClientInfo (vars.first ());
+			if (addInfo.contains ("user_activity"))
+			{
+				const QMap<QString, QVariant>& actInfo = addInfo ["user_activity"].toMap ();
+				const QString& iconName = ActivityIconset_ + '/' +
+						GetActivityIconName (actInfo ["general"].toString (),
+								actInfo ["specific"].toString ());
+
+				QIcon icon = ActivityIconCache_ [iconName];
+				if (icon.isNull ())
+					icon = QIcon (Core::Instance ()
+							.GetResourceLoader (Core::RLTActivityIconLoader)->
+									GetIconPath (iconName));
+
+				if (!icon.isNull ())
+				{
+					clientIcons.prepend (icon);
+					ActivityIconCache_ [iconName] = icon;
+				}
+			}
+			if (addInfo.contains ("user_mood"))
+			{
+				const QMap<QString, QVariant>& moodInfo = addInfo ["user_mood"].toMap ();
+				QString iconName = moodInfo ["mood"].toString ();
+				iconName [0] = iconName.at (0).toUpper ();
+				iconName.prepend (MoodIconset_ + '/');
+
+				QIcon icon = MoodIconCache_ [iconName];
+				if (icon.isNull ())
+					icon = QIcon (Core::Instance ()
+							.GetResourceLoader (Core::RLTMoodIconLoader)->
+									GetIconPath (iconName));
+
+				if (!icon.isNull ())
+				{
+					clientIcons.prepend (icon);
+					MoodIconCache_ [iconName] = icon;
+				}
+			}
+			if (addInfo.contains ("user_tune"))
+			{
+				const QString& iconName = SystemIconset_ + "/notification_roster_tune";
+				QIcon icon = SystemIconCache_ [iconName];
+				if (icon.isNull ())
+					icon = QIcon (Core::Instance ()
+							.GetResourceLoader (Core::RLTSystemIconLoader)->
+									GetIconPath (iconName));
+				
+				if (!icon.isNull ())
+				{
+					clientIcons.prepend (icon);
+					SystemIconCache_ [iconName] = icon;
+				}
+			}
+		}
 
 		const int clientsIconsWidth = clientIcons.isEmpty () ?
 				0 :
@@ -306,6 +375,30 @@ namespace Azoth
 	{
 		ShowClientIcons_ = XmlSettingsManager::Instance ()
 				.property ("ShowClientIcons").toBool ();
+	}
+	
+	void ContactListDelegate::handleActivityIconsetChanged ()
+	{
+		ActivityIconCache_.clear ();
+		
+		ActivityIconset_ = XmlSettingsManager::Instance ()
+				.property ("ActivityIcons").toString ();
+	}
+	
+	void ContactListDelegate::handleMoodIconsetChanged ()
+	{
+		MoodIconCache_.clear ();
+		
+		MoodIconset_ = XmlSettingsManager::Instance ()
+				.property ("MoodIcons").toString ();
+	}
+	
+	void ContactListDelegate::handleSystemIconsetChanged ()
+	{
+		SystemIconCache_.clear ();
+		
+		SystemIconset_ = XmlSettingsManager::Instance ()
+				.property ("SystemIcons").toString ();
 	}
 }
 }

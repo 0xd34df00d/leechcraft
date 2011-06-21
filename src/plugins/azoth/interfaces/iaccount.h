@@ -41,7 +41,10 @@ namespace Azoth
 	 * If the account supports something similar to XML console, it can
 	 * also implement the IHaveConsole interface.
 	 * 
-	 * @sa IHaveServiceDiscovery, IHaveConsole
+	 * If the account supports publishing user tune, it may implement
+	 * ISupportTune.
+	 * 
+	 * @sa IHaveServiceDiscovery, IHaveConsole, ISupportTune
 	 */
 	class IAccount
 	{

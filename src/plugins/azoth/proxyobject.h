@@ -39,6 +39,7 @@ namespace Azoth
 	public:
 		ProxyObject (QObject* = 0);
 	public slots:
+		QObject* GetSettingsManager ();
 		QString GetPassword (QObject*);
 		void SetPassword (const QString&, QObject*);
 		QString GetOSName ();
@@ -47,6 +48,7 @@ namespace Azoth
 		QString AuthStatusToString (AuthStatus) const;
 		AuthStatus AuthStatusFromString (const QString&) const;
 		QObject* GetAccount (const QString&) const;
+		QList<QObject*> GetAllAccounts () const;
 		QObject* GetEntry (const QString&, const QString&) const;
 		QString GetSelectedChatTemplate (QObject*) const;
 		QList<QColor> GenerateColors (const QString&) const;

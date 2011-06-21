@@ -23,11 +23,15 @@
 #include <QCoreApplication>
 #include <QtDebug>
 #include <interfaces/iprotocolplugin.h>
+#include <interfaces/iproxyobject.h>
 #include "glooxaccount.h"
 #include "core.h"
 #include "joingroupchatwidget.h"
 #include "glooxaccountconfigurationwidget.h"
 #include "bookmarkeditwidget.h"
+#include "inbandaccountregfirstpage.h"
+#include "inbandaccountregsecondpage.h"
+#include "inbandaccountregthirdpage.h"
 
 namespace LeechCraft
 {
@@ -68,7 +72,7 @@ namespace Xoox
 
 	IProtocol::ProtocolFeatures GlooxProtocol::GetFeatures() const
 	{
-		return PFSupportsMUCs | PFMUCsJoinable;
+		return PFSupportsMUCs | PFMUCsJoinable | PFSupportsInBandRegistration;
 	}
 
 	QList<QObject*> GlooxProtocol::GetRegisteredAccounts ()
@@ -94,17 +98,43 @@ namespace Xoox
 		return "Xoox.Gloox.XMPP";
 	}
 	
-	QList<QWidget*> GlooxProtocol::GetAccountRegistrationWidgets ()
+	QList<QWidget*> GlooxProtocol::GetAccountRegistrationWidgets (AccountAddOptions options)
 	{
 		QList<QWidget*> result;
-		result << new GlooxAccountConfigurationWidget ();
+		if (options & AAORegisterNewAccount)
+		{
+			InBandAccountRegFirstPage *first = new InBandAccountRegFirstPage ();
+			InBandAccountRegSecondPage *second = new InBandAccountRegSecondPage (first);
+			InBandAccountRegThirdPage *third = new InBandAccountRegThirdPage (second);
+			GlooxAccountConfigurationWidget *fourth = new GlooxAccountConfigurationWidget ();
+			third->SetConfWidget (fourth);
+			result << first;
+			result << second;
+			result << third;
+			result << fourth;
+		}
+		else
+			result << new GlooxAccountConfigurationWidget ();
+
+		result.at (0)->setProperty ("IsNewAccount",
+				static_cast<bool> (options & AAORegisterNewAccount));
+
 		return result;
 	}
 	
 	void GlooxProtocol::RegisterAccount (const QString& name, const QList<QWidget*>& widgets)
 	{
+		if (!widgets.size ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "empty widgets set";
+			return;
+		}
+
+		bool isNewAcc = widgets.at (0)->property ("IsNewAccount").toBool ();
+		const int pos = isNewAcc ? 3 : 0;
 		GlooxAccountConfigurationWidget *w =
-				qobject_cast<GlooxAccountConfigurationWidget*> (widgets.value (0));
+				qobject_cast<GlooxAccountConfigurationWidget*> (widgets.value (pos));
 		if (!w)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -115,6 +145,16 @@ namespace Xoox
 		
 		GlooxAccount *account = new GlooxAccount (name, this);
 		account->FillSettings (w);
+
+		if (isNewAcc)
+		{
+			InBandAccountRegSecondPage *second =
+				qobject_cast<InBandAccountRegSecondPage*> (widgets.value (1));
+			if (second)
+				qobject_cast<IProxyObject*> (ProxyObject_)->
+						SetPassword (second->GetPassword (), account);
+		}
+
 		Accounts_ << account;
 		saveAccounts ();
 		emit accountAdded (account);
