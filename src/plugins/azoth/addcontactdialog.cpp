@@ -42,6 +42,12 @@ namespace Azoth
 			
 		if (focusAcc)
 			FocusAccount (focusAcc);
+		
+		checkComplete ();
+		connect (Ui_.ContactID_,
+				SIGNAL (textChanged (const QString&)),
+				this,
+				SLOT (checkComplete ()));
 	}
 
 	IAccount* AddContactDialog::GetSelectedAccount () const
@@ -132,6 +138,13 @@ namespace Azoth
 				Ui_.Account_->setCurrentIndex (i);
 				break;
 			}
+	}
+	
+	void AddContactDialog::checkComplete ()
+	{
+		const bool isComplete = GetSelectedAccount () &&
+				!Ui_.ContactID_->text ().isEmpty ();
+		Ui_.ButtonBox_->button (QDialogButtonBox::Ok)->setEnabled (isComplete);
 	}
 }
 }
