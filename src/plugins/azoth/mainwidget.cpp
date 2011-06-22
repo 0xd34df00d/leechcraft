@@ -599,6 +599,9 @@ namespace Azoth
 		std::auto_ptr<AddContactDialog> dia (new AddContactDialog (0, this));
 		if (dia->exec () != QDialog::Accepted)
 			return;
+		
+		if (!dia->GetSelectedAccount ())
+			return;
 
 		dia->GetSelectedAccount ()->RequestAuth (dia->GetContactID (),
 					dia->GetReason (),
