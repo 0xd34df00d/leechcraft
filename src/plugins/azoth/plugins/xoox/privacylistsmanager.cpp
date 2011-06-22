@@ -299,6 +299,15 @@ namespace Xoox
 		if (elem.tagName () != "iq")
 			return false;
 		
+		if (elem.attribute ("type") == "set" &&
+				elem.firstChildElement ("query").namespaceURI () == NsPrivacy)
+		{
+			QXmppIq iq (QXmppIq::Result);
+			iq.setId (elem.attribute ("id"));
+			client ()->sendPacket (iq);
+			return true;
+		}
+		
 		if (!ID2Type_.contains (elem.attribute ("id")))
 			return false;
 		
