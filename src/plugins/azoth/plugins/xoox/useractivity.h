@@ -133,10 +133,12 @@ namespace Xoox
 		General GetGeneral () const;
 		void SetGeneral (General);
 		QString GetGeneralStr () const;
+		void SetGeneralStr (const QString&);
 		
 		Specific GetSpecific () const;
 		void SetSpecific (Specific);
 		QString GetSpecificStr () const;
+		void SetSpecificStr (const QString&);
 		
 		QString GetText () const;
 		void SetText (const QString&);

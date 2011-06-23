@@ -16,42 +16,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AUSCRIE_SHOOTERDIALOG_H
-#define PLUGINS_AUSCRIE_SHOOTERDIALOG_H
-#include <QDialog>
-#include "ui_shooterdialog.h"
-#include "poster.h"
+#ifndef PLUGINS_AZOTH_INTERFACES_ISUPPORTACTIVITY_H
+#define PLUGINS_AZOTH_INTERFACES_ISUPPORTACTIVITY_H
+#include <QtGlobal>
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Azoth
+{
+	class ISupportActivity
 	{
-		namespace Auscrie
-		{
-			class ShooterDialog : public QDialog
-			{
-				Q_OBJECT
-
-				Ui::ShooterDialog Ui_;
-			public:
-				enum Action
-				{
-					AUpload,
-					ASave
-				};
-
-				ShooterDialog (QWidget* = 0);
-
-				Action GetAction () const;
-				Poster::HostingService GetHostingService () const;
-				int GetTimeout () const;
-				QString GetFormat () const;
-				int GetQuality () const;
-			private slots:
-				void on_Format__currentIndexChanged (const QString&);
-			};
-		}
-	}
+	public:
+		virtual ~ISupportActivity () {}
+		
+		virtual void SetActivity (const QString&,
+				const QString&, const QString&) = 0;
+	};
 }
+}
+
+Q_DECLARE_INTERFACE (LeechCraft::Azoth::ISupportActivity,
+		"org.Deviant.LeechCraft.Azoth.ISupportActivity/1.0");
 
 #endif

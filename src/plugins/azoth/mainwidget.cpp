@@ -23,8 +23,11 @@
 #include <QToolButton>
 #include <QInputDialog>
 #include <QTimer>
+#include <plugininterface/util.h>
 #include "interfaces/iclentry.h"
 #include "interfaces/ihaveconsole.h"
+#include "interfaces/isupportactivity.h"
+#include "interfaces/isupportmood.h"
 #include "core.h"
 #include "sortfilterproxymodel.h"
 #include "setstatusdialog.h"
@@ -35,6 +38,8 @@
 #include "bookmarksmanagerdialog.h"
 #include "chattabsmanager.h"
 #include "consolewidget.h"
+#include "activitydialog.h"
+#include "mooddialog.h"
 
 namespace LeechCraft
 {
@@ -136,6 +141,18 @@ namespace Azoth
 				SIGNAL (triggered ()),
 				this,
 				SLOT (addAccountContact ()));
+		
+		AccountSetActivity_ = new QAction (tr ("Set activity..."), this);
+		connect (AccountSetActivity_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleAccountSetActivity ()));
+		
+		AccountSetMood_ = new QAction (tr ("Set mood..."), this);
+		connect (AccountSetMood_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleAccountSetMood ()));
 		
 		AccountConsole_ = new QAction (tr ("Console..."), this);
 		connect (AccountConsole_,
@@ -276,6 +293,7 @@ namespace Azoth
 		if (!index.isValid ())
 			return;
 
+		QMenu *menu = new QMenu (tr ("Entry context menu"));
 		QList<QAction*> actions;
 		switch (index.data (Core::CLREntryType).value<Core::CLEntryType> ())
 		{
@@ -312,6 +330,8 @@ namespace Azoth
 			AccountAddContact_->setProperty ("Azoth/AccountObject", objVar);
 			actions << AccountJoinConference_;
 			actions << AccountAddContact_;
+			
+			actions << Util::CreateSeparator (menu);
 
 			Q_FOREACH (QAction *act, MenuChangeStatus_->actions ())
 			{
@@ -329,6 +349,19 @@ namespace Azoth
 			}
 			actions << MenuChangeStatus_->menuAction ();
 			
+			if (qobject_cast<ISupportActivity*> (objVar.value<QObject*> ()))
+			{
+				AccountSetActivity_->setProperty ("Azoth/AccountObject", objVar);
+				actions << AccountSetActivity_;
+			}
+			if (qobject_cast<ISupportMood*> (objVar.value<QObject*> ()))
+			{
+				AccountSetMood_->setProperty ("Azoth/AccountObject", objVar);
+				actions << AccountSetMood_;
+			}
+			
+			actions << Util::CreateSeparator (menu);
+			
 			if (qobject_cast<IHaveConsole*> (objVar.value<QObject*> ()))
 			{
 				AccountConsole_->setProperty ("Azoth/AccountObject", objVar);
@@ -340,9 +373,11 @@ namespace Azoth
 			break;
 		}
 		if (!actions.size ())
+		{
+			delete menu;
 			return;
+		}
 
-		QMenu *menu = new QMenu (tr ("Entry context menu"));
 		menu->addActions (actions);
 		menu->exec (Ui_.CLTree_->mapToGlobal (pos));
 	}
@@ -496,6 +531,52 @@ namespace Azoth
 					dia->GetGroups ());
 	}
 	
+	void MainWidget::handleAccountSetActivity ()
+	{
+		IAccount *account = GetAccountFromSender (Q_FUNC_INFO);
+		if (!account)
+			return;
+		
+		QObject *obj = sender ()->property ("Azoth/AccountObject").value<QObject*> ();
+		ISupportActivity *activity = qobject_cast<ISupportActivity*> (obj);
+		if (!activity)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< obj
+					<< "doesn't support activity";
+			return;
+		}
+		
+		std::auto_ptr<ActivityDialog> dia (new ActivityDialog (this));
+		if (dia->exec () != QDialog::Accepted)
+			return;
+		
+		activity->SetActivity (dia->GetGeneral (), dia->GetSpecific (), dia->GetText ());
+	}
+	
+	void MainWidget::handleAccountSetMood ()
+	{
+		IAccount *account = GetAccountFromSender (Q_FUNC_INFO);
+		if (!account)
+			return;
+		
+		QObject *obj = sender ()->property ("Azoth/AccountObject").value<QObject*> ();
+		ISupportMood *mood = qobject_cast<ISupportMood*> (obj);
+		if (!mood)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< obj
+					<< "doesn't support mood";
+			return;
+		}
+		
+		std::auto_ptr<MoodDialog> dia (new MoodDialog (this));
+		if (dia->exec () != QDialog::Accepted)
+			return;
+		
+		mood->SetMood (dia->GetMood (), dia->GetText ());
+	}
+	
 	void MainWidget::handleAccountConsole ()
 	{
 		IAccount *account = GetAccountFromSender (Q_FUNC_INFO);
@@ -517,6 +598,9 @@ namespace Azoth
 	{
 		std::auto_ptr<AddContactDialog> dia (new AddContactDialog (0, this));
 		if (dia->exec () != QDialog::Accepted)
+			return;
+		
+		if (!dia->GetSelectedAccount ())
 			return;
 
 		dia->GetSelectedAccount ()->RequestAuth (dia->GetContactID (),

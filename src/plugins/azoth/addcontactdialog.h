@@ -42,6 +42,7 @@ namespace Azoth
 		QStringList GetGroups () const;
 	private slots:
 		void on_Protocol__currentIndexChanged (int);
+		void checkComplete ();
 	private:
 		void FocusAccount (IAccount*);
 	};

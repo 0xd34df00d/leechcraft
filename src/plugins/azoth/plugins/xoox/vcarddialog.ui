@@ -40,7 +40,11 @@
           </widget>
          </item>
          <item row="1" column="1">
-          <widget class="QLineEdit" name="EditRealName_"/>
+          <widget class="QLineEdit" name="EditRealName_">
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
          <item row="2" column="0">
           <widget class="QLabel" name="label_2">
@@ -50,7 +54,11 @@
           </widget>
          </item>
          <item row="2" column="1">
-          <widget class="QLineEdit" name="EditNick_"/>
+          <widget class="QLineEdit" name="EditNick_">
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
          <item row="3" column="0">
           <widget class="QLabel" name="label_3">
@@ -67,7 +75,11 @@
           </widget>
          </item>
          <item row="4" column="1">
-          <widget class="QLineEdit" name="EditPhone_"/>
+          <widget class="QLineEdit" name="EditPhone_">
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
          <item row="5" column="0">
           <widget class="QLabel" name="label_5">
@@ -77,10 +89,17 @@
           </widget>
          </item>
          <item row="5" column="1">
-          <widget class="QLineEdit" name="EditEmail_"/>
+          <widget class="QLineEdit" name="EditEmail_">
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
          <item row="3" column="1">
           <widget class="QDateEdit" name="EditBirthday_">
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
            <property name="displayFormat">
             <string>dd MMMM yyyy</string>
            </property>
@@ -97,7 +116,11 @@
           </widget>
          </item>
          <item row="6" column="1">
-          <widget class="QLineEdit" name="EditURL_"/>
+          <widget class="QLineEdit" name="EditURL_">
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
          <item row="0" column="0">
           <widget class="QLabel" name="label_11">
@@ -107,7 +130,11 @@
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QLineEdit" name="EditJID_"/>
+          <widget class="QLineEdit" name="EditJID_">
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
@@ -175,7 +202,11 @@
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QLineEdit" name="OrgName_"/>
+        <widget class="QLineEdit" name="OrgName_">
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
        <item row="1" column="0">
         <widget class="QLabel" name="label_8">
@@ -185,7 +216,11 @@
         </widget>
        </item>
        <item row="1" column="1">
-        <widget class="QLineEdit" name="OrgUnit_"/>
+        <widget class="QLineEdit" name="OrgUnit_">
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
        <item row="2" column="0">
         <widget class="QLabel" name="label_9">
@@ -195,7 +230,11 @@
         </widget>
        </item>
        <item row="2" column="1">
-        <widget class="QLineEdit" name="Title_"/>
+        <widget class="QLineEdit" name="Title_">
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
        <item row="3" column="0">
         <widget class="QLabel" name="label_10">
@@ -205,7 +244,11 @@
         </widget>
        </item>
        <item row="3" column="1">
-        <widget class="QLineEdit" name="Role_"/>
+        <widget class="QLineEdit" name="Role_">
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -231,7 +274,11 @@
         <number>1</number>
        </property>
        <item>
-        <widget class="QTextEdit" name="ClientInfo_"/>
+        <widget class="QTextEdit" name="ClientInfo_">
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -243,7 +290,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Close|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>

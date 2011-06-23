@@ -16,42 +16,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AUSCRIE_SHOOTERDIALOG_H
-#define PLUGINS_AUSCRIE_SHOOTERDIALOG_H
-#include <QDialog>
-#include "ui_shooterdialog.h"
-#include "poster.h"
+#ifndef PLUGINS_AZOTH_INTERFACES_ISUPPORTMOOD_H
+#define PLUGINS_AZOTH_INTERFACES_ISUPPORTMOOD_H
+#include <QtGlobal>
+
+class QString;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Azoth
+{
+	class ISupportMood
 	{
-		namespace Auscrie
-		{
-			class ShooterDialog : public QDialog
-			{
-				Q_OBJECT
-
-				Ui::ShooterDialog Ui_;
-			public:
-				enum Action
-				{
-					AUpload,
-					ASave
-				};
-
-				ShooterDialog (QWidget* = 0);
-
-				Action GetAction () const;
-				Poster::HostingService GetHostingService () const;
-				int GetTimeout () const;
-				QString GetFormat () const;
-				int GetQuality () const;
-			private slots:
-				void on_Format__currentIndexChanged (const QString&);
-			};
-		}
-	}
+	public:
+		virtual ~ISupportMood () {}
+		
+		virtual void SetMood (const QString&, const QString&) = 0;
+	};
 }
+}
+
+Q_DECLARE_INTERFACE (LeechCraft::Azoth::ISupportMood,
+		"org.Deviant.LeechCraft.Azoth.ISupportMood/1.0");
 
 #endif

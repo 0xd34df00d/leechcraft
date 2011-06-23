@@ -47,6 +47,7 @@ SET (XOOX_SRCS
 	useractivity.cpp
 	usermood.cpp
 	usertune.cpp
+	privacylistsmanager.cpp
 	)
 SET (XOOX_HEADERS
 	xoox.h
@@ -89,6 +90,7 @@ SET (XOOX_HEADERS
 	useractivity.h
 	usermood.h
 	usertune.h
+	privacylistsmanager.h
 	)
 SET (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui

@@ -34,7 +34,8 @@ namespace Xtazy
 		connect (&Watcher_,
 				SIGNAL (fileChanged (const QString&)),
 				this,
-				SLOT (handleFileChanged (const QString&)));
+				SLOT (handleFileChanged (const QString&)),
+				Qt::QueuedConnection);
 
 		XmlSettingsManager::Instance ().RegisterObject ("FileSourcePath",
 				this, "handleFilePathChanged");
@@ -59,7 +60,6 @@ namespace Xtazy
 		}
 		
 		TuneInfo_t result;
-
 		Q_FOREACH (QString line, data.split ('\n', QString::SkipEmptyParts))
 		{
 			line = line.trimmed ();
