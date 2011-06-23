@@ -51,7 +51,7 @@ namespace LeechCraft
 	class ShortcutManager;
 	class LogToolBox;
 	class ToolbarGuard;
-	class GlanceShower;
+// 	class GlanceShower;
 
 	class NewTabButton : public QToolButton
 	{
@@ -79,7 +79,7 @@ namespace LeechCraft
 		bool WasMaximized_;
 		QString LanguageOnLoad_;
 		ToolbarGuard *Guard_;
-		GlanceShower *Glance_;
+// 		GlanceShower *Glance_;
 		QToolButton *NewTabButton_;
 		QShortcut *FullScreenShortcut_;
 		QShortcut *CloseTabShortcut_;
@@ -114,7 +114,7 @@ namespace LeechCraft
 		void on_ActionAddTask__triggered ();
 		void on_ActionNewTab__triggered ();
 		void on_ActionCloseTab__triggered ();
-		void on_ActionGlance__triggered ();
+// 		void on_ActionGlance__triggered ();
 		void on_ActionSettings__triggered ();
 		void on_ActionAboutLeechCraft__triggered ();
 		void on_ActionQuit__triggered ();

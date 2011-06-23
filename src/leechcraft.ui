@@ -93,7 +93,6 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="ActionGlance_"/>
    <addaction name="ActionMenu_"/>
   </widget>
   <action name="ActionAddTask_">
