@@ -16,42 +16,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AUSCRIE_SHOOTERDIALOG_H
-#define PLUGINS_AUSCRIE_SHOOTERDIALOG_H
+#ifndef PLUGINS_AZOTH_MOODDIALOG_H
+#define PLUGINS_AZOTH_MOODDIALOG_H
 #include <QDialog>
-#include "ui_shooterdialog.h"
-#include "poster.h"
+#include "ui_mooddialog.h"
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Azoth
+{
+	class MoodDialog : public QDialog
 	{
-		namespace Auscrie
-		{
-			class ShooterDialog : public QDialog
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				Ui::ShooterDialog Ui_;
-			public:
-				enum Action
-				{
-					AUpload,
-					ASave
-				};
+		Ui::MoodDialog Ui_;
+	public:
+		static QString ToHumanReadable (const QString&);
 
-				ShooterDialog (QWidget* = 0);
-
-				Action GetAction () const;
-				Poster::HostingService GetHostingService () const;
-				int GetTimeout () const;
-				QString GetFormat () const;
-				int GetQuality () const;
-			private slots:
-				void on_Format__currentIndexChanged (const QString&);
-			};
-		}
-	}
+		MoodDialog (QWidget* = 0);
+		
+		QString GetMood () const;
+		void SetMood (const QString&);
+		
+		QString GetText () const;
+		void SetText (const QString&);
+	};
+}
 }
 
 #endif

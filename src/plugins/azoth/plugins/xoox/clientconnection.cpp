@@ -57,6 +57,7 @@
 #include "useractivity.h"
 #include "usermood.h"
 #include "usertune.h"
+#include "privacylistsmanager.h"
 
 namespace LeechCraft
 {
@@ -78,6 +79,7 @@ namespace Xoox
 	, ArchiveManager_ (new QXmppArchiveManager)
 	, DeliveryReceiptsManager_ (new QXmppDeliveryReceiptsManager)
 	, PubSubManager_ (new PubSubManager)
+	, PrivacyListsManager_ (new PrivacyListsManager)
 	, AnnotationsManager_ (0)
 	, OurJID_ (jid)
 	, Account_ (account)
@@ -124,6 +126,7 @@ namespace Xoox
 		Client_->addExtension (EntityTimeManager_);
 		Client_->addExtension (ArchiveManager_);
 		Client_->addExtension (new LegacyEntityTimeExt);
+		Client_->addExtension (PrivacyListsManager_);
 		
 		AnnotationsManager_ = new AnnotationsManager (this);
 

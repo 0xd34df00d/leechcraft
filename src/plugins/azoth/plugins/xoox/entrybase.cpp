@@ -167,11 +167,16 @@ namespace Xoox
 		UserActivity *activity = dynamic_cast<UserActivity*> (event);
 		if (activity)
 		{
-			QMap<QString, QVariant> activityMap;
-			activityMap ["general"] = activity->GetGeneralStr ();
-			activityMap ["specific"] = activity->GetSpecificStr ();
-			activityMap ["text"] = activity->GetText ();
-			Variant2ClientInfo_ [variant] ["user_activity"] = activityMap;
+			if (activity->GetGeneral () == UserActivity::GeneralEmpty)
+				Variant2ClientInfo_ [variant].remove ("user_activity");
+			else
+			{
+				QMap<QString, QVariant> activityMap;
+				activityMap ["general"] = activity->GetGeneralStr ();
+				activityMap ["specific"] = activity->GetSpecificStr ();
+				activityMap ["text"] = activity->GetText ();
+				Variant2ClientInfo_ [variant] ["user_activity"] = activityMap;
+			}
 
 			emit activityChanged (variant);
 			return;
@@ -180,10 +185,15 @@ namespace Xoox
 		UserMood *mood = dynamic_cast<UserMood*> (event);
 		if (mood)
 		{
-			QMap<QString, QVariant> moodMap;
-			moodMap ["mood"] = mood->GetMoodStr ();
-			moodMap ["text"] = mood->GetText ();
-			Variant2ClientInfo_ [variant] ["user_mood"] = moodMap;
+			if (mood->GetMood () == UserMood::MoodEmpty)
+				Variant2ClientInfo_ [variant].remove ("user_mood");
+			else
+			{
+				QMap<QString, QVariant> moodMap;
+				moodMap ["mood"] = mood->GetMoodStr ();
+				moodMap ["text"] = mood->GetText ();
+				Variant2ClientInfo_ [variant] ["user_mood"] = moodMap;
+			}
 			
 			emit moodChanged (variant);
 			return;

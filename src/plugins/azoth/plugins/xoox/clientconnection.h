@@ -59,6 +59,7 @@ namespace Xoox
 	class AnnotationsManager;
 	class FetchQueue;
 	class PubSubManager;
+	class PrivacyListsManager;
 
 	class ClientConnection : public QObject
 	{
@@ -73,6 +74,7 @@ namespace Xoox
 		QXmppArchiveManager *ArchiveManager_;
 		QXmppDeliveryReceiptsManager *DeliveryReceiptsManager_;
 		PubSubManager *PubSubManager_;
+		PrivacyListsManager *PrivacyListsManager_;
 		
 		AnnotationsManager *AnnotationsManager_;
 

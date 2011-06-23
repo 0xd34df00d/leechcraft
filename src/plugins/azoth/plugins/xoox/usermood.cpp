@@ -164,12 +164,7 @@ namespace Xoox
 			if (tagName == "text")
 				Text_ = mood.text ();
 			else
-				for (int m = MoodEmpty + 1; m <= Worried; ++m)
-					if (MoodStr [m] == tagName)
-					{
-						Mood_ = static_cast<Mood> (m);
-						break;
-					}
+				SetMoodStr (tagName);
 
 			mood = mood.nextSiblingElement ();
 		}
@@ -200,6 +195,16 @@ namespace Xoox
 		return Mood_ == MoodEmpty ?
 				QString () :
 				MoodStr [Mood_];
+	}
+	
+	void UserMood::SetMoodStr (const QString& str)
+	{
+		for (int m = MoodEmpty + 1; m <= Worried; ++m)
+			if (MoodStr [m] == str)
+			{
+				Mood_ = static_cast<Mood> (m);
+				break;
+			}
 	}
 	
 	QString UserMood::GetText () const
