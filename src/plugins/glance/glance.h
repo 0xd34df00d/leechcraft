@@ -31,10 +31,11 @@ namespace Plugins
 {
 namespace Glance
 {
+
 	class GlanceShower;
-	
+
 	class Plugin : public QObject
-					, public IInfo
+				, public IInfo
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo)

@@ -24,6 +24,7 @@
 #include <interfaces/iinfo.h>
 
 class QMainWindow;
+
 namespace LeechCraft
 {
 namespace Plugins
@@ -33,15 +34,16 @@ namespace Glance
 	class Core : public QObject
 	{
 		Q_OBJECT
+
 		ICoreProxy_ptr Proxy_;
 		Core ();
 	public:
 		static Core& Instance ();
 		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;
-		QMainWindow* GetReallyMainWindow () const;
+		QMainWindow* GetMainWindow () const;
 	};
 };
 };
 };
-#endif // CORE_H
+#endif // PLUGINS_GLANCE_CORE_H

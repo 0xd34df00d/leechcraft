@@ -46,7 +46,7 @@ namespace Glance
 		return Proxy_;
 	}
 
-	QMainWindow* Core::GetReallyMainWindow () const
+	QMainWindow* Core::GetMainWindow () const
 	{
 		return Proxy_->GetMainWindow ();
 	}

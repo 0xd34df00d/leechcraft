@@ -20,9 +20,12 @@
 #include "glance.h"
 #include <QAction>
 #include <QTabWidget>
+#include <QToolBar>
 #include <QMainWindow>
 #include "core.h"
 #include "glanceshower.h"
+#include <QtGui/QToolBar>
+
 
 namespace LeechCraft
 {
@@ -33,25 +36,30 @@ namespace Glance
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Core::Instance ().SetProxy (proxy);
-		
+
 		ActionGlance_ = new QAction (this);
-		ActionGlance_->setProperty ("ActionIcon", "glance");
+		ActionGlance_->setToolTip ("Show the quick overview of tabs");
+		ActionGlance_->setShortcut (QKeySequence ("Ctrl+G"));
+		ActionGlance_->setShortcutContext (Qt::ApplicationShortcut);
+
 		QToolBar *toolBar = proxy->GetMainWindow ()->
 				findChild<QToolBar*> ("MainToolbar_");
 
 		if (!toolBar)
 		{
 			qWarning () << Q_FUNC_INFO
-						<< "toolbar is null";
+					<< "toolbar is null";
 			return;
 		}
 
-		toolBar->addAction (ActionGlance_);
+		toolBar->insertAction (toolBar->actions ().at (0), ActionGlance_);
+
+		ActionGlance_->setIcon (proxy->GetIcon ("glance"));
 
 		connect (ActionGlance_,
 				SIGNAL (triggered (bool)),
 				this,
-				SLOT (on_ActionGlance__triggered(bool)));
+				SLOT (on_ActionGlance__triggered (bool)));
 	}
 	
 	void Plugin::SecondInit ()
@@ -74,7 +82,7 @@ namespace Glance
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("Show all tabs.");
+		return tr ("Quick overview of tabs");
 	}
 
 	QIcon Plugin::GetIcon () const
@@ -86,6 +94,7 @@ namespace Glance
 	{
 		Glance_ = new GlanceShower;
 		Glance_->SetTabWidget (Core::Instance ().GetProxy ()->GetTabWidget ());
+
 		connect (Glance_,
 				SIGNAL (finished (bool)),
 				ActionGlance_,

@@ -29,9 +29,9 @@
 #include <QKeyEvent>
 #include <QApplication>
 #include <QDesktopWidget>
+#include <QMainWindow>
 #include <QtDebug>
 #include "core.h"
-#include "mainwindow.h"
 #include "glanceitem.h"
 
 namespace LeechCraft
@@ -87,7 +87,7 @@ namespace Glance
 			++rows;
 
 		const QRect& screenGeom = QApplication::desktop ()->
-				screenGeometry (Core::Instance ().GetReallyMainWindow ());
+				screenGeometry (Core::Instance ().GetMainWindow ());
 		const int width = screenGeom.width ();
 		const int height = screenGeom.height ();
 

@@ -51,7 +51,6 @@
 #include "startupwizard.h"
 #include "aboutdialog.h"
 #include "toolbarguard.h"
-// #include "glanceshower.h"
 #include "newtabmenumanager.h"
 #include "tabmanager.h"
 #include "coreinstanceobject.h"
@@ -64,7 +63,6 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 , TrayIcon_ (0)
 , IsShown_ (true)
 , WasMaximized_ (false)
-// , Glance_ (0)
 , DefaultSystemStyleName_ (QApplication::style ()->objectName ())
 , IsQuitting_ (false)
 , Splash_ (new QSplashScreen (QPixmap (":/resources/images/splashscreen.png"),
@@ -313,7 +311,6 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	Ui_.ActionFullscreenMode_->setProperty ("ActionIcon", "fullscreen");
 	Ui_.ActionFullscreenMode_->setParent (this);
 	Ui_.ActionShowStatusBar_->setProperty ("ActionIcon", "showstatusbar");
-// 	Ui_.ActionGlance_->setProperty ("ActionIcon", "glance");
 
 	Ui_.MainTabWidget_->setTabIcon (0, QIcon (":/resources/images/leechcraft.svg"));
 	Ui_.MainTabWidget_->AddAction2TabBar (Ui_.ActionCloseTab_);
@@ -523,19 +520,6 @@ void LeechCraft::MainWindow::on_ActionCloseTab__triggered ()
 		pos = Ui_.MainTabWidget_->currentIndex ();
 	Core::Instance ().GetTabManager ()->remove (pos);
 }
-
-// void LeechCraft::MainWindow::on_ActionGlance__triggered ()
-// {
-// 	Glance_ = new GlanceShower;
-// 	Glance_->SetTabWidget (Ui_.MainTabWidget_);
-// 	connect (Glance_,
-// 			SIGNAL (finished (bool)),
-// 			Ui_.ActionGlance_,
-// 			SLOT (setEnabled (bool)));
-// 
-// 	Ui_.ActionGlance_->setEnabled (false);
-// 	Glance_->Start ();
-// }
 
 void LeechCraft::MainWindow::on_ActionSettings__triggered ()
 {

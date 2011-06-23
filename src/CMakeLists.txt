@@ -114,7 +114,7 @@ OPTION (ENABLE_JUFFED "Build JuffEd, the advanced text editor" OFF)
 OPTION (ENABLE_GMAILNOTIFIER "Build GMail Notifier which notifies about new mail in your GMail inbox" OFF)
 OPTION (ENABLE_OTZERKALU "Build Otzerkalu, which allows to download web sites recursively" OFF)
 OPTION (ENABLE_ADVANCEDNOTIFICATIONS "Build Advanced Notifications module for more customizable notifications" OFF)
-OPTION (ENABLE_GLANCE "" ON)
+OPTION (ENABLE_GLANCE "Quick overview of tabs" ON)
 ENABLE_TESTING ()
 
 FUNCTION (CreateTrVars PlugName Langs TranVar CompiledTranVar)
@@ -308,8 +308,6 @@ SET (SRCS
 	localsockethandler.cpp
 	toolbarguard.cpp
 	clipboardwatcher.cpp
-	glanceshower.cpp
-	glanceitem.cpp
 	tabbar.cpp
 	wizardtypechoicepage.cpp
 	3dparty/qxttooltip.cpp
@@ -353,8 +351,6 @@ SET (HEADERS
 	localsockethandler.h
 	toolbarguard.h
 	clipboardwatcher.h
-	glanceshower.h
-	glanceitem.h
 	tabbar.h
 	fullscreenspacerlabel.h
 	newtabmenumanager.h
