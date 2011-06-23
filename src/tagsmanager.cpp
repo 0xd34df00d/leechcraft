@@ -173,8 +173,11 @@ void TagsManager::ReadSettings ()
 			QCoreApplication::applicationName ());
 	settings.beginGroup ("Tags");
 	Tags_ = settings.value ("Dict").value<TagsDictionary_t> ();
-	beginInsertRows (QModelIndex (), 0, Tags_.size () - 1);
-	endInsertRows ();
+	if (!Tags_.isEmpty ())
+	{
+		beginInsertRows (QModelIndex (), 0, Tags_.size () - 1);
+		endInsertRows ();
+	}
 	settings.endGroup ();
 }
 
