@@ -1314,6 +1314,16 @@ namespace Azoth
 			authMenu->menuAction ()->setProperty ("ActionIcon", "azoth_menu_authorization");
 			Entry2Actions_ [entry] ["authorization"] = authMenu->menuAction ();
 			Action2Areas_ [authMenu->menuAction ()] << CLEAAContactListCtxtMenu;
+			
+			QAction *grantAuth = authMenu->addAction (tr ("Grant"),
+					this, SLOT (handleActionGrantAuthTriggered ()));
+			grantAuth->setProperty ("ActionIcon", "azoth_auth_grant");
+			grantAuth->setProperty ("Azoth/WithReason", false);
+			
+			QAction *grantAuthReason = authMenu->addAction (tr ("Grant with reason..."),
+					this, SLOT (handleActionGrantAuthTriggered ()));
+			grantAuthReason->setProperty ("ActionIcon", "azoth_auth_grant");
+			grantAuthReason->setProperty ("Azoth/WithReason", true);
 
 			QAction *revokeAuth = authMenu->addAction (tr ("Revoke"),
 					this, SLOT (handleActionRevokeAuthTriggered ()));
@@ -2663,6 +2673,13 @@ namespace Azoth
 		}
 
 		account->RemoveEntry (entry->GetObject ());
+	}
+	
+	void Core::handleActionGrantAuthTriggered()
+	{
+		ManipulateAuth ("grantauth",
+				tr ("Enter reason for granting authorization to %1:"),
+				&IAuthable::ResendAuth);
 	}
 
 	void Core::handleActionRevokeAuthTriggered ()

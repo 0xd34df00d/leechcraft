@@ -511,6 +511,7 @@ namespace Azoth
 		void handleActionRenameTriggered ();
 		void handleActionChangeGroupsTriggered ();
 		void handleActionRemoveTriggered ();
+		void handleActionGrantAuthTriggered ();
 		void handleActionRevokeAuthTriggered ();
 		void handleActionUnsubscribeTriggered ();
 		void handleActionRerequestTriggered ();
