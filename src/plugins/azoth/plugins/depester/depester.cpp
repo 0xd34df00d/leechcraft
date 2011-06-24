@@ -20,9 +20,13 @@
 #include <QIcon>
 #include <QAction>
 #include <QTranslator>
+#include <QSettings>
+#include <QCoreApplication>
 #include <plugininterface/util.h>
 #include <interfaces/iclentry.h>
 #include <interfaces/imessage.h>
+
+Q_DECLARE_METATYPE (QSet<QString>);
 
 namespace LeechCraft
 {
@@ -33,6 +37,10 @@ namespace Depester
 	void Plugin::Init (ICoreProxy_ptr)
 	{
 		Translator_.reset (Util::InstallTranslator ("azoth_depester"));
+		qRegisterMetaType<QSet<QString> > ("QSet<QString>");
+		qRegisterMetaTypeStreamOperators<QSet<QString> > ();
+		
+		LoadIgnores ();
 	}
 
 	void Plugin::SecondInit ()
@@ -85,6 +93,20 @@ namespace Depester
 		IMessage *msg = qobject_cast<IMessage*> (message);
 		if (IsEntryIgnored (msg->OtherPart ()))
 			proxy->CancelDefault ();
+	}
+	
+	void Plugin::SaveIgnores () const
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth_Depester");
+		settings.setValue ("IgnoredNicks", QVariant::fromValue (IgnoredNicks_));
+	}
+	
+	void Plugin::LoadIgnores ()
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth_Depester");
+		IgnoredNicks_ = settings.value ("IgnoredNicks").value<QSet<QString> > ();
 	}
 	
 	void Plugin::hookEntryActionAreasRequested (IHookProxy_ptr proxy,
@@ -147,6 +169,8 @@ namespace Depester
 			IgnoredNicks_ << entry->GetEntryName ();
 		else
 			IgnoredNicks_.remove (entry->GetEntryName ());
+		
+		SaveIgnores ();
 	}
 }
 }

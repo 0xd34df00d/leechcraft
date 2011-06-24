@@ -55,6 +55,8 @@ namespace Depester
 	private:
 		bool IsEntryIgnored (QObject*);
 		void HandleMsgOccurence (IHookProxy_ptr, QObject*);
+		void SaveIgnores () const;
+		void LoadIgnores ();
 	public slots:
 		void hookEntryActionAreasRequested (LeechCraft::IHookProxy_ptr proxy,
 				QObject *action,
