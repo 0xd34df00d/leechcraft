@@ -273,6 +273,7 @@ namespace Xoox
 			return;
 
 		SetAuthRequested (false);
+		RerequestAuth (QString ());
 		Account_->GetClientConnection ()->GrantSubscription (GetJID (), reason);
 	}
 
