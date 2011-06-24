@@ -823,9 +823,18 @@ namespace Xoox
 		else if (!Client_->rosterManager ().isRosterReceived ())
 			OfflineMsgQueue_ << msg;
 		else
+		{
 			qWarning () << Q_FUNC_INFO
 					<< "could not find source for"
-					<< msg.from ();
+					<< msg.from ()
+					<< "; creating new item";
+
+			GlooxCLEntry *entry = new GlooxCLEntry (jid, Account_);
+			JID2CLEntry_ [jid] = entry;
+			emit gotRosterItems (QList<QObject*> () << entry);
+
+			handleMessageReceived (msg);
+		}
 	}
 	
 	void ClientConnection::handlePEPEvent (const QString& from, PEPEventBase *event)
