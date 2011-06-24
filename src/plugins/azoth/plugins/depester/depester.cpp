@@ -157,6 +157,17 @@ namespace Depester
 		HandleMsgOccurence (proxy, message);
 	}
 	
+	void Plugin::hookShouldCountUnread (IHookProxy_ptr proxy,
+				QObject *message)
+	{
+		IMessage *msg = qobject_cast<IMessage*> (message);
+		if (IsEntryIgnored (msg->OtherPart ()))
+		{
+			proxy->CancelDefault ();
+			proxy->SetReturnValue (false);
+		}
+	}
+	
 	void Plugin::handleIgnoreEntry (bool ignore)
 	{
 		QObject *entryObj = sender ()->

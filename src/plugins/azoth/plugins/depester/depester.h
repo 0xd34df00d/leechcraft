@@ -68,6 +68,8 @@ namespace Depester
 				QObject *message);
 		void hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message);
+		void hookShouldCountUnread (LeechCraft::IHookProxy_ptr proxy,
+				QObject *message);
 	private slots:
 		void handleIgnoreEntry (bool);
 		void handleNameChanged (const QString&);
