@@ -177,6 +177,11 @@ namespace Xoox
 	{
 		return ParentProtocol_->GetProtocolID () + "_" + JID_.toUtf8 ();
 	}
+	
+	QList<QAction*> GlooxAccount::GetActions () const
+	{
+		return QList<QAction*> ();
+	}
 
 	void GlooxAccount::QueryInfo (const QString& entryId)
 	{

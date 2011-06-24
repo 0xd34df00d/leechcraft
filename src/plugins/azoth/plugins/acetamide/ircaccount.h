@@ -78,6 +78,8 @@ namespace Acetamide
 
 		QByteArray GetAccountID () const;
 		void SetAccountID (const QString&);
+		
+		QList<QAction*> GetActions () const;
 
 		void OpenConfigurationDialog ();
 		void FillSettings (IrcAccountConfigurationWidget*);
