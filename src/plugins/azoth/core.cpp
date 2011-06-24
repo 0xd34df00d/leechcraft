@@ -1757,6 +1757,10 @@ namespace Azoth
 				break;
 			}
 		}
+		
+		Q_FOREACH (ICLEntry *entry, Entry2Items_.keys ())
+			if (entry->GetParentAccount () == account)
+				Entry2Items_.remove (entry);
 	}
 
 	void Core::handleGotCLItems (const QList<QObject*>& items)
