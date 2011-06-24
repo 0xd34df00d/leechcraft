@@ -22,7 +22,6 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
-#include <interfaces/imessage.h>
 #include "core.h"
 
 class QTranslator;
@@ -41,6 +40,7 @@ namespace Depester
 		Q_INTERFACES (IInfo IPlugin2)
 
 		boost::shared_ptr<QTranslator> Translator_;
+		QHash<QObject*, QAction*> Entry2ActionIgnore_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -51,6 +51,8 @@ namespace Depester
 		QIcon GetIcon () const;
 
 		QSet<QByteArray> GetPluginClasses () const;
+	private:
+		bool IsEntryIgnored (QObject*);
 	public slots:
 		void hookEntryActionAreasRequested (LeechCraft::IHookProxy_ptr proxy,
 				QObject *action,
@@ -59,6 +61,8 @@ namespace Depester
 				QObject *entry);
 		void hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message);
+	private slots:
+		void handleIgnoreEntry (bool);
 	};
 }
 }

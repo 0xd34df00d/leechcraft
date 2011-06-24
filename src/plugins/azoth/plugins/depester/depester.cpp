@@ -21,6 +21,8 @@
 #include <QAction>
 #include <QTranslator>
 #include <plugininterface/util.h>
+#include <interfaces/iclentry.h>
+#include <interfaces/imessage.h>
 
 namespace LeechCraft
 {
@@ -68,17 +70,56 @@ namespace Depester
 		return result;
 	}
 	
+	bool Plugin::IsEntryIgnored (QObject *entry)
+	{
+		return false;
+	}
+	
 	void Plugin::hookEntryActionAreasRequested (IHookProxy_ptr proxy,
 			QObject *action, QObject*)
 	{
+		if (!action->property ("Azoth/Depester/IsGood").toBool ())
+			return;
+		
+		QStringList ours;
+		ours << "contactListContextMenu";
+		proxy->SetReturnValue (proxy->GetReturnValue ().toStringList () + ours);
 	}
 	
-	void Plugin::hookEntryActionsRequested (IHookProxy_ptr proxy, QObject *entry)
+	void Plugin::hookEntryActionsRequested (IHookProxy_ptr proxy, QObject *entryObj)
 	{
+		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+		if (entry->GetEntryType () != ICLEntry::ETPrivateChat)
+			return;
+		
+		if (!Entry2ActionIgnore_.contains (entryObj))
+		{
+			QAction *action = new QAction (tr ("Ignore"), entryObj);
+			action->setProperty ("Azoth/Depester/IsGood", true);
+			action->setProperty ("Azoth/Depester/Entry",
+					QVariant::fromValue<QObject*> (entryObj));
+			action->setCheckable (true);
+			action->setChecked (IsEntryIgnored (entryObj));
+			connect (action,
+					SIGNAL (toggled (bool)),
+					this,
+					SLOT (handleIgnoreEntry (bool)));
+			Entry2ActionIgnore_ [entryObj] = action;
+		}
+		QList<QVariant> list = proxy->GetReturnValue ().toList ();
+		list << QVariant::fromValue<QObject*> (Entry2ActionIgnore_ [entryObj]);
+		proxy->SetReturnValue (list);
 	}
 
-	void Plugin::hookGotMessage (LeechCraft::IHookProxy_ptr,
+	void Plugin::hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message)
+	{
+		IMessage *msg = qobject_cast<IMessage*> (message);
+		if (IsEntryIgnored (msg->OtherPart ()))
+			proxy->CancelDefault ();
+	}
+	
+	void Plugin::handleIgnoreEntry (bool ignore)
 	{
 	}
 }
