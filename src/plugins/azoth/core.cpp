@@ -423,8 +423,13 @@ namespace Azoth
 	}
 
 	bool Core::ShouldCountUnread (const ICLEntry *entry,
-			const IMessage *msg)
+			IMessage *msg)
 	{
+		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		emit hookShouldCountUnread (proxy, msg->GetObject ());
+		if (proxy->IsCancelled ())
+			return proxy->GetReturnValue ().toBool ();
+
 		return !ChatTabsManager_->IsActiveChat (entry) &&
 				(msg->GetMessageType () == IMessage::MTChatMessage ||
 				 msg->GetMessageType () == IMessage::MTMUCMessage);

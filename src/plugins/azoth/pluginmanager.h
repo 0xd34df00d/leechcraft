@@ -167,6 +167,8 @@ namespace Azoth
 		void hookMessageCreated (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QObject *message);
+		void hookShouldCountUnread (LeechCraft::IHookProxy_ptr proxy,
+				QObject *message);
 		void hookThemeReloaded (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QWebView *view,
