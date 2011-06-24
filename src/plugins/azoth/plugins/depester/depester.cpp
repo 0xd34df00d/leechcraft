@@ -70,9 +70,21 @@ namespace Depester
 		return result;
 	}
 	
-	bool Plugin::IsEntryIgnored (QObject *entry)
+	bool Plugin::IsEntryIgnored (QObject *entryObj)
 	{
-		return false;
+		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+		if (!entry ||
+				entry->GetEntryType () != ICLEntry::ETPrivateChat)
+			return false;
+		
+		return IgnoredNicks_.contains (entry->GetEntryName ());
+	}
+	
+	void Plugin::HandleMsgOccurence (IHookProxy_ptr proxy, QObject *message)
+	{
+		IMessage *msg = qobject_cast<IMessage*> (message);
+		if (IsEntryIgnored (msg->OtherPart ()))
+			proxy->CancelDefault ();
 	}
 	
 	void Plugin::hookEntryActionAreasRequested (IHookProxy_ptr proxy,
@@ -110,17 +122,31 @@ namespace Depester
 		list << QVariant::fromValue<QObject*> (Entry2ActionIgnore_ [entryObj]);
 		proxy->SetReturnValue (list);
 	}
+	
+	void Plugin::hookGonnaAppendMsg (LeechCraft::IHookProxy_ptr proxy,
+				QObject *message)
+	{
+		HandleMsgOccurence (proxy, message);
+	}
 
 	void Plugin::hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message)
 	{
-		IMessage *msg = qobject_cast<IMessage*> (message);
-		if (IsEntryIgnored (msg->OtherPart ()))
-			proxy->CancelDefault ();
+		HandleMsgOccurence (proxy, message);
 	}
 	
 	void Plugin::handleIgnoreEntry (bool ignore)
 	{
+		QObject *entryObj = sender ()->
+				property ("Azoth/Depester/Entry").value<QObject*> ();
+		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+		if (!entry)
+			return;
+		
+		if (ignore)
+			IgnoredNicks_ << entry->GetEntryName ();
+		else
+			IgnoredNicks_.remove (entry->GetEntryName ());
 	}
 }
 }

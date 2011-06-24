@@ -41,6 +41,7 @@ namespace Depester
 
 		boost::shared_ptr<QTranslator> Translator_;
 		QHash<QObject*, QAction*> Entry2ActionIgnore_;
+		QSet<QString> IgnoredNicks_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -53,12 +54,15 @@ namespace Depester
 		QSet<QByteArray> GetPluginClasses () const;
 	private:
 		bool IsEntryIgnored (QObject*);
+		void HandleMsgOccurence (IHookProxy_ptr, QObject*);
 	public slots:
 		void hookEntryActionAreasRequested (LeechCraft::IHookProxy_ptr proxy,
 				QObject *action,
 				QObject *entry);
 		void hookEntryActionsRequested (LeechCraft::IHookProxy_ptr proxy,
 				QObject *entry);
+		void hookGonnaAppendMsg (LeechCraft::IHookProxy_ptr proxy,
+				QObject *message);
 		void hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message);
 	private slots:
