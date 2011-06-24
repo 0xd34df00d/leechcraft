@@ -2177,17 +2177,6 @@ namespace Azoth
 			return;
 		}
 
-		QStandardItem *accItem = GetAccountItem (sender ());
-		if (!accItem)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "no account item for"
-					<< sender ();
-			return;
-		}
-
-		AddCLEntry (entry, accItem);
-
 		QString str = msg.isEmpty () ?
 				tr ("Subscription requested by %1.")
 					.arg (entry->GetEntryName ()) :

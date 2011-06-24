@@ -136,7 +136,7 @@ namespace Xoox
 
 		QObject* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&,
-				const QXmppRosterIq::Item&);
+				const QString&);
 	private:
 		QString GetPassword (bool authFailure = false);
 	public slots:

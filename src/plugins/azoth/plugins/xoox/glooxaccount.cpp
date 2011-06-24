@@ -29,7 +29,6 @@
 #include "glooxmessage.h"
 #include "glooxclentry.h"
 #include "roomclentry.h"
-#include "unauthclentry.h"
 #include "transfermanager.h"
 #include "sdsession.h"
 #include "pubsubmanager.h"
@@ -447,9 +446,9 @@ namespace Xoox
 	QObject* GlooxAccount::CreateMessage (IMessage::MessageType type,
 			const QString& variant,
 			const QString& body,
-			const QXmppRosterIq::Item& ri)
+			const QString& jid)
 	{
-		return ClientConnection_->CreateMessage (type, variant, body, ri);
+		return ClientConnection_->CreateMessage (type, variant, body, jid);
 	}
 
 	QString GlooxAccount::GetPassword (bool authfailure)

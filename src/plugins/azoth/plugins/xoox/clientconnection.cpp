@@ -47,7 +47,6 @@
 #include "glooxprotocol.h"
 #include "core.h"
 #include "roomclentry.h"
-#include "unauthclentry.h"
 #include "vcarddialog.h"
 #include "capsmanager.h"
 #include "annotationsmanager.h"
@@ -420,29 +419,27 @@ namespace Xoox
 
 	void ClientConnection::AckAuth (QObject *entryObj, bool ack)
 	{
-		UnauthCLEntry *entry = qobject_cast<UnauthCLEntry*> (entryObj);
-		if (!entry)
+		IAuthable *authable = qobject_cast<IAuthable*> (entryObj);
+		if (!authable)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< entryObj
-					<< "is not an UnauthCLEntry";
+					<< "is not authable";
 			return;
 		}
-
-		const QString& jid = entry->GetJID ();
-
-		qDebug () << "AckAuth" << jid << ack;
-
+		
 		if (ack)
 		{
-			Client_->rosterManager ().acceptSubscription (jid);
-			Subscribe (jid, QString (), entry->GetEntryName (), entry->Groups ());
+			authable->ResendAuth ();
+			const AuthStatus status = authable->GetAuthStatus ();
+			if (status == ASNone || status == ASFrom)
+				authable->RerequestAuth ();
 		}
 		else
-			Client_->rosterManager ().refuseSubscription (jid);
-
-		emit rosterItemRemoved (entry);
-		entry->deleteLater ();
+			authable->RevokeAuth ();
+		
+		GlooxCLEntry *entry = qobject_cast<GlooxCLEntry*> (entryObj);
+		entry->SetAuthRequested (false);
 	}
 	
 	void ClientConnection::AddEntry (const QString& id,
@@ -473,12 +470,16 @@ namespace Xoox
 	{
 		qDebug () << "GrantSubscription" << jid;
 		Client_->rosterManager ().acceptSubscription (jid, reason);
+		if (JID2CLEntry_ [jid])
+			JID2CLEntry_ [jid]->SetAuthRequested (false);
 	}
 
 	void ClientConnection::RevokeSubscription (const QString& jid, const QString& reason)
 	{
 		qDebug () << "RevokeSubscription" << jid;
 		Client_->rosterManager ().refuseSubscription (jid, reason);
+		if (JID2CLEntry_ [jid])
+			JID2CLEntry_ [jid]->SetAuthRequested (false);
 	}
 
 	void ClientConnection::Remove (GlooxCLEntry *entry)
@@ -565,11 +566,11 @@ namespace Xoox
 	}
 
 	GlooxMessage* ClientConnection::CreateMessage (IMessage::MessageType type,
-			const QString& resource, const QString& body, const QXmppRosterIq::Item& item)
+			const QString& resource, const QString& body, const QString& jid)
 	{
 		GlooxMessage *msg = new GlooxMessage (type,
 				IMessage::DOut,
-				item.bareJid (),
+				jid,
 				resource,
 				this);
 		msg->SetBody (body);
@@ -943,8 +944,14 @@ namespace Xoox
 		switch (pres.type ())
 		{
 		case QXmppPresence::Subscribe:
-			emit gotSubscriptionRequest (new UnauthCLEntry (jid, QString (), Account_),
-					QString ());
+			if (!JID2CLEntry_.contains (jid))
+			{
+				GlooxCLEntry *entry = new GlooxCLEntry (jid, Account_);
+				JID2CLEntry_ [jid] = entry;
+				emit gotRosterItems (QList<QObject*> () << entry);
+			}
+			JID2CLEntry_ [jid]->SetAuthRequested (true);
+			emit gotSubscriptionRequest (JID2CLEntry_ [jid], QString ());
 			break;
 		case QXmppPresence::Subscribed:
 			if (JID2CLEntry_.contains (jid))

@@ -64,6 +64,8 @@ namespace Xoox
 			QDateTime DateTime_;
 		};
 		QList<MessageQueueItem> MessageQueue_;
+		
+		bool AuthRequested_;
 	public:
 		GlooxCLEntry (const QString& bareJID, GlooxAccount*);
 		GlooxCLEntry (OfflineDataSource_ptr, GlooxAccount*);
@@ -101,6 +103,8 @@ namespace Xoox
 		void RerequestAuth (const QString&);
 
 		QString GetJID () const;
+		
+		void SetAuthRequested (bool);
 	};
 }
 }

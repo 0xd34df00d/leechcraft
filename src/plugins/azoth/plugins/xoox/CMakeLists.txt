@@ -23,7 +23,6 @@ SET (XOOX_SRCS
 	entrybase.cpp
 	util.cpp
 	core.cpp
-	unauthclentry.cpp
 	vcarddialog.cpp
 	transfermanager.cpp
 	transferjob.cpp
@@ -66,7 +65,6 @@ SET (XOOX_HEADERS
 	entrybase.h
 	util.h
 	core.h
-	unauthclentry.h
 	vcarddialog.h
 	transfermanager.h
 	transferjob.h
