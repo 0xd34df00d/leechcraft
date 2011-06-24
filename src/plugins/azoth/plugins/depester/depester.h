@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_CHATHISTORY_CHATHISTORY_H
-#define PLUGINS_AZOTH_PLUGINS_CHATHISTORY_CHATHISTORY_H
+#ifndef PLUGINS_AZOTH_PLUGINS_DEPESTER_DEPESTER_H
+#define PLUGINS_AZOTH_PLUGINS_DEPESTER_DEPESTER_H
 #include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <interfaces/iinfo.h>
