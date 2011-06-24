@@ -16,12 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_CHATHISTORY_CHATHISTORY_H
-#define PLUGINS_AZOTH_PLUGINS_CHATHISTORY_CHATHISTORY_H
+#ifndef PLUGINS_AZOTH_PLUGINS_HERBICIDE_HERBICIDE_H
+#define PLUGINS_AZOTH_PLUGINS_HERBICIDE_HERBICIDE_H
 #include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
+#include <interfaces/ihavesettings.h>
 #include "core.h"
 
 class QTranslator;
@@ -32,17 +33,20 @@ namespace Azoth
 {
 namespace Herbicide
 {
+	class ConfWidget;
+
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
+				 , public IHaveSettings
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2)
+		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
 
 		boost::shared_ptr<QTranslator> Translator_;
-		QHash<QObject*, QAction*> Entry2ActionIgnore_;
-		QHash<QObject*, QString> Entry2Nick_;
-		QSet<QString> IgnoredNicks_;
+		Util::XmlSettingsDialog_ptr SettingsDialog_;
+		ConfWidget *ConfWidget_;
+		QSet<QObject*> AskedEntries_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -53,6 +57,15 @@ namespace Herbicide
 		QIcon GetIcon () const;
 
 		QSet<QByteArray> GetPluginClasses () const;
+		
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+	public slots:
+		void hookGonnaAppendMsg (LeechCraft::IHookProxy_ptr proxy,
+				QObject *message);
+		void hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
+				QObject *message);
+		void hookShouldCountUnread (LeechCraft::IHookProxy_ptr proxy,
+				QObject *message);
 	};
 }
 }

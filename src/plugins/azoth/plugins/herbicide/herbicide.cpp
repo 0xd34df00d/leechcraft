@@ -25,6 +25,9 @@
 #include <plugininterface/util.h>
 #include <interfaces/iclentry.h>
 #include <interfaces/imessage.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include "xmlsettingsmanager.h"
+#include "confwidget.h"
 
 namespace LeechCraft
 {
@@ -35,6 +38,13 @@ namespace Herbicide
 	void Plugin::Init (ICoreProxy_ptr)
 	{
 		Translator_.reset (Util::InstallTranslator ("azoth_herbicide"));
+		
+		SettingsDialog_.reset (new Util::XmlSettingsDialog);
+		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
+				"azothherbicidesettings.xml");
+		
+		ConfWidget_ = new ConfWidget ();
+		SettingsDialog_->SetCustomWidget ("ConfWidget", ConfWidget_);
 	}
 
 	void Plugin::SecondInit ()
@@ -70,6 +80,39 @@ namespace Herbicide
 		QSet<QByteArray> result;
 		result << "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin";
 		return result;
+	}
+	
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return SettingsDialog_;
+	}
+	
+	void Plugin::hookGonnaAppendMsg (LeechCraft::IHookProxy_ptr proxy,
+				QObject *message)
+	{
+	}
+
+	void Plugin::hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
+				QObject *message)
+	{
+		IMessage *msg = qobject_cast<IMessage*> (message);
+		if (!msg)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< message
+					<< "doesn't implement IMessage";
+			return;
+		}
+		
+		QObject *entryObj = msg->OtherPart ();
+		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+		if (entry->GetEntryFeatures () & ICLEntry::FPermanentEntry)
+			return;
+	}
+	
+	void Plugin::hookShouldCountUnread (IHookProxy_ptr proxy,
+				QObject *message)
+	{
 	}
 }
 }
