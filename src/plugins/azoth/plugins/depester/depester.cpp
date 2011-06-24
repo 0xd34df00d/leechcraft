@@ -166,11 +166,37 @@ namespace Depester
 			return;
 		
 		if (ignore)
-			IgnoredNicks_ << entry->GetEntryName ();
+		{
+			const QString& nick = entry->GetEntryName ();
+			IgnoredNicks_ << nick;
+			Entry2Nick_ [entryObj] = nick;
+			connect (entryObj,
+					SIGNAL (nameChanged (const QString&)),
+					this,
+					SLOT (handleNameChanged (const QString&)));
+		}
 		else
+		{
 			IgnoredNicks_.remove (entry->GetEntryName ());
+			Entry2Nick_.remove (entryObj);
+			disconnect (entryObj,
+					SIGNAL (nameChanged (const QString&)),
+					this,
+					SLOT (handleNameChanged (const QString&)));
+		}
 		
 		SaveIgnores ();
+	}
+	
+	void Plugin::handleNameChanged (const QString& name)
+	{
+		QObject *entryObj = sender ();
+		if (!entryObj)
+			return;
+		
+		IgnoredNicks_.remove (Entry2Nick_ [entryObj]);
+		IgnoredNicks_ << name;
+		Entry2Nick_ [entryObj] = name;
 	}
 }
 }

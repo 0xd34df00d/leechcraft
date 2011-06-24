@@ -41,6 +41,7 @@ namespace Depester
 
 		boost::shared_ptr<QTranslator> Translator_;
 		QHash<QObject*, QAction*> Entry2ActionIgnore_;
+		QHash<QObject*, QString> Entry2Nick_;
 		QSet<QString> IgnoredNicks_;
 	public:
 		void Init (ICoreProxy_ptr);
@@ -69,6 +70,7 @@ namespace Depester
 				QObject *message);
 	private slots:
 		void handleIgnoreEntry (bool);
+		void handleNameChanged (const QString&);
 	};
 }
 }
