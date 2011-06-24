@@ -460,6 +460,7 @@ namespace Xoox
 			Client_->rosterManager ().addRosterEntry (id,
 					name, msg, QSet<QString>::fromList (groups));
 		Client_->rosterManager ().subscribe (id, msg);
+		Client_->rosterManager ().acceptSubscription (id, msg);
 	}
 
 	void ClientConnection::Unsubscribe (const QString& jid, const QString& reason)
