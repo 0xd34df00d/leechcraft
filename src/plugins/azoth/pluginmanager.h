@@ -119,6 +119,9 @@ namespace Azoth
 		void hookEntryActionsRequested (LeechCraft::IHookProxy_ptr proxy,
 				QObject *entry);
 		
+		void hookGonnaAppendMsg (LeechCraft::IHookProxy_ptr proxy,
+				QObject *message);
+		
 		/** @brief Hook for handling incoming messages.
 		 * 
 		 * This hook is called for handling incoming messages. The

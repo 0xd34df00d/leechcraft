@@ -856,6 +856,11 @@ namespace Azoth
 		if (msg->GetMessageSubType () == IMessage::MSTParticipantStatusChange &&
 				!XmlSettingsManager::Instance ().property ("ShowStatusChangesEvents").toBool ())
 			return;
+		
+		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		emit hookGonnaAppendMsg (proxy, msg->GetObject ());
+		if (proxy->IsCancelled ())
+			return;
 
 		QWebFrame *frame = Ui_.View_->page ()->mainFrame ();
 		
