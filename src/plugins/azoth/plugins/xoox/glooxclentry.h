@@ -95,6 +95,7 @@ namespace Xoox
 
 		// IAuthable
 		AuthStatus GetAuthStatus () const;
+		void ResendAuth (const QString&);
 		void RevokeAuth (const QString&);
 		void Unsubscribe (const QString&);
 		void RerequestAuth (const QString&);

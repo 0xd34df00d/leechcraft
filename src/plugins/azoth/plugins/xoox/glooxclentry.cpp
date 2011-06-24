@@ -254,6 +254,14 @@ namespace Xoox
 
 		return static_cast<AuthStatus> (GetRI ().subscriptionType ());
 	}
+	
+	void GlooxCLEntry::ResendAuth (const QString& reason)
+	{
+		if (ODS_)
+			return;
+		
+		Account_->GetClientConnection ()->GrantSubscription (GetJID (), reason);
+	}
 
 	void GlooxCLEntry::RevokeAuth (const QString& reason)
 	{

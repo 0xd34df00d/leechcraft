@@ -462,16 +462,22 @@ namespace Xoox
 		Client_->rosterManager ().subscribe (id, msg);
 	}
 
-	void ClientConnection::RevokeSubscription (const QString& jid, const QString& reason)
-	{
-		qDebug () << "RevokeSubscription" << jid;
-		Client_->rosterManager ().refuseSubscription (jid, reason);
-	}
-
 	void ClientConnection::Unsubscribe (const QString& jid, const QString& reason)
 	{
 		qDebug () << "Unsubscribe" << jid;
 		Client_->rosterManager ().unsubscribe (jid, reason);
+	}
+	
+	void ClientConnection::GrantSubscription (const QString& jid, const QString& reason)
+	{
+		qDebug () << "GrantSubscription" << jid;
+		Client_->rosterManager ().acceptSubscription (jid, reason);
+	}
+
+	void ClientConnection::RevokeSubscription (const QString& jid, const QString& reason)
+	{
+		qDebug () << "RevokeSubscription" << jid;
+		Client_->rosterManager ().refuseSubscription (jid, reason);
 	}
 
 	void ClientConnection::Remove (GlooxCLEntry *entry)

@@ -163,8 +163,9 @@ namespace Xoox
 		void Subscribe (const QString&,
 				const QString& = QString (), const QString& = QString (),
 				const QStringList& = QStringList ());
-		void RevokeSubscription (const QString&, const QString&);
 		void Unsubscribe (const QString&, const QString&);
+		void GrantSubscription (const QString&, const QString&);
+		void RevokeSubscription (const QString&, const QString&);
 		void Remove (GlooxCLEntry*);
 
 		void SendPacketWCallback (const QXmppIq&, QObject*, const QByteArray&);
