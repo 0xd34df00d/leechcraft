@@ -139,6 +139,7 @@ namespace p100q
 				" <a href=\"azoth://msgeditreplace/%23\\1\">#\\1</a> "
 				"("
 				"<a href=\"azoth://msgeditreplace/S%20%23\\1\">S</a> "
+				"<a href=\"azoth://msgeditreplace/U%20%23\\1\">U</a> "
 				"<a href=\"azoth://msgeditreplace/%23\\1+\">+</a> "
 				"<a href=\"azoth://msgeditreplace/!%20%23\\1\">!</a> "
 				") ");
