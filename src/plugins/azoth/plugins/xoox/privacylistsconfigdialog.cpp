@@ -37,6 +37,8 @@ namespace Xoox
 		Ui_.setupUi (this);
 		Ui_.RulesTree_->setModel (Model_);
 		
+		ReinitModel ();
+		
 		QueryLists ();
 	}
 	
@@ -75,6 +77,14 @@ namespace Xoox
 		Ui_.ActiveList_->addItem (listName);
 		Ui_.DefaultList_->addItem (listName);
 		Ui_.ConfigureList_->addItem (listName);
+	}
+	
+	void PrivacyListsConfigDialog::ReinitModel ()
+	{
+		Model_->clear ();
+		QStringList headers (tr ("Type"));
+		headers << tr ("Value") << tr ("Action") << tr ("Stanzas");
+		Model_->setHorizontalHeaderLabels (headers);
 	}
 	
 	QList<QStandardItem*> PrivacyListsConfigDialog::ToRow (const PrivacyListItem& item) const
@@ -146,6 +156,11 @@ namespace Xoox
 		deleteLater ();
 	}
 	
+	void PrivacyListsConfigDialog::on_ConfigureList__activated (int idx)
+	{
+		QueryList (Ui_.ConfigureList_->itemText (idx));
+	}
+	
 	void PrivacyListsConfigDialog::on_AddButton__released ()
 	{
 		const QString& listName = QInputDialog::getText (this,
@@ -157,7 +172,11 @@ namespace Xoox
 		Lists_ [listName] = PrivacyList (listName);
 		AddListToBoxes (listName);
 		
+		ReinitModel ();
+
+		Ui_.ConfigureList_->blockSignals (true);
 		Ui_.ConfigureList_->setCurrentIndex (Ui_.ConfigureList_->findText (listName)); 
+		Ui_.ConfigureList_->blockSignals (false);
 	}
 	
 	void PrivacyListsConfigDialog::on_RemoveButton__released ()
@@ -176,6 +195,15 @@ namespace Xoox
 			return;
 		}
 		
+		if (QMessageBox::question (this,
+					"LeechCraft",
+					tr ("This list would be immediately and "
+						"permanently deleted. Are you sure?"),
+					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+			return;
+		
+		ReinitModel ();
+		
 		PrivacyList list (listName);
 		Manager_->SetList (list);
 		Lists_.remove (listName);
@@ -187,7 +215,7 @@ namespace Xoox
 		std::auto_ptr<PrivacyListsItemDialog> dia (new PrivacyListsItemDialog);
 		if (dia->exec () != QDialog::Accepted)
 			return;
-		
+
 		const PrivacyListItem& item = dia->GetItem ();
 		Model_->appendRow (ToRow (item));
 
@@ -266,10 +294,7 @@ namespace Xoox
 				SLOT (handleGotList (const PrivacyList&)));
 		Ui_.StatusLabel_->setText (QString ());
 		
-		Model_->clear ();
-		QStringList headers (tr ("Type"));
-		headers << tr ("Value") << tr ("Action") << tr ("Stanzas");
-		Model_->setHorizontalHeaderLabels (headers);
+		ReinitModel ();
 		
 		Lists_ [list.GetName ()] = list;
 		

@@ -48,11 +48,13 @@ namespace Xoox
 		void QueryLists ();
 		void QueryList (const QString&);
 		void AddListToBoxes (const QString&);
+		void ReinitModel ();
 		QList<QStandardItem*> ToRow (const PrivacyListItem&) const;
 	public slots:
 		void accept ();
 		void reject ();
 	private slots:
+		void on_ConfigureList__activated (int);
 		void on_AddButton__released ();
 		void on_RemoveButton__released ();
 		void on_AddRule__released ();

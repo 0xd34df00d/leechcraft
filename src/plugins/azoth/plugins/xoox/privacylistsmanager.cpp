@@ -270,7 +270,7 @@ namespace Xoox
 		query.setAttribute ("xmlns", NsPrivacy);
 		query.appendChild (list);
 		
-		QXmppIq iq;
+		QXmppIq iq (QXmppIq::Set);
 		iq.setExtensions (query);
 		
 		client ()->sendPacket (iq);
@@ -283,7 +283,7 @@ namespace Xoox
 		query.setAttribute ("xmlns", NsPrivacy);
 		query.appendChild (list.ToXML ());
 		
-		QXmppIq iq;
+		QXmppIq iq (QXmppIq::Set);
 		iq.setExtensions (query);
 		
 		client ()->sendPacket (iq);
