@@ -25,14 +25,11 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
-	class ClearButton;
-
 	class URLFrame : public QFrame
 	{
 		Q_OBJECT
 
 		Ui::URLFrame Ui_;
-		ClearButton *ClearButton_;
 	public:
 		URLFrame (QWidget* = 0);
 
