@@ -54,17 +54,19 @@ namespace Xoox
 		}
 		
 		PrivacyListItem::StanzaTypes stanzas = PrivacyListItem::STNone;
-		if (Ui_.StanzaMessage_->isChecked ())
+		if (Ui_.StanzaMessage_->checkState () == Qt::Checked)
 			stanzas |= PrivacyListItem::STMessage;
-		if (Ui_.StanzaInPres_->isChecked ())
+		if (Ui_.StanzaInPres_->checkState () == Qt::Checked)
 			stanzas |= PrivacyListItem::STPresenceIn;
-		if (Ui_.StanzaOutPres_->isChecked ())
+		if (Ui_.StanzaOutPres_->checkState () == Qt::Checked)
 			stanzas |= PrivacyListItem::STPresenceOut;
-		if (Ui_.StanzaIQ_->isChecked ())
+		if (Ui_.StanzaIQ_->checkState () == Qt::Checked)
 			stanzas |= PrivacyListItem::STIq;
 		
 		if (stanzas == PrivacyListItem::STNone)
 			stanzas = PrivacyListItem::STAll;
+		
+		result.SetStanzaTypes (stanzas);
 
 		return result;
 	}
