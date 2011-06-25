@@ -198,7 +198,7 @@ namespace Xoox
 		Q_FOREACH (const PrivacyListItem& item, Items_)
 		{
 			QXmppElement itemElem = item.ToXML ();
-			itemElem.setAttribute ("order", QString::number (i));
+			itemElem.setAttribute ("order", QString::number (i++));
 			listElem.appendChild (itemElem);
 		}
 		
