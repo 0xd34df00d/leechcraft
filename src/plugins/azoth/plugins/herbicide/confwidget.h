@@ -32,6 +32,7 @@ namespace Herbicide
 		Q_OBJECT
 		
 		Ui::ConfWidget Ui_;
+		QList<QList<QPair<QString, QStringList> > > PredefinedQuests_;
 	public:
 		ConfWidget (QWidget* = 0);
 		
@@ -43,6 +44,9 @@ namespace Herbicide
 	public slots:
 		void accept ();
 		void reject ();
+	private slots:
+		void on_QuestStyle__currentIndexChanged (int);
+		void on_QuestVariant__currentIndexChanged (int);
 	};
 }
 }

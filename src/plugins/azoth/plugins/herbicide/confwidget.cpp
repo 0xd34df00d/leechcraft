@@ -31,6 +31,11 @@ namespace Herbicide
 		Ui_.setupUi (this);
 		
 		LoadSettings ();
+		
+		QList<QPair<QString, QStringList> > mathQuests;
+		mathQuests << qMakePair (QString ("(cos(x))'"), QStringList ("-sin(x)"));
+		mathQuests << qMakePair (QString::fromUtf8 ("e^(iπ)"), QStringList ("-1"));
+		PredefinedQuests_ << mathQuests;
 	}
 	
 	QString ConfWidget::GetQuestion () const
@@ -69,6 +74,23 @@ namespace Herbicide
 	void ConfWidget::reject ()
 	{
 		LoadSettings ();
+	}
+	
+	void ConfWidget::on_QuestStyle__currentIndexChanged (int idx)
+	{
+		if (PredefinedQuests_.size () <= idx - 1)
+			return;
+		
+		Ui_.QuestVariant_->clear ();
+		QPair<QString, QStringList> pair;
+		Q_FOREACH (pair, PredefinedQuests_.at (idx - 1))
+			Ui_.QuestVariant_->addItem (pair.first, pair.second);
+	}
+	
+	void ConfWidget::on_QuestVariant__currentIndexChanged (int idx)
+	{
+		Ui_.Question_->setPlainText (Ui_.QuestVariant_->currentText ());
+		Ui_.Answers_->setPlainText (Ui_.QuestVariant_->itemData (idx).toStringList ().join ("\n"));
 	}
 }
 }
