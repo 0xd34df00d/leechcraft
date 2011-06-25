@@ -20,6 +20,10 @@
 #define PLUGINS_AZOTH_PLUGINS_XOOX_PRIVACYLISTSCONFIGDIALOG_H
 #include <QDialog>
 #include "ui_privacylistsconfigdialog.h"
+#include "privacylistsmanager.h"
+
+class QStandardItemModel;
+class QStandardItem;
 
 namespace LeechCraft
 {
@@ -35,10 +39,24 @@ namespace Xoox
 
 		Ui::PrivacyListsConfigDialog Ui_;
 		PrivacyListsManager *Manager_;
+		QMap<QString, PrivacyList> Lists_;
+		
+		QStandardItemModel *Model_;
 	public:
 		PrivacyListsConfigDialog (PrivacyListsManager*, QWidget* = 0);
+	private:
+		void QueryLists ();
+		void QueryList (const QString&);
+		void AddListToBoxes (const QString&);
+		QList<QStandardItem*> ToRow (const PrivacyListItem&) const;
+	public slots:
+		void accept ();
+		void reject ();
 	private slots:
+		void on_AddButton__released ();
+		void on_RemoveButton__released ();
 		void handleGotLists (const QStringList&, const QString&, const QString&);
+		void handleGotList (const PrivacyList&);
 	};
 }
 }
