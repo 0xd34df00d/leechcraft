@@ -329,7 +329,7 @@ namespace Xoox
 			Ui_.DefaultPolicy_->setCurrentIndex (item.GetAction () == PrivacyListItem::AAllow ? 0 : 1);
 		}
 		
-		Q_FOREACH (const PrivacyListItem& item, list.GetItems ())
+		Q_FOREACH (const PrivacyListItem& item, items)
 			Model_->appendRow (ToRow (item));
 	}
 }
