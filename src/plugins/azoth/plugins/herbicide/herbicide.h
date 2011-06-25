@@ -48,6 +48,7 @@ namespace Herbicide
 		ConfWidget *ConfWidget_;
 		QSet<QObject*> AskedEntries_;
 		QSet<QObject*> AllowedEntries_;
+		QSet<QObject*> OurMessages_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -64,11 +65,7 @@ namespace Herbicide
 		bool IsConfValid () const;
 		bool IsEntryAllowed (QObject*) const;
 	public slots:
-		void hookGonnaAppendMsg (LeechCraft::IHookProxy_ptr proxy,
-				QObject *message);
 		void hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
-				QObject *message);
-		void hookShouldCountUnread (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message);
 	};
 }
