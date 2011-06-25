@@ -248,6 +248,31 @@ namespace Xoox
 		items << item;
 		list.SetItems (items);
 	}
+	
+	void PrivacyListsConfigDialog::on_ModifyRule__released ()
+	{
+		const QModelIndex& index = Ui_.RulesTree_->currentIndex ();
+		if (!index.isValid ())
+			return;
+		
+		const int row = index.row ();
+		
+		PrivacyList& list = Lists_ [Ui_.ConfigureList_->currentText ()];
+		QList<PrivacyListItem> items = list.GetItems ();
+
+		std::auto_ptr<PrivacyListsItemDialog> dia (new PrivacyListsItemDialog);
+		dia->SetItem (items.at (row));
+		if (dia->exec () != QDialog::Accepted)
+			return;
+		
+		const PrivacyListItem& item = dia->GetItem ();
+		items [row] = item;
+		list.SetItems (items);
+		
+		int column = 0;
+		Q_FOREACH (QStandardItem *item, ToRow (item))
+			Model_->setItem (row, column++, item);
+	}
 
 	void PrivacyListsConfigDialog::on_RemoveRule__released ()
 	{

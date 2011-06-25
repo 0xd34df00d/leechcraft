@@ -59,6 +59,7 @@ namespace Xoox
 		void on_RemoveButton__released ();
 		void on_DefaultPolicy__currentIndexChanged (int);
 		void on_AddRule__released ();
+		void on_ModifyRule__released ();
 		void on_RemoveRule__released ();
 		void on_MoveUp__released ();
 		void on_MoveDown__released ();
