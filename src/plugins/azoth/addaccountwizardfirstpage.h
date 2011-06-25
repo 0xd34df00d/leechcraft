@@ -36,7 +36,7 @@ namespace Azoth
 		
 		void initializePage ();
 	private slots:
-		void on_ProtoBox__currentIndexChanged (int);
+		void readdWidgets ();
 		void handleAccepted ();
 	};
 }

@@ -77,6 +77,9 @@
            <property name="rootIsDecorated">
             <bool>false</bool>
            </property>
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
            <attribute name="headerVisible">
             <bool>false</bool>
            </attribute>

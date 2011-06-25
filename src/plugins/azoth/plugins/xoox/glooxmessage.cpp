@@ -91,6 +91,9 @@ namespace Xoox
 			Message_.setRequestReceipt (true);
 		case MTMUCMessage:
 			Connection_->SendMessage (this);
+			QMetaObject::invokeMethod (OtherPart (),
+					"gotMessage",
+					Q_ARG (QObject*, this));
 			break;
 		default:
 			qWarning () << Q_FUNC_INFO

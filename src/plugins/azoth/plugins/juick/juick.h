@@ -18,7 +18,6 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_JUICK_JUICK_H
 #define PLUGINS_AZOTH_PLUGINS_JUICK_JUICK_H
-
 #include <QObject>
 #include <QRegExp>
 #include <interfaces/iinfo.h>
@@ -52,10 +51,6 @@ namespace Juick
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
-		QStringList Provides () const;
-		QStringList Needs () const;
-		QStringList Uses () const;
-		void SetProvider (QObject*, const QString&);
 
 		QSet<QByteArray> GetPluginClasses () const;
 	private:
@@ -75,11 +70,9 @@ namespace Juick
 				int type, 
 				QString variant, 
 				QString text);
-
 	};
 }
 }
 }
 
 #endif
-

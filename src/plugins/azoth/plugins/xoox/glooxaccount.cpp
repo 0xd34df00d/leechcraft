@@ -29,9 +29,12 @@
 #include "glooxmessage.h"
 #include "glooxclentry.h"
 #include "roomclentry.h"
-#include "unauthclentry.h"
 #include "transfermanager.h"
 #include "sdsession.h"
+#include "pubsubmanager.h"
+#include "usertune.h"
+#include "usermood.h"
+#include "useractivity.h"
 
 namespace LeechCraft
 {
@@ -64,6 +67,11 @@ namespace Xoox
 		TransferManager_.reset (new TransferManager (ClientConnection_->
 						GetTransferManager (),
 					this));
+		
+		connect (ClientConnection_.get (),
+				SIGNAL (gotConsoleLog (const QByteArray&, int)),
+				this,
+				SIGNAL (gotConsolePacket (const QByteArray&, int)));
 
 		connect (ClientConnection_.get (),
 				SIGNAL (serverAuthFailed ()),
@@ -168,6 +176,11 @@ namespace Xoox
 	QByteArray GlooxAccount::GetAccountID () const
 	{
 		return ParentProtocol_->GetProtocolID () + "_" + JID_.toUtf8 ();
+	}
+	
+	QList<QAction*> GlooxAccount::GetActions () const
+	{
+		return QList<QAction*> ();
 	}
 
 	void GlooxAccount::QueryInfo (const QString& entryId)
@@ -295,6 +308,47 @@ namespace Xoox
 	{
 		return new SDSession (this);
 	}
+	
+	IHaveConsole::PacketFormat GlooxAccount::GetPacketFormat () const
+	{
+		return PFXML;
+	}
+	
+	void GlooxAccount::SetConsoleEnabled (bool enabled)
+	{
+		ClientConnection_->SetSignaledLog (enabled);
+	}
+	
+	void GlooxAccount::PublishTune (const QMap<QString, QVariant>& tuneInfo)
+	{
+		UserTune tune;
+		tune.SetArtist (tuneInfo ["artist"].toString ());
+		tune.SetTitle (tuneInfo ["title"].toString ());
+		tune.SetSource (tuneInfo ["source"].toString ());
+		tune.SetLength (tuneInfo ["length"].toInt ());
+		
+		ClientConnection_->GetPubSubManager ()->PublishEvent (&tune);
+	}
+	
+	void GlooxAccount::SetMood (const QString& moodStr, const QString& text)
+	{
+		UserMood mood;
+		mood.SetMoodStr (moodStr);
+		mood.SetText (text);
+		
+		ClientConnection_->GetPubSubManager ()->PublishEvent (&mood);
+	}
+	
+	void GlooxAccount::SetActivity (const QString& general,
+			const QString& specific, const QString& text)
+	{
+		UserActivity activity;
+		activity.SetGeneralStr (general);
+		activity.SetSpecificStr (specific);
+		activity.SetText (text);
+		
+		ClientConnection_->GetPubSubManager ()->PublishEvent (&activity);
+	}
 
 	QString GlooxAccount::GetJID () const
 	{
@@ -397,9 +451,9 @@ namespace Xoox
 	QObject* GlooxAccount::CreateMessage (IMessage::MessageType type,
 			const QString& variant,
 			const QString& body,
-			const QXmppRosterIq::Item& ri)
+			const QString& jid)
 	{
-		return ClientConnection_->CreateMessage (type, variant, body, ri);
+		return ClientConnection_->CreateMessage (type, variant, body, jid);
 	}
 
 	QString GlooxAccount::GetPassword (bool authfailure)

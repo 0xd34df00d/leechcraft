@@ -32,6 +32,8 @@
 #include "xmlsettingsmanager.h"
 #include "transferjobmanager.h"
 #include "servicediscoverywidget.h"
+#include "accountslistwidget.h"
+#include "consolewidget.h"
 
 namespace LeechCraft
 {
@@ -58,9 +60,17 @@ namespace Azoth
 		XmlSettingsDialog_->SetDataSource ("AffIcons",
 				Core::Instance ().GetResourceLoader (Core::RLTAffIconLoader)->
 					GetSubElemModel ());
+		XmlSettingsDialog_->SetDataSource ("MoodIcons",
+				Core::Instance ().GetResourceLoader (Core::RLTMoodIconLoader)->
+					GetSubElemModel ());
+		XmlSettingsDialog_->SetDataSource ("ActivityIcons",
+				Core::Instance ().GetResourceLoader (Core::RLTActivityIconLoader)->
+					GetSubElemModel ());
 		XmlSettingsDialog_->SetDataSource ("SystemIcons",
 				Core::Instance ().GetResourceLoader (Core::RLTSystemIconLoader)->
 					GetSubElemModel ());
+		
+		XmlSettingsDialog_->SetCustomWidget ("AccountsWidget", new AccountsListWidget);
 
 		QMainWindow *mainWin = proxy->GetMainWindow ();
 		QDockWidget *dw = new QDockWidget (mainWin);
@@ -99,6 +109,10 @@ namespace Azoth
 				SIGNAL (raiseTab (QWidget*)),
 				this,
 				SIGNAL (raiseTab (QWidget*)));
+		connect (MW_,
+				SIGNAL (gotConsoleWidget (ConsoleWidget*)),
+				this,
+				SLOT (handleConsoleWidget (ConsoleWidget*)));
 		
 		TabClassInfo chatTab =
 		{
@@ -128,10 +142,21 @@ namespace Azoth
 			55,
 			TFOpenableByRequest
 		};
+		TabClassInfo consoleTab =
+		{
+			"ConsoleTab",
+			tr ("IM console"),
+			tr ("Protocol console, for example, XML console for a XMPP "
+				"client protocol"),
+			QIcon (),
+			0,
+			TFEmpty
+		};
 		
 		TabClasses_ << chatTab;
 		TabClasses_ << mucTab;
 		TabClasses_ << sdTab;
+		TabClasses_ << consoleTab;
 	}
 
 	void Plugin::SecondInit ()
@@ -248,6 +273,17 @@ namespace Azoth
 		QModelIndex si = Core::Instance ().GetProxy ()->MapToSource (index);
 		TransferJobManager *mgr = Core::Instance ().GetTransferJobManager ();
 		mgr->SelectionChanged (si.model () == mgr->GetSummaryModel () ? si : QModelIndex ());
+	}
+	
+	void Plugin::handleConsoleWidget (ConsoleWidget *cw)
+	{
+		cw->SetParentMultiTabs (this);
+		connect (cw,
+				SIGNAL (removeTab (QWidget*)),
+				this,
+				SIGNAL (removeTab (QWidget*)));
+		emit addNewTab (cw->GetTitle (), cw);
+		emit raiseTab (cw);
 	}
 }
 }

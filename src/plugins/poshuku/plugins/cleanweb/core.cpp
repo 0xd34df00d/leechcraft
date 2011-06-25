@@ -30,6 +30,7 @@
 #include <qwebframe.h>
 #include <qwebpage.h>
 #include <qwebelement.h>
+#include <qwebview.h>
 #include <QCoreApplication>
 #include <QMenu>
 #include <QMainWindow>
@@ -404,8 +405,20 @@ namespace CleanWeb
 			if (Blocked_.size () > 300)
 				Blocked_.removeFirst ();
 			qDebug () << "rejecting against" << matched;
-			Blocked_ << req->url ().toString ();
 			hook->CancelDefault ();
+
+#if QT_VERSION >= 0x040700
+			QWebFrame *frame = qobject_cast<QWebFrame*> (req->originatingObject ());
+			if (frame)
+				QMetaObject::invokeMethod (this,
+						"delayedRemoveElements",
+						Qt::QueuedConnection,
+						Q_ARG (QWebFrame*, frame),
+						Q_ARG (QString, req->url ().toString ()));
+#else
+			Blocked_ << req->url ().toString ();
+#endif
+
 			Util::CustomNetworkReply *result = new Util::CustomNetworkReply (this);
 			result->SetContent (QString ("Blocked by Poshuku CleanWeb"));
 			result->SetError (QNetworkReply::ContentAccessDenied,
@@ -450,14 +463,19 @@ namespace CleanWeb
 	}
 
 	void Core::HandleContextMenu (const QWebHitTestResult& r,
-		QMenu *menu, LeechCraft::Poshuku::WebViewCtxMenuStage stage)
+		QWebView *view, QMenu *menu,
+		LeechCraft::Poshuku::WebViewCtxMenuStage stage)
 	{
 		QUrl iurl = r.imageUrl ();
 		if (stage == WVSAfterImage &&
 				!iurl.isEmpty ())
-			menu->addAction (tr ("Block image..."),
+		{
+			QAction *action = menu->addAction (tr ("Block image..."),
 					UserFilters_,
-					SLOT (blockImage ()))->setData (iurl);
+					SLOT (blockImage ()));
+			action->setProperty ("CleanWeb/URL", iurl);
+			action->setProperty ("CleanWeb/View", QVariant::fromValue<QObject*> (view));
+		}
 	}
 
 	UserFiltersModel* Core::GetUserFiltersModel () const
@@ -898,12 +916,34 @@ namespace CleanWeb
 	void Core::delayedRemoveElements (QWebFrame *frame, const QString& url)
 	{
 		QWebElementCollection elems =
-				frame->findAllElements (QString ("*[src=\"%1\"]").arg (url));
+				frame->findAllElements ("*[src=\"" + url + "\"]");
 		if (elems.count ())
 			Q_FOREACH (QWebElement elem, elems)
 				elem.removeFromDocument ();
 		else
-			qWarning () << Q_FUNC_INFO << "not found" << url;
+		{
+			connect (frame,
+					SIGNAL (loadFinished (bool)),
+					this,
+					SLOT (moreDelayedRemoveElements ()),
+					Qt::UniqueConnection);
+			MoreDelayedURLs_ [frame] << url;
+		}
+	}
+	
+	void Core::moreDelayedRemoveElements ()
+	{
+		QWebFrame *frame = qobject_cast<QWebFrame*> (sender ());
+		Q_FOREACH (const QString& url, MoreDelayedURLs_ [frame])
+		{
+			QWebElementCollection elems =
+					frame->findAllElements ("*[src=\"" + url + "\"]");
+			if (elems.count ())
+				Q_FOREACH (QWebElement elem, elems)
+					elem.removeFromDocument ();
+			else
+				qWarning () << Q_FUNC_INFO << "not found" << url;
+		}
 	}
 }
 }

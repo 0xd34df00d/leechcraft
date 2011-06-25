@@ -129,7 +129,6 @@ namespace Poshuku
 		void SetActualReloadInterval (const QTime&);
 		void SetSplitterSizes (int);
 	public slots:
-		void notificationActionTriggered (int);
 		void focusLineEdit ();
 		void handleShortcutHistory ();
 		void handleShortcutBookmarks ();

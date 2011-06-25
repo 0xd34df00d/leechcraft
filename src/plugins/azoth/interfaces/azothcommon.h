@@ -60,19 +60,23 @@ namespace Azoth
 		/** Contact and user are not subscribed to each other, and
 		 * neither has requested a subscription from the other.
 		 */
-		ASNone,
+		ASNone = 0x00,
 
 		/** Contact is subscribed to user (one-way).
 		 */
-		ASFrom,
+		ASFrom = 0x01,
 
 		/** User is subscribed to contact (one-way).
 		 */
-		ASTo,
+		ASTo = 0x02,
 
 		/** User and contact are subscribed to each other (two-way).
 		 */
-		ASBoth
+		ASBoth = 0x03,
+		
+		/** Contact has requested our subscription.
+		 */
+		ASContactRequested = 0x08
 	};
 
 	/** Represents possible chat states.

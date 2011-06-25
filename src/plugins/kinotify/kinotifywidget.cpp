@@ -202,10 +202,11 @@ namespace LeechCraft
 				ShowNotification ();
 			}
 
-			void KinotifyWidget::SetActions (const QStringList& actions, QObject *object)
+			void KinotifyWidget::SetActions (const QStringList& actions, QObject_ptr object)
 			{
 				ActionsNames_ = actions;
-				Action_->SetActionObject (object);
+				Action_->SetActionObject (object.get ());
+				HandlerGuard_ = object;
 			}
 
 			void KinotifyWidget::CreateWidget ()

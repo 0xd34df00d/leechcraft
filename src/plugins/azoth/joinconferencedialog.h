@@ -40,8 +40,8 @@ namespace Azoth
 		virtual void reject ();
 	private slots:
 		void on_AccountBox__currentIndexChanged (int);
-		void on_BookmarksBox__currentIndexChanged (int);
-		void on_HistoryBox__currentIndexChanged (int);
+		void on_BookmarksBox__activated (int);
+		void on_HistoryBox__activated (int);
 		void handleValidityChanged (bool);
 	private:
 		void FillWidget (const QVariantMap&);

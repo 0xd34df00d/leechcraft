@@ -31,6 +31,7 @@
 #include "interfaces/iclentry.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -79,11 +80,16 @@ namespace Azoth
 
 	namespace
 	{
+		ICLEntry* GetContact (const QString& id)
+		{
+			return qobject_cast<ICLEntry*> (Core::Instance ().GetEntry (id));
+		}
+
 		QString GetContactName (const QString& id)
 		{
-			QObject *entryObj = Core::Instance ().GetEntry (id);
-			return entryObj ?
-					qobject_cast<ICLEntry*> (entryObj)->GetHumanReadableID () :
+			ICLEntry *contact = GetContact (id);
+			return contact ?
+					contact->GetHumanReadableID () :
 					id;
 		}
 	}
@@ -236,8 +242,21 @@ namespace Azoth
 					<< "could not be casted to ITransferJob";
 			return;
 		}
+
 		if (Entry2Incoming_ [job->GetSourceID ()].removeAll (jobObj))
+		{
+			Entity e = Util::MakeNotification ("Azoth", QString (), PInfo_);
+			e.Additional_ ["org.LC.AdvNotifications.SenderID"] = "org.LeechCraft.Azoth";
+			e.Additional_ ["org.LC.AdvNotifications.EventID"] =
+					"org.LC.Plugins.Azoth.IncomingFileFrom/" +
+						GetContact (job->GetSourceID ())->GetEntryID () +
+						"/" + job->GetName ();
+			e.Additional_ ["org.LC.AdvNotifications.EventCategory"] =
+					"org.LC.AdvNotifications.Cancel";
+			Core::Instance ().SendEntity (e);
+
 			emit jobNoLongerOffered (jobObj);
+		}
 	}
 
 	void TransferJobManager::handleFileOffered (QObject *jobObj)
@@ -261,12 +280,24 @@ namespace Azoth
 					.arg (Util::MakePrettySize (job->GetSize ()))
 					.arg (GetContactName (id)),
 				PInfo_);
+		
+		ICLEntry *entry = GetContact (id);
+		BuildNotification (e, entry);
+		e.Additional_ ["org.LC.AdvNotifications.EventID"] =
+				"org.LC.Plugins.Azoth.IncomingFileFrom/" + entry->GetEntryID () + "/" + job->GetName ();
+		e.Additional_ ["org.LC.AdvNotifications.VisualPath"] = (QStringList (entry->GetEntryName ()) << job->GetName ());
+		e.Additional_ ["org.LC.AdvNotifications.DeltaCount"] = 1;
+		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = tr ("Incoming file");
+		e.Additional_ ["org.LC.AdvNotifications.EventType"] =
+				"org.LC.AdvNotifications.IM.IncomingFile";
+
 		Util::NotificationActionHandler *nh =
 				new Util::NotificationActionHandler (e, this);
 		nh->AddFunction ("Accept",
 				boost::bind (&TransferJobManager::AcceptJob, this, jobObj, QString ()));
 		nh->AddFunction ("Deny",
 				boost::bind (&TransferJobManager::DenyJob, this, jobObj));
+
 		Core::Instance ().SendEntity (e);
 	}
 

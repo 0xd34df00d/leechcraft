@@ -20,6 +20,7 @@
 #include "textedit.h"
 #include <QKeyEvent>
 #include "chattab.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -32,9 +33,17 @@ namespace Azoth
 
 	void TextEdit::keyPressEvent (QKeyEvent *event)
 	{
+		const QString& modOption = XmlSettingsManager::Instance ()
+				.property ("SendOnModifier").toString ();
+		Qt::KeyboardModifier sendMod = Qt::NoModifier;
+		if (modOption == "CtrlEnter")
+			sendMod = Qt::ControlModifier;
+		else if (modOption == "ShiftEnter")
+			sendMod = Qt::ShiftModifier;
+
 		bool sendMsgButton = event->key () == Qt::Key_Return ||
 				event->key () == Qt::Key_Enter;
-		if (sendMsgButton && event->modifiers () == Qt::NoModifier)
+		if (sendMsgButton && event->modifiers () == sendMod)
 			emit keyReturnPressed ();
 		else if (event->key () == Qt::Key_Tab)
 		{
@@ -43,6 +52,10 @@ namespace Azoth
 			else
 				event->ignore ();
 		}
+		else if (event->modifiers () & Qt::ShiftModifier &&
+				(event->key () == Qt::Key_PageUp ||
+				 event->key () == Qt::Key_PageDown))
+			emit scroll (event->key () == Qt::Key_PageUp ? -1 : 1);
 		else
 		{
 			emit clearAvailableNicks ();
@@ -51,4 +64,3 @@ namespace Azoth
 	}
 }
 }
-

@@ -47,10 +47,11 @@ namespace LeechCraft
 				int GetTimeout () const;
 				QString GetFormat () const;
 				int GetQuality () const;
+			private slots:
+				void on_Format__currentIndexChanged (const QString&);
 			};
-		};
-	};
-};
+		}
+	}
+}
 
 #endif
-

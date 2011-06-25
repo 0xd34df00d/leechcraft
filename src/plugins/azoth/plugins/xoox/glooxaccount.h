@@ -26,6 +26,10 @@
 #include <interfaces/iaccount.h>
 #include <interfaces/ihaveservicediscovery.h>
 #include <interfaces/imessage.h>
+#include <interfaces/ihaveconsole.h>
+#include <interfaces/isupporttune.h>
+#include <interfaces/isupportmood.h>
+#include <interfaces/isupportactivity.h>
 #include "glooxclentry.h"
 
 namespace LeechCraft
@@ -52,9 +56,18 @@ namespace Xoox
 	class GlooxAccount : public QObject
 					   , public IAccount
 					   , public IHaveServiceDiscovery
+					   , public IHaveConsole
+					   , public ISupportTune
+					   , public ISupportMood
+					   , public ISupportActivity
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IAccount LeechCraft::Azoth::IHaveServiceDiscovery);
+		Q_INTERFACES (LeechCraft::Azoth::IAccount
+				LeechCraft::Azoth::IHaveServiceDiscovery
+				LeechCraft::Azoth::IHaveConsole
+				LeechCraft::Azoth::ISupportTune
+				LeechCraft::Azoth::ISupportMood
+				LeechCraft::Azoth::ISupportActivity);
 
 		QString Name_;
 		GlooxProtocol *ParentProtocol_;
@@ -83,6 +96,7 @@ namespace Xoox
 		int GetPort () const;
 		void RenameAccount (const QString&);
 		QByteArray GetAccountID () const;
+		QList<QAction*> GetActions () const;
 		void QueryInfo (const QString&);
 		void OpenConfigurationDialog ();
 		void FillSettings (GlooxAccountConfigurationWidget*);
@@ -99,6 +113,15 @@ namespace Xoox
 		QObject* GetTransferManager () const;
 		
 		QObject* CreateSDSession ();
+		
+		PacketFormat GetPacketFormat () const;
+		void SetConsoleEnabled (bool);
+		
+		void PublishTune (const QMap<QString, QVariant>&);
+		
+		void SetMood (const QString&, const QString&);
+		
+		void SetActivity (const QString&, const QString&, const QString&);
 
 		QString GetJID () const;
 		QString GetNick () const;
@@ -114,7 +137,7 @@ namespace Xoox
 
 		QObject* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&,
-				const QXmppRosterIq::Item&);
+				const QString&);
 	private:
 		QString GetPassword (bool authFailure = false);
 	public slots:
@@ -135,6 +158,8 @@ namespace Xoox
 		void itemCancelledSubscription (QObject*, const QString&);
 		void itemGrantedSubscription (QObject*, const QString&);
 		void statusChanged (const EntryStatus&);
+		
+		void gotConsolePacket (const QByteArray&, int);
 
 		void accountSettingsChanged ();
 

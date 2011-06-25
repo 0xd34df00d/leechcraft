@@ -23,10 +23,10 @@
 #include <QMap>
 #include <QVariant>
 #include <QXmppMessage.h>
+#include <QXmppVCardIq.h>
 #include <interfaces/iclentry.h>
 #include <interfaces/iadvancedclentry.h>
 
-class QXmppVCardIq;
 class QXmppPresence;
 
 namespace LeechCraft
@@ -35,6 +35,7 @@ namespace Azoth
 {
 namespace Xoox
 {
+	class PEPEventBase;
 	class GlooxMessage;
 	class VCardDialog;
 	class GlooxAccount;
@@ -60,6 +61,7 @@ namespace Xoox
 		QImage Avatar_;
 		QString RawInfo_;
 		GlooxAccount *Account_;
+		QXmppVCardIq VCardIq_;
 		QPointer<VCardDialog> VCardDialog_;
 
 		QMap<QString, QMap<QString, QVariant> > Variant2ClientInfo_;
@@ -86,11 +88,13 @@ namespace Xoox
 		virtual QString GetJID () const = 0;
 
 		void HandleMessage (GlooxMessage*);
+		void HandlePEPEvent (QString, PEPEventBase*);
 		void HandleAttentionMessage (const QXmppMessage&);
 		void UpdateChatState (QXmppMessage::State, const QString&);
 		void SetStatus (const EntryStatus&, const QString&);
 		void SetAvatar (const QByteArray&);
 		void SetAvatar (const QImage&);
+		QXmppVCardIq GetVCard () const;
 		void SetVCard (const QXmppVCardIq&);
 		void SetRawInfo (const QString&);
 
@@ -112,6 +116,9 @@ namespace Xoox
 		void permsChanged ();
 		
 		void attentionDrawn (const QString&, const QString&);
+		void moodChanged (const QString&);
+		void activityChanged (const QString&);
+		void tuneChanged (const QString&);
 	};
 }
 }

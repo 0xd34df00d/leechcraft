@@ -108,7 +108,7 @@
     </layout>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="buttonBox">
+    <widget class="QDialogButtonBox" name="ButtonBox_">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
@@ -134,12 +134,12 @@
   <tabstop>ResolveButton_</tabstop>
   <tabstop>Groups_</tabstop>
   <tabstop>Reason_</tabstop>
-  <tabstop>buttonBox</tabstop>
+  <tabstop>ButtonBox_</tabstop>
  </tabstops>
  <resources/>
  <connections>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>ButtonBox_</sender>
    <signal>accepted()</signal>
    <receiver>AddContactDialog</receiver>
    <slot>accept()</slot>
@@ -155,7 +155,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>ButtonBox_</sender>
    <signal>rejected()</signal>
    <receiver>AddContactDialog</receiver>
    <slot>reject()</slot>

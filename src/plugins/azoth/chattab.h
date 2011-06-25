@@ -95,8 +95,12 @@ namespace Azoth
 		void TabLostCurrent ();
 		
 		QObject* GetCLEntry () const;
+	public slots:
+		void prepareMessageText (const QString&);
+		void appendMessageText (const QString&);
 	private slots:
 		void clearAvailableNick ();
+		void handleEditScroll (int);
 		void messageSend ();
 		void nickComplete ();
 		void on_MsgEdit__textChanged ();
@@ -149,6 +153,12 @@ namespace Azoth
 		 * TabIcon_.
 		 */
 		void UpdateStateIcon ();
+
+		/** Insert nickname into message edit field.
+		 * @param nickname a nick to insert, in html format.
+		 */
+		void InsertNick (const QString& nicknameHtml);
+
 	signals:
 		void changeTabName (QWidget*, const QString&);
 		void changeTabIcon (QWidget*, const QIcon&);
@@ -160,6 +170,8 @@ namespace Azoth
 				QObject *chatTab,
 				QObject *entry,
 				QWebView *webView);
+		void hookGonnaAppendMsg (LeechCraft::IHookProxy_ptr proxy,
+				QObject *message);
 		void hookMadeCurrent (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab);
 		void hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,

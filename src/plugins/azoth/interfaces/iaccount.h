@@ -38,7 +38,13 @@ namespace Azoth
 	 * supports some XMPP's service discovery-like functionality. Look
 	 * at that documentation for more information.
 	 * 
-	 * @sa IHaveServiceDiscovery
+	 * If the account supports something similar to XML console, it can
+	 * also implement the IHaveConsole interface.
+	 * 
+	 * If the account supports publishing user tune, it may implement
+	 * ISupportTune.
+	 * 
+	 * @sa IHaveServiceDiscovery, IHaveConsole, ISupportTune
 	 */
 	class IAccount
 	{
@@ -142,6 +148,15 @@ namespace Azoth
 		 * @return The unique and persistent account ID.
 		 */
 		virtual QByteArray GetAccountID () const = 0;
+		
+		/** @brief Returns the list of actions for the account item.
+		 *
+		 * The list is showed, for example, when user calls the context
+		 * menu on the account item, or such.
+		 *
+		 * @return The list of actions.
+		 */
+		virtual QList<QAction*> GetActions () const = 0;
 
 		/** @brief Request message w/ info/vcard information for the given address.
 		 *

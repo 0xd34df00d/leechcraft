@@ -22,10 +22,14 @@
 #include <QVBoxLayout>
 #include <QToolButton>
 #include <QInputDialog>
+#include <QTimer>
+#include <plugininterface/util.h>
 #include "interfaces/iclentry.h"
+#include "interfaces/ihaveconsole.h"
+#include "interfaces/isupportactivity.h"
+#include "interfaces/isupportmood.h"
 #include "core.h"
 #include "sortfilterproxymodel.h"
-#include "accountslistdialog.h"
 #include "setstatusdialog.h"
 #include "contactlistdelegate.h"
 #include "xmlsettingsmanager.h"
@@ -33,7 +37,9 @@
 #include "joinconferencedialog.h"
 #include "bookmarksmanagerdialog.h"
 #include "chattabsmanager.h"
-#include <QTimer>
+#include "consolewidget.h"
+#include "activitydialog.h"
+#include "mooddialog.h"
 
 namespace LeechCraft
 {
@@ -86,6 +92,10 @@ namespace Azoth
 				SIGNAL (modelReset ()),
 				this,
 				SLOT (rebuildTreeExpansions ()));
+		connect (ProxyModel_,
+				SIGNAL (mucMode ()),
+				Ui_.CLTree_,
+				SLOT (expandAll ()));
 
 		QMetaObject::invokeMethod (Ui_.CLTree_,
 				"expandToDepth",
@@ -132,6 +142,24 @@ namespace Azoth
 				this,
 				SLOT (addAccountContact ()));
 		
+		AccountSetActivity_ = new QAction (tr ("Set activity..."), this);
+		connect (AccountSetActivity_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleAccountSetActivity ()));
+		
+		AccountSetMood_ = new QAction (tr ("Set mood..."), this);
+		connect (AccountSetMood_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleAccountSetMood ()));
+		
+		AccountConsole_ = new QAction (tr ("Console..."), this);
+		connect (AccountConsole_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleAccountConsole ()));
+		
 		XmlSettingsManager::Instance ().RegisterObject ("ShowMenuBar",
 				this, "menuBarVisibilityToggled");
 		menuBarVisibilityToggled ();
@@ -149,9 +177,6 @@ namespace Azoth
 
 	void MainWidget::CreateMenu ()
 	{
-		MainMenu_->addAction (tr ("Accounts..."),
-				this,
-				SLOT (showAccountsList ()));
 		MainMenu_->addSeparator ();
 		MainMenu_->addAction (tr ("Add contact..."),
 				this,
@@ -268,6 +293,7 @@ namespace Azoth
 		if (!index.isValid ())
 			return;
 
+		QMenu *menu = new QMenu (tr ("Entry context menu"));
 		QList<QAction*> actions;
 		switch (index.data (Core::CLREntryType).value<Core::CLEntryType> ())
 		{
@@ -304,6 +330,8 @@ namespace Azoth
 			AccountAddContact_->setProperty ("Azoth/AccountObject", objVar);
 			actions << AccountJoinConference_;
 			actions << AccountAddContact_;
+			
+			actions << Util::CreateSeparator (menu);
 
 			Q_FOREACH (QAction *act, MenuChangeStatus_->actions ())
 			{
@@ -320,15 +348,36 @@ namespace Azoth
 				}
 			}
 			actions << MenuChangeStatus_->menuAction ();
+			
+			if (qobject_cast<ISupportActivity*> (objVar.value<QObject*> ()))
+			{
+				AccountSetActivity_->setProperty ("Azoth/AccountObject", objVar);
+				actions << AccountSetActivity_;
+			}
+			if (qobject_cast<ISupportMood*> (objVar.value<QObject*> ()))
+			{
+				AccountSetMood_->setProperty ("Azoth/AccountObject", objVar);
+				actions << AccountSetMood_;
+			}
+			
+			actions << Util::CreateSeparator (menu);
+			
+			if (qobject_cast<IHaveConsole*> (objVar.value<QObject*> ()))
+			{
+				AccountConsole_->setProperty ("Azoth/AccountObject", objVar);
+				actions << AccountConsole_;
+			}
 			break;
 		}
 		default:
 			break;
 		}
 		if (!actions.size ())
+		{
+			delete menu;
 			return;
+		}
 
-		QMenu *menu = new QMenu (tr ("Entry context menu"));
 		menu->addActions (actions);
 		menu->exec (Ui_.CLTree_->mapToGlobal (pos));
 	}
@@ -481,12 +530,61 @@ namespace Azoth
 					dia->GetNick (),
 					dia->GetGroups ());
 	}
-
-	void MainWidget::showAccountsList ()
+	
+	void MainWidget::handleAccountSetActivity ()
 	{
-		AccountsListDialog *dia = new AccountsListDialog (this);
-		dia->setAttribute (Qt::WA_DeleteOnClose, true);
-		dia->exec ();
+		IAccount *account = GetAccountFromSender (Q_FUNC_INFO);
+		if (!account)
+			return;
+		
+		QObject *obj = sender ()->property ("Azoth/AccountObject").value<QObject*> ();
+		ISupportActivity *activity = qobject_cast<ISupportActivity*> (obj);
+		if (!activity)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< obj
+					<< "doesn't support activity";
+			return;
+		}
+		
+		std::auto_ptr<ActivityDialog> dia (new ActivityDialog (this));
+		if (dia->exec () != QDialog::Accepted)
+			return;
+		
+		activity->SetActivity (dia->GetGeneral (), dia->GetSpecific (), dia->GetText ());
+	}
+	
+	void MainWidget::handleAccountSetMood ()
+	{
+		IAccount *account = GetAccountFromSender (Q_FUNC_INFO);
+		if (!account)
+			return;
+		
+		QObject *obj = sender ()->property ("Azoth/AccountObject").value<QObject*> ();
+		ISupportMood *mood = qobject_cast<ISupportMood*> (obj);
+		if (!mood)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< obj
+					<< "doesn't support mood";
+			return;
+		}
+		
+		std::auto_ptr<MoodDialog> dia (new MoodDialog (this));
+		if (dia->exec () != QDialog::Accepted)
+			return;
+		
+		mood->SetMood (dia->GetMood (), dia->GetText ());
+	}
+	
+	void MainWidget::handleAccountConsole ()
+	{
+		IAccount *account = GetAccountFromSender (Q_FUNC_INFO);
+		if (!account)
+			return;
+		
+		ConsoleWidget *cw = new ConsoleWidget (account->GetObject ());
+		emit gotConsoleWidget (cw);
 	}
 	
 	void MainWidget::handleManageBookmarks ()
@@ -500,6 +598,9 @@ namespace Azoth
 	{
 		std::auto_ptr<AddContactDialog> dia (new AddContactDialog (0, this));
 		if (dia->exec () != QDialog::Accepted)
+			return;
+		
+		if (!dia->GetSelectedAccount ())
 			return;
 
 		dia->GetSelectedAccount ()->RequestAuth (dia->GetContactID (),
@@ -523,13 +624,7 @@ namespace Azoth
 	void MainWidget::handleEntryMadeCurrent (QObject *obj)
 	{
 		if (qobject_cast<IMUCEntry*> (obj))
-		{
 			ProxyModel_->SetMUC (obj);
-			if (Ui_.RosterMode_->currentIndex () == 1)
-				QTimer::singleShot (100,
-						Ui_.CLTree_,
-						SLOT (expandAll ()));
-		}
 	}
 	
 	void MainWidget::on_RosterMode__currentIndexChanged (int index)

@@ -259,8 +259,10 @@ namespace StandardStyles
 	
 	QString StandardStyleSource::GetStatusImage (const QString& statusIconName)
 	{
+		const QString& fullName = Proxy_->GetSettingsManager ()->
+				property ("SystemIcons").toString () + '/' + statusIconName;
 		const QString& statusIconPath = Proxy_->
-				GetResourceLoader (IProxyObject::PRLSystemIcons)->GetIconPath (statusIconName);
+				GetResourceLoader (IProxyObject::PRLSystemIcons)->GetIconPath (fullName);
 		const QImage& img = QImage (statusIconPath);
 		return Util::GetAsBase64Src (img);
 	}

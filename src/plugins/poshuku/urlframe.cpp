@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "urlframe.h"
+#include "clearbutton.h"
 
 namespace LeechCraft
 {
@@ -24,8 +25,22 @@ namespace Poshuku
 {
 	URLFrame::URLFrame (QWidget *parent)
 	: QFrame (parent)
+	, ClearButton_ (new ClearButton (this))
 	{
 		Ui_.setupUi (this);
+
+		connect (ClearButton_,
+				SIGNAL (released ()),
+				Ui_.URLEdit_,
+				SLOT (clear ()));
+		
+		connect (Ui_.URLEdit_,
+				SIGNAL (textChanged (const QString&)),
+				ClearButton_,
+				SLOT (textChanged (const QString&)));
+
+		ClearButton_->hide ();
+		AddWidget (ClearButton_);
 	}
 
 	QLineEdit* URLFrame::GetEdit () const

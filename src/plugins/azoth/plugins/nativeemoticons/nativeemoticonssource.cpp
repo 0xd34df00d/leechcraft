@@ -27,73 +27,10 @@ namespace Azoth
 namespace NativeEmoticons
 {
 	NativeEmoticonsSource::NativeEmoticonsSource (QObject *parent)
-	: QObject (parent)
-	, EmoLoader_ (new Util::ResourceLoader ("azoth/emoticons/native/", this))
+	: BaseEmoticonsSource ("native/", parent)
 	{
-		EmoLoader_->AddGlobalPrefix ();
-		EmoLoader_->AddLocalPrefix ();
 	}
-	
-	QAbstractItemModel* NativeEmoticonsSource::GetOptionsModel () const
-	{
-		return EmoLoader_->GetSubElemModel ();
-	}
-	
-	QSet<QString> NativeEmoticonsSource::GetEmoticonStrings (const QString& pack) const
-	{
-		return ParseFile (pack).keys ().toSet ();
-	}
-	
-	QHash<QImage, QString> NativeEmoticonsSource::GetReprImages (const QString& pack) const
-	{
-		QHash<QImage, QString> result;
 
-		const String2Filename_t& hash = ParseFile (pack);
-		const QSet<QString>& uniqueImgs = hash.values ().toSet ();
-		Q_FOREACH (const QString& imgPath, uniqueImgs)
-		{
-			const QString& fullPath = EmoLoader_->GetIconPath (pack + "/" + imgPath);
-			const QImage& img = QImage (fullPath);
-			if (img.isNull ())
-			{
-				qWarning () << Q_FUNC_INFO
-						<< imgPath
-						<< "in pack"
-						<< pack
-						<< "is null, got path:"
-						<< fullPath;
-				continue;
-			}
-			
-			result [img] = hash.key (imgPath);
-		}
-		
-		return result;
-	}
-	
-	QByteArray NativeEmoticonsSource::GetImage (const QString& pack, const QString& smile) const
-	{
-		const String2Filename_t& hash = ParseFile (pack);
-		if (!hash.contains (smile))
-			return QByteArray ();
-		
-		const QString& path = EmoLoader_->GetIconPath (pack + "/" + hash [smile]);
-		QFile file (path);
-		if (!file.open (QIODevice::ReadOnly))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to open file"
-					<< file.fileName ()
-					<< "for"
-					<< pack
-					<< smile
-					<< file.errorString ();
-			return QByteArray ();
-		}
-		
-		return file.readAll ();
-	}
-	
 	NativeEmoticonsSource::String2Filename_t NativeEmoticonsSource::ParseFile (const QString& pack) const
 	{
 		if (CachedPack_ == pack && !IconCache_.isEmpty ())

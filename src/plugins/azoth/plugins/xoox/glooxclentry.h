@@ -22,6 +22,7 @@
 #include <QObject>
 #include <QStringList>
 #include <QXmppRosterIq.h>
+#include <QXmppVCardIq.h>
 #include <interfaces/iauthable.h>
 #include "entrybase.h"
 
@@ -49,6 +50,7 @@ namespace Xoox
 			QString Name_;
 			QStringList Groups_;
 			AuthStatus AuthStatus_;
+			QXmppVCardIq VCardIq_;
 		};
 		typedef boost::shared_ptr<OfflineDataSource> OfflineDataSource_ptr;
 	private:
@@ -62,6 +64,8 @@ namespace Xoox
 			QDateTime DateTime_;
 		};
 		QList<MessageQueueItem> MessageQueue_;
+		
+		bool AuthRequested_;
 	public:
 		GlooxCLEntry (const QString& bareJID, GlooxAccount*);
 		GlooxCLEntry (OfflineDataSource_ptr, GlooxAccount*);
@@ -93,11 +97,14 @@ namespace Xoox
 
 		// IAuthable
 		AuthStatus GetAuthStatus () const;
+		void ResendAuth (const QString&);
 		void RevokeAuth (const QString&);
 		void Unsubscribe (const QString&);
 		void RerequestAuth (const QString&);
 
 		QString GetJID () const;
+		
+		void SetAuthRequested (bool);
 	};
 }
 }

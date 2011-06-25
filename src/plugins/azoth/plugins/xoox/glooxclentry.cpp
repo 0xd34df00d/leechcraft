@@ -37,12 +37,14 @@ namespace Xoox
 	GlooxCLEntry::GlooxCLEntry (const QString& jid, GlooxAccount *parent)
 	: EntryBase (parent)
 	, BareJID_ (jid)
+	, AuthRequested_ (false)
 	{
 	}
 
 	GlooxCLEntry::GlooxCLEntry (GlooxCLEntry::OfflineDataSource_ptr ods, GlooxAccount *parent)
 	: EntryBase (parent)
 	, ODS_ (ods)
+	, AuthRequested_ (false)
 	{
 		const QString& pre = Account_->GetAccountID () + '_';
 		if (ods->ID_.startsWith (pre))
@@ -55,6 +57,8 @@ namespace Xoox
 					<< ods->ID_;
 			BareJID_ = ods->ID_;
 		}
+		
+		SetVCard (ods->VCardIq_);
 	}
 
 	GlooxCLEntry::OfflineDataSource_ptr GlooxCLEntry::ToOfflineDataSource () const
@@ -67,6 +71,7 @@ namespace Xoox
 		ods->Name_ = GetEntryName ();
 		ods->Groups_ = Groups ();
 		ods->AuthStatus_ = GetAuthStatus ();
+		ods->VCardIq_ = GetVCard ();
 
 		return ods;
 	}
@@ -109,10 +114,14 @@ namespace Xoox
 
 	ICLEntry::Features GlooxCLEntry::GetEntryFeatures () const
 	{
-		return FPermanentEntry |
-				FSupportsRenames |
-				FSupportsAuth |
+		ICLEntry::Features result = FSupportsAuth |
 				FSupportsGrouping;
+		if (Account_->GetClientConnection ()->
+				GetClient ()->rosterManager().getRosterBareJids ().contains (GetJID ()))
+			result |= FSupportsRenames | FPermanentEntry;
+		else
+			result |= FSessionEntry;
+		return result;
 	}
 
 	ICLEntry::EntryType GlooxCLEntry::GetEntryType () const
@@ -161,7 +170,10 @@ namespace Xoox
 		if (ODS_)
 			return ODS_->Groups_;
 
-		return GetRI ().groups ().toList ();
+		QStringList groups = GetRI ().groups ().toList ();
+		if (AuthRequested_)
+			groups += tr ("Unauthorized users");
+		return groups;
 	}
 
 	void GlooxCLEntry::SetGroups (const QStringList& groups)
@@ -204,6 +216,9 @@ namespace Xoox
 	{
 		if (ODS_)
 			return EntryStatus ();
+		
+		if (AuthRequested_)
+			return EntryStatus (SOnline, QString ());
 
 		QXmppRosterManager& rm = Account_->
 				GetClientConnection ()->GetClient ()->rosterManager ();
@@ -239,7 +254,7 @@ namespace Xoox
 			return 0;
 		}
 
-		QObject *msg = Account_->CreateMessage (type, variant, text, GetRI ());
+		QObject *msg = Account_->CreateMessage (type, variant, text, GetJID ());
 		AllMessages_ << msg;
 		return msg;
 	}
@@ -251,12 +266,23 @@ namespace Xoox
 
 		return static_cast<AuthStatus> (GetRI ().subscriptionType ());
 	}
+	
+	void GlooxCLEntry::ResendAuth (const QString& reason)
+	{
+		if (ODS_)
+			return;
+
+		SetAuthRequested (false);
+		RerequestAuth (QString ());
+		Account_->GetClientConnection ()->GrantSubscription (GetJID (), reason);
+	}
 
 	void GlooxCLEntry::RevokeAuth (const QString& reason)
 	{
 		if (ODS_)
 			return;
 
+		SetAuthRequested (false);
 		Account_->GetClientConnection ()->RevokeSubscription (GetJID (), reason);
 	}
 
@@ -282,6 +308,13 @@ namespace Xoox
 	QString GlooxCLEntry::GetJID () const
 	{
 		return BareJID_;
+	}
+	
+	void GlooxCLEntry::SetAuthRequested (bool auth)
+	{
+		AuthRequested_ = auth;
+		emit statusChanged (GetStatus (QString ()), QString ());
+		emit groupsChanged (Groups ());
 	}
 }
 }

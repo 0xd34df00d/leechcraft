@@ -19,6 +19,8 @@
 #include "util.h"
 #include <QObject>
 #include <QHash>
+#include <QDomDocument>
+#include <QDomElement>
 
 namespace LeechCraft
 {
@@ -160,6 +162,17 @@ namespace Util
 	{
 		static Node2ClientHR n2ch;
 		return n2ch.Node2ClientHR_.value (node);
+	}
+	
+	QDomElement XmppElem2DomElem (const QXmppElement& elem)
+	{
+		QByteArray arr;
+		QXmlStreamWriter w (&arr);
+		elem.toXml (&w);
+
+		QDomDocument doc;
+		doc.setContent (arr);
+		return doc.documentElement ();
 	}
 }
 }

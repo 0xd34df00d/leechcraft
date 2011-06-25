@@ -101,10 +101,14 @@ namespace Azoth
 			/** This entry is permanent and would appear in the next
 			 * session too. It makes sense to save it to disk, for
 			 * example, when shutting down.
+			 * 
+			 * This also means that the entry has been accepted into
+			 * some kind of contact list by the user.
 			 */
 			FPermanentEntry = 0x0000,
 
-			/** This entry is not permament and for this session only.
+			/** This entry is not permanent and would cease existing
+			 * after this login session.
 			 */
 			FSessionEntry = 0x0001,
 
@@ -422,30 +426,46 @@ namespace Azoth
 		 * The following keys are optional:
 		 * - user_activity
 		 *   The corresponding value is a map itself, mapping QString to
-		 *   QString, with the contents documented later.
+		 *   QString.
+		 * - user_mood
+		 *   The corresponding value is a map itself, mapping QString to
+		 *   QString.
+		 * - user_tune
+		 *   The corresponding value is a map itself, mapping QString to
+		 *   QString or int (see below).
 		 * 
 		 * The map for the user_activity can have the following keys,
-		 * where first one is required, and others are optional.
+		 * where the first one is required and others are optional:
 		 * - general
-		 *   The following strings are recognized by Azoth core, and
-		 *   thus may be returned as is without translating or other
-		 *   processing:
-		 *   - empty
-		 *   - doing_chores
-		 *   - drinking
-		 *   - eating
-		 *   - exercising
-		 *   - grooming
-		 *   - having_appointment
-		 *   - inactive
-		 *   - relaxing
-		 *   - talking
-		 *   - traveling
-		 *   - working
 		 * - specific
 		 * - additional_specific
 		 * - activity_detailed
 		 * - text
+		 * These keys and their contents are modeled after XEP-0108, so
+		 * refer to http://xmpp.org/extensions/xep-0108.html for more
+		 * information about the semantics.
+		 * Empty "general" key means that the entity stopped publishing
+		 * activity information.
+		 * 
+		 * The map for the user_mood can have the following keys, where
+		 * the first one is required and others are optional:
+		 * - mood
+		 * - text
+		 * These keys and their contents are modeled after XEP-0107, so
+		 * refer to http://xmpp.org/extensions/xep-0107.html for more
+		 * information about the semantics.
+		 * Empty "mood" key means that the entity stopped publishing
+		 * mood information.
+		 * 
+		 * The map for the user_tune can have the following keys:
+		 * - artist of type QString
+		 * - source of type QString (usually it will contain the album
+		 *   containing the tune)
+		 * - title of type QString
+		 * - track of type QString
+		 * - URI of type QUrl
+		 * - length of type int
+		 * - rating of type int
 		 *
 		 * @param[in] variant Variant for which to return the client
 		 * info.

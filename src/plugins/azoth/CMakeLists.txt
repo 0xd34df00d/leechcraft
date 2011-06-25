@@ -35,7 +35,7 @@ SET (SRCS
 	chattabsmanager.cpp
 	chattab.cpp
 	sortfilterproxymodel.cpp
-	accountslistdialog.cpp
+	accountslistwidget.cpp
 	setstatusdialog.cpp
 	pluginmanager.cpp
 	proxyobject.cpp
@@ -55,6 +55,9 @@ SET (SRCS
 	eventsnotifier.cpp
 	zoomeventfilter.cpp
 	drawattentiondialog.cpp
+	consolewidget.cpp
+	activitydialog.cpp
+	mooddialog.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -63,7 +66,7 @@ SET (HEADERS
 	chattabsmanager.h
 	chattab.h
 	sortfilterproxymodel.h
-	accountslistdialog.h
+	accountslistwidget.h
 	setstatusdialog.h
 	pluginmanager.h
 	proxyobject.h
@@ -83,6 +86,9 @@ SET (HEADERS
 	eventsnotifier.h
 	zoomeventfilter.h
 	drawattentiondialog.h
+	consolewidget.h
+	activitydialog.h
+	mooddialog.h
 	sourcetrackingmodel.h
 	interfaces/iprotocolplugin.h
 	interfaces/iaccount.h
@@ -92,7 +98,7 @@ SET (HEADERS
 SET (FORMS
 	mainwidget.ui
 	chattab.ui
-	accountslistdialog.ui
+	accountslistwidget.ui
 	setstatusdialog.ui
 	addcontactdialog.ui
 	joinconferencedialog.ui
@@ -103,6 +109,9 @@ SET (FORMS
 	simpledialog.ui
 	servicediscoverywidget.ui
 	drawattentiondialog.ui
+	consolewidget.ui
+	activitydialog.ui
+	mooddialog.ui
 	)
 SET (RESOURCES azothresources.qrc)
 CreateTrVars ("azoth" "en;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
@@ -135,20 +144,37 @@ INSTALL (DIRECTORY share/azoth DESTINATION share/leechcraft)
 SET (AZOTH_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 OPTION (ENABLE_AZOTH_ACETAMIDE "Build Acetamide, IRC support for Azoth" ON)
+OPTION (ENABLE_AZOTH_AUTOPASTE "Build Autopaste for automatic pasting of long messages to pastebins" ON)
 OPTION (ENABLE_AZOTH_CHATHISTORY "Build ChatHistory which keeps, well, chat history" ON)
+OPTION (ENABLE_AZOTH_DEPESTER "Build Depester for ignoring unwanted MUC participants" ON)
+OPTION (ENABLE_AZOTH_EMBEDMEDIA "Build EmbedMedia  enables embedding different media objects in chat tab" ON)
+OPTION (ENABLE_AZOTH_HERBICIDE "Build Herbicide, a basic antispam plugin" ON)
 OPTION (ENABLE_AZOTH_HILI "Build HiLi, plugin for customizing conference highlights" ON)
 OPTION (ENABLE_AZOTH_JUICK "Build plugin for the juick.com microblogging service" ON)
 OPTION (ENABLE_AZOTH_NATIVEEMOTICONS "Build support for Azoth's own emoticons packs" ON)
 OPTION (ENABLE_AZOTH_P100Q "Build plugin for the psto.net microblogging service" ON)
 OPTION (ENABLE_AZOTH_STANDARDSTYLES "Build support for standard Azoth styles" ON)
 OPTION (ENABLE_AZOTH_XOOX "Build Xoox, the QXmpp-aided XMPP support for Azoth" ON)
+OPTION (ENABLE_AZOTH_XTAZY "Build Xtazy for publishing current user tune" ON)
 
 IF (ENABLE_AZOTH_ACETAMIDE)
 	ADD_SUBDIRECTORY (plugins/acetamide)
 ENDIF (ENABLE_AZOTH_ACETAMIDE)
+IF (ENABLE_AZOTH_AUTOPASTE)
+	ADD_SUBDIRECTORY (plugins/autopaste)
+ENDIF (ENABLE_AZOTH_AUTOPASTE)
 IF (ENABLE_AZOTH_CHATHISTORY)
 	ADD_SUBDIRECTORY (plugins/chathistory)
 ENDIF (ENABLE_AZOTH_CHATHISTORY)
+IF (ENABLE_AZOTH_DEPESTER)
+	ADD_SUBDIRECTORY (plugins/depester)
+ENDIF (ENABLE_AZOTH_DEPESTER)
+IF (ENABLE_AZOTH_EMBEDMEDIA)
+    ADD_SUBDIRECTORY (plugins/embedmedia)
+ENDIF (ENABLE_AZOTH_EMBEDMEDIA) 
+IF (ENABLE_AZOTH_HERBICIDE)
+	ADD_SUBDIRECTORY (plugins/herbicide)
+ENDIF (ENABLE_AZOTH_HERBICIDE)
 IF (ENABLE_AZOTH_HILI)
 	ADD_SUBDIRECTORY (plugins/hili)
 ENDIF (ENABLE_AZOTH_HILI)
@@ -167,3 +193,6 @@ ENDIF (ENABLE_AZOTH_P100Q)
 IF (ENABLE_AZOTH_XOOX)
 	ADD_SUBDIRECTORY (plugins/xoox)
 ENDIF (ENABLE_AZOTH_XOOX)
+IF (ENABLE_AZOTH_XTAZY)
+	ADD_SUBDIRECTORY (plugins/xtazy)
+ENDIF (ENABLE_AZOTH_XTAZY)

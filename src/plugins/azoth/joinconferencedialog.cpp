@@ -234,13 +234,13 @@ namespace Azoth
 		qobject_cast<IMUCJoinWidget*> (joiner)->AccountSelected (accObj);
 	}
 
-	void JoinConferenceDialog::on_BookmarksBox__currentIndexChanged (int idx)
+	void JoinConferenceDialog::on_BookmarksBox__activated (int idx)
 	{	
 		const QVariantMap& map = Ui_.BookmarksBox_->itemData (idx).toMap ();
 		FillWidget (map);
 	}
 
-	void JoinConferenceDialog::on_HistoryBox__currentIndexChanged (int idx)
+	void JoinConferenceDialog::on_HistoryBox__activated (int idx)
 	{
 		const QVariantMap& map = Ui_.HistoryBox_->itemData (idx).toMap ();
 		FillWidget (map);

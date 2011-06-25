@@ -22,6 +22,8 @@
 #include <QtDebug>
 #include <QXmppVCardIq.h>
 #include <QXmppPresence.h>
+#include <QXmppClient.h>
+#include <QXmppRosterManager.h>
 #include <plugininterface/util.h>
 #include <interfaces/iproxyobject.h>
 #include <interfaces/azothutil.h>
@@ -33,9 +35,10 @@
 #include "clientconnection.h"
 #include "util.h"
 #include "core.h"
-#include <QXmppClient.h>
-#include <QXmppRosterManager.h>
 #include "capsmanager.h"
+#include "useractivity.h"
+#include "usermood.h"
+#include "usertune.h"
 
 namespace LeechCraft
 {
@@ -155,6 +158,76 @@ namespace Xoox
 		emit gotMessage (msg);
 	}
 	
+	void EntryBase::HandlePEPEvent (QString variant, PEPEventBase *event)
+	{
+		const QStringList& vars = Variants ();
+		if (!vars.isEmpty () && !vars.contains (variant))
+			variant = vars.first ();
+
+		UserActivity *activity = dynamic_cast<UserActivity*> (event);
+		if (activity)
+		{
+			if (activity->GetGeneral () == UserActivity::GeneralEmpty)
+				Variant2ClientInfo_ [variant].remove ("user_activity");
+			else
+			{
+				QMap<QString, QVariant> activityMap;
+				activityMap ["general"] = activity->GetGeneralStr ();
+				activityMap ["specific"] = activity->GetSpecificStr ();
+				activityMap ["text"] = activity->GetText ();
+				Variant2ClientInfo_ [variant] ["user_activity"] = activityMap;
+			}
+
+			emit activityChanged (variant);
+			return;
+		}
+		
+		UserMood *mood = dynamic_cast<UserMood*> (event);
+		if (mood)
+		{
+			if (mood->GetMood () == UserMood::MoodEmpty)
+				Variant2ClientInfo_ [variant].remove ("user_mood");
+			else
+			{
+				QMap<QString, QVariant> moodMap;
+				moodMap ["mood"] = mood->GetMoodStr ();
+				moodMap ["text"] = mood->GetText ();
+				Variant2ClientInfo_ [variant] ["user_mood"] = moodMap;
+			}
+			
+			emit moodChanged (variant);
+			return;
+		}
+		
+		UserTune *tune = dynamic_cast<UserTune*> (event);
+		if (tune)
+		{
+			if (tune->IsNull ())
+				Variant2ClientInfo_ [variant].remove ("user_tune");
+			else
+			{
+				QMap<QString, QVariant> tuneMap;
+				tuneMap ["artist"] = tune->GetArtist ();
+				tuneMap ["source"] = tune->GetSource ();
+				tuneMap ["title"] = tune->GetTitle ();
+				tuneMap ["track"] = tune->GetTrack ();
+				tuneMap ["URI"] = tune->GetURI ();
+				tuneMap ["length"] = tune->GetLength ();
+				tuneMap ["rating"] = tune->GetRating ();
+				Variant2ClientInfo_ [variant] ["user_tune"] = tuneMap;
+			}
+			
+			emit tuneChanged (variant);
+			return;
+		}
+		
+		qWarning () << Q_FUNC_INFO
+				<< "unhandled PEP event from"
+				<< GetJID ()
+				<< "resource"
+				<< variant;
+	}
+	
 	void EntryBase::HandleAttentionMessage (const QXmppMessage& msg)
 	{
 		QString jid;
@@ -238,9 +311,16 @@ namespace Xoox
 
 		emit avatarChanged (Avatar_);
 	}
+	
+	QXmppVCardIq EntryBase::GetVCard () const
+	{
+		return VCardIq_;
+	}
 
 	void EntryBase::SetVCard (const QXmppVCardIq& vcard)
 	{
+		VCardIq_ = vcard;
+
 		QString text = FormatRawInfo (vcard);
 		if (!text.isEmpty ())
 			text = QString ("gloox VCard:\n") + text;
@@ -249,6 +329,8 @@ namespace Xoox
 
 		if (VCardDialog_)
 			VCardDialog_->UpdateInfo (vcard);
+		
+		Core::Instance ().ScheduleSaveRoster (10000);
 	}
 
 	void EntryBase::SetRawInfo (const QString& rawinfo)

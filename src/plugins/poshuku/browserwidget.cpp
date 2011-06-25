@@ -22,6 +22,7 @@
 #include <idna.h>
 #endif
 
+#include <boost/bind.hpp>
 #include <boost/preprocessor/seq/size.hpp>
 #include <boost/preprocessor/seq/elem.hpp>
 #include <boost/preprocessor/repetition/repeat.hpp>
@@ -52,6 +53,7 @@
 #include <QKeySequence>
 #include <plugininterface/util.h>
 #include <plugininterface/defaulthookproxy.h>
+#include <plugininterface/notificationactionhandler.h>
 #include "core.h"
 #include "historymodel.h"
 #include "finddialog.h"
@@ -798,20 +800,6 @@ namespace Poshuku
 		ReloadTimer_->start (msecs);
 	}
 
-	void BrowserWidget::notificationActionTriggered (int idx)
-	{
-		switch (idx)
-		{
-			case 0:
-				emit raiseTab (this);
-				break;
-			default:
-				qWarning () << Q_FUNC_INFO
-					<< "unhandled"
-					<< idx;
-		}
-	}
-
 	void BrowserWidget::handleIconChanged ()
 	{
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
@@ -1301,8 +1289,8 @@ namespace Poshuku
 		}
 
 		Entity e = Util::MakeNotification ("Poshuku", text, prio);
-		e.Additional_ ["HandlingObject"] = QVariant::fromValue<QObject*> (this);
-		e.Additional_ ["NotificationActions"] = QStringList (tr ("Open"));
+		Util::NotificationActionHandler *nh = new Util::NotificationActionHandler (e, this);
+		nh->AddFunction (tr ("Open"), boost::bind (&BrowserWidget::raiseTab, this, this));
 		emit gotEntity (e);
 	}
 

@@ -46,11 +46,11 @@ namespace CleanWeb
 		int rowCount (const QModelIndex& = QModelIndex ()) const;
 
 		const Filter& GetFilter () const;
-		void InitiateAdd (const QString& = QString ());
+		bool InitiateAdd (const QString& = QString ());
 		void Modify (int);
 		void Remove (int);
 	private:
-		void Add (const RuleOptionDialog&);
+		bool Add (const RuleOptionDialog&);
 		void SplitRow (int*, bool*) const;
 		void ReadSettings ();
 		void WriteSettings () const;

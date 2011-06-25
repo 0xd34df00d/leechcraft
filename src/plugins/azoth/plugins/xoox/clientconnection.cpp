@@ -18,6 +18,7 @@
 
 #include "clientconnection.h"
 #include <boost/bind.hpp>
+#include <boost/fusion/container.hpp>
 #include <QTimer>
 #include <QtDebug>
 #include <QXmppClient.h>
@@ -31,7 +32,6 @@
 #include <QXmppBookmarkManager.h>
 #include <QXmppEntityTimeManager.h>
 #include <QXmppArchiveManager.h>
-#include <QXmppPubSubManager.h>
 #include <QXmppActivityItem.h>
 #include <QXmppPubSubIq.h>
 #include <QXmppDeliveryReceiptsManager.h>
@@ -48,11 +48,17 @@
 #include "glooxprotocol.h"
 #include "core.h"
 #include "roomclentry.h"
-#include "unauthclentry.h"
 #include "vcarddialog.h"
 #include "capsmanager.h"
 #include "annotationsmanager.h"
 #include "formbuilder.h"
+#include "fetchqueue.h"
+#include "legacyentitytimeext.h"
+#include "pubsubmanager.h"
+#include "useractivity.h"
+#include "usermood.h"
+#include "usertune.h"
+#include "privacylistsmanager.h"
 
 namespace LeechCraft
 {
@@ -61,19 +67,21 @@ namespace Azoth
 namespace Xoox
 {
 	const int ErrorLimit = 5;
+
 	ClientConnection::ClientConnection (const QString& jid,
 			const GlooxAccountState& state,
 			GlooxAccount *account)
 	: Client_ (new QXmppClient (this))
 	, MUCManager_ (new QXmppMucManager)
 	, XferManager_ (new QXmppTransferManager)
-	, DiscoveryManager_ (0)
+	, DiscoveryManager_ (Client_->findExtension<QXmppDiscoveryManager> ())
 	, BMManager_ (new QXmppBookmarkManager (Client_))
 	, EntityTimeManager_ (new QXmppEntityTimeManager)
 	, ArchiveManager_ (new QXmppArchiveManager)
-	, PubSubManager_ (new QXmppPubSubManager)
 	, DeliveryReceiptsManager_ (new QXmppDeliveryReceiptsManager)
 	, CaptchaManager_ (new QXmppCaptchaManager)
+	, PubSubManager_ (new PubSubManager)
+	, PrivacyListsManager_ (new PrivacyListsManager)
 	, AnnotationsManager_ (0)
 	, OurJID_ (jid)
 	, Account_ (account)
@@ -81,7 +89,10 @@ namespace Xoox
 	, CapsManager_ (new CapsManager (this))
 	, IsConnected_ (false)
 	, FirstTimeConnect_ (true)
-	, VCardFetchTimer_ (new QTimer (this))
+	, VCardQueue_ (new FetchQueue (boost::bind (&QXmppVCardManager::requestVCard, &Client_->vCardManager (), _1),
+				1700, 1, this))
+	, CapsQueue_ (new FetchQueue (boost::bind (&QXmppDiscoveryManager::requestInfo, DiscoveryManager_, _1, ""),
+				1000, 1, this))
 	, SocketErrorAccumulator_ (0)
 	{
 		LastState_.State_ = SOffline;
@@ -92,28 +103,36 @@ namespace Xoox
 				this,
 				SLOT (decrementErrAccumulators ()));
 		decrTimer->start (15000);
-		
-		connect (VCardFetchTimer_,
-				SIGNAL (timeout ()),
-				this,
-				SLOT (handleVCardFetchingQueue ()));
 
 		QObject *proxyObj = qobject_cast<GlooxProtocol*> (account->
 					GetParentProtocol ())->GetProxyObject ();
 		ProxyObject_ = qobject_cast<IProxyObject*> (proxyObj);
+		
+		PubSubManager_->RegisterCreator<UserActivity> ();
+		PubSubManager_->RegisterCreator<UserMood> ();
+		PubSubManager_->RegisterCreator<UserTune> ();
+		PubSubManager_->SetAutosubscribe<UserActivity> (true);
+		PubSubManager_->SetAutosubscribe<UserMood> (true);
+		PubSubManager_->SetAutosubscribe<UserTune> (true);
+		
+		connect (PubSubManager_,
+				SIGNAL (gotEvent (const QString&, PEPEventBase*)),
+				this,
+				SLOT (handlePEPEvent (const QString&, PEPEventBase*)));
 
+		Client_->addExtension (PubSubManager_);
 		Client_->addExtension (DeliveryReceiptsManager_);
 		Client_->addExtension (MUCManager_);
 		Client_->addExtension (XferManager_);
 		Client_->addExtension (BMManager_);
 		Client_->addExtension (EntityTimeManager_);
 		Client_->addExtension (ArchiveManager_);
-		Client_->addExtension (PubSubManager_);
 		Client_->addExtension (CaptchaManager_);
+		Client_->addExtension (new LegacyEntityTimeExt);
+		Client_->addExtension (PrivacyListsManager_);
 		
 		AnnotationsManager_ = new AnnotationsManager (this);
 
-		DiscoveryManager_ = Client_->findExtension<QXmppDiscoveryManager> ();
 		DiscoveryManager_->setClientCapabilitiesNode ("http://leechcraft.org/azoth");
 
 		Client_->versionManager ().setClientName ("LeechCraft Azoth");
@@ -338,14 +357,40 @@ namespace Xoox
 	{
 		return AnnotationsManager_;
 	}
+	
+	PubSubManager* ClientConnection::GetPubSubManager () const
+	{
+		return PubSubManager_;
+	}
+	
+	void ClientConnection::SetSignaledLog (bool signaled)
+	{
+		if (signaled)
+		{
+			connect (Client_->logger (),
+					SIGNAL (message (QXmppLogger::MessageType, const QString&)),
+					this,
+					SLOT (handleLog (QXmppLogger::MessageType, const QString&)),
+					Qt::UniqueConnection);
+			Client_->logger ()->setLoggingType (QXmppLogger::SignalLogging);
+		}
+		else
+		{
+			disconnect (Client_->logger (),
+					SIGNAL (message (QXmppLogger::MessageType, const QString&)),
+					this,
+					SLOT (handleLog (QXmppLogger::MessageType, const QString&)));
+			Client_->logger ()->setLoggingType (QXmppLogger::FileLogging);
+		}
+	}
 
 	void ClientConnection::RequestInfo (const QString& jid) const
 	{
 		if (JID2CLEntry_.contains (jid))
 			Q_FOREACH (const QString& variant, JID2CLEntry_ [jid]->Variants ())
-				DiscoveryManager_->requestInfo (jid + '/' + variant);
+				CapsQueue_->Schedule (jid + '/' + variant, FetchQueue::PHigh);
 		else
-			DiscoveryManager_->requestInfo (jid);
+			CapsQueue_->Schedule (jid, FetchQueue::PLow);
 	}
 	
 	void ClientConnection::RequestInfo (const QString& jid,
@@ -383,29 +428,27 @@ namespace Xoox
 
 	void ClientConnection::AckAuth (QObject *entryObj, bool ack)
 	{
-		UnauthCLEntry *entry = qobject_cast<UnauthCLEntry*> (entryObj);
-		if (!entry)
+		IAuthable *authable = qobject_cast<IAuthable*> (entryObj);
+		if (!authable)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< entryObj
-					<< "is not an UnauthCLEntry";
+					<< "is not authable";
 			return;
 		}
-
-		const QString& jid = entry->GetJID ();
-
-		qDebug () << "AckAuth" << jid << ack;
-
+		
 		if (ack)
 		{
-			Client_->rosterManager ().acceptSubscription (jid);
-			Subscribe (jid, QString (), entry->GetEntryName (), entry->Groups ());
+			authable->ResendAuth ();
+			const AuthStatus status = authable->GetAuthStatus ();
+			if (status == ASNone || status == ASFrom)
+				authable->RerequestAuth ();
 		}
 		else
-			Client_->rosterManager ().refuseSubscription (jid);
-
-		emit rosterItemRemoved (entry);
-		entry->deleteLater ();
+			authable->RevokeAuth ();
+		
+		GlooxCLEntry *entry = qobject_cast<GlooxCLEntry*> (entryObj);
+		entry->SetAuthRequested (false);
 	}
 	
 	void ClientConnection::AddEntry (const QString& id,
@@ -423,18 +466,29 @@ namespace Xoox
 			Client_->rosterManager ().addRosterEntry (id,
 					name, msg, QSet<QString>::fromList (groups));
 		Client_->rosterManager ().subscribe (id, msg);
-	}
-
-	void ClientConnection::RevokeSubscription (const QString& jid, const QString& reason)
-	{
-		qDebug () << "RevokeSubscription" << jid;
-		Client_->rosterManager ().refuseSubscription (jid, reason);
+		Client_->rosterManager ().acceptSubscription (id, msg);
 	}
 
 	void ClientConnection::Unsubscribe (const QString& jid, const QString& reason)
 	{
 		qDebug () << "Unsubscribe" << jid;
 		Client_->rosterManager ().unsubscribe (jid, reason);
+	}
+	
+	void ClientConnection::GrantSubscription (const QString& jid, const QString& reason)
+	{
+		qDebug () << "GrantSubscription" << jid;
+		Client_->rosterManager ().acceptSubscription (jid, reason);
+		if (JID2CLEntry_ [jid])
+			JID2CLEntry_ [jid]->SetAuthRequested (false);
+	}
+
+	void ClientConnection::RevokeSubscription (const QString& jid, const QString& reason)
+	{
+		qDebug () << "RevokeSubscription" << jid;
+		Client_->rosterManager ().refuseSubscription (jid, reason);
+		if (JID2CLEntry_ [jid])
+			JID2CLEntry_ [jid]->SetAuthRequested (false);
 	}
 
 	void ClientConnection::Remove (GlooxCLEntry *entry)
@@ -521,11 +575,11 @@ namespace Xoox
 	}
 
 	GlooxMessage* ClientConnection::CreateMessage (IMessage::MessageType type,
-			const QString& resource, const QString& body, const QXmppRosterIq::Item& item)
+			const QString& resource, const QString& body, const QString& jid)
 	{
 		GlooxMessage *msg = new GlooxMessage (type,
 				IMessage::DOut,
-				item.bareJid (),
+				jid,
 				resource,
 				this);
 		msg->SetBody (body);
@@ -658,8 +712,15 @@ namespace Xoox
 		
 		Q_FOREACH (const QXmppMessage& msg, OfflineMsgQueue_)
 			handleMessageReceived (msg);
-
 		OfflineMsgQueue_.clear ();
+		
+		QPair<QString, PEPEventBase*> initialEvent;
+		Q_FOREACH (initialEvent, InitialEventQueue_)
+		{
+			handlePEPEvent (initialEvent.first, initialEvent.second);
+			delete initialEvent.second;
+		}
+		InitialEventQueue_.clear ();
 	}
 
 	void ClientConnection::handleRosterChanged (const QString& bareJid)
@@ -771,9 +832,39 @@ namespace Xoox
 		else if (!Client_->rosterManager ().isRosterReceived ())
 			OfflineMsgQueue_ << msg;
 		else
+		{
 			qWarning () << Q_FUNC_INFO
 					<< "could not find source for"
-					<< msg.from ();
+					<< msg.from ()
+					<< "; creating new item";
+
+			GlooxCLEntry *entry = new GlooxCLEntry (jid, Account_);
+			JID2CLEntry_ [jid] = entry;
+			emit gotRosterItems (QList<QObject*> () << entry);
+
+			handleMessageReceived (msg);
+		}
+	}
+	
+	void ClientConnection::handlePEPEvent (const QString& from, PEPEventBase *event)
+	{
+		QString bare;
+		QString resource;
+		Split (from, &bare, &resource);
+		
+		if (!JID2CLEntry_.contains (bare))
+		{
+			if (JID2CLEntry_.isEmpty ())
+				InitialEventQueue_ << qMakePair (from, event->Clone ());
+			else
+				qWarning () << Q_FUNC_INFO
+						<< "unknown PEP event source"
+						<< from
+						<< JID2CLEntry_.keys ();
+			return;
+		}
+		
+		JID2CLEntry_ [bare]->HandlePEPEvent (resource, event);
 	}
 	
 	void ClientConnection::handleMessageDelivered (const QString& msgId)
@@ -866,6 +957,21 @@ namespace Xoox
 			AwaitingDiscoItems_ [jid] (iq);
 	}
 	
+	void ClientConnection::handleLog (QXmppLogger::MessageType type, const QString& msg)
+	{
+		switch (type)
+		{
+		case QXmppLogger::SentMessage:
+			emit gotConsoleLog (msg.toUtf8 (), IHaveConsole::PDOut);
+			break;
+		case QXmppLogger::ReceivedMessage:
+			emit gotConsoleLog (msg.toUtf8 (), IHaveConsole::PDIn);
+			break;
+		default:
+			break;
+		}
+	}
+	
 	void ClientConnection::decrementErrAccumulators ()
 	{
 		if (SocketErrorAccumulator_ > 0)
@@ -882,8 +988,14 @@ namespace Xoox
 		switch (pres.type ())
 		{
 		case QXmppPresence::Subscribe:
-			emit gotSubscriptionRequest (new UnauthCLEntry (jid, QString (), Account_),
-					QString ());
+			if (!JID2CLEntry_.contains (jid))
+			{
+				GlooxCLEntry *entry = new GlooxCLEntry (jid, Account_);
+				JID2CLEntry_ [jid] = entry;
+				emit gotRosterItems (QList<QObject*> () << entry);
+			}
+			JID2CLEntry_ [jid]->SetAuthRequested (true);
+			emit gotSubscriptionRequest (JID2CLEntry_ [jid], QString ());
 			break;
 		case QXmppPresence::Subscribed:
 			if (JID2CLEntry_.contains (jid))
@@ -1010,33 +1122,14 @@ namespace Xoox
 			return tr ("Other error.");
 		}
 	}
-	
-	void ClientConnection::handleVCardFetchingQueue ()
-	{
-		int num = std::min (3, VCardFetchQueue_.size ());
-		while (num--)
-			Client_->vCardManager ().requestVCard (VCardFetchQueue_.takeFirst ());
-		
-		if (VCardFetchQueue_.isEmpty ())
-			VCardFetchTimer_->stop ();
-	}
-	
+
 	void ClientConnection::ScheduleFetchVCard (const QString& jid)
 	{
-		if (VCardFetchQueue_.contains (jid))
-			return;
-
-		if (!JID2CLEntry_.contains (jid) ||
-				JID2CLEntry_ [jid]->GetStatus (QString ()).State_ == SOffline)
-			VCardFetchQueue_ << jid;
-		else
-			VCardFetchQueue_.prepend (jid);
-
-		if (!VCardFetchTimer_->isActive ())
-		{
-			Client_->vCardManager ().requestVCard (VCardFetchQueue_.takeFirst ());
-			VCardFetchTimer_->start (5000);
-		}
+		FetchQueue::Priority prio = !JID2CLEntry_.contains (jid) ||
+					JID2CLEntry_ [jid]->GetStatus (QString ()).State_ == SOffline ?
+				FetchQueue::PLow :
+				FetchQueue::PHigh;
+		VCardQueue_->Schedule (jid, prio);
 	}
 
 	GlooxCLEntry* ClientConnection::CreateCLEntry (const QString& jid)
@@ -1074,7 +1167,15 @@ namespace Xoox
 		entry->UpdateRI (ri);
 		JID2CLEntry_ [bareJID] = entry;
 		if (entry->GetAvatar ().isNull ())
-			ScheduleFetchVCard (bareJID);
+		{
+			const QXmppVCardIq& vcard = entry->GetVCard ();
+			if (vcard.nickName ().isEmpty () &&
+					vcard.birthday ().isNull () &&
+					vcard.email ().isEmpty () &&
+					vcard.firstName ().isEmpty () &&
+					vcard.lastName ().isEmpty ())
+				ScheduleFetchVCard (bareJID);
+		}
 		return entry;
 	}
 }
