@@ -210,6 +210,30 @@ namespace Xoox
 		Ui_.ConfigureList_->removeItem (Ui_.ConfigureList_->currentIndex ());
 	}
 	
+	void PrivacyListsConfigDialog::on_DefaultPolicy__currentIndexChanged (int idx)
+	{
+		const QString& listName = Ui_.ConfigureList_->currentText ();
+		if (listName.isEmpty ())
+			return;
+		
+		const PrivacyListItem::Action action = idx == 0 ?
+				PrivacyListItem::AAllow :
+				PrivacyListItem::ADeny;
+		
+		QList<PrivacyListItem> items = Lists_ [listName].GetItems ();
+		if (!items.isEmpty () &&
+				items.last ().GetType () == PrivacyListItem::TNone)
+			items.removeLast ();
+		if (action == PrivacyListItem::ADeny)
+		{
+			PrivacyListItem item;
+			item.SetType (PrivacyListItem::TNone);
+			item.SetAction (action);
+			items << item;
+		}
+		Lists_ [listName].SetItems (items);
+	}
+	
 	void PrivacyListsConfigDialog::on_AddRule__released ()
 	{
 		std::auto_ptr<PrivacyListsItemDialog> dia (new PrivacyListsItemDialog);
