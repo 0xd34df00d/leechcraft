@@ -141,6 +141,11 @@ namespace Acetamide
 	{
 		AccountID_ = id.toUtf8 ();
 	}
+	
+	QList<QAction*> IrcAccount::GetActions () const
+	{
+		return QList<QAction*> ();
+	}
 
 	void IrcAccount::OpenConfigurationDialog ()
 	{

@@ -29,7 +29,6 @@
 #include "glooxmessage.h"
 #include "glooxclentry.h"
 #include "roomclentry.h"
-#include "unauthclentry.h"
 #include "transfermanager.h"
 #include "sdsession.h"
 #include "pubsubmanager.h"
@@ -177,6 +176,11 @@ namespace Xoox
 	QByteArray GlooxAccount::GetAccountID () const
 	{
 		return ParentProtocol_->GetProtocolID () + "_" + JID_.toUtf8 ();
+	}
+	
+	QList<QAction*> GlooxAccount::GetActions () const
+	{
+		return QList<QAction*> ();
 	}
 
 	void GlooxAccount::QueryInfo (const QString& entryId)
@@ -447,9 +451,9 @@ namespace Xoox
 	QObject* GlooxAccount::CreateMessage (IMessage::MessageType type,
 			const QString& variant,
 			const QString& body,
-			const QXmppRosterIq::Item& ri)
+			const QString& jid)
 	{
-		return ClientConnection_->CreateMessage (type, variant, body, ri);
+		return ClientConnection_->CreateMessage (type, variant, body, jid);
 	}
 
 	QString GlooxAccount::GetPassword (bool authfailure)

@@ -16,46 +16,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_UNAUTHCLENTRY_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_UNAUTHCLENTRY_H
-#include "entrybase.h"
-#include <QStringList>
+#ifndef PLUGINS_AZOTH_PLUGINS_HERBICIDE_CONFWIDGET_H
+#define PLUGINS_AZOTH_PLUGINS_HERBICIDE_CONFWIDGET_H
+#include <QWidget>
+#include "ui_confwidget.h"
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-namespace Xoox
+namespace Herbicide
 {
-	class GlooxAccount;
-
-	/** Represents an entry in the contact list that has requested the
-	 * authorization but hasn't been granted nor denied yet.
-	 */
-	class UnauthCLEntry : public EntryBase
+	class ConfWidget : public QWidget
 	{
 		Q_OBJECT
-
-		QString JID_;
-		GlooxAccount *Account_;
-		QStringList Groups_;
+		
+		Ui::ConfWidget Ui_;
+		QList<QList<QPair<QString, QStringList> > > PredefinedQuests_;
 	public:
-		UnauthCLEntry (const QString&, const QString&, GlooxAccount*);
-
-		QObject* GetParentAccount () const;
-		Features GetEntryFeatures () const;
-		EntryType GetEntryType () const;
-		QString GetEntryName () const;
-		void SetEntryName (const QString&);
-		QString GetEntryID () const;
-		QString GetHumanReadableID () const;
-		QStringList Groups () const;
-		void SetGroups (const QStringList&);
-		QStringList Variants () const;
-		QObject* CreateMessage (IMessage::MessageType,
-				const QString&, const QString&);
-
-		QString GetJID () const;
+		ConfWidget (QWidget* = 0);
+		
+		QString GetQuestion () const;
+		QStringList GetAnswers () const;
+	private:
+		void SaveSettings () const;
+		void LoadSettings ();
+	public slots:
+		void accept ();
+		void reject ();
+	private slots:
+		void on_QuestStyle__currentIndexChanged (int);
+		void on_QuestVariant__currentIndexChanged (int);
 	};
 }
 }

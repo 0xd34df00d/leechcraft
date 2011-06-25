@@ -96,6 +96,7 @@ namespace Xoox
 		int GetPort () const;
 		void RenameAccount (const QString&);
 		QByteArray GetAccountID () const;
+		QList<QAction*> GetActions () const;
 		void QueryInfo (const QString&);
 		void OpenConfigurationDialog ();
 		void FillSettings (GlooxAccountConfigurationWidget*);
@@ -136,7 +137,7 @@ namespace Xoox
 
 		QObject* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&,
-				const QXmppRosterIq::Item&);
+				const QString&);
 	private:
 		QString GetPassword (bool authFailure = false);
 	public slots:

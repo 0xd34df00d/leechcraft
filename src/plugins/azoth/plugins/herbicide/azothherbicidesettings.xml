@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="Azoth Herbicide" />
+		<item type="groupbox" property="EnableQuest" checkable="true" default="off">
+			<label value="Enable quest" />
+			<item type="customwidget" label="own" name="ConfWidget" />
+		</item>
+	</page>
+</settings>

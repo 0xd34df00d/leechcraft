@@ -16,37 +16,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_JOINCONFERENCEDIALOG_H
-#define PLUGINS_AZOTH_JOINCONFERENCEDIALOG_H
-#include <QDialog>
-#include "interfaces/iaccount.h"
-#include "ui_joinconferencedialog.h"
+#include "xmlsettingsmanager.h"
+#include <QCoreApplication>
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-	class JoinConferenceDialog : public QDialog
+namespace Herbicide
+{
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		Q_OBJECT
+		Util::BaseSettingsManager::Init ();
+	}
+	
+	XmlSettingsManager& XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager xsm;
+		return xsm;
+	}
+	
+	void XmlSettingsManager::EndSettings (QSettings* settings) const
+	{
+	}
 
-		Ui::JoinConferenceDialog Ui_;
-		QHash<IProtocol*, QWidget*> Proto2Joiner_;
-	public:
-		JoinConferenceDialog (const QList<IAccount*>&, QWidget* = 0);
-		virtual ~JoinConferenceDialog ();
-	public slots:
-		virtual void accept ();
-		virtual void reject ();
-	private slots:
-		void on_AccountBox__currentIndexChanged (int);
-		void on_BookmarksBox__activated (int);
-		void on_HistoryBox__activated (int);
-		void handleValidityChanged (bool);
-	private:
-		void FillWidget (const QVariantMap&);
-	};
+	QSettings* XmlSettingsManager::BeginSettings () const
+	{
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth_Autopaste");
+		return settings;
+	}
 }
 }
-
-#endif
+}

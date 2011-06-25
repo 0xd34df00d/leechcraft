@@ -163,8 +163,9 @@ namespace Xoox
 		void Subscribe (const QString&,
 				const QString& = QString (), const QString& = QString (),
 				const QStringList& = QStringList ());
-		void RevokeSubscription (const QString&, const QString&);
 		void Unsubscribe (const QString&, const QString&);
+		void GrantSubscription (const QString&, const QString&);
+		void RevokeSubscription (const QString&, const QString&);
 		void Remove (GlooxCLEntry*);
 
 		void SendPacketWCallback (const QXmppIq&, QObject*, const QByteArray&);
@@ -178,7 +179,7 @@ namespace Xoox
 		QXmppBookmarkSet GetBookmarks () const;
 		void SetBookmarks (const QXmppBookmarkSet&);
 		GlooxMessage* CreateMessage (IMessage::MessageType,
-				const QString&, const QString&, const QXmppRosterIq::Item&);
+				const QString&, const QString&, const QString&);
 
 		static void Split (const QString& full,
 				QString *bare, QString *resource);
