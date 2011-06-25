@@ -23,6 +23,7 @@ INCLUDE_DIRECTORIES (
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
 	
+ADD_SUBDIRECTORY (storageplugins/securestorage)
 ADD_SUBDIRECTORY (storageplugins/simplestorage)
 
 SET (SRCS
