@@ -101,10 +101,14 @@ namespace Azoth
 			/** This entry is permanent and would appear in the next
 			 * session too. It makes sense to save it to disk, for
 			 * example, when shutting down.
+			 * 
+			 * This also means that the entry has been accepted into
+			 * some kind of contact list by the user.
 			 */
 			FPermanentEntry = 0x0000,
 
-			/** This entry is not permament and for this session only.
+			/** This entry is not permanent and would cease existing
+			 * after this login session.
 			 */
 			FSessionEntry = 0x0001,
 

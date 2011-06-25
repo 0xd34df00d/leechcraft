@@ -16,12 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_DEPESTER_DEPESTER_H
-#define PLUGINS_AZOTH_PLUGINS_DEPESTER_DEPESTER_H
+#ifndef PLUGINS_AZOTH_PLUGINS_HERBICIDE_HERBICIDE_H
+#define PLUGINS_AZOTH_PLUGINS_HERBICIDE_HERBICIDE_H
 #include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
+#include <interfaces/ihavesettings.h>
 #include "core.h"
 
 class QTranslator;
@@ -30,19 +31,24 @@ namespace LeechCraft
 {
 namespace Azoth
 {
-namespace Depester
+namespace Herbicide
 {
+	class ConfWidget;
+
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
+				 , public IHaveSettings
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2)
+		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
 
 		boost::shared_ptr<QTranslator> Translator_;
-		QHash<QObject*, QAction*> Entry2ActionIgnore_;
-		QHash<QObject*, QString> Entry2Nick_;
-		QSet<QString> IgnoredNicks_;
+		Util::XmlSettingsDialog_ptr SettingsDialog_;
+		ConfWidget *ConfWidget_;
+		QSet<QObject*> AskedEntries_;
+		QSet<QObject*> AllowedEntries_;
+		QSet<QObject*> OurMessages_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -53,26 +59,14 @@ namespace Depester
 		QIcon GetIcon () const;
 
 		QSet<QByteArray> GetPluginClasses () const;
+		
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	private:
-		bool IsEntryIgnored (QObject*);
-		void HandleMsgOccurence (IHookProxy_ptr, QObject*);
-		void SaveIgnores () const;
-		void LoadIgnores ();
+		bool IsConfValid () const;
+		bool IsEntryAllowed (QObject*) const;
 	public slots:
-		void hookEntryActionAreasRequested (LeechCraft::IHookProxy_ptr proxy,
-				QObject *action,
-				QObject *entry);
-		void hookEntryActionsRequested (LeechCraft::IHookProxy_ptr proxy,
-				QObject *entry);
-		void hookGonnaAppendMsg (LeechCraft::IHookProxy_ptr proxy,
-				QObject *message);
 		void hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message);
-		void hookShouldCountUnread (LeechCraft::IHookProxy_ptr proxy,
-				QObject *message);
-	private slots:
-		void handleIgnoreEntry (bool);
-		void handleNameChanged (const QString&);
 	};
 }
 }

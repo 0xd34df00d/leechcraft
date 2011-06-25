@@ -20,9 +20,13 @@
 #include <QIcon>
 #include <QAction>
 #include <QTranslator>
+#include <QSettings>
+#include <QCoreApplication>
 #include <plugininterface/util.h>
 #include <interfaces/iclentry.h>
 #include <interfaces/imessage.h>
+
+Q_DECLARE_METATYPE (QSet<QString>);
 
 namespace LeechCraft
 {
@@ -33,6 +37,10 @@ namespace Depester
 	void Plugin::Init (ICoreProxy_ptr)
 	{
 		Translator_.reset (Util::InstallTranslator ("azoth_depester"));
+		qRegisterMetaType<QSet<QString> > ("QSet<QString>");
+		qRegisterMetaTypeStreamOperators<QSet<QString> > ();
+		
+		LoadIgnores ();
 	}
 
 	void Plugin::SecondInit ()
@@ -87,6 +95,20 @@ namespace Depester
 			proxy->CancelDefault ();
 	}
 	
+	void Plugin::SaveIgnores () const
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth_Depester");
+		settings.setValue ("IgnoredNicks", QVariant::fromValue (IgnoredNicks_));
+	}
+	
+	void Plugin::LoadIgnores ()
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth_Depester");
+		IgnoredNicks_ = settings.value ("IgnoredNicks").value<QSet<QString> > ();
+	}
+	
 	void Plugin::hookEntryActionAreasRequested (IHookProxy_ptr proxy,
 			QObject *action, QObject*)
 	{
@@ -135,6 +157,17 @@ namespace Depester
 		HandleMsgOccurence (proxy, message);
 	}
 	
+	void Plugin::hookShouldCountUnread (IHookProxy_ptr proxy,
+				QObject *message)
+	{
+		IMessage *msg = qobject_cast<IMessage*> (message);
+		if (IsEntryIgnored (msg->OtherPart ()))
+		{
+			proxy->CancelDefault ();
+			proxy->SetReturnValue (false);
+		}
+	}
+	
 	void Plugin::handleIgnoreEntry (bool ignore)
 	{
 		QObject *entryObj = sender ()->
@@ -144,9 +177,37 @@ namespace Depester
 			return;
 		
 		if (ignore)
-			IgnoredNicks_ << entry->GetEntryName ();
+		{
+			const QString& nick = entry->GetEntryName ();
+			IgnoredNicks_ << nick;
+			Entry2Nick_ [entryObj] = nick;
+			connect (entryObj,
+					SIGNAL (nameChanged (const QString&)),
+					this,
+					SLOT (handleNameChanged (const QString&)));
+		}
 		else
+		{
 			IgnoredNicks_.remove (entry->GetEntryName ());
+			Entry2Nick_.remove (entryObj);
+			disconnect (entryObj,
+					SIGNAL (nameChanged (const QString&)),
+					this,
+					SLOT (handleNameChanged (const QString&)));
+		}
+		
+		SaveIgnores ();
+	}
+	
+	void Plugin::handleNameChanged (const QString& name)
+	{
+		QObject *entryObj = sender ();
+		if (!entryObj)
+			return;
+		
+		IgnoredNicks_.remove (Entry2Nick_ [entryObj]);
+		IgnoredNicks_ << name;
+		Entry2Nick_ [entryObj] = name;
 	}
 }
 }
