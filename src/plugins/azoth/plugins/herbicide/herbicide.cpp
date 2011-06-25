@@ -38,11 +38,11 @@ namespace Herbicide
 	void Plugin::Init (ICoreProxy_ptr)
 	{
 		Translator_.reset (Util::InstallTranslator ("azoth_herbicide"));
-		
+
 		SettingsDialog_.reset (new Util::XmlSettingsDialog);
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"azothherbicidesettings.xml");
-		
+
 		ConfWidget_ = new ConfWidget ();
 		SettingsDialog_->SetCustomWidget ("ConfWidget", ConfWidget_);
 	}
@@ -87,14 +87,44 @@ namespace Herbicide
 		return SettingsDialog_;
 	}
 	
+	bool Plugin::IsConfValid () const
+	{
+		if (!XmlSettingsManager::Instance ()
+				.property ("EnableQuest").toBool ())
+			return false;
+		
+		if (ConfWidget_->GetQuestion ().isEmpty () ||
+				ConfWidget_->GetAnswers ().isEmpty ())
+			return false;
+		
+		return true;
+	}
+	
+	bool Plugin::IsEntryAllowed (QObject *entryObj) const
+	{
+		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+		if (entry->GetEntryFeatures () & ICLEntry::FPermanentEntry)
+			return true;
+		
+		if (AllowedEntries_.contains (entryObj))
+			return true;
+		
+		return false;
+	}
+	
 	void Plugin::hookGonnaAppendMsg (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message)
 	{
+		if (!IsConfValid ())
+			return;
 	}
 
 	void Plugin::hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message)
 	{
+		if (!IsConfValid ())
+			return;
+
 		IMessage *msg = qobject_cast<IMessage*> (message);
 		if (!msg)
 		{
@@ -106,13 +136,47 @@ namespace Herbicide
 		
 		QObject *entryObj = msg->OtherPart ();
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
-		if (entry->GetEntryFeatures () & ICLEntry::FPermanentEntry)
+		
+		if (IsEntryAllowed (entryObj))
 			return;
+		
+		if (!AskedEntries_.contains (entryObj))
+		{
+			const QString& text = tr ("Please answer to the following "
+					"question to verify you are not a bot and is welcome "
+					"to communicate with me:\n%1")
+						.arg (ConfWidget_->GetQuestion ());
+			QObject *msgObj = entry->CreateMessage (IMessage::MTChatMessage, QString (), text);
+			qobject_cast<IMessage*> (msgObj)->Send ();
+			AskedEntries_ << entryObj;
+			
+			proxy->CancelDefault ();
+		}
+		else if (ConfWidget_->GetAnswers ().contains (msg->GetBody ().toLower ()))
+		{
+			const QString& text = tr ("Nice, seems like you've answered "
+					"correctly. Please write again now what you wanted "
+					"to write.");
+			QObject *msgObj = entry->CreateMessage (IMessage::MTChatMessage, QString (), text);
+			qobject_cast<IMessage*> (msgObj)->Send ();
+			AllowedEntries_ << entryObj;
+			AskedEntries_.remove (entryObj);
+		}
+		else
+		{
+			const QString& text = tr ("Sorry, you are wrong. Try again.");
+			QObject *msgObj = entry->CreateMessage (IMessage::MTChatMessage, QString (), text);
+			qobject_cast<IMessage*> (msgObj)->Send ();
+			
+			proxy->CancelDefault ();
+		}
 	}
 	
 	void Plugin::hookShouldCountUnread (IHookProxy_ptr proxy,
 				QObject *message)
 	{
+		if (!IsConfValid ())
+			return;
 	}
 }
 }

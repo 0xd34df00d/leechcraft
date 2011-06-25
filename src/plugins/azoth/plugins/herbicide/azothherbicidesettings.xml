@@ -2,6 +2,9 @@
 <settings>
 	<page>
 		<label value="Azoth Herbicide" />
-		<item type="customwidget" label="own" name="ConfWidget" />
+		<item type="groupbox" property="EnableQuest" checkable="true" default="off">
+			<label value="Enable quest" />
+			<item type="customwidget" label="own" name="ConfWidget" />
+		</item>
 	</page>
 </settings>

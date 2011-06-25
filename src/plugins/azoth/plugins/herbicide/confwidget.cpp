@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "confwidget.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -28,6 +29,46 @@ namespace Herbicide
 	: QWidget (parent)
 	{
 		Ui_.setupUi (this);
+		
+		LoadSettings ();
+	}
+	
+	QString ConfWidget::GetQuestion () const
+	{
+		return Ui_.Question_->toPlainText ();
+	}
+	
+	QStringList ConfWidget::GetAnswers () const
+	{
+		return Ui_.Answers_->toPlainText ()
+			.split ('\n', QString::SkipEmptyParts);
+	}
+	
+	void ConfWidget::SaveSettings () const
+	{
+		XmlSettingsManager::Instance ().setProperty ("Question", GetQuestion ());
+		XmlSettingsManager::Instance ().setProperty ("Answers", GetAnswers ());
+	}
+
+	void ConfWidget::LoadSettings ()
+	{
+		const QString& question = XmlSettingsManager::Instance ()
+				.property ("Question").toString ();
+		Ui_.Question_->setPlainText (question);
+
+		const QStringList& answers = XmlSettingsManager::Instance ()
+				.property ("Answers").toStringList ();
+		Ui_.Answers_->setPlainText (answers.join ("\n"));
+	}
+	
+	void ConfWidget::accept ()
+	{
+		SaveSettings ();
+	}
+	
+	void ConfWidget::reject ()
+	{
+		LoadSettings ();
 	}
 }
 }

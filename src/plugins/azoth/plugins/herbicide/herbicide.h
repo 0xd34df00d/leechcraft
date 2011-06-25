@@ -47,6 +47,7 @@ namespace Herbicide
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
 		ConfWidget *ConfWidget_;
 		QSet<QObject*> AskedEntries_;
+		QSet<QObject*> AllowedEntries_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -59,6 +60,9 @@ namespace Herbicide
 		QSet<QByteArray> GetPluginClasses () const;
 		
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+	private:
+		bool IsConfValid () const;
+		bool IsEntryAllowed (QObject*) const;
 	public slots:
 		void hookGonnaAppendMsg (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message);

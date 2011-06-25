@@ -34,6 +34,15 @@ namespace Herbicide
 		Ui::ConfWidget Ui_;
 	public:
 		ConfWidget (QWidget* = 0);
+		
+		QString GetQuestion () const;
+		QStringList GetAnswers () const;
+	private:
+		void SaveSettings () const;
+		void LoadSettings ();
+	public slots:
+		void accept ();
+		void reject ();
 	};
 }
 }
