@@ -47,6 +47,7 @@ SET (XOOX_SRCS
 	usermood.cpp
 	usertune.cpp
 	privacylistsmanager.cpp
+	privacylistsconfigdialog.cpp
 	)
 SET (XOOX_HEADERS
 	xoox.h
@@ -89,6 +90,7 @@ SET (XOOX_HEADERS
 	usermood.h
 	usertune.h
 	privacylistsmanager.h
+	privacylistsconfigdialog.h
 	)
 SET (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui
@@ -99,6 +101,7 @@ SET (XOOX_FORMS
 	roomconfigwidget.ui
 	affiliationselectordialog.ui
 	inbandaccountregfirstpage.ui
+	privacylistsconfigdialog.ui
 	)
 CreateTrVars ("azoth_xoox" "de;en;fr;it;ru_RU;uk_UA" XOOX_TRANSLATIONS XOOX_COMPILED_TRANSLATIONS)
 QT4_WRAP_CPP (XOOX_MOC_SRCS ${XOOX_HEADERS})
