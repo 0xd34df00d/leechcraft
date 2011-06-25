@@ -362,6 +362,14 @@ namespace Azoth
 			
 			actions << Util::CreateSeparator (menu);
 			
+			IAccount *account = qobject_cast<IAccount*> (objVar.value<QObject*> ());
+			QList<QAction*> accActions = account->GetActions ();
+			if (!accActions.isEmpty ())
+			{
+				actions += accActions;
+				actions << Util::CreateSeparator (menu);
+			}
+			
 			if (qobject_cast<IHaveConsole*> (objVar.value<QObject*> ()))
 			{
 				AccountConsole_->setProperty ("Azoth/AccountObject", objVar);
