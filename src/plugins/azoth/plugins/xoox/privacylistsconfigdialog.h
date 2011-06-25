@@ -55,6 +55,10 @@ namespace Xoox
 	private slots:
 		void on_AddButton__released ();
 		void on_RemoveButton__released ();
+		void on_AddRule__released ();
+		void on_RemoveRule__released ();
+		void on_MoveUp__released ();
+		void on_MoveDown__released ();
 		void handleGotLists (const QStringList&, const QString&, const QString&);
 		void handleGotList (const PrivacyList&);
 	};

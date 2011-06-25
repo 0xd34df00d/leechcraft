@@ -17,9 +17,11 @@
  **********************************************************************/
 
 #include "privacylistsconfigdialog.h"
+#include <memory>
 #include <QMessageBox>
 #include <QInputDialog>
 #include <QStandardItemModel>
+#include "privacylistsitemdialog.h"
 
 namespace LeechCraft
 {
@@ -180,6 +182,54 @@ namespace Xoox
 		Ui_.ConfigureList_->removeItem (Ui_.ConfigureList_->currentIndex ());
 	}
 	
+	void PrivacyListsConfigDialog::on_AddRule__released ()
+	{
+		std::auto_ptr<PrivacyListsItemDialog> dia (new PrivacyListsItemDialog);
+		if (dia->exec () != QDialog::Accepted)
+			return;
+		
+		const PrivacyListItem& item = dia->GetItem ();
+		Model_->appendRow (ToRow (item));
+
+		PrivacyList& list = Lists_ [Ui_.ConfigureList_->currentText ()];
+		QList<PrivacyListItem> items = list.GetItems ();
+		items << item;
+		list.SetItems (items);
+	}
+
+	void PrivacyListsConfigDialog::on_RemoveRule__released ()
+	{
+		const QModelIndex& index = Ui_.RulesTree_->currentIndex ();
+		if (!index.isValid ())
+			return;
+		
+		const int row = index.row ();
+		Model_->removeRow (row);
+		
+		PrivacyList& list = Lists_ [Ui_.ConfigureList_->currentText ()];
+		QList<PrivacyListItem> items = list.GetItems ();
+		items.removeAt (row);
+		list.SetItems (items);
+	}
+
+	void PrivacyListsConfigDialog::on_MoveUp__released ()
+	{
+		const QModelIndex& index = Ui_.RulesTree_->currentIndex ();
+		if (!index.isValid () || index.row () < 1)
+			return;
+
+		Model_->insertRow (index.row () - 1, Model_->takeRow (index.row ()));
+	}
+
+	void PrivacyListsConfigDialog::on_MoveDown__released ()
+	{
+		const QModelIndex& index = Ui_.RulesTree_->currentIndex ();
+		if (!index.isValid () || index.row () >= Model_->rowCount () - 1)
+			return;
+
+		Model_->insertRow (index.row (), Model_->takeRow (index.row () + 1));
+	}
+
 	void PrivacyListsConfigDialog::handleGotLists (const QStringList& lists,
 			const QString& active, const QString& def)
 	{
