@@ -40,18 +40,18 @@ namespace LeechCraft
 
 					class CryptoSystem
 					{
+						QByteArray Key_;
 					public:
 						CryptoSystem (const QString &password);
 						QByteArray Encrypt (const QByteArray &data) const;
 						QByteArray Decrypt (const QByteArray &data) const;
 						QByteArray HMAC (const QByteArray &data) const;
-					private:
+
 						static const int HMAC_LENGTH = 128 / 8;
 						static const int HASH_LENGTH = 256 / 8;
 						static const int KEY_LENGTH = 256 / 8;
 						static const int IV_LENGTH = 128 / 8;
-						
-						QByteArray Key_;
+
 						QByteArray Hash (const QByteArray &data) const;
 						QByteArray CreateKey (const QString &password) const;
 					};
