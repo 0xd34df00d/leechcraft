@@ -116,7 +116,7 @@ namespace LeechCraft
 				if (sSize != w->size ())
 					w->resize (sSize * 2);
 
-				if (!scaleFactor)
+				if (std::fabs (scaleFactor) < std::numeric_limits<qreal>::epsilon ())
 					scaleFactor = std::min (static_cast<qreal> (wW) / sSize.width (),
 							static_cast<qreal> (wH) / sSize.height ());
 
