@@ -270,8 +270,8 @@ namespace Xoox
 		list.SetItems (items);
 		
 		int column = 0;
-		Q_FOREACH (QStandardItem *item, ToRow (item))
-			Model_->setItem (row, column++, item);
+		Q_FOREACH (QStandardItem *modelItem, ToRow (item))
+			Model_->setItem (row, column++, modelItem);
 	}
 
 	void PrivacyListsConfigDialog::on_RemoveRule__released ()
