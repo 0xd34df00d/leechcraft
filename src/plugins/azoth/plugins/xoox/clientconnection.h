@@ -151,6 +151,7 @@ namespace Xoox
 		CapsManager* GetCapsManager () const;
 		AnnotationsManager* GetAnnotationsManager () const;
 		PubSubManager* GetPubSubManager () const;
+		PrivacyListsManager* GetPrivacyListsManager () const;
 		
 		void SetSignaledLog (bool);
 

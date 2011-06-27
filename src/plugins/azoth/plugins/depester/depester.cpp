@@ -38,7 +38,7 @@ namespace Depester
 	{
 		Translator_.reset (Util::InstallTranslator ("azoth_depester"));
 		qRegisterMetaType<QSet<QString> > ("QSet<QString>");
-		qRegisterMetaTypeStreamOperators<QSet<QString> > ();
+		qRegisterMetaTypeStreamOperators<QSet<QString> > ("QSet<QString>");
 		
 		LoadIgnores ();
 	}

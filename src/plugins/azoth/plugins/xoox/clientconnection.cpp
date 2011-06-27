@@ -367,6 +367,11 @@ namespace Xoox
 		return PubSubManager_;
 	}
 	
+	PrivacyListsManager* ClientConnection::GetPrivacyListsManager () const
+	{
+		return PrivacyListsManager_;
+	}
+	
 	void ClientConnection::SetSignaledLog (bool signaled)
 	{
 		if (signaled)
