@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2011  Andrey Batyiev
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,15 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_FORMBUILDER_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_FORMBUILDER_H
-#include <boost/shared_ptr.hpp>
-#include <QXmppDataForm.h>
-
-class QXmppDataForm;
-class QXmppBobManager;
-class QWidget;
-class QFormLayout;
+#include "imagemediawidget.h"
+#include <QXmppBobManager.h>
+#include <QXmppBobIq.h>
+#include <QDebug>
 
 namespace LeechCraft
 {
@@ -32,27 +27,39 @@ namespace Azoth
 {
 namespace Xoox
 {
-	class FieldHandler;
-	typedef boost::shared_ptr<FieldHandler> FieldHandler_ptr;
-
-	class FormBuilder
-	{		
-		QXmppDataForm Form_;
-		QHash<QXmppDataForm::Field::Type, FieldHandler_ptr> Type2Handler_;
-		QXmppBobManager *BobManager_;
-		QString From_;
+	ImageMediaWidget::ImageMediaWidget (const QPair<QString, QString>& uri, QXmppBobManager *manager, const QString& from, QWidget *parent)
+	: QLabel (parent)
+	{
+		QByteArray data;
+		if (uri.second.startsWith("cid:"))
+		{
+			cid = uri.second.mid(4);
+			data = manager->take (from, cid);
+		}
+		else
+		{
+			//FIXME
+		}
 		
-	public:
-		FormBuilder (const QString& = QString(), QXmppBobManager* = 0);
+		if (!data.isNull ())
+		{
+			setPixmap (QPixmap::fromImage (QImage::fromData (data)));
+		}
+		else if (cid != "")
+		{
+			connect (manager, SIGNAL (bobReceived (const QXmppBobIq&)), this, SLOT (bobReceived (const QXmppBobIq&)));
+			manager->requestBob (from, cid);
+		}
+	}
 
-		QString From () const;
-		QXmppBobManager* BobManager() const;
-		
-		QWidget* CreateForm (const QXmppDataForm&, QWidget* = 0);
-		QXmppDataForm GetForm ();
-	};
-}
-}
-}
+	void ImageMediaWidget::bobReceived (const QXmppBobIq& bob)
+	{
+		if (bob.cid () == cid)
+		{
+			setPixmap (QPixmap::fromImage (QImage::fromData (bob.data ())));
+		}
+	}
 
-#endif
+}
+}
+}

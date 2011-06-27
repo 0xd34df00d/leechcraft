@@ -36,6 +36,7 @@
 #include <QXmppPubSubIq.h>
 #include <QXmppDeliveryReceiptsManager.h>
 #include <QXmppCaptchaManager.h>
+#include <QXmppBobManager.h>
 #include <plugininterface/util.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <interfaces/iprotocol.h>
@@ -60,6 +61,7 @@
 #include "usertune.h"
 #include "privacylistsmanager.h"
 
+
 namespace LeechCraft
 {
 namespace Azoth
@@ -81,6 +83,7 @@ namespace Xoox
 	, DeliveryReceiptsManager_ (new QXmppDeliveryReceiptsManager)
 	, CaptchaManager_ (new QXmppCaptchaManager)
 	, PubSubManager_ (new PubSubManager)
+	, BobManager_ (new QXmppBobManager)
 	, PrivacyListsManager_ (new PrivacyListsManager)
 	, AnnotationsManager_ (0)
 	, OurJID_ (jid)
@@ -120,6 +123,7 @@ namespace Xoox
 				this,
 				SLOT (handlePEPEvent (const QString&, PEPEventBase*)));
 
+		Client_->addExtension (BobManager_);
 		Client_->addExtension (PubSubManager_);
 		Client_->addExtension (DeliveryReceiptsManager_);
 		Client_->addExtension (MUCManager_);
@@ -193,9 +197,9 @@ namespace Xoox
 				SLOT (handleMessageDelivered (const QString&)));
 
 		connect (CaptchaManager_,
-				SIGNAL (captchaFormReceived (const QXmppDataForm&)),
+				SIGNAL (captchaFormReceived (const QString&, const QXmppDataForm&)),
 				this,
-				SLOT (handleCaptchaReceived (const QXmppDataForm&)));
+				SLOT (handleCaptchaReceived (const QString&, const QXmppDataForm&)));
 		
 		connect (DiscoveryManager_,
 				SIGNAL (infoReceived (const QXmppDiscoveryIq&)),
@@ -874,9 +878,9 @@ namespace Xoox
 			msg->SetDelivered (true);
 	}
 
-	void ClientConnection::handleCaptchaReceived (const QXmppDataForm& dataForm)
+	void ClientConnection::handleCaptchaReceived (const QString& from, const QXmppDataForm& dataForm)
 	{
-		FormBuilder builder;
+		FormBuilder builder (from, BobManager_);
 		
 		std::auto_ptr<QDialog> dialog (new QDialog ());
 		QWidget *widget = builder.CreateForm (dataForm, dialog.get ());
@@ -898,6 +902,8 @@ namespace Xoox
 		if (dialog->exec () != QDialog::Accepted)
 			return;
 		
+		QXmppDataForm form = builder.GetForm ();
+		CaptchaManager_->sendResponse (from, form);
 	}
 
 	void ClientConnection::handleBookmarksReceived (const QXmppBookmarkSet& set)

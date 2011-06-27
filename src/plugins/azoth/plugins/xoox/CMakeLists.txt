@@ -47,6 +47,7 @@ SET (XOOX_SRCS
 	usermood.cpp
 	usertune.cpp
 	privacylistsmanager.cpp
+	imagemediawidget.cpp
 	)
 SET (XOOX_HEADERS
 	xoox.h
@@ -89,6 +90,7 @@ SET (XOOX_HEADERS
 	usermood.h
 	usertune.h
 	privacylistsmanager.h
+	imagemediawidget.h
 	)
 SET (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui

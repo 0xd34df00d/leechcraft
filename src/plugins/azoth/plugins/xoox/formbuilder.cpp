@@ -25,6 +25,8 @@
 #include <QLineEdit>
 #include <QTreeWidget>
 #include <QtDebug>
+#include <QXmppBobManager.h>
+#include "imagemediawidget.h"
 
 namespace LeechCraft
 {
@@ -36,6 +38,11 @@ namespace Xoox
 	{
 		QMap<QWidget*, QXmppDataForm::Field*> Widget2Field_;
 	public:
+		FieldHandler (FormBuilder *builder)
+		: Builder_ (builder)
+		{
+		}
+		
 		virtual ~FieldHandler () {}
 		
 		void CreateWidget (QXmppDataForm::Field& field, QFormLayout *layout)
@@ -63,13 +70,46 @@ namespace Xoox
 				Widget2Field_ [widget]->setValue (var);
 			}
 		}
+		
 	protected:
 		virtual QWidget* CreateWidgetImpl (QXmppDataForm::Field&, QFormLayout*) = 0;
 		virtual QVariant GetData (QWidget*) = 0;
+		
+		FormBuilder *Builder_;
+		
+		QWidget* CombineWithMedia (const QXmppDataForm::Media& media, QWidget *widget = 0)
+		{
+			QWidget *container = new QWidget;
+			QBoxLayout *layout = new QBoxLayout (QBoxLayout::TopToBottom);
+			QWidget *mediaWidget = 0;
+			
+			QPair<QString, QString> uri = media.uris().first();
+			
+			if (uri.first.startsWith ("image/"))
+				mediaWidget = new ImageMediaWidget (uri, Builder_->BobManager (), Builder_->From (), container);
+			
+			if (mediaWidget == 0)
+			{
+				mediaWidget = new QLabel (QObject::tr ("Unable to represent embedded media data."));
+				qWarning () << Q_FUNC_INFO
+						<< "unable to process "
+						<< uri.first;
+			}
+			layout->addWidget (mediaWidget);
+			layout->addWidget (widget);
+			container->setLayout (layout);
+			return container;
+		}
 	};
 	
 	class BooleanHandler : public FieldHandler
 	{
+	public:
+		BooleanHandler (FormBuilder *builder)
+		: FieldHandler (builder)
+		{
+		}
+		
 	protected:
 		QWidget* CreateWidgetImpl (QXmppDataForm::Field& field, QFormLayout *layout)
 		{
@@ -97,6 +137,12 @@ namespace Xoox
 	
 	class FixedHandler : public FieldHandler
 	{
+	public:
+		FixedHandler (FormBuilder *builder)
+		: FieldHandler (builder)
+		{
+		}
+
 	protected:
 		QWidget* CreateWidgetImpl (QXmppDataForm::Field& field, QFormLayout *layout)
 		{
@@ -113,6 +159,12 @@ namespace Xoox
 	
 	class NullHandler : public FieldHandler
 	{
+	public:
+		NullHandler (FormBuilder *builder)
+		: FieldHandler (builder)
+		{
+		}
+
 	protected:
 		QWidget* CreateWidgetImpl (QXmppDataForm::Field&, QFormLayout*)
 		{
@@ -127,6 +179,12 @@ namespace Xoox
 	
 	class MultiTextHandler : public FieldHandler
 	{
+	public:
+		MultiTextHandler (FormBuilder *builder)
+		: FieldHandler (builder)
+		{
+		}
+
 	protected:
 		QWidget* CreateWidgetImpl (QXmppDataForm::Field& field, QFormLayout *layout)
 		{
@@ -156,8 +214,8 @@ namespace Xoox
 	{
 		bool IsPassword_;
 	public:
-		SingleTextHandler (bool pass)
-		: IsPassword_ (pass)
+		SingleTextHandler (bool pass, FormBuilder *builder)
+		: IsPassword_ (pass), FieldHandler (builder)
 		{
 		}
 	protected:
@@ -166,7 +224,10 @@ namespace Xoox
 			QLineEdit *edit = new QLineEdit (field.value ().toString ());
 			if (IsPassword_)
 				edit->setEchoMode (QLineEdit::Password);
-			layout->addRow (field.label (), edit);
+			if (!field.media ().isNull ())
+				layout->addRow (field.label (), CombineWithMedia (field.media (), edit));
+			else
+				layout->addRow (field.label (), edit);
 			return edit;
 		}
 		
@@ -190,8 +251,8 @@ namespace Xoox
 	{
 		QAbstractItemView::SelectionMode SelMode_;
 	public:
-		ListHandler (QAbstractItemView::SelectionMode mode)
-		: SelMode_ (mode)
+		ListHandler (QAbstractItemView::SelectionMode mode, FormBuilder *builder)
+		: SelMode_ (mode), FieldHandler (builder)
 		{
 		}
 	protected:
@@ -231,20 +292,31 @@ namespace Xoox
 		}
 	};
 
-	FormBuilder::FormBuilder ()
+	FormBuilder::FormBuilder (const QString& from, QXmppBobManager *bobManager)
+	:	From_ (from), BobManager_ (bobManager)
 	{
-		Type2Handler_ [QXmppDataForm::Field::BooleanField].reset (new BooleanHandler);
-		Type2Handler_ [QXmppDataForm::Field::FixedField].reset (new FixedHandler);
-		Type2Handler_ [QXmppDataForm::Field::HiddenField].reset (new NullHandler);
-		Type2Handler_ [QXmppDataForm::Field::JidMultiField].reset (new MultiTextHandler);
-		Type2Handler_ [QXmppDataForm::Field::JidSingleField].reset (new SingleTextHandler (false));
-		Type2Handler_ [QXmppDataForm::Field::ListMultiField].reset (new ListHandler (QAbstractItemView::ExtendedSelection));
-		Type2Handler_ [QXmppDataForm::Field::ListSingleField].reset (new ListHandler (QAbstractItemView::SingleSelection));
-		Type2Handler_ [QXmppDataForm::Field::TextMultiField].reset (new MultiTextHandler);
-		Type2Handler_ [QXmppDataForm::Field::TextPrivateField].reset (new SingleTextHandler (true));
-		Type2Handler_ [QXmppDataForm::Field::TextSingleField].reset (new SingleTextHandler (false));
+		Type2Handler_ [QXmppDataForm::Field::BooleanField].reset (new BooleanHandler (this));
+		Type2Handler_ [QXmppDataForm::Field::FixedField].reset (new FixedHandler (this));
+		Type2Handler_ [QXmppDataForm::Field::HiddenField].reset (new NullHandler (this));
+		Type2Handler_ [QXmppDataForm::Field::JidMultiField].reset (new MultiTextHandler (this));
+		Type2Handler_ [QXmppDataForm::Field::JidSingleField].reset (new SingleTextHandler (false, this));
+		Type2Handler_ [QXmppDataForm::Field::ListMultiField].reset (new ListHandler (QAbstractItemView::ExtendedSelection, this));
+		Type2Handler_ [QXmppDataForm::Field::ListSingleField].reset (new ListHandler (QAbstractItemView::SingleSelection, this));
+		Type2Handler_ [QXmppDataForm::Field::TextMultiField].reset (new MultiTextHandler (this));
+		Type2Handler_ [QXmppDataForm::Field::TextPrivateField].reset (new SingleTextHandler (true, this));
+		Type2Handler_ [QXmppDataForm::Field::TextSingleField].reset (new SingleTextHandler (false, this));
 	}
 	
+	QXmppBobManager* FormBuilder::BobManager () const
+	{
+		return BobManager_;
+	}
+
+	QString FormBuilder::From () const
+	{
+		return From_;
+	}
+
 	QWidget* FormBuilder::CreateForm (const QXmppDataForm& form, QWidget *parent)
 	{
 		if (form.isNull ())

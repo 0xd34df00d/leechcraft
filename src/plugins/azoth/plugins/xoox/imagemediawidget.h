@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2011  Andrey Batyiev
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,15 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_FORMBUILDER_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_FORMBUILDER_H
-#include <boost/shared_ptr.hpp>
-#include <QXmppDataForm.h>
+#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_IMAGEMEDIAWIDGET_H
+#define PLUGINS_AZOTH_PLUGINS_XOOX_IMAGEMEDIAWIDGET_H
 
-class QXmppDataForm;
+#include <QLabel>
+
 class QXmppBobManager;
-class QWidget;
-class QFormLayout;
+class QXmppBobIq;
 
 namespace LeechCraft
 {
@@ -32,24 +30,16 @@ namespace Azoth
 {
 namespace Xoox
 {
-	class FieldHandler;
-	typedef boost::shared_ptr<FieldHandler> FieldHandler_ptr;
-
-	class FormBuilder
-	{		
-		QXmppDataForm Form_;
-		QHash<QXmppDataForm::Field::Type, FieldHandler_ptr> Type2Handler_;
-		QXmppBobManager *BobManager_;
-		QString From_;
+	class ImageMediaWidget : public QLabel
+	{
+		Q_OBJECT
+		QString cid;
 		
 	public:
-		FormBuilder (const QString& = QString(), QXmppBobManager* = 0);
-
-		QString From () const;
-		QXmppBobManager* BobManager() const;
+		ImageMediaWidget (const QPair<QString, QString>&, QXmppBobManager *, const QString&, QWidget * = 0);
 		
-		QWidget* CreateForm (const QXmppDataForm&, QWidget* = 0);
-		QXmppDataForm GetForm ();
+	public slots:
+		void bobReceived (const QXmppBobIq&);
 	};
 }
 }
