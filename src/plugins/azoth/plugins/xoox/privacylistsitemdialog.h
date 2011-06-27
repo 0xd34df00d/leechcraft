@@ -16,32 +16,46 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_URLFRAME_H
-#define PLUGINS_POSHUKU_URLFRAME_H
-#include <QFrame>
-#include "ui_urlframe.h"
+#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_PRIVACYLISTSITEMDIALOG_H
+#define PLUGINS_AZOTH_PLUGINS_XOOX_PRIVACYLISTSITEMDIALOG_H
+#include <QDialog>
+#include "ui_privacylistsitemdialog.h"
 
 namespace LeechCraft
 {
-namespace Poshuku
+namespace Azoth
 {
-	class URLFrame : public QFrame
+namespace Xoox
+{
+	class PrivacyListItem;
+
+	class PrivacyListsItemDialog : public QDialog
 	{
 		Q_OBJECT
-
-		Ui::URLFrame Ui_;
+		
+		Ui::PrivacyListsItemDialog Ui_;
+		
+		enum TypeNum
+		{
+			TNJID,
+			TNSubscription,
+			TNGroup
+		};
+		
+		enum ActionNum
+		{
+			ANAllow,
+			ANDeny
+		};
 	public:
-		URLFrame (QWidget* = 0);
-
-		QLineEdit* GetEdit () const;
-		void SetFavicon (const QIcon&);
-		void AddWidget (QWidget*);
-		void RemoveWidget (QWidget*);
+		PrivacyListsItemDialog (QWidget* = 0);
+		
+		PrivacyListItem GetItem () const;
+		void SetItem (const PrivacyListItem&);
 	private slots:
-		void on_URLEdit__returnPressed ();
-	signals:
-		void load (const QString&);
+		void on_Type__currentIndexChanged (int);
 	};
+}
 }
 }
 
