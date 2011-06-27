@@ -82,6 +82,8 @@ namespace Xoox
 		boost::shared_ptr<TransferManager> TransferManager_;
 
 		GlooxAccountState AccState_;
+		
+		QAction *PrivacyDialogAction_;
 	public:
 		GlooxAccount (const QString&, QObject*);
 		void Init ();
@@ -96,6 +98,7 @@ namespace Xoox
 		int GetPort () const;
 		void RenameAccount (const QString&);
 		QByteArray GetAccountID () const;
+		QList<QAction*> GetActions () const;
 		void QueryInfo (const QString&);
 		void OpenConfigurationDialog ();
 		void FillSettings (GlooxAccountConfigurationWidget*);
@@ -136,7 +139,7 @@ namespace Xoox
 
 		QObject* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&,
-				const QXmppRosterIq::Item&);
+				const QString&);
 	private:
 		QString GetPassword (bool authFailure = false);
 	public slots:
@@ -145,6 +148,7 @@ namespace Xoox
 	private slots:
 		void handleServerAuthFailed ();
 		void feedClientPassword ();
+		void showPrivacyDialog ();
 		void handleDestroyClient ();
 	signals:
 		void gotCLItems (const QList<QObject*>&);

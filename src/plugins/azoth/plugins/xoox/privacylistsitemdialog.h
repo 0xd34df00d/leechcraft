@@ -16,10 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_UNAUTHCLENTRY_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_UNAUTHCLENTRY_H
-#include "entrybase.h"
-#include <QStringList>
+#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_PRIVACYLISTSITEMDIALOG_H
+#define PLUGINS_AZOTH_PLUGINS_XOOX_PRIVACYLISTSITEMDIALOG_H
+#include <QDialog>
+#include "ui_privacylistsitemdialog.h"
 
 namespace LeechCraft
 {
@@ -27,35 +27,33 @@ namespace Azoth
 {
 namespace Xoox
 {
-	class GlooxAccount;
+	class PrivacyListItem;
 
-	/** Represents an entry in the contact list that has requested the
-	 * authorization but hasn't been granted nor denied yet.
-	 */
-	class UnauthCLEntry : public EntryBase
+	class PrivacyListsItemDialog : public QDialog
 	{
 		Q_OBJECT
-
-		QString JID_;
-		GlooxAccount *Account_;
-		QStringList Groups_;
+		
+		Ui::PrivacyListsItemDialog Ui_;
+		
+		enum TypeNum
+		{
+			TNJID,
+			TNSubscription,
+			TNGroup
+		};
+		
+		enum ActionNum
+		{
+			ANAllow,
+			ANDeny
+		};
 	public:
-		UnauthCLEntry (const QString&, const QString&, GlooxAccount*);
-
-		QObject* GetParentAccount () const;
-		Features GetEntryFeatures () const;
-		EntryType GetEntryType () const;
-		QString GetEntryName () const;
-		void SetEntryName (const QString&);
-		QString GetEntryID () const;
-		QString GetHumanReadableID () const;
-		QStringList Groups () const;
-		void SetGroups (const QStringList&);
-		QStringList Variants () const;
-		QObject* CreateMessage (IMessage::MessageType,
-				const QString&, const QString&);
-
-		QString GetJID () const;
+		PrivacyListsItemDialog (QWidget* = 0);
+		
+		PrivacyListItem GetItem () const;
+		void SetItem (const PrivacyListItem&);
+	private slots:
+		void on_Type__currentIndexChanged (int);
 	};
 }
 }

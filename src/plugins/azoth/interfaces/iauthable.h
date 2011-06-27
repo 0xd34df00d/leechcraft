@@ -38,6 +38,12 @@ namespace Azoth
 		 * @return Authorization status of this entry.
 		 */
 		virtual AuthStatus GetAuthStatus () const = 0;
+		
+		/** @brief Resends authorization to the entry.
+		 * 
+		 * @param[in] reason Optional reason message, if applicable.
+		 */
+		virtual void ResendAuth (const QString& reason = QString ()) = 0;
 
 		/** @brief Revokes authorization from the entry.
 		 *

@@ -119,6 +119,9 @@ namespace Azoth
 		void hookEntryActionsRequested (LeechCraft::IHookProxy_ptr proxy,
 				QObject *entry);
 		
+		void hookGonnaAppendMsg (LeechCraft::IHookProxy_ptr proxy,
+				QObject *message);
+		
 		/** @brief Hook for handling incoming messages.
 		 * 
 		 * This hook is called for handling incoming messages. The
@@ -163,6 +166,8 @@ namespace Azoth
 				QString text);
 		void hookMessageCreated (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab,
+				QObject *message);
+		void hookShouldCountUnread (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message);
 		void hookThemeReloaded (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab,

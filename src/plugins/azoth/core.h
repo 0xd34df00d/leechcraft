@@ -207,7 +207,7 @@ namespace Azoth
 		 * unread.
 		 */
 		bool ShouldCountUnread (const ICLEntry *entry,
-				const IMessage *message);
+				IMessage *message);
 
 		/** Whether this message should be considered as a the one that
 		 * highlights the participant.
@@ -511,6 +511,7 @@ namespace Azoth
 		void handleActionRenameTriggered ();
 		void handleActionChangeGroupsTriggered ();
 		void handleActionRemoveTriggered ();
+		void handleActionGrantAuthTriggered ();
 		void handleActionRevokeAuthTriggered ();
 		void handleActionUnsubscribeTriggered ();
 		void handleActionRerequestTriggered ();
@@ -561,6 +562,8 @@ namespace Azoth
 		void hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message);
 		void hookIsHighlightMessage (LeechCraft::IHookProxy_ptr proxy,
+				QObject *message);
+		void hookShouldCountUnread (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message);
 	};
 }

@@ -16,58 +16,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "urlframe.h"
+#include "xmlsettingsmanager.h"
+#include <QCoreApplication>
 
 namespace LeechCraft
 {
-namespace Poshuku
+namespace Azoth
 {
-	URLFrame::URLFrame (QWidget *parent)
-	: QFrame (parent)
+namespace Herbicide
+{
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		Ui_.setupUi (this);
-		
-		connect (Ui_.ClearButton_,
-				SIGNAL (released ()),
-				Ui_.URLEdit_,
-				SLOT (clear ()));
-		
-		connect (Ui_.URLEdit_,
-				SIGNAL (textChanged (const QString&)),
-				Ui_.ClearButton_,
-				SLOT (textChanged (const QString&)));
-
-		Ui_.ClearButton_->hide ();
+		Util::BaseSettingsManager::Init ();
+	}
+	
+	XmlSettingsManager& XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager xsm;
+		return xsm;
+	}
+	
+	void XmlSettingsManager::EndSettings (QSettings* settings) const
+	{
 	}
 
-	QLineEdit* URLFrame::GetEdit () const
+	QSettings* XmlSettingsManager::BeginSettings () const
 	{
-		return Ui_.URLEdit_;
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth_Autopaste");
+		return settings;
 	}
-
-	void URLFrame::SetFavicon (const QIcon& icon)
-	{
-		QPixmap pixmap = icon.pixmap (Ui_.FaviconLabel_->size ());
-		Ui_.FaviconLabel_->setPixmap (pixmap);
-	}
-
-	void URLFrame::AddWidget (QWidget *widget)
-	{
-		layout ()->addWidget (widget);
-	}
-
-	void URLFrame::RemoveWidget (QWidget *widget)
-	{
-		layout ()->removeWidget (widget);
-	}
-
-	void URLFrame::on_URLEdit__returnPressed ()
-	{
-		if (Ui_.URLEdit_->IsCompleting () ||
-				Ui_.URLEdit_->text ().isEmpty ())
-			return;
-
-		emit load (Ui_.URLEdit_->text ());
-	}
+}
 }
 }

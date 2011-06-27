@@ -170,6 +170,8 @@ namespace Azoth
 				QObject *chatTab,
 				QObject *entry,
 				QWebView *webView);
+		void hookGonnaAppendMsg (LeechCraft::IHookProxy_ptr proxy,
+				QObject *message);
 		void hookMadeCurrent (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab);
 		void hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
