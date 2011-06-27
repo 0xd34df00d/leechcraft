@@ -16,36 +16,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_JOINCONFERENCEDIALOG_H
-#define PLUGINS_AZOTH_JOINCONFERENCEDIALOG_H
-#include <QDialog>
-#include "interfaces/iaccount.h"
-#include "ui_joinconferencedialog.h"
+#ifndef PLUGINS_AZOTH_PLUGINS_HERBICIDE_CONFWIDGET_H
+#define PLUGINS_AZOTH_PLUGINS_HERBICIDE_CONFWIDGET_H
+#include <QWidget>
+#include "ui_confwidget.h"
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-	class JoinConferenceDialog : public QDialog
+namespace Herbicide
+{
+	class ConfWidget : public QWidget
 	{
 		Q_OBJECT
-
-		Ui::JoinConferenceDialog Ui_;
-		QHash<IProtocol*, QWidget*> Proto2Joiner_;
+		
+		Ui::ConfWidget Ui_;
+		QList<QList<QPair<QString, QStringList> > > PredefinedQuests_;
 	public:
-		JoinConferenceDialog (const QList<IAccount*>&, QWidget* = 0);
-		virtual ~JoinConferenceDialog ();
-	public slots:
-		virtual void accept ();
-		virtual void reject ();
-	private slots:
-		void on_AccountBox__currentIndexChanged (int);
-		void on_BookmarksBox__activated (int);
-		void on_HistoryBox__activated (int);
-		void handleValidityChanged (bool);
+		ConfWidget (QWidget* = 0);
+		
+		QString GetQuestion () const;
+		QStringList GetAnswers () const;
 	private:
-		void FillWidget (const QVariantMap&);
+		void SaveSettings () const;
+		void LoadSettings ();
+	public slots:
+		void accept ();
+		void reject ();
+	private slots:
+		void on_QuestStyle__currentIndexChanged (int);
+		void on_QuestVariant__currentIndexChanged (int);
 	};
+}
 }
 }
 

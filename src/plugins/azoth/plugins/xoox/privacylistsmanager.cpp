@@ -198,7 +198,7 @@ namespace Xoox
 		Q_FOREACH (const PrivacyListItem& item, Items_)
 		{
 			QXmppElement itemElem = item.ToXML ();
-			itemElem.setAttribute ("order", QString::number (i));
+			itemElem.setAttribute ("order", QString::number (i++));
 			listElem.appendChild (itemElem);
 		}
 		
@@ -270,7 +270,7 @@ namespace Xoox
 		query.setAttribute ("xmlns", NsPrivacy);
 		query.appendChild (list);
 		
-		QXmppIq iq;
+		QXmppIq iq (QXmppIq::Set);
 		iq.setExtensions (query);
 		
 		client ()->sendPacket (iq);
@@ -283,7 +283,7 @@ namespace Xoox
 		query.setAttribute ("xmlns", NsPrivacy);
 		query.appendChild (list.ToXML ());
 		
-		QXmppIq iq;
+		QXmppIq iq (QXmppIq::Set);
 		iq.setExtensions (query);
 		
 		client ()->sendPacket (iq);

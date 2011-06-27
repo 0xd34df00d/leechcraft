@@ -423,8 +423,13 @@ namespace Azoth
 	}
 
 	bool Core::ShouldCountUnread (const ICLEntry *entry,
-			const IMessage *msg)
+			IMessage *msg)
 	{
+		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		emit hookShouldCountUnread (proxy, msg->GetObject ());
+		if (proxy->IsCancelled ())
+			return proxy->GetReturnValue ().toBool ();
+
 		return !ChatTabsManager_->IsActiveChat (entry) &&
 				(msg->GetMessageType () == IMessage::MTChatMessage ||
 				 msg->GetMessageType () == IMessage::MTMUCMessage);
@@ -1309,6 +1314,16 @@ namespace Azoth
 			authMenu->menuAction ()->setProperty ("ActionIcon", "azoth_menu_authorization");
 			Entry2Actions_ [entry] ["authorization"] = authMenu->menuAction ();
 			Action2Areas_ [authMenu->menuAction ()] << CLEAAContactListCtxtMenu;
+			
+			QAction *grantAuth = authMenu->addAction (tr ("Grant"),
+					this, SLOT (handleActionGrantAuthTriggered ()));
+			grantAuth->setProperty ("ActionIcon", "azoth_auth_grant");
+			grantAuth->setProperty ("Azoth/WithReason", false);
+			
+			QAction *grantAuthReason = authMenu->addAction (tr ("Grant with reason..."),
+					this, SLOT (handleActionGrantAuthTriggered ()));
+			grantAuthReason->setProperty ("ActionIcon", "azoth_auth_grant");
+			grantAuthReason->setProperty ("Azoth/WithReason", true);
 
 			QAction *revokeAuth = authMenu->addAction (tr ("Revoke"),
 					this, SLOT (handleActionRevokeAuthTriggered ()));
@@ -1752,6 +1767,10 @@ namespace Azoth
 				break;
 			}
 		}
+		
+		Q_FOREACH (ICLEntry *entry, Entry2Items_.keys ())
+			if (entry->GetParentAccount () == account)
+				Entry2Items_.remove (entry);
 	}
 
 	void Core::handleGotCLItems (const QList<QObject*>& items)
@@ -2167,17 +2186,6 @@ namespace Azoth
 					<< "doesn't implement ICLEntry";
 			return;
 		}
-
-		QStandardItem *accItem = GetAccountItem (sender ());
-		if (!accItem)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "no account item for"
-					<< sender ();
-			return;
-		}
-
-		AddCLEntry (entry, accItem);
 
 		QString str = msg.isEmpty () ?
 				tr ("Subscription requested by %1.")
@@ -2665,6 +2673,13 @@ namespace Azoth
 		}
 
 		account->RemoveEntry (entry->GetObject ());
+	}
+	
+	void Core::handleActionGrantAuthTriggered()
+	{
+		ManipulateAuth ("grantauth",
+				tr ("Enter reason for granting authorization to %1:"),
+				&IAuthable::ResendAuth);
 	}
 
 	void Core::handleActionRevokeAuthTriggered ()

@@ -260,10 +260,7 @@ void Application::commitData (QSessionManager& sm)
 
 void Application::saveState (QSessionManager& sm)
 {
-	if (Arguments_.contains ("-autorestart"))
-		sm.setRestartHint (QSessionManager::RestartImmediately);
-
-	sm.release ();
+	commitData (sm);
 }
 
 void Application::checkStillRunning ()

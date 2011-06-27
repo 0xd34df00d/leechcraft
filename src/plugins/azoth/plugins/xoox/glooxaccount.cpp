@@ -29,13 +29,13 @@
 #include "glooxmessage.h"
 #include "glooxclentry.h"
 #include "roomclentry.h"
-#include "unauthclentry.h"
 #include "transfermanager.h"
 #include "sdsession.h"
 #include "pubsubmanager.h"
 #include "usertune.h"
 #include "usermood.h"
 #include "useractivity.h"
+#include "privacylistsconfigdialog.h"
 
 namespace LeechCraft
 {
@@ -49,6 +49,7 @@ namespace Xoox
 	, Name_ (name)
 	, ParentProtocol_ (qobject_cast<GlooxProtocol*> (parent))
 	, Port_ (-1)
+	, PrivacyDialogAction_ (new QAction (tr ("Privacy lists..."), this))
 	{
 		AccState_.State_ = SOffline;
 		AccState_.Priority_ = -1;
@@ -58,6 +59,11 @@ namespace Xoox
 				this,
 				SLOT (handleDestroyClient ()),
 				Qt::QueuedConnection);
+		
+		connect (PrivacyDialogAction_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (showPrivacyDialog ()));
 	}
 
 	void GlooxAccount::Init ()
@@ -177,6 +183,13 @@ namespace Xoox
 	QByteArray GlooxAccount::GetAccountID () const
 	{
 		return ParentProtocol_->GetProtocolID () + "_" + JID_.toUtf8 ();
+	}
+	
+	QList<QAction*> GlooxAccount::GetActions () const
+	{
+		QList<QAction*> result;
+		result << PrivacyDialogAction_;
+		return result;
 	}
 
 	void GlooxAccount::QueryInfo (const QString& entryId)
@@ -447,9 +460,9 @@ namespace Xoox
 	QObject* GlooxAccount::CreateMessage (IMessage::MessageType type,
 			const QString& variant,
 			const QString& body,
-			const QXmppRosterIq::Item& ri)
+			const QString& jid)
 	{
-		return ClientConnection_->CreateMessage (type, variant, body, ri);
+		return ClientConnection_->CreateMessage (type, variant, body, jid);
 	}
 
 	QString GlooxAccount::GetPassword (bool authfailure)
@@ -494,6 +507,13 @@ namespace Xoox
 	void GlooxAccount::feedClientPassword ()
 	{
 		ClientConnection_->SetPassword (GetPassword ());
+	}
+	
+	void GlooxAccount::showPrivacyDialog ()
+	{
+		PrivacyListsManager *mgr = ClientConnection_->GetPrivacyListsManager ();
+		PrivacyListsConfigDialog *plcd = new PrivacyListsConfigDialog (mgr);
+		plcd->show ();
 	}
 
 	void GlooxAccount::handleDestroyClient ()
