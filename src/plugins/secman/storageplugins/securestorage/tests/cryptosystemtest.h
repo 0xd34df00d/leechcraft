@@ -21,7 +21,13 @@ class CryptoSystemTest : public QObject
 {
 	Q_OBJECT
 private slots:
-	/** Test SHA-256 hash */
+	/** Test SHA-256 hash. */
 	void testHash ();
+	/** Check that ciphertexts (and HMAC's) of same data are different. */
+	void testDifferentCipherText ();
+	/** Check that we get the original data after encrypting and decrypting. */
+	void testEncryptDecrypt ();
+	/** Check that we get the original data after encrypting and decrypting (with random data). */
+	void testEncryptDecryptRandom ();
 };
 
