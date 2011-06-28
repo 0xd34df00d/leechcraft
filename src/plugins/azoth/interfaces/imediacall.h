@@ -39,10 +39,10 @@ namespace Azoth
 		
 		enum State
 		{
-			StateConnecting,
-			StateActive,
-			StateDisconnecting,
-			StateFinished
+			SConnecting,
+			SActive,
+			SDisconnecting,
+			SFinished
 		};
 		
 		virtual Direction GetDirection () const = 0;
