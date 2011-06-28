@@ -281,7 +281,8 @@ namespace Azoth
 		connect (cw,
 				SIGNAL (removeTab (QWidget*)),
 				this,
-				SIGNAL (removeTab (QWidget*)));
+				SIGNAL (removeTab (QWidget*)),
+				Qt::UniqueConnection);
 		emit addNewTab (cw->GetTitle (), cw);
 		emit raiseTab (cw);
 	}
