@@ -17,9 +17,12 @@
  **********************************************************************/
 
 #include "callmanager.h"
+#include <QAudioDeviceInfo>
+#include <QAudioInput>
+#include <QAudioOutput>
 #include <QtDebug>
-#include "interfaces/imediacall.h"
 #include "interfaces/iclentry.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -62,6 +65,28 @@ namespace Azoth
 		return Entry2Calls_ [id];
 	}
 	
+	namespace
+	{
+		QAudioDeviceInfo FindDevice (const QByteArray& property, QAudio::Mode mode)
+		{
+			const QString& name = XmlSettingsManager::Instance ()
+					.property (property).toString ();
+
+			QAudioDeviceInfo result = mode == QAudio::AudioInput ?
+					QAudioDeviceInfo::defaultInputDevice () :
+					QAudioDeviceInfo::defaultOutputDevice ();
+			Q_FOREACH (const QAudioDeviceInfo& info,
+					QAudioDeviceInfo::availableDevices (mode))
+				if (info.deviceName () == name)
+				{
+					result = info;
+					break;
+				}
+
+			return result;
+		}
+	}
+	
 	void CallManager::HandleCall (QObject *obj)
 	{
 		IMediaCall *mediaCall = qobject_cast<IMediaCall*> (obj);
@@ -75,6 +100,11 @@ namespace Azoth
 		}
 
 		Entry2Calls_ [mediaCall->GetSourceID ()] << obj;
+		
+		connect (obj,
+				SIGNAL (stateChanged (LeechCraft::Azoth::IMediaCall::State)),
+				this,
+				SLOT (handleStateChanged (LeechCraft::Azoth::IMediaCall::State)));
 	}
 	
 	void CallManager::handleIncomingCall (QObject *obj)
@@ -82,6 +112,30 @@ namespace Azoth
 		HandleCall (obj);
 		
 		emit gotCall (obj);
+	}
+	
+	void CallManager::handleStateChanged (IMediaCall::State state)
+	{
+		IMediaCall *mediaCall = qobject_cast<IMediaCall*> (sender ());
+		if (state == IMediaCall::SActive)
+		{
+			QIODevice *callAudioDev = mediaCall->GetAudioDevice ();
+			QAudioDeviceInfo inInfo = FindDevice ("InputAudioDevice", QAudio::AudioInput);
+			QAudioDeviceInfo outInfo = FindDevice ("OutputAudioDevice", QAudio::AudioOutput);
+
+			const QAudioFormat& callFormat = mediaCall->GetAudioFormat ();
+			const QAudioFormat& inFormat = inInfo.nearestFormat (callFormat);
+			const QAudioFormat& outFormat = outInfo.nearestFormat (callFormat);
+
+			QAudioInput *input = new QAudioInput (inInfo, inFormat, sender ());
+			input->start (callAudioDev);
+
+			QAudioOutput *output = new QAudioOutput (outInfo, outFormat, sender ());
+			output->start (callAudioDev);
+			
+			qDebug () << input->state () << input->error () << inInfo.isFormatSupported (callFormat) << inInfo.supportedCodecs ();
+			qDebug () << output->state () << output->error ();
+		}
 	}
 }
 }

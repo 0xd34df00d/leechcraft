@@ -20,6 +20,7 @@
 #define PLUGINS_AZOTH_CALLMANAGER_H
 #include <QObject>
 #include <QHash>
+#include "interfaces/imediacall.h"
 #include "interfaces/isupportmediacalls.h"
 
 namespace LeechCraft
@@ -43,6 +44,7 @@ namespace Azoth
 		void HandleCall (QObject*);
 	private slots:
 		void handleIncomingCall (QObject*);
+		void handleStateChanged (LeechCraft::Azoth::IMediaCall::State);
 	signals:
 		void gotCall (QObject*);
 	};
