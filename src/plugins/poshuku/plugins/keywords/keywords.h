@@ -52,15 +52,16 @@ namespace Keywords
 		QString GetInfo () const;
 		QIcon GetIcon () const;
 		QSet<QByteArray> GetPluginClasses () const;
-		Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const;
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 		void UpdateKeywords (const QString& keyword, const QString& url);
 		void RemoveKeyword (const QString& keyword);
 	public slots:
 		void hookURLEditReturnPressed (LeechCraft::IHookProxy_ptr proxy,
-			QObject *browserWidget); 
+				QObject *browserWidget); 
 	};
 }
 }
 }
 
 #endif
+
