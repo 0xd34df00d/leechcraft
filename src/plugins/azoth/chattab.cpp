@@ -47,6 +47,7 @@
 #include "simpledialog.h"
 #include "zoomeventfilter.h"
 #include "callmanager.h"
+#include "callchatwidget.h"
 
 namespace LeechCraft
 {
@@ -447,6 +448,9 @@ namespace Azoth
 	
 	void ChatTab::handleCall (QObject *callObj)
 	{
+		CallChatWidget *widget = new CallChatWidget (callObj);
+		const int idx = Ui_.MainLayout_->indexOf (Ui_.View_);
+		Ui_.MainLayout_->insertWidget (idx, widget);
 	}
 	
 	void ChatTab::handleClearChat ()

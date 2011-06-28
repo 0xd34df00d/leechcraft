@@ -33,6 +33,10 @@ namespace Xoox
 	, Call_ (call)
 	, Account_ (acc)
 	{
+		connect (Call_,
+				SIGNAL (stateChanged (QXmppCall::State)),
+				this,
+				SLOT (handleStateChanged (QXmppCall::State)));
 	}
 	
 	IMediaCall::Direction MediaCall::GetDirection () const
@@ -72,6 +76,11 @@ namespace Xoox
 	QIODevice* MediaCall::GetVideoDevice ()
 	{
 		return 0;
+	}
+	
+	void MediaCall::handleStateChanged (QXmppCall::State state)
+	{
+		emit stateChanged (static_cast<State> (state));
 	}
 }
 }

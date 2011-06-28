@@ -16,44 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_MEDIACALL_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_MEDIACALL_H
-#include <QObject>
-#include <QXmppCallManager.h>
-#include <interfaces/imediacall.h>
+#include "callchatwidget.h"
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-namespace Xoox
-{
-	class GlooxAccount;
-
-	class MediaCall : public QObject
-					, public IMediaCall
+	CallChatWidget::CallChatWidget (QObject*, QWidget *parent)
+	: QWidget (parent)
 	{
-		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMediaCall);
-		
-		QXmppCall *Call_;
-		GlooxAccount *Account_;
-	public:
-		MediaCall (GlooxAccount*, QXmppCall*);
-		
-		Direction GetDirection () const;
-		QString GetSourceID () const;
-		void Accept ();
-		void Hangup ();
-		QIODevice* GetAudioDevice ();
-		QIODevice* GetVideoDevice ();
-	private slots:
-		void handleStateChanged (QXmppCall::State);
-	signals:
-		void stateChanged (LeechCraft::Azoth::IMediaCall::State);
-	};
+		Ui_.setupUi (this);
+	}
 }
 }
-}
-
-#endif
