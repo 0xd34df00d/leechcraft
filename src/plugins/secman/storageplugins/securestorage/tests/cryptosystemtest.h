@@ -15,19 +15,38 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
+
+#ifndef PLUGINS_SECMAN_SECURESTORAGE_CRYPTOSYSTEM_TEST_H
+#define PLUGINS_SECMAN_SECURESTORAGE_CRYPTOSYSTEM_TEST_H
 #include <QObject>
 
-class CryptoSystemTest : public QObject
+namespace LeechCraft
 {
-	Q_OBJECT
-private slots:
-	/** Test SHA-256 hash. */
-	void testHash ();
-	/** Check that ciphertexts (and HMAC's) of same data are different. */
-	void testDifferentCipherText ();
-	/** Check that we get the original data after encrypting and decrypting. */
-	void testEncryptDecrypt ();
-	/** Check that we get the original data after encrypting and decrypting (with random data). */
-	void testEncryptDecryptRandom ();
-};
+	namespace Plugins
+	{
+		namespace SecMan
+		{
+			namespace StoragePlugins
+			{
+				namespace SecureStorage
+				{
+					class CryptoSystemTest : public QObject
+					{
+						Q_OBJECT
+					private slots:
+						/** Test SHA-256 hash. */
+						void testHash ();
+						/** Check that ciphertexts (and HMAC's) of same data are different. */
+						void testDifferentCipherText ();
+						/** Check that we get the original data after encrypting and decrypting. */
+						void testEncryptDecrypt ();
+						/** Check that we get the original data after encrypting and decrypting (with random data). */
+						void testEncryptDecryptRandom ();
+					};
+				}
+			}
+		}
+	}
+}
+#endif
 
