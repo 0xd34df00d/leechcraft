@@ -33,13 +33,6 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="CallButton_">
-       <property name="text">
-        <string>Call...</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QLabel" name="EntryInfo_">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
