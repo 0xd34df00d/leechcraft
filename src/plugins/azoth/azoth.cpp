@@ -22,6 +22,8 @@
 #include <QMainWindow>
 #include <QVBoxLayout>
 #include <QMenu>
+#include <QStringListModel>
+#include <QAudioDeviceInfo>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <plugininterface/resourceloader.h>
 #include <plugininterface/util.h>
@@ -69,6 +71,18 @@ namespace Azoth
 		XmlSettingsDialog_->SetDataSource ("SystemIcons",
 				Core::Instance ().GetResourceLoader (Core::RLTSystemIconLoader)->
 					GetSubElemModel ());
+
+		QStringList audioIns (tr ("Default input device"));
+		Q_FOREACH (const QAudioDeviceInfo& info,
+				QAudioDeviceInfo::availableDevices (QAudio::AudioInput))
+			audioIns << info.deviceName ();
+		XmlSettingsDialog_->SetDataSource ("InputAudioDevice", new QStringListModel (audioIns));
+		
+		QStringList audioOuts (tr ("Default output device"));
+		Q_FOREACH (const QAudioDeviceInfo& info,
+				QAudioDeviceInfo::availableDevices (QAudio::AudioOutput))
+			audioOuts << info.deviceName ();
+		XmlSettingsDialog_->SetDataSource ("OutputAudioDevice", new QStringListModel (audioOuts));
 		
 		XmlSettingsDialog_->SetCustomWidget ("AccountsWidget", new AccountsListWidget);
 
