@@ -58,6 +58,7 @@ SET (SRCS
 	consolewidget.cpp
 	activitydialog.cpp
 	mooddialog.cpp
+	callmanager.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -89,6 +90,7 @@ SET (HEADERS
 	consolewidget.h
 	activitydialog.h
 	mooddialog.h
+	callmanager.h
 	animatediconmanager.h
 	sourcetrackingmodel.h
 	interfaces/iprotocolplugin.h

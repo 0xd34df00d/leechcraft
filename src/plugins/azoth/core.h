@@ -54,6 +54,7 @@ namespace Azoth
 	class PluginManager;
 	class ProxyObject;
 	class TransferJobManager;
+	class CallManager;
 	class EventsNotifier;
 
 	class Core : public QObject
@@ -111,6 +112,7 @@ namespace Azoth
 		boost::shared_ptr<ProxyObject> PluginProxyObject_;
 
 		boost::shared_ptr<TransferJobManager> XferJobManager_;
+		boost::shared_ptr<CallManager> CallManager_;
 		boost::shared_ptr<EventsNotifier> EventsNotifier_;
 
 		Core ();
@@ -203,6 +205,8 @@ namespace Azoth
 		void HandleTransferJob (QObject *job);
 
 		TransferJobManager* GetTransferJobManager () const;
+		
+		CallManager* GetCallManager () const;
 
 		/** Whether the given from the given entry should be counted as
 		 * unread message. For example, messages in currently visible

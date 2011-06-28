@@ -59,6 +59,7 @@
 #include "drawattentiondialog.h"
 #include "activitydialog.h"
 #include "mooddialog.h"
+#include "callmanager.h"
 
 namespace LeechCraft
 {
@@ -105,6 +106,7 @@ namespace Azoth
 	, PluginManager_ (new PluginManager)
 	, PluginProxyObject_ (new ProxyObject)
 	, XferJobManager_ (new TransferJobManager)
+	, CallManager_ (new CallManager)
 	, EventsNotifier_ (new EventsNotifier)
 	{
 		ResourceLoaders_ [RLTStatusIconLoader].reset (new Util::ResourceLoader ("azoth/iconsets/contactlist/", this));
@@ -421,6 +423,11 @@ namespace Azoth
 	TransferJobManager* Core::GetTransferJobManager () const
 	{
 		return XferJobManager_.get ();
+	}
+	
+	CallManager* Core::GetCallManager () const
+	{
+		return CallManager_.get ();
 	}
 
 	bool Core::ShouldCountUnread (const ICLEntry *entry,
@@ -1747,6 +1754,8 @@ namespace Azoth
 					this,
 					SLOT (handleFileOffered (QObject*)));
 		}
+		
+		CallManager_->AddAccount (account->GetObject ());
 	}
 
 	void Core::handleAccountRemoved (QObject *account)
