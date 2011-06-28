@@ -19,6 +19,7 @@
 #include "glooxclentry.h"
 #include <boost/bind.hpp>
 #include <QStringList>
+#include <QAction>
 #include <QtDebug>
 #include <QXmppClient.h>
 #include <QXmppRosterManager.h>
@@ -28,6 +29,7 @@
 #include "glooxaccount.h"
 #include "core.h"
 #include "clientconnection.h"
+#include "capsmanager.h"
 
 namespace LeechCraft
 {
@@ -92,6 +94,8 @@ namespace Xoox
 	: EntryBase (parent)
 	, BareJID_ (jid)
 	, AuthRequested_ (false)
+	, GWLogin_ (0)
+	, GWLogout_ (0)
 	{
 	}
 
@@ -99,6 +103,8 @@ namespace Xoox
 	: EntryBase (parent)
 	, ODS_ (ods)
 	, AuthRequested_ (false)
+	, GWLogin_ (0)
+	, GWLogout_ (0)
 	{
 		const QString& pre = Account_->GetAccountID () + '_';
 		if (ods->ID_.startsWith (pre))
@@ -312,6 +318,48 @@ namespace Xoox
 		AllMessages_ << msg;
 		return msg;
 	}
+	
+	QList<QAction*> GlooxCLEntry::GetActions() const
+	{
+		QList<QAction*> baseActs = EntryBase::GetActions ();
+		const QList<QXmppDiscoveryIq::Identity>& ids = Account_->
+				GetClientConnection ()->GetCapsManager ()->GetIdentities (VerString_);
+		bool gwFound = false;
+		Q_FOREACH (const QXmppDiscoveryIq::Identity& id, ids)
+			if (id.category () == "gateway")
+			{
+				gwFound = true;
+				break;
+			}
+			
+		if (gwFound)
+		{
+			if (!GWLogin_ || !GWLogout_)
+			{
+				GWLogin_ = new QAction (tr ("Login"), Account_);
+				connect (GWLogin_,
+						SIGNAL (triggered ()),
+						this,
+						SLOT (handleGWLogin ()));
+				GWLogout_ = new QAction (tr ("Logout"), Account_);
+				connect (GWLogout_,
+						SIGNAL (triggered ()),
+						this,
+						SLOT (handleGWLogout ()));
+			}
+
+			baseActs << GWLogin_ << GWLogout_;
+		}
+		else
+		{
+			delete GWLogin_;
+			GWLogin_ = 0;
+			delete GWLogout_;
+			GWLogout_ = 0;
+		}
+		
+		return baseActs;
+	}
 
 	AuthStatus GlooxCLEntry::GetAuthStatus () const
 	{
@@ -369,6 +417,20 @@ namespace Xoox
 		AuthRequested_ = auth;
 		emit statusChanged (GetStatus (QString ()), QString ());
 		emit groupsChanged (Groups ());
+	}	
+	
+	void GlooxCLEntry::handleGWLogin ()
+	{
+		QXmppPresence avail;
+		avail.setTo (GetJID ());
+		Account_->GetClientConnection ()->GetClient ()->sendPacket (avail);
+	}
+	
+	void GlooxCLEntry::handleGWLogout ()
+	{
+		QXmppPresence unavail (QXmppPresence::Unavailable);
+		unavail.setTo (GetJID ());
+		Account_->GetClientConnection ()->GetClient ()->sendPacket (unavail);
 	}
 }
 }

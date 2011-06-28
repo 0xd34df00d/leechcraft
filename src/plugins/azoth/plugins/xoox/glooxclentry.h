@@ -69,6 +69,9 @@ namespace Xoox
 		QList<MessageQueueItem> MessageQueue_;
 		
 		bool AuthRequested_;
+		
+		mutable QAction *GWLogin_;
+		mutable QAction *GWLogout_;
 	public:
 		GlooxCLEntry (const QString& bareJID, GlooxAccount*);
 		GlooxCLEntry (OfflineDataSource_ptr, GlooxAccount*);
@@ -97,6 +100,7 @@ namespace Xoox
 		EntryStatus GetStatus (const QString&) const;
 		QObject* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);
+		virtual QList<QAction*> GetActions () const;
 
 		// IAuthable
 		AuthStatus GetAuthStatus () const;
@@ -108,6 +112,9 @@ namespace Xoox
 		QString GetJID () const;
 		
 		void SetAuthRequested (bool);
+	private slots:
+		void handleGWLogin ();
+		void handleGWLogout ();
 	};
 }
 }
