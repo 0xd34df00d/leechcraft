@@ -82,7 +82,7 @@ namespace Keywords
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("Url keywords support for the Poshuku browser.");
+		return tr ("URL keywords support for the Poshuku browser.");
 	}
 
 	QIcon Plugin::GetIcon () const
@@ -107,7 +107,7 @@ namespace Keywords
 		Keywords2Urls_ [keyword] = url;
 	}
 
-	void Plugin::RemoveKeyword( const QString& keyword )
+	void Plugin::RemoveKeyword (const QString& keyword)
 	{
 		Keywords2Urls_.remove (keyword);
 	}
@@ -134,6 +134,10 @@ namespace Keywords
 			return;
 
 		QStringList keywords = urlEdit->text ().split (" ", QString::SkipEmptyParts);
+
+		if (keywords.isEmpty())
+			return;
+
 		QString redirect = Keywords2Urls_.value (keywords.takeFirst ());
 
 		if (redirect.isEmpty ())
