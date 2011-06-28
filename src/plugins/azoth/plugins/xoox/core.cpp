@@ -80,6 +80,11 @@ namespace Xoox
 	{
 		PluginProxy_ = proxy;
 	}
+	
+	IProxyObject* Core::GetPluginProxy () const
+	{
+		return qobject_cast<IProxyObject*> (PluginProxy_);
+	}
 
 	void Core::SetProxy (ICoreProxy_ptr proxy)
 	{
@@ -187,36 +192,14 @@ namespace Xoox
 				const QByteArray& entryID =
 						QByteArray::fromPercentEncoding (entry
 								.firstChildElement ("id").text ().toLatin1 ());
-				const QString& name = entry.firstChildElement ("name").text ();
-				
-				QByteArray vcardData = entry.firstChildElement ("vcard").text ().toAscii ();
-				QDomDocument vcardDoc;
-				vcardDoc.setContent (QByteArray::fromBase64 (vcardData));
-
-				QStringList groups;
-				QDomElement group = entry
-						.firstChildElement ("groups")
-						.firstChildElement ("group");
-				while (!group.isNull ())
-				{
-					const QString& text = group.text ();
-					if (!text.isEmpty ())
-						groups << text;
-					group = group.nextSiblingElement ("group");
-				}
 
 				if (entryID.isEmpty ())
 					qWarning () << Q_FUNC_INFO
 							<< "entry ID is empty";
 				else
 				{
-					GlooxCLEntry::OfflineDataSource_ptr ods (new GlooxCLEntry::OfflineDataSource);
-					ods->Name_ = name;
-					ods->ID_ = QString::fromUtf8 (entryID.constData ());
-					ods->Groups_ = groups;
-					ods->AuthStatus_ = qobject_cast<IProxyObject*> (PluginProxy_)->
-							AuthStatusFromString (entry.firstChildElement ("authstatus").text ());
-					ods->VCardIq_.parse (vcardDoc.documentElement ());
+					OfflineDataSource_ptr ods (new OfflineDataSource);
+					Load (ods, entry);
 
 					GlooxCLEntry *clEntry = id2account [id]->CreateFromODS (ods);
 
@@ -264,27 +247,8 @@ namespace Xoox
 					if (!entry ||
 							(entry->GetEntryFeatures () & ICLEntry::FMaskLongetivity) != ICLEntry::FPermanentEntry)
 						continue;
-
-					w.writeStartElement ("entry");
-						w.writeTextElement ("id", entry->GetEntryID ().toUtf8 ().toPercentEncoding ("@"));
-						w.writeTextElement ("name", entry->GetEntryName ());
-						w.writeTextElement ("authstatus",
-								qobject_cast<IProxyObject*> (PluginProxy_)->
-									AuthStatusToString (entry->GetAuthStatus ()));
-
-						w.writeStartElement ("groups");
-						Q_FOREACH (const QString& group, entry->Groups ())
-							w.writeTextElement ("group", group);
-						w.writeEndElement ();
-						
-						QByteArray vcardData;
-						{
-							QXmlStreamWriter vcardWriter (&vcardData);
-							entry->GetVCard ().toXml (&vcardWriter);
-						}
-						w.writeTextElement ("vcard", vcardData.toBase64 ());
-					w.writeEndElement ();
-
+					
+					Save (entry->ToOfflineDataSource (), &w);
 					saveAvatarFor (entry);
 				}
 				w.writeEndElement ();

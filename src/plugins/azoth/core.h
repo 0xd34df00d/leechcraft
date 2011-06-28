@@ -30,6 +30,7 @@
 #include "interfaces/iauthable.h"
 #include "interfaces/ichatstyleresourcesource.h"
 #include "sourcetrackingmodel.h"
+#include "animatediconmanager.h"
 
 class QStandardItemModel;
 class QStandardItem;
@@ -89,6 +90,8 @@ namespace Azoth
 
 		typedef QHash<ICLEntry*, QImage> Entry2SmoothAvatarCache_t;
 		Entry2SmoothAvatarCache_t Entry2SmoothAvatarCache_;
+		
+		AnimatedIconManager<QStandardItem*> *ItemIconManager_;
 	public:
 		enum ResourceLoaderType
 		{
@@ -213,6 +216,11 @@ namespace Azoth
 		 * highlights the participant.
 		 */
 		bool IsHighlightMessage (IMessage*);
+		
+		/** Returns the name of the icon from the current iconset for
+		 * the given contact list entry state.
+		 */
+		QString GetIconPathForState (State state) const;
 
 		/** Returns an icon from the current iconset for the given
 		 * contact list entry state.

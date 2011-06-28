@@ -130,7 +130,7 @@ namespace Xoox
 		void JoinRoom (const QString&, const QString&, const QString&);
 
 		boost::shared_ptr<ClientConnection> GetClientConnection () const;
-		GlooxCLEntry* CreateFromODS (GlooxCLEntry::OfflineDataSource_ptr);
+		GlooxCLEntry* CreateFromODS (OfflineDataSource_ptr);
 		QXmppBookmarkSet GetBookmarks () const;
 		void SetBookmarks (const QXmppBookmarkSet&);
 

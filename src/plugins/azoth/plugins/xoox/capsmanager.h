@@ -44,6 +44,8 @@ namespace Xoox
 		QStringList GetRawCaps (const QByteArray&) const;
 		QStringList GetCaps (const QByteArray&) const;
 		QStringList GetCaps (const QStringList&) const;
+		
+		QList<QXmppDiscoveryIq::Identity> GetIdentities (const QByteArray&) const;
 	public slots:
 		void handleInfoReceived (const QXmppDiscoveryIq&);
 		void handleItemsReceived (const QXmppDiscoveryIq&);

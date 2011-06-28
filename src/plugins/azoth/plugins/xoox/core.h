@@ -26,6 +26,8 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+class IProxyObject;
+
 namespace Xoox
 {
 	class GlooxProtocol;
@@ -49,6 +51,7 @@ namespace Xoox
 		QList<QObject*> GetProtocols () const;
 
 		void SetPluginProxy (QObject*);
+		IProxyObject* GetPluginProxy () const;
 		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;
 
