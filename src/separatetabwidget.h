@@ -102,6 +102,7 @@ namespace LeechCraft
 		void InsertAction2TabBar (QAction *before, QAction *action);
 	protected:
 		void resizeEvent (QResizeEvent*);
+		bool event (QEvent*);
 	private:
 		void Init ();
 		void AddTabButtonInit ();

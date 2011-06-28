@@ -32,6 +32,7 @@
 #include "separatetabbar.h"
 #include "xmlsettingsmanager.h"
 #include "core.h"
+#include "3dparty/qxttooltip.h"
 
 namespace LeechCraft
 {
@@ -418,6 +419,25 @@ namespace LeechCraft
 				MainTabBar_->SetTabNoClosable (index);
 			}
 		}
+	}
+
+	bool SeparateTabWidget::event (QEvent *e)
+	{
+		if (e->type () == QEvent::ToolTip)
+		{
+			QHelpEvent *he = static_cast<QHelpEvent*> (e);
+			int index = TabAt (he->pos ());
+			if (Widgets_.contains (index) &&
+					Widgets_ [index])
+			{
+				QxtToolTip::show (he->globalPos (), Widgets_ [index], MainTabBar_);
+				return true;
+			}
+			else
+				return false;
+		}
+		else
+			return QWidget::event (e);
 	}
 
 	void SeparateTabWidget::Init ()
