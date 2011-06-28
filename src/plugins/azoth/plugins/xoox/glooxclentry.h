@@ -35,6 +35,19 @@ class IAccount;
 namespace Xoox
 {
 	class GlooxAccount;
+	
+	struct OfflineDataSource
+	{
+		QString ID_;
+		QString Name_;
+		QStringList Groups_;
+		AuthStatus AuthStatus_;
+		QXmppVCardIq VCardIq_;
+	};
+	typedef boost::shared_ptr<OfflineDataSource> OfflineDataSource_ptr;
+	
+	void Save (OfflineDataSource_ptr, QXmlStreamWriter*);
+	void Load (OfflineDataSource_ptr, const QDomElement&);
 
 	class GlooxCLEntry : public EntryBase
 					   , public IAuthable
@@ -43,16 +56,6 @@ namespace Xoox
 		Q_INTERFACES (LeechCraft::Azoth::IAuthable);
 
 		QString BareJID_;
-	public:
-		struct OfflineDataSource
-		{
-			QString ID_;
-			QString Name_;
-			QStringList Groups_;
-			AuthStatus AuthStatus_;
-			QXmppVCardIq VCardIq_;
-		};
-		typedef boost::shared_ptr<OfflineDataSource> OfflineDataSource_ptr;
 	private:
 		OfflineDataSource_ptr ODS_;
 

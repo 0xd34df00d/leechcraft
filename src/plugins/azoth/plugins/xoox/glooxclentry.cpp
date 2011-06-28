@@ -24,6 +24,7 @@
 #include <QXmppRosterManager.h>
 #include <interfaces/iaccount.h>
 #include <interfaces/azothcommon.h>
+#include <interfaces/iproxyobject.h>
 #include "glooxaccount.h"
 #include "core.h"
 #include "clientconnection.h"
@@ -34,6 +35,59 @@ namespace Azoth
 {
 namespace Xoox
 {
+	void Save (OfflineDataSource_ptr ods, QXmlStreamWriter *w)
+	{
+		w->writeStartElement ("entry");
+			w->writeTextElement ("id", ods->ID_.toUtf8 ().toPercentEncoding ("@"));
+			w->writeTextElement ("name", ods->Name_);
+			w->writeTextElement ("authstatus",
+					Core::Instance ().GetPluginProxy ()->
+						AuthStatusToString (ods->AuthStatus_));
+
+			w->writeStartElement ("groups");
+			Q_FOREACH (const QString& group, ods->Groups_)
+				w->writeTextElement ("group", group);
+			w->writeEndElement ();
+			
+			QByteArray vcardData;
+			{
+				QXmlStreamWriter vcardWriter (&vcardData);
+				ods->VCardIq_.toXml (&vcardWriter);
+			}
+			w->writeTextElement ("vcard", vcardData.toBase64 ());
+		w->writeEndElement ();
+	}
+	
+	void Load (OfflineDataSource_ptr ods, const QDomElement& entry)
+	{
+		const QByteArray& entryID = QByteArray::fromPercentEncoding (entry
+					.firstChildElement ("id").text ().toLatin1 ());
+		const QString& name = entry.firstChildElement ("name").text ();
+				
+		QByteArray vcardData = entry.firstChildElement ("vcard").text ().toAscii ();
+		QDomDocument vcardDoc;
+		vcardDoc.setContent (QByteArray::fromBase64 (vcardData));
+
+		QStringList groups;
+		QDomElement group = entry
+				.firstChildElement ("groups")
+				.firstChildElement ("group");
+		while (!group.isNull ())
+		{
+			const QString& text = group.text ();
+			if (!text.isEmpty ())
+				groups << text;
+			group = group.nextSiblingElement ("group");
+		}
+		
+		ods->Name_ = name;
+		ods->ID_ = QString::fromUtf8 (entryID.constData ());
+		ods->Groups_ = groups;
+		ods->AuthStatus_ = Core::Instance ().GetPluginProxy ()->
+				AuthStatusFromString (entry.firstChildElement ("authstatus").text ());
+		ods->VCardIq_.parse (vcardDoc.documentElement ());
+	}
+
 	GlooxCLEntry::GlooxCLEntry (const QString& jid, GlooxAccount *parent)
 	: EntryBase (parent)
 	, BareJID_ (jid)
@@ -41,7 +95,7 @@ namespace Xoox
 	{
 	}
 
-	GlooxCLEntry::GlooxCLEntry (GlooxCLEntry::OfflineDataSource_ptr ods, GlooxAccount *parent)
+	GlooxCLEntry::GlooxCLEntry (OfflineDataSource_ptr ods, GlooxAccount *parent)
 	: EntryBase (parent)
 	, ODS_ (ods)
 	, AuthRequested_ (false)
@@ -61,7 +115,7 @@ namespace Xoox
 		SetVCard (ods->VCardIq_);
 	}
 
-	GlooxCLEntry::OfflineDataSource_ptr GlooxCLEntry::ToOfflineDataSource () const
+	OfflineDataSource_ptr GlooxCLEntry::ToOfflineDataSource () const
 	{
 		if (ODS_)
 			return ODS_;
