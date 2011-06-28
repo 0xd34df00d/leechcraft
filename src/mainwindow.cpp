@@ -637,14 +637,12 @@ void LeechCraft::MainWindow::on_ActionFullscreenMode__triggered (bool full)
 		ShowMenuAndBar (false);
 		showFullScreen ();
 		Clock_->show ();
-		Ui_.Label_->show();
 	}
 	else if (WasMaximized_)
 	{
 		ShowMenuAndBar (true);
 		Clock_->hide ();
 		showMaximized ();
-		Ui_.Label_->hide();
 		// Because shit happens on X11 otherwise
 		QTimer::singleShot (200,
 				this,
@@ -653,7 +651,6 @@ void LeechCraft::MainWindow::on_ActionFullscreenMode__triggered (bool full)
 	else
 	{
 		ShowMenuAndBar (true);
-		Ui_.Label_->hide();
 		Clock_->hide ();
 		showNormal ();
 	}

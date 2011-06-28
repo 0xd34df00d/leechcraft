@@ -311,7 +311,6 @@ SET (SRCS
 	tabbar.cpp
 	wizardtypechoicepage.cpp
 	3dparty/qxttooltip.cpp
-	fullscreenspacerlabel.cpp
 	newtabmenumanager.cpp
 	plugintreebuilder.cpp
 	coreinstanceobject.cpp
@@ -354,7 +353,6 @@ SET (HEADERS
 	toolbarguard.h
 	clipboardwatcher.h
 	tabbar.h
-	fullscreenspacerlabel.h
 	newtabmenumanager.h
 	wizardtypechoicepage.h
 	plugintreebuilder.h
