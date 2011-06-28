@@ -539,7 +539,7 @@ namespace Xoox
 			return JID2CLEntry_ [bareJid];
 	}
 
-	GlooxCLEntry* ClientConnection::AddODSCLEntry (GlooxCLEntry::OfflineDataSource_ptr ods)
+	GlooxCLEntry* ClientConnection::AddODSCLEntry (OfflineDataSource_ptr ods)
 	{
 		GlooxCLEntry *entry = new GlooxCLEntry (ods, Account_);
 		ODSEntries_ [entry->GetJID ()] = entry;

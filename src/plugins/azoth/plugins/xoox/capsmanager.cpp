@@ -92,11 +92,18 @@ namespace Xoox
 		result.removeAll (QString ());
 		return result;
 	}
+	
+	QList<QXmppDiscoveryIq::Identity> CapsManager::GetIdentities (const QByteArray& verNode) const
+	{
+		return DB_->GetIdentities (verNode);
+	}
 
 	void CapsManager::handleInfoReceived (const QXmppDiscoveryIq& iq)
 	{
 		if (!iq.features ().isEmpty ())
 			DB_->Set (iq.verificationString (), iq.features ());
+		if (!iq.identities ().isEmpty ())
+			DB_->SetIdentities (iq.verificationString (), iq.identities ());
 	}
 	
 	void CapsManager::handleItemsReceived (const QXmppDiscoveryIq& iq)

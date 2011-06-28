@@ -103,6 +103,9 @@ namespace Herbicide
 	bool Plugin::IsEntryAllowed (QObject *entryObj) const
 	{
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+		if (!entry)
+			return true;
+
 		if ((entry->GetEntryFeatures () & ICLEntry::FMaskLongetivity) == ICLEntry::FPermanentEntry)
 			return true;
 		
@@ -133,6 +136,9 @@ namespace Herbicide
 					<< "doesn't implement IMessage";
 			return;
 		}
+		
+		if (msg->GetMessageType () != IMessage::MTChatMessage)
+			return;
 		
 		QObject *entryObj = msg->OtherPart ();
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);

@@ -21,6 +21,43 @@
 #include <QTimer>
 #include <plugininterface/util.h>
 
+Q_DECLARE_METATYPE (QXmppDiscoveryIq::Identity);
+
+QDataStream& operator<< (QDataStream& out, const QXmppDiscoveryIq::Identity& id)
+{
+	out << static_cast<quint8> (1)
+		<< id.category ()
+		<< id.language ()
+		<< id.name ()
+		<< id.type ();
+	return out;
+}
+
+QDataStream& operator>> (QDataStream& in, QXmppDiscoveryIq::Identity& id)
+{
+	quint8 version = 0;
+	in >> version;
+	if (version != 1)
+	{
+		qWarning () << Q_FUNC_INFO
+				<< "unknown version"
+				<< version;
+		return in;
+	}
+	
+	QString category, language, name, type;
+	in >> category
+		>> language
+		>> name
+		>> type;
+	id.setCategory (category);
+	id.setLanguage (language);
+	id.setName (name);
+	id.setType (type);
+	
+	return in;
+}
+
 namespace LeechCraft
 {
 namespace Azoth
@@ -31,12 +68,15 @@ namespace Xoox
 	: QObject (parent)
 	, SaveScheduled_ (false)
 	{
+		qRegisterMetaType<QXmppDiscoveryIq::Identity> ("QXmppDiscoveryIq::Identity");
+		qRegisterMetaTypeStreamOperators<QXmppDiscoveryIq::Identity> ("QXmppDiscoveryIq::Identity");
 		Load ();
 	}
 	
 	bool CapsDatabase::Contains (const QByteArray& hash) const
 	{
-		return Ver2Features_.contains (hash);
+		return Ver2Features_.contains (hash) &&
+				Ver2Identities_.contains (hash);
 	}
 	
 	QStringList CapsDatabase::Get (const QByteArray& hash) const
@@ -47,6 +87,18 @@ namespace Xoox
 	void CapsDatabase::Set (const QByteArray& hash, const QStringList& features)
 	{
 		Ver2Features_ [hash] = features;
+		ScheduleSave ();
+	}
+	
+	QList<QXmppDiscoveryIq::Identity> CapsDatabase::GetIdentities (const QByteArray& hash) const
+	{
+		return Ver2Identities_ [hash];
+	}
+	
+	void CapsDatabase::SetIdentities (const QByteArray& hash,
+			const QList<QXmppDiscoveryIq::Identity>& ids)
+	{
+		Ver2Identities_ [hash] = ids;
 		ScheduleSave ();
 	}
 	
@@ -65,8 +117,9 @@ namespace Xoox
 		}
 		
 		QDataStream stream (&file);
-		stream << static_cast<quint8> (1)
-				<< Ver2Features_;
+		stream << static_cast<quint8> (2)
+				<< Ver2Features_
+				<< Ver2Identities_;
 				
 		SaveScheduled_ = false;
 	}
@@ -99,12 +152,14 @@ namespace Xoox
 		QDataStream stream (&file);
 		quint8 ver = 0;
 		stream >> ver;
-		if (ver == 1)
-			stream >> Ver2Features_;
-		else
+		if (ver < 1 || ver > 2)
 			qWarning () << Q_FUNC_INFO
 					<< "unknown storage version"
 					<< ver;
+		if (ver >= 1)
+			stream >> Ver2Features_;
+		if (ver >= 2)
+			stream >> Ver2Identities_;
 	}
 }
 }
