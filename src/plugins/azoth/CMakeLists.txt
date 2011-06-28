@@ -89,6 +89,7 @@ SET (HEADERS
 	consolewidget.h
 	activitydialog.h
 	mooddialog.h
+	animatediconmanager.h
 	sourcetrackingmodel.h
 	interfaces/iprotocolplugin.h
 	interfaces/iaccount.h
