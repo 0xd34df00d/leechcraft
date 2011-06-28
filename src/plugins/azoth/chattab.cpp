@@ -440,7 +440,7 @@ namespace Azoth
 	void ChatTab::handleCallRequested ()
 	{
 		QObject *callObj = Core::Instance ().GetCallManager ()->
-				Call (GetEntry<ICLEntry> (), QString ());
+				Call (GetEntry<ICLEntry> (), Ui_.VariantBox_->currentText ());
 		if (!callObj)
 			return;
 		handleCall (callObj);
