@@ -1574,11 +1574,13 @@ namespace Azoth
 
 		QStandardItem *category = item->parent ();
 		QString text = category->text ();
+		ItemIconManager_->Cancel (item);
 		category->removeRow (item->row ());
 
 		if (!category->rowCount ())
 		{
 			QStandardItem *account = category->parent ();
+			ItemIconManager_->Cancel (category);
 			account->removeRow (category->row ());
 			Account2Category2Item_ [account].remove (text);
 		}
@@ -1768,6 +1770,7 @@ namespace Azoth
 			QObject *obj = item->data (CLRAccountObject).value<QObject*> ();
 			if (obj == account)
 			{
+				ItemIconManager_->Cancel (item);
 				CLModel_->removeRow (i);
 				break;
 			}
