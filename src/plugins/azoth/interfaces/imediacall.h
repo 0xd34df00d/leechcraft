@@ -21,6 +21,7 @@
 #include <QtPlugin>
 
 class QIODevice;
+class QAudioFormat;
 
 namespace LeechCraft
 {
@@ -54,6 +55,8 @@ namespace Azoth
 		virtual void Hangup () = 0;
 		
 		virtual QIODevice* GetAudioDevice () = 0;
+		
+		virtual QAudioFormat GetAudioFormat () = 0;
 		
 		virtual QIODevice* GetVideoDevice () = 0;
 		

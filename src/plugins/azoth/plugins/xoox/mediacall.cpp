@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "mediacall.h"
+#include <QAudioFormat>
 #include <QXmppCallManager.h>
 #include <QXmppRtpChannel.h>
 #include "clientconnection.h"
@@ -70,7 +71,23 @@ namespace Xoox
 	
 	QIODevice* MediaCall::GetAudioDevice ()
 	{
+		QXmppJinglePayloadType payload = Call_->audioChannel ()->payloadType ();
+		qDebug () << "INFO" << payload.name () << payload.parameters ();
+		qDebug () << payload.channels () << payload.clockrate ();
 		return Call_->audioChannel ();
+	}
+	
+	QAudioFormat MediaCall::GetAudioFormat ()
+	{
+		const QXmppJinglePayloadType& payload =
+				Call_->audioChannel ()->payloadType ();
+		QAudioFormat result;
+		result.setCodec (payload.name ());
+#if QT_VERSION >= 0x040700
+		result.setChannelCount (payload.channels ());
+		result.setSampleRate (payload.clockrate ());
+#endif
+		return result;
 	}
 	
 	QIODevice* MediaCall::GetVideoDevice ()
