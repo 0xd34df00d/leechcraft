@@ -21,6 +21,7 @@
 #include <QObject>
 #include <QHash>
 #include <QStringList>
+#include <QXmppDiscoveryIq.h>
 
 namespace LeechCraft
 {
@@ -33,6 +34,7 @@ namespace Xoox
 		Q_OBJECT
 
 		QHash<QByteArray, QStringList> Ver2Features_;
+		QHash<QByteArray, QList<QXmppDiscoveryIq::Identity> > Ver2Identities_;
 		mutable bool SaveScheduled_;
 	public:
 		CapsDatabase (QObject* = 0);
@@ -40,6 +42,8 @@ namespace Xoox
 		bool Contains (const QByteArray&) const;
 		QStringList Get (const QByteArray&) const;
 		void Set (const QByteArray&, const QStringList&);
+		QList<QXmppDiscoveryIq::Identity> GetIdentities (const QByteArray&) const;
+		void SetIdentities (const QByteArray&, const QList<QXmppDiscoveryIq::Identity>&);
 	private slots:
 		void save () const;
 	private:
