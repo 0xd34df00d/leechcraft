@@ -49,6 +49,7 @@ SET (XOOX_SRCS
 	privacylistsmanager.cpp
 	privacylistsconfigdialog.cpp
 	privacylistsitemdialog.cpp
+	mediacall.cpp
 	)
 SET (XOOX_HEADERS
 	xoox.h
@@ -93,6 +94,7 @@ SET (XOOX_HEADERS
 	privacylistsmanager.h
 	privacylistsconfigdialog.h
 	privacylistsitemdialog.h
+	mediacall.h
 	)
 SET (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui
