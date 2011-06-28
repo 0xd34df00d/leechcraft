@@ -316,6 +316,8 @@ SET (SRCS
 	plugintreebuilder.cpp
 	coreinstanceobject.cpp
 	settingstab.cpp
+	separatetabbar.cpp
+	separatetabwidget.cpp
 	)
 SET (HEADERS
 	mainwindow.h
@@ -361,6 +363,8 @@ SET (HEADERS
 	3dparty/qxttooltip.h
 	3dparty/qxttooltip_p.h
 	interfaces/structures.h
+	separatetabbar.h
+	separatetabwidget.h
 	)
 SET (FORMS
 	commonjobadder.ui
