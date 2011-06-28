@@ -137,6 +137,9 @@ namespace Herbicide
 			return;
 		}
 		
+		if (msg->GetMessageType () != IMessage::MTChatMessage)
+			return;
+		
 		QObject *entryObj = msg->OtherPart ();
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 		
