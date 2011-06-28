@@ -386,7 +386,7 @@ namespace Xoox
 		return ClientConnection_;
 	}
 
-	GlooxCLEntry* GlooxAccount::CreateFromODS (GlooxCLEntry::OfflineDataSource_ptr ods)
+	GlooxCLEntry* GlooxAccount::CreateFromODS (OfflineDataSource_ptr ods)
 	{
 		return ClientConnection_->AddODSCLEntry (ods);
 	}
