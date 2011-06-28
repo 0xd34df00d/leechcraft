@@ -178,6 +178,16 @@ namespace LeechCraft
 
 		MainStackedWidget_->removeWidget (Widget (index));
 		MainTabBar_->removeTab (index);
+		
+		Widgets_.remove (index);
+		QList<int> keys = Widgets_.keys ();
+		for (QList<int>::const_iterator i = keys.begin (),
+				end = keys.end (); i != end; ++i)
+			if (*i > index)
+			{
+				Widgets_ [*i - 1] = Widgets_ [*i];
+				Widgets_.remove (*i);
+			}
 	}
 
 	void SeparateTabWidget::SetTabEnabled (int index, bool enabled)
