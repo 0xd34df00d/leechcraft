@@ -19,6 +19,7 @@
 #ifndef PLUGINS_AZOTH_CALLCHATWIDGET_H
 #define PLUGINS_AZOTH_CALLCHATWIDGET_H
 #include <QWidget>
+#include "interfaces/imediacall.h"
 #include "ui_callchatwidget.h"
 
 namespace LeechCraft
@@ -30,8 +31,15 @@ namespace Azoth
 		Q_OBJECT
 
 		Ui::CallChatWidget Ui_;
+		QObject *CallObject_;
+		IMediaCall *Call_;
 	public:
 		CallChatWidget (QObject*, QWidget* = 0);
+	private slots:
+		void on_AcceptButton__released ();
+		void on_HangupButton__released ();
+		void handleStateChanged (LeechCraft::Azoth::IMediaCall::State);
+		void scheduleDelete ();
 	};
 }
 }
