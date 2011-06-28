@@ -1096,6 +1096,9 @@ namespace LeechCraft
 
 			void ItemsWidget::currentItemChanged ()
 			{
+				QString preHtml = "<html><head><title/></head><body bgcolor=\"";
+				preHtml += palette ().color (QPalette::Base).name ();
+				preHtml += "\">";
 				if (Impl_->TapeMode_)
 				{
 					QString html;
@@ -1109,7 +1112,7 @@ namespace LeechCraft
 						html += ToHtml (item);
 					}
 
-					Impl_->Ui_.ItemView_->SetHtml (html);
+					Impl_->Ui_.ItemView_->SetHtml (preHtml + html + "</body></html>");
 				}
 				else
 				{
@@ -1125,7 +1128,7 @@ namespace LeechCraft
 						html += ToHtml (GetItem (sindex));
 					}
 
-					Impl_->Ui_.ItemView_->SetHtml (html);
+					Impl_->Ui_.ItemView_->SetHtml (preHtml + html + "</body></html>");
 
 					const QModelIndex& sourceIndex =
 							Impl_->Ui_.Items_->currentIndex ();
