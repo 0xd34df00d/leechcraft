@@ -1,0 +1,57 @@
+/**********************************************************************
+ * <>
+ * Copyright (C) 2010  Oleg Linkin
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ **********************************************************************/
+
+#ifndef SEPARATETABBAR_H
+#define SEPARATETABBAR_H
+
+#include <QTabBar>
+#include <QHash>
+
+namespace LeechCraft
+{
+	class SeparateTabBar : public QTabBar
+	{
+		Q_OBJECT
+		int Id_;
+		bool IsLastTab_;
+		QHash<int, QString> PinTabsIndex2Name_;
+		QHash<int, QWidget*> PinTabsIndex2CloseWidget_;
+		QTabBar::ButtonPosition CloseSide_;
+	public:
+		explicit SeparateTabBar (QWidget* = 0);
+		bool IsPinTab (int) const;
+		int PinTabsCount () const;
+		QList<int> GetPinTabs () const;
+		void SetTabData (int);
+		void SetTabNoClosable (int);
+		void SetLastTab (bool);
+	protected:
+		QSize tabSizeHint (int) const;
+		void mouseReleaseEvent (QMouseEvent*);
+		void mousePressEvent (QMouseEvent *event);
+		void tabInserted (int);
+		void tabRemoved (int);
+	public slots:
+		void setPinTab (int);
+		void setUnPinTab (int);
+	signals:
+		void addDefaultTab (bool);
+		void showAddTabButton (bool);
+	};
+}
+#endif // SEPARATETABBAR_H
