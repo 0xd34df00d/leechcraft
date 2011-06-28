@@ -25,32 +25,24 @@ namespace Poshuku
 {
 namespace Keywords
 { 
-
 	EditKeywordDialog::EditKeywordDialog (const QString& url, 
 		const QString& keyword, QWidget *parent)
 	: QDialog (parent)
-	, Url_ (url)
-	, Keyword_ (keyword)
 	{
 		Ui_.setupUi (this);
-		Ui_.Url_->setText (Url_);
-		Ui_.Keyword_->setText (Keyword_);
+		Ui_.Url_->setText (url);
+		Ui_.Keyword_->setText (keyword);
+		Ui_.Url_->setFocus (Qt::ActiveWindowFocusReason);
 	}
 
 	QString EditKeywordDialog::GetUrl () const
 	{
-		return Url_;
+		return Ui_.Url_->text ();
 	}
 
 	QString EditKeywordDialog::GetKeyword () const
 	{
-		return Keyword_;
-	}
-
-	void EditKeywordDialog::on_Buttons__accepted()
-	{
-		Url_ = Ui_.Url_->text ();
-		Keyword_ = Ui_.Keyword_->text ();
+		return Ui_.Keyword_->text ();
 	}
 }
 }

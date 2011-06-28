@@ -130,25 +130,21 @@ namespace Keywords
 			return;
 		}
 
+		if (urlEdit->text ().isEmpty ())
+			return;
+
 		QStringList keywords = urlEdit->text ().split (" ", QString::SkipEmptyParts);
-		const QString& keyword = keywords.first ();
+		QString redirect = Keywords2Urls_.value (keywords.takeFirst ());
 
-		if (Keywords2Urls_.contains (keyword)) 
-		{
-			QString redirect = Keywords2Urls_ [keyword];
+		if (redirect.isEmpty ())
+			return;
 
-			if (keywords.length () > 1) 
-			{
-				for (int i = 1; i < keywords.length (); i++)
-				{
-					redirect = redirect.arg (keywords[i]);
-				}
-			}
+		while (!keywords.isEmpty ())
+			redirect = redirect.arg (keywords.takeFirst ());
 			
-			urlEdit->setText (redirect);
-			QMetaObject::invokeMethod (urlEdit, "returnPressed", Qt::QueuedConnection);
-			proxy->CancelDefault ();
-		}
+		urlEdit->setText (redirect);
+		QMetaObject::invokeMethod (urlEdit, "returnPressed", Qt::QueuedConnection);
+		proxy->CancelDefault ();
 	}
 }
 }

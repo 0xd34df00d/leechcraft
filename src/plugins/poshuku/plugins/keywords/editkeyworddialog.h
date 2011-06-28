@@ -33,15 +33,10 @@ namespace Keywords
         Q_OBJECT
 
         Ui::EditKeywordDialog Ui_;
-        QString Url_;
-        QString Keyword_;
     public:
         EditKeywordDialog (const QString& url, const QString& keyword, QWidget *parent = 0);
         QString GetUrl () const;
         QString GetKeyword () const;
-	public slots:
-		void on_Buttons__accepted ();
-
     };
 }
 }
