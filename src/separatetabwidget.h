@@ -59,6 +59,7 @@ namespace LeechCraft
 		QAction *UnPinTab_;
 		QAction *DefaultTabAction_;
 		QMap<int, QWidget*> Widgets_;
+		QList<QPointer<QAction> > TabBarActions_;
 	public:
 		explicit SeparateTabWidget (QWidget* = 0);
 		virtual ~SeparateTabWidget ();
@@ -94,6 +95,11 @@ namespace LeechCraft
 		void AddAction2TabBarLayout (QTabBar::ButtonPosition, QAction*);
 		void AddWidget2SeparateTabWidget (QWidget*);
 		SeparateTabBar* TabBar () const;
+		
+		void SetTooltip (int, QWidget*);
+		void AddAction2TabBar (QAction*);
+		void InsertAction2TabBar (int, QAction*);
+		void InsertAction2TabBar (QAction *before, QAction *action);
 	protected:
 		void resizeEvent (QResizeEvent*);
 	private:
@@ -112,6 +118,7 @@ namespace LeechCraft
 		void handleContextMenuRequested (const QPoint&);
 		void handleShowAddTabButton (bool);
 		void handleAddDefaultTab (bool);
+		void handleActionDestroyed ();
 	signals:
 		void newTabRequested ();
 		void newTabMenuRequested ();

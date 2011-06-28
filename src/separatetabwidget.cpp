@@ -344,6 +344,37 @@ namespace LeechCraft
 		return MainTabBar_;
 	}
 
+	void SeparateTabWidget::SetTooltip (int index, QWidget *widget)
+	{
+		Widgets_ [index] = widget;
+	}
+
+	void SeparateTabWidget::AddAction2TabBar (QAction *act)
+	{
+		TabBarActions_ << act;
+		connect (act,
+				SIGNAL (destroyed (QObject*)),
+				this,
+				SLOT (handleActionDestroyed ()));
+	}
+
+	void SeparateTabWidget::InsertAction2TabBar (int index, QAction *act)
+	{
+		TabBarActions_.insert (index, act);
+		connect (act,
+				SIGNAL (destroyed (QObject*)),
+				this,
+				SLOT (handleActionDestroyed ()));
+	}
+
+	void SeparateTabWidget::InsertAction2TabBar (QAction* before, QAction* action)
+	{
+		int idx = TabBarActions_.indexOf (before);
+		if (idx < 0)
+			idx = TabBarActions_.size ();
+		InsertAction2TabBar (idx, action);
+	}
+
 	void SeparateTabWidget::resizeEvent (QResizeEvent *event)
 	{
 		QWidget::resizeEvent (event);
@@ -512,14 +543,62 @@ namespace LeechCraft
 			menu.addActions (AddTabButtonContextMenu_->actions ());
 		else
 		{
-			menu.addActions (DefaultContextMenu_->actions ());
-			if (MainTabBar_->IsPinTab (index))
-				menu.addAction (UnPinTab_);
-			else
-				menu.addAction (PinTab_);
-		}
+			QMenu *menu = new QMenu ("", MainTabBar_);
 
-		menu.exec (MainTabBar_->mapToGlobal (point));
+			if (index != -1 &&
+					XmlSettingsManager::Instance ()->
+						property ("ShowPluginMenuInTabs").toBool ())
+			{
+				bool asSub = XmlSettingsManager::Instance ()->
+					property ("ShowPluginMenuInTabsAsSubmenu").toBool ();
+				ITabWidget *imtw =
+					qobject_cast<ITabWidget*> (Widget (index));
+				if (imtw)
+				{
+					QList<QAction*> tabActions = imtw->GetTabBarContextMenuActions ();
+
+					QMenu *subMenu = new QMenu (TabText (index), menu);
+					Q_FOREACH (QAction *act, tabActions)
+						(asSub ? subMenu : menu)->addAction (act);
+					if (asSub)
+						menu->addMenu (subMenu);
+					if (tabActions.size ())
+						menu->addSeparator ();
+				}
+			}
+
+			Q_FOREACH (QAction *act, TabBarActions_)
+			{
+				if (!act)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "detected null pointer";
+					continue;
+				}
+				act->setProperty ("_Core/ClickPos", MainTabBar_->mapToGlobal (point));
+				menu->addAction (act);
+			}
+
+			if (MainTabBar_->IsPinTab (index))
+				menu->addAction (UnPinTab_);
+			else
+				menu->addAction (PinTab_);
+
+			menu->exec (MainTabBar_->mapToGlobal (point));
+
+			Q_FOREACH (QAction *act, TabBarActions_)
+			{
+				if (!act)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "detected null pointer";
+					continue;
+				}
+				act->setProperty ("_Core/ClickPos", QVariant ());
+			}
+
+			delete menu;
+		}
 	}
 
 	void SeparateTabWidget::handleShowAddTabButton (bool show)
@@ -613,5 +692,12 @@ namespace LeechCraft
 		}
 
 		highestIHT->TabOpenRequested (highestTabClass);
+	}
+	
+	void SeparateTabWidget::handleActionDestroyed()
+	{
+		Q_FOREACH (QPointer<QAction> act, TabBarActions_)
+			if (!act || act == sender ())
+				TabBarActions_.removeAll (act);
 	}
 }
