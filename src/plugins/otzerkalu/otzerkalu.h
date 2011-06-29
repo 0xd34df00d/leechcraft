@@ -19,7 +19,10 @@
 #ifndef PLUGINS_OTZERKALU_OTZERKALU_H
 #define PLUGINS_OTZERKALU_OTZERKALU_H
 #include <QObject>
+#include <QUrl>
 #include <interfaces/iinfo.h>
+#include <interfaces/ientityhandler.h>
+#include <interfaces/structures.h>
 
 namespace LeechCraft
 {
@@ -27,9 +30,12 @@ namespace Otzerkalu
 {
 	class Plugin : public QObject
 				 , public IInfo
+				 , public IEntityHandler
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo)
+		Q_INTERFACES (IInfo IEntityHandler)
+
+		QUrl dUrl;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -38,6 +44,8 @@ namespace Otzerkalu
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+		bool CouldHandle (const LeechCraft::Entity& entity) const;
+		void Handle (LeechCraft::Entity entity);
 
 	};
 }

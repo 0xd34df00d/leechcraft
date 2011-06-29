@@ -54,6 +54,17 @@ namespace Otzerkalu
 	{
 		return QIcon ();
 	}
+
+	bool Plugin::CouldHandle (const LeechCraft::Entity& entity) const
+	{
+		return entity.Mime_ == "x-leechcraft/otzerkalu-url"
+			&& entity.Entity_.canConvert<QUrl> ();
+	}
+
+	void Plugin::Handle (LeechCraft::Entity entity)
+	{
+		dUrl = qvariant_cast<QUrl> (entity.Entity_).toString();
+	}
 }
 }
 
