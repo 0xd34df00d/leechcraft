@@ -836,7 +836,8 @@ namespace Azoth
 				handleFileOffered (object);
 		}
 		
-		if (qobject_cast<ISupportMediaCalls*> (accObj))
+		if (qobject_cast<ISupportMediaCalls*> (accObj) &&
+				e->GetEntryType () == ICLEntry::ETChat)
 		{
 			Call_ = new QAction (tr ("Call..."), this);
 			Call_->setProperty ("ActionIcon", "call");
