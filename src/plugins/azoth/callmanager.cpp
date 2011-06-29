@@ -144,14 +144,18 @@ namespace Azoth
 			QAudioDeviceInfo outInfo = FindDevice ("OutputAudioDevice", QAudio::AudioOutput);
 
 			const QAudioFormat& callFormat = mediaCall->GetAudioFormat ();
-			const QAudioFormat& inFormat = inInfo.nearestFormat (callFormat);
-			const QAudioFormat& outFormat = outInfo.nearestFormat (callFormat);
-
-			QAudioInput *input = new QAudioInput (inInfo, inFormat, sender ());
-			input->start (callAudioDev);
+			const QAudioFormat& inFormat = callFormat;
+			const QAudioFormat& outFormat = callFormat;
+			
+			const int bufSize = callFormat.sampleRate () * callFormat.channelCount () * callFormat.sampleSize () / 8 * 160 / 1000;
 
 			QAudioOutput *output = new QAudioOutput (outInfo, outFormat, sender ());
+			output->setBufferSize (bufSize);
 			output->start (callAudioDev);
+
+			QAudioInput *input = new QAudioInput (inInfo, inFormat, sender ());
+			input->setBufferSize (bufSize);
+			input->start (callAudioDev);
 			
 			qDebug () << input->state () << input->error () << inInfo.isFormatSupported (callFormat) << inInfo.supportedCodecs ();
 			qDebug () << output->state () << output->error ();
