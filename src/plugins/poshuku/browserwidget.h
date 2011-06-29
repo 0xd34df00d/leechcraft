@@ -57,6 +57,7 @@ namespace Poshuku
 		QAction *PrintPreview_;
 		QAction *ScreenSave_;
 		QAction *ViewSources_;
+		QAction *SavePage_;
 		QAction *ContentsEditable_;
 		QAction *ZoomIn_;
 		QAction *ZoomOut_;
@@ -148,6 +149,7 @@ namespace Poshuku
 		void handlePrintingWithPreview ();
 		void handleScreenSave ();
 		void handleViewSources ();
+		void handleSavePage ();
 		void handleNewUnclose (QAction*);
 		void handleUncloseDestroyed ();
 		void updateTooltip ();

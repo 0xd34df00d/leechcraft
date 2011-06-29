@@ -35,6 +35,7 @@
 #include <QXmppActivityItem.h>
 #include <QXmppPubSubIq.h>
 #include <QXmppDeliveryReceiptsManager.h>
+#include <QXmppCallManager.h>
 #include <plugininterface/util.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <interfaces/iprotocol.h>
@@ -77,6 +78,7 @@ namespace Xoox
 	, EntityTimeManager_ (new QXmppEntityTimeManager)
 	, ArchiveManager_ (new QXmppArchiveManager)
 	, DeliveryReceiptsManager_ (new QXmppDeliveryReceiptsManager)
+	, CallManager_ (new QXmppCallManager)
 	, PubSubManager_ (new PubSubManager)
 	, PrivacyListsManager_ (new PrivacyListsManager)
 	, AnnotationsManager_ (0)
@@ -92,6 +94,7 @@ namespace Xoox
 				1000, 1, this))
 	, SocketErrorAccumulator_ (0)
 	{
+		Client_->setLogger (new QXmppLogger (this));
 		LastState_.State_ = SOffline;
 		
 		QTimer *decrTimer = new QTimer (this);
@@ -126,6 +129,7 @@ namespace Xoox
 		Client_->addExtension (ArchiveManager_);
 		Client_->addExtension (new LegacyEntityTimeExt);
 		Client_->addExtension (PrivacyListsManager_);
+		Client_->addExtension (CallManager_);
 		
 		AnnotationsManager_ = new AnnotationsManager (this);
 
@@ -357,6 +361,11 @@ namespace Xoox
 	PrivacyListsManager* ClientConnection::GetPrivacyListsManager () const
 	{
 		return PrivacyListsManager_;
+	}
+	
+	QXmppCallManager* ClientConnection::GetCallManager () const
+	{
+		return CallManager_;
 	}
 	
 	void ClientConnection::SetSignaledLog (bool signaled)

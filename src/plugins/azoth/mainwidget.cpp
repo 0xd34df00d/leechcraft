@@ -591,8 +591,17 @@ namespace Azoth
 		if (!account)
 			return;
 		
-		ConsoleWidget *cw = new ConsoleWidget (account->GetObject ());
-		emit gotConsoleWidget (cw);
+		if (!Account2CW_.contains (account))
+		{
+			ConsoleWidget *cw = new ConsoleWidget (account->GetObject ());
+			Account2CW_ [account] = cw;
+			connect (cw,
+					SIGNAL (removeTab (QWidget*)),
+					this,
+					SLOT (consoleRemoved (QWidget*)));
+		}
+		
+		emit gotConsoleWidget (Account2CW_ [account]);
 	}
 	
 	void MainWidget::handleManageBookmarks ()
@@ -711,6 +720,12 @@ namespace Azoth
 	void MainWidget::on_CLTree__expanded (const QModelIndex& idx)
 	{
 		SetExpanded (idx, true);
+	}
+	
+	void MainWidget::consoleRemoved (QWidget *cwWidget)
+	{
+		ConsoleWidget *cw = qobject_cast<ConsoleWidget*> (cwWidget);
+		Account2CW_.remove (Account2CW_.key (cw));
 	}
 }
 }
