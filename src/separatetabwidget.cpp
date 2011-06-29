@@ -365,6 +365,9 @@ namespace LeechCraft
 
 	void SeparateTabWidget::SetTooltip (int index, QWidget *widget)
 	{
+		if ((index == TabCount () - 1) && !IsAddTabActionVisible ())
+			return;
+
 		Widgets_ [index] = widget;
 	}
 
@@ -543,6 +546,11 @@ namespace LeechCraft
 			MainTabBar_->moveTab (to, from);
 			return;
 		}
+
+		if ((to == MainTabBar_->count () - 1) &&
+				!AddTabButtonAction_->isVisible ())
+			return;
+
 		QWidget *From = MainStackedWidget_->widget (from);
 		MainStackedWidget_->insertWidget (to, From);
 
