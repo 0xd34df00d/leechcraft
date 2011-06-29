@@ -167,7 +167,7 @@ LeechCraft::MainWindow::~MainWindow ()
 {
 }
 
-TabWidget* LeechCraft::MainWindow::GetTabWidget () const
+SeparateTabWidget* LeechCraft::MainWindow::GetTabWidget () const
 {
 	return Ui_.MainTabWidget_;
 }
@@ -285,7 +285,7 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	Ui_.setupUi (this);
 
 	Ui_.MainTabWidget_->setObjectName ("org_LeechCraft_MainWindow_CentralTabWidget");
-
+	Ui_.MainTabWidget_->SetTabsClosable (true);
 	connect (Ui_.ActionAboutQt_,
 			SIGNAL (triggered ()),
 			qApp,
@@ -308,12 +308,7 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	Ui_.ActionFullscreenMode_->setParent (this);
 	Ui_.ActionShowStatusBar_->setProperty ("ActionIcon", "showstatusbar");
 
-	Ui_.MainTabWidget_->setTabIcon (0, QIcon (":/resources/images/leechcraft.svg"));
 	Ui_.MainTabWidget_->AddAction2TabBar (Ui_.ActionCloseTab_);
-	connect (Ui_.MainTabWidget_,
-			SIGNAL (newTabRequested ()),
-			this,
-			SLOT (on_ActionNewTab__triggered ()));
 	connect (Ui_.MainTabWidget_,
 			SIGNAL (newTabMenuRequested ()),
 			this,
@@ -440,7 +435,7 @@ void LeechCraft::MainWindow::on_ActionCloseTab__triggered ()
 		act->setData (QVariant ());
 	}
 	else
-		pos = Ui_.MainTabWidget_->currentIndex ();
+		pos = Ui_.MainTabWidget_->CurrentIndex ();
 	Core::Instance ().GetTabManager ()->remove (pos);
 }
 
@@ -766,6 +761,7 @@ void LeechCraft::MainWindow::FillToolMenu ()
 
 	QMenu *ntm = Core::Instance ()
 		.GetNewTabMenuManager ()->GetNewTabMenu ();
+	Ui_.MainTabWidget_->SetAddTabButtonContextMenu (ntm);
 	int i = 0;
 	Q_FOREACH (QAction *act, ntm->actions ())
 		Ui_.MainTabWidget_->InsertAction2TabBar (i++, act);
@@ -829,7 +825,7 @@ void LeechCraft::MainWindow::ShowMenuAndBar (bool show)
 {
 	Ui_.MainToolbar_->setVisible (show);
 
-	int cur = Ui_.MainTabWidget_->currentIndex ();
+	int cur = Ui_.MainTabWidget_->CurrentIndex ();
 	if (Core::Instance ().GetToolBar (cur))
 		Core::Instance ().GetToolBar (cur)->setVisible (show);
 	Ui_.ActionFullscreenMode_->setChecked (!show);
@@ -841,6 +837,6 @@ void LeechCraft::MainWindow::keyPressEvent(QKeyEvent* e)
 	if (index == 0)
 		index = 10;
 	--index;
-	if (index >= 0 && index < std::min (10, Ui_.MainTabWidget_->count ()))
+	if (index >= 0 && index < std::min (10, Ui_.MainTabWidget_->WidgetCount ()))
 		Ui_.MainTabWidget_->setCurrentIndex (index);
 }

@@ -81,7 +81,7 @@ namespace LeechCraft
 	public:
 		MainWindow (QWidget *parent = 0, Qt::WFlags flags = 0);
 		virtual ~MainWindow ();
-		TabWidget* GetTabWidget () const;
+		SeparateTabWidget* GetTabWidget () const;
 		const IShortcutProxy* GetShortcutProxy () const;
 		void SetAdditionalTitle (const QString&);
 		ToolbarGuard* GetGuard () const;
