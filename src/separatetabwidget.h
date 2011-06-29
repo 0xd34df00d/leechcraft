@@ -25,6 +25,7 @@
 #include <QPointer>
 #include <QAction>
 #include <QMap>
+#include <interfaces/iinfo.h>
 
 class QStackedWidget;
 class QVBoxLayout;
@@ -39,8 +40,10 @@ namespace LeechCraft
 	class SeparateTabBar;
 
 	class SeparateTabWidget : public QWidget
+							, public ICoreTabWidget
 	{
 		Q_OBJECT
+		Q_INTERFACES (ICoreTabWidget)
 
 		int LastContextMenuTab_;
 		QMenu *DefaultContextMenu_;
@@ -114,7 +117,6 @@ namespace LeechCraft
 		void on_UnPinTab__triggered (bool);
 	private slots:
 		void handleCurrentChanged (int);
-		void handleTabCloseRequested (int);
 		void handleTabMoved (int, int);
 		void handleContextMenuRequested (const QPoint&);
 		void handleShowAddTabButton (bool);
@@ -123,6 +125,9 @@ namespace LeechCraft
 	signals:
 		void newTabRequested ();
 		void newTabMenuRequested ();
+		void tabWasMoved (int, int);
+		void currentChanged (int);
+		void tabCloseRequested (int);
 	};
 }
 #endif // SEPARATETABWIDGET_H

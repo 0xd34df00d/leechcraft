@@ -446,11 +446,15 @@ namespace LeechCraft
 				SIGNAL (currentChanged (int)),
 				this,
 				SLOT (handleCurrentChanged (int)));
+		connect (MainTabBar_,
+				SIGNAL (currentChanged (int)),
+				this,
+				SIGNAL (currentChanged (int)));
 
 		connect (MainTabBar_,
 				SIGNAL (tabCloseRequested (int)),
 				this,
-				SLOT (handleTabCloseRequested (int)));
+				SIGNAL (tabCloseRequested (int)));
 
 		connect (MainTabBar_,
 				SIGNAL (tabMoved (int, int)),
@@ -501,7 +505,6 @@ namespace LeechCraft
 				SIGNAL (triggered (bool)),
 				this,
 				SLOT (handleAddDefaultTab (bool)));
-
 	}
 
 	void SeparateTabWidget::setCurrentIndex (int index)
@@ -523,11 +526,6 @@ namespace LeechCraft
 	void SeparateTabWidget::handleCurrentChanged (int index)
 	{
 		setCurrentIndex (index);
-	}
-
-	void SeparateTabWidget::handleTabCloseRequested (int index)
-	{
-		RemoveTab (index);
 	}
 
 	void SeparateTabWidget::handleTabMoved (int from, int to)
@@ -557,6 +555,8 @@ namespace LeechCraft
 		}
 
 		std::swap (Widgets_ [from], Widgets_ [to]);
+		if (to == TabCount () - 1)
+			emit tabWasMoved (from, to);
 	}
 
 	void SeparateTabWidget::handleContextMenuRequested (const QPoint& point)
@@ -567,14 +567,14 @@ namespace LeechCraft
 		int index = MainTabBar_->tabAt (point);
 		LastContextMenuTab_ = index;
 
-		QMenu menu;
-
+		QMenu *menu = new QMenu ("", MainTabBar_);
 		if ((index == MainTabBar_->count () - 1) && !AddTabButtonAction_->isVisible ())
-			menu.addActions (AddTabButtonContextMenu_->actions ());
+		{
+			menu->addActions (AddTabButtonContextMenu_->actions ());
+			menu->exec (MainTabBar_->mapToGlobal (point));
+		}
 		else
 		{
-			QMenu *menu = new QMenu ("", MainTabBar_);
-
 			if (index != -1 &&
 					XmlSettingsManager::Instance ()->
 						property ("ShowPluginMenuInTabs").toBool ())
@@ -626,9 +626,8 @@ namespace LeechCraft
 				}
 				act->setProperty ("_Core/ClickPos", QVariant ());
 			}
-
-			delete menu;
 		}
+		delete menu;
 	}
 
 	void SeparateTabWidget::handleShowAddTabButton (bool show)
