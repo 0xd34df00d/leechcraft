@@ -440,7 +440,7 @@ namespace Azoth
 	void ChatTab::handleCallRequested ()
 	{
 		QObject *callObj = Core::Instance ().GetCallManager ()->
-				Call (GetEntry<ICLEntry> (), QString ());
+				Call (GetEntry<ICLEntry> (), Ui_.VariantBox_->currentText ());
 		if (!callObj)
 			return;
 		handleCall (callObj);
@@ -448,6 +448,10 @@ namespace Azoth
 	
 	void ChatTab::handleCall (QObject *callObj)
 	{
+		IMediaCall *call = qobject_cast<IMediaCall*> (callObj);
+		if (!call || call->GetSourceID () != EntryID_)
+			return;
+
 		CallChatWidget *widget = new CallChatWidget (callObj);
 		const int idx = Ui_.MainLayout_->indexOf (Ui_.View_);
 		Ui_.MainLayout_->insertWidget (idx, widget);

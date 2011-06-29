@@ -100,6 +100,7 @@ namespace Xoox
 				1000, 1, this))
 	, SocketErrorAccumulator_ (0)
 	{
+		Client_->setLogger (new QXmppLogger (this));
 		LastState_.State_ = SOffline;
 		
 		QTimer *decrTimer = new QTimer (this);

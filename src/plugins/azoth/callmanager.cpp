@@ -17,12 +17,16 @@
  **********************************************************************/
 
 #include "callmanager.h"
+#include <boost/bind.hpp>
 #include <QAudioDeviceInfo>
 #include <QAudioInput>
 #include <QAudioOutput>
 #include <QtDebug>
+#include <plugininterface/util.h>
+#include <plugininterface/notificationactionhandler.h>
 #include "interfaces/iclentry.h"
 #include "xmlsettingsmanager.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -37,7 +41,7 @@ namespace Azoth
 	{
 		if (!qobject_cast<ISupportMediaCalls*> (account))
 			return;
-		
+
 		connect (account,
 				SIGNAL (called (QObject*)),
 				this,
@@ -110,6 +114,22 @@ namespace Azoth
 	void CallManager::handleIncomingCall (QObject *obj)
 	{
 		HandleCall (obj);
+		
+		IMediaCall *call = qobject_cast<IMediaCall*> (obj);
+
+		ICLEntry *entry = qobject_cast<ICLEntry*> (Core::Instance ().GetEntry (call->GetSourceID ()));
+		const QString& name = entry ?
+				entry->GetEntryName () :
+				call->GetSourceID ();
+
+		Entity e = Util::MakeNotification ("Azoth",
+				tr ("Incoming call from %1").arg (name),
+				PInfo_);
+		Util::NotificationActionHandler *nh =
+				new Util::NotificationActionHandler (e, this);
+		nh->AddFunction (tr ("Accept"), boost::bind (&IMediaCall::Accept, call));
+		nh->AddFunction (tr ("Hangup"), boost::bind (&IMediaCall::Hangup, call));
+		Core::Instance ().SendEntity (e);
 		
 		emit gotCall (obj);
 	}
