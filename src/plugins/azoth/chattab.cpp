@@ -1173,6 +1173,11 @@ namespace Azoth
 	{
 		Ui_.MsgEdit_->setText (Ui_.MsgEdit_->toPlainText () + text);
 	}
+	
+	QTextEdit* ChatTab::getMsgEdit ()
+	{
+		return Ui_.MsgEdit_;
+	}
 
 	void ChatTab::clearAvailableNick ()
 	{
