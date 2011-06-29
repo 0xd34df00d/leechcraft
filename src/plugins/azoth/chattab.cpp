@@ -836,7 +836,8 @@ namespace Azoth
 				handleFileOffered (object);
 		}
 		
-		if (qobject_cast<ISupportMediaCalls*> (accObj))
+		if (qobject_cast<ISupportMediaCalls*> (accObj) &&
+				e->GetEntryType () == ICLEntry::ETChat)
 		{
 			Call_ = new QAction (tr ("Call..."), this);
 			Call_->setProperty ("ActionIcon", "call");
@@ -1172,6 +1173,11 @@ namespace Azoth
 	void ChatTab::appendMessageText (const QString& text)
 	{
 		Ui_.MsgEdit_->setText (Ui_.MsgEdit_->toPlainText () + text);
+	}
+	
+	QTextEdit* ChatTab::getMsgEdit ()
+	{
+		return Ui_.MsgEdit_;
 	}
 
 	void ChatTab::clearAvailableNick ()
