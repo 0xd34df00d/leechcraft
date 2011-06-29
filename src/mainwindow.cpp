@@ -167,7 +167,7 @@ LeechCraft::MainWindow::~MainWindow ()
 {
 }
 
-TabWidget* LeechCraft::MainWindow::GetTabWidget () const
+SeparateTabWidget* LeechCraft::MainWindow::GetTabWidget () const
 {
 	return Ui_.MainTabWidget_;
 }
@@ -280,14 +280,12 @@ void LeechCraft::MainWindow::closeEvent (QCloseEvent *e)
 
 void LeechCraft::MainWindow::InitializeInterface ()
 {
-	installEventFilter (new ChildActionEventFilter (this));
+ 	installEventFilter (new ChildActionEventFilter (this));
 
 	Ui_.setupUi (this);
 
-	NewTabButton_ = new NewTabButton (this);
-
 	Ui_.MainTabWidget_->setObjectName ("org_LeechCraft_MainWindow_CentralTabWidget");
-
+	Ui_.MainTabWidget_->SetTabsClosable (true);
 	connect (Ui_.ActionAboutQt_,
 			SIGNAL (triggered ()),
 			qApp,
@@ -299,8 +297,6 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	MenuTools_ = new QMenu (tr ("Tools"), this);
 
 	Ui_.ActionAddTask_->setProperty ("ActionIcon", "addjob");
-	NewTabButton_->setDefaultAction (Ui_.ActionNewTab_);
-	NewTabButton_->defaultAction ()->setProperty ("ActionIcon", "newtab");
 	Ui_.ActionCloseTab_->setProperty ("ActionIcon", "closetab");
 	Ui_.ActionSettings_->setProperty ("ActionIcon", "settings");
 	Ui_.ActionAboutLeechCraft_->setProperty ("ActionIcon", "about");
@@ -312,20 +308,11 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	Ui_.ActionFullscreenMode_->setParent (this);
 	Ui_.ActionShowStatusBar_->setProperty ("ActionIcon", "showstatusbar");
 
-	Ui_.MainTabWidget_->setTabIcon (0, QIcon (":/resources/images/leechcraft.svg"));
 	Ui_.MainTabWidget_->AddAction2TabBar (Ui_.ActionCloseTab_);
-	connect (Ui_.MainTabWidget_,
-			SIGNAL (newTabRequested ()),
-			this,
-			SLOT (on_ActionNewTab__triggered ()));
 	connect (Ui_.MainTabWidget_,
 			SIGNAL (newTabMenuRequested ()),
 			this,
 			SLOT (handleNewTabMenuRequested ()));
-
-	QToolBar *bar = new QToolBar ();
-	bar->addWidget (NewTabButton_);
-	Ui_.MainTabWidget_->setCornerWidget (bar, Qt::TopRightCorner);
 
 	XmlSettingsManager::Instance ()->RegisterObject ("AppQStyle",
 			this, "handleAppStyle");
@@ -437,75 +424,6 @@ void LeechCraft::MainWindow::on_ActionAddTask__triggered ()
 		Core::Instance ().TryToAddJob (name);
 }
 
-void LeechCraft::MainWindow::on_ActionNewTab__triggered ()
-{
-	QByteArray combined = XmlSettingsManager::Instance ()->
-			property ("DefaultNewTab").toString ().toLatin1 ();
-	if (combined != "contextdependent")
-	{
-		QList<QByteArray> parts = combined.split ('|');
-		if (parts.size () != 2)
-			qWarning () << Q_FUNC_INFO
-					<< "incorrect split"
-					<< parts
-					<< combined;
-		else
-		{
-			const QByteArray& newTabId = parts.at (0);
-			const QByteArray& tabClass = parts.at (1);
-			QObject *plugin = Core::Instance ()
-					.GetPluginManager ()->GetPluginByID (newTabId);
-			IHaveTabs *iht = qobject_cast<IHaveTabs*> (plugin);
-			if (!iht)
-				qWarning () << Q_FUNC_INFO
-						<< "plugin with id"
-						<< newTabId
-						<< "is not a IMultiTabs";
-			else
-			{
-				iht->TabOpenRequested (tabClass);
-				return;
-			}
-		}
-	}
-	
-	IHaveTabs *highestIHT = 0;
-	QByteArray highestTabClass;
-	int highestPriority = 0;
-	Q_FOREACH (IHaveTabs *iht, Core::Instance ()
-			.GetPluginManager ()->GetAllCastableTo<IHaveTabs*> ())
-		Q_FOREACH (const TabClassInfo& info, iht->GetTabClasses ())
-		{
-			if (!(info.Features_ & TFOpenableByRequest))
-				continue;
-
-			if (info.Priority_ <= highestPriority)
-				continue;
-
-			highestIHT = iht;
-			highestTabClass = info.TabClass_;
-			highestPriority = info.Priority_;
-		}
-
-	ITabWidget *imtw =
-		qobject_cast<ITabWidget*> (GetTabWidget ()->currentWidget ());
-	const int delta = 15;
-	if (imtw && imtw->GetTabClassInfo ().Priority_ + delta > highestPriority)
-	{
-		highestIHT = qobject_cast<IHaveTabs*> (imtw->ParentMultiTabs ());
-		highestTabClass = imtw->GetTabClassInfo ().TabClass_;
-	}
-	
-	if (!highestIHT)
-	{
-		qWarning () << Q_FUNC_INFO
-				<< "no IHT detected";
-		return;
-	}
-	
-	highestIHT->TabOpenRequested (highestTabClass);
-}
-
 void LeechCraft::MainWindow::on_ActionCloseTab__triggered ()
 {
 	QAction *act = qobject_cast<QAction*> (sender ());
@@ -517,7 +435,7 @@ void LeechCraft::MainWindow::on_ActionCloseTab__triggered ()
 		act->setData (QVariant ());
 	}
 	else
-		pos = Ui_.MainTabWidget_->currentIndex ();
+		pos = Ui_.MainTabWidget_->CurrentIndex ();
 	Core::Instance ().GetTabManager ()->remove (pos);
 }
 
@@ -637,14 +555,12 @@ void LeechCraft::MainWindow::on_ActionFullscreenMode__triggered (bool full)
 		ShowMenuAndBar (false);
 		showFullScreen ();
 		Clock_->show ();
-		Ui_.Label_->show();
 	}
 	else if (WasMaximized_)
 	{
 		ShowMenuAndBar (true);
 		Clock_->hide ();
 		showMaximized ();
-		Ui_.Label_->hide();
 		// Because shit happens on X11 otherwise
 		QTimer::singleShot (200,
 				this,
@@ -653,7 +569,6 @@ void LeechCraft::MainWindow::on_ActionFullscreenMode__triggered (bool full)
 	else
 	{
 		ShowMenuAndBar (true);
-		Ui_.Label_->hide();
 		Clock_->hide ();
 		showNormal ();
 	}
@@ -846,8 +761,7 @@ void LeechCraft::MainWindow::FillToolMenu ()
 
 	QMenu *ntm = Core::Instance ()
 		.GetNewTabMenuManager ()->GetNewTabMenu ();
-	NewTabButton_->setMenu (ntm);
-	NewTabButton_->setPopupMode (QToolButton::MenuButtonPopup);
+	Ui_.MainTabWidget_->SetAddTabButtonContextMenu (ntm);
 	int i = 0;
 	Q_FOREACH (QAction *act, ntm->actions ())
 		Ui_.MainTabWidget_->InsertAction2TabBar (i++, act);
@@ -907,31 +821,11 @@ namespace
 	}
 };
 
-void LeechCraft::NewTabButton::mousePressEvent (QMouseEvent *event)
-{
-	if (event->button () == Qt::MidButton)
-	{
-		QVariant econtent;
-		econtent = ClipboardToEcontent (QApplication::clipboard ()->text (QClipboard::Selection));
-		if (econtent.isNull ())
-		{
-			econtent = ClipboardToEcontent (QApplication::clipboard ()->text (QClipboard::Clipboard));
-			if (econtent.isNull ())
-				return;
-		}
-
-		Entity e = MakeEntity (econtent,QString (),FromUserInitiated | OnlyHandle,QString ());
-		Core::Instance ().handleGotEntity (e);
-	}
-	else
-		QToolButton::mousePressEvent (event);
-}
-
 void LeechCraft::MainWindow::ShowMenuAndBar (bool show)
 {
 	Ui_.MainToolbar_->setVisible (show);
 
-	int cur = Ui_.MainTabWidget_->currentIndex ();
+	int cur = Ui_.MainTabWidget_->CurrentIndex ();
 	if (Core::Instance ().GetToolBar (cur))
 		Core::Instance ().GetToolBar (cur)->setVisible (show);
 	Ui_.ActionFullscreenMode_->setChecked (!show);
@@ -943,6 +837,6 @@ void LeechCraft::MainWindow::keyPressEvent(QKeyEvent* e)
 	if (index == 0)
 		index = 10;
 	--index;
-	if (index >= 0 && index < std::min (10, Ui_.MainTabWidget_->count ()))
+	if (index >= 0 && index < std::min (10, Ui_.MainTabWidget_->WidgetCount ()))
 		Ui_.MainTabWidget_->setCurrentIndex (index);
 }

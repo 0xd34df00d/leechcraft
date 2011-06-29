@@ -311,11 +311,12 @@ SET (SRCS
 	tabbar.cpp
 	wizardtypechoicepage.cpp
 	3dparty/qxttooltip.cpp
-	fullscreenspacerlabel.cpp
 	newtabmenumanager.cpp
 	plugintreebuilder.cpp
 	coreinstanceobject.cpp
 	settingstab.cpp
+	separatetabbar.cpp
+	separatetabwidget.cpp
 	)
 SET (HEADERS
 	mainwindow.h
@@ -352,7 +353,6 @@ SET (HEADERS
 	toolbarguard.h
 	clipboardwatcher.h
 	tabbar.h
-	fullscreenspacerlabel.h
 	newtabmenumanager.h
 	wizardtypechoicepage.h
 	plugintreebuilder.h
@@ -361,6 +361,8 @@ SET (HEADERS
 	3dparty/qxttooltip.h
 	3dparty/qxttooltip_p.h
 	interfaces/structures.h
+	separatetabbar.h
+	separatetabwidget.h
 	)
 SET (FORMS
 	commonjobadder.ui

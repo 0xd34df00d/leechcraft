@@ -60,7 +60,7 @@ QMainWindow* CoreProxy::GetMainWindow () const
 	return Core::Instance ().GetReallyMainWindow ();
 }
 
-QTabWidget* CoreProxy::GetTabWidget () const
+ICoreTabWidget* CoreProxy::GetTabWidget () const
 {
 	return Core::Instance ().GetReallyMainWindow ()->GetTabWidget ();
 }
