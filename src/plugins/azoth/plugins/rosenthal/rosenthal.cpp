@@ -41,7 +41,6 @@ namespace Rosenthal
 		base = qApp->applicationDirPath () + "/myspell/";
 #endif
 		QByteArray baBase = (base + locale).toLatin1 ();
-		qDebug () << Q_FUNC_INFO << baBase;
 		Hunspell_.reset (new Hunspell (baBase + ".aff", baBase + ".dic"));
 	}
 
