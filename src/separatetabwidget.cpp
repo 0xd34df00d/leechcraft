@@ -130,6 +130,9 @@ namespace LeechCraft
 
 		MainStackedWidget_->addWidget (page);
 
+		if (MainTabBar_->currentIndex () == TabCount () - 1)
+			setCurrentIndex (TabCount () - 2);
+
 		return newIndex;
 	}
 
@@ -355,6 +358,11 @@ namespace LeechCraft
 		return MainTabBar_;
 	}
 
+	bool SeparateTabWidget::IsAddTabActionVisible () const
+	{
+		return AddTabButtonAction_->isVisible ();
+	}
+
 	void SeparateTabWidget::SetTooltip (int index, QWidget *widget)
 	{
 		Widgets_ [index] = widget;
@@ -509,11 +517,10 @@ namespace LeechCraft
 
 	void SeparateTabWidget::setCurrentIndex (int index)
 	{
-		int newIndex = index;
 		if ((index == TabCount () - 1) && !AddTabButtonAction_->isVisible ())
-			newIndex = index - 1;
+			--index;
 
-		MainTabBar_->setCurrentIndex (newIndex);
+		MainTabBar_->setCurrentIndex (index);
 		MainStackedWidget_->setCurrentIndex (index);
 	}
 
@@ -555,8 +562,7 @@ namespace LeechCraft
 		}
 
 		std::swap (Widgets_ [from], Widgets_ [to]);
-		if (to == TabCount () - 1)
-			emit tabWasMoved (from, to);
+		emit tabWasMoved (from, to);
 	}
 
 	void SeparateTabWidget::handleContextMenuRequested (const QPoint& point)
