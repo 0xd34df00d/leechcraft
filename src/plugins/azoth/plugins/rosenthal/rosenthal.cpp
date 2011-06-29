@@ -42,6 +42,9 @@ namespace Rosenthal
 #endif
 		QByteArray baBase = (base + locale).toLatin1 ();
 		Hunspell_.reset (new Hunspell (baBase + ".aff", baBase + ".dic"));
+		
+		if (!locale.startsWith ("en_"))
+			Hunspell_->add_dic ((base + "en_GB.dic").toLatin1 ());
 	}
 
 	void Plugin::SecondInit ()
