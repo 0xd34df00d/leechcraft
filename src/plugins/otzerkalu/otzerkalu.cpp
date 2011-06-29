@@ -19,6 +19,8 @@
 #include "otzerkalu.h"
 #include <QIcon>
 
+#include "otzerkaludialog.h"
+
 namespace LeechCraft
 {
 namespace Otzerkalu
@@ -63,7 +65,15 @@ namespace Otzerkalu
 
 	void Plugin::Handle (LeechCraft::Entity entity)
 	{
-		dUrl = qvariant_cast<QUrl> (entity.Entity_).toString();
+		dUrl = qvariant_cast<QUrl> (entity.Entity_);
+		
+		OtzerkaluDialog dialog;
+		dialog.exec ();
+		if (!dialog.isOk ())
+			return;
+		
+		QString dir = dialog.getDir ();
+		int recLevel = dialog.getRecursionLevel ();
 	}
 }
 }
