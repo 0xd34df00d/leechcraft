@@ -32,26 +32,7 @@
      <number>2</number>
     </property>
     <item row="0" column="0">
-     <widget class="LeechCraft::TabWidget" name="MainTabWidget_">
-      <property name="currentIndex">
-       <number>-1</number>
-      </property>
-      <property name="iconSize">
-       <size>
-        <width>16</width>
-        <height>16</height>
-       </size>
-      </property>
-      <property name="elideMode">
-       <enum>Qt::ElideRight</enum>
-      </property>
-      <property name="tabsClosable">
-       <bool>true</bool>
-      </property>
-      <property name="movable">
-       <bool>true</bool>
-      </property>
-     </widget>
+     <widget class="LeechCraft::SeparateTabWidget" name="MainTabWidget_" native="true"/>
     </item>
    </layout>
   </widget>
@@ -166,9 +147,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>LeechCraft::TabWidget</class>
-   <extends>QTabWidget</extends>
-   <header>tabwidget.h</header>
+   <class>LeechCraft::SeparateTabWidget</class>
+   <extends>QWidget</extends>
+   <header>separatetabwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
