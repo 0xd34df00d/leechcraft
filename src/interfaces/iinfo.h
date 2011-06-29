@@ -420,6 +420,14 @@ public:
 	virtual QObject* GetObject () = 0;
 };
 
+
+class ICoreTabWidget
+{
+public:
+	~ICoreTabWidget () {};
+};
+
+
 /** @brief Proxy class for the communication with LeechCraft.
  *
  * Allows to talk with LeechCraft, requesting and getting various
@@ -497,7 +505,7 @@ public:
 
 	/** Returns the main tab widget.
 	 */
-	virtual QTabWidget* GetTabWidget () const = 0;
+	virtual ICoreTabWidget* GetTabWidget () const = 0;
 
 	/** Returns the application-wide tags manager.
 	 */
@@ -879,5 +887,6 @@ Q_DECLARE_INTERFACE (IInfo, "org.Deviant.LeechCraft.IInfo/1.0");
 Q_DECLARE_INTERFACE (ICoreProxy, "org.Deviant.LeechCraft.ICoreProxy/1.0");
 Q_DECLARE_INTERFACE (ITagsManager, "org.Deviant.LeechCraft.ITagsManager/1.0");
 Q_DECLARE_INTERFACE (IPluginsManager, "org.Deviant.LeechCraft.IPluginsManager/1.0");
+Q_DECLARE_INTERFACE (ICoreTabWidget, "org.Deviant.LeechCraft.ICoreTabWidget/1.0");
 
 #endif
