@@ -49,11 +49,16 @@ namespace Rosenthal
 		QString GetInfo () const;
 		QIcon GetIcon () const;
 		QSet<QByteArray> GetPluginClasses () const;
+	protected:
+		bool eventFilter (QObject*, QEvent*);
+	private:
+		QStringList GetPropositions (const QString&);
 	private slots:
 		void hookChatTabCreated (LeechCraft::IHookProxy_ptr,
 				QObject*,
 				QObject*,
 				QWebView*); 
+		void handleCorrectionTriggered ();
 	};
 }
 }

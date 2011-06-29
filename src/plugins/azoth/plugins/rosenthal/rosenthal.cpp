@@ -20,6 +20,9 @@
 #include <QIcon>
 #include <QApplication>
 #include <QTextEdit>
+#include <QContextMenuEvent>
+#include <QMenu>
+#include <QTextCodec>
 #include <plugininterface/util.h>
 #include "hunspell/hunspell.hxx"
 #include "highlighter.h"
@@ -82,6 +85,76 @@ namespace Rosenthal
 		result << "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin";
 		return result;
 	}
+	
+	bool Plugin::eventFilter (QObject *obj, QEvent *event)
+	{
+		QPoint eventPos;
+		if (event->type () == QEvent::ContextMenu)
+			eventPos = static_cast<QContextMenuEvent*> (event)->pos ();
+		else if (event->type () == QEvent::MouseButtonPress)
+		{
+			QMouseEvent *me = static_cast<QMouseEvent*> (event);
+			if (me->buttons () & Qt::RightButton)
+				eventPos = me->pos ();
+			else
+				return QObject::eventFilter (obj, event);
+		}
+		else
+			return QObject::eventFilter (obj, event);
+		
+		QTextEdit *edit = qobject_cast<QTextEdit*> (obj);
+		const QPoint& curPos = edit->mapToGlobal (eventPos);
+
+		QTextCursor cur = edit->cursorForPosition (curPos);
+		QString word = cur.block ().text ();
+		const int pos = cur.columnNumber ();
+		const int end = word.indexOf (QRegExp("\\W+"), pos);
+		const int begin = word.lastIndexOf (QRegExp("\\W+"), pos);
+		word = word.mid (begin + 1, end - begin - 1);
+		
+		QMenu *menu = edit->createStandardContextMenu (curPos);
+		
+		const QStringList& words = GetPropositions (word);
+		if (!words.isEmpty ())
+		{
+			QList<QAction*> acts;
+			Q_FOREACH (const QString& word, words)
+			{
+				QAction *act = new QAction (word, menu);
+				acts << act;
+				connect (act,
+						SIGNAL (triggered ()),
+						this,
+						SLOT (handleCorrectionTriggered ()));
+				act->setProperty ("TextEdit", QVariant::fromValue<QObject*> (edit));
+			}
+			menu->insertActions (menu->actions ().first (), acts);
+		}
+
+		menu->exec (curPos);
+		
+		return true;
+	}
+	
+	QStringList Plugin::GetPropositions (const QString& word)
+	{		
+		QTextCodec *codec = QTextCodec::codecForName (Hunspell_->get_dic_encoding ());
+		const QByteArray& encoded = codec->fromUnicode (word);
+		if (Hunspell_->spell (encoded.data ()))
+			return QStringList ();
+		
+		char **wlist = 0;
+		const int ns = Hunspell_->suggest (&wlist, encoded.data ());
+		if (!ns)
+			return QStringList ();
+		
+		QStringList result;
+		for (int i = 0; i < std::min (ns, 10); ++i)
+			result << codec->toUnicode (wlist [i]);
+		Hunspell_->free_list (&wlist, ns);
+
+		return result;
+	}
 
 	void Plugin::hookChatTabCreated (LeechCraft::IHookProxy_ptr, 
 			QObject *chatTab, QObject*, QWebView*)
@@ -91,6 +164,21 @@ namespace Rosenthal
 				"getMsgEdit",
 				Q_RETURN_ARG (QTextEdit*, edit));
 		Highlighter *hl = new Highlighter (Hunspell_, edit->document ());
+		
+		edit->installEventFilter (this);
+	}
+	
+	void Plugin::handleCorrectionTriggered ()
+	{
+		QAction *action = qobject_cast<QAction*> (sender ());
+		if (!action)
+			return;
+		
+		QTextEdit *edit = qobject_cast<QTextEdit*> (action->property ("TextEdit").value<QObject*> ());
+		QTextCursor cur = edit->textCursor ();
+		cur.select (QTextCursor::WordUnderCursor);
+		cur.deleteChar ();
+		cur.insertText (action->text ());
 	}
 }
 }
