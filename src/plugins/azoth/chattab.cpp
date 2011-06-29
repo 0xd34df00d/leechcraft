@@ -36,6 +36,8 @@
 #include "interfaces/itransfermanager.h"
 #include "interfaces/iconfigurablemuc.h"
 #include "interfaces/ichatstyleresourcesource.h"
+#include "interfaces/isupportmediacalls.h"
+#include "interfaces/imediacall.h"
 #include "core.h"
 #include "textedit.h"
 #include "chattabsmanager.h"
@@ -44,6 +46,8 @@
 #include "bookmarksmanagerdialog.h"
 #include "simpledialog.h"
 #include "zoomeventfilter.h"
+#include "callmanager.h"
+#include "callchatwidget.h"
 
 namespace LeechCraft
 {
@@ -433,6 +437,26 @@ namespace Azoth
 		Core::Instance ().HandleTransferJob (job);
 	}
 	
+	void ChatTab::handleCallRequested ()
+	{
+		QObject *callObj = Core::Instance ().GetCallManager ()->
+				Call (GetEntry<ICLEntry> (), Ui_.VariantBox_->currentText ());
+		if (!callObj)
+			return;
+		handleCall (callObj);
+	}
+	
+	void ChatTab::handleCall (QObject *callObj)
+	{
+		IMediaCall *call = qobject_cast<IMediaCall*> (callObj);
+		if (!call || call->GetSourceID () != EntryID_)
+			return;
+
+		CallChatWidget *widget = new CallChatWidget (callObj);
+		const int idx = Ui_.MainLayout_->indexOf (Ui_.View_);
+		Ui_.MainLayout_->insertWidget (idx, widget);
+	}
+	
 	void ChatTab::handleClearChat ()
 	{
 		ICLEntry *entry = GetEntry<ICLEntry> ();
@@ -786,7 +810,8 @@ namespace Azoth
 					SLOT (handleChatPartStateChanged (const ChatPartState&, const QString&)));
 		}
 
-		IAccount *acc = qobject_cast<IAccount*> (GetEntry<ICLEntry> ()->GetParentAccount ());
+		QObject *accObj = GetEntry<ICLEntry> ()->GetParentAccount ();
+		IAccount *acc = qobject_cast<IAccount*> (accObj);
 		XferManager_ = qobject_cast<ITransferManager*> (acc->GetTransferManager ());
 		if (XferManager_ &&
 			!IsMUC_ &&
@@ -809,6 +834,27 @@ namespace Azoth
 					Core::Instance ().GetTransferJobManager ()->
 							GetPendingIncomingJobsFor (EntryID_))
 				handleFileOffered (object);
+		}
+		
+		if (qobject_cast<ISupportMediaCalls*> (accObj))
+		{
+			Call_ = new QAction (tr ("Call..."), this);
+			Call_->setProperty ("ActionIcon", "call");
+			connect (Call_,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (handleCallRequested ()));
+			TabToolbar_->addAction (Call_);
+			
+			connect (accObj,
+					SIGNAL (called (QObject*)),
+					this,
+					SLOT (handleCall (QObject*)));
+			
+			Q_FOREACH (QObject *object,
+					Core::Instance ().GetCallManager ()->
+							GetCallsForEntry (EntryID_))
+				handleCall (object);
 		}
 	}
 
@@ -1126,6 +1172,11 @@ namespace Azoth
 	void ChatTab::appendMessageText (const QString& text)
 	{
 		Ui_.MsgEdit_->setText (Ui_.MsgEdit_->toPlainText () + text);
+	}
+	
+	QTextEdit* ChatTab::getMsgEdit ()
+	{
+		return Ui_.MsgEdit_;
 	}
 
 	void ChatTab::clearAvailableNick ()

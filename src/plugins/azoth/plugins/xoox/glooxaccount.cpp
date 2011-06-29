@@ -20,6 +20,7 @@
 #include <memory>
 #include <QInputDialog>
 #include <QtDebug>
+#include <QXmppCallManager.h>
 #include <interfaces/iprotocol.h>
 #include <interfaces/iproxyobject.h>
 #include "glooxprotocol.h"
@@ -36,6 +37,7 @@
 #include "usermood.h"
 #include "useractivity.h"
 #include "privacylistsconfigdialog.h"
+#include "mediacall.h"
 
 namespace LeechCraft
 {
@@ -131,6 +133,11 @@ namespace Xoox
 				SIGNAL (rosterItemGrantedSubscription (QObject*, const QString&)),
 				this,
 				SIGNAL (itemGrantedSubscription (QObject*, const QString&)));
+		
+		connect (ClientConnection_->GetCallManager (),
+				SIGNAL (callReceived (QXmppCall*)),
+				this,
+				SLOT (handleIncomingCall (QXmppCall*)));
 	}
 
 	QObject* GlooxAccount::GetObject ()
@@ -358,6 +365,26 @@ namespace Xoox
 		
 		ClientConnection_->GetPubSubManager ()->PublishEvent (&activity);
 	}
+	
+	ISupportMediaCalls::MediaCallFeatures GlooxAccount::GetMediaCallFeatures () const
+	{
+		return MCFSupportsAudioCalls;
+	}
+	
+	QObject* GlooxAccount::Call (const QString& id, const QString& variant)
+	{
+		QString target = GlooxCLEntry::JIDFromID (this, id);
+		QString var = variant;
+		if (var.isEmpty ())
+		{
+			QObject *entryObj = GetClientConnection ()->
+					GetCLEntry (target, QString ());
+			GlooxCLEntry *entry = qobject_cast<GlooxCLEntry*> (entryObj);
+			var = entry->Variants ().value (0);
+		}
+		target += '/' + var;
+		return new MediaCall (this, ClientConnection_->GetCallManager ()->call (target));
+	}
 
 	QString GlooxAccount::GetJID () const
 	{
@@ -386,7 +413,7 @@ namespace Xoox
 		return ClientConnection_;
 	}
 
-	GlooxCLEntry* GlooxAccount::CreateFromODS (GlooxCLEntry::OfflineDataSource_ptr ods)
+	GlooxCLEntry* GlooxAccount::CreateFromODS (OfflineDataSource_ptr ods)
 	{
 		return ClientConnection_->AddODSCLEntry (ods);
 	}
@@ -519,6 +546,11 @@ namespace Xoox
 	void GlooxAccount::handleDestroyClient ()
 	{
 		ClientConnection_.reset ();
+	}
+	
+	void GlooxAccount::handleIncomingCall (QXmppCall *call)
+	{
+		emit called (new MediaCall (this, call));
 	}
 }
 }

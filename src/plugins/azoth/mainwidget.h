@@ -41,6 +41,8 @@ namespace Azoth
 		QMenu *MainMenu_;
 		QToolButton *MenuButton_;
 		SortFilterProxyModel *ProxyModel_;
+		
+		QHash<IAccount*, ConsoleWidget*> Account2CW_;
 
 		QMenu *MenuChangeStatus_;
 		QMenu *TrayChangeStatus_;
@@ -88,6 +90,8 @@ namespace Azoth
 		void rebuildTreeExpansions ();
 		void on_CLTree__expanded (const QModelIndex&);
 		void on_CLTree__collapsed (const QModelIndex&);
+		
+		void consoleRemoved (QWidget*);
 	signals:
 		void gotConsoleWidget (ConsoleWidget*);
 	};

@@ -1,6 +1,7 @@
 SET (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 FIND_PACKAGE (QXmpp REQUIRED)
+FIND_PACKAGE (Speex REQUIRED)
 
 INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -49,6 +50,7 @@ SET (XOOX_SRCS
 	privacylistsmanager.cpp
 	privacylistsconfigdialog.cpp
 	privacylistsitemdialog.cpp
+	mediacall.cpp
 	)
 SET (XOOX_HEADERS
 	xoox.h
@@ -93,6 +95,7 @@ SET (XOOX_HEADERS
 	privacylistsmanager.h
 	privacylistsconfigdialog.h
 	privacylistsitemdialog.h
+	mediacall.h
 	)
 SET (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui
@@ -127,6 +130,7 @@ TARGET_LINK_LIBRARIES (leechcraft_azoth_xoox
 	plugininterface
 	xmlsettingsdialog
 	${QXMPP_LIBRARIES}
+	${SPEEX_LIBRARIES}
 	)
 INSTALL (TARGETS leechcraft_azoth_xoox DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES ${XOOX_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

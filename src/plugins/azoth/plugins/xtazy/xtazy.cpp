@@ -18,7 +18,9 @@
 
 #include "xtazy.h"
 #include <QIcon>
+#include <QTranslator>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <plugininterface/util.h>
 #include <interfaces/iaccount.h>
 #include <interfaces/isupporttune.h>
 #include <interfaces/iproxyobject.h>
@@ -38,6 +40,8 @@ namespace Xtazy
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Translator_.reset (Util::InstallTranslator ("azoth_xtazy"));
+
 		AzothProxy_ = 0;
 		Proxy_ = proxy;
 		

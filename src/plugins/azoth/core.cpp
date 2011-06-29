@@ -59,6 +59,7 @@
 #include "drawattentiondialog.h"
 #include "activitydialog.h"
 #include "mooddialog.h"
+#include "callmanager.h"
 
 namespace LeechCraft
 {
@@ -99,11 +100,13 @@ namespace Azoth
 			Qt::CaseInsensitive, QRegExp::RegExp2)
 	, CLModel_ (new QStandardItemModel (this))
 	, ChatTabsManager_ (new ChatTabsManager (this))
+	, ItemIconManager_ (new AnimatedIconManager<QStandardItem*> (boost::bind (&QStandardItem::setIcon, _1, _2)))
 	, SmilesOptionsModel_ (new SourceTrackingModel<IEmoticonResourceSource> (QStringList (tr ("Smile pack"))))
 	, ChatStylesOptionsModel_ (new SourceTrackingModel<IChatStyleResourceSource> (QStringList (tr ("Chat style"))))
 	, PluginManager_ (new PluginManager)
 	, PluginProxyObject_ (new ProxyObject)
 	, XferJobManager_ (new TransferJobManager)
+	, CallManager_ (new CallManager)
 	, EventsNotifier_ (new EventsNotifier)
 	{
 		ResourceLoaders_ [RLTStatusIconLoader].reset (new Util::ResourceLoader ("azoth/iconsets/contactlist/", this));
@@ -420,6 +423,11 @@ namespace Azoth
 	TransferJobManager* Core::GetTransferJobManager () const
 	{
 		return XferJobManager_.get ();
+	}
+	
+	CallManager* Core::GetCallManager () const
+	{
+		return CallManager_.get ();
 	}
 
 	bool Core::ShouldCountUnread (const ICLEntry *entry,
@@ -1024,12 +1032,12 @@ namespace Azoth
 		const QString& tip = MakeTooltipString (entry);
 
 		const State state = entry->GetStatus ().State_;
-		const QIcon& icon = GetIconForState (state);
+		const QString& icon = GetIconPathForState (state);
 
 		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
 		{
 			item->setToolTip (tip);
-			item->setIcon (icon);
+			ItemIconManager_->SetIcon (item, icon);
 		}
 		
 		const QString& id = entry->GetEntryID ();
@@ -1057,10 +1065,10 @@ namespace Azoth
 		
 		const QString& filename = XmlSettingsManager::Instance ()
 				.property ("StatusIcons").toString () + "/file";
-		const QIcon& fileIcon = QIcon (ResourceLoaders_ [RLTStatusIconLoader]->GetIconPath (filename));
+		const QString& fileIcon = ResourceLoaders_ [RLTStatusIconLoader]->GetIconPath (filename);
 
 		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
-			item->setIcon (fileIcon);
+			ItemIconManager_->SetIcon (item, fileIcon);
 	}
 	
 	void Core::IncreaseUnreadCount (ICLEntry* entry, int amount)
@@ -1073,7 +1081,7 @@ namespace Azoth
 			}
 	}
 
-	QIcon Core::GetIconForState (State state) const
+	QString Core::GetIconPathForState (State state) const
 	{
 		QString iconName;
 		switch (state)
@@ -1113,8 +1121,12 @@ namespace Azoth
 				<< filename + ".png"
 				<< filename + ".jpg";
 
-		const QString& path = ResourceLoaders_ [RLTStatusIconLoader]->GetPath (variants);
-		return QIcon (path);
+		return ResourceLoaders_ [RLTStatusIconLoader]->GetPath (variants);
+	}
+	
+	QIcon Core::GetIconForState (State state) const
+	{
+		return QIcon (GetIconPathForState (state));
 	}
 	
 	QIcon Core::GetAffIcon (const QByteArray& affName) const
@@ -1569,11 +1581,13 @@ namespace Azoth
 
 		QStandardItem *category = item->parent ();
 		QString text = category->text ();
+		ItemIconManager_->Cancel (item);
 		category->removeRow (item->row ());
 
 		if (!category->rowCount ())
 		{
 			QStandardItem *account = category->parent ();
+			ItemIconManager_->Cancel (category);
 			account->removeRow (category->row ());
 			Account2Category2Item_ [account].remove (text);
 		}
@@ -1652,7 +1666,7 @@ namespace Azoth
 				CLRAccountObject);
 		accItem->setData (QVariant::fromValue<CLEntryType> (CLETAccount),
 				CLREntryType);
-		accItem->setIcon (GetIconForState (account->GetState ().State_));
+		ItemIconManager_->SetIcon (accItem, GetIconPathForState (account->GetState ().State_));
 		CLModel_->appendRow (accItem);
 
 		accItem->setEditable (false);
@@ -1740,6 +1754,8 @@ namespace Azoth
 					this,
 					SLOT (handleFileOffered (QObject*)));
 		}
+		
+		CallManager_->AddAccount (account->GetObject ());
 	}
 
 	void Core::handleAccountRemoved (QObject *account)
@@ -1763,6 +1779,7 @@ namespace Azoth
 			QObject *obj = item->data (CLRAccountObject).value<QObject*> ();
 			if (obj == account)
 			{
+				ItemIconManager_->Cancel (item);
 				CLModel_->removeRow (i);
 				break;
 			}
@@ -1889,7 +1906,7 @@ namespace Azoth
 			if (item->data (CLRAccountObject).value<QObject*> () != sender ())
 				continue;
 
-			item->setIcon (GetIconForState (status.State_));
+			ItemIconManager_->SetIcon (item, GetIconPathForState (status.State_));
 			return;
 		}
 
@@ -2389,15 +2406,15 @@ namespace Azoth
 
 	void Core::updateStatusIconset ()
 	{
-		QMap<State, QIcon> State2IconCache_;
+		QMap<State, QString> State2IconCache_;
 		Q_FOREACH (ICLEntry *entry, Entry2Items_.keys ())
 		{
 			State state = entry->GetStatus ().State_;
 			if (!State2IconCache_.contains (state))
-				State2IconCache_ [state] = GetIconForState (state);
+				State2IconCache_ [state] = GetIconPathForState (state);
 
 			Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
-				item->setIcon (State2IconCache_ [state]);
+				ItemIconManager_->SetIcon (item, State2IconCache_ [state]);
 		}
 	}
 	

@@ -343,6 +343,8 @@ namespace Xoox
 	void EntryBase::SetClientInfo (const QString& variant,
 			const QString& node, const QByteArray& ver)
 	{
+		VerString_ = ver;
+
 		QString type = Util::GetClientIDName (node);
 		if (type.isEmpty ())
 		{
