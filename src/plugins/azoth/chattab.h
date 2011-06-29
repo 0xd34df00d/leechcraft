@@ -48,6 +48,7 @@ namespace Azoth
 		Ui::ChatTab Ui_;
 		QToolBar *TabToolbar_;
 		QAction *SendFile_;
+		QAction *Call_;
 
 		QString EntryID_;
 
@@ -106,8 +107,10 @@ namespace Azoth
 		void on_MsgEdit__textChanged ();
 		void on_SubjectButton__toggled (bool);
 		void on_SubjChange__released ();
-		void handleSendFile ();
 		void handleClearChat ();
+		void handleSendFile ();
+		void handleCallRequested ();
+		void handleCall (QObject*);
 		void handleFileOffered (QObject*);
 		void handleFileNoLongerOffered (QObject*);
 		void handleOfferActionTriggered ();

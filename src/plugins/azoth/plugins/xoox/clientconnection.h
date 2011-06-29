@@ -42,6 +42,8 @@ class QXmppEntityTimeManager;
 class QXmppDeliveryReceiptsManager;
 class QXmppCaptchaManager;
 class QXmppBobManager;
+class QXmppCallManager;
+class QXmppCall;
 
 namespace LeechCraft
 {
@@ -77,6 +79,7 @@ namespace Xoox
 		QXmppDeliveryReceiptsManager *DeliveryReceiptsManager_;
 		QXmppCaptchaManager *CaptchaManager_;
 		QXmppBobManager *BobManager_;
+		QXmppCallManager *CallManager_;
 		PubSubManager *PubSubManager_;
 		PrivacyListsManager *PrivacyListsManager_;
 		
@@ -152,6 +155,7 @@ namespace Xoox
 		AnnotationsManager* GetAnnotationsManager () const;
 		PubSubManager* GetPubSubManager () const;
 		PrivacyListsManager* GetPrivacyListsManager () const;
+		QXmppCallManager* GetCallManager () const;
 		
 		void SetSignaledLog (bool);
 

@@ -37,6 +37,7 @@
 #include <QXmppDeliveryReceiptsManager.h>
 #include <QXmppCaptchaManager.h>
 #include <QXmppBobManager.h>
+#include <QXmppCallManager.h>
 #include <plugininterface/util.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <interfaces/iprotocol.h>
@@ -82,6 +83,7 @@ namespace Xoox
 	, ArchiveManager_ (new QXmppArchiveManager)
 	, DeliveryReceiptsManager_ (new QXmppDeliveryReceiptsManager)
 	, CaptchaManager_ (new QXmppCaptchaManager)
+	, CallManager_ (new QXmppCallManager)
 	, PubSubManager_ (new PubSubManager)
 	, BobManager_ (new QXmppBobManager)
 	, PrivacyListsManager_ (new PrivacyListsManager)
@@ -134,6 +136,7 @@ namespace Xoox
 		Client_->addExtension (CaptchaManager_);
 		Client_->addExtension (new LegacyEntityTimeExt);
 		Client_->addExtension (PrivacyListsManager_);
+		Client_->addExtension (CallManager_);
 		
 		AnnotationsManager_ = new AnnotationsManager (this);
 
@@ -370,6 +373,11 @@ namespace Xoox
 	PrivacyListsManager* ClientConnection::GetPrivacyListsManager () const
 	{
 		return PrivacyListsManager_;
+	}
+	
+	QXmppCallManager* ClientConnection::GetCallManager () const
+	{
+		return CallManager_;
 	}
 	
 	void ClientConnection::SetSignaledLog (bool signaled)

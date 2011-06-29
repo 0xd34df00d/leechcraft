@@ -20,6 +20,7 @@ SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTWEBKIT TRUE)
 SET (QT_USE_QTSQL TRUE)
 SET (QT_USE_QTXML TRUE)
+SET (QT_USE_QTMULTIMEDIA TRUE)
 
 INCLUDE (${QT_USE_FILE})
 INCLUDE_DIRECTORIES (
@@ -58,6 +59,8 @@ SET (SRCS
 	consolewidget.cpp
 	activitydialog.cpp
 	mooddialog.cpp
+	callmanager.cpp
+	callchatwidget.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -89,6 +92,8 @@ SET (HEADERS
 	consolewidget.h
 	activitydialog.h
 	mooddialog.h
+	callmanager.h
+	callchatwidget.h
 	animatediconmanager.h
 	sourcetrackingmodel.h
 	interfaces/iprotocolplugin.h
@@ -113,6 +118,7 @@ SET (FORMS
 	consolewidget.ui
 	activitydialog.ui
 	mooddialog.ui
+	callchatwidget.ui
 	)
 SET (RESOURCES azothresources.qrc)
 CreateTrVars ("azoth" "en;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
