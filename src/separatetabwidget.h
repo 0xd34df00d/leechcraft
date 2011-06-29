@@ -97,6 +97,7 @@ namespace LeechCraft
 		void AddWidget2TabBarLayout (QTabBar::ButtonPosition, QWidget*);
 		void AddAction2TabBarLayout (QTabBar::ButtonPosition, QAction*);
 		void AddWidget2SeparateTabWidget (QWidget*);
+		void RemoveWidgetFromSeparateTabWidget (QWidget*);
 		SeparateTabBar* TabBar () const;
 		bool IsAddTabActionVisible () const;
 		void SetTooltip (int, QWidget*);

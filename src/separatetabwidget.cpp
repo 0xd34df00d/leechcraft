@@ -353,6 +353,12 @@ namespace LeechCraft
 			MainToolBarLayout_->insertWidget (1, widget);
 	}
 
+	void SeparateTabWidget::RemoveWidgetFromSeparateTabWidget (QWidget* w)
+	{
+// 		MainLayout_->removeWidget (w);
+		MainToolBarLayout_->removeWidget (w);
+	}
+
 	SeparateTabBar* SeparateTabWidget::TabBar () const
 	{
 		return MainTabBar_;

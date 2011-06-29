@@ -37,18 +37,6 @@
    </layout>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <widget class="QToolBar" name="MainToolbar_">
-   <property name="windowTitle">
-    <string>Main toolbar</string>
-   </property>
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-   <addaction name="ActionMenu_"/>
-  </widget>
   <action name="ActionAddTask_">
    <property name="text">
     <string>Add task</string>

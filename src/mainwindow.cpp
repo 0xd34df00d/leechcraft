@@ -284,6 +284,7 @@ void LeechCraft::MainWindow::InitializeInterface ()
 
 	Ui_.setupUi (this);
 
+	MainToolbar_ = new QToolBar (this);
 	Ui_.MainTabWidget_->setObjectName ("org_LeechCraft_MainWindow_CentralTabWidget");
 	Ui_.MainTabWidget_->SetTabsClosable (true);
 	connect (Ui_.ActionAboutQt_,
@@ -351,6 +352,9 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	ReadSettings ();
 
 	LogToolBox_ = new LogToolBox (this);
+
+	Ui_.MainTabWidget_->AddAction2TabBarLayout (QTabBar::LeftSide, Ui_.ActionMenu_);
+	Ui_.MainTabWidget_->AddWidget2SeparateTabWidget (MainToolbar_);
 }
 
 
@@ -583,8 +587,6 @@ void LeechCraft::MainWindow::on_MainTabWidget__currentChanged (int index)
 {
 	QToolBar *bar = Core::Instance ().GetToolBar (index);
 	GetGuard ()->AddToolbar (bar);
-	if (bar && isFullScreen ())
-		bar->setVisible (Ui_.MainToolbar_->isVisible ());
 }
 
 namespace
@@ -695,8 +697,8 @@ void LeechCraft::MainWindow::doDelayedInit ()
 		QList<QAction*> actions = exp->GetActions (AEPQuickLaunch);
 		if (!actions.isEmpty ())
 		{
-			Ui_.MainToolbar_->addSeparator ();
-			Ui_.MainToolbar_->addActions (actions);
+			MainToolbar_->addSeparator ();
+			MainToolbar_->addActions (actions);
 		}
 	}
 
@@ -823,8 +825,6 @@ namespace
 
 void LeechCraft::MainWindow::ShowMenuAndBar (bool show)
 {
-	Ui_.MainToolbar_->setVisible (show);
-
 	int cur = Ui_.MainTabWidget_->CurrentIndex ();
 	if (Core::Instance ().GetToolBar (cur))
 		Core::Instance ().GetToolBar (cur)->setVisible (show);
