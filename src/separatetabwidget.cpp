@@ -400,6 +400,11 @@ namespace LeechCraft
 		InsertAction2TabBar (idx, action);
 	}
 
+	QObject* SeparateTabWidget::GetObject ()
+	{
+		return this;
+	}
+
 	void SeparateTabWidget::resizeEvent (QResizeEvent *event)
 	{
 		QWidget::resizeEvent (event);

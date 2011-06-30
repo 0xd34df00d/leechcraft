@@ -104,6 +104,7 @@ namespace LeechCraft
 		void AddAction2TabBar (QAction*);
 		void InsertAction2TabBar (int, QAction*);
 		void InsertAction2TabBar (QAction *before, QAction *action);
+		QObject* GetObject ();
 	protected:
 		void resizeEvent (QResizeEvent*);
 		bool event (QEvent*);

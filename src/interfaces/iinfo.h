@@ -427,6 +427,7 @@ class ICoreTabWidget
 public:
 	virtual ~ICoreTabWidget () {}
 	
+	virtual QObject* GetObject () = 0;
 	virtual int WidgetCount () const = 0;
 	virtual QWidget* Widget (int) const = 0;
 	virtual void AddAction2TabBarLayout (QTabBar::ButtonPosition, QAction*) = 0;
