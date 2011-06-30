@@ -30,6 +30,7 @@
 #include "interfaces/iauthable.h"
 #include "interfaces/ichatstyleresourcesource.h"
 #include "sourcetrackingmodel.h"
+#include "animatediconmanager.h"
 
 class QStandardItemModel;
 class QStandardItem;
@@ -53,6 +54,7 @@ namespace Azoth
 	class PluginManager;
 	class ProxyObject;
 	class TransferJobManager;
+	class CallManager;
 	class EventsNotifier;
 
 	class Core : public QObject
@@ -89,6 +91,8 @@ namespace Azoth
 
 		typedef QHash<ICLEntry*, QImage> Entry2SmoothAvatarCache_t;
 		Entry2SmoothAvatarCache_t Entry2SmoothAvatarCache_;
+		
+		AnimatedIconManager<QStandardItem*> *ItemIconManager_;
 	public:
 		enum ResourceLoaderType
 		{
@@ -108,6 +112,7 @@ namespace Azoth
 		boost::shared_ptr<ProxyObject> PluginProxyObject_;
 
 		boost::shared_ptr<TransferJobManager> XferJobManager_;
+		boost::shared_ptr<CallManager> CallManager_;
 		boost::shared_ptr<EventsNotifier> EventsNotifier_;
 
 		Core ();
@@ -200,6 +205,8 @@ namespace Azoth
 		void HandleTransferJob (QObject *job);
 
 		TransferJobManager* GetTransferJobManager () const;
+		
+		CallManager* GetCallManager () const;
 
 		/** Whether the given from the given entry should be counted as
 		 * unread message. For example, messages in currently visible
@@ -213,6 +220,11 @@ namespace Azoth
 		 * highlights the participant.
 		 */
 		bool IsHighlightMessage (IMessage*);
+		
+		/** Returns the name of the icon from the current iconset for
+		 * the given contact list entry state.
+		 */
+		QString GetIconPathForState (State state) const;
 
 		/** Returns an icon from the current iconset for the given
 		 * contact list entry state.

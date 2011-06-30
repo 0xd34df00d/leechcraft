@@ -66,6 +66,8 @@ namespace Xoox
 
 		QMap<QString, QMap<QString, QVariant> > Variant2ClientInfo_;
 		QMap<QString, QByteArray> Variant2VerString_;
+		
+		QByteArray VerString_;
 	public:
 		EntryBase (GlooxAccount* = 0);
 
@@ -75,7 +77,7 @@ namespace Xoox
 		void PurgeMessages (const QDateTime&);
 		void SetChatPartState (ChatPartState, const QString&);
 		EntryStatus GetStatus (const QString&) const;
-		QList<QAction*> GetActions () const;
+		virtual QList<QAction*> GetActions () const;
 		QImage GetAvatar () const;
 		QString GetRawInfo () const;
 		void ShowInfo ();

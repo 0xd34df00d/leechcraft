@@ -40,6 +40,8 @@ class QXmppBookmarkManager;
 class QXmppArchiveManager;
 class QXmppEntityTimeManager;
 class QXmppDeliveryReceiptsManager;
+class QXmppCallManager;
+class QXmppCall;
 
 namespace LeechCraft
 {
@@ -73,6 +75,7 @@ namespace Xoox
 		QXmppEntityTimeManager *EntityTimeManager_;
 		QXmppArchiveManager *ArchiveManager_;
 		QXmppDeliveryReceiptsManager *DeliveryReceiptsManager_;
+		QXmppCallManager *CallManager_;
 		PubSubManager *PubSubManager_;
 		PrivacyListsManager *PrivacyListsManager_;
 		
@@ -148,6 +151,7 @@ namespace Xoox
 		AnnotationsManager* GetAnnotationsManager () const;
 		PubSubManager* GetPubSubManager () const;
 		PrivacyListsManager* GetPrivacyListsManager () const;
+		QXmppCallManager* GetCallManager () const;
 		
 		void SetSignaledLog (bool);
 
@@ -173,7 +177,7 @@ namespace Xoox
 		void SendMessage (GlooxMessage*);
 		QXmppClient* GetClient () const;
 		QObject* GetCLEntry (const QString& bareJid, const QString& variant) const;
-		GlooxCLEntry* AddODSCLEntry (GlooxCLEntry::OfflineDataSource_ptr);
+		GlooxCLEntry* AddODSCLEntry (OfflineDataSource_ptr);
 		QList<QObject*> GetCLEntries () const;
 		void FetchVCard (const QString&);
 		void FetchVCard (const QString&, VCardDialog*);

@@ -30,7 +30,10 @@
 #include <interfaces/isupporttune.h>
 #include <interfaces/isupportmood.h>
 #include <interfaces/isupportactivity.h>
+#include <interfaces/isupportmediacalls.h>
 #include "glooxclentry.h"
+
+class QXmppCall;
 
 namespace LeechCraft
 {
@@ -60,6 +63,7 @@ namespace Xoox
 					   , public ISupportTune
 					   , public ISupportMood
 					   , public ISupportActivity
+					   , public ISupportMediaCalls
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IAccount
@@ -67,7 +71,8 @@ namespace Xoox
 				LeechCraft::Azoth::IHaveConsole
 				LeechCraft::Azoth::ISupportTune
 				LeechCraft::Azoth::ISupportMood
-				LeechCraft::Azoth::ISupportActivity);
+				LeechCraft::Azoth::ISupportActivity
+				LeechCraft::Azoth::ISupportMediaCalls);
 
 		QString Name_;
 		GlooxProtocol *ParentProtocol_;
@@ -124,13 +129,16 @@ namespace Xoox
 		void SetMood (const QString&, const QString&);
 		
 		void SetActivity (const QString&, const QString&, const QString&);
+		
+		MediaCallFeatures GetMediaCallFeatures () const;
+		QObject* Call (const QString& id, const QString& variant);
 
 		QString GetJID () const;
 		QString GetNick () const;
 		void JoinRoom (const QString&, const QString&, const QString&);
 
 		boost::shared_ptr<ClientConnection> GetClientConnection () const;
-		GlooxCLEntry* CreateFromODS (GlooxCLEntry::OfflineDataSource_ptr);
+		GlooxCLEntry* CreateFromODS (OfflineDataSource_ptr);
 		QXmppBookmarkSet GetBookmarks () const;
 		void SetBookmarks (const QXmppBookmarkSet&);
 
@@ -150,6 +158,7 @@ namespace Xoox
 		void feedClientPassword ();
 		void showPrivacyDialog ();
 		void handleDestroyClient ();
+		void handleIncomingCall (QXmppCall*);
 	signals:
 		void gotCLItems (const QList<QObject*>&);
 		void removedCLItems (const QList<QObject*>&);
@@ -163,6 +172,8 @@ namespace Xoox
 		void statusChanged (const EntryStatus&);
 		
 		void gotConsolePacket (const QByteArray&, int);
+		
+		void called (QObject*);
 
 		void accountSettingsChanged ();
 

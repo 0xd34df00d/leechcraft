@@ -20,6 +20,7 @@ SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTWEBKIT TRUE)
 SET (QT_USE_QTSQL TRUE)
 SET (QT_USE_QTXML TRUE)
+SET (QT_USE_QTMULTIMEDIA TRUE)
 
 INCLUDE (${QT_USE_FILE})
 INCLUDE_DIRECTORIES (
@@ -28,6 +29,12 @@ INCLUDE_DIRECTORIES (
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
+
+IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} EQUAL 2.8 AND ${CMAKE_PATCH_VERSION} LESS 4)
+	INCLUDE_DIRECTORIES (/usr/include/QtMultimediaKit)
+	SET (QTMULTIMEDIA_KLUDGE "QtMultimediaKit")
+ENDIF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} EQUAL 2.8 AND ${CMAKE_PATCH_VERSION} LESS 4)
+
 SET (SRCS
 	azoth.cpp
 	core.cpp
@@ -58,6 +65,8 @@ SET (SRCS
 	consolewidget.cpp
 	activitydialog.cpp
 	mooddialog.cpp
+	callmanager.cpp
+	callchatwidget.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -89,6 +98,9 @@ SET (HEADERS
 	consolewidget.h
 	activitydialog.h
 	mooddialog.h
+	callmanager.h
+	callchatwidget.h
+	animatediconmanager.h
 	sourcetrackingmodel.h
 	interfaces/iprotocolplugin.h
 	interfaces/iaccount.h
@@ -112,6 +124,7 @@ SET (FORMS
 	consolewidget.ui
 	activitydialog.ui
 	mooddialog.ui
+	callchatwidget.ui
 	)
 SET (RESOURCES azothresources.qrc)
 CreateTrVars ("azoth" "en;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
@@ -135,6 +148,7 @@ ADD_LIBRARY (leechcraft_azoth SHARED
 TARGET_LINK_LIBRARIES (leechcraft_azoth
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
+	${QTMULTIMEDIA_KLUDGE}
 	)
 INSTALL (TARGETS leechcraft_azoth DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
@@ -153,6 +167,7 @@ OPTION (ENABLE_AZOTH_HILI "Build HiLi, plugin for customizing conference highlig
 OPTION (ENABLE_AZOTH_JUICK "Build plugin for the juick.com microblogging service" ON)
 OPTION (ENABLE_AZOTH_NATIVEEMOTICONS "Build support for Azoth's own emoticons packs" ON)
 OPTION (ENABLE_AZOTH_P100Q "Build plugin for the psto.net microblogging service" ON)
+OPTION (ENABLE_AZOTH_ROSENTHAL "Build Rosenthal, spellchecker plugin for Azoth" ON)
 OPTION (ENABLE_AZOTH_STANDARDSTYLES "Build support for standard Azoth styles" ON)
 OPTION (ENABLE_AZOTH_XOOX "Build Xoox, the QXmpp-aided XMPP support for Azoth" ON)
 OPTION (ENABLE_AZOTH_XTAZY "Build Xtazy for publishing current user tune" ON)
@@ -184,12 +199,15 @@ ENDIF (ENABLE_AZOTH_JUICK)
 IF (ENABLE_AZOTH_NATIVEEMOTICONS)
 	ADD_SUBDIRECTORY (plugins/nativeemoticons)
 ENDIF (ENABLE_AZOTH_NATIVEEMOTICONS)
-IF (ENABLE_AZOTH_STANDARDSTYLES)
-	ADD_SUBDIRECTORY (plugins/standardstyles)
-ENDIF (ENABLE_AZOTH_STANDARDSTYLES)
 IF (ENABLE_AZOTH_P100Q)
 	ADD_SUBDIRECTORY (plugins/p100q)
 ENDIF (ENABLE_AZOTH_P100Q)
+IF (ENABLE_AZOTH_ROSENTHAL)
+	ADD_SUBDIRECTORY (plugins/rosenthal)
+ENDIF (ENABLE_AZOTH_ROSENTHAL)
+IF (ENABLE_AZOTH_STANDARDSTYLES)
+	ADD_SUBDIRECTORY (plugins/standardstyles)
+ENDIF (ENABLE_AZOTH_STANDARDSTYLES)
 IF (ENABLE_AZOTH_XOOX)
 	ADD_SUBDIRECTORY (plugins/xoox)
 ENDIF (ENABLE_AZOTH_XOOX)
