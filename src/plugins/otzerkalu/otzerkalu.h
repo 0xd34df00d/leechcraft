@@ -23,6 +23,8 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/structures.h>
+#include <plugininterface/util.h>
+#include <QRegExp>
 
 namespace LeechCraft
 {
@@ -34,8 +36,7 @@ namespace Otzerkalu
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IEntityHandler)
-
-		QUrl dUrl;
+		
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -46,6 +47,9 @@ namespace Otzerkalu
 		QIcon GetIcon () const;
 		bool CouldHandle (const LeechCraft::Entity& entity) const;
 		void Handle (LeechCraft::Entity entity);
+		
+	private slots:
+		void downloadCompleted ();
 
 	};
 }

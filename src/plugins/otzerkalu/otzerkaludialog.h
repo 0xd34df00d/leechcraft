@@ -17,8 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef OTZERKALUWIDGET_H
-#define OTZERKALUWIDGET_H
+#ifndef PLUGINS_OTZERKALU_OTZERKALUWIDGET_H
+#define PLUGINS_OTZERKALU_OTZERKALUWIDGET_H
 
 #include <QDialog>
 #include <QUrl>
@@ -34,27 +34,19 @@ namespace Otzerkalu
 	class OtzerkaluDialog : public QDialog
 	{
 		Q_OBJECT
-		Ui::OtzerkaluDialog *ui;
-		
-		QString saveDir;
-		int recLevel;
-		
-		bool ok;
+		Ui::OtzerkaluDialog Ui_;
 	public:
-		OtzerkaluDialog (QWidget* parent = 0, Qt::WindowFlags f = 0);
-		virtual ~OtzerkaluDialog ();
+		OtzerkaluDialog (QWidget *parent = 0);
 		
-		int getRecursionLevel ();
-		QString getDir ();
-		
-		bool isOk ();
+		int GetRecursionLevel () const;
+		QString GetDir () const;
+		bool IsFromOtherSite () const;
 		
 	private slots:
-		void getData ();
-		void save ();
+		void on_ChooseDirButton_clicked ();
 	
 	};
 
 }
 }
-#endif // OTZERKALUWIDGET_H
+#endif //PLUGINS_OTZERKALU_OTZERKALUWIDGET_H

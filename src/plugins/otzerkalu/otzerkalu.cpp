@@ -20,6 +20,7 @@
 #include <QIcon>
 
 #include "otzerkaludialog.h"
+#include "otzerkaludownloader.h"
 
 namespace LeechCraft
 {
@@ -65,15 +66,19 @@ namespace Otzerkalu
 
 	void Plugin::Handle (LeechCraft::Entity entity)
 	{
-		dUrl = qvariant_cast<QUrl> (entity.Entity_);
+		QUrl dUrl = qvariant_cast<QUrl> (entity.Entity_);
 		
 		OtzerkaluDialog dialog;
 		dialog.exec ();
-		if (!dialog.isOk ())
+		if (dialog.exec () != QDialog::Accepted)
 			return;
+		OtzerkaluDownloader downloader (DownloadParams (dUrl, dialog.GetDir (), dialog.GetRecursionLevel (), dialog.IsFromOtherSite ()), this);
 		
-		QString dir = dialog.getDir ();
-		int recLevel = dialog.getRecursionLevel ();
+		connect (&downloader, SIGNAL (donwloadCompleted ()), this, SLOT (downloadCompleted ()));
+	}
+	
+	void Plugin::downloadCompleted ()
+	{
 	}
 }
 }

@@ -24,64 +24,36 @@ namespace LeechCraft
 	
 namespace Otzerkalu
 {
-	OtzerkaluDialog::OtzerkaluDialog (QWidget* parent, Qt::WindowFlags f)
-		: QDialog (parent, f)
-		, ui (new Ui::OtzerkaluDialog)
+	OtzerkaluDialog::OtzerkaluDialog (QWidget *parent)
+	: QDialog (parent)
 	{
-		ui->setupUi (this);
-		
-		ok = false;
-		
-		connect (ui->ChooseDirButton,
-				SIGNAL (clicked ()),
-				this,
-				SLOT (getData ()));		
-		connect (ui->CancelButton,
-				SIGNAL (clicked ()),
-				this,
-				SLOT (close ()));
-		connect (ui->OkButton,
-				SIGNAL (clicked ()),
-				this,
-				SLOT (save ()));
-	}
-
-	OtzerkaluDialog::~OtzerkaluDialog ()
-	{
-		delete ui;
+		Ui_.setupUi (this);
 	}
 	
-	void OtzerkaluDialog::getData ()
+	int OtzerkaluDialog::GetRecursionLevel () const
 	{
-		saveDir = QFileDialog::getExistingDirectory (this, tr ("Save into a directory"),
-				"~/",
-				QFileDialog::ShowDirsOnly
-				| QFileDialog::DontResolveSymlinks);
+		return Ui_.RecursionLevel_->value ();
+	}
+	
+	QString OtzerkaluDialog::GetDir () const
+	{
+		return Ui_.SaveDirLineEdit_->text ();
+	}
+	
+	bool OtzerkaluDialog::IsFromOtherSite () const
+	{
+		return Ui_.FromOtherSite_->isChecked ();
+	}
+		
+	void OtzerkaluDialog::on_ChooseDirButton_clicked ()
+	{
+		QString saveDir = QFileDialog::getExistingDirectory (this, tr ("Save into a directory"),
+				QDir::homePath (),
+				QFileDialog::ShowDirsOnly |
+					QFileDialog::DontResolveSymlinks);
 		if (saveDir.isEmpty ())
 			return;
-		ui->SaveDirLineEdit->setText (saveDir);
-	}
-	
-	void OtzerkaluDialog::save()
-	{
-		recLevel = ui->RecursionLevel->value ();
-		ok = true;
-		close ();
-	}
-	
-	int OtzerkaluDialog::getRecursionLevel ()
-	{
-		return recLevel;
-	}
-	
-	QString OtzerkaluDialog::getDir ()
-	{
-		return saveDir;
-	}
-		
-	bool OtzerkaluDialog::isOk ()
-	{
-		return ok;
+		Ui_.SaveDirLineEdit_->setText (saveDir);
 	}
 }
 }

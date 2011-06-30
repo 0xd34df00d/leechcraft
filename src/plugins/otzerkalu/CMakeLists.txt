@@ -24,10 +24,12 @@ INCLUDE_DIRECTORIES (
 SET (SRCS
 	otzerkalu.cpp
 	otzerkaludialog.cpp
+	otzerkaludownloader.cpp
 	)
 SET (HEADERS
 	otzerkalu.h
 	otzerkaludialog.h
+	otzerkaludownloader.h
 	)
 SET (FORMS
 	otzerkaludialog.ui
