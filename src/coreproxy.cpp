@@ -24,7 +24,6 @@
 #include "xmlsettingsmanager.h"
 #include "skinengine.h"
 #include "tagsmanager.h"
-#include "tabwidget.h"
 #include "config.h"
 
 using namespace LeechCraft;

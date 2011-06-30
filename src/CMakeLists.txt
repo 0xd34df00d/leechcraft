@@ -293,7 +293,6 @@ SET (SRCS
 	debugmessagehandler.cpp
 	application.cpp
 	handlerchoicedialog.cpp
-	tabwidget.cpp
 	graphwidget.cpp
 	shortcutmanager.cpp
 	keysequencer.cpp
@@ -308,7 +307,6 @@ SET (SRCS
 	localsockethandler.cpp
 	toolbarguard.cpp
 	clipboardwatcher.cpp
-	tabbar.cpp
 	wizardtypechoicepage.cpp
 	3dparty/qxttooltip.cpp
 	newtabmenumanager.cpp
@@ -337,7 +335,6 @@ SET (HEADERS
 	debugmessagehandler.h
 	application.h
 	handlerchoicedialog.h
-	tabwidget.h
 	graphwidget.h
 	shortcutmanager.h
 	keysequencer.h
@@ -352,7 +349,6 @@ SET (HEADERS
 	localsockethandler.h
 	toolbarguard.h
 	clipboardwatcher.h
-	tabbar.h
 	newtabmenumanager.h
 	wizardtypechoicepage.h
 	plugintreebuilder.h
