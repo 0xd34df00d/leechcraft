@@ -25,6 +25,7 @@
 #include <QString>
 #include <QStringList>
 #include <QtPlugin>
+#include <QTabBar>
 #include <QtNetwork/QNetworkAccessManager>
 #include "structures.h"
 
@@ -424,7 +425,13 @@ public:
 class ICoreTabWidget
 {
 public:
-	~ICoreTabWidget () {};
+	virtual ~ICoreTabWidget () {}
+	
+	virtual int WidgetCount () const = 0;
+	virtual QWidget* Widget (int) const = 0;
+	virtual void AddAction2TabBarLayout (QTabBar::ButtonPosition, QAction*) = 0;
+public slots:
+	virtual void setCurrentIndex (int) = 0;
 };
 
 
