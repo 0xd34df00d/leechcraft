@@ -26,6 +26,7 @@
 #include <QMouseEvent>
 #include <QLayoutItem>
 #include <QLayout>
+#include <QShortcut>
 #include <QtDebug>
 #include <interfaces/ihavetabs.h>
 #include "coreproxy.h"
@@ -86,6 +87,7 @@ namespace LeechCraft
 		Init ();
 		AddTabButtonInit ();
 		PinTabActionsInit ();
+		InitShortcuts ();
 	}
 
 	SeparateTabWidget::~SeparateTabWidget ()
@@ -519,6 +521,30 @@ namespace LeechCraft
 				SLOT (handleAddDefaultTab (bool)));
 	}
 
+	void SeparateTabWidget::InitShortcuts ()
+	{
+		QShortcut *newTabShortcut = new QShortcut (QKeySequence (tr("Ctrl+T", 
+				"New tab request")), this);
+		connect (newTabShortcut,
+				SIGNAL (activated ()),
+				this,
+				SLOT (handleNewTabShortcutActivated ()));
+
+		QShortcut *nextTabShortcut = new QShortcut (QKeySequence (Qt::CTRL + Qt::Key_Tab),
+				this);
+		connect (nextTabShortcut,
+				SIGNAL (activated ()),
+				this,
+				SLOT (handleNextTabShortcut ()));
+
+		QShortcut *porevTabShortcut = new QShortcut (QKeySequence (Qt::CTRL + Qt::SHIFT + Qt::Key_Tab), 
+				this);
+		connect (porevTabShortcut,
+				SIGNAL (activated ()),
+				this,
+				SLOT (handlePrevTabShortcut ()));
+	}
+
 	void SeparateTabWidget::setCurrentIndex (int index)
 	{
 		if ((index == TabCount () - 1) && !AddTabButtonAction_->isVisible ())
@@ -738,10 +764,34 @@ namespace LeechCraft
 		highestIHT->TabOpenRequested (highestTabClass);
 	}
 	
+	void SeparateTabWidget::handleNewTabShortcutActivated ()
+	{
+		handleAddDefaultTab (true);
+	}
+
 	void SeparateTabWidget::handleActionDestroyed()
 	{
 		Q_FOREACH (QPointer<QAction> act, TabBarActions_)
 			if (!act || act == sender ())
 				TabBarActions_.removeAll (act);
 	}
+	
+	void SeparateTabWidget::handleNextTabShortcut ()
+	{
+		const int ci = CurrentIndex ();
+		if (ci == WidgetCount () - 1)
+			setCurrentIndex (0);
+		else
+			setCurrentIndex (ci + 1);
+	}
+
+	void SeparateTabWidget::handlePrevTabShortcut ()
+	{
+		const int ci = CurrentIndex ();
+		if (ci == 0)
+			setCurrentIndex (WidgetCount () - 1);
+		else
+			setCurrentIndex (ci - 1);
+	}
+
 }
