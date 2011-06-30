@@ -58,6 +58,7 @@
 #include "usermood.h"
 #include "usertune.h"
 #include "privacylistsmanager.h"
+#include "adhoccommandmanager.h"
 
 namespace LeechCraft
 {
@@ -81,6 +82,7 @@ namespace Xoox
 	, CallManager_ (new QXmppCallManager)
 	, PubSubManager_ (new PubSubManager)
 	, PrivacyListsManager_ (new PrivacyListsManager)
+	, AdHocCommandManager_ (new AdHocCommandManager (this))
 	, AnnotationsManager_ (0)
 	, OurJID_ (jid)
 	, Account_ (account)
@@ -130,6 +132,7 @@ namespace Xoox
 		Client_->addExtension (new LegacyEntityTimeExt);
 		Client_->addExtension (PrivacyListsManager_);
 		Client_->addExtension (CallManager_);
+		Client_->addExtension (AdHocCommandManager_);
 		
 		AnnotationsManager_ = new AnnotationsManager (this);
 
@@ -366,6 +369,11 @@ namespace Xoox
 	QXmppCallManager* ClientConnection::GetCallManager () const
 	{
 		return CallManager_;
+	}
+	
+	AdHocCommandManager* ClientConnection::GetAdHocCommandManager () const
+	{
+		return AdHocCommandManager_;
 	}
 	
 	void ClientConnection::SetSignaledLog (bool signaled)

@@ -319,7 +319,7 @@ namespace Xoox
 		return msg;
 	}
 	
-	QList<QAction*> GlooxCLEntry::GetActions() const
+	QList<QAction*> GlooxCLEntry::GetActions () const
 	{
 		QList<QAction*> baseActs = EntryBase::GetActions ();
 		const QList<QXmppDiscoveryIq::Identity>& ids = Account_->
