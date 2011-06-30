@@ -146,8 +146,12 @@ namespace Azoth
 			const QAudioFormat& callFormat = mediaCall->GetAudioFormat ();
 			const QAudioFormat& inFormat = callFormat;
 			const QAudioFormat& outFormat = callFormat;
-			
+
+#if QT_VERSION >= 0x040700
 			const int bufSize = callFormat.sampleRate () * callFormat.channelCount () * callFormat.sampleSize () / 8 * 160 / 1000;
+#else
+			const int bufSize = 8000 * 2 * callFormat.sampleSize () / 8 * 160 / 1000;
+#endif
 
 			QAudioOutput *output = new QAudioOutput (outInfo, outFormat, sender ());
 			output->setBufferSize (bufSize);
