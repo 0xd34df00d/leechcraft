@@ -405,6 +405,11 @@ namespace LeechCraft
 		return this;
 	}
 
+	int SeparateTabWidget::GetLastContextMenuTab () const
+	{
+		return LastContextMenuTab_;
+	}
+
 	void SeparateTabWidget::resizeEvent (QResizeEvent *event)
 	{
 		QWidget::resizeEvent (event);
@@ -651,7 +656,6 @@ namespace LeechCraft
 							<< "detected null pointer";
 					continue;
 				}
-				act->setProperty ("_Core/ClickPos", MainTabBar_->mapToGlobal (point));
 				menu->addAction (act);
 			}
 
@@ -661,17 +665,6 @@ namespace LeechCraft
 				menu->addAction (PinTab_);
 
 			menu->exec (MainTabBar_->mapToGlobal (point));
-
-			Q_FOREACH (QAction *act, TabBarActions_)
-			{
-				if (!act)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "detected null pointer";
-					continue;
-				}
-				act->setProperty ("_Core/ClickPos", QVariant ());
-			}
 		}
 		delete menu;
 	}

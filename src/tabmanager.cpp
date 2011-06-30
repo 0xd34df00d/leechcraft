@@ -49,10 +49,6 @@ TabManager::TabManager (SeparateTabWidget *tabWidget,
 			this,
 			SLOT (handleCurrentChanged (int)));
 	connect (TabWidget_,
-			SIGNAL (currentChanged (int)),
-			this,
-			SLOT (handleCurrentChanged (int)));
-	connect (TabWidget_,
 			SIGNAL (tabWasMoved (int,int)),
 			this,
 			SLOT (handleMoveHappened (int, int)));
@@ -287,9 +283,13 @@ void TabManager::bringToFront (QWidget *widget) const
 
 void TabManager::handleCurrentChanged (int index)
 {
+	if (index == TabWidget_->TabCount () - 1)
+		return;
+
 	InvalidateName ();
 
-	Core::Instance ().GetReallyMainWindow ()->RemoveMenus (Menus_);
+	if (TabWidget_->TabCount () != 2)
+		Core::Instance ().GetReallyMainWindow ()->RemoveMenus (Menus_);
 
 	ITabWidget *imtw = qobject_cast<ITabWidget*> (TabWidget_->Widget (index));
 	if (!imtw)
@@ -325,9 +325,8 @@ void TabManager::handleCloseAllButCurrent ()
 		return;
 	}
 
-	int cur = TabWidget_->TabAt (act->property ("_Core/ClickPos").value<QPoint> ());
 	for (int i = TabWidget_->WidgetCount () - 1; i >= 0; --i)
-		if (i != cur)
+		if (i != TabWidget_->GetLastContextMenuTab ())
 			remove (i);
 }
 

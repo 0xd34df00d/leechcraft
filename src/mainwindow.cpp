@@ -428,17 +428,8 @@ void LeechCraft::MainWindow::on_ActionAddTask__triggered ()
 
 void LeechCraft::MainWindow::on_ActionCloseTab__triggered ()
 {
-	QAction *act = qobject_cast<QAction*> (sender ());
-	int pos = -1;
-	if (act &&
-			act->property ("_Core/ClickPos").canConvert<QPoint> ())
-	{
-		pos = Ui_.MainTabWidget_->TabAt (act->property ("_Core/ClickPos").value<QPoint> ());
-		act->setData (QVariant ());
-	}
-	else
-		pos = Ui_.MainTabWidget_->CurrentIndex ();
-	Core::Instance ().GetTabManager ()->remove (pos);
+	Core::Instance ().GetTabManager ()->
+			remove (Ui_.MainTabWidget_->GetLastContextMenuTab ());
 }
 
 void LeechCraft::MainWindow::on_ActionSettings__triggered ()
