@@ -343,20 +343,15 @@ namespace LeechCraft
 	void SeparateTabWidget::AddWidget2SeparateTabWidget (QWidget* widget)
 	{
 		widget->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Fixed);
-		if (!MainToolBarLayout_->count ())
-		{
-			MainToolBarLayout_->addWidget (widget);
-			MainToolBarLayout_->addSpacerItem (new QSpacerItem (1, 1, 
-					QSizePolicy::Minimum, QSizePolicy::Fixed));
-		}
-		else
-			MainToolBarLayout_->insertWidget (1, widget);
+		MainToolBarLayout_->addWidget (widget);
+		MainToolBarLayout_->addSpacerItem (new QSpacerItem (1, 1, 
+				QSizePolicy::Minimum, QSizePolicy::Fixed));
 	}
 
 	void SeparateTabWidget::RemoveWidgetFromSeparateTabWidget (QWidget* w)
 	{
-// 		MainLayout_->removeWidget (w);
 		MainToolBarLayout_->removeWidget (w);
+		w->hide ();
 	}
 
 	SeparateTabBar* SeparateTabWidget::TabBar () const

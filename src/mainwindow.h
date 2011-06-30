@@ -70,7 +70,6 @@ namespace LeechCraft
 		bool WasMaximized_;
 		QString LanguageOnLoad_;
 		ToolbarGuard *Guard_;
-		QToolBar *MainToolbar_;
 		QShortcut *FullScreenShortcut_;
 		QShortcut *CloseTabShortcut_;
 		const QString DefaultSystemStyleName_;
