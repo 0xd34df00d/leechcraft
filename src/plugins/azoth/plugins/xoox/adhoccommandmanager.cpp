@@ -202,6 +202,8 @@ namespace Xoox
 
 			result.SetActions (actionsList);
 		}
+		else if (command.attribute ("status") == "executing")
+			result.SetActions (QStringList ("execute"));
 		
 		if (command.firstChildElement ("x").attribute ("type") == "form")
 		{

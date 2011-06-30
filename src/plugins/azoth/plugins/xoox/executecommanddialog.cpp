@@ -21,7 +21,9 @@
 #include <QLabel>
 #include "glooxaccount.h"
 #include "clientconnection.h"
+#include "formbuilder.h"
 #include "ui_commandslistpage.h"
+#include "ui_commandresultpage.h"
 
 namespace LeechCraft
 {
@@ -70,8 +72,32 @@ namespace Xoox
 
 			Q_FOREACH (const AdHocCommand& cmd, commands)
 				Ui_.CommandsBox_->addItem (cmd.GetName ());
+		}
+		
+		AdHocCommand GetSelectedCommand () const
+		{
+			const int idx = Ui_.CommandsBox_->currentIndex ();
+			return Commands_.at (idx);
+		}
+	};
+	
+	class CommandResultPage : public QWizardPage
+	{
+		Ui::CommandResultPage Ui_;
+		
+		FormBuilder FB_;
+	public:
+		CommandResultPage (const QStringList& actions,
+				const QXmppDataForm& form, QWidget *parent = 0)
+		: QWizardPage (parent)
+		{
+			Ui_.setupUi (this);
+			setCommitPage (true);
 			
-			registerField ("Command", Ui_.CommandsBox_);
+			Ui_.Actions_->addItems (actions);
+			
+			if (!form.isNull ())
+				Ui_.FormArea_->setWidget (FB_.CreateForm (form));
 		}
 	};
 
@@ -81,8 +107,14 @@ namespace Xoox
 	, Account_ (account)
 	, Manager_ (account->GetClientConnection ()->GetAdHocCommandManager ())
 	, JID_ (jid)
+	, CurrentCommandsListPage_ (0)
 	{
 		Ui_.setupUi (this);
+		
+		connect (this,
+				SIGNAL (currentIdChanged (int)),
+				this,
+				SLOT (handleCurrentChanged (int)));
 		
 		RequestCommands ();
 	}
@@ -97,8 +129,35 @@ namespace Xoox
 		connect (Manager_,
 				SIGNAL (gotCommands (QString, QList<AdHocCommand>)),
 				this,
-				SLOT (handleGotCommands (QString, QList<AdHocCommand>)));
+				SLOT (handleGotCommands (QString, QList<AdHocCommand>)),
+				Qt::UniqueConnection);
 		Manager_->QueryCommands (JID_);
+	}
+	
+	void ExecuteCommandDialog::ExecuteCommand (const AdHocCommand& command)
+	{
+		connect (Manager_,
+				SIGNAL (gotResult (QString, AdHocResult)),
+				this,
+				SLOT (handleGotResult (QString, AdHocResult)),
+				Qt::UniqueConnection);
+		Manager_->ExecuteCommand (JID_, command);
+	}
+
+	void ExecuteCommandDialog::handleCurrentChanged (int id)
+	{
+		if (!dynamic_cast<WaitPage*> (currentPage ()))
+			return;
+
+		const QList<int>& ids = pageIds ();
+
+		const int pos = ids.indexOf (id);
+		if (pos <= 0)
+			return;
+
+		QWizardPage *prevPage = page (ids.at (pos - 1));
+		if (prevPage == CurrentCommandsListPage_)
+			ExecuteCommand (CurrentCommandsListPage_->GetSelectedCommand ());
 	}
 	
 	void ExecuteCommandDialog::handleGotCommands (const QString& jid, const QList<AdHocCommand>& commands)
@@ -110,8 +169,28 @@ namespace Xoox
 				SIGNAL (gotCommands (QString, QList<AdHocCommand>)),
 				this,
 				SLOT (handleGotCommands (QString, QList<AdHocCommand>)));
+
+		CurrentCommandsListPage_ = new CommandsListPage (commands);
+		addPage (CurrentCommandsListPage_);
+		addPage (new WaitPage (tr ("Please wait while command result "
+					"is fetched.")));
+		next ();
+	}
+	
+	void ExecuteCommandDialog::handleGotResult (const QString& jid, const AdHocResult& result)
+	{
+		if (jid != JID_)
+			return;
+
+		disconnect (Manager_,
+				SIGNAL (gotResult (QString, AdHocResult&)),
+				this,
+				SLOT (handleGotResult (QString, AdHocResult)));
 		
-		addPage (new CommandsListPage (commands));
+		addPage (new CommandResultPage (result.GetActions (), result.GetDataForm ()));
+		if (!result.GetActions ().isEmpty ())
+			addPage (new WaitPage (tr ("Please wait while action "
+						"is performed")));
 		next ();
 	}
 }

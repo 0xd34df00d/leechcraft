@@ -114,6 +114,7 @@ SET (XOOX_FORMS
 	privacylistsitemdialog.ui
 	executecommanddialog.ui
 	commandslistpage.ui
+	commandresultpage.ui
 	)
 CreateTrVars ("azoth_xoox" "de;en;fr;it;ru_RU;uk_UA" XOOX_TRANSLATIONS XOOX_COMPILED_TRANSLATIONS)
 QT4_WRAP_CPP (XOOX_MOC_SRCS ${XOOX_HEADERS})
