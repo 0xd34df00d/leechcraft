@@ -30,8 +30,6 @@ namespace Xoox
 {
 	class GlooxAccount;
 	class AdHocCommandManager;
-	class CommandsListPage;
-	class CommandResultPage;
 
 	class ExecuteCommandDialog : public QWizard
 	{
@@ -41,13 +39,12 @@ namespace Xoox
 		GlooxAccount *Account_;
 		AdHocCommandManager *Manager_;
 		QString JID_;
-		
-		CommandsListPage *CurrentCommandsListPage_;
 	public:
 		ExecuteCommandDialog (const QString&, GlooxAccount*, QWidget* = 0);
 	private:
 		void RequestCommands ();
 		void ExecuteCommand (const AdHocCommand&);
+		void ProceedExecuting (const AdHocResult&, const QString&);
 	private slots:
 		void handleCurrentChanged (int);
 		void handleGotCommands (const QString&, const QList<AdHocCommand>&);
