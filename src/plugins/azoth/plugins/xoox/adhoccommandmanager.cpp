@@ -145,7 +145,9 @@ namespace Xoox
 		{
 			QByteArray ba;
 			QXmlStreamWriter w (&ba);
-			state.GetDataForm ().toXml (&w);
+			QXmppDataForm form = state.GetDataForm ();
+			form.setType (QXmppDataForm::Submit);
+			form.toXml (&w);
 			formElem.setContent (ba);
 		}
 		command.appendChild (formElem.documentElement ());
