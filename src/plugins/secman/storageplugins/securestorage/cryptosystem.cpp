@@ -47,29 +47,27 @@ QByteArray CryptoSystem::Encrypt (const QByteArray &data) const
 	// init cipher
 	EVP_CIPHER_CTX cipherCtx;
 	EVP_CIPHER_CTX_init (&cipherCtx);
-	EVP_EncryptInit (&cipherCtx, EVP_aes_256_ofb(), reinterpret_cast<const unsigned char*> (Key_.data()), cipherText.Iv ());
+	EVP_EncryptInit (&cipherCtx, EVP_aes_256_ofb (), reinterpret_cast<const unsigned char*> (Key_.data ()), cipherText.Iv ());
 
 	// encrypt
 	int outLength = 0;
-	unsigned char* outPtr=cipherText.Data ();
+	unsigned char* outPtr = cipherText.Data ();
 	EVP_EncryptUpdate (&cipherCtx, outPtr, &outLength, reinterpret_cast<const unsigned char*> (data.data ()), data.length ());
-	outPtr+=outLength;
+	outPtr += outLength;
 	EVP_EncryptUpdate (&cipherCtx, outPtr, &outLength, randomData, RND_LENGTH);
-	outPtr+=outLength;
-	// TODO: read mans
+	outPtr += outLength;
+	// output last block & cleanup
 	EVP_EncryptFinal (&cipherCtx, outPtr, &outLength);
-	outPtr+=outLength;
-	EVP_CIPHER_CTX_cleanup (&cipherCtx);
+	outPtr += outLength;
 
 	// compute hmac
 	HMAC_CTX hmacCtx;
 	HMAC_CTX_init (&hmacCtx);
-	HMAC_Init (&hmacCtx, Key_.data (), Key_.length (), EVP_sha256 ());
+	HMAC_Init_ex (&hmacCtx, Key_.data (), Key_.length (), EVP_sha256 (), 0);
 	HMAC_Update (&hmacCtx, reinterpret_cast<const unsigned char*> (data.data ()), data.length ());
 	HMAC_Update (&hmacCtx, randomData, RND_LENGTH);
 	unsigned hmacLength = 0;
 	HMAC_Final (&hmacCtx, cipherText.Hmac (), &hmacLength);
-	// TODO: fix segfault here
 	HMAC_CTX_cleanup (&hmacCtx);
 
 	return result;
@@ -81,7 +79,7 @@ QByteArray CryptoSystem::Decrypt (const QByteArray &cipherText) const
 	data.resize (CipherTextFormat::DecryptBufferLengthFor (cipherText.length ()));
 	CipherTextFormat ctFormat (const_cast<char*> (cipherText.data ()),
 			CipherTextFormat::DataLengthFor (cipherText.length ()));
-	
+
 	data.truncate (ctFormat.DataLength_);
 	return data;
 }
@@ -89,8 +87,8 @@ QByteArray CryptoSystem::Decrypt (const QByteArray &cipherText) const
 QByteArray CryptoSystem::Hash (const QByteArray &data) const
 {
 	unsigned char hash[HASH_LENGTH];
-	SHA256 (reinterpret_cast<const unsigned char*>(data.data ()), data.size (), hash);
-	return QByteArray (reinterpret_cast<char*>(hash), HASH_LENGTH);
+	SHA256 (reinterpret_cast<const unsigned char*> (data.data ()), data.size (), hash);
+	return QByteArray (reinterpret_cast<char*> (hash), HASH_LENGTH);
 }
 
 QByteArray CryptoSystem::CreateKey (const QString &password) const

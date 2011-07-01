@@ -32,7 +32,7 @@ namespace LeechCraft
 			{
 				namespace SecureStorage
 				{
-					const int HMAC_LENGTH = 128 / 8;
+					const int HMAC_LENGTH = 256 / 8;
 					const int HASH_LENGTH = 256 / 8;
 					const int KEY_LENGTH = 256 / 8;
 					const int IV_LENGTH = 128 / 8;
@@ -52,19 +52,19 @@ namespace LeechCraft
 						int DataLength_;
 
 						CipherTextFormat (void* buffer, int dataLength)
-							: Buffer_ (reinterpret_cast<unsigned char*> (buffer))
-							, DataLength_ (dataLength) {}
+						: Buffer_ (reinterpret_cast<unsigned char*> (buffer))
+						, DataLength_ (dataLength) { }
 
 						/**
 						 * Compute buffer length for known data length.
 						 * @param dataLength length of data.
 						 * @return length of buffer.
-						 */ 
+						 */
 						static int BufferLengthFor (int dataLength)
 						{
 							return dataLength + (IV_LENGTH + RND_LENGTH + HMAC_LENGTH);
 						}
-						
+
 						/**
 						 * Compute data length from known buffer length.
 						 * @param bufferlength of buffer.
@@ -74,7 +74,7 @@ namespace LeechCraft
 						{
 							return bufferLength - (IV_LENGTH + RND_LENGTH + HMAC_LENGTH);
 						}
-						
+
 						/**
 						 * Compute decryption buffer length from known buffer length.
 						 * Decryption buffer contains data and random block,
@@ -86,7 +86,7 @@ namespace LeechCraft
 						{
 							return bufferLength - (IV_LENGTH + HMAC_LENGTH);
 						}
-						
+
 						/** Pointer to initialization vector. */
 						unsigned char* Iv () const
 						{
