@@ -33,9 +33,12 @@ namespace LeechCraft
 			{
 				namespace SecureStorage
 				{
-					class WrongHMACException: public std::exception
+
+					class WrongHMACException : public std::exception
 					{
-						WrongHMACException(){}
+					public:
+
+						WrongHMACException () { }
 					};
 
 					class CryptoSystem

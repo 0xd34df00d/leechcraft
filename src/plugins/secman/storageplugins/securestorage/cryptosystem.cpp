@@ -77,10 +77,43 @@ QByteArray CryptoSystem::Decrypt (const QByteArray &cipherText) const
 {
 	QByteArray data;
 	data.resize (CipherTextFormat::DecryptBufferLengthFor (cipherText.length ()));
-	CipherTextFormat ctFormat (const_cast<char*> (cipherText.data ()),
+	CipherTextFormat cipherTextFormat (const_cast<char*> (cipherText.data ()),
 			CipherTextFormat::DataLengthFor (cipherText.length ()));
+	// init cipher
+	EVP_CIPHER_CTX cipherCtx;
+	EVP_CIPHER_CTX_init (&cipherCtx);
+	EVP_DecryptInit (&cipherCtx, EVP_aes_256_ofb (),
+			reinterpret_cast<const unsigned char*> (Key_.data ()), cipherTextFormat.Iv ());
+	// decrypt
+	int outLength = 0;
+	unsigned char* outPtr = reinterpret_cast<unsigned char*> (data.data ());
+	EVP_DecryptUpdate (&cipherCtx, outPtr, &outLength,
+			cipherTextFormat.Data (), cipherTextFormat.DataLength_);
+	outPtr += outLength;
+	EVP_DecryptUpdate (&cipherCtx, outPtr, &outLength,
+			cipherTextFormat.Rnd (), RND_LENGTH);
+	outPtr += outLength;
+	// output last block & cleanup
+	EVP_DecryptFinal (&cipherCtx, outPtr, &outLength);
+	outPtr += outLength;
 
-	data.truncate (ctFormat.DataLength_);
+	// compute hmac
+	unsigned char hmac[HMAC_LENGTH];
+	HMAC_CTX hmacCtx;
+	HMAC_CTX_init (&hmacCtx);
+	HMAC_Init_ex (&hmacCtx, Key_.data (), Key_.length (),
+			EVP_sha256 (), 0);
+	HMAC_Update (&hmacCtx, reinterpret_cast<unsigned char*> (data.data ()), data.length ());
+	unsigned int hmacLength = 0;
+	HMAC_Final (&hmacCtx, hmac, &hmacLength);
+	HMAC_CTX_cleanup (&hmacCtx);
+
+	// check hmac
+	bool hmacsDifferent = memcmp (hmac, cipherTextFormat.Hmac (), HMAC_LENGTH);
+	if (hmacsDifferent)
+		throw WrongHMACException ();
+	// remove random block
+	data.truncate (cipherTextFormat.DataLength_);
 	return data;
 }
 

@@ -63,12 +63,12 @@ namespace
 	{
 		QList<CipherTextFormat> ctfs;
 		Q_FOREACH (const QByteArray &a, list)
-		ctfs << CipherTextFormat (const_cast<char*>(a.data ()),
-				CipherTextFormat::DataLengthFor (a.size()));
-		Q_FOREACH (const CipherTextFormat &c1, ctfs)
-		Q_FOREACH (const CipherTextFormat &c2, ctfs)
-		if (!AllFieldsDifferent (c1, c2))
-			return false;
+		ctfs << CipherTextFormat (const_cast<char*> (a.data ()),
+				CipherTextFormat::DataLengthFor (a.size ()));
+		for (int i = 0, len = ctfs.length (); i < len; ++i)
+			for (int j = i + 1; j < len; ++j)
+				if (!AllFieldsDifferent (ctfs.at (i), ctfs.at (j)))
+					return false;
 		return true;
 	}
 
