@@ -41,7 +41,7 @@ namespace Rosenthal
 		if (!QFile::exists (base + locale + ".aff"))
 			base = "/usr/share/myspell/";
 #elif defined(Q_WS_WIN32)
-		base = qApp->applicationDirPath () + "/myspell/";
+		QString base = qApp->applicationDirPath () + "/myspell/";
 #endif
 		QByteArray baBase = (base + locale).toLatin1 ();
 		Hunspell_.reset (new Hunspell (baBase + ".aff", baBase + ".dic"));

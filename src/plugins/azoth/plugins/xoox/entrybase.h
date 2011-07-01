@@ -57,6 +57,7 @@ namespace Xoox
 		QList<QObject*> AllMessages_;
 		QMap<QString, EntryStatus> CurrentStatus_;
 		QList<QAction*> Actions_;
+		mutable QAction *Commands_;
 
 		QImage Avatar_;
 		QString RawInfo_;
@@ -106,6 +107,8 @@ namespace Xoox
 		QByteArray GetVariantVerString (const QString&) const;
 	private:
 		QString FormatRawInfo (const QXmppVCardIq&);
+	private slots:
+		void handleCommands ();
 	signals:
 		void gotMessage (QObject*);
 		void statusChanged (const EntryStatus&, const QString&);
