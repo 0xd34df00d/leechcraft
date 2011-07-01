@@ -10,6 +10,7 @@ SET (SRCS
 SET (HEADERS
 	securestorage.h
 	cryptosystem.h
+	ciphertextformat.h
 	)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 

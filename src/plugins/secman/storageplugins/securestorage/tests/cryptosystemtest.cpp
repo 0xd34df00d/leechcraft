@@ -18,9 +18,11 @@
 
 #include "cryptosystemtest.h"
 #include "../cryptosystem.h"
+#include "../ciphertextformat.h"
 #include <QtTest/QtTest>
 #include <QByteArray>
 #include <QList>
+#include <cstdlib>
 
 using namespace LeechCraft::Plugins::SecMan::StoragePlugins::SecureStorage;
 
@@ -30,51 +32,58 @@ void CryptoSystemTest::testHash ()
 {
 	CryptoSystem cs1 ("pass");
 	CryptoSystem cs2 ("");
-	
+
 	QVERIFY (cs1.Hash (QByteArray ("")).toHex () ==
 			QByteArray ("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"));
-	
+
 	QVERIFY (cs1.Hash (QByteArray ("")).toHex () !=
 			QByteArray ("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b854"));
-	
-	QCOMPARE (cs2.Hash (QByteArray("test")).toHex (),
+
+	QCOMPARE (cs2.Hash (QByteArray ("test")).toHex (),
 			QByteArray ("9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"));
-	
+
 	QCOMPARE (cs1.Hash (QByteArray ("rJklspsjsHKS973h0w3jH(Y30-s*sdf0249sdf-k3-492j")).toHex (),
 			QByteArray ("bc6f51ff3f474d205f5f6f764278e86012a2ead9f06e47283856fc746e874981"));
 }
 
 namespace
 {
-	bool allDifferent (const QList<QByteArray> &list)
+
+	bool AllFieldsDifferent (const CipherTextFormat &ctf1, const CipherTextFormat &ctf2)
 	{
-		Q_FOREACH (const QByteArray &a1, list)
-			Q_FOREACH (const QByteArray &a2, list)
-				if (a1 == a2)
-					return false;
+		return memcmp (ctf1.Iv (), ctf2.Iv (), IV_LENGTH) &&
+				memcmp (ctf1.Rnd (), ctf2.Rnd (), RND_LENGTH) &&
+				memcmp (ctf1.Hmac (), ctf2.Hmac (), HMAC_LENGTH) &&
+				(ctf1.DataLength_ == ctf2.DataLength_ ?
+				memcmp (ctf1.Data (), ctf2.Data (), ctf1.DataLength_) :
+				true);
+	}
+
+	bool AllDiffer (const QList<QByteArray> &list)
+	{
+		QList<CipherTextFormat> ctfs;
+		Q_FOREACH (const QByteArray &a, list)
+		ctfs << CipherTextFormat (const_cast<char*>(a.data ()),
+				CipherTextFormat::DataLengthFor (a.size()));
+		Q_FOREACH (const CipherTextFormat &c1, ctfs)
+		Q_FOREACH (const CipherTextFormat &c2, ctfs)
+		if (!AllFieldsDifferent (c1, c2))
+			return false;
 		return true;
 	}
 
-	QList<QByteArray> mapMid (const QList<QByteArray> &list, int pos, int size = -1)
-	{
-		QList<QByteArray> res;
-		Q_FOREACH (const QByteArray &a, list)
-			res << a.mid (pos, size);
-		return res;
-	}
-
 	/**
-	* Encrypt all data by all cryptosystems.
-	* @param css list of cryptosystems.
-	* @param datas list of texts to encrypt.
-	* @return list of ciphertexts with length (css.size() * datas.size())
-	*/
+	 * Encrypt all data by all cryptosystems.
+	 * @param css list of cryptosystems.
+	 * @param datas list of texts to encrypt.
+	 * @return list of ciphertexts with length (css.size () * datas.size ())
+	 */
 	QList<QByteArray> allCipherTexts (const QList<CryptoSystem*> &css, const QList<QByteArray*> &datas)
 	{
 		QList<QByteArray> cipherTexts;
 		Q_FOREACH (CryptoSystem* cs, css)
-			Q_FOREACH (QByteArray* data, datas)
-				cipherTexts << cs->Encrypt (*data);
+		Q_FOREACH (QByteArray* data, datas)
+		cipherTexts << cs->Encrypt (*data);
 		return cipherTexts;
 	}
 }
@@ -90,19 +99,14 @@ void CryptoSystemTest::testDifferentCipherText ()
 	css << &cs1 << &cs2 << &cs3 << &cs4 << &cs1 << &cs3;
 
 	QByteArray data1 ("test-data");
-	QByteArray data2("rJklspsjsHKS973h0w3jH(Y30-s*sdf0249sdf-k3-492j");
+	QByteArray data2 ("rJklspsjsHKS973h0w3jH(Y30-s*sdf0249sdf-k3-492j");
 
 	QList<QByteArray*> datas;
 	datas << &data1 << &data2 << &data1;
 
 	const QList<QByteArray> &cipherTexts = allCipherTexts (css, datas);
 
-	const int cipherTextOffset = CryptoSystem::IV_LENGTH + CryptoSystem::HMAC_LENGTH;
-	QVERIFY (allDifferent (mapMid (cipherTexts, cipherTextOffset)));
-
-	const int hmacOffset = CryptoSystem::IV_LENGTH;
-	const int hmacLength = CryptoSystem::HMAC_LENGTH;
-	QVERIFY (allDifferent (mapMid (cipherTexts, hmacOffset, hmacLength)));
+	QVERIFY (AllDiffer (cipherTexts));
 }
 
 #define EXPECT_EXCEPTION(statement, exception) \
@@ -120,7 +124,7 @@ void CryptoSystemTest::testEncryptDecrypt ()
 	QList<QByteArray*> datas;
 	QByteArray data1;
 	QByteArray data2;
-	data2.fill (0, CryptoSystem::IV_LENGTH + 1);
+	data2.fill (0, IV_LENGTH + 1);
 	QByteArray data3 = QByteArray::fromHex ("bc6f51ff3f474d205f5f6f764278e86012a2ead9f06e47283856fc746e874981");
 	datas << &data1 << &data2 << &data3;
 
