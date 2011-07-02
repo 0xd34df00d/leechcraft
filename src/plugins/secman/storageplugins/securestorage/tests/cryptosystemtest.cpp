@@ -49,6 +49,12 @@ void CryptoSystemTest::testHash ()
 namespace
 {
 
+	/**
+	 * 
+	 * @param ctf1 first ciphertext.
+	 * @param ctf2 second ciphertext.
+	 * @return true if all appropriate field in ciphertexts are different.
+	 */
 	bool AllFieldsDifferent (const CipherTextFormat &ctf1, const CipherTextFormat &ctf2)
 	{
 		return memcmp (ctf1.Iv (), ctf2.Iv (), IV_LENGTH) &&
@@ -59,6 +65,13 @@ namespace
 				true);
 	}
 
+	/**
+	 * Checks whether all ciphertexts in list have different 
+	 * appropriate fields.
+	 * @param list list of ciphertexts.
+	 * @return true if all ciphertexts in list have different 
+	 * appropriate fields.
+	 */
 	bool AllDiffer (const QList<QByteArray> &list)
 	{
 		QList<CipherTextFormat> ctfs;
