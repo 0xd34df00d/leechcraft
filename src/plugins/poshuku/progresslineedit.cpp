@@ -48,6 +48,11 @@ namespace Poshuku
 				SIGNAL (textEdited (const QString&)),
 				Core::Instance ().GetURLCompletionModel (),
 				SLOT (setBase (const QString&)));
+
+		connect (this,
+				SIGNAL (textChanged (const QString &)),
+				this,
+				SLOT (textChanged (const QString &)));
 	}
 
 	ProgressLineEdit::~ProgressLineEdit ()
@@ -78,6 +83,12 @@ namespace Poshuku
 		default:
 			QLineEdit::keyPressEvent (event);
 		}
+	}
+
+	void ProgressLineEdit::textChanged (const QString &text)
+	{
+		if (!text.isEmpty () && PreviousUrl_.isEmpty ())
+			PreviousUrl_ = text; 
 	}
 }
 }
