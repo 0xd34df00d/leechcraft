@@ -28,24 +28,6 @@ using namespace LeechCraft::Plugins::SecMan::StoragePlugins::SecureStorage;
 
 QTEST_MAIN (CryptoSystemTest)
 
-void CryptoSystemTest::testHash ()
-{
-	CryptoSystem cs1 ("pass");
-	CryptoSystem cs2 ("");
-
-	QVERIFY (cs1.Hash (QByteArray ("")).toHex () ==
-			QByteArray ("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"));
-
-	QVERIFY (cs1.Hash (QByteArray ("")).toHex () !=
-			QByteArray ("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b854"));
-
-	QCOMPARE (cs2.Hash (QByteArray ("test")).toHex (),
-			QByteArray ("9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"));
-
-	QCOMPARE (cs1.Hash (QByteArray ("rJklspsjsHKS973h0w3jH(Y30-s*sdf0249sdf-k3-492j")).toHex (),
-			QByteArray ("bc6f51ff3f474d205f5f6f764278e86012a2ead9f06e47283856fc746e874981"));
-}
-
 namespace
 {
 
@@ -57,12 +39,17 @@ namespace
 	 */
 	bool AllFieldsDifferent (const CipherTextFormat &ctf1, const CipherTextFormat &ctf2)
 	{
-		return memcmp (ctf1.Iv (), ctf2.Iv (), IV_LENGTH) &&
-				memcmp (ctf1.Rnd (), ctf2.Rnd (), RND_LENGTH) &&
-				memcmp (ctf1.Hmac (), ctf2.Hmac (), HMAC_LENGTH) &&
-				(ctf1.DataLength_ == ctf2.DataLength_ ?
-				memcmp (ctf1.Data (), ctf2.Data (), ctf1.DataLength_) :
-				true);
+		if (!memcmp (ctf1.Iv (), ctf2.Iv (), IV_LENGTH))
+			return false;
+		if (!memcmp (ctf1.Rnd (), ctf2.Rnd (), RND_LENGTH))
+			return false;
+		if (!memcmp (ctf1.Hmac (), ctf2.Hmac (), HMAC_LENGTH))
+			return false;
+		if (ctf1.DataLength_ == ctf2.DataLength_)
+			if (ctf1.DataLength_ != 0)
+				if (!memcmp (ctf1.Data (), ctf2.Data (), ctf1.DataLength_))
+					return false;
+		return true;
 	}
 
 	/**
@@ -99,6 +86,68 @@ namespace
 		cipherTexts << cs->Encrypt (*data);
 		return cipherTexts;
 	}
+
+	/**
+	 * Generate random array with random contents and random length
+	 * (from minLength to maxLength).
+	 * 
+	 * If maxLength ≤ minLength, the generated array will have
+	 * length specified by minLength parameter.
+	 * 
+	 * @param minLength minimum length (including).
+	 * @param maxLength maximum length (excluding).
+	 * @return array with random data.
+	 */
+	QByteArray randomData (unsigned minLength, unsigned maxLength = 0)
+	{
+		unsigned length;
+		if (maxLength <= minLength)
+			length = minLength;
+		else
+			length = minLength + qrand () % (maxLength - minLength);
+
+		QByteArray result;
+		for (unsigned i = 0; i < length; i++)
+			result.append (qrand ());
+		return result;
+	}
+
+	void TestEncryptDecryptCorrect (const QString &password, const QByteArray &data)
+	{
+		CryptoSystem cs1 (password);
+		CryptoSystem cs2 (password);
+		QByteArray enc1 = cs1.Encrypt (data);
+		QByteArray enc2 = cs2.Encrypt (data);
+		const QByteArray &dec12 = cs1.Decrypt (enc2);
+		const QByteArray &dec21 = cs2.Decrypt (enc1);
+		QVERIFY (dec12 == dec21);
+		CipherTextFormat ctf1 (enc1.data (), CipherTextFormat::DataLengthFor (enc1.length ()));
+		CipherTextFormat ctf2 (enc2.data (), CipherTextFormat::DataLengthFor (enc2.length ()));
+		QVERIFY (AllFieldsDifferent (ctf1, ctf2));
+	}
+}
+
+void CryptoSystemTest::initTestCase ()
+{
+	qsrand (time (0));
+}
+
+void CryptoSystemTest::testHash ()
+{
+	CryptoSystem cs1 ("pass");
+	CryptoSystem cs2 ("");
+
+	QVERIFY (cs1.Hash (QByteArray ("")).toHex () ==
+			QByteArray ("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"));
+
+	QVERIFY (cs1.Hash (QByteArray ("")).toHex () !=
+			QByteArray ("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b854"));
+
+	QCOMPARE (cs2.Hash (QByteArray ("test")).toHex (),
+			QByteArray ("9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"));
+
+	QCOMPARE (cs1.Hash (QByteArray ("rJklspsjsHKS973h0w3jH(Y30-s*sdf0249sdf-k3-492j")).toHex (),
+			QByteArray ("bc6f51ff3f474d205f5f6f764278e86012a2ead9f06e47283856fc746e874981"));
 }
 
 void CryptoSystemTest::testDifferentCipherText ()
@@ -113,9 +162,10 @@ void CryptoSystemTest::testDifferentCipherText ()
 
 	QByteArray data1 ("test-data");
 	QByteArray data2 ("rJklspsjsHKS973h0w3jH(Y30-s*sdf0249sdf-k3-492j");
+	QByteArray data3;
 
 	QList<QByteArray*> datas;
-	datas << &data1 << &data2 << &data1;
+	datas << &data1 << &data2 << &data3 << &data3 << &data1;
 
 	const QList<QByteArray> &cipherTexts = allCipherTexts (css, datas);
 
@@ -172,6 +222,22 @@ void CryptoSystemTest::testEncryptDecrypt ()
 
 void CryptoSystemTest::testEncryptDecryptRandom ()
 {
-	QWARN ("Test was not implemented yet.");
+	const int nTests = 10000;
+	for (int i = 0; i < nTests; ++i)
+	{
+		const QString password (randomData (0, 100));
+		const QByteArray &data = randomData (0, 16384);
+		TestEncryptDecryptCorrect (password, data);
+	}
 }
 
+void CryptoSystemTest::testEncryptDecryptLength ()
+{
+	const int maxLength = 1025;
+	for (int len = 0; len <= maxLength; ++len)
+	{
+		const QString password (randomData (len));
+		const QByteArray &data = randomData (len);
+		TestEncryptDecryptCorrect (password, data);
+	}
+}
