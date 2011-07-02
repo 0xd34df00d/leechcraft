@@ -43,7 +43,7 @@ QByteArray CryptoSystem::Encrypt (const QByteArray &data) const
 	result.resize (CipherTextFormat::BufferLengthFor (data.length ()));
 	CipherTextFormat cipherText (result.data (), data.length ());
 
-	// fill iv & random in cipherText
+	// fill IV in cipherText & random block
 	// TODO: check error codes.
 	RAND_bytes (cipherText.Iv (), IV_LENGTH);
 	unsigned char randomData[RND_LENGTH];

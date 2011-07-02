@@ -32,7 +32,7 @@ namespace
 {
 
 	/**
-	 * 
+	 * Check whether all appropriate field in two ciphertexts are different.
 	 * @param ctf1 first ciphertext.
 	 * @param ctf2 second ciphertext.
 	 * @return true if all appropriate field in ciphertexts are different.
