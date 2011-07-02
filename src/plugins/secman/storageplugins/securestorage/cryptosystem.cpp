@@ -32,6 +32,11 @@ CryptoSystem::CryptoSystem (const QString &password)
 	Key_ = CreateKey (password);
 }
 
+CryptoSystem::~CryptoSystem ()
+{
+	Key_.fill (0, Key_.length ());
+}
+
 QByteArray CryptoSystem::Encrypt (const QByteArray &data) const
 {
 	QByteArray result;

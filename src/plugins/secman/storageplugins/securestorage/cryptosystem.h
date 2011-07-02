@@ -47,6 +47,7 @@ namespace LeechCraft
 						QByteArray Key_;
 					public:
 						CryptoSystem (const QString &password);
+						~CryptoSystem ();
 						QByteArray Encrypt (const QByteArray &data) const;
 						QByteArray Decrypt (const QByteArray& cipherText) const;
 					private:
