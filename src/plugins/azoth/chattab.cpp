@@ -901,6 +901,7 @@ namespace Azoth
 			return;
 
 		if (msg->GetMessageSubType () == IMessage::MSTParticipantStatusChange &&
+				other->GetEntryType () == ICLEntry::ETMUC &&
 				!XmlSettingsManager::Instance ().property ("ShowStatusChangesEvents").toBool ())
 			return;
 		
