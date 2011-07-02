@@ -52,8 +52,8 @@ namespace LeechCraft
 						int DataLength_;
 
 						CipherTextFormat (void* buffer, int dataLength)
-						: Buffer_ (reinterpret_cast<unsigned char*> (buffer))
-						, DataLength_ (dataLength) { }
+							: Buffer_ (reinterpret_cast<unsigned char*> (buffer))
+							, DataLength_ (dataLength) { }
 
 						/**
 						 * Compute buffer length for known data length.
