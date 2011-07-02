@@ -61,7 +61,23 @@ namespace Poshuku
 
 	void ProgressLineEdit::handleCompleterActivated ()
 	{
+		PreviousUrl_ = text ();
 		emit returnPressed ();
+	}
+
+	void ProgressLineEdit::keyPressEvent (QKeyEvent *event)
+	{
+		switch (event->key ())
+		{
+		case Qt::Key_Escape:
+			setText (PreviousUrl_);
+			break;
+		case Qt::Key_Return:
+		case Qt::Key_Enter:
+			PreviousUrl_ = text ();
+		default:
+			QLineEdit::keyPressEvent (event);
+		}
 	}
 }
 }
