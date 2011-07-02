@@ -194,6 +194,7 @@ namespace Azoth
 		const QRect& r = option.rect;
 		const int sHeight = r.height ();
 		const int iconSize = sHeight - 2 * CPadding;
+		const int clientIconSize = (iconSize > 16) ? 16 : iconSize;
 
 		const QIcon& stateIcon = index.data (Qt::DecorationRole).value<QIcon> ();
 		QString name = index.data (Qt::DisplayRole).value<QString> ();
@@ -297,14 +298,14 @@ namespace Azoth
 
 		const int clientsIconsWidth = clientIcons.isEmpty () ?
 				0 :
-				clientIcons.size () * (iconSize + CPadding) - CPadding;
+				clientIcons.size () * (clientIconSize + CPadding);
 		/* text for width is total width minus shift of the text from
 		 * the left (textShift) minus space for avatar (if present) with
 		 * paddings minus space for client icons and paddings between
 		 * them: there are N-1 paddings inbetween if there are N icons.
 		 */
 		const int textWidth = r.width () - textShift -
-				(isMUC || !ShowAvatars_ ? 0 : (iconSize + 2 * CPadding)) -
+				(isMUC || !ShowAvatars_ ? 0 : (clientIconSize + 2 * CPadding)) -
 				clientsIconsWidth;
 
 		QPixmap pixmap (r.size ());
@@ -342,7 +343,6 @@ namespace Azoth
 					QPixmap::fromImage (avatarImg));
 
 		int currentShift = textShift + textWidth + CPadding;
-		const int clientIconSize = (iconSize > 16) ? 16 : iconSize;
 
 		Q_FOREACH (const QIcon& icon, clientIcons)
 		{
