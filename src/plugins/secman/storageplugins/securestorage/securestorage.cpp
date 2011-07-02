@@ -27,7 +27,7 @@
 #include <openssl/crypto.h>
 #include <openssl/hmac.h>
 #include <boost/graph/graph_concepts.hpp>
-
+#include <qt4/QtGui/qinputdialog.h>
 
 namespace LeechCraft
 {
@@ -44,9 +44,9 @@ namespace LeechCraft
 					{
 						CryptoSystem_ = 0;
 						Storage_ .reset (new QSettings (QSettings::IniFormat,
-									QSettings::UserScope,
-									QCoreApplication::organizationName (),
-									QCoreApplication::applicationName () + "_SecMan_SecureStorage"));
+								QSettings::UserScope,
+								QCoreApplication::organizationName (),
+								QCoreApplication::applicationName () + "_SecMan_SecureStorage"));
 					}
 
 					void Plugin::SecondInit ()
@@ -60,6 +60,7 @@ namespace LeechCraft
 
 					void Plugin::Release ()
 					{
+						forgetKey ();
 					}
 
 					QString Plugin::GetName () const
@@ -98,7 +99,7 @@ namespace LeechCraft
 
 					QSet<QByteArray> Plugin::GetPluginClasses () const
 					{
-						return QSet<QByteArray> () << "org.LeechCraft.SecMan.StoragePlugins/1.0";
+						return QSet<QByteArray > () << "org.LeechCraft.SecMan.StoragePlugins/1.0";
 					}
 
 					IStoragePlugin::StorageTypes Plugin::GetStorageTypes () const
@@ -109,12 +110,12 @@ namespace LeechCraft
 					QList<QByteArray> Plugin::ListKeys (IStoragePlugin::StorageType st)
 					{
 						if (st != STInsecure)
-							return QList<QByteArray> ();
+							return QList<QByteArray > ();
 
 						QStringList keys = Storage_->childKeys ();
 						QList<QByteArray> result;
 						Q_FOREACH (const QString& key, keys)
-							result << key.toUtf8 ();
+						result << key.toUtf8 ();
 						return result;
 					}
 
@@ -143,29 +144,34 @@ namespace LeechCraft
 					{
 						QPair<QByteArray, QVariantList> keyValue;
 						Q_FOREACH (keyValue, keyValues)
-							Save (keyValue.first, keyValue.second, st, overwrite);
+						Save (keyValue.first, keyValue.second, st, overwrite);
 					}
 
 					QList<QVariantList> Plugin::Load (const QList<QByteArray>& keys, IStoragePlugin::StorageType st)
 					{
 						QList<QVariantList> result;
 						Q_FOREACH (const QByteArray& key, keys)
-							result << Load (key, st);
+						result << Load (key, st);
 						return result;
 					}
 
-					const CryptoSystem &Plugin::GetCryptoSystem()
+					const CryptoSystem &Plugin::GetCryptoSystem ()
 					{
-						//TODO: implement getting password from user
 						if (!CryptoSystem_)
 						{
-							QString password ("empty password");
+							QInputDialog dialog;
+							dialog.setTextEchoMode (QLineEdit::Password);
+							dialog.setWindowTitle (tr ("SecMan SecureStorage"));
+							dialog.setLabelText (tr ("Enter master password:"));
+							QString password ("");
+							if (dialog.exec () == QDialog::Accepted)
+								password = dialog.textValue ();
 							CryptoSystem_ = new CryptoSystem (password);
 						}
 						return *CryptoSystem_;
 					}
 
-					void Plugin::forgetKey()
+					void Plugin::forgetKey ()
 					{
 						delete CryptoSystem_;
 						CryptoSystem_ = 0;
@@ -173,7 +179,6 @@ namespace LeechCraft
 
 					void Plugin::changePassword (const QString &oldPass, const QString &newPass)
 					{
-						
 					}
 				}
 			}
