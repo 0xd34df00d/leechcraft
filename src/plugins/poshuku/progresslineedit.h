@@ -44,7 +44,7 @@ namespace Poshuku
 		void keyPressEvent (QKeyEvent *);
 	private slots:
 		void handleCompleterActivated ();
-		void textChanged (const QString &text);
+		void textChanged (const QString& text);
 	};
 }
 }

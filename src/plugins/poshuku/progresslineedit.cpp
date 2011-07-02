@@ -50,9 +50,9 @@ namespace Poshuku
 				SLOT (setBase (const QString&)));
 
 		connect (this,
-				SIGNAL (textChanged (const QString &)),
+				SIGNAL (textChanged (const QString&)),
 				this,
-				SLOT (textChanged (const QString &)));
+				SLOT (textChanged (const QString&)));
 	}
 
 	ProgressLineEdit::~ProgressLineEdit ()
@@ -85,7 +85,7 @@ namespace Poshuku
 		}
 	}
 
-	void ProgressLineEdit::textChanged (const QString &text)
+	void ProgressLineEdit::textChanged (const QString& text)
 	{
 		if (!text.isEmpty () && PreviousUrl_.isEmpty ())
 			PreviousUrl_ = text; 
