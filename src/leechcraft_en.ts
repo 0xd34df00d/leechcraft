@@ -478,7 +478,7 @@
         <translation>LeechCraft Core module.</translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="191"/>
+        <location filename="coreinstanceobject.cpp" line="185"/>
         <source>Settings</source>
         <translation>Settings</translation>
     </message>
@@ -623,17 +623,9 @@
         <translation>%1 down, %2 up</translation>
     </message>
     <message>
-        <source>Context-dependent</source>
-        <translation type="obsolete">Context-dependent</translation>
-    </message>
-    <message>
         <location filename="mainwindow.cpp" line="821"/>
         <source>LeechCraft menu</source>
         <translation>LeechCraft menu</translation>
-    </message>
-    <message>
-        <source>System</source>
-        <translation type="obsolete">System</translation>
     </message>
 </context>
 <context>
@@ -764,11 +756,6 @@
         <translation>General second-level plugins</translation>
     </message>
     <message>
-        <location filename="settingstab.cpp" line="94"/>
-        <source>LeechCraft</source>
-        <translation>LeechCraft</translation>
-    </message>
-    <message>
         <location filename="settingstab.cpp" line="98"/>
         <location filename="settingstab.cpp" line="124"/>
         <location filename="settingstab.cpp" line="126"/>
@@ -777,17 +764,17 @@
         <translation>General plugins</translation>
     </message>
     <message>
-        <location filename="settingstab.cpp" line="163"/>
+        <location filename="settingstab.cpp" line="168"/>
         <source>Settings</source>
         <translation>Settings</translation>
     </message>
     <message>
-        <location filename="settingstab.cpp" line="164"/>
+        <location filename="settingstab.cpp" line="169"/>
         <source>LeechCraft-wide settings dashboard</source>
         <translation>LeechCraft-wide settings dashboard</translation>
     </message>
     <message>
-        <location filename="settingstab.cpp" line="201"/>
+        <location filename="settingstab.cpp" line="206"/>
         <source>Settings for %1</source>
         <translation>Settings for %1</translation>
     </message>
@@ -1056,12 +1043,105 @@
         <source>System</source>
         <translation>System</translation>
     </message>
-</context>
-<context>
-    <name>SettingsSink</name>
     <message>
-        <source>Preferences</source>
-        <translation type="obsolete">Preferences</translation>
+        <location filename="plugininterface/socketerrorstrings.cpp" line="31"/>
+        <source>connection refused</source>
+        <translation>connection refused</translation>
+    </message>
+    <message>
+        <location filename="plugininterface/socketerrorstrings.cpp" line="33"/>
+        <source>remote host closed connection</source>
+        <translation>remote host closed connection</translation>
+    </message>
+    <message>
+        <location filename="plugininterface/socketerrorstrings.cpp" line="35"/>
+        <source>host not found</source>
+        <translation>host not found</translation>
+    </message>
+    <message>
+        <location filename="plugininterface/socketerrorstrings.cpp" line="37"/>
+        <source>socket access error (lacking required privileges)</source>
+        <translation>socket access error (lacking required privileges)</translation>
+    </message>
+    <message>
+        <location filename="plugininterface/socketerrorstrings.cpp" line="39"/>
+        <source>system ran out of sockets</source>
+        <translation>system ran out of sockets</translation>
+    </message>
+    <message>
+        <location filename="plugininterface/socketerrorstrings.cpp" line="41"/>
+        <source>socket operation timed out</source>
+        <translation>socket operation timed out</translation>
+    </message>
+    <message>
+        <location filename="plugininterface/socketerrorstrings.cpp" line="43"/>
+        <source>datagram too large</source>
+        <translation>datagram too large</translation>
+    </message>
+    <message>
+        <location filename="plugininterface/socketerrorstrings.cpp" line="45"/>
+        <source>physical network error</source>
+        <translation>physical network error</translation>
+    </message>
+    <message>
+        <location filename="plugininterface/socketerrorstrings.cpp" line="47"/>
+        <source>address already in use</source>
+        <translation>address already in use</translation>
+    </message>
+    <message>
+        <location filename="plugininterface/socketerrorstrings.cpp" line="49"/>
+        <source>specified address doesn&apos;t belong to the host</source>
+        <translation>specified address doesn&apos;t belong to the host</translation>
+    </message>
+    <message>
+        <location filename="plugininterface/socketerrorstrings.cpp" line="51"/>
+        <source>unsupported socket operation</source>
+        <translation>unsupported socket operation</translation>
+    </message>
+    <message>
+        <location filename="plugininterface/socketerrorstrings.cpp" line="53"/>
+        <source>proxy authentication required</source>
+        <translation>proxy authentication required</translation>
+    </message>
+    <message>
+        <location filename="plugininterface/socketerrorstrings.cpp" line="55"/>
+        <source>SSL handshake failed</source>
+        <translation>SSL handshake failed</translation>
+    </message>
+    <message>
+        <location filename="plugininterface/socketerrorstrings.cpp" line="57"/>
+        <source>unfinished socket operation in progress</source>
+        <translation>unfinished socket operation in progress</translation>
+    </message>
+    <message>
+        <location filename="plugininterface/socketerrorstrings.cpp" line="59"/>
+        <source>proxy connection has been refused</source>
+        <translation>proxy connection has been refused</translation>
+    </message>
+    <message>
+        <location filename="plugininterface/socketerrorstrings.cpp" line="61"/>
+        <source>proxy connection was closed unexpectedly</source>
+        <translation>proxy connection was closed unexpectedly</translation>
+    </message>
+    <message>
+        <location filename="plugininterface/socketerrorstrings.cpp" line="63"/>
+        <source>connection to the proxy server timed out</source>
+        <translation>connection to the proxy server timed out</translation>
+    </message>
+    <message>
+        <location filename="plugininterface/socketerrorstrings.cpp" line="65"/>
+        <source>proxy not found</source>
+        <translation>proxy not found</translation>
+    </message>
+    <message>
+        <location filename="plugininterface/socketerrorstrings.cpp" line="67"/>
+        <source>proxy protocol error</source>
+        <translation>proxy protocol error</translation>
+    </message>
+    <message>
+        <location filename="plugininterface/socketerrorstrings.cpp" line="70"/>
+        <source>unknown error</source>
+        <translation>unknown error</translation>
     </message>
 </context>
 <context>
