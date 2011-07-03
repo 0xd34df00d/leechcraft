@@ -16,14 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_HIGHLIGHTER_H
-#define PLUGINS_AZOTH_PLUGINS_HIGHLIGHTER_H
-#include <boost/shared_ptr.hpp>
-#include <QSyntaxHighlighter>
-#include <QTextFormat>
-
-class Hunspell;
-class QTextCodec;
+#ifndef PLUGINS_AZOTH_PLUGINS_ROSENTHAL_XMLSETTINGSMANAGER_H
+#define PLUGINS_AZOTH_PLUGINS_ROSENTHAL_XMLSETTINGSMANAGER_H
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
@@ -31,21 +26,16 @@ namespace Azoth
 {
 namespace Rosenthal
 {
-	class Highlighter : public QSyntaxHighlighter
+	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
 		Q_OBJECT
-		
-		boost::shared_ptr<Hunspell> Hunspell_;
-		QTextCharFormat SpellCheckFormat_;
-		QTextCodec *Codec_;
+
+		XmlSettingsManager ();
 	public:
-		Highlighter (boost::shared_ptr<Hunspell>, QTextDocument*);
-		
-		void UpdateHunspell (boost::shared_ptr<Hunspell>);
+		static XmlSettingsManager& Instance ();
 	protected:
-		void highlightBlock (const QString&);
-	private:
-		bool CheckWord (const QString&);
+		virtual QSettings* BeginSettings () const;
+		virtual void EndSettings (QSettings*) const;
 	};
 }
 }

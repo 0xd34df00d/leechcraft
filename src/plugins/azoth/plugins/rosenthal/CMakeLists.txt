@@ -7,10 +7,12 @@ INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
 SET (ROSENTHAL_SRCS
 	rosenthal.cpp
 	highlighter.cpp
+	xmlsettingsmanager.cpp
 	)
 SET (ROSENTHAL_HEADERS
 	rosenthal.h
 	highlighter.h
+	xmlsettingsmanager.h
 	)
 QT4_WRAP_CPP (ROSENTHAL_MOC_SRCS ${ROSENTHAL_HEADERS})
 CreateTrVars ("azoth_rosenthal" "en;ru_RU;uk_UA" ROSENTHAL_TRANSLATIONS ROSENTHAL_COMPILED_TRANSLATIONS)
