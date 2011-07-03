@@ -96,7 +96,9 @@ namespace Xoox
 				1000, 1, this))
 	, SocketErrorAccumulator_ (0)
 	{
-		Client_->setLogger (new QXmppLogger (this));
+		SetupLogger ();
+
+
 		LastState_.State_ = SOffline;
 		
 		QTimer *decrTimer = new QTimer (this);
@@ -598,6 +600,27 @@ namespace Xoox
 		msg->SetBody (body);
 		msg->SetDateTime (QDateTime::currentDateTime ());
 		return msg;
+	}
+	
+	void ClientConnection::SetupLogger ()
+	{
+		QFile::remove (Util::CreateIfNotExists ("azoth").filePath ("qxmpp.log"));
+		
+		QString jid;
+		QString bare;
+		Split (OurJID_, &jid, &bare);
+		QString logName = jid + ".qxmpp.log";
+		logName.replace ('@', '_');
+		const QString& path = Util::CreateIfNotExists ("azoth/xoox/logs").filePath (logName);
+		QFileInfo info (path);
+		if (info.size () > 1024 * 1024 * 10)
+			QFile::remove (path);
+
+		QXmppLogger *logger = new QXmppLogger (Client_);
+		logger->setLoggingType (QXmppLogger::FileLogging);
+		logger->setLogFilePath (path);
+		logger->setMessageTypes (QXmppLogger::AnyMessage);
+		Client_->setLogger (logger);
 	}
 
 	EntryStatus ClientConnection::PresenceToStatus (const QXmppPresence& pres) const

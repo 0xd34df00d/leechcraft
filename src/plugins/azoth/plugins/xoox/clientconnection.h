@@ -192,6 +192,7 @@ namespace Xoox
 		static void Split (const QString& full,
 				QString *bare, QString *resource);
 	private:
+		void SetupLogger ();
 		EntryStatus PresenceToStatus (const QXmppPresence&) const;
 		void HandleOtherPresence (const QXmppPresence&);
 		void HandleError (const QXmppIq&);
