@@ -21,13 +21,15 @@
 #include <QSettings>
 #include <QIcon>
 #include <QCoreApplication>
+#include <QInputDialog>
+#include <QVariant>
+#include <QDataStream>
 #include <openssl/aes.h>
 #include <openssl/sha.h>
 #include <openssl/rand.h>
 #include <openssl/crypto.h>
 #include <openssl/hmac.h>
-#include <boost/graph/graph_concepts.hpp>
-#include <qt4/QtGui/qinputdialog.h>
+#include <exception>
 
 namespace LeechCraft
 {
@@ -39,6 +41,15 @@ namespace LeechCraft
 			{
 				namespace SecureStorage
 				{
+
+					class PasswordNotEnteredException : std::exception
+					{
+					public:
+
+						PasswordNotEnteredException ()
+						{
+						}
+					};
 
 					void Plugin::Init (ICoreProxy_ptr)
 					{
@@ -107,11 +118,44 @@ namespace LeechCraft
 						return STInsecure;
 					}
 
+					inline bool IsDataKey (const QString &keyName)
+					{
+						return keyName.startsWith ("d");
+					}
+
+					inline bool IsMetaDataKey (const QString &keyName)
+					{
+						return keyName.startsWith ("m");
+					}
+
+					inline QString ToDataKey (const QString &key)
+					{
+						return QString ("d") + key;
+					}
+
+					inline QString ToMetaDataKey (const QString &key)
+					{
+						return QString ("m") + key;
+					}
+
+					QByteArray serialize (const QVariant &variant)
+					{
+						QByteArray result;
+						QDataStream stream (&result, QIODevice::ReadWrite);
+						variant.save (stream);
+						return result;
+					}
+
+					QVariant deserialize (const QByteArray &array)
+					{
+						QVariant result;
+						QDataStream stream (array);
+						result.load (stream);
+						return result;
+					}
+					
 					QList<QByteArray> Plugin::ListKeys (IStoragePlugin::StorageType st)
 					{
-						if (st != STInsecure)
-							return QList<QByteArray > ();
-
 						QStringList keys = Storage_->childKeys ();
 						QList<QByteArray> result;
 						Q_FOREACH (const QString& key, keys)
@@ -122,21 +166,26 @@ namespace LeechCraft
 					void Plugin::Save (const QByteArray& key, const QVariantList& values,
 							IStoragePlugin::StorageType st, bool overwrite)
 					{
-						if (st != STInsecure)
-							return;
-
-						QVariantList oldValues;
-						if (!overwrite)
-							oldValues = Load (key, st);
-						Storage_->setValue (key, oldValues + values);
+						QVariantList allValues;
+						if (overwrite)
+							allValues = values;
+						else
+							allValues = Load (key, st) + values;
+						QByteArray encrypted = GetCryptoSystem ().Encrypt (serialize (allValues));
+						Storage_->setValue (key, encrypted);
 					}
 
 					QVariantList Plugin::Load (const QByteArray& key, IStoragePlugin::StorageType st)
 					{
-						if (st != STInsecure)
+						try
+						{
+							QByteArray encrypted = Storage_->value (key).toByteArray ();
+							return deserialize (GetCryptoSystem ().Decrypt (encrypted)).toList ();
+						}
+						catch (WrongHMACException&e)
+						{
 							return QVariantList ();
-
-						return Storage_->value (key).toList ();
+						}
 					}
 
 					void Plugin::Save (const QList<QPair<QByteArray, QVariantList> >& keyValues,
@@ -164,6 +213,7 @@ namespace LeechCraft
 							dialog.setWindowTitle (tr ("SecMan SecureStorage"));
 							dialog.setLabelText (tr ("Enter master password:"));
 							QString password ("");
+
 							if (dialog.exec () == QDialog::Accepted)
 								password = dialog.textValue ();
 							CryptoSystem_ = new CryptoSystem (password);
@@ -173,6 +223,7 @@ namespace LeechCraft
 
 					void Plugin::forgetKey ()
 					{
+
 						delete CryptoSystem_;
 						CryptoSystem_ = 0;
 					}
