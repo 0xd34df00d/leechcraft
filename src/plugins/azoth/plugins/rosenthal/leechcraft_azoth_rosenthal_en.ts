@@ -6,7 +6,7 @@
     <message>
         <location filename="rosenthal.cpp" line="74"/>
         <source>Provides spellchecking for Azoth.</source>
-        <translation type="unfinished"></translation>
+        <translation>Provides spellchecking for Azoth.</translation>
     </message>
 </context>
 <context>
@@ -14,17 +14,17 @@
     <message>
         <location filename="dummy.cpp" line="2"/>
         <source>Azoth Rosenthal</source>
-        <translation type="unfinished"></translation>
+        <translation>Azoth Rosenthal</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="3"/>
         <source>Languages to use</source>
-        <translation type="unfinished"></translation>
+        <translation>Languages to use</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="4"/>
         <source>Override autodetect with these locales:</source>
-        <translation type="unfinished"></translation>
+        <translation>Override autodetect with these locales:</translation>
     </message>
 </context>
 </TS>
