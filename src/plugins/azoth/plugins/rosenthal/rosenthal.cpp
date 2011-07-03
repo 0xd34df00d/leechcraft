@@ -149,9 +149,19 @@ namespace Rosenthal
 		
 		const QString& locale = userLocales.value (0, Util::GetLocaleName ());
 #ifdef Q_WS_X11
-		QString base = "/usr/local/share/myspell/";
-		if (!QFile::exists (base + locale + ".aff"))
-			base = "/usr/share/myspell/";
+		QString base;
+
+		QStringList candidates;
+		candidates << "/usr/local/share/myspell/"
+				<< "/usr/share/myspell/"
+				<< "/usr/local/share/myspell/dicts/"
+				<< "/usr/share/myspell/dicts/"
+				<< "/usr/local/share/hunspell/"
+				<< "/usr/share/hunspell/";
+
+		Q_FOREACH (base, candidates)
+			if (QFile::exists (base + locale + ".aff"))
+				break;
 #elif defined(Q_WS_WIN32)
 		QString base = qApp->applicationDirPath () + "/myspell/";
 #endif
