@@ -38,16 +38,22 @@ namespace LeechCraft
 			{
 				namespace SecureStorage
 				{
+
 					class Plugin : public QObject
-								 , public IInfo
-								 , public IPlugin2
-								 , public IStoragePlugin
+					, public IInfo
+					, public IPlugin2
+					, public IStoragePlugin
 					{
 						Q_OBJECT
 						Q_INTERFACES (IInfo IPlugin2 LeechCraft::Plugins::SecMan::IStoragePlugin)
 
 						boost::shared_ptr<QSettings> Storage_;
+						boost::shared_ptr<QSettings> Settings_;
 					public:
+
+						Plugin ()
+							: CryptoSystem_ (0)
+							, WindowTitle_ ("SecMan SecureStorage") { }
 						void Init (ICoreProxy_ptr);
 						void SecondInit ();
 						QByteArray GetUniqueID () const;
@@ -70,10 +76,17 @@ namespace LeechCraft
 						QList<QVariantList> Load (const QList<QByteArray>&, StorageType);
 					public slots:
 						void forgetKey ();
-						void changePassword (const QString &oldPass, const QString &newPass);
+						void changePassword ();
+						void clearSettings ();
 					private:
+						QString WindowTitle_;
 						CryptoSystem* CryptoSystem_;
 						const CryptoSystem &GetCryptoSystem ();
+
+						void ChangePassword (const QString &oldPass, const QString &newPass);
+						void CreateNewPassword ();
+						bool IsPasswordCorrect (const CryptoSystem &cs);
+						bool IsPasswordSet ();
 					};
 				}
 			}

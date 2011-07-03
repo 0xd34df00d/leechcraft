@@ -22,6 +22,7 @@
 #include <QIcon>
 #include <QCoreApplication>
 #include <QInputDialog>
+#include <QMessageBox>
 #include <QVariant>
 #include <QDataStream>
 #include <openssl/aes.h>
@@ -53,11 +54,14 @@ namespace LeechCraft
 
 					void Plugin::Init (ICoreProxy_ptr)
 					{
-						CryptoSystem_ = 0;
-						Storage_ .reset (new QSettings (QSettings::IniFormat,
+						Settings_ .reset (new QSettings (QSettings::IniFormat,
 								QSettings::UserScope,
 								QCoreApplication::organizationName (),
 								QCoreApplication::applicationName () + "_SecMan_SecureStorage"));
+						Storage_ .reset (new QSettings (QSettings::IniFormat,
+								QSettings::UserScope,
+								QCoreApplication::organizationName (),
+								QCoreApplication::applicationName () + "_SecMan_SecureStorage_Data"));
 					}
 
 					void Plugin::SecondInit ()
@@ -115,27 +119,7 @@ namespace LeechCraft
 
 					IStoragePlugin::StorageTypes Plugin::GetStorageTypes () const
 					{
-						return STInsecure;
-					}
-
-					inline bool IsDataKey (const QString &keyName)
-					{
-						return keyName.startsWith ("d");
-					}
-
-					inline bool IsMetaDataKey (const QString &keyName)
-					{
-						return keyName.startsWith ("m");
-					}
-
-					inline QString ToDataKey (const QString &key)
-					{
-						return QString ("d") + key;
-					}
-
-					inline QString ToMetaDataKey (const QString &key)
-					{
-						return QString ("m") + key;
+						return STSecure;
 					}
 
 					QByteArray serialize (const QVariant &variant)
@@ -153,7 +137,7 @@ namespace LeechCraft
 						result.load (stream);
 						return result;
 					}
-					
+
 					QList<QByteArray> Plugin::ListKeys (IStoragePlugin::StorageType st)
 					{
 						QStringList keys = Storage_->childKeys ();
@@ -204,33 +188,127 @@ namespace LeechCraft
 						return result;
 					}
 
+					void Plugin::forgetKey ()
+					{
+						delete CryptoSystem_;
+						CryptoSystem_ = 0;
+					}
+
+					void Plugin::clearSettings ()
+					{
+						// confirm
+						QMessageBox::StandardButton r =
+								QMessageBox::question (0, WindowTitle_,
+								tr ("Do you really want to clear all stored data?"),
+								QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+						if (r != QMessageBox::Yes)
+							return;
+
+						Settings_->clear ();
+						Storage_->clear ();
+					}
+
+					void Plugin::changePassword ()
+					{
+						qWarning () << Q_FUNC_INFO << "Not implemented";
+					}
+
 					const CryptoSystem &Plugin::GetCryptoSystem ()
 					{
 						if (!CryptoSystem_)
 						{
 							QInputDialog dialog;
 							dialog.setTextEchoMode (QLineEdit::Password);
-							dialog.setWindowTitle (tr ("SecMan SecureStorage"));
+							dialog.setWindowTitle (WindowTitle_);
 							dialog.setLabelText (tr ("Enter master password:"));
-							QString password ("");
+							while (true)
+							{
+								if (dialog.exec () != QDialog::Accepted)
+									throw PasswordNotEnteredException ();
 
-							if (dialog.exec () == QDialog::Accepted)
-								password = dialog.textValue ();
-							CryptoSystem_ = new CryptoSystem (password);
+								QString password = dialog.textValue ();
+								CryptoSystem* cs = new CryptoSystem (password);
+								if (IsPasswordCorrect (*cs))
+								{
+									CryptoSystem_ = cs;
+									break;
+								}
+								else
+									dialog.setLabelText (tr ("Wrong password.\n"
+										"Try enter master password again:"));
+							}
 						}
 						return *CryptoSystem_;
 					}
 
-					void Plugin::forgetKey ()
+					void Plugin::CreateNewPassword ()
 					{
-
+						QInputDialog dialog;
+						dialog.setWindowTitle (WindowTitle_);
+						dialog.setTextEchoMode (QLineEdit::Password);
+						QString password;
+						while (true)
+						{
+							// query password
+							dialog.setLabelText (tr ("Enter new master password"));
+							if (dialog.exec () != QInputDialog::Accepted)
+								return;
+							password = dialog.textValue ();
+							// query password again
+							dialog.setLabelText (tr ("Enter same master password again"));
+							if (dialog.exec () != QInputDialog::Accepted)
+								return;
+							QString password2 = dialog.textValue ();
+							if (password == password2)
+								break; // the "right" way
+							else if (QMessageBox::question (0, WindowTitle_,
+									tr ("Two passwords that you entered are not equal.\n"
+									"Do you want to try again?"),
+									QMessageBox::Yes | QMessageBox::No,
+									QMessageBox::Yes) != QMessageBox::Yes)
+								return;
+							// else continue;
+						}
+						// clear old settings and data
+						Settings_->clear ();
+						Storage_->clear ();
+						// set up new settings
+						CryptoSystem* cs = new CryptoSystem (password);
+						Settings_->setValue ("SecureStoragePasswordIsSet", QVariant (true));
+						QByteArray cookie = cs->Encrypt (QByteArray ("cookie"));
+						Settings_->setValue ("SecureStorageCookie", cookie);
+						// use created cryptosystem.
 						delete CryptoSystem_;
-						CryptoSystem_ = 0;
+						CryptoSystem_ = cs;
 					}
 
-					void Plugin::changePassword (const QString &oldPass, const QString &newPass)
+					bool Plugin::IsPasswordSet ()
 					{
+						return Settings_->value ("SecureStoragePasswordIsSet").toBool ();
 					}
+
+					void Plugin::ChangePassword (const QString &oldPass, const QString &newPass)
+					{
+						qWarning () << Q_FUNC_INFO << "Not implemented";
+					}
+
+					bool Plugin::IsPasswordCorrect (const CryptoSystem &cs)
+					{
+						if (!IsPasswordSet ())
+							return false;
+
+						QByteArray cookie = Settings_->value ("SecureStorageCookie").toByteArray ();
+						try
+						{
+							cs.Decrypt (cookie);
+							return true;
+						}
+						catch (WrongHMACException &e)
+						{
+							return false;
+						}
+					}
+
 				}
 			}
 		}
