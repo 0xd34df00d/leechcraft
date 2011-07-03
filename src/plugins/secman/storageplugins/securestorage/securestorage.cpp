@@ -185,7 +185,8 @@ void Plugin::Save (const QByteArray& key, const QVariantList& values,
 		allValues = Load (key, st) + values;
 	try
 	{
-		QByteArray encrypted = GetCryptoSystem ().Encrypt (serialize (allValues));
+		QByteArray data = serialize (allValues);
+		QByteArray encrypted = GetCryptoSystem ().Encrypt (data);
 		Storage_->setValue (key, encrypted);
 	}
 	catch (PasswordNotEnteredException &e)
@@ -204,7 +205,8 @@ QVariantList Plugin::Load (const QByteArray& key, IStoragePlugin::StorageType st
 	try
 	{
 		QByteArray encrypted = Storage_->value (key).toByteArray ();
-		return deserialize (GetCryptoSystem ().Decrypt (encrypted)).toList ();
+		QByteArray data = GetCryptoSystem ().Decrypt (encrypted);
+		return deserialize (data).toList ();
 	}
 	catch (WrongHMACException &e)
 	{
@@ -249,6 +251,7 @@ void Plugin::clearSettings ()
 	if (r != QMessageBox::Yes)
 		return;
 
+	forgetKey ();
 	Settings_->clear ();
 	Storage_->clear ();
 }
@@ -301,7 +304,8 @@ void Plugin::CreateNewPassword ()
 	while (true)
 	{
 		// query password
-		dialog.setLabelText (tr ("Enter new master password"));
+		dialog.setLabelText (tr ("Creating master password for SecureStorage\n"
+				"Enter new master password"));
 		if (dialog.exec () != QInputDialog::Accepted)
 			throw PasswordNotEnteredException ();
 		password = dialog.textValue ();
