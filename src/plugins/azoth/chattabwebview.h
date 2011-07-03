@@ -16,35 +16,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PROGRESSLINEEDIT_H
-#define PLUGINS_POSHUKU_PROGRESSLINEEDIT_H
-#include <boost/shared_ptr.hpp>
-#include <QKeyEvent>
-#include <QLineEdit>
-#include <QToolButton>
-
-class QModelIndex;
-class QToolBar;
+#ifndef PLUGINS_AZOTH_CHATTABWEBVIEW_H
+#define PLUGINS_AZOTH_CHATTABWEBVIEW_H
+#include <QWebView>
 
 namespace LeechCraft
 {
-namespace Poshuku
+namespace Azoth
 {
-	class ProgressLineEdit : public QLineEdit
+	class ChatTabWebView : public QWebView
 	{
 		Q_OBJECT
-
-		bool IsCompleting_;
-		QString PreviousUrl_;
 	public:
-		ProgressLineEdit (QWidget* = 0);
-		virtual ~ProgressLineEdit ();
-		bool IsCompleting () const;
+		ChatTabWebView (QWidget* = 0);
 	protected:
-		void keyPressEvent (QKeyEvent *);
+		void contextMenuEvent (QContextMenuEvent*);
 	private slots:
-		void handleCompleterActivated ();
-		void textChanged (const QString& text);
+		void handleOpenLink ();
+		void handleSaveLink ();
 	};
 }
 }

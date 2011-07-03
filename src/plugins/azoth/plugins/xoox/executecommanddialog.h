@@ -16,36 +16,41 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PROGRESSLINEEDIT_H
-#define PLUGINS_POSHUKU_PROGRESSLINEEDIT_H
-#include <boost/shared_ptr.hpp>
-#include <QKeyEvent>
-#include <QLineEdit>
-#include <QToolButton>
-
-class QModelIndex;
-class QToolBar;
+#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_EXECUTECOMMANDDIALOG_H
+#define PLUGINS_AZOTH_PLUGINS_XOOX_EXECUTECOMMANDDIALOG_H
+#include <QWizard>
+#include "ui_executecommanddialog.h"
+#include "adhoccommandmanager.h"
 
 namespace LeechCraft
 {
-namespace Poshuku
+namespace Azoth
 {
-	class ProgressLineEdit : public QLineEdit
+namespace Xoox
+{
+	class GlooxAccount;
+	class AdHocCommandManager;
+
+	class ExecuteCommandDialog : public QWizard
 	{
 		Q_OBJECT
 
-		bool IsCompleting_;
-		QString PreviousUrl_;
+		Ui::ExecuteCommandDialog Ui_;
+		GlooxAccount *Account_;
+		AdHocCommandManager *Manager_;
+		QString JID_;
 	public:
-		ProgressLineEdit (QWidget* = 0);
-		virtual ~ProgressLineEdit ();
-		bool IsCompleting () const;
-	protected:
-		void keyPressEvent (QKeyEvent *);
+		ExecuteCommandDialog (const QString&, GlooxAccount*, QWidget* = 0);
+	private:
+		void RequestCommands ();
+		void ExecuteCommand (const AdHocCommand&);
+		void ProceedExecuting (const AdHocResult&, const QString&);
 	private slots:
-		void handleCompleterActivated ();
-		void textChanged (const QString& text);
+		void handleCurrentChanged (int);
+		void handleGotCommands (const QString&, const QList<AdHocCommand>&);
+		void handleGotResult (const QString&, const AdHocResult&);
 	};
+}
 }
 }
 

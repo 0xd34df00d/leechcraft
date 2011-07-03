@@ -45,7 +45,7 @@ SectionGroup "Core"
 		File plugininterface.dll
 		File xmlsettingsdialog.dll
 		File leechcraft.exe
-		File boost_program_options-vc90-mt-1_45.dll
+		File boost_program_options-vc100-mt-1_46_1.dll
 		File /r icons
 		File /r leechcraft
 		File /r oxygen
@@ -83,25 +83,45 @@ SectionGroup "Core"
 		SectionIn 1 2 RO
 	SectionEnd
 
-	Section "MSVC" MSVC
-		# Check is Visual Studio 2008 SP1 Redistributable package is installed:
-		Push $R0
-		ClearErrors
-		ReadRegDword $R0 HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{9A25302D-30C0-39D9-BD6F-21E6EC160475}" "Version"
-		IfErrors 0 VSRedistInstalled
-        
+	Section "MSVC 2010 SP1 Redist" MSVC
 		SetOutPath $TEMP
 		File vcredist_x86.exe
-		DetailPrint "Installing Visual C++ 2008 Libraries"
-		ExecWait '"$TEMP\vcredist_x86.exe" /q:a /c:"msiexec /i vcredist.msi /quiet"'
-        
-VSRedistInstalled:
-		Exch $R0
-		SectionIn 1 2 RO
+		DetailPrint "Installing Visual C++ 2010 Libraries"
+		ExecWait '"$TEMP\vcredist_x86.exe" /q /norestart"'
+
+		SectionIn 1
 	SectionEnd
 SectionGroupEnd
 
 SectionGroup "Plugins"
+    Section "Azoth" AZOTHPLUGIN
+        SetOutPath $INSTDIR\settings
+        File settings\azothacetamidesettings.xml
+        File settings\azothautopastesettings.xml
+        File settings\azothherbicidesettings.xml
+        File settings\azothhilisettings.xml
+        File settings\azothp100qsettings.xml
+        File settings\azothsettings.xml
+        SetOutPath $INSTDIR\plugins\bin
+        File plugins\bin\leechcraft_azoth.dll
+        File plugins\bin\leechcraft_azoth_acetamide.dll
+        File plugins\bin\leechcraft_azoth_autopaste.dll
+        File plugins\bin\leechcraft_azoth_chathistory.dll
+        File plugins\bin\leechcraft_azoth_depester.dll
+        File plugins\bin\leechcraft_azoth_embedmedia.dll
+        File plugins\bin\leechcraft_azoth_herbicide.dll
+        File plugins\bin\leechcraft_azoth_hili.dll
+        File plugins\bin\leechcraft_azoth_juick.dll
+        File plugins\bin\leechcraft_azoth_nativeemoticons.dll
+        File plugins\bin\leechcraft_azoth_p100q.dll
+        File pligins\bin\leechcraft_azoth_rosenthal.dll
+        File plugins\bin\leechcraft_azoth_standardstyles.dll
+        File plugins\bin\leechcraft_azoth_xoox.dll
+        File plugins\bin\leechcraft_azoth_xtazy.dll
+        SetOutPath $INSTDIR\share\azoth
+        File /r share\azoth\*
+        SectionIn 1
+    SectionEnd
 	Section "Aggregator" AGGREGATORPLUGIN
 		SetOutPath $INSTDIR\plugins\bin
 		File plugins\bin\leechcraft_aggregator.dll
@@ -117,10 +137,10 @@ SectionGroup "Plugins"
 	Section "BitTorrent" TORRENTPLUGIN
 		SetOutPath $INSTDIR
 		File torrent.dll
-		File boost_date_time-vc90-mt-1_45.dll
-		File boost_filesystem-vc90-mt-1_45.dll
-		File boost_system-vc90-mt-1_45.dll
-		File boost_thread-vc90-mt-1_45.dll
+		File boost_date_time-vc100-mt-1_46_1.dll
+		File boost_filesystem-vc100-mt-1_46_1.dll
+		File boost_system-vc100-mt-1_46_1.dll
+		File boost_thread-vc100-mt-1_46_1.dll
 		SetOutPath $INSTDIR\settings
 		File settings\torrentsettings.xml
 		SetOutPath $INSTDIR\plugins\bin
@@ -147,20 +167,24 @@ SectionGroup "Plugins"
 		SectionIn 1
 	SectionEnd
 	Section "Kinotify" KINOTIFYPLUGIN
+        SetOutPath $INSTDIR\settings
+        File settings\kinotifysettings.xml
 		SetOutPath $INSTDIR\plugins\bin
 		File plugins\bin\leechcraft_kinotify.dll
+        SetOutPath $INSTDIR\share\kinotify
+        File /r share\kinotify\*
 		SectionIn 1
 	SectionEnd
-	Section "LackMan" LACKMANPLUGIN
-		SetOutPath $INSTDIR\settings
-		File settings\lackmansettings.xml
-		SetOutPath $INSTDIR\plugins\bin
-		File plugins\bin\leechcraft_lackman.dll
-		SetOutPath $INSTDIR
-		File 7za.exe
-		File gunzip.exe
-		SectionIn 1
-	SectionEnd
+#	Section "LackMan" LACKMANPLUGIN
+#		SetOutPath $INSTDIR\settings
+#		File settings\lackmansettings.xml
+#		SetOutPath $INSTDIR\plugins\bin
+#		File plugins\bin\leechcraft_lackman.dll
+#		SetOutPath $INSTDIR
+#		File 7za.exe
+#		File gunzip.exe
+#		SectionIn 1
+#	SectionEnd
 	Section "NetworkMonitor" NETWORKMONITORPLUGIN
 		SetOutPath $INSTDIR\plugins\bin
 		File plugins\bin\leechcraft_networkmonitor.dll
@@ -173,9 +197,12 @@ SectionGroup "Plugins"
 	SectionEnd
 	Section "Poshuku" POSHUKUPLUGIN
 		SetOutPath $INSTDIR\settings
+        File settings\poshukufatapesettings.xml
 		File settings\poshukusettings.xml
 		SetOutPath $INSTDIR\plugins\bin
 		File plugins\bin\leechcraft_poshuku.dll
+        File plugins\bin\leechcraft_poshuku_fatape.dll
+        File plugins\bin\leechcraft_poshuku_pintab.dll
 		SectionIn 1
 	SectionEnd
 	Section "Poshuku CleanWeb" POSHUKUCLEANWEBPLUGIN
@@ -195,6 +222,15 @@ SectionGroup "Plugins"
 		File settings\poshukufuasettings.xml
 		SetOutPath $INSTDIR\plugins\bin
 		File plugins\bin\leechcraft_poshuku_fua.dll
+		SectionIn 1
+	SectionEnd
+	Section "Poshuku OnlineBookmarks"
+		SetOutPath $INSTDIR
+		File qjson.dll
+		SetOutPath $INSTDIR\settings
+		File settings\poshukuonlinebookmarkssettings.xml
+		SetOutPath $INSTDIR\plugins\bin
+		File plugins\bin\leechcraft_poshuku_onlinebookmarks.dll
 		SectionIn 1
 	SectionEnd
 	Section "Poshuku WYFV" POSHUKUWYFVPLUGIN
@@ -293,20 +329,14 @@ SectionGroup "Translations"
 SectionGroupEnd
 
 SectionGroup "Unsupported plugins"
-	Section "Chatter" CHATTERPLUGIN
-		SetOutPath $INSTDIR\settings
-		File settings\chattersettings.xml
-		SetOutPath $INSTDIR\plugins\bin
-		File plugins\bin\leechcraft_chatter.dll
-	SectionEnd
-	Section "LCFTP" LCFTPPLUGIN
-		SetOutPath $INSTDIR\settings
-		File settings\lcftpsettings.xml
-		SetOutPath $INSTDIR
-		File libcurl.dll
-		SetOutPath $INSTDIR\plugins\bin
-		File plugins\bin\leechcraft_lcftp.dll
-	SectionEnd
+#	Section "LCFTP" LCFTPPLUGIN
+#		SetOutPath $INSTDIR\settings
+#		File settings\lcftpsettings.xml
+#		SetOutPath $INSTDIR
+#		File libcurl.dll
+#		SetOutPath $INSTDIR\plugins\bin
+#		File plugins\bin\leechcraft_lcftp.dll
+#	SectionEnd
 	Section "LMP" LMPPLUGIN
 		SetOutPath $INSTDIR\settings
 		File settings\lmpsettings.xml

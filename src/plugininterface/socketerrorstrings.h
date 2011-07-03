@@ -16,36 +16,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PROGRESSLINEEDIT_H
-#define PLUGINS_POSHUKU_PROGRESSLINEEDIT_H
-#include <boost/shared_ptr.hpp>
-#include <QKeyEvent>
-#include <QLineEdit>
-#include <QToolButton>
+#ifndef PLUGININTERFACE_SOCKETERRORSTRINGS_H
+#define PLUGININTERFACE_SOCKETERRORSTRINGS_H
+#include <QAbstractSocket>
+#include "piconfig.h"
 
-class QModelIndex;
-class QToolBar;
+class QString;
 
 namespace LeechCraft
 {
-namespace Poshuku
+namespace Util
 {
-	class ProgressLineEdit : public QLineEdit
-	{
-		Q_OBJECT
-
-		bool IsCompleting_;
-		QString PreviousUrl_;
-	public:
-		ProgressLineEdit (QWidget* = 0);
-		virtual ~ProgressLineEdit ();
-		bool IsCompleting () const;
-	protected:
-		void keyPressEvent (QKeyEvent *);
-	private slots:
-		void handleCompleterActivated ();
-		void textChanged (const QString& text);
-	};
+	PLUGININTERFACE_API QString GetSocketErrorString (QAbstractSocket::SocketError);
 }
 }
 

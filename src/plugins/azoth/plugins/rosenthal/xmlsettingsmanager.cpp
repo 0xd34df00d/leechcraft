@@ -16,37 +16,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PROGRESSLINEEDIT_H
-#define PLUGINS_POSHUKU_PROGRESSLINEEDIT_H
-#include <boost/shared_ptr.hpp>
-#include <QKeyEvent>
-#include <QLineEdit>
-#include <QToolButton>
-
-class QModelIndex;
-class QToolBar;
+#include "xmlsettingsmanager.h"
+#include <QCoreApplication>
 
 namespace LeechCraft
 {
-namespace Poshuku
+namespace Azoth
 {
-	class ProgressLineEdit : public QLineEdit
+namespace Rosenthal
+{
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		Q_OBJECT
+		Util::BaseSettingsManager::Init ();
+	}
+	
+	XmlSettingsManager& XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager xsm;
+		return xsm;
+	}
+	
+	void XmlSettingsManager::EndSettings (QSettings* settings) const
+	{
+	}
 
-		bool IsCompleting_;
-		QString PreviousUrl_;
-	public:
-		ProgressLineEdit (QWidget* = 0);
-		virtual ~ProgressLineEdit ();
-		bool IsCompleting () const;
-	protected:
-		void keyPressEvent (QKeyEvent *);
-	private slots:
-		void handleCompleterActivated ();
-		void textChanged (const QString& text);
-	};
+	QSettings* XmlSettingsManager::BeginSettings () const
+	{
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth_Rosenthal");
+		return settings;
+	}
 }
 }
-
-#endif
+}

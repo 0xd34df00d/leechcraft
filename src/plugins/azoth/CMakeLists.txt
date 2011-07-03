@@ -29,6 +29,18 @@ INCLUDE_DIRECTORIES (
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
+
+IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} EQUAL 2.8 AND ${CMAKE_PATCH_VERSION} LESS 4)
+	IF (${QT_VERSION_MINOR} EQUAL 6)
+		INCLUDE_DIRECTORIES (/usr/include/qt4/QtMultimedia)
+		SET (QTMULTIMEDIA_KLUDGE "QtMultimedia")
+	ELSE (${QT_VERSION_MINOR} EQUAL 6)
+		INCLUDE_DIRECTORIES (/usr/include/QtMultimediaKit)
+		INCLUDE_DIRECTORIES (/usr/include/QtMobility)
+		SET (QTMULTIMEDIA_KLUDGE "QtMultimediaKit")
+	ENDIF (${QT_VERSION_MINOR} EQUAL 6)
+ENDIF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} EQUAL 2.8 AND ${CMAKE_PATCH_VERSION} LESS 4)
+
 SET (SRCS
 	azoth.cpp
 	core.cpp
@@ -61,6 +73,7 @@ SET (SRCS
 	mooddialog.cpp
 	callmanager.cpp
 	callchatwidget.cpp
+	chattabwebview.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -94,6 +107,7 @@ SET (HEADERS
 	mooddialog.h
 	callmanager.h
 	callchatwidget.h
+	chattabwebview.h
 	animatediconmanager.h
 	sourcetrackingmodel.h
 	interfaces/iprotocolplugin.h
@@ -142,6 +156,7 @@ ADD_LIBRARY (leechcraft_azoth SHARED
 TARGET_LINK_LIBRARIES (leechcraft_azoth
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
+	${QTMULTIMEDIA_KLUDGE}
 	)
 INSTALL (TARGETS leechcraft_azoth DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

@@ -48,6 +48,7 @@
 #include "zoomeventfilter.h"
 #include "callmanager.h"
 #include "callchatwidget.h"
+#include "chattabwebview.h"
 
 namespace LeechCraft
 {
@@ -901,6 +902,7 @@ namespace Azoth
 			return;
 
 		if (msg->GetMessageSubType () == IMessage::MSTParticipantStatusChange &&
+				(!other || other->GetEntryType () == ICLEntry::ETMUC) &&
 				!XmlSettingsManager::Instance ().property ("ShowStatusChangesEvents").toBool ())
 			return;
 		

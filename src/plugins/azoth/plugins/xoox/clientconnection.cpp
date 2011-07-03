@@ -37,6 +37,7 @@
 #include <QXmppDeliveryReceiptsManager.h>
 #include <QXmppCallManager.h>
 #include <plugininterface/util.h>
+#include <plugininterface/socketerrorstrings.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <interfaces/iprotocol.h>
 #include <interfaces/iproxyobject.h>
@@ -58,6 +59,7 @@
 #include "usermood.h"
 #include "usertune.h"
 #include "privacylistsmanager.h"
+#include "adhoccommandmanager.h"
 
 namespace LeechCraft
 {
@@ -81,6 +83,7 @@ namespace Xoox
 	, CallManager_ (new QXmppCallManager)
 	, PubSubManager_ (new PubSubManager)
 	, PrivacyListsManager_ (new PrivacyListsManager)
+	, AdHocCommandManager_ (new AdHocCommandManager (this))
 	, AnnotationsManager_ (0)
 	, OurJID_ (jid)
 	, Account_ (account)
@@ -94,7 +97,9 @@ namespace Xoox
 				1000, 1, this))
 	, SocketErrorAccumulator_ (0)
 	{
-		Client_->setLogger (new QXmppLogger (this));
+		SetupLogger ();
+
+
 		LastState_.State_ = SOffline;
 		
 		QTimer *decrTimer = new QTimer (this);
@@ -130,6 +135,7 @@ namespace Xoox
 		Client_->addExtension (new LegacyEntityTimeExt);
 		Client_->addExtension (PrivacyListsManager_);
 		Client_->addExtension (CallManager_);
+		Client_->addExtension (AdHocCommandManager_);
 		
 		AnnotationsManager_ = new AnnotationsManager (this);
 
@@ -368,6 +374,11 @@ namespace Xoox
 		return CallManager_;
 	}
 	
+	AdHocCommandManager* ClientConnection::GetAdHocCommandManager () const
+	{
+		return AdHocCommandManager_;
+	}
+	
 	void ClientConnection::SetSignaledLog (bool signaled)
 	{
 		if (signaled)
@@ -591,6 +602,27 @@ namespace Xoox
 		msg->SetDateTime (QDateTime::currentDateTime ());
 		return msg;
 	}
+	
+	void ClientConnection::SetupLogger ()
+	{
+		QFile::remove (Util::CreateIfNotExists ("azoth").filePath ("qxmpp.log"));
+		
+		QString jid;
+		QString bare;
+		Split (OurJID_, &jid, &bare);
+		QString logName = jid + ".qxmpp.log";
+		logName.replace ('@', '_');
+		const QString& path = Util::CreateIfNotExists ("azoth/xoox/logs").filePath (logName);
+		QFileInfo info (path);
+		if (info.size () > 1024 * 1024 * 10)
+			QFile::remove (path);
+
+		QXmppLogger *logger = new QXmppLogger (Client_);
+		logger->setLoggingType (QXmppLogger::FileLogging);
+		logger->setLogFilePath (path);
+		logger->setMessageTypes (QXmppLogger::AnyMessage);
+		Client_->setLogger (logger);
+	}
 
 	EntryStatus ClientConnection::PresenceToStatus (const QXmppPresence& pres) const
 	{
@@ -643,15 +675,15 @@ namespace Xoox
 			if (SocketErrorAccumulator_ < ErrorLimit)
 			{
 				++SocketErrorAccumulator_;
-				str = tr ("Socket error %1.")
-						.arg (Client_->socketError ());
+				str = tr ("socket error: %1.")
+						.arg (Util::GetSocketErrorString (Client_->socketError ()));
 			}
 			break;
 		case QXmppClient::KeepAliveError:
-			str = tr ("Keep-alive error.");
+			str = tr ("keep-alive error.");
 			break;
 		case QXmppClient::XmppStreamError:
-			str = tr ("Error while connecting: ");
+			str = tr ("error while connecting: ");
 			str += HandleErrorCondition (Client_->xmppStreamError ());
 			break;
 		}
@@ -668,7 +700,8 @@ namespace Xoox
 		}
 
 		const Entity& e = Util::MakeNotification ("Azoth",
-				str,
+				tr ("Account %1:").arg (OurJID_) +
+					' ' + str,
 				PCritical_);
 		Core::Instance ().SendEntity (e);
 	}
