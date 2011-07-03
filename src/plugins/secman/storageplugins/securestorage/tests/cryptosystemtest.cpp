@@ -241,3 +241,15 @@ void CryptoSystemTest::testEncryptDecryptLength ()
 		TestEncryptDecryptCorrect (password, data);
 	}
 }
+
+void CryptoSystemTest::testDecryptShortCipherText ()
+{
+	int minLength = CipherTextFormat::BufferLengthFor (0);
+	CryptoSystem cs ("password");
+	for (int i = 0; i < minLength; i++)
+	{
+		QByteArray array;
+		array.resize (i);
+		EXPECT_EXCEPTION (cs.Decrypt (array), WrongHMACException);
+	}
+}

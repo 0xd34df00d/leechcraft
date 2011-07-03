@@ -80,6 +80,8 @@ QByteArray CryptoSystem::Encrypt (const QByteArray &data) const
 
 QByteArray CryptoSystem::Decrypt (const QByteArray &cipherText) const
 {
+	if (CipherTextFormat::DataLengthFor (cipherText.length ()) < 0)
+		throw WrongHMACException ();
 	QByteArray data;
 	data.resize (CipherTextFormat::DecryptBufferLengthFor (cipherText.length ()));
 	CipherTextFormat cipherTextFormat (const_cast<char*> (cipherText.data ()),

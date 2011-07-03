@@ -53,6 +53,10 @@ namespace LeechCraft
 						 * (with different lengthes and random data). 
 						 */
 						void testEncryptDecryptLength ();
+						/**
+						 * Check that cryptosystem operates correctly with too short ciphertexts.
+						 */
+						void testDecryptShortCipherText ();
 					};
 				}
 			}
@@ -60,4 +64,3 @@ namespace LeechCraft
 	}
 }
 #endif
-
