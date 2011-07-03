@@ -32,10 +32,10 @@ namespace
 {
 
 	/**
-	 * Check whether all appropriate field in two ciphertexts are different.
+	 * Check whether all corresponding field in two ciphertexts are different.
 	 * @param ctf1 first ciphertext.
 	 * @param ctf2 second ciphertext.
-	 * @return true if all appropriate field in ciphertexts are different.
+	 * @return true if all corresponding field in ciphertexts are different.
 	 */
 	bool AllFieldsDifferent (const CipherTextFormat &ctf1, const CipherTextFormat &ctf2)
 	{
@@ -54,10 +54,10 @@ namespace
 
 	/**
 	 * Checks whether all ciphertexts in list have different 
-	 * appropriate fields.
+	 * corresponding fields.
 	 * @param list list of ciphertexts.
 	 * @return true if all ciphertexts in list have different 
-	 * appropriate fields.
+	 * corresponding fields.
 	 */
 	bool AllDiffer (const QList<QByteArray> &list)
 	{
