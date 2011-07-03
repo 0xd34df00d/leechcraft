@@ -23,6 +23,7 @@
 #include <QContextMenuEvent>
 #include <QMenu>
 #include <QTextCodec>
+#include <QTranslator>
 #include <plugininterface/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "hunspell/hunspell.hxx"
@@ -37,6 +38,8 @@ namespace Rosenthal
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		Translator_.reset (Util::InstallTranslator ("azoth_rosenthal"));
+
 		SettingsDialog_.reset (new Util::XmlSettingsDialog);
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"azothrosenthalsettings.xml");

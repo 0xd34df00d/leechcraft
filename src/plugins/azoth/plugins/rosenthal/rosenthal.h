@@ -25,6 +25,7 @@
 #include <interfaces/ihavesettings.h>
 
 class QWebView;
+class QTranslator;
 class Hunspell;
 
 namespace LeechCraft
@@ -43,6 +44,7 @@ namespace Rosenthal
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
 
+		boost::shared_ptr<QTranslator> Translator_;
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
 		boost::shared_ptr<Hunspell> Hunspell_;
 		QList<Highlighter*> Highlighters_;
