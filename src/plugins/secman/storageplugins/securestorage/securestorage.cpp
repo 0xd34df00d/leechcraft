@@ -25,6 +25,9 @@
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QVariant>
+#include <QAction>
+#include <QList>
+#include <QMap>
 #include <QDataStream>
 #include <exception>
 
@@ -54,6 +57,16 @@ void Plugin::Init (ICoreProxy_ptr)
 			QSettings::UserScope,
 			QCoreApplication::organizationName (),
 			QCoreApplication::applicationName () + "_SecMan_SecureStorage_Data"));
+	ForgetKeyAction_ = new QAction (tr ("Forget SecureStorage key"), this);
+	ClearSettingsAction_ = new QAction (tr ("Clear SecureStorage data"), this);
+	ChangePasswordAction_ = new QAction (tr ("Change SecureStorage master password"), this);
+	connect (ForgetKeyAction_, SIGNAL (triggered ()),
+			this, SLOT (forgetKey ()));
+	connect (ClearSettingsAction_, SIGNAL (triggered ()),
+			this, SLOT (clearSettings ()));
+	connect (ChangePasswordAction_, SIGNAL (triggered ()),
+			this, SLOT (changePassword ()));
+	ForgetKeyAction_->setEnabled (false);
 }
 
 void Plugin::SecondInit ()
@@ -109,6 +122,29 @@ QSet<QByteArray> Plugin::GetPluginClasses () const
 	return QSet<QByteArray > () << "org.LeechCraft.SecMan.StoragePlugins/1.0";
 }
 
+QList<QAction*> Plugin::GetActions (LeechCraft::ActionsEmbedPlace place) const
+{
+	QList<QAction*> result;
+	switch (place)
+	{
+		case AEPCommonContextMenu:
+			result << ForgetKeyAction_;
+			result << ClearSettingsAction_;
+			result << ChangePasswordAction_;
+			break;
+		default:
+			break;
+	}
+	return result;
+}
+
+QMap<QString, QList<QAction*> > Plugin::GetMenuActions () const
+{
+	QMap<QString, QList<QAction*> >result;
+
+	return result;
+}
+
 IStoragePlugin::StorageTypes Plugin::GetStorageTypes () const
 {
 	return STSecure;
@@ -147,8 +183,20 @@ void Plugin::Save (const QByteArray& key, const QVariantList& values,
 		allValues = values;
 	else
 		allValues = Load (key, st) + values;
-	QByteArray encrypted = GetCryptoSystem ().Encrypt (serialize (allValues));
-	Storage_->setValue (key, encrypted);
+	try
+	{
+		QByteArray encrypted = GetCryptoSystem ().Encrypt (serialize (allValues));
+		Storage_->setValue (key, encrypted);
+	}
+	catch (PasswordNotEnteredException &e)
+	{
+		qWarning () << Q_FUNC_INFO << "Password was not entered";
+	}
+	catch (WrongHMACException &e)
+	{
+		qWarning () << Q_FUNC_INFO << "Wrong HMAC";
+		forgetKey ();
+	}
 }
 
 QVariantList Plugin::Load (const QByteArray& key, IStoragePlugin::StorageType st)
@@ -158,7 +206,11 @@ QVariantList Plugin::Load (const QByteArray& key, IStoragePlugin::StorageType st
 		QByteArray encrypted = Storage_->value (key).toByteArray ();
 		return deserialize (GetCryptoSystem ().Decrypt (encrypted)).toList ();
 	}
-	catch (WrongHMACException&e)
+	catch (WrongHMACException &e)
+	{
+		return QVariantList ();
+	}
+	catch (PasswordNotEnteredException &e)
 	{
 		return QVariantList ();
 	}
@@ -184,6 +236,7 @@ void Plugin::forgetKey ()
 {
 	delete CryptoSystem_;
 	CryptoSystem_ = 0;
+	ForgetKeyAction_->setEnabled (false);
 }
 
 void Plugin::clearSettings ()
@@ -203,10 +256,15 @@ void Plugin::clearSettings ()
 void Plugin::changePassword ()
 {
 	qWarning () << Q_FUNC_INFO << "Not implemented";
+	QMessageBox::information (0, WindowTitle_,
+			tr ("Changing password is not implemented yet."));
 }
 
 const CryptoSystem &Plugin::GetCryptoSystem ()
 {
+	if (!IsPasswordSet ())
+		CreateNewPassword ();
+
 	if (!CryptoSystem_)
 	{
 		QInputDialog dialog;
@@ -223,6 +281,7 @@ const CryptoSystem &Plugin::GetCryptoSystem ()
 			if (IsPasswordCorrect (*cs))
 			{
 				CryptoSystem_ = cs;
+				ForgetKeyAction_->setEnabled (true);
 				break;
 			}
 			else
@@ -244,12 +303,12 @@ void Plugin::CreateNewPassword ()
 		// query password
 		dialog.setLabelText (tr ("Enter new master password"));
 		if (dialog.exec () != QInputDialog::Accepted)
-			return;
+			throw PasswordNotEnteredException ();
 		password = dialog.textValue ();
 		// query password again
 		dialog.setLabelText (tr ("Enter same master password again"));
 		if (dialog.exec () != QInputDialog::Accepted)
-			return;
+			throw PasswordNotEnteredException ();
 		QString password2 = dialog.textValue ();
 		if (password == password2)
 			break; // the "right" way
@@ -258,7 +317,7 @@ void Plugin::CreateNewPassword ()
 				"Do you want to try again?"),
 				QMessageBox::Yes | QMessageBox::No,
 				QMessageBox::Yes) != QMessageBox::Yes)
-			return;
+			throw PasswordNotEnteredException ();
 		// else continue;
 	}
 	// clear old settings and data
@@ -272,6 +331,7 @@ void Plugin::CreateNewPassword ()
 	// use created cryptosystem.
 	delete CryptoSystem_;
 	CryptoSystem_ = cs;
+	ForgetKeyAction_->setEnabled (true);
 }
 
 bool Plugin::IsPasswordSet ()

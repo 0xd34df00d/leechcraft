@@ -24,6 +24,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/secman/istorageplugin.h>
+#include <interfaces/iactionsexporter.h>
 #include "cryptosystem.h"
 
 class QSettings;
@@ -43,9 +44,10 @@ namespace LeechCraft
 					, public IInfo
 					, public IPlugin2
 					, public IStoragePlugin
+					, public IActionsExporter
 					{
 						Q_OBJECT
-						Q_INTERFACES (IInfo IPlugin2 LeechCraft::Plugins::SecMan::IStoragePlugin)
+						Q_INTERFACES (IInfo IPlugin2 LeechCraft::Plugins::SecMan::IStoragePlugin IActionsExporter)
 
 						boost::shared_ptr<QSettings> Storage_;
 						boost::shared_ptr<QSettings> Settings_;
@@ -74,6 +76,8 @@ namespace LeechCraft
 						QVariantList Load (const QByteArray&, StorageType);
 						void Save (const QList<QPair<QByteArray, QVariantList> >&, StorageType, bool);
 						QList<QVariantList> Load (const QList<QByteArray>&, StorageType);
+						QList<QAction*> GetActions (LeechCraft::ActionsEmbedPlace) const;
+						QMap<QString, QList<QAction*> > GetMenuActions () const;
 					public slots:
 						void forgetKey ();
 						void changePassword ();
@@ -87,6 +91,10 @@ namespace LeechCraft
 						void CreateNewPassword ();
 						bool IsPasswordCorrect (const CryptoSystem &cs);
 						bool IsPasswordSet ();
+
+						QAction*ForgetKeyAction_;
+						QAction*ChangePasswordAction_;
+						QAction*ClearSettingsAction_;
 					};
 				}
 			}
