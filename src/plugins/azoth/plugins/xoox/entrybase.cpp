@@ -39,6 +39,8 @@
 #include "useractivity.h"
 #include "usermood.h"
 #include "usertune.h"
+#include "adhoccommandmanager.h"
+#include "executecommanddialog.h"
 
 namespace LeechCraft
 {
@@ -48,9 +50,9 @@ namespace Xoox
 {
 	EntryBase::EntryBase (GlooxAccount *parent)
 	: QObject (parent)
+	, Commands_ (0)
 	, Account_ (parent)
 	{
-
 	}
 
 	QObject* EntryBase::GetObject ()
@@ -93,7 +95,27 @@ namespace Xoox
 
 	QList<QAction*> EntryBase::GetActions () const
 	{
-		return Actions_;
+		if (VerString_.isEmpty ())
+			return Actions_;
+		
+		QList<QAction*> additional;
+		
+		const QStringList& caps = Account_->GetClientConnection ()->GetCapsManager ()->GetRawCaps (VerString_);
+		if (caps.isEmpty () ||
+				caps.contains (AdHocCommandManager::GetAdHocFeature ()))
+		{
+			if (!Commands_)
+			{
+				Commands_ = new QAction (tr ("Commands..."), Account_);
+				connect (Commands_,
+						SIGNAL (triggered ()),
+						this,
+						SLOT (handleCommands ()));
+			}
+			additional << Commands_;
+		}
+		
+		return additional + Actions_;
 	}
 
 	QImage EntryBase::GetAvatar () const
@@ -418,6 +440,13 @@ namespace Xoox
 		}
 
 		return text;
+	}
+	
+	void EntryBase::handleCommands ()
+	{
+		ExecuteCommandDialog *dia = new ExecuteCommandDialog (GetJID (), Account_);
+		dia->setAttribute (Qt::WA_DeleteOnClose);
+		dia->show ();
 	}
 }
 }
