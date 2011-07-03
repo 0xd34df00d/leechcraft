@@ -36,6 +36,11 @@ namespace Rosenthal
 		Codec_ = QTextCodec::codecForName (Hunspell_->get_dic_encoding ());
 	}
 	
+	void Highlighter::UpdateHunspell (boost::shared_ptr<Hunspell> hunspell)
+	{
+		Hunspell_ = hunspell;
+	}
+	
 	void Highlighter::highlightBlock (const QString& text)
 	{
 		QRegExp sr ("\\W+");

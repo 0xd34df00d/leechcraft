@@ -73,6 +73,7 @@ SET (SRCS
 	mooddialog.cpp
 	callmanager.cpp
 	callchatwidget.cpp
+	chattabwebview.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -106,6 +107,7 @@ SET (HEADERS
 	mooddialog.h
 	callmanager.h
 	callchatwidget.h
+	chattabwebview.h
 	animatediconmanager.h
 	sourcetrackingmodel.h
 	interfaces/iprotocolplugin.h

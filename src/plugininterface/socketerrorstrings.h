@@ -16,38 +16,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_HIGHLIGHTER_H
-#define PLUGINS_AZOTH_PLUGINS_HIGHLIGHTER_H
-#include <boost/shared_ptr.hpp>
-#include <QSyntaxHighlighter>
-#include <QTextFormat>
+#ifndef PLUGININTERFACE_SOCKETERRORSTRINGS_H
+#define PLUGININTERFACE_SOCKETERRORSTRINGS_H
+#include <QAbstractSocket>
+#include "piconfig.h"
 
-class Hunspell;
-class QTextCodec;
+class QString;
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace Util
 {
-namespace Rosenthal
-{
-	class Highlighter : public QSyntaxHighlighter
-	{
-		Q_OBJECT
-		
-		boost::shared_ptr<Hunspell> Hunspell_;
-		QTextCharFormat SpellCheckFormat_;
-		QTextCodec *Codec_;
-	public:
-		Highlighter (boost::shared_ptr<Hunspell>, QTextDocument*);
-		
-		void UpdateHunspell (boost::shared_ptr<Hunspell>);
-	protected:
-		void highlightBlock (const QString&);
-	private:
-		bool CheckWord (const QString&);
-	};
-}
+	PLUGININTERFACE_API QString GetSocketErrorString (QAbstractSocket::SocketError);
 }
 }
 

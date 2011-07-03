@@ -16,14 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_HIGHLIGHTER_H
-#define PLUGINS_AZOTH_PLUGINS_HIGHLIGHTER_H
-#include <boost/shared_ptr.hpp>
-#include <QSyntaxHighlighter>
-#include <QTextFormat>
-
-class Hunspell;
-class QTextCodec;
+#include "xmlsettingsmanager.h"
+#include <QCoreApplication>
 
 namespace LeechCraft
 {
@@ -31,24 +25,27 @@ namespace Azoth
 {
 namespace Rosenthal
 {
-	class Highlighter : public QSyntaxHighlighter
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		Q_OBJECT
-		
-		boost::shared_ptr<Hunspell> Hunspell_;
-		QTextCharFormat SpellCheckFormat_;
-		QTextCodec *Codec_;
-	public:
-		Highlighter (boost::shared_ptr<Hunspell>, QTextDocument*);
-		
-		void UpdateHunspell (boost::shared_ptr<Hunspell>);
-	protected:
-		void highlightBlock (const QString&);
-	private:
-		bool CheckWord (const QString&);
-	};
-}
-}
-}
+		Util::BaseSettingsManager::Init ();
+	}
+	
+	XmlSettingsManager& XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager xsm;
+		return xsm;
+	}
+	
+	void XmlSettingsManager::EndSettings (QSettings* settings) const
+	{
+	}
 
-#endif
+	QSettings* XmlSettingsManager::BeginSettings () const
+	{
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth_Rosenthal");
+		return settings;
+	}
+}
+}
+}

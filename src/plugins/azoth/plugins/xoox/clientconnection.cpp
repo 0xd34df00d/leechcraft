@@ -37,6 +37,7 @@
 #include <QXmppDeliveryReceiptsManager.h>
 #include <QXmppCallManager.h>
 #include <plugininterface/util.h>
+#include <plugininterface/socketerrorstrings.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <interfaces/iprotocol.h>
 #include <interfaces/iproxyobject.h>
@@ -674,15 +675,15 @@ namespace Xoox
 			if (SocketErrorAccumulator_ < ErrorLimit)
 			{
 				++SocketErrorAccumulator_;
-				str = tr ("Socket error %1.")
-						.arg (Client_->socketError ());
+				str = tr ("socket error: %1.")
+						.arg (Util::GetSocketErrorString (Client_->socketError ()));
 			}
 			break;
 		case QXmppClient::KeepAliveError:
-			str = tr ("Keep-alive error.");
+			str = tr ("keep-alive error.");
 			break;
 		case QXmppClient::XmppStreamError:
-			str = tr ("Error while connecting: ");
+			str = tr ("error while connecting: ");
 			str += HandleErrorCondition (Client_->xmppStreamError ());
 			break;
 		}
@@ -699,7 +700,8 @@ namespace Xoox
 		}
 
 		const Entity& e = Util::MakeNotification ("Azoth",
-				str,
+				tr ("Account %1:").arg (OurJID_) +
+					' ' + str,
 				PCritical_);
 		Core::Instance ().SendEntity (e);
 	}

@@ -16,38 +16,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_HIGHLIGHTER_H
-#define PLUGINS_AZOTH_PLUGINS_HIGHLIGHTER_H
-#include <boost/shared_ptr.hpp>
-#include <QSyntaxHighlighter>
-#include <QTextFormat>
-
-class Hunspell;
-class QTextCodec;
+#ifndef PLUGINS_AZOTH_CHATTABWEBVIEW_H
+#define PLUGINS_AZOTH_CHATTABWEBVIEW_H
+#include <QWebView>
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-namespace Rosenthal
-{
-	class Highlighter : public QSyntaxHighlighter
+	class ChatTabWebView : public QWebView
 	{
 		Q_OBJECT
-		
-		boost::shared_ptr<Hunspell> Hunspell_;
-		QTextCharFormat SpellCheckFormat_;
-		QTextCodec *Codec_;
 	public:
-		Highlighter (boost::shared_ptr<Hunspell>, QTextDocument*);
-		
-		void UpdateHunspell (boost::shared_ptr<Hunspell>);
+		ChatTabWebView (QWidget* = 0);
 	protected:
-		void highlightBlock (const QString&);
-	private:
-		bool CheckWord (const QString&);
+		void contextMenuEvent (QContextMenuEvent*);
+	private slots:
+		void handleOpenLink ();
+		void handleSaveLink ();
 	};
-}
 }
 }
 

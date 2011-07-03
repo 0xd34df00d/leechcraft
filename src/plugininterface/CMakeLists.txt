@@ -33,6 +33,7 @@ SET (SRCS
 	resourceloader.cpp
 	notificationactionhandler.cpp
 	flowlayout.cpp
+	socketerrorstrings.cpp
 	)
 SET (HEADERS
 	tagscompleter.h
@@ -60,6 +61,7 @@ SET (HEADERS
 	resourceloader.h
 	notificationactionhandler.h
 	flowlayout.h
+	socketerrorstrings.h
 	idpool.h
 	)
 SET (FORMS

@@ -48,6 +48,7 @@
 #include "zoomeventfilter.h"
 #include "callmanager.h"
 #include "callchatwidget.h"
+#include "chattabwebview.h"
 
 namespace LeechCraft
 {
