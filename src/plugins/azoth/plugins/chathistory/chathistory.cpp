@@ -177,22 +177,6 @@ namespace ChatHistory
 		proxy->SetReturnValue (list);
 	}
 
-	void Plugin::hookMessageCreated (IHookProxy_ptr,
-			QObject*, QObject *message)
-	{
-		IMessage *msg = qobject_cast<IMessage*> (message);
-		if (!msg)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< message
-					<< "doesn't implement IMessage"
-					<< sender ();
-			return;
-		}
-		
-		Core::Instance ()->Process (message);
-	}
-
 	void Plugin::hookGotMessage (LeechCraft::IHookProxy_ptr,
 				QObject *message)
 	{
