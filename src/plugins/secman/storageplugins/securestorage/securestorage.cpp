@@ -58,15 +58,15 @@ void Plugin::Init (ICoreProxy_ptr)
 			QCoreApplication::organizationName (),
 			QCoreApplication::applicationName () + "_SecMan_SecureStorage_Data"));
 	ForgetKeyAction_ = new QAction (tr ("Forget SecureStorage key"), this);
-	ClearSettingsAction_ = new QAction (tr ("Clear SecureStorage data"), this);
-	ChangePasswordAction_ = new QAction (tr ("Change SecureStorage master password"), this);
+	ClearSettingsAction_ = new QAction (tr ("Clear SecureStorage data.."), this);
+	ChangePasswordAction_ = new QAction (tr ("Change SecureStorage master password.."), this);
 	connect (ForgetKeyAction_, SIGNAL (triggered ()),
 			this, SLOT (forgetKey ()));
 	connect (ClearSettingsAction_, SIGNAL (triggered ()),
 			this, SLOT (clearSettings ()));
 	connect (ChangePasswordAction_, SIGNAL (triggered ()),
 			this, SLOT (changePassword ()));
-	ForgetKeyAction_->setEnabled (false);
+	UpdateActionsStates ();
 }
 
 void Plugin::SecondInit ()
@@ -166,6 +166,13 @@ QVariant deserialize (const QByteArray &array)
 	return result;
 }
 
+void Plugin::UpdateActionsStates ()
+{
+	ForgetKeyAction_->setEnabled ((bool)CryptoSystem_);
+	ClearSettingsAction_->setEnabled (IsPasswordSet ());
+	ChangePasswordAction_->setEnabled (IsPasswordSet ());
+}
+
 QList<QByteArray> Plugin::ListKeys (IStoragePlugin::StorageType st)
 {
 	QStringList keys = Storage_->childKeys ();
@@ -236,9 +243,7 @@ QList<QVariantList> Plugin::Load (const QList<QByteArray>& keys, IStoragePlugin:
 
 void Plugin::forgetKey ()
 {
-	delete CryptoSystem_;
-	CryptoSystem_ = 0;
-	ForgetKeyAction_->setEnabled (false);
+	SetCryptoSystem (0);
 }
 
 void Plugin::clearSettings ()
@@ -251,9 +256,10 @@ void Plugin::clearSettings ()
 	if (r != QMessageBox::Yes)
 		return;
 
-	forgetKey ();
+	SetCryptoSystem (0);
 	Settings_->clear ();
 	Storage_->clear ();
+	UpdateActionsStates ();
 }
 
 void Plugin::changePassword ()
@@ -261,6 +267,7 @@ void Plugin::changePassword ()
 	qWarning () << Q_FUNC_INFO << "Not implemented";
 	QMessageBox::information (0, WindowTitle_,
 			tr ("Changing password is not implemented yet."));
+	UpdateActionsStates ();
 }
 
 const CryptoSystem &Plugin::GetCryptoSystem ()
@@ -270,29 +277,40 @@ const CryptoSystem &Plugin::GetCryptoSystem ()
 
 	if (!CryptoSystem_)
 	{
-		QInputDialog dialog;
-		dialog.setTextEchoMode (QLineEdit::Password);
-		dialog.setWindowTitle (WindowTitle_);
-		dialog.setLabelText (tr ("Enter master password:"));
-		while (true)
+		if (IsPasswordEmpty ())
+			SetCryptoSystem (new CryptoSystem (""));
+		else
 		{
-			if (dialog.exec () != QDialog::Accepted)
-				throw PasswordNotEnteredException ();
-
-			QString password = dialog.textValue ();
-			CryptoSystem* cs = new CryptoSystem (password);
-			if (IsPasswordCorrect (*cs))
+			QInputDialog dialog;
+			dialog.setTextEchoMode (QLineEdit::Password);
+			dialog.setWindowTitle (WindowTitle_);
+			dialog.setLabelText (tr ("Enter master password:"));
+			while (true)
 			{
-				CryptoSystem_ = cs;
-				ForgetKeyAction_->setEnabled (true);
-				break;
+				if (dialog.exec () != QDialog::Accepted)
+					throw PasswordNotEnteredException ();
+
+				QString password = dialog.textValue ();
+				CryptoSystem* cs = new CryptoSystem (password);
+				if (IsPasswordCorrect (*cs))
+				{
+					SetCryptoSystem (cs);
+					break;
+				}
+				else
+					dialog.setLabelText (tr ("Wrong password.\n"
+						"Try enter master password again:"));
 			}
-			else
-				dialog.setLabelText (tr ("Wrong password.\n"
-					"Try enter master password again:"));
 		}
 	}
 	return *CryptoSystem_;
+}
+
+void Plugin::SetCryptoSystem (CryptoSystem* cs)
+{
+	delete CryptoSystem_;
+	CryptoSystem_ = cs;
+	ForgetKeyAction_->setEnabled ((bool)cs);
 }
 
 void Plugin::CreateNewPassword ()
@@ -304,15 +322,17 @@ void Plugin::CreateNewPassword ()
 	while (true)
 	{
 		// query password
+		dialog.setTextValue ("");
 		dialog.setLabelText (tr ("Creating master password for SecureStorage\n"
 				"Enter new master password"));
 		if (dialog.exec () != QInputDialog::Accepted)
-			throw PasswordNotEnteredException ();
+			break; // use empty password
 		password = dialog.textValue ();
 		// query password again
+		dialog.setTextValue ("");
 		dialog.setLabelText (tr ("Enter same master password again"));
 		if (dialog.exec () != QInputDialog::Accepted)
-			throw PasswordNotEnteredException ();
+			break; // use empty password
 		QString password2 = dialog.textValue ();
 		if (password == password2)
 			break; // the "right" way
@@ -330,12 +350,12 @@ void Plugin::CreateNewPassword ()
 	// set up new settings
 	CryptoSystem* cs = new CryptoSystem (password);
 	Settings_->setValue ("SecureStoragePasswordIsSet", QVariant (true));
+	if (password.isEmpty ())
+		Settings_->setValue ("SecureStoragePasswordIsEmpty", true);
 	QByteArray cookie = cs->Encrypt (QByteArray ("cookie"));
 	Settings_->setValue ("SecureStorageCookie", cookie);
 	// use created cryptosystem.
-	delete CryptoSystem_;
-	CryptoSystem_ = cs;
-	ForgetKeyAction_->setEnabled (true);
+	SetCryptoSystem (cs);
 }
 
 bool Plugin::IsPasswordSet ()
@@ -363,6 +383,11 @@ bool Plugin::IsPasswordCorrect (const CryptoSystem &cs)
 	{
 		return false;
 	}
+}
+
+bool Plugin::IsPasswordEmpty ()
+{
+	return Settings_->value ("SecureStoragePasswordIsEmpty").toBool ();
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_secman_securestorage, LeechCraft::Plugins::SecMan::StoragePlugins::SecureStorage::Plugin);

@@ -86,10 +86,13 @@ namespace LeechCraft
 						QString WindowTitle_;
 						CryptoSystem* CryptoSystem_;
 						const CryptoSystem &GetCryptoSystem ();
+						void SetCryptoSystem (CryptoSystem* cs);
+						void UpdateActionsStates ();
 
 						void ChangePassword (const QString &oldPass, const QString &newPass);
 						void CreateNewPassword ();
 						bool IsPasswordCorrect (const CryptoSystem &cs);
+						bool IsPasswordEmpty ();
 						bool IsPasswordSet ();
 
 						QAction*ForgetKeyAction_;
