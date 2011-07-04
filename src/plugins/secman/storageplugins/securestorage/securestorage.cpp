@@ -57,7 +57,7 @@ void Plugin::Init (ICoreProxy_ptr)
 			QSettings::UserScope,
 			QCoreApplication::organizationName (),
 			QCoreApplication::applicationName () + "_SecMan_SecureStorage_Data"));
-	ForgetKeyAction_ = new QAction (tr ("Forget SecureStorage key"), this);
+	ForgetKeyAction_ = new QAction (tr ("Forget master password"), this);
 	ClearSettingsAction_ = new QAction (tr ("Clear SecureStorage data.."), this);
 	ChangePasswordAction_ = new QAction (tr ("Change SecureStorage master password.."), this);
 	connect (ForgetKeyAction_, SIGNAL (triggered ()),
@@ -125,23 +125,12 @@ QSet<QByteArray> Plugin::GetPluginClasses () const
 QList<QAction*> Plugin::GetActions (LeechCraft::ActionsEmbedPlace place) const
 {
 	QList<QAction*> result;
-	switch (place)
-	{
-		case AEPCommonContextMenu:
-			result << ForgetKeyAction_;
-			result << ClearSettingsAction_;
-			result << ChangePasswordAction_;
-			break;
-		default:
-			break;
-	}
-	return result;
-}
-
-QMap<QString, QList<QAction*> > Plugin::GetMenuActions () const
-{
-	QMap<QString, QList<QAction*> >result;
-
+	if (place == AEPCommonContextMenu || place == AEPToolsMenu || place == AEPTrayMenu)
+		result << ForgetKeyAction_;
+	if (place == AEPToolsMenu)
+		result << ChangePasswordAction_;
+	if (place == AEPToolsMenu)
+		result << ClearSettingsAction_;
 	return result;
 }
 

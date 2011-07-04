@@ -77,7 +77,6 @@ namespace LeechCraft
 						void Save (const QList<QPair<QByteArray, QVariantList> >&, StorageType, bool);
 						QList<QVariantList> Load (const QList<QByteArray>&, StorageType);
 						QList<QAction*> GetActions (LeechCraft::ActionsEmbedPlace) const;
-						QMap<QString, QList<QAction*> > GetMenuActions () const;
 					public slots:
 						void forgetKey ();
 						void changePassword ();
