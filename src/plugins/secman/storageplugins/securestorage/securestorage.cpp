@@ -175,7 +175,7 @@ void Plugin::UpdateActionsStates ()
 
 QList<QByteArray> Plugin::ListKeys (IStoragePlugin::StorageType st)
 {
-	QStringList keys = Storage_->childKeys ();
+	QStringList keys = Storage_->allKeys ();
 	QList<QByteArray> result;
 	Q_FOREACH (const QString& key, keys)
 	result << key.toUtf8 ();
@@ -264,10 +264,61 @@ void Plugin::clearSettings ()
 
 void Plugin::changePassword ()
 {
-	qWarning () << Q_FUNC_INFO << "Not implemented";
-	QMessageBox::information (0, WindowTitle_,
-			tr ("Changing password is not implemented yet."));
-	UpdateActionsStates ();
+	if (!IsPasswordSet ())
+	{
+		CreateNewPassword ();
+		return;
+	}
+	QInputDialog dialog;
+	dialog.setWindowTitle (WindowTitle_);
+	dialog.setTextEchoMode (QLineEdit::Password);
+
+	QString oldPassword ("");
+	// ask old password
+	if (!IsPasswordEmpty ())
+		while (true)
+		{
+			dialog.setLabelText (tr ("Enter old master password:"));
+			dialog.setTextValue ("");
+			if (dialog.exec () != QInputDialog::Accepted)
+				return;
+			oldPassword = dialog.textValue ();
+			CryptoSystem oldCs (oldPassword);
+			if (IsPasswordCorrect (oldCs))
+				break; // normal way
+			if (QMessageBox::question (0, WindowTitle_,
+					tr ("Wrong old master password.\nDo you want to try again?"),
+					QMessageBox::Yes | QMessageBox::No,
+					QMessageBox::No) != QMessageBox::Yes)
+				return;
+			// else continue;
+		}
+
+	QString password;
+	// ask new password
+	while (true)
+	{
+		dialog.setLabelText (tr ("Enter new master password"));
+		dialog.setTextValue ("");
+		if (dialog.exec () != QInputDialog::Accepted)
+			return;
+		password = dialog.textValue ();
+		dialog.setLabelText (tr ("Enter same master password again"));
+		dialog.setTextValue ("");
+		if (dialog.exec () != QInputDialog::Accepted)
+			return;
+		QString password2 = dialog.textValue ();
+		if (password == password2)
+			break; // normal way
+		if (QMessageBox::question (0, WindowTitle_,
+				tr ("The passwords are different.\nDo you want to try again?"),
+				QMessageBox::Yes | QMessageBox::No,
+				QMessageBox::No) != QMessageBox::Yes)
+			return;
+		// else continue;
+	}
+
+	ChangePassword (oldPassword, password);
 }
 
 const CryptoSystem &Plugin::GetCryptoSystem ()
@@ -348,14 +399,8 @@ void Plugin::CreateNewPassword ()
 	Settings_->clear ();
 	Storage_->clear ();
 	// set up new settings
-	CryptoSystem* cs = new CryptoSystem (password);
-	Settings_->setValue ("SecureStoragePasswordIsSet", QVariant (true));
-	if (password.isEmpty ())
-		Settings_->setValue ("SecureStoragePasswordIsEmpty", true);
-	QByteArray cookie = cs->Encrypt (QByteArray ("cookie"));
-	Settings_->setValue ("SecureStorageCookie", cookie);
-	// use created cryptosystem.
-	SetCryptoSystem (cs);
+	UpdatePasswordSettings (password);
+	UpdateActionsStates ();
 }
 
 bool Plugin::IsPasswordSet ()
@@ -365,7 +410,47 @@ bool Plugin::IsPasswordSet ()
 
 void Plugin::ChangePassword (const QString &oldPass, const QString &newPass)
 {
-	qWarning () << Q_FUNC_INFO << "Not implemented";
+	CryptoSystem oldCs (oldPass);
+	if (!IsPasswordCorrect (oldCs))
+	{
+		qWarning () << Q_FUNC_INFO << "Called with incorrect old password";
+		return;
+	}
+
+	CryptoSystem newCs (newPass);
+	QStringList keys = Storage_->allKeys ();
+
+	Q_FOREACH (const QString &key, keys)
+	{
+		try
+		{
+			QByteArray oldEncrypted = Storage_->value (key).toByteArray ();
+			QByteArray data = oldCs.Decrypt (oldEncrypted);
+			QByteArray newEncrypted = newCs.Encrypt (data);
+			QVariant encryptedData (newEncrypted);
+			Storage_->setValue (key, encryptedData);
+		}
+		catch (WrongHMACException &e)
+		{
+			qWarning () << Q_FUNC_INFO <<
+					"Removing value of key \"" << key << "\" (wrong HMAC)";
+			Storage_->remove (key);
+		}
+	}
+	UpdatePasswordSettings (newPass);
+	UpdateActionsStates ();
+}
+
+void Plugin::UpdatePasswordSettings (const QString &pass)
+{
+	CryptoSystem *cs = new CryptoSystem (pass);
+	// set up new settings
+	Settings_->setValue ("SecureStoragePasswordIsSet", true);
+	Settings_->setValue ("SecureStoragePasswordIsEmpty", pass.isEmpty ());
+	QByteArray cookie = cs->Encrypt (QByteArray ("cookie"));
+	Settings_->setValue ("SecureStorageCookie", cookie);
+	// use created cryptosystem.
+	SetCryptoSystem (cs);
 }
 
 bool Plugin::IsPasswordCorrect (const CryptoSystem &cs)

@@ -88,6 +88,7 @@ namespace LeechCraft
 						const CryptoSystem &GetCryptoSystem ();
 						void SetCryptoSystem (CryptoSystem* cs);
 						void UpdateActionsStates ();
+						void UpdatePasswordSettings (const QString &pass);
 
 						void ChangePassword (const QString &oldPass, const QString &newPass);
 						void CreateNewPassword ();
