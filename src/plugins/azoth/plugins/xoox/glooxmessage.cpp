@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "glooxmessage.h"
+#include <QTextDocument>
 #include <QtDebug>
 #include <QXmppClient.h>
 #include "glooxclentry.h"
@@ -29,6 +30,9 @@ namespace Azoth
 {
 namespace Xoox
 {
+	const QString NsXhtmlIM = "http://jabber.org/protocol/xhtml-im";
+	const QString NsXhtml = "http://www.w3.org/1999/xhtml";
+
 	GlooxMessage::GlooxMessage (IMessage::MessageType type,
 			IMessage::Direction dir,
 			const QString& jid,
@@ -136,7 +140,11 @@ namespace Xoox
 
 	QString GlooxMessage::GetBody () const
 	{
-		return Message_.body ();
+		const QString& rich = Message_.getXhtml ();
+		if (!rich.isEmpty ())
+			return rich;
+
+		return Qt::escape (Message_.body ());
 	}
 
 	void GlooxMessage::SetBody (const QString& body)
@@ -159,6 +167,11 @@ namespace Xoox
 	bool GlooxMessage::IsDelivered () const
 	{
 		return IsDelivered_;
+	}
+	
+	void GlooxMessage::SetRichBody (const QString& html)
+	{
+		Message_.setXhtml (html);
 	}
 	
 	void GlooxMessage::SetDelivered (bool delivered)
