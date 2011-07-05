@@ -167,7 +167,7 @@ QList<QByteArray> Plugin::ListKeys (IStoragePlugin::StorageType st)
 	QStringList keys = Storage_->allKeys ();
 	QList<QByteArray> result;
 	Q_FOREACH (const QString& key, keys)
-	result << key.toUtf8 ();
+		result << key.toUtf8 ();
 	return result;
 }
 
@@ -219,14 +219,14 @@ void Plugin::Save (const QList<QPair<QByteArray, QVariantList> >& keyValues,
 {
 	QPair<QByteArray, QVariantList> keyValue;
 	Q_FOREACH (keyValue, keyValues)
-	Save (keyValue.first, keyValue.second, st, overwrite);
+		Save (keyValue.first, keyValue.second, st, overwrite);
 }
 
 QList<QVariantList> Plugin::Load (const QList<QByteArray>& keys, IStoragePlugin::StorageType st)
 {
 	QList<QVariantList> result;
 	Q_FOREACH (const QByteArray& key, keys)
-	result << Load (key, st);
+		result << Load (key, st);
 	return result;
 }
 
@@ -337,7 +337,7 @@ const CryptoSystem &Plugin::GetCryptoSystem ()
 					SetCryptoSystem (cs);
 					break;
 				}
-				else
+				else // continue
 					dialog.setLabelText (tr ("Wrong password.\n"
 						"Try enter master password again:"));
 			}

@@ -36,7 +36,7 @@ namespace LeechCraft
 					const int HASH_LENGTH = 256 / 8;
 					const int KEY_LENGTH = 256 / 8;
 					const int IV_LENGTH = 128 / 8;
-					const int RND_LENGTH = sizeof (int);
+					const int RND_LENGTH = 4;
 
 					/**
 					 * Block of ciphertext in specific format.
@@ -44,14 +44,16 @@ namespace LeechCraft
 					 * Format:
 					 * IV + CIPHER(TEXT+RND) + HMAC(TEXT+RND)
 					 */
-					struct CipherTextFormat
+					class CipherTextFormat
 					{
 						/** Pointer to buffer containing ciphertext. */
 						unsigned char* Buffer_;
 						/** Length of unencrypted data. */
 						int DataLength_;
 
-						CipherTextFormat (void* buffer, int dataLength)
+					public:
+
+						inline CipherTextFormat (void* buffer, int dataLength)
 							: Buffer_ (reinterpret_cast<unsigned char*> (buffer))
 							, DataLength_ (dataLength) { }
 
@@ -60,7 +62,7 @@ namespace LeechCraft
 						 * @param dataLength length of data.
 						 * @return length of buffer.
 						 */
-						static int BufferLengthFor (int dataLength)
+						inline static int BufferLengthFor (int dataLength)
 						{
 							return dataLength + (IV_LENGTH + RND_LENGTH + HMAC_LENGTH);
 						}
@@ -70,7 +72,7 @@ namespace LeechCraft
 						 * @param bufferlength of buffer.
 						 * @return length of data.
 						 */
-						static int DataLengthFor (int bufferLength)
+						inline static int DataLengthFor (int bufferLength)
 						{
 							return bufferLength - (IV_LENGTH + RND_LENGTH + HMAC_LENGTH);
 						}
@@ -82,45 +84,51 @@ namespace LeechCraft
 						 * @param bufferlength of buffer.
 						 * @return length of buffer for decryption.
 						 */
-						static int DecryptBufferLengthFor (int bufferLength)
+						inline static int DecryptBufferLengthFor (int bufferLength)
 						{
 							return bufferLength - (IV_LENGTH + HMAC_LENGTH);
 						}
 
 						/** Pointer to initialization vector. */
-						unsigned char* Iv () const
+						inline unsigned char* Iv () const
 						{
 							return Buffer_;
 						}
 
 						/** Pointer to encrypted data block. */
-						unsigned char* Data () const
+						inline unsigned char* Data () const
 						{
 							return Buffer_ + IV_LENGTH;
 						}
 
 						/** Pointer to encrypted random block. */
-						unsigned char* Rnd () const
+						inline unsigned char* Rnd () const
 						{
 							return Buffer_ + IV_LENGTH + DataLength_;
 						}
 
 						/** Pointer to HMAC. */
-						unsigned char* Hmac () const
+						inline unsigned char* Hmac () const
 						{
 							return Buffer_ + IV_LENGTH + DataLength_ + RND_LENGTH;
 						}
 
-						/** Pointer to begin of buffer. */
-						unsigned char* BufferBegin () const
+						/** Pointer to beginning of buffer. */
+						inline unsigned char* BufferBegin () const
 						{
 							return Buffer_;
 						}
 
 						/** Pointer to end of buffer. */
-						unsigned char* BufferEnd () const
+						inline unsigned char* BufferEnd () const
 						{
 							return Buffer_ + IV_LENGTH + DataLength_ + RND_LENGTH + HMAC_LENGTH;
+						}
+
+						/** Length of data.*/
+						inline int GetDataLength () const
+						{
+							return DataLength_;
 						}
 					};
 				}
@@ -130,4 +138,3 @@ namespace LeechCraft
 }
 
 #endif
-

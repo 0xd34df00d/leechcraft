@@ -37,7 +37,6 @@ namespace LeechCraft
 					class WrongHMACException : public std::exception
 					{
 					public:
-
 						WrongHMACException () { }
 					};
 
@@ -59,5 +58,5 @@ namespace LeechCraft
 		}
 	}
 }
-#endif
 
+#endif

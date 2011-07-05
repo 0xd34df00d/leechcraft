@@ -40,11 +40,12 @@ namespace LeechCraft
 				namespace SecureStorage
 				{
 
-					class Plugin : public QObject
-					, public IInfo
-					, public IPlugin2
-					, public IStoragePlugin
-					, public IActionsExporter
+					class Plugin :
+							public QObject,
+							public IInfo,
+							public IPlugin2,
+							public IStoragePlugin,
+							public IActionsExporter
 					{
 						Q_OBJECT
 						Q_INTERFACES (IInfo IPlugin2 LeechCraft::Plugins::SecMan::IStoragePlugin IActionsExporter)
@@ -106,4 +107,3 @@ namespace LeechCraft
 }
 
 #endif
-

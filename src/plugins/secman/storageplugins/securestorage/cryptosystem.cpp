@@ -52,12 +52,14 @@ QByteArray CryptoSystem::Encrypt (const QByteArray &data) const
 	// init cipher
 	EVP_CIPHER_CTX cipherCtx;
 	EVP_CIPHER_CTX_init (&cipherCtx);
-	EVP_EncryptInit (&cipherCtx, EVP_aes_256_ofb (), reinterpret_cast<const unsigned char*> (Key_.data ()), cipherText.Iv ());
+	EVP_EncryptInit (&cipherCtx, EVP_aes_256_ofb (),
+			reinterpret_cast<const unsigned char*> (Key_.data ()), cipherText.Iv ());
 
 	// encrypt
 	int outLength = 0;
 	unsigned char* outPtr = cipherText.Data ();
-	EVP_EncryptUpdate (&cipherCtx, outPtr, &outLength, reinterpret_cast<const unsigned char*> (data.data ()), data.length ());
+	EVP_EncryptUpdate (&cipherCtx, outPtr, &outLength,
+			reinterpret_cast<const unsigned char*> (data.data ()), data.length ());
 	outPtr += outLength;
 	EVP_EncryptUpdate (&cipherCtx, outPtr, &outLength, randomData, RND_LENGTH);
 	outPtr += outLength;
@@ -95,7 +97,7 @@ QByteArray CryptoSystem::Decrypt (const QByteArray &cipherText) const
 	int outLength = 0;
 	unsigned char* outPtr = reinterpret_cast<unsigned char*> (data.data ());
 	EVP_DecryptUpdate (&cipherCtx, outPtr, &outLength,
-			cipherTextFormat.Data (), cipherTextFormat.DataLength_);
+			cipherTextFormat.Data (), cipherTextFormat.GetDataLength ());
 	outPtr += outLength;
 	EVP_DecryptUpdate (&cipherCtx, outPtr, &outLength,
 			cipherTextFormat.Rnd (), RND_LENGTH);
@@ -120,7 +122,7 @@ QByteArray CryptoSystem::Decrypt (const QByteArray &cipherText) const
 	if (hmacsDifferent)
 		throw WrongHMACException ();
 	// remove random block
-	data.truncate (cipherTextFormat.DataLength_);
+	data.truncate (cipherTextFormat.GetDataLength ());
 	return data;
 }
 
@@ -137,4 +139,3 @@ QByteArray CryptoSystem::CreateKey (const QString &password) const
 	res.resize (KEY_LENGTH);
 	return res;
 }
-

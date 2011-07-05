@@ -45,9 +45,9 @@ namespace
 			return false;
 		if (!memcmp (ctf1.Hmac (), ctf2.Hmac (), HMAC_LENGTH))
 			return false;
-		if (ctf1.DataLength_ == ctf2.DataLength_)
-			if (ctf1.DataLength_ != 0)
-				if (!memcmp (ctf1.Data (), ctf2.Data (), ctf1.DataLength_))
+		if (ctf1.GetDataLength () == ctf2.GetDataLength ())
+			if (ctf1.GetDataLength () != 0)
+				if (!memcmp (ctf1.Data (), ctf2.Data (), ctf1.GetDataLength ()))
 					return false;
 		return true;
 	}
@@ -63,8 +63,8 @@ namespace
 	{
 		QList<CipherTextFormat> ctfs;
 		Q_FOREACH (const QByteArray &a, list)
-		ctfs << CipherTextFormat (const_cast<char*> (a.data ()),
-				CipherTextFormat::DataLengthFor (a.size ()));
+			ctfs << CipherTextFormat (const_cast<char*> (a.data ()),
+					CipherTextFormat::DataLengthFor (a.size ()));
 		for (int i = 0, len = ctfs.length (); i < len; ++i)
 			for (int j = i + 1; j < len; ++j)
 				if (!AllFieldsDifferent (ctfs.at (i), ctfs.at (j)))
@@ -82,8 +82,8 @@ namespace
 	{
 		QList<QByteArray> cipherTexts;
 		Q_FOREACH (CryptoSystem* cs, css)
-		Q_FOREACH (QByteArray* data, datas)
-		cipherTexts << cs->Encrypt (*data);
+			Q_FOREACH (QByteArray* data, datas)
+				cipherTexts << cs->Encrypt (*data);
 		return cipherTexts;
 	}
 
