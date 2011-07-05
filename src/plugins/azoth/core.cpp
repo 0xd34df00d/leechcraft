@@ -684,30 +684,22 @@ namespace Azoth
 		if (!proxy->IsCancelled ())
 		{
 			proxy->FillValue ("body", body);
-			body = Qt::escape (body);
 
 			int pos = 0;
 			while ((pos = LinkRegexp_.indexIn (body, pos)) != -1)
 			{
 				QString link = LinkRegexp_.cap (1);
+				if (pos > 0 &&
+						(body.at (pos - 1) == '"' || body.at (pos - 1) == '='))
+				{
+					pos += link.size ();
+					continue;
+				}
+
 				QString str = QString ("<a href=\"%1\">%1</a>")
 						.arg (link);
 				body.replace (pos, link.length (), str);
 
-				pos += str.length ();
-			}
-			pos = 0;
-			while ((pos = ImageRegexp_.indexIn (body, pos)) != -1)
-			{
-				QString image = ImageRegexp_.cap (1);
-				// webkit not copy <img alt> to buffer with all text
-				//  fix it in new <div ...
-				QString str = QString ("<img src=\"%1\" alt=\"%1\" />\
-						<div style='width: 1px; overflow: hidden;\
-									height: 1px; float: left;\
-									font-size: 1px;'>%1</div>")
-						.arg (image);
-				body.replace (pos, image.length (), str);
 				pos += str.length ();
 			}
 
