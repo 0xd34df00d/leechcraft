@@ -153,7 +153,7 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	
 	CloseTabShortcut_ = new QShortcut (QString ("Ctrl+W"),
 			this,
-			SLOT (on_ActionCloseTab__triggered ()),
+			SLOT (handleCloseCurrentTab ()),
 			0,
 			Qt::ApplicationShortcut);
 }
@@ -430,6 +430,12 @@ void LeechCraft::MainWindow::on_ActionCloseTab__triggered ()
 {
 	Core::Instance ().GetTabManager ()->
 			remove (Ui_.MainTabWidget_->GetLastContextMenuTab ());
+}
+
+void MainWindow::handleCloseCurrentTab ()
+{
+	Core::Instance ().GetTabManager ()->
+			remove (Ui_.MainTabWidget_->CurrentIndex ());
 }
 
 void LeechCraft::MainWindow::on_ActionSettings__triggered ()
@@ -753,8 +759,12 @@ void LeechCraft::MainWindow::FillToolMenu ()
 	QMenu *ntm = Core::Instance ()
 		.GetNewTabMenuManager ()->GetNewTabMenu ();
 	Ui_.MainTabWidget_->SetAddTabButtonContextMenu (ntm);
+	
+	QMenu *atm = Core::Instance ()
+		.GetNewTabMenuManager ()->GetAdditiornalMenu ();
+
 	int i = 0;
-	Q_FOREACH (QAction *act, ntm->actions ())
+	Q_FOREACH (QAction *act, atm->actions ())
 		Ui_.MainTabWidget_->InsertAction2TabBar (i++, act);
 
 	on_MainTabWidget__currentChanged (0);
@@ -770,6 +780,14 @@ void LeechCraft::MainWindow::InitializeShortcuts ()
 			SIGNAL (activated ()),
 			Core::Instance ().GetTabManager (),
 			SLOT (rotateRight ()));
+	connect (new QShortcut (QKeySequence (Qt::CTRL + Qt::Key_Tab), this),
+			SIGNAL (activated ()),
+			Core::Instance ().GetTabManager (),
+			SLOT (rotateRight ()));
+	connect (new QShortcut (QKeySequence (Qt::CTRL + Qt::SHIFT + Qt::Key_Tab), this),
+			SIGNAL (activated ()),
+			Core::Instance ().GetTabManager (),
+			SLOT (rotateLeft ()));
 	connect (new QShortcut (QKeySequence ("Ctrl+PgUp"), this),
 			SIGNAL (activated ()),
 			Core::Instance ().GetTabManager (),
@@ -778,6 +796,10 @@ void LeechCraft::MainWindow::InitializeShortcuts ()
 			SIGNAL (activated ()),
 			Core::Instance ().GetTabManager (),
 			SLOT (rotateRight ()));
+	connect (new QShortcut (QKeySequence (Qt::CTRL + Qt::Key_T), this),
+			SIGNAL (activated ()),
+			Ui_.MainTabWidget_,
+			SLOT (handleNewTabShortcutActivated ()));
 
 	for (int i = 0; i < 10; ++i)
 	{

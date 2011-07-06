@@ -102,6 +102,7 @@ namespace LeechCraft
 	private slots:
 		void on_ActionAddTask__triggered ();
 		void on_ActionCloseTab__triggered ();
+		void handleCloseCurrentTab ();
 		void on_ActionSettings__triggered ();
 		void on_ActionAboutLeechCraft__triggered ();
 		void on_ActionQuit__triggered ();
