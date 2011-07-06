@@ -49,6 +49,16 @@ namespace Azoth
 				this,
 				SLOT (checkComplete ()));
 	}
+	
+	void AddContactDialog::SetContactID (const QString& id)
+	{
+		Ui_.ContactID_->setText (id);
+	}
+	
+	void AddContactDialog::SetNick (const QString& nick)
+	{
+		Ui_.Nick_->setText (nick);
+	}
 
 	IAccount* AddContactDialog::GetSelectedAccount () const
 	{

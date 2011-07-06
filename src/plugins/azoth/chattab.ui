@@ -158,7 +158,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QWebView" name="View_">
+    <widget class="LeechCraft::Azoth::ChatTabWebView" name="View_" native="true">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
        <horstretch>0</horstretch>
@@ -202,19 +202,19 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QWebView</class>
-   <extends>QWidget</extends>
-   <header>QtWebKit/QWebView</header>
-  </customwidget>
-  <customwidget>
    <class>LeechCraft::Azoth::TextEdit</class>
    <extends>QTextEdit</extends>
    <header>textedit.h</header>
   </customwidget>
+  <customwidget>
+   <class>LeechCraft::Azoth::ChatTabWebView</class>
+   <extends>QWidget</extends>
+   <header>chattabwebview.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>MsgEdit_</tabstop>
-  <tabstop>View_</tabstop>
   <tabstop>SubjectButton_</tabstop>
  </tabstops>
  <resources/>

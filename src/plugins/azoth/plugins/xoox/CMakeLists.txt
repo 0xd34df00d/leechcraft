@@ -51,6 +51,9 @@ SET (XOOX_SRCS
 	privacylistsconfigdialog.cpp
 	privacylistsitemdialog.cpp
 	mediacall.cpp
+	adhoccommandmanager.cpp
+	executecommanddialog.cpp
+	userlocation.cpp
 	)
 SET (XOOX_HEADERS
 	xoox.h
@@ -96,6 +99,9 @@ SET (XOOX_HEADERS
 	privacylistsconfigdialog.h
 	privacylistsitemdialog.h
 	mediacall.h
+	adhoccommandmanager.h
+	executecommanddialog.h
+	userlocation.h
 	)
 SET (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui
@@ -108,6 +114,9 @@ SET (XOOX_FORMS
 	inbandaccountregfirstpage.ui
 	privacylistsconfigdialog.ui
 	privacylistsitemdialog.ui
+	executecommanddialog.ui
+	commandslistpage.ui
+	commandresultpage.ui
 	)
 CreateTrVars ("azoth_xoox" "de;en;fr;it;ru_RU;uk_UA" XOOX_TRANSLATIONS XOOX_COMPILED_TRANSLATIONS)
 QT4_WRAP_CPP (XOOX_MOC_SRCS ${XOOX_HEADERS})

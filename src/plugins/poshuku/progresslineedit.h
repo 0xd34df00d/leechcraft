@@ -19,7 +19,9 @@
 #ifndef PLUGINS_POSHUKU_PROGRESSLINEEDIT_H
 #define PLUGINS_POSHUKU_PROGRESSLINEEDIT_H
 #include <boost/shared_ptr.hpp>
+#include <QKeyEvent>
 #include <QLineEdit>
+#include <QToolButton>
 
 class QModelIndex;
 class QToolBar;
@@ -33,12 +35,16 @@ namespace Poshuku
 		Q_OBJECT
 
 		bool IsCompleting_;
+		QString PreviousUrl_;
 	public:
 		ProgressLineEdit (QWidget* = 0);
 		virtual ~ProgressLineEdit ();
 		bool IsCompleting () const;
+	protected:
+		void keyPressEvent (QKeyEvent *);
 	private slots:
 		void handleCompleterActivated ();
+		void textChanged (const QString& text);
 	};
 }
 }

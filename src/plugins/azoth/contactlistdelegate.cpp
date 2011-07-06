@@ -24,6 +24,7 @@
 #include <QTreeView>
 #include <plugininterface/resourceloader.h>
 #include "interfaces/iclentry.h"
+#include "interfaces/isupportgeolocation.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "util.h"
@@ -194,6 +195,7 @@ namespace Azoth
 		const QRect& r = option.rect;
 		const int sHeight = r.height ();
 		const int iconSize = sHeight - 2 * CPadding;
+		const int clientIconSize = (iconSize > 16) ? 16 : iconSize;
 
 		const QIcon& stateIcon = index.data (Qt::DecorationRole).value<QIcon> ();
 		QString name = index.data (Qt::DisplayRole).value<QString> ();
@@ -279,32 +281,29 @@ namespace Azoth
 				}
 			}
 			if (addInfo.contains ("user_tune"))
+				LoadSystemIcon ("/notification_roster_tune", clientIcons);
+			
+			ISupportGeolocation *geoloc =
+					qobject_cast<ISupportGeolocation*> (entry->GetParentAccount ());
+			if (geoloc)
 			{
-				const QString& iconName = SystemIconset_ + "/notification_roster_tune";
-				QIcon icon = SystemIconCache_ [iconName];
-				if (icon.isNull ())
-					icon = QIcon (Core::Instance ()
-							.GetResourceLoader (Core::RLTSystemIconLoader)->
-									GetIconPath (iconName));
-				
-				if (!icon.isNull ())
-				{
-					clientIcons.prepend (icon);
-					SystemIconCache_ [iconName] = icon;
-				}
+				const GeolocationInfo_t& info = geoloc->
+						GetUserGeolocationInfo (entryObj, vars.value (0, QString ()));
+				if (!info.isEmpty ())
+					LoadSystemIcon ("/geolocation", clientIcons);
 			}
 		}
 
 		const int clientsIconsWidth = clientIcons.isEmpty () ?
 				0 :
-				clientIcons.size () * (iconSize + CPadding) - CPadding;
+				clientIcons.size () * (clientIconSize + CPadding);
 		/* text for width is total width minus shift of the text from
 		 * the left (textShift) minus space for avatar (if present) with
 		 * paddings minus space for client icons and paddings between
 		 * them: there are N-1 paddings inbetween if there are N icons.
 		 */
 		const int textWidth = r.width () - textShift -
-				(isMUC || !ShowAvatars_ ? 0 : (iconSize + 2 * CPadding)) -
+				(isMUC || !ShowAvatars_ ? 0 : (clientIconSize + 2 * CPadding)) -
 				clientsIconsWidth;
 
 		QPixmap pixmap (r.size ());
@@ -342,7 +341,6 @@ namespace Azoth
 					QPixmap::fromImage (avatarImg));
 
 		int currentShift = textShift + textWidth + CPadding;
-		const int clientIconSize = (iconSize > 16) ? 16 : iconSize;
 
 		Q_FOREACH (const QIcon& icon, clientIcons)
 		{
@@ -363,6 +361,23 @@ namespace Azoth
 		}
 
 		painter->drawPixmap (option.rect, pixmap);
+	}
+	
+	void ContactListDelegate::LoadSystemIcon (const QString& name,
+			QList<QIcon>& clientIcons) const
+	{
+		const QString& iconName = SystemIconset_ + name;
+		QIcon icon = SystemIconCache_ [iconName];
+		if (icon.isNull ())
+			icon = QIcon (Core::Instance ()
+					.GetResourceLoader (Core::RLTSystemIconLoader)->
+							GetIconPath (iconName));
+			
+		if (!icon.isNull ())
+		{
+			clientIcons.prepend (icon);
+			SystemIconCache_ [iconName] = icon;
+		}
 	}
 
 	void ContactListDelegate::handleShowAvatarsChanged ()

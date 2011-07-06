@@ -29,6 +29,7 @@
 #include <QMainWindow>
 #include <QStringListModel>
 #include <QMessageBox>
+#include <QClipboard>
 #include <QtDebug>
 #include <plugininterface/resourceloader.h>
 #include <plugininterface/util.h>
@@ -60,6 +61,7 @@
 #include "activitydialog.h"
 #include "mooddialog.h"
 #include "callmanager.h"
+#include "addcontactdialog.h"
 
 namespace LeechCraft
 {
@@ -684,30 +686,22 @@ namespace Azoth
 		if (!proxy->IsCancelled ())
 		{
 			proxy->FillValue ("body", body);
-			body = Qt::escape (body);
 
 			int pos = 0;
 			while ((pos = LinkRegexp_.indexIn (body, pos)) != -1)
 			{
 				QString link = LinkRegexp_.cap (1);
+				if (pos > 0 &&
+						(body.at (pos - 1) == '"' || body.at (pos - 1) == '='))
+				{
+					pos += link.size ();
+					continue;
+				}
+
 				QString str = QString ("<a href=\"%1\">%1</a>")
 						.arg (link);
 				body.replace (pos, link.length (), str);
 
-				pos += str.length ();
-			}
-			pos = 0;
-			while ((pos = ImageRegexp_.indexIn (body, pos)) != -1)
-			{
-				QString image = ImageRegexp_.cap (1);
-				// webkit not copy <img alt> to buffer with all text
-				//  fix it in new <div ...
-				QString str = QString ("<img src=\"%1\" alt=\"%1\" />\
-						<div style='width: 1px; overflow: hidden;\
-									height: 1px; float: left;\
-									font-size: 1px;'>%1</div>")
-						.arg (image);
-				body.replace (pos, image.length (), str);
 				pos += str.length ();
 			}
 
@@ -825,6 +819,10 @@ namespace Azoth
 					SLOT (handleEntryPEPEvent (const QString&)));
 			connect (clEntry->GetObject (),
 					SIGNAL (tuneChanged (const QString&)),
+					this,
+					SLOT (handleEntryPEPEvent (const QString&)));
+			connect (clEntry->GetObject (),
+					SIGNAL (locationChanged (const QString&)),
 					this,
 					SLOT (handleEntryPEPEvent (const QString&)));
 		}
@@ -971,57 +969,67 @@ namespace Azoth
 			tip += "<br />";
 			tip += tr ("In groups: ") + entry->Groups ().join ("; ");
 		}
-
-		IMUCPerms *mucEntry = qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ());
+		
+		const QStringList& variants = entry->Variants ();
+		
+		IMUCEntry *mucEntry = qobject_cast<IMUCEntry*> (entry->GetParentCLEntry ());
 		if (mucEntry)
+		{
+			const QString& jid = mucEntry->GetRealID (entry->GetObject ());
+			tip += tr ("Real ID:") + ' ' + (jid.isEmpty () ? tr ("unknown") : jid);
+		}
+
+		IMUCPerms *mucPerms = qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ());
+		if (mucPerms)
 		{
 			tip += "<hr />";
 			const QMap<QByteArray, QByteArray>& perms =
-					mucEntry->GetPerms (entry->GetObject ());
+					mucPerms->GetPerms (entry->GetObject ());
 			Q_FOREACH (const QByteArray& permClass, perms.keys ())
 			{
-				tip += mucEntry->GetUserString (permClass);
+				tip += mucPerms->GetUserString (permClass);
 				tip += ": ";
-				tip += mucEntry->GetUserString (perms [permClass]);
+				tip += mucPerms->GetUserString (perms [permClass]);
 				tip += "<br />";
 			}
 		}
-				
-		const QStringList& variants = entry->Variants ();
-		Q_FOREACH (const QString& variant, variants)
-		{
-			const QMap<QString, QVariant>& info = entry->GetClientInfo (variant);
-			if (info.isEmpty ())
-				continue;
 
-			tip += "<hr />";
-			if (!variant.isEmpty ())
-				tip += "<strong>" + variant + "</strong>";
-
-			if (info.contains ("priority"))
-				tip += " (" + QString::number (info.value ("priority").toInt ()) + ")";
-			tip += ": ";
-			tip += Status2Str (entry->GetStatus (variant), PluginProxyObject_);
-
-			if (info.contains ("client_name"))
-				tip += "<br />" + tr ("Using:") + ' ' + info.value ("client_name").toString ();
-			if (info.contains ("client_version"))
-				tip += " " + info.value ("client_version").toString ();
-			
-			if (info.contains ("user_mood"))
-				FormatMood (tip, info ["user_mood"].toMap ());
-			if (info.contains ("user_activity"))
-				FormatActivity (tip, info ["user_activity"].toMap ());
-			if (info.contains ("user_tune"))
-				FormatTune (tip, info ["user_tune"].toMap ());
-
-			if (info.contains ("custom_user_visible_map"))
+		if (entry->GetEntryType () != ICLEntry::ETPrivateChat)
+			Q_FOREACH (const QString& variant, variants)
 			{
-				const QVariantMap& map = info ["custom_user_visible_map"].toMap ();
-				Q_FOREACH (const QString& key, map.keys ())
-					tip += "<br />" + key + ": " + map [key].toString () + "<br />";
+				const QMap<QString, QVariant>& info = entry->GetClientInfo (variant);
+				if (info.isEmpty ())
+					continue;
+
+				tip += "<hr />";
+				if (!variant.isEmpty ())
+					tip += "<strong>" + variant + "</strong>";
+
+				if (info.contains ("priority"))
+					tip += " (" + QString::number (info.value ("priority").toInt ()) + ")";
+				tip += ": ";
+				tip += Status2Str (entry->GetStatus (variant), PluginProxyObject_);
+
+				if (info.contains ("client_name"))
+					tip += "<br />" + tr ("Using:") + ' ' + info.value ("client_name").toString ();
+				if (info.contains ("client_version"))
+					tip += " " + info.value ("client_version").toString ();
+				
+				if (info.contains ("user_mood"))
+					FormatMood (tip, info ["user_mood"].toMap ());
+				if (info.contains ("user_activity"))
+					FormatActivity (tip, info ["user_activity"].toMap ());
+				if (info.contains ("user_tune"))
+					FormatTune (tip, info ["user_tune"].toMap ());
+
+				if (info.contains ("custom_user_visible_map"))
+				{
+					const QVariantMap& map = info ["custom_user_visible_map"].toMap ();
+					Q_FOREACH (const QString& key, map.keys ())
+						tip += "<br />" + key + ": " + map [key].toString () + "<br />";
+				}
 			}
-		}
+
 		return tip;
 	}
 
@@ -1205,6 +1213,9 @@ namespace Azoth
 			Q_FOREACH (const QByteArray& permClass, perms->GetPossiblePerms ().keys ())
 				result << id2action.value (permClass);
 		result << id2action.value ("sep_afterroles");
+		result << id2action.value ("add_contact");
+		result << id2action.value ("copy_id");
+		result << id2action.value ("sep_afterjid");
 		result << id2action.value ("vcard");
 		result << id2action.value ("leave");
 		result << id2action.value ("authorize");
@@ -1381,30 +1392,55 @@ namespace Azoth
 		}
 
 		IMUCPerms *perms = qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ());
-		if (entry->GetEntryType () == ICLEntry::ETPrivateChat &&
-				perms)
+		if (entry->GetEntryType () == ICLEntry::ETPrivateChat)
 		{
-			const QMap<QByteArray, QList<QByteArray> >& possible = perms->GetPossiblePerms ();
-			Q_FOREACH (const QByteArray& permClass, possible.keys ())
+			if (perms)
 			{
-				QMenu *changeClass = new QMenu (perms->GetUserString (permClass));
-				Entry2Actions_ [entry] [permClass] = changeClass->menuAction ();
-				Action2Areas_ [changeClass->menuAction ()] << CLEAAContactListCtxtMenu;
-				
-				Q_FOREACH (const QByteArray& perm, possible [permClass])
+				const QMap<QByteArray, QList<QByteArray> >& possible = perms->GetPossiblePerms ();
+				Q_FOREACH (const QByteArray& permClass, possible.keys ())
 				{
-					QAction *permAct = changeClass->addAction (perms->GetUserString (perm),
-							this,
-							SLOT (handleActionPermTriggered ()));
-					permAct->setParent (entry->GetObject ());
-					permAct->setCheckable (true);
-					permAct->setProperty ("Azoth/TargetPermClass", permClass);
-					permAct->setProperty ("Azoth/TargetPerm", perm);
+					QMenu *changeClass = new QMenu (perms->GetUserString (permClass));
+					Entry2Actions_ [entry] [permClass] = changeClass->menuAction ();
+					Action2Areas_ [changeClass->menuAction ()] << CLEAAContactListCtxtMenu;
+					
+					Q_FOREACH (const QByteArray& perm, possible [permClass])
+					{
+						QAction *permAct = changeClass->addAction (perms->GetUserString (perm),
+								this,
+								SLOT (handleActionPermTriggered ()));
+						permAct->setParent (entry->GetObject ());
+						permAct->setCheckable (true);
+						permAct->setProperty ("Azoth/TargetPermClass", permClass);
+						permAct->setProperty ("Azoth/TargetPerm", perm);
+					}
 				}
-			}
 
+				QAction *sep = Util::CreateSeparator (entry->GetObject ());
+				Entry2Actions_ [entry] ["sep_afterroles"] = sep;
+				Action2Areas_ [sep] << CLEAAContactListCtxtMenu;
+			}
+			
+			QAction *addContact = new QAction (tr ("Add to contact list..."), entry->GetObject ());
+			addContact->setProperty ("ActionIcon", "add");
+			connect (addContact,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (handleActionAddContactFromMUC ()));
+			Entry2Actions_ [entry] ["add_contact"] = addContact;
+			Action2Areas_ [addContact] << CLEAAContactListCtxtMenu
+					<< CLEAATabCtxtMenu;
+			
+			QAction *copyId = new QAction (tr ("Copy ID"), entry->GetObject ());
+			copyId->setProperty ("ActionIcon", "copy");
+			connect (copyId,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (handleActionCopyMUCPartID ()));
+			Entry2Actions_ [entry] ["copy_id"] = copyId;
+			Action2Areas_ [copyId] << CLEAAContactListCtxtMenu;
+			
 			QAction *sep = Util::CreateSeparator (entry->GetObject ());
-			Entry2Actions_ [entry] ["sep_afterroles"] = sep;
+			Entry2Actions_ [entry] ["sep_afterjid"] = sep;
 			Action2Areas_ [sep] << CLEAAContactListCtxtMenu;
 		}
 		else if (entry->GetEntryType () == ICLEntry::ETMUC)
@@ -1516,20 +1552,28 @@ namespace Azoth
 					<< "doesn't implement IMUCEntry";
 
 		IMUCPerms *mucPerms = qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ());
-		if (entry->GetEntryType () == ICLEntry::ETPrivateChat &&
-				mucPerms)
+		if (entry->GetEntryType () == ICLEntry::ETPrivateChat)
 		{
-			const QMap<QByteArray, QList<QByteArray> > possible = mucPerms->GetPossiblePerms ();
-			QObject *entryObj = entry->GetObject ();
-			Q_FOREACH (const QByteArray& permClass, possible.keys ())
-				Q_FOREACH (QAction *action,
-						Entry2Actions_ [entry] [permClass]->menu ()->actions ())
-				{
-					const QByteArray& perm = action->property ("Azoth/TargetPerm").toByteArray ();
-					action->setEnabled (mucPerms->MayChangePerm (entryObj,
-								permClass, perm));
-					action->setChecked (perm == mucPerms->GetPerms (entryObj) [permClass]);
-				}
+			if (mucPerms)
+			{
+				const QMap<QByteArray, QList<QByteArray> > possible = mucPerms->GetPossiblePerms ();
+				QObject *entryObj = entry->GetObject ();
+				Q_FOREACH (const QByteArray& permClass, possible.keys ())
+					Q_FOREACH (QAction *action,
+							Entry2Actions_ [entry] [permClass]->menu ()->actions ())
+					{
+						const QByteArray& perm = action->property ("Azoth/TargetPerm").toByteArray ();
+						action->setEnabled (mucPerms->MayChangePerm (entryObj,
+									permClass, perm));
+						action->setChecked (perm == mucPerms->GetPerms (entryObj) [permClass]);
+					}
+			}
+			
+			const QString& realJid = mucEntry->GetRealID (entry->GetObject ());
+			Entry2Actions_ [entry] ["add_contact"]->setEnabled (!realJid.isEmpty ());
+			Entry2Actions_ [entry] ["add_contact"]->setProperty ("Azoth/RealID", realJid);
+			Entry2Actions_ [entry] ["copy_id"]->setEnabled (!realJid.isEmpty ());
+			Entry2Actions_ [entry] ["copy_id"]->setProperty ("Azoth/RealID", realJid);
 		}
 	}
 
@@ -2815,6 +2859,51 @@ namespace Azoth
 		DenyAuthForEntry (entry);
 	}
 
+	void Core::handleActionAddContactFromMUC ()
+	{
+		const QString& id = sender ()->property ("Azoth/RealID").toString ();
+		if (id.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "empty ID"
+					<< sender ()
+					<< sender ()->property ("Azoth/RealID");
+			return;
+		}
+		
+		ICLEntry *entry = sender ()->
+				property ("Azoth/Entry").value<ICLEntry*> ();
+		const QString& nick = entry->GetEntryName ();
+		
+		IAccount *account = qobject_cast<IAccount*> (entry->GetParentAccount ());
+		
+		std::auto_ptr<AddContactDialog> dia (new AddContactDialog (account));
+		dia->SetContactID (id);
+		dia->SetNick (nick);
+		if (dia->exec () != QDialog::Accepted)
+			return;
+		
+		dia->GetSelectedAccount ()->RequestAuth (dia->GetContactID (),
+					dia->GetReason (),
+					dia->GetNick (),
+					dia->GetGroups ());
+	}
+	
+	void Core::handleActionCopyMUCPartID ()
+	{
+		const QString& id = sender ()->property ("Azoth/RealID").toString ();
+		if (id.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "empty ID"
+					<< sender ()
+					<< sender ()->property ("Azoth/RealID");
+			return;
+		}
+		
+		QApplication::clipboard ()->setText (id, QClipboard::Clipboard);
+		QApplication::clipboard ()->setText (id, QClipboard::Selection);
+	}
 
 	void Core::handleActionPermTriggered ()
 	{

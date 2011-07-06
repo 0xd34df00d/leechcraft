@@ -478,7 +478,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="191"/>
+        <location filename="coreinstanceobject.cpp" line="185"/>
         <source>Settings</source>
         <translation type="unfinished">Preferencias</translation>
     </message>
@@ -756,11 +756,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="settingstab.cpp" line="94"/>
-        <source>LeechCraft</source>
-        <translation type="unfinished">LeechCraft</translation>
-    </message>
-    <message>
         <location filename="settingstab.cpp" line="98"/>
         <location filename="settingstab.cpp" line="124"/>
         <location filename="settingstab.cpp" line="126"/>
@@ -769,17 +764,17 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="settingstab.cpp" line="163"/>
+        <location filename="settingstab.cpp" line="168"/>
         <source>Settings</source>
         <translation type="unfinished">Preferencias</translation>
     </message>
     <message>
-        <location filename="settingstab.cpp" line="164"/>
+        <location filename="settingstab.cpp" line="169"/>
         <source>LeechCraft-wide settings dashboard</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="settingstab.cpp" line="201"/>
+        <location filename="settingstab.cpp" line="206"/>
         <source>Settings for %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1048,12 +1043,105 @@
         <source>System</source>
         <translation type="unfinished"></translation>
     </message>
-</context>
-<context>
-    <name>SettingsSink</name>
     <message>
-        <source>Preferences</source>
-        <translation type="obsolete">Preferencias</translation>
+        <location filename="plugininterface/socketerrorstrings.cpp" line="31"/>
+        <source>connection refused</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/socketerrorstrings.cpp" line="33"/>
+        <source>remote host closed connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/socketerrorstrings.cpp" line="35"/>
+        <source>host not found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/socketerrorstrings.cpp" line="37"/>
+        <source>socket access error (lacking required privileges)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/socketerrorstrings.cpp" line="39"/>
+        <source>system ran out of sockets</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/socketerrorstrings.cpp" line="41"/>
+        <source>socket operation timed out</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/socketerrorstrings.cpp" line="43"/>
+        <source>datagram too large</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/socketerrorstrings.cpp" line="45"/>
+        <source>physical network error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/socketerrorstrings.cpp" line="47"/>
+        <source>address already in use</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/socketerrorstrings.cpp" line="49"/>
+        <source>specified address doesn&apos;t belong to the host</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/socketerrorstrings.cpp" line="51"/>
+        <source>unsupported socket operation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/socketerrorstrings.cpp" line="53"/>
+        <source>proxy authentication required</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/socketerrorstrings.cpp" line="55"/>
+        <source>SSL handshake failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/socketerrorstrings.cpp" line="57"/>
+        <source>unfinished socket operation in progress</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/socketerrorstrings.cpp" line="59"/>
+        <source>proxy connection has been refused</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/socketerrorstrings.cpp" line="61"/>
+        <source>proxy connection was closed unexpectedly</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/socketerrorstrings.cpp" line="63"/>
+        <source>connection to the proxy server timed out</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/socketerrorstrings.cpp" line="65"/>
+        <source>proxy not found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/socketerrorstrings.cpp" line="67"/>
+        <source>proxy protocol error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="plugininterface/socketerrorstrings.cpp" line="70"/>
+        <source>unknown error</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

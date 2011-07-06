@@ -483,14 +483,6 @@
         <translation>Всегда</translation>
     </message>
     <message>
-        <source>Context-dependent</source>
-        <translation type="obsolete">В зависимости от контекста</translation>
-    </message>
-    <message>
-        <source>System</source>
-        <translation type="obsolete">Системный</translation>
-    </message>
-    <message>
         <source>F11</source>
         <comment>FullScreen</comment>
         <translation>F11</translation>
@@ -614,10 +606,6 @@
     <message>
         <source>General second-level plugins</source>
         <translation>Общие модули второго уровня</translation>
-    </message>
-    <message>
-        <source>LeechCraft</source>
-        <translation>LeechCraft</translation>
     </message>
     <message>
         <source>General plugins</source>
@@ -849,12 +837,85 @@
         <source>System</source>
         <translation>Системный</translation>
     </message>
-</context>
-<context>
-    <name>SettingsSink</name>
     <message>
-        <source>Preferences</source>
-        <translation type="obsolete">Параметры</translation>
+        <source>connection refused</source>
+        <translation>в соединении отказано</translation>
+    </message>
+    <message>
+        <source>remote host closed connection</source>
+        <translation>удаленный сервер закрыл соединение</translation>
+    </message>
+    <message>
+        <source>host not found</source>
+        <translation>сервер не найден</translation>
+    </message>
+    <message>
+        <source>socket access error (lacking required privileges)</source>
+        <translation>ошибка доступа к сокету (нет необходимых привилегий)</translation>
+    </message>
+    <message>
+        <source>system ran out of sockets</source>
+        <translation>в системе кончились сокеты</translation>
+    </message>
+    <message>
+        <source>socket operation timed out</source>
+        <translation>истекло время ожидания операции с сокетом</translation>
+    </message>
+    <message>
+        <source>datagram too large</source>
+        <translation>слишком большой пакет данных</translation>
+    </message>
+    <message>
+        <source>physical network error</source>
+        <translation>физическая ошибка сети</translation>
+    </message>
+    <message>
+        <source>address already in use</source>
+        <translation>адрес уже используется</translation>
+    </message>
+    <message>
+        <source>specified address doesn&apos;t belong to the host</source>
+        <translation>указанный адрес не принадлежит хосту</translation>
+    </message>
+    <message>
+        <source>unsupported socket operation</source>
+        <translation>неподдерживаемая операция над сокетом</translation>
+    </message>
+    <message>
+        <source>proxy authentication required</source>
+        <translation>требуется аутентификация на прокси</translation>
+    </message>
+    <message>
+        <source>SSL handshake failed</source>
+        <translation>ошибка инициализации SSL</translation>
+    </message>
+    <message>
+        <source>unfinished socket operation in progress</source>
+        <translation>незаконченная операция над сокетом</translation>
+    </message>
+    <message>
+        <source>proxy connection has been refused</source>
+        <translation>в соединении с прокси-сервером отказано</translation>
+    </message>
+    <message>
+        <source>proxy connection was closed unexpectedly</source>
+        <translation>соединение с прокси-сервером неожиданно закрылось</translation>
+    </message>
+    <message>
+        <source>connection to the proxy server timed out</source>
+        <translation>истекло время ожидания соединения с прокси-сервером</translation>
+    </message>
+    <message>
+        <source>proxy not found</source>
+        <translation>прокси-сервер не найден</translation>
+    </message>
+    <message>
+        <source>proxy protocol error</source>
+        <translation>ошибка протокола прокси-сервера</translation>
+    </message>
+    <message>
+        <source>unknown error</source>
+        <translation>неизвестная ошибка</translation>
     </message>
 </context>
 <context>

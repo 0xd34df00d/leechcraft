@@ -22,8 +22,10 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
+#include <interfaces/ihavesettings.h>
 
 class QWebView;
+class QTranslator;
 class Hunspell;
 
 namespace LeechCraft
@@ -32,14 +34,20 @@ namespace Azoth
 {
 namespace Rosenthal
 {
+	class Highlighter;
+
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
+				 , public IHaveSettings
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2)
+		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
 
+		boost::shared_ptr<QTranslator> Translator_;
+		Util::XmlSettingsDialog_ptr SettingsDialog_;
 		boost::shared_ptr<Hunspell> Hunspell_;
+		QList<Highlighter*> Highlighters_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -49,9 +57,12 @@ namespace Rosenthal
 		QString GetInfo () const;
 		QIcon GetIcon () const;
 		QSet<QByteArray> GetPluginClasses () const;
+		
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	protected:
 		bool eventFilter (QObject*, QEvent*);
 	private:
+		void ReinitHunspell ();
 		QStringList GetPropositions (const QString&);
 	private slots:
 		void hookChatTabCreated (LeechCraft::IHookProxy_ptr,
@@ -59,6 +70,8 @@ namespace Rosenthal
 				QObject*,
 				QWebView*); 
 		void handleCorrectionTriggered ();
+		void handleHighlighterDestroyed ();
+		void handleCustomLocalesChanged ();
 	};
 }
 }

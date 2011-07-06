@@ -82,11 +82,14 @@ namespace Xoox
 		const QXmppJinglePayloadType& payload =
 				Call_->audioChannel ()->payloadType ();
 		QAudioFormat result;
-		result.setCodec (payload.name ());
 #if QT_VERSION >= 0x040700
-		result.setChannelCount (payload.channels ());
 		result.setSampleRate (payload.clockrate ());
+		result.setChannelCount (payload.channels ());
 #endif
+		result.setSampleSize (16);
+		result.setCodec ("audio/pcm");
+		result.setByteOrder (QAudioFormat::LittleEndian);
+		result.setSampleType (QAudioFormat::SignedInt);
 		return result;
 	}
 	

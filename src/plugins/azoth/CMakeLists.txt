@@ -29,6 +29,18 @@ INCLUDE_DIRECTORIES (
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
+
+IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} EQUAL 2.8 AND ${CMAKE_PATCH_VERSION} LESS 4)
+	IF (${QT_VERSION_MINOR} EQUAL 6)
+		INCLUDE_DIRECTORIES (/usr/include/qt4/QtMultimedia)
+		SET (QTMULTIMEDIA_KLUDGE "QtMultimedia")
+	ELSE (${QT_VERSION_MINOR} EQUAL 6)
+		INCLUDE_DIRECTORIES (/usr/include/QtMultimediaKit)
+		INCLUDE_DIRECTORIES (/usr/include/QtMobility)
+		SET (QTMULTIMEDIA_KLUDGE "QtMultimediaKit")
+	ENDIF (${QT_VERSION_MINOR} EQUAL 6)
+ENDIF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} EQUAL 2.8 AND ${CMAKE_PATCH_VERSION} LESS 4)
+
 SET (SRCS
 	azoth.cpp
 	core.cpp
@@ -61,6 +73,7 @@ SET (SRCS
 	mooddialog.cpp
 	callmanager.cpp
 	callchatwidget.cpp
+	chattabwebview.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -94,6 +107,7 @@ SET (HEADERS
 	mooddialog.h
 	callmanager.h
 	callchatwidget.h
+	chattabwebview.h
 	animatediconmanager.h
 	sourcetrackingmodel.h
 	interfaces/iprotocolplugin.h
@@ -142,6 +156,7 @@ ADD_LIBRARY (leechcraft_azoth SHARED
 TARGET_LINK_LIBRARIES (leechcraft_azoth
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
+	${QTMULTIMEDIA_KLUDGE}
 	)
 INSTALL (TARGETS leechcraft_azoth DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
@@ -152,6 +167,7 @@ SET (AZOTH_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 OPTION (ENABLE_AZOTH_ACETAMIDE "Build Acetamide, IRC support for Azoth" ON)
 OPTION (ENABLE_AZOTH_AUTOPASTE "Build Autopaste for automatic pasting of long messages to pastebins" ON)
+OPTION (ENABLE_AZOTH_AUTOIDLER "Build Autoidler for automatic changing of status according to idle time" ON)
 OPTION (ENABLE_AZOTH_CHATHISTORY "Build ChatHistory which keeps, well, chat history" ON)
 OPTION (ENABLE_AZOTH_DEPESTER "Build Depester for ignoring unwanted MUC participants" ON)
 OPTION (ENABLE_AZOTH_EMBEDMEDIA "Build EmbedMedia  enables embedding different media objects in chat tab" ON)
@@ -171,6 +187,9 @@ ENDIF (ENABLE_AZOTH_ACETAMIDE)
 IF (ENABLE_AZOTH_AUTOPASTE)
 	ADD_SUBDIRECTORY (plugins/autopaste)
 ENDIF (ENABLE_AZOTH_AUTOPASTE)
+IF (ENABLE_AZOTH_AUTOIDLER)
+	ADD_SUBDIRECTORY (plugins/autoidler)
+ENDIF (ENABLE_AZOTH_AUTOIDLER)
 IF (ENABLE_AZOTH_CHATHISTORY)
 	ADD_SUBDIRECTORY (plugins/chathistory)
 ENDIF (ENABLE_AZOTH_CHATHISTORY)
