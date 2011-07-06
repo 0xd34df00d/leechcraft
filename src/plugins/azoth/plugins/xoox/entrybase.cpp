@@ -289,7 +289,6 @@ namespace Xoox
 			return;
 
 		CurrentStatus_ [variant] = status;
-		emit statusChanged (status, variant);
 		
 		const QStringList& vars = Variants ();
 		if ((!existed || wasOffline) && !vars.isEmpty ())
@@ -307,6 +306,8 @@ namespace Xoox
 						Variant2ClientInfo_ [highest] [key] = info [key];
 			}
 		}
+		
+		emit statusChanged (status, variant);
 		
 		if (!existed ||
 				(existed && status.State_ == SOffline) ||
