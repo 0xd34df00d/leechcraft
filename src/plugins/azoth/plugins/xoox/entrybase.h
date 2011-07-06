@@ -26,6 +26,7 @@
 #include <QXmppVCardIq.h>
 #include <interfaces/iclentry.h>
 #include <interfaces/iadvancedclentry.h>
+#include <interfaces/isupportgeolocation.h>
 
 class QXmppPresence;
 
@@ -58,6 +59,8 @@ namespace Xoox
 		QMap<QString, EntryStatus> CurrentStatus_;
 		QList<QAction*> Actions_;
 		mutable QAction *Commands_;
+		
+		QMap<QString, GeolocationInfo_t> Location_;
 
 		QImage Avatar_;
 		QString RawInfo_;
@@ -124,6 +127,7 @@ namespace Xoox
 		void moodChanged (const QString&);
 		void activityChanged (const QString&);
 		void tuneChanged (const QString&);
+		void locationChanged (const QString&);
 	};
 }
 }

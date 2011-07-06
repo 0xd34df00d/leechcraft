@@ -58,6 +58,7 @@
 #include "useractivity.h"
 #include "usermood.h"
 #include "usertune.h"
+#include "userlocation.h"
 #include "privacylistsmanager.h"
 #include "adhoccommandmanager.h"
 
@@ -116,9 +117,11 @@ namespace Xoox
 		PubSubManager_->RegisterCreator<UserActivity> ();
 		PubSubManager_->RegisterCreator<UserMood> ();
 		PubSubManager_->RegisterCreator<UserTune> ();
+		PubSubManager_->RegisterCreator<UserLocation> ();
 		PubSubManager_->SetAutosubscribe<UserActivity> (true);
 		PubSubManager_->SetAutosubscribe<UserMood> (true);
 		PubSubManager_->SetAutosubscribe<UserTune> (true);
+		PubSubManager_->SetAutosubscribe<UserLocation> (true);
 		
 		connect (PubSubManager_,
 				SIGNAL (gotEvent (const QString&, PEPEventBase*)),

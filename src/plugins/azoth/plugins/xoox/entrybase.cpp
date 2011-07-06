@@ -39,6 +39,7 @@
 #include "useractivity.h"
 #include "usermood.h"
 #include "usertune.h"
+#include "userlocation.h"
 #include "adhoccommandmanager.h"
 #include "executecommanddialog.h"
 
@@ -240,6 +241,14 @@ namespace Xoox
 			}
 			
 			emit tuneChanged (variant);
+			return;
+		}
+		
+		UserLocation *location = dynamic_cast<UserLocation*> (event);
+		if (location)
+		{
+			Location_ [variant] = location->GetInfo ();
+			emit locationChanged (variant);
 			return;
 		}
 		
