@@ -963,6 +963,8 @@ namespace Azoth
 			tip += "<br />";
 			tip += tr ("In groups: ") + entry->Groups ().join ("; ");
 		}
+		
+		const QStringList& variants = entry->Variants ();
 
 		IMUCPerms *mucEntry = qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ());
 		if (mucEntry)
@@ -977,9 +979,10 @@ namespace Azoth
 				tip += mucEntry->GetUserString (perms [permClass]);
 				tip += "<br />";
 			}
+			const QMap<QString, QVariant>& info = entry->GetClientInfo (variants.value (0, QString ()));
+			tip += tr ("Real ID:") + ' ' + info.value ("real_id", tr ("unknown")).toString ();
 		}
-				
-		const QStringList& variants = entry->Variants ();
+
 		Q_FOREACH (const QString& variant, variants)
 		{
 			const QMap<QString, QVariant>& info = entry->GetClientInfo (variant);
