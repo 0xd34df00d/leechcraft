@@ -18,8 +18,8 @@
  **********************************************************************/
 
 #include "otzerkaludownloader.h"
-#include <QtWebKit/QWebElement>
-#include <QtWebKit/QWebPage>
+#include <QWebElement>
+#include <QWebPage>
 
 namespace LeechCraft
 {

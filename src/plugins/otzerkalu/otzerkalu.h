@@ -37,7 +37,6 @@ namespace Otzerkalu
 		Q_OBJECT
 		Q_INTERFACES (IInfo IEntityHandler)
 		
-		OtzerkaluDownloader *Downloader_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

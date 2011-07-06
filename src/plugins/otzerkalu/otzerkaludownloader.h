@@ -23,7 +23,7 @@
 #include <QObject>
 #include <QUrl>
 #include <QStack>
-#include <QtWebKit/QWebFrame>
+#include <QWebFrame>
 
 #include <interfaces/structures.h>
 #include <plugininterface/util.h>
