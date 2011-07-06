@@ -283,7 +283,7 @@ void TabManager::bringToFront (QWidget *widget) const
 
 void TabManager::handleCurrentChanged (int index)
 {
-	if (index == TabWidget_->TabCount () - 1)
+	if (index == TabWidget_->WidgetCount ())
 		return;
 
 	InvalidateName ();
@@ -352,7 +352,7 @@ QString TabManager::MakeTabName (const QString& name) const
 void TabManager::InvalidateName ()
 {
 	int ci = TabWidget_->CurrentIndex ();
-	if (ci >= 0 && ci < TabWidget_->TabCount () - 1)
+	if (ci >= 0 && ci < TabWidget_->WidgetCount ())
 		Core::Instance ().GetReallyMainWindow ()->
 			SetAdditionalTitle (OriginalTabNames_.at (ci));
 	else
