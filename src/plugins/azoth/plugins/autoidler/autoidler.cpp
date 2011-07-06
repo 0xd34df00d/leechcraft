@@ -21,6 +21,8 @@
 #include <QTranslator>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <plugininterface/util.h>
+#include <interfaces/iproxyobject.h>
+#include <interfaces/iaccount.h>
 #include "xmlsettingsmanager.h"
 #include "3dparty/idle.h"
 
@@ -41,7 +43,6 @@ namespace Autoidler
 				"azothautoidlersettings.xml");
 		
 		Idle_.reset (new Idle);
-		Idle_->start ();
 		connect (Idle_.get (),
 				SIGNAL (secondsIdle (int)),
 				this,
@@ -50,7 +51,8 @@ namespace Autoidler
 
 	void Plugin::SecondInit ()
 	{
-	}	
+		Idle_->start ();
+	}
 
 	QByteArray Plugin::GetUniqueID () const
 	{
@@ -88,8 +90,59 @@ namespace Autoidler
 		return XmlSettingsDialog_;
 	}
 	
+	void Plugin::initPlugin (QObject *proxy)
+	{
+		AzothProxy_ = qobject_cast<IProxyObject*> (proxy);
+	}
+	
 	void Plugin::handleIdle (int seconds)
 	{
+		if (seconds && seconds % 60)
+			return;
+		
+		const int mins = seconds / 60;
+		if (!mins &&
+				!OldStatuses_.isEmpty ())
+		{
+			Q_FOREACH (QObject *accObj, AzothProxy_->GetAllAccounts ())
+			{
+				if (!OldStatuses_.contains (accObj))
+					continue;
+				
+				IAccount *acc = qobject_cast<IAccount*> (accObj);
+				acc->ChangeState (OldStatuses_ [accObj]);
+			}
+			
+			OldStatuses_.clear ();
+		}
+		
+		if (!mins)
+			return;
+		
+		EntryStatus status;
+		
+		if (mins == XmlSettingsManager::Instance ().property ("AwayTimeout").toInt ())
+			status = EntryStatus (SAway,
+					XmlSettingsManager::Instance ().property ("AwayText").toString ());
+		else if (mins == XmlSettingsManager::Instance ().property ("NATimeout").toInt ())
+			status = EntryStatus (SDND,
+					XmlSettingsManager::Instance ().property ("NAText").toString ());
+		else
+			return;
+		
+		Q_FOREACH (QObject *accObj, AzothProxy_->GetAllAccounts ())
+		{
+			IAccount *acc = qobject_cast<IAccount*> (accObj);
+
+			const EntryStatus& oldStatus = acc->GetState ();
+			if (oldStatus.State_ == SOffline)
+				continue;
+			
+			if (!OldStatuses_.contains (accObj))
+				OldStatuses_ [accObj] = oldStatus;
+			
+			acc->ChangeState (status);
+		}
 	}
 }
 }

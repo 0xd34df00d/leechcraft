@@ -20,9 +20,11 @@
 #define PLUGINS_AZOTH_PLUGINS_AUTOIDLER_AUTOIDLER_H
 #include <boost/shared_ptr.hpp>
 #include <QObject>
+#include <QMap>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/ihavesettings.h>
+#include <interfaces/iclentry.h>
 
 class QTranslator;
 
@@ -32,6 +34,8 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+class IProxyObject;
+
 namespace Autoidler
 {
 	class Plugin : public QObject
@@ -43,10 +47,13 @@ namespace Autoidler
 		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
 		
 		ICoreProxy_ptr Proxy_;
+		IProxyObject *AzothProxy_;
 		boost::shared_ptr<QTranslator> Translator_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 		
 		boost::shared_ptr<Idle> Idle_;
+		
+		QMap<QObject*, EntryStatus> OldStatuses_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -59,6 +66,8 @@ namespace Autoidler
 		QSet<QByteArray> GetPluginClasses () const;
 		
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+	public slots:
+		void initPlugin (QObject*);
 	private slots:
 		void handleIdle (int);
 	};
