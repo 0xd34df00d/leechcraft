@@ -61,6 +61,7 @@ namespace Xoox
 		QStringList Variants () const;
 		QObject* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);
+		QMap<QString, QVariant> GetClientInfo (const QString&) const;
 
 		QString GetJID () const;
 		QString GetNick () const;

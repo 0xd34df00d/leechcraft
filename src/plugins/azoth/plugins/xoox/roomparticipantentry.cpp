@@ -24,6 +24,7 @@
 #include "glooxmessage.h"
 #include "roomhandler.h"
 #include "roomclentry.h"
+#include <QXmppMucManager.h>
 
 namespace LeechCraft
 {
@@ -103,6 +104,16 @@ namespace Xoox
 		GlooxMessage *msg = RoomHandler_->CreateMessage (type, Nick_, body);
 		AllMessages_ << msg;
 		return msg;
+	}
+	
+	QMap<QString, QVariant> RoomParticipantEntry::GetClientInfo (const QString& variant) const
+	{
+		QMap<QString, QVariant> result = EntryBase::GetClientInfo (variant);
+		const QString& realJid = RoomHandler_->GetRoom ()->
+				participantPresence (GetJID ()).mucItem ().jid ();
+		if (!realJid.isEmpty ())
+			result ["real_id"] = realJid;
+		return result;
 	}
 
 	QString RoomParticipantEntry::GetJID () const
