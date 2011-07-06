@@ -259,7 +259,11 @@ namespace Xoox
 		if (!entry)
 			return QString ();
 		
-		return entry->GetRealJID ();
+		const QString& jid = entry->GetRealJID ();
+		QString bare;
+		QString resource;
+		ClientConnection::Split (jid, &bare, &resource);
+		return bare;
 	}
 	
 	QMap<QByteArray, QList<QByteArray> > RoomCLEntry::GetPossiblePerms () const
