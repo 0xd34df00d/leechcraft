@@ -70,6 +70,7 @@ namespace Otzerkalu
 		OtzerkaluDialog dialog;
 		if (dialog.exec () != QDialog::Accepted)
 			return;
+
 		OtzerkaluDownloader *dl = new OtzerkaluDownloader (DownloadParams (dUrl, dialog.GetDir (),
 					dialog.GetRecursionLevel (),
 					dialog.FetchFromExternalHosts ()),
@@ -83,6 +84,8 @@ namespace Otzerkalu
 				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)),
 				this,
 				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)));
+		
+		dl->Begin ();
 	}
 }
 }

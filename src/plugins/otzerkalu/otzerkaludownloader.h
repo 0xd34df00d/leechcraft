@@ -62,14 +62,14 @@ namespace Otzerkalu
 	public:
 		OtzerkaluDownloader (const DownloadParams& param, QObject *parent = 0);
 		
+		void Begin ();
 	private:
+		QString Download (const QUrl&);
 		bool WriteData (const QString& filename, const QString& data);
 		void HandleProvider (QObject *provider, int id, const QUrl& url,
 				const QString& filename, int recLevel);
-		
 	private slots:
 		void handleJobFinished (int id);
-		
 	signals:
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 		void gotEntity (const LeechCraft::Entity&);
