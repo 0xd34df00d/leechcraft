@@ -45,12 +45,10 @@ namespace Otzerkalu
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
-		bool CouldHandle (const LeechCraft::Entity& entity) const;
-		void Handle (LeechCraft::Entity entity);
-		
+		bool CouldHandle (const Entity& entity) const;
+		void Handle (Entity entity);
 	private slots:
 		void downloadCompleted ();
-
 	};
 }
 }

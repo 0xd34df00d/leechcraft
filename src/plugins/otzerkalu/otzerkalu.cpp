@@ -18,7 +18,6 @@
 
 #include "otzerkalu.h"
 #include <QIcon>
-
 #include "otzerkaludialog.h"
 #include "otzerkaludownloader.h"
 
@@ -58,23 +57,30 @@ namespace Otzerkalu
 		return QIcon ();
 	}
 
-	bool Plugin::CouldHandle (const LeechCraft::Entity& entity) const
+	bool Plugin::CouldHandle (const Entity& entity) const
 	{
-		return entity.Mime_ == "x-leechcraft/otzerkalu-url"
-			&& entity.Entity_.canConvert<QUrl> ();
+		return !entity.Entity_.toUrl ().isEmpty () && (entity.Parameters_ & FromUserInitiated);
 	}
 
-	void Plugin::Handle (LeechCraft::Entity entity)
+	void Plugin::Handle (Entity entity)
 	{
-		QUrl dUrl = qvariant_cast<QUrl> (entity.Entity_);
+		QUrl dUrl = entity.Entity_.toUrl ();
+		if (!dUrl.isValid ())
+			return;
 		
 		OtzerkaluDialog dialog;
-		dialog.exec ();
 		if (dialog.exec () != QDialog::Accepted)
 			return;
-		OtzerkaluDownloader downloader (DownloadParams (dUrl, dialog.GetDir (), dialog.GetRecursionLevel (), dialog.IsFromOtherSite ()), this);
+		OtzerkaluDownloader downloader (
+				DownloadParams (dUrl, dialog.GetDir (),
+						dialog.GetRecursionLevel (),
+						dialog.IsFromOtherSite ()),
+						this);
 		
-		connect (&downloader, SIGNAL (donwloadCompleted ()), this, SLOT (downloadCompleted ()));
+		connect (&downloader,
+				SIGNAL (donwloadCompleted ()),
+				this,
+				SLOT (downloadCompleted ()));
 	}
 	
 	void Plugin::downloadCompleted ()

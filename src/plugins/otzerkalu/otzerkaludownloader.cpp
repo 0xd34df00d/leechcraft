@@ -1,7 +1,6 @@
-
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011 Minh Ngo
+ * Copyright (C) 2011  Minh Ngo
  * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -31,23 +30,11 @@ namespace Otzerkalu
 	}
 	
 	DownloadParams::DownloadParams (const QUrl& downloadUrl, const QString& destDir,
-			int recLevel, bool fromOtherSite)
+				const int recLevel, const bool fromOtherSite)
 	: DownloadUrl_ (downloadUrl)
 	, DestDir_ (destDir)
 	, RecLevel_ (recLevel)
 	, FromOtherSite_ (fromOtherSite)
-	{
-	}
-	
-	OtzerkaluDownloader::FileData::FileData ()
-	{
-	}
-	
-	OtzerkaluDownloader::FileData::FileData (const QUrl& url,
-			 const QString& filename, int recLevel)
-	: Url_ (url)
-	, Filename_ (filename)
-	, RecLevel_ (recLevel)
 	{
 	}
 	
@@ -64,6 +51,19 @@ namespace Otzerkalu
 						LeechCraft::DoNotAnnounceEntity);
 		}
 	}
+
+	OtzerkaluDownloader::FileData::FileData()
+	{
+	}
+	
+	OtzerkaluDownloader::FileData::FileData(const QUrl& url, const QString& filename, const int recLevel)
+	: Url_ (url)
+	, Filename_ (filename)
+	, RecLevel_ (recLevel)
+	{
+	}
+
+
 	
 	OtzerkaluDownloader::OtzerkaluDownloader (const DownloadParams& param, QObject *parent)
 	: QObject (parent)
@@ -71,11 +71,11 @@ namespace Otzerkalu
 	{
 		const QString& filename = Param_.DestDir_ + "/" + Param_.DownloadUrl_.host () +
 				"/" + Param_.DownloadUrl_.path ();
-				
-		int jobId = -1;
+		
+		int id = -1;
 		QObject *pr;
-		emit delegateEntity (GetEntity (Param_.DownloadUrl_, filename), &jobId, &pr);
-		if (jobId == -1)
+		emit delegateEntity (GetEntity (Param_.DownloadUrl_, filename), &id, &pr);
+		if (id == -1)
 		{
 			qWarning () << Q_FUNC_INFO << "Otzerkalu: Could not download a file";
 			emit gotEntity (Util::MakeNotification ("Otzerkalu",
@@ -83,7 +83,7 @@ namespace Otzerkalu
 					LeechCraft::PCritical_));
 		}
 		else
-			HandleProvider (pr, jobId, Param_.DownloadUrl_, filename, Param_.RecLevel_);
+			HandleProvider (pr, id, Param_.DownloadUrl_, filename, Param_.RecLevel_);
 	}
 	
 	void OtzerkaluDownloader::HandleProvider (QObject *provider, int id,
@@ -99,8 +99,10 @@ namespace Otzerkalu
 	void OtzerkaluDownloader::handleJobFinished (int id)
 	{
 		const FileData& data = FileMap_ [id];
+		if (!data.RecLevel_)
+			return;
+		
 		const QString& filename = data.Filename_;
-		int recLevel = data.RecLevel_;
 		const QUrl& tmpUrl = data.Url_;
 
 		QWebPage page;
@@ -121,12 +123,11 @@ namespace Otzerkalu
 				url = tmpUrl.resolved (url);
 						
 			QString urlVal = Param_.DestDir_ + "/" + url.host () + "/" + url.path ();
-				
-				
-			int jobId = -1;
+						
+			int id = -1;
 			QObject *pr;
-			emit delegateEntity (GetEntity (url, urlVal), &jobId, &pr);
-			if (jobId == -1)
+			emit delegateEntity (GetEntity (url, urlVal), &id, &pr);
+			if (id == -1)
 			{
 				qWarning () << Q_FUNC_INFO << "Otzerkalu: Could not download a file";
 				emit gotEntity (Util::MakeNotification ("Otzerkalu",
@@ -135,7 +136,7 @@ namespace Otzerkalu
 				continue;
 			}
 				
-			HandleProvider (pr, jobId, url, urlVal, recLevel);
+			HandleProvider (pr, id, url, urlVal, data.RecLevel_ - 1);
 			if ((*urlElement).hasAttribute ("href"))
 				(*urlElement).setAttribute ("href", urlVal);
 			else
@@ -159,5 +160,3 @@ namespace Otzerkalu
 
 };
 };
-
-FileMap_ [id]

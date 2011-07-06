@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011 Minh Ngo
+ * Copyright (C) 2011  Minh Ngo
  * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -37,8 +37,7 @@ namespace Otzerkalu
 	{
 		DownloadParams ();
 		DownloadParams (const QUrl& downloadUrl, const QString& destDir,
-				int recLevel, bool fromOtherSite = true);
-		
+				const int recLevel, const bool fromOtherSite);
 		QUrl DownloadUrl_;
 		QString DestDir_;
 		int RecLevel_;
@@ -52,8 +51,7 @@ namespace Otzerkalu
 		struct FileData
 		{
 			FileData ();
-			FileData (const QUrl& url, const QString& filename, int recLevel);
-			
+			FileData (const QUrl& url, const QString& filename, const int recLevel);
 			QUrl Url_;
 			QString Filename_;
 			int RecLevel_;
@@ -66,7 +64,8 @@ namespace Otzerkalu
 		
 	private:
 		bool WriteData (const QString& filename, const QString& data);
-		void HandleProvider (QObject *provider, int id, const QUrl& url, const QString& filename, int recLevel);
+		void HandleProvider (QObject *provider, int id, const QUrl& url,
+				const QString& filename, int recLevel);
 		
 	private slots:
 		void handleJobFinished (int id);

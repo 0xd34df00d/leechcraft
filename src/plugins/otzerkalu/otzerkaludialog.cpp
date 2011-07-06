@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011 Minh Ngo
+ * Copyright (C) 2011  Minh Ngo
  * Copyright (C) 2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,8 +20,7 @@
 #include "otzerkaludialog.h"
 
 namespace LeechCraft
-{
-	
+{	
 namespace Otzerkalu
 {
 	OtzerkaluDialog::OtzerkaluDialog (QWidget *parent)
@@ -47,12 +46,14 @@ namespace Otzerkalu
 		
 	void OtzerkaluDialog::on_ChooseDirButton_clicked ()
 	{
-		QString saveDir = QFileDialog::getExistingDirectory (this, tr ("Save into a directory"),
+		QString saveDir = QFileDialog::getExistingDirectory (this,
+				tr ("Save into a directory"),
 				QDir::homePath (),
 				QFileDialog::ShowDirsOnly |
-					QFileDialog::DontResolveSymlinks);
+						QFileDialog::DontResolveSymlinks);
 		if (saveDir.isEmpty ())
 			return;
+		
 		Ui_.SaveDirLineEdit_->setText (saveDir);
 	}
 }

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011 Minh Ngo
+ * Copyright (C) 2011  Minh Ngo
  * Copyright (C) 2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,7 +19,6 @@
 
 #ifndef PLUGINS_OTZERKALU_OTZERKALUWIDGET_H
 #define PLUGINS_OTZERKALU_OTZERKALUWIDGET_H
-
 #include <QDialog>
 #include <QUrl>
 #include <QFileDialog>
@@ -27,10 +26,8 @@
 
 namespace LeechCraft
 {
-	
 namespace Otzerkalu
 {
-
 	class OtzerkaluDialog : public QDialog
 	{
 		Q_OBJECT
@@ -41,12 +38,9 @@ namespace Otzerkalu
 		int GetRecursionLevel () const;
 		QString GetDir () const;
 		bool IsFromOtherSite () const;
-		
 	private slots:
 		void on_ChooseDirButton_clicked ();
-	
 	};
-
 }
 }
 #endif //PLUGINS_OTZERKALU_OTZERKALUWIDGET_H
