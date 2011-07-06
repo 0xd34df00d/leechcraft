@@ -76,16 +76,15 @@ namespace Otzerkalu
 					this);
 		
 		connect (dl,
-				SIGNAL (downloadCompleted ()),
+				SIGNAL (gotEntity (const LeechCraft::Entity&)),
 				this,
-				SLOT (downloadCompleted ()));
-	}
-	
-	void Plugin::downloadCompleted ()
-	{
+				SIGNAL (gotEntity (const LeechCraft::Entity&)));
+		connect (dl,
+				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)),
+				this,
+				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)));
 	}
 }
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_otzerkalu, LeechCraft::Otzerkalu::Plugin);
-

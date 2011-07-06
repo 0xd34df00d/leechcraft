@@ -71,7 +71,6 @@ namespace Otzerkalu
 		void handleJobFinished (int id);
 		
 	signals:
-		void downloadCompleted ();
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 		void gotEntity (const LeechCraft::Entity&);
 	};
