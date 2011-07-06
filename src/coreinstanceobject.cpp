@@ -182,6 +182,7 @@ namespace LeechCraft
 	{
 		if (tabClass == "org.LeechCraft.SettingsPane")
 		{
+			emit removeTab (SettingsTab_);
 			emit addNewTab (tr ("Settings"), SettingsTab_);
 			emit raiseTab (SettingsTab_);
 		}

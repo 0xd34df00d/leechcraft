@@ -19,9 +19,8 @@
 #ifndef PLUGINS_GLANCE_GLANCESHOWER_H
 #define PLUGINS_GLANCE_GLANCESHOWER_H
 #include <QGraphicsView>
+#include <interfaces/iinfo.h>
 
-
-class QTabWidget;
 
 namespace LeechCraft
 {
@@ -36,12 +35,12 @@ namespace Glance
 	{
 		Q_OBJECT
 
-		QTabWidget *TabWidget_;
+		ICoreTabWidget *TabWidget_;
 		QGraphicsScene *Scene_;
 		bool Shown_;
 	public:
 		GlanceShower (QWidget* = 0);
-		void SetTabWidget (QTabWidget*);
+		void SetTabWidget (ICoreTabWidget*);
 		void Start ();
 	private:
 		void Finalize ();

@@ -18,7 +18,6 @@
 
 #include "glanceshower.h"
 #include <cmath>
-#include <QTabWidget>
 #include <QLabel>
 #include <QGraphicsItem>
 #include <QGraphicsPixmapItem>
@@ -55,7 +54,7 @@ namespace Glance
 		setRenderHints (QPainter::HighQualityAntialiasing);
 	}
 
-	void GlanceShower::SetTabWidget (QTabWidget *tw)
+	void GlanceShower::SetTabWidget (ICoreTabWidget *tw)
 	{
 		TabWidget_ = tw;
 	}
@@ -69,7 +68,7 @@ namespace Glance
 			return;
 		}
 
-		const int count = TabWidget_->count ();
+		const int count = TabWidget_->WidgetCount ();
 		if (count < 2)
 		{
 			emit finished (true);
@@ -113,7 +112,7 @@ namespace Glance
 			{
 				const int idx = column + row * cols;
 				pg.setValue (idx);
-				QWidget *w = TabWidget_->widget (idx);
+				QWidget *w = TabWidget_->Widget (idx);
 
 				if (!sSize.isValid ())
 					sSize = w->size () / 2;
@@ -194,7 +193,7 @@ namespace Glance
 				glanceItemList << qgraphicsitem_cast<GlanceItem*> (item);
 
 			int currentItem = -1;
-			const int count = TabWidget_->count ();
+			const int count = TabWidget_->WidgetCount ();
 
 			const int sqrt = std::sqrt ((double)count);
 			int rows = sqrt;

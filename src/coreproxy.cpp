@@ -24,7 +24,6 @@
 #include "xmlsettingsmanager.h"
 #include "skinengine.h"
 #include "tagsmanager.h"
-#include "tabwidget.h"
 #include "config.h"
 
 using namespace LeechCraft;
@@ -60,7 +59,7 @@ QMainWindow* CoreProxy::GetMainWindow () const
 	return Core::Instance ().GetReallyMainWindow ();
 }
 
-QTabWidget* CoreProxy::GetTabWidget () const
+ICoreTabWidget* CoreProxy::GetTabWidget () const
 {
 	return Core::Instance ().GetReallyMainWindow ()->GetTabWidget ();
 }

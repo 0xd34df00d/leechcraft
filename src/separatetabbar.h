@@ -1,6 +1,6 @@
 /**********************************************************************
- * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * <>
+ * Copyright (C) 2010  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,25 +16,45 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef TABBAR_H
-#define TABBAR_H
+#ifndef SEPARATETABBAR_H
+#define SEPARATETABBAR_H
+
 #include <QTabBar>
+#include <QHash>
 
 namespace LeechCraft
 {
-	class TabBar : public QTabBar
+	class SeparateTabBar : public QTabBar
 	{
 		Q_OBJECT
+		int Id_;
+		bool IsLastTab_;
+		QHash<int, QString> PinTabsIndex2Name_;
+		QHash<int, QWidget*> PinTabsIndex2CloseWidget_;
+		QTabBar::ButtonPosition CloseSide_;
 	public:
-		TabBar (QWidget* = 0);
+		explicit SeparateTabBar (QWidget* = 0);
+		bool IsPinTab (int) const;
+		int PinTabsCount () const;
+		QList<int> GetPinTabs () const;
+		void SetTabData (int);
+		void SetTabNoClosable (int);
+		void SetLastTab (bool);
 	protected:
-		virtual void tabInserted (int);
-		virtual void tabRemoved (int);
+		QSize tabSizeHint (int) const;
+		void mouseReleaseEvent (QMouseEvent*);
+		void mousePressEvent (QMouseEvent *event);
+		void tabInserted (int);
+		void tabRemoved (int);
+	public slots:
+		void setPinTab (int);
+		void setUnPinTab (int);
 	signals:
+		void addDefaultTab (bool);
+		void showAddTabButton (bool);
 		void tabWasInserted (int);
 		void tabWasRemoved (int);
+		
 	};
-};
-
-#endif
-
+}
+#endif // SEPARATETABBAR_H

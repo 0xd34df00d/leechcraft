@@ -42,17 +42,8 @@ namespace Glance
 		ActionGlance_->setShortcut (QKeySequence ("Ctrl+G"));
 		ActionGlance_->setShortcutContext (Qt::ApplicationShortcut);
 
-		QToolBar *toolBar = proxy->GetMainWindow ()->
-				findChild<QToolBar*> ("MainToolbar_");
-
-		if (!toolBar)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "toolbar is null";
-			return;
-		}
-
-		toolBar->insertAction (toolBar->actions ().at (0), ActionGlance_);
+		Core::Instance ().GetProxy ()->GetTabWidget ()->
+				AddAction2TabBarLayout (QTabBar::RightSide, ActionGlance_);
 
 		ActionGlance_->setIcon (proxy->GetIcon ("glance"));
 

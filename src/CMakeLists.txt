@@ -293,7 +293,6 @@ SET (SRCS
 	debugmessagehandler.cpp
 	application.cpp
 	handlerchoicedialog.cpp
-	tabwidget.cpp
 	graphwidget.cpp
 	shortcutmanager.cpp
 	keysequencer.cpp
@@ -308,14 +307,14 @@ SET (SRCS
 	localsockethandler.cpp
 	toolbarguard.cpp
 	clipboardwatcher.cpp
-	tabbar.cpp
 	wizardtypechoicepage.cpp
 	3dparty/qxttooltip.cpp
-	fullscreenspacerlabel.cpp
 	newtabmenumanager.cpp
 	plugintreebuilder.cpp
 	coreinstanceobject.cpp
 	settingstab.cpp
+	separatetabbar.cpp
+	separatetabwidget.cpp
 	)
 SET (HEADERS
 	mainwindow.h
@@ -336,7 +335,6 @@ SET (HEADERS
 	debugmessagehandler.h
 	application.h
 	handlerchoicedialog.h
-	tabwidget.h
 	graphwidget.h
 	shortcutmanager.h
 	keysequencer.h
@@ -351,8 +349,6 @@ SET (HEADERS
 	localsockethandler.h
 	toolbarguard.h
 	clipboardwatcher.h
-	tabbar.h
-	fullscreenspacerlabel.h
 	newtabmenumanager.h
 	wizardtypechoicepage.h
 	plugintreebuilder.h
@@ -361,6 +357,8 @@ SET (HEADERS
 	3dparty/qxttooltip.h
 	3dparty/qxttooltip_p.h
 	interfaces/structures.h
+	separatetabbar.h
+	separatetabwidget.h
 	)
 SET (FORMS
 	commonjobadder.ui

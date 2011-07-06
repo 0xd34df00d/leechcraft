@@ -40,7 +40,7 @@ namespace LeechCraft
 		QModelIndex MapToSource (const QModelIndex&) const;
 		Util::BaseSettingsManager* GetSettingsManager () const;
 		QMainWindow* GetMainWindow () const;
-		QTabWidget* GetTabWidget () const;
+		ICoreTabWidget* GetTabWidget () const;
 		QMap<int, QString> GetIconPath (const QString&) const;
 		QIcon GetIcon (const QString&, const QString& = QString ()) const;
 		ITagsManager* GetTagsManager () const;

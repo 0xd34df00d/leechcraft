@@ -51,8 +51,7 @@ namespace LeechCraft
 		namespace TabPP
 		{
 			Core::Core ()
-			: Bar_ (0)
-			, TabWidget_ (0)
+			: TabWidget_ (0)
 			, RootItem_ (new Util::TreeItem (QList<QVariant> () << QVariant ()))
 			, Sorter_ (new QSortFilterProxyModel (this))
 			, Current_ (-1)
@@ -72,42 +71,24 @@ namespace LeechCraft
 			{
 				Proxy_ = proxy;
 
-				Bar_ = proxy->GetMainWindow ()->
-					findChild<QTabBar*> ("org_LeechCraft_MainWindow_CentralTabBar");
-				if (!Bar_)
-				{
-					qWarning () << Q_FUNC_INFO
-						<< "no tabbar found"
-						<< proxy->GetMainWindow ()->findChildren<QTabBar*> ();
-					return;
-				}
+				TabWidget_ = Proxy_->GetTabWidget ();
 
-				TabWidget_ = proxy->GetMainWindow ()->
-					findChild<QTabWidget*> ("org_LeechCraft_MainWindow_CentralTabWidget");
-				if (!TabWidget_ )
-				{
-					qWarning () << Q_FUNC_INFO
-						<< "no tabwidget found"
-						<< proxy->GetMainWindow ()->findChildren<QTabWidget*> ();
-					return;
-				}
-
-				for (int i = 0; i < Bar_->count (); ++i)
+				for (int i = 0; i < TabWidget_->WidgetCount (); ++i)
 					handleTabInserted (i);
 
-				connect (Bar_,
+				connect (TabWidget_->GetObject (),
 						SIGNAL (tabWasInserted (int)),
 						this,
 						SLOT (handleTabInserted (int)));
-				connect (Bar_,
+				connect (TabWidget_->GetObject (),
 						SIGNAL (tabWasRemoved (int)),
 						this,
 						SLOT (handleTabRemoved (int)));
-				connect (Bar_,
+				connect (TabWidget_->GetObject (),
 						SIGNAL (currentChanged (int)),
 						this,
 						SLOT (handleCurrentChanged (int)));
-				connect (Bar_,
+				connect (TabWidget_->GetObject (),
 						SIGNAL (tabMoved (int, int)),
 						this,
 						SLOT (handleTabsSwapped (int, int)));
@@ -269,7 +250,7 @@ namespace LeechCraft
 
 			void Core::HandleLogicalPathChanged (QWidget *widget)
 			{
-				int idx = TabWidget_->indexOf (widget);
+				int idx = TabWidget_->IndexOf (widget);
 				if (idx < 0)
 					return;
 
@@ -278,7 +259,7 @@ namespace LeechCraft
 						property ("WidgetLogicalPath").toStringList ();
 				if (parts.isEmpty ())
 				{
-					QString title = Bar_->tabText (idx);
+					QString title = TabWidget_->TabText (idx);
 					if (title.isEmpty ())
 						title = tr ("unknown");
 					parts << title;
@@ -382,7 +363,7 @@ namespace LeechCraft
 
 			void Core::handleTabInserted (int idx)
 			{
-				QWidget *widget = TabWidget_->widget (idx);
+				QWidget *widget = TabWidget_->Widget (idx);
 
 				bool initConnections = !Widget2Pos_.contains (widget);
 
@@ -407,7 +388,7 @@ namespace LeechCraft
 							SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
 							this,
 							SLOT (handleChangeTabIcon (QWidget*, const QIcon&)));
-					handleChangeTabIcon (widget, TabWidget_->tabIcon (idx));
+					handleChangeTabIcon (widget, TabWidget_->TabIcon (idx));
 				}
 			}
 
