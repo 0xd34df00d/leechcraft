@@ -39,7 +39,7 @@ namespace Otzerkalu
 		QString GetDir () const;
 		bool FetchFromExternalHosts () const;
 	private slots:
-		void on_ChooseDirButton_clicked ();
+		void on_ChooseDirButton__clicked ();
 	};
 }
 }
