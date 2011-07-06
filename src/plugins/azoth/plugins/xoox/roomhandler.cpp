@@ -542,6 +542,11 @@ namespace Xoox
 		item.setRole (newRole);
 		Account_->GetClientConnection ()->Update (item, Room_->jid ());
 	}
+	
+	QXmppMucRoom* RoomHandler::GetRoom () const
+	{
+		return Room_;
+	}
 
 	RoomParticipantEntry_ptr RoomHandler::CreateParticipantEntry (const QString& nick, bool announce)
 	{

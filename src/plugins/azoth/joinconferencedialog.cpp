@@ -100,11 +100,11 @@ namespace Azoth
 			}
 		}
 		
-		if (Ui_.AccountBox_->count ())
+		if (Ui_.HistoryBox_->count ())
 			QMetaObject::invokeMethod (this,
-					"on_AccountBox__currentIndexChanged",
+					"on_HistoryBox__activated",
 					Qt::QueuedConnection,
-					Q_ARG (int, Ui_.AccountBox_->currentIndex ()));
+					Q_ARG (int, 0));
 	}
 
 	JoinConferenceDialog::~JoinConferenceDialog ()

@@ -74,6 +74,7 @@ namespace Acetamide
 		void SetChatPartState (ChatPartState, const QString&);
 		QList<QAction*> GetActions () const;
 		QMap<QString, QVariant> GetClientInfo (const QString&) const;
+		QString GetRealID (QObject*) const;
 
 		EntryStatus GetStatus (const QString& variant = QString ()) const;
 		QImage GetAvatar () const;

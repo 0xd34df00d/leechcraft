@@ -74,6 +74,7 @@ SET (SRCS
 	callmanager.cpp
 	callchatwidget.cpp
 	chattabwebview.cpp
+	locationdialog.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -108,6 +109,7 @@ SET (HEADERS
 	callmanager.h
 	callchatwidget.h
 	chattabwebview.h
+	locationdialog.h
 	animatediconmanager.h
 	sourcetrackingmodel.h
 	interfaces/iprotocolplugin.h
@@ -133,6 +135,7 @@ SET (FORMS
 	activitydialog.ui
 	mooddialog.ui
 	callchatwidget.ui
+	locationdialog.ui
 	)
 SET (RESOURCES azothresources.qrc)
 CreateTrVars ("azoth" "en;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
@@ -167,6 +170,7 @@ SET (AZOTH_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 OPTION (ENABLE_AZOTH_ACETAMIDE "Build Acetamide, IRC support for Azoth" ON)
 OPTION (ENABLE_AZOTH_AUTOPASTE "Build Autopaste for automatic pasting of long messages to pastebins" ON)
+OPTION (ENABLE_AZOTH_AUTOIDLER "Build Autoidler for automatic changing of status according to idle time" ON)
 OPTION (ENABLE_AZOTH_CHATHISTORY "Build ChatHistory which keeps, well, chat history" ON)
 OPTION (ENABLE_AZOTH_DEPESTER "Build Depester for ignoring unwanted MUC participants" ON)
 OPTION (ENABLE_AZOTH_EMBEDMEDIA "Build EmbedMedia  enables embedding different media objects in chat tab" ON)
@@ -186,6 +190,9 @@ ENDIF (ENABLE_AZOTH_ACETAMIDE)
 IF (ENABLE_AZOTH_AUTOPASTE)
 	ADD_SUBDIRECTORY (plugins/autopaste)
 ENDIF (ENABLE_AZOTH_AUTOPASTE)
+IF (ENABLE_AZOTH_AUTOIDLER)
+	ADD_SUBDIRECTORY (plugins/autoidler)
+ENDIF (ENABLE_AZOTH_AUTOIDLER)
 IF (ENABLE_AZOTH_CHATHISTORY)
 	ADD_SUBDIRECTORY (plugins/chathistory)
 ENDIF (ENABLE_AZOTH_CHATHISTORY)

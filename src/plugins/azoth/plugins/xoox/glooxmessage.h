@@ -22,6 +22,7 @@
 #include <QXmppMessage.h>
 #include <interfaces/imessage.h>
 #include <interfaces/iadvancedmessage.h>
+#include <interfaces/irichtextmessage.h>
 
 namespace LeechCraft
 {
@@ -35,9 +36,12 @@ namespace Xoox
 	class GlooxMessage : public QObject
 					   , public IMessage
 					   , public IAdvancedMessage
+					   , public IRichTextMessage
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMessage LeechCraft::Azoth::IAdvancedMessage)
+		Q_INTERFACES (LeechCraft::Azoth::IMessage
+				LeechCraft::Azoth::IAdvancedMessage
+				LeechCraft::Azoth::IRichTextMessage)
 
 		MessageType Type_;
 		MessageSubType SubType_;
@@ -58,6 +62,7 @@ namespace Xoox
 		GlooxMessage (const QXmppMessage& msg,
 				ClientConnection *conn);
 
+		// IMessage
 		QObject* GetObject ();
 		void Send ();
 		Direction GetDirection () const;
@@ -71,10 +76,14 @@ namespace Xoox
 		QDateTime GetDateTime () const;
 		void SetDateTime (const QDateTime&);
 		
+		// IAdvancedMessage
 		bool IsDelivered () const;
 		
-		void SetDelivered (bool);
+		// IRichTextMessage
+		void SetRichBody (const QString&);
 		
+		void SetDelivered (bool);
+
 		QXmppMessage GetMessage () const;
 	signals:
 		void messageDelivered ();
