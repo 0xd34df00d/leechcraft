@@ -29,6 +29,7 @@ namespace Azoth
 	public:
 		virtual ~IRichTextMessage () {}
 
+		virtual QString GetRichBody () const = 0;
 		virtual void SetRichBody (const QString&) = 0;
 	};
 }
