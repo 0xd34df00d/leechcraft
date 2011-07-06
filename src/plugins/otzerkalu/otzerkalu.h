@@ -25,6 +25,7 @@
 #include <interfaces/structures.h>
 #include <plugininterface/util.h>
 #include <QRegExp>
+#include "otzerkaludownloader.h"
 
 namespace LeechCraft
 {
@@ -37,6 +38,7 @@ namespace Otzerkalu
 		Q_OBJECT
 		Q_INTERFACES (IInfo IEntityHandler)
 		
+		OtzerkaluDownloader *Downloader_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

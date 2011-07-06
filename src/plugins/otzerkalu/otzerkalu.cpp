@@ -19,7 +19,6 @@
 #include "otzerkalu.h"
 #include <QIcon>
 #include "otzerkaludialog.h"
-#include "otzerkaludownloader.h"
 
 namespace LeechCraft
 {
@@ -71,13 +70,13 @@ namespace Otzerkalu
 		OtzerkaluDialog dialog;
 		if (dialog.exec () != QDialog::Accepted)
 			return;
-		OtzerkaluDownloader downloader (
+		Downloader_ = new OtzerkaluDownloader (
 				DownloadParams (dUrl, dialog.GetDir (),
 						dialog.GetRecursionLevel (),
 						dialog.IsFromOtherSite ()),
 						this);
 		
-		connect (&downloader,
+		connect (Downloader_,
 				SIGNAL (donwloadCompleted ()),
 				this,
 				SLOT (downloadCompleted ()));

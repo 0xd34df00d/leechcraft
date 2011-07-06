@@ -56,7 +56,8 @@ namespace Otzerkalu
 	{
 	}
 	
-	OtzerkaluDownloader::FileData::FileData(const QUrl& url, const QString& filename, const int recLevel)
+	OtzerkaluDownloader::FileData::FileData(const QUrl& url, const QString& filename,
+			const int recLevel)
 	: Url_ (url)
 	, Filename_ (filename)
 	, RecLevel_ (recLevel)
