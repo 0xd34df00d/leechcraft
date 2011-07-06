@@ -821,6 +821,10 @@ namespace Azoth
 					SIGNAL (tuneChanged (const QString&)),
 					this,
 					SLOT (handleEntryPEPEvent (const QString&)));
+			connect (clEntry->GetObject (),
+					SIGNAL (locationChanged (const QString&)),
+					this,
+					SLOT (handleEntryPEPEvent (const QString&)));
 		}
 		
 		EventsNotifier_->RegisterEntry (clEntry);
@@ -989,8 +993,6 @@ namespace Azoth
 				tip += "<br />";
 			}
 		}
-		
-		
 
 		if (entry->GetEntryType () != ICLEntry::ETPrivateChat)
 			Q_FOREACH (const QString& variant, variants)
