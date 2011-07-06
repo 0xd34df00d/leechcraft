@@ -68,6 +68,7 @@ namespace Otzerkalu
 	: QObject (parent)
 	, Param_ (param)
 	{
+		UrlCount_ = 0;
 	}
 	
 	void OtzerkaluDownloader::Begin ()
@@ -88,14 +89,10 @@ namespace Otzerkalu
 	
 	void OtzerkaluDownloader::handleJobFinished (int id)
 	{
+		--UrlCount_;
 		const FileData& data = FileMap_ [id];
 		if (!data.RecLevel_)
 			return;
-		
-		emit gotEntity (Util::MakeNotification (tr ("Download complete"),
-				tr ("Download complete: %1.")
-					.arg (data.Filename_),
-				PInfo_));
 		
 		const QString& filename = data.Filename_;
 		const QUrl& tmpUrl = data.Url_;
@@ -125,9 +122,12 @@ namespace Otzerkalu
 				(*urlElement).setAttribute ("href", filename);
 			else
 				(*urlElement).setAttribute ("src", filename);
-
 		}
-				
+		if (!UrlCount_)
+			emit gotEntity (Util::MakeNotification (tr ("Download complete"),
+					tr ("Download complete %1")
+						.arg (Param_.DownloadUrl_.toString ()),
+					PInfo_));
 		WriteData (filename, page.mainFrame ()->toHtml ());
 	}
 	
@@ -157,7 +157,7 @@ namespace Otzerkalu
 					PCritical_));
 			return QString ();
 		}
-
+		++UrlCount_;
 		HandleProvider (pr, id, Param_.DownloadUrl_, filename, Param_.RecLevel_ - 1);
 		
 		return filename;
