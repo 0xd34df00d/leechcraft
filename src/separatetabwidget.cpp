@@ -126,13 +126,12 @@ namespace LeechCraft
 			return -1;
 
 		int newIndex;
+		MainStackedWidget_->addWidget (page);
 		if (!AddTabButtonAction_->isVisible ())
 			newIndex = MainTabBar_->
 					insertTab (MainTabBar_->count () - 1, icon, text);
 		else
 			newIndex = MainTabBar_->addTab (icon, text);
-
-		MainStackedWidget_->addWidget (page);
 
 		if (MainTabBar_->currentIndex () == TabCount () - 1)
 			setCurrentIndex (TabCount () - 2);
@@ -170,8 +169,9 @@ namespace LeechCraft
 			newIndex = index - 1;
 
 		MainStackedWidget_->insertWidget (index, page);
+		int idx = MainTabBar_->insertTab (newIndex, icon, text);
 
-		return MainTabBar_->insertTab (newIndex, icon, text);
+		return idx;
 	}
 
 	bool SeparateTabWidget::IsTabEnabled (int index) const
