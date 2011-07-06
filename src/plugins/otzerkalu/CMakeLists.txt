@@ -23,16 +23,25 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	otzerkalu.cpp
+	otzerkaludialog.cpp
+	otzerkaludownloader.cpp
 	)
 SET (HEADERS
 	otzerkalu.h
+	otzerkaludialog.h
+	otzerkaludownloader.h
+	)
+SET (FORMS
+	otzerkaludialog.ui
 	)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
+QT4_WRAP_UI (UIS_H ${FORMS})
 
 ADD_LIBRARY (leechcraft_otzerkalu SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
+	${UIS_H}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_otzerkalu
 	${QT_LIBRARIES}
