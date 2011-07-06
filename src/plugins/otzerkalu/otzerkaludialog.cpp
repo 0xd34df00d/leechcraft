@@ -27,6 +27,8 @@ namespace Otzerkalu
 	: QDialog (parent)
 	{
 		Ui_.setupUi (this);
+
+		Ui_.SaveDirLineEdit_->setText (QDir::homePath ());
 	}
 	
 	int OtzerkaluDialog::GetRecursionLevel () const
