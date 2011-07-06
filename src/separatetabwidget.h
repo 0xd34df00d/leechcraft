@@ -25,6 +25,7 @@
 #include <QPointer>
 #include <QAction>
 #include <QMap>
+#include <QStack>
 #include <interfaces/iinfo.h>
 
 class QStackedWidget;
@@ -113,10 +114,10 @@ namespace LeechCraft
 		void Init ();
 		void AddTabButtonInit ();
 		void PinTabActionsInit ();
-		void InitShortcuts ();
 	public slots:
 		void setCurrentIndex (int);
 		void setCurrentWidget (QWidget*);
+		void handleNewTabShortcutActivated ();
 		void on_PinTab__triggered (bool);
 		void on_UnPinTab__triggered (bool);
 	private slots:
@@ -125,10 +126,7 @@ namespace LeechCraft
 		void handleContextMenuRequested (const QPoint&);
 		void handleShowAddTabButton (bool);
 		void handleAddDefaultTab (bool);
-		void handleNewTabShortcutActivated ();
 		void handleActionDestroyed ();
-		void handleNextTabShortcut ();
-		void handlePrevTabShortcut ();
 	signals:
 		void newTabRequested ();
 		void newTabMenuRequested ();

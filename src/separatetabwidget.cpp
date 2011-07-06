@@ -77,6 +77,9 @@ namespace LeechCraft
 		MainToolBarLayout_ = new QHBoxLayout;
 		MainToolBarLayout_->setSpacing (0);
 		MainToolBarLayout_->setContentsMargins (0, 0, 0, 0);
+		
+		MainToolBarLayout_->addSpacerItem (new QSpacerItem (1, 1, 
+				QSizePolicy::Minimum, QSizePolicy::Minimum));
 
 		MainLayout_ = new QVBoxLayout (this);
 		MainLayout_->setContentsMargins (0, 0, 0, 0);
@@ -87,7 +90,6 @@ namespace LeechCraft
 		Init ();
 		AddTabButtonInit ();
 		PinTabActionsInit ();
-		InitShortcuts ();
 	}
 
 	SeparateTabWidget::~SeparateTabWidget ()
@@ -344,10 +346,8 @@ namespace LeechCraft
 
 	void SeparateTabWidget::AddWidget2SeparateTabWidget (QWidget* widget)
 	{
-		widget->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Fixed);
+		widget->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Minimum);
 		MainToolBarLayout_->addWidget (widget);
-		MainToolBarLayout_->addSpacerItem (new QSpacerItem (1, 1, 
-				QSizePolicy::Minimum, QSizePolicy::Fixed));
 	}
 
 	void SeparateTabWidget::RemoveWidgetFromSeparateTabWidget (QWidget* w)
@@ -531,30 +531,6 @@ namespace LeechCraft
 				SLOT (handleAddDefaultTab (bool)));
 	}
 
-	void SeparateTabWidget::InitShortcuts ()
-	{
-		QShortcut *newTabShortcut = new QShortcut (QKeySequence (tr("Ctrl+T", 
-				"New tab request")), this);
-		connect (newTabShortcut,
-				SIGNAL (activated ()),
-				this,
-				SLOT (handleNewTabShortcutActivated ()));
-
-		QShortcut *nextTabShortcut = new QShortcut (QKeySequence (Qt::CTRL + Qt::Key_Tab),
-				this);
-		connect (nextTabShortcut,
-				SIGNAL (activated ()),
-				this,
-				SLOT (handleNextTabShortcut ()));
-
-		QShortcut *porevTabShortcut = new QShortcut (QKeySequence (Qt::CTRL + Qt::SHIFT + Qt::Key_Tab), 
-				this);
-		connect (porevTabShortcut,
-				SIGNAL (activated ()),
-				this,
-				SLOT (handlePrevTabShortcut ()));
-	}
-
 	void SeparateTabWidget::setCurrentIndex (int index)
 	{
 		if ((index == TabCount () - 1) && !AddTabButtonAction_->isVisible ())
@@ -568,6 +544,11 @@ namespace LeechCraft
 	{
 		int index = MainStackedWidget_->indexOf (w);
 		setCurrentIndex (index);
+	}
+
+	void SeparateTabWidget::handleNewTabShortcutActivated ()
+	{
+		handleAddDefaultTab (true);
 	}
 
 	void SeparateTabWidget::handleCurrentChanged (int index)
@@ -616,7 +597,6 @@ namespace LeechCraft
 			return;
 
 		int index = MainTabBar_->tabAt (point);
-		LastContextMenuTab_ = index;
 
 		QMenu *menu = new QMenu ("", MainTabBar_);
 		if ((index == MainTabBar_->count () - 1) && !AddTabButtonAction_->isVisible ())
@@ -626,6 +606,7 @@ namespace LeechCraft
 		}
 		else
 		{
+			LastContextMenuTab_ = index;
 			if (index != -1 &&
 					XmlSettingsManager::Instance ()->
 						property ("ShowPluginMenuInTabs").toBool ())
@@ -660,9 +641,9 @@ namespace LeechCraft
 			}
 
 			if (MainTabBar_->IsPinTab (index))
-				menu->addAction (UnPinTab_);
+				menu->insertAction (TabBarActions_.at (0).data (), UnPinTab_);
 			else
-				menu->addAction (PinTab_);
+				menu->insertAction (TabBarActions_.at (0).data (), PinTab_);
 
 			menu->exec (MainTabBar_->mapToGlobal (point));
 		}
@@ -761,11 +742,6 @@ namespace LeechCraft
 
 		highestIHT->TabOpenRequested (highestTabClass);
 	}
-	
-	void SeparateTabWidget::handleNewTabShortcutActivated ()
-	{
-		handleAddDefaultTab (true);
-	}
 
 	void SeparateTabWidget::handleActionDestroyed()
 	{
@@ -773,23 +749,4 @@ namespace LeechCraft
 			if (!act || act == sender ())
 				TabBarActions_.removeAll (act);
 	}
-	
-	void SeparateTabWidget::handleNextTabShortcut ()
-	{
-		const int ci = CurrentIndex ();
-		if (ci == WidgetCount () - 1)
-			setCurrentIndex (0);
-		else
-			setCurrentIndex (ci + 1);
-	}
-
-	void SeparateTabWidget::handlePrevTabShortcut ()
-	{
-		const int ci = CurrentIndex ();
-		if (ci == 0)
-			setCurrentIndex (WidgetCount () - 1);
-		else
-			setCurrentIndex (ci - 1);
-	}
-
 }
