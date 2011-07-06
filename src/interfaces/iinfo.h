@@ -28,6 +28,7 @@
 #include <QTabBar>
 #include <QtNetwork/QNetworkAccessManager>
 #include "structures.h"
+#include <QIcon>
 
 class IShortcutProxy;
 class QTreeView;
@@ -431,8 +432,12 @@ public:
 	virtual int WidgetCount () const = 0;
 	virtual QWidget* Widget (int) const = 0;
 	virtual void AddAction2TabBarLayout (QTabBar::ButtonPosition, QAction*) = 0;
+	virtual int IndexOf (QWidget*) const = 0;
+	virtual QIcon TabIcon (int) const = 0;
+	virtual QString TabText (int) const = 0;
 public slots:
 	virtual void setCurrentIndex (int) = 0;
+	virtual void setCurrentWidget (QWidget*) = 0;
 };
 
 
