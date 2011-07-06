@@ -1,5 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
+ * Copyright (C) 2011  Minh Ngo
  * Copyright (C) 2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,42 +17,44 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_OTZERKALU_OTZERKALU_H
-#define PLUGINS_OTZERKALU_OTZERKALU_H
-#include <QObject>
-#include <QUrl>
-#include <interfaces/iinfo.h>
-#include <interfaces/ientityhandler.h>
-#include <interfaces/structures.h>
-#include <plugininterface/util.h>
-#include "otzerkaludownloader.h"
+#include "otzerkaludialog.h"
 
 namespace LeechCraft
-{
+{	
 namespace Otzerkalu
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IEntityHandler
+	OtzerkaluDialog::OtzerkaluDialog (QWidget *parent)
+	: QDialog (parent)
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IEntityHandler)
+		Ui_.setupUi (this);
+	}
+	
+	int OtzerkaluDialog::GetRecursionLevel () const
+	{
+		return Ui_.RecursionLevel_->value ();
+	}
+	
+	QString OtzerkaluDialog::GetDir () const
+	{
+		return Ui_.SaveDirLineEdit_->text ();
+	}
+	
+	bool OtzerkaluDialog::FetchFromExternalHosts () const
+	{
+		return Ui_.FromOtherSite_->isChecked ();
+	}
 		
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-		bool CouldHandle (const Entity& entity) const;
-		void Handle (Entity entity);
-	private slots:
-		void downloadCompleted ();
-	};
+	void OtzerkaluDialog::on_ChooseDirButton_clicked ()
+	{
+		QString saveDir = QFileDialog::getExistingDirectory (this,
+				tr ("Save into a directory"),
+				QDir::homePath (),
+				QFileDialog::ShowDirsOnly |
+						QFileDialog::DontResolveSymlinks);
+		if (saveDir.isEmpty ())
+			return;
+		
+		Ui_.SaveDirLineEdit_->setText (saveDir);
+	}
 }
 }
-
-#endif
-

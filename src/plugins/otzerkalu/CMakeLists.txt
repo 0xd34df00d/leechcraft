@@ -14,7 +14,7 @@ IF (NOT QT_USE_FILE)
 	FIND_PACKAGE (Qt4 REQUIRED)
 	FIND_PACKAGE (LeechCraft REQUIRED)
 ENDIF (NOT QT_USE_FILE)
-
+SET (QT_USE_QTWEBKIT TRUE)
 INCLUDE (${QT_USE_FILE})
 INCLUDE_DIRECTORIES (
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -23,16 +23,25 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	otzerkalu.cpp
+	otzerkaludialog.cpp
+	otzerkaludownloader.cpp
 	)
 SET (HEADERS
 	otzerkalu.h
+	otzerkaludialog.h
+	otzerkaludownloader.h
+	)
+SET (FORMS
+	otzerkaludialog.ui
 	)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
+QT4_WRAP_UI (UIS_H ${FORMS})
 
 ADD_LIBRARY (leechcraft_otzerkalu SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
+	${UIS_H}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_otzerkalu
 	${QT_LIBRARIES}
