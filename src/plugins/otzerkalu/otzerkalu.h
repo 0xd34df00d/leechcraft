@@ -24,7 +24,6 @@
 #include <interfaces/ientityhandler.h>
 #include <interfaces/structures.h>
 #include <plugininterface/util.h>
-#include <QRegExp>
 #include "otzerkaludownloader.h"
 
 namespace LeechCraft

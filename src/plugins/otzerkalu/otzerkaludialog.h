@@ -37,7 +37,7 @@ namespace Otzerkalu
 		
 		int GetRecursionLevel () const;
 		QString GetDir () const;
-		bool IsFromOtherSite () const;
+		bool FetchFromExternalHosts () const;
 	private slots:
 		void on_ChooseDirButton_clicked ();
 	};

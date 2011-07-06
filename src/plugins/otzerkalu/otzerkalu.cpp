@@ -70,11 +70,10 @@ namespace Otzerkalu
 		OtzerkaluDialog dialog;
 		if (dialog.exec () != QDialog::Accepted)
 			return;
-		Downloader_ = new OtzerkaluDownloader (
-				DownloadParams (dUrl, dialog.GetDir (),
-						dialog.GetRecursionLevel (),
-						dialog.IsFromOtherSite ()),
-						this);
+		Downloader_ = new OtzerkaluDownloader (DownloadParams (dUrl, dialog.GetDir (),
+					dialog.GetRecursionLevel (),
+					dialog.FetchFromExternalHosts ()),
+					this);
 		
 		connect (Downloader_,
 				SIGNAL (donwloadCompleted ()),

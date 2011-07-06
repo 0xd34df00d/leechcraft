@@ -39,7 +39,7 @@ namespace Otzerkalu
 		return Ui_.SaveDirLineEdit_->text ();
 	}
 	
-	bool OtzerkaluDialog::IsFromOtherSite () const
+	bool OtzerkaluDialog::FetchFromExternalHosts () const
 	{
 		return Ui_.FromOtherSite_->isChecked ();
 	}

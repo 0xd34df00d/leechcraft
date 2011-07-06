@@ -37,7 +37,7 @@ namespace Otzerkalu
 	{
 		DownloadParams ();
 		DownloadParams (const QUrl& downloadUrl, const QString& destDir,
-				const int recLevel, const bool fromOtherSite);
+				int recLevel, bool fromOtherSite);
 		QUrl DownloadUrl_;
 		QString DestDir_;
 		int RecLevel_;
@@ -51,7 +51,7 @@ namespace Otzerkalu
 		struct FileData
 		{
 			FileData ();
-			FileData (const QUrl& url, const QString& filename, const int recLevel);
+			FileData (const QUrl& url, const QString& filename, int recLevel);
 			QUrl Url_;
 			QString Filename_;
 			int RecLevel_;

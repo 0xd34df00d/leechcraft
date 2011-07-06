@@ -30,7 +30,7 @@ namespace Otzerkalu
 	}
 	
 	DownloadParams::DownloadParams (const QUrl& downloadUrl, const QString& destDir,
-				const int recLevel, const bool fromOtherSite)
+				int recLevel, bool fromOtherSite)
 	: DownloadUrl_ (downloadUrl)
 	, DestDir_ (destDir)
 	, RecLevel_ (recLevel)
@@ -52,12 +52,12 @@ namespace Otzerkalu
 		}
 	}
 
-	OtzerkaluDownloader::FileData::FileData()
+	OtzerkaluDownloader::FileData::FileData ()
 	{
 	}
 	
-	OtzerkaluDownloader::FileData::FileData(const QUrl& url, const QString& filename,
-			const int recLevel)
+	OtzerkaluDownloader::FileData::FileData (const QUrl& url, const QString& filename,
+			int recLevel)
 	: Url_ (url)
 	, Filename_ (filename)
 	, RecLevel_ (recLevel)
@@ -107,7 +107,7 @@ namespace Otzerkalu
 		const QUrl& tmpUrl = data.Url_;
 
 		QWebPage page;
-		page.mainFrame ()->load(filename);
+		page.mainFrame ()->load (filename);
 		QWebElement document = page.mainFrame ()->documentElement ();
 		QWebElementCollection uel = document.findAll ("*[href]") + document.findAll ("*[src]");
 				
@@ -130,7 +130,9 @@ namespace Otzerkalu
 			emit delegateEntity (GetEntity (url, urlVal), &id, &pr);
 			if (id == -1)
 			{
-				qWarning () << Q_FUNC_INFO << "Otzerkalu: Could not download a file";
+				qWarning () << Q_FUNC_INFO
+						<< "Otzerkalu: Could not download a file "
+						<< url.toString ();
 				emit gotEntity (Util::MakeNotification ("Otzerkalu",
 						tr ("Could not download a file"),
 						PCritical_));
