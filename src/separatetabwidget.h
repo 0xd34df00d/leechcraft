@@ -73,7 +73,7 @@ namespace LeechCraft
 		int AddTab (QWidget*, const QString&);
 		int AddTab (QWidget*, const QIcon&, const QString&);
 		void Clear ();
-		QWidget*	CurrentWidget () const;
+		QWidget* CurrentWidget () const;
 		int IndexOf (QWidget*) const;
 		int InsertTab (int, QWidget*, const QString&);
 		int InsertTab (int, QWidget*, const QIcon&, const QString&);
