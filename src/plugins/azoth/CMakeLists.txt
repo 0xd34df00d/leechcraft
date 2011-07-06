@@ -74,6 +74,7 @@ SET (SRCS
 	callmanager.cpp
 	callchatwidget.cpp
 	chattabwebview.cpp
+	locationdialog.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -108,6 +109,7 @@ SET (HEADERS
 	callmanager.h
 	callchatwidget.h
 	chattabwebview.h
+	locationdialog.h
 	animatediconmanager.h
 	sourcetrackingmodel.h
 	interfaces/iprotocolplugin.h
@@ -133,6 +135,7 @@ SET (FORMS
 	activitydialog.ui
 	mooddialog.ui
 	callchatwidget.ui
+	locationdialog.ui
 	)
 SET (RESOURCES azothresources.qrc)
 CreateTrVars ("azoth" "en;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)

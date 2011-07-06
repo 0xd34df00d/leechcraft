@@ -1,0 +1,554 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>LocationDialog</class>
+ <widget class="QDialog" name="LocationDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>347</width>
+    <height>608</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Location</string>
+  </property>
+  <layout class="QFormLayout" name="formLayout">
+   <property name="fieldGrowthPolicy">
+    <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+   </property>
+   <property name="margin">
+    <number>2</number>
+   </property>
+   <item row="0" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Accuracy:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QDoubleSpinBox" name="Accuracy_">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="decimals">
+        <number>1</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="SetAccuracy_">
+       <property name="text">
+        <string>Set</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Altitude:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QDoubleSpinBox" name="Altitude_">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="decimals">
+        <number>1</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="SetAltitude_">
+       <property name="text">
+        <string>Set</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>Area:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QLineEdit" name="Area_"/>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label_5">
+     <property name="text">
+      <string>Bearing:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QDoubleSpinBox" name="Bearing_">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="decimals">
+        <number>1</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="SetBearing_">
+       <property name="text">
+        <string>Set</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="label_19">
+     <property name="text">
+      <string>Building:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QLineEdit" name="Building_"/>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="label_21">
+     <property name="text">
+      <string>Country:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="QLineEdit" name="Country_"/>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLabel" name="label_22">
+     <property name="text">
+      <string>Country code:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1">
+    <widget class="QLineEdit" name="CountryCode_"/>
+   </item>
+   <item row="7" column="0">
+    <widget class="QLabel" name="label_7">
+     <property name="text">
+      <string>Datum:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="1">
+    <widget class="QLineEdit" name="Datum_"/>
+   </item>
+   <item row="8" column="0">
+    <widget class="QLabel" name="label_8">
+     <property name="text">
+      <string>Description:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="1">
+    <widget class="QLineEdit" name="Description_"/>
+   </item>
+   <item row="9" column="0">
+    <widget class="QLabel" name="label_12">
+     <property name="text">
+      <string>Floor:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="1">
+    <widget class="QLineEdit" name="Floor_"/>
+   </item>
+   <item row="10" column="0">
+    <widget class="QLabel" name="label_23">
+     <property name="text">
+      <string>Latitude:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <item>
+      <widget class="QDoubleSpinBox" name="Latitude_">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="SetLatitude_">
+       <property name="text">
+        <string>Set</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="11" column="0">
+    <widget class="QLabel" name="label_9">
+     <property name="text">
+      <string>Locality:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="11" column="1">
+    <widget class="QLineEdit" name="Locality_"/>
+   </item>
+   <item row="12" column="0">
+    <widget class="QLabel" name="label_10">
+     <property name="text">
+      <string>Longitude:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="12" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_5">
+     <item>
+      <widget class="QDoubleSpinBox" name="Longitude_">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="SetLongitude_">
+       <property name="text">
+        <string>Set</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="13" column="0">
+    <widget class="QLabel" name="label_11">
+     <property name="text">
+      <string>Postal code:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="13" column="1">
+    <widget class="QLineEdit" name="PostalCode_"/>
+   </item>
+   <item row="14" column="0">
+    <widget class="QLabel" name="label_6">
+     <property name="text">
+      <string>Region:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="14" column="1">
+    <widget class="QLineEdit" name="Region_"/>
+   </item>
+   <item row="15" column="0">
+    <widget class="QLabel" name="label_14">
+     <property name="text">
+      <string>Room:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="15" column="1">
+    <widget class="QLineEdit" name="Room_"/>
+   </item>
+   <item row="16" column="0">
+    <widget class="QLabel" name="label_15">
+     <property name="text">
+      <string>Speed:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="16" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_6">
+     <item>
+      <widget class="QDoubleSpinBox" name="Speed_">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="decimals">
+        <number>1</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="SetSpeed_">
+       <property name="text">
+        <string>Set</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="17" column="0">
+    <widget class="QLabel" name="label_17">
+     <property name="text">
+      <string>Street:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="17" column="1">
+    <widget class="QLineEdit" name="Street_"/>
+   </item>
+   <item row="18" column="0">
+    <widget class="QLabel" name="label_18">
+     <property name="text">
+      <string>Text:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="18" column="1">
+    <widget class="QLineEdit" name="Text_"/>
+   </item>
+   <item row="19" column="0">
+    <widget class="QLabel" name="label_20">
+     <property name="text">
+      <string>Timestamp:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="19" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_7">
+     <item>
+      <widget class="QDateTimeEdit" name="Timestamp_">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="timeSpec">
+        <enum>Qt::UTC</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="SetTimestamp_">
+       <property name="text">
+        <string>Set</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="20" column="0">
+    <widget class="QLabel" name="label_16">
+     <property name="text">
+      <string>URL:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="20" column="1">
+    <widget class="QLineEdit" name="URL_"/>
+   </item>
+   <item row="21" column="0" colspan="2">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>LocationDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>220</x>
+     <y>597</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>LocationDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>288</x>
+     <y>603</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>SetAccuracy_</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>Accuracy_</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>315</x>
+     <y>19</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>256</x>
+     <y>13</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>SetAltitude_</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>Altitude_</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>307</x>
+     <y>43</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>253</x>
+     <y>41</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>SetBearing_</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>Bearing_</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>312</x>
+     <y>103</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>277</x>
+     <y>106</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>SetLatitude_</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>Latitude_</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>318</x>
+     <y>288</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>264</x>
+     <y>288</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>SetLongitude_</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>Longitude_</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>314</x>
+     <y>339</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>266</x>
+     <y>345</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>SetSpeed_</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>Speed_</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>324</x>
+     <y>451</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>256</x>
+     <y>455</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>SetTimestamp_</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>Timestamp_</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>320</x>
+     <y>536</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>265</x>
+     <y>539</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
