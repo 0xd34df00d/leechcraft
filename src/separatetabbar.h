@@ -52,6 +52,9 @@ namespace LeechCraft
 	signals:
 		void addDefaultTab (bool);
 		void showAddTabButton (bool);
+		void tabWasInserted (int);
+		void tabWasRemoved (int);
+		
 	};
 }
 #endif // SEPARATETABBAR_H

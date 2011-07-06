@@ -499,6 +499,15 @@ namespace LeechCraft
 				SIGNAL (addDefaultTab (bool)),
 				this,
 				SLOT (handleAddDefaultTab (bool)));
+
+		connect (MainTabBar_,
+				SIGNAL (tabWasInserted (int)),
+				this,
+				SIGNAL (tabWasInserted (int)));
+		connect (MainTabBar_,
+				SIGNAL (tabWasRemoved (int)),
+				this,
+				SIGNAL (tabWasRemoved (int)));
 	}
 
 	void SeparateTabWidget::AddTabButtonInit ()

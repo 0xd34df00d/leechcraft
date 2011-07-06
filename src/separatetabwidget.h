@@ -133,6 +133,8 @@ namespace LeechCraft
 		void tabWasMoved (int, int);
 		void currentChanged (int);
 		void tabCloseRequested (int);
+		void tabWasInserted (int);
+		void tabWasRemoved (int);
 	};
 }
 #endif // SEPARATETABWIDGET_H

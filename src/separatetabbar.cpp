@@ -142,6 +142,8 @@ namespace LeechCraft
 			removeTab (count () - 1);
 			emit showAddTabButton (true);
 		}
+
+		emit tabWasInserted (index);
 	}
 
 	void SeparateTabBar::tabRemoved (int index)
@@ -163,6 +165,8 @@ namespace LeechCraft
 
 			emit showAddTabButton (false);
 		}
+
+		emit tabWasRemoved (index);
 	}
 
 	void SeparateTabBar::setPinTab (int index)
