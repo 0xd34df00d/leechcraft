@@ -88,7 +88,10 @@ namespace Azoth
 		
 		virtual void SetGeolocationInfo (const GeolocationInfo_t&) = 0;
 		
-		virtual GeolocationInfo_t GetUserGeolocationInfo (QObject *entry) = 0;
+		virtual GeolocationInfo_t GetUserGeolocationInfo (QObject *entry,
+				const QString& variant) const = 0;
+		
+		virtual void geolocationInfoChanged (const QString&, QObject*) = 0;
 	};
 }
 }

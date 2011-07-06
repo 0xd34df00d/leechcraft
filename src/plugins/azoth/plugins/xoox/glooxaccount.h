@@ -30,6 +30,7 @@
 #include <interfaces/isupporttune.h>
 #include <interfaces/isupportmood.h>
 #include <interfaces/isupportactivity.h>
+#include <interfaces/isupportgeolocation.h>
 #include <interfaces/isupportmediacalls.h>
 #include "glooxclentry.h"
 
@@ -63,6 +64,7 @@ namespace Xoox
 					   , public ISupportTune
 					   , public ISupportMood
 					   , public ISupportActivity
+					   , public ISupportGeolocation
 					   , public ISupportMediaCalls
 	{
 		Q_OBJECT
@@ -72,6 +74,7 @@ namespace Xoox
 				LeechCraft::Azoth::ISupportTune
 				LeechCraft::Azoth::ISupportMood
 				LeechCraft::Azoth::ISupportActivity
+				LeechCraft::Azoth::ISupportGeolocation
 				LeechCraft::Azoth::ISupportMediaCalls);
 
 		QString Name_;
@@ -125,10 +128,11 @@ namespace Xoox
 		void SetConsoleEnabled (bool);
 		
 		void PublishTune (const QMap<QString, QVariant>&);
-		
 		void SetMood (const QString&, const QString&);
-		
 		void SetActivity (const QString&, const QString&, const QString&);
+		
+		void SetGeolocationInfo (const GeolocationInfo_t&);
+		GeolocationInfo_t GetUserGeolocationInfo (QObject*, const QString&) const;
 		
 		MediaCallFeatures GetMediaCallFeatures () const;
 		QObject* Call (const QString& id, const QString& variant);
@@ -173,6 +177,8 @@ namespace Xoox
 		void addContactSuggested (const QString&, const QString&, const QStringList&);
 		
 		void gotConsolePacket (const QByteArray&, int);
+		
+		void geolocationInfoChanged (const QString&, QObject*);
 		
 		void called (QObject*);
 
