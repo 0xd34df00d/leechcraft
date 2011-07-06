@@ -44,7 +44,7 @@ namespace Otzerkalu
 		return Ui_.FromOtherSite_->isChecked ();
 	}
 		
-	void OtzerkaluDialog::on_ChooseDirButton_clicked ()
+	void OtzerkaluDialog::on_ChooseDirButton__clicked ()
 	{
 		QString saveDir = QFileDialog::getExistingDirectory (this,
 				tr ("Save into a directory"),
