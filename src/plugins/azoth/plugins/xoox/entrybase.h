@@ -107,6 +107,8 @@ namespace Xoox
 		void SetClientInfo (const QString&, const QString&, const QByteArray&);
 		void SetClientInfo (const QString&, const QXmppPresence&);
 		
+		GeolocationInfo_t GetGeolocationInfo (const QString&) const;
+		
 		QByteArray GetVariantVerString (const QString&) const;
 	private:
 		QString FormatRawInfo (const QXmppVCardIq&);
@@ -127,7 +129,7 @@ namespace Xoox
 		void moodChanged (const QString&);
 		void activityChanged (const QString&);
 		void tuneChanged (const QString&);
-		void locationChanged (const QString&);
+		void locationChanged (const QString&, QObject*);
 	};
 }
 }
