@@ -24,6 +24,7 @@
 #include <QTreeView>
 #include <plugininterface/resourceloader.h>
 #include "interfaces/iclentry.h"
+#include "interfaces/isupportgeolocation.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "util.h"
@@ -280,19 +281,16 @@ namespace Azoth
 				}
 			}
 			if (addInfo.contains ("user_tune"))
+				LoadSystemIcon ("/notification_roster_tune", clientIcons);
+			
+			ISupportGeolocation *geoloc =
+					qobject_cast<ISupportGeolocation*> (entry->GetParentAccount ());
+			if (geoloc)
 			{
-				const QString& iconName = SystemIconset_ + "/notification_roster_tune";
-				QIcon icon = SystemIconCache_ [iconName];
-				if (icon.isNull ())
-					icon = QIcon (Core::Instance ()
-							.GetResourceLoader (Core::RLTSystemIconLoader)->
-									GetIconPath (iconName));
-				
-				if (!icon.isNull ())
-				{
-					clientIcons.prepend (icon);
-					SystemIconCache_ [iconName] = icon;
-				}
+				const GeolocationInfo_t& info = geoloc->
+						GetUserGeolocationInfo (entryObj, vars.value (0, QString ()));
+				if (!info.isEmpty ())
+					LoadSystemIcon ("/geolocation", clientIcons);
 			}
 		}
 
@@ -363,6 +361,23 @@ namespace Azoth
 		}
 
 		painter->drawPixmap (option.rect, pixmap);
+	}
+	
+	void ContactListDelegate::LoadSystemIcon (const QString& name,
+			QList<QIcon>& clientIcons) const
+	{
+		const QString& iconName = SystemIconset_ + name;
+		QIcon icon = SystemIconCache_ [iconName];
+		if (icon.isNull ())
+			icon = QIcon (Core::Instance ()
+					.GetResourceLoader (Core::RLTSystemIconLoader)->
+							GetIconPath (iconName));
+			
+		if (!icon.isNull ())
+		{
+			clientIcons.prepend (icon);
+			SystemIconCache_ [iconName] = icon;
+		}
 	}
 
 	void ContactListDelegate::handleShowAvatarsChanged ()
