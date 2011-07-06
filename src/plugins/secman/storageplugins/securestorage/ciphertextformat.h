@@ -20,7 +20,6 @@
 #define PLUGINS_SECMAN_PLUGINS_SECURESTORAGE_CIPHERTEXTFORMAT_H
 
 #include "cryptosystem.h"
-#include <QByteArray>
 
 namespace LeechCraft
 {
@@ -32,11 +31,37 @@ namespace LeechCraft
 			{
 				namespace SecureStorage
 				{
-					const int HMAC_LENGTH = 256 / 8;
-					const int HASH_LENGTH = 256 / 8;
-					const int KEY_LENGTH = 256 / 8;
-					const int IV_LENGTH = 128 / 8;
-					const int RND_LENGTH = 4;
+					const int HMACLength = 256 / 8;
+					const int HashLength = 256 / 8;
+					const int KeyLength = 256 / 8;
+					const int IVLength = 128 / 8;
+					const int RndLength = 4;
+
+					namespace CipherTextFormatUtils
+					{
+						/**
+						 * Compute buffer length for known data length.
+						 * @param dataLength length of data.
+						 * @return length of buffer.
+						 */
+						int BufferLengthFor (int dataLength);
+
+						/**
+						 * Compute data length from known buffer length.
+						 * @param bufferlength of buffer.
+						 * @return length of data.
+						 */
+						int DataLengthFor (int bufferLength);
+
+						/**
+						 * Compute decryption buffer length from known buffer length.
+						 * Decryption buffer contains data and random block,
+						 * and has length (Datalength + RND_LENGTH)
+						 * @param bufferlength of buffer.
+						 * @return length of buffer for decryption.
+						 */
+						int DecryptBufferLengthFor (int bufferLength);
+					}
 
 					/**
 					 * Block of ciphertext in specific format.
@@ -47,89 +72,26 @@ namespace LeechCraft
 					class CipherTextFormat
 					{
 						/** Pointer to buffer containing ciphertext. */
-						unsigned char* Buffer_;
+						unsigned char *Buffer_;
 						/** Length of unencrypted data. */
 						int DataLength_;
 
 					public:
-
-						inline CipherTextFormat (void* buffer, int dataLength)
-							: Buffer_ (reinterpret_cast<unsigned char*> (buffer))
-							, DataLength_ (dataLength) { }
-
-						/**
-						 * Compute buffer length for known data length.
-						 * @param dataLength length of data.
-						 * @return length of buffer.
-						 */
-						inline static int BufferLengthFor (int dataLength)
-						{
-							return dataLength + (IV_LENGTH + RND_LENGTH + HMAC_LENGTH);
-						}
-
-						/**
-						 * Compute data length from known buffer length.
-						 * @param bufferlength of buffer.
-						 * @return length of data.
-						 */
-						inline static int DataLengthFor (int bufferLength)
-						{
-							return bufferLength - (IV_LENGTH + RND_LENGTH + HMAC_LENGTH);
-						}
-
-						/**
-						 * Compute decryption buffer length from known buffer length.
-						 * Decryption buffer contains data and random block,
-						 * and has length (Datalength + RND_LENGTH)
-						 * @param bufferlength of buffer.
-						 * @return length of buffer for decryption.
-						 */
-						inline static int DecryptBufferLengthFor (int bufferLength)
-						{
-							return bufferLength - (IV_LENGTH + HMAC_LENGTH);
-						}
-
+						CipherTextFormat (void *buffer, int dataLength);
 						/** Pointer to initialization vector. */
-						inline unsigned char* Iv () const
-						{
-							return Buffer_;
-						}
-
+						unsigned char* Iv () const;
 						/** Pointer to encrypted data block. */
-						inline unsigned char* Data () const
-						{
-							return Buffer_ + IV_LENGTH;
-						}
-
+						unsigned char* Data () const;
 						/** Pointer to encrypted random block. */
-						inline unsigned char* Rnd () const
-						{
-							return Buffer_ + IV_LENGTH + DataLength_;
-						}
-
+						unsigned char* Rnd () const;
 						/** Pointer to HMAC. */
-						inline unsigned char* Hmac () const
-						{
-							return Buffer_ + IV_LENGTH + DataLength_ + RND_LENGTH;
-						}
-
+						unsigned char* Hmac () const;
 						/** Pointer to beginning of buffer. */
-						inline unsigned char* BufferBegin () const
-						{
-							return Buffer_;
-						}
-
+						unsigned char* BufferBegin () const;
 						/** Pointer to end of buffer. */
-						inline unsigned char* BufferEnd () const
-						{
-							return Buffer_ + IV_LENGTH + DataLength_ + RND_LENGTH + HMAC_LENGTH;
-						}
-
+						unsigned char* BufferEnd () const;
 						/** Length of data.*/
-						inline int GetDataLength () const
-						{
-							return DataLength_;
-						}
+						int GetDataLength () const;
 					};
 				}
 			}

@@ -37,13 +37,13 @@ namespace
 	 * @param ctf2 second ciphertext.
 	 * @return true if all corresponding field in ciphertexts are different.
 	 */
-	bool AllFieldsDifferent (const CipherTextFormat &ctf1, const CipherTextFormat &ctf2)
+	bool AllFieldsDifferent (const CipherTextFormat& ctf1, const CipherTextFormat& ctf2)
 	{
-		if (!memcmp (ctf1.Iv (), ctf2.Iv (), IV_LENGTH))
+		if (!memcmp (ctf1.Iv (), ctf2.Iv (), IVLength))
 			return false;
-		if (!memcmp (ctf1.Rnd (), ctf2.Rnd (), RND_LENGTH))
+		if (!memcmp (ctf1.Rnd (), ctf2.Rnd (), RndLength))
 			return false;
-		if (!memcmp (ctf1.Hmac (), ctf2.Hmac (), HMAC_LENGTH))
+		if (!memcmp (ctf1.Hmac (), ctf2.Hmac (), HMACLength))
 			return false;
 		if (ctf1.GetDataLength () == ctf2.GetDataLength ())
 			if (ctf1.GetDataLength () != 0)
@@ -59,12 +59,12 @@ namespace
 	 * @return true if all ciphertexts in list have different 
 	 * corresponding fields.
 	 */
-	bool AllDiffer (const QList<QByteArray> &list)
+	bool AllDiffer (const QList<QByteArray>& list)
 	{
 		QList<CipherTextFormat> ctfs;
-		Q_FOREACH (const QByteArray &a, list)
+		Q_FOREACH (const QByteArray& a, list)
 			ctfs << CipherTextFormat (const_cast<char*> (a.data ()),
-					CipherTextFormat::DataLengthFor (a.size ()));
+					CipherTextFormatUtils::DataLengthFor (a.size ()));
 		for (int i = 0, len = ctfs.length (); i < len; ++i)
 			for (int j = i + 1; j < len; ++j)
 				if (!AllFieldsDifferent (ctfs.at (i), ctfs.at (j)))
@@ -78,11 +78,11 @@ namespace
 	 * @param datas list of texts to encrypt.
 	 * @return list of ciphertexts with length (css.size () * datas.size ())
 	 */
-	QList<QByteArray> allCipherTexts (const QList<CryptoSystem*> &css, const QList<QByteArray*> &datas)
+	QList<QByteArray> allCipherTexts (const QList<CryptoSystem*>& css, const QList<QByteArray*>& datas)
 	{
 		QList<QByteArray> cipherTexts;
-		Q_FOREACH (CryptoSystem* cs, css)
-			Q_FOREACH (QByteArray* data, datas)
+		Q_FOREACH (CryptoSystem *cs, css)
+			Q_FOREACH (QByteArray *data, datas)
 				cipherTexts << cs->Encrypt (*data);
 		return cipherTexts;
 	}
@@ -112,17 +112,17 @@ namespace
 		return result;
 	}
 
-	void TestEncryptDecryptCorrect (const QString &password, const QByteArray &data)
+	void TestEncryptDecryptCorrect (const QString& password, const QByteArray& data)
 	{
 		CryptoSystem cs1 (password);
 		CryptoSystem cs2 (password);
 		QByteArray enc1 = cs1.Encrypt (data);
 		QByteArray enc2 = cs2.Encrypt (data);
-		const QByteArray &dec12 = cs1.Decrypt (enc2);
-		const QByteArray &dec21 = cs2.Decrypt (enc1);
+		const QByteArray& dec12 = cs1.Decrypt (enc2);
+		const QByteArray& dec21 = cs2.Decrypt (enc1);
 		QVERIFY (dec12 == dec21);
-		CipherTextFormat ctf1 (enc1.data (), CipherTextFormat::DataLengthFor (enc1.length ()));
-		CipherTextFormat ctf2 (enc2.data (), CipherTextFormat::DataLengthFor (enc2.length ()));
+		CipherTextFormat ctf1 (enc1.data (), CipherTextFormatUtils::DataLengthFor (enc1.length ()));
+		CipherTextFormat ctf2 (enc2.data (), CipherTextFormatUtils::DataLengthFor (enc2.length ()));
 		QVERIFY (AllFieldsDifferent (ctf1, ctf2));
 	}
 }
@@ -167,7 +167,7 @@ void CryptoSystemTest::testDifferentCipherText ()
 	QList<QByteArray*> datas;
 	datas << &data1 << &data2 << &data3 << &data3 << &data1;
 
-	const QList<QByteArray> &cipherTexts = allCipherTexts (css, datas);
+	const QList<QByteArray>& cipherTexts = allCipherTexts (css, datas);
 
 	QVERIFY (AllDiffer (cipherTexts));
 }
@@ -176,7 +176,7 @@ void CryptoSystemTest::testDifferentCipherText ()
 	try { \
 		statement; \
 		QFAIL (#exception " must be throwed"); \
-	} catch (exception &) {}
+	} catch (exception&) {}
 
 void CryptoSystemTest::testEncryptDecrypt ()
 {
@@ -187,11 +187,11 @@ void CryptoSystemTest::testEncryptDecrypt ()
 	QList<QByteArray*> datas;
 	QByteArray data1;
 	QByteArray data2;
-	data2.fill (0, IV_LENGTH + 1);
+	data2.fill (0, IVLength + 1);
 	QByteArray data3 = QByteArray::fromHex ("bc6f51ff3f474d205f5f6f764278e86012a2ead9f06e47283856fc746e874981");
 	datas << &data1 << &data2 << &data3;
 
-	Q_FOREACH (QByteArray* data, datas)
+	Q_FOREACH (QByteArray *data, datas)
 	{
 		QByteArray e1 = cs1.Encrypt (*data);
 		QByteArray e2 = cs2.Encrypt (*data);
@@ -207,7 +207,7 @@ void CryptoSystemTest::testEncryptDecrypt ()
 			QVERIFY (cs3.Decrypt (e3) == *data);
 			QVERIFY (cs3.Decrypt (e3) == cs3.Decrypt (e3));
 		}
-		catch (WrongHMACException &e)
+		catch (WrongHMACException& e)
 		{
 			QFAIL ("Wrong HMAC");
 		}
@@ -226,7 +226,7 @@ void CryptoSystemTest::testEncryptDecryptRandom ()
 	for (int i = 0; i < nTests; ++i)
 	{
 		const QString password (randomData (0, 100));
-		const QByteArray &data = randomData (0, 16384);
+		const QByteArray& data = randomData (0, 16384);
 		TestEncryptDecryptCorrect (password, data);
 	}
 }
@@ -237,14 +237,14 @@ void CryptoSystemTest::testEncryptDecryptLength ()
 	for (int len = 0; len <= maxLength; ++len)
 	{
 		const QString password (randomData (len));
-		const QByteArray &data = randomData (len);
+		const QByteArray& data = randomData (len);
 		TestEncryptDecryptCorrect (password, data);
 	}
 }
 
 void CryptoSystemTest::testDecryptShortCipherText ()
 {
-	int minLength = CipherTextFormat::BufferLengthFor (0);
+	int minLength = CipherTextFormatUtils::BufferLengthFor (0);
 	CryptoSystem cs ("password");
 	for (int i = 0; i < minLength; i++)
 	{

@@ -37,7 +37,9 @@ namespace LeechCraft
 					class WrongHMACException : public std::exception
 					{
 					public:
+
 						WrongHMACException () { }
+						const char* what () const throw ();
 					};
 
 					class CryptoSystem

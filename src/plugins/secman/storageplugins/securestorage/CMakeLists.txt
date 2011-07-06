@@ -6,6 +6,7 @@ INCLUDE_DIRECTORIES (
 SET (SRCS
 	securestorage.cpp
 	cryptosystem.cpp
+	ciphertextformat.cpp
 	)
 SET (HEADERS
 	securestorage.h
@@ -20,6 +21,7 @@ IF (TESTS_SECMAN)
 	ADD_EXECUTABLE (lc_secman_securestorage_test WIN32
 		tests/cryptosystemtest.cpp
 		cryptosystem.cpp
+		ciphertextformat.cpp
 		${SECMAN_SECURESTORAGE_MOC}
 	)
 	TARGET_LINK_LIBRARIES (lc_secman_securestorage_test

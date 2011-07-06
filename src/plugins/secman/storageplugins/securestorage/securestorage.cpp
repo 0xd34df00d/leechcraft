@@ -41,8 +41,11 @@ namespace
 	{
 	public:
 
-		PasswordNotEnteredException ()
+		PasswordNotEnteredException () { }
+
+		const char* what () const throw ()
 		{
+			return "PasswordNotEnteredException";
 		}
 	};
 }
@@ -57,15 +60,24 @@ void Plugin::Init (ICoreProxy_ptr)
 			QSettings::UserScope,
 			QCoreApplication::organizationName (),
 			QCoreApplication::applicationName () + "_SecMan_SecureStorage_Data"));
+	
 	ForgetKeyAction_ = new QAction (tr ("Forget master password"), this);
 	ClearSettingsAction_ = new QAction (tr ("Clear SecureStorage data.."), this);
 	ChangePasswordAction_ = new QAction (tr ("Change SecureStorage master password.."), this);
-	connect (ForgetKeyAction_, SIGNAL (triggered ()),
-			this, SLOT (forgetKey ()));
-	connect (ClearSettingsAction_, SIGNAL (triggered ()),
-			this, SLOT (clearSettings ()));
-	connect (ChangePasswordAction_, SIGNAL (triggered ()),
-			this, SLOT (changePassword ()));
+	
+	connect (ForgetKeyAction_, 
+			SIGNAL (triggered ()),
+			this, 
+			SLOT (forgetKey ()));
+	connect (ClearSettingsAction_, 
+			SIGNAL (triggered ()),
+			this, 
+			SLOT (clearSettings ()));
+	connect (ChangePasswordAction_, 
+			SIGNAL (triggered ()),
+			this, 
+			SLOT (changePassword ()));
+	
 	UpdateActionsStates ();
 }
 
@@ -139,7 +151,9 @@ IStoragePlugin::StorageTypes Plugin::GetStorageTypes () const
 	return STSecure;
 }
 
-QByteArray serialize (const QVariant &variant)
+namespace
+{
+QByteArray Serialize (const QVariant& variant)
 {
 	QByteArray result;
 	QDataStream stream (&result, QIODevice::ReadWrite);
@@ -147,17 +161,18 @@ QByteArray serialize (const QVariant &variant)
 	return result;
 }
 
-QVariant deserialize (const QByteArray &array)
+QVariant Deserialize (const QByteArray& array)
 {
 	QVariant result;
 	QDataStream stream (array);
 	result.load (stream);
 	return result;
 }
+}
 
 void Plugin::UpdateActionsStates ()
 {
-	ForgetKeyAction_->setEnabled ((bool)CryptoSystem_);
+	ForgetKeyAction_->setEnabled (bool(CryptoSystem_));
 	ClearSettingsAction_->setEnabled (IsPasswordSet ());
 	ChangePasswordAction_->setEnabled (IsPasswordSet ());
 }
@@ -181,15 +196,15 @@ void Plugin::Save (const QByteArray& key, const QVariantList& values,
 		allValues = Load (key, st) + values;
 	try
 	{
-		QByteArray data = serialize (allValues);
+		QByteArray data = Serialize (allValues);
 		QByteArray encrypted = GetCryptoSystem ().Encrypt (data);
 		Storage_->setValue (key, encrypted);
 	}
-	catch (PasswordNotEnteredException &e)
+	catch (PasswordNotEnteredException& e)
 	{
 		qWarning () << Q_FUNC_INFO << "Password was not entered";
 	}
-	catch (WrongHMACException &e)
+	catch (WrongHMACException& e)
 	{
 		qWarning () << Q_FUNC_INFO << "Wrong HMAC";
 		forgetKey ();
@@ -202,13 +217,13 @@ QVariantList Plugin::Load (const QByteArray& key, IStoragePlugin::StorageType st
 	{
 		QByteArray encrypted = Storage_->value (key).toByteArray ();
 		QByteArray data = GetCryptoSystem ().Decrypt (encrypted);
-		return deserialize (data).toList ();
+		return Deserialize (data).toList ();
 	}
-	catch (WrongHMACException &e)
+	catch (WrongHMACException& e)
 	{
 		return QVariantList ();
 	}
-	catch (PasswordNotEnteredException &e)
+	catch (PasswordNotEnteredException& e)
 	{
 		return QVariantList ();
 	}
@@ -331,7 +346,7 @@ const CryptoSystem &Plugin::GetCryptoSystem ()
 					throw PasswordNotEnteredException ();
 
 				QString password = dialog.textValue ();
-				CryptoSystem* cs = new CryptoSystem (password);
+				CryptoSystem *cs = new CryptoSystem (password);
 				if (IsPasswordCorrect (*cs))
 				{
 					SetCryptoSystem (cs);
@@ -346,11 +361,11 @@ const CryptoSystem &Plugin::GetCryptoSystem ()
 	return *CryptoSystem_;
 }
 
-void Plugin::SetCryptoSystem (CryptoSystem* cs)
+void Plugin::SetCryptoSystem (CryptoSystem *cs)
 {
 	delete CryptoSystem_;
 	CryptoSystem_ = cs;
-	ForgetKeyAction_->setEnabled ((bool)cs);
+	ForgetKeyAction_->setEnabled (bool(cs));
 }
 
 void Plugin::CreateNewPassword ()
@@ -397,7 +412,7 @@ bool Plugin::IsPasswordSet ()
 	return Settings_->value ("SecureStoragePasswordIsSet").toBool ();
 }
 
-void Plugin::ChangePassword (const QString &oldPass, const QString &newPass)
+void Plugin::ChangePassword (const QString& oldPass, const QString& newPass)
 {
 	CryptoSystem oldCs (oldPass);
 	if (!IsPasswordCorrect (oldCs))
@@ -419,7 +434,7 @@ void Plugin::ChangePassword (const QString &oldPass, const QString &newPass)
 			QVariant encryptedData (newEncrypted);
 			Storage_->setValue (key, encryptedData);
 		}
-		catch (WrongHMACException &e)
+		catch (WrongHMACException& e)
 		{
 			qWarning () << Q_FUNC_INFO <<
 					"Removing value of key \"" << key << "\" (wrong HMAC)";
@@ -430,7 +445,7 @@ void Plugin::ChangePassword (const QString &oldPass, const QString &newPass)
 	UpdateActionsStates ();
 }
 
-void Plugin::UpdatePasswordSettings (const QString &pass)
+void Plugin::UpdatePasswordSettings (const QString& pass)
 {
 	CryptoSystem *cs = new CryptoSystem (pass);
 	// set up new settings
@@ -442,7 +457,7 @@ void Plugin::UpdatePasswordSettings (const QString &pass)
 	SetCryptoSystem (cs);
 }
 
-bool Plugin::IsPasswordCorrect (const CryptoSystem &cs)
+bool Plugin::IsPasswordCorrect (const CryptoSystem& cs)
 {
 	if (!IsPasswordSet ())
 		return false;
@@ -453,7 +468,7 @@ bool Plugin::IsPasswordCorrect (const CryptoSystem &cs)
 		cs.Decrypt (cookie);
 		return true;
 	}
-	catch (WrongHMACException &e)
+	catch (WrongHMACException& e)
 	{
 		return false;
 	}
