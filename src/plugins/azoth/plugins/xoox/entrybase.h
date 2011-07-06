@@ -129,6 +129,8 @@ namespace Xoox
 		void moodChanged (const QString&);
 		void activityChanged (const QString&);
 		void tuneChanged (const QString&);
+		void locationChanged (const QString&);
+
 		void locationChanged (const QString&, QObject*);
 	};
 }

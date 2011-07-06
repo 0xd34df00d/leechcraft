@@ -254,6 +254,7 @@ namespace Xoox
 		{
 			Location_ [variant] = location->GetInfo ();
 			emit locationChanged (variant, this);
+			emit locationChanged (variant);
 			return;
 		}
 		
