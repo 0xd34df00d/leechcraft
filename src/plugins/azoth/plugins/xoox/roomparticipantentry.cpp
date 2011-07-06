@@ -105,20 +105,16 @@ namespace Xoox
 		AllMessages_ << msg;
 		return msg;
 	}
-	
-	QMap<QString, QVariant> RoomParticipantEntry::GetClientInfo (const QString& variant) const
-	{
-		QMap<QString, QVariant> result = EntryBase::GetClientInfo (variant);
-		const QString& realJid = RoomHandler_->GetRoom ()->
-				participantPresence (GetJID ()).mucItem ().jid ();
-		if (!realJid.isEmpty ())
-			result ["real_id"] = realJid;
-		return result;
-	}
 
 	QString RoomParticipantEntry::GetJID () const
 	{
 		return RoomHandler_->GetRoomJID () + "/" + Nick_;
+	}
+	
+	QString RoomParticipantEntry::GetRealJID () const
+	{
+		return RoomHandler_->GetRoom ()->
+				participantPresence (GetJID ()).mucItem ().jid ();
 	}
 
 	QString RoomParticipantEntry::GetNick () const
