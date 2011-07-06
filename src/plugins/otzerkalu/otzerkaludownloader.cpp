@@ -70,15 +70,21 @@ namespace Otzerkalu
 	: QObject (parent)
 	, Param_ (param)
 	{
-		const QString& filename = Param_.DestDir_ + "/" + Param_.DownloadUrl_.host () +
-				"/" + Param_.DownloadUrl_.path ();
-		
+		const QString& filename = Param_.DownloadUrl_.path () == "/" ?
+				Param_.DestDir_ + "/" + Param_.DownloadUrl_.host () +
+					"/index.html" :
+				Param_.DestDir_ + "/" + Param_.DownloadUrl_.host () +
+					"/" + Param_.DownloadUrl_.path ();
+		qDebug () << Param_.DownloadUrl_.path ();
+		qDebug () << filename;
 		int id = -1;
 		QObject *pr;
 		emit delegateEntity (GetEntity (Param_.DownloadUrl_, filename), &id, &pr);
 		if (id == -1)
 		{
-			qWarning () << Q_FUNC_INFO << "Otzerkalu: Could not download a file";
+			qWarning () << Q_FUNC_INFO
+					<< "Otzerkalu: Could not download a file"
+					<< Param_.DownloadUrl_.toString ();
 			emit gotEntity (Util::MakeNotification ("Otzerkalu",
 					tr ("Could not download a file"),
 					LeechCraft::PCritical_));
@@ -102,6 +108,11 @@ namespace Otzerkalu
 		const FileData& data = FileMap_ [id];
 		if (!data.RecLevel_)
 			return;
+		
+		emit gotEntity (Util::MakeNotification (tr ("Download complete"),
+				tr ("Download complete: %1.")
+					.arg (data.Filename_),
+				PInfo_));
 		
 		const QString& filename = data.Filename_;
 		const QUrl& tmpUrl = data.Url_;

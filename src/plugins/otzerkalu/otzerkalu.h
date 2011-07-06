@@ -47,8 +47,9 @@ namespace Otzerkalu
 		QIcon GetIcon () const;
 		bool CouldHandle (const Entity& entity) const;
 		void Handle (Entity entity);
-	private slots:
-		void downloadCompleted ();
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
+		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 	};
 }
 }
