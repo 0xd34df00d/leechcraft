@@ -983,40 +983,42 @@ namespace Azoth
 			tip += tr ("Real ID:") + ' ' + info.value ("real_id", tr ("unknown")).toString ();
 		}
 
-		Q_FOREACH (const QString& variant, variants)
-		{
-			const QMap<QString, QVariant>& info = entry->GetClientInfo (variant);
-			if (info.isEmpty ())
-				continue;
-
-			tip += "<hr />";
-			if (!variant.isEmpty ())
-				tip += "<strong>" + variant + "</strong>";
-
-			if (info.contains ("priority"))
-				tip += " (" + QString::number (info.value ("priority").toInt ()) + ")";
-			tip += ": ";
-			tip += Status2Str (entry->GetStatus (variant), PluginProxyObject_);
-
-			if (info.contains ("client_name"))
-				tip += "<br />" + tr ("Using:") + ' ' + info.value ("client_name").toString ();
-			if (info.contains ("client_version"))
-				tip += " " + info.value ("client_version").toString ();
-			
-			if (info.contains ("user_mood"))
-				FormatMood (tip, info ["user_mood"].toMap ());
-			if (info.contains ("user_activity"))
-				FormatActivity (tip, info ["user_activity"].toMap ());
-			if (info.contains ("user_tune"))
-				FormatTune (tip, info ["user_tune"].toMap ());
-
-			if (info.contains ("custom_user_visible_map"))
+		if (entry->GetEntryType () != ICLEntry::ETPrivateChat)
+			Q_FOREACH (const QString& variant, variants)
 			{
-				const QVariantMap& map = info ["custom_user_visible_map"].toMap ();
-				Q_FOREACH (const QString& key, map.keys ())
-					tip += "<br />" + key + ": " + map [key].toString () + "<br />";
+				const QMap<QString, QVariant>& info = entry->GetClientInfo (variant);
+				if (info.isEmpty ())
+					continue;
+
+				tip += "<hr />";
+				if (!variant.isEmpty ())
+					tip += "<strong>" + variant + "</strong>";
+
+				if (info.contains ("priority"))
+					tip += " (" + QString::number (info.value ("priority").toInt ()) + ")";
+				tip += ": ";
+				tip += Status2Str (entry->GetStatus (variant), PluginProxyObject_);
+
+				if (info.contains ("client_name"))
+					tip += "<br />" + tr ("Using:") + ' ' + info.value ("client_name").toString ();
+				if (info.contains ("client_version"))
+					tip += " " + info.value ("client_version").toString ();
+				
+				if (info.contains ("user_mood"))
+					FormatMood (tip, info ["user_mood"].toMap ());
+				if (info.contains ("user_activity"))
+					FormatActivity (tip, info ["user_activity"].toMap ());
+				if (info.contains ("user_tune"))
+					FormatTune (tip, info ["user_tune"].toMap ());
+
+				if (info.contains ("custom_user_visible_map"))
+				{
+					const QVariantMap& map = info ["custom_user_visible_map"].toMap ();
+					Q_FOREACH (const QString& key, map.keys ())
+						tip += "<br />" + key + ": " + map [key].toString () + "<br />";
+				}
 			}
-		}
+
 		return tip;
 	}
 
