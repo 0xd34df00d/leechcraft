@@ -60,7 +60,8 @@ namespace Otzerkalu
 	EntityTestHandleResult Plugin::CouldHandle (const Entity& entity) const
 	{
 		const bool can = !entity.Entity_.toUrl ().isEmpty () &&
-				(entity.Parameters_ & FromUserInitiated);
+				(entity.Parameters_ & FromUserInitiated) &&
+				entity.Additional_.value ("AllowedSemantics").toStringList ().contains ("save");
 		return can ?
 				EntityTestHandleResult (EntityTestHandleResult::PHigh) :
 				EntityTestHandleResult ();
