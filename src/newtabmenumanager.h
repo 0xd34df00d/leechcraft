@@ -48,7 +48,7 @@ namespace LeechCraft
 		void SingleRemoved (ITabWidget*);
 
 		QMenu* GetNewTabMenu () const;
-		QMenu* GetAdditiornalMenu () const;
+		QMenu* GetAdditiornalMenu ();
 	private:
 		QString AccelerateName (QString);
 		void ToggleHide (QObject*, const QByteArray&, bool);
