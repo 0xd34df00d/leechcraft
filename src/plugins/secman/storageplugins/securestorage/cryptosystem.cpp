@@ -17,13 +17,13 @@
  **********************************************************************/
 
 #include "cryptosystem.h"
-#include "ciphertextformat.h"
 #include <QByteArray>
 #include <openssl/sha.h>
 #include <openssl/aes.h>
 #include <openssl/hmac.h>
 #include <openssl/rand.h>
 #include <openssl/crypto.h>
+#include "ciphertextformat.h"
 
 namespace LeechCraft
 {

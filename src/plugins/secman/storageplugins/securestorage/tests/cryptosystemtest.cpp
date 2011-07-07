@@ -17,12 +17,12 @@
  **********************************************************************/
 
 #include "cryptosystemtest.h"
-#include "../cryptosystem.h"
-#include "../ciphertextformat.h"
+#include <cstdlib>
 #include <QtTest/QtTest>
 #include <QByteArray>
 #include <QList>
-#include <cstdlib>
+#include "../cryptosystem.h"
+#include "../ciphertextformat.h"
 
 using namespace LeechCraft::Plugins::SecMan::StoragePlugins::SecureStorage;
 

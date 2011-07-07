@@ -17,7 +17,6 @@
  **********************************************************************/
 
 #include "ciphertextformat.h"
-#include "cryptosystem.h"
 
 namespace LeechCraft
 {
@@ -30,66 +29,65 @@ namespace StoragePlugins
 namespace SecureStorage
 {
 
-CipherTextFormat::CipherTextFormat (void* buffer, int dataLength)
-: Buffer_ (reinterpret_cast<unsigned char*> (buffer))
-, DataLength_ (dataLength)
-{
-}
+	CipherTextFormat::CipherTextFormat (void *buffer, int dataLength)
+		: Buffer_ (reinterpret_cast<unsigned char*> (buffer))
+		, DataLength_ (dataLength)
+	{
+	}
 
-unsigned char* CipherTextFormat::Iv () const
-{
-	return Buffer_;
-}
+	unsigned char* CipherTextFormat::Iv () const
+	{
+		return Buffer_;
+	}
 
-unsigned char* CipherTextFormat::Data () const
-{
-	return Buffer_ + IVLength;
-}
+	unsigned char* CipherTextFormat::Data () const
+	{
+		return Buffer_ + IVLength;
+	}
 
-unsigned char* CipherTextFormat::Rnd () const
-{
-	return Buffer_ + IVLength + DataLength_;
-}
+	unsigned char* CipherTextFormat::Rnd () const
+	{
+		return Buffer_ + IVLength + DataLength_;
+	}
 
-unsigned char* CipherTextFormat::Hmac () const
-{
-	return Buffer_ + IVLength + DataLength_ + RndLength;
-}
+	unsigned char* CipherTextFormat::Hmac () const
+	{
+		return Buffer_ + IVLength + DataLength_ + RndLength;
+	}
 
-unsigned char* CipherTextFormat::BufferBegin () const
-{
-	return Buffer_;
-}
+	unsigned char* CipherTextFormat::BufferBegin () const
+	{
+		return Buffer_;
+	}
 
-unsigned char* CipherTextFormat::BufferEnd () const
-{
-	return Buffer_ + IVLength + DataLength_ + RndLength + HMACLength;
-}
+	unsigned char* CipherTextFormat::BufferEnd () const
+	{
+		return Buffer_ + IVLength + DataLength_ + RndLength + HMACLength;
+	}
 
-int CipherTextFormat::GetDataLength () const
-{
-	return DataLength_;
-}
+	int CipherTextFormat::GetDataLength () const
+	{
+		return DataLength_;
+	}
 
-namespace CipherTextFormatUtils
-{
+	namespace CipherTextFormatUtils
+	{
 
-int BufferLengthFor (int dataLength)
-{
-	return dataLength + (IVLength + RndLength + HMACLength);
-}
+		int BufferLengthFor (int dataLength)
+		{
+			return dataLength + (IVLength + RndLength + HMACLength);
+		}
 
-int DataLengthFor (int bufferLength)
-{
-	return bufferLength - (IVLength + RndLength + HMACLength);
-}
+		int DataLengthFor (int bufferLength)
+		{
+			return bufferLength - (IVLength + RndLength + HMACLength);
+		}
 
-int DecryptBufferLengthFor (int bufferLength)
-{
-	return bufferLength - (IVLength + HMACLength);
-}
-}
-
+		int DecryptBufferLengthFor (int bufferLength)
+		{
+			return bufferLength - (IVLength + HMACLength);
+		}
+	}
 }
 }
 }

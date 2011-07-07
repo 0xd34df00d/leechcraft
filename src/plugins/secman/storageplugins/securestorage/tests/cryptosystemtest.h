@@ -22,45 +22,45 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
-	{
-		namespace SecMan
-		{
-			namespace StoragePlugins
-			{
-				namespace SecureStorage
-				{
+namespace Plugins
+{
+namespace SecMan
+{
+namespace StoragePlugins
+{
+namespace SecureStorage
+{
 
-					class CryptoSystemTest : public QObject
-					{
-						Q_OBJECT
-					private slots:
-						/** Initialization. */
-						void initTestCase ();
-						/** Test SHA-256 hash. */
-						void testHash ();
-						/** Check that ciphertexts (and HMAC's) of same data are different. */
-						void testDifferentCipherText ();
-						/** Check that we get the original data after encrypting and decrypting. */
-						void testEncryptDecrypt ();
-						/** 
-						 * Check that we get the original data after encrypting and decrypting 
-						 * (with random data and length). 
-						 */
-						void testEncryptDecryptRandom ();
-						/** 
-						 * Check that we get the original data after encrypting and decrypting
-						 * (with different lengthes and random data). 
-						 */
-						void testEncryptDecryptLength ();
-						/**
-						 * Check that cryptosystem operates correctly with too short ciphertexts.
-						 */
-						void testDecryptShortCipherText ();
-					};
-				}
-			}
-		}
-	}
+	class CryptoSystemTest : public QObject
+	{
+		Q_OBJECT
+	private slots:
+		/** Initialization. */
+		void initTestCase ();
+		/** Test SHA-256 hash. */
+		void testHash ();
+		/** Check that ciphertexts (and HMAC's) of same data are different. */
+		void testDifferentCipherText ();
+		/** Check that we get the original data after encrypting and decrypting. */
+		void testEncryptDecrypt ();
+		/** 
+		 * Check that we get the original data after encrypting and decrypting 
+		 * (with random data and length). 
+		 */
+		void testEncryptDecryptRandom ();
+		/** 
+		 * Check that we get the original data after encrypting and decrypting
+		 * (with different lengthes and random data). 
+		 */
+		void testEncryptDecryptLength ();
+		/**
+		 * Check that cryptosystem operates correctly with too short ciphertexts.
+		 */
+		void testDecryptShortCipherText ();
+	};
+}
+}
+}
+}
 }
 #endif

@@ -31,79 +31,75 @@ class QSettings;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace SecMan
+{
+namespace StoragePlugins
+{
+namespace SecureStorage
+{
+
+	class Plugin :
+			public QObject,
+			public IInfo,
+			public IPlugin2,
+			public IStoragePlugin,
+			public IActionsExporter
 	{
-		namespace SecMan
-		{
-			namespace StoragePlugins
-			{
-				namespace SecureStorage
-				{
+		Q_OBJECT
+		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Plugins::SecMan::IStoragePlugin IActionsExporter)
 
-					class Plugin :
-							public QObject,
-							public IInfo,
-							public IPlugin2,
-							public IStoragePlugin,
-							public IActionsExporter
-					{
-						Q_OBJECT
-						Q_INTERFACES (IInfo IPlugin2 LeechCraft::Plugins::SecMan::IStoragePlugin IActionsExporter)
+		boost::shared_ptr<QSettings> Storage_;
+		boost::shared_ptr<QSettings> Settings_;
+	public:
 
-						boost::shared_ptr<QSettings> Storage_;
-						boost::shared_ptr<QSettings> Settings_;
-					public:
+		Plugin ()
+			: CryptoSystem_ (0)
+			, WindowTitle_ ("SecMan SecureStorage") { }
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		QByteArray GetUniqueID () const;
+		void Release ();
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
 
-						Plugin ()
-							: CryptoSystem_ (0)
-							, WindowTitle_ ("SecMan SecureStorage") { }
-						void Init (ICoreProxy_ptr);
-						void SecondInit ();
-						QByteArray GetUniqueID () const;
-						void Release ();
-						QString GetName () const;
-						QString GetInfo () const;
-						QIcon GetIcon () const;
-						QStringList Provides () const;
-						QStringList Needs () const;
-						QStringList Uses () const;
-						void SetProvider (QObject*, const QString&);
+		QSet<QByteArray> GetPluginClasses () const;
 
-						QSet<QByteArray> GetPluginClasses () const;
+		StorageTypes GetStorageTypes () const;
+		QList<QByteArray> ListKeys (StorageType);
+		void Save (const QByteArray&, const QVariantList&, StorageType, bool);
+		QVariantList Load (const QByteArray&, StorageType);
+		void Save (const QList<QPair<QByteArray, QVariantList> >&, StorageType, bool);
+		QList<QVariantList> Load (const QList<QByteArray>&, StorageType);
+		QList<QAction*> GetActions (LeechCraft::ActionsEmbedPlace) const;
+	public slots:
+		void forgetKey ();
+		void changePassword ();
+		void clearSettings ();
+	private:
+		QString WindowTitle_;
+		CryptoSystem *CryptoSystem_;
+		const CryptoSystem &GetCryptoSystem ();
+		void SetCryptoSystem (CryptoSystem *cs);
+		void UpdateActionsStates ();
+		void UpdatePasswordSettings (const QString& pass);
 
-						StorageTypes GetStorageTypes () const;
-						QList<QByteArray> ListKeys (StorageType);
-						void Save (const QByteArray&, const QVariantList&, StorageType, bool);
-						QVariantList Load (const QByteArray&, StorageType);
-						void Save (const QList<QPair<QByteArray, QVariantList> >&, StorageType, bool);
-						QList<QVariantList> Load (const QList<QByteArray>&, StorageType);
-						QList<QAction*> GetActions (LeechCraft::ActionsEmbedPlace) const;
-					public slots:
-						void forgetKey ();
-						void changePassword ();
-						void clearSettings ();
-					private:
-						QString WindowTitle_;
-						CryptoSystem *CryptoSystem_;
-						const CryptoSystem &GetCryptoSystem ();
-						void SetCryptoSystem (CryptoSystem *cs);
-						void UpdateActionsStates ();
-						void UpdatePasswordSettings (const QString& pass);
+		void ChangePassword (const QString& oldPass, const QString& newPass);
+		void CreateNewPassword ();
+		bool IsPasswordCorrect (const CryptoSystem& cs);
+		bool IsPasswordEmpty ();
+		bool IsPasswordSet ();
 
-						void ChangePassword (const QString& oldPass, const QString& newPass);
-						void CreateNewPassword ();
-						bool IsPasswordCorrect (const CryptoSystem& cs);
-						bool IsPasswordEmpty ();
-						bool IsPasswordSet ();
-
-						QAction *ForgetKeyAction_;
-						QAction *ChangePasswordAction_;
-						QAction *ClearSettingsAction_;
-					};
-				}
-			}
-		}
-	}
+		QAction *ForgetKeyAction_;
+		QAction *ChangePasswordAction_;
+		QAction *ClearSettingsAction_;
+	};
+}
+}
+}
+}
 }
 
 #endif

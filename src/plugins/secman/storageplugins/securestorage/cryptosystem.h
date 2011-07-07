@@ -25,40 +25,39 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Plugins
+{
+namespace SecMan
+{
+namespace StoragePlugins
+{
+namespace SecureStorage
+{
+
+	class WrongHMACException : public std::exception
 	{
-		namespace SecMan
-		{
-			namespace StoragePlugins
-			{
-				namespace SecureStorage
-				{
+	public:
 
-					class WrongHMACException : public std::exception
-					{
-					public:
+		WrongHMACException () { }
+		const char* what () const throw ();
+	};
 
-						WrongHMACException () { }
-						const char* what () const throw ();
-					};
-
-					class CryptoSystem
-					{
-						friend class CryptoSystemTest;
-						QByteArray Key_;
-					public:
-						CryptoSystem (const QString &password);
-						~CryptoSystem ();
-						QByteArray Encrypt (const QByteArray &data) const;
-						QByteArray Decrypt (const QByteArray& cipherText) const;
-					private:
-						QByteArray Hash (const QByteArray &data) const;
-						QByteArray CreateKey (const QString &password) const;
-					};
-				}
-			}
-		}
-	}
+	class CryptoSystem
+	{
+		friend class CryptoSystemTest;
+		QByteArray Key_;
+	public:
+		CryptoSystem (const QString &password);
+		~CryptoSystem ();
+		QByteArray Encrypt (const QByteArray &data) const;
+		QByteArray Decrypt (const QByteArray& cipherText) const;
+	private:
+		QByteArray Hash (const QByteArray &data) const;
+		QByteArray CreateKey (const QString &password) const;
+	};
 }
-
+}
+}
+}
+}
 #endif
