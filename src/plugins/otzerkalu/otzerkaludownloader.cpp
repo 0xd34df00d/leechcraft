@@ -91,8 +91,7 @@ namespace Otzerkalu
 	{
 		--UrlCount_;
 		const FileData& data = FileMap_ [id];
-		if (!data.RecLevel_ || (!Param_.FromOtherSite_ &&
-				data.Url_.host () != Param_.DownloadUrl_.host ()))
+		if (!data.RecLevel_)
 			return;
 
 		const QString& filename = data.Filename_;
@@ -120,11 +119,18 @@ namespace Otzerkalu
 
 			if (!url.isValid ())
 				continue;
-
+			if (url.isRelative ())
+			{
+				url = data.Url_.resolved (url);
+				qDebug () << url.toString ();
+			}
+			if (!Param_.FromOtherSite_ && url.host () != Param_.DownloadUrl_.host ())
+				continue;
+			
 			const QString& filename = Download (url);
 			if (filename.isEmpty ())
 				continue;
-
+			
 			if ((*urlElement).hasAttribute ("href"))
 				(*urlElement).setAttribute ("href", filename);
 			else
