@@ -64,6 +64,7 @@ namespace LeechCraft
 		QAction *DefaultTabAction_;
 		QMap<int, QWidget*> Widgets_;
 		QList<QPointer<QAction> > TabBarActions_;
+		bool InMoveProcess_;
 	public:
 		explicit SeparateTabWidget (QWidget* = 0);
 		virtual ~SeparateTabWidget ();
@@ -107,6 +108,8 @@ namespace LeechCraft
 		void InsertAction2TabBar (QAction *before, QAction *action);
 		QObject* GetObject ();
 		int GetLastContextMenuTab () const;
+		bool IsInMoveProcess () const;
+		void SetInMoveProcess (bool);
 	protected:
 		void resizeEvent (QResizeEvent*);
 		bool event (QEvent*);

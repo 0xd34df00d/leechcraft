@@ -21,6 +21,7 @@
 #include <QStyle>
 #include <QtDebug>
 #include "coreproxy.h"
+#include "separatetabwidget.h"
 
 namespace LeechCraft
 {
@@ -95,6 +96,11 @@ namespace LeechCraft
 		IsLastTab_ = isLast;
 	}
 
+	void SeparateTabBar::SetTabWidget (SeparateTabWidget *widget)
+	{
+		TabWidget_ = widget;
+	}
+
 	QSize SeparateTabBar::tabSizeHint (int index) const
 	{
 		QSize size = QTabBar::tabSizeHint (index);
@@ -112,6 +118,19 @@ namespace LeechCraft
 				IsLastTab_)
 			emit addDefaultTab (true);
 
+		if (TabWidget_->IsInMoveProcess ())
+		{
+			int index = currentIndex ();
+			if (IsPinTab (index + 1) && !IsPinTab (index))
+			{
+				SetTabData (index);
+				setPinTab (index);
+			}
+			else if (IsPinTab (index) && index && !IsPinTab (index - 1))
+				setUnPinTab (index);
+
+			TabWidget_->SetInMoveProcess (false);
+		}
 		QTabBar::mouseReleaseEvent (event);
 	}
 
