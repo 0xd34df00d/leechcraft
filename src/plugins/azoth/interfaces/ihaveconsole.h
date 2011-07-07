@@ -35,6 +35,8 @@ namespace Azoth
 	 * Azoth core and other plugins may toggle the status of the console
 	 * by the means of SetConsoleEnabled() function. By default, the
 	 * console for each account should be disabled.
+	 * 
+	 * @sa IAccount
 	 */
 	class IHaveConsole
 	{
