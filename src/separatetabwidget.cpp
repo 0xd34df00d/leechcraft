@@ -65,9 +65,9 @@ namespace LeechCraft
 		QPointer<QVBoxLayout> leftToolBarLayout = new QVBoxLayout;
 		QPointer<QVBoxLayout> rightToolBarLayout = new QVBoxLayout;
 		leftToolBarLayout->addWidget (LeftToolBar_);
-		leftToolBarLayout->addSpacing (3);
+		leftToolBarLayout->setContentsMargins (0, 0, 0, 0);
 		rightToolBarLayout->addWidget (RightToolBar_);
-		rightToolBarLayout->addSpacing (3);
+		rightToolBarLayout->setContentsMargins (0, 0, 0, 0);
 
 		MainTabBarLayout_ = new QHBoxLayout;
 		MainTabBarLayout_->setContentsMargins (0, 0, 0, 0);
@@ -85,6 +85,7 @@ namespace LeechCraft
 
 		MainLayout_ = new QVBoxLayout (this);
 		MainLayout_->setContentsMargins (0, 0, 0, 0);
+		MainLayout_->setSpacing (0);
 		MainLayout_->addLayout (MainTabBarLayout_);
 		MainLayout_->addLayout (MainToolBarLayout_);
 		MainLayout_->addWidget (MainStackedWidget_);
