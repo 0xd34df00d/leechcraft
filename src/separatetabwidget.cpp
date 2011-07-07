@@ -606,6 +606,8 @@ namespace LeechCraft
 			return;
 
 		int index = MainTabBar_->tabAt (point);
+		if (index == -1)
+			index = MainTabBar_->currentIndex ();
 
 		QMenu *menu = new QMenu ("", MainTabBar_);
 		if ((index == MainTabBar_->count () - 1) && !AddTabButtonAction_->isVisible ())
