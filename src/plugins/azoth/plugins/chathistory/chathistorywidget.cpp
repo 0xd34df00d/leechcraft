@@ -229,6 +229,9 @@ namespace ChatHistory
 		const QString& name = entry ?
 				entry->GetEntryName () :
 				EntryID2NameCache_.value (entryId, entryId);
+		const QString& ourName = entry ?
+				qobject_cast<IAccount*> (entry->GetParentAccount ())->GetOurNick () :
+				QString ();
 
 		QList<QColor> colors = Core::Instance ()->
 				GetPluginProxy ()->GenerateColors ("hash");
@@ -250,16 +253,25 @@ namespace ChatHistory
 			const QString& var = map ["Variant"].toString ();
 			if (isChat)
 			{
-				html += map ["Direction"] == "IN" ?
-						QString::fromUtf8 ("← ") :
-						QString::fromUtf8 ("→ ");
-
+				QString remoteName;
 				if (!entry && !var.isEmpty ())
-					html += var;
+					remoteName += var;
 				else if (entry && var.isEmpty ())
-					html += name;
+					remoteName += name;
 				else
-					html += name + '/' + var;
+					remoteName += name + '/' + var;
+
+				if (!ourName.isEmpty ())
+					html += map ["Direction"] == "IN" ?
+							remoteName :
+							ourName;
+				else
+				{
+					html += map ["Direction"] == "IN" ?
+							QString::fromUtf8 ("← ") :
+							QString::fromUtf8 ("→ ");
+					html += remoteName;
+				}
 			}
 			else
 			{
