@@ -223,7 +223,8 @@ namespace ChatHistory
 			return;
 
 		Amount_ = 0;
-		Ui_.HistView_->clear ();		
+		Ui_.HistView_->clear ();
+
 		ICLEntry *entry = qobject_cast<ICLEntry*> (Core::Instance ()->
 					GetPluginProxy ()->GetEntry (entryId, accountId));
 		const QString& name = entry ?
@@ -232,6 +233,13 @@ namespace ChatHistory
 		const QString& ourName = entry ?
 				qobject_cast<IAccount*> (entry->GetParentAccount ())->GetOurNick () :
 				QString ();
+
+		QString preNick = Core::Instance ()->GetPluginProxy ()->
+				GetSettingsManager ()->property ("PreNickText").toString ();
+		QString postNick = Core::Instance ()->GetPluginProxy ()->
+				GetSettingsManager ()->property ("PostNickText").toString ();
+		preNick.replace ('<', "&lt;");
+		postNick.replace ('<', "&lt;");
 
 		QList<QColor> colors = Core::Instance ()->
 				GetPluginProxy ()->GenerateColors ("hash");
@@ -249,7 +257,7 @@ namespace ChatHistory
 				html = QString ("<div style='background-color: %1'>")
 					.arg (palette ().color (QPalette::AlternateBase).name ());
 
-			html += "[" + map ["Date"].toDateTime ().toString () + "] ";
+			html += "[" + map ["Date"].toDateTime ().toString () + "] " + preNick;
 			const QString& var = map ["Variant"].toString ();
 			if (isChat)
 			{
@@ -280,7 +288,7 @@ namespace ChatHistory
 				html += "<font color=\"" + color + "\">" + var + "</font>";
 			}
 			
-			html += ": " + map ["Message"].toString ()
+			html += postNick + ' ' + map ["Message"].toString ()
 					.replace ('<', "&lt;")
 					.replace ('\n', "<br/>");
 

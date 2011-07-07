@@ -129,10 +129,25 @@ namespace StandardStyles
 			body = msg->GetBody ();
 		
 		body = Proxy_->FormatBody (body, msg->GetObject ());
+		
+		const QString dateBegin ("<span class='datetime'>");
+		const QString dateEnd ("</span>");
+		
+		const QString& preNick = dateBegin +
+				Proxy_->GetSettingsManager ()->
+					property ("PreNickText").toString () +
+				dateEnd;
+		const QString& postNick = dateBegin +
+				Proxy_->GetSettingsManager ()->
+					property ("PostNickText").toString () +
+				dateEnd;
 
 		QString divClass;
 		QString statusIconName;
-		QString string = Proxy_->FormatDate (msg->GetDateTime (), msg->GetObject ());
+
+		QString string = dateBegin + '[' +
+				Proxy_->FormatDate (msg->GetDateTime (), msg->GetObject ()) +
+				']' + dateEnd;
 		string.append (' ');
 		switch (msg->GetDirection ())
 		{
@@ -160,8 +175,10 @@ namespace StandardStyles
 				}
 				else
 				{
+					string.append (preNick);
 					string.append (entryName);
-					string.append (": ");
+					string.append (postNick);
+					string.append (' ');
 					if (divClass.isEmpty ())
 						divClass = isHighlightMsg ?
 								"highlightchatmsg" :
@@ -213,8 +230,10 @@ namespace StandardStyles
 			}
 			else
 			{
+				string.append (preNick);
 				string.append (Proxy_->FormatNickname (nick, msg->GetObject (), nickColor));
-				string.append (": ");
+				string.append (postNick);
+				string.append (' ');
 			}
 			if (divClass.isEmpty ())
 				divClass = "msgout";

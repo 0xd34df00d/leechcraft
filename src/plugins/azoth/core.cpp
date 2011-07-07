@@ -642,9 +642,7 @@ namespace Azoth
 
 		proxy->FillValue ("dateTime", dt);
 
-		QString str = dt.time ().toString ();
-		return QString ("<span class='datetime'>[" +
-				str + "]</span>");
+		return dt.time ().toString ();
 	}
 
 	QString Core::FormatNickname (QString nick, IMessage *msg, const QString& color)
