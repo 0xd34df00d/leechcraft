@@ -110,6 +110,9 @@ namespace Otzerkalu
 		QWebElement document = page.mainFrame ()->documentElement ();
 		QWebElementCollection uel = document.findAll ("*[href]") + document.findAll ("*[src]");
 
+		if (!uel.count ())
+			return;
+
 		for (QWebElementCollection::iterator urlElement = uel.begin ();
 				urlElement != uel.end (); ++urlElement)
 		{
