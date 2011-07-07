@@ -43,7 +43,14 @@
      <widget class="QLineEdit" name="SaveDirLineEdit_"/>
     </item>
     <item row="1" column="1" colspan="2">
-     <widget class="QSpinBox" name="RecursionLevel_"/>
+     <widget class="QSpinBox" name="RecursionLevel_">
+      <property name="minimum">
+       <number>1</number>
+      </property>
+      <property name="value">
+       <number>1</number>
+      </property>
+     </widget>
     </item>
     <item row="0" column="0">
      <widget class="QLabel" name="label">

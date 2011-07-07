@@ -91,29 +91,36 @@ namespace Otzerkalu
 	{
 		--UrlCount_;
 		const FileData& data = FileMap_ [id];
-		if (!data.RecLevel_)
+		if (!data.RecLevel_ || (!Param_.FromOtherSite_ &&
+				data.Url_.host () != Param_.DownloadUrl_.host ()))
 			return;
-		
-		const QString& filename = data.Filename_;
-		const QUrl& tmpUrl = data.Url_;
 
+		const QString& filename = data.Filename_;
+
+		QFile file (filename);
+
+		if (!file.open (QIODevice::ReadOnly | QIODevice::Text))
+			return;
+
+		QTextStream in (&file);
+		const QString& array = in.readAll ();
 		QWebPage page;
-		page.mainFrame ()->load (filename);
+
+		page.mainFrame ()->setHtml (array, data.Url_);
+
 		QWebElement document = page.mainFrame ()->documentElement ();
 		QWebElementCollection uel = document.findAll ("*[href]") + document.findAll ("*[src]");
-				
+
 		for (QWebElementCollection::iterator urlElement = uel.begin ();
 				urlElement != uel.end (); ++urlElement)
 		{
 			QUrl url = (*urlElement).attribute ("href");
 			if (!url.isValid ())
 				url = (*urlElement).attribute ("src");
-					
+
 			if (!url.isValid ())
 				continue;
-			if (url.isRelative ())
-				url = tmpUrl.resolved (url);
-						
+
 			const QString& filename = Download (url);
 			if (filename.isEmpty ())
 				continue;
@@ -126,8 +133,9 @@ namespace Otzerkalu
 		if (!UrlCount_)
 			emit gotEntity (Util::MakeNotification (tr ("Download complete"),
 					tr ("Download complete %1")
-						.arg (Param_.DownloadUrl_.toString ()),
+						.arg (data.Url_.toString ()),
 					PInfo_));
+
 		WriteData (filename, page.mainFrame ()->toHtml ());
 	}
 	
@@ -137,7 +145,7 @@ namespace Otzerkalu
 		const QString& name = fi.fileName ();
 		const QString& path = Param_.DestDir_ + '/' + url.host () +
 				fi.path ();
-		const QString& filename = path + (name.isEmpty () ? "index.html" : name);
+		const QString& filename = path + '/' + (name.isEmpty () ? "index.html" : name);
 		
 		QDir::root ().mkpath (path);
 
@@ -158,7 +166,7 @@ namespace Otzerkalu
 			return QString ();
 		}
 		++UrlCount_;
-		HandleProvider (pr, id, Param_.DownloadUrl_, filename, Param_.RecLevel_ - 1);
+		HandleProvider (pr, id, url, filename, Param_.RecLevel_ - 1);
 		
 		return filename;
 	}
