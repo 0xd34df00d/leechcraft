@@ -50,9 +50,11 @@ namespace LeechCraft
 	, PinTab_ (new QAction (tr ("Pin tab"), this))
 	, UnPinTab_ (new QAction (tr ("UnPin tab"), this))
 	, DefaultTabAction_ (new QAction (QString (), this))
+	, InMoveProcess_ (false)
 	{
 		MainTabBar_->setMovable (true);
 		MainTabBar_->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Minimum);
+		MainTabBar_->SetTabWidget (this);
 
 		LeftToolBar_->setSizePolicy (QSizePolicy::Minimum, QSizePolicy::Minimum);
 		RightToolBar_->setSizePolicy (QSizePolicy::Minimum, QSizePolicy::Minimum);
@@ -233,8 +235,8 @@ namespace LeechCraft
 					<< index;
 			return;
 		}
-
-		MainTabBar_->setTabText (index, text);
+		if (!MainTabBar_->IsPinTab (index))
+			MainTabBar_->setTabText (index, text);
 	}
 
 	void SeparateTabWidget::SetTabToolTip (int index, const QString& tip)
@@ -410,6 +412,16 @@ namespace LeechCraft
 		return LastContextMenuTab_;
 	}
 
+	bool SeparateTabWidget::IsInMoveProcess () const
+	{
+		return InMoveProcess_;
+	}
+
+	void SeparateTabWidget::SetInMoveProcess (bool move)
+	{
+		InMoveProcess_ = move;
+	}
+
 	void SeparateTabWidget::resizeEvent (QResizeEvent *event)
 	{
 		QWidget::resizeEvent (event);
@@ -580,22 +592,7 @@ namespace LeechCraft
 
 		QWidget *From = MainStackedWidget_->widget (from);
 		MainStackedWidget_->insertWidget (to, From);
-
-		if ((qAbs (from - to) == 1) &&
-				!(MainTabBar_->IsPinTab (from) &&
-						MainTabBar_->IsPinTab (to)))
-		{
-			if ((from <= MainTabBar_->PinTabsCount () - 1) &&
-					MainTabBar_->IsPinTab (to))
-			{
-				MainTabBar_->SetTabData (from);
-				MainTabBar_->setPinTab (from);
-			}
-			else if ((from - MainTabBar_->PinTabsCount () <= 1) &&
-					MainTabBar_->IsPinTab (from))
-				MainTabBar_->setUnPinTab (from);
-		}
-
+		InMoveProcess_ = true;
 		std::swap (Widgets_ [from], Widgets_ [to]);
 		emit tabWasMoved (from, to);
 	}
@@ -606,6 +603,8 @@ namespace LeechCraft
 			return;
 
 		int index = MainTabBar_->tabAt (point);
+		if (index == -1)
+			index = MainTabBar_->currentIndex ();
 
 		QMenu *menu = new QMenu ("", MainTabBar_);
 		if ((index == MainTabBar_->count () - 1) && !AddTabButtonAction_->isVisible ())

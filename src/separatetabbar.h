@@ -24,6 +24,8 @@
 
 namespace LeechCraft
 {
+	class SeparateTabWidget;
+	
 	class SeparateTabBar : public QTabBar
 	{
 		Q_OBJECT
@@ -32,6 +34,7 @@ namespace LeechCraft
 		QHash<int, QString> PinTabsIndex2Name_;
 		QHash<int, QWidget*> PinTabsIndex2CloseWidget_;
 		QTabBar::ButtonPosition CloseSide_;
+		SeparateTabWidget *TabWidget_;
 	public:
 		explicit SeparateTabBar (QWidget* = 0);
 		bool IsPinTab (int) const;
@@ -40,6 +43,7 @@ namespace LeechCraft
 		void SetTabData (int);
 		void SetTabNoClosable (int);
 		void SetLastTab (bool);
+		void SetTabWidget (SeparateTabWidget*);
 	protected:
 		QSize tabSizeHint (int) const;
 		void mouseReleaseEvent (QMouseEvent*);
