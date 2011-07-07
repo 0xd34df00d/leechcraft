@@ -449,9 +449,7 @@ namespace LeechCraft
 			{
 				handleShowAddTabButton (false);
 				MainTabBar_->SetLastTab (true);
-				CoreProxy proxy;
-				QIcon icon = proxy.GetIcon ("addjob");
-				int index = MainTabBar_->addTab (icon, QString ());
+				int index = MainTabBar_->addTab (QString ());
 				MainTabBar_->SetTabNoClosable (index);
 			}
 		}
