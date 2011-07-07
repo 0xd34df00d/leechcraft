@@ -19,6 +19,7 @@
 #include "storagethread.h"
 #include "storage.h"
 #include "core.h"
+#include <QTimer>
 
 namespace LeechCraft
 {
@@ -39,30 +40,37 @@ namespace ChatHistory
 	void StorageThread::run ()
 	{
 		Storage_.reset (new Storage);
-
-		connect (Storage_.get (),
-				SIGNAL (gotOurAccounts (const QStringList&)),
-				Core::Instance ().get (),
-				SIGNAL (gotOurAccounts (const QStringList&)),
-				Qt::QueuedConnection);
-		connect (Storage_.get (),
-				SIGNAL (gotUsersForAccount (const QStringList&, const QString&, const QStringList&)),
-				Core::Instance ().get (),
-				SIGNAL (gotUsersForAccount (const QStringList&, const QString&, const QStringList&)),
-				Qt::QueuedConnection);
-		connect (Storage_.get (),
-				SIGNAL (gotChatLogs (const QString&, const QString&, int, int, const QVariant&)),
-				Core::Instance ().get (),
-				SIGNAL (gotChatLogs (const QString&, const QString&, int, int, const QVariant&)),
-				Qt::QueuedConnection);
-		connect (Storage_.get (),
-				SIGNAL (gotSearchPosition (const QString&, const QString&, int)),
-				Core::Instance ().get (),
-				SIGNAL (gotSearchPosition (const QString&, const QString&, int)),
-				Qt::QueuedConnection);
+		
+		QTimer::singleShot (0,
+				this,
+				SLOT (connectSignals ()));
 
 		QThread::run ();
 		Storage_.reset ();
+	}
+	
+	void StorageThread::connectSignals ()
+	{
+		connect (Storage_.get (),
+				SIGNAL (gotOurAccounts (const QStringList&)),
+				Core::Instance ().get (),
+				SIGNAL (gotOurAccounts (const QStringList&)),
+				Qt::QueuedConnection);
+		connect (Storage_.get (),
+				SIGNAL (gotUsersForAccount (const QStringList&, const QString&, const QStringList&)),
+				Core::Instance ().get (),
+				SIGNAL (gotUsersForAccount (const QStringList&, const QString&, const QStringList&)),
+				Qt::QueuedConnection);
+		connect (Storage_.get (),
+				SIGNAL (gotChatLogs (const QString&, const QString&, int, int, const QVariant&)),
+				Core::Instance ().get (),
+				SIGNAL (gotChatLogs (const QString&, const QString&, int, int, const QVariant&)),
+				Qt::QueuedConnection);
+		connect (Storage_.get (),
+				SIGNAL (gotSearchPosition (const QString&, const QString&, int)),
+				Core::Instance ().get (),
+				SIGNAL (gotSearchPosition (const QString&, const QString&, int)),
+				Qt::QueuedConnection);
 	}
 }
 }
