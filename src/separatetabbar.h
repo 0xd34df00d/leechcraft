@@ -50,6 +50,7 @@ namespace LeechCraft
 		void mousePressEvent (QMouseEvent *event);
 		void tabInserted (int);
 		void tabRemoved (int);
+		void paintEvent (QPaintEvent*);
 	public slots:
 		void setPinTab (int);
 		void setUnPinTab (int);

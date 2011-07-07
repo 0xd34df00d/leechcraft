@@ -22,6 +22,8 @@
 #include <QtDebug>
 #include "coreproxy.h"
 #include "separatetabwidget.h"
+#include <QStylePainter>
+#include <QStyleOption>
 
 namespace LeechCraft
 {
@@ -39,9 +41,7 @@ namespace LeechCraft
 		CloseSide_ = (QTabBar::ButtonPosition)this->style ()->
 				styleHint (QStyle::SH_TabBar_CloseButtonPosition);
 
-		CoreProxy proxy;
-		QIcon icon = proxy.GetIcon ("addjob");
-		addTab (icon, QString ());
+		addTab (QString ());
 
 		IsLastTab_ = true;
 	}
@@ -177,9 +177,7 @@ namespace LeechCraft
 		{
 			IsLastTab_ = true;
 
-			CoreProxy proxy;
-			QIcon icon = proxy.GetIcon ("addjob");
-			addTab (icon, QString ());
+			addTab (QString ());
 			SetTabNoClosable (count () - 1);
 
 			emit showAddTabButton (false);
@@ -188,6 +186,25 @@ namespace LeechCraft
 		emit tabWasRemoved (index);
 	}
 
+	void SeparateTabBar::paintEvent (QPaintEvent *event)
+	{
+		QTabBar::paintEvent (event);
+		QStylePainter painter (this);
+
+		for(int i = 0; i < count (); ++i)
+		{
+			QStyleOptionTabV2 option;
+			initStyleOption(&option, i);
+			if ((i == count () - 1) && (IsLastTab_))
+			{
+				CoreProxy proxy;
+				QIcon icon = proxy.GetIcon ("addjob");
+				painter.drawItemPixmap (option.rect, Qt::AlignCenter, 
+						icon.pixmap (QSize (15, 15)));
+			}
+		}
+	}
+	
 	void SeparateTabBar::setPinTab (int index)
 	{
 		if ((index < 0) || (index >= count () - 1))
