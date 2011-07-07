@@ -533,6 +533,9 @@ namespace Azoth
 		void handleActionLeaveTriggered ();
 		void handleActionAuthorizeTriggered ();
 		void handleActionDenyAuthTriggered ();
+		
+		void handleActionAddContactFromMUC ();
+		void handleActionCopyMUCPartID ();
 
 		void handleActionPermTriggered ();
 	signals:

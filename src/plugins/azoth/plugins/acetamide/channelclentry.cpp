@@ -160,6 +160,11 @@ namespace Acetamide
 	{
 		return QMap<QString, QVariant> ();
 	}
+	
+	QString ChannelCLEntry::GetRealID (QObject *participant) const
+	{
+		return QString ();
+	}
 
 	EntryStatus ChannelCLEntry::GetStatus (const QString&) const
 	{

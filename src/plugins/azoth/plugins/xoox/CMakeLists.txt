@@ -53,6 +53,7 @@ SET (XOOX_SRCS
 	mediacall.cpp
 	adhoccommandmanager.cpp
 	executecommanddialog.cpp
+	userlocation.cpp
 	)
 SET (XOOX_HEADERS
 	xoox.h
@@ -100,6 +101,7 @@ SET (XOOX_HEADERS
 	mediacall.h
 	adhoccommandmanager.h
 	executecommanddialog.h
+	userlocation.h
 	)
 SET (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui

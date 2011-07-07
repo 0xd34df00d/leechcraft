@@ -92,7 +92,7 @@ namespace Azoth
 		 */
 		virtual void attentionDrawn (const QString& text, const QString& variant) = 0;
 		
-		/** @brief Notifies that entity's user mood has changed.
+		/** @brief Notifies that entry's user mood has changed.
 		 * 
 		 * The actual mood information should be contained in the map
 		 * returned from ICLEntry::GetClientInfo(). Please refer to its
@@ -108,7 +108,7 @@ namespace Azoth
 		 */
 		virtual void moodChanged (const QString& variant) = 0;
 		
-		/** @brief Notifies that entity's user activity has changed.		
+		/** @brief Notifies that entry's user activity has changed.		
 		 * 
 		 * The actual activity information should be contained in the
 		 * map returned from ICLEntry::GetClientInfo(). Please refer to
@@ -124,7 +124,7 @@ namespace Azoth
 		 */
 		virtual void activityChanged (const QString& variant) = 0;
 		
-		/** @brief Notifies that entity's user tune has changed.
+		/** @brief Notifies that entry's user tune has changed.
 		 * 
 		 * The actual tune information should be contained in the map
 		 * returned from ICLEntry::GetClientInfo(). Please refer to its
@@ -139,6 +139,19 @@ namespace Azoth
 		 * @sa ICLEntry::GetClientInfo()
 		 */
 		virtual void tuneChanged (const QString& variant) = 0;
+		
+		/** @brief Notifies that entry's geolocation has changed.
+		 * 
+		 * The actual geolocation information could be obtained via
+		 * ISupportGeolocation::GetUserGeolocationInfo() method.
+		 * 
+		 * @note This function is expected to be a signal.
+		 * 
+		 * @param[out] variant Variant of the entry whose location has
+		 * changed.
+		 * @sa ISupportGeolocation
+		 */
+		virtual void locationChanged (const QString& variant) = 0;
 	};
 }
 }

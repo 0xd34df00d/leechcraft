@@ -18,6 +18,7 @@
 
 #include "otzerkalu.h"
 #include <QIcon>
+#include "otzerkaludialog.h"
 
 namespace LeechCraft
 {
@@ -54,8 +55,39 @@ namespace Otzerkalu
 	{
 		return QIcon ();
 	}
+
+	bool Plugin::CouldHandle (const Entity& entity) const
+	{
+		return !entity.Entity_.toUrl ().isEmpty () && (entity.Parameters_ & FromUserInitiated);
+	}
+
+	void Plugin::Handle (Entity entity)
+	{
+		QUrl dUrl = entity.Entity_.toUrl ();
+		if (!dUrl.isValid ())
+			return;
+		
+		OtzerkaluDialog dialog;
+		if (dialog.exec () != QDialog::Accepted)
+			return;
+
+		OtzerkaluDownloader *dl = new OtzerkaluDownloader (DownloadParams (dUrl, dialog.GetDir (),
+					dialog.GetRecursionLevel (),
+					dialog.FetchFromExternalHosts ()),
+					this);
+		
+		connect (dl,
+				SIGNAL (gotEntity (const LeechCraft::Entity&)),
+				this,
+				SIGNAL (gotEntity (const LeechCraft::Entity&)));
+		connect (dl,
+				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)),
+				this,
+				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)));
+		
+		dl->Begin ();
+	}
 }
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_otzerkalu, LeechCraft::Otzerkalu::Plugin);
-

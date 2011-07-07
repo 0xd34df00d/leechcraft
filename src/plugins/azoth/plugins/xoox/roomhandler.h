@@ -74,6 +74,8 @@ namespace Xoox
 				QXmppMucItem::Affiliation, const QString&);
 		void SetRole (RoomParticipantEntry*,
 				QXmppMucItem::Role, const QString&);
+		
+		QXmppMucRoom* GetRoom () const;
 
 		void HandleErrorPresence (const QXmppPresence&, const QString&);
 		void HandlePermsChanged (const QString&,

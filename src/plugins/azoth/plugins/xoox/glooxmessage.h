@@ -80,6 +80,7 @@ namespace Xoox
 		bool IsDelivered () const;
 		
 		// IRichTextMessage
+		QString GetRichBody () const;
 		void SetRichBody (const QString&);
 		
 		void SetDelivered (bool);

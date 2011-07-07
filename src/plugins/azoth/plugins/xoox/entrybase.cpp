@@ -39,6 +39,7 @@
 #include "useractivity.h"
 #include "usermood.h"
 #include "usertune.h"
+#include "userlocation.h"
 #include "adhoccommandmanager.h"
 #include "executecommanddialog.h"
 
@@ -53,6 +54,10 @@ namespace Xoox
 	, Commands_ (0)
 	, Account_ (parent)
 	{
+		connect (this,
+				SIGNAL (locationChanged (const QString&, QObject*)),
+				parent,
+				SIGNAL (geolocationInfoChanged (const QString&, QObject*)));
 	}
 
 	QObject* EntryBase::GetObject ()
@@ -183,7 +188,8 @@ namespace Xoox
 	void EntryBase::HandlePEPEvent (QString variant, PEPEventBase *event)
 	{
 		const QStringList& vars = Variants ();
-		if (!vars.isEmpty () && !vars.contains (variant))
+		if (!vars.isEmpty () &&
+				(!vars.contains (variant) || variant.isEmpty ()))
 			variant = vars.first ();
 
 		UserActivity *activity = dynamic_cast<UserActivity*> (event);
@@ -243,6 +249,15 @@ namespace Xoox
 			return;
 		}
 		
+		UserLocation *location = dynamic_cast<UserLocation*> (event);
+		if (location)
+		{
+			Location_ [variant] = location->GetInfo ();
+			emit locationChanged (variant, this);
+			emit locationChanged (variant);
+			return;
+		}
+		
 		qWarning () << Q_FUNC_INFO
 				<< "unhandled PEP event from"
 				<< GetJID ()
@@ -275,12 +290,30 @@ namespace Xoox
 			return;
 
 		CurrentStatus_ [variant] = status;
+		
+		const QStringList& vars = Variants ();
+		if ((!existed || wasOffline) && !vars.isEmpty ())
+		{
+			const QString& highest = vars.first ();
+			if (Location_.contains (QString ()))
+				Location_ [highest] = Location_.take (QString ());
+			if (Variant2ClientInfo_.contains (QString ()))
+			{
+				const QMap<QString, QVariant>& info = Variant2ClientInfo_.take (QString ());
+				QStringList toCopy;
+				toCopy << "user_tune" << "user_mood" << "user_activity";
+				Q_FOREACH (const QString& key, toCopy)
+					if (info.contains (key))
+						Variant2ClientInfo_ [highest] [key] = info [key];
+			}
+		}
+		
 		emit statusChanged (status, variant);
 		
 		if (!existed ||
 				(existed && status.State_ == SOffline) ||
 				wasOffline)
-			emit availableVariantsChanged (Variants ());
+			emit availableVariantsChanged (vars);
 		
 		if (status.State_ != SOffline)
 		{
@@ -405,6 +438,11 @@ namespace Xoox
 	void EntryBase::SetClientInfo (const QString& variant, const QXmppPresence& pres)
 	{
 		SetClientInfo (variant, pres.capabilityNode (), pres.capabilityVer ());
+	}
+	
+	GeolocationInfo_t EntryBase::GetGeolocationInfo (const QString& variant) const
+	{
+		return Location_ [variant];
 	}
 	
 	QByteArray EntryBase::GetVariantVerString (const QString& var) const

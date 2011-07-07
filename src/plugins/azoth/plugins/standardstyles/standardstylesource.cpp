@@ -25,6 +25,7 @@
 #include <plugininterface/util.h>
 #include <interfaces/imessage.h>
 #include <interfaces/iadvancedmessage.h>
+#include <interfaces/irichtextmessage.h>
 #include <interfaces/iaccount.h>
 #include <interfaces/imucentry.h>
 #include <interfaces/iproxyobject.h>
@@ -117,10 +118,17 @@ namespace StandardStyles
 					Qt::UniqueConnection);
 			Msg2Frame_ [msgObj] = frame;
 		}
-				
+		
 		const QString& nickColor = Proxy_->GetNickColor (entryName, colors);
 		
-		QString body = Proxy_->FormatBody (msg->GetBody (), msg->GetObject ());
+		IRichTextMessage *richMsg = qobject_cast<IRichTextMessage*> (msgObj);
+		QString body;
+		if (richMsg)
+			body = richMsg->GetRichBody ();
+		if (body.isEmpty ())
+			body = msg->GetBody ();
+		
+		body = Proxy_->FormatBody (body, msg->GetObject ());
 
 		QString divClass;
 		QString statusIconName;
