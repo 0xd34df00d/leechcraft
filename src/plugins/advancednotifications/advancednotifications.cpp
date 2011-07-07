@@ -18,6 +18,7 @@
 
 #include "advancednotifications.h"
 #include <QIcon>
+#include <interfaces/entitytesthandleresult.h>
 #include "generalhandler.h"
 
 namespace LeechCraft
@@ -60,11 +61,14 @@ namespace AdvancedNotifications
 		return QIcon ();
 	}
 	
-	bool Plugin::CouldHandle (const Entity& e) const
+	EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const
 	{
-		return e.Mime_ == "x-leechcraft/notification" &&
+		const bool can = e.Mime_ == "x-leechcraft/notification" &&
 			e.Additional_.contains ("org.LC.AdvNotifications.SenderID") &&
 			e.Additional_.contains ("org.LC.AdvNotifications.EventID");
+		return can ?
+				EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
+				EntityTestHandleResult ();
 	}
 	
 	void Plugin::Handle (Entity e)

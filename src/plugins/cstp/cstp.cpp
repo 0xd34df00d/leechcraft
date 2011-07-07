@@ -32,6 +32,7 @@
 #include <QTextCodec>
 #include <QTranslator>
 #include <QMainWindow>
+#include <interfaces/entitytesthandleresult.h>
 #include <plugininterface/util.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -154,7 +155,7 @@ namespace LeechCraft
 				Core::Instance ().stopAllTriggered ();
 			}
 
-			bool CSTP::CouldDownload (const LeechCraft::Entity& e) const
+			EntityTestHandleResult CSTP::CouldDownload (const LeechCraft::Entity& e) const
 			{
 				return Core::Instance ().CouldDownload (e);
 			}

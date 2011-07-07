@@ -78,7 +78,7 @@ namespace LeechCraft
 				qint64 GetUploadSpeed () const;
 				void StartAll ();
 				void StopAll ();
-				bool CouldDownload (const LeechCraft::Entity&) const;
+				EntityTestHandleResult CouldDownload (const LeechCraft::Entity&) const;
 				int AddJob (LeechCraft::Entity);
 				void KillTask (int);
 

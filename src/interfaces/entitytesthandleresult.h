@@ -16,45 +16,43 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_QROSP_QROSP_H
-#define PLUGINS_QROSP_QROSP_H
-#include <QObject>
-#include <QModelIndex>
-#include <interfaces/iinfo.h>
-#include <interfaces/ipluginadaptor.h>
-#include <interfaces/ientityhandler.h>
+#ifndef INTERFACES_ENTITYTESTHANDLERESULT_H
+#define INTERFACES_ENTITYTESTHANDLERESULT_H
 
-namespace LeechCraft
+/** @brief The result of testing whether the entity could be handled.
+ * 
+ * Both processing an Entity with IEntityHandler and IDownload are
+ * considered to be "handling".
+ */
+struct EntityTestHandleResult
 {
-	namespace Plugins
+	/** @brief The priority with which an entity could be handled.
+	 * 
+	 * Typically the handler with the highest priority will be chosen.
+	 * 
+	 * A value of 0 or lower means that the given entity can't be
+	 * handled by this handler/downloader at all.
+	 */
+	int HandlePriority_;
+	
+	enum Priority
 	{
-		namespace Qrosp
-		{
-			class Plugin : public QObject
-						 , public IInfo
-						 , public IPluginAdaptor
-						 , public IEntityHandler
-			{
-				Q_OBJECT
-				Q_INTERFACES (IInfo IPluginAdaptor IEntityHandler)
-			public:
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
-				void Release ();
-				QByteArray GetUniqueID () const;
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-				QStringList Provides () const;
-
-				QList<QObject*> GetPlugins ();
-
-				EntityTestHandleResult CouldHandle (const Entity&) const;
-				void Handle (Entity);
-			};
-		};
+		PIdeal = 1000,
+		PHigh = 800,
+		PNormal = 600,
+		PLow = 200,
+		PNone = 0
 	};
+
+	EntityTestHandleResult ()
+	: HandlePriority_ ()
+	{
+	}
+	
+	explicit EntityTestHandleResult (Priority prio)
+	: HandlePriority_ (prio)
+	{
+	}
 };
 
 #endif
-

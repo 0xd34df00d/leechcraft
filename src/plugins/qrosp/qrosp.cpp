@@ -21,6 +21,7 @@
 #include <QUrl>
 #include <QFileInfo>
 #include <qross/core/manager.h>
+#include <interfaces/entitytesthandleresult.h>
 #include "pluginmanager.h"
 #include "wrapperobject.h"
 
@@ -75,22 +76,22 @@ namespace LeechCraft
 				return PluginManager::Instance ().GetPlugins ();
 			}
 
-			bool Plugin::CouldHandle (const Entity& entity) const
+			EntityTestHandleResult Plugin::CouldHandle (const Entity& entity) const
 			{
 				QString language = entity.Additional_ ["Language"].toString ().toLower ();
 				if (entity.Mime_ != "x-leechcraft/script-wrap-request")
-					return false;
+					return EntityTestHandleResult ();
 				if (!entity.Additional_ ["Object"].value<QObject**> ())
-					return false;
+					return EntityTestHandleResult ();
 				if (!Qross::Manager::self ().interpreters ().contains (language))
-					return false;
+					return EntityTestHandleResult ();
 				if (!entity.Entity_.toUrl ().isValid ())
-					return false;
+					return EntityTestHandleResult ();
 				if (!QFileInfo (entity.Entity_
 						.toUrl ().toLocalFile ()).exists ())
-					return false;
+					return EntityTestHandleResult ();
 
-				return true;
+				return EntityTestHandleResult (EntityTestHandleResult::PIdeal);
 			}
 
 			void Plugin::Handle (Entity entity)

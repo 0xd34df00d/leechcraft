@@ -66,7 +66,7 @@ namespace CleanWeb
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
-		bool CouldHandle (const Entity&) const;
+		EntityTestHandleResult CouldHandle (const Entity&) const;
 		void Handle (Entity);
 
 		QList<QWizardPage*> GetWizardPages () const;

@@ -70,6 +70,7 @@
 #include "localsockethandler.h"
 #include "storagebackend.h"
 #include "coreinstanceobject.h"
+#include "interfaces/entitytesthandleresult.h"
 
 using namespace LeechCraft::Util;
 
@@ -614,23 +615,25 @@ namespace LeechCraft
 
 			try
 			{
+				EntityTestHandleResult r;
 				switch (type)
 				{
 					case OTDownloaders:
 						{
 							IDownload *id = qobject_cast<IDownload*> (*it);
-							if (id->CouldDownload (p))
-								result.append (*it);
+							r = id->CouldDownload (p);
 						}
 						break;
 					case OTHandlers:
 						{
 							IEntityHandler *ih = qobject_cast<IEntityHandler*> (*it);
-							if (ih->CouldHandle (p))
-								result.append (*it);
+							r = ih->CouldHandle (p);
 						}
 						break;
 				}
+				
+				if (r.HandlePriority_ > 0)
+					result << *it;
 
 				if (detectOnly && result.size ())
 					break;

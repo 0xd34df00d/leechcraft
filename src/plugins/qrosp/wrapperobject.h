@@ -79,7 +79,7 @@ namespace LeechCraft
 				void SetProvider (QObject*, const QString&);
 
 				// IEntityHandler
-				bool CouldHandle (const LeechCraft::Entity&) const;
+				EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
 				void Handle (LeechCraft::Entity);
 
 				// IJobHolder

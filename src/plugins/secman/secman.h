@@ -45,7 +45,7 @@ namespace LeechCraft
 				QString GetInfo () const;
 				QIcon GetIcon () const;
 
-				bool CouldHandle (const Entity&) const;
+				EntityTestHandleResult CouldHandle (const Entity&) const;
 				void Handle (Entity);
 
 				QSet<QByteArray> GetExpectedPluginClasses () const;

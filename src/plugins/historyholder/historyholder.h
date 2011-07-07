@@ -52,7 +52,7 @@ namespace LeechCraft
 				QStringList GetCategories () const;
 				QList<IFindProxy_ptr> GetProxy (const LeechCraft::Request&);
 
-				bool CouldHandle (const LeechCraft::Entity&) const;
+				EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
 				void Handle (LeechCraft::Entity);
 
 				void SetShortcut (const QString&, const QKeySequences_t&);
