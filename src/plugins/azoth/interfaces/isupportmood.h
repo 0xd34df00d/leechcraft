@@ -26,12 +26,33 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+	/** @brief Interface for accounts supporting user mood.
+	 * 
+	 * This interface can be implemented by account objects to advertise
+	 * the support for publishing current user mood.
+	 * 
+	 * The mood concept in Azoth is based on the XMPP XEP-0107: User
+	 * Mood (http://xmpp.org/extensions/xep-0107.html).
+	 * 
+	 * @sa IAccount
+	 */
 	class ISupportMood
 	{
 	public:
 		virtual ~ISupportMood () {}
 		
-		virtual void SetMood (const QString&, const QString&) = 0;
+		/** @brief Publishes the current user mood.
+		 * 
+		 * The mood information is divided into two pieces:
+		 * mood name (required) and an optional text.
+		 * 
+		 * The possible values of the mood name are
+		 * listed in http://xmpp.org/extensions/xep-0107.html.
+		 * 
+		 * @param[in] mood The mood name.
+		 * @param[in] text The additional text message (optional).
+		 */
+		virtual void SetMood (const QString& mood, const QString& text) = 0;
 	};
 }
 }
