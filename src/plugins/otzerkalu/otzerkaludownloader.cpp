@@ -99,7 +99,8 @@ namespace Otzerkalu
 		QFile file (filename);
 		if (!file.open (QIODevice::ReadOnly | QIODevice::Text))
 		{
-			qWarning () << "Can't parse the file "
+			qWarning () << Q_FUNC_INFO
+					<< "Can't parse the file "
 					<< filename;
 			return;
 		}
