@@ -50,7 +50,7 @@ namespace Azoth
 		 * 
 		 * @param[in] general The general activity.
 		 * @param[in] specific The specific activity (optional).
-		 * @param[in] text The additional text message.
+		 * @param[in] text The additional text message (optional).
 		 */
 		virtual void SetActivity (const QString& general,
 				const QString& specific, const QString& text) = 0;
