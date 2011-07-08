@@ -42,7 +42,7 @@ namespace Otzerkalu
 	{
 		Entity GetEntity (const QUrl& url, const QString& filename)
 		{
-			return LeechCraft::Util::MakeEntity (url,
+			return Util::MakeEntity (url,
 					filename,
 					LeechCraft::Internal |
 						LeechCraft::DoNotNotifyUser |
@@ -64,27 +64,15 @@ namespace Otzerkalu
 	{
 	}
 
-
-	
 	OtzerkaluDownloader::OtzerkaluDownloader (const DownloadParams& param, QObject *parent)
 	: QObject (parent)
 	, Param_ (param)
 	{
-		const QString& filename = Param_.DestDir_ + "/" + Param_.DownloadUrl_.host () +
-				"/" + Param_.DownloadUrl_.path ();
-		
-		int id = -1;
-		QObject *pr;
-		emit delegateEntity (GetEntity (Param_.DownloadUrl_, filename), &id, &pr);
-		if (id == -1)
-		{
-			qWarning () << Q_FUNC_INFO << "Otzerkalu: Could not download a file";
-			emit gotEntity (Util::MakeNotification ("Otzerkalu",
-					tr ("Could not download a file"),
-					LeechCraft::PCritical_));
-		}
-		else
-			HandleProvider (pr, id, Param_.DownloadUrl_, filename, Param_.RecLevel_);
+	}
+	
+	void OtzerkaluDownloader::Begin ()
+	{
+		Download (Param_.DownloadUrl_);
 	}
 	
 	void OtzerkaluDownloader::HandleProvider (QObject *provider, int id,
@@ -94,7 +82,8 @@ namespace Otzerkalu
 		connect (provider,
 				SIGNAL (jobFinished (int)),
 				this,
-				SLOT (handleJobFinished (int)));
+				SLOT (handleJobFinished (int)),
+				Qt::UniqueConnection);
 	}
 	
 	void OtzerkaluDownloader::handleJobFinished (int id)
@@ -102,6 +91,11 @@ namespace Otzerkalu
 		const FileData& data = FileMap_ [id];
 		if (!data.RecLevel_)
 			return;
+		
+		emit gotEntity (Util::MakeNotification (tr ("Download complete"),
+				tr ("Download complete: %1.")
+					.arg (data.Filename_),
+				PInfo_));
 		
 		const QString& filename = data.Filename_;
 		const QUrl& tmpUrl = data.Url_;
@@ -123,31 +117,50 @@ namespace Otzerkalu
 			if (url.isRelative ())
 				url = tmpUrl.resolved (url);
 						
-			QString urlVal = Param_.DestDir_ + "/" + url.host () + "/" + url.path ();
-						
-			int id = -1;
-			QObject *pr;
-			emit delegateEntity (GetEntity (url, urlVal), &id, &pr);
-			if (id == -1)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "Otzerkalu: Could not download a file "
-						<< url.toString ();
-				emit gotEntity (Util::MakeNotification ("Otzerkalu",
-						tr ("Could not download a file"),
-						PCritical_));
+			const QString& filename = Download (url);
+			if (filename.isEmpty ())
 				continue;
-			}
-				
-			HandleProvider (pr, id, url, urlVal, data.RecLevel_ - 1);
+
 			if ((*urlElement).hasAttribute ("href"))
-				(*urlElement).setAttribute ("href", urlVal);
+				(*urlElement).setAttribute ("href", filename);
 			else
-				(*urlElement).setAttribute ("src", urlVal);
+				(*urlElement).setAttribute ("src", filename);
 
 		}
 				
 		WriteData (filename, page.mainFrame ()->toHtml ());
+	}
+	
+	QString OtzerkaluDownloader::Download (const QUrl& url)
+	{
+		const QFileInfo fi (url.path ());
+		const QString& name = fi.fileName ();
+		const QString& path = Param_.DestDir_ + '/' + url.host () +
+				fi.path ();
+		const QString& filename = path + (name.isEmpty () ? "index.html" : name);
+		
+		QDir::root ().mkpath (path);
+
+		int id = -1;
+		QObject *pr;
+		emit delegateEntity (GetEntity (url, filename), &id, &pr);
+		if (id == -1)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "could not download"
+					<< url
+					<< "to"
+					<< filename;
+			emit gotEntity (Util::MakeNotification ("Otzerkalu",
+					tr ("Could not download %1")
+						.arg (url.toString ()),
+					PCritical_));
+			return QString ();
+		}
+
+		HandleProvider (pr, id, Param_.DownloadUrl_, filename, Param_.RecLevel_ - 1);
+		
+		return filename;
 	}
 	
 	bool OtzerkaluDownloader::WriteData(const QString& filename, const QString& data)
@@ -160,6 +173,5 @@ namespace Otzerkalu
 		out << data;
 		return true;
 	}
-
-};
-};
+}
+}

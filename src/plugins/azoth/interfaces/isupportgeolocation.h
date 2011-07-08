@@ -81,17 +81,65 @@ namespace Azoth
 	 */
 	typedef QMap<QString, QVariant> GeolocationInfo_t;
 
+	/** @brief Interface for accounts supporting geolocation data.
+	 * 
+	 * This interface can be implemented by account objects to advertise
+	 * the support for both publishing the current user geolocation data
+	 * and fetching other users' data.
+	 * 
+	 * The geolocation concept in Azoth is based on the XMPP XEP-0080:
+	 * User Location (http://xmpp.org/extensions/xep-0080.html).
+	 * 
+	 * @sa IAccount
+	 */
 	class ISupportGeolocation
 	{
 	public:
 		virtual ~ISupportGeolocation () {}
 		
-		virtual void SetGeolocationInfo (const GeolocationInfo_t&) = 0;
+		/** @brief Publishes the given geolocation info.
+		 * 
+		 * If the info map is empty, geolocation info publishing should
+		 * be effectively canceled.
+		 * 
+		 * @param[in] info The geolocation info to publish.
+		 */
+		virtual void SetGeolocationInfo (const GeolocationInfo_t& info) = 0;
 		
+		/** @brief Returns info for the given entry and variant.
+		 * 
+		 * If the user identified by an entry doesn't exist, or it has
+		 * no variant, or the given combination of user and variant
+		 * doesn't publish geolocation information, an empty map should
+		 * be returned. The only exception is an empty variant, in this
+		 * case this function should return last published info, or info
+		 * from the highest priority variant, or whatever is
+		 * appropriate.
+		 * 
+		 * @param[in] entry The entry for which to return the info.
+		 * @param[in] variant The variant of the entry for which to
+		 * return the info.
+		 * @return The geolocation information for the given entry and
+		 * variant.
+		 */
 		virtual GeolocationInfo_t GetUserGeolocationInfo (QObject *entry,
 				const QString& variant) const = 0;
-		
-		virtual void geolocationInfoChanged (const QString&, QObject*) = 0;
+
+		/** @brief Notifies about info change of another entry.
+		 * 
+		 * This signal should be emitted whenever geolocation
+		 * information is changed for the given variant of the given
+		 * contact list entry. The only exception is if the variant
+		 * goes offline. In this case, there is no need to emit this
+		 * signal.
+		 * 
+		 * @note This function is expected to be a signal.
+		 * 
+		 * @param[out] variant The variant for which the event occurred.
+		 * @param[out] entry The entry whose geolocation information has
+		 * been changed.
+		 */
+		virtual void geolocationInfoChanged (const QString& variant, QObject *entry) = 0;
 	};
 }
 }

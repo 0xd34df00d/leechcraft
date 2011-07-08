@@ -144,7 +144,7 @@ namespace Xoox
 		if (!rich.isEmpty ())
 			return rich;
 
-		return Qt::escape (Message_.body ());
+		return Message_.body ();
 	}
 
 	void GlooxMessage::SetBody (const QString& body)
@@ -167,6 +167,11 @@ namespace Xoox
 	bool GlooxMessage::IsDelivered () const
 	{
 		return IsDelivered_;
+	}
+	
+	QString GlooxMessage::GetRichBody () const
+	{
+		return Message_.getXhtml ();
 	}
 	
 	void GlooxMessage::SetRichBody (const QString& html)

@@ -19,6 +19,7 @@
 #include "lcftp.h"
 #include <QIcon>
 #include <QUrl>
+#include <interfaces/entitytesthandleresult.h>
 #include <plugininterface/util.h>
 #include "core.h"
 #include "tabmanager.h"
@@ -175,9 +176,11 @@ namespace LeechCraft
 			{
 			}
 
-			bool LCFTP::CouldDownload (const Entity& e) const
+			EntityTestHandleResult LCFTP::CouldDownload (const Entity& e) const
 			{
-				return Core::Instance ().IsOK (e);
+				return Core::Instance ().IsOK (e) ?
+						EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
+						EntityTestHandleResult ();
 			}
 
 			int LCFTP::AddJob (Entity e)
@@ -193,9 +196,11 @@ namespace LeechCraft
 				// the call to GetID() and returned from AddJob.
 			}
 
-			bool LCFTP::CouldHandle (const Entity& e) const
+			EntityTestHandleResult LCFTP::CouldHandle (const Entity& e) const
 			{
-				return Core::Instance ().IsOK (e);
+				return Core::Instance ().IsOK (e) ?
+						EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
+						EntityTestHandleResult ();
 			}
 
 			void LCFTP::Handle (Entity e)

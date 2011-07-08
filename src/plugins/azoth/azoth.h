@@ -72,7 +72,7 @@ namespace Azoth
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
 		QMap<QString, QList<QAction*> > GetMenuActions () const;
 		
-		bool CouldHandle (const Entity&) const;
+		EntityTestHandleResult CouldHandle (const Entity&) const;
 		void Handle (Entity);
 	
 		TabClasses_t GetTabClasses () const;

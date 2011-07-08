@@ -40,6 +40,8 @@ namespace ChatHistory
 		Storage* GetStorage ();
 	protected:
 		virtual void run ();
+	private slots:
+		void connectSignals ();
 	};
 }
 }

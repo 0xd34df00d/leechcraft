@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "seekthru.h"
+#include <interfaces/entitytesthandleresult.h>
 #include <plugininterface/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "core.h"
@@ -141,9 +142,11 @@ namespace LeechCraft
 				return XmlSettingsDialog_;
 			}
 
-			bool SeekThru::CouldHandle (const LeechCraft::Entity& e) const
+			EntityTestHandleResult SeekThru::CouldHandle (const LeechCraft::Entity& e) const
 			{
-				return Core::Instance ().CouldHandle (e);
+				return Core::Instance ().CouldHandle (e) ?
+						EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
+						EntityTestHandleResult ();
 			}
 
 			void SeekThru::Handle (LeechCraft::Entity e)

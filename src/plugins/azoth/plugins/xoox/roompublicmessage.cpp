@@ -154,6 +154,11 @@ namespace Xoox
 		Datetime_ = dt;
 	}
 	
+	QString RoomPublicMessage::GetRichBody () const
+	{
+		return XHTML_;
+	}
+	
 	void RoomPublicMessage::SetRichBody (const QString& xhtml)
 	{
 		XHTML_ = xhtml;

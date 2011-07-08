@@ -47,6 +47,7 @@
 #include "interfaces/iauthable.h"
 #include "interfaces/iresourceplugin.h"
 #include "interfaces/iurihandler.h"
+#include "interfaces/irichtextmessage.h"
 #include "chattabsmanager.h"
 #include "pluginmanager.h"
 #include "proxyobject.h"
@@ -641,9 +642,7 @@ namespace Azoth
 
 		proxy->FillValue ("dateTime", dt);
 
-		QString str = dt.time ().toString ();
-		return QString ("<span class='datetime'>[" +
-				str + "]</span>");
+		return dt.time ().toString ();
 	}
 
 	QString Core::FormatNickname (QString nick, IMessage *msg, const QString& color)
@@ -680,6 +679,9 @@ namespace Azoth
 	QString Core::FormatBody (QString body, IMessage *msg)
 	{
 		QObject *msgObj = msg->GetObject ();
+		
+		IRichTextMessage *rtMsg = qobject_cast<IRichTextMessage*> (msgObj);
+		const bool isRich = rtMsg && rtMsg->GetRichBody () == body;
 
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 		emit hookFormatBodyBegin (proxy, this, body, msgObj);
@@ -687,26 +689,29 @@ namespace Azoth
 		{
 			proxy->FillValue ("body", body);
 
-			int pos = 0;
-			while ((pos = LinkRegexp_.indexIn (body, pos)) != -1)
+			if (!isRich)
 			{
-				QString link = LinkRegexp_.cap (1);
-				if (pos > 0 &&
-						(body.at (pos - 1) == '"' || body.at (pos - 1) == '='))
+				int pos = 0;
+				while ((pos = LinkRegexp_.indexIn (body, pos)) != -1)
 				{
-					pos += link.size ();
-					continue;
+					QString link = LinkRegexp_.cap (1);
+					if (pos > 0 &&
+							(body.at (pos - 1) == '"' || body.at (pos - 1) == '='))
+					{
+						pos += link.size ();
+						continue;
+					}
+
+					QString str = QString ("<a href=\"%1\">%1</a>")
+							.arg (link);
+					body.replace (pos, link.length (), str);
+
+					pos += str.length ();
 				}
 
-				QString str = QString ("<a href=\"%1\">%1</a>")
-						.arg (link);
-				body.replace (pos, link.length (), str);
-
-				pos += str.length ();
+				body.replace ('\n', "<br />");
+				body.replace ("  ", "&nbsp; ");
 			}
-
-			body.replace ('\n', "<br />");
-			body.replace ("  ", "&nbsp; ");
 
 			body = HandleSmiles (body);
 

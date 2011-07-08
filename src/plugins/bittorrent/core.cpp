@@ -56,6 +56,7 @@
 #include <libtorrent/storage.hpp>
 #include <libtorrent/file.hpp>
 #include <libtorrent/magnet_uri.hpp>
+#include <interfaces/entitytesthandleresult.h>
 #include <plugininterface/tagscompletionmodel.h>
 #include <plugininterface/util.h>
 #include "xmlsettingsmanager.h"
@@ -310,7 +311,7 @@ namespace LeechCraft
 				return Proxy_;
 			}
 
-			bool Core::CouldDownload (const Entity& e) const
+			EntityTestHandleResult Core::CouldDownload (const Entity& e) const
 			{
 				if (e.Entity_.canConvert<QUrl> ())
 				{
@@ -322,48 +323,50 @@ namespace LeechCraft
 								end = queryItems.end (); i != end; ++i)
 							if (i->first == "xt" &&
 									i->second.startsWith ("urn:btih:"))
-								return true;
-						return false;
+								return EntityTestHandleResult (EntityTestHandleResult::PIdeal);
+						return EntityTestHandleResult ();
 					}
 					else if (url.scheme () == "file")
 					{
 						QString str = url.toLocalFile ();
 						QFile file (str);
-						if (file.exists () &&
-								file.open (QIODevice::ReadOnly))
+						if (!file.exists () ||
+								!file.open (QIODevice::ReadOnly))
+							return EntityTestHandleResult ();
+
+						if (file.size () > XmlSettingsManager::Instance ()->
+								property ("MaxAutoTorrentSize").toInt () * 1024 * 1024)
 						{
-							if (file.size () > XmlSettingsManager::Instance ()->
-									property ("MaxAutoTorrentSize").toInt () * 1024 * 1024)
+							if (XmlSettingsManager::Instance ()->
+									property ("NotifyAboutTooBig").toBool ())
 							{
-								if (XmlSettingsManager::Instance ()->
-										property ("NotifyAboutTooBig").toBool ())
-								{
-									QString text = tr ("Rejecting file %1 because it's "
-											"bigger than current auto limit.").arg (str);
-									emit const_cast<Core*> (this)->
-											gotEntity (Util::MakeNotification ("BitTorrent",
-											text, PWarning_));
-								}
-								return false;
+								const QString text = tr ("Rejecting file %1 because it's "
+										"bigger than current auto limit.").arg (str);
+								emit const_cast<Core*> (this)->
+										gotEntity (Util::MakeNotification ("BitTorrent",
+												text, PWarning_));
 							}
-							else
-								return IsValidTorrent (file.readAll ());
+							return EntityTestHandleResult ();
 						}
 						else
-							return false;
+							return IsValidTorrent (file.readAll ()) ?
+									EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
+									EntityTestHandleResult ();
 					}
 					else
-						return false;
+						return EntityTestHandleResult ();
 				}
 				else if (e.Entity_.canConvert<QByteArray> ())
-					return IsValidTorrent (e.Entity_.toByteArray ());
+					return IsValidTorrent (e.Entity_.toByteArray ()) ?
+							EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
+							EntityTestHandleResult ();
 				else
-					return false;
+					return EntityTestHandleResult ();
 			}
 
-			bool Core::CouldHandle (const Entity&) const
+			EntityTestHandleResult Core::CouldHandle (const Entity&) const
 			{
-				return false;
+				return EntityTestHandleResult ();
 			}
 
 			void Core::Handle (Entity)

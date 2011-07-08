@@ -22,6 +22,8 @@
 #include <QtPlugin>
 #include "structures.h"
 
+struct EntityTestHandleResult;
+
 /** @brief Common interface for all the downloaders.
  *
  * Plugins which provide downloading capabilities and want to be visible
@@ -105,7 +107,7 @@ public:
 	 * @sa AddJob
 	 * @sa LeechCraft::Entity
 	 */
-	virtual bool CouldDownload (const LeechCraft::Entity& entity) const = 0;
+	virtual EntityTestHandleResult CouldDownload (const LeechCraft::Entity& entity) const = 0;
 
 	/** @brief Adds the job with given parameters.
 	 *

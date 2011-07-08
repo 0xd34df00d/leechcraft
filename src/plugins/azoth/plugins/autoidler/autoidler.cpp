@@ -100,6 +100,9 @@ namespace Autoidler
 		if (seconds && seconds % 60)
 			return;
 		
+		if (!XmlSettingsManager::Instance ().property ("EnableAutoidler").toBool ())
+			return;
+		
 		const int mins = seconds / 60;
 		if (!mins &&
 				!OldStatuses_.isEmpty ())

@@ -34,6 +34,7 @@
 #include <QTranslator>
 #include <QCursor>
 #include <QKeyEvent>
+#include <interfaces/entitytesthandleresult.h>
 #include <plugininterface/tagscompletionmodel.h>
 #include <plugininterface/util.h>
 #include <plugininterface/categoryselector.h>
@@ -59,7 +60,6 @@
 #include "wizardgenerator.h"
 #include "export2fb2dialog.h"
 #include "actionsstructs.h"
-#include <boost/graph/graph_concepts.hpp>
 #include "uistatepersist.h"
 #include "itemswidget.h"
 
@@ -402,9 +402,12 @@ namespace LeechCraft
 				Core::Instance ().GetReprWidget ()->CurrentChannelChanged (si);
 			}
 
-			bool Aggregator::CouldHandle (const LeechCraft::Entity& e) const
+			EntityTestHandleResult Aggregator::CouldHandle (const LeechCraft::Entity& e) const
 			{
-				return Core::Instance ().CouldHandle (e);
+				EntityTestHandleResult r;
+				if (Core::Instance ().CouldHandle (e))
+					r.HandlePriority_ = 1000;
+				return r;
 			}
 
 			void Aggregator::Handle (LeechCraft::Entity e)
