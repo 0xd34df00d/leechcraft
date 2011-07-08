@@ -423,6 +423,16 @@ namespace LeechCraft
 		InMoveProcess_ = move;
 	}
 
+	bool SeparateTabWidget::IsPinTab (int index) const
+	{
+		return MainTabBar_->IsPinTab (index);
+	}
+
+	QString SeparateTabWidget::GetPinTabText (int index) const
+	{
+		return MainTabBar_->GetPinTabText (index);
+	}
+
 	void SeparateTabWidget::resizeEvent (QResizeEvent *event)
 	{
 		QWidget::resizeEvent (event);

@@ -435,6 +435,8 @@ public:
 	virtual int IndexOf (QWidget*) const = 0;
 	virtual QIcon TabIcon (int) const = 0;
 	virtual QString TabText (int) const = 0;
+	virtual bool IsPinTab (int) const = 0;
+	virtual QString GetPinTabText (int) const = 0;
 public slots:
 	virtual void setCurrentIndex (int) = 0;
 	virtual void setCurrentWidget (QWidget*) = 0;

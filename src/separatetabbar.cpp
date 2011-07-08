@@ -101,6 +101,11 @@ namespace LeechCraft
 		TabWidget_ = widget;
 	}
 
+	QString SeparateTabBar::GetPinTabText (int index) const
+	{
+		return PinTabsIndex2Name_ [tabData (index).toInt ()];
+	}
+
 	QSize SeparateTabBar::tabSizeHint (int index) const
 	{
 		QSize size = QTabBar::tabSizeHint (index);

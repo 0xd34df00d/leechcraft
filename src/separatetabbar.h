@@ -44,6 +44,7 @@ namespace LeechCraft
 		void SetTabNoClosable (int);
 		void SetLastTab (bool);
 		void SetTabWidget (SeparateTabWidget*);
+		QString GetPinTabText (int) const;
 	protected:
 		QSize tabSizeHint (int) const;
 		void mouseReleaseEvent (QMouseEvent*);
