@@ -18,6 +18,7 @@
 
 #include "otzerkalu.h"
 #include <QIcon>
+#include <interfaces/entitytesthandleresult.h>
 #include "otzerkaludialog.h"
 
 namespace LeechCraft
@@ -56,9 +57,14 @@ namespace Otzerkalu
 		return QIcon ();
 	}
 
-	bool Plugin::CouldHandle (const Entity& entity) const
+	EntityTestHandleResult Plugin::CouldHandle (const Entity& entity) const
 	{
-		return !entity.Entity_.toUrl ().isEmpty () && (entity.Parameters_ & FromUserInitiated);
+		const bool can = !entity.Entity_.toUrl ().isEmpty () &&
+				(entity.Parameters_ & FromUserInitiated) &&
+				entity.Additional_.value ("AllowedSemantics").toStringList ().contains ("save");
+		return can ?
+				EntityTestHandleResult (EntityTestHandleResult::PHigh) :
+				EntityTestHandleResult ();
 	}
 
 	void Plugin::Handle (Entity entity)

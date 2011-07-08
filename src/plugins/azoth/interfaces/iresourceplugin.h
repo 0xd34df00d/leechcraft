@@ -43,7 +43,7 @@ namespace Azoth
 	 * In your plugin you should never derive from this interface
 	 * directly, instead, a relevant interface should be used.
 	 * 
-	 * @sa ISmileResourceSource
+	 * @sa IEmoticonResourceSource
 	 */
 	class IResourceSource
 	{
@@ -60,7 +60,9 @@ namespace Azoth
 		 * associated resources (see derived interfaces' documentation
 		 * for more information).
 		 * 
-		 * @sa XmlSettingsDialog::SetDataSource(), ISmileResourceSource
+		 * @sa XmlSettingsDialog::SetDataSource()
+		 * @sa IEmoticonResourceSource
+		 * @sa IChatStyleResourceSource
 		 */
 		virtual QAbstractItemModel* GetOptionsModel () const = 0;
 	};
@@ -147,6 +149,8 @@ namespace Azoth
 	 * plugin, it should also implement IPlugin2, and it should return
 	 * "org.LeechCraft.Plugins.Azoth.Plugins.IResourceSourcePlugin"
 	 * string from the IPlugin2::GetPluginClasses(), among others.
+	 * 
+	 * @sa IEmoticonResourceSource, IChatStyleResourceSource
 	 */
 	class IResourcePlugin
 	{
@@ -157,11 +161,11 @@ namespace Azoth
 		 * 
 		 * Each object in this list should implement at least one
 		 * interface derived from IResourceSource — that is,
-		 * ISmileResourceSource.
+		 * IEmoticonResourceSource or IChatStyleResourceSource.
 		 * 
 		 * @return List of resource sources.
 		 * 
-		 * @sa ISmileResourceSource
+		 * @sa IEmoticonResourceSource, IChatStyleResourceSource
 		 */
 		virtual QList<QObject*> GetResourceSources () const = 0;
 	};

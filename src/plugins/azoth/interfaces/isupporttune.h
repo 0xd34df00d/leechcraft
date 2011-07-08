@@ -28,8 +28,8 @@ namespace Azoth
 	/** @brief Interface for publishing user tunes.
 	 * 
 	 * This interface can be implemented by account objects (those that
-	 * implement IAccount) to signify that the account supports
-	 * publishing tune information.
+	 * implement IAccount) to advertise the support for publishing
+	 * currently playing tune information.
 	 * 
 	 * @sa IAccount
 	 */

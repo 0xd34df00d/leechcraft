@@ -28,6 +28,7 @@
 #include <qross/core/script.h>
 #include <qross/core/manager.h>
 #include <qross/core/wrapperinterface.h>
+#include <interfaces/entitytesthandleresult.h>
 #include <plugininterface/util.h>
 #include "utilproxy.h"
 #include "wrappers/coreproxywrapper.h"
@@ -340,11 +341,14 @@ namespace LeechCraft
 				SCALL (void) ("SetProvider", args);
 			}
 
-			bool WrapperObject::CouldHandle (const Entity& e) const
+			EntityTestHandleResult WrapperObject::CouldHandle (const Entity& e) const
 			{
 				QVariantList args;
 				args << QVariant::fromValue<QObject*> (new EntityWrapper (e));
-				return SCALL (bool) ("CouldHandle", args);
+				const QVariantMap& map = SCALL (QVariantMap) ("CouldHandle", args);
+				EntityTestHandleResult r;
+				r.HandlePriority_ = map ["Priority"].toInt ();
+				return r;
 			}
 
 			void WrapperObject::Handle (Entity e)

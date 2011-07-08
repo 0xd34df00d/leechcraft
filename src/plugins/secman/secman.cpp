@@ -18,6 +18,7 @@
 
 #include "secman.h"
 #include <QIcon>
+#include <interfaces/entitytesthandleresult.h>
 #include "core.h"
 
 namespace LeechCraft
@@ -58,9 +59,11 @@ namespace LeechCraft
 				return QIcon ();
 			}
 
-			bool Plugin::CouldHandle (const Entity& e) const
+			EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const
 			{
-				return Core::Instance ().CouldHandle (e);
+				return Core::Instance ().CouldHandle (e) ?
+						EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
+						EntityTestHandleResult ();
 			}
 
 			void Plugin::Handle (Entity e)

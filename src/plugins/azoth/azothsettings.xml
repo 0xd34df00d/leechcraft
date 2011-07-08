@@ -75,6 +75,15 @@
 				<label value="Group contacts" />
 			</item>
 		</tab>
+		<tab>
+			<label value="Chat windows" />
+			<item type="lineedit" property="PreNickText" default="">
+				<label value="Pre-nick text:" />
+			</item>
+			<item type="lineedit" property="PostNickText" default=":">
+				<label value="Post-nick text:" />
+			</item>
+		</tab>
 	</page>
 	<page>
 		<label value="Behavior" />

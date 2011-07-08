@@ -49,7 +49,7 @@ namespace LeechCraft
 
 				QList<QObject*> GetPlugins ();
 
-				bool CouldHandle (const Entity&) const;
+				EntityTestHandleResult CouldHandle (const Entity&) const;
 				void Handle (Entity);
 			};
 		};

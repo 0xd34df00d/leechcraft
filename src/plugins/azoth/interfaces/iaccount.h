@@ -44,7 +44,9 @@ namespace Azoth
 	 * If the account supports publishing user tune, it may implement
 	 * ISupportTune.
 	 * 
-	 * @sa IHaveServiceDiscovery, IHaveConsole, ISupportTune
+	 * @sa IHaveServiceDiscovery, IHaveConsole
+	 * @sa ISupportTune, ISupportMood, ISupportActivity
+	 * @sa ISupportGeolocation
 	 */
 	class IAccount
 	{
