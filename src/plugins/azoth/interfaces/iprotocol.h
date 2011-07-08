@@ -22,6 +22,7 @@
 #include <QMetaType>
 
 class QObject;
+class QIcon;
 
 namespace LeechCraft
 {
@@ -123,6 +124,12 @@ namespace Azoth
 		 * @return Human-readable name of the protocol.
 		 */
 		virtual QString GetProtocolName () const = 0;
+		
+		/** @brief Returns the icon of this protocol.
+		 * 
+		 * @return The icon of the protocol.
+		 */
+		virtual QIcon GetProtocolIcon () const = 0;
 
 		/** @brief Returns the protocol ID, which must be unique among
 		 * all the protocols.
