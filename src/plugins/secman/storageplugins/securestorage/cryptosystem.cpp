@@ -35,129 +35,131 @@ namespace StoragePlugins
 {
 namespace SecureStorage
 {
+	const char* WrongHMACException::what () const throw ()
+	{
+		return "WrongHMACException";
+	}
 
-const char* WrongHMACException::what () const throw ()
-{
-	return "WrongHMACException";
-}
+	CryptoSystem::CryptoSystem (const QString& password)
+	{
+		Key_ = CreateKey (password);
+	}
 
-CryptoSystem::CryptoSystem (const QString& password)
-{
-	Key_ = CreateKey (password);
-}
+	CryptoSystem::~CryptoSystem ()
+	{
+		Key_.fill (0, Key_.length ());
+	}
 
-CryptoSystem::~CryptoSystem ()
-{
-	Key_.fill (0, Key_.length ());
-}
+	QByteArray CryptoSystem::Encrypt (const QByteArray& data) const
+	{
+		QByteArray result;
+		result.resize (CipherTextFormatUtils::BufferLengthFor (data.length ()));
+		CipherTextFormat cipherText (result.data (), data.length ());
 
-QByteArray CryptoSystem::Encrypt (const QByteArray& data) const
-{
-	QByteArray result;
-	result.resize (CipherTextFormatUtils::BufferLengthFor (data.length ()));
-	CipherTextFormat cipherText (result.data (), data.length ());
+		// fill IV in cipherText & random block
+		// TODO: check error codes.
+		RAND_bytes (cipherText.Iv (), IVLength);
+		unsigned char randomData [RndLength];
+		RAND_bytes (randomData, RndLength);
 
-	// fill IV in cipherText & random block
-	// TODO: check error codes.
-	RAND_bytes (cipherText.Iv (), IVLength);
-	unsigned char randomData [RndLength];
-	RAND_bytes (randomData, RndLength);
+		// init cipher
+		EVP_CIPHER_CTX cipherCtx;
+		EVP_CIPHER_CTX_init (&cipherCtx);
+		EVP_EncryptInit (&cipherCtx, EVP_aes_256_ofb (),
+				reinterpret_cast<const unsigned char*> (Key_.data ()),
+				cipherText.Iv ());
 
-	// init cipher
-	EVP_CIPHER_CTX cipherCtx;
-	EVP_CIPHER_CTX_init (&cipherCtx);
-	EVP_EncryptInit (&cipherCtx, EVP_aes_256_ofb (),
-			reinterpret_cast<const unsigned char*> (Key_.data ()), cipherText.Iv ());
+		// encrypt
+		int outLength = 0;
+		unsigned char* outPtr = cipherText.Data ();
+		EVP_EncryptUpdate (&cipherCtx, outPtr, &outLength,
+				reinterpret_cast<const unsigned char*> (data.data ()),
+				data.length ());
+		outPtr += outLength;
+		EVP_EncryptUpdate (&cipherCtx, outPtr, &outLength, randomData, RndLength);
+		outPtr += outLength;
+		// output last block & cleanup
+		EVP_EncryptFinal (&cipherCtx, outPtr, &outLength);
+		outPtr += outLength;
 
-	// encrypt
-	int outLength = 0;
-	unsigned char* outPtr = cipherText.Data ();
-	EVP_EncryptUpdate (&cipherCtx, outPtr, &outLength,
-			reinterpret_cast<const unsigned char*> (data.data ()), data.length ());
-	outPtr += outLength;
-	EVP_EncryptUpdate (&cipherCtx, outPtr, &outLength, randomData, RndLength);
-	outPtr += outLength;
-	// output last block & cleanup
-	EVP_EncryptFinal (&cipherCtx, outPtr, &outLength);
-	outPtr += outLength;
+		// compute hmac
+		HMAC_CTX hmacCtx;
+		HMAC_CTX_init (&hmacCtx);
+		HMAC_Init_ex (&hmacCtx, Key_.data (), Key_.length (), EVP_sha256 (), 0);
+		HMAC_Update (&hmacCtx, reinterpret_cast<const unsigned char*> (data.data ()), data.length ());
+		HMAC_Update (&hmacCtx, randomData, RndLength);
+		unsigned hmacLength = 0;
+		HMAC_Final (&hmacCtx, cipherText.Hmac (), &hmacLength);
+		HMAC_CTX_cleanup (&hmacCtx);
 
-	// compute hmac
-	HMAC_CTX hmacCtx;
-	HMAC_CTX_init (&hmacCtx);
-	HMAC_Init_ex (&hmacCtx, Key_.data (), Key_.length (), EVP_sha256 (), 0);
-	HMAC_Update (&hmacCtx, reinterpret_cast<const unsigned char*> (data.data ()), data.length ());
-	HMAC_Update (&hmacCtx, randomData, RndLength);
-	unsigned hmacLength = 0;
-	HMAC_Final (&hmacCtx, cipherText.Hmac (), &hmacLength);
-	HMAC_CTX_cleanup (&hmacCtx);
+		return result;
+	}
 
-	return result;
-}
+	QByteArray CryptoSystem::Decrypt (const QByteArray& cipherText) const
+	{
+		if (CipherTextFormatUtils::DataLengthFor (cipherText.length ()) < 0)
+			throw WrongHMACException ();
 
-QByteArray CryptoSystem::Decrypt (const QByteArray& cipherText) const
-{
-	if (CipherTextFormatUtils::DataLengthFor (cipherText.length ()) < 0)
-		throw WrongHMACException ();
+		QByteArray data;
+		data.resize (CipherTextFormatUtils::DecryptBufferLengthFor (cipherText.length ()));
+		CipherTextFormat cipherTextFormat (const_cast<char*> (cipherText.data ()),
+				CipherTextFormatUtils::DataLengthFor (cipherText.length ()));
 
-	QByteArray data;
-	data.resize (CipherTextFormatUtils::DecryptBufferLengthFor (cipherText.length ()));
-	CipherTextFormat cipherTextFormat (const_cast<char*> (cipherText.data ()),
-			CipherTextFormatUtils::DataLengthFor (cipherText.length ()));
+		// init cipher
+		EVP_CIPHER_CTX cipherCtx;
+		EVP_CIPHER_CTX_init (&cipherCtx);
+		EVP_DecryptInit (&cipherCtx, EVP_aes_256_ofb (),
+				reinterpret_cast<const unsigned char*> (Key_.data ()),
+				cipherTextFormat.Iv ());
 
-	// init cipher
-	EVP_CIPHER_CTX cipherCtx;
-	EVP_CIPHER_CTX_init (&cipherCtx);
-	EVP_DecryptInit (&cipherCtx, EVP_aes_256_ofb (),
-			reinterpret_cast<const unsigned char*> (Key_.data ()), cipherTextFormat.Iv ());
+		// decrypt
+		int outLength = 0;
+		unsigned char* outPtr = reinterpret_cast<unsigned char*> (data.data ());
+		EVP_DecryptUpdate (&cipherCtx, outPtr, &outLength,
+				cipherTextFormat.Data (), cipherTextFormat.GetDataLength ());
+		outPtr += outLength;
+		EVP_DecryptUpdate (&cipherCtx, outPtr, &outLength,
+				cipherTextFormat.Rnd (), RndLength);
+		outPtr += outLength;
+		// output last block & cleanup
+		EVP_DecryptFinal (&cipherCtx, outPtr, &outLength);
+		outPtr += outLength;
 
-	// decrypt
-	int outLength = 0;
-	unsigned char* outPtr = reinterpret_cast<unsigned char*> (data.data ());
-	EVP_DecryptUpdate (&cipherCtx, outPtr, &outLength,
-			cipherTextFormat.Data (), cipherTextFormat.GetDataLength ());
-	outPtr += outLength;
-	EVP_DecryptUpdate (&cipherCtx, outPtr, &outLength,
-			cipherTextFormat.Rnd (), RndLength);
-	outPtr += outLength;
-	// output last block & cleanup
-	EVP_DecryptFinal (&cipherCtx, outPtr, &outLength);
-	outPtr += outLength;
+		// compute hmac
+		unsigned char hmac [HMACLength];
+		HMAC_CTX hmacCtx;
+		HMAC_CTX_init (&hmacCtx);
+		HMAC_Init_ex (&hmacCtx, Key_.data (), Key_.length (),
+				EVP_sha256 (), 0);
+		HMAC_Update (&hmacCtx, reinterpret_cast<unsigned char*> (data.data ()), data.length ());
+		unsigned int hmacLength = 0;
+		HMAC_Final (&hmacCtx, hmac, &hmacLength);
+		HMAC_CTX_cleanup (&hmacCtx);
 
-	// compute hmac
-	unsigned char hmac [HMACLength];
-	HMAC_CTX hmacCtx;
-	HMAC_CTX_init (&hmacCtx);
-	HMAC_Init_ex (&hmacCtx, Key_.data (), Key_.length (),
-			EVP_sha256 (), 0);
-	HMAC_Update (&hmacCtx, reinterpret_cast<unsigned char*> (data.data ()), data.length ());
-	unsigned int hmacLength = 0;
-	HMAC_Final (&hmacCtx, hmac, &hmacLength);
-	HMAC_CTX_cleanup (&hmacCtx);
+		// check hmac
+		const bool hmacsDifferent = memcmp (hmac, cipherTextFormat.Hmac (), HMACLength);
+		if (hmacsDifferent)
+			throw WrongHMACException ();
 
-	// check hmac
-	bool hmacsDifferent = memcmp (hmac, cipherTextFormat.Hmac (), HMACLength);
-	if (hmacsDifferent)
-		throw WrongHMACException ();
+		// remove random block
+		data.truncate (cipherTextFormat.GetDataLength ());
 
-	// remove random block
-	data.truncate (cipherTextFormat.GetDataLength ());
+		return data;
+	}
 
-	return data;
-}
+	QByteArray CryptoSystem::Hash (const QByteArray& data) const
+	{
+		unsigned char hash [HashLength];
+		SHA256 (reinterpret_cast<const unsigned char*> (data.data ()), data.size (), hash);
+		return QByteArray (reinterpret_cast<char*> (hash), HashLength);
+	}
 
-QByteArray CryptoSystem::Hash (const QByteArray& data) const
-{
-	unsigned char hash [HashLength];
-	SHA256 (reinterpret_cast<const unsigned char*> (data.data ()), data.size (), hash);
-	return QByteArray (reinterpret_cast<char*> (hash), HashLength);
-}
-
-QByteArray CryptoSystem::CreateKey (const QString& password) const
-{
-	QByteArray res = Hash (password.toUtf8 ());
-	res.resize (KeyLength);
-	return res;
-}
+	QByteArray CryptoSystem::CreateKey (const QString& password) const
+	{
+		QByteArray res = Hash (password.toUtf8 ());
+		res.resize (KeyLength);
+		return res;
+	}
 }
 }
 }

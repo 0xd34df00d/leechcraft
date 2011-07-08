@@ -39,24 +39,26 @@ namespace StoragePlugins
 {
 namespace SecureStorage
 {
-
-	class Plugin :
-			public QObject,
-			public IInfo,
-			public IPlugin2,
-			public IStoragePlugin,
-			public IActionsExporter
+	class Plugin : public QObject
+				 , public IInfo
+				 , public IPlugin2
+				 , public IActionsExporter
+				 , public IStoragePlugin
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Plugins::SecMan::IStoragePlugin IActionsExporter)
 
 		boost::shared_ptr<QSettings> Storage_;
 		boost::shared_ptr<QSettings> Settings_;
-	public:
 
-		Plugin ()
-			: CryptoSystem_ (0)
-			, WindowTitle_ ("SecMan SecureStorage") { }
+		QString WindowTitle_;
+		CryptoSystem *CryptoSystem_;
+		
+		QAction *ForgetKeyAction_;
+		QAction *ChangePasswordAction_;
+		QAction *ClearSettingsAction_;
+	public:
+		Plugin ();
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
 		QByteArray GetUniqueID () const;
@@ -79,9 +81,7 @@ namespace SecureStorage
 		void changePassword ();
 		void clearSettings ();
 	private:
-		QString WindowTitle_;
-		CryptoSystem *CryptoSystem_;
-		const CryptoSystem &GetCryptoSystem ();
+		const CryptoSystem& GetCryptoSystem ();
 		void SetCryptoSystem (CryptoSystem *cs);
 		void UpdateActionsStates ();
 		void UpdatePasswordSettings (const QString& pass);
@@ -91,10 +91,6 @@ namespace SecureStorage
 		bool IsPasswordCorrect (const CryptoSystem& cs);
 		bool IsPasswordEmpty ();
 		bool IsPasswordSet ();
-
-		QAction *ForgetKeyAction_;
-		QAction *ChangePasswordAction_;
-		QAction *ClearSettingsAction_;
 	};
 }
 }

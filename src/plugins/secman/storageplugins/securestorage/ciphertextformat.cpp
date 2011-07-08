@@ -28,10 +28,9 @@ namespace StoragePlugins
 {
 namespace SecureStorage
 {
-
 	CipherTextFormat::CipherTextFormat (void *buffer, int dataLength)
-		: Buffer_ (reinterpret_cast<unsigned char*> (buffer))
-		, DataLength_ (dataLength)
+	: Buffer_ (reinterpret_cast<unsigned char*> (buffer))
+	, DataLength_ (dataLength)
 	{
 	}
 
@@ -72,7 +71,6 @@ namespace SecureStorage
 
 	namespace CipherTextFormatUtils
 	{
-
 		int BufferLengthFor (int dataLength)
 		{
 			return dataLength + (IVLength + RndLength + HMACLength);

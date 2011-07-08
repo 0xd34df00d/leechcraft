@@ -33,11 +33,9 @@
 
 namespace
 {
-
 	class PasswordNotEnteredException : std::exception
 	{
 	public:
-
 		PasswordNotEnteredException () { }
 
 		const char* what () const throw ()
@@ -73,17 +71,22 @@ namespace StoragePlugins
 {
 namespace SecureStorage
 {
+	Plugin::Plugin ()
+	: WindowTitle_ ("SecMan SecureStorage")
+	, CryptoSystem_ (0)
+	{
+	}
 
 	void Plugin::Init (ICoreProxy_ptr)
 	{
 		Settings_ .reset (new QSettings (QSettings::IniFormat,
-				QSettings::UserScope,
-				QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_SecMan_SecureStorage"));
+					QSettings::UserScope,
+					QCoreApplication::organizationName (),
+					QCoreApplication::applicationName () + "_SecMan_SecureStorage"));
 		Storage_ .reset (new QSettings (QSettings::IniFormat,
-				QSettings::UserScope,
-				QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_SecMan_SecureStorage_Data"));
+					QSettings::UserScope,
+					QCoreApplication::organizationName (),
+					QCoreApplication::applicationName () + "_SecMan_SecureStorage_Data"));
 
 		ForgetKeyAction_ = new QAction (tr ("Forget master password"), this);
 		ClearSettingsAction_ = new QAction (tr ("Clear SecureStorage data.."), this);
@@ -136,10 +139,10 @@ namespace SecureStorage
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
-		return QSet<QByteArray > () << "org.LeechCraft.SecMan.StoragePlugins/1.0";
+		return QSet<QByteArray> () << "org.LeechCraft.SecMan.StoragePlugins/1.0";
 	}
 
-	QList<QAction*> Plugin::GetActions (LeechCraft::ActionsEmbedPlace place) const
+	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace place) const
 	{
 		QList<QAction*> result;
 		if (place == AEPCommonContextMenu || place == AEPToolsMenu || place == AEPTrayMenu)
@@ -163,11 +166,10 @@ namespace SecureStorage
 		ChangePasswordAction_->setEnabled (IsPasswordSet ());
 	}
 
-	QList<QByteArray> Plugin::ListKeys (IStoragePlugin::StorageType st)
+	QList<QByteArray> Plugin::ListKeys (IStoragePlugin::StorageType)
 	{
-		QStringList keys = Storage_->allKeys ();
 		QList<QByteArray> result;
-		Q_FOREACH (const QString& key, keys)
+		Q_FOREACH (const QString& key, Storage_->allKeys ())
 			result << key.toUtf8 ();
 		return result;
 	}
@@ -175,34 +177,33 @@ namespace SecureStorage
 	void Plugin::Save (const QByteArray& key, const QVariantList& values,
 			IStoragePlugin::StorageType st, bool overwrite)
 	{
-		QVariantList allValues;
-		if (overwrite)
-			allValues = values;
-		else
-			allValues = Load (key, st) + values;
+		QVariantList allValues = values;
+		if (!overwrite)
+			allValues.prepend (Load (key, st));
+
 		try
 		{
-			QByteArray data = Serialize (allValues);
-			QByteArray encrypted = GetCryptoSystem ().Encrypt (data);
+			const QByteArray& data = Serialize (allValues);
+			const QByteArray& encrypted = GetCryptoSystem ().Encrypt (data);
 			Storage_->setValue (key, encrypted);
 		}
-		catch (PasswordNotEnteredException& e)
+		catch (const PasswordNotEnteredException&)
 		{
 			qWarning () << Q_FUNC_INFO << "Password was not entered";
 		}
-		catch (WrongHMACException& e)
+		catch (const WrongHMACException&)
 		{
 			qWarning () << Q_FUNC_INFO << "Wrong HMAC";
 			forgetKey ();
 		}
 	}
 
-	QVariantList Plugin::Load (const QByteArray& key, IStoragePlugin::StorageType st)
+	QVariantList Plugin::Load (const QByteArray& key, IStoragePlugin::StorageType)
 	{
 		try
 		{
-			QByteArray encrypted = Storage_->value (key).toByteArray ();
-			QByteArray data = GetCryptoSystem ().Decrypt (encrypted);
+			const QByteArray& encrypted = Storage_->value (key).toByteArray ();
+			const QByteArray& data = GetCryptoSystem ().Decrypt (encrypted);
 			return Deserialize (data).toList ();
 		}
 		catch (const WrongHMACException&)
@@ -240,9 +241,11 @@ namespace SecureStorage
 	{
 		// confirm
 		QMessageBox::StandardButton r =
-				QMessageBox::question (0, WindowTitle_,
-				tr ("Do you really want to clear all stored data?"),
-				QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+			QMessageBox::question (0,
+					WindowTitle_,
+					tr ("Do you really want to clear all stored data?"),
+					QMessageBox::Yes | QMessageBox::No,
+					QMessageBox::No);
 		if (r != QMessageBox::Yes)
 			return;
 
@@ -259,6 +262,7 @@ namespace SecureStorage
 			CreateNewPassword ();
 			return;
 		}
+
 		QInputDialog dialog;
 		dialog.setWindowTitle (WindowTitle_);
 		dialog.setTextEchoMode (QLineEdit::Password);
@@ -272,46 +276,50 @@ namespace SecureStorage
 				dialog.setTextValue ("");
 				if (dialog.exec () != QInputDialog::Accepted)
 					return;
+
 				oldPassword = dialog.textValue ();
 				CryptoSystem oldCs (oldPassword);
 				if (IsPasswordCorrect (oldCs))
 					break; // normal way
+
 				if (QMessageBox::question (0, WindowTitle_,
 						tr ("Wrong old master password.\nDo you want to try again?"),
 						QMessageBox::Yes | QMessageBox::No,
 						QMessageBox::No) != QMessageBox::Yes)
 					return;
-				// else continue;
 			}
 
 		QString password;
 		// ask new password
 		while (true)
 		{
-			dialog.setLabelText (tr ("Enter new master password"));
+			dialog.setLabelText (tr ("Enter new master password:"));
 			dialog.setTextValue ("");
 			if (dialog.exec () != QInputDialog::Accepted)
 				return;
+
 			password = dialog.textValue ();
-			dialog.setLabelText (tr ("Enter same master password again"));
+			dialog.setLabelText (tr ("Enter the same master password again:"));
 			dialog.setTextValue ("");
 			if (dialog.exec () != QInputDialog::Accepted)
 				return;
+
 			QString password2 = dialog.textValue ();
 			if (password == password2)
 				break; // normal way
-			if (QMessageBox::question (0, WindowTitle_,
-					tr ("The passwords are different.\nDo you want to try again?"),
-					QMessageBox::Yes | QMessageBox::No,
-					QMessageBox::No) != QMessageBox::Yes)
+
+			if (QMessageBox::question (0,
+						WindowTitle_,
+						tr ("The passwords are different. Do you want to try again?"),
+						QMessageBox::Yes | QMessageBox::No,
+						QMessageBox::No) != QMessageBox::Yes)
 				return;
-			// else continue;
 		}
 
 		ChangePassword (oldPassword, password);
 	}
 
-	const CryptoSystem &Plugin::GetCryptoSystem ()
+	const CryptoSystem& Plugin::GetCryptoSystem ()
 	{
 		if (!IsPasswordSet ())
 			CreateNewPassword ();
@@ -340,7 +348,7 @@ namespace SecureStorage
 					}
 					else // continue
 						dialog.setLabelText (tr ("Wrong password.\n"
-							"Try enter master password again:"));
+								"Try enter master password again:"));
 				}
 			}
 		}
@@ -351,7 +359,7 @@ namespace SecureStorage
 	{
 		delete CryptoSystem_;
 		CryptoSystem_ = cs;
-		ForgetKeyAction_->setEnabled (bool (cs));
+		ForgetKeyAction_->setEnabled (static_cast<bool> (cs));
 	}
 
 	void Plugin::CreateNewPassword ()
@@ -359,35 +367,43 @@ namespace SecureStorage
 		QInputDialog dialog;
 		dialog.setWindowTitle (WindowTitle_);
 		dialog.setTextEchoMode (QLineEdit::Password);
+
 		QString password;
 		while (true)
 		{
 			// query password
 			dialog.setTextValue ("");
-			dialog.setLabelText (tr ("Creating master password for SecureStorage\n"
-					"Enter new master password"));
+			dialog.setLabelText (tr ("Creating master password for SecureStorage.\n"
+					"Enter new master password:"));
 			if (dialog.exec () != QInputDialog::Accepted)
 				break; // use empty password
+
 			password = dialog.textValue ();
+
 			// query password again
 			dialog.setTextValue ("");
-			dialog.setLabelText (tr ("Enter same master password again"));
+			dialog.setLabelText (tr ("Enter the same master password again:"));
 			if (dialog.exec () != QInputDialog::Accepted)
 				break; // use empty password
+
 			QString password2 = dialog.textValue ();
 			if (password == password2)
 				break; // the "right" way
-			else if (QMessageBox::question (0, WindowTitle_,
-					tr ("Two passwords that you entered are not equal.\n"
-					"Do you want to try again?"),
-					QMessageBox::Yes | QMessageBox::No,
-					QMessageBox::Yes) != QMessageBox::Yes)
+
+			else if (QMessageBox::question (0,
+						WindowTitle_,
+						tr ("Two passwords that you entered are not equal.\n"
+							"Do you want to try again?"),
+						QMessageBox::Yes | QMessageBox::No,
+						QMessageBox::Yes) != QMessageBox::Yes)
 				throw PasswordNotEnteredException ();
 			// else continue;
 		}
+
 		// clear old settings and data
 		Settings_->clear ();
 		Storage_->clear ();
+
 		// set up new settings
 		UpdatePasswordSettings (password);
 		UpdateActionsStates ();
@@ -408,15 +424,14 @@ namespace SecureStorage
 		}
 
 		CryptoSystem newCs (newPass);
-		QStringList keys = Storage_->allKeys ();
 
-		Q_FOREACH (const QString &key, keys)
+		Q_FOREACH (const QString& key, Storage_->allKeys ())
 		{
 			try
 			{
-				QByteArray oldEncrypted = Storage_->value (key).toByteArray ();
-				QByteArray data = oldCs.Decrypt (oldEncrypted);
-				QByteArray newEncrypted = newCs.Encrypt (data);
+				const QByteArray& oldEncrypted = Storage_->value (key).toByteArray ();
+				const QByteArray& data = oldCs.Decrypt (oldEncrypted);
+				const QByteArray& newEncrypted = newCs.Encrypt (data);
 				QVariant encryptedData (newEncrypted);
 				Storage_->setValue (key, encryptedData);
 			}
@@ -427,6 +442,7 @@ namespace SecureStorage
 				Storage_->remove (key);
 			}
 		}
+
 		UpdatePasswordSettings (newPass);
 		UpdateActionsStates ();
 	}
@@ -434,11 +450,13 @@ namespace SecureStorage
 	void Plugin::UpdatePasswordSettings (const QString& pass)
 	{
 		CryptoSystem *cs = new CryptoSystem (pass);
+
 		// set up new settings
 		Settings_->setValue ("SecureStoragePasswordIsSet", true);
 		Settings_->setValue ("SecureStoragePasswordIsEmpty", pass.isEmpty ());
-		QByteArray cookie = cs->Encrypt (QByteArray ("cookie"));
+		const QByteArray& cookie = cs->Encrypt (QByteArray ("cookie"));
 		Settings_->setValue ("SecureStorageCookie", cookie);
+
 		// use created cryptosystem.
 		SetCryptoSystem (cs);
 	}
@@ -448,7 +466,7 @@ namespace SecureStorage
 		if (!IsPasswordSet ())
 			return false;
 
-		QByteArray cookie = Settings_->value ("SecureStorageCookie").toByteArray ();
+		const QByteArray& cookie = Settings_->value ("SecureStorageCookie").toByteArray ();
 		try
 		{
 			cs.Decrypt (cookie);

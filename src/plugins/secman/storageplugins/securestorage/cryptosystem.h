@@ -18,10 +18,9 @@
 
 #ifndef PLUGINS_SECMAN_PLUGINS_SECURESTORAGE_CRYPTOSYSTEM_H
 #define PLUGINS_SECMAN_PLUGINS_SECURESTORAGE_CRYPTOSYSTEM_H
-
+#include <stdexcept>
 #include <QByteArray>
 #include <QString>
-#include <stdexcept>
 
 namespace LeechCraft
 {
@@ -33,11 +32,9 @@ namespace StoragePlugins
 {
 namespace SecureStorage
 {
-
 	class WrongHMACException : public std::exception
 	{
 	public:
-
 		WrongHMACException () { }
 		const char* what () const throw ();
 	};
@@ -49,15 +46,16 @@ namespace SecureStorage
 	public:
 		CryptoSystem (const QString &password);
 		~CryptoSystem ();
-		QByteArray Encrypt (const QByteArray &data) const;
+		QByteArray Encrypt (const QByteArray& data) const;
 		QByteArray Decrypt (const QByteArray& cipherText) const;
 	private:
-		QByteArray Hash (const QByteArray &data) const;
-		QByteArray CreateKey (const QString &password) const;
+		QByteArray Hash (const QByteArray& data) const;
+		QByteArray CreateKey (const QString& password) const;
 	};
 }
 }
 }
 }
 }
+
 #endif
