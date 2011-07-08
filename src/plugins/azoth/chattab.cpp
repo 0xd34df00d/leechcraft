@@ -94,6 +94,7 @@ namespace Azoth
 				this,
 				SLOT (handleClearChat ()));
 		TabToolbar_->addAction (clearAction);
+		TabToolbar_->addSeparator ();
 
 		Core::Instance ().RegisterHookable (this);
 		
@@ -143,6 +144,7 @@ namespace Azoth
 		Ui_.AccountName_->setText (accName);
 
 		CheckMUC ();
+		InitExtraActions ();
 
 		QShortcut *histUp = new QShortcut (Qt::CTRL + Qt::Key_Up,
 				Ui_.MsgEdit_, 0, 0, Qt::WidgetShortcut);
@@ -810,8 +812,37 @@ namespace Azoth
 					this,
 					SLOT (handleChatPartStateChanged (const ChatPartState&, const QString&)));
 		}
+	}
 
-		QObject *accObj = GetEntry<ICLEntry> ()->GetParentAccount ();
+	void ChatTab::HandleMUC ()
+	{
+		TabIcon_ = QIcon (":/plugins/azoth/resources/images/azoth.svg");
+		
+		QAction *bookmarks = new QAction (tr ("Add to bookmarks..."), this);
+		bookmarks->setProperty ("ActionIcon", "favorites");
+		connect (bookmarks,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleAddToBookmarks ()));
+		TabToolbar_->addAction (bookmarks);
+		
+		IConfigurableMUC *confmuc = GetEntry<IConfigurableMUC> ();
+		if (confmuc)
+		{
+			QAction *configureMUC = new QAction (tr ("Configure MUC..."), this);
+			configureMUC->setProperty ("ActionIcon", "preferences");
+			connect (configureMUC,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (handleConfigureMUC ()));
+			TabToolbar_->addAction (configureMUC);
+		}
+	}
+	
+	void ChatTab::InitExtraActions ()
+	{
+		ICLEntry *e = GetEntry<ICLEntry> ();
+		QObject *accObj = e->GetParentAccount ();
 		IAccount *acc = qobject_cast<IAccount*> (accObj);
 		XferManager_ = qobject_cast<ITransferManager*> (acc->GetTransferManager ());
 		if (XferManager_ &&
@@ -857,31 +888,6 @@ namespace Azoth
 					Core::Instance ().GetCallManager ()->
 							GetCallsForEntry (EntryID_))
 				handleCall (object);
-		}
-	}
-
-	void ChatTab::HandleMUC ()
-	{
-		TabIcon_ = QIcon (":/plugins/azoth/resources/images/azoth.svg");
-		
-		QAction *bookmarks = new QAction (tr ("Add to bookmarks..."), this);
-		bookmarks->setProperty ("ActionIcon", "favorites");
-		connect (bookmarks,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleAddToBookmarks ()));
-		TabToolbar_->addAction (bookmarks);
-		
-		IConfigurableMUC *confmuc = GetEntry<IConfigurableMUC> ();
-		if (confmuc)
-		{
-			QAction *configureMUC = new QAction (tr ("Configure MUC..."), this);
-			configureMUC->setProperty ("ActionIcon", "preferences");
-			connect (configureMUC,
-					SIGNAL (triggered ()),
-					this,
-					SLOT (handleConfigureMUC ()));
-			TabToolbar_->addAction (configureMUC);
 		}
 	}
 

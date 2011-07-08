@@ -132,6 +132,7 @@ namespace Azoth
 		T* GetEntry () const;
 		void CheckMUC ();
 		void HandleMUC ();
+		void InitExtraActions ();
 		QStringList GetMUCParticipants () const;
 
 		void ReformatTitle ();
