@@ -144,7 +144,7 @@ namespace Xoox
 		if (!rich.isEmpty ())
 			return rich;
 
-		return Message_.body ();
+		return Qt::escape (Message_.body ());
 	}
 
 	void GlooxMessage::SetBody (const QString& body)
