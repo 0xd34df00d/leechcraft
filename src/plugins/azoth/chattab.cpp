@@ -916,7 +916,8 @@ namespace Azoth
 		ChatMsgAppendInfo info =
 		{
 			Core::Instance ().IsHighlightMessage (msg),
-			Core::Instance ().GetChatTabsManager ()->IsActiveChat (GetEntry<ICLEntry> ())
+			Core::Instance ().GetChatTabsManager ()->IsActiveChat (GetEntry<ICLEntry> ()),
+			XmlSettingsManager::Instance ().property ("ShowRichTextMessageBody").toBool ()
 		};
 
 		if (!Core::Instance ().AppendMessageByTemplate (frame,
