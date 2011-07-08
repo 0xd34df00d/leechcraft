@@ -336,9 +336,10 @@ namespace Poshuku
 		
 		proxy->FillValue ("request", request);
 
-		LeechCraft::Entity e = Util::MakeEntity (request.url (),
+		Entity e = Util::MakeEntity (request.url (),
 				QString (),
-				LeechCraft::FromUserInitiated);
+				FromUserInitiated);
+		e.Additional_ ["AllowedSemantics"] = QStringList ("fetch") << "save";
 		emit gotEntity (e);
 	}
 
