@@ -65,7 +65,9 @@ namespace Azoth
 			QWidget *parent)
 	: QWidget (parent)
 	, TabToolbar_ (new QToolBar (tr ("Azoth chat window")))
+	, ToggleRichText_ (0)
 	, SendFile_ (0)
+	, Call_ (0)
 	, EntryID_ (entryId)
 	, BgColor_ (QApplication::palette ().color (QPalette::Base))
 	, CurrentHistoryPosition_ (-1)
@@ -94,6 +96,17 @@ namespace Azoth
 				this,
 				SLOT (handleClearChat ()));
 		TabToolbar_->addAction (clearAction);
+
+		ToggleRichText_ = new QAction (tr ("Enable rich text"), this);
+		ToggleRichText_->setProperty ("ActionIcon", "richtext");
+		connect (ToggleRichText_,
+				SIGNAL (toggled (bool)),
+				this,
+				SLOT (handleRichTextToggled ()));
+		ToggleRichText_->setCheckable (true);
+		ToggleRichText_->setChecked (XmlSettingsManager::Instance ()
+					.property ("ShowRichTextMessageBody").toBool ());
+		TabToolbar_->addAction (ToggleRichText_);
 		TabToolbar_->addSeparator ();
 
 		Core::Instance ().RegisterHookable (this);
@@ -467,6 +480,11 @@ namespace Azoth
 			return;
 		
 		entry->PurgeMessages (QDateTime ());
+		PrepareTheme ();
+	}
+	
+	void ChatTab::handleRichTextToggled ()
+	{
 		PrepareTheme ();
 	}
 	
@@ -923,7 +941,7 @@ namespace Azoth
 		{
 			Core::Instance ().IsHighlightMessage (msg),
 			Core::Instance ().GetChatTabsManager ()->IsActiveChat (GetEntry<ICLEntry> ()),
-			XmlSettingsManager::Instance ().property ("ShowRichTextMessageBody").toBool ()
+			ToggleRichText_->isChecked ()
 		};
 
 		if (!Core::Instance ().AppendMessageByTemplate (frame,

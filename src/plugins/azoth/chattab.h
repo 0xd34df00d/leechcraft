@@ -47,6 +47,7 @@ namespace Azoth
 
 		Ui::ChatTab Ui_;
 		QToolBar *TabToolbar_;
+		QAction *ToggleRichText_;
 		QAction *SendFile_;
 		QAction *Call_;
 
@@ -109,6 +110,7 @@ namespace Azoth
 		void on_SubjectButton__toggled (bool);
 		void on_SubjChange__released ();
 		void handleClearChat ();
+		void handleRichTextToggled ();
 		void handleSendFile ();
 		void handleCallRequested ();
 		void handleCall (QObject*);
