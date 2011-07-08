@@ -992,7 +992,7 @@ namespace Azoth
 
 	void ChatTab::nickComplete ()
 	{
-		ICLEntry *entry = GetEntry<ICLEntry> ();
+		IMUCEntry *entry = GetEntry<IMUCEntry> ();
 		if (!entry)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -1001,12 +1001,12 @@ namespace Azoth
 
 			return;
 		}
-		if (entry->GetEntryType() != ICLEntry::ETMUC)
-			return;
 
 		QStringList currentMUCParticipants = GetMUCParticipants ();
 		if (currentMUCParticipants.isEmpty ())
 			return;
+		
+		currentMUCParticipants.removeAll (entry->GetNick ());
 
 		QTextCursor cursor = Ui_.MsgEdit_->textCursor ();
 
