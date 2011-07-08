@@ -52,6 +52,7 @@ namespace LeechCraft
 			class JobHolderRepresentation;
 			class ChannelsFilterModel;
 			class ItemsWidget;
+			class PluginManager;
 
 			class Core : public QObject
 			{
@@ -110,6 +111,8 @@ namespace LeechCraft
 				bool Initialized_;
 				AppWideActions AppWideActions_;
 				ItemsWidget *ReprWidget_;
+				
+				PluginManager *PluginManager_;
 
 				Core ();
 			private:
@@ -131,6 +134,8 @@ namespace LeechCraft
 
 				void SetProxy (ICoreProxy_ptr);
 				ICoreProxy_ptr GetProxy () const;
+				
+				void AddPlugin (QObject*);
 
 				Util::IDPool<IDType_t>& GetPool (PoolType);
 
@@ -231,6 +236,10 @@ namespace LeechCraft
 				void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 				void gotEntity (const LeechCraft::Entity&);
 				void channelRemoved (IDType_t);
+				
+				// Plugin API
+				void hookGotNewItems (LeechCraft::IHookProxy_ptr proxy,
+						QVariantList items);
 			};
 		}
 	}

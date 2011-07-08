@@ -32,6 +32,7 @@
 #include <plugininterface/mergemodel.h>
 #include <plugininterface/util.h>
 #include <plugininterface/fileremoveguard.h>
+#include <plugininterface/defaulthookproxy.h>
 #include "core.h"
 #include "regexpmatchermanager.h"
 #include "xmlsettingsmanager.h"
@@ -50,6 +51,7 @@
 #include "importopml.h"
 #include "addfeed.h"
 #include "itemswidget.h"
+#include "pluginmanager.h"
 
 namespace LeechCraft
 {
@@ -63,11 +65,14 @@ namespace LeechCraft
 			, JobHolderRepresentation_ (0)
 			, ChannelsFilterModel_ (0)
 			, Initialized_ (false)
+			, PluginManager_ (new PluginManager)
 			{
 				qRegisterMetaType<QItemSelection> ("QItemSelection");
 				qRegisterMetaType<Item_ptr> ("Item_ptr");
 				qRegisterMetaType<Channel_ptr> ("Channel_ptr");
 				qRegisterMetaTypeStreamOperators<Feed> ("LeechCraft::Plugins::Aggregator::Feed");
+				
+				PluginManager_->RegisterHookable (this);
 			}
 
 			Core& Core::Instance ()
@@ -95,6 +100,11 @@ namespace LeechCraft
 			ICoreProxy_ptr Core::GetProxy () const
 			{
 				return Proxy_;
+			}
+			
+			void Core::AddPlugin (QObject *plugin)
+			{
+				PluginManager_->AddPlugin (plugin);
 			}
 
 			Util::IDPool<IDType_t>& Core::GetPool (PoolType type)
@@ -1366,26 +1376,66 @@ namespace LeechCraft
 						item->PubDate_ = QDateTime::currentDateTime ();
 				}
 			};
+			
+			namespace
+			{
+				QVariantMap GetItemMapChannelPart (const Channel_ptr channel)
+				{
+					QVariantMap result;
+					result ["ChannelID"] = channel->ChannelID_;
+					result ["ChannelTitle"] = channel->Title_;
+					result ["ChannelLink"] = channel->Link_;
+					result ["ChannelTags"] = channel->Tags_;
+					return result;
+				}
+				
+				QVariantMap GetItemMapItemPart (const Item_ptr item)
+				{
+					QVariantMap result;
+					result ["ItemID"] = item->ItemID_;
+					result ["ItemTitle"] = item->Title_;
+					result ["ItemLink"] = item->Link_;
+					result ["ItemDescription"] = item->Description_;
+					result ["ItemCategories"] = item->Categories_;
+					result ["ItemPubdate"] = item->PubDate_;
+					result ["ItemCommentsLink"] = item->CommentsLink_;
+					result ["ItemCommentsPageLink"] = item->CommentsPageLink_;
+					return result;
+				}
+				
+				QVariantList GetItems (const Channel_ptr channel)
+				{
+					QVariantList result;
+					const QVariantMap& channelPart = GetItemMapChannelPart (channel);
+					Q_FOREACH (const Item_ptr item, channel->Items_)
+						result << GetItemMapItemPart (item).unite (channelPart);
+					return result;
+				}
+			}
 
 			void Core::HandleFeedAdded (const channels_container_t& channels,
 					const Core::PendingJob& pj)
 			{
 				for (size_t i = 0; i < channels.size (); ++i)
 				{
-					std::for_each (channels [i]->Items_.begin (),
-							channels [i]->Items_.end (),
+					Channel_ptr channel = channels [i];
+					std::for_each (channel->Items_.begin (),
+							channel->Items_.end (),
 							boost::bind (FixDate,
 								_1));
 
-					channels [i]->Tags_ = pj.Tags_;
-					ChannelsModel_->AddChannel (channels [i]->ToShort ());
-					StorageBackend_->AddChannel (channels [i]);
+					channel->Tags_ = pj.Tags_;
+					ChannelsModel_->AddChannel (channel->ToShort ());
+					StorageBackend_->AddChannel (channel);
 
-					std::for_each (channels [i]->Items_.begin (),
-							channels [i]->Items_.end (),
+					std::for_each (channel->Items_.begin (),
+							channel->Items_.end (),
 							boost::bind (&RegexpMatcherManager::HandleItem,
 								&RegexpMatcherManager::Instance (),
 								_1));
+					
+					emit hookGotNewItems (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy),
+							GetItems (channel));
 				}
 
 				for (size_t i = 0; i < channels.size (); ++i)
@@ -1490,6 +1540,8 @@ namespace LeechCraft
 						emit gotEntity (Util::MakeNotification ("Aggregator", str, PInfo_));
 						continue;
 					}
+					
+					const QVariantMap& channelPart = GetItemMapChannelPart (ourChannel);
 
 					int newItems = 0;
 					int updatedItems = 0;
@@ -1520,6 +1572,11 @@ namespace LeechCraft
 							StorageBackend_->AddItem (item);
 
 							RegexpMatcherManager::Instance ().HandleItem (item);
+							
+							QVariantList itemData;
+							itemData << GetItemMapItemPart (item).unite (channelPart);
+							emit hookGotNewItems (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy),
+									itemData);
 
 							if (downloadEnclosures)
 								Q_FOREACH (Enclosure e, item->Enclosures_)

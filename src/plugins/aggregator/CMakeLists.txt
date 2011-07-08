@@ -67,6 +67,7 @@ SET (SRCS
 	export2fb2dialog.cpp
 	actionsstructs.cpp
 	sqlstoragebackend_mysql.cpp
+	pluginmanager.cpp
 	)
 SET (HEADERS
     aggregator.h
@@ -111,6 +112,7 @@ SET (HEADERS
 	export2fb2dialog.h
 	actionsstructs.h
 	sqlstoragebackend_mysql.h
+	pluginmanager.h
 	)
 SET (FORMS
     mainwidget.ui

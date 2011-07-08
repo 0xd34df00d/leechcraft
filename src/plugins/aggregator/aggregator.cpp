@@ -465,6 +465,18 @@ namespace LeechCraft
 
 				return result;
 			}
+			
+			QSet<QByteArray> Aggregator::GetExpectedPluginClasses () const
+			{
+				QSet<QByteArray> result;
+				result << "org.LeechCraft.Aggregator.Plugins/1.0";
+				return result;
+			}
+			
+			void Aggregator::AddPlugin (QObject *plugin)
+			{
+				Core::Instance ().AddPlugin (plugin);
+			}
 
 			void Aggregator::keyPressEvent (QKeyEvent *e)
 			{
