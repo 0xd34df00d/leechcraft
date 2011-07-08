@@ -1,4 +1,3 @@
-
 INCLUDE_DIRECTORIES (
 	${CMAKE_CURRENT_BINARY_DIR}
 	)
@@ -40,5 +39,6 @@ ADD_LIBRARY (leechcraft_secman_securestorage SHARED
 TARGET_LINK_LIBRARIES (leechcraft_secman_securestorage
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
+	crypto
 	)
 INSTALL (TARGETS leechcraft_secman_securestorage DESTINATION ${LC_PLUGINS_DEST})
