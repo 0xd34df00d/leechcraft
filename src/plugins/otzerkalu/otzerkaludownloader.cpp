@@ -20,6 +20,7 @@
 #include "otzerkaludownloader.h"
 #include <QWebElement>
 #include <QWebPage>
+#include <QRegExp>
 
 namespace LeechCraft
 {
@@ -67,8 +68,8 @@ namespace Otzerkalu
 	OtzerkaluDownloader::OtzerkaluDownloader (const DownloadParams& param, QObject *parent)
 	: QObject (parent)
 	, Param_ (param)
+	, UrlCount_ (0)
 	{
-		UrlCount_ = 0;
 	}
 	
 	void OtzerkaluDownloader::Begin ()
@@ -97,7 +98,7 @@ namespace Otzerkalu
 		const QString& filename = data.Filename_;
 
 		QFile file (filename);
-		if (!file.open (QIODevice::ReadOnly | QIODevice::Text))
+		if (!file.open (QIODevice::ReadOnly))
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "Can't parse the file "
@@ -105,13 +106,30 @@ namespace Otzerkalu
 			return;
 		}
 
+		QRegExp UrlCSS ("(?s).*?:\\s*url\\s*\\((.*?)\\).*");
+		int pos;
+
+		if (filename.section ('.', -1) == "css")
+		{
+			QString data = file.readAll ();
+			pos = 0;
+			while ((pos = UrlCSS.indexIn (data, pos)) != -1)
+			{
+				QUrl url = UrlCSS.cap (1);
+				if (!url.isValid ())
+					continue;
+
+				const QString& filename = Download (url);
+				data.replace (url.toString (), filename);
+			}
+			WriteData (filename, data);
+			return;
+		}
+
 		QWebPage page;
 		page.mainFrame ()->setContent (file.readAll ());
 		QWebElementCollection uel = page.mainFrame ()->findAllElements ("*[href]") +
 				page.mainFrame ()->findAllElements ("*[src]");
-
-		if (!uel.count ())
-			return;
 
 		for (QWebElementCollection::iterator urlElement = uel.begin ();
 				urlElement != uel.end (); ++urlElement)
@@ -130,19 +148,40 @@ namespace Otzerkalu
 			const QString& filename = Download (url);
 			if (filename.isEmpty ())
 				continue;
-			
+
 			if ((*urlElement).hasAttribute ("href"))
 				(*urlElement).setAttribute ("href", filename);
 			else
 				(*urlElement).setAttribute ("src", filename);
 		}
+
+		QWebElementCollection styleColl = page.mainFrame ()->findAllElements("style");
+
+		for (QWebElementCollection::iterator styleItr = styleColl.begin ();
+				styleItr != styleColl.end (); ++styleItr)
+		{
+			QString data = (*styleItr).toInnerXml ();
+			pos = 0;
+			while ((pos = UrlCSS.indexIn (data, pos)) != -1)
+			{
+				QUrl url = UrlCSS.cap (1);
+				if (!url.isValid ())
+					continue;
+
+				const QString& filename = Download (url);
+				data.replace (url.toString (), filename);
+			}
+
+			(*styleItr).setInnerXml (data);
+		}
+
 		if (!UrlCount_)
 			emit gotEntity (Util::MakeNotification (tr ("Download complete"),
 					tr ("Download complete %1")
 						.arg (data.Url_.toString ()),
 					PInfo_));
-
-		WriteData (filename, page.mainFrame ()->toHtml ());
+		if (uel.count ())
+			WriteData (filename, page.mainFrame ()->toHtml ());
 	}
 	
 	QString OtzerkaluDownloader::Download (const QUrl& url)
@@ -151,8 +190,10 @@ namespace Otzerkalu
 		const QString& name = fi.fileName ();
 		const QString& path = Param_.DestDir_ + '/' + url.host () +
 				fi.path ();
-		const QString& filename = path + '/' + (name.isEmpty () ? "index.html" : name);
-		
+		const QString& file = path + '/' + (name.isEmpty () ? "index.html" : name);
+		const QString& filename = url.hasQuery () ? file + "?" +
+				url.encodedQuery () + ".html" : file;
+
 		QDir::root ().mkpath (path);
 
 		int id = -1;
