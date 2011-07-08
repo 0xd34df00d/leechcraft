@@ -1003,10 +1003,9 @@ namespace Azoth
 		}
 
 		QStringList currentMUCParticipants = GetMUCParticipants ();
+		currentMUCParticipants.removeAll (entry->GetNick ());
 		if (currentMUCParticipants.isEmpty ())
 			return;
-		
-		currentMUCParticipants.removeAll (entry->GetNick ());
 
 		QTextCursor cursor = Ui_.MsgEdit_->textCursor ();
 
