@@ -97,18 +97,17 @@ namespace Otzerkalu
 		const QString& filename = data.Filename_;
 
 		QFile file (filename);
-
 		if (!file.open (QIODevice::ReadOnly | QIODevice::Text))
+		{
+			qWarning () << "Can't parse the file "
+					<< filename;
 			return;
+		}
 
-		QTextStream in (&file);
-		const QString& array = in.readAll ();
 		QWebPage page;
-
-		page.mainFrame ()->setHtml (array, data.Url_);
-
-		QWebElement document = page.mainFrame ()->documentElement ();
-		QWebElementCollection uel = document.findAll ("*[href]") + document.findAll ("*[src]");
+		page.mainFrame ()->setContent (file.readAll ());
+		QWebElementCollection uel = page.mainFrame ()->findAllElements ("*[href]") +
+				page.mainFrame ()->findAllElements ("*[src]");
 
 		if (!uel.count ())
 			return;
@@ -120,16 +119,13 @@ namespace Otzerkalu
 			if (!url.isValid ())
 				url = (*urlElement).attribute ("src");
 
-			if (!url.isValid ())
-				continue;
 			if (url.isRelative ())
-			{
 				url = data.Url_.resolved (url);
-				qDebug () << url.toString ();
-			}
-			if (!Param_.FromOtherSite_ && url.host () != Param_.DownloadUrl_.host ())
+
+			if ((!Param_.FromOtherSite_ && url.host () != Param_.DownloadUrl_.host ()) ||
+					(url.host () == data.Url_.host () && url.path () == data.Url_.path ()))
 				continue;
-			
+
 			const QString& filename = Download (url);
 			if (filename.isEmpty ())
 				continue;
