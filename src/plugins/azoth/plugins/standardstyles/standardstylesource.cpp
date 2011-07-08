@@ -89,6 +89,7 @@ namespace StandardStyles
 	bool StandardStyleSource::AppendMessage (QWebFrame *frame,
 			QObject *msgObj, const ChatMsgAppendInfo& info)
 	{
+		QObject *azothSettings = Proxy_->GetSettingsManager ();
 		const QList<QColor>& colors = CreateColors (frame->metaData ().value ("coloring"));
 
 		const bool isHighlightMsg = info.IsHighlightMsg_;
@@ -123,7 +124,7 @@ namespace StandardStyles
 		
 		IRichTextMessage *richMsg = qobject_cast<IRichTextMessage*> (msgObj);
 		QString body;
-		if (richMsg)
+		if (richMsg && info.UseRichTextBody_)
 			body = richMsg->GetRichBody ();
 		if (body.isEmpty ())
 			body = msg->GetBody ();
@@ -134,12 +135,10 @@ namespace StandardStyles
 		const QString dateEnd ("</span>");
 		
 		const QString& preNick = dateBegin +
-				Proxy_->GetSettingsManager ()->
-					property ("PreNickText").toString () +
+				azothSettings->property ("PreNickText").toString () +
 				dateEnd;
 		const QString& postNick = dateBegin +
-				Proxy_->GetSettingsManager ()->
-					property ("PostNickText").toString () +
+				azothSettings->property ("PostNickText").toString () +
 				dateEnd;
 
 		QString divClass;
