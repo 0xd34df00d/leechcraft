@@ -22,6 +22,7 @@
 #include <QWebPage>
 #include <QWebFrame>
 #include <QWebElementCollection>
+#include <QTextCodec>
 #include <QtDebug>
 #include <interfaces/iscriptloader.h>
 #include <plugininterface/util.h>
@@ -97,9 +98,9 @@ namespace BodyFetch
 			QString fetchStr = script->InvokeMethod ("GetFullURL", args).toString ();
 			if (fetchStr.isEmpty ())
 				fetchStr = map ["ItemLink"].toString ();
-			
+
 			qDebug () << Q_FUNC_INFO << fetchStr << "using" << ChannelLink2ScriptID_ [channelLinkStr];
-			
+
 			const QUrl& url = QUrl::fromEncoded (fetchStr.toUtf8 ());
 			URL2Script_ [url] = script;
 			URL2ItemID_ [url] = map ["ItemID"].value<quint64> ();
@@ -155,7 +156,7 @@ namespace BodyFetch
 	
 	QString WorkerObject::Parse (const QString& contents, IScript_ptr script)
 	{
-		const QVariant& var = script->InvokeMethod ("KeepTags", QVariantList ());
+		const QVariant& var = script->InvokeMethod ("KeepFirstTag", QVariantList ());
 		
 		if (var.isNull ())
 			return script->InvokeMethod ("Strip", QVariantList () << contents).toString ();
@@ -177,9 +178,9 @@ namespace BodyFetch
 		
 		Q_FOREACH (const QString& sel, selectors)
 		{
-			QWebElementCollection col = page.mainFrame ()->findAllElements (sel);
-			for (int i = 0; i < col.count (); ++i)
-				result += col [i].toOuterXml ().simplified ();
+			QWebElement col = page.mainFrame ()->findFirstElement (sel);
+			if (!col.isNull ())
+				result += col.toOuterXml ().simplified ();
 		}
 		
 		result.remove ("</br>");
@@ -225,7 +226,11 @@ namespace BodyFetch
 			return;
 		}
 
-		const QString& contents = QString::fromUtf8 (file.readAll ());
+		const QByteArray& rawContents = file.readAll ();
+		QTextCodec *codec = QTextCodec::codecForHtml (rawContents, 0);
+		const QString& contents = codec ?
+				codec->toUnicode (rawContents) :
+				QString::fromUtf8 (rawContents);
 		file.close ();
 		file.remove ();
 		const QString& result = Parse (contents, script);
