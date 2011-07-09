@@ -29,81 +29,77 @@ Q_DECLARE_METATYPE (QObject**);
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Qrosp
+{
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		namespace Qrosp
-		{
-			void Plugin::Init (ICoreProxy_ptr proxy)
-			{
-			}
+	}
 
-			void Plugin::SecondInit ()
-			{
-			}
+	void Plugin::SecondInit ()
+	{
+	}
 
-			void Plugin::Release ()
-			{
-				PluginManager::Instance ().Release ();
-			}
+	void Plugin::Release ()
+	{
+		PluginManager::Instance ().Release ();
+	}
 
-			QByteArray Plugin::GetUniqueID () const
-			{
-				return "org.LeechCraft.Qrosp";
-			}
+	QByteArray Plugin::GetUniqueID () const
+	{
+		return "org.LeechCraft.Qrosp";
+	}
 
-			QString Plugin::GetName () const
-			{
-				return "Qrosp";
-			}
+	QString Plugin::GetName () const
+	{
+		return "Qrosp";
+	}
 
-			QString Plugin::GetInfo () const
-			{
-				return tr ("Makes LeechCraft scriptable using Qross.");
-			}
+	QString Plugin::GetInfo () const
+	{
+		return tr ("Makes LeechCraft scriptable using Qross.");
+	}
 
-			QIcon Plugin::GetIcon () const
-			{
-				return QIcon ();
-			}
+	QIcon Plugin::GetIcon () const
+	{
+		return QIcon ();
+	}
 
-			QStringList Plugin::Provides () const
-			{
-				return QStringList ("qrosp");
-			}
+	QStringList Plugin::Provides () const
+	{
+		return QStringList ("qrosp");
+	}
 
-			QList<QObject*> Plugin::GetPlugins ()
-			{
-				return PluginManager::Instance ().GetPlugins ();
-			}
+	QList<QObject*> Plugin::GetPlugins ()
+	{
+		return PluginManager::Instance ().GetPlugins ();
+	}
 
-			EntityTestHandleResult Plugin::CouldHandle (const Entity& entity) const
-			{
-				QString language = entity.Additional_ ["Language"].toString ().toLower ();
-				if (entity.Mime_ != "x-leechcraft/script-wrap-request")
-					return EntityTestHandleResult ();
-				if (!entity.Additional_ ["Object"].value<QObject**> ())
-					return EntityTestHandleResult ();
-				if (!Qross::Manager::self ().interpreters ().contains (language))
-					return EntityTestHandleResult ();
-				if (!entity.Entity_.toUrl ().isValid ())
-					return EntityTestHandleResult ();
-				if (!QFileInfo (entity.Entity_
-						.toUrl ().toLocalFile ()).exists ())
-					return EntityTestHandleResult ();
+	EntityTestHandleResult Plugin::CouldHandle (const Entity& entity) const
+	{
+		QString language = entity.Additional_ ["Language"].toString ().toLower ();
+		if (entity.Mime_ != "x-leechcraft/script-wrap-request")
+			return EntityTestHandleResult ();
+		if (!entity.Additional_ ["Object"].value<QObject**> ())
+			return EntityTestHandleResult ();
+		if (!Qross::Manager::self ().interpreters ().contains (language))
+			return EntityTestHandleResult ();
+		if (!entity.Entity_.toUrl ().isValid ())
+			return EntityTestHandleResult ();
+		if (!QFileInfo (entity.Entity_
+				.toUrl ().toLocalFile ()).exists ())
+			return EntityTestHandleResult ();
 
-				return EntityTestHandleResult (EntityTestHandleResult::PIdeal);
-			}
+		return EntityTestHandleResult (EntityTestHandleResult::PIdeal);
+	}
 
-			void Plugin::Handle (Entity entity)
-			{
-				QString language = entity.Additional_ ["Language"].toString ().toLower ();
-				QString path = entity.Entity_.toUrl ().toLocalFile ();
+	void Plugin::Handle (Entity entity)
+	{
+		QString language = entity.Additional_ ["Language"].toString ().toLower ();
+		QString path = entity.Entity_.toUrl ().toLocalFile ();
 
-				*entity.Additional_ ["Object"].value<QObject**> () = new WrapperObject (language, path);
-			}
-		};
-	};
-};
+		*entity.Additional_ ["Object"].value<QObject**> () = new WrapperObject (language, path);
+	}
+}
+}
 
-Q_EXPORT_PLUGIN2 (leechcraft_qrosp, LeechCraft::Plugins::Qrosp::Plugin);
-
+Q_EXPORT_PLUGIN2 (leechcraft_qrosp, LeechCraft::Qrosp::Plugin);

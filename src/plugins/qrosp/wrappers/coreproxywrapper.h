@@ -31,35 +31,32 @@ Q_DECLARE_METATYPE (QNetworkAccessManager*);
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Qrosp
+{
+	class CoreProxyWrapper : public QObject
 	{
-		namespace Qrosp
-		{
-			class CoreProxyWrapper : public QObject
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				ICoreProxy_ptr Proxy_;
-			public:
-				CoreProxyWrapper (ICoreProxy_ptr);
-			public slots:
-				QNetworkAccessManager* GetNetworkAccessManager () const;
-				QObject* GetShortcutProxy () const;
-				QModelIndex MapToSource (const QModelIndex&) const;
-				//LeechCraft::Util::BaseSettingsManager* GetSettingsManager () const;
-				QMap<int, QString> GetIconPath (const QString& name) const;
-				QIcon GetIcon (const QString& on, const QString& off = QString ()) const;
-				QMainWindow* GetMainWindow () const;
-				QTabWidget* GetTabWidget () const;
-				QObject* GetTagsManager () const;
-				QStringList GetSearchCategories () const;
-				int GetID ();
-				void FreeID (int id);
-				QObject* GetPluginsManager () const;
-				QObject* GetSelf ();
-			};
-		};
+		ICoreProxy_ptr Proxy_;
+	public:
+		CoreProxyWrapper (ICoreProxy_ptr);
+	public slots:
+		QNetworkAccessManager* GetNetworkAccessManager () const;
+		QObject* GetShortcutProxy () const;
+		QModelIndex MapToSource (const QModelIndex&) const;
+		//LeechCraft::Util::BaseSettingsManager* GetSettingsManager () const;
+		QMap<int, QString> GetIconPath (const QString& name) const;
+		QIcon GetIcon (const QString& on, const QString& off = QString ()) const;
+		QMainWindow* GetMainWindow () const;
+		QTabWidget* GetTabWidget () const;
+		QObject* GetTagsManager () const;
+		QStringList GetSearchCategories () const;
+		int GetID ();
+		void FreeID (int id);
+		QObject* GetPluginsManager () const;
+		QObject* GetSelf ();
 	};
-};
+}
+}
 
 #endif

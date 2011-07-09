@@ -20,34 +20,31 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Qrosp
+{
+	HookProxyWrapper::HookProxyWrapper (IHookProxy_ptr proxy)
+	: Proxy_ (proxy)
 	{
-		namespace Qrosp
-		{
-			HookProxyWrapper::HookProxyWrapper (IHookProxy_ptr proxy)
-			: Proxy_ (proxy)
-			{
-			}
+	}
 
-			void HookProxyWrapper::CancelDefault ()
-			{
-				Proxy_->CancelDefault ();
-			}
+	void HookProxyWrapper::CancelDefault ()
+	{
+		Proxy_->CancelDefault ();
+	}
 
-			const QVariant& HookProxyWrapper::GetReturnValue () const
-			{
-				return Proxy_->GetReturnValue ();
-			}
+	const QVariant& HookProxyWrapper::GetReturnValue () const
+	{
+		return Proxy_->GetReturnValue ();
+	}
 
-			void HookProxyWrapper::SetReturnValue (const QVariant& val)
-			{
-				Proxy_->SetReturnValue (val);
-			}
+	void HookProxyWrapper::SetReturnValue (const QVariant& val)
+	{
+		Proxy_->SetReturnValue (val);
+	}
 
-			void HookProxyWrapper::SetValue (const QByteArray& name, const QVariant& value)
-			{
-				Proxy_->SetValue (name, value);
-			}
-		};
-	};
-};
+	void HookProxyWrapper::SetValue (const QByteArray& name, const QVariant& value)
+	{
+		Proxy_->SetValue (name, value);
+	}
+}
+}

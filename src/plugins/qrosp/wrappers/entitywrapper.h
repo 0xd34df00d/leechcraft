@@ -24,46 +24,43 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Qrosp
+{
+	class EntityWrapper : public QObject, public Qross::WrapperInterface
 	{
-		namespace Qrosp
-		{
-			class EntityWrapper : public QObject, public Qross::WrapperInterface
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				Entity E_;
+		Entity E_;
 
-				Q_PROPERTY (QVariant Entity READ GetEntity WRITE SetEntity);
-				Q_PROPERTY (QString Location READ GetLocation WRITE SetLocation);
-				Q_PROPERTY (QString Mime READ GetMime WRITE SetMime);
-				Q_PROPERTY (TaskParameters Parameters READ GetParameters WRITE SetParameters);
-				Q_PROPERTY (QVariantMap Additional READ GetAdditional WRITE SetAdditional);
-			public:
-				EntityWrapper ();
-				EntityWrapper (const EntityWrapper&);
-				EntityWrapper (const Entity&);
+		Q_PROPERTY (QVariant Entity READ GetEntity WRITE SetEntity);
+		Q_PROPERTY (QString Location READ GetLocation WRITE SetLocation);
+		Q_PROPERTY (QString Mime READ GetMime WRITE SetMime);
+		Q_PROPERTY (TaskParameters Parameters READ GetParameters WRITE SetParameters);
+		Q_PROPERTY (QVariantMap Additional READ GetAdditional WRITE SetAdditional);
+	public:
+		EntityWrapper ();
+		EntityWrapper (const EntityWrapper&);
+		EntityWrapper (const Entity&);
 
-				void* wrappedObject () const;
-			public slots:
-				LeechCraft::Entity ToEntity () const;
-				const QVariant& GetEntity () const;
-				void SetEntity (const QVariant&);
-				const QString& GetLocation () const;
-				void SetLocation (const QString&);
-				const QString& GetMime () const;
-				void SetMime (const QString&);
-				const TaskParameters& GetParameters () const;
-				void SetParameters (const TaskParameters&);
-				const QVariantMap& GetAdditional () const;
-				void SetAdditional (const QVariantMap&);
-			};
-
-			QVariant EntityHandler (void*);
-		};
+		void* wrappedObject () const;
+	public slots:
+		LeechCraft::Entity ToEntity () const;
+		const QVariant& GetEntity () const;
+		void SetEntity (const QVariant&);
+		const QString& GetLocation () const;
+		void SetLocation (const QString&);
+		const QString& GetMime () const;
+		void SetMime (const QString&);
+		const TaskParameters& GetParameters () const;
+		void SetParameters (const TaskParameters&);
+		const QVariantMap& GetAdditional () const;
+		void SetAdditional (const QVariantMap&);
 	};
-};
 
-Q_DECLARE_METATYPE(LeechCraft::Plugins::Qrosp::EntityWrapper);
+	QVariant EntityHandler (void*);
+}
+}
+
+Q_DECLARE_METATYPE (LeechCraft::Qrosp::EntityWrapper);
 
 #endif

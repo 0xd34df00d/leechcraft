@@ -29,112 +29,109 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Qrosp
+{
+	PluginManager::PluginManager ()
 	{
-		namespace Qrosp
-		{
-			PluginManager::PluginManager ()
-			{
-				Qross::Manager::self ().registerMetaTypeHandler ("LeechCraft::Entity", EntityHandler);
+		Qross::Manager::self ().registerMetaTypeHandler ("LeechCraft::Entity", EntityHandler);
 
-				qDebug () << Q_FUNC_INFO
-						<< "interpreters:"
-						<< Qross::Manager::self ().interpreters ();
+		qDebug () << Q_FUNC_INFO
+				<< "interpreters:"
+				<< Qross::Manager::self ().interpreters ();
 
-				QMap<QString, QStringList> plugins = FindPlugins ();
-				qDebug () << Q_FUNC_INFO
-						<< "found"
-						<< plugins;
+		QMap<QString, QStringList> plugins = FindPlugins ();
+		qDebug () << Q_FUNC_INFO
+				<< "found"
+				<< plugins;
 
-				Qross::Manager::self ().addQObject (new TypesFactory, "TypesFactory");
-				Qross::Manager::self ().addQObject (new UtilProxy, "Util");
+		Qross::Manager::self ().addQObject (new TypesFactory, "TypesFactory");
+		Qross::Manager::self ().addQObject (new UtilProxy, "Util");
 
 #ifndef QROSP_NO_QTSCRIPT
-				//qScriptRegisterMetaType (Priority, ToScriptValue, FromScriptValue);
+		//qScriptRegisterMetaType (Priority, ToScriptValue, FromScriptValue);
 #endif
 
-				Q_FOREACH (QString type, plugins.keys ())
-					Q_FOREACH (QString path, plugins [type])
-						Wrappers_ << new WrapperObject (type, path);
+		Q_FOREACH (QString type, plugins.keys ())
+			Q_FOREACH (QString path, plugins [type])
+				Wrappers_ << new WrapperObject (type, path);
+	}
+
+	PluginManager& PluginManager::Instance ()
+	{
+		static PluginManager pm;
+		return pm;
+	}
+
+	void PluginManager::Release ()
+	{
+		Qross::Manager::self ().finalize ();
+	}
+
+	QList<QObject*> PluginManager::GetPlugins ()
+	{
+		return Wrappers_;
+	}
+
+	QMap<QString, QStringList> PluginManager::FindPlugins ()
+	{
+		QMap<QString, QStringList> knownExtensions;
+		knownExtensions ["javascript"] << "*.es" << "*.js" << "*.qs";
+		knownExtensions ["python"] << "*.py";
+		knownExtensions ["ruby"] << "*.rb";
+
+		QMap<QString, QStringList> result;
+
+		struct Collector
+		{
+			const QStringList& Extensions_;
+
+			Collector (const QStringList& exts)
+			: Extensions_ (exts)
+			{
 			}
 
-			PluginManager& PluginManager::Instance ()
+			QFileInfoList operator() (const QString& path)
 			{
-				static PluginManager pm;
-				return pm;
-			}
-
-			void PluginManager::Release ()
-			{
-				Qross::Manager::self ().finalize ();
-			}
-
-			QList<QObject*> PluginManager::GetPlugins ()
-			{
-				return Wrappers_;
-			}
-
-			QMap<QString, QStringList> PluginManager::FindPlugins ()
-			{
-				QMap<QString, QStringList> knownExtensions;
-				knownExtensions ["javascript"] << "*.es" << "*.js" << "*.qs";
-				knownExtensions ["python"] << "*.py";
-				knownExtensions ["ruby"] << "*.rb";
-
-				QMap<QString, QStringList> result;
-
-				struct Collector
-				{
-					const QStringList& Extensions_;
-
-					Collector (const QStringList& exts)
-					: Extensions_ (exts)
-					{
-					}
-
-					QFileInfoList operator() (const QString& path)
-					{
-						QFileInfoList list;
-						QDir dir = QDir::home ();
-						if (dir.cd (path))
-							list = dir.entryInfoList (Extensions_,
-									QDir::Files |
-										QDir::NoDotAndDotDot |
-										QDir::Readable,
-									QDir::Name);
-						return list;
-					}
-				};
-
+				QFileInfoList list;
 				QDir dir = QDir::home ();
-				if (!dir.cd (".leechcraft/plugins/scriptable"))
-					qWarning () << Q_FUNC_INFO
-							<< "unable to cd into ~/.leechcraft/plugins/scriptable";
-				else
-					// Iterate over the different types of scripts
-					Q_FOREACH (QFileInfo sameType,
-							dir.entryInfoList (QDir::Dirs |
-									QDir::NoDotAndDotDot |
-									QDir::Readable))
-					{
-						// For the same type iterate over subdirs with
-						// actual plugins.
-						Q_FOREACH (QFileInfo pluginDir,
-								QDir (sameType.absoluteFilePath ()).entryInfoList (QDir::Dirs |
-										QDir::NoDotAndDotDot |
-										QDir::Readable))
-						{
-							QString type = sameType.fileName ();
-							QStringList exts = knownExtensions.value (type, QStringList ("*.*"));
-							QFileInfoList list = Collector (exts) (pluginDir.absoluteFilePath ());
-							Q_FOREACH (QFileInfo fileInfo, list)
-								if (fileInfo.baseName () == pluginDir.baseName ())
-									result [type] += fileInfo.absoluteFilePath ();
-						}
-					}
-
-				return result;
+				if (dir.cd (path))
+					list = dir.entryInfoList (Extensions_,
+							QDir::Files |
+								QDir::NoDotAndDotDot |
+								QDir::Readable,
+							QDir::Name);
+				return list;
 			}
 		};
-	};
-};
+
+		QDir dir = QDir::home ();
+		if (!dir.cd (".leechcraft/plugins/scriptable"))
+			qWarning () << Q_FUNC_INFO
+					<< "unable to cd into ~/.leechcraft/plugins/scriptable";
+		else
+			// Iterate over the different types of scripts
+			Q_FOREACH (QFileInfo sameType,
+					dir.entryInfoList (QDir::Dirs |
+							QDir::NoDotAndDotDot |
+							QDir::Readable))
+			{
+				// For the same type iterate over subdirs with
+				// actual plugins.
+				Q_FOREACH (QFileInfo pluginDir,
+						QDir (sameType.absoluteFilePath ()).entryInfoList (QDir::Dirs |
+								QDir::NoDotAndDotDot |
+								QDir::Readable))
+				{
+					QString type = sameType.fileName ();
+					QStringList exts = knownExtensions.value (type, QStringList ("*.*"));
+					QFileInfoList list = Collector (exts) (pluginDir.absoluteFilePath ());
+					Q_FOREACH (QFileInfo fileInfo, list)
+						if (fileInfo.baseName () == pluginDir.baseName ())
+							result [type] += fileInfo.absoluteFilePath ();
+				}
+			}
+
+		return result;
+	}
+}
+}
