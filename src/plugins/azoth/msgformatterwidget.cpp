@@ -23,6 +23,7 @@
 #include <QToolBar>
 #include <QAction>
 #include <QTextBlock>
+#include <QColorDialog>
 #include <QDomDocument>
 #include <QtDebug>
 
@@ -65,6 +66,13 @@ namespace Azoth
 				SLOT (handleStrikeThrough ()));
 		FormatStrikeThrough_->setCheckable (true);
 		FormatStrikeThrough_->setProperty ("ActionIcon", "format_text_strikethrough");
+		
+		toolbar->addSeparator ();
+		
+		FormatColor_ = toolbar->addAction (tr ("Text color"),
+				this,
+				SLOT (handleTextColor ()));
+		FormatColor_->setProperty ("ActionIcon", "format_text_color");
 		
 		connect (Edit_,
 				SIGNAL (currentCharFormatChanged (const QTextCharFormat&)),
@@ -150,6 +158,14 @@ namespace Azoth
 		}
 	}
 	
+	QTextCharFormat MsgFormatterWidget::GetActualCharFormat () const
+	{
+		const QTextCursor& cursor = Edit_->textCursor ();
+		return cursor.hasSelection () ?
+				cursor.charFormat () :
+				Edit_->currentCharFormat ();
+	}
+	
 	void MsgFormatterWidget::handleBold ()
 	{
 		CharFormatActor (boost::bind (&QTextCharFormat::setFontWeight,
@@ -176,6 +192,18 @@ namespace Azoth
 		CharFormatActor (boost::bind (&QTextCharFormat::setFontStrikeOut,
 						_1,
 						FormatStrikeThrough_->isChecked ()));
+	}
+	
+	void MsgFormatterWidget::handleTextColor ()
+	{
+		QBrush brush = GetActualCharFormat ().foreground ();
+		const QColor& color = QColorDialog::getColor (brush.color (), Edit_);
+		if (!color.isValid ())
+			return;
+
+		CharFormatActor (boost::bind (&QTextFormat::setForeground,
+						_1,
+						QBrush (color)));
 	}
 	
 	void MsgFormatterWidget::checkCleared ()
