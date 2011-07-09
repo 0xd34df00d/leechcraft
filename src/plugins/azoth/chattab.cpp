@@ -276,6 +276,7 @@ namespace Azoth
 
 		Ui_.MsgEdit_->clear ();
 		Ui_.MsgEdit_->document ()->clear ();
+		MsgFormatter_->Clear ();
 		CurrentHistoryPosition_ = -1;
 		MsgHistory_.prepend (text);
 

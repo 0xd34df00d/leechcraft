@@ -52,10 +52,13 @@ namespace Azoth
 		QAction *FormatAlignCenter_;
 		QAction *FormatAlignRight_;
 		QAction *FormatAlignJustify_;
+		
+		bool HasCustomFormatting_;
 	public:
 		MsgFormatterWidget (QTextEdit*, QWidget* = 0);
 		
 		bool HasCustomFormatting () const;
+		void Clear ();
 		QString GetNormalizedRichText () const;
 	private:
 		void CharFormatActor (boost::function<void (QTextCharFormat*)>);

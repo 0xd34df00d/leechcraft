@@ -39,6 +39,7 @@ namespace Azoth
 	, StockCharFormat_ (Edit_->currentCharFormat ())
 	, StockBlockFormat_ (Edit_->document ()->begin ().blockFormat ())
 	, StockFrameFormat_ (Edit_->document ()->rootFrame ()->frameFormat ())
+	, HasCustomFormatting_ (false)
 	{
 		setLayout (new QVBoxLayout ());
 		QToolBar *toolbar = new QToolBar ();
@@ -130,28 +131,12 @@ namespace Azoth
 
 	bool MsgFormatterWidget::HasCustomFormatting () const
 	{
-		const QVector<QTextFormat>& allFormats = Edit_->document ()->allFormats ();
-		Q_FOREACH (const QTextFormat& fmt, allFormats)
-		{
-			switch (fmt.type ())
-			{
-			case QTextFormat::CharFormat:
-				if (fmt.toCharFormat () != StockCharFormat_)
-					return true;
-				break;
-			case QTextFormat::BlockFormat:
-				if (fmt.toBlockFormat () != StockBlockFormat_)
-					return true;
-				break;
-			case QTextFormat::FrameFormat:
-				if (fmt.toFrameFormat () != StockFrameFormat_)
-					return true;
-				break;
-			default:
-				return true;
-			}
-		}
-		return false;
+		return HasCustomFormatting_;
+	}
+	
+	void MsgFormatterWidget::Clear ()
+	{
+		HasCustomFormatting_ = false;
 	}
 
 	QString MsgFormatterWidget::GetNormalizedRichText () const
@@ -203,6 +188,8 @@ namespace Azoth
 			format (&fmt);
 			Edit_->setCurrentCharFormat (fmt);
 		}
+		
+		HasCustomFormatting_ = true;
 	}
 	
 	void MsgFormatterWidget::BlockFormatActor (boost::function<void (QTextBlockFormat*)> format)
@@ -210,6 +197,8 @@ namespace Azoth
 		QTextBlockFormat fmt = Edit_->textCursor ().blockFormat ();
 		format (&fmt);
 		Edit_->textCursor ().setBlockFormat (fmt);
+		
+		HasCustomFormatting_ = true;
 	}
 	
 	QTextCharFormat MsgFormatterWidget::GetActualCharFormat () const
