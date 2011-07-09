@@ -431,7 +431,7 @@ namespace LeechCraft
 			int length = 0;
 			for (int i = 0; i < MainTabBar_->count (); ++i)
 				length += MainTabBar_->tabRect (i).width ();
-			if ((length - event->size ().width () > 79) &&
+			if ((length + 30 > MainTabBar_->width ()) &&
 					!AddTabButtonAction_->isVisible ())
 			{
 				handleShowAddTabButton (true);
@@ -445,7 +445,7 @@ namespace LeechCraft
 			for (int i = 0; i < MainTabBar_->count (); ++i)
 				length += MainTabBar_->tabRect (i).width ();
 
-			if (length < event->size ().width () &&
+			if (length + 60 < MainTabBar_->width () &&
 					AddTabButtonAction_->isVisible ())
 			{
 				handleShowAddTabButton (false);
