@@ -21,6 +21,7 @@
 #include <QVariant>
 #include <interfaces/iinfo.h>
 #include <plugininterface/basehookinterconnector.h>
+#include "interfaces/aggregator/item.h"
 
 namespace LeechCraft
 {
@@ -36,6 +37,8 @@ namespace Aggregator
 
 		virtual void AddPlugin (QObject*);
 	signals:
+		void hookItemLoad (LeechCraft::IHookProxy_ptr proxy,
+				Item*);
 		void hookGotNewItems (LeechCraft::IHookProxy_ptr proxy,
 				QVariantList items);
 	};

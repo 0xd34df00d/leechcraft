@@ -281,6 +281,8 @@ namespace LeechCraft
 							tr ("Aggregator: general storage initialization error."));
 					return false;
 				}
+				
+				PluginManager_->RegisterHookable (StorageBackend_.get ());
 
 				ChannelsModel_ = new ChannelsModel ();
 				ChannelsFilterModel_ = new ChannelsFilterModel ();

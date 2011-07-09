@@ -19,6 +19,7 @@
 #ifndef PLUGINS_AGGREGATOR_STORAGEBACKEND_H
 #define PLUGINS_AGGREGATOR_STORAGEBACKEND_H
 #include <QObject>
+#include <interfaces/iinfo.h>
 #include "feed.h"
 
 namespace LeechCraft
@@ -390,6 +391,13 @@ namespace LeechCraft
 				 * item.
 				 */
 				void itemDataUpdated (Item_ptr item, Channel_ptr channel) const;
+				
+				/** @brief Should be emitted whenever a full item is loaded.
+				 * 
+				 * @param[out] proxy Standard proxy object.
+				 * @param[out] itemId The ID of the item to be loaded.
+				 */
+				void hookItemLoad (LeechCraft::IHookProxy_ptr proxy, Item*) const;
 			};
 		};
 	};
