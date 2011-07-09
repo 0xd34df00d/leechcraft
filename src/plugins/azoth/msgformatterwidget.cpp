@@ -102,7 +102,7 @@ namespace Azoth
 				this,
 				SLOT (handleParaAlignment ()));
 		FormatAlignRight_->setProperty ("ActionIcon", "format_text_alignright");
-		FormatAlignRight_->setProperty ("Alignment", static_cast<int> (Qt::AlignLeft));
+		FormatAlignRight_->setProperty ("Alignment", static_cast<int> (Qt::AlignRight));
 		FormatAlignRight_->setCheckable (true);
 		
 		FormatAlignJustify_ = toolbar->addAction (tr ("Align justify"),
