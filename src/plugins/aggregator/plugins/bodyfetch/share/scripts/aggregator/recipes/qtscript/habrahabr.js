@@ -1,9 +1,9 @@
 function CanHandle(link)
 {
-	return link == "http://habrahabr.ru/rss/";
+	return link.indexOf("http://habrahabr.ru/rss/") == 0;
 }
 
-function KeepTags()
+function KeepFirstTag()
 {
 	return [ 'div[class="content"]' ];
 }
