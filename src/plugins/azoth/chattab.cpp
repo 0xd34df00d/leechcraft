@@ -318,7 +318,9 @@ namespace Azoth
 		}
 		
 		IRichTextMessage *richMsg = qobject_cast<IRichTextMessage*> (msgObj);
-		if (richMsg && !richText.isEmpty ())
+		if (richMsg &&
+				!richText.isEmpty () &&
+				ToggleRichText_->isChecked ())
 			richMsg->SetRichBody (richText);
 
 		proxy.reset (new Util::DefaultHookProxy ());
