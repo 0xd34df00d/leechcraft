@@ -62,7 +62,7 @@ namespace BodyFetch
 				this,
 				SLOT (handleWTStarted ()),
 				Qt::QueuedConnection);
-		WT_->start (QThread::LowPriority);
+		WT_->start (QThread::LowestPriority);
 	}
 
 	QByteArray Plugin::GetUniqueID () const
