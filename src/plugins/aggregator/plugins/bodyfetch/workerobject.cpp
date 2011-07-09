@@ -205,6 +205,37 @@ namespace BodyFetch
 		
 		file.write (contents.toUtf8 ());
 	}
+	
+	QString WorkerObject::Recode (const QByteArray& rawContents) const
+	{
+		const QByteArray stupidCharset ("meta charset=");
+		const int stupidPos = rawContents.indexOf (stupidCharset);
+		
+		if (stupidPos >= 0)
+		{
+			const int begin = stupidPos + stupidCharset.size ();
+			const char sep = rawContents.at (begin);
+			if (sep == '\'' || sep == '"')
+			{
+				const int end = rawContents.indexOf (sep, begin + 1);
+				
+				const QByteArray& enca = rawContents.mid (begin + 1, end - begin - 1);
+				qDebug () << "detected encoding" << enca;
+				QTextCodec *codec = QTextCodec::codecForName (enca);
+				if (codec)
+					return codec->toUnicode (rawContents);
+				else
+					qWarning () << Q_FUNC_INFO
+							<< "unable to get codec for"
+							<< enca;
+			}
+		}
+
+		QTextCodec *codec = QTextCodec::codecForHtml (rawContents, 0);
+		return codec ?
+				codec->toUnicode (rawContents) :
+				QString::fromUtf8 (rawContents);
+	}
 
 	void WorkerObject::handleDownloadFinished (QUrl url, QString filename)
 	{
@@ -227,10 +258,7 @@ namespace BodyFetch
 		}
 
 		const QByteArray& rawContents = file.readAll ();
-		QTextCodec *codec = QTextCodec::codecForHtml (rawContents, 0);
-		const QString& contents = codec ?
-				codec->toUnicode (rawContents) :
-				QString::fromUtf8 (rawContents);
+		const QString& contents = Recode (rawContents);
 		file.close ();
 		file.remove ();
 		const QString& result = Parse (contents, script);

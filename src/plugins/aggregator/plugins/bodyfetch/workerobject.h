@@ -61,6 +61,7 @@ namespace BodyFetch
 		QString Parse (const QString&, IScript_ptr);
 		QString ParseWithSelectors (const QString&, const QStringList&);
 		void WriteFile (const QString&, quint64) const;
+		QString Recode (const QByteArray&) const;
 	public slots:
 		void handleDownloadFinished (QUrl, QString);
 		void process ();
