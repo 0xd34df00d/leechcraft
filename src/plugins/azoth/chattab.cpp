@@ -49,6 +49,7 @@
 #include "callmanager.h"
 #include "callchatwidget.h"
 #include "chattabwebview.h"
+#include "msgformatterwidget.h"
 
 namespace LeechCraft
 {
@@ -89,25 +90,7 @@ namespace Azoth
 		Ui_.EventsButton_->setMenu (new QMenu (tr ("Events")));
 		Ui_.EventsButton_->hide ();
 		
-		QAction *clearAction = new QAction (tr ("Clear chat window"), this);
-		clearAction->setProperty ("ActionIcon", "clear");
-		connect (clearAction,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleClearChat ()));
-		TabToolbar_->addAction (clearAction);
-
-		ToggleRichText_ = new QAction (tr ("Enable rich text"), this);
-		ToggleRichText_->setProperty ("ActionIcon", "richtext");
-		connect (ToggleRichText_,
-				SIGNAL (toggled (bool)),
-				this,
-				SLOT (handleRichTextToggled ()));
-		ToggleRichText_->setCheckable (true);
-		ToggleRichText_->setChecked (XmlSettingsManager::Instance ()
-					.property ("ShowRichTextMessageBody").toBool ());
-		TabToolbar_->addAction (ToggleRichText_);
-		TabToolbar_->addSeparator ();
+		BuildBasicActions ();
 
 		Core::Instance ().RegisterHookable (this);
 		
@@ -133,70 +116,11 @@ namespace Azoth
 				this,
 				SLOT (typeTimeout ()));
 
-		connect (GetEntry<QObject> (),
-				SIGNAL (gotMessage (QObject*)),
-				this,
-				SLOT (handleEntryMessage (QObject*)));
-		connect (GetEntry<QObject> (),
-				SIGNAL (statusChanged (const EntryStatus&, const QString&)),
-				this,
-				SLOT (handleStatusChanged (const EntryStatus&, const QString&)));
-		connect (GetEntry<QObject> (),
-				SIGNAL (availableVariantsChanged (const QStringList&)),
-				this,
-				SLOT (handleVariantsChanged (QStringList)));
-
 		PrepareTheme ();
-
-		ICLEntry *e = GetEntry<ICLEntry> ();
-		handleVariantsChanged (e->Variants ());
-
-		const QString& accName =
-				qobject_cast<IAccount*> (e->GetParentAccount ())->
-						GetAccountName ();
-		Ui_.AccountName_->setText (accName);
-
+		InitEntry ();
 		CheckMUC ();
 		InitExtraActions ();
-
-		QShortcut *histUp = new QShortcut (Qt::CTRL + Qt::Key_Up,
-				Ui_.MsgEdit_, 0, 0, Qt::WidgetShortcut);
-		connect (histUp,
-				SIGNAL (activated ()),
-				this,
-				SLOT (handleHistoryUp ()));
-
-		QShortcut *histDown = new QShortcut (Qt::CTRL + Qt::Key_Down,
-				Ui_.MsgEdit_, 0, 0, Qt::WidgetShortcut);
-		connect (histDown,
-				SIGNAL (activated ()),
-				this,
-				SLOT (handleHistoryDown ()));
-
-		connect (Ui_.MsgEdit_,
-				SIGNAL (keyReturnPressed ()),
-				this,
-				SLOT (messageSend ()));
-		connect (Ui_.MsgEdit_,
-				SIGNAL (keyTabPressed ()),
-				this,
-				SLOT (nickComplete ()));
-		connect (Ui_.MsgEdit_,
-				SIGNAL (scroll (int)),
-				this,
-				SLOT (handleEditScroll (int)));
-
-		Ui_.EntryInfo_->setText (e->GetEntryName ());
-
-		QTimer::singleShot (0,
-				Ui_.MsgEdit_,
-				SLOT (setFocus ()));
-
-		connect (Ui_.MsgEdit_,
-				SIGNAL (clearAvailableNicks ()),
-				this,
-				SLOT (clearAvailableNick ()));
-		UpdateTextHeight ();
+		InitMsgEdit ();
 		
 		emit hookChatTabCreated (IHookProxy_ptr (new Util::DefaultHookProxy),
 				this,
@@ -797,6 +721,54 @@ namespace Azoth
 					<< "doesn't implement the required interface";
 		return entry;
 	}
+	
+	void ChatTab::BuildBasicActions ()
+	{
+		QAction *clearAction = new QAction (tr ("Clear chat window"), this);
+		clearAction->setProperty ("ActionIcon", "clear");
+		connect (clearAction,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleClearChat ()));
+		TabToolbar_->addAction (clearAction);
+
+		ToggleRichText_ = new QAction (tr ("Enable rich text"), this);
+		ToggleRichText_->setProperty ("ActionIcon", "richtext");
+		connect (ToggleRichText_,
+				SIGNAL (toggled (bool)),
+				this,
+				SLOT (handleRichTextToggled ()));
+		ToggleRichText_->setCheckable (true);
+		ToggleRichText_->setChecked (XmlSettingsManager::Instance ()
+					.property ("ShowRichTextMessageBody").toBool ());
+		TabToolbar_->addAction (ToggleRichText_);
+		TabToolbar_->addSeparator ();
+	}
+	
+	void ChatTab::InitEntry()
+	{
+		connect (GetEntry<QObject> (),
+				SIGNAL (gotMessage (QObject*)),
+				this,
+				SLOT (handleEntryMessage (QObject*)));
+		connect (GetEntry<QObject> (),
+				SIGNAL (statusChanged (const EntryStatus&, const QString&)),
+				this,
+				SLOT (handleStatusChanged (const EntryStatus&, const QString&)));
+		connect (GetEntry<QObject> (),
+				SIGNAL (availableVariantsChanged (const QStringList&)),
+				this,
+				SLOT (handleVariantsChanged (QStringList)));
+
+		ICLEntry *e = GetEntry<ICLEntry> ();
+		handleVariantsChanged (e->Variants ());
+		Ui_.EntryInfo_->setText (e->GetEntryName ());
+
+		const QString& accName =
+				qobject_cast<IAccount*> (e->GetParentAccount ())->
+						GetAccountName ();
+		Ui_.AccountName_->setText (accName);
+	}
 
 	void ChatTab::CheckMUC ()
 	{
@@ -907,6 +879,50 @@ namespace Azoth
 							GetCallsForEntry (EntryID_))
 				handleCall (object);
 		}
+	}
+	
+	void ChatTab::InitMsgEdit ()
+	{
+		QShortcut *histUp = new QShortcut (Qt::CTRL + Qt::Key_Up,
+				Ui_.MsgEdit_, 0, 0, Qt::WidgetShortcut);
+		connect (histUp,
+				SIGNAL (activated ()),
+				this,
+				SLOT (handleHistoryUp ()));
+
+		QShortcut *histDown = new QShortcut (Qt::CTRL + Qt::Key_Down,
+				Ui_.MsgEdit_, 0, 0, Qt::WidgetShortcut);
+		connect (histDown,
+				SIGNAL (activated ()),
+				this,
+				SLOT (handleHistoryDown ()));
+
+		connect (Ui_.MsgEdit_,
+				SIGNAL (keyReturnPressed ()),
+				this,
+				SLOT (messageSend ()));
+		connect (Ui_.MsgEdit_,
+				SIGNAL (keyTabPressed ()),
+				this,
+				SLOT (nickComplete ()));
+		connect (Ui_.MsgEdit_,
+				SIGNAL (scroll (int)),
+				this,
+				SLOT (handleEditScroll (int)));
+
+		QTimer::singleShot (0,
+				Ui_.MsgEdit_,
+				SLOT (setFocus ()));
+
+		connect (Ui_.MsgEdit_,
+				SIGNAL (clearAvailableNicks ()),
+				this,
+				SLOT (clearAvailableNick ()));
+		UpdateTextHeight ();
+		
+		const int pos = Ui_.MainLayout_->indexOf (Ui_.MsgEdit_);
+		Ui_.MainLayout_->insertWidget (pos,
+				new MsgFormatterWidget (Ui_.MsgEdit_));
 	}
 
 	void ChatTab::AppendMessage (IMessage *msg)

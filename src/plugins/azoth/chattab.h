@@ -132,9 +132,12 @@ namespace Azoth
 	private:
 		template<typename T>
 		T* GetEntry () const;
+		void BuildBasicActions ();
+		void InitEntry ();
 		void CheckMUC ();
 		void HandleMUC ();
 		void InitExtraActions ();
+		void InitMsgEdit ();
 		QStringList GetMUCParticipants () const;
 
 		void ReformatTitle ();
