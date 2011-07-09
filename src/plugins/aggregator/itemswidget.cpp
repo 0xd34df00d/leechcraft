@@ -1102,21 +1102,25 @@ namespace LeechCraft
 				if (Impl_->TapeMode_)
 				{
 					QString html;
+					QUrl base;
 					for (int i = 0, size = Impl_->ItemsFilterModel_->rowCount ();
 							i < size; ++i)
 					{
 						QModelIndex index = Impl_->ItemsFilterModel_->index (i, 0);
 						QModelIndex mapped = Impl_->ItemsFilterModel_->mapToSource (index);
 						Item_ptr item = GetItem (mapped);
+						if (!i)
+							base = item->Link_;
 
 						html += ToHtml (item);
 					}
 
-					Impl_->Ui_.ItemView_->SetHtml (preHtml + html + "</body></html>");
+					Impl_->Ui_.ItemView_->SetHtml (preHtml + html + "</body></html>", base);
 				}
 				else
 				{
 					QString html;
+					QUrl link;
 					Q_FOREACH (const QModelIndex& selIndex,
 							Impl_->Ui_.Items_->selectionModel ()->selectedRows ())
 					{
@@ -1125,10 +1129,13 @@ namespace LeechCraft
 						if (!sindex.isValid ())
 							continue;
 
-						html += ToHtml (GetItem (sindex));
+						const Item_ptr item = GetItem (sindex);
+						html += ToHtml (item);
+						if (!link.isValid ())
+							link = item->Link_;
 					}
 
-					Impl_->Ui_.ItemView_->SetHtml (preHtml + html + "</body></html>");
+					Impl_->Ui_.ItemView_->SetHtml (preHtml + html + "</body></html>", link);
 
 					const QModelIndex& sourceIndex =
 							Impl_->Ui_.Items_->currentIndex ();
