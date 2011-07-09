@@ -921,8 +921,14 @@ namespace Azoth
 		UpdateTextHeight ();
 		
 		const int pos = Ui_.MainLayout_->indexOf (Ui_.MsgEdit_);
-		Ui_.MainLayout_->insertWidget (pos,
-				new MsgFormatterWidget (Ui_.MsgEdit_));
+		
+		MsgFormatterWidget *formatter = new MsgFormatterWidget (Ui_.MsgEdit_);
+		Ui_.MainLayout_->insertWidget (pos, formatter);
+		connect (ToggleRichText_,
+				SIGNAL (toggled (bool)),
+				formatter,
+				SLOT (setVisible (bool)));
+		formatter->setVisible (ToggleRichText_->isChecked ());
 	}
 
 	void ChatTab::AppendMessage (IMessage *msg)
