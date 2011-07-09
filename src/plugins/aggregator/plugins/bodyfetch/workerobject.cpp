@@ -73,42 +73,22 @@ namespace BodyFetch
 		if (EnumeratedCache_.isEmpty ())
 			EnumeratedCache_ = Inst_.Val ()->EnumerateScripts ();
 		
+		QHash<QString, IScript_ptr> channel2script;
+		
 		Q_FOREACH (const QVariant& item, items)
 		{
 			const QVariantMap& map = item.toMap ();
 			
 			const QString& channelLinkStr = map ["ChannelLink"].toString ();
 
-			IScript_ptr script;
-			if (ChannelLink2ScriptID_.contains (channelLinkStr))
+			IScript_ptr script = channel2script.value (channelLinkStr);
+			if (!script)
 			{
-				script.reset (Inst_.Val ()->LoadScript (ChannelLink2ScriptID_ [channelLinkStr]));
-				if (!script->InvokeMethod ("CanHandle", QVariantList () << channelLinkStr).toBool ())
-				{
-					ChannelLink2ScriptID_.remove (channelLinkStr);
-					script.reset ();
-				}
-			}
-			
-			if (!ChannelLink2ScriptID_.contains (channelLinkStr))
-			{
-				const QString& scriptId = FindScriptForChannel (channelLinkStr);
-				if (scriptId.isEmpty ())
+				script = GetScriptForChannel (channelLinkStr);
+				if (!script)
 					continue;
-
-				ChannelLink2ScriptID_ [channelLinkStr] = scriptId;
+				channel2script [channelLinkStr] = script;
 			}
-			
-			if (ChannelLink2ScriptID_ [channelLinkStr].isEmpty ())
-			{
-				ChannelLink2ScriptID_.remove (channelLinkStr);
-				continue;
-			}
-
-			if (!script)
-				script.reset (Inst_.Val ()->LoadScript (ChannelLink2ScriptID_ [channelLinkStr]));
-			if (!script)
-				continue;
 			
 			QVariantList args;
 			args << map ["ItemLink"];
@@ -125,6 +105,40 @@ namespace BodyFetch
 			URL2ItemID_ [url] = map ["ItemID"].value<quint64> ();
 			emit downloadRequested (url);
 		}
+	}
+	
+	IScript_ptr WorkerObject::GetScriptForChannel (const QString& channel)
+	{
+		IScript_ptr script;
+		if (ChannelLink2ScriptID_.contains (channel))
+		{
+			script.reset (Inst_.Val ()->LoadScript (ChannelLink2ScriptID_ [channel]));
+			if (!script->InvokeMethod ("CanHandle", QVariantList () << channel).toBool ())
+			{
+				ChannelLink2ScriptID_.remove (channel);
+				script.reset ();
+			}
+		}
+		
+		if (!ChannelLink2ScriptID_.contains (channel))
+		{
+			const QString& scriptId = FindScriptForChannel (channel);
+			if (scriptId.isEmpty ())
+				return IScript_ptr ();
+
+			ChannelLink2ScriptID_ [channel] = scriptId;
+		}
+		
+		if (ChannelLink2ScriptID_ [channel].isEmpty ())
+		{
+			ChannelLink2ScriptID_.remove (channel);
+			return IScript_ptr ();
+		}
+
+		if (!script)
+			script.reset (Inst_.Val ()->LoadScript (ChannelLink2ScriptID_ [channel]));
+		
+		return script;
 	}
 	
 	QString WorkerObject::FindScriptForChannel (const QString& link)

@@ -56,6 +56,7 @@ namespace BodyFetch
 		void AppendItems (const QVariantList&);
 	private:
 		void ProcessItems (const QVariantList&);
+		IScript_ptr GetScriptForChannel (const QString&);
 		QString FindScriptForChannel (const QString&);
 		QString Parse (const QString&, IScript_ptr);
 		QString ParseWithSelectors (const QString&, const QStringList&);
