@@ -16,14 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_PLUGINS_BODYFETCH_BODYFETCH_H
-#define PLUGINS_AGGREGATOR_PLUGINS_BODYFETCH_BODYFETCH_H
-#include <QObject>
-#include <QUrl>
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
+#ifndef PLUGINS_AGGREGATOR_PLUGINS_BODYFETCH_WORKERTHREAD_H
+#define PLUGINS_AGGREGATOR_PLUGINS_BODYFETCH_WORKERTHREAD_H
+#include <QThread>
+#include <plugininterface/guarded.h>
 
-class QTranslator;
+class IScriptLoaderInstance;
 
 namespace LeechCraft
 {
@@ -31,39 +29,24 @@ namespace Aggregator
 {
 namespace BodyFetch
 {
-	class WorkerThread;
+	class WorkerObject;
 
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IPlugin2
+	class WorkerThread : public QThread
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2)
 		
-		ICoreProxy_ptr Proxy_;
-		WorkerThread *WT_;
-		QHash<int, QPair<QUrl, QString> > Jobs_;
+		Util::Guarded<WorkerObject*> Object_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-
-		QSet<QByteArray> GetPluginClasses () const;
-	public slots:
-		void hookGotNewItems (LeechCraft::IHookProxy_ptr proxy,
-				QVariantList items);
-	private slots:
-		void handleWTStarted ();
-		void handleDownload (QUrl);
-		void handleJobFinished (int);
-	signals:
-		void downloadFinished (QUrl, QString);
-
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
+		WorkerThread (QObject* = 0);
+		
+		void run ();
+		
+		void SetLoaderInstance (IScriptLoaderInstance*);
+		bool IsOK () const;
+		
+		void AppendItems (const QVariantList&);
+		
+		QObject* GetWorkingObject () const;
 	};
 }
 }

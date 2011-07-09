@@ -2,9 +2,13 @@ INCLUDE_DIRECTORIES (${CMAKE_CURRENT_BINARY_DIR}
 	)
 SET (BODYFETCH_SRCS
 	bodyfetch.cpp
+	workerthread.cpp
+	workerobject.cpp
 	)
 SET (BODYFETCH_HEADERS
 	bodyfetch.h
+	workerthread.h
+	workerobject.h
 	)
 QT4_WRAP_CPP (BODYFETCH_MOC_SRCS ${BODYFETCH_HEADERS})
 
