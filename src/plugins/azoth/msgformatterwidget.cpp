@@ -59,6 +59,11 @@ namespace Azoth
 				SLOT (handleStrikeThrough ()));
 		FormatStrikeThrough_->setCheckable (true);
 		FormatStrikeThrough_->setProperty ("ActionIcon", "format_text_strikethrough");
+		
+		connect (Edit_,
+				SIGNAL (currentCharFormatChanged (const QTextCharFormat&)),
+				this,
+				SLOT (updateState (const QTextCharFormat&)));
 	}
 	
 	void MsgFormatterWidget::CharFormatActor (boost::function<void (QTextCharFormat*)> format)
@@ -104,6 +109,14 @@ namespace Azoth
 		CharFormatActor (boost::bind (&QTextCharFormat::setFontStrikeOut,
 						_1,
 						FormatStrikeThrough_->isChecked ()));
+	}
+	
+	void MsgFormatterWidget::updateState (const QTextCharFormat& fmt)
+	{
+		FormatBold_->setChecked (fmt.fontWeight () != QFont::Normal);
+		FormatItalic_->setChecked (fmt.fontItalic ());
+		FormatUnderline_->setChecked (fmt.fontUnderline ());
+		FormatStrikeThrough_->setChecked (fmt.fontStrikeOut ());
 	}
 }
 }

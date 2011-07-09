@@ -47,6 +47,8 @@ namespace Azoth
 		void handleItalic ();
 		void handleUnderline ();
 		void handleStrikeThrough ();
+		
+		void updateState (const QTextCharFormat&);
 	};
 }
 }
