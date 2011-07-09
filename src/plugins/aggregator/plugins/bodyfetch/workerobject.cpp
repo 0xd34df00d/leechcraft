@@ -222,7 +222,9 @@ namespace BodyFetch
 			return;
 		}
 		
-		WriteFile (result, URL2ItemID_.take (url));
+		const quint64 id = URL2ItemID_.take (url);
+		WriteFile (result, id);
+		emit newBodyFetched (id);
 	}
 	
 	void WorkerObject::process ()
