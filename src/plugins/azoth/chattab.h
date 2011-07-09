@@ -36,6 +36,8 @@ namespace Azoth
 	class IMUCEntry;
 	class IMessage;
 	class ITransferManager;
+	
+	class MsgFormatterWidget;
 
 	class ChatTab : public QWidget
 				  , public ITabWidget
@@ -67,6 +69,8 @@ namespace Azoth
 		QIcon TabIcon_;
 		bool IsMUC_;
 		int PreviousTextHeight_;
+		
+		MsgFormatterWidget *MsgFormatter_;
 
 		ITransferManager *XferManager_;
 		

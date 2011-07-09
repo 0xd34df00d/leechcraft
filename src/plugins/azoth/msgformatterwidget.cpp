@@ -22,6 +22,9 @@
 #include <QTextEdit>
 #include <QToolBar>
 #include <QAction>
+#include <QTextBlock>
+#include <QDomDocument>
+#include <QtDebug>
 
 namespace LeechCraft
 {
@@ -30,6 +33,9 @@ namespace Azoth
 	MsgFormatterWidget::MsgFormatterWidget (QTextEdit *edit, QWidget *parent)
 	: QWidget (parent)
 	, Edit_ (edit)
+	, StockCharFormat_ (Edit_->currentCharFormat ())
+	, StockBlockFormat_ (Edit_->document ()->begin ().blockFormat ())
+	, StockFrameFormat_ (Edit_->document ()->rootFrame ()->frameFormat ())
 	{
 		setLayout (new QVBoxLayout ());
 		QToolBar *toolbar = new QToolBar ();
@@ -68,6 +74,63 @@ namespace Azoth
 				SIGNAL (textChanged ()),
 				this,
 				SLOT (checkCleared ()));
+	}
+
+	bool MsgFormatterWidget::HasCustomFormatting () const
+	{
+		const QVector<QTextFormat>& allFormats = Edit_->document ()->allFormats ();
+		Q_FOREACH (const QTextFormat& fmt, allFormats)
+		{
+			switch (fmt.type ())
+			{
+			case QTextFormat::CharFormat:
+				if (fmt.toCharFormat () != StockCharFormat_)
+					return true;
+				break;
+			case QTextFormat::BlockFormat:
+				if (fmt.toBlockFormat () != StockBlockFormat_)
+					return true;
+				break;
+			case QTextFormat::FrameFormat:
+				if (fmt.toFrameFormat () != StockFrameFormat_)
+					return true;
+				break;
+			default:
+				return true;
+			}
+		}
+		return false;
+	}
+
+	QString MsgFormatterWidget::GetNormalizedRichText () const
+	{
+		if (!HasCustomFormatting ())
+			return QString ();
+
+		QString result = Edit_->toHtml ();
+
+		QDomDocument doc;
+		if (!doc.setContent (result))
+			return result;
+
+		const QDomNodeList& styles = doc.elementsByTagName ("style");
+		const QDomElement& style = styles.size () ?
+				styles.at (0).toElement () :
+				QDomElement ();
+
+		QDomElement body = doc.elementsByTagName ("body").at (0).toElement ();
+		const QDomElement& elem = body.firstChildElement ();
+		if (elem.isNull ())
+			return QString ();
+		else
+			body.insertBefore (style.cloneNode (true), elem);
+		
+		body.setTagName ("div");
+		
+		QDomDocument finalDoc;
+		finalDoc.appendChild (finalDoc.importNode (body, true));
+
+		return finalDoc.toString ();
 	}
 	
 	void MsgFormatterWidget::CharFormatActor (boost::function<void (QTextCharFormat*)> format)

@@ -31,6 +31,7 @@
 #include <plugininterface/util.h>
 #include "interfaces/iclentry.h"
 #include "interfaces/imessage.h"
+#include "interfaces/irichtextmessage.h"
 #include "interfaces/iaccount.h"
 #include "interfaces/imucentry.h"
 #include "interfaces/itransfermanager.h"
@@ -77,6 +78,7 @@ namespace Azoth
 	, NumUnreadMsgs_ (0)
 	, IsMUC_ (false)
 	, PreviousTextHeight_ (0)
+	, MsgFormatter_ (0)
 	, XferManager_ (0)
 	, TypeTimer_ (new QTimer (this))
 	, PreviousState_ (CPSNone)
@@ -268,9 +270,12 @@ namespace Azoth
 		if (text.isEmpty ())
 			return;
 		
+		const QString& richText = MsgFormatter_->GetNormalizedRichText ();
+		
 		SetChatPartState (CPSActive);
 
 		Ui_.MsgEdit_->clear ();
+		Ui_.MsgEdit_->document ()->clear ();
 		CurrentHistoryPosition_ = -1;
 		MsgHistory_.prepend (text);
 
@@ -310,6 +315,10 @@ namespace Azoth
 					<< msgObj;
 			return;
 		}
+		
+		IRichTextMessage *richMsg = qobject_cast<IRichTextMessage*> (msgObj);
+		if (richMsg && !richText.isEmpty ())
+			richMsg->SetRichBody (richText);
 
 		proxy.reset (new Util::DefaultHookProxy ());
 		emit hookMessageCreated (proxy, this, msg->GetObject ());
@@ -922,13 +931,13 @@ namespace Azoth
 		
 		const int pos = Ui_.MainLayout_->indexOf (Ui_.MsgEdit_);
 		
-		MsgFormatterWidget *formatter = new MsgFormatterWidget (Ui_.MsgEdit_);
-		Ui_.MainLayout_->insertWidget (pos, formatter);
+		MsgFormatter_ = new MsgFormatterWidget (Ui_.MsgEdit_);
+		Ui_.MainLayout_->insertWidget (pos, MsgFormatter_);
 		connect (ToggleRichText_,
 				SIGNAL (toggled (bool)),
-				formatter,
+				MsgFormatter_,
 				SLOT (setVisible (bool)));
-		formatter->setVisible (ToggleRichText_->isChecked ());
+		MsgFormatter_->setVisible (ToggleRichText_->isChecked ());
 	}
 
 	void ChatTab::AppendMessage (IMessage *msg)

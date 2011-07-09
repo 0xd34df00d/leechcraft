@@ -20,8 +20,10 @@
 #define PLUGINS_AZOTH_MSGFORMATTERWIDGET_H
 #include <boost/function.hpp>
 #include <QWidget>
+#include <QTextCharFormat>
+#include <QTextBlockFormat>
+#include <QTextFrameFormat>
 
-class QTextCharFormat;
 class QTextEdit;
 
 namespace LeechCraft
@@ -34,12 +36,19 @@ namespace Azoth
 		
 		QTextEdit *Edit_;
 		
+		const QTextCharFormat StockCharFormat_;
+		const QTextBlockFormat StockBlockFormat_;
+		const QTextFrameFormat StockFrameFormat_;
+		
 		QAction *FormatBold_;
 		QAction *FormatItalic_;
 		QAction *FormatUnderline_;
 		QAction *FormatStrikeThrough_;
 	public:
 		MsgFormatterWidget (QTextEdit*, QWidget* = 0);
+		
+		bool HasCustomFormatting () const;
+		QString GetNormalizedRichText () const;
 	private:
 		void CharFormatActor (boost::function<void (QTextCharFormat*)>);
 	private slots:
