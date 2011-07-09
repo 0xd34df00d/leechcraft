@@ -441,7 +441,7 @@ namespace LeechCraft
 			int length = 0;
 			for (int i = 0; i < MainTabBar_->count (); ++i)
 				length += MainTabBar_->tabRect (i).width ();
-			if ((length - event->size ().width () > 79) &&
+			if ((length + 30 > MainTabBar_->width ()) &&
 					!AddTabButtonAction_->isVisible ())
 			{
 				handleShowAddTabButton (true);
@@ -455,7 +455,7 @@ namespace LeechCraft
 			for (int i = 0; i < MainTabBar_->count (); ++i)
 				length += MainTabBar_->tabRect (i).width ();
 
-			if (length < event->size ().width () &&
+			if (length + 60 < MainTabBar_->width () &&
 					AddTabButtonAction_->isVisible ())
 			{
 				handleShowAddTabButton (false);
@@ -611,12 +611,25 @@ namespace LeechCraft
 		if (point.isNull ())
 			return;
 
-		int index = MainTabBar_->tabAt (point);
-		if (index == -1)
-			index = MainTabBar_->currentIndex ();
-
 		QMenu *menu = new QMenu ("", MainTabBar_);
-		if ((index == MainTabBar_->count () - 1) && !AddTabButtonAction_->isVisible ())
+		int index = MainTabBar_->tabAt (point);
+
+		if (index == -1)
+		{
+			menu->addActions (AddTabButtonContextMenu_->actions ());
+			Q_FOREACH (QAction *act, TabBarActions_)
+			{
+				if (!act)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "detected null pointer";
+					continue;
+				}
+				menu->addAction (act);
+			}
+			menu->exec (MainTabBar_->mapToGlobal (point));
+		}
+		else if ((index == MainTabBar_->count () - 1) && !AddTabButtonAction_->isVisible ())
 		{
 			menu->addActions (AddTabButtonContextMenu_->actions ());
 			menu->exec (MainTabBar_->mapToGlobal (point));
