@@ -26,6 +26,7 @@
 #include <QColorDialog>
 #include <QDomDocument>
 #include <QtDebug>
+#include <QFontDialog>
 
 namespace LeechCraft
 {
@@ -73,6 +74,37 @@ namespace Azoth
 				this,
 				SLOT (handleTextColor ()));
 		FormatColor_->setProperty ("ActionIcon", "format_text_color");
+		
+		FormatFont_ = toolbar->addAction (tr ("Font"),
+				this,
+				SLOT (handleFont ()));
+		FormatFont_->setProperty ("ActionIcon", "format_text_font");
+		
+		toolbar->addSeparator ();
+		
+		FormatAlignLeft_ = toolbar->addAction (tr ("Align left"),
+				this,
+				SLOT (handleParaAlignment ()));
+		FormatAlignLeft_->setProperty ("ActionIcon", "format_text_alignleft");
+		FormatAlignLeft_->setProperty ("Alignment", static_cast<int> (Qt::AlignLeft));
+		
+		FormatAlignCenter_ = toolbar->addAction (tr ("Align center"),
+				this,
+				SLOT (handleParaAlignment ()));
+		FormatAlignCenter_->setProperty ("ActionIcon", "format_text_aligncenter");
+		FormatAlignCenter_->setProperty ("Alignment", static_cast<int> (Qt::AlignCenter));
+		
+		FormatAlignRight_ = toolbar->addAction (tr ("Align right"),
+				this,
+				SLOT (handleParaAlignment ()));
+		FormatAlignRight_->setProperty ("ActionIcon", "format_text_alignright");
+		FormatAlignRight_->setProperty ("Alignment", static_cast<int> (Qt::AlignLeft));
+		
+		FormatAlignJustify_ = toolbar->addAction (tr ("Align justify"),
+				this,
+				SLOT (handleParaAlignment ()));
+		FormatAlignJustify_->setProperty ("ActionIcon", "format_text_alignjustify");
+		FormatAlignJustify_->setProperty ("Alignment", static_cast<int> (Qt::AlignJustify));
 		
 		connect (Edit_,
 				SIGNAL (currentCharFormatChanged (const QTextCharFormat&)),
@@ -161,6 +193,13 @@ namespace Azoth
 		}
 	}
 	
+	void MsgFormatterWidget::BlockFormatActor (boost::function<void (QTextBlockFormat*)> format)
+	{
+		QTextBlockFormat fmt = Edit_->textCursor ().blockFormat ();
+		format (&fmt);
+		Edit_->textCursor ().setBlockFormat (fmt);
+	}
+	
 	QTextCharFormat MsgFormatterWidget::GetActualCharFormat () const
 	{
 		const QTextCursor& cursor = Edit_->textCursor ();
@@ -207,6 +246,28 @@ namespace Azoth
 		CharFormatActor (boost::bind (&QTextFormat::setForeground,
 						_1,
 						QBrush (color)));
+	}
+	
+	void MsgFormatterWidget::handleFont ()
+	{
+		QFont font = GetActualCharFormat ().font ();
+		bool ok = false;
+		font = QFontDialog::getFont (&ok, font, Edit_);
+		if (!ok)
+			return;
+		
+		CharFormatActor (boost::bind (&QTextCharFormat::setFont,
+						_1,
+						font));
+	}
+	
+	void MsgFormatterWidget::handleParaAlignment ()
+	{
+		Qt::Alignment alignment = static_cast<Qt::Alignment> (sender ()->
+					property ("Alignment").toInt ());
+		BlockFormatActor (boost::bind (&QTextBlockFormat::setAlignment,
+						_1,
+						alignment));
 	}
 	
 	void MsgFormatterWidget::checkCleared ()

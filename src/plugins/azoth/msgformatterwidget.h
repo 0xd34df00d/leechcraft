@@ -46,6 +46,12 @@ namespace Azoth
 		QAction *FormatStrikeThrough_;
 
 		QAction *FormatColor_;
+		QAction *FormatFont_;
+		
+		QAction *FormatAlignLeft_;
+		QAction *FormatAlignCenter_;
+		QAction *FormatAlignRight_;
+		QAction *FormatAlignJustify_;
 	public:
 		MsgFormatterWidget (QTextEdit*, QWidget* = 0);
 		
@@ -53,13 +59,18 @@ namespace Azoth
 		QString GetNormalizedRichText () const;
 	private:
 		void CharFormatActor (boost::function<void (QTextCharFormat*)>);
+		void BlockFormatActor (boost::function<void (QTextBlockFormat*)>);
 		QTextCharFormat GetActualCharFormat () const;
 	private slots:
 		void handleBold ();
 		void handleItalic ();
 		void handleUnderline ();
 		void handleStrikeThrough ();
+
 		void handleTextColor ();
+		void handleFont ();
+		
+		void handleParaAlignment ();
 		
 		void checkCleared ();
 		void updateState (const QTextCharFormat&);
