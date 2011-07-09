@@ -68,11 +68,15 @@ namespace BodyFetch
 		
 		qDebug () << Q_FUNC_INFO << items.size ();
 
-		if (LastEnumerated_.secsTo (QDateTime::currentDateTime ()) > 10)
+		if (!EnumeratedCache_.isEmpty () &&
+				LastEnumerated_.secsTo (QDateTime::currentDateTime ()) > 10)
 			EnumeratedCache_.clear ();
 		
 		if (EnumeratedCache_.isEmpty ())
+		{
 			EnumeratedCache_ = Inst_.Val ()->EnumerateScripts ();
+			LastEnumerated_ = QDateTime::currentDateTime ();
+		}
 		
 		QHash<QString, IScript_ptr> channel2script;
 		
