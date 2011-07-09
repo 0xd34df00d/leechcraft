@@ -64,6 +64,10 @@ namespace Azoth
 				SIGNAL (currentCharFormatChanged (const QTextCharFormat&)),
 				this,
 				SLOT (updateState (const QTextCharFormat&)));
+		connect (Edit_,
+				SIGNAL (textChanged ()),
+				this,
+				SLOT (checkCleared ()));
 	}
 	
 	void MsgFormatterWidget::CharFormatActor (boost::function<void (QTextCharFormat*)> format)
@@ -109,6 +113,12 @@ namespace Azoth
 		CharFormatActor (boost::bind (&QTextCharFormat::setFontStrikeOut,
 						_1,
 						FormatStrikeThrough_->isChecked ()));
+	}
+	
+	void MsgFormatterWidget::checkCleared ()
+	{
+		if (Edit_->toPlainText ().simplified ().isEmpty ())
+			updateState (Edit_->currentCharFormat ());
 	}
 	
 	void MsgFormatterWidget::updateState (const QTextCharFormat& fmt)
