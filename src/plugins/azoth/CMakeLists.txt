@@ -75,6 +75,7 @@ SET (SRCS
 	callchatwidget.cpp
 	chattabwebview.cpp
 	locationdialog.cpp
+	msgformatterwidget.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -110,6 +111,7 @@ SET (HEADERS
 	callchatwidget.h
 	chattabwebview.h
 	locationdialog.h
+	msgformatterwidget.h
 	animatediconmanager.h
 	sourcetrackingmodel.h
 	interfaces/iprotocolplugin.h
