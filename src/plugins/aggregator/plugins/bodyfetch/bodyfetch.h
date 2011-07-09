@@ -20,13 +20,26 @@
 #define PLUGINS_AGGREGATOR_PLUGINS_BODYFETCH_BODYFETCH_H
 #include <QObject>
 #include <QUrl>
+#include <QDir>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
+#include <interfaces/aggregator/item.h>
 
 class QTranslator;
 
 namespace LeechCraft
 {
+
+// TODO remove this shit after migrating to Plugins-less ns for Aggregator.
+namespace Plugins
+{
+namespace Aggregator
+{
+	class Item;
+}
+}
+using Plugins::Aggregator::Item;
+
 namespace Aggregator
 {
 namespace BodyFetch
@@ -41,8 +54,11 @@ namespace BodyFetch
 		Q_INTERFACES (IInfo IPlugin2)
 		
 		ICoreProxy_ptr Proxy_;
+		QDir StorageDir_;
 		WorkerThread *WT_;
 		QHash<int, QPair<QUrl, QString> > Jobs_;
+		QHash<int, QString> ContentsCache_;
+		QSet<quint64> FetchedItems_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -54,12 +70,15 @@ namespace BodyFetch
 
 		QSet<QByteArray> GetPluginClasses () const;
 	public slots:
+		void hookItemLoad (LeechCraft::IHookProxy_ptr proxy,
+				Item*);
 		void hookGotNewItems (LeechCraft::IHookProxy_ptr proxy,
 				QVariantList items);
 	private slots:
 		void handleWTStarted ();
 		void handleDownload (QUrl);
 		void handleJobFinished (int);
+		void handleBodyFetched (quint64);
 	signals:
 		void downloadFinished (QUrl, QString);
 

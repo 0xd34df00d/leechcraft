@@ -30,6 +30,26 @@ namespace BodyFetch
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		StorageDir_ = Util::CreateIfNotExists ("aggregator/bodyfetcher/storage");
+		
+		const int suffixLength = std::strlen (".html");
+		for (int i = 0; i < 10; ++i)
+		{
+			const QString& name = QString::number (i);
+			if (!StorageDir_.exists (name))
+				StorageDir_.mkdir (name);
+			else
+			{
+				QDir dir = StorageDir_;
+				dir.cd (name);
+				Q_FOREACH (QString name, dir.entryList ())
+				{
+					name.chop (suffixLength);
+					FetchedItems_ << name.toLongLong ();
+				}
+			}
+		}
+
 		WT_ = 0;
 		Proxy_ = proxy;
 	}
@@ -85,6 +105,35 @@ namespace BodyFetch
 		return result;
 	}
 	
+	void Plugin::hookItemLoad (IHookProxy_ptr, Item *item)
+	{
+		if (!FetchedItems_.contains (item->ItemID_))
+			return;
+		
+		const quint64 id = item->ItemID_;
+		if (!ContentsCache_.contains (id))
+		{
+			QDir dir = StorageDir_;
+
+			dir.cd (QString::number (id % 10));
+			QFile file (dir.filePath (QString ("%1.html").arg (id)));
+			if (!file.open (QIODevice::ReadOnly))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to open file:"
+						<< file.fileName ()
+						<< file.errorString ();
+				return;
+			}
+
+			ContentsCache_ [id] = QString::fromUtf8 (file.readAll ());
+		}
+		
+		const QString& contents = ContentsCache_ [id];
+		if (!contents.isEmpty ())
+			item->Description_ = contents;
+	}
+	
 	void Plugin::hookGotNewItems (IHookProxy_ptr, QVariantList items)
 	{
 		if (!WT_)
@@ -131,6 +180,11 @@ namespace BodyFetch
 				this,
 				SLOT (handleDownload (QUrl)),
 				Qt::QueuedConnection);
+		connect (WT_->GetWorkingObject (),
+				SIGNAL (newBodyFetched (quint64)),
+				this,
+				SLOT (handleBodyFetched (quint64)),
+				Qt::QueuedConnection);
 		connect (this,
 				SIGNAL (downloadFinished (QUrl, QString)),
 				WT_->GetWorkingObject (),
@@ -175,6 +229,11 @@ namespace BodyFetch
 		const QPair<QUrl, QString>& job = Jobs_.take (id);
 		
 		emit downloadFinished (job.first, job.second);
+	}
+	
+	void Plugin::handleBodyFetched (quint64 id)
+	{
+		FetchedItems_ << id;
 	}
 }
 }

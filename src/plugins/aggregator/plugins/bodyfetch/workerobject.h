@@ -59,12 +59,13 @@ namespace BodyFetch
 		QString FindScriptForChannel (const QString&);
 		QString Parse (const QString&, IScript_ptr);
 		QString ParseWithSelectors (const QString&, const QStringList&);
-		void WriteFile (const QString&, quint64);
+		void WriteFile (const QString&, quint64) const;
 	public slots:
 		void handleDownloadFinished (QUrl, QString);
 		void process ();
 	signals:
 		void downloadRequested (QUrl);
+		void newBodyFetched (quint64);
 	};
 }
 }

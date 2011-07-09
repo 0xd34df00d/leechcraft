@@ -44,8 +44,6 @@ namespace BodyFetch
 	, Inst_ (0)
 	, StorageDir_ (Util::CreateIfNotExists ("aggregator/bodyfetcher/storage"))
 	{
-		for (int i = 0; i < 10; ++i)
-			StorageDir_.mkdir (QString::number (i));
 	}
 	
 	void WorkerObject::SetLoaderInstance (IScriptLoaderInstance *inst)
@@ -173,7 +171,7 @@ namespace BodyFetch
 		return result;
 	}
 	
-	void WorkerObject::WriteFile (const QString& contents, quint64 itemId)
+	void WorkerObject::WriteFile (const QString& contents, quint64 itemId) const
 	{
 		QDir dir = StorageDir_;
 		dir.cd (QString::number (itemId % 10));
