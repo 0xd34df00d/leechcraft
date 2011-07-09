@@ -17,7 +17,11 @@
  **********************************************************************/
 
 #include "msgformatterwidget.h"
+#include <boost/bind.hpp>
+#include <QVBoxLayout>
 #include <QTextEdit>
+#include <QToolBar>
+#include <QAction>
 
 namespace LeechCraft
 {
@@ -27,6 +31,79 @@ namespace Azoth
 	: QWidget (parent)
 	, Edit_ (edit)
 	{
+		setLayout (new QVBoxLayout ());
+		QToolBar *toolbar = new QToolBar ();
+		toolbar->setIconSize (QSize (16, 16));
+		layout ()->addWidget (toolbar);
+		
+		FormatBold_ = toolbar->addAction (tr ("Bold"),
+				this,
+				SLOT (handleBold ()));
+		FormatBold_->setCheckable (true);
+		FormatBold_->setProperty ("ActionIcon", "format_text_bold");
+
+		FormatItalic_ = toolbar->addAction (tr ("Italic"),
+				this,
+				SLOT (handleItalic ()));
+		FormatItalic_->setCheckable (true);
+		FormatItalic_->setProperty ("ActionIcon", "format_text_italic");
+
+		FormatUnderline_ = toolbar->addAction (tr ("Underline"),
+				this,
+				SLOT (handleUnderline ()));
+		FormatUnderline_->setCheckable (true);
+		FormatUnderline_->setProperty ("ActionIcon", "format_text_underline");
+		
+		FormatStrikeThrough_ = toolbar->addAction (tr ("Strike through"),
+				this,
+				SLOT (handleStrikeThrough ()));
+		FormatStrikeThrough_->setCheckable (true);
+		FormatStrikeThrough_->setProperty ("ActionIcon", "format_text_strikethrough");
+	}
+	
+	void MsgFormatterWidget::CharFormatActor (boost::function<void (QTextCharFormat*)> format)
+	{
+		QTextCursor cursor = Edit_->textCursor ();
+		if (cursor.hasSelection ())
+		{
+			QTextCharFormat fmt = cursor.charFormat ();
+			format (&fmt);
+			cursor.setCharFormat (fmt);
+		}
+		else
+		{
+			QTextCharFormat fmt = Edit_->currentCharFormat ();
+			format (&fmt);
+			Edit_->setCurrentCharFormat (fmt);
+		}
+	}
+	
+	void MsgFormatterWidget::handleBold ()
+	{
+		CharFormatActor (boost::bind (&QTextCharFormat::setFontWeight,
+						_1,
+						FormatBold_->isChecked () ? QFont::Bold : QFont::Normal));
+	}
+	
+	void MsgFormatterWidget::handleItalic ()
+	{
+		CharFormatActor (boost::bind (&QTextCharFormat::setFontItalic,
+						_1,
+						FormatItalic_->isChecked ()));
+	}
+	
+	void MsgFormatterWidget::handleUnderline ()
+	{
+		CharFormatActor (boost::bind (&QTextCharFormat::setFontUnderline,
+						_1,
+						FormatUnderline_->isChecked ()));
+	}
+	
+	void MsgFormatterWidget::handleStrikeThrough ()
+	{
+		CharFormatActor (boost::bind (&QTextCharFormat::setFontStrikeOut,
+						_1,
+						FormatStrikeThrough_->isChecked ()));
 	}
 }
 }
