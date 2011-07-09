@@ -16,43 +16,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_QROSP_QROSP_H
-#define PLUGINS_QROSP_QROSP_H
+#ifndef PLUGINS_QROSP_SCRIPTLOADERINSTANCE_H
+#define PLUGINS_QROSP_SCRIPTLOADERINSTANCE_H
 #include <QObject>
-#include <QModelIndex>
-#include <interfaces/iinfo.h>
-#include <interfaces/ipluginadaptor.h>
-#include <interfaces/ientityhandler.h>
+#include <QStringList>
 #include <interfaces/iscriptloader.h>
 
 namespace LeechCraft
 {
 namespace Qrosp
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IPluginAdaptor
-				 , public IEntityHandler
-				 , public IScriptLoader
+	class ScriptLoaderInstance : public QObject
+							   , public IScriptLoaderInstance
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPluginAdaptor IEntityHandler IScriptLoader)
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-		QStringList Provides () const;
-
-		QList<QObject*> GetPlugins ();
-
-		EntityTestHandleResult CouldHandle (const Entity&) const;
-		void Handle (Entity);
+		Q_INTERFACES (IScriptLoaderInstance)
 		
-		IScriptLoaderInstance* CreateScriptLoaderInstance (const QString&);
+		mutable QHash<QString, QString> ID2Interpereter_;
+		
+		QString RelativePath_;
+		QStringList Prefixes_;
+	public:
+		ScriptLoaderInstance (const QString&, QObject* = 0);
+		
+		QObject* GetObject ();
+		void AddGlobalPrefix ();
+		void AddLocalPrefix (QString prefix);
+		QStringList EnumerateScripts () const;
+		QVariantMap GetScriptInfo (const QString&);
+		IScript* LoadScript (const QString&);
 	};
 }
 }

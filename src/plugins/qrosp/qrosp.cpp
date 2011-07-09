@@ -24,6 +24,7 @@
 #include <interfaces/entitytesthandleresult.h>
 #include "pluginmanager.h"
 #include "wrapperobject.h"
+#include "scriptloaderinstance.h"
 
 Q_DECLARE_METATYPE (QObject**);
 
@@ -98,6 +99,11 @@ namespace Qrosp
 		QString path = entity.Entity_.toUrl ().toLocalFile ();
 
 		*entity.Additional_ ["Object"].value<QObject**> () = new WrapperObject (language, path);
+	}
+	
+	IScriptLoaderInstance* Plugin::CreateScriptLoaderInstance (const QString& relPath)
+	{
+		return new ScriptLoaderInstance (relPath);
 	}
 }
 }

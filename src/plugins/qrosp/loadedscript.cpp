@@ -16,45 +16,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_QROSP_QROSP_H
-#define PLUGINS_QROSP_QROSP_H
-#include <QObject>
-#include <QModelIndex>
-#include <interfaces/iinfo.h>
-#include <interfaces/ipluginadaptor.h>
-#include <interfaces/ientityhandler.h>
-#include <interfaces/iscriptloader.h>
+#include "loadedscript.h"
+#include <qross/core/action.h>
 
 namespace LeechCraft
 {
 namespace Qrosp
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IPluginAdaptor
-				 , public IEntityHandler
-				 , public IScriptLoader
+	LoadedScript::LoadedScript (const QString& path,
+			const QString& interp, QObject *parent)
+	: QObject (parent)
+	, ScriptAction_ (new Qross::Action (this, QUrl::fromLocalFile (path)))
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IPluginAdaptor IEntityHandler IScriptLoader)
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-		QStringList Provides () const;
+		if (!interp.isEmpty ())
+			ScriptAction_->setInterpreter (interp);
 
-		QList<QObject*> GetPlugins ();
+		ScriptAction_->trigger ();
+	}
+	
+	QVariant LoadedScript::InvokeMethod (const QString& name, const QVariantList& args) const
+	{
+		if (!ScriptAction_->functionNames ().contains (name))
+			return QVariant ();
 
-		EntityTestHandleResult CouldHandle (const Entity&) const;
-		void Handle (Entity);
-		
-		IScriptLoaderInstance* CreateScriptLoaderInstance (const QString&);
-	};
+		return ScriptAction_->callFunction (name, args);
+	}
 }
 }
-
-#endif
