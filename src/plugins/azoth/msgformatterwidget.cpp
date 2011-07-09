@@ -138,7 +138,10 @@ namespace Azoth
 		QDomDocument finalDoc;
 		finalDoc.appendChild (finalDoc.importNode (body, true));
 
-		return finalDoc.toString ();
+		result = finalDoc.toString ();
+		result = result.simplified ();
+		result.remove ('\n');
+		return result;
 	}
 	
 	void MsgFormatterWidget::CharFormatActor (boost::function<void (QTextCharFormat*)> format)
