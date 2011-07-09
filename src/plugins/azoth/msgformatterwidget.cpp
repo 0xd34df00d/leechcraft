@@ -25,8 +25,9 @@
 #include <QTextBlock>
 #include <QColorDialog>
 #include <QDomDocument>
-#include <QtDebug>
 #include <QFontDialog>
+#include <QActionGroup>
+#include <QtDebug>
 
 namespace LeechCraft
 {
@@ -87,24 +88,35 @@ namespace Azoth
 				SLOT (handleParaAlignment ()));
 		FormatAlignLeft_->setProperty ("ActionIcon", "format_text_alignleft");
 		FormatAlignLeft_->setProperty ("Alignment", static_cast<int> (Qt::AlignLeft));
+		FormatAlignLeft_->setCheckable (true);
+		FormatAlignLeft_->setChecked (true);
 		
 		FormatAlignCenter_ = toolbar->addAction (tr ("Align center"),
 				this,
 				SLOT (handleParaAlignment ()));
 		FormatAlignCenter_->setProperty ("ActionIcon", "format_text_aligncenter");
 		FormatAlignCenter_->setProperty ("Alignment", static_cast<int> (Qt::AlignCenter));
+		FormatAlignCenter_->setCheckable (true);
 		
 		FormatAlignRight_ = toolbar->addAction (tr ("Align right"),
 				this,
 				SLOT (handleParaAlignment ()));
 		FormatAlignRight_->setProperty ("ActionIcon", "format_text_alignright");
 		FormatAlignRight_->setProperty ("Alignment", static_cast<int> (Qt::AlignLeft));
+		FormatAlignRight_->setCheckable (true);
 		
 		FormatAlignJustify_ = toolbar->addAction (tr ("Align justify"),
 				this,
 				SLOT (handleParaAlignment ()));
 		FormatAlignJustify_->setProperty ("ActionIcon", "format_text_alignjustify");
 		FormatAlignJustify_->setProperty ("Alignment", static_cast<int> (Qt::AlignJustify));
+		FormatAlignJustify_->setCheckable (true);
+		
+		QActionGroup *alignGroup = new QActionGroup (this);
+		alignGroup->addAction (FormatAlignLeft_);
+		alignGroup->addAction (FormatAlignCenter_);
+		alignGroup->addAction (FormatAlignRight_);
+		alignGroup->addAction (FormatAlignJustify_);
 		
 		connect (Edit_,
 				SIGNAL (currentCharFormatChanged (const QTextCharFormat&)),
