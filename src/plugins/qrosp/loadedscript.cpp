@@ -17,7 +17,12 @@
  **********************************************************************/
 
 #include "loadedscript.h"
+#ifndef QROSP_NO_QTSCRIPT
+#include <QScriptEngine>
+#endif
+#include <QtDebug>
 #include <qross/core/action.h>
+#include <qross/core/script.h>
 
 namespace LeechCraft
 {
@@ -32,6 +37,26 @@ namespace Qrosp
 			ScriptAction_->setInterpreter (interp);
 
 		ScriptAction_->trigger ();
+#ifndef QROSP_NO_QTSCRIPT
+		if (interp == "qtscript")
+		{
+			QObject *scriptEngineObject = 0;
+			QMetaObject::invokeMethod (ScriptAction_->script (),
+					"engine", Q_RETURN_ARG (QObject*, scriptEngineObject));
+			QScriptEngine *engine = qobject_cast<QScriptEngine*> (scriptEngineObject);
+			if (!engine)
+				qWarning () << Q_FUNC_INFO
+						<< "unable to obtain script engine from the"
+						<< "script action though we are Qt Script";
+			else
+			{
+				QStringList requires;
+				requires << "qt" << "qt.core" << "qt.gui" << "qt.network" << "qt.webkit";
+				Q_FOREACH (const QString& req, requires)
+					engine->importExtension (req);
+			}
+		}
+#endif
 	}
 	
 	QVariant LoadedScript::InvokeMethod (const QString& name, const QVariantList& args) const

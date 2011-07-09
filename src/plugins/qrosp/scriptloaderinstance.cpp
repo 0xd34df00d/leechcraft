@@ -80,8 +80,8 @@ namespace Qrosp
 				const QString& path = prefix + RelativePath_ + interp + '/';
 
 				QDir dir (path);
-				const QStringList& entries =
-						dir.entryList (knownExtensions [interp], QDir::Readable);
+				const QStringList& entries = dir.entryList (knownExtensions [interp],
+						QDir::Readable | QDir::Files);
 
 				Q_FOREACH (const QString& entry, entries)
 				{

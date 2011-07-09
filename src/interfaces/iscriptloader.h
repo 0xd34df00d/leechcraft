@@ -18,6 +18,7 @@
 
 #ifndef INTERFACES_ISCRIPTLOADER_H
 #define INTERFACES_ISCRIPTLOADER_H
+#include <boost/shared_ptr.hpp>
 #include <QVariant>
 
 class IScript
@@ -28,6 +29,8 @@ public:
 	virtual QVariant InvokeMethod (const QString& name,
 			const QVariantList& args) const = 0;
 };
+
+typedef boost::shared_ptr<IScript> IScript_ptr;
 
 class IScriptLoaderInstance
 {
