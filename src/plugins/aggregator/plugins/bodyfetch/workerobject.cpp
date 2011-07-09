@@ -168,6 +168,8 @@ namespace BodyFetch
 				result += col [i].toOuterXml ().simplified ();
 		}
 		
+		result.remove ("</br>");
+		
 		return result;
 	}
 	
