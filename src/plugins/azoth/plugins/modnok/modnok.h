@@ -23,6 +23,7 @@
 #include <QCache>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
+#include <interfaces/ihavesettings.h>
 
 class QTranslator;
 class QImage;
@@ -36,11 +37,12 @@ namespace Modnok
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
+				 , public IHaveSettings
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2)
+		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
 		
-		boost::shared_ptr<QTranslator> Translator_;
+		Util::XmlSettingsDialog_ptr SettingsDialog_;
 
 		QString ConvScriptPath_;
 
@@ -55,6 +57,8 @@ namespace Modnok
 		QIcon GetIcon () const;
 
 		QSet<QByteArray> GetPluginClasses () const;
+		
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	private:
 		QImage GetRenderedImage (const QString&);
 		QString HandleBody (QString);
@@ -65,6 +69,7 @@ namespace Modnok
 				QObject *message);
 	private slots:
 		void clearCaches ();
+		void handleCacheSize ();
 	};
 }
 }

@@ -22,6 +22,8 @@
 #include <QProcess>
 #include <interfaces/imessage.h>
 #include <plugininterface/util.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -31,7 +33,18 @@ namespace Modnok
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		FormulasCache_.setMaxCost (10 * 1024);
+		SettingsDialog_.reset (new Util::XmlSettingsDialog);
+		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
+				"azothmodnoksettings.xml");
+		
+		XmlSettingsManager::Instance ().RegisterObject ("RenderCacheSize",
+				this, "handleCacheSize");
+		handleCacheSize ();
+		
+		XmlSettingsManager::Instance ().RegisterObject ("HorizontalDPI",
+				this, "clearCaches");
+		XmlSettingsManager::Instance ().RegisterObject ("VerticalDPI",
+				this, "clearCaches");
 
 		QStringList candidates;
 		candidates << "/usr/local/bin/lc_azoth_modnok_latexconvert.sh"
@@ -85,6 +98,11 @@ namespace Modnok
 		return result;
 	}
 	
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return SettingsDialog_;
+	}
+	
 	namespace
 	{
 		bool IsSecure (const QString& formula)
@@ -99,9 +117,14 @@ namespace Modnok
 			return *FormulasCache_.object (formula);
 
 		const QString& filename = Util::GetTemporaryName ("lc_azoth_modnok.XXXXXX.png");
+		
+		const int dpiX = XmlSettingsManager::Instance ()
+				.property ("HorizontalDPI").toInt ();
+		const int dpiY = XmlSettingsManager::Instance ()
+				.property ("VerticalDPI").toInt ();
 
 		QStringList args;
-		args << QString ("-r %1x%2").arg (150).arg (150);
+		args << QString ("-r %1x%2").arg (dpiX).arg (dpiY);
 		args << QString ("-o %1").arg (filename);
 
 		// TODO
@@ -177,6 +200,10 @@ namespace Modnok
 	{
 		if (ConvScriptPath_.isEmpty ())
 			return;
+		
+		if (!XmlSettingsManager::Instance ()
+				.property ("OnDisplayRendering").toBool ())
+			return;
 
 		if (!body.contains ("$$"))
 			return;
@@ -189,6 +216,13 @@ namespace Modnok
 	void Plugin::clearCaches ()
 	{
 		FormulasCache_.clear ();
+	}
+	
+	void Plugin::handleCacheSize ()
+	{
+		const int mibs = XmlSettingsManager::Instance ()
+				.property ("RenderCacheSize").toInt ();
+		FormulasCache_.setMaxCost (mibs * 1024);
 	}
 }
 }
