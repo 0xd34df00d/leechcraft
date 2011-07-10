@@ -3,9 +3,11 @@ INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
 	)
 SET (MODNOK_SRCS
 	modnok.cpp
+	xmlsettingsmanager.cpp
 	)
 SET (MODNOK_HEADERS
 	modnok.h
+	xmlsettingsmanager.h
 	)
 #CreateTrVars ("azoth_modnok" "en;ru_RU;uk_UA" MODNOK_TRANSLATIONS MODNOK_COMPILED_TRANSLATIONS)
 QT4_WRAP_CPP (MODNOK_MOC_SRCS ${MODNOK_HEADERS})
@@ -27,5 +29,5 @@ TARGET_LINK_LIBRARIES (leechcraft_azoth_modnok
 	)
 INSTALL (TARGETS leechcraft_azoth_modnok DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (PROGRAMS lc_azoth_modnok_latexconvert.sh DESTINATION bin)
-#INSTALL (FILES azothmodnoksettings.xml DESTINATION ${LC_SETTINGS_DEST})
+INSTALL (FILES azothmodnoksettings.xml DESTINATION ${LC_SETTINGS_DEST})
 #INSTALL (FILES ${MODNOK_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
