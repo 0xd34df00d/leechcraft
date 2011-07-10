@@ -22,21 +22,17 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Aggregator
+{
+	class ChannelsFilterModel : public Util::TagsFilterModel
 	{
-		namespace Aggregator
-		{
-			class ChannelsFilterModel : public LeechCraft::Util::TagsFilterModel
-			{
-				Q_OBJECT
-			public:
-				ChannelsFilterModel (QObject *parent = 0);
-			protected:
-				virtual QStringList GetTagsForIndex (int) const;
-			};
-		};
+		Q_OBJECT
+	public:
+		ChannelsFilterModel (QObject *parent = 0);
+	protected:
+		virtual QStringList GetTagsForIndex (int) const;
 	};
-};
+}
+}
 
 #endif
-

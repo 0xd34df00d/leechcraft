@@ -22,119 +22,115 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Aggregator
+{
+	FeedSettings::FeedSettings (const QModelIndex& mapped, QWidget *parent)
+	: QDialog (parent)
+	, Index_ (mapped)
+	, SettingsID_ (-1)
 	{
-		namespace Aggregator
+		Ui_.setupUi (this);
+	
+		ChannelTagsCompleter_.reset (new Util::TagsCompleter (Ui_.ChannelTags_));
+		Ui_.ChannelTags_->AddSelector ();
+	
+		connect (Ui_.ChannelLink_,
+				SIGNAL (linkActivated (const QString&)),
+				&Core::Instance (),
+				SLOT (openLink (const QString&)));
+	
+		QStringList tags = Core::Instance ().GetTagsForIndex (Index_.row ());
+		Ui_.ChannelTags_->setText (Core::Instance ().GetProxy ()->GetTagsManager ()->Join (tags));
+	
+		Feed::FeedSettings settings (-1, -1);
+		try
 		{
-			FeedSettings::FeedSettings (const QModelIndex& mapped, QWidget *parent)
-			: QDialog (parent)
-			, Index_ (mapped)
-			, SettingsID_ (-1)
-			{
-				Ui_.setupUi (this);
-			
-				ChannelTagsCompleter_.reset (new Util::TagsCompleter (Ui_.ChannelTags_));
-				Ui_.ChannelTags_->AddSelector ();
-			
-				connect (Ui_.ChannelLink_,
-						SIGNAL (linkActivated (const QString&)),
-						&Core::Instance (),
-						SLOT (openLink (const QString&)));
-			
-				QStringList tags = Core::Instance ().GetTagsForIndex (Index_.row ());
-				Ui_.ChannelTags_->setText (Core::Instance ().GetProxy ()->GetTagsManager ()->Join (tags));
-			
-				Feed::FeedSettings settings (-1, -1);
-				try
-				{
-					settings = Core::Instance ().GetFeedSettings (Index_);
-				}
-				catch (const std::exception& e)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "unable to get settings for"
-							<< Index_
-							<< e.what ();
-					return;
-				}
-				catch (const StorageBackend::FeedSettingsNotFoundError&)
-				{
-					settings = Feed::FeedSettings (Core::Instance ()
-							.GetChannelInfo (Index_).FeedID_);
-				}
+			settings = Core::Instance ().GetFeedSettings (Index_);
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to get settings for"
+					<< Index_
+					<< e.what ();
+			return;
+		}
+		catch (const StorageBackend::FeedSettingsNotFoundError&)
+		{
+			settings = Feed::FeedSettings (Core::Instance ()
+					.GetChannelInfo (Index_).FeedID_);
+		}
 
-				SettingsID_ = settings.SettingsID_;
+		SettingsID_ = settings.SettingsID_;
 
-				Ui_.UpdateInterval_->setValue (settings.UpdateTimeout_);
-				Ui_.NumItems_->setValue (settings.NumItems_);
-				Ui_.ItemAge_->setValue (settings.ItemAge_);
-				Ui_.AutoDownloadEnclosures_->setChecked (settings.AutoDownloadEnclosures_);
-			
-				Core::ChannelInfo ci = Core::Instance ().GetChannelInfo (Index_);
-				QString link = ci.Link_;
-				QString shortLink;
-				Ui_.ChannelLink_->setToolTip (link);
-				if (link.size () >= 160)
-					shortLink = link.left (78) + "..." + link.right (78);
-				else
-					shortLink = link;
-				if (QUrl (link).isValid ())
-				{
-					link.insert (0, "<a href=\"");
-					link.append ("\">" + shortLink + "</a>");
-					Ui_.ChannelLink_->setText (link);
-				}
-				else
-					Ui_.ChannelLink_->setText (shortLink);
-			
-				link = ci.URL_;
-				Ui_.ChannelLink_->setToolTip (link);
-				if (link.size () >= 160)
-					shortLink = link.left (78) + "..." + link.right (78);
-				else
-					shortLink = link;
-				if (QUrl (link).isValid ())
-				{
-					link.insert (0, "<a href=\"");
-					link.append ("\">" + shortLink + "</a>");
-					Ui_.FeedURL_->setText (link);
-				}
-				else
-					Ui_.FeedURL_->setText (shortLink);
-			
-				Ui_.ChannelDescription_->setHtml (ci.Description_);
-				Ui_.ChannelAuthor_->setText (ci.Author_);
+		Ui_.UpdateInterval_->setValue (settings.UpdateTimeout_);
+		Ui_.NumItems_->setValue (settings.NumItems_);
+		Ui_.ItemAge_->setValue (settings.ItemAge_);
+		Ui_.AutoDownloadEnclosures_->setChecked (settings.AutoDownloadEnclosures_);
+	
+		Core::ChannelInfo ci = Core::Instance ().GetChannelInfo (Index_);
+		QString link = ci.Link_;
+		QString shortLink;
+		Ui_.ChannelLink_->setToolTip (link);
+		if (link.size () >= 160)
+			shortLink = link.left (78) + "..." + link.right (78);
+		else
+			shortLink = link;
+		if (QUrl (link).isValid ())
+		{
+			link.insert (0, "<a href=\"");
+			link.append ("\">" + shortLink + "</a>");
+			Ui_.ChannelLink_->setText (link);
+		}
+		else
+			Ui_.ChannelLink_->setText (shortLink);
+	
+		link = ci.URL_;
+		Ui_.ChannelLink_->setToolTip (link);
+		if (link.size () >= 160)
+			shortLink = link.left (78) + "..." + link.right (78);
+		else
+			shortLink = link;
+		if (QUrl (link).isValid ())
+		{
+			link.insert (0, "<a href=\"");
+			link.append ("\">" + shortLink + "</a>");
+			Ui_.FeedURL_->setText (link);
+		}
+		else
+			Ui_.FeedURL_->setText (shortLink);
+	
+		Ui_.ChannelDescription_->setHtml (ci.Description_);
+		Ui_.ChannelAuthor_->setText (ci.Author_);
 
-				Ui_.FeedNumItems_->setText (QString::number (ci.NumItems_));
-			
-				QPixmap pixmap = Core::Instance ().GetChannelPixmap (Index_);
-				if (pixmap.width () > 400)
-					pixmap = pixmap.scaledToWidth (400, Qt::SmoothTransformation);
-				if (pixmap.height () > 300)
-					pixmap = pixmap.scaledToHeight (300, Qt::SmoothTransformation);
-			}
-			
-			void FeedSettings::accept ()
-			{
-				QString tags = Ui_.ChannelTags_->text ();
-				Core::Instance ().SetTagsForIndex (tags, Index_);
-			
-				Feed::FeedSettings settings (Core::Instance ().GetChannelInfo (Index_).FeedID_,
-						SettingsID_,
-						Ui_.UpdateInterval_->value (),
-						Ui_.NumItems_->value (),
-						Ui_.ItemAge_->value (),
-						Ui_.AutoDownloadEnclosures_->checkState () == Qt::Checked);
-				Core::Instance ().SetFeedSettings (settings);
-			
-				QDialog::accept ();
-			}
-			
-			void FeedSettings::on_UpdateFavicon__released ()
-			{
-				Core::Instance ().UpdateFavicon (Index_);
-			}
-		};
-	};
-};
-
+		Ui_.FeedNumItems_->setText (QString::number (ci.NumItems_));
+	
+		QPixmap pixmap = Core::Instance ().GetChannelPixmap (Index_);
+		if (pixmap.width () > 400)
+			pixmap = pixmap.scaledToWidth (400, Qt::SmoothTransformation);
+		if (pixmap.height () > 300)
+			pixmap = pixmap.scaledToHeight (300, Qt::SmoothTransformation);
+	}
+	
+	void FeedSettings::accept ()
+	{
+		QString tags = Ui_.ChannelTags_->text ();
+		Core::Instance ().SetTagsForIndex (tags, Index_);
+	
+		Feed::FeedSettings settings (Core::Instance ().GetChannelInfo (Index_).FeedID_,
+				SettingsID_,
+				Ui_.UpdateInterval_->value (),
+				Ui_.NumItems_->value (),
+				Ui_.ItemAge_->value (),
+				Ui_.AutoDownloadEnclosures_->checkState () == Qt::Checked);
+		Core::Instance ().SetFeedSettings (settings);
+	
+		QDialog::accept ();
+	}
+	
+	void FeedSettings::on_UpdateFavicon__released ()
+	{
+		Core::Instance ().UpdateFavicon (Index_);
+	}
+}
+}

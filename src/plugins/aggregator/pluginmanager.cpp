@@ -20,8 +20,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Aggregator
 {
 	PluginManager::PluginManager (QObject *parent)
@@ -33,6 +31,5 @@ namespace Aggregator
 	{
 		Util::BaseHookInterconnector::AddPlugin (plugin);
 	}
-}
 }
 }

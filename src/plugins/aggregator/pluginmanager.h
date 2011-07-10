@@ -25,8 +25,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Aggregator
 {
 	class PluginManager : public Util::BaseHookInterconnector
@@ -42,7 +40,6 @@ namespace Aggregator
 		void hookGotNewItems (LeechCraft::IHookProxy_ptr proxy,
 				QVariantList items);
 	};
-}
 }
 }
 

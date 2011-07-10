@@ -23,32 +23,28 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Aggregator
+{
+	using LeechCraft::Util::TagsCompleter;
+	
+	AddFeed::AddFeed (const QString& url, QWidget *parent)
+	: QDialog (parent)
 	{
-		namespace Aggregator
-		{
-			using LeechCraft::Util::TagsCompleter;
-			
-			AddFeed::AddFeed (const QString& url, QWidget *parent)
-			: QDialog (parent)
-			{
-				setupUi (this);
-				new TagsCompleter (Tags_, this);
-				Tags_->AddSelector ();
-			
-				URL_->setText (url);
-			}
-			
-			QString AddFeed::GetURL () const
-			{
-				return URL_->text ().simplified ();
-			}
-			
-			QStringList AddFeed::GetTags () const
-			{
-				return Core::Instance ().GetProxy ()->GetTagsManager ()->Split (Tags_->text ());
-			}
-		};
-	};
-};
-
+		setupUi (this);
+		new TagsCompleter (Tags_, this);
+		Tags_->AddSelector ();
+	
+		URL_->setText (url);
+	}
+	
+	QString AddFeed::GetURL () const
+	{
+		return URL_->text ().simplified ();
+	}
+	
+	QStringList AddFeed::GetTags () const
+	{
+		return Core::Instance ().GetProxy ()->GetTagsManager ()->Split (Tags_->text ());
+	}
+}
+}

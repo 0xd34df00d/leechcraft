@@ -26,24 +26,20 @@ class QString;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Aggregator
+{
+	class AtomParser : public Parser
 	{
-		namespace Aggregator
-		{
-			class AtomParser : public Parser
-			{
-			protected:
-				AtomParser ();
-			public:
-				virtual ~AtomParser ();
-			protected:
-				virtual QString ParseEscapeAware (const QDomElement&) const;
-				QList<Enclosure> GetEnclosures (const QDomElement&,
-						const IDType_t&) const;
-			};
-		};
+	protected:
+		AtomParser ();
+	public:
+		virtual ~AtomParser ();
+	protected:
+		virtual QString ParseEscapeAware (const QDomElement&) const;
+		QList<Enclosure> GetEnclosures (const QDomElement&,
+				const IDType_t&) const;
 	};
-};
+}
+}
 
 #endif
-
