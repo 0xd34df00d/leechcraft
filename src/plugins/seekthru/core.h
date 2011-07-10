@@ -24,7 +24,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/ifinder.h>
 #include <interfaces/isyncable.h>
-#include <plugininterface/versionactionmapper.h>
+#include <util/versionactionmapper.h>
 #include "description.h"
 #include "searchhandler.h"
 #include "deltastorage.h"

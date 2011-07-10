@@ -22,7 +22,7 @@
 #include <QTranslator>
 #include <QSettings>
 #include <QCoreApplication>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include <interfaces/iclentry.h>
 #include <interfaces/imessage.h>
 

@@ -26,7 +26,7 @@
 #include <QSqlError>
 #include <QVariant>
 #include <QSqlRecord>
-#include "plugininterface/dblock.h"
+#include "util/dblock.h"
 #include "xmlsettingsmanager.h"
 #include "core.h"
 

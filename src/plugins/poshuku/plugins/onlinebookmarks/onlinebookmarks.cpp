@@ -24,7 +24,7 @@
 #include <QMenu>
 #include <QStandardItemModel>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "bookmarksdialog.h"
 #include "core.h"
 #include "syncbookmarks.h"

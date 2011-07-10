@@ -20,7 +20,7 @@
 #define COREPROXY_H
 #include <QObject>
 #include "interfaces/iinfo.h"
-#include "plugininterface/idpool.h"
+#include "util/idpool.h"
 
 namespace LeechCraft
 {

@@ -17,7 +17,7 @@
  **********************************************************************/
 
 #include "editbookmarkdialog.h"
-#include <plugininterface/tagscompleter.h>
+#include <util/tagscompleter.h>
 #include "favoritesmodel.h"
 #include "core.h"
 

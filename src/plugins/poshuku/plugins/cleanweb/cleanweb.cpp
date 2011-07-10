@@ -23,7 +23,7 @@
 #include <QTextCodec>
 #include <QtDebug>
 #include <interfaces/entitytesthandleresult.h>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"

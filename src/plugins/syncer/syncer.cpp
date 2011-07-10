@@ -18,7 +18,7 @@
 
 #include "syncer.h"
 #include <QIcon>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"

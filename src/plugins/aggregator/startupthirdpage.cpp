@@ -19,7 +19,7 @@
 #include "startupthirdpage.h"
 #include <QLineEdit>
 #include <QTextCodec>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "xmlsettingsmanager.h"
 #include "core.h"
 

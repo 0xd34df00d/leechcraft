@@ -27,7 +27,7 @@
 #include <QDateTime>
 #include <interfaces/iinfo.h>
 #include <interfaces/idownload.h>
-#include <plugininterface/idpool.h>
+#include <util/idpool.h>
 #include "item.h"
 #include "channel.h"
 #include "feed.h"

@@ -26,8 +26,8 @@
 #include <QSqlError>
 #include <QVariant>
 #include <QSqlRecord>
-#include <plugininterface/dblock.h>
-#include <plugininterface/defaulthookproxy.h>
+#include <util/dblock.h>
+#include <util/defaulthookproxy.h>
 #include "xmlsettingsmanager.h"
 #include "core.h"
 

@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include <plugininterface/tagscompleter.h>
-#include <plugininterface/tagscompletionmodel.h>
+#include <util/tagscompleter.h>
+#include <util/tagscompletionmodel.h>
 #include "core.h"
 #include "addfeed.h"
 

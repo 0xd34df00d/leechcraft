@@ -20,7 +20,7 @@
 #define PLUGINS_AZOTH_PLUGINMANAGER_H
 #include <QString>
 #include <QDateTime>
-#include <plugininterface/basehookinterconnector.h>
+#include <util/basehookinterconnector.h>
 #include <interfaces/iinfo.h>
 
 class QDateTime;

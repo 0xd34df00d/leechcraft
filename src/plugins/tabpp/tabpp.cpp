@@ -21,7 +21,7 @@
 #include <QAction>
 #include <QMainWindow>
 #include <QTranslator>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "core.h"
 #include "tabppwidget.h"
 #include "xmlsettingsmanager.h"

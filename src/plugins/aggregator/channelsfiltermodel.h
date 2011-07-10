@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_AGGREGATOR_CHANNELSFILTERMODEL_H
 #define PLUGINS_AGGREGATOR_CHANNELSFILTERMODEL_H
-#include <plugininterface/tagsfiltermodel.h>
+#include <util/tagsfiltermodel.h>
 
 namespace LeechCraft
 {

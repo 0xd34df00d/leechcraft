@@ -19,7 +19,7 @@
 #include "xoox.h"
 #include <QIcon>
 #include <QTranslator>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "core.h"
 
 namespace LeechCraft

@@ -20,9 +20,9 @@
 #include <QSortFilterProxyModel>
 #include <QStringListModel>
 #include <QIcon>
-#include <plugininterface/util.h>
-#include <plugininterface/tagscompleter.h>
-#include <plugininterface/categoryselector.h>
+#include <util/util.h>
+#include <util/tagscompleter.h>
+#include <util/categoryselector.h>
 #include "core.h"
 #include "packagesdelegate.h"
 #include "pendingmanager.h"

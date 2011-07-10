@@ -185,13 +185,13 @@
   <customwidget>
    <class>LeechCraft::Util::SelectableBrowser</class>
    <extends>QWidget</extends>
-   <header location="global">plugininterface/selectablebrowser.h</header>
+   <header location="global">util/selectablebrowser.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>LeechCraft::Util::TagsLineEdit</class>
    <extends>QLineEdit</extends>
-   <header location="global">plugininterface/tagslineedit.h</header>
+   <header location="global">util/tagslineedit.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

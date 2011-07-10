@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 #include "startupsecondpage.h"
-#include <plugininterface/backendselector.h>
+#include <util/backendselector.h>
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft

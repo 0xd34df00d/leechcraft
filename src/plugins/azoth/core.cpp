@@ -31,11 +31,11 @@
 #include <QMessageBox>
 #include <QClipboard>
 #include <QtDebug>
-#include <plugininterface/resourceloader.h>
-#include <plugininterface/util.h>
-#include <plugininterface/defaulthookproxy.h>
-#include <plugininterface/categoryselector.h>
-#include <plugininterface/notificationactionhandler.h>
+#include <util/resourceloader.h>
+#include <util/util.h>
+#include <util/defaulthookproxy.h>
+#include <util/categoryselector.h>
+#include <util/notificationactionhandler.h>
 #include <interfaces/iplugin2.h>
 #include "interfaces/iprotocolplugin.h"
 #include "interfaces/iprotocol.h"

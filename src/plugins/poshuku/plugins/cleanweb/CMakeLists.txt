@@ -64,8 +64,7 @@ ADD_LIBRARY (leechcraft_poshuku_cleanweb SHARED
 	)
 TARGET_LINK_LIBRARIES (leechcraft_poshuku_cleanweb
 	${QT_LIBRARIES}
-	plugininterface
-	xmlsettingsdialog
+	${LEECHCRAFT_LIBRARIES}
 	)
 INSTALL (TARGETS leechcraft_poshuku_cleanweb DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES ${CLEANWEB_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

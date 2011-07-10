@@ -29,7 +29,7 @@
 #include <QtDebug>
 #include <QRegExp>
 #include <interfaces/entitytesthandleresult.h>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "task.h"
 #include "xmlsettingsmanager.h"
 #include "morphfile.h"

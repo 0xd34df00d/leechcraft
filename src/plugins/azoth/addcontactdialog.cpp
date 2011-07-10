@@ -18,7 +18,7 @@
 
 #include "addcontactdialog.h"
 #include <QStringListModel>
-#include <plugininterface/tagscompleter.h>
+#include <util/tagscompleter.h>
 #include "interfaces/iprotocol.h"
 #include "interfaces/iaccount.h"
 #include "core.h"

@@ -27,8 +27,8 @@
 #include <QMenu>
 #include <QFileDialog>
 #include <QMessageBox>
-#include <plugininterface/defaulthookproxy.h>
-#include <plugininterface/util.h>
+#include <util/defaulthookproxy.h>
+#include <util/util.h>
 #include "interfaces/iclentry.h"
 #include "interfaces/imessage.h"
 #include "interfaces/irichtextmessage.h"

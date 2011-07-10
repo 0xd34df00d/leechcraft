@@ -23,7 +23,7 @@
 #include <QWebPage>
 #include <QDateTime>
 #include <QNetworkRequest>
-#include <plugininterface/basehookinterconnector.h>
+#include <util/basehookinterconnector.h>
 #include <interfaces/iinfo.h>
 #include "interfaces/poshukutypes.h"
 #include "interfaces/iwebplugin.h"

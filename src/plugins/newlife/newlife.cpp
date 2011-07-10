@@ -21,7 +21,7 @@
 #include <QMenu>
 #include <QAction>
 #include <QTranslator>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "importwizard.h"
 
 namespace LeechCraft

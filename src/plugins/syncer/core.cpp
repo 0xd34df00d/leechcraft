@@ -19,7 +19,7 @@
 #include "core.h"
 #include <QCoreApplication>
 #include <QTimer>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "datastorageserver.h"
 
 namespace LeechCraft

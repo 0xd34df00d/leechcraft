@@ -17,8 +17,8 @@
  **********************************************************************/
 
 #include "favoritesdelegate.h"
-#include <plugininterface/tagslineedit.h>
-#include <plugininterface/tagscompletionmodel.h>
+#include <util/tagslineedit.h>
+#include <util/tagscompletionmodel.h>
 #include "core.h"
 #include "filtermodel.h"
 #include "favoritesmodel.h"

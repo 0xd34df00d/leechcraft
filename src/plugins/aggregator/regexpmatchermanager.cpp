@@ -28,7 +28,7 @@
 #include <QSettings>
 #include <QUrl>
 #include <QCoreApplication>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "item.h"
 
 namespace LeechCraft

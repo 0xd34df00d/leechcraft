@@ -22,7 +22,7 @@
 #include <QBitmap>
 #include <QTimer>
 #include <QDialog>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "phonon.h"
 #include "videosettings.h"
 #include "xmlsettingsmanager.h"

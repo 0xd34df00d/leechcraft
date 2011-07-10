@@ -18,7 +18,7 @@
 
 #include "groupeditordialog.h"
 #include <QStringListModel>
-#include <plugininterface/tagscompleter.h>
+#include <util/tagscompleter.h>
 #include "core.h"
 
 namespace LeechCraft

@@ -36,8 +36,8 @@
 #include <QXmppPubSubIq.h>
 #include <QXmppDeliveryReceiptsManager.h>
 #include <QXmppCallManager.h>
-#include <plugininterface/util.h>
-#include <plugininterface/socketerrorstrings.h>
+#include <util/util.h>
+#include <util/socketerrorstrings.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <interfaces/iprotocol.h>
 #include <interfaces/iproxyobject.h>

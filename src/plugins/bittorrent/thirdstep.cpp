@@ -20,7 +20,7 @@
 #include <QFileInfo>
 #include <QDirIterator>
 #include <QtDebug>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "thirdstep.h"
 #include "secondstep.h"
 #include "newtorrentwizard.h"

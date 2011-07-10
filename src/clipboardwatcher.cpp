@@ -20,7 +20,7 @@
 #include <QApplication>
 #include <QTimer>
 #include <QClipboard>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft

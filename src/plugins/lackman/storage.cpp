@@ -20,8 +20,8 @@
 #include <stdexcept>
 #include <QDir>
 #include <QSqlError>
-#include <plugininterface/dblock.h>
-#include <plugininterface/util.h>
+#include <util/dblock.h>
+#include <util/util.h>
 #include "repoinfo.h"
 #include "core.h"
 

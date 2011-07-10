@@ -57,8 +57,8 @@
 #include <libtorrent/file.hpp>
 #include <libtorrent/magnet_uri.hpp>
 #include <interfaces/entitytesthandleresult.h>
-#include <plugininterface/tagscompletionmodel.h>
-#include <plugininterface/util.h>
+#include <util/tagscompletionmodel.h>
+#include <util/util.h>
 #include "xmlsettingsmanager.h"
 #include "piecesmodel.h"
 #include "peersmodel.h"

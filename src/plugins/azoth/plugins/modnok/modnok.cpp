@@ -23,7 +23,7 @@
 #include <QTranslator>
 #include <interfaces/imessage.h>
 #include <interfaces/irichtextmessage.h>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 

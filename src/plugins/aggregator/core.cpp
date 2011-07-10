@@ -29,10 +29,10 @@
 #include <QTextCodec>
 #include <QNetworkReply>
 #include <interfaces/iwebbrowser.h>
-#include <plugininterface/mergemodel.h>
-#include <plugininterface/util.h>
-#include <plugininterface/fileremoveguard.h>
-#include <plugininterface/defaulthookproxy.h>
+#include <util/mergemodel.h>
+#include <util/util.h>
+#include <util/fileremoveguard.h>
+#include <util/defaulthookproxy.h>
 #include "core.h"
 #include "regexpmatchermanager.h"
 #include "xmlsettingsmanager.h"

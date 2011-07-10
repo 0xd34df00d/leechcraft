@@ -23,7 +23,7 @@
 #include <QObject>
 #include <QUrl>
 #include <QTimer>
-#include <plugininterface/tagscompletionmodel.h>
+#include <util/tagscompletionmodel.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/structures.h>
 #include <interfaces/ihavetabs.h>

@@ -139,8 +139,7 @@ ADD_LIBRARY (leechcraft_azoth_xoox SHARED
 	)
 TARGET_LINK_LIBRARIES (leechcraft_azoth_xoox
 	${QT_LIBRARIES}
-	plugininterface
-	xmlsettingsdialog
+	${LEECHCRAFT_LIBRARIES}
 	${QXMPP_LIBRARIES}
 	${SPEEX_LIBRARIES}
 	)

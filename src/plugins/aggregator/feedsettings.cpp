@@ -17,7 +17,7 @@
  **********************************************************************/
 
 #include "feedsettings.h"
-#include <plugininterface/tagscompletionmodel.h>
+#include <util/tagscompletionmodel.h>
 #include "core.h"
 
 namespace LeechCraft

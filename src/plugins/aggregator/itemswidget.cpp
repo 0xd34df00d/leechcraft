@@ -25,9 +25,9 @@
 #include <QTimer>
 #include <QtDebug>
 #include <interfaces/iwebbrowser.h>
-#include <plugininterface/categoryselector.h>
-#include <plugininterface/util.h>
-#include <plugininterface/mergemodel.h>
+#include <util/categoryselector.h>
+#include <util/util.h>
+#include <util/mergemodel.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "itemsfiltermodel.h"

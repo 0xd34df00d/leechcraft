@@ -17,7 +17,7 @@
  **********************************************************************/
 
 #include <QFileDialog>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "secondstep.h"
 #include "xmlsettingsmanager.h"
 

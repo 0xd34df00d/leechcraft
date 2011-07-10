@@ -32,7 +32,7 @@
 #include <interfaces/ihaveshortcuts.h>
 #include <interfaces/istartupwizard.h>
 #include <interfaces/iactionsexporter.h>
-#include <plugininterface/tagscompleter.h>
+#include <util/tagscompleter.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "tabwidget.h"
 #include "torrentinfo.h"

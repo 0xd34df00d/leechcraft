@@ -25,7 +25,7 @@
 #include <QTextCodec>
 #include <QtDebug>
 #include <interfaces/iscriptloader.h>
-#include <plugininterface/util.h>
+#include <util/util.h>
 
 uint qHash (IScript_ptr script)
 {

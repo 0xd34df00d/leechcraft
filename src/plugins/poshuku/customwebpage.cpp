@@ -29,8 +29,8 @@
 #include <QSysInfo>
 #include <qwebelement.h>
 #include <qwebhistory.h>
-#include <plugininterface/util.h>
-#include <plugininterface/defaulthookproxy.h>
+#include <util/util.h>
+#include <util/defaulthookproxy.h>
 #include "xmlsettingsmanager.h"
 #include "customwebview.h"
 #include "core.h"

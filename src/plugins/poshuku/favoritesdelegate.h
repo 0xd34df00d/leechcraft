@@ -20,7 +20,7 @@
 #define PLUGINS_POSHUKU_FAVORITESDELEGATE_H
 #include <memory>
 #include <QItemDelegate>
-#include <plugininterface/tagscompleter.h>
+#include <util/tagscompleter.h>
 
 namespace LeechCraft
 {

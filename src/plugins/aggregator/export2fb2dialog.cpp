@@ -23,8 +23,8 @@
 #include <QUuid>
 #include <QDate>
 #include <interfaces/structures.h>
-#include <plugininterface/util.h>
-#include <plugininterface/categoryselector.h>
+#include <util/util.h>
+#include <util/categoryselector.h>
 #include "core.h"
 #include "channelsmodel.h"
 

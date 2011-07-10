@@ -29,7 +29,7 @@
 #include <interfaces/ihavetabs.h>
 #include <interfaces/idownload.h>
 #include <interfaces/structures.h>
-#include <plugininterface/guarded.h>
+#include <util/guarded.h>
 #include "worker.h"
 
 class QToolBar;

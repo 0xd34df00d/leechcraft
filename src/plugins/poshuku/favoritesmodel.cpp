@@ -21,7 +21,7 @@
 #include <QTimer>
 #include <QtDebug>
 #include <interfaces/iinfo.h>
-#include <plugininterface/defaulthookproxy.h>
+#include <util/defaulthookproxy.h>
 #include "filtermodel.h"
 #include "core.h"
 
