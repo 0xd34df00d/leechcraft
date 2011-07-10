@@ -32,7 +32,7 @@
 #include <libtorrent/session_status.hpp>
 #include <interfaces/iinfo.h>
 #include <interfaces/structures.h>
-#include <plugininterface/tagscompletionmodel.h>
+#include <util/tagscompletionmodel.h>
 #include "torrentinfo.h"
 #include "fileinfo.h"
 #include "peerinfo.h"

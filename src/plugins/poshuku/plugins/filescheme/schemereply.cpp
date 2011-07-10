@@ -27,7 +27,7 @@
 #include <QApplication>
 #include <QStyle>
 #include <QtDebug>
-#include <plugininterface/util.h>
+#include <util/util.h>
 
 namespace LeechCraft
 {

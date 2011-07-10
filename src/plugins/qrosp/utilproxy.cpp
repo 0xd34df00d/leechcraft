@@ -17,7 +17,7 @@
  **********************************************************************/
 
 #include "utilproxy.h"
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include <interfaces/structures.h>
 
 namespace LeechCraft

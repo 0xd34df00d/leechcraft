@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_SUMMARY_OPERATIONALMODEL_H
 #define PLUGINS_SUMMARY_OPERATIONALMODEL_H
-#include <plugininterface/mergemodel.h>
+#include <util/mergemodel.h>
 
 namespace LeechCraft
 {

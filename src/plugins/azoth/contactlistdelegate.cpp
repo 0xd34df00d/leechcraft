@@ -22,7 +22,7 @@
 #include <QApplication>
 #include <QAbstractProxyModel>
 #include <QTreeView>
-#include <plugininterface/resourceloader.h>
+#include <util/resourceloader.h>
 #include "interfaces/iclentry.h"
 #include "interfaces/isupportgeolocation.h"
 #include "core.h"

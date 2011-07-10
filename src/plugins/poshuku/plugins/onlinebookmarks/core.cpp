@@ -22,7 +22,7 @@
 #include <QNetworkAccessManager>
 #include <QStandardItemModel>
 #include <QSettings>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include <interfaces/iproxyobject.h>
 #include "syncbookmarks.h"
 #include "settings.h"

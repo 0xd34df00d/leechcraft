@@ -20,7 +20,7 @@
 #define PLUGINS_POSHUKU_ADDTOFAVORITESDIALOG_H
 #include <memory>
 #include <QDialog>
-#include <plugininterface/tagscompleter.h>
+#include <util/tagscompleter.h>
 #include "ui_addtofavoritesdialog.h"
 
 namespace LeechCraft

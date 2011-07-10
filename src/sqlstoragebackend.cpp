@@ -22,7 +22,7 @@
 #include <QSqlError>
 #include <QVariant>
 #include <QtDebug>
-#include <plugininterface/dblock.h>
+#include <util/dblock.h>
 
 using namespace LeechCraft;
 

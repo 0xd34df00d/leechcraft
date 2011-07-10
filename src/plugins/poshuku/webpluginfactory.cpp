@@ -17,7 +17,7 @@
  **********************************************************************/
 
 #include "webpluginfactory.h"
-#include <plugininterface/defaulthookproxy.h>
+#include <util/defaulthookproxy.h>
 #include "core.h"
 
 namespace LeechCraft

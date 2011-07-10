@@ -18,7 +18,7 @@
 
 #include "summary.h"
 #include <QIcon>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include <interfaces/entitytesthandleresult.h>
 #include "core.h"
 #include "summarywidget.h"

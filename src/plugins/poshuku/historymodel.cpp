@@ -22,8 +22,8 @@
 #include <QVariant>
 #include <QAction>
 #include <QtDebug>
-#include <plugininterface/treeitem.h>
-#include <plugininterface/defaulthookproxy.h>
+#include <util/treeitem.h>
+#include <util/defaulthookproxy.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "poshuku.h"

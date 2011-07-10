@@ -21,7 +21,7 @@
 #include <QIcon>
 #include <QAction>
 #include <QTranslator>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include <interfaces/imessage.h>
 #include <interfaces/iclentry.h>
 #include <interfaces/azothcommon.h>

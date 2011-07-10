@@ -18,7 +18,7 @@
 
 #include "mainviewdelegate.h"
 #include <QApplication>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "core.h"
 
 namespace LeechCraft

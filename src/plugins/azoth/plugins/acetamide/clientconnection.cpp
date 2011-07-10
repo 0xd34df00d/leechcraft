@@ -18,7 +18,7 @@
 
 #include "clientconnection.h"
 #include <QTextCodec>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include <interfaces/iprotocol.h>
 #include <interfaces/iproxyobject.h>
 #include "channelclentry.h"

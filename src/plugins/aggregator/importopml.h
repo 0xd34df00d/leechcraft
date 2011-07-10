@@ -23,32 +23,28 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Aggregator
+{
+	class ImportOPML : public QDialog
 	{
-		namespace Aggregator
-		{
-			class ImportOPML : public QDialog
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				Ui::ImportOPML Ui_;
-			public:
-				ImportOPML (const QString& = QString (), QWidget* = 0);
-				virtual ~ImportOPML ();
+		Ui::ImportOPML Ui_;
+	public:
+		ImportOPML (const QString& = QString (), QWidget* = 0);
+		virtual ~ImportOPML ();
 
-				QString GetFilename () const;
-				QString GetTags () const;
-				std::vector<bool> GetMask () const;
-			private slots:
-				void on_File__textEdited (const QString&);
-				void on_Browse__released ();
-			private:
-				bool HandleFile (const QString&);
-				void Reset ();
-			};
-		};
+		QString GetFilename () const;
+		QString GetTags () const;
+		std::vector<bool> GetMask () const;
+	private slots:
+		void on_File__textEdited (const QString&);
+		void on_Browse__released ();
+	private:
+		bool HandleFile (const QString&);
+		void Reset ();
 	};
-};
+}
+}
 
 #endif
-

@@ -19,7 +19,7 @@
 #include "findproxy.h"
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
-#include <plugininterface/mergemodel.h>
+#include <util/mergemodel.h>
 #include "core.h"
 
 namespace LeechCraft

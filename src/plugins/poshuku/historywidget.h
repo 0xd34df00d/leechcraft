@@ -19,7 +19,7 @@
 #ifndef PLUGINS_POSHUKU_HISTORYWIDGET_H
 #define PLUGINS_POSHUKU_HISTORYWIDGET_H
 #include <QWidget>
-#include <plugininterface/tagscompleter.h>
+#include <util/tagscompleter.h>
 #include "ui_historywidget.h"
 #include "historyfiltermodel.h"
 

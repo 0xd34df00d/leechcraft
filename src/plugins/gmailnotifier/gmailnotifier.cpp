@@ -20,7 +20,7 @@
 #include <QIcon>
 #include <QTimer>
 #include <QTranslator>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "gmailchecker.h"

@@ -24,7 +24,7 @@
 #include <QXmppPresence.h>
 #include <QXmppClient.h>
 #include <QXmppRosterManager.h>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include <interfaces/iproxyobject.h>
 #include <interfaces/azothutil.h>
 #include "glooxmessage.h"

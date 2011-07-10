@@ -21,7 +21,7 @@
 #include <QUrl>
 #include <QSettings>
 #include <QCoreApplication>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "settings.h"
 #include "xmlsettingsmanager.h"

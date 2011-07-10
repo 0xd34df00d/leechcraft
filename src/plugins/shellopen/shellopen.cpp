@@ -24,7 +24,7 @@
 #include <QMessageBox>
 #include <QMainWindow>
 #include <interfaces/entitytesthandleresult.h>
-#include <plugininterface/util.h>
+#include <util/util.h>
 
 namespace LeechCraft
 {

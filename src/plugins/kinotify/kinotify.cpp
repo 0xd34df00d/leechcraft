@@ -22,7 +22,7 @@
 #include <QIcon>
 #include <QTimer>
 #include <interfaces/entitytesthandleresult.h>
-#include <plugininterface/resourceloader.h>
+#include <util/resourceloader.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include "kinotifywidget.h"
 #include "xmlsettingsmanager.h"

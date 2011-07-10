@@ -17,7 +17,7 @@
  **********************************************************************/
 
 #include "searchtext.h"
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "core.h"
 
 namespace LeechCraft

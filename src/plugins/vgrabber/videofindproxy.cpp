@@ -19,7 +19,7 @@
 #include "videofindproxy.h"
 #include <QAction>
 #include <QTextCodec>
-#include <plugininterface/util.h>
+#include <util/util.h>
 
 namespace LeechCraft
 {

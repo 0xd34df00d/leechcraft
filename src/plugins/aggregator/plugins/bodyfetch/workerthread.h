@@ -19,7 +19,7 @@
 #ifndef PLUGINS_AGGREGATOR_PLUGINS_BODYFETCH_WORKERTHREAD_H
 #define PLUGINS_AGGREGATOR_PLUGINS_BODYFETCH_WORKERTHREAD_H
 #include <QThread>
-#include <plugininterface/guarded.h>
+#include <util/guarded.h>
 
 class IScriptLoaderInstance;
 

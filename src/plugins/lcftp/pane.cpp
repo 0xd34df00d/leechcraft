@@ -22,7 +22,7 @@
 #include <QCompleter>
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "xmlsettingsmanager.h"
 #include "core.h"
 

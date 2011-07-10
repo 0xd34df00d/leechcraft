@@ -20,12 +20,10 @@
 #define PLUGINS_AGGREGATOR_PLUGINMANAGER_H
 #include <QVariant>
 #include <interfaces/iinfo.h>
-#include <plugininterface/basehookinterconnector.h>
+#include <util/basehookinterconnector.h>
 #include "interfaces/aggregator/item.h"
 
 namespace LeechCraft
-{
-namespace Plugins
 {
 namespace Aggregator
 {
@@ -42,7 +40,6 @@ namespace Aggregator
 		void hookGotNewItems (LeechCraft::IHookProxy_ptr proxy,
 				QVariantList items);
 	};
-}
 }
 }
 

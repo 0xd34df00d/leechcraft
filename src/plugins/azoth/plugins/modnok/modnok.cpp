@@ -20,9 +20,10 @@
 #include <QIcon>
 #include <QTextDocument>
 #include <QProcess>
+#include <QTranslator>
 #include <interfaces/imessage.h>
 #include <interfaces/irichtextmessage.h>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 
@@ -34,6 +35,8 @@ namespace Modnok
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		Translator_.reset (Util::InstallTranslator ("azoth_modnok"));
+
 		SettingsDialog_.reset (new Util::XmlSettingsDialog);
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"azothmodnoksettings.xml");
@@ -89,7 +92,7 @@ namespace Modnok
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		return QIcon (":/plugins/azoth/plugins/modnok/resources/images/modnok.svg");
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
@@ -108,7 +111,11 @@ namespace Modnok
 	{
 		bool IsSecure (const QString& formula)
 		{
-			return true;
+			static QRegExp rx ("\\\\(def|let|futurelet|newcommand|renewcomment|else|fi|write|input|include"                
+					"|chardef|catcode|makeatletter|noexpand|toksdef|every|errhelp|errorstopmode|scrollmode|nonstopmode|batchmode"     
+					"|read|csname|newhelp|relax|afterground|afterassignment|expandafter|noexpand|special|command|loop|repeat|toks"    
+					"|output|line|mathcode|name|item|section|mbox|DeclareRobustCommand)[^a-zA-Z]");
+			return !formula.contains (rx);
 		}
 	}
 	
@@ -189,7 +196,7 @@ namespace Modnok
 			QString escFormula = key;
 			escFormula.replace ('\"', "&quot;");
 			escFormula.remove ("$$");
-			const QString img = QString ("<img src=\"%1\" alt=\"%2\" />")
+			const QString img = QString ("<img src=\"%1\" alt=\"%2\" style=\"vertical-align: middle;\" />")
 					.arg (replaceMap [key])
 					.arg (escFormula.trimmed ().simplified ());
 			body.replace (key, img);

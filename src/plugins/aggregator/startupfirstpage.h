@@ -23,25 +23,21 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Aggregator
+{
+	class StartupFirstPage : public QWizardPage
 	{
-		namespace Aggregator
-		{
-			class StartupFirstPage : public QWizardPage
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				Ui::StartupFirstPageWidget Ui_;
-			public:
-				StartupFirstPage (QWidget* = 0);
+		Ui::StartupFirstPageWidget Ui_;
+	public:
+		StartupFirstPage (QWidget* = 0);
 
-				void initializePage ();
-			private slots:
-				void handleAccepted ();
-			};
-		};
+		void initializePage ();
+	private slots:
+		void handleAccepted ();
 	};
-};
+}
+}
 
 #endif
-

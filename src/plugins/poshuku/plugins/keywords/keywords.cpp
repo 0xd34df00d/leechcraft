@@ -22,7 +22,7 @@
 #include <QDebug>
 #include <QLineEdit>
 #include <QUrl>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h> 
 #include "keywordsmanagerwidget.h"
 #include "xmlsettingsmanager.h"

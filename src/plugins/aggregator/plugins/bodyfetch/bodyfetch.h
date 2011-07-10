@@ -29,19 +29,10 @@ class QTranslator;
 
 namespace LeechCraft
 {
-
-// TODO remove this shit after migrating to Plugins-less ns for Aggregator.
-namespace Plugins
-{
 namespace Aggregator
-{
-	class Item;
-}
-}
-using Plugins::Aggregator::Item;
+{	
+class Item;
 
-namespace Aggregator
-{
 namespace BodyFetch
 {
 	class WorkerThread;

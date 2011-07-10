@@ -24,23 +24,20 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Aggregator
+{
+	QList<QWizardPage*> WizardGenerator::GetPages ()
 	{
-		namespace Aggregator
-		{
-			QList<QWizardPage*> WizardGenerator::GetPages ()
-			{
-				QList<QWizardPage*> result;
-				int version = XmlSettingsManager::Instance ()->
-					Property ("StartupVersion", 0).toInt ();
-				if (version <= 0)
-					result << new StartupFirstPage ();
-				if (version <= 1)
-					result << new StartupSecondPage ();
-				if (version <= 2)
-					result << new StartupThirdPage ();
-				return result;
-			}
-		};
-	};
-};
+		QList<QWizardPage*> result;
+		int version = XmlSettingsManager::Instance ()->
+			Property ("StartupVersion", 0).toInt ();
+		if (version <= 0)
+			result << new StartupFirstPage ();
+		if (version <= 1)
+			result << new StartupSecondPage ();
+		if (version <= 2)
+			result << new StartupThirdPage ();
+		return result;
+	}
+}
+}
