@@ -42,10 +42,10 @@ namespace Modnok
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
 		
+		boost::shared_ptr<QTranslator> Translator_;
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
 
 		QString ConvScriptPath_;
-
 		QCache<QString, QImage> FormulasCache_;
 		
 		QSet<QObject*> HandledObjects_;

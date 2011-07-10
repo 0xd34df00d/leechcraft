@@ -20,6 +20,7 @@
 #include <QIcon>
 #include <QTextDocument>
 #include <QProcess>
+#include <QTranslator>
 #include <interfaces/imessage.h>
 #include <interfaces/irichtextmessage.h>
 #include <plugininterface/util.h>
@@ -34,6 +35,8 @@ namespace Modnok
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		Translator_.reset (Util::InstallTranslator ("azoth_modnok"));
+
 		SettingsDialog_.reset (new Util::XmlSettingsDialog);
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"azothmodnoksettings.xml");
