@@ -392,24 +392,14 @@ namespace Poshuku
 
 		if (body.findAll ("*").count () == 1 && 
 				body.firstChild ().tagName () == "IMG")
-		{
-			QWebElement img  = body.firstChild ();
-			int width = img.geometry ().width ();
-			int height = img.geometry ().height ();
-			int bodyWidth = body.geometry ().width ();
-			int bodyHeigth = body.geometry ().height ();
-
-			img.setStyleProperty ("top", QString ("%1px").arg ((bodyWidth - width) / 2));
-			img.setStyleProperty ("left", QString ("%1px").arg ((bodyHeigth - height) / 2));
-			img.setStyleProperty ("position", QString ("fixed"));
-
-			mainFrame ()->evaluateJavaScript ("window.addEventListener('resize', function() {"
+			mainFrame ()->evaluateJavaScript ("function centerImg() {"
 					"var img = document.querySelector('img');"
 					"img.style.left = Math.floor((document.width - img.width) / 2) + 'px';"
 					"img.style.top =  Math.floor((document.height - img.height) / 2) + 'px';"
 					"img.style.position = 'fixed';"
-					"}, false);");
-		}
+					"}"
+					"window.addEventListener('resize', centerImg, false);"
+					"centerImg();");
 
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
 		emit hookLoadFinished (proxy, this, ok);
