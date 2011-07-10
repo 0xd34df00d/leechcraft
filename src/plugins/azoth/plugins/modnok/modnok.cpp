@@ -184,12 +184,14 @@ namespace Modnok
 		if (replaceMap.isEmpty ())
 			return body;
 		
-		Q_FOREACH (QString key, replaceMap.keys ())
+		Q_FOREACH (const QString& key, replaceMap.keys ())
 		{
-			const QString escFormula = key.replace ('\"', "&quot;");
+			QString escFormula = key;
+			escFormula.replace ('\"', "&quot;");
+			escFormula.remove ("$$");
 			const QString img = QString ("<img src=\"%1\" alt=\"%2\" />")
 					.arg (replaceMap [key])
-					.arg (escFormula);
+					.arg (escFormula.trimmed ().simplified ());
 			body.replace (key, img);
 		}
 		
