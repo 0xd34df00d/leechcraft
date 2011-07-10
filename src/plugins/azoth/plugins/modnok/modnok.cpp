@@ -21,6 +21,7 @@
 #include <QTextDocument>
 #include <QProcess>
 #include <interfaces/imessage.h>
+#include <interfaces/irichtextmessage.h>
 #include <plugininterface/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
@@ -207,10 +208,16 @@ namespace Modnok
 
 		if (!body.contains ("$$"))
 			return;
+		
+		if (HandledObjects_.contains (message))
+			return;
 
 		const QString newBody = HandleBody (body);
 		if (body != newBody)
+		{
 			proxy->SetValue ("body", newBody);
+			HandledObjects_ << message;
+		}
 	}
 	
 	void Plugin::hookGonnaHandleSmiles (IHookProxy_ptr proxy,
@@ -227,6 +234,53 @@ namespace Modnok
 			return;
 		
 		proxy->CancelDefault ();
+	}
+	
+	void Plugin::hookMessageCreated (IHookProxy_ptr proxy,
+			QObject*, QObject *msgObj)
+	{
+		if (ConvScriptPath_.isEmpty ())
+			return;
+		
+		if (!XmlSettingsManager::Instance ()
+				.property ("SubstituteOutgoing").toBool ())
+			return;
+		
+		if (HandledObjects_.contains (msgObj))
+			return;
+		
+		IMessage *msg = qobject_cast<IMessage*> (msgObj);
+		if (!msg)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "message"
+					<< msgObj
+					<< "doesn't implement IMessage";
+			return;
+		}
+		
+		IRichTextMessage *richMsg = qobject_cast<IRichTextMessage*> (msgObj);
+		if (!richMsg)
+			return;
+		
+		QString body = richMsg->GetRichBody ();
+		if (body.isEmpty ())
+			body = msg->GetBody ();
+		
+		if (!body.contains ("$$"))
+			return;
+		
+		const QString newBody = HandleBody (body);
+		if (newBody == body)
+			return;
+
+		if (XmlSettingsManager::Instance ()
+				.property ("WarnInOutgoing").toBool ())
+			msg->SetBody (msg->GetBody () + " (this message contains "
+						"inline formulas, enable XHTML-IM to view them)");
+
+		richMsg->SetRichBody (newBody);
+		HandledObjects_ << msgObj;
 	}
 	
 	void Plugin::clearCaches ()

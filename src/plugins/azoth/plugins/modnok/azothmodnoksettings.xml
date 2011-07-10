@@ -7,8 +7,11 @@
 			<item type="checkbox" property="OnDisplayRendering" default="true">
 				<label value="Render formulas on display" />
 			</item>
-			<item type="checkbox" property="SubstituteOutgoing" default="true">
+			<item type="groupbox" checkable="true" property="SubstituteOutgoing" default="true">
 				<label value="Substitute formulas with images in outgoing messages whenever possible" />
+				<item type="checkbox" property="WarnInOutgoing" default="true">
+					<label value="Append a warning about the formula into plain part of outgoing message" />
+				</item>
 			</item>
 		</groupbox>
 		<groupbox>

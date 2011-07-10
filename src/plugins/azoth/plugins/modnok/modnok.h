@@ -47,6 +47,8 @@ namespace Modnok
 		QString ConvScriptPath_;
 
 		QCache<QString, QImage> FormulasCache_;
+		
+		QSet<QObject*> HandledObjects_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -70,6 +72,9 @@ namespace Modnok
 		void hookGonnaHandleSmiles (LeechCraft::IHookProxy_ptr proxy,
 				QString body,
 				QString pack);
+		void hookMessageCreated (LeechCraft::IHookProxy_ptr proxy,
+				QObject *chatTab,
+				QObject *message);
 	private slots:
 		void clearCaches ();
 		void handleCacheSize ();
