@@ -213,6 +213,22 @@ namespace Modnok
 			proxy->SetValue ("body", newBody);
 	}
 	
+	void Plugin::hookGonnaHandleSmiles (IHookProxy_ptr proxy,
+			QString body, QString)
+	{
+		if (ConvScriptPath_.isEmpty ())
+			return;
+		
+		if (!XmlSettingsManager::Instance ()
+				.property ("OnDisplayRendering").toBool ())
+			return;
+
+		if (!body.contains ("$$"))
+			return;
+		
+		proxy->CancelDefault ();
+	}
+	
 	void Plugin::clearCaches ()
 	{
 		FormulasCache_.clear ();

@@ -67,6 +67,9 @@ namespace Modnok
 				QObject *chatTab,
 				QString body,
 				QObject *message);
+		void hookGonnaHandleSmiles (LeechCraft::IHookProxy_ptr proxy,
+				QString body,
+				QString pack);
 	private slots:
 		void clearCaches ();
 		void handleCacheSize ();
