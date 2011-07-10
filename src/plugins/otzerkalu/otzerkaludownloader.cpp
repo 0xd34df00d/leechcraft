@@ -88,6 +88,34 @@ namespace Otzerkalu
 				Qt::UniqueConnection);
 	}
 	
+	QStack <QUrl> OtzerkaluDownloader::CSSParser (const QString& data) const
+	{
+		QRegExp UrlCSS ("(?s).*?:\\s*url\\s*\\((.*?)\\).*");
+		QStack <QUrl> urlStack;
+		int pos = 0;
+		while ((pos = UrlCSS.indexIn (data, pos)) != -1)
+		{
+			const QUrl& url = UrlCSS.cap (1);
+			if (!url.isValid ())
+				continue;
+
+			urlStack.push (url);
+		}
+		return urlStack;
+	}
+	
+	QString OtzerkaluDownloader::CSSUrlReplace (const QString& value)
+	{
+		const QStack <QUrl>& urlStack = CSSParser (value);
+		QString data = value;
+		Q_FOREACH (const QUrl& urlCSS, urlStack)
+		{
+			const QString& filename = Download (urlCSS);
+			data.replace (urlCSS.toString (), filename);
+		}
+		return data;
+	}
+	
 	void OtzerkaluDownloader::handleJobFinished (int id)
 	{
 		--UrlCount_;
@@ -106,23 +134,9 @@ namespace Otzerkalu
 			return;
 		}
 
-		QRegExp UrlCSS ("(?s).*?:\\s*url\\s*\\((.*?)\\).*");
-		int pos;
-
 		if (filename.section ('.', -1) == "css")
 		{
-			QString data = file.readAll ();
-			pos = 0;
-			while ((pos = UrlCSS.indexIn (data, pos)) != -1)
-			{
-				QUrl url = UrlCSS.cap (1);
-				if (!url.isValid ())
-					continue;
-
-				const QString& filename = Download (url);
-				data.replace (url.toString (), filename);
-			}
-			WriteData (filename, data);
+			WriteData (filename, CSSUrlReplace (file.readAll ()));
 			return;
 		}
 
@@ -159,21 +173,7 @@ namespace Otzerkalu
 
 		for (QWebElementCollection::iterator styleItr = styleColl.begin ();
 				styleItr != styleColl.end (); ++styleItr)
-		{
-			QString data = (*styleItr).toInnerXml ();
-			pos = 0;
-			while ((pos = UrlCSS.indexIn (data, pos)) != -1)
-			{
-				QUrl url = UrlCSS.cap (1);
-				if (!url.isValid ())
-					continue;
-
-				const QString& filename = Download (url);
-				data.replace (url.toString (), filename);
-			}
-
-			(*styleItr).setInnerXml (data);
-		}
+			(*styleItr).setInnerXml (CSSUrlReplace ((*styleItr).toInnerXml ()));
 
 		if (!UrlCount_)
 			emit gotEntity (Util::MakeNotification (tr ("Download complete"),
