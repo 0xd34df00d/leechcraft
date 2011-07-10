@@ -117,7 +117,13 @@ namespace LeechCraft
 				return;
 			}
 
-			G_ [u].IsFulfilled_ = true;
+			G_ [u].IsFulfilled_ = G_ [u].UnfulfilledFeatureDeps_.isEmpty () &&
+					G_ [u].UnfulfilledP2PDeps_.isEmpty ();
+			if (!G_ [u].IsFulfilled_)
+				qWarning () << qobject_cast<IInfo*> (G_ [u].Object_)->GetName ()
+						<< "failed to initialize because of:"
+						<< G_ [u].UnfulfilledFeatureDeps_
+						<< G_ [u].UnfulfilledP2PDeps_;
 
 			Q_FOREACH (const Vertex& v, Reachable_ [u])
 				if (!G_ [v].IsFulfilled_)
@@ -229,14 +235,14 @@ namespace LeechCraft
 			boost::graph_traits<Graph_t>::vertex_iterator vj, vj_end;
 			for (boost::tie (vj, vj_end) = boost::vertices (Graph_); vj != vj_end; ++vj)
 			{
-				const QSet<QString>& fInter = Graph_ [*vj].FeatureProvides_.intersect (fdeps);
+				const QSet<QString> fInter = QSet<QString> (fdeps).intersect (Graph_ [*vj].FeatureProvides_);
 				if (fInter.size ())
 				{
 					Graph_ [*vi].UnfulfilledFeatureDeps_.subtract (fInter);
 					depVertices << qMakePair (*vi, *vj);
 				}
 
-				const QSet<QByteArray>& pInter = Graph_ [*vj].P2PProvides_.intersect (pdeps);
+				const QSet<QByteArray> pInter = QSet<QByteArray> (pdeps).intersect (Graph_ [*vj].P2PProvides_);
 				if (pInter.size ())
 				{
 					Graph_ [*vi].UnfulfilledP2PDeps_.subtract (pInter);
