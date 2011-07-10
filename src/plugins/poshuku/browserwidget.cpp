@@ -1014,6 +1014,7 @@ namespace Poshuku
 		Entity e = Util::MakeEntity (Ui_.WebView_->url (),
 				QString (),
 				FromUserInitiated);
+		e.Additional_ ["AllowedSemantics"] = QStringList ("fetch") << "save";
 		emit gotEntity (e);
 	}
 

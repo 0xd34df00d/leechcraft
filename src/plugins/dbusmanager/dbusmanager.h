@@ -55,7 +55,7 @@ namespace LeechCraft
 
 				boost::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
 
-				bool CouldHandle (const Entity&) const;
+				EntityTestHandleResult CouldHandle (const Entity&) const;
 				void Handle (Entity);
 			};
 		};

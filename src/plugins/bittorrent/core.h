@@ -49,6 +49,8 @@ namespace libtorrent
 	class session;
 };
 
+struct EntityTestHandleResult;
+
 namespace LeechCraft
 {
 	namespace Plugins
@@ -164,8 +166,8 @@ namespace LeechCraft
 				void SetProxy (ICoreProxy_ptr);
 				ICoreProxy_ptr GetProxy () const;
 
-				bool CouldDownload (const LeechCraft::Entity&) const;
-				bool CouldHandle (const LeechCraft::Entity&) const;
+				EntityTestHandleResult CouldDownload (const LeechCraft::Entity&) const;
+				EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
 				void Handle (LeechCraft::Entity);
 				PiecesModel* GetPiecesModel ();
 				void ClearPieces ();

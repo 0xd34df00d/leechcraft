@@ -122,6 +122,10 @@ namespace Azoth
 		void hookGonnaAppendMsg (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message);
 		
+		void hookGonnaHandleSmiles (LeechCraft::IHookProxy_ptr proxy,
+				QString body,
+				QString pack);
+		
 		/** @brief Hook for handling incoming messages.
 		 * 
 		 * This hook is called for handling incoming messages. The

@@ -169,6 +169,11 @@ namespace Xoox
 		return IsDelivered_;
 	}
 	
+	QString GlooxMessage::GetRichBody () const
+	{
+		return Message_.getXhtml ();
+	}
+	
 	void GlooxMessage::SetRichBody (const QString& html)
 	{
 		Message_.setXhtml (html);

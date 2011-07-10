@@ -18,6 +18,7 @@
 
 #include "otzerkalu.h"
 #include <QIcon>
+#include <interfaces/entitytesthandleresult.h>
 #include "otzerkaludialog.h"
 
 namespace LeechCraft
@@ -56,9 +57,14 @@ namespace Otzerkalu
 		return QIcon ();
 	}
 
-	bool Plugin::CouldHandle (const Entity& entity) const
+	EntityTestHandleResult Plugin::CouldHandle (const Entity& entity) const
 	{
-		return !entity.Entity_.toUrl ().isEmpty () && (entity.Parameters_ & FromUserInitiated);
+		const bool can = !entity.Entity_.toUrl ().isEmpty () &&
+				(entity.Parameters_ & FromUserInitiated) &&
+				entity.Additional_.value ("AllowedSemantics").toStringList ().contains ("save");
+		return can ?
+				EntityTestHandleResult (EntityTestHandleResult::PHigh) :
+				EntityTestHandleResult ();
 	}
 
 	void Plugin::Handle (Entity entity)
@@ -70,22 +76,24 @@ namespace Otzerkalu
 		OtzerkaluDialog dialog;
 		if (dialog.exec () != QDialog::Accepted)
 			return;
+
 		OtzerkaluDownloader *dl = new OtzerkaluDownloader (DownloadParams (dUrl, dialog.GetDir (),
 					dialog.GetRecursionLevel (),
 					dialog.FetchFromExternalHosts ()),
 					this);
 		
 		connect (dl,
-				SIGNAL (downloadCompleted ()),
+				SIGNAL (gotEntity (const LeechCraft::Entity&)),
 				this,
-				SLOT (downloadCompleted ()));
-	}
-	
-	void Plugin::downloadCompleted ()
-	{
+				SIGNAL (gotEntity (const LeechCraft::Entity&)));
+		connect (dl,
+				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)),
+				this,
+				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)));
+		
+		dl->Begin ();
 	}
 }
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_otzerkalu, LeechCraft::Otzerkalu::Plugin);
-

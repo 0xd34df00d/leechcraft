@@ -36,6 +36,8 @@ namespace Azoth
 	class IMUCEntry;
 	class IMessage;
 	class ITransferManager;
+	
+	class MsgFormatterWidget;
 
 	class ChatTab : public QWidget
 				  , public ITabWidget
@@ -47,6 +49,7 @@ namespace Azoth
 
 		Ui::ChatTab Ui_;
 		QToolBar *TabToolbar_;
+		QAction *ToggleRichText_;
 		QAction *SendFile_;
 		QAction *Call_;
 
@@ -66,6 +69,8 @@ namespace Azoth
 		QIcon TabIcon_;
 		bool IsMUC_;
 		int PreviousTextHeight_;
+		
+		MsgFormatterWidget *MsgFormatter_;
 
 		ITransferManager *XferManager_;
 		
@@ -109,6 +114,7 @@ namespace Azoth
 		void on_SubjectButton__toggled (bool);
 		void on_SubjChange__released ();
 		void handleClearChat ();
+		void handleRichTextToggled ();
 		void handleSendFile ();
 		void handleCallRequested ();
 		void handleCall (QObject*);
@@ -130,8 +136,12 @@ namespace Azoth
 	private:
 		template<typename T>
 		T* GetEntry () const;
+		void BuildBasicActions ();
+		void InitEntry ();
 		void CheckMUC ();
 		void HandleMUC ();
+		void InitExtraActions ();
+		void InitMsgEdit ();
 		QStringList GetMUCParticipants () const;
 
 		void ReformatTitle ();

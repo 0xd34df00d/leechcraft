@@ -41,7 +41,7 @@ namespace Xoox
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IMessage
-				LeechCraft::Azoth::IMessage);
+				LeechCraft::Azoth::IRichTextMessage);
 
 		QPointer<RoomCLEntry> ParentEntry_;
 		RoomParticipantEntry_ptr ParticipantEntry_;
@@ -80,7 +80,8 @@ namespace Xoox
 		void SetBody (const QString&);
 		QDateTime GetDateTime () const;
 		void SetDateTime (const QDateTime&);
-		
+
+		QString GetRichBody () const;
 		void SetRichBody (const QString&);
 	};
 }

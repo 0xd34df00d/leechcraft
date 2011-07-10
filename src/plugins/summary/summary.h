@@ -60,7 +60,7 @@ namespace LeechCraft
 				TabClasses_t GetTabClasses () const;
 				void TabOpenRequested (const QByteArray&);
 
-				bool CouldHandle (const LeechCraft::Entity&) const;
+				EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
 				void Handle (LeechCraft::Entity);
 
 				QModelIndex MapToSource (const QModelIndex&) const;

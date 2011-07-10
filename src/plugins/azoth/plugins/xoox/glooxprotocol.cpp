@@ -92,6 +92,11 @@ namespace Xoox
 	{
 		return "XMPP";
 	}
+	
+	QIcon GlooxProtocol::GetProtocolIcon () const
+	{
+		return QIcon (":/plugins/azoth/plugins/xoox/resources/images/jabbericon.svg");
+	}
 
 	QByteArray GlooxProtocol::GetProtocolID () const
 	{

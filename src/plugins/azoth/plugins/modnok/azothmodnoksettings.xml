@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="Azoth Modnok" />
+		<groupbox>
+			<label value="Message handling" />
+			<item type="checkbox" property="OnDisplayRendering" default="true">
+				<label value="Render formulas on display" />
+			</item>
+			<item type="groupbox" checkable="true" property="SubstituteOutgoing" default="true">
+				<label value="Substitute formulas with images in outgoing messages whenever possible" />
+				<item type="checkbox" property="WarnInOutgoing" default="true">
+					<label value="Append a warning about the formula into plain part of outgoing message" />
+				</item>
+			</item>
+		</groupbox>
+		<groupbox>
+			<label value="Rendering" />
+			<item type="spinbox" property="HorizontalDPI" default="150" minimum="10" maximum="900">
+				<label value="Horizontal DPI:" />
+			</item>
+			<item type="spinbox" property="VerticalDPI" default="150" minimum="10" maximum="900">
+				<label value="Vertical DPI:" />
+			</item>
+		</groupbox>
+		<groupbox>
+			<item type="spinbox" property="RenderCacheSize" default="10" minimum="1" maximum="100">
+				<label value="Render-cache size:" />
+				<suffix value=" MiB" />
+			</item>
+		</groupbox>
+	</page>
+</settings>

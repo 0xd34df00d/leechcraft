@@ -23,38 +23,38 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/ipluginadaptor.h>
 #include <interfaces/ientityhandler.h>
+#include <interfaces/iscriptloader.h>
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Qrosp
+{
+	class Plugin : public QObject
+				 , public IInfo
+				 , public IPluginAdaptor
+				 , public IEntityHandler
+				 , public IScriptLoader
 	{
-		namespace Qrosp
-		{
-			class Plugin : public QObject
-						 , public IInfo
-						 , public IPluginAdaptor
-						 , public IEntityHandler
-			{
-				Q_OBJECT
-				Q_INTERFACES (IInfo IPluginAdaptor IEntityHandler)
-			public:
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
-				void Release ();
-				QByteArray GetUniqueID () const;
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-				QStringList Provides () const;
+		Q_OBJECT
+		Q_INTERFACES (IInfo IPluginAdaptor IEntityHandler IScriptLoader)
+	public:
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		void Release ();
+		QByteArray GetUniqueID () const;
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
+		QStringList Provides () const;
 
-				QList<QObject*> GetPlugins ();
+		QList<QObject*> GetPlugins ();
 
-				bool CouldHandle (const Entity&) const;
-				void Handle (Entity);
-			};
-		};
+		EntityTestHandleResult CouldHandle (const Entity&) const;
+		void Handle (Entity);
+		
+		IScriptLoaderInstance* CreateScriptLoaderInstance (const QString&);
 	};
-};
+}
+}
 
 #endif
-
