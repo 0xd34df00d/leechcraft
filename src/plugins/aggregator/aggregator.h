@@ -30,6 +30,7 @@
 #include <interfaces/structures.h>
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/istartupwizard.h>
+#include <interfaces/ipluginready.h>
 
 class QSystemTrayIcon;
 class QTranslator;
@@ -56,9 +57,19 @@ namespace LeechCraft
 							 , public IHaveShortcuts
 							 , public IActionsExporter
 							 , public IStartupWizard
+							 , public IPluginReady
 			{
 				Q_OBJECT
-				Q_INTERFACES (IInfo IHaveTabs ITabWidget IHaveSettings IJobHolder IEntityHandler IHaveShortcuts IStartupWizard IActionsExporter)
+				Q_INTERFACES (IInfo
+						IHaveTabs
+						ITabWidget
+						IHaveSettings
+						IJobHolder
+						IEntityHandler
+						IHaveShortcuts
+						IStartupWizard
+						IActionsExporter
+						IPluginReady)
 
 				Aggregator_Impl *Impl_;
 			public:
@@ -95,10 +106,12 @@ namespace LeechCraft
 				QList<QWizardPage*> GetWizardPages () const;
 
 				QList<QAction*> GetActions (ActionsEmbedPlace) const;
+				
+				QSet<QByteArray> GetExpectedPluginClasses () const;
+				void AddPlugin (QObject*);
 			protected:
 				virtual void keyPressEvent (QKeyEvent*);
 			private:
-				void ScheduleShowError ();
 				bool IsRepr () const;
 				QModelIndex GetRelevantIndex () const;
 				QList<QModelIndex> GetRelevantIndexes () const;
@@ -137,9 +150,8 @@ namespace LeechCraft
 				void statusBarChanged (QWidget*, const QString&);
 				void raiseTab (QWidget*);
 			};
-		};
-	};
-};
+		}
+	}
+}
 
 #endif
-

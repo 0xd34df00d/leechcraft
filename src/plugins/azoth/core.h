@@ -290,7 +290,7 @@ namespace Azoth
 		QString FormatDate (QDateTime, IMessage*);
 		QString FormatNickname (QString, IMessage*, const QString& color);
 		QString FormatBody (QString body, IMessage *msg);
-		QString HandleSmiles (QString body) const;
+		QString HandleSmiles (QString body);
 	private:
 		/** Adds the protocol object. The object must implement
 		 * IProtocolPlugin interface.
@@ -574,6 +574,9 @@ namespace Azoth
 				QObject *chatTab,
 				QString body,
 				QObject *message);
+		void hookGonnaHandleSmiles (LeechCraft::IHookProxy_ptr proxy,
+				QString body,
+				QString pack);
 		void hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message);
 		void hookIsHighlightMessage (LeechCraft::IHookProxy_ptr proxy,

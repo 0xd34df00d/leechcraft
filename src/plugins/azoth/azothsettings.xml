@@ -83,6 +83,9 @@
 			<item type="lineedit" property="PostNickText" default=":">
 				<label value="Post-nick text:" />
 			</item>
+			<item type="checkbox" property="ShowRichTextMessageBody" default="true">
+				<label value="Show rich text message body (if available)" />
+			</item>
 		</tab>
 	</page>
 	<page>

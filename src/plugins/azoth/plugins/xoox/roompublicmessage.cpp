@@ -137,7 +137,7 @@ namespace Xoox
 
 	QString RoomPublicMessage::GetBody () const
 	{
-		return XHTML_.isEmpty () ? Qt::escape (Message_) : XHTML_;
+		return Qt::escape (Message_);
 	}
 
 	void RoomPublicMessage::SetBody (const QString& msg)

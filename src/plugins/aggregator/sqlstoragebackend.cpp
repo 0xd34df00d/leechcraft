@@ -26,7 +26,8 @@
 #include <QSqlError>
 #include <QVariant>
 #include <QSqlRecord>
-#include "plugininterface/dblock.h"
+#include <plugininterface/dblock.h>
+#include <plugininterface/defaulthookproxy.h>
 #include "xmlsettingsmanager.h"
 #include "core.h"
 
@@ -1126,6 +1127,8 @@ namespace LeechCraft
 
 				GetEnclosures (itemId, item->Enclosures_);
 				GetMRSSEntries (itemId, item->MRSSEntries_);
+				
+				emit hookItemLoad (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy), item.get ());
 
 				return item;
 			}

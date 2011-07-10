@@ -32,6 +32,8 @@ SET (SRCS
 	wrapperobject.cpp
 	typesfactory.cpp
 	utilproxy.cpp
+	scriptloaderinstance.cpp
+	loadedscript.cpp
 	wrappers/coreproxywrapper.cpp
 	wrappers/hookproxywrapper.cpp
 	wrappers/entitywrapper.cpp
@@ -46,6 +48,8 @@ SET (HEADERS
 	wrapperobject.h
 	typesfactory.h
 	utilproxy.h
+	scriptloaderinstance.h
+	loadedscript.h
 	wrappers/coreproxywrapper.h
 	wrappers/hookproxywrapper.h
 	wrappers/entitywrapper.h

@@ -35,6 +35,10 @@ namespace Azoth
 		/** @brief Whether this message is appended in active session.
 		 */
 		bool IsActiveChat_;
+		
+		/** @brief Whether rich text body should be used (if available).
+		 */
+		bool UseRichTextBody_;
 	};
 
 	/** @brief Interface for chat style resource loaders and handlers.

@@ -725,10 +725,19 @@ namespace Azoth
 				body;
 	}
 	
-	QString Core::HandleSmiles (QString body) const
+	QString Core::HandleSmiles (QString body)
 	{
 		const QString& pack = XmlSettingsManager::Instance ()
-				.property ("SmileIcons").toString ();				
+				.property ("SmileIcons").toString ();
+
+		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		emit hookGonnaHandleSmiles (proxy, body, pack);
+		if (proxy->IsCancelled ())
+		{
+			const QString& cand = proxy->GetReturnValue ().toString ();
+			return cand.isEmpty () ? body : cand;
+		}
+
 		if (pack.isEmpty ())
 			return body;
 

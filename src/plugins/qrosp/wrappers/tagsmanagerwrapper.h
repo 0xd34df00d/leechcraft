@@ -26,30 +26,27 @@ class QAbstractItemModel;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Qrosp
+{
+	class TagsManagerWrapper : public QObject
 	{
-		namespace Qrosp
-		{
-			class TagsManagerWrapper : public QObject
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				ITagsManager *Manager_;
-			public:
-				TagsManagerWrapper (ITagsManager*);
-			public slots:
-				QString GetID (const QString& tag);
-				QString GetTag (const QString& id) const;
-				QStringList GetAllTags () const;
-				QStringList Split (const QString& string) const;
-				QString Join (const QStringList& tags) const;
-				QAbstractItemModel* GetModel ();
-				QObject* GetObject ();
-			signals:
-				void tagsUpdated (const QStringList& tags);
-			};
-		};
+		ITagsManager *Manager_;
+	public:
+		TagsManagerWrapper (ITagsManager*);
+	public slots:
+		QString GetID (const QString& tag);
+		QString GetTag (const QString& id) const;
+		QStringList GetAllTags () const;
+		QStringList Split (const QString& string) const;
+		QString Join (const QStringList& tags) const;
+		QAbstractItemModel* GetModel ();
+		QObject* GetObject ();
+	signals:
+		void tagsUpdated (const QStringList& tags);
 	};
-};
+}
+}
 
 #endif
