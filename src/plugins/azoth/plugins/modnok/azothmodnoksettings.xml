@@ -24,6 +24,7 @@
 			</item>
 		</groupbox>
 		<groupbox>
+			<label value="Performance" />
 			<item type="spinbox" property="RenderCacheSize" default="10" minimum="1" maximum="100">
 				<label value="Render-cache size:" />
 				<suffix value=" MiB" />
