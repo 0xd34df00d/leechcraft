@@ -111,7 +111,11 @@ namespace Modnok
 	{
 		bool IsSecure (const QString& formula)
 		{
-			return true;
+			static QRegExp rx ("\\\\(def|let|futurelet|newcommand|renewcomment|else|fi|write|input|include"                
+					"|chardef|catcode|makeatletter|noexpand|toksdef|every|errhelp|errorstopmode|scrollmode|nonstopmode|batchmode"     
+					"|read|csname|newhelp|relax|afterground|afterassignment|expandafter|noexpand|special|command|loop|repeat|toks"    
+					"|output|line|mathcode|name|item|section|mbox|DeclareRobustCommand)[^a-zA-Z]");
+			return !formula.contains (rx);
 		}
 	}
 	
