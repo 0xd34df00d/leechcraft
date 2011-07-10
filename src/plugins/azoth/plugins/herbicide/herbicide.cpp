@@ -72,7 +72,7 @@ namespace Herbicide
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		return QIcon (":/plugins/azoth/plugins/herbicide/resources/images/herbicide.svg");
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
