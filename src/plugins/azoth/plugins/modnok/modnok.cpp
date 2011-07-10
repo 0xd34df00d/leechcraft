@@ -196,7 +196,7 @@ namespace Modnok
 			QString escFormula = key;
 			escFormula.replace ('\"', "&quot;");
 			escFormula.remove ("$$");
-			const QString img = QString ("<img src=\"%1\" alt=\"%2\" />")
+			const QString img = QString ("<img src=\"%1\" alt=\"%2\" style=\"vertical-align: middle;\" />")
 					.arg (replaceMap [key])
 					.arg (escFormula.trimmed ().simplified ());
 			body.replace (key, img);
