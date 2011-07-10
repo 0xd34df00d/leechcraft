@@ -75,7 +75,7 @@ namespace Autoidler
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		return QIcon (":/plugins/azoth/plugins/autoidler/resources/images/autoidler.svg");
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
