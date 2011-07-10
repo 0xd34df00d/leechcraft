@@ -89,7 +89,7 @@ namespace Modnok
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		return QIcon (":/plugins/azoth/plugins/modnok/resources/images/modnok.svg");
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
