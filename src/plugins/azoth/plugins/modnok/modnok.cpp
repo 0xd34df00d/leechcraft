@@ -157,8 +157,6 @@ namespace Modnok
 			replaceMap [match] = Util::GetAsBase64Src (rendered);
 		}
 		
-		qDebug () << replaceMap.size ();
-		
 		if (replaceMap.isEmpty ())
 			return body;
 		
@@ -182,11 +180,15 @@ namespace Modnok
 
 		if (!body.contains ("$$"))
 			return;
-		
-		qDebug () << "had body" << body;
-		body = HandleBody (body);		
-		qDebug () << "got body" << body;
-		proxy->SetValue ("body", body);
+
+		const QString newBody = HandleBody (body);
+		if (body != newBody)
+			proxy->SetValue ("body", newBody);
+	}
+	
+	void Plugin::clearCaches ()
+	{
+		FormulasCache_.clear ();
 	}
 }
 }

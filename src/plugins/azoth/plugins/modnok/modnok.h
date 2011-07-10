@@ -63,6 +63,8 @@ namespace Modnok
 				QObject *chatTab,
 				QString body,
 				QObject *message);
+	private slots:
+		void clearCaches ();
 	};
 }
 }
