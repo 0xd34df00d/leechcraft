@@ -308,7 +308,11 @@ namespace AdiumStyles
 		// %userIconPath%
 		QImage image = in ? other->GetAvatar () : QImage ();
 		if (image.isNull ())
-			image = QImage (base + "buddy_icon.png");
+			image = QImage (StylesLoader_->GetPath (QStringList (base + "buddy_icon.png")));
+		if (image.isNull ())
+			qWarning () << Q_FUNC_INFO
+					<< "image is still null, though tried"
+					<< base + "buddy_icon.png";
 		templ.replace ("%userIconPath%", Util::GetAsBase64Src (image));
 		
 		// %senderScreenName%
