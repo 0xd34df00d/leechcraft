@@ -1,0 +1,23 @@
+.IncomingBody2
+{
+	min-height: 0;
+	padding-bottom: 7px;
+}
+
+.inUserPicture
+{
+	display: none;
+	float: none;
+}
+
+.OutgoingBody2
+{
+	min-height: 0;
+	padding-bottom: 7px;
+}
+
+.outUserPicture
+{
+	display: none;
+	float: none;
+}

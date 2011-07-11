@@ -1,0 +1,35 @@
+ @import url(../main.css);
+
+ .inUserPicture
+{
+	height: 96px;
+}
+
+.IncomingList, .OutgoingList
+{
+	/*margin-left: 110px;*/
+	margin-left :53px;
+}
+
+.IncomingMessage, .OutgoingMessage
+{
+
+}
+
+.NextIncomingMessage, .NextOutgoingMessage
+{
+
+}
+
+.outUserPicture
+{
+	height: 96px;
+}
+
+.KopeteMessage
+{
+	/*height: 96px;*/
+}
+
+
+

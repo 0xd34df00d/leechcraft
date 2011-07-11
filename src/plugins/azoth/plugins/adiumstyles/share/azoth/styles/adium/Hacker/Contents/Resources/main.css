@@ -1,0 +1,41 @@
+body  { font-size: 12px; font-family: "DejaVu Sans Mono", monospace; font-style: normal; font-weight: normal; margin: 0; color: #5099ff; background: black; background-color: black }
+
+#Chat  { padding-top: 80px; margin: 4px; overflow: hidden }
+
+#Header { background: url("images/background.png") repeat-x right top; position: fixed; z-index: 100; top: 0; right: 0; left: 0; height: 80px; border-bottom: 0 none }
+
+.imageContainer  { display: none; }
+
+.chatName  { color: #cdcfd1; font-size: 14px; font-weight: bold; text-align: center; position: relative; margin-left: 2px; margin-right: 5px }
+
+.headerContainer  { padding: 1px 1px; position: relative; border-style: dotted none; border-width: 2px medium; border-color: #666 white }
+
+.container  { margin-bottom: 2px; overflow: auto; }
+
+a:link  { color: #5099ff }
+a:visited  { color: #5099ff }
+a:hover  { color: #82b6ff }
+
+.messageTime   { color: #dcdcdc; font-size: 10px; font-weight: normal; text-align: left; position: relative; z-index: 60; top: 0px; float: left; margin-right: 4px }
+
+.Message  { color: #cdcfd1; font-style: normal; font-weight: normal; position: relative; margin-left: 2px; margin-right: 5px }
+
+.pastMessage  { color: #a0a3a6; font-style: normal; font-weight: normal }
+
+.statusContainer  { margin-bottom: 2px }
+
+.statusTime  { color: #cde2ff; font-size: 10px; font-weight: bold; top: 0px; text-align: right; margin-right: 5px; position: relative; width: 150px; float: left }
+
+.statusMessage  { color: #dddfe1; font-size: 12px; font-weight: bold; position: relative; right: 5px }
+
+.buddy  { color: #5099ff; font-weight: bold; text-align: left; position: relative; margin-left: 2px }
+
+.user  { color: white; font-weight: bold; text-align: left; position: relative; margin-left: 2px }
+
+.pastBuddy  { color: #7c91af; font-size: 11px; font-weight: bold; text-align: left; position: relative }
+
+.pastUser  { color: gray; font-size: 11px; font-weight: bold; text-align: left; position: relative }
+
+.outState { overflow: hidden; float: right; height: 16px; padding-left: 3px; padding-right: 3px; }
+
+.stateSendingImg { width: 16px; height: 16px; background: transparent url("images/state-sending-white.gif") no-repeat center center; }
