@@ -61,6 +61,8 @@ namespace AdiumStyles
 			LastPack_ = pack;
 		}
 		
+		Frame2LastContact_.remove (frame);
+		
 		const QString& prefix = pack + "/Contents/Resources/";
 
 		Util::QIODevice_ptr header = StylesLoader_->
@@ -125,7 +127,7 @@ namespace AdiumStyles
 		result += cssStr;
 		result += "</style><title/></head><body>";
 		result += QString::fromUtf8 (header->readAll ());
-		result += "<div id=\"Chat\"></div>";
+		result += "<div id=\"Chat\"><div id=\"insert\"></div></div>";
 		result += QString::fromUtf8 (footer->readAll ());
 		result += "</body></html>";
 		
@@ -184,8 +186,18 @@ namespace AdiumStyles
 				(in ? "Incoming" : "Outgoing") +
 				'/';
 
+		QObject *kindaSender = in ? msg->OtherPart () : reinterpret_cast<QObject*> (42);
+		const bool isNextMsg = Frame2LastContact_.contains (frame) &&
+				kindaSender == Frame2LastContact_ [frame];
+		const QString& filename = isNextMsg ?
+				"NextContent.html" :
+				"Content.html";
+
+		if (!isNextMsg)
+			Frame2LastContact_ [frame] = kindaSender;
+
 		Util::QIODevice_ptr content = StylesLoader_->
-				Load (QStringList (prefix + "Content.html"));
+				Load (QStringList (prefix + filename));
 		if (!content)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -205,18 +217,28 @@ namespace AdiumStyles
 			return false;
 		}
 		
-		QWebElement chat = frame->findFirstElement ("div[id=\"Chat\"]");
+		const QString& newSelector = QString ("div[id=\"Chat\"]");
+		const QString& nextSelector = QString ("div[id=\"insert\"]");
+		QWebElement chat = frame->findFirstElement (isNextMsg ? nextSelector : newSelector);
 		if (chat.isNull ())
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "no div[id=\"Chat\"]"
-					<< "could be found";
+					<< "no div for insertion could be found";
 			return false;
 		}
 
 		const QString& templ = QString::fromUtf8 (content->readAll ());
 		const QString& body = ParseTemplate (templ, prefix, frame, msgObj, info);
-		chat.appendInside (body);
+		if (isNextMsg)
+			chat.setOuterXml (body);
+		else
+		{
+			QWebElement next = frame->findFirstElement (nextSelector);
+			if (!next.isNull ())
+				next.removeFromDocument ();
+			
+			chat.appendInside (body);
+		}
 		
 		if (templ.contains ("%stateElementId%"))
 		{
@@ -456,6 +478,8 @@ namespace AdiumStyles
 				i = Msg2Frame_.erase (i);
 			else
 				++i;
+			
+		Frame2LastContact_.remove (static_cast<QWebFrame*> (sender ()));
 	}
 }
 }

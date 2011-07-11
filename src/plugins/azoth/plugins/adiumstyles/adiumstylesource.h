@@ -40,7 +40,7 @@ class IProxyObject;
 namespace AdiumStyles
 {
 	class AdiumStyleSource : public QObject
-							  , public IChatStyleResourceSource
+						   , public IChatStyleResourceSource
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IChatStyleResourceSource)
