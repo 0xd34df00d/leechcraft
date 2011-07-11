@@ -93,7 +93,7 @@ namespace AdiumStyles
 			return QString ();
 		}
 		
-		Entry2Pack_ [entryObj] = pack;
+		Frame2Pack_ [frame] = pack;
 		
 		QString cssStr = QString::fromUtf8 (css->readAll ());
 		int pos = 0;
@@ -171,7 +171,7 @@ namespace AdiumStyles
 			return false;
 		}
 
-		const QString& pack = Entry2Pack_ [msg->OtherPart ()];
+		const QString& pack = Frame2Pack_ [frame];
 		if (pack.isEmpty ())
 		{
 			qWarning () << Q_FUNC_INFO
@@ -315,8 +315,49 @@ namespace AdiumStyles
 		IMessage *msg = qobject_cast<IMessage*> (msgObj);
 		const bool in = msg->GetDirection () == IMessage::DIn;
 
-		ICLEntry *other = qobject_cast<ICLEntry*> (msg->OtherPart ());
-		IAccount *acc = qobject_cast<IAccount*> (other->GetParentAccount ());
+		ICLEntry *other = 0;
+		switch (msg->GetMessageType ())
+		{
+		case IMessage::MTChatMessage:
+		case IMessage::MTMUCMessage:
+		case IMessage::MTStatusMessage:
+			other = qobject_cast<ICLEntry*> (msg->OtherPart ());
+			if (!other)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "null other part, gonna fail:"
+						<< msg->GetMessageType ()
+						<< msg->GetBody ()
+						<< msg->OtherPart ();
+			}
+			break;
+		case IMessage::MTEventMessage:
+		case IMessage::MTServiceMessage:
+			other = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
+			break;
+		}
+
+		IAccount *acc = other ?
+				qobject_cast<IAccount*> (other->GetParentAccount ()) :
+				0;
+		
+		if (!acc && msg->ParentCLEntry ())
+		{
+			ICLEntry *entry = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
+			acc = entry ?
+					qobject_cast<IAccount*> (entry->GetParentAccount ()) :
+					0;
+		}
+
+		if (!acc && !in)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no account for outgoing message, that sucks"
+					<< msg->GetMessageType ()
+					<< msg->OtherPart ()
+					<< msg->ParentCLEntry ();
+			return templ;
+		}
 		
 		const QString& senderNick = in ?
 				other->GetEntryName () :
@@ -356,7 +397,9 @@ namespace AdiumStyles
 		
 		// %service%
 		templ.replace ("%service%",
-				qobject_cast<IProtocol*> (acc->GetParentProtocol ())->GetProtocolName ());
+				acc ?
+					qobject_cast<IProtocol*> (acc->GetParentProtocol ())->GetProtocolName () :
+					QString ());
 		
 		// TODO have a setting for highlights.
 		// %backgroundcolor{X}%
@@ -455,7 +498,7 @@ namespace AdiumStyles
 			return;
 		}
 
-		const QString& pack = Entry2Pack_ [msg->OtherPart ()];
+		const QString& pack = Frame2Pack_ [frame];
 		const QString& prefix = pack + "/Contents/Resources/Outgoing/";
 
 		Util::QIODevice_ptr content =
@@ -488,6 +531,7 @@ namespace AdiumStyles
 				++i;
 			
 		Frame2LastContact_.remove (static_cast<QWebFrame*> (sender ()));
+		Frame2Pack_.remove (static_cast<QWebFrame*> (sender ()));
 	}
 }
 }

@@ -48,7 +48,7 @@ namespace AdiumStyles
 		boost::shared_ptr<Util::ResourceLoader> StylesLoader_;
 		IProxyObject *Proxy_;
 
-		mutable QHash<QObject*, QString> Entry2Pack_;
+		mutable QHash<QWebFrame*, QString> Frame2Pack_;
 		mutable QHash<QString, QList<QColor> > Coloring2Colors_;
 		mutable QString LastPack_;
 		
