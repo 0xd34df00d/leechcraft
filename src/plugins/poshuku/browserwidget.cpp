@@ -176,6 +176,7 @@ namespace Poshuku
 				this);
 		SavePage_->setProperty ("ActionIcon", "fetchall");
 		SavePage_->setEnabled (false);
+		SavePage_->setShortcut (QKeySequence (tr ("Ctrl+s")));
 
 		ZoomIn_ = new QAction (tr ("Zoom in"),
 				this);
