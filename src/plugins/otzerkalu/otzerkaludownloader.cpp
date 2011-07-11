@@ -20,7 +20,6 @@
 #include "otzerkaludownloader.h"
 #include <QWebElement>
 #include <QWebPage>
-#include <QtAlgorithms>
 #include <QRegExp>
 
 namespace LeechCraft
@@ -134,7 +133,7 @@ namespace Otzerkalu
 			qWarning () << Q_FUNC_INFO
 					<< "Can't parse the file "
 					<< filename
-					<< ": "
+					<< ":"
 					<< file.errorString ();
 			return;
 		}
@@ -203,8 +202,7 @@ namespace Otzerkalu
 		const QString& filename = url.hasQuery () ? file + "?" +
 				url.encodedQuery () + ".html" : file;
 
-		if (qFind (DownloadedFiles_.begin (), DownloadedFiles_.end (), filename) !=
-				DownloadedFiles_.end ())
+		if (!DownloadedFiles_.contains (filename))
 			return QString ();
 
 		QDir::root ().mkpath (path);

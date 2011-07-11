@@ -22,7 +22,6 @@
 
 #include <QObject>
 #include <QUrl>
-#include <QList>
 #include <QWebFrame>
 #include <QWebElementCollection>
 
@@ -60,7 +59,7 @@ namespace Otzerkalu
 		
 		const DownloadParams Param_;
 		QMap<int, FileData> FileMap_;
-		QList<QString> DownloadedFiles_;
+		QStringList DownloadedFiles_;
 		int UrlCount_;
 	public:
 		OtzerkaluDownloader (const DownloadParams& param, QObject *parent = 0);
