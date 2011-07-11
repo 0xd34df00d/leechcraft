@@ -21,6 +21,7 @@
 #include <QWebElement>
 #include <QWebPage>
 #include <QRegExp>
+#include <util/util.h>
 
 namespace LeechCraft
 {

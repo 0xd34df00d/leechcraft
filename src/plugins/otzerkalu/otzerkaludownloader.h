@@ -19,14 +19,11 @@
 
 #ifndef PLUGINS_OTZERKALU_OTZERKALUDOWNLOADER_H
 #define PLUGINS_OTZERKALU_OTZERKALUDOWNLOADER_H
-
 #include <QObject>
 #include <QUrl>
 #include <QWebFrame>
 #include <QWebElementCollection>
-
 #include <interfaces/structures.h>
-#include <plugininterface/util.h>
 #include <interfaces/ientityhandler.h>
 
 namespace LeechCraft
