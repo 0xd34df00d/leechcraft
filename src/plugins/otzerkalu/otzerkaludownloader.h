@@ -26,7 +26,7 @@
 #include <QWebElementCollection>
 
 #include <interfaces/structures.h>
-#include <util/util.h>
+#include <plugininterface/util.h>
 #include <interfaces/ientityhandler.h>
 
 namespace LeechCraft
