@@ -52,7 +52,8 @@ namespace AdiumStyles
 		return StylesLoader_->GetSubElemModel ();
 	}
 	
-	QString AdiumStyleSource::GetHTMLTemplate (const QString& pack, QObject *entryObj) const
+	QString AdiumStyleSource::GetHTMLTemplate (const QString& pack,
+			QObject *entryObj, QWebFrame *frame) const
 	{
 		if (pack != LastPack_)
 		{

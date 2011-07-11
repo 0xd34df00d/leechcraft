@@ -529,7 +529,7 @@ namespace Azoth
 		ChatStylesOptionsModel_->AddSource (src);
 	}
 	
-	QString Core::GetSelectedChatTemplate (QObject *entry) const
+	QString Core::GetSelectedChatTemplate (QObject *entry, QWebFrame *frame) const
 	{
 		IChatStyleResourceSource *src = GetCurrentChatStyle ();
 		if (!src)
@@ -537,7 +537,7 @@ namespace Azoth
 		
 		const QString& opt = XmlSettingsManager::Instance ()
 				.property ("ChatWindowStyle").toString ();
-		return src->GetHTMLTemplate (opt, entry);
+		return src->GetHTMLTemplate (opt, entry, frame);
 	}
 	
 	bool Core::AppendMessageByTemplate (QWebFrame *frame,

@@ -53,11 +53,13 @@ namespace AdiumStyles
 		mutable QString LastPack_;
 		
 		QHash<QObject*, QWebFrame*> Msg2Frame_;
+		
+		mutable QHash<QWebFrame*, QObject*> Frame2LastContact_;
 	public:
 		AdiumStyleSource (IProxyObject*, QObject* = 0);
 		
 		QAbstractItemModel* GetOptionsModel () const;
-		QString GetHTMLTemplate (const QString&, QObject*) const;
+		QString GetHTMLTemplate (const QString&, QObject*, QWebFrame*) const;
 		bool AppendMessage (QWebFrame*, QObject*, const ChatMsgAppendInfo&);
 		void FrameFocused (QWebFrame*);
 	private:

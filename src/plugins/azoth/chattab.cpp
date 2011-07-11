@@ -142,7 +142,8 @@ namespace Azoth
 	
 	void ChatTab::PrepareTheme ()
 	{
-		QString data = Core::Instance ().GetSelectedChatTemplate (GetEntry<QObject> ());
+		QString data = Core::Instance ().GetSelectedChatTemplate (GetEntry<QObject> (),
+				Ui_.View_->page ()->mainFrame ());
 		if (data.isEmpty ())
 			data = "<h1 style='color:red;'>" +
 					tr ("Unable to load style, "

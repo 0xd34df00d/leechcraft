@@ -51,7 +51,7 @@ namespace Azoth
 		QObject* GetAccount (const QString&) const;
 		QList<QObject*> GetAllAccounts () const;
 		QObject* GetEntry (const QString&, const QString&) const;
-		QString GetSelectedChatTemplate (QObject*) const;
+		QString GetSelectedChatTemplate (QObject*, QWebFrame*) const;
 		QList<QColor> GenerateColors (const QString&) const;
 		QString GetNickColor (const QString&, const QList<QColor>&) const;
 		QString FormatDate (QDateTime, QObject*) const;
