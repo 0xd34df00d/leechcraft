@@ -189,15 +189,23 @@ namespace AdiumStyles
 		QObject *kindaSender = in ? msg->OtherPart () : reinterpret_cast<QObject*> (42);
 		const bool isNextMsg = Frame2LastContact_.contains (frame) &&
 				kindaSender == Frame2LastContact_ [frame];
-		const QString& filename = isNextMsg ?
-				"NextContent.html" :
-				"Content.html";
+		QString filename;
+		if (msg->GetMessageType () == IMessage::MTChatMessage ||
+				msg->GetMessageType () == IMessage::MTMUCMessage)
+			filename = isNextMsg ?
+					"NextContent.html" :
+					"Content.html";
+		else
+			filename = "Action.html";
 
 		if (!isNextMsg)
 			Frame2LastContact_ [frame] = kindaSender;
 
 		Util::QIODevice_ptr content = StylesLoader_->
 				Load (QStringList (prefix + filename));
+		if (!content && filename == "Action.html")
+			content = StylesLoader_->
+					Load (QStringList (prefix + "../Status.html"));
 		if (!content)
 		{
 			qWarning () << Q_FUNC_INFO
