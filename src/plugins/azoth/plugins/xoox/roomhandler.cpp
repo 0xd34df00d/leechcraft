@@ -120,7 +120,8 @@ namespace Xoox
 				IMessage::DIn,
 				CLEntry_,
 				IMessage::MTStatusMessage,
-				IMessage::MSTParticipantLeave);
+				IMessage::MSTParticipantLeave,
+				GetParticipantEntry (nick));
 		CLEntry_->HandleMessage (message);
 	}
 
@@ -148,7 +149,8 @@ namespace Xoox
 				IMessage::DIn,
 				CLEntry_,
 				IMessage::MTStatusMessage,
-				IMessage::MSTParticipantJoin);
+				IMessage::MSTParticipantJoin,
+				GetParticipantEntry (nick));
 		CLEntry_->HandleMessage (message);
 	}
 
@@ -169,7 +171,8 @@ namespace Xoox
 				IMessage::DIn,
 				CLEntry_,
 				IMessage::MTStatusMessage,
-				IMessage::MSTParticipantStatusChange);
+				IMessage::MSTParticipantStatusChange,
+				GetParticipantEntry (nick));
 		message->setProperty ("Azoth/Nick", nick);
 		message->setProperty ("Azoth/TargetState", state);
 		message->setProperty ("Azoth/StatusText", status.statusText ());
