@@ -22,8 +22,9 @@
 
 #include <QObject>
 #include <QUrl>
-#include <QStack>
+#include <QList>
 #include <QWebFrame>
+#include <QWebElementCollection>
 
 #include <interfaces/structures.h>
 #include <plugininterface/util.h>
@@ -66,8 +67,9 @@ namespace Otzerkalu
 		void Begin ();
 	private:
 		QString Download (const QUrl&);
-		QStack <QUrl> CSSParser (const QString&) const;
+		QList<QUrl> CSSParser (const QString&) const;
 		QString CSSUrlReplace (const QString&);
+		bool HTMLReplace (QWebElementCollection::iterator element, const FileData& data);
 		bool WriteData (const QString& filename, const QString& data);
 		void HandleProvider (QObject *provider, int id, const QUrl& url,
 				const QString& filename, int recLevel);
