@@ -19,6 +19,7 @@
 #ifndef PLUGINS_AZOTH_CONTACTLISTDELEGATE_H
 #define PLUGINS_AZOTH_CONTACTLISTDELEGATE_H
 #include <QStyledItemDelegate>
+#include "core.h"
 
 class QTreeView;
 
@@ -52,6 +53,7 @@ namespace Azoth
 				QStyleOptionViewItemV4, const QModelIndex&) const;
 		void DrawContact (QPainter*,
 				QStyleOptionViewItemV4, const QModelIndex&) const;
+		void LoadSystemIcon (const QString&, QList<QIcon>&) const;
 	private slots:
 		void handleShowAvatarsChanged ();
 		void handleShowClientIconsChanged ();

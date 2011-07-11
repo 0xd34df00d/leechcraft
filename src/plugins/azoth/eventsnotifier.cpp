@@ -18,8 +18,8 @@
 
 #include "eventsnotifier.h"
 #include <boost/bind.hpp>
-#include <plugininterface/util.h>
-#include <plugininterface/notificationactionhandler.h>
+#include <util/util.h>
+#include <util/notificationactionhandler.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "chattabsmanager.h"

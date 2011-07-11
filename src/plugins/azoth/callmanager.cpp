@@ -22,8 +22,8 @@
 #include <QAudioInput>
 #include <QAudioOutput>
 #include <QtDebug>
-#include <plugininterface/util.h>
-#include <plugininterface/notificationactionhandler.h>
+#include <util/util.h>
+#include <util/notificationactionhandler.h>
 #include "interfaces/iclentry.h"
 #include "xmlsettingsmanager.h"
 #include "core.h"
@@ -144,14 +144,22 @@ namespace Azoth
 			QAudioDeviceInfo outInfo = FindDevice ("OutputAudioDevice", QAudio::AudioOutput);
 
 			const QAudioFormat& callFormat = mediaCall->GetAudioFormat ();
-			const QAudioFormat& inFormat = inInfo.nearestFormat (callFormat);
-			const QAudioFormat& outFormat = outInfo.nearestFormat (callFormat);
+			const QAudioFormat& inFormat = callFormat;
+			const QAudioFormat& outFormat = callFormat;
 
-			QAudioInput *input = new QAudioInput (inInfo, inFormat, sender ());
-			input->start (callAudioDev);
+#if QT_VERSION >= 0x040700
+			const int bufSize = callFormat.sampleRate () * callFormat.channelCount () * callFormat.sampleSize () / 8 * 160 / 1000;
+#else
+			const int bufSize = 8000 * 2 * callFormat.sampleSize () / 8 * 160 / 1000;
+#endif
 
 			QAudioOutput *output = new QAudioOutput (outInfo, outFormat, sender ());
+			output->setBufferSize (bufSize);
 			output->start (callAudioDev);
+
+			QAudioInput *input = new QAudioInput (inInfo, inFormat, sender ());
+			input->setBufferSize (bufSize);
+			input->start (callAudioDev);
 			
 			qDebug () << input->state () << input->error () << inInfo.isFormatSupported (callFormat) << inInfo.supportedCodecs ();
 			qDebug () << output->state () << output->error ();

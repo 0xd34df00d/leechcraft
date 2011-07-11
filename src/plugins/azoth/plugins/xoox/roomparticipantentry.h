@@ -63,6 +63,7 @@ namespace Xoox
 				const QString&, const QString&);
 
 		QString GetJID () const;
+		QString GetRealJID () const;
 		QString GetNick () const;
 
 		QXmppMucItem::Affiliation GetAffiliation () const;

@@ -21,7 +21,7 @@
 #include <QDomDocument>
 #include <QDir>
 #include <QUrl>
-#include <plugininterface/util.h>
+#include <util/util.h>
 
 namespace LeechCraft
 {

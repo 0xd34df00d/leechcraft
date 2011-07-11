@@ -16,51 +16,48 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 #include "startupsecondpage.h"
-#include <plugininterface/backendselector.h>
+#include <util/backendselector.h>
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Aggregator
+{
+	StartupSecondPage::StartupSecondPage (QWidget *parent)
+	: QWizardPage (parent)
+	, Selector_ (new Util::BackendSelector (XmlSettingsManager::Instance ()))
 	{
-		namespace Aggregator
-		{
-			StartupSecondPage::StartupSecondPage (QWidget *parent)
-			: QWizardPage (parent)
-			, Selector_ (new Util::BackendSelector (XmlSettingsManager::Instance ()))
-			{
-				Ui_.setupUi (this);
-				QHBoxLayout *lay = new QHBoxLayout ();
-				lay->addWidget (Selector_);
-				Ui_.SelectorContainer_->setLayout (lay);
+		Ui_.setupUi (this);
+		QHBoxLayout *lay = new QHBoxLayout ();
+		lay->addWidget (Selector_);
+		Ui_.SelectorContainer_->setLayout (lay);
 
-				setTitle ("Aggregator");
-				setSubTitle (tr ("Set storage options"));
+		setTitle ("Aggregator");
+		setSubTitle (tr ("Set storage options"));
 
-				setProperty ("WizardType", 1);
-			}
+		setProperty ("WizardType", 1);
+	}
 
-			void StartupSecondPage::initializePage ()
-			{
-				connect (wizard (),
-						SIGNAL (accepted ()),
-						this,
-						SLOT (handleAccepted ()));
-				connect (wizard (),
-						SIGNAL (accepted ()),
-						Selector_,
-						SLOT (accept ()));
-				XmlSettingsManager::Instance ()->
-						setProperty ("StartupVersion", 2);
+	void StartupSecondPage::initializePage ()
+	{
+		connect (wizard (),
+				SIGNAL (accepted ()),
+				this,
+				SLOT (handleAccepted ()));
+		connect (wizard (),
+				SIGNAL (accepted ()),
+				Selector_,
+				SLOT (accept ()));
+		XmlSettingsManager::Instance ()->
+				setProperty ("StartupVersion", 2);
 
-				int thisId = property ("PageID").toInt ();
-				wizard ()->removePage (thisId + 1);
-			}
+		int thisId = property ("PageID").toInt ();
+		wizard ()->removePage (thisId + 1);
+	}
 
-			void StartupSecondPage::handleAccepted ()
-			{
-				wizard ()->setProperty ("NeedsRestart", true);
-			}
-		};
-	};
-};
+	void StartupSecondPage::handleAccepted ()
+	{
+		wizard ()->setProperty ("NeedsRestart", true);
+	}
+}
+}

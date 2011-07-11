@@ -17,9 +17,10 @@
  **********************************************************************/
 
 #include "roompublicmessage.h"
+#include <QTextDocument>
+#include <QtDebug>
 #include <QXmppMessage.h>
 #include <QXmppClient.h>
-#include <QtDebug>
 #include "roomclentry.h"
 #include "roomparticipantentry.h"
 #include "glooxaccount.h"
@@ -61,7 +62,8 @@ namespace Xoox
 	}
 
 	RoomPublicMessage::RoomPublicMessage (const QXmppMessage& msg,
-			RoomCLEntry *entry, RoomParticipantEntry_ptr partEntry)
+			RoomCLEntry *entry,
+			RoomParticipantEntry_ptr partEntry)
 	: QObject (entry)
 	, ParentEntry_ (entry)
 	, ParticipantEntry_ (partEntry)
@@ -70,6 +72,7 @@ namespace Xoox
 	, Direction_ (DIn)
 	, Type_ (MTMUCMessage)
 	, SubType_ (MSTOther)
+	, XHTML_ (msg.getXhtml ())
 	{
 		ClientConnection::Split (msg.from (), &FromJID_, &FromVariant_);
 	}
@@ -92,6 +95,7 @@ namespace Xoox
 		msg.setBody (Message_);
 		msg.setTo (ParentEntry_->GetRoomHandler ()->GetRoomJID ());
 		msg.setType (QXmppMessage::GroupChat);
+		msg.setXhtml (XHTML_);
 		client->sendPacket (msg);
 	}
 
@@ -133,7 +137,7 @@ namespace Xoox
 
 	QString RoomPublicMessage::GetBody () const
 	{
-		return Message_;
+		return Qt::escape (Message_);
 	}
 
 	void RoomPublicMessage::SetBody (const QString& msg)
@@ -149,6 +153,16 @@ namespace Xoox
 	void RoomPublicMessage::SetDateTime (const QDateTime& dt)
 	{
 		Datetime_ = dt;
+	}
+	
+	QString RoomPublicMessage::GetRichBody () const
+	{
+		return XHTML_;
+	}
+	
+	void RoomPublicMessage::SetRichBody (const QString& xhtml)
+	{
+		XHTML_ = xhtml;
 	}
 }
 }

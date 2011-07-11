@@ -223,12 +223,23 @@ namespace ChatHistory
 			return;
 
 		Amount_ = 0;
-		Ui_.HistView_->clear ();		
+		Ui_.HistView_->clear ();
+
 		ICLEntry *entry = qobject_cast<ICLEntry*> (Core::Instance ()->
 					GetPluginProxy ()->GetEntry (entryId, accountId));
 		const QString& name = entry ?
 				entry->GetEntryName () :
 				EntryID2NameCache_.value (entryId, entryId);
+		const QString& ourName = entry ?
+				qobject_cast<IAccount*> (entry->GetParentAccount ())->GetOurNick () :
+				QString ();
+
+		QString preNick = Core::Instance ()->GetPluginProxy ()->
+				GetSettingsManager ()->property ("PreNickText").toString ();
+		QString postNick = Core::Instance ()->GetPluginProxy ()->
+				GetSettingsManager ()->property ("PostNickText").toString ();
+		preNick.replace ('<', "&lt;");
+		postNick.replace ('<', "&lt;");
 
 		QList<QColor> colors = Core::Instance ()->
 				GetPluginProxy ()->GenerateColors ("hash");
@@ -246,20 +257,29 @@ namespace ChatHistory
 				html = QString ("<div style='background-color: %1'>")
 					.arg (palette ().color (QPalette::AlternateBase).name ());
 
-			html += "[" + map ["Date"].toDateTime ().toString () + "] ";
+			html += "[" + map ["Date"].toDateTime ().toString () + "] " + preNick;
 			const QString& var = map ["Variant"].toString ();
 			if (isChat)
 			{
-				html += map ["Direction"] == "IN" ?
-						QString::fromUtf8 ("← ") :
-						QString::fromUtf8 ("→ ");
-
+				QString remoteName;
 				if (!entry && !var.isEmpty ())
-					html += var;
+					remoteName += var;
 				else if (entry && var.isEmpty ())
-					html += name;
+					remoteName += name;
 				else
-					html += name + '/' + var;
+					remoteName += name + '/' + var;
+
+				if (!ourName.isEmpty ())
+					html += map ["Direction"] == "IN" ?
+							remoteName :
+							ourName;
+				else
+				{
+					html += map ["Direction"] == "IN" ?
+							QString::fromUtf8 ("← ") :
+							QString::fromUtf8 ("→ ");
+					html += remoteName;
+				}
 			}
 			else
 			{
@@ -268,7 +288,7 @@ namespace ChatHistory
 				html += "<font color=\"" + color + "\">" + var + "</font>";
 			}
 			
-			html += ": " + map ["Message"].toString ()
+			html += postNick + ' ' + map ["Message"].toString ()
 					.replace ('<', "&lt;")
 					.replace ('\n', "<br/>");
 

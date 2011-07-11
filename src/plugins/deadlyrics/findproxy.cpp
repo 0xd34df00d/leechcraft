@@ -20,7 +20,7 @@
 #include <QUrl>
 #include <QtDebug>
 #include <interfaces/structures.h>
-#include <plugininterface/selectablebrowser.h>
+#include <util/selectablebrowser.h>
 #include "searcher.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"

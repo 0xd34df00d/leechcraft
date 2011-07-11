@@ -21,8 +21,8 @@
 #include <boost/functional/hash.hpp>
 #include <QUrl>
 #include <QtDebug>
-#include <plugininterface/treeitem.h>
-#include <plugininterface/util.h>
+#include <util/treeitem.h>
+#include <util/util.h>
 #include "core.h"
 
 using namespace LeechCraft::Util;

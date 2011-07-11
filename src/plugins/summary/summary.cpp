@@ -18,7 +18,8 @@
 
 #include "summary.h"
 #include <QIcon>
-#include <plugininterface/util.h>
+#include <util/util.h>
+#include <interfaces/entitytesthandleresult.h>
 #include "core.h"
 #include "summarywidget.h"
 
@@ -142,9 +143,11 @@ namespace LeechCraft
 							<< tabClass;
 			}
 
-			bool Summary::CouldHandle (const LeechCraft::Entity& e) const
+			EntityTestHandleResult Summary::CouldHandle (const LeechCraft::Entity& e) const
 			{
-				return Core::Instance ().CouldHandle (e);
+				EntityTestHandleResult result;
+				result.HandlePriority_ = Core::Instance ().CouldHandle (e) ? 1000 : 0;
+				return result;
 			}
 
 			void Summary::Handle (LeechCraft::Entity e)

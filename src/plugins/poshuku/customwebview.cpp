@@ -29,8 +29,8 @@
 #include <QTextCodec>
 #include <QWindowsStyle>
 #include <QtDebug>
-#include <plugininterface/util.h>
-#include <plugininterface/defaulthookproxy.h>
+#include <util/util.h>
+#include <util/defaulthookproxy.h>
 #include "interfaces/poshukutypes.h"
 #include "core.h"
 #include "customwebpage.h"
@@ -371,6 +371,7 @@ namespace Poshuku
 		menu->addAction (Browser_->PrintPreview_);
 		menu->addSeparator ();
 		menu->addAction (Browser_->ViewSources_);
+		menu->addAction (Browser_->SavePage_);
 		menu->addSeparator ();
 		menu->addAction (pageAction (QWebPage::ReloadAndBypassCache));
 		menu->addAction (Browser_->ReloadPeriodically_);

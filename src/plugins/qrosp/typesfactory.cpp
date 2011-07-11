@@ -21,22 +21,19 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Qrosp
+{
+	TypesFactory::TypesFactory (QObject *parent)
+	: QObject (parent)
 	{
-		namespace Qrosp
-		{
-			TypesFactory::TypesFactory (QObject *parent)
-			: QObject (parent)
-			{
-			}
+	}
 
-			QObject* TypesFactory::Create (const QString& type)
-			{
-				if (type == "LeechCraft::Entity")
-					return new EntityWrapper (Entity ());
-				else
-					return 0;
-			}
-		};
-	};
-};
+	QObject* TypesFactory::Create (const QString& type)
+	{
+		if (type == "LeechCraft::Entity")
+			return new EntityWrapper (Entity ());
+		else
+			return 0;
+	}
+}
+}

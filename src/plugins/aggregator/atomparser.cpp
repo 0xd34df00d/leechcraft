@@ -23,56 +23,52 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Aggregator
+{
+	AtomParser::AtomParser ()
 	{
-		namespace Aggregator
+	}
+
+	AtomParser::~AtomParser ()
+	{
+	}
+
+	QString AtomParser::ParseEscapeAware (const QDomElement& parent) const
+	{
+		QString result;
+		if (!parent.hasAttribute ("type") ||
+				parent.attribute ("type") == "text" ||
+				(parent.attribute ("type") == "text/html" &&
+					parent.attribute ("mode") != "escaped"))
+			result = parent.text ();
+		else if (parent.attribute ("type") == "text/html" &&
+				parent.attribute ("mode") == "escaped")
+			result = UnescapeHTML (parent.text ());
+		else
+			result = UnescapeHTML (parent.text ());
+	
+		return result;
+	}
+	
+	QList<Enclosure> AtomParser::GetEnclosures (const QDomElement& entry,
+			const IDType_t& itemId) const
+	{
+		QList<Enclosure> result;
+		QDomNodeList links = entry.elementsByTagName ("link");
+		for (int i = 0; i < links.size (); ++i)
 		{
-			AtomParser::AtomParser ()
-			{
-			}
-
-			AtomParser::~AtomParser ()
-			{
-			}
-
-			QString AtomParser::ParseEscapeAware (const QDomElement& parent) const
-			{
-				QString result;
-				if (!parent.hasAttribute ("type") ||
-						parent.attribute ("type") == "text" ||
-						(parent.attribute ("type") == "text/html" &&
-						 parent.attribute ("mode") != "escaped"))
-					result = parent.text ();
-				else if (parent.attribute ("type") == "text/html" &&
-						parent.attribute ("mode") == "escaped")
-					result = UnescapeHTML (parent.text ());
-				else
-					result = UnescapeHTML (parent.text ());
-			
-				return result;
-			}
-			
-			QList<Enclosure> AtomParser::GetEnclosures (const QDomElement& entry,
-					const IDType_t& itemId) const
-			{
-				QList<Enclosure> result;
-				QDomNodeList links = entry.elementsByTagName ("link");
-				for (int i = 0; i < links.size (); ++i)
-				{
-					QDomElement link = links.at (i).toElement ();
-					if (link.attribute ("rel") != "enclosure")
-						continue;
-			
-					Enclosure e (itemId);
-					e.URL_ = link.attribute ("href");
-					e.Type_ = link.attribute ("type");
-					e.Length_ = link.attribute ("length", "-1").toLongLong ();
-					e.Lang_ = link.attribute ("hreflang");
-					result << e;
-				}
-				return result;
-			}
-		};
-	};
-};
-
+			QDomElement link = links.at (i).toElement ();
+			if (link.attribute ("rel") != "enclosure")
+				continue;
+	
+			Enclosure e (itemId);
+			e.URL_ = link.attribute ("href");
+			e.Type_ = link.attribute ("type");
+			e.Length_ = link.attribute ("length", "-1").toLongLong ();
+			e.Lang_ = link.attribute ("hreflang");
+			result << e;
+		}
+		return result;
+	}
+}
+}

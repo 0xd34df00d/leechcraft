@@ -40,6 +40,8 @@ namespace Rosenthal
 		QTextCodec *Codec_;
 	public:
 		Highlighter (boost::shared_ptr<Hunspell>, QTextDocument*);
+		
+		void UpdateHunspell (boost::shared_ptr<Hunspell>);
 	protected:
 		void highlightBlock (const QString&);
 	private:

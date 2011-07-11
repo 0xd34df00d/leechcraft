@@ -26,8 +26,8 @@
 #include <QTreeView>
 #include <QMainWindow>
 #include <QCoreApplication>
-#include <plugininterface/structuresops.h>
-#include <plugininterface/util.h>
+#include <util/structuresops.h>
+#include <util/util.h>
 #include "findproxy.h"
 
 using namespace LeechCraft::Plugins::HistoryHolder;

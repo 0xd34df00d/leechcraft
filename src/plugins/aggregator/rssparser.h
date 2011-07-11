@@ -27,25 +27,21 @@ class QDomDocument;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Aggregator
+{
+	class RSSParser : public Parser
 	{
-		namespace Aggregator
-		{
-			class RSSParser : public Parser
-			{
-			protected:
-				QMap<QString, int> TimezoneOffsets_;
+	protected:
+		QMap<QString, int> TimezoneOffsets_;
 
-				RSSParser ();
-			public:
-				virtual ~RSSParser ();
-			protected:
-				QDateTime RFC822TimeToQDateTime (const QString&) const;
-				QList<Enclosure> GetEnclosures (const QDomElement&, const IDType_t&) const;
-			};
-		};
+		RSSParser ();
+	public:
+		virtual ~RSSParser ();
+	protected:
+		QDateTime RFC822TimeToQDateTime (const QString&) const;
+		QList<Enclosure> GetEnclosures (const QDomElement&, const IDType_t&) const;
 	};
-};
+}
+}
 
 #endif
-

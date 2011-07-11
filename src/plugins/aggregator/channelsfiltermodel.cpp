@@ -23,22 +23,18 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Aggregator
+{
+	ChannelsFilterModel::ChannelsFilterModel (QObject *parent)
+	: Util::TagsFilterModel (parent)
 	{
-		namespace Aggregator
-		{
-			ChannelsFilterModel::ChannelsFilterModel (QObject *parent)
-			: LeechCraft::Util::TagsFilterModel (parent)
-			{
-				setDynamicSortFilter (true);
-				setTagsMode (true);
-			}
-			
-			QStringList ChannelsFilterModel::GetTagsForIndex (int row) const
-			{
-				return Core::Instance ().GetTagsForIndex (row);
-			}
-		};
-	};
-};
-
+		setDynamicSortFilter (true);
+		setTagsMode (true);
+	}
+	
+	QStringList ChannelsFilterModel::GetTagsForIndex (int row) const
+	{
+		return Core::Instance ().GetTagsForIndex (row);
+	}
+}
+}

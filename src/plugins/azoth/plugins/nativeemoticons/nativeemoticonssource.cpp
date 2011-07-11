@@ -18,7 +18,7 @@
 
 #include "nativeemoticonssource.h"
 #include <QtDebug>
-#include <plugininterface/resourceloader.h>
+#include <util/resourceloader.h>
 
 namespace LeechCraft
 {

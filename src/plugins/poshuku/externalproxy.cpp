@@ -18,7 +18,7 @@
 
 #include "externalproxy.h"
 #include <interfaces/structures.h>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include <QUrl>
 
 namespace LeechCraft

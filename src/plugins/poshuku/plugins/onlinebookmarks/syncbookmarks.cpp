@@ -20,7 +20,7 @@
 #include <QDateTime>
 #include <QMetaObject>
 #include <QTimer>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "core.h"
 #include "abstractbookmarksservice.h"
 #include "xmlsettingsmanager.h"

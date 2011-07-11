@@ -15,9 +15,16 @@ IF (NOT QT_USE_FILE)
 	FIND_PACKAGE (LeechCraft REQUIRED)
 ENDIF (NOT QT_USE_FILE)
 
+OPTION (ENABLE_AGGREGATOR_BODYFETCH "Enable BodyFetch for fetching full bodies of news items" ON)
+
 SET (QT_USE_QTSQL TRUE)
 SET (QT_USE_QTXML TRUE)
 SET (QT_USE_QTNETWORK TRUE)
+
+IF (ENABLE_AGGREGATOR_BODYFETCH)
+	SET (QT_USE_QTWEBKIT TRUE)
+ENDIF (ENABLE_AGGREGATOR_BODYFETCH)
+
 INCLUDE (${QT_USE_FILE})
 INCLUDE_DIRECTORIES (${Boost_INCLUDE_DIRS}
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -67,6 +74,7 @@ SET (SRCS
 	export2fb2dialog.cpp
 	actionsstructs.cpp
 	sqlstoragebackend_mysql.cpp
+	pluginmanager.cpp
 	)
 SET (HEADERS
     aggregator.h
@@ -111,6 +119,7 @@ SET (HEADERS
 	export2fb2dialog.h
 	actionsstructs.h
 	sqlstoragebackend_mysql.h
+	pluginmanager.h
 	)
 SET (FORMS
     mainwidget.ui
@@ -157,3 +166,9 @@ TARGET_LINK_LIBRARIES (leechcraft_aggregator
 INSTALL (TARGETS leechcraft_aggregator DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 INSTALL (FILES aggregatorsettings.xml DESTINATION ${LC_SETTINGS_DEST})
+
+SET (AGGREGATOR_INCLUDE_DIR ${CURRENT_SOURCE_DIR})
+
+IF (ENABLE_AGGREGATOR_BODYFETCH)
+	ADD_SUBDIRECTORY (plugins/bodyfetch)
+ENDIF (ENABLE_AGGREGATOR_BODYFETCH)

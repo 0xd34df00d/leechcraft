@@ -24,102 +24,98 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Aggregator
+{
+	ItemsFilterModel::ItemsFilterModel (QObject *parent)
+	: QSortFilterProxyModel (parent)
+	, HideRead_ (false)
+	, UnreadOnTop_ (XmlSettingsManager::Instance ()->
+			property ("UnreadOnTop").toBool ())
+	, ItemsWidget_ (0)
 	{
-		namespace Aggregator
+		setDynamicSortFilter (true);
+
+		XmlSettingsManager::Instance ()->RegisterObject ("UnreadOnTop",
+				this, "handleUnreadOnTopChanged");
+	}
+	
+	ItemsFilterModel::~ItemsFilterModel ()
+	{
+	}
+
+	void ItemsFilterModel::SetItemsWidget (ItemsWidget *w)
+	{
+		ItemsWidget_ = w;
+	}
+	
+	void ItemsFilterModel::SetHideRead (bool hide)
+	{
+		HideRead_ = hide;
+		invalidateFilter ();
+	}
+	
+	bool ItemsFilterModel::filterAcceptsRow (int sourceRow,
+			const QModelIndex& sourceParent) const
+	{
+		if (HideRead_ &&
+				ItemsWidget_->IsItemReadNotCurrent (sourceRow))
+			return false;
+
+		if (!ItemCategories_.isEmpty ())
 		{
-			ItemsFilterModel::ItemsFilterModel (QObject *parent)
-			: QSortFilterProxyModel (parent)
-			, HideRead_ (false)
-			, UnreadOnTop_ (XmlSettingsManager::Instance ()->
-					property ("UnreadOnTop").toBool ())
-			, ItemsWidget_ (0)
-			{
-				setDynamicSortFilter (true);
-
-				XmlSettingsManager::Instance ()->RegisterObject ("UnreadOnTop",
-						this, "handleUnreadOnTopChanged");
-			}
-			
-			ItemsFilterModel::~ItemsFilterModel ()
-			{
-			}
-
-			void ItemsFilterModel::SetItemsWidget (ItemsWidget *w)
-			{
-				ItemsWidget_ = w;
-			}
-			
-			void ItemsFilterModel::SetHideRead (bool hide)
-			{
-				HideRead_ = hide;
-				invalidateFilter ();
-			}
-			
-			bool ItemsFilterModel::filterAcceptsRow (int sourceRow,
-					const QModelIndex& sourceParent) const
-			{
-				if (HideRead_ &&
-						ItemsWidget_->IsItemReadNotCurrent (sourceRow))
-					return false;
-
-				if (!ItemCategories_.isEmpty ())
-				{
-					bool categoryFound = false;
-					QStringList itemCategories =
-						ItemsWidget_->GetItemCategories (sourceRow);
-			
-					if (!itemCategories.size ())
+			bool categoryFound = false;
+			QStringList itemCategories =
+				ItemsWidget_->GetItemCategories (sourceRow);
+	
+			if (!itemCategories.size ())
+				categoryFound = true;
+			else
+				Q_FOREACH (QString cat, itemCategories)
+					if (ItemCategories_.contains (cat))
+					{
 						categoryFound = true;
-					else
-						Q_FOREACH (QString cat, itemCategories)
-							if (ItemCategories_.contains (cat))
-							{
-								categoryFound = true;
-								break;
-							}
-			
-					if (!categoryFound)
-						return false;
-				}
-			
-				return QSortFilterProxyModel::filterAcceptsRow (sourceRow,
-						sourceParent);
-			}
-			
-			bool ItemsFilterModel::lessThan (const QModelIndex& left,
-					const QModelIndex& right) const
-			{
-				if (left.column () == 1 &&
-						right.column () == 1 &&
-						UnreadOnTop_ &&
-						!HideRead_)
-				{
-					bool lr = ItemsWidget_->IsItemRead (left.row ());
-					bool rr = ItemsWidget_->IsItemRead (right.row ());
-					if (lr && !rr)
-						return true;
-					else if ((lr && rr) || (!lr && !rr))
-						return QSortFilterProxyModel::lessThan (left, right);
-					else
-						return false;
-				}
+						break;
+					}
+	
+			if (!categoryFound)
+				return false;
+		}
+	
+		return QSortFilterProxyModel::filterAcceptsRow (sourceRow,
+				sourceParent);
+	}
+	
+	bool ItemsFilterModel::lessThan (const QModelIndex& left,
+			const QModelIndex& right) const
+	{
+		if (left.column () == 1 &&
+				right.column () == 1 &&
+				UnreadOnTop_ &&
+				!HideRead_)
+		{
+			bool lr = ItemsWidget_->IsItemRead (left.row ());
+			bool rr = ItemsWidget_->IsItemRead (right.row ());
+			if (lr && !rr)
+				return true;
+			else if ((lr && rr) || (!lr && !rr))
 				return QSortFilterProxyModel::lessThan (left, right);
-			}
+			else
+				return false;
+		}
+		return QSortFilterProxyModel::lessThan (left, right);
+	}
 
-			void ItemsFilterModel::categorySelectionChanged (const QStringList& categories)
-			{
-				ItemCategories_ = QSet<QString>::fromList (categories);
-				invalidateFilter ();
-			}
+	void ItemsFilterModel::categorySelectionChanged (const QStringList& categories)
+	{
+		ItemCategories_ = QSet<QString>::fromList (categories);
+		invalidateFilter ();
+	}
 
-			void ItemsFilterModel::handleUnreadOnTopChanged ()
-			{
-				UnreadOnTop_ = XmlSettingsManager::Instance ()->
-						property ("UnreadOnTop").toBool ();
-				invalidateFilter ();
-			}
-		};
-	};
-};
-
+	void ItemsFilterModel::handleUnreadOnTopChanged ()
+	{
+		UnreadOnTop_ = XmlSettingsManager::Instance ()->
+				property ("UnreadOnTop").toBool ();
+		invalidateFilter ();
+	}
+}
+}

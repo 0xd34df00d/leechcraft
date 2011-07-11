@@ -51,9 +51,9 @@
 #include <QDataStream>
 #include <QRegExp>
 #include <QKeySequence>
-#include <plugininterface/util.h>
-#include <plugininterface/defaulthookproxy.h>
-#include <plugininterface/notificationactionhandler.h>
+#include <util/util.h>
+#include <util/defaulthookproxy.h>
+#include <util/notificationactionhandler.h>
 #include "core.h"
 #include "historymodel.h"
 #include "finddialog.h"
@@ -171,6 +171,11 @@ namespace Poshuku
 				this);
 		ViewSources_->setProperty ("ActionIcon", "poshuku_viewsources");
 		ViewSources_->setEnabled (false);
+		
+		SavePage_ = new QAction (tr ("Save page..."),
+				this);
+		SavePage_->setProperty ("ActionIcon", "fetchall");
+		SavePage_->setEnabled (false);
 
 		ZoomIn_ = new QAction (tr ("Zoom in"),
 				this);
@@ -219,6 +224,7 @@ namespace Poshuku
 			WindowMenus_ [tools] << ScreenSave_;
 			WindowMenus_ [tools] << Util::CreateSeparator (this);
 			WindowMenus_ [tools] << ViewSources_;
+			WindowMenus_ [tools] << SavePage_;
 			WindowMenus_ [tools] << Util::CreateSeparator (this);
 
 			const QString view = "view";
@@ -298,6 +304,10 @@ namespace Poshuku
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleViewSources ()));
+		connect (SavePage_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleSavePage ()));
 		connect (ZoomIn_,
 				SIGNAL (triggered ()),
 				Ui_.WebView_,
@@ -998,6 +1008,15 @@ namespace Poshuku
 		viewer->SetHtml (html);
 		viewer->show ();
 	}
+	
+	void BrowserWidget::handleSavePage ()
+	{
+		Entity e = Util::MakeEntity (Ui_.WebView_->url (),
+				QString (),
+				FromUserInitiated);
+		e.Additional_ ["AllowedSemantics"] = QStringList ("fetch") << "save";
+		emit gotEntity (e);
+	}
 
 	void BrowserWidget::focusLineEdit ()
 	{
@@ -1120,6 +1139,7 @@ namespace Poshuku
 		PrintPreview_->setEnabled (true);
 		ScreenSave_->setEnabled (true);
 		ViewSources_->setEnabled (true);
+		SavePage_->setEnabled (true);
 	}
 
 	void BrowserWidget::handleEntityAction ()

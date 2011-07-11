@@ -36,6 +36,7 @@
 #include "usertune.h"
 #include "usermood.h"
 #include "useractivity.h"
+#include "userlocation.h"
 #include "privacylistsconfigdialog.h"
 #include "mediacall.h"
 
@@ -364,6 +365,23 @@ namespace Xoox
 		activity.SetText (text);
 		
 		ClientConnection_->GetPubSubManager ()->PublishEvent (&activity);
+	}
+	
+	void GlooxAccount::SetGeolocationInfo (const GeolocationInfo_t& info)
+	{
+		UserLocation location;
+		location.SetInfo (info);
+		ClientConnection_->GetPubSubManager ()->PublishEvent (&location);
+	}
+	
+	GeolocationInfo_t GlooxAccount::GetUserGeolocationInfo (QObject *obj,
+			const QString& variant) const
+	{
+		EntryBase *entry = qobject_cast<EntryBase*> (obj);
+		if (!entry)
+			return GeolocationInfo_t ();
+		
+		return entry->GetGeolocationInfo (variant);
 	}
 	
 	ISupportMediaCalls::MediaCallFeatures GlooxAccount::GetMediaCallFeatures () const

@@ -20,7 +20,7 @@
 #define PLUGINS_SUMMARY_CORE_H
 #include <QObject>
 #include <QHash>
-#include <plugininterface/mergemodel.h>
+#include <util/mergemodel.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/ifinder.h>
 

@@ -22,7 +22,7 @@
 #include <boost/scoped_array.hpp>
 #include <QLocalSocket>
 #include <QUrl>
-#include "plugininterface/util.h"
+#include "util/util.h"
 #include "interfaces/structures.h"
 #include "mainwindow.h"
 #include "application.h"

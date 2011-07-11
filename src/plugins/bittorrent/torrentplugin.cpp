@@ -32,8 +32,9 @@
 #include <QHeaderView>
 #include <QInputDialog>
 #include <libtorrent/session.hpp>
-#include <plugininterface/tagscompletionmodel.h>
-#include <plugininterface/util.h>
+#include <interfaces/entitytesthandleresult.h>
+#include <util/tagscompletionmodel.h>
+#include <util/util.h>
 #include "core.h"
 #include "addtorrent.h"
 #include "addmultipletorrents.h"
@@ -150,7 +151,7 @@ namespace LeechCraft
 					Core::Instance ()->PauseTorrent (i);
 			}
 
-			bool TorrentPlugin::CouldDownload (const Entity& e) const
+			EntityTestHandleResult TorrentPlugin::CouldDownload (const Entity& e) const
 			{
 				return Core::Instance ()->CouldDownload (e);
 			}
@@ -258,7 +259,7 @@ namespace LeechCraft
 				return result;
 			}
 
-			bool TorrentPlugin::CouldHandle (const LeechCraft::Entity& e) const
+			EntityTestHandleResult TorrentPlugin::CouldHandle (const LeechCraft::Entity& e) const
 			{
 				return Core::Instance ()->CouldHandle (e);
 			}

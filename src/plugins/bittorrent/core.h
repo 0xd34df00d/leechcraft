@@ -32,7 +32,7 @@
 #include <libtorrent/session_status.hpp>
 #include <interfaces/iinfo.h>
 #include <interfaces/structures.h>
-#include <plugininterface/tagscompletionmodel.h>
+#include <util/tagscompletionmodel.h>
 #include "torrentinfo.h"
 #include "fileinfo.h"
 #include "peerinfo.h"
@@ -48,6 +48,8 @@ namespace libtorrent
 	struct cache_status;
 	class session;
 };
+
+struct EntityTestHandleResult;
 
 namespace LeechCraft
 {
@@ -164,8 +166,8 @@ namespace LeechCraft
 				void SetProxy (ICoreProxy_ptr);
 				ICoreProxy_ptr GetProxy () const;
 
-				bool CouldDownload (const LeechCraft::Entity&) const;
-				bool CouldHandle (const LeechCraft::Entity&) const;
+				EntityTestHandleResult CouldDownload (const LeechCraft::Entity&) const;
+				EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
 				void Handle (LeechCraft::Entity);
 				PiecesModel* GetPiecesModel ();
 				void ClearPieces ();

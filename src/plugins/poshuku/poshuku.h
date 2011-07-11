@@ -82,7 +82,7 @@ namespace Poshuku
 
 		boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
 
-		bool CouldHandle (const LeechCraft::Entity&) const;
+		EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
 		void Handle (LeechCraft::Entity);
 
 		void Open (const QString&);

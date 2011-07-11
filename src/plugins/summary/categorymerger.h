@@ -20,7 +20,7 @@
 #define PLUGINS_SUMMARY_CATEGORYMERGER_H
 #include <vector>
 #include <boost/shared_ptr.hpp>
-#include <plugininterface/mergemodel.h>
+#include <util/mergemodel.h>
 #include <interfaces/ifinder.h>
 #include "filtermodel.h"
 

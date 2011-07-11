@@ -19,8 +19,8 @@
 #include "ircserverhandler.h"
 #include <boost/bind.hpp>
 #include <QTextCodec>
-#include <plugininterface/util.h>
-#include <plugininterface/notificationactionhandler.h>
+#include <util/util.h>
+#include <util/notificationactionhandler.h>
 #include "channelhandler.h"
 #include "channelclentry.h"
 #include "channelpublicmessage.h"

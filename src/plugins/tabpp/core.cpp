@@ -22,7 +22,7 @@
 #include <QApplication>
 #include <QSortFilterProxyModel>
 #include <QDynamicPropertyChangeEvent>
-#include <plugininterface/treeitem.h>
+#include <util/treeitem.h>
 #include <interfaces/ihavetabs.h>
 
 bool operator< (const QStringList& left, const QStringList& right)

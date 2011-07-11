@@ -28,37 +28,34 @@ class QTranslator;
 
 namespace LeechCraft
 {
-	struct Entity;
+struct Entity;
 
-	namespace Plugins
+namespace Qrosp
+{
+	class UtilProxy : public QObject
 	{
-		namespace Qrosp
-		{
-			class UtilProxy : public QObject
-			{
-				Q_OBJECT
-			public:
-				UtilProxy (QObject* = 0);
-			public slots:
-				QString GetUserText (const LeechCraft::Entity& entity) const;
-				QString MakePrettySize (qint64 size) const;
-				QString MakeTimeFromLong (ulong time) const;
-				QTranslator* InstallTranslator (const QString& base,
-						const QString& prefix, const QString& appname) const;
-				QString GetLocaleName () const;
-				QString GetLanguage () const;
-				QDir CreateIfNotExists (const QString& path) const;
-				QString GetTemporaryName (const QString& pattern) const;
-				QObject* MakeEntity (const QVariant& entity,
-						const QString& location,
-						LeechCraft::TaskParameters tp,
-						const QString& mime) const;
-				QObject* MakeNotification (const QString& header,
-						const QString& text,
-						Priority priority) const;
-			};
-		};
+		Q_OBJECT
+	public:
+		UtilProxy (QObject* = 0);
+	public slots:
+		QString GetUserText (const LeechCraft::Entity& entity) const;
+		QString MakePrettySize (qint64 size) const;
+		QString MakeTimeFromLong (ulong time) const;
+		QTranslator* InstallTranslator (const QString& base,
+				const QString& prefix, const QString& appname) const;
+		QString GetLocaleName () const;
+		QString GetLanguage () const;
+		QDir CreateIfNotExists (const QString& path) const;
+		QString GetTemporaryName (const QString& pattern) const;
+		QObject* MakeEntity (const QVariant& entity,
+				const QString& location,
+				LeechCraft::TaskParameters tp,
+				const QString& mime) const;
+		QObject* MakeNotification (const QString& header,
+				const QString& text,
+				Priority priority) const;
 	};
-};
+}
+}
 
 #endif

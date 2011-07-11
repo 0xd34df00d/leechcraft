@@ -29,7 +29,7 @@
 #include <QTimer>
 #include <QMainWindow>
 #include <curl/curl.h>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "inactiveworkersfilter.h"
 #include "xmlsettingsmanager.h"
 #include "watchthread.h"

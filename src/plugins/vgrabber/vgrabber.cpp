@@ -18,7 +18,7 @@
 
 #include "vgrabber.h"
 #include <QIcon>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "audiofindproxy.h"
 #include "videofindproxy.h"

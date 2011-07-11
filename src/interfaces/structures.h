@@ -40,46 +40,58 @@ namespace LeechCraft
 		/** Use default parameters.
 		 */
 		NoParameters = 0,
+
 		/** Task should not be started automatically after addition.
 		 */
 		NoAutostart = 1,
+
 		/** Task should not be saved in history.
 		 */
 		DoNotSaveInHistory = 2,
+
 		/** Task is really downloaded, so, a file, for example, has
 		 * appeared as a result.
 		 */
 		IsDownloaded = 4,
+
 		/** Task is created as a result of user's actions.
 		 */
 		FromUserInitiated = 8,
+
 		/** User should not be notified about task finish.
 		 */
 		DoNotNotifyUser = 32,
+
 		/** Task is used internally and would not be visible to the user
 		 * at all.
 		 */
 		Internal = 64,
+
 		/** Task should not be saved as it would have no meaning after
 		 * next start.
 		 */
 		NotPersistent = 128,
+
 		/** When the task is finished, it should not be announced via
 		 * gotEntity() signal.
 		 */
 		DoNotAnnounceEntity = 256,
+
 		/** This task should not be downloaded, only handled by a
 		 * handler.
 		 */
 		OnlyHandle = 512,
+
 		/** This task should not be handled, only downloaded by a
 		 * downloader.
 		 */
 		OnlyDownload = 1024,
+
 		/** This task should be automatically accepted if any handler is
 		 * available.
 		 */
 		AutoAccept = 2048,
+
 		/** The plugin that was the source of this task should be
 		 * queried if it could handle the task.
 		 */
@@ -259,4 +271,3 @@ Q_DECLARE_METATYPE (QPointer<QObject*>);
 Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::TaskParameters);
 
 #endif
-

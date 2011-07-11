@@ -22,7 +22,7 @@
 #include <QByteArray>
 #include <QDomDocument>
 #include <QDomElement>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "core.h"
 
 namespace LeechCraft

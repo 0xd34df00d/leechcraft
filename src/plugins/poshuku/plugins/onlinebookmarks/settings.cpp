@@ -21,7 +21,7 @@
 #include <QMessageBox>
 #include <QDialog>
 #include <QDateTime>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "onlinebookmarks.h"
 #include "readitlater/readitlaterbookmarksservice.h"
 #include "core.h"

@@ -21,7 +21,7 @@
 #include <QMenu>
 #include <QSortFilterProxyModel>
 #include <QMainWindow>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "requestmodel.h"
 #include "headermodel.h"
 

@@ -22,6 +22,8 @@
 #include <QtPlugin>
 #include "structures.h"
 
+struct EntityTestHandleResult;
+
 /** @brief Interface for plugins able to handle entities.
  *
  * This is similar to IDownload, but it doesn't require to implement all
@@ -44,12 +46,12 @@ public:
 	 *
 	 * @param[in] entity A Entity structure that could be possibly
 	 * handled by this plugin.
-	 * @return Whether this plugin can handle this particular entity.
+	 * @return The result of entity 
 	 *
 	 * @sa Handle
 	 * @sa LeechCraft::Entity
 	 */
-	virtual bool CouldHandle (const LeechCraft::Entity& entity) const = 0;
+	virtual EntityTestHandleResult CouldHandle (const LeechCraft::Entity& entity) const = 0;
 
 	/** @brief Notifies the plugin that it should handle the given entity.
 	 *

@@ -17,7 +17,7 @@
  **********************************************************************/
 
 #include "tagsasker.h"
-#include <plugininterface/tagscompleter.h>
+#include <util/tagscompleter.h>
 
 namespace LeechCraft
 {
