@@ -747,13 +747,13 @@ namespace Azoth
 
 		ToggleRichText_ = new QAction (tr ("Enable rich text"), this);
 		ToggleRichText_->setProperty ("ActionIcon", "richtext");
+		ToggleRichText_->setCheckable (true);
+		ToggleRichText_->setChecked (XmlSettingsManager::Instance ()
+					.property ("ShowRichTextMessageBody").toBool ());
 		connect (ToggleRichText_,
 				SIGNAL (toggled (bool)),
 				this,
 				SLOT (handleRichTextToggled ()));
-		ToggleRichText_->setCheckable (true);
-		ToggleRichText_->setChecked (XmlSettingsManager::Instance ()
-					.property ("ShowRichTextMessageBody").toBool ());
 		TabToolbar_->addAction (ToggleRichText_);
 		TabToolbar_->addSeparator ();
 	}
