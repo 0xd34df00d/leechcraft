@@ -72,7 +72,7 @@ namespace Autopaste
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		return QIcon (":/plugins/azoth/plugins/autopaste/resources/images/autopaste.svg");
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
