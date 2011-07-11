@@ -21,34 +21,30 @@
 #include <memory>
 #include <QDialog>
 #include <QModelIndex>
-#include <plugininterface/tagscompleter.h>
+#include <util/tagscompleter.h>
 #include "ui_feedsettings.h"
 #include "common.h"
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Aggregator
+{
+	class FeedSettings : public QDialog
 	{
-		namespace Aggregator
-		{
-			class FeedSettings : public QDialog
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				Ui::FeedSettings Ui_;
-				std::auto_ptr<LeechCraft::Util::TagsCompleter> ChannelTagsCompleter_;
-				QModelIndex Index_;
-				IDType_t SettingsID_;
-			public:
-				FeedSettings (const QModelIndex&, QWidget* = 0);
-			public slots:
-				virtual void accept ();
-			private slots:
-				void on_UpdateFavicon__released ();
-			};
-		};
+		Ui::FeedSettings Ui_;
+		std::auto_ptr<LeechCraft::Util::TagsCompleter> ChannelTagsCompleter_;
+		QModelIndex Index_;
+		IDType_t SettingsID_;
+	public:
+		FeedSettings (const QModelIndex&, QWidget* = 0);
+	public slots:
+		virtual void accept ();
+	private slots:
+		void on_UpdateFavicon__released ();
 	};
-};
+}
+}
 
 #endif
-

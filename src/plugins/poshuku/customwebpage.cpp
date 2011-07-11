@@ -29,8 +29,8 @@
 #include <QSysInfo>
 #include <qwebelement.h>
 #include <qwebhistory.h>
-#include <plugininterface/util.h>
-#include <plugininterface/defaulthookproxy.h>
+#include <util/util.h>
+#include <util/defaulthookproxy.h>
 #include "xmlsettingsmanager.h"
 #include "customwebview.h"
 #include "core.h"
@@ -336,9 +336,10 @@ namespace Poshuku
 		
 		proxy->FillValue ("request", request);
 
-		LeechCraft::Entity e = Util::MakeEntity (request.url (),
+		Entity e = Util::MakeEntity (request.url (),
 				QString (),
-				LeechCraft::FromUserInitiated);
+				FromUserInitiated);
+		e.Additional_ ["AllowedSemantics"] = QStringList ("fetch") << "save";
 		emit gotEntity (e);
 	}
 
@@ -387,6 +388,19 @@ namespace Poshuku
 
 	void CustomWebPage::handleLoadFinished (bool ok)
 	{
+		QWebElement body = mainFrame ()->findFirstElement ("body");
+
+		if (body.findAll ("*").count () == 1 && 
+				body.firstChild ().tagName () == "IMG")
+			mainFrame ()->evaluateJavaScript ("function centerImg() {"
+					"var img = document.querySelector('img');"
+					"img.style.left = Math.floor((document.width - img.width) / 2) + 'px';"
+					"img.style.top =  Math.floor((document.height - img.height) / 2) + 'px';"
+					"img.style.position = 'fixed';"
+					"}"
+					"window.addEventListener('resize', centerImg, false);"
+					"centerImg();");
+
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
 		emit hookLoadFinished (proxy, this, ok);
 		if (proxy->IsCancelled ())

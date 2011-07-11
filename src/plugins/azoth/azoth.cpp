@@ -26,8 +26,8 @@
 #include <QAudioDeviceInfo>
 #include <interfaces/entitytesthandleresult.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <plugininterface/resourceloader.h>
-#include <plugininterface/util.h>
+#include <util/resourceloader.h>
+#include <util/util.h>
 #include "core.h"
 #include "mainwidget.h"
 #include "chattabsmanager.h"

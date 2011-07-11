@@ -23,7 +23,7 @@
 #include <QDir>
 #include <QFileDialog>
 #include <xmlsettingsdialog/basesettingsmanager.h>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "shooterdialog.h"
 #include "poster.h"
 

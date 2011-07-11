@@ -20,7 +20,7 @@
 #include <QIcon>
 #include <QTranslator>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include <interfaces/iproxyobject.h>
 #include <interfaces/iaccount.h>
 #include "xmlsettingsmanager.h"
@@ -75,7 +75,7 @@ namespace Autoidler
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		return QIcon (":/plugins/azoth/plugins/autoidler/resources/images/autoidler.svg");
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const

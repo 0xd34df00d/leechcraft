@@ -21,8 +21,8 @@
 #include <QStringList>
 #include <QSqlDatabase>
 #include <QSqlError>
-#include <plugininterface/util.h>
-#include <plugininterface/dblock.h>
+#include <util/util.h>
+#include <util/dblock.h>
 #include <interfaces/iclentry.h>
 #include <boost/graph/graph_concepts.hpp>
 #include <interfaces/iaccount.h>

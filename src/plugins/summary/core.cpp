@@ -18,7 +18,7 @@
 
 #include "core.h"
 #include <interfaces/ijobholder.h>
-#include <plugininterface/tagsfiltermodel.h>
+#include <util/tagsfiltermodel.h>
 #include "summarywidget.h"
 #include "requestnormalizer.h"
 #include "summarytagsfilter.h"

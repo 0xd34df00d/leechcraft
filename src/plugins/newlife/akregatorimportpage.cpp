@@ -23,7 +23,7 @@
 #include <QMessageBox>
 #include <QSettings>
 #include <QUrl>
-#include <plugininterface/util.h>
+#include <util/util.h>
 
 namespace LeechCraft
 {

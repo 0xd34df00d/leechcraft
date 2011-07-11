@@ -32,7 +32,7 @@
 #include <QScrollArea>
 #include <QDomNodeList>
 #include <QtScript>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "itemhandlerfactory.h"
 
 using namespace LeechCraft;

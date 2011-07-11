@@ -37,9 +37,9 @@
 #include <QNetworkReply>
 #include <QAbstractNetworkCache>
 #include <QClipboard>
-#include <plugininterface/util.h>
-#include <plugininterface/customcookiejar.h>
-#include <plugininterface/defaulthookproxy.h>
+#include <util/util.h>
+#include <util/customcookiejar.h>
+#include <util/defaulthookproxy.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/idownload.h>

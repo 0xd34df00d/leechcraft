@@ -19,7 +19,7 @@
 #include "deadlyrics.h"
 #include <QIcon>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "core.h"
 #include "findproxy.h"
 #include "xmlsettingsmanager.h"

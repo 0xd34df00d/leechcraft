@@ -22,7 +22,7 @@
 #include <QDomDocument>
 #include <QTimer>
 #include <QXmppLogger.h>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include <interfaces/iaccount.h>
 #include <interfaces/iproxyobject.h>
 #include "glooxprotocol.h"

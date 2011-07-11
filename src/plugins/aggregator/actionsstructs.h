@@ -25,41 +25,37 @@ class QWidget;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Aggregator
+{
+	struct AppWideActions
 	{
-		namespace Aggregator
-		{
-			struct AppWideActions
-			{
-				Q_DECLARE_TR_FUNCTIONS (AppWideActions);
-			public:
-				QAction *ActionAddFeed_;
-				QAction *ActionUpdateFeeds_;
-				QAction *ActionRegexpMatcher_;
-				QAction *ActionImportOPML_;
-				QAction *ActionExportOPML_;
-				QAction *ActionImportBinary_;
-				QAction *ActionExportBinary_;
-				QAction *ActionExportFB2_;
+		Q_DECLARE_TR_FUNCTIONS (AppWideActions);
+	public:
+		QAction *ActionAddFeed_;
+		QAction *ActionUpdateFeeds_;
+		QAction *ActionRegexpMatcher_;
+		QAction *ActionImportOPML_;
+		QAction *ActionExportOPML_;
+		QAction *ActionImportBinary_;
+		QAction *ActionExportBinary_;
+		QAction *ActionExportFB2_;
 
-				void SetupActionsStruct (QWidget*);
-			};
-
-			struct ChannelActions
-			{
-				Q_DECLARE_TR_FUNCTIONS (ChannelActions);
-			public:
-				QAction *ActionRemoveFeed_;
-				QAction *ActionUpdateSelectedFeed_;
-				QAction *ActionMarkChannelAsRead_;
-				QAction *ActionMarkChannelAsUnread_;
-				QAction *ActionChannelSettings_;
-
-				void SetupActionsStruct (QWidget*);
-			};
-		};
+		void SetupActionsStruct (QWidget*);
 	};
-};
+
+	struct ChannelActions
+	{
+		Q_DECLARE_TR_FUNCTIONS (ChannelActions);
+	public:
+		QAction *ActionRemoveFeed_;
+		QAction *ActionUpdateSelectedFeed_;
+		QAction *ActionMarkChannelAsRead_;
+		QAction *ActionMarkChannelAsUnread_;
+		QAction *ActionChannelSettings_;
+
+		void SetupActionsStruct (QWidget*);
+	};
+}
+}
 
 #endif
-

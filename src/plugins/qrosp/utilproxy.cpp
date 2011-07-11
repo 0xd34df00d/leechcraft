@@ -17,72 +17,69 @@
  **********************************************************************/
 
 #include "utilproxy.h"
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include <interfaces/structures.h>
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Qrosp
+{
+	UtilProxy::UtilProxy (QObject *parent)
+	: QObject (parent)
 	{
-		namespace Qrosp
-		{
-			UtilProxy::UtilProxy (QObject *parent)
-			: QObject (parent)
-			{
-			}
+	}
 
-			QString UtilProxy::GetUserText (const LeechCraft::Entity& entity) const
-			{
-				return Util::GetUserText (entity);
-			}
+	QString UtilProxy::GetUserText (const LeechCraft::Entity& entity) const
+	{
+		return Util::GetUserText (entity);
+	}
 
-			QString UtilProxy::MakePrettySize (qint64 size) const
-			{
-				return Util::MakePrettySize (size);
-			}
+	QString UtilProxy::MakePrettySize (qint64 size) const
+	{
+		return Util::MakePrettySize (size);
+	}
 
-			QString UtilProxy::MakeTimeFromLong (ulong time) const
-			{
-				return Util::MakePrettySize (time);
-			}
+	QString UtilProxy::MakeTimeFromLong (ulong time) const
+	{
+		return Util::MakePrettySize (time);
+	}
 
-			QTranslator* UtilProxy::InstallTranslator (const QString& base,
-					const QString& prefix, const QString& appname) const
-			{
-				return Util::InstallTranslator (base, prefix, appname);
-			}
+	QTranslator* UtilProxy::InstallTranslator (const QString& base,
+			const QString& prefix, const QString& appname) const
+	{
+		return Util::InstallTranslator (base, prefix, appname);
+	}
 
-			QString UtilProxy::GetLocaleName () const
-			{
-				return Util::GetLocaleName ();
-			}
+	QString UtilProxy::GetLocaleName () const
+	{
+		return Util::GetLocaleName ();
+	}
 
-			QString UtilProxy::GetLanguage () const
-			{
-				return Util::GetLanguage ();
-			}
+	QString UtilProxy::GetLanguage () const
+	{
+		return Util::GetLanguage ();
+	}
 
-			QDir UtilProxy::CreateIfNotExists (const QString& path) const
-			{
-				return Util::CreateIfNotExists (path);
-			}
+	QDir UtilProxy::CreateIfNotExists (const QString& path) const
+	{
+		return Util::CreateIfNotExists (path);
+	}
 
-			QString UtilProxy::GetTemporaryName (const QString& pattern) const
-			{
-				return Util::GetTemporaryName (pattern);
-			}
+	QString UtilProxy::GetTemporaryName (const QString& pattern) const
+	{
+		return Util::GetTemporaryName (pattern);
+	}
 
-			QObject* UtilProxy::MakeEntity (const QVariant& entity,
-					const QString& location, LeechCraft::TaskParameters tp, const QString& mime) const
-			{
-				return new EntityWrapper (Util::MakeEntity (entity, location, tp,  mime));
-			}
+	QObject* UtilProxy::MakeEntity (const QVariant& entity,
+			const QString& location, LeechCraft::TaskParameters tp, const QString& mime) const
+	{
+		return new EntityWrapper (Util::MakeEntity (entity, location, tp,  mime));
+	}
 
-			QObject* UtilProxy::MakeNotification (const QString& header,
-					const QString& text, Priority priority) const
-			{
-				return new EntityWrapper (Util::MakeNotification (header, text, priority));
-			}
-		};
-	};
-};
+	QObject* UtilProxy::MakeNotification (const QString& header,
+			const QString& text, Priority priority) const
+	{
+		return new EntityWrapper (Util::MakeNotification (header, text, priority));
+	}
+}
+}

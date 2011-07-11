@@ -19,7 +19,7 @@
 #include "lmp.h"
 #include <QToolBar>
 #include <interfaces/entitytesthandleresult.h>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "core.h"

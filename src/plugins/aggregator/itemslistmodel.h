@@ -25,46 +25,43 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Aggregator
+{
+	class ItemsListModel : public QAbstractItemModel
 	{
-		namespace Aggregator
-		{
-			class ItemsListModel : public QAbstractItemModel
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				QStringList ItemHeaders_;
-				items_shorts_t CurrentItems_;
-				int CurrentRow_;
-				// First is ParentURL_ and second is Title_
-				IDType_t CurrentChannel_;
-				bool MayBeRichText_;
-			public:
-				ItemsListModel (QObject* = 0);
+		QStringList ItemHeaders_;
+		items_shorts_t CurrentItems_;
+		int CurrentRow_;
+		// First is ParentURL_ and second is Title_
+		IDType_t CurrentChannel_;
+		bool MayBeRichText_;
+	public:
+		ItemsListModel (QObject* = 0);
 
-				int GetSelectedRow () const;
-				const IDType_t& GetCurrentChannel () const;
-				void SetCurrentChannel (const IDType_t&);
-				void Selected (const QModelIndex&);
-				void MarkItemReadStatus (const QModelIndex&, bool);
-				const ItemShort& GetItem (const QModelIndex&) const;
-				bool IsItemRead (int) const;
-				QStringList GetCategories (int) const;
-				void Reset (const IDType_t&);
-				void ItemDataUpdated (Item_ptr);
+		int GetSelectedRow () const;
+		const IDType_t& GetCurrentChannel () const;
+		void SetCurrentChannel (const IDType_t&);
+		void Selected (const QModelIndex&);
+		void MarkItemReadStatus (const QModelIndex&, bool);
+		const ItemShort& GetItem (const QModelIndex&) const;
+		bool IsItemRead (int) const;
+		QStringList GetCategories (int) const;
+		void Reset (const IDType_t&);
+		void ItemDataUpdated (Item_ptr);
 
-				int columnCount (const QModelIndex& = QModelIndex ()) const;
-				QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
-				Qt::ItemFlags flags (const QModelIndex&) const;
-				QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const;
-				QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const;
-				QModelIndex parent (const QModelIndex&) const;
-				int rowCount (const QModelIndex& = QModelIndex ()) const;
-			private slots:
-				void handleChannelRemoved (IDType_t);
-			};
-		}
-	}
+		int columnCount (const QModelIndex& = QModelIndex ()) const;
+		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
+		Qt::ItemFlags flags (const QModelIndex&) const;
+		QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const;
+		QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const;
+		QModelIndex parent (const QModelIndex&) const;
+		int rowCount (const QModelIndex& = QModelIndex ()) const;
+	private slots:
+		void handleChannelRemoved (IDType_t);
+	};
+}
 }
 
 #endif

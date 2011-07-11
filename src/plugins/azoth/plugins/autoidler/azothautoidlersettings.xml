@@ -5,18 +5,18 @@
 		<item type="groupbox" property="EnableAutoidler" default="true" checkable="true">
 			<label value="Enable autoidler" />
 			<item type="spinbox" property="AwayTimeout" default="10">
-				<label value="&quot;Away&quot; timeout:" />
+				<label value="'Away' timeout:" />
 				<suffix value=" min" />
 			</item>
 			<item type="spinbox" property="NATimeout" default="30">
-				<label value="&quot;Not Available&quot; timeout:" />
+				<label value="'Not Available' timeout:" />
 				<suffix value=" min" />
 			</item>
 			<item type="multiline" property="AwayText" default="">
-				<label value="&quot;Away&quot; status text:" />
+				<label value="'Away' status text:" />
 			</item>
 			<item type="multiline" property="NAText" default="">
-				<label value="&quot;Not Available&quot; status text:" />
+				<label value="'Not Available' status text:" />
 			</item>
 		</item>
 	</page>

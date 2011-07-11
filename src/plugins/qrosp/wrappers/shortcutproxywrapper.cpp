@@ -20,19 +20,16 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Qrosp
+{
+	ShortcutProxyWrapper::ShortcutProxyWrapper (const IShortcutProxy *proxy)
+	: ShortcutProxy_ (proxy)
 	{
-		namespace Qrosp
-		{
-			ShortcutProxyWrapper::ShortcutProxyWrapper (const IShortcutProxy *proxy)
-			: ShortcutProxy_ (proxy)
-			{
-			}
+	}
 
-			QList<QKeySequence> ShortcutProxyWrapper::GetShortcuts (const QObject *object, const QString& id) const
-			{
-				return ShortcutProxy_->GetShortcuts (object, id);
-			}
-		};
-	};
-};
+	QList<QKeySequence> ShortcutProxyWrapper::GetShortcuts (const QObject *object, const QString& id) const
+	{
+		return ShortcutProxy_->GetShortcuts (object, id);
+	}
+}
+}

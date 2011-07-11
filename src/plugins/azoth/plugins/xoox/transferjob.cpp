@@ -18,7 +18,7 @@
 
 #include "transferjob.h"
 #include <QFile>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "core.h"
 #include "clientconnection.h"
 #include "transfermanager.h"

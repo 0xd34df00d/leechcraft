@@ -40,8 +40,7 @@ ADD_LIBRARY (leechcraft_poshuku_fatape SHARED
 	)
 TARGET_LINK_LIBRARIES (leechcraft_poshuku_fatape
 	${QT_LIBRARIES}
-	plugininterface
-	xmlsettingsdialog
+	${LEECHCRAFT_LIBRARIES}
 	)
 INSTALL (TARGETS leechcraft_poshuku_fatape DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES poshukufatapesettings.xml DESTINATION ${LC_SETTINGS_DEST})

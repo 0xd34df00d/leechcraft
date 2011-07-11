@@ -22,8 +22,8 @@
 #include <QFile>
 #include <QVector>
 #include <QCoreApplication>
-#include <plugininterface/util.h>
-#include <plugininterface/syncops.h>
+#include <util/util.h>
+#include <util/syncops.h>
 
 namespace LeechCraft
 {

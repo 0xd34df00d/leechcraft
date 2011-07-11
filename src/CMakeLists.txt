@@ -76,12 +76,12 @@ IF (CMAKE_INSTALL_PREFIX AND NOT STANDARD_PREFIX)
 	ADD_DEFINITIONS (-DINSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}")
 ENDIF (CMAKE_INSTALL_PREFIX AND NOT STANDARD_PREFIX)
 
-ADD_SUBDIRECTORY (plugininterface)
+ADD_SUBDIRECTORY (util)
 ADD_SUBDIRECTORY (xmlsettingsdialog)
 ADD_SUBDIRECTORY (iconsets)
 
 SET (LEECHCRAFT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
-SET (LEECHCRAFT_LIBRARIES plugininterface xmlsettingsdialog)
+SET (LEECHCRAFT_LIBRARIES lcutil xmlsettingsdialog)
 
 OPTION (ENABLE_SUMMARY "Build Summary, the plugin that shows a handy summary of the stuff going on" ON)
 OPTION (ENABLE_TORRENT "Build BitTorrent, the BitTorrent client" ON)
@@ -271,8 +271,7 @@ INCLUDE (${QT_USE_FILE})
 
 INCLUDE_DIRECTORIES (${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
-	.
-	plugininterface/)
+	${CMAKE_CURRENT_SOURCE_DIR})
 
 SET (SRCS
 	mainwindow.cpp
@@ -449,15 +448,15 @@ ELSE (UNIX)
 ENDIF (UNIX)
 
 TARGET_LINK_LIBRARIES(leechcraft
-						${QT_LIBRARIES}
-						${Boost_PROGRAM_OPTIONS_LIBRARY}
-						plugininterface
-						xmlsettingsdialog)
+		${QT_LIBRARIES}
+		${Boost_PROGRAM_OPTIONS_LIBRARY}
+		lcutil
+		xmlsettingsdialog)
 INSTALL (TARGETS leechcraft DESTINATION bin)
 INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 INSTALL (FILES coresettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
-INSTALL (DIRECTORY plugininterface/ DESTINATION include/leechcraft/plugininterface/
+INSTALL (DIRECTORY util/ DESTINATION include/leechcraft/util/
 	PATTERN ".h")
 INSTALL (DIRECTORY interfaces/ DESTINATION include/leechcraft/interfaces/
 	PATTERN ".h")

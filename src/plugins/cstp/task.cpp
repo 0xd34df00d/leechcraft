@@ -28,7 +28,7 @@
 #include <QDir>
 #include <QTimer>
 #include <QtDebug>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "hook.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"

@@ -51,9 +51,9 @@
 #include <QDataStream>
 #include <QRegExp>
 #include <QKeySequence>
-#include <plugininterface/util.h>
-#include <plugininterface/defaulthookproxy.h>
-#include <plugininterface/notificationactionhandler.h>
+#include <util/util.h>
+#include <util/defaulthookproxy.h>
+#include <util/notificationactionhandler.h>
 #include "core.h"
 #include "historymodel.h"
 #include "finddialog.h"

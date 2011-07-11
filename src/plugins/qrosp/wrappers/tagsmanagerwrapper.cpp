@@ -21,53 +21,50 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Qrosp
+{
+	TagsManagerWrapper::TagsManagerWrapper (ITagsManager *manager)
+	: Manager_ (manager)
 	{
-		namespace Qrosp
-		{
-			TagsManagerWrapper::TagsManagerWrapper (ITagsManager *manager)
-			: Manager_ (manager)
-			{
-				connect (Manager_->GetObject (),
-						SIGNAL (tagsUpdated (const QStringList&)),
-						this,
-						SIGNAL (tagsUpdated (const QStringList&)));
-			}
+		connect (Manager_->GetObject (),
+				SIGNAL (tagsUpdated (const QStringList&)),
+				this,
+				SIGNAL (tagsUpdated (const QStringList&)));
+	}
 
-			QString TagsManagerWrapper::GetID (const QString& tag)
-			{
-				return Manager_->GetID (tag);
-			}
+	QString TagsManagerWrapper::GetID (const QString& tag)
+	{
+		return Manager_->GetID (tag);
+	}
 
-			QString TagsManagerWrapper::GetTag (const QString& id) const
-			{
-				return Manager_->GetTag (id);
-			}
+	QString TagsManagerWrapper::GetTag (const QString& id) const
+	{
+		return Manager_->GetTag (id);
+	}
 
-			QStringList TagsManagerWrapper::GetAllTags () const
-			{
-				return Manager_->GetAllTags ();
-			}
+	QStringList TagsManagerWrapper::GetAllTags () const
+	{
+		return Manager_->GetAllTags ();
+	}
 
-			QStringList TagsManagerWrapper::Split (const QString& string) const
-			{
-				return Manager_->Split (string);
-			}
+	QStringList TagsManagerWrapper::Split (const QString& string) const
+	{
+		return Manager_->Split (string);
+	}
 
-			QString TagsManagerWrapper::Join (const QStringList& tags) const
-			{
-				return Manager_->Join (tags);
-			}
+	QString TagsManagerWrapper::Join (const QStringList& tags) const
+	{
+		return Manager_->Join (tags);
+	}
 
-			QAbstractItemModel* TagsManagerWrapper::GetModel ()
-			{
-				return Manager_->GetModel ();
-			}
+	QAbstractItemModel* TagsManagerWrapper::GetModel ()
+	{
+		return Manager_->GetModel ();
+	}
 
-			QObject* TagsManagerWrapper::GetObject ()
-			{
-				return Manager_->GetObject ();
-			}
-		};
-	};
-};
+	QObject* TagsManagerWrapper::GetObject ()
+	{
+		return Manager_->GetObject ();
+	}
+}
+}

@@ -24,7 +24,7 @@
 #include <QApplication>
 #include <QtDebug>
 #include <interfaces/structures.h>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "requestbuilder.h"
 
 namespace LeechCraft

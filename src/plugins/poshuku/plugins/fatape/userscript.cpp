@@ -30,7 +30,7 @@
 #include <QNetworkRequest>
 #include <QTextCodec>
 #include <QTextStream>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "greasemonkey.h"
 #include "resourcedownloadhandler.h"
 

@@ -31,11 +31,11 @@
 #include <QMessageBox>
 #include <QClipboard>
 #include <QtDebug>
-#include <plugininterface/resourceloader.h>
-#include <plugininterface/util.h>
-#include <plugininterface/defaulthookproxy.h>
-#include <plugininterface/categoryselector.h>
-#include <plugininterface/notificationactionhandler.h>
+#include <util/resourceloader.h>
+#include <util/util.h>
+#include <util/defaulthookproxy.h>
+#include <util/categoryselector.h>
+#include <util/notificationactionhandler.h>
 #include <interfaces/iplugin2.h>
 #include "interfaces/iprotocolplugin.h"
 #include "interfaces/iprotocol.h"
@@ -725,10 +725,19 @@ namespace Azoth
 				body;
 	}
 	
-	QString Core::HandleSmiles (QString body) const
+	QString Core::HandleSmiles (QString body)
 	{
 		const QString& pack = XmlSettingsManager::Instance ()
-				.property ("SmileIcons").toString ();				
+				.property ("SmileIcons").toString ();
+
+		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		emit hookGonnaHandleSmiles (proxy, body, pack);
+		if (proxy->IsCancelled ())
+		{
+			const QString& cand = proxy->GetReturnValue ().toString ();
+			return cand.isEmpty () ? body : cand;
+		}
+
 		if (pack.isEmpty ())
 			return body;
 

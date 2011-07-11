@@ -23,7 +23,7 @@
 #include <QToolButton>
 #include <QInputDialog>
 #include <QTimer>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "interfaces/iclentry.h"
 #include "interfaces/ihaveconsole.h"
 #include "interfaces/isupportactivity.h"

@@ -21,7 +21,7 @@
 #include <QStyledItemDelegate>
 #include <QPointer>
 #include <QHash>
-#include <plugininterface/selectablebrowser.h>
+#include <util/selectablebrowser.h>
 
 class QTreeView;
 class QToolButton;

@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="/plugins/azoth/plugins/modnok">
+    <file>resources/images/modnok.svg</file>
+  </qresource>
+</RCC>

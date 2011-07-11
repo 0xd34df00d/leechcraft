@@ -30,8 +30,8 @@
 #include <QPropertyAnimation>
 #include <QFinalState>
 #include <QWebHitTestResult>
-#include <plugininterface/resourceloader.h>
-#include <plugininterface/util.h>
+#include <util/resourceloader.h>
+#include <util/util.h>
 #include "notificationaction.h"
 #include "xmlsettingsmanager.h"
 

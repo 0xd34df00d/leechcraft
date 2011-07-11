@@ -23,40 +23,36 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Aggregator
+{
+	class StartupThirdPage : public QWizardPage
 	{
-		namespace Aggregator
+		Q_OBJECT
+
+		Ui::StartupThirdPageWidget Ui_;
+		struct FeedInfo
 		{
-			class StartupThirdPage : public QWizardPage
-			{
-				Q_OBJECT
+			QString Name_;
+			QString DefaultTags_;
+			QString URL_;
 
-				Ui::StartupThirdPageWidget Ui_;
-				struct FeedInfo
-				{
-					QString Name_;
-					QString DefaultTags_;
-					QString URL_;
-
-					FeedInfo (const QString&, const QString&, const QString&);
-				};
-				typedef QList<FeedInfo> FeedInfos_t;
-				QMap<QString, FeedInfos_t> Sets_;
-			public:
-				StartupThirdPage (QWidget* = 0);
-
-				void initializePage ();
-			private:
-				void Populate (const QString&);
-			private slots:
-				void handleAccepted ();
-				void handleCurrentIndexChanged (const QString&);
-				void on_SelectAll__released ();
-				void on_DeselectAll__released ();
-			};
+			FeedInfo (const QString&, const QString&, const QString&);
 		};
+		typedef QList<FeedInfo> FeedInfos_t;
+		QMap<QString, FeedInfos_t> Sets_;
+	public:
+		StartupThirdPage (QWidget* = 0);
+
+		void initializePage ();
+	private:
+		void Populate (const QString&);
+	private slots:
+		void handleAccepted ();
+		void handleCurrentIndexChanged (const QString&);
+		void on_SelectAll__released ();
+		void on_DeselectAll__released ();
 	};
-};
+}
+}
 
 #endif
-

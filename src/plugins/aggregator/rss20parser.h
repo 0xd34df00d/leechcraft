@@ -23,26 +23,22 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Aggregator
+{
+	class RSS20Parser : public RSSParser
 	{
-		namespace Aggregator
-		{
-			class RSS20Parser : public RSSParser
-			{
-				RSS20Parser ();
-			public:
-				virtual ~RSS20Parser ();
-				static RSS20Parser& Instance ();
-				virtual bool CouldParse (const QDomDocument&) const;
-			private:
-				channels_container_t Parse (const QDomDocument&,
-						const IDType_t&) const;
-				Item* ParseItem (const QDomElement&,
-						const IDType_t&) const;
-			};
-		};
+		RSS20Parser ();
+	public:
+		virtual ~RSS20Parser ();
+		static RSS20Parser& Instance ();
+		virtual bool CouldParse (const QDomDocument&) const;
+	private:
+		channels_container_t Parse (const QDomDocument&,
+				const IDType_t&) const;
+		Item* ParseItem (const QDomElement&,
+				const IDType_t&) const;
 	};
-};
+}
+}
 
 #endif
-

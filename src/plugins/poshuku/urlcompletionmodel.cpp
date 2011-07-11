@@ -20,7 +20,7 @@
 #include <stdexcept>
 #include <QUrl>
 #include <QtDebug>
-#include <plugininterface/defaulthookproxy.h>
+#include <util/defaulthookproxy.h>
 #include "core.h"
 #include <boost/graph/graph_concepts.hpp>
 
