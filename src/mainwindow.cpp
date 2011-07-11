@@ -33,7 +33,7 @@
 #include <QSplashScreen>
 #include <QBitmap>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/ihavetabs.h>
 #include "view.h"

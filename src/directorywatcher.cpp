@@ -20,7 +20,7 @@
 #include <QDir>
 #include <QTimer>
 #include <QUrl>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft

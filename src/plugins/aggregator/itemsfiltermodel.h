@@ -24,36 +24,32 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Aggregator
+{
+	class ItemsWidget;
+
+	class ItemsFilterModel : public QSortFilterProxyModel
 	{
-		namespace Aggregator
-		{
-			class ItemsWidget;
+		Q_OBJECT
 
-			class ItemsFilterModel : public QSortFilterProxyModel
-			{
-				Q_OBJECT
+		bool HideRead_;
+		bool UnreadOnTop_;
+		QSet<QString> ItemCategories_;
+		ItemsWidget *ItemsWidget_;
+	public:
+		ItemsFilterModel (QObject* = 0);
+		virtual ~ItemsFilterModel ();
 
-				bool HideRead_;
-				bool UnreadOnTop_;
-				QSet<QString> ItemCategories_;
-				ItemsWidget *ItemsWidget_;
-			public:
-				ItemsFilterModel (QObject* = 0);
-				virtual ~ItemsFilterModel ();
-
-				void SetItemsWidget (ItemsWidget*);
-				void SetHideRead (bool);
-			protected:
-				virtual bool filterAcceptsRow (int, const QModelIndex&) const;
-				virtual bool lessThan (const QModelIndex&, const QModelIndex&) const;
-			public slots:
-				void categorySelectionChanged (const QStringList&);
-				void handleUnreadOnTopChanged ();
-			};
-		};
+		void SetItemsWidget (ItemsWidget*);
+		void SetHideRead (bool);
+	protected:
+		virtual bool filterAcceptsRow (int, const QModelIndex&) const;
+		virtual bool lessThan (const QModelIndex&, const QModelIndex&) const;
+	public slots:
+		void categorySelectionChanged (const QStringList&);
+		void handleUnreadOnTopChanged ();
 	};
-};
+}
+}
 
 #endif
-

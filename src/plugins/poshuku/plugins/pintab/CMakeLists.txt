@@ -14,7 +14,6 @@ ADD_LIBRARY (leechcraft_poshuku_pintab SHARED
 	)
 TARGET_LINK_LIBRARIES (leechcraft_poshuku_pintab
 	${QT_LIBRARIES}
-	plugininterface
-	xmlsettingsdialog
+	${LEECHCRAFT_LIBRARIES}
 	)
 INSTALL (TARGETS leechcraft_poshuku_pintab DESTINATION ${LC_PLUGINS_DEST})

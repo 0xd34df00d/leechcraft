@@ -19,7 +19,7 @@
 #include "bodyfetch.h"
 #include <QIcon>
 #include <interfaces/iscriptloader.h>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "workerthread.h"
 
 namespace LeechCraft

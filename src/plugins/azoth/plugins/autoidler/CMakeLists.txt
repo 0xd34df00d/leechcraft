@@ -11,6 +11,8 @@ SET (AUTOIDLER_HEADERS
 	xmlsettingsmanager.h
 	3dparty/idle.h
 	)
+SET (AUTOIDLER_RESOURCES azothautoidlerresources.qrc)
+QT4_ADD_RESOURCES (AUTOIDLER_RCCS ${AUTOIDLER_RESOURCES})
 
 IF (APPLE)
 	SET (AUTOIDLER_SRCS ${AUTOIDLER_SRCS} 3dparty/idle_mac.cpp)
@@ -43,6 +45,7 @@ ADD_LIBRARY (leechcraft_azoth_autoidler SHARED
 	${AUTOIDLER_COMPILED_TRANSLATIONS}
 	${AUTOIDLER_SRCS}
 	${AUTOIDLER_MOC_SRCS}
+	${AUTOIDLER_RCCS}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_azoth_autoidler
 	${QT_LIBRARIES}

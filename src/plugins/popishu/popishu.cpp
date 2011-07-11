@@ -21,7 +21,7 @@
 #include <QIcon>
 #include <interfaces/entitytesthandleresult.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "core.h"
 #include "editorpage.h"
 #include "xmlsettingsmanager.h"

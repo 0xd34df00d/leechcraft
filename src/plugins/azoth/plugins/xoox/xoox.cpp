@@ -19,7 +19,7 @@
 #include "xoox.h"
 #include <QIcon>
 #include <QTranslator>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "core.h"
 
 namespace LeechCraft
@@ -67,7 +67,7 @@ namespace Xoox
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		return QIcon (":/plugins/azoth/plugins/xoox/resources/images/xoox.svg");
 	}
 
 	QStringList Plugin::Provides () const

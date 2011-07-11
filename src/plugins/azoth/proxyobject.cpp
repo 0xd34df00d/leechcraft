@@ -25,7 +25,7 @@
 #include <QProcess>
 #include <QTextStream>
 #include <QtDebug>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "interfaces/iaccount.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"

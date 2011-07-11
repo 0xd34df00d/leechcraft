@@ -39,119 +39,116 @@ class IDownload;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Aggregator
+{
+	struct Enclosure;
+
+	struct Aggregator_Impl;
+
+	class Aggregator : public QWidget
+						, public IInfo
+						, public IHaveTabs
+						, public ITabWidget
+						, public IHaveSettings
+						, public IJobHolder
+						, public IEntityHandler
+						, public IHaveShortcuts
+						, public IActionsExporter
+						, public IStartupWizard
+						, public IPluginReady
 	{
-		namespace Aggregator
-		{
-			struct Enclosure;
+		Q_OBJECT
+		Q_INTERFACES (IInfo
+				IHaveTabs
+				ITabWidget
+				IHaveSettings
+				IJobHolder
+				IEntityHandler
+				IHaveShortcuts
+				IStartupWizard
+				IActionsExporter
+				IPluginReady)
 
-			struct Aggregator_Impl;
+		Aggregator_Impl *Impl_;
+	public:
+		virtual ~Aggregator ();
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		void Release ();
+		QByteArray GetUniqueID () const;
+		QString GetName () const;
+		QString GetInfo () const;
+		QStringList Provides () const;
+		QStringList Needs () const;
+		QStringList Uses () const;
+		void SetProvider (QObject*, const QString&);
+		QIcon GetIcon () const;
 
-			class Aggregator : public QWidget
-							 , public IInfo
-							 , public IHaveTabs
-							 , public ITabWidget
-							 , public IHaveSettings
-							 , public IJobHolder
-							 , public IEntityHandler
-							 , public IHaveShortcuts
-							 , public IActionsExporter
-							 , public IStartupWizard
-							 , public IPluginReady
-			{
-				Q_OBJECT
-				Q_INTERFACES (IInfo
-						IHaveTabs
-						ITabWidget
-						IHaveSettings
-						IJobHolder
-						IEntityHandler
-						IHaveShortcuts
-						IStartupWizard
-						IActionsExporter
-						IPluginReady)
+		TabClasses_t GetTabClasses () const;
+		QToolBar* GetToolBar () const;
+		void TabOpenRequested (const QByteArray&);
+		TabClassInfo GetTabClassInfo () const;
+		QObject* ParentMultiTabs ();
+		void Remove ();
 
-				Aggregator_Impl *Impl_;
-			public:
-				virtual ~Aggregator ();
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
-				void Release ();
-				QByteArray GetUniqueID () const;
-				QString GetName () const;
-				QString GetInfo () const;
-				QStringList Provides () const;
-				QStringList Needs () const;
-				QStringList Uses () const;
-				void SetProvider (QObject*, const QString&);
-				QIcon GetIcon () const;
+		QAbstractItemModel* GetRepresentation () const;
 
-				TabClasses_t GetTabClasses () const;
-				QToolBar* GetToolBar () const;
-				void TabOpenRequested (const QByteArray&);
-				TabClassInfo GetTabClassInfo () const;
-				QObject* ParentMultiTabs ();
-				void Remove ();
+		boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
 
-				QAbstractItemModel* GetRepresentation () const;
+		EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
+		void Handle (LeechCraft::Entity);
 
-				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
+		void SetShortcut (const QString&, const QKeySequences_t&);
+		QMap<QString, LeechCraft::ActionInfo> GetActionInfo () const;
 
-				EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
-				void Handle (LeechCraft::Entity);
+		QList<QWizardPage*> GetWizardPages () const;
 
-				void SetShortcut (const QString&, const QKeySequences_t&);
-				QMap<QString, LeechCraft::ActionInfo> GetActionInfo () const;
-
-				QList<QWizardPage*> GetWizardPages () const;
-
-				QList<QAction*> GetActions (ActionsEmbedPlace) const;
-				
-				QSet<QByteArray> GetExpectedPluginClasses () const;
-				void AddPlugin (QObject*);
-			protected:
-				virtual void keyPressEvent (QKeyEvent*);
-			private:
-				bool IsRepr () const;
-				QModelIndex GetRelevantIndex () const;
-				QList<QModelIndex> GetRelevantIndexes () const;
-				void BuildID2ActionTupleMap ();
-				void Perform (boost::function<void (const QModelIndex&)>);
-			public slots:
-				void handleTasksTreeSelectionCurrentRowChanged (const QModelIndex&, const QModelIndex&);
-			private slots:
-				void on_ActionAddFeed__triggered ();
-				void on_ActionRemoveFeed__triggered ();
-				void on_ActionUpdateSelectedFeed__triggered ();
-				void on_ActionRegexpMatcher__triggered ();
-				void on_ActionImportOPML__triggered ();
-				void on_ActionExportOPML__triggered ();
-				void on_ActionImportBinary__triggered ();
-				void on_ActionExportBinary__triggered ();
-				void on_ActionExportFB2__triggered ();
-				void on_ActionMarkChannelAsRead__triggered ();
-				void on_ActionMarkChannelAsUnread__triggered ();
-				void on_ActionChannelSettings__triggered ();
-				void handleFeedsContextMenuRequested (const QPoint&);
-				void on_MergeItems__toggled (bool);
-				void currentChannelChanged ();
-				void unreadNumberChanged (int);
-				void trayIconActivated ();
-				void handleGroupChannels ();
-			signals:
-				void gotEntity (const LeechCraft::Entity&);
-				void delegateEntity (const LeechCraft::Entity&,
-						int*, QObject**);
-				void addNewTab (const QString&, QWidget*);
-				void removeTab (QWidget*);
-				void changeTabName (QWidget*, const QString&);
-				void changeTabIcon (QWidget*, const QIcon&);
-				void changeTooltip (QWidget*, QWidget*);
-				void statusBarChanged (QWidget*, const QString&);
-				void raiseTab (QWidget*);
-			};
-		}
-	}
+		QList<QAction*> GetActions (ActionsEmbedPlace) const;
+		
+		QSet<QByteArray> GetExpectedPluginClasses () const;
+		void AddPlugin (QObject*);
+	protected:
+		virtual void keyPressEvent (QKeyEvent*);
+	private:
+		bool IsRepr () const;
+		QModelIndex GetRelevantIndex () const;
+		QList<QModelIndex> GetRelevantIndexes () const;
+		void BuildID2ActionTupleMap ();
+		void Perform (boost::function<void (const QModelIndex&)>);
+	public slots:
+		void handleTasksTreeSelectionCurrentRowChanged (const QModelIndex&, const QModelIndex&);
+	private slots:
+		void on_ActionAddFeed__triggered ();
+		void on_ActionRemoveFeed__triggered ();
+		void on_ActionUpdateSelectedFeed__triggered ();
+		void on_ActionRegexpMatcher__triggered ();
+		void on_ActionImportOPML__triggered ();
+		void on_ActionExportOPML__triggered ();
+		void on_ActionImportBinary__triggered ();
+		void on_ActionExportBinary__triggered ();
+		void on_ActionExportFB2__triggered ();
+		void on_ActionMarkChannelAsRead__triggered ();
+		void on_ActionMarkChannelAsUnread__triggered ();
+		void on_ActionChannelSettings__triggered ();
+		void handleFeedsContextMenuRequested (const QPoint&);
+		void on_MergeItems__toggled (bool);
+		void currentChannelChanged ();
+		void unreadNumberChanged (int);
+		void trayIconActivated ();
+		void handleGroupChannels ();
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
+		void delegateEntity (const LeechCraft::Entity&,
+				int*, QObject**);
+		void addNewTab (const QString&, QWidget*);
+		void removeTab (QWidget*);
+		void changeTabName (QWidget*, const QString&);
+		void changeTabIcon (QWidget*, const QIcon&);
+		void changeTooltip (QWidget*, QWidget*);
+		void statusBarChanged (QWidget*, const QString&);
+		void raiseTab (QWidget*);
+	};
+}
 }
 
 #endif

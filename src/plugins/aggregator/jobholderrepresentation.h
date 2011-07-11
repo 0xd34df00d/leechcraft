@@ -23,24 +23,20 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Aggregator
+{
+	class JobHolderRepresentation : public QSortFilterProxyModel
 	{
-		namespace Aggregator
-		{
-			class JobHolderRepresentation : public QSortFilterProxyModel
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				QModelIndex Selected_;
-			public:
-				JobHolderRepresentation (QObject* = 0);
-				QModelIndex SelectionChanged (const QModelIndex&);
-			protected:
-				virtual bool filterAcceptsRow (int, const QModelIndex&) const;
-			};
-		};
+		QModelIndex Selected_;
+	public:
+		JobHolderRepresentation (QObject* = 0);
+		QModelIndex SelectionChanged (const QModelIndex&);
+	protected:
+		virtual bool filterAcceptsRow (int, const QModelIndex&) const;
 	};
-};
+}
+}
 
 #endif
-

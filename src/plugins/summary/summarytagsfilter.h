@@ -18,7 +18,7 @@
 
 #ifndef SUMMARYTAGSFILTER_H
 #define SUMMARYTAGSFILTER_H
-#include <plugininterface/tagsfiltermodel.h>
+#include <util/tagsfiltermodel.h>
 
 namespace LeechCraft
 {

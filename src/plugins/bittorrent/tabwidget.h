@@ -21,7 +21,7 @@
 #include <memory>
 #include <QTabWidget>
 #include <QAction>
-#include <plugininterface/tagscompleter.h>
+#include <util/tagscompleter.h>
 #include "ui_tabwidget.h"
 
 namespace LeechCraft

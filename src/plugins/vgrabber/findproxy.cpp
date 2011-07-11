@@ -23,7 +23,7 @@
 #include <QClipboard>
 #include <QMenu>
 #include <interfaces/structures.h>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "categoriesselector.h"
 
 namespace LeechCraft

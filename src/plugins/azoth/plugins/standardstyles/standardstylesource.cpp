@@ -21,8 +21,8 @@
 #include <QWebElement>
 #include <QWebFrame>
 #include <QtDebug>
-#include <plugininterface/resourceloader.h>
-#include <plugininterface/util.h>
+#include <util/resourceloader.h>
+#include <util/util.h>
 #include <interfaces/imessage.h>
 #include <interfaces/iadvancedmessage.h>
 #include <interfaces/irichtextmessage.h>

@@ -26,96 +26,92 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Aggregator
+{
+	Atom03Parser::Atom03Parser ()
 	{
-		namespace Aggregator
+	}
+	
+	Atom03Parser& Atom03Parser::Instance ()
+	{
+		static Atom03Parser inst;
+		return inst;
+	}
+	
+	bool Atom03Parser::CouldParse (const QDomDocument& doc) const
+	{
+		QDomElement root = doc.documentElement ();
+		if (root.tagName () != "feed")
+			return false;
+		if (root.hasAttribute ("version") && root.attribute ("version") == "0.3")
+			return true;
+		return false;
+	}
+	
+	channels_container_t Atom03Parser::Parse (const QDomDocument& doc,
+			const IDType_t& feedId) const
+	{
+		channels_container_t channels;
+		Channel_ptr chan (new Channel (feedId));
+		channels.push_back (chan);
+	
+		QDomElement root = doc.documentElement ();
+		chan->Title_ = root.firstChildElement ("title").text ().trimmed ();
+		if (chan->Title_.isEmpty ())
+			chan->Title_ = QObject::tr ("(No title)");
+		chan->LastBuild_ = FromRFC3339 (root.firstChildElement ("updated").text ());
+		chan->Link_ = GetLink (root);
+		chan->Description_ = root.firstChildElement ("tagline").text ();
+		chan->Language_ = "<>";
+		chan->Author_ = GetAuthor (root);
+	
+		QDomElement entry = root.firstChildElement ("entry");
+		while (!entry.isNull ())
 		{
-			Atom03Parser::Atom03Parser ()
-			{
-			}
-			
-			Atom03Parser& Atom03Parser::Instance ()
-			{
-				static Atom03Parser inst;
-				return inst;
-			}
-			
-			bool Atom03Parser::CouldParse (const QDomDocument& doc) const
-			{
-				QDomElement root = doc.documentElement ();
-				if (root.tagName () != "feed")
-					return false;
-				if (root.hasAttribute ("version") && root.attribute ("version") == "0.3")
-					return true;
-				return false;
-			}
-			
-			channels_container_t Atom03Parser::Parse (const QDomDocument& doc,
-					const IDType_t& feedId) const
-			{
-				channels_container_t channels;
-				Channel_ptr chan (new Channel (feedId));
-				channels.push_back (chan);
-			
-				QDomElement root = doc.documentElement ();
-				chan->Title_ = root.firstChildElement ("title").text ().trimmed ();
-				if (chan->Title_.isEmpty ())
-					chan->Title_ = QObject::tr ("(No title)");
-				chan->LastBuild_ = FromRFC3339 (root.firstChildElement ("updated").text ());
-				chan->Link_ = GetLink (root);
-				chan->Description_ = root.firstChildElement ("tagline").text ();
-				chan->Language_ = "<>";
-				chan->Author_ = GetAuthor (root);
-			
-				QDomElement entry = root.firstChildElement ("entry");
-				while (!entry.isNull ())
-				{
-					chan->Items_.push_back (Item_ptr (ParseItem (entry, chan->ChannelID_)));
-					entry = entry.nextSiblingElement ("entry");
-				}
-			
-				return channels;
-			}
-			
-			Item* Atom03Parser::ParseItem (const QDomElement& entry,
-					const IDType_t& channelId) const
-			{
-				Item *item = new Item (channelId);
-			
-				item->Title_ = ParseEscapeAware (entry.firstChildElement ("title"));
-				item->Link_ = GetLink (entry);
-				item->Guid_ = entry.firstChildElement ("id").text ();
-				item->Unread_ = true;
-			
-				QDomElement date = entry.firstChildElement ("modified");
-				if (date.isNull ())
-					date = entry.firstChildElement ("issued");
-				item->PubDate_ = FromRFC3339 (date.text ());
-			
-				QDomElement summary = entry.firstChildElement ("content");
-				if (summary.isNull ())
-					summary = entry.firstChildElement ("summary");
-				item->Description_ = ParseEscapeAware (summary);
-				GetDescription (entry, item->Description_);
-			
-				item->Categories_ += GetAllCategories (entry);
-				item->Author_ = GetAuthor (entry);
-			
-				item->NumComments_ = GetNumComments (entry);
-				item->CommentsLink_ = GetCommentsRSS (entry);
-				item->CommentsPageLink_ = GetCommentsLink (entry);
-			
-				item->Enclosures_ = GetEnclosures (entry, item->ItemID_);
-				item->Enclosures_ += GetEncEnclosures (entry, item->ItemID_);
+			chan->Items_.push_back (Item_ptr (ParseItem (entry, chan->ChannelID_)));
+			entry = entry.nextSiblingElement ("entry");
+		}
+	
+		return channels;
+	}
+	
+	Item* Atom03Parser::ParseItem (const QDomElement& entry,
+			const IDType_t& channelId) const
+	{
+		Item *item = new Item (channelId);
+	
+		item->Title_ = ParseEscapeAware (entry.firstChildElement ("title"));
+		item->Link_ = GetLink (entry);
+		item->Guid_ = entry.firstChildElement ("id").text ();
+		item->Unread_ = true;
+	
+		QDomElement date = entry.firstChildElement ("modified");
+		if (date.isNull ())
+			date = entry.firstChildElement ("issued");
+		item->PubDate_ = FromRFC3339 (date.text ());
+	
+		QDomElement summary = entry.firstChildElement ("content");
+		if (summary.isNull ())
+			summary = entry.firstChildElement ("summary");
+		item->Description_ = ParseEscapeAware (summary);
+		GetDescription (entry, item->Description_);
+	
+		item->Categories_ += GetAllCategories (entry);
+		item->Author_ = GetAuthor (entry);
+	
+		item->NumComments_ = GetNumComments (entry);
+		item->CommentsLink_ = GetCommentsRSS (entry);
+		item->CommentsPageLink_ = GetCommentsLink (entry);
+	
+		item->Enclosures_ = GetEnclosures (entry, item->ItemID_);
+		item->Enclosures_ += GetEncEnclosures (entry, item->ItemID_);
 
-				QPair<double, double> point = GetGeoPoint (entry);
-				item->Latitude_ = point.first;
-				item->Longitude_ = point.second;
-				item->MRSSEntries_ = GetMediaRSS (entry, item->ItemID_);
-			
-				return item;
-			}
-		};
-	};
-};
-
+		QPair<double, double> point = GetGeoPoint (entry);
+		item->Latitude_ = point.first;
+		item->Longitude_ = point.second;
+		item->MRSSEntries_ = GetMediaRSS (entry, item->ItemID_);
+	
+		return item;
+	}
+}
+}

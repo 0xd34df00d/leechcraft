@@ -22,7 +22,7 @@
 #include <QBuffer>
 #include <QTimer>
 #include <QtDebug>
-#include <plugininterface/util.h>
+#include <util/util.h>
 
 namespace LeechCraft
 {

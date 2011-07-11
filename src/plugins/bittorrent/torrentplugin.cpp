@@ -33,8 +33,8 @@
 #include <QInputDialog>
 #include <libtorrent/session.hpp>
 #include <interfaces/entitytesthandleresult.h>
-#include <plugininterface/tagscompletionmodel.h>
-#include <plugininterface/util.h>
+#include <util/tagscompletionmodel.h>
+#include <util/util.h>
 #include "core.h"
 #include "addtorrent.h"
 #include "addmultipletorrents.h"

@@ -19,8 +19,8 @@
 #include "tabwidget.h"
 #include <QSortFilterProxyModel>
 #include <QUrl>
-#include <plugininterface/util.h>
-#include <plugininterface/treeitem.h>
+#include <util/util.h>
+#include <util/treeitem.h>
 #include "core.h"
 #include "filesviewdelegate.h"
 #include "torrentfilesmodel.h"

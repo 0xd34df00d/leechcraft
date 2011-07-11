@@ -23,7 +23,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/structures.h>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "otzerkaludownloader.h"
 
 namespace LeechCraft

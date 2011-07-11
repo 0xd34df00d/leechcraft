@@ -36,8 +36,8 @@
 #include <QTimer>
 #include <interfaces/isyncable.h>
 #include <interfaces/ihaveshortcuts.h>
-#include <plugininterface/util.h>
-#include <plugininterface/structuresops.h>
+#include <util/util.h>
+#include <util/structuresops.h>
 #include "debugmessagehandler.h"
 #include "tagsmanager.h"
 #include "mainwindow.h"

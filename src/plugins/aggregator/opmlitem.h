@@ -23,31 +23,27 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Aggregator
+{
+	struct OPMLItem
 	{
-		namespace Aggregator
-		{
-			struct OPMLItem
-			{
-				QString URL_;
-				QString HTMLUrl_;
-				QString Title_;
-				QString Description_;
-				QStringList Categories_;
-				int MaxArticleAge_;
-				int FetchInterval_;
-				int MaxArticleNumber_;
-				bool CustomFetchInterval_;
-				//	<outline htmlUrl="" title="Оформление KDE"
-				//	useCustomFetchInterval="false" maxArticleAge="0"
-				//	fetchInterval="0" maxArticleNumber="0"
-				//	archiveMode="globalDefault" version="RSS" type="rss"
-				//	xmlUrl="http://www.kde.org/kde-look-content.rdf"
-				//	id="2097705275" text="Оформление KDE" description="" />
-			};
-		};
+		QString URL_;
+		QString HTMLUrl_;
+		QString Title_;
+		QString Description_;
+		QStringList Categories_;
+		int MaxArticleAge_;
+		int FetchInterval_;
+		int MaxArticleNumber_;
+		bool CustomFetchInterval_;
+		//	<outline htmlUrl="" title="Оформление KDE"
+		//	useCustomFetchInterval="false" maxArticleAge="0"
+		//	fetchInterval="0" maxArticleNumber="0"
+		//	archiveMode="globalDefault" version="RSS" type="rss"
+		//	xmlUrl="http://www.kde.org/kde-look-content.rdf"
+		//	id="2097705275" text="Оформление KDE" description="" />
 	};
-};
+}
+}
 
 #endif
-

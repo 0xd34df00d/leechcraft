@@ -29,7 +29,7 @@
 #include <QUrl>
 #include <QDateTime>
 #include <QXmlStreamWriter>
-#include <plugininterface/util.h>
+#include <util/util.h>
 
 
 

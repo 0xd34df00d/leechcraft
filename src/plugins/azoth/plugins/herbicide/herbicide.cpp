@@ -22,7 +22,7 @@
 #include <QTranslator>
 #include <QSettings>
 #include <QCoreApplication>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include <interfaces/iclentry.h>
 #include <interfaces/imessage.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
@@ -72,7 +72,7 @@ namespace Herbicide
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		return QIcon (":/plugins/azoth/plugins/herbicide/resources/images/herbicide.svg");
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const

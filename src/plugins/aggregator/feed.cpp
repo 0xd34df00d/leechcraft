@@ -24,72 +24,68 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Aggregator
+{
+	Feed::FeedSettings::FeedSettings (IDType_t feedId,
+			int ut, int ni, int ia, bool ade)
+	: SettingsID_ (Core::Instance ().GetPool (PTFeedSettings).GetID ())
+	, FeedID_ (feedId)
+	, UpdateTimeout_ (ut)
+	, NumItems_ (ni)
+	, ItemAge_ (ia)
+	, AutoDownloadEnclosures_ (ade)
 	{
-		namespace Aggregator
+	}
+
+	Feed::FeedSettings::FeedSettings (IDType_t feedId, IDType_t settingsId,
+			int ut, int ni, int ia, bool ade)
+	: SettingsID_ (settingsId)
+	, FeedID_ (feedId)
+	, UpdateTimeout_ (ut)
+	, NumItems_ (ni)
+	, ItemAge_ (ia)
+	, AutoDownloadEnclosures_ (ade)
+	{
+	}
+	
+	Feed::Feed ()
+	: FeedID_ (Core::Instance ().GetPool (PTFeed).GetID ())
+	{
+	}
+	
+	Feed::Feed (const IDType_t& feedId)
+	: FeedID_ (feedId)
+	{
+	}
+
+	bool operator< (const Feed& f1, const Feed& f2)
+	{
+		return f1.URL_ < f2.URL_;
+	}
+	
+	QDataStream& operator<< (QDataStream& out, const Feed& feed)
+	{
+		out << feed.URL_
+			<< feed.LastUpdate_
+			<< static_cast<quint32> (feed.Channels_.size ());
+		for (quint32 i = 0; i < feed.Channels_.size (); ++i)
+			out << *feed.Channels_.at (i);
+		return out;
+	}
+	
+	QDataStream& operator>> (QDataStream& in, Feed& feed)
+	{
+		quint32 size = 0;
+		in >> feed.URL_
+			>> feed.LastUpdate_
+			>> size;
+		for (quint32 i = 0; i < size; ++i)
 		{
-			Feed::FeedSettings::FeedSettings (IDType_t feedId,
-					int ut, int ni, int ia, bool ade)
-			: SettingsID_ (Core::Instance ().GetPool (PTFeedSettings).GetID ())
-			, FeedID_ (feedId)
-			, UpdateTimeout_ (ut)
-			, NumItems_ (ni)
-			, ItemAge_ (ia)
-			, AutoDownloadEnclosures_ (ade)
-			{
-			}
-
-			Feed::FeedSettings::FeedSettings (IDType_t feedId, IDType_t settingsId,
-					int ut, int ni, int ia, bool ade)
-			: SettingsID_ (settingsId)
-			, FeedID_ (feedId)
-			, UpdateTimeout_ (ut)
-			, NumItems_ (ni)
-			, ItemAge_ (ia)
-			, AutoDownloadEnclosures_ (ade)
-			{
-			}
-			
-			Feed::Feed ()
-			: FeedID_ (Core::Instance ().GetPool (PTFeed).GetID ())
-			{
-			}
-			
-			Feed::Feed (const IDType_t& feedId)
-			: FeedID_ (feedId)
-			{
-			}
-
-			bool operator< (const Feed& f1, const Feed& f2)
-			{
-				return f1.URL_ < f2.URL_;
-			}
-			
-			QDataStream& operator<< (QDataStream& out, const Feed& feed)
-			{
-				out << feed.URL_
-					<< feed.LastUpdate_
-					<< static_cast<quint32> (feed.Channels_.size ());
-				for (quint32 i = 0; i < feed.Channels_.size (); ++i)
-					out << *feed.Channels_.at (i);
-				return out;
-			}
-			
-			QDataStream& operator>> (QDataStream& in, Feed& feed)
-			{
-				quint32 size = 0;
-				in >> feed.URL_
-					>> feed.LastUpdate_
-					>> size;
-				for (quint32 i = 0; i < size; ++i)
-				{
-					Channel_ptr chan (new Channel (feed.FeedID_));
-					in >> *chan;
-					feed.Channels_.push_back (chan);
-				}
-				return in;
-			}
-		};
-	};
-};
-
+			Channel_ptr chan (new Channel (feed.FeedID_));
+			in >> *chan;
+			feed.Channels_.push_back (chan);
+		}
+		return in;
+	}
+}
+}

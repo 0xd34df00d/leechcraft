@@ -20,7 +20,7 @@
 #include <typeinfo>
 #include <boost/bind.hpp>
 #include <QIcon>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "schemereply.h"
 
 namespace LeechCraft

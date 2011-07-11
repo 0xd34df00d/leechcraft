@@ -24,7 +24,7 @@
 #include <QNetworkAccessManager>
 #include <QString>
 #include <QtGlobal>
-#include <plugininterface/customcookiejar.h>
+#include <util/customcookiejar.h>
 #include "core.h"
 
 namespace LeechCraft

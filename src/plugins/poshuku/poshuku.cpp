@@ -30,9 +30,9 @@
 #include <QMainWindow>
 #include <QtDebug>
 #include <interfaces/entitytesthandleresult.h>
-#include <plugininterface/util.h>
-#include <plugininterface/tagscompletionmodel.h>
-#include <plugininterface/backendselector.h>
+#include <util/util.h>
+#include <util/tagscompletionmodel.h>
+#include <util/backendselector.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "customwebview.h"

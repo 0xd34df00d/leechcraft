@@ -23,37 +23,33 @@
 
 namespace LeechCraft
 {
-	struct Entity;
+struct Entity;
 
-	namespace Util
-	{
-		class CategorySelector;
-	};
-
-	namespace Plugins
-	{
-		namespace Aggregator
-		{
-			class Export2FB2Dialog : public QDialog
-			{
-				Q_OBJECT
-
-				Ui::Export2FB2Dialog Ui_;
-				Util::CategorySelector *Selector_;
-				QStringList CurrentCategories_;
-			public:
-				Export2FB2Dialog (QWidget* = 0);
-			private slots:
-				void on_Browse__released ();
-				void on_File__textChanged (const QString&);
-				void handleChannelsSelectionChanged (const QItemSelection&, const QItemSelection&);
-				void handleAccepted ();
-			signals:
-				void gotEntity (const LeechCraft::Entity&);
-			};
-		};
-	};
+namespace Util
+{
+	class CategorySelector;
 };
 
-#endif
+namespace Aggregator
+{
+	class Export2FB2Dialog : public QDialog
+	{
+		Q_OBJECT
 
+		Ui::Export2FB2Dialog Ui_;
+		Util::CategorySelector *Selector_;
+		QStringList CurrentCategories_;
+	public:
+		Export2FB2Dialog (QWidget* = 0);
+	private slots:
+		void on_Browse__released ();
+		void on_File__textChanged (const QString&);
+		void handleChannelsSelectionChanged (const QItemSelection&, const QItemSelection&);
+		void handleAccepted ();
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
+	};
+}
+}
+
+#endif

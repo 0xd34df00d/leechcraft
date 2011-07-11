@@ -21,7 +21,7 @@
 #include <memory>
 #include <boost/shared_ptr.hpp>
 #include <QWidget>
-#include <plugininterface/tagscompleter.h>
+#include <util/tagscompleter.h>
 #include "filtermodel.h"
 #include "ui_bookmarkswidget.h"
 

@@ -20,7 +20,7 @@
 #include <ctime>
 #include <QIcon>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 

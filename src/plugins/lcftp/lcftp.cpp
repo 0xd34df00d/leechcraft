@@ -20,7 +20,7 @@
 #include <QIcon>
 #include <QUrl>
 #include <interfaces/entitytesthandleresult.h>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "core.h"
 #include "tabmanager.h"
 #include "xmlsettingsmanager.h"

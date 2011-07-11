@@ -17,7 +17,7 @@
  **********************************************************************/
 
 #include "mooddialog.h"
-#include <plugininterface/resourceloader.h>
+#include <util/resourceloader.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 
