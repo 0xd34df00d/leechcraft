@@ -20,6 +20,7 @@
 #include "otzerkaludownloader.h"
 #include <QWebElement>
 #include <QWebPage>
+#include <QtAlgorithms>
 #include <QRegExp>
 
 namespace LeechCraft
@@ -111,7 +112,8 @@ namespace Otzerkalu
 		Q_FOREACH (const QUrl& urlCSS, urlStack)
 		{
 			const QString& filename = Download (urlCSS);
-			data.replace (urlCSS.toString (), filename);
+			if (!filename.isEmpty ())
+				data.replace (urlCSS.toString (), filename);
 		}
 		return data;
 	}
@@ -124,6 +126,7 @@ namespace Otzerkalu
 			return;
 
 		const QString& filename = data.Filename_;
+		DownloadedFiles_.append (filename);
 
 		QFile file (filename);
 		if (!file.open (QIODevice::ReadOnly))
@@ -179,8 +182,7 @@ namespace Otzerkalu
 		if (url.isRelative ())
 			url = data.Url_.resolved (url);
 
-		if ((!Param_.FromOtherSite_ && url.host () != Param_.DownloadUrl_.host ()) ||
-				(url.host () == data.Url_.host () && url.path () == data.Url_.path ()))
+		if (!Param_.FromOtherSite_ && url.host () != Param_.DownloadUrl_.host ())
 			return false;
 
 		const QString& filename = Download (url);
@@ -200,6 +202,10 @@ namespace Otzerkalu
 		const QString& file = path + '/' + (name.isEmpty () ? "index.html" : name);
 		const QString& filename = url.hasQuery () ? file + "?" +
 				url.encodedQuery () + ".html" : file;
+
+		if (qFind (DownloadedFiles_.begin (), DownloadedFiles_.end (), filename) !=
+				DownloadedFiles_.end ())
+			return QString ();
 
 		QDir::root ().mkpath (path);
 

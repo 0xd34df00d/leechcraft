@@ -60,6 +60,7 @@ namespace Otzerkalu
 		
 		const DownloadParams Param_;
 		QMap<int, FileData> FileMap_;
+		QList<QString> DownloadedFiles_;
 		int UrlCount_;
 	public:
 		OtzerkaluDownloader (const DownloadParams& param, QObject *parent = 0);
