@@ -20,6 +20,7 @@
 #define PLUGINS_AZOTH_PROXYOBJECT_H
 #include <QObject>
 #include <QHash>
+#include <QIcon>
 #include <QColor>
 #include <QDateTime>
 #include "interfaces/iproxyobject.h"
@@ -58,6 +59,7 @@ namespace Azoth
 		QString FormatBody (QString, QObject*) const;
 		void PreprocessMessage (QObject*);
 		Util::ResourceLoader* GetResourceLoader (PublicResourceLoader) const;
+		QIcon GetIconForState (State) const;
 	};
 }
 }

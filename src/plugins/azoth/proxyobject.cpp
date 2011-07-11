@@ -375,5 +375,10 @@ namespace Azoth
 			return Core::Instance ().GetResourceLoader (Core::RLTSystemIconLoader);
 		}
 	}
+	
+	QIcon ProxyObject::GetIconForState (State state) const
+	{
+		return Core::Instance ().GetIconForState (state);
+	}
 }
 }

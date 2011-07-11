@@ -176,6 +176,8 @@ namespace Azoth
 		virtual void PreprocessMessage (QObject*) = 0;
 		
 		virtual Util::ResourceLoader* GetResourceLoader (PublicResourceLoader loader) const = 0;
+		
+		virtual QIcon GetIconForState (State state) const = 0;
 	};
 }
 }
