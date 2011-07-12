@@ -24,9 +24,10 @@
 #include <QMenu>
 #include <QStringListModel>
 #include <QAudioDeviceInfo>
+#include <interfaces/entitytesthandleresult.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <plugininterface/resourceloader.h>
-#include <plugininterface/util.h>
+#include <util/resourceloader.h>
+#include <util/util.h>
 #include "core.h"
 #include "mainwidget.h"
 #include "chattabsmanager.h"
@@ -252,9 +253,11 @@ namespace Azoth
 		return result;
 	}
 	
-	bool Plugin::CouldHandle (const LeechCraft::Entity& e) const
+	EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const
 	{
-		return Core::Instance ().CouldHandle (e);
+		return Core::Instance ().CouldHandle (e) ?
+				EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
+				EntityTestHandleResult ();
 	}
 	
 	void Plugin::Handle (Entity e)

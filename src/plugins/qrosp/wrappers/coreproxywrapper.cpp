@@ -23,79 +23,76 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Qrosp
+{
+	CoreProxyWrapper::CoreProxyWrapper (ICoreProxy_ptr proxy)
+	: Proxy_ (proxy)
 	{
-		namespace Qrosp
-		{
-			CoreProxyWrapper::CoreProxyWrapper (ICoreProxy_ptr proxy)
-			: Proxy_ (proxy)
-			{
-			}
+	}
 
-			QNetworkAccessManager* CoreProxyWrapper::GetNetworkAccessManager () const
-			{
-				return Proxy_->GetNetworkAccessManager ();
-			}
+	QNetworkAccessManager* CoreProxyWrapper::GetNetworkAccessManager () const
+	{
+		return Proxy_->GetNetworkAccessManager ();
+	}
 
-			QObject* CoreProxyWrapper::GetShortcutProxy () const
-			{
-				return new ShortcutProxyWrapper (Proxy_->GetShortcutProxy ());
-			}
+	QObject* CoreProxyWrapper::GetShortcutProxy () const
+	{
+		return new ShortcutProxyWrapper (Proxy_->GetShortcutProxy ());
+	}
 
-			QModelIndex CoreProxyWrapper::MapToSource (const QModelIndex& index) const
-			{
-				return Proxy_->MapToSource (index);
-			}
+	QModelIndex CoreProxyWrapper::MapToSource (const QModelIndex& index) const
+	{
+		return Proxy_->MapToSource (index);
+	}
 
-			QMap<int, QString> CoreProxyWrapper::GetIconPath (const QString& name) const
-			{
-				return Proxy_->GetIconPath (name);
-			}
+	QMap<int, QString> CoreProxyWrapper::GetIconPath (const QString& name) const
+	{
+		return Proxy_->GetIconPath (name);
+	}
 
-			QIcon CoreProxyWrapper::GetIcon (const QString& on, const QString& off) const
-			{
-				return Proxy_->GetIcon (on, off);
-			}
+	QIcon CoreProxyWrapper::GetIcon (const QString& on, const QString& off) const
+	{
+		return Proxy_->GetIcon (on, off);
+	}
 
-			QMainWindow* CoreProxyWrapper::GetMainWindow () const
-			{
-				return Proxy_->GetMainWindow ();
-			}
+	QMainWindow* CoreProxyWrapper::GetMainWindow () const
+	{
+		return Proxy_->GetMainWindow ();
+	}
 
-			QTabWidget* CoreProxyWrapper::GetTabWidget () const
-			{
-				return Proxy_->GetTabWidget ();
-			}
+	QTabWidget* CoreProxyWrapper::GetTabWidget () const
+	{
+		return Proxy_->GetTabWidget ();
+	}
 
-			QObject* CoreProxyWrapper::GetTagsManager () const
-			{
-				return new TagsManagerWrapper (Proxy_->GetTagsManager ());
-			}
+	QObject* CoreProxyWrapper::GetTagsManager () const
+	{
+		return new TagsManagerWrapper (Proxy_->GetTagsManager ());
+	}
 
-			QStringList CoreProxyWrapper::GetSearchCategories () const
-			{
-				return Proxy_->GetSearchCategories ();
-			}
+	QStringList CoreProxyWrapper::GetSearchCategories () const
+	{
+		return Proxy_->GetSearchCategories ();
+	}
 
-			int CoreProxyWrapper::GetID ()
-			{
-				return Proxy_->GetID ();
-			}
+	int CoreProxyWrapper::GetID ()
+	{
+		return Proxy_->GetID ();
+	}
 
-			void CoreProxyWrapper::FreeID (int id)
-			{
-				Proxy_->FreeID (id);
-			}
+	void CoreProxyWrapper::FreeID (int id)
+	{
+		Proxy_->FreeID (id);
+	}
 
-			QObject* CoreProxyWrapper::GetPluginsManager () const
-			{
-				return new PluginsManagerWrapper (Proxy_->GetPluginsManager ());
-			}
+	QObject* CoreProxyWrapper::GetPluginsManager () const
+	{
+		return new PluginsManagerWrapper (Proxy_->GetPluginsManager ());
+	}
 
-			QObject* CoreProxyWrapper::GetSelf ()
-			{
-				return Proxy_->GetSelf ();
-			}
-		};
-	};
-};
+	QObject* CoreProxyWrapper::GetSelf ()
+	{
+		return Proxy_->GetSelf ();
+	}
+}
+}

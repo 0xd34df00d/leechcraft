@@ -79,6 +79,9 @@ namespace LeechCraft
 	struct TabClassInfo
 	{
 		/** @brief The tab class ID, which should be globally unique.
+		 * 
+		 * This ID would be passed to the IHaveTabs::TabOpenRequested()
+		 * method if the user decides to open a tab of this class.
 		 */
 		QByteArray TabClass_;
 		
@@ -243,10 +246,10 @@ public:
  * system is used to try to guess the most-currently-wanted tab by the
  * user. When user requests a new tab, but doesn't specify its type (for
  * example, just hits Ctrl+T), priorities of two tab classes are
- * fetched: the priority of the class of the current tab and the highest
- * priority among all the tabs. If current priority plus some delta is
- * higher than maximum one, a new instance of current tab class is
- * opened, otherwise the tab with the highest priority is opened. For
+ * compared: the priority of the class of the current tab and the
+ * highest priority among all the tabs. If current priority plus some
+ * delta is higher than maximum one, a new instance of current tab class
+ * is opened, otherwise the tab with the highest priority is opened. For
  * example, if web browser tab has priority of 80, text editor — 70 and
  * search plugin — 60, and delta is 15, then if current tab is web
  * browser or search plugin, the new tab will be a web browser tab (since
@@ -260,7 +263,7 @@ public:
  * been called on your plugin, but you may use them in SecondInit() or
  * later.
  * 
- * @sa ITabWidget, TabClassInfo
+ * @sa ITabWidget, LeechCraft::TabClassInfo
  */
 class IHaveTabs
 {

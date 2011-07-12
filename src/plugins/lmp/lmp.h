@@ -66,7 +66,7 @@ namespace LeechCraft
 
 				boost::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
 
-				bool CouldHandle (const LeechCraft::Entity&) const;
+				EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
 				void Handle (LeechCraft::Entity);
 
 				QList<QAction*> GetActions (ActionsEmbedPlace) const;

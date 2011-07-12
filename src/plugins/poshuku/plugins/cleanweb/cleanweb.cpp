@@ -22,7 +22,8 @@
 #include <QIcon>
 #include <QTextCodec>
 #include <QtDebug>
-#include <plugininterface/util.h>
+#include <interfaces/entitytesthandleresult.h>
+#include <util/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -126,9 +127,11 @@ namespace CleanWeb
 		return SettingsDialog_;
 	}
 
-	bool CleanWeb::CouldHandle (const Entity& e) const
+	EntityTestHandleResult CleanWeb::CouldHandle (const Entity& e) const
 	{
-		return Core::Instance ().CouldHandle (e);
+		return Core::Instance ().CouldHandle (e) ?
+				EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
+				EntityTestHandleResult ();
 	}
 
 	void CleanWeb::Handle (Entity e)

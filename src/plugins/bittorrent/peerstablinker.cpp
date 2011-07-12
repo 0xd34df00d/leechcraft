@@ -19,7 +19,7 @@
 #include "peerstablinker.h"
 #include <QTimer>
 #include <QSortFilterProxyModel>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "ui_tabwidget.h"
 #include "core.h"
 #include "peersmodel.h"

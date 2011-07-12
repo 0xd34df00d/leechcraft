@@ -19,7 +19,7 @@
 #include "capsdatabase.h"
 #include <QFile>
 #include <QTimer>
-#include <plugininterface/util.h>
+#include <util/util.h>
 
 Q_DECLARE_METATYPE (QXmppDiscoveryIq::Identity);
 

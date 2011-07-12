@@ -24,25 +24,21 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Aggregator
+{
+	class Atom03Parser : public AtomParser
 	{
-		namespace Aggregator
-		{
-			class Atom03Parser : public AtomParser
-			{
-				Atom03Parser ();
-			public:
-				static Atom03Parser& Instance ();
-				virtual bool CouldParse (const QDomDocument&) const;
-			private:
-				channels_container_t Parse (const QDomDocument&,
-						const IDType_t&) const;
-				Item* ParseItem (const QDomElement&,
-						const IDType_t&) const;
-			};
-		};
+		Atom03Parser ();
+	public:
+		static Atom03Parser& Instance ();
+		virtual bool CouldParse (const QDomDocument&) const;
+	private:
+		channels_container_t Parse (const QDomDocument&,
+				const IDType_t&) const;
+		Item* ParseItem (const QDomElement&,
+				const IDType_t&) const;
 	};
-};
+}
+}
 
 #endif
-

@@ -23,7 +23,8 @@
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QMainWindow>
-#include <plugininterface/util.h>
+#include <interfaces/entitytesthandleresult.h>
+#include <util/util.h>
 
 namespace LeechCraft
 {
@@ -66,25 +67,25 @@ namespace LeechCraft
 				return QIcon ();
 			}
 
-			bool Plugin::CouldHandle (const LeechCraft::Entity& e) const
+			EntityTestHandleResult Plugin::CouldHandle (const LeechCraft::Entity& e) const
 			{
 				if (!(e.Parameters_ & FromUserInitiated))
-					return false;
+					return EntityTestHandleResult ();
 
 				if (!e.Entity_.canConvert<QUrl> ())
-					return false;
+					return EntityTestHandleResult ();
 
 				if (e.Mime_.startsWith ("x-leechcraft/"))
-					return false;
+					return EntityTestHandleResult ();
 
-				QUrl url = e.Entity_.toUrl ();
+				const QUrl& url = e.Entity_.toUrl ();
 				if (url.scheme () != "file")
-					return false;
+					return EntityTestHandleResult ();
 
 				if (!QFileInfo (url.toLocalFile ()).exists ())
-					return false;
+					return EntityTestHandleResult ();
 
-				return true;
+				return EntityTestHandleResult (EntityTestHandleResult::PHigh);
 			}
 
 			void Plugin::Handle (LeechCraft::Entity e)

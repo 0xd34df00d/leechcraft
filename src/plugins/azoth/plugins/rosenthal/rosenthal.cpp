@@ -24,7 +24,7 @@
 #include <QMenu>
 #include <QTextCodec>
 #include <QTranslator>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "hunspell/hunspell.hxx"
 #include "highlighter.h"

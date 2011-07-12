@@ -51,9 +51,9 @@
 #include <QDataStream>
 #include <QRegExp>
 #include <QKeySequence>
-#include <plugininterface/util.h>
-#include <plugininterface/defaulthookproxy.h>
-#include <plugininterface/notificationactionhandler.h>
+#include <util/util.h>
+#include <util/defaulthookproxy.h>
+#include <util/notificationactionhandler.h>
 #include "core.h"
 #include "historymodel.h"
 #include "finddialog.h"
@@ -176,6 +176,7 @@ namespace Poshuku
 				this);
 		SavePage_->setProperty ("ActionIcon", "fetchall");
 		SavePage_->setEnabled (false);
+		SavePage_->setShortcut (QKeySequence (tr ("Ctrl+s")));
 
 		ZoomIn_ = new QAction (tr ("Zoom in"),
 				this);
@@ -1014,6 +1015,7 @@ namespace Poshuku
 		Entity e = Util::MakeEntity (Ui_.WebView_->url (),
 				QString (),
 				FromUserInitiated);
+		e.Additional_ ["AllowedSemantics"] = QStringList ("fetch") << "save";
 		emit gotEntity (e);
 	}
 

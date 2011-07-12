@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="Azoth Autoidler" />
+		<item type="groupbox" property="EnableAutoidler" default="true" checkable="true">
+			<label value="Enable autoidler" />
+			<item type="spinbox" property="AwayTimeout" default="10">
+				<label value="'Away' timeout:" />
+				<suffix value=" min" />
+			</item>
+			<item type="spinbox" property="NATimeout" default="30">
+				<label value="'Not Available' timeout:" />
+				<suffix value=" min" />
+			</item>
+			<item type="multiline" property="AwayText" default="">
+				<label value="'Away' status text:" />
+			</item>
+			<item type="multiline" property="NAText" default="">
+				<label value="'Not Available' status text:" />
+			</item>
+		</item>
+	</page>
+</settings>

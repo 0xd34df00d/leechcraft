@@ -19,7 +19,7 @@
 #ifndef PLUGINS_HISTORYHOLDER_FINDPROXY_H
 #define PLUGINS_HISTORYHOLDER_FINDPROXY_H
 #include <QObject>
-#include <plugininterface/tagsfiltermodel.h>
+#include <util/tagsfiltermodel.h>
 #include <interfaces/ifinder.h>
 
 namespace LeechCraft

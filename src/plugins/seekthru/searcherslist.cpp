@@ -18,7 +18,7 @@
 
 #include "searcherslist.h"
 #include <QInputDialog>
-#include <plugininterface/tagscompleter.h>
+#include <util/tagscompleter.h>
 #include "core.h"
 
 namespace LeechCraft

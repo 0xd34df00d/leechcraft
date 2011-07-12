@@ -18,7 +18,7 @@
 
 #include "addcontactdialog.h"
 #include <QStringListModel>
-#include <plugininterface/tagscompleter.h>
+#include <util/tagscompleter.h>
 #include "interfaces/iprotocol.h"
 #include "interfaces/iaccount.h"
 #include "core.h"
@@ -48,6 +48,16 @@ namespace Azoth
 				SIGNAL (textChanged (const QString&)),
 				this,
 				SLOT (checkComplete ()));
+	}
+	
+	void AddContactDialog::SetContactID (const QString& id)
+	{
+		Ui_.ContactID_->setText (id);
+	}
+	
+	void AddContactDialog::SetNick (const QString& nick)
+	{
+		Ui_.Nick_->setText (nick);
 	}
 
 	IAccount* AddContactDialog::GetSelectedAccount () const

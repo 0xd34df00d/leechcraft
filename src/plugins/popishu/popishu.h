@@ -56,7 +56,7 @@ namespace LeechCraft
 				TabClasses_t GetTabClasses () const;
 				void TabOpenRequested (const QByteArray&);
 
-				bool CouldHandle (const Entity&) const;
+				EntityTestHandleResult CouldHandle (const Entity&) const;
 				void Handle (Entity);
 
 				boost::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;

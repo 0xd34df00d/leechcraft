@@ -18,7 +18,8 @@
 
 #include "dbusmanager.h"
 #include <QIcon>
-#include <plugininterface/util.h>
+#include <interfaces/entitytesthandleresult.h>
+#include <util/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "core.h"
@@ -93,9 +94,11 @@ namespace LeechCraft
 				return SettingsDialog_;
 			}
 
-			bool DBusManager::CouldHandle (const Entity& e) const
+			EntityTestHandleResult DBusManager::CouldHandle (const Entity& e) const
 			{
-				return Core::Instance ().CouldHandle (e);
+				return Core::Instance ().CouldHandle (e) ?
+						EntityTestHandleResult (EntityTestHandleResult::PHigh) :
+						EntityTestHandleResult ();
 			}
 
 			void DBusManager::Handle (Entity e)

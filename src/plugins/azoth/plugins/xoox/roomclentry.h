@@ -98,6 +98,7 @@ namespace Xoox
 		void SetNick (const QString&);
 		QString GetGroupName () const;
 		QVariantMap GetIdentifyingData () const;
+		QString GetRealID (QObject*) const;
 		
 		// IMUCPerms
 		QMap<QByteArray, QList<QByteArray> > GetPossiblePerms () const;

@@ -53,7 +53,10 @@ namespace Azoth
 
 	void AccountsListWidget::addAccount (IAccount *acc)
 	{
+		IProtocol *proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
+
 		QStandardItem *item = new QStandardItem (acc->GetAccountName ());
+		item->setIcon (proto ? proto->GetProtocolIcon () : QIcon ());
 		item->setData (QVariant::fromValue<IAccount*> (acc), RAccObj);
 		item->setEditable (false);
 		AccModel_->appendRow (item);

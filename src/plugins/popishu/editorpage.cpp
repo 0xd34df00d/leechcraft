@@ -36,7 +36,7 @@
 #include <Qsci/qscilexersql.h>
 #include <Qsci/qscilexertex.h>
 #include <Qsci/qscilexerxml.h>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "replacedialog.h"

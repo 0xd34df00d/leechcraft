@@ -22,7 +22,7 @@
 #include <KDE/KGlobal>
 #include <KDE/KCrash>
 #include <kdeversion.h>
-#include <plugininterface/util.h>
+#include <util/util.h>
 
 namespace LeechCraft
 {

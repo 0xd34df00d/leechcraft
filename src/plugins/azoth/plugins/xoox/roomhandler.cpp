@@ -120,7 +120,8 @@ namespace Xoox
 				IMessage::DIn,
 				CLEntry_,
 				IMessage::MTStatusMessage,
-				IMessage::MSTParticipantLeave);
+				IMessage::MSTParticipantLeave,
+				GetParticipantEntry (nick));
 		CLEntry_->HandleMessage (message);
 	}
 
@@ -148,7 +149,8 @@ namespace Xoox
 				IMessage::DIn,
 				CLEntry_,
 				IMessage::MTStatusMessage,
-				IMessage::MSTParticipantJoin);
+				IMessage::MSTParticipantJoin,
+				GetParticipantEntry (nick));
 		CLEntry_->HandleMessage (message);
 	}
 
@@ -169,7 +171,8 @@ namespace Xoox
 				IMessage::DIn,
 				CLEntry_,
 				IMessage::MTStatusMessage,
-				IMessage::MSTParticipantStatusChange);
+				IMessage::MSTParticipantStatusChange,
+				GetParticipantEntry (nick));
 		message->setProperty ("Azoth/Nick", nick);
 		message->setProperty ("Azoth/TargetState", state);
 		message->setProperty ("Azoth/StatusText", status.statusText ());
@@ -186,7 +189,8 @@ namespace Xoox
 				IMessage::DIn,
 				CLEntry_,
 				IMessage::MTStatusMessage,
-				IMessage::MSTParticipantNickChange);
+				IMessage::MSTParticipantNickChange,
+				GetParticipantEntry (oldNick));
 		CLEntry_->HandleMessage (message);
 	}
 	
@@ -205,7 +209,8 @@ namespace Xoox
 				IMessage::DIn,
 				CLEntry_,
 				IMessage::MTStatusMessage,
-				IMessage::MSTKickNotification);
+				IMessage::MSTKickNotification,
+				GetParticipantEntry (nick));
 		CLEntry_->HandleMessage (message);
 	}
 
@@ -224,7 +229,8 @@ namespace Xoox
 				IMessage::DIn,
 				CLEntry_,
 				IMessage::MTStatusMessage,
-				IMessage::MSTBanNotification);
+				IMessage::MSTBanNotification,
+				GetParticipantEntry (nick));
 		CLEntry_->HandleMessage (message);
 	}
 	
@@ -251,7 +257,8 @@ namespace Xoox
 				IMessage::DIn,
 				CLEntry_,
 				IMessage::MTStatusMessage,
-				IMessage::MSTParticipantRoleAffiliationChange);
+				IMessage::MSTParticipantRoleAffiliationChange,
+				GetParticipantEntry (nick));
 		CLEntry_->HandleMessage (message);
 	}
 	
@@ -348,12 +355,13 @@ namespace Xoox
 			role == QXmppMucItem::NoRole)
 		{
 			Account_->handleEntryRemoved (entry.get ());
-			Nick2Entry_.remove (nick);
 
 			if (aff == QXmppMucItem::OutcastAffiliation)
 				MakeBanMessage (nick, reason);
 			else
 				MakeKickMessage (nick, reason);
+			
+			Nick2Entry_.remove (nick);
 
 			return;
 		}
@@ -541,6 +549,11 @@ namespace Xoox
 		item.setReason (reason);
 		item.setRole (newRole);
 		Account_->GetClientConnection ()->Update (item, Room_->jid ());
+	}
+	
+	QXmppMucRoom* RoomHandler::GetRoom () const
+	{
+		return Room_;
 	}
 
 	RoomParticipantEntry_ptr RoomHandler::CreateParticipantEntry (const QString& nick, bool announce)

@@ -24,18 +24,14 @@ class QWizardPage;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Aggregator
+{
+	class WizardGenerator
 	{
-		namespace Aggregator
-		{
-			class WizardGenerator
-			{
-			public:
-				QList<QWizardPage*> GetPages ();
-			};
-		};
+	public:
+		QList<QWizardPage*> GetPages ();
 	};
-};
+}
+}
 
 #endif
-

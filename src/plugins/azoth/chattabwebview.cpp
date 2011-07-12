@@ -21,7 +21,7 @@
 #include <QWebHitTestResult>
 #include <QPointer>
 #include <QMenu>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "core.h"
 
 namespace LeechCraft
@@ -78,9 +78,10 @@ namespace Azoth
 	void ChatTabWebView::handleSaveLink ()
 	{
 		QAction *action = qobject_cast<QAction*> (sender ());
-		const Entity& e = Util::MakeEntity (action->data (),
+		Entity e = Util::MakeEntity (action->data (),
 				QString (),
-				static_cast<TaskParameters> (OnlyHandle | FromUserInitiated));
+				FromUserInitiated);
+		e.Additional_ ["AllowedSemantics"] = QStringList ("fetch") << "save";
 		Core::Instance ().SendEntity (e);
 	}
 }

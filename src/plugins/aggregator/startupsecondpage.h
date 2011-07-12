@@ -23,31 +23,27 @@
 
 namespace LeechCraft
 {
-	namespace Util
-	{
-		class BackendSelector;
-	};
-
-	namespace Plugins
-	{
-		namespace Aggregator
-		{
-			class StartupSecondPage : public QWizardPage
-			{
-				Q_OBJECT
-
-				Ui::StartupSecondPageWidget Ui_;
-				Util::BackendSelector *Selector_;
-			public:
-				StartupSecondPage (QWidget* = 0);
-
-				void initializePage ();
-			private slots:
-				void handleAccepted ();
-			};
-		};
-	};
+namespace Util
+{
+	class BackendSelector;
 };
 
-#endif
+namespace Aggregator
+{
+	class StartupSecondPage : public QWizardPage
+	{
+		Q_OBJECT
 
+		Ui::StartupSecondPageWidget Ui_;
+		Util::BackendSelector *Selector_;
+	public:
+		StartupSecondPage (QWidget* = 0);
+
+		void initializePage ();
+	private slots:
+		void handleAccepted ();
+	};
+}
+}
+
+#endif

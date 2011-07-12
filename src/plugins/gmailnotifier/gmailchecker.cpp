@@ -123,7 +123,6 @@ namespace GmailNotifier
 		const int fullShow = XmlSettingsManager::Instance ()->
 				property ("ShowLastNMessages").toInt ();
 		QString result;
-		qDebug () << "GMAIL" << fullCount << fullShow;
 		for (QDomElement elem = root.firstChildElement ("entry");
 				!elem.isNull () && i < fullShow; elem = elem.nextSiblingElement ("entry"), ++i)
 		{

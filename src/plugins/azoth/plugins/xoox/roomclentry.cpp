@@ -253,6 +253,19 @@ namespace Xoox
 		return result;
 	}
 	
+	QString RoomCLEntry::GetRealID (QObject *obj) const
+	{
+		RoomParticipantEntry *entry = qobject_cast<RoomParticipantEntry*> (obj);
+		if (!entry)
+			return QString ();
+		
+		const QString& jid = entry->GetRealJID ();
+		QString bare;
+		QString resource;
+		ClientConnection::Split (jid, &bare, &resource);
+		return bare;
+	}
+	
 	QMap<QByteArray, QList<QByteArray> > RoomCLEntry::GetPossiblePerms () const
 	{
 		return Perms_;

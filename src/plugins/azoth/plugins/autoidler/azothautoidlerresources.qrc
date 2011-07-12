@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="/plugins/azoth/plugins/autoidler">
+    <file>resources/images/autoidler.svg</file>
+  </qresource>
+</RCC>

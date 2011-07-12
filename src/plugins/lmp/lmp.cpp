@@ -18,7 +18,8 @@
 
 #include "lmp.h"
 #include <QToolBar>
-#include <plugininterface/util.h>
+#include <interfaces/entitytesthandleresult.h>
+#include <util/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "core.h"
@@ -112,17 +113,16 @@ boost::shared_ptr<XmlSettingsDialog> LMP::GetSettingsDialog () const
 	return SettingsDialog_;
 }
 
-bool LMP::CouldHandle (const LeechCraft::Entity& e) const
+EntityTestHandleResult LMP::CouldHandle (const LeechCraft::Entity& e) const
 {
 	EntityChecker ec (e);
-	return ec.Can ();
+	return ec.Can () ?
+			EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
+			EntityTestHandleResult ();
 }
 
 void LMP::Handle (LeechCraft::Entity e)
 {
-	if (!CouldHandle (e))
-		return;
-
 	Core::Instance ().Handle (e);
 }
 

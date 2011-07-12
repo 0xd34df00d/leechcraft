@@ -23,11 +23,12 @@
 #include <QToolButton>
 #include <QInputDialog>
 #include <QTimer>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "interfaces/iclentry.h"
 #include "interfaces/ihaveconsole.h"
 #include "interfaces/isupportactivity.h"
 #include "interfaces/isupportmood.h"
+#include "interfaces/isupportgeolocation.h"
 #include "core.h"
 #include "sortfilterproxymodel.h"
 #include "setstatusdialog.h"
@@ -40,6 +41,7 @@
 #include "consolewidget.h"
 #include "activitydialog.h"
 #include "mooddialog.h"
+#include "locationdialog.h"
 
 namespace LeechCraft
 {
@@ -153,6 +155,12 @@ namespace Azoth
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleAccountSetMood ()));
+		
+		AccountSetLocation_ = new QAction (tr ("Set location..."), this);
+		connect (AccountSetLocation_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleAccountSetLocation ()));
 		
 		AccountConsole_ = new QAction (tr ("Console..."), this);
 		connect (AccountConsole_,
@@ -358,6 +366,11 @@ namespace Azoth
 			{
 				AccountSetMood_->setProperty ("Azoth/AccountObject", objVar);
 				actions << AccountSetMood_;
+			}
+			if (qobject_cast<ISupportGeolocation*> (objVar.value<QObject*> ()))
+			{
+				AccountSetLocation_->setProperty ("Azoth/AccountObject", objVar);
+				actions << AccountSetLocation_;
 			}
 			
 			actions << Util::CreateSeparator (menu);
@@ -583,6 +596,29 @@ namespace Azoth
 			return;
 		
 		mood->SetMood (dia->GetMood (), dia->GetText ());
+	}
+	
+	void MainWidget::handleAccountSetLocation ()
+	{
+		IAccount *account = GetAccountFromSender (Q_FUNC_INFO);
+		if (!account)
+			return;
+		
+		QObject *obj = account->GetObject ();
+		ISupportGeolocation *loc = qobject_cast<ISupportGeolocation*> (obj);
+		if (!loc)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< obj
+					<< "doesn't support geolocation";
+			return;
+		}
+		
+		std::auto_ptr<LocationDialog> dia (new LocationDialog (this));
+		if (dia->exec () != QDialog::Accepted)
+			return;
+		
+		loc->SetGeolocationInfo (dia->GetInfo ());
 	}
 	
 	void MainWidget::handleAccountConsole ()

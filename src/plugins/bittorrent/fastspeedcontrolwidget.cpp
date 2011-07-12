@@ -19,7 +19,7 @@
 #include "fastspeedcontrolwidget.h"
 #include <QSettings>
 #include <QHBoxLayout>
-#include <plugininterface/util.h>
+#include <util/util.h>
 
 namespace LeechCraft
 {

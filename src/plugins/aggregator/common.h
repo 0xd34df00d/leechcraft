@@ -18,33 +18,30 @@
 
 #ifndef PLUGINS_AGGREGATOR_COMMON_H
 #define PLUGINS_AGGREGATOR_COMMON_H
-#include <vector>
+#include <QList>
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Aggregator
+{
+	typedef quint64 IDType_t;
+	typedef QList<IDType_t> ids_t;
+	enum PoolType
 	{
-		namespace Aggregator
-		{
-			typedef quint64 IDType_t;
-			typedef QList<IDType_t> ids_t;
-			enum PoolType
-			{
-				PTFeed,
-				PTChannel,
-				PTItem,
-				PTFeedSettings,
-				PTEnclosure,
-				PTMRSSEntry,
-				PTMRSSThumbnail,
-				PTMRSSCredit,
-				PTMRSSComment,
-				PTMRSSPeerLink,
-				PTMRSSScene,
-				PTMAX
-			};
-		};
+		PTFeed,
+		PTChannel,
+		PTItem,
+		PTFeedSettings,
+		PTEnclosure,
+		PTMRSSEntry,
+		PTMRSSThumbnail,
+		PTMRSSCredit,
+		PTMRSSComment,
+		PTMRSSPeerLink,
+		PTMRSSScene,
+		PTMAX
 	};
-};
+}
+}
 
 #endif

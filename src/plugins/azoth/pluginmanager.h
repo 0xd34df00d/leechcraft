@@ -20,7 +20,7 @@
 #define PLUGINS_AZOTH_PLUGINMANAGER_H
 #include <QString>
 #include <QDateTime>
-#include <plugininterface/basehookinterconnector.h>
+#include <util/basehookinterconnector.h>
 #include <interfaces/iinfo.h>
 
 class QDateTime;
@@ -121,6 +121,10 @@ namespace Azoth
 		
 		void hookGonnaAppendMsg (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message);
+		
+		void hookGonnaHandleSmiles (LeechCraft::IHookProxy_ptr proxy,
+				QString body,
+				QString pack);
 		
 		/** @brief Hook for handling incoming messages.
 		 * 

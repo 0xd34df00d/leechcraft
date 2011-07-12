@@ -42,8 +42,8 @@
 #include <qwebhistory.h>
 #include <QtDebug>
 #include <QMainWindow>
-#include <plugininterface/util.h>
-#include <plugininterface/defaulthookproxy.h>
+#include <util/util.h>
+#include <util/defaulthookproxy.h>
 #include <interfaces/ihaveshortcuts.h>
 #include "browserwidget.h"
 #include "customwebview.h"

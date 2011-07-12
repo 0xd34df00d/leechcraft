@@ -25,7 +25,7 @@
 #include <QTranslator>
 #include <interfaces/imessage.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -72,7 +72,7 @@ namespace HiLi
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		return QIcon (":/plugins/azoth/plugins/hili/resources/images/hili.svg");
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const

@@ -21,7 +21,7 @@
 #include <QIcon>
 #include <QAction>
 #include <QTranslator>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include <interfaces/imessage.h>
 #include <interfaces/iclentry.h>
 #include <interfaces/azothcommon.h>
@@ -175,22 +175,6 @@ namespace ChatHistory
 		list << QVariant::fromValue<QObject*> (Entry2ActionHistory_ [entry]);
 		list << QVariant::fromValue<QObject*> (Entry2ActionEnableHistory_ [entry]);
 		proxy->SetReturnValue (list);
-	}
-
-	void Plugin::hookMessageCreated (IHookProxy_ptr,
-			QObject*, QObject *message)
-	{
-		IMessage *msg = qobject_cast<IMessage*> (message);
-		if (!msg)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< message
-					<< "doesn't implement IMessage"
-					<< sender ();
-			return;
-		}
-		
-		Core::Instance ()->Process (message);
 	}
 
 	void Plugin::hookGotMessage (LeechCraft::IHookProxy_ptr,

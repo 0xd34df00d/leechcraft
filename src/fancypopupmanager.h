@@ -23,7 +23,7 @@
 #include <QPoint>
 #include <QList>
 #include <QMap>
-#include "plugininterface/structuresops.h"
+#include "util/structuresops.h"
 
 class QSystemTrayIcon;
 

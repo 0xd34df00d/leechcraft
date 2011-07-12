@@ -36,8 +36,8 @@
 #include <QXmppPubSubIq.h>
 #include <QXmppDeliveryReceiptsManager.h>
 #include <QXmppCallManager.h>
-#include <plugininterface/util.h>
-#include <plugininterface/socketerrorstrings.h>
+#include <util/util.h>
+#include <util/socketerrorstrings.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <interfaces/iprotocol.h>
 #include <interfaces/iproxyobject.h>
@@ -58,6 +58,7 @@
 #include "useractivity.h"
 #include "usermood.h"
 #include "usertune.h"
+#include "userlocation.h"
 #include "privacylistsmanager.h"
 #include "adhoccommandmanager.h"
 
@@ -116,9 +117,11 @@ namespace Xoox
 		PubSubManager_->RegisterCreator<UserActivity> ();
 		PubSubManager_->RegisterCreator<UserMood> ();
 		PubSubManager_->RegisterCreator<UserTune> ();
+		PubSubManager_->RegisterCreator<UserLocation> ();
 		PubSubManager_->SetAutosubscribe<UserActivity> (true);
 		PubSubManager_->SetAutosubscribe<UserMood> (true);
 		PubSubManager_->SetAutosubscribe<UserTune> (true);
+		PubSubManager_->SetAutosubscribe<UserLocation> (true);
 		
 		connect (PubSubManager_,
 				SIGNAL (gotEvent (const QString&, PEPEventBase*)),

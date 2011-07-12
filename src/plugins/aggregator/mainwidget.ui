@@ -73,7 +73,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="LeechCraft::Plugins::Aggregator::ItemsWidget" name="ItemsWidget_" native="true"/>
+     <widget class="LeechCraft::Aggregator::ItemsWidget" name="ItemsWidget_" native="true"/>
     </widget>
    </item>
   </layout>
@@ -82,10 +82,10 @@
   <customwidget>
    <class>LeechCraft::Util::TagsLineEdit</class>
    <extends>QLineEdit</extends>
-   <header location="global">plugininterface/tagslineedit.h</header>
+   <header location="global">util/tagslineedit.h</header>
   </customwidget>
   <customwidget>
-   <class>LeechCraft::Plugins::Aggregator::ItemsWidget</class>
+   <class>LeechCraft::Aggregator::ItemsWidget</class>
    <extends>QWidget</extends>
    <header>itemswidget.h</header>
    <container>1</container>

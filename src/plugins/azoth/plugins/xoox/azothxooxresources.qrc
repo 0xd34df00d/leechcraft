@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/plugins/azoth/plugins/xoox">
+    <file>resources/images/xoox.svg</file>
+    <file>resources/images/jabbericon.svg</file>
+  </qresource>
+</RCC>

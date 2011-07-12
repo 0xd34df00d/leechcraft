@@ -26,8 +26,8 @@
 #include <QToolBar>
 #include <QAction>
 #include <interfaces/structures.h>
-#include <plugininterface/util.h>
-#include <plugininterface/notificationactionhandler.h>
+#include <util/util.h>
+#include <util/notificationactionhandler.h>
 #include "interfaces/iclentry.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"

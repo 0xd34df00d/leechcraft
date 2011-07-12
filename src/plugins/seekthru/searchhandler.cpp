@@ -25,8 +25,8 @@
 #include <QTextCodec>
 #include <QtDebug>
 #include <interfaces/iwebbrowser.h>
-#include <plugininterface/util.h>
-#include <plugininterface/selectablebrowser.h>
+#include <util/util.h>
+#include <util/selectablebrowser.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 

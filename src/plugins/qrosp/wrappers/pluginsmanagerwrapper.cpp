@@ -20,24 +20,21 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Qrosp
+{
+	PluginsManagerWrapper::PluginsManagerWrapper (IPluginsManager *manager)
+	: Manager_ (manager)
 	{
-		namespace Qrosp
-		{
-			PluginsManagerWrapper::PluginsManagerWrapper (IPluginsManager *manager)
-			: Manager_ (manager)
-			{
-			}
+	}
 
-			QObjectList PluginsManagerWrapper::GetAllPlugins () const
-			{
-				return Manager_->GetAllPlugins ();
-			}
+	QObjectList PluginsManagerWrapper::GetAllPlugins () const
+	{
+		return Manager_->GetAllPlugins ();
+	}
 
-			QString PluginsManagerWrapper::GetPluginLibraryPath (const QObject *object) const
-			{
-				return Manager_->GetPluginLibraryPath (object);
-			}
-		};
-	};
-};
+	QString PluginsManagerWrapper::GetPluginLibraryPath (const QObject *object) const
+	{
+		return Manager_->GetPluginLibraryPath (object);
+	}
+}
+}

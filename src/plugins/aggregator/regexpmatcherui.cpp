@@ -24,116 +24,112 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Aggregator
+{
+	RegexpMatcherUi::RegexpMatcherUi (QWidget *parent)
+	: QDialog (parent)
 	{
-		namespace Aggregator
+		Ui_.setupUi (this);
+		Ui_.Regexps_->setModel (&RegexpMatcherManager::Instance ());
+	}
+	
+	RegexpMatcherUi::~RegexpMatcherUi ()
+	{
+		RegexpMatcherManager::Instance ().Release ();
+	}
+	
+	void RegexpMatcherUi::on_AddRegexpButton__released ()
+	{
+		bool success = false;
+		QString title, body;
+		do
 		{
-			RegexpMatcherUi::RegexpMatcherUi (QWidget *parent)
-			: QDialog (parent)
+			success = true;
+			SingleRegexp srx (title, body, false, this);
+			if (srx.exec () == QDialog::Rejected)
+				return;
+	
+			title = srx.GetTitle ();
+			body = srx.GetBody ();
+	
+			try
 			{
-				Ui_.setupUi (this);
-				Ui_.Regexps_->setModel (&RegexpMatcherManager::Instance ());
+				RegexpMatcherManager::Instance ().Add (title, body);
 			}
-			
-			RegexpMatcherUi::~RegexpMatcherUi ()
+			catch (const RegexpMatcherManager::AlreadyExists&)
 			{
-				RegexpMatcherManager::Instance ().Release ();
+				QMessageBox::critical (this,
+						tr ("LeechCraft"),
+						tr ("This title "
+							"matcher regexp already exists. Specify another "
+							"one or modify existing title matcher regexp's "
+							"body extractor."));
+				success = false;
 			}
-			
-			void RegexpMatcherUi::on_AddRegexpButton__released ()
+			catch (const RegexpMatcherManager::Malformed&)
 			{
-				bool success = false;
-				QString title, body;
-				do
-				{
-					success = true;
-					SingleRegexp srx (title, body, false, this);
-					if (srx.exec () == QDialog::Rejected)
-						return;
-			
-					title = srx.GetTitle ();
-					body = srx.GetBody ();
-			
-					try
-					{
-						RegexpMatcherManager::Instance ().Add (title, body);
-					}
-					catch (const RegexpMatcherManager::AlreadyExists&)
-					{
-						QMessageBox::critical (this,
-								tr ("LeechCraft"),
-								tr ("This title "
-									"matcher regexp already exists. Specify another "
-									"one or modify existing title matcher regexp's "
-									"body extractor."));
-						success = false;
-					}
-					catch (const RegexpMatcherManager::Malformed&)
-					{
-						QMessageBox::critical (this,
-								tr ("LeechCraft"),
-								tr ("Either title"
-									" matcher or body extractor is malformed."));
-						success = false;
-					}
-				}
-				while (!success);
+				QMessageBox::critical (this,
+						tr ("LeechCraft"),
+						tr ("Either title"
+							" matcher or body extractor is malformed."));
+				success = false;
 			}
-			
-			void RegexpMatcherUi::on_ModifyRegexpButton__released ()
+		}
+		while (!success);
+	}
+	
+	void RegexpMatcherUi::on_ModifyRegexpButton__released ()
+	{
+		QModelIndex index = Ui_.Regexps_->selectionModel ()->currentIndex ();
+		if (!index.isValid ())
+			return;
+	
+		bool success = false;
+		RegexpMatcherManager::titlebody_t pair = RegexpMatcherManager::Instance ().GetTitleBody (index);
+		QString title = pair.first,
+				body = pair.second;
+		do
+		{
+			success = true;
+			SingleRegexp srx (title, body, true, this);
+			if (srx.exec () == QDialog::Rejected)
+				return;
+	
+			body = srx.GetBody ();
+	
+			try
 			{
-				QModelIndex index = Ui_.Regexps_->selectionModel ()->currentIndex ();
-				if (!index.isValid ())
-					return;
-			
-				bool success = false;
-				RegexpMatcherManager::titlebody_t pair = RegexpMatcherManager::Instance ().GetTitleBody (index);
-				QString title = pair.first,
-						body = pair.second;
-				do
-				{
-					success = true;
-					SingleRegexp srx (title, body, true, this);
-					if (srx.exec () == QDialog::Rejected)
-						return;
-			
-					body = srx.GetBody ();
-			
-					try
-					{
-						RegexpMatcherManager::Instance ().Modify (title, body);
-					}
-					catch (const RegexpMatcherManager::AlreadyExists&)
-					{
-						QMessageBox::critical (this,
-								tr ("LeechCraft"),
-								tr ("This title "
-									"matcher regexp already exists. Specify another "
-									"one or modify existing title matcher regexp's "
-									"body extractor."));
-						success = false;
-					}
-					catch (const RegexpMatcherManager::Malformed&)
-					{
-						QMessageBox::critical (this,
-								tr ("LeechCraft"),
-								tr ("Either title"
-									" matcher or body extractor is malformed."));
-						success = false;
-					}
-				}
-				while (!success);
+				RegexpMatcherManager::Instance ().Modify (title, body);
 			}
-			
-			void RegexpMatcherUi::on_RemoveRegexpButton__released ()
+			catch (const RegexpMatcherManager::AlreadyExists&)
 			{
-				QModelIndex index = Ui_.Regexps_->selectionModel ()->currentIndex ();
-				if (!index.isValid ())
-					return;
-			
-				RegexpMatcherManager::Instance ().Remove (index);
+				QMessageBox::critical (this,
+						tr ("LeechCraft"),
+						tr ("This title "
+							"matcher regexp already exists. Specify another "
+							"one or modify existing title matcher regexp's "
+							"body extractor."));
+				success = false;
 			}
-		};
-	};
-};
-
+			catch (const RegexpMatcherManager::Malformed&)
+			{
+				QMessageBox::critical (this,
+						tr ("LeechCraft"),
+						tr ("Either title"
+							" matcher or body extractor is malformed."));
+				success = false;
+			}
+		}
+		while (!success);
+	}
+	
+	void RegexpMatcherUi::on_RemoveRegexpButton__released ()
+	{
+		QModelIndex index = Ui_.Regexps_->selectionModel ()->currentIndex ();
+		if (!index.isValid ())
+			return;
+	
+		RegexpMatcherManager::Instance ().Remove (index);
+	}
+}
+}

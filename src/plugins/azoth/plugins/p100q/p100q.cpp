@@ -78,7 +78,7 @@ namespace p100q
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		return QIcon (":/plugins/azoth/plugins/p100q/resources/images/p100q.svg");
 	}
 
 	QStringList Plugin::Provides () const
@@ -155,7 +155,7 @@ namespace p100q
 				" <a href=\"azoth://msgeditreplace/@\\1+\">@\\1</a> ");
 				
 		body.replace (CommentRX_,
-				" (<a href=\"azoth://msgeditreplace/U%20%23\\1/\\2\">U</a>) "
+				" (<a href=\"azoth://msgeditreplace/U%20%23\\1\">U</a>) "
 				" <a href=\"azoth://msgeditreplace/%23\\1/\\2%20\">#\\1/\\2</a>");
 				
 		body.replace (PostByUserRX_,

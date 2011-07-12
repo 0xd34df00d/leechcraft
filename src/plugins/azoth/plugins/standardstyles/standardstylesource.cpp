@@ -21,10 +21,11 @@
 #include <QWebElement>
 #include <QWebFrame>
 #include <QtDebug>
-#include <plugininterface/resourceloader.h>
-#include <plugininterface/util.h>
+#include <util/resourceloader.h>
+#include <util/util.h>
 #include <interfaces/imessage.h>
 #include <interfaces/iadvancedmessage.h>
+#include <interfaces/irichtextmessage.h>
 #include <interfaces/iaccount.h>
 #include <interfaces/imucentry.h>
 #include <interfaces/iproxyobject.h>
@@ -49,7 +50,7 @@ namespace StandardStyles
 		return StylesLoader_->GetSubElemModel ();
 	}
 	
-	QString StandardStyleSource::GetHTMLTemplate (const QString& pack, QObject *entryObj) const
+	QString StandardStyleSource::GetHTMLTemplate (const QString& pack, QObject *entryObj, QWebFrame*) const
 	{
 		if (pack != LastPack_)
 		{
@@ -88,6 +89,7 @@ namespace StandardStyles
 	bool StandardStyleSource::AppendMessage (QWebFrame *frame,
 			QObject *msgObj, const ChatMsgAppendInfo& info)
 	{
+		QObject *azothSettings = Proxy_->GetSettingsManager ();
 		const QList<QColor>& colors = CreateColors (frame->metaData ().value ("coloring"));
 
 		const bool isHighlightMsg = info.IsHighlightMsg_;
@@ -117,14 +119,34 @@ namespace StandardStyles
 					Qt::UniqueConnection);
 			Msg2Frame_ [msgObj] = frame;
 		}
-				
+		
 		const QString& nickColor = Proxy_->GetNickColor (entryName, colors);
 		
-		QString body = Proxy_->FormatBody (msg->GetBody (), msg->GetObject ());
+		IRichTextMessage *richMsg = qobject_cast<IRichTextMessage*> (msgObj);
+		QString body;
+		if (richMsg && info.UseRichTextBody_)
+			body = richMsg->GetRichBody ();
+		if (body.isEmpty ())
+			body = msg->GetBody ();
+		
+		body = Proxy_->FormatBody (body, msg->GetObject ());
+		
+		const QString dateBegin ("<span class='datetime'>");
+		const QString dateEnd ("</span>");
+		
+		const QString& preNick = dateBegin +
+				azothSettings->property ("PreNickText").toString () +
+				dateEnd;
+		const QString& postNick = dateBegin +
+				azothSettings->property ("PostNickText").toString () +
+				dateEnd;
 
 		QString divClass;
 		QString statusIconName;
-		QString string = Proxy_->FormatDate (msg->GetDateTime (), msg->GetObject ());
+
+		QString string = dateBegin + '[' +
+				Proxy_->FormatDate (msg->GetDateTime (), msg->GetObject ()) +
+				']' + dateEnd;
 		string.append (' ');
 		switch (msg->GetDirection ())
 		{
@@ -152,8 +174,10 @@ namespace StandardStyles
 				}
 				else
 				{
+					string.append (preNick);
 					string.append (entryName);
-					string.append (": ");
+					string.append (postNick);
+					string.append (' ');
 					if (divClass.isEmpty ())
 						divClass = isHighlightMsg ?
 								"highlightchatmsg" :
@@ -205,8 +229,10 @@ namespace StandardStyles
 			}
 			else
 			{
+				string.append (preNick);
 				string.append (Proxy_->FormatNickname (nick, msg->GetObject (), nickColor));
-				string.append (": ");
+				string.append (postNick);
+				string.append (' ');
 			}
 			if (divClass.isEmpty ())
 				divClass = "msgout";

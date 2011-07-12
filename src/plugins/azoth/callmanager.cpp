@@ -22,8 +22,8 @@
 #include <QAudioInput>
 #include <QAudioOutput>
 #include <QtDebug>
-#include <plugininterface/util.h>
-#include <plugininterface/notificationactionhandler.h>
+#include <util/util.h>
+#include <util/notificationactionhandler.h>
 #include "interfaces/iclentry.h"
 #include "xmlsettingsmanager.h"
 #include "core.h"

@@ -24,9 +24,9 @@
 #include <QNetworkReply>
 #include <QNetworkProxy>
 #include <QSettings>
-#include <plugininterface/util.h>
-#include <plugininterface/customcookiejar.h>
-#include <plugininterface/defaulthookproxy.h>
+#include <util/util.h>
+#include <util/customcookiejar.h>
+#include <util/defaulthookproxy.h>
 #include "core.h"
 #include "networkdiskcache.h"
 #include "authenticationdialog.h"

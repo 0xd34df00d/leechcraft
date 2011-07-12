@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN"
+        "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+        <key>CFBundleDevelopmentRegion</key>
+        <string>English</string>
+        <key>CFBundleGetInfoString</key>
+        <string>Hacker Kopete chat style</string>
+        <key>CFBundleIdentifier</key>
+        <string>Kopete.Hacker.style</string>
+        <key>CFBundleInfoDictionaryVersion</key>
+        <string>1.0</string>
+        <key>CFBundleName</key>
+        <string>Hacker</string>
+        <key>CFBundlePackageType</key>
+        <string>KopeteChatStyle</string>
+        <key>MessageViewVersion</key>
+        <integer>1</integer>
+        <key>DefaultFontFamily</key>
+	<string>DejaVu Sans Mono</string>
+	<key>DefaultFontSize</key>
+	<integer>12</integer>
+        <key>DisableCustomBackground</key>
+        <false/>
+        <key>DefaultBackgroundColor</key>
+        <string>000000</string>
+	<key>DisplayNameForNoVariant</key>
+        <string>Dark</string>
+        <key>AllowTextColors:Dark</key>
+        <false/>
+	<key>DefaultBackgroundColor:Dark2</key>
+        <string>000000</string>
+	<key>AllowTextColors:Dark2</key>
+        <false/>
+	<key>DefaultBackgroundColor:Light</key>
+        <string>ffffff</string>
+	<key>DefaultBackgroundColor:Light2</key>
+        <string>ffffff</string>
+	
+</dict>
+</plist>
