@@ -18,6 +18,7 @@
 
 #include "glanceshower.h"
 #include <cmath>
+#include <limits>
 #include <QTabWidget>
 #include <QLabel>
 #include <QGraphicsItem>
