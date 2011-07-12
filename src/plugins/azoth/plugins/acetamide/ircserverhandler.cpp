@@ -30,6 +30,8 @@
 #include "ircparser.h"
 #include "ircserverclentry.h"
 #include "xmlsettingsmanager.h"
+#include <QMessageBox>
+#include <QInputDialog>
 
 namespace LeechCraft
 {
@@ -849,11 +851,40 @@ namespace Acetamide
 	void IrcServerHandler::NickCmdError ()
 	{
 		int index = Account_->GetNickNames ().indexOf (NickName_);
-		if (index < Account_->GetNickNames ().count ())
-		{
+		if (index != Account_->GetNickNames ().count () - 1)
 			NickName_ = Account_->GetNickNames ().at (++index);
-			IrcParser_->NickCommand (QStringList () << NickName_);
+		else
+			NickName_ = Account_->GetNickNames ().at (0);
+		if (NickName_.isEmpty ())
+		{
+			NickCmdError ();
+			return;
 		}
+
+		if (NickName_ == OldNickName_)
+		{
+			if (QMessageBox::question (0,
+					tr ("Nickname conflict"),
+					tr ("You have specified a nickname for %1 that's "
+						"already used. Would you like to try to "
+						"join with another nick?")
+						.arg (ServerCLEntry_->GetEntryName ()),
+					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+				return;
+
+			const QString& newNick = QInputDialog::getText (0,
+							tr ("Enter new nick"),
+							tr ("Enter new nick for joining %1 (%2 is already used):")
+								.arg (ServerCLEntry_->GetEntryName ())
+								.arg (NickName_),
+							QLineEdit::Normal,
+							NickName_);
+			if (newNick.isEmpty ())
+				return;
+
+			NickName_ = newNick;
+		}
+		IrcParser_->NickCommand (QStringList () << NickName_);
 	}
 
 	void IrcServerHandler::SendAnswerToChannel (const QString& cmd,
@@ -1764,7 +1795,11 @@ namespace Acetamide
 						, IrcParser_->GetIrcMessageOptions ()
 							.Message_);
 				if (cmd == "433")
+				{
+					if (OldNickName_.isEmpty ())
+						OldNickName_ = NickName_;
 					NickCmdError ();
+				}
 			}
 			else if ((cmd != "join") && (!ChannelJoined_))
 				IncomingMessage2Server ();
