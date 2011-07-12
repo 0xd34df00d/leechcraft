@@ -160,7 +160,8 @@ namespace LeechCraft
 		int length = 0;
 		for (int i = 0; i < count (); ++i)
 			length += tabRect (i).width ();
-		if ((length - width () > 79) && IsLastTab_)
+
+		if ((length + 30 > width ()) && IsLastTab_)
 		{
 			IsLastTab_ = false;
 			removeTab (count () - 1);
@@ -179,7 +180,7 @@ namespace LeechCraft
 		for (int i = 0; i < count (); ++i)
 			length += tabRect (i).width ();
 
-		if (length < width () && !IsLastTab_)
+		if (length + 60 < width () && !IsLastTab_)
 		{
 			IsLastTab_ = true;
 
