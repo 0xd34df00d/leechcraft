@@ -30,6 +30,8 @@
 #include "ircparser.h"
 #include "ircserverclentry.h"
 #include "xmlsettingsmanager.h"
+#include <QMessageBox>
+#include <QInputDialog>
 
 namespace LeechCraft
 {
@@ -74,11 +76,6 @@ namespace Acetamide
 	QString IrcServerHandler::GetNickName () const
 	{
 		return NickName_;
-	}
-
-	IrcServerConsole_ptr IrcServerHandler::GetIrcServerConsole () const
-	{
-		return Console_;
 	}
 
 	QString IrcServerHandler::GetServerID_ () const
@@ -318,7 +315,7 @@ namespace Acetamide
 	void IrcServerHandler::SendCommand (const QString& cmd)
 	{
 		qDebug () << TcpSocket_ptr.get () << cmd;
-		SendToConsole (cmd.trimmed ());
+		SendToConsole (IMessage::DOut, cmd.trimmed ());
 
 		if (!TcpSocket_ptr->isWritable ())
 		{
@@ -369,16 +366,18 @@ namespace Acetamide
 
 	}
 
-	void IrcServerHandler::SendToConsole (const QString& message)
+	void IrcServerHandler::SendToConsole (IMessage::Direction dir,
+			const QString& message)
 	{
 		if (!IsConsoleEnabled_)
 			return;
 
-		IrcMessage *msg = CreateMessage (IMessage::MTChatMessage,
-				Console_->GetEntryID (),
-				EncodedMessage (message, IMessage::DIn));
-
-		Console_->HandleMessage (msg);
+		if (dir == IMessage::DIn)
+			emit sendMessageToConsole (dir, 
+					EncodedMessage (message, dir));
+		else
+			emit sendMessageToConsole (dir,
+					EncodedMessage (message, IMessage::DIn));
 	}
 
 	void IrcServerHandler::InitErrorsReplys ()
@@ -852,11 +851,40 @@ namespace Acetamide
 	void IrcServerHandler::NickCmdError ()
 	{
 		int index = Account_->GetNickNames ().indexOf (NickName_);
-		if (index < Account_->GetNickNames ().count ())
-		{
+		if (index != Account_->GetNickNames ().count () - 1)
 			NickName_ = Account_->GetNickNames ().at (++index);
-			IrcParser_->NickCommand (QStringList () << NickName_);
+		else
+			NickName_ = Account_->GetNickNames ().at (0);
+		if (NickName_.isEmpty ())
+		{
+			NickCmdError ();
+			return;
 		}
+
+		if (NickName_ == OldNickName_)
+		{
+			if (QMessageBox::question (0,
+					tr ("Nickname conflict"),
+					tr ("You have specified a nickname for %1 that's "
+						"already used. Would you like to try to "
+						"join with another nick?")
+						.arg (ServerCLEntry_->GetEntryName ()),
+					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+				return;
+
+			const QString& newNick = QInputDialog::getText (0,
+							tr ("Enter new nick"),
+							tr ("Enter new nick for joining %1 (%2 is already used):")
+								.arg (ServerCLEntry_->GetEntryName ())
+								.arg (NickName_),
+							QLineEdit::Normal,
+							NickName_);
+			if (newNick.isEmpty ())
+				return;
+
+			NickName_ = newNick;
+		}
+		IrcParser_->NickCommand (QStringList () << NickName_);
 	}
 
 	void IrcServerHandler::SendAnswerToChannel (const QString& cmd,
@@ -908,6 +936,11 @@ namespace Acetamide
 					.property ("AutoDisconnectFromServer").toBool ())
 				Account_->GetClientConnection ()->
 						CloseServer (ServerID_);
+	}
+
+	void IrcServerHandler::SetConsoleEnabled (bool enabled)
+	{
+		IsConsoleEnabled_ = enabled;
 	}
 
 	ServerParticipantEntry_ptr IrcServerHandler::CreateParticipantEntry
@@ -1749,8 +1782,7 @@ namespace Acetamide
 		while (TcpSocket_ptr->canReadLine ())
 		{
 			QString str = TcpSocket_ptr->readLine ();
-			SendToConsole (str.trimmed ());
-			qDebug () << str;
+			SendToConsole (IMessage::DIn, str.trimmed ());
 			if (!IrcParser_->ParseMessage (str))
 				return;
 
@@ -1763,7 +1795,11 @@ namespace Acetamide
 						, IrcParser_->GetIrcMessageOptions ()
 							.Message_);
 				if (cmd == "433")
+				{
+					if (OldNickName_.isEmpty ())
+						OldNickName_ = NickName_;
 					NickCmdError ();
+				}
 			}
 			else if ((cmd != "join") && (!ChannelJoined_))
 				IncomingMessage2Server ();
@@ -1776,17 +1812,6 @@ namespace Acetamide
 	{
 		ServerConnectionState_ = Connected;
 		emit connected (ServerID_);
-		if (XmlSettingsManager::Instance ().property
-			("ServerConsole")
-			.toBool ())
-		{
-				Console_.reset (new IrcServerConsole (this, Account_));
-				Account_->handleGotRosterItems (QList<QObject*> () <<
-						Console_.get ());
-				IsConsoleEnabled_ = true;
-				Console_->SetStatus (EntryStatus (SOnline, QString ()));
-		}
-
 		ServerCLEntry_->SetStatus (EntryStatus (SOnline, QString ()));
 		IrcParser_->AuthCommand ();
 	}

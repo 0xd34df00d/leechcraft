@@ -42,6 +42,8 @@
 #include "userlocation.h"
 #include "adhoccommandmanager.h"
 #include "executecommanddialog.h"
+#include "roomclentry.h"
+#include "roomhandler.h"
 
 namespace LeechCraft
 {
@@ -328,7 +330,17 @@ namespace Xoox
 			}
 		}
 		
-		GlooxMessage *message = new GlooxMessage (IMessage::MTStatusMessage,
+		
+		GlooxMessage *message = 0;
+		if (GetEntryType () == ETPrivateChat)
+			message = new GlooxMessage (IMessage::MTStatusMessage,
+					IMessage::DIn,
+					qobject_cast<RoomCLEntry*> (GetParentCLEntry ())->
+							GetRoomHandler ()->GetRoomJID (),
+					GetEntryName (),
+					Account_->GetClientConnection ().get ());
+		else
+			message = new GlooxMessage (IMessage::MTStatusMessage,
 				IMessage::DIn,
 				GetJID (),
 				variant,
