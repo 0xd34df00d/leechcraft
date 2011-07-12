@@ -955,13 +955,15 @@ namespace Azoth
 					<< msg->OtherPart ();
 			return;
 		}
+		
+		ICLEntry *parent = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
 
 		if (msg->GetDirection () == IMessage::DOut &&
 				other->GetEntryType () == ICLEntry::ETMUC)
 			return;
 
 		if (msg->GetMessageSubType () == IMessage::MSTParticipantStatusChange &&
-				(!other || other->GetEntryType () == ICLEntry::ETMUC) &&
+				(!parent || parent->GetEntryType () == ICLEntry::ETMUC) &&
 				!XmlSettingsManager::Instance ().property ("ShowStatusChangesEvents").toBool ())
 			return;
 		
