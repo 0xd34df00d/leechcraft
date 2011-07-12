@@ -1,0 +1,4 @@
+@import url(./Light.css);
+
+.imageContainer  { margin: 4px 4px 4px 4px; display: block }
+.buddyIcon  { width: 48px; float: right; border-style: dotted none; border-width: 2px medium; border-color: #666 white }

@@ -13,7 +13,9 @@ SET (XTAZY_HEADERS
 	filesource.h
 	xmlsettingsmanager.h
 	)
+SET (XTAZY_RESOURCES azothxtazyresources.qrc)
 CreateTrVars ("azoth_xtazy" "en;ru_RU;uk_UA" XTAZY_TRANSLATIONS XTAZY_COMPILED_TRANSLATIONS)
+QT4_ADD_RESOURCES (XTAZY_RCCS ${XTAZY_RESOURCES})
 
 IF (QT_QTDBUS_FOUND)
 	ADD_DEFINITIONS (-DHAVE_DBUS)
@@ -40,6 +42,7 @@ ADD_LIBRARY (leechcraft_azoth_xtazy SHARED
 	${XTAZY_COMPILED_TRANSLATIONS}
 	${XTAZY_SRCS}
 	${XTAZY_MOC_SRCS}
+	${XTAZY_RCCS}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_azoth_xtazy
 	${QT_LIBRARIES}

@@ -50,7 +50,7 @@ namespace StandardStyles
 		return StylesLoader_->GetSubElemModel ();
 	}
 	
-	QString StandardStyleSource::GetHTMLTemplate (const QString& pack, QObject *entryObj) const
+	QString StandardStyleSource::GetHTMLTemplate (const QString& pack, QObject *entryObj, QWebFrame*) const
 	{
 		if (pack != LastPack_)
 		{

@@ -76,9 +76,10 @@ namespace Azoth
 		 * template.
 		 * @param[in] entry The entry object for which the chat window
 		 * is being set up.
+		 * @param[in] frame The frame that's being set up.
 		 * @return The HTML template.
 		 */
-		virtual QString GetHTMLTemplate (const QString& style, QObject *entry) const = 0;
+		virtual QString GetHTMLTemplate (const QString& style, QObject *entry, QWebFrame *frame) const = 0;
 		
 		/** @brief Appends a new message to the chat view.
 		 * 

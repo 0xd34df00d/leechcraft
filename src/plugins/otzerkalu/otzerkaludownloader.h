@@ -19,14 +19,11 @@
 
 #ifndef PLUGINS_OTZERKALU_OTZERKALUDOWNLOADER_H
 #define PLUGINS_OTZERKALU_OTZERKALUDOWNLOADER_H
-
 #include <QObject>
 #include <QUrl>
-#include <QStack>
 #include <QWebFrame>
-
+#include <QWebElementCollection>
 #include <interfaces/structures.h>
-#include <util/util.h>
 #include <interfaces/ientityhandler.h>
 
 namespace LeechCraft
@@ -59,12 +56,17 @@ namespace Otzerkalu
 		
 		const DownloadParams Param_;
 		QMap<int, FileData> FileMap_;
+		QStringList DownloadedFiles_;
+		int UrlCount_;
 	public:
 		OtzerkaluDownloader (const DownloadParams& param, QObject *parent = 0);
 		
 		void Begin ();
 	private:
 		QString Download (const QUrl&);
+		QList<QUrl> CSSParser (const QString&) const;
+		QString CSSUrlReplace (const QString&);
+		bool HTMLReplace (QWebElementCollection::iterator element, const FileData& data);
 		bool WriteData (const QString& filename, const QString& data);
 		void HandleProvider (QObject *provider, int id, const QUrl& url,
 				const QString& filename, int recLevel);

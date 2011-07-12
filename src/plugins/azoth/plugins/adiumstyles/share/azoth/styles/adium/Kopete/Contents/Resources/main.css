@@ -1,0 +1,214 @@
+.KopeteMessage
+{
+	margin:1.4em .2em 0 .2em;
+	clear: both;
+}
+
+.IncomingMessageHeader
+{
+	background-color:#dfedff;
+	padding:.1em;
+	border:solid;
+	border-color:#fafafa #d1dfef #d1dfef #fafafa;
+	border-width:2px;
+}
+
+.IncomingList, .OutgoingList
+{
+	margin-left: 5px;
+	padding-left: 40px;
+	padding-right: 5px;
+	padding-top: 0.25em;
+	padding-bottom: 0.5em;
+	line-height: 1.2em;
+	list-style: none;
+}
+
+
+.IncomingMessage, .NextIncomingMessage
+{
+	padding-left: 20px;
+	padding-right: 1ex;
+	padding-top: 0.2em;
+	padding-bottom: 0.2em;
+	line-height: 1.2em;
+	border-style: hidden; /* fix a strange bug*/
+	border-width: 0 0 1px 0;
+}
+
+
+.NextIncomingMessage
+{
+	margin-left: 17px;
+	padding-left: 20px;
+	border: dotted #d1dfef;
+	border-width: 1px 0 0 0;
+}
+
+.inUserPicture
+{
+	float: left;
+	height: 48px;
+	margin-top: 0.2em;
+	margin-left: 0.2em;
+	margin-right: 1ex;
+}
+
+.inStatusIcon
+{
+	float: left;
+}
+
+.inTime
+{
+	float: right;
+}
+.inMetacontact
+{
+	margin-left: 60px;
+	font-weight: bold;
+}
+
+.IncomingAction
+{
+	border-top: 2px solid #dae5f0; 
+	border-right: 2px solid #aaccf0;
+	border-bottom: 2px solid #aaccf0;
+	border-left: 2px solid #dae5f0;
+	padding: 0.1em; 
+	vertical-align: middle;
+	background-color:#c3d9f0;
+}
+.inActionIcon
+{
+	float: left;
+	margin-right: 5px;
+}
+.inActionMetacontact
+{
+	margin-left: 10px;
+	font-weight: bold;
+}
+.inActionMessage
+{
+	margin-left: 1ex;
+}
+
+.OutgoingMessageHeader
+{
+	background-color:#f5f5f5;
+	padding:.1em;
+	border:solid;
+	border-color:#fafafa #e3e3e3 #e3e3e3 #fafafa;
+	border-width:2px;
+}
+
+.OutgoingMessage, .NextOutgoingMessage
+{
+	padding-left: 20px;
+	padding-right: 1ex;
+	padding-top: 0.2em;
+	padding-bottom: 0.2em;
+	line-height: 1.2em;
+	border-style: hidden; /* fix a strange bug*/
+	border-width: 0 0 1px 0;
+}
+
+.NextOutgoingMessage
+{
+	margin-left: 17px;
+	padding-left: 20px;
+	border: dotted #d1dfef;
+	border-width: 1px 0 0 0;
+}
+
+.outUserPicture
+{
+	float: left;
+	height: 48px;
+	margin-top: 0.2em;
+	margin-left: 0.2em;
+	margin-right: 1ex;
+}
+
+.outStatusIcon
+{
+	float: left;
+}
+
+.outTime
+{
+	float: right;
+}
+.outMetacontact
+{
+	margin-left: 70px;
+	font-weight: bold;
+}
+
+.OutgoingAction
+{
+	border-top: 2px solid #fafafa #cfcfcf; 
+	border-right: 2px solid #fafafa #afafaf;
+	border-bottom: 2px solid #fafafa #afafaf;
+	border-left: 2px solid #fafafa #cfcfcf;
+	padding: 0.1em; 
+	vertical-align: middle;
+	background-color:#dedede;
+}
+.outActionIcon
+{
+	float: left;
+	margin-right: 5px;
+}
+.outActionMetacontact
+{
+	margin-left: 10px;
+	font-weight: bold;
+}
+.outActionMessage
+{
+	margin-left: 5px;
+}
+
+.InternalMessageHeader
+{
+	border-top: 0.1em dashed #afafaf; 
+	border-right: 0.1em dashed #afafaf;
+	border-bottom: 0.1em dashed #afafaf;
+	border-left: 0.1em dashed #afafaf;
+	padding-left: 0.1em; 
+	padding-bottom: 0.1em; 
+	padding-right: 0.1em; 
+	vertical-align: middle;
+}
+
+.InternalMessage
+{
+	width: 80%;
+	text-align: left;
+	font-size: 10px;
+	font-weight: bold;
+	color: #808080;
+}
+
+.InternalMessageHeaderTime
+{
+	font-size: 10px;
+	float: right; 
+	font-weight: normal;
+	margin-right: 1ex;
+}
+
+.systemLogo
+{
+	float: left;
+	margin-right: 1ex;
+	vertical-align: middle;
+}
+
+.outState
+{
+	float: right;
+	height: 16px;
+}

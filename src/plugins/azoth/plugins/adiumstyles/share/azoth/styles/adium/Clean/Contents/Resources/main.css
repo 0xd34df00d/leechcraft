@@ -1,0 +1,175 @@
+.KopeteMessage
+{
+	margin:1.4em .2em 0 .2em;
+}
+
+.IncomingMessageHeader
+{
+	padding-left: 1ex; 
+	padding-right: 1ex;
+	border-bottom: 0.1em solid;
+}
+
+.IncomingMessage
+{
+	padding-left: 1ex;
+	padding-right: 1ex;
+	padding-top: 0.25em;
+}
+
+.NextIncomingMessage
+{
+	padding-left: 1ex;
+	padding-right: 1ex;
+	padding-top: 0.25em;
+	padding-bottom: 0.5em;
+}
+
+.inUserPicture
+{
+	float: left;
+	border: 1px solid #888;
+	height: 4.30em;
+	margin-top: 0.25em;
+	border: 0.1em solid black;
+	margin-left: 0.2em;
+	margin-right: 1ex;
+
+}
+
+.inStatusIcon
+{
+	float: left;
+	padding-right: 1ex;
+}
+
+.inTime
+{
+	float: right;
+}
+.inMetacontact
+{
+	padding-left: 1ex;
+	font-weight: bold;
+}
+
+.IncomingAction
+{
+	padding-left: 1ex; 
+	padding-right: 1ex; 
+	border-bottom: 0.1em dashed #ffafaf;
+}
+.inActionIcon
+{
+	float: left;
+	margin-right: 5px;
+}
+.inActionMetacontact
+{
+	margin-left: 5px;
+	font-weight: bold;
+}
+.inActionMessage
+{
+
+}
+
+.OutgoingMessageHeader
+{
+	padding-left: 1ex; padding-right: 1ex;
+	border-bottom: 0.1em solid #ffafaf;
+}
+
+.OutgoingMessage
+{
+	padding-left: 1ex;
+	padding-right: 1ex;
+	padding-top: 0.25em;
+	padding-bottom: 0.5em;
+}
+
+.NextOutgoingMessage
+{
+	padding-left: 1ex;
+	padding-right: 1ex;
+	padding-top: 0.25em;
+	padding-bottom: 0.5em;
+}
+
+.outUserPicture
+{
+	float: left;
+	border: 1px solid #888;
+	height: 4.30em;
+	margin-top: 0.2em;
+	margin-left: 0.2em;
+	margin-right: 1ex;
+}
+
+.outStatusIcon
+{
+	float: left;
+	padding-right: 1ex;
+}
+
+.outTime
+{
+	float: right;
+}
+.outMetacontact
+{
+	margin-left: 15px;
+	font-weight: bold;
+}
+
+.OutgoingAction
+{
+	padding-left: 1ex; 
+	padding-right: 1ex; 
+	border-bottom: 0.1em dashed #ffafaf;
+}
+.outActionIcon
+{
+	float: left;
+	padding-right: 1ex;
+}
+.outActionMetacontact
+{
+	margin-left: 10px;
+	font-weight: bold;
+}
+.outActionMessage
+{
+}
+
+.InternalMessageHeader
+{
+	padding-left: 1ex; 
+	padding-right: 1ex; 
+	border-bottom: 0.1em dashed #afffaf;
+}
+
+.InternalMessage
+{
+	width: 80%;
+	text-align: left;
+}
+
+.InternalMessageHeaderTime
+{
+	float: right; 
+}
+
+.systemLogo
+{
+	float: left;
+	vertical-align: middle;
+	padding-right: 1ex;
+}
+
+.outState
+{
+	overflow: hidden;
+	float: right;
+	height: 16px;
+}

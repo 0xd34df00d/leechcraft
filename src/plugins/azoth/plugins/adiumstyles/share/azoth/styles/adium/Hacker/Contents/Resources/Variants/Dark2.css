@@ -1,0 +1,10 @@
+@import url(../main.css);
+
+body	{
+	font-size: 12px; font-family: "DejaVu Sans Mono", monospace; font-style: normal; font-weight: normal; margin: 0;
+	background: url("../images/kopete.png"); background-position: center; background-attachment: fixed; background-repeat: no-repeat; background-color: black
+	}
+
+.imageContainer  { margin: 4px 4px 4px 4px; display: block }
+.buddyIcon  { width: 48px; float: right; border-style: dotted none; border-width: 2px medium; border-color: #666 white }
+.stateSendingImg { width: 16px; height: 16px; background: transparent url("../images/state-sending-white.gif") no-repeat center center; }

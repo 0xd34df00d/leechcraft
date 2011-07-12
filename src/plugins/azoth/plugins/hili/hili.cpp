@@ -72,7 +72,7 @@ namespace HiLi
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		return QIcon (":/plugins/azoth/plugins/hili/resources/images/hili.svg");
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const

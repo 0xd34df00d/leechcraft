@@ -142,7 +142,8 @@ namespace Azoth
 	
 	void ChatTab::PrepareTheme ()
 	{
-		QString data = Core::Instance ().GetSelectedChatTemplate (GetEntry<QObject> ());
+		QString data = Core::Instance ().GetSelectedChatTemplate (GetEntry<QObject> (),
+				Ui_.View_->page ()->mainFrame ());
 		if (data.isEmpty ())
 			data = "<h1 style='color:red;'>" +
 					tr ("Unable to load style, "
@@ -746,13 +747,13 @@ namespace Azoth
 
 		ToggleRichText_ = new QAction (tr ("Enable rich text"), this);
 		ToggleRichText_->setProperty ("ActionIcon", "richtext");
+		ToggleRichText_->setCheckable (true);
+		ToggleRichText_->setChecked (XmlSettingsManager::Instance ()
+					.property ("ShowRichTextMessageBody").toBool ());
 		connect (ToggleRichText_,
 				SIGNAL (toggled (bool)),
 				this,
 				SLOT (handleRichTextToggled ()));
-		ToggleRichText_->setCheckable (true);
-		ToggleRichText_->setChecked (XmlSettingsManager::Instance ()
-					.property ("ShowRichTextMessageBody").toBool ());
 		TabToolbar_->addAction (ToggleRichText_);
 		TabToolbar_->addSeparator ();
 	}
