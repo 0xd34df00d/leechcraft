@@ -14,7 +14,7 @@
 #include <QSound>
 #include <QFile>
 
-#include <plugininterface/util.h>
+#include <util/util.h>
 
 #include "WulforUtil.h"
 #include "WulforSettings.h"
