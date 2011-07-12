@@ -23,6 +23,7 @@
 #include <QObject>
 #include <interfaces/iaccount.h>
 #include <interfaces/imessage.h>
+#include <interfaces/ihaveconsole.h>
 #include "core.h"
 #include "localtypes.h"
 
@@ -42,9 +43,10 @@ namespace Acetamide
 
 	class IrcAccount : public QObject
 						, public IAccount
+						, public IHaveConsole
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IAccount);
+		Q_INTERFACES (LeechCraft::Azoth::IAccount LeechCraft::Azoth::IHaveConsole);
 
 		QString AccountName_;
 		IrcProtocol *ParentProtocol_;
@@ -95,6 +97,9 @@ namespace Acetamide
 				const QString&, const QStringList&);
 		void RemoveEntry (QObject*);
 		QObject* GetTransferManager () const;
+
+		PacketFormat GetPacketFormat () const;
+		void SetConsoleEnabled (bool);
 	public:
 		QByteArray Serialize () const;
 		static IrcAccount* Deserialize (const QByteArray&, QObject*);
@@ -118,6 +123,8 @@ namespace Acetamide
 		void accountSettingsChanged ();
 
 		void scheduleClientDestruction ();
+
+		void gotConsolePacket (const QByteArray&, int);
 	};
 
 	typedef boost::shared_ptr<IrcAccount> IrcAccount_ptr;

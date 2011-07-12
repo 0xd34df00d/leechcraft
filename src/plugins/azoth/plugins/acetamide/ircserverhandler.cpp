@@ -76,11 +76,6 @@ namespace Acetamide
 		return NickName_;
 	}
 
-	IrcServerConsole_ptr IrcServerHandler::GetIrcServerConsole () const
-	{
-		return Console_;
-	}
-
 	QString IrcServerHandler::GetServerID_ () const
 	{
 		return ServerID_;
@@ -318,7 +313,7 @@ namespace Acetamide
 	void IrcServerHandler::SendCommand (const QString& cmd)
 	{
 		qDebug () << TcpSocket_ptr.get () << cmd;
-		SendToConsole (cmd.trimmed ());
+		SendToConsole (IMessage::DOut, cmd.trimmed ());
 
 		if (!TcpSocket_ptr->isWritable ())
 		{
@@ -369,16 +364,18 @@ namespace Acetamide
 
 	}
 
-	void IrcServerHandler::SendToConsole (const QString& message)
+	void IrcServerHandler::SendToConsole (IMessage::Direction dir,
+			const QString& message)
 	{
 		if (!IsConsoleEnabled_)
 			return;
 
-		IrcMessage *msg = CreateMessage (IMessage::MTChatMessage,
-				Console_->GetEntryID (),
-				EncodedMessage (message, IMessage::DIn));
-
-		Console_->HandleMessage (msg);
+		if (dir == IMessage::DIn)
+			emit sendMessageToConsole (dir, 
+					EncodedMessage (message, dir));
+		else
+			emit sendMessageToConsole (dir,
+					EncodedMessage (message, IMessage::DIn));
 	}
 
 	void IrcServerHandler::InitErrorsReplys ()
@@ -908,6 +905,11 @@ namespace Acetamide
 					.property ("AutoDisconnectFromServer").toBool ())
 				Account_->GetClientConnection ()->
 						CloseServer (ServerID_);
+	}
+
+	void IrcServerHandler::SetConsoleEnabled (bool enabled)
+	{
+		IsConsoleEnabled_ = enabled;
 	}
 
 	ServerParticipantEntry_ptr IrcServerHandler::CreateParticipantEntry
@@ -1749,8 +1751,7 @@ namespace Acetamide
 		while (TcpSocket_ptr->canReadLine ())
 		{
 			QString str = TcpSocket_ptr->readLine ();
-			SendToConsole (str.trimmed ());
-			qDebug () << str;
+			SendToConsole (IMessage::DIn, str.trimmed ());
 			if (!IrcParser_->ParseMessage (str))
 				return;
 
@@ -1776,17 +1777,6 @@ namespace Acetamide
 	{
 		ServerConnectionState_ = Connected;
 		emit connected (ServerID_);
-		if (XmlSettingsManager::Instance ().property
-			("ServerConsole")
-			.toBool ())
-		{
-				Console_.reset (new IrcServerConsole (this, Account_));
-				Account_->handleGotRosterItems (QList<QObject*> () <<
-						Console_.get ());
-				IsConsoleEnabled_ = true;
-				Console_->SetStatus (EntryStatus (SOnline, QString ()));
-		}
-
 		ServerCLEntry_->SetStatus (EntryStatus (SOnline, QString ()));
 		IrcParser_->AuthCommand ();
 	}

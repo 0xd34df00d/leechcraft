@@ -24,7 +24,6 @@
 #include <QObject>
 #include <QTcpSocket>
 #include <interfaces/imessage.h>
-#include "ircserverconsole.h"
 #include "localtypes.h"
 #include "serverparticipantentry.h"
 #include "invitechannelsdialog.h"
@@ -50,7 +49,6 @@ namespace Acetamide
 		IrcAccount *Account_;
 		IrcParser *IrcParser_;
 		IrcServerCLEntry *ServerCLEntry_;
-		IrcServerConsole_ptr Console_;
 		bool IsConsoleEnabled_;
 		bool ChannelJoined_;
 		bool IsInviteDialogActive_;
@@ -76,8 +74,6 @@ namespace Acetamide
 		IrcServerCLEntry* GetCLEntry () const;
 		IrcAccount* GetAccount () const;
 		QString GetNickName () const;
-
-		IrcServerConsole_ptr GetIrcServerConsole () const;
 
 		QString GetServerID_ () const;
 		ServerOptions GetServerOptions () const;
@@ -118,8 +114,9 @@ namespace Acetamide
 		void RemoveParticipantEntry (const QString&);
 
 		void UnregisterChannel (ChannelHandler*);
+		void SetConsoleEnabled (bool);
 	private:
-		void SendToConsole (const QString&);
+		void SendToConsole (IMessage::Direction, const QString&);
 		void InitErrorsReplys ();
 		void InitCommandResponses ();
 		void InitSocket ();
@@ -275,6 +272,7 @@ namespace Acetamide
 		void joinAfterInvite ();
 	signals:
 		void connected (const QString&);
+		void sendMessageToConsole (IMessage::Direction, const QString&);
 	};
 };
 };
