@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="/plugins/azoth/plugins/p100q">
+    <file>resources/images/p100q.svg</file>
+  </qresource>
+</RCC>
