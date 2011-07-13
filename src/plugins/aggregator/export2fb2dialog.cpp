@@ -162,14 +162,18 @@ namespace Aggregator
 				descr.replace (QRegExp ("</p>\\s*<p>"), "<br/>");
 				descr.remove ("<p>");
 				descr.remove ("</p>");
-				descr.remove (QRegExp ("<img *>",
-							Qt::CaseSensitive, QRegExp::Wildcard));
-				descr.remove (QRegExp ("<a *>",
-							Qt::CaseSensitive, QRegExp::Wildcard));
+				descr.replace (QRegExp ("<img *>",
+							Qt::CaseSensitive, QRegExp::Wildcard),
+						"(inline image)");
+				descr.replace ("&qout;", "\"");
+				descr.replace ("&mdash;", QString::fromUtf8 ("—"));
+				descr.replace ("&ndash;", "-");
+
 				w.writeStartElement ("p");
 					w.writeComment ("p");
 					w.device ()->write (descr.toUtf8 ());
 				w.writeEndElement ();
+
 				w.writeEmptyElement ("empty-line");
 			}
 		w.writeEndElement ();
