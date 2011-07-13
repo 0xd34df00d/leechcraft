@@ -47,8 +47,6 @@ namespace Acetamide
 	QObject* ClientConnection::GetCLEntry (const QString& id,
 			const QString& nickname) const
 	{
-		QString idc = id.mid (id.indexOf ('_') + 1,
-				id.indexOf ('/') - id.indexOf ('_') - 1);
 		if (ServerHandlers_.contains (id) && nickname.isEmpty ())
 			return ServerHandlers_ [id]->GetCLEntry ();
 		else if (!nickname.isEmpty ())
@@ -149,10 +147,8 @@ namespace Acetamide
 	{
 		Q_FOREACH (IrcServerHandler *ish, ServerHandlers_.values ())
 		{
-			Q_FOREACH (ChannelHandler* ich, ish->GetChannelHandlers ())
-				ich->LeaveChannel (QString ());
-			Q_FOREACH (const QString& nick, ish->GetPrivateChats ())
-				ish->ClosePrivateChat (nick);
+			ish->LeaveAllChannel ();
+			ish->CloseAllPrivateChats ();
 			ish->DisconnectFromServer ();
 			ServerHandlers_.remove (ish->GetServerID_ ());
 			Account_->handleEntryRemoved (ish->GetCLEntry ());
@@ -162,10 +158,8 @@ namespace Acetamide
 	void ClientConnection::QuitServer (const QStringList& list)
 	{
 		IrcServerHandler *ish = ServerHandlers_ [list.last ()];
-		Q_FOREACH (ChannelHandler* ich, ish->GetChannelHandlers ())
-			ich->LeaveChannel (QString ());
-		Q_FOREACH (const QString& nick, ish->GetPrivateChats ())
-			ish->ClosePrivateChat (nick);
+		ish->LeaveAllChannel ();
+		ish->CloseAllPrivateChats ();
 		ish->DisconnectFromServer ();
 		ServerHandlers_.remove (ish->GetServerID_ ());
 		Account_->handleEntryRemoved (ish->GetCLEntry ());
@@ -199,7 +193,7 @@ namespace Acetamide
 				ServerHandlers_ [serverId]->GetCLEntry ());
 	}
 
-	void ClientConnection::serverDisConnected (const QString& serverId)
+	void ClientConnection::serverDisconnected (const QString& serverId)
 	{
 		Account_->handleEntryRemoved (ServerHandlers_ [serverId]->
 				GetCLEntry ());

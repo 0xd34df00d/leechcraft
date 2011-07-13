@@ -138,7 +138,7 @@ namespace Acetamide
 
 	void IrcServerCLEntry::SetNick (const QString& nick)
 	{
-		ISH_->SetNick (nick);
+		ISH_->SetNickName (nick);
 	}
 
 	QString IrcServerCLEntry::GetGroupName () const

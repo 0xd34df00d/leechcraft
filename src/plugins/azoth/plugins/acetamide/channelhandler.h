@@ -45,7 +45,6 @@ namespace Acetamide
 		ChannelOptions ChannelOptions_;
 		bool IsRosterReceived_;
 		QHash<QString, ServerParticipantEntry_ptr> Nick2Entry_;
-		QStringList SendCommand_;
 	public:
 		ChannelHandler (IrcServerHandler*, const ChannelOptions&);
 		QString GetChannelID () const;
@@ -61,9 +60,6 @@ namespace Acetamide
 
 		bool IsRosterReceived () const;
 		void SetRosterReceived (bool);
-
-		bool IsSendCommand (const QString&);
-		void RemoveCommand (const QString&);
 
 		void ShowServiceMessage (const QString&, IMessage::MessageType,
 				IMessage::MessageSubType);

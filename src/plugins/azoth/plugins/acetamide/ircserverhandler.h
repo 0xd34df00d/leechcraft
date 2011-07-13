@@ -34,11 +34,11 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	class IrcMessage;
-
 	class ChannelCLEntry;
 	class ChannelHandler;
 	class IrcAccount;
+	class IrcErrorHandler;
+	class IrcMessage;
 	class IrcParser;
 	class IrcServerCLEntry;
 
@@ -47,66 +47,50 @@ namespace Acetamide
 		Q_OBJECT
 
 		IrcAccount *Account_;
+		IrcErrorHandler *ErrorHandler_;
 		IrcParser *IrcParser_;
 		IrcServerCLEntry *ServerCLEntry_;
-		bool IsConsoleEnabled_;
-		bool ChannelJoined_;
-		bool IsInviteDialogActive_;
-		std::auto_ptr<InviteChannelsDialog> InviteChannelsDialog_;
-
-		ServerOptions ServerOptions_;
-		QString ServerID_;
-		boost::shared_ptr<QTcpSocket> TcpSocket_ptr;
 		ConnectionState ServerConnectionState_;
+		bool IsConsoleEnabled_;
+		bool IsInviteDialogActive_;
+		QString ServerID_;
+		QString NickName_;
+		QString OldNickName_;
+		QString LastSendId_;
+		QVariantMap ISupport_;
+		ServerOptions ServerOptions_;
+		QList<ChannelOptions> ChannelsQueue_;
+		std::auto_ptr<InviteChannelsDialog> InviteChannelsDialog_;
+		boost::shared_ptr<QTcpSocket> TcpSocket_ptr;
 		QHash<QString, ChannelHandler*> ChannelHandlers_;
-		QHash<QString, boost::function<void (const QList<std::string>&,
-				const QString&)> > Error2Action_;
 		QHash<QString, boost::function<void (const QString&,
 				const QList<std::string>&, const QString&)> > Command2Action_;
 		QHash<QString, boost::function<void (const QStringList&)> > Name2Command_;
 		QHash<QString, ServerParticipantEntry_ptr> Nick2Entry_;
-		QString NickName_;
-		QString OldNickName_;
-		QString LastSendId_;
-		QList<ChannelOptions> ChannelsQueue_;
-		QVariantMap ISupport_;
 	public:
 		IrcServerHandler (const ServerOptions&, IrcAccount*);
 		IrcServerCLEntry* GetCLEntry () const;
 		IrcAccount* GetAccount () const;
 		IrcParser* GetParser () const;
 		QString GetNickName () const;
-		void SetNick (const QString&);
-
+		void SetNickName (const QString&);
 		QString GetServerID_ () const;
 		ServerOptions GetServerOptions () const;
-		ConnectionState GetConnectionState () const;
 		bool IsChannelExists (const QString&);
 		bool IsParticipantExists (const QString&);
-
 		void Add2ChannelsQueue (const ChannelOptions&);
-
 		void SendPublicMessage (const QString&, const QString&);
 		void SendPrivateMessage (IrcMessage*);
 		void SendCommandMessage2Server (const QString&);
 		void ParseMessageForCommand (const QString&, const QString&);
-
 		QList<QObject*> GetCLEntries () const;
-
 		void LeaveChannel (const QString&, const QString&);
 		QStringList GetPrivateChats () const;
 		void ClosePrivateChat (const QString&);
-
 		ChannelHandler* GetChannelHandler (const QString&);
-		QList<ChannelHandler*> GetChannelHandlers () const;
-		QList<ServerParticipantEntry_ptr>
-				GetParticipants (const QString&);
-
-		bool IsRoleAvailable (ChannelRole);
-
+		QList<ServerParticipantEntry_ptr> GetParticipants (const QString&);
 		IrcMessage* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);
-
 		void ConnectToServer ();
 		void DisconnectFromServer ();
 		bool JoinChannel (const ChannelOptions&);
@@ -117,28 +101,21 @@ namespace Acetamide
 		void IncomingMessage2Channel (const QString&);
 		ServerParticipantEntry_ptr GetParticipantEntry (const QString&);
 		void RemoveParticipantEntry (const QString&);
-
 		void UnregisterChannel (ChannelHandler*);
 		void SetConsoleEnabled (bool);
+		void LeaveAllChannel ();
+		void CloseAllPrivateChats ();
 	private:
 		void SendToConsole (IMessage::Direction, const QString&);
-		void InitErrorsReplys ();
 		void InitCommandResponses ();
 		void InitSocket ();
-		bool IsErrorReply (const QString&);
 		bool IsCTCPMessage (const QString&);
-
 		void NickCmdError ();
-
-		void SendAnswerToChannel (const QString&, const QString&,
-				bool remove = false);
-
 		QString EncodedMessage (const QString&, IMessage::Direction);
-
 		ServerParticipantEntry_ptr
 				CreateParticipantEntry (const QString&);
-
 		void JoinFromQueue ();
+		void ShowAnswer (const QString&);
 		// RPL
 		void SetTopic (const QString&,
 				const QList<std::string>&, const QString&);
@@ -266,10 +243,6 @@ namespace Acetamide
 				const QList<std::string>&, const QString&);
 		void GetTryAgain (const QString&,
 				const QList<std::string>&, const QString&);
-		void GetErrorWithParam (const QList<std::string>&,
-				const QString&);
-		void GetErrorWithoutParam (const QList<std::string>&,
-				const QString&);
 	private slots:
 		void readReply ();
 		void connectionEstablished ();

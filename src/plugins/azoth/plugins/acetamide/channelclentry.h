@@ -49,9 +49,6 @@ namespace Acetamide
 
 		ChannelHandler *ICH_;
 		QList<QObject*> AllMessages_;
-		QMap<QByteArray, QList<QByteArray> > Perms_;
-		QMap<ChannelRole, QByteArray> Role2Str_;
-		QMap<QByteArray, QString> Translations_;
 	public:
 		ChannelCLEntry (ChannelHandler*);
 		ChannelHandler* GetChannelHandler () const;
@@ -97,8 +94,6 @@ namespace Acetamide
 		void HandleNewParticipants (const QList<ICLEntry*>&);
 		void HandleSubjectChanged (const QString&);
 
-		bool MayChange (ChannelRole,
-				ServerParticipantEntry*, ChannelRole) const;
 		// IMUCPerms
 		QByteArray GetAffName (QObject*) const;
 		QMap<QByteArray, QByteArray> GetPerms (QObject*) const;
@@ -122,7 +117,6 @@ namespace Acetamide
 		void groupsChanged (const QStringList&);
 		void chatPartStateChanged (const ChatPartState&, const QString&);
 		void permsChanged ();
-		// TODO emit this signal on nickname conflict on join.
 		void nicknameConflict (const QString&);
 	};
 };
