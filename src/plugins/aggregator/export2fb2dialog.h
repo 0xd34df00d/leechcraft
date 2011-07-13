@@ -39,11 +39,14 @@ namespace Aggregator
 		Ui::Export2FB2Dialog Ui_;
 		Util::CategorySelector *Selector_;
 		QStringList CurrentCategories_;
+		
+		bool HasBeenTextModified_;
 	public:
 		Export2FB2Dialog (QWidget* = 0);
 	private slots:
 		void on_Browse__released ();
 		void on_File__textChanged (const QString&);
+		void on_Name__textEdited ();
 		void handleChannelsSelectionChanged (const QItemSelection&, const QItemSelection&);
 		void handleAccepted ();
 	signals:

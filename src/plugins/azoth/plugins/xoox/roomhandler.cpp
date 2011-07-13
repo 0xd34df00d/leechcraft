@@ -189,7 +189,8 @@ namespace Xoox
 				IMessage::DIn,
 				CLEntry_,
 				IMessage::MTStatusMessage,
-				IMessage::MSTParticipantNickChange);
+				IMessage::MSTParticipantNickChange,
+				GetParticipantEntry (oldNick));
 		CLEntry_->HandleMessage (message);
 	}
 	
@@ -208,7 +209,8 @@ namespace Xoox
 				IMessage::DIn,
 				CLEntry_,
 				IMessage::MTStatusMessage,
-				IMessage::MSTKickNotification);
+				IMessage::MSTKickNotification,
+				GetParticipantEntry (nick));
 		CLEntry_->HandleMessage (message);
 	}
 
@@ -227,7 +229,8 @@ namespace Xoox
 				IMessage::DIn,
 				CLEntry_,
 				IMessage::MTStatusMessage,
-				IMessage::MSTBanNotification);
+				IMessage::MSTBanNotification,
+				GetParticipantEntry (nick));
 		CLEntry_->HandleMessage (message);
 	}
 	
@@ -254,7 +257,8 @@ namespace Xoox
 				IMessage::DIn,
 				CLEntry_,
 				IMessage::MTStatusMessage,
-				IMessage::MSTParticipantRoleAffiliationChange);
+				IMessage::MSTParticipantRoleAffiliationChange,
+				GetParticipantEntry (nick));
 		CLEntry_->HandleMessage (message);
 	}
 	
@@ -351,12 +355,13 @@ namespace Xoox
 			role == QXmppMucItem::NoRole)
 		{
 			Account_->handleEntryRemoved (entry.get ());
-			Nick2Entry_.remove (nick);
 
 			if (aff == QXmppMucItem::OutcastAffiliation)
 				MakeBanMessage (nick, reason);
 			else
 				MakeKickMessage (nick, reason);
+			
+			Nick2Entry_.remove (nick);
 
 			return;
 		}

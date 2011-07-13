@@ -34,6 +34,7 @@ namespace Aggregator
 {
 	Export2FB2Dialog::Export2FB2Dialog (QWidget *parent)
 	: QDialog (parent)
+	, HasBeenTextModified_ (false)
 	{
 		Ui_.setupUi (this);
 
@@ -50,6 +51,17 @@ namespace Aggregator
 				this,
 				SLOT (handleChannelsSelectionChanged (const QItemSelection&,
 						const QItemSelection&)));
+		
+		for (int i = 0; i < Ui_.Genres_->topLevelItemCount (); ++i)
+		{
+			QTreeWidgetItem *item = Ui_.Genres_->topLevelItem (i);
+			for (int j = 0; j < item->childCount (); ++j)
+			{
+				QTreeWidgetItem *subItem = item->child (j);
+				if (subItem->checkState (0) == Qt::Unchecked)
+					subItem->setCheckState (0, Qt::Unchecked);
+			}
+		}
 
 		connect (this,
 				SIGNAL (accepted ()),
@@ -75,6 +87,11 @@ namespace Aggregator
 	{
 		Ui_.ButtonBox_->button (QDialogButtonBox::Ok)->setEnabled (name.size ());
 	}
+	
+	void Export2FB2Dialog::on_Name__textEdited ()
+	{
+		HasBeenTextModified_ = true;
+	}
 
 	void Export2FB2Dialog::handleChannelsSelectionChanged (const QItemSelection& selected,
 			const QItemSelection& deselected)
@@ -95,6 +112,14 @@ namespace Aggregator
 
 		Selector_->SetPossibleSelections (CurrentCategories_);
 		Selector_->selectAll ();
+		
+		if (!HasBeenTextModified_ &&
+				Ui_.ChannelsTree_->selectionModel ()->selectedRows ().size () <= 1)
+		{
+			const QModelIndex& index = Ui_.ChannelsTree_->currentIndex ();
+			if (index.isValid ())
+				Ui_.Name_->setText (index.sibling (index.row (), 0).data ().toString ());
+		}
 	}
 
 	void WriteChannel (QXmlStreamWriter& w,
@@ -110,7 +135,10 @@ namespace Aggregator
 			Q_FOREACH (Item_ptr item, items)
 			{
 				w.writeStartElement ("title");
-					w.writeTextElement ("p", item->Title_);
+					w.writeStartElement ("p");
+					w.writeComment ("p");
+					w.device ()->write (item->Title_.toUtf8 ());
+					w.writeEndElement ();
 				w.writeEndElement ();
 
 				bool hasDate = item->PubDate_.isValid ();
@@ -131,20 +159,26 @@ namespace Aggregator
 				}
 
 				QString descr = item->Description_;
+				descr.replace (QRegExp ("</p>\\s*<p>"), "<br/>");
 				descr.remove ("<p>");
 				descr.remove ("</p>");
 				descr.remove (QRegExp ("<img *>",
 							Qt::CaseSensitive, QRegExp::Wildcard));
 				descr.remove (QRegExp ("<a *>",
 							Qt::CaseSensitive, QRegExp::Wildcard));
-				w.writeTextElement ("p", descr);
+				w.writeStartElement ("p");
+					w.writeComment ("p");
+					w.device ()->write (descr.toUtf8 ());
+				w.writeEndElement ();
 				w.writeEmptyElement ("empty-line");
 			}
 		w.writeEndElement ();
 	}
 
 	void WriteBeginning (QXmlStreamWriter& w,
-			const QStringList& authors)
+			const QStringList& authors,
+			const QStringList& genres,
+			const QString& name)
 	{
 		w.setAutoFormatting (true);
 		w.setAutoFormattingIndent (2);
@@ -155,15 +189,15 @@ namespace Aggregator
 
 		w.writeStartElement ("description");
 			w.writeStartElement ("title-info");
-				w.writeTextElement ("genre", "comp_www");
-				w.writeTextElement ("genre", "computers");
+				Q_FOREACH (const QString& genre, genres)
+					w.writeTextElement ("genre", genre);
 				Q_FOREACH (QString author, authors)
 				{
 					w.writeStartElement ("author");
 						w.writeTextElement ("nickname", author);
 					w.writeEndElement ();
 				}
-				w.writeTextElement ("book-title", "Exported Feeds");
+				w.writeTextElement ("book-title", name);
 				w.writeTextElement ("lang", "en");
 			w.writeEndElement ();
 
@@ -177,8 +211,11 @@ namespace Aggregator
 				w.writeTextElement ("id",
 						QUuid::createUuid ().toString ());
 				w.writeTextElement ("version", "1.0");
-				w.writeTextElement ("date",
-						QDate::currentDate ().toString (Qt::ISODate));
+				w.writeStartElement ("date");
+					const QDate& date = QDate::currentDate ();
+					w.writeAttribute ("date", date.toString (Qt::ISODate));
+					w.writeCharacters (date.toString (Qt::TextDate));
+				w.writeEndElement ();
 			w.writeEndElement ();
 		w.writeEndElement ();
 
@@ -249,9 +286,21 @@ namespace Aggregator
 
 		if (!authors.size ())
 			authors << "LeechCraft";
+		
+		QStringList genres;
+		for (int i = 0; i < Ui_.Genres_->topLevelItemCount (); ++i)
+		{
+			QTreeWidgetItem *item = Ui_.Genres_->topLevelItem (i);
+			for (int j = 0; j < item->childCount (); ++j)
+			{
+				QTreeWidgetItem *subItem = item->child (j);
+				if (subItem->checkState (0) == Qt::Checked)
+					genres << subItem->text (1);
+			}
+		}
 
 		QXmlStreamWriter w (&file);
-		WriteBeginning (w, authors);
+		WriteBeginning (w, authors, genres, Ui_.Name_->text ());
 
 		QList<ChannelShort> shorts = items2write.keys ();
 		Q_FOREACH (ChannelShort cs, shorts)
