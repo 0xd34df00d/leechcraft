@@ -27,7 +27,6 @@
 #include <QtDebug>
 #include <QMainWindow>
 #include <libtorrent/create_torrent.hpp>
-#include "config.h"
 #include "core.h"
 
 namespace LeechCraft
