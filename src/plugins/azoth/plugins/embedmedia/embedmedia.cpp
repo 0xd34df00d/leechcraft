@@ -66,7 +66,7 @@ namespace EmbedMedia
 
 	QString Plugin::GetName () const
 	{
-		return "Azoth Embed media";
+		return "Azoth EmbedMedia";
 	}
 
 	QString Plugin::GetInfo () const
