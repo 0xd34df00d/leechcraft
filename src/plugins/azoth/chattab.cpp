@@ -727,7 +727,6 @@ namespace Azoth
 		if (entry != GetEntry<QObject> ())
 			return;
 
-		const bool wasEmpty = HistoryMessages_.isEmpty ();
 		Q_FOREACH (QObject *msgObj, messages)
 		{
 			IMessage *msg = qobject_cast<IMessage*> (msgObj);
@@ -741,7 +740,7 @@ namespace Azoth
 			
 			const QDateTime& dt = msg->GetDateTime ();
 			if (HistoryMessages_.isEmpty () ||
-					HistoryMessages_.last ()->GetDateTime () <= msg->GetDateTime ())
+					HistoryMessages_.last ()->GetDateTime () <= dt)
 				HistoryMessages_ << msg;
 			else
 			{
@@ -749,7 +748,7 @@ namespace Azoth
 						std::find_if (HistoryMessages_.begin (), HistoryMessages_.end (),
 								boost::bind (std::greater<QDateTime> (),
 										boost::bind (&IMessage::GetDateTime, _1),
-										msg->GetDateTime ()));
+										dt));
 				HistoryMessages_.insert (pos, msg);
 			}
 		}
@@ -994,7 +993,17 @@ namespace Azoth
 	
 	void ChatTab::RequestLogs ()
 	{
-		QObject *entryObj = GetEntry<QObject> ();
+		ICLEntry *entry = GetEntry<ICLEntry> ();
+		if (entry->GetAllMessages ().size () > 100 ||
+				entry->GetEntryType () != ICLEntry::ETChat)
+			return;
+		
+		const int num = XmlSettingsManager::Instance ()
+				.property ("ShowLastNMessages").toInt ();
+		if (!num)
+			return;
+
+		QObject *entryObj = entry->GetObject ();
 
 		const QObjectList& histories = Core::Instance ().GetProxy ()->
 				GetPluginsManager ()->GetAllCastableRoots<IHistoryPlugin*> ();
@@ -1011,7 +1020,7 @@ namespace Azoth
 					SLOT (handleGotLastMessages (QObject*, const QList<QObject*>&)),
 					Qt::UniqueConnection);
 			
-			hist->RequestLastMessages (entryObj, 10);
+			hist->RequestLastMessages (entryObj, num);
 		}
 	}
 
