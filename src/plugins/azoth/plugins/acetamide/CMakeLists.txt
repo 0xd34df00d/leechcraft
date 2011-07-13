@@ -21,10 +21,10 @@ SET (ACETAMIDE_SRCS
 	ircparser.cpp
 	ircprotocol.cpp
 	ircserverclentry.cpp
-	ircserverconsole.cpp
 	ircserverhandler.cpp
 	invitechannelsdialog.cpp
 	localtypes.cpp
+	servercommandmessage.cpp
 	serverparticipantentry.cpp
 	xmlsettingsmanager.cpp
 	)
@@ -45,10 +45,10 @@ SET (ACETAMIDE_HEADERS
 	ircparser.h
 	ircprotocol.h
 	ircserverclentry.h
-	ircserverconsole.h
 	ircserverhandler.h
 	invitechannelsdialog.h
 	localtypes.h
+	servercommandmessage.h
 	serverparticipantentry.h
 	xmlsettingsmanager.h
 	)

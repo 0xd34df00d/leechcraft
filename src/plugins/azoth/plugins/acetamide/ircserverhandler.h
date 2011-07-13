@@ -24,7 +24,6 @@
 #include <QObject>
 #include <QTcpSocket>
 #include <interfaces/imessage.h>
-#include "ircserverconsole.h"
 #include "localtypes.h"
 #include "serverparticipantentry.h"
 #include "invitechannelsdialog.h"
@@ -50,7 +49,6 @@ namespace Acetamide
 		IrcAccount *Account_;
 		IrcParser *IrcParser_;
 		IrcServerCLEntry *ServerCLEntry_;
-		IrcServerConsole_ptr Console_;
 		bool IsConsoleEnabled_;
 		bool ChannelJoined_;
 		bool IsInviteDialogActive_;
@@ -75,9 +73,9 @@ namespace Acetamide
 		IrcServerHandler (const ServerOptions&, IrcAccount*);
 		IrcServerCLEntry* GetCLEntry () const;
 		IrcAccount* GetAccount () const;
+		IrcParser* GetParser () const;
 		QString GetNickName () const;
-
-		IrcServerConsole_ptr GetIrcServerConsole () const;
+		void SetNick (const QString&);
 
 		QString GetServerID_ () const;
 		ServerOptions GetServerOptions () const;
@@ -108,7 +106,7 @@ namespace Acetamide
 				const QString&, const QString&);
 
 		void ConnectToServer ();
-		bool DisconnectFromServer ();
+		void DisconnectFromServer ();
 		bool JoinChannel (const ChannelOptions&);
 		void JoinChannelByCmd (const QStringList&);
 		void SendCommand (const QString&);
@@ -118,15 +116,15 @@ namespace Acetamide
 		void RemoveParticipantEntry (const QString&);
 
 		void UnregisterChannel (ChannelHandler*);
+		void SetConsoleEnabled (bool);
 	private:
-		void SendToConsole (const QString&);
+		void SendToConsole (IMessage::Direction, const QString&);
 		void InitErrorsReplys ();
 		void InitCommandResponses ();
 		void InitSocket ();
 		bool IsErrorReply (const QString&);
 		bool IsCTCPMessage (const QString&);
 
-		void NoSuchNickError ();
 		void NickCmdError ();
 
 		void SendAnswerToChannel (const QString&, const QString&,
@@ -137,8 +135,8 @@ namespace Acetamide
 		ServerParticipantEntry_ptr
 				CreateParticipantEntry (const QString&);
 
-		// RPL
 		void JoinFromQueue ();
+		// RPL
 		void SetTopic (const QString&,
 				const QList<std::string>&, const QString&);
 		void AddParticipants (const QString&,
@@ -272,9 +270,13 @@ namespace Acetamide
 	private slots:
 		void readReply ();
 		void connectionEstablished ();
+		void connectionClosed ();
 		void joinAfterInvite ();
 	signals:
 		void connected (const QString&);
+		void disconnected (const QString&);
+		void sendMessageToConsole (IMessage::Direction, const QString&);
+		void nicknameConflict (const QString&);
 	};
 };
 };

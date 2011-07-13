@@ -30,6 +30,8 @@
 #include "ircparser.h"
 #include "ircserverclentry.h"
 #include "xmlsettingsmanager.h"
+#include <QMessageBox>
+#include <QInputDialog>
 
 namespace LeechCraft
 {
@@ -56,9 +58,19 @@ namespace Acetamide
 		InitCommandResponses ();
 
 		connect (this,
-				 SIGNAL (connected (const QString&)),
-				 Account_->GetClientConnection ().get (),
-				 SLOT (serverConnected (const QString&)));
+				SIGNAL (connected (const QString&)),
+				Account_->GetClientConnection ().get (),
+				SLOT (serverConnected (const QString&)));
+
+		connect (this,
+				SIGNAL (disconnected (const QString&)),
+				Account_->GetClientConnection ().get (),
+				SLOT (serverDisConnected (const QString&)));
+
+		connect (this,
+				SIGNAL (nicknameConflict (const QString&)),
+				ServerCLEntry_,
+				SIGNAL (nicknameConflict (const QString&)));
 	}
 
 	IrcServerCLEntry* IrcServerHandler::GetCLEntry () const
@@ -71,14 +83,19 @@ namespace Acetamide
 		return Account_;
 	}
 
+	IrcParser* IrcServerHandler::GetParser () const
+	{
+		return IrcParser_;
+	}
+
 	QString IrcServerHandler::GetNickName () const
 	{
 		return NickName_;
 	}
 
-	IrcServerConsole_ptr IrcServerHandler::GetIrcServerConsole () const
+	void IrcServerHandler::SetNick (const QString& nick)
 	{
-		return Console_;
+		NickName_ = nick;
 	}
 
 	QString IrcServerHandler::GetServerID_ () const
@@ -256,26 +273,13 @@ namespace Acetamide
 		}
 	}
 
-	bool IrcServerHandler::DisconnectFromServer ()
+	void IrcServerHandler::DisconnectFromServer ()
 	{
-		if (ServerConnectionState_ != NotConnected)
-		{
-			TcpSocket_ptr->disconnectFromHost ();
-			if (TcpSocket_ptr->state ()
-					== QAbstractSocket::UnconnectedState &&
-				TcpSocket_ptr->waitForDisconnected (1000))
-			{
-				ServerConnectionState_ = NotConnected;
-				ServerCLEntry_->
-						SetStatus (EntryStatus (SOffline, QString ()));
-				TcpSocket_ptr->close ();
-				return true;
-			}
-		}
-		else
-			return true;
+		Q_FOREACH (ChannelHandler *ch, ChannelHandlers_.values ())
+			ch->LeaveChannel (QString ());
 
-		return false;
+		if (ServerConnectionState_ != NotConnected)
+			TcpSocket_ptr->disconnectFromHost ();
 	}
 
 	bool IrcServerHandler::JoinChannel (const ChannelOptions& channel)
@@ -318,7 +322,7 @@ namespace Acetamide
 	void IrcServerHandler::SendCommand (const QString& cmd)
 	{
 		qDebug () << TcpSocket_ptr.get () << cmd;
-		SendToConsole (cmd.trimmed ());
+		SendToConsole (IMessage::DOut, cmd.trimmed ());
 
 		if (!TcpSocket_ptr->isWritable ())
 		{
@@ -369,16 +373,18 @@ namespace Acetamide
 
 	}
 
-	void IrcServerHandler::SendToConsole (const QString& message)
+	void IrcServerHandler::SendToConsole (IMessage::Direction dir,
+			const QString& message)
 	{
 		if (!IsConsoleEnabled_)
 			return;
 
-		IrcMessage *msg = CreateMessage (IMessage::MTChatMessage,
-				Console_->GetEntryID (),
-				EncodedMessage (message, IMessage::DIn));
-
-		Console_->HandleMessage (msg);
+		if (dir == IMessage::DIn)
+			emit sendMessageToConsole (dir, 
+					EncodedMessage (message, dir));
+		else
+			emit sendMessageToConsole (dir,
+					EncodedMessage (message, IMessage::DIn));
 	}
 
 	void IrcServerHandler::InitErrorsReplys ()
@@ -845,18 +851,25 @@ namespace Acetamide
 				boost::bind (&IrcParser::IsonCommand, IrcParser_, _1);
 	}
 
-	void IrcServerHandler::NoSuchNickError ()
-	{
-	}
-
 	void IrcServerHandler::NickCmdError ()
 	{
 		int index = Account_->GetNickNames ().indexOf (NickName_);
-		if (index < Account_->GetNickNames ().count ())
-		{
+		if (index != Account_->GetNickNames ().count () - 1)
 			NickName_ = Account_->GetNickNames ().at (++index);
-			IrcParser_->NickCommand (QStringList () << NickName_);
+		else
+			NickName_ = Account_->GetNickNames ().at (0);
+		if (NickName_.isEmpty ())
+		{
+			NickCmdError ();
+			return;
 		}
+
+		if (NickName_ == OldNickName_)
+		{
+			emit nicknameConflict (NickName_);
+			return;
+		}
+		IrcParser_->NickCommand (QStringList () << NickName_);
 	}
 
 	void IrcServerHandler::SendAnswerToChannel (const QString& cmd,
@@ -908,6 +921,11 @@ namespace Acetamide
 					.property ("AutoDisconnectFromServer").toBool ())
 				Account_->GetClientConnection ()->
 						CloseServer (ServerID_);
+	}
+
+	void IrcServerHandler::SetConsoleEnabled (bool enabled)
+	{
+		IsConsoleEnabled_ = enabled;
 	}
 
 	ServerParticipantEntry_ptr IrcServerHandler::CreateParticipantEntry
@@ -1729,6 +1747,11 @@ namespace Acetamide
 				SLOT (connectionEstablished ()));
 
 		connect (TcpSocket_ptr.get (),
+				SIGNAL (disconnected ()),
+				this,
+				SLOT (connectionClosed ()));
+
+		connect (TcpSocket_ptr.get (),
 				SIGNAL (error (QAbstractSocket::SocketError)),
 				Account_->GetClientConnection ().get (),
 				SLOT (handleError (QAbstractSocket::SocketError)));
@@ -1749,8 +1772,7 @@ namespace Acetamide
 		while (TcpSocket_ptr->canReadLine ())
 		{
 			QString str = TcpSocket_ptr->readLine ();
-			SendToConsole (str.trimmed ());
-			qDebug () << str;
+			SendToConsole (IMessage::DIn, str.trimmed ());
 			if (!IrcParser_->ParseMessage (str))
 				return;
 
@@ -1763,7 +1785,11 @@ namespace Acetamide
 						, IrcParser_->GetIrcMessageOptions ()
 							.Message_);
 				if (cmd == "433")
+				{
+					if (OldNickName_.isEmpty ())
+						OldNickName_ = NickName_;
 					NickCmdError ();
+				}
 			}
 			else if ((cmd != "join") && (!ChannelJoined_))
 				IncomingMessage2Server ();
@@ -1776,19 +1802,16 @@ namespace Acetamide
 	{
 		ServerConnectionState_ = Connected;
 		emit connected (ServerID_);
-		if (XmlSettingsManager::Instance ().property
-			("ServerConsole")
-			.toBool ())
-		{
-				Console_.reset (new IrcServerConsole (this, Account_));
-				Account_->handleGotRosterItems (QList<QObject*> () <<
-						Console_.get ());
-				IsConsoleEnabled_ = true;
-				Console_->SetStatus (EntryStatus (SOnline, QString ()));
-		}
-
 		ServerCLEntry_->SetStatus (EntryStatus (SOnline, QString ()));
 		IrcParser_->AuthCommand ();
+	}
+
+	void IrcServerHandler::connectionClosed ()
+	{
+		ServerConnectionState_ = NotConnected;
+		ServerCLEntry_->SetStatus (EntryStatus (SOffline, QString ()));
+		TcpSocket_ptr->close ();
+		emit disconnected (ServerID_);
 	}
 
 	void IrcServerHandler::joinAfterInvite ()

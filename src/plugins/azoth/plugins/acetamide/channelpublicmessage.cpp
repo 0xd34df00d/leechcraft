@@ -134,8 +134,6 @@ namespace Acetamide
 	{
 		Datetime_ = dt;
 	}
-
-
 };
 };
 };
