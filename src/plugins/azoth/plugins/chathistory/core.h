@@ -81,6 +81,7 @@ namespace ChatHistory
 	signals:
 		void gotOurAccounts (const QStringList&);
 		void gotUsersForAccount (const QStringList&, const QString&, const QStringList&);
+
 		/** The variant is a list of QVariantMaps.
 		 */
 		void gotChatLogs (const QString&, const QString&, int, int, const QVariant&);
