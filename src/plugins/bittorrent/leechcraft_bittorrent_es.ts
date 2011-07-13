@@ -223,7 +223,7 @@
     <message>
         <location filename="addwebseeddialog.ui" line="22"/>
         <source>URL:</source>
-        <translation type="unfinished">URL:</translation>
+        <translation>URL:</translation>
     </message>
     <message>
         <location filename="addwebseeddialog.ui" line="34"/>
@@ -458,7 +458,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="core.cpp" line="557"/>
         <source>Progress:</source>
-        <translation type="unfinished">Progreso:</translation>
+        <translation>Progreso:</translation>
     </message>
     <message>
         <location filename="core.cpp" line="558"/>
@@ -804,7 +804,6 @@ IPv6 input mask</extracomment>
         <source>%1 (%n second(s) remaining)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -1021,7 +1020,6 @@ IPv6 input mask</extracomment>
         <location filename="torrentplugin.cpp" line="480"/>
         <source>Do you really want to delete %n torrent(s)?</source>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -2778,7 +2776,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="dummy.cpp" line="136"/>
         <source>Cache size:</source>
-        <translation type="unfinished">Tamaño del caché:</translation>
+        <translation>Tamaño del caché:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="138"/>
@@ -2918,12 +2916,12 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="dummy.cpp" line="170"/>
         <source>Session stats</source>
-        <translation type="unfinished">Estadísticas de la sesión</translation>
+        <translation>Estadísticas de la sesión</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="171"/>
         <source>Advanced session stats</source>
-        <translation type="unfinished">Estadísticas avanzadas de la sesión</translation>
+        <translation>Estadísticas avanzadas de la sesión</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="172"/>
@@ -2938,17 +2936,17 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="dummy.cpp" line="174"/>
         <source>Torrent</source>
-        <translation type="unfinished">Torrent</translation>
+        <translation>Torrent</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="175"/>
         <source>Status</source>
-        <translation type="unfinished">Estado</translation>
+        <translation>Estado</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="176"/>
         <source>Advanced status</source>
-        <translation type="unfinished">Estado avanzado</translation>
+        <translation>Estado avanzado</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="177"/>

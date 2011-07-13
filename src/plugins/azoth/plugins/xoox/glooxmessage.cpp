@@ -140,10 +140,6 @@ namespace Xoox
 
 	QString GlooxMessage::GetBody () const
 	{
-		const QString& rich = Message_.getXhtml ();
-		if (!rich.isEmpty ())
-			return rich;
-
 		return Qt::escape (Message_.body ());
 	}
 

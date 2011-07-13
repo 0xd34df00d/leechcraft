@@ -42,7 +42,6 @@
 #include <interfaces/iprotocol.h>
 #include <interfaces/iproxyobject.h>
 #include "glooxaccount.h"
-#include "config.h"
 #include "glooxclentry.h"
 #include "glooxmessage.h"
 #include "roomhandler.h"
@@ -145,7 +144,8 @@ namespace Xoox
 		DiscoveryManager_->setClientCapabilitiesNode ("http://leechcraft.org/azoth");
 
 		Client_->versionManager ().setClientName ("LeechCraft Azoth");
-		Client_->versionManager ().setClientVersion (LEECHCRAFT_VERSION);
+		Client_->versionManager ().setClientVersion (Core::Instance ()
+					.GetProxy ()->GetVersion ());
 		Client_->versionManager ().setClientOs (ProxyObject_->GetOSName ());
 
 		connect (Client_,

@@ -322,19 +322,21 @@ namespace AdiumStyles
 		case IMessage::MTMUCMessage:
 		case IMessage::MTStatusMessage:
 			other = qobject_cast<ICLEntry*> (msg->OtherPart ());
-			if (!other)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "null other part, gonna fail:"
-						<< msg->GetMessageType ()
-						<< msg->GetBody ()
-						<< msg->OtherPart ();
-			}
 			break;
 		case IMessage::MTEventMessage:
 		case IMessage::MTServiceMessage:
 			other = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
 			break;
+		}
+		
+		if (!other)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "null other part, gonna fail:"
+					<< msg->GetMessageType ()
+					<< msg->GetBody ()
+					<< msg->OtherPart ()
+					<< msg->ParentCLEntry ();
 		}
 
 		IAccount *acc = other ?

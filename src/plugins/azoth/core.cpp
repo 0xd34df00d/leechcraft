@@ -990,7 +990,7 @@ namespace Azoth
 		if (mucEntry)
 		{
 			const QString& jid = mucEntry->GetRealID (entry->GetObject ());
-			tip += tr ("Real ID:") + ' ' + (jid.isEmpty () ? tr ("unknown") : jid);
+			tip += "\n" + tr ("Real ID:") + ' ' + (jid.isEmpty () ? tr ("unknown") : jid);
 		}
 
 		IMUCPerms *mucPerms = qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ());
@@ -1402,7 +1402,8 @@ namespace Azoth
 					SLOT (handleActionVCardTriggered ()));
 			vcard->setProperty ("ActionIcon", "azoth_vcard");
 			Entry2Actions_ [entry] ["vcard"] = vcard;
-			Action2Areas_ [vcard] << CLEAAContactListCtxtMenu;
+			Action2Areas_ [vcard] << CLEAAContactListCtxtMenu
+					<< CLEAATabCtxtMenu;
 		}
 
 		IMUCPerms *perms = qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ());
