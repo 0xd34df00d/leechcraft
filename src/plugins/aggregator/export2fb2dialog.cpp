@@ -190,8 +190,11 @@ namespace Aggregator
 				w.writeTextElement ("id",
 						QUuid::createUuid ().toString ());
 				w.writeTextElement ("version", "1.0");
-				w.writeTextElement ("date",
-						QDate::currentDate ().toString (Qt::ISODate));
+				w.writeStartElement ("date");
+					const QDate& date = QDate::currentDate ();
+					w.writeAttribute ("date", date.toString (Qt::ISODate));
+					w.writeCharacters (date.toString (Qt::TextDate));
+				w.writeEndElement ();
 			w.writeEndElement ();
 		w.writeEndElement ();
 
