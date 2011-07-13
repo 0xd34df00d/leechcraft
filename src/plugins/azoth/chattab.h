@@ -65,6 +65,8 @@ namespace Azoth
 		QString NickFirstPart_;
 
 		int NumUnreadMsgs_;
+		
+		QList<IMessage*> HistoryMessages_;
 
 		QIcon TabIcon_;
 		bool IsMUC_;
@@ -132,6 +134,8 @@ namespace Azoth
 		void handleConfigureMUC ();
 		void typeTimeout ();
 		
+		void handleGotLastMessages (QObject*, const QList<QObject*>&);
+		
 		void handleFontSizeChanged ();
 	private:
 		template<typename T>
@@ -142,6 +146,9 @@ namespace Azoth
 		void HandleMUC ();
 		void InitExtraActions ();
 		void InitMsgEdit ();
+
+		void RequestLogs ();
+
 		QStringList GetMUCParticipants () const;
 
 		void ReformatTitle ();
@@ -172,7 +179,6 @@ namespace Azoth
 		 * @param nickname a nick to insert, in html format.
 		 */
 		void InsertNick (const QString& nicknameHtml);
-
 	signals:
 		void changeTabName (QWidget*, const QString&);
 		void changeTabIcon (QWidget*, const QIcon&);
