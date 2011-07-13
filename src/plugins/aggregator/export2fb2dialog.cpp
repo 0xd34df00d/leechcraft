@@ -34,6 +34,7 @@ namespace Aggregator
 {
 	Export2FB2Dialog::Export2FB2Dialog (QWidget *parent)
 	: QDialog (parent)
+	, HasBeenTextModified_ (false)
 	{
 		Ui_.setupUi (this);
 
@@ -86,6 +87,11 @@ namespace Aggregator
 	{
 		Ui_.ButtonBox_->button (QDialogButtonBox::Ok)->setEnabled (name.size ());
 	}
+	
+	void Export2FB2Dialog::on_Name__textEdited ()
+	{
+		HasBeenTextModified_ = true;
+	}
 
 	void Export2FB2Dialog::handleChannelsSelectionChanged (const QItemSelection& selected,
 			const QItemSelection& deselected)
@@ -106,6 +112,14 @@ namespace Aggregator
 
 		Selector_->SetPossibleSelections (CurrentCategories_);
 		Selector_->selectAll ();
+		
+		if (!HasBeenTextModified_ &&
+				Ui_.ChannelsTree_->selectionModel ()->selectedRows ().size () <= 1)
+		{
+			const QModelIndex& index = Ui_.ChannelsTree_->currentIndex ();
+			if (index.isValid ())
+				Ui_.Name_->setText (index.sibling (index.row (), 0).data ().toString ());
+		}
 	}
 
 	void WriteChannel (QXmlStreamWriter& w,
