@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "chattab.h"
+#include <boost/bind.hpp>
 #include <QWebFrame>
 #include <QWebElement>
 #include <QTextDocument>
@@ -39,6 +40,7 @@
 #include "interfaces/ichatstyleresourcesource.h"
 #include "interfaces/isupportmediacalls.h"
 #include "interfaces/imediacall.h"
+#include "interfaces/ihistoryplugin.h"
 #include "core.h"
 #include "textedit.h"
 #include "chattabsmanager.h"
@@ -93,6 +95,8 @@ namespace Azoth
 		Ui_.EventsButton_->hide ();
 		
 		BuildBasicActions ();
+		
+		RequestLogs ();
 
 		Core::Instance ().RegisterHookable (this);
 		
@@ -157,6 +161,9 @@ namespace Azoth
 		data.replace ("LINKCOLOR",
 				QApplication::palette ().color (QPalette::Link).name ());
 		Ui_.View_->setHtml (data);
+		
+		Q_FOREACH (IMessage *msg, HistoryMessages_)
+			AppendMessage (msg);
 
 		ICLEntry *e = GetEntry<ICLEntry> ();
 		Q_FOREACH (QObject *msgObj, e->GetAllMessages ())
@@ -715,6 +722,47 @@ namespace Azoth
 		SetChatPartState (CPSPaused);
 	}
 	
+	void ChatTab::handleGotLastMessages (QObject *entry, const QList<QObject*>& messages)
+	{
+		if (entry != GetEntry<QObject> ())
+			return;
+
+		const bool wasEmpty = HistoryMessages_.isEmpty ();
+		Q_FOREACH (QObject *msgObj, messages)
+		{
+			IMessage *msg = qobject_cast<IMessage*> (msgObj);
+			if (!msg)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< msgObj
+						<< "doesn't implement IMessage";
+				continue;
+			}
+			
+			const QDateTime& dt = msg->GetDateTime ();
+			if (HistoryMessages_.isEmpty () ||
+					HistoryMessages_.last ()->GetDateTime () <= msg->GetDateTime ())
+				HistoryMessages_ << msg;
+			else
+			{
+				QList<IMessage*>::iterator pos =
+						std::find_if (HistoryMessages_.begin (), HistoryMessages_.end (),
+								boost::bind (std::greater<QDateTime> (),
+										boost::bind (&IMessage::GetDateTime, _1),
+										msg->GetDateTime ()));
+				HistoryMessages_.insert (pos, msg);
+			}
+		}
+		
+		if (!messages.isEmpty ())
+			PrepareTheme ();
+		
+		disconnect (sender (),
+				SIGNAL (gotLastMessages (QObject*, const QList<QObject*>&)),
+				this,
+				SLOT (handleGotLastMessages (QObject*, const QList<QObject*>&)));	
+	}
+	
 	void ChatTab::handleFontSizeChanged ()
 	{
 		const int size = XmlSettingsManager::Instance ()
@@ -942,6 +990,29 @@ namespace Azoth
 				MsgFormatter_,
 				SLOT (setVisible (bool)));
 		MsgFormatter_->setVisible (ToggleRichText_->isChecked ());
+	}
+	
+	void ChatTab::RequestLogs ()
+	{
+		QObject *entryObj = GetEntry<QObject> ();
+
+		const QObjectList& histories = Core::Instance ().GetProxy ()->
+				GetPluginsManager ()->GetAllCastableRoots<IHistoryPlugin*> ();
+		
+		Q_FOREACH (QObject *histObj, histories)
+		{
+			IHistoryPlugin *hist = qobject_cast<IHistoryPlugin*> (histObj);	
+			if (!hist->IsHistoryEnabledFor (entryObj))
+				continue;
+			
+			connect (histObj,
+					SIGNAL (gotLastMessages (QObject*, const QList<QObject*>&)),
+					this,
+					SLOT (handleGotLastMessages (QObject*, const QList<QObject*>&)),
+					Qt::UniqueConnection);
+			
+			hist->RequestLastMessages (entryObj, 10);
+		}
 	}
 
 	void ChatTab::AppendMessage (IMessage *msg)
