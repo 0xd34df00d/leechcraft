@@ -121,6 +121,28 @@ namespace Aggregator
 				Ui_.Name_->setText (index.sibling (index.row (), 0).data ().toString ());
 		}
 	}
+	
+	namespace
+	{
+		QString FixContents (QString descr)
+		{
+			descr.replace (QRegExp ("</p>\\s*<p>"), "<br/>");
+			descr.remove ("<p>");
+			descr.remove ("</p>");
+			descr.replace (QRegExp ("<img *>",
+						Qt::CaseSensitive, QRegExp::Wildcard),
+					"(inline image)");
+			descr.replace ("&qout;", "\"");
+			descr.replace ("&emdash;", QString::fromUtf8 ("—"));
+			descr.replace ("&mdash;", QString::fromUtf8 ("—"));
+			descr.replace ("&ndash;", "-");
+			
+			// Fix some common errors
+			descr.replace ("<br>", "<br/>");
+			
+			return descr;
+		}
+	}
 
 	void WriteChannel (QXmlStreamWriter& w,
 			const ChannelShort& cs, const QList<Item_ptr>& items)
@@ -128,7 +150,7 @@ namespace Aggregator
 		w.writeStartElement ("section");
 			w.writeAttribute ("id", QString::number (cs.ChannelID_));
 			w.writeStartElement ("title");
-				w.writeTextElement ("p", cs.Title_);
+				w.writeTextElement ("p", FixContents (cs.Title_));
 			w.writeEndElement ();
 			w.writeTextElement ("annotation",
 					Export2FB2Dialog::tr ("%n unread item(s)", "", cs.Unread_));
@@ -158,20 +180,9 @@ namespace Aggregator
 					w.writeEmptyElement ("empty-line");
 				}
 
-				QString descr = item->Description_;
-				descr.replace (QRegExp ("</p>\\s*<p>"), "<br/>");
-				descr.remove ("<p>");
-				descr.remove ("</p>");
-				descr.replace (QRegExp ("<img *>",
-							Qt::CaseSensitive, QRegExp::Wildcard),
-						"(inline image)");
-				descr.replace ("&qout;", "\"");
-				descr.replace ("&mdash;", QString::fromUtf8 ("—"));
-				descr.replace ("&ndash;", "-");
-
 				w.writeStartElement ("p");
 					w.writeComment ("p");
-					w.device ()->write (descr.toUtf8 ());
+					w.device ()->write (FixContents (item->Description_).toUtf8 ());
 				w.writeEndElement ();
 
 				w.writeEmptyElement ("empty-line");
