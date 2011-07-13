@@ -67,6 +67,7 @@ namespace Acetamide
 		QHash<QString, ServerParticipantEntry_ptr> Nick2Entry_;
 		QString NickName_;
 		QString OldNickName_;
+		QString LastSendId_;
 		QList<ChannelOptions> ChannelsQueue_;
 		QVariantMap ISupport_;
 	public:
@@ -87,6 +88,7 @@ namespace Acetamide
 
 		void SendPublicMessage (const QString&, const QString&);
 		void SendPrivateMessage (IrcMessage*);
+		void SendCommandMessage2Server (const QString&);
 		void ParseMessageForCommand (const QString&, const QString&);
 
 		QList<QObject*> GetCLEntries () const;
@@ -112,6 +114,7 @@ namespace Acetamide
 		void SendCommand (const QString&);
 		void IncomingMessage2Server ();
 		void IncomingMessage2Channel ();
+		void IncomingMessage2Channel (const QString&);
 		ServerParticipantEntry_ptr GetParticipantEntry (const QString&);
 		void RemoveParticipantEntry (const QString&);
 

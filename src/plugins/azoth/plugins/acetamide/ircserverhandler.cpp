@@ -23,7 +23,7 @@
 #include <util/notificationactionhandler.h>
 #include "channelhandler.h"
 #include "channelclentry.h"
-#include "channelpublicmessage.h"
+#include "servercommandmessage.h"
 #include "clientconnection.h"
 #include "ircaccount.h"
 #include "ircmessage.h"
@@ -32,6 +32,7 @@
 #include "xmlsettingsmanager.h"
 #include <QMessageBox>
 #include <QInputDialog>
+#include "channelpublicmessage.h"
 
 namespace LeechCraft
 {
@@ -132,6 +133,7 @@ namespace Acetamide
 	void IrcServerHandler::SendPublicMessage (const QString& msg,
 			const QString& channelId)
 	{
+		LastSendId_ = channelId;
 		IrcParser_->PrivMsgCommand (EncodedMessage (msg, IMessage::DOut),
 				ChannelHandlers_ [channelId]->GetChannelOptions ()
 					.ChannelName_);
@@ -139,14 +141,29 @@ namespace Acetamide
 
 	void IrcServerHandler::SendPrivateMessage (IrcMessage* msg)
 	{
+		LastSendId_ = msg->GetOtherVariant ();
 		IrcParser_->PrivMsgCommand
 				(EncodedMessage (msg->GetBody (), IMessage::DOut),
 				msg->GetOtherVariant ());
 	}
 
+	void IrcServerHandler::SendCommandMessage2Server (const QString& msg)
+	{
+		QString mess = msg;
+		if (msg.startsWith ('/'))
+			mess = msg.mid (1);
+		LastSendId_ = QString ();
+		IrcParser_->RawCommand (mess.split (' '));
+
+		IrcMessage *mesg = CreateMessage (IMessage::MTEventMessage,
+				ServerID_, EncodedMessage (mess, IMessage::DIn));
+		ServerCLEntry_->HandleMessage (mesg);
+	}
+
 	void IrcServerHandler::ParseMessageForCommand (const QString& msg,
 			const QString& channelID)
 	{
+		LastSendId_ = channelID;
 		QString commandMessage = EncodedMessage (msg.mid (1),
 				IMessage::DOut);
 		QString outputMessage = QString ();
@@ -370,7 +387,24 @@ namespace Acetamide
 		else if (Command2Action_.contains (cmd))
 			Command2Action_ [cmd] (imo.Nick_, imo.Parameters_,
 					imo.Message_);
+	}
 
+	void IrcServerHandler::IncomingMessage2Channel (const QString& channelID)
+	{
+		QString message;
+		Q_FOREACH (std::string str, IrcParser_->GetIrcMessageOptions ()
+				.Parameters_)
+			message.append (QString::fromUtf8 (str.c_str ()))
+				.append (' ');
+		message.append (IrcParser_->GetIrcMessageOptions ().Message_);
+
+		ChannelPublicMessage *msg =
+				new ChannelPublicMessage (EncodedMessage (message, IMessage::DIn),
+						IMessage::DIn,
+						ChannelHandlers_ [channelID]->GetCLEntry (),
+						IMessage::MTEventMessage,
+						IMessage::MSTOther);
+		ChannelHandlers_ [channelID]->GetCLEntry ()->HandleMessage (msg);
 	}
 
 	void IrcServerHandler::SendToConsole (IMessage::Direction dir,
@@ -1791,8 +1825,11 @@ namespace Acetamide
 					NickCmdError ();
 				}
 			}
-			else if ((cmd != "join") && (!ChannelJoined_))
+			else if (((cmd != "join") && (!ChannelJoined_)) ||
+						LastSendId_.isEmpty ())
 				IncomingMessage2Server ();
+			else if (!LastSendId_.isEmpty () && !Command2Action_.contains (cmd))
+				IncomingMessage2Channel (LastSendId_);
 
 			IncomingMessage2Channel ();
 		}
