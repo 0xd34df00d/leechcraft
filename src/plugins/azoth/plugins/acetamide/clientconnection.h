@@ -71,6 +71,7 @@ namespace Acetamide
 		void SetConsoleEnabled (bool);
 	public slots:
 		void serverConnected (const QString&);
+		void serverDisConnected (const QString&);
 		void handleError (QAbstractSocket::SocketError);
 		void handleLog (IMessage::Direction, const QString&);
 	signals:

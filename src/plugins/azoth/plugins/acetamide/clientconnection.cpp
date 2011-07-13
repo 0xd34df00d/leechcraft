@@ -142,16 +142,7 @@ namespace Acetamide
 	void ClientConnection::CloseServer (const QString& serverId)
 	{
 		if (ServerHandlers_.contains (serverId))
-			if (ServerHandlers_ [serverId]->DisconnectFromServer ())
-			{
-				Account_->
-						handleEntryRemoved (ServerHandlers_ [serverId]->
-							GetCLEntry ());
-				ServerHandlers_.remove (serverId);
-				if (!ServerHandlers_.count ())
-					Account_->ChangeState (EntryStatus (SOffline,
-							QString ()));
-			}
+			ServerHandlers_ [serverId]->DisconnectFromServer ();
 	}
 
 	void ClientConnection::DisconnectFromAll ()
@@ -206,6 +197,16 @@ namespace Acetamide
 			Account_->ChangeState (EntryStatus (SOnline, QString ()));
 		emit gotRosterItems (QList<QObject*> () <<
 				ServerHandlers_ [serverId]->GetCLEntry ());
+	}
+
+	void ClientConnection::serverDisConnected (const QString& serverId)
+	{
+		Account_->handleEntryRemoved (ServerHandlers_ [serverId]->
+				GetCLEntry ());
+		ServerHandlers_.remove (serverId);
+		if (!ServerHandlers_.count ())
+			Account_->ChangeState (EntryStatus (SOffline,
+					QString ()));
 	}
 
 	void ClientConnection::handleError (QAbstractSocket::SocketError)

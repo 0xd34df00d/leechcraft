@@ -24,6 +24,7 @@ SET (ACETAMIDE_SRCS
 	ircserverhandler.cpp
 	invitechannelsdialog.cpp
 	localtypes.cpp
+	servercommandmessage.cpp
 	serverparticipantentry.cpp
 	xmlsettingsmanager.cpp
 	)
@@ -47,6 +48,7 @@ SET (ACETAMIDE_HEADERS
 	ircserverhandler.h
 	invitechannelsdialog.h
 	localtypes.h
+	servercommandmessage.h
 	serverparticipantentry.h
 	xmlsettingsmanager.h
 	)

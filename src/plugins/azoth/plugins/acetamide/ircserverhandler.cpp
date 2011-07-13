@@ -58,9 +58,19 @@ namespace Acetamide
 		InitCommandResponses ();
 
 		connect (this,
-				 SIGNAL (connected (const QString&)),
-				 Account_->GetClientConnection ().get (),
-				 SLOT (serverConnected (const QString&)));
+				SIGNAL (connected (const QString&)),
+				Account_->GetClientConnection ().get (),
+				SLOT (serverConnected (const QString&)));
+
+		connect (this,
+				SIGNAL (disconnected (const QString&)),
+				Account_->GetClientConnection ().get (),
+				SLOT (serverDisConnected (const QString&)));
+
+		connect (this,
+				SIGNAL (nicknameConflict (const QString&)),
+				ServerCLEntry_,
+				SIGNAL (nicknameConflict (const QString&)));
 	}
 
 	IrcServerCLEntry* IrcServerHandler::GetCLEntry () const
@@ -73,9 +83,19 @@ namespace Acetamide
 		return Account_;
 	}
 
+	IrcParser* IrcServerHandler::GetParser () const
+	{
+		return IrcParser_;
+	}
+
 	QString IrcServerHandler::GetNickName () const
 	{
 		return NickName_;
+	}
+
+	void IrcServerHandler::SetNick (const QString& nick)
+	{
+		NickName_ = nick;
 	}
 
 	QString IrcServerHandler::GetServerID_ () const
@@ -253,26 +273,13 @@ namespace Acetamide
 		}
 	}
 
-	bool IrcServerHandler::DisconnectFromServer ()
+	void IrcServerHandler::DisconnectFromServer ()
 	{
-		if (ServerConnectionState_ != NotConnected)
-		{
-			TcpSocket_ptr->disconnectFromHost ();
-			if (TcpSocket_ptr->state ()
-					== QAbstractSocket::UnconnectedState &&
-				TcpSocket_ptr->waitForDisconnected (1000))
-			{
-				ServerConnectionState_ = NotConnected;
-				ServerCLEntry_->
-						SetStatus (EntryStatus (SOffline, QString ()));
-				TcpSocket_ptr->close ();
-				return true;
-			}
-		}
-		else
-			return true;
+		Q_FOREACH (ChannelHandler *ch, ChannelHandlers_.values ())
+			ch->LeaveChannel (QString ());
 
-		return false;
+		if (ServerConnectionState_ != NotConnected)
+			TcpSocket_ptr->disconnectFromHost ();
 	}
 
 	bool IrcServerHandler::JoinChannel (const ChannelOptions& channel)
@@ -844,10 +851,6 @@ namespace Acetamide
 				boost::bind (&IrcParser::IsonCommand, IrcParser_, _1);
 	}
 
-	void IrcServerHandler::NoSuchNickError ()
-	{
-	}
-
 	void IrcServerHandler::NickCmdError ()
 	{
 		int index = Account_->GetNickNames ().indexOf (NickName_);
@@ -863,26 +866,8 @@ namespace Acetamide
 
 		if (NickName_ == OldNickName_)
 		{
-			if (QMessageBox::question (0,
-					tr ("Nickname conflict"),
-					tr ("You have specified a nickname for %1 that's "
-						"already used. Would you like to try to "
-						"join with another nick?")
-						.arg (ServerCLEntry_->GetEntryName ()),
-					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
-				return;
-
-			const QString& newNick = QInputDialog::getText (0,
-							tr ("Enter new nick"),
-							tr ("Enter new nick for joining %1 (%2 is already used):")
-								.arg (ServerCLEntry_->GetEntryName ())
-								.arg (NickName_),
-							QLineEdit::Normal,
-							NickName_);
-			if (newNick.isEmpty ())
-				return;
-
-			NickName_ = newNick;
+			emit nicknameConflict (NickName_);
+			return;
 		}
 		IrcParser_->NickCommand (QStringList () << NickName_);
 	}
@@ -1762,6 +1747,11 @@ namespace Acetamide
 				SLOT (connectionEstablished ()));
 
 		connect (TcpSocket_ptr.get (),
+				SIGNAL (disconnected ()),
+				this,
+				SLOT (connectionClosed ()));
+
+		connect (TcpSocket_ptr.get (),
 				SIGNAL (error (QAbstractSocket::SocketError)),
 				Account_->GetClientConnection ().get (),
 				SLOT (handleError (QAbstractSocket::SocketError)));
@@ -1814,6 +1804,14 @@ namespace Acetamide
 		emit connected (ServerID_);
 		ServerCLEntry_->SetStatus (EntryStatus (SOnline, QString ()));
 		IrcParser_->AuthCommand ();
+	}
+
+	void IrcServerHandler::connectionClosed ()
+	{
+		ServerConnectionState_ = NotConnected;
+		ServerCLEntry_->SetStatus (EntryStatus (SOffline, QString ()));
+		TcpSocket_ptr->close ();
+		emit disconnected (ServerID_);
 	}
 
 	void IrcServerHandler::joinAfterInvite ()
