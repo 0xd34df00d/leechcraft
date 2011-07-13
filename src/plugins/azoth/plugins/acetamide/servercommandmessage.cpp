@@ -37,7 +37,19 @@ namespace Acetamide
 	, Type_ (MTMUCMessage)
 	, SubType_ (MSTOther)
 	{
+	}
 
+	ServerCommandMessage::ServerCommandMessage (const QString& msg,
+			IMessage::Direction dir, IrcServerCLEntry *entry,
+			IMessage::MessageType mtype, IMessage::MessageSubType mstype)
+	: QObject (entry)
+	, ParentEntry_ (entry)
+	, Message_ (msg)
+	, Datetime_ (QDateTime::currentDateTime ())
+	, Direction_ (dir)
+	, Type_ (mtype)
+	, SubType_ (mstype)
+	{
 	}
 
 	QObject* ServerCommandMessage::GetObject ()
@@ -50,7 +62,7 @@ namespace Acetamide
 		if (!ParentEntry_)
 			return;
 
-		ParentEntry_->GetIrcServerHandler ()->SendCommand (Message_);
+		ParentEntry_->GetIrcServerHandler ()->SendCommandMessage2Server (Message_);
 	}
 
 	IMessage::Direction ServerCommandMessage::GetDirection () const

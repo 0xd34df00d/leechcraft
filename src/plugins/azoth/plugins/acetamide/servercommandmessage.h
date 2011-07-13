@@ -48,7 +48,10 @@ namespace Acetamide
 		MessageSubType SubType_;
 	public:
 		ServerCommandMessage (const QString&, IrcServerCLEntry*);
-
+		ServerCommandMessage (const QString&, Direction,
+				IrcServerCLEntry*,
+				MessageType,
+				MessageSubType);
 		QObject* GetObject ();
 		void Send ();
 		Direction GetDirection () const;
