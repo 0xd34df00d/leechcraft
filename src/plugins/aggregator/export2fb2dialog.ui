@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>629</width>
-    <height>391</height>
+    <width>599</width>
+    <height>589</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,7 +15,285 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QFormLayout" name="formLayout">
+     <property name="fieldGrowthPolicy">
+      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+     </property>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Name:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Genres:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="Name_">
+       <property name="text">
+        <string>Exported Feeds</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QTreeWidget" name="Genres_">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>120</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>120</height>
+        </size>
+       </property>
+       <attribute name="headerVisible">
+        <bool>false</bool>
+       </attribute>
+       <column>
+        <property name="text">
+         <string>Genre</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>ID</string>
+        </property>
+       </column>
+       <item>
+        <property name="text">
+         <string>Computers</string>
+        </property>
+        <item>
+         <property name="text">
+          <string>Internet</string>
+         </property>
+         <property name="checkState">
+          <enum>Checked</enum>
+         </property>
+         <property name="text">
+          <string notr="true">comp_www</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Programming</string>
+         </property>
+         <property name="checkState">
+          <enum>Unchecked</enum>
+         </property>
+         <property name="text">
+          <string notr="true">comp_programming</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Hardware</string>
+         </property>
+         <property name="checkState">
+          <enum>Unchecked</enum>
+         </property>
+         <property name="text">
+          <string notr="true">comp_hard</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Software</string>
+         </property>
+         <property name="checkState">
+          <enum>Unchecked</enum>
+         </property>
+         <property name="text">
+          <string notr="true">comp_soft</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Databases</string>
+         </property>
+         <property name="checkState">
+          <enum>Unchecked</enum>
+         </property>
+         <property name="text">
+          <string notr="true">comp_db</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>OS</string>
+         </property>
+         <property name="checkState">
+          <enum>Unchecked</enum>
+         </property>
+         <property name="text">
+          <string notr="true">comp_os</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Other</string>
+         </property>
+         <property name="checkState">
+          <enum>Checked</enum>
+         </property>
+         <property name="text">
+          <string notr="true">computers</string>
+         </property>
+        </item>
+       </item>
+       <item>
+        <property name="text">
+         <string>Science</string>
+        </property>
+        <item>
+         <property name="text">
+          <string>Math</string>
+         </property>
+         <property name="text">
+          <string notr="true">sci_math</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Physics</string>
+         </property>
+         <property name="text">
+          <string notr="true">sci_phys</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Chemistry</string>
+         </property>
+         <property name="text">
+          <string notr="true">sci_chem</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Biology</string>
+         </property>
+         <property name="text">
+          <string notr="true">sci_biology</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Technology</string>
+         </property>
+         <property name="text">
+          <string notr="true">sci_tech</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>History</string>
+         </property>
+         <property name="text">
+          <string notr="true">sci_history</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Psychology</string>
+         </property>
+         <property name="text">
+          <string notr="true">sci_psychology</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Culture</string>
+         </property>
+         <property name="text">
+          <string notr="true">sci_culture</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Religion</string>
+         </property>
+         <property name="text">
+          <string notr="true">sci_religion</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Philosophy</string>
+         </property>
+         <property name="text">
+          <string notr="true">sci_philosophy</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Politics</string>
+         </property>
+         <property name="text">
+          <string notr="true">sci_politics</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Business</string>
+         </property>
+         <property name="text">
+          <string notr="true">sci_business</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Jurisprudence</string>
+         </property>
+         <property name="text">
+          <string notr="true">sci_juris</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Linguistic</string>
+         </property>
+         <property name="text">
+          <string notr="true">sci_linguistic</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Medicine</string>
+         </property>
+         <property name="text">
+          <string notr="true">sci_medicine</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Other</string>
+         </property>
+         <property name="text">
+          <string notr="true">science</string>
+         </property>
+        </item>
+       </item>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="VLayout_">
      <item>
       <widget class="QTreeView" name="ChannelsTree_">
        <property name="selectionMode">
@@ -29,24 +307,27 @@
        </property>
       </widget>
      </item>
-     <item>
-      <layout class="QVBoxLayout" name="VLayout_">
-       <item>
-        <widget class="QCheckBox" name="UnreadOnly_">
-         <property name="text">
-          <string>Only unread items</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
     </layout>
    </item>
    <item>
+    <widget class="QCheckBox" name="UnreadOnly_">
+     <property name="text">
+      <string>Only unread items</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Output:</string>
+       </property>
+      </widget>
+     </item>
      <item>
       <widget class="QLineEdit" name="File_"/>
      </item>

@@ -50,6 +50,17 @@ namespace Aggregator
 				this,
 				SLOT (handleChannelsSelectionChanged (const QItemSelection&,
 						const QItemSelection&)));
+		
+		for (int i = 0; i < Ui_.Genres_->topLevelItemCount (); ++i)
+		{
+			QTreeWidgetItem *item = Ui_.Genres_->topLevelItem (i);
+			for (int j = 0; j < item->childCount (); ++j)
+			{
+				QTreeWidgetItem *subItem = item->child (j);
+				if (subItem->checkState (0) == Qt::Unchecked)
+					subItem->setCheckState (0, Qt::Unchecked);
+			}
+		}
 
 		connect (this,
 				SIGNAL (accepted ()),
@@ -144,7 +155,9 @@ namespace Aggregator
 	}
 
 	void WriteBeginning (QXmlStreamWriter& w,
-			const QStringList& authors)
+			const QStringList& authors,
+			const QStringList& genres,
+			const QString& name)
 	{
 		w.setAutoFormatting (true);
 		w.setAutoFormattingIndent (2);
@@ -155,15 +168,15 @@ namespace Aggregator
 
 		w.writeStartElement ("description");
 			w.writeStartElement ("title-info");
-				w.writeTextElement ("genre", "comp_www");
-				w.writeTextElement ("genre", "computers");
+				Q_FOREACH (const QString& genre, genres)
+					w.writeTextElement ("genre", genre);
 				Q_FOREACH (QString author, authors)
 				{
 					w.writeStartElement ("author");
 						w.writeTextElement ("nickname", author);
 					w.writeEndElement ();
 				}
-				w.writeTextElement ("book-title", "Exported Feeds");
+				w.writeTextElement ("book-title", name);
 				w.writeTextElement ("lang", "en");
 			w.writeEndElement ();
 
@@ -249,9 +262,21 @@ namespace Aggregator
 
 		if (!authors.size ())
 			authors << "LeechCraft";
+		
+		QStringList genres;
+		for (int i = 0; i < Ui_.Genres_->topLevelItemCount (); ++i)
+		{
+			QTreeWidgetItem *item = Ui_.Genres_->topLevelItem (i);
+			for (int j = 0; j < item->childCount (); ++j)
+			{
+				QTreeWidgetItem *subItem = item->child (j);
+				if (subItem->checkState (0) == Qt::Checked)
+					genres << subItem->text (1);
+			}
+		}
 
 		QXmlStreamWriter w (&file);
-		WriteBeginning (w, authors);
+		WriteBeginning (w, authors, genres, Ui_.Name_->text ());
 
 		QList<ChannelShort> shorts = items2write.keys ();
 		Q_FOREACH (ChannelShort cs, shorts)
