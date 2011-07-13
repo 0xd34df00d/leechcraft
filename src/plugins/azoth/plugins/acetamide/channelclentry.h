@@ -21,9 +21,9 @@
 
 #include <boost/shared_ptr.hpp>
 #include <QObject>
+#include <interfaces/iclentry.h>
 #include <interfaces/imucentry.h>
 #include <interfaces/imucperms.h>
-#include "entrybase.h"
 #include "localtypes.h"
 
 namespace LeechCraft
