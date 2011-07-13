@@ -142,8 +142,7 @@ namespace Acetamide
 	void IrcServerHandler::SendPrivateMessage (IrcMessage* msg)
 	{
 		LastSendId_ = msg->GetOtherVariant ();
-		IrcParser_->PrivMsgCommand
-				(EncodedMessage (msg->GetBody (), IMessage::DOut),
+		IrcParser_->PrivMsgCommand (EncodedMessage (msg->GetBody (), IMessage::DOut),
 				msg->GetOtherVariant ());
 	}
 
@@ -153,7 +152,13 @@ namespace Acetamide
 		if (msg.startsWith ('/'))
 			mess = msg.mid (1);
 		LastSendId_ = QString ();
-		IrcParser_->RawCommand (mess.split (' '));
+		QString commandMessage = EncodedMessage (mess, IMessage::DOut);
+		QStringList commandWithParams = commandMessage.split (' ');
+		if (Name2Command_.contains (commandWithParams.at (0).toLower ()))
+			Name2Command_ [commandWithParams.at (0).toLower ()]
+					(commandWithParams.mid (1));
+		else
+			IrcParser_->RawCommand (commandWithParams);
 
 		IrcMessage *mesg = CreateMessage (IMessage::MTEventMessage,
 				ServerID_, EncodedMessage (mess, IMessage::DIn));
