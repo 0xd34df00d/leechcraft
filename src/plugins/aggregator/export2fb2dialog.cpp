@@ -135,7 +135,10 @@ namespace Aggregator
 			Q_FOREACH (Item_ptr item, items)
 			{
 				w.writeStartElement ("title");
-					w.writeTextElement ("p", item->Title_);
+					w.writeStartElement ("p");
+					w.writeComment ("p");
+					w.device ()->write (item->Title_.toUtf8 ());
+					w.writeEndElement ();
 				w.writeEndElement ();
 
 				bool hasDate = item->PubDate_.isValid ();
@@ -156,13 +159,17 @@ namespace Aggregator
 				}
 
 				QString descr = item->Description_;
+				descr.replace (QRegExp ("</p>\\s*<p>"), "<br/>");
 				descr.remove ("<p>");
 				descr.remove ("</p>");
 				descr.remove (QRegExp ("<img *>",
 							Qt::CaseSensitive, QRegExp::Wildcard));
 				descr.remove (QRegExp ("<a *>",
 							Qt::CaseSensitive, QRegExp::Wildcard));
-				w.writeTextElement ("p", descr);
+				w.writeStartElement ("p");
+					w.writeComment ("p");
+					w.device ()->write (descr.toUtf8 ());
+				w.writeEndElement ();
 				w.writeEmptyElement ("empty-line");
 			}
 		w.writeEndElement ();
