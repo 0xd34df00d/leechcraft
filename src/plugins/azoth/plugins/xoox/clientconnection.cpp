@@ -934,7 +934,9 @@ namespace Xoox
 		
 		std::auto_ptr<QDialog> dialog (new QDialog ());
 		QWidget *widget = builder.CreateForm (dataForm, dialog.get ());
-		dialog->setWindowTitle (widget->windowTitle ());
+		dialog->setWindowTitle (widget->windowTitle ().isEmpty () ?
+				tr ("Enter CAPTCHA") :
+				widget->windowTitle ());
 		dialog->setLayout (new QVBoxLayout ());
 		dialog->layout ()->addWidget (widget);
 		QDialogButtonBox *box = new QDialogButtonBox (QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
