@@ -52,7 +52,7 @@ namespace SecureStorage
 		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Plugins::SecMan::IStoragePlugin IActionsExporter IHaveSettings)
 
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
-		boost::shared_ptr<SettingsWidget> SettingsWidget_;
+		SettingsWidget* SettingsWidget_;
 		
 		boost::shared_ptr<QSettings> Storage_;
 		boost::shared_ptr<QSettings> Settings_;

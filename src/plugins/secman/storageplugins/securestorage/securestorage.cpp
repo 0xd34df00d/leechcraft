@@ -97,12 +97,12 @@ namespace SecureStorage
 				this, 
 				SLOT (forgetKey ()));
 
-		SettingsWidget_.reset (new SettingsWidget);
-		connect (SettingsWidget_.get (),
+		SettingsWidget_ = new SettingsWidget;
+		connect (SettingsWidget_,
 				SIGNAL (changePasswordRequested ()),
 				this,
 				SLOT (changePassword ()));
-		connect (SettingsWidget_.get (),
+		connect (SettingsWidget_,
 				SIGNAL (clearSettingsRequested ()),
 				this,
 				SLOT (clearSettings ()));
@@ -110,7 +110,7 @@ namespace SecureStorage
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog);
 		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				"securestoragesettings.xml");
-		XmlSettingsDialog_->SetCustomWidget ("SettingsWidget", SettingsWidget_.get ());
+		XmlSettingsDialog_->SetCustomWidget ("SettingsWidget", SettingsWidget_);
 		UpdateActionsStates ();
 	}
 
