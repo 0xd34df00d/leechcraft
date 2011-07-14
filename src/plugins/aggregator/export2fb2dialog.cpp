@@ -22,7 +22,6 @@
 #include <QMessageBox>
 #include <QUuid>
 #include <QDate>
-#include <QWebElement>
 #include <interfaces/structures.h>
 #include <util/util.h>
 #include <util/categoryselector.h>
