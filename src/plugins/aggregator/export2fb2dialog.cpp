@@ -131,10 +131,19 @@ namespace Aggregator
 			descr.remove ("<p>");
 			descr.remove ("</p>");
 			
+			// Remove images, links and frames
 			QRegExp imgRx ("<img *>", Qt::CaseSensitive, QRegExp::Wildcard);
 			imgRx.setMinimal (true);
 			descr.remove (imgRx);
 			descr.remove ("</img>");
+			
+			// Remove tables
+			if (descr.contains ("<table", Qt::CaseInsensitive))
+			{
+				QRegExp tableRx ("<table.*/table>", Qt::CaseInsensitive);
+				tableRx.setMinimal (true);
+				descr.remove (tableRx);
+			}
 			
 			QRegExp linkRx ("<a.*>");
 			linkRx.setMinimal (true);
@@ -145,6 +154,7 @@ namespace Aggregator
 			iframeRx.setMinimal (true);
 			descr.remove (iframeRx);
 
+			// Replace HTML entities with corresponding stuff
 			descr.replace ("&qout;", "\"");
 			descr.replace ("&emdash;", QString::fromUtf8 ("—"));
 			descr.replace ("&mdash;", QString::fromUtf8 ("—"));
@@ -152,10 +162,26 @@ namespace Aggregator
 			
 			// Fix some common errors
 			descr.replace ("<br>", "<br/>");
+			descr.replace (QRegExp ("<br\\s+/>"), "<br/>");
 
+			// Replace multilines
 			while (descr.contains ("<br/><br/>"))
 				descr.replace ("<br/><br/>", "<br/>");
+			
+			// Replace HTML tags with their fb2 analogues
+			descr.replace ("<em>", "<emphasis>", Qt::CaseInsensitive);
+			descr.replace ("</em>", "</emphasis>", Qt::CaseInsensitive);
+			descr.replace ("<i>", "<emphasis>", Qt::CaseInsensitive);
+			descr.replace ("</i>", "</emphasis>", Qt::CaseInsensitive);
+			descr.replace ("<b>", "<strong>", Qt::CaseInsensitive);
+			descr.replace ("</b>", "</strong>", Qt::CaseInsensitive);
+			descr.replace ("<ss>", "<strikethrough>", Qt::CaseInsensitive);
+			descr.replace ("</ss>", "</strikethrough>", Qt::CaseInsensitive);
+			
+			if (descr.endsWith ("<br/>"))
+				descr.chop (5);
 
+			// Remove unclosed tags
 			QRegExp unclosedRx ("<(\\w+)[^/]*>");
 			unclosedRx.setMinimal (true);
 			int pos = 0;
@@ -169,6 +195,15 @@ namespace Aggregator
 				}
 				descr.remove (pos, unclosedRx.matchedLength ());
 			}
+			
+			// Normalize empty lines - needs to be done after removing
+			// unclosed, otherwise last <p> would get dropped.
+			descr.replace (QRegExp ("<br/>\\s*</p>"), "</p>");
+			descr.replace ("<br/>", "</p><p>");
+			
+			descr.remove ("\r");
+			descr.remove ("\n");
+			descr = descr.simplified ();
 			
 			return descr;
 		}
@@ -189,7 +224,7 @@ namespace Aggregator
 				w.writeStartElement ("title");
 					w.writeStartElement ("p");
 					w.writeComment ("p");
-					w.device ()->write (item->Title_.toUtf8 ());
+					w.device ()->write (FixContents (item->Title_).toUtf8 ());
 					w.writeEndElement ();
 				w.writeEndElement ();
 
