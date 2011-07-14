@@ -145,6 +145,14 @@ namespace Aggregator
 				descr.remove (tableRx);
 			}
 			
+			// Objects
+			if (descr.contains ("<object", Qt::CaseInsensitive))
+			{
+				QRegExp objRx ("<object.*/object>", Qt::CaseInsensitive);
+				objRx.setMinimal (true);
+				descr.remove (objRx);
+			}
+			
 			QRegExp linkRx ("<a.*>");
 			linkRx.setMinimal (true);
 			descr.remove (linkRx);
@@ -159,6 +167,11 @@ namespace Aggregator
 			descr.replace ("&emdash;", QString::fromUtf8 ("—"));
 			descr.replace ("&mdash;", QString::fromUtf8 ("—"));
 			descr.replace ("&ndash;", "-");
+			
+			// Remove the rest
+			descr.replace ("&amp;", "&&");
+			descr.remove (QRegExp ("&\\w*;"));
+			descr.replace ("&&", "&amp;");
 			
 			// Fix some common errors
 			descr.replace ("<br>", "<br/>");
