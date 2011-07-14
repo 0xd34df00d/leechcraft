@@ -16,45 +16,49 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SHELLOPEN_SHELLOPEN_H
-#define PLUGINS_SHELLOPEN_SHELLOPEN_H
+#ifndef PLUGINS_AZOTH_PLUGINS_CHATHISTORY_HISTORYMESSAGE_H
+#define PLUGINS_AZOTH_PLUGINS_CHATHISTORY_HISTORYMESSAGE_H
 #include <QObject>
-#include <QTranslator>
-#include <interfaces/iinfo.h>
-#include <interfaces/ientityhandler.h>
+#include <interfaces/imessage.h>
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Azoth
+{
+namespace ChatHistory
+{
+	class HistoryMessage : public QObject
+						 , public IMessage
 	{
-		namespace ShellOpen
-		{
-			class Plugin : public QObject
-						 , public IInfo
-						 , public IEntityHandler
-			{
-				Q_OBJECT
-				Q_INTERFACES (IInfo IEntityHandler)
-
-				std::auto_ptr<QTranslator> Translator_;
-				ICoreProxy_ptr Proxy_;
-			public:
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
-				QByteArray GetUniqueID () const;
-				void Release ();
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-
-				EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
-				void Handle (LeechCraft::Entity);
-			signals:
-				void gotEntity (const LeechCraft::Entity&);
-			};
-		};
+		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Azoth::IMessage);
+		
+		Direction Direction_;
+		QObject *OtherPart_;
+		QString Variant_;
+		QString Body_;
+		QDateTime DateTime_;
+	public:
+		HistoryMessage (Direction dir,
+				QObject *other,
+				const QString& variant,
+				const QString& body,
+				const QDateTime& datetime);
+		
+		QObject* GetObject ();
+		void Send ();
+		Direction GetDirection () const;
+		MessageType GetMessageType () const;
+		MessageSubType GetMessageSubType () const;
+		QObject* OtherPart () const;
+		QString GetOtherVariant () const;
+		QString GetBody () const;
+		void SetBody (const QString&);
+		QDateTime GetDateTime () const;
+		void SetDateTime (const QDateTime&);
 	};
-};
+}
+}
+}
 
 #endif
-

@@ -24,9 +24,11 @@
 #include <util/util.h>
 #include <interfaces/imessage.h>
 #include <interfaces/iclentry.h>
+#include <interfaces/iaccount.h>
 #include <interfaces/azothcommon.h>
 #include "core.h"
 #include "chathistorywidget.h"
+#include "historymessage.h"
 
 namespace LeechCraft
 {
@@ -46,6 +48,11 @@ namespace ChatHistory
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleHistoryRequested ()));
+		
+		connect (Core::Instance ().get (),
+				SIGNAL (gotChatLogs (QString, QString, int, int, QVariant)),
+				this,
+				SLOT (handleGotChatLogs (QString, QString, int, int, QVariant)));
 	}
 
 	void Plugin::SecondInit ()
@@ -111,6 +118,41 @@ namespace ChatHistory
 			qWarning () << Q_FUNC_INFO
 					<< "unknown tab class"
 					<< tabClass;
+	}
+	
+	bool Plugin::IsHistoryEnabledFor (QObject *entry) const
+	{
+		return Core::Instance ()->IsLoggingEnabled (entry);
+	}
+	
+	void Plugin::RequestLastMessages (QObject *entryObj, int num)
+	{
+		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< entryObj
+					<< "doesn't implement ICLEntry";
+			return;
+		}
+		
+		if (entry->GetEntryType () != ICLEntry::ETChat)
+			return;
+		
+		IAccount *account = qobject_cast<IAccount*> (entry->GetParentAccount ());
+		if (!account)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< entry->GetParentAccount ()
+					<< "doesn't implement IAccount";
+			return;
+		}
+
+		const QString& accId = account->GetAccountID ();
+		const QString& entryId = entry->GetEntryID ();
+		Core::Instance ()->GetChatLogs (accId, entryId, 0, num);
+
+		RequestedLogs_ [accId] [entryId] = entryObj;
 	}
 	
 	void Plugin::initPlugin (QObject *proxy)
@@ -190,6 +232,35 @@ namespace ChatHistory
 			return;
 		}
 		Core::Instance ()->Process (message);
+	}
+	
+	void Plugin::handleGotChatLogs (const QString& accId, const QString& entryId,
+			int backPages, int amount, const QVariant& logs)
+	{
+		if (!RequestedLogs_.contains (accId) ||
+				!RequestedLogs_ [accId].contains (entryId))
+			return;
+		
+		QObject *entryObj = RequestedLogs_ [accId].take (entryId);
+		
+		QList<QObject*> result;
+		Q_FOREACH (const QVariant& messageVar, logs.toList ())
+		{
+			const QVariantMap& msgMap = messageVar.toMap ();
+			
+			const IMessage::Direction dir =
+				msgMap ["Direction"].toString () == "IN" ?
+						IMessage::DIn :
+						IMessage::DOut;
+			HistoryMessage *msg = new HistoryMessage (dir,
+					entryObj,
+					msgMap ["Variant"].toString (),
+					msgMap ["Message"].toString (),
+					msgMap ["Date"].toDateTime ());
+			result << msg;
+		}
+
+		emit gotLastMessages (entryObj, result);
 	}
 	
 	void Plugin::handleHistoryRequested ()

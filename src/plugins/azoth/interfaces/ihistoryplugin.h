@@ -16,45 +16,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SHELLOPEN_SHELLOPEN_H
-#define PLUGINS_SHELLOPEN_SHELLOPEN_H
-#include <QObject>
-#include <QTranslator>
-#include <interfaces/iinfo.h>
-#include <interfaces/ientityhandler.h>
+#ifndef PLUGINS_AZOTH_INTERFACES_IHISTORYPLUGIN_H
+#define PLUGINS_AZOTH_INTERFACES_IHISTORYPLUGIN_H
+#include <QList>
+
+class QObject;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Azoth
+{
+	class IHistoryPlugin
 	{
-		namespace ShellOpen
-		{
-			class Plugin : public QObject
-						 , public IInfo
-						 , public IEntityHandler
-			{
-				Q_OBJECT
-				Q_INTERFACES (IInfo IEntityHandler)
-
-				std::auto_ptr<QTranslator> Translator_;
-				ICoreProxy_ptr Proxy_;
-			public:
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
-				QByteArray GetUniqueID () const;
-				void Release ();
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-
-				EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
-				void Handle (LeechCraft::Entity);
-			signals:
-				void gotEntity (const LeechCraft::Entity&);
-			};
-		};
+	public:
+		virtual ~IHistoryPlugin () {}
+		
+		virtual bool IsHistoryEnabledFor (QObject *entry) const = 0;
+		
+		virtual void RequestLastMessages (QObject *entry, int num) = 0;
+		
+		virtual void gotLastMessages (QObject *entry, const QList<QObject*>& messages) = 0;
 	};
-};
+}
+}
+
+Q_DECLARE_INTERFACE (LeechCraft::Azoth::IHistoryPlugin,
+		"org.Deviant.LeechCraft.Azoth.IHistoryPlugin/1.0");
 
 #endif
-
