@@ -68,17 +68,17 @@ namespace p100q
 
 	QString Plugin::GetName () const
 	{
-		return "p100q";
+		return "Azoth p100q";
 	}
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("p100q is plugin for nicer support of the psto.net microblogging service.");
+		return tr ("Azoth p100q is plugin for nicer support of the psto.net microblogging service.");
 	}
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		return QIcon (":/plugins/azoth/plugins/p100q/resources/images/p100q.svg");
 	}
 
 	QStringList Plugin::Provides () const
@@ -136,12 +136,13 @@ namespace p100q
 					"<p><a href=\"\\1\"><img style='max-height: 300px; max-width:300px;' src=\"\\1\"/></a><p/>");
 				
 		body.replace (PostRX_,
-				" <a href=\"azoth://msgeditreplace/%23\\1\">#\\1</a> "
+				" <a href=\"azoth://msgeditreplace/%23\\1%20\">#\\1</a> "
 				"("
 				"<a href=\"azoth://msgeditreplace/S%20%23\\1\">S</a> "
 				"<a href=\"azoth://msgeditreplace/U%20%23\\1\">U</a> "
 				"<a href=\"azoth://msgeditreplace/%23\\1+\">+</a> "
-				"<a href=\"azoth://msgeditreplace/!%20%23\\1\">!</a> "
+				"<a href=\"azoth://msgeditreplace/!%20%23\\1%20\">!</a> "
+				"<a href=\"azoth://msgeditreplace/~%20%23\\1%20\">~</a>"
 				") ");
 		
 		body.replace (PostAuthorRX_,
@@ -155,7 +156,9 @@ namespace p100q
 				" <a href=\"azoth://msgeditreplace/@\\1+\">@\\1</a> ");
 				
 		body.replace (CommentRX_,
-				" (<a href=\"azoth://msgeditreplace/U%20%23\\1/\\2\">U</a>) "
+				" (<a href=\"azoth://msgeditreplace/U%20%23\\1\">U</a> "
+				" <a href=\"azoth://msgeditreplace/!%20%23\\1/\\2%20\">!</a> "
+				" <a href=\"azoth://msgeditreplace/~%20%23\\1/\\2%20\">~</a>) "
 				" <a href=\"azoth://msgeditreplace/%23\\1/\\2%20\">#\\1/\\2</a>");
 				
 		body.replace (PostByUserRX_,

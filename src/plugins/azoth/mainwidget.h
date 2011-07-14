@@ -51,6 +51,7 @@ namespace Azoth
 		QAction *AccountAddContact_;
 		QAction *AccountSetActivity_;
 		QAction *AccountSetMood_;
+		QAction *AccountSetLocation_;
 		QAction *AccountConsole_;
 	public:
 		MainWidget (QWidget* = 0);
@@ -74,6 +75,7 @@ namespace Azoth
 		void addAccountContact ();
 		void handleAccountSetActivity ();
 		void handleAccountSetMood ();
+		void handleAccountSetLocation ();
 		void handleAccountConsole ();
 
 		void handleManageBookmarks ();

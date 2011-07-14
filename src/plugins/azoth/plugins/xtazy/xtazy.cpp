@@ -20,7 +20,7 @@
 #include <QIcon>
 #include <QTranslator>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include <interfaces/iaccount.h>
 #include <interfaces/isupporttune.h>
 #include <interfaces/iproxyobject.h>
@@ -87,7 +87,7 @@ namespace Xtazy
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		return QIcon (":/plugins/azoth/plugins/xtazy/resources/images/xtazy.svg");
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const

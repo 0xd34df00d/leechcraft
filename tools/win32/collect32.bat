@@ -1,11 +1,12 @@
 rem @echo off
 
 rem Set these variables to proper paths of your system:
-set BOOST_BIN_DIR="f:\X-Files\Projects\Lib\boost_1_43_0\stage\lib"
-set BOOST_VERSION="1_43"
-set LIBTORRENT_BIN_DIR="f:/X-Files/Projects/Lib/libtorrent/tags/libtorrent-0_15_1/bin/msvc-9.0/release/boost-link-shared/boost-source/threading-multi/"
-set OPENSSL_BIN_DIR="c:\Programs\OpenSSL-Win32\"
-set QT_BIN_DIR="c:\Programs\Qt\4.7.0-beta2\bin\"
+set BOOST_BIN_DIR="f:\X-Files\Projects\Lib\boost_1_46_1\stage\lib"
+set BOOST_VERSION="1_46_1"
+set LIBTORRENT_BIN_DIR="f:\X-Files\Projects\Lib\libtorrent-rasterbar-0.15.6\bin\msvc-10.0\release\boost-link-shared\boost-source\threading-multi"
+set OPENSSL_BIN_DIR="f:\X-Files\Projects\Lib\openssl-1.0.0d\out32dll"
+set QT_BIN_DIR="c:\Programs\Qt\qt-everywhere-opensource-src-4.7.3\\bin"
+set QJSON_DIR="f:\X-Files\Projects\Lib\qjson\build\lib\RelWithDebInfo\"
 
 set LEECHCRAFT_ROOT_DIR="..\.."
 set LEECHCRAFT_BUILD_DIR="build32"
@@ -15,7 +16,7 @@ rem This is the directory where LeechCraft will live
 set TARGET_DIR="LeechCraft"
 
 rem === DIRECTORY STRUCTURE ===
-if exist %TARGET_DIR% del /f /s /q %TARGET_DIR%
+if exist %TARGET_DIR% rmdir /s /q %TARGET_DIR%
 mkdir %TARGET_DIR%
 mkdir %TARGET_DIR%\plugins
 mkdir %TARGET_DIR%\plugins\bin
@@ -32,15 +33,17 @@ mkdir %TARGET_DIR%\icons
 rem === SHARED COMPONENTS ===
 
 rem - Boost -
-copy %BOOST_BIN_DIR%\boost_date_time-vc90-mt-%BOOST_VERSION%.dll %TARGET_DIR%
-copy %BOOST_BIN_DIR%\boost_filesystem-vc90-mt-%BOOST_VERSION%.dll %TARGET_DIR%
-copy %BOOST_BIN_DIR%\boost_system-vc90-mt-%BOOST_VERSION%.dll %TARGET_DIR%
-copy %BOOST_BIN_DIR%\boost_thread-vc90-mt-%BOOST_VERSION%.dll %TARGET_DIR%
+copy %BOOST_BIN_DIR%\boost_date_time-vc100-mt-%BOOST_VERSION%.dll %TARGET_DIR%
+copy %BOOST_BIN_DIR%\boost_filesystem-vc100-mt-%BOOST_VERSION%.dll %TARGET_DIR%
+copy %BOOST_BIN_DIR%\boost_program_options-vc100-mt-%BOOST_VERSION%.dll %TARGET_DIR%
+copy %BOOST_BIN_DIR%\boost_system-vc100-mt-%BOOST_VERSION%.dll %TARGET_DIR%
+copy %BOOST_BIN_DIR%\boost_thread-vc100-mt-%BOOST_VERSION%.dll %TARGET_DIR%
 
 rem - Qt -
 copy %QT_BIN_DIR%\phonon4.dll %TARGET_DIR%
 copy %QT_BIN_DIR%\QtCore4.dll %TARGET_DIR%
 copy %QT_BIN_DIR%\QtGui4.dll %TARGET_DIR%
+copy %QT_BIN_DIR%\QtMultimedia4.dll %TARGET_DIR%
 copy %QT_BIN_DIR%\QtNetwork4.dll %TARGET_DIR%
 copy %QT_BIN_DIR%\QtScript4.dll %TARGET_DIR%
 copy %QT_BIN_DIR%\QtSql4.dll %TARGET_DIR%
@@ -72,8 +75,8 @@ copy %OPENSSL_BIN_DIR%\ssleay32.dll %TARGET_DIR%
 rem - libtorrent -
 copy %LIBTORRENT_BIN_DIR%\torrent.dll %TARGET_DIR%
 
-rem - libcurl -
-copy %LIBCURL_BIN_DIR%\libcurl.dll %TARGET_DIR%
+rem - qjson -
+copy %QJSON_DIR%\qjson.dll %TARGET_DIR%
 
 rem === LEECHCRAFT FILES ===
 
@@ -95,6 +98,14 @@ rem - Oxygen icon theme -
 copy %LEECHCRAFT_ROOT_DIR%\src\iconsets\oxygen\oxygen.mapping %TARGET_DIR%\icons
 xcopy /e /i %LEECHCRAFT_ROOT_DIR%\src\iconsets\oxygen\icons %TARGET_DIR%\icons\oxygen
 copy nul %TARGET_DIR%\leechcraft\themes\oxygen
+
+rem - Azoth resources -
+xcopy /e /i %LEECHCRAFT_ROOT_DIR%\src\plugins\azoth\share %TARGET_DIR%\share
+xcopy /e /i %LEECHCRAFT_ROOT_DIR%\src\plugins\azoth\plugins\standardstyles\share %TARGET_DIR%\share
+
+rem - Kinotify themes -
+mkdir %TARGET_DIR%\share\kinotify\themes
+xcopy /e /i %LEECHCRAFT_ROOT_DIR%\src\plugins\kinotify\themes %TARGET_DIR%\share\kinotify\themes
 
 rem - Other stuff -
 copy %LEECHCRAFT_ROOT_DIR%\tools\win32\installer\qt.conf %TARGET_DIR%

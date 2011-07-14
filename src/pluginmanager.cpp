@@ -24,8 +24,8 @@
 #include <QtDebug>
 #include <QMessageBox>
 #include <QMainWindow>
-#include <plugininterface/util.h>
-#include <plugininterface/exceptions.h>
+#include <util/util.h>
+#include <util/exceptions.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/ipluginready.h>

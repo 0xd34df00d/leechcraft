@@ -19,8 +19,9 @@
 #include "popishu.h"
 #include <QTranslator>
 #include <QIcon>
+#include <interfaces/entitytesthandleresult.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "core.h"
 #include "editorpage.h"
 #include "xmlsettingsmanager.h"
@@ -124,10 +125,14 @@ namespace LeechCraft
 							<< tabClass;
 			}
 
-			bool Plugin::CouldHandle (const Entity& entity) const
+			EntityTestHandleResult Plugin::CouldHandle (const Entity& entity) const
 			{
-				return entity.Mime_ == "x-leechcraft/plain-text-document" &&
+				const bool can = entity.Mime_ == "x-leechcraft/plain-text-document" &&
 						entity.Entity_.canConvert<QString> ();
+
+				return can ?
+						EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
+						EntityTestHandleResult ();
 			}
 
 			void Plugin::Handle (Entity entity)

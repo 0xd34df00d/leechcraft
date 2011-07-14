@@ -22,8 +22,8 @@
 #include <QAudioInput>
 #include <QAudioOutput>
 #include <QtDebug>
-#include <plugininterface/util.h>
-#include <plugininterface/notificationactionhandler.h>
+#include <util/util.h>
+#include <util/notificationactionhandler.h>
 #include "interfaces/iclentry.h"
 #include "xmlsettingsmanager.h"
 #include "core.h"
@@ -146,8 +146,12 @@ namespace Azoth
 			const QAudioFormat& callFormat = mediaCall->GetAudioFormat ();
 			const QAudioFormat& inFormat = callFormat;
 			const QAudioFormat& outFormat = callFormat;
-			
+
+#if QT_VERSION >= 0x040700
 			const int bufSize = callFormat.sampleRate () * callFormat.channelCount () * callFormat.sampleSize () / 8 * 160 / 1000;
+#else
+			const int bufSize = 8000 * 2 * callFormat.sampleSize () / 8 * 160 / 1000;
+#endif
 
 			QAudioOutput *output = new QAudioOutput (outInfo, outFormat, sender ());
 			output->setBufferSize (bufSize);

@@ -21,7 +21,7 @@
 #include <QDirIterator>
 #include <QFileInfo>
 #include <stdexcept>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "core.h"
 #include "externalresourcemanager.h"
 #include "storage.h"

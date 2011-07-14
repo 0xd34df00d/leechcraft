@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "chattab.h"
+#include <boost/bind.hpp>
 #include <QWebFrame>
 #include <QWebElement>
 #include <QTextDocument>
@@ -27,10 +28,11 @@
 #include <QMenu>
 #include <QFileDialog>
 #include <QMessageBox>
-#include <plugininterface/defaulthookproxy.h>
-#include <plugininterface/util.h>
+#include <util/defaulthookproxy.h>
+#include <util/util.h>
 #include "interfaces/iclentry.h"
 #include "interfaces/imessage.h"
+#include "interfaces/irichtextmessage.h"
 #include "interfaces/iaccount.h"
 #include "interfaces/imucentry.h"
 #include "interfaces/itransfermanager.h"
@@ -38,6 +40,7 @@
 #include "interfaces/ichatstyleresourcesource.h"
 #include "interfaces/isupportmediacalls.h"
 #include "interfaces/imediacall.h"
+#include "interfaces/ihistoryplugin.h"
 #include "core.h"
 #include "textedit.h"
 #include "chattabsmanager.h"
@@ -48,6 +51,8 @@
 #include "zoomeventfilter.h"
 #include "callmanager.h"
 #include "callchatwidget.h"
+#include "chattabwebview.h"
+#include "msgformatterwidget.h"
 
 namespace LeechCraft
 {
@@ -64,7 +69,9 @@ namespace Azoth
 			QWidget *parent)
 	: QWidget (parent)
 	, TabToolbar_ (new QToolBar (tr ("Azoth chat window")))
+	, ToggleRichText_ (0)
 	, SendFile_ (0)
+	, Call_ (0)
 	, EntryID_ (entryId)
 	, BgColor_ (QApplication::palette ().color (QPalette::Base))
 	, CurrentHistoryPosition_ (-1)
@@ -73,6 +80,7 @@ namespace Azoth
 	, NumUnreadMsgs_ (0)
 	, IsMUC_ (false)
 	, PreviousTextHeight_ (0)
+	, MsgFormatter_ (0)
 	, XferManager_ (0)
 	, TypeTimer_ (new QTimer (this))
 	, PreviousState_ (CPSNone)
@@ -86,13 +94,9 @@ namespace Azoth
 		Ui_.EventsButton_->setMenu (new QMenu (tr ("Events")));
 		Ui_.EventsButton_->hide ();
 		
-		QAction *clearAction = new QAction (tr ("Clear chat window"), this);
-		clearAction->setProperty ("ActionIcon", "clear");
-		connect (clearAction,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleClearChat ()));
-		TabToolbar_->addAction (clearAction);
+		BuildBasicActions ();
+		
+		RequestLogs ();
 
 		Core::Instance ().RegisterHookable (this);
 		
@@ -118,69 +122,11 @@ namespace Azoth
 				this,
 				SLOT (typeTimeout ()));
 
-		connect (GetEntry<QObject> (),
-				SIGNAL (gotMessage (QObject*)),
-				this,
-				SLOT (handleEntryMessage (QObject*)));
-		connect (GetEntry<QObject> (),
-				SIGNAL (statusChanged (const EntryStatus&, const QString&)),
-				this,
-				SLOT (handleStatusChanged (const EntryStatus&, const QString&)));
-		connect (GetEntry<QObject> (),
-				SIGNAL (availableVariantsChanged (const QStringList&)),
-				this,
-				SLOT (handleVariantsChanged (QStringList)));
-
 		PrepareTheme ();
-
-		ICLEntry *e = GetEntry<ICLEntry> ();
-		handleVariantsChanged (e->Variants ());
-
-		const QString& accName =
-				qobject_cast<IAccount*> (e->GetParentAccount ())->
-						GetAccountName ();
-		Ui_.AccountName_->setText (accName);
-
+		InitEntry ();
 		CheckMUC ();
-
-		QShortcut *histUp = new QShortcut (Qt::CTRL + Qt::Key_Up,
-				Ui_.MsgEdit_, 0, 0, Qt::WidgetShortcut);
-		connect (histUp,
-				SIGNAL (activated ()),
-				this,
-				SLOT (handleHistoryUp ()));
-
-		QShortcut *histDown = new QShortcut (Qt::CTRL + Qt::Key_Down,
-				Ui_.MsgEdit_, 0, 0, Qt::WidgetShortcut);
-		connect (histDown,
-				SIGNAL (activated ()),
-				this,
-				SLOT (handleHistoryDown ()));
-
-		connect (Ui_.MsgEdit_,
-				SIGNAL (keyReturnPressed ()),
-				this,
-				SLOT (messageSend ()));
-		connect (Ui_.MsgEdit_,
-				SIGNAL (keyTabPressed ()),
-				this,
-				SLOT (nickComplete ()));
-		connect (Ui_.MsgEdit_,
-				SIGNAL (scroll (int)),
-				this,
-				SLOT (handleEditScroll (int)));
-
-		Ui_.EntryInfo_->setText (e->GetEntryName ());
-
-		QTimer::singleShot (0,
-				Ui_.MsgEdit_,
-				SLOT (setFocus ()));
-
-		connect (Ui_.MsgEdit_,
-				SIGNAL (clearAvailableNicks ()),
-				this,
-				SLOT (clearAvailableNick ()));
-		UpdateTextHeight ();
+		InitExtraActions ();
+		InitMsgEdit ();
 		
 		emit hookChatTabCreated (IHookProxy_ptr (new Util::DefaultHookProxy),
 				this,
@@ -200,7 +146,8 @@ namespace Azoth
 	
 	void ChatTab::PrepareTheme ()
 	{
-		QString data = Core::Instance ().GetSelectedChatTemplate (GetEntry<QObject> ());
+		QString data = Core::Instance ().GetSelectedChatTemplate (GetEntry<QObject> (),
+				Ui_.View_->page ()->mainFrame ());
 		if (data.isEmpty ())
 			data = "<h1 style='color:red;'>" +
 					tr ("Unable to load style, "
@@ -214,6 +161,9 @@ namespace Azoth
 		data.replace ("LINKCOLOR",
 				QApplication::palette ().color (QPalette::Link).name ());
 		Ui_.View_->setHtml (data);
+		
+		Q_FOREACH (IMessage *msg, HistoryMessages_)
+			AppendMessage (msg);
 
 		ICLEntry *e = GetEntry<ICLEntry> ();
 		Q_FOREACH (QObject *msgObj, e->GetAllMessages ())
@@ -328,9 +278,13 @@ namespace Azoth
 		if (text.isEmpty ())
 			return;
 		
+		const QString& richText = MsgFormatter_->GetNormalizedRichText ();
+		
 		SetChatPartState (CPSActive);
 
 		Ui_.MsgEdit_->clear ();
+		Ui_.MsgEdit_->document ()->clear ();
+		MsgFormatter_->Clear ();
 		CurrentHistoryPosition_ = -1;
 		MsgHistory_.prepend (text);
 
@@ -370,6 +324,12 @@ namespace Azoth
 					<< msgObj;
 			return;
 		}
+		
+		IRichTextMessage *richMsg = qobject_cast<IRichTextMessage*> (msgObj);
+		if (richMsg &&
+				!richText.isEmpty () &&
+				ToggleRichText_->isChecked ())
+			richMsg->SetRichBody (richText);
 
 		proxy.reset (new Util::DefaultHookProxy ());
 		emit hookMessageCreated (proxy, this, msg->GetObject ());
@@ -464,6 +424,11 @@ namespace Azoth
 			return;
 		
 		entry->PurgeMessages (QDateTime ());
+		PrepareTheme ();
+	}
+	
+	void ChatTab::handleRichTextToggled ()
+	{
 		PrepareTheme ();
 	}
 	
@@ -757,6 +722,46 @@ namespace Azoth
 		SetChatPartState (CPSPaused);
 	}
 	
+	void ChatTab::handleGotLastMessages (QObject *entry, const QList<QObject*>& messages)
+	{
+		if (entry != GetEntry<QObject> ())
+			return;
+
+		Q_FOREACH (QObject *msgObj, messages)
+		{
+			IMessage *msg = qobject_cast<IMessage*> (msgObj);
+			if (!msg)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< msgObj
+						<< "doesn't implement IMessage";
+				continue;
+			}
+			
+			const QDateTime& dt = msg->GetDateTime ();
+			if (HistoryMessages_.isEmpty () ||
+					HistoryMessages_.last ()->GetDateTime () <= dt)
+				HistoryMessages_ << msg;
+			else
+			{
+				QList<IMessage*>::iterator pos =
+						std::find_if (HistoryMessages_.begin (), HistoryMessages_.end (),
+								boost::bind (std::greater<QDateTime> (),
+										boost::bind (&IMessage::GetDateTime, _1),
+										dt));
+				HistoryMessages_.insert (pos, msg);
+			}
+		}
+		
+		if (!messages.isEmpty ())
+			PrepareTheme ();
+		
+		disconnect (sender (),
+				SIGNAL (gotLastMessages (QObject*, const QList<QObject*>&)),
+				this,
+				SLOT (handleGotLastMessages (QObject*, const QList<QObject*>&)));	
+	}
+	
 	void ChatTab::handleFontSizeChanged ()
 	{
 		const int size = XmlSettingsManager::Instance ()
@@ -775,6 +780,54 @@ namespace Azoth
 					<< obj
 					<< "doesn't implement the required interface";
 		return entry;
+	}
+	
+	void ChatTab::BuildBasicActions ()
+	{
+		QAction *clearAction = new QAction (tr ("Clear chat window"), this);
+		clearAction->setProperty ("ActionIcon", "clear");
+		connect (clearAction,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleClearChat ()));
+		TabToolbar_->addAction (clearAction);
+
+		ToggleRichText_ = new QAction (tr ("Enable rich text"), this);
+		ToggleRichText_->setProperty ("ActionIcon", "richtext");
+		ToggleRichText_->setCheckable (true);
+		ToggleRichText_->setChecked (XmlSettingsManager::Instance ()
+					.property ("ShowRichTextMessageBody").toBool ());
+		connect (ToggleRichText_,
+				SIGNAL (toggled (bool)),
+				this,
+				SLOT (handleRichTextToggled ()));
+		TabToolbar_->addAction (ToggleRichText_);
+		TabToolbar_->addSeparator ();
+	}
+	
+	void ChatTab::InitEntry()
+	{
+		connect (GetEntry<QObject> (),
+				SIGNAL (gotMessage (QObject*)),
+				this,
+				SLOT (handleEntryMessage (QObject*)));
+		connect (GetEntry<QObject> (),
+				SIGNAL (statusChanged (const EntryStatus&, const QString&)),
+				this,
+				SLOT (handleStatusChanged (const EntryStatus&, const QString&)));
+		connect (GetEntry<QObject> (),
+				SIGNAL (availableVariantsChanged (const QStringList&)),
+				this,
+				SLOT (handleVariantsChanged (QStringList)));
+
+		ICLEntry *e = GetEntry<ICLEntry> ();
+		handleVariantsChanged (e->Variants ());
+		Ui_.EntryInfo_->setText (e->GetEntryName ());
+
+		const QString& accName =
+				qobject_cast<IAccount*> (e->GetParentAccount ())->
+						GetAccountName ();
+		Ui_.AccountName_->setText (accName);
 	}
 
 	void ChatTab::CheckMUC ()
@@ -809,8 +862,37 @@ namespace Azoth
 					this,
 					SLOT (handleChatPartStateChanged (const ChatPartState&, const QString&)));
 		}
+	}
 
-		QObject *accObj = GetEntry<ICLEntry> ()->GetParentAccount ();
+	void ChatTab::HandleMUC ()
+	{
+		TabIcon_ = QIcon (":/plugins/azoth/resources/images/azoth.svg");
+		
+		QAction *bookmarks = new QAction (tr ("Add to bookmarks..."), this);
+		bookmarks->setProperty ("ActionIcon", "favorites");
+		connect (bookmarks,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleAddToBookmarks ()));
+		TabToolbar_->addAction (bookmarks);
+		
+		IConfigurableMUC *confmuc = GetEntry<IConfigurableMUC> ();
+		if (confmuc)
+		{
+			QAction *configureMUC = new QAction (tr ("Configure MUC..."), this);
+			configureMUC->setProperty ("ActionIcon", "preferences");
+			connect (configureMUC,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (handleConfigureMUC ()));
+			TabToolbar_->addAction (configureMUC);
+		}
+	}
+	
+	void ChatTab::InitExtraActions ()
+	{
+		ICLEntry *e = GetEntry<ICLEntry> ();
+		QObject *accObj = e->GetParentAccount ();
 		IAccount *acc = qobject_cast<IAccount*> (accObj);
 		XferManager_ = qobject_cast<ITransferManager*> (acc->GetTransferManager ());
 		if (XferManager_ &&
@@ -858,29 +940,87 @@ namespace Azoth
 				handleCall (object);
 		}
 	}
-
-	void ChatTab::HandleMUC ()
+	
+	void ChatTab::InitMsgEdit ()
 	{
-		TabIcon_ = QIcon (":/plugins/azoth/resources/images/azoth.svg");
-		
-		QAction *bookmarks = new QAction (tr ("Add to bookmarks..."), this);
-		bookmarks->setProperty ("ActionIcon", "favorites");
-		connect (bookmarks,
-				SIGNAL (triggered ()),
+		QShortcut *histUp = new QShortcut (Qt::CTRL + Qt::Key_Up,
+				Ui_.MsgEdit_, 0, 0, Qt::WidgetShortcut);
+		connect (histUp,
+				SIGNAL (activated ()),
 				this,
-				SLOT (handleAddToBookmarks ()));
-		TabToolbar_->addAction (bookmarks);
+				SLOT (handleHistoryUp ()));
+
+		QShortcut *histDown = new QShortcut (Qt::CTRL + Qt::Key_Down,
+				Ui_.MsgEdit_, 0, 0, Qt::WidgetShortcut);
+		connect (histDown,
+				SIGNAL (activated ()),
+				this,
+				SLOT (handleHistoryDown ()));
+
+		connect (Ui_.MsgEdit_,
+				SIGNAL (keyReturnPressed ()),
+				this,
+				SLOT (messageSend ()));
+		connect (Ui_.MsgEdit_,
+				SIGNAL (keyTabPressed ()),
+				this,
+				SLOT (nickComplete ()));
+		connect (Ui_.MsgEdit_,
+				SIGNAL (scroll (int)),
+				this,
+				SLOT (handleEditScroll (int)));
+
+		QTimer::singleShot (0,
+				Ui_.MsgEdit_,
+				SLOT (setFocus ()));
+
+		connect (Ui_.MsgEdit_,
+				SIGNAL (clearAvailableNicks ()),
+				this,
+				SLOT (clearAvailableNick ()));
+		UpdateTextHeight ();
 		
-		IConfigurableMUC *confmuc = GetEntry<IConfigurableMUC> ();
-		if (confmuc)
+		const int pos = Ui_.MainLayout_->indexOf (Ui_.MsgEdit_);
+		
+		MsgFormatter_ = new MsgFormatterWidget (Ui_.MsgEdit_);
+		Ui_.MainLayout_->insertWidget (pos, MsgFormatter_);
+		connect (ToggleRichText_,
+				SIGNAL (toggled (bool)),
+				MsgFormatter_,
+				SLOT (setVisible (bool)));
+		MsgFormatter_->setVisible (ToggleRichText_->isChecked ());
+	}
+	
+	void ChatTab::RequestLogs ()
+	{
+		ICLEntry *entry = GetEntry<ICLEntry> ();
+		if (entry->GetAllMessages ().size () > 100 ||
+				entry->GetEntryType () != ICLEntry::ETChat)
+			return;
+		
+		const int num = XmlSettingsManager::Instance ()
+				.property ("ShowLastNMessages").toInt ();
+		if (!num)
+			return;
+
+		QObject *entryObj = entry->GetObject ();
+
+		const QObjectList& histories = Core::Instance ().GetProxy ()->
+				GetPluginsManager ()->GetAllCastableRoots<IHistoryPlugin*> ();
+		
+		Q_FOREACH (QObject *histObj, histories)
 		{
-			QAction *configureMUC = new QAction (tr ("Configure MUC..."), this);
-			configureMUC->setProperty ("ActionIcon", "preferences");
-			connect (configureMUC,
-					SIGNAL (triggered ()),
+			IHistoryPlugin *hist = qobject_cast<IHistoryPlugin*> (histObj);	
+			if (!hist->IsHistoryEnabledFor (entryObj))
+				continue;
+			
+			connect (histObj,
+					SIGNAL (gotLastMessages (QObject*, const QList<QObject*>&)),
 					this,
-					SLOT (handleConfigureMUC ()));
-			TabToolbar_->addAction (configureMUC);
+					SLOT (handleGotLastMessages (QObject*, const QList<QObject*>&)),
+					Qt::UniqueConnection);
+			
+			hist->RequestLastMessages (entryObj, num);
 		}
 	}
 
@@ -895,12 +1035,15 @@ namespace Azoth
 					<< msg->OtherPart ();
 			return;
 		}
+		
+		ICLEntry *parent = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
 
 		if (msg->GetDirection () == IMessage::DOut &&
 				other->GetEntryType () == ICLEntry::ETMUC)
 			return;
 
 		if (msg->GetMessageSubType () == IMessage::MSTParticipantStatusChange &&
+				(!parent || parent->GetEntryType () == ICLEntry::ETMUC) &&
 				!XmlSettingsManager::Instance ().property ("ShowStatusChangesEvents").toBool ())
 			return;
 		
@@ -914,7 +1057,8 @@ namespace Azoth
 		ChatMsgAppendInfo info =
 		{
 			Core::Instance ().IsHighlightMessage (msg),
-			Core::Instance ().GetChatTabsManager ()->IsActiveChat (GetEntry<ICLEntry> ())
+			Core::Instance ().GetChatTabsManager ()->IsActiveChat (GetEntry<ICLEntry> ()),
+			ToggleRichText_->isChecked ()
 		};
 
 		if (!Core::Instance ().AppendMessageByTemplate (frame,
@@ -965,7 +1109,7 @@ namespace Azoth
 
 	void ChatTab::nickComplete ()
 	{
-		ICLEntry *entry = GetEntry<ICLEntry> ();
+		IMUCEntry *entry = GetEntry<IMUCEntry> ();
 		if (!entry)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -974,10 +1118,9 @@ namespace Azoth
 
 			return;
 		}
-		if (entry->GetEntryType() != ICLEntry::ETMUC)
-			return;
 
 		QStringList currentMUCParticipants = GetMUCParticipants ();
+		currentMUCParticipants.removeAll (entry->GetNick ());
 		if (currentMUCParticipants.isEmpty ())
 			return;
 

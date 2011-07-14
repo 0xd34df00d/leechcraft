@@ -74,11 +74,11 @@ namespace LeechCraft
 				qint64 GetUploadSpeed () const;
 				void StartAll ();
 				void StopAll ();
-				bool CouldDownload (const Entity&) const;
+				EntityTestHandleResult CouldDownload (const Entity&) const;
 				int AddJob (Entity);
 				void KillTask (int);
 
-				bool CouldHandle (const Entity&) const;
+				EntityTestHandleResult CouldHandle (const Entity&) const;
 				void Handle (Entity);
 
 				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;

@@ -348,10 +348,27 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Aggregator::Aggregator</name>
+    <name>LeechCraft::Aggregator::Aggregator</name>
+    <message>
+        <source>Aggregator</source>
+        <translation>Aggregator</translation>
+    </message>
+    <message>
+        <source>Aggregator failed to initialize properly. Check logs and talk with the developers. Or, at least, check the storage backend settings and restart LeechCraft.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Feeds actions</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>RSS/Atom feed reader.</source>
         <translation>Lector de feeds RSS/Atom.</translation>
+    </message>
+    <message>
+        <source>You are going to permanently remove the feed:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Are you really sure that you want to do it?</source>
+        <comment>Feed removing confirmation</comment>
+        <translation>Vas a eliminar permanentemente el feed:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;¿Estas seguro de que lo quieres hacer?</translation>
     </message>
     <message>
         <source>Export to OPML</source>
@@ -371,29 +388,11 @@
     </message>
     <message>
         <source>Aggregator exchange files (*.lcae);;All files (*.*)</source>
-        <translation>Archivos del agergador de intercambos (*.lcae);;Todos los archivos(*.*)</translation>
-    </message>
-    <message>
-        <source>Aggregator failed to initialize properly. Check logs and talk with the developers. Or, at least, check the storage backend settings and restart LeechCraft.</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Feeds actions</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>You are going to permanently remove the feed:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Are you really sure that you want to do it?</source>
-        <comment>Feed removing confirmation</comment>
-        <translation>Vas a eliminar permanentemente el feed:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;¿Estas seguro de que lo quieres hacer?</translation>
-    </message>
-    <message>
-        <source>Aggregator</source>
-        <translation>Aggregator</translation>
     </message>
     <message numerus="yes">
         <source>%n unread message(s)</source>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -401,12 +400,11 @@
         <source>in %n channel(s).</source>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Aggregator::ChannelsModel</name>
+    <name>LeechCraft::Aggregator::ChannelsModel</name>
     <message>
         <source>Feed</source>
         <translation>Feed</translation>
@@ -429,58 +427,14 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Aggregator::Core</name>
-    <message>
-        <source>Could not update feed</source>
-        <translation>No se pudo cargar el feed</translation>
-    </message>
-    <message>
-        <source>Could not open file %1 for reading.</source>
-        <translation>No se pudo abrir el archivo %1 para lectura.</translation>
-    </message>
-    <message>
-        <source>XML error, file %1, line %2, column %3, error:&lt;br /&gt;%4</source>
-        <translation>Error XML, archivo %1, línea %2, columna %3, error:&lt;br /&gt;%4</translation>
-    </message>
-    <message>
-        <source>OPML from file %1 is not valid.</source>
-        <translation>OPML de archivo %1 is no es válido.</translation>
-    </message>
-    <message>
-        <source>Feed with url %1 not found.</source>
-        <translation>Feed con url %1 no encontrado.</translation>
-    </message>
-    <message>
-        <source>XML file parse error: %1, line %2, column %3, filename %4, from %5</source>
-        <translation>Error %1 en el análisis del archivo XML línea %2, columna %3, nombre de archivo %4, desde %5</translation>
-    </message>
-    <message>
-        <source>Could not find parser to parse file %1 from %2</source>
-        <translation>No se pudo obtener un analizador para analizar el archivo %1 desde %2</translation>
-    </message>
-    <message>
-        <source>Address not found:&lt;br /&gt;%1</source>
-        <translation>Dirección no encontrada:&lt;br /&gt;%1</translation>
-    </message>
-    <message>
-        <source>Access denied:&lt;br /&gt;%1</source>
-        <translation>Acceso denegado:&lt;br /&gt;%1</translation>
-    </message>
-    <message>
-        <source>Local error for:&lt;br /&gt;%1</source>
-        <translation>Error local para:&lt;br /&gt;%1</translation>
-    </message>
-    <message>
-        <source>Unknown error for:&lt;br /&gt;%1</source>
-        <translation>Error desconocido para:&lt;br /&gt;%1</translation>
-    </message>
-    <message>
-        <source>Could not mark channel</source>
-        <translation>No se pudo marcar el canal</translation>
-    </message>
+    <name>LeechCraft::Aggregator::Core</name>
     <message>
         <source>Import error</source>
         <translation>Error de importación</translation>
+    </message>
+    <message>
+        <source>Could not find plugin to download OPML %1.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Storage error</source>
@@ -503,6 +457,10 @@
         <translation>Error del complemento</translation>
     </message>
     <message>
+        <source>Could not find plugin to download feed %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Feed removal error</source>
         <translation type="unfinished"></translation>
     </message>
@@ -515,6 +473,10 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Could not get feed settings: %1</source>
+        <translation>No se pudieron cargar los ajustes del feed: %1</translation>
+    </message>
+    <message>
         <source>Could not update feed settings: %1</source>
         <translation>No se pudieron actualizar los ajustes del feed: %1</translation>
     </message>
@@ -523,8 +485,24 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Could not update feed</source>
+        <translation>No se pudo cargar el feed</translation>
+    </message>
+    <message>
         <source>OPML import error</source>
         <translation>Error al importar OPML</translation>
+    </message>
+    <message>
+        <source>Could not open file %1 for reading.</source>
+        <translation>No se pudo abrir el archivo %1 para lectura.</translation>
+    </message>
+    <message>
+        <source>XML error, file %1, line %2, column %3, error:&lt;br /&gt;%4</source>
+        <translation>Error XML, archivo %1, línea %2, columna %3, error:&lt;br /&gt;%4</translation>
+    </message>
+    <message>
+        <source>OPML from file %1 is not valid.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>OPML export error</source>
@@ -547,16 +525,44 @@
         <translation>¡El archivo descargado desde la url %1 tiene tamaño nulo.</translation>
     </message>
     <message>
+        <source>XML file parse error: %1, line %2, column %3, filename %4, from %5</source>
+        <translation>Error %1 en el análisis del archivo XML línea %2, columna %3, nombre de archivo %4, desde %5</translation>
+    </message>
+    <message>
+        <source>Could not find parser to parse file %1 from %2</source>
+        <translation>No se pudo obtener un analizador para analizar el archivo %1 desde %2</translation>
+    </message>
+    <message>
+        <source>Feed with url %1 not found.</source>
+        <translation>Feed con url %1 no encontrado.</translation>
+    </message>
+    <message>
         <source>Unable to download the OPML file.</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Address not found:&lt;br /&gt;%1</source>
+        <translation>Dirección no encontrada:&lt;br /&gt;%1</translation>
+    </message>
+    <message>
+        <source>Access denied:&lt;br /&gt;%1</source>
+        <translation>Acceso denegado:&lt;br /&gt;%1</translation>
+    </message>
+    <message>
+        <source>Local error for:&lt;br /&gt;%1</source>
+        <translation>Error local para:&lt;br /&gt;%1</translation>
+    </message>
+    <message>
+        <source>Unknown error for:&lt;br /&gt;%1</source>
+        <translation>Error desconocido para:&lt;br /&gt;%1</translation>
     </message>
     <message>
         <source>Download error</source>
         <translation>Error de descarga</translation>
     </message>
     <message>
-        <source>Could not get feed settings: %1</source>
-        <translation>No se pudieron cargar los ajustes del feed: %1</translation>
+        <source>Could not find plugin to download external file %1.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
         <source>Added channel &quot;%1&quot; (%n item(s))</source>
@@ -582,20 +588,11 @@
         <comment>Channel update</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message>
-        <source>Could not find plugin to download OPML %1.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Could not find plugin to download feed %1.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Could not find plugin to download external file %1.</source>
-        <translation type="unfinished"></translation>
+        <source>Could not mark channel</source>
+        <translation>No se pudo marcar el canal</translation>
     </message>
     <message>
         <source>Could not find plugin for feed with URL %1</source>
@@ -603,7 +600,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Aggregator::Export2FB2Dialog</name>
+    <name>LeechCraft::Aggregator::Export2FB2Dialog</name>
     <message>
         <source>Select save file</source>
         <translation>Seleccionar el archivo a guardar</translation>
@@ -611,6 +608,12 @@
     <message>
         <source>fb2 files (*.fb2);;XML files (*.xml);;All files (*.*)</source>
         <translation>Archivos fb2 (*.fb2);; Archivos XML (*.xml);;Todos los archivos (*.*)</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n unread item(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
     </message>
     <message>
         <source>Published on %1</source>
@@ -624,27 +627,20 @@
         <source>Could not open file %1 for write:&lt;br /&gt;%2.</source>
         <translation type="unfinished"></translation>
     </message>
-    <message numerus="yes">
-        <source>%n unread item(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
     <message>
         <source>FB2 export complete.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Aggregator::ImportBinary</name>
+    <name>LeechCraft::Aggregator::ImportBinary</name>
     <message>
         <source>Select binary file</source>
         <translation>Seleccionar archivo binario</translation>
     </message>
     <message>
         <source>Aggregator exchange files (*.lcae);;All files (*.*)</source>
-        <translation>Archivos del agregador de intercambios (*.lcae);;Todos los archivos(*.*)</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>LeechCraft</source>
@@ -664,7 +660,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Aggregator::ImportOPML</name>
+    <name>LeechCraft::Aggregator::ImportOPML</name>
     <message>
         <source>Select OPML file</source>
         <translation>Selecciona el archivo OPML</translation>
@@ -687,11 +683,11 @@
     </message>
     <message>
         <source>OPML from file %1 is not valid.</source>
-        <translation>OPML de archivo %1 no es válido.</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Aggregator::ItemsListModel</name>
+    <name>LeechCraft::Aggregator::ItemsListModel</name>
     <message>
         <source>Name</source>
         <translation>Nombre</translation>
@@ -710,7 +706,7 @@
     </message>
     <message numerus="yes">
         <source>%n comment(s)</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>%n comentario</numerusform>
             <numerusform>%n comentarios</numerusform>
         </translation>
@@ -719,13 +715,11 @@
         <source>%n enclosure(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>%n MediaRSS entry(s)</source>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -735,10 +729,42 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Aggregator::ItemsWidget</name>
+    <name>LeechCraft::Aggregator::ItemsWidget</name>
+    <message>
+        <source>Name</source>
+        <translation>Nombre</translation>
+    </message>
+    <message>
+        <source>Date</source>
+        <translation>Fecha</translation>
+    </message>
+    <message>
+        <source>Items categories</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hide read items</source>
+        <translation>Ocultar elementos leídos</translation>
+    </message>
+    <message>
+        <source>Show items as tape</source>
+        <translation>Mostrar elementos como una cinta</translation>
+    </message>
     <message>
         <source>Mark item as unread</source>
         <translation>Marcar el elemento como no leído</translation>
+    </message>
+    <message>
+        <source>Mark item as read</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Subscribe to comments</source>
+        <translation>Suscribirse a los comentarios</translation>
+    </message>
+    <message>
+        <source>Open in new tab</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Published on %1 by %2</source>
@@ -752,6 +778,28 @@
         <source>Published by %1</source>
         <translation>Publicado por %1</translation>
     </message>
+    <message numerus="yes">
+        <source>%n comment(s), &lt;a href=&apos;%1&apos;%2&gt;view them&lt;/a&gt;&lt;br /&gt;</source>
+        <translation>
+            <numerusform>%n comentario, &lt;a href=&apos;%1&apos;%2&gt;verlos&lt;/a&gt;&lt;br /&gt;</numerusform>
+            <numerusform>%n comentarios, &lt;a href=&apos;%1&apos;%2&gt;verlos&lt;/a&gt;&lt;br /&gt;</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n comment(s)</source>
+        <translation>
+            <numerusform>%n comentario</numerusform>
+            <numerusform>%n comentarios</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>&lt;a href=&apos;%1&apos;%2&gt;View comments&lt;/a&gt;&lt;br /&gt;</source>
+        <translation>&lt;a href=&apos;%1&apos;%2&gt;Ver comentarios&lt;/a&gt;&lt;br /&gt;</translation>
+    </message>
+    <message>
+        <source>Geoposition: &lt;a href=&apos;%3&apos;%4 title=&apos;Google Maps&apos;&gt;%1 %2&lt;/a&gt;&lt;br /&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>File of type %1, size %2:&lt;br /&gt;</source>
         <translation>Archivo tipo %1, tamaño %2:&lt;br /&gt;</translation>
@@ -763,22 +811,6 @@
     <message>
         <source>&lt;br /&gt;Specified language: %1</source>
         <translation>&lt;br /&gt;Idioma especificado: %1</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation>Nombre</translation>
-    </message>
-    <message>
-        <source>Date</source>
-        <translation>Fecha</translation>
-    </message>
-    <message>
-        <source>Hide read items</source>
-        <translation>Ocultar elementos leídos</translation>
-    </message>
-    <message>
-        <source>Subscribe to comments</source>
-        <translation>Suscribirse a los comentarios</translation>
     </message>
     <message>
         <source>Image </source>
@@ -843,6 +875,12 @@
     <message>
         <source>&lt;strong&gt;Views:&lt;/strong&gt; %1</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <source>&lt;strong&gt;Added to favorites:&lt;/strong&gt; %n time(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
     </message>
     <message>
         <source>&lt;strong&gt;Average rating:&lt;/strong&gt; %1</source>
@@ -916,54 +954,9 @@
         <source>&lt;strong&gt;Credits:&lt;/strong&gt;</source>
         <translation>&lt;strong&gt;Creditos:&lt;/strong&gt;</translation>
     </message>
-    <message>
-        <source>Show items as tape</source>
-        <translation>Mostrar elementos como una cinta</translation>
-    </message>
-    <message numerus="yes">
-        <source>%n comment(s), &lt;a href=&apos;%1&apos;%2&gt;view them&lt;/a&gt;&lt;br /&gt;</source>
-        <translation>
-            <numerusform>%n comentario, &lt;a href=&apos;%1&apos;%2&gt;verlos&lt;/a&gt;&lt;br /&gt;</numerusform>
-            <numerusform>%n comentarios, &lt;a href=&apos;%1&apos;%2&gt;verlos&lt;/a&gt;&lt;br /&gt;</numerusform>
-        </translation>
-    </message>
-    <message numerus="yes">
-        <source>%n comment(s)</source>
-        <translation>
-            <numerusform>%n comentario</numerusform>
-            <numerusform>%n comentarios</numerusform>
-        </translation>
-    </message>
-    <message>
-        <source>&lt;a href=&apos;%1&apos;%2&gt;View comments&lt;/a&gt;&lt;br /&gt;</source>
-        <translation>&lt;a href=&apos;%1&apos;%2&gt;Ver comentarios&lt;/a&gt;&lt;br /&gt;</translation>
-    </message>
-    <message>
-        <source>Geoposition: &lt;a href=&apos;%3&apos;%4 title=&apos;Google Maps&apos;&gt;%1 %2&lt;/a&gt;&lt;br /&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message numerus="yes">
-        <source>&lt;strong&gt;Added to favorites:&lt;/strong&gt; %n time(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
-    <message>
-        <source>Items categories</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Mark item as read</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Open in new tab</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Aggregator::RegexpMatcherManager</name>
+    <name>LeechCraft::Aggregator::RegexpMatcherManager</name>
     <message>
         <source>Title matcher</source>
         <translation>Emparejador de títulos</translation>
@@ -974,7 +967,7 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Aggregator::RegexpMatcherUi</name>
+    <name>LeechCraft::Aggregator::RegexpMatcherUi</name>
     <message>
         <source>LeechCraft</source>
         <translation>LeechCraft</translation>
@@ -989,21 +982,21 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Aggregator::StartupFirstPage</name>
+    <name>LeechCraft::Aggregator::StartupFirstPage</name>
     <message>
         <source>Set default options</source>
         <translation>Usar opcionespor defecto</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Aggregator::StartupSecondPage</name>
+    <name>LeechCraft::Aggregator::StartupSecondPage</name>
     <message>
         <source>Set storage options</source>
         <translation>Ajustar las opciones de almacenamiento</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::Aggregator::StartupThirdPage</name>
+    <name>LeechCraft::Aggregator::StartupThirdPage</name>
     <message>
         <source>Select feeds</source>
         <translation type="unfinished"></translation>
@@ -1263,7 +1256,7 @@
     </message>
     <message>
         <source>Update interval:</source>
-        <translation type="unfinished">Intervalo de actualización:</translation>
+        <translation>Intervalo de actualización:</translation>
     </message>
     <message>
         <source> min</source>
@@ -1283,7 +1276,7 @@
     </message>
     <message>
         <source>Items per channel:</source>
-        <translation type="unfinished">Objetos por canal:</translation>
+        <translation>Objetos por canal:</translation>
     </message>
     <message>
         <source>Store items for:</source>
@@ -1295,7 +1288,7 @@
     </message>
     <message>
         <source>Storage</source>
-        <translation type="unfinished">Almacenamiento</translation>
+        <translation>Almacenamiento</translation>
     </message>
     <message>
         <source>Mark as read after</source>

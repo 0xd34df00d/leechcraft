@@ -141,6 +141,19 @@ namespace Azoth
 		 * @return The human-readable name.
 		 */
 		virtual QString GetGroupName () const = 0;
+		
+		/** @brief Returns the real ID of a participant.
+		 * 
+		 * This function should return a real protocol ID of the given
+		 * participant (JID for XMPP protocol, for example), or a null
+		 * string if the ID is unknown, or the given participant doesn't
+		 * belong to this room.
+		 * 
+		 * @param[in] participant The participant for which to return
+		 * the real JID.
+		 * @return The real ID of a participant.
+		 */
+		virtual QString GetRealID (QObject *participant) const = 0;
 				
 		/** @brief Returns the data identifying this room.
 		 * 

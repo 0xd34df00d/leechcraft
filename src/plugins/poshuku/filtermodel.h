@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_POSHUKU_FILTERMODEL_H
 #define PLUGINS_POSHUKU_FILTERMODEL_H
-#include <plugininterface/tagsfiltermodel.h>
+#include <util/tagsfiltermodel.h>
 
 namespace LeechCraft
 {

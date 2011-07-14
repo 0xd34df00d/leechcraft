@@ -20,7 +20,7 @@
 #include <typeinfo>
 #include <QIcon>
 #include <QtDebug>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"

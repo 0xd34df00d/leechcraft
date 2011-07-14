@@ -42,7 +42,11 @@ namespace Azoth
 	 * Advanced features like delivery receipts and such, are in
 	 * IAdvancedMessage.
 	 * 
-	 * @sa IAdvancedMessage
+	 * Messages implementing this interface are expected to contain only
+	 * plain text bodies. If a message may also contain rich text, it
+	 * should implement the IRichTextMessage interface.
+	 * 
+	 * @sa IAdvancedMessage, IRichTextMessage.
 	 */
 	class IMessage
 	{
@@ -243,11 +247,16 @@ namespace Azoth
 		
 		/** @brief Returns the body of the message.
 		 * 
+		 * The body is expected to be a plain text string. All '<' and
+		 * '&' will be escaped.
+		 * 
 		 * @return The body of the message.
 		 */
 		virtual QString GetBody () const = 0;
 		
 		/** @brief Updates the body of the message.
+		 * 
+		 * The passed string is the plain text contents of the message.
 		 * 
 		 * @param[in] body The new body of the message.
 		 */

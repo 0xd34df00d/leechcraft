@@ -78,7 +78,7 @@ namespace Herbicide
 	
 	void ConfWidget::on_QuestStyle__currentIndexChanged (int idx)
 	{
-		if (PredefinedQuests_.size () <= idx - 1)
+		if (PredefinedQuests_.size () <= idx - 1 || !idx)
 			return;
 		
 		Ui_.QuestVariant_->clear ();

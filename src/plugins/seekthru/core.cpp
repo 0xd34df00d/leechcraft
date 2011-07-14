@@ -29,8 +29,8 @@
 #include <QCoreApplication>
 #include <QtDebug>
 #include <interfaces/iwebbrowser.h>
-#include <plugininterface/util.h>
-#include <plugininterface/syncops.h>
+#include <util/util.h>
+#include <util/syncops.h>
 #include "findproxy.h"
 #include "tagsasker.h"
 

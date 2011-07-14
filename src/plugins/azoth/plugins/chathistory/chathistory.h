@@ -25,6 +25,7 @@
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/imessage.h>
+#include <interfaces/ihistoryplugin.h>
 #include "core.h"
 
 class QTranslator;
@@ -40,15 +41,22 @@ namespace ChatHistory
 				 , public IPlugin2
 				 , public IActionsExporter
 				 , public IHaveTabs
+				 , public IHistoryPlugin
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 IActionsExporter IHaveTabs)
+		Q_INTERFACES (IInfo
+				IPlugin2
+				IActionsExporter
+				IHaveTabs
+				LeechCraft::Azoth::IHistoryPlugin)
 
 		boost::shared_ptr<STGuard<Core> > Guard_;
 		boost::shared_ptr<QTranslator> Translator_;
 		QAction *ActionHistory_;
 		QHash<QObject*, QAction*> Entry2ActionHistory_;
 		QHash<QObject*, QAction*> Entry2ActionEnableHistory_;
+		
+		QHash<QString, QHash<QString, QObject*> > RequestedLogs_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -58,13 +66,20 @@ namespace ChatHistory
 		QString GetInfo () const;
 		QIcon GetIcon () const;
 
+		// IPlugin2
 		QSet<QByteArray> GetPluginClasses () const;
 		
+		// IActionsExporter
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
 		QMap<QString, QList<QAction*> > GetMenuActions () const;
 		
+		// IHaveTabs
 		TabClasses_t GetTabClasses () const;
 		void TabOpenRequested (const QByteArray&);
+		
+		// IHistoryPlugin
+		bool IsHistoryEnabledFor (QObject*) const;
+		void RequestLastMessages (QObject*, int);
 	public slots:
 		void initPlugin (QObject*);
 
@@ -73,12 +88,12 @@ namespace ChatHistory
 				QObject *entry);
 		void hookEntryActionsRequested (LeechCraft::IHookProxy_ptr proxy,
 				QObject *entry);
-		void hookMessageCreated (LeechCraft::IHookProxy_ptr proxy,
-				QObject *chatTab,
-				QObject *message);
 		void hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message);
 	private slots:
+		void handleGotChatLogs (const QString&,
+				const QString&, int, int, const QVariant&);
+
 		void handleHistoryRequested ();
 		void handleEntryHistoryRequested ();
 		void handleEntryEnableHistoryRequested (bool);
@@ -91,6 +106,8 @@ namespace ChatHistory
 		void changeTooltip (QWidget*, QWidget*);
 		void statusBarChanged (QWidget*, const QString&);
 		void raiseTab (QWidget*);
+		
+		void gotLastMessages (QObject*, const QList<QObject*>&);
 	};
 }
 }

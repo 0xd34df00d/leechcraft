@@ -130,7 +130,7 @@
     <message>
         <location filename="editbookmarkdialog.ui" line="14"/>
         <source>Edit bookmark</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="editbookmarkdialog.ui" line="23"/>
@@ -210,7 +210,7 @@
     <message>
         <location filename="addtofavoritesdialog.cpp" line="37"/>
         <source>untagged</source>
-        <translation type="unfinished">sin etiquetar</translation>
+        <translation>sin etiquetar</translation>
     </message>
 </context>
 <context>
@@ -218,220 +218,238 @@
     <message>
         <location filename="bookmarkswidget.cpp" line="134"/>
         <source>Change URL</source>
-        <translation type="unfinished">Cambiar URL</translation>
+        <translation>Cambiar URL</translation>
     </message>
     <message>
         <location filename="bookmarkswidget.cpp" line="135"/>
         <source>Enter new URL for&lt;br /&gt;%1</source>
-        <translation type="unfinished">Ingresar una nueva URL para&lt;br /&gt;%1</translation>
+        <translation>Ingresar una nueva URL para&lt;br /&gt;%1</translation>
     </message>
     <message>
         <location filename="bookmarkswidget.cpp" line="147"/>
         <source>URL of a bookmark can&apos;t be empty.</source>
-        <translation type="unfinished">No se puede vaciar la URL de un marcador.</translation>
+        <translation>No se puede vaciar la URL de un marcador.</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Poshuku::BrowserWidget</name>
     <message>
-        <location filename="browserwidget.cpp" line="83"/>
+        <location filename="browserwidget.cpp" line="87"/>
         <source>Bookmarks</source>
-        <translation type="unfinished">Marcadores</translation>
+        <translation>Desmarcar todo</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="84"/>
+        <location filename="browserwidget.cpp" line="88"/>
         <source>History</source>
-        <translation type="unfinished">Historial</translation>
-    </message>
-    <message>
-        <location filename="browserwidget.cpp" line="130"/>
-        <source>Reload periodically</source>
-        <translation type="unfinished">Actualizar periodicamente</translation>
+        <translation>Historial</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="134"/>
+        <source>Reload periodically</source>
+        <translation>Recargar siempre</translation>
+    </message>
+    <message>
+        <location filename="browserwidget.cpp" line="138"/>
         <source>Notify when finished loading</source>
-        <translation type="unfinished">Notificar cuando haya finalizado carga</translation>
+        <translation>Notificar cuando haya finalizado carga</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="141"/>
+        <location filename="browserwidget.cpp" line="145"/>
         <source>Bookmark...</source>
-        <translation type="unfinished">Marcador...</translation>
+        <translation>Marcador...</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="146"/>
+        <location filename="browserwidget.cpp" line="150"/>
         <source>Find...</source>
-        <translation type="unfinished">Buscar…</translation>
+        <translation>Buscar…</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="151"/>
+        <location filename="browserwidget.cpp" line="155"/>
         <source>Print...</source>
-        <translation type="unfinished">Imprimir...</translation>
+        <translation>Imprimir...</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="156"/>
+        <location filename="browserwidget.cpp" line="160"/>
         <source>Print with preview...</source>
-        <translation type="unfinished">Imprimir con vista previa...</translation>
+        <translation>Imprimir con vista previa...</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="161"/>
+        <location filename="browserwidget.cpp" line="165"/>
         <source>Take page&apos;s screenshot...</source>
-        <translation type="unfinished">Tomar instantánea de la página...</translation>
+        <translation>Tomar instantánea de la página...</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="166"/>
+        <location filename="browserwidget.cpp" line="170"/>
         <source>View sources...</source>
-        <translation type="unfinished">Ver fuentes...</translation>
-    </message>
-    <message>
-        <location filename="browserwidget.cpp" line="171"/>
-        <source>Zoom in</source>
-        <translation type="unfinished">Acercar</translation>
+        <translation>Ver fuentes...</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="175"/>
-        <source>Zoom out</source>
-        <translation type="unfinished">Alejar</translation>
+        <source>Save page...</source>
+        <translation>Guardar enlace...</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="179"/>
+        <source>Ctrl+s</source>
+        <translation>Ctrl+S</translation>
+    </message>
+    <message>
+        <location filename="browserwidget.cpp" line="181"/>
+        <source>Zoom in</source>
+        <translation>Acercar</translation>
+    </message>
+    <message>
+        <location filename="browserwidget.cpp" line="185"/>
+        <source>Zoom out</source>
+        <translation>Alejar</translation>
+    </message>
+    <message>
+        <location filename="browserwidget.cpp" line="189"/>
         <source>Reset zoom</source>
-        <translation type="unfinished">Reiniciar zoom</translation>
+        <translation>Reiniciar zoom</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="183"/>
+        <location filename="browserwidget.cpp" line="193"/>
         <source>Open history</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="186"/>
+        <location filename="browserwidget.cpp" line="196"/>
         <source>Ctrl+h</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+h</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="188"/>
+        <location filename="browserwidget.cpp" line="198"/>
         <source>Open bookmarks</source>
-        <translation type="unfinished"></translation>
+        <translation>Desmarcar todo</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="191"/>
+        <location filename="browserwidget.cpp" line="201"/>
         <source>Ctrl+b</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+b</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="236"/>
+        <location filename="browserwidget.cpp" line="247"/>
         <source>Change encoding</source>
-        <translation type="unfinished">cambiando codificación</translation>
+        <translation>Cambiar URL</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="246"/>
+        <location filename="browserwidget.cpp" line="257"/>
         <source>Recently closed</source>
-        <translation type="unfinished">Recientemente cerrado</translation>
+        <translation>Recientemente cerrado</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="251"/>
+        <location filename="browserwidget.cpp" line="262"/>
         <source>External links</source>
-        <translation type="unfinished">Enlaces externos</translation>
+        <translation>Enlaces externos</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="650"/>
+        <location filename="browserwidget.cpp" line="667"/>
         <source>Ctrl+D</source>
-        <translation type="unfinished">Ctrl+D</translation>
+        <translation>Ctrl+D</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="651"/>
+        <location filename="browserwidget.cpp" line="668"/>
         <source>Ctrl+F</source>
-        <translation type="unfinished">Ctrl+F</translation>
+        <translation>Ctrl+F</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="652"/>
+        <location filename="browserwidget.cpp" line="669"/>
         <source>Ctrl+P</source>
-        <translation type="unfinished">Ctrl+P</translation>
+        <translation>Ctrl+P</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="653"/>
+        <location filename="browserwidget.cpp" line="670"/>
         <source>Ctrl+Shift+P</source>
-        <translation type="unfinished">Ctrl+Shift+P</translation>
+        <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="655"/>
+        <location filename="browserwidget.cpp" line="672"/>
         <source>Ctrl+Shift+V</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+V</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="658"/>
+        <location filename="browserwidget.cpp" line="675"/>
         <source>Ctrl+0</source>
-        <translation type="unfinished">Ctrl+0</translation>
+        <translation>Ctrl+0</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="659"/>
+        <location filename="browserwidget.cpp" line="676"/>
         <source>Ctrl+X</source>
-        <translation type="unfinished">Ctrl+X</translation>
+        <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="660"/>
+        <location filename="browserwidget.cpp" line="677"/>
         <source>Ctrl+C</source>
-        <translation type="unfinished">Ctrl+C</translation>
+        <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="661"/>
+        <location filename="browserwidget.cpp" line="678"/>
         <source>Ctrl+V</source>
-        <translation type="unfinished">Ctrl+V</translation>
+        <translation>Ctrl+V</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="666"/>
+        <location filename="browserwidget.cpp" line="683"/>
         <source>Ctrl+Shift+T</source>
-        <translation type="unfinished">Ctrl+Shift+T</translation>
+        <translation>Ctrl+Shift+T</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="728"/>
+        <location filename="browserwidget.cpp" line="780"/>
         <source>Print web page</source>
-        <translation type="unfinished">Imprimir página web</translation>
+        <translation>Imprimir página web</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="755"/>
+        <location filename="browserwidget.cpp" line="807"/>
         <source>Reloading once in %1</source>
-        <translation type="unfinished">recargando una  vez en %1</translation>
+        <translation>Recargando una  vez en %1</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="920"/>
+        <location filename="browserwidget.cpp" line="959"/>
         <source>Save screenshot</source>
-        <translation type="unfinished">Guardar captura de pantalla</translation>
+        <translation>Guardar captura de pantalla</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="935"/>
+        <location filename="browserwidget.cpp" line="974"/>
         <source>Could not open %1 for write</source>
-        <translation type="unfinished">No se pudo abrir %1 para escribir</translation>
+        <translation>Ingresar una nueva URL para&lt;br /&gt;%1</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="944"/>
+        <location filename="browserwidget.cpp" line="983"/>
         <source>Could not write screenshot to %1</source>
-        <translation type="unfinished">No se pudo escribir instantánea en %1</translation>
+        <translation>No se pudo escribir instantánea en %1</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="1245"/>
+        <location filename="browserwidget.cpp" line="1303"/>
         <source>Page load finished: %1</source>
-        <translation type="unfinished">Pagina cargada: %1</translation>
+        <translation>Pagina cargada: %1</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="1249"/>
+        <location filename="browserwidget.cpp" line="1307"/>
         <source>Page load failed: %1</source>
-        <translation type="unfinished">Fallo en carga de pagina: %1</translation>
+        <translation>Fallo en carga de pagina: %1</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="1256"/>
+        <location filename="browserwidget.cpp" line="1314"/>
         <source>Open</source>
-        <translation type="unfinished">Abrir</translation>
+        <translation>Abrir</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="1279"/>
+        <location filename="browserwidget.cpp" line="1337"/>
         <source>Default</source>
-        <translation type="unfinished">Predeterminado</translation>
+        <translation>Predeterminado</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="1328"/>
+        <location filename="browserwidget.cpp" line="1386"/>
         <source>No title</source>
-        <translation type="unfinished">Sin título</translation>
+        <translation>Sin título</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Poshuku::ClearButton</name>
+    <message>
+        <location filename="clearbutton.cpp" line="33"/>
+        <source>Clear</source>
+        <translation>Aclarar</translation>
     </message>
 </context>
 <context>
@@ -439,7 +457,7 @@
     <message>
         <location filename="cookieseditmodel.cpp" line="39"/>
         <source>Domain (cookie name)</source>
-        <translation type="unfinished">Dominio (nombre de la «cookie»)</translation>
+        <translation>Dominio (nombre de la «cookie»)</translation>
     </message>
 </context>
 <context>
@@ -447,148 +465,149 @@
     <message>
         <location filename="core.cpp" line="84"/>
         <source>Poshuku</source>
-        <translation type="unfinished"></translation>
+        <translation>Poshuku</translation>
     </message>
     <message>
         <location filename="core.cpp" line="85"/>
         <source>The Poshuku web browser</source>
-        <translation type="unfinished"></translation>
+        <translation>El Navegador Poshuku</translation>
     </message>
     <message>
         <location filename="core.cpp" line="157"/>
         <source>Poshuku: general storage initialization error.</source>
-        <translation type="unfinished">Poshuku: error en la inicialización en almacenamiento general.</translation>
+        <translation>Poshuku: error en la inicialización en almacenamiento general.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="836"/>
+        <location filename="core.cpp" line="854"/>
         <source>Select XBEL file</source>
-        <translation type="unfinished">Seleccionar archivo XBEL</translation>
+        <translation>Seleccionar archivo XBEL</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="838"/>
-        <location filename="core.cpp" line="878"/>
+        <location filename="core.cpp" line="856"/>
+        <location filename="core.cpp" line="896"/>
         <source>XBEL files (*.xbel);;All files (*.*)</source>
-        <translation type="unfinished">Archivos de XBEL (*.xbel);;Todos los archivos (*.*)</translation>
+        <translation>Archivos de XBEL (*.xbel);;Todos los archivos (*.*)</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="852"/>
+        <location filename="core.cpp" line="870"/>
         <source>Could not open file %1 for reading.</source>
-        <translation type="unfinished">No se pudo abrir el archivo %1 para lectura.</translation>
+        <translation>No se pudo abrir el archivo %1 para lectura.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="876"/>
+        <location filename="core.cpp" line="894"/>
         <source>Save XBEL file</source>
-        <translation type="unfinished">Guardar archivo XBEL</translation>
+        <translation>Guardar archivo XBEL</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="895"/>
+        <location filename="core.cpp" line="913"/>
         <source>Could not open file %1 for writing.</source>
-        <translation type="unfinished">No se pudo abrir el archivo %1 para escritura.</translation>
+        <translation>No se pudo abrir el archivo %1 para escritura.</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Poshuku::CustomWebPage</name>
     <message>
-        <location filename="customwebpage.cpp" line="136"/>
+        <location filename="customwebpage.cpp" line="140"/>
         <source>&lt;a href=&quot;http://downforeveryoneorjustme.com/{host}&quot; target=&quot;_blank&quot;&gt;check&lt;/a&gt; if the site &lt;strong&gt;{host}&lt;/strong&gt; is down for you only;</source>
         <comment>{host} would be substituded with site&apos;s host name.</comment>
-        <translation type="unfinished"></translation>
+        <translatorcomment>{host} would be substituted with site&apos;s host name.</translatorcomment>
+        <translation>&lt;a href=&quot;http://downforeveryoneorjustme.com/{host}&quot; target=&quot;_blank&quot;&gt;check&lt;/a&gt; if the site &lt;strong&gt;{host}&lt;/strong&gt; is down for you only;</translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="139"/>
+        <location filename="customwebpage.cpp" line="143"/>
         <source>try again later</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="customwebpage.cpp" line="140"/>
-        <source>contact remote server&apos;s administrator (typically at &lt;a href=&quot;mailto:webmaster@{host}&quot;&gt;webmaster@{host}&lt;/a&gt;)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="customwebpage.cpp" line="142"/>
-        <source>contact your system/network administrator, especially if you can&apos;t load any single page</source>
-        <translation type="unfinished"></translation>
+        <translation>Prueba despues de nuevo</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="144"/>
+        <source>contact remote server&apos;s administrator (typically at &lt;a href=&quot;mailto:webmaster@{host}&quot;&gt;webmaster@{host}&lt;/a&gt;)</source>
+        <translation>Contacta al administrador del servidor remoto  (típicamente en &lt;a href=&quot;mailto:webmaster@{host}&quot;&gt;webmaster@{host}&lt;/a&gt;)</translation>
+    </message>
+    <message>
+        <location filename="customwebpage.cpp" line="146"/>
+        <source>contact your system/network administrator, especially if you can&apos;t load any single page</source>
+        <translation>Contacta a vuestro sysadmin, si no puede cargar ninguna pagina</translation>
+    </message>
+    <message>
+        <location filename="customwebpage.cpp" line="148"/>
         <source>check your proxy settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Verifica la configuración del proxy</translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="155"/>
-        <location filename="customwebpage.cpp" line="190"/>
+        <location filename="customwebpage.cpp" line="159"/>
+        <location filename="customwebpage.cpp" line="194"/>
         <source>check if the URL is written correctly;</source>
-        <translation type="unfinished"></translation>
+        <translation>Verifica que el URL esta escrito correctamente</translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="156"/>
+        <location filename="customwebpage.cpp" line="160"/>
         <source>try changing your DNS servers;</source>
-        <translation type="unfinished"></translation>
+        <translation>Prueba a cambiar los servidores DNS</translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="157"/>
+        <location filename="customwebpage.cpp" line="161"/>
         <source>make sure that LeechCraft is allowed to access the Internet and particularly web sites;</source>
-        <translation type="unfinished"></translation>
+        <translation>Asegurase de que a LeechCraft se le permite acceder a Internet y en particular los sitios web</translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="162"/>
+        <location filename="customwebpage.cpp" line="166"/>
         <source>check whether some downloads consume too much bandwidth: try limiting their speed or reducing number of connections for them;</source>
-        <translation type="unfinished"></translation>
+        <translation>Comprueba si algunas descargas consumen demasiado ancho de banda: trata de limitar su velocidad o reducir el número de conexiones para ellas;</translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="167"/>
+        <location filename="customwebpage.cpp" line="171"/>
         <source>try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>prueba de nuevo.</translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="169"/>
+        <location filename="customwebpage.cpp" line="173"/>
         <source>make sure that remote server is really what it claims to be;</source>
-        <translation type="unfinished"></translation>
+        <translation>Asegurase de que el servidor remoto es realmente lo que dice ser;</translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="191"/>
+        <location filename="customwebpage.cpp" line="195"/>
         <source>go to web site&apos;s &lt;a href=&quot;{schema}://{host}/&quot;&gt;main page&lt;/a&gt; and find the required page from there.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="customwebpage.cpp" line="193"/>
-        <source>check the login and password you entered and try again</source>
-        <translation type="unfinished"></translation>
+        <translation>Va a la página del sitio web &lt;a href=&quot;{schema}://{host}/&quot;&gt; principal &lt;/ a&gt; y encuentra la pagina deseada desde alli.</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="197"/>
+        <source>check the login and password you entered and try again</source>
+        <translation>Comprueba el login y contraseña y vuelva a intentarlo</translation>
+    </message>
+    <message>
+        <location filename="customwebpage.cpp" line="201"/>
         <source>check if the URL is written correctly, particularly, the part before the &apos;://&apos;;</source>
-        <translation type="unfinished"></translation>
+        <translation>Comprueba que el URL esta escrito correctamente, sobre todo, la parte antes de &apos;://&apos;;</translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="198"/>
+        <location filename="customwebpage.cpp" line="202"/>
         <source>try installing plugins that are known to support this protocol;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="customwebpage.cpp" line="485"/>
-        <source>Error loading %1</source>
-        <translation type="unfinished">Error leyendo %1</translation>
-    </message>
-    <message>
-        <location filename="customwebpage.cpp" line="490"/>
-        <source>%1 (%2)</source>
-        <translation type="unfinished">%1 (%2)</translation>
-    </message>
-    <message>
-        <location filename="customwebpage.cpp" line="495"/>
-        <source>%1</source>
-        <translation type="unfinished">%1</translation>
-    </message>
-    <message>
-        <location filename="customwebpage.cpp" line="497"/>
-        <source>The page you tried to access cannot be loaded now.</source>
-        <translation type="unfinished"></translation>
+        <translation>Trata de  instalar plugins que se sabe que soportan este protocolo;</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="504"/>
+        <source>Error loading %1</source>
+        <translation>Error leyendo %1</translation>
+    </message>
+    <message>
+        <location filename="customwebpage.cpp" line="509"/>
+        <source>%1 (%2)</source>
+        <translation>%1 (%2)</translation>
+    </message>
+    <message>
+        <location filename="customwebpage.cpp" line="514"/>
+        <source>%1</source>
+        <translation>%1</translation>
+    </message>
+    <message>
+        <location filename="customwebpage.cpp" line="516"/>
+        <source>The page you tried to access cannot be loaded now.</source>
+        <translation>La página que intentó acceder no se puede cargar ahora.</translation>
+    </message>
+    <message>
+        <location filename="customwebpage.cpp" line="523"/>
         <source>Try doing the following:</source>
-        <translation type="unfinished"></translation>
+        <translation>Trate de hacer lo siguiente:</translation>
     </message>
 </context>
 <context>
@@ -597,128 +616,128 @@
         <location filename="customwebview.cpp" line="172"/>
         <location filename="customwebview.cpp" line="181"/>
         <source>Loading...</source>
-        <translation type="unfinished">Cargando...</translation>
+        <translation>Cargando...</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="280"/>
         <source>Subscribe</source>
-        <translation type="unfinished">Subscribir</translation>
+        <translation>Subscribir</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="288"/>
         <source>Open &amp;here</source>
-        <translation type="unfinished">Abrir aquí (&amp;h)</translation>
+        <translation>Abrir aquí (&amp;h)</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="290"/>
         <source>Open in new &amp;tab</source>
-        <translation type="unfinished">Abrir en una nueva pes&amp;taña</translation>
+        <translation>Abrir en una nueva pes&amp;taña</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="293"/>
         <source>&amp;Save link...</source>
-        <translation type="unfinished">&amp;Guardar enlace...</translation>
+        <translation>&amp;Guardar enlace...</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="299"/>
         <source>&amp;Bookmark link...</source>
-        <translation type="unfinished">Enlaza del &amp;marcador...</translation>
+        <translation>Enlaza del &amp;marcador...</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="305"/>
         <source>&amp;Copy link</source>
-        <translation type="unfinished">&amp;Copiar enlace</translation>
+        <translation>&amp;Copiar enlace</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="312"/>
         <source>Open as link</source>
-        <translation type="unfinished"></translation>
+        <translation>Abrir como vínculo</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="324"/>
         <source>Open image here</source>
-        <translation type="unfinished">Abrir imagen aquí</translation>
+        <translation>Abrir imagen aquí</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="326"/>
         <source>Open image in new tab</source>
-        <translation type="unfinished">Abrir imagen en una nueva pestaña</translation>
+        <translation>Abrir imagen en una nueva pestaña</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="329"/>
         <source>Save image...</source>
-        <translation type="unfinished">Guardar imagen...</translation>
+        <translation>Guardar imagen...</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="331"/>
         <source>Copy image</source>
-        <translation type="unfinished">Copiar imagen</translation>
+        <translation>Copiar imagen</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="333"/>
         <source>Copy image location</source>
-        <translation type="unfinished">Copiar ubicación de la imagen</translation>
+        <translation>Copiar ubicación de la imagen</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="355"/>
         <source>Search...</source>
-        <translation type="unfinished">Buscar...</translation>
-    </message>
-    <message>
-        <location filename="customwebview.cpp" line="449"/>
-        <source>Installed plugins</source>
-        <translation type="unfinished">agregados instalados</translation>
+        <translation>Buscar...</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="450"/>
-        <source>No plugins installed</source>
-        <translation type="unfinished">No hay plugins instalados</translation>
+        <source>Installed plugins</source>
+        <translation>agregados instalados</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="451"/>
-        <source>File name</source>
-        <translation type="unfinished">Nombre del archivo</translation>
+        <source>No plugins installed</source>
+        <translation>No hay plugins instalados</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="452"/>
-        <source>MIME type</source>
-        <translation type="unfinished">Tipo MIME</translation>
+        <source>File name</source>
+        <translation>Nombre del archivo</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="453"/>
-        <source>Description</source>
-        <translation type="unfinished">Descripción</translation>
+        <source>MIME type</source>
+        <translation>Tipo MIME</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="454"/>
-        <source>Suffixes</source>
-        <translation type="unfinished">Sufijos</translation>
+        <source>Description</source>
+        <translation>Descripción</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="455"/>
-        <source>Enabled</source>
-        <translation type="unfinished">Habilitado</translation>
+        <source>Suffixes</source>
+        <translation>Sufijos</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="456"/>
-        <source>No</source>
-        <translation type="unfinished">No</translation>
+        <source>Enabled</source>
+        <translation>Habilitado</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="457"/>
+        <source>No</source>
+        <translation>No</translation>
+    </message>
+    <message>
+        <location filename="customwebview.cpp" line="458"/>
         <source>Yes</source>
-        <translation type="unfinished">Si</translation>
+        <translation>Si</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="467"/>
-        <location filename="customwebview.cpp" line="469"/>
+        <location filename="customwebview.cpp" line="468"/>
+        <location filename="customwebview.cpp" line="470"/>
         <source>Welcome to LeechCraft!</source>
-        <translation type="unfinished">Bienvenido a LeechCraft!</translation>
+        <translation>Bienvenido a LeechCraft!</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="471"/>
+        <location filename="customwebview.cpp" line="472"/>
         <source>Welcome to LeechCraft, the integrated internet-client.&lt;br /&gt;More info is available on the &lt;a href=&apos;http://leechcraft.org&apos;&gt;project&apos;s site&lt;/a&gt;.</source>
-        <translation type="unfinished">Bienvenido a LeechCraft, Cliente integrado de internet &lt;br&gt; más información disponible en &lt;a href=&apos;http://leechcraft.org&apos;&gt;pagina web del proyecto&lt;/a&gt;.</translation>
+        <translation>Bienvenido a LeechCraft, Cliente integrado de internet &lt;br&gt; más información disponible en &lt;a href=&apos;http://leechcraft.org&apos;&gt;pagina web del proyecto&lt;/a&gt;.</translation>
     </message>
 </context>
 <context>
@@ -726,52 +745,52 @@
     <message>
         <location filename="favoriteschecker.cpp" line="35"/>
         <source>Checking Favorites...</source>
-        <translation type="unfinished">verificando favoritos...</translation>
+        <translation>verificando favoritos...</translation>
     </message>
     <message>
         <location filename="favoriteschecker.cpp" line="36"/>
         <source>Cancel</source>
-        <translation type="unfinished">Cancelar</translation>
+        <translation>Cancelar</translation>
     </message>
     <message>
         <location filename="favoriteschecker.cpp" line="50"/>
         <source>Already checking links, please wait...</source>
-        <translation type="unfinished">Verificando enlaces, por favor espere...</translation>
+        <translation>Verificando enlaces, por favor espere...</translation>
     </message>
     <message>
         <location filename="favoriteschecker.cpp" line="102"/>
         <source>%1 favorites are %2:&lt;br /&gt;&lt;ul&gt;%3&lt;/ul&gt;</source>
-        <translation type="unfinished">%1 favoritos son %2:&lt;br /&gt;&lt;ul&gt;%3&lt;/ul&gt;</translation>
+        <translation>%1 favoritos son %2:&lt;br /&gt;&lt;ul&gt;%3&lt;/ul&gt;</translation>
     </message>
     <message>
         <location filename="favoriteschecker.cpp" line="108"/>
         <source>%1 favorites are %2.&lt;br /&gt;</source>
-        <translation type="unfinished">%1 favoritos son %2.&lt;br /&gt;</translation>
+        <translation>%1 favoritos son %2.&lt;br /&gt;</translation>
     </message>
     <message>
         <location filename="favoriteschecker.cpp" line="175"/>
         <source>HTTP %1</source>
-        <translation type="unfinished">HTTP %1</translation>
+        <translation>HTTP %1</translation>
     </message>
     <message>
         <location filename="favoriteschecker.cpp" line="178"/>
         <source>&lt;br /&gt;Length: %1</source>
-        <translation type="unfinished">&lt;br /&gt;Longitud: %1</translation>
+        <translation>&lt;br /&gt;Longitud: %1</translation>
     </message>
     <message>
         <location filename="favoriteschecker.cpp" line="181"/>
         <source>&lt;br /&gt;Last-modified: %1</source>
-        <translation type="unfinished">&lt;br /&gt;Ultima modificación: %1</translation>
+        <translation>&lt;br /&gt;Ultima modificación: %1</translation>
     </message>
     <message>
         <location filename="favoriteschecker.cpp" line="187"/>
         <source>&lt;br /&gt;Redirects to %1</source>
-        <translation type="unfinished">&lt;br /&gt;Redirigir to %1</translation>
+        <translation>&lt;br /&gt;Redirigir to %1</translation>
     </message>
     <message>
         <location filename="favoriteschecker.cpp" line="197"/>
         <source>%1 favorites total.&lt;br /&gt;%2 favorites are accessible.&lt;br /&gt;%3%4 are not correctly returned by the remote server.&lt;br /&gt;%5</source>
-        <translation type="unfinished">%1 total de favoritos.&lt;br /&gt;%2 favoritos son accesibles.&lt;br /&gt;%3%4 no retornaron correctamente desde el servidor remoto.&lt;br /&gt;%5</translation>
+        <translation>%1 total de favoritos.&lt;br /&gt;%2 favoritos son accesibles.&lt;br /&gt;%3%4 no retornaron correctamente desde el servidor remoto.&lt;br /&gt;%5</translation>
     </message>
 </context>
 <context>
@@ -779,22 +798,22 @@
     <message>
         <location filename="favoritesmodel.cpp" line="42"/>
         <source>Title</source>
-        <translation type="unfinished">Título</translation>
+        <translation>Título</translation>
     </message>
     <message>
         <location filename="favoritesmodel.cpp" line="43"/>
         <source>URL</source>
-        <translation type="unfinished">URL</translation>
+        <translation>URL</translation>
     </message>
     <message>
         <location filename="favoritesmodel.cpp" line="44"/>
         <source>Tags</source>
-        <translation type="unfinished">Etiquetas</translation>
+        <translation>Etiquetas</translation>
     </message>
     <message>
         <location filename="favoritesmodel.cpp" line="187"/>
         <source>Failed to add&lt;br /&gt;%1&lt;br /&gt;to Favorites, seems like such title is already used.</source>
-        <translation type="unfinished">Falló al añadir&lt;br /&gt;%1&lt;br /&gt;a Favoritos, parece que ese título ya está en uso.</translation>
+        <translation>Falló al añadir&lt;br /&gt;%1&lt;br /&gt;a Favoritos, parece que ese título ya está en uso.</translation>
     </message>
 </context>
 <context>
@@ -802,17 +821,17 @@
     <message>
         <location filename="historymodel.cpp" line="99"/>
         <source>Title</source>
-        <translation type="unfinished">Título</translation>
+        <translation>Título</translation>
     </message>
     <message>
         <location filename="historymodel.cpp" line="100"/>
         <source>Date</source>
-        <translation type="unfinished">Fecha</translation>
+        <translation>Fecha</translation>
     </message>
     <message>
         <location filename="historymodel.cpp" line="101"/>
         <source>URL</source>
-        <translation type="unfinished">URL</translation>
+        <translation>URL</translation>
     </message>
 </context>
 <context>
@@ -820,65 +839,65 @@
     <message>
         <location filename="importentityhandler.cpp" line="41"/>
         <source>Importing history...</source>
-        <translation type="unfinished"></translation>
+        <translation>Importación de la historia ...</translation>
     </message>
     <message>
         <location filename="importentityhandler.cpp" line="42"/>
         <source>Abort history import</source>
-        <translation type="unfinished"></translation>
+        <translation>Dejar de importar el historial</translation>
     </message>
     <message>
         <location filename="importentityhandler.cpp" line="68"/>
         <source>Importing bookmarks...</source>
-        <translation type="unfinished"></translation>
+        <translation>Importamos los marcadores...</translation>
     </message>
     <message>
         <location filename="importentityhandler.cpp" line="69"/>
         <source>Abort bookmarks import</source>
-        <translation type="unfinished"></translation>
+        <translation>Dejar de importar los marcadores</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Poshuku::Poshuku</name>
     <message>
-        <location filename="poshuku.cpp" line="110"/>
+        <location filename="poshuku.cpp" line="111"/>
         <source>Import XBEL...</source>
-        <translation type="unfinished">Importar XBEL...</translation>
+        <translation>Importar XBEL...</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="114"/>
+        <location filename="poshuku.cpp" line="115"/>
         <source>Export XBEL...</source>
-        <translation type="unfinished">Exportar XBEL...</translation>
+        <translation>Exportar XBEL...</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="118"/>
+        <location filename="poshuku.cpp" line="119"/>
         <source>Check favorites...</source>
-        <translation type="unfinished">Revisar favoritos...</translation>
+        <translation>Revisar favoritos...</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="122"/>
+        <location filename="poshuku.cpp" line="123"/>
         <source>Reload all pages</source>
-        <translation type="unfinished"></translation>
+        <translation>Recargar todos enlaces</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="135"/>
+        <location filename="poshuku.cpp" line="136"/>
         <source>Poshuku failed to initialize properly. Check logs and talk with the developers. Or, at least, check the storage backend settings and restart LeechCraft.</source>
-        <translation type="unfinished">Poshuku fallo en inicializar correctamente. verifique los registros y hable con los desarrolladores. or por lo menos verifique la configuración de almacenamiento y reinicie LeechCraft.</translation>
+        <translation>Poshuku fallo en inicializar correctamente. Verifique los registros y hable con los desarrolladores. or por lo menos verifique la configuración de almacenamiento y reinicie LeechCraft.</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="200"/>
+        <location filename="poshuku.cpp" line="201"/>
         <source>Poshuku Browser</source>
-        <translation type="unfinished">Explorador de Poshuku</translation>
+        <translation>El Navegador Poshuku</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="205"/>
+        <location filename="poshuku.cpp" line="206"/>
         <source>Simple yet functional web browser</source>
-        <translation type="unfinished">Un explorador web simple pero funcional</translation>
+        <translation>Un explorador web simple pero funcional</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="503"/>
+        <location filename="poshuku.cpp" line="506"/>
         <source>Please note that Developer Extras would work correctly only for pages that are loaded after enabling.</source>
-        <translation type="unfinished">Por favor observe que desarrolladores extras podrian trabajar correctamente solo para paginas que son cargadas despues de habilitadas.</translation>
+        <translation>Por favor observe que desarrolladores extras podrian trabajar correctamente solo para paginas que son cargadas despues de habilitadas.</translation>
     </message>
 </context>
 <context>
@@ -886,7 +905,7 @@
     <message>
         <location filename="screenshotsavedialog.cpp" line="82"/>
         <source>File size unknown</source>
-        <translation type="unfinished">Tamaño de archivo desconocido</translation>
+        <translation>Tamaño de archivo desconocido</translation>
     </message>
 </context>
 <context>
@@ -894,7 +913,7 @@
     <message>
         <location filename="searchtext.cpp" line="32"/>
         <source>Search %1 with:</source>
-        <translation type="unfinished">Bucar %1 con:</translation>
+        <translation>Bucar %1 con:</translation>
     </message>
 </context>
 <context>
@@ -904,7 +923,7 @@
         <location filename="passwordremember.ui" line="23"/>
         <source>Remember forms data</source>
         <oldsource>Password remember</oldsource>
-        <translation type="unfinished">Contraseña recordada</translation>
+        <translation>Contraseña recordada</translation>
     </message>
     <message>
         <location filename="passwordremember.ui" line="30"/>
@@ -1064,152 +1083,160 @@
     </message>
 </context>
 <context>
+    <name>URLFrame</name>
+    <message>
+        <location filename="urlframe.ui" line="92"/>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+</context>
+<context>
     <name>poshukusettings</name>
     <message>
         <location filename="dummy.cpp" line="2"/>
         <source>Browser settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Configuración del navegador</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="3"/>
         <source>Behavior</source>
-        <translation type="unfinished"></translation>
+        <translation>Comportamiento</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="4"/>
         <source>Restore previous session</source>
-        <translation type="unfinished"></translation>
+        <translation>Restaurar sesión previosa</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="5"/>
         <source>Always open home tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Siempre abrir la ficha Inicio</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="6"/>
         <source>Open new tabs in the background</source>
-        <translation type="unfinished"></translation>
+        <translation>Abrir nuevas pestañas en segundo plano</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="7"/>
         <source>Group bookmarks by tags</source>
-        <translation type="unfinished"></translation>
+        <translation>Agrupar marcadores por etiquetas</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="8"/>
         <source>Paranoid downloads detection</source>
-        <translation type="unfinished"></translation>
+        <translation>Detección de descargas Paranoid</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="9"/>
         <source>Differ download locations by file extension</source>
-        <translation type="unfinished"></translation>
+        <translation>Diferenciar sitios de descarga por extensión de archivo</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="10"/>
         <source>Try to detect links to RSS/Atom feeds</source>
-        <translation type="unfinished"></translation>
+        <translation>Tratar de detectar enlaces a feeds RSS / Atom</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="11"/>
         <source>Generate tooltips</source>
-        <translation type="unfinished"></translation>
+        <translation>Generar información sobre herramientas</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="12"/>
         <source>Notify about finished loads by default</source>
-        <translation type="unfinished"></translation>
+        <translation>Notificarme de las cargas terminado por defecto</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="13"/>
         <source>Automatically close empty pages with delegated content</source>
-        <translation type="unfinished"></translation>
+        <translation>Cerrar automáticamente las páginas vacías de contenido delegado</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="14"/>
         <source>Open these schemes using external applications:</source>
-        <translation type="unfinished"></translation>
+        <translation>Abrir estos esquemas con aplicaciones externas:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="15"/>
         <source>User CSS URL:</source>
-        <translation type="unfinished"></translation>
+        <translation>User CSS URL:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="16"/>
         <location filename="dummy.cpp" line="17"/>
         <source>Security</source>
-        <translation type="unfinished"></translation>
+        <translation>Seguridad</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="18"/>
         <source>Offline storage database</source>
-        <translation type="unfinished"></translation>
+        <translation>Base de datos de almacenamiento offline</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="19"/>
         <source>Offline web application cache</source>
-        <translation type="unfinished"></translation>
+        <translation>Web sin conexión caché de la aplicación</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="20"/>
         <source>Local storage database</source>
-        <translation type="unfinished"></translation>
+        <translation>Base de datos de almacenamiento local</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="21"/>
         <source>Store local link history</source>
-        <translation type="unfinished"></translation>
+        <translation>Almacenar el historial de enlace local</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="22"/>
         <source>Clear history items older than:</source>
-        <translation type="unfinished"></translation>
+        <translation>Borrar los elementos del historial más antiguos que:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="23"/>
         <source> days</source>
-        <translation type="unfinished"></translation>
+        <translation>Dias</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="24"/>
         <source>Keep less than: </source>
-        <translation type="unfinished"></translation>
+        <translation>Dejar menos que:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="25"/>
         <source> items</source>
-        <translation type="unfinished"></translation>
+        <translation>artículos</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="26"/>
         <source>Cookies...</source>
-        <translation type="unfinished"></translation>
+        <translation>Cookies...</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="27"/>
         <source>Clear favicon database</source>
-        <translation type="unfinished"></translation>
+        <translation>Borrar la base de favicon  datos</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="28"/>
         <source>Cache</source>
-        <translation type="unfinished"></translation>
+        <translation>Caché</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="29"/>
         <source>Offline storage</source>
-        <translation type="unfinished"></translation>
+        <translation>Almacenamiento fuera de línea</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="30"/>
         <source>Offline storage default quota:</source>
-        <translation type="unfinished"></translation>
+        <translation>Almacenamiento fuera de línea cuota predeterminada:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="31"/>
         <source> KB</source>
-        <translation type="unfinished"></translation>
+        <translation>KB</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="32"/>
@@ -1224,7 +1251,7 @@
     <message>
         <location filename="dummy.cpp" line="34"/>
         <source>Maximum pages:</source>
-        <translation type="unfinished"></translation>
+        <translation>Páginas como máximo:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="35"/>
@@ -1256,125 +1283,125 @@
     <message>
         <location filename="dummy.cpp" line="42"/>
         <source>Storage</source>
-        <translation type="unfinished"></translation>
+        <translation>Almacenamiento</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="43"/>
         <source>Viewer settings</source>
-        <translation type="unfinished"></translation>
+        <translation>configuración del visor</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="44"/>
         <location filename="dummy.cpp" line="45"/>
         <source>Dynamic content</source>
-        <translation type="unfinished"></translation>
+        <translation>El contenido dinámico</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="46"/>
         <source>Load images automatically</source>
-        <translation type="unfinished"></translation>
+        <translation>Cargar imágenes automáticamente</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="47"/>
         <source>Allow Javascript</source>
-        <translation type="unfinished"></translation>
+        <translation>Permitir Javascript</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="48"/>
         <source>Allow Java</source>
-        <translation type="unfinished"></translation>
+        <translation>Permitir java</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="49"/>
         <source>Allow plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Permitir plugins</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="50"/>
         <source>Javascript programs can open new windows</source>
-        <translation type="unfinished"></translation>
+        <translation>Programas de Javascript pueden abrir nuevas ventanas</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="51"/>
         <source>Javascript programs can access clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Programas de Javascript tienen acceso al portapapeles</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="52"/>
         <source>Developer extras</source>
-        <translation type="unfinished"></translation>
+        <translation>desarrollador extras</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="53"/>
         <location filename="dummy.cpp" line="54"/>
         <source>Fonts</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipos de letra </translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="55"/>
         <source>Standard font:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo de letra normal:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="56"/>
         <source>Fixed font:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo fijo:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="57"/>
         <source>Serif font:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo de letra Serif:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="58"/>
         <source>SansSerif font:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo de letra SansSerif:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="59"/>
         <source>Cursive font:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo de letra Cursive:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="60"/>
         <source>Fantasy font:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo de letra Fantasy:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="61"/>
         <source>Sizes</source>
-        <translation type="unfinished"></translation>
+        <translation>Tamaños</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="62"/>
         <source>Minimum font size:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tamaño minimal de letras:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="63"/>
         <source>Default font size:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tamaño de letra predeterminado:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="64"/>
         <source>Default fixed font size:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tamaño de letra predeterminado fijo:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="65"/>
         <location filename="dummy.cpp" line="66"/>
         <source>Rendering</source>
-        <translation type="unfinished"></translation>
+        <translation>Rendering</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="67"/>
         <source>Antialias primitives if possible</source>
-        <translation type="unfinished"></translation>
+        <translation>Antialias primitivas, si es posible</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="68"/>
         <source>Antialias text if possible</source>
-        <translation type="unfinished"></translation>
+        <translation>Suavizar texto si es posible</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="69"/>

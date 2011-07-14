@@ -23,21 +23,17 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Aggregator
+{
+	class AddFeed : public QDialog, private Ui::AddFeed
 	{
-		namespace Aggregator
-		{
-			class AddFeed : public QDialog, private Ui::AddFeed
-			{
-				Q_OBJECT
-			public:
-				AddFeed (const QString& = QString (), QWidget *parent = 0);
-				QString GetURL () const;
-				QStringList GetTags () const;
-			};
-		};
+		Q_OBJECT
+	public:
+		AddFeed (const QString& = QString (), QWidget *parent = 0);
+		QString GetURL () const;
+		QStringList GetTags () const;
 	};
-};
+}
+}
 
 #endif
-

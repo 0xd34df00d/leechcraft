@@ -23,26 +23,23 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Qrosp
+{
+	class HookProxyWrapper : public QObject
 	{
-		namespace Qrosp
-		{
-			class HookProxyWrapper : public QObject
-			{
-				Q_OBJECT
-				Q_PROPERTY (QVariant ReturnValue READ GetReturnValue WRITE SetReturnValue);
+		Q_OBJECT
+		Q_PROPERTY (QVariant ReturnValue READ GetReturnValue WRITE SetReturnValue);
 
-				IHookProxy_ptr Proxy_;
-			public:
-				HookProxyWrapper (IHookProxy_ptr);
-			public slots:
-				void CancelDefault ();
-				const QVariant& GetReturnValue () const;
-				void SetReturnValue (const QVariant&);
-				void SetValue (const QByteArray&, const QVariant&);
-			};
-		};
+		IHookProxy_ptr Proxy_;
+	public:
+		HookProxyWrapper (IHookProxy_ptr);
+	public slots:
+		void CancelDefault ();
+		const QVariant& GetReturnValue () const;
+		void SetReturnValue (const QVariant&);
+		void SetValue (const QByteArray&, const QVariant&);
 	};
-};
+}
+}
 
 #endif

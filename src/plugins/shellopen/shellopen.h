@@ -47,8 +47,10 @@ namespace LeechCraft
 				QString GetInfo () const;
 				QIcon GetIcon () const;
 
-				bool CouldHandle (const LeechCraft::Entity&) const;
+				EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
 				void Handle (LeechCraft::Entity);
+			signals:
+				void gotEntity (const LeechCraft::Entity&);
 			};
 		};
 	};

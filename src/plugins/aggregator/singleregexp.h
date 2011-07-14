@@ -25,25 +25,21 @@ class QString;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Aggregator
+{
+	class SingleRegexp : public QDialog
 	{
-		namespace Aggregator
-		{
-			class SingleRegexp : public QDialog
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				Ui::SingleRegexp Ui_;
-			public:
-				SingleRegexp (const QString& = QString (), const QString& = QString (), bool = false, QWidget* = 0);
-				QString GetTitle () const;
-				QString GetBody () const;
-			private slots:
-				void lineEdited (const QString&, QWidget* = 0);
-			};
-		};
+		Ui::SingleRegexp Ui_;
+	public:
+		SingleRegexp (const QString& = QString (), const QString& = QString (), bool = false, QWidget* = 0);
+		QString GetTitle () const;
+		QString GetBody () const;
+	private slots:
+		void lineEdited (const QString&, QWidget* = 0);
 	};
-};
+}
+}
 
 #endif
-

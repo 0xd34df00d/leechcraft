@@ -64,6 +64,7 @@ namespace Xoox
 	class FetchQueue;
 	class PubSubManager;
 	class PrivacyListsManager;
+	class AdHocCommandManager;
 
 	class ClientConnection : public QObject
 	{
@@ -82,6 +83,7 @@ namespace Xoox
 		QXmppCallManager *CallManager_;
 		PubSubManager *PubSubManager_;
 		PrivacyListsManager *PrivacyListsManager_;
+		AdHocCommandManager *AdHocCommandManager_;
 		
 		AnnotationsManager *AnnotationsManager_;
 
@@ -156,6 +158,7 @@ namespace Xoox
 		PubSubManager* GetPubSubManager () const;
 		PrivacyListsManager* GetPrivacyListsManager () const;
 		QXmppCallManager* GetCallManager () const;
+		AdHocCommandManager* GetAdHocCommandManager () const;
 		
 		void SetSignaledLog (bool);
 
@@ -193,6 +196,7 @@ namespace Xoox
 		static void Split (const QString& full,
 				QString *bare, QString *resource);
 	private:
+		void SetupLogger ();
 		EntryStatus PresenceToStatus (const QXmppPresence&) const;
 		void HandleOtherPresence (const QXmppPresence&);
 		void HandleError (const QXmppIq&);

@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_AZOTH_SOURCETRACKINGMODEL_H
 #define PLUGINS_AZOTH_SOURCETRACKINGMODEL_H
-#include <plugininterface/mergemodel.h>
+#include <util/mergemodel.h>
 #include <interfaces/iresourceplugin.h>
 #include <interfaces/ichatstyleresourcesource.h>
 
@@ -66,13 +66,7 @@ namespace Azoth
 				int from, int to, bool add)
 		{
 			if (!model)
-			{
 				model = qobject_cast<QAbstractItemModel*> (sender ());
-				
-				const QAbstractProxyModel *proxy = 0;
-				while ((proxy = qobject_cast<const QAbstractProxyModel*> (model)))
-					model = proxy->sourceModel ();
-			}
 
 			SrcType *src = Model2Source_ [model];
 			for (int i = from; i <= to; ++i)

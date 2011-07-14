@@ -66,67 +66,67 @@
 <context>
     <name>BackendSelector</name>
     <message>
-        <location filename="plugininterface/backendselector.ui" line="21"/>
+        <location filename="util/backendselector.ui" line="21"/>
         <source>SQLite</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugininterface/backendselector.ui" line="26"/>
+        <location filename="util/backendselector.ui" line="26"/>
         <source>PostgreSQL</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugininterface/backendselector.ui" line="31"/>
+        <location filename="util/backendselector.ui" line="31"/>
         <source>MySQL</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugininterface/backendselector.ui" line="54"/>
+        <location filename="util/backendselector.ui" line="54"/>
         <source>Journal mode:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugininterface/backendselector.ui" line="90"/>
+        <location filename="util/backendselector.ui" line="90"/>
         <source>Temp store:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugininterface/backendselector.ui" line="111"/>
+        <location filename="util/backendselector.ui" line="111"/>
         <source>Synchronous:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugininterface/backendselector.ui" line="139"/>
+        <location filename="util/backendselector.ui" line="139"/>
         <source>VACUUM on exit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugininterface/backendselector.ui" line="169"/>
-        <location filename="plugininterface/backendselector.ui" line="237"/>
+        <location filename="util/backendselector.ui" line="169"/>
+        <location filename="util/backendselector.ui" line="237"/>
         <source>Hostname:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugininterface/backendselector.ui" line="179"/>
-        <location filename="plugininterface/backendselector.ui" line="247"/>
+        <location filename="util/backendselector.ui" line="179"/>
+        <location filename="util/backendselector.ui" line="247"/>
         <source>Port:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugininterface/backendselector.ui" line="206"/>
-        <location filename="plugininterface/backendselector.ui" line="274"/>
+        <location filename="util/backendselector.ui" line="206"/>
+        <location filename="util/backendselector.ui" line="274"/>
         <source>Username:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugininterface/backendselector.ui" line="216"/>
-        <location filename="plugininterface/backendselector.ui" line="284"/>
+        <location filename="util/backendselector.ui" line="216"/>
+        <location filename="util/backendselector.ui" line="284"/>
         <source>Password:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugininterface/backendselector.ui" line="196"/>
-        <location filename="plugininterface/backendselector.ui" line="264"/>
+        <location filename="util/backendselector.ui" line="196"/>
+        <location filename="util/backendselector.ui" line="264"/>
         <source>Database name:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -478,7 +478,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="191"/>
+        <location filename="coreinstanceobject.cpp" line="185"/>
         <source>Settings</source>
         <translation type="unfinished"></translation>
     </message>
@@ -756,11 +756,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="settingstab.cpp" line="94"/>
-        <source>LeechCraft</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="settingstab.cpp" line="98"/>
         <location filename="settingstab.cpp" line="124"/>
         <location filename="settingstab.cpp" line="126"/>
@@ -769,17 +764,17 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="settingstab.cpp" line="163"/>
+        <location filename="settingstab.cpp" line="168"/>
         <source>Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="settingstab.cpp" line="164"/>
+        <location filename="settingstab.cpp" line="169"/>
         <source>LeechCraft-wide settings dashboard</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="settingstab.cpp" line="201"/>
+        <location filename="settingstab.cpp" line="206"/>
         <source>Settings for %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -933,17 +928,17 @@
 <context>
     <name>LeechCraft::Util::CategorySelector</name>
     <message>
-        <location filename="plugininterface/categoryselector.cpp" line="37"/>
+        <location filename="util/categoryselector.cpp" line="37"/>
         <source>Tags selector</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugininterface/categoryselector.cpp" line="50"/>
+        <location filename="util/categoryselector.cpp" line="50"/>
         <source>Select all</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugininterface/categoryselector.cpp" line="56"/>
+        <location filename="util/categoryselector.cpp" line="56"/>
         <source>Select none</source>
         <translation type="unfinished"></translation>
     </message>
@@ -951,12 +946,12 @@
 <context>
     <name>LeechCraft::Util::FlatToFoldersProxyModel</name>
     <message>
-        <location filename="plugininterface/flattofoldersproxymodel.cpp" line="100"/>
+        <location filename="util/flattofoldersproxymodel.cpp" line="100"/>
         <source>untagged</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugininterface/flattofoldersproxymodel.cpp" line="104"/>
+        <location filename="util/flattofoldersproxymodel.cpp" line="104"/>
         <source>&lt;unknown tag&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -985,66 +980,166 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="plugininterface/util.cpp" line="50"/>
+        <location filename="util/util.cpp" line="50"/>
         <source>Too long to show</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugininterface/util.cpp" line="67"/>
+        <location filename="util/util.cpp" line="67"/>
         <source>Binary entity</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugininterface/util.cpp" line="70"/>
+        <location filename="util/util.cpp" line="70"/>
         <source>&lt;br /&gt;&lt;br /&gt;of type &lt;code&gt;%1&lt;/code&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugininterface/util.cpp" line="77"/>
+        <location filename="util/util.cpp" line="77"/>
         <source>&lt;br /&gt;from %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugininterface/util.cpp" line="107"/>
+        <location filename="util/util.cpp" line="107"/>
         <source> b</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugininterface/util.cpp" line="109"/>
+        <location filename="util/util.cpp" line="109"/>
         <source> KiB</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugininterface/util.cpp" line="111"/>
+        <location filename="util/util.cpp" line="111"/>
         <source> MiB</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugininterface/util.cpp" line="113"/>
+        <location filename="util/util.cpp" line="113"/>
         <source> GiB</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location filename="plugininterface/util.cpp" line="125"/>
+        <location filename="util/util.cpp" line="125"/>
         <source>%n day(s), </source>
         <translation type="unfinished">
             <numerusform></numerusform>
         </translation>
     </message>
     <message>
-        <location filename="plugininterface/util.cpp" line="221"/>
-        <location filename="plugininterface/util.cpp" line="238"/>
+        <location filename="util/util.cpp" line="221"/>
+        <location filename="util/util.cpp" line="238"/>
         <source>Could not cd into %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="plugininterface/util.cpp" line="215"/>
+        <location filename="util/util.cpp" line="215"/>
         <source>Could not create %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="coreinstanceobject.cpp" line="95"/>
         <source>System</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="util/socketerrorstrings.cpp" line="31"/>
+        <source>connection refused</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="util/socketerrorstrings.cpp" line="33"/>
+        <source>remote host closed connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="util/socketerrorstrings.cpp" line="35"/>
+        <source>host not found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="util/socketerrorstrings.cpp" line="37"/>
+        <source>socket access error (lacking required privileges)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="util/socketerrorstrings.cpp" line="39"/>
+        <source>system ran out of sockets</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="util/socketerrorstrings.cpp" line="41"/>
+        <source>socket operation timed out</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="util/socketerrorstrings.cpp" line="43"/>
+        <source>datagram too large</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="util/socketerrorstrings.cpp" line="45"/>
+        <source>physical network error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="util/socketerrorstrings.cpp" line="47"/>
+        <source>address already in use</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="util/socketerrorstrings.cpp" line="49"/>
+        <source>specified address doesn&apos;t belong to the host</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="util/socketerrorstrings.cpp" line="51"/>
+        <source>unsupported socket operation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="util/socketerrorstrings.cpp" line="53"/>
+        <source>proxy authentication required</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="util/socketerrorstrings.cpp" line="55"/>
+        <source>SSL handshake failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="util/socketerrorstrings.cpp" line="57"/>
+        <source>unfinished socket operation in progress</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="util/socketerrorstrings.cpp" line="59"/>
+        <source>proxy connection has been refused</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="util/socketerrorstrings.cpp" line="61"/>
+        <source>proxy connection was closed unexpectedly</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="util/socketerrorstrings.cpp" line="63"/>
+        <source>connection to the proxy server timed out</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="util/socketerrorstrings.cpp" line="65"/>
+        <source>proxy not found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="util/socketerrorstrings.cpp" line="67"/>
+        <source>proxy protocol error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="util/socketerrorstrings.cpp" line="70"/>
+        <source>unknown error</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

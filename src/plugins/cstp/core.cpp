@@ -28,11 +28,13 @@
 #include <QStringList>
 #include <QtDebug>
 #include <QRegExp>
-#include <plugininterface/util.h>
+#include <interfaces/entitytesthandleresult.h>
+#include <util/util.h>
 #include "task.h"
 #include "xmlsettingsmanager.h"
 #include "morphfile.h"
 #include "addtask.h"
+
 extern "C"
 {
 	#ifdef Q_OS_WIN32
@@ -343,22 +345,26 @@ namespace LeechCraft
 						result, _Local::SpeedAccumulator ());
 			}
 
-			bool Core::CouldDownload (const LeechCraft::Entity& e)
+			EntityTestHandleResult Core::CouldDownload (const LeechCraft::Entity& e)
 			{
 				if (e.Entity_.value<QNetworkReply*> ())
-					return true;
+					return EntityTestHandleResult (EntityTestHandleResult::PHigh);
 
-				QUrl url = e.Entity_.toUrl ();
+				const QUrl& url = e.Entity_.toUrl ();
 				if (!url.isValid ())
-					return false;
+					return EntityTestHandleResult ();
 
-				QString scheme = url.scheme ();
+				const QString& scheme = url.scheme ();
 				if (scheme == "file")
-					return !(e.Parameters_ & FromUserInitiated);
+					return !(e.Parameters_ & FromUserInitiated) ?
+							EntityTestHandleResult (EntityTestHandleResult::PHigh) :
+							EntityTestHandleResult ();
 				else
 				{
-					QStringList schemes = QStringList ("http") << "https";
-					return schemes.contains (url.scheme ());
+					const QStringList schemes = QStringList ("http") << "https";
+					return schemes.contains (url.scheme ()) ?
+							EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
+							EntityTestHandleResult ();
 				}
 			}
 

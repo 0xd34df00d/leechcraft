@@ -20,40 +20,37 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Aggregator
+{
+	StartupFirstPage::StartupFirstPage (QWidget *parent)
+	: QWizardPage (parent)
 	{
-		namespace Aggregator
-		{
-			StartupFirstPage::StartupFirstPage (QWidget *parent)
-			: QWizardPage (parent)
-			{
-				Ui_.setupUi (this);
+		Ui_.setupUi (this);
 
-				setTitle ("Aggregator");
-				setSubTitle (tr ("Set default options"));
-			}
+		setTitle ("Aggregator");
+		setSubTitle (tr ("Set default options"));
+	}
 
-			void StartupFirstPage::initializePage ()
-			{
-				connect (wizard (),
-						SIGNAL (accepted ()),
-						this,
-						SLOT (handleAccepted ()));
-				XmlSettingsManager::Instance ()->
-						setProperty ("StartupVersion", 1);
-			}
+	void StartupFirstPage::initializePage ()
+	{
+		connect (wizard (),
+				SIGNAL (accepted ()),
+				this,
+				SLOT (handleAccepted ()));
+		XmlSettingsManager::Instance ()->
+				setProperty ("StartupVersion", 1);
+	}
 
-			void StartupFirstPage::handleAccepted ()
-			{
-				XmlSettingsManager::Instance ()->setProperty ("ShowIconInTray",
-						Ui_.ShowIconInTray_->isChecked ());
-				XmlSettingsManager::Instance ()->setProperty ("UpdateInterval",
-						Ui_.UpdateInterval_->value ());
-				XmlSettingsManager::Instance ()->setProperty ("ItemsPerChannel",
-						Ui_.ItemsPerChannel_->value ());
-				XmlSettingsManager::Instance ()->setProperty ("ItemsMaxAge",
-						Ui_.ItemsMaxAge_->value ());
-			}
-		};
-	};
-};
+	void StartupFirstPage::handleAccepted ()
+	{
+		XmlSettingsManager::Instance ()->setProperty ("ShowIconInTray",
+				Ui_.ShowIconInTray_->isChecked ());
+		XmlSettingsManager::Instance ()->setProperty ("UpdateInterval",
+				Ui_.UpdateInterval_->value ());
+		XmlSettingsManager::Instance ()->setProperty ("ItemsPerChannel",
+				Ui_.ItemsPerChannel_->value ());
+		XmlSettingsManager::Instance ()->setProperty ("ItemsMaxAge",
+				Ui_.ItemsMaxAge_->value ());
+	}
+}
+}

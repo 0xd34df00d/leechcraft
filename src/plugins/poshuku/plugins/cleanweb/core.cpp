@@ -34,8 +34,8 @@
 #include <QCoreApplication>
 #include <QMenu>
 #include <QMainWindow>
-#include <plugininterface/util.h>
-#include <plugininterface/customnetworkreply.h>
+#include <util/util.h>
+#include <util/customnetworkreply.h>
 #include "xmlsettingsmanager.h"
 #include "flashonclickplugin.h"
 #include "flashonclickwhitelist.h"
@@ -236,7 +236,7 @@ namespace CleanWeb
 			<< tr ("URL");
 		try
 		{
-			LeechCraft::Util::CreateIfNotExists ("cleanweb");
+			Util::CreateIfNotExists ("cleanweb");
 		}
 		catch (const std::exception& e)
 		{

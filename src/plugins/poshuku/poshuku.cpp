@@ -29,9 +29,10 @@
 #include <QMenu>
 #include <QMainWindow>
 #include <QtDebug>
-#include <plugininterface/util.h>
-#include <plugininterface/tagscompletionmodel.h>
-#include <plugininterface/backendselector.h>
+#include <interfaces/entitytesthandleresult.h>
+#include <util/util.h>
+#include <util/tagscompletionmodel.h>
+#include <util/backendselector.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "customwebview.h"
@@ -262,9 +263,11 @@ namespace Poshuku
 		return XmlSettingsDialog_;
 	}
 
-	bool Poshuku::CouldHandle (const LeechCraft::Entity& e) const
+	EntityTestHandleResult Poshuku::CouldHandle (const LeechCraft::Entity& e) const
 	{
-		return Core::Instance ().CouldHandle (e);
+		return Core::Instance ().CouldHandle (e) ?
+				EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
+				EntityTestHandleResult ();
 	}
 
 	void Poshuku::Handle (LeechCraft::Entity e)

@@ -21,7 +21,8 @@
 #include <QMainWindow>
 #include <QIcon>
 #include <QTimer>
-#include <plugininterface/resourceloader.h>
+#include <interfaces/entitytesthandleresult.h>
+#include <util/resourceloader.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include "kinotifywidget.h"
 #include "xmlsettingsmanager.h"
@@ -76,11 +77,14 @@ namespace LeechCraft
 				return QIcon ();
 			}
 
-			bool Plugin::CouldHandle (const LeechCraft::Entity& e) const
+			EntityTestHandleResult Plugin::CouldHandle (const LeechCraft::Entity& e) const
 			{
-				return e.Mime_ == "x-leechcraft/notification" &&
+				const bool could = e.Mime_ == "x-leechcraft/notification" &&
 						e.Additional_ ["Priority"].toInt () != PLog_ &&
 						!e.Additional_ ["Text"].toString ().isEmpty ();
+				return could ?
+						EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
+						EntityTestHandleResult ();
 			}
 
 			void Plugin::Handle (LeechCraft::Entity e)

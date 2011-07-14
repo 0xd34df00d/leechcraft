@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="/plugins/azoth/plugins/hili">
+    <file>resources/images/hili.svg</file>
+  </qresource>
+</RCC>

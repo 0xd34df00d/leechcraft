@@ -18,6 +18,7 @@
 
 #include "historyholder.h"
 #include <QIcon>
+#include <interfaces/entitytesthandleresult.h>
 #include "core.h"
 #include "findproxy.h"
 
@@ -78,10 +79,10 @@ QList<IFindProxy_ptr> Plugin::GetProxy (const LeechCraft::Request& r)
 	return result;
 }
 
-bool Plugin::CouldHandle (const LeechCraft::Entity& e) const
+EntityTestHandleResult Plugin::CouldHandle (const LeechCraft::Entity& e) const
 {
 	Core::Instance ().Handle (e);
-	return false;
+	return EntityTestHandleResult ();
 }
 
 void Plugin::Handle (LeechCraft::Entity)

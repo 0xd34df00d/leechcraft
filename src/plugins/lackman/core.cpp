@@ -23,7 +23,7 @@
 #include <QStandardItemModel>
 #include <QDir>
 #include <QtDebug>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include <xmlsettingsdialog/datasourceroles.h>
 #include "repoinfofetcher.h"
 #include "storage.h"

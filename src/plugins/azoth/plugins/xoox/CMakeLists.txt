@@ -52,6 +52,9 @@ SET (XOOX_SRCS
 	privacylistsconfigdialog.cpp
 	privacylistsitemdialog.cpp
 	mediacall.cpp
+	adhoccommandmanager.cpp
+	executecommanddialog.cpp
+	userlocation.cpp
 	)
 SET (XOOX_HEADERS
 	xoox.h
@@ -98,6 +101,9 @@ SET (XOOX_HEADERS
 	privacylistsconfigdialog.h
 	privacylistsitemdialog.h
 	mediacall.h
+	adhoccommandmanager.h
+	executecommanddialog.h
+	userlocation.h
 	)
 SET (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui
@@ -110,10 +116,15 @@ SET (XOOX_FORMS
 	inbandaccountregfirstpage.ui
 	privacylistsconfigdialog.ui
 	privacylistsitemdialog.ui
+	executecommanddialog.ui
+	commandslistpage.ui
+	commandresultpage.ui
 	)
+SET (XOOX_RESOURCES azothxooxresources.qrc)
 CreateTrVars ("azoth_xoox" "de;en;fr;it;ru_RU;uk_UA" XOOX_TRANSLATIONS XOOX_COMPILED_TRANSLATIONS)
 QT4_WRAP_CPP (XOOX_MOC_SRCS ${XOOX_HEADERS})
 QT4_WRAP_UI (XOOX_UIS_H ${XOOX_FORMS})
+QT4_ADD_RESOURCES (XOOX_RCCS ${XOOX_RESOURCES})
 
 ADD_CUSTOM_COMMAND (OUTPUT
 	${XOOX_COMPILED_TRANSLATIONS}
@@ -126,11 +137,11 @@ ADD_LIBRARY (leechcraft_azoth_xoox SHARED
 	${XOOX_SRCS}
 	${XOOX_MOC_SRCS}
 	${XOOX_UIS_H}
+	${XOOX_RCCS}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_azoth_xoox
 	${QT_LIBRARIES}
-	plugininterface
-	xmlsettingsdialog
+	${LEECHCRAFT_LIBRARIES}
 	${QXMPP_LIBRARIES}
 	${SPEEX_LIBRARIES}
 	)

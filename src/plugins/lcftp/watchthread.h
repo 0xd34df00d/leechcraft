@@ -19,7 +19,7 @@
 #ifndef PLUGINS_LCFTP_WATCHTHREAD_H
 #define PLUGINS_LCFTP_WATCHTHREAD_H
 #include <QThread>
-#include <plugininterface/guarded.h>
+#include <util/guarded.h>
 
 namespace LeechCraft
 {

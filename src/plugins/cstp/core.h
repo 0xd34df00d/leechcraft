@@ -31,6 +31,8 @@
 
 class QFile;
 
+struct EntityTestHandleResult;
+
 namespace boost
 {
 	namespace logic
@@ -113,7 +115,7 @@ namespace LeechCraft
 				qint64 GetTotal (int) const;
 				bool IsRunning (int) const;
 				qint64 GetTotalDownloadSpeed () const;
-				bool CouldDownload (const LeechCraft::Entity&);
+				EntityTestHandleResult CouldDownload (const LeechCraft::Entity&);
 				QAbstractItemModel* GetRepresentationModel ();
 				void SetNetworkAccessManager (QNetworkAccessManager*);
 				QNetworkAccessManager* GetNetworkAccessManager () const;

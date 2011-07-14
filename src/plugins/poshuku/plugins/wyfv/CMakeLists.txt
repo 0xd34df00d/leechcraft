@@ -54,8 +54,7 @@ ADD_LIBRARY (leechcraft_poshuku_wyfv SHARED
 	)
 TARGET_LINK_LIBRARIES (leechcraft_poshuku_wyfv
 	${QT_LIBRARIES}
-	plugininterface
-	xmlsettingsdialog
+	${LEECHCRAFT_LIBRARIES}
 	)
 INSTALL (TARGETS leechcraft_poshuku_wyfv DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES ${WYFV_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

@@ -15,12 +15,16 @@ IF (NOT QT_USE_FILE)
 	FIND_PACKAGE (LeechCraft REQUIRED)
 ENDIF (NOT QT_USE_FILE)
 
+SET (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+FIND_PACKAGE (Qross REQUIRED)
+
 SET (QT_USE_QTSCRIPT TRUE)
 INCLUDE (${QT_USE_FILE})
 INCLUDE_DIRECTORIES (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
+	${QROSS_INCLUDE_DIR}
 	)
 SET (SRCS
 	qrosp.cpp
@@ -28,6 +32,8 @@ SET (SRCS
 	wrapperobject.cpp
 	typesfactory.cpp
 	utilproxy.cpp
+	scriptloaderinstance.cpp
+	loadedscript.cpp
 	wrappers/coreproxywrapper.cpp
 	wrappers/hookproxywrapper.cpp
 	wrappers/entitywrapper.cpp
@@ -42,6 +48,8 @@ SET (HEADERS
 	wrapperobject.h
 	typesfactory.h
 	utilproxy.h
+	scriptloaderinstance.h
+	loadedscript.h
 	wrappers/coreproxywrapper.h
 	wrappers/hookproxywrapper.h
 	wrappers/entitywrapper.h
@@ -60,6 +68,6 @@ ADD_LIBRARY (leechcraft_qrosp SHARED
 TARGET_LINK_LIBRARIES (leechcraft_qrosp
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
-	qrosscore
+	${QROSS_LIBRARIES}
 	)
 INSTALL (TARGETS leechcraft_qrosp DESTINATION ${LC_PLUGINS_DEST})

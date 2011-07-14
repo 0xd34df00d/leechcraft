@@ -17,13 +17,16 @@
  **********************************************************************/
 
 #include "shellopen.h"
+#include <boost/bind.hpp>
 #include <QIcon>
 #include <QDesktopServices>
 #include <QUrl>
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QMainWindow>
-#include <plugininterface/util.h>
+#include <interfaces/entitytesthandleresult.h>
+#include <util/util.h>
+#include <util/notificationactionhandler.h>
 
 namespace LeechCraft
 {
@@ -66,44 +69,43 @@ namespace LeechCraft
 				return QIcon ();
 			}
 
-			bool Plugin::CouldHandle (const LeechCraft::Entity& e) const
+			EntityTestHandleResult Plugin::CouldHandle (const LeechCraft::Entity& e) const
 			{
 				if (!(e.Parameters_ & FromUserInitiated))
-					return false;
+					return EntityTestHandleResult ();
 
 				if (!e.Entity_.canConvert<QUrl> ())
-					return false;
+					return EntityTestHandleResult ();
 
 				if (e.Mime_.startsWith ("x-leechcraft/"))
-					return false;
+					return EntityTestHandleResult ();
 
-				QUrl url = e.Entity_.toUrl ();
+				const QUrl& url = e.Entity_.toUrl ();
 				if (url.scheme () != "file")
-					return false;
+					return EntityTestHandleResult ();
 
 				if (!QFileInfo (url.toLocalFile ()).exists ())
-					return false;
+					return EntityTestHandleResult ();
 
-				return true;
+				return EntityTestHandleResult (EntityTestHandleResult::PHigh);
 			}
 
 			void Plugin::Handle (LeechCraft::Entity e)
 			{
 				QUrl url = e.Entity_.toUrl ();
-				if (e.Parameters_ & FromUserInitiated &&
-						e.Parameters_ & IsDownloaded &&
-						QMessageBox::question (Proxy_->GetMainWindow (),
-								"LeechCraft",
-								tr ("Do you want to open %1?")
-									.arg (url.toLocalFile ()),
-								QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
-					return;
 
-				QDesktopServices::openUrl (url);
+				Entity notif = Util::MakeNotification ("ShellOpen",
+						tr ("%1 just finished downloading.")
+							.arg (url.toLocalFile ()),
+						PInfo_);
+				Util::NotificationActionHandler *nh =
+						new Util::NotificationActionHandler (notif);
+				nh->AddFunction (tr ("Open"), boost::bind (QDesktopServices::openUrl, url));
+
+				emit gotEntity (notif);
 			}
 		};
 	};
 };
 
 Q_EXPORT_PLUGIN2 (leechcraft_shellopen, LeechCraft::Plugins::ShellOpen::Plugin);
-

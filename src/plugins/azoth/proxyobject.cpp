@@ -25,7 +25,7 @@
 #include <QProcess>
 #include <QTextStream>
 #include <QtDebug>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "interfaces/iaccount.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -292,9 +292,9 @@ namespace Azoth
 		return Core::Instance ().GetEntry (entryID);
 	}
 	
-	QString ProxyObject::GetSelectedChatTemplate (QObject *entry) const
+	QString ProxyObject::GetSelectedChatTemplate (QObject *entry, QWebFrame *frame) const
 	{
-		return Core::Instance ().GetSelectedChatTemplate (entry);
+		return Core::Instance ().GetSelectedChatTemplate (entry, frame);
 	}
 	
 	QList<QColor> ProxyObject::GenerateColors (const QString& scheme) const
@@ -374,6 +374,11 @@ namespace Azoth
 		case PRLSystemIcons:
 			return Core::Instance ().GetResourceLoader (Core::RLTSystemIconLoader);
 		}
+	}
+	
+	QIcon ProxyObject::GetIconForState (State state) const
+	{
+		return Core::Instance ().GetIconForState (state);
 	}
 }
 }

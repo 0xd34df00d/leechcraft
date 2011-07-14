@@ -25,7 +25,7 @@
 #include <QTranslator>
 #include <interfaces/imessage.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <plugininterface/util.h>
+#include <util/util.h>
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -72,7 +72,7 @@ namespace HiLi
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		return QIcon (":/plugins/azoth/plugins/hili/resources/images/hili.svg");
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
@@ -98,6 +98,14 @@ namespace HiLi
 		
 		bool isHighlight = false;
 		const QString& body = msg->GetBody ();
+		if (body.size () > 1024)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "too big string to handle:"
+					<< body.size ();
+			return;
+		}
+
 		Q_FOREACH (const QRegExp& rx, RegexpsCache_)
 			if (body.contains (rx))
 			{

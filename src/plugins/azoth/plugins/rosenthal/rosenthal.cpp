@@ -23,9 +23,12 @@
 #include <QContextMenuEvent>
 #include <QMenu>
 #include <QTextCodec>
-#include <plugininterface/util.h>
+#include <QTranslator>
+#include <util/util.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "hunspell/hunspell.hxx"
 #include "highlighter.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -35,19 +38,16 @@ namespace Rosenthal
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		const QString& locale = Util::GetLocaleName ();
-#ifdef Q_WS_X11
-		QString base = "/usr/local/share/myspell/";
-		if (!QFile::exists (base + locale + ".aff"))
-			base = "/usr/share/myspell/";
-#elif defined(Q_WS_WIN32)
-		base = qApp->applicationDirPath () + "/myspell/";
-#endif
-		QByteArray baBase = (base + locale).toLatin1 ();
-		Hunspell_.reset (new Hunspell (baBase + ".aff", baBase + ".dic"));
+		Translator_.reset (Util::InstallTranslator ("azoth_rosenthal"));
+
+		SettingsDialog_.reset (new Util::XmlSettingsDialog);
+		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
+				"azothrosenthalsettings.xml");
 		
-		if (!locale.startsWith ("en_"))
-			Hunspell_->add_dic ((base + "en_GB.dic").toLatin1 ());
+		XmlSettingsManager::Instance ().RegisterObject ("CustomLocales",
+				this, "handleCustomLocalesChanged");
+		
+		ReinitHunspell ();
 	}
 
 	void Plugin::SecondInit ()
@@ -84,6 +84,11 @@ namespace Rosenthal
 		QSet<QByteArray> result;
 		result << "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin";
 		return result;
+	}
+	
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return SettingsDialog_;
 	}
 	
 	bool Plugin::eventFilter (QObject *obj, QEvent *event)
@@ -136,6 +141,50 @@ namespace Rosenthal
 		return true;
 	}
 	
+	void Plugin::ReinitHunspell ()
+	{
+		const QString& userSetting = XmlSettingsManager::Instance ()
+				.property ("CustomLocales").toString ();
+		const QStringList& userLocales = userSetting.split (' ', QString::SkipEmptyParts);
+		
+		const QString& locale = userLocales.value (0, Util::GetLocaleName ());
+#ifdef Q_WS_X11
+		QString base;
+
+		QStringList candidates;
+		candidates << "/usr/local/share/myspell/"
+				<< "/usr/share/myspell/"
+				<< "/usr/local/share/myspell/dicts/"
+				<< "/usr/share/myspell/dicts/"
+				<< "/usr/local/share/hunspell/"
+				<< "/usr/share/hunspell/";
+
+		Q_FOREACH (base, candidates)
+			if (QFile::exists (base + locale + ".aff"))
+				break;
+#elif defined(Q_WS_WIN32)
+		QString base = qApp->applicationDirPath () + "/myspell/";
+#endif
+		QByteArray baBase = (base + locale).toLatin1 ();
+		Hunspell_.reset (new Hunspell (baBase + ".aff", baBase + ".dic"));
+		
+		if (!locale.startsWith ("en_"))
+			Hunspell_->add_dic ((base + "en_GB.dic").toLatin1 ());
+		
+		if (userLocales.size () > 1)
+			Q_FOREACH (const QString& loc, userLocales)
+			{
+				if (loc == locale ||
+						loc == "en_GB")
+					continue;
+
+				Hunspell_->add_dic ((base + loc + ".dic").toLatin1 ());
+			}
+			
+		Q_FOREACH (Highlighter *hl, Highlighters_)
+			hl->UpdateHunspell (Hunspell_);
+	}
+	
 	QStringList Plugin::GetPropositions (const QString& word)
 	{		
 		QTextCodec *codec = QTextCodec::codecForName (Hunspell_->get_dic_encoding ());
@@ -163,8 +212,14 @@ namespace Rosenthal
 		QMetaObject::invokeMethod (chatTab,
 				"getMsgEdit",
 				Q_RETURN_ARG (QTextEdit*, edit));
+
 		Highlighter *hl = new Highlighter (Hunspell_, edit->document ());
-		
+		Highlighters_ << hl;
+		connect (hl,
+				SIGNAL (destroyed (QObject*)),
+				this,
+				SLOT (handleHighlighterDestroyed ()));
+
 		edit->installEventFilter (this);
 	}
 	
@@ -179,6 +234,16 @@ namespace Rosenthal
 		cur.select (QTextCursor::WordUnderCursor);
 		cur.deleteChar ();
 		cur.insertText (action->text ());
+	}
+	
+	void Plugin::handleHighlighterDestroyed ()
+	{
+		Highlighters_.removeAll (static_cast<Highlighter*> (sender ()));
+	}
+	
+	void Plugin::handleCustomLocalesChanged ()
+	{
+		ReinitHunspell ();
 	}
 }
 }

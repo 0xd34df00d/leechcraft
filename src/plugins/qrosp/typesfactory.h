@@ -22,20 +22,17 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Qrosp
+{
+	class TypesFactory : public QObject
 	{
-		namespace Qrosp
-		{
-			class TypesFactory : public QObject
-			{
-				Q_OBJECT
-			public:
-				TypesFactory (QObject* = 0);
-			public slots:
-				QObject* Create (const QString&);
-			};
-		};
+		Q_OBJECT
+	public:
+		TypesFactory (QObject* = 0);
+	public slots:
+		QObject* Create (const QString&);
 	};
-};
+}
+}
 
 #endif

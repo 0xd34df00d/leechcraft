@@ -21,6 +21,7 @@
 #include <QObject>
 #include <QPointer>
 #include <interfaces/imessage.h>
+#include <interfaces/irichtextmessage.h>
 #include "roomparticipantentry.h"
 
 class QXmppMessage;
@@ -36,9 +37,11 @@ namespace Xoox
 
 	class RoomPublicMessage : public QObject
 							, public IMessage
+							, public IRichTextMessage
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMessage);
+		Q_INTERFACES (LeechCraft::Azoth::IMessage
+				LeechCraft::Azoth::IRichTextMessage);
 
 		QPointer<RoomCLEntry> ParentEntry_;
 		RoomParticipantEntry_ptr ParticipantEntry_;
@@ -49,6 +52,8 @@ namespace Xoox
 		QString FromVariant_;
 		MessageType Type_;
 		MessageSubType SubType_;
+		
+		QString XHTML_;
 	public:
 		RoomPublicMessage (const QString&, RoomCLEntry*);
 		RoomPublicMessage (const QString&, Direction,
@@ -75,6 +80,9 @@ namespace Xoox
 		void SetBody (const QString&);
 		QDateTime GetDateTime () const;
 		void SetDateTime (const QDateTime&);
+
+		QString GetRichBody () const;
+		void SetRichBody (const QString&);
 	};
 }
 }

@@ -234,203 +234,216 @@
 <context>
     <name>LeechCraft::Poshuku::BrowserWidget</name>
     <message>
-        <location filename="browserwidget.cpp" line="83"/>
+        <location filename="browserwidget.cpp" line="87"/>
         <source>Bookmarks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="84"/>
+        <location filename="browserwidget.cpp" line="88"/>
         <source>History</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="130"/>
+        <location filename="browserwidget.cpp" line="134"/>
         <source>Reload periodically</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="134"/>
+        <location filename="browserwidget.cpp" line="138"/>
         <source>Notify when finished loading</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="141"/>
+        <location filename="browserwidget.cpp" line="145"/>
         <source>Bookmark...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="146"/>
+        <location filename="browserwidget.cpp" line="150"/>
         <source>Find...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="151"/>
+        <location filename="browserwidget.cpp" line="155"/>
         <source>Print...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="156"/>
+        <location filename="browserwidget.cpp" line="160"/>
         <source>Print with preview...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="161"/>
+        <location filename="browserwidget.cpp" line="165"/>
         <source>Take page&apos;s screenshot...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="166"/>
+        <location filename="browserwidget.cpp" line="170"/>
         <source>View sources...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="171"/>
+        <location filename="browserwidget.cpp" line="175"/>
+        <source>Save page...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="browserwidget.cpp" line="180"/>
         <source>Zoom in</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="175"/>
+        <location filename="browserwidget.cpp" line="184"/>
         <source>Zoom out</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="179"/>
+        <location filename="browserwidget.cpp" line="188"/>
         <source>Reset zoom</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="183"/>
+        <location filename="browserwidget.cpp" line="192"/>
         <source>Open history</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="186"/>
+        <location filename="browserwidget.cpp" line="195"/>
         <source>Ctrl+h</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="188"/>
+        <location filename="browserwidget.cpp" line="197"/>
         <source>Open bookmarks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="191"/>
+        <location filename="browserwidget.cpp" line="200"/>
         <source>Ctrl+b</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="236"/>
+        <location filename="browserwidget.cpp" line="246"/>
         <source>Change encoding</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="246"/>
+        <location filename="browserwidget.cpp" line="256"/>
         <source>Recently closed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="251"/>
+        <location filename="browserwidget.cpp" line="261"/>
         <source>External links</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="650"/>
+        <location filename="browserwidget.cpp" line="666"/>
         <source>Ctrl+D</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="651"/>
+        <location filename="browserwidget.cpp" line="667"/>
         <source>Ctrl+F</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="652"/>
+        <location filename="browserwidget.cpp" line="668"/>
         <source>Ctrl+P</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="653"/>
+        <location filename="browserwidget.cpp" line="669"/>
         <source>Ctrl+Shift+P</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="655"/>
+        <location filename="browserwidget.cpp" line="671"/>
         <source>Ctrl+Shift+V</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="658"/>
+        <location filename="browserwidget.cpp" line="674"/>
         <source>Ctrl+0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="659"/>
+        <location filename="browserwidget.cpp" line="675"/>
         <source>Ctrl+X</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="660"/>
+        <location filename="browserwidget.cpp" line="676"/>
         <source>Ctrl+C</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="661"/>
+        <location filename="browserwidget.cpp" line="677"/>
         <source>Ctrl+V</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="666"/>
+        <location filename="browserwidget.cpp" line="682"/>
         <source>Ctrl+Shift+T</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="728"/>
+        <location filename="browserwidget.cpp" line="779"/>
         <source>Print web page</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="755"/>
+        <location filename="browserwidget.cpp" line="806"/>
         <source>Reloading once in %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="920"/>
+        <location filename="browserwidget.cpp" line="958"/>
         <source>Save screenshot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="935"/>
+        <location filename="browserwidget.cpp" line="973"/>
         <source>Could not open %1 for write</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="944"/>
+        <location filename="browserwidget.cpp" line="982"/>
         <source>Could not write screenshot to %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="1245"/>
+        <location filename="browserwidget.cpp" line="1301"/>
         <source>Page load finished: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="1249"/>
+        <location filename="browserwidget.cpp" line="1305"/>
         <source>Page load failed: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="1256"/>
+        <location filename="browserwidget.cpp" line="1312"/>
         <source>Open</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="1279"/>
+        <location filename="browserwidget.cpp" line="1335"/>
         <source>Default</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="1328"/>
+        <location filename="browserwidget.cpp" line="1384"/>
         <source>No title</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Poshuku::ClearButton</name>
+    <message>
+        <location filename="clearbutton.cpp" line="33"/>
+        <source>Clear</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -460,28 +473,28 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="836"/>
+        <location filename="core.cpp" line="854"/>
         <source>Select XBEL file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="838"/>
-        <location filename="core.cpp" line="878"/>
+        <location filename="core.cpp" line="856"/>
+        <location filename="core.cpp" line="896"/>
         <source>XBEL files (*.xbel);;All files (*.*)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="852"/>
+        <location filename="core.cpp" line="870"/>
         <source>Could not open file %1 for reading.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="876"/>
+        <location filename="core.cpp" line="894"/>
         <source>Save XBEL file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="895"/>
+        <location filename="core.cpp" line="913"/>
         <source>Could not open file %1 for writing.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -489,104 +502,104 @@
 <context>
     <name>LeechCraft::Poshuku::CustomWebPage</name>
     <message>
-        <location filename="customwebpage.cpp" line="136"/>
+        <location filename="customwebpage.cpp" line="140"/>
         <source>&lt;a href=&quot;http://downforeveryoneorjustme.com/{host}&quot; target=&quot;_blank&quot;&gt;check&lt;/a&gt; if the site &lt;strong&gt;{host}&lt;/strong&gt; is down for you only;</source>
         <comment>{host} would be substituded with site&apos;s host name.</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="139"/>
+        <location filename="customwebpage.cpp" line="143"/>
         <source>try again later</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="140"/>
+        <location filename="customwebpage.cpp" line="144"/>
         <source>contact remote server&apos;s administrator (typically at &lt;a href=&quot;mailto:webmaster@{host}&quot;&gt;webmaster@{host}&lt;/a&gt;)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="142"/>
+        <location filename="customwebpage.cpp" line="146"/>
         <source>contact your system/network administrator, especially if you can&apos;t load any single page</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="144"/>
+        <location filename="customwebpage.cpp" line="148"/>
         <source>check your proxy settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="155"/>
-        <location filename="customwebpage.cpp" line="190"/>
+        <location filename="customwebpage.cpp" line="159"/>
+        <location filename="customwebpage.cpp" line="194"/>
         <source>check if the URL is written correctly;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="156"/>
+        <location filename="customwebpage.cpp" line="160"/>
         <source>try changing your DNS servers;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="157"/>
+        <location filename="customwebpage.cpp" line="161"/>
         <source>make sure that LeechCraft is allowed to access the Internet and particularly web sites;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="162"/>
+        <location filename="customwebpage.cpp" line="166"/>
         <source>check whether some downloads consume too much bandwidth: try limiting their speed or reducing number of connections for them;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="167"/>
+        <location filename="customwebpage.cpp" line="171"/>
         <source>try again.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="169"/>
+        <location filename="customwebpage.cpp" line="173"/>
         <source>make sure that remote server is really what it claims to be;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="191"/>
+        <location filename="customwebpage.cpp" line="195"/>
         <source>go to web site&apos;s &lt;a href=&quot;{schema}://{host}/&quot;&gt;main page&lt;/a&gt; and find the required page from there.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="193"/>
+        <location filename="customwebpage.cpp" line="197"/>
         <source>check the login and password you entered and try again</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="197"/>
+        <location filename="customwebpage.cpp" line="201"/>
         <source>check if the URL is written correctly, particularly, the part before the &apos;://&apos;;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="198"/>
+        <location filename="customwebpage.cpp" line="202"/>
         <source>try installing plugins that are known to support this protocol;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="485"/>
+        <location filename="customwebpage.cpp" line="490"/>
         <source>Error loading %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="490"/>
+        <location filename="customwebpage.cpp" line="495"/>
         <source>%1 (%2)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="495"/>
+        <location filename="customwebpage.cpp" line="500"/>
         <source>%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="497"/>
+        <location filename="customwebpage.cpp" line="502"/>
         <source>The page you tried to access cannot be loaded now.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="504"/>
+        <location filename="customwebpage.cpp" line="509"/>
         <source>Try doing the following:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -665,58 +678,58 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="449"/>
+        <location filename="customwebview.cpp" line="450"/>
         <source>Installed plugins</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="450"/>
+        <location filename="customwebview.cpp" line="451"/>
         <source>No plugins installed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="451"/>
+        <location filename="customwebview.cpp" line="452"/>
         <source>File name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="452"/>
+        <location filename="customwebview.cpp" line="453"/>
         <source>MIME type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="453"/>
+        <location filename="customwebview.cpp" line="454"/>
         <source>Description</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="454"/>
+        <location filename="customwebview.cpp" line="455"/>
         <source>Suffixes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="455"/>
+        <location filename="customwebview.cpp" line="456"/>
         <source>Enabled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="456"/>
+        <location filename="customwebview.cpp" line="457"/>
         <source>No</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="457"/>
+        <location filename="customwebview.cpp" line="458"/>
         <source>Yes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="467"/>
-        <location filename="customwebview.cpp" line="469"/>
+        <location filename="customwebview.cpp" line="468"/>
+        <location filename="customwebview.cpp" line="470"/>
         <source>Welcome to LeechCraft!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="471"/>
+        <location filename="customwebview.cpp" line="472"/>
         <source>Welcome to LeechCraft, the integrated internet-client.&lt;br /&gt;More info is available on the &lt;a href=&apos;http://leechcraft.org&apos;&gt;project&apos;s site&lt;/a&gt;.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1062,6 +1075,14 @@
     <message>
         <location filename="sourceviewer.ui" line="13"/>
         <source>Source viewer</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>URLFrame</name>
+    <message>
+        <location filename="urlframe.ui" line="92"/>
+        <source>...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

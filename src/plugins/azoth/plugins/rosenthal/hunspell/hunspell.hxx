@@ -1,14 +1,9 @@
+#include "hunvisapi.h"
+
 #include "hashmgr.hxx"
 #include "affixmgr.hxx"
 #include "suggestmgr.hxx"
 #include "langnum.hxx"
-#include "csutil.hxx"
-
-#define  SPELL_COMPOUND  (1 << 0)
-#define  SPELL_FORBIDDEN (1 << 1)
-#define  SPELL_ALLCAP    (1 << 2)
-#define  SPELL_NOCAP     (1 << 3)
-#define  SPELL_INITCAP   (1 << 4)
 
 #define  SPELL_XML "<?xml?>"
 
@@ -16,24 +11,13 @@
 #define MAXSUGGESTION 15
 #define MAXSHARPS 5
 
+#define HUNSPELL_OK       (1 << 0)
+#define HUNSPELL_OK_WARN  (1 << 1)
+
 #ifndef _MYSPELLMGR_HXX_
 #define _MYSPELLMGR_HXX_
 
-#ifdef HUNSPELL_STATIC
-	#define DLLEXPORT
-#else
-	#ifdef HUNSPELL_EXPORTS
-		#define DLLEXPORT  __declspec( dllexport )
-	#else
-		#define DLLEXPORT  __declspec( dllimport )
-	#endif
-#endif
-
-#ifdef W32
-class DLLEXPORT Hunspell
-#else
-class Hunspell
-#endif
+class LIBHUNSPELL_DLL_EXPORTED Hunspell
 {
   AffixMgr*       pAMgr;
   HashMgr*        pHMgr[MAXDIC];
@@ -145,6 +129,8 @@ public:
 
   struct cs_info * get_csconv();
   const char * get_version();
+
+  int get_langnum() const;
   
   /* experimental and deprecated functions */
 
@@ -156,7 +142,6 @@ public:
   /* spec. suggestions */
   int suggest_auto(char*** slst, const char * word);
   int suggest_pos_stems(char*** slst, const char * word);
-  char * get_possible_root();
 #endif
 
 private:
@@ -179,8 +164,8 @@ private:
    int    spellml(char*** slst, const char * word);
    int    get_xml_par(char * dest, const char * par, int maxl);
    const char * get_xml_pos(const char * s, const char * attr);
-   int    get_xml_list(char ***slst, char * list, char * tag);
-   int    check_xml_par(char * q, char * attr, char * value);
+   int    get_xml_list(char ***slst, char * list, const char * tag);
+   int    check_xml_par(const char * q, const char * attr, const char * value);
 
 };
 

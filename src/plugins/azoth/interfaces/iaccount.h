@@ -44,7 +44,9 @@ namespace Azoth
 	 * If the account supports publishing user tune, it may implement
 	 * ISupportTune.
 	 * 
-	 * @sa IHaveServiceDiscovery, IHaveConsole, ISupportTune
+	 * @sa IHaveServiceDiscovery, IHaveConsole
+	 * @sa ISupportTune, ISupportMood, ISupportActivity
+	 * @sa ISupportGeolocation
 	 */
 	class IAccount
 	{
@@ -401,6 +403,21 @@ namespace Azoth
 		 * @param[out] state New state of this account.
 		 */
 		virtual void statusChanged (const EntryStatus&) = 0;
+		
+		/** @brief This signal should be emitted when adding a contact
+		 * should be suggested to the user.
+		 * 
+		 * For XMPP protocol, this signal may be emitted when new
+		 * contacts are pushed to the roster via Roster Exchange XEP.
+		 * 
+		 * @note This function is expected to be a signal.
+		 * 
+		 * @param[out] id The ID of the contact.
+		 * @param[out] nick The suggested nick of the contact.
+		 * @param[out] groups The suggested groups of the contact.
+		 */
+		virtual void addContactSuggested (const QString& id,
+				const QString& nick, const QStringList& groups) = 0;
 	};
 
 	Q_DECLARE_OPERATORS_FOR_FLAGS (IAccount::AccountFeatures);
