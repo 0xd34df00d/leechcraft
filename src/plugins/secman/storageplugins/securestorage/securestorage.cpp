@@ -19,6 +19,7 @@
 
 #include "securestorage.h"
 #include <interfaces/secman/istorageplugin.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <QSettings>
 #include <QIcon>
 #include <QCoreApplication>
@@ -30,6 +31,8 @@
 #include <QMap>
 #include <QDataStream>
 #include <exception>
+#include "settingswidget.h"
+#include "xmlsettingsmanager.h"
 
 namespace
 {
@@ -89,22 +92,25 @@ namespace SecureStorage
 					QCoreApplication::applicationName () + "_SecMan_SecureStorage_Data"));
 
 		ForgetKeyAction_ = new QAction (tr ("Forget master password"), this);
-		ClearSettingsAction_ = new QAction (tr ("Clear SecureStorage data.."), this);
-		ChangePasswordAction_ = new QAction (tr ("Change SecureStorage master password.."), this);
-
 		connect (ForgetKeyAction_, 
 				SIGNAL (triggered ()),
 				this, 
 				SLOT (forgetKey ()));
-		connect (ClearSettingsAction_, 
-				SIGNAL (triggered ()),
-				this, 
-				SLOT (clearSettings ()));
-		connect (ChangePasswordAction_, 
-				SIGNAL (triggered ()),
-				this, 
-				SLOT (changePassword ()));
 
+		SettingsWidget_.reset (new SettingsWidget);
+		connect (SettingsWidget_.get (),
+				SIGNAL (changePasswordRequested ()),
+				this,
+				SLOT (changePassword ()));
+		connect (SettingsWidget_.get (),
+				SIGNAL (clearSettingsRequested ()),
+				this,
+				SLOT (clearSettings ()));
+
+		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog);
+		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
+				"securestoragesettings.xml");
+		XmlSettingsDialog_->SetCustomWidget ("SettingsWidget", SettingsWidget_.get ());
 		UpdateActionsStates ();
 	}
 
@@ -145,12 +151,8 @@ namespace SecureStorage
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace place) const
 	{
 		QList<QAction*> result;
-		if (place == AEPCommonContextMenu || place == AEPToolsMenu || place == AEPTrayMenu)
+		if (place == AEPCommonContextMenu || place == AEPTrayMenu)
 			result << ForgetKeyAction_;
-		if (place == AEPToolsMenu)
-			result << ChangePasswordAction_;
-		if (place == AEPToolsMenu)
-			result << ClearSettingsAction_;
 		return result;
 	}
 
@@ -162,8 +164,6 @@ namespace SecureStorage
 	void Plugin::UpdateActionsStates ()
 	{
 		ForgetKeyAction_->setEnabled (bool (CryptoSystem_));
-		ClearSettingsAction_->setEnabled (IsPasswordSet ());
-		ChangePasswordAction_->setEnabled (IsPasswordSet ());
 	}
 
 	QList<QByteArray> Plugin::ListKeys (IStoragePlugin::StorageType)
@@ -263,60 +263,33 @@ namespace SecureStorage
 			return;
 		}
 
-		QInputDialog dialog;
-		dialog.setWindowTitle (WindowTitle_);
-		dialog.setTextEchoMode (QLineEdit::Password);
-
-		QString oldPassword ("");
-		// ask old password
-		if (!IsPasswordEmpty ())
-			while (true)
-			{
-				dialog.setLabelText (tr ("Enter old master password:"));
-				dialog.setTextValue ("");
-				if (dialog.exec () != QInputDialog::Accepted)
-					return;
-
-				oldPassword = dialog.textValue ();
-				CryptoSystem oldCs (oldPassword);
-				if (IsPasswordCorrect (oldCs))
-					break; // normal way
-
-				if (QMessageBox::question (0, WindowTitle_,
-						tr ("Wrong old master password.\nDo you want to try again?"),
-						QMessageBox::Yes | QMessageBox::No,
-						QMessageBox::No) != QMessageBox::Yes)
-					return;
-			}
-
-		QString password;
-		// ask new password
-		while (true)
+		// get old password from a settings
+		QString oldPassword = SettingsWidget_->GetOldPassword ();
+		CryptoSystem oldCs (oldPassword);
+		if(!IsPasswordCorrect (oldCs))
 		{
-			dialog.setLabelText (tr ("Enter new master password:"));
-			dialog.setTextValue ("");
-			if (dialog.exec () != QInputDialog::Accepted)
-				return;
+			QMessageBox::critical (0, WindowTitle_,
+						tr ("Wrong old master password"),
+						QMessageBox::Ok);
+			return;
+		}
 
-			password = dialog.textValue ();
-			dialog.setLabelText (tr ("Enter the same master password again:"));
-			dialog.setTextValue ("");
-			if (dialog.exec () != QInputDialog::Accepted)
-				return;
-
-			QString password2 = dialog.textValue ();
-			if (password == password2)
-				break; // normal way
-
-			if (QMessageBox::question (0,
+		// get new password from a settings
+		QString password = SettingsWidget_->GetNewPassword1 ();
+		QString password2 = SettingsWidget_->GetNewPassword2 ();
+		if (password != password2)
+		{
+			QMessageBox::critical (0,
 						WindowTitle_,
-						tr ("The passwords are different. Do you want to try again?"),
-						QMessageBox::Yes | QMessageBox::No,
-						QMessageBox::No) != QMessageBox::Yes)
+						tr ("The passwords are different."),
+						QMessageBox::Ok);
 				return;
 		}
 
 		ChangePassword (oldPassword, password);
+		
+		// clear the password fields of the settings widget
+		SettingsWidget_->ClearPasswordFields ();
 	}
 
 	const CryptoSystem& Plugin::GetCryptoSystem ()
@@ -359,7 +332,7 @@ namespace SecureStorage
 	{
 		delete CryptoSystem_;
 		CryptoSystem_ = cs;
-		ForgetKeyAction_->setEnabled (static_cast<bool> (cs));
+		UpdateActionsStates ();
 	}
 
 	void Plugin::CreateNewPassword ()
@@ -481,6 +454,11 @@ namespace SecureStorage
 	bool Plugin::IsPasswordEmpty ()
 	{
 		return Settings_->value ("SecureStoragePasswordIsEmpty").toBool ();
+	}
+
+	LeechCraft::Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XmlSettingsDialog_;
 	}
 }
 }

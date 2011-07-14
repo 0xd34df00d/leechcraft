@@ -25,7 +25,9 @@
 #include <interfaces/iplugin2.h>
 #include <interfaces/secman/istorageplugin.h>
 #include <interfaces/iactionsexporter.h>
+#include <interfaces/ihavesettings.h>
 #include "cryptosystem.h"
+#include "settingswidget.h"
 
 class QSettings;
 
@@ -44,10 +46,14 @@ namespace SecureStorage
 				 , public IPlugin2
 				 , public IActionsExporter
 				 , public IStoragePlugin
+				 , public IHaveSettings
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Plugins::SecMan::IStoragePlugin IActionsExporter)
+		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Plugins::SecMan::IStoragePlugin IActionsExporter IHaveSettings)
 
+		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
+		boost::shared_ptr<SettingsWidget> SettingsWidget_;
+		
 		boost::shared_ptr<QSettings> Storage_;
 		boost::shared_ptr<QSettings> Settings_;
 
@@ -55,8 +61,6 @@ namespace SecureStorage
 		CryptoSystem *CryptoSystem_;
 		
 		QAction *ForgetKeyAction_;
-		QAction *ChangePasswordAction_;
-		QAction *ClearSettingsAction_;
 	public:
 		Plugin ();
 		void Init (ICoreProxy_ptr);
@@ -76,6 +80,8 @@ namespace SecureStorage
 		void Save (const QList<QPair<QByteArray, QVariantList> >&, StorageType, bool);
 		QList<QVariantList> Load (const QList<QByteArray>&, StorageType);
 		QList<QAction*> GetActions (LeechCraft::ActionsEmbedPlace) const;
+		
+		LeechCraft::Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	public slots:
 		void forgetKey ();
 		void changePassword ();
