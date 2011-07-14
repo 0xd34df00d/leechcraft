@@ -33,7 +33,7 @@ namespace Xoox
 	{
 		Q_OBJECT
 
-		QString cid;
+		QString Cid_;
 	public:
 		ImageMediaWidget (const QPair<QString, QString>&, QXmppBobManager*, const QString&, QWidget* = 0);
 	public slots:

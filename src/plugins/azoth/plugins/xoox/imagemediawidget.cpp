@@ -34,32 +34,34 @@ namespace Xoox
 		QByteArray data;
 		if (uri.second.startsWith ("cid:"))
 		{
-			cid = uri.second.mid (4);
-			data = manager->take (from, cid);
+			Cid_ = uri.second.mid (4);
+			data = manager->take (from, Cid_);
 		}
 		else
 		{
-			//FIXME
+			// FIXME
+			qWarning () << Q_FUNC_INFO
+					<< "unhandled uri:"
+					<< uri.second;
 		}
 		
 		if (!data.isNull ())
 			setPixmap (QPixmap::fromImage (QImage::fromData (data)));
-		else if (cid != "")
+		else if (!Cid_.isEmpty ())
 		{
 			connect (manager,
 					SIGNAL (bobReceived (const QXmppBobIq&)),
 					this,
 					SLOT (bobReceived (const QXmppBobIq&)));
-			manager->requestBob (from, cid);
+			manager->requestBob (from, Cid_);
 		}
 	}
 
 	void ImageMediaWidget::bobReceived (const QXmppBobIq& bob)
 	{
-		if (bob.cid () == cid)
+		if (bob.cid () == Cid_)
 			setPixmap (QPixmap::fromImage (QImage::fromData (bob.data ())));
 	}
-
 }
 }
 }

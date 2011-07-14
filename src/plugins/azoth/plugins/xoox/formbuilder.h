@@ -39,9 +39,8 @@ namespace Xoox
 	{		
 		QXmppDataForm Form_;
 		QHash<QXmppDataForm::Field::Type, FieldHandler_ptr> Type2Handler_;
-		QXmppBobManager *BobManager_;
 		QString From_;
-		
+		QXmppBobManager *BobManager_;		
 	public:
 		FormBuilder (const QString& = QString (), QXmppBobManager* = 0);
 
