@@ -22,6 +22,7 @@
 #include <QMessageBox>
 #include <QUuid>
 #include <QDate>
+#include <QWebElement>
 #include <interfaces/structures.h>
 #include <util/util.h>
 #include <util/categoryselector.h>
@@ -129,9 +130,21 @@ namespace Aggregator
 			descr.replace (QRegExp ("</p>\\s*<p>"), "<br/>");
 			descr.remove ("<p>");
 			descr.remove ("</p>");
-			descr.replace (QRegExp ("<img *>",
-						Qt::CaseSensitive, QRegExp::Wildcard),
-					"(inline image)");
+			
+			QRegExp imgRx ("<img *>", Qt::CaseSensitive, QRegExp::Wildcard);
+			imgRx.setMinimal (true);
+			descr.remove (imgRx);
+			descr.remove ("</img>");
+			
+			QRegExp linkRx ("<a.*>");
+			linkRx.setMinimal (true);
+			descr.remove (linkRx);
+			descr.remove ("</a>");
+			
+			QRegExp iframeRx ("<iframe .*/iframe>");
+			iframeRx.setMinimal (true);
+			descr.remove (iframeRx);
+
 			descr.replace ("&qout;", "\"");
 			descr.replace ("&emdash;", QString::fromUtf8 ("—"));
 			descr.replace ("&mdash;", QString::fromUtf8 ("—"));
@@ -139,6 +152,23 @@ namespace Aggregator
 			
 			// Fix some common errors
 			descr.replace ("<br>", "<br/>");
+
+			while (descr.contains ("<br/><br/>"))
+				descr.replace ("<br/><br/>", "<br/>");
+
+			QRegExp unclosedRx ("<(\\w+)[^/]*>");
+			unclosedRx.setMinimal (true);
+			int pos = 0;
+			while ((pos = unclosedRx.indexIn (descr, pos)) != -1)
+			{
+				QRegExp closedFinder ("</" + unclosedRx.cap (1) + ">");
+				if (closedFinder.indexIn (descr, pos + unclosedRx.matchedLength ()) != -1)
+				{
+					pos += unclosedRx.matchedLength ();
+					continue;
+				}
+				descr.remove (pos, unclosedRx.matchedLength ());
+			}
 			
 			return descr;
 		}
