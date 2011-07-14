@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "shellopen.h"
+#include <boost/bind.hpp>
 #include <QIcon>
 #include <QDesktopServices>
 #include <QUrl>
@@ -25,6 +26,7 @@
 #include <QMainWindow>
 #include <interfaces/entitytesthandleresult.h>
 #include <util/util.h>
+#include <util/notificationactionhandler.h>
 
 namespace LeechCraft
 {
@@ -91,20 +93,19 @@ namespace LeechCraft
 			void Plugin::Handle (LeechCraft::Entity e)
 			{
 				QUrl url = e.Entity_.toUrl ();
-				if (e.Parameters_ & FromUserInitiated &&
-						e.Parameters_ & IsDownloaded &&
-						QMessageBox::question (Proxy_->GetMainWindow (),
-								"LeechCraft",
-								tr ("Do you want to open %1?")
-									.arg (url.toLocalFile ()),
-								QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
-					return;
 
-				QDesktopServices::openUrl (url);
+				Entity notif = Util::MakeNotification ("ShellOpen",
+						tr ("%1 just finished downloading.")
+							.arg (url.toLocalFile ()),
+						PInfo_);
+				Util::NotificationActionHandler *nh =
+						new Util::NotificationActionHandler (notif);
+				nh->AddFunction (tr ("Open"), boost::bind (QDesktopServices::openUrl, url));
+
+				emit gotEntity (notif);
 			}
 		};
 	};
 };
 
 Q_EXPORT_PLUGIN2 (leechcraft_shellopen, LeechCraft::Plugins::ShellOpen::Plugin);
-
