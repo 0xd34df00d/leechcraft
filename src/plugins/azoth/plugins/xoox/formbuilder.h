@@ -43,10 +43,10 @@ namespace Xoox
 		QString From_;
 		
 	public:
-		FormBuilder (const QString& = QString(), QXmppBobManager* = 0);
+		FormBuilder (const QString& = QString (), QXmppBobManager* = 0);
 
 		QString From () const;
-		QXmppBobManager* BobManager() const;
+		QXmppBobManager* BobManager () const;
 		
 		QWidget* CreateForm (const QXmppDataForm&, QWidget* = 0);
 		QXmppDataForm GetForm ();

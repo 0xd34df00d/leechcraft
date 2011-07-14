@@ -27,13 +27,14 @@ namespace Azoth
 {
 namespace Xoox
 {
-	ImageMediaWidget::ImageMediaWidget (const QPair<QString, QString>& uri, QXmppBobManager *manager, const QString& from, QWidget *parent)
+	ImageMediaWidget::ImageMediaWidget (const QPair<QString, QString>& uri,
+			QXmppBobManager *manager, const QString& from, QWidget *parent)
 	: QLabel (parent)
 	{
 		QByteArray data;
-		if (uri.second.startsWith("cid:"))
+		if (uri.second.startsWith ("cid:"))
 		{
-			cid = uri.second.mid(4);
+			cid = uri.second.mid (4);
 			data = manager->take (from, cid);
 		}
 		else
@@ -42,12 +43,13 @@ namespace Xoox
 		}
 		
 		if (!data.isNull ())
-		{
 			setPixmap (QPixmap::fromImage (QImage::fromData (data)));
-		}
 		else if (cid != "")
 		{
-			connect (manager, SIGNAL (bobReceived (const QXmppBobIq&)), this, SLOT (bobReceived (const QXmppBobIq&)));
+			connect (manager,
+					SIGNAL (bobReceived (const QXmppBobIq&)),
+					this,
+					SLOT (bobReceived (const QXmppBobIq&)));
 			manager->requestBob (from, cid);
 		}
 	}
@@ -55,9 +57,7 @@ namespace Xoox
 	void ImageMediaWidget::bobReceived (const QXmppBobIq& bob)
 	{
 		if (bob.cid () == cid)
-		{
 			setPixmap (QPixmap::fromImage (QImage::fromData (bob.data ())));
-		}
 	}
 
 }

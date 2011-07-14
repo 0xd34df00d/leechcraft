@@ -37,6 +37,8 @@ namespace Xoox
 	class FieldHandler
 	{
 		QMap<QWidget*, QXmppDataForm::Field*> Widget2Field_;
+	protected:
+		FormBuilder *Builder_;
 	public:
 		FieldHandler (FormBuilder *builder)
 		: Builder_ (builder)
@@ -75,20 +77,18 @@ namespace Xoox
 		virtual QWidget* CreateWidgetImpl (QXmppDataForm::Field&, QFormLayout*) = 0;
 		virtual QVariant GetData (QWidget*) = 0;
 		
-		FormBuilder *Builder_;
-		
 		QWidget* CombineWithMedia (const QXmppDataForm::Media& media, QWidget *widget = 0)
 		{
 			QWidget *container = new QWidget;
-			QBoxLayout *layout = new QBoxLayout (QBoxLayout::TopToBottom);
+			QVBoxLayout *layout = new QVBoxLayout ();
 			QWidget *mediaWidget = 0;
 			
-			QPair<QString, QString> uri = media.uris().first();
+			QPair<QString, QString> uri = media.uris ().first ();
 			
 			if (uri.first.startsWith ("image/"))
 				mediaWidget = new ImageMediaWidget (uri, Builder_->BobManager (), Builder_->From (), container);
 			
-			if (mediaWidget == 0)
+			if (!mediaWidget)
 			{
 				mediaWidget = new QLabel (QObject::tr ("Unable to represent embedded media data."));
 				qWarning () << Q_FUNC_INFO
@@ -215,7 +215,8 @@ namespace Xoox
 		bool IsPassword_;
 	public:
 		SingleTextHandler (bool pass, FormBuilder *builder)
-		: IsPassword_ (pass), FieldHandler (builder)
+		: FieldHandler (builder)
+		, IsPassword_ (pass)
 		{
 		}
 	protected:
@@ -252,7 +253,8 @@ namespace Xoox
 		QAbstractItemView::SelectionMode SelMode_;
 	public:
 		ListHandler (QAbstractItemView::SelectionMode mode, FormBuilder *builder)
-		: SelMode_ (mode), FieldHandler (builder)
+		: FieldHandler (builder)
+		, SelMode_ (mode)
 		{
 		}
 	protected:
@@ -293,7 +295,8 @@ namespace Xoox
 	};
 
 	FormBuilder::FormBuilder (const QString& from, QXmppBobManager *bobManager)
-	:	From_ (from), BobManager_ (bobManager)
+	: From_ (from)
+	, BobManager_ (bobManager)
 	{
 		Type2Handler_ [QXmppDataForm::Field::BooleanField].reset (new BooleanHandler (this));
 		Type2Handler_ [QXmppDataForm::Field::FixedField].reset (new FixedHandler (this));

@@ -892,9 +892,9 @@ namespace Xoox
 			msg->SetDelivered (true);
 	}
 
-	void ClientConnection::handleCaptchaReceived (const QString& from, const QXmppDataForm& dataForm)
+	void ClientConnection::handleCaptchaReceived (const QString& jid, const QXmppDataForm& dataForm)
 	{
-		FormBuilder builder (from, BobManager_);
+		FormBuilder builder (jid, BobManager_);
 		
 		std::auto_ptr<QDialog> dialog (new QDialog ());
 		QWidget *widget = builder.CreateForm (dataForm, dialog.get ());
@@ -917,7 +917,7 @@ namespace Xoox
 			return;
 		
 		QXmppDataForm form = builder.GetForm ();
-		CaptchaManager_->sendResponse (from, form);
+		CaptchaManager_->sendResponse (jid, form);
 	}
 
 	void ClientConnection::handleBookmarksReceived (const QXmppBookmarkSet& set)

@@ -18,7 +18,6 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_XOOX_IMAGEMEDIAWIDGET_H
 #define PLUGINS_AZOTH_PLUGINS_XOOX_IMAGEMEDIAWIDGET_H
-
 #include <QLabel>
 
 class QXmppBobManager;
@@ -33,11 +32,10 @@ namespace Xoox
 	class ImageMediaWidget : public QLabel
 	{
 		Q_OBJECT
+
 		QString cid;
-		
 	public:
-		ImageMediaWidget (const QPair<QString, QString>&, QXmppBobManager *, const QString&, QWidget * = 0);
-		
+		ImageMediaWidget (const QPair<QString, QString>&, QXmppBobManager*, const QString&, QWidget* = 0);
 	public slots:
 		void bobReceived (const QXmppBobIq&);
 	};
