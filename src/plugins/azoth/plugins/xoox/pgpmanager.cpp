@@ -56,6 +56,7 @@ namespace Xoox
 			warning (QString ("Cannot encrypt: public key is null"));
 			return false;
 		}
+
 		msgKey.setPGPPublicKey (pubkey);
 		const QByteArray originalText = body;
 		QCA::OpenPGP pgp;
@@ -65,6 +66,7 @@ namespace Xoox
 		msg.update (originalText);
 		msg.end ();
 		msg.waitForFinished (-1);
+
 		if (msg.success ())
 		{
 			encrypted = msg.read ();
@@ -85,6 +87,7 @@ namespace Xoox
 			warning (QString ("Cannot sign: private key is null"));
 			return false;
 		}
+
 		msgKey.setPGPSecretKey (PrivateKey_);
 		const QByteArray originalText = body;
 		QCA::OpenPGP pgp;
@@ -95,6 +98,7 @@ namespace Xoox
 		msg.update (originalText);
 		msg.end ();
 		msg.waitForFinished (-1);
+
 		if (msg.success ())
 		{
 			signature = msg.signature ();
@@ -115,6 +119,7 @@ namespace Xoox
 			warning (QString ("Cannot sign: private key is null"));
 			return false;
 		}
+
 		msgKey.setPGPSecretKey (PrivateKey_);
 		const QByteArray originalText = status;
 		QCA::OpenPGP pgp;
@@ -125,6 +130,7 @@ namespace Xoox
 		msg.update (originalText);
 		msg.end ();
 		msg.waitForFinished (-1);
+
 		if (msg.success ())
 		{
 			signature = msg.signature ();
@@ -146,6 +152,7 @@ namespace Xoox
 		msg.update (encrypted);
 		msg.end ();
 		msg.waitForFinished (-1);
+
 		if (msg.success ())
 		{
 			decrypted = msg.read ();
@@ -170,6 +177,7 @@ namespace Xoox
 		msg.update (message);
 		msg.end ();
 		msg.waitForFinished (-1);
+
 		if (msg.verifySuccess ())
 			return true;
 		else
@@ -211,6 +219,7 @@ namespace Xoox
 					emit signedMessageReceived (msg);
 					return true;
 				}
+
 				if (stanza.tagName () == "presence")
 				{
 					QString typeText = stanza.attribute ("type");
@@ -232,6 +241,7 @@ namespace Xoox
 			QByteArray decryptedBody ("");
 			//TODO Check if we need another representation, instead of 'toAscii()'
 			bool decryptSuccess = DecryptBody (encryptedBody, decryptedBody);
+
 			if (decryptSuccess)
 			{
 				QXmppMessage msg (from, to);
