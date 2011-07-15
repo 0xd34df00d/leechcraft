@@ -801,7 +801,11 @@ void LeechCraft::MainWindow::InitializeShortcuts ()
 			SIGNAL (activated ()),
 			Ui_.MainTabWidget_,
 			SLOT (handleNewTabShortcutActivated ()));
-
+	connect (new QShortcut (QKeySequence (Qt::CTRL + Qt::Key_Space), this),
+			SIGNAL (activated ()),
+			Ui_.MainTabWidget_,
+			SLOT (setPreviousTab ()));
+	
 	for (int i = 0; i < 10; ++i)
 	{
 		QString seqStr = QString ("Ctrl+\\, %1").arg (i);
