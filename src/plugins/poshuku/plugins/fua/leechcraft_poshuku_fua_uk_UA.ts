@@ -56,7 +56,7 @@
     </message>
     <message>
         <location filename="fua.cpp" line="112"/>
-        <source>Allows to set fake user agents for different sites.</source>
+        <source>Allows one to set fake user agents for different sites.</source>
         <translation>Дозволяє встановти підробні user agent&apos;и для різних сайтів.</translation>
     </message>
 </context>

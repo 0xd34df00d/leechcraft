@@ -315,7 +315,7 @@
 +				if (!dir.cd ("UserData/aggregator") &&
 +						!dir.mkpath ("UserData/aggregator"))
  				{
- 					qCritical () << Q_FUNC_INFO << "could not create neccessary "
+ 					qCritical () << Q_FUNC_INFO << "could not create necessary "
  						"directories for Aggregator";
 --- a/src/plugins/aggregator/itemmodel.cpp
 +++ b/src/plugins/aggregator/itemmodel.cpp
@@ -741,7 +741,7 @@
 +					!dir.mkpath ("UserData/poshuku"))
  				{
  					qCritical () << Q_FUNC_INFO
- 						<< "could not create neccessary directories for Poshuku";
+ 						<< "could not create necessary directories for Poshuku";
 @@ -876,8 +877,8 @@
  					return;
  			

@@ -48,6 +48,7 @@ SET (XOOX_SRCS
 	usermood.cpp
 	usertune.cpp
 	privacylistsmanager.cpp
+	imagemediawidget.cpp
 	privacylistsconfigdialog.cpp
 	privacylistsitemdialog.cpp
 	mediacall.cpp
@@ -96,6 +97,7 @@ SET (XOOX_HEADERS
 	usermood.h
 	usertune.h
 	privacylistsmanager.h
+	imagemediawidget.h
 	privacylistsconfigdialog.h
 	privacylistsitemdialog.h
 	mediacall.h

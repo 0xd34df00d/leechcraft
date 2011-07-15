@@ -97,7 +97,7 @@
 						<label lang="en" value="SOCKS5-HOSTNAME" />
 					</option>
 				</item>
-				<item type="checkbox" propery="ProxyTunnel" default="off">
+				<item type="checkbox" property="ProxyTunnel" default="off">
 					<label lang="en" value="Tunnel requests through the proxy" />
 				</item>
 				<item type="lineedit" property="NoProxy" default="">

@@ -61,6 +61,7 @@ ENDIF (IS64BITS AND RESPECTLIB64)
 SET (LC_PLUGINS_DEST "${LIBDIR}/leechcraft/plugins")
 SET (LC_TRANSLATIONS_DEST "share/leechcraft/translations")
 SET (LC_SETTINGS_DEST "share/leechcraft/settings")
+SET (LC_QML_DEST "share/leechcraft/qml")
 SET (LC_INSTALLEDMANIFEST_DEST "share/leechcraft/installed")
 
 SET (Boost_ADDITIONAL_VERSIONS "1.46" "1.46.1" "1.44" "1.44.0")
@@ -113,7 +114,7 @@ OPTION (ENABLE_POTORCHU "Build Potorchu, the new generation audio/video player" 
 OPTION (ENABLE_TRANSPARENTARCH "Build TransparentArch, the plugin for transparent access to archives in various formats" OFF)
 OPTION (ENABLE_JUFFED "Build JuffEd, the advanced text editor" OFF)
 OPTION (ENABLE_GMAILNOTIFIER "Build GMail Notifier which notifies about new mail in your GMail inbox" OFF)
-OPTION (ENABLE_OTZERKALU "Build Otzerkalu, which allows to download web sites recursively" OFF)
+OPTION (ENABLE_OTZERKALU "Build Otzerkalu, which allows one to download web sites recursively" OFF)
 OPTION (ENABLE_ADVANCEDNOTIFICATIONS "Build Advanced Notifications module for more customizable notifications" OFF)
 ENABLE_TESTING ()
 

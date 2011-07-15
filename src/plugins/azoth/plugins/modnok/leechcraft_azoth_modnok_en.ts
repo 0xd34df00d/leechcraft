@@ -5,8 +5,8 @@
     <name>LeechCraft::Azoth::Modnok::Plugin</name>
     <message>
         <location filename="modnok.cpp" line="90"/>
-        <source>Azoth Modnok allows to render LaTeX formulas and display them in the chat window.</source>
-        <translation>Azoth Modnok allows to render LaTeX formulas and display them in the chat window.</translation>
+        <source>Azoth Modnok allows one to render LaTeX formulas and display them in the chat window.</source>
+        <translation>Azoth Modnok allows one to render LaTeX formulas and display them in the chat window.</translation>
     </message>
 </context>
 <context>

@@ -99,7 +99,7 @@
     <name>Export</name>
     <message>
         <location filename="export.ui" line="14"/>
-        <source>This string is overriden in the source code</source>
+        <source>This string is overridden in the source code</source>
         <translation>Questa stringa è ridefinito nel codice sorgente</translation>
     </message>
     <message>

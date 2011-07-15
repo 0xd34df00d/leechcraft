@@ -63,7 +63,7 @@ namespace Depester
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("Allows to block messages from unwanted contacts in MUCs.");
+		return tr ("Allows one to block messages from unwanted contacts in MUCs.");
 	}
 
 	QIcon Plugin::GetIcon () const

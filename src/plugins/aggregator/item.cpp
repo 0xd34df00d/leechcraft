@@ -281,7 +281,7 @@ namespace Aggregator
 				>> thumb.Time_;
 		else
 			qWarning () << Q_FUNC_INFO
-				<< "unkown version"
+				<< "unknown version"
 				<< version;
 		return in;
 	}
@@ -304,7 +304,7 @@ namespace Aggregator
 				>> credit.Who_;
 		else
 			qWarning () << Q_FUNC_INFO
-				<< "unkown version"
+				<< "unknown version"
 				<< version;
 		return in;
 	}
@@ -327,7 +327,7 @@ namespace Aggregator
 				>> c.Comment_;
 		else
 			qWarning () << Q_FUNC_INFO
-				<< "unkown version"
+				<< "unknown version"
 				<< version;
 		return in;
 	}
@@ -350,7 +350,7 @@ namespace Aggregator
 				>> p.Link_;
 		else
 			qWarning () << Q_FUNC_INFO
-				<< "unkown version"
+				<< "unknown version"
 				<< version;
 		return in;
 	}
@@ -377,7 +377,7 @@ namespace Aggregator
 				>> s.EndTime_;
 		else
 			qWarning () << Q_FUNC_INFO
-				<< "unkown version"
+				<< "unknown version"
 				<< version;
 		return in;
 	}
@@ -464,7 +464,7 @@ namespace Aggregator
 			>> e.Scenes_;
 		else
 			qWarning () << Q_FUNC_INFO
-				<< "unkown version"
+				<< "unknown version"
 				<< version;
 		return in;
 	}

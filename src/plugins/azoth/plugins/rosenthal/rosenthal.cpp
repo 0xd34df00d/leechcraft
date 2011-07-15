@@ -76,7 +76,7 @@ namespace Rosenthal
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		return QIcon (":/plugins/azoth/plugins/rosenthal/resources/images/rosenthal.svg");
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const

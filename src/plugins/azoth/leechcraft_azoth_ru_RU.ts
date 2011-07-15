@@ -1904,7 +1904,7 @@
     </message>
     <message>
         <location filename="azoth.cpp" line="154"/>
-        <source>A service discovery tab that allows to discover capabilities of remote entries</source>
+        <source>A service discovery tab that allows one to discover capabilities of remote entries</source>
         <translation>Вкладка с обзором сервисом, позволяющая выполнять обзор сервисов</translation>
     </message>
     <message>
@@ -1950,7 +1950,7 @@
     </message>
     <message>
         <location filename="servicediscoverywidget.cpp" line="100"/>
-        <source>A service discovery tab that allows to discover capabilities of remote entries</source>
+        <source>A service discovery tab that allows one to discover capabilities of remote entries</source>
         <translation>Вкладка с обзором сервисом, позволяющая выполнять обзор сервисов</translation>
     </message>
     <message>

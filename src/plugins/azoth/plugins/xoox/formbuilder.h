@@ -22,6 +22,7 @@
 #include <QXmppDataForm.h>
 
 class QXmppDataForm;
+class QXmppBobManager;
 class QWidget;
 class QFormLayout;
 
@@ -38,9 +39,14 @@ namespace Xoox
 	{		
 		QXmppDataForm Form_;
 		QHash<QXmppDataForm::Field::Type, FieldHandler_ptr> Type2Handler_;
+		QString From_;
+		QXmppBobManager *BobManager_;		
 	public:
-		FormBuilder ();
+		FormBuilder (const QString& = QString (), QXmppBobManager* = 0);
 
+		QString From () const;
+		QXmppBobManager* BobManager () const;
+		
 		QWidget* CreateForm (const QXmppDataForm&, QWidget* = 0);
 		QXmppDataForm GetForm ();
 	};

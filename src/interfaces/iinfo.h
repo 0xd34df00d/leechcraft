@@ -422,7 +422,7 @@ public:
 
 /** @brief Proxy class for the communication with LeechCraft.
  *
- * Allows to talk with LeechCraft, requesting and getting various
+ * Allows one to talk with LeechCraft, requesting and getting various
  * services.
  */
 class ICoreProxy

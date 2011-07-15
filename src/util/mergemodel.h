@@ -151,7 +151,7 @@ namespace LeechCraft
 			/** Returns the model that corresponds to the given row. If
 			 * there is no such model, throws std::runtime_error. If
 			 * starting is not null, it also calculates and returns the
-			 * starting row for the returned model. This allows to avoid
+			 * starting row for the returned model. This allows one to avoid
 			 * calling GetStartingRow() after this function and thus
 			 * speed things up.
 			 *

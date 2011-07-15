@@ -32,7 +32,7 @@ namespace LeechCraft
 			 *
 			 * Usual QButtonGroup doesn't allow to have no checked
 			 * buttons at all. This class is used to work around this
-			 * and allows to have no checked buttons.
+			 * and allows one to have no checked buttons.
 			 *
 			 * Used in PackagesDelegate to represent the update or
 			 * (install|remove) action group.

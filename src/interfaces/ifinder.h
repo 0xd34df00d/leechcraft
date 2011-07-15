@@ -104,7 +104,7 @@ public:
 	 * and the other one is "music", because your plugin searches for
 	 * music. Then, if user selects both music and the site name, only
 	 * one search find proxy should be returned. Thus, this function
-	 * allows to avoid such situations.
+	 * allows one to avoid such situations.
 	 *
 	 * @return The string with unique ID.
 	 */

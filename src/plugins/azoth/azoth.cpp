@@ -151,7 +151,7 @@ namespace Azoth
 		{
 			"SD",
 			tr ("Service discovery"),
-			tr ("A service discovery tab that allows to discover "
+			tr ("A service discovery tab that allows one to discover "
 				"capabilities of remote entries"),
 			QIcon (),
 			55,

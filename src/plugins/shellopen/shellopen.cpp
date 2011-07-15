@@ -61,7 +61,7 @@ namespace LeechCraft
 
 			QString Plugin::GetInfo () const
 			{
-				return tr ("Allows to open files and otherwise handle entities with external applications.");
+				return tr ("Allows one to open files and otherwise handle entities with external applications.");
 			}
 
 			QIcon Plugin::GetIcon () const

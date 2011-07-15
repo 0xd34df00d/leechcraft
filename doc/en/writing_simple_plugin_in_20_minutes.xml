@@ -88,7 +88,7 @@ QList<QAction*> Plugin::GetActions () const
 	</sect1>
 	<sect1 id="initiating_screenshooting">
 		<title>Initiating screenshooting</title>
-		<para>In our screenshooting slot we run a simple dialog asking for screenshot parameters. If user accepts the dialog, we disable the shooting action (we will reenable it again when the screenshot is ready) and start a timer according to the timeout set by user in the dialog:</para>
+		<para>In our screenshooting slot we run a simple dialog asking for screenshot parameters. If user accepts the dialog, we disable the shooting action (we will re-enable it again when the screenshot is ready) and start a timer according to the timeout set by user in the dialog:</para>
 		<programlisting language="c++">
 <![CDATA[
 void Plugin::makeScreenshot ()

@@ -607,7 +607,7 @@ IPv6 input mask</extracomment>
     </message>
     <message>
         <location filename="core.cpp" line="2794"/>
-        <source>Storage notifications are disabled. Live streaming definitely won&apos;t work without them, so if you are experiencing troubles, reenable storage notifications in &quot;Notifications&quot; section of BitTorrent settings. Do you want to enable them now?</source>
+        <source>Storage notifications are disabled. Live streaming definitely won&apos;t work without them, so if you are experiencing troubles, re-enable storage notifications in &quot;Notifications&quot; section of BitTorrent settings. Do you want to enable them now?</source>
         <translation>Storage-Benachrichtigungen sind deaktiviert. Live-Streaming wird definitiv nicht funktionieren. Falls ein Problem auftritt, reaktivieren der Storage-Benachrichtigungen im &quot;Benachrichtigungen&quot; Abschnitt der BitTorrent-Einstellungen. Wollen Sie diese nun Aktivieren?</translation>
     </message>
 </context>

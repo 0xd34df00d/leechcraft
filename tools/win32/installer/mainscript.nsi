@@ -393,9 +393,9 @@ LangString DESC_VGRABBERPLUGIN ${LANG_ENGLISH} "VKontakte.ru audio/video grabber
 LangString DESC_AUSCRIEPLUGIN ${LANG_ENGLISH} "Auto Screenshooter."
 LangString DESC_KINOTIFYPLUGIN ${LANG_ENGLISH} "Provides fancy notifications instead of plain default ones."
 LangString DESC_TABPPPLUGIN ${LANG_ENGLISH} "Enhances tabbed navigation experience."
-LangString DESC_LACKMANPLUGIN ${LANG_ENGLISH} "LeechCraft Package Manager allows to install additional plugins, extensions, icons and various other data."
+LangString DESC_LACKMANPLUGIN ${LANG_ENGLISH} "LeechCraft Package Manager allows one to install additional plugins, extensions, icons and various other data."
 LangString DESC_SECMANPLUGIN ${LANG_ENGLISH} "Security Manager stores passwords and various other data."
-LangString DESC_SHELLOPENPLUGIN ${LANG_ENGLISH} "Allows to open unhandled entities via other applications."
+LangString DESC_SHELLOPENPLUGIN ${LANG_ENGLISH} "Allows one to open unhandled entities via other applications."
 
 LangString DESC_MAINFILES ${LANG_RUSSIAN} "ядро LeechCraft."
 LangString DESC_QT ${LANG_RUSSIAN} "Ѕиблиотеки Qt."

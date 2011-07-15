@@ -49,7 +49,7 @@ namespace Otzerkalu
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("Otzerkalu allows to recursively download a web site.");
+		return tr ("Otzerkalu allows one to recursively download a web site.");
 	}
 
 	QIcon Plugin::GetIcon () const

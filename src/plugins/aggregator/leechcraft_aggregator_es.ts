@@ -81,7 +81,7 @@
 <context>
     <name>Export</name>
     <message>
-        <source>This string is overriden in the source code</source>
+        <source>This string is overridden in the source code</source>
         <translation>Esta cadena está sobrescrita en el código fuente</translation>
     </message>
     <message>

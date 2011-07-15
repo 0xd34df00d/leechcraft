@@ -1,5 +1,5 @@
 LeechCraft is a free open source cross-platform modular internet-client.
-LeechCraft allows to browse the web, read RSS/Atom feeds, download files
+LeechCraft allows one to browse the web, read RSS/Atom feeds, download files
 via BitTorrent, FTP, HTTP and ADC/NMDC, automatically download, play or
 stream podcasts (and other media files) and much more.
 
@@ -35,14 +35,14 @@ Currently it includes following plugins:
 * Poshuku, the web browser.
   * Poshuku CleanWeb, AdBlock+-compatible ad blocker.
   * Poshuku FileScheme, support for the file:// browsing.
-  * Poshuku FUA, which allows to set fake user agents per domain.
-  * Poshuku WYFV, which allows to play flash video on some sites without
+  * Poshuku FUA, which allows one to set fake user agents per domain.
+  * Poshuku WYFV, which allows one to play flash video on some sites without
     Flash installed.
 * Qrosp, scripting support for LeechCraft via Qross library.
 * SecMan, password & other sensitive info manager.
 * SeekThru, client for OpenSearch-aware web sites.
 * Summary, a plugin which shows all the downloads, tasks, events and
-  statuses and allows to perform searches.
+  statuses and allows one to perform searches.
 * Syncer, for synchronizing data and state between different machines
   running LeechCraft.
 * Tab++, for better tabs management.

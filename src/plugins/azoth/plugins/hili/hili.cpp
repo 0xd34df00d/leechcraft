@@ -67,7 +67,7 @@ namespace HiLi
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("Azoth Hili allows to customize the settings of highlights in conferences.");
+		return tr ("Azoth Hili allows one to customize the settings of highlights in conferences.");
 	}
 
 	QIcon Plugin::GetIcon () const
@@ -98,6 +98,14 @@ namespace HiLi
 		
 		bool isHighlight = false;
 		const QString& body = msg->GetBody ();
+		if (body.size () > 1024)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "too big string to handle:"
+					<< body.size ();
+			return;
+		}
+
 		Q_FOREACH (const QRegExp& rx, RegexpsCache_)
 			if (body.contains (rx))
 			{
