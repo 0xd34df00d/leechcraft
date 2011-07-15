@@ -25,6 +25,7 @@
 #include <QSystemTrayIcon>
 #include <interfaces/structures.h>
 #include "concretehandlerbase.h"
+#include "eventdata.h"
 
 class QSystemTrayIcon;
 
@@ -41,21 +42,10 @@ namespace AdvancedNotifications
 		Q_OBJECT
 
 		QMap<QString, QSystemTrayIcon*> Category2Icon_;
-		
-		struct EventData
-		{
-			int Count_;
-			QString Category_;
-			QStringList VisualPath_;
-			QString ExtendedText_;
-			QPixmap Pixmap_;
-
-			QObject_ptr HandlingObject_;
-			QStringList Actions_;
-		};
 		QMap<QString, EventData> Events_;
 		
 #ifdef HAVE_QML
+		QMap<QSystemTrayIcon*, QList<EventData> > EventsForIcon_;
 		QMap<QSystemTrayIcon*, VisualNotificationsView*> Icon2NotificationView_;
 #endif
 	public:

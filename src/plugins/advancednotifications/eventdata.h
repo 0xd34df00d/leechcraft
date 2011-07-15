@@ -16,26 +16,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_VISUALNOTIFICATIONSVIEW_H
-#define PLUGINS_ADVANCEDNOTIFICATIONS_VISUALNOTIFICATIONSVIEW_H
-
-#ifndef HAVE_QML
-#error "Trying to compile QML notifications view without having QML :("
-#endif
-
-#include <QDeclarativeView>
+#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_EVENTDATA_H
+#define PLUGINS_ADVANCEDNOTIFICATIONS_EVENTDATA_H
+#include <QStringList>
+#include <QPixmap>
+#include <interfaces/structures.h>
 
 namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
-	class VisualNotificationsView : public QDeclarativeView
+	struct EventData
 	{
-		Q_OBJECT
-	public:
-		VisualNotificationsView (QWidget* = 0);
-	private slots:
-		void handleStatusChanged (QDeclarativeView::Status);
+		int Count_;
+		QString Category_;
+		QStringList VisualPath_;
+		QString ExtendedText_;
+		QPixmap Pixmap_;
+
+		QObject_ptr HandlingObject_;
+		QStringList Actions_;
 	};
 }
 }

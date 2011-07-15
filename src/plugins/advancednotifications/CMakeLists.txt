@@ -41,10 +41,10 @@ IF (QT_QTDECLARATIVE_FOUND)
 	ADD_DEFINITIONS(-DHAVE_QML=1)
 
 	SET (SRCS ${SRCS}
-		visualnotificationsview.cpp
+		qml/visualnotificationsview.cpp
 		)
 	SET (HEADERS ${HEADERS}
-		visualnotificationsview.h
+		qml/visualnotificationsview.h
 		)
 ENDIF (QT_QTDECLARATIVE_FOUND)
 

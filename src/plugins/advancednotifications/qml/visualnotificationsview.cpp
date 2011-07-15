@@ -57,6 +57,10 @@ namespace AdvancedNotifications
 		setSource (QUrl::fromLocalFile (fileLocation));
 	}
 	
+	void VisualNotificationsView::SetEvents (const QList<EventData>&)
+	{
+	}
+	
 	void VisualNotificationsView::handleStatusChanged (QDeclarativeView::Status status)
 	{
 		qDebug () << Q_FUNC_INFO

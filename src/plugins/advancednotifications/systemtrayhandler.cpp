@@ -22,7 +22,7 @@
 #include "generalhandler.h"
 
 #ifdef HAVE_QML
-#include "visualnotificationsview.h"
+#include "qml/visualnotificationsview.h"
 #endif
 
 namespace LeechCraft
@@ -97,6 +97,10 @@ namespace AdvancedNotifications
 			icons2hide << icon;
 			icon->contextMenu ()->clear ();
 		}
+		
+#ifdef HAVE_QML
+		EventsForIcon_.clear ();
+#endif
 
 		Q_FOREACH (const QString& event, Events_.keys ())
 		{
@@ -105,6 +109,10 @@ namespace AdvancedNotifications
 			if (!icon->isVisible ())
 				icon->show ();
 			icons2hide.remove (icon);
+			
+#ifdef HAVE_QML
+			EventsForIcon_ [icon] << data;
+#endif
 
 			QMenu *menu = icon->contextMenu ();
 			Q_FOREACH (const QString& pathItem, data.VisualPath_)
@@ -182,6 +190,7 @@ namespace AdvancedNotifications
 
 		Icon2NotificationView_ [trayIcon]->move (QCursor::pos ());
 		Icon2NotificationView_ [trayIcon]->show ();
+		Icon2NotificationView_ [trayIcon]->SetEvents (EventsForIcon_ [trayIcon]);		
 #endif
 	}
 }
