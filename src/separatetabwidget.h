@@ -47,6 +47,8 @@ namespace LeechCraft
 		Q_INTERFACES (ICoreTabWidget)
 
 		int LastContextMenuTab_;
+		int PreviouseTab_;
+		int CurrentTab_;
 		QMenu *DefaultContextMenu_;
 		QMenu *AddTabButtonContextMenu_;
 		QPointer<QStackedWidget> MainStackedWidget_;
@@ -124,6 +126,7 @@ namespace LeechCraft
 		void handleNewTabShortcutActivated ();
 		void on_PinTab__triggered (bool);
 		void on_UnPinTab__triggered (bool);
+		void setPreviousTab ();
 	private slots:
 		void handleCurrentChanged (int);
 		void handleTabMoved (int, int);

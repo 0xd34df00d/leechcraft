@@ -40,6 +40,8 @@ namespace LeechCraft
 	SeparateTabWidget::SeparateTabWidget (QWidget *parent)
 	: QWidget (parent)
 	, LastContextMenuTab_ (-1)
+	, PreviouseTab_ (-1)
+	, CurrentTab_ (-1)
 	, DefaultContextMenu_ (0)
 	, AddTabButtonContextMenu_ (0)
 	, MainStackedWidget_ (new QStackedWidget)
@@ -582,6 +584,12 @@ namespace LeechCraft
 
 		MainTabBar_->setCurrentIndex (index);
 		MainStackedWidget_->setCurrentIndex (index);
+
+		if (CurrentTab_ != index)
+		{
+			PreviouseTab_ = CurrentTab_;
+			CurrentTab_ = index;
+		}
 	}
 
 	void SeparateTabWidget::setCurrentWidget (QWidget *w)
@@ -716,6 +724,12 @@ namespace LeechCraft
 		MainTabBar_->setUnPinTab (MainTabBar_->PinTabsCount () - 1);
 
 		handleCurrentChanged (MainTabBar_->PinTabsCount ());
+	}
+
+	void SeparateTabWidget::setPreviousTab ()
+	{
+		if ((PreviouseTab_ <= WidgetCount () - 1) && (WidgetCount () >= 2))
+			setCurrentIndex (PreviouseTab_);
 	}
 
 	void SeparateTabWidget::handleAddDefaultTab (bool)
