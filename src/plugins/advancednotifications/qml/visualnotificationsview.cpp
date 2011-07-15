@@ -18,8 +18,10 @@
 
 #include "visualnotificationsview.h"
 #include <QFile>
+#include <QDeclarativeContext>
 #include <QDeclarativeError>
 #include <QtDebug>
+#include "eventproxyobject.h"
 
 namespace LeechCraft
 {
@@ -28,6 +30,10 @@ namespace AdvancedNotifications
 	VisualNotificationsView::VisualNotificationsView (QWidget *parent)
 	: QDeclarativeView (parent)
 	{
+		setWindowFlags (Qt::WindowStaysOnTopHint);
+		setAttribute (Qt::WA_TranslucentBackground);
+		setStyleSheet ("background: transparent");
+
 		connect (this,
 				SIGNAL (statusChanged (QDeclarativeView::Status)),
 				this,
@@ -53,12 +59,24 @@ namespace AdvancedNotifications
 					<< "visualnotificationsview.qml isn't found";
 			return;
 		}
-
-		setSource (QUrl::fromLocalFile (fileLocation));
+		
+		Location_ = QUrl::fromLocalFile (fileLocation); 
 	}
 	
-	void VisualNotificationsView::SetEvents (const QList<EventData>&)
+	void VisualNotificationsView::SetEvents (const QList<EventData>& events)
 	{
+		QObjectList oldEvents = LastEvents_;
+		
+		LastEvents_.clear ();
+		Q_FOREACH (const EventData& ed, events)
+			LastEvents_ << new EventProxyObject (ed, this);
+
+		rootContext ()->setContextProperty ("eventsModel",
+				QVariant::fromValue<QList<QObject*> > (LastEvents_));
+		
+		setSource (Location_);
+		
+		qDeleteAll (oldEvents);
 	}
 	
 	void VisualNotificationsView::handleStatusChanged (QDeclarativeView::Status status)

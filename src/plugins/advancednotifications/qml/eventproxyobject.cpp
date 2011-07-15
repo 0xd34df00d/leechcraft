@@ -16,34 +16,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_QML_VISUALNOTIFICATIONSVIEW_H
-#define PLUGINS_ADVANCEDNOTIFICATIONS_QML_VISUALNOTIFICATIONSVIEW_H
-
-#ifndef HAVE_QML
-#error "Trying to compile QML notifications view without having QML :("
-#endif
-
-#include <QDeclarativeView>
-#include "../eventdata.h"
+#include "eventproxyobject.h"
 
 namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
-	class VisualNotificationsView : public QDeclarativeView
+	EventProxyObject::EventProxyObject (const EventData& ed, QObject *parent)
+	: QObject (parent)
+	, E_ (ed)
 	{
-		Q_OBJECT
-		
-		QObjectList LastEvents_;
-		QUrl Location_;
-	public:
-		VisualNotificationsView (QWidget* = 0);
-		
-		void SetEvents (const QList<EventData>&);
-	private slots:
-		void handleStatusChanged (QDeclarativeView::Status);
-	};
-}
-}
+	}
 
-#endif
+	int EventProxyObject::count () const
+	{
+		return E_.Count_;
+	}
+	
+	QPixmap EventProxyObject::image () const
+	{
+		return E_.Pixmap_;
+	}
+	
+	QString EventProxyObject::extendedText () const
+	{
+		return E_.ExtendedText_;
+	}
+}
+}

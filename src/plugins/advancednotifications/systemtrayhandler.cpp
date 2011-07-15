@@ -188,9 +188,9 @@ namespace AdvancedNotifications
 			return;
 		}
 
+		Icon2NotificationView_ [trayIcon]->SetEvents (EventsForIcon_ [trayIcon]);
 		Icon2NotificationView_ [trayIcon]->move (QCursor::pos ());
 		Icon2NotificationView_ [trayIcon]->show ();
-		Icon2NotificationView_ [trayIcon]->SetEvents (EventsForIcon_ [trayIcon]);		
 #endif
 	}
 }
