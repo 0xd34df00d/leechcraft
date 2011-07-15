@@ -28,27 +28,27 @@ namespace Azoth
 {
 namespace Xoox
 {
-	QCA::PGPKey QXmppPgpManager::publicKey (const QString& id) const
+	QCA::PGPKey QXmppPgpManager::PublicKey (const QString& id) const
 	{
 		return ((PublicKeys_.contains (id)) ? PublicKeys_[id] : QString ());
 	}
 
-	void QXmppPgpManager::setPublicKey (const QString& id, const QCA::PGPKey& publicKey)
+	void QXmppPgpManager::SetPublicKey (const QString& id, const QCA::PGPKey& publicKey)
 	{
 		PublicKeys_.insert (id, publicKey);
 	}
 
-	QCA::PGPKey QXmppPgpManager::privateKey () const
+	QCA::PGPKey QXmppPgpManager::PrivateKey () const
 	{
 		return PrivateKey_;
 	}
 
-	void QXmppPgpManager::setPrivateKey (const QCA::PGPKey& privateKey)
+	void QXmppPgpManager::SetPrivateKey (const QCA::PGPKey& privateKey)
 	{
 		PrivateKey_ = privateKey;
 	}
 
-	bool QXmppPgpManager::encryptBody(const QCA::PGPKey& pubkey, const QByteArray& body, QByteArray& encrypted)
+	bool QXmppPgpManager::EncryptBody(const QCA::PGPKey& pubkey, const QByteArray& body, QByteArray& encrypted)
 	{
 		QCA::SecureMessageKey msgKey;
 		if (pubkey.isNull ())
@@ -65,7 +65,7 @@ namespace Xoox
 		msg.update (originalText);
 		msg.end ();
 		msg.waitForFinished (-1);
-		if(msg.success ())
+		if (msg.success ())
 		{
 			encrypted = msg.read ();
 			return true;
@@ -77,7 +77,7 @@ namespace Xoox
 		}
 	}
 
-	bool QXmppPgpManager::signMessage (const QByteArray& body, QByteArray& signature)
+	bool QXmppPgpManager::SignMessage (const QByteArray& body, QByteArray& signature)
 	{
 		QCA::SecureMessageKey msgKey;
 		if (PrivateKey_.isNull ())
@@ -95,7 +95,7 @@ namespace Xoox
 		msg.update (originalText);
 		msg.end ();
 		msg.waitForFinished (-1);
-		if(msg.success ())
+		if (msg.success ())
 		{
 			signature = msg.signature ();
 			return true;
@@ -107,7 +107,7 @@ namespace Xoox
 		}
 	}
 
-	bool QXmppPgpManager::signPresence (const QByteArray& status, QByteArray& signature)
+	bool QXmppPgpManager::SignPresence (const QByteArray& status, QByteArray& signature)
 	{
 		QCA::SecureMessageKey msgKey;
 		if (PrivateKey_.isNull ())
@@ -125,7 +125,7 @@ namespace Xoox
 		msg.update (originalText);
 		msg.end ();
 		msg.waitForFinished (-1);
-		if(msg.success ())
+		if (msg.success ())
 		{
 			signature = msg.signature ();
 			return true;
@@ -137,7 +137,7 @@ namespace Xoox
 		}
 	}
 
-	bool QXmppPgpManager::decryptBody (const QByteArray& encrypted, QByteArray& decrypted)
+	bool QXmppPgpManager::DecryptBody (const QByteArray& encrypted, QByteArray& decrypted)
 	{
 		QCA::OpenPGP pgp;
 		QCA::SecureMessage msg (&pgp);
@@ -146,7 +146,7 @@ namespace Xoox
 		msg.update (encrypted);
 		msg.end ();
 		msg.waitForFinished (-1);
-		if(msg.success ())
+		if (msg.success ())
 		{
 			decrypted = msg.read ();
 			return true;
@@ -158,7 +158,7 @@ namespace Xoox
 		}
 	}
 
-	bool QXmppPgpManager::isValidSignature (const QCA::PGPKey& pubkey, const QByteArray& message, const QByteArray& signature)
+	bool QXmppPgpManager::IsValidSignature (const QCA::PGPKey& pubkey, const QByteArray& message, const QByteArray& signature)
 	{
 		QCA::OpenPGP pgp;
 		QCA::SecureMessageKey key;
@@ -170,7 +170,7 @@ namespace Xoox
 		msg.update (message);
 		msg.end ();
 		msg.waitForFinished (-1);
-		if(msg.verifySuccess ())
+		if (msg.verifySuccess ())
 			return true;
 		else
 		{
@@ -196,7 +196,7 @@ namespace Xoox
 			QString signature = x_element.text ();
 			//TODO Initialize keystore somewhere
 			//TODO Check if we need another representation, instead of 'toAscii()'
-			if (!isValidSignature (publicKey ("from"), message.toAscii (), signature.toAscii ()))
+			if (!IsValidSignature (PublicKey ("from"), message.toAscii (), signature.toAscii ()))
 			{
 				emit invalidSignatureReceived (stanza);
 				return false;
@@ -217,7 +217,7 @@ namespace Xoox
 					QString statusText = stanza.firstChildElement ("status").text ();
 					QXmppPresence::Status status;
 					status.setStatusText (statusText);
-					QXmppPresence::Type type = setPresenceTypeFromStr (typeText);
+					QXmppPresence::Type type = SetPresenceTypeFromStr (typeText);
 					QXmppPresence presence (type, status);
 					emit signedPresenceReceived (presence);
 					return true;
@@ -231,7 +231,7 @@ namespace Xoox
 			QByteArray encryptedBody = encryptedBodyStr.toAscii ();
 			QByteArray decryptedBody ("");
 			//TODO Check if we need another representation, instead of 'toAscii()'
-			bool decryptSuccess = decryptBody (encryptedBody, decryptedBody);
+			bool decryptSuccess = DecryptBody (encryptedBody, decryptedBody);
 			if (decryptSuccess)
 			{
 				QXmppMessage msg (from, to);
@@ -244,24 +244,24 @@ namespace Xoox
 	}
 
 
-	QXmppPresence::Type QXmppPgpManager::setPresenceTypeFromStr (const QString& str)
+	QXmppPresence::Type QXmppPgpManager::SetPresenceTypeFromStr (const QString& str)
 	{
 		QXmppPresence::Type type;
-		if(str == "error")
+		if (str == "error")
 			type = QXmppPresence::Error;
-		else if(str == "unavailable")
+		else if (str == "unavailable")
 			type = QXmppPresence::Unavailable;
-		else if(str == "subscribe")
+		else if (str == "subscribe")
 			type = QXmppPresence::Subscribe;
-		else if(str == "subscribed")
+		else if (str == "subscribed")
 			type = QXmppPresence::Subscribed;
-		else if(str == "unsubscribe")
+		else if (str == "unsubscribe")
 			type = QXmppPresence::Unsubscribe;
-		else if(str == "unsubscribed")
+		else if (str == "unsubscribed")
 			type = QXmppPresence::Unsubscribed;
-		else if(str == "probe")
+		else if (str == "probe")
 			type = QXmppPresence::Probe;
-		else if(str == "")
+		else if (str == "")
 			type = QXmppPresence::Available;
 		else
 		{

@@ -39,18 +39,18 @@ namespace Xoox
 		Q_OBJECT
 
 	public:
-		QCA::PGPKey publicKey (const QString&) const;
-		void setPublicKey (const QString&, const QCA::PGPKey&);
+		QCA::PGPKey PublicKey (const QString&) const;
+		void SetPublicKey (const QString&, const QCA::PGPKey&);
 
-		QCA::PGPKey privateKey () const;
-		void setPrivateKey (const QCA::PGPKey&);
+		QCA::PGPKey PrivateKey () const;
+		void SetPrivateKey (const QCA::PGPKey&);
 
-		bool encryptBody (const QCA::PGPKey&, const QByteArray&, QByteArray&);
-		bool signMessage (const QByteArray&, QByteArray&);
-		bool signPresence (const QByteArray&, QByteArray&);
+		bool EncryptBody (const QCA::PGPKey&, const QByteArray&, QByteArray&);
+		bool SignMessage (const QByteArray&, QByteArray&);
+		bool SignPresence (const QByteArray&, QByteArray&);
 
-		bool decryptBody (const QByteArray&, QByteArray&);
-		bool isValidSignature (const QCA::PGPKey&, const QByteArray&, const QByteArray&);
+		bool DecryptBody (const QByteArray&, QByteArray&);
+		bool IsValidSignature (const QCA::PGPKey&, const QByteArray&, const QByteArray&);
 
 		bool handleStanza (const QDomElement &element);
 
@@ -62,7 +62,7 @@ namespace Xoox
 
 	private:
 		// set presence type enum value from its string representation
-		QXmppPresence::Type setPresenceTypeFromStr (const QString&);
+		QXmppPresence::Type SetPresenceTypeFromStr (const QString&);
 		// private key, used for decrypting messages
 		QCA::PGPKey PrivateKey_;
 		// map of userIDs and corresponding public keys
