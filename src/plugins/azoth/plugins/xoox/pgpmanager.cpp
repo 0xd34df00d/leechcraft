@@ -19,7 +19,6 @@
 #include "pgpmanager.h"
 #include <QDomElement>
 #include <QtCrypto>
-#include <QXmppPgpManager.h>
 #include <QXmppConstants.h>
 #include <QXmppClient.h>
 
