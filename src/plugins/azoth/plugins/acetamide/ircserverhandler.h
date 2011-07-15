@@ -125,6 +125,8 @@ namespace Acetamide
 				const QList<std::string>&, const QString&);
 		void LeaveParticipant (const QString&,
 				const QList<std::string>&, const QString&);
+		void QuitParticipant (const QString&,
+				const QList<std::string>&, const QString&);
 		void HandleIncomingMessage (const QString&,
 				const QList<std::string>&, const QString&);
 		void PongMessage (const QString&,
