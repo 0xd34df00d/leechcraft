@@ -52,6 +52,10 @@ namespace LeechCraft
 	, DefaultTabAction_ (new QAction (QString (), this))
 	, InMoveProcess_ (false)
 	{
+		XmlSettingsManager::Instance ()->RegisterObject ("SelectionBehavior",
+			this, "handleSelectionBehavior");
+		handleSelectionBehavior ();
+
 		MainTabBar_->setMovable (true);
 		MainTabBar_->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Minimum);
 		MainTabBar_->SetTabWidget (this);
@@ -421,6 +425,18 @@ namespace LeechCraft
 	void SeparateTabWidget::SetInMoveProcess (bool move)
 	{
 		InMoveProcess_ = move;
+	}
+
+	void SeparateTabWidget::handleSelectionBehavior ()
+	{
+		QString selection = XmlSettingsManager::Instance ()->
+			property ("SelectionBehavior").toString ();
+		if (selection == "PreviouseActive")
+			MainTabBar_->setSelectionBehaviorOnRemove (QTabBar::SelectPreviousTab);
+		else if (selection == "NextIndex")
+			MainTabBar_->setSelectionBehaviorOnRemove (QTabBar::SelectRightTab);
+		else if (selection == "PreviouseIndex")
+			MainTabBar_->setSelectionBehaviorOnRemove (QTabBar::SelectLeftTab);
 	}
 
 	void SeparateTabWidget::resizeEvent (QResizeEvent *event)

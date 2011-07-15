@@ -130,6 +130,7 @@ namespace LeechCraft
 		void handleShowAddTabButton (bool);
 		void handleAddDefaultTab (bool);
 		void handleActionDestroyed ();
+		void handleSelectionBehavior ();
 	signals:
 		void newTabRequested ();
 		void newTabMenuRequested ();
