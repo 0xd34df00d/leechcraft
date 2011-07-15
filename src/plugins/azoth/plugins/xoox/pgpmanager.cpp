@@ -65,7 +65,7 @@ namespace Xoox
 		msg.startEncrypt ();
 		msg.update (originalText);
 		msg.end ();
-		msg.waitForFinished (-1);
+		msg.waitForFinished ();
 
 		if (msg.success ())
 		{
@@ -97,7 +97,7 @@ namespace Xoox
 		msg.startSign (QCA::SecureMessage::Detached);
 		msg.update (originalText);
 		msg.end ();
-		msg.waitForFinished (-1);
+		msg.waitForFinished ();
 
 		if (msg.success ())
 		{
@@ -129,7 +129,7 @@ namespace Xoox
 		msg.startSign (QCA::SecureMessage::Detached);
 		msg.update (originalText);
 		msg.end ();
-		msg.waitForFinished (-1);
+		msg.waitForFinished ();
 
 		if (msg.success ())
 		{
@@ -151,7 +151,7 @@ namespace Xoox
 		msg.startDecrypt ();
 		msg.update (encrypted);
 		msg.end ();
-		msg.waitForFinished (-1);
+		msg.waitForFinished ();
 
 		if (msg.success ())
 		{
@@ -176,7 +176,7 @@ namespace Xoox
 		msg.startVerify (signature);
 		msg.update (message);
 		msg.end ();
-		msg.waitForFinished (-1);
+		msg.waitForFinished ();
 
 		if (msg.verifySuccess ())
 			return true;
