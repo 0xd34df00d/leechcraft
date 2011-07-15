@@ -427,6 +427,14 @@ namespace LeechCraft
 		InMoveProcess_ = move;
 	}
 
+	void SeparateTabWidget::SetToolBarVisible (bool visible)
+	{
+		if (!visible)
+			MainLayout_->removeItem (MainToolBarLayout_);
+		else
+			MainLayout_->insertLayout (1, MainToolBarLayout_);
+	}
+
 	void SeparateTabWidget::handleSelectionBehavior ()
 	{
 		QString selection = XmlSettingsManager::Instance ()->

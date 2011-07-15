@@ -110,6 +110,7 @@ namespace LeechCraft
 		int GetLastContextMenuTab () const;
 		bool IsInMoveProcess () const;
 		void SetInMoveProcess (bool);
+		void SetToolBarVisible (bool);
 	protected:
 		void resizeEvent (QResizeEvent*);
 		bool event (QEvent*);
