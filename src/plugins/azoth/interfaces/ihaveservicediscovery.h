@@ -123,7 +123,7 @@ namespace Azoth
 
 	/** @brief Interface for accounts supporting service discovery.
 	 * 
-	 * Service discovery is a mechanism that allows to discover the
+	 * Service discovery is a mechanism that allows one to discover the
 	 * capabilities and items of remote contacts and other entities. For
 	 * example, through service discovery it may be possible to fetch
 	 * the list of MUC participants without joining the MUC, to register

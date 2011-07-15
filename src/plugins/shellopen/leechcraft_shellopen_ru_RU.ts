@@ -5,7 +5,7 @@
     <name>LeechCraft::Plugins::ShellOpen::Plugin</name>
     <message>
         <location filename="shellopen.cpp" line="61"/>
-        <source>Allows to open files and otherwise handle entities with external applications.</source>
+        <source>Allows one to open files and otherwise handle entities with external applications.</source>
         <translation>Позволяет открывать файлы и обрабатывать сущности при помощи внешних приложений.</translation>
     </message>
     <message>

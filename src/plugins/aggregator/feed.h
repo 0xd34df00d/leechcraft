@@ -71,7 +71,7 @@ namespace Aggregator
 			 * everything set to default values - so, no
 			 * settings are overridden.
 			 *
-			 * This constructor allows to reuse an existing ID
+			 * This constructor allows one to reuse an existing ID
 			 * for the SettingsID_.
 			 *
 			 * @param[in] feedId ID of the feed that these

@@ -87,7 +87,7 @@ namespace Modnok
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("Azoth Modnok allows to render LaTeX formulas and display them in the chat window.");
+		return tr ("Azoth Modnok allows one to render LaTeX formulas and display them in the chat window.");
 	}
 
 	QIcon Plugin::GetIcon () const

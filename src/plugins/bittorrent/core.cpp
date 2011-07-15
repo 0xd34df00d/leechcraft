@@ -2796,7 +2796,7 @@ namespace LeechCraft
 								"LeechCraft BitTorrent",
 								tr ("Storage notifications are disabled. Live streaming "
 									"definitely won't work without them, so if you are "
-									"experiencing troubles, reenable storage notifications "
+									"experiencing troubles, re-enable storage notifications "
 									"in \"Notifications\" section of BitTorrent settings. "
 									"Do you want to enable them now?"),
 								QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)

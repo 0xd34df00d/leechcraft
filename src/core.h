@@ -115,7 +115,7 @@ namespace LeechCraft
 
 		/** Returns the model which manages the plugins, displays
 		 * various info about them like name, description, icon and
-		 * allows to switch them off.
+		 * allows one to switch them off.
 		 *
 		 * For example, this model is used in the Plugin Manager page
 		 * in the settings.

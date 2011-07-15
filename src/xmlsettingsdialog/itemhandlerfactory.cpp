@@ -88,7 +88,7 @@ namespace LeechCraft
 		if (!object)
 		{
 			qWarning () << Q_FUNC_INFO
-				<< "ItemHandler propery for widget is not set"
+				<< "ItemHandler property for widget is not set"
 				<< widget;
 			return;
 		}

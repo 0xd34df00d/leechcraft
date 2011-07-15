@@ -67,7 +67,7 @@ namespace HiLi
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("Azoth Hili allows to customize the settings of highlights in conferences.");
+		return tr ("Azoth Hili allows one to customize the settings of highlights in conferences.");
 	}
 
 	QIcon Plugin::GetIcon () const

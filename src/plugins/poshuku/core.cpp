@@ -123,8 +123,8 @@ namespace Poshuku
 				!dir.mkpath (".leechcraft/poshuku"))
 		{
 			qCritical () << Q_FUNC_INFO
-				<< "could not create neccessary directories for Poshuku";
-			throw std::runtime_error ("could not create neccessary directories for Poshuku");
+				<< "could not create necessary directories for Poshuku";
+			throw std::runtime_error ("could not create necessary directories for Poshuku");
 		}
 
 		StorageBackend::Type type;
@@ -577,7 +577,7 @@ namespace Poshuku
 				winver = "unknown DOS-based";
 				break;
 			case QSysInfo::WV_NT_based:
-				winver = "unkown NT-based";
+				winver = "unknown NT-based";
 				break;
 			case QSysInfo::WV_CE_based:
 				winver = "unknown CE-based";
@@ -685,7 +685,7 @@ namespace Poshuku
 			.arg ("any UNIX BSD/SYSV")
 #else
 #warning "Unknown OS"
-			.arg ("unkown subplatform")
+			.arg ("unknown subplatform")
 #endif
 			// %4 locale
 			.arg (QLocale::system ().name ())

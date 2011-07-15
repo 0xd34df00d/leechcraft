@@ -244,7 +244,7 @@ namespace Aggregator
 		if (!dir.cd (".leechcraft/aggregator") &&
 				!dir.mkpath (".leechcraft/aggregator"))
 		{
-			qCritical () << Q_FUNC_INFO << "could not create neccessary "
+			qCritical () << Q_FUNC_INFO << "could not create necessary "
 				"directories for Aggregator";
 			return false;
 		}

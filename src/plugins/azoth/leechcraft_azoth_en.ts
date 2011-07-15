@@ -1903,8 +1903,8 @@
     </message>
     <message>
         <location filename="azoth.cpp" line="154"/>
-        <source>A service discovery tab that allows to discover capabilities of remote entries</source>
-        <translation>A service discovery tab that allows to discover capabilities of remote entries</translation>
+        <source>A service discovery tab that allows one to discover capabilities of remote entries</source>
+        <translation>A service discovery tab that allows one to discover capabilities of remote entries</translation>
     </message>
     <message>
         <location filename="azoth.cpp" line="163"/>
@@ -1949,8 +1949,8 @@
     </message>
     <message>
         <location filename="servicediscoverywidget.cpp" line="100"/>
-        <source>A service discovery tab that allows to discover capabilities of remote entries</source>
-        <translation>A service discovery tab that allows to discover capabilities of remote entries</translation>
+        <source>A service discovery tab that allows one to discover capabilities of remote entries</source>
+        <translation>A service discovery tab that allows one to discover capabilities of remote entries</translation>
     </message>
     <message>
         <location filename="servicediscoverywidget.cpp" line="142"/>

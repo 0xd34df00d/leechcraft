@@ -26,7 +26,7 @@ namespace LeechCraft
 {
 	namespace Util
 	{
-		/** Customized cookie jar. Allows to filter tracking cookies, 
+		/** Customized cookie jar. Allows one to filter tracking cookies, 
 		 * filter duplicate cookies and has unlimited storage period.
 		 */
 		class UTIL_API CustomCookieJar : public QNetworkCookieJar

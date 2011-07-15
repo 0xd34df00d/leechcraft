@@ -99,8 +99,8 @@
     <name>Export</name>
     <message>
         <location filename="export.ui" line="14"/>
-        <source>This string is overriden in the source code</source>
-        <translation>This string is overriden in the source code</translation>
+        <source>This string is overridden in the source code</source>
+        <translation>This string is overridden in the source code</translation>
     </message>
     <message>
         <location filename="export.ui" line="25"/>

@@ -5,7 +5,7 @@
     <name>LeechCraft::Azoth::HiLi::Plugin</name>
     <message>
         <location filename="hili.cpp" line="66"/>
-        <source>Azoth Hili allows to customize the settings of highlights in conferences.</source>
+        <source>Azoth Hili allows one to customize the settings of highlights in conferences.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

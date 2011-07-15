@@ -114,7 +114,7 @@ OPTION (ENABLE_POTORCHU "Build Potorchu, the new generation audio/video player" 
 OPTION (ENABLE_TRANSPARENTARCH "Build TransparentArch, the plugin for transparent access to archives in various formats" OFF)
 OPTION (ENABLE_JUFFED "Build JuffEd, the advanced text editor" OFF)
 OPTION (ENABLE_GMAILNOTIFIER "Build GMail Notifier which notifies about new mail in your GMail inbox" OFF)
-OPTION (ENABLE_OTZERKALU "Build Otzerkalu, which allows to download web sites recursively" OFF)
+OPTION (ENABLE_OTZERKALU "Build Otzerkalu, which allows one to download web sites recursively" OFF)
 OPTION (ENABLE_ADVANCEDNOTIFICATIONS "Build Advanced Notifications module for more customizable notifications" OFF)
 ENABLE_TESTING ()
 
