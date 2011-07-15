@@ -36,7 +36,6 @@ namespace LeechCraft
 		setExpanding (false);
 		setIconSize (QSize (15, 15));
 		setContextMenuPolicy (Qt::CustomContextMenu);
-		setSelectionBehaviorOnRemove (QTabBar::SelectLeftTab);
 
 		CloseSide_ = (QTabBar::ButtonPosition)this->style ()->
 				styleHint (QStyle::SH_TabBar_CloseButtonPosition);

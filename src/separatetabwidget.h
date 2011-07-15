@@ -47,6 +47,8 @@ namespace LeechCraft
 		Q_INTERFACES (ICoreTabWidget)
 
 		int LastContextMenuTab_;
+		int PreviouseTab_;
+		int CurrentTab_;
 		QMenu *DefaultContextMenu_;
 		QMenu *AddTabButtonContextMenu_;
 		QPointer<QStackedWidget> MainStackedWidget_;
@@ -112,6 +114,7 @@ namespace LeechCraft
 		void SetInMoveProcess (bool);
 		bool IsPinTab (int) const;
 		QString GetPinTabText (int) const;
+		void SetToolBarVisible (bool);
 	protected:
 		void resizeEvent (QResizeEvent*);
 		bool event (QEvent*);
@@ -125,6 +128,7 @@ namespace LeechCraft
 		void handleNewTabShortcutActivated ();
 		void on_PinTab__triggered (bool);
 		void on_UnPinTab__triggered (bool);
+		void setPreviousTab ();
 	private slots:
 		void handleCurrentChanged (int);
 		void handleTabMoved (int, int);
@@ -132,6 +136,7 @@ namespace LeechCraft
 		void handleShowAddTabButton (bool);
 		void handleAddDefaultTab (bool);
 		void handleActionDestroyed ();
+		void handleSelectionBehavior ();
 	signals:
 		void newTabRequested ();
 		void newTabMenuRequested ();
