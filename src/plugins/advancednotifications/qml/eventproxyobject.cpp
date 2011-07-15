@@ -17,7 +17,10 @@
  **********************************************************************/
 
 #include "eventproxyobject.h"
+#include <QVariant>
+#include <QDeclarativeContext>
 #include <util/util.h>
+#include "actionsproxyobject.h"
 
 namespace LeechCraft
 {
@@ -28,6 +31,12 @@ namespace AdvancedNotifications
 	, E_ (ed)
 	{
 		CachedImage_ = QUrl (Util::GetAsBase64Src (E_.Pixmap_.scaled (32, 32).toImage ()));
+		
+		QList<QObject*> model;
+		Q_FOREACH (const QString& action, ed.Actions_)
+			model << new ActionsProxyObject (action);
+		
+		ActionsModel_ = QVariant::fromValue<QList<QObject*> > (model);
 	}
 
 	int EventProxyObject::count () const
@@ -47,7 +56,7 @@ namespace AdvancedNotifications
 	
 	QVariant EventProxyObject::eventActionsModel () const
 	{
-		return QVariant (E_.Actions_);
+		return ActionsModel_;
 	}
 }
 }

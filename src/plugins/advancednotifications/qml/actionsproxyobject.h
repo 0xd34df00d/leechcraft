@@ -16,41 +16,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_QML_EVENTPROXYOBJECT_H
-#define PLUGINS_ADVANCEDNOTIFICATIONS_QML_EVENTPROXYOBJECT_H
+#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_QML_ACTIONSPROXYOBJECT_H
+#define PLUGINS_ADVANCEDNOTIFICATIONS_QML_ACTIONSPROXYOBJECT_H
 #include <QObject>
-#include <QUrl>
-#include "../eventdata.h"
 
 namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
-	class EventProxyObject : public QObject
+	class ActionsProxyObject : public QObject
 	{
 		Q_OBJECT
-		Q_PROPERTY (int count READ count NOTIFY countChanged);
-		Q_PROPERTY (QUrl image READ image NOTIFY imageChanged);
-		Q_PROPERTY (QString extendedText READ extendedText NOTIFY extendedTextChanged);
-		Q_PROPERTY (QVariant eventActionsModel READ eventActionsModel NOTIFY eventActionsModelChanged);
+		Q_PROPERTY (QString actionText READ actionText NOTIFY actionTextChanged);
 		
-		EventData E_;
-		QUrl CachedImage_;
-		QVariant ActionsModel_;
+		QString ActionText_;
 	public:
-		EventProxyObject (const EventData&, QObject* = 0);
+		ActionsProxyObject (const QString&, QObject* = 0);
 		
-		int count () const;
-		QUrl image () const;
-		QString extendedText () const;
-		
-		QVariant eventActionsModel () const;
+		QString actionText () const;
 	signals:
-		void countChanged ();
-		void imageChanged ();
-		void extendedTextChanged ();
-		
-		void eventActionsModelChanged ();
+		void actionTextChanged ();
 	};
 }
 }

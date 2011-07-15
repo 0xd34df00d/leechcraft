@@ -6,8 +6,8 @@ Rectangle {
 	smooth: true
 	radius: 10
 	gradient: Gradient {
-		GradientStop { position: 0.0; color: "#414141E0" }
-		GradientStop { position: 1.0; color: "#1A1A1AC0" }
+		GradientStop { position: 0.0; color: "#414141" }
+		GradientStop { position: 1.0; color: "#1A1A1A" }
 	}
 	
 	ListView {
@@ -24,8 +24,8 @@ Rectangle {
 			smooth: true
 			radius: 6
 			gradient: Gradient {
-				GradientStop { position: 0.0; color: "#3A3A3AFF" }
-				GradientStop { position: 1.0; color: "#101010F2" }
+				GradientStop { position: 0.0; color: "#3A3A3A" }
+				GradientStop { position: 1.0; color: "#101010" }
 			}
 			
 			Image {
@@ -52,16 +52,19 @@ Rectangle {
 				anchors.bottom: parent.bottom
 				anchors.bottomMargin: 5
 				
+				orientation: ListView.Horizontal
+				
 				model: eventActionsModel
 				delegate: Rectangle {
-					anchors.centerIn: parent
 					height: 20
 					width: 100
 					smooth: true
 					radius: 3
 					
 					Text {
-						text: actionText
+						anchors.fill: parent
+
+						text: model.modelData.actionText
 					}
 				}
 			}
