@@ -19,6 +19,7 @@
 #ifndef PLUGINS_ADVANCEDNOTIFICATIONS_QML_EVENTPROXYOBJECT_H
 #define PLUGINS_ADVANCEDNOTIFICATIONS_QML_EVENTPROXYOBJECT_H
 #include <QObject>
+#include <QUrl>
 #include "../eventdata.h"
 
 namespace LeechCraft
@@ -29,20 +30,26 @@ namespace AdvancedNotifications
 	{
 		Q_OBJECT
 		Q_PROPERTY (int count READ count NOTIFY countChanged);
-		Q_PROPERTY (QPixmap image READ image NOTIFY imageChanged);
+		Q_PROPERTY (QUrl image READ image NOTIFY imageChanged);
 		Q_PROPERTY (QString extendedText READ extendedText NOTIFY extendedTextChanged);
+		Q_PROPERTY (QVariant eventActionsModel READ eventActionsModel NOTIFY eventActionsModelChanged);
 		
 		EventData E_;
+		QUrl CachedImage_;
 	public:
 		EventProxyObject (const EventData&, QObject* = 0);
 		
 		int count () const;
-		QPixmap image () const;
+		QUrl image () const;
 		QString extendedText () const;
+		
+		QVariant eventActionsModel () const;
 	signals:
 		void countChanged ();
 		void imageChanged ();
 		void extendedTextChanged ();
+		
+		void eventActionsModelChanged ();
 	};
 }
 }

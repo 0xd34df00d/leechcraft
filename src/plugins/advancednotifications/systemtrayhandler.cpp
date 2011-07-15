@@ -188,9 +188,10 @@ namespace AdvancedNotifications
 			return;
 		}
 
-		Icon2NotificationView_ [trayIcon]->SetEvents (EventsForIcon_ [trayIcon]);
-		Icon2NotificationView_ [trayIcon]->move (QCursor::pos ());
-		Icon2NotificationView_ [trayIcon]->show ();
+		VisualNotificationsView *view = Icon2NotificationView_ [trayIcon];
+		view->SetEvents (EventsForIcon_ [trayIcon]);
+		view->move (QCursor::pos ());
+		view->setVisible (!view->isVisible ());
 #endif
 	}
 }

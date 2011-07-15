@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "eventproxyobject.h"
+#include <util/util.h>
 
 namespace LeechCraft
 {
@@ -26,6 +27,7 @@ namespace AdvancedNotifications
 	: QObject (parent)
 	, E_ (ed)
 	{
+		CachedImage_ = QUrl (Util::GetAsBase64Src (E_.Pixmap_.scaled (32, 32).toImage ()));
 	}
 
 	int EventProxyObject::count () const
@@ -33,14 +35,19 @@ namespace AdvancedNotifications
 		return E_.Count_;
 	}
 	
-	QPixmap EventProxyObject::image () const
+	QUrl EventProxyObject::image () const
 	{
-		return E_.Pixmap_;
+		return CachedImage_;
 	}
 	
 	QString EventProxyObject::extendedText () const
 	{
 		return E_.ExtendedText_;
+	}
+	
+	QVariant EventProxyObject::eventActionsModel () const
+	{
+		return QVariant (E_.Actions_);
 	}
 }
 }
