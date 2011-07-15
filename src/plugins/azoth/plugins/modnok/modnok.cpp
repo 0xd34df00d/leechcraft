@@ -217,16 +217,10 @@ namespace Modnok
 
 		if (!body.contains ("$$"))
 			return;
-		
-		if (HandledObjects_.contains (message))
-			return;
 
 		const QString newBody = HandleBody (body);
 		if (body != newBody)
-		{
 			proxy->SetValue ("body", newBody);
-			HandledObjects_ << message;
-		}
 	}
 	
 	void Plugin::hookGonnaHandleSmiles (IHookProxy_ptr proxy,
@@ -253,9 +247,6 @@ namespace Modnok
 		
 		if (!XmlSettingsManager::Instance ()
 				.property ("SubstituteOutgoing").toBool ())
-			return;
-		
-		if (HandledObjects_.contains (msgObj))
 			return;
 		
 		IMessage *msg = qobject_cast<IMessage*> (msgObj);
@@ -289,7 +280,6 @@ namespace Modnok
 						"inline formulas, enable XHTML-IM to view them)");
 
 		richMsg->SetRichBody (newBody);
-		HandledObjects_ << msgObj;
 	}
 	
 	void Plugin::clearCaches ()
