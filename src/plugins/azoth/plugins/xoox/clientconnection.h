@@ -40,6 +40,8 @@ class QXmppBookmarkManager;
 class QXmppArchiveManager;
 class QXmppEntityTimeManager;
 class QXmppDeliveryReceiptsManager;
+class QXmppCaptchaManager;
+class QXmppBobManager;
 class QXmppCallManager;
 class QXmppCall;
 
@@ -76,6 +78,8 @@ namespace Xoox
 		QXmppEntityTimeManager *EntityTimeManager_;
 		QXmppArchiveManager *ArchiveManager_;
 		QXmppDeliveryReceiptsManager *DeliveryReceiptsManager_;
+		QXmppCaptchaManager *CaptchaManager_;
+		QXmppBobManager *BobManager_;
 		QXmppCallManager *CallManager_;
 		PubSubManager *PubSubManager_;
 		PrivacyListsManager *PrivacyListsManager_;
@@ -211,6 +215,7 @@ namespace Xoox
 		void handleMessageReceived (const QXmppMessage&);
 		void handlePEPEvent (const QString&, PEPEventBase*);
 		void handleMessageDelivered (const QString&);
+		void handleCaptchaReceived (const QString&, const QXmppDataForm&);
 		
 		void handleBookmarksReceived (const QXmppBookmarkSet&);
 		void handleAutojoinQueue ();

@@ -16,51 +16,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_SYSTEMTRAYHANDLER_H
-#define PLUGINS_ADVANCEDNOTIFICATIONS_SYSTEMTRAYHANDLER_H
-#include <QMap>
+#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_EVENTDATA_H
+#define PLUGINS_ADVANCEDNOTIFICATIONS_EVENTDATA_H
 #include <QStringList>
 #include <QPixmap>
-#include <QPointer>
-#include <QSystemTrayIcon>
 #include <interfaces/structures.h>
-#include "concretehandlerbase.h"
-#include "eventdata.h"
-
-class QSystemTrayIcon;
 
 namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
-#ifdef HAVE_QML
-	class VisualNotificationsView;
-#endif
-
-	class SystemTrayHandler : public ConcreteHandlerBase
+	struct EventData
 	{
-		Q_OBJECT
+		int Count_;
+		QString Category_;
+		QStringList VisualPath_;
+		QString ExtendedText_;
+		QPixmap Pixmap_;
 
-		QMap<QString, QSystemTrayIcon*> Category2Icon_;
-		QMap<QString, EventData> Events_;
-		
-#ifdef HAVE_QML
-		QMap<QSystemTrayIcon*, QList<EventData> > EventsForIcon_;
-		QMap<QSystemTrayIcon*, VisualNotificationsView*> Icon2NotificationView_;
-#endif
-	public:
-		SystemTrayHandler ();
-
-		HandlerType GetHandlerType () const;
-		void Handle (const Entity&);
-	private:
-		void PrepareSysTrayIcon (const QString&);
-		void RebuildState ();
-	private slots:
-		void handleActionTriggered ();
-		void dismissNotification ();
-		
-		void handleTrayActivated (QSystemTrayIcon::ActivationReason);
+		QObject_ptr HandlingObject_;
+		QStringList Actions_;
 	};
 }
 }

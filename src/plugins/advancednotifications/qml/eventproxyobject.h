@@ -16,45 +16,42 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SHELLOPEN_SHELLOPEN_H
-#define PLUGINS_SHELLOPEN_SHELLOPEN_H
+#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_QML_EVENTPROXYOBJECT_H
+#define PLUGINS_ADVANCEDNOTIFICATIONS_QML_EVENTPROXYOBJECT_H
 #include <QObject>
-#include <QTranslator>
-#include <interfaces/iinfo.h>
-#include <interfaces/ientityhandler.h>
+#include <QUrl>
+#include "../eventdata.h"
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace AdvancedNotifications
+{
+	class EventProxyObject : public QObject
 	{
-		namespace ShellOpen
-		{
-			class Plugin : public QObject
-						 , public IInfo
-						 , public IEntityHandler
-			{
-				Q_OBJECT
-				Q_INTERFACES (IInfo IEntityHandler)
-
-				std::auto_ptr<QTranslator> Translator_;
-				ICoreProxy_ptr Proxy_;
-			public:
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
-				QByteArray GetUniqueID () const;
-				void Release ();
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-
-				EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
-				void Handle (LeechCraft::Entity);
-			signals:
-				void gotEntity (const LeechCraft::Entity&);
-			};
-		};
+		Q_OBJECT
+		Q_PROPERTY (int count READ count NOTIFY countChanged);
+		Q_PROPERTY (QUrl image READ image NOTIFY imageChanged);
+		Q_PROPERTY (QString extendedText READ extendedText NOTIFY extendedTextChanged);
+		Q_PROPERTY (QVariant eventActionsModel READ eventActionsModel NOTIFY eventActionsModelChanged);
+		
+		EventData E_;
+		QUrl CachedImage_;
+	public:
+		EventProxyObject (const EventData&, QObject* = 0);
+		
+		int count () const;
+		QUrl image () const;
+		QString extendedText () const;
+		
+		QVariant eventActionsModel () const;
+	signals:
+		void countChanged ();
+		void imageChanged ();
+		void extendedTextChanged ();
+		
+		void eventActionsModelChanged ();
 	};
-};
+}
+}
 
 #endif
-

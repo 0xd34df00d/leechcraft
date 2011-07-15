@@ -16,45 +16,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SHELLOPEN_SHELLOPEN_H
-#define PLUGINS_SHELLOPEN_SHELLOPEN_H
-#include <QObject>
-#include <QTranslator>
-#include <interfaces/iinfo.h>
-#include <interfaces/ientityhandler.h>
+#include "eventproxyobject.h"
+#include <util/util.h>
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace AdvancedNotifications
+{
+	EventProxyObject::EventProxyObject (const EventData& ed, QObject *parent)
+	: QObject (parent)
+	, E_ (ed)
 	{
-		namespace ShellOpen
-		{
-			class Plugin : public QObject
-						 , public IInfo
-						 , public IEntityHandler
-			{
-				Q_OBJECT
-				Q_INTERFACES (IInfo IEntityHandler)
+		CachedImage_ = QUrl (Util::GetAsBase64Src (E_.Pixmap_.scaled (32, 32).toImage ()));
+	}
 
-				std::auto_ptr<QTranslator> Translator_;
-				ICoreProxy_ptr Proxy_;
-			public:
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
-				QByteArray GetUniqueID () const;
-				void Release ();
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-
-				EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
-				void Handle (LeechCraft::Entity);
-			signals:
-				void gotEntity (const LeechCraft::Entity&);
-			};
-		};
-	};
-};
-
-#endif
-
+	int EventProxyObject::count () const
+	{
+		return E_.Count_;
+	}
+	
+	QUrl EventProxyObject::image () const
+	{
+		return CachedImage_;
+	}
+	
+	QString EventProxyObject::extendedText () const
+	{
+		return E_.ExtendedText_;
+	}
+	
+	QVariant EventProxyObject::eventActionsModel () const
+	{
+		return QVariant (E_.Actions_);
+	}
+}
+}

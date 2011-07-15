@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2011  Andrey Batyiev
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,45 +16,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SHELLOPEN_SHELLOPEN_H
-#define PLUGINS_SHELLOPEN_SHELLOPEN_H
-#include <QObject>
-#include <QTranslator>
-#include <interfaces/iinfo.h>
-#include <interfaces/ientityhandler.h>
+#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_IMAGEMEDIAWIDGET_H
+#define PLUGINS_AZOTH_PLUGINS_XOOX_IMAGEMEDIAWIDGET_H
+#include <QLabel>
+
+class QXmppBobManager;
+class QXmppBobIq;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Azoth
+{
+namespace Xoox
+{
+	class ImageMediaWidget : public QLabel
 	{
-		namespace ShellOpen
-		{
-			class Plugin : public QObject
-						 , public IInfo
-						 , public IEntityHandler
-			{
-				Q_OBJECT
-				Q_INTERFACES (IInfo IEntityHandler)
+		Q_OBJECT
 
-				std::auto_ptr<QTranslator> Translator_;
-				ICoreProxy_ptr Proxy_;
-			public:
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
-				QByteArray GetUniqueID () const;
-				void Release ();
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-
-				EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
-				void Handle (LeechCraft::Entity);
-			signals:
-				void gotEntity (const LeechCraft::Entity&);
-			};
-		};
+		QString Cid_;
+	public:
+		ImageMediaWidget (const QPair<QString, QString>&, QXmppBobManager*, const QString&, QWidget* = 0);
+	public slots:
+		void bobReceived (const QXmppBobIq&);
 	};
-};
+}
+}
+}
 
 #endif
-

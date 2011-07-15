@@ -47,8 +47,6 @@ namespace Modnok
 
 		QString ConvScriptPath_;
 		QCache<QString, QImage> FormulasCache_;
-		
-		QSet<QObject*> HandledObjects_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

@@ -1,0 +1,82 @@
+This file lists only more or less major changes, refer to `git log` for
+the rest.
+
+Links to the corresponding development digests are also given for the
+relevant blocks of changes, so one could easily lookup 
+
+!!! HEAD
+! Devel digest #8 ( http://leechcraft.org/devel-digest-8 ):
+* Aggregator: allow to set custom book name & genres in fb2 export.
+* Aggregator: fixes for fb2 generator.
+* Aggregator BodyFetch: new plugin for fetching full RSS news bodies.
+* Azoth: rich text formatter.
+* Azoth: support publishing geolocation information.
+* Azoth: allow to add MUC participants to contact-list in two clicks
+  if contact ID is known.
+* Azoth: support pre-nick and post-nick texts.
+* Azoth AdiumStyles: new plugin for Adium styles.
+* Azoth Autoidler: new plugin for setting status due to inactivity.
+* Azoth ChatHistory: improved history rendering with better nicks.
+* Azoth Modnok: new plugin for LaTeX rendering and inline display.
+* Azoth Rosenthal: updated Hunspell implementation.
+* Azoth Xoox: support XHTML-IM (XEP-0070).
+* Azoth Xoox: support geolocation (XEP-0080).
+* Core: fixed segfault on first-level plugin disabling.
+* Core: prioritized handlers concept.
+* SecMan SecureStorage: new plugin providing AES256-backed secure data
+  storage.
+
+!!! 0.4.80
+! Devel digest #7 ( http://leechcraft.org/devel-digest-7 ):
+* Aggregator: respect system background color palette.
+* Azoth: UI & concepts for media calls.
+* Azoth: support for animated state icons in contact list.
+* Azoth Rosenthal: new plugin for Hunspell-based spellchecking.
+* Azoth Xoox: Jingle support.
+* Azoth Xoox: support ad-hoc commands (XEP-0050).
+* Poshuku Keywords: new plugin for URL shortcuts.
+
+! Devel digest #6 ( http://leechcraft.org/devel-digest-6 ):
+* Azoth: support for changing user mood/activity/tune.
+* Azoth: protocol consoles concept.
+* Azoth: fixed regexps for detecting links in chats.
+* Azoth: improved insertion of nicks in message line edits.
+* Azoth Autopaste: new plugin for sending long posts to pastebins.
+* Azoth Depester: new plugin for ignoring specific MUC participants.
+* Azoth EmbedMedia: new plugin for in-chat media objects display.
+* Azoth Herbicide: new antispam plugin.
+* Azoth Xoox: PubSub/PEP support, particularly: XEP-0107, XEP-0108,
+  XEP-0118, XEP-0163.
+* Azoth Xoox: support in-band registration (XEP-0077).
+* Azoth Xoox: support privacy lists (XEP-0016).
+* Azoth Xoox: redesigned handling of unauthorized contacts.
+* Azoth Xoox: implemented XEP-0090.
+* Azoth Xoox: support legacy forms.
+* Azoth Xtazy: new plugin for publishing current user tune.
+
+! Devel digest #5 ( http://leechcraft.org/devel-digest-5 ):
+* AdvancedNotifications: basic support.
+* Azoth: support scrolling chats by Ctrl+PgUp/PgDown.
+* Azoth: configurable hotkey for message sending.
+* Azoth: display statuses with line breaks correctly.
+* Azoth ChatHistory: correctly handle HTML in messages.
+* Azoth ChatHistory: show the directions of messages.
+* Azoth p100q: inline images display is now optional.
+* Azoth p100q: lots bugfixes.
+* Azoth Xoox: queue for service discovery & vcard requests.
+* Azoth Xoox: don't request caps for old clients like Psi+.
+* Core: settings UI moved from the dialog to a separate tab.
+* Poshuku: fixed too paranoid downloads detection.
+* Poshuku CleanWeb: correctly hide elements on Qt 4.7.
+
+! Devel digest #4 ( http://leechcraft.org/devel-digest-4 ):
+* Azoth & Xoox: support for XEP-0184, XEP-0221, XEP-0224.
+* Azoth: support for message receipts.
+* Azoth: support for incoming & outgoing attention requests.
+* Azoth: separate mode for participants of the current MUC.
+* Azoth: zooming chat windows by Ctrl+Wheel.
+* Azoth: default alt nick option for MUC rooms.
+* BitTorrent: nicer torrent removal dialog.
+
+!!! 0.4.75
+* Initial milestone when we started tracking changes in this file.
