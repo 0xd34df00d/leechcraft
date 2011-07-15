@@ -22,6 +22,7 @@
 #include <QStringList>
 #include <QPixmap>
 #include <QPointer>
+#include <QSystemTrayIcon>
 #include <interfaces/structures.h>
 #include "concretehandlerbase.h"
 
@@ -31,6 +32,10 @@ namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
+#ifdef HAVE_QML
+	class VisualNotificationsView;
+#endif
+
 	class SystemTrayHandler : public ConcreteHandlerBase
 	{
 		Q_OBJECT
@@ -49,6 +54,10 @@ namespace AdvancedNotifications
 			QStringList Actions_;
 		};
 		QMap<QString, EventData> Events_;
+		
+#ifdef HAVE_QML
+		QMap<QSystemTrayIcon*, VisualNotificationsView*> Icon2NotificationView_;
+#endif
 	public:
 		SystemTrayHandler ();
 
@@ -60,6 +69,8 @@ namespace AdvancedNotifications
 	private slots:
 		void handleActionTriggered ();
 		void dismissNotification ();
+		
+		void handleTrayActivated (QSystemTrayIcon::ActivationReason);
 	};
 }
 }

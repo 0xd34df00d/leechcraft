@@ -18,9 +18,12 @@
 
 #include "systemtrayhandler.h"
 #include <interfaces/structures.h>
-#include <QSystemTrayIcon>
 #include <QMenu>
 #include "generalhandler.h"
+
+#ifdef HAVE_QML
+#include "visualnotificationsview.h"
+#endif
 
 namespace LeechCraft
 {
@@ -75,6 +78,15 @@ namespace AdvancedNotifications
 		QSystemTrayIcon *trayIcon = new QSystemTrayIcon (GH_->GetIconForCategory (category));
 		trayIcon->setContextMenu (new QMenu ());
 		Category2Icon_ [category] = trayIcon;
+		
+		connect (trayIcon,
+				SIGNAL (activated (QSystemTrayIcon::ActivationReason)),
+				this,
+				SLOT (handleTrayActivated (QSystemTrayIcon::ActivationReason)));
+		
+#ifdef HAVE_QML
+		Icon2NotificationView_ [trayIcon] = new VisualNotificationsView;
+#endif
 	}
 	
 	void SystemTrayHandler::RebuildState ()
@@ -151,6 +163,26 @@ namespace AdvancedNotifications
 		const QString& event = sender ()->property ("EventID").toString ();
 		if (Events_.remove (event))
 			RebuildState ();
+	}
+	
+	void SystemTrayHandler::handleTrayActivated (QSystemTrayIcon::ActivationReason reason)
+	{
+		if (reason != QSystemTrayIcon::Trigger)
+			return;
+		
+#ifdef HAVE_QML
+		QSystemTrayIcon *trayIcon = qobject_cast<QSystemTrayIcon*> (sender ());
+		if (!trayIcon)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< sender ()
+					<< "is not a QSystemTrayIcon";
+			return;
+		}
+
+		Icon2NotificationView_ [trayIcon]->move (QCursor::pos ());
+		Icon2NotificationView_ [trayIcon]->show ();
+#endif
 	}
 }
 }

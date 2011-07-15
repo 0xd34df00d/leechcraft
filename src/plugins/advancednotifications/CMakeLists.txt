@@ -15,6 +15,7 @@ IF (NOT QT_USE_FILE)
 	FIND_PACKAGE (LeechCraft REQUIRED)
 ENDIF (NOT QT_USE_FILE)
 
+SET (QT_USE_QTDECLARATIVE TRUE)
 INCLUDE (${QT_USE_FILE})
 INCLUDE_DIRECTORIES (
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -35,8 +36,23 @@ SET (HEADERS
 	systemtrayhandler.h
 	handlersconfigurator.h
 	)
+
+IF (QT_QTDECLARATIVE_FOUND)
+	ADD_DEFINITIONS(-DHAVE_QML=1)
+
+	SET (SRCS ${SRCS}
+		visualnotificationsview.cpp
+		)
+	SET (HEADERS ${HEADERS}
+		visualnotificationsview.h
+		)
+ENDIF (QT_QTDECLARATIVE_FOUND)
+
+SET (RESOURCES advancednotificationsresources.qrc)
+
 CreateTrVars ("advancednotifications" "en;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
+QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
 ADD_CUSTOM_COMMAND (OUTPUT
 	${COMPILED_TRANSLATIONS}
@@ -49,6 +65,7 @@ ADD_LIBRARY (leechcraft_advancednotifications SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
+	${RCCS}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_advancednotifications
 	${QT_LIBRARIES}
@@ -57,3 +74,4 @@ TARGET_LINK_LIBRARIES (leechcraft_advancednotifications
 INSTALL (TARGETS leechcraft_advancednotifications DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 INSTALL (FILES advancednotificationssettings.xml DESTINATION ${LC_SETTINGS_DEST})
+INSTALL (FILES share/qml/visualnotificationsview.qml DESTINATION ${LC_QML_DEST})
