@@ -111,7 +111,6 @@ namespace LeechCraft
 		bool IsInMoveProcess () const;
 		void SetInMoveProcess (bool);
 		bool IsPinTab (int) const;
-		QString GetPinTabText (int) const;
 	protected:
 		void resizeEvent (QResizeEvent*);
 		bool event (QEvent*);

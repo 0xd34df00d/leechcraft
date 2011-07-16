@@ -273,7 +273,8 @@ namespace LeechCraft
 
 	QString SeparateTabWidget::TabText (int index) const
 	{
-		return MainTabBar_->tabText (index);
+		return (IsPinTab (index)) ? MainTabBar_->GetPinTabText (index) : 
+				MainTabBar_->tabText (index);
 	}
 
 	QString SeparateTabWidget::TabToolTip (int index) const
@@ -426,11 +427,6 @@ namespace LeechCraft
 	bool SeparateTabWidget::IsPinTab (int index) const
 	{
 		return MainTabBar_->IsPinTab (index);
-	}
-
-	QString SeparateTabWidget::GetPinTabText (int index) const
-	{
-		return MainTabBar_->GetPinTabText (index);
 	}
 
 	void SeparateTabWidget::resizeEvent (QResizeEvent *event)
