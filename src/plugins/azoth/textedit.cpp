@@ -35,7 +35,7 @@ namespace Azoth
 	{
 		const QString& modOption = XmlSettingsManager::Instance ()
 				.property ("SendOnModifier").toString ();
-		Qt::KeyboardModifier sendMod = Qt::NoModifier;
+		Qt::KeyboardModifiers sendMod = Qt::NoModifier;
 		if (modOption == "CtrlEnter")
 			sendMod = Qt::ControlModifier;
 		else if (modOption == "ShiftEnter")
