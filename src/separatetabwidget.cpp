@@ -101,10 +101,6 @@ namespace LeechCraft
 		PinTabActionsInit ();
 	}
 
-	SeparateTabWidget::~SeparateTabWidget ()
-	{
-	}
-
 	int SeparateTabWidget::WidgetCount () const
 	{
 		return MainStackedWidget_->count ();

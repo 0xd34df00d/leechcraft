@@ -69,7 +69,6 @@ namespace LeechCraft
 		bool InMoveProcess_;
 	public:
 		explicit SeparateTabWidget (QWidget* = 0);
-		virtual ~SeparateTabWidget ();
 		int WidgetCount () const;
 		int CurrentIndex () const;
 		int AddTab (QWidget*, const QString&);
