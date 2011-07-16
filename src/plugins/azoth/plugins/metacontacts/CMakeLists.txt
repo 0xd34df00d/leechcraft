@@ -4,10 +4,12 @@ INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
 SET (METACONTACTS_SRCS
 	metacontacts.cpp
 	metaprotocol.cpp
+	metaaccount.cpp
 	)
 SET (METACONTACTS_HEADERS
 	metacontacts.h
 	metaprotocol.h
+	metaaccount.h
 	)
 CreateTrVars ("azoth_metacontacts" "en;ru_RU;uk_UA" METACONTACTS_TRANSLATIONS METACONTACTS_COMPILED_TRANSLATIONS)
 QT4_WRAP_CPP (METACONTACTS_MOC_SRCS ${METACONTACTS_HEADERS})

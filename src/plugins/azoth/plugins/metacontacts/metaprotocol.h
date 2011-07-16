@@ -27,15 +27,18 @@ namespace Azoth
 {
 namespace Metacontacts
 {
-	class Metaprotocol : public QObject
+	class MetaAccount;
+
+	class MetaProtocol : public QObject
 					   , public IProtocol
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IProtocol);
 		
 		QObject *ParentPlugin_;
+		MetaAccount *Account_;
 	public:
-		Metaprotocol (QObject*);
+		MetaProtocol (QObject*);
 		
 		QObject* GetObject ();
 		ProtocolFeatures GetFeatures () const;

@@ -18,6 +18,7 @@
 
 #include "metaprotocol.h"
 #include <QIcon>
+#include "metaaccount.h"
 
 namespace LeechCraft
 {
@@ -25,67 +26,70 @@ namespace Azoth
 {
 namespace Metacontacts
 {
-	Metaprotocol::Metaprotocol (QObject *parent)
+	MetaProtocol::MetaProtocol (QObject *parent)
 	: QObject (parent)
 	, ParentPlugin_ (parent)
 	{
+		Account_ = new MetaAccount (this);
 	}
 	
-	QObject* Metaprotocol::GetObject ()
+	QObject* MetaProtocol::GetObject ()
 	{
 		return this;
 	}
 	
-	IProtocol::ProtocolFeatures Metaprotocol::GetFeatures () const
+	IProtocol::ProtocolFeatures MetaProtocol::GetFeatures () const
 	{
 		return PFNone;
 	}
 	
-	QList<QObject*> Metaprotocol::GetRegisteredAccounts ()
+	QList<QObject*> MetaProtocol::GetRegisteredAccounts ()
 	{
-		return QList<QObject*> ();
+		QList<QObject*> result;
+		result << Account_;
+		return result;
 	}
 	
-	QObject* Metaprotocol::GetParentProtocolPlugin () const
+	QObject* MetaProtocol::GetParentProtocolPlugin () const
 	{
 		return ParentPlugin_;
 	}
 	
-	QString Metaprotocol::GetProtocolName () const
+	QString MetaProtocol::GetProtocolName () const
 	{
 		return tr ("Metacontacts");
 	}
 
-	QIcon Metaprotocol::GetProtocolIcon () const
+	QIcon MetaProtocol::GetProtocolIcon () const
 	{
 		return QIcon ();
 	}
 
-	QByteArray Metaprotocol::GetProtocolID () const
+	QByteArray MetaProtocol::GetProtocolID () const
 	{
-		return "org.LeechCraft.Azoth.Protocols.Metaprotocol";
+		return "org.LeechCraft.Azoth.Protocols.MetaProtocol";
 	}
 	
-	QList<QWidget*> Metaprotocol::GetAccountRegistrationWidgets (IProtocol::AccountAddOptions)
+	QList<QWidget*> MetaProtocol::GetAccountRegistrationWidgets (IProtocol::AccountAddOptions)
 	{
 		return QList<QWidget*> ();
 	}
 	
-	void Metaprotocol::RegisterAccount (const QString&, const QList<QWidget*>&)
+	void MetaProtocol::RegisterAccount (const QString&, const QList<QWidget*>&)
 	{
 	}
 	
-	QWidget* Metaprotocol::GetMUCJoinWidget ()
+	QWidget* MetaProtocol::GetMUCJoinWidget ()
 	{
 		return 0;
 	}
 	
-	QWidget* Metaprotocol::GetMUCBookmarkEditorWidget ()
+	QWidget* MetaProtocol::GetMUCBookmarkEditorWidget ()
 	{
 		return 0;
 	}
 
-	void Metaprotocol::RemoveAccount (QObject*)
+	void MetaProtocol::RemoveAccount (QObject*)
 	{
 	}
 }
