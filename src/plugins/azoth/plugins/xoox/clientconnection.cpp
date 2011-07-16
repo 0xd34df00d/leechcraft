@@ -35,6 +35,8 @@
 #include <QXmppActivityItem.h>
 #include <QXmppPubSubIq.h>
 #include <QXmppDeliveryReceiptsManager.h>
+#include <QXmppCaptchaManager.h>
+#include <QXmppBobManager.h>
 #include <QXmppCallManager.h>
 #include <util/util.h>
 #include <util/socketerrorstrings.h>
@@ -51,6 +53,7 @@
 #include "vcarddialog.h"
 #include "capsmanager.h"
 #include "annotationsmanager.h"
+#include "formbuilder.h"
 #include "fetchqueue.h"
 #include "legacyentitytimeext.h"
 #include "pubsubmanager.h"
@@ -60,6 +63,7 @@
 #include "userlocation.h"
 #include "privacylistsmanager.h"
 #include "adhoccommandmanager.h"
+
 
 namespace LeechCraft
 {
@@ -80,8 +84,10 @@ namespace Xoox
 	, EntityTimeManager_ (new QXmppEntityTimeManager)
 	, ArchiveManager_ (new QXmppArchiveManager)
 	, DeliveryReceiptsManager_ (new QXmppDeliveryReceiptsManager)
+	, CaptchaManager_ (new QXmppCaptchaManager)
+	, BobManager_ (new QXmppBobManager)
 	, CallManager_ (new QXmppCallManager)
-	, PubSubManager_ (new PubSubManager)
+	, PubSubManager_ (new PubSubManager)	
 	, PrivacyListsManager_ (new PrivacyListsManager)
 	, AdHocCommandManager_ (new AdHocCommandManager (this))
 	, AnnotationsManager_ (0)
@@ -127,6 +133,7 @@ namespace Xoox
 				this,
 				SLOT (handlePEPEvent (const QString&, PEPEventBase*)));
 
+		Client_->addExtension (BobManager_);
 		Client_->addExtension (PubSubManager_);
 		Client_->addExtension (DeliveryReceiptsManager_);
 		Client_->addExtension (MUCManager_);
@@ -134,6 +141,7 @@ namespace Xoox
 		Client_->addExtension (BMManager_);
 		Client_->addExtension (EntityTimeManager_);
 		Client_->addExtension (ArchiveManager_);
+		Client_->addExtension (CaptchaManager_);
 		Client_->addExtension (new LegacyEntityTimeExt);
 		Client_->addExtension (PrivacyListsManager_);
 		Client_->addExtension (CallManager_);
@@ -201,6 +209,11 @@ namespace Xoox
 				this,
 				SLOT (handleMessageDelivered (const QString&)));
 
+		connect (CaptchaManager_,
+				SIGNAL (captchaFormReceived (const QString&, const QXmppDataForm&)),
+				this,
+				SLOT (handleCaptchaReceived (const QString&, const QXmppDataForm&)));
+		
 		connect (DiscoveryManager_,
 				SIGNAL (infoReceived (const QXmppDiscoveryIq&)),
 				CapsManager_,
@@ -913,6 +926,36 @@ namespace Xoox
 		QPointer<GlooxMessage> msg = UndeliveredMessages_.take (msgId);
 		if (msg)
 			msg->SetDelivered (true);
+	}
+
+	void ClientConnection::handleCaptchaReceived (const QString& jid, const QXmppDataForm& dataForm)
+	{
+		FormBuilder builder (jid, BobManager_);
+		
+		std::auto_ptr<QDialog> dialog (new QDialog ());
+		QWidget *widget = builder.CreateForm (dataForm, dialog.get ());
+		dialog->setWindowTitle (widget->windowTitle ().isEmpty () ?
+				tr ("Enter CAPTCHA") :
+				widget->windowTitle ());
+		dialog->setLayout (new QVBoxLayout ());
+		dialog->layout ()->addWidget (widget);
+		QDialogButtonBox *box = new QDialogButtonBox (QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+		dialog->layout ()->addWidget (box);
+		
+		connect (box,
+				SIGNAL (accepted ()),
+				dialog.get (),
+				SLOT (accept ()));
+		connect (box,
+				SIGNAL (rejected ()),
+				dialog.get (),
+				SLOT (reject ()));
+		
+		if (dialog->exec () != QDialog::Accepted)
+			return;
+		
+		QXmppDataForm form = builder.GetForm ();
+		CaptchaManager_->sendResponse (jid, form);
 	}
 
 	void ClientConnection::handleBookmarksReceived (const QXmppBookmarkSet& set)

@@ -117,7 +117,7 @@ namespace FatApe
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		return QIcon (":/plugins/poshuku/plugins/fatape/resources/images/fatape.svg");
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const

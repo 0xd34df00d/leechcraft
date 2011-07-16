@@ -215,6 +215,8 @@ namespace Xoox
 		}
 		
 		emit gotResult (elem.attribute ("from"), result);
+		
+		return true;
 	}
 	
 	void AdHocCommandManager::handleItemsReceived (const QXmppDiscoveryIq& iq)

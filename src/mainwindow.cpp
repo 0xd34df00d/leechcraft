@@ -582,6 +582,8 @@ void LeechCraft::MainWindow::on_MainTabWidget__currentChanged (int index)
 {
 	QToolBar *bar = Core::Instance ().GetToolBar (index);
 	GetGuard ()->AddToolbar (bar);
+	if (Ui_.MainTabWidget_->TabCount () > 1)
+		bar->setVisible (!isFullScreen ());
 }
 
 namespace
@@ -800,7 +802,11 @@ void LeechCraft::MainWindow::InitializeShortcuts ()
 			SIGNAL (activated ()),
 			Ui_.MainTabWidget_,
 			SLOT (handleNewTabShortcutActivated ()));
-
+	connect (new QShortcut (QKeySequence (Qt::CTRL + Qt::Key_Space), this),
+			SIGNAL (activated ()),
+			Ui_.MainTabWidget_,
+			SLOT (setPreviousTab ()));
+	
 	for (int i = 0; i < 10; ++i)
 	{
 		QString seqStr = QString ("Ctrl+\\, %1").arg (i);
@@ -839,6 +845,7 @@ void LeechCraft::MainWindow::ShowMenuAndBar (bool show)
 	int cur = Ui_.MainTabWidget_->CurrentIndex ();
 	if (Core::Instance ().GetToolBar (cur))
 		Core::Instance ().GetToolBar (cur)->setVisible (show);
+	Ui_.MainTabWidget_->SetToolBarVisible (show);
 	Ui_.ActionFullscreenMode_->setChecked (!show);
 }
 

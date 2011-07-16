@@ -61,6 +61,7 @@ ENDIF (IS64BITS AND RESPECTLIB64)
 SET (LC_PLUGINS_DEST "${LIBDIR}/leechcraft/plugins")
 SET (LC_TRANSLATIONS_DEST "share/leechcraft/translations")
 SET (LC_SETTINGS_DEST "share/leechcraft/settings")
+SET (LC_QML_DEST "share/leechcraft/qml")
 SET (LC_INSTALLEDMANIFEST_DEST "share/leechcraft/installed")
 
 SET (Boost_ADDITIONAL_VERSIONS "1.46" "1.46.1" "1.44" "1.44.0")
