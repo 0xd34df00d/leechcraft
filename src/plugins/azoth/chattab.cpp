@@ -722,10 +722,43 @@ namespace Azoth
 		SetChatPartState (CPSPaused);
 	}
 	
-	void ChatTab::handleGotLastMessages (QObject *entry, const QList<QObject*>& messages)
+	namespace
 	{
-		if (entry != GetEntry<QObject> ())
+		struct PredSimilarMessage
+		{
+			IMessage *To_;
+
+			PredSimilarMessage (IMessage *to)
+			: To_ (to)
+			{
+			}
+			
+			bool operator() (QObject *msgObj)
+			{
+				IMessage *msg = qobject_cast<IMessage*> (msgObj);
+				if (!msg)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< msgObj
+							<< "doesn't implement IMessage";
+					return false;
+				}
+				
+				return msg->GetDirection () == To_->GetDirection () &&
+						msg->GetBody () == To_->GetBody () &&
+						std::abs (msg->GetDateTime ().secsTo (To_->GetDateTime ())) < 5;
+			}
+		};
+	}
+	
+	void ChatTab::handleGotLastMessages (QObject *entryObj, const QList<QObject*>& messages)
+	{
+		if (entryObj != GetEntry<QObject> ())
 			return;
+		
+		ICLEntry *entry = GetEntry<ICLEntry> ();
+		QList<QObject*> rMsgs = entry->GetAllMessages ();
+		std::reverse (rMsgs.begin (), rMsgs.end ());
 
 		Q_FOREACH (QObject *msgObj, messages)
 		{
@@ -739,6 +772,11 @@ namespace Azoth
 			}
 			
 			const QDateTime& dt = msg->GetDateTime ();
+			
+			if (std::find_if (rMsgs.begin (), rMsgs.end (),
+						PredSimilarMessage (msg)) != rMsgs.end ())
+				continue;
+			
 			if (HistoryMessages_.isEmpty () ||
 					HistoryMessages_.last ()->GetDateTime () <= dt)
 				HistoryMessages_ << msg;
