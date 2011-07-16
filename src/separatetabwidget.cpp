@@ -460,11 +460,11 @@ namespace LeechCraft
 	void SeparateTabWidget::resizeEvent (QResizeEvent *event)
 	{
 		QWidget::resizeEvent (event);
+		int length = 0;
+		for (int i = 0; i < MainTabBar_->count (); ++i)
+			length += MainTabBar_->tabRect (i).width ();
 		if (event->oldSize ().width () > event->size ().width ())
 		{
-			int length = 0;
-			for (int i = 0; i < MainTabBar_->count (); ++i)
-				length += MainTabBar_->tabRect (i).width ();
 			if ((length + 30 > MainTabBar_->width ()) &&
 					!AddTabButtonAction_->isVisible ())
 			{
@@ -475,10 +475,6 @@ namespace LeechCraft
 		}
 		else if (event->oldSize ().width () < event->size ().width ())
 		{
-			int length = 0;
-			for (int i = 0; i < MainTabBar_->count (); ++i)
-				length += MainTabBar_->tabRect (i).width ();
-
 			if (length + 60 < MainTabBar_->width () &&
 					AddTabButtonAction_->isVisible ())
 			{
