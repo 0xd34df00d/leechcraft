@@ -69,49 +69,60 @@ namespace LeechCraft
 		bool InMoveProcess_;
 	public:
 		explicit SeparateTabWidget (QWidget* = 0);
+		QObject* GetObject ();
+
 		int WidgetCount () const;
-		int CurrentIndex () const;
-		int AddTab (QWidget*, const QString&);
-		int AddTab (QWidget*, const QIcon&, const QString&);
 		void Clear ();
+
+		int CurrentIndex () const;
 		QWidget* CurrentWidget () const;
 		int IndexOf (QWidget*) const;
+
+		int AddTab (QWidget*, const QString&);
+		int AddTab (QWidget*, const QIcon&, const QString&);
 		int InsertTab (int, QWidget*, const QString&);
 		int InsertTab (int, QWidget*, const QIcon&, const QString&);
-		bool IsTabEnabled (int) const;
 		void RemoveTab (int);
+
 		void SetTabEnabled (int, bool);
 		void SetTabIcon (int, const QIcon&);
 		void SetTabText (int, const QString&);
 		void SetTabToolTip (int, const QString&);
 		void SetTabWhatsThis (int, const QString&);
+		void SetTabsClosable (bool closable);
+		void SetTooltip (int, QWidget*);
+
+		bool IsTabEnabled (int) const;
 		QIcon TabIcon (int) const;
 		QString TabText (int) const;
 		QString TabToolTip (int) const;
 		QString TabWhatsThis (int) const;
 		QWidget* Widget (int) const;
 		int TabAt (const QPoint&);
-		void SetTabsClosable (bool closable);
+
 		void SetDefaultContextMenu (QMenu*);
 		QMenu* GetDefaultContextMenu () const;
 		void SetAddTabButtonContextMenu (QMenu*);
 		QMenu* GetAddTabButtonContextMenu () const;
+
 		void AddWidget2TabBarLayout (QTabBar::ButtonPosition, QWidget*);
 		void AddAction2TabBarLayout (QTabBar::ButtonPosition, QAction*);
 		void AddWidget2SeparateTabWidget (QWidget*);
 		void RemoveWidgetFromSeparateTabWidget (QWidget*);
+		void SetToolBarVisible (bool);
+
 		SeparateTabBar* TabBar () const;
-		bool IsAddTabActionVisible () const;
-		void SetTooltip (int, QWidget*);
+
 		void AddAction2TabBar (QAction*);
 		void InsertAction2TabBar (int, QAction*);
 		void InsertAction2TabBar (QAction *before, QAction *action);
-		QObject* GetObject ();
+
 		int GetLastContextMenuTab () const;
+		bool IsAddTabActionVisible () const;
+		bool IsPinTab (int) const;
+
 		bool IsInMoveProcess () const;
 		void SetInMoveProcess (bool);
-		bool IsPinTab (int) const;
-		void SetToolBarVisible (bool);
 	protected:
 		void resizeEvent (QResizeEvent*);
 		bool event (QEvent*);

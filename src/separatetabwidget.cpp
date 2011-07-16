@@ -101,14 +101,35 @@ namespace LeechCraft
 		PinTabActionsInit ();
 	}
 
+	QObject* SeparateTabWidget::GetObject ()
+	{
+		return this;
+	}
+
 	int SeparateTabWidget::WidgetCount () const
 	{
 		return MainStackedWidget_->count ();
 	}
 
+	void SeparateTabWidget::Clear ()
+	{
+		for (int i = 0; i < MainTabBar_->count () - 1; ++i)
+			RemoveTab (i);
+	}
+
 	int SeparateTabWidget::CurrentIndex () const
 	{
 		return MainTabBar_->currentIndex ();
+	}
+
+	QWidget* SeparateTabWidget::CurrentWidget () const
+	{
+		return MainStackedWidget_->currentWidget ();
+	}
+
+	int SeparateTabWidget::IndexOf (QWidget *w) const
+	{
+		return MainStackedWidget_->indexOf (w);
 	}
 
 	int SeparateTabWidget::AddTab (QWidget *page, const QString& text)
@@ -141,22 +162,6 @@ namespace LeechCraft
 		return newIndex;
 	}
 
-	void SeparateTabWidget::Clear ()
-	{
-		for (int i = 0; i < MainTabBar_->count () - 1; ++i)
-			RemoveTab (i);
-	}
-
-	QWidget* SeparateTabWidget::CurrentWidget () const
-	{
-		return MainStackedWidget_->currentWidget ();
-	}
-
-	int SeparateTabWidget::IndexOf (QWidget *w) const
-	{
-		return MainStackedWidget_->indexOf (w);
-	}
-
 	int SeparateTabWidget::InsertTab (int index, QWidget *page,
 			const QString& text)
 	{
@@ -174,11 +179,6 @@ namespace LeechCraft
 		int idx = MainTabBar_->insertTab (newIndex, icon, text);
 
 		return idx;
-	}
-
-	bool SeparateTabWidget::IsTabEnabled (int index) const
-	{
-		return MainStackedWidget_->widget (index)->isEnabled ();
 	}
 
 	void SeparateTabWidget::RemoveTab (int index)
@@ -270,6 +270,25 @@ namespace LeechCraft
 		MainTabBar_->setTabWhatsThis (index, text);
 	}
 
+	void SeparateTabWidget::SetTabsClosable (bool closable)
+	{
+		MainTabBar_->setTabsClosable (closable);
+		MainTabBar_->SetTabNoClosable (WidgetCount ());
+	}
+
+	void SeparateTabWidget::SetTooltip (int index, QWidget *widget)
+	{
+		if ((index >= WidgetCount ()) && !IsAddTabActionVisible ())
+			return;
+
+		Widgets_ [index] = widget;
+	}
+
+	bool SeparateTabWidget::IsTabEnabled (int index) const
+	{
+		return MainStackedWidget_->widget (index)->isEnabled ();
+	}
+
 	QIcon SeparateTabWidget::TabIcon (int index) const
 	{
 		return MainTabBar_->tabIcon (index);
@@ -299,12 +318,6 @@ namespace LeechCraft
 	int SeparateTabWidget::TabAt (const QPoint& pos)
 	{
 		return MainTabBar_->tabAt (pos);
-	}
-
-	void SeparateTabWidget::SetTabsClosable (bool closable)
-	{
-		MainTabBar_->setTabsClosable (closable);
-		MainTabBar_->SetTabNoClosable (WidgetCount ());
 	}
 
 	void SeparateTabWidget::SetDefaultContextMenu (QMenu *menu)
@@ -364,6 +377,14 @@ namespace LeechCraft
 		w->hide ();
 	}
 
+	void SeparateTabWidget::SetToolBarVisible (bool visible)
+	{
+		if (!visible)
+			MainLayout_->removeItem (MainToolBarLayout_);
+		else
+			MainLayout_->insertLayout (1, MainToolBarLayout_);
+	}
+
 	SeparateTabBar* SeparateTabWidget::TabBar () const
 	{
 		return MainTabBar_;
@@ -372,14 +393,6 @@ namespace LeechCraft
 	bool SeparateTabWidget::IsAddTabActionVisible () const
 	{
 		return AddTabButtonAction_->isVisible ();
-	}
-
-	void SeparateTabWidget::SetTooltip (int index, QWidget *widget)
-	{
-		if ((index >= WidgetCount ()) && !IsAddTabActionVisible ())
-			return;
-
-		Widgets_ [index] = widget;
 	}
 
 	void SeparateTabWidget::AddAction2TabBar (QAction *act)
@@ -408,14 +421,14 @@ namespace LeechCraft
 		InsertAction2TabBar (idx, action);
 	}
 
-	QObject* SeparateTabWidget::GetObject ()
-	{
-		return this;
-	}
-
 	int SeparateTabWidget::GetLastContextMenuTab () const
 	{
 		return LastContextMenuTab_;
+	}
+
+	bool SeparateTabWidget::IsPinTab (int index) const
+	{
+		return MainTabBar_->IsPinTab (index);
 	}
 
 	bool SeparateTabWidget::IsInMoveProcess () const
@@ -426,31 +439,6 @@ namespace LeechCraft
 	void SeparateTabWidget::SetInMoveProcess (bool move)
 	{
 		InMoveProcess_ = move;
-	}
-
-	bool SeparateTabWidget::IsPinTab (int index) const
-	{
-		return MainTabBar_->IsPinTab (index);
-	}
-
-	void SeparateTabWidget::SetToolBarVisible (bool visible)
-	{
-		if (!visible)
-			MainLayout_->removeItem (MainToolBarLayout_);
-		else
-			MainLayout_->insertLayout (1, MainToolBarLayout_);
-	}
-
-	void SeparateTabWidget::handleSelectionBehavior ()
-	{
-		QString selection = XmlSettingsManager::Instance ()->
-			property ("SelectionBehavior").toString ();
-		if (selection == "PreviousActive")
-			MainTabBar_->setSelectionBehaviorOnRemove (QTabBar::SelectPreviousTab);
-		else if (selection == "NextIndex")
-			MainTabBar_->setSelectionBehaviorOnRemove (QTabBar::SelectRightTab);
-		else if (selection == "PreviousIndex")
-			MainTabBar_->setSelectionBehaviorOnRemove (QTabBar::SelectLeftTab);
 	}
 
 	void SeparateTabWidget::resizeEvent (QResizeEvent *event)
@@ -603,6 +591,31 @@ namespace LeechCraft
 		handleAddDefaultTab (true);
 	}
 
+	void  SeparateTabWidget::on_PinTab__triggered (bool)
+	{
+		MainTabBar_->moveTab (LastContextMenuTab_,
+				MainTabBar_->PinTabsCount ());
+		MainTabBar_->SetTabData (MainTabBar_->PinTabsCount ());
+		MainTabBar_->setPinTab (MainTabBar_->PinTabsCount ());
+
+		handleCurrentChanged (MainTabBar_->PinTabsCount () - 1);
+	}
+
+	void  SeparateTabWidget::on_UnPinTab__triggered (bool)
+	{
+		MainTabBar_->moveTab (LastContextMenuTab_,
+				MainTabBar_->PinTabsCount () - 1);
+		MainTabBar_->setUnPinTab (MainTabBar_->PinTabsCount () - 1);
+
+		handleCurrentChanged (MainTabBar_->PinTabsCount ());
+	}
+
+	void SeparateTabWidget::setPreviousTab ()
+	{
+		if ((PreviousTab_ <= WidgetCount () - 1) && (WidgetCount () >= 2))
+			setCurrentIndex (PreviousTab_);
+	}
+
 	void SeparateTabWidget::handleCurrentChanged (int index)
 	{
 		setCurrentIndex (index);
@@ -707,31 +720,6 @@ namespace LeechCraft
 		AddTabButtonAction_->setVisible (show);
 	}
 
-	void  SeparateTabWidget::on_PinTab__triggered (bool)
-	{
-		MainTabBar_->moveTab (LastContextMenuTab_,
-				MainTabBar_->PinTabsCount ());
-		MainTabBar_->SetTabData (MainTabBar_->PinTabsCount ());
-		MainTabBar_->setPinTab (MainTabBar_->PinTabsCount ());
-
-		handleCurrentChanged (MainTabBar_->PinTabsCount () - 1);
-	}
-
-	void  SeparateTabWidget::on_UnPinTab__triggered (bool)
-	{
-		MainTabBar_->moveTab (LastContextMenuTab_,
-				MainTabBar_->PinTabsCount () - 1);
-		MainTabBar_->setUnPinTab (MainTabBar_->PinTabsCount () - 1);
-
-		handleCurrentChanged (MainTabBar_->PinTabsCount ());
-	}
-
-	void SeparateTabWidget::setPreviousTab ()
-	{
-		if ((PreviousTab_ <= WidgetCount () - 1) && (WidgetCount () >= 2))
-			setCurrentIndex (PreviousTab_);
-	}
-
 	void SeparateTabWidget::handleAddDefaultTab (bool)
 	{
 		QByteArray combined = XmlSettingsManager::Instance ()->
@@ -806,5 +794,17 @@ namespace LeechCraft
 		Q_FOREACH (QPointer<QAction> act, TabBarActions_)
 			if (!act || act == sender ())
 				TabBarActions_.removeAll (act);
+	}
+
+	void SeparateTabWidget::handleSelectionBehavior ()
+	{
+		QString selection = XmlSettingsManager::Instance ()->
+			property ("SelectionBehavior").toString ();
+		if (selection == "PreviousActive")
+			MainTabBar_->setSelectionBehaviorOnRemove (QTabBar::SelectPreviousTab);
+		else if (selection == "NextIndex")
+			MainTabBar_->setSelectionBehaviorOnRemove (QTabBar::SelectRightTab);
+		else if (selection == "PreviousIndex")
+			MainTabBar_->setSelectionBehaviorOnRemove (QTabBar::SelectLeftTab);
 	}
 }
