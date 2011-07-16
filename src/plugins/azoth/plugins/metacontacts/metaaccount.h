@@ -62,7 +62,6 @@ namespace Metacontacts
 	signals:
 		void gotCLItems (const QList<QObject*>&);
 		void removedCLItems (const QList<QObject*>&);
-		void joinedGroupchat (QObject*);
 		void authorizationRequested (QObject*, const QString&);
 		void itemSubscribed (QObject*, const QString&);
 		void itemUnsubscribed (QObject*, const QString&);
