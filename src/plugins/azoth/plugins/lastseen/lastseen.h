@@ -18,11 +18,14 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_LASTSEEN_LASTSEEN_H
 #define PLUGINS_AZOTH_PLUGINS_LASTSEEN_LASTSEEN_H
+#include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <QDateTime>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/azothcommon.h>
+
+class QTranslator;
 
 namespace LeechCraft
 {
@@ -38,6 +41,8 @@ namespace LastSeen
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2)
+		
+		boost::shared_ptr<QTranslator> Translator_;
 
 		QHash<QString, State> LastState_;
 		LastHash_t LastAvailable_;

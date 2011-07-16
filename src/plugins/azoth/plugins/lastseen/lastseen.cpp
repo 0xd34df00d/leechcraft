@@ -21,6 +21,8 @@
 #include <QSettings>
 #include <QCoreApplication>
 #include <QIcon>
+#include <QTranslator>
+#include <util/util.h>
 #include <interfaces/iclentry.h>
 
 Q_DECLARE_METATYPE (LeechCraft::Azoth::LastSeen::LastHash_t);
@@ -33,6 +35,8 @@ namespace LastSeen
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		Translator_.reset (Util::InstallTranslator ("azoth_lastseen"));
+
 		qRegisterMetaType<LastHash_t> ("LeechCraft::Azoth::LastSeen::LastHash_t");
 		qRegisterMetaTypeStreamOperators<LastHash_t> ("LeechCraft::Azoth::LastSeen::LastHash_t");
 
