@@ -115,6 +115,7 @@ namespace Metacontacts
 
 	QObject* MetaAccount::GetTransferManager () const
 	{
+		return 0;
 	}
 }
 }
