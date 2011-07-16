@@ -99,14 +99,6 @@ namespace LeechCraft
 	{
 	}
 
-	/**
-		the number of tabs exceeds the number of widgets on the 1
-	*/
-	int SeparateTabWidget::TabCount () const
-	{
-		return MainTabBar_->count ();
-	}
-
 	int SeparateTabWidget::WidgetCount () const
 	{
 		return MainStackedWidget_->count ();
@@ -136,8 +128,8 @@ namespace LeechCraft
 		else
 			newIndex = MainTabBar_->addTab (icon, text);
 
-		if (MainTabBar_->currentIndex () == TabCount () - 1)
-			setCurrentIndex (TabCount () - 2);
+		if (MainTabBar_->currentIndex () >= WidgetCount ())
+			setCurrentIndex (WidgetCount () - 1);
 
 		return newIndex;
 	}
@@ -168,8 +160,8 @@ namespace LeechCraft
 			const QIcon& icon, const QString& text)
 	{
 		int newIndex = index;
-		if (index == TabCount () && !AddTabButtonAction_->isVisible ())
-			newIndex = index - 1;
+		if (index >= WidgetCount () && !AddTabButtonAction_->isVisible ())
+			newIndex = WidgetCount () - 1;
 
 		MainStackedWidget_->insertWidget (index, page);
 		int idx = MainTabBar_->insertTab (newIndex, icon, text);
@@ -184,7 +176,7 @@ namespace LeechCraft
 
 	void SeparateTabWidget::RemoveTab (int index)
 	{
-		if ((index == TabCount () - 1) && !AddTabButtonAction_->isVisible ())
+		if ((index >= WidgetCount ()) && !AddTabButtonAction_->isVisible ())
 			return;
 
 		MainStackedWidget_->removeWidget (Widget (index));
@@ -300,7 +292,7 @@ namespace LeechCraft
 	void SeparateTabWidget::SetTabsClosable (bool closable)
 	{
 		MainTabBar_->setTabsClosable (closable);
-		MainTabBar_->SetTabNoClosable (TabCount ()- 1);
+		MainTabBar_->SetTabNoClosable (WidgetCount ());
 	}
 
 	void SeparateTabWidget::SetDefaultContextMenu (QMenu *menu)
@@ -372,7 +364,7 @@ namespace LeechCraft
 
 	void SeparateTabWidget::SetTooltip (int index, QWidget *widget)
 	{
-		if ((index == TabCount () - 1) && !IsAddTabActionVisible ())
+		if ((index >= WidgetCount ()) && !IsAddTabActionVisible ())
 			return;
 
 		Widgets_ [index] = widget;
@@ -559,7 +551,7 @@ namespace LeechCraft
 
 	void SeparateTabWidget::setCurrentIndex (int index)
 	{
-		if ((index == TabCount () - 1) && !AddTabButtonAction_->isVisible ())
+		if ((index >= WidgetCount ()) && !AddTabButtonAction_->isVisible ())
 			--index;
 
 		MainTabBar_->setCurrentIndex (index);

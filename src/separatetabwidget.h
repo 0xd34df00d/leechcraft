@@ -68,7 +68,6 @@ namespace LeechCraft
 	public:
 		explicit SeparateTabWidget (QWidget* = 0);
 		virtual ~SeparateTabWidget ();
-		int TabCount () const;
 		int WidgetCount () const;
 		int CurrentIndex () const;
 		int AddTab (QWidget*, const QString&);

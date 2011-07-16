@@ -182,7 +182,7 @@ void TabManager::add (const QString& name, QWidget *contents,
 
 void TabManager::remove (QWidget *contents)
 {
-	if (TabWidget_->TabCount () == 1)
+	if (!TabWidget_->WidgetCount ())
 		return;
 
 	const int tabNumber = FindTabForWidget (contents);
@@ -206,7 +206,7 @@ void TabManager::remove (QWidget *contents)
 
 void TabManager::remove (int index)
 {
-	if (TabWidget_->TabCount () == 1)
+	if (!TabWidget_->WidgetCount ())
 		return;
 
 	QWidget *widget = TabWidget_->Widget (index);
@@ -283,12 +283,12 @@ void TabManager::bringToFront (QWidget *widget) const
 
 void TabManager::handleCurrentChanged (int index)
 {
-	if (index == TabWidget_->WidgetCount ())
+	if (index >= TabWidget_->WidgetCount ())
 		return;
 
 	InvalidateName ();
 
-	if (TabWidget_->TabCount () != 2)
+	if (TabWidget_->WidgetCount () != 1)
 		Core::Instance ().GetReallyMainWindow ()->RemoveMenus (Menus_);
 
 	ITabWidget *imtw = qobject_cast<ITabWidget*> (TabWidget_->Widget (index));
