@@ -30,7 +30,7 @@ namespace Azoth
 {
 namespace Metacontacts
 {
-	class Metaprotocol;
+	class MetaProtocol;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -40,7 +40,7 @@ namespace Metacontacts
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IProtocolPlugin)
 		
-		Metaprotocol *Proto_;
+		MetaProtocol *Proto_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

@@ -32,7 +32,7 @@ namespace Metacontacts
 	{
 		Util::InstallTranslator ("azoth_metacontacts");
 		
-		Proto_ = new Metaprotocol (this);
+		Proto_ = new MetaProtocol (this);
 	}
 
 	void Plugin::SecondInit ()
