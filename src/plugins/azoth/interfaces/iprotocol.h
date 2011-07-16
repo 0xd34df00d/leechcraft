@@ -58,6 +58,10 @@ namespace Azoth
 		 */
 		enum ProtocolFeature
 		{
+			/** None of these features are supported by the protocol.
+			 */
+			PFNone = 0x0,
+
 			/** Multiuser chats are possible in this proto.
 			 */
 			PFSupportsMUCs = 0x01,
