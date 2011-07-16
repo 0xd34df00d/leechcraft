@@ -62,7 +62,7 @@ namespace Xoox
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("XMPP (Jabber) protocol support via Gloox library.");
+		return tr ("XMPP (Jabber) protocol module using the QXmpp library.");
 	}
 
 	QIcon Plugin::GetIcon () const
