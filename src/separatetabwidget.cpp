@@ -148,6 +148,9 @@ namespace LeechCraft
 			return -1;
 		}
 
+		if (MainStackedWidget_->indexOf (page) != -1)
+			return -1;
+
 		int newIndex = 0;
 		MainStackedWidget_->addWidget (page);
 		if (!AddTabButtonAction_->isVisible ())
