@@ -152,6 +152,13 @@ namespace LeechCraft
 		QTabBar::mousePressEvent (event);
 	}
 
+	void SeparateTabBar::mouseDoubleClickEvent (QMouseEvent *event)
+	{
+		QWidget::mouseDoubleClickEvent (event);
+		if (tabAt (event->pos ()) == -1)
+			emit addDefaultTab (true);
+	}
+
 	void SeparateTabBar::tabInserted (int index)
 	{
 		QTabBar::tabInserted (index);

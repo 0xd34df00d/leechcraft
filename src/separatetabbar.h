@@ -49,6 +49,7 @@ namespace LeechCraft
 		QSize tabSizeHint (int) const;
 		void mouseReleaseEvent (QMouseEvent*);
 		void mousePressEvent (QMouseEvent *event);
+		void mouseDoubleClickEvent (QMouseEvent*);
 		void tabInserted (int);
 		void tabRemoved (int);
 		void paintEvent (QPaintEvent*);
