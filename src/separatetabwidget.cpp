@@ -118,7 +118,12 @@ namespace LeechCraft
 			const QIcon& icon, const QString& text)
 	{
 		if (!page)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "There is no widget to add to SeaprateTabWidget"
+					<< page;
 			return -1;
+		}
 
 		int newIndex;
 		MainStackedWidget_->addWidget (page);
@@ -177,7 +182,12 @@ namespace LeechCraft
 	void SeparateTabWidget::RemoveTab (int index)
 	{
 		if ((index >= WidgetCount ()) && !AddTabButtonAction_->isVisible ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "invalid index"
+					<< index;
 			return;
+		}
 
 		MainStackedWidget_->removeWidget (Widget (index));
 		MainTabBar_->removeTab (index);
@@ -198,7 +208,7 @@ namespace LeechCraft
 		if ((index < 0) || (index >= WidgetCount ()))
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "invalid index"
+					<< "nvalid index"
 					<< index;
 			return;
 		}
