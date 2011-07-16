@@ -35,6 +35,8 @@ namespace LastSeen
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		SaveScheduled_ = false;
+
 		Translator_.reset (Util::InstallTranslator ("azoth_lastseen"));
 
 		qRegisterMetaType<LastHash_t> ("LeechCraft::Azoth::LastSeen::LastHash_t");
