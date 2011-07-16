@@ -119,6 +119,10 @@ namespace Azoth
 		void hookEntryActionsRequested (LeechCraft::IHookProxy_ptr proxy,
 				QObject *entry);
 		
+		void hookEntryStatusChanged (LeechCraft::IHookProxy_ptr proxy,
+				QObject *entry,
+				QString variant);
+		
 		void hookGonnaAppendMsg (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message);
 		
@@ -178,6 +182,31 @@ namespace Azoth
 		void hookThemeReloaded (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QWebView *view,
+				QObject *entry);
+		
+		/** @brief Hook for tooltip formatting.
+		 * 
+		 * This hook is called while formatting tooltip for the contact
+		 * list tree for the given entry, after general information
+		 * about the entry has been formatted.
+		 * 
+		 * The already-formatted string is contained as "tooltip" value
+		 * in the proxy. The hook may change the string by updating this
+		 * value.
+		 * 
+		 * If the hook handler cancels default handler (by calling
+		 * IHookProxy::CancelDefault on the proxy object), variants info
+		 * won't be formatted, and the hook's "tooltip" value would be
+		 * returned.
+		 * 
+		 * @param[out] proxy Standard proxy object.
+		 * @param[out] entry The entry for which the tooltip is being
+		 * formatted.
+		 * @param[in,out] proxy::"tooltip" The tooltip string.
+		 * 
+		 * @sa IHookProxy
+		 */
+		void hookTooltipBeforeVariants (LeechCraft::IHookProxy_ptr proxy,
 				QObject *entry);
 	};
 }

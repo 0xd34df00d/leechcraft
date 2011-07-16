@@ -1008,6 +1008,11 @@ namespace Azoth
 			}
 		}
 
+		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		proxy->SetValue ("tooltip", tip);
+		emit hookTooltipBeforeVariants (proxy, entry->GetObject ());
+		proxy->FillValue ("tooltip", tip);
+
 		if (entry->GetEntryType () != ICLEntry::ETPrivateChat)
 			Q_FOREACH (const QString& variant, variants)
 			{
@@ -1048,8 +1053,11 @@ namespace Azoth
 	}
 
 	void Core::HandleStatusChanged (const EntryStatus&,
-			ICLEntry *entry, const QString&)
+			ICLEntry *entry, const QString& variant)
 	{
+		emit hookEntryStatusChanged (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy),					 
+				entry->GetObject (), variant);
+
 		invalidateClientsIconCache (entry);
 		const QString& tip = MakeTooltipString (entry);
 
