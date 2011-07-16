@@ -125,7 +125,7 @@ namespace LeechCraft
 			return -1;
 		}
 
-		int newIndex;
+		int newIndex = 0;
 		MainStackedWidget_->addWidget (page);
 		if (!AddTabButtonAction_->isVisible ())
 			newIndex = MainTabBar_->
