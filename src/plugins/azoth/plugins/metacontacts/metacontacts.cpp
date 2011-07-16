@@ -20,6 +20,7 @@
 #include <QIcon>
 #include <util/util.h>
 #include <interfaces/iclentry.h>
+#include "metaprotocol.h"
 
 namespace LeechCraft
 {
@@ -30,7 +31,8 @@ namespace Metacontacts
 	void Plugin::Init (ICoreProxy_ptr)
 	{
 		Util::InstallTranslator ("azoth_metacontacts");
-
+		
+		Proto_ = new Metaprotocol (this);
 	}
 
 	void Plugin::SecondInit ()
@@ -65,6 +67,19 @@ namespace Metacontacts
 	{
 		QSet<QByteArray> result;
 		result << "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin";
+		result << "org.LeechCraft.Plugins.Azoth.Plugins.IProtocolPlugin";
+		return result;
+	}
+	
+	QObject* Plugin::GetObject ()
+	{
+		return this;
+	}
+	
+	QList<QObject*> Plugin::GetProtocols () const
+	{
+		QList<QObject*> result;
+		result << Proto_;
 		return result;
 	}
 }

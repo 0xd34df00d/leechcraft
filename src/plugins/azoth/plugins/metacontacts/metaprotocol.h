@@ -16,13 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_METACONTACTS_METACONTACTS_H
-#define PLUGINS_AZOTH_PLUGINS_METACONTACTS_METACONTACTS_H
+#ifndef PLUGINS_AZOTH_PLUGINS_METACONTACTS_METAPROTOCOL_H
+#define PLUGINS_AZOTH_PLUGINS_METACONTACTS_METAPROTOCOL_H
 #include <QObject>
-#include <QDateTime>
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-#include <interfaces/iprotocolplugin.h>
+#include <interfaces/iprotocol.h>
 
 namespace LeechCraft
 {
@@ -30,30 +27,31 @@ namespace Azoth
 {
 namespace Metacontacts
 {
-	class Metaprotocol;
-
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IPlugin2
-				 , public IProtocolPlugin
+	class Metaprotocol : public QObject
+					   , public IProtocol
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IProtocolPlugin)
+		Q_INTERFACES (LeechCraft::Azoth::IProtocol);
 		
-		Metaprotocol *Proto_;
+		QObject *ParentPlugin_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-
-		QSet<QByteArray> GetPluginClasses () const;
+		Metaprotocol (QObject*);
 		
 		QObject* GetObject ();
-		QList<QObject*> GetProtocols () const;
+		ProtocolFeatures GetFeatures () const;
+		QList<QObject*> GetRegisteredAccounts ();
+		QObject* GetParentProtocolPlugin () const;
+		QString GetProtocolName () const;
+		QIcon GetProtocolIcon () const;
+		QByteArray GetProtocolID () const;
+		QList<QWidget*> GetAccountRegistrationWidgets (AccountAddOptions);
+		void RegisterAccount (const QString&, const QList<QWidget*>&);
+		QWidget* GetMUCJoinWidget ();
+		QWidget* GetMUCBookmarkEditorWidget ();
+		void RemoveAccount (QObject*);
+	signals:
+		void accountAdded (QObject*);
+		void accountRemoved (QObject*);
 	};
 }
 }
