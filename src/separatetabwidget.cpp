@@ -40,7 +40,7 @@ namespace LeechCraft
 	SeparateTabWidget::SeparateTabWidget (QWidget *parent)
 	: QWidget (parent)
 	, LastContextMenuTab_ (-1)
-	, PreviouseTab_ (-1)
+	, PreviousTab_ (-1)
 	, CurrentTab_ (-1)
 	, DefaultContextMenu_ (0)
 	, AddTabButtonContextMenu_ (0)
@@ -449,11 +449,11 @@ namespace LeechCraft
 	{
 		QString selection = XmlSettingsManager::Instance ()->
 			property ("SelectionBehavior").toString ();
-		if (selection == "PreviouseActive")
+		if (selection == "PreviousActive")
 			MainTabBar_->setSelectionBehaviorOnRemove (QTabBar::SelectPreviousTab);
 		else if (selection == "NextIndex")
 			MainTabBar_->setSelectionBehaviorOnRemove (QTabBar::SelectRightTab);
-		else if (selection == "PreviouseIndex")
+		else if (selection == "PreviousIndex")
 			MainTabBar_->setSelectionBehaviorOnRemove (QTabBar::SelectLeftTab);
 	}
 
@@ -595,7 +595,7 @@ namespace LeechCraft
 
 		if (CurrentTab_ != index)
 		{
-			PreviouseTab_ = CurrentTab_;
+			PreviousTab_ = CurrentTab_;
 			CurrentTab_ = index;
 		}
 	}
@@ -736,8 +736,8 @@ namespace LeechCraft
 
 	void SeparateTabWidget::setPreviousTab ()
 	{
-		if ((PreviouseTab_ <= WidgetCount () - 1) && (WidgetCount () >= 2))
-			setCurrentIndex (PreviouseTab_);
+		if ((PreviousTab_ <= WidgetCount () - 1) && (WidgetCount () >= 2))
+			setCurrentIndex (PreviousTab_);
 	}
 
 	void SeparateTabWidget::handleAddDefaultTab (bool)

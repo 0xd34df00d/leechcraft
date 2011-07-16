@@ -47,7 +47,7 @@ namespace LeechCraft
 		Q_INTERFACES (ICoreTabWidget)
 
 		int LastContextMenuTab_;
-		int PreviouseTab_;
+		int PreviousTab_;
 		int CurrentTab_;
 		QMenu *DefaultContextMenu_;
 		QMenu *AddTabButtonContextMenu_;
