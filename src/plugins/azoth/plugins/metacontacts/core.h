@@ -19,6 +19,7 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_METACONTACTS_CORE_H
 #define PLUGINS_AZOTH_PLUGINS_METACONTACTS_CORE_H
 #include <QObject>
+#include <QHash>
 
 namespace LeechCraft
 {
@@ -38,6 +39,8 @@ namespace Metacontacts
 		MetaAccount *Account_;
 		QList<MetaEntry*> Entries_;
 		
+		QHash<QString, MetaEntry*> UnavailRealEntries_;
+		
 		Core ();
 	public:
 		static Core& Instance ();
@@ -45,6 +48,7 @@ namespace Metacontacts
 		void SetMetaAccount (MetaAccount*);
 		QList<QObject*> GetEntries () const;
 		
+		bool HandleRealEntryAddBegin (QObject*);
 		void AddRealEntry (QObject*);
 	private:
 		void ScheduleSaveEntries ();
@@ -52,6 +56,7 @@ namespace Metacontacts
 		void saveEntries ();
 	signals:
 		void gotCLItems (const QList<QObject*>&);
+		void removedCLItems (const QList<QObject*>&);
 	};
 }
 }

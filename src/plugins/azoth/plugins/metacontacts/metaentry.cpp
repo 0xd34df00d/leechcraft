@@ -54,11 +54,13 @@ namespace Metacontacts
 	void MetaEntry::AddRealObject (ICLEntry *entry)
 	{
 		QObject *entryObj = entry->GetObject ();
+
 		AvailableRealEntries_ << entryObj;
+		UnavailableRealEntries_.removeAll (entry->GetEntryID ());
 		
 		handleRealVariantsChanged (entry->Variants (), entryObj);		
 		Q_FOREACH (QObject *object, entry->GetAllMessages ())
-			handleGotMessage (object, entryObj);
+			handleGotMessage (object);
 		
 		emit statusChanged (GetStatus (QString ()), QString ());
 		
@@ -136,7 +138,6 @@ namespace Metacontacts
 		Q_FOREACH (QObject *entryObj, AvailableRealEntries_)
 		{
 			ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
-			const State state = entry->GetStatus ().State_;
 			
 			const QString& name = entry->GetEntryName ();
 			QStringList variants = entry->Variants ();
@@ -301,7 +302,7 @@ namespace Metacontacts
 		return qobject_cast<ICLEntry*> (pair.first)->GetClientInfo (pair.second);
 	}
 	
-	void MetaEntry::handleGotMessage (QObject *msgObj, QObject *passedObj)
+	void MetaEntry::handleGotMessage (QObject *msgObj)
 	{
 		IMessage *msg = qobject_cast<IMessage*> (msgObj);
 		if (!msg)

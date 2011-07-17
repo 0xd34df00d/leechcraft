@@ -78,7 +78,7 @@ namespace Metacontacts
 		QList<QAction*> GetActions () const;
 		QMap<QString, QVariant> GetClientInfo (const QString&) const;
 	private slots:
-		void handleGotMessage (QObject*, QObject* = 0);
+		void handleGotMessage (QObject*);
 		void handleRealVariantsChanged (QStringList, QObject* = 0);
 	signals:
 		void gotMessage (QObject*);

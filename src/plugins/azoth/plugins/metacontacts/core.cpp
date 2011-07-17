@@ -51,6 +51,10 @@ namespace Metacontacts
 				SIGNAL (gotCLItems (const QList<QObject*>&)),
 				acc,
 				SIGNAL (gotCLItems (const QList<QObject*>&)));
+		connect (this,
+				SIGNAL (removedCLItems (const QList<QObject*>&)),
+				acc,
+				SIGNAL (removedCLItems (const QList<QObject*>&)));
 		
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Azoth_Metacontacts_Entries");
@@ -74,11 +78,24 @@ namespace Metacontacts
 				continue;
 			}
 
+			const QStringList& reals = settings.value ("RealIDs").toStringList ();
+			if (reals.isEmpty ())
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "empty real IDs list for"
+						<< id
+						<< name;
+				continue;
+			}
+
 			MetaEntry *entry = new MetaEntry (id, acc);
 			entry->SetEntryName (name);
 			entry->SetGroups (settings.value ("Groups").toStringList ());
-			entry->SetRealEntries (settings.value ("RealIDs").toStringList ());
+			entry->SetRealEntries (reals);
 			Entries_ << entry;
+			
+			Q_FOREACH (const QString& id, reals)
+				UnavailRealEntries_ [id] = entry;
 		}
 		settings.endArray ();
 	}
@@ -90,7 +107,29 @@ namespace Metacontacts
 			result << entry;
 		return result;
 	}
-	
+
+	bool Core::HandleRealEntryAddBegin (QObject *entryObj)
+	{
+		if (entryObj->metaObject ()->className () == "MetaEntry")
+			return false;
+		
+		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< entryObj
+					<< "doesn't implement ICLEntry";
+			return false;
+		}
+		
+		const QString& id = entry->GetEntryID ();
+		if (!UnavailRealEntries_.contains (id))
+			return false;
+		
+		UnavailRealEntries_.take (id)->AddRealObject (entry);
+		return true;
+	}
+
 	void Core::AddRealEntry (QObject *realObj)
 	{
 		ICLEntry *real = qobject_cast<ICLEntry*> (realObj);
@@ -124,12 +163,13 @@ namespace Metacontacts
 			
 			Entries_ << existingMeta;
 			
-			ScheduleSaveEntries ();
-			
 			emit gotCLItems (QList<QObject*> () << existingMeta);
 		}
 		
 		existingMeta->AddRealObject (real);
+		emit removedCLItems (QList<QObject*> () << realObj);
+		
+		ScheduleSaveEntries ();
 	}
 	
 	void Core::ScheduleSaveEntries ()

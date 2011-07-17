@@ -56,6 +56,8 @@ namespace Metacontacts
 		QObject* GetObject ();
 		QList<QObject*> GetProtocols () const;
 	public slots:
+		void hookAddingCLEntryBegin (LeechCraft::IHookProxy_ptr proxy,
+				QObject *entry);
 		void hookEntryActionAreasRequested (LeechCraft::IHookProxy_ptr proxy,
 				QObject *action,
 				QObject *entry);

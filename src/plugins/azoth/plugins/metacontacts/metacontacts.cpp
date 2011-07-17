@@ -91,6 +91,12 @@ namespace Metacontacts
 		return result;
 	}
 	
+	void Plugin::hookAddingCLEntryBegin (IHookProxy_ptr proxy, QObject *entry)
+	{
+		if (Core::Instance ().HandleRealEntryAddBegin (entry))
+			proxy->CancelDefault ();
+	}
+	
 	void Plugin::hookEntryActionAreasRequested (IHookProxy_ptr proxy,
 			QObject *action, QObject*)
 	{
