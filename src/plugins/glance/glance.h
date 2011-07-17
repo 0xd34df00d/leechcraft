@@ -21,6 +21,7 @@
 #define PLUGINS_GLANCE_GLANCE_H
 #include <QObject>
 #include <interfaces/iinfo.h>
+#include <interfaces/iactionsexporter.h>
 
 class QAction;
 
@@ -34,9 +35,10 @@ namespace Glance
 
 	class Plugin : public QObject
 				 , public IInfo
+				 , public IActionsExporter
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo)
+		Q_INTERFACES (IInfo IActionsExporter)
 
 		QAction *ActionGlance_;
 		GlanceShower *Glance_;
@@ -48,6 +50,8 @@ namespace Glance
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+		
+		QList<QAction*> GetActions (ActionsEmbedPlace) const;
 	public slots:
 		void on_ActionGlance__triggered ();
 	};

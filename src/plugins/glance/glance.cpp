@@ -39,10 +39,6 @@ namespace Glance
 		ActionGlance_->setToolTip ("Show the quick overview of tabs");
 		ActionGlance_->setShortcut (QKeySequence ("Ctrl+G"));
 		ActionGlance_->setShortcutContext (Qt::ApplicationShortcut);
-
-		Core::Instance ().GetProxy ()->GetTabWidget ()->
-				AddAction2TabBarLayout (QTabBar::RightSide, ActionGlance_);
-
 		ActionGlance_->setIcon (proxy->GetIcon ("glance"));
 
 		connect (ActionGlance_,
@@ -91,6 +87,14 @@ namespace Glance
 
 		ActionGlance_->setEnabled (false);
 		Glance_->Start ();
+	}
+	
+	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace aep) const
+	{
+		QList<QAction*> result;
+		if (aep == AEPQuickLaunch)
+			result << ActionGlance_;
+		return result;
 	}
 }
 }
