@@ -650,7 +650,6 @@ namespace LeechCraft
 
 		if (index == -1)
 		{
-			menu->addActions (AddTabButtonContextMenu_->actions ());
 			Q_FOREACH (QAction *act, TabBarActions_)
 			{
 				if (!act)
