@@ -817,7 +817,8 @@ namespace Acetamide
 		if (!ChannelHandlers_ [channelID]->IsRosterReceived ())
 		{
 			Q_FOREACH (QString nick, participants)
-				ChannelHandlers_ [channelID]->SetChannelUser (nick);
+				ChannelHandlers_ [channelID]->
+						SetChannelUser (EncodedMessage (nick, IMessage::DIn));
 
 			ChannelHandlers_ [channelID]->SetRosterReceived (true);
 		}
