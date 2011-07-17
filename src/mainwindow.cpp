@@ -765,7 +765,7 @@ void LeechCraft::MainWindow::FillToolMenu ()
 	Ui_.MainTabWidget_->SetAddTabButtonContextMenu (ntm);
 	
 	QMenu *atm = Core::Instance ()
-		.GetNewTabMenuManager ()->GetAdditiornalMenu ();
+		.GetNewTabMenuManager ()->GetAdditionalMenu ();
 
 	int i = 0;
 	Q_FOREACH (QAction *act, atm->actions ())

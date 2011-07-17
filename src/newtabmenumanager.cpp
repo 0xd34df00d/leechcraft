@@ -124,7 +124,7 @@ namespace LeechCraft
 		return NewTabMenu_;
 	}
 
-	QMenu* NewTabMenuManager::GetAdditiornalMenu ()
+	QMenu* NewTabMenuManager::GetAdditionalMenu ()
 	{
 		AdditionalTabMenu_->insertMenu (AdditionalTabMenu_->actions ().first (),
 				NewTabMenu_);
