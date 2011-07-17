@@ -694,11 +694,14 @@ void LeechCraft::MainWindow::doDelayedInit ()
 			AddMenus (map);
 		
 		QList<QAction*> actions = exp->GetActions (AEPQuickLaunch);
-		if (!actions.isEmpty ())
-		{
-// 			Ui_.MainToolbar_->addSeparator ();
-// 			Ui_.MainToolbar_->addActions (actions);
-		}
+		if (actions.isEmpty ())
+			continue;
+
+		Q_FOREACH (QAction *action, actions)
+			Ui_.MainTabWidget_->
+					AddAction2TabBarLayout (QTabBar::RightSide, action);
+		Ui_.MainTabWidget_->AddAction2TabBarLayout (QTabBar::RightSide,
+						Util::CreateSeparator (this));
 	}
 
 	FillTray ();
