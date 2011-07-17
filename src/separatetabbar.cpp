@@ -205,17 +205,13 @@ namespace LeechCraft
 		QTabBar::paintEvent (event);
 		QStylePainter painter (this);
 
-		for(int i = 0; i < count (); ++i)
+		if (count () > 1 && IsLastTab_)
 		{
 			QStyleOptionTabV2 option;
-			initStyleOption(&option, i);
-			if ((i == count () - 1) && (IsLastTab_))
-			{
-				CoreProxy proxy;
-				QIcon icon = proxy.GetIcon ("addjob");
-				painter.drawItemPixmap (option.rect, Qt::AlignCenter, 
-						icon.pixmap (QSize (15, 15)));
-			}
+			initStyleOption (&option, count () - 1);
+			QIcon icon = CoreProxy ().GetIcon ("addjob");
+			painter.drawItemPixmap (option.rect, Qt::AlignCenter, 
+					icon.pixmap (QSize (15, 15)));
 		}
 	}
 	
