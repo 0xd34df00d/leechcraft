@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010  Oleg Linkin
+ * Copyright (C) 2010-2011 Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,6 +50,7 @@ namespace Acetamide
 		IrcAccount *Account_;
 		IProxyObject *ProxyObject_;
 		QHash<QString, IrcServerHandler*> ServerHandlers_;
+		bool IsConsoleEnabled_;
 	public:
 		ClientConnection (IrcAccount*);
 		QObject* GetCLEntry (const QString&, const QString&) const;
@@ -58,7 +59,7 @@ namespace Acetamide
 		IrcAccount* GetAccount () const;
 
 		bool IsServerExists (const QString&);
-		void  JoinServer (const ServerOptions&);
+		void JoinServer (const ServerOptions&);
 		void JoinChannel (const ServerOptions&,
 				const ChannelOptions&);
 		IrcServerHandler* GetIrcServerHandler (const QString&);
@@ -66,14 +67,19 @@ namespace Acetamide
 		void CloseServer (const QString&);
 		void DisconnectFromAll ();
 		void QuitServer (const QStringList&);
+
+		void SetConsoleEnabled (bool);
 	public slots:
 		void serverConnected (const QString&);
+		void serverDisconnected (const QString&);
 		void handleError (QAbstractSocket::SocketError);
+		void handleLog (IMessage::Direction, const QString&);
 	signals:
 		void gotRosterItems (const QList<QObject*>&);
 		void rosterItemRemoved (QObject*);
 		void rosterItemsRemoved (const QList<QObject*>&);
 		void gotCLItems (const QList<QObject*>&);
+		void gotConsoleLog (const QByteArray&, int);
 	};
 };
 };

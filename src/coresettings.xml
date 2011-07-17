@@ -37,21 +37,6 @@
 					<label lang="en" value="The text appears under the icon" />
 				</option>
 			</item>
-			<item type="combobox" property="TabBarLocation">
-				<label lang="en" value="Tab bar location:" />
-				<option name="north" default="true">
-					<label lang="en" value="Top" />
-				</option>
-				<option name="south">
-					<label lang="en" value="Bottom" />
-				</option>
-				<option name="west">
-					<label lang="en" value="Left" />
-				</option>
-				<option name="east">
-					<label lang="en" value="Right" />
-				</option>
-			</item>
 			<item type="combobox" property="IconSet" mayHaveDataSource="true">
 				<label lang="en" value="Icon set:" />
 				<option name="oxygen" default="true">
@@ -102,6 +87,18 @@
 				</item>
 				<item type="checkbox" property="OpenTabNext" default="false">
 					<label lang="en" value="Open new tab next to current" />
+				</item>
+				<item type="combobox" property="SelectionBehavior">
+					<label lang="en" value="Tab selection behavior: " />
+					<option name="PreviouseActive" default="true">
+						<label lang="en" value="Select the previously selected tab" />
+					</option>
+					<option name="NextIndex">
+						<label lang="en" value="Select the tab to the right of the one being removed" />
+					</option>
+					<option name="PreviouseIndex">
+						<label lang="en" value="Select the tab to the left of the one being removed" />
+					</option>
 				</item>
 				<item type="checkbox" property="DontAskWhenSingle" default="true">
 					<label lang="en" value="Automatically accept task when there is only one handler" />

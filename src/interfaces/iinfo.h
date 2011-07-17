@@ -25,8 +25,10 @@
 #include <QString>
 #include <QStringList>
 #include <QtPlugin>
+#include <QTabBar>
 #include <QtNetwork/QNetworkAccessManager>
 #include "structures.h"
+#include <QIcon>
 
 class IShortcutProxy;
 class QTreeView;
@@ -481,6 +483,25 @@ public:
 	virtual QObject* GetObject () = 0;
 };
 
+
+class ICoreTabWidget
+{
+public:
+	virtual ~ICoreTabWidget () {}
+	
+	virtual QObject* GetObject () = 0;
+	virtual int WidgetCount () const = 0;
+	virtual QWidget* Widget (int) const = 0;
+	virtual void AddAction2TabBarLayout (QTabBar::ButtonPosition, QAction*) = 0;
+	virtual int IndexOf (QWidget*) const = 0;
+	virtual QIcon TabIcon (int) const = 0;
+	virtual QString TabText (int) const = 0;
+	virtual bool IsPinTab (int) const = 0;
+	virtual void setCurrentIndex (int) = 0;
+	virtual void setCurrentWidget (QWidget*) = 0;
+};
+
+
 /** @brief Proxy class for the communication with LeechCraft.
  *
  * Allows one to talk with LeechCraft, requesting and getting various
@@ -558,7 +579,7 @@ public:
 
 	/** Returns the main tab widget.
 	 */
-	virtual QTabWidget* GetTabWidget () const = 0;
+	virtual ICoreTabWidget* GetTabWidget () const = 0;
 
 	/** Returns the application-wide tags manager.
 	 */
@@ -940,5 +961,6 @@ Q_DECLARE_INTERFACE (IInfo, "org.Deviant.LeechCraft.IInfo/1.0");
 Q_DECLARE_INTERFACE (ICoreProxy, "org.Deviant.LeechCraft.ICoreProxy/1.0");
 Q_DECLARE_INTERFACE (ITagsManager, "org.Deviant.LeechCraft.ITagsManager/1.0");
 Q_DECLARE_INTERFACE (IPluginsManager, "org.Deviant.LeechCraft.IPluginsManager/1.0");
+Q_DECLARE_INTERFACE (ICoreTabWidget, "org.Deviant.LeechCraft.ICoreTabWidget/1.0");
 
 #endif

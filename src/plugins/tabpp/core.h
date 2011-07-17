@@ -40,8 +40,7 @@ namespace LeechCraft
 				Q_OBJECT
 
 				ICoreProxy_ptr Proxy_;
-				QTabBar *Bar_;
-				QTabWidget *TabWidget_;
+				ICoreTabWidget *TabWidget_;
 				Util::TreeItem *RootItem_;
 				QSortFilterProxyModel *Sorter_;
 

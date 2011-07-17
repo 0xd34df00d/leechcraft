@@ -28,6 +28,7 @@ namespace LeechCraft
 	NewTabMenuManager::NewTabMenuManager (QObject *parent)
 	: QObject (parent)
 	, NewTabMenu_ (new QMenu (tr ("New tab menu")))
+	, AdditionalTabMenu_ (new QMenu (tr ("Additional tab menu")))
 	{
 	}
 
@@ -94,8 +95,8 @@ namespace LeechCraft
 			if (!list.size ())
 				continue;
 
-			NewTabMenu_->addSeparator ();
-			NewTabMenu_->addActions (list);
+			AdditionalTabMenu_->addSeparator ();
+			AdditionalTabMenu_->addActions (list);
 		}
 	}
 	
@@ -121,6 +122,13 @@ namespace LeechCraft
 	QMenu* NewTabMenuManager::GetNewTabMenu () const
 	{
 		return NewTabMenu_;
+	}
+
+	QMenu* NewTabMenuManager::GetAdditionalMenu ()
+	{
+		AdditionalTabMenu_->insertMenu (AdditionalTabMenu_->actions ().first (),
+				NewTabMenu_);
+		return AdditionalTabMenu_;
 	}
 
 	QString NewTabMenuManager::AccelerateName (QString name)

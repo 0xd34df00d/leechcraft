@@ -35,6 +35,7 @@ namespace LeechCraft
 		Q_OBJECT
 
 		QMenu *NewTabMenu_;
+		QMenu *AdditionalTabMenu_;
 		QList<QObject*> RegisteredMultiTabs_;
 		QSet<QChar> UsedAccelerators_;
 		QMap<QObject*, QMap<QString, QAction*> > HiddenActions_;
@@ -47,6 +48,7 @@ namespace LeechCraft
 		void SingleRemoved (ITabWidget*);
 
 		QMenu* GetNewTabMenu () const;
+		QMenu* GetAdditionalMenu ();
 	private:
 		QString AccelerateName (QString);
 		void ToggleHide (QObject*, const QByteArray&, bool);

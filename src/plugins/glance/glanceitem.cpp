@@ -24,6 +24,10 @@
 
 namespace LeechCraft
 {
+namespace Plugins
+{
+namespace Glance
+{
 	GlanceItem::GlanceItem (const QPixmap& px, QGraphicsItem *parent)
 	: QGraphicsPixmapItem (px, parent)
 	, Scale_ (0)
@@ -105,4 +109,5 @@ namespace LeechCraft
 			ItemsList_ << qgraphicsitem_cast<GlanceItem*> (item);
 	}
 };
-
+};
+};

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010  Oleg Linkin
+ * Copyright (C) 2010-2011  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,8 +35,10 @@ namespace Acetamide
 	class IrcAccount;
 
 	class IrcServerCLEntry : public EntryBase
+							, public IMUCEntry
 	{
 		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Azoth::IMUCEntry)
 
 		IrcServerHandler *ISH_;
 		IrcAccount *Account_;
@@ -57,6 +59,22 @@ namespace Acetamide
 		QStringList Variants () const;
 		QObject* CreateMessage (IMessage::MessageType, const QString&,
 				const QString&);
+		// IMUCEntry
+		MUCFeatures GetMUCFeatures () const;
+		QString GetMUCSubject () const;
+		void SetMUCSubject (const QString&);
+		QList<QObject*> GetParticipants ();
+		void Join ();
+		void Leave (const QString& msg = QString ());
+		QString GetNick () const;
+		void SetNick (const QString&);
+		QString GetGroupName () const;
+		QString GetRealID (QObject*) const;
+		QVariantMap GetIdentifyingData () const;
+	signals:
+		void gotNewParticipants (const QList<QObject*>&);
+		void mucSubjectChanged (const QString&);
+		void nicknameConflict (const QString&);
 	};
 };
 };
