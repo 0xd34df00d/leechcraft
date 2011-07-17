@@ -167,7 +167,10 @@ namespace Metacontacts
 		}
 		
 		existingMeta->AddRealObject (real);
-		emit removedCLItems (QList<QObject*> () << realObj);
+		QMetaObject::invokeMethod (this,
+				"removedCLItems",
+				Qt::QueuedConnection,
+				Q_ARG (QList<QObject*>, QList<QObject*> () << realObj));
 		
 		ScheduleSaveEntries ();
 	}
