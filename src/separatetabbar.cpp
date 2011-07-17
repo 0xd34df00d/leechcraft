@@ -205,7 +205,7 @@ namespace LeechCraft
 		QTabBar::paintEvent (event);
 		QStylePainter painter (this);
 
-		if (count () > 1 && IsLastTab_)
+		if (count () >= 1 && IsLastTab_)
 		{
 			QStyleOptionTabV2 option;
 			initStyleOption (&option, count () - 1);
