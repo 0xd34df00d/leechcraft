@@ -16,13 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_METACONTACTS_METACONTACTS_H
-#define PLUGINS_AZOTH_PLUGINS_METACONTACTS_METACONTACTS_H
+#ifndef PLUGINS_AZOTH_PLUGINS_METACONTACTS_CORE_H
+#define PLUGINS_AZOTH_PLUGINS_METACONTACTS_CORE_H
 #include <QObject>
-#include <QDateTime>
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-#include <interfaces/iprotocolplugin.h>
 
 namespace LeechCraft
 {
@@ -30,39 +26,32 @@ namespace Azoth
 {
 namespace Metacontacts
 {
-	class MetaProtocol;
+	class MetaAccount;
+	class MetaEntry;
 
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IPlugin2
-				 , public IProtocolPlugin
+	class Core : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IProtocolPlugin)
 		
-		MetaProtocol *Proto_;
-		QAction *AddToMetacontacts_;
+		bool SaveEntriesScheduled_;
+		
+		MetaAccount *Account_;
+		QList<MetaEntry*> Entries_;
+		
+		Core ();
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-
-		QSet<QByteArray> GetPluginClasses () const;
+		static Core& Instance ();
 		
-		QObject* GetObject ();
-		QList<QObject*> GetProtocols () const;
-	public slots:
-		void hookEntryActionAreasRequested (LeechCraft::IHookProxy_ptr proxy,
-				QObject *action,
-				QObject *entry);
-		void hookEntryActionsRequested (LeechCraft::IHookProxy_ptr proxy,
-				QObject *entry);
+		void SetMetaAccount (MetaAccount*);
+		QList<QObject*> GetEntries () const;
+		
+		void AddRealEntry (QObject*);
+	private:
+		void ScheduleSaveEntries ();
 	private slots:
-		void handleAddToMetacontacts ();
+		void saveEntries ();
+	signals:
+		void gotCLItems (const QList<QObject*>&);
 	};
 }
 }

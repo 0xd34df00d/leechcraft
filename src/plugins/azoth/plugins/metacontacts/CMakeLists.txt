@@ -6,15 +6,23 @@ SET (METACONTACTS_SRCS
 	metaprotocol.cpp
 	metaaccount.cpp
 	metaentry.cpp
+	core.cpp
+	addtometacontactsdialog.cpp
 	)
 SET (METACONTACTS_HEADERS
 	metacontacts.h
 	metaprotocol.h
 	metaaccount.h
 	metaentry.h
+	core.h
+	addtometacontactsdialog.h
+	)
+SET (METACONTACTS_FORMS
+	addtometacontactsdialog.ui
 	)
 CreateTrVars ("azoth_metacontacts" "en;ru_RU;uk_UA" METACONTACTS_TRANSLATIONS METACONTACTS_COMPILED_TRANSLATIONS)
 QT4_WRAP_CPP (METACONTACTS_MOC_SRCS ${METACONTACTS_HEADERS})
+QT4_WRAP_UI (METACONTACTS_UIS_H ${METACONTACTS_FORMS})
 
 ADD_CUSTOM_COMMAND (OUTPUT
 	${METACONTACTS_COMPILED_TRANSLATIONS}
@@ -26,6 +34,7 @@ ADD_LIBRARY (leechcraft_azoth_metacontacts SHARED
 	${METACONTACTS_COMPILED_TRANSLATIONS}
 	${METACONTACTS_SRCS}
 	${METACONTACTS_MOC_SRCS}
+	${METACONTACTS_UIS_H}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_azoth_metacontacts
 	${QT_LIBRARIES}

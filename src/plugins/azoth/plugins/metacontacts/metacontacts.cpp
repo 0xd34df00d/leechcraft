@@ -18,9 +18,11 @@
 
 #include "metacontacts.h"
 #include <QIcon>
+#include <QAction>
 #include <util/util.h>
 #include <interfaces/iclentry.h>
 #include "metaprotocol.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -33,6 +35,12 @@ namespace Metacontacts
 		Util::InstallTranslator ("azoth_metacontacts");
 		
 		Proto_ = new MetaProtocol (this);
+		
+		AddToMetacontacts_ = new QAction (tr ("Add to a metacontact..."), this);
+		connect (AddToMetacontacts_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleAddToMetacontacts ()));
 	}
 
 	void Plugin::SecondInit ()
@@ -81,6 +89,45 @@ namespace Metacontacts
 		QList<QObject*> result;
 		result << Proto_;
 		return result;
+	}
+	
+	void Plugin::hookEntryActionAreasRequested (IHookProxy_ptr proxy,
+			QObject *action, QObject*)
+	{
+		if (action != AddToMetacontacts_)
+			return;
+		
+		const QStringList& oldList = proxy->GetReturnValue ().toStringList ();
+		proxy->SetReturnValue (oldList + QStringList ("contactListContextMenu"));
+	}
+	
+	void Plugin::hookEntryActionsRequested (IHookProxy_ptr proxy, QObject *entryObj)
+	{
+		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+		if (!entry || entry->GetEntryType () != ICLEntry::ETChat)
+			return;
+
+		QList<QVariant> list = proxy->GetReturnValue ().toList ();
+		list << QVariant::fromValue<QObject*> (AddToMetacontacts_);
+		proxy->SetReturnValue (list);
+		
+		AddToMetacontacts_->setProperty ("Azoth/Metacontacts/Object",
+				QVariant::fromValue<QObject*> (entryObj));
+	}
+	
+	void Plugin::handleAddToMetacontacts ()
+	{
+		QObject *entryObj = sender ()->
+				property ("Azoth/Metacontacts/Object").value<QObject*> ();
+		if (!entryObj)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no corresponding property for sender"
+					<< sender ();
+			return;
+		}
+		
+		Core::Instance ().AddRealEntry (entryObj);
 	}
 }
 }

@@ -37,6 +37,32 @@ namespace Metacontacts
 	{
 	}
 	
+	QStringList MetaEntry::GetRealEntries () const
+	{
+		QStringList result = UnavailableRealEntries_;
+		Q_FOREACH (QObject *entryObj, AvailableRealEntries_)
+			result << qobject_cast<ICLEntry*> (entryObj)->GetEntryID ();
+		return result;
+	}
+	
+	void MetaEntry::SetRealEntries (const QStringList& ids)
+	{
+		UnavailableRealEntries_ = ids;
+	}
+	
+	void MetaEntry::AddRealObject (ICLEntry *entry)
+	{
+		QObject *entryObj = entry->GetObject ();
+		AvailableRealEntries_ << entryObj;
+		
+		handleRealVariantsChanged (entry->Variants (), entryObj);
+		
+		connect (entryObj,
+				SIGNAL (availableVariantsChanged (const QStringList&)),
+				this,
+				SLOT (handleRealVariantsChanged (const QStringList&)));
+	}
+	
 	QObject* MetaEntry::GetObject ()
 	{
 		return this;
@@ -91,7 +117,34 @@ namespace Metacontacts
 	
 	QStringList MetaEntry::Variants () const
 	{
-		return Variant2RealVariant_.keys ();
+		QStringList result;
+		Q_FOREACH (QObject *entryObj, AvailableRealEntries_)
+		{
+			ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+			const State state = entry->GetStatus ().State_;
+			if (state == SOffline ||
+					state == SInvalid ||
+					state == SError)
+				continue;
+			
+			const QString& name = entry->GetEntryName ();				
+			Q_FOREACH (const QString& var, entry->Variants ())
+			{
+				const QString& full = name + '/' + var;
+				if (!Variant2RealVariant_.contains (full))
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "skipping out-of-sync with variant map:"
+							<< name
+							<< var
+							<< Variant2RealVariant_;
+					continue;
+				}
+				
+				result << full;
+			}
+		}
+		return result;
 	}
 	
 	QObject* MetaEntry::CreateMessage (IMessage::MessageType type, const QString& variant, const QString& body)
@@ -226,6 +279,25 @@ namespace Metacontacts
 		
 		const QPair<QObject*, QString>& pair = Variant2RealVariant_ [variant];
 		return qobject_cast<ICLEntry*> (pair.first)->GetClientInfo (pair.second);
+	}
+	
+	void MetaEntry::handleRealVariantsChanged (const QStringList& variants, QObject *passedObj)
+	{
+		QObject *obj = passedObj ? passedObj : sender ();
+		Q_FOREACH (const QString& var, Variant2RealVariant_.keys ())
+		{
+			const QPair<QObject*, QString>& pair = Variant2RealVariant_ [var];
+			if (pair.first == obj)
+				Variant2RealVariant_.remove (var);
+		}
+		
+		ICLEntry *entry = qobject_cast<ICLEntry*> (obj);
+		
+		Q_FOREACH (const QString& var, variants)
+			Variant2RealVariant_ [entry->GetEntryName () + '/' + var] =
+					qMakePair (obj, var);
+		
+		emit availableVariantsChanged (Variants ());
 	}
 }
 }

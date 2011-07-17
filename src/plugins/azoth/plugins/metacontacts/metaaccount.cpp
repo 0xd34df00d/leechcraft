@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "metaaccount.h"
+#include "core.h"
 #include "metaprotocol.h"
 
 namespace LeechCraft
@@ -29,6 +30,7 @@ namespace Metacontacts
 	: QObject (parent)
 	, Parent_ (parent)
 	{
+		Core::Instance ().SetMetaAccount (this);
 	}
 	
 	QObject* MetaAccount::GetObject ()
@@ -48,7 +50,7 @@ namespace Metacontacts
 
 	QList<QObject*> MetaAccount::GetCLEntries ()
 	{
-		return QList<QObject*> ();
+		return Core::Instance ().GetEntries ();
 	}
 
 	QString MetaAccount::GetAccountName () const
