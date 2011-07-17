@@ -59,7 +59,7 @@ namespace LeechCraft
 			void Core::SetProxy (ICoreProxy_ptr proxy)
 			{
 				Proxy_ = proxy;
-				connect (Proxy_->GetTabWidget (),
+				connect (Proxy_->GetTabWidget ()->GetObject (),
 						SIGNAL (currentChanged (int)),
 						this,
 						SLOT (handleCurrentTabChanged (int)));
@@ -327,7 +327,7 @@ namespace LeechCraft
 
 			void Core::handleCurrentTabChanged (int newIndex)
 			{
-				QWidget *newTab = Proxy_->GetTabWidget ()->widget (newIndex);
+				QWidget *newTab = Proxy_->GetTabWidget ()->Widget (newIndex);
 				Current_ = qobject_cast<SummaryWidget*> (newTab);
 				MadeCurrent (Current_);
 			}

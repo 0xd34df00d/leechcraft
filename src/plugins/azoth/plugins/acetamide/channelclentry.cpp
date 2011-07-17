@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010  Oleg Linkin
+ * Copyright (C) 2010-2011 Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,33 +34,6 @@ namespace Acetamide
 	: QObject (handler->GetIrcServerHandler ()->GetAccount ())
 	, ICH_ (handler)
 	{
-		Perms_ ["permclass_role"] << "owner";
-		Perms_ ["permclass_role"] << "admin";
-		Perms_ ["permclass_role"] << "pperator";
-		Perms_ ["permclass_role"] << "half_operator";
-		Perms_ ["permclass_role"] << "voiced";
-		Perms_ ["permclass_role"] << "participant";
-		Perms_ ["permclass_role"] << "norole";
-		Perms_ ["permclass_role"] << "outcast";
-
-		Role2Str_ [Owner] = "owner";
-		Role2Str_ [Admin] = "admin";
-		Role2Str_ [Operator] = "operator";
-		Role2Str_ [HalfOperator] = "half_operator";
-		Role2Str_ [Voiced] = "voiced";
-		Role2Str_ [Participant] = "participant";
-		Role2Str_ [NoRole] = "norole";
-		Role2Str_ [Outcast] = "outcast";
-
-		Translations_ ["permclass_role"] = tr ("Role");
-		Translations_ ["owner"] = tr ("Owner");
-		Translations_ ["admin"] = tr ("Admin");
-		Translations_ ["operator"] = tr ("Operator");
-		Translations_ ["half_operator"] = tr ("Half Operator");
-		Translations_ ["voiced"] = tr ("Voiced");
-		Translations_ ["participant"] = tr ("Participant");
-		Translations_ ["norole"] = tr ("Kicked");
-		Translations_ ["outcast"] = tr ("Banned");
 	}
 
 	ChannelHandler* ChannelCLEntry::GetChannelHandler () const
@@ -261,8 +234,7 @@ namespace Acetamide
 		emit gotMessage (msg);
 	}
 
-	void ChannelCLEntry::HandleNewParticipants
-			(const QList<ICLEntry*>& parts)
+	void ChannelCLEntry::HandleNewParticipants (const QList<ICLEntry*>& parts)
 	{
 		QObjectList objs;
 		Q_FOREACH (ICLEntry *e, parts)
@@ -274,141 +246,41 @@ namespace Acetamide
 	{
 		emit mucSubjectChanged (subj);
 	}
-
+	//TODO Permissions
 	QByteArray ChannelCLEntry::GetAffName (QObject*) const
 	{
 		return QByteArray ();
 	}
 
-	QMap<QByteArray, QByteArray>
-			ChannelCLEntry::GetPerms (QObject *participant) const
+	QMap<QByteArray, QByteArray> ChannelCLEntry::GetPerms (QObject*) const
 	{
-		if (!participant)
-			participant = ICH_->GetSelf ().get ();
-
-		QMap<QByteArray, QByteArray> result;
-		ServerParticipantEntry *entry =
-				qobject_cast<ServerParticipantEntry*> (participant);
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< participant
-					<< "is not a ServerParticipantEntry";
-			result ["permclass_role"] = "norole";
-		}
-		else
-			result ["permclass_role"] =
-					Role2Str_.value (entry->
-							GetRole (ICH_->
-								GetChannelOptions ().ChannelName_),
-							"invalid");
-		return result;
+		return QMap<QByteArray, QByteArray> ();
 	}
 
-	void ChannelCLEntry::SetPerm (QObject *participant,
-			const QByteArray&,
-			const QByteArray&,
-			const QString&)
+	void ChannelCLEntry::SetPerm (QObject*,
+			const QByteArray&, const QByteArray&, const QString&)
 	{
-		ServerParticipantEntry *entry =
-				qobject_cast<ServerParticipantEntry*> (participant);
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< participant
-					<< "is not a ServerParticipantEntry";
-			return;
-		}
-
-// 		if (permClass == "permclass_role")
-// 			ICH_->SetRole (entry, Role2Str_.key (perm), reason);
-// 		else
-// 		{
-// 			qWarning () << Q_FUNC_INFO
-// 			<< "unknown perm class"
-// 			<< permClass;
-// 			return;
-// 		}
 	}
 
-	QMap<QByteArray, QList<QByteArray> >
-			ChannelCLEntry::GetPossiblePerms () const
+	QMap<QByteArray, QList<QByteArray> > ChannelCLEntry::GetPossiblePerms () const
 	{
-		return Perms_;
+		return QMap<QByteArray, QList<QByteArray> > ();
 	}
 
-	QString ChannelCLEntry::GetUserString (const QByteArray& id) const
+	QString ChannelCLEntry::GetUserString (const QByteArray&) const
 	{
-		return Translations_.value (id, id);
+		return QString ();
 	}
 
-	bool ChannelCLEntry::IsLessByPerm
-			(QObject *part1, QObject *part2) const
+	bool ChannelCLEntry::IsLessByPerm (QObject*, QObject*) const
 	{
-		ServerParticipantEntry *e1 =
-				qobject_cast<ServerParticipantEntry*> (part1);
-		ServerParticipantEntry *e2 =
-				qobject_cast<ServerParticipantEntry*> (part2);
-		if (!e1 || !e2)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< part1
-					<< "or"
-					<< part2
-					<< "is not a ServerParticipantEntry";
-			return false;
-		}
-
-		return e1->GetRole (ICH_->GetChannelOptions ().ChannelName_) <
-				e2->GetRole (ICH_->GetChannelOptions ().ChannelName_);
+		return false;
 	}
 
-	bool ChannelCLEntry::MayChange (ChannelRole ourRole,
-			ServerParticipantEntry *entry,
-			ChannelRole newRole) const
+	bool ChannelCLEntry::MayChangePerm (QObject*,
+			const QByteArray&, const QByteArray&) const
 	{
-		ChannelRole role = entry->
-				GetRole (ICH_->GetChannelOptions ().ChannelName_);
-		if (!ICH_->GetIrcServerHandler ()->IsRoleAvailable (ourRole) ||
-				!ICH_->GetIrcServerHandler ()->IsRoleAvailable (newRole)
-				|| !ICH_->GetIrcServerHandler ()->
-					IsRoleAvailable (role))
-			return false;
-
-		if (ourRole == Participant ||
-				ourRole == Voiced ||
-				ourRole == NoRole ||
-				ourRole == Outcast)
-			return false;
-
-		return true;
-	}
-
-	bool ChannelCLEntry::MayChangePerm (QObject *participant,
-			const QByteArray& permClass, const QByteArray& perm) const
-	{
-		ServerParticipantEntry *entry =
-				qobject_cast<ServerParticipantEntry*> (participant);
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< participant
-					<< "is not a ServerParticipantEntry";
-			return false;
-		}
-
-		const ChannelRole ourRole = ICH_->GetSelf ()->
-				GetRole (ICH_->GetChannelOptions ().ChannelName_);
-
-		if (permClass == "permclass_role")
-			return MayChange (ourRole, entry, Role2Str_.key (perm));
-		else
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown perm class"
-					<< permClass;
-			return false;
-		}
+		return false;
 	}
 };
 };

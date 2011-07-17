@@ -16,20 +16,44 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef FULLSCREENSPACERLABEL_H
-#define FULLSCREENSPACERLABEL_H
-#include <QLabel>
+#ifndef PLUGINS_GLANCE_GLANCESHOWER_H
+#define PLUGINS_GLANCE_GLANCESHOWER_H
+#include <QGraphicsView>
+#include <interfaces/iinfo.h>
+
 
 namespace LeechCraft
 {
-	class FullscreenSpacerLabel : public QLabel
+namespace Plugins
+{
+namespace Glance
+{
+
+	class GlanceItem;
+
+	class GlanceShower : public QGraphicsView
 	{
 		Q_OBJECT
+
+		ICoreTabWidget *TabWidget_;
+		QGraphicsScene *Scene_;
+		bool Shown_;
 	public:
-		FullscreenSpacerLabel (QWidget* = 0);
+		GlanceShower (QWidget* = 0);
+		void SetTabWidget (ICoreTabWidget*);
+		void Start ();
+	private:
+		void Finalize ();
 	protected:
-		virtual void mouseMoveEvent (QMouseEvent*);
+		void keyPressEvent (QKeyEvent*);
+		void mousePressEvent (QMouseEvent *);
+	private slots:
+		void handleClicked (int);
+	signals:
+		void finished (bool);
 	};
+};
+};
 };
 
 #endif

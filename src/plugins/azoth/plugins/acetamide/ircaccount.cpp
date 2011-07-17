@@ -1,6 +1,6 @@
 /**********************************************************************
 * LeechCraft - modular cross-platform feature rich internet client.
-* Copyright (C) 2010  Oleg Linkin
+* Copyright (C) 2010-2011 Oleg Linkin
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -70,6 +70,11 @@ namespace Acetamide
 				SIGNAL (rosterItemsRemoved (const QList<QObject*>&)),
 				this,
 				SIGNAL (removedCLItems (const QList<QObject*>&)));
+
+		connect (ClientConnection_.get (),
+				SIGNAL (gotConsoleLog (const QByteArray&, int)),
+				this,
+				SIGNAL (gotConsolePacket (const QByteArray&, int)));
 	}
 
 	QObject* IrcAccount::GetObject ()
@@ -243,6 +248,16 @@ namespace Acetamide
 	QObject* IrcAccount::GetTransferManager () const
 	{
 		return 0;
+	}
+
+	IHaveConsole::PacketFormat IrcAccount::GetPacketFormat () const
+	{
+		return PFPlainText;
+	}
+
+	void IrcAccount::SetConsoleEnabled (bool enabled)
+	{
+		ClientConnection_->SetConsoleEnabled (enabled);
 	}
 
 	QByteArray IrcAccount::Serialize () const

@@ -16,44 +16,45 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef TABWIDGET_H
-#define TABWIDGET_H
-#include <QTabWidget>
-#include <QPointer>
-#include <QAction>
-#include <QMap>
+#ifndef PLUGINS_AZOTH_PLUGINS_METACONTACTS_METAMESSAGE_H
+#define PLUGINS_AZOTH_PLUGINS_METACONTACTS_METAMESSAGE_H
+#include <QObject>
+#include <interfaces/imessage.h>
 
 namespace LeechCraft
 {
-	class TabWidget : public QTabWidget
+namespace Azoth
+{
+namespace Metacontacts
+{
+	class MetaEntry;
+
+	class MetaMessage : public QObject
+					  , public IMessage
 	{
 		Q_OBJECT
-
-		QMap<int, QWidget*> Widgets_;
-		QList<QPointer<QAction> > TabBarActions_;
+		Q_INTERFACES (LeechCraft::Azoth::IMessage);
+		
+		MetaEntry *Entry_;
+		QObject *MessageObj_;
+		IMessage *Message_;
 	public:
-		TabWidget (QWidget* = 0);
-		void SetTooltip (int, QWidget*);
-		int TabAt (const QPoint&) const;
-		void AddAction2TabBar (QAction*);
-		void InsertAction2TabBar (int, QAction*);
-		void InsertAction2TabBar (QAction *before, QAction *action);
-	protected:
-		virtual bool event (QEvent*);
-		virtual void mouseDoubleClickEvent (QMouseEvent*);
-		virtual void mouseReleaseEvent (QMouseEvent*);
-		virtual void tabRemoved (int);
-	private slots:
-		void handleTabBarLocationChanged ();
-		void handleTabBarContextMenu (const QPoint&);
-		void handleMoveHappened (int, int);
-		void handleActionDestroyed ();
-	signals:
-		void moveHappened (int, int);
-		void newTabRequested ();
-		void newTabMenuRequested ();
+		MetaMessage (QObject*, MetaEntry*);
+		
+		QObject* GetObject ();
+		void Send ();
+		Direction GetDirection () const;
+		MessageType GetMessageType () const;
+		MessageSubType GetMessageSubType () const;
+		QObject* OtherPart () const;
+		QString GetOtherVariant () const;
+		QString GetBody () const;
+		void SetBody (const QString&);
+		QDateTime GetDateTime () const;
+		void SetDateTime (const QDateTime&);
 	};
-};
+}
+}
+}
 
 #endif
-

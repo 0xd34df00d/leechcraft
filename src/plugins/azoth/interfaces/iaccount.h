@@ -284,16 +284,6 @@ namespace Azoth
 		 */
 		virtual void removedCLItems (const QList<QObject*>& items) = 0;
 
-		/** @brief This signal should be emitted when a new groupchat
-		 * has been joined.
-		 *
-		 * @note This function is expected to be a signal.
-		 *
-		 * @param[out] groupchat Pointer to the ICLEntry representing
-		 * the groupchat.
-		 */
-		virtual void joinedGroupchat (QObject *groupchat) = 0;
-
 		/** @brief This signal should be emitted when another user
 		 * requests authorization from this account.
 		 *

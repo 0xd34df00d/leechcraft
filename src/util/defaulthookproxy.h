@@ -53,6 +53,8 @@ namespace LeechCraft
 
 				val = newVal.value<T> ();
 			}
+			
+			QVariant GetValue (const QByteArray&) const;
 
 			void SetValue (const QByteArray&, const QVariant&);
 		};

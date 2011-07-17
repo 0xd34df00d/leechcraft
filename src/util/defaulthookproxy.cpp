@@ -46,6 +46,11 @@ namespace LeechCraft
 		{
 			ReturnValue_ = val;
 		}
+		
+		QVariant DefaultHookProxy::GetValue (const QByteArray& name) const
+		{
+			return Name2NewVal_.value (name);
+		}
 
 		void DefaultHookProxy::SetValue (const QByteArray& name, const QVariant& val)
 		{

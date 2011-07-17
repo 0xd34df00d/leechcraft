@@ -1,6 +1,5 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Oleg Linkin
  * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -35,7 +34,7 @@ namespace Azoth
 	{
 		const QString& modOption = XmlSettingsManager::Instance ()
 				.property ("SendOnModifier").toString ();
-		Qt::KeyboardModifier sendMod = Qt::NoModifier;
+		Qt::KeyboardModifiers sendMod = Qt::NoModifier;
 		if (modOption == "CtrlEnter")
 			sendMod = Qt::ControlModifier;
 		else if (modOption == "ShiftEnter")

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010  Oleg Linkin
+ * Copyright (C) 2010-2011 Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,9 +21,9 @@
 
 #include <boost/shared_ptr.hpp>
 #include <QObject>
+#include <interfaces/iclentry.h>
 #include <interfaces/imucentry.h>
 #include <interfaces/imucperms.h>
-#include "entrybase.h"
 #include "localtypes.h"
 
 namespace LeechCraft
@@ -49,9 +49,6 @@ namespace Acetamide
 
 		ChannelHandler *ICH_;
 		QList<QObject*> AllMessages_;
-		QMap<QByteArray, QList<QByteArray> > Perms_;
-		QMap<ChannelRole, QByteArray> Role2Str_;
-		QMap<QByteArray, QString> Translations_;
 	public:
 		ChannelCLEntry (ChannelHandler*);
 		ChannelHandler* GetChannelHandler () const;
@@ -97,8 +94,6 @@ namespace Acetamide
 		void HandleNewParticipants (const QList<ICLEntry*>&);
 		void HandleSubjectChanged (const QString&);
 
-		bool MayChange (ChannelRole,
-				ServerParticipantEntry*, ChannelRole) const;
 		// IMUCPerms
 		QByteArray GetAffName (QObject*) const;
 		QMap<QByteArray, QByteArray> GetPerms (QObject*) const;
@@ -122,7 +117,6 @@ namespace Acetamide
 		void groupsChanged (const QStringList&);
 		void chatPartStateChanged (const ChatPartState&, const QString&);
 		void permsChanged ();
-		// TODO emit this signal on nickname conflict on join.
 		void nicknameConflict (const QString&);
 	};
 };

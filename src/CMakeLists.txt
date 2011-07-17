@@ -116,6 +116,7 @@ OPTION (ENABLE_JUFFED "Build JuffEd, the advanced text editor" OFF)
 OPTION (ENABLE_GMAILNOTIFIER "Build GMail Notifier which notifies about new mail in your GMail inbox" OFF)
 OPTION (ENABLE_OTZERKALU "Build Otzerkalu, which allows one to download web sites recursively" OFF)
 OPTION (ENABLE_ADVANCEDNOTIFICATIONS "Build Advanced Notifications module for more customizable notifications" OFF)
+OPTION (ENABLE_GLANCE "Quick overview of tabs" ON)
 ENABLE_TESTING ()
 
 FUNCTION (CreateTrVars PlugName Langs TranVar CompiledTranVar)
@@ -259,6 +260,10 @@ IF (ENABLE_ADVANCEDNOTIFICATIONS)
 	ADD_SUBDIRECTORY (plugins/advancednotifications)
 ENDIF (ENABLE_ADVANCEDNOTIFICATIONS)
 
+IF (ENABLE_GLANCE)
+	ADD_SUBDIRECTORY (plugins/glance)
+ENDIF (ENABLE_GLANCE)
+
 SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTXML TRUE)
 SET (QT_USE_QTSQL TRUE)
@@ -289,7 +294,6 @@ SET (SRCS
 	debugmessagehandler.cpp
 	application.cpp
 	handlerchoicedialog.cpp
-	tabwidget.cpp
 	graphwidget.cpp
 	shortcutmanager.cpp
 	keysequencer.cpp
@@ -304,16 +308,14 @@ SET (SRCS
 	localsockethandler.cpp
 	toolbarguard.cpp
 	clipboardwatcher.cpp
-	glanceshower.cpp
-	glanceitem.cpp
-	tabbar.cpp
 	wizardtypechoicepage.cpp
 	3dparty/qxttooltip.cpp
-	fullscreenspacerlabel.cpp
 	newtabmenumanager.cpp
 	plugintreebuilder.cpp
 	coreinstanceobject.cpp
 	settingstab.cpp
+	separatetabbar.cpp
+	separatetabwidget.cpp
 	)
 SET (HEADERS
 	mainwindow.h
@@ -334,7 +336,6 @@ SET (HEADERS
 	debugmessagehandler.h
 	application.h
 	handlerchoicedialog.h
-	tabwidget.h
 	graphwidget.h
 	shortcutmanager.h
 	keysequencer.h
@@ -349,10 +350,6 @@ SET (HEADERS
 	localsockethandler.h
 	toolbarguard.h
 	clipboardwatcher.h
-	glanceshower.h
-	glanceitem.h
-	tabbar.h
-	fullscreenspacerlabel.h
 	newtabmenumanager.h
 	wizardtypechoicepage.h
 	plugintreebuilder.h
@@ -361,6 +358,8 @@ SET (HEADERS
 	3dparty/qxttooltip.h
 	3dparty/qxttooltip_p.h
 	interfaces/structures.h
+	separatetabbar.h
+	separatetabwidget.h
 	)
 SET (FORMS
 	commonjobadder.ui
@@ -449,11 +448,11 @@ ELSE (UNIX)
 		)
 ENDIF (UNIX)
 
-TARGET_LINK_LIBRARIES(leechcraft
+TARGET_LINK_LIBRARIES (leechcraft
 		${QT_LIBRARIES}
 		${Boost_PROGRAM_OPTIONS_LIBRARY}
-		lcutil
-		xmlsettingsdialog)
+		${LEECHCRAFT_LIBRARIES}
+		)
 INSTALL (TARGETS leechcraft DESTINATION bin)
 INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 INSTALL (FILES coresettings.xml DESTINATION ${LC_SETTINGS_DEST})

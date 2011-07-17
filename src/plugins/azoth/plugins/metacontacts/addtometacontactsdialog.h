@@ -16,25 +16,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef TABBAR_H
-#define TABBAR_H
-#include <QTabBar>
+#ifndef PLUGINS_AZOTH_PLUGINS_METACONTACTS_ADDTOMETACONTACTSDIALOG_H
+#define PLUGINS_AZOTH_PLUGINS_METACONTACTS_ADDTOMETACONTACTSDIALOG_H
+#include <QDialog>
+#include "ui_addtometacontactsdialog.h"
 
 namespace LeechCraft
 {
-	class TabBar : public QTabBar
+namespace Azoth
+{
+class ICLEntry;
+
+namespace Metacontacts
+{
+	class MetaEntry;
+
+	class AddToMetacontactsDialog : public QDialog
 	{
 		Q_OBJECT
+		
+		Ui::AddToMetacontactsDialog Ui_;
 	public:
-		TabBar (QWidget* = 0);
-	protected:
-		virtual void tabInserted (int);
-		virtual void tabRemoved (int);
-	signals:
-		void tabWasInserted (int);
-		void tabWasRemoved (int);
+		AddToMetacontactsDialog (ICLEntry*,
+				const QList<MetaEntry*>&, QWidget* = 0);
+		
+		MetaEntry* GetSelectedMeta () const;
+		QString GetNewMetaName () const;
+	private slots:
+		void on_ExistingMeta__currentIndexChanged (int);
 	};
-};
+}
+}
+}
 
 #endif
-

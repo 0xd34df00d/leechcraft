@@ -60,7 +60,7 @@ namespace Qrosp
 		return Proxy_->GetMainWindow ();
 	}
 
-	QTabWidget* CoreProxyWrapper::GetTabWidget () const
+	ICoreTabWidget* CoreProxyWrapper::GetTabWidget () const
 	{
 		return Proxy_->GetTabWidget ();
 	}

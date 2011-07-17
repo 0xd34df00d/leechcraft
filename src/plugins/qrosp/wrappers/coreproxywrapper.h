@@ -48,7 +48,7 @@ namespace Qrosp
 		QMap<int, QString> GetIconPath (const QString& name) const;
 		QIcon GetIcon (const QString& on, const QString& off = QString ()) const;
 		QMainWindow* GetMainWindow () const;
-		QTabWidget* GetTabWidget () const;
+		ICoreTabWidget* GetTabWidget () const;
 		QObject* GetTagsManager () const;
 		QStringList GetSearchCategories () const;
 		int GetID ();

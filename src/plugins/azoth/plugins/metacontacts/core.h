@@ -16,48 +16,50 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef GLANCEITEM_H
-#define GLANCEITEM_H
+#ifndef PLUGINS_AZOTH_PLUGINS_METACONTACTS_CORE_H
+#define PLUGINS_AZOTH_PLUGINS_METACONTACTS_CORE_H
 #include <QObject>
-#include <QGraphicsPixmapItem>
-
-class QPropertyAnimation;
+#include <QHash>
 
 namespace LeechCraft
 {
-	class GlanceItem : public QObject
-					 , public QGraphicsPixmapItem
+namespace Azoth
+{
+namespace Metacontacts
+{
+	class MetaAccount;
+	class MetaEntry;
+
+	class Core : public QObject
 	{
 		Q_OBJECT
-
-		Q_PROPERTY (QPointF Pos READ pos WRITE setPos)
-		Q_PROPERTY (qreal Opacity READ opacity WRITE setOpacity)
-		Q_PROPERTY (qreal Scale READ scale WRITE setScale)
-
-		int Index_;		
-		qreal Scale_;
-		QPropertyAnimation *ScaleAnim_;
-		bool Current_;
-		QList<GlanceItem*> ItemsList_;
+		
+		bool SaveEntriesScheduled_;
+		
+		MetaAccount *Account_;
+		QList<MetaEntry*> Entries_;
+		
+		QHash<QString, MetaEntry*> UnavailRealEntries_;
+		
+		Core ();
 	public:
-		GlanceItem (const QPixmap&, QGraphicsItem* = 0);
-
-		void SetIndex (int);
-		void SetIdealScale (qreal);
-		void SetCurrent (bool);
-		void SetItemList (QList<QGraphicsItem*>);
-		bool IsCurrent () const;
+		static Core& Instance ();
+		
+		void SetMetaAccount (MetaAccount*);
+		QList<QObject*> GetEntries () const;
+		
+		bool HandleRealEntryAddBegin (QObject*);
+		void AddRealEntry (QObject*);
 	private:
-		void QueueScaleAnim (qreal, qreal);
-	protected:
-		virtual void hoverEnterEvent (QGraphicsSceneHoverEvent*);
-		virtual void hoverLeaveEvent (QGraphicsSceneHoverEvent*);
-		virtual void mousePressEvent (QGraphicsSceneMouseEvent*);
-		virtual void mouseReleaseEvent (QGraphicsSceneMouseEvent*);
+		void ScheduleSaveEntries ();
+	private slots:
+		void saveEntries ();
 	signals:
-		void clicked (int);
+		void gotCLItems (const QList<QObject*>&);
+		void removedCLItems (const QList<QObject*>&);
 	};
-};
+}
+}
+}
 
 #endif
-
