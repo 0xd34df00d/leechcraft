@@ -164,6 +164,8 @@ namespace Acetamide
 	void ChannelHandler::SetChannelUser (const QString& nick)
 	{
 		QString nickname = nick;
+		if (nick.isEmpty())
+			return;
 		ChannelRole role;
 		switch (nick [0].toAscii ())
 		{
