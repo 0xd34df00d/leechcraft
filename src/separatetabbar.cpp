@@ -117,10 +117,13 @@ namespace LeechCraft
 	void SeparateTabBar::mouseReleaseEvent (QMouseEvent *event)
 	{
 		int index = tabAt (event->pos ());
-		if ((index == count () - 1) &&
-				(event->button () == Qt::LeftButton) &&
+		if (index == count () - 1 &&
+				event->button () == Qt::LeftButton &&
 				IsLastTab_)
+		{
 			emit addDefaultTab (true);
+			return;
+		}
 
 		if (TabWidget_->IsInMoveProcess ())
 		{
@@ -135,19 +138,16 @@ namespace LeechCraft
 
 			TabWidget_->SetInMoveProcess (false);
 		}
+
 		QTabBar::mouseReleaseEvent (event);
 	}
 
 	void SeparateTabBar::mousePressEvent (QMouseEvent *event)
 	{
-		int index = tabAt (event->pos ());
-		if ((index == count () - 1) &&
-				(event->button () == Qt::LeftButton) &&
-				IsLastTab_)
-		{
-			mouseReleaseEvent (event);
+		if (IsLastTab_ &&
+				event->button () == Qt::LeftButton &&
+				tabAt (event->pos ()) == count () - 1)
 			return;
-		}
 
 		QTabBar::mousePressEvent (event);
 	}
