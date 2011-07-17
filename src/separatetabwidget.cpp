@@ -50,7 +50,7 @@ namespace LeechCraft
 	, LeftToolBar_ (new QToolBar)
 	, RightToolBar_ (new QToolBar)
 	, PinTab_ (new QAction (tr ("Pin tab"), this))
-	, UnPinTab_ (new QAction (tr ("UnPin tab"), this))
+	, UnPinTab_ (new QAction (tr ("Unpin tab"), this))
 	, DefaultTabAction_ (new QAction (QString (), this))
 	, InMoveProcess_ (false)
 	{
@@ -186,7 +186,8 @@ namespace LeechCraft
 
 	void SeparateTabWidget::RemoveTab (int index)
 	{
-		if ((index >= WidgetCount ()) && !AddTabButtonAction_->isVisible ())
+		if (index >= WidgetCount () &&
+				!AddTabButtonAction_->isVisible ())
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "invalid index"
@@ -210,7 +211,7 @@ namespace LeechCraft
 
 	void SeparateTabWidget::SetTabEnabled (int index, bool enabled)
 	{
-		if ((index < 0) || (index >= WidgetCount ()))
+		if (index < 0 || index >= WidgetCount ())
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "nvalid index"
@@ -223,7 +224,7 @@ namespace LeechCraft
 
 	void SeparateTabWidget::SetTabIcon (int index, const QIcon& icon)
 	{
-		if ((index < 0) || (index >= WidgetCount ()))
+		if (index < 0 || index >= WidgetCount ())
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "invalid index"
@@ -236,7 +237,7 @@ namespace LeechCraft
 
 	void SeparateTabWidget::SetTabText (int index, const QString& text)
 	{
-		if ((index < 0) || (index >= WidgetCount ()))
+		if (index < 0 || index >= WidgetCount ())
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "invalid index"
@@ -249,7 +250,7 @@ namespace LeechCraft
 
 	void SeparateTabWidget::SetTabToolTip (int index, const QString& tip)
 	{
-		if ((index < 0) || (index >= WidgetCount ()))
+		if (index < 0 || index >= WidgetCount ())
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "invalid index"
@@ -262,7 +263,7 @@ namespace LeechCraft
 
 	void SeparateTabWidget::SetTabWhatsThis (int index, const QString& text)
 	{
-		if ((index < 0) || (index >= WidgetCount ()))
+		if (index < 0 || index >= WidgetCount ())
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "invalid index"
@@ -281,7 +282,7 @@ namespace LeechCraft
 
 	void SeparateTabWidget::SetTooltip (int index, QWidget *widget)
 	{
-		if ((index >= WidgetCount ()) && !IsAddTabActionVisible ())
+		if (index >= WidgetCount () && !IsAddTabActionVisible ())
 			return;
 
 		Widgets_ [index] = widget;
@@ -299,7 +300,8 @@ namespace LeechCraft
 
 	QString SeparateTabWidget::TabText (int index) const
 	{
-		return (IsPinTab (index)) ? MainTabBar_->GetPinTabText (index) : 
+		return IsPinTab (index) ?
+				MainTabBar_->GetPinTabText (index) : 
 				MainTabBar_->tabText (index);
 	}
 
@@ -410,7 +412,7 @@ namespace LeechCraft
 				SLOT (handleActionDestroyed ()));
 	}
 
-	void SeparateTabWidget::InsertAction2TabBar (QAction* before, QAction* action)
+	void SeparateTabWidget::InsertAction2TabBar (QAction *before, QAction *action)
 	{
 		int idx = TabBarActions_.indexOf (before);
 		if (idx < 0)
@@ -446,7 +448,7 @@ namespace LeechCraft
 			length += MainTabBar_->tabRect (i).width ();
 		if (event->oldSize ().width () > event->size ().width ())
 		{
-			if ((length + 30 > MainTabBar_->width ()) &&
+			if (length + 30 > MainTabBar_->width () &&
 					!AddTabButtonAction_->isVisible ())
 			{
 				handleShowAddTabButton (true);
@@ -564,7 +566,7 @@ namespace LeechCraft
 
 	void SeparateTabWidget::setCurrentIndex (int index)
 	{
-		if ((index >= WidgetCount ()) && !AddTabButtonAction_->isVisible ())
+		if (index >= WidgetCount () && !AddTabButtonAction_->isVisible ())
 			--index;
 
 		MainTabBar_->setCurrentIndex (index);
@@ -609,7 +611,7 @@ namespace LeechCraft
 
 	void SeparateTabWidget::setPreviousTab ()
 	{
-		if ((PreviousTab_ <= WidgetCount () - 1) && (WidgetCount () >= 2))
+		if (PreviousTab_ <= WidgetCount () - 1 && WidgetCount () >= 2)
 			setCurrentIndex (PreviousTab_);
 	}
 
@@ -620,7 +622,7 @@ namespace LeechCraft
 
 	void SeparateTabWidget::handleTabMoved (int from, int to)
 	{
-		if ((from == MainTabBar_->count () - 1) &&
+		if (from == MainTabBar_->count () - 1 &&
 				!AddTabButtonAction_->isVisible ())
 		{
 			MainTabBar_->moveTab (to, from);
@@ -631,8 +633,8 @@ namespace LeechCraft
 				!AddTabButtonAction_->isVisible ())
 			return;
 
-		QWidget *From = MainStackedWidget_->widget (from);
-		MainStackedWidget_->insertWidget (to, From);
+		MainStackedWidget_->insertWidget (to,
+				MainStackedWidget_->widget (from));
 		InMoveProcess_ = true;
 		std::swap (Widgets_ [from], Widgets_ [to]);
 		emit tabWasMoved (from, to);
