@@ -350,10 +350,7 @@ namespace LeechCraft
 		if (pos == QTabBar::LeftSide)
 			LeftToolBar_->addWidget (w);
 		else
-		{
 			RightToolBar_->addWidget (w);
-			RightToolBar_->addSeparator ();
-		}
 	}
 
 	void SeparateTabWidget::AddAction2TabBarLayout (QTabBar::ButtonPosition pos, 
@@ -362,19 +359,16 @@ namespace LeechCraft
 		if (pos == QTabBar::LeftSide)
 			LeftToolBar_->addAction (action);
 		else
-		{
 			RightToolBar_->addAction (action);
-			RightToolBar_->addSeparator ();
-		}
 	}
 
-	void SeparateTabWidget::AddWidget2SeparateTabWidget (QWidget* widget)
+	void SeparateTabWidget::AddWidget2SeparateTabWidget (QWidget *widget)
 	{
 		widget->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Minimum);
 		MainToolBarLayout_->addWidget (widget);
 	}
 
-	void SeparateTabWidget::RemoveWidgetFromSeparateTabWidget (QWidget* w)
+	void SeparateTabWidget::RemoveWidgetFromSeparateTabWidget (QWidget *w)
 	{
 		MainToolBarLayout_->removeWidget (w);
 		w->hide ();
