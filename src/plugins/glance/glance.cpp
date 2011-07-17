@@ -24,8 +24,6 @@
 #include <QMainWindow>
 #include "core.h"
 #include "glanceshower.h"
-#include <QtGui/QToolBar>
-
 
 namespace LeechCraft
 {
@@ -48,9 +46,9 @@ namespace Glance
 		ActionGlance_->setIcon (proxy->GetIcon ("glance"));
 
 		connect (ActionGlance_,
-				SIGNAL (triggered (bool)),
+				SIGNAL (triggered ()),
 				this,
-				SLOT (on_ActionGlance__triggered (bool)));
+				SLOT (on_ActionGlance__triggered ()));
 	}
 	
 	void Plugin::SecondInit ()
@@ -73,7 +71,7 @@ namespace Glance
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("Quick overview of tabs");
+		return tr ("Quick overview of tabs.");
 	}
 
 	QIcon Plugin::GetIcon () const
@@ -81,7 +79,7 @@ namespace Glance
 		return QIcon ();
 	}
 	
-	void Plugin::on_ActionGlance__triggered (bool)
+	void Plugin::on_ActionGlance__triggered ()
 	{
 		Glance_ = new GlanceShower;
 		Glance_->SetTabWidget (Core::Instance ().GetProxy ()->GetTabWidget ());

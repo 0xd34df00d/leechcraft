@@ -30,11 +30,10 @@ namespace Plugins
 {
 namespace Glance
 {
-
 	class GlanceShower;
 
 	class Plugin : public QObject
-				, public IInfo
+				 , public IInfo
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo)
@@ -50,7 +49,7 @@ namespace Glance
 		QString GetInfo () const;
 		QIcon GetIcon () const;
 	public slots:
-		void on_ActionGlance__triggered (bool);
+		void on_ActionGlance__triggered ();
 	};
 };
 };
