@@ -78,6 +78,7 @@ namespace Metacontacts
 			entry->SetEntryName (name);
 			entry->SetGroups (settings.value ("Groups").toStringList ());
 			entry->SetRealEntries (settings.value ("RealIDs").toStringList ());
+			Entries_ << entry;
 		}
 		settings.endArray ();
 	}
@@ -100,6 +101,11 @@ namespace Metacontacts
 					<< "doesn't implement ICLEntry";
 			return;
 		}
+		
+		QList<MetaEntry*> allowed = Entries_;
+		Q_FOREACH (MetaEntry *entry, allowed)
+			if (entry->GetRealEntries ().contains (real->GetEntryID ()))
+				allowed.removeAll (entry);
 		
 		AddToMetacontactsDialog dia (real, Entries_);
 		if (dia.exec () != QDialog::Accepted)

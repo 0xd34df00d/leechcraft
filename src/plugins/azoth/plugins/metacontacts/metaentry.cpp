@@ -23,6 +23,7 @@
 #include <QImage>
 #include <QtDebug>
 #include "metaaccount.h"
+#include "metamessage.h"
 
 namespace LeechCraft
 {
@@ -55,12 +56,26 @@ namespace Metacontacts
 		QObject *entryObj = entry->GetObject ();
 		AvailableRealEntries_ << entryObj;
 		
-		handleRealVariantsChanged (entry->Variants (), entryObj);
+		handleRealVariantsChanged (entry->Variants (), entryObj);		
+		Q_FOREACH (QObject *object, entry->GetAllMessages ())
+			handleGotMessage (object, entryObj);
+		
+		emit statusChanged (GetStatus (QString ()), QString ());
 		
 		connect (entryObj,
 				SIGNAL (availableVariantsChanged (const QStringList&)),
 				this,
 				SLOT (handleRealVariantsChanged (const QStringList&)));
+		connect (entryObj,
+				SIGNAL (gotMessage (QObject*)),
+				this,
+				SLOT (handleGotMessage (QObject*)));
+	}
+	
+	QString MetaEntry::GetMetaVariant (QObject *entry, const QString& realVar) const
+	{
+		QPair<QObject*, QString> pair = qMakePair (entry, realVar);
+		return Variant2RealVariant_.key (pair);
 	}
 	
 	QObject* MetaEntry::GetObject ()
@@ -122,13 +137,12 @@ namespace Metacontacts
 		{
 			ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 			const State state = entry->GetStatus ().State_;
-			if (state == SOffline ||
-					state == SInvalid ||
-					state == SError)
-				continue;
 			
-			const QString& name = entry->GetEntryName ();				
-			Q_FOREACH (const QString& var, entry->Variants ())
+			const QString& name = entry->GetEntryName ();
+			QStringList variants = entry->Variants ();
+			if (!variants.contains (QString ()))
+				variants.prepend (QString ());
+			Q_FOREACH (const QString& var, variants)
 			{
 				const QString& full = name + '/' + var;
 				if (!Variant2RealVariant_.contains (full))
@@ -167,8 +181,11 @@ namespace Metacontacts
 		}
 		
 		const QPair<QObject*, QString>& pair = Variant2RealVariant_ [variant];
-		return qobject_cast<ICLEntry*> (pair.first)->
-				CreateMessage (type, pair.second, body);
+		MetaMessage *msg = new MetaMessage (qobject_cast<ICLEntry*> (pair.first)->
+					CreateMessage (type, pair.second, body),
+				this);
+		Messages_ << msg;
+		return msg;
 	}
 	
 	namespace
@@ -187,12 +204,7 @@ namespace Metacontacts
 	
 	QList<QObject*> MetaEntry::GetAllMessages () const
 	{
-		QList<QObject*> result;
-		Q_FOREACH (QObject *obj, AvailableRealEntries_)
-			result << qobject_cast<ICLEntry*> (obj)->GetAllMessages ();
-		
-		std::stable_sort (result.begin (), result.end (), DateSorter ());
-		return result;
+		return Messages_;
 	}
 	
 	void MetaEntry::PurgeMessages (const QDateTime& from)
@@ -203,6 +215,14 @@ namespace Metacontacts
 	
 	void MetaEntry::SetChatPartState (ChatPartState state, const QString& variant)
 	{
+		if (variant.isEmpty ())
+		{
+			if (AvailableRealEntries_.size ())
+				qobject_cast<ICLEntry*> (AvailableRealEntries_.first ())->
+						SetChatPartState (state, QString ());
+			return;
+		}
+
 		if (!Variant2RealVariant_.contains (variant))
 		{
 			qWarning () << Q_FUNC_INFO
@@ -281,7 +301,30 @@ namespace Metacontacts
 		return qobject_cast<ICLEntry*> (pair.first)->GetClientInfo (pair.second);
 	}
 	
-	void MetaEntry::handleRealVariantsChanged (const QStringList& variants, QObject *passedObj)
+	void MetaEntry::handleGotMessage (QObject *msgObj, QObject *passedObj)
+	{
+		IMessage *msg = qobject_cast<IMessage*> (msgObj);
+		if (!msg)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< msgObj
+					<< "doesn't implement IMessage";
+			return;
+		}
+
+		MetaMessage *message = new MetaMessage (msgObj, this);
+
+		const bool shouldSort = !Messages_.isEmpty () &&
+				qobject_cast<IMessage*> (Messages_.last ())->GetDateTime () > msg->GetDateTime ();
+
+		Messages_ << message;
+		if (shouldSort)
+			std::stable_sort (Messages_.begin (), Messages_.end (), DateSorter ());
+
+		emit gotMessage (message);
+	}
+	
+	void MetaEntry::handleRealVariantsChanged (QStringList variants, QObject *passedObj)
 	{
 		QObject *obj = passedObj ? passedObj : sender ();
 		Q_FOREACH (const QString& var, Variant2RealVariant_.keys ())
@@ -293,11 +336,20 @@ namespace Metacontacts
 		
 		ICLEntry *entry = qobject_cast<ICLEntry*> (obj);
 		
+		if (!variants.contains (QString ()))
+			variants.prepend (QString ());
+		
 		Q_FOREACH (const QString& var, variants)
 			Variant2RealVariant_ [entry->GetEntryName () + '/' + var] =
 					qMakePair (obj, var);
 		
 		emit availableVariantsChanged (Variants ());
+		
+		Q_FOREACH (const QString& var, variants)
+		{
+			const QString& str = entry->GetEntryName () + '/' + var;
+			emit statusChanged (GetStatus (str), str);
+		}
 	}
 }
 }

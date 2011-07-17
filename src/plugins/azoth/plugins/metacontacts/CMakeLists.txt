@@ -6,6 +6,7 @@ SET (METACONTACTS_SRCS
 	metaprotocol.cpp
 	metaaccount.cpp
 	metaentry.cpp
+	metamessage.cpp
 	core.cpp
 	addtometacontactsdialog.cpp
 	)
@@ -14,6 +15,7 @@ SET (METACONTACTS_HEADERS
 	metaprotocol.h
 	metaaccount.h
 	metaentry.h
+	metamessage.h
 	core.h
 	addtometacontactsdialog.h
 	)

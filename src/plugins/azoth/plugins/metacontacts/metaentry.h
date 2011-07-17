@@ -44,14 +44,17 @@ namespace Metacontacts
 		
 		QStringList UnavailableRealEntries_;
 		QList<QObject*> AvailableRealEntries_;
-		
 		QMap<QString, QPair<QObject*, QString> > Variant2RealVariant_;
+		
+		QList<QObject*> Messages_;
 	public:
 		MetaEntry (const QString&, MetaAccount*);
 		
 		QStringList GetRealEntries () const;
 		void SetRealEntries (const QStringList&);
 		void AddRealObject (ICLEntry*);
+		
+		QString GetMetaVariant (QObject*, const QString&) const;
 		
 		QObject* GetObject ();
 		QObject* GetParentAccount () const;
@@ -75,16 +78,17 @@ namespace Metacontacts
 		QList<QAction*> GetActions () const;
 		QMap<QString, QVariant> GetClientInfo (const QString&) const;
 	private slots:
-		void handleRealVariantsChanged (const QStringList&, QObject* = 0);
+		void handleGotMessage (QObject*, QObject* = 0);
+		void handleRealVariantsChanged (QStringList, QObject* = 0);
 	signals:
 		void gotMessage (QObject*);
-		void statusChanged (const LeechCraft::Azoth::EntryStatus&, const QString&);
+		void statusChanged (const EntryStatus&, const QString&);
 		void availableVariantsChanged (const QStringList&);
 		void rawinfoChanged (const QString&);
 		void nameChanged (const QString&);
 		void groupsChanged (const QStringList&);
 		void avatarChanged (const QImage&);
-		void chatPartStateChanged (const LeechCraft::Azoth::ChatPartState&, const QString&);
+		void chatPartStateChanged (const ChatPartState&, const QString&);
 		void permsChanged ();
 	};
 }
