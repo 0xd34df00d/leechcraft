@@ -51,15 +51,6 @@ namespace LeechCraft
 	class ShortcutManager;
 	class LogToolBox;
 	class ToolbarGuard;
-	class GlanceShower;
-
-	class NewTabButton : public QToolButton
-	{
-	public:
-		explicit NewTabButton (QWidget* parent=0) : QToolButton (parent) {};
-	protected:
-		void mousePressEvent (QMouseEvent *event);
-	};
 
 	class MainWindow : public QMainWindow
 	{
@@ -79,8 +70,6 @@ namespace LeechCraft
 		bool WasMaximized_;
 		QString LanguageOnLoad_;
 		ToolbarGuard *Guard_;
-		GlanceShower *Glance_;
-		QToolButton *NewTabButton_;
 		QShortcut *FullScreenShortcut_;
 		QShortcut *CloseTabShortcut_;
 		const QString DefaultSystemStyleName_;
@@ -92,7 +81,7 @@ namespace LeechCraft
 	public:
 		MainWindow (QWidget *parent = 0, Qt::WFlags flags = 0);
 		virtual ~MainWindow ();
-		TabWidget* GetTabWidget () const;
+		SeparateTabWidget* GetTabWidget () const;
 		const IShortcutProxy* GetShortcutProxy () const;
 		void SetAdditionalTitle (const QString&);
 		ToolbarGuard* GetGuard () const;
@@ -112,9 +101,8 @@ namespace LeechCraft
 		void WriteSettings ();
 	private slots:
 		void on_ActionAddTask__triggered ();
-		void on_ActionNewTab__triggered ();
 		void on_ActionCloseTab__triggered ();
-		void on_ActionGlance__triggered ();
+		void handleCloseCurrentTab ();
 		void on_ActionSettings__triggered ();
 		void on_ActionAboutLeechCraft__triggered ();
 		void on_ActionQuit__triggered ();

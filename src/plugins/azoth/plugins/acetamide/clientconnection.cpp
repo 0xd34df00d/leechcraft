@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010  Oleg Linkin
+ * Copyright (C) 2010-2011 Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,6 @@
 #include "ircprotocol.h"
 #include "ircserverclentry.h"
 #include "ircserverhandler.h"
-#include "ircserverconsole.h"
 
 namespace LeechCraft
 {
@@ -38,6 +37,7 @@ namespace Acetamide
 	ClientConnection::ClientConnection (IrcAccount *account)
 	: Account_ (account)
 	, ProxyObject_ (0)
+	, IsConsoleEnabled_ (false)
 	{
 		QObject *proxyObj = qobject_cast<IrcProtocol*> (account->
 				GetParentProtocol ())->GetProxyObject ();
@@ -47,10 +47,6 @@ namespace Acetamide
 	QObject* ClientConnection::GetCLEntry (const QString& id,
 			const QString& nickname) const
 	{
-		QString idc = id.mid (id.indexOf ('_') + 1,
-				id.indexOf ('/') - id.indexOf ('_') - 1);
-		if (id.contains ("/Console") && ServerHandlers_.contains (idc))
-			return ServerHandlers_ [idc]->GetIrcServerConsole ().get ();
 		if (ServerHandlers_.contains (id) && nickname.isEmpty ())
 			return ServerHandlers_ [id]->GetCLEntry ();
 		else if (!nickname.isEmpty ())
@@ -84,7 +80,21 @@ namespace Acetamide
 				QString::number (server.ServerPort_);
 
 		IrcServerHandler *ish = new IrcServerHandler (server, Account_);
+		
+		ish->SetConsoleEnabled (IsConsoleEnabled_);
+		if (IsConsoleEnabled_)
+			connect (ish,
+					SIGNAL (sendMessageToConsole (IMessage::Direction, const QString&)),
+					this,
+					SLOT (handleLog (IMessage::Direction, const QString&)),
+					Qt::UniqueConnection);
+		else
+			disconnect (ish,
+					SIGNAL (sendMessageToConsole (IMessage::Direction, const QString&)),
+					this,
+					SLOT (handleLog (IMessage::Direction, const QString&)));
 		ServerHandlers_ [serverId] = ish;
+		
 		ish->ConnectToServer ();
 	}
 
@@ -130,29 +140,15 @@ namespace Acetamide
 	void ClientConnection::CloseServer (const QString& serverId)
 	{
 		if (ServerHandlers_.contains (serverId))
-			if (ServerHandlers_ [serverId]->DisconnectFromServer ())
-			{
-				Account_->
-						handleEntryRemoved (ServerHandlers_ [serverId]->
-							GetCLEntry ());
-				ServerHandlers_.remove (serverId);
-				if (!ServerHandlers_.count ())
-					Account_->ChangeState (EntryStatus (SOffline,
-							QString ()));
-			}
+			ServerHandlers_ [serverId]->DisconnectFromServer ();
 	}
 
 	void ClientConnection::DisconnectFromAll ()
 	{
 		Q_FOREACH (IrcServerHandler *ish, ServerHandlers_.values ())
 		{
-			Q_FOREACH (ChannelHandler* ich, ish->GetChannelHandlers ())
-				ich->LeaveChannel (QString ());
-			Q_FOREACH (const QString& nick, ish->GetPrivateChats ())
-				ish->ClosePrivateChat (nick);
-			if (ish->GetIrcServerConsole ())
-				Account_->handleEntryRemoved (ish->GetIrcServerConsole ()
-						.get ());
+			ish->LeaveAllChannel ();
+			ish->CloseAllPrivateChats ();
 			ish->DisconnectFromServer ();
 			ServerHandlers_.remove (ish->GetServerID_ ());
 			Account_->handleEntryRemoved (ish->GetCLEntry ());
@@ -162,16 +158,31 @@ namespace Acetamide
 	void ClientConnection::QuitServer (const QStringList& list)
 	{
 		IrcServerHandler *ish = ServerHandlers_ [list.last ()];
-		Q_FOREACH (ChannelHandler* ich, ish->GetChannelHandlers ())
-			ich->LeaveChannel (QString ());
-		Q_FOREACH (const QString& nick, ish->GetPrivateChats ())
-			ish->ClosePrivateChat (nick);
-		if (ish->GetIrcServerConsole ())
-			Account_->handleEntryRemoved (ish->GetIrcServerConsole ()
-					.get ());
+		ish->LeaveAllChannel ();
+		ish->CloseAllPrivateChats ();
 		ish->DisconnectFromServer ();
 		ServerHandlers_.remove (ish->GetServerID_ ());
 		Account_->handleEntryRemoved (ish->GetCLEntry ());
+	}
+
+	void ClientConnection::SetConsoleEnabled (bool enabled)
+	{
+		IsConsoleEnabled_ = enabled;
+		Q_FOREACH (IrcServerHandler *srv, ServerHandlers_.values ())
+		{
+			srv->SetConsoleEnabled (enabled);
+			if (enabled)
+				connect (srv,
+						SIGNAL (sendMessageToConsole (IMessage::Direction, const QString&)),
+						this,
+						SLOT (handleLog (IMessage::Direction, const QString&)),
+						Qt::UniqueConnection);
+			else
+				disconnect (srv,
+						SIGNAL (sendMessageToConsole (IMessage::Direction, const QString&)),
+						this,
+						SLOT (handleLog (IMessage::Direction, const QString&)));
+		}
 	}
 
 	void ClientConnection::serverConnected (const QString& serverId)
@@ -180,6 +191,16 @@ namespace Acetamide
 			Account_->ChangeState (EntryStatus (SOnline, QString ()));
 		emit gotRosterItems (QList<QObject*> () <<
 				ServerHandlers_ [serverId]->GetCLEntry ());
+	}
+
+	void ClientConnection::serverDisconnected (const QString& serverId)
+	{
+		Account_->handleEntryRemoved (ServerHandlers_ [serverId]->
+				GetCLEntry ());
+		ServerHandlers_.remove (serverId);
+		if (!ServerHandlers_.count ())
+			Account_->ChangeState (EntryStatus (SOffline,
+					QString ()));
 	}
 
 	void ClientConnection::handleError (QAbstractSocket::SocketError)
@@ -199,6 +220,22 @@ namespace Acetamide
 		Core::Instance ().SendEntity (e);
 		Account_->ChangeState (EntryStatus (SOffline, QString ()));
 	}
+
+	void ClientConnection::handleLog (IMessage::Direction type, const QString& msg)
+	{
+		switch (type)
+		{
+		case IMessage::DOut:
+			emit gotConsoleLog (msg.toUtf8 (), IHaveConsole::PDOut);
+			break;
+		case IMessage::DIn:
+			emit gotConsoleLog (msg.toUtf8 (), IHaveConsole::PDIn);
+			break;
+		default:
+			break;
+		}
+	}
+
 };
 };
 };

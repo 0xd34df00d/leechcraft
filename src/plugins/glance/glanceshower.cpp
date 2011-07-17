@@ -19,7 +19,6 @@
 #include "glanceshower.h"
 #include <cmath>
 #include <limits>
-#include <QTabWidget>
 #include <QLabel>
 #include <QGraphicsItem>
 #include <QGraphicsPixmapItem>
@@ -30,12 +29,16 @@
 #include <QKeyEvent>
 #include <QApplication>
 #include <QDesktopWidget>
+#include <QMainWindow>
 #include <QtDebug>
 #include "core.h"
-#include "mainwindow.h"
 #include "glanceitem.h"
 
 namespace LeechCraft
+{
+namespace Plugins
+{
+namespace Glance
 {
 	GlanceShower::GlanceShower (QWidget *parent)
 	: QGraphicsView (parent)
@@ -52,7 +55,7 @@ namespace LeechCraft
 		setRenderHints (QPainter::HighQualityAntialiasing);
 	}
 
-	void GlanceShower::SetTabWidget (QTabWidget *tw)
+	void GlanceShower::SetTabWidget (ICoreTabWidget *tw)
 	{
 		TabWidget_ = tw;
 	}
@@ -66,7 +69,7 @@ namespace LeechCraft
 			return;
 		}
 
-		const int count = TabWidget_->count ();
+		const int count = TabWidget_->WidgetCount ();
 		if (count < 2)
 		{
 			emit finished (true);
@@ -84,7 +87,7 @@ namespace LeechCraft
 			++rows;
 
 		const QRect& screenGeom = QApplication::desktop ()->
-				screenGeometry (Core::Instance ().GetReallyMainWindow ());
+				screenGeometry (Core::Instance ().GetMainWindow ());
 		const int width = screenGeom.width ();
 		const int height = screenGeom.height ();
 
@@ -110,7 +113,7 @@ namespace LeechCraft
 			{
 				const int idx = column + row * cols;
 				pg.setValue (idx);
-				QWidget *w = TabWidget_->widget (idx);
+				QWidget *w = TabWidget_->Widget (idx);
 
 				if (!sSize.isValid ())
 					sSize = w->size () / 2;
@@ -191,7 +194,7 @@ namespace LeechCraft
 				glanceItemList << qgraphicsitem_cast<GlanceItem*> (item);
 
 			int currentItem = -1;
-			const int count = TabWidget_->count ();
+			const int count = TabWidget_->WidgetCount ();
 
 			const int sqrt = std::sqrt ((double)count);
 			int rows = sqrt;
@@ -314,4 +317,5 @@ namespace LeechCraft
 			Finalize ();
 	}
 };
-
+};
+};

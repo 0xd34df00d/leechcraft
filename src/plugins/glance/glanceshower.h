@@ -16,14 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef GLANCESHOWER_H
-#define GLANCESHOWER_H
+#ifndef PLUGINS_GLANCE_GLANCESHOWER_H
+#define PLUGINS_GLANCE_GLANCESHOWER_H
 #include <QGraphicsView>
+#include <interfaces/iinfo.h>
 
-
-class QTabWidget;
 
 namespace LeechCraft
+{
+namespace Plugins
+{
+namespace Glance
 {
 
 	class GlanceItem;
@@ -32,12 +35,12 @@ namespace LeechCraft
 	{
 		Q_OBJECT
 
-		QTabWidget *TabWidget_;
+		ICoreTabWidget *TabWidget_;
 		QGraphicsScene *Scene_;
 		bool Shown_;
 	public:
 		GlanceShower (QWidget* = 0);
-		void SetTabWidget (QTabWidget*);
+		void SetTabWidget (ICoreTabWidget*);
 		void Start ();
 	private:
 		void Finalize ();
@@ -49,6 +52,8 @@ namespace LeechCraft
 	signals:
 		void finished (bool);
 	};
+};
+};
 };
 
 #endif

@@ -16,14 +16,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef GLANCEITEM_H
-#define GLANCEITEM_H
+#ifndef PLUGINS_GLANCE_GLANCEITEM_H
+#define PLUGINS_GLANCE_GLANCEITEM_H
 #include <QObject>
 #include <QGraphicsPixmapItem>
 
 class QPropertyAnimation;
 
 namespace LeechCraft
+{
+namespace Plugins
+{
+namespace Glance
 {
 	class GlanceItem : public QObject
 					 , public QGraphicsPixmapItem
@@ -58,6 +62,7 @@ namespace LeechCraft
 		void clicked (int);
 	};
 };
-
+};
+};
 #endif
 

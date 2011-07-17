@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010  Oleg Linkin
+ * Copyright (C) 2010-2011 Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ namespace Acetamide
 {
 	ChannelPublicMessage::ChannelPublicMessage (const QString& msg,
 			ChannelCLEntry *entry)
-	: QObject (entry)
+	: QObject (0)
 	, ParentEntry_ (entry)
 	, Message_ (msg)
 	, Datetime_ (QDateTime::currentDateTime ())
@@ -44,7 +44,7 @@ namespace Acetamide
 			IMessage::MessageType type,
 			IMessage::MessageSubType subType,
 			ServerParticipantEntry_ptr part)
-	: QObject (entry)
+	: QObject (0)
 	, ParentEntry_ (entry)
 	, ParticipantEntry_ (part)
 	, Message_ (msg)
@@ -134,8 +134,6 @@ namespace Acetamide
 	{
 		Datetime_ = dt;
 	}
-
-
 };
 };
 };

@@ -16,15 +16,16 @@ SET (ACETAMIDE_SRCS
 	ircaccount.cpp
 	ircaccountconfigurationdialog.cpp
 	ircaccountconfigurationwidget.cpp
+	ircerrorhandler.cpp
 	ircjoingroupchat.cpp
 	ircmessage.cpp
 	ircparser.cpp
 	ircprotocol.cpp
 	ircserverclentry.cpp
-	ircserverconsole.cpp
 	ircserverhandler.cpp
 	invitechannelsdialog.cpp
 	localtypes.cpp
+	servercommandmessage.cpp
 	serverparticipantentry.cpp
 	xmlsettingsmanager.cpp
 	)
@@ -40,15 +41,16 @@ SET (ACETAMIDE_HEADERS
 	ircaccount.h
 	ircaccountconfigurationdialog.h
 	ircaccountconfigurationwidget.h
+	ircerrorhandler.h
 	ircjoingroupchat.h
 	ircmessage.h
 	ircparser.h
 	ircprotocol.h
 	ircserverclentry.h
-	ircserverconsole.h
 	ircserverhandler.h
 	invitechannelsdialog.h
 	localtypes.h
+	servercommandmessage.h
 	serverparticipantentry.h
 	xmlsettingsmanager.h
 	)

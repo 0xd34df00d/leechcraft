@@ -30,20 +30,20 @@ class QMenu;
 
 namespace LeechCraft
 {
-	class TabWidget;
+	class SeparateTabWidget;
 
 	class TabManager : public QObject
 	{
 		Q_OBJECT
 
-		TabWidget *TabWidget_;
+		SeparateTabWidget *TabWidget_;
 		QStringList OriginalTabNames_;
 		QList<QKeyEvent*> Events_;
 		QMap<QWidget*, QObject*> EmbedTabs_;
 		QMenu *NewTabMenu_;
 		QMap<QString, QList<QAction*> > Menus_;
 	public:
-		TabManager (TabWidget*, QObject* = 0);
+		TabManager (SeparateTabWidget*, QObject* = 0);
 
 		QWidget* GetWidget (int) const;
 		QToolBar* GetToolBar (int) const;

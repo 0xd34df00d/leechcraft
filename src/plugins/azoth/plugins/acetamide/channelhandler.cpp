@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010  Oleg Linkin
+ * Copyright (C) 2010-2011 Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -104,16 +104,6 @@ namespace Acetamide
 		IsRosterReceived_ = status;
 	}
 
-	bool ChannelHandler::IsSendCommand (const QString& cmd)
-	{
-		return SendCommand_.contains (cmd);
-	}
-
-	void ChannelHandler::RemoveCommand (const QString& cmd)
-	{
-		SendCommand_.removeOne (cmd);
-	}
-
 	void ChannelHandler::ShowServiceMessage (const QString& msg,
 			IMessage::MessageType mt, IMessage::MessageSubType mst)
 	{
@@ -131,7 +121,6 @@ namespace Acetamide
 			return;
 		if (msg.startsWith ('/'))
 		{
-			SendCommand_ << msg.mid (1).split (" ").first ().toLower ();
 			ISH_->ParseMessageForCommand (msg, ChannelID_);
 			return;
 		}
