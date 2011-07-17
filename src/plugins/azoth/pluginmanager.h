@@ -37,6 +37,10 @@ namespace Azoth
 	public:
 		PluginManager (QObject* = 0);
 	signals:
+		void hookAddingCLEntryBegin (LeechCraft::IHookProxy_ptr proxy,
+				QObject *entry);
+		void hookAddingCLEntryEnd (LeechCraft::IHookProxy_ptr proxy,
+				QObject *entry);
 		void hookChatTabCreated (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QObject *entry,

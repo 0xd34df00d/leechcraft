@@ -780,6 +780,11 @@ namespace Azoth
 	void Core::AddCLEntry (ICLEntry *clEntry,
 			QStandardItem *accItem)
 	{
+		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		emit hookAddingCLEntryBegin (proxy, clEntry->GetObject ());
+		if (proxy->IsCancelled ())
+			return;
+
 		connect (clEntry->GetObject (),
 				SIGNAL (statusChanged (const EntryStatus&, const QString&)),
 				this,
@@ -859,6 +864,9 @@ namespace Azoth
 
 		ChatTabsManager_->UpdateEntryMapping (id, clEntry->GetObject ());
 		ChatTabsManager_->SetChatEnabled (id, true);
+		
+		proxy.reset (new Util::DefaultHookProxy);
+		emit hookAddingCLEntryEnd (proxy, clEntry->GetObject ());
 	}
 
 	QList<QStandardItem*> Core::GetCategoriesItems (QStringList cats, QStandardItem *account)

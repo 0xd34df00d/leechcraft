@@ -553,6 +553,10 @@ namespace Azoth
 		void accountRemoved (IAccount*);
 
 		// Plugin API
+		void hookAddingCLEntryBegin (LeechCraft::IHookProxy_ptr proxy,
+				QObject *entry);
+		void hookAddingCLEntryEnd (LeechCraft::IHookProxy_ptr proxy,
+				QObject *entry);
 		void hookEntryActionAreasRequested (LeechCraft::IHookProxy_ptr proxy,
 				QObject *action,
 				QObject *entry);
