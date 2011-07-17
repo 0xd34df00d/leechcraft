@@ -403,6 +403,9 @@ namespace Acetamide
 		Command2Action_ ["part"] =
 				boost::bind (&IrcServerHandler::LeaveParticipant,
 					this, _1, _2, _3);
+		Command2Action_ ["quit"] =
+				boost::bind (&IrcServerHandler::QuitParticipant,
+					this, _1, _2, _3);
 		Command2Action_ ["privmsg"] =
 				boost::bind (&IrcServerHandler::HandleIncomingMessage,
 					this, _1, _2, _3);
@@ -845,6 +848,21 @@ namespace Acetamide
 		else
 			ChannelHandlers_ [channelID]->RemoveChannelUser (nick,
 					EncodedMessage (msg, IMessage::DIn), 0);
+	}
+
+	void IrcServerHandler::QuitParticipant (const QString& nick,
+			const QList<std::string>&, const QString& msg)
+	{
+		if (nick == NickName_)
+			Account_->GetClientConnection ()->QuitServer (QStringList () << ServerID_);
+		else
+			if (Nick2Entry_.contains (nick))
+				Q_FOREACH (const QString& channel, Nick2Entry_ [nick]->GetChannels ())
+				{
+					QString channelID = channel + "@" + ServerOptions_.ServerName_;
+					ChannelHandlers_ [channelID]->RemoveChannelUser (nick,
+							EncodedMessage (msg, IMessage::DIn), 0);
+				}
 	}
 
 	void IrcServerHandler::HandleIncomingMessage (const QString& nick,
