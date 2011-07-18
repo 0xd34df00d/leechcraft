@@ -581,10 +581,8 @@ void LeechCraft::MainWindow::on_ActionLogger__triggered ()
 void LeechCraft::MainWindow::on_MainTabWidget__currentChanged (int index)
 {
 	QToolBar *bar = Core::Instance ().GetToolBar (index);
-	if (!bar)
-		return;
 	GetGuard ()->AddToolbar (bar);
-	if (Ui_.MainTabWidget_->WidgetCount () > 0)
+	if (Ui_.MainTabWidget_->WidgetCount () > 0 && bar)
 		bar->setVisible (!isFullScreen ());
 }
 
