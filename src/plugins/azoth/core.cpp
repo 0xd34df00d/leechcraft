@@ -2052,6 +2052,9 @@ namespace Azoth
 		
 		if (entry->GetEntryType () == ICLEntry::ETChat)
 			newGroups = GetDisplayGroups (entry);
+		
+		if (!Entry2Items_.contains (entry))
+			return;
 
 		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
 		{
