@@ -438,7 +438,7 @@
         </item>
         <item>
          <property name="text">
-          <string>Historical</string>
+          <string>Historic</string>
          </property>
          <property name="text">
           <string notr="true">det_history</string>
@@ -522,6 +522,200 @@
          </property>
          <property name="text">
           <string notr="true">detective</string>
+         </property>
+        </item>
+       </item>
+       <item>
+        <property name="text">
+         <string>Prose</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <item>
+         <property name="text">
+          <string>Classic</string>
+         </property>
+         <property name="text">
+          <string notr="true">prose_classic</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Historic</string>
+         </property>
+         <property name="text">
+          <string notr="true">prose_history</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Contemporary</string>
+         </property>
+         <property name="text">
+          <string notr="true">prose_contemporary</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Counterculture</string>
+         </property>
+         <property name="text">
+          <string notr="true">prose_counter</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Russian classic</string>
+         </property>
+         <property name="text">
+          <string notr="true">prose_rus_classic</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>USSR classic</string>
+         </property>
+         <property name="text">
+          <string notr="true">prose_su_classics</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Humor</string>
+         </property>
+         <property name="text">
+          <string notr="true">humor_prose</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>For children</string>
+         </property>
+         <property name="text">
+          <string notr="true">child_prose</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Other</string>
+         </property>
+         <property name="text">
+          <string notr="true">prose</string>
+         </property>
+        </item>
+       </item>
+       <item>
+        <property name="text">
+         <string>Love</string>
+        </property>
+        <item>
+         <property name="text">
+          <string>Contemporary</string>
+         </property>
+         <property name="text">
+          <string notr="true">love_contemporary</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Historic</string>
+         </property>
+         <property name="text">
+          <string notr="true">love_history</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Detective</string>
+         </property>
+         <property name="text">
+          <string notr="true">love_detective</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Short</string>
+         </property>
+         <property name="text">
+          <string notr="true">love_short</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Erotica</string>
+         </property>
+         <property name="text">
+          <string notr="true">love_erotica</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Other</string>
+         </property>
+         <property name="text">
+          <string notr="true">love</string>
+         </property>
+        </item>
+       </item>
+       <item>
+        <property name="text">
+         <string>Adventure</string>
+        </property>
+        <item>
+         <property name="text">
+          <string>Western</string>
+         </property>
+         <property name="text">
+          <string notr="true">adv_western</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Historic</string>
+         </property>
+         <property name="text">
+          <string notr="true">adv_history</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Indian</string>
+         </property>
+         <property name="text">
+          <string notr="true">adv_indian</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Maritime</string>
+         </property>
+         <property name="text">
+          <string notr="true">adv_maritime</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Travel &amp; geography</string>
+         </property>
+         <property name="text">
+          <string notr="true">adv_geo</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Animals</string>
+         </property>
+         <property name="text">
+          <string notr="true">adv_animal</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Other</string>
+         </property>
+         <property name="text">
+          <string notr="true">adventure</string>
          </property>
         </item>
        </item>
