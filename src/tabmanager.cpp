@@ -278,7 +278,8 @@ void TabManager::handleScrollButtons ()
 
 void TabManager::bringToFront (QWidget *widget) const
 {
-	TabWidget_->setCurrentWidget (widget);
+	if (TabWidget_->IndexOf (widget) != -1)
+		TabWidget_->setCurrentWidget (widget);
 }
 
 void TabManager::handleCurrentChanged (int index)
