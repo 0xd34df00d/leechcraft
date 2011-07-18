@@ -28,9 +28,9 @@
 #include <QTabBar>
 #include <QtNetwork/QNetworkAccessManager>
 #include "structures.h"
-#include <QIcon>
 
 class IShortcutProxy;
+class IMWProxy;
 class QTreeView;
 class QModelIndex;
 class QIcon;
@@ -529,6 +529,12 @@ public:
 	 * @sa IShortcutProxy
 	 */
 	virtual const IShortcutProxy* GetShortcutProxy () const = 0;
+	
+	/** @brief Returns the main window proxy.
+	 * 
+	 * @sa IMWProxy
+	 */
+	virtual IMWProxy* GetMWProxy () const = 0;
 
 	/** @brief Maps the given index up to the plugin's through the
 	 * hierarchy of LeechCraft's models
