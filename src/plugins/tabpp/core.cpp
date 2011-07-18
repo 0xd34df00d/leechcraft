@@ -89,7 +89,7 @@ namespace LeechCraft
 						this,
 						SLOT (handleCurrentChanged (int)));
 				connect (TabWidget_->GetObject (),
-						SIGNAL (tabMoved (int, int)),
+						SIGNAL (tabWasMoved (int, int)),
 						this,
 						SLOT (handleTabsSwapped (int, int)));
 			}
