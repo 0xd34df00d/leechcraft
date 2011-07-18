@@ -41,25 +41,25 @@ namespace BodyFetch
 	
 	void WorkerThread::SetLoaderInstance (IScriptLoaderInstance *inst)
 	{
-		Object_.Val ()->SetLoaderInstance (inst);
+		Object_->SetLoaderInstance (inst);
 	}
 	
 	bool WorkerThread::IsOK () const
 	{
-		return isRunning () && Object_;
+		return isRunning () && Object_ && Object_->IsOk ();
 	}
 	
 	void WorkerThread::AppendItems (const QVariantList& items)
 	{
-		Object_.Val ()->AppendItems (items);
-		QMetaObject::invokeMethod (Object_.Val (),
+		Object_->AppendItems (items);
+		QMetaObject::invokeMethod (Object_,
 				"process",
 				Qt::QueuedConnection);
 	}
 	
 	QObject* WorkerThread::GetWorkingObject () const
 	{
-		return Object_.Val ();
+		return Object_;
 	}
 }
 }

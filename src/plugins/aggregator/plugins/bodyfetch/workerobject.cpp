@@ -58,6 +58,11 @@ namespace BodyFetch
 	{
 		Inst_ = inst;
 	}
+	
+	bool WorkerObject::IsOk () const
+	{
+		return Inst_;
+	}
 
 	void WorkerObject::AppendItems (const QVariantList& items)
 	{

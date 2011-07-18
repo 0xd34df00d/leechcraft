@@ -53,6 +53,7 @@ namespace BodyFetch
 		WorkerObject (QObject* = 0);
 		
 		void SetLoaderInstance (IScriptLoaderInstance*);
+		bool IsOk () const;
 		void AppendItems (const QVariantList&);
 	private:
 		void ProcessItems (const QVariantList&);
