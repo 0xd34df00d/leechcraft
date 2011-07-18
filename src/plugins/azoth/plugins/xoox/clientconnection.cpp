@@ -81,7 +81,7 @@ namespace Xoox
 	, XferManager_ (new QXmppTransferManager)
 	, DiscoveryManager_ (Client_->findExtension<QXmppDiscoveryManager> ())
 	, BMManager_ (new QXmppBookmarkManager (Client_))
-	, EntityTimeManager_ (new QXmppEntityTimeManager)
+	, EntityTimeManager_ (Client_->findExtension<QXmppEntityTimeManager> ())
 	, ArchiveManager_ (new QXmppArchiveManager)
 	, DeliveryReceiptsManager_ (new QXmppDeliveryReceiptsManager)
 	, CaptchaManager_ (new QXmppCaptchaManager)
@@ -139,7 +139,6 @@ namespace Xoox
 		Client_->addExtension (MUCManager_);
 		Client_->addExtension (XferManager_);
 		Client_->addExtension (BMManager_);
-		Client_->addExtension (EntityTimeManager_);
 		Client_->addExtension (ArchiveManager_);
 		Client_->addExtension (CaptchaManager_);
 		Client_->addExtension (new LegacyEntityTimeExt);
