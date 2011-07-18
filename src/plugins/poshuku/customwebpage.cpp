@@ -396,7 +396,7 @@ namespace Poshuku
 					"var img = document.querySelector('img');"
 					"img.style.left = Math.floor((document.width - img.width) / 2) + 'px';"
 					"img.style.top =  Math.floor((document.height - img.height) / 2) + 'px';"
-					"img.style.position = 'fixed';"
+					"img.style.position = 'absolute';"
 					"}"
 					"window.addEventListener('resize', centerImg, false);"
 					"centerImg();");
