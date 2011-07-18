@@ -288,6 +288,243 @@
          </property>
         </item>
        </item>
+       <item>
+        <property name="text">
+         <string>Science Fiction</string>
+        </property>
+        <item>
+         <property name="text">
+          <string>Alternative history</string>
+         </property>
+         <property name="text">
+          <string notr="true">sf_history</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Action</string>
+         </property>
+         <property name="text">
+          <string notr="true">sf_action</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Epic</string>
+         </property>
+         <property name="text">
+          <string notr="true">sf_epic</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Heroic</string>
+         </property>
+         <property name="text">
+          <string notr="true">sf_heroic</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Detective</string>
+         </property>
+         <property name="text">
+          <string notr="true">sf_detective</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Cyberpunk</string>
+         </property>
+         <property name="text">
+          <string notr="true">sf_cyberpunk</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Space</string>
+         </property>
+         <property name="text">
+          <string notr="true">sf_space</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Social</string>
+         </property>
+         <property name="text">
+          <string notr="true">sf_social</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Horror</string>
+         </property>
+         <property name="text">
+          <string notr="true">sf_horror</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Humor</string>
+         </property>
+         <property name="text">
+          <string notr="true">sf_humor</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Fantasy</string>
+         </property>
+         <property name="text">
+          <string notr="true">sf_fantasy</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>For children</string>
+         </property>
+         <property name="text">
+          <string notr="true">child_sf</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Other</string>
+         </property>
+         <property name="text">
+          <string notr="true">sf</string>
+         </property>
+        </item>
+       </item>
+       <item>
+        <property name="text">
+         <string>Detectives</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <item>
+         <property name="text">
+          <string>Classic</string>
+         </property>
+         <property name="text">
+          <string notr="true">det_classic</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Police</string>
+         </property>
+         <property name="text">
+          <string notr="true">det_police</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Action</string>
+         </property>
+         <property name="text">
+          <string notr="true">det_action</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Ironic</string>
+         </property>
+         <property name="text">
+          <string notr="true">det_irony</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Historical</string>
+         </property>
+         <property name="text">
+          <string notr="true">det_history</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Espionage</string>
+         </property>
+         <property name="text">
+          <string notr="true">det_espionage</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Criminal</string>
+         </property>
+         <property name="text">
+          <string notr="true">det_crime</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Political</string>
+         </property>
+         <property name="text">
+          <string notr="true">det_political</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Maniac</string>
+         </property>
+         <property name="text">
+          <string notr="true">det_maniac</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Hard</string>
+         </property>
+         <property name="text">
+          <string notr="true">det_hard</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Thriller</string>
+         </property>
+         <property name="text">
+          <string notr="true">thriller</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Fictional</string>
+         </property>
+         <property name="text">
+          <string notr="true">sf_detective</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>For children</string>
+         </property>
+         <property name="text">
+          <string notr="true">child_det</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Love</string>
+         </property>
+         <property name="text">
+          <string notr="true">love_detective</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Other</string>
+         </property>
+         <property name="text">
+          <string notr="true">detective</string>
+         </property>
+        </item>
+       </item>
       </widget>
      </item>
     </layout>
