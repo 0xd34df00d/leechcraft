@@ -55,14 +55,12 @@ namespace Xoox
 		bool handleStanza (const QDomElement &element);
 
 	signals:
-		void encryptedMessageReceived (const QXmppMessage&);
-		void signedMessageReceived (const QXmppMessage&);
-		void signedPresenceReceived (const QXmppPresence&);
-		void invalidSignatureReceived (const QDomElement &);
+		void encryptedMessageReceived (const QString&);
+		void signedMessageReceived (const QString&);
+		void signedPresenceReceived (const QString&);
+		void invalidSignatureReceived (const QString&);
 
 	private:
-		// set presence type enum value from its string representation
-		QXmppPresence::Type SetPresenceTypeFromStr (const QString&);
 		// private key, used for decrypting messages
 		QCA::PGPKey PrivateKey_;
 		// map of userIDs and corresponding public keys

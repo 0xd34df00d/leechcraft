@@ -190,7 +190,7 @@ namespace Xoox
 			return false;
 
 		QString from = stanza.attribute ("from");
-		QString to = stanza.attribute ("to");
+		QString id = stanza.attribute ("id");
 
 		// Case 1: signed presence|message
 		const QDomElement &x_element = stanza.firstChildElement ("x");
@@ -201,32 +201,23 @@ namespace Xoox
 			QString signature = x_element.text ();
 			//TODO Initialize keystore somewhere
 			//TODO Check if we need another representation, instead of 'toAscii()'
-			if (!IsValidSignature (PublicKey ("from"), message.toAscii (), signature.toAscii ()))
+			if (!IsValidSignature (PublicKey (from), message.toAscii (), signature.toAscii ()))
 			{
-				emit invalidSignatureReceived (stanza);
+				emit invalidSignatureReceived (id);
 				return false;
 			}
 			else
 			{
 				if (stanza.tagName () == "message")
 				{
-					QXmppMessage msg (from, to);
-					QString body = stanza.firstChildElement ("body").text ();
-					msg.setBody (body);
-					emit signedMessageReceived (msg);
-					return true;
+					emit signedMessageReceived (id);
+					return false;
 				}
 
 				if (stanza.tagName () == "presence")
 				{
-					QString typeText = stanza.attribute ("type");
-					QString statusText = stanza.firstChildElement ("status").text ();
-					QXmppPresence::Status status;
-					status.setStatusText (statusText);
-					QXmppPresence::Type type = SetPresenceTypeFromStr (typeText);
-					QXmppPresence presence (type, status);
-					emit signedPresenceReceived (presence);
-					return true;
+					emit signedPresenceReceived (id);
+					return false;
 				}
 			}
 		}
@@ -241,42 +232,11 @@ namespace Xoox
 
 			if (decryptSuccess)
 			{
-				QXmppMessage msg (from, to);
-				msg.setBody (QString (decryptedBody));
-				emit encryptedMessageReceived (msg);
-				return true;
+				emit encryptedMessageReceived (id);
+				return false;
 			}
 		}
 		return false;
-	}
-
-
-	QXmppPresence::Type QXmppPgpManager::SetPresenceTypeFromStr (const QString& str)
-	{
-		QXmppPresence::Type type;
-		if (str == "error")
-			type = QXmppPresence::Error;
-		else if (str == "unavailable")
-			type = QXmppPresence::Unavailable;
-		else if (str == "subscribe")
-			type = QXmppPresence::Subscribe;
-		else if (str == "subscribed")
-			type = QXmppPresence::Subscribed;
-		else if (str == "unsubscribe")
-			type = QXmppPresence::Unsubscribe;
-		else if (str == "unsubscribed")
-			type = QXmppPresence::Unsubscribed;
-		else if (str == "probe")
-			type = QXmppPresence::Probe;
-		else if (str == "")
-			type = QXmppPresence::Available;
-		else
-		{
-			type = static_cast<QXmppPresence::Type> (-1);
-			qWarning("QXmppPgpManager::setPresenceTypeFromStr () invalid input string type: %s",
-				 qPrintable (str));
-		}
-		return type;
 	}
 }
 }
