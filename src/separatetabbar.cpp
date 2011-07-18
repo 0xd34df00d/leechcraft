@@ -138,6 +138,10 @@ namespace LeechCraft
 
 			TabWidget_->SetInMoveProcess (false);
 		}
+		else if (index != -1 &&
+				event->button () == Qt::MidButton &&
+				index != count () - 1)
+			TabWidget_->RemoveTab (index);
 
 		QTabBar::mouseReleaseEvent (event);
 	}
