@@ -40,7 +40,7 @@ namespace LeechCraft
 		return Core::Instance ().GetNetworkAccessManager ();
 	}
 
-	const IShortcutProxy* CoreProxy::GetShortcutProxy () const
+	IShortcutProxy* CoreProxy::GetShortcutProxy () const
 	{
 		return Core::Instance ().GetShortcutProxy ();
 	}

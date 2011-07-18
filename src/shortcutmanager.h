@@ -43,7 +43,7 @@ namespace LeechCraft
 		void AddObject (QObject*);
 		void AddObject (QObject*, const QString&,
 				const QString&, const QIcon&);
-		QKeySequences_t GetShortcuts (const QObject*, const QString&) const ;
+		QKeySequences_t GetShortcuts (QObject*, const QString&);
 	public slots:
 		void on_Tree__itemActivated (QTreeWidgetItem*);
 		virtual void accept ();

@@ -39,7 +39,7 @@ namespace LeechCraft
 	public:
 		CoreProxy (QObject* = 0);
 		QNetworkAccessManager* GetNetworkAccessManager () const;
-		const IShortcutProxy* GetShortcutProxy () const;
+		IShortcutProxy* GetShortcutProxy () const;
 		IMWProxy* GetMWProxy () const;
 		QModelIndex MapToSource (const QModelIndex&) const;
 		Util::BaseSettingsManager* GetSettingsManager () const;

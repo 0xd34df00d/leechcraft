@@ -83,7 +83,7 @@ namespace LeechCraft
 		virtual ~MainWindow ();
 
 		SeparateTabWidget* GetTabWidget () const;
-		const IShortcutProxy* GetShortcutProxy () const;
+		IShortcutProxy* GetShortcutProxy () const;
 		void SetAdditionalTitle (const QString&);
 		ToolbarGuard* GetGuard () const;
 		FancyPopupManager* GetFancyPopupManager () const;

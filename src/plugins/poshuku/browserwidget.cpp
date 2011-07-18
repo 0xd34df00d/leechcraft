@@ -474,7 +474,7 @@ namespace Poshuku
 
 	void BrowserWidget::InitShortcuts ()
 	{
-		const IShortcutProxy *proxy = Core::Instance ().GetShortcutProxy ();
+		IShortcutProxy *proxy = Core::Instance ().GetShortcutProxy ();
 		QObject *object = Core::Instance ().parent ();
 
 		Cut_->setShortcuts (proxy->GetShortcuts (object, "BrowserCut_"));

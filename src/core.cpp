@@ -174,7 +174,7 @@ namespace LeechCraft
 		return ReallyMainWindow_;
 	}
 
-	const IShortcutProxy* Core::GetShortcutProxy () const
+	IShortcutProxy* Core::GetShortcutProxy () const
 	{
 		return ReallyMainWindow_->GetShortcutProxy ();
 	}

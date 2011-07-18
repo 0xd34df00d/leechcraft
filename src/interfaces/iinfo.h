@@ -528,7 +528,7 @@ public:
 	 *
 	 * @sa IShortcutProxy
 	 */
-	virtual const IShortcutProxy* GetShortcutProxy () const = 0;
+	virtual IShortcutProxy* GetShortcutProxy () const = 0;
 	
 	/** @brief Returns the main window proxy.
 	 * 

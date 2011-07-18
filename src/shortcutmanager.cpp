@@ -110,8 +110,8 @@ void ShortcutManager::AddObject (QObject *object,
 	Ui_.Tree_->resizeColumnToContents (0);
 }
 
-QKeySequences_t ShortcutManager::GetShortcuts (const QObject *object,
-		const QString& originalName) const
+QKeySequences_t ShortcutManager::GetShortcuts (QObject *object,
+		const QString& originalName)
 {
 	for (int i = 0, size = Ui_.Tree_->topLevelItemCount ();
 			i < size; ++i)

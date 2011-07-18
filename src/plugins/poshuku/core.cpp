@@ -487,7 +487,7 @@ namespace Poshuku
 			widget->SetShortcut (name, shortcut);
 	}
 
-	const IShortcutProxy* Core::GetShortcutProxy () const
+	IShortcutProxy* Core::GetShortcutProxy () const
 	{
 		return ShortcutProxy_;
 	}
