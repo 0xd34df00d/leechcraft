@@ -58,12 +58,11 @@ namespace Xoox
 		}
 
 		msgKey.setPGPPublicKey (pubkey);
-		const QByteArray originalText = body;
 		QCA::OpenPGP pgp;
 		QCA::SecureMessage msg (&pgp);
 		msg.setRecipient (msgKey);
 		msg.startEncrypt ();
-		msg.update (originalText);
+		msg.update (body);
 		msg.end ();
 		msg.waitForFinished ();
 
@@ -89,13 +88,12 @@ namespace Xoox
 		}
 
 		msgKey.setPGPSecretKey (PrivateKey_);
-		const QByteArray originalText = body;
 		QCA::OpenPGP pgp;
 		QCA::SecureMessage msg (&pgp);
 		msg.setFormat (QCA::SecureMessage::Ascii);
 		msg.setSigner (msgKey);
 		msg.startSign (QCA::SecureMessage::Detached);
-		msg.update (originalText);
+		msg.update (body);
 		msg.end ();
 		msg.waitForFinished ();
 
@@ -121,13 +119,12 @@ namespace Xoox
 		}
 
 		msgKey.setPGPSecretKey (PrivateKey_);
-		const QByteArray originalText = status;
 		QCA::OpenPGP pgp;
 		QCA::SecureMessage msg (&pgp);
 		msg.setFormat (QCA::SecureMessage::Ascii);
 		msg.setSigner (msgKey);
 		msg.startSign (QCA::SecureMessage::Detached);
-		msg.update (originalText);
+		msg.update (status);
 		msg.end ();
 		msg.waitForFinished ();
 
