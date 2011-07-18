@@ -18,10 +18,12 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_METACONTACTS_METAENTRY_H
 #define PLUGINS_AZOTH_PLUGINS_METACONTACTS_METAENTRY_H
+#include <boost/function.hpp>
 #include <QObject>
 #include <QPair>
 #include <QStringList>
 #include <interfaces/iclentry.h>
+#include <interfaces/iadvancedclentry.h>
 
 namespace LeechCraft
 {
@@ -33,9 +35,11 @@ namespace Metacontacts
 
 	class MetaEntry : public QObject
 					, public ICLEntry
+					, public IAdvancedCLEntry
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ICLEntry)
+		Q_INTERFACES (LeechCraft::Azoth::ICLEntry
+				LeechCraft::Azoth::IAdvancedCLEntry)
 		
 		MetaAccount *Account_;
 		QString ID_;
@@ -56,6 +60,7 @@ namespace Metacontacts
 		
 		QString GetMetaVariant (QObject*, const QString&) const;
 		
+		// ICLEntry
 		QObject* GetObject ();
 		QObject* GetParentAccount () const;
 		Features GetEntryFeatures () const;
@@ -77,10 +82,20 @@ namespace Metacontacts
 		void ShowInfo ();
 		QList<QAction*> GetActions () const;
 		QMap<QString, QVariant> GetClientInfo (const QString&) const;
+
+		// IAdvancedCLEntry
+		AdvancedFeatures GetAdvancedFeatures () const;
+		void DrawAttention (const QString&, const QString&);
+	private:
+		template<typename T, typename U>
+		T ActWithVariant (boost::function<T (U, const QString&)>, const QString&) const;
+
+		void ConnectStandardSignals (QObject*);
 	private slots:
 		void handleGotMessage (QObject*);
 		void handleRealVariantsChanged (QStringList, QObject* = 0);
 	signals:
+		// ICLEntry
 		void gotMessage (QObject*);
 		void statusChanged (const EntryStatus&, const QString&);
 		void availableVariantsChanged (const QStringList&);
@@ -90,6 +105,13 @@ namespace Metacontacts
 		void avatarChanged (const QImage&);
 		void chatPartStateChanged (const ChatPartState&, const QString&);
 		void permsChanged ();
+		
+		// IAdvancedCLEntry
+		void attentionDrawn (const QString&, const QString&);
+		void moodChanged (const QString&);
+		void activityChanged (const QString&);
+		void tuneChanged (const QString&);
+		void locationChanged (const QString&);
 	};
 }
 }
