@@ -35,7 +35,7 @@ namespace BodyFetch
 	{
 		Q_OBJECT
 		
-		Util::Guarded<WorkerObject*> Object_;
+		WorkerObject *Object_;
 	public:
 		WorkerThread (QObject* = 0);
 		

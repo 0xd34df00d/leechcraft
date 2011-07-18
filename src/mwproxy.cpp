@@ -16,20 +16,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "shortcutproxywrapper.h"
+#include "mwproxy.h"
+#include <QDockWidget>
+#include "core.h"
+#include "mainwindow.h"
 
 namespace LeechCraft
 {
-namespace Qrosp
-{
-	ShortcutProxyWrapper::ShortcutProxyWrapper (IShortcutProxy *proxy)
-	: ShortcutProxy_ (proxy)
+	MWProxy::MWProxy (QObject *parent)
+	: QObject (parent)
 	{
 	}
-
-	QList<QKeySequence> ShortcutProxyWrapper::GetShortcuts (QObject *object, const QString& id)
+	
+	void MWProxy::AddDockWidget (Qt::DockWidgetArea area, QDockWidget *w)
 	{
-		return ShortcutProxy_->GetShortcuts (object, id);
+		Core::Instance ().GetReallyMainWindow ()->addDockWidget (area, w);
+		ToggleViewActionVisiblity (w, true);
 	}
-}
+	
+	void MWProxy::ToggleViewActionVisiblity (QDockWidget *w, bool visible)
+	{
+		Core::Instance ().GetReallyMainWindow ()->ToggleViewActionVisiblity (w, visible);
+	}
 }

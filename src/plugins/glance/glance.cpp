@@ -22,6 +22,7 @@
 #include <QTabWidget>
 #include <QToolBar>
 #include <QMainWindow>
+#include <util/util.h>
 #include "core.h"
 #include "glanceshower.h"
 
@@ -33,6 +34,8 @@ namespace Glance
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("glance");
+
 		Core::Instance ().SetProxy (proxy);
 
 		ActionGlance_ = new QAction (this);

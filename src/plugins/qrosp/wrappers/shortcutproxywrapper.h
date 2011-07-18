@@ -29,11 +29,11 @@ namespace Qrosp
 	{
 		Q_OBJECT
 
-		const IShortcutProxy *ShortcutProxy_;
+		IShortcutProxy *ShortcutProxy_;
 	public:
-		ShortcutProxyWrapper (const IShortcutProxy*);
+		ShortcutProxyWrapper (IShortcutProxy*);
 	public slots:
-		QList<QKeySequence> GetShortcuts (const QObject*, const QString&) const;
+		QList<QKeySequence> GetShortcuts (QObject*, const QString&);
 	};
 }
 }

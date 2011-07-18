@@ -18,6 +18,7 @@
 
 #include "metaentry.h"
 #include <algorithm>
+#include <boost/bind.hpp>
 #include <QDateTime>
 #include <QVariant>
 #include <QImage>
@@ -64,14 +65,7 @@ namespace Metacontacts
 		
 		emit statusChanged (GetStatus (QString ()), QString ());
 		
-		connect (entryObj,
-				SIGNAL (availableVariantsChanged (const QStringList&)),
-				this,
-				SLOT (handleRealVariantsChanged (const QStringList&)));
-		connect (entryObj,
-				SIGNAL (gotMessage (QObject*)),
-				this,
-				SLOT (handleGotMessage (QObject*)));
+		ConnectStandardSignals (entryObj);
 	}
 	
 	QString MetaEntry::GetMetaVariant (QObject *entry, const QString& realVar) const
@@ -164,29 +158,12 @@ namespace Metacontacts
 	
 	QObject* MetaEntry::CreateMessage (IMessage::MessageType type, const QString& variant, const QString& body)
 	{
-		if (variant.isEmpty ())
-		{
-			if (AvailableRealEntries_.size ())
-				return qobject_cast<ICLEntry*> (AvailableRealEntries_.first ())->
-						CreateMessage (type, QString (), body);
-			else
-				return 0;
-		}
-
-		if (!Variant2RealVariant_.contains (variant))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< variant
-					<< "doesn't exist";
-			return 0;
-		}
-		
-		const QPair<QObject*, QString>& pair = Variant2RealVariant_ [variant];
-		MetaMessage *msg = new MetaMessage (qobject_cast<ICLEntry*> (pair.first)->
-					CreateMessage (type, pair.second, body),
-				this);
-		Messages_ << msg;
-		return msg;
+		return ActWithVariant<QObject*, ICLEntry*> (boost::bind (&ICLEntry::CreateMessage,
+					_1,
+					type,
+					_2,
+					body),
+				variant);
 	}
 	
 	namespace
@@ -216,46 +193,19 @@ namespace Metacontacts
 	
 	void MetaEntry::SetChatPartState (ChatPartState state, const QString& variant)
 	{
-		if (variant.isEmpty ())
-		{
-			if (AvailableRealEntries_.size ())
-				qobject_cast<ICLEntry*> (AvailableRealEntries_.first ())->
-						SetChatPartState (state, QString ());
-			return;
-		}
-
-		if (!Variant2RealVariant_.contains (variant))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< variant
-					<< "doesn't exist";
-			return;
-		}
-		
-		const QPair<QObject*, QString>& pair = Variant2RealVariant_ [variant];
-		qobject_cast<ICLEntry*> (pair.first)->SetChatPartState (state, pair.second);
+		ActWithVariant<void, ICLEntry*> (boost::bind (&ICLEntry::SetChatPartState,
+					_1,
+					state,
+					_2),
+				variant);
 	}
 	
 	EntryStatus MetaEntry::GetStatus (const QString& variant) const
 	{
-		if (variant.isEmpty ())
-		{
-			if (AvailableRealEntries_.size ())
-				return qobject_cast<ICLEntry*> (AvailableRealEntries_.first ())->GetStatus ();
-			else
-				return EntryStatus ();
-		}
-		
-		if (!Variant2RealVariant_.contains (variant))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< variant
-					<< "doesn't exist";
-			return EntryStatus ();
-		}
-		
-		const QPair<QObject*, QString>& pair = Variant2RealVariant_ [variant];
-		return qobject_cast<ICLEntry*> (pair.first)->GetStatus (pair.second);
+		return ActWithVariant<EntryStatus, ICLEntry*> (boost::bind (&ICLEntry::GetStatus,
+					_1,
+					_2),
+				variant);
 	}
 	
 	QImage MetaEntry::GetAvatar () const
@@ -282,12 +232,35 @@ namespace Metacontacts
 	
 	QMap<QString, QVariant> MetaEntry::GetClientInfo (const QString& variant) const
 	{
+		return ActWithVariant<QMap<QString, QVariant>, ICLEntry*> (boost::bind (&ICLEntry::GetClientInfo,
+					_1,
+					_2),
+				variant);
+	}
+	
+	IAdvancedCLEntry::AdvancedFeatures MetaEntry::GetAdvancedFeatures () const
+	{
+		return AFSupportsAttention;
+	}
+	
+	void MetaEntry::DrawAttention (const QString& text, const QString& variant)
+	{
+		ActWithVariant<void, IAdvancedCLEntry*> (boost::bind (&IAdvancedCLEntry::DrawAttention,
+					_1,
+					text,
+					_2),
+				variant);
+	}
+	
+	template<typename T, typename U>
+	T MetaEntry::ActWithVariant (boost::function<T (U, const QString&)> func, const QString& variant) const
+	{
 		if (variant.isEmpty ())
 		{
 			if (AvailableRealEntries_.size ())
-				return qobject_cast<ICLEntry*> (AvailableRealEntries_.first ())->GetClientInfo (QString ());
+				return func (qobject_cast<U> (AvailableRealEntries_.first ()), QString ());
 			else
-				return QMap<QString, QVariant> ();
+				return T ();
 		}
 
 		if (!Variant2RealVariant_.contains (variant))
@@ -295,11 +268,23 @@ namespace Metacontacts
 			qWarning () << Q_FUNC_INFO
 					<< variant
 					<< "doesn't exist";
-			return QMap<QString, QVariant> ();
+			return T ();
 		}
 		
 		const QPair<QObject*, QString>& pair = Variant2RealVariant_ [variant];
-		return qobject_cast<ICLEntry*> (pair.first)->GetClientInfo (pair.second);
+		return func (qobject_cast<U> (pair.first), pair.second);
+	}
+	
+	void MetaEntry::ConnectStandardSignals (QObject *entryObj)
+	{
+		connect (entryObj,
+				SIGNAL (availableVariantsChanged (const QStringList&)),
+				this,
+				SLOT (handleRealVariantsChanged (const QStringList&)));
+		connect (entryObj,
+				SIGNAL (gotMessage (QObject*)),
+				this,
+				SLOT (handleGotMessage (QObject*)));
 	}
 	
 	void MetaEntry::handleGotMessage (QObject *msgObj)

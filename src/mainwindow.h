@@ -81,11 +81,14 @@ namespace LeechCraft
 	public:
 		MainWindow (QWidget *parent = 0, Qt::WFlags flags = 0);
 		virtual ~MainWindow ();
+
 		SeparateTabWidget* GetTabWidget () const;
-		const IShortcutProxy* GetShortcutProxy () const;
+		IShortcutProxy* GetShortcutProxy () const;
 		void SetAdditionalTitle (const QString&);
 		ToolbarGuard* GetGuard () const;
 		FancyPopupManager* GetFancyPopupManager () const;
+		
+		void ToggleViewActionVisiblity (QDockWidget*, bool);
 
 		void AddMenus (const QMap<QString, QList<QAction*> >&);
 		void RemoveMenus (const QMap<QString, QList<QAction*> >&);

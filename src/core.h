@@ -90,7 +90,7 @@ namespace LeechCraft
 
 		/** Returns the pointer to the app-wide shortcut proxy.
 		 */
-		const IShortcutProxy* GetShortcutProxy () const;
+		IShortcutProxy* GetShortcutProxy () const;
 
 		/** Returns all plugins that implement IHaveSettings as
 		 * QObjectList.

@@ -79,7 +79,7 @@ namespace Poshuku
 
 		QMap<QString, QString> SavedSession_;
 		QList<QAction*> Unclosers_;
-		const IShortcutProxy *ShortcutProxy_;
+		IShortcutProxy *ShortcutProxy_;
 
 		ICoreProxy_ptr Proxy_;
 
@@ -144,7 +144,7 @@ namespace Poshuku
 		StorageBackend* GetStorageBackend () const;
 		PluginManager* GetPluginManager () const;
 		void SetShortcut (const QString& name, const QKeySequences_t& shortcut);
-		const IShortcutProxy* GetShortcutProxy () const;
+		IShortcutProxy* GetShortcutProxy () const;
 
 		QIcon GetIcon (const QUrl&) const;
 		QString GetUserAgent (const QUrl&, const QWebPage* = 0) const;

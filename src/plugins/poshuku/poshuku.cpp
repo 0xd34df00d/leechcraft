@@ -164,7 +164,7 @@ namespace Poshuku
 				this,
 				SLOT (handleReloadAll ()));
 
-		const IShortcutProxy *proxy = coreProxy->GetShortcutProxy ();
+		IShortcutProxy *proxy = coreProxy->GetShortcutProxy ();
 		ImportXbel_->setShortcuts (proxy->GetShortcuts (this, "EAImportXbel_"));
 		ExportXbel_->setShortcuts (proxy->GetShortcuts (this, "EAExportXbel_"));
 		CheckFavorites_->setShortcuts (proxy->GetShortcuts (this, "EACheckFavorites_"));
