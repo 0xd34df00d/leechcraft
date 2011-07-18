@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "mwproxy.h"
+#include <QDockWidget>
 #include "core.h"
 #include "mainwindow.h"
 
@@ -30,5 +31,11 @@ namespace LeechCraft
 	void MWProxy::AddDockWidget (Qt::DockWidgetArea area, QDockWidget *w)
 	{
 		Core::Instance ().GetReallyMainWindow ()->addDockWidget (area, w);
+		ToggleViewActionVisiblity (w, true);
+	}
+	
+	void MWProxy::ToggleViewActionVisiblity (QDockWidget *w, bool visible)
+	{
+		Core::Instance ().GetReallyMainWindow ()->ToggleViewActionVisiblity (w, visible);
 	}
 }
