@@ -61,7 +61,7 @@ namespace Metacontacts
 		
 		handleRealVariantsChanged (entry->Variants (), entryObj);		
 		Q_FOREACH (QObject *object, entry->GetAllMessages ())
-			handleGotMessage (object);
+			handleRealGotMessage (object);
 		
 		emit statusChanged (GetStatus (QString ()), QString ());
 		
@@ -278,16 +278,16 @@ namespace Metacontacts
 	void MetaEntry::ConnectStandardSignals (QObject *entryObj)
 	{
 		connect (entryObj,
+				SIGNAL (gotMessage (QObject*)),
+				this,
+				SLOT (handleRealGotMessage (QObject*)));
+		connect (entryObj,
 				SIGNAL (availableVariantsChanged (const QStringList&)),
 				this,
 				SLOT (handleRealVariantsChanged (const QStringList&)));
-		connect (entryObj,
-				SIGNAL (gotMessage (QObject*)),
-				this,
-				SLOT (handleGotMessage (QObject*)));
 	}
 	
-	void MetaEntry::handleGotMessage (QObject *msgObj)
+	void MetaEntry::handleRealGotMessage (QObject *msgObj)
 	{
 		IMessage *msg = qobject_cast<IMessage*> (msgObj);
 		if (!msg)

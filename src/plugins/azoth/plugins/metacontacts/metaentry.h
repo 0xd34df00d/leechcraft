@@ -92,7 +92,7 @@ namespace Metacontacts
 
 		void ConnectStandardSignals (QObject*);
 	private slots:
-		void handleGotMessage (QObject*);
+		void handleRealGotMessage (QObject*);
 		void handleRealVariantsChanged (QStringList, QObject* = 0);
 	signals:
 		// ICLEntry
@@ -105,6 +105,7 @@ namespace Metacontacts
 		void avatarChanged (const QImage&);
 		void chatPartStateChanged (const ChatPartState&, const QString&);
 		void permsChanged ();
+		void entryGenerallyChanged ();
 		
 		// IAdvancedCLEntry
 		void attentionDrawn (const QString&, const QString&);
