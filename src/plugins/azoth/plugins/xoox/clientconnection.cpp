@@ -257,7 +257,8 @@ namespace Xoox
 				QXmppPresence::Status (static_cast<QXmppPresence::Status::Type> (state.State_),
 						state.Status_,
 						state.Priority_));
-		Client_->setClientPresence (pres);
+		if (IsConnected_)
+			Client_->setClientPresence (pres);
 		if (presType != QXmppPresence::Unavailable)
 			Q_FOREACH (RoomHandler *rh, RoomHandlers_)
 				rh->SetState (state);
