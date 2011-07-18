@@ -40,6 +40,7 @@ namespace Metacontacts
 		QList<MetaEntry*> Entries_;
 		
 		QHash<QString, MetaEntry*> UnavailRealEntries_;
+		QHash<QString, MetaEntry*> AvailRealEntries_;
 		
 		Core ();
 	public:

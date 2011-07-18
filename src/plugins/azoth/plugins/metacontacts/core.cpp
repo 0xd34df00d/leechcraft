@@ -123,10 +123,17 @@ namespace Metacontacts
 		}
 		
 		const QString& id = entry->GetEntryID ();
+		if (AvailRealEntries_.contains (id))
+			return true;
+
 		if (!UnavailRealEntries_.contains (id))
 			return false;
 		
-		UnavailRealEntries_.take (id)->AddRealObject (entry);
+		MetaEntry *metaEntry = UnavailRealEntries_.take (id);
+		metaEntry->AddRealObject (entry);
+		
+		AvailRealEntries_ [id] = metaEntry;
+		
 		return true;
 	}
 
