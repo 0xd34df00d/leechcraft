@@ -93,7 +93,10 @@ namespace Metacontacts
 		void ConnectStandardSignals (QObject*);
 	private slots:
 		void handleRealGotMessage (QObject*);
+		void handleRealStatusChanged (const EntryStatus&, const QString&);
 		void handleRealVariantsChanged (QStringList, QObject* = 0);
+		void handleRealNameChanged (const QString&);
+		void handleRealCPSChanged (const ChatPartState&, const QString&);
 	signals:
 		// ICLEntry
 		void gotMessage (QObject*);

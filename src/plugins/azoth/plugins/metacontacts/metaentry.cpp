@@ -282,9 +282,25 @@ namespace Metacontacts
 				this,
 				SLOT (handleRealGotMessage (QObject*)));
 		connect (entryObj,
+				SIGNAL (statusChanged (const EntryStatus&, const QString&)),
+				this,
+				SLOT (handleRealStatusChanged (const EntryStatus&, const QString&)));
+		connect (entryObj,
 				SIGNAL (availableVariantsChanged (const QStringList&)),
 				this,
 				SLOT (handleRealVariantsChanged (const QStringList&)));
+		connect (entryObj,
+				SIGNAL (nameChanged (const QString&)),
+				this,
+				SLOT (handleRealNameChanged (const QString&)));
+		connect (entryObj,
+				SIGNAL (chatPartStateChanged (const ChatPartState&, const QString&)),
+				this,
+				SLOT (handleRealCPSChanged (const ChatPartState&, const QString&)));
+		connect (entryObj,
+				SIGNAL (entryGenerallyChanged ()),
+				this,
+				SIGNAL (entryGenerallyChanged ()));
 	}
 	
 	void MetaEntry::handleRealGotMessage (QObject *msgObj)
@@ -308,6 +324,12 @@ namespace Metacontacts
 			std::stable_sort (Messages_.begin (), Messages_.end (), DateSorter ());
 
 		emit gotMessage (message);
+	}
+	
+	void MetaEntry::handleRealStatusChanged (const EntryStatus& status, const QString& var)
+	{
+		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
+		emit statusChanged (status, entry->GetEntryName () + '/' + var);
 	}
 	
 	void MetaEntry::handleRealVariantsChanged (QStringList variants, QObject *passedObj)
@@ -336,6 +358,20 @@ namespace Metacontacts
 			const QString& str = entry->GetEntryName () + '/' + var;
 			emit statusChanged (GetStatus (str), str);
 		}
+	}
+	
+	void MetaEntry::handleRealNameChanged (const QString& name)
+	{
+		QObject *obj = sender ();
+		ICLEntry *entry = qobject_cast<ICLEntry*> (obj);
+		
+		handleRealVariantsChanged (entry->Variants (), obj);
+	}
+	
+	void MetaEntry::handleRealCPSChanged (const ChatPartState& cps, const QString& var)
+	{
+		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
+		emit chatPartStateChanged (cps, entry->GetEntryName () + '/' + var);
 	}
 }
 }
