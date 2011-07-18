@@ -34,7 +34,7 @@ namespace Azoth
 {
 namespace Xoox
 {
-	class QXmppPgpManager : public QXmppClientExtension
+	class PgpManager : public QXmppClientExtension
 	{
 		Q_OBJECT
 

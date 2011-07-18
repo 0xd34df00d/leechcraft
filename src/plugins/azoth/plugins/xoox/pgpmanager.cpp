@@ -28,27 +28,27 @@ namespace Azoth
 {
 namespace Xoox
 {
-	QCA::PGPKey QXmppPgpManager::PublicKey (const QString& id) const
+	QCA::PGPKey PgpManager::PublicKey (const QString& id) const
 	{
 		return ((PublicKeys_.contains (id)) ? PublicKeys_[id] : QString ());
 	}
 
-	void QXmppPgpManager::SetPublicKey (const QString& id, const QCA::PGPKey& publicKey)
+	void PgpManager::SetPublicKey (const QString& id, const QCA::PGPKey& publicKey)
 	{
 		PublicKeys_.insert (id, publicKey);
 	}
 
-	QCA::PGPKey QXmppPgpManager::PrivateKey () const
+	QCA::PGPKey PgpManager::PrivateKey () const
 	{
 		return PrivateKey_;
 	}
 
-	void QXmppPgpManager::SetPrivateKey (const QCA::PGPKey& privateKey)
+	void PgpManager::SetPrivateKey (const QCA::PGPKey& privateKey)
 	{
 		PrivateKey_ = privateKey;
 	}
 
-	bool QXmppPgpManager::EncryptBody(const QCA::PGPKey& pubkey, const QByteArray& body, QByteArray& encrypted)
+	bool PgpManager::EncryptBody(const QCA::PGPKey& pubkey, const QByteArray& body, QByteArray& encrypted)
 	{
 		QCA::SecureMessageKey msgKey;
 		if (pubkey.isNull ())
@@ -78,7 +78,7 @@ namespace Xoox
 		}
 	}
 
-	bool QXmppPgpManager::SignMessage (const QByteArray& body, QByteArray& signature)
+	bool PgpManager::SignMessage (const QByteArray& body, QByteArray& signature)
 	{
 		QCA::SecureMessageKey msgKey;
 		if (PrivateKey_.isNull ())
@@ -109,7 +109,7 @@ namespace Xoox
 		}
 	}
 
-	bool QXmppPgpManager::SignPresence (const QByteArray& status, QByteArray& signature)
+	bool PgpManager::SignPresence (const QByteArray& status, QByteArray& signature)
 	{
 		QCA::SecureMessageKey msgKey;
 		if (PrivateKey_.isNull ())
@@ -140,7 +140,7 @@ namespace Xoox
 		}
 	}
 
-	bool QXmppPgpManager::DecryptBody (const QByteArray& encrypted, QByteArray& decrypted)
+	bool PgpManager::DecryptBody (const QByteArray& encrypted, QByteArray& decrypted)
 	{
 		QCA::OpenPGP pgp;
 		QCA::SecureMessage msg (&pgp);
@@ -162,7 +162,7 @@ namespace Xoox
 		}
 	}
 
-	bool QXmppPgpManager::IsValidSignature (const QCA::PGPKey& pubkey, const QByteArray& message, const QByteArray& signature)
+	bool PgpManager::IsValidSignature (const QCA::PGPKey& pubkey, const QByteArray& message, const QByteArray& signature)
 	{
 		QCA::OpenPGP pgp;
 		QCA::SecureMessageKey key;
@@ -184,7 +184,7 @@ namespace Xoox
 		}
 	}
 
-	bool QXmppPgpManager::handleStanza (const QDomElement &stanza)
+	bool PgpManager::handleStanza (const QDomElement &stanza)
 	{
 		if ((stanza.tagName () != "message") || (stanza.tagName () != "presence"))
 			return false;
