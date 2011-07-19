@@ -48,100 +48,86 @@ namespace Xoox
 		PrivateKey_ = privateKey;
 	}
 
-	bool PgpManager::EncryptBody(const QCA::PGPKey& pubkey, const QByteArray& body, QByteArray& encrypted)
+	QByteArray PgpManager::EncryptBody(const QCA::PGPKey& pubkey, const QByteArray& body)
 	{
+		QByteArray encrypted;
 		QCA::SecureMessageKey msgKey;
 		if (pubkey.isNull ())
-		{
 			warning (QString ("Cannot encrypt: public key is null"));
-			return false;
-		}
-
-		msgKey.setPGPPublicKey (pubkey);
-		QCA::OpenPGP pgp;
-		QCA::SecureMessage msg (&pgp);
-		msg.setRecipient (msgKey);
-		msg.startEncrypt ();
-		msg.update (body);
-		msg.end ();
-		msg.waitForFinished ();
-
-		if (msg.success ())
-		{
-			encrypted = msg.read ();
-			return true;
-		}
 		else
 		{
-			info (QString ("Error encrypting: " + msg.errorCode ()));
-			return false;
+			msgKey.setPGPPublicKey (pubkey);
+			QCA::OpenPGP pgp;
+			QCA::SecureMessage msg (&pgp);
+			msg.setRecipient (msgKey);
+			msg.startEncrypt ();
+			msg.update (body);
+			msg.end ();
+			msg.waitForFinished ();
+
+			if (msg.success ())
+				encrypted = msg.read ();
+			else
+				info (QString ("Error encrypting: " + msg.errorCode ()));
 		}
+		return encrypted;
 	}
 
-	bool PgpManager::SignMessage (const QByteArray& body, QByteArray& signature)
+	QByteArray PgpManager::SignMessage (const QByteArray& body)
 	{
+		QByteArray signature;
 		QCA::SecureMessageKey msgKey;
 		if (PrivateKey_.isNull ())
-		{
 			warning (QString ("Cannot sign: private key is null"));
-			return false;
-		}
-
-		msgKey.setPGPSecretKey (PrivateKey_);
-		QCA::OpenPGP pgp;
-		QCA::SecureMessage msg (&pgp);
-		msg.setFormat (QCA::SecureMessage::Ascii);
-		msg.setSigner (msgKey);
-		msg.startSign (QCA::SecureMessage::Detached);
-		msg.update (body);
-		msg.end ();
-		msg.waitForFinished ();
-
-		if (msg.success ())
-		{
-			signature = msg.signature ();
-			return true;
-		}
 		else
 		{
-			warning (QString ("Error signing: " + msg.errorCode ()));
-			return false;
+			msgKey.setPGPSecretKey (PrivateKey_);
+			QCA::OpenPGP pgp;
+			QCA::SecureMessage msg (&pgp);
+			msg.setFormat (QCA::SecureMessage::Ascii);
+			msg.setSigner (msgKey);
+			msg.startSign (QCA::SecureMessage::Detached);
+			msg.update (body);
+			msg.end ();
+			msg.waitForFinished ();
+
+			if (msg.success ())
+				signature = msg.signature ();
+			else
+				warning (QString ("Error signing: " + msg.errorCode ()));
 		}
+		return signature;
 	}
 
-	bool PgpManager::SignPresence (const QByteArray& status, QByteArray& signature)
+	QByteArray PgpManager::SignPresence (const QByteArray& status)
 	{
+		QByteArray signature;
 		QCA::SecureMessageKey msgKey;
 		if (PrivateKey_.isNull ())
-		{
 			warning (QString ("Cannot sign: private key is null"));
-			return false;
-		}
-
-		msgKey.setPGPSecretKey (PrivateKey_);
-		QCA::OpenPGP pgp;
-		QCA::SecureMessage msg (&pgp);
-		msg.setFormat (QCA::SecureMessage::Ascii);
-		msg.setSigner (msgKey);
-		msg.startSign (QCA::SecureMessage::Detached);
-		msg.update (status);
-		msg.end ();
-		msg.waitForFinished ();
-
-		if (msg.success ())
-		{
-			signature = msg.signature ();
-			return true;
-		}
 		else
 		{
-			info (QString ("Error signing: " + msg.errorCode ()));
-			return false;
+			msgKey.setPGPSecretKey (PrivateKey_);
+			QCA::OpenPGP pgp;
+			QCA::SecureMessage msg (&pgp);
+			msg.setFormat (QCA::SecureMessage::Ascii);
+			msg.setSigner (msgKey);
+			msg.startSign (QCA::SecureMessage::Detached);
+			msg.update (status);
+			msg.end ();
+			msg.waitForFinished ();
+
+			if (msg.success ())
+				signature = msg.signature ();
+			else
+				info (QString ("Error signing: " + msg.errorCode ()));
 		}
+		return signature;
 	}
 
-	bool PgpManager::DecryptBody (const QByteArray& encrypted, QByteArray& decrypted)
+	QByteArray PgpManager::DecryptBody (const QByteArray& encrypted)
 	{
+		QByteArray decrypted;
 		QCA::OpenPGP pgp;
 		QCA::SecureMessage msg (&pgp);
 		msg.setFormat (QCA::SecureMessage::Ascii);
@@ -151,15 +137,10 @@ namespace Xoox
 		msg.waitForFinished ();
 
 		if (msg.success ())
-		{
 			decrypted = msg.read ();
-			return true;
-		}
 		else
-		{
 			info (QString ("Error decrypting: " + msg.errorCode ()));
-			return false;
-		}
+		return decrypted;
 	}
 
 	bool PgpManager::IsValidSignature (const QCA::PGPKey& pubkey, const QByteArray& message, const QByteArray& signature)
@@ -228,9 +209,9 @@ namespace Xoox
 			QByteArray encryptedBody = encryptedBodyStr.toAscii ();
 			QByteArray decryptedBody ("");
 			//TODO Check if we need another representation, instead of 'toAscii()'
-			bool decryptSuccess = DecryptBody (encryptedBody, decryptedBody);
+			decryptedBody = DecryptBody (encryptedBody);
 
-			if (decryptSuccess)
+			if (!decryptedBody.isEmpty ())
 			{
 				emit encryptedMessageReceived (id);
 				return false;

@@ -45,11 +45,11 @@ namespace Xoox
 		QCA::PGPKey PrivateKey () const;
 		void SetPrivateKey (const QCA::PGPKey&);
 
-		bool EncryptBody (const QCA::PGPKey&, const QByteArray&, QByteArray&);
-		bool SignMessage (const QByteArray&, QByteArray&);
-		bool SignPresence (const QByteArray&, QByteArray&);
+		QByteArray EncryptBody (const QCA::PGPKey&, const QByteArray&);
+		QByteArray SignMessage (const QByteArray&);
+		QByteArray SignPresence (const QByteArray&);
 
-		bool DecryptBody (const QByteArray&, QByteArray&);
+		QByteArray DecryptBody (const QByteArray&);
 		bool IsValidSignature (const QCA::PGPKey&, const QByteArray&, const QByteArray&);
 
 		bool handleStanza (const QDomElement &element);
