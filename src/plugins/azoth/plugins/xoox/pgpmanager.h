@@ -38,6 +38,13 @@ namespace Xoox
 	{
 		Q_OBJECT
 
+	private:
+		// private key, used for decrypting messages
+		QCA::PGPKey PrivateKey_;
+		// map of userIDs and corresponding public keys
+		// each user ID is a completely arbitrary value, one can use JIDs for this purpose
+		QMap<QString, QCA::PGPKey> PublicKeys_;
+
 	public:
 		QCA::PGPKey PublicKey (const QString&) const;
 		void SetPublicKey (const QString&, const QCA::PGPKey&);
@@ -52,20 +59,13 @@ namespace Xoox
 		QByteArray DecryptBody (const QByteArray&);
 		bool IsValidSignature (const QCA::PGPKey&, const QByteArray&, const QByteArray&);
 
-		bool handleStanza (const QDomElement &element);
+		bool handleStanza (const QDomElement&);
 
 	signals:
 		void encryptedMessageReceived (const QString&);
 		void signedMessageReceived (const QString&);
 		void signedPresenceReceived (const QString&);
 		void invalidSignatureReceived (const QString&);
-
-	private:
-		// private key, used for decrypting messages
-		QCA::PGPKey PrivateKey_;
-		// map of userIDs and corresponding public keys
-		// each user ID is a completely arbitrary value, one can use JIDs for this purpose
-		QMap<QString, QCA::PGPKey> PublicKeys_;
 	};
 }
 }
