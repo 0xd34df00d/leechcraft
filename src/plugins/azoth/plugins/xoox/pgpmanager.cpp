@@ -50,12 +50,12 @@ namespace Xoox
 
 	QByteArray PgpManager::EncryptBody(const QCA::PGPKey& pubkey, const QByteArray& body)
 	{
-		QCA::SecureMessageKey msgKey;
 		if (pubkey.isNull ())
 		{
 			warning (QString ("Cannot encrypt: public key is null"));
 			return QByteArray();
 		}
+		QCA::SecureMessageKey msgKey;
 		msgKey.setPGPPublicKey (pubkey);
 		QCA::OpenPGP pgp;
 		QCA::SecureMessage msg (&pgp);
@@ -149,6 +149,11 @@ namespace Xoox
 
 	bool PgpManager::IsValidSignature (const QCA::PGPKey& pubkey, const QByteArray& message, const QByteArray& signature)
 	{
+		if (pubkey.isNull ())
+		{
+			warning (QString ("Cannot encrypt: public key is null"));
+			return QByteArray();
+		}
 		QCA::OpenPGP pgp;
 		QCA::SecureMessageKey key;
 		QCA::SecureMessage msg (&pgp);
