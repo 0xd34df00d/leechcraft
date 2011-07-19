@@ -285,7 +285,7 @@ namespace LeechCraft
 		if (index >= WidgetCount () && !IsAddTabActionVisible ())
 			return;
 
-		Widgets_ [index] = widget;
+		Widgets_ [index].reset (widget);
 	}
 
 	bool SeparateTabWidget::IsTabEnabled (int index) const
@@ -478,7 +478,7 @@ namespace LeechCraft
 			if (Widgets_.value (index) &&
 					Widgets_ [index])
 			{
-				QxtToolTip::show (he->globalPos (), Widgets_ [index], MainTabBar_);
+				QxtToolTip::show (he->globalPos (), Widgets_ [index].get (), MainTabBar_);
 				return true;
 			}
 			else
