@@ -270,8 +270,6 @@ namespace Xoox
 		if (!ClientConnection_)
 			Init ();
 
-		emit statusChanged (status);
-
 		ClientConnection_->SetState (AccState_);
 	}
 

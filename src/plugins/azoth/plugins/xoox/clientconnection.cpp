@@ -160,6 +160,10 @@ namespace Xoox
 				this,
 				SLOT (handleConnected ()));
 		connect (Client_,
+				SIGNAL (disconnected ()),
+				this,
+				SLOT (handleDisconnected ()));
+		connect (Client_,
 				SIGNAL (error (QXmppClient::Error)),
 				this,
 				SLOT (handleError (QXmppClient::Error)));
@@ -679,6 +683,11 @@ namespace Xoox
 			rh->Join ();
 	}
 	
+	void ClientConnection::handleDisconnected ()
+	{
+		emit statusChanged (EntryStatus (SOffline, LastState_.Status_));
+	}
+	
 	void ClientConnection::handleReconnecting (int timeout)
 	{
 		qDebug () << "Azoth: reconnecting in"
@@ -848,6 +857,11 @@ namespace Xoox
 		{
 			if (ODSEntries_.contains (jid))
 				ConvertFromODS (jid, Client_->rosterManager ().getRosterEntry (jid));
+			else if (OurJID_ == pres.from ())
+			{
+				emit statusChanged (PresenceToStatus (pres));
+				return;
+			}
 			else
 				return;
 		}
