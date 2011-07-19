@@ -21,6 +21,7 @@
 #include <QObject>
 #include <QStringList>
 #include <QMap>
+#include <QIcon>
 
 class QAction;
 class QIcon;
@@ -55,7 +56,7 @@ namespace LeechCraft
 
 		void add (const QString&, QWidget*);
 		void add (const QString&, QWidget*,
-				const QIcon& icon);
+				QIcon icon);
 		void remove (QWidget*);
 
 		/** Removes the tab at the given index. Calls

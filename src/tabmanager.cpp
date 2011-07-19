@@ -146,9 +146,8 @@ void TabManager::add (const QString& name, QWidget *contents)
 }
 
 void TabManager::add (const QString& name, QWidget *contents,
-		const QIcon& srcIcon)
+		QIcon icon)
 {
-	QIcon icon = srcIcon;
 	if (icon.isNull ())
 	{
 		ITabWidget *itw = qobject_cast<ITabWidget*> (contents);
