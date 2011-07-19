@@ -4,28 +4,28 @@ Rectangle {
 	id: notifArea
 	width: 450; height: 200
 	smooth: true
-	radius: 10
+	radius: 16
 	gradient: Gradient {
-		GradientStop { position: 0.0; color: "#414141" }
-		GradientStop { position: 1.0; color: "#1A1A1A" }
+		GradientStop { position: 0.0; color: "#CF414141" }
+		GradientStop { position: 1.0; color: "#CF1A1A1A" }
 	}
 	
 	ListView {
+		id: listView
+
 		anchors.centerIn: parent
-		
 		width: notifArea.width - 10
 		height: notifArea.height
 		
 		model: eventsModel
 		delegate: Rectangle {
-			anchors.centerIn: parent
 			height: 50
-			width: 420
+			width: listView.width
 			smooth: true
-			radius: 6
+			radius: 9
 			gradient: Gradient {
-				GradientStop { position: 0.0; color: "#3A3A3A" }
-				GradientStop { position: 1.0; color: "#101010" }
+				GradientStop { position: 0.0; color: "#DF3A3A3A" }
+				GradientStop { position: 1.0; color: "#DF101010" }
 			}
 			
 			Image {
@@ -41,12 +41,14 @@ Rectangle {
 				id: eventText
 
 				text: extendedText
-				
+				color: "grey"
 				anchors.left: eventPic.right
 				anchors.leftMargin: 5
 			}
 			
 			ListView {
+				id: actionsListView
+
 				anchors.right: parent.right
 				anchors.rightMargin: 5
 				anchors.bottom: parent.bottom
@@ -56,7 +58,7 @@ Rectangle {
 				
 				model: eventActionsModel
 				delegate: Rectangle {
-					height: 20
+					height: actionsListView.height
 					width: 100
 					smooth: true
 					radius: 3
