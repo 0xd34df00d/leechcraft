@@ -24,6 +24,8 @@
 #include <QtDebug>
 #include "coreproxy.h"
 #include "separatetabwidget.h"
+#include "core.h"
+#include "tabmanager.h"
 
 namespace LeechCraft
 {
@@ -141,7 +143,7 @@ namespace LeechCraft
 		else if (index != -1 &&
 				event->button () == Qt::MidButton &&
 				index != count () - 1)
-			TabWidget_->RemoveTab (index);
+			Core::Instance ().GetTabManager ()->remove (index);
 
 		QTabBar::mouseReleaseEvent (event);
 	}
