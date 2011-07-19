@@ -175,8 +175,8 @@ namespace LeechCraft
 			const QIcon& icon, const QString& text)
 	{
 		int newIndex = index;
-		if (index >= WidgetCount () && !AddTabButtonAction_->isVisible ())
-			newIndex = WidgetCount () - 1;
+		if (index > WidgetCount () && !AddTabButtonAction_->isVisible ())
+			newIndex = WidgetCount ();
 
 		MainStackedWidget_->insertWidget (index, page);
 		int idx = MainTabBar_->insertTab (newIndex, icon, text);
