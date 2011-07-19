@@ -1,4 +1,5 @@
 import QtQuick 1.0
+import "."
 
 Rectangle {
 	id: notifArea
@@ -18,11 +19,11 @@ Rectangle {
 			width: actionText.width + 5
 			smooth: true
 			radius: 3
+			color: "transparent"
 
-			Text {
+			TextButton {
 				id: actionText
 
-				anchors.centerIn: parent
 				text: model.modelData.actionText
 			}
 		}
@@ -72,9 +73,9 @@ Rectangle {
 
 				height: 20
 				anchors.left: eventRect.left
-				anchors.leftMargin: 2
+				anchors.leftMargin: 5
 				anchors.bottom: eventRect.bottom
-				anchors.bottomMargin: 2
+				anchors.bottomMargin: 5
 
 				orientation: ListView.Horizontal
 
