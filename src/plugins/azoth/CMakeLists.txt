@@ -49,6 +49,7 @@ IF (ENABLE_CRYPT)
 
 	IF (NOT QCA2_FOUND)
 		SET (ENABLE_CRYPT OFF)
+		MESSAGE (WARNING "QCA2 is NOT found, support for PGP-signed/encrypted messages won't be built")
 	ENDIF (NOT QCA2_FOUND)
 
 	INCLUDE_DIRECTORIES (${QCA2_INCLUDE_DIR})
