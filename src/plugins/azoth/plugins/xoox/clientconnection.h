@@ -66,6 +66,10 @@ namespace Xoox
 	class PrivacyListsManager;
 	class AdHocCommandManager;
 
+#ifdef ENABLE_CRYPT
+	class PgpManager;
+#endif
+
 	class ClientConnection : public QObject
 	{
 		Q_OBJECT
@@ -83,9 +87,12 @@ namespace Xoox
 		QXmppCallManager *CallManager_;
 		PubSubManager *PubSubManager_;
 		PrivacyListsManager *PrivacyListsManager_;
-		AdHocCommandManager *AdHocCommandManager_;
-		
+		AdHocCommandManager *AdHocCommandManager_;		
 		AnnotationsManager *AnnotationsManager_;
+		
+#ifdef ENABLE_CRYPT
+		PgpManager *PGPManager_;
+#endif
 
 		QString OurJID_;
 

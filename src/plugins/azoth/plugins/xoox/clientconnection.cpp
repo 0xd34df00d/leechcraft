@@ -64,6 +64,9 @@
 #include "privacylistsmanager.h"
 #include "adhoccommandmanager.h"
 
+#ifdef ENABLE_CRYPT
+#include "pgpmanager.h"
+#endif
 
 namespace LeechCraft
 {
@@ -91,6 +94,9 @@ namespace Xoox
 	, PrivacyListsManager_ (new PrivacyListsManager)
 	, AdHocCommandManager_ (new AdHocCommandManager (this))
 	, AnnotationsManager_ (0)
+#ifdef ENABLE_CRYPT
+	, PGPManager_ (new PgpManager)
+#endif
 	, OurJID_ (jid)
 	, Account_ (account)
 	, ProxyObject_ (0)
