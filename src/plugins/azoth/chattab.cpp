@@ -267,6 +267,23 @@ namespace Azoth
 		SetChatPartState (CPSInactive);
 	}
 	
+	void ChatTab::HandleMUCParticipantsChanged ()
+	{
+		IMUCEntry *muc = GetEntry<IMUCEntry> ();
+		if (!muc)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< GetEntry<QObject> ()
+					<< "doesn't implement IMUCEntry";
+			return;
+		}
+		
+		const QString& text = tr ("%1 (%2 participants)")
+				.arg (GetEntry<ICLEntry> ()->GetEntryName ())
+				.arg (muc->GetParticipants ().size ());
+		Ui_.EntryInfo_->setText (text);
+	}
+	
 	QObject* ChatTab::GetCLEntry () const
 	{
 		return GetEntry<QObject> ();

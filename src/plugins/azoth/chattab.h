@@ -102,6 +102,8 @@ namespace Azoth
 		void TabMadeCurrent ();
 		void TabLostCurrent ();
 		
+		void HandleMUCParticipantsChanged ();
+		
 		QObject* GetCLEntry () const;
 	public slots:
 		void prepareMessageText (const QString&);
