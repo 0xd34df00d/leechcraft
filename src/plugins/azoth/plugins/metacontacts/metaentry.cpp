@@ -61,11 +61,13 @@ namespace Metacontacts
 		
 		handleRealVariantsChanged (entry->Variants (), entryObj);		
 		Q_FOREACH (QObject *object, entry->GetAllMessages ())
-			handleGotMessage (object);
+			handleRealGotMessage (object);
 		
 		emit statusChanged (GetStatus (QString ()), QString ());
 		
 		ConnectStandardSignals (entryObj);
+		if (qobject_cast<IAdvancedCLEntry*> (entryObj))
+			ConnectAdvancedSiganls (entryObj);
 	}
 	
 	QString MetaEntry::GetMetaVariant (QObject *entry, const QString& realVar) const
@@ -278,16 +280,56 @@ namespace Metacontacts
 	void MetaEntry::ConnectStandardSignals (QObject *entryObj)
 	{
 		connect (entryObj,
+				SIGNAL (gotMessage (QObject*)),
+				this,
+				SLOT (handleRealGotMessage (QObject*)));
+		connect (entryObj,
+				SIGNAL (statusChanged (const EntryStatus&, const QString&)),
+				this,
+				SLOT (handleRealStatusChanged (const EntryStatus&, const QString&)));
+		connect (entryObj,
 				SIGNAL (availableVariantsChanged (const QStringList&)),
 				this,
 				SLOT (handleRealVariantsChanged (const QStringList&)));
 		connect (entryObj,
-				SIGNAL (gotMessage (QObject*)),
+				SIGNAL (nameChanged (const QString&)),
 				this,
-				SLOT (handleGotMessage (QObject*)));
+				SLOT (handleRealNameChanged (const QString&)));
+		connect (entryObj,
+				SIGNAL (chatPartStateChanged (const ChatPartState&, const QString&)),
+				this,
+				SLOT (handleRealCPSChanged (const ChatPartState&, const QString&)));
+		connect (entryObj,
+				SIGNAL (entryGenerallyChanged ()),
+				this,
+				SIGNAL (entryGenerallyChanged ()));
 	}
 	
-	void MetaEntry::handleGotMessage (QObject *msgObj)
+	void MetaEntry::ConnectAdvancedSiganls (QObject *entryObj)
+	{
+		connect (entryObj,
+				SIGNAL (attentionDrawn (const QString&, const QString&)),
+				this,
+				SLOT (handleRealAttentionDrawn (const QString&, const QString&)));
+		connect (entryObj,
+				SIGNAL (moodChanged (const QString&)),
+				this,
+				SLOT (handleRealMoodChanged (const QString&)));
+		connect (entryObj,
+				SIGNAL (activityChanged (const QString&)),
+				this,
+				SLOT (handleRealActivityChanged (const QString&)));
+		connect (entryObj,
+				SIGNAL (tuneChanged (const QString&)),
+				this,
+				SLOT (handleRealTuneChanged (const QString&)));
+		connect (entryObj,
+				SIGNAL (locationChanged (const QString&)),
+				this,
+				SLOT (handleRealLocationChanged (const QString&)));
+	}
+	
+	void MetaEntry::handleRealGotMessage (QObject *msgObj)
 	{
 		IMessage *msg = qobject_cast<IMessage*> (msgObj);
 		if (!msg)
@@ -308,6 +350,12 @@ namespace Metacontacts
 			std::stable_sort (Messages_.begin (), Messages_.end (), DateSorter ());
 
 		emit gotMessage (message);
+	}
+	
+	void MetaEntry::handleRealStatusChanged (const EntryStatus& status, const QString& var)
+	{
+		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
+		emit statusChanged (status, entry->GetEntryName () + '/' + var);
 	}
 	
 	void MetaEntry::handleRealVariantsChanged (QStringList variants, QObject *passedObj)
@@ -336,6 +384,50 @@ namespace Metacontacts
 			const QString& str = entry->GetEntryName () + '/' + var;
 			emit statusChanged (GetStatus (str), str);
 		}
+	}
+	
+	void MetaEntry::handleRealNameChanged (const QString& name)
+	{
+		QObject *obj = sender ();
+		ICLEntry *entry = qobject_cast<ICLEntry*> (obj);
+		
+		handleRealVariantsChanged (entry->Variants (), obj);
+	}
+	
+	void MetaEntry::handleRealCPSChanged (const ChatPartState& cps, const QString& var)
+	{
+		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
+		emit chatPartStateChanged (cps, entry->GetEntryName () + '/' + var);
+	}
+	
+	void MetaEntry::handleRealAttentionDrawn (const QString& text, const QString& var)
+	{
+		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
+		emit attentionDrawn (text, entry->GetEntryName () + '/' + var);
+	}
+	
+	void MetaEntry::handleRealMoodChanged (const QString& var)
+	{
+		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
+		emit moodChanged (entry->GetEntryName () + '/' + var);
+	}
+	
+	void MetaEntry::handleRealActivityChanged (const QString& var)
+	{
+		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
+		emit activityChanged (entry->GetEntryName () + '/' + var);
+	}
+	
+	void MetaEntry::handleRealTuneChanged (const QString& var)
+	{
+		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
+		emit tuneChanged (entry->GetEntryName () + '/' + var);
+	}
+
+	void MetaEntry::handleRealLocationChanged (const QString& var)
+	{
+		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
+		emit locationChanged (entry->GetEntryName () + '/' + var);
 	}
 }
 }

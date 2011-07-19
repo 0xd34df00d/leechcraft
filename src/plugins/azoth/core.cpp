@@ -1910,6 +1910,8 @@ namespace Azoth
 				QStandardItem *item = Entry2Items_ [entry].first ();
 				OpenChat (CLModel_->indexFromItem (item));
 			}
+
+			ChatTabsManager_->HandleEntryAdded (entry);
 		}
 	}
 

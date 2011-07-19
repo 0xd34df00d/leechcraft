@@ -1,73 +1,99 @@
 import QtQuick 1.0
+import "."
 
 Rectangle {
 	id: notifArea
 	width: 450; height: 200
 	smooth: true
-	radius: 10
+	radius: 16
 	gradient: Gradient {
-		GradientStop { position: 0.0; color: "#414141" }
-		GradientStop { position: 1.0; color: "#1A1A1A" }
+		GradientStop { position: 0.0; color: "#CF414141" }
+		GradientStop { position: 1.0; color: "#CF1A1A1A" }
+	}
+
+	Component {
+		id: actionsDelegate
+
+		Rectangle {
+			height: actionsListView.height
+			width: actionText.width + 5
+			smooth: true
+			radius: 3
+			color: "transparent"
+
+			TextButton {
+				id: actionText
+
+				text: model.modelData.actionText
+			}
+		}
+	}
+
+	Component {
+		id: eventsDelegate
+
+		Rectangle {
+			id: eventRect
+
+			//height: 50
+			width: listView.width
+			height: (contentsRow.height > 20 ? contentsRow.height : 20) + actionsListView.height + 5
+			smooth: true
+			radius: 9
+			gradient: Gradient {
+				GradientStop { position: 0.0; color: "#DF3A3A3A" }
+				GradientStop { position: 1.0; color: "#DF101010" }
+			}
+
+			Row {
+				id: contentsRow
+
+				anchors.left: eventRect.left
+				anchors.top: eventRect.top
+				anchors.leftMargin: 2
+				anchors.topMargin: 2
+
+				Image {
+					id: eventPic
+					source: image
+				}
+
+				Text {
+					id: eventText
+
+					text: extendedText
+					color: "lightgrey"
+					anchors.left: eventPic.right
+					anchors.leftMargin: 5
+				}
+			}
+
+			ListView {
+				id: actionsListView
+
+				height: 20
+				anchors.left: eventRect.left
+				anchors.leftMargin: 5
+				anchors.bottom: eventRect.bottom
+				anchors.bottomMargin: 5
+
+				orientation: ListView.Horizontal
+
+				model: eventActionsModel
+				delegate: actionsDelegate
+			}
+		}
 	}
 	
 	ListView {
+		id: listView
+
 		anchors.centerIn: parent
-		
+		anchors.topMargin: 5
 		width: notifArea.width - 10
 		height: notifArea.height
 		
 		model: eventsModel
-		delegate: Rectangle {
-			anchors.centerIn: parent
-			height: 50
-			width: 420
-			smooth: true
-			radius: 6
-			gradient: Gradient {
-				GradientStop { position: 0.0; color: "#3A3A3A" }
-				GradientStop { position: 1.0; color: "#101010" }
-			}
-			
-			Image {
-				id: eventPic
-				
-				anchors.leftMargin: 2
-				anchors.topMargin: 2
-				
-				source: image
-			}
-			
-			Text {
-				id: eventText
-
-				text: extendedText
-				
-				anchors.left: eventPic.right
-				anchors.leftMargin: 5
-			}
-			
-			ListView {
-				anchors.right: parent.right
-				anchors.rightMargin: 5
-				anchors.bottom: parent.bottom
-				anchors.bottomMargin: 5
-				
-				orientation: ListView.Horizontal
-				
-				model: eventActionsModel
-				delegate: Rectangle {
-					height: 20
-					width: 100
-					smooth: true
-					radius: 3
-					
-					Text {
-						anchors.fill: parent
-
-						text: model.modelData.actionText
-					}
-				}
-			}
-		}
+		delegate: eventsDelegate
 	}
 }

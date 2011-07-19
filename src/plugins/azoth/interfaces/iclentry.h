@@ -563,6 +563,16 @@ namespace Azoth
 		 * @note This function is expected to be a signal in subclasses.
 		 */
 		virtual void permsChanged () = 0;
+		
+		/** @brief This signal should be emitted when the entry changes.
+		 * 
+		 * This signal should be emitted only if no other signals apply
+		 * (even those from IAdvancedCLEntry or such): it is some kind
+		 * of a fall-back notification.
+		 * 
+		 * @note This function is expected to be a signal in subclasses.
+		 */
+		virtual void entryGenerallyChanged () = 0;
 	};
 
 	Q_DECLARE_OPERATORS_FOR_FLAGS (ICLEntry::Features);

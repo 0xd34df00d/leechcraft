@@ -91,9 +91,19 @@ namespace Metacontacts
 		T ActWithVariant (boost::function<T (U, const QString&)>, const QString&) const;
 
 		void ConnectStandardSignals (QObject*);
+		void ConnectAdvancedSiganls (QObject*);
 	private slots:
-		void handleGotMessage (QObject*);
+		void handleRealGotMessage (QObject*);
+		void handleRealStatusChanged (const EntryStatus&, const QString&);
 		void handleRealVariantsChanged (QStringList, QObject* = 0);
+		void handleRealNameChanged (const QString&);
+		void handleRealCPSChanged (const ChatPartState&, const QString&);
+		
+		void handleRealAttentionDrawn (const QString&, const QString&);
+		void handleRealMoodChanged (const QString&);
+		void handleRealActivityChanged (const QString&);
+		void handleRealTuneChanged (const QString&);
+		void handleRealLocationChanged (const QString&);
 	signals:
 		// ICLEntry
 		void gotMessage (QObject*);
@@ -105,6 +115,7 @@ namespace Metacontacts
 		void avatarChanged (const QImage&);
 		void chatPartStateChanged (const ChatPartState&, const QString&);
 		void permsChanged ();
+		void entryGenerallyChanged ();
 		
 		// IAdvancedCLEntry
 		void attentionDrawn (const QString&, const QString&);

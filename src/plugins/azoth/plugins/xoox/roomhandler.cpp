@@ -651,8 +651,8 @@ namespace Xoox
 		else
 			MakeLeaveMessage (pres, nick);
 
-		Account_->handleEntryRemoved (entry.get ());
 		Nick2Entry_.remove (nick);
+		Account_->handleEntryRemoved (entry.get ());
 	}
 
 	void RoomHandler::RemoveThis ()

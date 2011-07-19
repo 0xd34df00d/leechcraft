@@ -35,7 +35,7 @@ namespace Acetamide
 	class IrcAccount;
 
 	class IrcServerCLEntry : public EntryBase
-							, public IMUCEntry
+						   , public IMUCEntry
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IMUCEntry)
