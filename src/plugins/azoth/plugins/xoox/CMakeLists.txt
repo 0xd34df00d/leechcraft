@@ -2,11 +2,13 @@ SET (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 FIND_PACKAGE (QXmpp REQUIRED)
 FIND_PACKAGE (Speex REQUIRED)
+FIND_PACKAGE (QCA2 REQUIRED)
 
 INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
-	${QXMPP_INCLUDE_DIR})
+	${QXMPP_INCLUDE_DIR}
+	${QCA2_INCLUDE_DIR})
 SET (XOOX_SRCS
 	xoox.cpp
 	glooxprotocol.cpp
@@ -55,6 +57,7 @@ SET (XOOX_SRCS
 	adhoccommandmanager.cpp
 	executecommanddialog.cpp
 	userlocation.cpp
+	pgpmanager.cpp
 	)
 SET (XOOX_HEADERS
 	xoox.h
@@ -104,6 +107,7 @@ SET (XOOX_HEADERS
 	adhoccommandmanager.h
 	executecommanddialog.h
 	userlocation.h
+	pgpmanager.h
 	)
 SET (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui
@@ -144,6 +148,7 @@ TARGET_LINK_LIBRARIES (leechcraft_azoth_xoox
 	${LEECHCRAFT_LIBRARIES}
 	${QXMPP_LIBRARIES}
 	${SPEEX_LIBRARIES}
+	${QCA2_LIBRARIES}
 	)
 INSTALL (TARGETS leechcraft_azoth_xoox DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES ${XOOX_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
