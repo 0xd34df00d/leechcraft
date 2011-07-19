@@ -27,7 +27,10 @@ namespace LeechCraft
 namespace Azoth
 {
 namespace Xoox
-{
+{	
+	const char *NsSigned = "jabber:x:signed";
+	const char *NsEncrypted = "jabber:x:encrypted";
+
 	QCA::PGPKey PgpManager::PublicKey (const QString& id) const
 	{
 		return PublicKeys_.value (id);
@@ -48,13 +51,14 @@ namespace Xoox
 		PrivateKey_ = privateKey;
 	}
 
-	QByteArray PgpManager::EncryptBody(const QCA::PGPKey& pubkey, const QByteArray& body)
+	QByteArray PgpManager::EncryptBody (const QCA::PGPKey& pubkey, const QByteArray& body)
 	{
 		if (pubkey.isNull ())
 		{
 			warning (QString ("Cannot encrypt: public key is null"));
-			return QByteArray();
+			return QByteArray ();
 		}
+
 		QCA::SecureMessageKey msgKey;
 		msgKey.setPGPPublicKey (pubkey);
 		QCA::OpenPGP pgp;
@@ -70,7 +74,7 @@ namespace Xoox
 		else
 		{
 			info (QString ("Error encrypting: " + msg.errorCode ()));
-			return QByteArray();
+			return QByteArray ();
 		}
 	}
 
@@ -80,8 +84,9 @@ namespace Xoox
 		if (PrivateKey_.isNull ())
 		{
 			warning (QString ("Cannot sign: private key is null"));
-			return QByteArray();
+			return QByteArray ();
 		}
+		
 		msgKey.setPGPSecretKey (PrivateKey_);
 		QCA::OpenPGP pgp;
 		QCA::SecureMessage msg (&pgp);
@@ -97,7 +102,7 @@ namespace Xoox
 		else
 		{
 			warning (QString ("Error signing: " + msg.errorCode ()));
-			return QByteArray();
+			return QByteArray ();
 		}
 	}
 
@@ -109,6 +114,7 @@ namespace Xoox
 			warning (QString ("Cannot sign: private key is null"));
 			return QByteArray();
 		}
+
 		msgKey.setPGPSecretKey (PrivateKey_);
 		QCA::OpenPGP pgp;
 		QCA::SecureMessage msg (&pgp);
@@ -124,7 +130,7 @@ namespace Xoox
 		else
 		{
 			info (QString ("Error signing: " + msg.errorCode ()));
-			return QByteArray();
+			return QByteArray ();
 		}
 	}
 
@@ -143,17 +149,19 @@ namespace Xoox
 		else
 		{
 			info (QString ("Error decrypting: " + msg.errorCode ()));
-			return QByteArray();
+			return QByteArray ();
 		}
 	}
 
-	bool PgpManager::IsValidSignature (const QCA::PGPKey& pubkey, const QByteArray& message, const QByteArray& signature)
+	bool PgpManager::IsValidSignature (const QCA::PGPKey& pubkey,
+			const QByteArray& message, const QByteArray& signature)
 	{
 		if (pubkey.isNull ())
 		{
 			warning (QString ("Cannot encrypt: public key is null"));
-			return QByteArray();
+			return false;
 		}
+		
 		QCA::OpenPGP pgp;
 		QCA::SecureMessageKey key;
 		QCA::SecureMessage msg (&pgp);
@@ -169,15 +177,15 @@ namespace Xoox
 			return true;
 		else
 		{
-			info(QString("Invalid signature: " + msg.errorCode ()));
+			info (QString ("Invalid signature: " + msg.errorCode ()));
 			return false;
 		}
 	}
 
 	bool PgpManager::handleStanza (const QDomElement& stanza)
 	{
-		QString tagName = stanza.tagName ();
-		if (("message" != tagName) || ("presence" != tagName))
+		const QString& tagName = stanza.tagName ();
+		if (("message" != tagName) && ("presence" != tagName))
 			return false;
 
 		const QString& from = stanza.attribute ("from");
@@ -185,22 +193,24 @@ namespace Xoox
 
 		// Case 1: signed presence|message
 		const QDomElement& x_element = stanza.firstChildElement ("x");
-		if (x_element.namespaceURI () == ns_signed)
+		if (x_element.namespaceURI () == NsSigned)
 		{
 			const QDomElement& status = stanza.firstChildElement ("status");
 			QString message = status.text ();
 			QString signature = x_element.text ();
+
 			//TODO Initialize keystore somewhere
 			//TODO Check if we need another representation, instead of 'toAscii()'
 			if (!IsValidSignature (PublicKey (from), message.toAscii (), signature.toAscii ()))
 				emit invalidSignatureReceived (id);
-			else if (stanza.tagName () == "message")
+			else if (tagName == "message")
 				emit signedMessageReceived (id);
-			else if (stanza.tagName () == "presence")
+			else if (tagName == "presence")
 				emit signedPresenceReceived (id);
 		}
+		
 		// Case 2: encrypted message
-		if (x_element.namespaceURI () == ns_encrypted)
+		if (x_element.namespaceURI () == NsEncrypted)
 		{
 			QString encryptedBodyStr = x_element.text ();
 			//TODO Check if we need another representation, instead of 'toAscii()'
@@ -209,6 +219,7 @@ namespace Xoox
 			if (!decryptedBody.isEmpty ())
 				emit encryptedMessageReceived (id);
 		}
+
 		return false;
 	}
 }

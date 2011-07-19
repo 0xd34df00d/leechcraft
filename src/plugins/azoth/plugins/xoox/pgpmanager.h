@@ -18,15 +18,12 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_XOOX_PGPMANAGER_H
 #define PLUGINS_AZOTH_PLUGINS_XOOX_PGPMANAGER_H
-
 #include <QMap>
 #include <QByteArray>
 #include <QtCrypto>
 #include <QXmppClientExtension.h>
 #include <QXmppMessage.h>
 #include <QXmppPresence.h>
-
-class QXmppAnnotationsManager;
 
 namespace LeechCraft
 {
@@ -38,13 +35,12 @@ namespace Xoox
 	{
 		Q_OBJECT
 
-	private:
 		// private key, used for decrypting messages
 		QCA::PGPKey PrivateKey_;
+
 		// map of userIDs and corresponding public keys
 		// each user ID is a completely arbitrary value, one can use JIDs for this purpose
 		QMap<QString, QCA::PGPKey> PublicKeys_;
-
 	public:
 		QCA::PGPKey PublicKey (const QString&) const;
 		void SetPublicKey (const QString&, const QCA::PGPKey&);
@@ -60,7 +56,6 @@ namespace Xoox
 		bool IsValidSignature (const QCA::PGPKey&, const QByteArray&, const QByteArray&);
 
 		bool handleStanza (const QDomElement&);
-
 	signals:
 		void encryptedMessageReceived (const QString&);
 		void signedMessageReceived (const QString&);
