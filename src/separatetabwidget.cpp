@@ -475,8 +475,7 @@ namespace LeechCraft
 		{
 			QHelpEvent *he = static_cast<QHelpEvent*> (e);
 			int index = TabAt (he->pos ());
-			if (Widgets_.value (index) &&
-					Widgets_ [index])
+			if (Widgets_.value (index))
 			{
 				QxtToolTip::show (he->globalPos (), Widgets_ [index].get (), MainTabBar_);
 				return true;
