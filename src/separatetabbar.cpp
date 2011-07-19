@@ -19,11 +19,11 @@
 #include "separatetabbar.h"
 #include <QMouseEvent>
 #include <QStyle>
+#include <QStylePainter>
+#include <QStyleOption>
 #include <QtDebug>
 #include "coreproxy.h"
 #include "separatetabwidget.h"
-#include <QStylePainter>
-#include <QStyleOption>
 
 namespace LeechCraft
 {
@@ -211,9 +211,10 @@ namespace LeechCraft
 
 		if (count () > 0 && IsLastTab_)
 		{
+			CoreProxy proxy;
 			QStyleOptionTabV2 option;
 			initStyleOption (&option, count () - 1);
-			QIcon icon = CoreProxy ().GetIcon ("addjob");
+			QIcon icon = proxy.GetIcon ("addjob");
 			painter.drawItemPixmap (option.rect, Qt::AlignCenter, 
 					icon.pixmap (QSize (15, 15)));
 		}
