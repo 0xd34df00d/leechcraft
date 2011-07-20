@@ -101,9 +101,11 @@ namespace Azoth
 			Qt::CaseInsensitive, QRegExp::RegExp2)
 	, ImageRegexp_ ("(\\b(?:data:image/)[\\w\\d/\\?.=:@&%#_;\\(?:\\)\\+\\-\\~\\*\\,]+)",
 			Qt::CaseInsensitive, QRegExp::RegExp2)
+#ifdef ENABLE_CRYPT
 	, QCAInit_ (new QCA::Initializer)
 	, KeyStoreMgr_ (new QCA::KeyStoreManager)
 	, QCAEventHandler_ (new QCA::EventHandler)
+#endif
 	, CLModel_ (new QStandardItemModel (this))
 	, ChatTabsManager_ (new ChatTabsManager (this))
 	, ItemIconManager_ (new AnimatedIconManager<QStandardItem*> (boost::bind (&QStandardItem::setIcon, _1, _2)))
