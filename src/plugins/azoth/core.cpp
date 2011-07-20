@@ -1289,6 +1289,8 @@ namespace Azoth
 					Action2Areas_ [act] << CLEAATabCtxtMenu;
 				else if (place == "applicationMenu")
 					Action2Areas_ [act] << CLEAAApplicationMenu;
+				else if (place == "toolbar")
+					Action2Areas_ [act] << CLEAAToolbar;
 				else
 					qWarning () << Q_FUNC_INFO
 							<< "unknown embed place ID"
@@ -1431,10 +1433,11 @@ namespace Azoth
 					SIGNAL (triggered ()),
 					this,
 					SLOT (handleActionVCardTriggered ()));
-			vcard->setProperty ("ActionIcon", "azoth_vcard");
+			vcard->setProperty ("ActionIcon", "personalinfo");
 			Entry2Actions_ [entry] ["vcard"] = vcard;
 			Action2Areas_ [vcard] << CLEAAContactListCtxtMenu
-					<< CLEAATabCtxtMenu;
+					<< CLEAATabCtxtMenu
+					<< CLEAAToolbar;
 		}
 
 		IMUCPerms *perms = qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ());

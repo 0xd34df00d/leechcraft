@@ -156,6 +156,7 @@ namespace Azoth
 			CLEAATabCtxtMenu,
 			CLEAAContactListCtxtMenu,
 			CLEAAApplicationMenu,
+			CLEAAToolbar,
 			CLEAAMAX
 		};
 	private:

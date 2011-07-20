@@ -71,6 +71,7 @@ namespace Azoth
 		 * - tabContextMenu for tab's context menu.
 		 * - applicationMenu for the menu item in the application's main
 		 *   menu.
+		 * - toolbar for the toolbar in the entry chat window.
 		 * 
 		 * Please note that this hook would be called on each plugin
 		 * that exposes it, so each plugin would have it called for each

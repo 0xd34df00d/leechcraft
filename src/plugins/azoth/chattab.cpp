@@ -993,6 +993,17 @@ namespace Azoth
 							GetCallsForEntry (EntryID_))
 				handleCall (object);
 		}
+		
+		QList<QAction*> coreActions;
+		Q_FOREACH (QAction *action, Core::Instance ().GetEntryActions (e))
+			if (Core::Instance ().GetAreasForAction (action).contains (Core::CLEAAToolbar))
+				coreActions << action;
+
+		if (!coreActions.isEmpty ())
+		{
+			TabToolbar_->addSeparator ();
+			TabToolbar_->addActions (coreActions);
+		}
 	}
 	
 	void ChatTab::InitMsgEdit ()
