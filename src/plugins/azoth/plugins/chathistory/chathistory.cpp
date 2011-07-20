@@ -169,6 +169,9 @@ namespace ChatHistory
 		QStringList ours;
 		ours << "contactListContextMenu"
 			<< "tabContextMenu";
+		if (action->property ("ActionIcon") == "history")
+			ours << "toolbar";
+
 		proxy->SetReturnValue (proxy->GetReturnValue ().toStringList () + ours);
 	}
 	
@@ -183,6 +186,7 @@ namespace ChatHistory
 					Qt::UniqueConnection);
 
 			QAction *action = new QAction (tr ("History..."), entry);
+			action->setProperty ("ActionIcon", "history");
 			action->setProperty ("Azoth/ChatHistory/IsGood", true);
 			action->setProperty ("Azoth/ChatHistory/Entry",
 					QVariant::fromValue<QObject*> (entry));
