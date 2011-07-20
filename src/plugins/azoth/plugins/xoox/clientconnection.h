@@ -24,6 +24,11 @@
 #include <QMap>
 #include <QHash>
 #include <QSet>
+
+#ifdef ENABLE_CRYPT
+#include <QtCrypto>
+#endif
+
 #include <QXmppClient.h>
 #include <QXmppMucIq.h>
 #include <interfaces/imessage.h>
@@ -92,6 +97,7 @@ namespace Xoox
 		
 #ifdef ENABLE_CRYPT
 		PgpManager *PGPManager_;
+		QCA::KeyStoreManager QCAMgr_;
 #endif
 
 		QString OurJID_;
@@ -128,6 +134,10 @@ namespace Xoox
 		QHash<QString, QPointer<VCardDialog> > AwaitingVCardDialogs_;
 		
 		QHash<QString, QPointer<GlooxMessage> > UndeliveredMessages_;
+		
+		QSet<QString> SignedPresences_;
+		QSet<QString> SignedMessages_;
+		QSet<QString> EncryptedMessages_;
 	public:
 		typedef boost::function<void (const QXmppDiscoveryIq&)> DiscoCallback_t;
 	private:
@@ -231,10 +241,16 @@ namespace Xoox
 		void handleDiscoInfo (const QXmppDiscoveryIq&);
 		void handleDiscoItems (const QXmppDiscoveryIq&);
 		
+		void handleEncryptedMessageReceived (const QString&);
+		void handleSignedMessageReceived (const QString&);
+		void handleSignedPresenceReceived (const QString&);
+		void handleInvalidSignatureReceived (const QString&);
+		
 		void handleLog (QXmppLogger::MessageType, const QString&);
 		
 		void decrementErrAccumulators ();
 	private:
+		void InitializeQCA ();
 		void ScheduleFetchVCard (const QString&);
 		GlooxCLEntry* CreateCLEntry (const QString&);
 		GlooxCLEntry* CreateCLEntry (const QXmppRosterIq::Item&);

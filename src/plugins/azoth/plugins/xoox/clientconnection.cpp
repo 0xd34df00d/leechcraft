@@ -95,7 +95,7 @@ namespace Xoox
 	, AdHocCommandManager_ (new AdHocCommandManager (this))
 	, AnnotationsManager_ (0)
 #ifdef ENABLE_CRYPT
-	, PGPManager_ (new PgpManager)
+	, PGPManager_ (0)
 #endif
 	, OurJID_ (jid)
 	, Account_ (account)
@@ -138,6 +138,8 @@ namespace Xoox
 				SIGNAL (gotEvent (const QString&, PEPEventBase*)),
 				this,
 				SLOT (handlePEPEvent (const QString&, PEPEventBase*)));
+		
+		InitializeQCA ();
 
 		Client_->addExtension (BobManager_);
 		Client_->addExtension (PubSubManager_);
@@ -874,6 +876,10 @@ namespace Xoox
 
 		JID2CLEntry_ [jid]->SetClientInfo (resource, pres);
 		JID2CLEntry_ [jid]->SetStatus (PresenceToStatus (pres), resource);
+		if (SignedPresences_.remove (pres.id ()))
+		{
+			qDebug () << "got signed presence" << jid;
+		}
 	}
 
 	void ClientConnection::handleMessageReceived (const QXmppMessage& msg)
@@ -1036,6 +1042,26 @@ namespace Xoox
 		const QString& jid = iq.from ();
 		if (AwaitingDiscoItems_.contains (jid))
 			AwaitingDiscoItems_ [jid] (iq);
+	}
+	
+	void ClientConnection::handleEncryptedMessageReceived (const QString& id)
+	{
+		EncryptedMessages_ << id;
+	}
+
+	void ClientConnection::handleSignedMessageReceived (const QString& id)
+	{
+		SignedMessages_ << id;
+	}
+
+	void ClientConnection::handleSignedPresenceReceived (const QString& id)
+	{
+		qDebug () << Q_FUNC_INFO << id;
+		SignedPresences_ << id;
+	}
+
+	void ClientConnection::handleInvalidSignatureReceived (const QString& id)
+	{
 	}
 	
 	void ClientConnection::handleLog (QXmppLogger::MessageType type, const QString& msg)
@@ -1202,6 +1228,52 @@ namespace Xoox
 		default:
 			return tr ("Other error.");
 		}
+	}
+	
+	void ClientConnection::InitializeQCA ()
+	{
+#ifdef ENABLE_CRYPT
+		qDebug () << Q_FUNC_INFO
+				<< "gonna wait?"
+				<< QCAMgr_.isBusy ();
+		QCAMgr_.waitForBusyFinished ();
+
+		const QStringList& keystores = QCAMgr_.keyStores ();
+		QString keySt;
+		Q_FOREACH (keySt, keystores)
+		{
+			if (keySt.contains ("gnupg") ||
+					keySt.contains ("gpg") ||
+					keySt.contains ("pgp"))
+				break;
+			
+			keySt.clear ();
+		}
+		qDebug () << "chosen"
+				<< keySt
+				<< "from"
+				<< keystores;
+		
+		PGPManager_ = new PgpManager ();
+
+		Client_->addExtension (PGPManager_);
+		connect (PGPManager_,
+				SIGNAL (encryptedMessageReceived (const QString&)),
+				this,
+				SLOT (handleEncryptedMessageReceived (const QString&)));
+		connect (PGPManager_,
+				SIGNAL (signedMessageReceived (const QString&)),
+				this,
+				SLOT (handleSignedMessageReceived (const QString&)));
+		connect (PGPManager_,
+				SIGNAL (signedPresenceReceived (const QString&)),
+				this,
+				SLOT (handleSignedPresenceReceived (const QString&)));
+		connect (PGPManager_,
+				SIGNAL (invalidSignatureReceived (const QString&)),
+				this,
+				SLOT (handleInvalidSignatureReceived (const QString&)));
+#endif
 	}
 
 	void ClientConnection::ScheduleFetchVCard (const QString& jid)
