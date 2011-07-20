@@ -19,10 +19,14 @@
 #ifndef PLUGINS_AZOTH_CORE_H
 #define PLUGINS_AZOTH_CORE_H
 #include <boost/function.hpp>
+#include <boost/scoped_ptr.hpp>
 #include <QObject>
 #include <QSet>
 #include <QIcon>
 #include <QDateTime>
+#ifdef ENABLE_CRYPT
+#include <QtCrypto>
+#endif
 #include "interfaces/iinfo.h"
 #include "interfaces/azothcommon.h"
 #include "interfaces/imucentry.h"
@@ -66,6 +70,12 @@ namespace Azoth
 
 		QRegExp LinkRegexp_;
 		QRegExp ImageRegexp_;
+		
+#ifdef ENABLE_CRYPT
+		boost::scoped_ptr<QCA::Initializer> QCAInit_;
+		boost::scoped_ptr<QCA::KeyStoreManager> KeyStoreMgr_;
+		boost::scoped_ptr<QCA::EventHandler> QCAEventHandler_;
+#endif
 
 		QObjectList ProtocolPlugins_;
 		QList<QAction*> AccountCreatorActions_;
@@ -538,6 +548,10 @@ namespace Azoth
 		void handleActionCopyMUCPartID ();
 
 		void handleActionPermTriggered ();
+		
+#ifdef ENABLE_CRYPT
+		void handleQCAEvent (int, const QCA::Event&);
+#endif
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);

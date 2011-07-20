@@ -101,6 +101,9 @@ namespace Azoth
 			Qt::CaseInsensitive, QRegExp::RegExp2)
 	, ImageRegexp_ ("(\\b(?:data:image/)[\\w\\d/\\?.=:@&%#_;\\(?:\\)\\+\\-\\~\\*\\,]+)",
 			Qt::CaseInsensitive, QRegExp::RegExp2)
+	, QCAInit_ (new QCA::Initializer)
+	, KeyStoreMgr_ (new QCA::KeyStoreManager)
+	, QCAEventHandler_ (new QCA::EventHandler)
 	, CLModel_ (new QStandardItemModel (this))
 	, ChatTabsManager_ (new ChatTabsManager (this))
 	, ItemIconManager_ (new AnimatedIconManager<QStandardItem*> (boost::bind (&QStandardItem::setIcon, _1, _2)))
@@ -112,6 +115,14 @@ namespace Azoth
 	, CallManager_ (new CallManager)
 	, EventsNotifier_ (new EventsNotifier)
 	{
+#ifdef ENABLE_CRYPT
+		connect (QCAEventHandler_.get (),
+				SIGNAL (eventReady (int, const QCA::Event&)),
+				this,
+				SLOT (handleQCAEvent (int, const QCA::Event&)));
+		QCAEventHandler_->start ();
+		KeyStoreMgr_->start ();
+#endif
 		ResourceLoaders_ [RLTStatusIconLoader].reset (new Util::ResourceLoader ("azoth/iconsets/contactlist/", this));
 		ResourceLoaders_ [RLTClientIconLoader].reset (new Util::ResourceLoader ("azoth/iconsets/clients/", this));
 		ResourceLoaders_ [RLTAffIconLoader].reset (new Util::ResourceLoader ("azoth/iconsets/affiliations/", this));
@@ -164,6 +175,10 @@ namespace Azoth
 	void Core::Release ()
 	{
 		ResourceLoaders_.clear ();
+		
+		QCAEventHandler_.reset ();
+		KeyStoreMgr_.reset ();
+		QCAInit_.reset ();
 	}
 
 	void Core::SetProxy (ICoreProxy_ptr proxy)
@@ -2977,5 +2992,12 @@ namespace Azoth
 
 		mucPerms->SetPerm (entry->GetObject (), permClass, perm, QString ());
 	}
+	
+#ifdef ENABLE_CRYPT
+	void Core::handleQCAEvent (int id, const QCA::Event& event)
+	{
+		qDebug () << Q_FUNC_INFO << id << event.type ();
+	}
+#endif
 }
 }
