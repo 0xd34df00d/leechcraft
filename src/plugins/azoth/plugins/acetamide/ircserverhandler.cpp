@@ -462,10 +462,10 @@ namespace Acetamide
 					this, _1, _2, _3);
 		Command2Action_ ["314"] =
 				boost::bind (&IrcServerHandler::GetWhoWas,
-					this, _1, _2, _3);
+					this, _1, QList<std::string> () << "whowas", _3);
 		Command2Action_ ["366"] =
 				boost::bind (&IrcServerHandler::GetEndMessage,
-					this, _1, QList<std::string> () << "whowas", _3);
+					this, _1, _2, _3);
 		Command2Action_ ["331"] =
 				boost::bind (&IrcServerHandler::GetNoTopic,
 					this, _1, _2, _3);
@@ -483,7 +483,7 @@ namespace Acetamide
 					this, _1, _2, _3);
 		Command2Action_ ["366"] =
 				boost::bind (&IrcServerHandler::GetEndMessage,
-					this, _1, QList<std::string> () << "names", _3);
+					this, _1, _2, _3);
 		Command2Action_ ["364"] =
 				boost::bind (&IrcServerHandler::GetLinks,
 					this, _1, _2, _3);
@@ -819,8 +819,6 @@ namespace Acetamide
 			Q_FOREACH (QString nick, participants)
 				ChannelHandlers_ [channelID]->
 						SetChannelUser (EncodedMessage (nick, IMessage::DIn));
-
-			ChannelHandlers_ [channelID]->SetRosterReceived (true);
 		}
 		else
 			ShowAnswer (message);
@@ -1251,6 +1249,13 @@ namespace Acetamide
 		ShowAnswer (msg);
 		if (params.first () == "motd")
 			JoinFromQueue ();
+		else if (msg.contains ("End of /NAMES list"))
+		{
+			QString channelID = (QString::fromUtf8 (params.last ().c_str ())
+				+ "@" + ServerOptions_.ServerName_).toLower ();
+			if (ChannelHandlers_.contains (channelID))
+				ChannelHandlers_ [channelID]->SetRosterReceived (true);
+		}
 	}
 
 	void IrcServerHandler::GetYoureOper (const QString&,

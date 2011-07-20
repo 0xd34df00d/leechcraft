@@ -185,9 +185,6 @@ namespace Acetamide
 				role = Participant;
 		}
 
-		if (role != Participant)
-			nickname = nickname.mid (1);
-
 		ServerParticipantEntry_ptr entry = ISH_->
 				GetParticipantEntry (nickname);
 		QStringList groups = entry->GetChannels ();
