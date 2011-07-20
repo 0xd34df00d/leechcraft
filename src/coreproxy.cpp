@@ -79,6 +79,11 @@ namespace LeechCraft
 	{
 		return SkinEngine::Instance ().GetIcon (icon, iconOff);
 	}
+	
+	void CoreProxy::UpdateIconset (const QList<QAction*>& actions) const
+	{
+		SkinEngine::Instance ().UpdateIconSet (actions);
+	}
 
 	ITagsManager* CoreProxy::GetTagsManager () const
 	{

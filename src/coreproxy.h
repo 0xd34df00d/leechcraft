@@ -47,6 +47,7 @@ namespace LeechCraft
 		ICoreTabWidget* GetTabWidget () const;
 		QMap<int, QString> GetIconPath (const QString&) const;
 		QIcon GetIcon (const QString&, const QString& = QString ()) const;
+		void UpdateIconset (const QList<QAction*>&) const;
 		ITagsManager* GetTagsManager () const;
 		QStringList GetSearchCategories () const;
 		int GetID ();

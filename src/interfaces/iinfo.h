@@ -578,6 +578,10 @@ public:
 	 * @sa GetIconPath
 	 */
 	virtual QIcon GetIcon (const QString& on, const QString& off = QString ()) const = 0;
+	
+	/** @brief Updates the icons of the given actions according to current iconset.
+	 */
+	virtual void UpdateIconset (const QList<QAction*>& actions) const = 0;
 
 	/** Returns main LeechCraft's window.
 	 */
