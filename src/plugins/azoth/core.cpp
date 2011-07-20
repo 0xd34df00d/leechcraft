@@ -178,9 +178,11 @@ namespace Azoth
 	{
 		ResourceLoaders_.clear ();
 		
+#ifdef ENABLE_CRYPT
 		QCAEventHandler_.reset ();
 		KeyStoreMgr_.reset ();
 		QCAInit_.reset ();
+#endif
 	}
 
 	void Core::SetProxy (ICoreProxy_ptr proxy)
