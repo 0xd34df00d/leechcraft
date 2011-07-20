@@ -142,6 +142,8 @@ namespace Azoth
 	ChatTab::~ChatTab ()
 	{
 		SetChatPartState (CPSGone);
+		
+		delete TabToolbar_;
 	}
 	
 	void ChatTab::PrepareTheme ()
