@@ -68,7 +68,7 @@ namespace Azoth
 	ChatTab::ChatTab (const QString& entryId,
 			QWidget *parent)
 	: QWidget (parent)
-	, TabToolbar_ (new QToolBar (tr ("Azoth chat window")))
+	, TabToolbar_ (new QToolBar (tr ("Azoth chat window"), this))
 	, ToggleRichText_ (0)
 	, SendFile_ (0)
 	, Call_ (0)
@@ -95,7 +95,6 @@ namespace Azoth
 		Ui_.EventsButton_->hide ();
 		
 		BuildBasicActions ();
-		
 		RequestLogs ();
 
 		Core::Instance ().RegisterHookable (this);
@@ -142,8 +141,6 @@ namespace Azoth
 	ChatTab::~ChatTab ()
 	{
 		SetChatPartState (CPSGone);
-		
-		delete TabToolbar_;
 	}
 	
 	void ChatTab::PrepareTheme ()
