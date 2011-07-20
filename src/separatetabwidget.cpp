@@ -493,10 +493,6 @@ namespace LeechCraft
 				SIGNAL (currentChanged (int)),
 				this,
 				SLOT (handleCurrentChanged (int)));
-		connect (MainTabBar_,
-				SIGNAL (currentChanged (int)),
-				this,
-				SIGNAL (currentChanged (int)));
 
 		connect (MainTabBar_,
 				SIGNAL (tabCloseRequested (int)),
@@ -576,6 +572,8 @@ namespace LeechCraft
 			PreviousTab_ = CurrentTab_;
 			CurrentTab_ = index;
 		}
+		
+		emit currentChanged (index);
 	}
 
 	void SeparateTabWidget::setCurrentWidget (QWidget *w)
