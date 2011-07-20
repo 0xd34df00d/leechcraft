@@ -1299,6 +1299,9 @@ namespace Azoth
 		}
 		
 		result.removeAll (0);
+
+		Proxy_->UpdateIconset (result);
+
 		return result;
 	}
 
