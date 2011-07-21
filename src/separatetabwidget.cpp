@@ -564,6 +564,8 @@ namespace LeechCraft
 		if (index >= WidgetCount () && !AddTabButtonAction_->isVisible ())
 			--index;
 
+		emit currentChanged (index);
+
 		MainTabBar_->setCurrentIndex (index);
 		MainStackedWidget_->setCurrentIndex (index);
 
@@ -572,8 +574,6 @@ namespace LeechCraft
 			PreviousTab_ = CurrentTab_;
 			CurrentTab_ = index;
 		}
-		
-		emit currentChanged (index);
 	}
 
 	void SeparateTabWidget::setCurrentWidget (QWidget *w)
