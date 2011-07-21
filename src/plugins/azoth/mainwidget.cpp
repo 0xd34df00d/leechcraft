@@ -676,7 +676,12 @@ namespace Azoth
 	
 	void MainWidget::handleEntryMadeCurrent (QObject *obj)
 	{
-		if (qobject_cast<IMUCEntry*> (obj))
+		const bool isMUC = qobject_cast<IMUCEntry*> (obj);
+
+		if (XmlSettingsManager::Instance ().property ("AutoMUCMode").toBool ())
+			Ui_.RosterMode_->setCurrentIndex (isMUC ? 1 : 0);
+
+		if (isMUC)
 			ProxyModel_->SetMUC (obj);
 	}
 	

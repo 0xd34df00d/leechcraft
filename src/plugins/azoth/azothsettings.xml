@@ -98,6 +98,9 @@
 			<item type="checkbox" property="CloseConfOnLeave" default="false">
 				<label value="Close conferences tabs when leaving" />
 			</item>
+			<item type="checkbox" property="AutoMUCMode" default="false">
+				<label value="Automatically switch roster to conference mode when needed" />
+			</item>
 			<item type="checkbox" property="IsAutojoinAllowed" default="true">
 				<label value="Autojoin allowed" />
 			</item>
