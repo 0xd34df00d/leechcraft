@@ -926,6 +926,13 @@ namespace Acetamide
 	void IrcServerHandler::ChangeNickname (const QString& nick,
 			const QList<std::string>&, const QString& msg)
 	{
+		if (!Nick2Entry_.contains (nick))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "there is no such nick"
+					<< nick;
+			return;
+		}
 		Q_FOREACH (const QString& channel, Nick2Entry_ [nick]->GetChannels ())
 		{
 			QString id = (channel + "@" + ServerOptions_.ServerName_).toLower ();
