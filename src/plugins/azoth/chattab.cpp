@@ -136,6 +136,8 @@ namespace Azoth
 				this, "handleFontSizeChanged");
 		handleFontSizeChanged ();
 		Ui_.View_->setFocusProxy (Ui_.MsgEdit_);
+		
+		HandleMUCParticipantsChanged ();
 	}
 	
 	ChatTab::~ChatTab ()
