@@ -140,6 +140,8 @@ namespace TabsList
 			QToolButton *button = new QToolButton ();
 			button->setDefaultAction (action);
 			button->setToolButtonStyle (Qt::ToolButtonTextBesideIcon);
+			button->setSizePolicy (QSizePolicy::Expanding,
+					button->sizePolicy ().verticalPolicy ());
 			layout->addWidget (button);
 			
 			if (currentIdx == i)
