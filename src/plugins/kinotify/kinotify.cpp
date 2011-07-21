@@ -74,7 +74,7 @@ namespace LeechCraft
 
 			QIcon Plugin::GetIcon () const
 			{
-				return QIcon ();
+				return QIcon (":/plugins/kinotify/resources/images/kinotify.svg");
 			}
 
 			EntityTestHandleResult Plugin::CouldHandle (const LeechCraft::Entity& e) const
