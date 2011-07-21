@@ -56,9 +56,6 @@
 					<label value="Basic" />
 				</option>
 			</item>
-			<item type="spinbox" property="FontSize" default="12">
-				<label value="Font size:" />
-			</item>
 		</tab>
 		<tab>
 			<label value="Contact list" />
@@ -85,6 +82,12 @@
 			</item>
 			<item type="checkbox" property="ShowRichTextMessageBody" default="true">
 				<label value="Show rich text message body (if available)" />
+			</item>
+			<item type="color" property="HighlightColor" default="#FF0000">
+				<label value="Highlight color:" />
+			</item>
+			<item type="spinbox" property="FontSize" default="12">
+				<label value="Font size:" />
 			</item>
 		</tab>
 	</page>
