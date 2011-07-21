@@ -96,7 +96,7 @@ namespace OnlineBookmarks
 
 	QIcon OnlineBookmarks::GetIcon () const
 	{
-		return QIcon ();
+		return QIcon (":/plugins/poshuku/plugins/onlinebookmarks/resources/images/onlinebookmarks.svg");
 	}
 
 	Util::XmlSettingsDialog_ptr OnlineBookmarks::GetSettingsDialog () const
