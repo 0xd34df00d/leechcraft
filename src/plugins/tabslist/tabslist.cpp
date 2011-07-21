@@ -24,6 +24,7 @@
 #include <QDesktopWidget>
 #include <QApplication>
 #include <QMainWindow>
+#include <QKeyEvent>
 
 namespace LeechCraft
 {
@@ -79,11 +80,39 @@ namespace TabsList
 		return actions;
 	}
 	
+	namespace
+	{
+		class ListEventFilter : public QObject
+		{
+		public:
+			ListEventFilter (QObject *parent = 0)
+			: QObject (parent)
+			{
+			}
+		protected:
+			bool eventFilter (QObject *obj, QEvent *event)
+			{
+				if (event->type () != QEvent::KeyPress)
+					return false;
+				
+				QKeyEvent *key = static_cast<QKeyEvent*> (event);
+				if (key->key () != Qt::Key_Escape)
+					return false;
+				
+				obj->deleteLater ();
+				return true;
+			}
+		};
+	}
+	
 	void Plugin::handleShowList ()
 	{
 		ICoreTabWidget *tw = Proxy_->GetTabWidget ();
 
-		QWidget *widget = new QWidget (0, Qt::Tool | Qt::FramelessWindowHint);
+		QWidget *widget = new QWidget (Proxy_->GetMainWindow (),
+				Qt::Tool | Qt::FramelessWindowHint);
+		widget->installEventFilter (new ListEventFilter (widget));
+		widget->setWindowModality (Qt::ApplicationModal);
 
 		QVBoxLayout *layout = new QVBoxLayout ();
 		layout->setSpacing (1);
