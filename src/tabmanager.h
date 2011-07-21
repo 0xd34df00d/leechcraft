@@ -53,6 +53,9 @@ namespace LeechCraft
 		void rotateLeft ();
 		void rotateRight ();
 		void navigateToTabNumber ();
+		
+		void handlePinTab ();
+		void handleUnpinTab ();
 
 		void add (const QString&, QWidget*);
 		void add (const QString&, QWidget*,
@@ -80,6 +83,9 @@ namespace LeechCraft
 		int FindTabForWidget (QWidget*) const;
 		QString MakeTabName (const QString&) const;
 		void InvalidateName ();
+		
+		QStringList GetOriginalNames () const;
+		void SetOriginalNames (const QStringList&);
 	};
 };
 

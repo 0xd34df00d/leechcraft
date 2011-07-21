@@ -133,8 +133,6 @@ namespace LeechCraft
 		void setCurrentIndex (int);
 		void setCurrentWidget (QWidget*);
 		void handleNewTabShortcutActivated ();
-		void on_PinTab__triggered (bool);
-		void on_UnPinTab__triggered (bool);
 		void setPreviousTab ();
 	private slots:
 		void handleCurrentChanged (int);
@@ -152,6 +150,9 @@ namespace LeechCraft
 		void tabCloseRequested (int);
 		void tabWasInserted (int);
 		void tabWasRemoved (int);
+		
+		void pinTabRequested ();
+		void unpinTabRequested ();
 	};
 }
 #endif // SEPARATETABWIDGET_H

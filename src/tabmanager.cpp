@@ -49,9 +49,18 @@ TabManager::TabManager (SeparateTabWidget *tabWidget,
 			this,
 			SLOT (handleCurrentChanged (int)));
 	connect (TabWidget_,
-			SIGNAL (tabWasMoved (int,int)),
+			SIGNAL (tabWasMoved (int, int)),
 			this,
 			SLOT (handleMoveHappened (int, int)));
+	
+	connect (TabWidget_,
+			SIGNAL (pinTabRequested ()),
+			this,
+			SLOT (handlePinTab ()));
+	connect (TabWidget_,
+			SIGNAL (unpinTabRequested ()),
+			this,
+			SLOT (handleUnpinTab ()));
 
 	XmlSettingsManager::Instance ()->RegisterObject ("UseTabScrollButtons",
 			this, "handleScrollButtons");
@@ -127,6 +136,40 @@ void TabManager::navigateToTabNumber ()
 	if (n >= TabWidget_->WidgetCount ())
 		return;
 	TabWidget_->setCurrentIndex (n);
+}
+
+void TabManager::handlePinTab ()
+{
+	SeparateTabBar *bar = TabWidget_->TabBar ();
+	const int last = TabWidget_->GetLastContextMenuTab ();
+
+	QStringList names = OriginalTabNames_;
+	names.insert (bar->PinTabsCount (), names.takeAt (last));
+
+	bar->moveTab (last, bar->PinTabsCount ());
+	bar->SetTabData (bar->PinTabsCount ());
+	bar->setPinTab (bar->PinTabsCount ());
+
+	TabWidget_->setCurrentIndex (bar->PinTabsCount () - 1);
+	
+	OriginalTabNames_ = names;
+}
+
+void TabManager::handleUnpinTab ()
+{
+	SeparateTabBar *bar = TabWidget_->TabBar ();
+	const int last = TabWidget_->GetLastContextMenuTab ();
+	
+	QStringList names = OriginalTabNames_;
+	names.insert (bar->PinTabsCount (), names.at (last));
+	names.removeAt (last);
+
+	bar->moveTab (last, bar->PinTabsCount () - 1);
+	bar->setUnPinTab (bar->PinTabsCount () - 1);
+
+	TabWidget_->setCurrentIndex (bar->PinTabsCount ());
+	
+	OriginalTabNames_ = names;
 }
 
 void TabManager::ForwardKeyboard (QKeyEvent *key)
@@ -360,3 +403,12 @@ void TabManager::InvalidateName ()
 			SetAdditionalTitle (QString ());
 }
 
+QStringList TabManager::GetOriginalNames () const
+{
+	return OriginalTabNames_;
+}
+
+void TabManager::SetOriginalNames (const QStringList& names)
+{
+	OriginalTabNames_ = names;
+}

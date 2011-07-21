@@ -544,14 +544,13 @@ namespace LeechCraft
 	void SeparateTabWidget::PinTabActionsInit ()
 	{
 		connect (PinTab_,
-				SIGNAL (triggered (bool)),
+				SIGNAL (triggered ()),
 				this,
-				SLOT (on_PinTab__triggered (bool)));
-
+				SIGNAL (pinTabRequested ()));
 		connect (UnPinTab_,
-				SIGNAL (triggered (bool)),
+				SIGNAL (triggered ()),
 				this,
-				SLOT (on_UnPinTab__triggered (bool)));
+				SIGNAL (unpinTabRequested ()));
 
 		connect (DefaultTabAction_,
 				SIGNAL (triggered (bool)),
@@ -585,25 +584,6 @@ namespace LeechCraft
 	void SeparateTabWidget::handleNewTabShortcutActivated ()
 	{
 		handleAddDefaultTab (true);
-	}
-
-	void  SeparateTabWidget::on_PinTab__triggered (bool)
-	{
-		MainTabBar_->moveTab (LastContextMenuTab_,
-				MainTabBar_->PinTabsCount ());
-		MainTabBar_->SetTabData (MainTabBar_->PinTabsCount ());
-		MainTabBar_->setPinTab (MainTabBar_->PinTabsCount ());
-
-		handleCurrentChanged (MainTabBar_->PinTabsCount () - 1);
-	}
-
-	void  SeparateTabWidget::on_UnPinTab__triggered (bool)
-	{
-		MainTabBar_->moveTab (LastContextMenuTab_,
-				MainTabBar_->PinTabsCount () - 1);
-		MainTabBar_->setUnPinTab (MainTabBar_->PinTabsCount () - 1);
-
-		handleCurrentChanged (MainTabBar_->PinTabsCount ());
 	}
 
 	void SeparateTabWidget::setPreviousTab ()
