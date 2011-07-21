@@ -171,6 +171,7 @@ namespace Azoth
 
 		Util::ResourceLoader* GetResourceLoader (ResourceLoaderType) const;
 		QAbstractItemModel* GetSmilesOptionsModel () const;
+		IEmoticonResourceSource* GetCurrentEmoSource () const;
 		QAbstractItemModel* GetChatStylesOptionsModel ();
 
 		QSet<QByteArray> GetExpectedPluginClasses () const;

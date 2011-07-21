@@ -205,6 +205,13 @@ namespace Azoth
 		return SmilesOptionsModel_.get ();
 	}
 	
+	IEmoticonResourceSource* Core::GetCurrentEmoSource () const
+	{
+		const QString& pack = XmlSettingsManager::Instance ()
+				.property ("SmileIcons").toString ();
+		return SmilesOptionsModel_->GetSourceForOption (pack);
+	}
+	
 	QAbstractItemModel* Core::GetChatStylesOptionsModel()
 	{
 		return ChatStylesOptionsModel_.get ();
