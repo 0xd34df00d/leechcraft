@@ -25,6 +25,7 @@
 #include <QApplication>
 #include <QMainWindow>
 #include <QKeyEvent>
+#include <util/util.h>
 
 namespace LeechCraft
 {
@@ -33,6 +34,8 @@ namespace TabsList
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
+		
+		Util::InstallTranslator ("tabslist");
 
 		ShowList_ = new QAction (tr ("List of tabs"),
 				Proxy_->GetMainWindow ());
