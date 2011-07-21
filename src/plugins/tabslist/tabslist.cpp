@@ -110,7 +110,8 @@ namespace TabsList
 		ICoreTabWidget *tw = Proxy_->GetTabWidget ();
 
 		QWidget *widget = new QWidget (Proxy_->GetMainWindow (),
-				Qt::Tool | Qt::FramelessWindowHint);
+				Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+		widget->setAttribute (Qt::WA_TranslucentBackground);
 		widget->installEventFilter (new ListEventFilter (widget));
 		widget->setWindowModality (Qt::ApplicationModal);
 
