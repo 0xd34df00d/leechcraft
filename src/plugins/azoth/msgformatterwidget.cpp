@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "msgformatterwidget.h"
+#include <cmath>
 #include <boost/bind.hpp>
 #include <QVBoxLayout>
 #include <QTextEdit>
@@ -27,7 +28,12 @@
 #include <QDomDocument>
 #include <QFontDialog>
 #include <QActionGroup>
+#include <QGridLayout>
+#include <QToolButton>
 #include <QtDebug>
+#include "interfaces/iresourceplugin.h"
+#include "xmlsettingsmanager.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -40,7 +46,10 @@ namespace Azoth
 	, StockBlockFormat_ (Edit_->document ()->begin ().blockFormat ())
 	, StockFrameFormat_ (Edit_->document ()->rootFrame ()->frameFormat ())
 	, HasCustomFormatting_ (false)
+	, SmilesTooltip_ (new QWidget (this, Qt::Tool))
 	{
+		SmilesTooltip_->setWindowTitle (tr ("Emoticons"));
+		
 		setLayout (new QVBoxLayout ());
 		QToolBar *toolbar = new QToolBar ();
 		toolbar->setIconSize (QSize (16, 16));
@@ -127,6 +136,17 @@ namespace Azoth
 				SIGNAL (textChanged ()),
 				this,
 				SLOT (checkCleared ()));
+		
+		toolbar->addSeparator ();
+		
+		AddEmoticon_ = toolbar->addAction (tr ("Emoticons..."),
+				this,
+				SLOT (handleAddEmoticon ()));
+		AddEmoticon_->setProperty ("ActionIcon", "emoticons");
+		
+		XmlSettingsManager::Instance ().RegisterObject ("SmileIcons",
+				this, "handleEmoPackChanged");
+		handleEmoPackChanged ();
 	}
 
 	bool MsgFormatterWidget::HasCustomFormatting () const
@@ -269,6 +289,76 @@ namespace Azoth
 		BlockFormatActor (boost::bind (&QTextBlockFormat::setAlignment,
 						_1,
 						alignment));
+	}
+	
+	void MsgFormatterWidget::handleAddEmoticon ()
+	{
+		if (!SmilesTooltip_)
+			return;
+		
+		SmilesTooltip_->move (QCursor::pos ());
+		SmilesTooltip_->show ();
+
+		const QSize& size = SmilesTooltip_->size ();
+		const QPoint& newPos = QCursor::pos () - QPoint (0, size.height ());
+		SmilesTooltip_->move (newPos);
+	}
+	
+	void MsgFormatterWidget::handleEmoPackChanged ()
+	{
+		const QString& emoPack = XmlSettingsManager::Instance ()
+				.property ("SmileIcons").toString ();
+		AddEmoticon_->setEnabled (!emoPack.isEmpty ());
+
+		IEmoticonResourceSource *src = Core::Instance ().GetCurrentEmoSource ();
+		if (!src)
+			return;
+
+		const QHash<QImage, QString>& images = src->GetReprImages (emoPack);
+
+		QLayout *lay = SmilesTooltip_->layout ();
+		if (lay)
+		{
+			while (lay->count ())
+				delete lay->takeAt (0);
+			delete lay;
+		}
+		
+		QGridLayout *layout = new QGridLayout (SmilesTooltip_);
+		layout->setSpacing (0);
+		layout->setContentsMargins (1, 1, 1, 1);
+		const int numRows = std::sqrt (images.size ()) + 1;
+		int pos = 0;
+		for (QHash<QImage, QString>::const_iterator i = images.begin (),
+				end = images.end (); i != end; ++i)
+		{
+			const QIcon icon (QPixmap::fromImage (i.key ()));
+			QAction *action = new QAction (icon, *i, this);
+			action->setToolTip (*i);
+			action->setProperty ("Text", *i);
+			
+			connect (action,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (insertEmoticon ()));
+
+			QToolButton *button = new QToolButton ();
+			button->setDefaultAction (action);
+			
+			layout->addWidget (button, pos / numRows, pos % numRows);
+			++pos;
+		}
+		
+		SmilesTooltip_->setLayout (layout);
+	}
+	
+	void MsgFormatterWidget::insertEmoticon ()
+	{
+		const QString& text = sender ()->property ("Text").toString ();
+		Edit_->textCursor ().insertText (text + " ");
+		
+		if (SmilesTooltip_)
+			SmilesTooltip_->hide ();
 	}
 	
 	void MsgFormatterWidget::checkCleared ()
