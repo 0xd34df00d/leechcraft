@@ -117,6 +117,9 @@ namespace TabsList
 		QVBoxLayout *layout = new QVBoxLayout ();
 		layout->setSpacing (1);
 		layout->setContentsMargins (1, 1, 1, 1);
+		
+		const int currentIdx = tw->CurrentIndex ();
+		QToolButton *toFocus = 0;
 		for (int i = 0, count = tw->WidgetCount (); i < count; ++i)
 		{
 			QString title = tw->TabText (i);
@@ -138,6 +141,9 @@ namespace TabsList
 			button->setDefaultAction (action);
 			button->setToolButtonStyle (Qt::ToolButtonTextBesideIcon);
 			layout->addWidget (button);
+			
+			if (currentIdx == i)
+				toFocus = button;
 		}
 		
 		widget->setLayout (layout);
@@ -153,6 +159,9 @@ namespace TabsList
 		
 		widget->move (pos);
 		widget->show ();
+		
+		if (toFocus)
+			toFocus->setFocus ();
 	}
 	
 	void Plugin::navigateToTab ()
