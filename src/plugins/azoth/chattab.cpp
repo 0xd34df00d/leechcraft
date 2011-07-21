@@ -154,13 +154,6 @@ namespace Azoth
 					tr ("Unable to load style, "
 						"please check you've enabled at least one styles plugin.") +
 					"</h1>";
-		
-		data.replace ("BACKGROUNDCOLOR",
-				BgColor_.name ());
-		data.replace ("FOREGROUNDCOLOR",
-				QApplication::palette ().color (QPalette::Text).name ());
-		data.replace ("LINKCOLOR",
-				QApplication::palette ().color (QPalette::Link).name ());
 		Ui_.View_->setHtml (data);
 		
 		Q_FOREACH (IMessage *msg, HistoryMessages_)

@@ -20,6 +20,7 @@
 #include <QTextDocument>
 #include <QWebElement>
 #include <QWebFrame>
+#include <QApplication>
 #include <QtDebug>
 #include <util/resourceloader.h>
 #include <util/util.h>
@@ -83,7 +84,16 @@ namespace StandardStyles
 			return QString ();
 		}
 		
-		return dev->readAll ();
+		QString data = QString::fromUtf8 (dev->readAll ());
+		data.replace ("BACKGROUNDCOLOR",
+				QApplication::palette ().color (QPalette::Base).name ());
+		data.replace ("FOREGROUNDCOLOR",
+				QApplication::palette ().color (QPalette::Text).name ());
+		data.replace ("LINKCOLOR",
+				QApplication::palette ().color (QPalette::Link).name ());
+		data.replace ("HIGHLIGHTCOLOR",
+				Proxy_->GetSettingsManager ()->property ("HighlightColor").toString ());
+		return data;
 	}
 	
 	bool StandardStyleSource::AppendMessage (QWebFrame *frame,
