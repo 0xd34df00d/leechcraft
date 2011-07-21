@@ -92,7 +92,8 @@ namespace StandardStyles
 		data.replace ("LINKCOLOR",
 				QApplication::palette ().color (QPalette::Link).name ());
 		data.replace ("HIGHLIGHTCOLOR",
-				Proxy_->GetSettingsManager ()->property ("HighlightColor").toString ());
+				Proxy_->GetSettingsManager ()->
+						property ("HighlightColor").toString ());
 		return data;
 	}
 	
