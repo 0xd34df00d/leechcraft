@@ -87,7 +87,7 @@ namespace Keywords
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		return QIcon (":/plugins/poshuku/plugins/keywords/resources/images/keywords.svg");
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
