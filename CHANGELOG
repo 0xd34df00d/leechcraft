@@ -4,7 +4,28 @@ the rest.
 Links to the corresponding development digests are also given for the
 relevant blocks of changes, so one could easily lookup 
 
-!!! HEAD
+!!! 0.4.85
+! Devel digest #9 ( http://leechcraft.org/devel-digest-9 ):
+* Aggregator: more compatibility in fb2 generator.
+* Azoth: load last few messages on new chat sessiongit 
+* Azoth: actions for history & vcard on chat tab toolbar.
+* Azoth: emoticons chooser in message formatter toolbar.
+* Azoth: show number of MUC participants in chat tab header.
+* Azoth: fixed self status changes and handling.
+* Azoth: fixed leaking toolbars.
+* Azoth Acetamide: lots of stability fixes.
+* Azoth HiLi: don't check big message bodies now.
+* Azoth LastSeen: added new plugin for client-side last online/available
+  status date recording.
+* Azoth p100q: buttons for recommending and bookmarking are now
+  everywhere.
+* Azoth Xoox: fixed entity capabilities hash calculation.
+* Azoth Xoox: support CAPTCHAs.
+* Core: fixed tooltips leak.
+* Glance: moved this feature out from Core to a separate module.
+* ShellOpen: suggest opening entities via notification instead of dialog.
+* TabsList: new module for, well, a list of tabs.
+
 ! Devel digest #8 ( http://leechcraft.org/devel-digest-8 ):
 * Aggregator: allow to set custom book name & genres in fb2 export.
 * Aggregator: fixes for fb2 generator.
