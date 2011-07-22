@@ -738,7 +738,7 @@ namespace Azoth
 				body.replace ('\n', "<br />");
 				body.replace ("  ", "&nbsp; ");
 			}
-
+			
 			body = HandleSmiles (body);
 
 			proxy.reset (new Util::DefaultHookProxy);
@@ -774,13 +774,14 @@ namespace Azoth
 		const QString& img = QString ("<img src=\"%1\" title=\"%2\" />");
 		Q_FOREACH (const QString& str, src->GetEmoticonStrings (pack))
 		{
-			if (!body.contains (str))
+			const QString& escaped = Qt::escape (str);
+			if (!body.contains (escaped))
 				continue;
 			const QByteArray& rawData = src->GetImage (pack, str);
 			const QString& smileStr = img
 					.arg (QString ("data:image/png;base64," + rawData.toBase64 ()))
 					.arg (str);
-			body.replace (str, smileStr);
+			body.replace (escaped, smileStr);
 		}
 		
 		return body;
