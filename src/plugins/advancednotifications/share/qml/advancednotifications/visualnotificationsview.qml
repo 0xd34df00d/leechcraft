@@ -71,7 +71,8 @@ Rectangle {
 			ListView {
 				id: actionsListView
 
-				height: 20
+				anchors.top: contentsRow.bottom
+				anchors.topMargin: 5
 				anchors.left: eventRect.left
 				anchors.leftMargin: 5
 				anchors.bottom: eventRect.bottom
