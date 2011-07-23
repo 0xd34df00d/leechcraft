@@ -42,6 +42,8 @@ namespace AdvancedNotifications
 		void Handle (const Entity&);		
 		HandlersConfigurator* GetHandlersConfigurator () const;
 		
+		ICoreProxy_ptr GetProxy () const;
+		
 		QIcon GetIconForCategory (const QString&) const;
 	};
 }

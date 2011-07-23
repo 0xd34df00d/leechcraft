@@ -50,6 +50,11 @@ namespace AdvancedNotifications
 		return HandlersConfigurator_;
 	}
 	
+	ICoreProxy_ptr GeneralHandler::GetProxy () const
+	{
+		return Proxy_;
+	}
+	
 	QIcon GeneralHandler::GetIconForCategory (const QString& cat) const
 	{
 		const QString& name = "notificationcategory_" + Cat2IconName_.value (cat, "general");
