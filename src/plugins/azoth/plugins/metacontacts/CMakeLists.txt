@@ -9,6 +9,7 @@ SET (METACONTACTS_SRCS
 	metamessage.cpp
 	core.cpp
 	addtometacontactsdialog.cpp
+	managecontactsdialog.cpp
 	)
 SET (METACONTACTS_HEADERS
 	metacontacts.h
@@ -18,9 +19,11 @@ SET (METACONTACTS_HEADERS
 	metamessage.h
 	core.h
 	addtometacontactsdialog.h
+	managecontactsdialog.h
 	)
 SET (METACONTACTS_FORMS
 	addtometacontactsdialog.ui
+	managecontactsdialog.ui
 	)
 CreateTrVars ("azoth_metacontacts" "en;ru_RU;uk_UA" METACONTACTS_TRANSLATIONS METACONTACTS_COMPILED_TRANSLATIONS)
 QT4_WRAP_CPP (METACONTACTS_MOC_SRCS ${METACONTACTS_HEADERS})
