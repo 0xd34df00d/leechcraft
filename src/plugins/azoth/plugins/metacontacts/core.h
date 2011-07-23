@@ -51,7 +51,7 @@ namespace Metacontacts
 		
 		bool HandleRealEntryAddBegin (QObject*);
 		void AddRealEntry (QObject*);
-	private:
+
 		void ScheduleSaveEntries ();
 	private slots:
 		void saveEntries ();

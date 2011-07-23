@@ -28,6 +28,7 @@
 #include "metaaccount.h"
 #include "metamessage.h"
 #include "managecontactsdialog.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -480,6 +481,9 @@ namespace Metacontacts
 			return;
 		
 		const QList<QObject*>& newList = dia.GetObjects ();
+		if (newList == AvailableRealEntries_)
+			return;
+
 		QList<QObject*> removedContacts;
 		
 		Q_FOREACH (QObject *obj, AvailableRealEntries_)
@@ -487,13 +491,14 @@ namespace Metacontacts
 				removedContacts << obj;
 		
 		AvailableRealEntries_ = newList;
-		
+
 		Q_FOREACH (QObject *entryObj, removedContacts)
 			PerformRemoval (entryObj);
-			
-		emit availableVariantsChanged (Variants ());
-		
+
+		emit availableVariantsChanged (Variants ());		
 		emit statusChanged (GetStatus (QString ()), QString ());
+		
+		Core::Instance ().ScheduleSaveEntries ();
 	}
 }
 }
