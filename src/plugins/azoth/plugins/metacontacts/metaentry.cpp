@@ -22,9 +22,12 @@
 #include <QDateTime>
 #include <QVariant>
 #include <QImage>
+#include <QAction>
 #include <QtDebug>
+#include <util/util.h>
 #include "metaaccount.h"
 #include "metamessage.h"
+#include "managecontactsdialog.h"
 
 namespace LeechCraft
 {
@@ -37,6 +40,13 @@ namespace Metacontacts
 	, Account_ (account)
 	, ID_ (id)
 	{
+		ActionMCSep_ = Util::CreateSeparator (this);
+		ActionManageContacts_ = new QAction (tr ("Manage contacts..."),
+				this);
+		connect (ActionManageContacts_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleManageContacts ()));
 	}
 	
 	QStringList MetaEntry::GetRealEntries () const
@@ -229,6 +239,12 @@ namespace Metacontacts
 		QList<QAction*> result;
 		Q_FOREACH (QObject *entryObj, AvailableRealEntries_)
 			result << qobject_cast<ICLEntry*> (entryObj)->GetActions ();
+
+		if (!result.isEmpty ())
+			result << ActionMCSep_;
+		
+		result << ActionManageContacts_;
+		
 		return result;
 	}
 	
@@ -327,6 +343,33 @@ namespace Metacontacts
 				SIGNAL (locationChanged (const QString&)),
 				this,
 				SLOT (handleRealLocationChanged (const QString&)));
+	}
+	
+	void MetaEntry::PerformRemoval (QObject *entryObj)
+	{
+		QObjectList::iterator i = Messages_.begin ();
+		while (i < Messages_.end ())
+		{
+			MetaMessage *metaMsg = qobject_cast<MetaMessage*> (*i);
+			IMessage *origMsg = metaMsg->GetOriginalMessage ();
+			
+			if (origMsg->OtherPart () == entryObj)
+				i = Messages_.erase (i);
+			else
+				++i;
+		}
+		
+		Q_FOREACH (const QString& var, Variant2RealVariant_.keys ())
+		{
+			const QPair<QObject*, QString>& pair = Variant2RealVariant_ [var];
+			if (pair.first == entryObj)
+			{
+				Variant2RealVariant_.remove (var);
+				emit statusChanged (EntryStatus (SOffline, QString ()), var);
+			}
+		}
+		
+		emit availableVariantsChanged (Variants ());
 	}
 	
 	void MetaEntry::handleRealGotMessage (QObject *msgObj)
@@ -428,6 +471,29 @@ namespace Metacontacts
 	{
 		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
 		emit locationChanged (entry->GetEntryName () + '/' + var);
+	}
+	
+	void MetaEntry::handleManageContacts ()
+	{
+		ManageContactsDialog dia (AvailableRealEntries_);
+		if (dia.exec () == QDialog::Rejected)
+			return;
+		
+		const QList<QObject*>& newList = dia.GetObjects ();
+		QList<QObject*> removedContacts;
+		
+		Q_FOREACH (QObject *obj, AvailableRealEntries_)
+			if (!newList.contains (obj))
+				removedContacts << obj;
+		
+		AvailableRealEntries_ = newList;
+		
+		Q_FOREACH (QObject *entryObj, removedContacts)
+			PerformRemoval (entryObj);
+			
+		emit availableVariantsChanged (Variants ());
+		
+		emit statusChanged (GetStatus (QString ()), QString ());
 	}
 }
 }

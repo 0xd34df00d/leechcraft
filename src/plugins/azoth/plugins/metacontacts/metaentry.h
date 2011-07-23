@@ -51,6 +51,9 @@ namespace Metacontacts
 		QMap<QString, QPair<QObject*, QString> > Variant2RealVariant_;
 		
 		QList<QObject*> Messages_;
+		
+		QAction *ActionMCSep_;
+		QAction *ActionManageContacts_;
 	public:
 		MetaEntry (const QString&, MetaAccount*);
 		
@@ -92,6 +95,8 @@ namespace Metacontacts
 
 		void ConnectStandardSignals (QObject*);
 		void ConnectAdvancedSiganls (QObject*);
+	private:
+		void PerformRemoval (QObject*);
 	private slots:
 		void handleRealGotMessage (QObject*);
 		void handleRealStatusChanged (const EntryStatus&, const QString&);
@@ -104,6 +109,8 @@ namespace Metacontacts
 		void handleRealActivityChanged (const QString&);
 		void handleRealTuneChanged (const QString&);
 		void handleRealLocationChanged (const QString&);
+		
+		void handleManageContacts ();
 	signals:
 		// ICLEntry
 		void gotMessage (QObject*);
