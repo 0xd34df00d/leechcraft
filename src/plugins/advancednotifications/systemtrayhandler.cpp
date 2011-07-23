@@ -37,6 +37,31 @@ namespace AdvancedNotifications
 	{
 		return HTSystemTray;
 	}
+	
+	namespace
+	{
+		QPixmap GetPixmap (const Entity& e, ICoreProxy_ptr proxy)
+		{
+			QPixmap pixmap = e.Additional_ ["NotificationPixmap"].value<QPixmap> ();
+			if (pixmap.isNull ())
+			{
+				QString mi = "information";
+				switch (e.Additional_ ["Priority"].toInt ())
+				{
+					case PWarning_:
+						mi = "warning";
+						break;
+					case PCritical_:
+						mi = "error";
+					default:
+						break;
+				}
+				
+				pixmap = proxy->GetIcon (mi).pixmap (QSize (64, 64));
+			}
+			return pixmap;
+		}
+	}
 
 	void SystemTrayHandler::Handle (const Entity& e)
 	{
@@ -51,7 +76,6 @@ namespace AdvancedNotifications
 				EventData data;
 				data.Category_ = cat;
 				data.VisualPath_ = e.Additional_ ["org.LC.AdvNotifications.VisualPath"].toStringList ();
-				data.Pixmap_ = e.Additional_ ["NotificationPixmap"].value<QPixmap> ();
 				data.HandlingObject_ = e.Additional_ ["HandlingObject"].value<QObject_ptr> ();
 				data.Actions_ = e.Additional_ ["NotificationActions"].toStringList ();
 				Events_ [eventId] = data;
@@ -63,6 +87,9 @@ namespace AdvancedNotifications
 			else
 				Events_ [eventId].Count_ = e.Additional_.value ("org.LC.AdvNotifications.Count", 1).toInt ();
 			Events_ [eventId].ExtendedText_ = e.Additional_ ["org.LC.AdvNotifications.ExtendedText"].toString ();
+			Events_ [eventId].FullText_ = e.Additional_ ["org.LC.AdvNotifications.FullText"].toString ();
+			
+			Events_ [eventId].Pixmap_ = GetPixmap (e, GH_->GetProxy ());
 		}
 		else if (!Events_.remove (eventId))
 			return;

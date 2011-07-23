@@ -32,6 +32,7 @@ namespace AdvancedNotifications
 		QString Category_;
 		QStringList VisualPath_;
 		QString ExtendedText_;
+		QString FullText_;
 		QPixmap Pixmap_;
 
 		QObject_ptr HandlingObject_;
