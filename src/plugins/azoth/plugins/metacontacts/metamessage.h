@@ -52,6 +52,8 @@ namespace Metacontacts
 		void SetBody (const QString&);
 		QDateTime GetDateTime () const;
 		void SetDateTime (const QDateTime&);
+		
+		IMessage* GetOriginalMessage () const;
 	};
 }
 }
