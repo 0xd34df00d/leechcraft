@@ -2236,7 +2236,11 @@ namespace Azoth
 				msgString,
 				PInfo_);
 
-		QStandardItem *someItem = 0;
+		QStandardItem *someItem = Entry2Items_ [msg->GetMessageType () == IMessage::MTMUCMessage ?
+						parentCL : other].value (0);
+		const int count = someItem ?
+				someItem->data (CLRUnreadMsgCount).toInt () :
+				0;
 		if (msg->GetMessageType () == IMessage::MTMUCMessage)
 		{
 			BuildNotification (e, parentCL);
@@ -2245,19 +2249,18 @@ namespace Azoth
 					"org.LC.AdvNotifications.IM.MUCMessage";
 			e.Additional_ ["NotificationPixmap"] =
 					QVariant::fromValue<QPixmap> (QPixmap::fromImage (other->GetAvatar ()));
-			someItem = Entry2Items_ [parentCL].value (0);
+			e.Additional_ ["org.LC.AdvNotifications.FullText"] =
+				tr ("%n message(s) from", 0, count) + ' ' + other->GetEntryName ();
 		}
 		else
 		{
 			BuildNotification (e, other);
 			e.Additional_ ["org.LC.AdvNotifications.EventType"] =
 					"org.LC.AdvNotifications.IM.IncomingMessage";
-			someItem = Entry2Items_ [other].value (0);
+			e.Additional_ ["org.LC.AdvNotifications.FullText"] =
+				tr ("%n message(s) from", 0, count) + ' ' + other->GetEntryName ();
 		}
-		
-		const int count = someItem ?
-				someItem->data (CLRUnreadMsgCount).toInt () :
-				0;
+
 		e.Additional_ ["org.LC.AdvNotifications.Count"] = count;
 
 		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = tr ("%n message(s)", 0, count);
@@ -2368,6 +2371,8 @@ namespace Azoth
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] =
 				"org.LC.AdvNotifications.IM.AttentionDrawn";
 		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = tr ("Attention requested");
+		e.Additional_ ["org.LC.AdvNotifications.FullText"] = tr ("Attention requested by %1")
+				.arg (entry->GetEntryName ());
 		e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = text;
 
 		Util::NotificationActionHandler *nh =
