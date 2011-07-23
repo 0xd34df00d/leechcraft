@@ -78,4 +78,4 @@ TARGET_LINK_LIBRARIES (leechcraft_advancednotifications
 INSTALL (TARGETS leechcraft_advancednotifications DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 INSTALL (FILES advancednotificationssettings.xml DESTINATION ${LC_SETTINGS_DEST})
-INSTALL (FILES share/qml/visualnotificationsview.qml DESTINATION ${LC_QML_DEST})
+INSTALL (DIRECTORY share/qml/advancednotifications DESTINATION ${LC_QML_DEST})

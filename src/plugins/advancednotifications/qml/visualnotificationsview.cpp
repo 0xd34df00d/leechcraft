@@ -22,6 +22,7 @@
 #include <QDeclarativeError>
 #include <QtDebug>
 #include "eventproxyobject.h"
+#include <QApplication>
 
 namespace LeechCraft
 {
@@ -41,8 +42,10 @@ namespace AdvancedNotifications
 		
 		QStringList candidates;
 #ifdef Q_WS_X11
-		candidates << "/usr/local/share/leechcraft/qml/"
-				<< "/usr/share/leechcraft/qml/";
+		candidates << "/usr/local/share/leechcraft/qml/advancednotifications/"
+				<< "/usr/share/leechcraft/qml/advancednotifications/";
+#elif Q_WS_WIN32
+		candidates << QApplication::applicationDirPath () + "/share/qml/advancednotifications/";
 #endif
 
 		QString fileLocation;
