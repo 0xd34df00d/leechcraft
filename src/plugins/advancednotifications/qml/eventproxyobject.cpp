@@ -51,7 +51,9 @@ namespace AdvancedNotifications
 	
 	QString EventProxyObject::extendedText () const
 	{
-		return E_.ExtendedText_;
+		return E_.FullText_.isEmpty () ?
+				E_.ExtendedText_ :
+				E_.FullText_;
 	}
 	
 	QVariant EventProxyObject::eventActionsModel () const
