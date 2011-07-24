@@ -494,11 +494,11 @@ namespace Metacontacts
 
 		Q_FOREACH (QObject *entryObj, removedContacts)
 			PerformRemoval (entryObj);
+			
+		emit entriesRemoved (removedContacts);
 
 		emit availableVariantsChanged (Variants ());		
 		emit statusChanged (GetStatus (QString ()), QString ());
-		
-		Core::Instance ().ScheduleSaveEntries ();
 	}
 }
 }

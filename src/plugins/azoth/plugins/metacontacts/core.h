@@ -53,7 +53,10 @@ namespace Metacontacts
 		void AddRealEntry (QObject*);
 
 		void ScheduleSaveEntries ();
+	private:
+		void ConnectSignals (MetaEntry*);
 	private slots:
+		void handleEntriesRemoved (const QList<QObject*>&);
 		void saveEntries ();
 	signals:
 		void gotCLItems (const QList<QObject*>&);

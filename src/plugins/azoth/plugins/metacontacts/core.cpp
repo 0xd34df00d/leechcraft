@@ -90,6 +90,7 @@ namespace Metacontacts
 			}
 
 			MetaEntry *entry = new MetaEntry (id, acc);
+			ConnectSignals (entry);
 			entry->SetEntryName (name);
 			entry->SetGroups (settings.value ("Groups").toStringList ());
 			entry->SetRealEntries (reals);
@@ -167,6 +168,7 @@ namespace Metacontacts
 			
 			const QString& id = QUuid::createUuid ().toString ();
 			existingMeta = new MetaEntry (id, Account_);
+			ConnectSignals (existingMeta);
 			existingMeta->SetEntryName (name);
 			
 			Entries_ << existingMeta;
@@ -192,6 +194,31 @@ namespace Metacontacts
 				this,
 				SLOT (saveEntries ()));
 		SaveEntriesScheduled_ = true;
+	}
+	
+	void Core::ConnectSignals (MetaEntry *entry)
+	{
+		connect (entry,
+				SIGNAL (entriesRemoved (const QList<QObject*>&)),
+				this,
+				SLOT (handleEntriesRemoved (const QList<QObject*>&)));
+	}
+	
+	void Core::handleEntriesRemoved (const QList<QObject*>& entries)
+	{
+		Q_FOREACH (QObject *entryObj, entries)
+		{
+			ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+
+			AvailRealEntries_.remove (entry->GetEntryID ());
+
+			QObject *accObj = entry->GetParentAccount ();
+			QMetaObject::invokeMethod (accObj,
+					"gotCLItems",
+					Q_ARG (QList<QObject*>, QList<QObject*> () << entryObj));
+		}
+
+		ScheduleSaveEntries ();
 	}
 	
 	void Core::saveEntries ()

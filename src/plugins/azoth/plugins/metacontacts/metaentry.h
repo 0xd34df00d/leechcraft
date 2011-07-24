@@ -130,6 +130,9 @@ namespace Metacontacts
 		void activityChanged (const QString&);
 		void tuneChanged (const QString&);
 		void locationChanged (const QString&);
+		
+		// Own
+		void entriesRemoved (const QList<QObject*>&);
 	};
 }
 }
