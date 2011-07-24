@@ -272,9 +272,9 @@ namespace Azoth
 			return;
 		}
 		
-		const QString& text = tr ("%1 (%2 participants)")
-				.arg (GetEntry<ICLEntry> ()->GetEntryName ())
-				.arg (muc->GetParticipants ().size ());
+		const int parts = muc->GetParticipants ().size ();
+		const QString& text = tr ("%1 (%n participant(s))", 0, parts)
+				.arg (GetEntry<ICLEntry> ()->GetEntryName ());
 		Ui_.EntryInfo_->setText (text);
 	}
 	
