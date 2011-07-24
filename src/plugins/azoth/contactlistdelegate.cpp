@@ -151,33 +151,52 @@ namespace Azoth
 		QStyledItemDelegate::paint (painter, o, index);
 
 		const int textWidth = o.fontMetrics.width (index.data ().value<QString> () + " ");
-		if (textWidth <= r.width ())
+		const int rem = r.width () - textWidth;
+		if (rem < o.fontMetrics.width ("0/0"))
+			return;
+
+		const int visibleCount = index.model ()->rowCount (index);
+
+		const QAbstractItemModel *model = index.model ();
+		QModelIndex sourceIndex = index;
+		while (const QAbstractProxyModel *proxyModel = qobject_cast<const QAbstractProxyModel*> (model))
 		{
-			painter->save ();
-
-			const int visibleCount = index.model ()->rowCount (index);
-
-			const QAbstractItemModel *model = index.model ();
-			QModelIndex sourceIndex = index;
-			while (const QAbstractProxyModel *proxyModel = qobject_cast<const QAbstractProxyModel*> (model))
-			{
-				model = proxyModel->sourceModel ();
-				sourceIndex = proxyModel->mapToSource (sourceIndex);
-			}
-
-			const QString& str = QString (" (%1/%2)")
-					.arg (visibleCount)
-					.arg (model->rowCount (sourceIndex));
-
-			if (o.state & QStyle::State_Selected)
-				painter->setPen (o.palette.color (QPalette::HighlightedText));
-			painter->drawText (r.left () + textWidth, r.top () + CPadding,
-					o.fontMetrics.width (str), r.height () - 2 * CPadding,
-					Qt::AlignVCenter | Qt::AlignLeft,
-					str);
-
-			painter->restore ();
+			model = proxyModel->sourceModel ();
+			sourceIndex = proxyModel->mapToSource (sourceIndex);
 		}
+
+		const QString& str = QString (" %1/%2")
+				.arg (visibleCount)
+				.arg (model->rowCount (sourceIndex));
+				
+		if (rem < o.fontMetrics.width (str))
+			return;
+
+		painter->save ();
+
+		if (o.state & QStyle::State_Selected)
+			painter->setPen (o.palette.color (QPalette::HighlightedText));
+		
+		QFont font = painter->font ();
+		font.setItalic (true);
+		painter->setFont (font);
+
+		const QRect numRect (r.left () + textWidth - 1, r.top () + CPadding,
+				rem - 1, r.height () - 2 * CPadding);
+		
+		const QRect& br = painter->boundingRect (numRect,
+				Qt::AlignVCenter | Qt::AlignRight, str).adjusted (0, 0, 1, 0);
+		QPainterPath rectPath;
+		rectPath.addRoundedRect (br, 4, 4);
+		
+		painter->fillPath (rectPath, o.palette.color (QPalette::Background));
+		
+		painter->drawText (numRect, Qt::AlignVCenter | Qt::AlignRight, str);
+
+		painter->setPen (o.palette.color (QPalette::Dark));
+		painter->drawPath (rectPath);
+
+		painter->restore ();
 	}
 
 	void ContactListDelegate::DrawContact (QPainter *painter,
