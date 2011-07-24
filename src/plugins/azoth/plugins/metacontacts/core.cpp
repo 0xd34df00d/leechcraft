@@ -154,7 +154,7 @@ namespace Metacontacts
 		Q_FOREACH (MetaEntry *entry, allowed)
 			if (entry->GetRealEntries ().contains (real->GetEntryID ()))
 				allowed.removeAll (entry);
-		
+
 		AddToMetacontactsDialog dia (real, Entries_);
 		if (dia.exec () != QDialog::Accepted)
 			return;

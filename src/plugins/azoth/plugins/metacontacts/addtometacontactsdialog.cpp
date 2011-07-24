@@ -36,6 +36,8 @@ namespace Metacontacts
 				.arg (entry->GetEntryName ())
 				.arg (entry->GetHumanReadableID ()));
 		
+		Ui_.NewMetaname_->setText (entry->GetEntryName ());
+		
 		Q_FOREACH (MetaEntry *entry, metas)
 			Ui_.ExistingMeta_->addItem (entry->GetEntryName (),
 					QVariant::fromValue<QObject*> (entry));
