@@ -57,6 +57,7 @@ namespace Metacontacts
 	public:
 		MetaEntry (const QString&, MetaAccount*);
 		
+		QObjectList GetAvailEntryObjs () const;
 		QStringList GetRealEntries () const;
 		void SetRealEntries (const QStringList&);
 		void AddRealObject (ICLEntry*);
@@ -133,6 +134,7 @@ namespace Metacontacts
 		
 		// Own
 		void entriesRemoved (const QList<QObject*>&);
+		void shouldRemoveThis ();
 	};
 }
 }

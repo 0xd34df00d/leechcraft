@@ -17,8 +17,10 @@
  **********************************************************************/
 
 #include "metaaccount.h"
+#include <QtDebug>
 #include "core.h"
 #include "metaprotocol.h"
+#include "metaentry.h"
 
 namespace LeechCraft
 {
@@ -111,8 +113,19 @@ namespace Metacontacts
 	{
 	}
 
-	void MetaAccount::RemoveEntry (QObject*)
+	void MetaAccount::RemoveEntry (QObject *entryObj)
 	{
+		MetaEntry *entry = qobject_cast<MetaEntry*> (entryObj);
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to cast"
+					<< entryObj
+					<< "to MetaEntry";
+			return;
+		}
+
+		Core::Instance ().RemoveEntry (entry);
 	}
 
 	QObject* MetaAccount::GetTransferManager () const

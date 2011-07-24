@@ -51,12 +51,15 @@ namespace Metacontacts
 		
 		bool HandleRealEntryAddBegin (QObject*);
 		void AddRealEntry (QObject*);
+		
+		void RemoveEntry (MetaEntry*);
 
 		void ScheduleSaveEntries ();
 	private:
 		void ConnectSignals (MetaEntry*);
 	private slots:
 		void handleEntriesRemoved (const QList<QObject*>&);
+		void handleEntryShouldBeRemoved ();
 		void saveEntries ();
 	signals:
 		void gotCLItems (const QList<QObject*>&);

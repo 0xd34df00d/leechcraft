@@ -50,6 +50,11 @@ namespace Metacontacts
 				SLOT (handleManageContacts ()));
 	}
 	
+	QObjectList MetaEntry::GetAvailEntryObjs () const
+	{
+		return AvailableRealEntries_;
+	}
+	
 	QStringList MetaEntry::GetRealEntries () const
 	{
 		QStringList result = UnavailableRealEntries_;
@@ -496,6 +501,13 @@ namespace Metacontacts
 			PerformRemoval (entryObj);
 			
 		emit entriesRemoved (removedContacts);
+		
+		if (AvailableRealEntries_.isEmpty () &&
+				UnavailableRealEntries_.isEmpty ())
+		{
+			emit shouldRemoveThis ();
+			return;
+		}
 
 		emit availableVariantsChanged (Variants ());		
 		emit statusChanged (GetStatus (QString ()), QString ());

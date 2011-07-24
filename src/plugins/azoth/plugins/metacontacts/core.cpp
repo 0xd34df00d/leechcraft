@@ -185,6 +185,16 @@ namespace Metacontacts
 		ScheduleSaveEntries ();
 	}
 	
+	void Core::RemoveEntry (MetaEntry *entry)
+	{
+		Entries_.removeAll (entry);
+		emit removedCLItems (QObjectList () << entry);
+		
+		handleEntriesRemoved (entry->GetAvailEntryObjs ());
+		
+		entry->deleteLater ();
+	}
+	
 	void Core::ScheduleSaveEntries ()
 	{
 		if (SaveEntriesScheduled_)
@@ -219,6 +229,21 @@ namespace Metacontacts
 		}
 
 		ScheduleSaveEntries ();
+	}
+	
+	void Core::handleEntryShouldBeRemoved ()
+	{
+		MetaEntry *entry = qobject_cast<MetaEntry*> (sender ());
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to cast"
+					<< sender ()
+					<< "to MetaEntry*";
+			return;
+		}
+		
+		RemoveEntry (entry);
 	}
 	
 	void Core::saveEntries ()
