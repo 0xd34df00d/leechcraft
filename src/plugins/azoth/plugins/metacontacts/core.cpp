@@ -36,6 +36,7 @@ namespace Metacontacts
 	: SaveEntriesScheduled_ (false)
 	, Account_ (0)
 	{
+		qRegisterMetaType<QList<QObject*> > ("QList<QObject*>");
 	}
 
 	Core& Core::Instance ()
