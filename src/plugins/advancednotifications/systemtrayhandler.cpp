@@ -177,7 +177,8 @@ namespace AdvancedNotifications
 			menu->addSeparator ();
 			menu->addAction (data.ExtendedText_)->setEnabled (false);
 		}
-		
+
+#ifdef HAVE_QML
 		Q_FOREACH (QSystemTrayIcon *icon, Category2Icon_.values ())
 		{
 			VisualNotificationsView *view = Icon2NotificationView_ [icon];
@@ -189,6 +190,7 @@ namespace AdvancedNotifications
 			if (events.isEmpty ())
 				view->hide ();
 		}
+#endif
 		
 		Q_FOREACH (QSystemTrayIcon *icon, icons2hide)
 			icon->hide ();
