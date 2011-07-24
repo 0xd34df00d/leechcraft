@@ -74,6 +74,7 @@ namespace AdvancedNotifications
 			if (!Events_.contains (eventId))
 			{
 				EventData data;
+				data.EventID_ = eventId;
 				data.Category_ = cat;
 				data.VisualPath_ = e.Additional_ ["org.LC.AdvNotifications.VisualPath"].toStringList ();
 				data.HandlingObject_ = e.Additional_ ["HandlingObject"].value<QObject_ptr> ();
@@ -112,7 +113,12 @@ namespace AdvancedNotifications
 				SLOT (handleTrayActivated (QSystemTrayIcon::ActivationReason)));
 		
 #ifdef HAVE_QML
-		Icon2NotificationView_ [trayIcon] = new VisualNotificationsView;
+		VisualNotificationsView *vnv = new VisualNotificationsView;
+		connect (vnv,
+				SIGNAL (actionTriggered (const QString&, int)),
+				this,
+				SLOT (handleActionTriggered (const QString&, int)));
+		Icon2NotificationView_ [trayIcon] = vnv;
 #endif
 	}
 	
@@ -172,6 +178,18 @@ namespace AdvancedNotifications
 			menu->addAction (data.ExtendedText_)->setEnabled (false);
 		}
 		
+		Q_FOREACH (QSystemTrayIcon *icon, Category2Icon_.values ())
+		{
+			VisualNotificationsView *view = Icon2NotificationView_ [icon];
+			if (!view->isVisible ())
+				continue;
+
+			const QList<EventData>& events = EventsForIcon_ [icon];
+			view->SetEvents (events);
+			if (events.isEmpty ())
+				view->hide ();
+		}
+		
 		Q_FOREACH (QSystemTrayIcon *icon, icons2hide)
 			icon->hide ();
 	}
@@ -180,6 +198,12 @@ namespace AdvancedNotifications
 	{
 		const QString& event = sender ()->property ("EventID").toString ();
 		const int index = sender ()->property ("Index").toInt ();
+		
+		handleActionTriggered (event, index);
+	}
+	
+	void SystemTrayHandler::handleActionTriggered (const QString& event, int index)
+	{
 		if (!Events_.contains (event))
 		{
 			qWarning () << Q_FUNC_INFO
@@ -216,8 +240,11 @@ namespace AdvancedNotifications
 		}
 
 		VisualNotificationsView *view = Icon2NotificationView_ [trayIcon];
-		view->SetEvents (EventsForIcon_ [trayIcon]);
-		view->move (QCursor::pos ());
+		if (!view->isVisible ())
+		{
+			view->SetEvents (EventsForIcon_ [trayIcon]);
+			view->move (QCursor::pos ());
+		}
 		view->setVisible (!view->isVisible ());
 #endif
 	}

@@ -25,6 +25,7 @@ Rectangle {
 				id: actionText
 
 				text: model.modelData.actionText
+				onClicked: { model.modelData.actionSelected() }
 			}
 		}
 	}
@@ -63,8 +64,8 @@ Rectangle {
 
 					text: extendedText
 					color: "lightgrey"
-					anchors.left: eventPic.right
-					anchors.leftMargin: 5
+					//anchors.left: eventPic.right
+					//anchors.leftMargin: 5
 				}
 			}
 

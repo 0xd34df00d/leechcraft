@@ -36,6 +36,8 @@ namespace AdvancedNotifications
 		QString actionText () const;
 	signals:
 		void actionTextChanged ();
+		
+		void actionSelected ();
 	};
 }
 }

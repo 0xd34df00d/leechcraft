@@ -58,6 +58,7 @@ namespace AdvancedNotifications
 		void RebuildState ();
 	private slots:
 		void handleActionTriggered ();
+		void handleActionTriggered (const QString&, int);
 		void dismissNotification ();
 		
 		void handleTrayActivated (QSystemTrayIcon::ActivationReason);

@@ -72,7 +72,14 @@ namespace AdvancedNotifications
 		
 		LastEvents_.clear ();
 		Q_FOREACH (const EventData& ed, events)
-			LastEvents_ << new EventProxyObject (ed, this);
+		{
+			EventProxyObject *obj = new EventProxyObject (ed, this);
+			connect (obj,
+					SIGNAL (actionTriggered (const QString&, int)),
+					this,
+					SIGNAL (actionTriggered (const QString&, int)));
+			LastEvents_ << obj;
+		}
 
 		rootContext ()->setContextProperty ("eventsModel",
 				QVariant::fromValue<QList<QObject*> > (LastEvents_));
