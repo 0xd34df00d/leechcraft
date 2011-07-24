@@ -212,6 +212,10 @@ namespace Metacontacts
 				SIGNAL (entriesRemoved (const QList<QObject*>&)),
 				this,
 				SLOT (handleEntriesRemoved (const QList<QObject*>&)));
+		connect (entry,
+				SIGNAL (shouldRemoveThis ()),
+				this,
+				SLOT (handleEntryShouldBeRemoved ()));
 	}
 	
 	void Core::handleEntriesRemoved (const QList<QObject*>& entries)
