@@ -19,6 +19,8 @@
 #include "systemtrayhandler.h"
 #include <interfaces/structures.h>
 #include <QMenu>
+#include <QApplication>
+#include <QDesktopWidget>
 #include "generalhandler.h"
 
 #ifdef HAVE_QML
@@ -245,7 +247,19 @@ namespace AdvancedNotifications
 		if (!view->isVisible ())
 		{
 			view->SetEvents (EventsForIcon_ [trayIcon]);
-			view->move (QCursor::pos ());
+
+			QPoint pos = QCursor::pos ();
+			const QRect& geometry = qApp->desktop ()->screenGeometry (pos);
+			const QSize& size = view->size ();
+			const bool dropDown = pos.y () < geometry.height () / 2;
+			const bool dropRight = pos.x () + size.width () < geometry.width ();
+			
+			if (!dropDown)
+				pos.ry () -= size.height ();
+			if (!dropRight)
+				pos.rx () -= size.width ();
+			
+			view->move (pos);
 		}
 		view->setVisible (!view->isVisible ());
 #endif
