@@ -120,7 +120,7 @@ namespace Acetamide
 
 	void IrcServerHandler::Add2ChannelsQueue (const ChannelOptions& ch)
 	{
-		if (!ChannelsQueue_.contains (ch))
+		if (!ChannelsQueue_.contains (ch) && !ch.ChannelName_.isEmpty ())
 			ChannelsQueue_ << ch;
 	}
 
@@ -139,12 +139,11 @@ namespace Acetamide
 				msg->GetOtherVariant ());
 	}
 
-	void IrcServerHandler::SendCommandMessage2Server (const QString& msg)
+	void IrcServerHandler::SendCommandMessage2Server (const QStringList& list)
 	{
-		QString mess = msg;
-		if (msg.startsWith ('/'))
-			mess = msg.mid (1);
-		LastSendId_ = QString ();
+		QString mess = list.join (" ");
+		if (mess.startsWith ('/'))
+			mess = mess.mid (1);
 		QString commandMessage = EncodedMessage (mess, IMessage::DOut);
 		QStringList commandWithParams = commandMessage.split (' ');
 		if (Name2Command_.contains (commandWithParams.at (0).toLower ()))
@@ -152,9 +151,7 @@ namespace Acetamide
 		else
 			IrcParser_->RawCommand (commandWithParams);
 
-		IrcMessage *mesg = CreateMessage (IMessage::MTEventMessage,
-				ServerID_, EncodedMessage (mess, IMessage::DIn));
-		ServerCLEntry_->HandleMessage (mesg);
+		ShowAnswer (mess);
 	}
 
 	void IrcServerHandler::ParseMessageForCommand (const QString& msg,
@@ -688,6 +685,9 @@ namespace Acetamide
 				boost::bind (&IrcParser::WallopsCommand, IrcParser_, _1);
 		Name2Command_ ["ison"] =
 				boost::bind (&IrcParser::IsonCommand, IrcParser_, _1);
+		Name2Command_ ["msg"] =
+				boost::bind (&IrcServerHandler::SendCommandMessage2Server,
+						this, _1);
 	}
 
 	void IrcServerHandler::NickCmdError ()
@@ -765,6 +765,11 @@ namespace Acetamide
 		Q_FOREACH (ServerParticipantEntry_ptr spe, Nick2Entry_.values ())
 			if (spe->IsPrivateChat ())
 				spe->closePrivateChat (true);
+	}
+
+	void IrcServerHandler::SetLastSendID (const QString& str)
+	{
+		LastSendId_ = str;
 	}
 
 	ServerParticipantEntry_ptr IrcServerHandler::CreateParticipantEntry (const QString& nick)
@@ -906,6 +911,7 @@ namespace Acetamide
 	void IrcServerHandler::SetISupport (const QString&,
 			const QList<std::string>& params, const QString&)
 	{
+		JoinFromQueue ();
 		Q_FOREACH (std::string str, params)
 		{
 			QString string = QString::fromUtf8 (str.c_str ());
@@ -1254,9 +1260,7 @@ namespace Acetamide
 			const QList<std::string>& params, const QString& msg)
 	{
 		ShowAnswer (msg);
-		if (params.first () == "motd")
-			JoinFromQueue ();
-		else if (msg.contains ("End of /NAMES list"))
+		if (msg.contains ("End of /NAMES list"))
 		{
 			QString channelID = (QString::fromUtf8 (params.last ().c_str ())
 				+ "@" + ServerOptions_.ServerName_).toLower ();

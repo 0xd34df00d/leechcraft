@@ -194,6 +194,9 @@ namespace Acetamide
 	void IrcAccount::JoinServer (const ServerOptions& server,
 			const ChannelOptions& channel)
 	{
+		if (server.ServerName_.isEmpty ())
+			return;
+
 		QString serverId = server.ServerName_ + ":" +
 				QString::number (server.ServerPort_);
 		if (!ClientConnection_->IsServerExists (serverId))
