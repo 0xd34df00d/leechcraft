@@ -120,7 +120,7 @@ namespace Acetamide
 
 	void IrcServerHandler::Add2ChannelsQueue (const ChannelOptions& ch)
 	{
-		if (!ChannelsQueue_.contains (ch))
+		if (!ChannelsQueue_.contains (ch) && !ch.ChannelName_.isEmpty ())
 			ChannelsQueue_ << ch;
 	}
 
@@ -906,6 +906,7 @@ namespace Acetamide
 	void IrcServerHandler::SetISupport (const QString&,
 			const QList<std::string>& params, const QString&)
 	{
+		JoinFromQueue ();
 		Q_FOREACH (std::string str, params)
 		{
 			QString string = QString::fromUtf8 (str.c_str ());
@@ -1254,9 +1255,7 @@ namespace Acetamide
 			const QList<std::string>& params, const QString& msg)
 	{
 		ShowAnswer (msg);
-		if (params.first () == "motd")
-			JoinFromQueue ();
-		else if (msg.contains ("End of /NAMES list"))
+		if (msg.contains ("End of /NAMES list"))
 		{
 			QString channelID = (QString::fromUtf8 (params.last ().c_str ())
 				+ "@" + ServerOptions_.ServerName_).toLower ();
