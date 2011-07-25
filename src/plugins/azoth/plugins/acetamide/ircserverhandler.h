@@ -81,7 +81,7 @@ namespace Acetamide
 		void Add2ChannelsQueue (const ChannelOptions&);
 		void SendPublicMessage (const QString&, const QString&);
 		void SendPrivateMessage (IrcMessage*);
-		void SendCommandMessage2Server (const QString&);
+		void SendCommandMessage2Server (const QStringList&);
 		void ParseMessageForCommand (const QString&, const QString&);
 		QList<QObject*> GetCLEntries () const;
 		void LeaveChannel (const QString&, const QString&);
@@ -105,6 +105,7 @@ namespace Acetamide
 		void SetConsoleEnabled (bool);
 		void LeaveAllChannel ();
 		void CloseAllPrivateChats ();
+		void SetLastSendID (const QString&);
 	private:
 		void SendToConsole (IMessage::Direction, const QString&);
 		void InitCommandResponses ();
