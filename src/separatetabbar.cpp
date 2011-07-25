@@ -38,6 +38,7 @@ namespace LeechCraft
 		setExpanding (false);
 		setIconSize (QSize (15, 15));
 		setContextMenuPolicy (Qt::CustomContextMenu);
+		setElideMode (Qt::ElideRight);
 
 		CloseSide_ = (QTabBar::ButtonPosition)this->style ()->
 				styleHint (QStyle::SH_TabBar_CloseButtonPosition);
@@ -110,8 +111,15 @@ namespace LeechCraft
 	QSize SeparateTabBar::tabSizeHint (int index) const
 	{
 		QSize size = QTabBar::tabSizeHint (index);
-		if (index == count () - 1 && IsLastTab_)
+		const int tc = count ();
+		if (index == tc - 1 && IsLastTab_)
 			size.setWidth (30);
+		else if (tc > 5)
+		{
+			const int target = 100 + 100 / tc;
+			if (size.width () > target)
+				size.setWidth (target);
+		}
 
 		return size;
 	}
