@@ -34,6 +34,7 @@
 #include "xmlsettingsmanager.h"
 #include "channelpublicmessage.h"
 #include "ircerrorhandler.h"
+#include "ircserversocket.h"
 
 namespace LeechCraft
 {
@@ -249,11 +250,10 @@ namespace Acetamide
 		if (ServerConnectionState_ != NotConnected)
 			return;
 
-		TcpSocket_ptr.reset (new QTcpSocket (this));
-		InitSocket ();
-		ServerConnectionState_ = InProgress;
-		TcpSocket_ptr->connectToHost (ServerOptions_.ServerName_,
+		Socket_ = new IrcServerSocket (this);
+		Socket_->ConnectToHost (ServerOptions_.ServerName_,
 				ServerOptions_.ServerPort_);
+		ServerConnectionState_ = InProgress;
 	}
 
 	void IrcServerHandler::DisconnectFromServer ()
@@ -261,7 +261,7 @@ namespace Acetamide
 		LeaveAllChannel ();
 		CloseAllPrivateChats ();
 		if (ServerConnectionState_ != NotConnected)
-			TcpSocket_ptr->disconnectFromHost ();
+			Socket_->DisconnectFromHost ();
 	}
 
 	bool IrcServerHandler::JoinChannel (const ChannelOptions& channel)
@@ -303,22 +303,7 @@ namespace Acetamide
 	void IrcServerHandler::SendCommand (const QString& cmd)
 	{
 		SendToConsole (IMessage::DOut, cmd.trimmed ());
-
-		if (!TcpSocket_ptr->isWritable ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< TcpSocket_ptr->error ()
-					<< TcpSocket_ptr->errorString ();
-			return;
-		}
-
-		if (TcpSocket_ptr->write (cmd.toAscii ()) == -1)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< TcpSocket_ptr->error ()
-					<< TcpSocket_ptr->errorString ();
-			return;
-		}
+		Socket_->Send (cmd);
 	}
 
 	void IrcServerHandler::IncomingMessage2Server ()
@@ -770,6 +755,35 @@ namespace Acetamide
 	void IrcServerHandler::SetLastSendID (const QString& str)
 	{
 		LastSendId_ = str;
+	}
+
+	void IrcServerHandler::ReadReply (const QString& msg)
+	{
+		SendToConsole (IMessage::DIn, msg.trimmed ());
+		if (!IrcParser_->ParseMessage (msg))
+			return;
+
+		QString cmd = IrcParser_->GetIrcMessageOptions ().Command_.toLower ();
+		if (ErrorHandler_->IsError (cmd.toInt ()))
+		{
+			ErrorHandler_->HandleError (cmd.toInt (),
+					IrcParser_->GetIrcMessageOptions ().Parameters_,
+					IrcParser_->GetIrcMessageOptions ().Message_);
+			if (cmd == "433")
+			{
+				if (OldNickName_.isEmpty ())
+					OldNickName_ = NickName_;
+				else if (!Account_->GetNickNames ().contains (OldNickName_))
+					OldNickName_ = Account_->GetNickNames ().first ();
+				NickCmdError ();
+			}
+		}
+		else if (LastSendId_.isEmpty ())
+			IncomingMessage2Server ();
+		else if (!LastSendId_.isEmpty () && !Command2Action_.contains (cmd))
+			IncomingMessage2Channel (LastSendId_);
+
+		IncomingMessage2Channel ();
 	}
 
 	ServerParticipantEntry_ptr IrcServerHandler::CreateParticipantEntry (const QString& nick)
@@ -1514,63 +1528,9 @@ namespace Acetamide
 		ShowAnswer (cmd + ":" + msg);
 	}
 
-	void IrcServerHandler::InitSocket ()
-	{
-		connect (TcpSocket_ptr.get (),
-				SIGNAL (readyRead ()),
-				this,
-				SLOT (readReply ()));
-
-		connect (TcpSocket_ptr.get (),
-				SIGNAL (connected ()),
-				this,
-				SLOT (connectionEstablished ()));
-
-		connect (TcpSocket_ptr.get (),
-				SIGNAL (disconnected ()),
-				this,
-				SLOT (connectionClosed ()));
-
-		connect (TcpSocket_ptr.get (),
-				SIGNAL (error (QAbstractSocket::SocketError)),
-				Account_->GetClientConnection ().get (),
-				SLOT (handleError (QAbstractSocket::SocketError)));
-	}
-
 	bool IrcServerHandler::IsCTCPMessage (const QString& msg)
 	{
 		return msg.startsWith ('\001') && msg.endsWith ('\001');
-	}
-
-	void IrcServerHandler::readReply ()
-	{
-		while (TcpSocket_ptr->canReadLine ())
-		{
-			QString str = TcpSocket_ptr->readLine ();
-			SendToConsole (IMessage::DIn, str.trimmed ());
-			if (!IrcParser_->ParseMessage (str))
-				return;
-
-			QString cmd = IrcParser_->GetIrcMessageOptions ().Command_.toLower ();
-			if (ErrorHandler_->IsError (cmd.toInt ()))
-			{
-				ErrorHandler_->HandleError (cmd.toInt (), 
-						IrcParser_->GetIrcMessageOptions ().Parameters_,
-						IrcParser_->GetIrcMessageOptions ().Message_);
-				if (cmd == "433")
-				{
-					if (OldNickName_.isEmpty ())
-						OldNickName_ = NickName_;
-					NickCmdError ();
-				}
-			}
-			else if (LastSendId_.isEmpty ())
-				IncomingMessage2Server ();
-			else if (!LastSendId_.isEmpty () && !Command2Action_.contains (cmd))
-				IncomingMessage2Channel (LastSendId_);
-
-			IncomingMessage2Channel ();
-		}
 	}
 
 	void IrcServerHandler::connectionEstablished ()
@@ -1585,7 +1545,7 @@ namespace Acetamide
 	{
 		ServerConnectionState_ = NotConnected;
 		ServerCLEntry_->SetStatus (EntryStatus (SOffline, QString ()));
-		TcpSocket_ptr->close ();
+		Socket_->Close ();
 		emit disconnected (ServerID_);
 	}
 
