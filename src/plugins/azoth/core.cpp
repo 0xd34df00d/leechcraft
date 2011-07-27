@@ -117,6 +117,8 @@ namespace Azoth
 	, CallManager_ (new CallManager)
 	, EventsNotifier_ (new EventsNotifier)
 	{
+		FillANFields ();
+
 #ifdef ENABLE_CRYPT
 		connect (QCAEventHandler_.get (),
 				SIGNAL (eventReady (int, const QCA::Event&)),
@@ -193,6 +195,11 @@ namespace Azoth
 	ICoreProxy_ptr Core::GetProxy () const
 	{
 		return Proxy_;
+	}
+	
+	QList<ANFieldData> Core::GetANFields () const
+	{
+		return ANFields_;
 	}
 
 	Util::ResourceLoader* Core::GetResourceLoader (Core::ResourceLoaderType type) const
@@ -1729,6 +1736,11 @@ namespace Azoth
 					<< "empty result for"
 					<< opt;
 		return src;
+	}
+	
+	void Core::FillANFields ()
+	{
+		ANFieldData data;
 	}
 
 	void Core::handleMucJoinRequested ()

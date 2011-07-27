@@ -27,6 +27,7 @@
 #ifdef ENABLE_CRYPT
 #include <QtCrypto>
 #endif
+#include <interfaces/ianemitter.h>
 #include "interfaces/iinfo.h"
 #include "interfaces/azothcommon.h"
 #include "interfaces/imucentry.h"
@@ -67,6 +68,7 @@ namespace Azoth
 		Q_ENUMS (CLRoles CLEntryType CLEntryActionArea)
 
 		ICoreProxy_ptr Proxy_;
+		QList<ANFieldData> ANFields_;
 
 		QRegExp LinkRegexp_;
 		QRegExp ImageRegexp_;
@@ -168,6 +170,8 @@ namespace Azoth
 
 		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;
+		
+		QList<ANFieldData> GetANFields () const;
 
 		Util::ResourceLoader* GetResourceLoader (ResourceLoaderType) const;
 		QAbstractItemModel* GetSmilesOptionsModel () const;
@@ -400,6 +404,8 @@ namespace Azoth
 		void AddEntryTo (ICLEntry*, QStandardItem*);
 		
 		IChatStyleResourceSource* GetCurrentChatStyle () const;
+		
+		void FillANFields ();
 	public slots:
 		/** Initiates MUC join by calling the corresponding protocol
 		 * plugin's IProtocol::InitiateMUCJoin() function.

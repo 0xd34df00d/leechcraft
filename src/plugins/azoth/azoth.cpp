@@ -284,6 +284,11 @@ namespace Azoth
 		}
 	}
 	
+	QList<ANFieldData> Plugin::GetANFields () const
+	{
+		return Core::Instance ().GetANFields ();
+	}
+	
 	void Plugin::handleTasksTreeSelectionCurrentRowChanged (const QModelIndex& index, const QModelIndex&)
 	{
 		QModelIndex si = Core::Instance ().GetProxy ()->MapToSource (index);

@@ -28,6 +28,7 @@
 #include <interfaces/ijobholder.h>
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/ientityhandler.h>
+#include <interfaces/ianemitter.h>
 
 namespace LeechCraft
 {
@@ -44,9 +45,17 @@ namespace Azoth
 				 , public IJobHolder
 				 , public IActionsExporter
 				 , public IEntityHandler
+				 , public IANEmitter
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPluginReady IHaveTabs IHaveSettings IJobHolder IActionsExporter IEntityHandler)
+		Q_INTERFACES (IInfo
+				IPluginReady
+				IHaveTabs
+				IHaveSettings
+				IJobHolder
+				IActionsExporter
+				IEntityHandler
+				IANEmitter)
 
 		MainWidget *MW_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
@@ -77,6 +86,8 @@ namespace Azoth
 	
 		TabClasses_t GetTabClasses () const;
 		void TabOpenRequested (const QByteArray&);
+		
+		QList<ANFieldData> GetANFields () const;
 	public slots:
 		void handleTasksTreeSelectionCurrentRowChanged (const QModelIndex&, const QModelIndex&);
 	private slots:
