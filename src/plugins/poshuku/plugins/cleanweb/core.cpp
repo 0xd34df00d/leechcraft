@@ -41,6 +41,8 @@
 #include "flashonclickwhitelist.h"
 #include "userfiltersmodel.h"
 
+Q_DECLARE_METATYPE (QWebFrame*);
+
 namespace LeechCraft
 {
 namespace Poshuku
@@ -226,11 +228,13 @@ namespace CleanWeb
 		};
 	};
 
-	LeechCraft::Poshuku::CleanWeb::Core::Core ()
+	Core::Core ()
 	: FlashOnClickPlugin_ (0)
 	, FlashOnClickWhitelist_ (new FlashOnClickWhitelist ())
 	, UserFilters_ (new UserFiltersModel (this))
 	{
+		qRegisterMetaType<QWebFrame*> ("QWebFrame*");
+
 		HeaderLabels_ << tr ("Name")
 			<< tr ("Last updated")
 			<< tr ("URL");
