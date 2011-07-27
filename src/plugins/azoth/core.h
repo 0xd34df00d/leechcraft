@@ -489,6 +489,14 @@ namespace Azoth
 		/** Handles nick conflict.
 		 */
 		void handleNicknameConflict (const QString&);
+		
+		/** Handles kicks.
+		 */
+		void handleBeenKicked (const QString&);
+		
+		/** Handles bans.
+		 */
+		void handleBeenBanned (const QString&);
 
 		void handleItemSubscribed (QObject*, const QString&);
 		void handleItemUnsubscribed (QObject*, const QString&);

@@ -854,6 +854,14 @@ namespace Azoth
 					SIGNAL (nicknameConflict (const QString&)),
 					this,
 					SLOT (handleNicknameConflict (const QString&)));
+			connect (clEntry->GetObject (),
+					SIGNAL (beenKicked (const QString&)),
+					this,
+					SLOT (handleBeenKicked (const QString&)));
+			connect (clEntry->GetObject (),
+					SIGNAL (beenBanned (const QString&)),
+					this,
+					SLOT (handleBeenBanned (const QString&)));
 		}
 		
 		if (qobject_cast<IAdvancedCLEntry*> (clEntry->GetObject ()))
@@ -2470,6 +2478,54 @@ namespace Azoth
 		
 		entry->SetNick (newNick);
 		entry->Join ();
+	}
+	
+	void Core::handleBeenKicked (const QString& reason)
+	{
+		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
+		IMUCEntry *mucEntry = qobject_cast<IMUCEntry*> (sender ());
+		if (!entry || !mucEntry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< sender ()
+					<< "doesn't implement ICLEntry or IMUCEntry";
+			return;
+		}
+		
+		const QString& text = reason.isEmpty () ?
+				tr ("You have been kicked from %1. Do you want to rejoin?")
+					.arg (entry->GetEntryName ()) :
+				tr ("You have been kicked from %1: %2. Do you want to rejoin?")
+					.arg (entry->GetEntryName ())
+					.arg (reason);
+					
+		if (QMessageBox::question (0,
+				"LeechCraft Azoth",
+				text,
+				QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+			mucEntry->Join ();
+	}
+	
+	void Core::handleBeenBanned (const QString& reason)
+	{
+		ICLEntry* entry = qobject_cast<ICLEntry*> (sender ());
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< sender ()
+					<< "doesn't implement ICLEntry";
+			return;
+		}
+		
+		const QString& text = reason.isEmpty () ?
+				tr ("You have been banned from %1.")
+					.arg (entry->GetEntryName ()) :
+				tr ("You have been banned from %1: %2.")
+					.arg (entry->GetEntryName ())
+					.arg (reason);
+		QMessageBox::warning (0,
+				"LeechCraft Azoth",
+				text);
 	}
 
 	void Core::NotifyWithReason (QObject *entryObj, const QString& msg,
