@@ -1740,7 +1740,35 @@ namespace Azoth
 	
 	void Core::FillANFields ()
 	{
-		ANFieldData data;
+		const QStringList commonFields = QStringList ("org.LC.AdvNotifications.IM.MUCHighlightMessage")
+						<< "org.LC.AdvNotifications.IM.MUCMessage"
+						<< "org.LC.AdvNotifications.IM.IncomingMessage"
+						<< "org.LC.AdvNotifications.IM.AttentionDrawn"
+						<< "org.LC.AdvNotifications.IM.StatusChange";
+
+		ANFields_ << ANFieldData ("org.LC.Plugins.Azoth.Msg",
+				tr ("Message body"),
+				tr ("Original human-readable message body."),
+				QVariant::String,
+				commonFields);
+
+		ANFields_ << ANFieldData ("org.LC.Plugins.Azoth.SenderName",
+				tr ("Sender name"),
+				tr ("Human-readable name of the sender of the message."),
+				QVariant::String,
+				commonFields);
+		
+		ANFields_ << ANFieldData ("org.LC.Plugins.Azoth.SenderID",
+				tr ("Sender ID"),
+				tr ("Human-readable ID of the sender (protocol-specific)."),
+				QVariant::String,
+				commonFields);
+		
+		ANFields_ << ANFieldData ("org.LC.Plugins.Azoth.SenderGroups",
+				tr ("Sender groups"),
+				tr ("Groups to which the sender belongs."),
+				QVariant::String,
+				commonFields);
 	}
 
 	void Core::handleMucJoinRequested ()
