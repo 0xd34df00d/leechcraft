@@ -34,6 +34,10 @@ namespace AdvancedNotifications
 		Q_OBJECT
 		
 		Ui::NotificationRulesWidget Ui_;
+		
+		QMap<QString, QString> Cat2HR_;
+		QMap<QString, QString> Type2HR_;
+		
 		QList<NotificationRule> Rules_;
 		QStandardItemModel *Model_;
 	public:

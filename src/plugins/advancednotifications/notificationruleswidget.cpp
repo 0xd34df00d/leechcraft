@@ -56,6 +56,18 @@ namespace AdvancedNotifications
 		Ui_.setupUi (this);
 		Ui_.RulesTree_->setModel (Model_);
 		
+		Cat2HR_ [CatIM] = tr ("Instant messaging");
+		
+		Type2HR_ [TypeIMAttention] = tr ("Attention request");
+		Type2HR_ [TypeIMIncFile] = tr ("Incoming file transfer request");
+		Type2HR_ [TypeIMIncMsg] = tr ("Incoming chat message");
+		Type2HR_ [TypeIMMUCHighlight] = tr ("MUC highlight");
+		Type2HR_ [TypeIMMUCMsg] = tr ("General MUC message");
+		Type2HR_ [TypeIMStatusChange] = tr ("Contact status change");
+		Type2HR_ [TypeIMSubscrGrant] = tr ("Authorization granted");
+		Type2HR_ [TypeIMSubscrRevoke] = tr ("Authorization revoked");
+		Type2HR_ [TypeIMSubscrRequest] = tr ("Authorization requested");
+		
 		qRegisterMetaType<NotificationRule> ("LeechCraft::AdvancedNotifications::NotificationRule");
 		qRegisterMetaTypeStreamOperators<NotificationRule> ("LeechCraft::AdvancedNotifications::NotificationRule");
 		
@@ -103,10 +115,14 @@ namespace AdvancedNotifications
 		
 		Q_FOREACH (const NotificationRule& rule, Rules_)
 		{
+			QStringList hrTypes;
+			Q_FOREACH (const QString& type, rule.GetTypes ())
+				hrTypes << Type2HR_ [type];
+
 			QList<QStandardItem*> items;
 			items << new QStandardItem (rule.GetName ());
-			items << new QStandardItem (rule.GetCategory ());
-			items << new QStandardItem (rule.GetTypes ().join ("; "));
+			items << new QStandardItem (Cat2HR_ [rule.GetCategory ()]);
+			items << new QStandardItem (hrTypes.join ("; "));
 			Model_->appendRow (items);
 		}
 	}
