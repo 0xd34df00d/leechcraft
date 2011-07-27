@@ -235,8 +235,9 @@ namespace AdvancedNotifications
 		
 		const int row = index.row ();
 		Rules_ [row] = rule;
-		Model_->removeRow (row);
-		Model_->insertRow (row, RuleToRow (rule));
+		int i = 0;
+		Q_FOREACH (QStandardItem *item, RuleToRow (rule))
+			Model_->setItem (row, i++, item);
 		
 		SaveSettings ();
 	}
