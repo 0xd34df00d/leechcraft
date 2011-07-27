@@ -18,6 +18,7 @@
 
 #include "notificationruleswidget.h"
 #include <QSettings>
+#include <QStandardItemModel>
 #include <interfaces/ianemitter.h>
 #include "xmlsettingsmanager.h"
 
@@ -50,8 +51,10 @@ namespace AdvancedNotifications
 
 	NotificationRulesWidget::NotificationRulesWidget (QWidget *parent)
 	: QWidget (parent)
+	, Model_ (new QStandardItemModel (this))
 	{
 		Ui_.setupUi (this);
+		Ui_.RulesTree_->setModel (Model_);
 		
 		qRegisterMetaType<NotificationRule> ("LeechCraft::AdvancedNotifications::NotificationRule");
 		qRegisterMetaTypeStreamOperators<NotificationRule> ("LeechCraft::AdvancedNotifications::NotificationRule");
@@ -87,6 +90,25 @@ namespace AdvancedNotifications
 		
 		if (Rules_.isEmpty ())
 			LoadDefaultRules ();
+		
+		ResetModel ();
+	}
+	
+	void NotificationRulesWidget::ResetModel ()
+	{
+		Model_->clear ();
+		Model_->setHorizontalHeaderLabels (QStringList (tr ("Name"))
+				<< tr ("Category")
+				<< tr ("Type"));
+		
+		Q_FOREACH (const NotificationRule& rule, Rules_)
+		{
+			QList<QStandardItem*> items;
+			items << new QStandardItem (rule.GetName ());
+			items << new QStandardItem (rule.GetCategory ());
+			items << new QStandardItem (rule.GetTypes ().join ("; "));
+			Model_->appendRow (items);
+		}
 	}
 	
 	void NotificationRulesWidget::SaveSettings () const

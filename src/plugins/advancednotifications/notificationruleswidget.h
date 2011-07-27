@@ -23,6 +23,8 @@
 #include "ui_notificationruleswidget.h"
 #include "notificationrule.h"
 
+class QStandardItemModel;
+
 namespace LeechCraft
 {
 namespace AdvancedNotifications
@@ -33,11 +35,13 @@ namespace AdvancedNotifications
 		
 		Ui::NotificationRulesWidget Ui_;
 		QList<NotificationRule> Rules_;
+		QStandardItemModel *Model_;
 	public:
 		NotificationRulesWidget (QWidget* = 0);
 	private:
 		void LoadDefaultRules ();
 		void LoadSettings ();
+		void ResetModel ();
 		void SaveSettings () const;
 	};
 }
