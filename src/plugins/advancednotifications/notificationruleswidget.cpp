@@ -177,7 +177,7 @@ namespace AdvancedNotifications
 				Qt::Checked : Qt::Unchecked);
 		Ui_.NotifySysTray_->setCheckState ((methods & NMTray) ?
 				Qt::Checked : Qt::Unchecked);
-		Ui_.NotifySound_->setCheckState ((methods & NMAudio) ?
+		Ui_.NotifyAudio_->setCheckState ((methods & NMAudio) ?
 				Qt::Checked : Qt::Unchecked);
 	}
 	
@@ -194,6 +194,21 @@ namespace AdvancedNotifications
 			item->setCheckState (0, Qt::Unchecked);
 			Ui_.EventTypes_->addTopLevelItem (item);
 		}
+	}
+	
+	void NotificationRulesWidget::on_NotifyVisual__stateChanged (int state)
+	{
+		Ui_.PageVisual_->setEnabled (state == Qt::Checked);
+	}
+	
+	void NotificationRulesWidget::on_NotifySysTray__stateChanged (int state)
+	{
+		Ui_.PageTray_->setEnabled (state == Qt::Checked);
+	}
+	
+	void NotificationRulesWidget::on_NotifyAudio__stateChanged (int state)
+	{
+		Ui_.PageAudio_->setEnabled (state == Qt::Checked);
 	}
 }
 }

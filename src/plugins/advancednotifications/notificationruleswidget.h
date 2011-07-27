@@ -51,6 +51,9 @@ namespace AdvancedNotifications
 	private slots:
 		void handleItemSelected (const QModelIndex&);
 		void on_EventCat__activated (int);
+		void on_NotifyVisual__stateChanged (int);
+		void on_NotifySysTray__stateChanged (int);
+		void on_NotifyAudio__stateChanged (int);
 	};
 }
 }
