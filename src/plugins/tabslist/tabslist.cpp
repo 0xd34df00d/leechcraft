@@ -126,7 +126,7 @@ namespace TabsList
 		QToolButton *toFocus = 0;
 		for (int i = 0, count = tw->WidgetCount (); i < count; ++i)
 		{
-			QString title = tw->TabText (i);
+			QString title = QString ("[%1] ").arg (i + 1) + tw->TabText (i);
 			if (title.size () > 100)
 				title = title.left (100) + "...";
 			QAction *action = new QAction (tw->TabIcon (i),
