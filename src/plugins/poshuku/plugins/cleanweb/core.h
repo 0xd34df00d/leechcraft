@@ -161,6 +161,7 @@ namespace CleanWeb
 		void handleJobError (int, IDownload::Error);
 		void delayedRemoveElements (QWebFrame*, const QString&);
 		void moreDelayedRemoveElements ();
+		void handleFrameDestroyed ();
 	signals:
 		void delegateEntity (const LeechCraft::Entity&,
 				int*, QObject**);

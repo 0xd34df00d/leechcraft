@@ -931,6 +931,11 @@ namespace CleanWeb
 					this,
 					SLOT (moreDelayedRemoveElements ()),
 					Qt::UniqueConnection);
+			connect (frame,
+					SIGNAL (destroyed (QObject*)),
+					this,
+					SLOT (handleFrameDestroyed ()),
+					Qt::UniqueConnection);
 			MoreDelayedURLs_ [frame] << url;
 		}
 	}
@@ -948,6 +953,13 @@ namespace CleanWeb
 			else
 				qWarning () << Q_FUNC_INFO << "not found" << url;
 		}
+		
+		MoreDelayedURLs_.remove (frame);
+	}
+	
+	void Core::handleFrameDestroyed ()
+	{
+		MoreDelayedURLs_.remove (static_cast<QWebFrame*> (sender ()));
 	}
 }
 }
