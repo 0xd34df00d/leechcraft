@@ -133,26 +133,64 @@ namespace AdvancedNotifications
 				<< tr ("Type"));
 		
 		Q_FOREACH (const NotificationRule& rule, Rules_)
+			Model_->appendRow (RuleToRow (rule));
+	}
+	
+	NotificationRule NotificationRulesWidget::GetRuleFromUI () const
+	{
+		QStringList types;
+		for (int i = 0; i < Ui_.EventTypes_->topLevelItemCount (); ++i)
 		{
-			QStringList hrTypes;
-			Q_FOREACH (const QString& type, rule.GetTypes ())
-				hrTypes << Type2HR_ [type];
-
-			QList<QStandardItem*> items;
-			items << new QStandardItem (rule.GetName ());
-			items << new QStandardItem (Cat2HR_ [rule.GetCategory ()]);
-			items << new QStandardItem (hrTypes.join ("; "));
-			Model_->appendRow (items);
+			QTreeWidgetItem *item = Ui_.EventTypes_->topLevelItem (i);
+			if (item->checkState (0) == Qt::Checked)
+				types << item->data (0, Qt::UserRole).toString ();
 		}
+		
+		if (types.isEmpty () ||
+				Ui_.RuleName_->text ().isEmpty ())
+			return NotificationRule ();
+		
+		NotificationRule rule (Ui_.RuleName_->text (),
+				Ui_.EventCat_->itemData (Ui_.EventCat_->currentIndex ()).toString (),
+				types);
+
+		NotificationMethods methods = NMNone;
+		if (Ui_.NotifyVisual_->checkState () == Qt::Checked)
+			methods |= NMVisual;
+		if (Ui_.NotifySysTray_->checkState () == Qt::Checked)
+			methods |= NMTray;
+		if (Ui_.NotifyAudio_->checkState () == Qt::Checked)
+			methods |= NMAudio;
+		rule.SetMethods (methods);
+		
+		return rule;
+	}
+	
+	QList<QStandardItem*> NotificationRulesWidget::RuleToRow (const NotificationRule& rule) const
+	{
+		QStringList hrTypes;
+		Q_FOREACH (const QString& type, rule.GetTypes ())
+			hrTypes << Type2HR_ [type];
+
+		QList<QStandardItem*> items;
+		items << new QStandardItem (rule.GetName ());
+		items << new QStandardItem (Cat2HR_ [rule.GetCategory ()]);
+		items << new QStandardItem (hrTypes.join ("; "));
+		return items;
 	}
 	
 	void NotificationRulesWidget::SaveSettings () const
 	{
+		/* Don't save settings until the rest of stuff is working and we
+		 * have a sane set of default rules.
+		 * 
+		 * 
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_AdvancedNotifications");
 		settings.beginGroup ("rules");
 		settings.setValue ("RulesList", QVariant::fromValue<QList<NotificationRule> > (Rules_));
 		settings.endGroup ();
+		*/
 	}
 	
 	void NotificationRulesWidget::handleItemSelected (const QModelIndex& index)
@@ -187,7 +225,20 @@ namespace AdvancedNotifications
 	
 	void NotificationRulesWidget::on_UpdateRule__released ()
 	{
+		const QModelIndex& index = Ui_.RulesTree_->currentIndex ();
+		if (!index.isValid ())
+			return;
 		
+		const NotificationRule& rule = GetRuleFromUI ();
+		if (rule.IsNull ())
+			return;
+		
+		const int row = index.row ();
+		Rules_ [row] = rule;
+		Model_->removeRow (row);
+		Model_->insertRow (row, RuleToRow (rule));
+		
+		SaveSettings ();
 	}
 
 	void NotificationRulesWidget::on_RemoveRule__released ()
@@ -198,6 +249,8 @@ namespace AdvancedNotifications
 		
 		Model_->removeRow (index.row ());
 		Rules_.removeAt (index.row ());
+		
+		SaveSettings ();
 	}
 	
 	void NotificationRulesWidget::on_EventCat__activated (int idx)

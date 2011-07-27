@@ -24,6 +24,7 @@
 #include "notificationrule.h"
 
 class QStandardItemModel;
+class QStandardItem;
 
 namespace LeechCraft
 {
@@ -47,6 +48,8 @@ namespace AdvancedNotifications
 		void LoadDefaultRules ();
 		void LoadSettings ();
 		void ResetModel ();
+		NotificationRule GetRuleFromUI () const;
+		QList<QStandardItem*> RuleToRow (const NotificationRule&) const;
 		void SaveSettings () const;
 	private slots:
 		void handleItemSelected (const QModelIndex&);
