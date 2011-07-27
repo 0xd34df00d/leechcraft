@@ -53,10 +53,14 @@ Rectangle {
 				anchors.top: eventRect.top
 				anchors.leftMargin: 2
 				anchors.topMargin: 2
+				
+				height: (eventText.height > 32 ? eventText.height : 32)
 
 				Image {
 					id: eventPic
 					source: image
+					
+					height: 32
 				}
 
 				Text {
