@@ -114,9 +114,10 @@ namespace LeechCraft
 		const int tc = count ();
 		if (index == tc - 1 && IsLastTab_)
 			size.setWidth (30);
-		else if (tc > 5)
+		else
 		{
-			const int target = 100 + 100 / tc;
+			const int target = std::max (100,
+					this->size ().width () / tc);
 			if (size.width () > target)
 				size.setWidth (target);
 		}
