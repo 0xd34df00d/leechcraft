@@ -19,7 +19,9 @@
 #ifndef PLUGINS_ADVANCEDNOTIFICATIONS_NOTIFICATIONRULESWIDGET_H
 #define PLUGINS_ADVANCEDNOTIFICATIONS_NOTIFICATIONRULESWIDGET_H
 #include <QWidget>
+#include <QList>
 #include "ui_notificationruleswidget.h"
+#include "notificationrule.h"
 
 namespace LeechCraft
 {
@@ -30,8 +32,13 @@ namespace AdvancedNotifications
 		Q_OBJECT
 		
 		Ui::NotificationRulesWidget Ui_;
+		QList<NotificationRule> Rules_;
 	public:
 		NotificationRulesWidget (QWidget* = 0);
+	private:
+		void LoadDefaultRules ();
+		void LoadSettings ();
+		void SaveSettings () const;
 	};
 }
 }
