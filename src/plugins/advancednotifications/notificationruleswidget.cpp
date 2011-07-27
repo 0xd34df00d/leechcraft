@@ -181,6 +181,25 @@ namespace AdvancedNotifications
 				Qt::Checked : Qt::Unchecked);
 	}
 	
+	void NotificationRulesWidget::on_AddRule__released ()
+	{
+	}
+	
+	void NotificationRulesWidget::on_UpdateRule__released ()
+	{
+		
+	}
+
+	void NotificationRulesWidget::on_RemoveRule__released ()
+	{
+		const QModelIndex& index = Ui_.RulesTree_->currentIndex ();
+		if (!index.isValid ())
+			return;
+		
+		Model_->removeRow (index.row ());
+		Rules_.removeAt (index.row ());
+	}
+	
 	void NotificationRulesWidget::on_EventCat__activated (int idx)
 	{
 		const QString& catId = Ui_.EventCat_->itemData (idx).toString ();
