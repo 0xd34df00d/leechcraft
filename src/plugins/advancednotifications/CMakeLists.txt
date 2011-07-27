@@ -30,6 +30,7 @@ SET (SRCS
 	handlersconfigurator.cpp
 	notificationruleswidget.cpp
 	xmlsettingsmanager.cpp
+	notificationrule.cpp
 	)
 SET (HEADERS
 	advancednotifications.h
@@ -39,6 +40,7 @@ SET (HEADERS
 	handlersconfigurator.h
 	notificationruleswidget.h
 	xmlsettingsmanager.h
+	notificationrule.h
 	)
 SET (FORMS
 	notificationruleswidget.ui
