@@ -221,6 +221,8 @@ namespace AdvancedNotifications
 	
 	void NotificationRulesWidget::on_AddRule__released ()
 	{
+		Model_->insertRow (0, RuleToRow (NotificationRule ()));
+		Rules_.prepend (NotificationRule ());
 	}
 	
 	void NotificationRulesWidget::on_UpdateRule__released ()
