@@ -19,7 +19,10 @@
 #include "advancednotifications.h"
 #include <QIcon>
 #include <interfaces/entitytesthandleresult.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "generalhandler.h"
+#include "xmlsettingsmanager.h"
+#include "notificationruleswidget.h"
 
 namespace LeechCraft
 {
@@ -28,6 +31,12 @@ namespace AdvancedNotifications
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
+		
+		SettingsDialog_.reset (new Util::XmlSettingsDialog ());
+		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
+				"advancednotificationssettings.xml");
+		NotificationRulesWidget *nrw = new NotificationRulesWidget;
+		SettingsDialog_->SetCustomWidget ("RulesWidget", nrw);
 		
 		GeneralHandler_.reset (new GeneralHandler (proxy));
 	}
@@ -74,6 +83,11 @@ namespace AdvancedNotifications
 	void Plugin::Handle (Entity e)
 	{
 		GeneralHandler_->Handle (e);
+	}
+	
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return SettingsDialog_;
 	}
 }
 }

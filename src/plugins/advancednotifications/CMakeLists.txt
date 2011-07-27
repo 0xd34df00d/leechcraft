@@ -28,6 +28,8 @@ SET (SRCS
 	concretehandlerbase.cpp
 	systemtrayhandler.cpp
 	handlersconfigurator.cpp
+	notificationruleswidget.cpp
+	xmlsettingsmanager.cpp
 	)
 SET (HEADERS
 	advancednotifications.h
@@ -35,6 +37,11 @@ SET (HEADERS
 	concretehandlerbase.h
 	systemtrayhandler.h
 	handlersconfigurator.h
+	notificationruleswidget.h
+	xmlsettingsmanager.h
+	)
+SET (FORMS
+	notificationruleswidget.ui
 	)
 
 IF (QT_QTDECLARATIVE_FOUND)
@@ -56,6 +63,7 @@ SET (RESOURCES advancednotificationsresources.qrc)
 
 CreateTrVars ("advancednotifications" "en;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
+QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
 ADD_CUSTOM_COMMAND (OUTPUT
@@ -70,6 +78,7 @@ ADD_LIBRARY (leechcraft_advancednotifications SHARED
 	${SRCS}
 	${MOC_SRCS}
 	${RCCS}
+	${UIS_H}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_advancednotifications
 	${QT_LIBRARIES}

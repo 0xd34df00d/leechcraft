@@ -16,46 +16,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_ADVANCEDNOTIFICATIONS_H
-#define PLUGINS_ADVANCEDNOTIFICATIONS_ADVANCEDNOTIFICATIONS_H
-#include <boost/shared_ptr.hpp>
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/ientityhandler.h>
-#include <interfaces/ihavesettings.h>
+#include "xmlsettingsmanager.h"
+#include <QCoreApplication>
 
 namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
-	class GeneralHandler;
-
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IEntityHandler
-				 , public IHaveSettings
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IEntityHandler IHaveSettings)
-		
-		ICoreProxy_ptr Proxy_;
-		Util::XmlSettingsDialog_ptr SettingsDialog_;
-		boost::shared_ptr<GeneralHandler> GeneralHandler_;
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-		
-		EntityTestHandleResult CouldHandle (const Entity&) const;
-		void Handle (Entity);
-		
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-	};
-}
-}
+		Util::BaseSettingsManager::Init ();
+	}
 
-#endif
+	XmlSettingsManager& XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager xsm;
+		return xsm;
+	}
+
+	QSettings* XmlSettingsManager::BeginSettings () const
+	{
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_AdvancedNotifications");
+		return settings;
+	}
+
+	void XmlSettingsManager::EndSettings (QSettings*) const
+	{
+	}
+}
+}
