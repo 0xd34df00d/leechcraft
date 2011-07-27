@@ -20,6 +20,7 @@
 #define INTERFACES_IANEMITTER_H
 #include <QtPlugin>
 #include <QVariant>
+#include <QStringList>
 
 namespace LeechCraft
 {
@@ -29,6 +30,20 @@ namespace LeechCraft
 		QString Name_;
 		QString Description_;
 		QVariant::Type Type_;
+		QStringList EventTypes_;
+		
+		ANFieldData (const QString& id,
+				const QString& name,
+				const QString& description,
+				QVariant::Type type,
+				QStringList events)
+		: ID_ (id)
+		, Name_ (name)
+		, Description_ (description)
+		, Type_ (type)
+		, EventTypes_ (events)
+		{
+		}
 	};
 }
 
