@@ -120,9 +120,11 @@ namespace Acetamide
 		void entryGenerallyChanged ();
 
 		void nicknameConflict (const QString&);
+		void beenKicked (const QString&);
+		void beenBanned (const QString&);
 	};
-};
-};
-};
+}
+}
+}
 
 #endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_CHANNELCLENTRY_H

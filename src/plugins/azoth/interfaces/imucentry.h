@@ -207,6 +207,28 @@ namespace Azoth
 		 * room.
 		 */
 		virtual void nicknameConflict (const QString& usedNick) = 0;
+		
+		/** @brief Notifies about participant being kicked.
+		 * 
+		 * This signal should be emitted whenever our user gets kicked
+		 * from this room.
+		 * 
+		 * @note This function is expected to be a signal.
+		 * 
+		 * @param[out] reason The optional reason message.
+		 */
+		virtual void beenKicked (const QString& reason) = 0;
+		
+		/** @brief Notifies about participant being banned.
+		 * 
+		 * This signal should be emitted whenever our user gets banned
+		 * from this room.
+		 * 
+		 * @note This function is expected to be a signal.
+		 * 
+		 * @param[out] reason The optional reason message.
+		 */
+		virtual void beenBanned (const QString& reason) = 0;
 	};
 
 	Q_DECLARE_OPERATORS_FOR_FLAGS (IMUCEntry::MUCFeatures);

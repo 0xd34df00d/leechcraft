@@ -133,6 +133,8 @@ namespace Xoox
 		void gotNewParticipants (const QList<QObject*>&);
 		void mucSubjectChanged (const QString&);
 		void nicknameConflict (const QString&);
+		void beenKicked (const QString&);
+		void beenBanned (const QString&);
 	};
 }
 }
