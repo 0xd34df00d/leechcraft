@@ -69,7 +69,8 @@ namespace LeechCraft
 				this,
 				Title_);
 
-		if (color == Color_)
+		if (color == Color_ ||
+				!color.isValid ())
 			return;
 
 		SetCurrentColor (color);
