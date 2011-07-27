@@ -150,10 +150,8 @@ namespace Azoth
 	
 	void ChatTabsManager::HandleEntryRemoved (ICLEntry *entry)
 	{
-		qDebug () << "Entry removed";
 		if (entry->GetEntryType () == ICLEntry::ETPrivateChat)
 		{
-			qDebug () << "would update muc tab";
 			QObject *mucObj = entry->GetParentCLEntry ();
 			ICLEntry *muc = qobject_cast<ICLEntry*> (mucObj);
 			UpdateMUCTab (muc);
