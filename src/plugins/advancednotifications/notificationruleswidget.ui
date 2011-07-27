@@ -103,14 +103,32 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
-           <widget class="QComboBox" name="EventType_"/>
-          </item>
           <item row="4" column="1">
            <widget class="QCheckBox" name="NotifyVisual_">
             <property name="text">
              <string>Visual</string>
             </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QTreeWidget" name="EventTypes_">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="rootIsDecorated">
+             <bool>false</bool>
+            </property>
+            <attribute name="headerVisible">
+             <bool>false</bool>
+            </attribute>
+            <column>
+             <property name="text">
+              <string notr="true">1</string>
+             </property>
+            </column>
            </widget>
           </item>
          </layout>

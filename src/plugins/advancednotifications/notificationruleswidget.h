@@ -49,6 +49,7 @@ namespace AdvancedNotifications
 		void ResetModel ();
 		void SaveSettings () const;
 	private slots:
+		void handleItemSelected (const QModelIndex&);
 		void on_EventCat__activated (int);
 	};
 }

@@ -53,9 +53,6 @@ namespace AdvancedNotifications
 	: QWidget (parent)
 	, Model_ (new QStandardItemModel (this))
 	{
-		Ui_.setupUi (this);
-		Ui_.RulesTree_->setModel (Model_);
-		
 		Cat2HR_ [CatIM] = tr ("Instant messaging");
 		
 		Type2HR_ [TypeIMAttention] = tr ("Attention request");
@@ -77,6 +74,14 @@ namespace AdvancedNotifications
 				<< TypeIMSubscrGrant
 				<< TypeIMSubscrRequest
 				<< TypeIMSubscrRevoke;
+				
+		Ui_.setupUi (this);
+		Ui_.RulesTree_->setModel (Model_);
+		
+		connect (Ui_.RulesTree_->selectionModel (),
+				SIGNAL (currentChanged (QModelIndex, QModelIndex)),
+				this,
+				SLOT (handleItemSelected (QModelIndex)));
 				
 		Q_FOREACH (const QString& cat, Cat2HR_.keys ())
 			Ui_.EventCat_->addItem (Cat2HR_ [cat], cat);
@@ -150,13 +155,45 @@ namespace AdvancedNotifications
 		settings.endGroup ();
 	}
 	
+	void NotificationRulesWidget::handleItemSelected (const QModelIndex& index)
+	{
+		const NotificationRule& rule = Rules_.value (index.row ());
+		
+		const int catIdx = Ui_.EventCat_->findData (rule.GetCategory ());
+		Ui_.EventCat_->setCurrentIndex (std::max (catIdx, 0));
+		
+		const QStringList& types = rule.GetTypes ();
+		for (int i = 0; i < Ui_.EventTypes_->topLevelItemCount (); ++i)
+		{
+			QTreeWidgetItem *item = Ui_.EventTypes_->topLevelItem (i);
+			const bool cont = types.contains (item->data (0, Qt::UserRole).toString ());
+			item->setCheckState (0, cont ? Qt::Checked : Qt::Unchecked);
+		}
+		
+		Ui_.RuleName_->setText (rule.GetName ());
+
+		const NotificationMethods methods = rule.GetMethods ();
+		Ui_.NotifyVisual_->setCheckState ((methods & NMVisual) ?
+				Qt::Checked : Qt::Unchecked);
+		Ui_.NotifySysTray_->setCheckState ((methods & NMTray) ?
+				Qt::Checked : Qt::Unchecked);
+		Ui_.NotifySound_->setCheckState ((methods & NMAudio) ?
+				Qt::Checked : Qt::Unchecked);
+	}
+	
 	void NotificationRulesWidget::on_EventCat__activated (int idx)
 	{
 		const QString& catId = Ui_.EventCat_->itemData (idx).toString ();
-		Ui_.EventType_->clear ();
+		Ui_.EventTypes_->clear ();
 		
 		Q_FOREACH (const QString& type, Cat2Types_ [catId])
-			Ui_.EventType_->addItem (Type2HR_ [type], type);
+		{
+			const QString& hr = Type2HR_ [type];
+			QTreeWidgetItem *item = new QTreeWidgetItem (QStringList (hr));
+			item->setData (0, Qt::UserRole, type);
+			item->setCheckState (0, Qt::Unchecked);
+			Ui_.EventTypes_->addTopLevelItem (item);
+		}
 	}
 }
 }
