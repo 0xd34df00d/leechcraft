@@ -40,6 +40,8 @@ namespace AdvancedNotifications
 		NotificationRule (const QString& name,
 				const QString& cat, const QStringList& types);
 		
+		bool IsNull () const;
+		
 		QString GetName () const;
 		void SetName (const QString&);
 		

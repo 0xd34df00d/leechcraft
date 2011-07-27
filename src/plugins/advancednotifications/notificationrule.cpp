@@ -38,6 +38,13 @@ namespace AdvancedNotifications
 	{
 	}
 	
+	bool NotificationRule::IsNull () const
+	{
+		return Name_.isEmpty () ||
+				Category_.isEmpty () ||
+				Types_.isEmpty ();
+	}
+	
 	QString NotificationRule::GetName () const
 	{
 		return Name_;
