@@ -68,6 +68,20 @@ namespace AdvancedNotifications
 		Type2HR_ [TypeIMSubscrRevoke] = tr ("Authorization revoked");
 		Type2HR_ [TypeIMSubscrRequest] = tr ("Authorization requested");
 		
+		Cat2Types_ [CatIM] << TypeIMAttention
+				<< TypeIMIncFile
+				<< TypeIMIncMsg
+				<< TypeIMMUCHighlight
+				<< TypeIMMUCMsg
+				<< TypeIMStatusChange
+				<< TypeIMSubscrGrant
+				<< TypeIMSubscrRequest
+				<< TypeIMSubscrRevoke;
+				
+		Q_FOREACH (const QString& cat, Cat2HR_.keys ())
+			Ui_.EventCat_->addItem (Cat2HR_ [cat], cat);
+		on_EventCat__activated (0);
+		
 		qRegisterMetaType<NotificationRule> ("LeechCraft::AdvancedNotifications::NotificationRule");
 		qRegisterMetaTypeStreamOperators<NotificationRule> ("LeechCraft::AdvancedNotifications::NotificationRule");
 		
@@ -134,6 +148,15 @@ namespace AdvancedNotifications
 		settings.beginGroup ("rules");
 		settings.setValue ("RulesList", QVariant::fromValue<QList<NotificationRule> > (Rules_));
 		settings.endGroup ();
+	}
+	
+	void NotificationRulesWidget::on_EventCat__activated (int idx)
+	{
+		const QString& catId = Ui_.EventCat_->itemData (idx).toString ();
+		Ui_.EventType_->clear ();
+		
+		Q_FOREACH (const QString& type, Cat2Types_ [catId])
+			Ui_.EventType_->addItem (Type2HR_ [type], type);
 	}
 }
 }

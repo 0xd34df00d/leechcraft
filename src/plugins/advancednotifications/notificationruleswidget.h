@@ -37,6 +37,7 @@ namespace AdvancedNotifications
 		
 		QMap<QString, QString> Cat2HR_;
 		QMap<QString, QString> Type2HR_;
+		QMap<QString, QStringList> Cat2Types_;
 		
 		QList<NotificationRule> Rules_;
 		QStandardItemModel *Model_;
@@ -47,6 +48,8 @@ namespace AdvancedNotifications
 		void LoadSettings ();
 		void ResetModel ();
 		void SaveSettings () const;
+	private slots:
+		void on_EventCat__activated (int);
 	};
 }
 }
