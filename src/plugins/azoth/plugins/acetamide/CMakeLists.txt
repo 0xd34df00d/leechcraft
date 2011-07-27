@@ -21,6 +21,7 @@ SET (ACETAMIDE_SRCS
 	ircmessage.cpp
 	ircparser.cpp
 	ircprotocol.cpp
+	ircserversocket.cpp
 	ircserverclentry.cpp
 	ircserverhandler.cpp
 	invitechannelsdialog.cpp
@@ -46,6 +47,7 @@ SET (ACETAMIDE_HEADERS
 	ircmessage.h
 	ircparser.h
 	ircprotocol.h
+	ircserversocket.h
 	ircserverclentry.h
 	ircserverhandler.h
 	invitechannelsdialog.h

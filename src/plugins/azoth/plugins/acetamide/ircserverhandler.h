@@ -41,7 +41,7 @@ namespace Acetamide
 	class IrcMessage;
 	class IrcParser;
 	class IrcServerCLEntry;
-
+	class IrcServerSocket;
 	class IrcServerHandler : public QObject
 	{
 		Q_OBJECT
@@ -50,6 +50,7 @@ namespace Acetamide
 		IrcErrorHandler *ErrorHandler_;
 		IrcParser *IrcParser_;
 		IrcServerCLEntry *ServerCLEntry_;
+		IrcServerSocket *Socket_;
 		ConnectionState ServerConnectionState_;
 		bool IsConsoleEnabled_;
 		bool IsInviteDialogActive_;
@@ -61,7 +62,6 @@ namespace Acetamide
 		ServerOptions ServerOptions_;
 		QList<ChannelOptions> ChannelsQueue_;
 		std::auto_ptr<InviteChannelsDialog> InviteChannelsDialog_;
-		boost::shared_ptr<QTcpSocket> TcpSocket_ptr;
 		QHash<QString, ChannelHandler*> ChannelHandlers_;
 		QHash<QString, boost::function<void (const QString&,
 				const QList<std::string>&, const QString&)> > Command2Action_;
@@ -81,7 +81,7 @@ namespace Acetamide
 		void Add2ChannelsQueue (const ChannelOptions&);
 		void SendPublicMessage (const QString&, const QString&);
 		void SendPrivateMessage (IrcMessage*);
-		void SendCommandMessage2Server (const QString&);
+		void SendCommandMessage2Server (const QStringList&);
 		void ParseMessageForCommand (const QString&, const QString&);
 		QList<QObject*> GetCLEntries () const;
 		void LeaveChannel (const QString&, const QString&);
@@ -105,10 +105,11 @@ namespace Acetamide
 		void SetConsoleEnabled (bool);
 		void LeaveAllChannel ();
 		void CloseAllPrivateChats ();
+		void SetLastSendID (const QString&);
+		void ReadReply (const QString&);
 	private:
 		void SendToConsole (IMessage::Direction, const QString&);
 		void InitCommandResponses ();
-		void InitSocket ();
 		bool IsCTCPMessage (const QString&);
 		void NickCmdError ();
 		QString EncodedMessage (const QString&, IMessage::Direction);
@@ -246,7 +247,6 @@ namespace Acetamide
 		void GetTryAgain (const QString&,
 				const QList<std::string>&, const QString&);
 	private slots:
-		void readReply ();
 		void connectionEstablished ();
 		void connectionClosed ();
 		void joinAfterInvite ();
