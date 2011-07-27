@@ -503,7 +503,6 @@ namespace Xoox
 			Account_->handleEntryRemoved (entry.get ());
 			
 		Nick2Entry_.clear ();
-		Room_->leave (msg);
 
 		if (remove)
 			RemoveThis ();
@@ -632,6 +631,8 @@ namespace Xoox
 
 		QString nick;
 		ClientConnection::Split (jid, 0, &nick);
+		
+		const bool us = Room_->nickName () == nick;
 
 		RoomParticipantEntry_ptr entry = GetParticipantEntry (nick);
 		const QXmppMucItem& item = pres.mucItem ();
@@ -645,11 +646,24 @@ namespace Xoox
 			return;
 		}
 		else if (pres.mucStatusCodes ().contains (301))
-			MakeBanMessage (nick, item.reason ());
+			!us ?
+				MakeBanMessage (nick, item.reason ()) :
+				static_cast<void> (QMetaObject::invokeMethod (CLEntry_,
+							"beenBanned",
+							Qt::QueuedConnection,
+							Q_ARG (QString, item.reason ())));
 		else if (pres.mucStatusCodes ().contains (307))
-			MakeKickMessage (nick, item.reason ());
+			!us ?
+				MakeKickMessage (nick, item.reason ()) :
+				static_cast<void> (QMetaObject::invokeMethod (CLEntry_,
+							"beenKicked",
+							Qt::QueuedConnection,
+							Q_ARG (QString, item.reason ())));
 		else
 			MakeLeaveMessage (pres, nick);
+		
+		if (us)
+			Leave (QString (), false);
 
 		Nick2Entry_.remove (nick);
 		Account_->handleEntryRemoved (entry.get ());
