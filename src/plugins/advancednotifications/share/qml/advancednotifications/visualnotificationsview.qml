@@ -2,103 +2,100 @@ import QtQuick 1.0
 import "."
 
 Rectangle {
-	id: notifArea
-	width: 450; height: 200
-	smooth: true
-	radius: 16
-	gradient: Gradient {
-		GradientStop { position: 0.0; color: "#CF414141" }
-		GradientStop { position: 1.0; color: "#CF1A1A1A" }
-	}
+    id: notifArea
+    width: 450; height: 200
+    smooth: true
+    radius: 16
+    gradient: Gradient {
+        GradientStop { position: 0.0; color: "#CF414141" }
+        GradientStop { position: 1.0; color: "#CF1A1A1A" }
+    }
 
-	Component {
-		id: actionsDelegate
+    Component {
+        id: actionsDelegate
 
-		Rectangle {
-			height: actionsListView.height
-			width: actionText.width + 5
-			smooth: true
-			radius: 3
-			color: "transparent"
+        Rectangle {
+            height: actionsListView.height
+            width: actionText.width + 5
+            smooth: true
+            radius: 3
+            color: "transparent"
 
-			TextButton {
-				id: actionText
+            TextButton {
+                id: actionText
 
-				text: model.modelData.actionText
-				onClicked: { model.modelData.actionSelected() }
-			}
-		}
-	}
+                text: model.modelData.actionText
+                onClicked: { model.modelData.actionSelected() }
+            }
+        }
+    }
 
-	Component {
-		id: eventsDelegate
+    Component {
+        id: eventsDelegate
 
-		Rectangle {
-			id: eventRect
+        Rectangle {
+            id: eventRect
 
-			//height: 50
-			width: listView.width
-			height: (contentsRow.height > 20 ? contentsRow.height : 20) + actionsListView.height + 5
-			smooth: true
-			radius: 9
-			gradient: Gradient {
-				GradientStop { position: 0.0; color: "#DF3A3A3A" }
-				GradientStop { position: 1.0; color: "#DF101010" }
-			}
+            width: listView.width
+            height: contentsRow.height + 5
+            smooth: true
+            radius: 9
+            gradient: Gradient {
+                GradientStop { position: 0.0; color: "#DF3A3A3A" }
+                GradientStop { position: 1.0; color: "#DF101010" }
+            }
 
-			Row {
-				id: contentsRow
+            Row {
+                Component.onCompleted: console.debug(contentsRow.height) 
+                id: contentsRow
 
-				anchors.left: eventRect.left
-				anchors.top: eventRect.top
-				anchors.leftMargin: 2
-				anchors.topMargin: 2
-				
-				height: (eventText.height > 32 ? eventText.height : 32)
+                height: Math.max(eventText.height, 32) + actionsListView.height
+                anchors.fill: parent
+                anchors.leftMargin: 2
+                anchors.topMargin: 2
+                
+                Image {
+                    id: eventPic
+                    source: image
+                    
+                    height: 32
+                }
 
-				Image {
-					id: eventPic
-					source: image
-					
-					height: 32
-				}
+                Text {
+                    id: eventText
 
-				Text {
-					id: eventText
+                    text: extendedText
+                    color: "lightgrey"
+                }
 
-					text: extendedText
-					color: "lightgrey"
-					//anchors.left: eventPic.right
-					//anchors.leftMargin: 5
-				}
-			}
+                ListView {
+                    id: actionsListView
 
-			ListView {
-				id: actionsListView
+                    height: 20
+                    anchors.left: eventRect.left
+                    anchors.leftMargin: 5
+                    anchors.bottom: eventRect.bottom
+                    anchors.bottomMargin: 5
+                    anchors.top: eventPic.bottom
 
-				height: 20
-				anchors.left: eventRect.left
-				anchors.leftMargin: 5
-				anchors.bottom: eventRect.bottom
-				anchors.bottomMargin: 5
+                    orientation: ListView.Horizontal
 
-				orientation: ListView.Horizontal
+                    model: eventActionsModel
+                    delegate: actionsDelegate
+                }
+            }
+        }
+    }
+    
+    ListView {
+        id: listView
 
-				model: eventActionsModel
-				delegate: actionsDelegate
-			}
-		}
-	}
-	
-	ListView {
-		id: listView
-
-		anchors.centerIn: parent
-		anchors.topMargin: 5
-		width: notifArea.width - 10
-		height: notifArea.height
-		
-		model: eventsModel
-		delegate: eventsDelegate
-	}
+        anchors.centerIn: parent
+        anchors.topMargin: 5
+        width: notifArea.width - 10
+        height: notifArea.height
+        
+        model: eventsModel
+        delegate: eventsDelegate
+    }
 }
