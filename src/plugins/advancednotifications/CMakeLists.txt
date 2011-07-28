@@ -31,6 +31,8 @@ SET (SRCS
 	notificationruleswidget.cpp
 	xmlsettingsmanager.cpp
 	notificationrule.cpp
+	fieldmatch.cpp
+	typedmatchers.cpp
 	)
 SET (HEADERS
 	advancednotifications.h
@@ -41,6 +43,8 @@ SET (HEADERS
 	notificationruleswidget.h
 	xmlsettingsmanager.h
 	notificationrule.h
+	fieldmatch.h
+	typedmatchers.h
 	)
 SET (FORMS
 	notificationruleswidget.ui
