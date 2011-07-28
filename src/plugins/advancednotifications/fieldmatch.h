@@ -42,8 +42,15 @@ namespace AdvancedNotifications
 		FieldMatch ();
 		FieldMatch (QVariant::Type);
 		
-		QString GetPluginID () const;		
+		QString GetPluginID () const;
+		void SetPluginID (const QString&);
+
 		QString GetFieldName () const;
+		void SetFieldName (const QString&);
+		
+		QVariant::Type GetType () const;
+		void SetType (QVariant::Type);
+
 		TypedMatcherBase_ptr GetMatcher () const;
 		
 		void Save (QDataStream&) const;
