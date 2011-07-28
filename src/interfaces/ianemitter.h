@@ -32,6 +32,11 @@ namespace LeechCraft
 		QVariant::Type Type_;
 		QStringList EventTypes_;
 		
+		ANFieldData ()
+		: Type_ (QVariant::Invalid)
+		{
+		}
+		
 		ANFieldData (const QString& id,
 				const QString& name,
 				const QString& description,
@@ -56,5 +61,6 @@ public:
 };
 
 Q_DECLARE_INTERFACE (IANEmitter, "org.Deviant.LeechCraft.IANEmitter/1.0");
+Q_DECLARE_METATYPE (LeechCraft::ANFieldData);
 
 #endif
