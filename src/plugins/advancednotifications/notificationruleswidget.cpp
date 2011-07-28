@@ -21,6 +21,8 @@
 #include <QStandardItemModel>
 #include <interfaces/ianemitter.h>
 #include "xmlsettingsmanager.h"
+#include "matchconfigdialog.h"
+#include "typedmatchers.h"
 
 namespace LeechCraft
 {
@@ -254,6 +256,21 @@ namespace AdvancedNotifications
 		Rules_.removeAt (index.row ());
 		
 		SaveSettings ();
+	}
+	
+	void NotificationRulesWidget::on_AddMatch__released ()
+	{
+		MatchConfigDialog dia (GetSelectedTypes (), this);
+		if (dia.exec () != QDialog::Accepted)
+			return;
+	}
+	
+	void NotificationRulesWidget::on_ModifyMatch__released ()
+	{
+	}
+	
+	void NotificationRulesWidget::on_RemoveMatch__released ()
+	{
 	}
 	
 	void NotificationRulesWidget::on_EventCat__activated (int idx)

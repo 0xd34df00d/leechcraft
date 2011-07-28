@@ -56,6 +56,9 @@ namespace AdvancedNotifications
 		void on_AddRule__released ();
 		void on_UpdateRule__released ();
 		void on_RemoveRule__released ();
+		void on_AddMatch__released ();
+		void on_ModifyMatch__released ();
+		void on_RemoveMatch__released ();
 		void on_EventCat__activated (int);
 		void on_NotifyVisual__stateChanged (int);
 		void on_NotifySysTray__stateChanged (int);
