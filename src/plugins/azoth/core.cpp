@@ -1775,7 +1775,7 @@ namespace Azoth
 		ANFields_ << ANFieldData ("org.LC.Plugins.Azoth.SenderGroups",
 				tr ("Sender groups"),
 				tr ("Groups to which the sender belongs."),
-				QVariant::String,
+				QVariant::StringList,
 				commonFields);
 	}
 
