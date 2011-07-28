@@ -35,6 +35,21 @@ namespace AdvancedNotifications
 	{
 	}
 	
+	QString FieldMatch::GetPluginID () const
+	{
+		return PluginID_;
+	}
+
+	QString FieldMatch::GetFieldName () const
+	{
+		return FieldName_;
+	}
+	
+	TypedMatcherBase_ptr FieldMatch::GetMatcher () const
+	{
+		return Matcher_;
+	}
+	
 	void FieldMatch::Save (QDataStream& out) const
 	{
 		out << static_cast<quint8> (1)

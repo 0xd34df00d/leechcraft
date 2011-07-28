@@ -27,6 +27,8 @@ namespace LeechCraft
 namespace AdvancedNotifications
 {
 	class TypedMatcherBase;
+	
+	typedef boost::shared_ptr<TypedMatcherBase> TypedMatcherBase_ptr;
 
 	class FieldMatch
 	{
@@ -35,14 +37,20 @@ namespace AdvancedNotifications
 
 		QVariant::Type FieldType_;
 		
-		boost::shared_ptr<TypedMatcherBase> Matcher_;
+		TypedMatcherBase_ptr Matcher_;
 	public:
 		FieldMatch ();
 		FieldMatch (QVariant::Type);
 		
+		QString GetPluginID () const;		
+		QString GetFieldName () const;
+		TypedMatcherBase_ptr GetMatcher () const;
+		
 		void Save (QDataStream&) const;
 		void Load (QDataStream&);
 	};
+	
+	typedef QList<FieldMatch> FieldMatches_t;
 }
 }
 
