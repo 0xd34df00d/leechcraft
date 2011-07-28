@@ -53,7 +53,8 @@ namespace AdvancedNotifications
 
 	NotificationRulesWidget::NotificationRulesWidget (QWidget *parent)
 	: QWidget (parent)
-	, Model_ (new QStandardItemModel (this))
+	, RulesModel_ (new QStandardItemModel (this))
+	, MatchesModel_ (new QStandardItemModel (this))
 	{
 		Cat2HR_ [CatIM] = tr ("Instant messaging");
 		
@@ -78,7 +79,7 @@ namespace AdvancedNotifications
 				<< TypeIMSubscrRevoke;
 				
 		Ui_.setupUi (this);
-		Ui_.RulesTree_->setModel (Model_);
+		Ui_.RulesTree_->setModel (RulesModel_);
 		
 		connect (Ui_.RulesTree_->selectionModel (),
 				SIGNAL (currentChanged (QModelIndex, QModelIndex)),
@@ -129,16 +130,23 @@ namespace AdvancedNotifications
 	
 	void NotificationRulesWidget::ResetModel ()
 	{
-		Model_->clear ();
-		Model_->setHorizontalHeaderLabels (QStringList (tr ("Name"))
+		RulesModel_->clear ();
+		RulesModel_->setHorizontalHeaderLabels (QStringList (tr ("Name"))
 				<< tr ("Category")
 				<< tr ("Type"));
 		
 		Q_FOREACH (const NotificationRule& rule, Rules_)
-			Model_->appendRow (RuleToRow (rule));
+			RulesModel_->appendRow (RuleToRow (rule));
 	}
 	
-	NotificationRule NotificationRulesWidget::GetRuleFromUI () const
+	void NotificationRulesWidget::ResetMatchesModel ()
+	{
+		MatchesModel_->clear ();
+		MatchesModel_->setHorizontalHeaderLabels (QStringList (tr ("Field name"))
+				<< tr ("Rule description"));
+	}
+	
+	QStringList NotificationRulesWidget::GetSelectedTypes () const
 	{
 		QStringList types;
 		for (int i = 0; i < Ui_.EventTypes_->topLevelItemCount (); ++i)
@@ -147,6 +155,12 @@ namespace AdvancedNotifications
 			if (item->checkState (0) == Qt::Checked)
 				types << item->data (0, Qt::UserRole).toString ();
 		}
+		return types;
+	}
+	
+	NotificationRule NotificationRulesWidget::GetRuleFromUI () const
+	{
+		const QStringList& types = GetSelectedTypes ();
 		
 		if (types.isEmpty () ||
 				Ui_.RuleName_->text ().isEmpty ())
@@ -165,6 +179,8 @@ namespace AdvancedNotifications
 			methods |= NMAudio;
 		rule.SetMethods (methods);
 		
+		rule.SetFieldMatches (Matches_);
+		
 		return rule;
 	}
 	
@@ -178,6 +194,16 @@ namespace AdvancedNotifications
 		items << new QStandardItem (rule.GetName ());
 		items << new QStandardItem (Cat2HR_ [rule.GetCategory ()]);
 		items << new QStandardItem (hrTypes.join ("; "));
+		return items;
+	}
+	
+	QList<QStandardItem*> NotificationRulesWidget::MatchToRow (const FieldMatch& match) const
+	{
+		QList<QStandardItem*> items;
+		items << new QStandardItem (match.GetFieldName ());
+		items << new QStandardItem (match.GetMatcher () ?
+				match.GetMatcher ()->GetHRDescription () :
+				tr ("<empty matcher>"));
 		return items;
 	}
 	
@@ -219,11 +245,16 @@ namespace AdvancedNotifications
 				Qt::Checked : Qt::Unchecked);
 		Ui_.NotifyAudio_->setCheckState ((methods & NMAudio) ?
 				Qt::Checked : Qt::Unchecked);
+		
+		ResetMatchesModel ();
+		Matches_ = rule.GetFieldMatches ();
+		Q_FOREACH (const FieldMatch& m, Matches_)
+			MatchesModel_->appendRow (MatchToRow (m));
 	}
 	
 	void NotificationRulesWidget::on_AddRule__released ()
 	{
-		Model_->insertRow (0, RuleToRow (NotificationRule ()));
+		RulesModel_->insertRow (0, RuleToRow (NotificationRule ()));
 		Rules_.prepend (NotificationRule ());
 	}
 	
@@ -241,7 +272,7 @@ namespace AdvancedNotifications
 		Rules_ [row] = rule;
 		int i = 0;
 		Q_FOREACH (QStandardItem *item, RuleToRow (rule))
-			Model_->setItem (row, i++, item);
+			RulesModel_->setItem (row, i++, item);
 		
 		SaveSettings ();
 	}
@@ -252,7 +283,7 @@ namespace AdvancedNotifications
 		if (!index.isValid ())
 			return;
 		
-		Model_->removeRow (index.row ());
+		RulesModel_->removeRow (index.row ());
 		Rules_.removeAt (index.row ());
 		
 		SaveSettings ();

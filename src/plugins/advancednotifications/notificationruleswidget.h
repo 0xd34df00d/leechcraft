@@ -41,15 +41,21 @@ namespace AdvancedNotifications
 		QMap<QString, QStringList> Cat2Types_;
 		
 		QList<NotificationRule> Rules_;
-		QStandardItemModel *Model_;
+		QStandardItemModel *RulesModel_;
+
+		FieldMatches_t Matches_;
+		QStandardItemModel *MatchesModel_;
 	public:
 		NotificationRulesWidget (QWidget* = 0);
 	private:
 		void LoadDefaultRules ();
 		void LoadSettings ();
 		void ResetModel ();
+		void ResetMatchesModel ();
+		QStringList GetSelectedTypes () const;
 		NotificationRule GetRuleFromUI () const;
 		QList<QStandardItem*> RuleToRow (const NotificationRule&) const;
+		QList<QStandardItem*> MatchToRow (const FieldMatch&) const;
 		void SaveSettings () const;
 	private slots:
 		void handleItemSelected (const QModelIndex&);
