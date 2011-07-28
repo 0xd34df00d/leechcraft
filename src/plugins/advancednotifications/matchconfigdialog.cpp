@@ -17,6 +17,8 @@
  **********************************************************************/
 
 #include "matchconfigdialog.h"
+#include <interfaces/ianemitter.h>
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -27,6 +29,78 @@ namespace AdvancedNotifications
 	, Types_ (QSet<QString>::fromList (types))
 	{
 		Ui_.setupUi (this);
+		
+		const QObjectList& emitters = Core::Instance ().GetProxy ()->
+				GetPluginsManager ()->GetAllCastableRoots<IANEmitter*> ();
+		Q_FOREACH (QObject *pObj, emitters)
+		{
+			IInfo *ii = qobject_cast<IInfo*> (pObj);
+			if (!ii)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< pObj
+						<< "doesn't implement IInfo";
+				continue;
+			}
+			
+			Ui_.SourcePlugin_->addItem (ii->GetIcon (),
+					ii->GetName (), ii->GetUniqueID ());
+		}
+		
+		if (!emitters.isEmpty ())
+			on_SourcePlugin__activated (0);
+	}
+	
+	void MatchConfigDialog::on_SourcePlugin__activated (int idx)
+	{
+		Ui_.FieldName_->clear ();
+
+		const QByteArray& id = Ui_.SourcePlugin_->
+				itemData (idx).toByteArray ();
+		QObject *pObj = Core::Instance ().GetProxy ()->
+				GetPluginsManager ()->GetPluginByID (id);
+		IANEmitter *iae = qobject_cast<IANEmitter*> (pObj);
+		if (!iae)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "plugin for ID"
+					<< id
+					<< "doesn't implement IANEmitter:"
+					<< pObj;
+			return;
+		}
+		
+		const QList<ANFieldData> fields = iae->GetANFields ();
+		Q_FOREACH (const ANFieldData& data, fields)
+		{
+			if (!Types_.isEmpty () &&
+					QSet<QString>::fromList (data.EventTypes_).intersect (Types_).isEmpty ())
+				continue;
+			
+			Ui_.FieldName_->addItem (data.Name_,
+					QVariant::fromValue<ANFieldData> (data));
+		}
+		
+		if (!fields.isEmpty ())
+			on_FieldName__activated (0);
+	}
+	
+	void MatchConfigDialog::on_FieldName__activated (int idx)
+	{
+		const ANFieldData& data = Ui_.FieldName_->
+				itemData (idx).value<ANFieldData> ();
+		Ui_.DescriptionLabel_->setText (data.Description_);
+		
+		QLayout *lay = Ui_.ConfigWidget_->layout ();
+		QLayoutItem *oldItem = 0;
+		while ((oldItem = lay->takeAt (0)) != 0)
+		{
+			if (oldItem->widget ())
+				delete oldItem->widget ();
+			delete oldItem;
+		}
+		
+		lay->addWidget (new QLabel (QVariant::typeToName (data.Type_)));
 	}
 }
 }
