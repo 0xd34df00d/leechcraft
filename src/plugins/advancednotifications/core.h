@@ -16,9 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_NOTIFICATIONRULESWIDGET_H
-#define PLUGINS_ADVANCEDNOTIFICATIONS_NOTIFICATIONRULESWIDGET_H
+#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_CORE_H
+#define PLUGINS_ADVANCEDNOTIFICATIONS_CORE_H
 #include <QObject>
+#include <interfaces/iinfo.h>
 
 namespace LeechCraft
 {
@@ -28,9 +29,14 @@ namespace AdvancedNotifications
 	{
 		Q_OBJECT
 		
+		ICoreProxy_ptr Proxy_;
+		
 		Core ();
 	public:
 		static Core& Instance ();
+		
+		ICoreProxy_ptr GetProxy () const;
+		void SetProxy (ICoreProxy_ptr);
 	};
 }
 }

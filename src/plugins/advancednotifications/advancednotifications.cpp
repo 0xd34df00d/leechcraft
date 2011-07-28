@@ -23,6 +23,7 @@
 #include "generalhandler.h"
 #include "xmlsettingsmanager.h"
 #include "notificationruleswidget.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -31,6 +32,8 @@ namespace AdvancedNotifications
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
+		
+		Core::Instance ().SetProxy (proxy);
 		
 		SettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
