@@ -25,11 +25,15 @@ namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
+	class NotificationRulesWidget;
+
 	class Core : public QObject
 	{
 		Q_OBJECT
 		
 		ICoreProxy_ptr Proxy_;
+		
+		NotificationRulesWidget *NRW_;
 		
 		Core ();
 	public:
@@ -37,6 +41,8 @@ namespace AdvancedNotifications
 		
 		ICoreProxy_ptr GetProxy () const;
 		void SetProxy (ICoreProxy_ptr);
+		
+		NotificationRulesWidget* GetNRW ();
 	};
 }
 }

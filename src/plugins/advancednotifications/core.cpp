@@ -17,12 +17,14 @@
  **********************************************************************/
 
 #include "core.h"
+#include "notificationruleswidget.h"
 
 namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
 	Core::Core ()
+	: NRW_ (0)
 	{
 	}
 	
@@ -40,6 +42,13 @@ namespace AdvancedNotifications
 	void Core::SetProxy (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
+	}
+	
+	NotificationRulesWidget* Core::GetNRW ()
+	{
+		if (!NRW_)
+			NRW_ = new NotificationRulesWidget;
+		return NRW_;
 	}
 }
 }

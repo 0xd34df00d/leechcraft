@@ -38,8 +38,8 @@ namespace AdvancedNotifications
 		SettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"advancednotificationssettings.xml");
-		NotificationRulesWidget *nrw = new NotificationRulesWidget;
-		SettingsDialog_->SetCustomWidget ("RulesWidget", nrw);
+		SettingsDialog_->SetCustomWidget ("RulesWidget",
+				Core::Instance ().GetNRW ());
 		
 		GeneralHandler_.reset (new GeneralHandler (proxy));
 	}
