@@ -24,6 +24,7 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	advancednotifications.cpp
+	core.cpp
 	generalhandler.cpp
 	concretehandlerbase.cpp
 	systemtrayhandler.cpp
@@ -37,6 +38,7 @@ SET (SRCS
 	)
 SET (HEADERS
 	advancednotifications.h
+	core.h
 	generalhandler.h
 	concretehandlerbase.h
 	systemtrayhandler.h
