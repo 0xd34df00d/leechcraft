@@ -40,6 +40,8 @@ namespace AdvancedNotifications
 		virtual void Load (const QVariantMap&) = 0;
 		
 		virtual bool Match (const QVariant&) const = 0;
+		
+		virtual QString GetHRDescription () const = 0;
 	};
 	
 	class StringLikeMatcher : public TypedMatcherBase
@@ -56,12 +58,16 @@ namespace AdvancedNotifications
 	{
 	public:
 		bool Match (const QVariant&) const;
+		
+		QString GetHRDescription () const;
 	};
 	
 	class StringListMatcher : public StringLikeMatcher
 	{
 	public:
 		bool Match (const QVariant&) const;
+		
+		QString GetHRDescription () const;
 	};
 	
 	class IntMatcher : public TypedMatcherBase
@@ -83,6 +89,8 @@ namespace AdvancedNotifications
 		void Load (const QVariantMap&);
 		
 		bool Match (const QVariant&) const;
+		
+		QString GetHRDescription () const;
 	};
 }
 }

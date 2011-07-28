@@ -67,6 +67,14 @@ namespace AdvancedNotifications
 		return res;
 	}
 	
+	QString StringMatcher::GetHRDescription () const
+	{
+		const QString& p = Rx_.pattern ();
+		return Contains_ ?
+				QObject::tr ("contains pattern %1").arg (p) :
+				QObject::tr ("doesn't contain pattern %1").arg (p);
+	}
+	
 	bool StringListMatcher::Match (const QVariant& var) const
 	{
 		if (!var.canConvert<QStringList> ())
@@ -76,6 +84,14 @@ namespace AdvancedNotifications
 		if (!Contains_)
 			res = !res;
 		return res;
+	}
+	
+	QString StringListMatcher::GetHRDescription () const
+	{
+		const QString& p = Rx_.pattern ();
+		return Contains_ ?
+				QObject::tr ("contains element matching %1").arg (p) :
+				QObject::tr ("doesn't contain element matching %1").arg (p);
 	}
 	
 	QVariantMap IntMatcher::Save () const
@@ -107,6 +123,21 @@ namespace AdvancedNotifications
 			return true;
 		
 		return false;
+	}
+	
+	QString IntMatcher::GetHRDescription () const
+	{
+		QString op;
+		if ((Ops_ & OGreater))
+			op += ">";
+		if ((Ops_ & OLess))
+			op += "<";
+		if ((Ops_ & OEqual))
+			op += "=";
+		
+		return QObject::tr ("is %1 then %2")
+				.arg (op)
+				.arg (Boundary_);
 	}
 }
 }
