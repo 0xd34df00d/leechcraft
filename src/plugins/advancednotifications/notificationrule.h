@@ -21,6 +21,7 @@
 #include <QStringList>
 #include <QMetaType>
 #include "common.h"
+#include "fieldmatch.h"
 
 class QDataStream;
 
@@ -35,6 +36,8 @@ namespace AdvancedNotifications
 		QStringList Types_;
 		
 		NotificationMethods Methods_;
+		
+		FieldMatches_t FieldMatches_;
 	public:
 		NotificationRule ();
 		NotificationRule (const QString& name,
@@ -53,6 +56,9 @@ namespace AdvancedNotifications
 		
 		NotificationMethods GetMethods () const;
 		void SetMethods (const NotificationMethods&);
+		
+		FieldMatches_t GetFieldMatches () const;
+		void SetFieldMatches (const FieldMatches_t&);
 		
 		void Save (QDataStream&) const;
 		void Load (QDataStream&);

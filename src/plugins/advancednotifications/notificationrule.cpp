@@ -85,13 +85,27 @@ namespace AdvancedNotifications
 		Methods_ = methods;
 	}
 	
+	FieldMatches_t NotificationRule::GetFieldMatches () const
+	{
+		return FieldMatches_;
+	}
+	
+	void NotificationRule::SetFieldMatches (const FieldMatches_t& matches)
+	{
+		FieldMatches_ = matches;
+	}
+	
 	void NotificationRule::Save (QDataStream& stream) const
 	{
 		stream << static_cast<quint8> (1)
-				<< Name_
-				<< Category_
-				<< Types_
-				<< static_cast<quint16> (Methods_);
+			<< Name_
+			<< Category_
+			<< Types_
+			<< static_cast<quint16> (Methods_)
+			<< static_cast<quint16> (FieldMatches_.size ());
+
+		Q_FOREACH (const FieldMatch& match, FieldMatches_)
+			match.Save (stream);
 	}
 	
 	void NotificationRule::Load (QDataStream& stream)
@@ -108,10 +122,20 @@ namespace AdvancedNotifications
 		
 		quint16 methods;
 		stream >> Name_
-				>> Category_
-				>> Types_
-				>> methods;
+			>> Category_
+			>> Types_
+			>> methods;
 		Methods_ = static_cast<NotificationMethods> (methods);
+		
+		quint16 numMatches = 0;
+		stream >> numMatches;
+		
+		for (int i = 0; i < numMatches; ++i)
+		{
+			FieldMatch match;
+			match.Load (stream);
+			FieldMatches_ << match;
+		}
 	}
 }
 }
