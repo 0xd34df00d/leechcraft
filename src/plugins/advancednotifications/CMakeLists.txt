@@ -33,6 +33,7 @@ SET (SRCS
 	notificationrule.cpp
 	fieldmatch.cpp
 	typedmatchers.cpp
+	matchconfigdialog.cpp
 	)
 SET (HEADERS
 	advancednotifications.h
@@ -45,9 +46,11 @@ SET (HEADERS
 	notificationrule.h
 	fieldmatch.h
 	typedmatchers.h
+	matchconfigdialog.h
 	)
 SET (FORMS
 	notificationruleswidget.ui
+	matchconfigdialog.ui
 	)
 
 IF (QT_QTDECLARATIVE_FOUND)
