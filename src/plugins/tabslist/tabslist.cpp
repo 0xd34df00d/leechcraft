@@ -87,6 +87,7 @@ namespace TabsList
 	{
 		class ListEventFilter : public QObject
 		{
+			QString SearchText_;
 		public:
 			ListEventFilter (QObject *parent = 0)
 			: QObject (parent)
@@ -99,11 +100,37 @@ namespace TabsList
 					return false;
 				
 				QKeyEvent *key = static_cast<QKeyEvent*> (event);
-				if (key->key () != Qt::Key_Escape)
-					return false;
+				if (key->key () == Qt::Key_Escape)
+				{
+					obj->deleteLater ();
+					return true;
+				}
+				else if (key->key () == Qt::Key_Backspace)
+				{
+					SearchText_.chop (1);
+					FocusSearch ();
+					return true;
+				}
+				else if (!key->text ().isEmpty ())
+				{
+					SearchText_ += key->text ();
+					FocusSearch ();
+					return true;
+				}
 				
-				obj->deleteLater ();
-				return true;
+				return false;
+			}
+		private:
+			void FocusSearch ()
+			{
+				Q_FOREACH (QToolButton *butt,
+						parent ()->findChildren<QToolButton*> ())
+					if (butt->property ("OrigText").toString ()
+							.startsWith (SearchText_, Qt::CaseInsensitive))
+					{
+						butt->setFocus ();
+						break;
+					}
 			}
 		};
 	}
@@ -126,7 +153,8 @@ namespace TabsList
 		QToolButton *toFocus = 0;
 		for (int i = 0, count = tw->WidgetCount (); i < count; ++i)
 		{
-			QString title = QString ("[%1] ").arg (i + 1) + tw->TabText (i);
+			const QString& origText = tw->TabText (i);
+			QString title = QString ("[%1] ").arg (i + 1) + origText;
 			if (title.size () > 100)
 				title = title.left (100) + "...";
 			QAction *action = new QAction (tw->TabIcon (i),
@@ -146,6 +174,7 @@ namespace TabsList
 			button->setToolButtonStyle (Qt::ToolButtonTextBesideIcon);
 			button->setSizePolicy (QSizePolicy::Expanding,
 					button->sizePolicy ().verticalPolicy ());
+			button->setProperty ("OrigText", origText);
 			layout->addWidget (button);
 			
 			if (currentIdx == i)
