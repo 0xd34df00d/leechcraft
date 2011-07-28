@@ -30,8 +30,13 @@ namespace AdvancedNotifications
 		Q_OBJECT
 		
 		Ui::MatchConfigDialog Ui_;
+		
+		QSet<QString> Types_;
 	public:
-		MatchConfigDialog (QWidget* = 0);
+		MatchConfigDialog (const QStringList&, QWidget* = 0);
+	private slots:
+		void on_SourcePlugin__activated (int);
+		void on_FieldName__activated (int);
 	};
 }
 }

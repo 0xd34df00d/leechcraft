@@ -22,8 +22,9 @@ namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
-	MatchConfigDialog::MatchConfigDialog (QWidget *parent)
+	MatchConfigDialog::MatchConfigDialog (const QStringList& types, QWidget *parent)
 	: QDialog (parent)
+	, Types_ (QSet<QString>::fromList (types))
 	{
 		Ui_.setupUi (this);
 	}
