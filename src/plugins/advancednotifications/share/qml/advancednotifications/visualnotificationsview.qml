@@ -77,6 +77,7 @@ Rectangle {
                     anchors.bottom: eventRect.bottom
                     anchors.bottomMargin: 5
                     anchors.top: eventPic.bottom
+					anchors.topMargin: 5
 
                     orientation: ListView.Horizontal
 
