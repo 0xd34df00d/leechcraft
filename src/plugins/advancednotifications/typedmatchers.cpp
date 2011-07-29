@@ -96,6 +96,39 @@ namespace AdvancedNotifications
 		return CW_;
 	}
 	
+	void StringLikeMatcher::SyncToWidget ()
+	{
+		if (!CW_)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "called with null CW";
+			return;
+		}
+		
+		Contains_ = Ui_->ContainsBox_->currentIndex () == 0;
+
+		QRegExp::PatternSyntax pattern = QRegExp::FixedString;
+		switch (Ui_->RegexType_->currentIndex ())
+		{
+		case 0:
+			break;
+		case 1:
+			pattern = QRegExp::Wildcard;
+			break;
+		case 2:
+			pattern = QRegExp::RegExp;
+			break;
+		default:
+			qWarning () << Q_FUNC_INFO
+					<< "unknown regexp type"
+					<< Ui_->RegexType_->currentIndex ();
+			break;
+		}
+
+		Rx_ = QRegExp (Ui_->RegexpEditor_->text (),
+				Qt::CaseInsensitive, pattern);
+	}
+	
 	bool StringMatcher::Match (const QVariant& var) const
 	{
 		if (!var.canConvert<QString> ())
@@ -132,6 +165,15 @@ namespace AdvancedNotifications
 		return Contains_ ?
 				QObject::tr ("contains element matching %1").arg (p) :
 				QObject::tr ("doesn't contain element matching %1").arg (p);
+	}
+	
+	IntMatcher::IntMatcher ()
+	{
+		Ops2pos_ [OGreater] = 0;
+		Ops2pos_ [static_cast<Operations> (OEqual | OGreater)] = 1;
+		Ops2pos_ [OEqual] = 2;
+		Ops2pos_ [static_cast<Operations> (OEqual | OLess)] = 3;
+		Ops2pos_ [OLess] = 4;
 	}
 	
 	QVariantMap IntMatcher::Save () const
@@ -189,16 +231,23 @@ namespace AdvancedNotifications
 			Ui_->setupUi (CW_);
 		}
 		
-		Ui_->Boundary_->setValue (Boundary_);
-	
-		QMap<Operations, int> ops2pos;
-		ops2pos [OGreater] = 0;
-		ops2pos [static_cast<Operations> (OEqual | OGreater)] = 1;
-		ops2pos [OEqual] = 2;
-		ops2pos [static_cast<Operations> (OEqual | OLess)] = 3;
-		ops2pos [OLess] = 4;
+		Ui_->Boundary_->setValue (Boundary_);		
+		Ui_->OpType_->setCurrentIndex (Ops2pos_ [Ops_]);
 		
 		return CW_;
+	}
+	
+	void IntMatcher::SyncToWidget ()
+	{
+		if (!CW_)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "called with null CW";
+			return;
+		}
+
+		Boundary_  = Ui_->Boundary_->value ();
+		Ops_ = Ops2pos_.key (Ui_->OpType_->currentIndex ());
 	}
 }
 }

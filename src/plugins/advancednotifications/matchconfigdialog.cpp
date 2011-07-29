@@ -59,10 +59,12 @@ namespace AdvancedNotifications
 		const int sourceIdx = Ui_.SourcePlugin_->currentIndex ();
 		if (fieldIdx == -1 || sourceIdx == -1)
 			return FieldMatch ();
+		
+		CurrentMatcher_->SyncToWidget ();
 
 		const ANFieldData& data = Ui_.FieldName_->
 				itemData (fieldIdx).value<ANFieldData> ();
-				
+
 		FieldMatch result (data.Type_, CurrentMatcher_);
 		result.SetPluginID (Ui_.SourcePlugin_->
 					itemData (sourceIdx).toByteArray ());

@@ -51,6 +51,7 @@ namespace AdvancedNotifications
 		
 		virtual QString GetHRDescription () const = 0;
 		virtual QWidget* GetConfigWidget () = 0;
+		virtual void SyncToWidget () = 0;
 	};
 	
 	class StringLikeMatcher : public TypedMatcherBase
@@ -67,6 +68,7 @@ namespace AdvancedNotifications
 		void Load (const QVariantMap&);
 		
 		QWidget* GetConfigWidget ();
+		void SyncToWidget ();
 	};
 	
 	class StringMatcher : public StringLikeMatcher
@@ -99,9 +101,12 @@ namespace AdvancedNotifications
 		Q_DECLARE_FLAGS (Operations, Operation);
 		
 		Operations Ops_;
-		
+
 		boost::shared_ptr<Ui::IntMatcherConfigWidget> Ui_;
+		QMap<Operations, int> Ops2pos_;
 	public:
+		IntMatcher ();
+		
 		QVariantMap Save () const;
 		void Load (const QVariantMap&);
 		
@@ -109,6 +114,7 @@ namespace AdvancedNotifications
 		
 		QString GetHRDescription () const;
 		QWidget* GetConfigWidget ();
+		void SyncToWidget ();
 	};
 }
 }
