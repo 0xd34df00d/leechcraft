@@ -20,6 +20,7 @@
 #define PLUGINS_ADVANCEDNOTIFICATIONS_CONCRETEHANDLERBASE_H
 #include <boost/shared_ptr.hpp>
 #include <QObject>
+#include "common.h"
 
 namespace LeechCraft
 {
@@ -34,17 +35,9 @@ namespace AdvancedNotifications
 	protected:
 		GeneralHandler *GH_;
 	public:
-		enum HandlerType
-		{
-			HTSystemTray,
-			HTLCTray,
-			HTVisualNotification,
-			HTAudioNotification
-		};
-
 		void SetGeneralHandler (GeneralHandler*);
 
-		virtual HandlerType GetHandlerType () const = 0;
+		virtual NotificationMethod GetHandlerMethod () const = 0;
 		virtual void Handle (const Entity&) = 0;
 	};
 	

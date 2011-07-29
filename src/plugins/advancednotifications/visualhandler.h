@@ -33,7 +33,7 @@ namespace AdvancedNotifications
 	public:
 		VisualHandler ();
 		
-		HandlerType GetHandlerType () const;
+		NotificationMethod GetHandlerMethod () const;
 		void Handle (const Entity&);
 	};
 }

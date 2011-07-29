@@ -78,9 +78,13 @@ namespace AdvancedNotifications
 		const bool can = e.Mime_ == "x-leechcraft/notification" &&
 			e.Additional_.contains ("org.LC.AdvNotifications.SenderID") &&
 			e.Additional_.contains ("org.LC.AdvNotifications.EventID");
-		return can ?
-				EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
-				EntityTestHandleResult ();
+
+		if (!can)
+			return EntityTestHandleResult ();
+		
+		EntityTestHandleResult result (EntityTestHandleResult::PIdeal);
+		//result.CancelOthers_ = true;
+		return result;
 	}
 	
 	void Plugin::Handle (Entity e)

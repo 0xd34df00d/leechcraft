@@ -97,6 +97,11 @@ namespace AdvancedNotifications
 		LoadSettings ();
 	}
 	
+	QList<NotificationRule> NotificationRulesWidget::GetRules () const
+	{
+		return Rules_;
+	}
+	
 	void NotificationRulesWidget::LoadDefaultRules ()
 	{
 		NotificationRule chatMsg (tr ("Incoming chat messages"), CatIM,

@@ -20,6 +20,7 @@
 #define PLUGINS_ADVANCEDNOTIFICATIONS_CORE_H
 #include <QObject>
 #include <interfaces/iinfo.h>
+#include "notificationrule.h"
 
 namespace LeechCraft
 {
@@ -43,6 +44,8 @@ namespace AdvancedNotifications
 		void SetProxy (ICoreProxy_ptr);
 		
 		NotificationRulesWidget* GetNRW ();
+		
+		QList<NotificationRule> GetRules (const Entity&) const;
 	};
 }
 }

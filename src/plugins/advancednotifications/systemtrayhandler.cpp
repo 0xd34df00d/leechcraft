@@ -35,9 +35,9 @@ namespace AdvancedNotifications
 	{
 	}
 
-	ConcreteHandlerBase::HandlerType SystemTrayHandler::GetHandlerType () const
+	NotificationMethod SystemTrayHandler::GetHandlerMethod () const
 	{
-		return HTSystemTray;
+		return NMTray;
 	}
 	
 	namespace

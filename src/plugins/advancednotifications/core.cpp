@@ -18,6 +18,7 @@
 
 #include "core.h"
 #include "notificationruleswidget.h"
+#include "typedmatchers.h"
 
 namespace LeechCraft
 {
@@ -49,6 +50,39 @@ namespace AdvancedNotifications
 		if (!NRW_)
 			NRW_ = new NotificationRulesWidget;
 		return NRW_;
+	}
+	
+	QList<NotificationRule> Core::GetRules (const Entity& e) const
+	{
+		const QString& type = e.Additional_ ["org.LC.AdvNotifications.EventType"].toString ();
+
+		QList<NotificationRule> result;
+		
+		Q_FOREACH (const NotificationRule& rule, NRW_->GetRules ())
+		{
+			if (!rule.GetTypes ().contains (type))
+				continue;
+			
+			bool fieldsMatch = true;
+			Q_FOREACH (const FieldMatch& match, rule.GetFieldMatches ())
+			{
+				const QString& fieldName = match.GetFieldName ();
+				const TypedMatcherBase_ptr matcher = match.GetMatcher ();
+				if (!matcher->Match (e.Additional_ [fieldName]))
+				{
+					fieldsMatch = false;
+					break;
+				}
+			}
+			
+			if (!fieldsMatch)
+				continue;
+			
+			result << rule;
+			break;
+		}
+		
+		return result;
 	}
 }
 }

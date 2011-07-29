@@ -47,6 +47,8 @@ namespace AdvancedNotifications
 		QStandardItemModel *MatchesModel_;
 	public:
 		NotificationRulesWidget (QWidget* = 0);
+		
+		QList<NotificationRule> GetRules () const;
 	private:
 		void LoadDefaultRules ();
 		void LoadSettings ();

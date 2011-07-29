@@ -26,9 +26,9 @@ namespace AdvancedNotifications
 	{
 	}
 	
-	ConcreteHandlerBase::HandlerType VisualHandler::GetHandlerType () const
+	NotificationMethod VisualHandler::GetHandlerMethod () const
 	{
-		return HTVisualNotification;
+		return NMVisual;
 	}
 	
 	void VisualHandler::Handle (const Entity& e)
