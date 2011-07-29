@@ -80,6 +80,7 @@ namespace AdvancedNotifications
 				
 		Ui_.setupUi (this);
 		Ui_.RulesTree_->setModel (RulesModel_);
+		Ui_.MatchesTree_->setModel (MatchesModel_);
 		
 		connect (Ui_.RulesTree_->selectionModel (),
 				SIGNAL (currentChanged (QModelIndex, QModelIndex)),
@@ -294,6 +295,10 @@ namespace AdvancedNotifications
 		MatchConfigDialog dia (GetSelectedTypes (), this);
 		if (dia.exec () != QDialog::Accepted)
 			return;
+		
+		const FieldMatch& match = dia.GetFieldMatch ();
+		Matches_ << match;
+		MatchesModel_->appendRow (MatchToRow (match));
 	}
 	
 	void NotificationRulesWidget::on_ModifyMatch__released ()
