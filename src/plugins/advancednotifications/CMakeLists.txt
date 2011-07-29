@@ -35,6 +35,7 @@ SET (SRCS
 	fieldmatch.cpp
 	typedmatchers.cpp
 	matchconfigdialog.cpp
+	visualhandler.cpp
 	)
 SET (HEADERS
 	advancednotifications.h
@@ -49,6 +50,7 @@ SET (HEADERS
 	fieldmatch.h
 	typedmatchers.h
 	matchconfigdialog.h
+	visualhandler.h
 	)
 SET (FORMS
 	notificationruleswidget.ui
