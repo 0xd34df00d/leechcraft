@@ -20,6 +20,7 @@
 #include <interfaces/ianemitter.h>
 #include "core.h"
 #include "typedmatchers.h"
+#include "fieldmatch.h"
 
 namespace LeechCraft
 {
@@ -50,6 +51,24 @@ namespace AdvancedNotifications
 		
 		if (!emitters.isEmpty ())
 			on_SourcePlugin__activated (0);
+	}
+	
+	FieldMatch MatchConfigDialog::GetFieldMatch () const
+	{
+		const int fieldIdx = Ui_.FieldName_->currentIndex ();
+		const int sourceIdx = Ui_.SourcePlugin_->currentIndex ();
+		if (fieldIdx == -1 || sourceIdx == -1)
+			return FieldMatch ();
+
+		const ANFieldData& data = Ui_.FieldName_->
+				itemData (fieldIdx).value<ANFieldData> ();
+				
+		FieldMatch result (data.Type_, CurrentMatcher_);
+		result.SetPluginID (Ui_.SourcePlugin_->
+					itemData (sourceIdx).toByteArray ());
+		result.SetFieldName (data.Name_);
+		
+		return result;
 	}
 	
 	void MatchConfigDialog::on_SourcePlugin__activated (int idx)

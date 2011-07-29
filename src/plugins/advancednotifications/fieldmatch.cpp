@@ -35,6 +35,13 @@ namespace AdvancedNotifications
 	{
 	}
 	
+	FieldMatch::FieldMatch (QVariant::Type type,
+			TypedMatcherBase_ptr matcher)
+	: FieldType_ (type)
+	, Matcher_ (matcher)
+	{
+	}
+	
 	QString FieldMatch::GetPluginID () const
 	{
 		return PluginID_;

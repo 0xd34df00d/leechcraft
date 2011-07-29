@@ -27,8 +27,9 @@ namespace LeechCraft
 namespace AdvancedNotifications
 {
 	class TypedMatcherBase;
-	
 	typedef boost::shared_ptr<TypedMatcherBase> TypedMatcherBase_ptr;
+	
+	class FieldMatch;
 
 	class MatchConfigDialog : public QDialog
 	{
@@ -40,6 +41,8 @@ namespace AdvancedNotifications
 		TypedMatcherBase_ptr CurrentMatcher_;
 	public:
 		MatchConfigDialog (const QStringList&, QWidget* = 0);
+		
+		FieldMatch GetFieldMatch () const;
 	private slots:
 		void on_SourcePlugin__activated (int);
 		void on_FieldName__activated (int);
