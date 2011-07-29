@@ -68,7 +68,7 @@ namespace AdvancedNotifications
 		FieldMatch result (data.Type_, CurrentMatcher_);
 		result.SetPluginID (Ui_.SourcePlugin_->
 					itemData (sourceIdx).toByteArray ());
-		result.SetFieldName (data.Name_);
+		result.SetFieldName (data.ID_);
 		
 		return result;
 	}
