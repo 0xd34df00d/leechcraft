@@ -44,8 +44,11 @@ namespace AdvancedNotifications
 		void SetProxy (ICoreProxy_ptr);
 		
 		NotificationRulesWidget* GetNRW ();
-		
 		QList<NotificationRule> GetRules (const Entity&) const;
+		
+		void SendEntity (const Entity&);
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }

@@ -84,5 +84,10 @@ namespace AdvancedNotifications
 		
 		return result;
 	}
+	
+	void Core::SendEntity (const Entity& e)
+	{
+		emit gotEntity (e);
+	}
 }
 }

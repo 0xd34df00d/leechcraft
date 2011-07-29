@@ -35,6 +35,11 @@ namespace AdvancedNotifications
 		
 		Core::Instance ().SetProxy (proxy);
 		
+		connect (&Core::Instance (),
+				SIGNAL (gotEntity (const LeechCraft::Entity&)),
+				this,
+				SIGNAL (gotEntity (const LeechCraft::Entity&)));
+		
 		SettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"advancednotificationssettings.xml");

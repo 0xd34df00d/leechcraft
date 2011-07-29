@@ -54,6 +54,8 @@ namespace AdvancedNotifications
 		void Handle (Entity);
 		
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+	private:
+		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }
