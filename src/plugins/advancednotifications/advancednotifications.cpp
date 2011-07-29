@@ -88,7 +88,7 @@ namespace AdvancedNotifications
 			return EntityTestHandleResult ();
 		
 		EntityTestHandleResult result (EntityTestHandleResult::PIdeal);
-		//result.CancelOthers_ = true;
+		result.CancelOthers_ = true;
 		return result;
 	}
 	
