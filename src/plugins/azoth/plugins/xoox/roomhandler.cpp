@@ -643,6 +643,7 @@ namespace Xoox
 			entry->SetEntryName (item.nick ());
 			Nick2Entry_ [item.nick ()] = Nick2Entry_ [nick];
 			MakeNickChangeMessage (nick, item.nick ());
+			Nick2Entry_.remove (nick);
 			PendingNickChanges_ << item.nick ();
 			return;
 		}
