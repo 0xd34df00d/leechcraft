@@ -19,7 +19,6 @@
 #include "generalhandler.h"
 #include <interfaces/structures.h>
 #include "systemtrayhandler.h"
-#include "handlersconfigurator.h"
 
 namespace LeechCraft
 {
@@ -27,7 +26,6 @@ namespace AdvancedNotifications
 {
 	GeneralHandler::GeneralHandler (ICoreProxy_ptr proxy)
 	: Proxy_ (proxy)
-	, HandlersConfigurator_ (new HandlersConfigurator)
 	{
 		Handlers_ << ConcreteHandlerBase_ptr (new SystemTrayHandler);
 		
@@ -39,15 +37,6 @@ namespace AdvancedNotifications
 	
 	void GeneralHandler::Handle (const Entity& e)
 	{
-		const QSet<ConcreteHandlerBase::HandlerType>& types = HandlersConfigurator_->GetEnabledHandlers (e);
-		Q_FOREACH (ConcreteHandlerBase_ptr handler, Handlers_)
-			if (types.contains (handler->GetHandlerType ()))
-				handler->Handle (e);
-	}
-	
-	HandlersConfigurator* GeneralHandler::GetHandlersConfigurator () const
-	{
-		return HandlersConfigurator_;
 	}
 	
 	ICoreProxy_ptr GeneralHandler::GetProxy () const

@@ -38,6 +38,7 @@ namespace AdvancedNotifications
 		{
 			HTSystemTray,
 			HTLCTray,
+			HTVisualNotification,
 			HTAudioNotification
 		};
 

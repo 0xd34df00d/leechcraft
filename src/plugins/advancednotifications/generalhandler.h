@@ -27,20 +27,16 @@ namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
-	class HandlersConfigurator;
-
 	class GeneralHandler
 	{
 		QList<ConcreteHandlerBase_ptr> Handlers_;
 		
 		ICoreProxy_ptr Proxy_;
-		HandlersConfigurator *HandlersConfigurator_;
 		QMap<QString, QString> Cat2IconName_;
 	public:
 		GeneralHandler (ICoreProxy_ptr);
 		
-		void Handle (const Entity&);		
-		HandlersConfigurator* GetHandlersConfigurator () const;
+		void Handle (const Entity&);
 		
 		ICoreProxy_ptr GetProxy () const;
 		

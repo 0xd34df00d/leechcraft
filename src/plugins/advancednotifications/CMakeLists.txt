@@ -28,7 +28,6 @@ SET (SRCS
 	generalhandler.cpp
 	concretehandlerbase.cpp
 	systemtrayhandler.cpp
-	handlersconfigurator.cpp
 	notificationruleswidget.cpp
 	xmlsettingsmanager.cpp
 	notificationrule.cpp
@@ -43,7 +42,6 @@ SET (HEADERS
 	generalhandler.h
 	concretehandlerbase.h
 	systemtrayhandler.h
-	handlersconfigurator.h
 	notificationruleswidget.h
 	xmlsettingsmanager.h
 	notificationrule.h
