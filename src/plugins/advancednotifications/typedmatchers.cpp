@@ -144,8 +144,8 @@ namespace AdvancedNotifications
 	{
 		const QString& p = Rx_.pattern ();
 		return Contains_ ?
-				QObject::tr ("contains pattern %1").arg (p) :
-				QObject::tr ("doesn't contain pattern %1").arg (p);
+				QObject::tr ("contains pattern `%1`").arg (p) :
+				QObject::tr ("doesn't contain pattern `%1`").arg (p);
 	}
 	
 	bool StringListMatcher::Match (const QVariant& var) const
