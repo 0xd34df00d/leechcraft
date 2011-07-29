@@ -19,6 +19,7 @@
 #include "generalhandler.h"
 #include <interfaces/structures.h>
 #include "systemtrayhandler.h"
+#include "visualhandler.h"
 #include "core.h"
 
 namespace LeechCraft
@@ -29,6 +30,7 @@ namespace AdvancedNotifications
 	: Proxy_ (proxy)
 	{
 		Handlers_ << ConcreteHandlerBase_ptr (new SystemTrayHandler);
+		Handlers_ << ConcreteHandlerBase_ptr (new VisualHandler);
 		
 		Q_FOREACH (ConcreteHandlerBase_ptr handler, Handlers_)
 			handler->SetGeneralHandler (this);
