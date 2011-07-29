@@ -18,6 +18,7 @@
 
 #ifndef PLUGINS_ADVANCEDNOTIFICATIONS_MATCHCONFIGDIALOG_H
 #define PLUGINS_ADVANCEDNOTIFICATIONS_MATCHCONFIGDIALOG_H
+#include <boost/shared_ptr.hpp>
 #include <QDialog>
 #include "ui_matchconfigdialog.h"
 
@@ -25,6 +26,10 @@ namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
+	class TypedMatcherBase;
+	
+	typedef boost::shared_ptr<TypedMatcherBase> TypedMatcherBase_ptr;
+
 	class MatchConfigDialog : public QDialog
 	{
 		Q_OBJECT
@@ -32,6 +37,7 @@ namespace AdvancedNotifications
 		Ui::MatchConfigDialog Ui_;
 		
 		QSet<QString> Types_;
+		TypedMatcherBase_ptr CurrentMatcher_;
 	public:
 		MatchConfigDialog (const QStringList&, QWidget* = 0);
 	private slots:

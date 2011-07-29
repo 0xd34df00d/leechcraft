@@ -19,6 +19,7 @@
 #include "matchconfigdialog.h"
 #include <interfaces/ianemitter.h>
 #include "core.h"
+#include "typedmatchers.h"
 
 namespace LeechCraft
 {
@@ -100,7 +101,12 @@ namespace AdvancedNotifications
 			delete oldItem;
 		}
 		
-		lay->addWidget (new QLabel (QVariant::typeToName (data.Type_)));
+		CurrentMatcher_ = TypedMatcherBase::Create (data.Type_);
+		if (CurrentMatcher_)
+			lay->addWidget (CurrentMatcher_->GetConfigWidget ());
+		else
+			lay->addWidget (new QLabel (tr ("Invalid matcher type %1.")
+						.arg (QVariant::typeToName (data.Type_))));
 	}
 }
 }
