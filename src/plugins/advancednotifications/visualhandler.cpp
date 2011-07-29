@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "visualhandler.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -31,8 +32,14 @@ namespace AdvancedNotifications
 		return NMVisual;
 	}
 	
-	void VisualHandler::Handle (const Entity& e)
+	void VisualHandler::Handle (const Entity& orig)
 	{
+		Entity e = orig;
+		Q_FOREACH (const QString& key, e.Additional_.keys ())
+			if (key.startsWith ("org.LC.AdvNotifications."))
+				e.Additional_.remove (key);
+			
+		Core::Instance ().SendEntity (e);
 	}
 }
 }
