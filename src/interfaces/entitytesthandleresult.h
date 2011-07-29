@@ -43,14 +43,23 @@ struct EntityTestHandleResult
 		PLow = 200,
 		PNone = 0
 	};
+	
+	/** @brief Whether other handlers should be canceled.
+	 * 
+	 * If this is set to true, then other handlers won't be called to
+	 * handle the given entity.
+	 */
+	bool CancelOthers_;
 
 	EntityTestHandleResult ()
 	: HandlePriority_ ()
+	, CancelOthers_ (false)
 	{
 	}
 	
 	explicit EntityTestHandleResult (Priority prio)
 	: HandlePriority_ (prio)
+	, CancelOthers_ (false)
 	{
 	}
 };

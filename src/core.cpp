@@ -52,6 +52,7 @@
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/isummaryrepresentation.h>
 #include <interfaces/structures.h>
+#include <interfaces/entitytesthandleresult.h>
 #include "application.h"
 #include "mainwindow.h"
 #include "pluginmanager.h"
@@ -70,7 +71,6 @@
 #include "localsockethandler.h"
 #include "storagebackend.h"
 #include "coreinstanceobject.h"
-#include "interfaces/entitytesthandleresult.h"
 
 using namespace LeechCraft::Util;
 
@@ -632,8 +632,17 @@ namespace LeechCraft
 						break;
 				}
 				
-				if (r.HandlePriority_ > 0)
-					result << *it;
+				if (r.HandlePriority_ <= 0)
+					continue;
+
+				const bool single = type == OTHandlers && r.CancelOthers_;
+				if (single)
+					result.clear ();
+
+				result << *it;
+				
+				if (single)
+					break;
 
 				if (detectOnly && result.size ())
 					break;
