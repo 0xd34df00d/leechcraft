@@ -308,10 +308,31 @@ namespace AdvancedNotifications
 	
 	void NotificationRulesWidget::on_ModifyMatch__released ()
 	{
+		const QModelIndex& index = Ui_.MatchesTree_->currentIndex ();
+		if (!index.isValid ())
+			return;
+		
+		MatchConfigDialog dia (GetSelectedTypes (), this);
+		if (dia.exec () != QDialog::Accepted)
+			return;
+		
+		const int row = index.row ();
+		
+		const FieldMatch& match = dia.GetFieldMatch ();
+		Matches_ [row] = match;
+		int i = 0;
+		Q_FOREACH (QStandardItem *item, MatchToRow (match))
+			MatchesModel_->setItem (row, i++, item);
 	}
 	
 	void NotificationRulesWidget::on_RemoveMatch__released ()
 	{
+		const QModelIndex& index = Ui_.MatchesTree_->currentIndex ();
+		if (!index.isValid ())
+			return;
+		
+		Matches_.removeAt (index.row ());
+		MatchesModel_->removeRow (index.row ());
 	}
 	
 	void NotificationRulesWidget::on_EventCat__activated (int idx)
