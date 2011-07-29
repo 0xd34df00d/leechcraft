@@ -82,7 +82,6 @@ namespace Xoox
 				QXmppMucItem::Affiliation,
 				QXmppMucItem::Role,
 				const QString&);
-		void HandleNickChange (const QString&, const QString&);
 		void HandleMessage (const QXmppMessage&, const QString&);
 		void UpdatePerms (const QList<QXmppMucItem>&);
 		/** Creates a new entry for the given nick if it

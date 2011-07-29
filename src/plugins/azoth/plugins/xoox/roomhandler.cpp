@@ -370,15 +370,6 @@ namespace Xoox
 		entry->SetRole (role);
 		MakePermsChangedMessage (nick, aff, role, reason);
 	}
-	
-	void RoomHandler::HandleNickChange (const QString& oldNick, const QString& newNick)
-	{
-		MakeNickChangeMessage (oldNick, newNick);
-		Nick2Entry_ [newNick] = Nick2Entry_.take (oldNick);
-		Nick2Entry_ [newNick]->SetEntryName (newNick);
-		PendingNickChanges_ << oldNick;
-		PendingNickChanges_ << newNick;
-	}
 
 	void RoomHandler::HandleMessage (const QXmppMessage& msg, const QString& nick)
 	{
