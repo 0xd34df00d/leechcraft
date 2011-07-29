@@ -23,6 +23,12 @@
 #include <QRegExp>
 #include <QVariant>
 
+namespace Ui
+{
+	class IntMatcherConfigWidget;
+	class StringLikeMatcherConfigWidget;
+}
+
 namespace LeechCraft
 {
 namespace AdvancedNotifications
@@ -33,6 +39,8 @@ namespace AdvancedNotifications
 	
 	class TypedMatcherBase
 	{
+	protected:
+		QWidget *CW_;
 	public:
 		static TypedMatcherBase_ptr Create (QVariant::Type);
 
@@ -42,6 +50,7 @@ namespace AdvancedNotifications
 		virtual bool Match (const QVariant&) const = 0;
 		
 		virtual QString GetHRDescription () const = 0;
+		virtual QWidget* GetConfigWidget () = 0;
 	};
 	
 	class StringLikeMatcher : public TypedMatcherBase
@@ -49,9 +58,15 @@ namespace AdvancedNotifications
 	protected:
 		QRegExp Rx_;
 		bool Contains_;
+		
+		boost::shared_ptr<Ui::StringLikeMatcherConfigWidget> Ui_;
 	public:
+		StringLikeMatcher ();
+
 		QVariantMap Save () const;
 		void Load (const QVariantMap&);
+		
+		QWidget* GetConfigWidget ();
 	};
 	
 	class StringMatcher : public StringLikeMatcher
@@ -84,6 +99,8 @@ namespace AdvancedNotifications
 		Q_DECLARE_FLAGS (Operations, Operation);
 		
 		Operations Ops_;
+		
+		boost::shared_ptr<Ui::IntMatcherConfigWidget> Ui_;
 	public:
 		QVariantMap Save () const;
 		void Load (const QVariantMap&);
@@ -91,6 +108,7 @@ namespace AdvancedNotifications
 		bool Match (const QVariant&) const;
 		
 		QString GetHRDescription () const;
+		QWidget* GetConfigWidget ();
 	};
 }
 }

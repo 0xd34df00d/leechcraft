@@ -53,6 +53,8 @@ SET (HEADERS
 SET (FORMS
 	notificationruleswidget.ui
 	matchconfigdialog.ui
+	intmatcherconfigwidget.ui
+	stringlikematcherconfigwidget.ui
 	)
 
 IF (QT_QTDECLARATIVE_FOUND)

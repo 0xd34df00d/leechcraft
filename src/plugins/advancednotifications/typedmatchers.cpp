@@ -17,8 +17,13 @@
  **********************************************************************/
 
 #include "typedmatchers.h"
-#include <QtDebug>
 #include <QStringList>
+#include <QWidget>
+#include <QtDebug>
+#include "ui_intmatcherconfigwidget.h"
+#include "ui_stringlikematcherconfigwidget.h"
+
+//Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::AdvancedNotifications::IntMatcher::Operations);
 
 namespace LeechCraft
 {
@@ -42,6 +47,11 @@ namespace AdvancedNotifications
 		}
 	}
 	
+	StringLikeMatcher::StringLikeMatcher ()
+	: Contains_ (true)
+	{
+	}
+	
 	QVariantMap StringLikeMatcher::Save () const
 	{
 		QVariantMap result;
@@ -54,6 +64,36 @@ namespace AdvancedNotifications
 	{
 		Rx_ = map ["Rx"].toRegExp ();
 		Contains_ = map ["Cont"].toBool ();
+	}
+	
+	QWidget* StringLikeMatcher::GetConfigWidget ()
+	{
+		if (!CW_)
+		{
+			CW_ = new QWidget ();
+			Ui_.reset (new Ui::StringLikeMatcherConfigWidget ());
+			Ui_->setupUi (CW_);
+		}
+		
+		Ui_->ContainsBox_->setCurrentIndex (Contains_ ? 0 : 1);
+		Ui_->RegexpEditor_->setText (Rx_.pattern ());
+		int rxIdx = 0;
+		switch (Rx_.patternSyntax ())
+		{
+		case QRegExp::Wildcard:
+			rxIdx = 1;
+			break;
+		case QRegExp::RegExp:
+			rxIdx = 2;
+			break;
+		case QRegExp::FixedString:
+		default:
+			rxIdx = 0;
+			break;
+		}
+		Ui_->RegexType_->setCurrentIndex (rxIdx);
+
+		return CW_;
 	}
 	
 	bool StringMatcher::Match (const QVariant& var) const
@@ -138,6 +178,27 @@ namespace AdvancedNotifications
 		return QObject::tr ("is %1 then %2")
 				.arg (op)
 				.arg (Boundary_);
+	}
+	
+	QWidget* IntMatcher::GetConfigWidget ()
+	{
+		if (!CW_)
+		{
+			CW_ = new QWidget ();
+			Ui_.reset (new Ui::IntMatcherConfigWidget ());
+			Ui_->setupUi (CW_);
+		}
+		
+		Ui_->Boundary_->setValue (Boundary_);
+	
+		QMap<Operations, int> ops2pos;
+		ops2pos [OGreater] = 0;
+		ops2pos [static_cast<Operations> (OEqual | OGreater)] = 1;
+		ops2pos [OEqual] = 2;
+		ops2pos [static_cast<Operations> (OEqual | OLess)] = 3;
+		ops2pos [OLess] = 4;
+		
+		return CW_;
 	}
 }
 }
