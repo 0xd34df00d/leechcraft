@@ -194,6 +194,16 @@ namespace AdvancedNotifications
 		
 		rule.SetFieldMatches (Matches_);
 		
+		const int audioIdx = Ui_.AudioFile_->currentIndex ();
+		AudioParams params =
+		{
+			audioIdx >= 0 ?
+				Ui_.AudioFile_->itemData (audioIdx).toString () :
+				QString ()
+		};
+		
+		rule.SetAudioParams (params);
+		
 		return rule;
 	}
 	
@@ -309,6 +319,14 @@ namespace AdvancedNotifications
 		Matches_ = rule.GetFieldMatches ();
 		Q_FOREACH (const FieldMatch& m, Matches_)
 			MatchesModel_->appendRow (MatchToRow (m));
+			
+		const AudioParams& params = rule.GetAudioParams ();
+		const int idx = Ui_.AudioFile_->findData (params.Filename_);
+		if (idx == -1 &&
+				!params.Filename_.isEmpty ())
+			Ui_.AudioFile_->insertItem (0, params.Filename_, params.Filename_);
+		else
+			Ui_.AudioFile_->setCurrentIndex (idx);
 	}
 	
 	void NotificationRulesWidget::on_AddRule__released ()
