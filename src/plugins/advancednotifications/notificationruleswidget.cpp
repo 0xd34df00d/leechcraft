@@ -114,11 +114,13 @@ namespace AdvancedNotifications
 		NotificationRule chatMsg (tr ("Incoming chat messages"), CatIM,
 				QStringList (TypeIMIncMsg));
 		chatMsg.SetMethods (NMVisual | NMTray | NMAudio);
+		chatMsg.SetAudioParams (AudioParams ("im-incoming-message"));
 		Rules_ << chatMsg;
 
 		NotificationRule mucHigh (tr ("MUC highlights"), CatIM,
 				QStringList (TypeIMMUCHighlight));
 		mucHigh.SetMethods (NMVisual | NMTray | NMAudio);
+		mucHigh.SetAudioParams (AudioParams ("im-muc-highlight"));
 		Rules_ << mucHigh;
 		
 		NotificationRule incFile (tr ("Incoming file transfers"), CatIM,
@@ -195,14 +197,10 @@ namespace AdvancedNotifications
 		rule.SetFieldMatches (Matches_);
 		
 		const int audioIdx = Ui_.AudioFile_->currentIndex ();
-		AudioParams params =
-		{
-			audioIdx >= 0 ?
+		const QString& audioFile = audioIdx >= 0 ?
 				Ui_.AudioFile_->itemData (audioIdx).toString () :
-				QString ()
-		};
-		
-		rule.SetAudioParams (params);
+				QString ();		
+		rule.SetAudioParams (AudioParams (audioFile));
 		
 		return rule;
 	}
@@ -321,12 +319,19 @@ namespace AdvancedNotifications
 			MatchesModel_->appendRow (MatchToRow (m));
 			
 		const AudioParams& params = rule.GetAudioParams ();
-		const int idx = Ui_.AudioFile_->findData (params.Filename_);
-		if (idx == -1 &&
-				!params.Filename_.isEmpty ())
-			Ui_.AudioFile_->insertItem (0, params.Filename_, params.Filename_);
+		if (params.Filename_.isEmpty ())
+			Ui_.AudioFile_->setCurrentIndex (-1);
 		else
-			Ui_.AudioFile_->setCurrentIndex (idx);
+		{
+			int idx = Ui_.AudioFile_->findData (params.Filename_);
+			if (idx == -1)
+				idx = Ui_.AudioFile_->findText (params.Filename_);
+
+			if (idx == -1)
+				Ui_.AudioFile_->insertItem (0, params.Filename_, params.Filename_);
+			else
+				Ui_.AudioFile_->setCurrentIndex (idx);
+		}
 	}
 	
 	void NotificationRulesWidget::on_AddRule__released ()

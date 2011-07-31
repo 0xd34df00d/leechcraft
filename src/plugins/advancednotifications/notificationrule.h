@@ -36,6 +36,9 @@ namespace AdvancedNotifications
 	struct AudioParams
 	{
 		QString Filename_;
+		
+		AudioParams ();
+		AudioParams (const QString& fname);
 	};
 	
 	struct TrayParams

@@ -24,6 +24,15 @@ namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
+	AudioParams::AudioParams ()
+	{
+	}
+		
+	AudioParams::AudioParams (const QString& fname)
+	: Filename_ (fname)
+	{
+	}
+
 	NotificationRule::NotificationRule ()
 	: Methods_ (NMNone)
 	{
