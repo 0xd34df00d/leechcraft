@@ -22,27 +22,23 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace LMP
+{
+	class DefaultWidget : public IVideoWidget
 	{
-		namespace LMP
-		{
-			class DefaultWidget : public IVideoWidget
-			{
-				Q_INTERFACES (IVideoWidget);
-			public:
-				DefaultWidget ();
+		Q_INTERFACES (IVideoWidget);
+	public:
+		DefaultWidget ();
 
-				void Play ();
-				void Pause ();
-				void Stop ();
-				void Clear ();
-				void Enqueue (const QUrl&);
-				void Enqueue (QIODevice*);
-				QWidget* Widget ();
-			};
-		};
+		void Play ();
+		void Pause ();
+		void Stop ();
+		void Clear ();
+		void Enqueue (const QUrl&);
+		void Enqueue (QIODevice*);
+		QWidget* Widget ();
 	};
-};
+}
+}
 
 #endif
-

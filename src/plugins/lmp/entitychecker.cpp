@@ -25,70 +25,72 @@
 #include "phonon.h"
 #include "xmlsettingsmanager.h"
 
-using namespace LeechCraft;
-using namespace LeechCraft::Plugins::LMP;
-
-EntityChecker::EntityChecker (const LeechCraft::Entity& e)
-: Result_ (false)
-, Break_ (false)
+namespace LeechCraft
 {
-	struct MimeChecker
+namespace LMP
+{
+	EntityChecker::EntityChecker (const LeechCraft::Entity& e)
+	: Result_ (false)
+	, Break_ (false)
 	{
-		bool operator () (const QString& mime)
+		struct MimeChecker
 		{
-			if (mime == "application/ogg")
-				return true;
-			if (mime.startsWith ("audio/"))
-				return true;
-			if (mime.startsWith ("video/"))
-				return true;
-			return false;
-		}
-	};
+			bool operator () (const QString& mime)
+			{
+				if (mime == "application/ogg")
+					return true;
+				if (mime.startsWith ("audio/"))
+					return true;
+				if (mime.startsWith ("video/"))
+					return true;
+				return false;
+			}
+		};
 
-	if (e.Entity_.canConvert<QNetworkReply*> () &&
-			MimeChecker () (e.Mime_))
-	{
-		Result_ = true;
-		return;
-	}
-	if (e.Entity_.canConvert<QIODevice*> () &&
-			e.Mime_ == "x-leechcraft/media-qiodevice")
-	{
-		Result_ = true;
-		return;
-	}
-	if (e.Entity_.canConvert<QUrl> ())
-	{
-		QUrl url = e.Entity_.toUrl ();
-		QString extension = QFileInfo (url.path ()).suffix ();
-
-		QStringList goodExt = XmlSettingsManager::Instance ()->
-			property ("TestExtensions").toString ()
-			.split (' ', QString::SkipEmptyParts);
-
-		Result_ = goodExt.contains (extension);
-		return;
-	}
-
-	Result_ = false;
-}
-
-bool EntityChecker::Can () const
-{
-	return Result_;
-}
-
-void EntityChecker::stateChanged (Phonon::State st)
-{
-	switch (st)
-	{
-		case Phonon::PlayingState:
+		if (e.Entity_.canConvert<QNetworkReply*> () &&
+				MimeChecker () (e.Mime_))
+		{
 			Result_ = true;
-		case Phonon::ErrorState:
-			Break_ = true;
-		default:
-			break;
+			return;
+		}
+		if (e.Entity_.canConvert<QIODevice*> () &&
+				e.Mime_ == "x-leechcraft/media-qiodevice")
+		{
+			Result_ = true;
+			return;
+		}
+		if (e.Entity_.canConvert<QUrl> ())
+		{
+			QUrl url = e.Entity_.toUrl ();
+			QString extension = QFileInfo (url.path ()).suffix ();
+
+			QStringList goodExt = XmlSettingsManager::Instance ()->
+				property ("TestExtensions").toString ()
+				.split (' ', QString::SkipEmptyParts);
+
+			Result_ = goodExt.contains (extension);
+			return;
+		}
+
+		Result_ = false;
+	}
+
+	bool EntityChecker::Can () const
+	{
+		return Result_;
+	}
+
+	void EntityChecker::stateChanged (Phonon::State st)
+	{
+		switch (st)
+		{
+			case Phonon::PlayingState:
+				Result_ = true;
+			case Phonon::ErrorState:
+				Break_ = true;
+			default:
+				break;
+		}
 	}
 }
-
+}

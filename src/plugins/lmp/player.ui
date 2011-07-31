@@ -26,7 +26,7 @@
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <widget class="LeechCraft::Plugins::LMP::PlayerWidget" name="Player_" native="true">
+     <widget class="LeechCraft::LMP::PlayerWidget" name="Player_" native="true">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
         <horstretch>0</horstretch>
@@ -48,7 +48,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>LeechCraft::Plugins::LMP::PlayerWidget</class>
+   <class>LeechCraft::LMP::PlayerWidget</class>
    <extends>QWidget</extends>
    <header>playerwidget.h</header>
    <container>1</container>

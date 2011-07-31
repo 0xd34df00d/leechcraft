@@ -21,49 +21,45 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace LMP
+{
+	DefaultWidget::DefaultWidget ()
 	{
-		namespace LMP
-		{
-			DefaultWidget::DefaultWidget ()
-			{
-			}
+	}
 
-			void DefaultWidget::Play ()
-			{
-				Core::Instance ().Play ();
-			}
+	void DefaultWidget::Play ()
+	{
+		Core::Instance ().Play ();
+	}
 
-			void DefaultWidget::Pause ()
-			{
-				Core::Instance ().Pause ();
-			}
+	void DefaultWidget::Pause ()
+	{
+		Core::Instance ().Pause ();
+	}
 
-			void DefaultWidget::Stop ()
-			{
-				Core::Instance ().Stop ();
-			}
+	void DefaultWidget::Stop ()
+	{
+		Core::Instance ().Stop ();
+	}
 
-			void DefaultWidget::Clear ()
-			{
-				Core::Instance ().Clear ();
-			}
+	void DefaultWidget::Clear ()
+	{
+		Core::Instance ().Clear ();
+	}
 
-			void DefaultWidget::Enqueue (const QUrl& url)
-			{
-				Core::Instance ().Enqueue (url);
-			}
+	void DefaultWidget::Enqueue (const QUrl& url)
+	{
+		Core::Instance ().Enqueue (url);
+	}
 
-			void DefaultWidget::Enqueue (QIODevice* data)
-			{
-				Core::Instance ().Enqueue (data);
-			}
+	void DefaultWidget::Enqueue (QIODevice* data)
+	{
+		Core::Instance ().Enqueue (data);
+	}
 
-			QWidget* DefaultWidget::Widget ()
-			{
-				return 0;
-			}
-		};
-	};
-};
-
+	QWidget* DefaultWidget::Widget ()
+	{
+		return 0;
+	}
+}
+}

@@ -34,47 +34,43 @@ namespace Phonon
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace LMP
+{
+	class DefaultWidget;
+
+	class Core : public QObject
 	{
-		namespace LMP
-		{
-			class DefaultWidget;
+		Q_OBJECT
 
-			class Core : public QObject
-			{
-				Q_OBJECT
+		std::auto_ptr<Player> Player_;
+		ICoreProxy_ptr Proxy_;
+		QAction *ShowAction_;
+		mutable DefaultWidget *DefaultWidget_;
 
-				std::auto_ptr<Player> Player_;
-				ICoreProxy_ptr Proxy_;
-				QAction *ShowAction_;
-				mutable DefaultWidget *DefaultWidget_;
+		Core ();
+	public:
+		static Core& Instance ();
+		void Release ();
+		void SetCoreProxy (ICoreProxy_ptr);
+		ICoreProxy_ptr GetCoreProxy () const;
 
-				Core ();
-			public:
-				static Core& Instance ();
-				void Release ();
-				void SetCoreProxy (ICoreProxy_ptr);
-				ICoreProxy_ptr GetCoreProxy () const;
+		PlayerWidget* CreateWidget () const;
+		IVideoWidget* GetDefaultWidget () const;
 
-				PlayerWidget* CreateWidget () const;
-				IVideoWidget* GetDefaultWidget () const;
-
-				void Reinitialize ();
-				void Play ();
-				void Pause ();
-				void Stop ();
-				void Clear ();
-				void Enqueue (const QUrl&);
-				void Enqueue (QIODevice*);
-				QAction* GetShowAction () const;
-				void Handle (const LeechCraft::Entity&);
-			signals:
-				void bringToFront ();
-				void gotEntity (const LeechCraft::Entity&);
-			};
-		};
+		void Reinitialize ();
+		void Play ();
+		void Pause ();
+		void Stop ();
+		void Clear ();
+		void Enqueue (const QUrl&);
+		void Enqueue (QIODevice*);
+		QAction* GetShowAction () const;
+		void Handle (const LeechCraft::Entity&);
+	signals:
+		void bringToFront ();
+		void gotEntity (const LeechCraft::Entity&);
 	};
-};
+}
+}
 
 #endif
-

@@ -32,51 +32,47 @@ class QToolBar;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace LMP
+{
+	class LMP : public QObject
+			  , public IInfo
+			  , public IMediaPlayer
+			  , public IHaveSettings
+			  , public IEntityHandler
+			  , public IActionsExporter
 	{
-		namespace LMP
-		{
-			class LMP : public QObject
-					  , public IInfo
-					  , public IMediaPlayer
-					  , public IHaveSettings
-					  , public IEntityHandler
-					  , public IActionsExporter
-			{
-				Q_OBJECT
-				Q_INTERFACES (IInfo IMediaPlayer IHaveSettings IEntityHandler IActionsExporter)
+		Q_OBJECT
+		Q_INTERFACES (IInfo IMediaPlayer IHaveSettings IEntityHandler IActionsExporter)
 
-				std::auto_ptr<QTranslator> Translator_;
-				boost::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
-			public:
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
-				void Release ();
-				QByteArray GetUniqueID () const;
-				QString GetName () const;
-				QString GetInfo () const;
-				QStringList Provides () const;
-				QStringList Needs () const;
-				QStringList Uses () const;
-				void SetProvider (QObject*, const QString&);
-				QIcon GetIcon () const;
+		std::auto_ptr<QTranslator> Translator_;
+		Util::XmlSettingsDialog_ptr SettingsDialog_;
+	public:
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		void Release ();
+		QByteArray GetUniqueID () const;
+		QString GetName () const;
+		QString GetInfo () const;
+		QStringList Provides () const;
+		QStringList Needs () const;
+		QStringList Uses () const;
+		void SetProvider (QObject*, const QString&);
+		QIcon GetIcon () const;
 
-				IVideoWidget* CreateWidget () const;
-				IVideoWidget* GetDefaultWidget () const;
+		IVideoWidget* CreateWidget () const;
+		IVideoWidget* GetDefaultWidget () const;
 
-				boost::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
-				EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
-				void Handle (LeechCraft::Entity);
+		EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
+		void Handle (LeechCraft::Entity);
 
-				QList<QAction*> GetActions (ActionsEmbedPlace) const;
-			signals:
-				void bringToFront ();
-				void gotEntity (const LeechCraft::Entity&);
-			};
-		};
+		QList<QAction*> GetActions (ActionsEmbedPlace) const;
+	signals:
+		void bringToFront ();
+		void gotEntity (const LeechCraft::Entity&);
 	};
-};
+}
+}
 
 #endif
-

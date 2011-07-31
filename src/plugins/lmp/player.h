@@ -30,43 +30,39 @@ class QAction;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace LMP
+{
+	class Player : public QDialog
 	{
-		namespace LMP
-		{
-			class Player : public QDialog
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				Ui::Player Ui_;
-				QStatusBar *StatusBar_;
-				std::auto_ptr<QStandardItemModel> QueueModel_;
-				enum
-				{
-					SourceRole = Qt::UserRole + 100
-				};
-			public:
-				Player (QWidget* = 0);
-				void Play ();
-				void Pause ();
-				void Stop ();
-				void Clear ();
-				void TogglePause ();
-				void Enqueue (Phonon::MediaSource*);
-			private:
-				void FillQueue (int) const;
-			public slots:
-				void handleStateUpdated (const QString&);
-			private slots:
-				void handleSourceChanged (const Phonon::MediaSource&);
-				void handleMetadataChanged ();
-				void on_Queue__activated (const QModelIndex&);
-			signals:
-				void gotEntity (const LeechCraft::Entity&);
-			};
+		Ui::Player Ui_;
+		QStatusBar *StatusBar_;
+		std::auto_ptr<QStandardItemModel> QueueModel_;
+		enum
+		{
+			SourceRole = Qt::UserRole + 100
 		};
+	public:
+		Player (QWidget* = 0);
+		void Play ();
+		void Pause ();
+		void Stop ();
+		void Clear ();
+		void TogglePause ();
+		void Enqueue (Phonon::MediaSource*);
+	private:
+		void FillQueue (int) const;
+	public slots:
+		void handleStateUpdated (const QString&);
+	private slots:
+		void handleSourceChanged (const Phonon::MediaSource&);
+		void handleMetadataChanged ();
+		void on_Queue__activated (const QModelIndex&);
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
 	};
-};
+}
+}
 
 #endif
-
