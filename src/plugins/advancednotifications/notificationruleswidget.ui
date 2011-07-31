@@ -280,6 +280,13 @@
            </property>
           </widget>
          </item>
+         <item>
+          <widget class="QPushButton" name="TestAudio_">
+           <property name="text">
+            <string>Test</string>
+           </property>
+          </widget>
+         </item>
         </layout>
        </item>
       </layout>

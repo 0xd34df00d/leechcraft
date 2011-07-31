@@ -22,6 +22,7 @@
 #include <QStandardItemModel>
 #include <interfaces/ianemitter.h>
 #include <util/resourceloader.h>
+#include <util/util.h>
 #include "xmlsettingsmanager.h"
 #include "matchconfigdialog.h"
 #include "typedmatchers.h"
@@ -465,6 +466,20 @@ namespace AdvancedNotifications
 	void NotificationRulesWidget::on_NotifyAudio__stateChanged (int state)
 	{
 		Ui_.PageAudio_->setEnabled (state == Qt::Checked);
+	}
+	
+	void NotificationRulesWidget::on_TestAudio__released ()
+	{
+		const int idx = Ui_.AudioFile_->currentIndex ();
+		if (idx == -1)
+			return;
+		
+		const QString& path = Ui_.AudioFile_->itemData (idx).toString ();
+		if (path.isEmpty ())
+			return;
+		
+		const Entity& e = Util::MakeEntity (path, QString (), Internal);
+		Core::Instance ().SendEntity (e);
 	}
 	
 	void NotificationRulesWidget::resetAudioFileBox ()
