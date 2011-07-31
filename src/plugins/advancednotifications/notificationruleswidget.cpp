@@ -201,8 +201,9 @@ namespace AdvancedNotifications
 		const int audioIdx = Ui_.AudioFile_->currentIndex ();
 		const QString& audioFile = audioIdx >= 0 ?
 				Ui_.AudioFile_->itemData (audioIdx).toString () :
-				QString ();		
+				QString ();
 		rule.SetAudioParams (AudioParams (audioFile));
+		qDebug () << "set" << audioFile;
 		
 		return rule;
 	}
@@ -321,6 +322,7 @@ namespace AdvancedNotifications
 			MatchesModel_->appendRow (MatchToRow (m));
 			
 		const AudioParams& params = rule.GetAudioParams ();
+		qDebug () << "got params here:" << params.Filename_;
 		if (params.Filename_.isEmpty ())
 			Ui_.AudioFile_->setCurrentIndex (-1);
 		else
@@ -330,9 +332,12 @@ namespace AdvancedNotifications
 				idx = Ui_.AudioFile_->findText (params.Filename_);
 
 			if (idx == -1)
+			{
 				Ui_.AudioFile_->insertItem (0, params.Filename_, params.Filename_);
-			else
-				Ui_.AudioFile_->setCurrentIndex (idx);
+				idx = 0;
+			}
+
+			Ui_.AudioFile_->setCurrentIndex (idx);
 		}
 	}
 	
@@ -487,6 +492,8 @@ namespace AdvancedNotifications
 		}
 		else
 			Ui_.AudioFile_->insertItem (0, fname, fname);
+		
+		Ui_.AudioFile_->setCurrentIndex (0);
 	}
 	
 	void NotificationRulesWidget::on_TestAudio__released ()
