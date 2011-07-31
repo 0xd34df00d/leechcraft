@@ -17,8 +17,10 @@
  **********************************************************************/
 
 #include "audiohandler.h"
-#include "core.h"
 #include <util/util.h>
+#include <util/resourceloader.h>
+#include "core.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -35,8 +37,26 @@ namespace AdvancedNotifications
 	
 	void AudioHandler::Handle (const Entity&, const NotificationRule& rule)
 	{
-		const Entity& e = Util::MakeEntity (rule.GetAudioParams ().Filename_,
-				QString (), Internal);
+		QString fname = rule.GetAudioParams ().Filename_;
+		if (fname.isEmpty ())
+			return;
+		
+		if (!fname.contains ('/'))
+		{
+			const QString& option = XmlSettingsManager::Instance ()
+					.property ("AudioTheme").toString ();
+			const QString& base = option + '/' + fname;
+
+			QStringList pathVariants;
+			pathVariants << base + ".ogg"
+					<< base + ".wav"
+					<< base + ".flac"
+					<< base + ".mp3";
+
+			fname = Core::Instance ().GetAudioThemeLoader ()->GetPath (pathVariants);
+		}
+
+		const Entity& e = Util::MakeEntity (fname, QString (), Internal);
 		Core::Instance ().SendEntity (e);
 	}
 }
