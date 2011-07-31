@@ -150,9 +150,9 @@ namespace LMP
 					Player_.get (),
 					SLOT (show ()));
 			connect (Player_.get (),
-				SIGNAL (notify (const LeechCraft::Notification&)),
-				this,
-				SIGNAL (notify (const LeechCraft::Notification&)));
+					SIGNAL (gotEntity (const LeechCraft::Entity&)),
+					this,
+					SIGNAL (gotEntity (const LeechCraft::Entity&)));
 		}
 		Player_->Enqueue (source);
 		if (e.Parameters_ & FromUserInitiated)
