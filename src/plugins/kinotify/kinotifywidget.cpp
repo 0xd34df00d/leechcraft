@@ -123,6 +123,11 @@ namespace LeechCraft
 			{
 				ThemeLoader_ = loader;
 			}
+			
+			void KinotifyWidget::SetEntity (const Entity& e)
+			{
+				E_ = e;
+			}
 
 			void KinotifyWidget::SetContent (const QString& title, const QString& body,
 					const QString& imgPath, const QSize& size)

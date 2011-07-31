@@ -22,6 +22,7 @@
 #include "kinotify.h"
 #include <QWebView>
 #include <QStateMachine>
+#include "interfaces/structures.h"
 
 namespace LeechCraft
 {
@@ -56,9 +57,13 @@ namespace LeechCraft
 				boost::shared_ptr<Util::ResourceLoader> ThemeLoader_;
 				QPixmap OverridePixmap_;
 				QObject_ptr HandlerGuard_;
+				
+				Entity E_;
 			public:
 				KinotifyWidget (int timeout = 0, QWidget *widget = 0, int animationTimeout = 300);
 				void SetThemeLoader (boost::shared_ptr<Util::ResourceLoader>);
+				
+				void SetEntity (const Entity&);
 
 				void SetContent (const QString&, const QString&,
 						const QString&, const QSize& size = QSize (350, 70));

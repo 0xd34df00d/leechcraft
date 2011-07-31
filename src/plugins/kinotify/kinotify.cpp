@@ -102,6 +102,7 @@ namespace LeechCraft
  				KinotifyWidget *notificationWidget =
 						new KinotifyWidget (timeout, Proxy_->GetMainWindow ());
 				notificationWidget->SetThemeLoader (ThemeLoader_);
+				notificationWidget->SetEntity (e);
 
 				QStringList actionsNames = e.Additional_ ["NotificationActions"].toStringList ();
 				if (!actionsNames.isEmpty ())
