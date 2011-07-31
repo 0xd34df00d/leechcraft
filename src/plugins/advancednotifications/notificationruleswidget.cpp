@@ -27,6 +27,7 @@
 #include "matchconfigdialog.h"
 #include "typedmatchers.h"
 #include "core.h"
+#include <QFileDialog>
 
 namespace LeechCraft
 {
@@ -466,6 +467,26 @@ namespace AdvancedNotifications
 	void NotificationRulesWidget::on_NotifyAudio__stateChanged (int state)
 	{
 		Ui_.PageAudio_->setEnabled (state == Qt::Checked);
+	}
+	
+	void NotificationRulesWidget::on_BrowseAudioFile__released ()
+	{
+		const QString& fname = QFileDialog::getOpenFileName (this,
+				tr ("Select audio file"),
+				QDir::homePath (),
+				tr ("Audio files (*.ogg *.wav *.flac *.mp3);;All files (*.*)"));
+		if (fname.isEmpty ())
+			return;
+		
+		const bool shouldReplace = Ui_.AudioFile_->count () &&
+				Ui_.AudioFile_->itemText (0) == Ui_.AudioFile_->itemData (0);
+		if (shouldReplace)
+		{
+			Ui_.AudioFile_->setItemText (0, fname);
+			Ui_.AudioFile_->setItemData (0, fname);
+		}
+		else
+			Ui_.AudioFile_->insertItem (0, fname, fname);
 	}
 	
 	void NotificationRulesWidget::on_TestAudio__released ()

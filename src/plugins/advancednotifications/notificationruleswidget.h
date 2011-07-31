@@ -78,6 +78,7 @@ namespace AdvancedNotifications
 		void on_NotifySysTray__stateChanged (int);
 		void on_NotifyAudio__stateChanged (int);
 		
+		void on_BrowseAudioFile__released ();
 		void on_TestAudio__released ();
 		
 		void resetAudioFileBox ();
