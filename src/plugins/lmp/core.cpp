@@ -140,6 +140,20 @@ namespace LMP
 		}
 		else
 			return;
+		
+		if (!(e.Parameters_ & FromUserInitiated) &&
+				e.Parameters_ & Internal)
+		{
+			MediaObject *music = createPlayer (NotificationCategory, *source);
+			delete source;
+			music->play ();
+			connect (music,
+					SIGNAL (finished ()),
+					music,
+					SLOT (deleteLater ()),
+					Qt::QueuedConnection);
+			return;
+		}
 
 		if (!Player_.get ())
 		{
