@@ -692,6 +692,32 @@ namespace Xoox
 		Nick2Entry_.remove (nick);
 		Account_->handleEntryRemoved (entry.get ());
 	}
+	
+	void RoomHandler::requestVoice ()
+	{		
+		QList<QXmppDataForm::Field> fields;
+		
+		QXmppDataForm::Field typeField (QXmppDataForm::Field::HiddenField);
+		typeField.setKey ("FORM_TYPE");
+		typeField.setValue ("http://jabber.org/protocol/muc#request");
+		fields << typeField;
+
+		QXmppDataForm::Field reqField (QXmppDataForm::Field::TextSingleField);
+		reqField.setLabel ("Requested role");
+		reqField.setKey ("muc#role");
+		reqField.setValue ("participant");
+		fields << reqField;
+		
+		QXmppDataForm form;
+		form.setType (QXmppDataForm::Submit);
+		form.setFields (fields);
+	
+		QXmppMessage msg ("", Room_->jid ());
+		msg.setType (QXmppMessage::Normal);
+		msg.setExtensions (XooxUtil::Form2XmppElem (form));
+		
+		Account_->GetClientConnection ()->GetClient ()->sendPacket (msg);
+	}
 
 	void RoomHandler::RemoveThis ()
 	{

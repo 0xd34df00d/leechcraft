@@ -58,6 +58,8 @@ namespace Xoox
 		QMap<QXmppMucItem::Role, QByteArray> Role2Str_;
 		QMap<QXmppMucItem::Affiliation, QByteArray> Aff2Str_;
 		QMap<QByteArray, QString> Translations_;
+		
+		mutable QAction *ActionRequestVoice_;
 	public:
 		RoomCLEntry (RoomHandler*, GlooxAccount*);
 

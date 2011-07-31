@@ -95,6 +95,8 @@ namespace Xoox
 		void handleParticipantAdded (const QString&);
 		void handleParticipantChanged (const QString&);
 		void handleParticipantRemoved (const QString&);
+		
+		void requestVoice ();
 	private:
 		/** Creates a new entry for the given nick.
 		 */
