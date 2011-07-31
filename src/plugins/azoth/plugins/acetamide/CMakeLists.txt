@@ -28,6 +28,8 @@ SET (ACETAMIDE_SRCS
 	localtypes.cpp
 	servercommandmessage.cpp
 	serverparticipantentry.cpp
+	serverresponcemanager.cpp
+	usercommandmanager.cpp
 	xmlsettingsmanager.cpp
 	)
 
@@ -54,6 +56,8 @@ SET (ACETAMIDE_HEADERS
 	localtypes.h
 	servercommandmessage.h
 	serverparticipantentry.h
+	serverresponcemanager.h
+	usercommandmanager.h
 	xmlsettingsmanager.h
 	)
 

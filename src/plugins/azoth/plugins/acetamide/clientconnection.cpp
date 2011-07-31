@@ -146,23 +146,13 @@ namespace Acetamide
 	void ClientConnection::DisconnectFromAll ()
 	{
 		Q_FOREACH (IrcServerHandler *ish, ServerHandlers_.values ())
-		{
-			ish->LeaveAllChannel ();
-			ish->CloseAllPrivateChats ();
 			ish->DisconnectFromServer ();
-			ServerHandlers_.remove (ish->GetServerID_ ());
-			Account_->handleEntryRemoved (ish->GetCLEntry ());
-		}
 	}
 
 	void ClientConnection::QuitServer (const QStringList& list)
 	{
 		IrcServerHandler *ish = ServerHandlers_ [list.last ()];
-		ish->LeaveAllChannel ();
-		ish->CloseAllPrivateChats ();
 		ish->DisconnectFromServer ();
-		ServerHandlers_.remove (ish->GetServerID_ ());
-		Account_->handleEntryRemoved (ish->GetCLEntry ());
 	}
 
 	void ClientConnection::SetConsoleEnabled (bool enabled)

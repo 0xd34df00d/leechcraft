@@ -64,7 +64,7 @@ namespace Acetamide
 
 		ParentEntry_->GetIrcServerHandler ()->SetLastSendID (QString ());
 		ParentEntry_->GetIrcServerHandler ()->
-				SendCommandMessage2Server (Message_.split (' '));
+				SendMessage2Server (Message_.split (' '));
 	}
 
 	IMessage::Direction ServerCommandMessage::GetDirection () const
