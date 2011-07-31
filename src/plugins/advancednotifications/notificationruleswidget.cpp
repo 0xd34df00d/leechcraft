@@ -21,6 +21,7 @@
 #include <QSettings>
 #include <QStandardItemModel>
 #include <interfaces/ianemitter.h>
+#include <util/resourceloader.h>
 #include "xmlsettingsmanager.h"
 #include "matchconfigdialog.h"
 #include "typedmatchers.h"
@@ -97,6 +98,10 @@ namespace AdvancedNotifications
 		qRegisterMetaTypeStreamOperators<NotificationRule> ("LeechCraft::AdvancedNotifications::NotificationRule");
 		
 		LoadSettings ();
+		
+		XmlSettingsManager::Instance ().RegisterObject ("AudioTheme",
+				this, "resetAudioFileBox");
+		resetAudioFileBox ();
 	}
 	
 	QList<NotificationRule> NotificationRulesWidget::GetRules () const
@@ -275,6 +280,8 @@ namespace AdvancedNotifications
 	
 	void NotificationRulesWidget::handleItemSelected (const QModelIndex& index)
 	{
+		resetAudioFileBox ();
+
 		const NotificationRule& rule = Rules_.value (index.row ());
 		
 		const int catIdx = Ui_.EventCat_->findData (rule.GetCategory ());
@@ -435,6 +442,23 @@ namespace AdvancedNotifications
 	void NotificationRulesWidget::on_NotifyAudio__stateChanged (int state)
 	{
 		Ui_.PageAudio_->setEnabled (state == Qt::Checked);
+	}
+	
+	void NotificationRulesWidget::resetAudioFileBox ()
+	{
+		Ui_.AudioFile_->clear ();
+		
+		const QString& theme = XmlSettingsManager::Instance ().property ("AudioTheme").toString ();
+		const QStringList filters = QStringList ("*.ogg")
+				<< "*.wav"
+				<< "*.flac"
+				<< "*.mp3";
+		
+		const QFileInfoList& files = Core::Instance ()
+				.GetAudioThemeLoader ()->List (theme,
+						filters, QDir::Files | QDir::Readable);
+		Q_FOREACH (const QFileInfo& file, files)
+			Ui_.AudioFile_->addItem (file.baseName (), file.absoluteFilePath ());
 	}
 }
 }

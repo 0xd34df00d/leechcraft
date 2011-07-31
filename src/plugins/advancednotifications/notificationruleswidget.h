@@ -73,6 +73,7 @@ namespace AdvancedNotifications
 		void on_NotifyVisual__stateChanged (int);
 		void on_NotifySysTray__stateChanged (int);
 		void on_NotifyAudio__stateChanged (int);
+		void resetAudioFileBox ();
 	};
 }
 }
