@@ -34,12 +34,33 @@ namespace AdvancedNotifications
 	
 	void VisualHandler::Handle (const Entity& orig, const NotificationRule&)
 	{
+		const QString& evId = orig.Additional_ ["org.LC.AdvNotifications.EventID"].toString ();
+		if (ActiveEvents_.contains (evId))
+			return;
+		
+		ActiveEvents_ << evId;
+
 		Entity e = orig;
 		Q_FOREACH (const QString& key, e.Additional_.keys ())
 			if (key.startsWith ("org.LC.AdvNotifications."))
 				e.Additional_.remove (key);
+		
+		QObject_ptr probeObj (new QObject ());
+		probeObj->setProperty ("EventID", evId);
+		connect (probeObj.get (),
+				SIGNAL (destroyed ()),
+				this,
+				SLOT (handleProbeDestroyed ()));
+		QVariant probe = QVariant::fromValue<QObject_ptr> (probeObj);
+		e.Additional_ ["RemovalProbe"] = probe;
 			
 		Core::Instance ().SendEntity (e);
+	}
+	
+	void VisualHandler::handleProbeDestroyed ()
+	{
+		const QString& evId = sender ()->property ("EventID").toString ();
+		ActiveEvents_.remove (evId);
 	}
 }
 }

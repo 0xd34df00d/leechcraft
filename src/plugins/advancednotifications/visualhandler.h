@@ -30,11 +30,15 @@ namespace AdvancedNotifications
 	class VisualHandler : public ConcreteHandlerBase
 	{
 		Q_OBJECT
+		
+		QSet<QString> ActiveEvents_;
 	public:
 		VisualHandler ();
 		
 		NotificationMethod GetHandlerMethod () const;
 		void Handle (const Entity&, const NotificationRule&);
+	private slots:
+		void handleProbeDestroyed ();
 	};
 }
 }
