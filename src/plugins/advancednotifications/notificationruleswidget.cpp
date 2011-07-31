@@ -328,6 +328,32 @@ namespace AdvancedNotifications
 		
 		SaveSettings ();
 	}
+	
+	void NotificationRulesWidget::on_MoveRuleUp__released ()
+	{
+		const QModelIndex& index = Ui_.RulesTree_->currentIndex ();
+		const int row = index.row ();
+		if (row < 1)
+			return;
+		
+		std::swap (Rules_ [row - 1], Rules_ [row]);
+		RulesModel_->insertRow (row, RulesModel_->takeRow (row - 1));
+		
+		SaveSettings ();
+	}
+
+	void NotificationRulesWidget::on_MoveRuleDown__released ()
+	{
+		const QModelIndex& index = Ui_.RulesTree_->currentIndex ();
+		const int row = index.row () + 1;
+		if (row < 0 || row >= RulesModel_->rowCount ())
+			return;
+		
+		std::swap (Rules_ [row - 1], Rules_ [row]);
+		RulesModel_->insertRow (row - 1, RulesModel_->takeRow (row));
+		
+		SaveSettings ();
+	}
 
 	void NotificationRulesWidget::on_RemoveRule__released ()
 	{
