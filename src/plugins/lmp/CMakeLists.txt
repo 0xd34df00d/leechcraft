@@ -20,7 +20,8 @@ SET (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 FIND_PACKAGE (Phonon)
 
 IF (NOT QT_PHONON_FOUND)
-	MESSAGE (ERROR "Phonon not found, LMP could not be built")
+	MESSAGE (WARNING "KDE Phonon not found, trying with Qt's Phonon instead...")
+	SET (QT_USE_PHONON TRUE)
 ENDIF (NOT QT_PHONON_FOUND)
 
 SET (QT_USE_QTNETWORK TRUE)
