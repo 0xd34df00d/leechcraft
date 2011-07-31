@@ -702,9 +702,10 @@ namespace Xoox
 			return;
 
 		QXmppMessage msg ("", from);
+		msg.setType (QXmppMessage::Normal);
 		QXmppDataForm subForm = fb.GetForm ();
 		subForm.setType (QXmppDataForm::Submit);
-		msg.setExtensions (QXmppElementList (XooxUtil::Form2XmppElem (subForm)));
+		msg.setExtensions (XooxUtil::Form2XmppElem (subForm));
 		Client_->sendPacket (msg);
 	}
 
