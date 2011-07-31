@@ -219,6 +219,8 @@ namespace Xoox
 		void HandleError (const QXmppIq&);
 		void InvokeCallbacks (const QXmppIq&);
 		QString HandleErrorCondition (const QXmppStanza::Error::Condition&);
+	public slots:
+		void handlePendingForm (QXmppDataForm*, const QString&);
 	private slots:
 		void handleConnected ();
 		void handleDisconnected ();

@@ -37,6 +37,7 @@ namespace Xoox
 	class RoomCLEntry;
 	class GlooxAccount;
 	class RoomParticipantEntry;
+	class FormBuilder;
 
 	class RoomHandler : public QObject
 	{
@@ -112,6 +113,8 @@ namespace Xoox
 		void HandlePasswordRequired ();
 
 		void RemoveThis ();
+	signals:
+		void gotPendingForm (QXmppDataForm*, const QString&);
 	};
 }
 }

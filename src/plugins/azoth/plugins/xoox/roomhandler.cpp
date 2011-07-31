@@ -23,6 +23,7 @@
 #include <QXmppVCardIq.h>
 #include <QXmppMucManager.h>
 #include <QXmppClient.h>
+#include <QXmppConstants.h>
 #include <interfaces/iproxyobject.h>
 #include "glooxaccount.h"
 #include "roomclentry.h"
@@ -32,6 +33,7 @@
 #include "glooxmessage.h"
 #include "util.h"
 #include "glooxprotocol.h"
+#include "formbuilder.h"
 
 namespace LeechCraft
 {
@@ -61,6 +63,12 @@ namespace Xoox
 				SIGNAL (participantRemoved (const QString&)),
 				this,
 				SLOT (handleParticipantRemoved (const QString&)));
+		
+		connect (this,
+				SIGNAL (gotPendingForm (QXmppDataForm*, const QString&)),
+				Account_->GetClientConnection ().get (),
+				SLOT (handlePendingForm (QXmppDataForm*, const QString&)),
+				Qt::QueuedConnection);
 		
 		Room_->join ();
 	}
@@ -129,8 +137,8 @@ namespace Xoox
 	 */
 	void RoomHandler::MakeJoinMessage (const QXmppPresence& pres, const QString& nick)
 	{
-		QString affiliation = Util::AffiliationToString (pres.mucItem ().affiliation ());
-		QString role = Util::RoleToString (pres.mucItem ().role ());
+		QString affiliation = XooxUtil::AffiliationToString (pres.mucItem ().affiliation ());
+		QString role = XooxUtil::RoleToString (pres.mucItem ().role ());
 		QString realJid = pres.mucItem ().jid ();
 		QString msg;
 		if (realJid.isEmpty ())
@@ -238,8 +246,8 @@ namespace Xoox
 			QXmppMucItem::Affiliation aff,
 			QXmppMucItem::Role role, const QString& reason)
 	{
-		const QString& affStr = Util::AffiliationToString (aff);
-		const QString& roleStr = Util::RoleToString (role);
+		const QString& affStr = XooxUtil::AffiliationToString (aff);
+		const QString& roleStr = XooxUtil::RoleToString (role);
 		QString msg;
 		if (reason.isEmpty ())
 			msg = tr ("%1 is now %2 and %3")
@@ -373,6 +381,29 @@ namespace Xoox
 
 	void RoomHandler::HandleMessage (const QXmppMessage& msg, const QString& nick)
 	{
+		Q_FOREACH (const QXmppElement& elem, msg.extensions ())
+		{
+			const QString& xmlns = elem.attribute ("xmlns");
+			if (xmlns == ns_data)
+			{
+				QXmppDataForm *df = new QXmppDataForm ();
+				df->parse (XooxUtil::XmppElem2DomElem (elem));
+				if (df->isNull ())
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "unable to parse form from"
+							<< msg.from ();
+					delete df;
+				}
+				else
+					emit gotPendingForm (df, msg.from ());
+			}
+			else
+				qWarning () << Q_FUNC_INFO
+						<< "unhandled <x> element"
+						<< xmlns;
+		}
+		
 		const bool existed = Nick2Entry_.contains (nick);
 		RoomParticipantEntry_ptr entry = GetParticipantEntry (nick, false);
 		if (msg.type () == QXmppMessage::Chat && !nick.isEmpty ())
@@ -416,7 +447,7 @@ namespace Xoox
 				if (!msg.body ().isEmpty ())
 					message = new RoomPublicMessage (msg, CLEntry_, entry);
 			}
-			else
+			else if (!msg.body ().isEmpty ())
 				message = new RoomPublicMessage (msg.body (),
 					IMessage::DIn,
 					CLEntry_,

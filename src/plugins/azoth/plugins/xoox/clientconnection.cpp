@@ -63,6 +63,7 @@
 #include "userlocation.h"
 #include "privacylistsmanager.h"
 #include "adhoccommandmanager.h"
+#include "util.h"
 
 #ifdef ENABLE_CRYPT
 #include "pgpmanager.h"
@@ -672,6 +673,39 @@ namespace Xoox
 			*bare = jid.left (pos);
 		if (resource)
 			*resource = (pos >= 0 ? jid.mid (pos + 1) : QString ());
+	}
+	
+	void ClientConnection::handlePendingForm (QXmppDataForm *formObj, const QString& from)
+	{
+		std::auto_ptr<QXmppDataForm> form (formObj);
+		FormBuilder fb (from, BobManager_);
+		
+		QDialog dia;
+		dia.setWindowTitle (tr ("Data form from %1").arg (from));
+		dia.setLayout (new QVBoxLayout ());
+		
+		dia.layout ()->addWidget (new QLabel (tr ("You have received "
+						"dataform from %1:").arg (from)));
+		dia.layout ()->addWidget (fb.CreateForm (*form));
+		QDialogButtonBox *box = new QDialogButtonBox (QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+		connect (box,
+				SIGNAL (accepted ()),
+				&dia,
+				SLOT (accept ()));
+		connect (box,
+				SIGNAL (rejected ()),
+				&dia,
+				SLOT (reject ()));
+		dia.layout ()->addWidget (box);
+		dia.setWindowModality (Qt::WindowModal);
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		QXmppMessage msg ("", from);
+		QXmppDataForm subForm = fb.GetForm ();
+		subForm.setType (QXmppDataForm::Submit);
+		msg.setExtensions (QXmppElementList (XooxUtil::Form2XmppElem (subForm)));
+		Client_->sendPacket (msg);
 	}
 
 	void ClientConnection::handleConnected ()

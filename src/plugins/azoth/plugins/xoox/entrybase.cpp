@@ -412,7 +412,7 @@ namespace Xoox
 	{
 		VerString_ = ver;
 
-		QString type = Util::GetClientIDName (node);
+		QString type = XooxUtil::GetClientIDName (node);
 		if (type.isEmpty ())
 		{
 			if (!node.isEmpty ())
@@ -423,7 +423,7 @@ namespace Xoox
 		}
 		Variant2ClientInfo_ [variant] ["client_type"] = type;
 
-		QString name = Util::GetClientHRName (node);
+		QString name = XooxUtil::GetClientHRName (node);
 		if (name.isEmpty ())
 		{
 			if (!node.isEmpty ())
