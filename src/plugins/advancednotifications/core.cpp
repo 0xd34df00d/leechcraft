@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "core.h"
+#include <util/resourceloader.h>
 #include "notificationruleswidget.h"
 #include "typedmatchers.h"
 
@@ -26,13 +27,21 @@ namespace AdvancedNotifications
 {
 	Core::Core ()
 	: NRW_ (0)
+	, AudioThemeLoader_ (new Util::ResourceLoader ("sounds/"))
 	{
+		AudioThemeLoader_->AddLocalPrefix ();
+		AudioThemeLoader_->AddGlobalPrefix ();
 	}
 	
 	Core& Core::Instance ()
 	{
 		static Core c;
 		return c;
+	}
+	
+	void Core::Release ()
+	{
+		AudioThemeLoader_.reset ();
 	}
 	
 	ICoreProxy_ptr Core::GetProxy () const
@@ -50,6 +59,11 @@ namespace AdvancedNotifications
 		if (!NRW_)
 			NRW_ = new NotificationRulesWidget;
 		return NRW_;
+	}
+	
+	boost::shared_ptr<Util::ResourceLoader> Core::GetAudioThemeLoader () const
+	{
+		return AudioThemeLoader_;
 	}
 	
 	QList<NotificationRule> Core::GetRules (const Entity& e) const

@@ -24,6 +24,11 @@
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class ResourceLoader;
+}
+
 namespace AdvancedNotifications
 {
 	class NotificationRulesWidget;
@@ -35,15 +40,19 @@ namespace AdvancedNotifications
 		ICoreProxy_ptr Proxy_;
 		
 		NotificationRulesWidget *NRW_;
+		boost::shared_ptr<Util::ResourceLoader> AudioThemeLoader_;
 		
 		Core ();
 	public:
 		static Core& Instance ();
+		void Release ();
 		
 		ICoreProxy_ptr GetProxy () const;
 		void SetProxy (ICoreProxy_ptr);
 		
 		NotificationRulesWidget* GetNRW ();
+		boost::shared_ptr<Util::ResourceLoader> GetAudioThemeLoader () const;
+
 		QList<NotificationRule> GetRules (const Entity&) const;
 		
 		void SendEntity (const Entity&);

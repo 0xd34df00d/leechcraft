@@ -20,6 +20,7 @@
 #include <QIcon>
 #include <interfaces/entitytesthandleresult.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <util/resourceloader.h>
 #include "generalhandler.h"
 #include "xmlsettingsmanager.h"
 #include "notificationruleswidget.h"
@@ -45,6 +46,8 @@ namespace AdvancedNotifications
 				"advancednotificationssettings.xml");
 		SettingsDialog_->SetCustomWidget ("RulesWidget",
 				Core::Instance ().GetNRW ());
+		SettingsDialog_->SetDataSource ("AudioTheme",
+				Core::Instance ().GetAudioThemeLoader ()->GetSubElemModel ());
 		
 		GeneralHandler_.reset (new GeneralHandler (proxy));
 	}
@@ -61,6 +64,7 @@ namespace AdvancedNotifications
 	void Plugin::Release ()
 	{
 		GeneralHandler_.reset ();
+		Core::Instance ().Release ();
 	}
 
 	QString Plugin::GetName () const

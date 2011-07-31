@@ -4,4 +4,16 @@
 		<label value="Rules" />
 		<item type="customwidget" name="RulesWidget" label="own" />
 	</page>
+	<page>
+		<label value="Methods" />
+		<tab>
+			<label value="Audio" />
+			<item type="combobox" property="AudioTheme" mayHaveDataSource="true">
+				<label value="Audio theme:" />
+				<option name="oxygen" default="true">
+					<label value="Oxygen" />
+				</option>
+			</item>
+		</tab>
+	</page>
 </settings>
