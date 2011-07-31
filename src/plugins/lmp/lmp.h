@@ -64,8 +64,8 @@ namespace LMP
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
-		EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
-		void Handle (LeechCraft::Entity);
+		EntityTestHandleResult CouldHandle (const Entity&) const;
+		void Handle (Entity);
 
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
 	signals:

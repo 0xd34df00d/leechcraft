@@ -123,7 +123,7 @@ namespace LMP
 		return ShowAction_;
 	}
 
-	void Core::Handle (const LeechCraft::Entity& e)
+	void Core::Handle (const Entity& e)
 	{
 		MediaSource *source = 0;
 		if (e.Entity_.canConvert<QNetworkReply*> ())

@@ -65,7 +65,7 @@ namespace LMP
 		void Enqueue (const QUrl&);
 		void Enqueue (QIODevice*);
 		QAction* GetShowAction () const;
-		void Handle (const LeechCraft::Entity&);
+		void Handle (const Entity&);
 	signals:
 		void bringToFront ();
 		void gotEntity (const LeechCraft::Entity&);
