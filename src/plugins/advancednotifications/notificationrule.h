@@ -29,6 +29,19 @@ namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
+	struct VisualParams
+	{
+	};
+	
+	struct AudioParams
+	{
+		QString Filename_;
+	};
+	
+	struct TrayParams
+	{
+	};
+	
 	class NotificationRule
 	{
 		QString Name_;
@@ -38,6 +51,10 @@ namespace AdvancedNotifications
 		NotificationMethods Methods_;
 		
 		FieldMatches_t FieldMatches_;
+		
+		AudioParams AudioParams_;
+		TrayParams TrayParams_;
+		VisualParams VisualParams_;
 	public:
 		NotificationRule ();
 		NotificationRule (const QString& name,
@@ -59,6 +76,15 @@ namespace AdvancedNotifications
 		
 		FieldMatches_t GetFieldMatches () const;
 		void SetFieldMatches (const FieldMatches_t&);
+		
+		VisualParams GetVisualParams () const;
+		void SetVisualParams (const VisualParams&);
+		
+		AudioParams GetAudioParams () const;
+		void SetAudioParams (const AudioParams&);
+		
+		TrayParams GetTrayParams () const;
+		void SetTrayParams (const TrayParams&);
 		
 		void Save (QDataStream&) const;
 		void Load (QDataStream&);

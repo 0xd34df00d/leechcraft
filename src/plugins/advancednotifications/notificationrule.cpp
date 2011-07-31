@@ -90,6 +90,36 @@ namespace AdvancedNotifications
 		return FieldMatches_;
 	}
 	
+	VisualParams NotificationRule::GetVisualParams () const
+	{
+		return VisualParams_;
+	}
+
+	void NotificationRule::SetVisualParams (const VisualParams& params)
+	{
+		VisualParams_ = params;
+	}
+	
+	AudioParams NotificationRule::GetAudioParams () const
+	{
+		return AudioParams_;
+	}
+
+	void NotificationRule::SetAudioParams (const AudioParams& params)
+	{
+		AudioParams_ = params;
+	}
+	
+	TrayParams NotificationRule::GetTrayParams () const
+	{
+		return TrayParams_;
+	}
+
+	void NotificationRule::SetTrayParams (const TrayParams& params)
+	{
+		TrayParams_ = params;
+	}
+	
 	void NotificationRule::SetFieldMatches (const FieldMatches_t& matches)
 	{
 		FieldMatches_ = matches;
@@ -102,6 +132,7 @@ namespace AdvancedNotifications
 			<< Category_
 			<< Types_
 			<< static_cast<quint16> (Methods_)
+			<< AudioParams_.Filename_
 			<< static_cast<quint16> (FieldMatches_.size ());
 
 		Q_FOREACH (const FieldMatch& match, FieldMatches_)
@@ -124,7 +155,8 @@ namespace AdvancedNotifications
 		stream >> Name_
 			>> Category_
 			>> Types_
-			>> methods;
+			>> methods
+			>> AudioParams_.Filename_;
 		Methods_ = static_cast<NotificationMethods> (methods);
 		
 		quint16 numMatches = 0;
