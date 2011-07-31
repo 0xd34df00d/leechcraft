@@ -35,6 +35,7 @@ SET (SRCS
 	typedmatchers.cpp
 	matchconfigdialog.cpp
 	visualhandler.cpp
+	audiohandler.cpp
 	)
 SET (HEADERS
 	advancednotifications.h
@@ -49,6 +50,7 @@ SET (HEADERS
 	typedmatchers.h
 	matchconfigdialog.h
 	visualhandler.h
+	audiohandler.h
 	)
 SET (FORMS
 	notificationruleswidget.ui
@@ -101,3 +103,4 @@ INSTALL (TARGETS leechcraft_advancednotifications DESTINATION ${LC_PLUGINS_DEST}
 INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 INSTALL (FILES advancednotificationssettings.xml DESTINATION ${LC_SETTINGS_DEST})
 INSTALL (DIRECTORY share/qml/advancednotifications DESTINATION ${LC_QML_DEST})
+INSTALL (DIRECTORY share/sounds DESTINATION share/leechcraft)

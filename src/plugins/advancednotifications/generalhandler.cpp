@@ -20,6 +20,7 @@
 #include <interfaces/structures.h>
 #include "systemtrayhandler.h"
 #include "visualhandler.h"
+#include "audiohandler.h"
 #include "core.h"
 
 namespace LeechCraft
@@ -31,6 +32,7 @@ namespace AdvancedNotifications
 	{
 		Handlers_ << ConcreteHandlerBase_ptr (new SystemTrayHandler);
 		Handlers_ << ConcreteHandlerBase_ptr (new VisualHandler);
+		Handlers_ << ConcreteHandlerBase_ptr (new AudioHandler);
 		
 		Q_FOREACH (ConcreteHandlerBase_ptr handler, Handlers_)
 			handler->SetGeneralHandler (this);
