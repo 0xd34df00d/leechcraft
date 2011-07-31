@@ -43,7 +43,7 @@ namespace AdvancedNotifications
 		if (e.Additional_ ["org.LC.AdvNotifications.EventCategory"] == "org.LC.AdvNotifications.Cancel")
 		{
 			Q_FOREACH (ConcreteHandlerBase_ptr handler, Handlers_)
-				handler->Handle (e);
+				handler->Handle (e, NotificationRule ());
 			return;
 		}
 
@@ -57,7 +57,7 @@ namespace AdvancedNotifications
 				if (!(methods & handler->GetHandlerMethod ()))
 					continue;
 				
-				handler->Handle (e);
+				handler->Handle (e, rule);
 			}
 		}
 	}

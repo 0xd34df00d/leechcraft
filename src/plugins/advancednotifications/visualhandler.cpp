@@ -32,7 +32,7 @@ namespace AdvancedNotifications
 		return NMVisual;
 	}
 	
-	void VisualHandler::Handle (const Entity& orig)
+	void VisualHandler::Handle (const Entity& orig, const NotificationRule&)
 	{
 		Entity e = orig;
 		Q_FOREACH (const QString& key, e.Additional_.keys ())

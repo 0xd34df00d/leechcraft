@@ -29,6 +29,7 @@ struct Entity;
 namespace AdvancedNotifications
 {
 	class GeneralHandler;
+	class NotificationRule;
 
 	class ConcreteHandlerBase : public QObject
 	{
@@ -38,7 +39,7 @@ namespace AdvancedNotifications
 		void SetGeneralHandler (GeneralHandler*);
 
 		virtual NotificationMethod GetHandlerMethod () const = 0;
-		virtual void Handle (const Entity&) = 0;
+		virtual void Handle (const Entity&, const NotificationRule&) = 0;
 	};
 	
 	typedef boost::shared_ptr<ConcreteHandlerBase> ConcreteHandlerBase_ptr;

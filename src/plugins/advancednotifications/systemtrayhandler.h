@@ -52,7 +52,7 @@ namespace AdvancedNotifications
 		SystemTrayHandler ();
 
 		NotificationMethod GetHandlerMethod () const;
-		void Handle (const Entity&);
+		void Handle (const Entity&, const NotificationRule&);
 	private:
 		void PrepareSysTrayIcon (const QString&);
 		void RebuildState ();
