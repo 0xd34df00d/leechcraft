@@ -17,12 +17,14 @@
  **********************************************************************/
 
 #include "notificationruleswidget.h"
+#include <boost/bind.hpp>
 #include <QSettings>
 #include <QStandardItemModel>
 #include <interfaces/ianemitter.h>
 #include "xmlsettingsmanager.h"
 #include "matchconfigdialog.h"
 #include "typedmatchers.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -203,10 +205,54 @@ namespace AdvancedNotifications
 		return items;
 	}
 	
+	namespace
+	{
+		struct FieldMatchFinder
+		{
+			const QString& F_;
+		
+			FieldMatchFinder (const QString& f)
+			: F_ (f)
+			{
+			}
+			
+			bool operator() (const ANFieldData& fd)
+			{
+				return fd.ID_ == F_;
+			}
+		};
+	}
+	
 	QList<QStandardItem*> NotificationRulesWidget::MatchToRow (const FieldMatch& match) const
 	{
+		QString fieldName = match.GetFieldName ();
+
+		QObject *pObj = Core::Instance ().GetProxy ()->
+				GetPluginsManager ()->GetPluginByID (match.GetPluginID ().toUtf8 ());
+		IANEmitter *iae = qobject_cast<IANEmitter*> (pObj);
+		if (!iae)
+			qWarning () << Q_FUNC_INFO
+					<< pObj
+					<< "doesn't implement IANEmitter";
+		else
+		{
+			const QList<ANFieldData>& fields = iae->GetANFields ();
+			QList<ANFieldData>::const_iterator pos =
+					std::find_if (fields.begin (), fields.end (),
+							boost::bind (std::equal_to<QString> (),
+									fieldName,
+									boost::bind (&ANFieldData::ID_,
+											_1)));
+			if (pos != fields.end ())
+				fieldName = pos->Name_;
+			else
+				qWarning () << Q_FUNC_INFO
+						<< "unable to find field"
+						<< fieldName;
+		}
+
 		QList<QStandardItem*> items;
-		items << new QStandardItem (match.GetFieldName ());
+		items << new QStandardItem (fieldName);
 		items << new QStandardItem (match.GetMatcher () ?
 				match.GetMatcher ()->GetHRDescription () :
 				tr ("<empty matcher>"));
