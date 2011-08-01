@@ -64,6 +64,7 @@
 #include "privacylistsmanager.h"
 #include "adhoccommandmanager.h"
 #include "util.h"
+#include "selfcontact.h"
 
 #ifdef ENABLE_CRYPT
 #include "pgpmanager.h"
@@ -99,6 +100,7 @@ namespace Xoox
 	, PGPManager_ (0)
 #endif
 	, OurJID_ (jid)
+	, SelfContact_ (new SelfContact (jid, account))
 	, Account_ (account)
 	, ProxyObject_ (0)
 	, CapsManager_ (new CapsManager (this))
@@ -110,8 +112,9 @@ namespace Xoox
 				1000, 1, this))
 	, SocketErrorAccumulator_ (0)
 	{
-		SetupLogger ();
+		SetOurJID (OurJID_);
 
+		SetupLogger ();
 
 		LastState_.State_ = SOffline;
 		
@@ -334,6 +337,10 @@ namespace Xoox
 	void ClientConnection::SetOurJID (const QString& jid)
 	{
 		OurJID_ = jid;
+		
+		Split (jid, &OurBareJID_, &OurResource_);
+		
+		SelfContact_->UpdateJID (jid);
 	}
 
 	RoomCLEntry* ClientConnection::JoinRoom (const QString& jid, const QString& nick)
@@ -574,6 +581,8 @@ namespace Xoox
 	{
 		if (RoomHandlers_.contains (bareJid))
 			return RoomHandlers_ [bareJid]->GetParticipantEntry (variant).get ();
+		else if (bareJid == OurBareJID_)
+			return SelfContact_;
 		else
 			return JID2CLEntry_ [bareJid];
 	}
@@ -591,6 +600,7 @@ namespace Xoox
 	QList<QObject*> ClientConnection::GetCLEntries () const
 	{
 		QList<QObject*> result;
+		result << SelfContact_;
 		Q_FOREACH (GlooxCLEntry *entry, JID2CLEntry_.values () + ODSEntries_.values ())
 			result << entry;
 		Q_FOREACH (RoomHandler *rh, RoomHandlers_)
@@ -900,13 +910,25 @@ namespace Xoox
 		{
 			if (ODSEntries_.contains (jid))
 				ConvertFromODS (jid, Client_->rosterManager ().getRosterEntry (jid));
-			else if (OurJID_ == pres.from ())
+			else
 			{
-				emit statusChanged (PresenceToStatus (pres));
+				if (OurJID_ == pres.from ())
+					emit statusChanged (PresenceToStatus (pres));
+				
+				if (jid == OurBareJID_)
+				{
+					if (pres.type () == QXmppPresence::Available)
+					{
+						SelfContact_->SetClientInfo (resource, pres);
+						SelfContact_->UpdatePriority (resource, pres.status ().priority ());
+						SelfContact_->SetStatus (PresenceToStatus (pres), resource);
+					}
+					else
+						SelfContact_->RemoveVariant (resource);
+				}
+				
 				return;
 			}
-			else
-				return;
 		}
 
 		JID2CLEntry_ [jid]->SetClientInfo (resource, pres);
@@ -914,6 +936,26 @@ namespace Xoox
 		if (SignedPresences_.remove (pres.id ()))
 		{
 			qDebug () << "got signed presence" << jid;
+		}
+	}
+	
+	namespace
+	{
+		void HandleMessageForEntry (EntryBase *entry,
+				const QXmppMessage& msg, const QString& resource,
+				ClientConnection *conn)
+		{
+			if (msg.state ())
+				entry->UpdateChatState (msg.state (), resource);
+
+			if (!msg.body ().isEmpty ())
+			{
+				GlooxMessage *gm = new GlooxMessage (msg, conn);
+				entry->HandleMessage (gm);
+			}
+			
+			if (msg.isAttention ())
+				entry->HandleAttentionMessage (msg);
 		}
 	}
 
@@ -934,21 +976,11 @@ namespace Xoox
 		if (RoomHandlers_.contains (jid))
 			RoomHandlers_ [jid]->HandleMessage (msg, resource);
 		else if (JID2CLEntry_.contains (jid))
-		{
-			if (msg.state ())
-				JID2CLEntry_ [jid]->UpdateChatState (msg.state (), resource);
-
-			if (!msg.body ().isEmpty ())
-			{
-				GlooxMessage *gm = new GlooxMessage (msg, this);
-				JID2CLEntry_ [jid]->HandleMessage (gm);
-			}
-			
-			if (msg.isAttention ())
-				JID2CLEntry_ [jid]->HandleAttentionMessage (msg);
-		}
+			HandleMessageForEntry (JID2CLEntry_ [jid], msg, resource, this);
 		else if (!Client_->rosterManager ().isRosterReceived ())
 			OfflineMsgQueue_ << msg;
+		else if (jid == OurBareJID_)
+			HandleMessageForEntry (SelfContact_, msg, resource, this);
 		else
 		{
 			qWarning () << Q_FUNC_INFO

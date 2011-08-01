@@ -64,6 +64,7 @@ namespace Xoox
 	class GlooxMessage;
 	class RoomCLEntry;
 	class RoomHandler;
+	class SelfContact;
 	class CapsManager;
 	class AnnotationsManager;
 	class FetchQueue;
@@ -101,6 +102,10 @@ namespace Xoox
 #endif
 
 		QString OurJID_;
+		QString OurBareJID_;
+		QString OurResource_;
+		
+		SelfContact *SelfContact_;
 
 		GlooxAccount *Account_;
 		IProxyObject *ProxyObject_;
