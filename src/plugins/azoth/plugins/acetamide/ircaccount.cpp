@@ -20,6 +20,7 @@
 #include <boost/bind.hpp>
 #include <QInputDialog>
 #include <QSettings>
+#include <QTimer>
 #include <interfaces/iprotocol.h>
 #include <interfaces/iproxyobject.h>
 #include "channelclentry.h"
@@ -43,6 +44,7 @@ namespace Acetamide
 	, AccountName_ (name)
 	, ParentProtocol_ (qobject_cast<IrcProtocol*> (parent))
 	, IrcAccountState_ (SOffline)
+	, IsFirstStart_ (true)
 	{
 		connect (this,
 				SIGNAL (scheduleClientDestruction ()),
@@ -126,8 +128,7 @@ namespace Acetamide
 		return NickNames_;
 	}
 
-	boost::shared_ptr<ClientConnection>
-			IrcAccount::GetClientConnection () const
+	boost::shared_ptr<ClientConnection> IrcAccount::GetClientConnection () const
 	{
 		return ClientConnection_;
 	}
@@ -209,6 +210,22 @@ namespace Acetamide
 			ClientConnection_->JoinChannel (server, channel);
 	}
 
+	void IrcAccount::SetBookmarks(const QList<IrcBookmark>& bookmarks)
+	{
+		if (!ClientConnection_)
+			return;
+
+		ClientConnection_->SetBookmarks (bookmarks);
+	}
+
+	QList<IrcBookmark> IrcAccount::GetBookmarks () const
+	{
+		if (!ClientConnection_)
+			return QList<IrcBookmark> ();
+
+		return ClientConnection_->GetBookmarks ();
+	}
+
 	EntryStatus IrcAccount::GetState () const
 	{
 		return EntryStatus (IrcAccountState_, QString ());
@@ -221,9 +238,29 @@ namespace Acetamide
 			return;
 
 		IrcAccountState_ = state.State_;
+
+		IProxyObject *obj = qobject_cast<IProxyObject*> (ParentProtocol_->GetProxyObject ());
+		bool autoJoin = false;
+		if (!obj)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "is not an object of IProxyObject"
+					<< ParentProtocol_->GetProxyObject ();
+		}
+		else
+			autoJoin = obj->GetSettingsManager ()->
+					property ("IsAutojoinAllowed").toBool ();
+
 		if (state.State_ == SOffline)
 			ClientConnection_->DisconnectFromAll ();
-
+		else if (autoJoin)
+		{
+			if (IsFirstStart_)
+				QTimer::singleShot (10000, this, SLOT (joinFromBookmarks ()));
+			else
+				joinFromBookmarks ();
+		}
+		IsFirstStart_ = false;
 		emit statusChanged (state);
 	}
 
@@ -323,6 +360,30 @@ namespace Acetamide
 	void IrcAccount::handleDestroyClient ()
 	{
 	}
+
+	void IrcAccount::joinFromBookmarks ()
+	{
+		ServerOptions serverOpt;
+		ChannelOptions channelOpt;
+
+		Q_FOREACH (const IrcBookmark& bookmark, GetBookmarks ())
+		{
+			if (!bookmark.AutoJoin_)
+				continue;
+			serverOpt.ServerName_ = bookmark.ServerName_;
+			serverOpt.ServerPort_ = bookmark.ServerPort_;
+			serverOpt.ServerEncoding_ = bookmark.ServerEncoding_;
+			serverOpt.ServerNickName_ = bookmark.NickName_;
+			serverOpt.SSL_ = bookmark.SSL_;
+
+			channelOpt.ServerName_ = bookmark.ServerName_;
+			channelOpt.ChannelName_ = bookmark.ChannelName_;
+			channelOpt.ChannelPassword_ = bookmark.ChannelPassword_;
+
+			JoinServer (serverOpt, channelOpt);
+		}
+	}
+
 };
 };
 };
