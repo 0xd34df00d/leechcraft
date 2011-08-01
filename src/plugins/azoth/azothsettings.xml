@@ -126,7 +126,7 @@
 				</option>
 			</item>
 			<item type="spinbox" property="ShowLastNMessages" default="10" minimum="0" maximum="50">
-				<label value="Show at most this many messages from history:" />
+				<label value="Load at most messages from history:" />
 			</item>
 			<item type="lineedit" property="AlternativeNickname">
 				<label value="Alternative nickname for chat rooms:" />
