@@ -18,6 +18,8 @@
 
 #include "vcarddialog.h"
 #include <QPushButton>
+#include <QFileDialog>
+#include <QBuffer>
 #include <QXmppVCardIq.h>
 #include <QXmppVCardManager.h>
 #include "entrybase.h"
@@ -59,6 +61,11 @@ namespace Xoox
 
 		if (entry->GetJID () == account->GetJID ())
 			EnableEditableMode ();
+		else
+		{
+			Ui_.PhotoBrowse_->hide ();
+			Ui_.PhotoClear_->hide ();
+		}
 
 		Ui_.EditBirthday_->setVisible (false);
 		
@@ -142,10 +149,48 @@ namespace Xoox
 		VCard_.setOrgUnit (Ui_.OrgUnit_->text ());
 		VCard_.setTitle (Ui_.Title_->text ());
 		VCard_.setRole (Ui_.Role_->text ());
+		
+		const QPixmap *px = Ui_.LabelPhoto_->pixmap ();
+		if (px)
+		{
+			QBuffer buffer;
+			buffer.open (QIODevice::WriteOnly);
+			px->save (&buffer, "PNG", 100);
+			buffer.close ();
+			VCard_.setPhoto (buffer.data ());
+		}
+		else
+			VCard_.setPhoto (QByteArray ());
 
 		QXmppVCardManager& mgr = Account_->GetClientConnection ()->
 				GetClient ()->vCardManager ();
 		mgr.setClientVCard (VCard_);
+	}
+	
+	void VCardDialog::on_PhotoBrowse__released ()
+	{
+		const QString& fname = QFileDialog::getOpenFileName (this,
+				tr ("Choose new photo"),
+				QDir::homePath (),
+				tr ("Images (*.png *.jpg *.gif);;All files (*.*)"));
+		if (fname.isEmpty ())
+			return;
+		
+		QPixmap px (fname);
+		if (px.isNull ())
+			return;
+		
+		const int size = 150;
+		if (std::max (px.size ().width (), px.size ().height ()) > size)
+			px = px.scaled (size, size,
+					Qt::KeepAspectRatio, Qt::SmoothTransformation);
+		
+		Ui_.LabelPhoto_->setPixmap (px);
+	}
+	
+	void VCardDialog::on_PhotoClear__released ()
+	{
+		Ui_.LabelPhoto_->clear ();
 	}
 	
 	void VCardDialog::EnableEditableMode ()

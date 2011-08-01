@@ -179,6 +179,20 @@
            </property>
           </spacer>
          </item>
+         <item>
+          <widget class="QPushButton" name="PhotoBrowse_">
+           <property name="text">
+            <string>Browse...</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="PhotoClear_">
+           <property name="text">
+            <string>Clear</string>
+           </property>
+          </widget>
+         </item>
         </layout>
        </item>
       </layout>

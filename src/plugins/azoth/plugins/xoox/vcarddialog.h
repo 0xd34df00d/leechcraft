@@ -50,6 +50,8 @@ namespace Xoox
 	private slots:
 		void setNote ();
 		void publishVCard ();
+		void on_PhotoBrowse__released ();
+		void on_PhotoClear__released ();
 	private:
 		void EnableEditableMode ();
 		void UpdateNote (GlooxAccount*, const QString&);
