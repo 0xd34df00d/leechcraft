@@ -20,9 +20,8 @@
 #define VCARDDIALOG_H
 #include <QDialog>
 #include <QXmppAnnotationsIq.h>
+#include <QXmppVCardIq.h>
 #include "ui_vcarddialog.h"
-
-class QXmppVCardIq;
 
 namespace LeechCraft
 {
@@ -41,6 +40,8 @@ namespace Xoox
 		GlooxAccount *Account_;
 		QString JID_;
 		QXmppAnnotationsIq::NoteItem Note_;
+		
+		QXmppVCardIq VCard_;
 	public:
 		VCardDialog (QWidget* = 0);
 		VCardDialog (EntryBase*, QWidget* = 0);
@@ -48,7 +49,9 @@ namespace Xoox
 		void UpdateInfo (const QXmppVCardIq&);
 	private slots:
 		void setNote ();
+		void publishVCard ();
 	private:
+		void EnableEditableMode ();
 		void UpdateNote (GlooxAccount*, const QString&);
 	};
 }

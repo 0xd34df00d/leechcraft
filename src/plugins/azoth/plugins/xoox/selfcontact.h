@@ -51,7 +51,7 @@ namespace Xoox
 		EntryStatus GetStatus (const QString&) const;
 		QObject* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);
-		virtual QList<QAction*> GetActions () const;
+		QList<QAction*> GetActions () const;
 
 		void UpdatePriority (const QString&, int);
 		void RemoveVariant (const QString&);

@@ -18,6 +18,8 @@
 
 #include "selfcontact.h"
 #include "clientconnection.h"
+#include "vcarddialog.h"
+#include <QXmppVCardManager.h>
 
 namespace LeechCraft
 {
