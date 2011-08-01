@@ -202,3 +202,8 @@ void NotificationManager::handleActionInvoked (uint id, QString action)
 			Qt::QueuedConnection,
 			Q_ARG (int, idx));
 }
+
+void NotificationManager::handleNotificationClosed (uint id)
+{
+	CallID2AD_.remove (id);
+}
