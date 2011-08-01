@@ -119,8 +119,6 @@ namespace Azoth
 
 		const int textWidth = o.fontMetrics.width (index.data ().value<QString> () + " ");
 		const int rem = r.width () - textWidth;
-		if (rem < o.fontMetrics.width ("0/0"))
-			return;
 
 		const int visibleCount = index.model ()->rowCount (index);
 
@@ -136,9 +134,6 @@ namespace Azoth
 				.arg (visibleCount)
 				.arg (model->rowCount (sourceIndex));
 				
-		if (rem < o.fontMetrics.width (str))
-			return;
-
 		painter->save ();
 		
 		painter->setRenderHints (QPainter::HighQualityAntialiasing | QPainter::Antialiasing);
@@ -146,29 +141,32 @@ namespace Azoth
 		QPainterPath bgPath;
 		bgPath.addRoundedRect (r.adjusted (-r.topLeft ().x (), 0, 0, 0), 6, 6);
 		painter->drawPath (bgPath);
-
-		if (o.state & QStyle::State_Selected)
-			painter->setPen (o.palette.color (QPalette::HighlightedText));
 		
-		QFont font = painter->font ();
-		font.setItalic (true);
-		painter->setFont (font);
+		if (rem >= o.fontMetrics.width (str))
+		{
+			if (o.state & QStyle::State_Selected)
+				painter->setPen (o.palette.color (QPalette::HighlightedText));
+			
+			QFont font = painter->font ();
+			font.setItalic (true);
+			painter->setFont (font);
 
-		const QRect numRect (r.left () + textWidth - 1, r.top () + CPadding,
-				rem - 1, r.height () - 2 * CPadding);
-		
-		const QRect& br = painter->boundingRect (numRect,
-				Qt::AlignVCenter | Qt::AlignRight, str).adjusted (0, 0, 1, 0);
-		QPainterPath rectPath;
-		rectPath.addRoundedRect (br, 4, 4);
-		
-		painter->fillPath (rectPath, o.palette.color (QPalette::Background));
-		
-		painter->drawText (numRect, Qt::AlignVCenter | Qt::AlignRight, str);
+			const QRect numRect (r.left () + textWidth - 1, r.top () + CPadding,
+					rem - 1, r.height () - 2 * CPadding);
+			
+			const QRect& br = painter->boundingRect (numRect,
+					Qt::AlignVCenter | Qt::AlignRight, str).adjusted (0, 0, 1, 0);
+			QPainterPath rectPath;
+			rectPath.addRoundedRect (br, 4, 4);
+			
+			painter->fillPath (rectPath, o.palette.color (QPalette::Background));
+			
+			painter->drawText (numRect, Qt::AlignVCenter | Qt::AlignRight, str);
 
-		painter->setPen (o.palette.color (QPalette::WindowText));
-		painter->drawPath (rectPath);
-
+			painter->setPen (o.palette.color (QPalette::WindowText));
+			painter->drawPath (rectPath);
+		}
+		
 		painter->restore ();
 
 		const int unread = index.data (Core::CLRUnreadMsgCount).toInt ();
