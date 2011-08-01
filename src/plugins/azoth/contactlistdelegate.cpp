@@ -144,8 +144,7 @@ namespace Azoth
 		painter->setRenderHints (QPainter::HighQualityAntialiasing | QPainter::Antialiasing);
 		
 		QPainterPath bgPath;
-		bgPath.addRoundedRect (r, 6, 6);
-		painter->fillPath (bgPath, o.palette.color (QPalette::AlternateBase));
+		bgPath.addRoundedRect (r.adjusted (-r.topLeft ().x (), 0, 0, 0), 6, 6);
 		painter->drawPath (bgPath);
 
 		if (o.state & QStyle::State_Selected)
