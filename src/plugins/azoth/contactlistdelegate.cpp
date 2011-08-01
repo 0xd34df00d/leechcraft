@@ -132,7 +132,7 @@ namespace Azoth
 			sourceIndex = proxyModel->mapToSource (sourceIndex);
 		}
 
-		const QString& str = QString (" %1/%2")
+		const QString& str = QString (" %1/%2 ")
 				.arg (visibleCount)
 				.arg (model->rowCount (sourceIndex));
 				
