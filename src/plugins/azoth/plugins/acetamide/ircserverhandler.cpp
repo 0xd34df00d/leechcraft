@@ -537,10 +537,12 @@ namespace Acetamide
 	{
 		QString msg = list.join (" ");
 		if (!CmdManager_->VerifyMessage (msg, QString ()))
+		{
 			if (msg.startsWith ('/'))
 				IrcParser_->RawCommand (msg.mid (1).split (' '));
 			else
 				IrcParser_->RawCommand (list);
+		}
 	}
 
 	void IrcServerHandler::ParseMessageForCommand (const QString& msg,
