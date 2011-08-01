@@ -21,6 +21,7 @@
 #include <QTextCodec>
 #include <QValidator>
 #include "ircaccount.h"
+#include "ircprotocol.h"
 
 namespace LeechCraft
 {
@@ -86,12 +87,66 @@ namespace Acetamide
 
 	QVariantList IrcJoinGroupChat::GetBookmarkedMUCs () const
 	{
-		return QVariantList ();
+		IrcProtocol *proto = qobject_cast<IrcProtocol*> (Core::Instance ().GetProtocols ().at (0));
+		QVariantList result;
+		Q_FOREACH (QObject *obj, proto->GetRegisteredAccounts ())
+		{
+			IrcAccount *acc = qobject_cast<IrcAccount*> (obj);
+			const QList<IrcBookmark>& bookmarks = acc->GetBookmarks ();
+			Q_FOREACH (const IrcBookmark& channel, bookmarks)
+			{
+				QVariantMap cm;
+				cm ["HumanReadableName"] = QString ("%1@%2 (%3)")
+						.arg (channel.ChannelName_ )
+						.arg (channel.ServerName_)
+						.arg (channel.NickName_);
+				cm ["AccountID"] = acc->GetAccountID ();
+				cm ["Server"] = channel.ServerName_;
+				cm ["Port"] = channel.ServerPort_;
+				cm ["Encoding"] = channel.ServerEncoding_;
+				cm ["Channel"] = channel.ChannelName_;
+				cm ["Password"] = channel.ChannelPassword_;
+				cm ["Nickname"] = channel.NickName_;
+				cm ["SSL"] = channel.SSL_;
+				cm ["Autojoin"] = channel.AutoJoin_;
+				cm ["StoredName"] = channel.Name_;
+				result << cm;
+			}
+		}
+		return result;
 	}
 
-	void IrcJoinGroupChat::SetBookmarkedMUCs (QObject*,
-			const QVariantList&)
+	void IrcJoinGroupChat::SetBookmarkedMUCs (QObject *account,
+			const QVariantList& datas)
 	{
+		IrcAccount *acc = qobject_cast<IrcAccount*> (account);
+		if (!acc)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< account
+					<< "is not a IrcAccount";
+			return;
+		}
+
+		
+		QList<IrcBookmark> channels;
+		Q_FOREACH (const QVariant& var, datas)
+		{
+			const QVariantMap& map = var.toMap ();
+			IrcBookmark bookmark;
+			bookmark.AutoJoin_  = map.value ("Autojoin").toBool ();
+			bookmark.ServerName_ = map.value ("Server").toString ();
+			bookmark.ServerPort_ = map.value ("Port").toInt ();
+			bookmark.ServerEncoding_ = map.value ("Encoding").toString ();
+			bookmark.ChannelName_ = map.value ("Channel").toString ();
+			bookmark.ChannelPassword_ = map.value ("Password").toString ();
+			bookmark.SSL_ = map.value ("SSL").toBool ();
+			bookmark.NickName_ = map.value ("Nickname").toString ();
+			bookmark.Name_ = map.value ("StoredName").toString ();
+			channels << bookmark;
+		}
+
+		acc->SetBookmarks (channels);
 	}
 
 	void IrcJoinGroupChat::SetIdentifyingData (const QVariantMap& data)

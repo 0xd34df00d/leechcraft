@@ -49,6 +49,7 @@ namespace Acetamide
 		result ["Channel"] = Ui_.Channel_->text ();
 		result ["Password"] = Ui_.Password_->text ();
 		result ["Nickname"] = Ui_.Nickname_->text ();
+		result ["SSL"] = Ui_.SSL_->checkState () == Qt::Checked;
 		result ["Autojoin"] = Ui_.AutoJoin_->checkState () == Qt::Checked;
 
 		return result;
@@ -65,6 +66,7 @@ namespace Acetamide
 		Ui_.Channel_->setText (map.value ("Channel").toString ());
 		Ui_.Password_->setText (map.value ("Password").toString ());
 		Ui_.Nickname_->setText (map.value ("Nickname").toString ());
+		Ui_.SSL_->setCheckState (map.value ("SSL").toBool () ? Qt::Checked : Qt::Unchecked);
 		Ui_.AutoJoin_->setCheckState (map.value ("Autojoin").toBool () ? Qt::Checked : Qt::Unchecked);
 	}
 }

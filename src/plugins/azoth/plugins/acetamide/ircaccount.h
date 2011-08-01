@@ -58,6 +58,7 @@ namespace Acetamide
 		State IrcAccountState_;
 
 		boost::shared_ptr<ClientConnection> ClientConnection_;
+		bool IsFirstStart_;
 	public:
 		IrcAccount (const QString&, QObject*);
 		void Init ();
@@ -88,6 +89,10 @@ namespace Acetamide
 
 		void JoinServer (const ServerOptions&, const ChannelOptions&);
 
+		void SetBookmarks (const QList<IrcBookmark>&);
+		QList<IrcBookmark> GetBookmarks () const;
+
+
 		EntryStatus GetState () const;
 		void ChangeState (const EntryStatus&);
 		void Synchronize ();
@@ -100,7 +105,6 @@ namespace Acetamide
 
 		PacketFormat GetPacketFormat () const;
 		void SetConsoleEnabled (bool);
-	public:
 		QByteArray Serialize () const;
 		static IrcAccount* Deserialize (const QByteArray&, QObject*);
 	public slots:
@@ -108,6 +112,7 @@ namespace Acetamide
 		void handleGotRosterItems (const QList<QObject*>&);
 	private slots:
 		void handleDestroyClient ();
+		void joinFromBookmarks ();
 	signals:
 		void gotCLItems (const QList<QObject*>&);
 		void removedCLItems (const QList<QObject*>&);
