@@ -97,13 +97,13 @@ namespace Azoth
 			QStyleOptionViewItemV4 o, const QModelIndex& index) const
 	{
 		painter->save ();
-		painter->setRenderHints (QPainter::HighQualityAntialiasing);
+		painter->setRenderHints (QPainter::HighQualityAntialiasing | QPainter::Antialiasing);
 		
 		QPainterPath rectPath;
-		rectPath.addRoundedRect (o.rect, 6, 6);
+		rectPath.addRoundedRect (o.rect, 8, 8);
 		
-		painter->fillPath (rectPath, o.palette.color (QPalette::Background));
-		painter->setPen (o.palette.color (QPalette::Dark));
+		painter->fillPath (rectPath, o.palette.color (QPalette::Window));
+		painter->setPen (o.palette.color (QPalette::WindowText));
 		painter->drawPath (rectPath);
 		
 		painter->restore ();
@@ -116,51 +116,6 @@ namespace Azoth
 			QStyleOptionViewItemV4 o, const QModelIndex& index) const
 	{
 		const QRect& r = o.rect;
-
-		const QColor& dark = o.palette.color (QPalette::Dark);
-		const QColor& light = o.palette.color (QPalette::Light);
-		QLinearGradient gr (0, 0, r.width (), 0);
-		gr.setSpread (QGradient::PadSpread);
-		gr.setColorAt (0.00, light);
-		gr.setColorAt (0.25, dark.lighter (120));
-		gr.setColorAt (0.50, dark);
-		gr.setColorAt (0.75, dark.lighter (120));
-		gr.setColorAt (1.00, light);
-		painter->fillRect (QRect (r.topLeft (), r.topRight ()), gr);
-		painter->fillRect (QRect (r.bottomLeft (), r.bottomRight ()), gr);
-
-		QLinearGradient vGr (0, 0, 0, r.height ());
-		vGr.setSpread (QGradient::PadSpread);
-		vGr.setColorAt (0.00, light);
-		vGr.setColorAt (0.50, dark);
-		vGr.setColorAt (1.00, light);
-		painter->fillRect (QRect (r.topLeft (), r.bottomLeft ()), vGr);
-		painter->fillRect (QRect (r.topRight (), r.bottomRight ()), vGr);
-
-		const int unread = index.data (Core::CLRUnreadMsgCount).toInt ();
-		if (unread)
-		{
-			painter->save ();
-
-			const QString& text = QString (" %1 :: ").arg (unread);
-
-			QFont unreadFont = o.font;
-			unreadFont.setBold (true);
-
-			int unreadSpace = CPadding + QFontMetrics (unreadFont).width (text);
-
-			painter->setFont (unreadFont);
-			painter->drawText (r.left () + CPadding, r.top () + CPadding,
-					unreadSpace, r.height () - 2 * CPadding,
-					Qt::AlignVCenter | Qt::AlignLeft,
-					text);
-
-			painter->restore ();
-
-			o.rect.setLeft (unreadSpace + o.rect.left ());
-		}
-
-		QStyledItemDelegate::paint (painter, o, index);
 
 		const int textWidth = o.fontMetrics.width (index.data ().value<QString> () + " ");
 		const int rem = r.width () - textWidth;
@@ -186,7 +141,12 @@ namespace Azoth
 
 		painter->save ();
 		
-		painter->setRenderHints (QPainter::HighQualityAntialiasing);
+		painter->setRenderHints (QPainter::HighQualityAntialiasing | QPainter::Antialiasing);
+		
+		QPainterPath bgPath;
+		bgPath.addRoundedRect (r, 6, 6);
+		painter->fillPath (bgPath, o.palette.color (QPalette::AlternateBase));
+		painter->drawPath (bgPath);
 
 		if (o.state & QStyle::State_Selected)
 			painter->setPen (o.palette.color (QPalette::HighlightedText));
@@ -207,10 +167,35 @@ namespace Azoth
 		
 		painter->drawText (numRect, Qt::AlignVCenter | Qt::AlignRight, str);
 
-		painter->setPen (o.palette.color (QPalette::Dark));
+		painter->setPen (o.palette.color (QPalette::WindowText));
 		painter->drawPath (rectPath);
 
 		painter->restore ();
+
+		const int unread = index.data (Core::CLRUnreadMsgCount).toInt ();
+		if (unread)
+		{
+			painter->save ();
+
+			const QString& text = QString (" %1 :: ").arg (unread);
+
+			QFont unreadFont = o.font;
+			unreadFont.setBold (true);
+
+			int unreadSpace = CPadding + QFontMetrics (unreadFont).width (text);
+
+			painter->setFont (unreadFont);
+			painter->drawText (r.left () + CPadding, r.top () + CPadding,
+					unreadSpace, r.height () - 2 * CPadding,
+					Qt::AlignVCenter | Qt::AlignLeft,
+					text);
+
+			painter->restore ();
+
+			o.rect.setLeft (unreadSpace + o.rect.left ());
+		}
+
+		QStyledItemDelegate::paint (painter, o, index);
 	}
 
 	void ContactListDelegate::DrawContact (QPainter *painter,
