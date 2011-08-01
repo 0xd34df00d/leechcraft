@@ -96,6 +96,18 @@ namespace Azoth
 	void ContactListDelegate::DrawAccount (QPainter *painter,
 			QStyleOptionViewItemV4 o, const QModelIndex& index) const
 	{
+		painter->save ();
+		painter->setRenderHints (QPainter::HighQualityAntialiasing);
+		
+		QPainterPath rectPath;
+		rectPath.addRoundedRect (o.rect, 6, 6);
+		
+		painter->fillPath (rectPath, o.palette.color (QPalette::Background));
+		painter->setPen (o.palette.color (QPalette::Dark));
+		painter->drawPath (rectPath);
+		
+		painter->restore ();
+
 		o.font.setBold (true);
 		QStyledItemDelegate::paint (painter, o, index);
 	}
