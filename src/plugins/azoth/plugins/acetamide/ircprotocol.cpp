@@ -27,6 +27,7 @@
 #include "ircaccount.h"
 #include "ircaccountconfigurationwidget.h"
 #include "ircjoingroupchat.h"
+#include "bookmarkeditwidget.h"
 
 namespace LeechCraft
 {
@@ -136,7 +137,7 @@ namespace Acetamide
 
 	QWidget* IrcProtocol::GetMUCBookmarkEditorWidget ()
 	{
-		return 0;
+		return new BookmarkEditWidget ();
 	}
 
 	void IrcProtocol::RemoveAccount (QObject *acc)
