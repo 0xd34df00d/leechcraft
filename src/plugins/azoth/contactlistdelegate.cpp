@@ -173,6 +173,8 @@ namespace Azoth
 			return;
 
 		painter->save ();
+		
+		painter->setRenderHints (QPainter::HighQualityAntialiasing);
 
 		if (o.state & QStyle::State_Selected)
 			painter->setPen (o.palette.color (QPalette::HighlightedText));
