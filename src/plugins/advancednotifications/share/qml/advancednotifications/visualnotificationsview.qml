@@ -46,7 +46,6 @@ Rectangle {
             }
 
             Row {
-                Component.onCompleted: console.debug(contentsRow.height) 
                 id: contentsRow
 
                 height: Math.max(eventText.height, 32) + actionsListView.height
@@ -72,8 +71,9 @@ Rectangle {
                     id: actionsListView
 
                     height: 20
-                    anchors.left: eventRect.left
-                    anchors.leftMargin: 5
+                    width: parent.width - 5
+                    anchors.right: contentsRow.right
+                    //anchors.leftMargin: 5
                     anchors.bottom: eventRect.bottom
                     anchors.bottomMargin: 5
                     anchors.top: eventPic.bottom

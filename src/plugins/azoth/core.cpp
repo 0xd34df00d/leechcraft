@@ -1752,6 +1752,9 @@ namespace Azoth
 						<< "org.LC.AdvNotifications.IM.MUCMessage"
 						<< "org.LC.AdvNotifications.IM.IncomingMessage"
 						<< "org.LC.AdvNotifications.IM.AttentionDrawn"
+						<< "org.LC.AdvNotifications.IM.Subscr.Granted"
+						<< "org.LC.AdvNotifications.IM.Subscr.Revoked"
+						<< "org.LC.AdvNotifications.IM.Subscr.Requested"
 						<< "org.LC.AdvNotifications.IM.StatusChange";
 
 		ANFields_ << ANFieldData ("org.LC.Plugins.Azoth.Msg",
@@ -1777,6 +1780,12 @@ namespace Azoth
 				tr ("Groups to which the sender belongs."),
 				QVariant::StringList,
 				commonFields);
+		
+		ANFields_ << ANFieldData ("org.LC.Plugins.Azoth.NewStatus",
+				tr ("New status"),
+				tr ("The new status string of the contact."),
+				QVariant::String,
+				QStringList ("org.LC.AdvNotifications.IM.StatusChange"));
 	}
 
 	void Core::handleMucJoinRequested ()
@@ -2298,7 +2307,8 @@ namespace Azoth
 			e.Additional_ ["NotificationPixmap"] =
 					QVariant::fromValue<QPixmap> (QPixmap::fromImage (other->GetAvatar ()));
 			e.Additional_ ["org.LC.AdvNotifications.FullText"] =
-				tr ("%n message(s) from", 0, count) + ' ' + other->GetEntryName ();
+				tr ("%n message(s) from", 0, count) + ' ' + other->GetEntryName () +
+						" <em>(" + parentCL->GetEntryName () + ")</em>";
 		}
 		else
 		{
@@ -2306,7 +2316,8 @@ namespace Azoth
 			e.Additional_ ["org.LC.AdvNotifications.EventType"] =
 					"org.LC.AdvNotifications.IM.IncomingMessage";
 			e.Additional_ ["org.LC.AdvNotifications.FullText"] =
-				tr ("%n message(s) from", 0, count) + ' ' + other->GetEntryName ();
+				tr ("%n private message(s) from", 0, count) +
+						' ' + other->GetEntryName ();
 		}
 
 		e.Additional_ ["org.LC.AdvNotifications.Count"] = count;
@@ -2375,6 +2386,16 @@ namespace Azoth
 					.arg (entry->GetEntryName ())
 					.arg (msg);
 		Entity e = Util::MakeNotification ("Azoth", str, PInfo_);
+		
+		BuildNotification (e, entry);
+		e.Additional_ ["org.LC.AdvNotifications.EventID"] =
+				"org.LC.Plugins.Azoth.AuthRequestFrom/" + entry->GetEntryID ();
+		e.Additional_ ["org.LC.AdvNotifications.EventType"] =
+				"org.LC.AdvNotifications.IM.Subscr.Requested";
+		e.Additional_ ["org.LC.AdvNotifications.FullText"] = str;
+		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
+		e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = msg;
+		
 		Util::NotificationActionHandler *nh =
 				new Util::NotificationActionHandler (e, this);
 		nh->AddFunction (tr ("Authorize"),
@@ -2529,7 +2550,7 @@ namespace Azoth
 	}
 
 	void Core::NotifyWithReason (QObject *entryObj, const QString& msg,
-			const char *func,
+			const char *func, const QString& eventType,
 			const QString& patternLite, const QString& patternFull)
 	{
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
@@ -2549,7 +2570,18 @@ namespace Azoth
 					.arg (entry->GetEntryName ())
 					.arg (entry->GetHumanReadableID ())
 					.arg (msg);
-		emit gotEntity (Util::MakeNotification ("Azoth", str, PInfo_));
+
+		Entity e = Util::MakeNotification ("Azoth", str, PInfo_);
+		BuildNotification (e, entry);
+		
+		e.Additional_ ["org.LC.AdvNotifications.EventID"] =
+				"org.LC.Plugins.Azoth.Event/" + eventType + entry->GetEntryID ();
+		e.Additional_ ["org.LC.AdvNotifications.EventType"] = eventType;
+		e.Additional_ ["org.LC.AdvNotifications.FullText"] = str;
+		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
+		e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = msg;
+
+		emit gotEntity (e);
 	}
 
 	/** @todo Option for disabling notifications of subscription events.
@@ -2561,6 +2593,7 @@ namespace Azoth
 			return;
 
 		NotifyWithReason (entryObj, msg, Q_FUNC_INFO,
+				"org.LC.AdvNotifications.IM.Subscr.Subscribed",
 				tr ("%1 (%2) subscribed to us."),
 				tr ("%1 (%2) subscribed to us: %3."));
 	}
@@ -2574,6 +2607,7 @@ namespace Azoth
 			return;
 
 		NotifyWithReason (entryObj, msg, Q_FUNC_INFO,
+				"org.LC.AdvNotifications.IM.Subscr.Unsubscribed",
 				tr ("%1 (%2) unsubscribed from us."),
 				tr ("%1 (%2) unsubscribed from us: %3."));
 	}
@@ -2603,6 +2637,7 @@ namespace Azoth
 			return;
 
 		NotifyWithReason (entryObj, msg, Q_FUNC_INFO,
+				"org.LC.AdvNotifications.IM.Subscr.Revoked",
 				tr ("%1 (%2) cancelled our subscription."),
 				tr ("%1 (%2) cancelled our subscription: %3."));
 	}
@@ -2614,6 +2649,7 @@ namespace Azoth
 			return;
 
 		NotifyWithReason (entryObj, msg, Q_FUNC_INFO,
+				"org.LC.AdvNotifications.IM.Subscr.Granted",
 				tr ("%1 (%2) granted subscription."),
 				tr ("%1 (%2) granted subscription: %3."));
 	}
