@@ -151,6 +151,23 @@ namespace Acetamide
 		}
 	}
 
+	void IrcProtocol::HandleURI (const QUrl& url, QObject *account)
+	{
+		IrcAccount *acc = qobject_cast<IrcAccount*> (account);
+		if (!acc)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< account
+					<< "isn't IrcAccount";
+			return;
+		}
+	}
+
+	bool IrcProtocol::SupportsURI (const QUrl& url) const
+	{
+		return url.scheme () == "irc";
+	}
+
 	void IrcProtocol::saveAccounts () const
 	{
 		QSettings settings (QSettings::IniFormat, QSettings::UserScope,
