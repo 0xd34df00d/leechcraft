@@ -2316,7 +2316,7 @@ namespace Azoth
 			e.Additional_ ["org.LC.AdvNotifications.EventType"] =
 					"org.LC.AdvNotifications.IM.IncomingMessage";
 			e.Additional_ ["org.LC.AdvNotifications.FullText"] =
-				tr ("%n private message(s) from", 0, count) +
+				tr ("%n message(s) from", 0, count) +
 						' ' + other->GetEntryName ();
 		}
 
