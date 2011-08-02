@@ -60,6 +60,7 @@ namespace AdvancedNotifications
 		void handleActionTriggered ();
 		void handleActionTriggered (const QString&, int);
 		void dismissNotification ();
+		void dismissNotification (const QString&);
 		
 		void handleTrayActivated (QSystemTrayIcon::ActivationReason);
 	};

@@ -67,6 +67,13 @@ Rectangle {
                     color: "lightgrey"
                 }
 
+                TextButton {
+                    id: dismissButton
+
+                    text: "x"
+                    onClicked: { model.modelData.dismissEvent() }
+                }
+
                 ListView {
                     id: actionsListView
 

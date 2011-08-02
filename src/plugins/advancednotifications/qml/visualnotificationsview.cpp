@@ -78,6 +78,10 @@ namespace AdvancedNotifications
 					SIGNAL (actionTriggered (const QString&, int)),
 					this,
 					SIGNAL (actionTriggered (const QString&, int)));
+			connect (obj,
+					SIGNAL (dismissEventRequested (const QString&)),
+					this,
+					SIGNAL (dismissEvent (const QString&)));
 			LastEvents_ << obj;
 		}
 

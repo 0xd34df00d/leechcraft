@@ -44,6 +44,7 @@ namespace AdvancedNotifications
 		void handleStatusChanged (QDeclarativeView::Status);
 	signals:
 		void actionTriggered (const QString&, int);
+		void dismissEvent (const QString&);
 	};
 }
 }

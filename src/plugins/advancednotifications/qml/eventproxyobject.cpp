@@ -45,6 +45,11 @@ namespace AdvancedNotifications
 			model << proxy;
 		}
 		
+		connect (this,
+				SIGNAL (dismissEvent ()),
+				this,
+				SLOT (handleDismissEvent ()));
+		
 		ActionsModel_ = QVariant::fromValue<QList<QObject*> > (model);
 	}
 
@@ -74,6 +79,11 @@ namespace AdvancedNotifications
 	{
 		const int idx = sender ()->property ("ActionIndex").toInt ();
 		emit actionTriggered (E_.EventID_, idx);
+	}
+	
+	void EventProxyObject::handleDismissEvent ()
+	{
+		emit dismissEventRequested (E_.EventID_);
 	}
 }
 }

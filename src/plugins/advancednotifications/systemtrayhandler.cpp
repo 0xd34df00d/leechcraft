@@ -120,6 +120,10 @@ namespace AdvancedNotifications
 				SIGNAL (actionTriggered (const QString&, int)),
 				this,
 				SLOT (handleActionTriggered (const QString&, int)));
+		connect (vnv,
+				SIGNAL (dismissEvent (const QString&)),
+				this,
+				SLOT (dismissNotification (const QString&)));
 		Icon2NotificationView_ [trayIcon] = vnv;
 #endif
 	}
@@ -223,7 +227,11 @@ namespace AdvancedNotifications
 	
 	void SystemTrayHandler::dismissNotification ()
 	{
-		const QString& event = sender ()->property ("EventID").toString ();
+		dismissNotification (sender ()->property ("EventID").toString ());
+	}
+	
+	void SystemTrayHandler::dismissNotification (const QString& event)
+	{
 		if (Events_.remove (event))
 			RebuildState ();
 	}
