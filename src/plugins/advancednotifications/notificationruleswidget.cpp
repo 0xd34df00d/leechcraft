@@ -43,6 +43,8 @@ namespace AdvancedNotifications
 	const QString TypeIMSubscrGrant = "org.LC.AdvNotifications.IM.Subscr.Granted";
 	const QString TypeIMSubscrRevoke = "org.LC.AdvNotifications.IM.Subscr.Revoked";
 	const QString TypeIMSubscrRequest = "org.LC.AdvNotifications.IM.Subscr.Requested";
+	const QString TypeIMSubscrSub = "org.LC.AdvNotifications.IM.Subscr.Subscribed";
+	const QString TypeIMSubscrUnsub = "org.LC.AdvNotifications.IM.Subscr.Unsubscribed";
 
 	QDataStream& operator<< (QDataStream& out, const NotificationRule& r)
 	{
@@ -129,6 +131,26 @@ namespace AdvancedNotifications
 				QStringList (TypeIMIncFile));
 		incFile.SetMethods (NMVisual | NMTray | NMAudio);
 		Rules_ << incFile;
+		
+		NotificationRule subscrReq (tr ("Subscription requests"), CatIM,
+				QStringList (TypeIMSubscrRequest));
+		subscrReq.SetMethods (NMVisual | NMTray | NMAudio);
+		subscrReq.SetAudioParams (AudioParams ("im-auth-requested"));
+		Rules_ << subscrReq;
+		
+		NotificationRule subscrChanges (tr ("Subscription changes"), CatIM,
+				QStringList (TypeIMSubscrRevoke)
+					<< TypeIMSubscrGrant
+					<< TypeIMSubscrSub
+					<< TypeIMSubscrUnsub);
+		subscrChanges.SetMethods (NMVisual | NMTray);
+		Rules_ << subscrChanges;
+		
+		NotificationRule attentionDrawn (tr ("Attention requests"), CatIM,
+				QStringList (TypeIMAttention));
+		attentionDrawn.SetMethods (NMVisual | NMTray | NMAudio);
+		attentionDrawn.SetAudioParams (AudioParams ("im-attention"));
+		Rules_ << attentionDrawn;
 	}
 	
 	void NotificationRulesWidget::LoadSettings ()
