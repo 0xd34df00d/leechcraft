@@ -31,7 +31,6 @@ namespace Acetamide
 				(channel1.ChannelPassword_ == channel2.ChannelPassword_)
 				&& (channel1.ServerName_ == channel2.ServerName_);
 	}
-
 };
 };
 };

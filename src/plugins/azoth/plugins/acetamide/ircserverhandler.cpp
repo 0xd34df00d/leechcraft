@@ -145,6 +145,11 @@ namespace Acetamide
 		return result;
 	}
 
+	QList<ChannelHandler*> IrcServerHandler::GetChannelHandlers () const
+	{
+		return ChannelHandlers_.values ();
+	}
+
 	IrcMessage* IrcServerHandler::CreateMessage (IMessage::MessageType type,
 			const QString& variant, const QString& body)
 	{

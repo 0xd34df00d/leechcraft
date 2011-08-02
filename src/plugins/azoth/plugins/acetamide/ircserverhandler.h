@@ -83,6 +83,7 @@ namespace Acetamide
 		QStringList GetPrivateChats () const;
 		ChannelHandler* GetChannelHandler (const QString&);
 		QList<ServerParticipantEntry_ptr> GetParticipantsOnChannel (const QString&);
+		QList<ChannelHandler*> GetChannelHandlers () const;
 
 		IrcMessage* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);

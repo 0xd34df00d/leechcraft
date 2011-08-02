@@ -59,6 +59,7 @@ namespace Acetamide
 
 		boost::shared_ptr<ClientConnection> ClientConnection_;
 		bool IsFirstStart_;
+		QList<IrcBookmark> ActiveChannels_;
 	public:
 		IrcAccount (const QString&, QObject*);
 		void Init ();
@@ -107,6 +108,8 @@ namespace Acetamide
 		void SetConsoleEnabled (bool);
 		QByteArray Serialize () const;
 		static IrcAccount* Deserialize (const QByteArray&, QObject*);
+	private:
+		void SaveActiveChannels ();
 	public slots:
 		void handleEntryRemoved (QObject*);
 		void handleGotRosterItems (const QList<QObject*>&);

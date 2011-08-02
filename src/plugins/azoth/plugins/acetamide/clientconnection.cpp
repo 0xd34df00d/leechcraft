@@ -70,6 +70,11 @@ namespace Acetamide
 		return Account_;
 	}
 
+	QList<IrcServerHandler*> ClientConnection::GetServerHandlers () const
+	{
+		return ServerHandlers_.values ();
+	}
+
 	bool ClientConnection::IsServerExists (const QString& key)
 	{
 		return ServerHandlers_.contains (key);
