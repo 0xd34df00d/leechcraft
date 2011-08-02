@@ -385,7 +385,8 @@ namespace Azoth
 		QString GetReason (const QString& id, const QString& text);
 
 		void NotifyWithReason (QObject*, const QString&,
-				const char*, const QString&, const QString&);
+				const char*, const QString&,
+				const QString&, const QString&);
 
 		/** Calls the given func on the sending entry, asking for reason
 		 * for the action, if it should. The text may contain %1, in
