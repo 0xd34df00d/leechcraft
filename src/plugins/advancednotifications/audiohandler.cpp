@@ -37,6 +37,10 @@ namespace AdvancedNotifications
 	
 	void AudioHandler::Handle (const Entity&, const NotificationRule& rule)
 	{
+		if (!XmlSettingsManager::Instance ()
+				.property ("EnableAudioNots").toBool ())
+			return;
+
 		QString fname = rule.GetAudioParams ().Filename_;
 		if (fname.isEmpty ())
 			return;

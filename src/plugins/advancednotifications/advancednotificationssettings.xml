@@ -8,6 +8,9 @@
 		<label value="Methods" />
 		<tab>
 			<label value="Audio" />
+			<item type="checkbox" property="EnableAudioNots" default="true">
+				<label value="Enable audio notifications" />
+			</item>
 			<item type="combobox" property="AudioTheme" mayHaveDataSource="true">
 				<label value="Audio theme:" />
 				<option name="oxygen" default="true">
