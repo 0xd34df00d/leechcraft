@@ -345,6 +345,7 @@ SET (SRCS
 	separatetabbar.cpp
 	separatetabwidget.cpp
 	mwproxy.cpp
+	winwarndialog.cpp
 	)
 SET (HEADERS
 	mainwindow.h
@@ -387,6 +388,7 @@ SET (HEADERS
 	separatetabbar.h
 	separatetabwidget.h
 	mwproxy.h
+	winwarndialog.h
 	3dparty/qxttooltip.h
 	3dparty/qxttooltip_p.h
 	interfaces/structures.h

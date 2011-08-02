@@ -56,6 +56,10 @@
 #include "tabmanager.h"
 #include "coreinstanceobject.h"
 
+#ifdef Q_WS_WIN
+#include "winwarndialog.h"
+#endif
+
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
 
@@ -78,6 +82,10 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	Splash_->setUpdatesEnabled (true);
 	Splash_->showMessage (tr ("Initializing LeechCraft..."), Qt::AlignLeft | Qt::AlignBottom);
 	QApplication::processEvents ();
+	
+#ifdef Q_WS_WIN
+	new WinWarnDialog;
+#endif
 	
 	Core::Instance ();
 
