@@ -483,12 +483,10 @@ namespace AdvancedNotifications
 	
 	void NotificationRulesWidget::on_NotifyVisual__stateChanged (int state)
 	{
-		Ui_.PageVisual_->setEnabled (state == Qt::Checked);
 	}
 	
 	void NotificationRulesWidget::on_NotifySysTray__stateChanged (int state)
 	{
-		Ui_.PageTray_->setEnabled (state == Qt::Checked);
 	}
 	
 	void NotificationRulesWidget::on_NotifyAudio__stateChanged (int state)
