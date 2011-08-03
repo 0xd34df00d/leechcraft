@@ -56,6 +56,7 @@ namespace AdvancedNotifications
 	private:
 		void PrepareSysTrayIcon (const QString&);
 		void RebuildState ();
+		void UpdateSysTrayIcon (QSystemTrayIcon*);
 	private slots:
 		void handleActionTriggered ();
 		void handleActionTriggered (const QString&, int);

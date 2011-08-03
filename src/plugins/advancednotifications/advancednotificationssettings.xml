@@ -18,5 +18,14 @@
 				</option>
 			</item>
 		</tab>
+		<tab>
+			<label value="System tray" />
+			<groupbox>
+				<label value="Counters" />
+				<item type="checkbox" property="EnableCounter.org.LC.AdvNotifications.IM" default="true">
+					<label value="Enable for IM events" />
+				</item>
+			</groupbox>
+		</tab>
 	</page>
 </settings>

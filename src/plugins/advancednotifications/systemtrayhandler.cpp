@@ -25,6 +25,7 @@
 
 #ifdef HAVE_QML
 #include "qml/visualnotificationsview.h"
+#include "xmlsettingsmanager.h"
 #endif
 
 namespace LeechCraft
@@ -140,6 +141,8 @@ namespace AdvancedNotifications
 #ifdef HAVE_QML
 		EventsForIcon_.clear ();
 #endif
+		
+		QSet<QSystemTrayIcon*> visibleIcons;
 
 		Q_FOREACH (const QString& event, Events_.keys ())
 		{
@@ -148,6 +151,7 @@ namespace AdvancedNotifications
 			if (!icon->isVisible ())
 				icon->show ();
 			icons2hide.remove (icon);
+			visibleIcons << icon;
 			
 #ifdef HAVE_QML
 			EventsForIcon_ [icon] << data;
@@ -197,9 +201,65 @@ namespace AdvancedNotifications
 				view->hide ();
 		}
 #endif
+
+		Q_FOREACH (QSystemTrayIcon *icon, visibleIcons)
+			UpdateSysTrayIcon (icon);
 		
 		Q_FOREACH (QSystemTrayIcon *icon, icons2hide)
 			icon->hide ();
+	}
+	
+	void SystemTrayHandler::UpdateSysTrayIcon (QSystemTrayIcon *trayIcon)
+	{
+		const QString& category = Category2Icon_.key (trayIcon);
+
+		QIcon icon = GH_->GetIconForCategory (category);
+		
+		if (!XmlSettingsManager::Instance ()
+				.property ("EnableCounter." + category.toLatin1 ()).toBool ())
+		{
+			trayIcon->setIcon (icon);
+			return;
+		}
+
+		const QSize& iconSize = trayIcon->geometry ().size ();
+		QPixmap px = icon.pixmap (iconSize);
+		
+		int eventCount = 0;
+		Q_FOREACH (const EventData& event, Events_.values ())
+			if (event.Category_ == category)
+				eventCount += event.Count_;
+
+		const QString& countText = QString::number (eventCount);
+
+		QFont font = qApp->font ();
+		font.setPointSize ((iconSize.height () + 2 * font.pointSize ()) / 3);
+		font.setBold (true);
+		font.setItalic (true);
+		while (true)
+		{
+			const int width = QFontMetrics (font).width (countText);
+			if (width > iconSize.width () ||
+					font.pointSize () >= iconSize.height ())
+				font.setPointSize (font.pointSize () - 1);
+			else
+				break;
+		}
+		
+		const bool tooSmall = font.pointSize () < 5;
+		if (tooSmall)
+			font.setPointSize (qApp->font ().pointSize ());
+
+		QPainter p (&px);
+		p.setFont (font);
+		p.setPen (Qt::darkCyan);
+		p.drawText (0, 1,
+				iconSize.width (), iconSize.height (),
+				Qt::AlignBottom | Qt::AlignRight,
+				tooSmall ? "#" : countText);
+		p.end ();
+		
+		trayIcon->setIcon (QIcon (px));
 	}
 	
 	void SystemTrayHandler::handleActionTriggered ()
