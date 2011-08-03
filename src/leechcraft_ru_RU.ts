@@ -199,7 +199,7 @@
     </message>
     <message>
         <source>Main toolbar</source>
-        <translation>Главная панель инструментов</translation>
+        <translation type="obsolete">Главная панель инструментов</translation>
     </message>
     <message>
         <source>New tab</source>
@@ -243,15 +243,15 @@
     </message>
     <message>
         <source>Glance...</source>
-        <translation>Glance...</translation>
+        <translation type="obsolete">Glance...</translation>
     </message>
     <message>
         <source>Show a quick overview of tabs</source>
-        <translation>Показать миниатюры вкладок</translation>
+        <translation type="obsolete">Показать миниатюры вкладок</translation>
     </message>
     <message>
         <source>Ctrl+G</source>
-        <translation>Ctrl+G</translation>
+        <translation type="obsolete">Ctrl+G</translation>
     </message>
 </context>
 <context>
@@ -529,6 +529,10 @@
         <source>New tab menu</source>
         <translation>Меню создания вкладки</translation>
     </message>
+    <message>
+        <source>Additional tab menu</source>
+        <translation>Дополнительное меню вкладки</translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::PluginManager</name>
@@ -579,6 +583,17 @@
     <message>
         <source>Plugin with ID %1 is already loaded from %2; aborting load from %3.</source>
         <translation>Модуль с ID %1 уже загружен из %2, так что не грузим из %3.</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::SeparateTabWidget</name>
+    <message>
+        <source>Pin tab</source>
+        <translation>Закрепить вкладку</translation>
+    </message>
+    <message>
+        <source>Unpin tab</source>
+        <translation>Открепить вкладку</translation>
     </message>
 </context>
 <context>
@@ -763,6 +778,21 @@
     <message>
         <source>&lt;unknown tag&gt;</source>
         <translation>&lt;неизвестный тег&gt;</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::WinWarnDialog</name>
+    <message>
+        <source>Seems like you are running Microsoft Windows.
+
+LeechCraft for Windows is quite experimental and unstable, some builds may use unstable versions of third-party libraries, and, moreover, LeechCraft is known to have more bugs and less features on Windows than on other, saner operating systems. That&apos;s because we have not so much developers running Windows, and most of the users use other OSes. Sorry for that, we hope you&apos;ll understand us.
+
+If you have read and really understood all these letters, click Cancel button in this dialog so that it won&apos;t pop up again next time you run LeechCraft.</source>
+        <translation>Похоже, что Вы используете Microsoft Windows.
+
+LeechCraft для Windows — довольно экспериментальная и непроверенная штука, некоторые сборки могут использовать нестабильные версии других библиотек, и, более того, LeechCraft точно имеет больше ошибок и меньше возможностей под Windows чем под другими, более вменяемыми системами. Это потому, что у нас не так уж много разработчиков использует Windows, и большинство пользователей пользуется другими ОС. Приносим свои извинения и надеемся, что Вы нас поймете.
+
+Если Вы прочли и действительно поняли все, что тут написано, нажмите кнопку «Отмена» в этом диалоге, чтобы он больше не возникал.</translation>
     </message>
 </context>
 <context>
@@ -1054,23 +1084,23 @@
     </message>
     <message>
         <source>Tab bar location:</source>
-        <translation>Положение панели вкладок:</translation>
+        <translation type="obsolete">Положение панели вкладок:</translation>
     </message>
     <message>
         <source>Top</source>
-        <translation>Сверху</translation>
+        <translation type="obsolete">Сверху</translation>
     </message>
     <message>
         <source>Bottom</source>
-        <translation>Снизу</translation>
+        <translation type="obsolete">Снизу</translation>
     </message>
     <message>
         <source>Left</source>
-        <translation>Слева</translation>
+        <translation type="obsolete">Слева</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation>Справа</translation>
+        <translation type="obsolete">Справа</translation>
     </message>
     <message>
         <source>Icon set:</source>
@@ -1239,6 +1269,22 @@
     <message>
         <source>Plugins manager</source>
         <translation>Менеджер модулей</translation>
+    </message>
+    <message>
+        <source>Tab selection behavior: </source>
+        <translation>Поведение выбора вкладки:</translation>
+    </message>
+    <message>
+        <source>Select the previously selected tab</source>
+        <translation>Предыдущая открытая вкладка</translation>
+    </message>
+    <message>
+        <source>Select the tab to the right of the one being removed</source>
+        <translation>Справа от закрытой вкладки</translation>
+    </message>
+    <message>
+        <source>Select the tab to the left of the one being removed</source>
+        <translation>Слева от закрытой вкладки</translation>
     </message>
 </context>
 </TS>
