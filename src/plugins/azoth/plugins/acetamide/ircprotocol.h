@@ -35,7 +35,7 @@ namespace Acetamide
 
 	class IrcProtocol : public QObject
 						, public IProtocol
-						, IURIHandler
+						, public IURIHandler
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IProtocol LeechCraft::Azoth::IURIHandler);
