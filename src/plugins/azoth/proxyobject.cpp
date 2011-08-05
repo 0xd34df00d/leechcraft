@@ -262,6 +262,13 @@ namespace Azoth
 			return "From";
 		case ASBoth:
 			return "Both";
+		case ASContactRequested:
+			return "Requested";
+		default:
+			qWarning () << Q_FUNC_INFO
+					<< "unknown status"
+					<< status;
+			return "Unknown";
 		}
 	}
 
@@ -373,6 +380,11 @@ namespace Azoth
 			return Core::Instance ().GetResourceLoader (Core::RLTStatusIconLoader);
 		case PRLSystemIcons:
 			return Core::Instance ().GetResourceLoader (Core::RLTSystemIconLoader);
+		default:
+			qWarning () << Q_FUNC_INFO
+					<< "unknown type"
+					<< loader;
+			return 0;
 		}
 	}
 	
