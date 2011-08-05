@@ -141,7 +141,7 @@ namespace Xoox
 		
 		QSet<QString> SignedPresences_;
 		QSet<QString> SignedMessages_;
-		QSet<QString> EncryptedMessages_;
+		QHash<QString, QString> EncryptedMessages_;
 	public:
 		typedef boost::function<void (const QXmppDiscoveryIq&)> DiscoCallback_t;
 	private:
@@ -239,7 +239,7 @@ namespace Xoox
 		void handleRosterItemRemoved (const QString&);
 		void handleVCardReceived (const QXmppVCardIq&);
 		void handlePresenceChanged (const QXmppPresence&);
-		void handleMessageReceived (const QXmppMessage&);
+		void handleMessageReceived (QXmppMessage);
 		void handlePEPEvent (const QString&, PEPEventBase*);
 		void handleMessageDelivered (const QString&);
 		void handleCaptchaReceived (const QString&, const QXmppDataForm&);
@@ -250,7 +250,7 @@ namespace Xoox
 		void handleDiscoInfo (const QXmppDiscoveryIq&);
 		void handleDiscoItems (const QXmppDiscoveryIq&);
 		
-		void handleEncryptedMessageReceived (const QString&);
+		void handleEncryptedMessageReceived (const QString&, const QString&);
 		void handleSignedMessageReceived (const QString&);
 		void handleSignedPresenceReceived (const QString&);
 		void handleInvalidSignatureReceived (const QString&);

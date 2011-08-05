@@ -966,7 +966,7 @@ namespace Xoox
 		}
 	}
 
-	void ClientConnection::handleMessageReceived (const QXmppMessage& msg)
+	void ClientConnection::handleMessageReceived (QXmppMessage msg)
 	{
 		if (msg.type () == QXmppMessage::Error)
 		{
@@ -979,6 +979,9 @@ namespace Xoox
 		QString jid;
 		QString resource;
 		Split (msg.from (), &jid, &resource);
+		
+		if (EncryptedMessages_.contains (msg.from ()))
+			msg.setBody (EncryptedMessages_.take (msg.from ()));
 
 		if (RoomHandlers_.contains (jid))
 			RoomHandlers_ [jid]->HandleMessage (msg, resource);
@@ -1118,9 +1121,10 @@ namespace Xoox
 			AwaitingDiscoItems_ [jid] (iq);
 	}
 	
-	void ClientConnection::handleEncryptedMessageReceived (const QString& id)
+	void ClientConnection::handleEncryptedMessageReceived (const QString& id,
+			const QString& decrypted)
 	{
-		EncryptedMessages_ << id;
+		EncryptedMessages_ [id] = decrypted;
 	}
 
 	void ClientConnection::handleSignedMessageReceived (const QString& id)
@@ -1311,9 +1315,9 @@ namespace Xoox
 
 		Client_->addExtension (PGPManager_);
 		connect (PGPManager_,
-				SIGNAL (encryptedMessageReceived (const QString&)),
+				SIGNAL (encryptedMessageReceived (QString, QString)),
 				this,
-				SLOT (handleEncryptedMessageReceived (const QString&)));
+				SLOT (handleEncryptedMessageReceived (QString, QString)));
 		connect (PGPManager_,
 				SIGNAL (signedMessageReceived (const QString&)),
 				this,
