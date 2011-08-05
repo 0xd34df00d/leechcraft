@@ -419,6 +419,40 @@ namespace Azoth
 		result.removeAll (0);
 		return result;
 	}
+	
+#ifdef ENABLE_CRYPT
+	QList<QCA::PGPKey> Core::GetPublicKeys () const
+	{
+		QList<QCA::PGPKey> result;
+		
+		QCA::KeyStore store ("qca-gnupg", KeyStoreMgr_.get ());
+
+		Q_FOREACH (const QCA::KeyStoreEntry& entry, store.entryList ())
+		{
+			const QCA::PGPKey& key = entry.pgpPublicKey ();
+			if (!key.isNull ())
+				result << key;
+		}
+		
+		return result;
+	}
+
+	QList<QCA::PGPKey> Core::GetPrivateKeys () const
+	{
+		QList<QCA::PGPKey> result;
+		
+		QCA::KeyStore store ("qca-gnupg", KeyStoreMgr_.get ());
+
+		Q_FOREACH (const QCA::KeyStoreEntry& entry, store.entryList ())
+		{
+			const QCA::PGPKey& key = entry.pgpSecretKey ();
+			if (!key.isNull ())
+				result << key;
+		}
+		
+		return result;
+	}
+#endif
 
 	QStringList Core::GetChatGroups () const
 	{

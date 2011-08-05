@@ -191,6 +191,11 @@ namespace Azoth
 		ChatTabsManager* GetChatTabsManager () const;
 		QList<IAccount*> GetAccounts () const;
 		QList<IProtocol*> GetProtocols () const;
+		
+#ifdef ENABLE_CRYPT
+		QList<QCA::PGPKey> GetPublicKeys () const;
+		QList<QCA::PGPKey> GetPrivateKeys () const;
+#endif
 
 		/** Returns the list of all groups of all chat entries.
 		 */
