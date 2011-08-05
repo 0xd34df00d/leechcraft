@@ -940,7 +940,7 @@ namespace Xoox
 
 		JID2CLEntry_ [jid]->SetClientInfo (resource, pres);
 		JID2CLEntry_ [jid]->SetStatus (PresenceToStatus (pres), resource);
-		if (SignedPresences_.remove (pres.id ()))
+		if (SignedPresences_.remove (jid))
 		{
 			qDebug () << "got signed presence" << jid;
 		}
@@ -1130,12 +1130,12 @@ namespace Xoox
 
 	void ClientConnection::handleSignedPresenceReceived (const QString& id)
 	{
-		qDebug () << Q_FUNC_INFO << id;
 		SignedPresences_ << id;
 	}
 
 	void ClientConnection::handleInvalidSignatureReceived (const QString& id)
 	{
+		qDebug () << Q_FUNC_INFO << id;
 	}
 	
 	void ClientConnection::handleLog (QXmppLogger::MessageType type, const QString& msg)
