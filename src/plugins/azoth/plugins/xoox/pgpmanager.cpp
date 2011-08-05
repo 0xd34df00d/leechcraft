@@ -33,7 +33,11 @@ namespace Xoox
 
 	QCA::PGPKey PgpManager::PublicKey (const QString& id) const
 	{
-		return PublicKeys_.value (id);
+		if (PublicKeys_.contains (id))
+			return PublicKeys_.value (id);
+		
+		const QString& bare = id.left (id.indexOf ('/'));
+		return PublicKeys_.value (bare);
 	}
 
 	void PgpManager::SetPublicKey (const QString& id, const QCA::PGPKey& publicKey)
@@ -49,6 +53,21 @@ namespace Xoox
 	void PgpManager::SetPrivateKey (const QCA::PGPKey& privateKey)
 	{
 		PrivateKey_ = privateKey;
+	}
+	
+	namespace
+	{
+		QString WrapPGP (const QString& str, bool sig)
+		{
+			const QString type = sig ? "SIGNATURE" : "MESSAGE";
+			
+			QString result;
+			result += QString ("-----BEGIN PGP %1-----\n").arg (type);
+			result += "Version: PGP\n\n";
+			result += str + "\n";
+			result += QString ("-----END PGP %1-----\n").arg (type);
+			return result;
+		}
 	}
 
 	QByteArray PgpManager::EncryptBody (const QCA::PGPKey& pubkey, const QByteArray& body)
@@ -167,8 +186,8 @@ namespace Xoox
 		QCA::SecureMessage msg (&pgp);
 		key.setPGPPublicKey (pubkey);
 		msg.setSigner (key);
-		msg.setFormat (QCA::SecureMessage::Ascii);
-		msg.startVerify (signature);
+		msg.setFormat (QCA::SecureMessage::Binary);
+		msg.startVerify (WrapPGP (signature, true).toUtf8 ());
 		msg.update (message);
 		msg.end ();
 		msg.waitForFinished ();
@@ -199,14 +218,16 @@ namespace Xoox
 			QString message = status.text ();
 			QString signature = x_element.text ();
 
+			const QCA::PGPKey key = PublicKey (from);
+
 			//TODO Initialize keystore somewhere
 			//TODO Check if we need another representation, instead of 'toAscii()'
-			if (!IsValidSignature (PublicKey (from), message.toAscii (), signature.toAscii ()))
-				emit invalidSignatureReceived (id);
+			if (!IsValidSignature (key, message.toUtf8 (), signature.toAscii ()))
+				emit invalidSignatureReceived (from);
 			else if (tagName == "message")
-				emit signedMessageReceived (id);
+				emit signedMessageReceived (from);
 			else if (tagName == "presence")
-				emit signedPresenceReceived (id);
+				emit signedPresenceReceived (from);
 		}
 		
 		// Case 2: encrypted message
@@ -217,7 +238,7 @@ namespace Xoox
 			const QByteArray& encryptedBody = encryptedBodyStr.toAscii ();
 			QByteArray decryptedBody = DecryptBody (encryptedBody);
 			if (!decryptedBody.isEmpty ())
-				emit encryptedMessageReceived (id);
+				emit encryptedMessageReceived (from);
 		}
 
 		return false;
