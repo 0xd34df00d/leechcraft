@@ -524,7 +524,7 @@ namespace Xoox
 		Q_FOREACH (RoomParticipantEntry_ptr entry, Nick2Entry_.values ())
 			Account_->handleEntryRemoved (entry.get ());
 
-		Room_->leave ();
+		Room_->leave (msg);
 		Nick2Entry_.clear ();
 
 		if (remove)
