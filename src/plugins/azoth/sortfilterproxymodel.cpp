@@ -30,8 +30,8 @@ namespace Azoth
 	: QSortFilterProxyModel (parent)
 	, ShowOffline_ (true)
 	, MUCMode_ (false)
-	, MUCEntry_ (0)
 	, OrderByStatus_ (true)
+	, MUCEntry_ (0)
 	{
 		setDynamicSortFilter (true);
 		setFilterCaseSensitivity (Qt::CaseInsensitive);
