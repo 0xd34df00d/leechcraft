@@ -327,7 +327,7 @@ namespace Azoth
 		QGridLayout *layout = new QGridLayout (SmilesTooltip_);
 		layout->setSpacing (0);
 		layout->setContentsMargins (1, 1, 1, 1);
-		const int numRows = std::sqrt (images.size ()) + 1;
+		const int numRows = std::sqrt (static_cast<double> (images.size ())) + 1;
 		int pos = 0;
 		for (QHash<QImage, QString>::const_iterator i = images.begin (),
 				end = images.end (); i != end; ++i)
