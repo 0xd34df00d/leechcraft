@@ -39,8 +39,4 @@ else (QJSON_INCLUDE_DIR AND QJSON_LIBRARIES)
     ${INCLUDE_INSTALL_DIR}
     ${KDE4_INCLUDE_DIR}
   )
-
-  include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(QJSON DEFAULT_MSG QJSON_LIBRARIES QJSON_INCLUDE_DIR)
-
 endif (QJSON_INCLUDE_DIR AND QJSON_LIBRARIES)
