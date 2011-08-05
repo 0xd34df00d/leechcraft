@@ -50,6 +50,7 @@
 #include "interfaces/irichtextmessage.h"
 #ifdef ENABLE_CRYPT
 #include "interfaces/isupportpgp.h"
+#include "pgpkeyselectiondialog.h"
 #endif
 #include "chattabsmanager.h"
 #include "pluginmanager.h"
@@ -131,9 +132,17 @@ namespace Azoth
 			connect (KeyStoreMgr_.get (),
 					SIGNAL (busyFinished ()),
 					this,
-					SLOT (handleQCABusyFinished ()));
+					SLOT (handleQCABusyFinished ()),
+					Qt::QueuedConnection);
 		QCAEventHandler_->start ();
 		KeyStoreMgr_->start ();
+
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth");
+		settings.beginGroup ("PublicEntryKeys");
+		Q_FOREACH (const QString& entryId, settings.childKeys ())
+			StoredPublicKeys_ [entryId] = settings.value (entryId).toString ();
+		settings.endGroup ();
 #endif
 		ResourceLoaders_ [RLTStatusIconLoader].reset (new Util::ResourceLoader ("azoth/iconsets/contactlist/", this));
 		ResourceLoaders_ [RLTClientIconLoader].reset (new Util::ResourceLoader ("azoth/iconsets/clients/", this));
@@ -942,6 +951,11 @@ namespace Azoth
 					SLOT (handleEntryPEPEvent (const QString&)));
 		}
 		
+#ifdef ENABLE_CRYPT
+		if (!KeyStoreMgr_->isBusy ())
+			RestoreKeyForEntry (clEntry);
+#endif
+		
 		EventsNotifier_->RegisterEntry (clEntry);
 
 		const QString& id = clEntry->GetEntryID ();
@@ -1344,6 +1358,7 @@ namespace Azoth
 		result << id2action.value ("add_contact");
 		result << id2action.value ("copy_id");
 		result << id2action.value ("sep_afterjid");
+		result << id2action.value ("managepgp");
 		result << id2action.value ("vcard");
 		result << id2action.value ("leave");
 		result << id2action.value ("authorize");
@@ -1511,6 +1526,20 @@ namespace Azoth
 			rerequestReason->setProperty ("ActionIcon", "azoth_auth_rerequest");
 			rerequestReason->setProperty ("Azoth/WithReason", true);
 		}
+		
+#ifdef ENABLE_CRYPT
+		if (qobject_cast<ISupportPGP*> (entry->GetParentAccount ()))
+		{
+			QAction *manageGPG = new QAction (tr ("Manage PGP keys..."), entry->GetObject ());
+			connect (manageGPG,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (handleActionManagePGPTriggered ()));
+			manageGPG->setProperty ("ActionIcon", "security");
+			Entry2Actions_ [entry] ["managepgp"] = manageGPG;
+			Action2Areas_ [manageGPG] << CLEAAContactListCtxtMenu;
+		}
+#endif
 
 		if (entry->GetEntryType () != ICLEntry::ETMUC)
 		{
@@ -1870,6 +1899,31 @@ namespace Azoth
 			if (key.keyId () == keyId)
 			{
 				pgp->SetPrivateKey (key);
+				break;
+			}
+	}
+	
+	void Core::RestoreKeyForEntry (ICLEntry *clEntry)
+	{
+		if (!StoredPublicKeys_.contains (clEntry->GetEntryID ()))
+			return;
+
+		ISupportPGP *pgp = qobject_cast<ISupportPGP*> (clEntry->GetParentAccount ());
+		if (!pgp)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< clEntry->GetObject ()
+					<< clEntry->GetParentAccount ()
+					<< "doesn't implement ISupportGPG though "
+						"we have the key";
+			return;
+		}
+
+		const QString& keyId = StoredPublicKeys_.take (clEntry->GetEntryID ());
+		Q_FOREACH (const QCA::PGPKey& key, GetPublicKeys ())
+			if (key.keyId () == keyId)
+			{
+				pgp->SetEntryKey (clEntry->GetObject (), key);
 				break;
 			}
 	}
@@ -3061,6 +3115,52 @@ namespace Azoth
 				&IAuthable::RerequestAuth);
 	}
 
+#ifdef ENABLE_CRYPT
+	void Core::handleActionManagePGPTriggered ()
+	{
+		ICLEntry *entry = sender ()->
+				property ("Azoth/Entry").value<ICLEntry*> ();
+				
+		QObject *accObj = entry->GetParentAccount ();
+		IAccount *acc = qobject_cast<IAccount*> (accObj);
+		ISupportPGP *pgp = qobject_cast<ISupportPGP*> (accObj);
+		
+		if (!pgp)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< accObj
+					<< "doesn't implement ISupportPGP";
+			QMessageBox::warning (0,
+					"LeechCraft",
+					tr ("The parent account %1 for entry %2 doesn't "
+						"support encryption.")
+							.arg (acc->GetAccountName ())
+							.arg (entry->GetEntryName ()));
+			return;
+		}
+		
+		const QString& str = tr ("Please select the key for %1 (%2).")
+				.arg (entry->GetEntryName ())
+				.arg (entry->GetHumanReadableID ());
+		PGPKeySelectionDialog dia (str, PGPKeySelectionDialog::TPublic);
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		const QCA::PGPKey& key = dia.GetSelectedKey ();
+
+		pgp->SetEntryKey (entry->GetObject (), key);
+		
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth");
+		settings.beginGroup ("PublicEntryKeys");
+		if (key.isNull ())
+			settings.remove (entry->GetEntryID ());
+		else
+			settings.setValue (entry->GetEntryID (), key.keyId ());
+		settings.endGroup ();
+	}
+#endif
+
 	void Core::handleActionVCardTriggered ()
 	{
 		QAction *action = qobject_cast<QAction*> (sender ());
@@ -3248,7 +3348,23 @@ namespace Azoth
 	void Core::handleQCABusyFinished ()
 	{
 		Q_FOREACH (IAccount *acc, GetAccounts ())
+		{
 			RestoreKeyForAccount (acc);
+			
+			Q_FOREACH (QObject *entryObj, acc->GetCLEntries ())
+			{
+				ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+				if (!entry)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< entry
+							<< "doesn't implement ICLEntry";
+					continue;
+				}
+				
+				RestoreKeyForEntry (entry);
+			}
+		}
 	}
 #endif
 }

@@ -77,6 +77,7 @@ namespace Azoth
 		boost::scoped_ptr<QCA::Initializer> QCAInit_;
 		boost::scoped_ptr<QCA::KeyStoreManager> KeyStoreMgr_;
 		boost::scoped_ptr<QCA::EventHandler> QCAEventHandler_;
+		QMap<QString, QString> StoredPublicKeys_;
 #endif
 
 		QObjectList ProtocolPlugins_;
@@ -417,6 +418,7 @@ namespace Azoth
 		
 #ifdef ENABLE_CRYPT
 		void RestoreKeyForAccount (IAccount*);
+		void RestoreKeyForEntry (ICLEntry*);
 #endif
 	public slots:
 		/** Initiates MUC join by calling the corresponding protocol
@@ -565,6 +567,9 @@ namespace Azoth
 		void handleActionRevokeAuthTriggered ();
 		void handleActionUnsubscribeTriggered ();
 		void handleActionRerequestTriggered ();
+#ifdef ENABLE_CRYPT
+		void handleActionManagePGPTriggered ();
+#endif
 		void handleActionVCardTriggered ();
 
 		void handleActionOpenChatTriggered ();
