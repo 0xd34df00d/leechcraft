@@ -57,6 +57,7 @@ namespace Acetamide
 		void Sinchronize ();
 
 		IrcAccount* GetAccount () const;
+		QList<IrcServerHandler*> GetServerHandlers () const;
 
 		bool IsServerExists (const QString&);
 		void JoinServer (const ServerOptions&);

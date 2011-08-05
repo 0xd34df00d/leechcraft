@@ -32,6 +32,7 @@
 #include "ircserverclentry.h"
 #include "xmlsettingsmanager.h"
 #include "ircserverhandler.h"
+#include "channelhandler.h"
 
 namespace LeechCraft
 {
@@ -251,15 +252,25 @@ namespace Acetamide
 			autoJoin = obj->GetSettingsManager ()->
 					property ("IsAutojoinAllowed").toBool ();
 
-		if (state.State_ == SOffline)
-			ClientConnection_->DisconnectFromAll ();
-		else if (autoJoin)
-		{
-			if (IsFirstStart_)
-				QTimer::singleShot (10000, this, SLOT (joinFromBookmarks ()));
+			if (state.State_ == SOffline)
+			{
+				if (ClientConnection_->GetServerHandlers ().count ())
+					SaveActiveChannels ();
+				ClientConnection_->DisconnectFromAll ();
+			}
+			else if (autoJoin)
+			{
+				if (ActiveChannels_.isEmpty ())
+					ActiveChannels_ << GetBookmarks ();
+
+				if (IsFirstStart_)
+					QTimer::singleShot (10000, this, SLOT (joinFromBookmarks ()));
+				else
+					joinFromBookmarks ();
+			}
 			else
 				joinFromBookmarks ();
-		}
+
 		IsFirstStart_ = false;
 		emit statusChanged (state);
 	}
@@ -347,6 +358,25 @@ namespace Acetamide
 		return result;
 	}
 
+	void IrcAccount::SaveActiveChannels ()
+	{
+		ActiveChannels_.clear ();
+		Q_FOREACH (IrcServerHandler *ish, ClientConnection_->GetServerHandlers ())
+			Q_FOREACH (ChannelHandler *ich, ish->GetChannelHandlers ())
+			{
+				IrcBookmark bookmark;
+				bookmark.ServerName_ = ish->GetServerOptions ().ServerName_;
+				bookmark.ServerPort_ = ish->GetServerOptions ().ServerPort_;
+				bookmark.ServerEncoding_ = ish->GetServerOptions ().ServerEncoding_;
+				bookmark.NickName_ = ish->GetServerOptions ().ServerNickName_;
+				bookmark.SSL_ == ish->GetServerOptions ().SSL_;
+				bookmark.ChannelName_ = ich->GetChannelOptions ().ChannelName_;
+				bookmark.ChannelPassword_ = ich->GetChannelOptions ().ChannelPassword_;
+				bookmark.AutoJoin_ = true;
+				ActiveChannels_ << bookmark;
+			}
+	}
+
 	void IrcAccount::handleEntryRemoved (QObject *entry)
 	{
 		emit removedCLItems (QObjectList () << entry);
@@ -366,7 +396,7 @@ namespace Acetamide
 		ServerOptions serverOpt;
 		ChannelOptions channelOpt;
 
-		Q_FOREACH (const IrcBookmark& bookmark, GetBookmarks ())
+		Q_FOREACH (const IrcBookmark& bookmark, ActiveChannels_)
 		{
 			if (!bookmark.AutoJoin_)
 				continue;
@@ -382,6 +412,8 @@ namespace Acetamide
 
 			JoinServer (serverOpt, channelOpt);
 		}
+
+		ActiveChannels_.clear ();
 	}
 
 };

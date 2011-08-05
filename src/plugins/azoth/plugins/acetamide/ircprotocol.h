@@ -20,7 +20,8 @@
 #define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCPROTOCOL_H
 
 #include <QObject>
-#include "interfaces/iprotocol.h"
+#include <interfaces/iprotocol.h>
+#include <interfaces/iurihandler.h>
 
 namespace LeechCraft
 {
@@ -34,9 +35,10 @@ namespace Acetamide
 
 	class IrcProtocol : public QObject
 						, public IProtocol
+						, public IURIHandler
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IProtocol);
+		Q_INTERFACES (LeechCraft::Azoth::IProtocol LeechCraft::Azoth::IURIHandler);
 		
 		QObject *ParentProtocolPlugin_;
 		QList<IrcAccount*> IrcAccounts_;
@@ -62,6 +64,9 @@ namespace Acetamide
 		QWidget* GetMUCJoinWidget ();
 		QWidget* GetMUCBookmarkEditorWidget ();
 		void RemoveAccount (QObject*);
+
+		void HandleURI(const QUrl&, QObject*);
+		bool SupportsURI(const QUrl&) const;
 	private:
 		void RestoreAccounts ();
 	private slots:
