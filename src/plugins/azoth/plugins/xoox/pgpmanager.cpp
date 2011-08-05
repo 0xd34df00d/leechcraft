@@ -27,7 +27,7 @@ namespace LeechCraft
 namespace Azoth
 {
 namespace Xoox
-{	
+{
 	const char *NsSigned = "jabber:x:signed";
 	const char *NsEncrypted = "jabber:x:encrypted";
 
