@@ -131,6 +131,14 @@ namespace Azoth
 
 		IAccount *acc = index
 				.data (RAccObj).value<IAccount*> ();
+
+		if (QMessageBox::question (this,
+					"LeechCraft",
+					tr ("Are you sure you want to remove the account %1?")
+						.arg (acc->GetAccountName ()),
+					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+			return;
+
 		QObject *protoObj = acc->GetParentProtocol ();
 		IProtocol *proto = qobject_cast<IProtocol*> (protoObj);
 		if (!proto)
