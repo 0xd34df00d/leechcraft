@@ -21,11 +21,12 @@
 #include <QMenu>
 #include <QApplication>
 #include <QDesktopWidget>
+#include <QPainter>
 #include "generalhandler.h"
+#include "xmlsettingsmanager.h"
 
 #ifdef HAVE_QML
 #include "qml/visualnotificationsview.h"
-#include "xmlsettingsmanager.h"
 #endif
 
 namespace LeechCraft
