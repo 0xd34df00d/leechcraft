@@ -16,43 +16,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_ACCOUNTSLISTWIDGET_H
-#define PLUGINS_AZOTH_ACCOUNTSLISTWIDGET_H
-#include <QWidget>
-#include <QHash>
-#include "ui_accountslistwidget.h"
-
-class QStandardItemModel;
-class QStandardItem;
+#ifndef PLUGINS_AZOTH_PGPKEYSELECTIONDIALOG_H
+#define PLUGINS_AZOTH_PGPKEYSELECTIONDIALOG_H
+#include <QDialog>
+#include <QtCrypto>
+#include "ui_pgpkeyselectiondialog.h"
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-	class IAccount;
-
-	class AccountsListWidget : public QWidget
+	class PGPKeySelectionDialog : public QDialog
 	{
 		Q_OBJECT
 
-		Ui::AccountsListWidget Ui_;
-		QStandardItemModel *AccModel_;
-		QHash<IAccount*, QStandardItem*> Account2Item_;
-
-		enum Roles
-		{
-			RAccObj = Qt::UserRole + 1
-		};
+		Ui::PGPKeySelectionDialog Ui_;
+		QList<QCA::PGPKey> Keys_;
 	public:
-		AccountsListWidget (QWidget* = 0);
-	private slots:
-		void addAccount (IAccount*);
-		void on_Add__released ();
-		void on_Modify__released ();
-		void on_PGP__released ();
-		void on_Delete__released ();
+		enum Type
+		{
+			TPublic,
+			TPrivate
+		};
 
-		void handleAccountRemoved (IAccount*);
+		PGPKeySelectionDialog (const QString&, Type, QWidget* = 0);
+		
+		QCA::PGPKey GetSelectedKey () const;
 	};
 }
 }

@@ -16,45 +16,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_ACCOUNTSLISTWIDGET_H
-#define PLUGINS_AZOTH_ACCOUNTSLISTWIDGET_H
-#include <QWidget>
-#include <QHash>
-#include "ui_accountslistwidget.h"
-
-class QStandardItemModel;
-class QStandardItem;
+#include "pgpkeyselectiondialog.h"
+#include "core.h"
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-	class IAccount;
-
-	class AccountsListWidget : public QWidget
+	PGPKeySelectionDialog::PGPKeySelectionDialog (const QString& label,
+			PGPKeySelectionDialog::Type type, QWidget *parent)
+	: QDialog (parent)
 	{
-		Q_OBJECT
-
-		Ui::AccountsListWidget Ui_;
-		QStandardItemModel *AccModel_;
-		QHash<IAccount*, QStandardItem*> Account2Item_;
-
-		enum Roles
+		Ui_.setupUi (this);
+		Ui_.LabelText_->setText (label);
+		
+		switch (type)
 		{
-			RAccObj = Qt::UserRole + 1
-		};
-	public:
-		AccountsListWidget (QWidget* = 0);
-	private slots:
-		void addAccount (IAccount*);
-		void on_Add__released ();
-		void on_Modify__released ();
-		void on_PGP__released ();
-		void on_Delete__released ();
-
-		void handleAccountRemoved (IAccount*);
-	};
+		case TPrivate:
+			Keys_ = Core::Instance ().GetPrivateKeys ();
+			break;
+		case TPublic:
+			Keys_ = Core::Instance ().GetPublicKeys ();
+			break;
+		}
+				
+		Q_FOREACH (const QCA::PGPKey& key, Keys_)
+			Ui_.KeyCombo_->addItem (key.primaryUserId () + " (" + key.keyId () + ")");
+	}
+	
+	QCA::PGPKey PGPKeySelectionDialog::GetSelectedKey () const
+	{
+		const int idx = Ui_.KeyCombo_->currentIndex ();
+		return idx > 0 ? Keys_ [idx - 1] : QCA::PGPKey ();
+	}
 }
 }
-
-#endif

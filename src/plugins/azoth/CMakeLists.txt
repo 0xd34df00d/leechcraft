@@ -161,6 +161,13 @@ SET (FORMS
 	locationdialog.ui
 	)
 SET (RESOURCES azothresources.qrc)
+
+IF (ENABLE_CRYPT)
+	SET (HEADERS ${HEADERS} pgpkeyselectiondialog.h)
+	SET (SRCS ${SRCS} pgpkeyselectiondialog.cpp)
+	SET (FORMS ${FORMS} pgpkeyselectiondialog.ui)
+ENDIF (ENABLE_CRYPT)
+
 CreateTrVars ("azoth" "en;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 QT4_WRAP_UI (UIS_H ${FORMS})
