@@ -57,7 +57,7 @@ namespace Xoox
 
 		bool handleStanza (const QDomElement&);
 	signals:
-		void encryptedMessageReceived (const QString&);
+		void encryptedMessageReceived (const QString&, const QString&);
 		void signedMessageReceived (const QString&);
 		void signedPresenceReceived (const QString&);
 		void invalidSignatureReceived (const QString&);

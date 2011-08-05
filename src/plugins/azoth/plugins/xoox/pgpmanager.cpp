@@ -159,7 +159,7 @@ namespace Xoox
 		QCA::SecureMessage msg (&pgp);
 		msg.setFormat (QCA::SecureMessage::Ascii);
 		msg.startDecrypt ();
-		msg.update (encrypted);
+		msg.update (WrapPGP (encrypted, false).toUtf8 ());
 		msg.end ();
 		msg.waitForFinished ();
 
@@ -208,7 +208,6 @@ namespace Xoox
 			return false;
 
 		const QString& from = stanza.attribute ("from");
-		const QString& id = stanza.attribute ("id");
 
 		// Case 1: signed presence|message
 		const QDomElement& x_element = stanza.firstChildElement ("x");
@@ -220,8 +219,6 @@ namespace Xoox
 
 			const QCA::PGPKey key = PublicKey (from);
 
-			//TODO Initialize keystore somewhere
-			//TODO Check if we need another representation, instead of 'toAscii()'
 			if (!IsValidSignature (key, message.toUtf8 (), signature.toAscii ()))
 				emit invalidSignatureReceived (from);
 			else if (tagName == "message")
@@ -238,7 +235,7 @@ namespace Xoox
 			const QByteArray& encryptedBody = encryptedBodyStr.toAscii ();
 			QByteArray decryptedBody = DecryptBody (encryptedBody);
 			if (!decryptedBody.isEmpty ())
-				emit encryptedMessageReceived (from);
+				emit encryptedMessageReceived (from, QString::fromUtf8 (decryptedBody));
 		}
 
 		return false;
