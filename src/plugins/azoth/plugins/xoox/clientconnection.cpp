@@ -418,6 +418,13 @@ namespace Xoox
 		return AdHocCommandManager_;
 	}
 	
+#ifdef ENABLE_CRYPT
+	PgpManager* ClientConnection::GetPGPManager () const
+	{
+		return PGPManager_;
+	}
+#endif
+	
 	void ClientConnection::SetSignaledLog (bool signaled)
 	{
 		if (signaled)
@@ -1300,27 +1307,6 @@ namespace Xoox
 	void ClientConnection::InitializeQCA ()
 	{
 #ifdef ENABLE_CRYPT
-		qDebug () << Q_FUNC_INFO
-				<< "gonna wait?"
-				<< QCAMgr_.isBusy ();
-		QCAMgr_.waitForBusyFinished ();
-
-		const QStringList& keystores = QCAMgr_.keyStores ();
-		QString keySt;
-		Q_FOREACH (keySt, keystores)
-		{
-			if (keySt.contains ("gnupg") ||
-					keySt.contains ("gpg") ||
-					keySt.contains ("pgp"))
-				break;
-			
-			keySt.clear ();
-		}
-		qDebug () << "chosen"
-				<< keySt
-				<< "from"
-				<< keystores;
-		
 		PGPManager_ = new PgpManager ();
 
 		Client_->addExtension (PGPManager_);

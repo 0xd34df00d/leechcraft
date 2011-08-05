@@ -40,6 +40,10 @@
 #include "privacylistsconfigdialog.h"
 #include "mediacall.h"
 
+#ifdef ENABLE_CRYPT
+#include "pgpmanager.h"
+#endif
+
 namespace LeechCraft
 {
 namespace Azoth
@@ -401,6 +405,31 @@ namespace Xoox
 		target += '/' + var;
 		return new MediaCall (this, ClientConnection_->GetCallManager ()->call (target));
 	}
+	
+#ifdef ENABLE_CRYPT
+	void GlooxAccount::SetPrivateKey (const QCA::PGPKey& key)
+	{
+		ClientConnection_->GetPGPManager ()->SetPrivateKey (key);
+	}
+
+	void GlooxAccount::SetEntryKey (QObject *entryObj, const QCA::PGPKey& pubKey)
+	{
+		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< entryObj
+					<< "doesn't implement ICLEntry";
+			return;
+		}
+		
+		ClientConnection_->GetPGPManager ()->SetPublicKey (entry->GetHumanReadableID (), pubKey);
+	}
+
+	void GlooxAccount::SetEncryptionEnabled (QObject *entry, bool enabled)
+	{
+	}
+#endif
 
 	QString GlooxAccount::GetJID () const
 	{

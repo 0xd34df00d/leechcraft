@@ -98,7 +98,6 @@ namespace Xoox
 		
 #ifdef ENABLE_CRYPT
 		PgpManager *PGPManager_;
-		QCA::KeyStoreManager QCAMgr_;
 #endif
 
 		QString OurJID_;
@@ -181,6 +180,9 @@ namespace Xoox
 		PrivacyListsManager* GetPrivacyListsManager () const;
 		QXmppCallManager* GetCallManager () const;
 		AdHocCommandManager* GetAdHocCommandManager () const;
+#ifdef ENABLE_CRYPT
+		PgpManager* GetPGPManager () const;
+#endif
 		
 		void SetSignaledLog (bool);
 
