@@ -1310,9 +1310,11 @@ namespace Azoth
 		QList<QAction*> result;
 		result << id2action.value ("openchat");
 		result << id2action.value ("drawattention");
+		result << id2action.value ("sep_afterinitiate");
 		result << id2action.value ("rename");
 		result << id2action.value ("changegroups");
 		result << id2action.value ("remove");
+		result << id2action.value ("sep_afterrostermodify");
 		result << id2action.value ("authorization");
 		IMUCPerms *perms = qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ());
 		if (perms)
@@ -1599,6 +1601,13 @@ namespace Azoth
 			Entry2Actions_ [entry] ["remove"] = remove;
 			Action2Areas_ [remove] << CLEAAContactListCtxtMenu;
 		}
+		
+		QAction *sep = Util::CreateSeparator (entry->GetObject ());
+		Entry2Actions_ [entry] ["sep_afterinitiate"] = sep;
+		Action2Areas_ [sep] << CLEAAContactListCtxtMenu;
+		sep = Util::CreateSeparator (entry->GetObject ());
+		Entry2Actions_ [entry] ["sep_afterrostermodify"] = sep;
+		Action2Areas_ [sep] << CLEAAContactListCtxtMenu;
 
 		struct Entrifier
 		{
