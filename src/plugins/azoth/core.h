@@ -195,6 +195,8 @@ namespace Azoth
 #ifdef ENABLE_CRYPT
 		QList<QCA::PGPKey> GetPublicKeys () const;
 		QList<QCA::PGPKey> GetPrivateKeys () const;
+		
+		void AssociatePrivateKey (IAccount*, const QCA::PGPKey&) const;
 #endif
 
 		/** Returns the list of all groups of all chat entries.
@@ -412,6 +414,10 @@ namespace Azoth
 		IChatStyleResourceSource* GetCurrentChatStyle () const;
 		
 		void FillANFields ();
+		
+#ifdef ENABLE_CRYPT
+		void RestoreKeyForAccount (IAccount*);
+#endif
 	public slots:
 		/** Initiates MUC join by calling the corresponding protocol
 		 * plugin's IProtocol::InitiateMUCJoin() function.
@@ -573,6 +579,7 @@ namespace Azoth
 		
 #ifdef ENABLE_CRYPT
 		void handleQCAEvent (int, const QCA::Event&);
+		void handleQCABusyFinished ();
 #endif
 	signals:
 		void gotEntity (const LeechCraft::Entity&);

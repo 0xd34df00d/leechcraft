@@ -119,6 +119,9 @@ namespace Azoth
 		PGPKeySelectionDialog dia (str, PGPKeySelectionDialog::TPrivate, this);
 		if (dia.exec () != QDialog::Accepted)
 			return;
+		
+		pgpAcc->SetPrivateKey (dia.GetSelectedKey ());
+		Core::Instance ().AssociatePrivateKey (acc, dia.GetSelectedKey ());
 #endif
 	}
 

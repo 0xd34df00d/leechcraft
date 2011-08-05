@@ -48,6 +48,9 @@
 #include "interfaces/iresourceplugin.h"
 #include "interfaces/iurihandler.h"
 #include "interfaces/irichtextmessage.h"
+#ifdef ENABLE_CRYPT
+#include "interfaces/isupportpgp.h"
+#endif
 #include "chattabsmanager.h"
 #include "pluginmanager.h"
 #include "proxyobject.h"
@@ -124,6 +127,11 @@ namespace Azoth
 				SIGNAL (eventReady (int, const QCA::Event&)),
 				this,
 				SLOT (handleQCAEvent (int, const QCA::Event&)));
+		if (KeyStoreMgr_->isBusy ())
+			connect (KeyStoreMgr_.get (),
+					SIGNAL (busyFinished ()),
+					this,
+					SLOT (handleQCABusyFinished ()));
 		QCAEventHandler_->start ();
 		KeyStoreMgr_->start ();
 #endif
@@ -451,6 +459,18 @@ namespace Azoth
 		}
 		
 		return result;
+	}
+	
+	void Core::AssociatePrivateKey (IAccount *acc, const QCA::PGPKey& key) const
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth");
+		settings.beginGroup ("PrivateKeys");
+		if (key.isNull ())
+			settings.remove (acc->GetAccountID ());
+		else
+			settings.setValue (acc->GetAccountID (), key.keyId ());
+		settings.endGroup ();
 	}
 #endif
 
@@ -1830,6 +1850,29 @@ namespace Azoth
 				QVariant::String,
 				QStringList ("org.LC.AdvNotifications.IM.StatusChange"));
 	}
+	
+	void Core::RestoreKeyForAccount (IAccount *acc)
+	{
+		ISupportPGP *pgp = qobject_cast<ISupportPGP*> (acc->GetObject ());
+		if (!pgp)
+			return;
+	
+		QSettings settings (QCoreApplication::organizationName (),
+			QCoreApplication::applicationName () + "_Azoth");
+		settings.beginGroup ("PrivateKeys");
+		const QString& keyId = settings.value (acc->GetAccountID ()).toString ();
+		settings.endGroup ();
+		
+		if (keyId.isEmpty ())
+			return;
+		
+		Q_FOREACH (const QCA::PGPKey& key, GetPrivateKeys ())
+			if (key.keyId () == keyId)
+			{
+				pgp->SetPrivateKey (key);
+				break;
+			}
+	}
 
 	void Core::handleMucJoinRequested ()
 	{
@@ -1868,6 +1911,11 @@ namespace Azoth
 		}
 
 		emit accountAdded (account);
+		
+#ifdef ENABLE_CRYPT
+		if (!KeyStoreMgr_->isBusy ())
+			RestoreKeyForAccount (account);
+#endif
 
 		QStandardItem *accItem = new QStandardItem (account->GetAccountName ());
 		accItem->setData (QVariant::fromValue<QObject*> (accObject),
@@ -3195,6 +3243,12 @@ namespace Azoth
 	void Core::handleQCAEvent (int id, const QCA::Event& event)
 	{
 		qDebug () << Q_FUNC_INFO << id << event.type ();
+	}
+	
+	void Core::handleQCABusyFinished ()
+	{
+		Q_FOREACH (IAccount *acc, GetAccounts ())
+			RestoreKeyForAccount (acc);
 	}
 #endif
 }
