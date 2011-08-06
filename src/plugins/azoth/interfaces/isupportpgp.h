@@ -37,6 +37,8 @@ namespace Azoth
 		virtual void SetEncryptionEnabled (QObject *entry, bool enabled) = 0;
 		
 		virtual void signatureVerified (QObject *entry, bool successful) = 0;
+		
+		virtual void encryptionStateChanged (QObject *entry, bool enabled) = 0;
 	};
 }
 }

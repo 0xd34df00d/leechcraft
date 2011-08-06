@@ -199,6 +199,7 @@ namespace Xoox
 		
 #ifdef ENABLE_CRYPT
 		void signatureVerified (QObject*, bool);
+		void encryptionStateChanged (QObject*, bool);
 #endif
 
 		void accountSettingsChanged ();

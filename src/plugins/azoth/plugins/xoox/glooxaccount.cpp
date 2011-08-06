@@ -42,6 +42,7 @@
 
 #ifdef ENABLE_CRYPT
 #include "pgpmanager.h"
+#include <util/util.h>
 #endif
 
 namespace LeechCraft
@@ -428,6 +429,29 @@ namespace Xoox
 
 	void GlooxAccount::SetEncryptionEnabled (QObject *entry, bool enabled)
 	{
+		GlooxCLEntry *glEntry = qobject_cast<GlooxCLEntry*> (entry);
+		if (!glEntry)
+			return;
+
+		const QString& jid = glEntry->GetJID ();
+		if (enabled &&
+				ClientConnection_->GetPGPManager ()->PublicKey (jid).isNull ())
+		{
+			Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
+						tr ("Unable to enable encryption for entry %1: "
+							"no key has been set.")
+								.arg (glEntry->GetEntryName ()),
+						PCritical_));
+			return;
+		}
+
+		if (!ClientConnection_->SetEncryptionEnabled (jid, enabled))
+			Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
+						tr ("Unable to change encryption state for %1.")
+								.arg (glEntry->GetEntryName ()),
+						PCritical_));
+		else
+			emit encryptionStateChanged (entry, enabled);
 	}
 #endif
 

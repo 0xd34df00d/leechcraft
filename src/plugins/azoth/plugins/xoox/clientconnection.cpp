@@ -423,6 +423,16 @@ namespace Xoox
 	{
 		return PGPManager_;
 	}
+	
+	bool ClientConnection::SetEncryptionEnabled (const QString& jid, bool enabled)
+	{
+		if (enabled)
+			Entries2Crypt_ << jid;
+		else
+			Entries2Crypt_.remove (jid);
+		
+		return true;
+	}
 #endif
 	
 	void ClientConnection::SetSignaledLog (bool signaled)

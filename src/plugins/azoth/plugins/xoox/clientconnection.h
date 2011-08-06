@@ -142,6 +142,7 @@ namespace Xoox
 		QSet<QString> SignedPresences_;
 		QSet<QString> SignedMessages_;
 		QHash<QString, QString> EncryptedMessages_;
+		QSet<QString> Entries2Crypt_;
 	public:
 		typedef boost::function<void (const QXmppDiscoveryIq&)> DiscoCallback_t;
 	private:
@@ -182,6 +183,8 @@ namespace Xoox
 		AdHocCommandManager* GetAdHocCommandManager () const;
 #ifdef ENABLE_CRYPT
 		PgpManager* GetPGPManager () const;
+		
+		bool SetEncryptionEnabled (const QString&, bool);
 #endif
 		
 		void SetSignaledLog (bool);
