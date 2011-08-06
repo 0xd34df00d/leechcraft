@@ -16,14 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_ADHOCCOMMANDMANAGER_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_ADHOCCOMMANDMANAGER_H
-#include <QSet>
-#include <QXmppClientExtension.h>
-#include <QXmppDataForm.h>
 #include "adhoccommand.h"
-
-class QXmppDiscoveryIq;
 
 namespace LeechCraft
 {
@@ -31,33 +24,71 @@ namespace Azoth
 {
 namespace Xoox
 {
-	class ClientConnection;
-
-	class AdHocCommandManager : public QXmppClientExtension
+		AdHocCommand::AdHocCommand (const QString& name, const QString& node)
+	: Name_ (name)
+	, Node_ (node)
 	{
-		Q_OBJECT
-		
-		ClientConnection *ClientConn_;
-		QSet<QString> PendingCommands_;
-	public:
-		static QString GetAdHocFeature ();
+	}
+	
+	QString AdHocCommand::GetName () const
+	{
+		return Name_;
+	}
+	
+	void AdHocCommand::SetName (const QString& name)
+	{
+		Name_ = name;
+	}
+	
+	QString AdHocCommand::GetNode () const
+	{
+		return Node_;
+	}
 
-		AdHocCommandManager (ClientConnection*);
+	void AdHocCommand::SetNode (const QString& node)
+	{
+		Node_ = node;
+	}
+	
+	QString AdHocResult::GetNode () const
+	{
+		return Node_;
+	}
 
-		void QueryCommands (const QString&);
-		void ExecuteCommand (const QString&, const AdHocCommand&);
-		void ProceedExecuting (const QString&, const AdHocResult&, const QString&);
+	void AdHocResult::SetNode (const QString& node)
+	{
+		Node_ = node;
+	}
 
-		QStringList discoveryFeatures () const;
-		bool handleStanza (const QDomElement&);
-	private slots:
-		void handleItemsReceived (const QXmppDiscoveryIq&);
-	signals:
-		void gotCommands (const QString&, const QList<AdHocCommand>&);
-		void gotResult (const QString&, const AdHocResult&);
-	};
+	QString AdHocResult::GetSessionID () const
+	{
+		return SessionID_;
+	}
+
+	void AdHocResult::SetSessionID (const QString& sid)
+	{
+		SessionID_ = sid;
+	}
+
+	QXmppDataForm AdHocResult::GetDataForm () const
+	{
+		return Form_;
+	}
+
+	void AdHocResult::SetDataForm (const QXmppDataForm& form)
+	{
+		Form_ = form;
+	}
+
+	QStringList AdHocResult::GetActions () const
+	{
+		return Actions_;
+	}
+
+	void AdHocResult::SetActions (const QStringList& actions)
+	{
+		Actions_ = actions;
+	}
 }
 }
 }
-
-#endif

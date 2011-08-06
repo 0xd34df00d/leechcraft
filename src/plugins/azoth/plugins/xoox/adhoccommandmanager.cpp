@@ -28,73 +28,7 @@ namespace Azoth
 namespace Xoox
 {
 	const QString NsAdHoc = "http://jabber.org/protocol/commands";
-	
-	AdHocCommand::AdHocCommand (const QString& name, const QString& node)
-	: Name_ (name)
-	, Node_ (node)
-	{
-	}
-	
-	QString AdHocCommand::GetName () const
-	{
-		return Name_;
-	}
-	
-	void AdHocCommand::SetName (const QString& name)
-	{
-		Name_ = name;
-	}
-	
-	QString AdHocCommand::GetNode () const
-	{
-		return Node_;
-	}
-
-	void AdHocCommand::SetNode (const QString& node)
-	{
-		Node_ = node;
-	}
-	
-	QString AdHocResult::GetNode () const
-	{
-		return Node_;
-	}
-
-	void AdHocResult::SetNode (const QString& node)
-	{
-		Node_ = node;
-	}
-
-	QString AdHocResult::GetSessionID () const
-	{
-		return SessionID_;
-	}
-
-	void AdHocResult::SetSessionID (const QString& sid)
-	{
-		SessionID_ = sid;
-	}
-
-	QXmppDataForm AdHocResult::GetDataForm () const
-	{
-		return Form_;
-	}
-
-	void AdHocResult::SetDataForm (const QXmppDataForm& form)
-	{
-		Form_ = form;
-	}
-
-	QStringList AdHocResult::GetActions () const
-	{
-		return Actions_;
-	}
-
-	void AdHocResult::SetActions (const QStringList& actions)
-	{
-		Actions_ = actions;
-	}
-	
+		
 	QString AdHocCommandManager::GetAdHocFeature ()
 	{
 		return NsAdHoc;

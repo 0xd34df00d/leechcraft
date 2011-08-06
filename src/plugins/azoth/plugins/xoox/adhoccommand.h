@@ -16,14 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_ADHOCCOMMANDMANAGER_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_ADHOCCOMMANDMANAGER_H
-#include <QSet>
-#include <QXmppClientExtension.h>
+#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_ADHOCCOMMAND_H
+#define PLUGINS_AZOTH_PLUGINS_XOOX_ADHOCCOMMAND_H
+#include <QString>
+#include <QStringList>
 #include <QXmppDataForm.h>
-#include "adhoccommand.h"
-
-class QXmppDiscoveryIq;
 
 namespace LeechCraft
 {
@@ -31,30 +28,40 @@ namespace Azoth
 {
 namespace Xoox
 {
-	class ClientConnection;
-
-	class AdHocCommandManager : public QXmppClientExtension
+	class AdHocCommand
 	{
-		Q_OBJECT
-		
-		ClientConnection *ClientConn_;
-		QSet<QString> PendingCommands_;
+		QString Name_;
+		QString Node_;
 	public:
-		static QString GetAdHocFeature ();
+		AdHocCommand (const QString&, const QString&);
+		
+		QString GetName () const;
+		void SetName (const QString&);
 
-		AdHocCommandManager (ClientConnection*);
+		QString GetNode () const;
+		void SetNode (const QString&);
+	};
+	
+	class AdHocResult
+	{
+		QString Node_;
+		QString SessionID_;
+		
+		QXmppDataForm Form_;
+		
+		QStringList Actions_;
+	public:
+		QString GetNode () const;
+		void SetNode (const QString&);
+		
+		QString GetSessionID () const;
+		void SetSessionID (const QString&);
 
-		void QueryCommands (const QString&);
-		void ExecuteCommand (const QString&, const AdHocCommand&);
-		void ProceedExecuting (const QString&, const AdHocResult&, const QString&);
-
-		QStringList discoveryFeatures () const;
-		bool handleStanza (const QDomElement&);
-	private slots:
-		void handleItemsReceived (const QXmppDiscoveryIq&);
-	signals:
-		void gotCommands (const QString&, const QList<AdHocCommand>&);
-		void gotResult (const QString&, const AdHocResult&);
+		QXmppDataForm GetDataForm () const;
+		void SetDataForm (const QXmppDataForm&);
+		
+		QStringList GetActions () const;
+		void SetActions (const QStringList&);
 	};
 }
 }
