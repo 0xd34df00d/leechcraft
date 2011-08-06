@@ -16,45 +16,56 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_BLACKDASH_BLACKDASH_H
-#define PLUGINS_BLACKDASH_BLACKDASH_H
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/ihavetabs.h>
+#include "dashtab.h"
 
 namespace LeechCraft
 {
 namespace BlackDash
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IHaveTabs
-	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs)
-		
-		TabClasses_t TabClasses_;
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-		
-		TabClasses_t GetTabClasses () const;
-		void TabOpenRequested (const QByteArray&);
-	signals:
-		void addNewTab (const QString&, QWidget*);
-		void removeTab (QWidget*);
-		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void changeTooltip (QWidget*, QWidget*);
-		void statusBarChanged (QWidget*, const QString&);
-		void raiseTab (QWidget*);
-	};
-}
-}
+	QObject *DashTab::S_ParentPlugin_ = 0;
 
-#endif
+	void DashTab::SetParentPlugin (QObject *parent)
+	{
+		S_ParentPlugin_ = parent;
+	}
+	
+	TabClassInfo DashTab::GetStaticTabClassInfo ()
+	{
+		TabClassInfo info =
+		{
+			"org.LeechCraft.BlackDash.Dash",
+			tr ("Dashboard"),
+			tr ("Dashboard for widgets and shortcuts"),
+			QIcon (),
+			70,
+			TFOpenableByRequest
+		};
+		return info;
+	}
+
+	DashTab::DashTab (QWidget *parent)
+	: QWidget (parent)
+	{
+	}
+	
+	TabClassInfo DashTab::GetTabClassInfo () const
+	{
+		return GetStaticTabClassInfo ();
+	}
+	
+	QObject* DashTab::ParentMultiTabs ()
+	{
+		return S_ParentPlugin_;
+	}
+	
+	QToolBar* DashTab::GetToolBar () const
+	{
+		return 0;
+	}
+
+	void DashTab::Remove ()
+	{
+		emit removeTab (this);
+	}
+}
+}

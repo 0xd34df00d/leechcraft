@@ -23,9 +23,11 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	blackdash.cpp
+	dashtab.cpp
 	)
 SET (HEADERS
 	blackdash.h
+	dashtab.h
 	)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 

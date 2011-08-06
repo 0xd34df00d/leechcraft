@@ -16,43 +16,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_BLACKDASH_BLACKDASH_H
-#define PLUGINS_BLACKDASH_BLACKDASH_H
-#include <QObject>
-#include <interfaces/iinfo.h>
+#ifndef PLUGINS_BLACKDASH_DASHTAB_H
+#define PLUGINS_BLACKDASH_DASHTAB_H
+#include <QWidget>
 #include <interfaces/ihavetabs.h>
 
 namespace LeechCraft
 {
 namespace BlackDash
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IHaveTabs
+	class DashTab : public QWidget
+				  , public ITabWidget
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs)
+		Q_INTERFACES (ITabWidget)
 		
-		TabClasses_t TabClasses_;
+		static QObject *S_ParentPlugin_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-		
-		TabClasses_t GetTabClasses () const;
-		void TabOpenRequested (const QByteArray&);
+		static void SetParentPlugin (QObject*);
+		static TabClassInfo GetStaticTabClassInfo ();
+
+		DashTab (QWidget* = 0);
+
+		TabClassInfo GetTabClassInfo () const;
+		QObject* ParentMultiTabs ();
+		void Remove ();
+		QToolBar* GetToolBar () const;
 	signals:
-		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);
-		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void changeTooltip (QWidget*, QWidget*);
-		void statusBarChanged (QWidget*, const QString&);
-		void raiseTab (QWidget*);
 	};
 }
 }
