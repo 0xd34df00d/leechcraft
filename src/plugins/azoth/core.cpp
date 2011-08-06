@@ -1879,7 +1879,8 @@ namespace Azoth
 				QVariant::String,
 				QStringList ("org.LC.AdvNotifications.IM.StatusChange"));
 	}
-	
+
+#ifdef ENABLE_CRYPT
 	void Core::RestoreKeyForAccount (IAccount *acc)
 	{
 		ISupportPGP *pgp = qobject_cast<ISupportPGP*> (acc->GetObject ());
@@ -1927,6 +1928,7 @@ namespace Azoth
 				break;
 			}
 	}
+#endif
 
 	void Core::handleMucJoinRequested ()
 	{
