@@ -20,6 +20,7 @@
 #define PLUGINS_AZOTH_PLUGINS_XOOX_ADHOCCOMMANDSERVER_H
 #include <boost/function.hpp>
 #include <QSet>
+#include <QXmppClientExtension.h>
 #include <QXmppDataForm.h>
 #include <QXmppDiscoveryIq.h>
 
@@ -33,7 +34,7 @@ namespace Xoox
 {
 	class ClientConnection;
 
-	class AdHocCommandServer : public QObject
+	class AdHocCommandServer : public QXmppClientExtension
 	{
 		Q_OBJECT
 		
@@ -41,13 +42,21 @@ namespace Xoox
 
 		QMap<QString, QXmppDiscoveryIq::Item> XEP0146Items_;
 		
-		typedef boost::function<void (const QXmppDiscoveryIq&)> NodeActor_t;
+		typedef boost::function<void (const QDomElement&)> NodeActor_t;
 		QMap<QString, NodeActor_t> NodeInfos_;
-		QMap<QString, NodeActor_t> NodeActors_;
+		typedef boost::function<void (const QDomElement&,
+				const QString&, const QXmppDataForm&)> NodeSubmitHandler_t;
+		QMap<QString, NodeSubmitHandler_t> NodeSubmitHandlers_;
+		
+		QMap<QString, QStringList> PendingSessions_;
 	public:
 		AdHocCommandServer (ClientConnection*);
+		
+		bool handleStanza (const QDomElement&);
 	private:
-		void LeaveGroupchatsInfo (const QXmppDiscoveryIq&);
+		void LeaveGroupchatsInfo (const QDomElement&);
+		void LeaveGroupchatsSubmitted (const QDomElement&,
+				const QString&, const QXmppDataForm&);
 	private slots:
 		void handleDiscoItems (const QXmppDiscoveryIq&);
 		void handleDiscoInfo (const QXmppDiscoveryIq&);

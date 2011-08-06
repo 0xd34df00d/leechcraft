@@ -116,8 +116,6 @@ namespace Xoox
 		SetOurJID (OurJID_);
 
 		SetupLogger ();
-		
-		new AdHocCommandServer (this);
 
 		LastState_.State_ = SOffline;
 		
@@ -160,6 +158,7 @@ namespace Xoox
 		Client_->addExtension (PrivacyListsManager_);
 		Client_->addExtension (CallManager_);
 		Client_->addExtension (AdHocCommandManager_);
+		Client_->addExtension (new AdHocCommandServer (this));
 		
 		AnnotationsManager_ = new AnnotationsManager (this);
 

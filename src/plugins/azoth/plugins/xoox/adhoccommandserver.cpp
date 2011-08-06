@@ -20,6 +20,8 @@
 #include <boost/bind.hpp>
 #include <QXmppDiscoveryManager.h>
 #include "clientconnection.h"
+#include "util.h"
+#include "roomclentry.h"
 
 namespace LeechCraft
 {
@@ -28,10 +30,11 @@ namespace Azoth
 namespace Xoox
 {
 	const QString NsCommands = "http://jabber.org/protocol/commands";
+	const QString RcStr = "http://jabber.org/protocol/rc";
+	const QString NodeLeaveGroupchats = "http://jabber.org/protocol/rc#leave-groupchats";
 
 	AdHocCommandServer::AdHocCommandServer (ClientConnection *conn)
-	: QObject (conn)
-	, Conn_ (conn)
+	: Conn_ (conn)
 	{
 		QXmppDiscoveryManager *mgr = conn->GetDiscoveryManager ();
 		connect (mgr,
@@ -46,15 +49,160 @@ namespace Xoox
 		const QString& jid = Conn_->GetOurJID ();
 		
 		QXmppDiscoveryIq::Item leaveGroupchats;
-		leaveGroupchats.setNode ("http://jabber.org/protocol/rc#leave-groupchats");
+		leaveGroupchats.setNode (NodeLeaveGroupchats);
 		leaveGroupchats.setJid (jid);
 		leaveGroupchats.setName (tr ("Leave groupchats"));
 		XEP0146Items_ [leaveGroupchats.node ()] = leaveGroupchats;
-		NodeInfos_ [leaveGroupchats.node ()] = boost::bind (&AdHocCommandServer::LeaveGroupchatsInfo, this, _1);
+		NodeInfos_ [leaveGroupchats.node ()] =
+				boost::bind (&AdHocCommandServer::LeaveGroupchatsInfo, this, _1);
+		NodeSubmitHandlers_ [leaveGroupchats.node ()] =
+				boost::bind (&AdHocCommandServer::LeaveGroupchatsSubmitted, this, _1, _2, _3);
 	}
 	
-	void AdHocCommandServer::LeaveGroupchatsInfo (const QXmppDiscoveryIq& iq)
+	bool AdHocCommandServer::handleStanza (const QDomElement& elem)
 	{
+		if (elem.tagName () != "iq" ||
+				elem.attribute ("type") != "set")
+			return false;
+		
+		QXmppElement cmdElem = elem.firstChildElement ("command");
+		if (cmdElem.attribute ("xmlns") != NsCommands)
+			return false;
+		
+		if (!cmdElem.attribute ("action").isEmpty () &&
+				cmdElem.attribute ("action") != "execute")
+			return false;
+		
+		QString from, resource;
+		ClientConnection::Split (elem.attribute ("from"), &from, &resource);
+		const bool isUs = Conn_->GetOurJID ().startsWith (from);
+		
+		const QString& node = cmdElem.attribute ("node");
+		
+		if (XEP0146Items_.contains (node) && !isUs)
+		{
+			QXmppIq iq;
+			iq.parse (elem);
+			iq.setTo (elem.attribute ("from"));
+			iq.setFrom (QString ());
+			iq.setError (QXmppStanza::Error (QXmppStanza::Error::Auth, QXmppStanza::Error::Forbidden));
+			return true;
+		}
+		
+		if (!XEP0146Items_.contains (node))
+		{
+			QXmppIq iq;
+			iq.parse (elem);
+			iq.setTo (elem.attribute ("from"));
+			iq.setFrom (QString ());
+			iq.setError (QXmppStanza::Error (QXmppStanza::Error::Cancel, QXmppStanza::Error::FeatureNotImplemented));
+			return true;
+		}
+		
+		const QString& sessionId = cmdElem.attribute ("sessionid");
+		if (PendingSessions_ [node].removeAll (sessionId))
+		{
+			QXmppDataForm form;
+			form.parse (XooxUtil::XmppElem2DomElem (cmdElem.firstChildElement ("x")));
+			NodeSubmitHandlers_ [node] (elem, sessionId, form);
+		}
+		else
+			NodeInfos_ [node] (elem);
+		return true;
+	}
+	
+	void AdHocCommandServer::LeaveGroupchatsInfo (const QDomElement& sourceElem)
+	{
+		QList<QXmppDataForm::Field> fields;
+
+		QXmppDataForm::Field field (QXmppDataForm::Field::HiddenField);
+		field.setValue (RcStr);
+		field.setKey ("FORM_TYPE");
+		fields.append (field);
+
+		QList<QPair<QString, QString> > options;
+		Q_FOREACH (QObject *entryObj, Conn_->GetCLEntries ())
+		{
+			RoomCLEntry *entry = qobject_cast<RoomCLEntry*> (entryObj);
+			if (!entry)
+				continue;
+			
+			QPair<QString, QString> option;
+			option.first = entry->GetHumanReadableID () + "/" + entry->GetNick ();
+			option.second = entry->GetEntryID ();
+			options << option;
+		}
+		
+		QXmppDataForm::Field gcs (QXmppDataForm::Field::ListMultiField);
+		gcs.setLabel (tr ("Groupchats"));
+		gcs.setKey ("groupchats");
+		gcs.setRequired (true);
+		gcs.setOptions (options);
+		fields.append (gcs);
+		
+		QXmppDataForm form (QXmppDataForm::Form);
+		form.setTitle (tr ("Leave groupchats"));
+		form.setInstructions (tr ("Select the groupchats to leave"));
+		form.setFields (fields);
+		
+		const QString& sessionId = "leavegc:" + QDateTime::currentDateTime ().toString (Qt::ISODate);
+		PendingSessions_ [NodeLeaveGroupchats] << sessionId;
+		
+		QXmppElement elem;
+		elem.setTagName ("command");
+		elem.setAttribute ("xmlns", NsCommands);
+		elem.setAttribute ("node", NodeLeaveGroupchats);
+		elem.setAttribute ("status", "executing");
+		elem.setAttribute ("sessionid", sessionId);
+		elem.appendChild (XooxUtil::Form2XmppElem (form));
+		
+		QXmppIq iq;
+		iq.setTo (sourceElem.attribute ("from"));
+		iq.setId (sourceElem.attribute ("id"));
+		iq.setType (QXmppIq::Result);
+		iq.setExtensions (elem);
+		
+		Conn_->GetClient ()->sendPacket (iq);
+	}
+	
+	void AdHocCommandServer::LeaveGroupchatsSubmitted (const QDomElement& sourceElem,
+			const QString& sessionId, const QXmppDataForm& form)
+	{
+		Q_FOREACH (const QXmppDataForm::Field& field, form.fields ())
+		{
+			if (field.key () != "groupchats")
+				continue;
+			
+			const QStringList& ids = field.value ().toStringList ();			
+			Q_FOREACH (QObject *entryObj, Conn_->GetCLEntries ())
+			{
+				RoomCLEntry *entry = qobject_cast<RoomCLEntry*> (entryObj);
+				if (!entry)
+					continue;
+				
+				if (!ids.contains (entry->GetEntryID ()))
+					continue;
+				
+				entry->Leave (tr ("leaving as the result of the remote command"));
+			}
+
+			break;
+		}
+
+		QXmppElement elem;
+		elem.setTagName ("command");
+		elem.setAttribute ("xmlns", NsCommands);
+		elem.setAttribute ("node", NodeLeaveGroupchats);
+		elem.setAttribute ("status", "completed");
+		elem.setAttribute ("sessionid", sessionId);
+		
+		QXmppIq iq;
+		iq.setTo (sourceElem.attribute ("from"));
+		iq.setId (sourceElem.attribute ("id"));
+		iq.setType (QXmppIq::Result);
+		iq.setExtensions (elem);
+		
+		Conn_->GetClient ()->sendPacket (iq);
 	}
 
 	void AdHocCommandServer::handleDiscoItems (const QXmppDiscoveryIq& iq)
