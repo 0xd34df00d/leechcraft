@@ -504,13 +504,15 @@ namespace Xoox
 				jid += '/' + commandable.first ();
 			else
 			{
+				bool ok = true;
 				const QString& var = QInputDialog::getItem (0,
 						tr ("Select resource"),
 						tr ("Select resource for which to fetch the commands"),
 						commandable,
 						0,
-						false);
-				if (var.isEmpty ())
+						false,
+						&ok);
+				if (!ok || var.isEmpty ())
 					return;
 				
 				jid += '/' + var;
