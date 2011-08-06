@@ -83,6 +83,7 @@ namespace Xoox
 		QCA::OpenPGP pgp;
 		QCA::SecureMessage msg (&pgp);
 		msg.setRecipient (msgKey);
+		msg.setFormat (QCA::SecureMessage::Ascii);
 		msg.startEncrypt ();
 		msg.update (body);
 		msg.end ();
@@ -116,13 +117,36 @@ namespace Xoox
 		msg.end ();
 		msg.waitForFinished ();
 
-		if (msg.success ())
-			return msg.signature ();
-		else
+		if (!msg.success ())
 		{
 			warning (QString ("Error signing: " + msg.errorCode ()));
 			return QByteArray ();
 		}
+		
+		const QByteArray& sig = msg.signature ();
+		const QList<QByteArray>& arrs = sig.split ('\n');
+		QList<QByteArray>::const_iterator it = arrs.begin ();
+		++it;
+		if (it == arrs.end ())
+			return sig;
+		
+		for (; it != arrs.end (); ++it)
+			if (it->isEmpty ())
+				break;
+			
+		if (++it >= arrs.end ())
+			return sig;
+		
+		QByteArray result;
+		for (; it != arrs.end (); ++it)
+		{
+			if (it->at (0) == '-')
+				break;
+			result += *it;
+			result += '\n';
+		}
+		result.chop (1);
+		return result;
 	}
 
 	QByteArray PgpManager::SignPresence (const QByteArray& status)
