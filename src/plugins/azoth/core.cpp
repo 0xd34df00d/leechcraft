@@ -1535,7 +1535,7 @@ namespace Azoth
 					SIGNAL (triggered ()),
 					this,
 					SLOT (handleActionManagePGPTriggered ()));
-			manageGPG->setProperty ("ActionIcon", "security");
+			manageGPG->setProperty ("ActionIcon", "encryption");
 			Entry2Actions_ [entry] ["managepgp"] = manageGPG;
 			Action2Areas_ [manageGPG] << CLEAAContactListCtxtMenu;
 		}
