@@ -100,6 +100,9 @@ namespace Xoox
 
 	void CapsManager::handleInfoReceived (const QXmppDiscoveryIq& iq)
 	{
+		if (iq.type () != QXmppIq::Result)
+			return;
+
 		if (!iq.features ().isEmpty ())
 			DB_->Set (iq.verificationString (), iq.features ());
 		if (!iq.identities ().isEmpty ())
@@ -108,6 +111,9 @@ namespace Xoox
 	
 	void CapsManager::handleItemsReceived (const QXmppDiscoveryIq& iq)
 	{
+		if (iq.type () != QXmppIq::Result)
+			return;
+
 		if (!iq.features ().isEmpty ())
 			DB_->Set (iq.verificationString (), iq.features ());
 	}
