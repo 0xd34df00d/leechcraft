@@ -323,7 +323,7 @@ namespace Xoox
 	{
 		QList<QAction*> baseActs = EntryBase::GetActions ();
 		const QList<QXmppDiscoveryIq::Identity>& ids = Account_->
-				GetClientConnection ()->GetCapsManager ()->GetIdentities (VerString_);
+				GetClientConnection ()->GetCapsManager ()->GetIdentities (Variant2VerString_.values ().value (0));
 		bool gwFound = false;
 		Q_FOREACH (const QXmppDiscoveryIq::Identity& id, ids)
 			if (id.category () == "gateway")
