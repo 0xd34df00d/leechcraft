@@ -587,7 +587,8 @@ namespace Xoox
 		QXmppMessage msg = msgObj->GetMessage ();
 		if (msg.requestReceipt ())
 			UndeliveredMessages_ [msg.id ()] = msgObj;
-		
+
+#ifdef ENABLE_CRYPT		
 		EntryBase *entry = qobject_cast<EntryBase*> (msgObj->OtherPart ());
 		if (entry &&
 				Entries2Crypt_.contains (entry->GetJID ()))
@@ -608,6 +609,7 @@ namespace Xoox
 				msg.setExtensions (msg.extensions () + QXmppElementList (crypt));
 			}
 		}
+#endif
 		
 		Client_->sendPacket (msg);
 	}
