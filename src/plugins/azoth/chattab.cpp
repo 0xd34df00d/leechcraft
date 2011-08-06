@@ -41,6 +41,9 @@
 #include "interfaces/isupportmediacalls.h"
 #include "interfaces/imediacall.h"
 #include "interfaces/ihistoryplugin.h"
+#ifdef ENABLE_CRYPT
+#include "interfaces/isupportpgp.h"
+#endif
 #include "core.h"
 #include "textedit.h"
 #include "chattabsmanager.h"
@@ -72,6 +75,9 @@ namespace Azoth
 	, ToggleRichText_ (0)
 	, SendFile_ (0)
 	, Call_ (0)
+#ifdef ENABLE_CRYPT
+	, EnableEncryption_ (0)
+#endif
 	, EntryID_ (entryId)
 	, BgColor_ (QApplication::palette ().color (QPalette::Base))
 	, CurrentHistoryPosition_ (-1)
@@ -427,6 +433,36 @@ namespace Azoth
 		const int idx = Ui_.MainLayout_->indexOf (Ui_.View_);
 		Ui_.MainLayout_->insertWidget (idx, widget);
 	}
+	
+#ifdef ENABLE_CRYPT
+	void ChatTab::handleEnableEncryption ()
+	{
+		QObject *accObj = GetEntry<ICLEntry> ()->GetParentAccount ();
+		ISupportPGP *pgp = qobject_cast<ISupportPGP*> (accObj);
+		if (!pgp)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< accObj
+					<< "doesn't implement ISupportPGP";
+			return;
+		}
+		
+		const bool enable = EnableEncryption_->isChecked ();
+
+		EnableEncryption_->blockSignals (true);
+		EnableEncryption_->setChecked (!enable);
+		EnableEncryption_->blockSignals (false);
+
+		pgp->SetEncryptionEnabled (GetEntry<QObject> (), enable);
+	}
+	
+	void ChatTab::handleEncryptionStateChanged (QObject *entry, bool enabled)
+	{
+		EnableEncryption_->blockSignals (true);
+		EnableEncryption_->setChecked (enabled);
+		EnableEncryption_->blockSignals (false);
+	}
+#endif
 	
 	void ChatTab::handleClearChat ()
 	{
@@ -988,6 +1024,25 @@ namespace Azoth
 							GetCallsForEntry (EntryID_))
 				handleCall (object);
 		}
+		
+#ifdef ENABLE_CRYPT
+		if (qobject_cast<ISupportPGP*> (accObj))
+		{
+			EnableEncryption_ = new QAction (tr ("Enable encryption"), this);
+			EnableEncryption_->setProperty ("ActionIcon", "encryption");
+			EnableEncryption_->setCheckable (true);
+			connect (EnableEncryption_,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (handleEnableEncryption ()));
+			TabToolbar_->addAction (EnableEncryption_);
+
+			connect (accObj,
+					SIGNAL (encryptionStateChanged (QObject*, bool)),
+					this,
+					SLOT (handleEncryptionStateChanged (QObject*, bool)));
+		}
+#endif
 		
 		QList<QAction*> coreActions;
 		Q_FOREACH (QAction *action, Core::Instance ().GetEntryActions (e))

@@ -52,6 +52,9 @@ namespace Azoth
 		QAction *ToggleRichText_;
 		QAction *SendFile_;
 		QAction *Call_;
+#ifdef ENABLE_CRYPT
+		QAction *EnableEncryption_;
+#endif
 
 		QString EntryID_;
 
@@ -122,6 +125,10 @@ namespace Azoth
 		void handleSendFile ();
 		void handleCallRequested ();
 		void handleCall (QObject*);
+#ifdef ENABLE_CRYPT
+		void handleEnableEncryption ();
+		void handleEncryptionStateChanged (QObject*, bool);
+#endif
 		void handleFileOffered (QObject*);
 		void handleFileNoLongerOffered (QObject*);
 		void handleOfferActionTriggered ();
