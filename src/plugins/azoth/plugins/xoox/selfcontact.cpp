@@ -104,7 +104,7 @@ namespace Xoox
 	
 	QList<QAction*> SelfContact::GetActions () const
 	{
-		return QList<QAction*> ();
+		return EntryBase::GetActions ();
 	}
 	
 	void SelfContact::UpdatePriority (const QString& resource, int prio)
