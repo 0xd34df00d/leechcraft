@@ -582,9 +582,30 @@ namespace Xoox
 	
 	void ClientConnection::SendMessage (GlooxMessage *msgObj)
 	{
-		const QXmppMessage& msg = msgObj->GetMessage ();
+		QXmppMessage msg = msgObj->GetMessage ();
 		if (msg.requestReceipt ())
 			UndeliveredMessages_ [msg.id ()] = msgObj;
+		
+		EntryBase *entry = qobject_cast<EntryBase*> (msgObj->OtherPart ());
+		if (entry &&
+				Entries2Crypt_.contains (entry->GetJID ()))
+		{
+			const QCA::PGPKey& key = PGPManager_->PublicKey (entry->GetJID ());
+			
+			if (!key.isNull ())
+			{
+				const QString& body = msg.body ();
+				msg.setBody (tr ("This message is encrypted. Please decrypt "
+								"it to view the original contents"));
+				
+				QXmppElement crypt;
+				crypt.setTagName ("x");
+				crypt.setAttribute ("xmlns", "jabber:x:encrypted");
+				crypt.setValue (PGPManager_->EncryptBody (key, body.toUtf8 ()));
+				
+				msg.setExtensions (msg.extensions () + QXmppElementList (crypt));
+			}
+		}
 		
 		Client_->sendPacket (msg);
 	}
@@ -1139,12 +1160,10 @@ namespace Xoox
 
 	void ClientConnection::handleSignedMessageReceived (const QString& id)
 	{
-		SignedMessages_ << id;
 	}
 
 	void ClientConnection::handleSignedPresenceReceived (const QString& id)
 	{
-		SignedPresences_ << id;
 	}
 
 	void ClientConnection::handleInvalidSignatureReceived (const QString& id)
