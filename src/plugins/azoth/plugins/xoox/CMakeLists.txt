@@ -58,6 +58,7 @@ SET (XOOX_SRCS
 	executecommanddialog.cpp
 	userlocation.cpp
 	selfcontact.cpp
+	adhoccommandserver.cpp
 	)
 SET (XOOX_HEADERS
 	xoox.h
@@ -108,6 +109,7 @@ SET (XOOX_HEADERS
 	executecommanddialog.h
 	userlocation.h
 	selfcontact.h
+	adhoccommandserver.h
 	)
 SET (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui

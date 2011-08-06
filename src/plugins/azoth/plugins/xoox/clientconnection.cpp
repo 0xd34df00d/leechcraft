@@ -65,6 +65,7 @@
 #include "adhoccommandmanager.h"
 #include "util.h"
 #include "selfcontact.h"
+#include "adhoccommandserver.h"
 
 #ifdef ENABLE_CRYPT
 #include "pgpmanager.h"
@@ -115,6 +116,8 @@ namespace Xoox
 		SetOurJID (OurJID_);
 
 		SetupLogger ();
+		
+		new AdHocCommandServer (this);
 
 		LastState_.State_ = SOffline;
 		
