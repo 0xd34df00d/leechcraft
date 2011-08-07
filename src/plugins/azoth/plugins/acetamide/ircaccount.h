@@ -55,6 +55,10 @@ namespace Acetamide
 		QString RealName_;
 		QString UserName_;
 		QStringList NickNames_;
+		QString DefaultServer_;
+		int DefaultPort_;
+		QString DefaultEncoding_;
+		QString DefaultChannel_;
 		State IrcAccountState_;
 
 		boost::shared_ptr<ClientConnection> ClientConnection_;

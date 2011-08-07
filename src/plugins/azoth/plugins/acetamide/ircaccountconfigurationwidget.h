@@ -42,6 +42,14 @@ namespace Acetamide
 		QString GetUserName () const;
 		void SetNickNames (const QStringList&);
 		QStringList GetNickNames () const;
+		void SetDefaultServer (const QString&);
+		QString GetDefaultServer () const;
+		void SetDefaultPort (int);
+		int GetDefaultPort () const;
+		void SetDefaultEncoding (const QString&);
+		QString GetDefaultEncoding () const;
+		void SetDefaultChannel (const QString&);
+		QString GetDefaultChannel () const;
 	};
 };
 };

@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string></string>
+   <string/>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
@@ -20,7 +20,7 @@
       <bool>true</bool>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="IrcUserProfle_">
       <attribute name="title">
@@ -70,6 +70,61 @@
             <string/>
            </property>
           </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab">
+      <attribute name="title">
+       <string>Default settings</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="0">
+        <layout class="QFormLayout" name="formLayout">
+         <item row="0" column="0">
+          <widget class="QLabel" name="defaultIrcServerLabel">
+           <property name="text">
+            <string>Default irc server</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="DefaultIrcServer_"/>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="defaultPortLabel">
+           <property name="text">
+            <string>Default port</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QSpinBox" name="DefaultPort_">
+           <property name="maximum">
+            <number>65535</number>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="defaultEncodingLabel">
+           <property name="text">
+            <string>Default encoding</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QComboBox" name="DefaultEncoding_"/>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="defaultChannelLabel">
+           <property name="text">
+            <string>Default channel</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QLineEdit" name="DefaultChannel_"/>
          </item>
         </layout>
        </item>
