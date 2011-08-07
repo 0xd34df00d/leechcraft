@@ -66,6 +66,7 @@
 #include "util.h"
 #include "selfcontact.h"
 #include "adhoccommandserver.h"
+#include "lastactivitymanager.h"
 
 #ifdef ENABLE_CRYPT
 #include "pgpmanager.h"
@@ -97,6 +98,7 @@ namespace Xoox
 	, PrivacyListsManager_ (new PrivacyListsManager)
 	, AdHocCommandManager_ (new AdHocCommandManager (this))
 	, AnnotationsManager_ (0)
+	, LastActivityManager_ (new LastActivityManager)
 #ifdef ENABLE_CRYPT
 	, PGPManager_ (0)
 #endif
@@ -157,6 +159,7 @@ namespace Xoox
 		Client_->addExtension (new LegacyEntityTimeExt);
 		Client_->addExtension (PrivacyListsManager_);
 		Client_->addExtension (CallManager_);
+		Client_->addExtension (LastActivityManager_);
 		Client_->addExtension (AdHocCommandManager_);
 		Client_->addExtension (new AdHocCommandServer (this));
 		

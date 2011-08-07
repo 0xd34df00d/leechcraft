@@ -71,6 +71,7 @@ namespace Xoox
 	class PubSubManager;
 	class PrivacyListsManager;
 	class AdHocCommandManager;
+	class LastActivityManager;
 
 #ifdef ENABLE_CRYPT
 	class PgpManager;
@@ -95,6 +96,7 @@ namespace Xoox
 		PrivacyListsManager *PrivacyListsManager_;
 		AdHocCommandManager *AdHocCommandManager_;		
 		AnnotationsManager *AnnotationsManager_;
+		LastActivityManager *LastActivityManager_;
 		
 #ifdef ENABLE_CRYPT
 		PgpManager *PGPManager_;

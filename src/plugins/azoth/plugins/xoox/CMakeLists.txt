@@ -60,6 +60,7 @@ SET (XOOX_SRCS
 	selfcontact.cpp
 	adhoccommandserver.cpp
 	adhoccommand.cpp
+	lastactivitymanager.cpp
 	)
 SET (XOOX_HEADERS
 	xoox.h
@@ -112,6 +113,7 @@ SET (XOOX_HEADERS
 	selfcontact.h
 	adhoccommandserver.h
 	adhoccommand.h
+	lastactivitymanager.h
 	)
 SET (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui
