@@ -9,6 +9,7 @@ SET (ACETAMIDE_SRCS
 	acetamide.cpp
 	bookmarkeditwidget.cpp
 	channelclentry.cpp
+	channelconfigwidget.cpp
 	channelhandler.cpp
 	channelpublicmessage.cpp
 	clientconnection.cpp
@@ -38,6 +39,7 @@ SET (ACETAMIDE_HEADERS
 	acetamide.h
 	bookmarkeditwidget.h
 	channelclentry.h
+	channelconfigwidget.h
 	channelhandler.h
 	channelpublicmessage.h
 	clientconnection.h
@@ -65,6 +67,7 @@ SET (ACETAMIDE_HEADERS
 
 SET (ACETAMIDE_FORMS
 	bookmarkeditwidget.ui
+	channelconfigwidget.ui
 	ircaccountconfigurationdialog.ui
 	ircaccountconfigurationwidget.ui
 	ircjoingroupchat.ui

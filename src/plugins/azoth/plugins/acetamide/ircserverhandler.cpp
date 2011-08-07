@@ -729,6 +729,56 @@ namespace Acetamide
 		}
 	}
 
+	void IrcServerHandler::ParseChanMode (const QString& channel, 
+			const QString& mode, const QString& value)
+	{
+		if (mode.isEmpty ())
+			return;
+
+		const QString channelID = (channel + "@" + ServerOptions_.ServerName_).toLower ();
+		if (!ChannelHandlers_.contains (channelID))
+			return;
+
+		bool action = false;
+		if (mode [0] == '+')
+			action = true;
+
+		for (int i = 1; i < mode.length (); ++i)
+		{
+			switch (mode [i].toAscii ())
+			{
+			case 'o':
+				break;
+			case 'v':
+				break;
+			case 'a':
+				break;
+			case 'i':
+				break;
+			case 'm':
+				break;
+			case 'n':
+				break;
+			case 'q':
+				break;
+			case 'p':
+				break;
+			case 'r':
+				break;
+			case 's':
+				break;
+			case 't':
+				break;
+			case 'b':
+				break;
+			case 'e':
+				break;
+			case 'I':
+				break;
+			}
+		}
+	}
+
 	void IrcServerHandler::connectionEstablished ()
 	{
 		ServerConnectionState_ = Connected;

@@ -24,6 +24,7 @@
 #include <interfaces/iclentry.h>
 #include <interfaces/imucentry.h>
 #include <interfaces/imucperms.h>
+#include <interfaces/iconfigurablemuc.h>
 #include "localtypes.h"
 
 namespace LeechCraft
@@ -41,11 +42,14 @@ namespace Acetamide
 						 , public ICLEntry
 						 , public IMUCEntry
 						 , public IMUCPerms
+						 , public IConfigurableMUC
+						 
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IMUCEntry
 				LeechCraft::Azoth::ICLEntry
-				LeechCraft::Azoth::IMUCPerms)
+				LeechCraft::Azoth::IMUCPerms
+				LeechCraft::Azoth::IConfigurableMUC)
 
 		ChannelHandler *ICH_;
 		QList<QObject*> AllMessages_;
@@ -104,6 +108,10 @@ namespace Acetamide
 		bool IsLessByPerm (QObject*, QObject*) const;
 		bool MayChangePerm (QObject*, const QByteArray&,
 							const QByteArray&) const;
+
+		// IConfigurableMUC
+		QWidget* GetConfigurationWidget ();
+		void AcceptConfiguration (QWidget*);
 	signals:
 		void gotNewParticipants (const QList<QObject*>&);
 		void mucSubjectChanged (const QString&);
