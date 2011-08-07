@@ -165,6 +165,14 @@ namespace Acetamide
 			dia->ConfWidget ()->SetUserName (UserName_);
 		if (!NickNames_.isEmpty ())
 			dia->ConfWidget ()->SetNickNames (NickNames_);
+		if (!DefaultServer_.isEmpty ())
+			dia->ConfWidget ()->SetDefaultServer (DefaultServer_);
+		if (!DefaultPort_)
+			dia->ConfWidget ()->SetDefaultPort (DefaultPort_);
+		if (!DefaultEncoding_.isEmpty ())
+			dia->ConfWidget ()->SetDefaultEncoding (DefaultEncoding_);
+		if (!DefaultChannel_.isEmpty ())
+			dia->ConfWidget ()->SetDefaultChannel (DefaultChannel_);
 
 		if (dia->exec () == QDialog::Rejected)
 			return;
@@ -186,18 +194,35 @@ namespace Acetamide
 		RealName_ = widget->GetRealName ();
 		UserName_ = widget->GetUserName ();
 		NickNames_ = widget->GetNickNames ();
-
+		DefaultServer_ = widget->GetDefaultServer ();
+		DefaultPort_ = widget->GetDefaultPort ();
+		DefaultEncoding_ = widget->GetDefaultEncoding ();
+		DefaultChannel_ = widget->GetDefaultChannel ();
+		
+		
 		if (lastState != SOffline)
 			ChangeState (EntryStatus (lastState, QString ()));
 
 		emit accountSettingsChanged ();
 	}
 
-	void IrcAccount::JoinServer (const ServerOptions& server,
-			const ChannelOptions& channel)
+	void IrcAccount::JoinServer (ServerOptions server,
+			ChannelOptions channel)
 	{
 		if (server.ServerName_.isEmpty ())
-			return;
+			server.ServerName_ = DefaultServer_;
+		if (!server.ServerPort_)
+			server.ServerPort_ = DefaultPort_;
+		if (server.ServerEncoding_.isEmpty ())
+			server.ServerEncoding_ = DefaultEncoding_;
+		if (server.ServerNickName_.isEmpty ())
+			server.ServerNickName_ = NickNames_.isEmpty() ? GetOurNick ()
+					: NickNames_.at (0);
+
+		if (channel.ServerName_.isEmpty ())
+			channel.ServerName_ = server.ServerName_;
+		if (channel.ChannelName_.isEmpty ())
+			channel.ChannelName_ = DefaultChannel_;
 
 		QString serverId = server.ServerName_ + ":" +
 				QString::number (server.ServerPort_);
@@ -313,17 +338,21 @@ namespace Acetamide
 
 	QByteArray IrcAccount::Serialize () const
 	{
-		quint16 version = 2;
+		quint16 version = 3;
 
 		QByteArray result;
 		{
 			QDataStream ostr (&result, QIODevice::WriteOnly);
 			ostr << version
-				<< AccountName_
-				<< AccountID_
-				<< RealName_
-				<< UserName_
-				<< NickNames_;
+					<< AccountName_
+					<< AccountID_
+					<< RealName_
+					<< UserName_
+					<< NickNames_
+					<< DefaultServer_
+					<< DefaultPort_
+					<< DefaultEncoding_
+					<< DefaultChannel_;
 		}
 
 		return result;
@@ -337,7 +366,7 @@ namespace Acetamide
 		QDataStream in (data);
 		in >> version;
 
-		if (version < 1 || version > 2)
+		if (version < 1 || version > 3)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unknown version"
@@ -349,9 +378,21 @@ namespace Acetamide
 		in >> name;
 		IrcAccount *result = new IrcAccount (name, parent);
 		in >> result->AccountID_
-			>> result->RealName_
-			>> result->UserName_
-			>> result->NickNames_;
+				>> result->RealName_
+				>> result->UserName_
+				>> result->NickNames_;
+		if (version == 3)
+			in >> result->DefaultServer_
+				>> result->DefaultPort_
+				>> result->DefaultEncoding_
+				>> result->DefaultChannel_;
+		else if (version < 3)
+		{
+			result->DefaultServer_ = "chat.freenode.net";
+			result->DefaultPort_ = 8001;
+			result->DefaultEncoding_ = "UTF-8";
+			result->DefaultChannel_ = "leechcraft";
+		}
 
 		result->Init ();
 

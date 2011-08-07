@@ -55,6 +55,10 @@ namespace Acetamide
 		QString RealName_;
 		QString UserName_;
 		QStringList NickNames_;
+		QString DefaultServer_;
+		int DefaultPort_;
+		QString DefaultEncoding_;
+		QString DefaultChannel_;
 		State IrcAccountState_;
 
 		boost::shared_ptr<ClientConnection> ClientConnection_;
@@ -88,7 +92,7 @@ namespace Acetamide
 		void OpenConfigurationDialog ();
 		void FillSettings (IrcAccountConfigurationWidget*);
 
-		void JoinServer (const ServerOptions&, const ChannelOptions&);
+		void JoinServer (ServerOptions, ChannelOptions);
 
 		void SetBookmarks (const QList<IrcBookmark>&);
 		QList<IrcBookmark> GetBookmarks () const;
