@@ -146,6 +146,10 @@ namespace Xoox
 				SIGNAL (rosterItemGrantedSubscription (QObject*, const QString&)),
 				this,
 				SIGNAL (itemGrantedSubscription (QObject*, const QString&)));
+		connect (ClientConnection_.get (),
+				SIGNAL (gotMUCInvitation (QVariantMap, QString, QString)),
+				this,
+				SIGNAL (mucInvitationReceived (QVariantMap, QString, QString)));
 		
 		connect (ClientConnection_->GetCallManager (),
 				SIGNAL (callReceived (QXmppCall*)),

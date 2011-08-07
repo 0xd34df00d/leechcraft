@@ -249,6 +249,7 @@ namespace Xoox
 		void handlePEPEvent (const QString&, PEPEventBase*);
 		void handleMessageDelivered (const QString&);
 		void handleCaptchaReceived (const QString&, const QXmppDataForm&);
+		void handleRoomInvitation (const QString&, const QString&, const QString&);
 		
 		void handleBookmarksReceived (const QXmppBookmarkSet&);
 		void handleAutojoinQueue ();
@@ -281,6 +282,7 @@ namespace Xoox
 		void rosterItemCancelledSubscription (QObject*, const QString&);
 		void rosterItemGrantedSubscription (QObject*, const QString&);
 		void gotSubscriptionRequest (QObject*, const QString&);
+		void gotMUCInvitation (const QVariantMap&, const QString&, const QString&);
 
 		void gotConsoleLog (const QByteArray&, int);
 

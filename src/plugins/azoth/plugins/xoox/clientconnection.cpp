@@ -196,6 +196,11 @@ namespace Xoox
 				SIGNAL (messageReceived (const QXmppMessage&)),
 				this,
 				SLOT (handleMessageReceived (const QXmppMessage&)));
+		
+		connect (MUCManager_,
+				SIGNAL (invitationReceived (QString, QString, QString)),
+				this,
+				SLOT (handleRoomInvitation (QString, QString, QString)));
 
 		connect (&Client_->rosterManager (),
 				SIGNAL (rosterReceived ()),
@@ -1105,6 +1110,23 @@ namespace Xoox
 		
 		QXmppDataForm form = builder.GetForm ();
 		CaptchaManager_->sendResponse (jid, form);
+	}
+	
+	void ClientConnection::handleRoomInvitation (const QString& room,
+			const QString& inviter, const QString& reason)
+	{
+		const QStringList& split = room.split ('@', QString::SkipEmptyParts);
+
+		QVariantMap identifying;
+		identifying ["HumanReadableName"] = QString ("%2 (%1)")
+				.arg (Account_->GetOurNick ())
+				.arg (room);
+		identifying ["AccountID"] = Account_->GetAccountID ();
+		identifying ["Nick"] = Account_->GetOurNick ();
+		identifying ["Room"] = split.value (0);
+		identifying ["Server"] = split.value (1);
+
+		emit gotMUCInvitation (identifying, inviter, reason);
 	}
 
 	void ClientConnection::handleBookmarksReceived (const QXmppBookmarkSet& set)
