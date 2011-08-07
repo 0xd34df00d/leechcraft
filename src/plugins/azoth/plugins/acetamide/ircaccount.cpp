@@ -206,11 +206,23 @@ namespace Acetamide
 		emit accountSettingsChanged ();
 	}
 
-	void IrcAccount::JoinServer (const ServerOptions& server,
-			const ChannelOptions& channel)
+	void IrcAccount::JoinServer (ServerOptions server,
+			ChannelOptions channel)
 	{
 		if (server.ServerName_.isEmpty ())
-			return;
+			server.ServerName_ = DefaultServer_;
+		if (!server.ServerPort_)
+			server.ServerPort_ = DefaultPort_;
+		if (server.ServerEncoding_.isEmpty ())
+			server.ServerEncoding_ = DefaultEncoding_;
+		if (server.ServerNickName_.isEmpty ())
+			server.ServerNickName_ = NickNames_.isEmpty() ? GetOurNick ()
+					: NickNames_.at (0);
+
+		if (channel.ServerName_.isEmpty ())
+			channel.ServerName_ = server.ServerName_;
+		if (channel.ChannelName_.isEmpty ())
+			channel.ChannelName_ = DefaultChannel_;
 
 		QString serverId = server.ServerName_ + ":" +
 				QString::number (server.ServerPort_);
