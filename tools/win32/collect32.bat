@@ -1,16 +1,16 @@
 rem @echo off
 
 rem Set these variables to proper paths of your system:
-set BOOST_BIN_DIR="f:\X-Files\Projects\Lib\boost_1_46_1\stage\lib"
-set BOOST_VERSION="1_46_1"
-set LIBTORRENT_BIN_DIR="f:\X-Files\Projects\Lib\libtorrent-rasterbar-0.15.6\bin\msvc-10.0\release\boost-link-shared\boost-source\threading-multi"
-set OPENSSL_BIN_DIR="f:\X-Files\Projects\Lib\openssl-1.0.0d\out32dll"
-set QT_BIN_DIR="c:\Programs\Qt\qt-everywhere-opensource-src-4.7.3\\bin"
-set QJSON_DIR="f:\X-Files\Projects\Lib\qjson\build\lib\RelWithDebInfo\"
+set BOOST_BIN_DIR="E:\Libs\boost_1_47_0\stage\lib"
+set BOOST_VERSION="1_47"
+set LIBTORRENT_BIN_DIR="E:\Libs\libtorrent\bin\msvc-10.0\release\boost-link-shared\boost-source\threading-multi"
+set OPENSSL_BIN_DIR="E:\Libs\OpenSSL-Win32"
+set QT_BIN_DIR="E:\Libs\Qt\4.8.0-b1\bin"
+set QJSON_DIR="E:\Libs\qjson\build\lib\MinSizeRel\"
 
 set LEECHCRAFT_ROOT_DIR="..\.."
 set LEECHCRAFT_BUILD_DIR="build32"
-set BUILD_TYPE="RelWithDebInfo"
+set BUILD_TYPE="Release"
 
 rem This is the directory where LeechCraft will live
 set TARGET_DIR="LeechCraft"
@@ -42,6 +42,7 @@ copy %BOOST_BIN_DIR%\boost_thread-vc100-mt-%BOOST_VERSION%.dll %TARGET_DIR%
 rem - Qt -
 copy %QT_BIN_DIR%\phonon4.dll %TARGET_DIR%
 copy %QT_BIN_DIR%\QtCore4.dll %TARGET_DIR%
+copy %QT_BIN_DIR%\QtDeclarative4.dll %TARGET_DIR%
 copy %QT_BIN_DIR%\QtGui4.dll %TARGET_DIR%
 copy %QT_BIN_DIR%\QtMultimedia4.dll %TARGET_DIR%
 copy %QT_BIN_DIR%\QtNetwork4.dll %TARGET_DIR%
@@ -82,7 +83,7 @@ rem === LEECHCRAFT FILES ===
 
 rem - Main files -
 copy %LEECHCRAFT_BUILD_DIR%\%BUILD_TYPE%\leechcraft.exe %TARGET_DIR%
-copy %LEECHCRAFT_BUILD_DIR%\plugininterface\%BUILD_TYPE%\plugininterface.dll %TARGET_DIR%
+copy %LEECHCRAFT_BUILD_DIR%\util\%BUILD_TYPE%\lcutil.dll %TARGET_DIR%
 copy %LEECHCRAFT_BUILD_DIR%\xmlsettingsdialog\%BUILD_TYPE%\xmlsettingsdialog.dll %TARGET_DIR%
 
 rem - Plugins -
@@ -102,10 +103,14 @@ copy nul %TARGET_DIR%\leechcraft\themes\oxygen
 rem - Azoth resources -
 xcopy /e /i %LEECHCRAFT_ROOT_DIR%\src\plugins\azoth\share %TARGET_DIR%\share
 xcopy /e /i %LEECHCRAFT_ROOT_DIR%\src\plugins\azoth\plugins\standardstyles\share %TARGET_DIR%\share
+xcopy /e /i %LEECHCRAFT_ROOT_DIR%\src\plugins\azoth\plugins\nativeemoticons\share %TARGET_DIR%\share
 
 rem - Kinotify themes -
 mkdir %TARGET_DIR%\share\kinotify\themes
 xcopy /e /i %LEECHCRAFT_ROOT_DIR%\src\plugins\kinotify\themes %TARGET_DIR%\share\kinotify\themes
+
+rem - AdvancedNotifications stuff -
+xcopy /e /i %LEECHCRAFT_ROOT_DIR%\src\plugins\advancednotifications\share %TARGET_DIR%\share
 
 rem - Other stuff -
 copy %LEECHCRAFT_ROOT_DIR%\tools\win32\installer\qt.conf %TARGET_DIR%
