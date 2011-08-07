@@ -108,9 +108,9 @@ namespace Xoox
 	, IsConnected_ (false)
 	, FirstTimeConnect_ (true)
 	, VCardQueue_ (new FetchQueue (boost::bind (&QXmppVCardManager::requestVCard, &Client_->vCardManager (), _1),
-				1700, 1, this))
+				jid.contains ("gmail.com") ? 1700 : 300, 1, this))
 	, CapsQueue_ (new FetchQueue (boost::bind (&QXmppDiscoveryManager::requestInfo, DiscoveryManager_, _1, ""),
-				1000, 1, this))
+				jid.contains ("gmail.com") ? 1000 : 200, 1, this))
 	, SocketErrorAccumulator_ (0)
 	{
 		SetOurJID (OurJID_);
