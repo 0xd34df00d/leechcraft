@@ -54,6 +54,12 @@ namespace Xoox
 		
 		bool handleStanza (const QDomElement&);
 	private:
+		void Send (const QXmppDataForm&, const QDomElement&, const QString&);
+		void SendCompleted (const QDomElement&, const QString&, const QString&);
+
+		void ChangeStatusInfo (const QDomElement&);
+		void ChangeStatusSubmitted (const QDomElement&,
+				const QString&, const QXmppDataForm&);
 		void LeaveGroupchatsInfo (const QDomElement&);
 		void LeaveGroupchatsSubmitted (const QDomElement&,
 				const QString&, const QXmppDataForm&);
