@@ -18,13 +18,16 @@
 
 #include "blackdash.h"
 #include <QIcon>
+#include "dashtab.h"
 
 namespace LeechCraft
 {
 namespace BlackDash
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
-	{
+	{		
+		DashTab::SetParentPlugin (this);
+		TabClasses_ << DashTab::GetStaticTabClassInfo ();
 	}
 
 	void Plugin::SecondInit ()
@@ -53,6 +56,30 @@ namespace BlackDash
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon ();
+	}
+	
+	TabClasses_t Plugin::GetTabClasses () const
+	{
+		return TabClasses_;
+	}
+	
+	void Plugin::TabOpenRequested (const QByteArray& tabClass)
+	{
+		if (tabClass == DashTab::GetStaticTabClassInfo ().TabClass_)
+		{
+			DashTab *tab = new DashTab;
+			
+			connect (tab,
+					SIGNAL (removeTab (QWidget*)),
+					this,
+					SIGNAL (removeTab (QWidget*)));
+			
+			emit addNewTab (tr ("Dashboard"), tab);
+		}
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "unknown tab class"
+					<< tabClass;
 	}
 }
 }
