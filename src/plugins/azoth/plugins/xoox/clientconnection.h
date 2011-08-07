@@ -161,6 +161,7 @@ namespace Xoox
 		virtual ~ClientConnection ();
 
 		void SetState (const GlooxAccountState&);
+		GlooxAccountState GetLastState () const;
 		void Synchronize ();
 
 		void SetPassword (const QString&);

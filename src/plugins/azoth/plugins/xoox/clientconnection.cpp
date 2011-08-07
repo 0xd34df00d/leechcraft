@@ -324,6 +324,11 @@ namespace Xoox
 			}
 		}
 	}
+	
+	GlooxAccountState ClientConnection::GetLastState () const
+	{
+		return LastState_;
+	}
 
 	void ClientConnection::Synchronize ()
 	{
