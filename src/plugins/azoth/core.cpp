@@ -1826,6 +1826,16 @@ namespace Azoth
 		Entry2Items_ [clEntry] << clItem;
 	}
 	
+	void Core::SuggestJoiningMUC (IAccount *acc, const QVariantMap& ident)
+	{
+		QList<IAccount*> accs;
+		accs << acc;
+
+		JoinConferenceDialog *dia = new JoinConferenceDialog (accs, Proxy_->GetMainWindow ());
+		dia->SetIdentifyingData (ident);
+		dia->show ();
+	}
+	
 	IChatStyleResourceSource* Core::GetCurrentChatStyle () const
 	{
 		const QString& opt = XmlSettingsManager::Instance ()
@@ -2032,6 +2042,10 @@ namespace Azoth
 				SIGNAL (itemGrantedSubscription (QObject*, const QString&)),
 				this,
 				SLOT (handleItemGrantedSubscription (QObject*, const QString&)));
+		connect (accObject,
+				SIGNAL (mucInvitationReceived (QVariantMap, QString, QString)),
+				this,
+				SLOT (handleMUCInvitation (QVariantMap, QString, QString)));
 
 		connect (accObject,
 				SIGNAL (statusChanged (const EntryStatus&)),
@@ -2799,6 +2813,48 @@ namespace Azoth
 				"org.LC.AdvNotifications.IM.Subscr.Granted",
 				tr ("%1 (%2) granted subscription."),
 				tr ("%1 (%2) granted subscription: %3."));
+	}
+	
+	void Core::handleMUCInvitation (const QVariantMap& ident,
+			const QString& inviter, const QString& reason)
+	{
+		IAccount *acc = qobject_cast<IAccount*> (sender ());
+		if (!acc)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< sender ()
+					<< "doesn't implement IAccount";
+			return;
+		}
+		
+		const QString& name = ident ["HumanReadableName"].toString ();
+
+		const QString str = reason.isEmpty () ?
+				tr ("You have been invited to %1 by %2.")
+					.arg (name)
+					.arg (inviter) :
+				tr ("You have been invited to %1 by %2: %3")
+					.arg (name)
+					.arg (inviter)
+					.arg (reason);
+
+		Entity e = Util::MakeNotification ("Azoth", str, PInfo_);
+		e.Additional_ ["org.LC.AdvNotifications.SenderID"] = "org.LeechCraft.Azoth";
+		e.Additional_ ["org.LC.AdvNotifications.EventCategory"] =
+				"org.LC.AdvNotifications.IM";
+		e.Additional_ ["org.LC.AdvNotifications.VisualPath"] = QStringList (name);
+		e.Additional_ ["org.LC.AdvNotifications.EventID"] =
+				"org.LC.Plugins.Azoth.Invited/" + name + '/' + inviter;
+		e.Additional_ ["org.LC.AdvNotifications.EventType"] = "org.LC.AdvNotifications.IM.MUCInvitation";
+		e.Additional_ ["org.LC.AdvNotifications.FullText"] = str;
+		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
+		e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = reason;
+		
+		Util::NotificationActionHandler *nh = new Util::NotificationActionHandler (e);
+		nh->AddFunction (tr ("Join"), boost::bind (&Core::SuggestJoiningMUC,
+					this, acc, ident));
+
+		emit gotEntity (e);
 	}
 
 	void Core::updateStatusIconset ()
