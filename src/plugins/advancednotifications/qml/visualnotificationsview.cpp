@@ -44,7 +44,7 @@ namespace AdvancedNotifications
 #ifdef Q_WS_X11
 		candidates << "/usr/local/share/leechcraft/qml/advancednotifications/"
 				<< "/usr/share/leechcraft/qml/advancednotifications/";
-#elif Q_WS_WIN32
+#elif defined (Q_WS_WIN32)
 		candidates << QApplication::applicationDirPath () + "/share/qml/advancednotifications/";
 #endif
 
