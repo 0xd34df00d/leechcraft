@@ -55,6 +55,8 @@ namespace Xoox
 		QString Status_;
 		int Priority_;
 	};
+	
+	bool operator== (const GlooxAccountState&, const GlooxAccountState&);
 
 	class GlooxProtocol;
 	class TransferManager;

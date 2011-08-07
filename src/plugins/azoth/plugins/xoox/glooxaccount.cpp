@@ -51,6 +51,13 @@ namespace Azoth
 {
 namespace Xoox
 {
+	bool operator== (const GlooxAccountState& s1, const GlooxAccountState& s2)
+	{
+		return s1.Priority_ == s2.Priority_ &&
+			s1.State_ == s2.State_ &&
+			s1.Status_ == s2.Status_;
+	}
+
 	GlooxAccount::GlooxAccount (const QString& name,
 			QObject *parent)
 	: QObject (parent)
