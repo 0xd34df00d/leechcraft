@@ -35,6 +35,8 @@ namespace Azoth
 	public:
 		JoinConferenceDialog (const QList<IAccount*>&, QWidget* = 0);
 		virtual ~JoinConferenceDialog ();
+		
+		void SetIdentifyingData (const QVariantMap&);
 	public slots:
 		virtual void accept ();
 		virtual void reject ();
