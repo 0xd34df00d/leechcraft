@@ -38,6 +38,7 @@ namespace AdvancedNotifications
 	const QString TypeIMIncFile = "org.LC.AdvNotifications.IM.IncomingFile";
 	const QString TypeIMIncMsg = "org.LC.AdvNotifications.IM.IncomingMessage";
 	const QString TypeIMMUCHighlight = "org.LC.AdvNotifications.IM.MUCHighlightMessage";
+	const QString TypeIMMUCInvite = "org.LC.AdvNotifications.IM.MUCInvitation";
 	const QString TypeIMMUCMsg = "org.LC.AdvNotifications.IM.MUCMessage";
 	const QString TypeIMStatusChange = "org.LC.AdvNotifications.IM.StatusChange";
 	const QString TypeIMSubscrGrant = "org.LC.AdvNotifications.IM.Subscr.Granted";
@@ -69,21 +70,27 @@ namespace AdvancedNotifications
 		Type2HR_ [TypeIMIncFile] = tr ("Incoming file transfer request");
 		Type2HR_ [TypeIMIncMsg] = tr ("Incoming chat message");
 		Type2HR_ [TypeIMMUCHighlight] = tr ("MUC highlight");
+		Type2HR_ [TypeIMMUCInvite] = tr ("MUC invitation");
 		Type2HR_ [TypeIMMUCMsg] = tr ("General MUC message");
 		Type2HR_ [TypeIMStatusChange] = tr ("Contact status change");
 		Type2HR_ [TypeIMSubscrGrant] = tr ("Authorization granted");
 		Type2HR_ [TypeIMSubscrRevoke] = tr ("Authorization revoked");
 		Type2HR_ [TypeIMSubscrRequest] = tr ("Authorization requested");
+		Type2HR_ [TypeIMSubscrSub] = tr ("Contact subscribed");
+		Type2HR_ [TypeIMSubscrSub] = tr ("Contact unsubscribed");
 		
 		Cat2Types_ [CatIM] << TypeIMAttention
 				<< TypeIMIncFile
 				<< TypeIMIncMsg
 				<< TypeIMMUCHighlight
+				<< TypeIMMUCInvite
 				<< TypeIMMUCMsg
 				<< TypeIMStatusChange
 				<< TypeIMSubscrGrant
 				<< TypeIMSubscrRequest
-				<< TypeIMSubscrRevoke;
+				<< TypeIMSubscrRevoke
+				<< TypeIMSubscrSub
+				<< TypeIMSubscrUnsub;
 				
 		Ui_.setupUi (this);
 		Ui_.RulesTree_->setModel (RulesModel_);
@@ -126,6 +133,12 @@ namespace AdvancedNotifications
 		mucHigh.SetMethods (NMVisual | NMTray | NMAudio);
 		mucHigh.SetAudioParams (AudioParams ("im-muc-highlight"));
 		Rules_ << mucHigh;
+		
+		NotificationRule mucInv (tr ("MUC invitations"), CatIM,
+				QStringList (TypeIMMUCInvite));
+		mucInv.SetMethods (NMVisual | NMTray | NMAudio);
+		mucInv.SetAudioParams (AudioParams ("im-attention"));
+		Rules_ << mucInv;
 		
 		NotificationRule incFile (tr ("Incoming file transfers"), CatIM,
 				QStringList (TypeIMIncFile));
