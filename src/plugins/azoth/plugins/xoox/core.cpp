@@ -28,6 +28,7 @@
 #include "glooxprotocol.h"
 #include "glooxclentry.h"
 #include "glooxaccount.h"
+#include "capsdatabase.h"
 
 namespace LeechCraft
 {
@@ -38,6 +39,7 @@ namespace Xoox
 	Core::Core ()
 	: PluginProxy_ (0)
 	, SaveRosterScheduled_ (false)
+	, CapsDB_ (new CapsDatabase (this))
 	{
 		QXmppLogger::getLogger ()->setLoggingType (QXmppLogger::FileLogging);
 		QXmppLogger::getLogger ()->setLogFilePath (Util::CreateIfNotExists ("azoth").filePath ("qxmpp.log"));
@@ -94,6 +96,11 @@ namespace Xoox
 	ICoreProxy_ptr Core::GetProxy () const
 	{
 		return Proxy_;
+	}
+	
+	CapsDatabase* Core::GetCapsDatabase () const
+	{
+		return CapsDB_;
 	}
 
 	void Core::SendEntity (const Entity& e)

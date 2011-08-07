@@ -19,6 +19,7 @@
 #include "capsmanager.h"
 #include "clientconnection.h"
 #include "capsdatabase.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -29,7 +30,7 @@ namespace Xoox
 	CapsManager::CapsManager (ClientConnection *connection)
 	: QObject (connection)
 	, Connection_ (connection)
-	, DB_ (new CapsDatabase (this))
+	, DB_ (Core::Instance ().GetCapsDatabase ())
 	{
 		Caps2String_ ["http://etherx.jabber.org/streams"] = "stream";
 		Caps2String_ ["jabber:client"] = "client";
