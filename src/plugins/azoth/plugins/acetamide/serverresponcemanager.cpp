@@ -204,6 +204,8 @@ namespace Acetamide
 					this, _1, _2, _3);
 		Command2Action_ ["005"] = boost::bind (&ServerResponceManager::GotISupport,
 					 this, _1, _2, _3);
+		Command2Action_ ["mode"] = boost::bind (&ServerResponceManager::GotChannelMode,
+					 this, _1, _2, _3);
 	}
 
 	bool ServerResponceManager::IsCTCPMessage (const QString& msg)
@@ -929,6 +931,22 @@ namespace Acetamide
 			const QList<std::string>&, const QString&)
 	{
 		ISH_->JoinFromQueue ();
+	}
+
+	void ServerResponceManager::GotChannelMode (const QString& nick, 
+			const QList<std::string>& params, const QString& msg)
+	{
+		if (params.isEmpty ())
+			return;
+		QString channel = QString::fromUtf8 (params.first ().c_str ());
+		//TODO хуй его знает, как это будет работать, и правильно ли я сделал
+		if (params.count () == 3)
+			ISH_->ParseChanMode (channel, 
+					QString::fromUtf8 (params.at (1).c_str ()),
+					QString::fromUtf8 (params.at (2).c_str ()));
+		else if (params.count () == 2)
+			ISH_->ParseChanMode (channel, 
+					QString::fromUtf8 (params.at (1).c_str ()));
 	}
 
 }

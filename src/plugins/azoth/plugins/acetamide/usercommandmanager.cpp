@@ -173,6 +173,8 @@ namespace Acetamide
 				Parser_, _1);
 		Command2Action_ ["restart"] = boost::bind (&IrcParser::RestartCommand, 
 				Parser_, _1);
+		Command2Action_ ["mode"] = boost::bind (&IrcParser::ChanModeCommand,
+				Parser_, _1);
 	}
 }
 }

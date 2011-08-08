@@ -23,6 +23,7 @@
 #include "ircmessage.h"
 #include "ircserverhandler.h"
 #include "ircaccount.h"
+#include "channelconfigwidget.h"
 
 namespace LeechCraft
 {
@@ -283,6 +284,17 @@ namespace Acetamide
 	{
 		return false;
 	}
+
+	QWidget* ChannelCLEntry::GetConfigurationWidget ()
+	{
+		return new ChannelConfigWidget (this);
+	}
+
+	void ChannelCLEntry::AcceptConfiguration (QWidget *widget)
+	{
+		Q_UNUSED (widget);
+	}
+
 };
 };
 };

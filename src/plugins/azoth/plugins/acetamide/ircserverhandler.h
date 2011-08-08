@@ -152,6 +152,8 @@ namespace Acetamide
 		void SetLastSendID (const QString&);
 		void ReadReply (const QByteArray&);
 		void JoinFromQueue ();
+		void ParseChanMode (const QString&, const QString&, 
+				const QString& value = QString ());
 	private:
 		void SendToConsole (IMessage::Direction, const QString&);
 		void NickCmdError ();
