@@ -2492,6 +2492,7 @@ namespace Azoth
 				boost::bind (static_cast<void (ChatTabsManager::*) (const ICLEntry*)> (&ChatTabsManager::OpenChat),
 						ChatTabsManager_,
 						parentCL));
+		nh->AddDependentObject (parentCL->GetObject ());
 
 		emit gotEntity (e);
 	}
@@ -2568,6 +2569,7 @@ namespace Azoth
 		nh->AddFunction (tr ("View info"),
 				boost::bind (&ICLEntry::ShowInfo,
 						entry));
+		nh->AddDependentObject (entry->GetObject ());
 		emit gotEntity (e);
 	}
 	
@@ -2611,6 +2613,7 @@ namespace Azoth
 				boost::bind (static_cast<void (ChatTabsManager::*) (const ICLEntry*)> (&ChatTabsManager::OpenChat),
 						ChatTabsManager_,
 						entry));
+		nh->AddDependentObject (entry->GetObject ());
 
 		emit gotEntity (e);
 	}
@@ -2853,6 +2856,7 @@ namespace Azoth
 		Util::NotificationActionHandler *nh = new Util::NotificationActionHandler (e);
 		nh->AddFunction (tr ("Join"), boost::bind (&Core::SuggestJoiningMUC,
 					this, acc, ident));
+		nh->AddDependentObject (acc->GetObject ());
 
 		emit gotEntity (e);
 	}

@@ -1312,6 +1312,7 @@ namespace Poshuku
 		Entity e = Util::MakeNotification ("Poshuku", text, prio);
 		Util::NotificationActionHandler *nh = new Util::NotificationActionHandler (e, this);
 		nh->AddFunction (tr ("Open"), boost::bind (&BrowserWidget::raiseTab, this, this));
+		nh->AddDependentObject (this);
 		emit gotEntity (e);
 	}
 
