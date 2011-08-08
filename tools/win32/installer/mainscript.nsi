@@ -42,10 +42,10 @@ SectionGroup "Core"
 	Section "LeechCraft" MAINFILES
 		SetOutPath $INSTDIR
 		File icon64.ico
-		File plugininterface.dll
+		File lcutil.dll
 		File xmlsettingsdialog.dll
 		File leechcraft.exe
-		File boost_program_options-vc100-mt-1_46_1.dll
+		File boost_program_options-vc100-mt-1_47.dll
 		File /r icons
 		File /r leechcraft
 		File /r oxygen
@@ -94,34 +94,19 @@ SectionGroup "Core"
 SectionGroupEnd
 
 SectionGroup "Plugins"
-    Section "Azoth" AZOTHPLUGIN
-        SetOutPath $INSTDIR\settings
-        File settings\azothacetamidesettings.xml
-        File settings\azothautopastesettings.xml
-        File settings\azothherbicidesettings.xml
-        File settings\azothhilisettings.xml
-        File settings\azothp100qsettings.xml
-        File settings\azothsettings.xml
-        SetOutPath $INSTDIR\plugins\bin
-        File plugins\bin\leechcraft_azoth.dll
-        File plugins\bin\leechcraft_azoth_acetamide.dll
-        File plugins\bin\leechcraft_azoth_autopaste.dll
-        File plugins\bin\leechcraft_azoth_chathistory.dll
-        File plugins\bin\leechcraft_azoth_depester.dll
-        File plugins\bin\leechcraft_azoth_embedmedia.dll
-        File plugins\bin\leechcraft_azoth_herbicide.dll
-        File plugins\bin\leechcraft_azoth_hili.dll
-        File plugins\bin\leechcraft_azoth_juick.dll
-        File plugins\bin\leechcraft_azoth_nativeemoticons.dll
-        File plugins\bin\leechcraft_azoth_p100q.dll
-        File pligins\bin\leechcraft_azoth_rosenthal.dll
-        File plugins\bin\leechcraft_azoth_standardstyles.dll
-        File plugins\bin\leechcraft_azoth_xoox.dll
-        File plugins\bin\leechcraft_azoth_xtazy.dll
-        SetOutPath $INSTDIR\share\azoth
-        File /r share\azoth\*
-        SectionIn 1
-    SectionEnd
+	Section "AdvancedNotifications" ANPLUGIN
+		SetOutPath $INSTDIR\settings
+		File settings\advancednotificationssettings.xml
+
+		SetOutPath $INSTDIR\plugins\bin
+		File plugins\bin\leechcraft_advancednotifications.dll
+
+		SetOutPath $INSTDIR\share\advancednotifications
+		File /r share\qml\advancednotifications\*
+		SetOutPath $INSTDIR\share\sounds
+		File /r share\sounds\*
+		SectionIn 1
+	SectionEnd
 	Section "Aggregator" AGGREGATORPLUGIN
 		SetOutPath $INSTDIR\plugins\bin
 		File plugins\bin\leechcraft_aggregator.dll
@@ -134,13 +119,26 @@ SectionGroup "Plugins"
 		File plugins\bin\leechcraft_auscrie.dll
 		SectionIn 1
 	SectionEnd
+	Section "Azoth" AZOTHPLUGIN
+        SetOutPath $INSTDIR\settings
+        File settings\azoth*settings.xml
+        File settings\azothsettings.xml
+
+        SetOutPath $INSTDIR\plugins\bin
+        File plugins\bin\leechcraft_azoth.dll
+        File plugins\bin\leechcraft_azoth_*.dll
+
+        SetOutPath $INSTDIR\share\azoth
+        File /r share\azoth\*
+        SectionIn 1
+    SectionEnd
 	Section "BitTorrent" TORRENTPLUGIN
 		SetOutPath $INSTDIR
 		File torrent.dll
-		File boost_date_time-vc100-mt-1_46_1.dll
-		File boost_filesystem-vc100-mt-1_46_1.dll
-		File boost_system-vc100-mt-1_46_1.dll
-		File boost_thread-vc100-mt-1_46_1.dll
+		File boost_date_time-vc100-mt-1_47.dll
+		File boost_filesystem-vc100-mt-1_47.dll
+		File boost_system-vc100-mt-1_47.dll
+		File boost_thread-vc100-mt-1_47.dll
 		SetOutPath $INSTDIR\settings
 		File settings\torrentsettings.xml
 		SetOutPath $INSTDIR\plugins\bin
@@ -161,6 +159,18 @@ SectionGroup "Plugins"
 		File plugins\bin\leechcraft_deadlyrics.dll
 		SectionIn 1
 	SectionEnd
+	Section "Glance" GLANCEPLUGIN
+		SetOutPath $INSTDIR\plugins\bin
+		File plugins\bin\leechcraft_glance.dll
+		SectionIn 1
+	SectionEnd
+	Section "GMail Notifier" GMAILNOTIFIERPLUGIN
+		SetOutPath $INSTDIR\plugins\bin
+		File plugins\bin\leechcraft_gmailnotifier.dll
+		SetOutPath $INSTDIR\settings
+        File settings\gmailnotifiersettings.xml
+		SectionIn 1
+	SectionEnd
 	Section "HistoryHolder" HISTORYHOLDERPLUGIN
 		SetOutPath $INSTDIR\plugins\bin
 		File plugins\bin\leechcraft_historyholder.dll
@@ -175,16 +185,16 @@ SectionGroup "Plugins"
         File /r share\kinotify\*
 		SectionIn 1
 	SectionEnd
-#	Section "LackMan" LACKMANPLUGIN
-#		SetOutPath $INSTDIR\settings
-#		File settings\lackmansettings.xml
-#		SetOutPath $INSTDIR\plugins\bin
-#		File plugins\bin\leechcraft_lackman.dll
-#		SetOutPath $INSTDIR
-#		File 7za.exe
-#		File gunzip.exe
-#		SectionIn 1
-#	SectionEnd
+	Section "LackMan" LACKMANPLUGIN
+		SetOutPath $INSTDIR\settings
+		File settings\lackmansettings.xml
+		SetOutPath $INSTDIR\plugins\bin
+		File plugins\bin\leechcraft_lackman.dll
+		SetOutPath $INSTDIR
+		File 7za.exe
+		File gunzip.exe
+		SectionIn 1
+	SectionEnd
 	Section "NetworkMonitor" NETWORKMONITORPLUGIN
 		SetOutPath $INSTDIR\plugins\bin
 		File plugins\bin\leechcraft_networkmonitor.dll
@@ -197,12 +207,9 @@ SectionGroup "Plugins"
 	SectionEnd
 	Section "Poshuku" POSHUKUPLUGIN
 		SetOutPath $INSTDIR\settings
-        File settings\poshukufatapesettings.xml
 		File settings\poshukusettings.xml
 		SetOutPath $INSTDIR\plugins\bin
 		File plugins\bin\leechcraft_poshuku.dll
-        File plugins\bin\leechcraft_poshuku_fatape.dll
-        File plugins\bin\leechcraft_poshuku_pintab.dll
 		SectionIn 1
 	SectionEnd
 	Section "Poshuku CleanWeb" POSHUKUCLEANWEBPLUGIN
@@ -210,6 +217,13 @@ SectionGroup "Plugins"
 		File settings\poshukucleanwebsettings.xml
 		SetOutPath $INSTDIR\plugins\bin
 		File plugins\bin\leechcraft_poshuku_cleanweb.dll
+		SectionIn 1
+	SectionEnd
+	Section "Poshuku FatApe" POSHUKUFATAPEPLUGIN
+		SetOutPath $INSTDIR\plugins\bin
+		File plugins\bin\leechcraft_poshuku_fatape.dll
+		SetOutPath $INSTDIR\settings
+		File settings\poshukufatapesettings.xml
 		SectionIn 1
 	SectionEnd
 	Section "Poshuku FileScheme" POSHUKUFILESCHEMEPLUGIN
@@ -224,7 +238,7 @@ SectionGroup "Plugins"
 		File plugins\bin\leechcraft_poshuku_fua.dll
 		SectionIn 1
 	SectionEnd
-	Section "Poshuku OnlineBookmarks"
+	Section "Poshuku OnlineBookmarks" POSHUKUONLINEBOOKMARKS
 		SetOutPath $INSTDIR
 		File qjson.dll
 		SetOutPath $INSTDIR\settings
@@ -268,6 +282,11 @@ SectionGroup "Plugins"
 		File settings\tabppsettings.xml
 		SetOutPath $INSTDIR\plugins\bin
 		File plugins\bin\leechcraft_tabpp.dll
+		SectionIn 1
+	SectionEnd
+	Section "TabsList" TABSLISTPLUGIN
+		SetOutPath $INSTDIR\plugins\bin
+		File plugins\bin\leechcraft_tabslist.dll
 		SectionIn 1
 	SectionEnd
 	Section "vGrabber" VGRABBERPLUGIN
@@ -396,6 +415,12 @@ LangString DESC_TABPPPLUGIN ${LANG_ENGLISH} "Enhances tabbed navigation experien
 LangString DESC_LACKMANPLUGIN ${LANG_ENGLISH} "LeechCraft Package Manager allows one to install additional plugins, extensions, icons and various other data."
 LangString DESC_SECMANPLUGIN ${LANG_ENGLISH} "Security Manager stores passwords and various other data."
 LangString DESC_SHELLOPENPLUGIN ${LANG_ENGLISH} "Allows one to open unhandled entities via other applications."
+LangString DESC_ANPLUGIN ${LANG_ENGLISH} "A highly flexible, powerful and configurable notifications framework."
+LangString DESC_GLANCEPLUGIN ${LANG_ENGLISH} "Provides thumbnailed grid overview of tabs."
+LangString DESC_GMAILNOTIFIERPLUGIN ${LANG_ENGLISH} "Notifies about new mail in your GMail inbox."
+LangString DESC_POSHUKUFATAPEPLUGIN ${LANG_ENGLISH} "Adds support for GreaseMonkey userscripts."
+LangString DESC_POSHUKUONLINEBOOKMARKSPLUGIN ${LANG_ENGLISH} "Allows one to synchronize bookmarks with services like Read It Later."
+LangString DESC_TABSLISTPLUGIN ${LANG_ENGLISH} "Shows the list of currently opened tabs and allows to quickly navigate between them."
 
 LangString DESC_MAINFILES ${LANG_RUSSIAN} "Ядро LeechCraft."
 LangString DESC_QT ${LANG_RUSSIAN} "Библиотеки Qt."
@@ -425,6 +450,12 @@ LangString DESC_TABPPPLUGIN ${LANG_RUSSIAN} "Tab++ улучшает работу с вкладками."
 LangString DESC_LACKMANPLUGIN ${LANG_RUSSIAN} "LeechCraft Package Manager позволяет устанавливать дополнительные плагины, расширения, иконки и прочие данные."
 LangString DESC_SECMANPLUGIN ${LANG_RUSSIAN} "Security Manager сохраняет пароли и прочую информацию."
 LangString DESC_SHELLOPENPLUGIN ${LANG_RUSSIAN} "Позволяет открывать необработанные сущности другими приложениями."
+LangString DESC_ANPLUGIN ${LANG_RUSSIAN} "Мощная и гибкая система уведомлений."
+LangString DESC_GLANCEPLUGIN ${LANG_RUSSIAN} "Обеспечивает переключение между вкладками с предпросмотром их содержимого."
+LangString DESC_GMAILNOTIFIERPLUGIN ${LANG_RUSSIAN} "Уведомляет о новой почте в вашей учетной записи GMail."
+LangString DESC_POSHUKUFATAPEPLUGIN ${LANG_RUSSIAN} "Добавляет поддержку пользовательских скриптов GreaseMonkey."
+LangString DESC_POSHUKUONLINEBOOKMARKSPLUGIN ${LANG_RUSSIAN} "Позволяет синхронизировать закладки с сервисами типа Read It Later."
+LangString DESC_TABSLISTPLUGIN ${LANG_ENGLISH} "Показывает список открытых вкладок и позволяет легко перемещаться между ними."
 
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
 	!insertmacro MUI_DESCRIPTION_TEXT ${MAINFILES} $(DESC_MAINFILES)
@@ -455,6 +486,12 @@ LangString DESC_SHELLOPENPLUGIN ${LANG_RUSSIAN} "Позволяет открывать необработан
 	!insertmacro MUI_DESCRIPTION_TEXT ${LACKMANPLUGIN} $(DESC_LACKMANPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${SECMANPLUGIN} $(DESC_SECMANPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${SHELLOPENPLUGIN} $(DESC_SHELLOPENPLUGIN)
+	!insertmacro MUI_DESCRIPTION_TEXT ${ANPLUGIN} ${DESC_ANPLUGIN}
+	!insertmacro MUI_DESCRIPTION_TEXT ${GLANCEPLUGIN} ${DESC_GLANCEPLUGIN}
+	!insertmacro MUI_DESCRIPTION_TEXT ${GMAILNOTIFIERPLUGIN} ${DESC_GMAILNOTIFIERPLUGIN}
+	!insertmacro MUI_DESCRIPTION_TEXT ${POSHUKUFATAPEPLUGIN} ${DESC_POSHUKUFATAPEPLUGIN}
+	!insertmacro MUI_DESCRIPTION_TEXT ${POSHUKUONLINEBOOKMARKSPLUGIN} ${DESC_POSHUKUONLINEBOOKMARKSPLUGIN}
+	!insertmacro MUI_DESCRIPTION_TEXT ${TABSLISTPLUGIN} ${DESC_TABSLISTPLUGIN}
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 Function .onInit

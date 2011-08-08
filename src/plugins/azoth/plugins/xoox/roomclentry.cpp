@@ -37,6 +37,7 @@ namespace Xoox
 	: QObject (rh)
 	, Account_ (account)
 	, RH_ (rh)
+	, ActionRequestVoice_ (0)
 	{
 		connect (Account_,
 				SIGNAL (statusChanged (const EntryStatus&)),
@@ -168,7 +169,24 @@ namespace Xoox
 
 	QList<QAction*> RoomCLEntry::GetActions () const
 	{
-		return QList<QAction*> ();
+		QList<QAction*> result;
+		RoomParticipantEntry *self = RH_->GetSelf ();
+		if (self &&
+				self->GetRole () == QXmppMucItem::VisitorRole)
+		{
+			if (!ActionRequestVoice_)
+			{
+				ActionRequestVoice_ = new QAction (tr ("Request voice"),
+						RH_);
+				connect (ActionRequestVoice_,
+						SIGNAL (triggered ()),
+						RH_,
+						SLOT (requestVoice ()));
+			}
+			
+			result << ActionRequestVoice_;
+		}
+		return result;
 	}
 
 	QImage RoomCLEntry::GetAvatar () const

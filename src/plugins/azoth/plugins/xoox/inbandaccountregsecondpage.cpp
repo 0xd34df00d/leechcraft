@@ -182,7 +182,7 @@ namespace Xoox
 				formElem.attribute ("type") == "form")
 		{
 			QXmppDataForm form;
-			form.parse (Util::XmppElem2DomElem (formElem));
+			form.parse (XooxUtil::XmppElem2DomElem (formElem));
 			Widget_ = FB_.CreateForm (form);
 			FormType_ = FTNew;
 		}

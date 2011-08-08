@@ -103,13 +103,17 @@ namespace Azoth
 		if (Ui_.HistoryBox_->count ())
 			QMetaObject::invokeMethod (this,
 					"on_HistoryBox__activated",
-					Qt::QueuedConnection,
 					Q_ARG (int, 0));
 	}
 
 	JoinConferenceDialog::~JoinConferenceDialog ()
 	{
 		qDeleteAll (Proto2Joiner_.values ());
+	}
+	
+	void JoinConferenceDialog::SetIdentifyingData (const QVariantMap& ident)
+	{
+		FillWidget (ident);
 	}
 
 	void JoinConferenceDialog::accept ()

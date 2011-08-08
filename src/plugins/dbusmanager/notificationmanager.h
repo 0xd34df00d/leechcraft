@@ -46,6 +46,7 @@ namespace LeechCraft
 
 				struct ActionData
 				{
+					Entity E_;
 					QObject_ptr Handler_;
 					QStringList Actions_;
 				};
@@ -63,6 +64,7 @@ namespace LeechCraft
 				void handleNotificationCallFinished (QDBusPendingCallWatcher*);
 				void handleCapCheckCallFinished (QDBusPendingCallWatcher*);
 				void handleActionInvoked (uint, QString);
+				void handleNotificationClosed (uint);
 			};
 		};
 	};

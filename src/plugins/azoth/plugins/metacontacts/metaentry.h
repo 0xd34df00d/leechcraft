@@ -18,10 +18,12 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_METACONTACTS_METAENTRY_H
 #define PLUGINS_AZOTH_PLUGINS_METACONTACTS_METAENTRY_H
+#include <boost/function.hpp>
 #include <QObject>
 #include <QPair>
 #include <QStringList>
 #include <interfaces/iclentry.h>
+#include <interfaces/iadvancedclentry.h>
 
 namespace LeechCraft
 {
@@ -33,9 +35,11 @@ namespace Metacontacts
 
 	class MetaEntry : public QObject
 					, public ICLEntry
+					, public IAdvancedCLEntry
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ICLEntry)
+		Q_INTERFACES (LeechCraft::Azoth::ICLEntry
+				LeechCraft::Azoth::IAdvancedCLEntry)
 		
 		MetaAccount *Account_;
 		QString ID_;
@@ -47,15 +51,20 @@ namespace Metacontacts
 		QMap<QString, QPair<QObject*, QString> > Variant2RealVariant_;
 		
 		QList<QObject*> Messages_;
+		
+		QAction *ActionMCSep_;
+		QAction *ActionManageContacts_;
 	public:
 		MetaEntry (const QString&, MetaAccount*);
 		
+		QObjectList GetAvailEntryObjs () const;
 		QStringList GetRealEntries () const;
 		void SetRealEntries (const QStringList&);
 		void AddRealObject (ICLEntry*);
 		
 		QString GetMetaVariant (QObject*, const QString&) const;
 		
+		// ICLEntry
 		QObject* GetObject ();
 		QObject* GetParentAccount () const;
 		Features GetEntryFeatures () const;
@@ -77,10 +86,34 @@ namespace Metacontacts
 		void ShowInfo ();
 		QList<QAction*> GetActions () const;
 		QMap<QString, QVariant> GetClientInfo (const QString&) const;
+
+		// IAdvancedCLEntry
+		AdvancedFeatures GetAdvancedFeatures () const;
+		void DrawAttention (const QString&, const QString&);
+	private:
+		template<typename T, typename U>
+		T ActWithVariant (boost::function<T (U, const QString&)>, const QString&) const;
+
+		void ConnectStandardSignals (QObject*);
+		void ConnectAdvancedSiganls (QObject*);
+	private:
+		void PerformRemoval (QObject*);
 	private slots:
-		void handleGotMessage (QObject*);
+		void handleRealGotMessage (QObject*);
+		void handleRealStatusChanged (const EntryStatus&, const QString&);
 		void handleRealVariantsChanged (QStringList, QObject* = 0);
+		void handleRealNameChanged (const QString&);
+		void handleRealCPSChanged (const ChatPartState&, const QString&);
+		
+		void handleRealAttentionDrawn (const QString&, const QString&);
+		void handleRealMoodChanged (const QString&);
+		void handleRealActivityChanged (const QString&);
+		void handleRealTuneChanged (const QString&);
+		void handleRealLocationChanged (const QString&);
+		
+		void handleManageContacts ();
 	signals:
+		// ICLEntry
 		void gotMessage (QObject*);
 		void statusChanged (const EntryStatus&, const QString&);
 		void availableVariantsChanged (const QStringList&);
@@ -90,6 +123,18 @@ namespace Metacontacts
 		void avatarChanged (const QImage&);
 		void chatPartStateChanged (const ChatPartState&, const QString&);
 		void permsChanged ();
+		void entryGenerallyChanged ();
+		
+		// IAdvancedCLEntry
+		void attentionDrawn (const QString&, const QString&);
+		void moodChanged (const QString&);
+		void activityChanged (const QString&);
+		void tuneChanged (const QString&);
+		void locationChanged (const QString&);
+		
+		// Own
+		void entriesRemoved (const QList<QObject*>&);
+		void shouldRemoveThis ();
 	};
 }
 }

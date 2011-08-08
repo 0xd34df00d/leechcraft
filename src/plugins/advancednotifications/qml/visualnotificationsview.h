@@ -42,6 +42,9 @@ namespace AdvancedNotifications
 		void SetEvents (const QList<EventData>&);
 	private slots:
 		void handleStatusChanged (QDeclarativeView::Status);
+	signals:
+		void actionTriggered (const QString&, int);
+		void dismissEvent (const QString&);
 	};
 }
 }

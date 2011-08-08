@@ -36,6 +36,7 @@ namespace Metacontacts
 	: SaveEntriesScheduled_ (false)
 	, Account_ (0)
 	{
+		qRegisterMetaType<QList<QObject*> > ("QList<QObject*>");
 	}
 
 	Core& Core::Instance ()
@@ -89,6 +90,7 @@ namespace Metacontacts
 			}
 
 			MetaEntry *entry = new MetaEntry (id, acc);
+			ConnectSignals (entry);
 			entry->SetEntryName (name);
 			entry->SetGroups (settings.value ("Groups").toStringList ());
 			entry->SetRealEntries (reals);
@@ -123,10 +125,17 @@ namespace Metacontacts
 		}
 		
 		const QString& id = entry->GetEntryID ();
+		if (AvailRealEntries_.contains (id))
+			return true;
+
 		if (!UnavailRealEntries_.contains (id))
 			return false;
 		
-		UnavailRealEntries_.take (id)->AddRealObject (entry);
+		MetaEntry *metaEntry = UnavailRealEntries_.take (id);
+		metaEntry->AddRealObject (entry);
+		
+		AvailRealEntries_ [id] = metaEntry;
+		
 		return true;
 	}
 
@@ -145,7 +154,7 @@ namespace Metacontacts
 		Q_FOREACH (MetaEntry *entry, allowed)
 			if (entry->GetRealEntries ().contains (real->GetEntryID ()))
 				allowed.removeAll (entry);
-		
+
 		AddToMetacontactsDialog dia (real, Entries_);
 		if (dia.exec () != QDialog::Accepted)
 			return;
@@ -159,6 +168,7 @@ namespace Metacontacts
 			
 			const QString& id = QUuid::createUuid ().toString ();
 			existingMeta = new MetaEntry (id, Account_);
+			ConnectSignals (existingMeta);
 			existingMeta->SetEntryName (name);
 			
 			Entries_ << existingMeta;
@@ -175,6 +185,16 @@ namespace Metacontacts
 		ScheduleSaveEntries ();
 	}
 	
+	void Core::RemoveEntry (MetaEntry *entry)
+	{
+		Entries_.removeAll (entry);
+		emit removedCLItems (QObjectList () << entry);
+		
+		handleEntriesRemoved (entry->GetAvailEntryObjs ());
+		
+		entry->deleteLater ();
+	}
+	
 	void Core::ScheduleSaveEntries ()
 	{
 		if (SaveEntriesScheduled_)
@@ -184,6 +204,50 @@ namespace Metacontacts
 				this,
 				SLOT (saveEntries ()));
 		SaveEntriesScheduled_ = true;
+	}
+	
+	void Core::ConnectSignals (MetaEntry *entry)
+	{
+		connect (entry,
+				SIGNAL (entriesRemoved (const QList<QObject*>&)),
+				this,
+				SLOT (handleEntriesRemoved (const QList<QObject*>&)));
+		connect (entry,
+				SIGNAL (shouldRemoveThis ()),
+				this,
+				SLOT (handleEntryShouldBeRemoved ()));
+	}
+	
+	void Core::handleEntriesRemoved (const QList<QObject*>& entries)
+	{
+		Q_FOREACH (QObject *entryObj, entries)
+		{
+			ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+
+			AvailRealEntries_.remove (entry->GetEntryID ());
+
+			QObject *accObj = entry->GetParentAccount ();
+			QMetaObject::invokeMethod (accObj,
+					"gotCLItems",
+					Q_ARG (QList<QObject*>, QList<QObject*> () << entryObj));
+		}
+
+		ScheduleSaveEntries ();
+	}
+	
+	void Core::handleEntryShouldBeRemoved ()
+	{
+		MetaEntry *entry = qobject_cast<MetaEntry*> (sender ());
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to cast"
+					<< sender ()
+					<< "to MetaEntry*";
+			return;
+		}
+		
+		RemoveEntry (entry);
 	}
 	
 	void Core::saveEntries ()

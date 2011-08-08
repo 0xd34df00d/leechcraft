@@ -28,9 +28,9 @@
 #include <QTabBar>
 #include <QtNetwork/QNetworkAccessManager>
 #include "structures.h"
-#include <QIcon>
 
 class IShortcutProxy;
+class IMWProxy;
 class QTreeView;
 class QModelIndex;
 class QIcon;
@@ -497,6 +497,8 @@ public:
 	virtual QIcon TabIcon (int) const = 0;
 	virtual QString TabText (int) const = 0;
 	virtual bool IsPinTab (int) const = 0;
+	virtual int CurrentIndex () const = 0;
+
 	virtual void setCurrentIndex (int) = 0;
 	virtual void setCurrentWidget (QWidget*) = 0;
 };
@@ -528,7 +530,13 @@ public:
 	 *
 	 * @sa IShortcutProxy
 	 */
-	virtual const IShortcutProxy* GetShortcutProxy () const = 0;
+	virtual IShortcutProxy* GetShortcutProxy () const = 0;
+	
+	/** @brief Returns the main window proxy.
+	 * 
+	 * @sa IMWProxy
+	 */
+	virtual IMWProxy* GetMWProxy () const = 0;
 
 	/** @brief Maps the given index up to the plugin's through the
 	 * hierarchy of LeechCraft's models
@@ -572,6 +580,10 @@ public:
 	 * @sa GetIconPath
 	 */
 	virtual QIcon GetIcon (const QString& on, const QString& off = QString ()) const = 0;
+	
+	/** @brief Updates the icons of the given actions according to current iconset.
+	 */
+	virtual void UpdateIconset (const QList<QAction*>& actions) const = 0;
 
 	/** Returns main LeechCraft's window.
 	 */

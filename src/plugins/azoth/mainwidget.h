@@ -53,6 +53,9 @@ namespace Azoth
 		QAction *AccountSetMood_;
 		QAction *AccountSetLocation_;
 		QAction *AccountConsole_;
+		
+		QMap<QString, bool> FstLevelExpands_;
+		QMap<QString, QMap<QString, bool> > SndLevelExpands_;
 	public:
 		MainWidget (QWidget* = 0);
 		

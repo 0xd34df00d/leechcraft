@@ -25,27 +25,23 @@ class QKeyEvent;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace LMP
+{
+	class PlayerWidget;
+
+	class KeyInterceptor : public QObject
 	{
-		namespace LMP
-		{
-			class PlayerWidget;
+		Q_OBJECT
 
-			class KeyInterceptor : public QObject
-			{
-				Q_OBJECT
-
-				PlayerWidget *Player_;
-			public:
-				KeyInterceptor (PlayerWidget*, QObject* = 0);
-				virtual ~KeyInterceptor ();
-			protected:
-				virtual bool eventFilter (QObject*, QEvent*);
-				void keyPressEvent (QKeyEvent*);
-			};
-		};
+		PlayerWidget *Player_;
+	public:
+		KeyInterceptor (PlayerWidget*, QObject* = 0);
+		virtual ~KeyInterceptor ();
+	protected:
+		virtual bool eventFilter (QObject*, QEvent*);
+		void keyPressEvent (QKeyEvent*);
 	};
-};
+}
+}
 
 #endif
-

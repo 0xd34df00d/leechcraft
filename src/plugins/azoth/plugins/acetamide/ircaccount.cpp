@@ -20,6 +20,7 @@
 #include <boost/bind.hpp>
 #include <QInputDialog>
 #include <QSettings>
+#include <QTimer>
 #include <interfaces/iprotocol.h>
 #include <interfaces/iproxyobject.h>
 #include "channelclentry.h"
@@ -31,6 +32,7 @@
 #include "ircserverclentry.h"
 #include "xmlsettingsmanager.h"
 #include "ircserverhandler.h"
+#include "channelhandler.h"
 
 namespace LeechCraft
 {
@@ -43,6 +45,7 @@ namespace Acetamide
 	, AccountName_ (name)
 	, ParentProtocol_ (qobject_cast<IrcProtocol*> (parent))
 	, IrcAccountState_ (SOffline)
+	, IsFirstStart_ (true)
 	{
 		connect (this,
 				SIGNAL (scheduleClientDestruction ()),
@@ -126,8 +129,7 @@ namespace Acetamide
 		return NickNames_;
 	}
 
-	boost::shared_ptr<ClientConnection>
-			IrcAccount::GetClientConnection () const
+	boost::shared_ptr<ClientConnection> IrcAccount::GetClientConnection () const
 	{
 		return ClientConnection_;
 	}
@@ -163,6 +165,14 @@ namespace Acetamide
 			dia->ConfWidget ()->SetUserName (UserName_);
 		if (!NickNames_.isEmpty ())
 			dia->ConfWidget ()->SetNickNames (NickNames_);
+		if (!DefaultServer_.isEmpty ())
+			dia->ConfWidget ()->SetDefaultServer (DefaultServer_);
+		if (!DefaultPort_)
+			dia->ConfWidget ()->SetDefaultPort (DefaultPort_);
+		if (!DefaultEncoding_.isEmpty ())
+			dia->ConfWidget ()->SetDefaultEncoding (DefaultEncoding_);
+		if (!DefaultChannel_.isEmpty ())
+			dia->ConfWidget ()->SetDefaultChannel (DefaultChannel_);
 
 		if (dia->exec () == QDialog::Rejected)
 			return;
@@ -184,16 +194,36 @@ namespace Acetamide
 		RealName_ = widget->GetRealName ();
 		UserName_ = widget->GetUserName ();
 		NickNames_ = widget->GetNickNames ();
-
+		DefaultServer_ = widget->GetDefaultServer ();
+		DefaultPort_ = widget->GetDefaultPort ();
+		DefaultEncoding_ = widget->GetDefaultEncoding ();
+		DefaultChannel_ = widget->GetDefaultChannel ();
+		
+		
 		if (lastState != SOffline)
 			ChangeState (EntryStatus (lastState, QString ()));
 
 		emit accountSettingsChanged ();
 	}
 
-	void IrcAccount::JoinServer (const ServerOptions& server,
-			const ChannelOptions& channel)
+	void IrcAccount::JoinServer (ServerOptions server,
+			ChannelOptions channel)
 	{
+		if (server.ServerName_.isEmpty ())
+			server.ServerName_ = DefaultServer_;
+		if (!server.ServerPort_)
+			server.ServerPort_ = DefaultPort_;
+		if (server.ServerEncoding_.isEmpty ())
+			server.ServerEncoding_ = DefaultEncoding_;
+		if (server.ServerNickName_.isEmpty ())
+			server.ServerNickName_ = NickNames_.isEmpty() ? GetOurNick ()
+					: NickNames_.at (0);
+
+		if (channel.ServerName_.isEmpty ())
+			channel.ServerName_ = server.ServerName_;
+		if (channel.ChannelName_.isEmpty ())
+			channel.ChannelName_ = DefaultChannel_;
+
 		QString serverId = server.ServerName_ + ":" +
 				QString::number (server.ServerPort_);
 		if (!ClientConnection_->IsServerExists (serverId))
@@ -204,6 +234,22 @@ namespace Acetamide
 		}
 		else if (!channel.ChannelName_.isEmpty ())
 			ClientConnection_->JoinChannel (server, channel);
+	}
+
+	void IrcAccount::SetBookmarks(const QList<IrcBookmark>& bookmarks)
+	{
+		if (!ClientConnection_)
+			return;
+
+		ClientConnection_->SetBookmarks (bookmarks);
+	}
+
+	QList<IrcBookmark> IrcAccount::GetBookmarks () const
+	{
+		if (!ClientConnection_)
+			return QList<IrcBookmark> ();
+
+		return ClientConnection_->GetBookmarks ();
 	}
 
 	EntryStatus IrcAccount::GetState () const
@@ -218,9 +264,39 @@ namespace Acetamide
 			return;
 
 		IrcAccountState_ = state.State_;
-		if (state.State_ == SOffline)
-			ClientConnection_->DisconnectFromAll ();
 
+		IProxyObject *obj = qobject_cast<IProxyObject*> (ParentProtocol_->GetProxyObject ());
+		bool autoJoin = false;
+		if (!obj)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "is not an object of IProxyObject"
+					<< ParentProtocol_->GetProxyObject ();
+		}
+		else
+			autoJoin = obj->GetSettingsManager ()->
+					property ("IsAutojoinAllowed").toBool ();
+
+			if (state.State_ == SOffline)
+			{
+				if (ClientConnection_->GetServerHandlers ().count ())
+					SaveActiveChannels ();
+				ClientConnection_->DisconnectFromAll ();
+			}
+			else if (autoJoin)
+			{
+				if (ActiveChannels_.isEmpty ())
+					ActiveChannels_ << GetBookmarks ();
+
+				if (IsFirstStart_)
+					QTimer::singleShot (10000, this, SLOT (joinFromBookmarks ()));
+				else
+					joinFromBookmarks ();
+			}
+			else
+				joinFromBookmarks ();
+
+		IsFirstStart_ = false;
 		emit statusChanged (state);
 	}
 
@@ -262,17 +338,21 @@ namespace Acetamide
 
 	QByteArray IrcAccount::Serialize () const
 	{
-		quint16 version = 2;
+		quint16 version = 3;
 
 		QByteArray result;
 		{
 			QDataStream ostr (&result, QIODevice::WriteOnly);
 			ostr << version
-				<< AccountName_
-				<< AccountID_
-				<< RealName_
-				<< UserName_
-				<< NickNames_;
+					<< AccountName_
+					<< AccountID_
+					<< RealName_
+					<< UserName_
+					<< NickNames_
+					<< DefaultServer_
+					<< DefaultPort_
+					<< DefaultEncoding_
+					<< DefaultChannel_;
 		}
 
 		return result;
@@ -286,7 +366,7 @@ namespace Acetamide
 		QDataStream in (data);
 		in >> version;
 
-		if (version < 1 || version > 2)
+		if (version < 1 || version > 3)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unknown version"
@@ -298,13 +378,44 @@ namespace Acetamide
 		in >> name;
 		IrcAccount *result = new IrcAccount (name, parent);
 		in >> result->AccountID_
-			>> result->RealName_
-			>> result->UserName_
-			>> result->NickNames_;
+				>> result->RealName_
+				>> result->UserName_
+				>> result->NickNames_;
+		if (version == 3)
+			in >> result->DefaultServer_
+				>> result->DefaultPort_
+				>> result->DefaultEncoding_
+				>> result->DefaultChannel_;
+		else if (version < 3)
+		{
+			result->DefaultServer_ = "chat.freenode.net";
+			result->DefaultPort_ = 8001;
+			result->DefaultEncoding_ = "UTF-8";
+			result->DefaultChannel_ = "leechcraft";
+		}
 
 		result->Init ();
 
 		return result;
+	}
+
+	void IrcAccount::SaveActiveChannels ()
+	{
+		ActiveChannels_.clear ();
+		Q_FOREACH (IrcServerHandler *ish, ClientConnection_->GetServerHandlers ())
+			Q_FOREACH (ChannelHandler *ich, ish->GetChannelHandlers ())
+			{
+				IrcBookmark bookmark;
+				bookmark.ServerName_ = ish->GetServerOptions ().ServerName_;
+				bookmark.ServerPort_ = ish->GetServerOptions ().ServerPort_;
+				bookmark.ServerEncoding_ = ish->GetServerOptions ().ServerEncoding_;
+				bookmark.NickName_ = ish->GetServerOptions ().ServerNickName_;
+				bookmark.SSL_ == ish->GetServerOptions ().SSL_;
+				bookmark.ChannelName_ = ich->GetChannelOptions ().ChannelName_;
+				bookmark.ChannelPassword_ = ich->GetChannelOptions ().ChannelPassword_;
+				bookmark.AutoJoin_ = true;
+				ActiveChannels_ << bookmark;
+			}
 	}
 
 	void IrcAccount::handleEntryRemoved (QObject *entry)
@@ -320,6 +431,32 @@ namespace Acetamide
 	void IrcAccount::handleDestroyClient ()
 	{
 	}
+
+	void IrcAccount::joinFromBookmarks ()
+	{
+		ServerOptions serverOpt;
+		ChannelOptions channelOpt;
+
+		Q_FOREACH (const IrcBookmark& bookmark, ActiveChannels_)
+		{
+			if (!bookmark.AutoJoin_)
+				continue;
+			serverOpt.ServerName_ = bookmark.ServerName_;
+			serverOpt.ServerPort_ = bookmark.ServerPort_;
+			serverOpt.ServerEncoding_ = bookmark.ServerEncoding_;
+			serverOpt.ServerNickName_ = bookmark.NickName_;
+			serverOpt.SSL_ = bookmark.SSL_;
+
+			channelOpt.ServerName_ = bookmark.ServerName_;
+			channelOpt.ChannelName_ = bookmark.ChannelName_;
+			channelOpt.ChannelPassword_ = bookmark.ChannelPassword_;
+
+			JoinServer (serverOpt, channelOpt);
+		}
+
+		ActiveChannels_.clear ();
+	}
+
 };
 };
 };

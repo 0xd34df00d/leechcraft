@@ -403,13 +403,19 @@ namespace AdiumStyles
 					qobject_cast<IProtocol*> (acc->GetParentProtocol ())->GetProtocolName () :
 					QString ());
 		
-		// TODO have a setting for highlights.
-		// %backgroundcolor{X}%
+		// %textbackgroundcolor{X}%
 		QRegExp bgColorRx ("%textbackgroundcolor\\{([^}]*)\\}%");
 		pos = 0;
+		const QString& highColor = isHighlightMsg ?
+				Proxy_->GetSettingsManager ()->
+						property ("HighlightColor").toString () :
+				"inherit";
+		bool hasHighBackground = false;
 		while ((pos = bgColorRx.indexIn (templ, pos)) != -1)
-			templ.replace (pos, bgColorRx.matchedLength (),
-					"inherit");
+		{
+			templ.replace (pos, bgColorRx.matchedLength (), highColor);
+			hasHighBackground = true;
+		}
 			
 		// %senderStatusIcon%
 		if (templ.contains ("%senderStatusIcon%"))
@@ -429,9 +435,8 @@ namespace AdiumStyles
 			Coloring2Colors_ ["hash"] = Proxy_->GenerateColors ("hash");
 
 		// %senderColor%
-		const QString& nickColor = isHighlightMsg ?
-				"red" :
-				Proxy_->GetNickColor (senderNick, Coloring2Colors_ ["hash"]);
+		const QString& nickColor = Proxy_->
+				GetNickColor (senderNick, Coloring2Colors_ ["hash"]);
 		templ.replace ("%senderColor%", nickColor);
 		
 		// %senderColor{N}%
@@ -466,6 +471,10 @@ namespace AdiumStyles
 			body = msg->GetBody ();
 		
 		body = Proxy_->FormatBody (body, msgObj);
+		
+		if (isHighlightMsg && !hasHighBackground)
+			body = "<span style=\"color:" + highColor +
+					"\">" + body + "</span>";
 		
 		templ.replace ("%message%", body);
 		

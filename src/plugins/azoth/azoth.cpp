@@ -25,6 +25,7 @@
 #include <QStringListModel>
 #include <QAudioDeviceInfo>
 #include <interfaces/entitytesthandleresult.h>
+#include <interfaces/imwproxy.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/resourceloader.h>
 #include <util/util.h>
@@ -87,13 +88,11 @@ namespace Azoth
 		
 		XmlSettingsDialog_->SetCustomWidget ("AccountsWidget", new AccountsListWidget);
 
-		QMainWindow *mainWin = proxy->GetMainWindow ();
-		QDockWidget *dw = new QDockWidget (mainWin);
+		QDockWidget *dw = new QDockWidget ();
 		MW_ = new MainWidget ();
 		dw->setWidget (MW_);
 		dw->setWindowTitle ("Azoth");
-
-		mainWin->addDockWidget (Qt::RightDockWidgetArea, dw);
+		proxy->GetMWProxy ()->AddDockWidget (Qt::RightDockWidgetArea, dw);
 
 		connect (&Core::Instance (),
 				SIGNAL (gotEntity (const LeechCraft::Entity&)),
@@ -283,6 +282,11 @@ namespace Azoth
 					SIGNAL (removeTab (QWidget*)));
 			emit addNewTab (tr ("Service discovery"), sd);
 		}
+	}
+	
+	QList<ANFieldData> Plugin::GetANFields () const
+	{
+		return Core::Instance ().GetANFields ();
 	}
 	
 	void Plugin::handleTasksTreeSelectionCurrentRowChanged (const QModelIndex& index, const QModelIndex&)

@@ -474,7 +474,7 @@ namespace Poshuku
 
 	void BrowserWidget::InitShortcuts ()
 	{
-		const IShortcutProxy *proxy = Core::Instance ().GetShortcutProxy ();
+		IShortcutProxy *proxy = Core::Instance ().GetShortcutProxy ();
 		QObject *object = Core::Instance ().parent ();
 
 		Cut_->setShortcuts (proxy->GetShortcuts (object, "BrowserCut_"));
@@ -1312,6 +1312,7 @@ namespace Poshuku
 		Entity e = Util::MakeNotification ("Poshuku", text, prio);
 		Util::NotificationActionHandler *nh = new Util::NotificationActionHandler (e, this);
 		nh->AddFunction (tr ("Open"), boost::bind (&BrowserWidget::raiseTab, this, this));
+		nh->AddDependentObject (this);
 		emit gotEntity (e);
 	}
 

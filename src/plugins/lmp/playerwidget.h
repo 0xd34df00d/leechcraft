@@ -30,83 +30,79 @@ class QToolBar;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace LMP
+{
+	class PlayerWidget : public QWidget
+						, public IVideoWidget
 	{
-		namespace LMP
+		Q_OBJECT
+		Q_INTERFACES (IVideoWidget)
+
+		Ui::PlayerWidget Ui_;
+
+		Phonon::Path VideoPath_;
+		Phonon::Path AudioPath_;
+		std::auto_ptr<Phonon::MediaObject> MediaObject_;
+		std::auto_ptr<Phonon::AudioOutput> AudioOutput_;
+		QAction *Play_;
+		QAction *Pause_;
+		QAction *ViewerSettings_;
+		
+		QAction *FullScreen_;
+		QAction *TogglePause_;
+		QAction *VolumeUp_;
+		QAction *VolumeDown_;
+
+		QAction *OSD_;
+
+		QCursor TransparentCursor_;
+	public:
+		enum SkipAmount
 		{
-			class PlayerWidget : public QWidget
-							   , public IVideoWidget
-			{
-				Q_OBJECT
-				Q_INTERFACES (IVideoWidget)
-
-				Ui::PlayerWidget Ui_;
-
-				Phonon::Path VideoPath_;
-				Phonon::Path AudioPath_;
-				std::auto_ptr<Phonon::MediaObject> MediaObject_;
-				std::auto_ptr<Phonon::AudioOutput> AudioOutput_;
-				QAction *Play_;
-				QAction *Pause_;
-				QAction *ViewerSettings_;
-				
-				QAction *FullScreen_;
-				QAction *TogglePause_;
-				QAction *VolumeUp_;
-				QAction *VolumeDown_;
-
-				QAction *OSD_;
-
-				QCursor TransparentCursor_;
-			public:
-				enum SkipAmount
-				{
-					SkipLittle = 10
-					, SkipMedium = 60
-					, SkipALot = 600
-				};
-
-				PlayerWidget (QWidget* = 0);
-				void Play ();
-				void Pause ();
-				void Stop ();
-				void Clear ();
-				void Enqueue (const QUrl&);
-				void Enqueue (QIODevice*);
-				QWidget* Widget ();
-
-				void Enqueue (const Phonon::MediaSource&);
-				void Forward (SkipAmount);
-				void Rewind (SkipAmount);
-				Phonon::State GetState () const;
-				Phonon::MediaObject* GetMediaObject () const;
-			public slots:
-				void play ();
-				void pause ();
-				void toggleFullScreen ();
-				void togglePause ();
-				void incrementVolume ();
-				void decrementVolume ();
-			private:
-				QToolBar* SetupToolbar ();
-				void SetupContextMenu ();
-				void ApplyVideoSettings (qreal, qreal, qreal, qreal);
-			protected:
-				bool eventFilter (QObject*, QEvent*);
-			private slots:
-				void handleHasVideoChanged (bool);
-				void updateOSD ();
-				void updateState ();
-				void changeViewerSettings ();
-				void handleStateUpdated (const QString&);
-				void hideCursor ();
-			signals:
-				void stateUpdated (const QString&);
-				void gotEntity (const LeechCraft::Entity&);
-			};
+			SkipLittle = 10
+			, SkipMedium = 60
+			, SkipALot = 600
 		};
+
+		PlayerWidget (QWidget* = 0);
+		void Play ();
+		void Pause ();
+		void Stop ();
+		void Clear ();
+		void Enqueue (const QUrl&);
+		void Enqueue (QIODevice*);
+		QWidget* Widget ();
+
+		void Enqueue (const Phonon::MediaSource&);
+		void Forward (SkipAmount);
+		void Rewind (SkipAmount);
+		Phonon::State GetState () const;
+		Phonon::MediaObject* GetMediaObject () const;
+	public slots:
+		void play ();
+		void pause ();
+		void toggleFullScreen ();
+		void togglePause ();
+		void incrementVolume ();
+		void decrementVolume ();
+	private:
+		QToolBar* SetupToolbar ();
+		void SetupContextMenu ();
+		void ApplyVideoSettings (qreal, qreal, qreal, qreal);
+	protected:
+		bool eventFilter (QObject*, QEvent*);
+	private slots:
+		void handleHasVideoChanged (bool);
+		void updateOSD ();
+		void updateState ();
+		void changeViewerSettings ();
+		void handleStateUpdated (const QString&);
+		void hideCursor ();
+	signals:
+		void stateUpdated (const QString&);
+		void gotEntity (const LeechCraft::Entity&);
 	};
-};
+}
+}
 
 #endif
-

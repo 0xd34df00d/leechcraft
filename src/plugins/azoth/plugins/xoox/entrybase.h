@@ -70,8 +70,6 @@ namespace Xoox
 
 		QMap<QString, QMap<QString, QVariant> > Variant2ClientInfo_;
 		QMap<QString, QByteArray> Variant2VerString_;
-		
-		QByteArray VerString_;
 	public:
 		EntryBase (GlooxAccount* = 0);
 
@@ -124,6 +122,7 @@ namespace Xoox
 		void groupsChanged (const QStringList&);
 		void chatPartStateChanged (const ChatPartState&, const QString&);
 		void permsChanged ();
+		void entryGenerallyChanged ();
 		
 		void attentionDrawn (const QString&, const QString&);
 		void moodChanged (const QString&);

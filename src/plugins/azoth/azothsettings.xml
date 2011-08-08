@@ -56,9 +56,6 @@
 					<label value="Basic" />
 				</option>
 			</item>
-			<item type="spinbox" property="FontSize" default="12">
-				<label value="Font size:" />
-			</item>
 		</tab>
 		<tab>
 			<label value="Contact list" />
@@ -74,6 +71,9 @@
 			<item type="checkbox" property="GroupContacts" default="true">
 				<label value="Group contacts" />
 			</item>
+			<item type="checkbox" property="OrderByStatus" default="true">
+				<label value="Group contacts by status" />
+			</item>
 		</tab>
 		<tab>
 			<label value="Chat windows" />
@@ -86,6 +86,12 @@
 			<item type="checkbox" property="ShowRichTextMessageBody" default="true">
 				<label value="Show rich text message body (if available)" />
 			</item>
+			<item type="color" property="HighlightColor" default="#FF0000">
+				<label value="Highlight color:" />
+			</item>
+			<item type="spinbox" property="FontSize" default="12">
+				<label value="Font size:" />
+			</item>
 		</tab>
 	</page>
 	<page>
@@ -97,6 +103,9 @@
 			</item>
 			<item type="checkbox" property="CloseConfOnLeave" default="false">
 				<label value="Close conferences tabs when leaving" />
+			</item>
+			<item type="checkbox" property="AutoMUCMode" default="false">
+				<label value="Automatically switch roster to conference mode when needed" />
 			</item>
 			<item type="checkbox" property="IsAutojoinAllowed" default="true">
 				<label value="Autojoin allowed" />
@@ -120,7 +129,7 @@
 				</option>
 			</item>
 			<item type="spinbox" property="ShowLastNMessages" default="10" minimum="0" maximum="50">
-				<label value="Show at most this many messages from history:" />
+				<label value="Load at most messages from history:" />
 			</item>
 			<item type="lineedit" property="AlternativeNickname">
 				<label value="Alternative nickname for chat rooms:" />

@@ -213,105 +213,85 @@
         <translation>LeechCraft</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="88"/>
-        <source>Main toolbar</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="leechcraft.ui" line="101"/>
+        <location filename="leechcraft.ui" line="42"/>
         <source>Add task</source>
         <translation>إضافة مهمّة</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="106"/>
+        <location filename="leechcraft.ui" line="47"/>
         <source>Settings</source>
         <translation>إعدادات</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="109"/>
+        <location filename="leechcraft.ui" line="50"/>
         <source>Ctrl+P</source>
         <translation>Ctrl+P</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="117"/>
+        <location filename="leechcraft.ui" line="58"/>
         <source>Quit</source>
         <translation>إغلاق</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="120"/>
+        <location filename="leechcraft.ui" line="61"/>
         <source>F10</source>
         <translation>F10</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="126"/>
+        <location filename="leechcraft.ui" line="67"/>
         <source>exit</source>
         <translation>خروج</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="150"/>
+        <location filename="leechcraft.ui" line="91"/>
         <source>About LeechCraft...</source>
         <translation>حول LeechCraft...</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="155"/>
+        <location filename="leechcraft.ui" line="96"/>
         <source>About Qt...</source>
         <translation>حول Qt...</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="164"/>
+        <location filename="leechcraft.ui" line="105"/>
         <source>Menu</source>
         <translation>القائمة</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="175"/>
+        <location filename="leechcraft.ui" line="116"/>
         <source>Show status bar</source>
         <translation>إظهار شريط الأوضاع</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="180"/>
+        <location filename="leechcraft.ui" line="121"/>
         <source>Close tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="183"/>
+        <location filename="leechcraft.ui" line="124"/>
         <source>Ctrl+W</source>
         <translation>Ctrl+W</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="188"/>
-        <source>Glance...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="leechcraft.ui" line="191"/>
-        <source>Show a quick overview of tabs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="leechcraft.ui" line="134"/>
-        <location filename="leechcraft.ui" line="137"/>
+        <location filename="leechcraft.ui" line="75"/>
+        <location filename="leechcraft.ui" line="78"/>
         <source>Fullscreen mode</source>
         <translation>ملء الشاشة</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="142"/>
-        <location filename="leechcraft.ui" line="145"/>
+        <location filename="leechcraft.ui" line="83"/>
+        <location filename="leechcraft.ui" line="86"/>
         <source>Log</source>
         <oldsource>Logger</oldsource>
         <translation>سجلّ</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="194"/>
-        <source>Ctrl+G</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="leechcraft.ui" line="199"/>
+        <location filename="leechcraft.ui" line="129"/>
         <source>New tab</source>
         <translation>إطار جديد</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="202"/>
+        <location filename="leechcraft.ui" line="132"/>
         <source>Ctrl+T</source>
         <translation>Ctrl+T</translation>
     </message>
@@ -430,44 +410,44 @@
 <context>
     <name>LeechCraft::Core</name>
     <message>
-        <location filename="core.cpp" line="310"/>
+        <location filename="core.cpp" line="311"/>
         <source>No plugins are able to download &quot;%1&quot;</source>
         <translation>لا يوجد برامج مساعدة قابلة لتحميل %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="481"/>
+        <location filename="core.cpp" line="482"/>
         <source>Do you really want to clear the network cache?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="493"/>
+        <location filename="core.cpp" line="494"/>
         <source>Do you really want to clear cookies?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="726"/>
-        <location filename="core.cpp" line="743"/>
+        <location filename="core.cpp" line="738"/>
+        <location filename="core.cpp" line="755"/>
         <source>Error</source>
         <translation>خطأ</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="727"/>
+        <location filename="core.cpp" line="739"/>
         <source>Could not add task to the selected downloader, would you like to try another one?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="744"/>
+        <location filename="core.cpp" line="756"/>
         <source>Could not handle task with the selected handler, would you like to try another one?</source>
         <oldsource>Could not handle job with the selected handler, would you like to try another one?</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="782"/>
+        <location filename="core.cpp" line="794"/>
         <source>Could not handle download entity %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="core.cpp" line="809"/>
+        <location filename="core.cpp" line="821"/>
         <source>Plugin load error</source>
         <translation type="unfinished"></translation>
     </message>
@@ -566,66 +546,66 @@
 <context>
     <name>LeechCraft::MainWindow</name>
     <message>
-        <location filename="mainwindow.cpp" line="80"/>
+        <location filename="mainwindow.cpp" line="83"/>
         <source>Initializing LeechCraft...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="105"/>
+        <location filename="mainwindow.cpp" line="112"/>
         <source>Finalizing...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="149"/>
+        <location filename="mainwindow.cpp" line="156"/>
         <source>F11</source>
         <comment>FullScreen</comment>
         <translation type="unfinished">F11</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="298"/>
+        <location filename="mainwindow.cpp" line="313"/>
         <source>View</source>
         <translation type="unfinished">عرض</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="301"/>
+        <location filename="mainwindow.cpp" line="317"/>
         <source>Tools</source>
         <translation type="unfinished">الأدوات</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="376"/>
+        <location filename="mainwindow.cpp" line="382"/>
         <source>/s	</source>
         <translation>/ث	</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="379"/>
-        <location filename="mainwindow.cpp" line="383"/>
-        <location filename="mainwindow.cpp" line="737"/>
-        <location filename="mainwindow.cpp" line="738"/>
+        <location filename="mainwindow.cpp" line="385"/>
+        <location filename="mainwindow.cpp" line="389"/>
+        <location filename="mainwindow.cpp" line="655"/>
+        <location filename="mainwindow.cpp" line="656"/>
         <source>/s</source>
         <translation>/ث</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="558"/>
+        <location filename="mainwindow.cpp" line="479"/>
         <source>Do you really want to quit?</source>
         <translation>هل تريد الخروج؟</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="563"/>
+        <location filename="mainwindow.cpp" line="484"/>
         <source>Always</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="640"/>
+        <location filename="mainwindow.cpp" line="561"/>
         <source>This change requires restarting LeechCraft. Do you want to restart now?</source>
         <translation>هذا التغيير يلزمه إعادة تشغيل البرنامج. ÷ل تريد ذلك؟</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="821"/>
+        <location filename="mainwindow.cpp" line="742"/>
         <source>LeechCraft menu</source>
         <translation>قائمة LeechCraft</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="744"/>
+        <location filename="mainwindow.cpp" line="662"/>
         <source>%1 down, %2 up</source>
         <translation>تحميل %1، إعطاء %2</translation>
     </message>
@@ -661,6 +641,11 @@
         <location filename="newtabmenumanager.cpp" line="30"/>
         <source>New tab menu</source>
         <translation type="unfinished">قائمة الإطار الجديد</translation>
+    </message>
+    <message>
+        <location filename="newtabmenumanager.cpp" line="31"/>
+        <source>Additional tab menu</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -723,6 +708,19 @@
     <message>
         <location filename="pluginmanager.cpp" line="675"/>
         <source>Could not load plugin from %1: unable to get name/info/icon.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::SeparateTabWidget</name>
+    <message>
+        <location filename="separatetabwidget.cpp" line="52"/>
+        <source>Pin tab</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="separatetabwidget.cpp" line="53"/>
+        <source>Unpin tab</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -902,7 +900,7 @@
 <context>
     <name>LeechCraft::TabManager</name>
     <message>
-        <location filename="tabmanager.cpp" line="64"/>
+        <location filename="tabmanager.cpp" line="70"/>
         <source>Close all but this</source>
         <translation type="unfinished">إغلاق الكل إلا هذا</translation>
     </message>
@@ -956,6 +954,18 @@
     <message>
         <location filename="util/flattofoldersproxymodel.cpp" line="104"/>
         <source>&lt;unknown tag&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::WinWarnDialog</name>
+    <message>
+        <location filename="winwarndialog.cpp" line="38"/>
+        <source>Seems like you are running Microsoft Windows.
+
+LeechCraft for Windows is quite experimental and unstable, some builds may use unstable versions of third-party libraries, and, moreover, LeechCraft is known to have more bugs and less features on Windows than on other, saner operating systems. That&apos;s because we have not so much developers running Windows, and most of the users use other OSes. Sorry for that, we hope you&apos;ll understand us.
+
+If you have read and really understood all these letters, click Cancel button in this dialog so that it won&apos;t pop up again next time you run LeechCraft.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1319,238 +1329,233 @@
     </message>
     <message>
         <location filename="dummy.cpp" line="15"/>
-        <source>Tab bar location:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="16"/>
-        <source>Top</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="17"/>
-        <source>Bottom</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="18"/>
-        <source>Left</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="19"/>
-        <source>Right</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="20"/>
         <source>Icon set:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="21"/>
+        <location filename="dummy.cpp" line="16"/>
         <source>Oxygen</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="22"/>
+        <location filename="dummy.cpp" line="17"/>
         <source>Style:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="23"/>
+        <location filename="dummy.cpp" line="18"/>
         <source>Plastique</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="24"/>
+        <location filename="dummy.cpp" line="19"/>
         <source>Language:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="25"/>
+        <location filename="dummy.cpp" line="20"/>
         <source>System</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="26"/>
+        <location filename="dummy.cpp" line="21"/>
         <source>Default new tab contents:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="27"/>
+        <location filename="dummy.cpp" line="22"/>
         <source>Context-dependent</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="28"/>
+        <location filename="dummy.cpp" line="23"/>
         <source>Maximum log lines:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="29"/>
+        <location filename="dummy.cpp" line="24"/>
         <source>Shortcuts</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="30"/>
-        <location filename="dummy.cpp" line="31"/>
-        <location filename="dummy.cpp" line="32"/>
+        <location filename="dummy.cpp" line="25"/>
+        <location filename="dummy.cpp" line="26"/>
+        <location filename="dummy.cpp" line="27"/>
         <source>Behavior</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="33"/>
+        <location filename="dummy.cpp" line="28"/>
         <source>Watch clipboard</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="34"/>
+        <location filename="dummy.cpp" line="29"/>
         <source>Ask quit confirmation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="35"/>
+        <location filename="dummy.cpp" line="30"/>
         <source>Exit on close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="36"/>
+        <location filename="dummy.cpp" line="31"/>
         <source>Open new tab next to current</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="37"/>
+        <location filename="dummy.cpp" line="32"/>
+        <source>Tab selection behavior: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="33"/>
+        <source>Select the previously selected tab</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="34"/>
+        <source>Select the tab to the right of the one being removed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="35"/>
+        <source>Select the tab to the left of the one being removed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="36"/>
         <source>Automatically accept task when there is only one handler</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="38"/>
+        <location filename="dummy.cpp" line="37"/>
         <source>Watch directory:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="39"/>
+        <location filename="dummy.cpp" line="38"/>
         <source>Show plugin-dependent actions in tab bar context menu</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="40"/>
+        <location filename="dummy.cpp" line="39"/>
         <source>Show as a submenu</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="41"/>
+        <location filename="dummy.cpp" line="40"/>
         <source>Show messages in tray</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="42"/>
+        <location filename="dummy.cpp" line="41"/>
         <source>Message timeout:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="43"/>
+        <location filename="dummy.cpp" line="42"/>
         <source> s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="44"/>
+        <location filename="dummy.cpp" line="43"/>
         <source>Tags</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="45"/>
+        <location filename="dummy.cpp" line="44"/>
         <source>Tags manager</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="46"/>
+        <location filename="dummy.cpp" line="45"/>
         <source>Network</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="47"/>
+        <location filename="dummy.cpp" line="46"/>
         <source>Cache size:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="48"/>
+        <location filename="dummy.cpp" line="47"/>
         <source> MB</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="49"/>
+        <location filename="dummy.cpp" line="48"/>
         <source>Filter tracking cookies</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="50"/>
+        <location filename="dummy.cpp" line="49"/>
         <source>Clear cache</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="51"/>
+        <location filename="dummy.cpp" line="50"/>
         <source>Clear cookies</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="52"/>
+        <location filename="dummy.cpp" line="51"/>
         <source>Application-wide proxy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="53"/>
+        <location filename="dummy.cpp" line="52"/>
         <source>Host:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="54"/>
+        <location filename="dummy.cpp" line="53"/>
         <source>Port:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="55"/>
+        <location filename="dummy.cpp" line="54"/>
         <source>Login:</source>
         <translation type="unfinished">اسم المستخدم:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="56"/>
+        <location filename="dummy.cpp" line="55"/>
         <source>Password:</source>
         <translation type="unfinished">كلمة المرور:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="57"/>
+        <location filename="dummy.cpp" line="56"/>
         <source>Proxy type:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="58"/>
+        <location filename="dummy.cpp" line="57"/>
         <source>SOCKS5</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="59"/>
+        <location filename="dummy.cpp" line="58"/>
         <source>Transparent HTTP</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="60"/>
+        <location filename="dummy.cpp" line="59"/>
         <source>Caching HTTP</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="61"/>
+        <location filename="dummy.cpp" line="60"/>
         <source>Caching FTP</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="62"/>
+        <location filename="dummy.cpp" line="61"/>
         <source>Plugins</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="63"/>
+        <location filename="dummy.cpp" line="62"/>
         <source>Plugins manager</source>
         <translation type="unfinished"></translation>
     </message>

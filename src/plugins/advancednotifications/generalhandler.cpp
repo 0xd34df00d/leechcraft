@@ -19,7 +19,9 @@
 #include "generalhandler.h"
 #include <interfaces/structures.h>
 #include "systemtrayhandler.h"
-#include "handlersconfigurator.h"
+#include "visualhandler.h"
+#include "audiohandler.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -27,9 +29,10 @@ namespace AdvancedNotifications
 {
 	GeneralHandler::GeneralHandler (ICoreProxy_ptr proxy)
 	: Proxy_ (proxy)
-	, HandlersConfigurator_ (new HandlersConfigurator)
 	{
 		Handlers_ << ConcreteHandlerBase_ptr (new SystemTrayHandler);
+		Handlers_ << ConcreteHandlerBase_ptr (new VisualHandler);
+		Handlers_ << ConcreteHandlerBase_ptr (new AudioHandler);
 		
 		Q_FOREACH (ConcreteHandlerBase_ptr handler, Handlers_)
 			handler->SetGeneralHandler (this);
@@ -39,15 +42,31 @@ namespace AdvancedNotifications
 	
 	void GeneralHandler::Handle (const Entity& e)
 	{
-		const QSet<ConcreteHandlerBase::HandlerType>& types = HandlersConfigurator_->GetEnabledHandlers (e);
-		Q_FOREACH (ConcreteHandlerBase_ptr handler, Handlers_)
-			if (types.contains (handler->GetHandlerType ()))
-				handler->Handle (e);
+		if (e.Additional_ ["org.LC.AdvNotifications.EventCategory"] == "org.LC.AdvNotifications.Cancel")
+		{
+			Q_FOREACH (ConcreteHandlerBase_ptr handler, Handlers_)
+				handler->Handle (e, NotificationRule ());
+			return;
+		}
+
+		const QList<NotificationRule>& rules = Core::Instance ().GetRules (e);
+		Q_FOREACH (const NotificationRule& rule, rules)
+		{
+			NotificationMethods methods = rule.GetMethods ();
+			
+			Q_FOREACH (ConcreteHandlerBase_ptr handler, Handlers_)
+			{
+				if (!(methods & handler->GetHandlerMethod ()))
+					continue;
+				
+				handler->Handle (e, rule);
+			}
+		}
 	}
 	
-	HandlersConfigurator* GeneralHandler::GetHandlersConfigurator () const
+	ICoreProxy_ptr GeneralHandler::GetProxy () const
 	{
-		return HandlersConfigurator_;
+		return Proxy_;
 	}
 	
 	QIcon GeneralHandler::GetIconForCategory (const QString& cat) const

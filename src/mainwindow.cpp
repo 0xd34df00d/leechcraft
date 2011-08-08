@@ -32,6 +32,7 @@
 #include <QMenu>
 #include <QSplashScreen>
 #include <QBitmap>
+#include <QDockWidget>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
 #include <interfaces/iactionsexporter.h>
@@ -55,6 +56,10 @@
 #include "tabmanager.h"
 #include "coreinstanceobject.h"
 
+#ifdef Q_WS_WIN
+#include "winwarndialog.h"
+#endif
+
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
 
@@ -77,6 +82,10 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	Splash_->setUpdatesEnabled (true);
 	Splash_->showMessage (tr ("Initializing LeechCraft..."), Qt::AlignLeft | Qt::AlignBottom);
 	QApplication::processEvents ();
+	
+#ifdef Q_WS_WIN
+	new WinWarnDialog;
+#endif
 	
 	Core::Instance ();
 
@@ -172,7 +181,7 @@ SeparateTabWidget* LeechCraft::MainWindow::GetTabWidget () const
 	return Ui_.MainTabWidget_;
 }
 
-const IShortcutProxy* LeechCraft::MainWindow::GetShortcutProxy () const
+IShortcutProxy* LeechCraft::MainWindow::GetShortcutProxy () const
 {
 	return ShortcutManager_;
 }
@@ -193,6 +202,16 @@ LeechCraft::ToolbarGuard* LeechCraft::MainWindow::GetGuard () const
 LeechCraft::FancyPopupManager* LeechCraft::MainWindow::GetFancyPopupManager () const
 {
 	return FancyPopupManager_;
+}
+
+void LeechCraft::MainWindow::ToggleViewActionVisiblity (QDockWidget *widget, bool visible)
+{
+	QAction *act = widget->toggleViewAction ();
+
+	if (!visible)
+		MenuView_->removeAction (act);
+	else
+		MenuView_->insertAction (MenuView_->actions ().first (), act);
 }
 
 void LeechCraft::MainWindow::AddMenus (const QMap<QString, QList<QAction*> >& menus)
@@ -292,6 +311,7 @@ void LeechCraft::MainWindow::InitializeInterface ()
 			SLOT (aboutQt ()));
 
 	MenuView_ = new QMenu (tr ("View"), this);
+	MenuView_->addSeparator ();
 	MenuView_->addAction (Ui_.ActionShowStatusBar_);
 	MenuView_->addAction (Ui_.ActionFullscreenMode_);
 	MenuTools_ = new QMenu (tr ("Tools"), this);
@@ -581,10 +601,8 @@ void LeechCraft::MainWindow::on_ActionLogger__triggered ()
 void LeechCraft::MainWindow::on_MainTabWidget__currentChanged (int index)
 {
 	QToolBar *bar = Core::Instance ().GetToolBar (index);
-	if (!bar)
-		return;
 	GetGuard ()->AddToolbar (bar);
-	if (Ui_.MainTabWidget_->WidgetCount () > 0)
+	if (Ui_.MainTabWidget_->WidgetCount () > 0 && bar)
 		bar->setVisible (!isFullScreen ());
 }
 

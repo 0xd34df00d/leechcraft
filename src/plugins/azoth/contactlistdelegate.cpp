@@ -96,6 +96,18 @@ namespace Azoth
 	void ContactListDelegate::DrawAccount (QPainter *painter,
 			QStyleOptionViewItemV4 o, const QModelIndex& index) const
 	{
+		painter->save ();
+		painter->setRenderHints (QPainter::HighQualityAntialiasing | QPainter::Antialiasing);
+		
+		QPainterPath rectPath;
+		rectPath.addRoundedRect (o.rect, 8, 8);
+		
+		painter->fillPath (rectPath, o.palette.color (QPalette::Window));
+		painter->setPen (o.palette.color (QPalette::WindowText));
+		painter->drawPath (rectPath);
+		
+		painter->restore ();
+
 		o.font.setBold (true);
 		QStyledItemDelegate::paint (painter, o, index);
 	}
@@ -105,25 +117,57 @@ namespace Azoth
 	{
 		const QRect& r = o.rect;
 
-		const QColor& dark = o.palette.color (QPalette::Dark);
-		const QColor& light = o.palette.color (QPalette::Light);
-		QLinearGradient gr (0, 0, r.width (), 0);
-		gr.setSpread (QGradient::PadSpread);
-		gr.setColorAt (0.00, light);
-		gr.setColorAt (0.25, dark.lighter (120));
-		gr.setColorAt (0.50, dark);
-		gr.setColorAt (0.75, dark.lighter (120));
-		gr.setColorAt (1.00, light);
-		painter->fillRect (QRect (r.topLeft (), r.topRight ()), gr);
-		painter->fillRect (QRect (r.bottomLeft (), r.bottomRight ()), gr);
+		const int textWidth = o.fontMetrics.width (index.data ().value<QString> () + " ");
+		const int rem = r.width () - textWidth;
 
-		QLinearGradient vGr (0, 0, 0, r.height ());
-		vGr.setSpread (QGradient::PadSpread);
-		vGr.setColorAt (0.00, light);
-		vGr.setColorAt (0.50, dark);
-		vGr.setColorAt (1.00, light);
-		painter->fillRect (QRect (r.topLeft (), r.bottomLeft ()), vGr);
-		painter->fillRect (QRect (r.topRight (), r.bottomRight ()), vGr);
+		const int visibleCount = index.model ()->rowCount (index);
+
+		const QAbstractItemModel *model = index.model ();
+		QModelIndex sourceIndex = index;
+		while (const QAbstractProxyModel *proxyModel = qobject_cast<const QAbstractProxyModel*> (model))
+		{
+			model = proxyModel->sourceModel ();
+			sourceIndex = proxyModel->mapToSource (sourceIndex);
+		}
+
+		const QString& str = QString (" %1/%2 ")
+				.arg (visibleCount)
+				.arg (model->rowCount (sourceIndex));
+				
+		painter->save ();
+		
+		painter->setRenderHints (QPainter::HighQualityAntialiasing | QPainter::Antialiasing);
+		
+		QPainterPath bgPath;
+		bgPath.addRoundedRect (r.adjusted (-r.topLeft ().x (), 0, 0, 0), 6, 6);
+		painter->drawPath (bgPath);
+		
+		if (rem >= o.fontMetrics.width (str))
+		{
+			if (o.state & QStyle::State_Selected)
+				painter->setPen (o.palette.color (QPalette::HighlightedText));
+			
+			QFont font = painter->font ();
+			font.setItalic (true);
+			painter->setFont (font);
+
+			const QRect numRect (r.left () + textWidth - 1, r.top () + CPadding,
+					rem - 1, r.height () - 2 * CPadding);
+			
+			const QRect& br = painter->boundingRect (numRect,
+					Qt::AlignVCenter | Qt::AlignRight, str).adjusted (0, 0, 1, 0);
+			QPainterPath rectPath;
+			rectPath.addRoundedRect (br, 4, 4);
+			
+			painter->fillPath (rectPath, o.palette.color (QPalette::Background));
+			
+			painter->drawText (numRect, Qt::AlignVCenter | Qt::AlignRight, str);
+
+			painter->setPen (o.palette.color (QPalette::WindowText));
+			painter->drawPath (rectPath);
+		}
+		
+		painter->restore ();
 
 		const int unread = index.data (Core::CLRUnreadMsgCount).toInt ();
 		if (unread)
@@ -149,35 +193,6 @@ namespace Azoth
 		}
 
 		QStyledItemDelegate::paint (painter, o, index);
-
-		const int textWidth = o.fontMetrics.width (index.data ().value<QString> () + " ");
-		if (textWidth <= r.width ())
-		{
-			painter->save ();
-
-			const int visibleCount = index.model ()->rowCount (index);
-
-			const QAbstractItemModel *model = index.model ();
-			QModelIndex sourceIndex = index;
-			while (const QAbstractProxyModel *proxyModel = qobject_cast<const QAbstractProxyModel*> (model))
-			{
-				model = proxyModel->sourceModel ();
-				sourceIndex = proxyModel->mapToSource (sourceIndex);
-			}
-
-			const QString& str = QString (" (%1/%2)")
-					.arg (visibleCount)
-					.arg (model->rowCount (sourceIndex));
-
-			if (o.state & QStyle::State_Selected)
-				painter->setPen (o.palette.color (QPalette::HighlightedText));
-			painter->drawText (r.left () + textWidth, r.top () + CPadding,
-					o.fontMetrics.width (str), r.height () - 2 * CPadding,
-					Qt::AlignVCenter | Qt::AlignLeft,
-					str);
-
-			painter->restore ();
-		}
 	}
 
 	void ContactListDelegate::DrawContact (QPainter *painter,

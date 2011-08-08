@@ -22,6 +22,7 @@
 #include <QXmppMucIq.h>
 
 class QDomElement;
+class QXmppDataForm;
 
 namespace LeechCraft
 {
@@ -29,7 +30,7 @@ namespace Azoth
 {
 namespace Xoox
 {
-namespace Util
+namespace XooxUtil
 {
 	QString RoleToString (const QXmppMucItem::Role&);
 	QString AffiliationToString (const QXmppMucItem::Affiliation&);
@@ -38,6 +39,7 @@ namespace Util
 	QString GetClientHRName (const QString&);
 	
 	QDomElement XmppElem2DomElem (const QXmppElement&);
+	QXmppElement Form2XmppElem (const QXmppDataForm&);
 }
 }
 }

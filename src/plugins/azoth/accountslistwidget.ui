@@ -56,6 +56,16 @@
         </widget>
        </item>
        <item>
+        <widget class="QPushButton" name="PGP_">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>PGP...</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QPushButton" name="Delete_">
          <property name="text">
           <string>Delete</string>

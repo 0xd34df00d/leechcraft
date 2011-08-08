@@ -40,6 +40,7 @@ namespace Metacontacts
 		QList<MetaEntry*> Entries_;
 		
 		QHash<QString, MetaEntry*> UnavailRealEntries_;
+		QHash<QString, MetaEntry*> AvailRealEntries_;
 		
 		Core ();
 	public:
@@ -50,9 +51,15 @@ namespace Metacontacts
 		
 		bool HandleRealEntryAddBegin (QObject*);
 		void AddRealEntry (QObject*);
-	private:
+		
+		void RemoveEntry (MetaEntry*);
+
 		void ScheduleSaveEntries ();
+	private:
+		void ConnectSignals (MetaEntry*);
 	private slots:
+		void handleEntriesRemoved (const QList<QObject*>&);
+		void handleEntryShouldBeRemoved ();
 		void saveEntries ();
 	signals:
 		void gotCLItems (const QList<QObject*>&);

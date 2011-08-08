@@ -58,6 +58,8 @@ namespace Xoox
 		QMap<QXmppMucItem::Role, QByteArray> Role2Str_;
 		QMap<QXmppMucItem::Affiliation, QByteArray> Aff2Str_;
 		QMap<QByteArray, QString> Translations_;
+		
+		mutable QAction *ActionRequestVoice_;
 	public:
 		RoomCLEntry (RoomHandler*, GlooxAccount*);
 
@@ -128,10 +130,13 @@ namespace Xoox
 		void groupsChanged (const QStringList&);
 		void chatPartStateChanged (const ChatPartState&, const QString&);
 		void permsChanged ();
+		void entryGenerallyChanged ();
 
 		void gotNewParticipants (const QList<QObject*>&);
 		void mucSubjectChanged (const QString&);
 		void nicknameConflict (const QString&);
+		void beenKicked (const QString&);
+		void beenBanned (const QString&);
 	};
 }
 }

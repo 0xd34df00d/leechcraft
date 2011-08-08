@@ -20,6 +20,7 @@
 #define PLUGINS_AZOTH_INTERFACES_IACCOUNT_H
 #include <QFlags>
 #include <QMetaType>
+#include <QVariant>
 #include <QStringList>
 #include <interfaces/azothcommon.h>
 #include "iclentry.h"
@@ -408,6 +409,20 @@ namespace Azoth
 		 */
 		virtual void addContactSuggested (const QString& id,
 				const QString& nick, const QStringList& groups) = 0;
+
+		/** @brief This signal should be emitted whenever a MUC
+		 * invitation has been received.
+		 * 
+		 * The ident parameter contains the map with the identifying
+		 * data suitable for the IMUCJoinWidget of this account. Refer
+		 * to IMUCJoinWidget documentation for more information.
+		 * 
+		 * @param[out] ident MUC identifying data for IMUCJoinWidget.
+		 * @param[out] inviter The inviter's source ID or nickname.
+		 * @param[out] reason An optional reason string.
+		 */
+		virtual void mucInvitationReceived (const QVariantMap& ident,
+				const QString& inviter, const QString& reason) = 0;
 	};
 
 	Q_DECLARE_OPERATORS_FOR_FLAGS (IAccount::AccountFeatures);

@@ -19,9 +19,14 @@
 #include "accountslistwidget.h"
 #include <QMenu>
 #include <QWizard>
+#include <QMessageBox>
 #include <QStandardItemModel>
 #include "interfaces/iaccount.h"
 #include "interfaces/iprotocol.h"
+#ifdef ENABLE_CRYPT
+#include "interfaces/isupportpgp.h"
+#include "pgpkeyselectiondialog.h"
+#endif
 #include "core.h"
 #include "addaccountwizardfirstpage.h"
 
@@ -34,6 +39,10 @@ namespace Azoth
 	, AccModel_ (new QStandardItemModel ())
 	{
 		Ui_.setupUi (this);
+		
+#ifdef ENABLE_CRYPT
+		Ui_.PGP_->setEnabled (true);
+#endif
 
 		connect (&Core::Instance (),
 				SIGNAL (accountAdded (IAccount*)),
@@ -84,6 +93,37 @@ namespace Azoth
 				.data (RAccObj).value<IAccount*> ();
 		acc->OpenConfigurationDialog ();
 	}
+	
+	void AccountsListWidget::on_PGP__released ()
+	{
+#ifdef ENABLE_CRYPT
+		QModelIndex index = Ui_.Accounts_->
+				selectionModel ()->currentIndex ();
+		if (!index.isValid ())
+			return;
+
+		IAccount *acc = index
+				.data (RAccObj).value<IAccount*> ();
+		ISupportPGP *pgpAcc = qobject_cast<ISupportPGP*> (acc->GetObject ());
+		if (!pgpAcc)
+		{
+			QMessageBox::warning (this,
+					"LeechCraft",
+					tr ("The account %1 doesn't support encryption.")
+						.arg (acc->GetAccountName ()));
+			return;
+		}
+		
+		const QString& str = tr ("Please select new PGP key for the account %1.")
+				.arg (acc->GetAccountName ());
+		PGPKeySelectionDialog dia (str, PGPKeySelectionDialog::TPrivate, this);
+		if (dia.exec () != QDialog::Accepted)
+			return;
+		
+		pgpAcc->SetPrivateKey (dia.GetSelectedKey ());
+		Core::Instance ().AssociatePrivateKey (acc, dia.GetSelectedKey ());
+#endif
+	}
 
 	void AccountsListWidget::on_Delete__released()
 	{
@@ -94,6 +134,14 @@ namespace Azoth
 
 		IAccount *acc = index
 				.data (RAccObj).value<IAccount*> ();
+
+		if (QMessageBox::question (this,
+					"LeechCraft",
+					tr ("Are you sure you want to remove the account %1?")
+						.arg (acc->GetAccountName ()),
+					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+			return;
+
 		QObject *protoObj = acc->GetParentProtocol ();
 		IProtocol *proto = qobject_cast<IProtocol*> (protoObj);
 		if (!proto)

@@ -6,7 +6,9 @@ FIND_PACKAGE (Speex REQUIRED)
 INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
-	${QXMPP_INCLUDE_DIR})
+	${QXMPP_INCLUDE_DIR}
+	${QCA2_INCLUDE_DIR}
+	)
 SET (XOOX_SRCS
 	xoox.cpp
 	glooxprotocol.cpp
@@ -55,6 +57,10 @@ SET (XOOX_SRCS
 	adhoccommandmanager.cpp
 	executecommanddialog.cpp
 	userlocation.cpp
+	selfcontact.cpp
+	adhoccommandserver.cpp
+	adhoccommand.cpp
+	lastactivitymanager.cpp
 	)
 SET (XOOX_HEADERS
 	xoox.h
@@ -104,6 +110,10 @@ SET (XOOX_HEADERS
 	adhoccommandmanager.h
 	executecommanddialog.h
 	userlocation.h
+	selfcontact.h
+	adhoccommandserver.h
+	adhoccommand.h
+	lastactivitymanager.h
 	)
 SET (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui
@@ -121,6 +131,14 @@ SET (XOOX_FORMS
 	commandresultpage.ui
 	)
 SET (XOOX_RESOURCES azothxooxresources.qrc)
+
+IF (ENABLE_CRYPT)
+	ADD_DEFINITIONS (-DENABLE_CRYPT)
+
+	SET (XOOX_SRCS ${XOOX_SRCS} pgpmanager.cpp)
+	SET (XOOX_HEADERS ${XOOX_HEADERS} pgpmanager.h)
+ENDIF (ENABLE_CRYPT)
+
 CreateTrVars ("azoth_xoox" "de;en;fr;it;ru_RU;uk_UA" XOOX_TRANSLATIONS XOOX_COMPILED_TRANSLATIONS)
 QT4_WRAP_CPP (XOOX_MOC_SRCS ${XOOX_HEADERS})
 QT4_WRAP_UI (XOOX_UIS_H ${XOOX_FORMS})
@@ -144,6 +162,7 @@ TARGET_LINK_LIBRARIES (leechcraft_azoth_xoox
 	${LEECHCRAFT_LIBRARIES}
 	${QXMPP_LIBRARIES}
 	${SPEEX_LIBRARIES}
+	${QCA2_LIBRARIES}
 	)
 INSTALL (TARGETS leechcraft_azoth_xoox DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES ${XOOX_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

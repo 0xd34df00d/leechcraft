@@ -115,6 +115,25 @@ namespace LeechCraft
 			 * "plugin/directory/subdir".
 			 */
 			void AddLocalPrefix (QString prefix = QString ());
+			
+			/** @brief Lists the available files for the given option.
+			 * 
+			 * The option should be the one of the elements of the model
+			 * returned by GetSubElemModel().
+			 * 
+			 * This method supports basic filtering: list of name
+			 * filters could be passed via the names parameter, and
+			 * additional filter flags via the filters parameter. The
+			 * default is to perform no additional filtering.
+			 * 
+			 * @param[in] option The option for which to list available
+			 * files/directories.
+			 * @param[in] names Name filters.
+			 * @param[in] filters Additional filters.
+			 */
+			QFileInfoList List (const QString& option,
+					const QStringList& names = QStringList (),
+					QDir::Filters filters = QDir::NoFilter) const;
 
 			/** @brief Returns the first found path for the list of variants.
 			 *

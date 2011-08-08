@@ -18,14 +18,13 @@
 
 #ifndef SEPARATETABWIDGET_H
 #define SEPARATETABWIDGET_H
-
+#include <boost/shared_ptr.hpp>
 #include <QWidget>
 #include <QIcon>
 #include <QTabBar>
 #include <QPointer>
 #include <QAction>
 #include <QMap>
-#include <QStack>
 #include <interfaces/iinfo.h>
 
 class QStackedWidget;
@@ -64,7 +63,7 @@ namespace LeechCraft
 		QAction *PinTab_;
 		QAction *UnPinTab_;
 		QAction *DefaultTabAction_;
-		QMap<int, QWidget*> Widgets_;
+		QMap<int, boost::shared_ptr<QWidget> > Widgets_;
 		QList<QPointer<QAction> > TabBarActions_;
 		bool InMoveProcess_;
 	public:
@@ -134,8 +133,6 @@ namespace LeechCraft
 		void setCurrentIndex (int);
 		void setCurrentWidget (QWidget*);
 		void handleNewTabShortcutActivated ();
-		void on_PinTab__triggered (bool);
-		void on_UnPinTab__triggered (bool);
 		void setPreviousTab ();
 	private slots:
 		void handleCurrentChanged (int);
@@ -153,6 +150,9 @@ namespace LeechCraft
 		void tabCloseRequested (int);
 		void tabWasInserted (int);
 		void tabWasRemoved (int);
+		
+		void pinTabRequested ();
+		void unpinTabRequested ();
 	};
 }
 #endif // SEPARATETABWIDGET_H

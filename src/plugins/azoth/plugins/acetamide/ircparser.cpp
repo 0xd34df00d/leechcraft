@@ -62,96 +62,97 @@ namespace Acetamide
 
 	void IrcParser::NickCommand (const QStringList& nick)
 	{
-		QString nickCmd = QString ("NICK " + nick.at (0) + "\r\n");
+		const QString name = !nick.isEmpty () ?  EncodingList (nick).at (0)
+				: QString ();
+		QString nickCmd = QString ("NICK " + name + "\r\n");
 		ISH_->SendCommand (nickCmd);
 	}
 
 	void IrcParser::JoinCommand (const QString& channel)
 	{
-		//TODO Password
 		QString joinCmd = QString ("JOIN " + channel + "\r\n");
 		ISH_->SendCommand (joinCmd);
 	}
 
-	void IrcParser::PrivMsgCommand (const QString& msg,
-			const QString& target)
+	void IrcParser::PrivMsgCommand (const QStringList& cmd)
 	{
+		QStringList encodedCmd = EncodingList (cmd);
+		const QString target = encodedCmd.first ();
+		const QStringList msg = encodedCmd.mid (1);
 		QString privmsgCmd = QString ("PRIVMSG " + target + " :" +
-				msg + "\r\n");
+				msg.join (" ") + "\r\n");
 		ISH_->SendCommand (privmsgCmd);
 	}
 
 	void IrcParser::PartCommand (const QStringList& cmd)
 	{
-		QString partCmd = QString ("PART " + cmd.first () +
-				QStringList (cmd.mid (1)).join (" ") + "\r\n");
+		QStringList encodedCmd = EncodingList (cmd);
+		QString partCmd = QString ("PART " + encodedCmd.first () + " :" +
+				QStringList (encodedCmd.mid (1)).join (" ") + "\r\n");
 		ISH_->SendCommand (partCmd);
 	}
 
 	void IrcParser::PongCommand (const QStringList& msg)
 	{
-		QString pongCmd = QString ("PONG :" + msg.join (" ") + "\r\n");
+		QString pongCmd = QString ("PONG :" + EncodingList (msg).join (" ") + 
+				"\r\n");
 		ISH_->SendCommand (pongCmd);
 	}
 
 	void IrcParser::RawCommand (const QStringList& cmd)
 	{
-		QString rawCmd = cmd.join (" ") + "\r\n";
+		QString rawCmd = EncodingList (cmd).join (" ") + "\r\n";
 		ISH_->SendCommand (rawCmd);
 	}
 
 	void IrcParser::CTCPRequest (const QStringList& cmd)
 	{
-		if (!cmd.count ())
+		QStringList encodedCmd = EncodingList (cmd);
+		if (!encodedCmd.count ())
 			return;
 		QString ctcpCmd;
-		if (cmd.count () > 2)
-			ctcpCmd = "PRIVMSG " + cmd.first () + " :\001" +
-					cmd.at (1) + " " + QStringList (cmd.mid (2))
-							.join (" ") + "\001\r\n";
+		if (encodedCmd.count () > 2)
+			ctcpCmd = "PRIVMSG " + encodedCmd.first () + " :\001" +
+					encodedCmd.at (1) + " " + QStringList (encodedCmd.mid (2)).join (" ") + 
+					"\001\r\n";
 		else
-			ctcpCmd = "PRIVMSG " + cmd.first () + " :\001" +
-					cmd.at (1) + "\001\r\n";
+			ctcpCmd = "PRIVMSG " + encodedCmd.first () + " :\001" +
+					encodedCmd.at (1) + "\001\r\n";
 		ISH_->SendCommand (ctcpCmd);
 	}
 
 	void IrcParser::CTCPReply (const QStringList& cmd)
 	{
-		if (!cmd.count ())
+		QStringList encodedCmd = EncodingList (cmd);
+		if (!encodedCmd.count ())
 			return;
 
-		QString ctcpCmd = QString ("NOTICE " + cmd.first () + " :" +
-				cmd.last () + "\r\n");
+		QString ctcpCmd = QString ("NOTICE " + encodedCmd.first () + " :" +
+				encodedCmd.last () + "\r\n");
 		ISH_->SendCommand (ctcpCmd);
 	}
 
 	void IrcParser::TopicCommand (const QStringList& cmd)
 	{
-		if (!cmd.count ())
+		QStringList encodedCmd = EncodingList (cmd);
+		if (!encodedCmd.count ())
 			return;
 
 		QString topicCmd;
-		switch (cmd.count ())
-		{
-		case 1:
-			topicCmd = QString ("TOPIC " + cmd.first () + "\r\n");
-			break;
-		case 2:
-			topicCmd = QString ("TOPIC " + cmd.first () + " " +
-					cmd.last () + "\r\n");
-			break;
-		default:
-			topicCmd = QString ("TOPIC " + cmd.first () + " :" +
-					QStringList (cmd.mid (1)).join (" ") + "\r\n");
-		}
+		if (encodedCmd.count () == 1)
+			topicCmd = QString ("TOPIC " + encodedCmd.first () + "\r\n");
+		else
+			topicCmd = QString ("TOPIC " + encodedCmd.first () + " :" +
+					QStringList (encodedCmd.mid (1)).join (" ") + "\r\n");
 		ISH_->SendCommand (topicCmd);
 	}
 
 	void IrcParser::NamesCommand (const QStringList& cmd)
 	{
+		QStringList encodedCmd = EncodingList (cmd);
 		QString target = QString ();
-		if (cmd.count ())
-			target =  cmd.first ();
+		if (encodedCmd.count ())
+			target =  encodedCmd.first ();
 
 		QString namesCmd = QString ("NAMES " + target + "\r\n");
 		ISH_->SendCommand (namesCmd);
@@ -159,138 +160,151 @@ namespace Acetamide
 
 	void IrcParser::InviteCommand (const QStringList& cmd)
 	{
-		QString inviteCmd = QString ("INVITE " + cmd.join (" ") +
+		QString inviteCmd = QString ("INVITE " + EncodingList (cmd).join (" ") +
 				"\r\n");
 		ISH_->SendCommand (inviteCmd);
 	}
 
 	void IrcParser::KickCommand (const QStringList& cmd)
 	{
-		QString kickCmd = QString ("KICK " + cmd.first () + " " +
-				cmd.at (1) + " :" + QStringList (cmd.mid (2)).join (" ")
-				+ "\r\n");
+		QStringList encodedCmd = EncodingList (cmd);
+		QString kickCmd = QString ("KICK " + encodedCmd.join (" ") + "\r\n");
 		ISH_->SendCommand (kickCmd);
 	}
 
 	void IrcParser::OperCommand (const QStringList& cmd)
 	{
-		QString operCmd = QString ("OPER " + cmd.at (0) + " :" +
-				QStringList (cmd.mid (1)).join (" ") + "\r\n");
+		QStringList encodedCmd = EncodingList (cmd);
+		QString operCmd = QString ("OPER " + encodedCmd.at (0) + " :" +
+				QStringList (encodedCmd.mid (1)).join (" ") + "\r\n");
 		ISH_->SendCommand (operCmd);
 	}
 
 	void IrcParser::SQuitCommand (const QStringList& cmd)
 	{
-		QString squitCmd = QString ("SQUIT " + cmd.first () + " :" +
-				QStringList (cmd.mid (1)).join (" ") + "\r\n");
+		QStringList encodedCmd = EncodingList (cmd);
+		QString squitCmd = QString ("SQUIT " + encodedCmd.first () + " :" +
+				QStringList (encodedCmd.mid (1)).join (" ") + "\r\n");
 		ISH_->SendCommand (squitCmd);
 	}
 
 	void IrcParser::MOTDCommand (const QStringList& cmd)
 	{
+		QStringList encodedCmd = EncodingList (cmd);
 		QString motdCmd;
-		if (!cmd.count ())
+		if (!encodedCmd.count ())
 			motdCmd = QString ("MOTD\r\n");
 		else
-			motdCmd = QString ("MOTD " + cmd.first () + "\r\n");
+			motdCmd = QString ("MOTD " + encodedCmd.first () + "\r\n");
 
 		ISH_->SendCommand (motdCmd);
 	}
 
 	void IrcParser::LusersCommand (const QStringList& cmd)
 	{
-		QString lusersCmd = QString ("LUSERS " + cmd.join (" ") +
+		QString lusersCmd = QString ("LUSERS " + EncodingList (cmd).join (" ") +
 				"\r\n");
 		ISH_->SendCommand (lusersCmd);
 	}
 
 	void IrcParser::VersionCommand (const QStringList& cmd)
 	{
-		QString versionCmd = QString ("VERSION " + cmd.join (" ") +
+		QString versionCmd = QString ("VERSION " + EncodingList (cmd).join (" ") +
 				"\r\n");
 		ISH_->SendCommand (versionCmd);
 	}
 
 	void IrcParser::StatsCommand (const QStringList& cmd)
 	{
-		QString statsCmd = QString ("STATS " + cmd.join (" ") + "\r\n");
+		QString statsCmd = QString ("STATS " + EncodingList (cmd).join (" ") + 
+				"\r\n");
 		ISH_->SendCommand (statsCmd);
 	}
 
 	void IrcParser::LinksCommand (const QStringList& cmd)
 	{
-		QString linksCmd = QString ("LINKS " + cmd.join (" ") + "\r\n");
+		QString linksCmd = QString ("LINKS " + EncodingList (cmd).join (" ") + 
+				"\r\n");
 		ISH_->SendCommand (linksCmd);
 	}
 
 	void IrcParser::TimeCommand (const QStringList& cmd)
 	{
-		QString timeCmd = QString ("TIME " + cmd.join (" ") + "\r\n");
+		QString timeCmd = QString ("TIME " + EncodingList (cmd).join (" ") + 
+				"\r\n");
 		ISH_->SendCommand (timeCmd);
 	}
 
 	void IrcParser::ConnectCommand (const QStringList& cmd)
 	{
-		QString connectCmd = QString ("CONNECT " + cmd.join (" ") +
+		QString connectCmd = QString ("CONNECT " + EncodingList (cmd).join (" ") +
 				"\r\n");
 		ISH_->SendCommand (connectCmd);
 	}
 
 	void IrcParser::TraceCommand (const QStringList& cmd)
 	{
-		QString traceCmd = QString ("TRACE " + cmd.join (" ") + "\r\n");
+		QString traceCmd = QString ("TRACE " + EncodingList (cmd).join (" ") + 
+				"\r\n");
 		ISH_->SendCommand (traceCmd);
 	}
 
 	void IrcParser::AdminCommand (const QStringList& cmd)
 	{
-		QString adminCmd = QString ("ADMIN " + cmd.join (" ") + "\r\n");
+		QString adminCmd = QString ("ADMIN " + EncodingList (cmd).join (" ") + 
+				"\r\n");
 		ISH_->SendCommand (adminCmd);
 	}
 
 	void IrcParser::InfoCommand (const QStringList& cmd)
 	{
-		QString infoCmd = QString ("INFO " + cmd.join (" ") + "\r\n");
+		QString infoCmd = QString ("INFO " + EncodingList (cmd).join (" ") + 
+				"\r\n");
 		ISH_->SendCommand (infoCmd);
 	}
 
 	void IrcParser::WhoCommand (const QStringList& cmd)
 	{
-		QString whoCmd = QString ("WHO " + cmd.join (" ") + "\r\n");
+		QString whoCmd = QString ("WHO " + EncodingList (cmd).join (" ") + 
+				"\r\n");
 		ISH_->SendCommand (whoCmd);
 	}
 
 	void IrcParser::WhoisCommand (const QStringList& cmd)
 	{
-		QString whoisCmd = QString ("WHOIS " + cmd.join (" ") + "\r\n");
+		QString whoisCmd = QString ("WHOIS " + EncodingList (cmd).join (" ") + 
+				"\r\n");
 		ISH_->SendCommand (whoisCmd);
 	}
 
 	void IrcParser::WhowasCommand (const QStringList& cmd)
 	{
-		QString whowasCmd = QString ("WHOWAS " + cmd.join (" ") +
+		QString whowasCmd = QString ("WHOWAS " + EncodingList (cmd).join (" ") +
 				"\r\n");
 		ISH_->SendCommand (whowasCmd);
 	}
 
 	void IrcParser::KillCommand (const QStringList& cmd)
 	{
-		QString killCmd = QString ("KILL " + cmd.first () + " :" +
-				QStringList (cmd.mid (1)).join (" ") + "\r\n");
+		QStringList encodedCmd = EncodingList (cmd);
+		QString killCmd = QString ("KILL " + encodedCmd.first () + " :" +
+				QStringList (encodedCmd.mid (1)).join (" ") + "\r\n");
 		ISH_->SendCommand (killCmd);
 	}
 
 	void IrcParser::PingCommand (const QStringList& cmd)
 	{
-		QString pingCmd = QString ("PING " + cmd.join (" ") + "\r\n");
+		QString pingCmd = QString ("PING " + EncodingList (cmd).join (" ") + 
+				"\r\n");
 		ISH_->SendCommand (pingCmd);
 	}
 
 	void IrcParser::AwayCommand (const QStringList& cmd)
 	{
+		QStringList encodedCmd = EncodingList (cmd);
 		QString awayCmd;
-		if (cmd.count ())
-			awayCmd = QString ("AWAY :" + cmd.join (" ") + "\r\n");
+		if (encodedCmd.count ())
+			awayCmd = QString ("AWAY :" + encodedCmd.join (" ") + "\r\n");
 		else
 			awayCmd = QString ("AWAY\r\n");
 		ISH_->SendCommand (awayCmd);
@@ -316,40 +330,51 @@ namespace Acetamide
 
 	void IrcParser::SummonCommand (const QStringList& cmd)
 	{
-		QString summonCmd = QString ("SUMMON " + cmd.first () +
-				QStringList (cmd.mid (1)).join (" ") + "\r\n");
+		QStringList encodedCmd = EncodingList (cmd);
+		QString summonCmd = QString ("SUMMON " + encodedCmd.first () +
+				QStringList (encodedCmd.mid (1)).join (" ") + "\r\n");
 		ISH_->SendCommand (summonCmd);
 	}
 
 	void IrcParser::UsersCommand (const QStringList& cmd)
 	{
-		QString usersCmd = QString ("USERS " + cmd.first () + "\r\n");
+		QString usersCmd = QString ("USERS " + EncodingList (cmd).first () + "\r\n");
 		ISH_->SendCommand (usersCmd);
 	}
 
 	void IrcParser::UserhostCommand (const QStringList& cmd)
 	{
-		QString userhostCmd = QString ("USERHOST " + cmd.join (" ") +
+		QString userhostCmd = QString ("USERHOST " + EncodingList (cmd).join (" ") +
 				"\r\n");
 		ISH_->SendCommand (userhostCmd);
 	}
 
 	void IrcParser::WallopsCommand (const QStringList& cmd)
 	{
-		QString wallopsCmd = QString ("WALLOPS :" + cmd.join (" ") +
+		QString wallopsCmd = QString ("WALLOPS :" + EncodingList (cmd).join (" ") +
 				"\r\n");
 		ISH_->SendCommand (wallopsCmd);
 	}
 
 	void IrcParser::IsonCommand (const QStringList& cmd)
 	{
-		QString isonCmd = QString ("ISON " + cmd.join (" ") +
-				"\r\n");
+		QString isonCmd = QString ("ISON " + EncodingList (cmd).join (" ") + "\r\n");
 		ISH_->SendCommand (isonCmd);
 	}
 
-	bool IrcParser::ParseMessage (const QString& message)
+	void IrcParser::QuitCommand (const QStringList& cmd)
 	{
+		QString quitCmd = QString ("QUIT :" + EncodingList (cmd).join (" ") + "\r\n");
+		ISH_->SendCommand (quitCmd);
+	}
+
+	bool IrcParser::ParseMessage (const QByteArray& message)
+	{
+		QString msg;
+		QTextCodec *codec = QTextCodec::codecForName (ISH_->
+				GetServerOptions ().ServerEncoding_.toUtf8 ());
+		msg = codec->toUnicode (message);
+
 		IrcMessageOptions_.Command_.clear ();
 		IrcMessageOptions_.Nick_.clear ();
 		IrcMessageOptions_.Message_.clear ();
@@ -399,12 +424,12 @@ namespace Acetamide
 				>> !params
 				>> eol_p);
 
-		bool res = parse (message.toUtf8 ().constData (), reply).full;
+		bool res = parse (msg.toUtf8 ().constData (), reply).full;
 
 		if (!res)
 		{
 			qWarning () << "input string is not a valide IRC command"
-					<< message;
+					<< msg;
 			return false;
 		}
 		else
@@ -424,6 +449,19 @@ namespace Acetamide
 	IrcMessageOptions IrcParser::GetIrcMessageOptions () const
 	{
 		return IrcMessageOptions_;
+	}
+
+	QStringList IrcParser::EncodingList (const QStringList& list)
+	{
+		QTextCodec *codec = QTextCodec::codecForName (ISH_->
+				GetServerOptions ().ServerEncoding_.toUtf8 ());
+		QStringList encodedList;
+		Q_FOREACH (const QString& str, list)
+		{
+			encodedList << codec->fromUnicode (str);
+		}
+
+		return encodedList;
 	}
 
 };

@@ -88,6 +88,11 @@ namespace Metacontacts
 	{
 		Message_->SetDateTime (dt);
 	}
+	
+	IMessage* MetaMessage::GetOriginalMessage () const
+	{
+		return Message_;
+	}
 }
 }
 }

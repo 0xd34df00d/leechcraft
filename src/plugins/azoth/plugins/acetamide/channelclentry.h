@@ -117,9 +117,14 @@ namespace Acetamide
 		void groupsChanged (const QStringList&);
 		void chatPartStateChanged (const ChatPartState&, const QString&);
 		void permsChanged ();
+		void entryGenerallyChanged ();
+
 		void nicknameConflict (const QString&);
+		void beenKicked (const QString&);
+		void beenBanned (const QString&);
 	};
-};
-};
-};
+}
+}
+}
+
 #endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_CHANNELCLENTRY_H

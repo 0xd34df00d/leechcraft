@@ -41,6 +41,9 @@
 #include "interfaces/isupportmediacalls.h"
 #include "interfaces/imediacall.h"
 #include "interfaces/ihistoryplugin.h"
+#ifdef ENABLE_CRYPT
+#include "interfaces/isupportpgp.h"
+#endif
 #include "core.h"
 #include "textedit.h"
 #include "chattabsmanager.h"
@@ -68,10 +71,13 @@ namespace Azoth
 	ChatTab::ChatTab (const QString& entryId,
 			QWidget *parent)
 	: QWidget (parent)
-	, TabToolbar_ (new QToolBar (tr ("Azoth chat window")))
+	, TabToolbar_ (new QToolBar (tr ("Azoth chat window"), this))
 	, ToggleRichText_ (0)
 	, SendFile_ (0)
 	, Call_ (0)
+#ifdef ENABLE_CRYPT
+	, EnableEncryption_ (0)
+#endif
 	, EntryID_ (entryId)
 	, BgColor_ (QApplication::palette ().color (QPalette::Base))
 	, CurrentHistoryPosition_ (-1)
@@ -95,7 +101,6 @@ namespace Azoth
 		Ui_.EventsButton_->hide ();
 		
 		BuildBasicActions ();
-		
 		RequestLogs ();
 
 		Core::Instance ().RegisterHookable (this);
@@ -137,6 +142,8 @@ namespace Azoth
 				this, "handleFontSizeChanged");
 		handleFontSizeChanged ();
 		Ui_.View_->setFocusProxy (Ui_.MsgEdit_);
+		
+		HandleMUCParticipantsChanged ();
 	}
 	
 	ChatTab::~ChatTab ()
@@ -153,13 +160,6 @@ namespace Azoth
 					tr ("Unable to load style, "
 						"please check you've enabled at least one styles plugin.") +
 					"</h1>";
-		
-		data.replace ("BACKGROUNDCOLOR",
-				BgColor_.name ());
-		data.replace ("FOREGROUNDCOLOR",
-				QApplication::palette ().color (QPalette::Text).name ());
-		data.replace ("LINKCOLOR",
-				QApplication::palette ().color (QPalette::Link).name ());
 		Ui_.View_->setHtml (data);
 		
 		Q_FOREACH (IMessage *msg, HistoryMessages_)
@@ -265,6 +265,23 @@ namespace Azoth
 	{
 		TypeTimer_->stop ();
 		SetChatPartState (CPSInactive);
+	}
+	
+	void ChatTab::HandleMUCParticipantsChanged ()
+	{
+		IMUCEntry *muc = GetEntry<IMUCEntry> ();
+		if (!muc)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< GetEntry<QObject> ()
+					<< "doesn't implement IMUCEntry";
+			return;
+		}
+		
+		const int parts = muc->GetParticipants ().size ();
+		const QString& text = tr ("%1 (%n participant(s))", 0, parts)
+				.arg (GetEntry<ICLEntry> ()->GetEntryName ());
+		Ui_.EntryInfo_->setText (text);
 	}
 	
 	QObject* ChatTab::GetCLEntry () const
@@ -416,6 +433,36 @@ namespace Azoth
 		const int idx = Ui_.MainLayout_->indexOf (Ui_.View_);
 		Ui_.MainLayout_->insertWidget (idx, widget);
 	}
+	
+#ifdef ENABLE_CRYPT
+	void ChatTab::handleEnableEncryption ()
+	{
+		QObject *accObj = GetEntry<ICLEntry> ()->GetParentAccount ();
+		ISupportPGP *pgp = qobject_cast<ISupportPGP*> (accObj);
+		if (!pgp)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< accObj
+					<< "doesn't implement ISupportPGP";
+			return;
+		}
+		
+		const bool enable = EnableEncryption_->isChecked ();
+
+		EnableEncryption_->blockSignals (true);
+		EnableEncryption_->setChecked (!enable);
+		EnableEncryption_->blockSignals (false);
+
+		pgp->SetEncryptionEnabled (GetEntry<QObject> (), enable);
+	}
+	
+	void ChatTab::handleEncryptionStateChanged (QObject *entry, bool enabled)
+	{
+		EnableEncryption_->blockSignals (true);
+		EnableEncryption_->setChecked (enabled);
+		EnableEncryption_->blockSignals (false);
+	}
+#endif
 	
 	void ChatTab::handleClearChat ()
 	{
@@ -976,6 +1023,36 @@ namespace Azoth
 					Core::Instance ().GetCallManager ()->
 							GetCallsForEntry (EntryID_))
 				handleCall (object);
+		}
+		
+#ifdef ENABLE_CRYPT
+		if (qobject_cast<ISupportPGP*> (accObj))
+		{
+			EnableEncryption_ = new QAction (tr ("Enable encryption"), this);
+			EnableEncryption_->setProperty ("ActionIcon", "encryption");
+			EnableEncryption_->setCheckable (true);
+			connect (EnableEncryption_,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (handleEnableEncryption ()));
+			TabToolbar_->addAction (EnableEncryption_);
+
+			connect (accObj,
+					SIGNAL (encryptionStateChanged (QObject*, bool)),
+					this,
+					SLOT (handleEncryptionStateChanged (QObject*, bool)));
+		}
+#endif
+		
+		QList<QAction*> coreActions;
+		Q_FOREACH (QAction *action, Core::Instance ().GetEntryActions (e))
+			if (Core::Instance ().GetAreasForAction (action).contains (Core::CLEAAToolbar))
+				coreActions << action;
+
+		if (!coreActions.isEmpty ())
+		{
+			TabToolbar_->addSeparator ();
+			TabToolbar_->addActions (coreActions);
 		}
 	}
 	

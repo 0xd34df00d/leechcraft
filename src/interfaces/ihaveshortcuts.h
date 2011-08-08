@@ -95,7 +95,7 @@ public:
 	 * @param[in] id ID of the action.
 	 * @return The key sequences for the passed action.
 	 */
-	virtual QKeySequences_t GetShortcuts (const QObject *object, const QString& id) const = 0;
+	virtual QKeySequences_t GetShortcuts (QObject *object, const QString& id) = 0;
 
 	virtual ~IShortcutProxy () { }
 };

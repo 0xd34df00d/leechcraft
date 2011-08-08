@@ -50,7 +50,7 @@ namespace Azoth
 	QObject* AccountHandlerChooserDialog::GetSelectedAccount () const
 	{
 		const int idx = Ui_.AccountsBox_->currentIndex ();
-		if (!idx < 0)
+		if (idx < 0)
 			return 0;
 		
 		return Ui_.AccountsBox_->itemData (idx).value<QObject*> ();

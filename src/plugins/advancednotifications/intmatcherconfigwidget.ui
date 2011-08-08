@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>IntMatcherConfigWidget</class>
+ <widget class="QWidget" name="IntMatcherConfigWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>274</width>
+    <height>35</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string/>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <item>
+    <widget class="QComboBox" name="OpType_">
+     <item>
+      <property name="text">
+       <string>&gt;</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>≥</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>=</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>≤</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>&lt;</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>then</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QSpinBox" name="Boundary_">
+     <property name="minimum">
+      <number>-100000</number>
+     </property>
+     <property name="maximum">
+      <number>100000</number>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

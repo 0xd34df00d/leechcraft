@@ -32,6 +32,7 @@ namespace Xoox
 {
 	class GlooxProtocol;
 	class GlooxCLEntry;
+	class CapsDatabase;
 
 	class Core : public QObject
 	{
@@ -41,6 +42,8 @@ namespace Xoox
 		boost::shared_ptr<GlooxProtocol> GlooxProtocol_;
 		QObject *PluginProxy_;
 		bool SaveRosterScheduled_;
+		
+		CapsDatabase *CapsDB_;
 
 		Core ();
 	public:
@@ -54,6 +57,8 @@ namespace Xoox
 		IProxyObject* GetPluginProxy () const;
 		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;
+		
+		CapsDatabase* GetCapsDatabase () const;
 
 		void SendEntity (const Entity&);
 		

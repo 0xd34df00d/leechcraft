@@ -21,6 +21,7 @@
 #include <QSet>
 #include <QXmppClientExtension.h>
 #include <QXmppDataForm.h>
+#include "adhoccommand.h"
 
 class QXmppDiscoveryIq;
 
@@ -31,42 +32,6 @@ namespace Azoth
 namespace Xoox
 {
 	class ClientConnection;
-	
-	class AdHocCommand
-	{
-		QString Name_;
-		QString Node_;
-	public:
-		AdHocCommand (const QString&, const QString&);
-		
-		QString GetName () const;
-		void SetName (const QString&);
-
-		QString GetNode () const;
-		void SetNode (const QString&);
-	};
-	
-	class AdHocResult
-	{
-		QString Node_;
-		QString SessionID_;
-		
-		QXmppDataForm Form_;
-		
-		QStringList Actions_;
-	public:
-		QString GetNode () const;
-		void SetNode (const QString&);
-		
-		QString GetSessionID () const;
-		void SetSessionID (const QString&);
-
-		QXmppDataForm GetDataForm () const;
-		void SetDataForm (const QXmppDataForm&);
-		
-		QStringList GetActions () const;
-		void SetActions (const QStringList&);
-	};
 
 	class AdHocCommandManager : public QXmppClientExtension
 	{

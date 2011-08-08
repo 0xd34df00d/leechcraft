@@ -17,7 +17,11 @@
  **********************************************************************/
 
 #include "vcarddialog.h"
+#include <QPushButton>
+#include <QFileDialog>
+#include <QBuffer>
 #include <QXmppVCardIq.h>
+#include <QXmppVCardManager.h>
 #include "entrybase.h"
 #include "glooxaccount.h"
 #include "clientconnection.h"
@@ -52,8 +56,16 @@ namespace Xoox
 				this,
 				SLOT (setNote ()));
 
-		UpdateNote (qobject_cast<GlooxAccount*> (entry->GetParentAccount ()),
-				entry->GetJID ());
+		GlooxAccount *account = qobject_cast<GlooxAccount*> (entry->GetParentAccount ());
+		UpdateNote (account, entry->GetJID ());
+
+		if (entry->GetJID () == account->GetJID ())
+			EnableEditableMode ();
+		else
+		{
+			Ui_.PhotoBrowse_->hide ();
+			Ui_.PhotoClear_->hide ();
+		}
 
 		Ui_.EditBirthday_->setVisible (false);
 		
@@ -81,6 +93,8 @@ namespace Xoox
 
 	void VCardDialog::UpdateInfo (const QXmppVCardIq& vcard)
 	{
+		VCard_ = vcard;
+
 		setWindowTitle (tr ("VCard for %1")
 					.arg (vcard.nickName ()));
 		
@@ -123,6 +137,73 @@ namespace Xoox
 		Note_.setMdate (QDateTime::currentDateTime ());
 		Account_->GetClientConnection ()->
 				GetAnnotationsManager ()->SetNote (JID_, Note_);
+	}
+	
+	void VCardDialog::publishVCard ()
+	{
+		VCard_.setFullName (Ui_.EditRealName_->text ());
+		VCard_.setNickName (Ui_.EditNick_->text ());
+		VCard_.setBirthday (Ui_.EditBirthday_->date ());
+		VCard_.setUrl (Ui_.EditURL_->text ());
+		VCard_.setOrgName (Ui_.OrgName_->text ());
+		VCard_.setOrgUnit (Ui_.OrgUnit_->text ());
+		VCard_.setTitle (Ui_.Title_->text ());
+		VCard_.setRole (Ui_.Role_->text ());
+		
+		const QPixmap *px = Ui_.LabelPhoto_->pixmap ();
+		if (px)
+		{
+			QBuffer buffer;
+			buffer.open (QIODevice::WriteOnly);
+			px->save (&buffer, "PNG", 100);
+			buffer.close ();
+			VCard_.setPhoto (buffer.data ());
+		}
+		else
+			VCard_.setPhoto (QByteArray ());
+
+		QXmppVCardManager& mgr = Account_->GetClientConnection ()->
+				GetClient ()->vCardManager ();
+		mgr.setClientVCard (VCard_);
+	}
+	
+	void VCardDialog::on_PhotoBrowse__released ()
+	{
+		const QString& fname = QFileDialog::getOpenFileName (this,
+				tr ("Choose new photo"),
+				QDir::homePath (),
+				tr ("Images (*.png *.jpg *.gif);;All files (*.*)"));
+		if (fname.isEmpty ())
+			return;
+		
+		QPixmap px (fname);
+		if (px.isNull ())
+			return;
+		
+		const int size = 150;
+		if (std::max (px.size ().width (), px.size ().height ()) > size)
+			px = px.scaled (size, size,
+					Qt::KeepAspectRatio, Qt::SmoothTransformation);
+		
+		Ui_.LabelPhoto_->setPixmap (px);
+	}
+	
+	void VCardDialog::on_PhotoClear__released ()
+	{
+		Ui_.LabelPhoto_->clear ();
+	}
+	
+	void VCardDialog::EnableEditableMode ()
+	{
+		Ui_.ButtonBox_->setStandardButtons (QDialogButtonBox::Save |
+				QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
+		connect (Ui_.ButtonBox_->button (QDialogButtonBox::Save),
+				SIGNAL (released ()),
+				this,
+				SLOT (publishVCard ()));
+		
+		Q_FOREACH (QLineEdit *edit, findChildren<QLineEdit*> ())
+			edit->setReadOnly (false);
 	}
 	
 	void VCardDialog::UpdateNote (GlooxAccount *acc, const QString& jid)

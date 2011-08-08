@@ -45,12 +45,20 @@ namespace AdvancedNotifications
 		QString extendedText () const;
 		
 		QVariant eventActionsModel () const;
+	private slots:
+		void handleActionSelected ();
+		void handleDismissEvent ();
 	signals:
 		void countChanged ();
 		void imageChanged ();
 		void extendedTextChanged ();
 		
 		void eventActionsModelChanged ();
+		
+		void dismissEvent ();
+		
+		void actionTriggered (const QString&, int);
+		void dismissEventRequested (const QString&);
 	};
 }
 }

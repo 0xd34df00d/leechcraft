@@ -20,6 +20,7 @@
 #include "core.h"
 #include "interfaces/iclentry.h"
 #include "interfaces/imucperms.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -29,10 +30,15 @@ namespace Azoth
 	: QSortFilterProxyModel (parent)
 	, ShowOffline_ (true)
 	, MUCMode_ (false)
+	, OrderByStatus_ (true)
 	, MUCEntry_ (0)
 	{
 		setDynamicSortFilter (true);
 		setFilterCaseSensitivity (Qt::CaseInsensitive);
+		
+		XmlSettingsManager::Instance ().RegisterObject ("OrderByStatus",
+				this, "handleStatusOrderingChanged");
+		handleStatusOrderingChanged ();
 	}
 	
 	void SortFilterProxyModel::SetMUCMode (bool muc)
@@ -54,6 +60,13 @@ namespace Azoth
 	{
 		ShowOffline_ = show;
 		invalidateFilter ();
+	}
+	
+	void SortFilterProxyModel::handleStatusOrderingChanged ()
+	{
+		OrderByStatus_ = XmlSettingsManager::Instance ()
+				.property ("OrderByStatus").toBool ();
+		invalidate ();
 	}
 	
 	namespace
@@ -137,7 +150,8 @@ namespace Azoth
 
 		State lState = lE->GetStatus ().State_;
 		State rState = rE->GetStatus ().State_;
-		if (lState == rState)
+		if (lState == rState ||
+				!OrderByStatus_)
 			return lE->GetEntryName ().localeAwareCompare (rE->GetEntryName ()) < 0;
 		else
 			return IsLess (lState, rState);

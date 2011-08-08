@@ -22,6 +22,7 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/ientityhandler.h>
+#include <interfaces/ihavesettings.h>
 
 namespace LeechCraft
 {
@@ -32,11 +33,13 @@ namespace AdvancedNotifications
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IEntityHandler
+				 , public IHaveSettings
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IEntityHandler)
+		Q_INTERFACES (IInfo IEntityHandler IHaveSettings)
 		
 		ICoreProxy_ptr Proxy_;
+		Util::XmlSettingsDialog_ptr SettingsDialog_;
 		boost::shared_ptr<GeneralHandler> GeneralHandler_;
 	public:
 		void Init (ICoreProxy_ptr);
@@ -49,6 +52,10 @@ namespace AdvancedNotifications
 		
 		EntityTestHandleResult CouldHandle (const Entity&) const;
 		void Handle (Entity);
+		
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }

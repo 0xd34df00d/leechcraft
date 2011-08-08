@@ -22,6 +22,7 @@
 #include <QDeclarativeError>
 #include <QtDebug>
 #include "eventproxyobject.h"
+#include <QApplication>
 
 namespace LeechCraft
 {
@@ -41,8 +42,10 @@ namespace AdvancedNotifications
 		
 		QStringList candidates;
 #ifdef Q_WS_X11
-		candidates << "/usr/local/share/leechcraft/qml/"
-				<< "/usr/share/leechcraft/qml/";
+		candidates << "/usr/local/share/leechcraft/qml/advancednotifications/"
+				<< "/usr/share/leechcraft/qml/advancednotifications/";
+#elif defined (Q_WS_WIN32)
+		candidates << QApplication::applicationDirPath () + "/share/qml/advancednotifications/";
 #endif
 
 		QString fileLocation;
@@ -69,7 +72,18 @@ namespace AdvancedNotifications
 		
 		LastEvents_.clear ();
 		Q_FOREACH (const EventData& ed, events)
-			LastEvents_ << new EventProxyObject (ed, this);
+		{
+			EventProxyObject *obj = new EventProxyObject (ed, this);
+			connect (obj,
+					SIGNAL (actionTriggered (const QString&, int)),
+					this,
+					SIGNAL (actionTriggered (const QString&, int)));
+			connect (obj,
+					SIGNAL (dismissEventRequested (const QString&)),
+					this,
+					SIGNAL (dismissEvent (const QString&)));
+			LastEvents_ << obj;
+		}
 
 		rootContext ()->setContextProperty ("eventsModel",
 				QVariant::fromValue<QList<QObject*> > (LastEvents_));

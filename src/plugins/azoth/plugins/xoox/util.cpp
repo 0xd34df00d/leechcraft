@@ -28,7 +28,7 @@ namespace Azoth
 {
 namespace Xoox
 {
-namespace Util
+namespace XooxUtil
 {
 	QString RoleToString (const QXmppMucItem::Role& role)
 	{
@@ -172,6 +172,16 @@ namespace Util
 
 		QDomDocument doc;
 		doc.setContent (arr);
+		return doc.documentElement ();
+	}
+	
+	QXmppElement Form2XmppElem (const QXmppDataForm& form)
+	{
+		QByteArray formData;
+		QXmlStreamWriter w (&formData);
+		form.toXml (&w);
+		QDomDocument doc;
+		doc.setContent (formData);
 		return doc.documentElement ();
 	}
 }

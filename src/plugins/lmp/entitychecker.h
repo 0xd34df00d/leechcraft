@@ -26,25 +26,21 @@ namespace LeechCraft
 {
 	struct Entity;
 
-	namespace Plugins
+namespace LMP
+{
+	class EntityChecker : public QObject
 	{
-		namespace LMP
-		{
-			class EntityChecker : public QObject
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				bool Result_;
-				bool Break_;
-			public:
-				EntityChecker (const LeechCraft::Entity&);
-				bool Can () const;
-			private slots:
-				void stateChanged (Phonon::State);
-			};
-		};
+		bool Result_;
+		bool Break_;
+	public:
+		EntityChecker (const LeechCraft::Entity&);
+		bool Can () const;
+	private slots:
+		void stateChanged (Phonon::State);
 	};
-};
+}
+}
 
 #endif
-

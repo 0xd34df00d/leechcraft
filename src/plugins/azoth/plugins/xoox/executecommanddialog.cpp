@@ -77,7 +77,9 @@ namespace Xoox
 		AdHocCommand GetSelectedCommand () const
 		{
 			const int idx = Ui_.CommandsBox_->currentIndex ();
-			return Commands_.at (idx);
+			return idx >= 0 ?
+					Commands_.at (idx) :
+					AdHocCommand (QString (), QString ());
 		}
 	};
 	
@@ -183,7 +185,13 @@ namespace Xoox
 
 		QWizardPage *prevPage = page (ids.at (pos - 1));
 		if (dynamic_cast<CommandsListPage*> (prevPage))
-			ExecuteCommand (dynamic_cast<CommandsListPage*> (prevPage)->GetSelectedCommand ());
+		{
+			const AdHocCommand& cmd = dynamic_cast<CommandsListPage*> (prevPage)->GetSelectedCommand ();
+			if (cmd.GetName ().isEmpty ())
+				deleteLater ();
+			else
+				ExecuteCommand (cmd);
+		}
 		else if (dynamic_cast<CommandResultPage*> (prevPage))
 		{
 			CommandResultPage *crp = dynamic_cast<CommandResultPage*> (prevPage);

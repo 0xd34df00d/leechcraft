@@ -16,27 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_HANDLERSCONFIGURATOR_H
-#define PLUGINS_ADVANCEDNOTIFICATIONS_HANDLERSCONFIGURATOR_H
 #include <QObject>
-#include <QSet>
-#include "concretehandlerbase.h"
 
 namespace LeechCraft
 {
-struct Entity;
-
-namespace AdvancedNotifications
-{
-	class HandlersConfigurator : public QObject
+	class WinWarnDialog : public QObject
 	{
 		Q_OBJECT
 	public:
-		HandlersConfigurator (QObject* = 0);
-		
-		QSet<ConcreteHandlerBase::HandlerType> GetEnabledHandlers (const Entity&) const;
+		WinWarnDialog ();
+	private slots:
+		void run ();
 	};
 }
-}
-
-#endif

@@ -28,10 +28,12 @@ namespace AdvancedNotifications
 {
 	struct EventData
 	{
+		QString EventID_;
 		int Count_;
 		QString Category_;
 		QStringList VisualPath_;
 		QString ExtendedText_;
+		QString FullText_;
 		QPixmap Pixmap_;
 
 		QObject_ptr HandlingObject_;

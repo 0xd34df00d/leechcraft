@@ -26,115 +26,117 @@
 #include "entitychecker.h"
 #include "playerwidget.h"
 
-using namespace LeechCraft::Plugins::LMP;
-using namespace LeechCraft::Util;
-
-void LMP::Init (ICoreProxy_ptr proxy)
+namespace LeechCraft
 {
-	Translator_.reset (LeechCraft::Util::InstallTranslator ("lmp"));
+namespace LMP
+{
+	void LMP::Init (ICoreProxy_ptr proxy)
+	{
+		Translator_.reset (Util::InstallTranslator ("lmp"));
 
-	SettingsDialog_.reset (new XmlSettingsDialog ());
-	SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
-			"lmpsettings.xml");
+		SettingsDialog_.reset (new Util::XmlSettingsDialog ());
+		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
+				"lmpsettings.xml");
 
-	Core::Instance ().SetCoreProxy (proxy);
+		Core::Instance ().SetCoreProxy (proxy);
 
-	connect (&Core::Instance (),
-			SIGNAL (bringToFront ()),
-			this,
-			SIGNAL (bringToFront ()));
-	connect (&Core::Instance (),
-			SIGNAL (gotEntity (const LeechCraft::Entity&)),
-			this,
-			SIGNAL (gotEntity (const LeechCraft::Entity&)));
+		connect (&Core::Instance (),
+				SIGNAL (bringToFront ()),
+				this,
+				SIGNAL (bringToFront ()));
+		connect (&Core::Instance (),
+				SIGNAL (gotEntity (const LeechCraft::Entity&)),
+				this,
+				SIGNAL (gotEntity (const LeechCraft::Entity&)));
+	}
+
+	void LMP::SecondInit ()
+	{
+	}
+
+	void LMP::Release ()
+	{
+		Core::Instance ().Release ();
+		XmlSettingsManager::Instance ()->Release ();
+	}
+
+	QByteArray LMP::GetUniqueID () const
+	{
+		return "org.LeechCraft.LMP";
+	}
+
+	QString LMP::GetName () const
+	{
+		return "LMP";
+	}
+
+	QString LMP::GetInfo () const
+	{
+		return "LeechCraft Media Player";
+	}
+
+	QStringList LMP::Provides () const
+	{
+		return QStringList ("media");
+	}
+
+	QStringList LMP::Needs () const
+	{
+		return QStringList ();
+	}
+
+	QStringList LMP::Uses () const
+	{
+		return QStringList ();
+	}
+
+	void LMP::SetProvider (QObject*, const QString&)
+	{
+	}
+
+	QIcon LMP::GetIcon () const
+	{
+		return QIcon (":/plugins/lmp/resources/images/lmp.svg");
+	}
+
+	IVideoWidget* LMP::CreateWidget () const
+	{
+		return Core::Instance ().CreateWidget ();
+	}
+
+	IVideoWidget* LMP::GetDefaultWidget () const
+	{
+		return Core::Instance ().GetDefaultWidget ();
+	}
+
+	Util::XmlSettingsDialog_ptr LMP::GetSettingsDialog () const
+	{
+		return SettingsDialog_;
+	}
+
+	EntityTestHandleResult LMP::CouldHandle (const Entity& e) const
+	{
+		EntityChecker ec (e);
+		return ec.Can () ?
+				EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
+				EntityTestHandleResult ();
+	}
+
+	void LMP::Handle (Entity e)
+	{
+		Core::Instance ().Handle (e);
+	}
+
+	QList<QAction*> LMP::GetActions (ActionsEmbedPlace place) const
+	{
+		QList<QAction*> result;
+
+		if (place == AEPCommonContextMenu)
+			result += Core::Instance ().GetShowAction ();
+
+		return result;
+	}
+}
 }
 
-void LMP::SecondInit ()
-{
-}
-
-void LMP::Release ()
-{
-	Core::Instance ().Release ();
-	XmlSettingsManager::Instance ()->Release ();
-}
-
-QByteArray LMP::GetUniqueID () const
-{
-	return "org.LeechCraft.LMP";
-}
-
-QString LMP::GetName () const
-{
-	return "LMP";
-}
-
-QString LMP::GetInfo () const
-{
-	return "LeechCraft Media Player";
-}
-
-QStringList LMP::Provides () const
-{
-	return QStringList ("media");
-}
-
-QStringList LMP::Needs () const
-{
-	return QStringList ();
-}
-
-QStringList LMP::Uses () const
-{
-	return QStringList ();
-}
-
-void LMP::SetProvider (QObject*, const QString&)
-{
-}
-
-QIcon LMP::GetIcon () const
-{
-	return QIcon (":/plugins/lmp/resources/images/lmp.svg");
-}
-
-IVideoWidget* LMP::CreateWidget () const
-{
-	return Core::Instance ().CreateWidget ();
-}
-
-IVideoWidget* LMP::GetDefaultWidget () const
-{
-	return Core::Instance ().GetDefaultWidget ();
-}
-
-boost::shared_ptr<XmlSettingsDialog> LMP::GetSettingsDialog () const
-{
-	return SettingsDialog_;
-}
-
-EntityTestHandleResult LMP::CouldHandle (const LeechCraft::Entity& e) const
-{
-	EntityChecker ec (e);
-	return ec.Can () ?
-			EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
-			EntityTestHandleResult ();
-}
-
-void LMP::Handle (LeechCraft::Entity e)
-{
-	Core::Instance ().Handle (e);
-}
-
-QList<QAction*> LMP::GetActions (LeechCraft::ActionsEmbedPlace place) const
-{
-	QList<QAction*> result;
-
-	if (place == AEPCommonContextMenu)
-		result += Core::Instance ().GetShowAction ();
-
-	return result;
-}
-
-Q_EXPORT_PLUGIN2 (leechcraft_lmp, LeechCraft::Plugins::LMP::LMP);
-
+Q_EXPORT_PLUGIN2 (leechcraft_lmp, LeechCraft::LMP::LMP);

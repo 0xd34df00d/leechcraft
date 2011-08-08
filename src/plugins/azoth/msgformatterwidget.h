@@ -53,7 +53,11 @@ namespace Azoth
 		QAction *FormatAlignRight_;
 		QAction *FormatAlignJustify_;
 		
+		QAction *AddEmoticon_;
+		
 		bool HasCustomFormatting_;
+		
+		QWidget *SmilesTooltip_;
 	public:
 		MsgFormatterWidget (QTextEdit*, QWidget* = 0);
 		
@@ -74,6 +78,10 @@ namespace Azoth
 		void handleFont ();
 		
 		void handleParaAlignment ();
+		
+		void handleAddEmoticon ();
+		void handleEmoPackChanged ();
+		void insertEmoticon ();
 		
 		void checkCleared ();
 		void updateState (const QTextCharFormat&);

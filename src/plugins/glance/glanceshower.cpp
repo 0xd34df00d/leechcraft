@@ -78,7 +78,7 @@ namespace Glance
 
 		QAnimationGroup *animGroup = new QParallelAnimationGroup;
 
-		const int sqr = std::sqrt ((double)count);
+		const int sqr = std::sqrt (static_cast<double> (count));
 		int rows = sqr;
 		int cols = sqr;
 		if (rows * cols < count)
@@ -196,7 +196,7 @@ namespace Glance
 			int currentItem = -1;
 			const int count = TabWidget_->WidgetCount ();
 
-			const int sqrt = std::sqrt ((double)count);
+			const int sqrt = std::sqrt (static_cast<double> (count));
 			int rows = sqrt;
 			int cols = sqrt;
 			if (rows * cols < count)

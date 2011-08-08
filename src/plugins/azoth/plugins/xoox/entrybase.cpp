@@ -19,6 +19,7 @@
 #include "entrybase.h"
 #include <QImage>
 #include <QStringList>
+#include <QInputDialog>
 #include <QtDebug>
 #include <QXmppVCardIq.h>
 #include <QXmppPresence.h>
@@ -102,25 +103,17 @@ namespace Xoox
 
 	QList<QAction*> EntryBase::GetActions () const
 	{
-		if (VerString_.isEmpty ())
-			return Actions_;
-		
 		QList<QAction*> additional;
 		
-		const QStringList& caps = Account_->GetClientConnection ()->GetCapsManager ()->GetRawCaps (VerString_);
-		if (caps.isEmpty () ||
-				caps.contains (AdHocCommandManager::GetAdHocFeature ()))
+		if (!Commands_)
 		{
-			if (!Commands_)
-			{
-				Commands_ = new QAction (tr ("Commands..."), Account_);
-				connect (Commands_,
-						SIGNAL (triggered ()),
-						this,
-						SLOT (handleCommands ()));
-			}
-			additional << Commands_;
+			Commands_ = new QAction (tr ("Commands..."), Account_);
+			connect (Commands_,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (handleCommands ()));
 		}
+		additional << Commands_;
 		
 		return additional + Actions_;
 	}
@@ -410,9 +403,7 @@ namespace Xoox
 	void EntryBase::SetClientInfo (const QString& variant,
 			const QString& node, const QByteArray& ver)
 	{
-		VerString_ = ver;
-
-		QString type = Util::GetClientIDName (node);
+		QString type = XooxUtil::GetClientIDName (node);
 		if (type.isEmpty ())
 		{
 			if (!node.isEmpty ())
@@ -423,7 +414,7 @@ namespace Xoox
 		}
 		Variant2ClientInfo_ [variant] ["client_type"] = type;
 
-		QString name = Util::GetClientHRName (node);
+		QString name = XooxUtil::GetClientHRName (node);
 		if (name.isEmpty ())
 		{
 			if (!node.isEmpty ())
@@ -494,7 +485,41 @@ namespace Xoox
 	
 	void EntryBase::handleCommands ()
 	{
-		ExecuteCommandDialog *dia = new ExecuteCommandDialog (GetJID (), Account_);
+		QString jid = GetJID ();
+		if (GetEntryType () != ETPrivateChat)
+		{
+			QStringList commandable;
+			Q_FOREACH (const QString& var, Variant2VerString_.keys ())
+			{
+				const QStringList& caps = Account_->GetClientConnection ()->
+						GetCapsManager ()->GetRawCaps (Variant2VerString_ [var]);
+				if (caps.isEmpty () ||
+					caps.contains (AdHocCommandManager::GetAdHocFeature ()))
+					commandable << var;
+			}
+			
+			if (commandable.isEmpty ())
+				return;
+			else if (commandable.size () == 1)
+				jid += '/' + commandable.first ();
+			else
+			{
+				bool ok = true;
+				const QString& var = QInputDialog::getItem (0,
+						tr ("Select resource"),
+						tr ("Select resource for which to fetch the commands"),
+						commandable,
+						0,
+						false,
+						&ok);
+				if (!ok || var.isEmpty ())
+					return;
+				
+				jid += '/' + var;
+			}
+		}
+
+		ExecuteCommandDialog *dia = new ExecuteCommandDialog (jid, Account_);
 		dia->setAttribute (Qt::WA_DeleteOnClose);
 		dia->show ();
 	}

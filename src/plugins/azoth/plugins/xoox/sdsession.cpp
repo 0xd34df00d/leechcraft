@@ -299,7 +299,7 @@ namespace Xoox
 				continue;
 			
 			const QXmppElement& x = elem.firstChildElement ("x");
-			form.parse (Util::XmppElem2DomElem (x));
+			form.parse (XooxUtil::XmppElem2DomElem (x));
 			if (!form.isNull ())
 				break;
 		}
@@ -339,13 +339,7 @@ namespace Xoox
 		QXmppElement elem;
 		elem.setTagName ("query");
 		elem.setAttribute ("xmlns", "jabber:iq:register");
-		
-		QByteArray formData;
-		QXmlStreamWriter w (&formData);
-		form.toXml (&w);
-		QDomDocument doc;
-		doc.setContent (formData);
-		elem.appendChild (doc.documentElement ());
+		elem.appendChild (XooxUtil::Form2XmppElem (form));
 
 		regIq.setExtensions (QXmppElementList (elem));
 		

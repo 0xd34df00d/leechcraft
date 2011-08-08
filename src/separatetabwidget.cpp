@@ -175,8 +175,8 @@ namespace LeechCraft
 			const QIcon& icon, const QString& text)
 	{
 		int newIndex = index;
-		if (index >= WidgetCount () && !AddTabButtonAction_->isVisible ())
-			newIndex = WidgetCount () - 1;
+		if (index > WidgetCount () && !AddTabButtonAction_->isVisible ())
+			newIndex = WidgetCount ();
 
 		MainStackedWidget_->insertWidget (index, page);
 		int idx = MainTabBar_->insertTab (newIndex, icon, text);
@@ -285,7 +285,7 @@ namespace LeechCraft
 		if (index >= WidgetCount () && !IsAddTabActionVisible ())
 			return;
 
-		Widgets_ [index] = widget;
+		Widgets_ [index].reset (widget);
 	}
 
 	bool SeparateTabWidget::IsTabEnabled (int index) const
@@ -475,10 +475,9 @@ namespace LeechCraft
 		{
 			QHelpEvent *he = static_cast<QHelpEvent*> (e);
 			int index = TabAt (he->pos ());
-			if (Widgets_.value (index) &&
-					Widgets_ [index])
+			if (Widgets_.value (index))
 			{
-				QxtToolTip::show (he->globalPos (), Widgets_ [index], MainTabBar_);
+				QxtToolTip::show (he->globalPos (), Widgets_ [index].get (), MainTabBar_);
 				return true;
 			}
 			else
@@ -494,10 +493,6 @@ namespace LeechCraft
 				SIGNAL (currentChanged (int)),
 				this,
 				SLOT (handleCurrentChanged (int)));
-		connect (MainTabBar_,
-				SIGNAL (currentChanged (int)),
-				this,
-				SIGNAL (currentChanged (int)));
 
 		connect (MainTabBar_,
 				SIGNAL (tabCloseRequested (int)),
@@ -549,14 +544,13 @@ namespace LeechCraft
 	void SeparateTabWidget::PinTabActionsInit ()
 	{
 		connect (PinTab_,
-				SIGNAL (triggered (bool)),
+				SIGNAL (triggered ()),
 				this,
-				SLOT (on_PinTab__triggered (bool)));
-
+				SIGNAL (pinTabRequested ()));
 		connect (UnPinTab_,
-				SIGNAL (triggered (bool)),
+				SIGNAL (triggered ()),
 				this,
-				SLOT (on_UnPinTab__triggered (bool)));
+				SIGNAL (unpinTabRequested ()));
 
 		connect (DefaultTabAction_,
 				SIGNAL (triggered (bool)),
@@ -568,6 +562,8 @@ namespace LeechCraft
 	{
 		if (index >= WidgetCount () && !AddTabButtonAction_->isVisible ())
 			--index;
+
+		emit currentChanged (index);
 
 		MainTabBar_->setCurrentIndex (index);
 		MainStackedWidget_->setCurrentIndex (index);
@@ -588,25 +584,6 @@ namespace LeechCraft
 	void SeparateTabWidget::handleNewTabShortcutActivated ()
 	{
 		handleAddDefaultTab (true);
-	}
-
-	void  SeparateTabWidget::on_PinTab__triggered (bool)
-	{
-		MainTabBar_->moveTab (LastContextMenuTab_,
-				MainTabBar_->PinTabsCount ());
-		MainTabBar_->SetTabData (MainTabBar_->PinTabsCount ());
-		MainTabBar_->setPinTab (MainTabBar_->PinTabsCount ());
-
-		handleCurrentChanged (MainTabBar_->PinTabsCount () - 1);
-	}
-
-	void  SeparateTabWidget::on_UnPinTab__triggered (bool)
-	{
-		MainTabBar_->moveTab (LastContextMenuTab_,
-				MainTabBar_->PinTabsCount () - 1);
-		MainTabBar_->setUnPinTab (MainTabBar_->PinTabsCount () - 1);
-
-		handleCurrentChanged (MainTabBar_->PinTabsCount ());
 	}
 
 	void SeparateTabWidget::setPreviousTab ()

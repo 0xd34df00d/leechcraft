@@ -60,8 +60,8 @@ namespace LeechCraft
 		void addDefaultTab (bool);
 		void showAddTabButton (bool);
 		void tabWasInserted (int);
-		void tabWasRemoved (int);
-		
+		void tabWasRemoved (int);		
 	};
 }
+
 #endif // SEPARATETABBAR_H

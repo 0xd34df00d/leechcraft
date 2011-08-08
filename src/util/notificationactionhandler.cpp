@@ -34,9 +34,18 @@ namespace Util
 		const QStringList& sl = Entity_.Additional_ ["NotificationActions"].toStringList ();
 		Entity_.Additional_ ["NotificationActions"] = sl + QStringList (name);
 	}
+	
+	void NotificationActionHandler::AddDependentObject (QObject *obj)
+	{
+		DependentObjects_ << QPointer<QObject> (obj);
+	}
 
 	void NotificationActionHandler::notificationActionTriggered (int idx)
 	{
+		Q_FOREACH (const QPointer<QObject>& obj, DependentObjects_)
+			if (obj.isNull ())
+				return;
+
 		ActionName2Callback_.at (idx).second ();
 	}
 }

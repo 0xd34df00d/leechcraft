@@ -32,6 +32,9 @@
 #include <interfaces/isupportactivity.h>
 #include <interfaces/isupportgeolocation.h>
 #include <interfaces/isupportmediacalls.h>
+#ifdef ENABLE_CRYPT
+#include <interfaces/isupportpgp.h>
+#endif
 #include "glooxclentry.h"
 
 class QXmppCall;
@@ -52,6 +55,8 @@ namespace Xoox
 		QString Status_;
 		int Priority_;
 	};
+	
+	bool operator== (const GlooxAccountState&, const GlooxAccountState&);
 
 	class GlooxProtocol;
 	class TransferManager;
@@ -66,6 +71,9 @@ namespace Xoox
 					   , public ISupportActivity
 					   , public ISupportGeolocation
 					   , public ISupportMediaCalls
+#ifdef ENABLE_CRYPT
+					   , public ISupportPGP
+#endif
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IAccount
@@ -75,7 +83,11 @@ namespace Xoox
 				LeechCraft::Azoth::ISupportMood
 				LeechCraft::Azoth::ISupportActivity
 				LeechCraft::Azoth::ISupportGeolocation
-				LeechCraft::Azoth::ISupportMediaCalls);
+				LeechCraft::Azoth::ISupportMediaCalls
+#ifdef ENABLE_CRYPT
+				LeechCraft::Azoth::ISupportPGP
+#endif
+			);
 
 		QString Name_;
 		GlooxProtocol *ParentProtocol_;
@@ -136,6 +148,12 @@ namespace Xoox
 		
 		MediaCallFeatures GetMediaCallFeatures () const;
 		QObject* Call (const QString& id, const QString& variant);
+		
+#ifdef ENABLE_CRYPT
+		void SetPrivateKey (const QCA::PGPKey&);
+		void SetEntryKey (QObject*, const QCA::PGPKey&);
+		void SetEncryptionEnabled (QObject*, bool);
+#endif
 
 		QString GetJID () const;
 		QString GetNick () const;
@@ -173,13 +191,21 @@ namespace Xoox
 		void itemCancelledSubscription (QObject*, const QString&);
 		void itemGrantedSubscription (QObject*, const QString&);
 		void statusChanged (const EntryStatus&);
-		void addContactSuggested (const QString&, const QString&, const QStringList&);
+		void addContactSuggested (const QString&,
+				const QString&, const QStringList&);
+		void mucInvitationReceived (const QVariantMap&,
+				const QString&, const QString&);
 		
 		void gotConsolePacket (const QByteArray&, int);
 		
 		void geolocationInfoChanged (const QString&, QObject*);
 		
 		void called (QObject*);
+		
+#ifdef ENABLE_CRYPT
+		void signatureVerified (QObject*, bool);
+		void encryptionStateChanged (QObject*, bool);
+#endif
 
 		void accountSettingsChanged ();
 

@@ -21,6 +21,7 @@
 #include <QObject>
 #include <QStringList>
 #include <QMap>
+#include <QIcon>
 
 class QAction;
 class QIcon;
@@ -52,10 +53,13 @@ namespace LeechCraft
 		void rotateLeft ();
 		void rotateRight ();
 		void navigateToTabNumber ();
+		
+		void handlePinTab ();
+		void handleUnpinTab ();
 
 		void add (const QString&, QWidget*);
 		void add (const QString&, QWidget*,
-				const QIcon& icon);
+				QIcon icon);
 		void remove (QWidget*);
 
 		/** Removes the tab at the given index. Calls
@@ -79,6 +83,9 @@ namespace LeechCraft
 		int FindTabForWidget (QWidget*) const;
 		QString MakeTabName (const QString&) const;
 		void InvalidateName ();
+		
+		QStringList GetOriginalNames () const;
+		void SetOriginalNames (const QStringList&);
 	};
 };
 

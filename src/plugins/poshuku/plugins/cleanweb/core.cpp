@@ -41,6 +41,8 @@
 #include "flashonclickwhitelist.h"
 #include "userfiltersmodel.h"
 
+Q_DECLARE_METATYPE (QWebFrame*);
+
 namespace LeechCraft
 {
 namespace Poshuku
@@ -226,11 +228,13 @@ namespace CleanWeb
 		};
 	};
 
-	LeechCraft::Poshuku::CleanWeb::Core::Core ()
+	Core::Core ()
 	: FlashOnClickPlugin_ (0)
 	, FlashOnClickWhitelist_ (new FlashOnClickWhitelist ())
 	, UserFilters_ (new UserFiltersModel (this))
 	{
+		qRegisterMetaType<QWebFrame*> ("QWebFrame*");
+
 		HeaderLabels_ << tr ("Name")
 			<< tr ("Last updated")
 			<< tr ("URL");
@@ -927,6 +931,11 @@ namespace CleanWeb
 					this,
 					SLOT (moreDelayedRemoveElements ()),
 					Qt::UniqueConnection);
+			connect (frame,
+					SIGNAL (destroyed (QObject*)),
+					this,
+					SLOT (handleFrameDestroyed ()),
+					Qt::UniqueConnection);
 			MoreDelayedURLs_ [frame] << url;
 		}
 	}
@@ -944,6 +953,13 @@ namespace CleanWeb
 			else
 				qWarning () << Q_FUNC_INFO << "not found" << url;
 		}
+		
+		MoreDelayedURLs_.remove (frame);
+	}
+	
+	void Core::handleFrameDestroyed ()
+	{
+		MoreDelayedURLs_.remove (static_cast<QWebFrame*> (sender ()));
 	}
 }
 }

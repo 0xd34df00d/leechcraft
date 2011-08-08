@@ -57,11 +57,16 @@ namespace Acetamide
 		void Sinchronize ();
 
 		IrcAccount* GetAccount () const;
+		QList<IrcServerHandler*> GetServerHandlers () const;
 
 		bool IsServerExists (const QString&);
 		void JoinServer (const ServerOptions&);
 		void JoinChannel (const ServerOptions&,
 				const ChannelOptions&);
+
+		void SetBookmarks (const QList<IrcBookmark>&);
+		QList<IrcBookmark> GetBookmarks () const;
+
 		IrcServerHandler* GetIrcServerHandler (const QString&);
 		void ClosePrivateChat (QString, const QString&);
 		void CloseServer (const QString&);

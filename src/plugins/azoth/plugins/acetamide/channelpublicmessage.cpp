@@ -19,7 +19,7 @@
 #include "channelpublicmessage.h"
 #include "channelclentry.h"
 #include "channelhandler.h"
-
+#include <QtDebug>
 namespace LeechCraft
 {
 namespace Azoth

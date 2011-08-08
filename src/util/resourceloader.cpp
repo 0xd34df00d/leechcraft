@@ -112,6 +112,32 @@ namespace LeechCraft
 						<< "; rel path:"
 						<< RelativePath_;
 		}
+		
+		QFileInfoList ResourceLoader::List (const QString& option,
+				const QStringList& nameFilters, QDir::Filters filters) const
+		{
+			QSet<QString> alreadyListed;
+			QFileInfoList result;
+			Q_FOREACH (const QString& prefix,
+					LocalPrefixesChain_ + GlobalPrefixesChain_)
+			{
+				const QString& path = prefix + RelativePath_ + option;
+				QDir dir (path);
+				const QFileInfoList& list =
+						dir.entryInfoList (nameFilters, filters);
+				Q_FOREACH (const QFileInfo& info, list)
+				{
+					const QString& fname = info.fileName ();
+					if (alreadyListed.contains (fname))
+						continue;
+					
+					alreadyListed << fname;
+					result << info;
+				}
+			}
+			
+			return result;
+		}
 
 		QString ResourceLoader::GetPath (const QStringList& pathVariants) const
 		{

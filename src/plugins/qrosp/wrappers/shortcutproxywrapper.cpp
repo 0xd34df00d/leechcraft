@@ -22,12 +22,12 @@ namespace LeechCraft
 {
 namespace Qrosp
 {
-	ShortcutProxyWrapper::ShortcutProxyWrapper (const IShortcutProxy *proxy)
+	ShortcutProxyWrapper::ShortcutProxyWrapper (IShortcutProxy *proxy)
 	: ShortcutProxy_ (proxy)
 	{
 	}
 
-	QList<QKeySequence> ShortcutProxyWrapper::GetShortcuts (const QObject *object, const QString& id) const
+	QList<QKeySequence> ShortcutProxyWrapper::GetShortcuts (QObject *object, const QString& id)
 	{
 		return ShortcutProxy_->GetShortcuts (object, id);
 	}

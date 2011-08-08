@@ -30,13 +30,17 @@ namespace Azoth
 
 		bool ShowOffline_;
 		bool MUCMode_;
+		bool OrderByStatus_;
 		QObject *MUCEntry_;
 	public:
 		SortFilterProxyModel (QObject* = 0);
+
 		void SetMUCMode (bool);
 		void SetMUC (QObject*);
 	public slots:
 		void showOfflineContacts (bool);
+	private slots:
+		void handleStatusOrderingChanged ();
 	protected:
 		bool filterAcceptsRow (int, const QModelIndex&) const;
 		bool lessThan (const QModelIndex&, const QModelIndex&) const;

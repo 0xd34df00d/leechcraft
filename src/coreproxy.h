@@ -24,6 +24,8 @@
 
 namespace LeechCraft
 {
+	class MWProxy;
+
 	/** Implements the ICoreProxy's interface.
 	 */
 	class CoreProxy : public QObject
@@ -33,16 +35,19 @@ namespace LeechCraft
 		Q_INTERFACES (ICoreProxy);
 
 		Util::IDPool<int> Pool_;
+		MWProxy *MWProxy_;
 	public:
 		CoreProxy (QObject* = 0);
 		QNetworkAccessManager* GetNetworkAccessManager () const;
-		const IShortcutProxy* GetShortcutProxy () const;
+		IShortcutProxy* GetShortcutProxy () const;
+		IMWProxy* GetMWProxy () const;
 		QModelIndex MapToSource (const QModelIndex&) const;
 		Util::BaseSettingsManager* GetSettingsManager () const;
 		QMainWindow* GetMainWindow () const;
 		ICoreTabWidget* GetTabWidget () const;
 		QMap<int, QString> GetIconPath (const QString&) const;
 		QIcon GetIcon (const QString&, const QString& = QString ()) const;
+		void UpdateIconset (const QList<QAction*>&) const;
 		ITagsManager* GetTagsManager () const;
 		QStringList GetSearchCategories () const;
 		int GetID ();

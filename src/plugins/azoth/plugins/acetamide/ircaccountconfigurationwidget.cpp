@@ -17,6 +17,8 @@
  **********************************************************************/
 
 #include "ircaccountconfigurationwidget.h"
+#include <QTextCodec>
+
 
 namespace LeechCraft
 {
@@ -29,6 +31,11 @@ namespace Acetamide
 	: QWidget (parent)
 	{
 		Ui_.setupUi (this);
+		Q_FOREACH (const QByteArray& codec, QTextCodec::availableCodecs ())
+			Ui_.DefaultEncoding_->addItem (QString::fromUtf8 (codec));
+		Ui_.DefaultEncoding_->model ()->sort (0);
+		Ui_.DefaultEncoding_->
+				setCurrentIndex (Ui_.DefaultEncoding_->findText ("UTF-8"));
 	}
 
 	void IrcAccountConfigurationWidget::SetRealName (const QString& real)
@@ -60,6 +67,47 @@ namespace Acetamide
 	QStringList IrcAccountConfigurationWidget::GetNickNames () const
 	{
 		return Ui_.NickNames_->toPlainText ().split ('\n');
+	}
+
+	void IrcAccountConfigurationWidget::SetDefaultServer (const QString& server)
+	{
+		Ui_.DefaultIrcServer_->setText (server);
+	}
+
+	QString IrcAccountConfigurationWidget::GetDefaultServer() const
+	{
+		return Ui_.DefaultIrcServer_->text ();
+	}
+
+	void IrcAccountConfigurationWidget::SetDefaultPort (int port)
+	{
+		Ui_.DefaultPort_->setValue (port);
+	}
+
+	int IrcAccountConfigurationWidget::GetDefaultPort() const
+	{
+		return Ui_.DefaultPort_->value ();
+	}
+
+	void IrcAccountConfigurationWidget::SetDefaultEncoding (const QString& encoding)
+	{
+		Ui_.DefaultEncoding_->
+				setCurrentIndex (Ui_.DefaultEncoding_->findText (encoding));
+	}
+
+	QString IrcAccountConfigurationWidget::GetDefaultEncoding() const
+	{
+		return Ui_.DefaultEncoding_->currentText ();
+	}
+
+	void IrcAccountConfigurationWidget::SetDefaultChannel (const QString& channel)
+	{
+		Ui_.DefaultChannel_->setText (channel);
+	}
+
+	QString IrcAccountConfigurationWidget::GetDefaultChannel() const
+	{
+		return Ui_.DefaultChannel_->text ();
 	}
 
 };

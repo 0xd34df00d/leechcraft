@@ -37,6 +37,7 @@ namespace Xoox
 	class RoomCLEntry;
 	class GlooxAccount;
 	class RoomParticipantEntry;
+	class FormBuilder;
 
 	class RoomHandler : public QObject
 	{
@@ -82,7 +83,6 @@ namespace Xoox
 				QXmppMucItem::Affiliation,
 				QXmppMucItem::Role,
 				const QString&);
-		void HandleNickChange (const QString&, const QString&);
 		void HandleMessage (const QXmppMessage&, const QString&);
 		void UpdatePerms (const QList<QXmppMucItem>&);
 		/** Creates a new entry for the given nick if it
@@ -95,6 +95,8 @@ namespace Xoox
 		void handleParticipantAdded (const QString&);
 		void handleParticipantChanged (const QString&);
 		void handleParticipantRemoved (const QString&);
+		
+		void requestVoice ();
 	private:
 		/** Creates a new entry for the given nick.
 		 */
@@ -113,6 +115,8 @@ namespace Xoox
 		void HandlePasswordRequired ();
 
 		void RemoveThis ();
+	signals:
+		void gotPendingForm (QXmppDataForm*, const QString&);
 	};
 }
 }

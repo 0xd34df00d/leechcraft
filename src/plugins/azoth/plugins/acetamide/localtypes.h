@@ -71,6 +71,19 @@ namespace Acetamide
 		QList<std::string> Parameters_;
 	};
 
+	struct IrcBookmark
+	{
+		QString Name_;
+		QString ServerName_;
+		QString ServerEncoding_;
+		QString NickName_;
+		QString ChannelName_;
+		QString ChannelPassword_;
+		int ServerPort_;
+		bool SSL_;
+		bool AutoJoin_;
+	};
+
 	bool operator== (const ChannelOptions&, const ChannelOptions&);
 };
 };

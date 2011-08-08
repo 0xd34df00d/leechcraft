@@ -19,7 +19,11 @@
 #include "systemtrayhandler.h"
 #include <interfaces/structures.h>
 #include <QMenu>
+#include <QApplication>
+#include <QDesktopWidget>
+#include <QPainter>
 #include "generalhandler.h"
+#include "xmlsettingsmanager.h"
 
 #ifdef HAVE_QML
 #include "qml/visualnotificationsview.h"
@@ -33,12 +37,37 @@ namespace AdvancedNotifications
 	{
 	}
 
-	ConcreteHandlerBase::HandlerType SystemTrayHandler::GetHandlerType () const
+	NotificationMethod SystemTrayHandler::GetHandlerMethod () const
 	{
-		return HTSystemTray;
+		return NMTray;
+	}
+	
+	namespace
+	{
+		QPixmap GetPixmap (const Entity& e, ICoreProxy_ptr proxy)
+		{
+			QPixmap pixmap = e.Additional_ ["NotificationPixmap"].value<QPixmap> ();
+			if (pixmap.isNull ())
+			{
+				QString mi = "information";
+				switch (e.Additional_ ["Priority"].toInt ())
+				{
+					case PWarning_:
+						mi = "warning";
+						break;
+					case PCritical_:
+						mi = "error";
+					default:
+						break;
+				}
+				
+				pixmap = proxy->GetIcon (mi).pixmap (QSize (64, 64));
+			}
+			return pixmap;
+		}
 	}
 
-	void SystemTrayHandler::Handle (const Entity& e)
+	void SystemTrayHandler::Handle (const Entity& e, const NotificationRule&)
 	{
 		const QString& cat = e.Additional_ ["org.LC.AdvNotifications.EventCategory"].toString ();
 		const QString& eventId = e.Additional_ ["org.LC.AdvNotifications.EventID"].toString ();
@@ -49,9 +78,9 @@ namespace AdvancedNotifications
 			if (!Events_.contains (eventId))
 			{
 				EventData data;
+				data.EventID_ = eventId;
 				data.Category_ = cat;
 				data.VisualPath_ = e.Additional_ ["org.LC.AdvNotifications.VisualPath"].toStringList ();
-				data.Pixmap_ = e.Additional_ ["NotificationPixmap"].value<QPixmap> ();
 				data.HandlingObject_ = e.Additional_ ["HandlingObject"].value<QObject_ptr> ();
 				data.Actions_ = e.Additional_ ["NotificationActions"].toStringList ();
 				Events_ [eventId] = data;
@@ -63,6 +92,9 @@ namespace AdvancedNotifications
 			else
 				Events_ [eventId].Count_ = e.Additional_.value ("org.LC.AdvNotifications.Count", 1).toInt ();
 			Events_ [eventId].ExtendedText_ = e.Additional_ ["org.LC.AdvNotifications.ExtendedText"].toString ();
+			Events_ [eventId].FullText_ = e.Additional_ ["org.LC.AdvNotifications.FullText"].toString ();
+			
+			Events_ [eventId].Pixmap_ = GetPixmap (e, GH_->GetProxy ());
 		}
 		else if (!Events_.remove (eventId))
 			return;
@@ -85,7 +117,16 @@ namespace AdvancedNotifications
 				SLOT (handleTrayActivated (QSystemTrayIcon::ActivationReason)));
 		
 #ifdef HAVE_QML
-		Icon2NotificationView_ [trayIcon] = new VisualNotificationsView;
+		VisualNotificationsView *vnv = new VisualNotificationsView;
+		connect (vnv,
+				SIGNAL (actionTriggered (const QString&, int)),
+				this,
+				SLOT (handleActionTriggered (const QString&, int)));
+		connect (vnv,
+				SIGNAL (dismissEvent (const QString&)),
+				this,
+				SLOT (dismissNotification (const QString&)));
+		Icon2NotificationView_ [trayIcon] = vnv;
 #endif
 	}
 	
@@ -101,6 +142,8 @@ namespace AdvancedNotifications
 #ifdef HAVE_QML
 		EventsForIcon_.clear ();
 #endif
+		
+		QSet<QSystemTrayIcon*> visibleIcons;
 
 		Q_FOREACH (const QString& event, Events_.keys ())
 		{
@@ -109,6 +152,7 @@ namespace AdvancedNotifications
 			if (!icon->isVisible ())
 				icon->show ();
 			icons2hide.remove (icon);
+			visibleIcons << icon;
 			
 #ifdef HAVE_QML
 			EventsForIcon_ [icon] << data;
@@ -144,15 +188,91 @@ namespace AdvancedNotifications
 			menu->addSeparator ();
 			menu->addAction (data.ExtendedText_)->setEnabled (false);
 		}
+
+#ifdef HAVE_QML
+		Q_FOREACH (QSystemTrayIcon *icon, Category2Icon_.values ())
+		{
+			VisualNotificationsView *view = Icon2NotificationView_ [icon];
+			if (!view->isVisible ())
+				continue;
+
+			const QList<EventData>& events = EventsForIcon_ [icon];
+			view->SetEvents (events);
+			if (events.isEmpty ())
+				view->hide ();
+		}
+#endif
+
+		Q_FOREACH (QSystemTrayIcon *icon, visibleIcons)
+			UpdateSysTrayIcon (icon);
 		
 		Q_FOREACH (QSystemTrayIcon *icon, icons2hide)
 			icon->hide ();
+	}
+	
+	void SystemTrayHandler::UpdateSysTrayIcon (QSystemTrayIcon *trayIcon)
+	{
+		const QString& category = Category2Icon_.key (trayIcon);
+
+		QIcon icon = GH_->GetIconForCategory (category);
+		
+		if (!XmlSettingsManager::Instance ()
+				.property ("EnableCounter." + category.toLatin1 ()).toBool ())
+		{
+			trayIcon->setIcon (icon);
+			return;
+		}
+
+		const QSize& iconSize = trayIcon->geometry ().size ();
+		QPixmap px = icon.pixmap (iconSize);
+		
+		int eventCount = 0;
+		Q_FOREACH (const EventData& event, Events_.values ())
+			if (event.Category_ == category)
+				eventCount += event.Count_;
+
+		const QString& countText = QString::number (eventCount);
+
+		QFont font = qApp->font ();
+		font.setPointSize ((iconSize.height () + 2 * font.pointSize ()) / 3);
+		font.setBold (true);
+		font.setItalic (true);
+		while (true)
+		{
+			const int width = QFontMetrics (font).width (countText);
+			if (width > iconSize.width () ||
+					font.pointSize () >= iconSize.height ())
+				font.setPointSize (font.pointSize () - 1);
+			else
+				break;
+		}
+		
+		const bool tooSmall = font.pointSize () < 5;
+		if (tooSmall)
+			font.setPointSize (qApp->font ().pointSize ());
+
+		QPainter p (&px);
+		p.setFont (font);
+		p.setPen (Qt::darkCyan);
+		p.drawText (0, 1,
+				iconSize.width (), iconSize.height (),
+				Qt::AlignBottom | Qt::AlignRight,
+				tooSmall ? "#" : countText);
+		p.end ();
+		
+		trayIcon->setIcon (QIcon (px));
 	}
 	
 	void SystemTrayHandler::handleActionTriggered ()
 	{
 		const QString& event = sender ()->property ("EventID").toString ();
 		const int index = sender ()->property ("Index").toInt ();
+		
+		handleActionTriggered (event, index);
+	}
+	
+	void SystemTrayHandler::handleActionTriggered (const QString& event, int index)
+	{
 		if (!Events_.contains (event))
 		{
 			qWarning () << Q_FUNC_INFO
@@ -168,7 +288,11 @@ namespace AdvancedNotifications
 	
 	void SystemTrayHandler::dismissNotification ()
 	{
-		const QString& event = sender ()->property ("EventID").toString ();
+		dismissNotification (sender ()->property ("EventID").toString ());
+	}
+	
+	void SystemTrayHandler::dismissNotification (const QString& event)
+	{
 		if (Events_.remove (event))
 			RebuildState ();
 	}
@@ -189,8 +313,23 @@ namespace AdvancedNotifications
 		}
 
 		VisualNotificationsView *view = Icon2NotificationView_ [trayIcon];
-		view->SetEvents (EventsForIcon_ [trayIcon]);
-		view->move (QCursor::pos ());
+		if (!view->isVisible ())
+		{
+			view->SetEvents (EventsForIcon_ [trayIcon]);
+
+			QPoint pos = QCursor::pos ();
+			const QRect& geometry = qApp->desktop ()->screenGeometry (pos);
+			const QSize& size = view->size ();
+			const bool dropDown = pos.y () < geometry.height () / 2;
+			const bool dropRight = pos.x () + size.width () < geometry.width ();
+			
+			if (!dropDown)
+				pos.ry () -= size.height ();
+			if (!dropRight)
+				pos.rx () -= size.width ();
+			
+			view->move (pos);
+		}
 		view->setVisible (!view->isVisible ());
 #endif
 	}

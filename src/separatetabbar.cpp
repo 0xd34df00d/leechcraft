@@ -19,11 +19,13 @@
 #include "separatetabbar.h"
 #include <QMouseEvent>
 #include <QStyle>
+#include <QStylePainter>
+#include <QStyleOption>
 #include <QtDebug>
 #include "coreproxy.h"
 #include "separatetabwidget.h"
-#include <QStylePainter>
-#include <QStyleOption>
+#include "core.h"
+#include "tabmanager.h"
 
 namespace LeechCraft
 {
@@ -36,6 +38,7 @@ namespace LeechCraft
 		setExpanding (false);
 		setIconSize (QSize (15, 15));
 		setContextMenuPolicy (Qt::CustomContextMenu);
+		setElideMode (Qt::ElideRight);
 
 		CloseSide_ = (QTabBar::ButtonPosition)this->style ()->
 				styleHint (QStyle::SH_TabBar_CloseButtonPosition);
@@ -66,7 +69,7 @@ namespace LeechCraft
 
 	void SeparateTabBar::SetTabData (int index)
 	{
-		if ((index < 0) || (index >= count () - 1))
+		if (index < 0 || index >= count () - 1)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "invalid index "
@@ -79,7 +82,7 @@ namespace LeechCraft
 
 	void SeparateTabBar::SetTabNoClosable (int index)
 	{
-		if ((index < 0) || (index >= count ()))
+		if (index < 0 || index >= count ())
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "invalid index "
@@ -108,8 +111,16 @@ namespace LeechCraft
 	QSize SeparateTabBar::tabSizeHint (int index) const
 	{
 		QSize size = QTabBar::tabSizeHint (index);
-		if ((index == count () - 1) && IsLastTab_)
+		const int tc = count ();
+		if (index == tc - 1 && IsLastTab_)
 			size.setWidth (30);
+		else
+		{
+			const int target = std::max (100,
+					this->size ().width () / tc);
+			if (size.width () > target)
+				size.setWidth (target);
+		}
 
 		return size;
 	}
@@ -117,10 +128,13 @@ namespace LeechCraft
 	void SeparateTabBar::mouseReleaseEvent (QMouseEvent *event)
 	{
 		int index = tabAt (event->pos ());
-		if ((index == count () - 1) &&
-				(event->button () == Qt::LeftButton) &&
+		if (index == count () - 1 &&
+				event->button () == Qt::LeftButton &&
 				IsLastTab_)
+		{
 			emit addDefaultTab (true);
+			return;
+		}
 
 		if (TabWidget_->IsInMoveProcess ())
 		{
@@ -135,19 +149,20 @@ namespace LeechCraft
 
 			TabWidget_->SetInMoveProcess (false);
 		}
+		else if (index != -1 &&
+				event->button () == Qt::MidButton &&
+				index != count () - 1)
+			Core::Instance ().GetTabManager ()->remove (index);
+
 		QTabBar::mouseReleaseEvent (event);
 	}
 
 	void SeparateTabBar::mousePressEvent (QMouseEvent *event)
 	{
-		int index = tabAt (event->pos ());
-		if ((index == count () - 1) &&
-				(event->button () == Qt::LeftButton) &&
-				IsLastTab_)
-		{
-			mouseReleaseEvent (event);
+		if (IsLastTab_ &&
+				event->button () == Qt::LeftButton &&
+				tabAt (event->pos ()) == count () - 1)
 			return;
-		}
 
 		QTabBar::mousePressEvent (event);
 	}
@@ -167,14 +182,14 @@ namespace LeechCraft
 		for (int i = 0; i < count (); ++i)
 			length += tabRect (i).width ();
 
-		if ((length + 30 > width ()) && IsLastTab_)
+		if (length + 30 > width () && IsLastTab_)
 		{
 			IsLastTab_ = false;
 			removeTab (count () - 1);
 			emit showAddTabButton (true);
 		}
 		
-		if ((index != count () - 1 ) && (IsLastTab_))
+		if (index != count () - 1 && (IsLastTab_))
 			emit tabWasInserted (index);
 	}
 
@@ -196,7 +211,7 @@ namespace LeechCraft
 			emit showAddTabButton (false);
 		}
 
-		if ((index != count () - 1 ) && (!IsLastTab_))
+		if (index != count () - 1 && !IsLastTab_)
 			emit tabWasRemoved (index);
 	}
 
@@ -205,23 +220,20 @@ namespace LeechCraft
 		QTabBar::paintEvent (event);
 		QStylePainter painter (this);
 
-		for(int i = 0; i < count (); ++i)
+		if (count () > 0 && IsLastTab_)
 		{
+			CoreProxy proxy;
 			QStyleOptionTabV2 option;
-			initStyleOption(&option, i);
-			if ((i == count () - 1) && (IsLastTab_))
-			{
-				CoreProxy proxy;
-				QIcon icon = proxy.GetIcon ("addjob");
-				painter.drawItemPixmap (option.rect, Qt::AlignCenter, 
-						icon.pixmap (QSize (15, 15)));
-			}
+			initStyleOption (&option, count () - 1);
+			QIcon icon = proxy.GetIcon ("addjob");
+			painter.drawItemPixmap (option.rect, Qt::AlignCenter, 
+					icon.pixmap (QSize (15, 15)));
 		}
 	}
 	
 	void SeparateTabBar::setPinTab (int index)
 	{
-		if ((index < 0) || (index >= count () - 1))
+		if (index < 0 || index >= count () - 1)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "invalid index "
@@ -238,7 +250,7 @@ namespace LeechCraft
 
 	void SeparateTabBar::setUnPinTab (int index)
 	{
-		if ((index < 0) || (index >= count () - 1))
+		if (index < 0 || index >= count () - 1)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "invalid index "

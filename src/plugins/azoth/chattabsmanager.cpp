@@ -138,8 +138,25 @@ namespace Azoth
 				Qt::UniqueConnection);
 	}
 	
+	void ChatTabsManager::HandleEntryAdded (ICLEntry *entry)
+	{
+		if (entry->GetEntryType () != ICLEntry::ETPrivateChat)
+			return;
+		
+		QObject *mucObj = entry->GetParentCLEntry ();
+		ICLEntry *muc = qobject_cast<ICLEntry*> (mucObj);
+		UpdateMUCTab (muc);
+	}
+	
 	void ChatTabsManager::HandleEntryRemoved (ICLEntry *entry)
 	{
+		if (entry->GetEntryType () == ICLEntry::ETPrivateChat)
+		{
+			QObject *mucObj = entry->GetParentCLEntry ();
+			ICLEntry *muc = qobject_cast<ICLEntry*> (mucObj);
+			UpdateMUCTab (muc);
+		}
+
 		if (!Entry2Tab_.contains (entry->GetEntryID ()))
 			return;
 		
@@ -182,6 +199,19 @@ namespace Azoth
 		tab->TabMadeCurrent ();
 			
 		return false;
+	}
+	
+	void ChatTabsManager::UpdateMUCTab (ICLEntry *muc)
+	{
+		if (!muc)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "passed obj doesn't implement ICLEntry";
+			return;
+		}
+		
+		if (Entry2Tab_.contains (muc->GetEntryID ()))
+			Entry2Tab_ [muc->GetEntryID ()]->HandleMUCParticipantsChanged ();
 	}
 
 	void ChatTabsManager::handleNeedToClose (ChatTab *tab)

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="Rules" />
+		<item type="customwidget" name="RulesWidget" label="own" />
+	</page>
+	<page>
+		<label value="Methods" />
+		<tab>
+			<label value="Audio" />
+			<item type="checkbox" property="EnableAudioNots" default="true">
+				<label value="Enable audio notifications" />
+			</item>
+			<item type="combobox" property="AudioTheme" mayHaveDataSource="true">
+				<label value="Audio theme:" />
+				<option name="oxygen" default="true">
+					<label value="Oxygen" />
+				</option>
+			</item>
+		</tab>
+		<tab>
+			<label value="System tray" />
+			<groupbox>
+				<label value="Counters" />
+				<item type="checkbox" property="EnableCounter.org.LC.AdvNotifications.IM" default="true">
+					<label value="Enable for IM events" />
+				</item>
+			</groupbox>
+		</tab>
+	</page>
+</settings>

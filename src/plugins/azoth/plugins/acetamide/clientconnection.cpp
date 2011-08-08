@@ -27,6 +27,7 @@
 #include "ircprotocol.h"
 #include "ircserverclentry.h"
 #include "ircserverhandler.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -67,6 +68,11 @@ namespace Acetamide
 	IrcAccount* ClientConnection::GetAccount () const
 	{
 		return Account_;
+	}
+
+	QList<IrcServerHandler*> ClientConnection::GetServerHandlers () const
+	{
+		return ServerHandlers_.values ();
 	}
 
 	bool ClientConnection::IsServerExists (const QString& key)
@@ -125,8 +131,57 @@ namespace Acetamide
 		}
 	}
 
-	IrcServerHandler*
-			ClientConnection::GetIrcServerHandler (const QString& id)
+	void ClientConnection::SetBookmarks (const QList<IrcBookmark>& bookmarks)
+	{
+		QList<QVariant> res;
+		Q_FOREACH (const IrcBookmark& bookmark, bookmarks)
+		{
+			QByteArray result;
+			{
+				QDataStream ostr (&result, QIODevice::WriteOnly);
+				ostr << bookmark.Name_
+						<< bookmark.ServerName_
+						<< bookmark.ServerPort_
+						<< bookmark.ServerEncoding_
+						<< bookmark.ChannelName_
+						<< bookmark.ChannelPassword_
+						<< bookmark.NickName_
+						<< bookmark.SSL_
+						<< bookmark.AutoJoin_;
+			}
+
+			res << QVariant::fromValue (result);
+		}
+		XmlSettingsManager::Instance().setProperty ("Bookmarks",
+				QVariant::fromValue (res));
+	}
+
+	QList<IrcBookmark> ClientConnection::GetBookmarks () const
+	{
+		QList<QVariant> list = XmlSettingsManager::Instance().Property ("Bookmarks",
+				QList<QVariant> ()).toList ();
+
+		QList<IrcBookmark> bookmarks;
+		Q_FOREACH (const QVariant& variant, list)
+		{
+			IrcBookmark bookmark;
+			QDataStream istr (variant.toByteArray ());
+			istr >> bookmark.Name_
+					>> bookmark.ServerName_
+					>> bookmark.ServerPort_
+					>> bookmark.ServerEncoding_
+					>> bookmark.ChannelName_
+					>> bookmark.ChannelPassword_
+					>> bookmark.NickName_
+					>> bookmark.SSL_
+					>> bookmark.AutoJoin_;
+
+			bookmarks << bookmark;
+		}
+		return bookmarks;
+	}
+
+	IrcServerHandler* ClientConnection::GetIrcServerHandler (const QString& id)
 	{
 		return ServerHandlers_ [id];
 	}
@@ -146,23 +201,13 @@ namespace Acetamide
 	void ClientConnection::DisconnectFromAll ()
 	{
 		Q_FOREACH (IrcServerHandler *ish, ServerHandlers_.values ())
-		{
-			ish->LeaveAllChannel ();
-			ish->CloseAllPrivateChats ();
 			ish->DisconnectFromServer ();
-			ServerHandlers_.remove (ish->GetServerID_ ());
-			Account_->handleEntryRemoved (ish->GetCLEntry ());
-		}
 	}
 
 	void ClientConnection::QuitServer (const QStringList& list)
 	{
 		IrcServerHandler *ish = ServerHandlers_ [list.last ()];
-		ish->LeaveAllChannel ();
-		ish->CloseAllPrivateChats ();
 		ish->DisconnectFromServer ();
-		ServerHandlers_.remove (ish->GetServerID_ ());
-		Account_->handleEntryRemoved (ish->GetCLEntry ());
 	}
 
 	void ClientConnection::SetConsoleEnabled (bool enabled)

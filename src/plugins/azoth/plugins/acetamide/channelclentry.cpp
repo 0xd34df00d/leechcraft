@@ -186,7 +186,7 @@ namespace Acetamide
 
 	void ChannelCLEntry::Leave (const QString& msg)
 	{
-		ICH_->LeaveChannel (msg, true);
+		ICH_->Leave (msg);
 	}
 
 	QString ChannelCLEntry::GetNick () const
@@ -194,8 +194,9 @@ namespace Acetamide
 		return ICH_->GetIrcServerHandler ()->GetNickName ();
 	}
 
-	void ChannelCLEntry::SetNick (const QString&)
+	void ChannelCLEntry::SetNick (const QString& nick)
 	{
+		ICH_->SendPublicMessage ("/nick " + nick);
 	}
 	
 	QString ChannelCLEntry::GetGroupName () const

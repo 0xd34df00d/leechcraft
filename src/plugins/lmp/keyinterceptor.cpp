@@ -22,47 +22,42 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace LMP
+{
+	KeyInterceptor::KeyInterceptor (PlayerWidget *p, QObject *parent)
+	: QObject (parent)
+	, Player_ (p)
 	{
-		namespace LMP
+	}
+
+	KeyInterceptor::~KeyInterceptor ()
+	{
+	}
+
+	bool KeyInterceptor::eventFilter (QObject *obj, QEvent *e)
+	{
+		if (e->type () == QEvent::KeyPress)
 		{
-			KeyInterceptor::KeyInterceptor (PlayerWidget *p, QObject *parent)
-			: QObject (parent)
-			, Player_ (p)
-			{
-			}
+			keyPressEvent (dynamic_cast<QKeyEvent*> (e));
+			return true;
+		}
+		return QObject::eventFilter (obj, e);
+	}
 
-			KeyInterceptor::~KeyInterceptor ()
-			{
-			}
-
-			bool KeyInterceptor::eventFilter (QObject *obj, QEvent *e)
-			{
-				if (e->type () == QEvent::KeyPress)
-				{
-					keyPressEvent (dynamic_cast<QKeyEvent*> (e));
-					return true;
-				}
-				return QObject::eventFilter (obj, e);
-			}
-
-			void KeyInterceptor::keyPressEvent (QKeyEvent *e)
-			{
-				if (e->key () == Qt::Key_Right)
-					Player_->Forward (PlayerWidget::SkipLittle);
-				else if (e->key () == Qt::Key_Left)
-					Player_->Rewind (PlayerWidget::SkipLittle);
-				else if (e->key () == Qt::Key_Up)
-					Player_->Forward (PlayerWidget::SkipMedium);
-				else if (e->key () == Qt::Key_Down)
-					Player_->Rewind (PlayerWidget::SkipMedium);
-				else if (e->key () == Qt::Key_PageUp)
-					Player_->Forward (PlayerWidget::SkipALot);
-				else if (e->key () == Qt::Key_PageDown)
-					Player_->Rewind (PlayerWidget::SkipALot);
-			}
-		};
-	};
-};
-
-
+	void KeyInterceptor::keyPressEvent (QKeyEvent *e)
+	{
+		if (e->key () == Qt::Key_Right)
+			Player_->Forward (PlayerWidget::SkipLittle);
+		else if (e->key () == Qt::Key_Left)
+			Player_->Rewind (PlayerWidget::SkipLittle);
+		else if (e->key () == Qt::Key_Up)
+			Player_->Forward (PlayerWidget::SkipMedium);
+		else if (e->key () == Qt::Key_Down)
+			Player_->Rewind (PlayerWidget::SkipMedium);
+		else if (e->key () == Qt::Key_PageUp)
+			Player_->Forward (PlayerWidget::SkipALot);
+		else if (e->key () == Qt::Key_PageDown)
+			Player_->Rewind (PlayerWidget::SkipALot);
+	}
+}
+}

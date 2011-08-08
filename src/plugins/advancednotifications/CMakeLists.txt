@@ -24,17 +24,39 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	advancednotifications.cpp
+	core.cpp
 	generalhandler.cpp
 	concretehandlerbase.cpp
 	systemtrayhandler.cpp
-	handlersconfigurator.cpp
+	notificationruleswidget.cpp
+	xmlsettingsmanager.cpp
+	notificationrule.cpp
+	fieldmatch.cpp
+	typedmatchers.cpp
+	matchconfigdialog.cpp
+	visualhandler.cpp
+	audiohandler.cpp
 	)
 SET (HEADERS
 	advancednotifications.h
+	core.h
 	generalhandler.h
 	concretehandlerbase.h
 	systemtrayhandler.h
-	handlersconfigurator.h
+	notificationruleswidget.h
+	xmlsettingsmanager.h
+	notificationrule.h
+	fieldmatch.h
+	typedmatchers.h
+	matchconfigdialog.h
+	visualhandler.h
+	audiohandler.h
+	)
+SET (FORMS
+	notificationruleswidget.ui
+	matchconfigdialog.ui
+	intmatcherconfigwidget.ui
+	stringlikematcherconfigwidget.ui
 	)
 
 IF (QT_QTDECLARATIVE_FOUND)
@@ -56,6 +78,7 @@ SET (RESOURCES advancednotificationsresources.qrc)
 
 CreateTrVars ("advancednotifications" "en;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
+QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
 ADD_CUSTOM_COMMAND (OUTPUT
@@ -70,6 +93,7 @@ ADD_LIBRARY (leechcraft_advancednotifications SHARED
 	${SRCS}
 	${MOC_SRCS}
 	${RCCS}
+	${UIS_H}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_advancednotifications
 	${QT_LIBRARIES}
@@ -78,4 +102,5 @@ TARGET_LINK_LIBRARIES (leechcraft_advancednotifications
 INSTALL (TARGETS leechcraft_advancednotifications DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 INSTALL (FILES advancednotificationssettings.xml DESTINATION ${LC_SETTINGS_DEST})
-INSTALL (FILES share/qml/visualnotificationsview.qml DESTINATION ${LC_QML_DEST})
+INSTALL (DIRECTORY share/qml/advancednotifications DESTINATION ${LC_QML_DEST})
+INSTALL (DIRECTORY share/sounds DESTINATION share/leechcraft)

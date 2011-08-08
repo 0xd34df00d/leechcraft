@@ -84,40 +84,66 @@ ADD_SUBDIRECTORY (iconsets)
 SET (LEECHCRAFT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 SET (LEECHCRAFT_LIBRARIES lcutil xmlsettingsdialog)
 
-OPTION (ENABLE_SUMMARY "Build Summary, the plugin that shows a handy summary of the stuff going on" ON)
-OPTION (ENABLE_TORRENT "Build BitTorrent, the BitTorrent client" ON)
+# Basic & traditional set of options
 OPTION (ENABLE_AGGREGATOR "Build Aggregator, the RSS/Atom feed reader" ON)
-OPTION (ENABLE_POSHUKU "Build Poshuku, the WWW Browser" ON)
-OPTION (ENABLE_HTTP "Build CSTP, the HTTP implementation" ON)
-OPTION (ENABLE_FTP "Build LCFTP, the FTP client" ON)
-OPTION (ENABLE_LMP "Build LMP, the LeechCraft Media Previewer" ON)
+OPTION (ENABLE_ANHERO "Build AnHero, the crash handler" ON)
+OPTION (ENABLE_AUSCRIE "Build Auscrie, the auto screenshooter" ON)
 OPTION (ENABLE_DBUSMANAGER "Build DBusManager, the D-Bus support for the LeechCraft" ON)
 OPTION (ENABLE_DEADLYRICS "Build DeadLyrics, the client for the lyricwiki.org site" ON)
-OPTION (ENABLE_SEEKTHRU "Build SeekThru, the client for the OpenSearch-aware web sites" ON)
-OPTION (ENABLE_NETWORKMONITOR "Build NetworkMonitor, the monitor for HTTP requests" ON)
 OPTION (ENABLE_HISTORYHOLDER "Build HistoryHolder, the keeper of the history" ON)
-OPTION (ENABLE_NEWLIFE "Build NewLife, the settings importer" ON)
-OPTION (ENABLE_ANHERO "Build AnHero, the crash handler" ON)
-OPTION (ENABLE_VGRABBER "Build vGrabber, the vkontakte.ru music/video getter" ON)
+OPTION (ENABLE_HTTP "Build CSTP, the HTTP implementation" ON)
 OPTION (ENABLE_KINOTIFY "Build Kinotify, fancy kinetic notifications" ON)
-OPTION (ENABLE_AUSCRIE "Build Auscrie, the auto screenshooter" ON)
+OPTION (ENABLE_LMP "Build LMP, the LeechCraft Media Previewer" ON)
+OPTION (ENABLE_NETWORKMONITOR "Build NetworkMonitor, the monitor for HTTP requests" ON)
+OPTION (ENABLE_NEWLIFE "Build NewLife, the settings importer" ON)
+OPTION (ENABLE_POSHUKU "Build Poshuku, the WWW Browser" ON)
+OPTION (ENABLE_SEEKTHRU "Build SeekThru, the client for the OpenSearch-aware web sites" ON)
+OPTION (ENABLE_SUMMARY "Build Summary, the plugin that shows a handy summary of the stuff going on" ON)
 OPTION (ENABLE_TABPP "Build Tab++, the enhanced tab manager" ON)
-OPTION (ENABLE_EISKALTDCPP "Build EiskaltDC++ client" OFF)
+OPTION (ENABLE_TORRENT "Build BitTorrent, the BitTorrent client" ON)
+OPTION (ENABLE_VGRABBER "Build vGrabber, the vkontakte.ru music/video getter" ON)
+
+# New
+OPTION (ENABLE_ADVANCEDNOTIFICATIONS "Build Advanced Notifications module for more customizable notifications" OFF)
 OPTION (ENABLE_AZOTH "Build Azoth, the IM client" OFF)
-OPTION (ENABLE_SECMAN "Build SecMan, security & personal data manager" OFF)
-OPTION (ENABLE_QROSP "Build Qrosp, the scripting support plugin" OFF)
-OPTION (ENABLE_POPISHU "Build Popishu, a simple QScintilla-based text editor" OFF)
+OPTION (ENABLE_BLACKDASH "Build BlackDash, the dashboard plugin for LeechCraft" OFF)
+OPTION (ENABLE_EISKALTDCPP "Build EiskaltDC++ client" OFF)
+OPTION (ENABLE_GLANCE "Quick overview of tabs" OFF)
+OPTION (ENABLE_GMAILNOTIFIER "Build GMail Notifier which notifies about new mail in your GMail inbox" OFF)
 OPTION (ENABLE_LACKMAN "Build LackMan, the package manager for LeechCraft" OFF)
-OPTION (ENABLE_SYNCER "Build Syncer, the synchronization plugin for LeechCraft" OFF)
+OPTION (ENABLE_POPISHU "Build Popishu, a simple QScintilla-based text editor" OFF)
+OPTION (ENABLE_QROSP "Build Qrosp, the scripting support plugin" OFF)
+OPTION (ENABLE_SECMAN "Build SecMan, security & personal data manager" OFF)
 OPTION (ENABLE_SHELLOPEN "Build ShellOpen, the plugin supporting handling entities via external applications" ON)
+OPTION (ENABLE_SYNCER "Build Syncer, the synchronization plugin for LeechCraft" OFF)
+OPTION (ENABLE_TABSLIST "Quick overview of tabs" OFF)
+
+# Defunct
+OPTION (ENABLE_FTP "Build LCFTP, the FTP client" ON)
+OPTION (ENABLE_JUFFED "Build JuffEd, the advanced text editor" OFF)
+OPTION (ENABLE_OTZERKALU "Build Otzerkalu, which allows one to download web sites recursively" OFF)
 OPTION (ENABLE_POTORCHU "Build Potorchu, the new generation audio/video player" OFF)
 OPTION (ENABLE_TRANSPARENTARCH "Build TransparentArch, the plugin for transparent access to archives in various formats" OFF)
-OPTION (ENABLE_JUFFED "Build JuffEd, the advanced text editor" OFF)
-OPTION (ENABLE_GMAILNOTIFIER "Build GMail Notifier which notifies about new mail in your GMail inbox" OFF)
-OPTION (ENABLE_OTZERKALU "Build Otzerkalu, which allows one to download web sites recursively" OFF)
-OPTION (ENABLE_ADVANCEDNOTIFICATIONS "Build Advanced Notifications module for more customizable notifications" OFF)
-OPTION (ENABLE_GLANCE "Quick overview of tabs" ON)
+
 ENABLE_TESTING ()
+
+OPTION (ENABLE_RECOMMENDED "Build all new recommended plugins" OFF)
+
+IF (ENABLE_RECOMMENDED)
+	SET (ENABLE_ADVANCEDNOTIFICATIONS TRUE)
+	SET (ENABLE_AZOTH TRUE)
+	SET (ENABLE_BLACKDASH TRUE)
+	SET (ENABLE_EISKALTDCPP TRUE)
+	SET (ENABLE_GLANCE TRUE)
+	SET (ENABLE_GMAILNOTIFIER TRUE)
+	SET (ENABLE_LACKMAN TRUE)
+	SET (ENABLE_POPISHU TRUE)
+	SET (ENABLE_QROSP TRUE)
+	SET (ENABLE_SECMAN TRUE)
+	SET (ENABLE_SHELLOPEN TRUE)
+	SET (ENABLE_SYNCER TRUE)
+	SET (ENABLE_TABSLIST TRUE)
+ENDIF (ENABLE_RECOMMENDED)
 
 FUNCTION (CreateTrVars PlugName Langs TranVar CompiledTranVar)
 	STRING (LENGTH "${PlugName}" _pnameLength)
@@ -264,6 +290,14 @@ IF (ENABLE_GLANCE)
 	ADD_SUBDIRECTORY (plugins/glance)
 ENDIF (ENABLE_GLANCE)
 
+IF (ENABLE_TABSLIST)
+	ADD_SUBDIRECTORY (plugins/tabslist)
+ENDIF (ENABLE_TABSLIST)
+
+IF (ENABLE_BLACKDASH)
+	ADD_SUBDIRECTORY (plugins/blackdash)
+ENDIF (ENABLE_BLACKDASH)
+
 SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTXML TRUE)
 SET (QT_USE_QTSQL TRUE)
@@ -316,6 +350,8 @@ SET (SRCS
 	settingstab.cpp
 	separatetabbar.cpp
 	separatetabwidget.cpp
+	mwproxy.cpp
+	winwarndialog.cpp
 	)
 SET (HEADERS
 	mainwindow.h
@@ -355,11 +391,13 @@ SET (HEADERS
 	plugintreebuilder.h
 	coreinstanceobject.h
 	settingstab.h
+	separatetabbar.h
+	separatetabwidget.h
+	mwproxy.h
+	winwarndialog.h
 	3dparty/qxttooltip.h
 	3dparty/qxttooltip_p.h
 	interfaces/structures.h
-	separatetabbar.h
-	separatetabwidget.h
 	)
 SET (FORMS
 	commonjobadder.ui

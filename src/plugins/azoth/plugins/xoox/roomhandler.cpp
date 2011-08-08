@@ -23,6 +23,7 @@
 #include <QXmppVCardIq.h>
 #include <QXmppMucManager.h>
 #include <QXmppClient.h>
+#include <QXmppConstants.h>
 #include <interfaces/iproxyobject.h>
 #include "glooxaccount.h"
 #include "roomclentry.h"
@@ -32,6 +33,7 @@
 #include "glooxmessage.h"
 #include "util.h"
 #include "glooxprotocol.h"
+#include "formbuilder.h"
 
 namespace LeechCraft
 {
@@ -61,6 +63,12 @@ namespace Xoox
 				SIGNAL (participantRemoved (const QString&)),
 				this,
 				SLOT (handleParticipantRemoved (const QString&)));
+		
+		connect (this,
+				SIGNAL (gotPendingForm (QXmppDataForm*, const QString&)),
+				Account_->GetClientConnection ().get (),
+				SLOT (handlePendingForm (QXmppDataForm*, const QString&)),
+				Qt::QueuedConnection);
 		
 		Room_->join ();
 	}
@@ -129,8 +137,8 @@ namespace Xoox
 	 */
 	void RoomHandler::MakeJoinMessage (const QXmppPresence& pres, const QString& nick)
 	{
-		QString affiliation = Util::AffiliationToString (pres.mucItem ().affiliation ());
-		QString role = Util::RoleToString (pres.mucItem ().role ());
+		QString affiliation = XooxUtil::AffiliationToString (pres.mucItem ().affiliation ());
+		QString role = XooxUtil::RoleToString (pres.mucItem ().role ());
 		QString realJid = pres.mucItem ().jid ();
 		QString msg;
 		if (realJid.isEmpty ())
@@ -238,8 +246,8 @@ namespace Xoox
 			QXmppMucItem::Affiliation aff,
 			QXmppMucItem::Role role, const QString& reason)
 	{
-		const QString& affStr = Util::AffiliationToString (aff);
-		const QString& roleStr = Util::RoleToString (role);
+		const QString& affStr = XooxUtil::AffiliationToString (aff);
+		const QString& roleStr = XooxUtil::RoleToString (role);
 		QString msg;
 		if (reason.isEmpty ())
 			msg = tr ("%1 is now %2 and %3")
@@ -370,18 +378,32 @@ namespace Xoox
 		entry->SetRole (role);
 		MakePermsChangedMessage (nick, aff, role, reason);
 	}
-	
-	void RoomHandler::HandleNickChange (const QString& oldNick, const QString& newNick)
-	{
-		MakeNickChangeMessage (oldNick, newNick);
-		Nick2Entry_ [newNick] = Nick2Entry_.take (oldNick);
-		Nick2Entry_ [newNick]->SetEntryName (newNick);
-		PendingNickChanges_ << oldNick;
-		PendingNickChanges_ << newNick;
-	}
 
 	void RoomHandler::HandleMessage (const QXmppMessage& msg, const QString& nick)
 	{
+		Q_FOREACH (const QXmppElement& elem, msg.extensions ())
+		{
+			const QString& xmlns = elem.attribute ("xmlns");
+			if (xmlns == ns_data)
+			{
+				QXmppDataForm *df = new QXmppDataForm ();
+				df->parse (XooxUtil::XmppElem2DomElem (elem));
+				if (df->isNull ())
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "unable to parse form from"
+							<< msg.from ();
+					delete df;
+				}
+				else
+					emit gotPendingForm (df, msg.from ());
+			}
+			else
+				qWarning () << Q_FUNC_INFO
+						<< "unhandled <x> element"
+						<< xmlns;
+		}
+		
 		const bool existed = Nick2Entry_.contains (nick);
 		RoomParticipantEntry_ptr entry = GetParticipantEntry (nick, false);
 		if (msg.type () == QXmppMessage::Chat && !nick.isEmpty ())
@@ -425,7 +447,7 @@ namespace Xoox
 				if (!msg.body ().isEmpty ())
 					message = new RoomPublicMessage (msg, CLEntry_, entry);
 			}
-			else
+			else if (!msg.body ().isEmpty ())
 				message = new RoomPublicMessage (msg.body (),
 					IMessage::DIn,
 					CLEntry_,
@@ -501,9 +523,9 @@ namespace Xoox
 	{
 		Q_FOREACH (RoomParticipantEntry_ptr entry, Nick2Entry_.values ())
 			Account_->handleEntryRemoved (entry.get ());
-			
-		Nick2Entry_.clear ();
+
 		Room_->leave (msg);
+		Nick2Entry_.clear ();
 
 		if (remove)
 			RemoveThis ();
@@ -632,6 +654,8 @@ namespace Xoox
 
 		QString nick;
 		ClientConnection::Split (jid, 0, &nick);
+		
+		const bool us = Room_->nickName () == nick;
 
 		RoomParticipantEntry_ptr entry = GetParticipantEntry (nick);
 		const QXmppMucItem& item = pres.mucItem ();
@@ -641,18 +665,58 @@ namespace Xoox
 			entry->SetEntryName (item.nick ());
 			Nick2Entry_ [item.nick ()] = Nick2Entry_ [nick];
 			MakeNickChangeMessage (nick, item.nick ());
+			Nick2Entry_.remove (nick);
 			PendingNickChanges_ << item.nick ();
 			return;
 		}
 		else if (pres.mucStatusCodes ().contains (301))
-			MakeBanMessage (nick, item.reason ());
+			!us ?
+				MakeBanMessage (nick, item.reason ()) :
+				static_cast<void> (QMetaObject::invokeMethod (CLEntry_,
+							"beenBanned",
+							Qt::QueuedConnection,
+							Q_ARG (QString, item.reason ())));
 		else if (pres.mucStatusCodes ().contains (307))
-			MakeKickMessage (nick, item.reason ());
+			!us ?
+				MakeKickMessage (nick, item.reason ()) :
+				static_cast<void> (QMetaObject::invokeMethod (CLEntry_,
+							"beenKicked",
+							Qt::QueuedConnection,
+							Q_ARG (QString, item.reason ())));
 		else
 			MakeLeaveMessage (pres, nick);
+		
+		if (us)
+			Leave (QString (), false);
 
-		Account_->handleEntryRemoved (entry.get ());
 		Nick2Entry_.remove (nick);
+		Account_->handleEntryRemoved (entry.get ());
+	}
+	
+	void RoomHandler::requestVoice ()
+	{		
+		QList<QXmppDataForm::Field> fields;
+		
+		QXmppDataForm::Field typeField (QXmppDataForm::Field::HiddenField);
+		typeField.setKey ("FORM_TYPE");
+		typeField.setValue ("http://jabber.org/protocol/muc#request");
+		fields << typeField;
+
+		QXmppDataForm::Field reqField (QXmppDataForm::Field::TextSingleField);
+		reqField.setLabel ("Requested role");
+		reqField.setKey ("muc#role");
+		reqField.setValue ("participant");
+		fields << reqField;
+		
+		QXmppDataForm form;
+		form.setType (QXmppDataForm::Submit);
+		form.setFields (fields);
+	
+		QXmppMessage msg ("", Room_->jid ());
+		msg.setType (QXmppMessage::Normal);
+		msg.setExtensions (XooxUtil::Form2XmppElem (form));
+		
+		Account_->GetClientConnection ()->GetClient ()->sendPacket (msg);
 	}
 
 	void RoomHandler::RemoveThis ()

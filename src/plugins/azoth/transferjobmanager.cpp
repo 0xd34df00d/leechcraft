@@ -297,6 +297,7 @@ namespace Azoth
 				boost::bind (&TransferJobManager::AcceptJob, this, jobObj, QString ()));
 		nh->AddFunction ("Deny",
 				boost::bind (&TransferJobManager::DenyJob, this, jobObj));
+		nh->AddDependentObject (jobObj);
 
 		Core::Instance ().SendEntity (e);
 	}

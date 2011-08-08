@@ -676,13 +676,66 @@ namespace Azoth
 	
 	void MainWidget::handleEntryMadeCurrent (QObject *obj)
 	{
-		if (qobject_cast<IMUCEntry*> (obj))
+		const bool isMUC = qobject_cast<IMUCEntry*> (obj);
+
+		if (XmlSettingsManager::Instance ().property ("AutoMUCMode").toBool ())
+			Ui_.RosterMode_->setCurrentIndex (isMUC ? 1 : 0);
+
+		if (isMUC)
 			ProxyModel_->SetMUC (obj);
 	}
 	
 	void MainWidget::on_RosterMode__currentIndexChanged (int index)
 	{
-		ProxyModel_->SetMUCMode (index == 1);
+		const bool mucMode = index == 1;
+
+		if (mucMode)
+		{
+			FstLevelExpands_.clear ();
+			SndLevelExpands_.clear ();
+			
+			for (int i = 0; i < ProxyModel_->rowCount (); ++i)
+			{
+				const QModelIndex& accIdx = ProxyModel_->index (i, 0);
+				const QString& name = accIdx.data ().toString ();
+				FstLevelExpands_ [name] = Ui_.CLTree_->isExpanded (accIdx);
+
+				QMap<QString, bool> groups;
+				for (int j = 0, rc = ProxyModel_->rowCount (accIdx);
+						j < rc; ++j)
+				{
+					const QModelIndex& grpIdx = ProxyModel_->index (j, 0, accIdx);
+					groups [grpIdx.data ().toString ()] = Ui_.CLTree_->isExpanded (grpIdx);
+				}
+				
+				SndLevelExpands_ [name] = groups;
+			}
+		}
+
+		ProxyModel_->SetMUCMode (mucMode);
+		
+		if (!mucMode &&
+				!FstLevelExpands_.isEmpty () &&
+				!SndLevelExpands_.isEmpty ())
+		{
+			for (int i = 0; i < ProxyModel_->rowCount (); ++i)
+			{
+				const QModelIndex& accIdx = ProxyModel_->index (i, 0);
+				const QString& name = accIdx.data ().toString ();
+				if (!FstLevelExpands_.contains (name))
+					continue;
+
+				Ui_.CLTree_->setExpanded (accIdx, FstLevelExpands_.take (name));
+
+				const QMap<QString, bool>& groups = SndLevelExpands_.take (name);
+				for (int j = 0, rc = ProxyModel_->rowCount (accIdx);
+						j < rc; ++j)
+				{
+					const QModelIndex& grpIdx = ProxyModel_->index (j, 0, accIdx);
+					Ui_.CLTree_->setExpanded (grpIdx, groups [grpIdx.data ().toString ()]);
+				}
+			}
+		}
 	}
 
 	void MainWidget::menuBarVisibilityToggled ()

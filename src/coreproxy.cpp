@@ -24,108 +24,120 @@
 #include "xmlsettingsmanager.h"
 #include "skinengine.h"
 #include "tagsmanager.h"
+#include "mwproxy.h"
 #include "config.h"
 
-using namespace LeechCraft;
-using namespace LeechCraft::Util;
-
-CoreProxy::CoreProxy (QObject *parent)
-: QObject (parent)
+namespace LeechCraft
 {
-}
+	CoreProxy::CoreProxy (QObject *parent)
+	: QObject (parent)
+	, MWProxy_ (new MWProxy (this))
+	{
+	}
 
-QNetworkAccessManager* CoreProxy::GetNetworkAccessManager () const
-{
-	return Core::Instance ().GetNetworkAccessManager ();
-}
+	QNetworkAccessManager* CoreProxy::GetNetworkAccessManager () const
+	{
+		return Core::Instance ().GetNetworkAccessManager ();
+	}
 
-const IShortcutProxy* CoreProxy::GetShortcutProxy () const
-{
-	return Core::Instance ().GetShortcutProxy ();
-}
+	IShortcutProxy* CoreProxy::GetShortcutProxy () const
+	{
+		return Core::Instance ().GetShortcutProxy ();
+	}
+	
+	IMWProxy* CoreProxy::GetMWProxy () const
+	{
+		return MWProxy_;
+	}
 
-QModelIndex CoreProxy::MapToSource (const QModelIndex& index) const
-{
-	return Core::Instance ().MapToSource (index);
-}
+	QModelIndex CoreProxy::MapToSource (const QModelIndex& index) const
+	{
+		return Core::Instance ().MapToSource (index);
+	}
 
-BaseSettingsManager* CoreProxy::GetSettingsManager () const
-{
-	return XmlSettingsManager::Instance ();
-}
+	Util::BaseSettingsManager* CoreProxy::GetSettingsManager () const
+	{
+		return XmlSettingsManager::Instance ();
+	}
 
-QMainWindow* CoreProxy::GetMainWindow () const
-{
-	return Core::Instance ().GetReallyMainWindow ();
-}
+	QMainWindow* CoreProxy::GetMainWindow () const
+	{
+		return Core::Instance ().GetReallyMainWindow ();
+	}
 
-ICoreTabWidget* CoreProxy::GetTabWidget () const
-{
-	return Core::Instance ().GetReallyMainWindow ()->GetTabWidget ();
-}
+	ICoreTabWidget* CoreProxy::GetTabWidget () const
+	{
+		return Core::Instance ().GetReallyMainWindow ()->GetTabWidget ();
+	}
 
-QMap<int, QString> CoreProxy::GetIconPath (const QString& icon) const
-{
-	return SkinEngine::Instance ().GetIconPath (icon);
-}
+	QMap<int, QString> CoreProxy::GetIconPath (const QString& icon) const
+	{
+		return SkinEngine::Instance ().GetIconPath (icon);
+	}
 
-QIcon CoreProxy::GetIcon (const QString& icon, const QString& iconOff) const
-{
-	return SkinEngine::Instance ().GetIcon (icon, iconOff);
-}
+	QIcon CoreProxy::GetIcon (const QString& icon, const QString& iconOff) const
+	{
+		return SkinEngine::Instance ().GetIcon (icon, iconOff);
+	}
+	
+	void CoreProxy::UpdateIconset (const QList<QAction*>& actions) const
+	{
+		SkinEngine::Instance ().UpdateIconSet (actions);
+	}
 
-ITagsManager* CoreProxy::GetTagsManager () const
-{
-	return &TagsManager::Instance ();
-}
+	ITagsManager* CoreProxy::GetTagsManager () const
+	{
+		return &TagsManager::Instance ();
+	}
 
-QStringList CoreProxy::GetSearchCategories () const
-{
-	const QList<IFinder*>& finders = Core::Instance ().GetPluginManager ()->
-		GetAllCastableTo<IFinder*> ();
+	QStringList CoreProxy::GetSearchCategories () const
+	{
+		const QList<IFinder*>& finders = Core::Instance ().GetPluginManager ()->
+			GetAllCastableTo<IFinder*> ();
 
-	QStringList result;
-	for (QList<IFinder*>::const_iterator i = finders.begin (),
-			end = finders.end (); i != end; ++i)
-		result += (*i)->GetCategories ();
-	result.removeDuplicates ();
-	std::sort (result.begin (), result.end ());
-	return result;
-}
+		QStringList result;
+		for (QList<IFinder*>::const_iterator i = finders.begin (),
+				end = finders.end (); i != end; ++i)
+			result += (*i)->GetCategories ();
+		result.removeDuplicates ();
+		std::sort (result.begin (), result.end ());
+		return result;
+	}
 
-int CoreProxy::GetID ()
-{
-	return Pool_.GetID ();
-}
+	int CoreProxy::GetID ()
+	{
+		return Pool_.GetID ();
+	}
 
-void CoreProxy::FreeID (int id)
-{
-	Pool_.FreeID (id);
-}
+	void CoreProxy::FreeID (int id)
+	{
+		Pool_.FreeID (id);
+	}
 
-IPluginsManager* CoreProxy::GetPluginsManager () const
-{
-	return Core::Instance ().GetPluginManager ();
-}
+	IPluginsManager* CoreProxy::GetPluginsManager () const
+	{
+		return Core::Instance ().GetPluginManager ();
+	}
 
-QString CoreProxy::GetVersion () const
-{
-	return LEECHCRAFT_VERSION;
-}
+	QString CoreProxy::GetVersion () const
+	{
+		return LEECHCRAFT_VERSION;
+	}
 
-QObject* CoreProxy::GetSelf ()
-{
-	return this;
-}
+	QObject* CoreProxy::GetSelf ()
+	{
+		return this;
+	}
 
-#define LC_DEFINE_REGISTER(a) \
-void CoreProxy::RegisterHook (LeechCraft::HookSignature<LeechCraft::a>::Signature_t functor) \
-{ \
-	Core::Instance ().RegisterHook (functor); \
+	#define LC_DEFINE_REGISTER(a) \
+	void CoreProxy::RegisterHook (LeechCraft::HookSignature<LeechCraft::a>::Signature_t functor) \
+	{ \
+		Core::Instance ().RegisterHook (functor); \
+	}
+	#define LC_TRAVERSER(z,i,array) LC_DEFINE_REGISTER (BOOST_PP_SEQ_ELEM(i, array))
+	#define LC_EXPANDER(Names) BOOST_PP_REPEAT (BOOST_PP_SEQ_SIZE (Names), LC_TRAVERSER, Names)
+		LC_EXPANDER (HOOKS_TYPES_LIST);
+	#undef LC_EXPANDER
+	#undef LC_TRAVERSER
+	#undef LC_DEFINE_REGISTER
 }
-#define LC_TRAVERSER(z,i,array) LC_DEFINE_REGISTER (BOOST_PP_SEQ_ELEM(i, array))
-#define LC_EXPANDER(Names) BOOST_PP_REPEAT (BOOST_PP_SEQ_SIZE (Names), LC_TRAVERSER, Names)
-	LC_EXPANDER (HOOKS_TYPES_LIST);
-#undef LC_EXPANDER
-#undef LC_TRAVERSER
-#undef LC_DEFINE_REGISTER

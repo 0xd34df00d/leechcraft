@@ -33,8 +33,22 @@ namespace AdvancedNotifications
 		CachedImage_ = QUrl (Util::GetAsBase64Src (E_.Pixmap_.scaled (32, 32).toImage ()));
 		
 		QList<QObject*> model;
+		int i = 0;
 		Q_FOREACH (const QString& action, ed.Actions_)
-			model << new ActionsProxyObject (action);
+		{
+			QObject *proxy = new ActionsProxyObject (action);
+			proxy->setProperty ("ActionIndex", i++);
+			connect (proxy,
+					SIGNAL (actionSelected ()),
+					this,
+					SLOT (handleActionSelected ()));
+			model << proxy;
+		}
+		
+		connect (this,
+				SIGNAL (dismissEvent ()),
+				this,
+				SLOT (handleDismissEvent ()));
 		
 		ActionsModel_ = QVariant::fromValue<QList<QObject*> > (model);
 	}
@@ -51,12 +65,25 @@ namespace AdvancedNotifications
 	
 	QString EventProxyObject::extendedText () const
 	{
-		return E_.ExtendedText_;
+		return E_.FullText_.isEmpty () ?
+				E_.ExtendedText_ :
+				E_.FullText_;
 	}
 	
 	QVariant EventProxyObject::eventActionsModel () const
 	{
 		return ActionsModel_;
+	}
+	
+	void EventProxyObject::handleActionSelected ()
+	{
+		const int idx = sender ()->property ("ActionIndex").toInt ();
+		emit actionTriggered (E_.EventID_, idx);
+	}
+	
+	void EventProxyObject::handleDismissEvent ()
+	{
+		emit dismissEventRequested (E_.EventID_);
 	}
 }
 }

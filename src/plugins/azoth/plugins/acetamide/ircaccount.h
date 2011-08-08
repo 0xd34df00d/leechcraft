@@ -55,9 +55,15 @@ namespace Acetamide
 		QString RealName_;
 		QString UserName_;
 		QStringList NickNames_;
+		QString DefaultServer_;
+		int DefaultPort_;
+		QString DefaultEncoding_;
+		QString DefaultChannel_;
 		State IrcAccountState_;
 
 		boost::shared_ptr<ClientConnection> ClientConnection_;
+		bool IsFirstStart_;
+		QList<IrcBookmark> ActiveChannels_;
 	public:
 		IrcAccount (const QString&, QObject*);
 		void Init ();
@@ -86,7 +92,11 @@ namespace Acetamide
 		void OpenConfigurationDialog ();
 		void FillSettings (IrcAccountConfigurationWidget*);
 
-		void JoinServer (const ServerOptions&, const ChannelOptions&);
+		void JoinServer (ServerOptions, ChannelOptions);
+
+		void SetBookmarks (const QList<IrcBookmark>&);
+		QList<IrcBookmark> GetBookmarks () const;
+
 
 		EntryStatus GetState () const;
 		void ChangeState (const EntryStatus&);
@@ -100,14 +110,16 @@ namespace Acetamide
 
 		PacketFormat GetPacketFormat () const;
 		void SetConsoleEnabled (bool);
-	public:
 		QByteArray Serialize () const;
 		static IrcAccount* Deserialize (const QByteArray&, QObject*);
+	private:
+		void SaveActiveChannels ();
 	public slots:
 		void handleEntryRemoved (QObject*);
 		void handleGotRosterItems (const QList<QObject*>&);
 	private slots:
 		void handleDestroyClient ();
+		void joinFromBookmarks ();
 	signals:
 		void gotCLItems (const QList<QObject*>&);
 		void removedCLItems (const QList<QObject*>&);
@@ -119,6 +131,8 @@ namespace Acetamide
 		void itemGrantedSubscription (QObject*, const QString&);
 		void statusChanged (const EntryStatus&);
 		void addContactSuggested (const QString&, const QString&, const QStringList&);
+		void mucInvitationReceived (const QVariantMap&,
+				const QString&, const QString&);
 
 		void accountSettingsChanged ();
 

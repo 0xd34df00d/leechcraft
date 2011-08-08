@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>StringLikeMatcherConfigWidget</class>
+ <widget class="QWidget" name="StringLikeMatcherConfigWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>460</width>
+    <height>35</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string/>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <item>
+    <widget class="QComboBox" name="ContainsBox_">
+     <item>
+      <property name="text">
+       <string>contains</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>doesn't contain</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="RegexpEditor_">
+     <property name="minimumSize">
+      <size>
+       <width>200</width>
+       <height>0</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QComboBox" name="RegexType_">
+     <item>
+      <property name="text">
+       <string>string</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>wildcard</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>regexp</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item>
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

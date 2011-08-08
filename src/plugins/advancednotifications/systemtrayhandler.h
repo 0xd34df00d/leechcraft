@@ -51,14 +51,17 @@ namespace AdvancedNotifications
 	public:
 		SystemTrayHandler ();
 
-		HandlerType GetHandlerType () const;
-		void Handle (const Entity&);
+		NotificationMethod GetHandlerMethod () const;
+		void Handle (const Entity&, const NotificationRule&);
 	private:
 		void PrepareSysTrayIcon (const QString&);
 		void RebuildState ();
+		void UpdateSysTrayIcon (QSystemTrayIcon*);
 	private slots:
 		void handleActionTriggered ();
+		void handleActionTriggered (const QString&, int);
 		void dismissNotification ();
+		void dismissNotification (const QString&);
 		
 		void handleTrayActivated (QSystemTrayIcon::ActivationReason);
 	};

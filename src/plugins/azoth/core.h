@@ -19,10 +19,15 @@
 #ifndef PLUGINS_AZOTH_CORE_H
 #define PLUGINS_AZOTH_CORE_H
 #include <boost/function.hpp>
+#include <boost/scoped_ptr.hpp>
 #include <QObject>
 #include <QSet>
 #include <QIcon>
 #include <QDateTime>
+#ifdef ENABLE_CRYPT
+#include <QtCrypto>
+#endif
+#include <interfaces/ianemitter.h>
 #include "interfaces/iinfo.h"
 #include "interfaces/azothcommon.h"
 #include "interfaces/imucentry.h"
@@ -63,9 +68,17 @@ namespace Azoth
 		Q_ENUMS (CLRoles CLEntryType CLEntryActionArea)
 
 		ICoreProxy_ptr Proxy_;
+		QList<ANFieldData> ANFields_;
 
 		QRegExp LinkRegexp_;
 		QRegExp ImageRegexp_;
+		
+#ifdef ENABLE_CRYPT
+		boost::scoped_ptr<QCA::Initializer> QCAInit_;
+		boost::scoped_ptr<QCA::KeyStoreManager> KeyStoreMgr_;
+		boost::scoped_ptr<QCA::EventHandler> QCAEventHandler_;
+		QMap<QString, QString> StoredPublicKeys_;
+#endif
 
 		QObjectList ProtocolPlugins_;
 		QList<QAction*> AccountCreatorActions_;
@@ -146,6 +159,7 @@ namespace Azoth
 			CLEAATabCtxtMenu,
 			CLEAAContactListCtxtMenu,
 			CLEAAApplicationMenu,
+			CLEAAToolbar,
 			CLEAAMAX
 		};
 	private:
@@ -157,9 +171,12 @@ namespace Azoth
 
 		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;
+		
+		QList<ANFieldData> GetANFields () const;
 
 		Util::ResourceLoader* GetResourceLoader (ResourceLoaderType) const;
 		QAbstractItemModel* GetSmilesOptionsModel () const;
+		IEmoticonResourceSource* GetCurrentEmoSource () const;
 		QAbstractItemModel* GetChatStylesOptionsModel ();
 
 		QSet<QByteArray> GetExpectedPluginClasses () const;
@@ -175,6 +192,13 @@ namespace Azoth
 		ChatTabsManager* GetChatTabsManager () const;
 		QList<IAccount*> GetAccounts () const;
 		QList<IProtocol*> GetProtocols () const;
+		
+#ifdef ENABLE_CRYPT
+		QList<QCA::PGPKey> GetPublicKeys () const;
+		QList<QCA::PGPKey> GetPrivateKeys () const;
+		
+		void AssociatePrivateKey (IAccount*, const QCA::PGPKey&) const;
+#endif
 
 		/** Returns the list of all groups of all chat entries.
 		 */
@@ -369,7 +393,8 @@ namespace Azoth
 		QString GetReason (const QString& id, const QString& text);
 
 		void NotifyWithReason (QObject*, const QString&,
-				const char*, const QString&, const QString&);
+				const char*, const QString&,
+				const QString&, const QString&);
 
 		/** Calls the given func on the sending entry, asking for reason
 		 * for the action, if it should. The text may contain %1, in
@@ -387,7 +412,16 @@ namespace Azoth
 		 */
 		void AddEntryTo (ICLEntry*, QStandardItem*);
 		
+		void SuggestJoiningMUC (IAccount*, const QVariantMap&);
+		
 		IChatStyleResourceSource* GetCurrentChatStyle () const;
+		
+		void FillANFields ();
+		
+#ifdef ENABLE_CRYPT
+		void RestoreKeyForAccount (IAccount*);
+		void RestoreKeyForEntry (ICLEntry*);
+#endif
 	public slots:
 		/** Initiates MUC join by calling the corresponding protocol
 		 * plugin's IProtocol::InitiateMUCJoin() function.
@@ -471,12 +505,22 @@ namespace Azoth
 		/** Handles nick conflict.
 		 */
 		void handleNicknameConflict (const QString&);
+		
+		/** Handles kicks.
+		 */
+		void handleBeenKicked (const QString&);
+		
+		/** Handles bans.
+		 */
+		void handleBeenBanned (const QString&);
 
 		void handleItemSubscribed (QObject*, const QString&);
 		void handleItemUnsubscribed (QObject*, const QString&);
 		void handleItemUnsubscribed (const QString&, const QString&);
 		void handleItemCancelledSubscription (QObject*, const QString&);
 		void handleItemGrantedSubscription (QObject*, const QString&);
+
+		void handleMUCInvitation (const QVariantMap&, const QString&, const QString&);
 
 		/** Is registered in the XmlSettingsManager as handler for
 		 * changes of the "StatusIcons" property.
@@ -527,6 +571,9 @@ namespace Azoth
 		void handleActionRevokeAuthTriggered ();
 		void handleActionUnsubscribeTriggered ();
 		void handleActionRerequestTriggered ();
+#ifdef ENABLE_CRYPT
+		void handleActionManagePGPTriggered ();
+#endif
 		void handleActionVCardTriggered ();
 
 		void handleActionOpenChatTriggered ();
@@ -538,6 +585,11 @@ namespace Azoth
 		void handleActionCopyMUCPartID ();
 
 		void handleActionPermTriggered ();
+		
+#ifdef ENABLE_CRYPT
+		void handleQCAEvent (int, const QCA::Event&);
+		void handleQCABusyFinished ();
+#endif
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);

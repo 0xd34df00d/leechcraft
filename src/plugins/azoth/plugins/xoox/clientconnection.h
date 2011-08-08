@@ -24,6 +24,11 @@
 #include <QMap>
 #include <QHash>
 #include <QSet>
+
+#ifdef ENABLE_CRYPT
+#include <QtCrypto>
+#endif
+
 #include <QXmppClient.h>
 #include <QXmppMucIq.h>
 #include <interfaces/imessage.h>
@@ -59,12 +64,18 @@ namespace Xoox
 	class GlooxMessage;
 	class RoomCLEntry;
 	class RoomHandler;
+	class SelfContact;
 	class CapsManager;
 	class AnnotationsManager;
 	class FetchQueue;
 	class PubSubManager;
 	class PrivacyListsManager;
 	class AdHocCommandManager;
+	class LastActivityManager;
+
+#ifdef ENABLE_CRYPT
+	class PgpManager;
+#endif
 
 	class ClientConnection : public QObject
 	{
@@ -83,11 +94,19 @@ namespace Xoox
 		QXmppCallManager *CallManager_;
 		PubSubManager *PubSubManager_;
 		PrivacyListsManager *PrivacyListsManager_;
-		AdHocCommandManager *AdHocCommandManager_;
-		
+		AdHocCommandManager *AdHocCommandManager_;		
 		AnnotationsManager *AnnotationsManager_;
+		LastActivityManager *LastActivityManager_;
+		
+#ifdef ENABLE_CRYPT
+		PgpManager *PGPManager_;
+#endif
 
 		QString OurJID_;
+		QString OurBareJID_;
+		QString OurResource_;
+		
+		SelfContact *SelfContact_;
 
 		GlooxAccount *Account_;
 		IProxyObject *ProxyObject_;
@@ -121,6 +140,11 @@ namespace Xoox
 		QHash<QString, QPointer<VCardDialog> > AwaitingVCardDialogs_;
 		
 		QHash<QString, QPointer<GlooxMessage> > UndeliveredMessages_;
+		
+		QSet<QString> SignedPresences_;
+		QSet<QString> SignedMessages_;
+		QHash<QString, QString> EncryptedMessages_;
+		QSet<QString> Entries2Crypt_;
 	public:
 		typedef boost::function<void (const QXmppDiscoveryIq&)> DiscoCallback_t;
 	private:
@@ -137,6 +161,7 @@ namespace Xoox
 		virtual ~ClientConnection ();
 
 		void SetState (const GlooxAccountState&);
+		GlooxAccountState GetLastState () const;
 		void Synchronize ();
 
 		void SetPassword (const QString&);
@@ -159,6 +184,11 @@ namespace Xoox
 		PrivacyListsManager* GetPrivacyListsManager () const;
 		QXmppCallManager* GetCallManager () const;
 		AdHocCommandManager* GetAdHocCommandManager () const;
+#ifdef ENABLE_CRYPT
+		PgpManager* GetPGPManager () const;
+		
+		bool SetEncryptionEnabled (const QString&, bool);
+#endif
 		
 		void SetSignaledLog (bool);
 
@@ -202,8 +232,11 @@ namespace Xoox
 		void HandleError (const QXmppIq&);
 		void InvokeCallbacks (const QXmppIq&);
 		QString HandleErrorCondition (const QXmppStanza::Error::Condition&);
+	public slots:
+		void handlePendingForm (QXmppDataForm*, const QString&);
 	private slots:
 		void handleConnected ();
+		void handleDisconnected ();
 		void handleReconnecting (int = -1);
 		void handleError (QXmppClient::Error);
 		void handleIqReceived (const QXmppIq&);
@@ -212,10 +245,11 @@ namespace Xoox
 		void handleRosterItemRemoved (const QString&);
 		void handleVCardReceived (const QXmppVCardIq&);
 		void handlePresenceChanged (const QXmppPresence&);
-		void handleMessageReceived (const QXmppMessage&);
+		void handleMessageReceived (QXmppMessage);
 		void handlePEPEvent (const QString&, PEPEventBase*);
 		void handleMessageDelivered (const QString&);
 		void handleCaptchaReceived (const QString&, const QXmppDataForm&);
+		void handleRoomInvitation (const QString&, const QString&, const QString&);
 		
 		void handleBookmarksReceived (const QXmppBookmarkSet&);
 		void handleAutojoinQueue ();
@@ -223,10 +257,16 @@ namespace Xoox
 		void handleDiscoInfo (const QXmppDiscoveryIq&);
 		void handleDiscoItems (const QXmppDiscoveryIq&);
 		
+		void handleEncryptedMessageReceived (const QString&, const QString&);
+		void handleSignedMessageReceived (const QString&);
+		void handleSignedPresenceReceived (const QString&);
+		void handleInvalidSignatureReceived (const QString&);
+		
 		void handleLog (QXmppLogger::MessageType, const QString&);
 		
 		void decrementErrAccumulators ();
 	private:
+		void InitializeQCA ();
 		void ScheduleFetchVCard (const QString&);
 		GlooxCLEntry* CreateCLEntry (const QString&);
 		GlooxCLEntry* CreateCLEntry (const QXmppRosterIq::Item&);
@@ -242,6 +282,7 @@ namespace Xoox
 		void rosterItemCancelledSubscription (QObject*, const QString&);
 		void rosterItemGrantedSubscription (QObject*, const QString&);
 		void gotSubscriptionRequest (QObject*, const QString&);
+		void gotMUCInvitation (const QVariantMap&, const QString&, const QString&);
 
 		void gotConsoleLog (const QByteArray&, int);
 

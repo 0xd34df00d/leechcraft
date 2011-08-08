@@ -40,12 +40,24 @@
 #include "privacylistsconfigdialog.h"
 #include "mediacall.h"
 
+#ifdef ENABLE_CRYPT
+#include "pgpmanager.h"
+#include <util/util.h>
+#endif
+
 namespace LeechCraft
 {
 namespace Azoth
 {
 namespace Xoox
 {
+	bool operator== (const GlooxAccountState& s1, const GlooxAccountState& s2)
+	{
+		return s1.Priority_ == s2.Priority_ &&
+			s1.State_ == s2.State_ &&
+			s1.Status_ == s2.Status_;
+	}
+
 	GlooxAccount::GlooxAccount (const QString& name,
 			QObject *parent)
 	: QObject (parent)
@@ -134,6 +146,10 @@ namespace Xoox
 				SIGNAL (rosterItemGrantedSubscription (QObject*, const QString&)),
 				this,
 				SIGNAL (itemGrantedSubscription (QObject*, const QString&)));
+		connect (ClientConnection_.get (),
+				SIGNAL (gotMUCInvitation (QVariantMap, QString, QString)),
+				this,
+				SIGNAL (mucInvitationReceived (QVariantMap, QString, QString)));
 		
 		connect (ClientConnection_->GetCallManager (),
 				SIGNAL (callReceived (QXmppCall*)),
@@ -270,8 +286,6 @@ namespace Xoox
 		if (!ClientConnection_)
 			Init ();
 
-		emit statusChanged (status);
-
 		ClientConnection_->SetState (AccState_);
 	}
 
@@ -403,6 +417,54 @@ namespace Xoox
 		target += '/' + var;
 		return new MediaCall (this, ClientConnection_->GetCallManager ()->call (target));
 	}
+	
+#ifdef ENABLE_CRYPT
+	void GlooxAccount::SetPrivateKey (const QCA::PGPKey& key)
+	{
+		ClientConnection_->GetPGPManager ()->SetPrivateKey (key);
+	}
+
+	void GlooxAccount::SetEntryKey (QObject *entryObj, const QCA::PGPKey& pubKey)
+	{
+		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< entryObj
+					<< "doesn't implement ICLEntry";
+			return;
+		}
+		
+		ClientConnection_->GetPGPManager ()->SetPublicKey (entry->GetHumanReadableID (), pubKey);
+	}
+
+	void GlooxAccount::SetEncryptionEnabled (QObject *entry, bool enabled)
+	{
+		GlooxCLEntry *glEntry = qobject_cast<GlooxCLEntry*> (entry);
+		if (!glEntry)
+			return;
+
+		const QString& jid = glEntry->GetJID ();
+		if (enabled &&
+				ClientConnection_->GetPGPManager ()->PublicKey (jid).isNull ())
+		{
+			Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
+						tr ("Unable to enable encryption for entry %1: "
+							"no key has been set.")
+								.arg (glEntry->GetEntryName ()),
+						PCritical_));
+			return;
+		}
+
+		if (!ClientConnection_->SetEncryptionEnabled (jid, enabled))
+			Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
+						tr ("Unable to change encryption state for %1.")
+								.arg (glEntry->GetEntryName ()),
+						PCritical_));
+		else
+			emit encryptionStateChanged (entry, enabled);
+	}
+#endif
 
 	QString GlooxAccount::GetJID () const
 	{

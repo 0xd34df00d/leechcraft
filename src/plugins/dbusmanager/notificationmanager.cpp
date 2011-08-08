@@ -51,6 +51,10 @@ NotificationManager::NotificationManager (QObject *parent)
 			SIGNAL (ActionInvoked (uint, QString)),
 			this,
 			SLOT (handleActionInvoked (uint, QString)));
+	connect (Connection_.get (),
+			SIGNAL (NotificationClosed (uint, uint)),
+			this,
+			SLOT (handleNotificationClosed (uint)));
 }
 
 bool NotificationManager::CouldNotify (const Entity& e) const
@@ -131,6 +135,7 @@ void NotificationManager::DoNotify (const Entity& e, bool hasActions)
 
 	ActionData ad =
 	{
+		e,
 		e.Additional_ ["HandlingObject"].value<QObject_ptr> (),
 		actions
 	};
@@ -143,7 +148,7 @@ void NotificationManager::DoNotify (const Entity& e, bool hasActions)
 	connect (watcher,
 			SIGNAL (finished (QDBusPendingCallWatcher*)),
 			this,
-			SLOT (handleNotificationCallFinished (QDBusPendingCallWatcher*)));
+			SLOT (handleNotificationCallFinished (QDBusPendingCallWatcher*)));	
 }
 
 void NotificationManager::handleNotificationCallFinished (QDBusPendingCallWatcher *w)
@@ -182,7 +187,7 @@ void NotificationManager::handleCapCheckCallFinished (QDBusPendingCallWatcher *w
 
 void NotificationManager::handleActionInvoked (uint id, QString action)
 {
-	const ActionData& ad = CallID2AD_ [id];
+	const ActionData& ad = CallID2AD_.take (id);
 	if (!ad.Handler_)
 	{
 		qWarning () << Q_FUNC_INFO
@@ -196,6 +201,9 @@ void NotificationManager::handleActionInvoked (uint id, QString action)
 			"notificationActionTriggered",
 			Qt::QueuedConnection,
 			Q_ARG (int, idx));
+}
 
+void NotificationManager::handleNotificationClosed (uint id)
+{
 	CallID2AD_.remove (id);
 }

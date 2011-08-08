@@ -16,36 +16,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "handlersconfigurator.h"
-#include <interfaces/structures.h>
+#ifndef PLUGINS_AZOTH_INTERFACES_ILASTACTIVITYPROVIDER_H
+#define PLUGINS_AZOTH_INTERFACES_ILASTACTIVITYPROVIDER_H
+#include <QMetaType>
 
 namespace LeechCraft
 {
-namespace AdvancedNotifications
+namespace Azoth
 {
-	HandlersConfigurator::HandlersConfigurator (QObject *parent)
-	: QObject (parent)
+	class ILastActivityProvider
 	{
-	}
-	
-	QSet<ConcreteHandlerBase::HandlerType> HandlersConfigurator::GetEnabledHandlers (const Entity& e) const
-	{
-		QSet<ConcreteHandlerBase::HandlerType> result;
-
-		if (e.Additional_ ["org.LC.AdvNotifications.EventCategory"] == "org.LC.AdvNotifications.Cancel")
-		{
-			result << ConcreteHandlerBase::HTSystemTray;
-			result << ConcreteHandlerBase::HTLCTray;
-		}
-
-		if (e.Additional_ ["org.LC.AdvNotifications.EventCategory"] == "org.LC.AdvNotifications.IM" &&
-				e.Additional_ ["org.LC.AdvNotifications.EventType"] != "org.LC.AdvNotifications.IM.MUCMessage")
-		{
-			result << ConcreteHandlerBase::HTSystemTray;
-			result << ConcreteHandlerBase::HTAudioNotification;
-		}
+	public:
+		virtual ~ILastActivityProvider () {}
 		
-		return result;
-	}
+		virtual quint64 GetInactiveSeconds () = 0;
+	};
 }
 }
+
+Q_DECLARE_INTERFACE (LeechCraft::Azoth::ILastActivityProvider,
+		"org.Deviant.LeechCraft.Azoth.ILastActivityProvider/1.0");
+
+#endif
