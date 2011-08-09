@@ -225,7 +225,7 @@ namespace LeechCraft
 				page ()->mainFrame ()->setScrollBarPolicy (Qt::Horizontal, Qt::ScrollBarAlwaysOff);
 				page ()->mainFrame ()->setScrollBarPolicy (Qt::Vertical, Qt::ScrollBarAlwaysOff);
 
-				setWindowFlags (Qt::ToolTip | Qt::FramelessWindowHint);
+				setWindowFlags (Qt::ToolTip | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
 
 				QPalette pal = palette ();
 				pal.setBrush (QPalette::Base, Qt::transparent);
@@ -334,7 +334,7 @@ namespace LeechCraft
 				Machine_.start ();
 			}
 			
-						void KinotifyWidget::stateMachinePause ()
+			void KinotifyWidget::stateMachinePause ()
 			{
 				CloseTimer_->start (Timeout_);
 				CheckTimer_->start (Timeout_);
