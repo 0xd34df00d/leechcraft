@@ -21,6 +21,8 @@
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
 
+class QGraphicsView;
+
 namespace LeechCraft
 {
 namespace BlackDash
@@ -32,6 +34,8 @@ namespace BlackDash
 		Q_INTERFACES (ITabWidget)
 		
 		static QObject *S_ParentPlugin_;
+		
+		QGraphicsView *View_;
 	public:
 		static void SetParentPlugin (QObject*);
 		static TabClassInfo GetStaticTabClassInfo ();

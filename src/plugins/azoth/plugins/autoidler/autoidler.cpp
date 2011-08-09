@@ -34,6 +34,8 @@ namespace Autoidler
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		IdleSeconds_ = 0;
+
 		Translator_.reset (Util::InstallTranslator ("azoth_autoidler"));
 
 		Proxy_ = proxy;
@@ -90,6 +92,11 @@ namespace Autoidler
 		return XmlSettingsDialog_;
 	}
 	
+	quint64 Plugin::GetInactiveSeconds ()
+	{
+		return IdleSeconds_;
+	}
+	
 	void Plugin::initPlugin (QObject *proxy)
 	{
 		AzothProxy_ = qobject_cast<IProxyObject*> (proxy);
@@ -97,6 +104,7 @@ namespace Autoidler
 	
 	void Plugin::handleIdle (int seconds)
 	{
+		IdleSeconds_ = seconds;
 		if (seconds && seconds % 60)
 			return;
 		

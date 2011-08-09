@@ -16,44 +16,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "accounthandlerchooserdialog.h"
-#include <QtDebug>
-#include "interfaces/iaccount.h"
+#ifndef PLUGINS_AZOTH_INTERFACES_ILASTACTIVITYPROVIDER_H
+#define PLUGINS_AZOTH_INTERFACES_ILASTACTIVITYPROVIDER_H
+#include <QMetaType>
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-	AccountHandlerChooserDialog::AccountHandlerChooserDialog (const QList<QObject*>& accounts,
-			const QString& text, QWidget *parent)
-	: QDialog (parent)
+	class ILastActivityProvider
 	{
-		Ui_.setupUi (this);
-		Ui_.Text_->setText (text);
+	public:
+		virtual ~ILastActivityProvider () {}
 		
-		Q_FOREACH (QObject *accObj, accounts)
-		{
-			IAccount *acc = qobject_cast<IAccount*> (accObj);
-			if (!acc)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "account doesn't implement IAccount"
-						<< accObj;
-				continue;
-			}
-			
-			Ui_.AccountsBox_->addItem (acc->GetAccountName (),
-					QVariant::fromValue<QObject*> (accObj));
-		}
-	}
-	
-	QObject* AccountHandlerChooserDialog::GetSelectedAccount () const
-	{
-		const int idx = Ui_.AccountsBox_->currentIndex ();
-		if (idx < 0)
-			return 0;
-		
-		return Ui_.AccountsBox_->itemData (idx).value<QObject*> ();
-	}
+		virtual quint64 GetInactiveSeconds () = 0;
+	};
 }
 }
+
+Q_DECLARE_INTERFACE (LeechCraft::Azoth::ILastActivityProvider,
+		"org.Deviant.LeechCraft.Azoth.ILastActivityProvider/1.0");
+
+#endif

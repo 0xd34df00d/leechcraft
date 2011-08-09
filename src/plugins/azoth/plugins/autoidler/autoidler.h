@@ -25,6 +25,7 @@
 #include <interfaces/iplugin2.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/iclentry.h>
+#include <interfaces/ilastactivityprovider.h>
 
 class QTranslator;
 
@@ -42,9 +43,10 @@ namespace Autoidler
 				 , public IInfo
 				 , public IPlugin2
 				 , public IHaveSettings
+				 , public ILastActivityProvider
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
+		Q_INTERFACES (IInfo IPlugin2 IHaveSettings LeechCraft::Azoth::ILastActivityProvider)
 		
 		ICoreProxy_ptr Proxy_;
 		IProxyObject *AzothProxy_;
@@ -54,6 +56,8 @@ namespace Autoidler
 		boost::shared_ptr<Idle> Idle_;
 		
 		QMap<QObject*, EntryStatus> OldStatuses_;
+		
+		int IdleSeconds_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -66,6 +70,8 @@ namespace Autoidler
 		QSet<QByteArray> GetPluginClasses () const;
 		
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+		
+		quint64 GetInactiveSeconds ();
 	public slots:
 		void initPlugin (QObject*);
 	private slots:

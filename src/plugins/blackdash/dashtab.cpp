@@ -17,6 +17,8 @@
  **********************************************************************/
 
 #include "dashtab.h"
+#include <QGraphicsView>
+#include <QVBoxLayout>
 
 namespace LeechCraft
 {
@@ -45,7 +47,10 @@ namespace BlackDash
 
 	DashTab::DashTab (QWidget *parent)
 	: QWidget (parent)
+	, View_ (new QGraphicsView)
 	{
+		setLayout (new QVBoxLayout ());
+		layout ()->addWidget (View_);
 	}
 	
 	TabClassInfo DashTab::GetTabClassInfo () const

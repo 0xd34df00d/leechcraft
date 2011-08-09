@@ -412,6 +412,8 @@ namespace Azoth
 		 */
 		void AddEntryTo (ICLEntry*, QStandardItem*);
 		
+		void SuggestJoiningMUC (IAccount*, const QVariantMap&);
+		
 		IChatStyleResourceSource* GetCurrentChatStyle () const;
 		
 		void FillANFields ();
@@ -517,6 +519,8 @@ namespace Azoth
 		void handleItemUnsubscribed (const QString&, const QString&);
 		void handleItemCancelledSubscription (QObject*, const QString&);
 		void handleItemGrantedSubscription (QObject*, const QString&);
+
+		void handleMUCInvitation (const QVariantMap&, const QString&, const QString&);
 
 		/** Is registered in the XmlSettingsManager as handler for
 		 * changes of the "StatusIcons" property.

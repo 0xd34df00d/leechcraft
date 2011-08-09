@@ -36,10 +36,13 @@ namespace Util
 		typedef boost::function<void ()> Callback_t;
 	private:
 		QList<QPair<QString, Callback_t> > ActionName2Callback_;
+		
+		QList<QPointer<QObject> > DependentObjects_;
 	public:
 		UTIL_API NotificationActionHandler (Entity&, QObject* = 0);
 
 		UTIL_API void AddFunction (const QString&, Callback_t);
+		UTIL_API void AddDependentObject (QObject*);
 	public slots:
 		void notificationActionTriggered (int);
 	};

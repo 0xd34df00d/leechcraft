@@ -71,6 +71,7 @@ namespace Xoox
 	class PubSubManager;
 	class PrivacyListsManager;
 	class AdHocCommandManager;
+	class LastActivityManager;
 
 #ifdef ENABLE_CRYPT
 	class PgpManager;
@@ -95,6 +96,7 @@ namespace Xoox
 		PrivacyListsManager *PrivacyListsManager_;
 		AdHocCommandManager *AdHocCommandManager_;		
 		AnnotationsManager *AnnotationsManager_;
+		LastActivityManager *LastActivityManager_;
 		
 #ifdef ENABLE_CRYPT
 		PgpManager *PGPManager_;
@@ -159,6 +161,7 @@ namespace Xoox
 		virtual ~ClientConnection ();
 
 		void SetState (const GlooxAccountState&);
+		GlooxAccountState GetLastState () const;
 		void Synchronize ();
 
 		void SetPassword (const QString&);
@@ -246,6 +249,7 @@ namespace Xoox
 		void handlePEPEvent (const QString&, PEPEventBase*);
 		void handleMessageDelivered (const QString&);
 		void handleCaptchaReceived (const QString&, const QXmppDataForm&);
+		void handleRoomInvitation (const QString&, const QString&, const QString&);
 		
 		void handleBookmarksReceived (const QXmppBookmarkSet&);
 		void handleAutojoinQueue ();
@@ -278,6 +282,7 @@ namespace Xoox
 		void rosterItemCancelledSubscription (QObject*, const QString&);
 		void rosterItemGrantedSubscription (QObject*, const QString&);
 		void gotSubscriptionRequest (QObject*, const QString&);
+		void gotMUCInvitation (const QVariantMap&, const QString&, const QString&);
 
 		void gotConsoleLog (const QByteArray&, int);
 

@@ -55,6 +55,8 @@ namespace Xoox
 		QString Status_;
 		int Priority_;
 	};
+	
+	bool operator== (const GlooxAccountState&, const GlooxAccountState&);
 
 	class GlooxProtocol;
 	class TransferManager;
@@ -189,7 +191,10 @@ namespace Xoox
 		void itemCancelledSubscription (QObject*, const QString&);
 		void itemGrantedSubscription (QObject*, const QString&);
 		void statusChanged (const EntryStatus&);
-		void addContactSuggested (const QString&, const QString&, const QStringList&);
+		void addContactSuggested (const QString&,
+				const QString&, const QStringList&);
+		void mucInvitationReceived (const QVariantMap&,
+				const QString&, const QString&);
 		
 		void gotConsolePacket (const QByteArray&, int);
 		

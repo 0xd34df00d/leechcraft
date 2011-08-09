@@ -22,6 +22,8 @@
 #include "clientconnection.h"
 #include "util.h"
 #include "roomclentry.h"
+#include "core.h"
+#include <interfaces/iproxyobject.h>
 
 namespace LeechCraft
 {
@@ -31,6 +33,7 @@ namespace Xoox
 {
 	const QString NsCommands = "http://jabber.org/protocol/commands";
 	const QString RcStr = "http://jabber.org/protocol/rc";
+	const QString NodeChangeStatus = "ttp://jabber.org/protocol/rc#set-status";
 	const QString NodeLeaveGroupchats = "http://jabber.org/protocol/rc#leave-groupchats";
 
 	AdHocCommandServer::AdHocCommandServer (ClientConnection *conn)
@@ -47,6 +50,16 @@ namespace Xoox
 				SLOT (handleDiscoInfo (const QXmppDiscoveryIq&)));
 		
 		const QString& jid = Conn_->GetOurJID ();
+		
+		QXmppDiscoveryIq::Item changeStatus;
+		changeStatus.setNode (NodeChangeStatus);
+		changeStatus.setJid (jid);
+		changeStatus.setName (tr ("Change status"));
+		XEP0146Items_ [changeStatus.node ()] = changeStatus;
+		NodeInfos_ [changeStatus.node ()] =
+				boost::bind (&AdHocCommandServer::ChangeStatusInfo, this, _1);
+		NodeSubmitHandlers_ [changeStatus.node ()] =
+				boost::bind (&AdHocCommandServer::ChangeStatusSubmitted, this, _1, _2, _3);
 		
 		QXmppDiscoveryIq::Item leaveGroupchats;
 		leaveGroupchats.setNode (NodeLeaveGroupchats);
@@ -111,6 +124,149 @@ namespace Xoox
 		return true;
 	}
 	
+	namespace
+	{
+		QString GenSessID (const QString& base)
+		{
+			return base + ":" + QDateTime::currentDateTime ().toString (Qt::ISODate);
+		}
+	}
+	
+	void AdHocCommandServer::Send (const QXmppDataForm& form,
+			const QDomElement& sourceElem, const QString& node)
+	{
+		const QString& sessionId = GenSessID (sourceElem.attribute ("id"));
+		PendingSessions_ [node] << sessionId;
+		
+		QXmppElement elem;
+		elem.setTagName ("command");
+		elem.setAttribute ("xmlns", NsCommands);
+		elem.setAttribute ("node", node);
+		elem.setAttribute ("status", "executing");
+		elem.setAttribute ("sessionid", sessionId);
+		elem.appendChild (XooxUtil::Form2XmppElem (form));
+		
+		QXmppIq iq;
+		iq.setTo (sourceElem.attribute ("from"));
+		iq.setId (sourceElem.attribute ("id"));
+		iq.setType (QXmppIq::Result);
+		iq.setExtensions (elem);
+		
+		Conn_->GetClient ()->sendPacket (iq);
+	}
+	
+	void AdHocCommandServer::SendCompleted (const QDomElement& sourceElem,
+			const QString& node, const QString& sessionId)
+	{
+		QXmppElement elem;
+		elem.setTagName ("command");
+		elem.setAttribute ("xmlns", NsCommands);
+		elem.setAttribute ("node", node);
+		elem.setAttribute ("status", "completed");
+		elem.setAttribute ("sessionid", sessionId);
+		
+		QXmppIq iq;
+		iq.setTo (sourceElem.attribute ("from"));
+		iq.setId (sourceElem.attribute ("id"));
+		iq.setType (QXmppIq::Result);
+		iq.setExtensions (elem);
+		
+		Conn_->GetClient ()->sendPacket (iq);
+	}
+	
+	void AdHocCommandServer::ChangeStatusInfo (const QDomElement& sourceElem)
+	{
+		QList<QXmppDataForm::Field> fields;
+		
+		QXmppDataForm::Field field (QXmppDataForm::Field::HiddenField);
+		field.setValue (RcStr);
+		field.setKey ("FORM_TYPE");
+		fields << field;
+		
+		const GlooxAccountState& state = Conn_->GetLastState ();
+
+		QList<QPair<State, QString> > rawOpts;
+		rawOpts << qMakePair<State, QString> (SChat, "chat");
+		rawOpts << qMakePair<State, QString> (SOnline, "online");
+		rawOpts << qMakePair<State, QString> (SAway, "away");
+		rawOpts << qMakePair<State, QString> (SXA, "xa");
+		rawOpts << qMakePair<State, QString> (SDND, "dnd");
+		rawOpts << qMakePair<State, QString> (SInvisible, "invisible");
+		rawOpts << qMakePair<State, QString> (SOffline, "offline");
+		
+		QString option;
+		QList<QPair<QString, QString> > options;
+		QPair<State, QString> pair;
+		IProxyObject *proxy = Core::Instance ().GetPluginProxy ();
+		Q_FOREACH (pair, rawOpts)
+		{
+			options << qMakePair (proxy->StateToString (pair.first), pair.second);
+			if (pair.first == state.State_)
+				option = pair.second;
+		}
+		
+		QXmppDataForm::Field stateField (QXmppDataForm::Field::ListSingleField);
+		stateField.setLabel (tr ("Status"));
+		stateField.setRequired (true);
+		stateField.setKey ("status");
+		stateField.setOptions (options);
+		stateField.setValue (option);
+		fields << stateField;
+		
+		QXmppDataForm::Field prioField (QXmppDataForm::Field::TextSingleField);
+		prioField.setLabel (tr ("Priority"));
+		prioField.setKey ("status-priority");
+		prioField.setValue (QString::number (state.Priority_));
+		fields << prioField;
+		
+		QXmppDataForm::Field msgField (QXmppDataForm::Field::TextMultiField);
+		msgField.setLabel (tr ("Status message"));
+		msgField.setKey ("status-message");
+		msgField.setValue (state.Status_);
+		fields << msgField;
+		
+		QXmppDataForm form (QXmppDataForm::Form);
+		form.setTitle (tr ("Change status"));
+		form.setInstructions (tr ("Choose the new status, priority and status message"));
+		form.setFields (fields);
+		
+		Send (form, sourceElem, NodeChangeStatus);
+	}
+	
+	void AdHocCommandServer::ChangeStatusSubmitted (const QDomElement& sourceElem,
+			const QString& sessionId, const QXmppDataForm& form)
+	{
+		const GlooxAccountState& origState = Conn_->GetLastState ();
+		GlooxAccountState newState = origState;
+		Q_FOREACH (const QXmppDataForm::Field& field, form.fields ())
+		{
+			if (field.key () == "status")
+			{
+				QMap<QString, State> str2state;				
+				str2state ["chat"] = SChat;
+				str2state ["online"] = SOnline;
+				str2state ["away"] = SAway;
+				str2state ["xa"] = SXA;
+				str2state ["dnd"] = SDND;
+				str2state ["invisible"] = SInvisible;
+				str2state ["offline"] = SOffline;
+				
+				newState.State_ = str2state.value (field.value ().toString (), newState.State_);
+			}
+			else if (field.key () == "status-priority")
+				newState.Priority_ = field.value ().toInt ();
+			else if (field.key () == "status-message")
+				newState.Status_ = field.value ().toString ();
+		}
+		
+		if (newState == Conn_->GetLastState ())
+			return;
+		
+		Conn_->SetState (newState);
+		
+		SendCompleted (sourceElem, NodeChangeStatus, sessionId);
+	}
+	
 	void AdHocCommandServer::LeaveGroupchatsInfo (const QDomElement& sourceElem)
 	{
 		QList<QXmppDataForm::Field> fields;
@@ -145,24 +301,7 @@ namespace Xoox
 		form.setInstructions (tr ("Select the groupchats to leave"));
 		form.setFields (fields);
 		
-		const QString& sessionId = "leavegc:" + QDateTime::currentDateTime ().toString (Qt::ISODate);
-		PendingSessions_ [NodeLeaveGroupchats] << sessionId;
-		
-		QXmppElement elem;
-		elem.setTagName ("command");
-		elem.setAttribute ("xmlns", NsCommands);
-		elem.setAttribute ("node", NodeLeaveGroupchats);
-		elem.setAttribute ("status", "executing");
-		elem.setAttribute ("sessionid", sessionId);
-		elem.appendChild (XooxUtil::Form2XmppElem (form));
-		
-		QXmppIq iq;
-		iq.setTo (sourceElem.attribute ("from"));
-		iq.setId (sourceElem.attribute ("id"));
-		iq.setType (QXmppIq::Result);
-		iq.setExtensions (elem);
-		
-		Conn_->GetClient ()->sendPacket (iq);
+		Send (form, sourceElem, NodeLeaveGroupchats);
 	}
 	
 	void AdHocCommandServer::LeaveGroupchatsSubmitted (const QDomElement& sourceElem,
@@ -189,20 +328,7 @@ namespace Xoox
 			break;
 		}
 
-		QXmppElement elem;
-		elem.setTagName ("command");
-		elem.setAttribute ("xmlns", NsCommands);
-		elem.setAttribute ("node", NodeLeaveGroupchats);
-		elem.setAttribute ("status", "completed");
-		elem.setAttribute ("sessionid", sessionId);
-		
-		QXmppIq iq;
-		iq.setTo (sourceElem.attribute ("from"));
-		iq.setId (sourceElem.attribute ("id"));
-		iq.setType (QXmppIq::Result);
-		iq.setExtensions (elem);
-		
-		Conn_->GetClient ()->sendPacket (iq);
+		SendCompleted (sourceElem, NodeLeaveGroupchats, sessionId);
 	}
 
 	void AdHocCommandServer::handleDiscoItems (const QXmppDiscoveryIq& iq)

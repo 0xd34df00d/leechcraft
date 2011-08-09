@@ -66,6 +66,7 @@
 #include "util.h"
 #include "selfcontact.h"
 #include "adhoccommandserver.h"
+#include "lastactivitymanager.h"
 
 #ifdef ENABLE_CRYPT
 #include "pgpmanager.h"
@@ -97,6 +98,7 @@ namespace Xoox
 	, PrivacyListsManager_ (new PrivacyListsManager)
 	, AdHocCommandManager_ (new AdHocCommandManager (this))
 	, AnnotationsManager_ (0)
+	, LastActivityManager_ (new LastActivityManager)
 #ifdef ENABLE_CRYPT
 	, PGPManager_ (0)
 #endif
@@ -108,9 +110,9 @@ namespace Xoox
 	, IsConnected_ (false)
 	, FirstTimeConnect_ (true)
 	, VCardQueue_ (new FetchQueue (boost::bind (&QXmppVCardManager::requestVCard, &Client_->vCardManager (), _1),
-				1700, 1, this))
+				jid.contains ("gmail.com") ? 1700 : 300, 1, this))
 	, CapsQueue_ (new FetchQueue (boost::bind (&QXmppDiscoveryManager::requestInfo, DiscoveryManager_, _1, ""),
-				1000, 1, this))
+				jid.contains ("gmail.com") ? 1000 : 200, 1, this))
 	, SocketErrorAccumulator_ (0)
 	{
 		SetOurJID (OurJID_);
@@ -157,6 +159,7 @@ namespace Xoox
 		Client_->addExtension (new LegacyEntityTimeExt);
 		Client_->addExtension (PrivacyListsManager_);
 		Client_->addExtension (CallManager_);
+		Client_->addExtension (LastActivityManager_);
 		Client_->addExtension (AdHocCommandManager_);
 		Client_->addExtension (new AdHocCommandServer (this));
 		
@@ -193,6 +196,11 @@ namespace Xoox
 				SIGNAL (messageReceived (const QXmppMessage&)),
 				this,
 				SLOT (handleMessageReceived (const QXmppMessage&)));
+		
+		connect (MUCManager_,
+				SIGNAL (invitationReceived (QString, QString, QString)),
+				this,
+				SLOT (handleRoomInvitation (QString, QString, QString)));
 
 		connect (&Client_->rosterManager (),
 				SIGNAL (rosterReceived ()),
@@ -320,6 +328,11 @@ namespace Xoox
 				entry->Convert2ODS ();
 			}
 		}
+	}
+	
+	GlooxAccountState ClientConnection::GetLastState () const
+	{
+		return LastState_;
 	}
 
 	void ClientConnection::Synchronize ()
@@ -1097,6 +1110,23 @@ namespace Xoox
 		
 		QXmppDataForm form = builder.GetForm ();
 		CaptchaManager_->sendResponse (jid, form);
+	}
+	
+	void ClientConnection::handleRoomInvitation (const QString& room,
+			const QString& inviter, const QString& reason)
+	{
+		const QStringList& split = room.split ('@', QString::SkipEmptyParts);
+
+		QVariantMap identifying;
+		identifying ["HumanReadableName"] = QString ("%2 (%1)")
+				.arg (Account_->GetOurNick ())
+				.arg (room);
+		identifying ["AccountID"] = Account_->GetAccountID ();
+		identifying ["Nick"] = Account_->GetOurNick ();
+		identifying ["Room"] = split.value (0);
+		identifying ["Server"] = split.value (1);
+
+		emit gotMUCInvitation (identifying, inviter, reason);
 	}
 
 	void ClientConnection::handleBookmarksReceived (const QXmppBookmarkSet& set)
