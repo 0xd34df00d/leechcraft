@@ -72,6 +72,13 @@ namespace Azoth
 				SLOT (handleEntryMadeCurrent (QObject*)),
 				Qt::QueuedConnection);
 		
+#ifdef Q_WS_WIN32
+		connect (Ui_.CLTree_,
+				SIGNAL (clicked (const QModelIndex&)),
+				this,
+				SLOT (on_CLTree__activated (const QModelIndex&)));
+#endif
+		
 		connect (Ui_.CLTree_,
 				SIGNAL (activated (const QModelIndex&)),
 				this,
