@@ -82,6 +82,7 @@ namespace Azoth
 					boost::bind (static_cast<void (ChatTabsManager::*) (const ICLEntry*)> (&ChatTabsManager::OpenChat),
 							Core::Instance ().GetChatTabsManager (),
 							entry));
+			nh->AddDependentObject (entry->GetObject ());
 			emit gotEntity (e);
 		}
 	}
