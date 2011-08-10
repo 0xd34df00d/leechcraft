@@ -38,8 +38,8 @@ namespace BodyFetch
 	{
 		Q_OBJECT
 		
-		Util::Guarded<IScriptLoaderInstance*> Inst_;
-		Util::Guarded<QVariantList> Items_;
+		IScriptLoaderInstance *Inst_;
+		QVariantList Items_;
 		
 		QStringList EnumeratedCache_;
 		QDateTime LastEnumerated_;
@@ -60,7 +60,6 @@ namespace BodyFetch
 		IScript_ptr GetScriptForChannel (const QString&);
 		QString FindScriptForChannel (const QString&);
 		QString Parse (const QString&, IScript_ptr);
-		QString ParseWithSelectors (const QString&, const QStringList&);
 		void WriteFile (const QString&, quint64) const;
 		QString Recode (const QByteArray&) const;
 	public slots:
