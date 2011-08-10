@@ -32,6 +32,7 @@
 #include <interfaces/isupportactivity.h>
 #include <interfaces/isupportgeolocation.h>
 #include <interfaces/isupportmediacalls.h>
+#include <interfaces/isupportriex.h>
 #ifdef ENABLE_CRYPT
 #include <interfaces/isupportpgp.h>
 #endif
@@ -71,6 +72,7 @@ namespace Xoox
 					   , public ISupportActivity
 					   , public ISupportGeolocation
 					   , public ISupportMediaCalls
+					   , public ISupportRIEX
 #ifdef ENABLE_CRYPT
 					   , public ISupportPGP
 #endif
@@ -84,6 +86,7 @@ namespace Xoox
 				LeechCraft::Azoth::ISupportActivity
 				LeechCraft::Azoth::ISupportGeolocation
 				LeechCraft::Azoth::ISupportMediaCalls
+				LeechCraft::Azoth::ISupportRIEX
 #ifdef ENABLE_CRYPT
 				LeechCraft::Azoth::ISupportPGP
 #endif
