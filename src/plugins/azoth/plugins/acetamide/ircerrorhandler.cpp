@@ -49,7 +49,7 @@ namespace Acetamide
 				.ServerEncoding_.toUtf8 ());
 		msg = codec->toUnicode (message.toAscii ());
 		
-		if (!params.count () > 1)
+		if (params.count () > 1)
 			Q_FOREACH (const std::string& str, params.mid (1))
 				paramsMessage += QString::fromUtf8 (str.c_str ()) + " ";
 

@@ -719,6 +719,372 @@
          </property>
         </item>
        </item>
+       <item>
+        <property name="text">
+         <string>For children</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <item>
+         <property name="text">
+          <string>Tales</string>
+         </property>
+         <property name="text">
+          <string notr="true">child_tale</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Verses</string>
+         </property>
+         <property name="text">
+          <string notr="true">child_verse</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Prose</string>
+         </property>
+         <property name="text">
+          <string notr="true">child_prose</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Science fiction</string>
+         </property>
+         <property name="text">
+          <string notr="true">child_sf</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Detectives</string>
+         </property>
+         <property name="text">
+          <string notr="true">child_det</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Adventure</string>
+         </property>
+         <property name="text">
+          <string notr="true">child_adv</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Educational</string>
+         </property>
+         <property name="text">
+          <string notr="true">child_education</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Other</string>
+         </property>
+         <property name="text">
+          <string notr="true">children</string>
+         </property>
+        </item>
+       </item>
+       <item>
+        <property name="text">
+         <string>Antique</string>
+        </property>
+        <item>
+         <property name="text">
+          <string>Antique</string>
+         </property>
+         <property name="text">
+          <string notr="true">antique_ant</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>European</string>
+         </property>
+         <property name="text">
+          <string notr="true">antique_european</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Russian</string>
+         </property>
+         <property name="text">
+          <string notr="true">antique_russian</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>East</string>
+         </property>
+         <property name="text">
+          <string notr="true">antique_east</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Myths</string>
+         </property>
+         <property name="text">
+          <string notr="true">antique_myths</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Other</string>
+         </property>
+         <property name="text">
+          <string notr="true">antique</string>
+         </property>
+        </item>
+       </item>
+       <item>
+        <property name="text">
+         <string>References</string>
+        </property>
+        <item>
+         <property name="text">
+          <string>Encyclopedia</string>
+         </property>
+         <property name="text">
+          <string notr="true">ref_encyc</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Dictionaries</string>
+         </property>
+         <property name="text">
+          <string notr="true">ref_dict</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>References</string>
+         </property>
+         <property name="text">
+          <string notr="true">ref_ref</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Guides</string>
+         </property>
+         <property name="text">
+          <string notr="true">ref_guide</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Other</string>
+         </property>
+         <property name="text">
+          <string notr="true">reference</string>
+         </property>
+        </item>
+       </item>
+       <item>
+        <property name="text">
+         <string>Documentary</string>
+        </property>
+        <item>
+         <property name="text">
+          <string>Biography</string>
+         </property>
+         <property name="text">
+          <string notr="true">nonf_biography</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Publicism</string>
+         </property>
+         <property name="text">
+          <string notr="true">nonf_publicism</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Criticism</string>
+         </property>
+         <property name="text">
+          <string notr="true">nonf_criticism</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Other</string>
+         </property>
+         <property name="text">
+          <string notr="true">nonfiction</string>
+         </property>
+        </item>
+       </item>
+       <item>
+        <property name="text">
+         <string>Religion</string>
+        </property>
+        <item>
+         <property name="text">
+          <string>Religion</string>
+         </property>
+         <property name="text">
+          <string notr="true">religion_rel</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Esoterics</string>
+         </property>
+         <property name="text">
+          <string notr="true">religion_esoterics</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Self-improvement</string>
+         </property>
+         <property name="text">
+          <string notr="true">religion_self</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Other</string>
+         </property>
+         <property name="text">
+          <string notr="true">religion</string>
+         </property>
+        </item>
+       </item>
+       <item>
+        <property name="text">
+         <string>Humor</string>
+        </property>
+        <item>
+         <property name="text">
+          <string>Anecdotes</string>
+         </property>
+         <property name="text">
+          <string notr="true">humor_anecdote</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Prose</string>
+         </property>
+         <property name="text">
+          <string notr="true">humor_prose</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Verses</string>
+         </property>
+         <property name="text">
+          <string notr="true">humor_verse</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Other</string>
+         </property>
+         <property name="text">
+          <string notr="true">humor</string>
+         </property>
+        </item>
+       </item>
+       <item>
+        <property name="text">
+         <string>Home &amp; Family</string>
+        </property>
+        <item>
+         <property name="text">
+          <string>Cooking</string>
+         </property>
+         <property name="text">
+          <string notr="true">home_cooking</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Pets</string>
+         </property>
+         <property name="text">
+          <string notr="true">home_pets</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Crafts</string>
+         </property>
+         <property name="text">
+          <string notr="true">home_crafts</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Entertainment</string>
+         </property>
+         <property name="text">
+          <string notr="true">home_entertain</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Health</string>
+         </property>
+         <property name="text">
+          <string notr="true">home_health</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Garden</string>
+         </property>
+         <property name="text">
+          <string notr="true">home_garden</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>DIY</string>
+         </property>
+         <property name="text">
+          <string notr="true">home_diy</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Sports</string>
+         </property>
+         <property name="text">
+          <string notr="true">home_sport</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Sex</string>
+         </property>
+         <property name="text">
+          <string notr="true">home_sex</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Other</string>
+         </property>
+         <property name="text">
+          <string notr="true">home</string>
+         </property>
+        </item>
+       </item>
       </widget>
      </item>
     </layout>
