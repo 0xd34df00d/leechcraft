@@ -109,6 +109,8 @@ namespace Acetamide
 		bool MayChangePerm (QObject*, const QByteArray&,
 							const QByteArray&) const;
 
+		ChannelModes GetChannelModes () const;
+
 		// IConfigurableMUC
 		QWidget* GetConfigurationWidget ();
 		void AcceptConfiguration (QWidget*);

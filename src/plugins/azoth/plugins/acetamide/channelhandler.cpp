@@ -290,6 +290,80 @@ namespace Acetamide
 		deleteLater ();
 	}
 
+	ChannelModes ChannelHandler::GetChannelModes () const
+	{
+		return ChannelMode_;
+	}
+
+	void ChannelHandler::SetInviteMode (bool invite)
+	{
+		ChannelMode_.InviteMode_ = invite;
+	}
+
+	void ChannelHandler::SetModerateMode (bool moderate)
+	{
+		ChannelMode_.ModerateMode_ = moderate;
+	}
+
+	void ChannelHandler::SetBlockOutsideMessagesMode (bool block)
+	{
+		ChannelMode_.BlockOutsideMessageMode_ = block;
+	}
+
+	void ChannelHandler::SetPrivateMode (bool priv)
+	{
+		ChannelMode_.PrivateMode_ = priv;
+	}
+
+	void ChannelHandler::SetSecretMode (bool secret)
+	{
+		ChannelMode_.SecretMode_ = secret;
+	}
+
+	void ChannelHandler::SetServerReOpMode (bool reop)
+	{
+		ChannelMode_.ReOpMode_ = reop;
+	}
+
+	void ChannelHandler::SetOnlyOpTopicChangeMode (bool topic)
+	{
+		ChannelMode_.OnlyOpChangeTopicMode_ = topic;
+	}
+
+	void ChannelHandler::SetUserLimit (bool islimit, int limit)
+	{
+		ChannelMode_.UserLimit_ = qMakePair (islimit, limit);
+	}
+
+	void ChannelHandler::SetChannelKey (bool iskey, const QString& key)
+	{
+		ChannelMode_.ChannelKey_ = qMakePair (iskey, key);
+	}
+
+	void ChannelHandler::SetBanMask (bool ban, const QString& mask)
+	{
+		if (ban)
+			ChannelMode_.BanMask_ << mask;
+		else
+			ChannelMode_.BanMask_.removeOne (mask);
+	}
+
+	void ChannelHandler::SetExceptionMask (bool except, const QString& mask)
+	{
+		if (except)
+			ChannelMode_.ExceptionMask_ << mask;
+		else
+			ChannelMode_.ExceptionMask_.removeOne (mask);
+	}
+
+	void ChannelHandler::SetInviteMask (bool invite, const QString& mask)
+	{
+		if (invite)
+			ChannelMode_.InviteMask_ << mask;
+		else
+			ChannelMode_.InviteMask_.removeOne (mask);
+	}
+
 	bool ChannelHandler::RemoveUserFromChannel (const QString& nick)
 	{
 		ServerParticipantEntry_ptr entry =

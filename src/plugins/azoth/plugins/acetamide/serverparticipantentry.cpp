@@ -157,15 +157,26 @@ namespace Acetamide
 		return PrivateChat_;
 	}
 
-	ChannelRole ServerParticipantEntry::GetRole (const QString& ch) const
+	QList<ChannelRole> ServerParticipantEntry::GetRoles (const QString& channel) const
 	{
-		return Channel2Role_ [ch];
+		return Channel2Role_ [channel];
 	}
 
-	void ServerParticipantEntry::SetRole (const QString& ch,
-										  ChannelRole r)
+	void ServerParticipantEntry::AddRole (const QString& channel, ChannelRole role)
 	{
-		Channel2Role_ [ch] = r;
+		if (Channel2Role_.contains (channel))
+		{
+			if (!Channel2Role_ [channel].contains (role))
+				Channel2Role_ [channel].append (role);
+		}
+		else
+			Channel2Role_ [channel] = QList<ChannelRole> () << role;
+	}
+
+	void ServerParticipantEntry::RemoveRole (const QString& channnel, ChannelRole role)
+	{
+		if (Channel2Role_.contains (channnel))
+			Channel2Role_ [channnel].removeOne (role);
 	}
 
 	void ServerParticipantEntry::closePrivateChat (bool)

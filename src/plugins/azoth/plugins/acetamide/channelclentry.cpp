@@ -24,6 +24,7 @@
 #include "ircserverhandler.h"
 #include "ircaccount.h"
 #include "channelconfigwidget.h"
+// #include "channelconfigwidget.h"
 
 namespace LeechCraft
 {
@@ -285,6 +286,11 @@ namespace Acetamide
 		return false;
 	}
 
+	ChannelModes ChannelCLEntry::GetChannelModes () const
+	{
+		return ICH_->GetChannelModes ();
+	}
+
 	QWidget* ChannelCLEntry::GetConfigurationWidget ()
 	{
 		return new ChannelConfigWidget (this);
@@ -292,7 +298,17 @@ namespace Acetamide
 
 	void ChannelCLEntry::AcceptConfiguration (QWidget *widget)
 	{
-		Q_UNUSED (widget);
+		ChannelConfigWidget *cfg = qobject_cast<ChannelConfigWidget*> (widget);
+		if (!cfg)
+		{
+			qWarning () << Q_FUNC_INFO
+			<< "unable to cast"
+			<< widget
+			<< "to ChannelConfigWidget";
+			return;
+		}
+
+		cfg->accept ();
 	}
 
 };

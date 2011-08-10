@@ -748,32 +748,73 @@ namespace Acetamide
 			switch (mode [i].toAscii ())
 			{
 			case 'o':
+				if (!value.isEmpty () && IsParticipantExists (value))
+					if (action)
+						Nick2Entry_ [value]->AddRole (channel, Operator);
+					else
+						Nick2Entry_ [value]->RemoveRole (channel, Operator);
 				break;
 			case 'v':
+				if (!value.isEmpty () && IsParticipantExists (value))
+					if (action)
+						Nick2Entry_ [value]->AddRole (channel, Voiced);
+					else
+						Nick2Entry_ [value]->RemoveRole (channel, Voiced);
 				break;
 			case 'a':
+				// may be it is nessesary
 				break;
 			case 'i':
+				if (value.isEmpty ())
+					ChannelHandlers_ [channelID]->SetInviteMode (action);
 				break;
 			case 'm':
+				if (value.isEmpty ())
+					ChannelHandlers_ [channelID]->SetModerateMode (action);
 				break;
 			case 'n':
+				if (value.isEmpty ())
+					ChannelHandlers_ [channelID]->SetBlockOutsideMessagesMode (action);
 				break;
 			case 'q':
+				// may be it is nessesary
 				break;
 			case 'p':
+				if (value.isEmpty ())
+					ChannelHandlers_ [channelID]->SetPrivateMode (action);
 				break;
 			case 'r':
+				if (value.isEmpty ())
+					ChannelHandlers_ [channelID]->SetServerReOpMode (action);
 				break;
 			case 's':
+				if (value.isEmpty ())
+					ChannelHandlers_ [channelID]->SetSecretMode (action);
 				break;
 			case 't':
+				if (value.isEmpty ())
+					ChannelHandlers_ [channelID]->SetOnlyOpTopicChangeMode (action);
+				break;
+			case 'l':
+				if (!value.isEmpty ())
+					ChannelHandlers_ [channelID]->
+						SetUserLimit (action, value.toInt ());
+				break;
+			case 'k':
+				if (!value.isEmpty ())
+					ChannelHandlers_ [channelID]->SetChannelKey (action, value);
 				break;
 			case 'b':
+				if (!value.isEmpty ())
+					ChannelHandlers_ [channelID]->SetBanMask (action, value);
 				break;
 			case 'e':
+				if (!value.isEmpty ())
+					ChannelHandlers_ [channelID]->SetExceptionMask (action, value);
 				break;
 			case 'I':
+				if (!value.isEmpty ())
+					ChannelHandlers_ [channelID]->SetInviteMask (action, value);
 				break;
 			}
 		}

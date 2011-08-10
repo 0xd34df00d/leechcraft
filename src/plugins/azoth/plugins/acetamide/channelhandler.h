@@ -45,6 +45,7 @@ namespace Acetamide
 		ChannelOptions ChannelOptions_;
 		bool IsRosterReceived_;
 		QHash<QString, ServerParticipantEntry_ptr> Nick2Entry_;
+		ChannelModes ChannelMode_; 
 	public:
 		ChannelHandler (IrcServerHandler*, const ChannelOptions&);
 		QString GetChannelID () const;
@@ -85,6 +86,19 @@ namespace Acetamide
 
 		void RemoveThis ();
 
+		ChannelModes GetChannelModes () const;
+		void SetInviteMode (bool);
+		void SetModerateMode (bool);
+		void SetBlockOutsideMessagesMode (bool);
+		void SetPrivateMode (bool);
+		void SetSecretMode (bool);
+		void SetServerReOpMode (bool);
+		void SetOnlyOpTopicChangeMode (bool);
+		void SetUserLimit (bool, int limit = 0);
+		void SetChannelKey (bool, const QString& key = QString ());
+		void SetBanMask (bool, const QString&);
+		void SetExceptionMask (bool, const QString&);
+		void SetInviteMask (bool, const QString&);
 	private:
 		bool RemoveUserFromChannel (const QString&);
 	};

@@ -28,8 +28,26 @@ namespace Acetamide
 	ChannelConfigWidget::ChannelConfigWidget (ChannelCLEntry *clentry, QWidget *parent) 
 	: QWidget (parent)
 	, Channel_ (clentry)
+	, ChannelMode_ (clentry->GetChannelModes ())
 	{
 		Ui_.setupUi (this);
+
+		SetModesUi ();
+	}
+
+	void ChannelConfigWidget::SetModesUi ()
+	{
+		Ui_.OpTopic_->setChecked (ChannelMode_.OnlyOpChangeTopicMode_);
+		Ui_.BlockOutMessage_->setChecked (ChannelMode_.BlockOutsideMessageMode_);
+		Ui_.SecretChannel_->setChecked (ChannelMode_.SecretMode_);
+		Ui_.PrivateChannel_->setChecked (ChannelMode_.PrivateMode_);
+		Ui_.InvitesOnly_->setChecked (ChannelMode_.InviteMode_);
+		Ui_.ModerateChannel_->setChecked (ChannelMode_.ModerateMode_);
+		Ui_.ReOp_->setChecked (ChannelMode_.ReOpMode_);
+		Ui_.UserLimit_->setChecked (ChannelMode_.UserLimit_.first);
+		Ui_.Limit_->setValue (ChannelMode_.UserLimit_.second);
+		Ui_.Password_->setChecked (ChannelMode_.ChannelKey_.first);
+		Ui_.Key_->setText (ChannelMode_.ChannelKey_.second);
 	}
 
 	void ChannelConfigWidget::accept ()

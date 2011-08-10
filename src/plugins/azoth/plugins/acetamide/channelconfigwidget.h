@@ -23,6 +23,7 @@
 #include <QWidget>
 #include <interfaces/iconfigurablemuc.h>
 #include "ui_channelconfigwidget.h"
+#include "localtypes.h"
 
 namespace LeechCraft
 {
@@ -41,8 +42,11 @@ namespace Acetamide
 
 		Ui::ChannelConfigWidget Ui_;
 		ChannelCLEntry *Channel_;
+		ChannelModes ChannelMode_;
 	public:
 		ChannelConfigWidget (ChannelCLEntry*, QWidget* = 0);
+	private:
+		void SetModesUi ();
 	public slots:
 		void accept ();
 	signals:
