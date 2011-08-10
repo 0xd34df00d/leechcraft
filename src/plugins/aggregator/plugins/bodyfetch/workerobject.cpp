@@ -137,8 +137,9 @@ namespace BodyFetch
 		IScript_ptr script;
 		if (ChannelLink2ScriptID_.contains (channel))
 		{
-			script.reset (Inst_->LoadScript (ChannelLink2ScriptID_ [channel]));
-			if (!script->InvokeMethod ("CanHandle", QVariantList () << channel).toBool ())
+			script = Inst_->LoadScript (ChannelLink2ScriptID_ [channel]);
+			if (!script ||
+					!script->InvokeMethod ("CanHandle", QVariantList () << channel).toBool ())
 			{
 				ChannelLink2ScriptID_.remove (channel);
 				script.reset ();
@@ -161,7 +162,7 @@ namespace BodyFetch
 		}
 
 		if (!script)
-			script.reset (Inst_->LoadScript (ChannelLink2ScriptID_ [channel]));
+			script = Inst_->LoadScript (ChannelLink2ScriptID_ [channel]);
 		
 		return script;
 	}

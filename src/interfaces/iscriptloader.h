@@ -47,7 +47,23 @@ public:
 	
 	virtual QVariantMap GetScriptInfo (const QString&) = 0;
 	
-	virtual IScript* LoadScript (const QString&) = 0;
+	/** @brief Loads the given script.
+	 * 
+	 * This method loads the script identified by the script, and
+	 * returns an object used to communicate with the script, or a null
+	 * pointer if the given script could not be loaded.
+	 * 
+	 * Please refer to this class' documentation for more information
+	 * regarding script paths.
+	 * 
+	 * @note Implementations may choose to return a valid pointer even
+	 * if the script is loaded correctly. In this case, all operations
+	 * on it will fail, though.
+	 * 
+	 * @param[in] script The script base name.
+	 * @return The script wrapper object.
+	 */
+	virtual IScript_ptr LoadScript (const QString& script) = 0;
 };
 
 class IScriptLoader
