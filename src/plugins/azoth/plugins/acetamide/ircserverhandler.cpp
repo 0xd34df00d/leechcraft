@@ -644,17 +644,19 @@ namespace Acetamide
 			const QString& channelId)
 	{
 		LastSendId_ = channelId;
-		IrcParser_->PrivMsgCommand (QStringList () 
-				<< channelId.left (channelId.indexOf ('@'))
-				<< msg);
+		Q_FOREACH (const QString& str, msg.split ('\n'))
+			IrcParser_->PrivMsgCommand (QStringList ()
+					<< channelId.left (channelId.indexOf ('@'))
+					<< str);
 	}
 
 	void IrcServerHandler::SendPrivateMessage (IrcMessage* msg)
 	{
 		LastSendId_ = msg->GetOtherVariant ();
-		IrcParser_->PrivMsgCommand (QStringList () 
-				<< msg->GetOtherVariant () 
-				<< msg->GetBody ());
+		Q_FOREACH (const QString& str, msg->GetBody ().split ('\n'))
+			IrcParser_->PrivMsgCommand (QStringList ()
+					<< msg->GetOtherVariant ()
+					<< str);
 
 		ServerParticipantEntry_ptr entry = GetParticipantEntry (msg->GetOtherVariant ());
 		entry->HandleMessage (msg);
