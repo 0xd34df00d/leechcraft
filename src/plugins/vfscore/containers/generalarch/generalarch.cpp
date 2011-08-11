@@ -35,7 +35,7 @@ namespace GeneralArch
 
 	QByteArray Plugin::GetUniqueID () const
 	{
-		return "org.LeechCraft.VFScore";
+		return "org.LeechCraft.VFSContainers.GeneralArch";
 	}
 
 	void Plugin::Release ()
@@ -44,12 +44,12 @@ namespace GeneralArch
 
 	QString Plugin::GetName () const
 	{
-		return "VFScore";
+		return "VFS Container GeneralArch";
 	}
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("Core of the VFS subsystem in LeechCraft.");
+		return tr ("VFS container for supporting general archive formats.");
 	}
 
 	QIcon Plugin::GetIcon () const
