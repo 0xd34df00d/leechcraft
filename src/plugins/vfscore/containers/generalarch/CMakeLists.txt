@@ -4,7 +4,7 @@ IF (NOT QT_USE_FILE)
 		cmake_policy (SET CMP0003 NEW)
 	ENDIF (COMMAND cmake_policy)
 
-	PROJECT (leechcraft_vfscore)
+	PROJECT (leechcraft_vfscont_generalarch)
 
 	IF (NOT CMAKE_MODULE_PATH)
 		SET (CMAKE_MODULE_PATH "/usr/local/share/leechcraft/cmake;/usr/share/leechcraft/cmake")
@@ -22,24 +22,20 @@ INCLUDE_DIRECTORIES (
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
 SET (SRCS
-	vfscore.cpp
-	vfsenginehandler.cpp
+	generalarch.cpp
 	)
 SET (HEADERS
-	vfscore.h
-	vfsenginehandler.h
+	generalarch.h
 	)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 
-ADD_LIBRARY (leechcraft_vfscore SHARED
+ADD_LIBRARY (leechcraft_vfscont_generalarch SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_vfscore
+TARGET_LINK_LIBRARIES (leechcraft_vfscont_generalarch
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
-INSTALL (TARGETS leechcraft_vfscore DESTINATION ${LC_PLUGINS_DEST})
-
-ADD_SUBDIRECTORY (containers)
+INSTALL (TARGETS leechcraft_vfscont_generalarch DESTINATION ${LC_PLUGINS_DEST})
