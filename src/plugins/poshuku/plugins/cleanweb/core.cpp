@@ -154,6 +154,9 @@ namespace CleanWeb
 						f.Case_ = Qt::CaseSensitive;
 						cs = true;
 					}
+					
+					if (options.removeAll ("third-party"))
+						f.AbortForeign_ = true;
 
 					Q_FOREACH (const QString& option, options)
 						if (option.startsWith ("domain="))
@@ -404,33 +407,32 @@ namespace CleanWeb
 		}
 
 		QString matched;
-		if (ShouldReject (*req, &matched))
-		{
-			if (Blocked_.size () > 300)
-				Blocked_.removeFirst ();
-			qDebug () << "rejecting against" << matched;
-			hook->CancelDefault ();
+		if (!ShouldReject (*req, &matched))
+			return 0;
+
+		if (Blocked_.size () > 300)
+			Blocked_.removeFirst ();
+		qDebug () << "rejecting against" << matched;
+		hook->CancelDefault ();
 
 #if QT_VERSION >= 0x040700
-			QWebFrame *frame = qobject_cast<QWebFrame*> (req->originatingObject ());
-			if (frame)
-				QMetaObject::invokeMethod (this,
-						"delayedRemoveElements",
-						Qt::QueuedConnection,
-						Q_ARG (QWebFrame*, frame),
-						Q_ARG (QString, req->url ().toString ()));
+		QWebFrame *frame = qobject_cast<QWebFrame*> (req->originatingObject ());
+		if (frame)
+			QMetaObject::invokeMethod (this,
+					"delayedRemoveElements",
+					Qt::QueuedConnection,
+					Q_ARG (QWebFrame*, frame),
+					Q_ARG (QString, req->url ().toString ()));
 #else
-			Blocked_ << req->url ().toString ();
+		Blocked_ << req->url ().toString ();
 #endif
 
-			Util::CustomNetworkReply *result = new Util::CustomNetworkReply (this);
-			result->SetContent (QString ("Blocked by Poshuku CleanWeb"));
-			result->SetError (QNetworkReply::ContentAccessDenied,
-					tr ("Blocked by Poshuku CleanWeb: %1")
-						.arg (req->url ().toString ()));
-			return result;
-		}
-		return 0;
+		Util::CustomNetworkReply *result = new Util::CustomNetworkReply (this);
+		result->SetContent (QString ("Blocked by Poshuku CleanWeb"));
+		result->SetError (QNetworkReply::ContentAccessDenied,
+				tr ("Blocked by Poshuku CleanWeb: %1")
+					.arg (req->url ().toString ()));
+		return result;
 	}
 
 	void Core::HandleExtension (LeechCraft::IHookProxy_ptr proxy,
@@ -522,6 +524,9 @@ namespace CleanWeb
 	 */
 	bool Core::ShouldReject (const QNetworkRequest& req, QString *matchedFilter) const
 	{
+		if (!req.hasRawHeader ("referer"))
+			return false;
+
 		QUrl url = req.url ();
 		QString urlStr = url.toString ();
 		QString cinUrlStr = urlStr.toLower ();
@@ -542,7 +547,12 @@ namespace CleanWeb
 
 			Q_FOREACH (QString filterString, filter.FilterStrings_)
 			{
-				bool cs = filter.Options_ [filterString].Case_ == Qt::CaseSensitive;
+				const FilterOption& opt = filter.Options_ [filterString];
+				if (opt.AbortForeign_ &&
+						!req.rawHeader ("referer").contains (domain.toUtf8 ()))
+					continue;
+
+				bool cs = opt.Case_ == Qt::CaseSensitive;
 				QString url = cs ? urlStr : cinUrlStr;
 				if (Matches (filterString, filter, url, domain))
 				{

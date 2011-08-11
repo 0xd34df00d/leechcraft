@@ -27,12 +27,13 @@ namespace CleanWeb
 {
 	QDataStream& operator<< (QDataStream& out, const FilterOption& opt)
 	{
-		qint8 version = 1;
+		qint8 version = 2;
 		out << version
 			<< static_cast<qint8> (opt.Case_)
 			<< static_cast<qint8> (opt.MatchType_)
 			<< opt.Domains_
-			<< opt.NotDomains_;
+			<< opt.NotDomains_
+			<< opt.AbortForeign_;
 		return out;
 	}
 
@@ -40,7 +41,16 @@ namespace CleanWeb
 	{
 		qint8 version = 0;
 		in >> version;
-		if (version == 1)
+		
+		if (version < 1 || version > 2)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "unknown version"
+				<< version;
+			return in;
+		}
+		
+		if (version >= 1)
 		{
 			qint8 cs;
 			in >> cs;
@@ -53,22 +63,23 @@ namespace CleanWeb
 			in >> opt.Domains_
 				>> opt.NotDomains_;
 		}
-		else
-			qWarning () << Q_FUNC_INFO
-				<< "unknown version"
-				<< version;
+		if (version >= 2)
+			in >> opt.AbortForeign_;
+		
 		return in;
 	}
 
 	FilterOption::FilterOption ()
 	: Case_ (Qt::CaseInsensitive)
 	, MatchType_ (MTWildcard)
+	, AbortForeign_ (false)
 	{
 	}
 
 	bool operator== (const FilterOption& f1, const FilterOption& f2)
 	{
-		return f1.Case_ == f2.Case_ &&
+		return f1.AbortForeign_ == f2.AbortForeign_ &&
+			f1.Case_ == f2.Case_ &&
 			f1.MatchType_ == f2.MatchType_ &&
 			f1.Domains_ == f2.Domains_ &&
 			f1.NotDomains_ == f2.NotDomains_;
