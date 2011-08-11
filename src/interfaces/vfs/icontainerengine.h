@@ -19,12 +19,13 @@
 #ifndef INTERFACES_VFS_ICONTAINERENGINE_H
 #define INTERFACES_VFS_ICONTAINERENGINE_H
 #include <QtPlugin>
+#include "ienginebase.h"
 
 namespace LeechCraft
 {
 namespace VFS
 {
-	class IContainerEngine
+	class IContainerEngine : public IEngineBase
 	{
 	public:
 		virtual ~IContainerEngine () {}

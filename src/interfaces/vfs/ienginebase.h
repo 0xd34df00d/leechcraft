@@ -31,11 +31,11 @@ namespace VFS
 	public:
 		virtual ~IEngineBase () {}
 		
-		virtual QString GetName () const = 0;
+		virtual QString GetEngineName () const = 0;
 
-		virtual QString GetDescription () const = 0;
+		virtual QString GetEngineDescription () const = 0;
 		
-		virtual QAbstractFileEngine* CreateEngine (const QString&) const = 0;
+		virtual QAbstractFileEngine* CreateEngine (const QString& filename) const = 0;
 	};
 }
 }
