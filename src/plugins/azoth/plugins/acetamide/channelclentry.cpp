@@ -354,6 +354,41 @@ namespace Acetamide
 		return IsWidgetRequest_;
 	}
 
+	void ChannelCLEntry::AddBanListItem (QString mask)
+	{
+		ICH_->AddBanListItem (mask);
+	}
+
+	void ChannelCLEntry::RemoveBanListItem (QString mask)
+	{
+		ICH_->RemoveBanListItem (mask);
+	}
+
+	void ChannelCLEntry::AddExceptListItem (QString mask)
+	{
+		ICH_->AddExceptListItem (mask);
+	}
+
+	void ChannelCLEntry::RemoveExceptListItem (QString mask)
+	{
+		ICH_->RemoveExceptListItem (mask);
+	}
+
+	void ChannelCLEntry::AddInviteListItem (QString mask)
+	{
+		ICH_->AddInviteListItem (mask);
+	}
+
+	void ChannelCLEntry::RemoveInviteListItem (QString mask)
+	{
+		ICH_->RemoveInviteListItem (mask);
+	}
+
+	void ChannelCLEntry::SetNewChannelModes (const ChannelModes& modes)
+	{
+		ICH_->SetNewChannelModes (modes);
+	}
+
 };
 };
 };

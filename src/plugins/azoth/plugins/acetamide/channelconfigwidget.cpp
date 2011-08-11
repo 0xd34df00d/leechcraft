@@ -18,6 +18,7 @@
 
 #include "channelconfigwidget.h"
 #include <QStandardItemModel>
+#include <QtDebug>
 #include "sortfilterproxymodel.h"
 #include "channelclentry.h"
 
@@ -67,7 +68,7 @@ namespace Acetamide
 		InviteFilterModel_->setSourceModel (InviteModel_);
 
 		ChannelMode_ = ChannelEntry_->GetChannelModes ();
-		SetModesUi ();
+		handleNewChannelModes (ChannelMode_);
 
 		connect (ChannelEntry_,
 				SIGNAL (gotBanListItem (const QString&, const QString&, const QDateTime&)),
@@ -81,25 +82,29 @@ namespace Acetamide
 				SIGNAL (gotInviteListItem (const QString&, const QString&, const QDateTime&)),
 				this,
 				SLOT (addInviteListItem (const QString&, const QString&, const QDateTime&)));
-	}
 
-	void ChannelConfigWidget::SetModesUi ()
-	{
-		Ui_.OpTopic_->setChecked (ChannelMode_.OnlyOpChangeTopicMode_);
-		Ui_.BlockOutMessage_->setChecked (ChannelMode_.BlockOutsideMessageMode_);
-		Ui_.SecretChannel_->setChecked (ChannelMode_.SecretMode_);
-		Ui_.PrivateChannel_->setChecked (ChannelMode_.PrivateMode_);
-		Ui_.InvitesOnly_->setChecked (ChannelMode_.InviteMode_);
-		Ui_.ModerateChannel_->setChecked (ChannelMode_.ModerateMode_);
-		Ui_.ReOp_->setChecked (ChannelMode_.ReOpMode_);
-		Ui_.UserLimit_->setChecked (ChannelMode_.UserLimit_.first);
-		Ui_.Limit_->setValue (ChannelMode_.UserLimit_.second);
-		Ui_.Password_->setChecked (ChannelMode_.ChannelKey_.first);
-		Ui_.Key_->setText (ChannelMode_.ChannelKey_.second);
+		connect (ChannelEntry_,
+				SIGNAL (gotNewChannelModes (const ChannelModes&)),
+				this,
+				SLOT (handleNewChannelModes (const ChannelModes&)));
+
+		Ui_.tabWidget->setCurrentIndex (0);
 	}
 
 	void ChannelConfigWidget::accept ()
 	{
+		ChannelMode_.BlockOutsideMessageMode_ = Ui_.BlockOutMessage_->isChecked ();
+		ChannelMode_.ChannelKey_.first = Ui_.Password_->isChecked ();
+		ChannelMode_.ChannelKey_.second = Ui_.Key_->text ();
+		ChannelMode_.InviteMode_ = Ui_.InvitesOnly_->isChecked ();
+		ChannelMode_.ModerateMode_ = Ui_.ModerateChannel_->isChecked ();
+		ChannelMode_.OnlyOpChangeTopicMode_ = Ui_.OpTopic_->isChecked ();
+		ChannelMode_.PrivateMode_ = Ui_.PrivateChannel_->isChecked ();
+		ChannelMode_.ReOpMode_ = Ui_.ReOp_->isChecked ();
+		ChannelMode_.SecretMode_ = Ui_.SecretChannel_->isChecked ();
+		ChannelMode_.UserLimit_.first = Ui_.UserLimit_->isChecked ();
+		ChannelMode_.UserLimit_.second = Ui_.Limit_->value ();
+		ChannelEntry_->SetNewChannelModes (ChannelMode_);
 	}
 
 	void ChannelConfigWidget::on_BanSearch__textChanged (const QString& text)
@@ -128,14 +133,17 @@ namespace Acetamide
 		switch (index)
 		{
 		case 1:
+			BanModel_->clear ();
 			ChannelEntry_->RequestBanList ();
 			IsWidgetRequest_ = true;
 			break;
 		case 2:
+			ExceptModel_->clear ();
 			ChannelEntry_->RequestExceptList ();
 			IsWidgetRequest_ = true;
 			break;
 		case 3:
+			InviteModel_->clear ();
 			ChannelEntry_->RequestInviteList ();
 			IsWidgetRequest_ = true;
 			break;
@@ -188,6 +196,91 @@ namespace Acetamide
 		InviteModel_->appendRow (QList<QStandardItem*> () << itemMask
 				<< itemNick
 				<< itemDate);
+	}
+
+	void ChannelConfigWidget::on_UpdateBan__clicked ()
+	{
+		if (Ui_.BanHostMask_->text ().isEmpty ())
+			return;
+		on_RemoveBan__clicked ();
+		on_AddBan__clicked ();
+	}
+
+	void ChannelConfigWidget::on_AddBan__clicked ()
+	{
+		if (Ui_.BanHostMask_->text ().isEmpty ())
+			return;
+		ChannelEntry_->AddBanListItem (Ui_.BanHostMask_->text ());
+	}
+
+	void ChannelConfigWidget::on_RemoveBan__clicked ()
+	{
+		const QModelIndex currentIndex = Ui_.BanList_->currentIndex ();
+		if (!currentIndex.isValid ())
+			return;
+		ChannelEntry_->RemoveBanListItem (Ui_.BanHostMask_->text ());
+	}
+
+	void ChannelConfigWidget::on_UpdateExcept__clicked ()
+	{
+		if (Ui_.ExceptHostMask_->text ().isEmpty ())
+			return;
+		on_RemoveExcept__clicked ();
+		on_AddExcept__clicked ();
+	}
+
+	void ChannelConfigWidget::on_AddExcept__clicked ()
+	{
+		if (Ui_.ExceptHostMask_->text ().isEmpty ())
+			return;
+		ChannelEntry_->AddExceptListItem (Ui_.BanHostMask_->text ());
+	}
+
+	void ChannelConfigWidget::on_RemoveExcept__clicked ()
+	{
+		const QModelIndex currentIndex = Ui_.ExceptList_->currentIndex ();
+		if (!currentIndex.isValid ())
+			return;
+		ChannelEntry_->RemoveExceptListItem (Ui_.BanHostMask_->text ());
+	}
+
+	void ChannelConfigWidget::on_UpdateInvite__clicked ()
+	{
+		if (Ui_.InviteHostMask_->text ().isEmpty ())
+			return;
+		on_RemoveInvite__clicked ();
+		on_AddInvite__clicked ();
+	}
+
+	void ChannelConfigWidget::on_AddInvite__clicked ()
+	{
+		if (Ui_.InviteHostMask_->text ().isEmpty ())
+			return;
+		ChannelEntry_->AddInviteListItem (Ui_.BanHostMask_->text ());
+	}
+
+	void ChannelConfigWidget::on_RemoveInvite__clicked ()
+	{
+		const QModelIndex currentIndex = Ui_.InviteList_->currentIndex ();
+		if (!currentIndex.isValid ())
+			return;
+		ChannelEntry_->RemoveInviteListItem (Ui_.BanHostMask_->text ());
+	}
+
+	void ChannelConfigWidget::handleNewChannelModes(const ChannelModes& modes)
+	{
+		ChannelMode_ = modes;
+		Ui_.OpTopic_->setChecked (ChannelMode_.OnlyOpChangeTopicMode_);
+		Ui_.BlockOutMessage_->setChecked (ChannelMode_.BlockOutsideMessageMode_);
+		Ui_.SecretChannel_->setChecked (ChannelMode_.SecretMode_);
+		Ui_.PrivateChannel_->setChecked (ChannelMode_.PrivateMode_);
+		Ui_.InvitesOnly_->setChecked (ChannelMode_.InviteMode_);
+		Ui_.ModerateChannel_->setChecked (ChannelMode_.ModerateMode_);
+		Ui_.ReOp_->setChecked (ChannelMode_.ReOpMode_);
+		Ui_.UserLimit_->setChecked (ChannelMode_.UserLimit_.first);
+		Ui_.Limit_->setValue (ChannelMode_.UserLimit_.second);
+		Ui_.Password_->setChecked (ChannelMode_.ChannelKey_.first);
+		Ui_.Key_->setText (ChannelMode_.ChannelKey_.second);
 	}
 
 }

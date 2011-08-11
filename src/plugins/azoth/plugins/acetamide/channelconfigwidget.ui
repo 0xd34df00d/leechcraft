@@ -162,7 +162,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="HostMask_"/>
+          <widget class="QLineEdit" name="BanHostMask_"/>
          </item>
          <item>
           <widget class="QPushButton" name="UpdateBan_">
@@ -224,7 +224,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="HostExceptMask_"/>
+          <widget class="QLineEdit" name="ExceptHostMask_"/>
          </item>
          <item>
           <widget class="QPushButton" name="UpdateExcept_">
