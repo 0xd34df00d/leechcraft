@@ -63,6 +63,8 @@ SET (LC_TRANSLATIONS_DEST "share/leechcraft/translations")
 SET (LC_SETTINGS_DEST "share/leechcraft/settings")
 SET (LC_QML_DEST "share/leechcraft/qml")
 SET (LC_INSTALLEDMANIFEST_DEST "share/leechcraft/installed")
+SET (LC_GLOBAL_SETTINGS_DEST "share/leechcraft/rc")
+SET (LC_GLOBAL_SETTINGS_DEST_IN "${CMAKE_INSTALL_PREFIX}/${LC_GLOBAL_SETTINGS_DEST}")
 
 SET (Boost_ADDITIONAL_VERSIONS "1.46" "1.46.1" "1.44" "1.44.0")
 FIND_PACKAGE (Boost REQUIRED COMPONENTS date_time filesystem program_options system thread)
