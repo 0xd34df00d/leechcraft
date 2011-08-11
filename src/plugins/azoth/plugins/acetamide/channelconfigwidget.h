@@ -21,9 +21,12 @@
 #define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_CHANNELCONFIGWIDGET_H
 
 #include <QWidget>
+#include <QDateTime>
 #include <interfaces/iconfigurablemuc.h>
 #include "ui_channelconfigwidget.h"
 #include "localtypes.h"
+
+class QStandardItemModel;
 
 namespace LeechCraft
 {
@@ -33,6 +36,7 @@ namespace Acetamide
 {
 
 	class ChannelCLEntry;
+	class SortFilterProxyModel;
 
 	class ChannelConfigWidget : public QWidget
 								, public IMUCConfigWidget
@@ -41,14 +45,32 @@ namespace Acetamide
 		Q_INTERFACES (LeechCraft::Azoth::IMUCConfigWidget)
 
 		Ui::ChannelConfigWidget Ui_;
-		ChannelCLEntry *Channel_;
+		ChannelCLEntry *ChannelEntry_;
 		ChannelModes ChannelMode_;
+		QStandardItemModel *BanModel_;
+		QStandardItemModel *ExceptModel_;
+		QStandardItemModel *InviteModel_;
+		SortFilterProxyModel *BanFilterModel_;
+		SortFilterProxyModel *ExceptFilterModel_;
+		SortFilterProxyModel *InviteFilterModel_;
+		bool IsWidgetRequest_;
 	public:
 		ChannelConfigWidget (ChannelCLEntry*, QWidget* = 0);
 	private:
 		void SetModesUi ();
 	public slots:
 		void accept ();
+		void on_BanSearch__textChanged (const QString&);
+		void on_ExceptSearch__textChanged (const QString&);
+		void on_InviteSearch__textChanged (const QString&);
+		void on_tabWidget_currentChanged (int);
+		void addBanListItem (const QString&, 
+				const QString&, const QDateTime&);
+		void addExceptListItem (const QString&, 
+				const QString&, const QDateTime&);
+		void addInviteListItem (const QString&, 
+				const QString&, const QDateTime&);
+		
 	signals:
 		void dataReady ();
 	};

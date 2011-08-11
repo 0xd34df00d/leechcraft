@@ -24,7 +24,6 @@
 #include "ircserverhandler.h"
 #include "ircaccount.h"
 #include "channelconfigwidget.h"
-// #include "channelconfigwidget.h"
 
 namespace LeechCraft
 {
@@ -35,6 +34,7 @@ namespace Acetamide
 	ChannelCLEntry::ChannelCLEntry (ChannelHandler *handler)
 	: QObject (handler->GetIrcServerHandler ()->GetAccount ())
 	, ICH_ (handler)
+	, IsWidgetRequest_ (false)
 	{
 	}
 
@@ -309,6 +309,49 @@ namespace Acetamide
 		}
 
 		cfg->accept ();
+	}
+
+	void ChannelCLEntry::RequestBanList ()
+	{
+		ICH_->RequestBanList ();
+	}
+
+	void ChannelCLEntry::RequestExceptList ()
+	{
+		ICH_->RequestExceptList ();
+	}
+
+	void ChannelCLEntry::RequestInviteList ()
+	{
+		ICH_->RequestInviteList ();
+	}
+
+	void ChannelCLEntry::SetBanListItem (const QString& mask, 
+			const QString& nick, const QDateTime& date)
+	{
+		emit gotBanListItem (mask, nick, date);
+	}
+
+	void ChannelCLEntry::SetExceptListItem (const QString& mask, 
+			const QString& nick, const QDateTime& date)
+	{
+		emit gotExceptListItem (mask, nick, date);
+	}
+
+	void ChannelCLEntry::SetInviteListItem (const QString& mask, 
+			const QString& nick, const QDateTime& date)
+	{
+		emit gotInviteListItem (mask, nick, date);
+	}
+
+	void ChannelCLEntry::SetIsWidgetRequest (bool set)
+	{
+		IsWidgetRequest_ = set;
+	}
+
+	bool ChannelCLEntry::GetIsWidgetRequest () const
+	{
+		return IsWidgetRequest_;
 	}
 
 };

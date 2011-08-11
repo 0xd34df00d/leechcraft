@@ -290,6 +290,57 @@ namespace Acetamide
 		deleteLater ();
 	}
 
+	void ChannelHandler::RequestBanList ()
+	{
+		ISH_->GetBanList (ChannelOptions_.ChannelName_);
+	}
+
+	void ChannelHandler::RequestExceptList ()
+	{
+		ISH_->GetExceptList (ChannelOptions_.ChannelName_);
+	}
+
+	void ChannelHandler::RequestInviteList ()
+	{
+		ISH_->GetInviteList (ChannelOptions_.ChannelName_);
+	}
+
+	void ChannelHandler::SetBanListItem (const QString& mask, 
+			const QString& nick, const QDateTime& date)
+	{
+		ChannelCLEntry_->SetBanListItem (mask, nick, date);
+		if (!ChannelCLEntry_->GetIsWidgetRequest ())
+		{
+			const QString msg = mask + tr (" setted by ") + nick + tr (" on ")
+					+ date.toString ("dd.MM.yyyy hh:mm:ss");
+			ShowServiceMessage (msg, IMessage::MTEventMessage, IMessage::MSTOther);
+		}
+	}
+
+	void ChannelHandler::SetExceptListItem (const QString& mask, 
+			const QString& nick, const QDateTime& date)
+	{
+		ChannelCLEntry_->SetExceptListItem (mask, nick, date);
+		if (!ChannelCLEntry_->GetIsWidgetRequest ())
+		{
+			const QString msg = mask + tr (" setted by ") + nick + tr (" on ")
+					+ date.toString ("dd.MM.yyyy hh:mm:ss");
+			ShowServiceMessage (msg, IMessage::MTEventMessage, IMessage::MSTOther);
+		}
+	}
+
+	void ChannelHandler::SetInviteListItem (const QString& mask, 
+			const QString& nick, const QDateTime& date)
+	{
+		ChannelCLEntry_->SetInviteListItem (mask, nick, date);
+		if (!ChannelCLEntry_->GetIsWidgetRequest ())
+		{
+			const QString msg = mask + tr (" setted by ") + nick + tr (" on ")
+					+ date.toString ("dd.MM.yyyy hh:mm:ss");
+			ShowServiceMessage (msg, IMessage::MTEventMessage, IMessage::MSTOther);
+		}
+	}
+
 	ChannelModes ChannelHandler::GetChannelModes () const
 	{
 		return ChannelMode_;
@@ -338,30 +389,6 @@ namespace Acetamide
 	void ChannelHandler::SetChannelKey (bool iskey, const QString& key)
 	{
 		ChannelMode_.ChannelKey_ = qMakePair (iskey, key);
-	}
-
-	void ChannelHandler::SetBanMask (bool ban, const QString& mask)
-	{
-		if (ban)
-			ChannelMode_.BanMask_ << mask;
-		else
-			ChannelMode_.BanMask_.removeOne (mask);
-	}
-
-	void ChannelHandler::SetExceptionMask (bool except, const QString& mask)
-	{
-		if (except)
-			ChannelMode_.ExceptionMask_ << mask;
-		else
-			ChannelMode_.ExceptionMask_.removeOne (mask);
-	}
-
-	void ChannelHandler::SetInviteMask (bool invite, const QString& mask)
-	{
-		if (invite)
-			ChannelMode_.InviteMask_ << mask;
-		else
-			ChannelMode_.InviteMask_.removeOne (mask);
 	}
 
 	bool ChannelHandler::RemoveUserFromChannel (const QString& nick)

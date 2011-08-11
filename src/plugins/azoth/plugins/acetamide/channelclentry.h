@@ -53,6 +53,7 @@ namespace Acetamide
 
 		ChannelHandler *ICH_;
 		QList<QObject*> AllMessages_;
+		bool IsWidgetRequest_;
 	public:
 		ChannelCLEntry (ChannelHandler*);
 		ChannelHandler* GetChannelHandler () const;
@@ -114,6 +115,17 @@ namespace Acetamide
 		// IConfigurableMUC
 		QWidget* GetConfigurationWidget ();
 		void AcceptConfiguration (QWidget*);
+		void RequestBanList ();
+		void RequestExceptList ();
+		void RequestInviteList ();
+		void SetBanListItem (const QString&, const QString&, 
+				const QDateTime&);
+		void SetExceptListItem (const QString&, const QString&, 
+				const QDateTime&);
+		void SetInviteListItem (const QString&, const QString&, 
+				const QDateTime&);
+		void SetIsWidgetRequest (bool);
+		bool GetIsWidgetRequest () const;
 	signals:
 		void gotNewParticipants (const QList<QObject*>&);
 		void mucSubjectChanged (const QString&);
@@ -132,6 +144,13 @@ namespace Acetamide
 		void nicknameConflict (const QString&);
 		void beenKicked (const QString&);
 		void beenBanned (const QString&);
+
+		void gotBanListItem (const QString&, 
+				const QString&, const QDateTime&);
+		void gotExceptListItem (const QString&, 
+				const QString&, const QDateTime&);
+		void gotInviteListItem (const QString&,
+				const QString&, const QDateTime&);
 	};
 }
 }

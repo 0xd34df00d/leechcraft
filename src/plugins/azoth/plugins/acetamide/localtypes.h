@@ -98,9 +98,6 @@ namespace Acetamide
 		bool OnlyOpChangeTopicMode_;
 		QPair<bool, int> UserLimit_;
 		QPair<bool, QString> ChannelKey_;
-		QStringList BanMask_;
-		QStringList ExceptionMask_;
-		QStringList InviteMask_;
 	};
 
 	bool operator== (const ChannelOptions&, const ChannelOptions&);

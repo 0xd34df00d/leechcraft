@@ -17,6 +17,8 @@
  **********************************************************************/
 
 #include "channelconfigwidget.h"
+#include <QStandardItemModel>
+#include "sortfilterproxymodel.h"
 #include "channelclentry.h"
 
 namespace LeechCraft
@@ -27,12 +29,58 @@ namespace Acetamide
 {
 	ChannelConfigWidget::ChannelConfigWidget (ChannelCLEntry *clentry, QWidget *parent) 
 	: QWidget (parent)
-	, Channel_ (clentry)
-	, ChannelMode_ (clentry->GetChannelModes ())
+	, ChannelEntry_ (clentry)
+	, IsWidgetRequest_ (false)
 	{
 		Ui_.setupUi (this);
 
+		BanModel_ = new QStandardItemModel (this);
+		ExceptModel_ = new QStandardItemModel (this);
+		InviteModel_ = new QStandardItemModel (this);
+		BanFilterModel_ = new SortFilterProxyModel (this);
+		ExceptFilterModel_ = new SortFilterProxyModel (this);
+		InviteFilterModel_ = new SortFilterProxyModel (this);
+
+		BanModel_->setColumnCount (3);
+		BanModel_->setHorizontalHeaderLabels (QStringList () << tr ("Ban mask")
+				<< tr ("Set by")
+				<< tr ("Date"));
+
+		ExceptModel_->setColumnCount (3);
+		ExceptModel_->setHorizontalHeaderLabels (QStringList () << tr ("Except mask")
+				<< tr ("Set by")
+				<< tr ("Date"));
+
+		InviteModel_->setColumnCount (3);
+		InviteModel_->setHorizontalHeaderLabels (QStringList () << tr ("Invite mask")
+				<< tr ("Set by")
+				<< tr ("Date"));
+
+		Ui_.BanList_->horizontalHeader ()->setResizeMode (QHeaderView::Stretch);
+		Ui_.BanList_->setModel (BanFilterModel_);
+		Ui_.ExceptList_->horizontalHeader ()->setResizeMode (QHeaderView::Stretch);
+		Ui_.ExceptList_->setModel (ExceptFilterModel_);
+		Ui_.InviteList_->horizontalHeader ()->setResizeMode (QHeaderView::Stretch);
+		Ui_.InviteList_->setModel (InviteFilterModel_);
+		BanFilterModel_->setSourceModel (BanModel_);
+		ExceptFilterModel_->setSourceModel (ExceptModel_);
+		InviteFilterModel_->setSourceModel (InviteModel_);
+
+		ChannelMode_ = ChannelEntry_->GetChannelModes ();
 		SetModesUi ();
+
+		connect (ChannelEntry_,
+				SIGNAL (gotBanListItem (const QString&, const QString&, const QDateTime&)),
+				this,
+				SLOT (addBanListItem (const QString&, const QString&, const QDateTime&)));
+		connect (ChannelEntry_,
+				SIGNAL (gotExceptListItem (const QString&, const QString&, const QDateTime&)),
+				this,
+				SLOT (addExceptListItem (const QString&, const QString&, const QDateTime&)));
+		connect (ChannelEntry_,
+				SIGNAL (gotInviteListItem (const QString&, const QString&, const QDateTime&)),
+				this,
+				SLOT (addInviteListItem (const QString&, const QString&, const QDateTime&)));
 	}
 
 	void ChannelConfigWidget::SetModesUi ()
@@ -52,6 +100,94 @@ namespace Acetamide
 
 	void ChannelConfigWidget::accept ()
 	{
+	}
+
+	void ChannelConfigWidget::on_BanSearch__textChanged (const QString& text)
+	{
+		BanFilterModel_->setFilterRegExp (QRegExp(text, Qt::CaseInsensitive,
+				QRegExp::FixedString));
+		BanFilterModel_->setFilterKeyColumn (1);
+	}
+
+	void ChannelConfigWidget::on_ExceptSearch__textChanged (const QString& text)
+	{
+		ExceptFilterModel_->setFilterRegExp (QRegExp(text, Qt::CaseInsensitive,
+				QRegExp::FixedString));
+		ExceptFilterModel_->setFilterKeyColumn (1);
+	}
+
+	void ChannelConfigWidget::on_InviteSearch__textChanged (const QString& text)
+	{
+		InviteFilterModel_->setFilterRegExp (QRegExp(text, Qt::CaseInsensitive,
+				QRegExp::FixedString));
+		InviteFilterModel_->setFilterKeyColumn (1);
+	}
+
+	void ChannelConfigWidget::on_tabWidget_currentChanged (int index)
+	{
+		switch (index)
+		{
+		case 1:
+			ChannelEntry_->RequestBanList ();
+			IsWidgetRequest_ = true;
+			break;
+		case 2:
+			ChannelEntry_->RequestExceptList ();
+			IsWidgetRequest_ = true;
+			break;
+		case 3:
+			ChannelEntry_->RequestInviteList ();
+			IsWidgetRequest_ = true;
+			break;
+		default:
+			IsWidgetRequest_ = false;
+		}
+		ChannelEntry_->SetIsWidgetRequest (IsWidgetRequest_);
+	}
+
+	void ChannelConfigWidget::addBanListItem (const QString& mask, 
+			const QString& nick, const QDateTime& date)
+	{
+		QStandardItem *itemMask = new QStandardItem (mask);
+		itemMask->setEditable (false);
+		QStandardItem *itemNick = new QStandardItem (nick);
+		itemNick->setEditable (false);
+		QStandardItem *itemDate = new QStandardItem (date.toString ("dd.MM.yyyy hh:mm:ss"));
+		itemDate->setEditable (false);
+
+		BanModel_->appendRow (QList<QStandardItem*> () << itemMask
+				<< itemNick
+				<< itemDate);
+	}
+
+	void ChannelConfigWidget::addExceptListItem (const QString& mask, 
+			const QString& nick, const QDateTime& date)
+	{
+		QStandardItem *itemMask = new QStandardItem (mask);
+		itemMask->setEditable (false);
+		QStandardItem *itemNick = new QStandardItem (nick);
+		itemNick->setEditable (false);
+		QStandardItem *itemDate = new QStandardItem (date.toString ("dd.MM.yyyy hh:mm:ss"));
+		itemDate->setEditable (false);
+
+		ExceptModel_->appendRow (QList<QStandardItem*> () << itemMask
+				<< itemNick
+				<< itemDate);
+	}
+
+	void ChannelConfigWidget::addInviteListItem (const QString& mask, 
+			const QString& nick, const QDateTime& date)
+	{
+		QStandardItem *itemMask = new QStandardItem (mask);
+		itemMask->setEditable (false);
+		QStandardItem *itemNick = new QStandardItem (nick);
+		itemNick->setEditable (false);
+		QStandardItem *itemDate = new QStandardItem (date.toString ("dd.MM.yyyy hh:mm:ss"));
+		itemDate->setEditable (false);
+
+		InviteModel_->appendRow (QList<QStandardItem*> () << itemMask
+				<< itemNick
+				<< itemDate);
 	}
 
 }
