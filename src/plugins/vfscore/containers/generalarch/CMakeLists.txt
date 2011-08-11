@@ -39,3 +39,4 @@ TARGET_LINK_LIBRARIES (leechcraft_vfscont_generalarch
 	${LEECHCRAFT_LIBRARIES}
 	)
 INSTALL (TARGETS leechcraft_vfscont_generalarch DESTINATION ${LC_PLUGINS_DEST})
+INSTALL (DIRECTORY share/leechcraft/rc/vfs DESTINATION ${LC_GLOBAL_SETTINGS_DEST})
