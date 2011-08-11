@@ -16,40 +16,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_PLUGINS_BODYFETCH_WORKERTHREAD_H
-#define PLUGINS_AGGREGATOR_PLUGINS_BODYFETCH_WORKERTHREAD_H
-#include <QThread>
-#include <util/guarded.h>
-
-class IScriptLoaderInstance;
+#ifndef INTERFACES_VFS_IPROTOCOLENGINE_H
+#define INTERFACES_VFS_IPROTOCOLENGINE_H
+#include <QtPlugin>
 
 namespace LeechCraft
 {
-namespace Aggregator
+namespace VFS
 {
-namespace BodyFetch
-{
-	class WorkerObject;
-
-	class WorkerThread : public QThread
+	class IProtocolEngine
 	{
-		Q_OBJECT
-		
-		WorkerObject *Object_;
 	public:
-		WorkerThread (QObject* = 0);
-		
-		void run ();
-		
-		void SetLoaderInstance (IScriptLoaderInstance*);
-		bool IsOK () const;
-		
-		void AppendItems (const QVariantList&);
-		
-		QObject* GetWorkingObject () const;
+		virtual ~IProtocolEngine () {}
 	};
 }
 }
-}
+
+Q_DECLARE_INTERFACE (LeechCraft::VFS::IProtocolEngine,
+		"org.Deviant.LeechCraft.VFS.IProtocolEngine/1.0");
 
 #endif

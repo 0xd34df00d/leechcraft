@@ -128,9 +128,9 @@ namespace Qrosp
 		return result;
 	}
 	
-	IScript* ScriptLoaderInstance::LoadScript (const QString& id)
+	IScript_ptr ScriptLoaderInstance::LoadScript (const QString& id)
 	{
-		return new LoadedScript (id, ID2Interpereter_ [id]);
+		return IScript_ptr (new LoadedScript (id, ID2Interpereter_ [id]));
 	}
 }
 }

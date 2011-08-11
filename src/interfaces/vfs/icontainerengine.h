@@ -16,51 +16,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "workerthread.h"
-#include <QtDebug>
-#include "workerobject.h"
+#ifndef INTERFACES_VFS_ICONTAINERENGINE_H
+#define INTERFACES_VFS_ICONTAINERENGINE_H
+#include <QtPlugin>
 
 namespace LeechCraft
 {
-namespace Aggregator
+namespace VFS
 {
-namespace BodyFetch
-{
-	WorkerThread::WorkerThread (QObject *parent)
-	: QThread (parent)
-	, Object_ (0)
+	class IContainerEngine
 	{
-	}
-	
-	void WorkerThread::run ()
-	{
-		Object_ = new WorkerObject ();
-		QThread::run ();
-		Object_ = 0;
-	}
-	
-	void WorkerThread::SetLoaderInstance (IScriptLoaderInstance *inst)
-	{
-		Object_->SetLoaderInstance (inst);
-	}
-	
-	bool WorkerThread::IsOK () const
-	{
-		return isRunning () && Object_ && Object_->IsOk ();
-	}
-	
-	void WorkerThread::AppendItems (const QVariantList& items)
-	{
-		Object_->AppendItems (items);
-		QMetaObject::invokeMethod (Object_,
-				"process",
-				Qt::QueuedConnection);
-	}
-	
-	QObject* WorkerThread::GetWorkingObject () const
-	{
-		return Object_;
-	}
+	public:
+		virtual ~IContainerEngine () {}
+	};
 }
 }
-}
+
+Q_DECLARE_INTERFACE (LeechCraft::VFS::IContainerEngine,
+		"org.Deviant.LeechCraft.VFS.IContainerEngine/1.0");
+
+#endif

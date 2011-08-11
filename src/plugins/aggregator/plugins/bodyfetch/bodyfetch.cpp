@@ -20,7 +20,7 @@
 #include <QIcon>
 #include <interfaces/iscriptloader.h>
 #include <util/util.h>
-#include "workerthread.h"
+#include "workerobject.h"
 
 namespace LeechCraft
 {
@@ -50,19 +50,50 @@ namespace BodyFetch
 			}
 		}
 
-		WT_ = 0;
+		WO_ = 0;
 		Proxy_ = proxy;
 	}
 
 	void Plugin::SecondInit ()
 	{
-		WT_ = new WorkerThread (this);
-		connect (WT_,
-				SIGNAL (started ()),
+		WO_ = new WorkerObject (this);
+
+		IScriptLoader *loader = Proxy_->GetPluginsManager ()->
+				GetAllCastableTo<IScriptLoader*> ().value (0, 0);
+		if (!loader)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to find a suitable loader, aborting";
+			return;
+		}
+		
+		IScriptLoaderInstance *inst = loader->
+				CreateScriptLoaderInstance ("aggregator/recipes/");
+		if (!inst)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "got a null script loader instance";
+			return;
+		}
+		
+		inst->AddGlobalPrefix ();
+		inst->AddLocalPrefix ();
+
+		WO_->SetLoaderInstance (inst);
+		
+		connect (WO_,
+				SIGNAL (downloadRequested (QUrl)),
 				this,
-				SLOT (handleWTStarted ()),
+				SLOT (handleDownload (QUrl)));
+		connect (WO_,
+				SIGNAL (newBodyFetched (quint64)),
+				this,
+				SLOT (handleBodyFetched (quint64)),
 				Qt::QueuedConnection);
-		WT_->start (QThread::LowestPriority);
+		connect (this,
+				SIGNAL (downloadFinished (QUrl, QString)),
+				WO_,
+				SLOT (handleDownloadFinished (QUrl, QString)));
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -72,15 +103,7 @@ namespace BodyFetch
 
 	void Plugin::Release ()
 	{
-		if (WT_)
-		{
-			connect (WT_,
-					SIGNAL (finished ()),
-					WT_,
-					SLOT (deleteLater ()));			
-			WT_->quit ();
-			WT_ = 0;
-		}
+		delete WO_;
 	}
 
 	QString Plugin::GetName () const
@@ -136,61 +159,19 @@ namespace BodyFetch
 	
 	void Plugin::hookGotNewItems (IHookProxy_ptr, QVariantList items)
 	{
-		if (!WT_)
+		if (!WO_)
 			return;
 		
-		if (!WT_->IsOK ())
+		if (!WO_->IsOk ())
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "worker thread isn't ready yet :(";
+					<< "worker object isn't ready :(";
 			return;
 		}
 		
-		WT_->AppendItems (items);
+		WO_->AppendItems (items);
 	}
-	
-	void Plugin::handleWTStarted ()
-	{
-		IScriptLoader *loader = Proxy_->GetPluginsManager ()->
-				GetAllCastableTo<IScriptLoader*> ().value (0, 0);
-		if (!loader)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to find a suitable loader, aborting";
-			return;
-		}
-		
-		IScriptLoaderInstance *inst = loader->
-				CreateScriptLoaderInstance ("aggregator/recipes/");
-		if (!inst)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "got a null script loader instance";
-			return;
-		}
-		
-		inst->AddGlobalPrefix ();
-		inst->AddLocalPrefix ();
-		
-		inst->GetObject ()->moveToThread (WT_);
-		WT_->SetLoaderInstance (inst);
-		
-		connect (WT_->GetWorkingObject (),
-				SIGNAL (downloadRequested (QUrl)),
-				this,
-				SLOT (handleDownload (QUrl)),
-				Qt::QueuedConnection);
-		connect (WT_->GetWorkingObject (),
-				SIGNAL (newBodyFetched (quint64)),
-				this,
-				SLOT (handleBodyFetched (quint64)),
-				Qt::QueuedConnection);
-		connect (this,
-				SIGNAL (downloadFinished (QUrl, QString)),
-				WT_->GetWorkingObject (),
-				SLOT (handleDownloadFinished (QUrl, QString)));
-	}
-	
+
 	void Plugin::handleDownload (QUrl url)
 	{
 		const QString& temp = Util::GetTemporaryName ("agg_bodyfetcher");

@@ -16,35 +16,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_QROSP_SCRIPTLOADERINSTANCE_H
-#define PLUGINS_QROSP_SCRIPTLOADERINSTANCE_H
+#ifndef PLUGINS_VFSCORE_VFSCORE_H
+#define PLUGINS_VFSCORE_VFSCORE_H
 #include <QObject>
-#include <QStringList>
-#include <interfaces/iscriptloader.h>
+#include <interfaces/iinfo.h>
 
 namespace LeechCraft
 {
-namespace Qrosp
+namespace VFScore
 {
-	class ScriptLoaderInstance : public QObject
-							   , public IScriptLoaderInstance
+	class Plugin : public QObject
+				 , public IInfo
 	{
 		Q_OBJECT
-		Q_INTERFACES (IScriptLoaderInstance)
-		
-		mutable QHash<QString, QString> ID2Interpereter_;
-		
-		QString RelativePath_;
-		QStringList Prefixes_;
+		Q_INTERFACES (IInfo)
 	public:
-		ScriptLoaderInstance (const QString&, QObject* = 0);
-		
-		QObject* GetObject ();
-		void AddGlobalPrefix ();
-		void AddLocalPrefix (QString prefix);
-		QStringList EnumerateScripts () const;
-		QVariantMap GetScriptInfo (const QString&);
-		IScript_ptr LoadScript (const QString&);
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		QByteArray GetUniqueID () const;
+		void Release ();
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
 	};
 }
 }

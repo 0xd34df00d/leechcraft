@@ -35,7 +35,7 @@ class Item;
 
 namespace BodyFetch
 {
-	class WorkerThread;
+	class WorkerObject;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -46,7 +46,7 @@ namespace BodyFetch
 		
 		ICoreProxy_ptr Proxy_;
 		QDir StorageDir_;
-		WorkerThread *WT_;
+		WorkerObject *WO_;
 		QHash<int, QPair<QUrl, QString> > Jobs_;
 		QHash<int, QString> ContentsCache_;
 		QSet<quint64> FetchedItems_;
@@ -66,7 +66,6 @@ namespace BodyFetch
 		void hookGotNewItems (LeechCraft::IHookProxy_ptr proxy,
 				QVariantList items);
 	private slots:
-		void handleWTStarted ();
 		void handleDownload (QUrl);
 		void handleJobFinished (int);
 		void handleBodyFetched (quint64);

@@ -16,37 +16,46 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_QROSP_SCRIPTLOADERINSTANCE_H
-#define PLUGINS_QROSP_SCRIPTLOADERINSTANCE_H
-#include <QObject>
-#include <QStringList>
-#include <interfaces/iscriptloader.h>
+#include "vfscore.h"
+#include <QIcon>
+#include <interfaces/vfs/iengineprovider.h>
 
 namespace LeechCraft
 {
-namespace Qrosp
+namespace VFScore
 {
-	class ScriptLoaderInstance : public QObject
-							   , public IScriptLoaderInstance
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Q_OBJECT
-		Q_INTERFACES (IScriptLoaderInstance)
-		
-		mutable QHash<QString, QString> ID2Interpereter_;
-		
-		QString RelativePath_;
-		QStringList Prefixes_;
-	public:
-		ScriptLoaderInstance (const QString&, QObject* = 0);
-		
-		QObject* GetObject ();
-		void AddGlobalPrefix ();
-		void AddLocalPrefix (QString prefix);
-		QStringList EnumerateScripts () const;
-		QVariantMap GetScriptInfo (const QString&);
-		IScript_ptr LoadScript (const QString&);
-	};
+	}
+
+	void Plugin::SecondInit ()
+	{
+	}
+
+	QByteArray Plugin::GetUniqueID () const
+	{
+		return "org.LeechCraft.VFScore";
+	}
+
+	void Plugin::Release ()
+	{
+	}
+
+	QString Plugin::GetName () const
+	{
+		return "VFScore";
+	}
+
+	QString Plugin::GetInfo () const
+	{
+		return tr ("Core of the VFS subsystem in LeechCraft.");
+	}
+
+	QIcon Plugin::GetIcon () const
+	{
+		return QIcon ();
+	}
 }
 }
 
-#endif
+Q_EXPORT_PLUGIN2 (leechcraft_vfscore, LeechCraft::VFScore::Plugin);

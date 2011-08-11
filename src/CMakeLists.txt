@@ -117,6 +117,7 @@ OPTION (ENABLE_SECMAN "Build SecMan, security & personal data manager" OFF)
 OPTION (ENABLE_SHELLOPEN "Build ShellOpen, the plugin supporting handling entities via external applications" ON)
 OPTION (ENABLE_SYNCER "Build Syncer, the synchronization plugin for LeechCraft" OFF)
 OPTION (ENABLE_TABSLIST "Quick overview of tabs" OFF)
+OPTION (ENABLE_VFSCORE "Build VFS core" OFF)
 
 # Defunct
 OPTION (ENABLE_FTP "Build LCFTP, the FTP client" ON)
@@ -143,6 +144,7 @@ IF (ENABLE_RECOMMENDED)
 	SET (ENABLE_SHELLOPEN TRUE)
 	SET (ENABLE_SYNCER TRUE)
 	SET (ENABLE_TABSLIST TRUE)
+	SET (ENABLE_VFSCORE TRUE)
 ENDIF (ENABLE_RECOMMENDED)
 
 FUNCTION (CreateTrVars PlugName Langs TranVar CompiledTranVar)
@@ -297,6 +299,10 @@ ENDIF (ENABLE_TABSLIST)
 IF (ENABLE_BLACKDASH)
 	ADD_SUBDIRECTORY (plugins/blackdash)
 ENDIF (ENABLE_BLACKDASH)
+
+IF (ENABLE_VFSCORE)
+	ADD_SUBDIRECTORY (plugins/vfscore)
+ENDIF (ENABLE_VFSCORE)
 
 SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTXML TRUE)

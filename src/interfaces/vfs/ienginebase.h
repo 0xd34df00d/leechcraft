@@ -16,37 +16,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_QROSP_SCRIPTLOADERINSTANCE_H
-#define PLUGINS_QROSP_SCRIPTLOADERINSTANCE_H
-#include <QObject>
-#include <QStringList>
-#include <interfaces/iscriptloader.h>
+#ifndef INTERFACES_VFS_IENGINEBASE_H
+#define INTERFACES_VFS_IENGINEBASE_H
+#include <QtPlugin>
+
+class QAbstractFileEngine;
 
 namespace LeechCraft
 {
-namespace Qrosp
+namespace VFS
 {
-	class ScriptLoaderInstance : public QObject
-							   , public IScriptLoaderInstance
+	class IEngineBase
 	{
-		Q_OBJECT
-		Q_INTERFACES (IScriptLoaderInstance)
-		
-		mutable QHash<QString, QString> ID2Interpereter_;
-		
-		QString RelativePath_;
-		QStringList Prefixes_;
 	public:
-		ScriptLoaderInstance (const QString&, QObject* = 0);
+		virtual ~IEngineBase () {}
 		
-		QObject* GetObject ();
-		void AddGlobalPrefix ();
-		void AddLocalPrefix (QString prefix);
-		QStringList EnumerateScripts () const;
-		QVariantMap GetScriptInfo (const QString&);
-		IScript_ptr LoadScript (const QString&);
+		virtual QString GetName () const = 0;
+
+		virtual QString GetDescription () const = 0;
+		
+		virtual QAbstractFileEngine* CreateEngine (const QString&) const = 0;
 	};
 }
 }
+
+Q_DECLARE_INTERFACE (LeechCraft::VFS::IEngineBase,
+		"org.Deviant.LeechCraft.VFS.IEngineBase/1.0");
 
 #endif

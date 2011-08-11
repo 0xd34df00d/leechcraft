@@ -32,8 +32,10 @@ namespace Azoth
 	class IProtocol;
 	class ICLEntry;
 
-	/** Represents an account — an entity within IProtocol owning some
-	 * ICLEntry objects.
+	/** @brief Interface representing a single account.
+	 * 
+	 * This interface represents an account — an entity within IProtocol
+	 * owning some ICLEntry objects.
 	 * 
 	 * The account may also implement IHaveServiceDiscovery if it
 	 * supports some XMPP's service discovery-like functionality. Look
@@ -394,21 +396,6 @@ namespace Azoth
 		 * @param[out] state New state of this account.
 		 */
 		virtual void statusChanged (const EntryStatus&) = 0;
-		
-		/** @brief This signal should be emitted when adding a contact
-		 * should be suggested to the user.
-		 * 
-		 * For XMPP protocol, this signal may be emitted when new
-		 * contacts are pushed to the roster via Roster Exchange XEP.
-		 * 
-		 * @note This function is expected to be a signal.
-		 * 
-		 * @param[out] id The ID of the contact.
-		 * @param[out] nick The suggested nick of the contact.
-		 * @param[out] groups The suggested groups of the contact.
-		 */
-		virtual void addContactSuggested (const QString& id,
-				const QString& nick, const QStringList& groups) = 0;
 
 		/** @brief This signal should be emitted whenever a MUC
 		 * invitation has been received.
@@ -432,6 +419,5 @@ namespace Azoth
 Q_DECLARE_METATYPE (LeechCraft::Azoth::IAccount*);
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::IAccount,
 		"org.Deviant.LeechCraft.Azoth.IAccount/1.0");
-
 
 #endif
