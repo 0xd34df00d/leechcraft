@@ -290,6 +290,107 @@ namespace Acetamide
 		deleteLater ();
 	}
 
+	void ChannelHandler::RequestBanList ()
+	{
+		ISH_->GetBanList (ChannelOptions_.ChannelName_);
+	}
+
+	void ChannelHandler::RequestExceptList ()
+	{
+		ISH_->GetExceptList (ChannelOptions_.ChannelName_);
+	}
+
+	void ChannelHandler::RequestInviteList ()
+	{
+		ISH_->GetInviteList (ChannelOptions_.ChannelName_);
+	}
+
+	void ChannelHandler::SetBanListItem (const QString& mask, 
+			const QString& nick, const QDateTime& date)
+	{
+		ChannelCLEntry_->SetBanListItem (mask, nick, date);
+		if (!ChannelCLEntry_->GetIsWidgetRequest ())
+		{
+			const QString msg = mask + tr (" setted by ") + nick + tr (" on ")
+					+ date.toString ("dd.MM.yyyy hh:mm:ss");
+			ShowServiceMessage (msg, IMessage::MTEventMessage, IMessage::MSTOther);
+		}
+	}
+
+	void ChannelHandler::SetExceptListItem (const QString& mask, 
+			const QString& nick, const QDateTime& date)
+	{
+		ChannelCLEntry_->SetExceptListItem (mask, nick, date);
+		if (!ChannelCLEntry_->GetIsWidgetRequest ())
+		{
+			const QString msg = mask + tr (" setted by ") + nick + tr (" on ")
+					+ date.toString ("dd.MM.yyyy hh:mm:ss");
+			ShowServiceMessage (msg, IMessage::MTEventMessage, IMessage::MSTOther);
+		}
+	}
+
+	void ChannelHandler::SetInviteListItem (const QString& mask, 
+			const QString& nick, const QDateTime& date)
+	{
+		ChannelCLEntry_->SetInviteListItem (mask, nick, date);
+		if (!ChannelCLEntry_->GetIsWidgetRequest ())
+		{
+			const QString msg = mask + tr (" setted by ") + nick + tr (" on ")
+					+ date.toString ("dd.MM.yyyy hh:mm:ss");
+			ShowServiceMessage (msg, IMessage::MTEventMessage, IMessage::MSTOther);
+		}
+	}
+
+	ChannelModes ChannelHandler::GetChannelModes () const
+	{
+		return ChannelMode_;
+	}
+
+	void ChannelHandler::SetInviteMode (bool invite)
+	{
+		ChannelMode_.InviteMode_ = invite;
+	}
+
+	void ChannelHandler::SetModerateMode (bool moderate)
+	{
+		ChannelMode_.ModerateMode_ = moderate;
+	}
+
+	void ChannelHandler::SetBlockOutsideMessagesMode (bool block)
+	{
+		ChannelMode_.BlockOutsideMessageMode_ = block;
+	}
+
+	void ChannelHandler::SetPrivateMode (bool priv)
+	{
+		ChannelMode_.PrivateMode_ = priv;
+	}
+
+	void ChannelHandler::SetSecretMode (bool secret)
+	{
+		ChannelMode_.SecretMode_ = secret;
+	}
+
+	void ChannelHandler::SetServerReOpMode (bool reop)
+	{
+		ChannelMode_.ReOpMode_ = reop;
+	}
+
+	void ChannelHandler::SetOnlyOpTopicChangeMode (bool topic)
+	{
+		ChannelMode_.OnlyOpChangeTopicMode_ = topic;
+	}
+
+	void ChannelHandler::SetUserLimit (bool islimit, int limit)
+	{
+		ChannelMode_.UserLimit_ = qMakePair (islimit, limit);
+	}
+
+	void ChannelHandler::SetChannelKey (bool iskey, const QString& key)
+	{
+		ChannelMode_.ChannelKey_ = qMakePair (iskey, key);
+	}
+
 	bool ChannelHandler::RemoveUserFromChannel (const QString& nick)
 	{
 		ServerParticipantEntry_ptr entry =

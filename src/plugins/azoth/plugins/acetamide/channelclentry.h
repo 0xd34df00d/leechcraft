@@ -24,6 +24,7 @@
 #include <interfaces/iclentry.h>
 #include <interfaces/imucentry.h>
 #include <interfaces/imucperms.h>
+#include <interfaces/iconfigurablemuc.h>
 #include "localtypes.h"
 
 namespace LeechCraft
@@ -41,14 +42,18 @@ namespace Acetamide
 						 , public ICLEntry
 						 , public IMUCEntry
 						 , public IMUCPerms
+						 , public IConfigurableMUC
+						 
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IMUCEntry
 				LeechCraft::Azoth::ICLEntry
-				LeechCraft::Azoth::IMUCPerms)
+				LeechCraft::Azoth::IMUCPerms
+				LeechCraft::Azoth::IConfigurableMUC)
 
 		ChannelHandler *ICH_;
 		QList<QObject*> AllMessages_;
+		bool IsWidgetRequest_;
 	public:
 		ChannelCLEntry (ChannelHandler*);
 		ChannelHandler* GetChannelHandler () const;
@@ -104,6 +109,23 @@ namespace Acetamide
 		bool IsLessByPerm (QObject*, QObject*) const;
 		bool MayChangePerm (QObject*, const QByteArray&,
 							const QByteArray&) const;
+
+		ChannelModes GetChannelModes () const;
+
+		// IConfigurableMUC
+		QWidget* GetConfigurationWidget ();
+		void AcceptConfiguration (QWidget*);
+		void RequestBanList ();
+		void RequestExceptList ();
+		void RequestInviteList ();
+		void SetBanListItem (const QString&, const QString&, 
+				const QDateTime&);
+		void SetExceptListItem (const QString&, const QString&, 
+				const QDateTime&);
+		void SetInviteListItem (const QString&, const QString&, 
+				const QDateTime&);
+		void SetIsWidgetRequest (bool);
+		bool GetIsWidgetRequest () const;
 	signals:
 		void gotNewParticipants (const QList<QObject*>&);
 		void mucSubjectChanged (const QString&);
@@ -122,6 +144,13 @@ namespace Acetamide
 		void nicknameConflict (const QString&);
 		void beenKicked (const QString&);
 		void beenBanned (const QString&);
+
+		void gotBanListItem (const QString&, 
+				const QString&, const QDateTime&);
+		void gotExceptListItem (const QString&, 
+				const QString&, const QDateTime&);
+		void gotInviteListItem (const QString&,
+				const QString&, const QDateTime&);
 	};
 }
 }

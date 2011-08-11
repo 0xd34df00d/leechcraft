@@ -16,7 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "localtypes.h"
+#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SORTFILTERPROXYMODEL_H
+#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SORTFILTERPROXYMODEL_H
+
+#include <QSortFilterProxyModel>
 
 namespace LeechCraft
 {
@@ -24,27 +27,15 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	bool operator== (const ChannelOptions& channel1,
-			const ChannelOptions& channel2)
+	class SortFilterProxyModel : public QSortFilterProxyModel
 	{
-		return (channel1.ChannelName_ == channel2.ChannelName_) &&
-				(channel1.ChannelPassword_ == channel2.ChannelPassword_)
-				&& (channel1.ServerName_ == channel2.ServerName_);
-	}
-
-	ChannelModes::ChannelModes ()
-	: InviteMode_ (false)
-	, ModerateMode_ (false)
-	, BlockOutsideMessageMode_ (false)
-	, PrivateMode_ (false)
-	, SecretMode_ (false)
-	, ReOpMode_ (false)
-	, OnlyOpChangeTopicMode_ (false)
-	, UserLimit_ (qMakePair (false, 0))
-	, ChannelKey_ (qMakePair (false, QString ()))
-	{
-	}
-
-};
-};
-};
+		Q_OBJECT
+	public:
+		SortFilterProxyModel (QObject *parent = 0);
+	protected:
+		bool filterAcceptsRow (int, const QModelIndex&) const;
+	};
+}
+}
+}
+#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SORTFILTERPROXYMODEL_H

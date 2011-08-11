@@ -20,6 +20,7 @@
 #define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_LOCALTYPES_H
 
 #include <QStringList>
+#include <QPair>
 
 namespace LeechCraft
 {
@@ -82,6 +83,21 @@ namespace Acetamide
 		int ServerPort_;
 		bool SSL_;
 		bool AutoJoin_;
+	};
+
+	struct ChannelModes
+	{
+		ChannelModes ();
+
+		bool InviteMode_;
+		bool ModerateMode_;
+		bool BlockOutsideMessageMode_;
+		bool PrivateMode_;
+		bool SecretMode_;
+		bool ReOpMode_;
+		bool OnlyOpChangeTopicMode_;
+		QPair<bool, int> UserLimit_;
+		QPair<bool, QString> ChannelKey_;
 	};
 
 	bool operator== (const ChannelOptions&, const ChannelOptions&);

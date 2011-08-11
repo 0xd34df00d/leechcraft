@@ -202,19 +202,20 @@ namespace Acetamide
 
 		if (ServerConnectionState_ == Connected)
 		{
-			IrcParser_->JoinCommand (channel.ChannelName_ + " " + 
-					channel.ChannelPassword_);
 			if (!ChannelHandlers_.contains (id))
 			{
+				IrcParser_->JoinCommand (channel.ChannelName_ + " " + 
+					channel.ChannelPassword_);
 				ChannelHandler *ch = new ChannelHandler (this, channel);
 				ChannelHandlers_ [id] = ch;
-				IrcParser_->JoinCommand (channel.ChannelName_);
 
 				ChannelCLEntry *ichEntry = ch->GetCLEntry ();
 				if (!ichEntry)
 					return false;
 				Account_->handleGotRosterItems (QList<QObject*> () <<
 						ichEntry);
+
+				IrcParser_->ChanModeCommand (QStringList () << channel.ChannelName_);
 			}
 		}
 		else
@@ -316,7 +317,6 @@ namespace Acetamide
 		ShowAnswer (msg);
 	}
 
-//TODO namedChanged
 	void IrcServerHandler::ChangeNickname (const QString& nick, 
 			const QString& msg)
 	{
@@ -347,6 +347,21 @@ namespace Acetamide
 
 		if (nick == NickName_)
 			NickName_ = msg;
+	}
+
+	void IrcServerHandler::GetBanList (const QString& channel)
+	{
+		IrcParser_->ChanModeCommand (QStringList () << channel << "b");
+	}
+
+	void IrcServerHandler::GetExceptList (const QString& channel)
+	{
+		IrcParser_->ChanModeCommand (QStringList () << channel << "e");
+	}
+
+	void IrcServerHandler::GetInviteList (const QString& channel)
+	{
+		IrcParser_->ChanModeCommand (QStringList () << channel << "I");
 	}
 
 	void IrcServerHandler::PongMessage (const QString& msg)
@@ -515,6 +530,51 @@ namespace Acetamide
 	{
 		if (!IsLongMessageInProcess ())
 			ShowAnswer (tr ("Begin of STATS reply:"));
+		ShowAnswer (msg);
+	}
+
+	void IrcServerHandler::ShowBanList (const QString& channel, 
+			const QString& mask, const QString& nick, const QDateTime& time)
+	{
+		const QString channelId = (channel + "@" + ServerOptions_.ServerName_).toLower ();
+		if (!IsChannelExists (channelId))
+			return;
+
+		ChannelHandlers_ [channelId]->SetBanListItem (mask, nick, time);
+	}
+
+	void IrcServerHandler::ShowBanListEnd (const QString& msg)
+	{
+		ShowAnswer (msg);
+	}
+
+	void IrcServerHandler::ShowExceptList (const QString& channel, 
+			const QString& mask, const QString& nick, const QDateTime& time)
+	{
+		const QString channelId = (channel + "@" + ServerOptions_.ServerName_).toLower ();
+		if (!IsChannelExists (channelId))
+			return;
+
+		ChannelHandlers_ [channelId]->SetExceptListItem (mask, nick, time);
+	}
+
+	void IrcServerHandler::ShowExceptListEnd (const QString& msg)
+	{
+		ShowAnswer (msg);
+	}
+
+	void IrcServerHandler::ShowInviteList (const QString& channel, 
+			const QString& mask, const QString& nick, const QDateTime& time)
+	{
+		const QString channelId = (channel + "@" + ServerOptions_.ServerName_).toLower ();
+		if (!IsChannelExists (channelId))
+			return;
+		
+		ChannelHandlers_ [channelId]->SetInviteListItem (mask, nick, time);
+	}
+
+	void IrcServerHandler::ShowInviteListEnd (const QString& msg)
+	{
 		ShowAnswer (msg);
 	}
 
@@ -727,6 +787,102 @@ namespace Acetamide
 			IrcParser_->JoinCommand (co.ChannelName_ + " " + co.ChannelPassword_);
 			ChannelsQueue_.removeAll (co);
 		}
+	}
+
+	void IrcServerHandler::ParseChanMode (const QString& channel, 
+			const QString& mode, const QString& value)
+	{
+		if (mode.isEmpty ())
+			return;
+
+		const QString channelID = (channel + "@" + ServerOptions_.ServerName_).toLower ();
+		if (!ChannelHandlers_.contains (channelID))
+			return;
+
+		bool action = false;
+		if (mode [0] == '+')
+			action = true;
+
+		for (int i = 1; i < mode.length (); ++i)
+		{
+			switch (mode [i].toAscii ())
+			{
+			case 'o':
+				if (!value.isEmpty () && IsParticipantExists (value))
+					if (action)
+						Nick2Entry_ [value]->AddRole (channel, Operator);
+					else
+						Nick2Entry_ [value]->RemoveRole (channel, Operator);
+				break;
+			case 'v':
+				if (!value.isEmpty () && IsParticipantExists (value))
+					if (action)
+						Nick2Entry_ [value]->AddRole (channel, Voiced);
+					else
+						Nick2Entry_ [value]->RemoveRole (channel, Voiced);
+				break;
+			case 'a':
+				// may be it is nessesary
+				break;
+			case 'i':
+				if (value.isEmpty ())
+					ChannelHandlers_ [channelID]->SetInviteMode (action);
+				break;
+			case 'm':
+				if (value.isEmpty ())
+					ChannelHandlers_ [channelID]->SetModerateMode (action);
+				break;
+			case 'n':
+				if (value.isEmpty ())
+					ChannelHandlers_ [channelID]->SetBlockOutsideMessagesMode (action);
+				break;
+			case 'q':
+				// may be it is nessesary
+				break;
+			case 'p':
+				if (value.isEmpty ())
+					ChannelHandlers_ [channelID]->SetPrivateMode (action);
+				break;
+			case 'r':
+				if (value.isEmpty ())
+					ChannelHandlers_ [channelID]->SetServerReOpMode (action);
+				break;
+			case 's':
+				if (value.isEmpty ())
+					ChannelHandlers_ [channelID]->SetSecretMode (action);
+				break;
+			case 't':
+				if (value.isEmpty ())
+					ChannelHandlers_ [channelID]->SetOnlyOpTopicChangeMode (action);
+				break;
+			case 'l':
+				if (!value.isEmpty ())
+					ChannelHandlers_ [channelID]->
+						SetUserLimit (action, value.toInt ());
+				break;
+			case 'k':
+				if (!value.isEmpty ())
+					ChannelHandlers_ [channelID]->SetChannelKey (action, value);
+				break;
+			case 'b':
+				ShowAnswer (value + tr (" add to your ban list."));
+				break;
+			case 'e':
+				ShowAnswer (value + tr (" add to your except list."));
+				break;
+			case 'I':
+				ShowAnswer (value + tr (" add to your invite list."));
+				break;
+			}
+		}
+	}
+
+	void IrcServerHandler::ParseUserMode (const QString& nick, 
+			const QString& mode)
+	{
+		Q_UNUSED (nick);
+		Q_UNUSED (mode);
+		//TODO but I don't know how it use
 	}
 
 	void IrcServerHandler::connectionEstablished ()

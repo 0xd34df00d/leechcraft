@@ -185,6 +185,20 @@ namespace Acetamide
 				const QString&);
 		void GotISupport (const QString&, const QList<std::string>&,
 				const QString&);
+		void GotChannelMode (const QString&, const QList<std::string>&,
+				const QString&);
+		void GotBanList (const QString&, const QList<std::string>&,
+				const QString&);
+		void GotBanListEnd (const QString&, const QList<std::string>&,
+				const QString&);
+		void GotExceptList (const QString&, const QList<std::string>&,
+				const QString&);
+		void GotExceptListEnd (const QString&, const QList<std::string>&,
+				const QString&);
+		void GotInviteList (const QString&, const QList<std::string>&,
+				const QString&);
+		void GotInviteListEnd (const QString&, const QList<std::string>&,
+				const QString&);
 	};
 };
 };

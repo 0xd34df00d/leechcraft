@@ -112,6 +112,10 @@ namespace Acetamide
 
 		void ChangeNickname (const QString&, const QString&);
 
+		void GetBanList (const QString&);
+		void GetExceptList (const QString&);
+		void GetInviteList (const QString&);
+
 		void PongMessage (const QString&);
 		void GotTopic (const QString&, const QString&);
 		void KickUserFromChannel (const QString&, const QString&, 
@@ -133,7 +137,16 @@ namespace Acetamide
 		void ShowUsersReply (const QString&);
 		void ShowTraceReply (const QString&);
 		void ShowStatsReply (const QString&);
-
+		void ShowBanList (const QString&, 
+				const QString&, const QString&, const QDateTime&);
+		void ShowBanListEnd (const QString&);
+		void ShowExceptList (const QString&, 
+				const QString&, const QString&, const QDateTime&);
+		void ShowExceptListEnd (const QString&);
+		void ShowInviteList (const QString&, 
+				const QString&, const QString&, const QDateTime&);
+		void ShowInviteListEnd (const QString&);
+		
 		void SendPublicMessage (const QString&, const QString&);
 		void SendPrivateMessage (IrcMessage*);
 		void SendMessage2Server (const QStringList&);
@@ -152,6 +165,10 @@ namespace Acetamide
 		void SetLastSendID (const QString&);
 		void ReadReply (const QByteArray&);
 		void JoinFromQueue ();
+
+		void ParseChanMode (const QString&, const QString&, 
+				const QString& value = QString ());
+		void ParseUserMode (const QString&, const QString&);
 	private:
 		void SendToConsole (IMessage::Direction, const QString&);
 		void NickCmdError ();

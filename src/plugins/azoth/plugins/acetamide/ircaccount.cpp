@@ -410,7 +410,7 @@ namespace Acetamide
 				bookmark.ServerPort_ = ish->GetServerOptions ().ServerPort_;
 				bookmark.ServerEncoding_ = ish->GetServerOptions ().ServerEncoding_;
 				bookmark.NickName_ = ish->GetServerOptions ().ServerNickName_;
-				bookmark.SSL_ == ish->GetServerOptions ().SSL_;
+				bookmark.SSL_ = ish->GetServerOptions ().SSL_;
 				bookmark.ChannelName_ = ich->GetChannelOptions ().ChannelName_;
 				bookmark.ChannelPassword_ = ich->GetChannelOptions ().ChannelPassword_;
 				bookmark.AutoJoin_ = true;

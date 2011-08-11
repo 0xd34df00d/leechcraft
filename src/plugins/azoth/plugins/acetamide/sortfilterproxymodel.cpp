@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "localtypes.h"
+#include "sortfilterproxymodel.h"
 
 namespace LeechCraft
 {
@@ -24,27 +24,25 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	bool operator== (const ChannelOptions& channel1,
-			const ChannelOptions& channel2)
-	{
-		return (channel1.ChannelName_ == channel2.ChannelName_) &&
-				(channel1.ChannelPassword_ == channel2.ChannelPassword_)
-				&& (channel1.ServerName_ == channel2.ServerName_);
-	}
-
-	ChannelModes::ChannelModes ()
-	: InviteMode_ (false)
-	, ModerateMode_ (false)
-	, BlockOutsideMessageMode_ (false)
-	, PrivateMode_ (false)
-	, SecretMode_ (false)
-	, ReOpMode_ (false)
-	, OnlyOpChangeTopicMode_ (false)
-	, UserLimit_ (qMakePair (false, 0))
-	, ChannelKey_ (qMakePair (false, QString ()))
+	SortFilterProxyModel::SortFilterProxyModel (QObject *parent)
+	: QSortFilterProxyModel (parent)
 	{
 	}
 
-};
-};
-};
+	bool SortFilterProxyModel::filterAcceptsRow (int sourceRow,
+			const QModelIndex& sourceParent) const
+	{
+			QModelIndex index0 = sourceModel ()->
+					index (sourceRow, 1, sourceParent);
+			QModelIndex index1 = sourceModel ()->
+					index (sourceRow, 2, sourceParent);
+			QModelIndex index2 = sourceModel ()->
+					index (sourceRow, 3, sourceParent);
+
+			return (sourceModel ()->data (index0).toString().contains (filterRegExp ())
+					|| sourceModel ()->data (index1).toString ().contains (filterRegExp ())
+				|| sourceModel ()->data (index2).toString ().contains (filterRegExp ()));
+	}
+}
+}
+}
