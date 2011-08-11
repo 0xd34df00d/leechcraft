@@ -16,49 +16,45 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "vfscore.h"
-#include <QIcon>
-#include <interfaces/vfs/iengineprovider.h>
-#include "vfsenginehandler.h"
+#ifndef PLUGINS_VFSCORE_VFSENGINEHANDLER_H
+#define PLUGINS_VFSCORE_VFSENGINEHANLDER_H
+#include <QAbstractFileEngineHandler>
+#include <interfaces/iinfo.h>
 
 namespace LeechCraft
 {
+namespace VFS
+{
+	class IContainerEngine;
+	class IProtocolEngine;
+}
+
 namespace VFScore
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	class VFSEngineHandler : public QAbstractFileEngineHandler
 	{
-		Handler_.reset (new VFSEngineHandler (proxy));
-	}
+		ICoreProxy_ptr Proxy_;
 
-	void Plugin::SecondInit ()
-	{
-	}
+		struct MarkedPath
+		{
+			QString Type_;
+			QString Path_;
+			
+			MarkedPath ();
+			MarkedPath (const QString&, const QString&);
+		};
+		typedef QList<MarkedPath> PathChain_t;
+		
+		QList<VFS::IContainerEngine*> Containers_;
+		QList<VFS::IProtocolEngine*> Protocols_;
+	public:
+		VFSEngineHandler (ICoreProxy_ptr);
 
-	QByteArray Plugin::GetUniqueID () const
-	{
-		return "org.LeechCraft.VFScore";
-	}
-
-	void Plugin::Release ()
-	{
-		Handler_.reset ();
-	}
-
-	QString Plugin::GetName () const
-	{
-		return "VFScore";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("Core of the VFS subsystem in LeechCraft.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
-	}
+		QAbstractFileEngine* create (const QString&) const;
+	private:
+		PathChain_t ParsePath (const QString&) const;
+	};
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_vfscore, LeechCraft::VFScore::Plugin);
+#endif

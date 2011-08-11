@@ -23,9 +23,11 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	vfscore.cpp
+	vfsenginehandler.cpp
 	)
 SET (HEADERS
 	vfscore.h
+	vfsenginehandler.h
 	)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 

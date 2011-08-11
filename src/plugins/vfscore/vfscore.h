@@ -18,6 +18,7 @@
 
 #ifndef PLUGINS_VFSCORE_VFSCORE_H
 #define PLUGINS_VFSCORE_VFSCORE_H
+#include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <interfaces/iinfo.h>
 
@@ -25,11 +26,15 @@ namespace LeechCraft
 {
 namespace VFScore
 {
+	class VFSEngineHandler;
+
 	class Plugin : public QObject
 				 , public IInfo
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo)
+		
+		boost::shared_ptr<VFSEngineHandler> Handler_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
