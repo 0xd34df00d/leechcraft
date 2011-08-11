@@ -218,7 +218,7 @@ namespace Acetamide
 				 this, _1, _2, _3);
 		Command2Action_ ["347"] = boost::bind (&ServerResponceManager::GotInviteListEnd,
 				 this, _1, _2, _3);
-		Command2Action_ ["324"] = boost::bind (&ServerResponceManager::GotChannelMode,
+		Command2Action_ ["324"] = boost::bind (&ServerResponceManager::GotChannelModes,
 				 this, _1, _2, _3);
 	}
 
@@ -961,14 +961,28 @@ namespace Acetamide
 			return;
 		}
 
-		QString channel = QString::fromUtf8 (params.at (1).c_str ());
+		const QString channel = QString::fromUtf8 (params.first ().c_str ());
+
+		if (params.count () == 2)
+			ISH_->ParseChanMode (channel, 
+					QString::fromUtf8 (params.at (1).c_str ()));
+		else if (params.count () == 3)
+			ISH_->ParseChanMode (channel, 
+					QString::fromUtf8 (params.at (1).c_str ()),
+					QString::fromUtf8 (params.at (2).c_str ()));
+	}
+
+	void ServerResponceManager::GotChannelModes (const QString&,
+			const QList<std::string>& params, const QString&)
+	{
+		const QString channel = QString::fromUtf8 (params.at (1).c_str ());
 
 		if (params.count () == 3)
-			ISH_->ParseChanMode (channel, 
+			ISH_->ParseChanMode (channel,
 					QString::fromUtf8 (params.at (2).c_str ()));
 		else if (params.count () == 4)
-			ISH_->ParseChanMode (channel, 
-					QString::fromUtf8 (params.at (2).c_str ()), 
+			ISH_->ParseChanMode (channel,
+					QString::fromUtf8 (params.at (2).c_str ()),
 					QString::fromUtf8 (params.at (3).c_str ()));
 	}
 

@@ -115,6 +115,13 @@ namespace Acetamide
 		void GetBanList (const QString&);
 		void GetExceptList (const QString&);
 		void GetInviteList (const QString&);
+		void AddBanListItem (const QString&, QString);
+		void RemoveBanListItem (const QString&, QString);
+		void AddExceptListItem (const QString&, QString);
+		void RemoveExceptListItem (const QString&, QString);
+		void AddInviteListItem (const QString&, QString);
+		void RemoveInviteListItem (const QString&, QString);
+		void SetNewChannelModes (const QString&, const ChannelModes&);
 
 		void PongMessage (const QString&);
 		void GotTopic (const QString&, const QString&);

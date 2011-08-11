@@ -364,6 +364,68 @@ namespace Acetamide
 		IrcParser_->ChanModeCommand (QStringList () << channel << "I");
 	}
 
+	void IrcServerHandler::AddBanListItem (const QString& channel, QString mask)
+	{
+		IrcParser_->ChanModeCommand (QStringList () << channel << "+b" << mask);
+	}
+
+	void IrcServerHandler::RemoveBanListItem (const QString& channel, QString mask)
+	{
+		IrcParser_->ChanModeCommand (QStringList () << channel << "-b" << mask);
+	}
+
+	void IrcServerHandler::AddExceptListItem (const QString& channel, QString mask)
+	{
+		IrcParser_->ChanModeCommand (QStringList () << channel << "+e" << mask);
+	}
+
+	void IrcServerHandler::RemoveExceptListItem (const QString& channel, QString mask)
+	{
+		IrcParser_->ChanModeCommand (QStringList () << channel << "-e" << mask);
+	}
+
+	void IrcServerHandler::AddInviteListItem (const QString& channel, QString mask)
+	{
+		IrcParser_->ChanModeCommand (QStringList () << channel << "+I" << mask);
+	}
+
+	void IrcServerHandler::RemoveInviteListItem (const QString& channel, QString mask)
+	{
+		IrcParser_->ChanModeCommand (QStringList () << channel << "-I" << mask);
+	}
+
+	void IrcServerHandler::SetNewChannelModes(const QString& channel, const ChannelModes& modes)
+	{
+		const QString channelId = (channel + "@" + ServerOptions_.ServerName_).toLower ();
+		if (!IsChannelExists (channelId))
+			return;
+
+		IrcParser_->ChanModeCommand (QStringList () << channel
+				<< (modes.BlockOutsideMessageMode_ ? "+n" : "-n"));
+		if (modes.ChannelKey_.first)
+			IrcParser_->ChanModeCommand (QStringList () << channel
+					<< "+k" << modes.ChannelKey_.second);
+		else
+			IrcParser_->ChanModeCommand (QStringList () << channel << "-k");
+		IrcParser_->ChanModeCommand (QStringList () << channel
+				<< (modes.InviteMode_ ? "+i" : "-i"));
+		IrcParser_->ChanModeCommand (QStringList () << channel
+				<< (modes.ModerateMode_ ? "+m" : "-m"));
+		IrcParser_->ChanModeCommand (QStringList () << channel
+				<< (modes.OnlyOpChangeTopicMode_ ? "+t" : "-t"));
+		IrcParser_->ChanModeCommand (QStringList () << channel
+				<< (modes.PrivateMode_ ? "+p" : "-p"));
+		IrcParser_->ChanModeCommand (QStringList () << channel
+				<< (modes.ReOpMode_ ? "+r" : "-r"));
+		IrcParser_->ChanModeCommand (QStringList () << channel
+				<< (modes.SecretMode_ ? "+s" : "-s"));
+		if (modes.UserLimit_.first)
+			IrcParser_->ChanModeCommand (QStringList () << channel
+					<< "+l" << QString::number(modes.UserLimit_.second));
+		else
+			IrcParser_->ChanModeCommand (QStringList () << channel << "-l");
+	}
+
 	void IrcServerHandler::PongMessage (const QString& msg)
 	{
 		IrcParser_->PongCommand (QStringList () << msg);
@@ -582,17 +644,19 @@ namespace Acetamide
 			const QString& channelId)
 	{
 		LastSendId_ = channelId;
-		IrcParser_->PrivMsgCommand (QStringList () 
-				<< channelId.left (channelId.indexOf ('@'))
-				<< msg);
+		Q_FOREACH (const QString& str, msg.split ('\n'))
+			IrcParser_->PrivMsgCommand (QStringList ()
+					<< channelId.left (channelId.indexOf ('@'))
+					<< str);
 	}
 
 	void IrcServerHandler::SendPrivateMessage (IrcMessage* msg)
 	{
 		LastSendId_ = msg->GetOtherVariant ();
-		IrcParser_->PrivMsgCommand (QStringList () 
-				<< msg->GetOtherVariant () 
-				<< msg->GetBody ());
+		Q_FOREACH (const QString& str, msg->GetBody ().split ('\n'))
+			IrcParser_->PrivMsgCommand (QStringList ()
+					<< msg->GetOtherVariant ()
+					<< str);
 
 		ServerParticipantEntry_ptr entry = GetParticipantEntry (msg->GetOtherVariant ());
 		entry->HandleMessage (msg);
@@ -825,43 +889,34 @@ namespace Acetamide
 				// may be it is nessesary
 				break;
 			case 'i':
-				if (value.isEmpty ())
 					ChannelHandlers_ [channelID]->SetInviteMode (action);
 				break;
 			case 'm':
-				if (value.isEmpty ())
 					ChannelHandlers_ [channelID]->SetModerateMode (action);
 				break;
 			case 'n':
-				if (value.isEmpty ())
 					ChannelHandlers_ [channelID]->SetBlockOutsideMessagesMode (action);
 				break;
 			case 'q':
 				// may be it is nessesary
 				break;
 			case 'p':
-				if (value.isEmpty ())
 					ChannelHandlers_ [channelID]->SetPrivateMode (action);
 				break;
 			case 'r':
-				if (value.isEmpty ())
 					ChannelHandlers_ [channelID]->SetServerReOpMode (action);
 				break;
 			case 's':
-				if (value.isEmpty ())
 					ChannelHandlers_ [channelID]->SetSecretMode (action);
 				break;
 			case 't':
-				if (value.isEmpty ())
 					ChannelHandlers_ [channelID]->SetOnlyOpTopicChangeMode (action);
 				break;
 			case 'l':
-				if (!value.isEmpty ())
 					ChannelHandlers_ [channelID]->
 						SetUserLimit (action, value.toInt ());
 				break;
 			case 'k':
-				if (!value.isEmpty ())
 					ChannelHandlers_ [channelID]->SetChannelKey (action, value);
 				break;
 			case 'b':

@@ -37,6 +37,10 @@ namespace Acetamide
 	, IsRosterReceived_ (false)
 	{
 		ChannelCLEntry_ = new ChannelCLEntry (this);
+		connect (this,
+				SIGNAL (updateChanModes (const ChannelModes&)),
+				ChannelCLEntry_,
+				SIGNAL (gotNewChannelModes (const ChannelModes&)));
 	}
 
 	QString ChannelHandler::GetChannelID () const
@@ -305,6 +309,36 @@ namespace Acetamide
 		ISH_->GetInviteList (ChannelOptions_.ChannelName_);
 	}
 
+	void ChannelHandler::AddBanListItem (QString mask)
+	{
+		ISH_->AddBanListItem (ChannelOptions_.ChannelName_, mask);
+	}
+
+	void ChannelHandler::RemoveBanListItem (QString mask)
+	{
+		ISH_->RemoveBanListItem (ChannelOptions_.ChannelName_, mask);
+	}
+
+	void ChannelHandler::AddExceptListItem (QString mask)
+	{
+		ISH_->AddExceptListItem (ChannelOptions_.ChannelName_, mask);
+	}
+
+	void ChannelHandler::RemoveExceptListItem (QString mask)
+	{
+		ISH_->RemoveExceptListItem (ChannelOptions_.ChannelName_, mask);
+	}
+
+	void ChannelHandler::AddInviteListItem (QString mask)
+	{
+		ISH_->AddInviteListItem (ChannelOptions_.ChannelName_, mask);
+	}
+
+	void ChannelHandler::RemoveInviteListItem (QString mask)
+	{
+		ISH_->RemoveInviteListItem (ChannelOptions_.ChannelName_, mask);
+	}
+
 	void ChannelHandler::SetBanListItem (const QString& mask, 
 			const QString& nick, const QDateTime& date)
 	{
@@ -349,46 +383,123 @@ namespace Acetamide
 	void ChannelHandler::SetInviteMode (bool invite)
 	{
 		ChannelMode_.InviteMode_ = invite;
+		QString msg;
+		if (invite)
+			msg = tr ("Channel mode set to invite only channel (+i)");
+		else
+			msg = tr ("Channel mode set to non invite only channel (-i)");
+		ShowServiceMessage (msg,
+				IMessage::MTEventMessage, IMessage::MSTOther);
+		emit updateChanModes (ChannelMode_);
 	}
 
 	void ChannelHandler::SetModerateMode (bool moderate)
 	{
 		ChannelMode_.ModerateMode_ = moderate;
+		QString msg;
+		if (moderate)
+			msg = tr ("Channel mode set to moderate channel (+m)");
+		else
+			msg = tr ("Channel mode set to unmoderate channel (-m)");
+		ShowServiceMessage (msg,
+				IMessage::MTEventMessage, IMessage::MSTOther);
+		emit updateChanModes (ChannelMode_);
 	}
 
 	void ChannelHandler::SetBlockOutsideMessagesMode (bool block)
 	{
 		ChannelMode_.BlockOutsideMessageMode_ = block;
+		QString msg;
+		if (block)
+			msg = tr ("Channel mode set to block outside messages (+n)");
+		else
+			msg = tr ("Channel mode set to not block outside messages (-n)");
+		ShowServiceMessage (msg,
+				IMessage::MTEventMessage, IMessage::MSTOther);
+		emit updateChanModes (ChannelMode_);
 	}
 
 	void ChannelHandler::SetPrivateMode (bool priv)
 	{
 		ChannelMode_.PrivateMode_ = priv;
+		QString msg;
+		if (priv)
+			msg = tr ("Channel mode set to private channel (+p)");
+		else
+			msg = tr ("Channel mode set to non private channel (-p)");
+		ShowServiceMessage (msg,
+				IMessage::MTEventMessage, IMessage::MSTOther);
+		emit updateChanModes (ChannelMode_);
 	}
 
 	void ChannelHandler::SetSecretMode (bool secret)
 	{
 		ChannelMode_.SecretMode_ = secret;
+		QString msg;
+		if (secret)
+			msg = tr ("Channel mode set to secret channel (+s)");
+		else
+			msg = tr ("Channel mode set to non secret channel (-s)");
+		ShowServiceMessage (msg,
+				IMessage::MTEventMessage, IMessage::MSTOther);
+		emit updateChanModes (ChannelMode_);
 	}
 
 	void ChannelHandler::SetServerReOpMode (bool reop)
 	{
 		ChannelMode_.ReOpMode_ = reop;
+		QString msg;
+		if (reop)
+			msg = tr ("Reop flag is set (+r)");
+		else
+			msg = tr ("Reop flag is remove (-r)");
+		ShowServiceMessage (msg,
+				IMessage::MTEventMessage, IMessage::MSTOther);
+		emit updateChanModes (ChannelMode_);
 	}
 
 	void ChannelHandler::SetOnlyOpTopicChangeMode (bool topic)
 	{
 		ChannelMode_.OnlyOpChangeTopicMode_ = topic;
+		QString msg;
+		if (topic)
+			msg = tr ("Change topic available only for channel operators (+t)");
+		else
+			msg = tr ("Change topic available not only for channel operators (-t)");
+		ShowServiceMessage (msg,
+				IMessage::MTEventMessage, IMessage::MSTOther);
+		emit updateChanModes (ChannelMode_);
 	}
 
 	void ChannelHandler::SetUserLimit (bool islimit, int limit)
 	{
 		ChannelMode_.UserLimit_ = qMakePair (islimit, limit);
+		QString msg;
+		if (islimit)
+			msg = tr ("Limit user set to %1 (+l)").arg (limit);
+		else
+			msg = tr ("Remove limit user (-l)");
+		ShowServiceMessage (msg,
+				IMessage::MTEventMessage, IMessage::MSTOther);
+		emit updateChanModes (ChannelMode_);
 	}
 
 	void ChannelHandler::SetChannelKey (bool iskey, const QString& key)
 	{
 		ChannelMode_.ChannelKey_ = qMakePair (iskey, key);
+		QString msg;
+		if (iskey)
+			msg = tr ("Channel key set to %1 (+k)").arg (key);
+		else
+			msg = tr ("Remove channel key (-k)");
+		ShowServiceMessage (msg,
+				IMessage::MTEventMessage, IMessage::MSTOther);
+		emit updateChanModes (ChannelMode_);
+	}
+
+	void ChannelHandler::SetNewChannelModes(const ChannelModes& modes)
+	{
+		ISH_->SetNewChannelModes (ChannelOptions_.ChannelName_, modes);
 	}
 
 	bool ChannelHandler::RemoveUserFromChannel (const QString& nick)

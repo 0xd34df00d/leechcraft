@@ -64,13 +64,24 @@ namespace Acetamide
 		void on_ExceptSearch__textChanged (const QString&);
 		void on_InviteSearch__textChanged (const QString&);
 		void on_tabWidget_currentChanged (int);
+		void on_UpdateBan__clicked ();
+		void on_AddBan__clicked ();
+		void on_RemoveBan__clicked ();
+		void on_UpdateExcept__clicked ();
+		void on_AddExcept__clicked ();
+		void on_RemoveExcept__clicked ();
+		void on_AddInvite__clicked ();
+		void on_UpdateInvite__clicked ();
+		void on_RemoveInvite__clicked ();
+
 		void addBanListItem (const QString&, 
 				const QString&, const QDateTime&);
 		void addExceptListItem (const QString&, 
 				const QString&, const QDateTime&);
 		void addInviteListItem (const QString&, 
 				const QString&, const QDateTime&);
-		
+
+		void handleNewChannelModes (const ChannelModes&);
 	signals:
 		void dataReady ();
 	};

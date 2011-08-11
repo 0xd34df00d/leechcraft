@@ -126,6 +126,13 @@ namespace Acetamide
 				const QDateTime&);
 		void SetIsWidgetRequest (bool);
 		bool GetIsWidgetRequest () const;
+		void AddBanListItem (QString);
+		void RemoveBanListItem (QString);
+		void AddExceptListItem (QString);
+		void RemoveExceptListItem (QString);
+		void AddInviteListItem (QString);
+		void RemoveInviteListItem (QString);
+		void SetNewChannelModes (const ChannelModes&);
 	signals:
 		void gotNewParticipants (const QList<QObject*>&);
 		void mucSubjectChanged (const QString&);
@@ -151,6 +158,7 @@ namespace Acetamide
 				const QString&, const QDateTime&);
 		void gotInviteListItem (const QString&,
 				const QString&, const QDateTime&);
+		void gotNewChannelModes (const ChannelModes&);
 	};
 }
 }
