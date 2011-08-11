@@ -36,7 +36,8 @@ namespace CleanWeb
 		enum MatchType
 		{
 			MTWildcard,
-			MTRegexp
+			MTRegexp,
+			MTPlain
 		};
 		MatchType MatchType_;
 		QStringList Domains_;

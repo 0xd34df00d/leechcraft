@@ -201,19 +201,22 @@ namespace CleanWeb
 				{
 					if (actualLine.endsWith ('|'))
 					{
-						actualLine.remove (0, 1);
+						actualLine.chop (1);
 						actualLine.prepend ('*');
 					}
 					else if (actualLine.startsWith ('|'))
 					{
-						actualLine.chop (1);
+						actualLine.remove (0, 1);
 						actualLine.append ('*');
 					}
-					else
+					else if (actualLine.contains ('*') ||
+							actualLine.contains ('?'))
 					{
 						actualLine.prepend ('*');
 						actualLine.append ('*');
 					}
+					else
+						f.MatchType_ = FilterOption::MTPlain;
 					actualLine.replace ('?', "\\?");
 				}
 
@@ -657,6 +660,9 @@ namespace CleanWeb
 						qPrintable (urlStr)))
 				return true;
 		}
+		else if (opt.MatchType_ == FilterOption::MTPlain)
+			return urlStr.contains (exception);
+
 		return false;
 	}
 
