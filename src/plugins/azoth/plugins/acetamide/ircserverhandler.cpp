@@ -873,17 +873,21 @@ namespace Acetamide
 			{
 			case 'o':
 				if (!value.isEmpty () && IsParticipantExists (value))
+				{
 					if (action)
 						Nick2Entry_ [value]->AddRole (channel, Operator);
 					else
 						Nick2Entry_ [value]->RemoveRole (channel, Operator);
+				}
 				break;
 			case 'v':
 				if (!value.isEmpty () && IsParticipantExists (value))
+				{
 					if (action)
 						Nick2Entry_ [value]->AddRole (channel, Voiced);
 					else
 						Nick2Entry_ [value]->RemoveRole (channel, Voiced);
+				}
 				break;
 			case 'a':
 				// may be it is nessesary
