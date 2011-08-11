@@ -527,33 +527,32 @@ namespace CleanWeb
 		if (!req.hasRawHeader ("referer"))
 			return false;
 
-		QUrl url = req.url ();
-		QString urlStr = url.toString ();
-		QString cinUrlStr = urlStr.toLower ();
-		QString domain = url.host ();
+		const QUrl& url = req.url ();
+		const QString& urlStr = url.toString ();
+		const QString& cinUrlStr = urlStr.toLower ();
+		const QString& domain = url.host ();
 
-		QList<Filter> allFilters;
+		QList<Filter> allFilters = Filters_;
 		allFilters << UserFilters_->GetFilter ();
-		allFilters += Filters_;
-		Q_FOREACH (Filter filter, allFilters)
+		Q_FOREACH (const Filter& filter, allFilters)
 		{
-			Q_FOREACH (QString exception, filter.ExceptionStrings_)
+			Q_FOREACH (const QString& exception, filter.ExceptionStrings_)
 			{
-				bool cs = filter.Options_ [exception].Case_ == Qt::CaseSensitive;
-				QString url = cs ? urlStr : cinUrlStr;
+				const bool cs = filter.Options_ [exception].Case_ == Qt::CaseSensitive;
+				const QString& url = cs ? urlStr : cinUrlStr;
 				if (Matches (exception, filter, url, domain))
 					return false;
 			}
 
-			Q_FOREACH (QString filterString, filter.FilterStrings_)
+			Q_FOREACH (const QString& filterString, filter.FilterStrings_)
 			{
 				const FilterOption& opt = filter.Options_ [filterString];
 				if (opt.AbortForeign_ &&
 						!req.rawHeader ("referer").contains (domain.toUtf8 ()))
 					continue;
 
-				bool cs = opt.Case_ == Qt::CaseSensitive;
-				QString url = cs ? urlStr : cinUrlStr;
+				const bool cs = opt.Case_ == Qt::CaseSensitive;
+				const QString& url = cs ? urlStr : cinUrlStr;
 				if (Matches (filterString, filter, url, domain))
 				{
 					*matchedFilter = filterString;
@@ -628,18 +627,12 @@ namespace CleanWeb
 	bool Core::Matches (const QString& exception, const Filter& filter,
 			const QString& urlStr, const QString& domain) const
 	{
-		FilterOption opt = filter.Options_ [exception];
+		const FilterOption& opt = filter.Options_ [exception];
 		if (!opt.NotDomains_.isEmpty ())
 		{
-			bool shouldFurther = true;
-			Q_FOREACH (QString notDomain, opt.NotDomains_)
+			Q_FOREACH (const QString& notDomain, opt.NotDomains_)
 				if (domain.endsWith (notDomain, opt.Case_))
-				{
-					shouldFurther = false;
-					break;
-				}
-			if (!shouldFurther)
-				return false;
+					return false;
 		}
 
 		if (!opt.Domains_.isEmpty ())
