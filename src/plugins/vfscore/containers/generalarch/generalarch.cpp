@@ -18,6 +18,7 @@
 
 #include "generalarch.h"
 #include <QIcon>
+#include "config.h"
 
 namespace LeechCraft
 {
@@ -55,6 +56,16 @@ namespace GeneralArch
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon ();
+	}
+
+	QList<VFS::IContainerEngine*> Plugin::GetContainerEngines () const
+	{
+		return QList<VFS::IContainerEngine*> ();
+	}
+
+	QList< VFS::IProtocolEngine* > Plugin::GetProtocolEngines () const
+	{
+		return QList<VFS::IProtocolEngine*> ();
 	}
 }
 }

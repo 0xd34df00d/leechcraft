@@ -21,6 +21,7 @@
 #include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <interfaces/iinfo.h>
+#include <interfaces/vfs/iengineprovider.h>
 
 namespace LeechCraft
 {
@@ -30,9 +31,10 @@ namespace GeneralArch
 {
 	class Plugin : public QObject
 				 , public IInfo
+				 , public VFS::IEngineProvider
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo)
+		Q_INTERFACES (IInfo LeechCraft::VFS::IEngineProvider)
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -41,6 +43,9 @@ namespace GeneralArch
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+		
+		QList<VFS::IContainerEngine*> GetContainerEngines () const;
+		QList<VFS::IProtocolEngine*> GetProtocolEngines () const;
 	};
 }
 }
