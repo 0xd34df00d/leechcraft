@@ -123,12 +123,17 @@ namespace Acetamide
 	{
 		if (GetSelf () == ServerParticipantEntry_ptr ())
 			return;
+		bool command = false;
 		if (msg.startsWith ('/'))
+		{
 			ISH_->ParseMessageForCommand (msg, ChannelID_);
+			command = true;
+		}
 		else
 			ISH_->SendPublicMessage (msg, ChannelID_);
 
-		HandleIncomingMessage (ISH_->GetNickName (), msg);
+		HandleIncomingMessage (ISH_->GetNickName (), command  ?
+				msg.mid (msg.indexOf (' ')) : msg);
 	}
 
 	void ChannelHandler::HandleIncomingMessage (const QString& nick,
