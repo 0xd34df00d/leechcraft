@@ -173,6 +173,8 @@ namespace Acetamide
 		void ReadReply (const QByteArray&);
 		void JoinFromQueue ();
 
+		void SayCommand (const QStringList&);
+
 		void ParseChanMode (const QString&, const QString&, 
 				const QString& value = QString ());
 		void ParseUserMode (const QString&, const QString&);
