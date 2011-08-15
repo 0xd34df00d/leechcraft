@@ -41,7 +41,7 @@ namespace LeechCraft
 
 				XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
 				XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
-						"popishusettings.xml");
+						"woodpeckersettings.xml");
 
 				Core::Instance ().SetProxy (proxy);
 

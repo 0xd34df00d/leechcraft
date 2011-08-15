@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
-	<declare defaultlang="en" />
 	<page>
-		<label lang="en" value="Account settings" />
-		<groupbox>
-			<label lang="en" value="Editor settings" />
+	  <label lang="en" value="Woodpecker settings" />
+			<groupbox>
+				<label value="Account" />
 			<item type="lineedit" property="login" default="">
 				<label lang="en" value="Login:" />
-			<item type="password" property="password" default="">
+			<item type="lineedit" property="password" default="">
 				<label lang="en" value="Password:" />
 			</item>
-		</groupbox>
 	</page>
 </settings>
