@@ -853,6 +853,15 @@ namespace Acetamide
 		}
 	}
 
+	void IrcServerHandler::SayCommand (const QStringList& params)
+	{
+		if (params.isEmpty ())
+			return;
+		const QString channel = params.first ();
+		SendPublicMessage (QStringList (params.mid (1)).join (" "),
+				(channel + "@" + ServerOptions_.ServerName_).toLower ());
+	}
+
 	void IrcServerHandler::ParseChanMode (const QString& channel, 
 			const QString& mode, const QString& value)
 	{
