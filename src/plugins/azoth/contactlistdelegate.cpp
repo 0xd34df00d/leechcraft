@@ -100,7 +100,7 @@ namespace Azoth
 		painter->setRenderHints (QPainter::HighQualityAntialiasing | QPainter::Antialiasing);
 		
 		QPainterPath rectPath;
-		rectPath.addRoundedRect (o.rect, 8, 8);
+		rectPath.addRoundedRect (o.rect, 6, 6);
 		
 		painter->fillPath (rectPath, o.palette.color (QPalette::Window));
 		painter->setPen (o.palette.color (QPalette::WindowText));
@@ -157,7 +157,7 @@ namespace Azoth
 		painter->setRenderHints (QPainter::HighQualityAntialiasing | QPainter::Antialiasing);
 		
 		QPainterPath bgPath;
-		bgPath.addRoundedRect (r.adjusted (-r.topLeft ().x (), 0, 0, 0), 6, 6);
+		bgPath.addRoundedRect (r.adjusted (-r.topLeft ().x (), 0, 0, 0), 4, 4);
 		painter->drawPath (bgPath);
 		
 		if (rem >= o.fontMetrics.width (str))
