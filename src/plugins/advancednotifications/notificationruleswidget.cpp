@@ -20,6 +20,8 @@
 #include <boost/bind.hpp>
 #include <QSettings>
 #include <QStandardItemModel>
+#include <QFileDialog>
+#include <QMessageBox>
 #include <interfaces/ianemitter.h>
 #include <util/resourceloader.h>
 #include <util/util.h>
@@ -27,8 +29,6 @@
 #include "matchconfigdialog.h"
 #include "typedmatchers.h"
 #include "core.h"
-#include <QFileDialog>
-#include <QMessageBox>
 
 namespace LeechCraft
 {
@@ -47,18 +47,6 @@ namespace AdvancedNotifications
 	const QString TypeIMSubscrRequest = "org.LC.AdvNotifications.IM.Subscr.Requested";
 	const QString TypeIMSubscrSub = "org.LC.AdvNotifications.IM.Subscr.Subscribed";
 	const QString TypeIMSubscrUnsub = "org.LC.AdvNotifications.IM.Subscr.Unsubscribed";
-
-	QDataStream& operator<< (QDataStream& out, const NotificationRule& r)
-	{
-		r.Save (out);
-		return out;
-	}
-	
-	QDataStream& operator>> (QDataStream& in, NotificationRule& r)
-	{
-		r.Load (in);
-		return in;
-	}
 
 	NotificationRulesWidget::NotificationRulesWidget (QWidget *parent)
 	: QWidget (parent)
@@ -105,9 +93,6 @@ namespace AdvancedNotifications
 		Q_FOREACH (const QString& cat, Cat2HR_.keys ())
 			Ui_.EventCat_->addItem (Cat2HR_ [cat], cat);
 		on_EventCat__activated (0);
-		
-		qRegisterMetaType<NotificationRule> ("LeechCraft::AdvancedNotifications::NotificationRule");
-		qRegisterMetaTypeStreamOperators<NotificationRule> ("LeechCraft::AdvancedNotifications::NotificationRule");
 		
 		LoadSettings ();
 		
@@ -313,16 +298,11 @@ namespace AdvancedNotifications
 	
 	void NotificationRulesWidget::SaveSettings () const
 	{
-		/* Don't save settings until the rest of stuff is working and we
-		 * have a sane set of default rules.
-		 * 
-		 * 
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_AdvancedNotifications");
 		settings.beginGroup ("rules");
 		settings.setValue ("RulesList", QVariant::fromValue<QList<NotificationRule> > (Rules_));
 		settings.endGroup ();
-		*/
 	}
 	
 	void NotificationRulesWidget::handleItemSelected (const QModelIndex& index)

@@ -24,13 +24,30 @@
 namespace LeechCraft
 {
 namespace AdvancedNotifications
-{
+{	
+	QDataStream& operator<< (QDataStream& out, const NotificationRule& r)
+	{
+		r.Save (out);
+		return out;
+	}
+	
+	QDataStream& operator>> (QDataStream& in, NotificationRule& r)
+	{
+		r.Load (in);
+		return in;
+	}
+
 	Core::Core ()
 	: NRW_ (0)
 	, AudioThemeLoader_ (new Util::ResourceLoader ("sounds/"))
 	{
 		AudioThemeLoader_->AddLocalPrefix ();
 		AudioThemeLoader_->AddGlobalPrefix ();
+		
+		qRegisterMetaType<NotificationRule> ("LeechCraft::AdvancedNotifications::NotificationRule");
+		qRegisterMetaTypeStreamOperators<NotificationRule> ("LeechCraft::AdvancedNotifications::NotificationRule");
+		qRegisterMetaType<QList<NotificationRule> > ("QList<LeechCraft::AdvancedNotifications::NotificationRule>");
+		qRegisterMetaTypeStreamOperators<QList<NotificationRule> > ("QList<LeechCraft::AdvancedNotifications::NotificationRule>");
 	}
 	
 	Core& Core::Instance ()
