@@ -221,9 +221,8 @@ namespace Poshuku
 		return QStringList ();
 	}
 
-	void Poshuku::SetProvider (QObject *object, const QString& feature)
+	void Poshuku::SetProvider (QObject*, const QString&)
 	{
-		Core::Instance ().SetProvider (object, feature);
 	}
 
 	QIcon Poshuku::GetIcon () const

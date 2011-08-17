@@ -267,11 +267,6 @@ namespace Poshuku
 		return WebPluginFactory_;
 	}
 
-	void Core::SetProvider (QObject *object, const QString& feature)
-	{
-		Providers_ [feature] = object;
-	}
-
 	QSet<QByteArray> Core::GetExpectedPluginClasses () const
 	{
 		QSet<QByteArray> result;

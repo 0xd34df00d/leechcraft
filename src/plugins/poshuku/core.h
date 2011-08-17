@@ -72,8 +72,6 @@ namespace Poshuku
 		QNetworkAccessManager *NetworkAccessManager_;
 		WebPluginFactory *WebPluginFactory_;
 
-		QMap<QString, QObject*> Providers_;
-
 		bool IsShuttingDown_;
 		QList<int> RestoredURLs_;
 
@@ -117,7 +115,6 @@ namespace Poshuku
 
 		WebPluginFactory* GetWebPluginFactory ();
 
-		void SetProvider (QObject*, const QString&);
 		QSet<QByteArray> GetExpectedPluginClasses () const;
 		void AddPlugin (QObject*);
 
