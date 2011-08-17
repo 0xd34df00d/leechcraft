@@ -324,42 +324,45 @@ namespace Azoth
 		QPixmap pixmap (r.size ());
 		pixmap.fill (Qt::transparent);
 		QPainter p (&pixmap);
-		p.translate (-r.topLeft ());
 
 		if (selected ||
 				(option.state & QStyle::State_MouseOver))
+		{
+			QStyleOptionViewItemV4 bgOpt = option;
+			bgOpt.rect.moveTopLeft (QPoint (0, 0));
 			style->drawPrimitive (QStyle::PE_PanelItemViewItem,
-					&option, &p, option.widget);
+					&bgOpt, &p, option.widget);
+		}
 
 		p.setPen (fgColor);
 
 		if (unreadNum)
 		{
 			p.setFont (unreadFont);
-			p.drawText (r.left () + textShift - unreadSpace, r.top () + CPadding,
+			p.drawText (textShift - unreadSpace, CPadding,
 					textWidth, r.height () - 2 * CPadding,
 					Qt::AlignVCenter | Qt::AlignLeft,
 					unreadStr);
 		}
 
 		p.setFont (option.font);
-		p.drawText (r.left () + textShift, r.top () + CPadding,
+		p.drawText (textShift, CPadding,
 				textWidth, r.height () - 2 * CPadding,
 				Qt::AlignVCenter | Qt::AlignLeft,
 				option.fontMetrics.elidedText (name, Qt::ElideRight, textWidth));
 
-		p.drawPixmap (r.topLeft () + QPoint (CPadding, CPadding),
+		p.drawPixmap (QPoint (CPadding, CPadding),
 				stateIcon.pixmap (iconSize, iconSize));
 
 		if (!avatarImg.isNull ())
-			p.drawPixmap (r.topLeft () + QPoint (textShift + textWidth + clientsIconsWidth + CPadding, CPadding),
+			p.drawPixmap (QPoint (textShift + textWidth + clientsIconsWidth + CPadding, CPadding),
 					QPixmap::fromImage (avatarImg));
 
 		int currentShift = textShift + textWidth + CPadding;
 
 		Q_FOREACH (const QIcon& icon, clientIcons)
 		{
-			p.drawPixmap (r.topLeft () + QPoint (currentShift, CPadding),
+			p.drawPixmap (QPoint (currentShift, CPadding),
 					icon.pixmap (clientIconSize, clientIconSize));
 			currentShift += clientIconSize + CPadding;
 		}
