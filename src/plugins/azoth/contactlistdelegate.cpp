@@ -116,6 +116,24 @@ namespace Azoth
 			QStyleOptionViewItemV4 o, const QModelIndex& index) const
 	{
 		const QRect& r = o.rect;
+		
+		if ((o.state & QStyle::State_Selected) ||
+				(o.state & QStyle::State_MouseOver))
+		{
+			QStyle *style = o.widget ?
+					o.widget->style () :
+					QApplication::style ();
+
+			const int oldLeft = o.rect.left ();
+			o.rect.setLeft (0);
+			style->drawPrimitive (QStyle::PE_PanelItemViewItem,
+					&o, painter, o.widget);
+			o.rect.setLeft (oldLeft);
+		}
+		
+		QStyledItemDelegate::paint (painter, o, index);
+		
+		o.state &= ~(QStyle::State_Selected | QStyle::State_MouseOver);
 
 		const int textWidth = o.fontMetrics.width (index.data ().value<QString> () + " ");
 		const int rem = r.width () - textWidth;
@@ -191,8 +209,6 @@ namespace Azoth
 
 			o.rect.setLeft (unreadSpace + o.rect.left ());
 		}
-
-		QStyledItemDelegate::paint (painter, o, index);
 	}
 
 	void ContactListDelegate::DrawContact (QPainter *painter,
