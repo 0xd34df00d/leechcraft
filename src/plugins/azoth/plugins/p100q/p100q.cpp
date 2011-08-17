@@ -136,6 +136,7 @@ namespace p100q
 					"<p><a href=\"\\1\"><img style='max-height: 300px; max-width:300px;' src=\"\\1\"/></a><p/>");
 				
 		body.replace (PostRX_,
+				"<a href=\"azoth://msgeditreplace/%23\\1%20\">#\\1</a> "
 				"("
 				"<a href=\"azoth://msgeditreplace/S%20%23\\1\">S</a> "
 				"<a href=\"azoth://msgeditreplace/U%20%23\\1\">U</a> "
@@ -143,7 +144,6 @@ namespace p100q
 				"<a href=\"azoth://msgeditreplace/!%20%23\\1%20\">!</a> "
 				"<a href=\"azoth://msgeditreplace/~%20%23\\1%20\">~</a>"
 				") "
-				" <a href=\"azoth://msgeditreplace/%23\\1%20\">#\\1</a> "
 				);
 		
 		body.replace (PostAuthorRX_,
@@ -157,10 +157,10 @@ namespace p100q
 				" <a href=\"azoth://msgeditreplace/@\\1+\">@\\1</a> ");
 				
 		body.replace (CommentRX_,
-				" (<a href=\"azoth://msgeditreplace/U%20%23\\1\">U</a> "
+				"<a href=\"azoth://msgeditreplace/%23\\1/\\2%20\">#\\1/\\2</a> "
+				"(<a href=\"azoth://msgeditreplace/U%20%23\\1\">U</a> "
 				" <a href=\"azoth://msgeditreplace/!%20%23\\1/\\2%20\">!</a> "
-				" <a href=\"azoth://msgeditreplace/~%20%23\\1/\\2%20\">~</a>) "
-				" <a href=\"azoth://msgeditreplace/%23\\1/\\2%20\">#\\1/\\2</a>");
+				" <a href=\"azoth://msgeditreplace/~%20%23\\1/\\2%20\">~</a>) ");
 				
 		body.replace (PostByUserRX_,
 				" <a href=\"azoth://msgeditreplace/%23\\1+\">#\\1</a> ");
