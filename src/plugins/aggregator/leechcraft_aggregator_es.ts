@@ -81,10 +81,6 @@
 <context>
     <name>Export</name>
     <message>
-        <source>This string is overridden in the source code</source>
-        <translation>Esta cadena está sobrescrita en el código fuente</translation>
-    </message>
-    <message>
         <source>Save to:</source>
         <translation>Guardar a:</translation>
     </message>
@@ -116,6 +112,10 @@
         <source>URL</source>
         <translation>URL</translation>
     </message>
+    <message>
+        <source>This string is overridden in the source code</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Export2FB2Dialog</name>
@@ -130,6 +130,402 @@
     <message>
         <source>Browse...</source>
         <translation>Examinar...</translation>
+    </message>
+    <message>
+        <source>Name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Genres:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Exported Feeds</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Genre</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Computers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Internet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Programming</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hardware</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Software</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Databases</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Other</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Science</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Math</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Physics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Chemistry</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Biology</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Technology</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>History</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Psychology</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Culture</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Religion</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Philosophy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Politics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Business</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Jurisprudence</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Linguistic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Medicine</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Science Fiction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alternative history</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Action</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Epic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Heroic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Detective</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cyberpunk</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Space</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Social</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Horror</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Humor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fantasy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>For children</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Detectives</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Classic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Police</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ironic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Historic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Espionage</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Criminal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Political</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Maniac</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Thriller</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fictional</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Love</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Prose</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Contemporary</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Counterculture</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Russian classic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>USSR classic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Short</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Erotica</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Adventure</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Western</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Indian</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Maritime</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Travel &amp; geography</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Animals</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tales</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Verses</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Science fiction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Educational</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Antique</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>European</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Russian</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>East</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Myths</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>References</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Encyclopedia</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dictionaries</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Guides</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Documentary</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Biography</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Publicism</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Criticism</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Esoterics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Self-improvement</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Anecdotes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Home &amp; Family</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cooking</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pets</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Crafts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Entertainment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Health</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Garden</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DIY</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sports</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sex</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -196,7 +592,7 @@
     </message>
     <message>
         <source>Automatically download enclosures</source>
-        <translation type="unfinished"></translation>
+        <translation>Descargar recintos automáticamente</translation>
     </message>
     <message>
         <source>Items:</source>
@@ -208,7 +604,7 @@
     </message>
     <message>
         <source> day(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>dia(s)</translation>
     </message>
 </context>
 <context>
@@ -355,11 +751,11 @@
     </message>
     <message>
         <source>Aggregator failed to initialize properly. Check logs and talk with the developers. Or, at least, check the storage backend settings and restart LeechCraft.</source>
-        <translation type="unfinished"></translation>
+        <translation>Agregador no se pudo inicializar correctamente. Compruebe los registros y hable con los desarrolladores. O, al menos, compruebe la configuración de almacenamiento de fondo y reinicie LeechCraft.</translation>
     </message>
     <message>
         <source>Feeds actions</source>
-        <translation type="unfinished"></translation>
+        <translation>Acciones de fuentes</translation>
     </message>
     <message>
         <source>RSS/Atom feed reader.</source>
@@ -388,17 +784,19 @@
     </message>
     <message>
         <source>Aggregator exchange files (*.lcae);;All files (*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Archivos de intercambio de Agregador (*.lcae);;Todos los archivos (*.*)</translation>
     </message>
     <message numerus="yes">
         <source>%n unread message(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n mensaje no leído</numerusform>
+            <numerusform>%n mensajes no leidos</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>in %n channel(s).</source>
-        <translation type="unfinished">
+        <translation>
+            <numerusform>en %n canal(es).</numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -419,11 +817,11 @@
     </message>
     <message>
         <source>&lt;strong&gt;Author&lt;/strong&gt;: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;strong&gt;Autor&lt;/strong&gt;: %1</translation>
     </message>
     <message>
         <source>&lt;b&gt;Tags&lt;/b&gt;: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Etiquetas&lt;/b&gt;: %1</translation>
     </message>
 </context>
 <context>
@@ -434,7 +832,7 @@
     </message>
     <message>
         <source>Could not find plugin to download OPML %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede encontrar plug-in para descargar OPML %1.</translation>
     </message>
     <message>
         <source>Storage error</source>
@@ -442,11 +840,11 @@
     </message>
     <message>
         <source>Aggregator: general storage initialization error.</source>
-        <translation type="unfinished"></translation>
+        <translation>Agregador: error general de inicialización de almacenamiento.</translation>
     </message>
     <message>
         <source>Feed addition error</source>
-        <translation type="unfinished"></translation>
+        <translation>Error de adición de fuente</translation>
     </message>
     <message>
         <source>The feed %1 is already added</source>
@@ -458,11 +856,11 @@
     </message>
     <message>
         <source>Could not find plugin to download feed %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede encontrar plug-in para descargar fuente %1.</translation>
     </message>
     <message>
         <source>Feed removal error</source>
-        <translation type="unfinished"></translation>
+        <translation>Error de remover fuente</translation>
     </message>
     <message>
         <source>Could not remove the feed: %1</source>
@@ -470,7 +868,7 @@
     </message>
     <message>
         <source>Aggregator error</source>
-        <translation type="unfinished"></translation>
+        <translation>Error de Agregador</translation>
     </message>
     <message>
         <source>Could not get feed settings: %1</source>
@@ -482,7 +880,7 @@
     </message>
     <message>
         <source>Feed update error</source>
-        <translation type="unfinished"></translation>
+        <translation>Error de actualización de fuente</translation>
     </message>
     <message>
         <source>Could not update feed</source>
@@ -502,7 +900,7 @@
     </message>
     <message>
         <source>OPML from file %1 is not valid.</source>
-        <translation type="unfinished"></translation>
+        <translation>OPML del archivo%1 no es válida.</translation>
     </message>
     <message>
         <source>OPML export error</source>
@@ -518,7 +916,7 @@
     </message>
     <message>
         <source>Feed error</source>
-        <translation type="unfinished"></translation>
+        <translation>Error de feed</translation>
     </message>
     <message>
         <source>Downloaded file from url %1 has null size.</source>
@@ -538,7 +936,7 @@
     </message>
     <message>
         <source>Unable to download the OPML file.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede descargar el archivo OPML.</translation>
     </message>
     <message>
         <source>Address not found:&lt;br /&gt;%1</source>
@@ -562,7 +960,7 @@
     </message>
     <message>
         <source>Could not find plugin to download external file %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede encontrar plug-in para descargar el archivo %1 externo.</translation>
     </message>
     <message numerus="yes">
         <source>Added channel &quot;%1&quot; (%n item(s))</source>
@@ -586,8 +984,9 @@
     <message numerus="yes">
         <source>%n updated item(s)</source>
         <comment>Channel update</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n elemento actualizado</numerusform>
+            <numerusform>%n elementos actualizados</numerusform>
         </translation>
     </message>
     <message>
@@ -596,7 +995,7 @@
     </message>
     <message>
         <source>Could not find plugin for feed with URL %1</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede encontrar plug-in para fuente con URL%1</translation>
     </message>
 </context>
 <context>
@@ -611,8 +1010,9 @@
     </message>
     <message numerus="yes">
         <source>%n unread item(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n elemento no leído</numerusform>
+            <numerusform>%n elementos no leidos</numerusform>
         </translation>
     </message>
     <message>
@@ -625,11 +1025,11 @@
     </message>
     <message>
         <source>Could not open file %1 for write:&lt;br /&gt;%2.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede abrir el archivo %1 para escribir:&lt;br /&gt;%2.</translation>
     </message>
     <message>
         <source>FB2 export complete.</source>
-        <translation type="unfinished"></translation>
+        <translation>FB2 exportación completa.</translation>
     </message>
 </context>
 <context>
@@ -640,7 +1040,7 @@
     </message>
     <message>
         <source>Aggregator exchange files (*.lcae);;All files (*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Archivos de intercambio de Agregador (*.lcae);;Todos los archivos (*.*)</translation>
     </message>
     <message>
         <source>LeechCraft</source>
@@ -683,7 +1083,7 @@
     </message>
     <message>
         <source>OPML from file %1 is not valid.</source>
-        <translation type="unfinished"></translation>
+        <translation>OPML del archivo%1 no es válida.</translation>
     </message>
 </context>
 <context>
@@ -698,11 +1098,11 @@
     </message>
     <message>
         <source>&lt;b&gt;Author&lt;/b&gt;: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Autor&lt;/b&gt;: %1</translation>
     </message>
     <message>
         <source>&lt;b&gt;Categories&lt;/b&gt;: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Categorías&lt;/b&gt;: %1</translation>
     </message>
     <message numerus="yes">
         <source>%n comment(s)</source>
@@ -713,19 +1113,22 @@
     </message>
     <message numerus="yes">
         <source>%n enclosure(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n recinto</numerusform>
+            <numerusform>%n recintos</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>%n MediaRSS entry(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translatorcomment>Entradas?!</translatorcomment>
+        <translation>
+            <numerusform>%n MediaRSS entrada</numerusform>
+            <numerusform>%n MediaRSS entradas</numerusform>
         </translation>
     </message>
     <message>
         <source>RSS with comments is available</source>
-        <translation type="unfinished"></translation>
+        <translation>RSS con los comentarios está disponible</translation>
     </message>
 </context>
 <context>
@@ -740,7 +1143,7 @@
     </message>
     <message>
         <source>Items categories</source>
-        <translation type="unfinished"></translation>
+        <translation>Categorias de elementos</translation>
     </message>
     <message>
         <source>Hide read items</source>
@@ -756,7 +1159,7 @@
     </message>
     <message>
         <source>Mark item as read</source>
-        <translation type="unfinished"></translation>
+        <translation>Marcar el elemento como leído</translation>
     </message>
     <message>
         <source>Subscribe to comments</source>
@@ -764,7 +1167,7 @@
     </message>
     <message>
         <source>Open in new tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Abrir en una nueva pestaña</translation>
     </message>
     <message>
         <source>Published on %1 by %2</source>
@@ -798,7 +1201,7 @@
     </message>
     <message>
         <source>Geoposition: &lt;a href=&apos;%3&apos;%4 title=&apos;Google Maps&apos;&gt;%1 %2&lt;/a&gt;&lt;br /&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Geoposicion: &lt;a href=&apos;%3&apos;%4 title=&apos;Google Maps&apos;&gt;%1 %2&lt;/a&gt;&lt;br /&gt;</translation>
     </message>
     <message>
         <source>File of type %1, size %2:&lt;br /&gt;</source>
@@ -834,15 +1237,15 @@
     </message>
     <message>
         <source>&lt;hr /&gt;Thumbnail at %1:&lt;br /&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;hr /&gt;Miniatura en %1:&lt;br /&gt;</translation>
     </message>
     <message>
         <source>&lt;strong&gt;Keywords:&lt;/strong&gt; &lt;em&gt;%1&lt;/em&gt;&lt;br /&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;strong&gt;Palabras clave:&lt;/strong&gt; &lt;em&gt;%1&lt;/em&gt;&lt;br /&gt;</translation>
     </message>
     <message>
         <source>&lt;strong&gt;Language:&lt;/strong&gt; %1&lt;br /&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;strong&gt;Lengua:&lt;/strong&gt; %1&lt;br /&gt;</translation>
     </message>
     <message>
         <source>Sample</source>
@@ -850,7 +1253,7 @@
     </message>
     <message>
         <source>Continuous stream</source>
-        <translation type="unfinished"></translation>
+        <translation>corriente continua</translation>
     </message>
     <message>
         <source>Full version</source>
@@ -870,41 +1273,42 @@
     </message>
     <message>
         <source>&lt;strong&gt;Scenes:&lt;/strong&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;strong&gt;Escenas:&lt;/strong&gt;</translation>
     </message>
     <message>
         <source>&lt;strong&gt;Views:&lt;/strong&gt; %1</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;strong&gt;Puntos de vista:&lt;/strong&gt; %1</translation>
     </message>
     <message numerus="yes">
         <source>&lt;strong&gt;Added to favorites:&lt;/strong&gt; %n time(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>&lt;strong&gt;Añadido a favoritos:&lt;/strong&gt; %n vez</numerusform>
+            <numerusform>&lt;strong&gt;Añadido a favoritos:&lt;/strong&gt; %n veces</numerusform>
         </translation>
     </message>
     <message>
         <source>&lt;strong&gt;Average rating:&lt;/strong&gt; %1</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;strong&gt;Nota media:&lt;/strong&gt; %1</translation>
     </message>
     <message>
         <source>&lt;strong&gt;Number of marks:&lt;/strong&gt; %1</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;strong&gt;Numero de marcas:&lt;/strong&gt; %1</translation>
     </message>
     <message>
         <source>&lt;strong&gt;Minimal rating:&lt;/strong&gt; %1</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;strong&gt; minima calificación: &lt;/strong&gt; %1</translation>
     </message>
     <message>
         <source>&lt;strong&gt;Maximal rating:&lt;/strong&gt; %1</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;strong&gt; máxima calificación: &lt;/strong&gt; %1</translation>
     </message>
     <message>
         <source>&lt;strong&gt;User tags:&lt;/strong&gt; %1</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;strong&gt;Etiquetas de usuario:&lt;/strong&gt; %1</translation>
     </message>
     <message>
         <source>&lt;li&gt;&lt;strong&gt;Duration:&lt;/strong&gt; %1&lt;/li&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;li&gt;&lt;strong&gt;Duracion:&lt;/strong&gt; %1&lt;/li&gt;</translation>
     </message>
     <message>
         <source>&lt;li&gt;&lt;strong&gt;Channels:&lt;/strong&gt; %1&lt;/li&gt;</source>
@@ -916,19 +1320,19 @@
     </message>
     <message>
         <source>&lt;li&gt;&lt;strong&gt;Bitrate:&lt;/strong&gt; %1 kbps&lt;/li&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;li&gt;&lt;strong&gt;Tasa de bits:&lt;/strong&gt; %1 kbps&lt;/li&gt;</translation>
     </message>
     <message>
         <source>&lt;li&gt;&lt;strong&gt;Framerate:&lt;/strong&gt; %1&lt;/li&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;li&gt;&lt;strong&gt;Velocidad de cuadro:&lt;/strong&gt; %1&lt;/li&gt;</translation>
     </message>
     <message>
         <source>&lt;li&gt;&lt;strong&gt;Sampling rate:&lt;/strong&gt; %1&lt;/li&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;li&gt;&lt;strong&gt;Frecuencia de muestreo:&lt;/strong&gt; %1&lt;/li&gt;</translation>
     </message>
     <message>
         <source>&lt;li&gt;&lt;strong&gt;MIME type:&lt;/strong&gt; %1&lt;/li&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;li&gt;&lt;strong&gt;MIME tipo:&lt;/strong&gt; %1&lt;/li&gt;</translation>
     </message>
     <message>
         <source>&lt;strong&gt;Technical information:&lt;/strong&gt;</source>
@@ -936,7 +1340,7 @@
     </message>
     <message>
         <source>&lt;strong&gt;Rating:&lt;/strong&gt; %1 (according to %2 scheme)&lt;br /&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;strong&gt;índice:&lt;/strong&gt; %1 (acordando a la %2 esquema)&lt;br /&gt;</translation>
     </message>
     <message>
         <source>&lt;strong&gt;Copyright:&lt;/strong&gt; &lt;a href=&apos;%1&apos; target=&apos;_blank&apos;&gt;%2&lt;/a&gt;&lt;br /&gt;</source>
@@ -999,7 +1403,7 @@
     <name>LeechCraft::Aggregator::StartupThirdPage</name>
     <message>
         <source>Select feeds</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar fuentes</translation>
     </message>
 </context>
 <context>
@@ -1083,7 +1487,7 @@
     </message>
     <message>
         <source>Show icon in tray when there are unread items</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar icono en la bandeja cuando hay elementos no leídos</translation>
     </message>
     <message>
         <source>Update interval:</source>
@@ -1107,7 +1511,7 @@
     </message>
     <message>
         <source> day(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>dia(s)</translation>
     </message>
 </context>
 <context>
@@ -1125,7 +1529,7 @@
     </message>
     <message>
         <source>Localized set:</source>
-        <translation type="unfinished"></translation>
+        <translation>Serie localizada:</translation>
     </message>
     <message>
         <source>General</source>
@@ -1137,7 +1541,7 @@
     </message>
     <message>
         <source>Feed</source>
-        <translation>Feed</translation>
+        <translation>Fuente</translation>
     </message>
     <message>
         <source>Tags</source>
@@ -1149,110 +1553,110 @@
     </message>
     <message>
         <source>Select all</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar todo</translation>
     </message>
     <message>
         <source>Deselect all</source>
-        <translation type="unfinished"></translation>
+        <translation>Anular la selección de todo</translation>
     </message>
 </context>
 <context>
     <name>aggregatorsettings</name>
     <message>
         <source>General settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Preferencias generales</translation>
     </message>
     <message>
         <source>Behavior</source>
-        <translation type="unfinished"></translation>
+        <translation>Behavior</translation>
     </message>
     <message>
         <source>Be silent</source>
-        <translation type="unfinished"></translation>
+        <translation>Estar en silencio</translation>
     </message>
     <message>
         <source>Always use external browser</source>
-        <translation type="unfinished"></translation>
+        <translation>Siempre use un navegador externo</translation>
     </message>
     <message>
         <source>Show unread items on top</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar los elementos no leídos en la parte superior</translation>
     </message>
     <message>
         <source>Notifications on feed update:</source>
-        <translation type="unfinished"></translation>
+        <translation>Notificaciones sobre la actualización de fuente:</translation>
     </message>
     <message>
         <source>all</source>
-        <translation type="unfinished"></translation>
+        <translation>todo</translation>
     </message>
     <message>
         <source>only about new items</source>
-        <translation type="unfinished"></translation>
+        <translation>Solo sobre nuevos elementos</translation>
     </message>
     <message>
         <source>don&apos;t show</source>
-        <translation type="unfinished"></translation>
+        <translation>No mostrar</translation>
     </message>
     <message>
         <source>Additional tags for comment feeds:</source>
-        <translation type="unfinished"></translation>
+        <translation>Etiquetas adicionales para las fuentes de comentarios:</translation>
     </message>
     <message>
         <source>Appearance</source>
-        <translation type="unfinished"></translation>
+        <translation>Apariencia</translation>
     </message>
     <message>
         <source>Group channels by tags</source>
-        <translation type="unfinished"></translation>
+        <translation>Agrupar los canales por etiquetas</translation>
     </message>
     <message>
         <source>Show unread channels in summary</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar los canales no leídos en el resumen</translation>
     </message>
     <message>
         <source>Show icon in tray when there are unread items</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar icono en la bandeja cuando hay elementos no leídos</translation>
     </message>
     <message>
         <source>Show items category selector</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar el selector de categorías de elementos</translation>
     </message>
     <message>
         <source>Show navigation bar when showing the news item</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar la barra de navegación cuando se muestra la noticia</translation>
     </message>
     <message>
         <source>Items list</source>
-        <translation type="unfinished"></translation>
+        <translation>lista de los elementos</translation>
     </message>
     <message>
         <source>Font for unread:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo de letra para no leídos:</translation>
     </message>
     <message>
         <source>Use color to mark unread</source>
-        <translation type="unfinished"></translation>
+        <translation>Usar el color para marcar no leidos</translation>
     </message>
     <message>
         <source>Color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Color:</translation>
     </message>
     <message>
         <source>Use colors from the palette for read/unread items</source>
-        <translation type="unfinished"></translation>
+        <translation>Utilice los colores de la paleta de elementos leídos / no leídos</translation>
     </message>
     <message>
         <source>Feeds handling</source>
-        <translation type="unfinished"></translation>
+        <translation>Tratamiento de fuentes</translation>
     </message>
     <message>
         <source>Updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Actualizaciones</translation>
     </message>
     <message>
         <source>Update feeds on startup</source>
-        <translation type="unfinished"></translation>
+        <translation>Actualizar las fuentes al iniciar</translation>
     </message>
     <message>
         <source>Update interval:</source>
@@ -1260,19 +1664,19 @@
     </message>
     <message>
         <source> min</source>
-        <translation type="unfinished"></translation>
+        <translation>min</translation>
     </message>
     <message>
         <source>Automatic downloading</source>
-        <translation type="unfinished"></translation>
+        <translation>Descarga automática</translation>
     </message>
     <message>
         <source>Download directory for enclosures:</source>
-        <translation type="unfinished"></translation>
+        <translation>Descargar directorio para recintos:</translation>
     </message>
     <message>
         <source>Store</source>
-        <translation type="unfinished"></translation>
+        <translation>Almacenar</translation>
     </message>
     <message>
         <source>Items per channel:</source>
@@ -1280,11 +1684,11 @@
     </message>
     <message>
         <source>Store items for:</source>
-        <translation type="unfinished"></translation>
+        <translation>Guarde los artículos para:</translation>
     </message>
     <message>
         <source> days</source>
-        <translation type="unfinished"></translation>
+        <translation>dias</translation>
     </message>
     <message>
         <source>Storage</source>
@@ -1292,15 +1696,15 @@
     </message>
     <message>
         <source>Mark as read after</source>
-        <translation type="unfinished"></translation>
+        <translation>Marcar como leído después</translation>
     </message>
     <message>
         <source> s</source>
-        <translation type="unfinished"></translation>
+        <translation>s</translation>
     </message>
     <message>
         <source>Show tooltips for news items</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar ayudas para las noticias</translation>
     </message>
 </context>
 </TS>
