@@ -213,7 +213,7 @@ namespace Poshuku
 
 	QStringList Poshuku::Needs () const
 	{
-		return QStringList ("*");
+		return QStringList ();
 	}
 
 	QStringList Poshuku::Uses () const
