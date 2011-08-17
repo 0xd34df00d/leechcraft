@@ -46,7 +46,7 @@ namespace LeechCraft
 			throw std::runtime_error ("VertexInfo creation failed.");
 		}
 
-		AllFeatureDeps_ = QSet<QString>::fromList (info->Uses ());
+		AllFeatureDeps_ = QSet<QString>::fromList (info->Needs ());
 		UnfulfilledFeatureDeps_ = AllFeatureDeps_;
 		FeatureProvides_ = QSet<QString>::fromList (info->Provides ());
 
