@@ -28,6 +28,7 @@
 #include "typedmatchers.h"
 #include "core.h"
 #include <QFileDialog>
+#include <QMessageBox>
 
 namespace LeechCraft
 {
@@ -436,6 +437,23 @@ namespace AdvancedNotifications
 		RulesModel_->removeRow (index.row ());
 		Rules_.removeAt (index.row ());
 		
+		SaveSettings ();
+	}
+	
+	void NotificationRulesWidget::on_DefaultRules__released ()
+	{
+		if (QMessageBox::question (this,
+					"LeechCraft",
+					tr ("Are you sure you want to replace all rules with "
+						"the default set?"),
+					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+			return;
+		
+		Rules_.clear ();
+		RulesModel_->clear ();
+
+		LoadDefaultRules ();
+		ResetModel ();
 		SaveSettings ();
 	}
 	

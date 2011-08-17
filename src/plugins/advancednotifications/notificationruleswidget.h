@@ -67,6 +67,7 @@ namespace AdvancedNotifications
 		void on_MoveRuleUp__released ();
 		void on_MoveRuleDown__released ();
 		void on_RemoveRule__released ();
+		void on_DefaultRules__released ();
 
 		void on_AddMatch__released ();
 		void on_ModifyMatch__released ();
