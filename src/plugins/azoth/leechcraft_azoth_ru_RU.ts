@@ -35,7 +35,7 @@
     <message>
         <location filename="accountslistwidget.ui" line="64"/>
         <source>PGP...</source>
-        <translation type="unfinished"></translation>
+        <translation>PGP...</translation>
     </message>
     <message>
         <location filename="accountslistwidget.ui" line="71"/>
@@ -288,17 +288,17 @@
     <message>
         <location filename="accountslistwidget.cpp" line="112"/>
         <source>The account %1 doesn&apos;t support encryption.</source>
-        <translation type="unfinished"></translation>
+        <translation>Учетная запись %1 не поддерживает шифрование.</translation>
     </message>
     <message>
         <location filename="accountslistwidget.cpp" line="117"/>
         <source>Please select new PGP key for the account %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Пожалуйста выберите новый PGP-ключ для учетной записи %1.</translation>
     </message>
     <message>
         <location filename="accountslistwidget.cpp" line="140"/>
         <source>Are you sure you want to remove the account %1?</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы уверены, что хотите удалить учетную запись %1?</translation>
     </message>
 </context>
 <context>
@@ -892,7 +892,7 @@
     <message>
         <location filename="chattab.cpp" line="1031"/>
         <source>Enable encryption</source>
-        <translation type="unfinished"></translation>
+        <translation>Включить шифрование</translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="1376"/>
@@ -1083,7 +1083,7 @@
     <message>
         <location filename="core.cpp" line="1533"/>
         <source>Manage PGP keys...</source>
-        <translation type="unfinished"></translation>
+        <translation>Управление PGP-ключами...</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1546"/>
@@ -1169,12 +1169,12 @@
     <message>
         <location filename="core.cpp" line="1887"/>
         <source>New status</source>
-        <translation type="unfinished"></translation>
+        <translation>Новый статус</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1888"/>
         <source>The new status string of the contact.</source>
-        <translation type="unfinished"></translation>
+        <translation>Новая строка статуса контакта.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="2411"/>
@@ -1348,17 +1348,17 @@
     <message>
         <location filename="core.cpp" line="2836"/>
         <source>You have been invited to %1 by %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>%2 пригласил вас в %1.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="2839"/>
         <source>You have been invited to %1 by %2: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>%2 пригласил вас в %1: %3</translation>
     </message>
     <message>
         <location filename="core.cpp" line="2857"/>
         <source>Join</source>
-        <translation type="unfinished"></translation>
+        <translation>Зайти</translation>
     </message>
     <message>
         <location filename="core.cpp" line="3088"/>
@@ -1393,12 +1393,12 @@
     <message>
         <location filename="core.cpp" line="3197"/>
         <source>The parent account %1 for entry %2 doesn&apos;t support encryption.</source>
-        <translation type="unfinished"></translation>
+        <translation>Учетная запись %1 для контакта %2 не поддерживает шифрование.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="3204"/>
         <source>Please select the key for %1 (%2).</source>
-        <translation type="unfinished"></translation>
+        <translation>Пожалуйста, выберите ключ для %1 (%2).</translation>
     </message>
     <message>
         <location filename="proxyobject.cpp" line="237"/>
@@ -2451,17 +2451,17 @@
     <message>
         <location filename="pgpkeyselectiondialog.ui" line="14"/>
         <source>PGP key selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбор ключа PGP</translation>
     </message>
     <message>
         <location filename="pgpkeyselectiondialog.ui" line="32"/>
         <source>Key:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ключ:</translation>
     </message>
     <message>
         <location filename="pgpkeyselectiondialog.ui" line="40"/>
         <source>&lt;no key&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;без ключа&gt;</translation>
     </message>
 </context>
 <context>
@@ -2622,7 +2622,7 @@
     <message>
         <location filename="dummy.cpp" line="26"/>
         <source>Group contacts by status</source>
-        <translation type="unfinished"></translation>
+        <translation>Группировать контакты по статусу</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="28"/>
