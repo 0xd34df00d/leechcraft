@@ -1455,17 +1455,14 @@ namespace Azoth
 			Action2Areas_ [drawAtt] << CLEAAContactListCtxtMenu;
 		}
 
-		if (entry->GetEntryFeatures () & ICLEntry::FSupportsRenames)
-		{
-			QAction *rename = new QAction (tr ("Rename"), entry->GetObject ());
-			connect (rename,
-					SIGNAL (triggered ()),
-					this,
-					SLOT (handleActionRenameTriggered ()));
-			rename->setProperty ("ActionIcon", "azoth_rename");
-			Entry2Actions_ [entry] ["rename"] = rename;
-			Action2Areas_ [rename] << CLEAAContactListCtxtMenu;
-		}
+		QAction *rename = new QAction (tr ("Rename"), entry->GetObject ());
+		connect (rename,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleActionRenameTriggered ()));
+		rename->setProperty ("ActionIcon", "azoth_rename");
+		Entry2Actions_ [entry] ["rename"] = rename;
+		Action2Areas_ [rename] << CLEAAContactListCtxtMenu;
 
 		if (entry->GetEntryFeatures () & ICLEntry::FSupportsGrouping)
 		{
@@ -1698,6 +1695,8 @@ namespace Azoth
 					isOnline;
 			Entry2Actions_ [entry] ["vcard"]->setEnabled (enableVCard);
 		}
+		
+		Entry2Actions_ [entry] ["rename"]->setEnabled (entry->GetEntryFeatures () & ICLEntry::FSupportsRenames);
 		
 		if (advEntry)
 		{
