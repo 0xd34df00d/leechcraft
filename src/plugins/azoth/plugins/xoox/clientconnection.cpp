@@ -939,6 +939,9 @@ namespace Xoox
 		QString nick;
 		Split (vcard.from (), &jid, &nick);
 		
+		if (jid.isEmpty ())
+			jid = OurBareJID_;
+		
 		if (AwaitingVCardDialogs_.contains (jid))
 		{
 			QPointer<VCardDialog> dia = AwaitingVCardDialogs_ [jid];
@@ -951,6 +954,8 @@ namespace Xoox
 			JID2CLEntry_ [jid]->SetVCard (vcard);
 		else if (RoomHandlers_.contains (jid))
 			RoomHandlers_ [jid]->GetParticipantEntry (nick)->SetVCard (vcard);
+		else if (OurBareJID_ == jid)
+			SelfContact_->SetVCard (vcard);
 	}
 
 	void ClientConnection::handlePresenceChanged (const QXmppPresence& pres)
