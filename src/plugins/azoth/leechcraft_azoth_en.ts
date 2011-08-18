@@ -35,7 +35,7 @@
     <message>
         <location filename="accountslistwidget.ui" line="64"/>
         <source>PGP...</source>
-        <translation type="unfinished"></translation>
+        <translation>PGP...</translation>
     </message>
     <message>
         <location filename="accountslistwidget.ui" line="71"/>
@@ -288,17 +288,17 @@
     <message>
         <location filename="accountslistwidget.cpp" line="112"/>
         <source>The account %1 doesn&apos;t support encryption.</source>
-        <translation type="unfinished"></translation>
+        <translation>The account %1 doesn&apos;t support encryption.</translation>
     </message>
     <message>
         <location filename="accountslistwidget.cpp" line="117"/>
         <source>Please select new PGP key for the account %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Please select new PGP key for the account %1.</translation>
     </message>
     <message>
         <location filename="accountslistwidget.cpp" line="140"/>
         <source>Are you sure you want to remove the account %1?</source>
-        <translation type="unfinished"></translation>
+        <translation>Are you sure you want to remove the account %1?</translation>
     </message>
 </context>
 <context>
@@ -891,7 +891,7 @@
     <message>
         <location filename="chattab.cpp" line="1031"/>
         <source>Enable encryption</source>
-        <translation type="unfinished"></translation>
+        <translation>Enable encryption</translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="1376"/>
@@ -1082,7 +1082,7 @@
     <message>
         <location filename="core.cpp" line="1533"/>
         <source>Manage PGP keys...</source>
-        <translation type="unfinished"></translation>
+        <translation>Manage PGP keys...</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1546"/>
@@ -1168,12 +1168,12 @@
     <message>
         <location filename="core.cpp" line="1887"/>
         <source>New status</source>
-        <translation type="unfinished"></translation>
+        <translation>New status</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1888"/>
         <source>The new status string of the contact.</source>
-        <translation type="unfinished"></translation>
+        <translation>The new status string of the contact.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="2411"/>
@@ -1345,17 +1345,17 @@
     <message>
         <location filename="core.cpp" line="2836"/>
         <source>You have been invited to %1 by %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>You have been invited to %1 by %2.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="2839"/>
         <source>You have been invited to %1 by %2: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>You have been invited to %1 by %2: %3</translation>
     </message>
     <message>
         <location filename="core.cpp" line="2857"/>
         <source>Join</source>
-        <translation type="unfinished"></translation>
+        <translation>Join</translation>
     </message>
     <message>
         <location filename="core.cpp" line="3088"/>
@@ -1390,12 +1390,12 @@
     <message>
         <location filename="core.cpp" line="3197"/>
         <source>The parent account %1 for entry %2 doesn&apos;t support encryption.</source>
-        <translation type="unfinished"></translation>
+        <translation>The parent account %1 for entry %2 doesn&apos;t support encryption.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="3204"/>
         <source>Please select the key for %1 (%2).</source>
-        <translation type="unfinished"></translation>
+        <translation>Please select the key for %1 (%2).</translation>
     </message>
     <message>
         <location filename="proxyobject.cpp" line="237"/>
@@ -2448,17 +2448,17 @@
     <message>
         <location filename="pgpkeyselectiondialog.ui" line="14"/>
         <source>PGP key selection</source>
-        <translation type="unfinished"></translation>
+        <translation>PGP key selection</translation>
     </message>
     <message>
         <location filename="pgpkeyselectiondialog.ui" line="32"/>
         <source>Key:</source>
-        <translation type="unfinished"></translation>
+        <translation>Key:</translation>
     </message>
     <message>
         <location filename="pgpkeyselectiondialog.ui" line="40"/>
         <source>&lt;no key&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;no key&gt;</translation>
     </message>
 </context>
 <context>
@@ -2619,7 +2619,7 @@
     <message>
         <location filename="dummy.cpp" line="26"/>
         <source>Group contacts by status</source>
-        <translation type="unfinished"></translation>
+        <translation>Group contacts by status</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="28"/>
