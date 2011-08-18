@@ -612,7 +612,7 @@ namespace Xoox
 			{
 				const QString& body = msg.body ();
 				msg.setBody (tr ("This message is encrypted. Please decrypt "
-								"it to view the original contents"));
+								"it to view the original contents."));
 				
 				QXmppElement crypt;
 				crypt.setTagName ("x");
