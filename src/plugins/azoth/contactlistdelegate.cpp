@@ -25,6 +25,8 @@
 #include <util/resourceloader.h>
 #include "interfaces/iclentry.h"
 #include "interfaces/isupportgeolocation.h"
+#include "interfaces/iaccount.h"
+#include "interfaces/iextselfinfoaccount.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "util.h"
@@ -87,9 +89,20 @@ namespace Azoth
 	QSize ContactListDelegate::sizeHint (const QStyleOptionViewItem& option, const QModelIndex& index) const
 	{
 		QSize size = QStyledItemDelegate::sizeHint (option, index);
-		if (index.data (Core::CLREntryType).value<Core::CLEntryType> () == Core::CLETContact &&
-				size.height () < 24)
-			size.setHeight (24);
+
+		switch (index.data (Core::CLREntryType).value<Core::CLEntryType> ())
+		{
+		case Core::CLETContact:
+			if (size.height () < 24)
+				size.setHeight (24);
+			break;
+		case Core::CLETAccount:
+			size.setHeight (size.height () * 1.5);
+			break;
+		default:
+			break;
+		}
+
 		return size;
 	}
 
@@ -109,7 +122,45 @@ namespace Azoth
 		painter->restore ();
 
 		o.font.setBold (true);
+
 		QStyledItemDelegate::paint (painter, o, index);
+		
+		QObject *accObj = index.data (Core::CLRAccountObject).value<QObject*> ();
+		IAccount *acc = qobject_cast<IAccount*> (accObj);
+		IExtSelfInfoAccount *extAcc = qobject_cast<IExtSelfInfoAccount*> (accObj);
+
+		QIcon accIcon = extAcc ? extAcc->GetAccountIcon () : QIcon ();
+		if (accIcon.isNull ())
+			accIcon = qobject_cast<IProtocol*> (acc->GetParentProtocol ())->GetProtocolIcon ();
+
+		const QRect& r = o.rect;
+		const int sHeight = r.height ();
+		const int iconSize = sHeight;
+
+		const QImage& avatarImg = Core::Instance ().GetAvatar (extAcc ?
+					qobject_cast<ICLEntry*> (extAcc->GetSelfContact ()) :
+					0,
+				iconSize - AvatarPaddingBottom);
+		
+		QPoint pxDraw = o.rect.topRight () - QPoint (CPadding, 0);
+		
+		if (!avatarImg.isNull ())
+		{
+			pxDraw.rx () -= avatarImg.width ();
+			const QPoint& delta = QPoint (0, (iconSize - avatarImg.height ()) / 2);
+			painter->drawPixmap (pxDraw + delta,
+					QPixmap::fromImage (avatarImg));
+			pxDraw.rx () -= CPadding;
+		}
+		
+		if (!accIcon.isNull ())
+		{
+			const int size = std::min (16, iconSize - AvatarPaddingBottom);
+			const QPixmap& px = accIcon.pixmap (size, size);
+			pxDraw.rx () -= px.width ();
+			const QPoint& delta = QPoint (0, (iconSize - px.height ()) / 2);
+			painter->drawPixmap (pxDraw + delta, px);
+		}
 	}
 
 	void ContactListDelegate::DrawCategory (QPainter *painter,
