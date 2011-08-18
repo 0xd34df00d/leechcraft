@@ -335,6 +335,17 @@ namespace Xoox
 		return TransferManager_.get ();
 	}
 	
+	QIcon GlooxAccount::GetAccountIcon () const
+	{
+		return QIcon ();
+	}
+	
+	QObject* GlooxAccount::GetSelfContact () const
+	{
+		qDebug () << "self" << ClientConnection_->GetCLEntry (JID_, QString ());
+		return ClientConnection_->GetCLEntry (JID_, QString ());
+	}
+	
 	QObject* GlooxAccount::CreateSDSession ()
 	{
 		return new SDSession (this);
