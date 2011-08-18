@@ -20,58 +20,46 @@
       <bool>true</bool>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="IrcUserProfle_">
       <attribute name="title">
        <string>User profile</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout">
+      <layout class="QFormLayout" name="formLayout_2">
        <item row="0" column="0">
-        <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,2">
-         <item>
-          <widget class="QLabel" name="label">
-           <property name="text">
-            <string>Real Name:</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="RealName_"/>
-         </item>
-        </layout>
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Real name:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="RealName_"/>
        </item>
        <item row="1" column="0">
-        <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,2">
-         <item>
-          <widget class="QLabel" name="label_2">
-           <property name="text">
-            <string>User name:</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="UserName_"/>
-         </item>
-        </layout>
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>User name:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="UserName_"/>
        </item>
        <item row="2" column="0">
-        <layout class="QVBoxLayout" name="verticalLayout">
-         <item>
-          <widget class="QLabel" name="label_3">
-           <property name="text">
-            <string>Nicknames (one per line)</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPlainTextEdit" name="NickNames_">
-           <property name="plainText">
-            <string/>
-           </property>
-          </widget>
-         </item>
-        </layout>
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>Nicks (one per line):</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QPlainTextEdit" name="NickNames_">
+         <property name="plainText">
+          <string/>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -85,7 +73,7 @@
          <item row="0" column="0">
           <widget class="QLabel" name="defaultIrcServerLabel">
            <property name="text">
-            <string>Default irc server</string>
+            <string>Default IRC server:</string>
            </property>
           </widget>
          </item>
@@ -95,7 +83,7 @@
          <item row="1" column="0">
           <widget class="QLabel" name="defaultPortLabel">
            <property name="text">
-            <string>Default port</string>
+            <string>Default port:</string>
            </property>
           </widget>
          </item>
@@ -109,7 +97,7 @@
          <item row="2" column="0">
           <widget class="QLabel" name="defaultEncodingLabel">
            <property name="text">
-            <string>Default encoding</string>
+            <string>Default encoding:</string>
            </property>
           </widget>
          </item>
@@ -119,7 +107,7 @@
          <item row="3" column="0">
           <widget class="QLabel" name="defaultChannelLabel">
            <property name="text">
-            <string>Default channel</string>
+            <string>Default channel:</string>
            </property>
           </widget>
          </item>

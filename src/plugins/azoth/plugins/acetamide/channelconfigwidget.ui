@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string/>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
@@ -80,7 +80,7 @@
            <item>
             <widget class="QCheckBox" name="UserLimit_">
              <property name="text">
-              <string>Max users</string>
+              <string>Max users:</string>
              </property>
             </widget>
            </item>
@@ -107,7 +107,7 @@
            <item>
             <widget class="QCheckBox" name="Password_">
              <property name="text">
-              <string>Password</string>
+              <string>Password:</string>
              </property>
             </widget>
            </item>
