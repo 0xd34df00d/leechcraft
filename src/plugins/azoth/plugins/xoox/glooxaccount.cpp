@@ -342,7 +342,6 @@ namespace Xoox
 	
 	QObject* GlooxAccount::GetSelfContact () const
 	{
-		qDebug () << "self" << ClientConnection_->GetCLEntry (JID_, QString ());
 		return ClientConnection_->GetCLEntry (JID_, QString ());
 	}
 	
