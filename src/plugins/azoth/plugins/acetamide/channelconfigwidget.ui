@@ -36,7 +36,7 @@
          <item>
           <widget class="QCheckBox" name="BlockOutMessage_">
            <property name="text">
-            <string>Block messages out of channel </string>
+            <string>Block messages from outside</string>
            </property>
           </widget>
          </item>
