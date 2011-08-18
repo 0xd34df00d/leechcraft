@@ -215,48 +215,48 @@
         <location filename="adhoccommandserver.cpp" line="57"/>
         <location filename="adhoccommandserver.cpp" line="229"/>
         <source>Change status</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменить статус</translation>
     </message>
     <message>
         <location filename="adhoccommandserver.cpp" line="67"/>
         <location filename="adhoccommandserver.cpp" line="300"/>
         <source>Leave groupchats</source>
-        <translation type="unfinished"></translation>
+        <translation>Покинуть конференции</translation>
     </message>
     <message>
         <location filename="adhoccommandserver.cpp" line="209"/>
         <source>Status</source>
-        <translation type="unfinished"></translation>
+        <translation>Статус</translation>
     </message>
     <message>
         <location filename="adhoccommandserver.cpp" line="217"/>
         <source>Priority</source>
-        <translation type="unfinished"></translation>
+        <translation>Приоритет</translation>
     </message>
     <message>
         <location filename="adhoccommandserver.cpp" line="223"/>
         <source>Status message</source>
-        <translation type="unfinished"></translation>
+        <translation>Статусное сообщение</translation>
     </message>
     <message>
         <location filename="adhoccommandserver.cpp" line="230"/>
         <source>Choose the new status, priority and status message</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите новый статус, приоритет и сообщение</translation>
     </message>
     <message>
         <location filename="adhoccommandserver.cpp" line="293"/>
         <source>Groupchats</source>
-        <translation type="unfinished"></translation>
+        <translation>Конференции</translation>
     </message>
     <message>
         <location filename="adhoccommandserver.cpp" line="301"/>
         <source>Select the groupchats to leave</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите, какие конференции покинуть</translation>
     </message>
     <message>
         <location filename="adhoccommandserver.cpp" line="325"/>
         <source>leaving as the result of the remote command</source>
-        <translation type="unfinished"></translation>
+        <translation>выход в результате удалённой команды</translation>
     </message>
 </context>
 <context>
@@ -268,18 +268,19 @@
     </message>
     <message>
         <location filename="clientconnection.cpp" line="614"/>
-        <source>This message is encrypted. Please decrypt it to view the original contents</source>
-        <translation type="unfinished"></translation>
+        <source>This message is encrypted. Please decrypt it to view the original contents.</source>
+        <oldsource>This message is encrypted. Please decrypt it to view the original contents</oldsource>
+        <translation>Это сообщение зашифровано. Пожалуйста, расшифруйте его для просмотра исходного содержимого.</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="749"/>
         <source>Data form from %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма от %1</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="752"/>
         <source>You have received dataform from %1:</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы получили форму от %1:</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="814"/>
@@ -475,12 +476,12 @@
     <message>
         <location filename="entrybase.cpp" line="509"/>
         <source>Select resource</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите ресурс</translation>
     </message>
     <message>
         <location filename="entrybase.cpp" line="510"/>
         <source>Select resource for which to fetch the commands</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите ресурс, которым хотите командовать</translation>
     </message>
 </context>
 <context>
@@ -511,12 +512,12 @@
     <message>
         <location filename="glooxaccount.cpp" line="452"/>
         <source>Unable to enable encryption for entry %1: no key has been set.</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно включить шифрование для контакта %1: не задан ключ.</translation>
     </message>
     <message>
         <location filename="glooxaccount.cpp" line="461"/>
         <source>Unable to change encryption state for %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно изменить состояние шифрования для %1.</translation>
     </message>
     <message>
         <location filename="glooxaccount.cpp" line="588"/>
@@ -826,7 +827,7 @@
     <message>
         <location filename="roomclentry.cpp" line="179"/>
         <source>Request voice</source>
-        <translation type="unfinished"></translation>
+        <translation>Запросить голос</translation>
     </message>
     <message>
         <location filename="roomclentry.cpp" line="253"/>
@@ -1050,7 +1051,7 @@
     <message>
         <location filename="selfcontact.cpp" line="75"/>
         <source>Self contact</source>
-        <translation type="unfinished"></translation>
+        <translation>Самоконтакт</translation>
     </message>
 </context>
 <context>
@@ -1081,12 +1082,12 @@
     <message>
         <location filename="vcarddialog.cpp" line="173"/>
         <source>Choose new photo</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбор нового фото</translation>
     </message>
     <message>
         <location filename="vcarddialog.cpp" line="175"/>
         <source>Images (*.png *.jpg *.gif);;All files (*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Картинки (*.png *.jpg *.gif);;Все файлы (*.*)</translation>
     </message>
 </context>
 <context>
@@ -1387,12 +1388,12 @@
     <message>
         <location filename="vcarddialog.ui" line="185"/>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>Обзор...</translation>
     </message>
     <message>
         <location filename="vcarddialog.ui" line="192"/>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>Очистить</translation>
     </message>
     <message>
         <location filename="vcarddialog.ui" line="202"/>

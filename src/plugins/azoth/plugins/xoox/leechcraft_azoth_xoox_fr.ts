@@ -268,7 +268,8 @@
     </message>
     <message>
         <location filename="clientconnection.cpp" line="614"/>
-        <source>This message is encrypted. Please decrypt it to view the original contents</source>
+        <source>This message is encrypted. Please decrypt it to view the original contents.</source>
+        <oldsource>This message is encrypted. Please decrypt it to view the original contents</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
