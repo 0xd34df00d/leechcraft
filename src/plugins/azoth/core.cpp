@@ -1317,7 +1317,7 @@ namespace Azoth
 					Entry2SmoothAvatarCache_ [entry].height () == size))
 			return Entry2SmoothAvatarCache_ [entry];
 
-		QImage avatar = entry->GetAvatar ();
+		QImage avatar = entry ? entry->GetAvatar () : QImage ();
 		if (avatar.isNull () || !avatar.width ())
 		{
 			const QString& name = XmlSettingsManager::Instance ()
