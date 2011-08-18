@@ -779,6 +779,8 @@ namespace Xoox
 		IsConnected_ = true;
 		emit statusChanged (EntryStatus (LastState_.State_, LastState_.Status_));
 		
+		Client_->vCardManager ().requestVCard (OurBareJID_);
+		
 		connect (BMManager_,
 				SIGNAL (bookmarksReceived (const QXmppBookmarkSet&)),
 				this,
