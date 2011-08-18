@@ -131,6 +131,29 @@ namespace Azoth
 			o.rect.setLeft (oldLeft);
 		}
 		
+		const int unread = index.data (Core::CLRUnreadMsgCount).toInt ();
+		if (unread)
+		{
+			painter->save ();
+
+			const QString& text = QString (" %1 :: ").arg (unread);
+
+			QFont unreadFont = o.font;
+			unreadFont.setBold (true);
+
+			int unreadSpace = CPadding + QFontMetrics (unreadFont).width (text);
+
+			painter->setFont (unreadFont);
+			painter->drawText (r.left () + CPadding, r.top () + CPadding,
+					unreadSpace, r.height () - 2 * CPadding,
+					Qt::AlignVCenter | Qt::AlignLeft,
+					text);
+
+			painter->restore ();
+
+			o.rect.setLeft (unreadSpace + o.rect.left ());
+		}
+		
 		QStyledItemDelegate::paint (painter, o, index);
 		
 		o.state &= ~(QStyle::State_Selected | QStyle::State_MouseOver);
@@ -186,29 +209,6 @@ namespace Azoth
 		}
 		
 		painter->restore ();
-
-		const int unread = index.data (Core::CLRUnreadMsgCount).toInt ();
-		if (unread)
-		{
-			painter->save ();
-
-			const QString& text = QString (" %1 :: ").arg (unread);
-
-			QFont unreadFont = o.font;
-			unreadFont.setBold (true);
-
-			int unreadSpace = CPadding + QFontMetrics (unreadFont).width (text);
-
-			painter->setFont (unreadFont);
-			painter->drawText (r.left () + CPadding, r.top () + CPadding,
-					unreadSpace, r.height () - 2 * CPadding,
-					Qt::AlignVCenter | Qt::AlignLeft,
-					text);
-
-			painter->restore ();
-
-			o.rect.setLeft (unreadSpace + o.rect.left ());
-		}
 	}
 
 	void ContactListDelegate::DrawContact (QPainter *painter,
