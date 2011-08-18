@@ -73,7 +73,7 @@
          <item row="0" column="0">
           <widget class="QLabel" name="defaultIrcServerLabel">
            <property name="text">
-            <string>Default IRC server:</string>
+            <string>IRC server:</string>
            </property>
           </widget>
          </item>
@@ -83,7 +83,7 @@
          <item row="1" column="0">
           <widget class="QLabel" name="defaultPortLabel">
            <property name="text">
-            <string>Default port:</string>
+            <string>Port:</string>
            </property>
           </widget>
          </item>
@@ -97,7 +97,7 @@
          <item row="2" column="0">
           <widget class="QLabel" name="defaultEncodingLabel">
            <property name="text">
-            <string>Default encoding:</string>
+            <string>Encoding:</string>
            </property>
           </widget>
          </item>
@@ -107,7 +107,7 @@
          <item row="3" column="0">
           <widget class="QLabel" name="defaultChannelLabel">
            <property name="text">
-            <string>Default channel:</string>
+            <string>Channel:</string>
            </property>
           </widget>
          </item>
