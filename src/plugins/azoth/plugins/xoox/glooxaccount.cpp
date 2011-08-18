@@ -495,6 +495,13 @@ namespace Xoox
 	void GlooxAccount::JoinRoom (const QString& server,
 			const QString& room, const QString& nick)
 	{
+		if (!ClientConnection_)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "null ClientConnection";
+			return;
+		}
+
 		QString jidStr = QString ("%1@%2")
 				.arg (room, server);
 
