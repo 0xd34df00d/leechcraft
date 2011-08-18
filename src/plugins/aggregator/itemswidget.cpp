@@ -96,7 +96,6 @@ namespace Aggregator
 		Impl_->ItemLists_->AddModel (Impl_->CurrentItemsModel_.get ());
 
 		Impl_->Ui_.setupUi (this);
-		Impl_->Ui_.ItemView_->Construct (Core::Instance ().GetWebBrowser ());
 
 		Impl_->Ui_.Items_->setAcceptDrops (false);
 
@@ -179,7 +178,6 @@ namespace Aggregator
 		XmlSettingsManager::Instance ()->RegisterObject ("ShowNavBarInItemsView",
 				this, "navBarVisibilityChanged");
 		selectorVisiblityChanged ();
-		navBarVisibilityChanged ();
 
 		on_ActionHideReadItems__triggered ();
 	}
@@ -446,6 +444,12 @@ namespace Aggregator
 			Impl_->CurrentItemsModel_->Reset (-1);
 		}
 		emit currentChannelChanged (index);
+	}
+	
+	void ItemsWidget::ConstructBrowser ()
+	{
+		Impl_->Ui_.ItemView_->Construct (Core::Instance ().GetWebBrowser ());
+		navBarVisibilityChanged ();
 	}
 
 	void ItemsWidget::LoadUIState ()

@@ -287,7 +287,11 @@ namespace Aggregator
 	void Aggregator::SecondInit ()
 	{
 		LoadColumnWidth (Impl_->Ui_.Feeds_, "feeds");
+		
+		Impl_->Ui_.ItemsWidget_->ConstructBrowser ();
 		Impl_->Ui_.ItemsWidget_->LoadUIState ();
+		
+		Core::Instance ().GetReprWidget ()->ConstructBrowser ();
 	}
 
 	void Aggregator::Release ()
