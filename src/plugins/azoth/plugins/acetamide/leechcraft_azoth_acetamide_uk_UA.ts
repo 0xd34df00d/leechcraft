@@ -71,7 +71,8 @@
     </message>
     <message>
         <location filename="channelconfigwidget.ui" line="39"/>
-        <source>Block messages out of channel </source>
+        <source>Block messages from outside</source>
+        <oldsource>Block messages out of channel </oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -349,105 +350,99 @@
     </message>
     <message>
         <location filename="channelhandler.cpp" line="353"/>
-        <location filename="channelhandler.cpp" line="365"/>
-        <location filename="channelhandler.cpp" line="377"/>
-        <source> setted by </source>
+        <location filename="channelhandler.cpp" line="367"/>
+        <location filename="channelhandler.cpp" line="381"/>
+        <source>%1 set by %2 on %3</source>
+        <oldsource> setted by </oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="353"/>
-        <location filename="channelhandler.cpp" line="365"/>
-        <location filename="channelhandler.cpp" line="377"/>
-        <source> on </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="channelhandler.cpp" line="393"/>
+        <location filename="channelhandler.cpp" line="399"/>
         <source>Channel mode set to invite only channel (+i)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="395"/>
+        <location filename="channelhandler.cpp" line="401"/>
         <source>Channel mode set to non invite only channel (-i)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="406"/>
+        <location filename="channelhandler.cpp" line="412"/>
         <source>Channel mode set to moderate channel (+m)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="408"/>
+        <location filename="channelhandler.cpp" line="414"/>
         <source>Channel mode set to unmoderate channel (-m)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="419"/>
+        <location filename="channelhandler.cpp" line="425"/>
         <source>Channel mode set to block outside messages (+n)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="421"/>
+        <location filename="channelhandler.cpp" line="427"/>
         <source>Channel mode set to not block outside messages (-n)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="432"/>
+        <location filename="channelhandler.cpp" line="438"/>
         <source>Channel mode set to private channel (+p)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="434"/>
+        <location filename="channelhandler.cpp" line="440"/>
         <source>Channel mode set to non private channel (-p)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="445"/>
+        <location filename="channelhandler.cpp" line="451"/>
         <source>Channel mode set to secret channel (+s)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="447"/>
+        <location filename="channelhandler.cpp" line="453"/>
         <source>Channel mode set to non secret channel (-s)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="458"/>
+        <location filename="channelhandler.cpp" line="464"/>
         <source>Reop flag is set (+r)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="460"/>
+        <location filename="channelhandler.cpp" line="466"/>
         <source>Reop flag is remove (-r)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="471"/>
+        <location filename="channelhandler.cpp" line="477"/>
         <source>Change topic available only for channel operators (+t)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="473"/>
+        <location filename="channelhandler.cpp" line="479"/>
         <source>Change topic available not only for channel operators (-t)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="484"/>
+        <location filename="channelhandler.cpp" line="490"/>
         <source>Limit user set to %1 (+l)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="486"/>
+        <location filename="channelhandler.cpp" line="492"/>
         <source>Remove limit user (-l)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="497"/>
+        <location filename="channelhandler.cpp" line="503"/>
         <source>Channel key set to %1 (+k)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="channelhandler.cpp" line="499"/>
+        <location filename="channelhandler.cpp" line="505"/>
         <source>Remove channel key (-k)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -579,17 +574,20 @@
     </message>
     <message>
         <location filename="ircserverhandler.cpp" line="936"/>
-        <source> add to your ban list.</source>
+        <source> added to your ban list.</source>
+        <oldsource> add to your ban list.</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="ircserverhandler.cpp" line="939"/>
-        <source> add to your except list.</source>
+        <source> added to your except list.</source>
+        <oldsource> add to your except list.</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="ircserverhandler.cpp" line="942"/>
-        <source> add to your invite list.</source>
+        <source> added to your invite list.</source>
+        <oldsource> add to your invite list.</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
