@@ -161,6 +161,9 @@ namespace Xoox
 		}
 
 		Accounts_ << account;
+
+		account->Init ();
+
 		saveAccounts ();
 		emit accountAdded (account);
 	}
