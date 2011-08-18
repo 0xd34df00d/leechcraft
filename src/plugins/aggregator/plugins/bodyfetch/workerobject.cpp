@@ -54,6 +54,8 @@ namespace BodyFetch
 	WorkerObject::WorkerObject (QObject *parent)
 	: QObject (parent)
 	, Inst_ (0)
+	, IsProcessing_ (false)
+	, RecheckScheduled_ (false)
 	, StorageDir_ (Util::CreateIfNotExists ("aggregator/bodyfetcher/storage"))
 	{
 	}
@@ -85,8 +87,6 @@ namespace BodyFetch
 					<< "null instance loader, aborting";
 			return;
 		}
-		
-		qDebug () << Q_FUNC_INFO << items.size ();
 
 		if (!EnumeratedCache_.isEmpty () &&
 				LastEnumerated_.secsTo (QDateTime::currentDateTime ()) > 10)
@@ -291,9 +291,49 @@ namespace BodyFetch
 				codec->toUnicode (rawContents) :
 				QString::fromUtf8 (rawContents);
 	}
+	
+	namespace
+	{
+		struct ProcessingGuard
+		{
+			bool *P_;
+
+			ProcessingGuard (bool *p)
+			: P_ (p)
+			{
+				*P_ = true;
+			}
+			
+			~ProcessingGuard ()
+			{
+				*P_ = false;
+			}
+		};
+	}
+	
+	void WorkerObject::ScheduleRechecking ()
+	{
+		if (RecheckScheduled_)
+			return;
+		
+		QTimer::singleShot (1000,
+				this,
+				SLOT (recheckFinished ()));
+		
+		RecheckScheduled_ = true;
+	}
 
 	void WorkerObject::handleDownloadFinished (QUrl url, QString filename)
 	{
+		if (IsProcessing_)
+		{
+			FetchedQueue_ << qMakePair (url, filename);
+			ScheduleRechecking ();
+			return;
+		}
+
+		ProcessingGuard pg (&IsProcessing_);
+
 		IScript_ptr script = URL2Script_.take (url);
 		if (!script)
 		{
@@ -334,12 +374,28 @@ namespace BodyFetch
 		emit newBodyFetched (id);
 	}
 	
+	void WorkerObject::recheckFinished ()
+	{
+		RecheckScheduled_ = false;
+
+		if (FetchedQueue_.isEmpty ())
+			return;
+
+		if (IsProcessing_)
+			ScheduleRechecking ();
+
+		const QPair<QUrl, QString>& item = FetchedQueue_.takeFirst ();
+		handleDownloadFinished (item.first, item.second);
+	}
+	
 	void WorkerObject::process ()
 	{
 		if (Items_.isEmpty ())
 			return;
 		
-		ProcessItems (QVariantList () << Items_.takeFirst ());
+		if (!IsProcessing_)
+			ProcessItems (QVariantList () << Items_.takeFirst ());
+
 		if (!Items_.isEmpty ())
 			QTimer::singleShot (400,
 					this,
