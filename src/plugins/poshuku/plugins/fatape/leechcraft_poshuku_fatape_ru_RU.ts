@@ -24,17 +24,17 @@
     <message>
         <location filename="userscriptinstallerdialog.cpp" line="53"/>
         <source>Fetching script...</source>
-        <translation type="unfinished"></translation>
+        <translation>Получение скрипта...</translation>
     </message>
     <message>
         <location filename="userscriptinstallerdialog.cpp" line="82"/>
         <source>runs on:</source>
-        <translation type="unfinished"></translation>
+        <translation>работает на:</translation>
     </message>
     <message>
         <location filename="userscriptinstallerdialog.cpp" line="87"/>
         <source>does not run on:</source>
-        <translation type="unfinished"></translation>
+        <translation>не работает на:</translation>
     </message>
 </context>
 <context>
@@ -57,37 +57,37 @@
     <message>
         <location filename="userscriptinstallerdialog.ui" line="14"/>
         <source>FatApe Installation</source>
-        <translation type="unfinished"></translation>
+        <translation>Установка FatApe</translation>
     </message>
     <message>
         <location filename="userscriptinstallerdialog.ui" line="43"/>
         <source>This is a FatApe user script. Click install to start using it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Это пользовательский скрипт FatApe. Выберите установку для его использования.</translation>
     </message>
     <message>
         <location filename="userscriptinstallerdialog.ui" line="65"/>
         <source>Malicious scripts can violate your privacy and act on your behalf without your knowledge.</source>
-        <translation type="unfinished"></translation>
+        <translation>Недоброжелательные скрипты могут нарушить вашу приватность и действовать без вашего ведома.</translation>
     </message>
     <message>
         <location filename="userscriptinstallerdialog.ui" line="85"/>
         <source>You should only install scripts from sources that you trust.</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы должны устанавливать скрипты только из доверенных источников.</translation>
     </message>
     <message>
         <location filename="userscriptinstallerdialog.ui" line="122"/>
         <source>Install</source>
-        <translation type="unfinished"></translation>
+        <translation>Установить</translation>
     </message>
     <message>
         <location filename="userscriptinstallerdialog.ui" line="132"/>
         <source>Show script source</source>
-        <translation type="unfinished"></translation>
+        <translation>Показать исходный код</translation>
     </message>
     <message>
         <location filename="userscriptinstallerdialog.ui" line="139"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Отмена</translation>
     </message>
 </context>
 <context>
