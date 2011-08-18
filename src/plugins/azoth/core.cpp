@@ -1310,11 +1310,11 @@ namespace Azoth
 		return result;
 	}
 
-	QImage Core::GetAvatar (ICLEntry* entry, int size)
+	QImage Core::GetAvatar (ICLEntry *entry, int size)
 	{
 		if (Entry2SmoothAvatarCache_.contains (entry) &&
 				(Entry2SmoothAvatarCache_ [entry].width () == size ||
-					Entry2SmoothAvatarCache_ [entry].height () == size))
+				 Entry2SmoothAvatarCache_ [entry].height () == size))
 			return Entry2SmoothAvatarCache_ [entry];
 
 		QImage avatar = entry ? entry->GetAvatar () : QImage ();
