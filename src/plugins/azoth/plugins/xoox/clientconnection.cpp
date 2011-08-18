@@ -822,6 +822,9 @@ namespace Xoox
 			str = tr ("error while connecting: ");
 			str += HandleErrorCondition (Client_->xmppStreamError ());
 			break;
+		case QXmppClient::NoError:
+			str = tr ("no error.");
+			break;
 		}
 		
 		if (str.isEmpty ())
@@ -1192,11 +1195,11 @@ namespace Xoox
 		EncryptedMessages_ [id] = decrypted;
 	}
 
-	void ClientConnection::handleSignedMessageReceived (const QString& id)
+	void ClientConnection::handleSignedMessageReceived (const QString&)
 	{
 	}
 
-	void ClientConnection::handleSignedPresenceReceived (const QString& id)
+	void ClientConnection::handleSignedPresenceReceived (const QString&)
 	{
 	}
 
