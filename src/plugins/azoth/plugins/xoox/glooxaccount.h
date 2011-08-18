@@ -21,6 +21,7 @@
 #include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <QMap>
+#include <QIcon>
 #include <QXmppRosterIq.h>
 #include <QXmppBookmarkSet.h>
 #include <interfaces/iaccount.h>
@@ -103,6 +104,8 @@ namespace Xoox
 		QString Resource_;
 		QString Host_;
 		int Port_;
+		
+		QIcon AccountIcon_;
 
 		boost::shared_ptr<ClientConnection> ClientConnection_;
 		boost::shared_ptr<TransferManager> TransferManager_;
@@ -189,6 +192,7 @@ namespace Xoox
 				const QString&);
 	private:
 		QString GetPassword (bool authFailure = false);
+		void RegenAccountIcon ();
 	public slots:
 		void handleEntryRemoved (QObject*);
 		void handleGotRosterItems (const QList<QObject*>&);

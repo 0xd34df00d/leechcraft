@@ -155,6 +155,8 @@ namespace Xoox
 				SIGNAL (callReceived (QXmppCall*)),
 				this,
 				SLOT (handleIncomingCall (QXmppCall*)));
+		
+		RegenAccountIcon ();
 	}
 
 	QObject* GlooxAccount::GetObject ()
@@ -262,6 +264,8 @@ namespace Xoox
 		AccState_.Priority_ = w->GetPriority ();
 		Host_ = w->GetHost ();
 		Port_ = w->GetPort ();
+		
+		RegenAccountIcon ();
 
 		if (lastState != SOffline)
 			ChangeState (EntryStatus (lastState, AccState_.Status_));
@@ -337,12 +341,14 @@ namespace Xoox
 	
 	QIcon GlooxAccount::GetAccountIcon () const
 	{
-		return QIcon ();
+		return AccountIcon_;
 	}
 	
 	QObject* GlooxAccount::GetSelfContact () const
 	{
-		return ClientConnection_->GetCLEntry (JID_, QString ());
+		return ClientConnection_ ?
+				ClientConnection_->GetCLEntry (JID_, QString ()) :
+				0;
 	}
 	
 	QObject* GlooxAccount::CreateSDSession ()
@@ -599,6 +605,18 @@ namespace Xoox
 		if (!result.isNull ())
 			proxy->SetPassword (result, this);
 		return result;
+	}
+	
+	void GlooxAccount::RegenAccountIcon ()
+	{
+		AccountIcon_ = QIcon ();
+
+		if (JID_.contains ("google") ||
+				JID_.contains ("gmail"))
+			AccountIcon_ = QIcon (":/plugins/azoth/plugins/xoox/resources/images/special/gtalk.svg");
+		else if (JID_.contains ("facebook") ||
+				JID_.contains ("fb.com"))
+			AccountIcon_ = QIcon (":/plugins/azoth/plugins/xoox/resources/images/special/facebook.svg");
 	}
 
 	void GlooxAccount::handleEntryRemoved (QObject *entry)
