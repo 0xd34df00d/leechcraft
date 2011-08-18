@@ -341,7 +341,12 @@ namespace Azoth
 		{
 			QVariant objVar = index.data (Core::CLRAccountObject);
 
+			IAccount *account = qobject_cast<IAccount*> (objVar.value<QObject*> ());
+			IProtocol *proto = qobject_cast<IProtocol*> (account->GetParentProtocol ());
+
+			AccountJoinConference_->setEnabled (proto->GetFeatures () & IProtocol::PFMUCsJoinable);
 			AccountJoinConference_->setProperty ("Azoth/AccountObject", objVar);
+
 			AccountAddContact_->setProperty ("Azoth/AccountObject", objVar);
 			actions << AccountJoinConference_;
 			actions << AccountAddContact_;
@@ -382,7 +387,6 @@ namespace Azoth
 			
 			actions << Util::CreateSeparator (menu);
 			
-			IAccount *account = qobject_cast<IAccount*> (objVar.value<QObject*> ());
 			QList<QAction*> accActions = account->GetActions ();
 			if (!accActions.isEmpty ())
 			{
