@@ -228,6 +228,10 @@ namespace BodyFetch
 			return script->InvokeMethod ("Strip", QVariantList () << contents).toString ();
 		
 		QWebPage page;
+		page.settings ()->setAttribute (QWebSettings::DeveloperExtrasEnabled, false);
+		page.settings ()->setAttribute (QWebSettings::JavascriptEnabled, false);
+		page.settings ()->setAttribute (QWebSettings::AutoLoadImages, false);
+		page.settings ()->setAttribute (QWebSettings::PluginsEnabled, false);
 		page.mainFrame ()->setHtml (contents);
 		
 		qApp->processEvents ();
