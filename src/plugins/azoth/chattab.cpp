@@ -1185,38 +1185,47 @@ namespace Azoth
 	bool ChatTab::ProcessOutgoingMsg (ICLEntry *entry, QString& text)
 	{
 		IMUCEntry *mucEntry = qobject_cast<IMUCEntry*> (entry->GetObject ());
-		if (entry->GetEntryType () == ICLEntry::ETMUC &&
-				mucEntry)
+		if (entry->GetEntryType () != ICLEntry::ETMUC ||
+				!mucEntry)
+			return false;
+
+		if (text.startsWith ("/nick "))
 		{
-			if (text.startsWith ("/nick "))
+			mucEntry->SetNick (text.mid (std::strlen ("/nick ")));
+			return true;
+		}
+		else if (text.startsWith ("/leave"))
+		{
+			const int idx = text.indexOf (' ');
+			const QString& reason = idx > 0 ?
+					text.mid (idx + 1)
+					: QString ();
+			mucEntry->Leave (reason);
+			return true;
+		}
+		else if (text == "/names")
+		{
+			QStringList names;
+			Q_FOREACH (QObject *obj, mucEntry->GetParticipants ())
 			{
-				mucEntry->SetNick (text.mid (std::strlen ("/nick ")));
-				return true;
-			}
-			else if (text == "/names")
-			{
-				QStringList names;
-				Q_FOREACH (QObject *obj, mucEntry->GetParticipants ())
+				ICLEntry *entry = qobject_cast<ICLEntry*> (obj);
+				if (!entry)
 				{
-					ICLEntry *entry = qobject_cast<ICLEntry*> (obj);
-					if (!entry)
-					{
-						qWarning () << Q_FUNC_INFO
-								<< obj
-								<< "doesn't implement ICLEntry";
-						continue;
-					}
-					const QString& name = entry->GetEntryName ();
-					if (!name.isEmpty ())
-						names << name;
+					qWarning () << Q_FUNC_INFO
+							<< obj
+							<< "doesn't implement ICLEntry";
+					continue;
 				}
-				names.sort ();
-				QWebElement body = Ui_.View_->page ()->mainFrame ()->findFirstElement ("body");
-				body.appendInside ("<div class='systemmsg'>" +
-						tr ("MUC's participants: ") + "<ul><li>" +
-						names.join ("</li><li>") + "</li></ul></div>");
-				return true;
+				const QString& name = entry->GetEntryName ();
+				if (!name.isEmpty ())
+					names << name;
 			}
+			names.sort ();
+			QWebElement body = Ui_.View_->page ()->mainFrame ()->findFirstElement ("body");
+			body.appendInside ("<div class='systemmsg'>" +
+					tr ("MUC's participants: ") + "<ul><li>" +
+					names.join ("</li><li>") + "</li></ul></div>");
+			return true;
 		}
 
 		return false;
