@@ -51,6 +51,8 @@ namespace BodyFetch
 		QHash<QUrl, IScript_ptr> URL2Script_;
 		QHash<QUrl, quint64> URL2ItemID_;
 		
+		QHash<QString, IScript_ptr> CachedScripts_;
+		
 		QList<QPair<QUrl, QString> > FetchedQueue_;
 		
 		QDir StorageDir_;
@@ -68,10 +70,11 @@ namespace BodyFetch
 		void WriteFile (const QString&, quint64) const;
 		QString Recode (const QByteArray&) const;
 		void ScheduleRechecking ();
-	public slots:
+	private slots:
 		void handleDownloadFinished (QUrl, QString);
 		void recheckFinished ();
 		void process ();
+		void clearCaches ();
 	signals:
 		void downloadRequested (QUrl);
 		void newBodyFetched (quint64);

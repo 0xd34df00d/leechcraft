@@ -58,6 +58,12 @@ namespace BodyFetch
 	, RecheckScheduled_ (false)
 	, StorageDir_ (Util::CreateIfNotExists ("aggregator/bodyfetcher/storage"))
 	{
+		QTimer *timer = new QTimer;
+		connect (timer,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (clearCaches ()));
+		timer->start (10000);
 	}
 	
 	void WorkerObject::SetLoaderInstance (IScriptLoaderInstance *inst)
@@ -87,10 +93,6 @@ namespace BodyFetch
 					<< "null instance loader, aborting";
 			return;
 		}
-
-		if (!EnumeratedCache_.isEmpty () &&
-				LastEnumerated_.secsTo (QDateTime::currentDateTime ()) > 10)
-			EnumeratedCache_.clear ();
 		
 		if (EnumeratedCache_.isEmpty ())
 		{
@@ -134,6 +136,9 @@ namespace BodyFetch
 	
 	IScript_ptr WorkerObject::GetScriptForChannel (const QString& channel)
 	{
+		if (CachedScripts_.contains (channel))
+			return CachedScripts_ [channel];
+
 		IScript_ptr script;
 		if (ChannelLink2ScriptID_.contains (channel))
 		{
@@ -150,7 +155,10 @@ namespace BodyFetch
 		{
 			const QString& scriptId = FindScriptForChannel (channel);
 			if (scriptId.isEmpty ())
+			{
+				CachedScripts_ [channel] = IScript_ptr ();
 				return IScript_ptr ();
+			}
 
 			ChannelLink2ScriptID_ [channel] = scriptId;
 		}
@@ -158,11 +166,14 @@ namespace BodyFetch
 		if (ChannelLink2ScriptID_ [channel].isEmpty ())
 		{
 			ChannelLink2ScriptID_.remove (channel);
+			CachedScripts_ [channel] = IScript_ptr ();
 			return IScript_ptr ();
 		}
 
 		if (!script)
 			script = Inst_->LoadScript (ChannelLink2ScriptID_ [channel]);
+		
+		CachedScripts_ [channel] = script;
 		
 		return script;
 	}
@@ -404,6 +415,15 @@ namespace BodyFetch
 			QTimer::singleShot (400,
 					this,
 					SLOT (process ()));
+	}
+	
+	void WorkerObject::clearCaches ()
+	{
+		if (IsProcessing_)
+			return;
+		
+		EnumeratedCache_.clear ();
+		CachedScripts_.clear ();
 	}
 }
 }
