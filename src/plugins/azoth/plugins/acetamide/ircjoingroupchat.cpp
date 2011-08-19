@@ -204,9 +204,9 @@ namespace Acetamide
 	QString IrcJoinGroupChat::GetChannel () const
 	{
 		QString channel = Ui_.Channel_->text ().toLower ();
-		if (!Ui_.Channel_->text ().startsWith ('#') ||
-				!Ui_.Channel_->text ().startsWith ('&') ||
-				!Ui_.Channel_->text ().startsWith ('+') ||
+		if (!Ui_.Channel_->text ().startsWith ('#') &&
+				!Ui_.Channel_->text ().startsWith ('&') &&
+				!Ui_.Channel_->text ().startsWith ('+') &&
 				!Ui_.Channel_->text ().startsWith ('!'))
 			channel.prepend ('#');
 		return channel;
