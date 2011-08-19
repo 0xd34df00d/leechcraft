@@ -236,7 +236,7 @@ namespace Acetamide
 			co.ChannelName_ = msg;
 			co.ServerName_ = ISH_->GetServerOptions ().ServerName_.toLower ();
 			co.ChannelPassword_ = QString ();
-			ISH_->JoinChannel (co);
+			ISH_->JoinedChannel (co);
 			return;
 		}
 

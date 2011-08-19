@@ -121,14 +121,8 @@ namespace Acetamide
 			return;
 		}
 
-		if (!ServerHandlers_ [serverId]->JoinChannel (channel))
-		{
-			Entity e = Util::MakeNotification ("Azoth",
-					tr ("Unable to join the channel."),
-					PCritical_);
-			Core::Instance ().SendEntity (e);
-			return;
-		}
+		if (!channel.ChannelName_.isEmpty ())
+			ServerHandlers_ [serverId]->JoinChannel (channel);
 	}
 
 	void ClientConnection::SetBookmarks (const QList<IrcBookmark>& bookmarks)

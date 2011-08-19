@@ -195,7 +195,22 @@ namespace Acetamide
 			ChannelsQueue_ << ch;
 	}
 
-	bool IrcServerHandler::JoinChannel (const ChannelOptions& channel)
+	void IrcServerHandler::JoinChannel (const ChannelOptions& channel)
+	{
+		QString id = QString (channel.ChannelName_ + "@" +
+				channel.ServerName_).toLower ();
+
+		if (ServerConnectionState_ == Connected)
+		{
+			if (!ChannelHandlers_.contains (id))
+				IrcParser_->JoinCommand (channel.ChannelName_ + " " +
+						channel.ChannelPassword_);
+		}
+		else
+			Add2ChannelsQueue (channel);
+	}
+
+	bool IrcServerHandler::JoinedChannel (const ChannelOptions& channel)
 	{
 		QString id = QString (channel.ChannelName_ + "@" +
 				channel.ServerName_).toLower ();
@@ -204,8 +219,6 @@ namespace Acetamide
 		{
 			if (!ChannelHandlers_.contains (id))
 			{
-				IrcParser_->JoinCommand (channel.ChannelName_ + " " + 
-					channel.ChannelPassword_);
 				ChannelHandler *ch = new ChannelHandler (this, channel);
 				ChannelHandlers_ [id] = ch;
 

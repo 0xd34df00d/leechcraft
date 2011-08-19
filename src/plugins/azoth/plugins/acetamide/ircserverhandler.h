@@ -96,8 +96,8 @@ namespace Acetamide
 		void SetNickName (const QString&);
 		void Add2ChannelsQueue (const ChannelOptions&);
 
-
-		bool JoinChannel (const ChannelOptions&);
+		void JoinChannel (const ChannelOptions&);
+		bool JoinedChannel (const ChannelOptions&);
 		void JoinChannelByCmd (const QStringList&);
 		void JoinParticipant (const QString&, const QString&);
 
