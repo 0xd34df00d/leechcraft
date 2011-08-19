@@ -128,12 +128,13 @@ namespace Acetamide
 		{
 			ISH_->ParseMessageForCommand (msg, ChannelID_);
 			command = true;
+			ShowServiceMessage (msg, IMessage::MTEventMessage, IMessage::MSTOther);
 		}
 		else
+		{
 			ISH_->SendPublicMessage (msg, ChannelID_);
-
-		HandleIncomingMessage (ISH_->GetNickName (), command  ?
-				msg.mid (msg.indexOf (' ')) : msg);
+			HandleIncomingMessage (ISH_->GetNickName (), msg);
+		}
 	}
 
 	void ChannelHandler::HandleIncomingMessage (const QString& nick,
