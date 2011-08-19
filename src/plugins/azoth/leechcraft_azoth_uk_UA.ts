@@ -7,12 +7,12 @@
         <location filename="accounthandlerchooserdialog.ui" line="14"/>
         <source>Choose account</source>
         <oldsource>Chose account</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>Вибрати аккаунт</translation>
     </message>
     <message>
         <location filename="accounthandlerchooserdialog.ui" line="29"/>
         <source>Accounts:</source>
-        <translation type="unfinished"></translation>
+        <translation>Акаунт:</translation>
     </message>
 </context>
 <context>
@@ -20,27 +20,27 @@
     <message>
         <location filename="accountslistwidget.ui" line="14"/>
         <source>Accounts</source>
-        <translation type="unfinished"></translation>
+        <translation>Акаунти</translation>
     </message>
     <message>
         <location filename="accountslistwidget.ui" line="40"/>
         <source>Add...</source>
-        <translation type="unfinished">Додати...</translation>
+        <translation>Додати...</translation>
     </message>
     <message>
         <location filename="accountslistwidget.ui" line="54"/>
         <source>Modify...</source>
-        <translation type="unfinished">Змінити...</translation>
+        <translation>Змінити...</translation>
     </message>
     <message>
         <location filename="accountslistwidget.ui" line="64"/>
         <source>PGP...</source>
-        <translation type="unfinished"></translation>
+        <translation>PGP...</translation>
     </message>
     <message>
         <location filename="accountslistwidget.ui" line="71"/>
         <source>Delete</source>
-        <translation type="unfinished">Видалити</translation>
+        <translation>Видалити</translation>
     </message>
 </context>
 <context>
@@ -48,22 +48,22 @@
     <message>
         <location filename="activitydialog.ui" line="14"/>
         <source>Set activity</source>
-        <translation type="unfinished"></translation>
+        <translation>Виставити діяльність</translation>
     </message>
     <message>
         <location filename="activitydialog.ui" line="25"/>
         <source>General:</source>
-        <translation type="unfinished"></translation>
+        <translation>Головні:</translation>
     </message>
     <message>
         <location filename="activitydialog.ui" line="35"/>
         <source>Specific:</source>
-        <translation type="unfinished"></translation>
+        <translation>Специфічні:</translation>
     </message>
     <message>
         <location filename="activitydialog.ui" line="45"/>
         <source>Text:</source>
-        <translation type="unfinished"></translation>
+        <translation>Текст:</translation>
     </message>
 </context>
 <context>
@@ -71,17 +71,17 @@
     <message>
         <location filename="addaccountwizardfirstpage.ui" line="17"/>
         <source>Account name and type</source>
-        <translation type="unfinished"></translation>
+        <translation>Ім&apos;я акаунту та його тип</translation>
     </message>
     <message>
         <location filename="addaccountwizardfirstpage.ui" line="20"/>
         <source>Enter the name of the account to be created and select the protocol for which you would like to create the account.</source>
-        <translation type="unfinished"></translation>
+        <translation>Введіть ім&apos;я акаунту ,що буде створений і виберіть протокол для якого хотіли би створити акаунт.</translation>
     </message>
     <message>
         <location filename="addaccountwizardfirstpage.ui" line="29"/>
         <source>Account name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ім&apos;я акаунту:</translation>
     </message>
     <message>
         <location filename="addaccountwizardfirstpage.ui" line="39"/>
@@ -91,7 +91,7 @@
     <message>
         <location filename="addaccountwizardfirstpage.ui" line="53"/>
         <source>Register new account</source>
-        <translation type="unfinished"></translation>
+        <translation>Зареєструвати новий акаунт</translation>
     </message>
 </context>
 <context>
@@ -147,7 +147,7 @@
     <message>
         <location filename="bookmarksmanagerdialog.ui" line="14"/>
         <source>Manage bookmarks</source>
-        <translation type="unfinished"></translation>
+        <translation>Управляти закладками</translation>
     </message>
     <message>
         <location filename="bookmarksmanagerdialog.ui" line="29"/>
@@ -167,7 +167,7 @@
     <message>
         <location filename="bookmarksmanagerdialog.ui" line="85"/>
         <source>Apply</source>
-        <translation type="unfinished"></translation>
+        <translation>Застосовувати</translation>
     </message>
 </context>
 <context>
@@ -175,17 +175,18 @@
     <message>
         <location filename="callchatwidget.ui" line="20"/>
         <source>Call status:</source>
-        <translation type="unfinished"></translation>
+        <translation>Викликати статус:</translation>
     </message>
     <message>
         <location filename="callchatwidget.ui" line="40"/>
         <source>Accept</source>
-        <translation type="unfinished"></translation>
+        <translation>Прийняти</translation>
     </message>
     <message>
         <location filename="callchatwidget.ui" line="47"/>
         <source>Hangup</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>???????</translatorcomment>
+        <translation>Повісити</translation>
     </message>
 </context>
 <context>
@@ -221,12 +222,12 @@
     <message>
         <location filename="consolewidget.ui" line="36"/>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>Очистити</translation>
     </message>
     <message>
         <location filename="consolewidget.ui" line="43"/>
         <source>Enabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Включений</translation>
     </message>
 </context>
 <context>
@@ -234,17 +235,18 @@
     <message>
         <location filename="drawattentiondialog.ui" line="14"/>
         <source>Draw attention</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>досл.</translatorcomment>
+        <translation>Зверніть увагу</translation>
     </message>
     <message>
         <location filename="drawattentiondialog.ui" line="25"/>
         <source>Resource:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ресурс:</translation>
     </message>
     <message>
         <location filename="drawattentiondialog.ui" line="35"/>
         <source>Text:</source>
-        <translation type="unfinished"></translation>
+        <translation>Текст:</translation>
     </message>
 </context>
 <context>
@@ -283,22 +285,22 @@
     <message>
         <location filename="accountslistwidget.cpp" line="79"/>
         <source>Add account</source>
-        <translation type="unfinished">Додати акаунт</translation>
+        <translation>Додати акаунт</translation>
     </message>
     <message>
         <location filename="accountslistwidget.cpp" line="112"/>
         <source>The account %1 doesn&apos;t support encryption.</source>
-        <translation type="unfinished"></translation>
+        <translation>Акаунт %1 не пыдтримуе шифрування.</translation>
     </message>
     <message>
         <location filename="accountslistwidget.cpp" line="117"/>
         <source>Please select new PGP key for the account %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Будь ласка, введіть новий PGP ключ для контакту %1.</translation>
     </message>
     <message>
         <location filename="accountslistwidget.cpp" line="140"/>
         <source>Are you sure you want to remove the account %1?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ви дійсно бажаєте відалити акаунт%1?</translation>
     </message>
 </context>
 <context>
@@ -306,398 +308,400 @@
     <message>
         <location filename="activitydialog.cpp" line="40"/>
         <source>doing_chores</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>дословно</translatorcomment>
+        <translation>на випадковій роботі</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="41"/>
         <source>drinking</source>
-        <translation type="unfinished"></translation>
+        <translation>п&apos;є</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="42"/>
         <source>eating</source>
-        <translation type="unfinished"></translation>
+        <translation>їсть</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="43"/>
         <source>exercising</source>
-        <translation type="unfinished"></translation>
+        <translation>тренується</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="44"/>
         <source>grooming</source>
-        <translation type="unfinished"></translation>
+        <translation>пестить</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="45"/>
         <source>having_appointment</source>
-        <translation type="unfinished"></translation>
+        <translation>повинен_вирішити</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="46"/>
         <source>inactive</source>
-        <translation type="unfinished">неактивний</translation>
+        <translation>неактивний</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="47"/>
         <source>relaxing</source>
-        <translation type="unfinished"></translation>
+        <translation>розслабляється</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="48"/>
         <source>talking</source>
-        <translation type="unfinished"></translation>
+        <translation>розмовляє</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="49"/>
         <source>traveling</source>
-        <translation type="unfinished"></translation>
+        <translation>подорожуе</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="50"/>
         <source>working</source>
-        <translation type="unfinished"></translation>
+        <translation>працює</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="55"/>
         <source>buying_groceries</source>
-        <translation type="unfinished"></translation>
+        <translation>покупає_бакалію</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="56"/>
         <source>cleaning</source>
-        <translation type="unfinished"></translation>
+        <translation>прибирає</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="57"/>
         <source>cooking</source>
-        <translation type="unfinished"></translation>
+        <translation>готує</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="58"/>
         <source>doing_maintenance</source>
-        <translation type="unfinished"></translation>
+        <translation>обслуговує</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="59"/>
         <source>doing_the_dishes</source>
-        <translation type="unfinished"></translation>
+        <translation>миє_посуд</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="60"/>
         <source>doing_the_laundry</source>
-        <translation type="unfinished"></translation>
+        <translation>пере</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="61"/>
         <source>gardening</source>
-        <translation type="unfinished"></translation>
+        <translation>зайнятий_садовими_роботами</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="62"/>
         <source>running_an_errand</source>
-        <translation type="unfinished"></translation>
+        <translation>біжить_на_доручення</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="63"/>
         <source>walking_the_dog</source>
-        <translation type="unfinished"></translation>
+        <translation>вигулює_собаку</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="64"/>
         <source>having_a_beer</source>
-        <translation type="unfinished"></translation>
+        <translation>п&apos;є пиво</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="65"/>
         <source>having_coffee</source>
-        <translation type="unfinished"></translation>
+        <translation>п&apos;є каву</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="66"/>
         <source>having_tea</source>
-        <translation type="unfinished"></translation>
+        <translation>п&apos;є_чай</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="67"/>
         <source>having_a_snack</source>
-        <translation type="unfinished"></translation>
+        <translation>перекусує</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="68"/>
         <source>having_breakfast</source>
-        <translation type="unfinished"></translation>
+        <translation>снідає</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="69"/>
         <source>having_dinner</source>
-        <translation type="unfinished"></translation>
+        <translation>обідає</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="70"/>
         <source>having_lunch</source>
-        <translation type="unfinished"></translation>
+        <translation>на_ланчі</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="71"/>
         <location filename="activitydialog.cpp" line="110"/>
         <source>cycling</source>
-        <translation type="unfinished"></translation>
+        <translation>їздить на велосипеді</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="72"/>
         <source>dancing</source>
-        <translation type="unfinished"></translation>
+        <translation>танцює</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="73"/>
         <source>hiking</source>
-        <translation type="unfinished"></translation>
+        <translation>на_туризмі</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="74"/>
         <source>jogging</source>
-        <translation type="unfinished"></translation>
+        <translation>бігає_підтюпцем</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="75"/>
         <source>playing_sports</source>
-        <translation type="unfinished"></translation>
+        <translation>грає_спорт</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="76"/>
         <source>running</source>
-        <translation type="unfinished"></translation>
+        <translation>біжить</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="77"/>
         <source>skiing</source>
-        <translation type="unfinished"></translation>
+        <translation>катаеться_на_лижх</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="78"/>
         <source>swimming</source>
-        <translation type="unfinished"></translation>
+        <translation>плаває</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="79"/>
         <source>working_out</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>дословоно</translatorcomment>
+        <translation>розробляє</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="80"/>
         <source>at_the_spa</source>
-        <translation type="unfinished"></translation>
+        <translation>на_спа</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="81"/>
         <source>brushing_teeth</source>
-        <translation type="unfinished"></translation>
+        <translation>чистить_зуби</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="82"/>
         <source>getting_a_haircut</source>
-        <translation type="unfinished"></translation>
+        <translation>стрижеться</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="83"/>
         <source>shaving</source>
-        <translation type="unfinished"></translation>
+        <translation>миеться_у_душі</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="84"/>
         <source>taking_a_bath</source>
-        <translation type="unfinished"></translation>
+        <translation>миеться_в_ванній</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="85"/>
         <source>taking_a_shower</source>
-        <translation type="unfinished"></translation>
+        <translation>миеться_в_душі</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="86"/>
         <source>day_off</source>
-        <translation type="unfinished"></translation>
+        <translation>на_вихідних</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="87"/>
         <source>hanging_out</source>
-        <translation type="unfinished"></translation>
+        <translation>висить</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="88"/>
         <source>hiding</source>
-        <translation type="unfinished"></translation>
+        <translation>ховається</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="89"/>
         <source>on_vacation</source>
-        <translation type="unfinished"></translation>
+        <translation>на_відпустці</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="90"/>
         <source>praying</source>
-        <translation type="unfinished"></translation>
+        <translation>молиться</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="91"/>
         <source>scheduled_holiday</source>
-        <translation type="unfinished"></translation>
+        <translation>провів_вихідний</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="92"/>
         <source>sleeping</source>
-        <translation type="unfinished"></translation>
+        <translation>спить</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="93"/>
         <source>thinking</source>
-        <translation type="unfinished"></translation>
+        <translation>думає</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="94"/>
         <source>fishing</source>
-        <translation type="unfinished"></translation>
+        <translation>ловить_рибу</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="95"/>
         <source>gaming</source>
-        <translation type="unfinished"></translation>
+        <translation>грає</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="96"/>
         <source>going_out</source>
-        <translation type="unfinished"></translation>
+        <translation>виходить</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="97"/>
         <source>partying</source>
-        <translation type="unfinished"></translation>
+        <translation>на_вечірці</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="98"/>
         <source>reading</source>
-        <translation type="unfinished"></translation>
+        <translation>читає</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="99"/>
         <source>rehearsing</source>
-        <translation type="unfinished"></translation>
+        <translation>репетує</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="100"/>
         <source>shopping</source>
-        <translation type="unfinished"></translation>
+        <translation>шопінг</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="101"/>
         <source>smoking</source>
-        <translation type="unfinished"></translation>
+        <translation>курить</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="102"/>
         <source>socializing</source>
-        <translation type="unfinished"></translation>
+        <translation>спілкуеться</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="103"/>
         <source>sunbathing</source>
-        <translation type="unfinished"></translation>
+        <translation>приймає_сонячні_ванни</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="104"/>
         <source>watching_tv</source>
-        <translation type="unfinished"></translation>
+        <translation>дивиться_телевізор</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="105"/>
         <source>watching_a_movie</source>
-        <translation type="unfinished"></translation>
+        <translation>дивиться_фільм</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="106"/>
         <source>in_real_life</source>
-        <translation type="unfinished"></translation>
+        <translation>у_реалі</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="107"/>
         <source>on_the_phone</source>
-        <translation type="unfinished"></translation>
+        <translation>на_телефоні</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="108"/>
         <source>on_video_phone</source>
-        <translation type="unfinished"></translation>
+        <translation>на_відео_телефоні</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="109"/>
         <source>commuting</source>
-        <translation type="unfinished"></translation>
+        <translation>комутує</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="111"/>
         <source>driving</source>
-        <translation type="unfinished"></translation>
+        <translation>водить_машину</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="112"/>
         <source>in_a_car</source>
-        <translation type="unfinished"></translation>
+        <translation>в_машині</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="113"/>
         <source>on_a_bus</source>
-        <translation type="unfinished"></translation>
+        <translation>на_автобусі</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="114"/>
         <source>on_a_plane</source>
-        <translation type="unfinished"></translation>
+        <translation>на_літаку</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="115"/>
         <source>on_a_train</source>
-        <translation type="unfinished"></translation>
+        <translation>на_поїзді</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="116"/>
         <source>on_a_trip</source>
-        <translation type="unfinished"></translation>
+        <translation>у_подорожі</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="117"/>
         <source>walking</source>
-        <translation type="unfinished"></translation>
+        <translation>гуляє</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="118"/>
         <source>coding</source>
-        <translation type="unfinished"></translation>
+        <translation>пише_софт</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="119"/>
         <source>in_a_meeting</source>
-        <translation type="unfinished"></translation>
+        <translation>на_зустрічі</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="120"/>
         <source>studying</source>
-        <translation type="unfinished"></translation>
+        <translation>вчиться</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="121"/>
         <source>writing</source>
-        <translation type="unfinished"></translation>
+        <translation>пише</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="122"/>
         <source>other</source>
-        <translation type="unfinished"></translation>
+        <translation>інше</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="135"/>
         <source>&lt;clear&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;чисто&gt;</translation>
     </message>
 </context>
 <context>
@@ -705,7 +709,7 @@
     <message>
         <location filename="addaccountwizardfirstpage.cpp" line="98"/>
         <source>%1 options</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 опції</translation>
     </message>
 </context>
 <context>
@@ -713,7 +717,7 @@
     <message>
         <location filename="bookmarksmanagerdialog.cpp" line="225"/>
         <source>Are you sure you want to delete the bookmark %1?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ви дійсно бажаєте відалити закладку %1?</translation>
     </message>
 </context>
 <context>
@@ -721,27 +725,27 @@
     <message>
         <location filename="callchatwidget.cpp" line="33"/>
         <source>Initializing...</source>
-        <translation type="unfinished"></translation>
+        <translation>Ініціалізація...</translation>
     </message>
     <message>
         <location filename="callchatwidget.cpp" line="51"/>
         <source>Connecting...</source>
-        <translation type="unfinished"></translation>
+        <translation>З&apos;єднання...</translation>
     </message>
     <message>
         <location filename="callchatwidget.cpp" line="54"/>
         <source>Active</source>
-        <translation type="unfinished"></translation>
+        <translation>Активний</translation>
     </message>
     <message>
         <location filename="callchatwidget.cpp" line="57"/>
         <source>Disconnecting</source>
-        <translation type="unfinished"></translation>
+        <translation>Роз&apos;єднання</translation>
     </message>
     <message>
         <location filename="callchatwidget.cpp" line="77"/>
         <source>No active call</source>
-        <translation type="unfinished"></translation>
+        <translation>Не активний виклик</translation>
     </message>
 </context>
 <context>
@@ -749,17 +753,17 @@
     <message>
         <location filename="callmanager.cpp" line="126"/>
         <source>Incoming call from %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Вхідний дзвінок від %1</translation>
     </message>
     <message>
         <location filename="callmanager.cpp" line="130"/>
         <source>Accept</source>
-        <translation type="unfinished"></translation>
+        <translation>Прийняти</translation>
     </message>
     <message>
         <location filename="callmanager.cpp" line="131"/>
         <source>Hangup</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -767,7 +771,7 @@
     <message>
         <location filename="chattab.cpp" line="74"/>
         <source>Azoth chat window</source>
-        <translation type="unfinished"></translation>
+        <translation>Вікно чату Azoth</translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="100"/>
@@ -777,31 +781,31 @@
     <message numerus="yes">
         <location filename="chattab.cpp" line="282"/>
         <source>%1 (%n participant(s))</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%1 (%n учасник)</numerusform>
+            <numerusform>%1 (%n учасники)</numerusform>
+            <numerusform>%1 (%n учасники)</numerusform>
         </translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="872"/>
         <source>Clear chat window</source>
-        <translation type="unfinished"></translation>
+        <translation>Очистити вікно чату</translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="880"/>
         <source>Enable rich text</source>
-        <translation type="unfinished"></translation>
+        <translation>Включити форматуванний текст</translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="160"/>
         <source>Unable to load style, please check you&apos;ve enabled at least one styles plugin.</source>
-        <translation type="unfinished"></translation>
+        <translation>Неможливо загрузити стиль , будь ласка перевірте наявність включеного плагіна стилів.</translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="208"/>
         <source>A tab with a chat session</source>
-        <translation type="unfinished"></translation>
+        <translation>Вкладка з сессіею чату</translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="408"/>
@@ -856,7 +860,7 @@
     <message>
         <location filename="chattab.cpp" line="757"/>
         <source>Room configuration</source>
-        <translation type="unfinished"></translation>
+        <translation>Конфігурація кімнати</translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="987"/>
@@ -866,22 +870,22 @@
     <message>
         <location filename="chattab.cpp" line="1009"/>
         <source>Call...</source>
-        <translation type="unfinished"></translation>
+        <translation>Дзвінок...</translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="956"/>
         <source>Add to bookmarks...</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати в закладки...</translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="967"/>
         <source>Configure MUC...</source>
-        <translation type="unfinished"></translation>
+        <translation>Управління MUC...</translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="1216"/>
         <source>MUC&apos;s participants: </source>
-        <translation type="unfinished"></translation>
+        <translation>MUC учасники: </translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="207"/>
@@ -892,7 +896,7 @@
     <message>
         <location filename="chattab.cpp" line="1031"/>
         <source>Enable encryption</source>
-        <translation type="unfinished"></translation>
+        <translation>Включити шифрування</translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="1376"/>
@@ -915,12 +919,12 @@
     <message>
         <location filename="chattabwebview.cpp" line="46"/>
         <source>Open</source>
-        <translation type="unfinished"></translation>
+        <translation>Відкрити</translation>
     </message>
     <message>
         <location filename="chattabwebview.cpp" line="49"/>
         <source>Save...</source>
-        <translation type="unfinished"></translation>
+        <translation>Зберегти...</translation>
     </message>
 </context>
 <context>
@@ -928,17 +932,17 @@
     <message>
         <location filename="consolewidget.cpp" line="47"/>
         <source>IM console</source>
-        <translation type="unfinished"></translation>
+        <translation>IM консоль</translation>
     </message>
     <message>
         <location filename="consolewidget.cpp" line="48"/>
         <source>Protocol console, for example, XML console for a XMPP client protocol</source>
-        <translation type="unfinished"></translation>
+        <translation>Консоль протоколів,наприклад,XML консоль для XMPP протоколу кліенту</translation>
     </message>
     <message>
         <location filename="consolewidget.cpp" line="93"/>
         <source>%1: console</source>
-        <translation type="unfinished"></translation>
+        <translation>%1: консоль</translation>
     </message>
 </context>
 <context>
@@ -956,7 +960,7 @@
     <message>
         <location filename="core.cpp" line="366"/>
         <source>Please select account to handle URI %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Будь ласка виберіть акаунт для обробку URI %1</translation>
     </message>
     <message>
         <location filename="core.cpp" line="866"/>
@@ -966,7 +970,7 @@
     <message>
         <location filename="core.cpp" line="872"/>
         <source>Contacts</source>
-        <translation type="unfinished">Контакти</translation>
+        <translation>Контакти</translation>
     </message>
     <message>
         <location filename="core.cpp" line="985"/>
@@ -976,22 +980,22 @@
     <message>
         <location filename="core.cpp" line="1049"/>
         <source>Mood:</source>
-        <translation type="unfinished"></translation>
+        <translation>Настрій:</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1058"/>
         <source>Activity:</source>
-        <translation type="unfinished"></translation>
+        <translation>Діяльність:</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1074"/>
         <source>Now listening to:</source>
-        <translation type="unfinished"></translation>
+        <translation>Зараз слухає:</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1085"/>
         <source>from</source>
-        <translation type="unfinished"></translation>
+        <translation>з</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1102"/>
@@ -1001,17 +1005,17 @@
     <message>
         <location filename="core.cpp" line="1111"/>
         <source>Real ID:</source>
-        <translation type="unfinished"></translation>
+        <translation>Реальній ID:</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1111"/>
         <source>unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>Невідомий</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1151"/>
         <source>Using:</source>
-        <translation type="unfinished"></translation>
+        <translation>Використовує:</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1437"/>
@@ -1023,7 +1027,7 @@
     <message>
         <location filename="core.cpp" line="1448"/>
         <source>Draw attention...</source>
-        <translation type="unfinished"></translation>
+        <translation>Зверніть увагу...</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1460"/>
@@ -1043,12 +1047,12 @@
     <message>
         <location filename="core.cpp" line="1489"/>
         <source>Grant</source>
-        <translation type="unfinished"></translation>
+        <translation>Авторизувати</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1494"/>
         <source>Grant with reason...</source>
-        <translation type="unfinished"></translation>
+        <translation>Авторизувати з причиною...</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1499"/>
@@ -1083,7 +1087,7 @@
     <message>
         <location filename="core.cpp" line="1533"/>
         <source>Manage PGP keys...</source>
-        <translation type="unfinished"></translation>
+        <translation>Управляти PGP ключами...</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1546"/>
@@ -1093,12 +1097,12 @@
     <message>
         <location filename="core.cpp" line="1587"/>
         <source>Add to contact list...</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати в список контактів...</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1597"/>
         <source>Copy ID</source>
-        <translation type="unfinished"></translation>
+        <translation>Скопіювати ID</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1612"/>
@@ -1129,52 +1133,52 @@
     <message>
         <location filename="core.cpp" line="1863"/>
         <source>Message body</source>
-        <translation type="unfinished"></translation>
+        <translation>Тіло повідомлення</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1864"/>
         <source>Original human-readable message body.</source>
-        <translation type="unfinished"></translation>
+        <translation>початкове людинозрозуміле тіло повідомлення.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1869"/>
         <source>Sender name</source>
-        <translation type="unfinished"></translation>
+        <translation>Ім&apos;я відправника</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1870"/>
         <source>Human-readable name of the sender of the message.</source>
-        <translation type="unfinished"></translation>
+        <translation>Людинозрозуміле ім&apos;я відправника повідомлення.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1875"/>
         <source>Sender ID</source>
-        <translation type="unfinished"></translation>
+        <translation>ІD відправника</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1876"/>
         <source>Human-readable ID of the sender (protocol-specific).</source>
-        <translation type="unfinished"></translation>
+        <translation>Людинозрозуміле ім&apos;я відправника повідомлення(спеціфікація протоколу).</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1881"/>
         <source>Sender groups</source>
-        <translation type="unfinished"></translation>
+        <translation>Групи відправників</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1882"/>
         <source>Groups to which the sender belongs.</source>
-        <translation type="unfinished"></translation>
+        <translation>Групи доя яких належить відправник.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1887"/>
         <source>New status</source>
-        <translation type="unfinished"></translation>
+        <translation>Новий статус</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1888"/>
         <source>The new status string of the contact.</source>
-        <translation type="unfinished"></translation>
+        <translation>Новий статусний рядок контакту.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="2411"/>
@@ -1200,19 +1204,19 @@
         <location filename="core.cpp" line="2471"/>
         <location filename="core.cpp" line="2480"/>
         <source>%n message(s) from</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n повідомлення від</numerusform>
+            <numerusform>%n повідомленнь від</numerusform>
+            <numerusform>%n повідомленнь від</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="core.cpp" line="2486"/>
         <source>%n message(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n повідомлення(нь)</numerusform>
+            <numerusform>%n повідомленнь</numerusform>
+            <numerusform>%n повідомленнь</numerusform>
         </translation>
     </message>
     <message>
@@ -1233,67 +1237,67 @@
     <message>
         <location filename="core.cpp" line="2569"/>
         <source>View info</source>
-        <translation type="unfinished"></translation>
+        <translation>Побачити ынформацію</translation>
     </message>
     <message>
         <location filename="core.cpp" line="2592"/>
         <source>%1 requests your attention</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 звертає Вашу увагу</translation>
     </message>
     <message>
         <location filename="core.cpp" line="2594"/>
         <source>%1 requests your attention: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 звертає Вашу увагу: %2</translation>
     </message>
     <message>
         <location filename="core.cpp" line="2605"/>
         <source>Attention requested</source>
-        <translation type="unfinished"></translation>
+        <translation>Увага звернена</translation>
     </message>
     <message>
         <location filename="core.cpp" line="2606"/>
         <source>Attention requested by %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Увага звернена %1</translation>
     </message>
     <message>
         <location filename="core.cpp" line="2644"/>
         <source>Nickname conflict</source>
-        <translation type="unfinished"></translation>
+        <translation>Никнейм конфлікт</translation>
     </message>
     <message>
         <location filename="core.cpp" line="2645"/>
         <source>You have specified a nickname for %1 that&apos;s already used. Would you like to try to join with another nick?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ви вказали нікнейм для %1 котрий вже використовуеться. Ви не хотіли б використати інший?</translation>
     </message>
     <message>
         <location filename="core.cpp" line="2654"/>
         <source>Enter new nick</source>
-        <translation type="unfinished"></translation>
+        <translation>Введіть новий нік</translation>
     </message>
     <message>
         <location filename="core.cpp" line="2655"/>
         <source>Enter new nick for joining %1 (%2 is already used):</source>
-        <translation type="unfinished"></translation>
+        <translation>Введіть новий нік для заходження%1 (%2 вже використовуеться):</translation>
     </message>
     <message>
         <location filename="core.cpp" line="2681"/>
         <source>You have been kicked from %1. Do you want to rejoin?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ви були викинуті з %1. Чи не хочете ви перезайти?</translation>
     </message>
     <message>
         <location filename="core.cpp" line="2683"/>
         <source>You have been kicked from %1: %2. Do you want to rejoin?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ви були викинуті з %1: %2. Чи не хочете ви перезайти?</translation>
     </message>
     <message>
         <location filename="core.cpp" line="2706"/>
         <source>You have been banned from %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ви були забанені в %1.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="2708"/>
         <source>You have been banned from %1: %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ви були забанені в %1: %2.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="2761"/>
@@ -1348,17 +1352,17 @@
     <message>
         <location filename="core.cpp" line="2836"/>
         <source>You have been invited to %1 by %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ви були запрошені до %1 %2.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="2839"/>
         <source>You have been invited to %1 by %2: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Ви були запрошені до %1 %2: %3</translation>
     </message>
     <message>
         <location filename="core.cpp" line="2857"/>
         <source>Join</source>
-        <translation type="unfinished"></translation>
+        <translation>Зайти</translation>
     </message>
     <message>
         <location filename="core.cpp" line="3088"/>
@@ -1373,7 +1377,7 @@
     <message>
         <location filename="core.cpp" line="3155"/>
         <source>Enter reason for granting authorization to %1:</source>
-        <translation type="unfinished"></translation>
+        <translation>Введіть причину авторизації для %1:</translation>
     </message>
     <message>
         <location filename="core.cpp" line="3162"/>
@@ -1393,12 +1397,12 @@
     <message>
         <location filename="core.cpp" line="3197"/>
         <source>The parent account %1 for entry %2 doesn&apos;t support encryption.</source>
-        <translation type="unfinished"></translation>
+        <translation>Акаунт %1 для введення %2 не підтримує шифрування.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="3204"/>
         <source>Please select the key for %1 (%2).</source>
-        <translation type="unfinished"></translation>
+        <translation>Будь ласка, виберіть новий PGP ключ для %1 (%2).</translation>
     </message>
     <message>
         <location filename="proxyobject.cpp" line="237"/>
@@ -1441,7 +1445,7 @@
     <message>
         <location filename="drawattentiondialog.cpp" line="32"/>
         <source>&lt;all&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;всі&gt;</translation>
     </message>
 </context>
 <context>
@@ -1449,12 +1453,12 @@
     <message>
         <location filename="eventsnotifier.cpp" line="74"/>
         <source>%1 started composing a message to you.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 почате повідомлення до вас.</translation>
     </message>
     <message>
         <location filename="eventsnotifier.cpp" line="81"/>
         <source>Open chat</source>
-        <translation type="unfinished">Відкрити чат</translation>
+        <translation>Відкрити чат</translation>
     </message>
 </context>
 <context>
@@ -1475,27 +1479,27 @@
     <message>
         <location filename="mainwidget.cpp" line="154"/>
         <source>Set activity...</source>
-        <translation type="unfinished"></translation>
+        <translation>Виставити діяльність...</translation>
     </message>
     <message>
         <location filename="mainwidget.cpp" line="160"/>
         <source>Set mood...</source>
-        <translation type="unfinished"></translation>
+        <translation>Встановити настрій...</translation>
     </message>
     <message>
         <location filename="mainwidget.cpp" line="166"/>
         <source>Set location...</source>
-        <translation type="unfinished"></translation>
+        <translation>Виставити місце...</translation>
     </message>
     <message>
         <location filename="mainwidget.cpp" line="172"/>
         <source>Console...</source>
-        <translation type="unfinished"></translation>
+        <translation>Консоль...</translation>
     </message>
     <message>
         <location filename="mainwidget.cpp" line="203"/>
         <source>Manage bookmarks...</source>
-        <translation type="unfinished"></translation>
+        <translation>Управляти закладками...</translation>
     </message>
     <message>
         <location filename="mainwidget.cpp" line="224"/>
@@ -1540,17 +1544,17 @@
     <message>
         <location filename="mainwidget.cpp" line="493"/>
         <source>Rename group</source>
-        <translation type="unfinished"></translation>
+        <translation>Перейменувати групу</translation>
     </message>
     <message>
         <location filename="mainwidget.cpp" line="494"/>
         <source>Enter new group name for %1:</source>
-        <translation type="unfinished"></translation>
+        <translation>Будь ласка, введіть нове ім&apos;я групи для %1:</translation>
     </message>
     <message>
         <location filename="mainwidget.cpp" line="52"/>
         <source>Azoth menu</source>
-        <translation type="unfinished"></translation>
+        <translation>меню Azoth</translation>
     </message>
     <message>
         <location filename="mainwidget.cpp" line="148"/>
@@ -1567,7 +1571,7 @@
     <message>
         <location filename="mainwidget.cpp" line="61"/>
         <source>Search...</source>
-        <translation type="unfinished"></translation>
+        <translation>Пошук...</translation>
     </message>
     <message>
         <location filename="mainwidget.cpp" line="209"/>
@@ -1577,7 +1581,7 @@
     <message>
         <location filename="mainwidget.cpp" line="329"/>
         <source>Rename group...</source>
-        <translation type="unfinished"></translation>
+        <translation>Перейменувати групу...</translation>
     </message>
     <message>
         <location filename="mainwidget.cpp" line="311"/>
@@ -1590,427 +1594,429 @@
     <message>
         <location filename="mooddialog.cpp" line="40"/>
         <source>afraid</source>
-        <translation type="unfinished"></translation>
+        <translation>наляканий</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="41"/>
         <source>amazed</source>
-        <translation type="unfinished"></translation>
+        <translation>вражений</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="42"/>
         <source>amorous</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>дословно.</translatorcomment>
+        <translation>влюбливий</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="43"/>
         <source>angry</source>
-        <translation type="unfinished"></translation>
+        <translation>злий</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="44"/>
         <source>annoyed</source>
-        <translation type="unfinished"></translation>
+        <translation>роздратований</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="45"/>
         <source>anxious</source>
-        <translation type="unfinished"></translation>
+        <translation>тривожний</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="46"/>
         <source>aroused</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>дословно</translatorcomment>
+        <translation>спричинений</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="47"/>
         <source>ashamed</source>
-        <translation type="unfinished"></translation>
+        <translation>совісно</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="48"/>
         <source>bored</source>
-        <translation type="unfinished"></translation>
+        <translation>нудно</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="49"/>
         <source>brave</source>
-        <translation type="unfinished"></translation>
+        <translation>хоробрий</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="50"/>
         <source>calm</source>
-        <translation type="unfinished"></translation>
+        <translation>тихий</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="51"/>
         <source>cautious</source>
-        <translation type="unfinished"></translation>
+        <translation>обережний</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="52"/>
         <source>cold</source>
-        <translation type="unfinished"></translation>
+        <translation>холодний</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="53"/>
         <source>confident</source>
-        <translation type="unfinished"></translation>
+        <translation>впевнений</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="54"/>
         <source>confused</source>
-        <translation type="unfinished"></translation>
+        <translation>збентежений</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="55"/>
         <source>contemplative</source>
-        <translation type="unfinished"></translation>
+        <translation>споглядальний</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="56"/>
         <source>contented</source>
-        <translation type="unfinished"></translation>
+        <translation>задоволений</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="57"/>
         <source>cranky</source>
-        <translation type="unfinished"></translation>
+        <translation>вередливий</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="58"/>
         <source>crazy</source>
-        <translation type="unfinished"></translation>
+        <translation>скаженний</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="59"/>
         <source>creative</source>
-        <translation type="unfinished"></translation>
+        <translation>творчий</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="60"/>
         <source>curious</source>
-        <translation type="unfinished"></translation>
+        <translation>цікавий</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="61"/>
         <source>dejected</source>
-        <translation type="unfinished"></translation>
+        <translation>пригнічений</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="62"/>
         <source>depressed</source>
-        <translation type="unfinished"></translation>
+        <translation>сумний</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="63"/>
         <source>disappointed</source>
-        <translation type="unfinished"></translation>
+        <translation>розчарований</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="64"/>
         <source>disgusted</source>
-        <translation type="unfinished"></translation>
+        <translation>противний</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="65"/>
         <source>dismayed</source>
-        <translation type="unfinished"></translation>
+        <translation>стривожений</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="66"/>
         <source>distracted</source>
-        <translation type="unfinished"></translation>
+        <translation>відволічений</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="67"/>
         <source>embarrassed</source>
-        <translation type="unfinished"></translation>
+        <translation>зніяковілий</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="68"/>
         <source>envious</source>
-        <translation type="unfinished"></translation>
+        <translation>зависливий</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="69"/>
         <source>excited</source>
-        <translation type="unfinished"></translation>
+        <translation>зворушений</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="70"/>
         <source>flirtatious</source>
-        <translation type="unfinished"></translation>
+        <translation>кокетливий</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="71"/>
         <source>frustrated</source>
-        <translation type="unfinished"></translation>
+        <translation>засмучений</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="72"/>
         <source>grateful</source>
-        <translation type="unfinished"></translation>
+        <translation>вдячний</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="73"/>
         <source>grieving</source>
-        <translation type="unfinished"></translation>
+        <translation>уболіваючий</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="74"/>
         <source>grumpy</source>
-        <translation type="unfinished"></translation>
+        <translation>сварливий</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="75"/>
         <source>guilty</source>
-        <translation type="unfinished"></translation>
+        <translation>винний</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="76"/>
         <source>happy</source>
-        <translation type="unfinished"></translation>
+        <translation>щасливий</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="77"/>
         <source>hopeful</source>
-        <translation type="unfinished"></translation>
+        <translation>оптимістичний</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="78"/>
         <source>hot</source>
-        <translation type="unfinished"></translation>
+        <translation>гарячий</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="79"/>
         <source>humbled</source>
-        <translation type="unfinished"></translation>
+        <translation>непишний</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="80"/>
         <source>humiliated</source>
-        <translation type="unfinished"></translation>
+        <translation>принижений</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="81"/>
         <source>hungry</source>
-        <translation type="unfinished"></translation>
+        <translation>голодний</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="82"/>
         <source>hurt</source>
-        <translation type="unfinished"></translation>
+        <translation>болісний</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="83"/>
         <source>impressed</source>
-        <translation type="unfinished"></translation>
+        <translation>вражений</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="84"/>
         <source>in_awe</source>
-        <translation type="unfinished"></translation>
+        <translation>в_благоговінні</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="85"/>
         <source>in_love</source>
-        <translation type="unfinished"></translation>
+        <translation>в_коханні</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="86"/>
         <source>indignant</source>
-        <translation type="unfinished"></translation>
+        <translation>неспроможний</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="87"/>
         <source>interested</source>
-        <translation type="unfinished"></translation>
+        <translation>зацікавлений</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="88"/>
         <source>intoxicated</source>
-        <translation type="unfinished"></translation>
+        <translation>отруєний</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="89"/>
         <source>invincible</source>
-        <translation type="unfinished"></translation>
+        <translation>непереможний</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="90"/>
         <source>jealous</source>
-        <translation type="unfinished"></translation>
+        <translation>ревнивий</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="91"/>
         <source>lonely</source>
-        <translation type="unfinished"></translation>
+        <translation>самотній</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="92"/>
         <source>lost</source>
-        <translation type="unfinished"></translation>
+        <translation>загублений</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="93"/>
         <source>lucky</source>
-        <translation type="unfinished"></translation>
+        <translation>везучий</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="94"/>
         <source>mean</source>
-        <translation type="unfinished"></translation>
+        <translation>підлий</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="95"/>
         <source>moody</source>
-        <translation type="unfinished"></translation>
+        <translation>похмурий</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="96"/>
         <source>nervous</source>
-        <translation type="unfinished"></translation>
+        <translation>неспокійний</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="97"/>
         <source>neutral</source>
-        <translation type="unfinished"></translation>
+        <translation>нейтральний</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="98"/>
         <source>offended</source>
-        <translation type="unfinished"></translation>
+        <translation>ображений</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="99"/>
         <source>outraged</source>
-        <translation type="unfinished"></translation>
+        <translation>обурений</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="100"/>
         <source>playful</source>
-        <translation type="unfinished"></translation>
+        <translation>грайливий</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="101"/>
         <source>proud</source>
-        <translation type="unfinished"></translation>
+        <translation>гордий</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="102"/>
         <source>relaxed</source>
-        <translation type="unfinished"></translation>
+        <translation>розслаблений</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="103"/>
         <source>relieved</source>
-        <translation type="unfinished"></translation>
+        <translation>звільнений</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="104"/>
         <source>remorseful</source>
-        <translation type="unfinished"></translation>
+        <translation>повний_каяття</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="105"/>
         <source>restless</source>
-        <translation type="unfinished"></translation>
+        <translation>невсидючий</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="106"/>
         <source>sad</source>
-        <translation type="unfinished"></translation>
+        <translation>сумний</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="107"/>
         <source>sarcastic</source>
-        <translation type="unfinished"></translation>
+        <translation>саркастичний</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="108"/>
         <source>satisfied</source>
-        <translation type="unfinished"></translation>
+        <translation>задоволений</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="109"/>
         <source>serious</source>
-        <translation type="unfinished"></translation>
+        <translation>серйозний</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="110"/>
         <source>shocked</source>
-        <translation type="unfinished"></translation>
+        <translation>шокований</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="111"/>
         <source>shy</source>
-        <translation type="unfinished"></translation>
+        <translation>тихий</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="112"/>
         <source>sick</source>
-        <translation type="unfinished"></translation>
+        <translation>хворий</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="113"/>
         <source>sleepy</source>
-        <translation type="unfinished"></translation>
+        <translation>сонливий</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="114"/>
         <source>spontaneous</source>
-        <translation type="unfinished"></translation>
+        <translation>спонтанний</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="115"/>
         <source>stressed</source>
-        <translation type="unfinished"></translation>
+        <translation>наляканий</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="116"/>
         <source>strong</source>
-        <translation type="unfinished"></translation>
+        <translation>сильний</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="117"/>
         <source>surprised</source>
-        <translation type="unfinished"></translation>
+        <translation>здивований</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="118"/>
         <source>thankful</source>
-        <translation type="unfinished"></translation>
+        <translation>вдячний</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="119"/>
         <source>thirsty</source>
-        <translation type="unfinished"></translation>
+        <translation>пересохлий</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="120"/>
         <source>tired</source>
-        <translation type="unfinished"></translation>
+        <translation>стомлений</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="121"/>
         <source>undefined</source>
-        <translation type="unfinished"></translation>
+        <translation>невизначений</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="122"/>
         <source>weak</source>
-        <translation type="unfinished"></translation>
+        <translation>слабкий</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="123"/>
         <source>worried</source>
-        <translation type="unfinished"></translation>
+        <translation>схвильований</translation>
     </message>
     <message>
         <location filename="mooddialog.cpp" line="131"/>
         <source>&lt;clear&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;чисто&gt;</translation>
     </message>
 </context>
 <context>
@@ -2018,62 +2024,62 @@
     <message>
         <location filename="msgformatterwidget.cpp" line="51"/>
         <source>Emoticons</source>
-        <translation type="unfinished"></translation>
+        <translation>Емоційки</translation>
     </message>
     <message>
         <location filename="msgformatterwidget.cpp" line="58"/>
         <source>Bold</source>
-        <translation type="unfinished"></translation>
+        <translation>Жирний</translation>
     </message>
     <message>
         <location filename="msgformatterwidget.cpp" line="64"/>
         <source>Italic</source>
-        <translation type="unfinished"></translation>
+        <translation>Курсив</translation>
     </message>
     <message>
         <location filename="msgformatterwidget.cpp" line="70"/>
         <source>Underline</source>
-        <translation type="unfinished"></translation>
+        <translation>Підкреслений</translation>
     </message>
     <message>
         <location filename="msgformatterwidget.cpp" line="76"/>
         <source>Strike through</source>
-        <translation type="unfinished"></translation>
+        <translation>Закреслений</translation>
     </message>
     <message>
         <location filename="msgformatterwidget.cpp" line="84"/>
         <source>Text color</source>
-        <translation type="unfinished"></translation>
+        <translation>Колір тексту</translation>
     </message>
     <message>
         <location filename="msgformatterwidget.cpp" line="89"/>
         <source>Font</source>
-        <translation type="unfinished"></translation>
+        <translation>шрифт</translation>
     </message>
     <message>
         <location filename="msgformatterwidget.cpp" line="96"/>
         <source>Align left</source>
-        <translation type="unfinished"></translation>
+        <translation>Вирівняти вліво</translation>
     </message>
     <message>
         <location filename="msgformatterwidget.cpp" line="104"/>
         <source>Align center</source>
-        <translation type="unfinished"></translation>
+        <translation>Вирівняти по центру</translation>
     </message>
     <message>
         <location filename="msgformatterwidget.cpp" line="111"/>
         <source>Align right</source>
-        <translation type="unfinished"></translation>
+        <translation>Вирівняти вправо</translation>
     </message>
     <message>
         <location filename="msgformatterwidget.cpp" line="118"/>
         <source>Align justify</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметри вирівнювання</translation>
     </message>
     <message>
         <location filename="msgformatterwidget.cpp" line="142"/>
         <source>Emoticons...</source>
-        <translation type="unfinished"></translation>
+        <translation>Емоційки...</translation>
     </message>
 </context>
 <context>
@@ -2081,53 +2087,54 @@
     <message>
         <location filename="azoth.cpp" line="77"/>
         <source>Default input device</source>
-        <translation type="unfinished"></translation>
+        <translation>Пристрій вводу за замовчуванням</translation>
     </message>
     <message>
         <location filename="azoth.cpp" line="83"/>
         <source>Default output device</source>
-        <translation type="unfinished"></translation>
+        <translation>Пристрій виводу за замовчуванням</translation>
     </message>
     <message>
         <location filename="azoth.cpp" line="134"/>
         <source>Chat</source>
-        <translation type="unfinished">Чат</translation>
+        <translation>Чат</translation>
     </message>
     <message>
         <location filename="azoth.cpp" line="135"/>
         <source>A tab with a chat session</source>
-        <translation type="unfinished"></translation>
+        <translation>Вкладка з сессіею чату</translation>
     </message>
     <message>
         <location filename="azoth.cpp" line="143"/>
         <source>MUC</source>
-        <translation type="unfinished"></translation>
+        <translation>MUC</translation>
     </message>
     <message>
         <location filename="azoth.cpp" line="144"/>
         <source>A multiuser conference</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>дословно</translatorcomment>
+        <translation>Багатокористувацька конференція</translation>
     </message>
     <message>
         <location filename="azoth.cpp" line="152"/>
         <location filename="azoth.cpp" line="283"/>
         <source>Service discovery</source>
-        <translation type="unfinished"></translation>
+        <translation>Відкриття сервісу</translation>
     </message>
     <message>
         <location filename="azoth.cpp" line="153"/>
         <source>A service discovery tab that allows one to discover capabilities of remote entries</source>
-        <translation type="unfinished"></translation>
+        <translation>Вкладка пошуку послуг, яка дозволяє виявити можливості дистанційних записів</translation>
     </message>
     <message>
         <location filename="azoth.cpp" line="162"/>
         <source>IM console</source>
-        <translation type="unfinished"></translation>
+        <translation>IM консоль</translation>
     </message>
     <message>
         <location filename="azoth.cpp" line="163"/>
         <source>Protocol console, for example, XML console for a XMPP client protocol</source>
-        <translation type="unfinished"></translation>
+        <translation>Консоль протоколів,наприклад,XML консоль для XMPP протоколу кліенту</translation>
     </message>
     <message>
         <location filename="azoth.cpp" line="201"/>
@@ -2145,12 +2152,12 @@
     <message>
         <location filename="proxyobject.cpp" line="357"/>
         <source>%1 changed status to %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 змінив(ла) статус на %2</translation>
     </message>
     <message>
         <location filename="proxyobject.cpp" line="360"/>
         <source>%1 changed status to %2 (%3)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 змінив(ла) статус на %2 (%3)</translation>
     </message>
 </context>
 <context>
@@ -2158,17 +2165,18 @@
     <message>
         <location filename="servicediscoverywidget.cpp" line="99"/>
         <source>Service discovery</source>
-        <translation type="unfinished"></translation>
+        <translation>Відкриття сервісу</translation>
     </message>
     <message>
         <location filename="servicediscoverywidget.cpp" line="100"/>
         <source>A service discovery tab that allows one to discover capabilities of remote entries</source>
-        <translation type="unfinished"></translation>
+        <translation>Вкладка пошуку послуг, яка дозволяє виявити можливості дистанційних записів</translation>
     </message>
     <message>
         <location filename="servicediscoverywidget.cpp" line="142"/>
         <source>Discovery actions</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>дословно</translatorcomment>
+        <translation>Відкриття дії</translation>
     </message>
 </context>
 <context>
@@ -2176,7 +2184,7 @@
     <message>
         <location filename="transferjobmanager.cpp" line="45"/>
         <source>Abort</source>
-        <translation type="unfinished"></translation>
+        <translation>Скасувати</translation>
     </message>
     <message>
         <location filename="transferjobmanager.cpp" line="111"/>
@@ -2218,7 +2226,7 @@
     <message>
         <location filename="transferjobmanager.cpp" line="290"/>
         <source>Incoming file</source>
-        <translation type="unfinished"></translation>
+        <translation>Вхідний файл</translation>
     </message>
     <message>
         <location filename="transferjobmanager.cpp" line="322"/>
@@ -2253,7 +2261,7 @@
     <message>
         <location filename="transferjobmanager.cpp" line="345"/>
         <source>No error.</source>
-        <translation type="unfinished"></translation>
+        <translation>Нема помилки.</translation>
     </message>
     <message>
         <location filename="transferjobmanager.cpp" line="375"/>
@@ -2291,12 +2299,12 @@
     <message>
         <location filename="locationdialog.ui" line="14"/>
         <source>Location</source>
-        <translation type="unfinished"></translation>
+        <translation>Місце</translation>
     </message>
     <message>
         <location filename="locationdialog.ui" line="26"/>
         <source>Accuracy:</source>
-        <translation type="unfinished"></translation>
+        <translation>Точність:</translation>
     </message>
     <message>
         <location filename="locationdialog.ui" line="48"/>
@@ -2307,107 +2315,110 @@
         <location filename="locationdialog.ui" line="322"/>
         <location filename="locationdialog.ui" line="376"/>
         <source>Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Віставити</translation>
     </message>
     <message>
         <location filename="locationdialog.ui" line="60"/>
         <source>Altitude:</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>дословно</translatorcomment>
+        <translation>Підйом:</translation>
     </message>
     <message>
         <location filename="locationdialog.ui" line="94"/>
         <source>Area:</source>
-        <translation type="unfinished"></translation>
+        <translation>Площа:</translation>
     </message>
     <message>
         <location filename="locationdialog.ui" line="104"/>
         <source>Bearing:</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>дословно</translatorcomment>
+        <translation>Орієнтація:</translation>
     </message>
     <message>
         <location filename="locationdialog.ui" line="138"/>
         <source>Building:</source>
-        <translation type="unfinished"></translation>
+        <translation>Будівля:</translation>
     </message>
     <message>
         <location filename="locationdialog.ui" line="148"/>
         <source>Country:</source>
-        <translation type="unfinished"></translation>
+        <translation>Країна:</translation>
     </message>
     <message>
         <location filename="locationdialog.ui" line="158"/>
         <source>Country code:</source>
-        <translation type="unfinished"></translation>
+        <translation>Код країни:</translation>
     </message>
     <message>
         <location filename="locationdialog.ui" line="168"/>
         <source>Datum:</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>дословно</translatorcomment>
+        <translation>Характеристика:</translation>
     </message>
     <message>
         <location filename="locationdialog.ui" line="178"/>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Опис:</translation>
     </message>
     <message>
         <location filename="locationdialog.ui" line="188"/>
         <source>Floor:</source>
-        <translation type="unfinished"></translation>
+        <translation>Поверх:</translation>
     </message>
     <message>
         <location filename="locationdialog.ui" line="198"/>
         <source>Latitude:</source>
-        <translation type="unfinished"></translation>
+        <translation>Широта:</translation>
     </message>
     <message>
         <location filename="locationdialog.ui" line="229"/>
         <source>Locality:</source>
-        <translation type="unfinished"></translation>
+        <translation>Місце знаходження:</translation>
     </message>
     <message>
         <location filename="locationdialog.ui" line="239"/>
         <source>Longitude:</source>
-        <translation type="unfinished"></translation>
+        <translation>Довгота:</translation>
     </message>
     <message>
         <location filename="locationdialog.ui" line="270"/>
         <source>Postal code:</source>
-        <translation type="unfinished"></translation>
+        <translation>Поштовий код:</translation>
     </message>
     <message>
         <location filename="locationdialog.ui" line="280"/>
         <source>Region:</source>
-        <translation type="unfinished"></translation>
+        <translation>Регион:</translation>
     </message>
     <message>
         <location filename="locationdialog.ui" line="290"/>
         <source>Room:</source>
-        <translation type="unfinished"></translation>
+        <translation>Кімната:</translation>
     </message>
     <message>
         <location filename="locationdialog.ui" line="300"/>
         <source>Speed:</source>
-        <translation type="unfinished"></translation>
+        <translation>Швидкість:</translation>
     </message>
     <message>
         <location filename="locationdialog.ui" line="334"/>
         <source>Street:</source>
-        <translation type="unfinished"></translation>
+        <translation>Вулиця:</translation>
     </message>
     <message>
         <location filename="locationdialog.ui" line="344"/>
         <source>Text:</source>
-        <translation type="unfinished"></translation>
+        <translation>Текст:</translation>
     </message>
     <message>
         <location filename="locationdialog.ui" line="354"/>
         <source>Timestamp:</source>
-        <translation type="unfinished"></translation>
+        <translation>Час:</translation>
     </message>
     <message>
         <location filename="locationdialog.ui" line="388"/>
         <source>URL:</source>
-        <translation type="unfinished"></translation>
+        <translation>URL:</translation>
     </message>
 </context>
 <context>
@@ -2415,12 +2426,12 @@
     <message>
         <location filename="mainwidget.ui" line="60"/>
         <source>Whole CL</source>
-        <translation type="unfinished"></translation>
+        <translation>Загальний CL</translation>
     </message>
     <message>
         <location filename="mainwidget.ui" line="65"/>
         <source>Current MUC</source>
-        <translation type="unfinished"></translation>
+        <translation>Поточний MUC</translation>
     </message>
     <message>
         <location filename="mainwidget.ui" line="90"/>
@@ -2433,17 +2444,17 @@
     <message>
         <location filename="mooddialog.ui" line="14"/>
         <source>Set mood</source>
-        <translation type="unfinished"></translation>
+        <translation>Встановити настрій</translation>
     </message>
     <message>
         <location filename="mooddialog.ui" line="25"/>
         <source>Mood:</source>
-        <translation type="unfinished"></translation>
+        <translation>Настрій:</translation>
     </message>
     <message>
         <location filename="mooddialog.ui" line="39"/>
         <source>Text:</source>
-        <translation type="unfinished"></translation>
+        <translation>Текст:</translation>
     </message>
 </context>
 <context>
@@ -2451,17 +2462,17 @@
     <message>
         <location filename="pgpkeyselectiondialog.ui" line="14"/>
         <source>PGP key selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибір PGP ключа</translation>
     </message>
     <message>
         <location filename="pgpkeyselectiondialog.ui" line="32"/>
         <source>Key:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ключ:</translation>
     </message>
     <message>
         <location filename="pgpkeyselectiondialog.ui" line="40"/>
         <source>&lt;no key&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;нема ключа&gt;</translation>
     </message>
 </context>
 <context>
@@ -2546,12 +2557,12 @@
     <message>
         <location filename="dummy.cpp" line="2"/>
         <source>Accounts</source>
-        <translation type="unfinished"></translation>
+        <translation>Акаунти</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="4"/>
         <source>Themes</source>
-        <translation type="unfinished"></translation>
+        <translation>Теми</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="8"/>
@@ -2561,22 +2572,23 @@
     <message>
         <location filename="dummy.cpp" line="11"/>
         <source>Affiliation icons:</source>
-        <translation type="unfinished"></translation>
+        <translation>З&apos;єднальні іконки:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="13"/>
         <source>User mood icons:</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>дословно</translatorcomment>
+        <translation>Іконки настрою користувача:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="15"/>
         <source>User activity icons:</source>
-        <translation type="unfinished"></translation>
+        <translation>Іконки діяльності користувача:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="17"/>
         <source>General icons:</source>
-        <translation type="unfinished"></translation>
+        <translation>Головні іконки:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="19"/>
@@ -2592,7 +2604,7 @@
         <location filename="dummy.cpp" line="32"/>
         <source>Font size:</source>
         <oldsource>Font size</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>Розмір шрифта:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="21"/>
@@ -2602,7 +2614,7 @@
     <message>
         <location filename="dummy.cpp" line="22"/>
         <source>Show Azoth menu under the contact list</source>
-        <translation type="unfinished"></translation>
+        <translation>Показати меню Azoth під списком контактів</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="23"/>
@@ -2617,32 +2629,32 @@
     <message>
         <location filename="dummy.cpp" line="25"/>
         <source>Group contacts</source>
-        <translation type="unfinished"></translation>
+        <translation>Групові контакти</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="26"/>
         <source>Group contacts by status</source>
-        <translation type="unfinished"></translation>
+        <translation>Групові контакти по статусу</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="28"/>
         <source>Pre-nick text:</source>
-        <translation type="unfinished"></translation>
+        <translation>Перед-нік текст:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="29"/>
         <source>Post-nick text:</source>
-        <translation type="unfinished"></translation>
+        <translation>Post-nick text:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="30"/>
         <source>Show rich text message body (if available)</source>
-        <translation type="unfinished"></translation>
+        <translation>Показати форматоване тіло повідомлення (якщо можливо)</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="31"/>
         <source>Highlight color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Колір підсвічування:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="33"/>
@@ -2658,58 +2670,59 @@
     <message>
         <location filename="dummy.cpp" line="36"/>
         <source>Close conferences tabs when leaving</source>
-        <translation type="unfinished"></translation>
+        <translation>Закрити вкладки конференцій при виході</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="37"/>
         <source>Automatically switch roster to conference mode when needed</source>
-        <translation type="unfinished"></translation>
+        <translation>Автоматичне перемикання ростеру в режим конференції, коли це необхідно</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="38"/>
         <source>Autojoin allowed</source>
-        <translation type="unfinished"></translation>
+        <translation>Дозволити автовхід</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="39"/>
         <source>Send chat state events</source>
-        <translation type="unfinished"></translation>
+        <translation>Відправляти статусні повідомлення</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="40"/>
         <source>Use alternative nickname</source>
-        <translation type="unfinished"></translation>
+        <translation>використовувати альтернативний нік</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="41"/>
         <source>Send message on:</source>
-        <translation type="unfinished"></translation>
+        <translation>Відправляти повідомлення при:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="42"/>
         <source>Enter</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="43"/>
         <source>Shift+Enter</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="44"/>
         <source>Ctrl+Enter</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="45"/>
         <source>Load at most messages from history:</source>
         <oldsource>Show at most this many messages from history:</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>Завантажувати більшість повідомлень з історії:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="46"/>
         <source>Alternative nickname for chat rooms:</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>дословно</translatorcomment>
+        <translation>Альтернативний нік для кімнат чату:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="47"/>
@@ -2734,22 +2747,22 @@
     <message>
         <location filename="dummy.cpp" line="51"/>
         <source>Notify when remote contact starts composing a message:</source>
-        <translation type="unfinished"></translation>
+        <translation>Повідомляти, коли віддалений контакт при пише повідомлення:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="52"/>
         <source>always</source>
-        <translation type="unfinished"></translation>
+        <translation>завжди</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="53"/>
         <source>in opened chats</source>
-        <translation type="unfinished"></translation>
+        <translation>у відкритих чатах</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="54"/>
         <source>never</source>
-        <translation type="unfinished"></translation>
+        <translation>ніколи</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="55"/>
@@ -2764,12 +2777,12 @@
     <message>
         <location filename="dummy.cpp" line="57"/>
         <source>Ignore when someone draws our attention</source>
-        <translation type="unfinished"></translation>
+        <translation>Ігнорувати коли хтось звертає вашу увагу</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="58"/>
         <source>Subscriptions</source>
-        <translation type="unfinished"></translation>
+        <translation>Підписки</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="59"/>
@@ -2880,32 +2893,32 @@
     <message>
         <location filename="dummy.cpp" line="80"/>
         <source>Devices</source>
-        <translation type="unfinished"></translation>
+        <translation>Пристрої</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="81"/>
         <source>Audio devices</source>
-        <translation type="unfinished"></translation>
+        <translation>Аудіо пристрої</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="82"/>
         <source>Input audio device:</source>
-        <translation type="unfinished"></translation>
+        <translation>Вхідний аудіо пристрій:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="83"/>
         <source>Default input device</source>
-        <translation type="unfinished"></translation>
+        <translation>Пристрій вводу за замовчуванням</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="84"/>
         <source>Output audio device:</source>
-        <translation type="unfinished"></translation>
+        <translation>Вихідний аудіо пристрій:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="85"/>
         <source>Default output device</source>
-        <translation type="unfinished"></translation>
+        <translation>Пристрій виводу за замовчуванням</translation>
     </message>
 </context>
 </TS>
