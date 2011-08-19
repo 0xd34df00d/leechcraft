@@ -101,8 +101,10 @@ namespace Poshuku
 				SLOT (reload ()));
 
 		Cut_ = Ui_.WebView_->pageAction (QWebPage::Cut);
+		Cut_->setShortcutContext (Qt::WindowShortcut);
 		Cut_->setProperty ("ActionIcon", "poshuku_cut");
 		Copy_ = Ui_.WebView_->pageAction (QWebPage::Copy);
+		Copy_->setShortcutContext (Qt::WindowShortcut);
 		Copy_->setProperty ("ActionIcon", "poshuku_copy");
 		Paste_ = Ui_.WebView_->pageAction (QWebPage::Paste);
 		Paste_->setProperty ("ActionIcon", "poshuku_paste");
@@ -257,6 +259,7 @@ namespace Poshuku
 		RecentlyClosed_ = moreMenu->addMenu (tr ("Recently closed"));
 		RecentlyClosed_->setEnabled (false);
 		RecentlyClosedAction_ = RecentlyClosed_->menuAction ();
+		RecentlyClosedAction_->setShortcutContext (Qt::WindowShortcut);
 
 		ExternalLinks_ = new QMenu (this);
 		ExternalLinks_->menuAction ()->setText (tr ("External links"));
