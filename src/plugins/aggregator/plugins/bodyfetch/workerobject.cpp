@@ -230,11 +230,13 @@ namespace BodyFetch
 	QString WorkerObject::Parse (const QString& contents, IScript_ptr script)
 	{
 		const QStringList& firstTagOut = GetReplacements (script, "KeepFirstTag");
+		const QStringList& allTagsOut = GetReplacements (script, "KeepAllTags");
 		const QStringList& firstTagIn = GetReplacements (script, "KeepFirstTagInnerXml");
 		
 		qApp->processEvents ();
 		
 		if (firstTagOut.isEmpty () &&
+				allTagsOut.isEmpty () &&
 				firstTagIn.isEmpty ())
 			return script->InvokeMethod ("Strip", QVariantList () << contents).toString ();
 		
@@ -250,6 +252,8 @@ namespace BodyFetch
 		QString result;
 		result += ParseWithSelectors (page.mainFrame (),
 				firstTagOut, 1, boost::bind (&QWebElement::toOuterXml, _1));
+		result += ParseWithSelectors (page.mainFrame (),
+				allTagsOut, 1000, boost::bind (&QWebElement::toOuterXml, _1));
 		result += ParseWithSelectors (page.mainFrame (),
 				firstTagIn, 1, boost::bind (&QWebElement::toInnerXml, _1));
 
