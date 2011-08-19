@@ -28,6 +28,7 @@
 #include <QMenu>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QKeyEvent>
 #include <util/defaulthookproxy.h>
 #include <util/util.h>
 #include "interfaces/iclentry.h"
@@ -67,6 +68,33 @@ namespace Azoth
 	{
 		S_ParentMultiTabs_ = obj;
 	}
+	
+	class CopyFilter : public QObject
+	{
+		QWebView *View_;
+	public:
+		CopyFilter (QWebView *v)
+		: QObject (v)
+		, View_ (v)
+		{
+		}
+	protected:
+		bool eventFilter (QObject*, QEvent *orig)
+		{
+			if (orig->type () != QEvent::KeyRelease)
+				return false;
+			
+			QKeyEvent *e = static_cast<QKeyEvent*> (orig);
+			if (e->matches (QKeySequence::Copy) &&
+					!View_->page ()->selectedText ().isEmpty ())
+			{
+				View_->pageAction (QWebPage::Copy)->trigger ();
+				return true;
+			}
+			
+			return false;
+		}
+	};
 
 	ChatTab::ChatTab (const QString& entryId,
 			QWidget *parent)
@@ -93,6 +121,7 @@ namespace Azoth
 	{
 		Ui_.setupUi (this);
 		Ui_.View_->installEventFilter (new ZoomEventFilter (Ui_.View_));
+		Ui_.MsgEdit_->installEventFilter (new CopyFilter (Ui_.View_));
 
 		Ui_.SubjBox_->setVisible (false);
 		Ui_.SubjChange_->setEnabled (false);
