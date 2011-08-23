@@ -281,17 +281,33 @@ namespace LeechCraft
 
 			QModelIndex Core::MapToSourceRecursively (QModelIndex index) const
 			{
-				const QAbstractProxyModel *model = 0;
-				bool mapped = false;
-				while ((model = qobject_cast<const QAbstractProxyModel*> (index.model ())) &&
-						model->property ("__LeechCraft_own_core_model").toBool ())
-				{
-					index = model->mapToSource (index);
-					mapped = true;
-				}
-
-				if (!mapped)
+				if (!index.isValid ())
 					return QModelIndex ();
+
+				while (true)
+				{
+					if (!index.model ()->property ("__LeechCraft_own_core_model").toBool ())
+						break;
+
+					const QAbstractProxyModel *pModel = qobject_cast<const QAbstractProxyModel*> (index.model ());
+					if (pModel)
+					{
+						index = pModel->mapToSource (index);
+						continue;
+					}
+
+					const Util::MergeModel *mModel = qobject_cast<const Util::MergeModel*> (index.model ());
+					if (mModel)
+					{
+						index = mModel->mapToSource (index);
+						continue;
+					}
+
+					qWarning () << Q_FUNC_INFO
+							<< "unhandled parent own core model"
+							<< index.model ();
+					break;
+				}
 
 				return index;
 			}
