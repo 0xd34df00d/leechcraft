@@ -1098,7 +1098,7 @@ namespace Aggregator
 
 	void ItemsWidget::currentItemChanged ()
 	{
-		QString preHtml = "<html><head><title/></head><body bgcolor=\"";
+		QString preHtml = "<html><head><title>News</title></head><body bgcolor=\"";
 		preHtml += palette ().color (QPalette::Base).name ();
 		preHtml += "\">";
 		if (Impl_->TapeMode_)
