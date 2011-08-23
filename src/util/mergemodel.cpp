@@ -219,6 +219,10 @@ void MergeModel::AddModel (QAbstractItemModel *model)
 	connect (model,
 			SIGNAL (modelAboutToBeReset ()),
 			this,
+			SIGNAL (modelAboutToBeReset ()));
+	connect (model,
+			SIGNAL (modelReset ()),
+			this,
 			SIGNAL (modelReset ()));
 	connect (model,
 			SIGNAL (rowsAboutToBeInserted (const QModelIndex&, int, int)),
