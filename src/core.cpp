@@ -152,7 +152,7 @@ namespace LeechCraft
 
 		PluginManager_->Release ();
 		delete PluginManager_;
-		
+
 		CoreInstanceObject_.reset ();
 
 		NetworkAccessManager_.reset ();
@@ -218,7 +218,7 @@ namespace LeechCraft
 	{
 		return StorageBackend_.get ();
 	}
-	
+
 	CoreInstanceObject* Core::GetCoreInstanceObject () const
 	{
 		return CoreInstanceObject_.get ();
@@ -631,7 +631,7 @@ namespace LeechCraft
 						}
 						break;
 				}
-				
+
 				if (r.HandlePriority_ <= 0)
 					continue;
 
@@ -640,7 +640,7 @@ namespace LeechCraft
 					result.clear ();
 
 				result << *it;
-				
+
 				if (single)
 					break;
 
@@ -696,7 +696,7 @@ namespace LeechCraft
 
 		if (!(numHandlers + numDownloaders))
 			return false;
-		
+
 		const bool bcastCandidate = !id && !pr && numHandlers;
 
 		if (p.Parameters_ & FromUserInitiated &&
@@ -923,22 +923,6 @@ namespace LeechCraft
 
 	void Core::InitJobHolder (QObject *plugin)
 	{
-		try
-		{
-			IJobHolder *ijh = qobject_cast<IJobHolder*> (plugin);
-			QAbstractItemModel *model = ijh->GetRepresentation ();
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< e.what ()
-				<< plugin;
-		}
-		catch (...)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< plugin;
-		}
 	}
 
 	void Core::InitEmbedTab (QObject *plugin)
