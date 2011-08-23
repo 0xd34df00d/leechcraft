@@ -83,6 +83,7 @@ namespace CleanWeb
 				switch (Filter_.Options_ [str].MatchType_)
 				{
 					case FilterOption::MTWildcard:
+					case FilterOption::MTPlain:
 						return tr ("Wildcard");
 					case FilterOption::MTRegexp:
 						return tr ("Regexp");
@@ -150,7 +151,7 @@ namespace CleanWeb
 
 		return Add (dia);
 	}
-	
+
 	bool UserFiltersModel::Add (const RuleOptionDialog& dia)
 	{
 		QString rule = dia.GetString ();
@@ -178,7 +179,7 @@ namespace CleanWeb
 		endInsertRows ();
 
 		WriteSettings ();
-		
+
 		return !dia.IsException ();
 	}
 
