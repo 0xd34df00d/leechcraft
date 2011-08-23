@@ -25,7 +25,7 @@
 using namespace LeechCraft::Util;
 
 MergeModel::MergeModel (const QStringList& headers, QObject *parent)
-: QAbstractProxyModel (parent)
+: QAbstractItemModel (parent)
 , DefaultAcceptsRowImpl_ (false)
 , Headers_ (headers)
 {

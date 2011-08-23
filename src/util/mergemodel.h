@@ -39,7 +39,7 @@ namespace LeechCraft
 		 * Seems like it would never support it at least someone would
 		 * try to implement it.
 		 */
-		class UTIL_API MergeModel : public QAbstractProxyModel
+		class UTIL_API MergeModel : public QAbstractItemModel
 		{
 			Q_OBJECT
 
