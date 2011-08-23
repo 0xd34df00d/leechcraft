@@ -64,7 +64,7 @@ namespace Aggregator
 		std::auto_ptr<Util::MergeModel> ItemLists_;
 		std::auto_ptr<ItemsFilterModel> ItemsFilterModel_;
 		std::auto_ptr<CategorySelector> ItemCategorySelector_;
-		
+
 		QTimer *SelectedChecker_;
 		QModelIndex LastSelectedIndex_;
 	};
@@ -196,7 +196,7 @@ namespace Aggregator
 				0);
 		delete Impl_;
 	}
-	
+
 	void ItemsWidget::SetAppWideActions (const AppWideActions& awa)
 	{
 		QAction *first = Impl_->ControlToolBar_->actions ().first ();
@@ -445,7 +445,7 @@ namespace Aggregator
 		}
 		emit currentChannelChanged (index);
 	}
-	
+
 	void ItemsWidget::ConstructBrowser ()
 	{
 		Impl_->Ui_.ItemView_->Construct (Core::Instance ().GetWebBrowser ());
@@ -1163,7 +1163,7 @@ namespace Aggregator
 			}
 		}
 	}
-	
+
 	void ItemsWidget::checkSelected ()
 	{
 		const QModelIndex& sourceIndex =
