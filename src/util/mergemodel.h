@@ -137,7 +137,7 @@ namespace LeechCraft
 			 * @return The iterator.
 			 */
 			iterator FindModel (const QAbstractItemModel *model);
-			
+
 			/** Returns the row in the resulting MergeModel from which do
 			 * begin rows which belong to the model corresponding to the
 			 * given const_iterator.
@@ -147,7 +147,7 @@ namespace LeechCraft
 			 * @return The starting row.
 			 */
 			int GetStartingRow (const_iterator iterator) const;
-			
+
 			/** Returns the model that corresponds to the given row. If
 			 * there is no such model, throws std::runtime_error. If
 			 * starting is not null, it also calculates and returns the
