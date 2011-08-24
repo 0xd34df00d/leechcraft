@@ -95,10 +95,7 @@ namespace BodyFetch
 		}
 		
 		if (EnumeratedCache_.isEmpty ())
-		{
 			EnumeratedCache_ = Inst_->EnumerateScripts ();
-			LastEnumerated_ = QDateTime::currentDateTime ();
-		}
 		
 		QHash<QString, IScript_ptr> channel2script;
 		

@@ -21,7 +21,6 @@
 #include <QObject>
 #include <QVariant>
 #include <QStringList>
-#include <QDateTime>
 #include <QHash>
 #include <QUrl>
 #include <QDir>
@@ -45,7 +44,6 @@ namespace BodyFetch
 		bool RecheckScheduled_;
 		
 		QStringList EnumeratedCache_;
-		QDateTime LastEnumerated_;
 
 		QHash<QString, QString> ChannelLink2ScriptID_;
 		QHash<QUrl, IScript_ptr> URL2Script_;
