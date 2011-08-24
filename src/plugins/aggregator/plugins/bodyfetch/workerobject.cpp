@@ -60,7 +60,7 @@ namespace BodyFetch
 	{
 		QTimer *timer = new QTimer;
 		connect (timer,
-				SIGNAL (triggered ()),
+				SIGNAL (timeout ()),
 				this,
 				SLOT (clearCaches ()));
 		timer->start (10000);
