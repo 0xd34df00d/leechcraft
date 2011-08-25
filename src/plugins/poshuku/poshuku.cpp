@@ -179,6 +179,7 @@ namespace Poshuku
 
 	void Poshuku::SecondInit ()
 	{
+		Core::Instance ().SecondInit ();
 		QTimer::singleShot (1000,
 				this,
 				SLOT (createTabFirstTime ()));
@@ -229,14 +230,14 @@ namespace Poshuku
 	{
 		return QIcon (":/resources/images/poshuku.svg");
 	}
-	
+
 	TabClasses_t Poshuku::GetTabClasses () const
 	{
 		TabClasses_t result;
 		result << Core::Instance ().GetTabClass ();
 		return result;
 	}
-	
+
 	void Poshuku::TabOpenRequested (const QByteArray& tabClass)
 	{
 		if (tabClass == "Poshuku")

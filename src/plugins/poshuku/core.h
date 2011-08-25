@@ -84,7 +84,7 @@ namespace Poshuku
 		FavoritesChecker *FavoritesChecker_;
 
 		bool Initialized_;
-		
+
 		TabClassInfo TabClass_;
 
 		Core ();
@@ -105,6 +105,7 @@ namespace Poshuku
 
 		static Core& Instance ();
 		void Init ();
+		void SecondInit ();
 		void Release ();
 		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;
