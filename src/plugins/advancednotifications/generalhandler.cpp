@@ -21,6 +21,7 @@
 #include "systemtrayhandler.h"
 #include "visualhandler.h"
 #include "audiohandler.h"
+#include "cmdrunhandler.h"
 #include "core.h"
 
 namespace LeechCraft
@@ -33,13 +34,14 @@ namespace AdvancedNotifications
 		Handlers_ << ConcreteHandlerBase_ptr (new SystemTrayHandler);
 		Handlers_ << ConcreteHandlerBase_ptr (new VisualHandler);
 		Handlers_ << ConcreteHandlerBase_ptr (new AudioHandler);
-		
+		Handlers_ << ConcreteHandlerBase_ptr (new CmdRunHandler);
+
 		Q_FOREACH (ConcreteHandlerBase_ptr handler, Handlers_)
 			handler->SetGeneralHandler (this);
-			
+
 		Cat2IconName_ ["org.LC.AdvNotifications.IM"] = "message";
 	}
-	
+
 	void GeneralHandler::Handle (const Entity& e)
 	{
 		if (e.Additional_ ["org.LC.AdvNotifications.EventCategory"] == "org.LC.AdvNotifications.Cancel")
@@ -53,22 +55,22 @@ namespace AdvancedNotifications
 		Q_FOREACH (const NotificationRule& rule, rules)
 		{
 			NotificationMethods methods = rule.GetMethods ();
-			
+
 			Q_FOREACH (ConcreteHandlerBase_ptr handler, Handlers_)
 			{
 				if (!(methods & handler->GetHandlerMethod ()))
 					continue;
-				
+
 				handler->Handle (e, rule);
 			}
 		}
 	}
-	
+
 	ICoreProxy_ptr GeneralHandler::GetProxy () const
 	{
 		return Proxy_;
 	}
-	
+
 	QIcon GeneralHandler::GetIconForCategory (const QString& cat) const
 	{
 		const QString& name = "notificationcategory_" + Cat2IconName_.value (cat, "general");
