@@ -16,27 +16,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_COMMON_H
-#define PLUGINS_ADVANCEDNOTIFICATIONS_COMMON_H
-#include <QFlags>
+#include "cmdrunhandler.h"
+#include <QProcess>
+#include "notificationrule.h"
 
 namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
-	enum NotificationMethod
+	CmdRunHandler::CmdRunHandler ()
 	{
-		NMNone = 0x00,
-		NMVisual = 0x01,
-		NMTray = 0x02,
-		NMAudio = 0x04,
-		NMCommand = 0x08
-	};
+	}
 
-	Q_DECLARE_FLAGS (NotificationMethods, NotificationMethod);
+	NotificationMethod CmdRunHandler::GetHandlerMethod () const
+	{
+		return NMCommand;
+	}
+
+	void CmdRunHandler::Handle (const Entity&, const NotificationRule& rule)
+	{
+		const CmdParams& params = rule.GetCmdParams ();
+		if (params.Cmd_.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "empty command";
+			return;
+		}
+
+		QProcess::startDetached (params.Cmd_, params.Args_);
+	}
 }
 }
-
-Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::AdvancedNotifications::NotificationMethods);
-
-#endif

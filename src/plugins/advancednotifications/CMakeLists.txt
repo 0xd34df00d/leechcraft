@@ -36,6 +36,7 @@ SET (SRCS
 	matchconfigdialog.cpp
 	visualhandler.cpp
 	audiohandler.cpp
+	cmdrunhandler.cpp
 	)
 SET (HEADERS
 	advancednotifications.h
@@ -51,6 +52,7 @@ SET (HEADERS
 	matchconfigdialog.h
 	visualhandler.h
 	audiohandler.h
+	cmdrunhandler.h
 	)
 SET (FORMS
 	notificationruleswidget.ui

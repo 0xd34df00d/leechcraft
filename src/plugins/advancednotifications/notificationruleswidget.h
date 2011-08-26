@@ -33,13 +33,13 @@ namespace AdvancedNotifications
 	class NotificationRulesWidget : public QWidget
 	{
 		Q_OBJECT
-		
+
 		Ui::NotificationRulesWidget Ui_;
-		
+
 		QMap<QString, QString> Cat2HR_;
 		QMap<QString, QString> Type2HR_;
 		QMap<QString, QStringList> Cat2Types_;
-		
+
 		QList<NotificationRule> Rules_;
 		QStandardItemModel *RulesModel_;
 
@@ -47,7 +47,7 @@ namespace AdvancedNotifications
 		QStandardItemModel *MatchesModel_;
 	public:
 		NotificationRulesWidget (QWidget* = 0);
-		
+
 		QList<NotificationRule> GetRules () const;
 	private:
 		void LoadDefaultRules ();
@@ -72,16 +72,21 @@ namespace AdvancedNotifications
 		void on_AddMatch__released ();
 		void on_ModifyMatch__released ();
 		void on_RemoveMatch__released ();
-		
+
 		void on_EventCat__activated (int);
 
 		void on_NotifyVisual__stateChanged (int);
 		void on_NotifySysTray__stateChanged (int);
 		void on_NotifyAudio__stateChanged (int);
-		
+		void on_NotifyCmd__stateChanged (int);
+
 		void on_BrowseAudioFile__released ();
 		void on_TestAudio__released ();
-		
+
+		void on_AddArgument__released ();
+		void on_ModifyArgument__released ();
+		void on_RemoveArgument__released ();
+
 		void resetAudioFileBox ();
 	};
 }
