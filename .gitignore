@@ -1,4 +1,5 @@
 *.qm
+builds/
 backup/
 debug/
 release/
