@@ -667,16 +667,6 @@ namespace LeechCraft
 
 	bool Core::handleGotEntity (Entity p, int *id, QObject **pr)
 	{
-		DefaultHookProxy_ptr proxy (new DefaultHookProxy);
-		Q_FOREACH (const HookSignature<HIDGotEntity>::Signature_t& f,
-				GetHooks<HIDGotEntity> ())
-		{
-			const bool result = f (proxy, &p, id, pr, sender ());
-
-			if (proxy->IsCancelled ())
-				return result;
-		}
-
 		const QString& string = Util::GetUserText (p);
 
 		std::auto_ptr<HandlerChoiceDialog> dia (new HandlerChoiceDialog (string, ReallyMainWindow_));

@@ -158,15 +158,7 @@ namespace LeechCraft
 		 * IHookProxy::CancelDefault() cancels default processing
 		 * and returns the result from the hook from the handler.
 		 */
-		HIDCouldHandle,
-
-		/** Is called in the beginning of the method handling the
-		 * "gotEntity" request (IInfo::gotEntity() signal).
-		 *
-		 * IHookProxy::CancelDefault() cancels default processing
-		 * and returns the result from the hook from the handler.
-		 */
-		HIDGotEntity
+		HIDCouldHandle
 	};
 
 	template<int>
@@ -213,27 +205,6 @@ namespace LeechCraft
 					LeechCraft::Entity *entity)> Signature_t;
 		};
 
-	template<>
-		struct HookSignature<HIDGotEntity>
-		{
-			/** @param[in,out] entity The entity that is either got or
-			 * should be delegated.
-			 * @param[in,out] id The id of task in case of delegation.
-			 * Please note that this pointer can be NULL.
-			 * @param[in,out] provider The provider object in case of
-			 * delegation. Please not that this pointer can be NULL.
-			 * @param[in,out] sender The sender of the signal.
-			 * @return Whether the entity was delegated or not. If
-			 * IHookProxy::CancelDefault() wasn't called, the return
-			 * value is ignored.
-			 */
-			typedef boost::function<bool (IHookProxy_ptr,
-					LeechCraft::Entity *entity,
-					int *id,
-					QObject **provider,
-					QObject *sender)> Signature_t;
-		};
-
 	template<int id>
 		struct HooksContainer
 		{
@@ -244,8 +215,7 @@ namespace LeechCraft
 
 #define HOOKS_TYPES_LIST (HIDNetworkAccessManagerCreateRequest)\
 	(HIDManualJobAddition)\
-	(HIDCouldHandle)\
-	(HIDGotEntity)
+	(HIDCouldHandle)
 
 /** @brief Tags manager's interface.
  *
