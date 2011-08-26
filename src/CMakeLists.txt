@@ -360,6 +360,7 @@ SET (SRCS
 	separatetabwidget.cpp
 	mwproxy.cpp
 	winwarndialog.cpp
+	coreplugin2manager.cpp
 	)
 SET (HEADERS
 	mainwindow.h
@@ -403,6 +404,7 @@ SET (HEADERS
 	separatetabwidget.h
 	mwproxy.h
 	winwarndialog.h
+	coreplugin2manager.h
 	3dparty/qxttooltip.h
 	3dparty/qxttooltip_p.h
 	interfaces/structures.h
