@@ -287,16 +287,6 @@ namespace LeechCraft
 
 	void Core::TryToAddJob (QString name)
 	{
-		DefaultHookProxy_ptr proxy (new DefaultHookProxy);
-		Q_FOREACH (HookSignature<HIDManualJobAddition>::Signature_t f,
-				GetHooks<HIDManualJobAddition> ())
-		{
-			f (proxy, &name);
-
-			if (proxy->IsCancelled ())
-				return;
-		}
-
 		Entity e;
 		if (QFile::exists (name))
 			e.Entity_ = QUrl::fromLocalFile (name);

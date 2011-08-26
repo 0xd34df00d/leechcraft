@@ -143,14 +143,7 @@ namespace LeechCraft
 		 * IHookProxy::CancelDefault() cancels default request creation
 		 * and returns the reply obtained from the hook.
 		 */
-		HIDNetworkAccessManagerCreateRequest,
-
-		/** Is called in the beginning of the manual job addition
-		 * handler.
-		 *
-		 * IHookProxy::CancelDefault() cancels default processing.
-		 */
-		HIDManualJobAddition
+		HIDNetworkAccessManagerCreateRequest
 	};
 
 	template<int>
@@ -175,16 +168,6 @@ namespace LeechCraft
 					QIODevice **dev)> Signature_t;
 		};
 
-	template<>
-		struct HookSignature<HIDManualJobAddition>
-		{
-			/** @param[in,out] entity The entity to be manually added.
-			 * @paarm[in,out] The location where the entity should be saved.
-			 */
-			typedef boost::function<void (IHookProxy_ptr,
-					QString *entity)> Signature_t;
-		};
-
 	template<int id>
 		struct HooksContainer
 		{
@@ -193,8 +176,7 @@ namespace LeechCraft
 		};
 };
 
-#define HOOKS_TYPES_LIST (HIDNetworkAccessManagerCreateRequest)\
-	(HIDManualJobAddition)
+#define HOOKS_TYPES_LIST (HIDNetworkAccessManagerCreateRequest)
 
 /** @brief Tags manager's interface.
  *
