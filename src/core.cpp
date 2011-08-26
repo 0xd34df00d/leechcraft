@@ -493,16 +493,6 @@ namespace LeechCraft
 
 	bool Core::CouldHandle (Entity e) const
 	{
-		DefaultHookProxy_ptr proxy (new DefaultHookProxy);
-		Q_FOREACH (const HookSignature<HIDCouldHandle>::Signature_t& f,
-				GetHooks<HIDCouldHandle> ())
-		{
-			const bool result = f (proxy, &e);
-
-			if (proxy->IsCancelled ())
-				return result;
-		}
-
 		if (!(e.Parameters_ & OnlyHandle))
 			if (GetObjects (e, OTDownloaders, true).size ())
 				return true;
