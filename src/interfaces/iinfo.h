@@ -150,15 +150,7 @@ namespace LeechCraft
 		 *
 		 * IHookProxy::CancelDefault() cancels default processing.
 		 */
-		HIDManualJobAddition,
-
-		/** Is called in the beginning of the method handling the
-		 * "couldHandle" request (IInfo::couldHandle() signal).
-		 *
-		 * IHookProxy::CancelDefault() cancels default processing
-		 * and returns the result from the hook from the handler.
-		 */
-		HIDCouldHandle
+		HIDManualJobAddition
 	};
 
 	template<int>
@@ -193,18 +185,6 @@ namespace LeechCraft
 					QString *entity)> Signature_t;
 		};
 
-	template<>
-		struct HookSignature<HIDCouldHandle>
-		{
-			/** @param[in,out] entity The entity to be queried for.
-			 * @return Whether the entity can be handled or not. If
-			 * IHookProxy::CancelDefault() wasn't called, the return
-			 * value is ignored.
-			 */
-			typedef boost::function<bool (IHookProxy_ptr,
-					LeechCraft::Entity *entity)> Signature_t;
-		};
-
 	template<int id>
 		struct HooksContainer
 		{
@@ -214,8 +194,7 @@ namespace LeechCraft
 };
 
 #define HOOKS_TYPES_LIST (HIDNetworkAccessManagerCreateRequest)\
-	(HIDManualJobAddition)\
-	(HIDCouldHandle)
+	(HIDManualJobAddition)
 
 /** @brief Tags manager's interface.
  *
