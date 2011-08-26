@@ -514,7 +514,13 @@ namespace Azoth
 		if (selected.isEmpty ())
 			return;
 
-		const QString& toInsert = "> " + selected + "\n";
+		QStringList split = selected.split ('\n');
+		for (int i = 0; i < split.size (); ++i)
+			split [i].prepend ("> ");
+
+		split << QString ();
+
+		const QString& toInsert = split.join ("\n");
 		QTextCursor cur (Ui_.MsgEdit_->document ());
 		cur.insertText (toInsert);
 	}
