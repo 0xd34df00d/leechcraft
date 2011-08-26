@@ -824,21 +824,10 @@ namespace LeechCraft
 
 	void Core::handleStatusBarChanged (QWidget *contents, const QString& origMessage)
 	{
-		QString msg = origMessage;
-		DefaultHookProxy_ptr proxy (new DefaultHookProxy);
-		Q_FOREACH (const HookSignature<HIDStatusBarChanged>::Signature_t& f,
-				GetHooks<HIDStatusBarChanged> ())
-		{
-			f (proxy, contents, &msg);
-
-			if (proxy->IsCancelled ())
-				return;
-		}
-
 		if (contents->visibleRegion ().isEmpty ())
 			return;
 
-		ReallyMainWindow_->statusBar ()->showMessage (msg, 30000);
+		ReallyMainWindow_->statusBar ()->showMessage (origMessage, 30000);
 	}
 
 	void Core::HandleNotify (const Entity& entity)
