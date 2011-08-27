@@ -44,7 +44,7 @@ namespace LeechCraft
 	{
 		return Core::Instance ().GetShortcutProxy ();
 	}
-	
+
 	IMWProxy* CoreProxy::GetMWProxy () const
 	{
 		return MWProxy_;
@@ -79,7 +79,7 @@ namespace LeechCraft
 	{
 		return SkinEngine::Instance ().GetIcon (icon, iconOff);
 	}
-	
+
 	void CoreProxy::UpdateIconset (const QList<QAction*>& actions) const
 	{
 		SkinEngine::Instance ().UpdateIconSet (actions);
@@ -128,16 +128,4 @@ namespace LeechCraft
 	{
 		return this;
 	}
-
-	#define LC_DEFINE_REGISTER(a) \
-	void CoreProxy::RegisterHook (LeechCraft::HookSignature<LeechCraft::a>::Signature_t functor) \
-	{ \
-		Core::Instance ().RegisterHook (functor); \
-	}
-	#define LC_TRAVERSER(z,i,array) LC_DEFINE_REGISTER (BOOST_PP_SEQ_ELEM(i, array))
-	#define LC_EXPANDER(Names) BOOST_PP_REPEAT (BOOST_PP_SEQ_SIZE (Names), LC_TRAVERSER, Names)
-		LC_EXPANDER (HOOKS_TYPES_LIST);
-	#undef LC_EXPANDER
-	#undef LC_TRAVERSER
-	#undef LC_DEFINE_REGISTER
 }

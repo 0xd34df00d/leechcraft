@@ -366,27 +366,6 @@ namespace LeechCraft
 		return NewTabMenuManager_.get ();
 	}
 
-	#define LC_APPENDER(a) a##_.Functors_.append (functor)
-	#define LC_GETTER(a) a##_.Functors_
-	#define LC_DEFINE_REGISTER(a) \
-	void Core::RegisterHook (HookSignature<a>::Signature_t functor) \
-	{ \
-		LC_APPENDER(a); \
-	} \
-	template<> \
-		HooksContainer<a>::Functors_t Core::GetHooks<a> () const \
-	{ \
-		return LC_GETTER(a); \
-	}
-	#define LC_TRAVERSER(z,i,array) LC_DEFINE_REGISTER (BOOST_PP_SEQ_ELEM(i, array))
-	#define LC_EXPANDER(Names) BOOST_PP_REPEAT (BOOST_PP_SEQ_SIZE (Names), LC_TRAVERSER, Names)
-		LC_EXPANDER (HOOKS_TYPES_LIST);
-	#undef LC_EXPANDER
-	#undef LC_TRAVERSER
-	#undef LC_DEFINE_REGISTER
-	#undef LC_GETTER
-	#undef LC_APPENDER
-
 	bool Core::eventFilter (QObject *watched, QEvent *e)
 	{
 		if (ReallyMainWindow_ &&

@@ -134,49 +134,7 @@ namespace LeechCraft
 	};
 
 	typedef boost::shared_ptr<IHookProxy> IHookProxy_ptr;
-
-	enum HookID
-	{
-		/** Is called in the beginnign of creating request in the
-		 * application-wide network access manager.
-		 *
-		 * IHookProxy::CancelDefault() cancels default request creation
-		 * and returns the reply obtained from the hook.
-		 */
-		HIDNetworkAccessManagerCreateRequest
-	};
-
-	template<int>
-	struct HookSignature;
-
-	template<>
-		struct HookSignature<HIDNetworkAccessManagerCreateRequest>
-		{
-			/** @param[in,out] manager The network access manager.
-			 * @param[in,out] op The operation performed.
-			 * @param[in,out] req The request to which the reply should be
-			 * created.
-			 * @param[in,out] op The device with the outgoing data.
-			 * @return The newly created reply. If
-			 * IHookProxy::CancelDefault() wasn't called, the return
-			 * value is ignored.
-			 */
-			typedef boost::function<QNetworkReply* (IHookProxy_ptr,
-					QNetworkAccessManager *manager,
-					QNetworkAccessManager::Operation *op,
-					QNetworkRequest *req,
-					QIODevice **dev)> Signature_t;
-		};
-
-	template<int id>
-		struct HooksContainer
-		{
-			typedef QList<typename HookSignature<id>::Signature_t> Functors_t;
-			Functors_t Functors_;
-		};
 };
-
-#define HOOKS_TYPES_LIST (HIDNetworkAccessManagerCreateRequest)
 
 /** @brief Tags manager's interface.
  *
@@ -547,14 +505,6 @@ public:
 	 * Just to avoid nasty reinterpret_casts.
 	 */
 	virtual QObject* GetSelf () = 0;
-
-#define LC_DEFINE_REGISTER(a) virtual void RegisterHook (LeechCraft::HookSignature<LeechCraft::a>::Signature_t) = 0;
-#define LC_TRAVERSER(z,i,array) LC_DEFINE_REGISTER (BOOST_PP_SEQ_ELEM(i, array))
-#define LC_EXPANDER(Names) BOOST_PP_REPEAT (BOOST_PP_SEQ_SIZE (Names), LC_TRAVERSER, Names)
-	LC_EXPANDER (HOOKS_TYPES_LIST);
-#undef LC_EXPANDER
-#undef LC_TRAVERSER
-#undef LC_DEFINE_REGISTER
 };
 
 typedef boost::shared_ptr<ICoreProxy> ICoreProxy_ptr;
