@@ -22,6 +22,7 @@
 #include <QSlider>
 #include <QStandardItem>
 #include <QUrl>
+#include <interfaces/core/icoreproxy.h>
 #include "keyinterceptor.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -231,7 +232,7 @@ namespace LMP
 					text += artist.at (0);
 					text += " - ";
 				}
-				
+
 				text = text.left (text.size () - 3);
 
 				if (!text.isEmpty ())

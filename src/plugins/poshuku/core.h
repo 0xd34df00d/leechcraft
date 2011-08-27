@@ -24,7 +24,6 @@
 #include <QUrl>
 #include <QTimer>
 #include <util/tagscompletionmodel.h>
-#include <interfaces/iinfo.h>
 #include <interfaces/structures.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihaveshortcuts.h>

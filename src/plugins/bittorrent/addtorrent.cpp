@@ -20,6 +20,8 @@
 #include <QHeaderView>
 #include <QFileDialog>
 #include <util/util.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/itagsmanager.h>
 #include "addtorrent.h"
 #include "torrentfilesmodel.h"
 #include "xmlsettingsmanager.h"

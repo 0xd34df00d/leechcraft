@@ -22,7 +22,7 @@
 #include <QPointer>
 #include <QPersistentModelIndex>
 #include <QDateTime>
-#include <interfaces/iinfo.h>
+#include <interfaces/core/ihookproxy.h>
 #include <interfaces/ihavetabs.h>
 #include "interfaces/azothcommon.h"
 #include "ui_chattab.h"

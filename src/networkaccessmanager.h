@@ -21,7 +21,7 @@
 #include <memory>
 #include <QNetworkAccessManager>
 #include <QTimer>
-#include "interfaces/iinfo.h"
+#include "interfaces/core/ihookproxy.h"
 
 namespace LeechCraft
 {

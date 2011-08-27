@@ -31,6 +31,7 @@
 #include <qwebhistory.h>
 #include <util/util.h>
 #include <util/defaulthookproxy.h>
+#include <interfaces/core/icoreproxy.h>
 #include "xmlsettingsmanager.h"
 #include "customwebview.h"
 #include "core.h"
@@ -333,7 +334,7 @@ namespace Poshuku
 		emit hookDownloadRequested (proxy, this, request);
 		if (proxy->IsCancelled ())
 			return;
-		
+
 		proxy->FillValue ("request", request);
 
 		Entity e = Util::MakeEntity (request.url (),
@@ -348,7 +349,7 @@ namespace Poshuku
 		emit hookFrameCreated (IHookProxy_ptr (new Util::DefaultHookProxy),
 				this, frame);
 	}
-	
+
 	void CustomWebPage::handleInitialLayoutCompleted ()
 	{
 		emit hookInitialLayoutCompleted (IHookProxy_ptr (new Util::DefaultHookProxy),
@@ -390,7 +391,7 @@ namespace Poshuku
 	{
 		QWebElement body = mainFrame ()->findFirstElement ("body");
 
-		if (body.findAll ("*").count () == 1 && 
+		if (body.findAll ("*").count () == 1 &&
 				body.firstChild ().tagName () == "IMG")
 			mainFrame ()->evaluateJavaScript ("function centerImg() {"
 					"var img = document.querySelector('img');"
@@ -558,7 +559,7 @@ namespace Poshuku
 		emit hookAcceptNavigationRequest (proxy, this, frame, request, type);
 		if (proxy->IsCancelled ())
 			return proxy->GetReturnValue ().toBool ();
-		
+
 		proxy->FillValue ("request", request);
 
 		QString scheme = request.url ().scheme ();
@@ -609,7 +610,7 @@ namespace Poshuku
 		emit hookChooseFile (proxy, this, frame, suggested);
 		if (proxy->IsCancelled ())
 			return proxy->GetReturnValue ().toString ();
-		
+
 		proxy->FillValue ("suggested", suggested);
 
 		return QWebPage::chooseFile (frame, suggested);
@@ -627,7 +628,7 @@ namespace Poshuku
 				clsid, url, names, values);
 		if (proxy->IsCancelled ())
 			return proxy->GetReturnValue ().value<QObject*> ();
-		
+
 		proxy->FillValue ("clsid", clsid);
 		proxy->FillValue ("url", url);
 		proxy->FillValue ("names", names);
@@ -676,7 +677,7 @@ namespace Poshuku
 				this, frame, msg);
 		if (proxy->IsCancelled ())
 			return;
-		
+
 		proxy->FillValue ("message", msg);
 
 		QWebPage::javaScriptAlert (frame, msg);
@@ -690,7 +691,7 @@ namespace Poshuku
 				this, frame, msg);
 		if (proxy->IsCancelled ())
 			return proxy->GetReturnValue ().toBool ();
-		
+
 		proxy->FillValue ("message", msg);
 
 		return QWebPage::javaScriptConfirm (frame, msg);
@@ -706,7 +707,7 @@ namespace Poshuku
 				this, msg, line, sid);
 		if (proxy->IsCancelled ())
 			return;
-		
+
 		proxy->FillValue ("message", msg);
 		proxy->FillValue ("line", line);
 		proxy->FillValue ("sourceID", sid);

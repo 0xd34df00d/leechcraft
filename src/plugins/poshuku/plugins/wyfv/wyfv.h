@@ -26,6 +26,7 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/iflashoverrider.h>
 #include <interfaces/iwebplugin.h>
+#include <interfaces/core/ihookproxy.h>
 
 namespace LeechCraft
 {

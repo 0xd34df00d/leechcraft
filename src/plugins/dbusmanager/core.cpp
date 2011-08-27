@@ -24,6 +24,8 @@
 #include <QDBusConnectionInterface>
 #include <QApplication>
 #include <QTimer>
+#include <interfaces/structures.h>
+#include <interfaces/core/icoreproxy.h>
 #ifdef Q_WS_WIN32
 #include <QProcess>
 #endif

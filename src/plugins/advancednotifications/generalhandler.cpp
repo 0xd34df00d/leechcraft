@@ -18,6 +18,7 @@
 
 #include "generalhandler.h"
 #include <interfaces/structures.h>
+#include <interfaces/core/icoreproxy.h>
 #include "systemtrayhandler.h"
 #include "visualhandler.h"
 #include "audiohandler.h"

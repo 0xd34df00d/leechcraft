@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "networkaccessmanager.h"
+#include <stdexcept>
 #include <QNetworkRequest>
 #include <QDir>
 #include <QFile>

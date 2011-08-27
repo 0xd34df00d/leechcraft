@@ -37,6 +37,7 @@
 #include <util/categoryselector.h>
 #include <util/notificationactionhandler.h>
 #include <interfaces/iplugin2.h>
+#include <interfaces/core/icoreproxy.h>
 #include "interfaces/iprotocolplugin.h"
 #include "interfaces/iprotocol.h"
 #include "interfaces/iaccount.h"
@@ -80,7 +81,7 @@ namespace Azoth
 			<< status.StatusString_;
 		return out;
 	}
-	
+
 	QDataStream& operator>> (QDataStream& in, EntryStatus& status)
 	{
 		quint8 version = 0;
@@ -92,7 +93,7 @@ namespace Azoth
 					<< version;
 			return in;
 		}
-		
+
 		quint8 state;
 		in >> state
 			>> status.StatusString_;
@@ -150,7 +151,7 @@ namespace Azoth
 		ResourceLoaders_ [RLTSystemIconLoader].reset (new Util::ResourceLoader ("azoth/iconsets/system/", this));
 		ResourceLoaders_ [RLTActivityIconLoader].reset (new Util::ResourceLoader ("azoth/iconsets/activities/", this));
 		ResourceLoaders_ [RLTMoodIconLoader].reset (new Util::ResourceLoader ("azoth/iconsets/moods/", this));
-		
+
 		Q_FOREACH (boost::shared_ptr<Util::ResourceLoader> rl, ResourceLoaders_.values ())
 		{
 			rl->AddLocalPrefix ();
@@ -175,7 +176,7 @@ namespace Azoth
 				SLOT (handleEntryMadeCurrent (QObject*)));
 
 		PluginManager_->RegisterHookable (this);
-		
+
 		SmilesOptionsModel_->AddModel (new QStringListModel (QStringList (QString ())));
 
 		qRegisterMetaType<IMessage*> ("LeechCraft::Azoth::IMessage*");
@@ -196,7 +197,7 @@ namespace Azoth
 	void Core::Release ()
 	{
 		ResourceLoaders_.clear ();
-		
+
 #ifdef ENABLE_CRYPT
 		QCAEventHandler_.reset ();
 		KeyStoreMgr_.reset ();
@@ -213,7 +214,7 @@ namespace Azoth
 	{
 		return Proxy_;
 	}
-	
+
 	QList<ANFieldData> Core::GetANFields () const
 	{
 		return ANFields_;
@@ -223,19 +224,19 @@ namespace Azoth
 	{
 		return ResourceLoaders_ [type].get ();
 	}
-	
+
 	QAbstractItemModel* Core::GetSmilesOptionsModel () const
 	{
 		return SmilesOptionsModel_.get ();
 	}
-	
+
 	IEmoticonResourceSource* Core::GetCurrentEmoSource () const
 	{
 		const QString& pack = XmlSettingsManager::Instance ()
 				.property ("SmileIcons").toString ();
 		return SmilesOptionsModel_->GetSourceForOption (pack);
 	}
-	
+
 	QAbstractItemModel* Core::GetChatStylesOptionsModel()
 	{
 		return ChatStylesOptionsModel_.get ();
@@ -272,7 +273,7 @@ namespace Azoth
 		QSet<QByteArray> classes = plugin2->GetPluginClasses ();
 		if (classes.contains ("org.LeechCraft.Plugins.Azoth.Plugins.IProtocolPlugin"))
 			AddProtocolPlugin (plugin);
-		
+
 		if (classes.contains ("org.LeechCraft.Plugins.Azoth.Plugins.IResourceSourcePlugin"))
 			AddResourceSourcePlugin (plugin);
 	}
@@ -281,16 +282,16 @@ namespace Azoth
 	{
 		PluginManager_->RegisterHookable (object);
 	}
-	
+
 	bool Core::CouldHandle (const Entity& e) const
 	{
 		if (!e.Entity_.canConvert<QUrl> ())
 			return false;
-		
+
 		const QUrl& url = e.Entity_.toUrl ();
 		if (!url.isValid ())
 			return false;
-		
+
 		Q_FOREACH (QObject *obj, ProtocolPlugins_)
 		{
 			IProtocolPlugin *protoPlug = qobject_cast<IProtocolPlugin*> (obj);
@@ -302,7 +303,7 @@ namespace Azoth
 						<< "to IProtocolPlugin";
 				continue;
 			}
-			
+
 			Q_FOREACH (QObject *protoObj, protoPlug->GetProtocols ())
 			{
 				IURIHandler *handler = qobject_cast<IURIHandler*> (protoObj);
@@ -312,10 +313,10 @@ namespace Azoth
 					return true;
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	void Core::Handle (Entity e)
 	{
 		const QUrl& url = e.Entity_.toUrl ();
@@ -367,7 +368,7 @@ namespace Azoth
 							.arg (url.toString ())));
 			if (dia->exec () != QDialog::Accepted)
 				return;
-			
+
 			selected = dia->GetSelectedAccount ();
 		}
 		else
@@ -436,12 +437,12 @@ namespace Azoth
 		result.removeAll (0);
 		return result;
 	}
-	
+
 #ifdef ENABLE_CRYPT
 	QList<QCA::PGPKey> Core::GetPublicKeys () const
 	{
 		QList<QCA::PGPKey> result;
-		
+
 		QCA::KeyStore store ("qca-gnupg", KeyStoreMgr_.get ());
 
 		Q_FOREACH (const QCA::KeyStoreEntry& entry, store.entryList ())
@@ -450,14 +451,14 @@ namespace Azoth
 			if (!key.isNull ())
 				result << key;
 		}
-		
+
 		return result;
 	}
 
 	QList<QCA::PGPKey> Core::GetPrivateKeys () const
 	{
 		QList<QCA::PGPKey> result;
-		
+
 		QCA::KeyStore store ("qca-gnupg", KeyStoreMgr_.get ());
 
 		Q_FOREACH (const QCA::KeyStoreEntry& entry, store.entryList ())
@@ -466,10 +467,10 @@ namespace Azoth
 			if (!key.isNull ())
 				result << key;
 		}
-		
+
 		return result;
 	}
-	
+
 	void Core::AssociatePrivateKey (IAccount *acc, const QCA::PGPKey& key) const
 	{
 		QSettings settings (QCoreApplication::organizationName (),
@@ -523,7 +524,7 @@ namespace Azoth
 	{
 		return XferJobManager_.get ();
 	}
-	
+
 	CallManager* Core::GetCallManager () const
 	{
 		return CallManager_.get ();
@@ -590,7 +591,7 @@ namespace Azoth
 			}
 		}
 	}
-	
+
 	void Core::AddResourceSourcePlugin (QObject *rp)
 	{
 		IResourcePlugin *irp = qobject_cast<IResourcePlugin*> (rp);
@@ -607,35 +608,35 @@ namespace Azoth
 			IEmoticonResourceSource *smileSrc = qobject_cast<IEmoticonResourceSource*> (object);
 			if (smileSrc)
 				AddSmileResourceSource (smileSrc);
-			
+
 			IChatStyleResourceSource *chatStyleSrc =
 					qobject_cast<IChatStyleResourceSource*> (object);
 			if (chatStyleSrc)
 				AddChatStyleResourceSource (chatStyleSrc);
 		}
 	}
-	
+
 	void Core::AddSmileResourceSource (IEmoticonResourceSource *src)
 	{
 		SmilesOptionsModel_->AddSource (src);
 	}
-	
+
 	void Core::AddChatStyleResourceSource (IChatStyleResourceSource *src)
 	{
 		ChatStylesOptionsModel_->AddSource (src);
 	}
-	
+
 	QString Core::GetSelectedChatTemplate (QObject *entry, QWebFrame *frame) const
 	{
 		IChatStyleResourceSource *src = GetCurrentChatStyle ();
 		if (!src)
 			return QString ();
-		
+
 		const QString& opt = XmlSettingsManager::Instance ()
 				.property ("ChatWindowStyle").toString ();
 		return src->GetHTMLTemplate (opt, entry, frame);
 	}
-	
+
 	bool Core::AppendMessageByTemplate (QWebFrame *frame,
 			QObject *message, const ChatMsgAppendInfo& info)
 	{
@@ -649,16 +650,16 @@ namespace Azoth
 					<< opt;
 			return false;
 		}
-		
+
 		return src->AppendMessage (frame, message, info);
 	}
-	
+
 	void Core::FrameFocused (QWebFrame *frame)
 	{
 		IChatStyleResourceSource *src = GetCurrentChatStyle ();
 		if (!src)
 			return;
-		
+
 		src->FrameFocused (frame);
 	}
 
@@ -673,7 +674,7 @@ namespace Azoth
 			return h;
 		}
 	}
-	
+
 	QList<QColor> Core::GenerateColors (const QString& coloring) const
 	{
 		QList<QColor> result;
@@ -707,10 +708,10 @@ namespace Azoth
 			Q_FOREACH (const QString& str,
 					coloring.split (' ', QString::SkipEmptyParts))
 				result << QColor (str);
-				
+
 		return result;
 	}
-	
+
 	QString Core::GetNickColor (const QString& nick, const QList<QColor>& colors) const
 	{
 		if (colors.isEmpty ())
@@ -728,7 +729,7 @@ namespace Azoth
 		QColor nc = colors.at (hash % colors.size ());
 		return nc.name ();
 	}
-	
+
 	QString Core::FormatDate (QDateTime dt, IMessage *msg)
 	{
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
@@ -775,7 +776,7 @@ namespace Azoth
 	QString Core::FormatBody (QString body, IMessage *msg)
 	{
 		QObject *msgObj = msg->GetObject ();
-		
+
 		IRichTextMessage *rtMsg = qobject_cast<IRichTextMessage*> (msgObj);
 		const bool isRich = rtMsg && rtMsg->GetRichBody () == body;
 
@@ -808,7 +809,7 @@ namespace Azoth
 				body.replace ('\n', "<br />");
 				body.replace ("  ", "&nbsp; ");
 			}
-			
+
 			body = HandleSmiles (body);
 
 			proxy.reset (new Util::DefaultHookProxy);
@@ -820,7 +821,7 @@ namespace Azoth
 				proxy->GetReturnValue ().toString () :
 				body;
 	}
-	
+
 	QString Core::HandleSmiles (QString body)
 	{
 		const QString& pack = XmlSettingsManager::Instance ()
@@ -840,7 +841,7 @@ namespace Azoth
 		IEmoticonResourceSource *src = SmilesOptionsModel_->GetSourceForOption (pack);
 		if (!src)
 			return body;
-		
+
 		const QString& img = QString ("<img src=\"%1\" title=\"%2\" />");
 		Q_FOREACH (const QString& str, src->GetEmoticonStrings (pack))
 		{
@@ -853,10 +854,10 @@ namespace Azoth
 					.arg (str);
 			body.replace (escaped, smileStr);
 		}
-		
+
 		return body;
 	}
-	
+
 	namespace
 	{
 		QStringList GetDisplayGroups (const ICLEntry *clEntry)
@@ -910,7 +911,7 @@ namespace Azoth
 				SIGNAL (avatarChanged (const QImage&)),
 				this,
 				SLOT (invalidateSmoothAvatarCache ()));
-		
+
 		if (qobject_cast<IMUCEntry*> (clEntry->GetObject ()))
 		{
 			connect (clEntry->GetObject (),
@@ -926,7 +927,7 @@ namespace Azoth
 					this,
 					SLOT (handleBeenBanned (const QString&)));
 		}
-		
+
 		if (qobject_cast<IAdvancedCLEntry*> (clEntry->GetObject ()))
 		{
 			connect (clEntry->GetObject (),
@@ -950,12 +951,12 @@ namespace Azoth
 					this,
 					SLOT (handleEntryPEPEvent (const QString&)));
 		}
-		
+
 #ifdef ENABLE_CRYPT
 		if (!KeyStoreMgr_->isBusy ())
 			RestoreKeyForEntry (clEntry);
 #endif
-		
+
 		EventsNotifier_->RegisterEntry (clEntry);
 
 		const QString& id = clEntry->GetEntryID ();
@@ -968,13 +969,13 @@ namespace Azoth
 			AddEntryTo (clEntry, catItem);
 
 		HandleStatusChanged (clEntry->GetStatus (), clEntry, QString ());
-		
+
 		if (clEntry->GetEntryType () == ICLEntry::ETPrivateChat)
 			handleEntryPermsChanged (clEntry);
 
 		ChatTabsManager_->UpdateEntryMapping (id, clEntry->GetObject ());
 		ChatTabsManager_->SetChatEnabled (id, true);
-		
+
 		proxy.reset (new Util::DefaultHookProxy);
 		emit hookAddingCLEntryEnd (proxy, clEntry->GetObject ());
 	}
@@ -1029,7 +1030,7 @@ namespace Azoth
 			return accountItem;
 		}
 	}
-	
+
 	namespace
 	{
 		QString Status2Str (const EntryStatus& status, boost::shared_ptr<IProxyObject> obj)
@@ -1041,7 +1042,7 @@ namespace Azoth
 			return result;
 		}
 	}
-	
+
 	namespace
 	{
 		void FormatMood (QString& tip, const QMap<QString, QVariant>& moodInfo)
@@ -1052,7 +1053,7 @@ namespace Azoth
 			if (!text.isEmpty ())
 				tip += " (" + text + ")";
 		}
-		
+
 		void FormatActivity (QString& tip, const QMap<QString, QVariant>& actInfo)
 		{
 			tip += "<br />" + Core::tr ("Activity:") + ' ';
@@ -1064,7 +1065,7 @@ namespace Azoth
 			if (!text.isEmpty ())
 				tip += " (" + text + ")";
 		}
-		
+
 		void FormatTune (QString& tip, const QMap<QString, QVariant>& tuneInfo)
 		{
 			const QString& artist = tuneInfo ["artist"].toString ();
@@ -1074,23 +1075,23 @@ namespace Azoth
 			tip += "<br />" + Core::tr ("Now listening to:") + ' ';
 			if (!artist.isEmpty () && !title.isEmpty ())
 				tip += "<em>" + artist + "</em>" +
-						QString::fromUtf8 (" — ") + 
+						QString::fromUtf8 (" — ") +
 						"<em>" + title + "</em>";
 			else if (!artist.isEmpty ())
 				tip += "<em>" + artist + "</em>";
 			else if (!title.isEmpty ())
 				tip += "<em>" + title + "</em>";
-			
+
 			if (!source.isEmpty ())
 				tip += ' ' + Core::tr ("from") +
 						" <em>" + source + "</em>";
-			
+
 			const int length = tuneInfo ["length"].toInt ();
 			if (length)
 				tip += " (" + Util::MakeTimeFromLong (length) + ")";
 		}
 	}
-	
+
 	QString Core::MakeTooltipString (ICLEntry *entry) const
 	{
 		QString tip = "<strong>" + entry->GetEntryName () + "</strong>";
@@ -1101,9 +1102,9 @@ namespace Azoth
 			tip += "<br />";
 			tip += tr ("In groups: ") + entry->Groups ().join ("; ");
 		}
-		
+
 		const QStringList& variants = entry->Variants ();
-		
+
 		IMUCEntry *mucEntry = qobject_cast<IMUCEntry*> (entry->GetParentCLEntry ());
 		if (mucEntry)
 		{
@@ -1151,7 +1152,7 @@ namespace Azoth
 					tip += "<br />" + tr ("Using:") + ' ' + info.value ("client_name").toString ();
 				if (info.contains ("client_version"))
 					tip += " " + info.value ("client_version").toString ();
-				
+
 				if (info.contains ("user_mood"))
 					FormatMood (tip, info ["user_mood"].toMap ());
 				if (info.contains ("user_activity"))
@@ -1173,7 +1174,7 @@ namespace Azoth
 	void Core::HandleStatusChanged (const EntryStatus&,
 			ICLEntry *entry, const QString& variant)
 	{
-		emit hookEntryStatusChanged (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy),					 
+		emit hookEntryStatusChanged (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy),
 				entry->GetObject (), variant);
 
 		invalidateClientsIconCache (entry);
@@ -1187,12 +1188,12 @@ namespace Azoth
 			item->setToolTip (tip);
 			ItemIconManager_->SetIcon (item, icon);
 		}
-		
+
 		const QString& id = entry->GetEntryID ();
 		if (!XferJobManager_->GetPendingIncomingJobsFor (id).isEmpty ())
 			CheckFileIcon (id);
 	}
-	
+
 	void Core::CheckFileIcon (const QString& id)
 	{
 		ICLEntry *entry = qobject_cast<ICLEntry*> (GetEntry (id));
@@ -1210,7 +1211,7 @@ namespace Azoth
 			HandleStatusChanged (entry->GetStatus (variant), entry, variant);
 			return;
 		}
-		
+
 		const QString& filename = XmlSettingsManager::Instance ()
 				.property ("StatusIcons").toString () + "/file";
 		const QString& fileIcon = ResourceLoaders_ [RLTStatusIconLoader]->GetIconPath (filename);
@@ -1218,7 +1219,7 @@ namespace Azoth
 		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
 			ItemIconManager_->SetIcon (item, fileIcon);
 	}
-	
+
 	void Core::IncreaseUnreadCount (ICLEntry* entry, int amount)
 	{
 		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
@@ -1271,19 +1272,19 @@ namespace Azoth
 
 		return ResourceLoaders_ [RLTStatusIconLoader]->GetPath (variants);
 	}
-	
+
 	QIcon Core::GetIconForState (State state) const
 	{
 		return QIcon (GetIconPathForState (state));
 	}
-	
+
 	QIcon Core::GetAffIcon (const QByteArray& affName) const
 	{
 		QString filename = XmlSettingsManager::Instance ()
 				.property ("AffIcons").toString ();
 		filename += '/';
 		filename += affName;
-		
+
 		const QString& path = ResourceLoaders_ [RLTAffIconLoader]->GetIconPath (filename);
 		return QIcon (path);
 	}
@@ -1364,7 +1365,7 @@ namespace Azoth
 		result << id2action.value ("authorize");
 		result << id2action.value ("denyauth");
 		result << entry->GetActions ();
-		
+
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 		proxy->SetReturnValue (QVariantList ());
 		emit hookEntryActionsRequested (proxy, entry->GetObject ());
@@ -1374,7 +1375,7 @@ namespace Azoth
 			QAction *act = qobject_cast<QAction*> (obj);
 			if (!act)
 				continue;
-			
+
 			result << act;
 
 			proxy.reset (new Util::DefaultHookProxy);
@@ -1395,7 +1396,7 @@ namespace Azoth
 							<< place;
 			}
 		}
-		
+
 		result.removeAll (0);
 
 		Proxy_->UpdateIconset (result);
@@ -1423,7 +1424,7 @@ namespace Azoth
 	{
 		if (!entry)
 			return;
-		
+
 		IAdvancedCLEntry *advEntry = qobject_cast<IAdvancedCLEntry*> (entry->GetObject ());
 
 		if (Entry2Actions_.contains (entry))
@@ -1442,7 +1443,7 @@ namespace Azoth
 				SLOT (handleActionOpenChatTriggered ()));
 		Entry2Actions_ [entry] ["openchat"] = openChat;
 		Action2Areas_ [openChat] << CLEAAContactListCtxtMenu;
-		
+
 		if (advEntry)
 		{
 			QAction *drawAtt = new QAction (tr ("Draw attention..."), entry->GetObject ());
@@ -1482,12 +1483,12 @@ namespace Azoth
 			authMenu->menuAction ()->setProperty ("ActionIcon", "azoth_menu_authorization");
 			Entry2Actions_ [entry] ["authorization"] = authMenu->menuAction ();
 			Action2Areas_ [authMenu->menuAction ()] << CLEAAContactListCtxtMenu;
-			
+
 			QAction *grantAuth = authMenu->addAction (tr ("Grant"),
 					this, SLOT (handleActionGrantAuthTriggered ()));
 			grantAuth->setProperty ("ActionIcon", "azoth_auth_grant");
 			grantAuth->setProperty ("Azoth/WithReason", false);
-			
+
 			QAction *grantAuthReason = authMenu->addAction (tr ("Grant with reason..."),
 					this, SLOT (handleActionGrantAuthTriggered ()));
 			grantAuthReason->setProperty ("ActionIcon", "azoth_auth_grant");
@@ -1523,7 +1524,7 @@ namespace Azoth
 			rerequestReason->setProperty ("ActionIcon", "azoth_auth_rerequest");
 			rerequestReason->setProperty ("Azoth/WithReason", true);
 		}
-		
+
 #ifdef ENABLE_CRYPT
 		if (qobject_cast<ISupportPGP*> (entry->GetParentAccount ()))
 		{
@@ -1563,7 +1564,7 @@ namespace Azoth
 					QMenu *changeClass = new QMenu (perms->GetUserString (permClass));
 					Entry2Actions_ [entry] [permClass] = changeClass->menuAction ();
 					Action2Areas_ [changeClass->menuAction ()] << CLEAAContactListCtxtMenu;
-					
+
 					Q_FOREACH (const QByteArray& perm, possible [permClass])
 					{
 						QAction *permAct = changeClass->addAction (perms->GetUserString (perm),
@@ -1580,7 +1581,7 @@ namespace Azoth
 				Entry2Actions_ [entry] ["sep_afterroles"] = sep;
 				Action2Areas_ [sep] << CLEAAContactListCtxtMenu;
 			}
-			
+
 			QAction *addContact = new QAction (tr ("Add to contact list..."), entry->GetObject ());
 			addContact->setProperty ("ActionIcon", "add");
 			connect (addContact,
@@ -1590,7 +1591,7 @@ namespace Azoth
 			Entry2Actions_ [entry] ["add_contact"] = addContact;
 			Action2Areas_ [addContact] << CLEAAContactListCtxtMenu
 					<< CLEAATabCtxtMenu;
-			
+
 			QAction *copyId = new QAction (tr ("Copy ID"), entry->GetObject ());
 			copyId->setProperty ("ActionIcon", "copy");
 			connect (copyId,
@@ -1599,7 +1600,7 @@ namespace Azoth
 					SLOT (handleActionCopyMUCPartID ()));
 			Entry2Actions_ [entry] ["copy_id"] = copyId;
 			Action2Areas_ [copyId] << CLEAAContactListCtxtMenu;
-			
+
 			QAction *sep = Util::CreateSeparator (entry->GetObject ());
 			Entry2Actions_ [entry] ["sep_afterjid"] = sep;
 			Action2Areas_ [sep] << CLEAAContactListCtxtMenu;
@@ -1647,7 +1648,7 @@ namespace Azoth
 			Entry2Actions_ [entry] ["remove"] = remove;
 			Action2Areas_ [remove] << CLEAAContactListCtxtMenu;
 		}
-		
+
 		QAction *sep = Util::CreateSeparator (entry->GetObject ());
 		Entry2Actions_ [entry] ["sep_afterinitiate"] = sep;
 		Action2Areas_ [sep] << CLEAAContactListCtxtMenu;
@@ -1683,7 +1684,7 @@ namespace Azoth
 	{
 		if (!entry)
 			return;
-		
+
 		IAdvancedCLEntry *advEntry = qobject_cast<IAdvancedCLEntry*> (entry->GetObject ());
 
 		IAccount *account = qobject_cast<IAccount*> (entry->GetParentAccount ());
@@ -1695,9 +1696,9 @@ namespace Azoth
 					isOnline;
 			Entry2Actions_ [entry] ["vcard"]->setEnabled (enableVCard);
 		}
-		
+
 		Entry2Actions_ [entry] ["rename"]->setEnabled (entry->GetEntryFeatures () & ICLEntry::FSupportsRenames);
-		
+
 		if (advEntry)
 		{
 			bool suppAtt = advEntry->GetAdvancedFeatures () & IAdvancedCLEntry::AFSupportsAttention;
@@ -1738,7 +1739,7 @@ namespace Azoth
 						action->setChecked (perm == mucPerms->GetPerms (entryObj) [permClass]);
 					}
 			}
-			
+
 			const QString& realJid = mucEntry->GetRealID (entry->GetObject ());
 			Entry2Actions_ [entry] ["add_contact"]->setEnabled (!realJid.isEmpty ());
 			Entry2Actions_ [entry] ["add_contact"]->setProperty ("Azoth/RealID", realJid);
@@ -1824,7 +1825,7 @@ namespace Azoth
 
 		Entry2Items_ [clEntry] << clItem;
 	}
-	
+
 	void Core::SuggestJoiningMUC (IAccount *acc, const QVariantMap& ident)
 	{
 		QList<IAccount*> accs;
@@ -1834,7 +1835,7 @@ namespace Azoth
 		dia->SetIdentifyingData (ident);
 		dia->show ();
 	}
-	
+
 	IChatStyleResourceSource* Core::GetCurrentChatStyle () const
 	{
 		const QString& opt = XmlSettingsManager::Instance ()
@@ -1846,7 +1847,7 @@ namespace Azoth
 					<< opt;
 		return src;
 	}
-	
+
 	void Core::FillANFields ()
 	{
 		const QStringList commonFields = QStringList ("org.LC.AdvNotifications.IM.MUCHighlightMessage")
@@ -1869,19 +1870,19 @@ namespace Azoth
 				tr ("Human-readable name of the sender of the message."),
 				QVariant::String,
 				commonFields);
-		
+
 		ANFields_ << ANFieldData ("org.LC.Plugins.Azoth.SourceID",
 				tr ("Sender ID"),
 				tr ("Human-readable ID of the sender (protocol-specific)."),
 				QVariant::String,
 				commonFields);
-		
+
 		ANFields_ << ANFieldData ("org.LC.Plugins.Azoth.SourceGroups",
 				tr ("Sender groups"),
 				tr ("Groups to which the sender belongs."),
 				QVariant::StringList,
 				commonFields);
-		
+
 		ANFields_ << ANFieldData ("org.LC.Plugins.Azoth.NewStatus",
 				tr ("New status"),
 				tr ("The new status string of the contact."),
@@ -1895,16 +1896,16 @@ namespace Azoth
 		ISupportPGP *pgp = qobject_cast<ISupportPGP*> (acc->GetObject ());
 		if (!pgp)
 			return;
-	
+
 		QSettings settings (QCoreApplication::organizationName (),
 			QCoreApplication::applicationName () + "_Azoth");
 		settings.beginGroup ("PrivateKeys");
 		const QString& keyId = settings.value (acc->GetAccountID ()).toString ();
 		settings.endGroup ();
-		
+
 		if (keyId.isEmpty ())
 			return;
-		
+
 		Q_FOREACH (const QCA::PGPKey& key, GetPrivateKeys ())
 			if (key.keyId () == keyId)
 			{
@@ -1912,7 +1913,7 @@ namespace Azoth
 				break;
 			}
 	}
-	
+
 	void Core::RestoreKeyForEntry (ICLEntry *clEntry)
 	{
 		if (!StoredPublicKeys_.contains (clEntry->GetEntryID ()))
@@ -1976,7 +1977,7 @@ namespace Azoth
 		}
 
 		emit accountAdded (account);
-		
+
 #ifdef ENABLE_CRYPT
 		if (!KeyStoreMgr_->isBusy ())
 			RestoreKeyForAccount (account);
@@ -2068,18 +2069,18 @@ namespace Azoth
 			qWarning () << Q_FUNC_INFO
 					<< "account's parent proto isn't IProtocol"
 					<< account->GetParentProtocol ();
-		
+
 		QObject *xferMgr = account->GetTransferManager ();
 		if (xferMgr)
 		{
 			XferJobManager_->AddAccountManager (xferMgr);
-			
+
 			connect (xferMgr,
 					SIGNAL (fileOffered (QObject*)),
 					this,
 					SLOT (handleFileOffered (QObject*)));
 		}
-		
+
 		CallManager_->AddAccount (account->GetObject ());
 	}
 
@@ -2109,7 +2110,7 @@ namespace Azoth
 				break;
 			}
 		}
-		
+
 		Q_FOREACH (ICLEntry *entry, Entry2Items_.keys ())
 			if (entry->GetParentAccount () == account)
 				Entry2Items_.remove (entry);
@@ -2177,7 +2178,7 @@ namespace Azoth
 						<< "is not a valid ICLEntry";
 				continue;
 			}
-			
+
 			disconnect (clitem,
 					0,
 					this,
@@ -2208,7 +2209,7 @@ namespace Azoth
 					<< sender ();
 			return;
 		}
-		
+
 		IProtocol *proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
 		if (!proto)
 		{
@@ -2226,7 +2227,7 @@ namespace Azoth
 		}
 		XmlSettingsManager::Instance ().setProperty (id,
 				serializedStatus);
-		
+
 		for (int i = 0, size = CLModel_->rowCount (); i < size; ++i)
 		{
 			QStandardItem *item = CLModel_->item (i);
@@ -2256,7 +2257,7 @@ namespace Azoth
 
 		HandleStatusChanged (status, entry, variant);
 	}
-	
+
 	void Core::handleEntryPEPEvent (const QString&)
 	{
 		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
@@ -2286,7 +2287,7 @@ namespace Azoth
 
 		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
 			item->setText (newName);
-			
+
 		if (entry->Variants ().size ())
 			HandleStatusChanged (entry->GetStatus (), entry, entry->Variants ().first ());
 	}
@@ -2301,10 +2302,10 @@ namespace Azoth
 					<< "could not be casted to ICLEntry";
 			return;
 		}
-		
+
 		if (entry->GetEntryType () == ICLEntry::ETChat)
 			newGroups = GetDisplayGroups (entry);
-		
+
 		if (!Entry2Items_.contains (entry))
 			return;
 
@@ -2330,7 +2331,7 @@ namespace Azoth
 
 		HandleStatusChanged (entry->GetStatus (), entry, QString ());
 	}
-	
+
 	void Core::handleEntryPermsChanged (ICLEntry *suggest)
 	{
 		ICLEntry *entry = suggest ? suggest : qobject_cast<ICLEntry*> (sender ());
@@ -2341,12 +2342,12 @@ namespace Azoth
 					<< "could not be casted to ICLEntry";
 			return;
 		}
-		
+
 		QObject *entryObj = entry->GetObject ();
 		IMUCPerms *mucPerms = qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ());
 		if (!mucPerms)
 			return;
-		
+
 		const QString& tip = MakeTooltipString (entry);
 		const QString& name = mucPerms->GetAffName (entryObj);
 		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
@@ -2368,7 +2369,7 @@ namespace Azoth
 		}
 
 		ICLEntry *other = qobject_cast<ICLEntry*> (msg->OtherPart ());
-		
+
 		if (!other && msg->OtherPart ())
 		{
 			qWarning () << Q_FUNC_INFO
@@ -2387,7 +2388,7 @@ namespace Azoth
 			return;
 
 		ICLEntry *parentCL = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
-		
+
 		if (ShouldCountUnread (parentCL, msg))
 			IncreaseUnreadCount (parentCL);
 
@@ -2547,7 +2548,7 @@ namespace Azoth
 					.arg (entry->GetEntryName ())
 					.arg (msg);
 		Entity e = Util::MakeNotification ("Azoth", str, PInfo_);
-		
+
 		BuildNotification (e, entry);
 		e.Additional_ ["org.LC.AdvNotifications.EventID"] =
 				"org.LC.Plugins.Azoth.AuthRequestFrom/" + entry->GetEntryID ();
@@ -2556,7 +2557,7 @@ namespace Azoth
 		e.Additional_ ["org.LC.AdvNotifications.FullText"] = str;
 		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
 		e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = msg;
-		
+
 		Util::NotificationActionHandler *nh =
 				new Util::NotificationActionHandler (e, this);
 		nh->AddFunction (tr ("Authorize"),
@@ -2571,7 +2572,7 @@ namespace Azoth
 		nh->AddDependentObject (entry->GetObject ());
 		emit gotEntity (e);
 	}
-	
+
 	void Core::handleAttentionDrawn (const QString& text, const QString& variant)
 	{
 		if (XmlSettingsManager::Instance ()
@@ -2586,7 +2587,7 @@ namespace Azoth
 					<< "doesn't implement ICLEntry";
 			return;
 		}
-		
+
 		const QString& str = text.isEmpty () ?
 				tr ("%1 requests your attention")
 					.arg (entry->GetEntryName ()) :
@@ -2616,7 +2617,7 @@ namespace Azoth
 
 		emit gotEntity (e);
 	}
-	
+
 	void Core::handleNicknameConflict (const QString& usedNick)
 	{
 		ICLEntry *clEntry = qobject_cast<ICLEntry*> (sender ());
@@ -2628,7 +2629,7 @@ namespace Azoth
 					<< "doesn't implement ICLEntry or IMUCEntry";
 			return;
 		}
-		
+
 		QString altNick;
 		if (XmlSettingsManager::Instance ().property ("UseAltNick").toBool ())
 		{
@@ -2637,7 +2638,7 @@ namespace Azoth
 			if (altNick.isEmpty ())
 				altNick = usedNick + "_azoth";
 		}
-				
+
 		if ((altNick.isEmpty () || altNick == usedNick) &&
 				QMessageBox::question (0,
 						tr ("Nickname conflict"),
@@ -2659,11 +2660,11 @@ namespace Azoth
 				altNick;
 		if (newNick.isEmpty ())
 			return;
-		
+
 		entry->SetNick (newNick);
 		entry->Join ();
 	}
-	
+
 	void Core::handleBeenKicked (const QString& reason)
 	{
 		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
@@ -2675,21 +2676,21 @@ namespace Azoth
 					<< "doesn't implement ICLEntry or IMUCEntry";
 			return;
 		}
-		
+
 		const QString& text = reason.isEmpty () ?
 				tr ("You have been kicked from %1. Do you want to rejoin?")
 					.arg (entry->GetEntryName ()) :
 				tr ("You have been kicked from %1: %2. Do you want to rejoin?")
 					.arg (entry->GetEntryName ())
 					.arg (reason);
-					
+
 		if (QMessageBox::question (0,
 				"LeechCraft Azoth",
 				text,
 				QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
 			mucEntry->Join ();
 	}
-	
+
 	void Core::handleBeenBanned (const QString& reason)
 	{
 		ICLEntry* entry = qobject_cast<ICLEntry*> (sender ());
@@ -2700,7 +2701,7 @@ namespace Azoth
 					<< "doesn't implement ICLEntry";
 			return;
 		}
-		
+
 		const QString& text = reason.isEmpty () ?
 				tr ("You have been banned from %1.")
 					.arg (entry->GetEntryName ()) :
@@ -2736,7 +2737,7 @@ namespace Azoth
 
 		Entity e = Util::MakeNotification ("Azoth", str, PInfo_);
 		BuildNotification (e, entry);
-		
+
 		e.Additional_ ["org.LC.AdvNotifications.EventID"] =
 				"org.LC.Plugins.Azoth.Event/" + eventType + entry->GetEntryID ();
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = eventType;
@@ -2816,7 +2817,7 @@ namespace Azoth
 				tr ("%1 (%2) granted subscription."),
 				tr ("%1 (%2) granted subscription: %3."));
 	}
-	
+
 	void Core::handleMUCInvitation (const QVariantMap& ident,
 			const QString& inviter, const QString& reason)
 	{
@@ -2828,7 +2829,7 @@ namespace Azoth
 					<< "doesn't implement IAccount";
 			return;
 		}
-		
+
 		const QString& name = ident ["HumanReadableName"].toString ();
 
 		const QString str = reason.isEmpty () ?
@@ -2851,7 +2852,7 @@ namespace Azoth
 		e.Additional_ ["org.LC.AdvNotifications.FullText"] = str;
 		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
 		e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = reason;
-		
+
 		Util::NotificationActionHandler *nh = new Util::NotificationActionHandler (e);
 		nh->AddFunction (tr ("Join"), boost::bind (&Core::SuggestJoiningMUC,
 					this, acc, ident));
@@ -2873,7 +2874,7 @@ namespace Azoth
 				ItemIconManager_->SetIcon (item, State2IconCache_ [state]);
 		}
 	}
-	
+
 	void Core::handleGroupContactsChanged ()
 	{
 		Q_FOREACH (ICLEntry *entry, Entry2Items_.keys ())
@@ -2926,43 +2927,43 @@ namespace Azoth
 			item->setData (0, CLRUnreadMsgCount);
 			RecalculateUnreadForParents (item);
 		}
-		
+
 		Entity e = Util::MakeNotification ("Azoth", QString (), PInfo_);
 		e.Additional_ ["org.LC.AdvNotifications.SenderID"] = "org.LeechCraft.Azoth";
 		e.Additional_ ["org.LC.AdvNotifications.EventID"] =
 				"org.LC.Plugins.Azoth.IncomingMessageFrom/" + entry->GetEntryID ();
 		e.Additional_ ["org.LC.AdvNotifications.EventCategory"] =
 				"org.LC.AdvNotifications.Cancel";
-		
+
 		emit gotEntity (e);
-		
+
 		e.Additional_ ["org.LC.AdvNotifications.EventID"] =
 				"org.LC.Plugins.Azoth.AttentionDrawnBy/" + entry->GetEntryID ();
-				
+
 		emit gotEntity (e);
 	}
-	
+
 	void Core::handleFileOffered (QObject *jobObj)
 	{
 		ITransferJob *job = qobject_cast<ITransferJob*> (jobObj);
-		if (!job)	
+		if (!job)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< jobObj
 					<< "could not be casted to ITransferJob";
 			return;
 		}
-		
+
 		const QString& id = job->GetSourceID ();
 		IncreaseUnreadCount (qobject_cast<ICLEntry*> (GetEntry (id)));
 
 		CheckFileIcon (id);
 	}
-	
+
 	void Core::handleJobDeoffered (QObject *jobObj)
 	{
 		ITransferJob *job = qobject_cast<ITransferJob*> (jobObj);
-		if (!job)	
+		if (!job)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< jobObj
@@ -3025,7 +3026,7 @@ namespace Azoth
 				property ("Azoth/Entry").value<ICLEntry*> ();
 		ChatTabsManager_->OpenChat (entry);
 	}
-	
+
 	void Core::handleActionDrawAttention ()
 	{
 		QAction *action = qobject_cast<QAction*> (sender ());
@@ -3047,15 +3048,15 @@ namespace Azoth
 					<< "doesn't implement IAdvancedCLEntry";
 			return;
 		}
-		
+
 		const QStringList& vars = entry->Variants ();
 		DrawAttentionDialog dia (vars);
 		if (dia.exec () != QDialog::Accepted)
 			return;
-		
+
 		const QString& variant = dia.GetResource ();
 		const QString& text = dia.GetText ();
-		
+
 		QStringList varsToDraw;
 		if (!variant.isEmpty ())
 			varsToDraw << variant;
@@ -3147,7 +3148,7 @@ namespace Azoth
 
 		account->RemoveEntry (entry->GetObject ());
 	}
-	
+
 	void Core::handleActionGrantAuthTriggered()
 	{
 		ManipulateAuth ("grantauth",
@@ -3181,11 +3182,11 @@ namespace Azoth
 	{
 		ICLEntry *entry = sender ()->
 				property ("Azoth/Entry").value<ICLEntry*> ();
-				
+
 		QObject *accObj = entry->GetParentAccount ();
 		IAccount *acc = qobject_cast<IAccount*> (accObj);
 		ISupportPGP *pgp = qobject_cast<ISupportPGP*> (accObj);
-		
+
 		if (!pgp)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -3199,7 +3200,7 @@ namespace Azoth
 							.arg (entry->GetEntryName ()));
 			return;
 		}
-		
+
 		const QString& str = tr ("Please select the key for %1 (%2).")
 				.arg (entry->GetEntryName ())
 				.arg (entry->GetHumanReadableID ());
@@ -3210,7 +3211,7 @@ namespace Azoth
 		const QCA::PGPKey& key = dia.GetSelectedKey ();
 
 		pgp->SetEntryKey (entry->GetObject (), key);
-		
+
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Azoth");
 		settings.beginGroup ("PublicEntryKeys");
@@ -3262,7 +3263,7 @@ namespace Azoth
 					<< sender ();
 			return;
 		}
-		
+
 		if (XmlSettingsManager::Instance ().property ("CloseConfOnLeave").toBool ())
 		{
 			ChatTabsManager_->CloseChat (entry);
@@ -3277,7 +3278,7 @@ namespace Azoth
 							<< "to ICLEntry";
 					continue;
 				}
-				
+
 				ChatTabsManager_->CloseChat (partEntry);
 			}
 		}
@@ -3328,25 +3329,25 @@ namespace Azoth
 					<< sender ()->property ("Azoth/RealID");
 			return;
 		}
-		
+
 		ICLEntry *entry = sender ()->
 				property ("Azoth/Entry").value<ICLEntry*> ();
 		const QString& nick = entry->GetEntryName ();
-		
+
 		IAccount *account = qobject_cast<IAccount*> (entry->GetParentAccount ());
-		
+
 		std::auto_ptr<AddContactDialog> dia (new AddContactDialog (account));
 		dia->SetContactID (id);
 		dia->SetNick (nick);
 		if (dia->exec () != QDialog::Accepted)
 			return;
-		
+
 		dia->GetSelectedAccount ()->RequestAuth (dia->GetContactID (),
 					dia->GetReason (),
 					dia->GetNick (),
 					dia->GetGroups ());
 	}
-	
+
 	void Core::handleActionCopyMUCPartID ()
 	{
 		const QString& id = sender ()->property ("Azoth/RealID").toString ();
@@ -3358,7 +3359,7 @@ namespace Azoth
 					<< sender ()->property ("Azoth/RealID");
 			return;
 		}
-		
+
 		QApplication::clipboard ()->setText (id, QClipboard::Clipboard);
 		QApplication::clipboard ()->setText (id, QClipboard::Selection);
 	}
@@ -3399,19 +3400,19 @@ namespace Azoth
 
 		mucPerms->SetPerm (entry->GetObject (), permClass, perm, QString ());
 	}
-	
+
 #ifdef ENABLE_CRYPT
 	void Core::handleQCAEvent (int id, const QCA::Event& event)
 	{
 		qDebug () << Q_FUNC_INFO << id << event.type ();
 	}
-	
+
 	void Core::handleQCABusyFinished ()
 	{
 		Q_FOREACH (IAccount *acc, GetAccounts ())
 		{
 			RestoreKeyForAccount (acc);
-			
+
 			Q_FOREACH (QObject *entryObj, acc->GetCLEntries ())
 			{
 				ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
@@ -3422,7 +3423,7 @@ namespace Azoth
 							<< "doesn't implement ICLEntry";
 					continue;
 				}
-				
+
 				RestoreKeyForEntry (entry);
 			}
 		}

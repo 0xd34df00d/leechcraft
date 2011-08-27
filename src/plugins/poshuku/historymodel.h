@@ -23,7 +23,7 @@
 #include <QAbstractItemModel>
 #include <QStringList>
 #include <QDateTime>
-#include <interfaces/iinfo.h>
+#include <interfaces/core/ihookproxy.h>
 
 class QTimer;
 class QAction;

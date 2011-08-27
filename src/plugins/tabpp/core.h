@@ -19,10 +19,11 @@
 #ifndef PLUGINS_TABPP_CORE_H
 #define PLUGINS_TABPP_CORE_H
 #include <QAbstractItemModel>
-#include "interfaces/iinfo.h"
+#include <interfaces/core/icoreproxy.h>
 
 class QTabBar;
 class QSortFilterProxyModel;
+class ICoreTabWidget;
 
 namespace LeechCraft
 {

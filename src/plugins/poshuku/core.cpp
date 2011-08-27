@@ -20,6 +20,7 @@
 #include <algorithm>
 #include <memory>
 #include <typeinfo>
+#include <stdexcept>
 #include <QString>
 #include <QUrl>
 #include <QWidget>
@@ -45,6 +46,7 @@
 #include <util/util.h>
 #include <util/defaulthookproxy.h>
 #include <interfaces/ihaveshortcuts.h>
+#include <interfaces/core/icoreproxy.h>
 #include "browserwidget.h"
 #include "customwebview.h"
 #include "addtofavoritesdialog.h"

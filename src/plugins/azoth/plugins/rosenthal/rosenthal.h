@@ -23,6 +23,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/ihavesettings.h>
+#include <interfaces/core/ihookproxy.h>
 
 class QWebView;
 class QTranslator;
@@ -57,7 +58,7 @@ namespace Rosenthal
 		QString GetInfo () const;
 		QIcon GetIcon () const;
 		QSet<QByteArray> GetPluginClasses () const;
-		
+
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	protected:
 		bool eventFilter (QObject*, QEvent*);
@@ -68,7 +69,7 @@ namespace Rosenthal
 		void hookChatTabCreated (LeechCraft::IHookProxy_ptr,
 				QObject*,
 				QObject*,
-				QWebView*); 
+				QWebView*);
 		void handleCorrectionTriggered ();
 		void handleHighlighterDestroyed ();
 		void handleCustomLocalesChanged ();

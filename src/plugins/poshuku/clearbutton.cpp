@@ -20,6 +20,7 @@
 #include "clearbutton.h"
 #include <QPainter>
 #include <QVariant>
+#include <interfaces/core/icoreproxy.h>
 #include "core.h"
 
 namespace LeechCraft

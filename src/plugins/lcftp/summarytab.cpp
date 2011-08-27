@@ -19,6 +19,7 @@
 #include "summarytab.h"
 #include <QTreeView>
 #include <QTimer>
+#include <interfaces/core/icoreproxy.h>
 #include "core.h"
 
 namespace LeechCraft

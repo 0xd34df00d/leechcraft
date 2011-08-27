@@ -19,6 +19,7 @@
 #include "pendingmanager.h"
 #include <QStandardItemModel>
 #include <QtDebug>
+#include <interfaces/core/icoreproxy.h>
 #include "deptreebuilder.h"
 #include "core.h"
 
@@ -137,7 +138,7 @@ namespace LeechCraft
 
 				ID2ModelRow_ [id] = packageItem;
 				RootItemForAction_ [action]->appendRow (packageItem);
-				
+
 				if (action != ARemove)
 					NotifyFetchListUpdate ();
 			}
@@ -159,7 +160,7 @@ namespace LeechCraft
 				QStandardItem *item = ID2ModelRow_.take (id);
 				item->parent ()->takeRow (item->row ());
 				delete item;
-				
+
 				if (action != ARemove)
 					NotifyFetchListUpdate ();
 			}
@@ -188,7 +189,7 @@ namespace LeechCraft
 					PendingModel_->appendRow (item);
 				}
 			}
-			
+
 			void PendingManager::NotifyFetchListUpdate ()
 			{
 				QList<int> ids = (ScheduledForAction_ [AInstall] + ScheduledForAction_ [AUpdate]).toList ();

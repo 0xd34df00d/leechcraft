@@ -33,6 +33,8 @@
 #include <QInputDialog>
 #include <libtorrent/session.hpp>
 #include <interfaces/entitytesthandleresult.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/itagsmanager.h>
 #include <util/tagscompletionmodel.h>
 #include <util/util.h>
 #include "core.h"

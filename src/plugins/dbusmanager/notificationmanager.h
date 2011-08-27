@@ -22,7 +22,7 @@
 #include <QObject>
 #include <QDBusInterface>
 #include <QPointer>
-#include <interfaces/iinfo.h>
+#include <interfaces/structures.h>
 
 class QDBusPendingCallWatcher;
 

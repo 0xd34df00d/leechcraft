@@ -29,6 +29,9 @@
 #include <QTextCodec>
 #include <QNetworkReply>
 #include <interfaces/iwebbrowser.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/itagsmanager.h>
+#include <interfaces/core/ipluginsmanager.h>
 #include <util/mergemodel.h>
 #include <util/util.h>
 #include <util/fileremoveguard.h>
@@ -69,7 +72,7 @@ namespace Aggregator
 		qRegisterMetaType<Item_ptr> ("Item_ptr");
 		qRegisterMetaType<Channel_ptr> ("Channel_ptr");
 		qRegisterMetaTypeStreamOperators<Feed> ("LeechCraft::Plugins::Aggregator::Feed");
-		
+
 		PluginManager_->RegisterHookable (this);
 	}
 
@@ -99,7 +102,7 @@ namespace Aggregator
 	{
 		return Proxy_;
 	}
-	
+
 	void Core::AddPlugin (QObject *plugin)
 	{
 		PluginManager_->AddPlugin (plugin);
@@ -279,7 +282,7 @@ namespace Aggregator
 					tr ("Aggregator: general storage initialization error."));
 			return false;
 		}
-		
+
 		PluginManager_->RegisterHookable (StorageBackend_.get ());
 
 		ChannelsModel_ = new ChannelsModel ();
@@ -1375,7 +1378,7 @@ namespace Aggregator
 				item->PubDate_ = QDateTime::currentDateTime ();
 		}
 	};
-	
+
 	namespace
 	{
 		QVariantMap GetItemMapChannelPart (const Channel_ptr channel)
@@ -1387,7 +1390,7 @@ namespace Aggregator
 			result ["ChannelTags"] = channel->Tags_;
 			return result;
 		}
-		
+
 		QVariantMap GetItemMapItemPart (const Item_ptr item)
 		{
 			QVariantMap result;
@@ -1401,7 +1404,7 @@ namespace Aggregator
 			result ["ItemCommentsPageLink"] = item->CommentsPageLink_;
 			return result;
 		}
-		
+
 		QVariantList GetItems (const Channel_ptr channel)
 		{
 			QVariantList result;
@@ -1432,7 +1435,7 @@ namespace Aggregator
 					boost::bind (&RegexpMatcherManager::HandleItem,
 						&RegexpMatcherManager::Instance (),
 						_1));
-			
+
 			emit hookGotNewItems (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy),
 					GetItems (channel));
 		}
@@ -1539,7 +1542,7 @@ namespace Aggregator
 				emit gotEntity (Util::MakeNotification ("Aggregator", str, PInfo_));
 				continue;
 			}
-			
+
 			const QVariantMap& channelPart = GetItemMapChannelPart (ourChannel);
 
 			int newItems = 0;
@@ -1571,7 +1574,7 @@ namespace Aggregator
 					StorageBackend_->AddItem (item);
 
 					RegexpMatcherManager::Instance ().HandleItem (item);
-					
+
 					QVariantList itemData;
 					itemData << GetItemMapItemPart (item).unite (channelPart);
 					emit hookGotNewItems (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy),

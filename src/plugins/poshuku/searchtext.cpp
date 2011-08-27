@@ -18,6 +18,7 @@
 
 #include "searchtext.h"
 #include <util/util.h>
+#include <interfaces/core/icoreproxy.h>
 #include "core.h"
 
 namespace LeechCraft

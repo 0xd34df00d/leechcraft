@@ -23,6 +23,7 @@
 #include <QTimer>
 #include <QDialog>
 #include <util/util.h>
+#include <interfaces/core/icoreproxy.h>
 #include "phonon.h"
 #include "videosettings.h"
 #include "xmlsettingsmanager.h"

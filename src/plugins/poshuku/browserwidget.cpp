@@ -54,6 +54,7 @@
 #include <util/util.h>
 #include <util/defaulthookproxy.h>
 #include <util/notificationactionhandler.h>
+#include <interfaces/core/icoreproxy.h>
 #include "core.h"
 #include "historymodel.h"
 #include "finddialog.h"

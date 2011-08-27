@@ -31,6 +31,8 @@
 #include <QKeyEvent>
 #include <util/defaulthookproxy.h>
 #include <util/util.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ipluginsmanager.h>
 #include "interfaces/iclentry.h"
 #include "interfaces/imessage.h"
 #include "interfaces/irichtextmessage.h"

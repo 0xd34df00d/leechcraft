@@ -57,6 +57,8 @@
 #include <libtorrent/file.hpp>
 #include <libtorrent/magnet_uri.hpp>
 #include <interfaces/entitytesthandleresult.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/itagsmanager.h>
 #include <util/tagscompletionmodel.h>
 #include <util/util.h>
 #include "xmlsettingsmanager.h"

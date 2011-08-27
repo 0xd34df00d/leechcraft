@@ -16,32 +16,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_GLANCE_CORE_H
-#define PLUGINS_GLANCE_CORE_H
-#include <QObject>
-#include <interfaces/iinfo.h>
+#ifndef INTERFACES_CORE_ICORETABWIDGET_H
+#define INTERFACES_CORE_ICORETABWIDGET_H
+#include <QTabBar>
 
-class QMainWindow;
+class QObject;
+class QWidget;
+class QIcon;
 
-namespace LeechCraft
+class ICoreTabWidget
 {
-namespace Plugins
-{
-namespace Glance
-{
-	class Core : public QObject
-	{
-		Q_OBJECT
+public:
+	virtual ~ICoreTabWidget () {}
 
-		ICoreProxy_ptr Proxy_;
-		Core ();
-	public:
-		static Core& Instance ();
-		void SetProxy (ICoreProxy_ptr);
-		ICoreProxy_ptr GetProxy () const;
-		QMainWindow* GetMainWindow () const;
-	};
+	virtual QObject* GetObject () = 0;
+	virtual int WidgetCount () const = 0;
+	virtual QWidget* Widget (int) const = 0;
+	virtual void AddAction2TabBarLayout (QTabBar::ButtonPosition, QAction*) = 0;
+	virtual int IndexOf (QWidget*) const = 0;
+	virtual QIcon TabIcon (int) const = 0;
+	virtual QString TabText (int) const = 0;
+	virtual bool IsPinTab (int) const = 0;
+	virtual int CurrentIndex () const = 0;
+
+	virtual void setCurrentIndex (int) = 0;
+	virtual void setCurrentWidget (QWidget*) = 0;
 };
-};
-};
-#endif // PLUGINS_GLANCE_CORE_H
+
+Q_DECLARE_INTERFACE (ICoreTabWidget, "org.Deviant.LeechCraft.ICoreTabWidget/1.0");
+
+#endif

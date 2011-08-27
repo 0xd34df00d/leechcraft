@@ -22,8 +22,10 @@
 #include <QApplication>
 #include <QSortFilterProxyModel>
 #include <QDynamicPropertyChangeEvent>
+#include <QtDebug>
 #include <util/treeitem.h>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/core/icoretabwidget.h>
 
 bool operator< (const QStringList& left, const QStringList& right)
 {

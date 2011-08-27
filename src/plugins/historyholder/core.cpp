@@ -28,6 +28,8 @@
 #include <QCoreApplication>
 #include <util/structuresops.h>
 #include <util/util.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/itagsmanager.h>
 #include "findproxy.h"
 
 using namespace LeechCraft::Plugins::HistoryHolder;

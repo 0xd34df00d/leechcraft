@@ -28,6 +28,7 @@
 #include <util/categoryselector.h>
 #include <util/util.h>
 #include <util/mergemodel.h>
+#include <interfaces/core/itagsmanager.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "itemsfiltermodel.h"

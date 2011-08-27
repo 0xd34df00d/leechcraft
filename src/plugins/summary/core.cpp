@@ -19,6 +19,10 @@
 #include "core.h"
 #include <interfaces/ijobholder.h>
 #include <util/tagsfiltermodel.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/core/icoretabwidget.h>
+#include <interfaces/core/itagsmanager.h>
 #include "summarywidget.h"
 #include "requestnormalizer.h"
 #include "summarytagsfilter.h"

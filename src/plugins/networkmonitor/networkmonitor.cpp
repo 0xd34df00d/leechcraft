@@ -21,7 +21,9 @@
 #include <QMenu>
 #include <QSortFilterProxyModel>
 #include <QMainWindow>
+#include <QNetworkAccessManager>
 #include <util/util.h>
+#include <interfaces/core/icoreproxy.h>
 #include "requestmodel.h"
 #include "headermodel.h"
 

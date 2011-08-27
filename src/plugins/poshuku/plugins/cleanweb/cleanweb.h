@@ -23,6 +23,7 @@
 #include <QMap>
 #include <QTranslator>
 #include <QWebPage>
+#include <QNetworkAccessManager>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/ihavesettings.h>
@@ -30,6 +31,8 @@
 #include <interfaces/istartupwizard.h>
 #include <interfaces/iwebplugin.h>
 #include <interfaces/poshukutypes.h>
+#include <interfaces/core/ihookproxy.h>
+#include <interfaces/core/ipluginsmanager.h>
 
 class QWebView;
 

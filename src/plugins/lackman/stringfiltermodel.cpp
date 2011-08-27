@@ -18,6 +18,8 @@
 
 #include "stringfiltermodel.h"
 #include <QSet>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/itagsmanager.h>
 #include "packagesmodel.h"
 #include "core.h"
 
@@ -31,25 +33,25 @@ namespace LeechCraft
 			: QSortFilterProxyModel (parent)
 			{
 			}
-			
+
 			bool StringFilterModel::filterAcceptsRow (int sourceRow, const QModelIndex& sourceParent) const
 			{
 				if (QSortFilterProxyModel::filterAcceptsRow (sourceRow, sourceParent))
 					return true;
-				
+
 				const QString& filterString = filterRegExp ().pattern ();
 				const QModelIndex& idx = sourceModel ()->index (sourceRow, 0, sourceParent);
-				
+
 				if (sourceModel ()->data (idx, PackagesModel::PMRShortDescription)
 						.toString ().contains (filterString, Qt::CaseInsensitive))
 					return true;
-				
+
 				const QSet<QString>& tags = QSet<QString>::fromList (sourceModel ()->
 								data (idx, PackagesModel::PMRTags).toStringList ());
 				const QStringList& queryList = Core::Instance ().GetProxy ()->
 						GetTagsManager ()->Split (filterString);
 				QSet<QString> userDefined = QSet<QString>::fromList (queryList);
-				
+
 				return !userDefined.intersect (tags).empty ();
 			}
 		}

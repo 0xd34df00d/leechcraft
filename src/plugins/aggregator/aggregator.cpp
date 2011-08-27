@@ -35,6 +35,7 @@
 #include <QCursor>
 #include <QKeyEvent>
 #include <interfaces/entitytesthandleresult.h>
+#include <interfaces/core/icoreproxy.h>
 #include <util/tagscompletionmodel.h>
 #include <util/util.h>
 #include <util/categoryselector.h>

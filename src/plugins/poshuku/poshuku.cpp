@@ -30,6 +30,7 @@
 #include <QMainWindow>
 #include <QtDebug>
 #include <interfaces/entitytesthandleresult.h>
+#include <interfaces/core/icoreproxy.h>
 #include <util/util.h>
 #include <util/tagscompletionmodel.h>
 #include <util/backendselector.h>

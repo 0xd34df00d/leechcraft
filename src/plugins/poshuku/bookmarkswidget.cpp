@@ -20,6 +20,8 @@
 #include <QInputDialog>
 #include <QMessageBox>
 #include <util/flattofoldersproxymodel.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/itagsmanager.h>
 #include "core.h"
 #include "favoritesdelegate.h"
 #include "favoritesmodel.h"

@@ -20,6 +20,8 @@
 #include <QDomElement>
 #include <QXmppClient.h>
 #include <interfaces/ilastactivityprovider.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ipluginsmanager.h>
 #include "core.h"
 
 namespace LeechCraft
@@ -34,48 +36,48 @@ namespace Xoox
 	{
 		return QStringList (NsLastActivity);
 	}
-	
+
 	bool LastActivityManager::handleStanza (const QDomElement& elem)
 	{
 		if (elem.tagName () != "iq")
 			return false;
-		
+
 		const QDomElement& query = elem.firstChildElement ("query");
 		if (query.namespaceURI () != NsLastActivity)
 			return false;
-		
+
 		const QString& from = elem.attribute ("from");
-		
+
 		if (elem.attribute ("type") == "get")
 		{
 			IPluginsManager *pMgr = Core::Instance ()
 					.GetProxy ()->GetPluginsManager ();
 			ILastActivityProvider *prov = pMgr->
 					GetAllCastableTo<ILastActivityProvider*> ().value (0);
-					
+
 			if (!prov)
 				return false;
 
 			QXmppIq iq = CreateIq (from, prov->GetInactiveSeconds ());
 			iq.setType (QXmppIq::Result);
 			iq.setId (elem.attribute ("id"));
-			
+
 			client ()->sendPacket (iq);
 		}
 		else if (elem.attribute ("type") == "result" &&
 				query.hasAttribute ("seconds"))
 			emit gotLastActivity (from, query.attribute ("seconds").toInt ());
-		
+
 		return true;
 	}
-	
+
 	void LastActivityManager::RequestLastActivity (const QString& jid)
 	{
 		QXmppIq iq = CreateIq (jid);
 		iq.setType (QXmppIq::Get);
 		client ()->sendPacket (iq);
 	}
-	
+
 	QXmppIq LastActivityManager::CreateIq (const QString& to, int secs)
 	{
 		QXmppIq iq;
@@ -86,7 +88,7 @@ namespace Xoox
 		if (secs != -1)
 			queryElem.setAttribute ("seconds", QString::number (secs));
 		iq.setExtensions (queryElem);
-		
+
 		return iq;
 	}
 }
