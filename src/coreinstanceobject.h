@@ -36,7 +36,7 @@ namespace LeechCraft
 							  , public IPluginReady
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveSettings IHaveTabs)
+		Q_INTERFACES (IInfo IHaveSettings IHaveTabs IPluginReady)
 
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 		TabClasses_t Classes_;
