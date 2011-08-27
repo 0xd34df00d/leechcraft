@@ -110,6 +110,7 @@ namespace LeechCraft
 	: QObject (parent)
 	, XmlSettingsDialog_ (new Util::XmlSettingsDialog ())
 	, SettingsTab_ (new SettingsTab)
+	, CorePlugin2Manager_ (new CorePlugin2Manager)
 	{
 		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				"coresettings.xml");
