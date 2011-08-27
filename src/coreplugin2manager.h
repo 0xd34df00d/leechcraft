@@ -18,9 +18,8 @@
 
 #ifndef COREPLUGIN2MANAGER_H
 #define COREPLUGIN2MANAGER_H
-#include <vector>
-#include <boost/shared_ptr.hpp>
 #include "util/basehookinterconnector.h"
+#include "interfaces/iinfo.h"
 
 namespace LeechCraft
 {
@@ -30,6 +29,10 @@ namespace LeechCraft
 	public:
 		CorePlugin2Manager (QObject* = 0);
 	signals:
+		void hookNAMCreateRequest (LeechCraft::IHookProxy_ptr proxy,
+					QNetworkAccessManager *manager,
+					QNetworkAccessManager::Operation *op,
+					QIODevice **dev);
 	};
 }
 
