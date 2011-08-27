@@ -55,15 +55,6 @@ namespace CleanWeb
 
 		Core::Instance ().SetProxy (proxy);
 
-		proxy->RegisterHook (HookSignature<HIDNetworkAccessManagerCreateRequest>::Signature_t (
-					boost::bind (&Core::Hook,
-						&Core::Instance (),
-						_1,
-						_2,
-						_3,
-						_4,
-						_5)));
-
 		SettingsDialog_.reset (new Util::XmlSettingsDialog);
 		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				"poshukucleanwebsettings.xml");
@@ -149,6 +140,7 @@ namespace CleanWeb
 	{
 		QSet<QByteArray> result;
 		result << "org.LeechCraft.Poshuku.Plugins/1.0";
+		result << "org.LeechCraft.Core.Plugins/1.0";
 		return result;
 	}
 
@@ -156,6 +148,14 @@ namespace CleanWeb
 			QList<LeechCraft::Poshuku::IWebPlugin*>& plugins)
 	{
 		plugins << Core::Instance ().GetFlashOnClick ();
+	}
+
+	void CleanWeb::hookNAMCreateRequest (IHookProxy_ptr proxy,
+			QNetworkAccessManager *manager,
+			QNetworkAccessManager::Operation *op,
+			QIODevice **dev)
+	{
+		Core::Instance ().Hook (proxy, manager, op, dev);
 	}
 
 	void CleanWeb::hookExtension (LeechCraft::IHookProxy_ptr proxy,
