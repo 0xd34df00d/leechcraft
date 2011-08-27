@@ -20,8 +20,6 @@
 #define INTERFACES_IINFO_H
 #include <boost/shared_ptr.hpp>
 #include <boost/function.hpp>
-#include <boost/preprocessor/repeat.hpp>
-#include <boost/preprocessor/seq.hpp>
 #include <QString>
 #include <QStringList>
 #include <QtPlugin>
