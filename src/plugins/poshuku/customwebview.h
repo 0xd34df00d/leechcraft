@@ -20,7 +20,7 @@
 #define PLUGINS_POSHUKU_CUSTOMWEBVIEW_H
 #include <qwebview.h>
 #include <interfaces/structures.h>
-#include <interfaces/iinfo.h>
+#include <interfaces/core/ihookproxy.h>
 #include "interfaces/poshukutypes.h"
 #include "pageformsdata.h"
 

@@ -37,6 +37,8 @@
 #include <Qsci/qscilexertex.h>
 #include <Qsci/qscilexerxml.h>
 #include <util/util.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ipluginsmanager.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "replacedialog.h"
@@ -255,7 +257,7 @@ namespace LeechCraft
 			{
 				return WindowMenus_;
 			}
-			
+
 			TabClassInfo EditorPage::GetTabClassInfo () const
 			{
 				return Core::Instance ().GetTabClass ();

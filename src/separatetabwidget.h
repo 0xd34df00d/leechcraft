@@ -26,6 +26,7 @@
 #include <QAction>
 #include <QMap>
 #include <interfaces/iinfo.h>
+#include <interfaces/core/icoretabwidget.h>
 
 class QStackedWidget;
 class QVBoxLayout;
@@ -36,7 +37,6 @@ class QMenu;
 
 namespace LeechCraft
 {
-
 	class SeparateTabBar;
 
 	class SeparateTabWidget : public QWidget
@@ -150,7 +150,7 @@ namespace LeechCraft
 		void tabCloseRequested (int);
 		void tabWasInserted (int);
 		void tabWasRemoved (int);
-		
+
 		void pinTabRequested ();
 		void unpinTabRequested ();
 	};

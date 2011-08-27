@@ -24,7 +24,6 @@
 #include <QUrl>
 #include <QTimer>
 #include <util/tagscompletionmodel.h>
-#include <interfaces/iinfo.h>
 #include <interfaces/structures.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihaveshortcuts.h>
@@ -72,8 +71,6 @@ namespace Poshuku
 		QNetworkAccessManager *NetworkAccessManager_;
 		WebPluginFactory *WebPluginFactory_;
 
-		QMap<QString, QObject*> Providers_;
-
 		bool IsShuttingDown_;
 		QList<int> RestoredURLs_;
 
@@ -86,7 +83,7 @@ namespace Poshuku
 		FavoritesChecker *FavoritesChecker_;
 
 		bool Initialized_;
-		
+
 		TabClassInfo TabClass_;
 
 		Core ();
@@ -107,6 +104,7 @@ namespace Poshuku
 
 		static Core& Instance ();
 		void Init ();
+		void SecondInit ();
 		void Release ();
 		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;
@@ -117,7 +115,6 @@ namespace Poshuku
 
 		WebPluginFactory* GetWebPluginFactory ();
 
-		void SetProvider (QObject*, const QString&);
 		QSet<QByteArray> GetExpectedPluginClasses () const;
 		void AddPlugin (QObject*);
 

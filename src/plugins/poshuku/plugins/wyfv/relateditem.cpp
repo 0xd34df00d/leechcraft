@@ -20,6 +20,7 @@
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <interfaces/core/icoreproxy.h>
 #include "related.h"
 #include "core.h"
 

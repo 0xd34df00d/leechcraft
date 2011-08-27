@@ -368,6 +368,12 @@ namespace Acetamide
 		ISH_->SendCommand (quitCmd);
 	}
 
+	void IrcParser::ChanModeCommand (const QStringList& cmd)
+	{
+		QString modeCmd = QString ("MODE " + EncodingList (cmd).join (" ") + "\r\n");
+		ISH_->SendCommand (modeCmd);
+	}
+
 	bool IrcParser::ParseMessage (const QByteArray& message)
 	{
 		QString msg;

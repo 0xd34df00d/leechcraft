@@ -36,11 +36,13 @@ namespace CleanWeb
 		enum MatchType
 		{
 			MTWildcard,
-			MTRegexp
+			MTRegexp,
+			MTPlain
 		};
 		MatchType MatchType_;
 		QStringList Domains_;
 		QStringList NotDomains_;
+		bool AbortForeign_;
 
 		FilterOption ();
 	};
@@ -55,13 +57,16 @@ namespace CleanWeb
 	{
 		/// The URL of the subscription.
 		QUrl URL_;
+
 		/** The name of the subscription as provided by the abp:
-			* link.
-			*/
+		 * link.
+		 */
 		QString Name_;
+
 		/// This is the name of the file inside the
 		//~/.leechcraft/cleanweb/.
 		QString Filename_;
+
 		/// The date/time of last update.
 		QDateTime LastDateTime_;
 	};

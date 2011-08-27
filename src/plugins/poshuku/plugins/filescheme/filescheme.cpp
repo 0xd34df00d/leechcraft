@@ -29,18 +29,9 @@ namespace Poshuku
 {
 namespace FileScheme
 {
-	void FileScheme::Init (ICoreProxy_ptr proxy)
+	void FileScheme::Init (ICoreProxy_ptr)
 	{
 		Translator_.reset (Util::InstallTranslator ("poshuku_filescheme"));
-
-		proxy->RegisterHook (HookSignature<HIDNetworkAccessManagerCreateRequest>::Signature_t (
-					boost::bind (&FileScheme::CreateRequest,
-						this,
-						_1,
-						_2,
-						_3,
-						_4,
-						_5)));
 	}
 
 	void FileScheme::SecondInit ()
@@ -94,25 +85,26 @@ namespace FileScheme
 	{
 		QSet<QByteArray> result;
 		result << "org.LeechCraft.Poshuku.Plugins/1.0";
+		result << "org.LeechCraft.Core.Plugins/1.0";
 		return result;
 	}
 
-	QNetworkReply* FileScheme::CreateRequest (IHookProxy_ptr proxy,
+	void FileScheme::hookNAMCreateRequest (IHookProxy_ptr proxy,
 			QNetworkAccessManager*,
 			QNetworkAccessManager::Operation *op,
-			const QNetworkRequest *req,
-			QIODevice **)
+			QIODevice**)
 	{
 		if (*op != QNetworkAccessManager::GetOperation)
-			return 0;
+			return;
 
-		QString path = req->url ().toLocalFile ();
-
-		if (!QFileInfo (path).isDir ())
-			return 0;
+		const QNetworkRequest& req = proxy->GetValue ("request").value<QNetworkRequest> ();
+		const QUrl& url = req.url ();
+		if (url.scheme () != "file" ||
+				!QFileInfo (url.toLocalFile ()).isDir ())
+			return;
 
 		proxy->CancelDefault ();
-		return new SchemeReply (*req, this);
+		proxy->SetReturnValue (QVariant::fromValue<QNetworkReply*> (new SchemeReply (req, this)));
 	}
 }
 }

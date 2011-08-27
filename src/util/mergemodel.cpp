@@ -25,7 +25,7 @@
 using namespace LeechCraft::Util;
 
 MergeModel::MergeModel (const QStringList& headers, QObject *parent)
-: QAbstractProxyModel (parent)
+: QAbstractItemModel (parent)
 , DefaultAcceptsRowImpl_ (false)
 , Headers_ (headers)
 {
@@ -73,18 +73,10 @@ Qt::ItemFlags MergeModel::flags (const QModelIndex& index) const
 
 QModelIndex MergeModel::index (int row, int column, const QModelIndex& parent) const
 {
-	if (parent.isValid ())
-	{
-		QModelIndex mapped = mapToSource (parent);
-		return mapped.model ()->index (row, column, mapped);
-	}
+	if (parent.isValid () || !hasIndex (row, column))
+		return QModelIndex ();
 	else
-	{
-		if (!hasIndex (row, column))
-			return QModelIndex ();
-
 		return createIndex (row, column);
-	}
 }
 
 QModelIndex MergeModel::parent (const QModelIndex&) const
@@ -218,6 +210,10 @@ void MergeModel::AddModel (QAbstractItemModel *model)
 			SIGNAL (layoutChanged ()));
 	connect (model,
 			SIGNAL (modelAboutToBeReset ()),
+			this,
+			SIGNAL (modelAboutToBeReset ()));
+	connect (model,
+			SIGNAL (modelReset ()),
 			this,
 			SIGNAL (modelReset ()));
 	connect (model,

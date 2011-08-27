@@ -23,6 +23,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/ihavesettings.h>
+#include <interfaces/core/ihookproxy.h>
 
 class QTranslator;
 
@@ -39,7 +40,7 @@ namespace Autopaste
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
-		
+
 		ICoreProxy_ptr Proxy_;
 		boost::shared_ptr<QTranslator> Translator_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
@@ -54,16 +55,16 @@ namespace Autopaste
 		QIcon GetIcon () const;
 
 		QSet<QByteArray> GetPluginClasses () const;
-		
+
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	private:
 		void Paste (const QString&, QObject*);
 	public slots:
-		void hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,  
+		void hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QObject *entry,
-				int type, 
-				QString variant, 
+				int type,
+				QString variant,
 				QString text);
 	private slots:
 		void handleMetadata ();

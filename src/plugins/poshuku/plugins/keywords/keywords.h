@@ -23,7 +23,8 @@
 #include <QStandardItemModel>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
-#include <interfaces/ihavesettings.h> 
+#include <interfaces/ihavesettings.h>
+#include <interfaces/core/ihookproxy.h>
 
 namespace LeechCraft
 {
@@ -41,7 +42,7 @@ namespace Keywords
 
 		ICoreProxy_ptr CoreProxy_;
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
-		boost::shared_ptr<QStandardItemModel> Model_; 
+		boost::shared_ptr<QStandardItemModel> Model_;
 		QMap<QString, QString> Keywords2Urls_;
 	public:
 		void Init (ICoreProxy_ptr);
@@ -57,7 +58,7 @@ namespace Keywords
 		void RemoveKeyword (const QString& keyword);
 	public slots:
 		void hookURLEditReturnPressed (LeechCraft::IHookProxy_ptr proxy,
-				QObject *browserWidget); 
+				QObject *browserWidget);
 	};
 }
 }

@@ -44,7 +44,7 @@ namespace Qrosp
 		void AddLocalPrefix (QString prefix);
 		QStringList EnumerateScripts () const;
 		QVariantMap GetScriptInfo (const QString&);
-		IScript* LoadScript (const QString&);
+		IScript_ptr LoadScript (const QString&);
 	};
 }
 }

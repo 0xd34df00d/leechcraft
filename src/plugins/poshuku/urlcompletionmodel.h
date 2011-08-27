@@ -19,7 +19,7 @@
 #ifndef PLUGINS_POSHUKU_URLCOMPLETIONMODEL_H
 #define PLUGINS_POSHUKU_URLCOMPLETIONMODEL_H
 #include <QAbstractItemModel>
-#include <interfaces/iinfo.h>
+#include <interfaces/core/ihookproxy.h>
 #include "historymodel.h"
 
 namespace LeechCraft

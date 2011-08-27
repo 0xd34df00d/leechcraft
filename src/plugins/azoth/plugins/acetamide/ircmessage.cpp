@@ -18,6 +18,7 @@
 
 #include "ircmessage.h"
 #include <QtDebug>
+#include <QTextDocument>
 #include "clientconnection.h"
 #include "core.h"
 #include "ircserverhandler.h"
@@ -130,7 +131,7 @@ namespace Acetamide
 
 	QString IrcMessage::GetBody () const
 	{
-		return Message_.Body_;
+		return Qt::escape (Message_.Body_);
 	}
 
 	void IrcMessage::SetBody (const QString& body)

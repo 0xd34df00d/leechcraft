@@ -19,6 +19,8 @@
 #include "filtermodel.h"
 #include <QStringList>
 #include <interfaces/structures.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/itagsmanager.h>
 #include "favoritesmodel.h"
 #include "core.h"
 
@@ -30,11 +32,11 @@ namespace Poshuku
 	: LeechCraft::Util::TagsFilterModel (parent)
 	{
 	}
-	
+
 	FilterModel::~FilterModel ()
 	{
 	}
-	
+
 	QStringList FilterModel::GetTagsForIndex (int row) const
 	{
 		QStringList ids = sourceModel ()->data (sourceModel ()->index (row, 0),

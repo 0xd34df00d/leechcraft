@@ -28,6 +28,7 @@
 #include <util/util.h>
 #include <interfaces/imessage.h>
 #include <interfaces/iclentry.h>
+#include <interfaces/core/icoreproxy.h>
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -49,7 +50,7 @@ namespace Autopaste
 
 	void Plugin::SecondInit ()
 	{
-	}	
+	}
 
 	QByteArray Plugin::GetUniqueID () const
 	{
@@ -81,51 +82,51 @@ namespace Autopaste
 		result << "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin";
 		return result;
 	}
-	
+
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
 	{
 		return XmlSettingsDialog_;
 	}
-	
+
 	void Plugin::Paste (const QString& text, QObject *entry)
 	{
 		QNetworkRequest req (QUrl ("http://paste.pocoo.org/"));
 		req.setHeader (QNetworkRequest::ContentTypeHeader,
 				"application/x-www-form-urlencoded");
 		req.setRawHeader ("Referer", "http://paste.pocoo.org/");
-		
+
 		QByteArray data = "code=";
 		data += text.toUtf8 ().toPercentEncoding ();
 		data += "&language=text&webpage=";
 		req.setHeader (QNetworkRequest::ContentLengthHeader, data.size ());
-		
+
 		QNetworkReply *reply = Proxy_->GetNetworkAccessManager ()->post (req, data);
 		connect (reply,
 				SIGNAL (metaDataChanged ()),
 				this,
 				SLOT (handleMetadata ()));
-		
+
 		Reply2Entry_ [reply] = entry;
 	}
 
-	void Plugin::hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy, 
+	void Plugin::hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
 			QObject *chatTab, QObject *entry, int, QString, QString text)
 	{
 		ICLEntry *other = qobject_cast<ICLEntry*> (entry);
 		if (!other)
 		{
-			qWarning () << Q_FUNC_INFO 
-				<< "unable to cast" 
-				<< entry 
+			qWarning () << Q_FUNC_INFO
+				<< "unable to cast"
+				<< entry
 				<< "to ICLEntry";
 			return;
 		}
-		
+
 		const int maxLines = XmlSettingsManager::Instance ()
 				.property ("LineCount").toInt ();
 		if (text.split ('\n').size () < maxLines)
 			return;
-		
+
 		QByteArray propName;
 		switch (other->GetEntryType ())
 		{
@@ -141,11 +142,11 @@ namespace Autopaste
 		default:
 			return;
 		}
-		
+
 		if (!XmlSettingsManager::Instance ()
 				.property (propName).toBool ())
 			return;
-		
+
 		const bool shouldConfirm = XmlSettingsManager::Instance ()
 				.property ("ConfirmPasting").toBool ();
 		if (shouldConfirm &&
@@ -156,11 +157,11 @@ namespace Autopaste
 						"pastebin?"),
 					QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
 			return;
-		
+
 		Paste (text, entry);
 		proxy->CancelDefault ();
 	}
-	
+
 	void Plugin::handleMetadata ()
 	{
 		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
@@ -171,7 +172,7 @@ namespace Autopaste
 					<< sender ();
 			return;
 		}
-		
+
 		const QString& pasteUrl = reply->header (QNetworkRequest::LocationHeader).toString ();
 		QPointer<QObject> entryObj = Reply2Entry_ [reply];
 		if (!entryObj)

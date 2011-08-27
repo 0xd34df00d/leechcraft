@@ -20,6 +20,8 @@
 #include <QIcon>
 #include <util/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/itagsmanager.h>
 #include "audiofindproxy.h"
 #include "videofindproxy.h"
 #include "xmlsettingsmanager.h"

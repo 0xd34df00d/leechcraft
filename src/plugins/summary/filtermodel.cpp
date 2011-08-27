@@ -18,6 +18,8 @@
 
 #include <QStringList>
 #include <QtDebug>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/itagsmanager.h>
 #include "filtermodel.h"
 #include "core.h"
 

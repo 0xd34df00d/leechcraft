@@ -71,6 +71,7 @@
 #include "localsockethandler.h"
 #include "storagebackend.h"
 #include "coreinstanceobject.h"
+#include "coreplugin2manager.h"
 
 using namespace LeechCraft::Util;
 
@@ -85,6 +86,8 @@ namespace LeechCraft
 	, NewTabMenuManager_ (new NewTabMenuManager)
 	, CoreInstanceObject_ (new CoreInstanceObject)
 	{
+		CoreInstanceObject_->GetCorePluginManager ()->RegisterHookable (NetworkAccessManager_.get ());
+
 		connect (CoreInstanceObject_->GetSettingsDialog ().get (),
 				SIGNAL (pushButtonClicked (const QString&)),
 				this,
@@ -152,7 +155,7 @@ namespace LeechCraft
 
 		PluginManager_->Release ();
 		delete PluginManager_;
-		
+
 		CoreInstanceObject_.reset ();
 
 		NetworkAccessManager_.reset ();
@@ -218,7 +221,7 @@ namespace LeechCraft
 	{
 		return StorageBackend_.get ();
 	}
-	
+
 	CoreInstanceObject* Core::GetCoreInstanceObject () const
 	{
 		return CoreInstanceObject_.get ();
@@ -287,16 +290,6 @@ namespace LeechCraft
 
 	void Core::TryToAddJob (QString name)
 	{
-		DefaultHookProxy_ptr proxy (new DefaultHookProxy);
-		Q_FOREACH (HookSignature<HIDManualJobAddition>::Signature_t f,
-				GetHooks<HIDManualJobAddition> ())
-		{
-			f (proxy, &name);
-
-			if (proxy->IsCancelled ())
-				return;
-		}
-
 		Entity e;
 		if (QFile::exists (name))
 			e.Entity_ = QUrl::fromLocalFile (name);
@@ -372,27 +365,6 @@ namespace LeechCraft
 	{
 		return NewTabMenuManager_.get ();
 	}
-
-	#define LC_APPENDER(a) a##_.Functors_.append (functor)
-	#define LC_GETTER(a) a##_.Functors_
-	#define LC_DEFINE_REGISTER(a) \
-	void Core::RegisterHook (HookSignature<a>::Signature_t functor) \
-	{ \
-		LC_APPENDER(a); \
-	} \
-	template<> \
-		HooksContainer<a>::Functors_t Core::GetHooks<a> () const \
-	{ \
-		return LC_GETTER(a); \
-	}
-	#define LC_TRAVERSER(z,i,array) LC_DEFINE_REGISTER (BOOST_PP_SEQ_ELEM(i, array))
-	#define LC_EXPANDER(Names) BOOST_PP_REPEAT (BOOST_PP_SEQ_SIZE (Names), LC_TRAVERSER, Names)
-		LC_EXPANDER (HOOKS_TYPES_LIST);
-	#undef LC_EXPANDER
-	#undef LC_TRAVERSER
-	#undef LC_DEFINE_REGISTER
-	#undef LC_GETTER
-	#undef LC_APPENDER
 
 	bool Core::eventFilter (QObject *watched, QEvent *e)
 	{
@@ -503,16 +475,6 @@ namespace LeechCraft
 
 	bool Core::CouldHandle (Entity e) const
 	{
-		DefaultHookProxy_ptr proxy (new DefaultHookProxy);
-		Q_FOREACH (const HookSignature<HIDCouldHandle>::Signature_t& f,
-				GetHooks<HIDCouldHandle> ())
-		{
-			const bool result = f (proxy, &e);
-
-			if (proxy->IsCancelled ())
-				return result;
-		}
-
 		if (!(e.Parameters_ & OnlyHandle))
 			if (GetObjects (e, OTDownloaders, true).size ())
 				return true;
@@ -631,7 +593,7 @@ namespace LeechCraft
 						}
 						break;
 				}
-				
+
 				if (r.HandlePriority_ <= 0)
 					continue;
 
@@ -640,7 +602,7 @@ namespace LeechCraft
 					result.clear ();
 
 				result << *it;
-				
+
 				if (single)
 					break;
 
@@ -667,16 +629,6 @@ namespace LeechCraft
 
 	bool Core::handleGotEntity (Entity p, int *id, QObject **pr)
 	{
-		DefaultHookProxy_ptr proxy (new DefaultHookProxy);
-		Q_FOREACH (const HookSignature<HIDGotEntity>::Signature_t& f,
-				GetHooks<HIDGotEntity> ())
-		{
-			const bool result = f (proxy, &p, id, pr, sender ());
-
-			if (proxy->IsCancelled ())
-				return result;
-		}
-
 		const QString& string = Util::GetUserText (p);
 
 		std::auto_ptr<HandlerChoiceDialog> dia (new HandlerChoiceDialog (string, ReallyMainWindow_));
@@ -696,7 +648,7 @@ namespace LeechCraft
 
 		if (!(numHandlers + numDownloaders))
 			return false;
-		
+
 		const bool bcastCandidate = !id && !pr && numHandlers;
 
 		if (p.Parameters_ & FromUserInitiated &&
@@ -824,21 +776,10 @@ namespace LeechCraft
 
 	void Core::handleStatusBarChanged (QWidget *contents, const QString& origMessage)
 	{
-		QString msg = origMessage;
-		DefaultHookProxy_ptr proxy (new DefaultHookProxy);
-		Q_FOREACH (const HookSignature<HIDStatusBarChanged>::Signature_t& f,
-				GetHooks<HIDStatusBarChanged> ())
-		{
-			f (proxy, contents, &msg);
-
-			if (proxy->IsCancelled ())
-				return;
-		}
-
 		if (contents->visibleRegion ().isEmpty ())
 			return;
 
-		ReallyMainWindow_->statusBar ()->showMessage (msg, 30000);
+		ReallyMainWindow_->statusBar ()->showMessage (origMessage, 30000);
 	}
 
 	void Core::HandleNotify (const Entity& entity)
@@ -923,22 +864,6 @@ namespace LeechCraft
 
 	void Core::InitJobHolder (QObject *plugin)
 	{
-		try
-		{
-			IJobHolder *ijh = qobject_cast<IJobHolder*> (plugin);
-			QAbstractItemModel *model = ijh->GetRepresentation ();
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< e.what ()
-				<< plugin;
-		}
-		catch (...)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< plugin;
-		}
 	}
 
 	void Core::InitEmbedTab (QObject *plugin)

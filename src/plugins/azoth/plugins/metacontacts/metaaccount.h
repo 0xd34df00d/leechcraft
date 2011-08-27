@@ -69,7 +69,6 @@ namespace Metacontacts
 		void itemCancelledSubscription (QObject*, const QString&);
 		void itemGrantedSubscription (QObject*, const QString&);
 		void statusChanged (const EntryStatus&);
-		void addContactSuggested (const QString&, const QString&, const QStringList&);
 		void mucInvitationReceived (const QVariantMap&,
 				const QString&, const QString&);
 	};

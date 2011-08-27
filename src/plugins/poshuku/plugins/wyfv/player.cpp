@@ -19,6 +19,8 @@
 #include "player.h"
 #include <QNetworkReply>
 #include <qwebview.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ipluginsmanager.h>
 #include "core.h"
 
 namespace LeechCraft

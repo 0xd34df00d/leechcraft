@@ -43,7 +43,7 @@ namespace Xoox
 			Client_->removeExtension (ext);
 
 		setLayout (new QVBoxLayout);
-		
+
 		connect (Client_,
 				SIGNAL (connected ()),
 				this,
@@ -57,13 +57,13 @@ namespace Xoox
 				this,
 				SLOT (handleIqReceived (const QXmppIq&)));
 	}
-	
+
 	void InBandAccountRegSecondPage::Register ()
 	{
 		QXmppElement queryElem;
 		queryElem.setTagName ("query");
 		queryElem.setAttribute ("xmlns", NsRegister);
-		
+
 		switch (FormType_)
 		{
 		case FTLegacy:
@@ -87,24 +87,24 @@ namespace Xoox
 		QXmppIq iq (QXmppIq::Set);
 		iq.setExtensions (queryElem);
 		Client_->sendPacket (iq);
-		
+
 		SetState (SAwaitingRegistrationResult);
 	}
-	
+
 	QString InBandAccountRegSecondPage::GetJID () const
 	{
 		if (FormType_ != FTLegacy)
 			return QString ();
 		return LFB_.GetUsername () + '@' + FirstPage_->GetServerName ();
 	}
-	
+
 	QString InBandAccountRegSecondPage::GetPassword () const
 	{
 		if (FormType_ != FTLegacy)
 			return QString ();
 		return LFB_.GetPassword ();
 	}
-	
+
 	bool InBandAccountRegSecondPage::isComplete () const
 	{
 		switch (State_)
@@ -122,41 +122,46 @@ namespace Xoox
 				if (edit->text ().isEmpty ())
 					return false;
 			return true;
+		default:
+			qWarning () << Q_FUNC_INFO
+					<< "unknown state"
+					<< State_;
+			return false;
 		}
 	}
-	
+
 	void InBandAccountRegSecondPage::initializePage ()
 	{
 		QWizardPage::initializePage ();
-		
+
 		const QString& server = FirstPage_->GetServerName ();
 		ShowMessage (tr ("Connecting to %1...").arg (server));
-		
+
 		if (Client_->isConnected ())
 			Client_->disconnectFromServer ();
-		
+
 		QXmppConfiguration conf;
 		conf.setDomain (server);
 		conf.setSASLAuthMechanism (QXmppConfiguration::SASLAnonymous);
 		conf.setIgnoreAuth (true);
 		Client_->connectToServer (conf);
-		
+
 		SetState (SConnecting);
 	}
-	
+
 	void InBandAccountRegSecondPage::ShowMessage (const QString& msg)
 	{
 		qDeleteAll (findChildren<QWidget*> ());
-		
+
 		layout ()->addWidget (new QLabel (msg));
 	}
-	
+
 	void InBandAccountRegSecondPage::SetState (InBandAccountRegSecondPage::State state)
 	{
 		State_ = state;
 		emit completeChanged ();
 	}
-	
+
 	void InBandAccountRegSecondPage::HandleRegForm (const QXmppIq& iq)
 	{
 		QXmppElement queryElem;
@@ -206,10 +211,10 @@ namespace Xoox
 					SIGNAL (textChanged (const QString&)),
 					this,
 					SIGNAL (completeChanged ()));
-		
+
 		SetState (SAwaitingUserInput);
 	}
-	
+
 	void InBandAccountRegSecondPage::HandleRegResult (const QXmppIq& iq)
 	{
 		if (iq.type () == QXmppIq::Result)
@@ -227,7 +232,7 @@ namespace Xoox
 		{
 			if (elem.tagName () != "error")
 				continue;
-			
+
 			if (!elem.firstChildElement ("conflict").isNull ())
 				msg = tr ("data conflict");
 			else if (!elem.firstChildElement ("not-acceptable").isNull ())
@@ -240,7 +245,7 @@ namespace Xoox
 			msg = tr ("general registration error");
 		emit regError (msg);
 	}
-	
+
 	void InBandAccountRegSecondPage::handleConnected ()
 	{
 		ShowMessage ("Fetching registration form...");
@@ -252,10 +257,10 @@ namespace Xoox
 		QXmppIq iq;
 		iq.setExtensions (queryElem);
 		Client_->sendPacket (iq);
-		
+
 		SetState (SFetchingForm);
 	}
-	
+
 	void InBandAccountRegSecondPage::handleError (QXmppClient::Error error)
 	{
 		QString msg;
@@ -270,13 +275,16 @@ namespace Xoox
 		case QXmppClient::XmppStreamError:
 			msg = tr ("XMPP error:") + ' ' + QString::number (Client_->xmppStreamError ()) + '.';
 			break;
+		case QXmppClient::NoError:
+			msg = tr ("No error.");
+			break;
 		}
-		
+
 		ShowMessage (msg);
-		
+
 		SetState (SError);
 	}
-	
+
 	void InBandAccountRegSecondPage::handleIqReceived (const QXmppIq& iq)
 	{
 		switch (State_)

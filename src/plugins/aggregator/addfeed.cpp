@@ -18,6 +18,8 @@
 
 #include <util/tagscompleter.h>
 #include <util/tagscompletionmodel.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/itagsmanager.h>
 #include "core.h"
 #include "addfeed.h"
 
@@ -26,22 +28,22 @@ namespace LeechCraft
 namespace Aggregator
 {
 	using LeechCraft::Util::TagsCompleter;
-	
+
 	AddFeed::AddFeed (const QString& url, QWidget *parent)
 	: QDialog (parent)
 	{
 		setupUi (this);
 		new TagsCompleter (Tags_, this);
 		Tags_->AddSelector ();
-	
+
 		URL_->setText (url);
 	}
-	
+
 	QString AddFeed::GetURL () const
 	{
 		return URL_->text ().simplified ();
 	}
-	
+
 	QStringList AddFeed::GetTags () const
 	{
 		return Core::Instance ().GetProxy ()->GetTagsManager ()->Split (Tags_->text ());

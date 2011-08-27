@@ -25,6 +25,8 @@
 #include <interfaces/ientityhandler.h>
 #include <interfaces/ihaveshortcuts.h>
 
+class QModelIndex;
+
 namespace LeechCraft
 {
 	namespace Plugins

@@ -18,6 +18,7 @@
 
 #include <stdexcept>
 #include <algorithm>
+#include <boost/bind.hpp>
 #include <QApplication>
 #include <QDir>
 #include <QStringList>
@@ -216,6 +217,12 @@ namespace LeechCraft
 
 	QObject* PluginManager::TryFirstInit (QObjectList ordered)
 	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "-pg");
+		settings.beginGroup ("Plugins");
+		boost::shared_ptr<void> groupGuard (static_cast<void*> (0),
+				boost::bind (&QSettings::endGroup, &settings));
+
 		Q_FOREACH (QObject *obj, ordered)
 		{
 			IInfo *ii = qobject_cast<IInfo*> (obj);
@@ -224,6 +231,14 @@ namespace LeechCraft
 				qDebug () << "Initializing" << ii->GetName ();
 				emit loadProgress (tr ("Initializing %1: stage one...").arg (ii->GetName ()));
 				ii->Init (ICoreProxy_ptr (new CoreProxy ()));
+				
+				const QString& path = GetPluginLibraryPath (obj);
+				if (path.isEmpty ())
+					continue;
+
+				settings.beginGroup (path);
+				settings.setValue ("Info", ii->GetInfo ());
+				settings.endGroup ();
 			}
 			catch (const std::exception& e)
 			{

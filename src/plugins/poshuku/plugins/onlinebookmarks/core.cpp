@@ -24,6 +24,7 @@
 #include <QSettings>
 #include <util/util.h>
 #include <interfaces/iproxyobject.h>
+#include <interfaces/core/icoreproxy.h>
 #include "syncbookmarks.h"
 #include "settings.h"
 

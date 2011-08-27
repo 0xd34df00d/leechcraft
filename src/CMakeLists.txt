@@ -63,6 +63,8 @@ SET (LC_TRANSLATIONS_DEST "share/leechcraft/translations")
 SET (LC_SETTINGS_DEST "share/leechcraft/settings")
 SET (LC_QML_DEST "share/leechcraft/qml")
 SET (LC_INSTALLEDMANIFEST_DEST "share/leechcraft/installed")
+SET (LC_GLOBAL_SETTINGS_DEST "share/leechcraft/rc")
+SET (LC_GLOBAL_SETTINGS_DEST_IN "${CMAKE_INSTALL_PREFIX}/${LC_GLOBAL_SETTINGS_DEST}")
 
 SET (Boost_ADDITIONAL_VERSIONS "1.46" "1.46.1" "1.44" "1.44.0")
 FIND_PACKAGE (Boost REQUIRED COMPONENTS date_time filesystem program_options system thread)
@@ -117,6 +119,7 @@ OPTION (ENABLE_SECMAN "Build SecMan, security & personal data manager" OFF)
 OPTION (ENABLE_SHELLOPEN "Build ShellOpen, the plugin supporting handling entities via external applications" ON)
 OPTION (ENABLE_SYNCER "Build Syncer, the synchronization plugin for LeechCraft" OFF)
 OPTION (ENABLE_TABSLIST "Quick overview of tabs" OFF)
+OPTION (ENABLE_VFSCORE "Build VFS core" OFF)
 
 # Defunct
 OPTION (ENABLE_FTP "Build LCFTP, the FTP client" ON)
@@ -143,6 +146,7 @@ IF (ENABLE_RECOMMENDED)
 	SET (ENABLE_SHELLOPEN TRUE)
 	SET (ENABLE_SYNCER TRUE)
 	SET (ENABLE_TABSLIST TRUE)
+	SET (ENABLE_VFSCORE TRUE)
 ENDIF (ENABLE_RECOMMENDED)
 
 FUNCTION (CreateTrVars PlugName Langs TranVar CompiledTranVar)
@@ -298,6 +302,10 @@ IF (ENABLE_BLACKDASH)
 	ADD_SUBDIRECTORY (plugins/blackdash)
 ENDIF (ENABLE_BLACKDASH)
 
+IF (ENABLE_VFSCORE)
+	ADD_SUBDIRECTORY (plugins/vfscore)
+ENDIF (ENABLE_VFSCORE)
+
 SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTXML TRUE)
 SET (QT_USE_QTSQL TRUE)
@@ -352,6 +360,7 @@ SET (SRCS
 	separatetabwidget.cpp
 	mwproxy.cpp
 	winwarndialog.cpp
+	coreplugin2manager.cpp
 	)
 SET (HEADERS
 	mainwindow.h
@@ -395,6 +404,7 @@ SET (HEADERS
 	separatetabwidget.h
 	mwproxy.h
 	winwarndialog.h
+	coreplugin2manager.h
 	3dparty/qxttooltip.h
 	3dparty/qxttooltip_p.h
 	interfaces/structures.h
@@ -433,7 +443,7 @@ ADD_CUSTOM_COMMAND (OUTPUT
 
 IF (NOT DEFINED LEECHCRAFT_VERSION)
 	FIND_PROGRAM (GIT_CMD git)
-	EXECUTE_PROCESS (COMMAND "${GIT_CMD}" describe
+	EXECUTE_PROCESS (COMMAND "${GIT_CMD}" "--git-dir=${CMAKE_CURRENT_SOURCE_DIR}/../.git" describe
 		OUTPUT_VARIABLE LEECHCRAFT_VERSION
 		OUTPUT_STRIP_TRAILING_WHITESPACE
 		)

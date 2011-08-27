@@ -434,12 +434,12 @@
         <translation>Abrir</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="1337"/>
+        <location filename="browserwidget.cpp" line="1338"/>
         <source>Default</source>
         <translation>Predeterminado</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="1386"/>
+        <location filename="browserwidget.cpp" line="1387"/>
         <source>No title</source>
         <translation>Sin título</translation>
     </message>
@@ -478,28 +478,28 @@
         <translation>Poshuku: error en la inicialización en almacenamiento general.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="854"/>
+        <location filename="core.cpp" line="849"/>
         <source>Select XBEL file</source>
         <translation>Seleccionar archivo XBEL</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="856"/>
-        <location filename="core.cpp" line="896"/>
+        <location filename="core.cpp" line="851"/>
+        <location filename="core.cpp" line="891"/>
         <source>XBEL files (*.xbel);;All files (*.*)</source>
         <translation>Archivos de XBEL (*.xbel);;Todos los archivos (*.*)</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="870"/>
+        <location filename="core.cpp" line="865"/>
         <source>Could not open file %1 for reading.</source>
         <translation>No se pudo abrir el archivo %1 para lectura.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="894"/>
+        <location filename="core.cpp" line="889"/>
         <source>Save XBEL file</source>
         <translation>Guardar archivo XBEL</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="913"/>
+        <location filename="core.cpp" line="908"/>
         <source>Could not open file %1 for writing.</source>
         <translation>No se pudo abrir el archivo %1 para escritura.</translation>
     </message>
@@ -895,7 +895,7 @@
         <translation>Un explorador web simple pero funcional</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="506"/>
+        <location filename="poshuku.cpp" line="505"/>
         <source>Please note that Developer Extras would work correctly only for pages that are loaded after enabling.</source>
         <translation>Por favor observe que desarrolladores extras podrian trabajar correctamente solo para paginas que son cargadas despues de habilitadas.</translation>
     </message>

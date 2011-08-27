@@ -20,6 +20,10 @@
 #include <QBuffer>
 #include <QPixmap>
 #include <QIcon>
+#include <interfaces/iinfo.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/itagsmanager.h>
+#include <interfaces/core/ipluginsmanager.h>
 #include "core.h"
 
 namespace LeechCraft
@@ -78,7 +82,7 @@ namespace LeechCraft
 							.arg (dim);
 					return buffer.data ();
 				}
-				
+
 				throw tr ("Not found plugin %1.")
 					.arg (name);
 			}

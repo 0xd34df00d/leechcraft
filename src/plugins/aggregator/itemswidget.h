@@ -83,6 +83,8 @@ namespace Aggregator
 		QStringList GetItemCategories (int) const;
 		void SubscribeToComments (const QModelIndex&) const;
 		void CurrentChannelChanged (const QModelIndex&);
+
+		void ConstructBrowser ();
 		void LoadUIState ();
 		void SaveUIState ();
 	private:

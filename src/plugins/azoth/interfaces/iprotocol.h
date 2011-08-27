@@ -73,7 +73,14 @@ namespace Azoth
 			/** This protocol supports in-band registration: accounts
 			 * could be registered right from the client.
 			 */
-			PFSupportsInBandRegistration = 0x04
+			PFSupportsInBandRegistration = 0x04,
+			
+			/** This protocol doesn't support registering new accounts.
+			 * 
+			 * This may be usable for dummy protocols for implementing
+			 * things like metacontacts, for example.
+			 */
+			PFNoAccountRegistration = 0x08
 		};
 
 		Q_DECLARE_FLAGS (ProtocolFeatures, ProtocolFeature);

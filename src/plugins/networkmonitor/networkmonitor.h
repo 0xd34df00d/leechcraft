@@ -25,6 +25,7 @@
 #include "ui_networkmonitor.h"
 
 class QSortFilterProxyModel;
+class QNetworkAccessManager;
 
 namespace LeechCraft
 {

@@ -22,7 +22,7 @@
 #include <QPointer>
 #include <QPersistentModelIndex>
 #include <QDateTime>
-#include <interfaces/iinfo.h>
+#include <interfaces/core/ihookproxy.h>
 #include <interfaces/ihavetabs.h>
 #include "interfaces/azothcommon.h"
 #include "ui_chattab.h"
@@ -36,7 +36,7 @@ namespace Azoth
 	class IMUCEntry;
 	class IMessage;
 	class ITransferManager;
-	
+
 	class MsgFormatterWidget;
 
 	class ChatTab : public QWidget
@@ -68,26 +68,26 @@ namespace Azoth
 		QString NickFirstPart_;
 
 		int NumUnreadMsgs_;
-		
+
 		QList<IMessage*> HistoryMessages_;
 
 		QIcon TabIcon_;
 		bool IsMUC_;
 		int PreviousTextHeight_;
-		
+
 		MsgFormatterWidget *MsgFormatter_;
 
 		ITransferManager *XferManager_;
-		
+
 		QTimer *TypeTimer_;
-		
+
 		ChatPartState PreviousState_;
 	public:
 		static void SetParentMultiTabs (QObject*);
 
 		ChatTab (const QString&, QWidget* = 0);
 		~ChatTab ();
-		
+
 		/** Prepare (or update after it has been changed) the theme.
 		 */
 		void PrepareTheme ();
@@ -104,9 +104,9 @@ namespace Azoth
 		void Remove ();
 		void TabMadeCurrent ();
 		void TabLostCurrent ();
-		
+
 		void HandleMUCParticipantsChanged ();
-		
+
 		QObject* GetCLEntry () const;
 	public slots:
 		void prepareMessageText (const QString&);
@@ -122,6 +122,7 @@ namespace Azoth
 		void on_SubjChange__released ();
 		void handleClearChat ();
 		void handleRichTextToggled ();
+		void handleQuoteSelection ();
 		void handleSendFile ();
 		void handleCallRequested ();
 		void handleCall (QObject*);
@@ -142,9 +143,9 @@ namespace Azoth
 		void handleAddToBookmarks ();
 		void handleConfigureMUC ();
 		void typeTimeout ();
-		
+
 		void handleGotLastMessages (QObject*, const QList<QObject*>&);
-		
+
 		void handleFontSizeChanged ();
 	private:
 		template<typename T>

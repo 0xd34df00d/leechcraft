@@ -26,6 +26,7 @@
 #include <QSqlError>
 #include <QVariant>
 #include <QSqlRecord>
+#include <interfaces/core/itagsmanager.h>
 #include "util/dblock.h"
 #include "xmlsettingsmanager.h"
 #include "core.h"

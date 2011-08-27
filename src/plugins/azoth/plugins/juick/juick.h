@@ -22,6 +22,7 @@
 #include <QRegExp>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
+#include <interfaces/core/ihookproxy.h>
 
 namespace LeechCraft
 {
@@ -35,7 +36,7 @@ namespace Juick
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2)
-		
+
 		QRegExp UserRX_;
 		QRegExp PostRX_;
 		QRegExp IdRX_;
@@ -64,11 +65,11 @@ namespace Juick
 				QObject *chatTab,
 				QString body,
 				QObject *message);
-		void hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,  
+		void hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QObject *entry,
-				int type, 
-				QString variant, 
+				int type,
+				QString variant,
 				QString text);
 	};
 }

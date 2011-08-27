@@ -19,7 +19,7 @@
 #ifndef PLUGINS_AGGREGATOR_PLUGINMANAGER_H
 #define PLUGINS_AGGREGATOR_PLUGINMANAGER_H
 #include <QVariant>
-#include <interfaces/iinfo.h>
+#include <interfaces/core/ihookproxy.h>
 #include <util/basehookinterconnector.h>
 #include "interfaces/aggregator/item.h"
 

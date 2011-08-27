@@ -204,6 +204,22 @@ namespace Acetamide
 					this, _1, _2, _3);
 		Command2Action_ ["005"] = boost::bind (&ServerResponceManager::GotISupport,
 					 this, _1, _2, _3);
+		Command2Action_ ["mode"] = boost::bind (&ServerResponceManager::GotChannelMode,
+					 this, _1, _2, _3);
+		Command2Action_ ["367"] = boost::bind (&ServerResponceManager::GotBanList,
+				 this, _1, _2, _3);
+		Command2Action_ ["368"] = boost::bind (&ServerResponceManager::GotBanListEnd,
+				 this, _1, _2, _3);
+		Command2Action_ ["348"] = boost::bind (&ServerResponceManager::GotExceptList,
+				 this, _1, _2, _3);
+		Command2Action_ ["349"] = boost::bind (&ServerResponceManager::GotExceptListEnd,
+				 this, _1, _2, _3);
+		Command2Action_ ["346"] = boost::bind (&ServerResponceManager::GotInviteList,
+				 this, _1, _2, _3);
+		Command2Action_ ["347"] = boost::bind (&ServerResponceManager::GotInviteListEnd,
+				 this, _1, _2, _3);
+		Command2Action_ ["324"] = boost::bind (&ServerResponceManager::GotChannelModes,
+				 this, _1, _2, _3);
 	}
 
 	bool ServerResponceManager::IsCTCPMessage (const QString& msg)
@@ -220,7 +236,7 @@ namespace Acetamide
 			co.ChannelName_ = msg;
 			co.ServerName_ = ISH_->GetServerOptions ().ServerName_.toLower ();
 			co.ChannelPassword_ = QString ();
-			ISH_->JoinChannel (co);
+			ISH_->JoinedChannel (co);
 			return;
 		}
 
@@ -931,6 +947,149 @@ namespace Acetamide
 		ISH_->JoinFromQueue ();
 	}
 
+	void ServerResponceManager::GotChannelMode (const QString& nick, 
+			const QList<std::string>& params, const QString& msg)
+	{
+		if (params.isEmpty ())
+			return;
+
+		if (params.count () == 1 && 
+				QString::fromUtf8 (params.first ().c_str ()) == ISH_->GetNickName ())
+		{
+			ISH_->ParseUserMode (QString::fromUtf8 (params.first ().c_str ()),
+					msg);
+			return;
+		}
+
+		const QString channel = QString::fromUtf8 (params.first ().c_str ());
+
+		if (params.count () == 2)
+			ISH_->ParseChanMode (channel, 
+					QString::fromUtf8 (params.at (1).c_str ()));
+		else if (params.count () == 3)
+			ISH_->ParseChanMode (channel, 
+					QString::fromUtf8 (params.at (1).c_str ()),
+					QString::fromUtf8 (params.at (2).c_str ()));
+	}
+
+	void ServerResponceManager::GotChannelModes (const QString&,
+			const QList<std::string>& params, const QString&)
+	{
+		const QString channel = QString::fromUtf8 (params.at (1).c_str ());
+
+		if (params.count () == 3)
+			ISH_->ParseChanMode (channel,
+					QString::fromUtf8 (params.at (2).c_str ()));
+		else if (params.count () == 4)
+			ISH_->ParseChanMode (channel,
+					QString::fromUtf8 (params.at (2).c_str ()),
+					QString::fromUtf8 (params.at (3).c_str ()));
+	}
+
+	void ServerResponceManager::GotBanList (const QString&, 
+			const QList<std::string>& params, const QString&)
+	{
+		const int count = params.count ();
+		QString channel;
+		QString nick;
+		QString mask;
+		QDateTime time;
+
+		if (count > 2)
+		{
+			channel = QString::fromUtf8 (params.at (1).c_str ());
+			mask = QString::fromUtf8 (params.at (2).c_str ());
+		}
+
+		if (count > 3)
+		{
+			QString name = QString::fromUtf8 (params.at (3).c_str ());
+			nick = name.left (name.indexOf ('!'));
+		}
+
+		if (count > 4)
+			time = QDateTime::fromTime_t (QString::fromUtf8 (params.at (4).c_str ()).toInt ());
+		
+		ISH_->SetLongMessageState (true);
+		ISH_->ShowBanList (channel, mask, nick, time);
+	}
+
+	void ServerResponceManager::GotBanListEnd (const QString&, 
+			const QList<std::string>&, const QString& msg)
+	{
+		ISH_->ShowBanListEnd (msg);
+		ISH_->SetLongMessageState (false);
+	}
+
+	void ServerResponceManager::GotExceptList (const QString&, 
+			const QList<std::string>& params, const QString&)
+	{
+		const int count = params.count ();
+		QString channel;
+		QString nick;
+		QString mask;
+		QDateTime time;
+		
+		if (count > 2)
+		{
+			channel = QString::fromUtf8 (params.at (1).c_str ());
+			mask = QString::fromUtf8 (params.at (2).c_str ());
+		}
+
+		if (count > 3)
+		{
+			QString name = QString::fromUtf8 (params.at (3).c_str ());
+			nick = name.left (name.indexOf ('!'));
+		}
+
+		if (count > 4)
+			time = QDateTime::fromTime_t (QString::fromUtf8 (params.at (4).c_str ()).toInt ());
+		
+		ISH_->SetLongMessageState (true);
+		ISH_->ShowExceptList (channel, mask, nick, time);
+	}
+
+	void ServerResponceManager::GotExceptListEnd (const QString&, 
+			const QList<std::string>&, const QString& msg)
+	{
+		ISH_->ShowExceptListEnd (msg);
+		ISH_->SetLongMessageState (false);
+	}
+
+	void ServerResponceManager::GotInviteList (const QString&, 
+			const QList<std::string>& params, const QString&)
+	{
+		const int count = params.count ();
+		QString channel;
+		QString nick;
+		QString mask;
+		QDateTime time;
+		
+		if (count > 2)
+		{
+			channel = QString::fromUtf8 (params.at (1).c_str ());
+			mask = QString::fromUtf8 (params.at (2).c_str ());
+		}
+
+		if (count > 3)
+		{
+			QString name = QString::fromUtf8 (params.at (3).c_str ());
+			nick = name.left (name.indexOf ('!'));
+		}
+
+		if (count > 4)
+			time = QDateTime::fromTime_t (QString::fromUtf8 (params.at (4).c_str ()).toInt ());
+		
+		ISH_->SetLongMessageState (true);
+		ISH_->ShowInviteList (channel, mask, nick, time);
+	}
+
+	void ServerResponceManager::GotInviteListEnd (const QString&, 
+			const QList<std::string>&, const QString& msg)
+	{
+		ISH_->ShowInviteListEnd (msg);
+		ISH_->SetLongMessageState (false);
+	}
 }
 }
 }

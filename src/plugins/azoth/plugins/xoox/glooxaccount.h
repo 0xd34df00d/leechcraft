@@ -21,9 +21,11 @@
 #include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <QMap>
+#include <QIcon>
 #include <QXmppRosterIq.h>
 #include <QXmppBookmarkSet.h>
 #include <interfaces/iaccount.h>
+#include <interfaces/iextselfinfoaccount.h>
 #include <interfaces/ihaveservicediscovery.h>
 #include <interfaces/imessage.h>
 #include <interfaces/ihaveconsole.h>
@@ -32,6 +34,7 @@
 #include <interfaces/isupportactivity.h>
 #include <interfaces/isupportgeolocation.h>
 #include <interfaces/isupportmediacalls.h>
+#include <interfaces/isupportriex.h>
 #ifdef ENABLE_CRYPT
 #include <interfaces/isupportpgp.h>
 #endif
@@ -64,6 +67,7 @@ namespace Xoox
 
 	class GlooxAccount : public QObject
 					   , public IAccount
+					   , public IExtSelfInfoAccount
 					   , public IHaveServiceDiscovery
 					   , public IHaveConsole
 					   , public ISupportTune
@@ -71,12 +75,14 @@ namespace Xoox
 					   , public ISupportActivity
 					   , public ISupportGeolocation
 					   , public ISupportMediaCalls
+					   , public ISupportRIEX
 #ifdef ENABLE_CRYPT
 					   , public ISupportPGP
 #endif
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IAccount
+				LeechCraft::Azoth::IExtSelfInfoAccount
 				LeechCraft::Azoth::IHaveServiceDiscovery
 				LeechCraft::Azoth::IHaveConsole
 				LeechCraft::Azoth::ISupportTune
@@ -84,6 +90,7 @@ namespace Xoox
 				LeechCraft::Azoth::ISupportActivity
 				LeechCraft::Azoth::ISupportGeolocation
 				LeechCraft::Azoth::ISupportMediaCalls
+				LeechCraft::Azoth::ISupportRIEX
 #ifdef ENABLE_CRYPT
 				LeechCraft::Azoth::ISupportPGP
 #endif
@@ -97,6 +104,8 @@ namespace Xoox
 		QString Resource_;
 		QString Host_;
 		int Port_;
+		
+		QIcon AccountIcon_;
 
 		boost::shared_ptr<ClientConnection> ClientConnection_;
 		boost::shared_ptr<TransferManager> TransferManager_;
@@ -108,6 +117,7 @@ namespace Xoox
 		GlooxAccount (const QString&, QObject*);
 		void Init ();
 
+		// IAccount
 		QObject* GetObject ();
 		QObject* GetParentProtocol () const;
 		AccountFeatures GetAccountFeatures () const;
@@ -134,22 +144,32 @@ namespace Xoox
 		void RemoveEntry (QObject*);
 		QObject* GetTransferManager () const;
 		
+		// IExtSelfInfoAccount
+		QObject* GetSelfContact () const;
+		QIcon GetAccountIcon () const;
+		
+		// IHaveServiceDiscovery
 		QObject* CreateSDSession ();
 		
+		// IHaveConsole
 		PacketFormat GetPacketFormat () const;
 		void SetConsoleEnabled (bool);
 		
+		// ISupportTune, ISupportMood, ISupportActivity
 		void PublishTune (const QMap<QString, QVariant>&);
 		void SetMood (const QString&, const QString&);
 		void SetActivity (const QString&, const QString&, const QString&);
 		
+		// ISupportGeolocation
 		void SetGeolocationInfo (const GeolocationInfo_t&);
 		GeolocationInfo_t GetUserGeolocationInfo (QObject*, const QString&) const;
 		
+		// ISupportMediaCalls
 		MediaCallFeatures GetMediaCallFeatures () const;
 		QObject* Call (const QString& id, const QString& variant);
 		
 #ifdef ENABLE_CRYPT
+		// ISupportPGP
 		void SetPrivateKey (const QCA::PGPKey&);
 		void SetEntryKey (QObject*, const QCA::PGPKey&);
 		void SetEncryptionEnabled (QObject*, bool);
@@ -172,6 +192,7 @@ namespace Xoox
 				const QString&);
 	private:
 		QString GetPassword (bool authFailure = false);
+		void RegenAccountIcon ();
 	public slots:
 		void handleEntryRemoved (QObject*);
 		void handleGotRosterItems (const QList<QObject*>&);

@@ -27,6 +27,7 @@
 #include <QStringList>
 #include <QTranslator>
 #include <util/util.h>
+#include <interfaces/core/icoreproxy.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "userscriptsmanagerwidget.h"
@@ -80,22 +81,22 @@ namespace FatApe
 			UserScripts_.append (UserScript (scriptsDir.absoluteFilePath (script)));
 
 		Model_.reset (new QStandardItemModel);
-		Model_->setHorizontalHeaderLabels (QStringList (tr ("Name")) 
+		Model_->setHorizontalHeaderLabels (QStringList (tr ("Name"))
 				<< tr ("Description"));
 		Q_FOREACH (const UserScript& script, UserScripts_)
 			AddScriptToManager (script);
-		
+
 		SettingsDialog_.reset (new Util::XmlSettingsDialog);
 		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				"poshukufatapesettings.xml");
 		SettingsDialog_->SetCustomWidget ("UserScriptsManagerWidget",
 				new UserScriptsManagerWidget (Model_.get (), this));
 	}
-	
+
 	void Plugin::SecondInit ()
 	{
 	}
-	
+
 	void Plugin::Release ()
 	{
 	}
@@ -104,7 +105,7 @@ namespace FatApe
 	{
 		return "org.LeechCraft.Poshuku.FatApe";
 	}
-	
+
 	QString Plugin::GetName () const
 	{
 		return "Poshuku FatApe";
@@ -132,16 +133,16 @@ namespace FatApe
 		return SettingsDialog_;
 	}
 
-	void Plugin::hookInitialLayoutCompleted (LeechCraft::IHookProxy_ptr proxy, 
+	void Plugin::hookInitialLayoutCompleted (LeechCraft::IHookProxy_ptr proxy,
 			QWebPage *page, QWebFrame *frame)
 	{
-		boost::function<bool (const UserScript&)> match = 
-			boost::bind (&UserScript::MatchToPage, 
+		boost::function<bool (const UserScript&)> match =
+			boost::bind (&UserScript::MatchToPage,
 					_1,
 					frame->url ().toString ());
-		boost::function<void (const UserScript&)> inject = 
+		boost::function<void (const UserScript&)> inject =
 			boost::bind (&UserScript::Inject, _1, frame, Proxy_);
-		
+
 
 		apply_if (UserScripts_.begin (), UserScripts_.end (), match, inject);
 	}
@@ -183,14 +184,14 @@ namespace FatApe
 		UserScripts_ [scriptIndex].SetEnabled (value);
 	}
 
-	void Plugin::hookAcceptNavigationRequest (LeechCraft::IHookProxy_ptr proxy, QWebPage *page, 
+	void Plugin::hookAcceptNavigationRequest (LeechCraft::IHookProxy_ptr proxy, QWebPage *page,
 			QWebFrame *frame, QNetworkRequest request, QWebPage::NavigationType type)
 	{
 		if (!request.url ().toString ().endsWith ("user.js", Qt::CaseInsensitive) ||
 			request.url ().scheme () == "file")
 			return;
 
-		UserScriptInstallerDialog installer (this, 
+		UserScriptInstallerDialog installer (this,
 				CoreProxy_->GetNetworkAccessManager (), request.url ());
 
 		switch (installer.exec ())
@@ -209,7 +210,7 @@ namespace FatApe
 		default:
 			break;
 		}
-		
+
 		proxy->CancelDefault ();
 	}
 
@@ -225,7 +226,7 @@ namespace FatApe
 		WrapText (scriptDesc);
 		description->setToolTip (scriptDesc);
 		description->setData (script.IsEnabled (), EnabledRole);
-		
+
 		QList<QStandardItem*> items;
 		items << name << description;
 		Model_->appendRow (items);

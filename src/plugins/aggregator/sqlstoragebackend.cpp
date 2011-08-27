@@ -28,6 +28,8 @@
 #include <QSqlRecord>
 #include <util/dblock.h>
 #include <util/defaulthookproxy.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/itagsmanager.h>
 #include "xmlsettingsmanager.h"
 #include "core.h"
 
@@ -1125,7 +1127,7 @@ namespace Aggregator
 
 		GetEnclosures (itemId, item->Enclosures_);
 		GetMRSSEntries (itemId, item->MRSSEntries_);
-		
+
 		emit hookItemLoad (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy), item.get ());
 
 		return item;

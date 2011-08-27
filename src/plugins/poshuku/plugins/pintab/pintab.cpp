@@ -27,6 +27,8 @@
 #include <QSettings>
 #include <QTabWidget>
 #include <QUrl>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ipluginsmanager.h>
 
 namespace LeechCraft
 {
@@ -37,22 +39,22 @@ namespace PinTab
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		CoreProxy_ = proxy;
-		
-		QSettings settings (QCoreApplication::organizationName (), 
+
+		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Poshuku");
 		int size = settings.beginReadArray ("Pinned tabs");
-		
+
 		for (int i = 0; i < size; i++)
 		{
 			settings.setArrayIndex (i);
 			PinnedUrls_.append (settings.value ("url").toString ());
 		}
 	}
-	
+
 	void Plugin::SecondInit ()
 	{
 	}
-	
+
 	void Plugin::Release ()
 	{
 		SavePinned();
@@ -62,7 +64,7 @@ namespace PinTab
 	{
 		return "org.LeechCraft.Poshuku.PinTab";
 	}
-	
+
 	QString Plugin::GetName () const
 	{
 		return "Poshuku pintab";
@@ -85,11 +87,11 @@ namespace PinTab
 		return result;
 	}
 
-	void Plugin::hookMoreMenuFillEnd (LeechCraft::IHookProxy_ptr proxy, 
+	void Plugin::hookMoreMenuFillEnd (LeechCraft::IHookProxy_ptr proxy,
 			QMenu *menu, QWebView *webView, QObject *browserWidget)
 	{
 		QAction *pintab = new QAction (tr ("Pin tab"), browserWidget);
-		
+
 		connect (pintab,
 				SIGNAL (triggered ()),
 				this,
@@ -113,11 +115,11 @@ namespace PinTab
 		SetPinned (pintab->parent (), pintab, !Pinned_.contains (pintab->parent ()));
 	}
 
-	void Plugin::hookTabBarContextMenuActions (LeechCraft::IHookProxy_ptr proxy, 
+	void Plugin::hookTabBarContextMenuActions (LeechCraft::IHookProxy_ptr proxy,
 		const QObject *browserWidget) const
 	{
 		QList<QObject*> acts;
-		
+
 		acts.append (ActionsMap_ [browserWidget]);
 		proxy->SetValue ("endActions" , QVariant::fromValue (acts));
 	}
@@ -132,7 +134,7 @@ namespace PinTab
 	{
 		if (title.isEmpty ())
 			return;
-				
+
 		QObject *browserwidget = sender ();
 
 		Pinned_ [browserwidget] = title;
@@ -154,11 +156,11 @@ namespace PinTab
 			return;
 		}
 
-		QMetaObject::invokeMethod (poshuku, 
-			"changeTabName", 
-			Qt::QueuedConnection, 
-			Q_ARG (QWidget*, browserWidget), 
-			Q_ARG (const QString&, title));		
+		QMetaObject::invokeMethod (poshuku,
+			"changeTabName",
+			Qt::QueuedConnection,
+			Q_ARG (QWidget*, browserWidget),
+			Q_ARG (const QString&, title));
 	}
 
 	void Plugin::SetPinned (QObject *widget, QAction *action, bool pinned )
@@ -188,7 +190,7 @@ namespace PinTab
 		else
 		{
 			Pinned_.remove (widget);
-			disconnect (widget, 
+			disconnect (widget,
 					SIGNAL (titleChanged (const QString&)),
 					this,
 					SLOT (handlePinnedTitleChanged (const QString&)));
@@ -198,7 +200,7 @@ namespace PinTab
 		SavePinned ();
 	}
 
-	void Plugin::hookTabAdded (LeechCraft::IHookProxy_ptr, 
+	void Plugin::hookTabAdded (LeechCraft::IHookProxy_ptr,
 		QObject *browserWidget, QWebView *view, const QUrl& url)
 	{
 		if (PinnedUrls_.size () && PinnedUrls_.contains (url.toString ()))
@@ -215,7 +217,7 @@ namespace PinTab
 		Q_FOREACH (QObject *browserWidget, Pinned_.keys ())
 		{
 			QWebView *webView = GetWebView (browserWidget);
-			
+
 			if (!webView)
 			{
 				qWarning () << Q_FUNC_INFO
@@ -227,8 +229,8 @@ namespace PinTab
 			pinned.append (webView->url ().toString ());
 		}
 
-		
-		QSettings settings (QCoreApplication::organizationName (), 
+
+		QSettings settings (QCoreApplication::organizationName (),
 			QCoreApplication::applicationName () + "_Poshuku");
 
 		settings.remove ("Pinned tabs");
@@ -248,7 +250,7 @@ namespace PinTab
 		QMetaObject::invokeMethod (browserWidget,
 			"getWebView",
 			Q_RETURN_ARG (QWebView*, view));
-		
+
 		return view;
 	}
 

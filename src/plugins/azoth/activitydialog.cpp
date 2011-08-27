@@ -123,7 +123,7 @@ namespace Azoth
 		};
 
 		int sizes [] = { 9, 3, 4, 9, 6, 0, 8, 12, 3, 9, 4 };
-		for (int i = 0, pos = 0; pos < sizeof (sizes) / sizeof (sizes [0]); ++pos)
+		for (size_t i = 0, pos = 0; pos < sizeof (sizes) / sizeof (sizes [0]); ++pos)
 			for (int j = 0; j < sizes [pos]; ++j, ++i)
 				Gen2Specific_ [genAct [pos]] << specAct [i];
 		
@@ -134,7 +134,7 @@ namespace Azoth
 				
 		Ui_.General_->addItem (tr ("<clear>"));
 		
-		for (int i = 0; i < sizeof (genAct) / sizeof (genAct [0]); ++i)
+		for (size_t i = 0; i < sizeof (genAct) / sizeof (genAct [0]); ++i)
 		{
 			QIcon icon (rl->GetIconPath (theme + genAct [i]));
 			Ui_.General_->addItem (icon, tr (genAct [i]), QString (genAct [i]));

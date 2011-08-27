@@ -23,6 +23,7 @@
 #include "ircmessage.h"
 #include "ircserverhandler.h"
 #include "ircaccount.h"
+#include "channelconfigwidget.h"
 
 namespace LeechCraft
 {
@@ -33,6 +34,7 @@ namespace Acetamide
 	ChannelCLEntry::ChannelCLEntry (ChannelHandler *handler)
 	: QObject (handler->GetIrcServerHandler ()->GetAccount ())
 	, ICH_ (handler)
+	, IsWidgetRequest_ (false)
 	{
 	}
 
@@ -283,6 +285,110 @@ namespace Acetamide
 	{
 		return false;
 	}
+
+	ChannelModes ChannelCLEntry::GetChannelModes () const
+	{
+		return ICH_->GetChannelModes ();
+	}
+
+	QWidget* ChannelCLEntry::GetConfigurationWidget ()
+	{
+		return new ChannelConfigWidget (this);
+	}
+
+	void ChannelCLEntry::AcceptConfiguration (QWidget *widget)
+	{
+		ChannelConfigWidget *cfg = qobject_cast<ChannelConfigWidget*> (widget);
+		if (!cfg)
+		{
+			qWarning () << Q_FUNC_INFO
+			<< "unable to cast"
+			<< widget
+			<< "to ChannelConfigWidget";
+			return;
+		}
+
+		cfg->accept ();
+	}
+
+	void ChannelCLEntry::RequestBanList ()
+	{
+		ICH_->RequestBanList ();
+	}
+
+	void ChannelCLEntry::RequestExceptList ()
+	{
+		ICH_->RequestExceptList ();
+	}
+
+	void ChannelCLEntry::RequestInviteList ()
+	{
+		ICH_->RequestInviteList ();
+	}
+
+	void ChannelCLEntry::SetBanListItem (const QString& mask, 
+			const QString& nick, const QDateTime& date)
+	{
+		emit gotBanListItem (mask, nick, date);
+	}
+
+	void ChannelCLEntry::SetExceptListItem (const QString& mask, 
+			const QString& nick, const QDateTime& date)
+	{
+		emit gotExceptListItem (mask, nick, date);
+	}
+
+	void ChannelCLEntry::SetInviteListItem (const QString& mask, 
+			const QString& nick, const QDateTime& date)
+	{
+		emit gotInviteListItem (mask, nick, date);
+	}
+
+	void ChannelCLEntry::SetIsWidgetRequest (bool set)
+	{
+		IsWidgetRequest_ = set;
+	}
+
+	bool ChannelCLEntry::GetIsWidgetRequest () const
+	{
+		return IsWidgetRequest_;
+	}
+
+	void ChannelCLEntry::AddBanListItem (QString mask)
+	{
+		ICH_->AddBanListItem (mask);
+	}
+
+	void ChannelCLEntry::RemoveBanListItem (QString mask)
+	{
+		ICH_->RemoveBanListItem (mask);
+	}
+
+	void ChannelCLEntry::AddExceptListItem (QString mask)
+	{
+		ICH_->AddExceptListItem (mask);
+	}
+
+	void ChannelCLEntry::RemoveExceptListItem (QString mask)
+	{
+		ICH_->RemoveExceptListItem (mask);
+	}
+
+	void ChannelCLEntry::AddInviteListItem (QString mask)
+	{
+		ICH_->AddInviteListItem (mask);
+	}
+
+	void ChannelCLEntry::RemoveInviteListItem (QString mask)
+	{
+		ICH_->RemoveInviteListItem (mask);
+	}
+
+	void ChannelCLEntry::SetNewChannelModes (const ChannelModes& modes)
+	{
+		ICH_->SetNewChannelModes (modes);
+	}
+
 };
 };
 };

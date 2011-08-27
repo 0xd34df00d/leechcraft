@@ -22,6 +22,7 @@
 #include <QMainWindow>
 #include <QTranslator>
 #include <util/util.h>
+#include <interfaces/core/icoreproxy.h>
 #include "core.h"
 #include "tabppwidget.h"
 #include "xmlsettingsmanager.h"

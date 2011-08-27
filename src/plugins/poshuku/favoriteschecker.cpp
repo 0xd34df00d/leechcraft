@@ -22,6 +22,7 @@
 #include <QApplication>
 #include <QFontMetrics>
 #include <QMainWindow>
+#include <interfaces/core/icoreproxy.h>
 #include "core.h"
 
 namespace LeechCraft

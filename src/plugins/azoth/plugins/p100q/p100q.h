@@ -27,6 +27,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/ihavesettings.h>
+#include <interfaces/core/ihookproxy.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 
 namespace LeechCraft
@@ -51,7 +52,7 @@ namespace p100q
 		QRegExp TagRX_;
 		QRegExp ImgRX_;
 		QRegExp PstoCommentRX_;
-		
+
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 	public:
 		void Init (ICoreProxy_ptr);
@@ -67,9 +68,9 @@ namespace p100q
 		void SetProvider (QObject*, const QString&);
 
 		QSet<QByteArray> GetPluginClasses () const;
-		
+
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-		
+
 	private:
 		QString FormatBody (QString);
 	public slots:

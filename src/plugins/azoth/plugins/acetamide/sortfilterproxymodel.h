@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2010-2011  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,51 +16,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "workerthread.h"
-#include <QtDebug>
-#include "workerobject.h"
+#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SORTFILTERPROXYMODEL_H
+#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SORTFILTERPROXYMODEL_H
+
+#include <QSortFilterProxyModel>
 
 namespace LeechCraft
 {
-namespace Aggregator
+namespace Azoth
 {
-namespace BodyFetch
+namespace Acetamide
 {
-	WorkerThread::WorkerThread (QObject *parent)
-	: QThread (parent)
-	, Object_ (0)
+	class SortFilterProxyModel : public QSortFilterProxyModel
 	{
-	}
-	
-	void WorkerThread::run ()
-	{
-		Object_ = new WorkerObject ();
-		QThread::run ();
-		Object_ = 0;
-	}
-	
-	void WorkerThread::SetLoaderInstance (IScriptLoaderInstance *inst)
-	{
-		Object_->SetLoaderInstance (inst);
-	}
-	
-	bool WorkerThread::IsOK () const
-	{
-		return isRunning () && Object_ && Object_->IsOk ();
-	}
-	
-	void WorkerThread::AppendItems (const QVariantList& items)
-	{
-		Object_->AppendItems (items);
-		QMetaObject::invokeMethod (Object_,
-				"process",
-				Qt::QueuedConnection);
-	}
-	
-	QObject* WorkerThread::GetWorkingObject () const
-	{
-		return Object_;
-	}
+		Q_OBJECT
+	public:
+		SortFilterProxyModel (QObject *parent = 0);
+	protected:
+		bool filterAcceptsRow (int, const QModelIndex&) const;
+	};
 }
 }
 }
+#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SORTFILTERPROXYMODEL_H

@@ -54,6 +54,7 @@
 #include <util/util.h>
 #include <util/defaulthookproxy.h>
 #include <util/notificationactionhandler.h>
+#include <interfaces/core/icoreproxy.h>
 #include "core.h"
 #include "historymodel.h"
 #include "finddialog.h"
@@ -101,8 +102,10 @@ namespace Poshuku
 				SLOT (reload ()));
 
 		Cut_ = Ui_.WebView_->pageAction (QWebPage::Cut);
+		Cut_->setShortcutContext (Qt::WindowShortcut);
 		Cut_->setProperty ("ActionIcon", "poshuku_cut");
 		Copy_ = Ui_.WebView_->pageAction (QWebPage::Copy);
+		Copy_->setShortcutContext (Qt::WindowShortcut);
 		Copy_->setProperty ("ActionIcon", "poshuku_copy");
 		Paste_ = Ui_.WebView_->pageAction (QWebPage::Paste);
 		Paste_->setProperty ("ActionIcon", "poshuku_paste");
@@ -171,7 +174,7 @@ namespace Poshuku
 				this);
 		ViewSources_->setProperty ("ActionIcon", "poshuku_viewsources");
 		ViewSources_->setEnabled (false);
-		
+
 		SavePage_ = new QAction (tr ("Save page..."),
 				this);
 		SavePage_->setProperty ("ActionIcon", "fetchall");
@@ -190,21 +193,21 @@ namespace Poshuku
 				this);
 		ZoomReset_->setProperty ("ActionIcon", "poshuku_zoomreset");
 
-		HistoryAction_ = new QAction (tr ("Open history"), 
+		HistoryAction_ = new QAction (tr ("Open history"),
 				this);
 		HistoryAction_->setCheckable (true);
 		HistoryAction_->setShortcut (QKeySequence (tr ("Ctrl+h")));
-		
-		BookmarksAction_ = new QAction (tr ("Open bookmarks"), 
+
+		BookmarksAction_ = new QAction (tr ("Open bookmarks"),
 				this);
 		BookmarksAction_->setCheckable (true);
 		BookmarksAction_->setShortcut (QKeySequence (tr ("Ctrl+b")));
-		
-		
+
+
 		ToolBar_->addAction (Back_);
 		ToolBar_->addAction (Forward_);
 		ToolBar_->addAction (ReloadStop_);
-		
+
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
 		QMenu *moreMenu = new QMenu (this);
 		emit hookMoreMenuFillBegin (proxy, moreMenu, Ui_.WebView_, this);
@@ -257,6 +260,7 @@ namespace Poshuku
 		RecentlyClosed_ = moreMenu->addMenu (tr ("Recently closed"));
 		RecentlyClosed_->setEnabled (false);
 		RecentlyClosedAction_ = RecentlyClosed_->menuAction ();
+		RecentlyClosedAction_->setShortcutContext (Qt::WindowShortcut);
 
 		ExternalLinks_ = new QMenu (this);
 		ExternalLinks_->menuAction ()->setText (tr ("External links"));
@@ -432,7 +436,7 @@ namespace Poshuku
 				SIGNAL (triggered (bool)),
 				this,
 				SLOT (handleShortcutBookmarks ()));
-		
+
 		QTimer::singleShot (100,
 				this,
 				SLOT (focusLineEdit ()));
@@ -586,7 +590,7 @@ namespace Poshuku
 		emit hookSetURL (proxy, this, url);
 		if (proxy->IsCancelled ())
 			return;
-		
+
 		proxy->FillValue ("url", url);
 
 		if (!url.isEmpty () && url.isValid ())
@@ -698,7 +702,7 @@ namespace Poshuku
 	{
 		return Own_ ? ToolBar_ : 0;
 	}
-	
+
 	namespace
 	{
 		void Append (QList<QAction*>& result, const QList<QObject*>& objs)
@@ -726,7 +730,7 @@ namespace Poshuku
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 		emit hookTabBarContextMenuActions (proxy, this);
 		proxy->FillValue ("actions", plugResult);
-		
+
 		QList<QAction*> result;
 		Append (result, plugResult);
 
@@ -737,7 +741,7 @@ namespace Poshuku
 				<< RecentlyClosedAction_
 				<< Print_
 				<< Back_;
-				
+
 		plugResult.clear ();
 		proxy->FillValue ("endActions", plugResult);
 		Append (result, plugResult);
@@ -754,7 +758,7 @@ namespace Poshuku
 	{
 		return S_MultiTabsParent_;
 	}
-	
+
 	TabClassInfo BrowserWidget::GetTabClassInfo () const
 	{
 		return Core::Instance ().GetTabClass ();
@@ -771,7 +775,7 @@ namespace Poshuku
 		emit hookPrint (proxy, this, preview, frame);
 		if (proxy->IsCancelled ())
 			return;
-		
+
 		proxy->FillValue ("preview", preview);
 
 		std::auto_ptr<QPrinter> printer (new QPrinter ());
@@ -834,7 +838,7 @@ namespace Poshuku
 		emit hookStatusBarMessage (proxy, this, msg);
 		if (proxy->IsCancelled ())
 			return;
-		
+
 		proxy->FillValue ("message", msg);
 
 		emit statusBarChanged (msg);
@@ -911,7 +915,7 @@ namespace Poshuku
 		emit hookFindText (proxy, this, text, flags);
 		if (proxy->IsCancelled ())
 			return;
-		
+
 		proxy->FillValue ("text", text);
 
 		if (PreviousFindText_ != text)
@@ -1009,7 +1013,7 @@ namespace Poshuku
 		viewer->SetHtml (html);
 		viewer->show ();
 	}
-	
+
 	void BrowserWidget::handleSavePage ()
 	{
 		Entity e = Util::MakeEntity (Ui_.WebView_->url (),
@@ -1234,7 +1238,7 @@ namespace Poshuku
 		emit hookLoadProgress (proxy, Ui_.WebView_->page (), this, p);
 		if (proxy->IsCancelled ())
 			return;
-		
+
 		proxy->FillValue ("progress", p);
 
 		QString title = Ui_.WebView_->title ();
@@ -1281,7 +1285,7 @@ namespace Poshuku
 				NotifyWhenFinished_->isChecked (),
 				Own_,
 				HtmlMode_);
-		
+
 		proxy->FillValue ("ok", ok);
 
 		if (!NotifyWhenFinished_->isChecked () ||
@@ -1450,7 +1454,7 @@ namespace Poshuku
 #endif
 		Ui_.URLFrame_->GetEdit ()->setText (userText);
 	}
-	
+
 	void BrowserWidget::handleShortcutHistory ()
 	{
 		if (!HistoryAction_->isChecked ())
@@ -1460,10 +1464,10 @@ namespace Poshuku
 			HistoryAction_->setChecked (true);
 			BookmarksAction_->setChecked (false);
 		}
-		
+
 		SetSplitterSizes (1);
 	}
-	
+
 	void BrowserWidget::handleShortcutBookmarks ()
 	{
 		if (!BookmarksAction_->isChecked ())
@@ -1473,16 +1477,16 @@ namespace Poshuku
 			HistoryAction_->setChecked (false);
 			BookmarksAction_->setChecked (true);
 		}
-		
+
 		SetSplitterSizes (0);
 	}
-	
+
 	void BrowserWidget::SetSplitterSizes (int currentIndex)
 	{
 		int splitterSize = XmlSettingsManager::Instance ()->
 				Property ("HistoryBoormarksPanelSize", 250).toInt ();
 		int wSize = Ui_.WebView_->width ();
-		
+
 		if (!Ui_.Splitter_->sizes ().at (0))
 		{
 			Ui_.Splitter_->setSizes (QList<int> () << splitterSize << wSize - splitterSize);

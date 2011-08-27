@@ -24,6 +24,7 @@
 #include <interfaces/entitytesthandleresult.h>
 #include <util/resourceloader.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
+#include <interfaces/core/icoreproxy.h>
 #include "kinotifywidget.h"
 #include "xmlsettingsmanager.h"
 
@@ -77,7 +78,7 @@ namespace LeechCraft
 				return QIcon (":/plugins/kinotify/resources/images/kinotify.svg");
 			}
 
-			EntityTestHandleResult Plugin::CouldHandle (const LeechCraft::Entity& e) const
+			EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const
 			{
 				const bool could = e.Mime_ == "x-leechcraft/notification" &&
 						e.Additional_ ["Priority"].toInt () != PLog_ &&
@@ -87,7 +88,7 @@ namespace LeechCraft
 						EntityTestHandleResult ();
 			}
 
-			void Plugin::Handle (LeechCraft::Entity e)
+			void Plugin::Handle (Entity e)
 			{
 				Priority prio = static_cast<Priority> (e.Additional_ ["Priority"].toInt ());
 				if (prio == PLog_)
@@ -101,6 +102,7 @@ namespace LeechCraft
 
  				KinotifyWidget *notificationWidget =
 						new KinotifyWidget (timeout, Proxy_->GetMainWindow ());
+				notificationWidget->setWindowModality (Qt::NonModal);
 				notificationWidget->SetThemeLoader (ThemeLoader_);
 				notificationWidget->SetEntity (e);
 

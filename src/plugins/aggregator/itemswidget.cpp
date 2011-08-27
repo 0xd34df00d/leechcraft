@@ -28,6 +28,7 @@
 #include <util/categoryselector.h>
 #include <util/util.h>
 #include <util/mergemodel.h>
+#include <interfaces/core/itagsmanager.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "itemsfiltermodel.h"
@@ -64,7 +65,7 @@ namespace Aggregator
 		std::auto_ptr<Util::MergeModel> ItemLists_;
 		std::auto_ptr<ItemsFilterModel> ItemsFilterModel_;
 		std::auto_ptr<CategorySelector> ItemCategorySelector_;
-		
+
 		QTimer *SelectedChecker_;
 		QModelIndex LastSelectedIndex_;
 	};
@@ -96,7 +97,6 @@ namespace Aggregator
 		Impl_->ItemLists_->AddModel (Impl_->CurrentItemsModel_.get ());
 
 		Impl_->Ui_.setupUi (this);
-		Impl_->Ui_.ItemView_->Construct (Core::Instance ().GetWebBrowser ());
 
 		Impl_->Ui_.Items_->setAcceptDrops (false);
 
@@ -179,7 +179,6 @@ namespace Aggregator
 		XmlSettingsManager::Instance ()->RegisterObject ("ShowNavBarInItemsView",
 				this, "navBarVisibilityChanged");
 		selectorVisiblityChanged ();
-		navBarVisibilityChanged ();
 
 		on_ActionHideReadItems__triggered ();
 	}
@@ -198,7 +197,7 @@ namespace Aggregator
 				0);
 		delete Impl_;
 	}
-	
+
 	void ItemsWidget::SetAppWideActions (const AppWideActions& awa)
 	{
 		QAction *first = Impl_->ControlToolBar_->actions ().first ();
@@ -446,6 +445,12 @@ namespace Aggregator
 			Impl_->CurrentItemsModel_->Reset (-1);
 		}
 		emit currentChannelChanged (index);
+	}
+
+	void ItemsWidget::ConstructBrowser ()
+	{
+		Impl_->Ui_.ItemView_->Construct (Core::Instance ().GetWebBrowser ());
+		navBarVisibilityChanged ();
 	}
 
 	void ItemsWidget::LoadUIState ()
@@ -1094,7 +1099,7 @@ namespace Aggregator
 
 	void ItemsWidget::currentItemChanged ()
 	{
-		QString preHtml = "<html><head><title/></head><body bgcolor=\"";
+		QString preHtml = "<html><head><title>News</title></head><body bgcolor=\"";
 		preHtml += palette ().color (QPalette::Base).name ();
 		preHtml += "\">";
 		if (Impl_->TapeMode_)
@@ -1159,7 +1164,7 @@ namespace Aggregator
 			}
 		}
 	}
-	
+
 	void ItemsWidget::checkSelected ()
 	{
 		const QModelIndex& sourceIndex =

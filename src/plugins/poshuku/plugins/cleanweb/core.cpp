@@ -155,6 +155,9 @@ namespace CleanWeb
 						cs = true;
 					}
 
+					if (options.removeAll ("third-party"))
+						f.AbortForeign_ = true;
+
 					Q_FOREACH (const QString& option, options)
 						if (option.startsWith ("domain="))
 						{
@@ -198,19 +201,22 @@ namespace CleanWeb
 				{
 					if (actualLine.endsWith ('|'))
 					{
-						actualLine.remove (0, 1);
+						actualLine.chop (1);
 						actualLine.prepend ('*');
 					}
 					else if (actualLine.startsWith ('|'))
 					{
-						actualLine.chop (1);
+						actualLine.remove (0, 1);
 						actualLine.append ('*');
 					}
-					else
+					else if (actualLine.contains ('*') ||
+							actualLine.contains ('?'))
 					{
 						actualLine.prepend ('*');
 						actualLine.append ('*');
 					}
+					else
+						f.MatchType_ = FilterOption::MTPlain;
 					actualLine.replace ('?', "\\?");
 				}
 
@@ -390,13 +396,13 @@ namespace CleanWeb
 	QNetworkReply* Core::Hook (IHookProxy_ptr hook,
 			QNetworkAccessManager*,
 			QNetworkAccessManager::Operation*,
-			QNetworkRequest *req,
 			QIODevice**)
 	{
-		if (!req->originatingObject ())
+		QNetworkRequest req = hook->GetValue ("request").value<QNetworkRequest> ();
+		if (!req.originatingObject ())
 			return 0;
 
-		if (req->url ().scheme () == "data")
+		if (req.url ().scheme () == "data")
 		{
 			qDebug () << Q_FUNC_INFO
 				<< "not checking data: urls";
@@ -404,33 +410,33 @@ namespace CleanWeb
 		}
 
 		QString matched;
-		if (ShouldReject (*req, &matched))
-		{
-			if (Blocked_.size () > 300)
-				Blocked_.removeFirst ();
-			qDebug () << "rejecting against" << matched;
-			hook->CancelDefault ();
+		if (!ShouldReject (req, &matched))
+			return 0;
+
+		if (Blocked_.size () > 300)
+			Blocked_.removeFirst ();
+		qDebug () << "rejecting against" << matched;
+		hook->CancelDefault ();
 
 #if QT_VERSION >= 0x040700
-			QWebFrame *frame = qobject_cast<QWebFrame*> (req->originatingObject ());
-			if (frame)
-				QMetaObject::invokeMethod (this,
-						"delayedRemoveElements",
-						Qt::QueuedConnection,
-						Q_ARG (QWebFrame*, frame),
-						Q_ARG (QString, req->url ().toString ()));
+		QWebFrame *frame = qobject_cast<QWebFrame*> (req.originatingObject ());
+		if (frame)
+			QMetaObject::invokeMethod (this,
+					"delayedRemoveElements",
+					Qt::QueuedConnection,
+					Q_ARG (QWebFrame*, frame),
+					Q_ARG (QString, req.url ().toString ()));
 #else
-			Blocked_ << req->url ().toString ();
+		Blocked_ << req.url ().toString ();
 #endif
 
-			Util::CustomNetworkReply *result = new Util::CustomNetworkReply (this);
-			result->SetContent (QString ("Blocked by Poshuku CleanWeb"));
-			result->SetError (QNetworkReply::ContentAccessDenied,
-					tr ("Blocked by Poshuku CleanWeb: %1")
-						.arg (req->url ().toString ()));
-			return result;
-		}
-		return 0;
+		Util::CustomNetworkReply *result = new Util::CustomNetworkReply (this);
+		result->SetContent (QString ("Blocked by Poshuku CleanWeb"));
+		result->SetError (QNetworkReply::ContentAccessDenied,
+				tr ("Blocked by Poshuku CleanWeb: %1")
+					.arg (req.url ().toString ()));
+		hook->SetReturnValue (QVariant::fromValue<QNetworkReply*> (result));
+		return result;
 	}
 
 	void Core::HandleExtension (LeechCraft::IHookProxy_ptr proxy,
@@ -522,28 +528,35 @@ namespace CleanWeb
 	 */
 	bool Core::ShouldReject (const QNetworkRequest& req, QString *matchedFilter) const
 	{
-		QUrl url = req.url ();
-		QString urlStr = url.toString ();
-		QString cinUrlStr = urlStr.toLower ();
-		QString domain = url.host ();
+		if (!req.hasRawHeader ("referer"))
+			return false;
 
-		QList<Filter> allFilters;
+		const QUrl& url = req.url ();
+		const QString& urlStr = url.toString ();
+		const QString& cinUrlStr = urlStr.toLower ();
+		const QString& domain = url.host ();
+
+		QList<Filter> allFilters = Filters_;
 		allFilters << UserFilters_->GetFilter ();
-		allFilters += Filters_;
-		Q_FOREACH (Filter filter, allFilters)
+		Q_FOREACH (const Filter& filter, allFilters)
 		{
-			Q_FOREACH (QString exception, filter.ExceptionStrings_)
+			Q_FOREACH (const QString& exception, filter.ExceptionStrings_)
 			{
-				bool cs = filter.Options_ [exception].Case_ == Qt::CaseSensitive;
-				QString url = cs ? urlStr : cinUrlStr;
+				const bool cs = filter.Options_ [exception].Case_ == Qt::CaseSensitive;
+				const QString& url = cs ? urlStr : cinUrlStr;
 				if (Matches (exception, filter, url, domain))
 					return false;
 			}
 
-			Q_FOREACH (QString filterString, filter.FilterStrings_)
+			Q_FOREACH (const QString& filterString, filter.FilterStrings_)
 			{
-				bool cs = filter.Options_ [filterString].Case_ == Qt::CaseSensitive;
-				QString url = cs ? urlStr : cinUrlStr;
+				const FilterOption& opt = filter.Options_ [filterString];
+				if (opt.AbortForeign_ &&
+						!req.rawHeader ("referer").contains (domain.toUtf8 ()))
+					continue;
+
+				const bool cs = opt.Case_ == Qt::CaseSensitive;
+				const QString& url = cs ? urlStr : cinUrlStr;
 				if (Matches (filterString, filter, url, domain))
 				{
 					*matchedFilter = filterString;
@@ -618,18 +631,12 @@ namespace CleanWeb
 	bool Core::Matches (const QString& exception, const Filter& filter,
 			const QString& urlStr, const QString& domain) const
 	{
-		FilterOption opt = filter.Options_ [exception];
+		const FilterOption& opt = filter.Options_ [exception];
 		if (!opt.NotDomains_.isEmpty ())
 		{
-			bool shouldFurther = true;
-			Q_FOREACH (QString notDomain, opt.NotDomains_)
+			Q_FOREACH (const QString& notDomain, opt.NotDomains_)
 				if (domain.endsWith (notDomain, opt.Case_))
-				{
-					shouldFurther = false;
-					break;
-				}
-			if (!shouldFurther)
-				return false;
+					return false;
 		}
 
 		if (!opt.Domains_.isEmpty ())
@@ -654,6 +661,9 @@ namespace CleanWeb
 						qPrintable (urlStr)))
 				return true;
 		}
+		else if (opt.MatchType_ == FilterOption::MTPlain)
+			return urlStr.contains (exception);
+
 		return false;
 	}
 
@@ -924,6 +934,8 @@ namespace CleanWeb
 		if (elems.count ())
 			Q_FOREACH (QWebElement elem, elems)
 				elem.removeFromDocument ();
+		else if (frame->parentFrame ())
+			delayedRemoveElements (frame->parentFrame (), url);
 		else
 		{
 			connect (frame,
@@ -939,7 +951,7 @@ namespace CleanWeb
 			MoreDelayedURLs_ [frame] << url;
 		}
 	}
-	
+
 	void Core::moreDelayedRemoveElements ()
 	{
 		QWebFrame *frame = qobject_cast<QWebFrame*> (sender ());
@@ -953,10 +965,10 @@ namespace CleanWeb
 			else
 				qWarning () << Q_FUNC_INFO << "not found" << url;
 		}
-		
+
 		MoreDelayedURLs_.remove (frame);
 	}
-	
+
 	void Core::handleFrameDestroyed ()
 	{
 		MoreDelayedURLs_.remove (static_cast<QWebFrame*> (sender ()));
