@@ -71,6 +71,7 @@
 #include "localsockethandler.h"
 #include "storagebackend.h"
 #include "coreinstanceobject.h"
+#include "coreplugin2manager.h"
 
 using namespace LeechCraft::Util;
 
@@ -85,6 +86,8 @@ namespace LeechCraft
 	, NewTabMenuManager_ (new NewTabMenuManager)
 	, CoreInstanceObject_ (new CoreInstanceObject)
 	{
+		CoreInstanceObject_->GetCorePluginManager ()->RegisterHookable (NetworkAccessManager_.get ());
+
 		connect (CoreInstanceObject_->GetSettingsDialog ().get (),
 				SIGNAL (pushButtonClicked (const QString&)),
 				this,
