@@ -66,6 +66,8 @@ namespace LeechCraft
 		// IPluginReady
 		QSet<QByteArray> GetExpectedPluginClasses () const;
 		void AddPlugin (QObject*);
+
+		CorePlugin2Manager* GetCorePluginManager () const;
 	private:
 		void BuildNewTabModel ();
 	signals:

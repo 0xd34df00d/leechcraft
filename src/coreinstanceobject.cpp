@@ -205,6 +205,11 @@ namespace LeechCraft
 		CorePlugin2Manager_->AddPlugin (plugin);
 	}
 
+	CorePlugin2Manager* CoreInstanceObject::GetCorePluginManager () const
+	{
+		return CorePlugin2Manager_;
+	}
+
 	void CoreInstanceObject::BuildNewTabModel ()
 	{
 		QStandardItemModel *newTabsModel = new QStandardItemModel (this);
