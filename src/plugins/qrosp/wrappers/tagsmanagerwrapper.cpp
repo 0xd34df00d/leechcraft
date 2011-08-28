@@ -17,7 +17,7 @@
  **********************************************************************/
 
 #include "tagsmanagerwrapper.h"
-#include <interfaces/iinfo.h>
+#include <interfaces/core/itagsmanager.h>
 
 namespace LeechCraft
 {

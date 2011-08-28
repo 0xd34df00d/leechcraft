@@ -29,6 +29,7 @@
 #include <qross/core/manager.h>
 #include <qross/core/wrapperinterface.h>
 #include <interfaces/entitytesthandleresult.h>
+#include <interfaces/core/ihookproxy.h>
 #include <util/util.h>
 #include "utilproxy.h"
 #include "wrappers/coreproxywrapper.h"
