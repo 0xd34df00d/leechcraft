@@ -38,6 +38,7 @@ namespace Otzerkalu
 		QUrl DownloadUrl_;
 		QString DestDir_;
 		int RecLevel_;
+		bool Infinity_;
 		bool FromOtherSite_;
 	};
 	

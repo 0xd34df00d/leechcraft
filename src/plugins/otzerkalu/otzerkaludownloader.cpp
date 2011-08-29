@@ -37,6 +37,7 @@ namespace Otzerkalu
 	, DestDir_ (destDir)
 	, RecLevel_ (recLevel)
 	, FromOtherSite_ (fromOtherSite)
+	, Infinity_ (!RecLevel_)
 	{
 	}
 	
@@ -124,7 +125,7 @@ namespace Otzerkalu
 		qDebug () << Q_FUNC_INFO << "Download finished";
 		--UrlCount_;
 		const FileData& data = FileMap_ [id];
-		if (!data.RecLevel_)
+		if (!data.RecLevel_ && !Param_.Infinity_)
 			return;
 
 		const QString& filename = data.Filename_;
