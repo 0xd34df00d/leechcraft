@@ -42,6 +42,23 @@ namespace AdvancedNotifications
 			return;
 
 		Entity e = orig;
+
+		if (e.Additional_ ["Text"].toString ().isEmpty ())
+		{
+			if (!e.Additional_ ["org.LC.AdvNotifications.FullText"].toString ().isEmpty ())
+				e.Additional_ ["Text"] = e.Additional_ ["org.LC.AdvNotifications.FullText"];
+			else if (!e.Additional_ ["org.LC.AdvNotifications.ExtendedText"].toString ().isEmpty ())
+				e.Additional_ ["Text"] = e.Additional_ ["org.LC.AdvNotifications.ExtendedText"];
+			else
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "refusing to rehandle entity with empty text:"
+						<< e.Entity_
+						<< e.Additional_;
+				return;
+			}
+		}
+
 		Q_FOREACH (const QString& key, e.Additional_.keys ())
 			if (key.startsWith ("org.LC.AdvNotifications."))
 				e.Additional_.remove (key);
