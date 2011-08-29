@@ -739,6 +739,21 @@ namespace Aggregator
 			result.push_back (feedSelector.value (0).toInt ());
 	}
 
+	QList<ITagsManager::tag_id> SQLStorageBackend::GetItemTags (const IDType_t& id)
+	{
+		QList<ITagsManager::tag_id> result;
+		return result;
+	}
+
+	void SQLStorageBackend::SetItemTags (const IDType_t& id, const QList<ITagsManager::tag_id>& tags)
+	{
+	}
+
+	QList<IDType_t> SQLStorageBackend::GetItemsForTag (const ITagsManager::tag_id& tag)
+	{
+		return QList<IDType_t> ();
+	}
+
 	IDType_t SQLStorageBackend::GetHighestID (const PoolType& type) const
 	{
 		QString field, table;
