@@ -28,7 +28,7 @@ namespace Otzerkalu
 	{
 		setRange (0, 5);
 		setSpecialValueText (trUtf8 ("∞"));
-		setValue (0);
+		setValue (1);
 	}
 }
 }
