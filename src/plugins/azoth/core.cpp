@@ -2454,6 +2454,9 @@ namespace Azoth
 				msgString,
 				PInfo_);
 
+		if (msgString.isEmpty ())
+			e.Mime_ += "+advanced";
+
 		QStandardItem *someItem = Entry2Items_ [msg->GetMessageType () == IMessage::MTMUCMessage ?
 						parentCL : other].value (0);
 		const int count = someItem ?
