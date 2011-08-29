@@ -2470,9 +2470,14 @@ namespace Azoth
 					"org.LC.AdvNotifications.IM.MUCMessage";
 			e.Additional_ ["NotificationPixmap"] =
 					QVariant::fromValue<QPixmap> (QPixmap::fromImage (other->GetAvatar ()));
-			e.Additional_ ["org.LC.AdvNotifications.FullText"] =
-				tr ("%n message(s) from", 0, count) + ' ' + other->GetEntryName () +
-						" <em>(" + parentCL->GetEntryName () + ")</em>";
+
+			if (isHighlightMsg)
+				e.Additional_ ["org.LC.AdvNotifications.FullText"] =
+					tr ("%n message(s) from", 0, count) + ' ' + other->GetEntryName () +
+							" <em>(" + parentCL->GetEntryName () + ")</em>";
+			else
+				e.Additional_ ["org.LC.AdvNotifications.FullText"] =
+					tr ("%n message(s) in", 0, count) + ' ' + parentCL->GetEntryName ();
 		}
 		else
 		{
