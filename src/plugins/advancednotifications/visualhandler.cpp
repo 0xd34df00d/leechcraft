@@ -34,6 +34,9 @@ namespace AdvancedNotifications
 	
 	void VisualHandler::Handle (const Entity& orig, const NotificationRule&)
 	{
+		if (orig.Additional_ ["org.LC.AdvNotifications.EventCategory"].toString () == "org.LC.AdvNotifications.Cancel")
+			return;
+
 		const QString& evId = orig.Additional_ ["org.LC.AdvNotifications.EventID"].toString ();
 		if (ActiveEvents_.contains (evId))
 			return;
