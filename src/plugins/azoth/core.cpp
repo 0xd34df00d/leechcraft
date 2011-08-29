@@ -2392,7 +2392,7 @@ namespace Azoth
 		if (ShouldCountUnread (parentCL, msg))
 			IncreaseUnreadCount (parentCL);
 
-		if (!msg->GetDirection () == IMessage::DIn ||
+		if (msg->GetDirection () != IMessage::DIn ||
 				ChatTabsManager_->IsActiveChat (parentCL))
 			return;
 
