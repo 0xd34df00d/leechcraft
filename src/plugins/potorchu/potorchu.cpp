@@ -1,5 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
+ * Copyright (C) 2011 Minh Ngo
  * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,68 +19,129 @@
 
 #include "potorchu.h"
 #include <QIcon>
+#include <util/util.h>
+#include <interfaces/entitytesthandleresult.h>
 
 namespace LeechCraft
 {
-	namespace Plugins
+	namespace Potorchu
 	{
-		namespace Potorchu
-		{
-			void Plugin::Init (ICoreProxy_ptr proxy)
+			void Potorchu::Init (ICoreProxy_ptr proxy)
+			{
+				PotorchuWidget::SetParentMultiTabs (this);
+				TabClassInfo tabClass =
+				{
+					"Potorchu",
+					"Potorchu",
+					GetInfo (),
+					GetIcon (),
+					50,
+					TabFeatures (TFOpenableByRequest | TFByDefault)
+				};
+				TabClasses_ << tabClass;
+			}
+
+			void Potorchu::SecondInit ()
 			{
 			}
 
-			void Plugin::SecondInit ()
-			{
-			}
-
-			QByteArray Plugin::GetUniqueID () const
+			QByteArray Potorchu::GetUniqueID () const
 			{
 				return "org.LeechCraft.Potorchu";
 			}
 
-			void Plugin::Release ()
+			void Potorchu::Release ()
 			{
 			}
 
-			QString Plugin::GetName () const
+			QString Potorchu::GetName () const
 			{
 				return "Potorchu";
 			}
 
-			QString Plugin::GetInfo () const
+			QString Potorchu::GetInfo () const
 			{
 				return tr ("");
 			}
 
-			QIcon Plugin::GetIcon () const
+			QIcon Potorchu::GetIcon () const
 			{
 				return QIcon ();
 			}
 
-			QStringList Plugin::Provides () const
+			QStringList Potorchu::Provides () const
 			{
 				return QStringList ();
 			}
 
-			QStringList Plugin::Needs () const
+			QStringList Potorchu::Needs () const
 			{
 				return QStringList ();
 			}
 
-			QStringList Plugin::Uses () const
+			QStringList Potorchu::Uses () const
 			{
 				return QStringList ();
 			}
 
-			void Plugin::SetProvider (QObject*, const QString&)
+			void Potorchu::SetProvider (QObject*, const QString&)
 			{
 			}
+			
+			TabClasses_t Potorchu::GetTabClasses () const
+			{
+				return TabClasses_;
+			}
+			
+			void Potorchu::TabOpenRequested (const QByteArray& tabClass)
+			{
+				if (tabClass == "Potorchu")
+				{
+					PotorchuWidget *w = new PotorchuWidget ();
+					
+					connect (w,
+							SIGNAL (needToClose ()),
+							this,
+							SLOT (handleNeedToClose ()));
+					
+					Others_ << w;
+					emit addNewTab (tr ("Potorchu"), w);
+					emit changeTabIcon (w, QIcon ());
+					emit raiseTab (w);
+				}
+				else
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "unknown tab class"
+							<< tabClass;
+				}
+			}
+			
+			void Potorchu::handleNeedToClose ()
+			{
+				PotorchuWidget *w = qobject_cast<PotorchuWidget*> (sender ());
+				if (!w)
+				{
+					qWarning () << Q_FUNC_INFO
+						<< "not a PotorchuWidget*"
+						<< sender ();
+					return;
+				}
+				emit removeTab (w);
+				Others_.removeAll (w);
+				w->deleteLater ();
+			}
 
+			
+			EntityTestHandleResult Potorchu::CouldHandle (const LeechCraft::Entity& entity) const
+			{
+			}
+			
+			void Potorchu::Handle (LeechCraft::Entity entity)
+			{
+			}
+	}
+}
 
-		};
-	};
-};
-
-Q_EXPORT_PLUGIN2 (leechcraft_potorchu, LeechCraft::Plugins::Potorchu::Plugin);
+Q_EXPORT_PLUGIN2 (leechcraft_potorchu, LeechCraft::Potorchu::Potorchu);
 
