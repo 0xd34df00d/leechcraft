@@ -313,7 +313,22 @@ namespace Poshuku
 							error->url, error->errorString, error->domain);
 					ret->baseUrl = error->url;
 					ret->content = data.toUtf8 ();
-					return true;
+					if (error->domain == QWebPage::QtNetwork)
+						switch (error->error)
+						{
+						case QNetworkReply::UnknownNetworkError:
+							return QWebPage::extension (e, eo, er);
+						case QNetworkReply::ContentReSendError:
+							emit gotEntity (Util::MakeNotification ("Poshuku",
+										tr ("Unable to send the request to %1. Please try submitting it again.")
+											.arg (error->url.host ()),
+										PCritical_));
+							return false;
+						default :
+							return true;
+						}
+					else
+						return true;
 				}
 				}
 			}
