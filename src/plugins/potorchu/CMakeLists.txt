@@ -28,19 +28,26 @@ INCLUDE_DIRECTORIES (
 	${VLC_INCLUDE_DIR}
 	)
 SET (SRCS
+	player.cpp
 	potorchuwidget.cpp
 	potorchu.cpp
 	)
 SET (HEADERS
+	player.h
 	potorchuwidget.h
 	potorchu.h
 	)
+SET (FORMS
+	potorchuwidget.ui
+)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
+QT4_WRAP_UI (FORMS_HEADERS ${FORMS})
 
 ADD_LIBRARY (leechcraft_potorchu SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
+	${FORMS_HEADERS}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_potorchu
 	${QT_LIBRARIES}

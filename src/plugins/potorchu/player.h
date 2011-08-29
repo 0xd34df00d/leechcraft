@@ -17,43 +17,45 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef POTORCHUWIDGET_H
-#define POTORCHUWIDGET_H
+#ifndef PLAYER_H
+#define PLAYER_H
 
-#include <QWidget>
-#include <QToolBar>
-#include <interfaces/ihavetabs.h>
-#include "player.h"
-#include "ui_potorchuwidget.h"
+#include <QSlider>
+#include <QTimer>
+#include <QFrame>
+#include <QVBoxLayout>
+#include <QPushButton>
+#include <QFrame>
+#include <vlc/vlc.h>
+
 
 namespace LeechCraft
 {
 	namespace Potorchu
 	{
-		class PotorchuWidget : public QWidget
-					, public ITabWidget
+		class Player : public QFrame
 		{
 			Q_OBJECT
-			Q_INTERFACES (ITabWidget)
-			QToolBar *ToolBar_;
-			static QObject *S_ParentMultiTabs_;
-			Ui::PotorchuWidget *Ui_;
+			QTimer *Poller_;
+			bool IsPlaying_;
+			libvlc_instance_t *VLCInstance_;
+			libvlc_media_player_t *MP_;
+			libvlc_media_t *M_;
 		public:
-			PotorchuWidget (QWidget *parent = 0, Qt::WindowFlags f = 0);
-			virtual ~PotorchuWidget ();
-			static void SetParentMultiTabs (QObject *parent);
-			TabClassInfo GetTabClassInfo () const;
-			QObject* ParentMultiTabs ();
-			void Remove ();
-			QToolBar* GetToolBar () const;
+			Player (QWidget* parent = 0, Qt::WindowFlags f = 0);
+			virtual ~Player ();
+			
+			int getVolume () const;
+			int getPosition () const;
+			bool isPlayed () const;
+		public slots:
+			void playFile (const QString& file);
+			void changeVolume (int newVolume);
+			void changePosition (int newPosition);
+			void stop ();
 		signals:
-			void needToClose ();
-		private slots:
-			void handleOpenFile ();
-			void handleStop ();
-			void updateInterface ();
+			void timeout ();
 		};
 	}
 }
-
-#endif // POTORCHUWIDGET_H
+#endif // PLAYER_H

@@ -19,8 +19,12 @@
 
 #include "potorchuwidget.h"
 #include <QLabel>
+#include <QAction>
+#include <QFileDialog>
+#include <QDebug>
 
 #include "potorchu.h"
+
 namespace LeechCraft
 {
 	namespace Potorchu
@@ -29,12 +33,37 @@ namespace LeechCraft
 		PotorchuWidget::PotorchuWidget (QWidget *parent, Qt::WindowFlags f)
 		: QWidget (parent, f)
 		, ToolBar_ (new QToolBar)
+		, Ui_ (new Ui::PotorchuWidget)
 		{
+			Ui_->setupUi (this);
+			QAction *actionOpen = new QAction ("Open", this);
+			ToolBar_->addAction (actionOpen);
+			
+			connect (actionOpen,
+					SIGNAL (triggered (bool)),
+					this,
+					SLOT (handleOpenFile ()));
+			
+			connect (Ui_->StopButton_,
+					SIGNAL (clicked (bool)),
+					Ui_->Player_,
+					SLOT (stop ()));
+			connect (Ui_->Player_,
+					SIGNAL (timeout ()),
+					this,
+					SLOT (updateInterface ()));
 		}
+		
+		void PotorchuWidget::updateInterface ()
+		{
+			Ui_->VolumeSlider_->setValue (Ui_->Player_->getVolume ());
+			Ui_->PositionSlider_->setValue (Ui_->Player_->getPosition ());
+		}
+
 		
 		PotorchuWidget::~PotorchuWidget()
 		{
-
+			delete ToolBar_;
 		}
 		
 		void PotorchuWidget::SetParentMultiTabs (QObject* parent)
@@ -62,5 +91,22 @@ namespace LeechCraft
 		{
 			return ToolBar_;
 		}
+		
+		void PotorchuWidget::handleOpenFile ()
+		{
+			const QString& fileName = QFileDialog::getOpenFileName (this,
+					tr ("Choose file"), QDir::homePath ());
+			if (!fileName.isEmpty ())
+			{
+				Ui_->Player_->playFile (fileName);
+				Ui_->Player_->show ();
+			}
+		}
+		
+		void PotorchuWidget::handleStop ()
+		{
+			Ui_->Player_->stop ();
+		}
+
 	}
 }
