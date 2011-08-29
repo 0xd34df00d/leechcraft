@@ -292,8 +292,7 @@ namespace Poshuku
 					return false;
 				case 301:			// Unknown protocol (should delegate)
 				{
-					LeechCraft::Entity e =
-						LeechCraft::Util::MakeEntity (error->url,
+					Entity e = Util::MakeEntity (error->url,
 							QString (),
 							LeechCraft::FromUserInitiated);
 					bool ch = false;
