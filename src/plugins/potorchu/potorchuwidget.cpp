@@ -39,6 +39,7 @@ namespace LeechCraft
 			QAction *actionOpen = new QAction ("Open", this);
 			ToolBar_->addAction (actionOpen);
 			
+			Ui_->Player_->setFrameStyle (QFrame::Box | QFrame::Sunken);
 			connect (actionOpen,
 					SIGNAL (triggered (bool)),
 					this,
@@ -52,6 +53,10 @@ namespace LeechCraft
 					SIGNAL (timeout ()),
 					this,
 					SLOT (updateInterface ()));
+			connect (Ui_->PositionSlider_,
+					SIGNAL (sliderMoved (int)),
+					Ui_->Player_,
+					SLOT (changePosition (int)));
 		}
 		
 		void PotorchuWidget::updateInterface ()
