@@ -33,8 +33,11 @@ namespace AdvancedNotifications
 		return NMCommand;
 	}
 
-	void CmdRunHandler::Handle (const Entity&, const NotificationRule& rule)
+	void CmdRunHandler::Handle (const Entity& e, const NotificationRule& rule)
 	{
+		if (e.Additional_ ["org.LC.AdvNotifications.EventCategory"].toString () == "org.LC.AdvNotifications.Cancel")
+			return;
+
 		const CmdParams& params = rule.GetCmdParams ();
 		if (params.Cmd_.isEmpty ())
 		{
