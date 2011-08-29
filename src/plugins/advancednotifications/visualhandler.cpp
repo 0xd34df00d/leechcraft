@@ -40,15 +40,17 @@ namespace AdvancedNotifications
 		const QString& evId = orig.Additional_ ["org.LC.AdvNotifications.EventID"].toString ();
 		if (ActiveEvents_.contains (evId))
 			return;
-		
-		ActiveEvents_ << evId;
 
 		Entity e = orig;
 		Q_FOREACH (const QString& key, e.Additional_.keys ())
 			if (key.startsWith ("org.LC.AdvNotifications."))
 				e.Additional_.remove (key);
-		
+
+		if (e.Mime_.endsWith ("+advanced"))
+			e.Mime_.remove ("+advanced");
+
 		QObject_ptr probeObj (new QObject ());
+		ActiveEvents_ << evId;
 		probeObj->setProperty ("EventID", evId);
 		connect (probeObj.get (),
 				SIGNAL (destroyed ()),
