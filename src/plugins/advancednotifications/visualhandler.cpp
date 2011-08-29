@@ -26,12 +26,12 @@ namespace AdvancedNotifications
 	VisualHandler::VisualHandler ()
 	{
 	}
-	
+
 	NotificationMethod VisualHandler::GetHandlerMethod () const
 	{
 		return NMVisual;
 	}
-	
+
 	void VisualHandler::Handle (const Entity& orig, const NotificationRule&)
 	{
 		if (orig.Additional_ ["org.LC.AdvNotifications.EventCategory"].toString () == "org.LC.AdvNotifications.Cancel")
@@ -56,10 +56,10 @@ namespace AdvancedNotifications
 				SLOT (handleProbeDestroyed ()));
 		QVariant probe = QVariant::fromValue<QObject_ptr> (probeObj);
 		e.Additional_ ["RemovalProbe"] = probe;
-			
+
 		Core::Instance ().SendEntity (e);
 	}
-	
+
 	void VisualHandler::handleProbeDestroyed ()
 	{
 		const QString& evId = sender ()->property ("EventID").toString ();
