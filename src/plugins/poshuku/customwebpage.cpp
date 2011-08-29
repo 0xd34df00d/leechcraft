@@ -278,6 +278,14 @@ namespace Poshuku
 						static_cast<const ErrorPageExtensionOption*> (eo);
 				ErrorPageExtensionReturn *ret =
 						static_cast<ErrorPageExtensionReturn*> (er);
+
+				qDebug () << Q_FUNC_INFO
+						<< "error extension:"
+						<< error->domain
+						<< error->error
+						<< error->errorString
+						<< error->url;
+
 				switch (error->error)
 				{
 				case 102:			// Delegated entity
@@ -481,6 +489,12 @@ namespace Poshuku
 				{
 					int statusCode = reply->
 						attribute (QNetworkRequest::HttpStatusCodeAttribute).toInt ();
+
+					qDebug () << Q_FUNC_INFO
+							<< "general unsupported content"
+							<< reply->url ()
+							<< reply->error ()
+							<< reply->errorString ();
 
 					QString data = MakeErrorReplyContents (statusCode,
 							reply->url (), reply->errorString (), QtNetwork);
