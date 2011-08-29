@@ -18,15 +18,18 @@ SET (QT_USE_QTWEBKIT TRUE)
 INCLUDE (${QT_USE_FILE})
 INCLUDE_DIRECTORIES (
 	${CMAKE_CURRENT_BINARY_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
 SET (SRCS
+	dlevelspinbox.cpp
 	otzerkalu.cpp
 	otzerkaludialog.cpp
 	otzerkaludownloader.cpp
 	)
 SET (HEADERS
+	dlevelspinbox.h
 	otzerkalu.h
 	otzerkaludialog.h
 	otzerkaludownloader.h

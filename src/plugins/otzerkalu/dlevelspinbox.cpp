@@ -17,43 +17,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-
-#ifndef PLUGINS_OTZERKALU_OTZERKALU_H
-#define PLUGINS_OTZERKALU_OTZERKALU_H
-#include <QObject>
-#include <QUrl>
-#include <interfaces/iinfo.h>
-#include <interfaces/ientityhandler.h>
-#include <interfaces/structures.h>
-#include "otzerkaludownloader.h"
+#include "dlevelspinbox.h"
 
 namespace LeechCraft
-{
+{	
 namespace Otzerkalu
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IEntityHandler
+	DLevelSpinBox::DLevelSpinBox (QWidget* parent)
+	: QSpinBox (parent)
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IEntityHandler)
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-		EntityTestHandleResult CouldHandle (const Entity& entity) const;
-		void Handle (Entity entity);
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
-		void delegateEntity (const LeechCraft::Entity&,
-				int*, QObject**);
-	};
+		setRange (0, 5);
+		setSpecialValueText (trUtf8 ("∞"));
+		setValue (1);
+	}
 }
 }
-
-#endif
-

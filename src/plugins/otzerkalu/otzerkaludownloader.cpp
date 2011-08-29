@@ -31,12 +31,13 @@ namespace Otzerkalu
 	{
 	}
 	
-	DownloadParams::DownloadParams (const QUrl& downloadUrl, const QString& destDir,
-				int recLevel, bool fromOtherSite)
+	DownloadParams::DownloadParams (const QUrl& downloadUrl,
+			const QString& destDir, int recLevel, bool fromOtherSite)
 	: DownloadUrl_ (downloadUrl)
 	, DestDir_ (destDir)
 	, RecLevel_ (recLevel)
 	, FromOtherSite_ (fromOtherSite)
+	, Infinity_ (!RecLevel_)
 	{
 	}
 	
@@ -54,19 +55,20 @@ namespace Otzerkalu
 		}
 	}
 
-	OtzerkaluDownloader::FileData::FileData ()
+	FileData::FileData ()
 	{
 	}
 	
-	OtzerkaluDownloader::FileData::FileData (const QUrl& url, const QString& filename,
-			int recLevel)
+	FileData::FileData (const QUrl& url,
+			const QString& filename, int recLevel)
 	: Url_ (url)
 	, Filename_ (filename)
 	, RecLevel_ (recLevel)
 	{
 	}
 
-	OtzerkaluDownloader::OtzerkaluDownloader (const DownloadParams& param, QObject *parent)
+	OtzerkaluDownloader::OtzerkaluDownloader (const DownloadParams& param,
+			QObject *parent)
 	: QObject (parent)
 	, Param_ (param)
 	, UrlCount_ (0)
@@ -75,18 +77,23 @@ namespace Otzerkalu
 	
 	void OtzerkaluDownloader::Begin ()
 	{
-		Download (Param_.DownloadUrl_);
+		//Let's download the first URL
+		Download (Param_.DownloadUrl_, Param_.RecLevel_);
 	}
 	
 	void OtzerkaluDownloader::HandleProvider (QObject *provider, int id,
 			const QUrl& url, const QString& filename, int recLevel)
 	{
+		qDebug () << Q_FUNC_INFO
+				<< "Downloading "
+				<< url.toString ()
+				<< " ID "
+				<< id;
 		FileMap_.insert (id, FileData (url, filename, recLevel));
 		connect (provider,
 				SIGNAL (jobFinished (int)),
 				this,
-				SLOT (handleJobFinished (int)),
-				Qt::UniqueConnection);
+				SLOT (handleJobFinished (int)));
 	}
 	
 	QList<QUrl> OtzerkaluDownloader::CSSParser (const QString& data) const
@@ -105,24 +112,25 @@ namespace Otzerkalu
 		return urlStack;
 	}
 	
-	QString OtzerkaluDownloader::CSSUrlReplace (const QString& value)
+	QString OtzerkaluDownloader::CSSUrlReplace (const QString& value, const FileData& data)
 	{
 		const QList<QUrl>& urlStack = CSSParser (value);
-		QString data = value;
+		QString d = value;
 		Q_FOREACH (const QUrl& urlCSS, urlStack)
 		{
-			const QString& filename = Download (urlCSS);
+			const QString& filename = Download (urlCSS, data.RecLevel_ - 1);
 			if (!filename.isEmpty ())
-				data.replace (urlCSS.toString (), filename);
+				d.replace (urlCSS.toString (), filename);
 		}
-		return data;
+		return d;
 	}
 	
 	void OtzerkaluDownloader::handleJobFinished (int id)
 	{
+		qDebug () << Q_FUNC_INFO << "Download finished";
 		--UrlCount_;
 		const FileData& data = FileMap_ [id];
-		if (!data.RecLevel_)
+		if (!data.RecLevel_ && !Param_.Infinity_)
 			return;
 
 		const QString& filename = data.Filename_;
@@ -141,7 +149,7 @@ namespace Otzerkalu
 
 		if (filename.section ('.', -1) == "css")
 		{
-			WriteData (filename, CSSUrlReplace (file.readAll ()));
+			WriteData (filename, CSSUrlReplace (file.readAll (), data));
 			return;
 		}
 
@@ -159,7 +167,7 @@ namespace Otzerkalu
 		QWebElementCollection styleColl = page.mainFrame ()->findAllElements ("style");
 		for (QWebElementCollection::iterator styleItr = styleColl.begin ();
 				styleItr != styleColl.end (); ++styleItr)
-			(*styleItr).setInnerXml (CSSUrlReplace ((*styleItr).toInnerXml ()));
+			(*styleItr).setInnerXml (CSSUrlReplace ((*styleItr).toInnerXml (), data));
 
 		if (!UrlCount_)
 			emit gotEntity (Util::MakeNotification (tr ("Download complete"),
@@ -170,7 +178,8 @@ namespace Otzerkalu
 			WriteData (filename, page.mainFrame ()->toHtml ());
 	}
 	
-	bool OtzerkaluDownloader::HTMLReplace (QWebElementCollection::iterator element, const FileData& data)
+	bool OtzerkaluDownloader::HTMLReplace (QWebElementCollection::iterator element,
+			const FileData& data)
 	{
 		bool haveHref = true;
 		QUrl url = (*element).attribute ("href");
@@ -185,7 +194,7 @@ namespace Otzerkalu
 		if (!Param_.FromOtherSite_ && url.host () != Param_.DownloadUrl_.host ())
 			return false;
 
-		const QString& filename = Download (url);
+		const QString& filename = Download (url, data.RecLevel_ - 1);
 		if (filename.isEmpty ())
 			return false;
 
@@ -193,24 +202,37 @@ namespace Otzerkalu
 		return true;
 	}
 
-	QString OtzerkaluDownloader::Download (const QUrl& url)
+	QString OtzerkaluDownloader::Download (const QUrl& url, int recLevel)
 	{
 		const QFileInfo fi (url.path ());
 		const QString& name = fi.fileName ();
 		const QString& path = Param_.DestDir_ + '/' + url.host () +
 				fi.path ();
+				
+		//If file name's empty, rename it to 'index.html'
 		const QString& file = path + '/' + (name.isEmpty () ? "index.html" : name);
+		
+		//If file's not a html file, add .html tail to the name
 		const QString& filename = url.hasQuery () ? file + "?" +
 				url.encodedQuery () + ".html" : file;
 
-		if (!DownloadedFiles_.contains (filename))
+		//If a file's downloaded
+		if (DownloadedFiles_.contains (filename))
 			return QString ();
 
+		//Create the necessary directory for the downloaded file
 		QDir::root ().mkpath (path);
 
 		int id = -1;
 		QObject *pr;
-		emit delegateEntity (GetEntity (url, filename), &id, &pr);
+		Entity e = Util::MakeEntity (url,
+				filename,
+				LeechCraft::Internal |
+					LeechCraft::DoNotNotifyUser |
+					LeechCraft::DoNotSaveInHistory |
+					LeechCraft::NotPersistent |
+					LeechCraft::DoNotAnnounceEntity);
+		emit delegateEntity (e, &id, &pr);
 		if (id == -1)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -225,7 +247,7 @@ namespace Otzerkalu
 			return QString ();
 		}
 		++UrlCount_;
-		HandleProvider (pr, id, url, filename, Param_.RecLevel_ - 1);
+		HandleProvider (pr, id, url, filename, recLevel);
 		
 		return filename;
 	}

@@ -1,3 +1,19 @@
+IF (NOT QT_USE_FILE)
+	CMAKE_MINIMUM_REQUIRED (VERSION 2.6)
+	IF (COMMAND cmake_policy)
+		cmake_policy (SET CMP0003 NEW)
+	ENDIF (COMMAND cmake_policy)
+
+	PROJECT (leechcraft_azoth_p100q)
+
+	IF (NOT CMAKE_MODULE_PATH)
+		SET (CMAKE_MODULE_PATH "/usr/local/share/leechcraft/cmake;/usr/share/leechcraft/cmake")
+	ENDIF (NOT CMAKE_MODULE_PATH)
+
+	FIND_PACKAGE (Qt4 REQUIRED)
+	FIND_PACKAGE (LeechCraft REQUIRED)
+ENDIF (NOT QT_USE_FILE)
+
 INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	)
