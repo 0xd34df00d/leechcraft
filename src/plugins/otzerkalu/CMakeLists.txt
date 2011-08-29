@@ -23,13 +23,11 @@ INCLUDE_DIRECTORIES (
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
 SET (SRCS
-	dlevelspinbox.cpp
 	otzerkalu.cpp
 	otzerkaludialog.cpp
 	otzerkaludownloader.cpp
 	)
 SET (HEADERS
-	dlevelspinbox.h
 	otzerkalu.h
 	otzerkaludialog.h
 	otzerkaludownloader.h
