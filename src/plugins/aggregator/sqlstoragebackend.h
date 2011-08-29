@@ -509,7 +509,30 @@ namespace Aggregator
 							/** Binds:
 							 * - item_id
 							 */
-							RemoveMediaRSSScenes_;
+							RemoveMediaRSSScenes_,
+							/** Returns:
+							 * - tag
+							 *
+							 * Binds:
+							 * - item_id
+							 */
+							GetItemTags_,
+							/** Binds:
+							 * - item_id
+							 * - tag
+							 */
+							AddItemTag_,
+							/** Binds:
+							 * - item_id
+							 */
+							ClearItemTags_,
+							/** Returns:
+							 * - item_id
+							 *
+							 * Binds:
+							 * - tag
+							 */
+							GetItemsForTag_;
 	public:
 		SQLStorageBackend (Type);
 		virtual ~SQLStorageBackend ();
