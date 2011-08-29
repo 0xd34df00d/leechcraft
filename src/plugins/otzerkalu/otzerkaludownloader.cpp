@@ -31,8 +31,8 @@ namespace Otzerkalu
 	{
 	}
 	
-	DownloadParams::DownloadParams (const QUrl& downloadUrl, const QString& destDir,
-				int recLevel, bool fromOtherSite)
+	DownloadParams::DownloadParams (const QUrl& downloadUrl,
+			const QString& destDir, int recLevel, bool fromOtherSite)
 	: DownloadUrl_ (downloadUrl)
 	, DestDir_ (destDir)
 	, RecLevel_ (recLevel)
@@ -58,15 +58,16 @@ namespace Otzerkalu
 	{
 	}
 	
-	OtzerkaluDownloader::FileData::FileData (const QUrl& url, const QString& filename,
-			int recLevel)
+	OtzerkaluDownloader::FileData::FileData (const QUrl& url,
+			const QString& filename, int recLevel)
 	: Url_ (url)
 	, Filename_ (filename)
 	, RecLevel_ (recLevel)
 	{
 	}
 
-	OtzerkaluDownloader::OtzerkaluDownloader (const DownloadParams& param, QObject *parent)
+	OtzerkaluDownloader::OtzerkaluDownloader (const DownloadParams& param,
+			QObject *parent)
 	: QObject (parent)
 	, Param_ (param)
 	, UrlCount_ (0)
@@ -120,6 +121,7 @@ namespace Otzerkalu
 	
 	void OtzerkaluDownloader::handleJobFinished (int id)
 	{
+		qDebug () << Q_FUNC_INFO << "Download finished";
 		--UrlCount_;
 		const FileData& data = FileMap_ [id];
 		if (!data.RecLevel_)
@@ -170,7 +172,8 @@ namespace Otzerkalu
 			WriteData (filename, page.mainFrame ()->toHtml ());
 	}
 	
-	bool OtzerkaluDownloader::HTMLReplace (QWebElementCollection::iterator element, const FileData& data)
+	bool OtzerkaluDownloader::HTMLReplace (QWebElementCollection::iterator element,
+			const FileData& data)
 	{
 		bool haveHref = true;
 		QUrl url = (*element).attribute ("href");
@@ -210,7 +213,14 @@ namespace Otzerkalu
 
 		int id = -1;
 		QObject *pr;
-		emit delegateEntity (GetEntity (url, filename), &id, &pr);
+		Entity e = Util::MakeEntity (url,
+				filename,
+				LeechCraft::Internal |
+					LeechCraft::DoNotNotifyUser |
+					LeechCraft::DoNotSaveInHistory |
+					LeechCraft::NotPersistent |
+					LeechCraft::DoNotAnnounceEntity);
+		emit delegateEntity (e, &id, &pr);
 		if (id == -1)
 		{
 			qWarning () << Q_FUNC_INFO
