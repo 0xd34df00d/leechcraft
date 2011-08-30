@@ -28,6 +28,8 @@ INCLUDE_DIRECTORIES (
 	${VLC_INCLUDE_DIR}
 	)
 SET (SRCS
+	xmlsettingsmanager.cpp
+	playlistwidget.cpp
 	chooseurldialog.cpp
 	playpauseaction.cpp
 	player.cpp
@@ -35,6 +37,8 @@ SET (SRCS
 	potorchu.cpp
 	)
 SET (HEADERS
+	xmlsettingsmanager.h
+	playlistwidget.h
 	chooseurldialog.h
 	playpauseaction.h
 	player.h
@@ -64,3 +68,4 @@ TARGET_LINK_LIBRARIES (leechcraft_potorchu
 	${VLC_LIBRARIES}
 	)
 INSTALL (TARGETS leechcraft_potorchu DESTINATION ${LC_PLUGINS_DEST})
+INSTALL (FILES potorchusettings.xml DESTINATION ${LC_SETTINGS_DEST})

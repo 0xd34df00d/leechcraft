@@ -97,9 +97,13 @@ namespace LeechCraft
 					"Open File", this);
 			QAction *actionOpenURL = new QAction (proxy->GetIcon ("networkmonitor_plugin"),
 					"Open URL", this);
+			QAction *playList = new QAction (proxy->GetIcon ("itemlist"),
+					"Playlist", this);
+			playList->setCheckable (true);
 			
 			ToolBar_->addAction (actionOpenFile);
 			ToolBar_->addAction (actionOpenURL);
+			ToolBar_->addAction (playList);
 			
 			connect (actionOpenFile,
 					SIGNAL (triggered (bool)),
@@ -109,6 +113,10 @@ namespace LeechCraft
 					SIGNAL (triggered (bool)),
 					this,
 					SLOT (handleOpenChooseUrlDialog ()));
+			connect (playList,
+					SIGNAL (triggered (bool)),
+					this,
+					SLOT (handlePlaylist ()));
 		}
 
 		
@@ -178,6 +186,12 @@ namespace LeechCraft
 			if (!fileName.isEmpty ())
 				Ui_->Player_->playFile (fileName);
 		}
+		
+		void PotorchuWidget::handlePlaylist ()
+		{
+
+		}
+
 
 	}
 }

@@ -24,7 +24,8 @@
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/entitytesthandleresult.h>
-
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <interfaces/ihavesettings.h>
 #include "potorchuwidget.h"
 
 namespace LeechCraft
@@ -35,13 +36,15 @@ namespace LeechCraft
 					, public IInfo
 					, public IHaveTabs
 					, public IEntityHandler
+					, public IHaveSettings
 		{
 			Q_OBJECT
-			Q_INTERFACES (IInfo IHaveTabs IEntityHandler)
+			Q_INTERFACES (IInfo IHaveTabs IEntityHandler IHaveSettings)
 			
 			TabClasses_t TabClasses_;
 			QList<PotorchuWidget *> Others_;
 			ICoreProxy_ptr Proxy_;
+			Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 		public:
 			void Init (ICoreProxy_ptr);
 			void SecondInit ();
@@ -60,6 +63,7 @@ namespace LeechCraft
 			
 			EntityTestHandleResult CouldHandle (const Entity& entity) const;
 			void Handle (Entity entity);
+			Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 		private:
 			PotorchuWidget *createTab ();
 		signals:

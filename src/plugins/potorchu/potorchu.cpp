@@ -22,12 +22,17 @@
 #include <QUrl>
 #include <util/util.h>
 
+#include "xmlsettingsmanager.h"
+
 namespace LeechCraft
 {
 	namespace Potorchu
 	{
 			void Potorchu::Init (ICoreProxy_ptr proxy)
 			{
+				XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
+				XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
+						"potorchusettings.xml");
 				Proxy_ = proxy;
 				PotorchuWidget::SetParentMultiTabs (this);
 				TabClassInfo tabClass =
@@ -136,6 +141,12 @@ namespace LeechCraft
 				emit raiseTab (w);
 				return w;
 			}
+			
+			Util::XmlSettingsDialog_ptr Potorchu::GetSettingsDialog () const
+			{
+				return XmlSettingsDialog_;
+			}
+
 			
 			EntityTestHandleResult Potorchu::CouldHandle (const Entity& entity) const
 			{

@@ -60,6 +60,7 @@ namespace LeechCraft
 			void handleOpenFile ();
 			void handleOpenURL ();
 			void updateInterface ();
+			void handlePlaylist ();
 		};
 	}
 }
