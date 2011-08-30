@@ -27,7 +27,7 @@ namespace LeechCraft
 				QObject *parent)
 		: PlayPausePair_ (playPausePair)
 		, QAction (parent)
-		, Play_ (false)
+		, Play_ (true)
 		{
 			setIcon (PlayPausePair_.second);
 			connect (this,
@@ -40,12 +40,12 @@ namespace LeechCraft
 		{
 			if (Play_ = !Play_)
 			{
-				setIcon (PlayPausePair_.first);
+				setIcon (PlayPausePair_.second);
 				emit play ();
 			}
 			else
 			{
-				setIcon (PlayPausePair_.second);
+				setIcon (PlayPausePair_.first);
 				emit pause ();
 			}
 		}
