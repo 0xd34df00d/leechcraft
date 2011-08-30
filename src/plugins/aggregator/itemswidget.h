@@ -81,6 +81,7 @@ namespace Aggregator
 		bool IsItemRead (int) const;
 		bool IsItemReadNotCurrent (int) const;
 		QStringList GetItemCategories (int) const;
+		IDType_t GetItemIDFromRow (int) const;
 		void SubscribeToComments (const QModelIndex&) const;
 		void CurrentChannelChanged (const QModelIndex&);
 

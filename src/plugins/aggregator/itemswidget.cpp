@@ -415,6 +415,23 @@ namespace Aggregator
 		}
 	}
 
+	IDType_t ItemsWidget::GetItemIDFromRow (int index) const
+	{
+		ItemsListModel *model = 0;
+		if (!Impl_->SupplementaryModels_.size ())
+			model = Impl_->CurrentItemsModel_.get ();
+		else
+		{
+			int starting = 0;
+			LeechCraft::Util::MergeModel::const_iterator i = Impl_->ItemLists_->
+				GetModelForRow (index, &starting);
+			model = static_cast<ItemsListModel*> (i->data ());
+			index -= starting;
+		}
+
+		return model->GetItem (model->index (index, 0)).ItemID_;
+	}
+
 	void ItemsWidget::SubscribeToComments (const QModelIndex& index) const
 	{
 		Item_ptr it = GetItem (index);
@@ -1247,6 +1264,11 @@ namespace Aggregator
 			Impl_->ItemsFilterModel_->setFilterFixedString (text);
 			break;
 		}
+
+		QList<ITagsManager::tag_id> tags;
+		if (section == 3)
+			tags << "_important";
+		Impl_->ItemsFilterModel_->SetItemTags (tags);
 	}
 
 	void ItemsWidget::selectorVisiblityChanged ()
