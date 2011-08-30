@@ -19,8 +19,8 @@
 
 #include "potorchu.h"
 #include <QIcon>
+#include <QUrl>
 #include <util/util.h>
-#include <interfaces/entitytesthandleresult.h>
 
 namespace LeechCraft
 {
@@ -97,19 +97,7 @@ namespace LeechCraft
 			void Potorchu::TabOpenRequested (const QByteArray& tabClass)
 			{
 				if (tabClass == "Potorchu")
-				{
-					PotorchuWidget *w = new PotorchuWidget ();
-					w->Init (Proxy_);
-					connect (w,
-							SIGNAL (needToClose ()),
-							this,
-							SLOT (handleNeedToClose ()));
-					
-					Others_ << w;
-					emit addNewTab (tr ("Potorchu"), w);
-					emit changeTabIcon (w, QIcon ());
-					emit raiseTab (w);
-				}
+					createTab ();
 				else
 				{
 					qWarning () << Q_FUNC_INFO
@@ -133,13 +121,43 @@ namespace LeechCraft
 				w->deleteLater ();
 			}
 
-			
-			EntityTestHandleResult Potorchu::CouldHandle (const LeechCraft::Entity& entity) const
+			PotorchuWidget *Potorchu::createTab ()
 			{
+				PotorchuWidget *w = new PotorchuWidget ();
+				w->Init (Proxy_);
+				connect (w,
+						SIGNAL (needToClose ()),
+						this,
+						SLOT (handleNeedToClose ()));
+					
+				Others_ << w;
+				emit addNewTab (tr ("Potorchu"), w);
+				emit changeTabIcon (w, QIcon ());
+				emit raiseTab (w);
+				return w;
 			}
 			
-			void Potorchu::Handle (LeechCraft::Entity entity)
+			EntityTestHandleResult Potorchu::CouldHandle (const Entity& entity) const
 			{
+				bool stat;
+				if (entity.Mime_ == "application/ogg")
+                                        stat = true;
+                                if (entity.Mime_.startsWith ("audio/"))
+                                        stat = true;
+                                if (entity.Mime_.startsWith ("video/"))
+                                        stat = true;
+                                else
+					stat = false;
+				return stat ?
+						EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
+						EntityTestHandleResult ();
+			}
+			
+			void Potorchu::Handle (Entity entity)
+			{
+				const QString& dest = entity.Entity_.toString ();
+				PotorchuWidget *w = createTab ();
+				w->handleOpenMediaContent (dest);
 			}
 	}
 }

@@ -108,7 +108,7 @@ namespace LeechCraft
 			connect (actionOpenURL,
 					SIGNAL (triggered (bool)),
 					this,
-					SLOT (handleOpenURL ()));
+					SLOT (handleOpenChooseUrlDialog ()));
 		}
 
 		
@@ -156,13 +156,18 @@ namespace LeechCraft
 			if (dialog->exec () == QDialog::Accepted)
 			{
 				if (dialog->IsUrlValid ())
-					Ui_->Player_->playFile (dialog->GetUrl ());
+					Ui_->Player_->playFile (dialog->GetUrl ().toAscii ());
 				else
 					QMessageBox::warning (this,
 							tr ("The URL's not valid"),
 							tr ("The URL's not valid"));
 			}
-			dialog->deleteLater ();
+		}
+
+		
+		void PotorchuWidget::handleOpenMediaContent (const QString& val)
+		{
+			Ui_->Player_->playFile (val.toAscii ());
 		}
 
 		

@@ -23,6 +23,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ientityhandler.h>
+#include <interfaces/entitytesthandleresult.h>
 
 #include "potorchuwidget.h"
 
@@ -57,8 +58,10 @@ namespace LeechCraft
 			TabClasses_t GetTabClasses () const;
 			void TabOpenRequested (const QByteArray& tabClass);
 			
-			EntityTestHandleResult CouldHandle (const LeechCraft::Entity& entity) const;
-			void Handle (LeechCraft::Entity entity);
+			EntityTestHandleResult CouldHandle (const Entity& entity) const;
+			void Handle (Entity entity);
+		private:
+			PotorchuWidget *createTab ();
 		signals:
 			void addNewTab (const QString&, QWidget*);
 			void removeTab (QWidget*);

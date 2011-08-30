@@ -22,6 +22,7 @@
 
 #include <QWidget>
 #include <QToolBar>
+#include <QUrl>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/iinfo.h>
 #include "player.h"
@@ -53,6 +54,8 @@ namespace LeechCraft
 			QToolBar* GetToolBar () const;
 		signals:
 			void needToClose ();
+		public slots:
+			void handleOpenMediaContent (const QString& val);
 		private slots:
 			void handleOpenFile ();
 			void handleOpenURL ();
