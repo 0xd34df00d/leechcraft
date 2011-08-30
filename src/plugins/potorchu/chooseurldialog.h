@@ -17,48 +17,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef POTORCHUWIDGET_H
-#define POTORCHUWIDGET_H
+#ifndef CHOOSEURLDIALOG_H
+#define CHOOSEURLDIALOG_H
 
-#include <QWidget>
-#include <QToolBar>
-#include <interfaces/ihavetabs.h>
-#include <interfaces/iinfo.h>
-#include "player.h"
-#include "ui_potorchuwidget.h"
+#include <QDialog>
+#include <QUrl>
+#include "ui_chooseurldialog.h"
 
 namespace LeechCraft
 {
 	namespace Potorchu
 	{
-		class PotorchuWidget : public QWidget
-					, public ITabWidget
+		class ChooseURLDialog : public QDialog
 		{
 			Q_OBJECT
-			Q_INTERFACES (ITabWidget)
-			QToolBar *ToolBar_;
-			static QObject *S_ParentMultiTabs_;
-			Ui::PotorchuWidget *Ui_;
-			
-			//TODO Move to playlist
-			QString CurrentFile_;
+			Ui::ChooseURLDialog *Ui_;
 		public:
-			PotorchuWidget (QWidget *parent = 0, Qt::WindowFlags f = 0);
-			void Init (ICoreProxy_ptr);
-			virtual ~PotorchuWidget ();
-			static void SetParentMultiTabs (QObject *parent);
-			TabClassInfo GetTabClassInfo () const;
-			QObject* ParentMultiTabs ();
-			void Remove ();
-			QToolBar* GetToolBar () const;
-		signals:
-			void needToClose ();
-		private slots:
-			void handleOpenFile ();
-			void handleOpenURL ();
-			void updateInterface ();
+			ChooseURLDialog (QWidget *parent = 0);
+			virtual ~ChooseURLDialog ();
+			
+			QString GetUrl () const;
+			bool IsUrlValid () const;
 		};
 	}
 }
 
-#endif // POTORCHUWIDGET_H
+#endif // CHOOSEURLDIALOG_H

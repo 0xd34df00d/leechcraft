@@ -18,18 +18,18 @@
  **********************************************************************/
 
 #include "potorchuwidget.h"
-#include <QLabel>
 #include <QAction>
 #include <QFileDialog>
 #include <QDebug>
 #include <QVBoxLayout>
 #include <QWidgetAction>
-#include <QToolBar>
+#include <QMessageBox>
 
 #include <interfaces/core/icoreproxy.h>
 
 #include "potorchu.h"
 #include "playpauseaction.h"
+#include "chooseurldialog.h"
 
 namespace LeechCraft
 {
@@ -93,15 +93,22 @@ namespace LeechCraft
 					Ui_->Player_,
 					SLOT (pause ()));
 			
-			QAction *actionOpen = new QAction (proxy->GetIcon ("folder"),
-					"Open", this);
+			QAction *actionOpenFile = new QAction (proxy->GetIcon ("folder"),
+					"Open File", this);
+			QAction *actionOpenURL = new QAction (proxy->GetIcon ("networkmonitor_plugin"),
+					"Open URL", this);
 			
-			ToolBar_->addAction (actionOpen);
+			ToolBar_->addAction (actionOpenFile);
+			ToolBar_->addAction (actionOpenURL);
 			
-			connect (actionOpen,
+			connect (actionOpenFile,
 					SIGNAL (triggered (bool)),
 					this,
 					SLOT (handleOpenFile ()));
+			connect (actionOpenURL,
+					SIGNAL (triggered (bool)),
+					this,
+					SLOT (handleOpenURL ()));
 		}
 
 		
@@ -143,15 +150,28 @@ namespace LeechCraft
 			return ToolBar_;
 		}
 		
+		void PotorchuWidget::handleOpenURL ()
+		{
+			ChooseURLDialog *dialog = new ChooseURLDialog (this);
+			if (dialog->exec () == QDialog::Accepted)
+			{
+				if (dialog->IsUrlValid ())
+					Ui_->Player_->playFile (dialog->GetUrl ());
+				else
+					QMessageBox::warning (this,
+							tr ("The URL's not valid"),
+							tr ("The URL's not valid"));
+			}
+			dialog->deleteLater ();
+		}
+
+		
 		void PotorchuWidget::handleOpenFile ()
 		{
 			const QString& fileName = QFileDialog::getOpenFileName (this,
 					tr ("Choose file"), QDir::homePath ());
 			if (!fileName.isEmpty ())
-			{
 				Ui_->Player_->playFile (fileName);
-				Ui_->Player_->show ();
-			}
 		}
 
 	}

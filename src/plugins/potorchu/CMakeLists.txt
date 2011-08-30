@@ -28,12 +28,14 @@ INCLUDE_DIRECTORIES (
 	${VLC_INCLUDE_DIR}
 	)
 SET (SRCS
+	chooseurldialog.cpp
 	playpauseaction.cpp
 	player.cpp
 	potorchuwidget.cpp
 	potorchu.cpp
 	)
 SET (HEADERS
+	chooseurldialog.h
 	playpauseaction.h
 	player.h
 	potorchuwidget.h
@@ -41,6 +43,7 @@ SET (HEADERS
 	)
 SET (FORMS
 	potorchuwidget.ui
+	chooseurldialog.ui
 )
 SET (RESOURCES potorchuresources.qrc)
 
