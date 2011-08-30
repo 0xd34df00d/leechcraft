@@ -86,13 +86,14 @@ namespace Otzerkalu
 		qDebug () << Q_FUNC_INFO
 				<< "Downloading "
 				<< url.toString ()
-				<< " ID "
+				<< "ID"
 				<< id;
 		FileMap_.insert (id, FileData (url, filename, recLevel));
 		connect (provider,
 				SIGNAL (jobFinished (int)),
 				this,
-				SLOT (handleJobFinished (int)));
+				SLOT (handleJobFinished (int)),
+				Qt::UniqueConnection);
 	}
 	
 	QList<QUrl> OtzerkaluDownloader::CSSParser (const QString& data) const

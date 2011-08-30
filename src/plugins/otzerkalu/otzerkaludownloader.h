@@ -32,22 +32,24 @@ namespace Otzerkalu
 {
 	struct DownloadParams
 	{
-		DownloadParams ();
-		DownloadParams (const QUrl& downloadUrl, const QString& destDir,
-				int recLevel, bool fromOtherSite);
 		QUrl DownloadUrl_;
 		QString DestDir_;
 		int RecLevel_;
 		bool FromOtherSite_;
+		
+		DownloadParams ();
+		DownloadParams (const QUrl& downloadUrl, const QString& destDir,
+				int recLevel, bool fromOtherSite);
 	};
 	
 	struct FileData
 	{
-		FileData ();
-		FileData (const QUrl& url, const QString& filename, int recLevel);
 		QUrl Url_;
 		QString Filename_;
 		int RecLevel_;
+		
+		FileData ();
+		FileData (const QUrl& url, const QString& filename, int recLevel);
 	};
 	
 	class OtzerkaluDownloader : public QObject
