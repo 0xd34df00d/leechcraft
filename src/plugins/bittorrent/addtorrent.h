@@ -73,8 +73,8 @@ namespace LeechCraft
 				void updateAvailableSpace ();
 			private:
 				void ParseBrowsed ();
-				/** Available space, or (-1) if any error */
-				quint64 GetAvailableSpaceInDestination ();
+				/** Available space and total space, or (-1, -1) if any error */
+				QPair<quint64, quint64> GetAvailableSpaceInDestination ();
 			signals:
 				void on_TorrentFile__textChanged ();
 				void on_Destination__textChanged ();

@@ -154,13 +154,6 @@
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_2">
             <item>
-             <widget class="QLabel" name="label_9">
-              <property name="text">
-               <string>Available space:</string>
-              </property>
-             </widget>
-            </item>
-            <item>
              <widget class="QLabel" name="AvailSpaceLabel_">
               <property name="text">
                <string>unknown</string>
@@ -168,17 +161,14 @@
              </widget>
             </item>
             <item>
-             <spacer name="horizontalSpacer">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
+             <widget class="QProgressBar" name="AvailSpaceBar_">
+              <property name="value">
+               <number>0</number>
               </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
+              <property name="format">
+               <string>%p% used</string>
               </property>
-             </spacer>
+             </widget>
             </item>
            </layout>
           </item>
