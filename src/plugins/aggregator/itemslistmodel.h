@@ -49,6 +49,7 @@ namespace Aggregator
 		bool IsItemRead (int) const;
 		QStringList GetCategories (int) const;
 		void Reset (const IDType_t&);
+		void Reset (const QList<IDType_t>&);
 		void ItemDataUpdated (Item_ptr);
 
 		int columnCount (const QModelIndex& = QModelIndex ()) const;

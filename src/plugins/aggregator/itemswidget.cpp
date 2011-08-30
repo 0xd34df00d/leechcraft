@@ -69,6 +69,7 @@ namespace Aggregator
 
 		QTimer *SelectedChecker_;
 		QModelIndex LastSelectedIndex_;
+		QModelIndex LastSelectedChannel_;
 	};
 
 	ItemsWidget::ItemsWidget (QWidget *parent)
@@ -451,6 +452,8 @@ namespace Aggregator
 
 		ClearSupplementaryModels ();
 
+		Impl_->LastSelectedChannel_ = si;
+
 		QModelIndex index = si;
 		QSortFilterProxyModel *f = Impl_->ChannelsFilter_;
 		if (f)
@@ -464,6 +467,7 @@ namespace Aggregator
 		}
 		catch (const std::exception&)
 		{
+			Impl_->LastSelectedChannel_ = QModelIndex ();
 			Impl_->CurrentItemsModel_->Reset (-1);
 		}
 		emit currentChannelChanged (index);
@@ -1250,8 +1254,16 @@ namespace Aggregator
 
 	void ItemsWidget::updateItemsFilter ()
 	{
-		int section = Impl_->Ui_.SearchType_->currentIndex ();
-		QString text = Impl_->Ui_.SearchLine_->text ();
+		const int section = Impl_->Ui_.SearchType_->currentIndex ();
+		if (section == 4)
+		{
+			StorageBackend *sb = Core::Instance ().GetStorageBackend ();
+			Impl_->CurrentItemsModel_->Reset (sb->GetItemsForTag ("_important"));
+		}
+		else
+			CurrentChannelChanged (Impl_->LastSelectedChannel_);
+
+		const QString& text = Impl_->Ui_.SearchLine_->text ();
 		switch (section)
 		{
 		case 1:
