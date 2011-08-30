@@ -25,9 +25,9 @@ namespace LeechCraft
 	namespace Potorchu
 	{
 		PlayListWidget::PlayListWidget (QWidget *parent)
-		: QListWidget (parent)
+		: QListView (parent)
 		{
-
+			//setModel (model);
 		}
 	}
 }

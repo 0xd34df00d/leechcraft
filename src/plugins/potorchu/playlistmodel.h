@@ -17,23 +17,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLAYLISTWIDGET_H
-#define PLAYLISTWIDGET_H
+#ifndef PLAYLISTMODEL_H
+#define PLAYLISTMODEL_H
 
-#include <QListView>
-#include "playlistmodel.h"
+#include <QtCore/QModelIndex>
 
 namespace LeechCraft
 {
 	namespace Potorchu
 	{
-		class PlayListWidget : public QListView
+		class PlayListModel : public QAbstractListModel
 		{
 			Q_OBJECT
 		public:
-			PlayListWidget (QWidget *parent = 0);
+			PlayListModel (QObject *parent = 0);
+			QVariant data (const QModelIndex& index, int role = Qt::DisplayRole) const;
+			int rowCount (const QModelIndex& parent = QModelIndex()) const;
 		};
 	}
 }
-
-#endif // PLAYLISTWIDGET_H
+#endif // PLAYLISTMODEL_H

@@ -28,6 +28,7 @@ INCLUDE_DIRECTORIES (
 	${VLC_INCLUDE_DIR}
 	)
 SET (SRCS
+	playlistmodel.cpp
 	xmlsettingsmanager.cpp
 	playlistwidget.cpp
 	chooseurldialog.cpp
@@ -37,6 +38,7 @@ SET (SRCS
 	potorchu.cpp
 	)
 SET (HEADERS
+	playlistmodel.h
 	xmlsettingsmanager.h
 	playlistwidget.h
 	chooseurldialog.h

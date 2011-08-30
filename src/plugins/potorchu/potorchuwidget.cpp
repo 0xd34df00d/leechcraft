@@ -30,6 +30,8 @@
 #include "potorchu.h"
 #include "playpauseaction.h"
 #include "chooseurldialog.h"
+#include "xmlsettingsmanager.h"
+#include <sys/socket.h>
 
 namespace LeechCraft
 {
@@ -42,10 +44,9 @@ namespace LeechCraft
 		, Ui_ (new Ui::PotorchuWidget)
 		{
 			Ui_->setupUi (this);
-			
 			Ui_->Player_->setFrameStyle (QFrame::Box | QFrame::Sunken);
 			Ui_->CommandFrame_->setFrameStyle (QFrame::NoFrame);
-			
+			Ui_->PlayListWidget_->setVisible (false);
 			connect (Ui_->Player_,
 					SIGNAL (timeout ()),
 					this,
@@ -127,7 +128,7 @@ namespace LeechCraft
 		}
 
 		
-		PotorchuWidget::~PotorchuWidget()
+		PotorchuWidget::~PotorchuWidget ()
 		{
 			delete Ui_;
 		}
@@ -189,7 +190,7 @@ namespace LeechCraft
 		
 		void PotorchuWidget::handlePlaylist ()
 		{
-
+			Ui_->PlayListWidget_->setVisible (qobject_cast<QAction *> (sender ())->isChecked ());
 		}
 
 
