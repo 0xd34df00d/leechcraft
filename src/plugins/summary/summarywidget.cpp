@@ -543,16 +543,15 @@ namespace LeechCraft
 
 			void SummaryWidget::handleCategoriesChanged ()
 			{
-				QStringList currentCats = GetUniqueCategories ();
+				const QStringList& currentCats = GetUniqueCategories ();
 
-				QStringList currentSelection = SearchWidget_->GetCategories ();
 				SearchWidget_->SetPossibleCategories (currentCats + QStringList ("downloads"));
 			}
 
 			void SummaryWidget::syncSelection (const QModelIndex& current)
 			{
 				QItemSelectionModel *selm = Ui_.PluginsTasksTree_->selectionModel ();
-				QModelIndex now = selm->currentIndex ();
+				const QModelIndex& now = selm->currentIndex ();
 #ifdef QT_DEBUG
 				qDebug () << Q_FUNC_INFO << this << current << now;
 #endif
