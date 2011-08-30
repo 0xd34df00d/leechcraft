@@ -515,10 +515,10 @@ namespace Aggregator
 				this);
 		Impl_->ActionMarkItemAsRead_->setObjectName ("ActionMarkItemAsRead_");
 
-		Impl_->ActionMarkItemAsImportant_ = new QAction (tr ("Mark item as important"),
-				this);
+		Impl_->ActionMarkItemAsImportant_ = new QAction (tr ("Important"), this);
 		Impl_->ActionMarkItemAsImportant_->setObjectName ("ActionMarkItemAsImportant_");
 		Impl_->ActionMarkItemAsImportant_->setProperty ("ActionIcon", "favorites");
+		Impl_->ActionMarkItemAsImportant_->setCheckable (true);
 
 		Impl_->ActionItemCommentsSubscribe_ = new QAction (tr ("Subscribe to comments"),
 				this);
@@ -1076,6 +1076,10 @@ namespace Aggregator
 	{
 		StorageBackend *sb = Core::Instance ().GetStorageBackend ();
 
+		const bool mark = Impl_->ActionMarkItemAsImportant_->isChecked ();
+
+		const ITagsManager::tag_id impId = "_important";
+
 		Q_FOREACH (const QModelIndex& idx, GetSelected ())
 		{
 			const QModelIndex& mapped = Impl_->ItemLists_->mapToSource (idx);
@@ -1085,9 +1089,11 @@ namespace Aggregator
 
 			const IDType_t item = model->GetItem (mapped).ItemID_;
 
-			const QList<ITagsManager::tag_id>& tags = sb->GetItemTags (item);
-			if (!tags.contains ("_important"))
-				sb->SetItemTags (item, tags + QStringList ("_important"));
+			QList<ITagsManager::tag_id> tags = sb->GetItemTags (item);
+			if (mark && !tags.contains (impId))
+				sb->SetItemTags (item, tags + QStringList (impId));
+			else if (!mark && tags.removeAll (impId))
+				sb->SetItemTags (item, tags);
 		}
 	}
 
@@ -1128,6 +1134,16 @@ namespace Aggregator
 
 	void ItemsWidget::currentItemChanged ()
 	{
+		const QModelIndex& current = Impl_->ItemsFilterModel_->
+				mapToSource (Impl_->Ui_.Items_->selectionModel ()->currentIndex ());
+		if (current.isValid ())
+		{
+			const int idx = GetItem (current)->ItemID_;
+			const QList<ITagsManager::tag_id>& tags = Core::Instance ()
+					.GetStorageBackend ()->GetItemTags (idx);
+			Impl_->ActionMarkItemAsImportant_->setChecked (tags.contains ("_important"));
+		}
+
 		QString preHtml = "<html><head><title>News</title></head><body bgcolor=\"";
 		preHtml += palette ().color (QPalette::Base).name ();
 		preHtml += "\">";
