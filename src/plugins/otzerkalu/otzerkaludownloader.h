@@ -39,7 +39,6 @@ namespace Otzerkalu
 		QString DestDir_;
 		int RecLevel_;
 		bool FromOtherSite_;
-		bool Infinity_;
 	};
 	
 	struct FileData
