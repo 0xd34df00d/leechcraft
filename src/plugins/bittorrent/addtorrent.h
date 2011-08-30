@@ -70,8 +70,11 @@ namespace LeechCraft
 				void on_MarkSelected__released ();
 				void on_UnmarkSelected__released ();
 				void setOkEnabled ();
+				void updateAvailableSpace ();
 			private:
 				void ParseBrowsed ();
+				/** Available space, or (-1) if any error */
+				quint64 GetAvailableSpaceInDestination ();
 			signals:
 				void on_TorrentFile__textChanged ();
 				void on_Destination__textChanged ();
