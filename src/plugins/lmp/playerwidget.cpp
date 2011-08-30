@@ -425,11 +425,6 @@ namespace LMP
 #endif
 				result += tr ("nowhere");
 				break;
-#if PHONON_VERSION >= PHONON_VERSION_CHECK (4, 4, 0)
-			case MediaSource::CaptureDevice:
-				result += tr ("capture device");
-				break;
-#endif
 			case MediaSource::LocalFile:
 				result += source.fileName ();
 				break;

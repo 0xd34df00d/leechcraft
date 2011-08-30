@@ -2392,7 +2392,7 @@ namespace Azoth
 		if (ShouldCountUnread (parentCL, msg))
 			IncreaseUnreadCount (parentCL);
 
-		if (!msg->GetDirection () == IMessage::DIn ||
+		if (msg->GetDirection () != IMessage::DIn ||
 				ChatTabsManager_->IsActiveChat (parentCL))
 			return;
 
@@ -2454,6 +2454,9 @@ namespace Azoth
 				msgString,
 				PInfo_);
 
+		if (msgString.isEmpty ())
+			e.Mime_ += "+advanced";
+
 		QStandardItem *someItem = Entry2Items_ [msg->GetMessageType () == IMessage::MTMUCMessage ?
 						parentCL : other].value (0);
 		const int count = someItem ?
@@ -2467,9 +2470,14 @@ namespace Azoth
 					"org.LC.AdvNotifications.IM.MUCMessage";
 			e.Additional_ ["NotificationPixmap"] =
 					QVariant::fromValue<QPixmap> (QPixmap::fromImage (other->GetAvatar ()));
-			e.Additional_ ["org.LC.AdvNotifications.FullText"] =
-				tr ("%n message(s) from", 0, count) + ' ' + other->GetEntryName () +
-						" <em>(" + parentCL->GetEntryName () + ")</em>";
+
+			if (isHighlightMsg)
+				e.Additional_ ["org.LC.AdvNotifications.FullText"] =
+					tr ("%n message(s) from", 0, count) + ' ' + other->GetEntryName () +
+							" <em>(" + parentCL->GetEntryName () + ")</em>";
+			else
+				e.Additional_ ["org.LC.AdvNotifications.FullText"] =
+					tr ("%n message(s) in", 0, count) + ' ' + parentCL->GetEntryName ();
 		}
 		else
 		{

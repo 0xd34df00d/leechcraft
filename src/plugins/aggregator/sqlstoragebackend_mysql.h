@@ -548,6 +548,11 @@ namespace Aggregator
 		virtual bool UpdateChannelsStorage (int, int);
 		virtual bool UpdateItemsStorage (int, int);
 		virtual void ToggleChannelUnread (const IDType_t&, bool);
+
+		virtual QList<ITagsManager::tag_id> GetItemTags (const IDType_t&);
+		virtual void SetItemTags (const IDType_t&, const QList<ITagsManager::tag_id>&);
+		virtual QList<IDType_t> GetItemsForTag (const ITagsManager::tag_id&);
+
 		virtual IDType_t GetHighestID (const PoolType&) const;
 
 	private:
@@ -558,18 +563,6 @@ namespace Aggregator
 		QPixmap UnserializePixmap (const QByteArray&) const;
 
 		void RemoveTables ();
-		Feed::FeedSettings GetFeedSettingsFromVersion5 (Feed_ptr) const;
-		QList<Feed_ptr> LoadFeedsFromVersion5 () const;
-		QList<Feed_ptr> GetFeedsFromVersion5 () const;
-		QList<Channel_ptr> GetChannelsFromVersion5 (const QString&,
-				const IDType_t&) const;
-		QList<Item_ptr> GetItemsFromVersion5 (const QString&,
-				const IDType_t&) const;
-		void FillItemVersion5 (const QSqlQuery&, Item_ptr&) const;
-		void GetEnclosuresVersion5 (const QString&, const QString&, const QString&,
-				QList<Enclosure>&, const IDType_t&) const;
-		void GetMRSSEntriesVersion5 (const QString&, const QString&, const QString&,
-				QList<MRSSEntry>&, const IDType_t&) const;
 
 		IDType_t FindParentFeedForChannel (const IDType_t&) const;
 		void FillItem (const QSqlQuery&, Item_ptr&) const;
