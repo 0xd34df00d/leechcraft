@@ -52,6 +52,7 @@ namespace Aggregator
 
 		QAction *ActionMarkItemAsUnread_;
 		QAction *ActionMarkItemAsRead_;
+		QAction *ActionMarkItemAsImportant_;
 		QAction *ActionItemCommentsSubscribe_;
 		QAction *ActionItemLinkOpen_;
 
@@ -114,9 +115,13 @@ namespace Aggregator
 
 		Impl_->Ui_.Items_->addAction (Impl_->ActionMarkItemAsUnread_);
 		Impl_->Ui_.Items_->addAction (Impl_->ActionMarkItemAsRead_);
+		Impl_->Ui_.Items_->addAction (Util::CreateSeparator (this));
+		Impl_->Ui_.Items_->addAction (Impl_->ActionMarkItemAsImportant_);
+		Impl_->Ui_.Items_->addAction (Util::CreateSeparator (this));
 		Impl_->Ui_.Items_->addAction (Impl_->ActionItemCommentsSubscribe_);
 		Impl_->Ui_.Items_->addAction (Impl_->ActionItemLinkOpen_);
 		Impl_->Ui_.Items_->setContextMenuPolicy (Qt::ActionsContextMenu);
+
 		connect (Impl_->Ui_.SearchLine_,
 				SIGNAL (textChanged (const QString&)),
 				this,
@@ -507,8 +512,13 @@ namespace Aggregator
 		Impl_->ActionMarkItemAsUnread_->setObjectName ("ActionMarkItemAsUnread_");
 
 		Impl_->ActionMarkItemAsRead_ = new QAction (tr ("Mark item as read"),
-														this);
+				this);
 		Impl_->ActionMarkItemAsRead_->setObjectName ("ActionMarkItemAsRead_");
+
+		Impl_->ActionMarkItemAsImportant_ = new QAction (tr ("Mark item as important"),
+				this);
+		Impl_->ActionMarkItemAsImportant_->setObjectName ("ActionMarkItemAsImportant_");
+		Impl_->ActionMarkItemAsImportant_->setProperty ("ActionIcon", "favorites");
 
 		Impl_->ActionItemCommentsSubscribe_ = new QAction (tr ("Subscribe to comments"),
 				this);
@@ -1060,6 +1070,25 @@ namespace Aggregator
 	{
 		Q_FOREACH (const QModelIndex& idx, GetSelected ())
 			MarkItemReadStatus (idx, true);
+	}
+
+	void ItemsWidget::on_ActionMarkItemAsImportant__triggered ()
+	{
+		StorageBackend *sb = Core::Instance ().GetStorageBackend ();
+
+		Q_FOREACH (const QModelIndex& idx, GetSelected ())
+		{
+			const QModelIndex& mapped = Impl_->ItemLists_->mapToSource (idx);
+			const ItemsListModel *model =
+					static_cast<ItemsListModel*> (Impl_->ItemLists_->
+							GetModelForRow (idx.row ())->data ());
+
+			const IDType_t item = model->GetItem (mapped).ItemID_;
+
+			const QList<ITagsManager::tag_id>& tags = sb->GetItemTags (item);
+			if (!tags.contains ("_important"))
+				sb->SetItemTags (item, tags + QStringList ("_important"));
+		}
 	}
 
 	void ItemsWidget::on_CaseSensitiveSearch__stateChanged (int state)
