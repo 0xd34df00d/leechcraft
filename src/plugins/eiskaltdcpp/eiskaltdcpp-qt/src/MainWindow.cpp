@@ -93,6 +93,8 @@ using namespace std;
 #include "scriptengine/ScriptConsole.h"
 #endif
 
+#include <interfaces/core/icoreproxy.h>
+
 #include "dcpp/ShareManager.h"
 #include "dcpp/ConnectivityManager.h"
 #include "dcpp/Singleton.h"
@@ -414,7 +416,7 @@ HashProgress* MainLayout::progress_dialog() {
 MainLayout::~MainLayout(){
 }
 
-void MainLayout::closeEvent(QCloseEvent *c_e){   
+void MainLayout::closeEvent(QCloseEvent *c_e){
     c_e->accept();
 }
 
