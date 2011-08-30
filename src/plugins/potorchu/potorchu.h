@@ -40,6 +40,7 @@ namespace LeechCraft
 			
 			TabClasses_t TabClasses_;
 			QList<PotorchuWidget *> Others_;
+			ICoreProxy_ptr Proxy_;
 		public:
 			void Init (ICoreProxy_ptr);
 			void SecondInit ();

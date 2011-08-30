@@ -22,8 +22,14 @@
 #include <QAction>
 #include <QFileDialog>
 #include <QDebug>
+#include <QVBoxLayout>
+#include <QWidgetAction>
+#include <QToolBar>
+
+#include <interfaces/core/icoreproxy.h>
 
 #include "potorchu.h"
+#include "playpauseaction.h"
 
 namespace LeechCraft
 {
@@ -36,19 +42,10 @@ namespace LeechCraft
 		, Ui_ (new Ui::PotorchuWidget)
 		{
 			Ui_->setupUi (this);
-			QAction *actionOpen = new QAction ("Open", this);
-			ToolBar_->addAction (actionOpen);
 			
 			Ui_->Player_->setFrameStyle (QFrame::Box | QFrame::Sunken);
-			connect (actionOpen,
-					SIGNAL (triggered (bool)),
-					this,
-					SLOT (handleOpenFile ()));
+			Ui_->CommandFrame_->setFrameStyle (QFrame::NoFrame);
 			
-			connect (Ui_->StopButton_,
-					SIGNAL (clicked (bool)),
-					Ui_->Player_,
-					SLOT (stop ()));
 			connect (Ui_->Player_,
 					SIGNAL (timeout ()),
 					this,
@@ -57,12 +54,61 @@ namespace LeechCraft
 					SIGNAL (sliderMoved (int)),
 					Ui_->Player_,
 					SLOT (changePosition (int)));
+			connect (Ui_->VolumeSlider_,
+					SIGNAL (sliderMoved (int)),
+					Ui_->Player_,
+					SLOT (changeVolume (int)));
 		}
+		
+		void PotorchuWidget::Init (ICoreProxy_ptr proxy)
+		{
+			QToolBar *bar = new QToolBar (Ui_->CommandFrame_);
+			bar->setToolButtonStyle (Qt::ToolButtonIconOnly);
+			bar->setIconSize (QSize (32, 32));
+			QAction *actionPlay = new PlayPauseAction (QPair<QIcon, QIcon> (proxy->GetIcon ("start"),
+							proxy->GetIcon ("pause")),
+					Ui_->CommandFrame_);
+			QAction *actionStop = new QAction (proxy->GetIcon ("media_stop"),
+					"Stop", Ui_->CommandFrame_);
+			QAction *actionNext = new QAction (proxy->GetIcon ("media_skip_forward"),
+					"Next", Ui_->CommandFrame_);
+			QAction *actionPrev = new QAction (proxy->GetIcon ("media_skip_backward"),
+					"Previous", Ui_->CommandFrame_);
+			bar->addAction (actionPrev);
+			bar->addAction (actionPlay);
+			bar->addAction (actionStop);
+			bar->addAction (actionNext);
+	
+			connect (actionStop,
+					SIGNAL (triggered (bool)),
+					Ui_->Player_,
+					SLOT (stop ()));
+
+			connect (actionPlay,
+					SIGNAL (play ()),
+					Ui_->Player_,
+					SLOT (play ()));
+			connect (actionPlay,
+					SIGNAL (pause ()),
+					Ui_->Player_,
+					SLOT (pause ()));
+			
+			QAction *actionOpen = new QAction (proxy->GetIcon ("folder"),
+					"Open", this);
+			
+			ToolBar_->addAction (actionOpen);
+			
+			connect (actionOpen,
+					SIGNAL (triggered (bool)),
+					this,
+					SLOT (handleOpenFile ()));
+		}
+
 		
 		void PotorchuWidget::updateInterface ()
 		{
-			Ui_->VolumeSlider_->setValue (Ui_->Player_->getVolume ());
-			Ui_->PositionSlider_->setValue (Ui_->Player_->getPosition ());
+			Ui_->VolumeSlider_->setValue (Ui_->Player_->GetVolume ());
+			Ui_->PositionSlider_->setValue (Ui_->Player_->GetPosition ());
 		}
 
 		
@@ -106,11 +152,6 @@ namespace LeechCraft
 				Ui_->Player_->playFile (fileName);
 				Ui_->Player_->show ();
 			}
-		}
-		
-		void PotorchuWidget::handleStop ()
-		{
-			Ui_->Player_->stop ();
 		}
 
 	}

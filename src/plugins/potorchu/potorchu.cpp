@@ -28,6 +28,7 @@ namespace LeechCraft
 	{
 			void Potorchu::Init (ICoreProxy_ptr proxy)
 			{
+				Proxy_ = proxy;
 				PotorchuWidget::SetParentMultiTabs (this);
 				TabClassInfo tabClass =
 				{
@@ -98,7 +99,7 @@ namespace LeechCraft
 				if (tabClass == "Potorchu")
 				{
 					PotorchuWidget *w = new PotorchuWidget ();
-					
+					w->Init (Proxy_);
 					connect (w,
 							SIGNAL (needToClose ()),
 							this,

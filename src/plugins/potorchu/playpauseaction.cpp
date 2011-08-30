@@ -17,47 +17,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLAYER_H
-#define PLAYER_H
-
-#include <QSlider>
-#include <QTimer>
-#include <QFrame>
-#include <QVBoxLayout>
-#include <QPushButton>
-#include <QFrame>
-#include <vlc/vlc.h>
-
+#include "playpauseaction.h"
 
 namespace LeechCraft
 {
 	namespace Potorchu
 	{
-		class Player : public QFrame
+		PlayPauseAction::PlayPauseAction (const QPair<QIcon, QIcon>& playPausePair,
+				QObject *parent)
+		: PlayPausePair_ (playPausePair)
+		, QAction (parent)
+		, Play_ (false)
 		{
-			Q_OBJECT
-			QTimer *Poller_;
-			bool IsPlaying_;
-			libvlc_instance_t *VLCInstance_;
-			libvlc_media_player_t *MP_;
-			libvlc_media_t *M_;
-		public:
-			Player (QWidget* parent = 0, Qt::WindowFlags f = 0);
-			virtual ~Player ();
-			
-			int GetVolume () const;
-			int GetPosition () const;
-			bool IsPlayed () const;
-		public slots:
-			void playFile (const QString& file);
-			void changeVolume (int newVolume);
-			void changePosition (int newPosition);
-			void stop ();
-			void pause ();
-			void play ();
-		signals:
-			void timeout ();
-		};
+			setIcon (PlayPausePair_.second);
+			connect (this,
+					SIGNAL (triggered (bool)),
+					this,
+					SLOT(handleTriggered ()));
+		}
+		
+		void PlayPauseAction::handleTriggered ()
+		{
+			if (Play_ = !Play_)
+			{
+				setIcon (PlayPausePair_.first);
+				emit play ();
+			}
+			else
+			{
+				setIcon (PlayPausePair_.second);
+				emit pause ();
+			}
+		}
+
 	}
 }
-#endif // PLAYER_H

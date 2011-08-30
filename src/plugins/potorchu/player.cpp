@@ -66,7 +66,7 @@ namespace LeechCraft
 			IsPlaying_ = true;
 		}
 		
-		bool Player::isPlayed () const
+		bool Player::IsPlayed () const
 		{
 			if(!IsPlaying_)
 				return false;
@@ -75,21 +75,31 @@ namespace LeechCraft
 		}
 
 		
-		int Player::getVolume () const
+		int Player::GetVolume () const
 		{
-			if (!isPlayed ())
+			if (!IsPlayed ())
 				return -1;
 			int volume = libvlc_audio_get_volume (MP_);
 			return volume;
 		}
 		
-		int Player::getPosition() const
+		int Player::GetPosition() const
 		{
-			if (!isPlayed ())
+			if (!IsPlayed ())
 				return -1;
 			float pos = libvlc_media_player_get_position (MP_);
 			int siderPos = (int)(pos * (float)(pos_slider_max));
 			return siderPos;
+		}
+		
+		void Player::pause ()
+		{
+			libvlc_media_player_pause (MP_);
+		}
+		
+		void Player::play ()
+		{
+			libvlc_media_player_play (MP_);
 		}
 
 		

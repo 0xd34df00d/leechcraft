@@ -17,47 +17,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLAYER_H
-#define PLAYER_H
+#ifndef PLAYPAUSEACTION_H
+#define PLAYPAUSEACTION_H
 
-#include <QSlider>
-#include <QTimer>
-#include <QFrame>
-#include <QVBoxLayout>
-#include <QPushButton>
-#include <QFrame>
-#include <vlc/vlc.h>
-
+#include <QAction>
 
 namespace LeechCraft
 {
 	namespace Potorchu
 	{
-		class Player : public QFrame
+		class PlayPauseAction : public QAction
 		{
 			Q_OBJECT
-			QTimer *Poller_;
-			bool IsPlaying_;
-			libvlc_instance_t *VLCInstance_;
-			libvlc_media_player_t *MP_;
-			libvlc_media_t *M_;
+			QPair<QIcon, QIcon> PlayPausePair_;
+			bool  Play_;
 		public:
-			Player (QWidget* parent = 0, Qt::WindowFlags f = 0);
-			virtual ~Player ();
-			
-			int GetVolume () const;
-			int GetPosition () const;
-			bool IsPlayed () const;
-		public slots:
-			void playFile (const QString& file);
-			void changeVolume (int newVolume);
-			void changePosition (int newPosition);
-			void stop ();
-			void pause ();
-			void play ();
+			PlayPauseAction (const QPair<QIcon, QIcon>& playPausePair,
+					QObject *parent = 0);
 		signals:
-			void timeout ();
+			void play ();
+			void pause();
+		private slots:
+			void handleTriggered ();
 		};
 	}
 }
-#endif // PLAYER_H
+
+#endif // PLAYPAUSECTION_H

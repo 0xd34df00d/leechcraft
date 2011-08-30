@@ -23,6 +23,7 @@
 #include <QWidget>
 #include <QToolBar>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/iinfo.h>
 #include "player.h"
 #include "ui_potorchuwidget.h"
 
@@ -38,8 +39,12 @@ namespace LeechCraft
 			QToolBar *ToolBar_;
 			static QObject *S_ParentMultiTabs_;
 			Ui::PotorchuWidget *Ui_;
+			
+			//TODO Move to playlist
+			QString CurrentFile_;
 		public:
 			PotorchuWidget (QWidget *parent = 0, Qt::WindowFlags f = 0);
+			void Init (ICoreProxy_ptr);
 			virtual ~PotorchuWidget ();
 			static void SetParentMultiTabs (QObject *parent);
 			TabClassInfo GetTabClassInfo () const;
@@ -50,7 +55,6 @@ namespace LeechCraft
 			void needToClose ();
 		private slots:
 			void handleOpenFile ();
-			void handleStop ();
 			void updateInterface ();
 		};
 	}
