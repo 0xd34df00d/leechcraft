@@ -23,7 +23,7 @@ namespace LeechCraft
 {
 	namespace Potorchu
 	{
-		ChooseURLDialog::ChooseURLDialog (QWidget* parent)
+		ChooseURLDialog::ChooseURLDialog (QWidget *parent)
 		: QDialog (parent)
 		, Ui_ (new Ui::ChooseURLDialog)
 		{

@@ -42,7 +42,7 @@ namespace LeechCraft
 			libvlc_media_player_t *MP_;
 			libvlc_media_t *M_;
 		public:
-			Player (QWidget* parent = 0, Qt::WindowFlags f = 0);
+			Player (QWidget *parent = 0, Qt::WindowFlags f = 0);
 			virtual ~Player ();
 			
 			int GetVolume () const;

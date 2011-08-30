@@ -38,7 +38,7 @@ namespace LeechCraft
 		QObject *PotorchuWidget::S_ParentMultiTabs_ = 0;
 		PotorchuWidget::PotorchuWidget (QWidget *parent, Qt::WindowFlags f)
 		: QWidget (parent, f)
-		, ToolBar_ (new QToolBar)
+		, ToolBar_ (new QToolBar (this))
 		, Ui_ (new Ui::PotorchuWidget)
 		{
 			Ui_->setupUi (this);
@@ -121,7 +121,7 @@ namespace LeechCraft
 		
 		PotorchuWidget::~PotorchuWidget()
 		{
-			delete ToolBar_;
+			delete Ui_;
 		}
 		
 		void PotorchuWidget::SetParentMultiTabs (QObject* parent)

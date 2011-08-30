@@ -27,7 +27,7 @@ namespace LeechCraft
 	namespace Potorchu
 	{
 		const int pos_slider_max = 10000;
-		Player::Player (QWidget* parent, Qt::WindowFlags f)
+		Player::Player (QWidget *parent, Qt::WindowFlags f)
 		: QFrame (parent, f)
 		, IsPlaying_ (false)
 		{
