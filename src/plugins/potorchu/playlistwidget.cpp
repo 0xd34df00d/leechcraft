@@ -18,16 +18,57 @@
  **********************************************************************/
 
 #include "playlistwidget.h"
-#include "xmlsettingsmanager.h"
+#include <QToolBar>
+#include <QToolButton>
+#include <QMenu>
 
 namespace LeechCraft
 {
 	namespace Potorchu
 	{
 		PlayListWidget::PlayListWidget (QWidget *parent)
-		: QListView (parent)
+		: QWidget (parent)
+		, Ui_ (new Ui::PlayListWidget) 
 		{
-			//setModel (model);
+			Ui_->setupUi (this);
+			ActionBar_ = new QToolBar (Ui_->ActionFrame_);
+			Ui_->ActionFrame_->setFrameStyle (QFrame::NoFrame);
+			ActionBar_->setToolButtonStyle (Qt::ToolButtonIconOnly);
+			ActionBar_->setIconSize (QSize (16, 16));
 		}
+		
+		PlayListWidget::~PlayListWidget ()
+		{
+			delete Ui_;
+		}
+		
+		/*PlayListView* PlayListWidget::GetPlayListView ()
+		{
+			return Ui_->PlayListView_;
+		}*/
+		
+		void PlayListWidget::Init (ICoreProxy_ptr proxy)
+		{
+			QToolButton *actionAdd = new QToolButton (this);
+			actionAdd->setIcon (proxy->GetIcon ("add"));
+			actionAdd->setPopupMode (QToolButton::InstantPopup);
+			ActionBar_->addWidget (actionAdd);
+			QMenu *addMenu = new QMenu (this);
+			
+			QAction *addFiles = new QAction (tr ("Add files"), this);
+			QAction *addFolder = new QAction (tr ("Add folder"), this);
+			QAction *addURL = new QAction (tr ("Add URL"), this);
+			
+			addMenu->addAction (addFiles);
+			addMenu->addAction (addFolder);
+			addMenu->addAction (addURL);
+			
+			actionAdd->setMenu (addMenu);
+			QAction *actionRemove = new QAction (proxy->GetIcon ("remove"),
+					tr ("Remove"), this);
+			ActionBar_->addAction (actionRemove);
+		}
+
+
 	}
 }

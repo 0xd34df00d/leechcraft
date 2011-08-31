@@ -31,7 +31,6 @@
 #include "playpauseaction.h"
 #include "chooseurldialog.h"
 #include "xmlsettingsmanager.h"
-#include <sys/socket.h>
 
 namespace LeechCraft
 {
@@ -63,6 +62,7 @@ namespace LeechCraft
 		
 		void PotorchuWidget::Init (ICoreProxy_ptr proxy)
 		{
+			Ui_->PlayListWidget_->Init (proxy);
 			QToolBar *bar = new QToolBar (Ui_->CommandFrame_);
 			bar->setToolButtonStyle (Qt::ToolButtonIconOnly);
 			bar->setIconSize (QSize (32, 32));
@@ -70,11 +70,11 @@ namespace LeechCraft
 							proxy->GetIcon ("pause")),
 					Ui_->CommandFrame_);
 			QAction *actionStop = new QAction (proxy->GetIcon ("media_stop"),
-					"Stop", Ui_->CommandFrame_);
+					tr ("Stop"), Ui_->CommandFrame_);
 			QAction *actionNext = new QAction (proxy->GetIcon ("media_skip_forward"),
-					"Next", Ui_->CommandFrame_);
+					tr ("Next"), Ui_->CommandFrame_);
 			QAction *actionPrev = new QAction (proxy->GetIcon ("media_skip_backward"),
-					"Previous", Ui_->CommandFrame_);
+					tr ("Previous"), Ui_->CommandFrame_);
 			bar->addAction (actionPrev);
 			bar->addAction (actionPlay);
 			bar->addAction (actionStop);
@@ -95,11 +95,11 @@ namespace LeechCraft
 					SLOT (pause ()));
 			
 			QAction *actionOpenFile = new QAction (proxy->GetIcon ("folder"),
-					"Open File", this);
+					tr ("Open File"), this);
 			QAction *actionOpenURL = new QAction (proxy->GetIcon ("networkmonitor_plugin"),
-					"Open URL", this);
+					tr ("Open URL"), this);
 			QAction *playList = new QAction (proxy->GetIcon ("itemlist"),
-					"Playlist", this);
+					tr ("Playlist"), this);
 			playList->setCheckable (true);
 			
 			ToolBar_->addAction (actionOpenFile);

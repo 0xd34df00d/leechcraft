@@ -1,3 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
+	<declare defaultlang="en" />
+        <page>
+                <label lang="en" value="General" />
+                <tab>
+                        <label lang="en" value="Last.fm" />
+                </tab>
+        </page>
+
 </settings>

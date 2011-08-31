@@ -29,6 +29,7 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	playlistmodel.cpp
+	playlistview.cpp
 	xmlsettingsmanager.cpp
 	playlistwidget.cpp
 	chooseurldialog.cpp
@@ -39,6 +40,7 @@ SET (SRCS
 	)
 SET (HEADERS
 	playlistmodel.h
+	playlistview.h
 	xmlsettingsmanager.h
 	playlistwidget.h
 	chooseurldialog.h
@@ -50,6 +52,7 @@ SET (HEADERS
 SET (FORMS
 	potorchuwidget.ui
 	chooseurldialog.ui
+	playlistwidget.ui
 )
 SET (RESOURCES potorchuresources.qrc)
 

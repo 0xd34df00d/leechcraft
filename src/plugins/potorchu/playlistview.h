@@ -17,50 +17,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef POTORCHUWIDGET_H
-#define POTORCHUWIDGET_H
+#ifndef PLAYLISTVIEW_H
+#define PLAYLISTVIEW_H
 
-#include <QWidget>
-#include <QToolBar>
-#include <QUrl>
-#include <interfaces/ihavetabs.h>
-#include <interfaces/iinfo.h>
-#include "player.h"
-#include "playlistwidget.h"
-#include "ui_potorchuwidget.h"
+#include <QListView>
+
+#include "playlistmodel.h"
 
 namespace LeechCraft
 {
 	namespace Potorchu
 	{
-		class PotorchuWidget : public QWidget
-					, public ITabWidget
+		class PlayListView : public QListView
 		{
 			Q_OBJECT
-			Q_INTERFACES (ITabWidget)
-			QToolBar *ToolBar_;
-			static QObject *S_ParentMultiTabs_;
-			Ui::PotorchuWidget *Ui_;
+			PlayListModel *PlayListModel_;
 		public:
-			PotorchuWidget (QWidget *parent = 0, Qt::WindowFlags f = 0);
-			void Init (ICoreProxy_ptr);
-			virtual ~PotorchuWidget ();
-			static void SetParentMultiTabs (QObject *parent);
-			TabClassInfo GetTabClassInfo () const;
-			QObject* ParentMultiTabs ();
-			void Remove ();
-			QToolBar* GetToolBar () const;
-		signals:
-			void needToClose ();
-		public slots:
-			void handleOpenMediaContent (const QString& val);
-		private slots:
-			void handleOpenFile ();
-			void handleOpenURL ();
-			void updateInterface ();
-			void handlePlaylist ();
+			PlayListView (QWidget *parent = 0);
 		};
 	}
 }
-
-#endif // POTORCHUWIDGET_H
+#endif // PLAYLISTVIEW_H

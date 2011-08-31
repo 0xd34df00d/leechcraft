@@ -23,20 +23,20 @@ namespace LeechCraft
 {
 	namespace Potorchu
 	{
-		PlayListModel::PlayListModel (QObject *parent)
+		PlayListModel::PlayListModel (QObject* parent)
 		: QAbstractListModel (parent)
 		{
 
 		}
-
+		
+		int PlayListModel::rowCount (const QModelIndex& parent) const
+		{
+			return 0;
+		}
+		
 		QVariant PlayListModel::data (const QModelIndex& index, int role) const
 		{
 			return QVariant ();
-		}
-
-		int PlayListModel::rowCount (const QModelIndex& parent) const
-		{
-			return 1;
 		}
 	}
 }

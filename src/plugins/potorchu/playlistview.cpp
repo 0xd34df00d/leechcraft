@@ -17,24 +17,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLAYLISTMODEL_H
-#define PLAYLISTMODEL_H
-
-#include <QAbstractListModel>
+#include "playlistview.h"
 
 namespace LeechCraft
 {
 	namespace Potorchu
 	{
-		class PlayListModel : public QAbstractListModel
+		PlayListView::PlayListView (QWidget *parent)
+		: QListView (parent)
+		, PlayListModel_ (new PlayListModel (this))
 		{
-			Q_OBJECT
-		public:
-			PlayListModel (QObject *parent);
-			int rowCount (const QModelIndex& parent = QModelIndex ()) const;
-			QVariant data (const QModelIndex& index, int role = Qt::DisplayRole) const;
-		};
+			setModel (PlayListModel_);
+			setModelColumn (0);
+		}
 	}
 }
-
-#endif // PLAYLISTMODEL_H

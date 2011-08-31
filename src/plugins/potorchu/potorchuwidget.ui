@@ -89,7 +89,14 @@
     </layout>
    </item>
    <item row="0" column="1">
-    <widget class="LeechCraft::Potorchu::PlayListWidget" name="PlayListWidget_"/>
+    <widget class="LeechCraft::Potorchu::PlayListWidget" name="PlayListWidget_" native="true">
+     <property name="minimumSize">
+      <size>
+       <width>200</width>
+       <height>0</height>
+      </size>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
@@ -102,8 +109,9 @@
   </customwidget>
   <customwidget>
    <class>LeechCraft::Potorchu::PlayListWidget</class>
-   <extends>QListView</extends>
+   <extends>QWidget</extends>
    <header>playlistwidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

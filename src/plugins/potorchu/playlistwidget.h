@@ -20,18 +20,26 @@
 #ifndef PLAYLISTWIDGET_H
 #define PLAYLISTWIDGET_H
 
-#include <QListView>
-#include "playlistmodel.h"
+#include <QWidget>
+#include <QToolBar>
+#include <interfaces/core/icoreproxy.h>
+
+#include "ui_playlistwidget.h"
 
 namespace LeechCraft
 {
 	namespace Potorchu
 	{
-		class PlayListWidget : public QListView
+		class PlayListWidget : public QWidget
 		{
 			Q_OBJECT
+			Ui::PlayListWidget *Ui_;
+			QToolBar *ActionBar_;
 		public:
 			PlayListWidget (QWidget *parent = 0);
+			virtual ~PlayListWidget ();
+			void Init (ICoreProxy_ptr proxy);
+			//PlayListView *GetPlayListView ();
 		};
 	}
 }
