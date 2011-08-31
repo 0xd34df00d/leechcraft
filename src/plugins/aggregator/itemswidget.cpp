@@ -52,6 +52,7 @@ namespace Aggregator
 
 		QAction *ActionMarkItemAsUnread_;
 		QAction *ActionMarkItemAsRead_;
+		QAction *ActionMarkItemAsImportant_;
 		QAction *ActionItemCommentsSubscribe_;
 		QAction *ActionItemLinkOpen_;
 
@@ -68,6 +69,7 @@ namespace Aggregator
 
 		QTimer *SelectedChecker_;
 		QModelIndex LastSelectedIndex_;
+		QModelIndex LastSelectedChannel_;
 	};
 
 	ItemsWidget::ItemsWidget (QWidget *parent)
@@ -114,9 +116,13 @@ namespace Aggregator
 
 		Impl_->Ui_.Items_->addAction (Impl_->ActionMarkItemAsUnread_);
 		Impl_->Ui_.Items_->addAction (Impl_->ActionMarkItemAsRead_);
+		Impl_->Ui_.Items_->addAction (Util::CreateSeparator (this));
+		Impl_->Ui_.Items_->addAction (Impl_->ActionMarkItemAsImportant_);
+		Impl_->Ui_.Items_->addAction (Util::CreateSeparator (this));
 		Impl_->Ui_.Items_->addAction (Impl_->ActionItemCommentsSubscribe_);
 		Impl_->Ui_.Items_->addAction (Impl_->ActionItemLinkOpen_);
 		Impl_->Ui_.Items_->setContextMenuPolicy (Qt::ActionsContextMenu);
+
 		connect (Impl_->Ui_.SearchLine_,
 				SIGNAL (textChanged (const QString&)),
 				this,
@@ -410,6 +416,23 @@ namespace Aggregator
 		}
 	}
 
+	IDType_t ItemsWidget::GetItemIDFromRow (int index) const
+	{
+		ItemsListModel *model = 0;
+		if (!Impl_->SupplementaryModels_.size ())
+			model = Impl_->CurrentItemsModel_.get ();
+		else
+		{
+			int starting = 0;
+			LeechCraft::Util::MergeModel::const_iterator i = Impl_->ItemLists_->
+				GetModelForRow (index, &starting);
+			model = static_cast<ItemsListModel*> (i->data ());
+			index -= starting;
+		}
+
+		return model->GetItem (model->index (index, 0)).ItemID_;
+	}
+
 	void ItemsWidget::SubscribeToComments (const QModelIndex& index) const
 	{
 		Item_ptr it = GetItem (index);
@@ -429,6 +452,8 @@ namespace Aggregator
 
 		ClearSupplementaryModels ();
 
+		Impl_->LastSelectedChannel_ = si;
+
 		QModelIndex index = si;
 		QSortFilterProxyModel *f = Impl_->ChannelsFilter_;
 		if (f)
@@ -442,6 +467,7 @@ namespace Aggregator
 		}
 		catch (const std::exception&)
 		{
+			Impl_->LastSelectedChannel_ = QModelIndex ();
 			Impl_->CurrentItemsModel_->Reset (-1);
 		}
 		emit currentChannelChanged (index);
@@ -507,8 +533,13 @@ namespace Aggregator
 		Impl_->ActionMarkItemAsUnread_->setObjectName ("ActionMarkItemAsUnread_");
 
 		Impl_->ActionMarkItemAsRead_ = new QAction (tr ("Mark item as read"),
-														this);
+				this);
 		Impl_->ActionMarkItemAsRead_->setObjectName ("ActionMarkItemAsRead_");
+
+		Impl_->ActionMarkItemAsImportant_ = new QAction (tr ("Important"), this);
+		Impl_->ActionMarkItemAsImportant_->setObjectName ("ActionMarkItemAsImportant_");
+		Impl_->ActionMarkItemAsImportant_->setProperty ("ActionIcon", "favorites");
+		Impl_->ActionMarkItemAsImportant_->setCheckable (true);
 
 		Impl_->ActionItemCommentsSubscribe_ = new QAction (tr ("Subscribe to comments"),
 				this);
@@ -1062,6 +1093,31 @@ namespace Aggregator
 			MarkItemReadStatus (idx, true);
 	}
 
+	void ItemsWidget::on_ActionMarkItemAsImportant__triggered ()
+	{
+		StorageBackend *sb = Core::Instance ().GetStorageBackend ();
+
+		const bool mark = Impl_->ActionMarkItemAsImportant_->isChecked ();
+
+		const ITagsManager::tag_id impId = "_important";
+
+		Q_FOREACH (const QModelIndex& idx, GetSelected ())
+		{
+			const QModelIndex& mapped = Impl_->ItemLists_->mapToSource (idx);
+			const ItemsListModel *model =
+					static_cast<ItemsListModel*> (Impl_->ItemLists_->
+							GetModelForRow (idx.row ())->data ());
+
+			const IDType_t item = model->GetItem (mapped).ItemID_;
+
+			QList<ITagsManager::tag_id> tags = sb->GetItemTags (item);
+			if (mark && !tags.contains (impId))
+				sb->SetItemTags (item, tags + QStringList (impId));
+			else if (!mark && tags.removeAll (impId))
+				sb->SetItemTags (item, tags);
+		}
+	}
+
 	void ItemsWidget::on_CaseSensitiveSearch__stateChanged (int state)
 	{
 		Impl_->ItemsFilterModel_->setFilterCaseSensitivity (state ?
@@ -1099,6 +1155,16 @@ namespace Aggregator
 
 	void ItemsWidget::currentItemChanged ()
 	{
+		const QModelIndex& current = Impl_->ItemsFilterModel_->
+				mapToSource (Impl_->Ui_.Items_->selectionModel ()->currentIndex ());
+		if (current.isValid ())
+		{
+			const int idx = GetItem (current)->ItemID_;
+			const QList<ITagsManager::tag_id>& tags = Core::Instance ()
+					.GetStorageBackend ()->GetItemTags (idx);
+			Impl_->ActionMarkItemAsImportant_->setChecked (tags.contains ("_important"));
+		}
+
 		QString preHtml = "<html><head><title>News</title></head><body bgcolor=\"";
 		preHtml += palette ().color (QPalette::Base).name ();
 		preHtml += "\">";
@@ -1188,8 +1254,16 @@ namespace Aggregator
 
 	void ItemsWidget::updateItemsFilter ()
 	{
-		int section = Impl_->Ui_.SearchType_->currentIndex ();
-		QString text = Impl_->Ui_.SearchLine_->text ();
+		const int section = Impl_->Ui_.SearchType_->currentIndex ();
+		if (section == 4)
+		{
+			StorageBackend *sb = Core::Instance ().GetStorageBackend ();
+			Impl_->CurrentItemsModel_->Reset (sb->GetItemsForTag ("_important"));
+		}
+		else
+			CurrentChannelChanged (Impl_->LastSelectedChannel_);
+
+		const QString& text = Impl_->Ui_.SearchLine_->text ();
 		switch (section)
 		{
 		case 1:
@@ -1202,6 +1276,11 @@ namespace Aggregator
 			Impl_->ItemsFilterModel_->setFilterFixedString (text);
 			break;
 		}
+
+		QList<ITagsManager::tag_id> tags;
+		if (section == 3)
+			tags << "_important";
+		Impl_->ItemsFilterModel_->SetItemTags (tags);
 	}
 
 	void ItemsWidget::selectorVisiblityChanged ()

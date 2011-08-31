@@ -509,7 +509,30 @@ namespace Aggregator
 							/** Binds:
 							 * - item_id
 							 */
-							RemoveMediaRSSScenes_;
+							RemoveMediaRSSScenes_,
+							/** Returns:
+							 * - tag
+							 *
+							 * Binds:
+							 * - item_id
+							 */
+							GetItemTags_,
+							/** Binds:
+							 * - item_id
+							 * - tag
+							 */
+							AddItemTag_,
+							/** Binds:
+							 * - item_id
+							 */
+							ClearItemTags_,
+							/** Returns:
+							 * - item_id
+							 *
+							 * Binds:
+							 * - tag
+							 */
+							GetItemsForTag_;
 	public:
 		SQLStorageBackend (Type);
 		virtual ~SQLStorageBackend ();
@@ -548,6 +571,11 @@ namespace Aggregator
 		virtual bool UpdateChannelsStorage (int, int);
 		virtual bool UpdateItemsStorage (int, int);
 		virtual void ToggleChannelUnread (const IDType_t&, bool);
+
+		virtual QList<ITagsManager::tag_id> GetItemTags (const IDType_t&);
+		virtual void SetItemTags (const IDType_t&, const QList<ITagsManager::tag_id>&);
+		virtual QList<IDType_t> GetItemsForTag (const ITagsManager::tag_id&);
+
 		virtual IDType_t GetHighestID (const PoolType&) const;
 
 	private:

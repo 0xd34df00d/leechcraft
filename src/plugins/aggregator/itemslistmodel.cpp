@@ -105,6 +105,22 @@ namespace Aggregator
 		reset ();
 	}
 
+	void ItemsListModel::Reset (const QList<IDType_t>& items)
+	{
+		CurrentChannel_ = -1;
+		CurrentRow_ = -1;
+		CurrentItems_.clear ();
+
+		StorageBackend *sb = Core::Instance ().GetStorageBackend ();
+		Q_FOREACH (const IDType_t& itemId, items)
+			CurrentItems_.push_back (sb->GetItem (itemId)->ToShort ());
+
+		if (CurrentItems_.size ())
+			MayBeRichText_ = Qt::mightBeRichText (CurrentItems_.at (0).Title_);
+
+		reset ();
+	}
+
 	namespace
 	{
 		struct FindEarlierDate

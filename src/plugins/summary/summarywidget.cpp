@@ -445,7 +445,10 @@ namespace LeechCraft
 						Ui_.ControlsDockWidget_->setWidget (addiInfo);
 
 					if (addiInfo)
+					{
 						Ui_.ControlsDockWidget_->show ();
+						Core::Instance ().GetProxy()->UpdateIconset (addiInfo->findChildren<QAction*> ());
+					}
 				}
 			}
 

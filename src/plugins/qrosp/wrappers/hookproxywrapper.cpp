@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "hookproxywrapper.h"
+#include <interfaces/core/ihookproxy.h>
 
 namespace LeechCraft
 {

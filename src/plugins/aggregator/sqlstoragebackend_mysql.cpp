@@ -1117,6 +1117,23 @@ namespace Aggregator
 		}
 	}
 
+	QList<ITagsManager::tag_id> SQLStorageBackendMysql::GetItemTags (const IDType_t& id)
+	{
+#warning Implement me!
+		return QList<ITagsManager::tag_id> ();
+	}
+
+	void SQLStorageBackendMysql::SetItemTags (const IDType_t& id, const QList<ITagsManager::tag_id>& tags)
+	{
+#warning Implement me!
+	}
+
+	QList<IDType_t> SQLStorageBackendMysql::GetItemsForTag (const ITagsManager::tag_id& tag)
+	{
+#warning Implement me!
+		return QList<IDType_t> ();
+	}
+
 	bool SQLStorageBackendMysql::UpdateFeedsStorage (int, int)
 	{
 		return true;

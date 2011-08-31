@@ -278,14 +278,21 @@ namespace Poshuku
 						static_cast<const ErrorPageExtensionOption*> (eo);
 				ErrorPageExtensionReturn *ret =
 						static_cast<ErrorPageExtensionReturn*> (er);
+
+				qDebug () << Q_FUNC_INFO
+						<< "error extension:"
+						<< error->domain
+						<< error->error
+						<< error->errorString
+						<< error->url;
+
 				switch (error->error)
 				{
 				case 102:			// Delegated entity
 					return false;
 				case 301:			// Unknown protocol (should delegate)
 				{
-					LeechCraft::Entity e =
-						LeechCraft::Util::MakeEntity (error->url,
+					Entity e = Util::MakeEntity (error->url,
 							QString (),
 							LeechCraft::FromUserInitiated);
 					bool ch = false;
@@ -306,7 +313,22 @@ namespace Poshuku
 							error->url, error->errorString, error->domain);
 					ret->baseUrl = error->url;
 					ret->content = data.toUtf8 ();
-					return true;
+					if (error->domain == QWebPage::QtNetwork)
+						switch (error->error)
+						{
+						case QNetworkReply::UnknownNetworkError:
+							return QWebPage::extension (e, eo, er);
+						case QNetworkReply::ContentReSendError:
+							emit gotEntity (Util::MakeNotification ("Poshuku",
+										tr ("Unable to send the request to %1. Please try submitting it again.")
+											.arg (error->url.host ()),
+										PCritical_));
+							return false;
+						default :
+							return true;
+						}
+					else
+						return true;
 				}
 				}
 			}
@@ -481,6 +503,12 @@ namespace Poshuku
 				{
 					int statusCode = reply->
 						attribute (QNetworkRequest::HttpStatusCodeAttribute).toInt ();
+
+					qDebug () << Q_FUNC_INFO
+							<< "general unsupported content"
+							<< reply->url ()
+							<< reply->error ()
+							<< reply->errorString ();
 
 					QString data = MakeErrorReplyContents (statusCode,
 							reply->url (), reply->errorString (), QtNetwork);

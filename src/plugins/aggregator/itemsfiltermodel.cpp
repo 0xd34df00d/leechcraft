@@ -38,7 +38,7 @@ namespace Aggregator
 		XmlSettingsManager::Instance ()->RegisterObject ("UnreadOnTop",
 				this, "handleUnreadOnTopChanged");
 	}
-	
+
 	ItemsFilterModel::~ItemsFilterModel ()
 	{
 	}
@@ -47,13 +47,34 @@ namespace Aggregator
 	{
 		ItemsWidget_ = w;
 	}
-	
+
 	void ItemsFilterModel::SetHideRead (bool hide)
 	{
 		HideRead_ = hide;
-		invalidateFilter ();
+		invalidate ();
 	}
-	
+
+	void ItemsFilterModel::SetItemTags (QList<ITagsManager::tag_id> tags)
+	{
+		if (tags.isEmpty ())
+			TaggedItems_.clear ();
+		else
+		{
+			StorageBackend *sb = Core::Instance ().GetStorageBackend ();
+			TaggedItems_ = QSet<IDType_t>::fromList (sb->GetItemsForTag (tags.takeFirst ()));
+
+			Q_FOREACH (const ITagsManager::tag_id& tag, tags)
+			{
+				const QSet<IDType_t>& set = QSet<IDType_t>::fromList (sb->GetItemsForTag (tag));
+				TaggedItems_.intersect (set);
+				if (TaggedItems_.isEmpty ())
+					TaggedItems_ << -1;
+			}
+		}
+
+		invalidate ();
+	}
+
 	bool ItemsFilterModel::filterAcceptsRow (int sourceRow,
 			const QModelIndex& sourceParent) const
 	{
@@ -64,27 +85,31 @@ namespace Aggregator
 		if (!ItemCategories_.isEmpty ())
 		{
 			bool categoryFound = false;
-			QStringList itemCategories =
+			const QStringList& itemCategories =
 				ItemsWidget_->GetItemCategories (sourceRow);
-	
+
 			if (!itemCategories.size ())
 				categoryFound = true;
 			else
-				Q_FOREACH (QString cat, itemCategories)
+				Q_FOREACH (const QString& cat, itemCategories)
 					if (ItemCategories_.contains (cat))
 					{
 						categoryFound = true;
 						break;
 					}
-	
+
 			if (!categoryFound)
 				return false;
 		}
-	
+
+		if (!TaggedItems_.isEmpty () &&
+				!TaggedItems_.contains (ItemsWidget_->GetItemIDFromRow (sourceRow)))
+			return false;
+
 		return QSortFilterProxyModel::filterAcceptsRow (sourceRow,
 				sourceParent);
 	}
-	
+
 	bool ItemsFilterModel::lessThan (const QModelIndex& left,
 			const QModelIndex& right) const
 	{

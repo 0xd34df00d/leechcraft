@@ -21,6 +21,8 @@
 #include <QSortFilterProxyModel>
 #include <QSet>
 #include <QString>
+#include <interfaces/core/itagsmanager.h>
+#include "common.h"
 
 namespace LeechCraft
 {
@@ -36,12 +38,14 @@ namespace Aggregator
 		bool UnreadOnTop_;
 		QSet<QString> ItemCategories_;
 		ItemsWidget *ItemsWidget_;
+		QSet<IDType_t> TaggedItems_;
 	public:
 		ItemsFilterModel (QObject* = 0);
 		virtual ~ItemsFilterModel ();
 
 		void SetItemsWidget (ItemsWidget*);
 		void SetHideRead (bool);
+		void SetItemTags (QList<ITagsManager::tag_id>);
 	protected:
 		virtual bool filterAcceptsRow (int, const QModelIndex&) const;
 		virtual bool lessThan (const QModelIndex&, const QModelIndex&) const;

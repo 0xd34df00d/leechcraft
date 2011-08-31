@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_QROSP_WRAPPERS_COREPROXYWRAPPER_H
 #define PLUGINS_QROSP_WRAPPERS_COREPROXYWRAPPER_H
-#include <interfaces/iinfo.h>
+#include <interfaces/core/icoreproxy.h>
 #include <QMap>
 #include <QIcon>
 #include <QStringList>
@@ -26,6 +26,8 @@
 
 class QTreeView;
 class QTabWidget;
+class QNetworkAccessManager;
+class ICoreTabWidget;
 
 Q_DECLARE_METATYPE (QNetworkAccessManager*);
 
