@@ -26,12 +26,12 @@ SET (HEADERS
 	choroid.h
 	)
 #SET (TRANSLATIONS
-#	leechcraft_shellopen_ru_RU.ts
-#	leechcraft_shellopen_en.ts
+#	leechcraft_choroid_ru_RU.ts
+#	leechcraft_choroid_en.ts
 #	)
 #SET (COMPILED_TRANSLATIONS
-#	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_shellopen_ru_RU.qm
-#	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_shellopen_en.qm
+#	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_choroid_ru_RU.qm
+#	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_choroid_en.qm
 #	)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 
