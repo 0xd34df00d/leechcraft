@@ -39,7 +39,11 @@ namespace LeechCraft
 			PlayListWidget (QWidget *parent = 0);
 			virtual ~PlayListWidget ();
 			void Init (ICoreProxy_ptr proxy);
-			//PlayListView *GetPlayListView ();
+			PlayListView *GetPlayListView ();
+		private slots:
+			void handleAddUrl ();
+			void handleAddFolder ();
+			void handleAddFiles ();
 		};
 	}
 }

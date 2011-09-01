@@ -21,6 +21,9 @@
 #include <QToolBar>
 #include <QToolButton>
 #include <QMenu>
+#include <QFileDialog>
+
+#include "chooseurldialog.h"
 
 namespace LeechCraft
 {
@@ -42,10 +45,10 @@ namespace LeechCraft
 			delete Ui_;
 		}
 		
-		/*PlayListView* PlayListWidget::GetPlayListView ()
+		PlayListView* PlayListWidget::GetPlayListView ()
 		{
 			return Ui_->PlayListView_;
-		}*/
+		}
 		
 		void PlayListWidget::Init (ICoreProxy_ptr proxy)
 		{
@@ -67,6 +70,42 @@ namespace LeechCraft
 			QAction *actionRemove = new QAction (proxy->GetIcon ("remove"),
 					tr ("Remove"), this);
 			ActionBar_->addAction (actionRemove);
+			
+			connect (addURL,
+					SIGNAL (triggered (bool)),
+					this,
+					SLOT (handleAddUrl ()));
+			connect (addFiles,
+					SIGNAL (triggered (bool)),
+					this,
+					SLOT (handleAddFiles ()));
+			connect (addFolder,
+					SIGNAL (triggered (bool)),
+					this,
+					SLOT (handleAddFolder ()));
+		}
+		
+		void PlayListWidget::handleAddFiles ()
+		{
+			const QString& fileName = QFileDialog::getOpenFileNames (this,
+					tr ("Choose file"), QDir::homePath ());
+			if (!fileName.isEmpty ())
+				Ui_->PlayListView_->addItem (fileName);
+		}
+
+		void PlayListWidget::handleAddFolder ()
+		{
+				//TODO Recursive directory parsing
+		}
+		
+		void PlayListWidget::handleAddUrl ()
+		{
+			ChooseURLDialog *d = new ChooseURLDialog (this);
+			if (d->exec () == QDialog::Accepted)
+			{
+				const QString& url = d->GetUrl ();
+				Ui_->PlayListView_->addItem (url);
+			}
 		}
 
 

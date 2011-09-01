@@ -26,7 +26,10 @@ namespace LeechCraft
 		PlayListModel::PlayListModel (QObject* parent)
 		: QAbstractListModel (parent)
 		{
-
+		}
+		
+		PlayListModel::~PlayListModel ()
+		{
 		}
 		
 		int PlayListModel::rowCount (const QModelIndex& parent) const
@@ -38,6 +41,12 @@ namespace LeechCraft
 		{
 			return QVariant ();
 		}
+		
+		void PlayListModel::addRow (const QString& item)
+		{
+			DestList_ << item;
+		}
+
 	}
 }
 

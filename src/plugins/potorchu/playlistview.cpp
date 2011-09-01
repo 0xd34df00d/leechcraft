@@ -30,5 +30,10 @@ namespace LeechCraft
 			setModel (PlayListModel_);
 			setModelColumn (0);
 		}
+		
+		void PlayListView::addItem (const QString& item)
+		{
+		}
+
 	}
 }

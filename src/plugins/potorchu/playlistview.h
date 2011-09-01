@@ -34,6 +34,7 @@ namespace LeechCraft
 			PlayListModel *PlayListModel_;
 		public:
 			PlayListView (QWidget *parent = 0);
+			void addItem (const QString& item);
 		};
 	}
 }

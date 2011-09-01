@@ -21,6 +21,8 @@
 #define PLAYLISTMODEL_H
 
 #include <QAbstractListModel>
+#include <QStringList>
+#include <vlc/vlc.h>
 
 namespace LeechCraft
 {
@@ -29,10 +31,13 @@ namespace LeechCraft
 		class PlayListModel : public QAbstractListModel
 		{
 			Q_OBJECT
+			QStringList DestList_;
 		public:
 			PlayListModel (QObject *parent);
+			virtual ~PlayListModel ();
 			int rowCount (const QModelIndex& parent = QModelIndex ()) const;
 			QVariant data (const QModelIndex& index, int role = Qt::DisplayRole) const;
+			void addRow (const QString& item);
 		};
 	}
 }

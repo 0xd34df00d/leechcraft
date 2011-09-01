@@ -84,7 +84,6 @@ namespace LeechCraft
 					SIGNAL (triggered (bool)),
 					Ui_->Player_,
 					SLOT (stop ()));
-
 			connect (actionPlay,
 					SIGNAL (play ()),
 					Ui_->Player_,
