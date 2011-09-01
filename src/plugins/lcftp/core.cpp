@@ -30,6 +30,7 @@
 #include <QMainWindow>
 #include <curl/curl.h>
 #include <util/util.h>
+#include <interfaces/core/icoreproxy.h>
 #include "inactiveworkersfilter.h"
 #include "xmlsettingsmanager.h"
 #include "watchthread.h"
@@ -60,7 +61,7 @@ namespace LeechCraft
 				qRegisterMetaType<TaskData> ("LeechCraft::Plugins::LCFTP::TaskData");
 				qRegisterMetaTypeStreamOperators<TaskData> ("LeechCraft::Plugins::LCFTP::TaskData");
 				qRegisterMetaType<FetchedEntry> ("LeechCraft::Plugins::LCFTP::FetchedEntry");
-				
+
 				TabClass_.TabClass_ = "LCFTP";
 				TabClass_.VisibleName_ = "LCFTP";
 				TabClass_.Description_ = tr ("The FTP client in LeechCraft");
@@ -149,7 +150,7 @@ namespace LeechCraft
 			{
 				return Proxy_;
 			}
-			
+
 			TabClassInfo Core::GetTabClass () const
 			{
 				return TabClass_;
@@ -274,7 +275,7 @@ namespace LeechCraft
 			{
 				if (!hasIndex (row, column, parent))
 					return QModelIndex ();
-			
+
 				return createIndex (row, column);
 			}
 
@@ -461,7 +462,7 @@ namespace LeechCraft
 					dir = fi.dir ().path ();
 					file = fi.fileName ();
 				}
-	
+
 				QString tfn = dir + "/" + file;
 				if (check)
 				{
@@ -555,7 +556,7 @@ namespace LeechCraft
 					dir = fi.path ();
 				else
 					dir = fi.dir ().path ();
-	
+
 				TabManager_->AddTab (url, dir);
 			}
 
@@ -847,7 +848,7 @@ namespace LeechCraft
 						 RunningHandles_ < Workers_.size ()))
 					Reschedule ();
 			}
-			
+
 			void Core::handleError (const QString& msg, const TaskData& td)
 			{
 				--WorkersPerDomain_ [td.URL_.host ()];

@@ -30,7 +30,7 @@
 <context>
     <name>LeechCraft::Poshuku::CleanWeb::CleanWeb</name>
     <message>
-        <location filename="cleanweb.cpp" line="97"/>
+        <location filename="cleanweb.cpp" line="98"/>
         <source>Blocks unwanted ads.</source>
         <translation>Блокирует нежелательную рекламу.</translation>
     </message>
@@ -38,37 +38,37 @@
 <context>
     <name>LeechCraft::Poshuku::CleanWeb::Core</name>
     <message>
-        <location filename="core.cpp" line="233"/>
+        <location filename="core.cpp" line="244"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="234"/>
+        <location filename="core.cpp" line="245"/>
         <source>Last updated</source>
         <translation>Последнее обновление</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="235"/>
+        <location filename="core.cpp" line="246"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="412"/>
+        <location filename="core.cpp" line="436"/>
         <source>Blocked by Poshuku CleanWeb: %1</source>
         <translation>Заблокировано Poshuku CleanWeb: %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="458"/>
+        <location filename="core.cpp" line="482"/>
         <source>Block image...</source>
         <translation>Заблокировать изображение...</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="716"/>
+        <location filename="core.cpp" line="747"/>
         <source>The subscription %1 was successfully added.</source>
         <translation>Подписка %1 была успешно добавлена.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="751"/>
+        <location filename="core.cpp" line="782"/>
         <source>The subscription %1 wasn&apos;t delegated.</source>
         <translation>Подписка %1 не была делегирована.</translation>
     </message>
@@ -181,67 +181,67 @@
 <context>
     <name>LeechCraft::Poshuku::CleanWeb::UserFiltersModel</name>
     <message>
-        <location filename="userfiltersmodel.cpp" line="38"/>
+        <location filename="userfiltersmodel.cpp" line="41"/>
         <source>Filter</source>
         <translation>Фильтр</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="39"/>
+        <location filename="userfiltersmodel.cpp" line="42"/>
         <source>Policy</source>
         <translation>Действие</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="40"/>
+        <location filename="userfiltersmodel.cpp" line="43"/>
         <source>Type</source>
         <translation>Тип</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="41"/>
+        <location filename="userfiltersmodel.cpp" line="44"/>
         <source>Case sensitive</source>
         <translation>Учитывать регистр</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="42"/>
+        <location filename="userfiltersmodel.cpp" line="45"/>
         <source>Domains</source>
         <translation>Домены</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="77"/>
+        <location filename="userfiltersmodel.cpp" line="80"/>
         <source>Allowed</source>
         <translation>Разрешить</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="78"/>
+        <location filename="userfiltersmodel.cpp" line="81"/>
         <source>Blocked</source>
         <translation>Блокировать</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="83"/>
+        <location filename="userfiltersmodel.cpp" line="86"/>
         <source>Wildcard</source>
         <translation>Маска</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="85"/>
+        <location filename="userfiltersmodel.cpp" line="88"/>
         <source>Regexp</source>
         <translation>Regexp</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="89"/>
+        <location filename="userfiltersmodel.cpp" line="92"/>
         <source>True</source>
         <translation>Да</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="90"/>
+        <location filename="userfiltersmodel.cpp" line="93"/>
         <source>False</source>
         <translation>Нет</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="144"/>
+        <location filename="userfiltersmodel.cpp" line="147"/>
         <source>Add a filter</source>
         <translation>Добавить фильтр</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="200"/>
+        <location filename="userfiltersmodel.cpp" line="205"/>
         <source>Modify filter</source>
         <translation>Изменить фильтр</translation>
     </message>

@@ -24,6 +24,7 @@
 #include <QNetworkAccessManager>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
+#include <interfaces/core/ihookproxy.h>
 
 namespace LeechCraft
 {
@@ -32,8 +33,8 @@ namespace Poshuku
 namespace FileScheme
 {
 	class FileScheme : public QObject
-					 , public IInfo
-					 , public IPlugin2
+					  , public IInfo
+					  , public IPlugin2
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2)
@@ -53,12 +54,11 @@ namespace FileScheme
 		void SetProvider (QObject*, const QString&);
 
 		QSet<QByteArray> GetPluginClasses () const;
-
-		QNetworkReply* CreateRequest (IHookProxy_ptr,
-				QNetworkAccessManager*,
-				QNetworkAccessManager::Operation*,
-				const QNetworkRequest*,
-				QIODevice**);
+	public slots:
+		void hookNAMCreateRequest (LeechCraft::IHookProxy_ptr proxy,
+				QNetworkAccessManager *manager,
+				QNetworkAccessManager::Operation *op,
+				QIODevice **dev);
 	};
 }
 }

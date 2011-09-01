@@ -22,13 +22,15 @@
 #include <QObject>
 #include <QDBusConnection>
 #include <QStringList>
-#include <interfaces/iinfo.h>
+#include <interfaces/core/icoreproxy.h>
 #include "notificationmanager.h"
 #include "general.h"
 #include "tasks.h"
 
 namespace LeechCraft
 {
+	struct Entity;
+
 	namespace Plugins
 	{
 		namespace DBusManager

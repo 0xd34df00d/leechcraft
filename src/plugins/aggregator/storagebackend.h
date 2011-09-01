@@ -19,7 +19,8 @@
 #ifndef PLUGINS_AGGREGATOR_STORAGEBACKEND_H
 #define PLUGINS_AGGREGATOR_STORAGEBACKEND_H
 #include <QObject>
-#include <interfaces/iinfo.h>
+#include <interfaces/core/ihookproxy.h>
+#include <interfaces/core/itagsmanager.h>
 #include "feed.h"
 
 namespace LeechCraft
@@ -365,6 +366,10 @@ namespace Aggregator
 		virtual void ToggleChannelUnread (const IDType_t& id,
 				bool state) = 0;
 
+		virtual QList<ITagsManager::tag_id> GetItemTags (const IDType_t& id) = 0;
+		virtual void SetItemTags (const IDType_t& id, const QList<ITagsManager::tag_id>& tags) = 0;
+		virtual QList<IDType_t> GetItemsForTag (const ITagsManager::tag_id& tag) = 0;
+
 		/** @brief Searches for highest id of given type in the database
 		 *
 		 * @param[in] type of id to find
@@ -389,9 +394,9 @@ namespace Aggregator
 		 * item.
 		 */
 		void itemDataUpdated (Item_ptr item, Channel_ptr channel) const;
-		
+
 		/** @brief Should be emitted whenever a full item is loaded.
-		 * 
+		 *
 		 * @param[out] proxy Standard proxy object.
 		 * @param[out] itemId The ID of the item to be loaded.
 		 */

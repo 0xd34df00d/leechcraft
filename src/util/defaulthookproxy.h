@@ -20,8 +20,8 @@
 #define UTIL_DEFAULTHOOKPROXY_H
 #include <QMap>
 #include "interfaces/iinfo.h"
+#include "interfaces/core/ihookproxy.h"
 #include "utilconfig.h"
-#include <boost/concept_check.hpp>
 
 namespace LeechCraft
 {
@@ -53,7 +53,7 @@ namespace LeechCraft
 
 				val = newVal.value<T> ();
 			}
-			
+
 			QVariant GetValue (const QByteArray&) const;
 
 			void SetValue (const QByteArray&, const QVariant&);

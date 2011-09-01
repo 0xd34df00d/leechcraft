@@ -26,6 +26,8 @@
 #include <QMainWindow>
 #include <QKeyEvent>
 #include <util/util.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/icoretabwidget.h>
 
 namespace LeechCraft
 {
@@ -34,7 +36,7 @@ namespace TabsList
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
-		
+
 		Util::InstallTranslator ("tabslist");
 
 		ShowList_ = new QAction (tr ("List of tabs"),
@@ -74,7 +76,7 @@ namespace TabsList
 	{
 		return QIcon ();
 	}
-	
+
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace aep) const
 	{
 		QList<QAction*> actions;
@@ -82,7 +84,7 @@ namespace TabsList
 			actions << ShowList_;
 		return actions;
 	}
-	
+
 	namespace
 	{
 		class ListEventFilter : public QObject
@@ -98,7 +100,7 @@ namespace TabsList
 			{
 				if (event->type () != QEvent::KeyPress)
 					return false;
-				
+
 				QKeyEvent *key = static_cast<QKeyEvent*> (event);
 				if (key->key () == Qt::Key_Escape)
 				{
@@ -117,7 +119,7 @@ namespace TabsList
 					FocusSearch ();
 					return true;
 				}
-				
+
 				return false;
 			}
 		private:
@@ -134,7 +136,7 @@ namespace TabsList
 			}
 		};
 	}
-	
+
 	void Plugin::handleShowList ()
 	{
 		ICoreTabWidget *tw = Proxy_->GetTabWidget ();
@@ -148,7 +150,7 @@ namespace TabsList
 		QVBoxLayout *layout = new QVBoxLayout ();
 		layout->setSpacing (1);
 		layout->setContentsMargins (1, 1, 1, 1);
-		
+
 		const int currentIdx = tw->CurrentIndex ();
 		QToolButton *toFocus = 0;
 		for (int i = 0, count = tw->WidgetCount (); i < count; ++i)
@@ -162,7 +164,7 @@ namespace TabsList
 			action->setProperty ("TabIndex", i);
 			connect (action,
 					SIGNAL (triggered ()),
-					this,	
+					this,
 					SLOT (navigateToTab ()));
 			connect (action,
 					SIGNAL (triggered ()),
@@ -176,29 +178,29 @@ namespace TabsList
 					button->sizePolicy ().verticalPolicy ());
 			button->setProperty ("OrigText", origText);
 			layout->addWidget (button);
-			
+
 			if (currentIdx == i)
 				toFocus = button;
 		}
-		
+
 		widget->setLayout (layout);
 		layout->update ();
 		layout->activate ();
-		
+
 		const QRect& rect = QApplication::desktop ()->
 				screenGeometry (Proxy_->GetMainWindow ());
 		QPoint pos = rect.center ();
-		
+
 		const QSize& size = widget->sizeHint () / 2;
 		pos -= QPoint (size.width (), size.height ());
-		
+
 		widget->move (pos);
 		widget->show ();
-		
+
 		if (toFocus)
 			toFocus->setFocus ();
 	}
-	
+
 	void Plugin::navigateToTab ()
 	{
 		const int idx = sender ()->property ("TabIndex").toInt ();

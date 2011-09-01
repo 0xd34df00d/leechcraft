@@ -18,6 +18,8 @@
 
 #include "editbookmarkdialog.h"
 #include <util/tagscompleter.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/itagsmanager.h>
 #include "favoritesmodel.h"
 #include "core.h"
 

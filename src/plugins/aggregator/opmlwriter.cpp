@@ -24,6 +24,8 @@
 #include <QDomElement>
 #include <QtDebug>
 #include <util/util.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/itagsmanager.h>
 #include "core.h"
 
 namespace LeechCraft
@@ -33,11 +35,11 @@ namespace Aggregator
 	OPMLWriter::OPMLWriter ()
 	{
 	}
-	
+
 	OPMLWriter::~OPMLWriter ()
 	{
 	}
-	
+
 	QString OPMLWriter::Write (const channels_shorts_t& channels,
 			const QString& title,
 			const QString& owner,
@@ -48,10 +50,10 @@ namespace Aggregator
 		doc.appendChild (root);
 		WriteHead (root, doc, title, owner, ownerEmail);
 		WriteBody (root, doc, channels);
-	
+
 		return doc.toString ();
 	}
-	
+
 	void OPMLWriter::WriteHead (QDomElement& root,
 			QDomDocument& doc,
 			const QString& title,
@@ -62,7 +64,7 @@ namespace Aggregator
 		QDomElement text = doc.createElement ("text");
 		head.appendChild (text);
 		root.appendChild (head);
-	
+
 		if (!title.isEmpty ())
 		{
 			QDomText t = doc.createTextNode (title);
@@ -83,18 +85,18 @@ namespace Aggregator
 			head.appendChild (elem);
 		}
 	}
-	
+
 	QString TagGetter (const QDomElement& elem)
 	{
 		return elem.attribute ("text");
 	}
-	
+
 	void TagSetter (QDomElement& result, const QString& tag)
 	{
 		result.setAttribute ("text", tag);
 		result.setAttribute ("isOpen", "true");
 	}
-	
+
 	void OPMLWriter::WriteBody (QDomElement& root,
 			QDomDocument& doc,
 			const channels_shorts_t& channels) const
@@ -108,7 +110,7 @@ namespace Aggregator
 			Q_FOREACH (QString st, sourceTags)
 				tags << Core::Instance ().GetProxy ()->GetTagsManager ()->GetTag (st);
 			tags.sort ();
-	
+
 			QDomElement inserter;
 			inserter = LeechCraft::Util::GetElementForTags (tags,
 					body, doc, "outline",
@@ -122,7 +124,7 @@ namespace Aggregator
 			item.setAttribute ("htmlUrl", i->Link_);
 			inserter.appendChild (item);
 		}
-	
+
 		root.appendChild (body);
 	}
 }

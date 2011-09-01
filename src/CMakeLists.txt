@@ -360,6 +360,7 @@ SET (SRCS
 	separatetabwidget.cpp
 	mwproxy.cpp
 	winwarndialog.cpp
+	coreplugin2manager.cpp
 	)
 SET (HEADERS
 	mainwindow.h
@@ -403,6 +404,7 @@ SET (HEADERS
 	separatetabwidget.h
 	mwproxy.h
 	winwarndialog.h
+	coreplugin2manager.h
 	3dparty/qxttooltip.h
 	3dparty/qxttooltip_p.h
 	interfaces/structures.h
@@ -441,7 +443,7 @@ ADD_CUSTOM_COMMAND (OUTPUT
 
 IF (NOT DEFINED LEECHCRAFT_VERSION)
 	FIND_PROGRAM (GIT_CMD git)
-	EXECUTE_PROCESS (COMMAND "${GIT_CMD}" describe
+	EXECUTE_PROCESS (COMMAND "${GIT_CMD}" "--git-dir=${CMAKE_CURRENT_SOURCE_DIR}/../.git" describe
 		OUTPUT_VARIABLE LEECHCRAFT_VERSION
 		OUTPUT_STRIP_TRAILING_WHITESPACE
 		)

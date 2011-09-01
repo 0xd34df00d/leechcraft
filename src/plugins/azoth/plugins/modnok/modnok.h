@@ -24,6 +24,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/ihavesettings.h>
+#include <interfaces/core/ihookproxy.h>
 
 class QTranslator;
 class QImage;
@@ -41,7 +42,7 @@ namespace Modnok
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
-		
+
 		boost::shared_ptr<QTranslator> Translator_;
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
 
@@ -57,7 +58,7 @@ namespace Modnok
 		QIcon GetIcon () const;
 
 		QSet<QByteArray> GetPluginClasses () const;
-		
+
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	private:
 		QImage GetRenderedImage (const QString&);

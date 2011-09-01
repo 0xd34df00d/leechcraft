@@ -19,8 +19,8 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_XOOX_CORE_H
 #define PLUGINS_AZOTH_PLUGINS_XOOX_CORE_H
 #include <QObject>
-#include <interfaces/iinfo.h>
 #include <interfaces/structures.h>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
@@ -42,7 +42,7 @@ namespace Xoox
 		boost::shared_ptr<GlooxProtocol> GlooxProtocol_;
 		QObject *PluginProxy_;
 		bool SaveRosterScheduled_;
-		
+
 		CapsDatabase *CapsDB_;
 
 		Core ();
@@ -57,11 +57,11 @@ namespace Xoox
 		IProxyObject* GetPluginProxy () const;
 		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;
-		
+
 		CapsDatabase* GetCapsDatabase () const;
 
 		void SendEntity (const Entity&);
-		
+
 		void ScheduleSaveRoster (int = 2000);
 	private:
 		void LoadRoster ();

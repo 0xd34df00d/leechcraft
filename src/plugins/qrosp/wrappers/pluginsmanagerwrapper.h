@@ -19,7 +19,7 @@
 #ifndef PLUGINS_QROSP_WRAPPERS_PLUGINSMANAGERWRAPPER_H
 #define PLUGINS_QROSP_WRAPPERS_PLUGINSMANAGERWRAPPER_H
 #include <QObject>
-#include <interfaces/iinfo.h>
+#include <interfaces/core/ipluginsmanager.h>
 
 namespace LeechCraft
 {

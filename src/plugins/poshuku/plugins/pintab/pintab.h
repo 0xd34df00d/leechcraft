@@ -27,6 +27,7 @@
 #include <QWebView>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
+#include <interfaces/core/ihookproxy.h>
 
 Q_DECLARE_METATYPE(QList<QObject*>)
 
@@ -36,7 +37,7 @@ namespace Poshuku
 {
 namespace PinTab
 {
-	//TODO: 
+	//TODO:
 	//- hide close button on pinned tabs
 	//- move pinned tabs to left
 	class Plugin : public QObject

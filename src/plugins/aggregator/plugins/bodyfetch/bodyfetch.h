@@ -24,13 +24,14 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/aggregator/item.h>
+#include <interfaces/core/ihookproxy.h>
 
 class QTranslator;
 
 namespace LeechCraft
 {
 namespace Aggregator
-{	
+{
 class Item;
 
 namespace BodyFetch
@@ -43,7 +44,7 @@ namespace BodyFetch
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2)
-		
+
 		ICoreProxy_ptr Proxy_;
 		QDir StorageDir_;
 		WorkerObject *WO_;

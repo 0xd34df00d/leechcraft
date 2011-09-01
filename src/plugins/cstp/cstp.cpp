@@ -33,6 +33,7 @@
 #include <QTranslator>
 #include <QMainWindow>
 #include <interfaces/entitytesthandleresult.h>
+#include <interfaces/core/icoreproxy.h>
 #include <util/util.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"

@@ -26,6 +26,7 @@
 #include <QAudioDeviceInfo>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/imwproxy.h>
+#include <interfaces/core/icoreproxy.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/resourceloader.h>
 #include <util/util.h>
@@ -79,13 +80,13 @@ namespace Azoth
 				QAudioDeviceInfo::availableDevices (QAudio::AudioInput))
 			audioIns << info.deviceName ();
 		XmlSettingsDialog_->SetDataSource ("InputAudioDevice", new QStringListModel (audioIns));
-		
+
 		QStringList audioOuts (tr ("Default output device"));
 		Q_FOREACH (const QAudioDeviceInfo& info,
 				QAudioDeviceInfo::availableDevices (QAudio::AudioOutput))
 			audioOuts << info.deviceName ();
 		XmlSettingsDialog_->SetDataSource ("OutputAudioDevice", new QStringListModel (audioOuts));
-		
+
 		XmlSettingsDialog_->SetCustomWidget ("AccountsWidget", new AccountsListWidget);
 
 		QDockWidget *dw = new QDockWidget ();
@@ -127,7 +128,7 @@ namespace Azoth
 				SIGNAL (gotConsoleWidget (ConsoleWidget*)),
 				this,
 				SLOT (handleConsoleWidget (ConsoleWidget*)));
-		
+
 		TabClassInfo chatTab =
 		{
 			"ChatTab",
@@ -166,7 +167,7 @@ namespace Azoth
 			0,
 			TFEmpty
 		};
-		
+
 		TabClasses_ << chatTab;
 		TabClasses_ << mucTab;
 		TabClasses_ << sdTab;
@@ -230,7 +231,7 @@ namespace Azoth
 	{
 		return Core::Instance ().GetTransferJobManager ()->GetSummaryModel ();
 	}
-	
+
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace aep) const
 	{
 		QList<QAction*> result;
@@ -244,26 +245,26 @@ namespace Azoth
 		}
 		return result;
 	}
-	
+
 	QMap<QString, QList<QAction*> > Plugin::GetMenuActions () const
 	{
 		QMap<QString, QList<QAction*> > result;
 		result ["Azoth"] << MW_->GetMenuActions ();
 		return result;
 	}
-	
+
 	EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const
 	{
 		return Core::Instance ().CouldHandle (e) ?
 				EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
 				EntityTestHandleResult ();
 	}
-	
+
 	void Plugin::Handle (Entity e)
 	{
 		Core::Instance ().Handle (e);
 	}
-	
+
 	TabClasses_t Plugin::GetTabClasses () const
 	{
 		return TabClasses_;
@@ -283,19 +284,19 @@ namespace Azoth
 			emit addNewTab (tr ("Service discovery"), sd);
 		}
 	}
-	
+
 	QList<ANFieldData> Plugin::GetANFields () const
 	{
 		return Core::Instance ().GetANFields ();
 	}
-	
+
 	void Plugin::handleTasksTreeSelectionCurrentRowChanged (const QModelIndex& index, const QModelIndex&)
 	{
 		QModelIndex si = Core::Instance ().GetProxy ()->MapToSource (index);
 		TransferJobManager *mgr = Core::Instance ().GetTransferJobManager ();
 		mgr->SelectionChanged (si.model () == mgr->GetSummaryModel () ? si : QModelIndex ());
 	}
-	
+
 	void Plugin::handleConsoleWidget (ConsoleWidget *cw)
 	{
 		cw->SetParentMultiTabs (this);

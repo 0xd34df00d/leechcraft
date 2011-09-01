@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "networkaccessmanager.h"
+#include <stdexcept>
 #include <QNetworkRequest>
 #include <QDir>
 #include <QFile>
@@ -120,14 +121,15 @@ QNetworkReply* NetworkAccessManager::createRequest (QNetworkAccessManager::Opera
 		const QNetworkRequest& req, QIODevice *out)
 {
 	QNetworkRequest r = req;
+
 	DefaultHookProxy_ptr proxy (new DefaultHookProxy);
-	Q_FOREACH (HookSignature<HIDNetworkAccessManagerCreateRequest>::Signature_t f,
-			Core::Instance ().GetHooks<HIDNetworkAccessManagerCreateRequest> ())
-	{
-		QNetworkReply *rep = f (proxy, this, &op, &r, &out);
-		if (proxy->IsCancelled ())
-			return rep;
-	}
+	proxy->SetValue ("request", QVariant::fromValue<QNetworkRequest> (r));
+	emit hookNAMCreateRequest (proxy, this, &op, &out);
+
+	if (proxy->IsCancelled ())
+		return proxy->GetReturnValue ().value<QNetworkReply*> ();
+
+	proxy->FillValue ("request", r);
 
 	QNetworkReply *result = QNetworkAccessManager::createRequest (op, r, out);
 	emit requestCreated (op, r, result);

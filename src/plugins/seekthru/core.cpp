@@ -29,6 +29,8 @@
 #include <QCoreApplication>
 #include <QtDebug>
 #include <interfaces/iwebbrowser.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/itagsmanager.h>
 #include <util/util.h>
 #include <util/syncops.h>
 #include "findproxy.h"

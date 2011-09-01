@@ -23,6 +23,8 @@
 #include <QPalette>
 #include <QIcon>
 #include <interfaces/structures.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/itagsmanager.h>
 #include "channelsmodel.h"
 #include "item.h"
 #include "xmlsettingsmanager.h"

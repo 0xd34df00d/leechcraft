@@ -17,8 +17,11 @@
  **********************************************************************/
 
 #include "bodyfetch.h"
+#include <cstring>
 #include <QIcon>
 #include <interfaces/iscriptloader.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ipluginsmanager.h>
 #include <util/util.h>
 #include "workerobject.h"
 
@@ -31,7 +34,7 @@ namespace BodyFetch
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		StorageDir_ = Util::CreateIfNotExists ("aggregator/bodyfetcher/storage");
-		
+
 		const int suffixLength = std::strlen (".html");
 		for (int i = 0; i < 10; ++i)
 		{
@@ -66,7 +69,7 @@ namespace BodyFetch
 					<< "unable to find a suitable loader, aborting";
 			return;
 		}
-		
+
 		IScriptLoaderInstance *inst = loader->
 				CreateScriptLoaderInstance ("aggregator/recipes/");
 		if (!inst)
@@ -75,12 +78,12 @@ namespace BodyFetch
 					<< "got a null script loader instance";
 			return;
 		}
-		
+
 		inst->AddGlobalPrefix ();
 		inst->AddLocalPrefix ();
 
 		WO_->SetLoaderInstance (inst);
-		
+
 		connect (WO_,
 				SIGNAL (downloadRequested (QUrl)),
 				this,
@@ -127,12 +130,12 @@ namespace BodyFetch
 		result << "org.LeechCraft.Aggregator.GeneralPlugin/1.0";
 		return result;
 	}
-	
+
 	void Plugin::hookItemLoad (IHookProxy_ptr, Item *item)
 	{
 		if (!FetchedItems_.contains (item->ItemID_))
 			return;
-		
+
 		const quint64 id = item->ItemID_;
 		if (!ContentsCache_.contains (id))
 		{
@@ -151,24 +154,24 @@ namespace BodyFetch
 
 			ContentsCache_ [id] = QString::fromUtf8 (file.readAll ());
 		}
-		
+
 		const QString& contents = ContentsCache_ [id];
 		if (!contents.isEmpty ())
 			item->Description_ = contents;
 	}
-	
+
 	void Plugin::hookGotNewItems (IHookProxy_ptr, QVariantList items)
 	{
 		if (!WO_)
 			return;
-		
+
 		if (!WO_->IsOk ())
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "worker object isn't ready :(";
 			return;
 		}
-		
+
 		WO_->AppendItems (items);
 	}
 
@@ -192,26 +195,26 @@ namespace BodyFetch
 					<< "delegation failed";
 			return;
 		}
-		
+
 		Jobs_ [id] = qMakePair (url, temp);
-		
+
 		connect (obj,
 				SIGNAL (jobFinished (int)),
 				this,
 				SLOT (handleJobFinished (int)),
 				Qt::UniqueConnection);
 	}
-	
+
 	void Plugin::handleJobFinished (int id)
 	{
 		if (!Jobs_.contains (id))
 			return;
-		
+
 		const QPair<QUrl, QString>& job = Jobs_.take (id);
-		
+
 		emit downloadFinished (job.first, job.second);
 	}
-	
+
 	void Plugin::handleBodyFetched (quint64 id)
 	{
 		FetchedItems_ << id;

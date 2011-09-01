@@ -19,7 +19,10 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <QHeaderView>
 #include <QFileDialog>
+#include <boost/filesystem/path.hpp>
 #include <util/util.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/itagsmanager.h>
 #include "addtorrent.h"
 #include "torrentfilesmodel.h"
 #include "xmlsettingsmanager.h"
@@ -47,6 +50,10 @@ namespace LeechCraft
 						SIGNAL (on_Destination__textChanged ()),
 						this,
 						SLOT (setOkEnabled ()));
+				connect (this,
+						SIGNAL (on_Destination__textChanged ()),
+						this,
+						SLOT (updateAvailableSpace ()));
 
 				QString dir = XmlSettingsManager::Instance ()->property ("LastSaveDirectory").toString ();
 				Destination_->setText (dir);
@@ -152,6 +159,25 @@ namespace LeechCraft
 						QFileInfo (Destination_->text ()).exists ());
 			}
 
+			void AddTorrent::updateAvailableSpace ()
+			{
+				const QPair<quint64, quint64>& pair = GetAvailableSpaceInDestination ();
+				const quint64 availableSpace = pair.first;
+				const quint64 totalSpace = pair.second;
+
+				if (availableSpace != static_cast<quint64> (-1))
+				{
+					AvailSpaceLabel_->setText (tr ("%1 free").arg (Util::MakePrettySize (availableSpace)));
+					AvailSpaceBar_->show ();
+					AvailSpaceBar_->setValue (100 - 100 * availableSpace / totalSpace);
+				}
+				else
+				{
+					AvailSpaceLabel_->setText (tr ("unknown"));
+					AvailSpaceBar_->hide ();
+				}
+			}
+
 			void AddTorrent::on_TorrentBrowse__released ()
 			{
 				  QString filename = QFileDialog::getOpenFileName (this,
@@ -240,6 +266,12 @@ namespace LeechCraft
 				FilesView_->expandAll ();
 			}
 
+			QPair<quint64, quint64> AddTorrent::GetAvailableSpaceInDestination ()
+			{
+				boost::filesystem::space_info space =
+						boost::filesystem::space (GetSavePath ().toStdWString ());
+				return qMakePair<quint64, quint64> (space.available, space.capacity);
+			}
 		};
 	};
 };

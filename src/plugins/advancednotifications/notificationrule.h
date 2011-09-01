@@ -32,63 +32,76 @@ namespace AdvancedNotifications
 	struct VisualParams
 	{
 	};
-	
+
 	struct AudioParams
 	{
 		QString Filename_;
-		
+
 		AudioParams ();
-		AudioParams (const QString& fname);
+		AudioParams (const QString&);
 	};
-	
+
 	struct TrayParams
 	{
 	};
-	
+
+	struct CmdParams
+	{
+		QString Cmd_;
+		QStringList Args_;
+
+		CmdParams ();
+		CmdParams (const QString&, const QStringList& = QStringList ());
+	};
+
 	class NotificationRule
 	{
 		QString Name_;
 		QString Category_;
 		QStringList Types_;
-		
+
 		NotificationMethods Methods_;
-		
+
 		FieldMatches_t FieldMatches_;
-		
+
 		AudioParams AudioParams_;
 		TrayParams TrayParams_;
 		VisualParams VisualParams_;
+		CmdParams CmdParams_;
 	public:
 		NotificationRule ();
 		NotificationRule (const QString& name,
 				const QString& cat, const QStringList& types);
-		
+
 		bool IsNull () const;
-		
+
 		QString GetName () const;
 		void SetName (const QString&);
-		
+
 		QString GetCategory () const;
 		void SetCategory (const QString&);
-		
+
 		QStringList GetTypes () const;
 		void SetTypes (const QStringList&);
-		
+
 		NotificationMethods GetMethods () const;
 		void SetMethods (const NotificationMethods&);
-		
+
 		FieldMatches_t GetFieldMatches () const;
 		void SetFieldMatches (const FieldMatches_t&);
-		
+
 		VisualParams GetVisualParams () const;
 		void SetVisualParams (const VisualParams&);
-		
+
 		AudioParams GetAudioParams () const;
 		void SetAudioParams (const AudioParams&);
-		
+
 		TrayParams GetTrayParams () const;
 		void SetTrayParams (const TrayParams&);
-		
+
+		CmdParams GetCmdParams () const;
+		void SetCmdParams (const CmdParams&);
+
 		void Save (QDataStream&) const;
 		void Load (QDataStream&);
 	};
@@ -97,5 +110,5 @@ namespace AdvancedNotifications
 
 Q_DECLARE_METATYPE (LeechCraft::AdvancedNotifications::NotificationRule);
 Q_DECLARE_METATYPE (QList<LeechCraft::AdvancedNotifications::NotificationRule>);
-	
+
 #endif

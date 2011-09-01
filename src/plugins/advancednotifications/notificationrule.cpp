@@ -27,9 +27,19 @@ namespace AdvancedNotifications
 	AudioParams::AudioParams ()
 	{
 	}
-		
+
 	AudioParams::AudioParams (const QString& fname)
 	: Filename_ (fname)
+	{
+	}
+
+	CmdParams::CmdParams ()
+	{
+	}
+
+	CmdParams::CmdParams (const QString& cmd, const QStringList& args)
+	: Cmd_ (cmd)
+	, Args_ (args)
 	{
 	}
 
@@ -46,59 +56,59 @@ namespace AdvancedNotifications
 	, Methods_ (NMNone)
 	{
 	}
-	
+
 	bool NotificationRule::IsNull () const
 	{
 		return Name_.isEmpty () ||
 				Category_.isEmpty () ||
 				Types_.isEmpty ();
 	}
-	
+
 	QString NotificationRule::GetName () const
 	{
 		return Name_;
 	}
-	
+
 	void NotificationRule::SetName (const QString& name)
 	{
 		Name_ = name;
 	}
-	
+
 	QString NotificationRule::GetCategory () const
 	{
 		return Category_;
 	}
-	
+
 	void NotificationRule::SetCategory (const QString& cat)
 	{
 		Category_ = cat;
 	}
-	
+
 	QStringList NotificationRule::GetTypes () const
 	{
 		return Types_;
 	}
-	
+
 	void NotificationRule::SetTypes (const QStringList& types)
 	{
 		Types_ = types;
 	}
-	
+
 	NotificationMethods NotificationRule::GetMethods () const
 	{
 		return Methods_;
 	}
-	
+
 	void NotificationRule::SetMethods (const NotificationMethods& methods)
 	{
 		Methods_ = methods;
 	}
-	
+
 	FieldMatches_t NotificationRule::GetFieldMatches () const
 	{
 		return FieldMatches_;
 	}
-	
+
 	VisualParams NotificationRule::GetVisualParams () const
 	{
 		return VisualParams_;
@@ -108,7 +118,7 @@ namespace AdvancedNotifications
 	{
 		VisualParams_ = params;
 	}
-	
+
 	AudioParams NotificationRule::GetAudioParams () const
 	{
 		return AudioParams_;
@@ -118,7 +128,7 @@ namespace AdvancedNotifications
 	{
 		AudioParams_ = params;
 	}
-	
+
 	TrayParams NotificationRule::GetTrayParams () const
 	{
 		return TrayParams_;
@@ -128,49 +138,66 @@ namespace AdvancedNotifications
 	{
 		TrayParams_ = params;
 	}
-	
+
+	CmdParams NotificationRule::GetCmdParams() const
+	{
+		return CmdParams_;
+	}
+
+	void NotificationRule::SetCmdParams (const CmdParams& params)
+	{
+		CmdParams_ = params;
+	}
+
 	void NotificationRule::SetFieldMatches (const FieldMatches_t& matches)
 	{
 		FieldMatches_ = matches;
 	}
-	
+
 	void NotificationRule::Save (QDataStream& stream) const
 	{
-		stream << static_cast<quint8> (1)
+		stream << static_cast<quint8> (2)
 			<< Name_
 			<< Category_
 			<< Types_
 			<< static_cast<quint16> (Methods_)
 			<< AudioParams_.Filename_
+			<< CmdParams_.Cmd_
+			<< CmdParams_.Args_
 			<< static_cast<quint16> (FieldMatches_.size ());
 
 		Q_FOREACH (const FieldMatch& match, FieldMatches_)
 			match.Save (stream);
 	}
-	
+
 	void NotificationRule::Load (QDataStream& stream)
 	{
 		quint8 version = 0;
 		stream >> version;
-		if (version != 1)
+		if (version < 1 || version > 2)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unknown version"
 					<< version;
 			return;
 		}
-		
+
 		quint16 methods;
 		stream >> Name_
 			>> Category_
 			>> Types_
 			>> methods
 			>> AudioParams_.Filename_;
+
+		if (version >= 2)
+			stream >> CmdParams_.Cmd_
+				>> CmdParams_.Args_;
+
 		Methods_ = static_cast<NotificationMethods> (methods);
-		
+
 		quint16 numMatches = 0;
 		stream >> numMatches;
-		
+
 		for (int i = 0; i < numMatches; ++i)
 		{
 			FieldMatch match;

@@ -25,6 +25,7 @@
 #include <interfaces/iwebbrowser.h>
 #include <interfaces/ihaveshortcuts.h>
 #include <interfaces/structures.h>
+#include <interfaces/core/ihookproxy.h>
 #include "interfaces/ibrowserwidget.h"
 #include "ui_browserwidget.h"
 

@@ -30,7 +30,7 @@
 <context>
     <name>LeechCraft::Poshuku::CleanWeb::CleanWeb</name>
     <message>
-        <location filename="cleanweb.cpp" line="+97"/>
+        <location filename="cleanweb.cpp" line="+98"/>
         <source>Blocks unwanted ads.</source>
         <translation type="unfinished">Bloku evitindan anoncon.</translation>
     </message>
@@ -38,7 +38,7 @@
 <context>
     <name>LeechCraft::Poshuku::CleanWeb::Core</name>
     <message>
-        <location filename="core.cpp" line="+233"/>
+        <location filename="core.cpp" line="+244"/>
         <source>Name</source>
         <translation type="unfinished">Nomo</translation>
     </message>
@@ -53,7 +53,7 @@
         <translation type="unfinished">URL</translation>
     </message>
     <message>
-        <location line="+177"/>
+        <location line="+190"/>
         <source>Blocked by Poshuku CleanWeb: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -63,7 +63,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+258"/>
+        <location line="+265"/>
         <source>The subscription %1 was successfully added.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -181,7 +181,7 @@
 <context>
     <name>LeechCraft::Poshuku::CleanWeb::UserFiltersModel</name>
     <message>
-        <location filename="userfiltersmodel.cpp" line="+38"/>
+        <location filename="userfiltersmodel.cpp" line="+41"/>
         <source>Filter</source>
         <translation type="unfinished">Filtrilo</translation>
     </message>
@@ -241,7 +241,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+56"/>
+        <location line="+58"/>
         <source>Modify filter</source>
         <translation type="unfinished"></translation>
     </message>

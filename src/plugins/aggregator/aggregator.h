@@ -19,6 +19,7 @@
 #ifndef PLUGINS_AGGREGATOR_AGGREGATOR_H
 #define PLUGINS_AGGREGATOR_AGGREGATOR_H
 #include <memory>
+#include <boost/function.hpp>
 #include <QWidget>
 #include <QItemSelection>
 #include <interfaces/iinfo.h>
@@ -104,7 +105,7 @@ namespace Aggregator
 		QList<QWizardPage*> GetWizardPages () const;
 
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
-		
+
 		QSet<QByteArray> GetExpectedPluginClasses () const;
 		void AddPlugin (QObject*);
 	protected:

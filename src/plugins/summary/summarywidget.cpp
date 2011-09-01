@@ -27,6 +27,8 @@
 #include <interfaces/ifinder.h>
 #include <interfaces/structures.h>
 #include <interfaces/ijobholder.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ipluginsmanager.h>
 #include "core.h"
 #include "searchwidget.h"
 #include "summary.h"
@@ -180,7 +182,7 @@ namespace LeechCraft
 			{
 				return S_ParentMultiTabs_;
 			}
-			
+
 			TabClassInfo SummaryWidget::GetTabClassInfo () const
 			{
 				return qobject_cast<Summary*> (S_ParentMultiTabs_)->GetTabClasses ().first ();
@@ -443,7 +445,10 @@ namespace LeechCraft
 						Ui_.ControlsDockWidget_->setWidget (addiInfo);
 
 					if (addiInfo)
+					{
 						Ui_.ControlsDockWidget_->show ();
+						Core::Instance ().GetProxy()->UpdateIconset (addiInfo->findChildren<QAction*> ());
+					}
 				}
 			}
 

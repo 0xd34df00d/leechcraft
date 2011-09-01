@@ -21,6 +21,7 @@
 #include <memory>
 #include <QNetworkAccessManager>
 #include <QTimer>
+#include "interfaces/core/ihookproxy.h"
 
 namespace LeechCraft
 {
@@ -49,6 +50,11 @@ namespace LeechCraft
 		void requestCreated (QNetworkAccessManager::Operation,
 				const QNetworkRequest&, QNetworkReply*);
 		void error (const QString&) const;
+
+		void hookNAMCreateRequest (LeechCraft::IHookProxy_ptr proxy,
+					QNetworkAccessManager *manager,
+					QNetworkAccessManager::Operation *op,
+					QIODevice **dev);
 	};
 };
 

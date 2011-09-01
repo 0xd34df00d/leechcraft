@@ -26,6 +26,7 @@
 #include <QPluginLoader>
 #include <QIcon>
 #include "interfaces/iinfo.h"
+#include "interfaces/core/ipluginsmanager.h"
 
 namespace LeechCraft
 {

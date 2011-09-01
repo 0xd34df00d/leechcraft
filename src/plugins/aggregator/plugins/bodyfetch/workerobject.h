@@ -21,7 +21,6 @@
 #include <QObject>
 #include <QVariant>
 #include <QStringList>
-#include <QDateTime>
 #include <QHash>
 #include <QUrl>
 #include <QDir>
@@ -41,12 +40,18 @@ namespace BodyFetch
 		IScriptLoaderInstance *Inst_;
 		QVariantList Items_;
 		
+		bool IsProcessing_;
+		bool RecheckScheduled_;
+		
 		QStringList EnumeratedCache_;
-		QDateTime LastEnumerated_;
 
 		QHash<QString, QString> ChannelLink2ScriptID_;
 		QHash<QUrl, IScript_ptr> URL2Script_;
 		QHash<QUrl, quint64> URL2ItemID_;
+		
+		QHash<QString, IScript_ptr> CachedScripts_;
+		
+		QList<QPair<QUrl, QString> > FetchedQueue_;
 		
 		QDir StorageDir_;
 	public:
@@ -62,9 +67,12 @@ namespace BodyFetch
 		QString Parse (const QString&, IScript_ptr);
 		void WriteFile (const QString&, quint64) const;
 		QString Recode (const QByteArray&) const;
-	public slots:
+		void ScheduleRechecking ();
+	private slots:
 		void handleDownloadFinished (QUrl, QString);
+		void recheckFinished ();
 		void process ();
+		void clearCaches ();
 	signals:
 		void downloadRequested (QUrl);
 		void newBodyFetched (quint64);

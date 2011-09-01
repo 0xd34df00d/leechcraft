@@ -612,7 +612,7 @@ namespace Xoox
 			{
 				const QString& body = msg.body ();
 				msg.setBody (tr ("This message is encrypted. Please decrypt "
-								"it to view the original contents"));
+								"it to view the original contents."));
 				
 				QXmppElement crypt;
 				crypt.setTagName ("x");
@@ -779,6 +779,8 @@ namespace Xoox
 		IsConnected_ = true;
 		emit statusChanged (EntryStatus (LastState_.State_, LastState_.Status_));
 		
+		Client_->vCardManager ().requestVCard (OurBareJID_);
+		
 		connect (BMManager_,
 				SIGNAL (bookmarksReceived (const QXmppBookmarkSet&)),
 				this,
@@ -821,6 +823,9 @@ namespace Xoox
 		case QXmppClient::XmppStreamError:
 			str = tr ("error while connecting: ");
 			str += HandleErrorCondition (Client_->xmppStreamError ());
+			break;
+		case QXmppClient::NoError:
+			str = tr ("no error.");
 			break;
 		}
 		
@@ -934,6 +939,9 @@ namespace Xoox
 		QString nick;
 		Split (vcard.from (), &jid, &nick);
 		
+		if (jid.isEmpty ())
+			jid = OurBareJID_;
+		
 		if (AwaitingVCardDialogs_.contains (jid))
 		{
 			QPointer<VCardDialog> dia = AwaitingVCardDialogs_ [jid];
@@ -946,6 +954,8 @@ namespace Xoox
 			JID2CLEntry_ [jid]->SetVCard (vcard);
 		else if (RoomHandlers_.contains (jid))
 			RoomHandlers_ [jid]->GetParticipantEntry (nick)->SetVCard (vcard);
+		else if (OurBareJID_ == jid)
+			SelfContact_->SetVCard (vcard);
 	}
 
 	void ClientConnection::handlePresenceChanged (const QXmppPresence& pres)
@@ -1192,11 +1202,11 @@ namespace Xoox
 		EncryptedMessages_ [id] = decrypted;
 	}
 
-	void ClientConnection::handleSignedMessageReceived (const QString& id)
+	void ClientConnection::handleSignedMessageReceived (const QString&)
 	{
 	}
 
-	void ClientConnection::handleSignedPresenceReceived (const QString& id)
+	void ClientConnection::handleSignedPresenceReceived (const QString&)
 	{
 	}
 

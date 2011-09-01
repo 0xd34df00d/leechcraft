@@ -25,6 +25,8 @@
 #include <util/resourceloader.h>
 #include "interfaces/iclentry.h"
 #include "interfaces/isupportgeolocation.h"
+#include "interfaces/iaccount.h"
+#include "interfaces/iextselfinfoaccount.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "util.h"
@@ -87,9 +89,20 @@ namespace Azoth
 	QSize ContactListDelegate::sizeHint (const QStyleOptionViewItem& option, const QModelIndex& index) const
 	{
 		QSize size = QStyledItemDelegate::sizeHint (option, index);
-		if (index.data (Core::CLREntryType).value<Core::CLEntryType> () == Core::CLETContact &&
-				size.height () < 24)
-			size.setHeight (24);
+
+		switch (index.data (Core::CLREntryType).value<Core::CLEntryType> ())
+		{
+		case Core::CLETContact:
+			if (size.height () < 24)
+				size.setHeight (24);
+			break;
+		case Core::CLETAccount:
+			size.setHeight (size.height () * 1.5);
+			break;
+		default:
+			break;
+		}
+
 		return size;
 	}
 
@@ -100,7 +113,7 @@ namespace Azoth
 		painter->setRenderHints (QPainter::HighQualityAntialiasing | QPainter::Antialiasing);
 		
 		QPainterPath rectPath;
-		rectPath.addRoundedRect (o.rect, 8, 8);
+		rectPath.addRoundedRect (o.rect, 6, 6);
 		
 		painter->fillPath (rectPath, o.palette.color (QPalette::Window));
 		painter->setPen (o.palette.color (QPalette::WindowText));
@@ -109,13 +122,92 @@ namespace Azoth
 		painter->restore ();
 
 		o.font.setBold (true);
+
 		QStyledItemDelegate::paint (painter, o, index);
+		
+		QObject *accObj = index.data (Core::CLRAccountObject).value<QObject*> ();
+		IAccount *acc = qobject_cast<IAccount*> (accObj);
+		IExtSelfInfoAccount *extAcc = qobject_cast<IExtSelfInfoAccount*> (accObj);
+
+		QIcon accIcon = extAcc ? extAcc->GetAccountIcon () : QIcon ();
+		if (accIcon.isNull ())
+			accIcon = qobject_cast<IProtocol*> (acc->GetParentProtocol ())->GetProtocolIcon ();
+
+		const QRect& r = o.rect;
+		const int sHeight = r.height ();
+		const int iconSize = sHeight;
+
+		const QImage& avatarImg = Core::Instance ().GetAvatar (extAcc ?
+					qobject_cast<ICLEntry*> (extAcc->GetSelfContact ()) :
+					0,
+				iconSize - AvatarPaddingBottom);
+		
+		QPoint pxDraw = o.rect.topRight () - QPoint (CPadding, 0);
+		
+		if (!avatarImg.isNull ())
+		{
+			pxDraw.rx () -= avatarImg.width ();
+			const QPoint& delta = QPoint (0, (iconSize - avatarImg.height ()) / 2);
+			painter->drawPixmap (pxDraw + delta,
+					QPixmap::fromImage (avatarImg));
+			pxDraw.rx () -= CPadding;
+		}
+		
+		if (!accIcon.isNull ())
+		{
+			const int size = std::min (16, iconSize - AvatarPaddingBottom);
+			const QPixmap& px = accIcon.pixmap (size, size);
+			pxDraw.rx () -= px.width ();
+			const QPoint& delta = QPoint (0, (iconSize - px.height ()) / 2);
+			painter->drawPixmap (pxDraw + delta, px);
+		}
 	}
 
 	void ContactListDelegate::DrawCategory (QPainter *painter,
 			QStyleOptionViewItemV4 o, const QModelIndex& index) const
 	{
 		const QRect& r = o.rect;
+		
+		if ((o.state & QStyle::State_Selected) ||
+				(o.state & QStyle::State_MouseOver))
+		{
+			QStyle *style = o.widget ?
+					o.widget->style () :
+					QApplication::style ();
+
+			const int oldLeft = o.rect.left ();
+			o.rect.setLeft (0);
+			style->drawPrimitive (QStyle::PE_PanelItemViewItem,
+					&o, painter, o.widget);
+			o.rect.setLeft (oldLeft);
+		}
+		
+		const int unread = index.data (Core::CLRUnreadMsgCount).toInt ();
+		if (unread)
+		{
+			painter->save ();
+
+			const QString& text = QString (" %1 :: ").arg (unread);
+
+			QFont unreadFont = o.font;
+			unreadFont.setBold (true);
+
+			int unreadSpace = CPadding + QFontMetrics (unreadFont).width (text);
+
+			painter->setFont (unreadFont);
+			painter->drawText (r.left () + CPadding, r.top () + CPadding,
+					unreadSpace, r.height () - 2 * CPadding,
+					Qt::AlignVCenter | Qt::AlignLeft,
+					text);
+
+			painter->restore ();
+
+			o.rect.setLeft (unreadSpace + o.rect.left ());
+		}
+		
+		QStyledItemDelegate::paint (painter, o, index);
+		
+		o.state &= ~(QStyle::State_Selected | QStyle::State_MouseOver);
 
 		const int textWidth = o.fontMetrics.width (index.data ().value<QString> () + " ");
 		const int rem = r.width () - textWidth;
@@ -139,7 +231,7 @@ namespace Azoth
 		painter->setRenderHints (QPainter::HighQualityAntialiasing | QPainter::Antialiasing);
 		
 		QPainterPath bgPath;
-		bgPath.addRoundedRect (r.adjusted (-r.topLeft ().x (), 0, 0, 0), 6, 6);
+		bgPath.addRoundedRect (r.adjusted (-r.topLeft ().x (), 0, 0, 0), 4, 4);
 		painter->drawPath (bgPath);
 		
 		if (rem >= o.fontMetrics.width (str))
@@ -168,31 +260,6 @@ namespace Azoth
 		}
 		
 		painter->restore ();
-
-		const int unread = index.data (Core::CLRUnreadMsgCount).toInt ();
-		if (unread)
-		{
-			painter->save ();
-
-			const QString& text = QString (" %1 :: ").arg (unread);
-
-			QFont unreadFont = o.font;
-			unreadFont.setBold (true);
-
-			int unreadSpace = CPadding + QFontMetrics (unreadFont).width (text);
-
-			painter->setFont (unreadFont);
-			painter->drawText (r.left () + CPadding, r.top () + CPadding,
-					unreadSpace, r.height () - 2 * CPadding,
-					Qt::AlignVCenter | Qt::AlignLeft,
-					text);
-
-			painter->restore ();
-
-			o.rect.setLeft (unreadSpace + o.rect.left ());
-		}
-
-		QStyledItemDelegate::paint (painter, o, index);
 	}
 
 	void ContactListDelegate::DrawContact (QPainter *painter,
@@ -324,42 +391,45 @@ namespace Azoth
 		QPixmap pixmap (r.size ());
 		pixmap.fill (Qt::transparent);
 		QPainter p (&pixmap);
-		p.translate (-r.topLeft ());
 
 		if (selected ||
 				(option.state & QStyle::State_MouseOver))
+		{
+			QStyleOptionViewItemV4 bgOpt = option;
+			bgOpt.rect.moveTopLeft (QPoint (0, 0));
 			style->drawPrimitive (QStyle::PE_PanelItemViewItem,
-					&option, &p, option.widget);
+					&bgOpt, &p, option.widget);
+		}
 
 		p.setPen (fgColor);
 
 		if (unreadNum)
 		{
 			p.setFont (unreadFont);
-			p.drawText (r.left () + textShift - unreadSpace, r.top () + CPadding,
+			p.drawText (textShift - unreadSpace, CPadding,
 					textWidth, r.height () - 2 * CPadding,
 					Qt::AlignVCenter | Qt::AlignLeft,
 					unreadStr);
 		}
 
 		p.setFont (option.font);
-		p.drawText (r.left () + textShift, r.top () + CPadding,
+		p.drawText (textShift, CPadding,
 				textWidth, r.height () - 2 * CPadding,
 				Qt::AlignVCenter | Qt::AlignLeft,
 				option.fontMetrics.elidedText (name, Qt::ElideRight, textWidth));
 
-		p.drawPixmap (r.topLeft () + QPoint (CPadding, CPadding),
+		p.drawPixmap (QPoint (CPadding, CPadding),
 				stateIcon.pixmap (iconSize, iconSize));
 
 		if (!avatarImg.isNull ())
-			p.drawPixmap (r.topLeft () + QPoint (textShift + textWidth + clientsIconsWidth + CPadding, CPadding),
+			p.drawPixmap (QPoint (textShift + textWidth + clientsIconsWidth + CPadding, CPadding),
 					QPixmap::fromImage (avatarImg));
 
 		int currentShift = textShift + textWidth + CPadding;
 
 		Q_FOREACH (const QIcon& icon, clientIcons)
 		{
-			p.drawPixmap (r.topLeft () + QPoint (currentShift, CPadding),
+			p.drawPixmap (QPoint (currentShift, CPadding),
 					icon.pixmap (clientIconSize, clientIconSize));
 			currentShift += clientIconSize + CPadding;
 		}

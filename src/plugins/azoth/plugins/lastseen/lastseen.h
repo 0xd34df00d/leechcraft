@@ -24,6 +24,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/azothcommon.h>
+#include <interfaces/core/ihookproxy.h>
 
 class QTranslator;
 
@@ -41,13 +42,13 @@ namespace LastSeen
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2)
-		
+
 		boost::shared_ptr<QTranslator> Translator_;
 
 		QHash<QString, State> LastState_;
 		LastHash_t LastAvailable_;
 		LastHash_t LastOnline_;
-		
+
 		bool SaveScheduled_;
 	public:
 		void Init (ICoreProxy_ptr);

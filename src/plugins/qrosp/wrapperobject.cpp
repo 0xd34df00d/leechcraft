@@ -29,6 +29,7 @@
 #include <qross/core/manager.h>
 #include <qross/core/wrapperinterface.h>
 #include <interfaces/entitytesthandleresult.h>
+#include <interfaces/core/ihookproxy.h>
 #include <util/util.h>
 #include "utilproxy.h"
 #include "wrappers/coreproxywrapper.h"
@@ -37,7 +38,12 @@
 #include "wrappers/pluginsmanagerwrapper.h"
 #include "wrappers/shortcutproxywrapper.h"
 #include "wrappers/tagsmanagerwrapper.h"
+
+#if QT_VERSION < 0x040800
 #include "third-party/qmetaobjectbuilder.h"
+#else
+#include "third-party/qmetaobjectbuilder_48.h"
+#endif
 
 class QWebView;
 class QWebPage;

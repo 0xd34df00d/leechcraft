@@ -962,13 +962,13 @@ namespace Acetamide
 					ChannelHandlers_ [channelID]->SetChannelKey (action, value);
 				break;
 			case 'b':
-				ShowAnswer (value + tr (" add to your ban list."));
+				ShowAnswer (value + tr (" added to your ban list."));
 				break;
 			case 'e':
-				ShowAnswer (value + tr (" add to your except list."));
+				ShowAnswer (value + tr (" added to your except list."));
 				break;
 			case 'I':
-				ShowAnswer (value + tr (" add to your invite list."));
+				ShowAnswer (value + tr (" added to your invite list."));
 				break;
 			}
 		}

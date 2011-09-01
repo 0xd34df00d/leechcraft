@@ -23,6 +23,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/iprotocolplugin.h>
+#include <interfaces/core/ihookproxy.h>
 
 namespace LeechCraft
 {
@@ -39,7 +40,7 @@ namespace Metacontacts
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IProtocolPlugin)
-		
+
 		MetaProtocol *Proto_;
 		QAction *AddToMetacontacts_;
 	public:
@@ -52,7 +53,7 @@ namespace Metacontacts
 		QIcon GetIcon () const;
 
 		QSet<QByteArray> GetPluginClasses () const;
-		
+
 		QObject* GetObject ();
 		QList<QObject*> GetProtocols () const;
 	public slots:

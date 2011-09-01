@@ -23,6 +23,8 @@
 #include <util/util.h>
 #include <util/tagscompleter.h>
 #include <util/categoryselector.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ipluginsmanager.h>
 #include "core.h"
 #include "packagesdelegate.h"
 #include "pendingmanager.h"
@@ -42,7 +44,7 @@ namespace LeechCraft
 			void Plugin::Init (ICoreProxy_ptr proxy)
 			{
 				Translator_.reset (Util::InstallTranslator ("lackman"));
-				
+
 				TabClass_.TabClass_ = "Lackman";
 				TabClass_.VisibleName_ = tr ("LackMan");
 				TabClass_.Description_ = GetInfo ();
@@ -51,7 +53,7 @@ namespace LeechCraft
 				TabClass_.Features_ = TabFeatures (TFSingle | TFOpenableByRequest);
 
 				Ui_.setupUi (this);
-				
+
 				TagsModel_ = new QStringListModel (this);
 				Util::TagsCompleter *tc = new Util::TagsCompleter (Ui_.SearchLine_);
 				tc->OverrideModel (TagsModel_);
@@ -114,7 +116,7 @@ namespace LeechCraft
 						SIGNAL (textChanged (const QString&)),
 						FilterString_,
 						SLOT (setFilterFixedString (const QString&)));
-				
+
 				connect (Core::Instance ().GetPendingManager (),
 						SIGNAL (fetchListUpdated (const QList<int>&)),
 						this,
@@ -164,14 +166,14 @@ namespace LeechCraft
 			{
 				return QIcon (":/resources/images/lackman.svg");
 			}
-			
+
 			TabClasses_t Plugin::GetTabClasses () const
 			{
 				TabClasses_t result;
 				result << TabClass_;
 				return result;
 			}
-			
+
 			void Plugin::TabOpenRequested (const QByteArray& tabClass)
 			{
 				if (tabClass == "Lackman")
@@ -181,22 +183,22 @@ namespace LeechCraft
 							<< "unknown tab class"
 							<< tabClass;
 			}
-			
+
 			TabClassInfo Plugin::GetTabClassInfo () const
 			{
 				return TabClass_;
 			}
-			
+
 			QObject* Plugin::ParentMultiTabs ()
 			{
 				return this;
 			}
-			
+
 			void Plugin::Remove ()
 			{
 				emit removeTab (this);
 			}
-			
+
 			QToolBar* Plugin::GetToolBar () const
 			{
 				return Toolbar_;
@@ -227,7 +229,7 @@ namespace LeechCraft
 			{
 				TypeFilter_->SetFilterMode (static_cast<TypeFilterProxyModel::FilterMode> (index));
 			}
-			
+
 			namespace
 			{
 				void AddText (QString& text, const QStringList& urls)
@@ -245,14 +247,14 @@ namespace LeechCraft
 					}
 				}
 			}
-			
+
 			void Plugin::handlePackageSelected (const QModelIndex& index)
 			{
 				QString text;
 				AddText (text, index.data (PackagesModel::PMRThumbnails).toStringList ());
 				text += index.data (PackagesModel::PMRLongDescription).toString ();
 				AddText (text, index.data (PackagesModel::PMRScreenshots).toStringList ());
-				
+
 				Ui_.Browser_->SetHtml (text);
 
 				if (index.isValid ())
@@ -269,14 +271,14 @@ namespace LeechCraft
 				else
 					state = tr ("installed");
 				Ui_.StateLabel_->setText (state);
-				
+
 				const qint64 size = index.data (PackagesModel::PMRSize).toLongLong ();
 				const QString& sizeText = size >= 0 ?
 						Util::MakePrettySize (size) :
 						tr ("unknown");
 				Ui_.SizeLabel_->setText (sizeText);
 			}
-			
+
 			void Plugin::handleFetchListUpdated (const QList<int>& ids)
 			{
 				qint64 sumSize = 0;
@@ -284,12 +286,12 @@ namespace LeechCraft
 				{
 					if (Core::Instance ().GetListPackageInfo (id).IsInstalled_)
 						continue;
-					
+
 					const qint64 size = Core::Instance ().GetStorage ()->GetPackageSize (id);
 					if (size > 0)
 						sumSize += size;
 				}
-				
+
 				if (sumSize > 0)
 					Ui_.TotalSizeLabel_->setText (tr ("Total size to be downloaded: %1")
 								.arg (Util::MakePrettySize (sumSize)));
@@ -311,14 +313,14 @@ namespace LeechCraft
 						SIGNAL (triggered ()),
 						&Core::Instance (),
 						SLOT (upgradeAllRequested ()));
-				
+
 				Apply_ = new QAction (tr ("Apply"), this);
 				Apply_->setProperty ("ActionIcon", "apply");
 				connect (Apply_,
 						SIGNAL (triggered ()),
 						&Core::Instance (),
 						SLOT (acceptPending ()));
-				
+
 				Cancel_ = new QAction (tr ("Cancel"), this);
 				Cancel_->setProperty ("ActionIcon", "cancel");
 				connect (Cancel_,

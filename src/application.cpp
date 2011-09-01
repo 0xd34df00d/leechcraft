@@ -307,14 +307,49 @@ bool Application::IsAlreadyRunning () const
 	return false;
 }
 
+namespace
+{
+	void Rotate (QDir lcDir, const QString& filename)
+	{
+		if (!lcDir.exists (filename))
+			return;
+
+		if (QFileInfo (lcDir.filePath (filename)).size () < 20 * 1024 * 1024)
+			return;
+
+		if (lcDir.exists (filename + ".0") &&
+				!lcDir.remove (filename + ".0"))
+			qWarning () << Q_FUNC_INFO
+					<< "unable to remove old file"
+					<< filename + ".0";
+
+		if (!lcDir.rename (filename, filename + ".0"))
+			qWarning () << Q_FUNC_INFO
+					<< "failed to rename"
+					<< filename
+					<< "to"
+					<< filename + ".0";
+	}
+}
+
 void Application::ParseCommandLine ()
 {
 	if (VarMap_.count ("nolog"))
+	{
 		qInstallMsgHandler (0);
-	else if (VarMap_.count ("bt"))
+		return;
+	}
+
+	if (VarMap_.count ("bt"))
 		qInstallMsgHandler (DebugHandler::backtraced);
 	else
 		qInstallMsgHandler (DebugHandler::simple);
+
+	QDir lcDir = QDir::home ();
+	lcDir.cd (".leechcraft");
+
+	Rotate (lcDir, "debug.log");
+	Rotate (lcDir, "warning.log");
 }
 
 void Application::EnterRestartMode ()

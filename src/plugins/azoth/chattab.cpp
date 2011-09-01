@@ -28,8 +28,11 @@
 #include <QMenu>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QKeyEvent>
 #include <util/defaulthookproxy.h>
 #include <util/util.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ipluginsmanager.h>
 #include "interfaces/iclentry.h"
 #include "interfaces/imessage.h"
 #include "interfaces/irichtextmessage.h"
@@ -68,6 +71,33 @@ namespace Azoth
 		S_ParentMultiTabs_ = obj;
 	}
 
+	class CopyFilter : public QObject
+	{
+		QWebView *View_;
+	public:
+		CopyFilter (QWebView *v)
+		: QObject (v)
+		, View_ (v)
+		{
+		}
+	protected:
+		bool eventFilter (QObject*, QEvent *orig)
+		{
+			if (orig->type () != QEvent::KeyRelease)
+				return false;
+
+			QKeyEvent *e = static_cast<QKeyEvent*> (orig);
+			if (e->matches (QKeySequence::Copy) &&
+					!View_->page ()->selectedText ().isEmpty ())
+			{
+				View_->pageAction (QWebPage::Copy)->trigger ();
+				return true;
+			}
+
+			return false;
+		}
+	};
+
 	ChatTab::ChatTab (const QString& entryId,
 			QWidget *parent)
 	: QWidget (parent)
@@ -93,18 +123,19 @@ namespace Azoth
 	{
 		Ui_.setupUi (this);
 		Ui_.View_->installEventFilter (new ZoomEventFilter (Ui_.View_));
+		Ui_.MsgEdit_->installEventFilter (new CopyFilter (Ui_.View_));
 
 		Ui_.SubjBox_->setVisible (false);
 		Ui_.SubjChange_->setEnabled (false);
-		
+
 		Ui_.EventsButton_->setMenu (new QMenu (tr ("Events")));
 		Ui_.EventsButton_->hide ();
-		
+
 		BuildBasicActions ();
 		RequestLogs ();
 
 		Core::Instance ().RegisterHookable (this);
-		
+
 		connect (Core::Instance ().GetTransferJobManager (),
 				SIGNAL (jobNoLongerOffered (QObject*)),
 				this,
@@ -120,7 +151,7 @@ namespace Azoth
 				SIGNAL (linkClicked (const QUrl&)),
 				this,
 				SLOT (handleViewLinkClicked (const QUrl&)));
-		
+
 		TypeTimer_->setInterval (2000);
 		connect (TypeTimer_,
 				SIGNAL (timeout ()),
@@ -132,25 +163,25 @@ namespace Azoth
 		CheckMUC ();
 		InitExtraActions ();
 		InitMsgEdit ();
-		
+
 		emit hookChatTabCreated (IHookProxy_ptr (new Util::DefaultHookProxy),
 				this,
 				GetEntry<QObject> (),
 				Ui_.View_);
-		
+
 		XmlSettingsManager::Instance ().RegisterObject ("FontSize",
 				this, "handleFontSizeChanged");
 		handleFontSizeChanged ();
 		Ui_.View_->setFocusProxy (Ui_.MsgEdit_);
-		
+
 		HandleMUCParticipantsChanged ();
 	}
-	
+
 	ChatTab::~ChatTab ()
 	{
 		SetChatPartState (CPSGone);
 	}
-	
+
 	void ChatTab::PrepareTheme ()
 	{
 		QString data = Core::Instance ().GetSelectedChatTemplate (GetEntry<QObject> (),
@@ -161,7 +192,7 @@ namespace Azoth
 						"please check you've enabled at least one styles plugin.") +
 					"</h1>";
 		Ui_.View_->setHtml (data);
-		
+
 		Q_FOREACH (IMessage *msg, HistoryMessages_)
 			AppendMessage (msg);
 
@@ -178,7 +209,7 @@ namespace Azoth
 			}
 			AppendMessage (msg);
 		}
-		
+
 		QFile scrollerJS (":/plugins/azoth/resources/scripts/scrollers.js");
 		if (!scrollerJS.open (QIODevice::ReadOnly))
 			qWarning () << Q_FUNC_INFO
@@ -189,7 +220,7 @@ namespace Azoth
 			Ui_.View_->page ()->mainFrame ()->evaluateJavaScript (scrollerJS.readAll ());
 			Ui_.View_->page ()->mainFrame ()->evaluateJavaScript ("InstallEventListeners(); ScrollToBottom();");
 		}
-		
+
 		emit hookThemeReloaded (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy),
 				this, Ui_.View_, GetEntry<QObject> ());
 	}
@@ -198,7 +229,7 @@ namespace Azoth
 	{
 		UpdateStateIcon ();
 	}
-	
+
 	TabClassInfo ChatTab::GetTabClassInfo () const
 	{
 		TabClassInfo chatTab =
@@ -260,13 +291,13 @@ namespace Azoth
 		ReformatTitle ();
 		Ui_.MsgEdit_->setFocus ();
 	}
-	
+
 	void ChatTab::TabLostCurrent ()
 	{
 		TypeTimer_->stop ();
 		SetChatPartState (CPSInactive);
 	}
-	
+
 	void ChatTab::HandleMUCParticipantsChanged ()
 	{
 		IMUCEntry *muc = GetEntry<IMUCEntry> ();
@@ -277,13 +308,13 @@ namespace Azoth
 					<< "doesn't implement IMUCEntry";
 			return;
 		}
-		
+
 		const int parts = muc->GetParticipants ().size ();
 		const QString& text = tr ("%1 (%n participant(s))", 0, parts)
 				.arg (GetEntry<ICLEntry> ()->GetEntryName ());
 		Ui_.EntryInfo_->setText (text);
 	}
-	
+
 	QObject* ChatTab::GetCLEntry () const
 	{
 		return GetEntry<QObject> ();
@@ -294,9 +325,9 @@ namespace Azoth
 		QString text = Ui_.MsgEdit_->toPlainText ();
 		if (text.isEmpty ())
 			return;
-		
+
 		const QString& richText = MsgFormatter_->GetNormalizedRichText ();
-		
+
 		SetChatPartState (CPSActive);
 
 		Ui_.MsgEdit_->clear ();
@@ -341,7 +372,7 @@ namespace Azoth
 					<< msgObj;
 			return;
 		}
-		
+
 		IRichTextMessage *richMsg = qobject_cast<IRichTextMessage*> (msgObj);
 		if (richMsg &&
 				!richText.isEmpty () &&
@@ -413,7 +444,7 @@ namespace Azoth
 				Ui_.VariantBox_->currentText (), filename);
 		Core::Instance ().HandleTransferJob (job);
 	}
-	
+
 	void ChatTab::handleCallRequested ()
 	{
 		QObject *callObj = Core::Instance ().GetCallManager ()->
@@ -422,7 +453,7 @@ namespace Azoth
 			return;
 		handleCall (callObj);
 	}
-	
+
 	void ChatTab::handleCall (QObject *callObj)
 	{
 		IMediaCall *call = qobject_cast<IMediaCall*> (callObj);
@@ -433,7 +464,7 @@ namespace Azoth
 		const int idx = Ui_.MainLayout_->indexOf (Ui_.View_);
 		Ui_.MainLayout_->insertWidget (idx, widget);
 	}
-	
+
 #ifdef ENABLE_CRYPT
 	void ChatTab::handleEnableEncryption ()
 	{
@@ -446,7 +477,7 @@ namespace Azoth
 					<< "doesn't implement ISupportPGP";
 			return;
 		}
-		
+
 		const bool enable = EnableEncryption_->isChecked ();
 
 		EnableEncryption_->blockSignals (true);
@@ -455,7 +486,7 @@ namespace Azoth
 
 		pgp->SetEncryptionEnabled (GetEntry<QObject> (), enable);
 	}
-	
+
 	void ChatTab::handleEncryptionStateChanged (QObject *entry, bool enabled)
 	{
 		EnableEncryption_->blockSignals (true);
@@ -463,22 +494,39 @@ namespace Azoth
 		EnableEncryption_->blockSignals (false);
 	}
 #endif
-	
+
 	void ChatTab::handleClearChat ()
 	{
 		ICLEntry *entry = GetEntry<ICLEntry> ();
 		if (!entry)
 			return;
-		
+
 		entry->PurgeMessages (QDateTime ());
 		PrepareTheme ();
 	}
-	
+
 	void ChatTab::handleRichTextToggled ()
 	{
 		PrepareTheme ();
 	}
-	
+
+	void ChatTab::handleQuoteSelection ()
+	{
+		const QString& selected = Ui_.View_->selectedText ();
+		if (selected.isEmpty ())
+			return;
+
+		QStringList split = selected.split ('\n');
+		for (int i = 0; i < split.size (); ++i)
+			split [i].prepend ("> ");
+
+		split << QString ();
+
+		const QString& toInsert = split.join ("\n");
+		QTextCursor cur (Ui_.MsgEdit_->document ());
+		cur.insertText (toInsert);
+	}
+
 	void ChatTab::handleFileOffered (QObject *jobObj)
 	{
 		ITransferJob *job = qobject_cast<ITransferJob*> (jobObj);
@@ -489,7 +537,7 @@ namespace Azoth
 					<< "could not be casted to ITransferJob";
 			return;
 		}
-		
+
 		if (job->GetSourceID () != EntryID_)
 			return;
 
@@ -501,7 +549,7 @@ namespace Azoth
 				addAction (text, this, SLOT (handleOfferActionTriggered ()));
 		act->setData (QVariant::fromValue<QObject*> (jobObj));
 	}
-	
+
 	void ChatTab::handleFileNoLongerOffered (QObject *jobObj)
 	{
 		Q_FOREACH (QAction *action, Ui_.EventsButton_->menu ()->actions ())
@@ -510,11 +558,11 @@ namespace Azoth
 				action->deleteLater ();
 				break;
 			}
-			
+
 		if (Ui_.EventsButton_->menu ()->actions ().count () == 1)
 			Ui_.EventsButton_->hide ();
 	}
-	
+
 	void ChatTab::handleOfferActionTriggered ()
 	{
 		QAction *action = qobject_cast<QAction*> (sender ());
@@ -528,7 +576,7 @@ namespace Azoth
 
 		QObject *jobObj = action->data ().value<QObject*> ();
 		ITransferJob *job = qobject_cast<ITransferJob*> (jobObj);
-		
+
 		if (QMessageBox::question (this,
 					tr ("File transfer request"),
 					tr ("Would you like to accept or deny file transfer "
@@ -544,10 +592,10 @@ namespace Azoth
 							.property ("DefaultXferSavePath").toString ());
 			if (path.isEmpty ())
 				return;
-			
+
 			Core::Instance ().GetTransferJobManager ()->AcceptJob (jobObj, path);
 		}
-		
+
 		action->deleteLater ();
 
 		if (Ui_.EventsButton_->menu ()->actions ().size () == 1)
@@ -614,7 +662,7 @@ namespace Azoth
 			const int pos = std::max (0, Ui_.VariantBox_->findText (current));
 			Ui_.VariantBox_->setCurrentIndex (pos);
 		}
-		
+
 		Ui_.VariantBox_->setVisible (variants.size () > 1);
 	}
 
@@ -729,7 +777,7 @@ namespace Azoth
 
 		Ui_.MsgEdit_->moveCursor (QTextCursor::End);
 	}
-	
+
 	void ChatTab::handleAddToBookmarks ()
 	{
 		BookmarksManagerDialog *dia = new BookmarksManagerDialog (this);
@@ -737,7 +785,7 @@ namespace Azoth
 		dia->setAttribute (Qt::WA_DeleteOnClose, true);
 		dia->show ();
 	}
-	
+
 	void ChatTab::handleConfigureMUC ()
 	{
 		IConfigurableMUC *confMUC = GetEntry<IConfigurableMUC> ();
@@ -763,12 +811,12 @@ namespace Azoth
 				Qt::QueuedConnection);
 		dia->show ();
 	}
-	
+
 	void ChatTab::typeTimeout ()
 	{
 		SetChatPartState (CPSPaused);
 	}
-	
+
 	namespace
 	{
 		struct PredSimilarMessage
@@ -779,7 +827,7 @@ namespace Azoth
 			: To_ (to)
 			{
 			}
-			
+
 			bool operator() (QObject *msgObj)
 			{
 				IMessage *msg = qobject_cast<IMessage*> (msgObj);
@@ -790,19 +838,19 @@ namespace Azoth
 							<< "doesn't implement IMessage";
 					return false;
 				}
-				
+
 				return msg->GetDirection () == To_->GetDirection () &&
 						msg->GetBody () == To_->GetBody () &&
 						std::abs (msg->GetDateTime ().secsTo (To_->GetDateTime ())) < 5;
 			}
 		};
 	}
-	
+
 	void ChatTab::handleGotLastMessages (QObject *entryObj, const QList<QObject*>& messages)
 	{
 		if (entryObj != GetEntry<QObject> ())
 			return;
-		
+
 		ICLEntry *entry = GetEntry<ICLEntry> ();
 		QList<QObject*> rMsgs = entry->GetAllMessages ();
 		std::reverse (rMsgs.begin (), rMsgs.end ());
@@ -817,13 +865,13 @@ namespace Azoth
 						<< "doesn't implement IMessage";
 				continue;
 			}
-			
+
 			const QDateTime& dt = msg->GetDateTime ();
-			
+
 			if (std::find_if (rMsgs.begin (), rMsgs.end (),
 						PredSimilarMessage (msg)) != rMsgs.end ())
 				continue;
-			
+
 			if (HistoryMessages_.isEmpty () ||
 					HistoryMessages_.last ()->GetDateTime () <= dt)
 				HistoryMessages_ << msg;
@@ -837,16 +885,16 @@ namespace Azoth
 				HistoryMessages_.insert (pos, msg);
 			}
 		}
-		
+
 		if (!messages.isEmpty ())
 			PrepareTheme ();
-		
+
 		disconnect (sender (),
 				SIGNAL (gotLastMessages (QObject*, const QList<QObject*>&)),
 				this,
-				SLOT (handleGotLastMessages (QObject*, const QList<QObject*>&)));	
+				SLOT (handleGotLastMessages (QObject*, const QList<QObject*>&)));
 	}
-	
+
 	void ChatTab::handleFontSizeChanged ()
 	{
 		const int size = XmlSettingsManager::Instance ()
@@ -866,7 +914,7 @@ namespace Azoth
 					<< "doesn't implement the required interface";
 		return entry;
 	}
-	
+
 	void ChatTab::BuildBasicActions ()
 	{
 		QAction *clearAction = new QAction (tr ("Clear chat window"), this);
@@ -888,8 +936,17 @@ namespace Azoth
 				SLOT (handleRichTextToggled ()));
 		TabToolbar_->addAction (ToggleRichText_);
 		TabToolbar_->addSeparator ();
+
+		QAction *quoteSelection = new QAction (tr ("Quote selection"), this);
+		quoteSelection->setProperty ("ActionIcon", "quote");
+		connect (quoteSelection,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleQuoteSelection ()));
+		TabToolbar_->addAction (quoteSelection);
+		TabToolbar_->addSeparator ();
 	}
-	
+
 	void ChatTab::InitEntry()
 	{
 		connect (GetEntry<QObject> (),
@@ -952,7 +1009,7 @@ namespace Azoth
 	void ChatTab::HandleMUC ()
 	{
 		TabIcon_ = QIcon (":/plugins/azoth/resources/images/azoth.svg");
-		
+
 		QAction *bookmarks = new QAction (tr ("Add to bookmarks..."), this);
 		bookmarks->setProperty ("ActionIcon", "favorites");
 		connect (bookmarks,
@@ -960,7 +1017,7 @@ namespace Azoth
 				this,
 				SLOT (handleAddToBookmarks ()));
 		TabToolbar_->addAction (bookmarks);
-		
+
 		IConfigurableMUC *confmuc = GetEntry<IConfigurableMUC> ();
 		if (confmuc)
 		{
@@ -973,7 +1030,7 @@ namespace Azoth
 			TabToolbar_->addAction (configureMUC);
 		}
 	}
-	
+
 	void ChatTab::InitExtraActions ()
 	{
 		ICLEntry *e = GetEntry<ICLEntry> ();
@@ -996,13 +1053,13 @@ namespace Azoth
 					SIGNAL (fileOffered (QObject*)),
 					this,
 					SLOT (handleFileOffered (QObject*)));
-			
+
 			Q_FOREACH (QObject *object,
 					Core::Instance ().GetTransferJobManager ()->
 							GetPendingIncomingJobsFor (EntryID_))
 				handleFileOffered (object);
 		}
-		
+
 		if (qobject_cast<ISupportMediaCalls*> (accObj) &&
 				e->GetEntryType () == ICLEntry::ETChat)
 		{
@@ -1013,18 +1070,18 @@ namespace Azoth
 					this,
 					SLOT (handleCallRequested ()));
 			TabToolbar_->addAction (Call_);
-			
+
 			connect (accObj,
 					SIGNAL (called (QObject*)),
 					this,
 					SLOT (handleCall (QObject*)));
-			
+
 			Q_FOREACH (QObject *object,
 					Core::Instance ().GetCallManager ()->
 							GetCallsForEntry (EntryID_))
 				handleCall (object);
 		}
-		
+
 #ifdef ENABLE_CRYPT
 		if (qobject_cast<ISupportPGP*> (accObj))
 		{
@@ -1043,7 +1100,7 @@ namespace Azoth
 					SLOT (handleEncryptionStateChanged (QObject*, bool)));
 		}
 #endif
-		
+
 		QList<QAction*> coreActions;
 		Q_FOREACH (QAction *action, Core::Instance ().GetEntryActions (e))
 			if (Core::Instance ().GetAreasForAction (action).contains (Core::CLEAAToolbar))
@@ -1055,7 +1112,7 @@ namespace Azoth
 			TabToolbar_->addActions (coreActions);
 		}
 	}
-	
+
 	void ChatTab::InitMsgEdit ()
 	{
 		QShortcut *histUp = new QShortcut (Qt::CTRL + Qt::Key_Up,
@@ -1094,9 +1151,9 @@ namespace Azoth
 				this,
 				SLOT (clearAvailableNick ()));
 		UpdateTextHeight ();
-		
+
 		const int pos = Ui_.MainLayout_->indexOf (Ui_.MsgEdit_);
-		
+
 		MsgFormatter_ = new MsgFormatterWidget (Ui_.MsgEdit_);
 		Ui_.MainLayout_->insertWidget (pos, MsgFormatter_);
 		connect (ToggleRichText_,
@@ -1105,14 +1162,14 @@ namespace Azoth
 				SLOT (setVisible (bool)));
 		MsgFormatter_->setVisible (ToggleRichText_->isChecked ());
 	}
-	
+
 	void ChatTab::RequestLogs ()
 	{
 		ICLEntry *entry = GetEntry<ICLEntry> ();
 		if (entry->GetAllMessages ().size () > 100 ||
 				entry->GetEntryType () != ICLEntry::ETChat)
 			return;
-		
+
 		const int num = XmlSettingsManager::Instance ()
 				.property ("ShowLastNMessages").toInt ();
 		if (!num)
@@ -1122,19 +1179,19 @@ namespace Azoth
 
 		const QObjectList& histories = Core::Instance ().GetProxy ()->
 				GetPluginsManager ()->GetAllCastableRoots<IHistoryPlugin*> ();
-		
+
 		Q_FOREACH (QObject *histObj, histories)
 		{
-			IHistoryPlugin *hist = qobject_cast<IHistoryPlugin*> (histObj);	
+			IHistoryPlugin *hist = qobject_cast<IHistoryPlugin*> (histObj);
 			if (!hist->IsHistoryEnabledFor (entryObj))
 				continue;
-			
+
 			connect (histObj,
 					SIGNAL (gotLastMessages (QObject*, const QList<QObject*>&)),
 					this,
 					SLOT (handleGotLastMessages (QObject*, const QList<QObject*>&)),
 					Qt::UniqueConnection);
-			
+
 			hist->RequestLastMessages (entryObj, num);
 		}
 	}
@@ -1150,7 +1207,7 @@ namespace Azoth
 					<< msg->OtherPart ();
 			return;
 		}
-		
+
 		ICLEntry *parent = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
 
 		if (msg->GetDirection () == IMessage::DOut &&
@@ -1161,14 +1218,14 @@ namespace Azoth
 				(!parent || parent->GetEntryType () == ICLEntry::ETMUC) &&
 				!XmlSettingsManager::Instance ().property ("ShowStatusChangesEvents").toBool ())
 			return;
-		
+
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 		emit hookGonnaAppendMsg (proxy, msg->GetObject ());
 		if (proxy->IsCancelled ())
 			return;
 
 		QWebFrame *frame = Ui_.View_->page ()->mainFrame ();
-		
+
 		ChatMsgAppendInfo info =
 		{
 			Core::Instance ().IsHighlightMessage (msg),
@@ -1185,38 +1242,47 @@ namespace Azoth
 	bool ChatTab::ProcessOutgoingMsg (ICLEntry *entry, QString& text)
 	{
 		IMUCEntry *mucEntry = qobject_cast<IMUCEntry*> (entry->GetObject ());
-		if (entry->GetEntryType () == ICLEntry::ETMUC &&
-				mucEntry)
+		if (entry->GetEntryType () != ICLEntry::ETMUC ||
+				!mucEntry)
+			return false;
+
+		if (text.startsWith ("/nick "))
 		{
-			if (text.startsWith ("/nick "))
+			mucEntry->SetNick (text.mid (std::strlen ("/nick ")));
+			return true;
+		}
+		else if (text.startsWith ("/leave"))
+		{
+			const int idx = text.indexOf (' ');
+			const QString& reason = idx > 0 ?
+					text.mid (idx + 1)
+					: QString ();
+			mucEntry->Leave (reason);
+			return true;
+		}
+		else if (text == "/names")
+		{
+			QStringList names;
+			Q_FOREACH (QObject *obj, mucEntry->GetParticipants ())
 			{
-				mucEntry->SetNick (text.mid (std::strlen ("/nick ")));
-				return true;
-			}
-			else if (text == "/names")
-			{
-				QStringList names;
-				Q_FOREACH (QObject *obj, mucEntry->GetParticipants ())
+				ICLEntry *entry = qobject_cast<ICLEntry*> (obj);
+				if (!entry)
 				{
-					ICLEntry *entry = qobject_cast<ICLEntry*> (obj);
-					if (!entry)
-					{
-						qWarning () << Q_FUNC_INFO
-								<< obj
-								<< "doesn't implement ICLEntry";
-						continue;
-					}
-					const QString& name = entry->GetEntryName ();
-					if (!name.isEmpty ())
-						names << name;
+					qWarning () << Q_FUNC_INFO
+							<< obj
+							<< "doesn't implement ICLEntry";
+					continue;
 				}
-				names.sort ();
-				QWebElement body = Ui_.View_->page ()->mainFrame ()->findFirstElement ("body");
-				body.appendInside ("<div class='systemmsg'>" +
-						tr ("MUC's participants: ") + "<ul><li>" +
-						names.join ("</li><li>") + "</li></ul></div>");
-				return true;
+				const QString& name = entry->GetEntryName ();
+				if (!name.isEmpty ())
+					names << name;
 			}
+			names.sort ();
+			QWebElement body = Ui_.View_->page ()->mainFrame ()->findFirstElement ("body");
+			body.appendInside ("<div class='systemmsg'>" +
+					tr ("MUC's participants: ") + "<ul><li>" +
+					names.join ("</li><li>") + "</li></ul></div>");
+			return true;
 		}
 
 		return false;
@@ -1387,7 +1453,7 @@ namespace Azoth
 
 		setProperty ("WidgetLogicalPath", path);
 	}
-	
+
 	void ChatTab::UpdateTextHeight ()
 	{
 		Ui_.CharCounter_->setText (QString::number (Ui_.MsgEdit_->toPlainText ().size ()));
@@ -1395,14 +1461,14 @@ namespace Azoth
 		const int docHeight = Ui_.MsgEdit_->document ()->size ().toSize ().height ();
 		if (docHeight == PreviousTextHeight_)
 			return;
-		
+
 		PreviousTextHeight_ = docHeight;
 		const int fontHeight = Ui_.MsgEdit_->fontMetrics ().height ();
 		const int resHeight = std::min (height () / 3, std::max (docHeight, fontHeight));
 		Ui_.MsgEdit_->setMinimumHeight (resHeight);
 		Ui_.MsgEdit_->setMaximumHeight (resHeight);
 	}
-	
+
 	void ChatTab::SetChatPartState (ChatPartState state)
 	{
 		if (state == PreviousState_)
@@ -1410,29 +1476,29 @@ namespace Azoth
 
 		if (IsMUC_)
 			return;
-		
+
 		if (!XmlSettingsManager::Instance ()
 				.property ("SendChatStates").toBool ())
 			return;
-		
+
 		ICLEntry *entry = GetEntry<ICLEntry> ();
 		if (!entry)
 			return;
-		
+
 		PreviousState_ = state;
 		entry->SetChatPartState (state, Ui_.VariantBox_->currentText ());
 	}
-	
+
 	void ChatTab::prepareMessageText (const QString& text)
 	{
 		Ui_.MsgEdit_->setText (text);
 	}
-	
+
 	void ChatTab::appendMessageText (const QString& text)
 	{
 		Ui_.MsgEdit_->setText (Ui_.MsgEdit_->toPlainText () + text);
 	}
-	
+
 	QTextEdit* ChatTab::getMsgEdit ()
 	{
 		return Ui_.MsgEdit_;
@@ -1447,7 +1513,7 @@ namespace Azoth
 			CurrentNickIndex_ = 0;
 		}
 	}
-	
+
 	void ChatTab::handleEditScroll (int direction)
 	{
 		int distance = Ui_.View_->size ().height () / 2 - 5;

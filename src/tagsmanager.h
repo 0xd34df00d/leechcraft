@@ -18,12 +18,12 @@
 
 #ifndef TAGSMANAGER_H
 #define TAGSMANAGER_H
-#include "interfaces/iinfo.h"
 #include <QAbstractItemModel>
 #include <QMap>
 #include <QUuid>
 #include <QString>
 #include <QMetaType>
+#include "interfaces/core/itagsmanager.h"
 
 namespace LeechCraft
 {

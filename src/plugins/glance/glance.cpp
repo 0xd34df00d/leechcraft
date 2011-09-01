@@ -23,6 +23,7 @@
 #include <QToolBar>
 #include <QMainWindow>
 #include <util/util.h>
+#include <interfaces/core/icoreproxy.h>
 #include "core.h"
 #include "glanceshower.h"
 
@@ -49,7 +50,7 @@ namespace Glance
 				this,
 				SLOT (on_ActionGlance__triggered ()));
 	}
-	
+
 	void Plugin::SecondInit ()
 	{
 	}
@@ -77,7 +78,7 @@ namespace Glance
 	{
 		return QIcon ();
 	}
-	
+
 	void Plugin::on_ActionGlance__triggered ()
 	{
 		Glance_ = new GlanceShower;
@@ -91,7 +92,7 @@ namespace Glance
 		ActionGlance_->setEnabled (false);
 		Glance_->Start ();
 	}
-	
+
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace aep) const
 	{
 		QList<QAction*> result;

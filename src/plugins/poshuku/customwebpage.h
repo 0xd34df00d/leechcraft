@@ -23,7 +23,7 @@
 #include <QUrl>
 #include <QNetworkRequest>
 #include <interfaces/structures.h>
-#include <interfaces/iinfo.h>
+#include <interfaces/core/ihookproxy.h>
 #include "pageformsdata.h"
 
 namespace LeechCraft

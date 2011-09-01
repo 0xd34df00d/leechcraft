@@ -28,6 +28,7 @@
 #include <interfaces/iplugin2.h>
 #include <interfaces/iproxyobject.h>
 #include <interfaces/ihavesettings.h>
+#include <interfaces/core/ihookproxy.h>
 
 class QTranslator;
 
@@ -50,7 +51,7 @@ namespace FatApe
 		IProxyObject *Proxy_;
 		ICoreProxy_ptr CoreProxy_;
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
-		boost::shared_ptr<QStandardItemModel> Model_; 
+		boost::shared_ptr<QStandardItemModel> Model_;
 	public:
 		void Init (ICoreProxy_ptr);
 

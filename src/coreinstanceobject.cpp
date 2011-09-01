@@ -29,6 +29,7 @@
 #include "tagsviewer.h"
 #include "core.h"
 #include "settingstab.h"
+#include "coreplugin2manager.h"
 
 namespace LeechCraft
 {
@@ -109,40 +110,41 @@ namespace LeechCraft
 	: QObject (parent)
 	, XmlSettingsDialog_ (new Util::XmlSettingsDialog ())
 	, SettingsTab_ (new SettingsTab)
+	, CorePlugin2Manager_ (new CorePlugin2Manager)
 	{
 		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				"coresettings.xml");
-		
+
 		connect (SettingsTab_,
 				SIGNAL (remove (QWidget*)),
 				this,
 				SIGNAL (removeTab (QWidget*)));
 	}
-	
+
 	void CoreInstanceObject::Init (ICoreProxy_ptr proxy)
 	{
 		Classes_ << SettingsTab_->GetTabClassInfo ();
 
 		XmlSettingsDialog_->SetCustomWidget ("PluginManager", new PluginManagerDialog);
 		XmlSettingsDialog_->SetCustomWidget ("TagsViewer", new TagsViewer);
-		
+
 		XmlSettingsDialog_->SetDataSource ("Language",
 			GetInstalledLangsModel ());
 		XmlSettingsDialog_->SetDataSource ("IconSet",
 			new QStringListModel (SkinEngine::Instance ().ListIcons ()));
-		
+
 		QStringList appQStype = QStyleFactory::keys ();
 		appQStype.prepend ("Default");
 		XmlSettingsDialog_->SetDataSource ("AppQStyle",
 				new QStringListModel (appQStype));
 	}
-	
+
 	void CoreInstanceObject::SecondInit ()
 	{
 		BuildNewTabModel ();
 		SettingsTab_->Initialize ();
 	}
-	
+
 	void CoreInstanceObject::Release ()
 	{
 		XmlSettingsDialog_.reset ();
@@ -152,32 +154,32 @@ namespace LeechCraft
 	{
 		return "org.LeechCraft.CoreInstance";
 	}
-	
+
 	QString CoreInstanceObject::GetName () const
 	{
 		return "LeechCraft";
 	}
-	
+
 	QString CoreInstanceObject::GetInfo () const
 	{
 		return tr ("LeechCraft Core module.");
 	}
-	
+
 	QIcon CoreInstanceObject::GetIcon () const
 	{
 		return QIcon (":/resources/images/leechcraft.svg");
 	}
-	
+
 	Util::XmlSettingsDialog_ptr CoreInstanceObject::GetSettingsDialog () const
 	{
 		return XmlSettingsDialog_;
 	}
-	
+
 	TabClasses_t CoreInstanceObject::GetTabClasses () const
 	{
 		return Classes_;
 	}
-	
+
 	void CoreInstanceObject::TabOpenRequested (const QByteArray& tabClass)
 	{
 		if (tabClass == "org.LeechCraft.SettingsPane")
@@ -190,7 +192,24 @@ namespace LeechCraft
 					<< "unknown tab class"
 					<< tabClass;
 	}
-	
+
+	QSet<QByteArray> CoreInstanceObject::GetExpectedPluginClasses () const
+	{
+		QSet<QByteArray> result;
+		result << "org.LeechCraft.Core.Plugins/1.0";
+		return result;
+	}
+
+	void CoreInstanceObject::AddPlugin (QObject *plugin)
+	{
+		CorePlugin2Manager_->AddPlugin (plugin);
+	}
+
+	CorePlugin2Manager* CoreInstanceObject::GetCorePluginManager () const
+	{
+		return CorePlugin2Manager_;
+	}
+
 	void CoreInstanceObject::BuildNewTabModel ()
 	{
 		QStandardItemModel *newTabsModel = new QStandardItemModel (this);
