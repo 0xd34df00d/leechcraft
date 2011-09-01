@@ -282,10 +282,10 @@ namespace Acetamide
 		ISH_->IncomingMessage (nick, target, msg);
 	}
 
-	void ServerResponceManager::GotNoticeMsg (const QString&, 
+	void ServerResponceManager::GotNoticeMsg (const QString& nick, 
 			const QList<std::string>&, const QString& msg)
 	{
-		ISH_->IncomingNoticeMessage (msg);
+		ISH_->IncomingNoticeMessage (nick, msg);
 	}
 
 	void ServerResponceManager::GotNick (const QString& nick, 
