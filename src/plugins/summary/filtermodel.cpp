@@ -47,7 +47,7 @@ namespace LeechCraft
 					return QSortFilterProxyModel::filterAcceptsRow (source_row, source_parent);
 				else
 				{
-					QStringList itemTags = Core::Instance ().GetTagsForIndex (source_row, sourceModel ()),
+					const QStringList& itemTags = Core::Instance ().GetTagsForIndex (source_row, sourceModel ()),
 								filterTags = Core::Instance ().GetProxy ()->
                                              GetTagsManager ()->Split (filterRegExp ().pattern ());
 					if (!filterTags.size () || !itemTags.size ())

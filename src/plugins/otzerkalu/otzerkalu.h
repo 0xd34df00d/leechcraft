@@ -1,6 +1,7 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011  Georg Rudoy
+ * Copyright (C) 2011  Minh Ngo
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
+
 
 #ifndef PLUGINS_OTZERKALU_OTZERKALU_H
 #define PLUGINS_OTZERKALU_OTZERKALU_H
