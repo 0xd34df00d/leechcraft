@@ -43,6 +43,7 @@
 #include "activitydialog.h"
 #include "mooddialog.h"
 #include "locationdialog.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -194,16 +195,25 @@ namespace Azoth
 	void MainWidget::CreateMenu ()
 	{
 		MainMenu_->addSeparator ();
+
 		MainMenu_->addAction (tr ("Add contact..."),
 				this,
 				SLOT (handleAddContactRequested ()));
 		MainMenu_->addAction (tr ("Join conference..."),
 				&Core::Instance (),
 				SLOT (handleMucJoinRequested ()));
+
 		MainMenu_->addSeparator ();
+
 		MainMenu_->addAction (tr ("Manage bookmarks..."),
 				this,
 				SLOT (handleManageBookmarks ()));
+
+		MainMenu_->addSeparator ();
+
+		MainMenu_->addAction (tr ("Add account..."),
+				this,
+				SLOT (handleAddAccountRequested ()));
 
 		MainMenu_->addSeparator ();
 
@@ -657,6 +667,11 @@ namespace Azoth
 		BookmarksManagerDialog *dia = new BookmarksManagerDialog (this);
 		dia->setAttribute (Qt::WA_DeleteOnClose, true);
 		dia->show ();
+	}
+
+	void MainWidget::handleAddAccountRequested ()
+	{
+		InitiateAccountAddition (this);
 	}
 
 	void MainWidget::handleAddContactRequested ()

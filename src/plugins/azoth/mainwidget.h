@@ -41,24 +41,24 @@ namespace Azoth
 		QMenu *MainMenu_;
 		QToolButton *MenuButton_;
 		SortFilterProxyModel *ProxyModel_;
-		
+
 		QHash<IAccount*, ConsoleWidget*> Account2CW_;
 
 		QMenu *MenuChangeStatus_;
 		QMenu *TrayChangeStatus_;
-		
+
 		QAction *AccountJoinConference_;
 		QAction *AccountAddContact_;
 		QAction *AccountSetActivity_;
 		QAction *AccountSetMood_;
 		QAction *AccountSetLocation_;
 		QAction *AccountConsole_;
-		
+
 		QMap<QString, bool> FstLevelExpands_;
 		QMap<QString, QMap<QString, bool> > SndLevelExpands_;
 	public:
 		MainWidget (QWidget* = 0);
-		
+
 		QList<QAction*> GetMenuActions ();
 		QMenu* GetChangeStatusMenu () const;
 	private:
@@ -72,7 +72,7 @@ namespace Azoth
 		void handleChangeStatusRequested ();
 		void fastStateChangeRequested ();
 		void applyFastStatus ();
-		
+
 		void handleCatRenameTriggered ();
 		void joinAccountConference ();
 		void addAccountContact ();
@@ -82,11 +82,12 @@ namespace Azoth
 		void handleAccountConsole ();
 
 		void handleManageBookmarks ();
+		void handleAddAccountRequested ();
 		void handleAddContactRequested ();
 
 		void handleShowOffline (bool);
 		void clearFilter ();
-		
+
 		void handleEntryMadeCurrent (QObject*);
 		void on_RosterMode__currentIndexChanged (int);
 		void menuBarVisibilityToggled ();
@@ -95,7 +96,7 @@ namespace Azoth
 		void rebuildTreeExpansions ();
 		void on_CLTree__expanded (const QModelIndex&);
 		void on_CLTree__collapsed (const QModelIndex&);
-		
+
 		void consoleRemoved (QWidget*);
 	signals:
 		void gotConsoleWidget (ConsoleWidget*);
