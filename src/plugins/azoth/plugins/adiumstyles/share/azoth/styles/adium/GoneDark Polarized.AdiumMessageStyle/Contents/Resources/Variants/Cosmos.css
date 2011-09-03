@@ -1,0 +1,51 @@
+@import url('../main.css');
+
+body {
+	background: url(../images/backgroundCosmos.jpg) repeat-y center top #000 fixed;
+}
+
+.message1 .userName, .message1 .date, #headerChatStarted h2 {
+	color: #e33a7e;
+}
+
+.message2 .userName, .message2 .date {
+	color: #777;
+}
+
+.status {
+	color: #000;
+	text-shadow: none;
+	opacity: .4;
+}
+
+#headerImage {
+	background: url(../images/backgroundUserImageCosmos.png) no-repeat;
+}
+
+.content {
+	border-top: 3px solid #e33a7e;
+	border-bottom: 1px solid #e33a7e;
+}
+
+.message2 .content {
+	border-top: 3px solid #777;
+	border-bottom: 1px solid #777;
+}
+
+
+.message1 a {
+	color: #ca1960;
+}
+
+.message1 a:hover {
+	color: #aa0346;
+}
+
+.message2 a {
+	color: #555;
+}
+
+.message2 a:hover {
+	color: #222;
+}
+

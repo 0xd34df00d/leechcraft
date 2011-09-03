@@ -1,0 +1,51 @@
+@import url('../main.css');
+
+body {
+	background: url(../images/backgroundFirelight.jpg) repeat-y center top #000 fixed;
+}
+
+.message1 .userName, .message1 .date, #headerChatStarted h2 {
+	color: #bb2222;
+}
+
+.message2 .userName, .message2 .date {
+	color: #a78622;
+}
+
+.status {
+	color: #000;
+	text-shadow: none;
+	opacity: .4;
+}
+
+#headerImage {
+	background: url(../images/backgroundUserImageFire.png) no-repeat;
+}
+
+.content {
+	border-top: 3px solid #bb2222;
+	border-bottom: 1px solid #bb2222;
+}
+
+.message2 .content {
+	border-top: 3px solid #a78622;
+	border-bottom: 1px solid #a78622;
+}
+
+
+.message1 a {
+	color: #a71010;
+}
+
+.message1 a:hover {
+	color: #930606;
+}
+
+.message2 a {
+	color: #a78622;
+}
+
+.message2 a:hover {
+	color: #715602;
+}
+
