@@ -191,7 +191,7 @@ namespace Azoth
 					tr ("Unable to load style, "
 						"please check you've enabled at least one styles plugin.") +
 					"</h1>";
-		Ui_.View_->setContent (data.toUtf8 (), "application/xhtml+xml");
+		Ui_.View_->setHtml (data);
 
 		Q_FOREACH (IMessage *msg, HistoryMessages_)
 			AppendMessage (msg);

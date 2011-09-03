@@ -123,10 +123,10 @@ namespace AdiumStyles
 		}
 
 		QString result;
-		result = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
-		result += "<html xmlns=\"http://www.w3.org/1999/xhtml\"><head><style type=\"text/css\">";
+		result = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">";
+		result += "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" /><style type=\"text/css\">";
 		result += cssStr;
-		result += "</style><title/></head><body>";
+		result += "</style><title></title></head><body>";
 		result += QString::fromUtf8 (header->readAll ());
 		result += "<div id=\"Chat\"><div id=\"insert\"></div></div>";
 		result += QString::fromUtf8 (footer->readAll ());
