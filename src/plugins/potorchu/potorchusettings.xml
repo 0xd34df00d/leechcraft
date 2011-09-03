@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
-	<declare defaultlang="en" />
         <page>
-                <label lang="en" value="General" />
-                <tab>
-                        <label lang="en" value="Last.fm" />
-                </tab>
+                <label value="Potorchu" />
+		<groupbox>
+			<label value="Playlist" />
+                        <item type="lineedit" property="PlayListTemplate" default="%artist% - %album% - %title%">
+                                        <label value="Playlist view template: " />
+                        </item>
+		</groupbox>
         </page>
 
 </settings>

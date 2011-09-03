@@ -38,6 +38,14 @@ namespace LeechCraft
 			Ui_->ActionFrame_->setFrameStyle (QFrame::NoFrame);
 			ActionBar_->setToolButtonStyle (Qt::ToolButtonIconOnly);
 			ActionBar_->setIconSize (QSize (16, 16));
+			connect (Ui_->PlayListView_,
+					SIGNAL (play (QString)),
+					this,
+					SIGNAL (play (QString)));
+			connect (this,
+					SIGNAL (nextFile ()),
+					Ui_->PlayListView_,
+					SLOT (nextFile ()));
 		}
 		
 		PlayListWidget::~PlayListWidget ()
@@ -71,6 +79,11 @@ namespace LeechCraft
 					tr ("Remove"), this);
 			ActionBar_->addAction (actionRemove);
 			
+			connect (actionRemove,
+					SIGNAL (triggered (bool)),
+					Ui_->PlayListView_,
+					SLOT (removeSelectedRows ()));
+			
 			connect (addURL,
 					SIGNAL (triggered (bool)),
 					this,
@@ -87,9 +100,9 @@ namespace LeechCraft
 		
 		void PlayListWidget::handleAddFiles ()
 		{
-			const QString& fileName = QFileDialog::getOpenFileNames (this,
+			const QStringList& fileNames = QFileDialog::getOpenFileNames (this,
 					tr ("Choose file"), QDir::homePath ());
-			if (!fileName.isEmpty ())
+			Q_FOREACH (const QString& fileName, fileNames)
 				Ui_->PlayListView_->addItem (fileName);
 		}
 

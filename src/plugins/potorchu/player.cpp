@@ -83,6 +83,12 @@ namespace LeechCraft
 			return volume;
 		}
 		
+		QString Player::GetMeta (libvlc_meta_t meta) const
+		{
+			libvlc_media_parse (M_);
+			return QString (libvlc_media_get_meta (M_, meta));
+		}
+		
 		int Player::GetPosition() const
 		{
 			if (!IsPlayed ())

@@ -29,11 +29,32 @@ namespace LeechCraft
 		{
 			setModel (PlayListModel_);
 			setModelColumn (0);
+			connect (this,
+					SIGNAL (doubleClicked (QModelIndex)),
+					this,
+					SLOT (handleDoubleClicked (QModelIndex)));
 		}
 		
-		void PlayListView::addItem (const QString& item)
+		void PlayListView::nextFile ()
 		{
+
 		}
 
+		void PlayListView::addItem (const QString& item)
+		{
+			PlayListModel_->setStringList (PlayListModel_->stringList () << item);
+		}
+		
+		void PlayListView::handleDoubleClicked (const QModelIndex& index)
+		{
+			emit play (index.data (Qt::EditRole).toString ());
+		}
+		
+		void PlayListView::removeSelectedRows ()
+		{
+			const QModelIndexList& indexList = selectedIndexes ();
+			Q_FOREACH (const QModelIndex& index, indexList)
+				PlayListModel_->removeRow (index.row ());
+		}
 	}
 }

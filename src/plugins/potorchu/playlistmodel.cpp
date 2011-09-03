@@ -18,35 +18,56 @@
  **********************************************************************/
 
 #include "playlistmodel.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
 	namespace Potorchu
 	{
 		PlayListModel::PlayListModel (QObject* parent)
-		: QAbstractListModel (parent)
+		: QStringListModel (parent)
 		{
+			const char * const vlc_args[] = {
+					"-I", "dummy",
+					"--ignore-config",
+					"--extraintf=logger",
+					"--verbose=2"};
+			VLCInstance_ = libvlc_new (sizeof (vlc_args) / sizeof (vlc_args[0]), vlc_args);
 		}
 		
 		PlayListModel::~PlayListModel ()
 		{
+			libvlc_release (VLCInstance_);
 		}
 		
-		int PlayListModel::rowCount (const QModelIndex& parent) const
+		Qt::ItemFlags PlayListModel::flags (const QModelIndex& index) const
 		{
-			return 0;
+			return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
 		}
 		
 		QVariant PlayListModel::data (const QModelIndex& index, int role) const
 		{
-			return QVariant ();
-		}
-		
-		void PlayListModel::addRow (const QString& item)
-		{
-			DestList_ << item;
-		}
+			if (role == Qt::DisplayRole)
+			{
+				libvlc_media_t *t = libvlc_media_new_path (VLCInstance_, data (index, Qt::EditRole).toString ().toAscii ());
+				libvlc_media_parse (t);
+				QString temp = XmlSettingsManager::Instance ().property ("PlayListTemplate").toString ();
+				const QString& artist = QString (libvlc_media_get_meta (t, libvlc_meta_Artist));
+				const QString& album = QString (libvlc_media_get_meta (t, libvlc_meta_Album));
+				const QString& title = QString (libvlc_media_get_meta (t, libvlc_meta_Title));
+				const QString& genre = QString (libvlc_media_get_meta (t, libvlc_meta_Genre));
+				const QString& date = QString (libvlc_media_get_meta (t, libvlc_meta_Date));
+				temp.replace ("%artist%", artist);
+				temp.replace ("%album%", album);
+				temp.replace ("%title%", title);
+				temp.replace ("%genre%", genre);
+				temp.replace ("%date%", date);
+				libvlc_media_release (t);
 
+				return temp;
+			}
+			return QStringListModel::data (index, role);
+		}
 	}
 }
 

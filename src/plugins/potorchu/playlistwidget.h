@@ -44,6 +44,9 @@ namespace LeechCraft
 			void handleAddUrl ();
 			void handleAddFolder ();
 			void handleAddFiles ();
+		signals:
+			void play (const QString& file);
+			void nextFile ();
 		};
 	}
 }

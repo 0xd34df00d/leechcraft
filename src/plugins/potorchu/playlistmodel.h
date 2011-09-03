@@ -20,24 +20,25 @@
 #ifndef PLAYLISTMODEL_H
 #define PLAYLISTMODEL_H
 
-#include <QAbstractListModel>
+#include <QStringListModel>
 #include <QStringList>
 #include <vlc/vlc.h>
+#include <QDebug>
 
 namespace LeechCraft
 {
 	namespace Potorchu
 	{
-		class PlayListModel : public QAbstractListModel
+		class PlayListModel : public QStringListModel
 		{
 			Q_OBJECT
-			QStringList DestList_;
+			libvlc_instance_t *VLCInstance_;
 		public:
 			PlayListModel (QObject *parent);
 			virtual ~PlayListModel ();
-			int rowCount (const QModelIndex& parent = QModelIndex ()) const;
+			
+			Qt::ItemFlags flags (const QModelIndex& index) const;
 			QVariant data (const QModelIndex& index, int role = Qt::DisplayRole) const;
-			void addRow (const QString& item);
 		};
 	}
 }

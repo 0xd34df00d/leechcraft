@@ -21,7 +21,7 @@
 #define PLAYLISTVIEW_H
 
 #include <QListView>
-
+#include <QDebug>
 #include "playlistmodel.h"
 
 namespace LeechCraft
@@ -35,6 +35,13 @@ namespace LeechCraft
 		public:
 			PlayListView (QWidget *parent = 0);
 			void addItem (const QString& item);
+		public slots:
+			void removeSelectedRows ();
+			void nextFile ();
+		private slots:
+			void handleDoubleClicked (const QModelIndex& index);
+		signals:
+			void play (const QString& file);
 		};
 	}
 }

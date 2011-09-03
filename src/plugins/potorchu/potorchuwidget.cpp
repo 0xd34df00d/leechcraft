@@ -58,6 +58,14 @@ namespace LeechCraft
 					SIGNAL (sliderMoved (int)),
 					Ui_->Player_,
 					SLOT (changeVolume (int)));
+			connect (Ui_->PlayListWidget_,
+					SIGNAL (play (QString)),
+					Ui_->Player_,
+					SLOT (playFile (QString)));
+			connect (Ui_->Player_,
+					SIGNAL (timeout ()),
+					Ui_->PlayListWidget_,
+					SIGNAL (nextFile ()));
 		}
 		
 		void PotorchuWidget::Init (ICoreProxy_ptr proxy)
@@ -112,7 +120,7 @@ namespace LeechCraft
 			connect (actionOpenURL,
 					SIGNAL (triggered (bool)),
 					this,
-					SLOT (handleOpenChooseUrlDialog ()));
+					SLOT (handleOpenURL ()));
 			connect (playList,
 					SIGNAL (triggered (bool)),
 					this,

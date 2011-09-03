@@ -45,6 +45,8 @@ namespace LeechCraft
 			Player (QWidget *parent = 0, Qt::WindowFlags f = 0);
 			virtual ~Player ();
 			
+			QString GetMeta (libvlc_meta_t meta) const;
+			
 			int GetVolume () const;
 			int GetPosition () const;
 			bool IsPlayed () const;
