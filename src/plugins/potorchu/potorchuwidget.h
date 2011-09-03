@@ -52,6 +52,7 @@ namespace LeechCraft
 			QToolBar* GetToolBar () const;
 		signals:
 			void needToClose ();
+			void nextFile ();
 		public slots:
 			void handleOpenMediaContent (const QString& val);
 		private slots:

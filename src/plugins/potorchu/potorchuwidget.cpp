@@ -62,8 +62,8 @@ namespace LeechCraft
 					SIGNAL (play (QString)),
 					Ui_->Player_,
 					SLOT (playFile (QString)));
-			connect (Ui_->Player_,
-					SIGNAL (timeout ()),
+			connect (this,
+					SIGNAL (nextFile ()),
 					Ui_->PlayListWidget_,
 					SIGNAL (nextFile ()));
 		}
@@ -132,6 +132,9 @@ namespace LeechCraft
 		{
 			Ui_->VolumeSlider_->setValue (Ui_->Player_->GetVolume ());
 			Ui_->PositionSlider_->setValue (Ui_->Player_->GetPosition ());
+			
+			if (Ui_->Player_->MediaPosition () > 0.996)
+				emit nextFile ();
 		}
 
 		
@@ -179,7 +182,6 @@ namespace LeechCraft
 							tr ("The URL's not valid"));
 			}
 		}
-
 		
 		void PotorchuWidget::handleOpenMediaContent (const QString& val)
 		{

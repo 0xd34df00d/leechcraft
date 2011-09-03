@@ -44,7 +44,6 @@ namespace LeechCraft
 					SIGNAL (timeout ()),
 					this,
 					SIGNAL (timeout ()));
-
 			Poller_->start (100);
 		}
 		
@@ -74,7 +73,6 @@ namespace LeechCraft
 			return (curMedia != NULL);
 		}
 
-		
 		int Player::GetVolume () const
 		{
 			if (!IsPlayed ())
@@ -89,13 +87,20 @@ namespace LeechCraft
 			return QString (libvlc_media_get_meta (M_, meta));
 		}
 		
-		int Player::GetPosition() const
+		int Player::GetPosition () const
 		{
 			if (!IsPlayed ())
 				return -1;
 			float pos = libvlc_media_player_get_position (MP_);
 			int siderPos = (int)(pos * (float)(pos_slider_max));
 			return siderPos;
+		}
+		
+		float Player::MediaPosition () const
+		{
+			if (!IsPlayed ())
+				return -1;
+			return libvlc_media_player_get_position (MP_);
 		}
 		
 		void Player::pause ()

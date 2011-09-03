@@ -37,7 +37,9 @@ namespace LeechCraft
 		
 		void PlayListView::nextFile ()
 		{
-
+			const QModelIndex& index = currentIndex ();
+			emit play (PlayListModel_->index (index.row () + 1).data (Qt::EditRole).toString ());
+			setCurrentIndex (PlayListModel_->index (index.row () + 1));
 		}
 
 		void PlayListView::addItem (const QString& item)

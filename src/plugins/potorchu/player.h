@@ -49,6 +49,7 @@ namespace LeechCraft
 			
 			int GetVolume () const;
 			int GetPosition () const;
+			float MediaPosition () const;
 			bool IsPlayed () const;
 		public slots:
 			void playFile (const QString& file);
