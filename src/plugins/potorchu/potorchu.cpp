@@ -70,7 +70,7 @@ namespace Potorchu
 
 	QString Potorchu::GetInfo () const
 	{
-		return tr ("");
+		return tr ("Media player based on libvlc");
 	}
 
 	QIcon Potorchu::GetIcon () const
