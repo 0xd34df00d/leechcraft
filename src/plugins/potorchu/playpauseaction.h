@@ -19,31 +19,31 @@
 
 #ifndef PLAYPAUSEACTION_H
 #define PLAYPAUSEACTION_H
-
 #include <QAction>
 
 namespace LeechCraft
 {
-	namespace Potorchu
+namespace Potorchu
+{
+	class PlayPauseAction : public QAction
 	{
-		class PlayPauseAction : public QAction
-		{
-			Q_OBJECT
-			QPair<QIcon, QIcon> PlayPausePair_;
-			bool  Play_;
-		public:
-			PlayPauseAction (const QPair<QIcon, QIcon>& playPausePair,
-					QObject *parent = 0);
-		signals:
-			void play ();
-			void pause();
-		public slots:
-			void handlePause ();
-			void handlePlay ();
-		private slots:
-			void handleTriggered ();
-		};
-	}
+		Q_OBJECT
+
+		QPair<QIcon, QIcon> PlayPausePair_;
+		bool Play_;
+	public:
+		PlayPauseAction (const QPair<QIcon, QIcon>& playPausePair,
+				QObject *parent = 0);
+	public slots:
+		void handlePause ();
+		void handlePlay ();
+	private slots:
+		void handleTriggered ();
+	signals:
+		void play ();
+		void pause();
+	};
+}
 }
 
 #endif // PLAYPAUSECTION_H

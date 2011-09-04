@@ -21,46 +21,45 @@
 
 namespace LeechCraft
 {
-	namespace Potorchu
+namespace Potorchu
+{
+	PlayPauseAction::PlayPauseAction (const QPair<QIcon, QIcon>& playPausePair,
+			QObject *parent)
+	: QAction (parent)
+	, PlayPausePair_ (playPausePair)
+	, Play_ (false)
 	{
-		PlayPauseAction::PlayPauseAction (const QPair<QIcon, QIcon>& playPausePair,
-				QObject *parent)
-		: PlayPausePair_ (playPausePair)
-		, QAction (parent)
-		, Play_ (false)
-		{
-			setIcon (PlayPausePair_.first);
-			connect (this,
-					SIGNAL (triggered (bool)),
-					this,
-					SLOT(handleTriggered ()));
-		}
-				
-		void PlayPauseAction::handlePause ()
-		{
-			Play_ = false;
-			setIcon (PlayPausePair_.first);
-		}
-
-		void PlayPauseAction::handlePlay ()
-		{
-			Play_ = true;
-			setIcon (PlayPausePair_.second);
-		}
-
-		void PlayPauseAction::handleTriggered ()
-		{
-			if (Play_ = !Play_)
-			{
-				setIcon (PlayPausePair_.second);
-				emit play ();
-			}
-			else
-			{
-				setIcon (PlayPausePair_.first);
-				emit pause ();
-			}
-		}
-
+		setIcon (PlayPausePair_.first);
+		connect (this,
+				SIGNAL (triggered (bool)),
+				this,
+				SLOT (handleTriggered ()));
 	}
+
+	void PlayPauseAction::handlePause ()
+	{
+		Play_ = false;
+		setIcon (PlayPausePair_.first);
+	}
+
+	void PlayPauseAction::handlePlay ()
+	{
+		Play_ = true;
+		setIcon (PlayPausePair_.second);
+	}
+
+	void PlayPauseAction::handleTriggered ()
+	{
+		if ((Play_ = !Play_))
+		{
+			setIcon (PlayPausePair_.second);
+			emit play ();
+		}
+		else
+		{
+			setIcon (PlayPausePair_.first);
+			emit pause ();
+		}
+	}
+}
 }
