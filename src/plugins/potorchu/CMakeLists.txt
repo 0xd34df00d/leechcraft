@@ -15,27 +15,63 @@ IF (NOT QT_USE_FILE)
 	FIND_PACKAGE (LeechCraft REQUIRED)
 ENDIF (NOT QT_USE_FILE)
 
+SET (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+
+SET (QT_USE_QTGUI TRUE)
 INCLUDE (${QT_USE_FILE})
+FIND_PACKAGE (VLC REQUIRED)
+
 INCLUDE_DIRECTORIES (
 	${CMAKE_CURRENT_BINARY_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
+	${VLC_INCLUDE_DIR}
 	)
 SET (SRCS
+	playlistmodel.cpp
+	playlistview.cpp
+	xmlsettingsmanager.cpp
+	playlistwidget.cpp
+	chooseurldialog.cpp
+	playpauseaction.cpp
+	player.cpp
+	potorchuwidget.cpp
 	potorchu.cpp
 	)
 SET (HEADERS
+	playlistmodel.h
+	playlistview.h
+	xmlsettingsmanager.h
+	playlistwidget.h
+	chooseurldialog.h
+	playpauseaction.h
+	player.h
+	potorchuwidget.h
 	potorchu.h
 	)
+SET (FORMS
+	potorchuwidget.ui
+	chooseurldialog.ui
+	playlistwidget.ui
+)
+SET (RESOURCES potorchuresources.qrc)
+
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
+QT4_WRAP_UI (FORMS_HEADERS ${FORMS})
+QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
 ADD_LIBRARY (leechcraft_potorchu SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
+	${FORMS_HEADERS}
+	${RCCS}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_potorchu
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
+	${VLC_LIBRARIES}
 	)
 INSTALL (TARGETS leechcraft_potorchu DESTINATION ${LC_PLUGINS_DEST})
+INSTALL (FILES potorchusettings.xml DESTINATION ${LC_SETTINGS_DEST})
