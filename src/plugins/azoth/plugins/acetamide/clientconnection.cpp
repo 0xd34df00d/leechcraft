@@ -80,12 +80,13 @@ namespace Acetamide
 		return ServerHandlers_.contains (key);
 	}
 
-	void ClientConnection::JoinServer (const ServerOptions& server)
+	void ClientConnection::JoinServer (const ServerOptions& server,
+			const NickServIdentifyOptions& nickserv)
 	{
 		QString serverId = server.ServerName_ + ":" +
 				QString::number (server.ServerPort_);
 
-		IrcServerHandler *ish = new IrcServerHandler (server, Account_);
+		IrcServerHandler *ish = new IrcServerHandler (server, nickserv, Account_);
 		
 		ish->SetConsoleEnabled (IsConsoleEnabled_);
 		if (IsConsoleEnabled_)

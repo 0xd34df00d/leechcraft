@@ -282,10 +282,10 @@ namespace Acetamide
 		ISH_->IncomingMessage (nick, target, msg);
 	}
 
-	void ServerResponceManager::GotNoticeMsg (const QString&, 
+	void ServerResponceManager::GotNoticeMsg (const QString& nick, 
 			const QList<std::string>&, const QString& msg)
 	{
-		ISH_->IncomingNoticeMessage (msg);
+		ISH_->IncomingNoticeMessage (nick, msg);
 	}
 
 	void ServerResponceManager::GotNick (const QString& nick, 
@@ -942,9 +942,15 @@ namespace Acetamide
 	}
 
 	void ServerResponceManager::GotISupport (const QString&, 
-			const QList<std::string>&, const QString&)
+			const QList<std::string>& params, const QString& msg)
 	{
 		ISH_->JoinFromQueue ();
+		//TODO save server settings
+		QString result;
+		Q_FOREACH (const std::string& param, params)
+			result.append (QString::fromUtf8 (param.c_str ())).append (" ");
+		result.append (" : ").append (msg);
+		ISH_->ShowAnswer (result);
 	}
 
 	void ServerResponceManager::GotChannelMode (const QString& nick, 

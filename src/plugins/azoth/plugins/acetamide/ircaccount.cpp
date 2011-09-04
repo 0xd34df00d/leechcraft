@@ -207,7 +207,7 @@ namespace Acetamide
 	}
 
 	void IrcAccount::JoinServer (ServerOptions server,
-			ChannelOptions channel)
+			ChannelOptions channel, const NickServIdentifyOptions& nickserv)
 	{
 		if (server.ServerName_.isEmpty ())
 			server.ServerName_ = DefaultServer_;
@@ -228,7 +228,7 @@ namespace Acetamide
 				QString::number (server.ServerPort_);
 		if (!ClientConnection_->IsServerExists (serverId))
 		{
-			ClientConnection_->JoinServer (server);
+			ClientConnection_->JoinServer (server, nickserv);
 			ClientConnection_->GetIrcServerHandler (serverId)->
 					Add2ChannelsQueue (channel);
 		}
@@ -451,7 +451,8 @@ namespace Acetamide
 			channelOpt.ChannelName_ = bookmark.ChannelName_;
 			channelOpt.ChannelPassword_ = bookmark.ChannelPassword_;
 
-			JoinServer (serverOpt, channelOpt);
+			// TODO NickServ for bookmarks
+			JoinServer (serverOpt, channelOpt, NickServIdentifyOptions ());
 		}
 
 		ActiveChannels_.clear ();
