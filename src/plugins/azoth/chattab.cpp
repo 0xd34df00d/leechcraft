@@ -277,7 +277,7 @@ namespace Azoth
 	void ChatTab::TabMadeCurrent ()
 	{
 		Core::Instance ().GetChatTabsManager ()->ChatMadeCurrent (this);
-		Core::Instance ().FrameFocused (Ui_.View_->page ()->mainFrame ());
+		Core::Instance ().FrameFocused (GetEntry<QObject> (), Ui_.View_->page ()->mainFrame ());
 
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 		emit hookMadeCurrent (proxy, this);

@@ -180,6 +180,8 @@ namespace Azoth
 				Core::Instance ().GetSmilesOptionsModel ());
 		XmlSettingsDialog_->SetDataSource ("ChatWindowStyle",
 				Core::Instance ().GetChatStylesOptionsModel ());
+		XmlSettingsDialog_->SetDataSource ("MUCWindowStyle",
+				Core::Instance ().GetChatStylesOptionsModel ());
 	}
 
 	void Plugin::Release ()

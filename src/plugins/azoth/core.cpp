@@ -101,6 +101,18 @@ namespace Azoth
 		return in;
 	}
 
+	namespace
+	{
+		QByteArray GetStyleOptName (QObject *entry)
+		{
+			if (XmlSettingsManager::Instance ().property ("CustomMUCStyle").toBool () &&
+					qobject_cast<IMUCEntry*> (entry))
+				return "MUCWindowStyle";
+			else
+				return "ChatWindowStyle";
+		}
+	}
+
 	Core::Core ()
 	: LinkRegexp_ ("((?:(?:\\w+://)|(?:xmpp:|mailto:|www\\.|magnet:|irc:))\\S+)",
 			Qt::CaseInsensitive, QRegExp::RegExp2)
@@ -628,35 +640,33 @@ namespace Azoth
 
 	QString Core::GetSelectedChatTemplate (QObject *entry, QWebFrame *frame) const
 	{
-		IChatStyleResourceSource *src = GetCurrentChatStyle ();
+		IChatStyleResourceSource *src = GetCurrentChatStyle (entry);
 		if (!src)
 			return QString ();
 
 		const QString& opt = XmlSettingsManager::Instance ()
-				.property ("ChatWindowStyle").toString ();
+				.property (GetStyleOptName (entry)).toString ();
 		return src->GetHTMLTemplate (opt, entry, frame);
 	}
 
 	bool Core::AppendMessageByTemplate (QWebFrame *frame,
 			QObject *message, const ChatMsgAppendInfo& info)
 	{
-		const QString& opt = XmlSettingsManager::Instance ()
-				.property ("ChatWindowStyle").toString ();
-		IChatStyleResourceSource *src = ChatStylesOptionsModel_->GetSourceForOption (opt);
+		IChatStyleResourceSource *src = GetCurrentChatStyle (qobject_cast<IMessage*> (message)->ParentCLEntry ());
 		if (!src)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "empty result for"
-					<< opt;
+					<< message;
 			return false;
 		}
 
 		return src->AppendMessage (frame, message, info);
 	}
 
-	void Core::FrameFocused (QWebFrame *frame)
+	void Core::FrameFocused (QObject *entry, QWebFrame *frame)
 	{
-		IChatStyleResourceSource *src = GetCurrentChatStyle ();
+		IChatStyleResourceSource *src = GetCurrentChatStyle (entry);
 		if (!src)
 			return;
 
@@ -1836,10 +1846,10 @@ namespace Azoth
 		dia->show ();
 	}
 
-	IChatStyleResourceSource* Core::GetCurrentChatStyle () const
+	IChatStyleResourceSource* Core::GetCurrentChatStyle (QObject *entry) const
 	{
 		const QString& opt = XmlSettingsManager::Instance ()
-				.property ("ChatWindowStyle").toString ();
+				.property (GetStyleOptName (entry)).toString ();
 		IChatStyleResourceSource *src = ChatStylesOptionsModel_->GetSourceForOption (opt);
 		if (!src)
 			qWarning () << Q_FUNC_INFO

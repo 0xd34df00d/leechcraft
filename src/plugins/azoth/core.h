@@ -305,7 +305,7 @@ namespace Azoth
 
 		bool AppendMessageByTemplate (QWebFrame*, QObject*, const ChatMsgAppendInfo&);
 
-		void FrameFocused (QWebFrame*);
+		void FrameFocused (QObject*, QWebFrame*);
 
 		// Theming stuff
 		QList<QColor> GenerateColors (const QString& coloringScheme) const;
@@ -415,7 +415,7 @@ namespace Azoth
 
 		void SuggestJoiningMUC (IAccount*, const QVariantMap&);
 
-		IChatStyleResourceSource* GetCurrentChatStyle () const;
+		IChatStyleResourceSource* GetCurrentChatStyle (QObject*) const;
 
 		void FillANFields ();
 
