@@ -97,13 +97,15 @@ namespace LeechCraft
 				QStringList (tr ("Firefox importer in New Life."))
 					<< tr ("Poshuku OnlineBookmarks.")
 					<< tr ("Azoth Acetamide: IRC support for Azoth.")
+					<< tr ("Chrome-style tabs.")
 					<< tr ("Various patches."),
 				QList<int> () << 2010 << 2011);
 
 		QList<ContributorInfo> contribs;
 		contribs << ContributorInfo (QString (), "Akon32",
 				QString (), "akon32@rambler.ru",
-				QStringList (tr ("Various patches.")),
+				QStringList (tr ("SecMan SecureStorage."))
+					<< tr ("Various patches."),
 				QList<int> () << 2011);
 		contribs << ContributorInfo ("Aleksey Frolov", "Aleks Lifey aka atommix",
 				QString (), "aleks.lifey@gmail.com",
@@ -134,7 +136,8 @@ namespace LeechCraft
 		contribs << ContributorInfo (QString (), "nobodyzzz",
 				QString (), "nobodyzzz666@gmail.com",
 				QStringList ("Juick plugin.")
-					<< tr ("FatApe plugin, the GreaseMonkey support layer for Poshuku."),
+					<< tr ("FatApe plugin, the GreaseMonkey support layer for Poshuku.")
+					<< tr ("Various patches."),
 				QList<int> () << 2011);
 		contribs << ContributorInfo (QString (), "PanteR",
 				"panter_dsd@jabber.ru", "panter.dsd@gmail.com",
