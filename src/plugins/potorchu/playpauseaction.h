@@ -37,6 +37,9 @@ namespace LeechCraft
 		signals:
 			void play ();
 			void pause();
+		public slots:
+			void handlePause ();
+			void handlePlay ();
 		private slots:
 			void handleTriggered ();
 		};

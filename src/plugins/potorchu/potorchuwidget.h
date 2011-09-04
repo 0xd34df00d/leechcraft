@@ -33,6 +33,7 @@ namespace LeechCraft
 {
 	namespace Potorchu
 	{
+		class PlayPauseAction;
 		class PotorchuWidget : public QWidget
 					, public ITabWidget
 		{
@@ -41,6 +42,7 @@ namespace LeechCraft
 			QToolBar *ToolBar_;
 			static QObject *S_ParentMultiTabs_;
 			Ui::PotorchuWidget *Ui_;
+			PlayPauseAction *ActionPlay_;
 		public:
 			PotorchuWidget (QWidget *parent = 0, Qt::WindowFlags f = 0);
 			void Init (ICoreProxy_ptr);
@@ -58,6 +60,8 @@ namespace LeechCraft
 		private slots:
 			void handleOpenFile ();
 			void handleOpenURL ();
+			void handleStop ();
+			void handlePlay ();
 			void updateInterface ();
 			void handlePlaylist ();
 		};

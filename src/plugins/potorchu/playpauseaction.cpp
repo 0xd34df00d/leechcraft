@@ -27,15 +27,27 @@ namespace LeechCraft
 				QObject *parent)
 		: PlayPausePair_ (playPausePair)
 		, QAction (parent)
-		, Play_ (true)
+		, Play_ (false)
 		{
-			setIcon (PlayPausePair_.second);
+			setIcon (PlayPausePair_.first);
 			connect (this,
 					SIGNAL (triggered (bool)),
 					this,
 					SLOT(handleTriggered ()));
 		}
-		
+				
+		void PlayPauseAction::handlePause ()
+		{
+			Play_ = false;
+			setIcon (PlayPausePair_.first);
+		}
+
+		void PlayPauseAction::handlePlay ()
+		{
+			Play_ = true;
+			setIcon (PlayPausePair_.second);
+		}
+
 		void PlayPauseAction::handleTriggered ()
 		{
 			if (Play_ = !Play_)

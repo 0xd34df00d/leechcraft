@@ -66,6 +66,10 @@ namespace LeechCraft
 					SIGNAL (nextFile ()),
 					Ui_->PlayListWidget_,
 					SIGNAL (nextFile ()));
+			connect (Ui_->PlayListWidget_,
+					SIGNAL (play (QString)),
+					this,
+					SLOT (handlePlay ()));
 		}
 		
 		void PotorchuWidget::Init (ICoreProxy_ptr proxy)
@@ -74,7 +78,7 @@ namespace LeechCraft
 			QToolBar *bar = new QToolBar (Ui_->CommandFrame_);
 			bar->setToolButtonStyle (Qt::ToolButtonIconOnly);
 			bar->setIconSize (QSize (32, 32));
-			QAction *actionPlay = new PlayPauseAction (QPair<QIcon, QIcon> (proxy->GetIcon ("start"),
+			ActionPlay_ = new PlayPauseAction (QPair<QIcon, QIcon> (proxy->GetIcon ("start"),
 							proxy->GetIcon ("pause")),
 					Ui_->CommandFrame_);
 			QAction *actionStop = new QAction (proxy->GetIcon ("media_stop"),
@@ -84,19 +88,19 @@ namespace LeechCraft
 			QAction *actionPrev = new QAction (proxy->GetIcon ("media_skip_backward"),
 					tr ("Previous"), Ui_->CommandFrame_);
 			bar->addAction (actionPrev);
-			bar->addAction (actionPlay);
+			bar->addAction (ActionPlay_);
 			bar->addAction (actionStop);
 			bar->addAction (actionNext);
 	
 			connect (actionStop,
 					SIGNAL (triggered (bool)),
-					Ui_->Player_,
-					SLOT (stop ()));
-			connect (actionPlay,
+					this,
+					SLOT (handleStop ()));
+			connect (ActionPlay_,
 					SIGNAL (play ()),
 					Ui_->Player_,
 					SLOT (play ()));
-			connect (actionPlay,
+			connect (ActionPlay_,
 					SIGNAL (pause ()),
 					Ui_->Player_,
 					SLOT (pause ()));
@@ -125,6 +129,18 @@ namespace LeechCraft
 					SIGNAL (triggered (bool)),
 					this,
 					SLOT (handlePlaylist ()));
+		}
+
+		void PotorchuWidget::handleStop ()
+		{
+			ActionPlay_->handlePause ();
+			Ui_->Player_->stop ();
+		}
+
+		void PotorchuWidget::handlePlay ()
+		{
+			ActionPlay_->handlePlay ();
+			Ui_->Player_->play ();
 		}
 
 		
