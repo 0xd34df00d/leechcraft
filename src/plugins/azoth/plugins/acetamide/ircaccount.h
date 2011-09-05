@@ -92,8 +92,7 @@ namespace Acetamide
 		void OpenConfigurationDialog ();
 		void FillSettings (IrcAccountConfigurationWidget*);
 
-		void JoinServer (ServerOptions, ChannelOptions,
-				const NickServIdentifyOptions&);
+		void JoinServer (ServerOptions, ChannelOptions);
 
 		void SetBookmarks (const QList<IrcBookmark>&);
 		QList<IrcBookmark> GetBookmarks () const;

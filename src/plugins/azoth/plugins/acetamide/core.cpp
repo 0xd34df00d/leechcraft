@@ -17,9 +17,11 @@
  **********************************************************************/
 
 #include "core.h"
+#include <QStandardItemModel>
 #include <interfaces/iaccount.h>
 #include <interfaces/iproxyobject.h>
 #include "ircprotocol.h"
+#include "nickservidentifywidget.h"
 
 namespace LeechCraft
 {
@@ -37,6 +39,12 @@ namespace Acetamide
 	{
 		static Core c;
 		return c;
+	}
+
+	void Core::Init ()
+	{
+		Model_ = new QStandardItemModel (this);
+		NickServIdentifyWidget_ = new NickServIdentifyWidget (Model_);
 	}
 
 	void Core::SecondInit ()
@@ -80,6 +88,17 @@ namespace Acetamide
 	void Core::handleItemsAdded (const QList<QObject*>&)
 	{
 	}
+
+	NickServIdentifyWidget* Core::GetNickServIdentifyWidget () const
+	{
+		return NickServIdentifyWidget_;
+	}
+
+	QStandardItemModel* Core::GetNickServIdentifyModel () const
+	{
+		return Model_;
+	}
+
 }
 }
 }

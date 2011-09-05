@@ -67,13 +67,12 @@ namespace Acetamide
 		QVariantMap ISupport_;
 		ServerOptions ServerOptions_;
 		QList<ChannelOptions> ChannelsQueue_;
-		NickServIdentifyOptions NickServOptions_;
 		std::auto_ptr<InviteChannelsDialog> InviteChannelsDialog_;
 		QHash<QString, ChannelHandler*> ChannelHandlers_;
 		QHash<QString, ServerParticipantEntry_ptr> Nick2Entry_;
 	public:
 		IrcServerHandler (const ServerOptions&,
-				const NickServIdentifyOptions&, IrcAccount*);
+				IrcAccount*);
 
 		IrcServerCLEntry* GetCLEntry () const;
 		IrcAccount* GetAccount () const;

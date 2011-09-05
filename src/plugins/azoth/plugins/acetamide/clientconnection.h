@@ -60,7 +60,7 @@ namespace Acetamide
 		QList<IrcServerHandler*> GetServerHandlers () const;
 
 		bool IsServerExists (const QString&);
-		void JoinServer (const ServerOptions&, const NickServIdentifyOptions&);
+		void JoinServer (const ServerOptions&);
 		void JoinChannel (const ServerOptions&, const ChannelOptions&);
 
 		void SetBookmarks (const QList<IrcBookmark>&);

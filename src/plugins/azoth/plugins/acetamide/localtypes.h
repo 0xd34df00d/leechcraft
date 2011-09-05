@@ -46,14 +46,6 @@ namespace Acetamide
 		QString ChannelPassword_;
 	};
 
-	struct NickServIdentifyOptions
-	{
-		QString NickName_;
-		QString NickServMask_;
-		QString NickServAuthRegExp_;
-		QString AuthMessage_;
-	};
-	
 	enum ConnectionState
 	{
 		Connected,

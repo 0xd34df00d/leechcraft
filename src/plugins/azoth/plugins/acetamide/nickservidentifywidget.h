@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2011 Oleg Linkin
+ * Copyright (C) 2010-2011  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,11 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_CORE_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_CORE_H
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/structures.h>
+#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_NICKSERVIDENTIFYWIDGET_H
+#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_NICKSERVIDENTIFYWIDGET_H
+
+#include <QWidget>
+#include "ui_nickservidentifywidget.h"
 
 class QStandardItemModel;
 
@@ -30,42 +30,25 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	class IrcProtocol;
-	class IrcAccount;
-	class NickServIdentifyWidget;
-
-	class Core : public QObject
+	class NickServIdentifyWidget : public QWidget
 	{
 		Q_OBJECT
 
-		ICoreProxy_ptr Proxy_;
-		boost::shared_ptr<IrcProtocol> IrcProtocol_;
-		QObject *PluginProxy_;
+		Ui::NickServIdentifyWidget Ui_;
 		QStandardItemModel* Model_;
-		NickServIdentifyWidget* NickServIdentifyWidget_;
-		Core ();
 	public:
-		static Core& Instance ();
-
-		void Init ();
-		void SecondInit ();
-		void Release ();
-		QList<QObject*> GetProtocols () const;
-
-		void SetPluginProxy (QObject*);
-		void SetProxy (ICoreProxy_ptr);
-		ICoreProxy_ptr GetProxy () const;
-		void SendEntity (const Entity&);
-
-		NickServIdentifyWidget* GetNickServIdentifyWidget () const;
-		QStandardItemModel* GetNickServIdentifyModel () const;
+		NickServIdentifyWidget (QStandardItemModel*, QWidget* = 0, Qt::WindowFlags = 0);
+	private:
+		void ReadSettings ();
+	public slots:
+		void accept ();
 	private slots:
-		void handleItemsAdded (const QList<QObject*>&);
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
+		void on_Add__clicked ();
+		void on_Edit__clicked ();
+		void on_Delete__clicked ();
 	};
-}
-}
-}
+};
+};
+};
 
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_CORE_H
+#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_NICKSERVIDENTIFYWIDGET_H

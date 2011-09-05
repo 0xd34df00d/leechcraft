@@ -45,7 +45,7 @@ namespace Azoth
 namespace Acetamide
 {
 	IrcServerHandler::IrcServerHandler (const ServerOptions& server,
-			const NickServIdentifyOptions& nickserv, IrcAccount *account)
+			IrcAccount *account)
 	: Account_ (account)
 	, ErrorHandler_ (new IrcErrorHandler (this))
 	, IrcParser_ (0)
@@ -58,7 +58,6 @@ namespace Acetamide
 			QString::number (server.ServerPort_))
 	, NickName_ (server.ServerNickName_)
 	, ServerOptions_ (server)
-	, NickServOptions_ (nickserv)
 	{
 		IrcParser_ = new IrcParser (this);
 		CmdManager_ = new UserCommandManager (this);
@@ -330,20 +329,20 @@ namespace Acetamide
 	{
 		ShowAnswer (msg);
 
-		if (GetNickName () != NickServOptions_.NickName_)
-			return;
-
-		QRegExp nickMask (NickServOptions_.NickServMask_,
-				Qt::CaseInsensitive, QRegExp::Wildcard);
-		if (nickMask.indexIn (nick) == -1)
-			return;
-
-		QRegExp authRegExp (NickServOptions_.NickServAuthRegExp_,
-				Qt::CaseInsensitive, QRegExp::Wildcard);
-		if (authRegExp.indexIn (msg) == -1)
-			return;
-
-		SendMessage2Server (msg.split (' '));
+// 		if (GetNickName () != NickServOptions_.NickName_)
+// 			return;
+// 
+// 		QRegExp nickMask (NickServOptions_.NickServMask_,
+// 				Qt::CaseInsensitive, QRegExp::Wildcard);
+// 		if (nickMask.indexIn (nick) == -1)
+// 			return;
+// 
+// 		QRegExp authRegExp (NickServOptions_.NickServAuthRegExp_,
+// 				Qt::CaseInsensitive, QRegExp::Wildcard);
+// 		if (authRegExp.indexIn (msg) == -1)
+// 			return;
+// 
+// 		SendMessage2Server (msg.split (' '));
 	}
 
 	void IrcServerHandler::ChangeNickname (const QString& nick, 

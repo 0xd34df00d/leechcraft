@@ -78,8 +78,7 @@ namespace Acetamide
 		}
 
 		SelectedAccount_ = acc;
-		acc->JoinServer (GetServerOptions (), GetChannelOptions (),
-				GetNickServIdentifyOptions ());
+		acc->JoinServer (GetServerOptions (), GetChannelOptions ());
 	}
 
 	void IrcJoinGroupChat::Cancel ()
@@ -158,11 +157,6 @@ namespace Acetamide
 		const QString& encoding = data ["Encoding"].toString ();
 		const int port = data ["Port"].toInt ();
 		const bool ssl = data ["SSL"].toBool ();
-		const bool nickServIdentify = data ["NickServIdentify"].toBool ();
-		const QString& nickServNick = data ["NickServNickName"].toString ();
-		const QString& nickServMask = data ["NickServMask"].toString (); 
-		const QString& nickServAuthRegExp = data ["NickServAuthRegExp"].toString ();
-		const QString& nickServAuthMessage = data ["NickServAuthMessage"].toString ();
 
 		if (!nick.isEmpty ())
 			Ui_.Nickname_->setText (nick);
@@ -175,16 +169,6 @@ namespace Acetamide
 		if (port)
 			Ui_.Port_->setValue (port);
 		Ui_.SSL_->setChecked (ssl);
-		Ui_.NickServIdentify_->setChecked (nickServIdentify);
-
-		if (!nickServNick.isEmpty ())
-			Ui_.NickServNickname_->setText (nickServNick);
-		if (!nickServMask.isEmpty ())
-			Ui_.NickServMask_->setText (nickServMask);
-		if (!nickServAuthRegExp.isEmpty ())
-			Ui_.NickServAuthRegExp_->setText (nickServAuthRegExp);
-		if (!nickServAuthMessage.isEmpty ())
-			Ui_.NickServAuthMessage_->setText (nickServAuthMessage);
 	}
 
 	QVariantMap IrcJoinGroupChat::GetIdentifyingData () const
@@ -202,11 +186,6 @@ namespace Acetamide
 		result ["Port"] = GetPort ();
 		result ["Encoding"] = GetEncoding ();
 		result ["SSL"] = GetSSL ();
-		result ["NickServIdentify"] = GetNickServIdentify ();
-		result ["NickServNickName"] = GetNickServNickname ();
-		result ["NickServMask"] = GetNickServMask ();
-		result ["NickServAuthRegExp"] = GetNickServAuthRegExp ();
-		result ["NickServAuthMessage"] = GetNickServAuthMessage ();
 
 		return result;
 	}
@@ -247,31 +226,6 @@ namespace Acetamide
 		return Ui_.SSL_->isChecked ();
 	}
 
-	bool IrcJoinGroupChat::GetNickServIdentify () const
-	{
-		return Ui_.NickServIdentify_->isChecked ();
-	}
-
-	QString IrcJoinGroupChat::GetNickServNickname () const
-	{
-		return Ui_.NickServNickname_->text ();
-	}
-
-	QString IrcJoinGroupChat::GetNickServMask () const
-	{
-		return Ui_.NickServMask_->text ();
-	}
-
-	QString IrcJoinGroupChat::GetNickServAuthRegExp () const
-	{
-		return Ui_.NickServAuthRegExp_->text ();
-	}
-
-	QString IrcJoinGroupChat::GetNickServAuthMessage () const
-	{
-		return Ui_.NickServAuthMessage_->text ();
-	}
-
 	ServerOptions IrcJoinGroupChat::GetServerOptions () const
 	{
 		ServerOptions so;
@@ -281,7 +235,6 @@ namespace Acetamide
 		so.ServerPassword_ = QString ();
 		so.SSL_ = GetSSL ();
 		so.ServerNickName_ = GetNickname ();
-		so.NickServIdentify_ = GetNickServIdentify ();
 		return so;
 	}
 
@@ -294,18 +247,6 @@ namespace Acetamide
 
 		return cho;
 	}
-
-	NickServIdentifyOptions IrcJoinGroupChat::GetNickServIdentifyOptions () const
-	{
-		NickServIdentifyOptions nsio;
-		nsio.NickName_ = GetNickServNickname ();
-		nsio.NickServMask_ = GetNickServMask ();
-		nsio.NickServAuthRegExp_ = GetNickServAuthRegExp ();
-		nsio.AuthMessage_ = GetNickServAuthMessage ();
-
-		return nsio;
-	}
-
 };
 };
 };

@@ -11,5 +11,9 @@
 						<label value="Show invite dialog" />
 				</item>
 			</groupbox>
+			<groupbox>
+				<label value="NickServ identify" />
+				<item type="customwidget" label="own" name="NickServIdentifyWidget" />
+			</groupbox>
 	</page>
 </settings>

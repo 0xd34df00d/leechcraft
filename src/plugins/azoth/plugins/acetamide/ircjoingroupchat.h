@@ -58,16 +58,9 @@ namespace Acetamide
 		QString GetNickname () const;
 		QString GetEncoding () const;
 		bool GetSSL () const;
-		bool GetNickServIdentify () const;
-
-		QString GetNickServNickname () const;
-		QString GetNickServMask () const;
-		QString GetNickServAuthRegExp () const;
-		QString GetNickServAuthMessage () const;
 
 		ServerOptions GetServerOptions () const;
 		ChannelOptions GetChannelOptions () const;
-		NickServIdentifyOptions GetNickServIdentifyOptions () const; 
 	signals:
 		void validityChanged (bool);
 	};

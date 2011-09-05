@@ -19,10 +19,12 @@
 #include "acetamide.h"
 #include <ctime>
 #include <QIcon>
+#include <QStandardItemModel>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
+#include "nickservidentifywidget.h"
 
 namespace LeechCraft
 {
@@ -41,7 +43,13 @@ namespace Acetamide
 				RegisterObject (&XmlSettingsManager::Instance (),
 					"azothacetamidesettings.xml");
 
+		Core::Instance ().Init ();
 		Core::Instance ().SetProxy (proxy);
+
+		SettingsDialog_->SetCustomWidget ("NickServIdentifyWidget",
+				Core::Instance ().GetNickServIdentifyWidget ());
+// 		SettingsDialog_->SetDataSource ("NickServIdentifyModel",
+// 				Core::Instance ().GetNickServIdentifyModel ());
 
 		connect (&Core::Instance (),
 				SIGNAL (gotEntity (const LeechCraft::Entity&)),
