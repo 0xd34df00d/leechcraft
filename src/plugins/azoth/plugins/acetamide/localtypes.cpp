@@ -45,6 +45,15 @@ namespace Acetamide
 	{
 	}
 
+	bool operator== (const NickServIdentify& nsi1,
+					const NickServIdentify& nsi2)
+	{
+		return	(nsi1.Server_ == nsi2.Server_) &&
+				(nsi1.Nick_ == nsi2.Nick_) &&
+				(nsi1.NickServNick_ == nsi2.NickServNick_) &&
+				(nsi1.AuthString_ == nsi2.AuthString_) &&
+				(nsi1.AuthMessage_ == nsi2.AuthMessage_);
+	}
 };
 };
 };

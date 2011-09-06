@@ -31,6 +31,11 @@ namespace Acetamide
 		Ui_.setupUi (this);
 	}
 
+	QString NewNickServIdentifyDialog::GetServer () const
+	{
+		return Ui_.Server_->text ();
+	}
+
 	QString NewNickServIdentifyDialog::GetNickName () const
 	{
 		return Ui_.NickName_->text ();
@@ -53,13 +58,39 @@ namespace Acetamide
 
 	void NewNickServIdentifyDialog::accept ()
 	{
-		if (GetNickName ().isEmpty () ||
+		if (GetServer ().isEmpty () ||
+				GetNickName ().isEmpty () ||
 				GetNickServNickName ().isEmpty () ||
 				GetAuthString ().isEmpty () ||
 				GetAuthMessage ().isEmpty ())
 			return;
 
 		QDialog::accept ();
+	}
+
+	void NewNickServIdentifyDialog::SetServer (const QString& server)
+	{
+		Ui_.Server_->setText (server);
+	}
+
+	void NewNickServIdentifyDialog::SetNickName (const QString& nick)
+	{
+		Ui_.NickName_->setText (nick);
+	}
+
+	void NewNickServIdentifyDialog::SetNickServNickName (const QString& nickServ)
+	{
+		Ui_.NickServNickname_->setText (nickServ);
+	}
+
+	void NewNickServIdentifyDialog::SetAuthString (const QString& authString)
+	{
+		Ui_.NickServAuthString_->setText (authString);
+	}
+
+	void NewNickServIdentifyDialog::SetAuthMessage (const QString& authMessage)
+	{
+		Ui_.AuthMessage_->setText (authMessage);
 	}
 
 }

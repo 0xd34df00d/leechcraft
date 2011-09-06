@@ -38,6 +38,8 @@ namespace Acetamide
 
 		qsrand (time (NULL));
 
+		qRegisterMetaTypeStreamOperators<QList<QStringList> >("QList<QStringList>");
+
 		SettingsDialog_.reset (new Util::XmlSettingsDialog);
 		SettingsDialog_->
 				RegisterObject (&XmlSettingsManager::Instance (),
@@ -116,6 +118,28 @@ namespace Acetamide
 	}
 }
 }
+}
+
+
+QDataStream &operator<< (QDataStream &out, const QList<QStringList> &list)
+{
+	Q_FOREACH (const QStringList& subList, list)
+	out << subList;
+	
+	return out;
+}
+
+QDataStream &operator>> (QDataStream &in, QList<QStringList> &list)
+{
+	QStringList subList;
+	while (!in.atEnd ())
+	{
+		in >> subList;
+		list << subList;
+		subList.clear ();
+	}
+	
+	return in;
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_azoth_acetamide,

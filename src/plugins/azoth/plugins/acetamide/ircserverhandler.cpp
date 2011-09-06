@@ -328,21 +328,23 @@ namespace Acetamide
 	void IrcServerHandler::IncomingNoticeMessage (const QString& nick, const QString& msg)
 	{
 		ShowAnswer (msg);
+		QList<NickServIdentify> list = Core::Instance ()
+				.GetNickServIdentifyWithServ (ServerOptions_.ServerName_,
+						GetNickName (),
+						nick);
+		if (list.isEmpty ())
+			return;
+		Q_FOREACH (const NickServIdentify& nsi, list)
+		{
+			QRegExp authRegExp (nsi.AuthString_,
+					Qt::CaseInsensitive,
+					QRegExp::Wildcard);
+			if (authRegExp.indexIn (msg) == -1)
+				continue;
 
-// 		if (GetNickName () != NickServOptions_.NickName_)
-// 			return;
-// 
-// 		QRegExp nickMask (NickServOptions_.NickServMask_,
-// 				Qt::CaseInsensitive, QRegExp::Wildcard);
-// 		if (nickMask.indexIn (nick) == -1)
-// 			return;
-// 
-// 		QRegExp authRegExp (NickServOptions_.NickServAuthRegExp_,
-// 				Qt::CaseInsensitive, QRegExp::Wildcard);
-// 		if (authRegExp.indexIn (msg) == -1)
-// 			return;
-// 
-// 		SendMessage2Server (msg.split (' '));
+			SendMessage2Server (nsi.AuthMessage_.split (' '));
+			return;
+		}
 	}
 
 	void IrcServerHandler::ChangeNickname (const QString& nick, 

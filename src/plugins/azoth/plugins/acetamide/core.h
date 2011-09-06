@@ -21,6 +21,7 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/structures.h>
+#include "localtypes.h"
 
 class QStandardItemModel;
 
@@ -43,6 +44,7 @@ namespace Acetamide
 		QObject *PluginProxy_;
 		QStandardItemModel* Model_;
 		NickServIdentifyWidget* NickServIdentifyWidget_;
+		QList<NickServIdentify> NickServIdentifyList_;
 		Core ();
 	public:
 		static Core& Instance ();
@@ -59,6 +61,14 @@ namespace Acetamide
 
 		NickServIdentifyWidget* GetNickServIdentifyWidget () const;
 		QStandardItemModel* GetNickServIdentifyModel () const;
+
+		void AddNickServIdentify (const NickServIdentify&);
+		QList<NickServIdentify> GetAllNickServIdentify () const;
+		QList<NickServIdentify> GetNickServIdentifyWithNick (const QString&) const;
+		QList<NickServIdentify> GetNickServIdentifyWithNickServ (const QString&) const;
+		QList<NickServIdentify> GetNickServIdentifyWithServ (const QString&) const;
+		QList<NickServIdentify> GetNickServIdentifyWithMainParams (const QString&,
+				const QString&, const QString&) const;
 	private slots:
 		void handleItemsAdded (const QList<QObject*>&);
 	signals:

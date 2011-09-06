@@ -35,10 +35,12 @@ namespace Acetamide
 		Ui::NewNickServDataDialog Ui_;
 	public:
 		NewNickServIdentifyDialog (QWidget* = 0, Qt::WindowFlags = 0);
+		QString GetServer () const;
 		QString GetNickName () const;
 		QString GetNickServNickName () const;
 		QString GetAuthString () const;
 		QString GetAuthMessage () const;
+		void SetServer (const QString&);
 		void SetNickName (const QString&);
 		void SetNickServNickName (const QString&);
 		void SetAuthString (const QString&);

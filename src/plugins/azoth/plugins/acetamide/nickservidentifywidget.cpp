@@ -18,6 +18,7 @@
 
 #include "nickservidentifywidget.h"
 #include <QStandardItemModel>
+#include "acetamide.h"
 #include "core.h"
 #include "newnickservidentifydialog.h"
 #include "xmlsettingsmanager.h"
@@ -34,8 +35,10 @@ namespace Acetamide
 	, Model_ (model)
 	{
 		Ui_.setupUi (this);
+
 		Ui_.NickServIdentifyView_->setModel (Model_);
-		Model_->setHorizontalHeaderLabels (QStringList () << tr ("Nickname")
+		Model_->setHorizontalHeaderLabels (QStringList () << tr ("Server")
+				<< tr ("Nickname")
 				<< tr ("NickServ nickname")
 				<< tr ("NickServ auth string")
 				<< tr ("Auth message"));
@@ -46,12 +49,57 @@ namespace Acetamide
 
 	void NickServIdentifyWidget::ReadSettings ()
 	{
-		//TODO restore settings
+		QList<QStringList> list = XmlSettingsManager::Instance ()
+				.property("NickServIdentify").value<QList<QStringList> > ();
+
+		Q_FOREACH (const QStringList& subList, list)
+		{
+			if (subList.isEmpty ())
+				continue;
+
+			NickServIdentify nsi;
+			nsi.Server_ = subList [0];
+			nsi.Nick_ = subList [1];
+			nsi.NickServNick_ = subList [2];
+			nsi.AuthString_ = subList [3];
+			nsi.AuthMessage_ = subList [4];
+
+			QList<QStandardItem*> identify;
+			QStandardItem *serverItem = new QStandardItem (nsi.Server_);
+			serverItem->setEditable (false);
+			QStandardItem *nickItem = new QStandardItem (nsi.Nick_);
+			nickItem->setEditable (false);
+			QStandardItem *nickServNickItem = new QStandardItem (nsi.NickServNick_);
+			nickServNickItem->setEditable (false);
+			QStandardItem *authStringItem = new QStandardItem (nsi.AuthString_);
+			authStringItem->setEditable (false);
+			QStandardItem *authMessageItem = new QStandardItem (nsi.AuthMessage_);
+			authMessageItem->setEditable (false);
+			identify << serverItem
+					<< nickItem
+					<< nickServNickItem
+					<< authStringItem
+					<< authMessageItem;
+			Model_->appendRow (identify);
+			Core::Instance ().AddNickServIdentify (nsi);
+		}
 	}
 
 	void NickServIdentifyWidget::accept ()
 	{
-		//TODO save settings
+		QList<QStringList> list;
+		for (int i = 0; i < Model_->rowCount (); ++i)
+		{
+			QStringList record;
+			record << Model_->item (i, 0)->text ()
+					<< Model_->item (i, 1)->text()
+					<< Model_->item (i, 2)->text()
+					<< Model_->item (i, 3)->text()
+					<< Model_->item (i, 4)->text();
+			list << record;
+		}
+
+		XmlSettingsManager::Instance ().setProperty ("NickServIdentify", QVariant::fromValue (list));
 	}
 
 	void NickServIdentifyWidget::on_Add__clicked ()
@@ -61,11 +109,18 @@ namespace Acetamide
 			return;
 
 		QList<QStandardItem*> identify;
+		QStandardItem *serverItem = new QStandardItem (nns->GetServer ());
+		serverItem->setEditable (false);
 		QStandardItem *nickItem = new QStandardItem (nns->GetNickName ());
+		nickItem->setEditable (false);
 		QStandardItem *nickServNickItem = new QStandardItem (nns->GetNickServNickName ());
+		nickServNickItem->setEditable (false);
 		QStandardItem *authStringItem = new QStandardItem (nns->GetAuthString ());
+		authStringItem->setEditable (false);
 		QStandardItem *authMessageItem = new QStandardItem (nns->GetAuthMessage ());
-		identify << nickItem
+		authMessageItem->setEditable (false);
+		identify << serverItem
+				<< nickItem
 				<< nickServNickItem
 				<< authStringItem
 				<< authMessageItem;
@@ -79,18 +134,20 @@ namespace Acetamide
 			return;
 
 		std::auto_ptr<NewNickServIdentifyDialog> nns (new NewNickServIdentifyDialog (0));
-		nns->SetNickName (Model_->item(index.row (), 0)->text ());
-		nns->SetNickServNickName (Model_->item(index.row (), 1)->text ());
-		nns->SetAuthString (Model_->item(index.row (), 2)->text ());
-		nns->SetAuthMessage (Model_->item(index.row (), 3)->text ());
+		nns->SetServer (Model_->item(index.row (), 0)->text ());
+		nns->SetNickName (Model_->item(index.row (), 1)->text ());
+		nns->SetNickServNickName (Model_->item(index.row (), 2)->text ());
+		nns->SetAuthString (Model_->item(index.row (), 3)->text ());
+		nns->SetAuthMessage (Model_->item(index.row (), 4)->text ());
 		
 		if (nns->exec () == QDialog::Rejected)
 			return;
 
-		Model_->item(index.row (), 0)->setText (nns->GetNickName ());
-		Model_->item(index.row (), 1)->setText (nns->GetNickServNickName ());
-		Model_->item(index.row (), 2)->setText (nns->GetAuthString ());
-		Model_->item(index.row (), 3)->setText (nns->GetAuthMessage ());
+		Model_->item(index.row (), 0)->setText (nns->GetServer ());
+		Model_->item(index.row (), 1)->setText (nns->GetNickName ());
+		Model_->item(index.row (), 2)->setText (nns->GetNickServNickName ());
+		Model_->item(index.row (), 3)->setText (nns->GetAuthString ());
+		Model_->item(index.row (), 4)->setText (nns->GetAuthMessage ());
 	}
 
 	void NickServIdentifyWidget::on_Delete__clicked ()
