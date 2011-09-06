@@ -119,12 +119,20 @@ namespace Acetamide
 		authStringItem->setEditable (false);
 		QStandardItem *authMessageItem = new QStandardItem (nns->GetAuthMessage ());
 		authMessageItem->setEditable (false);
+		NickServIdentify nsi;
+		nsi.Server_ = nns->GetServer ();
+		nsi.Nick_ = nns->GetNickName ();
+		nsi.NickServNick_ = nns->GetNickServNickName ();
+		nsi.AuthString_ = nns->GetAuthString ();
+		nsi.AuthMessage_ = nns->GetAuthMessage ();
+
 		identify << serverItem
 				<< nickItem
 				<< nickServNickItem
 				<< authStringItem
 				<< authMessageItem;
 		Model_->appendRow (identify);
+		Core::Instance ().AddNickServIdentify (nsi);
 	}
 
 	void NickServIdentifyWidget::on_Edit__clicked ()

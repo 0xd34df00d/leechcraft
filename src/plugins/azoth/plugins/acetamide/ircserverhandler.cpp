@@ -329,11 +329,12 @@ namespace Acetamide
 	{
 		ShowAnswer (msg);
 		QList<NickServIdentify> list = Core::Instance ()
-				.GetNickServIdentifyWithServ (ServerOptions_.ServerName_,
+				.GetNickServIdentifyWithMainParams (ServerOptions_.ServerName_,
 						GetNickName (),
 						nick);
 		if (list.isEmpty ())
 			return;
+
 		Q_FOREACH (const NickServIdentify& nsi, list)
 		{
 			QRegExp authRegExp (nsi.AuthString_,
@@ -702,6 +703,7 @@ namespace Acetamide
 			else
 				IrcParser_->RawCommand (list);
 		}
+		ShowAnswer (msg);
 	}
 
 	void IrcServerHandler::ParseMessageForCommand (const QString& msg,
