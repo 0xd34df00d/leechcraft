@@ -19,6 +19,10 @@
 #include "core.h"
 #include <interfaces/ijobholder.h>
 #include <util/tagsfiltermodel.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/core/icoretabwidget.h>
+#include <interfaces/core/itagsmanager.h>
 #include "summarywidget.h"
 #include "requestnormalizer.h"
 #include "summarytagsfilter.h"
@@ -100,16 +104,13 @@ namespace LeechCraft
 
 			bool Core::CouldHandle (const LeechCraft::Entity& e) const
 			{
-				if (e.Mime_ == "x-leechcraft/category-search-request" &&
-						e.Entity_.canConvert<QString> ())
-					return true;
-				else
-					return false;
+				return e.Mime_ == "x-leechcraft/category-search-request" &&
+						e.Entity_.canConvert<QString> ();
 			}
 
 			void Core::Handle (LeechCraft::Entity e)
 			{
-				QString query = e.Entity_.toString ();
+				const QString& query = e.Entity_.toString ();
 				QStringList cats = e.Additional_ ["Categories"].toStringList ();
 
 				SummaryWidget *newTab = CreateSummaryWidget ();
@@ -126,8 +127,8 @@ namespace LeechCraft
 
 			bool Core::SameModel (const QModelIndex& i1, const QModelIndex& i2) const
 			{
-				QModelIndex mapped1 = MapToSourceRecursively (i1);
-				QModelIndex mapped2 = MapToSourceRecursively (i2);
+				const QModelIndex& mapped1 = MapToSourceRecursively (i1);
+				const QModelIndex& mapped2 = MapToSourceRecursively (i2);
 				return mapped1.model () == mapped2.model ();
 			}
 
@@ -136,7 +137,7 @@ namespace LeechCraft
 				if (!index.isValid ())
 					return 0;
 
-				QVariant data = index.data (RoleControls);
+				const QVariant& data = index.data (RoleControls);
 				return data.value<QToolBar*> ();
 			}
 
@@ -145,7 +146,7 @@ namespace LeechCraft
 				if (!index.isValid ())
 					return 0;
 
-				QVariant data = index.data (RoleAdditionalInfo);
+				const QVariant& data = index.data (RoleAdditionalInfo);
 				return data.value<QWidget*> ();
 			}
 
@@ -226,14 +227,14 @@ namespace LeechCraft
 
 				QList<IFinder*> finders = Proxy_->
 					GetPluginsManager ()->GetAllCastableTo<IFinder*> ();
-				QSet<QString> cats = QSet<QString>::fromList (query.Categories_);
+				const QSet<QString>& cats = QSet<QString>::fromList (query.Categories_);
 				FilterByCats (cats, finders, query.Op_);
 
 				QSet<QByteArray> used;
 				Q_FOREACH (IFinder *finder, finders)
 				{
 					QList<IFindProxy_ptr> proxies;
-					Q_FOREACH (QString category, cats)
+					Q_FOREACH (const QString& category, cats)
 					{
 						Request r =
 						{
@@ -252,7 +253,7 @@ namespace LeechCraft
 
 					Q_FOREACH (IFindProxy_ptr proxy, proxies)
 					{
-						QByteArray thisId = proxy->GetUniqueSearchID ();
+						const QByteArray& thisId = proxy->GetUniqueSearchID ();
 						if (used.contains (thisId))
 							continue;
 
@@ -274,24 +275,40 @@ namespace LeechCraft
 				QStringList ids = (*modIter)->data ((*modIter)->
 						index (index - starting, 0), RoleTags).toStringList ();
 				QStringList result;
-				Q_FOREACH (QString id, ids)
+				Q_FOREACH (const QString& id, ids)
 					result << Proxy_->GetTagsManager ()->GetTag (id);
 				return result;
 			}
 
 			QModelIndex Core::MapToSourceRecursively (QModelIndex index) const
 			{
-				const QAbstractProxyModel *model = 0;
-				bool mapped = false;
-				while ((model = qobject_cast<const QAbstractProxyModel*> (index.model ())) &&
-						model->property ("__LeechCraft_own_core_model").toBool ())
-				{
-					index = model->mapToSource (index);
-					mapped = true;
-				}
-
-				if (!mapped)
+				if (!index.isValid ())
 					return QModelIndex ();
+
+				while (true)
+				{
+					if (!index.model ()->property ("__LeechCraft_own_core_model").toBool ())
+						break;
+
+					const QAbstractProxyModel *pModel = qobject_cast<const QAbstractProxyModel*> (index.model ());
+					if (pModel)
+					{
+						index = pModel->mapToSource (index);
+						continue;
+					}
+
+					const Util::MergeModel *mModel = qobject_cast<const Util::MergeModel*> (index.model ());
+					if (mModel)
+					{
+						index = mModel->mapToSource (index);
+						continue;
+					}
+
+					qWarning () << Q_FUNC_INFO
+							<< "unhandled parent own core model"
+							<< index.model ();
+					break;
+				}
 
 				return index;
 			}

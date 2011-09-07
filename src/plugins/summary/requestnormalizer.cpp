@@ -48,7 +48,7 @@ namespace LeechCraft
 			, Root_ (new Util::MergeModel (QStringList ()))
 			, Parser_ (new RequestParser)
 			{
-				QStringList headers = QStringList (tr ("Name"))
+				const QStringList& headers = QStringList (tr ("Name"))
 					<< tr ("Status")
 					<< tr ("State");
 				Root_->SetHeaders (headers);

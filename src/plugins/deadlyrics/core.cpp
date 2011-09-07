@@ -23,6 +23,8 @@
 #include <QUrl>
 #include <QtDebug>
 #include <interfaces/iwebbrowser.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ipluginsmanager.h>
 #include "lyricwikisearcher.h"
 
 namespace LeechCraft
@@ -37,23 +39,23 @@ namespace LeechCraft
 				qRegisterMetaTypeStreamOperators<Lyrics> ("LeechCraft::Plugins::DeadLyrics::Lyrics");
 				Searchers_.push_back (searcher_ptr (new LyricWikiSearcher));
 			}
-			
+
 			Core& Core::Instance ()
 			{
 				static Core core;
 				return core;
 			}
-			
+
 			void Core::Release ()
 			{
 				Searchers_.clear ();
 			}
-			
+
 			void Core::SetProxy (ICoreProxy_ptr proxy)
 			{
 				Proxy_ = proxy;
 			}
-			
+
 			QNetworkAccessManager* Core::GetNetworkAccessManager () const
 			{
 				return Proxy_->GetNetworkAccessManager ();
@@ -67,12 +69,12 @@ namespace LeechCraft
 					qobject_cast<IWebBrowser*> (browsers.at (0)) :
 					0;
 			}
-			
+
 			QStringList Core::GetCategories () const
 			{
 				return QStringList (tr ("lyrics"));
 			}
-			
+
 			searchers_t Core::GetSearchers (const QString& category) const
 			{
 				if (category == tr ("lyrics"))

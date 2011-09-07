@@ -25,58 +25,75 @@ namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
+	QDataStream& operator<< (QDataStream& out, const NotificationRule& r)
+	{
+		r.Save (out);
+		return out;
+	}
+
+	QDataStream& operator>> (QDataStream& in, NotificationRule& r)
+	{
+		r.Load (in);
+		return in;
+	}
+
 	Core::Core ()
 	: NRW_ (0)
 	, AudioThemeLoader_ (new Util::ResourceLoader ("sounds/"))
 	{
 		AudioThemeLoader_->AddLocalPrefix ();
 		AudioThemeLoader_->AddGlobalPrefix ();
+
+		qRegisterMetaType<NotificationRule> ("LeechCraft::AdvancedNotifications::NotificationRule");
+		qRegisterMetaTypeStreamOperators<NotificationRule> ("LeechCraft::AdvancedNotifications::NotificationRule");
+		qRegisterMetaType<QList<NotificationRule> > ("QList<LeechCraft::AdvancedNotifications::NotificationRule>");
+		qRegisterMetaTypeStreamOperators<QList<NotificationRule> > ("QList<LeechCraft::AdvancedNotifications::NotificationRule>");
 	}
-	
+
 	Core& Core::Instance ()
 	{
 		static Core c;
 		return c;
 	}
-	
+
 	void Core::Release ()
 	{
 		AudioThemeLoader_.reset ();
 	}
-	
+
 	ICoreProxy_ptr Core::GetProxy () const
 	{
 		return Proxy_;
 	}
-	
+
 	void Core::SetProxy (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
 	}
-	
+
 	NotificationRulesWidget* Core::GetNRW ()
 	{
 		if (!NRW_)
 			NRW_ = new NotificationRulesWidget;
 		return NRW_;
 	}
-	
+
 	boost::shared_ptr<Util::ResourceLoader> Core::GetAudioThemeLoader () const
 	{
 		return AudioThemeLoader_;
 	}
-	
+
 	QList<NotificationRule> Core::GetRules (const Entity& e) const
 	{
 		const QString& type = e.Additional_ ["org.LC.AdvNotifications.EventType"].toString ();
 
 		QList<NotificationRule> result;
-		
+
 		Q_FOREACH (const NotificationRule& rule, NRW_->GetRules ())
 		{
 			if (!rule.GetTypes ().contains (type))
 				continue;
-			
+
 			bool fieldsMatch = true;
 			Q_FOREACH (const FieldMatch& match, rule.GetFieldMatches ())
 			{
@@ -88,17 +105,17 @@ namespace AdvancedNotifications
 					break;
 				}
 			}
-			
+
 			if (!fieldsMatch)
 				continue;
-			
+
 			result << rule;
 			break;
 		}
-		
+
 		return result;
 	}
-	
+
 	void Core::SendEntity (const Entity& e)
 	{
 		emit gotEntity (e);

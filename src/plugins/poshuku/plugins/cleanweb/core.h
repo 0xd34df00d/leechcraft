@@ -27,6 +27,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/idownload.h>
 #include <interfaces/poshukutypes.h>
+#include <interfaces/core/ihookproxy.h>
 #include "filter.h"
 
 class QNetworkRequest;
@@ -66,7 +67,7 @@ namespace CleanWeb
 		QMap<int, PendingJob> PendingJobs_;
 
 		QList<QString> Blocked_;
-		
+
 		QHash<QWebFrame*, QStringList> MoreDelayedURLs_;
 
 		ICoreProxy_ptr Proxy_;
@@ -93,7 +94,6 @@ namespace CleanWeb
 		QNetworkReply* Hook (LeechCraft::IHookProxy_ptr,
 				QNetworkAccessManager*,
 				QNetworkAccessManager::Operation*,
-				QNetworkRequest*,
 				QIODevice**);
 		void HandleExtension (LeechCraft::IHookProxy_ptr,
 				QWebPage*,

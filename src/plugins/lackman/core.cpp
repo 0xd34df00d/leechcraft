@@ -25,6 +25,7 @@
 #include <QtDebug>
 #include <util/util.h>
 #include <xmlsettingsdialog/datasourceroles.h>
+#include <interfaces/core/icoreproxy.h>
 #include "repoinfofetcher.h"
 #include "storage.h"
 #include "packagesmodel.h"
@@ -1158,7 +1159,7 @@ namespace LeechCraft
 							}
 						}
 					}
-					
+
 					emit tagsUpdated (GetAllTags ());
 				}
 				catch (const std::runtime_error& e)

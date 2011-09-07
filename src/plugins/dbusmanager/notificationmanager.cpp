@@ -22,6 +22,8 @@
 #include <QApplication>
 #include <QIcon>
 #include <QtDebug>
+#include <interfaces/structures.h>
+#include <interfaces/core/icoreproxy.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 
@@ -148,7 +150,7 @@ void NotificationManager::DoNotify (const Entity& e, bool hasActions)
 	connect (watcher,
 			SIGNAL (finished (QDBusPendingCallWatcher*)),
 			this,
-			SLOT (handleNotificationCallFinished (QDBusPendingCallWatcher*)));	
+			SLOT (handleNotificationCallFinished (QDBusPendingCallWatcher*)));
 }
 
 void NotificationManager::handleNotificationCallFinished (QDBusPendingCallWatcher *w)

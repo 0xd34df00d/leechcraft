@@ -1,0 +1,50 @@
+@import url('../main.css');
+
+body {
+	background: url(../images/backgroundMargarita.jpg) repeat-y center top #000 fixed;
+}
+
+.message1 .userName, .message1 .date, #headerChatStarted h2 {
+	color: #7aaa12;
+}
+
+.message2 .userName, .message2 .date {
+	color: #a4bc21;
+}
+
+.status {
+	color: #4c7427;
+	text-shadow: none;
+}
+
+#headerImage {
+	background: url(../images/backgroundUserImageMarg.png) no-repeat;
+}
+
+.content {
+	border-top: 3px solid #7aaa12;
+	border-bottom: 1px solid #7aaa12;
+}
+
+.message2 .content {
+	border-top: 3px solid #a4bc21;
+	border-bottom: 1px solid #a4bc21;
+}
+
+
+.message1 a {
+	color: #288d0a;
+}
+
+.message1 a:hover {
+	color: #227a09;
+}
+
+.message2 a {
+	color: #8b8b00;
+}
+
+.message2 a:hover {
+	color: #656500;
+}
+

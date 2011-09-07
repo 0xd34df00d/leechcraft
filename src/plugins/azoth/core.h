@@ -27,6 +27,7 @@
 #ifdef ENABLE_CRYPT
 #include <QtCrypto>
 #endif
+#include <interfaces/core/ihookproxy.h>
 #include <interfaces/ianemitter.h>
 #include "interfaces/iinfo.h"
 #include "interfaces/azothcommon.h"
@@ -72,7 +73,7 @@ namespace Azoth
 
 		QRegExp LinkRegexp_;
 		QRegExp ImageRegexp_;
-		
+
 #ifdef ENABLE_CRYPT
 		boost::scoped_ptr<QCA::Initializer> QCAInit_;
 		boost::scoped_ptr<QCA::KeyStoreManager> KeyStoreMgr_;
@@ -104,7 +105,7 @@ namespace Azoth
 
 		typedef QHash<ICLEntry*, QImage> Entry2SmoothAvatarCache_t;
 		Entry2SmoothAvatarCache_t Entry2SmoothAvatarCache_;
-		
+
 		AnimatedIconManager<QStandardItem*> *ItemIconManager_;
 	public:
 		enum ResourceLoaderType
@@ -171,7 +172,7 @@ namespace Azoth
 
 		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;
-		
+
 		QList<ANFieldData> GetANFields () const;
 
 		Util::ResourceLoader* GetResourceLoader (ResourceLoaderType) const;
@@ -182,7 +183,7 @@ namespace Azoth
 		QSet<QByteArray> GetExpectedPluginClasses () const;
 		void AddPlugin (QObject*);
 		void RegisterHookable (QObject*);
-		
+
 		bool CouldHandle (const Entity&) const;
 		void Handle (Entity);
 
@@ -192,11 +193,11 @@ namespace Azoth
 		ChatTabsManager* GetChatTabsManager () const;
 		QList<IAccount*> GetAccounts () const;
 		QList<IProtocol*> GetProtocols () const;
-		
+
 #ifdef ENABLE_CRYPT
 		QList<QCA::PGPKey> GetPublicKeys () const;
 		QList<QCA::PGPKey> GetPrivateKeys () const;
-		
+
 		void AssociatePrivateKey (IAccount*, const QCA::PGPKey&) const;
 #endif
 
@@ -229,7 +230,7 @@ namespace Azoth
 		void HandleTransferJob (QObject *job);
 
 		TransferJobManager* GetTransferJobManager () const;
-		
+
 		CallManager* GetCallManager () const;
 
 		/** Whether the given from the given entry should be counted as
@@ -244,7 +245,7 @@ namespace Azoth
 		 * highlights the participant.
 		 */
 		bool IsHighlightMessage (IMessage*);
-		
+
 		/** Returns the name of the icon from the current iconset for
 		 * the given contact list entry state.
 		 */
@@ -254,7 +255,7 @@ namespace Azoth
 		 * contact list entry state.
 		 */
 		QIcon GetIconForState (State state) const;
-		
+
 		/** Returns an icon from the current iconset for the given
 		 * affiliation.
 		 */
@@ -299,18 +300,18 @@ namespace Azoth
 		 * otherwise an empty list would be returned.
 		 */
 		QList<CLEntryActionArea> GetAreasForAction (const QAction *action) const;
-		
+
 		QString GetSelectedChatTemplate (QObject *entry, QWebFrame *frame) const;
-		
+
 		bool AppendMessageByTemplate (QWebFrame*, QObject*, const ChatMsgAppendInfo&);
-		
-		void FrameFocused (QWebFrame*);
-		
+
+		void FrameFocused (QObject*, QWebFrame*);
+
 		// Theming stuff
 		QList<QColor> GenerateColors (const QString& coloringScheme) const;
-		
+
 		QString GetNickColor (const QString& nick, const QList<QColor>& colors) const;
-		
+
 		QString FormatDate (QDateTime, IMessage*);
 		QString FormatNickname (QString, IMessage*, const QString& color);
 		QString FormatBody (QString body, IMessage *msg);
@@ -324,7 +325,7 @@ namespace Azoth
 		 * account in this protocol or joining groupchats.
 		 */
 		void AddProtocolPlugin (QObject *object);
-		
+
 		/** Adds the resource source object. Currently only smile
 		 * resources are supported.
 		 */
@@ -355,7 +356,7 @@ namespace Azoth
 		 */
 		QStandardItem* GetAccountItem (const QObject *accountObj,
 				QMap<const QObject*, QStandardItem*>& accountItemCache);
-		
+
 		/** Creates the tooltip text for the roster entry to be shown in
 		 * the tree.
 		 */
@@ -365,12 +366,12 @@ namespace Azoth
 		 */
 		void HandleStatusChanged (const EntryStatus& status,
 				ICLEntry *entry, const QString& variant);
-		
+
 		/** Checks whether icon representing incoming file should be
 		 * drawn for the entry with the given id.
 		 */
 		void CheckFileIcon (const QString& id);
-		
+
 		/** This function increases the number of unread messages by
 		 * the given amount, which may be negative.
 		 */
@@ -411,13 +412,13 @@ namespace Azoth
 		/** Adds the given entry to the given category item.
 		 */
 		void AddEntryTo (ICLEntry*, QStandardItem*);
-		
+
 		void SuggestJoiningMUC (IAccount*, const QVariantMap&);
-		
-		IChatStyleResourceSource* GetCurrentChatStyle () const;
-		
+
+		IChatStyleResourceSource* GetCurrentChatStyle (QObject*) const;
+
 		void FillANFields ();
-		
+
 #ifdef ENABLE_CRYPT
 		void RestoreKeyForAccount (IAccount*);
 		void RestoreKeyForEntry (ICLEntry*);
@@ -467,7 +468,7 @@ namespace Azoth
 		/** Handles the status change of a CL entry to new status.
 		 */
 		void handleStatusChanged (const EntryStatus& status, const QString& variant);
-		
+
 		/** Handles ICLEntry's PEP-like (XEP-0163) event from the given
 		 * variant.
 		 */
@@ -478,13 +479,13 @@ namespace Azoth
 		void handleEntryNameChanged (const QString& newName);
 
 		/** Handles the event of groups change in plugin.
-		 * 
+		 *
 		 * If obj is null, the sender() is used, otherwise obj is used.
 		 */
 		void handleEntryGroupsChanged (QStringList, QObject *obj = 0);
-		
+
 		/** Handles the event of permissions change in entry from plugin.
-		 * 
+		 *
 		 * If the passed entry is not NULL, it will be used, otherwise
 		 * sender() will be used.
 		 */
@@ -497,19 +498,19 @@ namespace Azoth
 		/** Handles the authorization requests from accounts.
 		 */
 		void handleAuthorizationRequested (QObject*, const QString&);
-		
+
 		/** Handles the IAdvancedCLEntry::attentionDrawn().
 		 */
 		void handleAttentionDrawn (const QString&, const QString&);
-		
+
 		/** Handles nick conflict.
 		 */
 		void handleNicknameConflict (const QString&);
-		
+
 		/** Handles kicks.
 		 */
 		void handleBeenKicked (const QString&);
-		
+
 		/** Handles bans.
 		 */
 		void handleBeenBanned (const QString&);
@@ -526,7 +527,7 @@ namespace Azoth
 		 * changes of the "StatusIcons" property.
 		 */
 		void updateStatusIconset ();
-		
+
 		/** Is registered in the XmlSettingsManager as handler for
 		 * changes of the "GroupContacts" property.
 		 */
@@ -548,7 +549,7 @@ namespace Azoth
 		 * ICLEntry, obviously.
 		 */
 		void handleClearUnreadMsgCount (QObject *object);
-		
+
 		void handleFileOffered (QObject*);
 		void handleJobDeoffered (QObject*);
 
@@ -580,12 +581,12 @@ namespace Azoth
 		void handleActionLeaveTriggered ();
 		void handleActionAuthorizeTriggered ();
 		void handleActionDenyAuthTriggered ();
-		
+
 		void handleActionAddContactFromMUC ();
 		void handleActionCopyMUCPartID ();
 
 		void handleActionPermTriggered ();
-		
+
 #ifdef ENABLE_CRYPT
 		void handleQCAEvent (int, const QCA::Event&);
 		void handleQCABusyFinished ();

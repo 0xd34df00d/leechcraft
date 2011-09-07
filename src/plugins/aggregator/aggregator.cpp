@@ -35,6 +35,7 @@
 #include <QCursor>
 #include <QKeyEvent>
 #include <interfaces/entitytesthandleresult.h>
+#include <interfaces/core/icoreproxy.h>
 #include <util/tagscompletionmodel.h>
 #include <util/util.h>
 #include <util/categoryselector.h>
@@ -90,7 +91,7 @@ namespace Aggregator
 		std::auto_ptr<RegexpMatcherUi> RegexpMatcherUi_;
 
 		QModelIndex SelectedRepr_;
-		
+
 		TabClassInfo TabInfo_;
 	};
 
@@ -104,7 +105,7 @@ namespace Aggregator
 
 		Impl_ = new Aggregator_Impl;
 		Impl_->Translator_.reset (LeechCraft::Util::InstallTranslator ("aggregator"));
-		
+
 		Impl_->TabInfo_.TabClass_ = "Aggregator";
 		Impl_->TabInfo_.VisibleName_ = GetName ();
 		Impl_->TabInfo_.Description_ = GetInfo ();
@@ -287,7 +288,11 @@ namespace Aggregator
 	void Aggregator::SecondInit ()
 	{
 		LoadColumnWidth (Impl_->Ui_.Feeds_, "feeds");
+
+		Impl_->Ui_.ItemsWidget_->ConstructBrowser ();
 		Impl_->Ui_.ItemsWidget_->LoadUIState ();
+
+		Core::Instance ().GetReprWidget ()->ConstructBrowser ();
 	}
 
 	void Aggregator::Release ()
@@ -354,7 +359,7 @@ namespace Aggregator
 	{
 		return Impl_->Ui_.ItemsWidget_->GetToolBar ();
 	}
-	
+
 	void Aggregator::TabOpenRequested (const QByteArray& tabClass)
 	{
 		if (tabClass == "Aggregator")
@@ -364,17 +369,17 @@ namespace Aggregator
 					<< "unknown tab class"
 					<< tabClass;
 	}
-	
+
 	TabClassInfo Aggregator::GetTabClassInfo () const
 	{
 		return Impl_->TabInfo_;
 	}
-	
+
 	QObject* Aggregator::ParentMultiTabs ()
 	{
 		return this;
 	}
-	
+
 	void Aggregator::Remove ()
 	{
 		emit removeTab (this);
@@ -459,18 +464,22 @@ namespace Aggregator
 			break;
 		case AEPQuickLaunch:
 			break;
+		default:
+			qWarning () << Q_FUNC_INFO
+					<< "unknown place"
+					<< place;
 		}
 
 		return result;
 	}
-	
+
 	QSet<QByteArray> Aggregator::GetExpectedPluginClasses () const
 	{
 		QSet<QByteArray> result;
 		result << "org.LeechCraft.Aggregator.GeneralPlugin/1.0";
 		return result;
 	}
-	
+
 	void Aggregator::AddPlugin (QObject *plugin)
 	{
 		Core::Instance ().AddPlugin (plugin);
@@ -562,7 +571,7 @@ namespace Aggregator
 			return Core::Instance ().GetChannelsModel ()->mapToSource (index);
 		}
 	}
-	
+
 	QList<QModelIndex> Aggregator::GetRelevantIndexes () const
 	{
 		if (IsRepr ())

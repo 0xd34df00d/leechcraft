@@ -21,6 +21,8 @@
 #include <QUrl>
 #include <util/util.h>
 #include <util/treeitem.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/itagsmanager.h>
 #include "core.h"
 #include "filesviewdelegate.h"
 #include "torrentfilesmodel.h"

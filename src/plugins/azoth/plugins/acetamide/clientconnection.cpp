@@ -80,12 +80,13 @@ namespace Acetamide
 		return ServerHandlers_.contains (key);
 	}
 
-	void ClientConnection::JoinServer (const ServerOptions& server)
+	void ClientConnection::JoinServer (const ServerOptions& server,
+			const NickServIdentifyOptions& nickserv)
 	{
 		QString serverId = server.ServerName_ + ":" +
 				QString::number (server.ServerPort_);
 
-		IrcServerHandler *ish = new IrcServerHandler (server, Account_);
+		IrcServerHandler *ish = new IrcServerHandler (server, nickserv, Account_);
 		
 		ish->SetConsoleEnabled (IsConsoleEnabled_);
 		if (IsConsoleEnabled_)
@@ -121,14 +122,8 @@ namespace Acetamide
 			return;
 		}
 
-		if (!ServerHandlers_ [serverId]->JoinChannel (channel))
-		{
-			Entity e = Util::MakeNotification ("Azoth",
-					tr ("Unable to join the channel."),
-					PCritical_);
-			Core::Instance ().SendEntity (e);
-			return;
-		}
+		if (!channel.ChannelName_.isEmpty ())
+			ServerHandlers_ [serverId]->JoinChannel (channel);
 	}
 
 	void ClientConnection::SetBookmarks (const QList<IrcBookmark>& bookmarks)

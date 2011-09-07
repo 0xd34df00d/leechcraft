@@ -28,6 +28,8 @@
 #include <QSqlRecord>
 #include <util/dblock.h>
 #include <util/defaulthookproxy.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/itagsmanager.h>
 #include "xmlsettingsmanager.h"
 #include "core.h"
 
@@ -720,6 +722,22 @@ namespace Aggregator
 		RemoveMediaRSSScenes_ = QSqlQuery (DB_);
 		RemoveMediaRSSScenes_.prepare ("DELETE FROM mrss_scenes "
 				"WHERE mrss_scene_id = :mrss_scene_id");
+
+		GetItemTags_ = QSqlQuery (DB_);
+		GetItemTags_.prepare ("SELECT tag FROM items2tags "
+				"WHERE item_id = :item_id");
+
+		AddItemTag_ = QSqlQuery (DB_);
+		AddItemTag_.prepare ("INSERT INTO items2tags "
+				"(item_id, tag) VALUES (:item_id, :tag)");
+
+		ClearItemTags_ = QSqlQuery (DB_);
+		ClearItemTags_.prepare ("DELETE FROM items2tags "
+				"WHERE item_id = :item_id");
+
+		GetItemsForTag_ = QSqlQuery (DB_);
+		GetItemsForTag_.prepare ("SELECT item_id FROM items2tags "
+				"WHERE tag = :tag");
 	}
 
 	void SQLStorageBackend::GetFeedsIDs (ids_t& result) const
@@ -735,6 +753,80 @@ namespace Aggregator
 
 		while (feedSelector.next ())
 			result.push_back (feedSelector.value (0).toInt ());
+	}
+
+	QList<ITagsManager::tag_id> SQLStorageBackend::GetItemTags (const IDType_t& id)
+	{
+		QList<ITagsManager::tag_id> result;
+
+		GetItemTags_.bindValue (":item_id", id);
+		if (!GetItemTags_.exec ())
+		{
+			Util::DBLock::DumpError (GetItemTags_);
+			return result;
+		}
+
+		while (GetItemTags_.next ())
+			result << GetItemTags_.value (0).toString ();
+
+		GetItemTags_.finish ();
+
+		return result;
+	}
+
+	void SQLStorageBackend::SetItemTags (const IDType_t& id, const QList<ITagsManager::tag_id>& tags)
+	{
+		Util::DBLock lock (DB_);
+		try
+		{
+			lock.Init ();
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to begin transaction:"
+					<< e.what ();
+			return;
+		}
+
+		ClearItemTags_.bindValue (":item_id", id);
+		if (!ClearItemTags_.exec ())
+		{
+			Util::DBLock::DumpError (ClearItemTags_);
+			return;
+		}
+
+		ClearItemTags_.finish ();
+
+		Q_FOREACH (const ITagsManager::tag_id& tag, tags)
+		{
+			AddItemTag_.bindValue (":tag", tag);
+			AddItemTag_.bindValue (":item_id", id);
+			if (!AddItemTag_.exec ())
+			{
+				Util::DBLock::DumpError (AddItemTag_);
+				return;
+			}
+		}
+
+		lock.Good ();
+	}
+
+	QList<IDType_t> SQLStorageBackend::GetItemsForTag (const ITagsManager::tag_id& tag)
+	{
+		QList<IDType_t> result;
+
+		GetItemsForTag_.bindValue (":tag", tag);
+		if (!GetItemsForTag_.exec ())
+		{
+			Util::DBLock::DumpError (GetItemsForTag_);
+			return result;
+		}
+
+		while (GetItemsForTag_.next ())
+			result << GetItemsForTag_.value (0).toInt ();
+
+		return result;
 	}
 
 	IDType_t SQLStorageBackend::GetHighestID (const PoolType& type) const
@@ -1125,7 +1217,7 @@ namespace Aggregator
 
 		GetEnclosures (itemId, item->Enclosures_);
 		GetMRSSEntries (itemId, item->MRSSEntries_);
-		
+
 		emit hookItemLoad (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy), item.get ());
 
 		return item;
@@ -2080,6 +2172,18 @@ namespace Aggregator
 			}
 		}
 
+		if (!DB_.tables ().contains ("items2tags"))
+		{
+			if (!query.exec ("CREATE TABLE items2tags ("
+						"item_id BIGINT NOT NULL, "
+						"tag TEXT NOT NULL"
+						");"))
+			{
+				Util::DBLock::DumpError (query.lastError ());
+				return false;
+			}
+		}
+
 		return true;
 	}
 
@@ -2105,7 +2209,7 @@ namespace Aggregator
 
 	bool SQLStorageBackend::RollItemsStorage (int version)
 	{
-		LeechCraft::Util::DBLock lock (DB_);
+		Util::DBLock lock (DB_);
 		try
 		{
 			lock.Init ();

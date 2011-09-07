@@ -1,0 +1,46 @@
+@import url('../main.css');
+
+body {
+	background: url(../images/backgroundArctic.jpg) repeat-y center top #000 fixed;
+}
+
+.message1 .userName, .message1 .date, #headerChatStarted h2 {
+	color: #1c5e90;
+}
+
+.message2 .userName, .message2 .date {
+	color: #479cc4;
+}
+
+#headerImage {
+	background: url(../images/backgroundUserImageArctic.png) no-repeat;
+}
+
+.content {
+	border-top: 3px solid #1c5e90;
+	border-bottom: 1px solid #1c5e90;
+}
+
+.message2 .content {
+	border-top: 3px solid #479cc4;
+	border-bottom: 1px solid #479cc4;
+}
+
+
+.message1 a {
+	color: #15517e;
+}
+
+.message1 a:hover {
+	color: #063456;
+}
+
+.message2 a {
+	color: #2b7fa6;
+}
+
+.message2 a:hover {
+	color: #18698f;
+}
+
+

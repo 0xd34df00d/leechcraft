@@ -81,8 +81,11 @@ namespace Aggregator
 		bool IsItemRead (int) const;
 		bool IsItemReadNotCurrent (int) const;
 		QStringList GetItemCategories (int) const;
+		IDType_t GetItemIDFromRow (int) const;
 		void SubscribeToComments (const QModelIndex&) const;
 		void CurrentChannelChanged (const QModelIndex&);
+
+		void ConstructBrowser ();
 		void LoadUIState ();
 		void SaveUIState ();
 	private:
@@ -104,6 +107,7 @@ namespace Aggregator
 		void on_ActionShowAsTape__triggered ();
 		void on_ActionMarkItemAsUnread__triggered ();
 		void on_ActionMarkItemAsRead__triggered ();
+		void on_ActionMarkItemAsImportant__triggered ();
 		void on_CaseSensitiveSearch__stateChanged (int);
 		void on_ActionItemCommentsSubscribe__triggered ();
 		void on_ActionItemLinkOpen__triggered ();

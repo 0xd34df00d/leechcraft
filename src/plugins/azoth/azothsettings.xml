@@ -56,6 +56,15 @@
 					<label value="Basic" />
 				</option>
 			</item>
+			<item type="groupbox" property="CustomMUCStyle" checkable="true" default="false">
+				<label value="Custom theme for multiuser chats" />
+				<item type="combobox" property="MUCWindowStyle" mayHaveDataSource="true">
+					<label value="MUC window style:" />
+					<option name="Basic" default="true">
+						<label value="Basic" />
+					</option>
+				</item>
+			</item>
 		</tab>
 		<tab>
 			<label value="Contact list" />

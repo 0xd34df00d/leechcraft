@@ -27,6 +27,7 @@
 #include <QtDebug>
 #include <QMainWindow>
 #include <libtorrent/create_torrent.hpp>
+#include <interfaces/core/icoreproxy.h>
 #include "core.h"
 
 namespace LeechCraft

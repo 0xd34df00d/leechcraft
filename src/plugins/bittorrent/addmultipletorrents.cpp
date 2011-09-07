@@ -17,6 +17,8 @@
  **********************************************************************/
 
 #include <QFileDialog>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/itagsmanager.h>
 #include "addmultipletorrents.h"
 #include "xmlsettingsmanager.h"
 
@@ -35,17 +37,17 @@ namespace LeechCraft
 				SaveDirectory_->setText (XmlSettingsManager::Instance ()->
 						property ("LastSaveDirectory").toString ());
 			}
-			
+
 			QString AddMultipleTorrents::GetOpenDirectory () const
 			{
 				return OpenDirectory_->text ();
 			}
-			
+
 			QString AddMultipleTorrents::GetSaveDirectory () const
 			{
 				return SaveDirectory_->text ();
 			}
-			
+
 			Core::AddType AddMultipleTorrents::GetAddType () const
 			{
 				switch (AddTypeBox_->currentIndex ())
@@ -58,12 +60,12 @@ namespace LeechCraft
 						return Core::Started;
 				}
 			}
-			
+
 			LeechCraft::Util::TagsLineEdit* AddMultipleTorrents::GetEdit ()
 			{
 				return TagsEdit_;
 			}
-			
+
 			QStringList AddMultipleTorrents::GetTags () const
 			{
 				QStringList tags = Core::Instance ()->GetProxy ()->
@@ -74,7 +76,7 @@ namespace LeechCraft
 						GetTagsManager ()->GetID (tag);
 				return result;
 			}
-			
+
 			void AddMultipleTorrents::on_BrowseOpen__released ()
 			{
 				QString dir = QFileDialog::getExistingDirectory (this,
@@ -82,11 +84,11 @@ namespace LeechCraft
 						OpenDirectory_->text ());
 				if (dir.isEmpty ())
 					return;
-			
+
 				XmlSettingsManager::Instance ()->setProperty ("LastTorrentDirectory", dir);
 				OpenDirectory_->setText (dir);
 			}
-			
+
 			void AddMultipleTorrents::on_BrowseSave__released ()
 			{
 				QString dir = QFileDialog::getExistingDirectory (this,
@@ -94,11 +96,11 @@ namespace LeechCraft
 						SaveDirectory_->text ());
 				if (dir.isEmpty ())
 					return;
-			
+
 				XmlSettingsManager::Instance ()->setProperty ("LastSaveDirectory", dir);
 				SaveDirectory_->setText (dir);
 			}
-			
+
 		};
 	};
 };

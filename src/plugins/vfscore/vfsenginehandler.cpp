@@ -17,6 +17,8 @@
  **********************************************************************/
 
 #include "vfsenginehandler.h"
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/vfs/iengineprovider.h>
 
 namespace LeechCraft

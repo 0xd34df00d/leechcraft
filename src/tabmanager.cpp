@@ -52,7 +52,7 @@ TabManager::TabManager (SeparateTabWidget *tabWidget,
 			SIGNAL (tabWasMoved (int, int)),
 			this,
 			SLOT (handleMoveHappened (int, int)));
-	
+
 	connect (TabWidget_,
 			SIGNAL (pinTabRequested ()),
 			this,
@@ -151,7 +151,7 @@ void TabManager::handlePinTab ()
 	bar->setPinTab (bar->PinTabsCount ());
 
 	TabWidget_->setCurrentIndex (bar->PinTabsCount () - 1);
-	
+
 	OriginalTabNames_ = names;
 }
 
@@ -159,7 +159,7 @@ void TabManager::handleUnpinTab ()
 {
 	SeparateTabBar *bar = TabWidget_->TabBar ();
 	const int last = TabWidget_->GetLastContextMenuTab ();
-	
+
 	QStringList names = OriginalTabNames_;
 	names.insert (bar->PinTabsCount (), names.at (last));
 	names.removeAt (last);
@@ -168,7 +168,7 @@ void TabManager::handleUnpinTab ()
 	bar->setUnPinTab (bar->PinTabsCount () - 1);
 
 	TabWidget_->setCurrentIndex (bar->PinTabsCount ());
-	
+
 	OriginalTabNames_ = names;
 }
 
@@ -321,7 +321,11 @@ void TabManager::handleScrollButtons ()
 void TabManager::bringToFront (QWidget *widget) const
 {
 	if (TabWidget_->IndexOf (widget) != -1)
+	{
 		TabWidget_->setCurrentWidget (widget);
+		Core::Instance ().GetReallyMainWindow ()->show ();
+		Core::Instance ().GetReallyMainWindow ()->activateWindow ();
+	}
 }
 
 void TabManager::handleCurrentChanged (int index)

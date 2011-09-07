@@ -24,6 +24,7 @@
 #include <interfaces/entitytesthandleresult.h>
 #include <util/resourceloader.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
+#include <interfaces/core/icoreproxy.h>
 #include "kinotifywidget.h"
 #include "xmlsettingsmanager.h"
 

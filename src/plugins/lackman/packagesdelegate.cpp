@@ -29,6 +29,7 @@
 #include <QMainWindow>
 #include <QAbstractProxyModel>
 #include <QtDebug>
+#include <interfaces/core/icoreproxy.h>
 #include "packagesmodel.h"
 #include "core.h"
 #include "pendingmanager.h"

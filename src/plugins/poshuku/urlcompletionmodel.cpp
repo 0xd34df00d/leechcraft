@@ -21,8 +21,8 @@
 #include <QUrl>
 #include <QtDebug>
 #include <util/defaulthookproxy.h>
+#include <interfaces/core/icoreproxy.h>
 #include "core.h"
-#include <boost/graph/graph_concepts.hpp>
 
 namespace LeechCraft
 {

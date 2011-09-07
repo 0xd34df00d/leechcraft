@@ -21,6 +21,7 @@
 #include <QGraphicsView>
 #include <interfaces/iinfo.h>
 
+class ICoreTabWidget;
 
 namespace LeechCraft
 {
@@ -28,7 +29,6 @@ namespace Plugins
 {
 namespace Glance
 {
-
 	class GlanceItem;
 
 	class GlanceShower : public QGraphicsView

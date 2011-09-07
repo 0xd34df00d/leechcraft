@@ -85,8 +85,13 @@ namespace Acetamide
 					<< passwords;
 		}
 		else if (cmd == "kick" && !message.isEmpty ())
+		{
 			if (ISH_->IsParticipantExists (messageList.first ()))
 				messageList.insert (0, channelName);
+		}
+		else if (cmd == "say")
+			messageList.insert (0, channelName);
+
 		Command2Action_ [cmd] (messageList);
 		return true;
 	}
@@ -175,6 +180,8 @@ namespace Acetamide
 				Parser_, _1);
 		Command2Action_ ["mode"] = boost::bind (&IrcParser::ChanModeCommand,
 				Parser_, _1);
+		Command2Action_ ["say"] = boost::bind (&IrcServerHandler::SayCommand,
+				ISH_, _1);
 	}
 }
 }

@@ -24,6 +24,7 @@
 #include <QFileDialog>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <util/util.h>
+#include <interfaces/core/icoreproxy.h>
 #include "shooterdialog.h"
 #include "poster.h"
 

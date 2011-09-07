@@ -32,28 +32,29 @@ namespace Otzerkalu
 {
 	struct DownloadParams
 	{
-		DownloadParams ();
-		DownloadParams (const QUrl& downloadUrl, const QString& destDir,
-				int recLevel, bool fromOtherSite);
 		QUrl DownloadUrl_;
 		QString DestDir_;
 		int RecLevel_;
 		bool FromOtherSite_;
+		
+		DownloadParams ();
+		DownloadParams (const QUrl& downloadUrl, const QString& destDir,
+				int recLevel, bool fromOtherSite);
+	};
+	
+	struct FileData
+	{
+		QUrl Url_;
+		QString Filename_;
+		int RecLevel_;
+		
+		FileData ();
+		FileData (const QUrl& url, const QString& filename, int recLevel);
 	};
 	
 	class OtzerkaluDownloader : public QObject
 	{
 		Q_OBJECT
-
-		struct FileData
-		{
-			FileData ();
-			FileData (const QUrl& url, const QString& filename, int recLevel);
-			QUrl Url_;
-			QString Filename_;
-			int RecLevel_;
-		};
-		
 		const DownloadParams Param_;
 		QMap<int, FileData> FileMap_;
 		QStringList DownloadedFiles_;
@@ -63,9 +64,9 @@ namespace Otzerkalu
 		
 		void Begin ();
 	private:
-		QString Download (const QUrl&);
+		QString Download (const QUrl&, int);
 		QList<QUrl> CSSParser (const QString&) const;
-		QString CSSUrlReplace (const QString&);
+		QString CSSUrlReplace (const QString&, const FileData&);
 		bool HTMLReplace (QWebElementCollection::iterator element, const FileData& data);
 		bool WriteData (const QString& filename, const QString& data);
 		void HandleProvider (QObject *provider, int id, const QUrl& url,

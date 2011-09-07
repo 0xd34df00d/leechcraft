@@ -21,6 +21,7 @@
 #include <QTextCodec>
 #include <QMainWindow>
 #include <QNetworkReply>
+#include <interfaces/core/icoreproxy.h>
 #include "xmlsettingsmanager.h"
 #include "defaultwidget.h"
 #include "keyinterceptor.h"
@@ -140,7 +141,7 @@ namespace LMP
 		}
 		else
 			return;
-		
+
 		if (!(e.Parameters_ & FromUserInitiated) &&
 				e.Parameters_ & Internal)
 		{

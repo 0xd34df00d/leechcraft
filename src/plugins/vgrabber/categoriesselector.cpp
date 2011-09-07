@@ -19,6 +19,8 @@
 #include "categoriesselector.h"
 #include <QCoreApplication>
 #include <QSettings>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/itagsmanager.h>
 #include "vgrabber.h"
 #include "categorymodifier.h"
 
@@ -125,7 +127,7 @@ namespace LeechCraft
 				settings.endArray ();
 				settings.endGroup ();
 			}
-			
+
 			void CategoriesSelector::AddItem (const QString& name)
 			{
 				QString id = Parent_->GetProxy ()->

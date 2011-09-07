@@ -22,6 +22,7 @@
 #include <QStringList>
 #include <QList>
 #include <interfaces/iinfo.h>
+#include <interfaces/core/ihookproxy.h>
 
 namespace LeechCraft
 {

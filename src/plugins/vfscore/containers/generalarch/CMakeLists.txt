@@ -27,12 +27,12 @@ SET (SRCS
 SET (HEADERS
 	generalarch.h
 	)
-QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
+QT4_WRAP_CPP (GA_MOC_SRCS ${HEADERS})
 
 ADD_LIBRARY (leechcraft_vfscont_generalarch SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
-	${MOC_SRCS}
+	${GA_MOC_SRCS}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_vfscont_generalarch
 	${QT_LIBRARIES}

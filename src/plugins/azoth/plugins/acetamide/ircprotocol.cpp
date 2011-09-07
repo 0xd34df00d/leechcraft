@@ -248,8 +248,8 @@ namespace Acetamide
 						tr ("This channel needs password."),
 						tr ("Password:"), 
 						QLineEdit::Password);
-
-			acc->JoinServer(so, cho);
+			//TODO nickServ for urls
+			acc->JoinServer(so, cho, NickServIdentifyOptions ());
 		}
 	}
 

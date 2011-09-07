@@ -18,12 +18,12 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_EMBEDMEDIA_H
 #define PLUGINS_AZOTH_PLUGINS_EMBEDMEDIA_H
-
 #include <QObject>
 #include <QString>
 #include <QWebView>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
+#include <interfaces/core/ihookproxy.h>
 
 namespace LeechCraft
 {
@@ -52,7 +52,7 @@ namespace EmbedMedia
 		void hookChatTabCreated (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QObject *entry,
-				QWebView *webView); 
+				QWebView *webView);
 	};
 }
 }

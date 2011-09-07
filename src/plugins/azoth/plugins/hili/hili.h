@@ -23,6 +23,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/ihavesettings.h>
+#include <interfaces/core/ihookproxy.h>
 
 class QTranslator;
 
@@ -39,7 +40,7 @@ namespace HiLi
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
-		
+
 		boost::shared_ptr<QTranslator> Translator_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 		QList<QRegExp> RegexpsCache_;
@@ -53,7 +54,7 @@ namespace HiLi
 		QIcon GetIcon () const;
 
 		QSet<QByteArray> GetPluginClasses () const;
-		
+
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	public slots:
 		void hookIsHighlightMessage (LeechCraft::IHookProxy_ptr,

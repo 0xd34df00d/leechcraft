@@ -24,6 +24,8 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/ifinder.h>
 
+class QTreeView;
+
 namespace LeechCraft
 {
 	namespace Plugins

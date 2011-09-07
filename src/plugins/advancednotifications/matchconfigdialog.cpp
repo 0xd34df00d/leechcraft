@@ -18,6 +18,8 @@
 
 #include "matchconfigdialog.h"
 #include <interfaces/ianemitter.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ipluginsmanager.h>
 #include "core.h"
 #include "typedmatchers.h"
 #include "fieldmatch.h"
@@ -31,7 +33,7 @@ namespace AdvancedNotifications
 	, Types_ (QSet<QString>::fromList (types))
 	{
 		Ui_.setupUi (this);
-		
+
 		const QObjectList& emitters = Core::Instance ().GetProxy ()->
 				GetPluginsManager ()->GetAllCastableRoots<IANEmitter*> ();
 		Q_FOREACH (QObject *pObj, emitters)
@@ -44,22 +46,22 @@ namespace AdvancedNotifications
 						<< "doesn't implement IInfo";
 				continue;
 			}
-			
+
 			Ui_.SourcePlugin_->addItem (ii->GetIcon (),
 					ii->GetName (), ii->GetUniqueID ());
 		}
-		
+
 		if (!emitters.isEmpty ())
 			on_SourcePlugin__activated (0);
 	}
-	
+
 	FieldMatch MatchConfigDialog::GetFieldMatch () const
 	{
 		const int fieldIdx = Ui_.FieldName_->currentIndex ();
 		const int sourceIdx = Ui_.SourcePlugin_->currentIndex ();
 		if (fieldIdx == -1 || sourceIdx == -1)
 			return FieldMatch ();
-		
+
 		CurrentMatcher_->SyncToWidget ();
 
 		const ANFieldData& data = Ui_.FieldName_->
@@ -69,10 +71,10 @@ namespace AdvancedNotifications
 		result.SetPluginID (Ui_.SourcePlugin_->
 					itemData (sourceIdx).toByteArray ());
 		result.SetFieldName (data.ID_);
-		
+
 		return result;
 	}
-	
+
 	void MatchConfigDialog::on_SourcePlugin__activated (int idx)
 	{
 		Ui_.FieldName_->clear ();
@@ -91,28 +93,28 @@ namespace AdvancedNotifications
 					<< pObj;
 			return;
 		}
-		
+
 		const QList<ANFieldData> fields = iae->GetANFields ();
 		Q_FOREACH (const ANFieldData& data, fields)
 		{
 			if (!Types_.isEmpty () &&
 					QSet<QString>::fromList (data.EventTypes_).intersect (Types_).isEmpty ())
 				continue;
-			
+
 			Ui_.FieldName_->addItem (data.Name_,
 					QVariant::fromValue<ANFieldData> (data));
 		}
-		
+
 		if (!fields.isEmpty ())
 			on_FieldName__activated (0);
 	}
-	
+
 	void MatchConfigDialog::on_FieldName__activated (int idx)
 	{
 		const ANFieldData& data = Ui_.FieldName_->
 				itemData (idx).value<ANFieldData> ();
 		Ui_.DescriptionLabel_->setText (data.Description_);
-		
+
 		QLayout *lay = Ui_.ConfigWidget_->layout ();
 		QLayoutItem *oldItem = 0;
 		while ((oldItem = lay->takeAt (0)) != 0)
@@ -121,7 +123,7 @@ namespace AdvancedNotifications
 				delete oldItem->widget ();
 			delete oldItem;
 		}
-		
+
 		CurrentMatcher_ = TypedMatcherBase::Create (data.Type_);
 		if (CurrentMatcher_)
 			lay->addWidget (CurrentMatcher_->GetConfigWidget ());

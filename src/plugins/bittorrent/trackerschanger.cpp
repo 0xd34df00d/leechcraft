@@ -19,6 +19,7 @@
 #include "trackerschanger.h"
 #include <QMessageBox>
 #include <QMainWindow>
+#include <interfaces/core/icoreproxy.h>
 #include "core.h"
 #include "singletrackerchanger.h"
 
@@ -39,7 +40,7 @@ namespace LeechCraft
 						SLOT (currentItemChanged (QTreeWidgetItem*)));
 				currentItemChanged (0);
 			}
-			
+
 			void TrackersChanger::SetTrackers (const std::vector<libtorrent::announce_entry>& trackers)
 			{
 				Ui_.Trackers_->clear ();
@@ -69,7 +70,7 @@ namespace LeechCraft
 				for (int i = 0; i < Ui_.Trackers_->columnCount (); ++i)
 					Ui_.Trackers_->resizeColumnToContents (i);
 			}
-			
+
 			std::vector<libtorrent::announce_entry> TrackersChanger::GetTrackers () const
 			{
 				std::vector<libtorrent::announce_entry> result;

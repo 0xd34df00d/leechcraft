@@ -26,6 +26,7 @@
 #include <QSqlError>
 #include <QVariant>
 #include <QSqlRecord>
+#include <interfaces/core/itagsmanager.h>
 #include "util/dblock.h"
 #include "xmlsettingsmanager.h"
 #include "core.h"
@@ -1114,6 +1115,23 @@ namespace Aggregator
 				<< "channel not found"
 				<< channelId;
 		}
+	}
+
+	QList<ITagsManager::tag_id> SQLStorageBackendMysql::GetItemTags (const IDType_t& id)
+	{
+		// TODO
+		return QList<ITagsManager::tag_id> ();
+	}
+
+	void SQLStorageBackendMysql::SetItemTags (const IDType_t& id, const QList<ITagsManager::tag_id>& tags)
+	{
+		// TODO
+	}
+
+	QList<IDType_t> SQLStorageBackendMysql::GetItemsForTag (const ITagsManager::tag_id& tag)
+	{
+		// TODO
+		return QList<IDType_t> ();
 	}
 
 	bool SQLStorageBackendMysql::UpdateFeedsStorage (int, int)

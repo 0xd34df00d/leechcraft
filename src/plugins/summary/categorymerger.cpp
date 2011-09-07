@@ -18,6 +18,8 @@
 
 #include "categorymerger.h"
 #include <QtDebug>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ipluginsmanager.h>
 #include "core.h"
 #include "requestparser.h"
 

@@ -16,9 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include <QtDebug>
-#include <QDataStream>
 #include <typeinfo>
+#include <boost/preprocessor/repeat.hpp>
+#include <boost/preprocessor/seq.hpp>
+#include <QDataStream>
+#include <QtDebug>
 #include "item.h"
 #include "core.h"
 
@@ -216,17 +218,17 @@ namespace Aggregator
 		};
 		return is;
 	}
-	
+
 	ItemComparator::ItemComparator (const Item_ptr& item)
 	: Item_ (item)
 	{
 	}
-	
+
 	bool ItemComparator::operator() (const Item_ptr& item)
 	{
 		return *Item_ == *item;
 	}
-	
+
 	bool operator== (const Item& i1, const Item& i2)
 	{
 		return i1.ItemID_ == i2.ItemID_;

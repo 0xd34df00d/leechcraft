@@ -154,7 +154,7 @@ namespace CleanWeb
 						f.Case_ = Qt::CaseSensitive;
 						cs = true;
 					}
-					
+
 					if (options.removeAll ("third-party"))
 						f.AbortForeign_ = true;
 
@@ -396,13 +396,13 @@ namespace CleanWeb
 	QNetworkReply* Core::Hook (IHookProxy_ptr hook,
 			QNetworkAccessManager*,
 			QNetworkAccessManager::Operation*,
-			QNetworkRequest *req,
 			QIODevice**)
 	{
-		if (!req->originatingObject ())
+		QNetworkRequest req = hook->GetValue ("request").value<QNetworkRequest> ();
+		if (!req.originatingObject ())
 			return 0;
 
-		if (req->url ().scheme () == "data")
+		if (req.url ().scheme () == "data")
 		{
 			qDebug () << Q_FUNC_INFO
 				<< "not checking data: urls";
@@ -410,7 +410,7 @@ namespace CleanWeb
 		}
 
 		QString matched;
-		if (!ShouldReject (*req, &matched))
+		if (!ShouldReject (req, &matched))
 			return 0;
 
 		if (Blocked_.size () > 300)
@@ -419,22 +419,23 @@ namespace CleanWeb
 		hook->CancelDefault ();
 
 #if QT_VERSION >= 0x040700
-		QWebFrame *frame = qobject_cast<QWebFrame*> (req->originatingObject ());
+		QWebFrame *frame = qobject_cast<QWebFrame*> (req.originatingObject ());
 		if (frame)
 			QMetaObject::invokeMethod (this,
 					"delayedRemoveElements",
 					Qt::QueuedConnection,
 					Q_ARG (QWebFrame*, frame),
-					Q_ARG (QString, req->url ().toString ()));
+					Q_ARG (QString, req.url ().toString ()));
 #else
-		Blocked_ << req->url ().toString ();
+		Blocked_ << req.url ().toString ();
 #endif
 
 		Util::CustomNetworkReply *result = new Util::CustomNetworkReply (this);
 		result->SetContent (QString ("Blocked by Poshuku CleanWeb"));
 		result->SetError (QNetworkReply::ContentAccessDenied,
 				tr ("Blocked by Poshuku CleanWeb: %1")
-					.arg (req->url ().toString ()));
+					.arg (req.url ().toString ()));
+		hook->SetReturnValue (QVariant::fromValue<QNetworkReply*> (result));
 		return result;
 	}
 
@@ -950,7 +951,7 @@ namespace CleanWeb
 			MoreDelayedURLs_ [frame] << url;
 		}
 	}
-	
+
 	void Core::moreDelayedRemoveElements ()
 	{
 		QWebFrame *frame = qobject_cast<QWebFrame*> (sender ());
@@ -964,10 +965,10 @@ namespace CleanWeb
 			else
 				qWarning () << Q_FUNC_INFO << "not found" << url;
 		}
-		
+
 		MoreDelayedURLs_.remove (frame);
 	}
-	
+
 	void Core::handleFrameDestroyed ()
 	{
 		MoreDelayedURLs_.remove (static_cast<QWebFrame*> (sender ()));

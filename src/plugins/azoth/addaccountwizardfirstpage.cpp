@@ -46,9 +46,14 @@ namespace Azoth
 
 		const QList<IProtocol*>& protos = Core::Instance ().GetProtocols ();
 		Q_FOREACH (IProtocol *proto, protos)
+		{
+			if (proto->GetFeatures () & IProtocol::PFNoAccountRegistration)
+				continue;
+
 			Ui_.ProtoBox_->addItem (proto->GetProtocolIcon (),
 					proto->GetProtocolName (),
 					QVariant::fromValue<QObject*> (proto->GetObject ()));
+		}
 			
 		connect (wizard (),
 				SIGNAL (accepted ()),

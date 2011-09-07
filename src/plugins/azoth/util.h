@@ -20,6 +20,7 @@
 #define PLUGINS_AZOTH_UTIL_H
 
 class QString;
+class QWidget;
 
 namespace LeechCraft
 {
@@ -31,6 +32,8 @@ namespace Azoth
 
 	void BuildNotification (Entity&, ICLEntry*);
 	QString GetActivityIconName (const QString&, const QString&);
+
+	void InitiateAccountAddition (QWidget *parent = 0);
 }
 }
 

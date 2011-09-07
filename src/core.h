@@ -132,9 +132,9 @@ namespace LeechCraft
 		/** Returns pointer to the storage backend of the Core.
 		 */
 		StorageBackend* GetStorageBackend () const;
-		
+
 		/** @brief Returns the pointer to the core instance.
-		 * 
+		 *
 		 * The core instance object is inserted into the plugin manager
 		 * to simulate the plugin-like behavior of the Core: some of its
 		 * functions are better and shorter expressed as if we consider
@@ -200,22 +200,6 @@ namespace LeechCraft
 		void Setup (QObject *object);
 
 		void PostSecondInit (QObject *object);
-
-		/** Some preprocessor black magick to initialize storage and a
-		 * method per each hook signature.
-		 */
-		template<LeechCraft::HookID id>
-			typename LeechCraft::HooksContainer<id>::Functors_t GetHooks () const;
-#define LC_STRN(a) a##_
-#define LC_DEFINE_REGISTER(a) \
-	private: \
-		LeechCraft::HooksContainer<a> LC_STRN(a); \
-	public: \
-		void RegisterHook (LeechCraft::HookSignature<LeechCraft::a>::Signature_t);
-#define LC_TRAVERSER(z,i,array) LC_DEFINE_REGISTER (BOOST_PP_SEQ_ELEM(i, array))
-#define LC_EXPANDER(Names) BOOST_PP_REPEAT (BOOST_PP_SEQ_SIZE (Names), LC_TRAVERSER, Names)
-	LC_EXPANDER (HOOKS_TYPES_LIST);
-#undef LC_DEFINE_REGISTER
 
 		virtual bool eventFilter (QObject*, QEvent*);
 	public slots:
@@ -328,14 +312,6 @@ namespace LeechCraft
 		 */
 		void log (const QString& message);
 	};
-#define LC_DEFINE_REGISTER(a) \
-	template<> \
-		LeechCraft::HooksContainer<LeechCraft::a>::Functors_t Core::GetHooks<a> () const;
-	LC_EXPANDER (HOOKS_TYPES_LIST);
-#undef LC_DEFINE_REGISTER
-#undef LC_EXPANDER
-#undef LC_TRAVERSER
-#undef LC_STRN
 };
 
 

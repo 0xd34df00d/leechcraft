@@ -45,7 +45,7 @@ namespace Azoth
 namespace Acetamide
 {
 	IrcServerHandler::IrcServerHandler (const ServerOptions& server,
-			IrcAccount *account )
+			const NickServIdentifyOptions& nickserv, IrcAccount *account)
 	: Account_ (account)
 	, ErrorHandler_ (new IrcErrorHandler (this))
 	, IrcParser_ (0)
@@ -58,6 +58,7 @@ namespace Acetamide
 			QString::number (server.ServerPort_))
 	, NickName_ (server.ServerNickName_)
 	, ServerOptions_ (server)
+	, NickServOptions_ (nickserv)
 	{
 		IrcParser_ = new IrcParser (this);
 		CmdManager_ = new UserCommandManager (this);
@@ -195,7 +196,22 @@ namespace Acetamide
 			ChannelsQueue_ << ch;
 	}
 
-	bool IrcServerHandler::JoinChannel (const ChannelOptions& channel)
+	void IrcServerHandler::JoinChannel (const ChannelOptions& channel)
+	{
+		QString id = QString (channel.ChannelName_ + "@" +
+				channel.ServerName_).toLower ();
+
+		if (ServerConnectionState_ == Connected)
+		{
+			if (!ChannelHandlers_.contains (id))
+				IrcParser_->JoinCommand (channel.ChannelName_ + " " +
+						channel.ChannelPassword_);
+		}
+		else
+			Add2ChannelsQueue (channel);
+	}
+
+	bool IrcServerHandler::JoinedChannel (const ChannelOptions& channel)
 	{
 		QString id = QString (channel.ChannelName_ + "@" +
 				channel.ServerName_).toLower ();
@@ -204,8 +220,6 @@ namespace Acetamide
 		{
 			if (!ChannelHandlers_.contains (id))
 			{
-				IrcParser_->JoinCommand (channel.ChannelName_ + " " + 
-					channel.ChannelPassword_);
 				ChannelHandler *ch = new ChannelHandler (this, channel);
 				ChannelHandlers_ [id] = ch;
 
@@ -312,9 +326,24 @@ namespace Acetamide
 		}
 	}
 
-	void IrcServerHandler::IncomingNoticeMessage (const QString& msg)
+	void IrcServerHandler::IncomingNoticeMessage (const QString& nick, const QString& msg)
 	{
 		ShowAnswer (msg);
+
+		if (GetNickName () != NickServOptions_.NickName_)
+			return;
+
+		QRegExp nickMask (NickServOptions_.NickServMask_,
+				Qt::CaseInsensitive, QRegExp::Wildcard);
+		if (nickMask.indexIn (nick) == -1)
+			return;
+
+		QRegExp authRegExp (NickServOptions_.NickServAuthRegExp_,
+				Qt::CaseInsensitive, QRegExp::Wildcard);
+		if (authRegExp.indexIn (msg) == -1)
+			return;
+
+		SendMessage2Server (msg.split (' '));
 	}
 
 	void IrcServerHandler::ChangeNickname (const QString& nick, 
@@ -853,6 +882,15 @@ namespace Acetamide
 		}
 	}
 
+	void IrcServerHandler::SayCommand (const QStringList& params)
+	{
+		if (params.isEmpty ())
+			return;
+		const QString channel = params.first ();
+		SendPublicMessage (QStringList (params.mid (1)).join (" "),
+				(channel + "@" + ServerOptions_.ServerName_).toLower ());
+	}
+
 	void IrcServerHandler::ParseChanMode (const QString& channel, 
 			const QString& mode, const QString& value)
 	{
@@ -924,13 +962,13 @@ namespace Acetamide
 					ChannelHandlers_ [channelID]->SetChannelKey (action, value);
 				break;
 			case 'b':
-				ShowAnswer (value + tr (" add to your ban list."));
+				ShowAnswer (value + tr (" added to your ban list."));
 				break;
 			case 'e':
-				ShowAnswer (value + tr (" add to your except list."));
+				ShowAnswer (value + tr (" added to your except list."));
 				break;
 			case 'I':
-				ShowAnswer (value + tr (" add to your invite list."));
+				ShowAnswer (value + tr (" added to your invite list."));
 				break;
 			}
 		}

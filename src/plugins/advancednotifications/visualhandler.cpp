@@ -26,26 +26,48 @@ namespace AdvancedNotifications
 	VisualHandler::VisualHandler ()
 	{
 	}
-	
+
 	NotificationMethod VisualHandler::GetHandlerMethod () const
 	{
 		return NMVisual;
 	}
-	
+
 	void VisualHandler::Handle (const Entity& orig, const NotificationRule&)
 	{
+		if (orig.Additional_ ["org.LC.AdvNotifications.EventCategory"].toString () == "org.LC.AdvNotifications.Cancel")
+			return;
+
 		const QString& evId = orig.Additional_ ["org.LC.AdvNotifications.EventID"].toString ();
 		if (ActiveEvents_.contains (evId))
 			return;
-		
-		ActiveEvents_ << evId;
 
 		Entity e = orig;
+
+		if (e.Additional_ ["Text"].toString ().isEmpty ())
+		{
+			if (!e.Additional_ ["org.LC.AdvNotifications.FullText"].toString ().isEmpty ())
+				e.Additional_ ["Text"] = e.Additional_ ["org.LC.AdvNotifications.FullText"];
+			else if (!e.Additional_ ["org.LC.AdvNotifications.ExtendedText"].toString ().isEmpty ())
+				e.Additional_ ["Text"] = e.Additional_ ["org.LC.AdvNotifications.ExtendedText"];
+			else
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "refusing to rehandle entity with empty text:"
+						<< e.Entity_
+						<< e.Additional_;
+				return;
+			}
+		}
+
 		Q_FOREACH (const QString& key, e.Additional_.keys ())
 			if (key.startsWith ("org.LC.AdvNotifications."))
 				e.Additional_.remove (key);
-		
+
+		if (e.Mime_.endsWith ("+advanced"))
+			e.Mime_.remove ("+advanced");
+
 		QObject_ptr probeObj (new QObject ());
+		ActiveEvents_ << evId;
 		probeObj->setProperty ("EventID", evId);
 		connect (probeObj.get (),
 				SIGNAL (destroyed ()),
@@ -53,10 +75,10 @@ namespace AdvancedNotifications
 				SLOT (handleProbeDestroyed ()));
 		QVariant probe = QVariant::fromValue<QObject_ptr> (probeObj);
 		e.Additional_ ["RemovalProbe"] = probe;
-			
+
 		Core::Instance ().SendEntity (e);
 	}
-	
+
 	void VisualHandler::handleProbeDestroyed ()
 	{
 		const QString& evId = sender ()->property ("EventID").toString ();

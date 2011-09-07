@@ -20,6 +20,7 @@
 #include <algorithm>
 #include <memory>
 #include <typeinfo>
+#include <stdexcept>
 #include <QString>
 #include <QUrl>
 #include <QWidget>
@@ -45,6 +46,7 @@
 #include <util/util.h>
 #include <util/defaulthookproxy.h>
 #include <interfaces/ihaveshortcuts.h>
+#include <interfaces/core/icoreproxy.h>
 #include "browserwidget.h"
 #include "customwebview.h"
 #include "addtofavoritesdialog.h"
@@ -79,7 +81,7 @@ namespace Poshuku
 		qRegisterMetaTypeStreamOperators<ElementData> ("LeechCraft::Poshuku::ElementData");
 		qRegisterMetaType<ElementsData_t> ("LeechCraft::Poshuku::ElementsData_t");
 		qRegisterMetaTypeStreamOperators<ElementsData_t> ("LeechCraft::Poshuku::ElementsData_t");
-		
+
 		TabClass_.TabClass_ = "Poshuku";
 		TabClass_.VisibleName_ = tr ("Poshuku");
 		TabClass_.Description_ = tr ("The Poshuku web browser");
@@ -194,6 +196,11 @@ namespace Poshuku
 		Initialized_ = true;
 	}
 
+	void Core::SecondInit ()
+	{
+		GetWebPluginFactory ()->refreshPlugins ();
+	}
+
 	void Core::Release ()
 	{
 		saveSession ();
@@ -222,7 +229,7 @@ namespace Poshuku
 	{
 		return Proxy_;
 	}
-	
+
 	TabClassInfo Core::GetTabClass () const
 	{
 		return TabClass_;
@@ -265,11 +272,6 @@ namespace Poshuku
 		if (!WebPluginFactory_)
 			WebPluginFactory_ = new WebPluginFactory (this);
 		return WebPluginFactory_;
-	}
-
-	void Core::SetProvider (QObject *object, const QString& feature)
-	{
-		Providers_ [feature] = object;
 	}
 
 	QSet<QByteArray> Core::GetExpectedPluginClasses () const
@@ -365,7 +367,7 @@ namespace Poshuku
 
 		if (raise)
 			emit raiseTab (widget);
-		
+
 		emit hookTabAdded (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy),
 				widget,
 				widget->getWebView (),
@@ -781,11 +783,11 @@ namespace Poshuku
 			}
 			QTimer::singleShot (2000, this, SLOT (restorePages ()));
 		}
-		
+
 		QList<QUrl> toRestore;
 		Q_FOREACH (int idx, RestoredURLs_)
 			toRestore << SavedSessionState_ [idx].second;
-		
+
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 		emit hookSessionRestoreScheduled (proxy,
 				toRestore);
@@ -971,7 +973,7 @@ namespace Poshuku
 		emit hookAddToFavoritesRequested (proxy, title, url);
 		if (proxy->IsCancelled ())
 			return;
-		
+
 		proxy->FillValue ("title", title);
 		proxy->FillValue ("url", url);
 

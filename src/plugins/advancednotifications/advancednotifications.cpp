@@ -33,14 +33,14 @@ namespace AdvancedNotifications
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
-		
+
 		Core::Instance ().SetProxy (proxy);
-		
+
 		connect (&Core::Instance (),
 				SIGNAL (gotEntity (const LeechCraft::Entity&)),
 				this,
 				SIGNAL (gotEntity (const LeechCraft::Entity&)));
-		
+
 		SettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"advancednotificationssettings.xml");
@@ -48,7 +48,7 @@ namespace AdvancedNotifications
 				Core::Instance ().GetNRW ());
 		SettingsDialog_->SetDataSource ("AudioTheme",
 				Core::Instance ().GetAudioThemeLoader ()->GetSubElemModel ());
-		
+
 		GeneralHandler_.reset (new GeneralHandler (proxy));
 	}
 
@@ -81,26 +81,26 @@ namespace AdvancedNotifications
 	{
 		return QIcon (":/plugins/advancednotifications/resources/images/advancednotifications.svg");
 	}
-	
+
 	EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const
 	{
-		const bool can = e.Mime_ == "x-leechcraft/notification" &&
+		const bool can = e.Mime_.startsWith ("x-leechcraft/notification") &&
 			e.Additional_.contains ("org.LC.AdvNotifications.SenderID") &&
 			e.Additional_.contains ("org.LC.AdvNotifications.EventID");
 
 		if (!can)
 			return EntityTestHandleResult ();
-		
+
 		EntityTestHandleResult result (EntityTestHandleResult::PIdeal);
 		result.CancelOthers_ = true;
 		return result;
 	}
-	
+
 	void Plugin::Handle (Entity e)
 	{
 		GeneralHandler_->Handle (e);
 	}
-	
+
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
 	{
 		return SettingsDialog_;

@@ -21,7 +21,7 @@
 #include <QString>
 #include <QDateTime>
 #include <util/basehookinterconnector.h>
-#include <interfaces/iinfo.h>
+#include <interfaces/core/ihookproxy.h>
 
 class QDateTime;
 class QObject;
@@ -47,13 +47,13 @@ namespace Azoth
 				QWebView *webView);
 
 		/** @brief Hook for adjusting where CL entry actions appear.
-		 * 
+		 *
 		 * This hook is called to determine where the given action for
 		 * the given entry should be shown. By default, it is only shown
 		 * in the contact list context menu. This hook is only called
 		 * for actions that were created as a result of the
 		 * hookEntryActionsRequested() hook.
-		 * 
+		 *
 		 * The handler of this hook should append the string IDs of the
 		 * corresponding places to the return value of the proxy object,
 		 * so an example implementation for inserting an action into
@@ -64,7 +64,7 @@ namespace Azoth
 		 * 	<< "tabContextMenu";
 		 * proxy->SetReturnValue (proxy->GetReturnValue ().toStringList () + ours);
 		 * @endcode
-		 * 
+		 *
 		 * The following IDs are possible:
 		 * - contactListContextMenu for contact list context menu (this
 		 *   is the default option if the return value is unmodified).
@@ -72,16 +72,16 @@ namespace Azoth
 		 * - applicationMenu for the menu item in the application's main
 		 *   menu.
 		 * - toolbar for the toolbar in the entry chat window.
-		 * 
+		 *
 		 * Please note that this hook would be called on each plugin
 		 * that exposes it, so each plugin would have it called for each
 		 * action created in hookEntryActionsRequested(), for all
 		 * plugins, not only their own ones.
-		 * 
+		 *
 		 * @param[out] proxy The proxy object.
 		 * @param[out] action The previously created action.
 		 * @param[out] entry The entry for which action is queried.
-		 * 
+		 *
 		 * @sa hookEntryActionsRequested()
 		 */
 		void hookEntryActionAreasRequested (LeechCraft::IHookProxy_ptr proxy,
@@ -89,18 +89,18 @@ namespace Azoth
 				QObject *entry);
 
 		/** @brief Hook for adding actions for contact list entries.
-		 * 
+		 *
 		 * This hook is called for adding new CL entry-related actions
 		 * could be.
-		 * 
+		 *
 		 * The passed entry object implements ICLEntry and represents
 		 * the entry for which the action could be created. Of course,
 		 * it's OK to not create actions for various entries, for
 		 * example, after querying their type, state, etc.
-		 * 
+		 *
 		 * The exact places where the action would appear is later
 		 * adjusted inside the hookEntryActionAreasRequested() hook.
-		 * 
+		 *
 		 * The handler of this hook should append the new actions to the
 		 * proxy's return value, which is actually a list of QObjects.
 		 * So, a typical hook would look like:
@@ -110,44 +110,44 @@ namespace Azoth
 		 * list << QVariant::fromValue<QObject*> (action);
 		 * proxy->SetReturnValue (list);
 		 * @endcode
-		 * 
+		 *
 		 * Please note that it's better to create actions as children of
 		 * the entry (as in this example) so that they are automatically
 		 * deleted when the entry is deleted.
-		 * 
+		 *
 		 * @param[out] proxy The proxy object.
 		 * @param[out] entry The object implementing ICLEntry and
 		 * representing the entry for which actions are to be created.
-		 * 
+		 *
 		 * @sa hookEntryActionAreasRequested()
 		 */
 		void hookEntryActionsRequested (LeechCraft::IHookProxy_ptr proxy,
 				QObject *entry);
-		
+
 		void hookEntryStatusChanged (LeechCraft::IHookProxy_ptr proxy,
 				QObject *entry,
 				QString variant);
-		
+
 		void hookGonnaAppendMsg (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message);
-		
+
 		void hookGonnaHandleSmiles (LeechCraft::IHookProxy_ptr proxy,
 				QString body,
 				QString pack);
-		
+
 		/** @brief Hook for handling incoming messages.
-		 * 
+		 *
 		 * This hook is called for handling incoming messages. The
 		 * message object could be modified accordingly, if possible,
 		 * and the result would be visible to the rest of Azoth.
-		 * 
+		 *
 		 * The message object, of course, implements IMessage.
-		 * 
+		 *
 		 * If the hook handler cancels default handler (by calling
 		 * IHookProxy::CancelDefault on the proxy object), nothing would
 		 * be done with the message: particularly, it won't be appended
 		 * to the chat window and such.
-		 * 
+		 *
 		 * @param[out] proxy The proxy object.
 		 * @param[out] message The message object implementing IMessage.
 		 */
@@ -188,27 +188,27 @@ namespace Azoth
 				QObject *chatTab,
 				QWebView *view,
 				QObject *entry);
-		
+
 		/** @brief Hook for tooltip formatting.
-		 * 
+		 *
 		 * This hook is called while formatting tooltip for the contact
 		 * list tree for the given entry, after general information
 		 * about the entry has been formatted.
-		 * 
+		 *
 		 * The already-formatted string is contained as "tooltip" value
 		 * in the proxy. The hook may change the string by updating this
 		 * value.
-		 * 
+		 *
 		 * If the hook handler cancels default handler (by calling
 		 * IHookProxy::CancelDefault on the proxy object), variants info
 		 * won't be formatted, and the hook's "tooltip" value would be
 		 * returned.
-		 * 
+		 *
 		 * @param[out] proxy Standard proxy object.
 		 * @param[out] entry The entry for which the tooltip is being
 		 * formatted.
 		 * @param[in,out] proxy::"tooltip" The tooltip string.
-		 * 
+		 *
 		 * @sa IHookProxy
 		 */
 		void hookTooltipBeforeVariants (LeechCraft::IHookProxy_ptr proxy,

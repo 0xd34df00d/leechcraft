@@ -123,12 +123,18 @@ namespace Acetamide
 	{
 		if (GetSelf () == ServerParticipantEntry_ptr ())
 			return;
+		bool command = false;
 		if (msg.startsWith ('/'))
+		{
 			ISH_->ParseMessageForCommand (msg, ChannelID_);
+			command = true;
+			ShowServiceMessage (msg, IMessage::MTEventMessage, IMessage::MSTOther);
+		}
 		else
+		{
 			ISH_->SendPublicMessage (msg, ChannelID_);
-
-		HandleIncomingMessage (ISH_->GetNickName (), msg);
+			HandleIncomingMessage (ISH_->GetNickName (), msg);
+		}
 	}
 
 	void ChannelHandler::HandleIncomingMessage (const QString& nick,
@@ -345,8 +351,10 @@ namespace Acetamide
 		ChannelCLEntry_->SetBanListItem (mask, nick, date);
 		if (!ChannelCLEntry_->GetIsWidgetRequest ())
 		{
-			const QString msg = mask + tr (" setted by ") + nick + tr (" on ")
-					+ date.toString ("dd.MM.yyyy hh:mm:ss");
+			const QString msg = tr ("%1 set by %2 on %3")
+					.arg (mask)
+					.arg (nick)
+					.arg (date.toString ("dd.MM.yyyy hh:mm:ss"));
 			ShowServiceMessage (msg, IMessage::MTEventMessage, IMessage::MSTOther);
 		}
 	}
@@ -357,8 +365,10 @@ namespace Acetamide
 		ChannelCLEntry_->SetExceptListItem (mask, nick, date);
 		if (!ChannelCLEntry_->GetIsWidgetRequest ())
 		{
-			const QString msg = mask + tr (" setted by ") + nick + tr (" on ")
-					+ date.toString ("dd.MM.yyyy hh:mm:ss");
+			const QString msg = tr ("%1 set by %2 on %3")
+					.arg (mask)
+					.arg (nick)
+					.arg (date.toString ("dd.MM.yyyy hh:mm:ss"));
 			ShowServiceMessage (msg, IMessage::MTEventMessage, IMessage::MSTOther);
 		}
 	}
@@ -369,8 +379,10 @@ namespace Acetamide
 		ChannelCLEntry_->SetInviteListItem (mask, nick, date);
 		if (!ChannelCLEntry_->GetIsWidgetRequest ())
 		{
-			const QString msg = mask + tr (" setted by ") + nick + tr (" on ")
-					+ date.toString ("dd.MM.yyyy hh:mm:ss");
+			const QString msg = tr ("%1 set by %2 on %3")
+					.arg (mask)
+					.arg (nick)
+					.arg (date.toString ("dd.MM.yyyy hh:mm:ss"));
 			ShowServiceMessage (msg, IMessage::MTEventMessage, IMessage::MSTOther);
 		}
 	}

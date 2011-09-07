@@ -20,7 +20,8 @@
 #include <algorithm>
 #include <QTimer>
 #include <QtDebug>
-#include <interfaces/iinfo.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/itagsmanager.h>
 #include <util/defaulthookproxy.h>
 #include "filtermodel.h"
 #include "core.h"
@@ -210,7 +211,7 @@ namespace Poshuku
 			map ["Tags"] = tags;
 			result << map;
 		}
-		
+
 		return result;
 	}
 

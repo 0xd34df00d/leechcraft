@@ -17,9 +17,11 @@
  **********************************************************************/
 
 #include "channelpublicmessage.h"
+#include <QtDebug>
+#include <QTextDocument>
 #include "channelclentry.h"
 #include "channelhandler.h"
-#include <QtDebug>
+
 namespace LeechCraft
 {
 namespace Azoth
@@ -117,7 +119,7 @@ namespace Acetamide
 
 	QString ChannelPublicMessage::GetBody () const
 	{
-		return Message_;
+		return Qt::escape (Message_);
 	}
 
 	void ChannelPublicMessage::SetBody (const QString& msg)

@@ -21,6 +21,7 @@
 #include <QMainWindow>
 #include <QProgressDialog>
 #include <interfaces/structures.h>
+#include <interfaces/core/icoreproxy.h>
 #include "core.h"
 
 namespace LeechCraft

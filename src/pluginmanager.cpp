@@ -18,6 +18,7 @@
 
 #include <stdexcept>
 #include <algorithm>
+#include <boost/bind.hpp>
 #include <QApplication>
 #include <QDir>
 #include <QStringList>
@@ -196,10 +197,48 @@ namespace LeechCraft
 				role != Qt::CheckStateRole)
 			return false;
 
+		QPluginLoader_ptr loader = AvailablePlugins_.at (index.row ());
+
+		if (!data.toBool () &&
+				PluginContainers_.contains (loader))
+		{
+			PluginTreeBuilder builder;
+			builder.AddObjects (Plugins_);
+			builder.Calculate ();
+
+			QSet<QObject*> oldSet = QSet<QObject*>::fromList (builder.GetResult ());
+
+			builder.RemoveObject (loader->instance ());
+			builder.Calculate ();
+
+			const QSet<QObject*>& newSet = QSet<QObject*>::fromList (builder.GetResult ());
+			oldSet.subtract (newSet);
+
+			oldSet.remove (loader->instance ());
+
+			if (!oldSet.isEmpty ())
+			{
+				QStringList pluginNames;
+				Q_FOREACH (QObject *obj, oldSet)
+				{
+					IInfo *ii = qobject_cast<IInfo*> (obj);
+					pluginNames << (ii->GetName () + " (" + ii->GetInfo () + ")");
+				}
+
+				if (QMessageBox::question (0,
+						"LeechCraft",
+						tr ("The following plugins would also be disabled as the result:") +
+							"<ul><li>" + pluginNames.join ("</li><li>") + "</li></ul>" +
+							tr ("Are you sure you want to disable this one?"),
+						QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+					return false;
+			}
+		}
+
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "-pg");
 		settings.beginGroup ("Plugins");
-		settings.beginGroup (AvailablePlugins_.at (index.row ())->fileName ());
+		settings.beginGroup (loader->fileName ());
 		settings.setValue ("AllowLoad", data.toBool ());
 		settings.endGroup ();
 		settings.endGroup ();
@@ -216,6 +255,12 @@ namespace LeechCraft
 
 	QObject* PluginManager::TryFirstInit (QObjectList ordered)
 	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "-pg");
+		settings.beginGroup ("Plugins");
+		boost::shared_ptr<void> groupGuard (static_cast<void*> (0),
+				boost::bind (&QSettings::endGroup, &settings));
+
 		Q_FOREACH (QObject *obj, ordered)
 		{
 			IInfo *ii = qobject_cast<IInfo*> (obj);
@@ -224,6 +269,14 @@ namespace LeechCraft
 				qDebug () << "Initializing" << ii->GetName ();
 				emit loadProgress (tr ("Initializing %1: stage one...").arg (ii->GetName ()));
 				ii->Init (ICoreProxy_ptr (new CoreProxy ()));
+
+				const QString& path = GetPluginLibraryPath (obj);
+				if (path.isEmpty ())
+					continue;
+
+				settings.beginGroup (path);
+				settings.setValue ("Info", ii->GetInfo ());
+				settings.endGroup ();
 			}
 			catch (const std::exception& e)
 			{
@@ -258,6 +311,13 @@ namespace LeechCraft
 					<< object;
 			Obj2Loader_ [object]->unload ();
 			Obj2Loader_.remove (object);
+
+			Q_FOREACH (QPluginLoader_ptr loader, PluginContainers_)
+				if (loader->instance () == object)
+				{
+					PluginContainers_.removeAll (loader);
+					break;
+				}
 		}
 	}
 
@@ -265,7 +325,7 @@ namespace LeechCraft
 	{
 		CheckPlugins ();
 		FillInstances ();
-		
+
 		Plugins_.prepend (Core::Instance ().GetCoreInstanceObject ());
 
 		PluginTreeBuilder_->AddObjects (Plugins_);
@@ -495,7 +555,7 @@ namespace LeechCraft
 				.arg (libdir));
 		ScanDir (QString ("/usr/%1/leechcraft/plugins")
 				.arg (libdir));
-	#endif	
+	#endif
 #endif
 	}
 
@@ -532,7 +592,7 @@ namespace LeechCraft
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "-pg");
 		settings.beginGroup ("Plugins");
-		
+
 		QHash<QByteArray, QString> id2source;
 
 		for (int i = 0; i < PluginContainers_.size (); ++i)
@@ -607,7 +667,7 @@ namespace LeechCraft
 				PluginContainers_.removeAt (i--);
 				continue;
 			}
-			
+
 			try
 			{
 				const QByteArray& id = info->GetUniqueID ();

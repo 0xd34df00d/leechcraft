@@ -26,6 +26,7 @@
 #include <interfaces/ihavetabs.h>
 #include <interfaces/imessage.h>
 #include <interfaces/ihistoryplugin.h>
+#include <interfaces/core/ihookproxy.h>
 #include "core.h"
 
 class QTranslator;
@@ -55,7 +56,7 @@ namespace ChatHistory
 		QAction *ActionHistory_;
 		QHash<QObject*, QAction*> Entry2ActionHistory_;
 		QHash<QObject*, QAction*> Entry2ActionEnableHistory_;
-		
+
 		QHash<QString, QHash<QString, QObject*> > RequestedLogs_;
 	public:
 		void Init (ICoreProxy_ptr);
@@ -68,15 +69,15 @@ namespace ChatHistory
 
 		// IPlugin2
 		QSet<QByteArray> GetPluginClasses () const;
-		
+
 		// IActionsExporter
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
 		QMap<QString, QList<QAction*> > GetMenuActions () const;
-		
+
 		// IHaveTabs
 		TabClasses_t GetTabClasses () const;
 		void TabOpenRequested (const QByteArray&);
-		
+
 		// IHistoryPlugin
 		bool IsHistoryEnabledFor (QObject*) const;
 		void RequestLastMessages (QObject*, int);
@@ -106,7 +107,7 @@ namespace ChatHistory
 		void changeTooltip (QWidget*, QWidget*);
 		void statusBarChanged (QWidget*, const QString&);
 		void raiseTab (QWidget*);
-		
+
 		void gotLastMessages (QObject*, const QList<QObject*>&);
 	};
 }

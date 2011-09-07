@@ -22,26 +22,32 @@
 #include "interfaces/iinfo.h"
 #include "interfaces/ihavesettings.h"
 #include "interfaces/ihavetabs.h"
+#include "interfaces/ipluginready.h"
 
 namespace LeechCraft
 {
 	class SettingsTab;
+	class CorePlugin2Manager;
 
 	class CoreInstanceObject : public QObject
-							 , public IInfo
-							 , public IHaveSettings
-							 , public IHaveTabs
+							  , public IInfo
+							  , public IHaveSettings
+							  , public IHaveTabs
+							  , public IPluginReady
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveSettings IHaveTabs)
-		
+		Q_INTERFACES (IInfo IHaveSettings IHaveTabs IPluginReady)
+
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 		TabClasses_t Classes_;
-		
+
 		SettingsTab *SettingsTab_;
+
+		CorePlugin2Manager *CorePlugin2Manager_;
 	public:
 		CoreInstanceObject (QObject* = 0);
-		
+
+		// IInfo
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
 		void Release ();
@@ -49,11 +55,19 @@ namespace LeechCraft
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
-		
+
+		// IHaveSettings
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-		
+
+		// IHaveTabs
 		TabClasses_t GetTabClasses () const;
 		void TabOpenRequested (const QByteArray&);
+
+		// IPluginReady
+		QSet<QByteArray> GetExpectedPluginClasses () const;
+		void AddPlugin (QObject*);
+
+		CorePlugin2Manager* GetCorePluginManager () const;
 	private:
 		void BuildNewTabModel ();
 	signals:

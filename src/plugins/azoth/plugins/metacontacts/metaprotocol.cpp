@@ -40,7 +40,7 @@ namespace Metacontacts
 	
 	IProtocol::ProtocolFeatures MetaProtocol::GetFeatures () const
 	{
-		return PFNone;
+		return PFNoAccountRegistration;
 	}
 	
 	QList<QObject*> MetaProtocol::GetRegisteredAccounts ()

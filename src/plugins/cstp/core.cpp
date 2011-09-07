@@ -29,6 +29,7 @@
 #include <QtDebug>
 #include <QRegExp>
 #include <interfaces/entitytesthandleresult.h>
+#include <interfaces/core/icoreproxy.h>
 #include <util/util.h>
 #include "task.h"
 #include "xmlsettingsmanager.h"

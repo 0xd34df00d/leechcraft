@@ -151,12 +151,542 @@
         <translation>Экспорт в FB2</translation>
     </message>
     <message>
-        <location filename="export2fb2dialog.ui" line="37"/>
+        <location filename="export2fb2dialog.ui" line="25"/>
+        <source>Name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="32"/>
+        <source>Genres:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="39"/>
+        <source>Exported Feeds</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="68"/>
+        <source>Genre</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="73"/>
+        <source>ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="78"/>
+        <source>Computers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="82"/>
+        <source>Internet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="93"/>
+        <source>Programming</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="104"/>
+        <source>Hardware</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="115"/>
+        <source>Software</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="126"/>
+        <source>Databases</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="137"/>
+        <source>OS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="148"/>
+        <location filename="export2fb2dialog.ui" line="284"/>
+        <location filename="export2fb2dialog.ui" line="393"/>
+        <location filename="export2fb2dialog.ui" line="521"/>
+        <location filename="export2fb2dialog.ui" line="601"/>
+        <location filename="export2fb2dialog.ui" line="654"/>
+        <location filename="export2fb2dialog.ui" line="715"/>
+        <location filename="export2fb2dialog.ui" line="787"/>
+        <location filename="export2fb2dialog.ui" line="840"/>
+        <location filename="export2fb2dialog.ui" line="885"/>
+        <location filename="export2fb2dialog.ui" line="922"/>
+        <location filename="export2fb2dialog.ui" line="959"/>
+        <location filename="export2fb2dialog.ui" line="996"/>
+        <location filename="export2fb2dialog.ui" line="1081"/>
+        <source>Other</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="160"/>
+        <source>Science</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="164"/>
+        <source>Math</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="172"/>
+        <source>Physics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="180"/>
+        <source>Chemistry</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="188"/>
+        <source>Biology</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="196"/>
+        <source>Technology</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="204"/>
+        <source>History</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="212"/>
+        <source>Psychology</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="220"/>
+        <source>Culture</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="228"/>
+        <location filename="export2fb2dialog.ui" line="931"/>
+        <location filename="export2fb2dialog.ui" line="935"/>
+        <source>Religion</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="236"/>
+        <source>Philosophy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="244"/>
+        <source>Politics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="252"/>
+        <source>Business</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="260"/>
+        <source>Jurisprudence</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="268"/>
+        <source>Linguistic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="276"/>
+        <source>Medicine</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="293"/>
+        <source>Science Fiction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="297"/>
+        <source>Alternative history</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="305"/>
+        <location filename="export2fb2dialog.ui" line="425"/>
+        <source>Action</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="313"/>
+        <source>Epic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="321"/>
+        <source>Heroic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="329"/>
+        <location filename="export2fb2dialog.ui" line="630"/>
+        <source>Detective</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="337"/>
+        <source>Cyberpunk</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="345"/>
+        <source>Space</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="353"/>
+        <source>Social</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="361"/>
+        <source>Horror</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="369"/>
+        <location filename="export2fb2dialog.ui" line="585"/>
+        <location filename="export2fb2dialog.ui" line="968"/>
+        <source>Humor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="377"/>
+        <source>Fantasy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="385"/>
+        <location filename="export2fb2dialog.ui" line="505"/>
+        <location filename="export2fb2dialog.ui" line="593"/>
+        <location filename="export2fb2dialog.ui" line="724"/>
+        <source>For children</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="402"/>
+        <location filename="export2fb2dialog.ui" line="763"/>
+        <source>Detectives</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="409"/>
+        <location filename="export2fb2dialog.ui" line="537"/>
+        <source>Classic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="417"/>
+        <source>Police</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="433"/>
+        <source>Ironic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="441"/>
+        <location filename="export2fb2dialog.ui" line="545"/>
+        <location filename="export2fb2dialog.ui" line="622"/>
+        <location filename="export2fb2dialog.ui" line="675"/>
+        <source>Historic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="449"/>
+        <source>Espionage</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="457"/>
+        <source>Criminal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="465"/>
+        <source>Political</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="473"/>
+        <source>Maniac</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="481"/>
+        <source>Hard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="489"/>
+        <source>Thriller</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="497"/>
+        <source>Fictional</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="513"/>
+        <location filename="export2fb2dialog.ui" line="610"/>
+        <source>Love</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="530"/>
+        <location filename="export2fb2dialog.ui" line="747"/>
+        <location filename="export2fb2dialog.ui" line="980"/>
+        <source>Prose</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="553"/>
+        <location filename="export2fb2dialog.ui" line="614"/>
+        <source>Contemporary</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="561"/>
+        <source>Counterculture</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="569"/>
+        <source>Russian classic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="577"/>
+        <source>USSR classic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="638"/>
+        <source>Short</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="646"/>
+        <source>Erotica</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="663"/>
+        <location filename="export2fb2dialog.ui" line="771"/>
+        <source>Adventure</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="667"/>
+        <source>Western</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="683"/>
+        <source>Indian</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="691"/>
+        <source>Maritime</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="699"/>
+        <source>Travel &amp; geography</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="707"/>
+        <source>Animals</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="731"/>
+        <source>Tales</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="739"/>
+        <location filename="export2fb2dialog.ui" line="988"/>
+        <source>Verses</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="755"/>
+        <source>Science fiction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="779"/>
+        <source>Educational</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="796"/>
+        <location filename="export2fb2dialog.ui" line="800"/>
+        <source>Antique</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="808"/>
+        <source>European</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="816"/>
+        <source>Russian</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="824"/>
+        <source>East</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="832"/>
+        <source>Myths</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="849"/>
+        <location filename="export2fb2dialog.ui" line="869"/>
+        <source>References</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="853"/>
+        <source>Encyclopedia</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="861"/>
+        <source>Dictionaries</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="877"/>
+        <source>Guides</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="894"/>
+        <source>Documentary</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="898"/>
+        <source>Biography</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="906"/>
+        <source>Publicism</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="914"/>
+        <source>Criticism</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="943"/>
+        <source>Esoterics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="951"/>
+        <source>Self-improvement</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="972"/>
+        <source>Anecdotes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="1005"/>
+        <source>Home &amp; Family</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="1009"/>
+        <source>Cooking</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="1017"/>
+        <source>Pets</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="1025"/>
+        <source>Crafts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="1033"/>
+        <source>Entertainment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="1041"/>
+        <source>Health</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="1049"/>
+        <source>Garden</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="1057"/>
+        <source>DIY</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="1065"/>
+        <source>Sports</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="1073"/>
+        <source>Sex</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="1112"/>
         <source>Only unread items</source>
         <translation>Только непрочитанные</translation>
     </message>
     <message>
-        <location filename="export2fb2dialog.ui" line="56"/>
+        <location filename="export2fb2dialog.ui" line="1124"/>
+        <source>Output:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="export2fb2dialog.ui" line="1134"/>
         <source>Browse...</source>
         <translation>Обзор...</translation>
     </message>
@@ -446,44 +976,44 @@
         <translation type="unfinished">Действия над лентами</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="319"/>
+        <location filename="aggregator.cpp" line="323"/>
         <source>RSS/Atom feed reader.</source>
         <translation type="unfinished">Чтение RSS/Atom-лент.</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="648"/>
+        <location filename="aggregator.cpp" line="652"/>
         <source>You are going to permanently remove the feed:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Are you really sure that you want to do it?</source>
         <comment>Feed removing confirmation</comment>
         <translation type="unfinished">Вы собираетесь навсегда удалить ленту:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Вы уверены?</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="740"/>
+        <location filename="aggregator.cpp" line="744"/>
         <source>Export to OPML</source>
         <translation type="unfinished">Экспорт в OPML</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="741"/>
-        <location filename="aggregator.cpp" line="771"/>
+        <location filename="aggregator.cpp" line="745"/>
+        <location filename="aggregator.cpp" line="775"/>
         <source>Select save file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="742"/>
+        <location filename="aggregator.cpp" line="746"/>
         <source>OPML files (*.opml);;XML files (*.xml);;All files (*.*)</source>
         <translation type="unfinished">OPML-файлы (*.opml);;XML-файлы (*.xml);;Все файлы (*.*)</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="770"/>
+        <location filename="aggregator.cpp" line="774"/>
         <source>Export to binary file</source>
         <translation type="unfinished">Экспорт в бинарный файл</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="772"/>
+        <location filename="aggregator.cpp" line="776"/>
         <source>Aggregator exchange files (*.lcae);;All files (*.*)</source>
         <translation type="unfinished">Файл обмена Aggregator (*.lcae);;Все файлы (*.*)</translation>
     </message>
     <message numerus="yes">
-        <location filename="aggregator.cpp" line="832"/>
+        <location filename="aggregator.cpp" line="836"/>
         <source>%n unread message(s)</source>
         <translation type="unfinished">
             <numerusform>%n непрочитанное сообщение</numerusform>
@@ -492,7 +1022,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="aggregator.cpp" line="833"/>
+        <location filename="aggregator.cpp" line="837"/>
         <source>in %n channel(s).</source>
         <translation type="unfinished">
             <numerusform>в %n канале.</numerusform>
@@ -583,137 +1113,137 @@
         <translation type="unfinished">Невозможно удалить ленту: %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="681"/>
-        <location filename="core.cpp" line="697"/>
-        <location filename="core.cpp" line="1683"/>
+        <location filename="core.cpp" line="680"/>
+        <location filename="core.cpp" line="696"/>
+        <location filename="core.cpp" line="1682"/>
         <source>Aggregator error</source>
         <translation type="unfinished">Ошибка Aggregator</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="682"/>
+        <location filename="core.cpp" line="681"/>
         <source>Could not get feed settings: %1</source>
         <translation type="unfinished">Невозможно получить параметры ленты: %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="698"/>
+        <location filename="core.cpp" line="697"/>
         <source>Could not update feed settings: %1</source>
         <translation type="unfinished">Невозможно обновить параметры ленты: %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="719"/>
+        <location filename="core.cpp" line="718"/>
         <source>Feed update error</source>
         <translation type="unfinished">Ошибка обновления ленты</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="720"/>
+        <location filename="core.cpp" line="719"/>
         <source>Could not update feed</source>
         <translation type="unfinished">Невозможно обновить ленту</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="745"/>
-        <location filename="core.cpp" line="763"/>
-        <location filename="core.cpp" line="775"/>
-        <location filename="core.cpp" line="1095"/>
+        <location filename="core.cpp" line="744"/>
+        <location filename="core.cpp" line="762"/>
+        <location filename="core.cpp" line="774"/>
+        <location filename="core.cpp" line="1094"/>
         <source>OPML import error</source>
         <translation type="unfinished">Ошибка импорта OPML</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="746"/>
+        <location filename="core.cpp" line="745"/>
         <source>Could not open file %1 for reading.</source>
         <translation type="unfinished">Невозможно открыть %1 для чтения.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="764"/>
+        <location filename="core.cpp" line="763"/>
         <source>XML error, file %1, line %2, column %3, error:&lt;br /&gt;%4</source>
         <translation type="unfinished">Ошибка XML, файл %1, строка %2, столбец %3, ошибка:&lt;br /&gt;%4</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="776"/>
+        <location filename="core.cpp" line="775"/>
         <source>OPML from file %1 is not valid.</source>
         <translation type="unfinished">OPML-файл %1 некорректен.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="831"/>
+        <location filename="core.cpp" line="830"/>
         <source>OPML export error</source>
         <translation type="unfinished">Ошибка экспорта OPML</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="832"/>
-        <location filename="core.cpp" line="863"/>
+        <location filename="core.cpp" line="831"/>
+        <location filename="core.cpp" line="862"/>
         <source>Could not open file %1 for write.</source>
         <translation type="unfinished">Невозможно открыть файл %1 на запись.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="862"/>
+        <location filename="core.cpp" line="861"/>
         <source>Binary export error</source>
         <translation type="unfinished">Ошибка экспорта в бинарный формат</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1014"/>
-        <location filename="core.cpp" line="1029"/>
-        <location filename="core.cpp" line="1043"/>
-        <location filename="core.cpp" line="1061"/>
-        <location filename="core.cpp" line="1188"/>
+        <location filename="core.cpp" line="1013"/>
+        <location filename="core.cpp" line="1028"/>
+        <location filename="core.cpp" line="1042"/>
+        <location filename="core.cpp" line="1060"/>
+        <location filename="core.cpp" line="1187"/>
         <source>Feed error</source>
         <translation type="unfinished">Ошибка ленты</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1015"/>
+        <location filename="core.cpp" line="1014"/>
         <source>Downloaded file from url %1 has null size.</source>
         <translation type="unfinished">Файл, скачанный с %1, имеет нулевой размер.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1030"/>
+        <location filename="core.cpp" line="1029"/>
         <source>XML file parse error: %1, line %2, column %3, filename %4, from %5</source>
         <translation type="unfinished">Ошибка разбора XML: %1, строка %2, столбец %3, имя файла %4, от %5</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1044"/>
+        <location filename="core.cpp" line="1043"/>
         <source>Could not find parser to parse file %1 from %2</source>
         <translation type="unfinished">Невозможно найти парсер для файла %1 из %2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1062"/>
+        <location filename="core.cpp" line="1061"/>
         <source>Feed with url %1 not found.</source>
         <translation type="unfinished">Лента с URL %1 не найдена.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1096"/>
+        <location filename="core.cpp" line="1095"/>
         <source>Unable to download the OPML file.</source>
         <translation type="unfinished">Невозможно скачать OPML-файл.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1111"/>
+        <location filename="core.cpp" line="1110"/>
         <source>Address not found:&lt;br /&gt;%1</source>
         <translation type="unfinished">Адрес не найден:&lt;br /&gt;%1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1114"/>
+        <location filename="core.cpp" line="1113"/>
         <source>Access denied:&lt;br /&gt;%1</source>
         <translation type="unfinished">Доступ запрещён:&lt;br /&gt;%1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1117"/>
+        <location filename="core.cpp" line="1116"/>
         <source>Local error for:&lt;br /&gt;%1</source>
         <translation type="unfinished">Локальная ошибка для:&lt;br /&gt;%1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1120"/>
+        <location filename="core.cpp" line="1119"/>
         <source>Unknown error for:&lt;br /&gt;%1</source>
         <translation type="unfinished">Неизвестная ошибка для:&lt;br /&gt;%1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1123"/>
+        <location filename="core.cpp" line="1122"/>
         <source>Download error</source>
         <translation type="unfinished">Ошибка скачивания</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1189"/>
+        <location filename="core.cpp" line="1188"/>
         <source>Could not find plugin to download external file %1.</source>
         <translation type="unfinished">Невозможно найти модуль для скачивания внешнего файла %1.</translation>
     </message>
     <message numerus="yes">
-        <location filename="core.cpp" line="1537"/>
+        <location filename="core.cpp" line="1536"/>
         <source>Added channel &quot;%1&quot; (%n item(s))</source>
         <translation type="unfinished">
             <numerusform>Добавлен канал &quot;%1&quot; (%n статья)</numerusform>
@@ -722,12 +1252,12 @@
         </translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1660"/>
+        <location filename="core.cpp" line="1659"/>
         <source>Updated channel &quot;%1&quot; (%2, %3)</source>
         <translation type="unfinished">Обновлён канал &quot;%1&quot; (%2, %3)</translation>
     </message>
     <message numerus="yes">
-        <location filename="core.cpp" line="1661"/>
+        <location filename="core.cpp" line="1660"/>
         <source>%n new item(s)</source>
         <comment>Channel update</comment>
         <translation type="unfinished">
@@ -737,7 +1267,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="core.cpp" line="1662"/>
+        <location filename="core.cpp" line="1661"/>
         <source>%n updated item(s)</source>
         <comment>Channel update</comment>
         <translation type="unfinished">
@@ -747,12 +1277,12 @@
         </translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1684"/>
+        <location filename="core.cpp" line="1683"/>
         <source>Could not mark channel</source>
         <translation type="unfinished">Невозможно отметить канал</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1743"/>
+        <location filename="core.cpp" line="1742"/>
         <source>Could not find plugin for feed with URL %1</source>
         <translation type="unfinished">Невозможно найти модуль для ленты с URL %1</translation>
     </message>
@@ -760,17 +1290,17 @@
 <context>
     <name>LeechCraft::Aggregator::Export2FB2Dialog</name>
     <message>
-        <location filename="export2fb2dialog.cpp" line="65"/>
+        <location filename="export2fb2dialog.cpp" line="77"/>
         <source>Select save file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="export2fb2dialog.cpp" line="67"/>
+        <location filename="export2fb2dialog.cpp" line="79"/>
         <source>fb2 files (*.fb2);;XML files (*.xml);;All files (*.*)</source>
         <translation type="unfinished">Файлы fb2 (*.fb2);;XML-файлы (*xml);;Все файлы (*.*)</translation>
     </message>
     <message numerus="yes">
-        <location filename="export2fb2dialog.cpp" line="109"/>
+        <location filename="export2fb2dialog.cpp" line="233"/>
         <source>%n unread item(s)</source>
         <translation type="unfinished">
             <numerusform>%n непрочитанная статья</numerusform>
@@ -779,22 +1309,22 @@
         </translation>
     </message>
     <message>
-        <location filename="export2fb2dialog.cpp" line="123"/>
+        <location filename="export2fb2dialog.cpp" line="250"/>
         <source>Published on %1</source>
         <translation type="unfinished">Опубликовано в %1</translation>
     </message>
     <message>
-        <location filename="export2fb2dialog.cpp" line="127"/>
+        <location filename="export2fb2dialog.cpp" line="254"/>
         <source>By %1</source>
         <translation type="unfinished">%1</translation>
     </message>
     <message>
-        <location filename="export2fb2dialog.cpp" line="195"/>
+        <location filename="export2fb2dialog.cpp" line="324"/>
         <source>Could not open file %1 for write:&lt;br /&gt;%2.</source>
         <translation type="unfinished">Невозможно открыть файл %1 на запись:&lt;br /&gt;%2.</translation>
     </message>
     <message>
-        <location filename="export2fb2dialog.cpp" line="263"/>
+        <location filename="export2fb2dialog.cpp" line="404"/>
         <source>FB2 export complete.</source>
         <translation type="unfinished">Экспорт в FB2 завершён.</translation>
     </message>
@@ -937,57 +1467,57 @@
         <translation type="unfinished">Дата</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="149"/>
+        <location filename="itemswidget.cpp" line="148"/>
         <source>Items categories</source>
         <translation type="unfinished">Категории статей</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="484"/>
+        <location filename="itemswidget.cpp" line="488"/>
         <source>Hide read items</source>
         <translation type="unfinished">Прятать прочитанные новости</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="492"/>
+        <location filename="itemswidget.cpp" line="496"/>
         <source>Show items as tape</source>
         <translation type="unfinished">Показывать статьи лентой</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="500"/>
+        <location filename="itemswidget.cpp" line="504"/>
         <source>Mark item as unread</source>
         <translation type="unfinished">Отметить статью как непрочитанную</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="504"/>
+        <location filename="itemswidget.cpp" line="508"/>
         <source>Mark item as read</source>
         <translation type="unfinished">Отметить статью как прочитанную</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="508"/>
+        <location filename="itemswidget.cpp" line="512"/>
         <source>Subscribe to comments</source>
         <translation type="unfinished">Подписаться на комментарии</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="512"/>
+        <location filename="itemswidget.cpp" line="516"/>
         <source>Open in new tab</source>
         <translation type="unfinished">Открыть в новой вкладке</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="598"/>
+        <location filename="itemswidget.cpp" line="602"/>
         <source>Published on %1 by %2</source>
         <translation type="unfinished">Опубликовал %2 в %1</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="603"/>
+        <location filename="itemswidget.cpp" line="607"/>
         <source>Published on %1</source>
         <translation type="unfinished">Опубликовано в %1</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="607"/>
+        <location filename="itemswidget.cpp" line="611"/>
         <source>Published by %1</source>
         <translation type="unfinished">Опубликовал %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="itemswidget.cpp" line="618"/>
+        <location filename="itemswidget.cpp" line="622"/>
         <source>%n comment(s), &lt;a href=&apos;%1&apos;%2&gt;view them&lt;/a&gt;&lt;br /&gt;</source>
         <translation type="unfinished">
             <numerusform>&lt;a href=&apos;%1&apos;%2&gt;посмотреть %n комментарий&lt;/a&gt;&lt;/div&gt;</numerusform>
@@ -996,7 +1526,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="itemswidget.cpp" line="623"/>
+        <location filename="itemswidget.cpp" line="627"/>
         <source>%n comment(s)</source>
         <translation type="unfinished">
             <numerusform>%n комментарий</numerusform>
@@ -1005,112 +1535,112 @@
         </translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="626"/>
+        <location filename="itemswidget.cpp" line="630"/>
         <source>&lt;a href=&apos;%1&apos;%2&gt;View comments&lt;/a&gt;&lt;br /&gt;</source>
         <translation type="unfinished">&lt;a href=&apos;%1&apos;%2&gt;Посмотреть комментарии&lt;/a&gt;&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="637"/>
+        <location filename="itemswidget.cpp" line="641"/>
         <source>Geoposition: &lt;a href=&apos;%3&apos;%4 title=&apos;Google Maps&apos;&gt;%1 %2&lt;/a&gt;&lt;br /&gt;</source>
         <translation type="unfinished">Положение: &lt;a href=&apos;%3&apos;%4 title=&apos;Google Maps&apos;&gt;%1 %2&lt;/a&gt;&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="658"/>
+        <location filename="itemswidget.cpp" line="662"/>
         <source>File of type %1, size %2:&lt;br /&gt;</source>
         <translation type="unfinished">Файл типа %1, размер %2:&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="662"/>
+        <location filename="itemswidget.cpp" line="666"/>
         <source>File of type %1 and unknown length:&lt;br /&gt;</source>
         <translation type="unfinished">Файл типа %1 и неизвестного размера:&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="668"/>
+        <location filename="itemswidget.cpp" line="672"/>
         <source>&lt;br /&gt;Specified language: %1</source>
         <translation type="unfinished">&lt;br /&gt;Указанный язык: %1</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="682"/>
+        <location filename="itemswidget.cpp" line="686"/>
         <source>Image </source>
         <translation type="unfinished">Изображение</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="684"/>
+        <location filename="itemswidget.cpp" line="688"/>
         <source>Audio </source>
         <translation type="unfinished">Аудио</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="686"/>
+        <location filename="itemswidget.cpp" line="690"/>
         <source>Video </source>
         <translation type="unfinished">Видео</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="688"/>
+        <location filename="itemswidget.cpp" line="692"/>
         <source>Document </source>
         <translation type="unfinished">Документ</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="690"/>
+        <location filename="itemswidget.cpp" line="694"/>
         <source>Executable </source>
         <translation type="unfinished">Приложение</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="758"/>
+        <location filename="itemswidget.cpp" line="762"/>
         <source>&lt;hr /&gt;Thumbnail at %1:&lt;br /&gt;</source>
         <translation type="unfinished">&lt;hr /&gt;Кадр в %1:&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="782"/>
+        <location filename="itemswidget.cpp" line="786"/>
         <source>&lt;strong&gt;Keywords:&lt;/strong&gt; &lt;em&gt;%1&lt;/em&gt;&lt;br /&gt;</source>
         <translation type="unfinished">&lt;strong&gt;Ключевые слова:&lt;/strong&gt; &lt;em&gt;%1&lt;/em&gt;&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="786"/>
+        <location filename="itemswidget.cpp" line="790"/>
         <source>&lt;strong&gt;Language:&lt;/strong&gt; %1&lt;br /&gt;</source>
         <translation type="unfinished">&lt;strong&gt;Язык:&lt;/strong&gt; %1&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="790"/>
+        <location filename="itemswidget.cpp" line="794"/>
         <source>Sample</source>
         <translation type="unfinished">Пример</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="792"/>
+        <location filename="itemswidget.cpp" line="796"/>
         <source>Continuous stream</source>
         <translation type="unfinished">Поток</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="794"/>
+        <location filename="itemswidget.cpp" line="798"/>
         <source>Full version</source>
         <translation type="unfinished">Полная версия</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="802"/>
+        <location filename="itemswidget.cpp" line="806"/>
         <source>Title: %1&lt;br /&gt;</source>
         <translation type="unfinished">Название: %1&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="805"/>
+        <location filename="itemswidget.cpp" line="809"/>
         <source>Start time: %1&lt;br /&gt;</source>
         <translation type="unfinished">Время начала: %1&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="808"/>
+        <location filename="itemswidget.cpp" line="812"/>
         <source>End time: %1&lt;br /&gt;</source>
         <translation type="unfinished">Время окончания: %1&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="821"/>
+        <location filename="itemswidget.cpp" line="825"/>
         <source>&lt;strong&gt;Scenes:&lt;/strong&gt;</source>
         <translation type="unfinished">&lt;strong&gt;Сцены:&lt;/strong&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="830"/>
+        <location filename="itemswidget.cpp" line="834"/>
         <source>&lt;strong&gt;Views:&lt;/strong&gt; %1</source>
         <translation type="unfinished">&lt;strong&gt;Просмотры:&lt;/strong&gt; %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="itemswidget.cpp" line="833"/>
+        <location filename="itemswidget.cpp" line="837"/>
         <source>&lt;strong&gt;Added to favorites:&lt;/strong&gt; %n time(s)</source>
         <translation type="unfinished">
             <numerusform>&lt;strong&gt;Добавлено в избранное:&lt;/strong&gt; %n раз</numerusform>
@@ -1119,92 +1649,92 @@
         </translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="836"/>
+        <location filename="itemswidget.cpp" line="840"/>
         <source>&lt;strong&gt;Average rating:&lt;/strong&gt; %1</source>
         <translation type="unfinished">&lt;strong&gt;Средний рейтинг:&lt;/strong&gt; %1</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="839"/>
+        <location filename="itemswidget.cpp" line="843"/>
         <source>&lt;strong&gt;Number of marks:&lt;/strong&gt; %1</source>
         <translation type="unfinished">&lt;strong&gt;Добавлено в закладки:&lt;/strong&gt; %1 раз</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="842"/>
+        <location filename="itemswidget.cpp" line="846"/>
         <source>&lt;strong&gt;Minimal rating:&lt;/strong&gt; %1</source>
         <translation type="unfinished">&lt;strong&gt;Минимальный рейтинг:&lt;/strong&gt; %1</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="845"/>
+        <location filename="itemswidget.cpp" line="849"/>
         <source>&lt;strong&gt;Maximal rating:&lt;/strong&gt; %1</source>
         <translation type="unfinished">&lt;strong&gt;Максимальный рейтинг:&lt;/strong&gt; %1</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="849"/>
+        <location filename="itemswidget.cpp" line="853"/>
         <source>&lt;strong&gt;User tags:&lt;/strong&gt; %1</source>
         <translation type="unfinished">&lt;strong&gt;Пользовательские теги:&lt;/strong&gt; %1</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="854"/>
+        <location filename="itemswidget.cpp" line="858"/>
         <source>&lt;li&gt;&lt;strong&gt;Duration:&lt;/strong&gt; %1&lt;/li&gt;</source>
         <translation type="unfinished">&lt;li&gt;&lt;strong&gt;Длительность:&lt;/strong&gt; %1&lt;/li&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="857"/>
+        <location filename="itemswidget.cpp" line="861"/>
         <source>&lt;li&gt;&lt;strong&gt;Channels:&lt;/strong&gt; %1&lt;/li&gt;</source>
         <translation type="unfinished">&lt;li&gt;&lt;strong&gt;Количество каналов:&lt;/strong&gt; %1&lt;/li&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="861"/>
+        <location filename="itemswidget.cpp" line="865"/>
         <source>&lt;li&gt;&lt;strong&gt;Size:&lt;/strong&gt; %1x%2&lt;/li&gt;</source>
         <translation type="unfinished">&lt;li&gt;&lt;strong&gt;Размер:&lt;/strong&gt; %1×%2&lt;/li&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="865"/>
+        <location filename="itemswidget.cpp" line="869"/>
         <source>&lt;li&gt;&lt;strong&gt;Bitrate:&lt;/strong&gt; %1 kbps&lt;/li&gt;</source>
         <translation type="unfinished">&lt;li&gt;&lt;strong&gt;Битрейт:&lt;/strong&gt; %1 kbps&lt;/li&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="868"/>
+        <location filename="itemswidget.cpp" line="872"/>
         <source>&lt;li&gt;&lt;strong&gt;Framerate:&lt;/strong&gt; %1&lt;/li&gt;</source>
         <translation type="unfinished">&lt;li&gt;&lt;strong&gt;Частота кадров:&lt;/strong&gt; %1&lt;/li&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="871"/>
+        <location filename="itemswidget.cpp" line="875"/>
         <source>&lt;li&gt;&lt;strong&gt;Sampling rate:&lt;/strong&gt; %1&lt;/li&gt;</source>
         <translation type="unfinished">&lt;li&gt;&lt;strong&gt;Частота дискретизации:&lt;/strong&gt; %1&lt;/li&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="874"/>
+        <location filename="itemswidget.cpp" line="878"/>
         <source>&lt;li&gt;&lt;strong&gt;MIME type:&lt;/strong&gt; %1&lt;/li&gt;</source>
         <translation type="unfinished">&lt;li&gt;&lt;strong&gt;MIME-тип:&lt;/strong&gt; %1&lt;/li&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="879"/>
+        <location filename="itemswidget.cpp" line="883"/>
         <source>&lt;strong&gt;Technical information:&lt;/strong&gt;</source>
         <translation type="unfinished">&lt;strong&gt;Техническая информация:&lt;/strong&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="889"/>
+        <location filename="itemswidget.cpp" line="893"/>
         <source>&lt;strong&gt;Rating:&lt;/strong&gt; %1 (according to %2 scheme)&lt;br /&gt;</source>
         <translation type="unfinished">&lt;strong&gt;Рейтинг:&lt;/strong&gt; %1 (по схеме %2)&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="913"/>
+        <location filename="itemswidget.cpp" line="917"/>
         <source>&lt;strong&gt;Copyright:&lt;/strong&gt; &lt;a href=&apos;%1&apos; target=&apos;_blank&apos;&gt;%2&lt;/a&gt;&lt;br /&gt;</source>
         <translation type="unfinished">&lt;strong&gt;©&lt;/strong&gt; &lt;a href=&apos;%1&apos; target=&apos;_blank&apos;&gt;%2&lt;/a&gt;&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="917"/>
+        <location filename="itemswidget.cpp" line="921"/>
         <source>&lt;strong&gt;Copyright:&lt;/strong&gt; &lt;a href=&apos;%1&apos; target=&apos;_blank&apos;&gt;%1&lt;/a&gt;&lt;br /&gt;</source>
         <translation type="unfinished">&lt;strong&gt;©&lt;/strong&gt; &lt;a href=&apos;%1&apos; target=&apos;_blank&apos;&gt;%1&lt;/a&gt;&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="921"/>
+        <location filename="itemswidget.cpp" line="925"/>
         <source>&lt;strong&gt;Copyright:&lt;/strong&gt; %1&lt;br /&gt;</source>
         <translation type="unfinished">&lt;strong&gt;©&lt;/strong&gt; %1&lt;br /&gt;</translation>
     </message>
     <message>
-        <location filename="itemswidget.cpp" line="936"/>
+        <location filename="itemswidget.cpp" line="940"/>
         <source>&lt;strong&gt;Credits:&lt;/strong&gt;</source>
         <translation type="unfinished">&lt;strong&gt;Исполнители:&lt;/strong&gt;</translation>
     </message>

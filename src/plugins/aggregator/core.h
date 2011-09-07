@@ -25,8 +25,9 @@
 #include <QMap>
 #include <QPair>
 #include <QDateTime>
-#include <interfaces/iinfo.h>
 #include <interfaces/idownload.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ihookproxy.h>
 #include <util/idpool.h>
 #include "item.h"
 #include "channel.h"
@@ -109,7 +110,7 @@ namespace Aggregator
 		bool Initialized_;
 		AppWideActions AppWideActions_;
 		ItemsWidget *ReprWidget_;
-		
+
 		PluginManager *PluginManager_;
 
 		Core ();
@@ -132,7 +133,7 @@ namespace Aggregator
 
 		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;
-		
+
 		void AddPlugin (QObject*);
 
 		Util::IDPool<IDType_t>& GetPool (PoolType);
@@ -234,7 +235,7 @@ namespace Aggregator
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 		void gotEntity (const LeechCraft::Entity&);
 		void channelRemoved (IDType_t);
-		
+
 		// Plugin API
 		void hookGotNewItems (LeechCraft::IHookProxy_ptr proxy,
 				QVariantList items);

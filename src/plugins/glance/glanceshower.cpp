@@ -31,6 +31,7 @@
 #include <QDesktopWidget>
 #include <QMainWindow>
 #include <QtDebug>
+#include <interfaces/core/icoretabwidget.h>
 #include "core.h"
 #include "glanceitem.h"
 

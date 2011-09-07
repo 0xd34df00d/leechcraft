@@ -27,6 +27,8 @@
 #include <interfaces/ifinder.h>
 #include <interfaces/structures.h>
 #include <interfaces/ijobholder.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ipluginsmanager.h>
 #include "core.h"
 #include "searchwidget.h"
 #include "summary.h"
@@ -180,7 +182,7 @@ namespace LeechCraft
 			{
 				return S_ParentMultiTabs_;
 			}
-			
+
 			TabClassInfo SummaryWidget::GetTabClassInfo () const
 			{
 				return qobject_cast<Summary*> (S_ParentMultiTabs_)->GetTabClasses ().first ();
@@ -443,7 +445,10 @@ namespace LeechCraft
 						Ui_.ControlsDockWidget_->setWidget (addiInfo);
 
 					if (addiInfo)
+					{
 						Ui_.ControlsDockWidget_->show ();
+						Core::Instance ().GetProxy()->UpdateIconset (addiInfo->findChildren<QAction*> ());
+					}
 				}
 			}
 
@@ -541,16 +546,15 @@ namespace LeechCraft
 
 			void SummaryWidget::handleCategoriesChanged ()
 			{
-				QStringList currentCats = GetUniqueCategories ();
+				const QStringList& currentCats = GetUniqueCategories ();
 
-				QStringList currentSelection = SearchWidget_->GetCategories ();
 				SearchWidget_->SetPossibleCategories (currentCats + QStringList ("downloads"));
 			}
 
 			void SummaryWidget::syncSelection (const QModelIndex& current)
 			{
 				QItemSelectionModel *selm = Ui_.PluginsTasksTree_->selectionModel ();
-				QModelIndex now = selm->currentIndex ();
+				const QModelIndex& now = selm->currentIndex ();
 #ifdef QT_DEBUG
 				qDebug () << Q_FUNC_INFO << this << current << now;
 #endif
