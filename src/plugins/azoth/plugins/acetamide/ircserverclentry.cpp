@@ -23,6 +23,7 @@
 #include "clientconnection.h"
 #include "ircparser.h"
 #include "servercommandmessage.h"
+#include "serverinfowidget.h"
 
 namespace LeechCraft
 {
@@ -169,6 +170,17 @@ namespace Acetamide
 
 		return result;
 	}
+
+	QWidget* IrcServerCLEntry::GetConfigurationWidget ()
+	{
+		return new ServerInfoWidget (this);
+	}
+
+	void IrcServerCLEntry::AcceptConfiguration (QWidget*)
+	{
+		// there is nothing to implement
+	}
+
 
 };
 };

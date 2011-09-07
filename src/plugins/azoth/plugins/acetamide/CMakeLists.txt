@@ -31,6 +31,7 @@ SET (ACETAMIDE_SRCS
 	newnickservidentifydialog.cpp
 	nickservidentifywidget.cpp
 	servercommandmessage.cpp
+	serverinfowidget.cpp
 	serverparticipantentry.cpp
 	serverresponcemanager.cpp
 	sortfilterproxymodel.cpp
@@ -64,6 +65,7 @@ SET (ACETAMIDE_HEADERS
 	newnickservidentifydialog.h
 	nickservidentifywidget.h
 	servercommandmessage.h
+	serverinfowidget.h
 	serverparticipantentry.h
 	serverresponcemanager.h
 	sortfilterproxymodel.h
@@ -80,6 +82,7 @@ SET (ACETAMIDE_FORMS
 	invitechannelsdialog.ui
 	newnickservidentifydialog.ui
 	nickservidentifywidget.ui
+	serverinfowidget.ui
 	)
 SET (ACETAMIDE_RESOURCES azothacetamideresources.qrc)
 
