@@ -29,6 +29,9 @@ namespace Acetamide
 	: QWidget (parent)
 	, ISCLEntry_ (isEntry)
 	{
+		Ui_.setupUi (this);
+
+		SetISupport ();
 	}
 
 	void ServerInfoWidget::dataReady ()
@@ -38,6 +41,12 @@ namespace Acetamide
 	void ServerInfoWidget::accept ()
 	{
 	}
+
+	void ServerInfoWidget::SetISupport ()
+	{
+		
+	}
+
 }
 }
 }

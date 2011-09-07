@@ -30,6 +30,7 @@ SET (ACETAMIDE_SRCS
 	localtypes.cpp
 	newnickservidentifydialog.cpp
 	nickservidentifywidget.cpp
+	rplisupportparser.cpp
 	servercommandmessage.cpp
 	serverinfowidget.cpp
 	serverparticipantentry.cpp
@@ -64,6 +65,7 @@ SET (ACETAMIDE_HEADERS
 	localtypes.h
 	newnickservidentifydialog.h
 	nickservidentifywidget.h
+	rplisupportparser.h
 	servercommandmessage.h
 	serverinfowidget.h
 	serverparticipantentry.h

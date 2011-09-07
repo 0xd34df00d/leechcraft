@@ -37,6 +37,7 @@
 #include "ircserversocket.h"
 #include "usercommandmanager.h"
 #include "serverresponcemanager.h"
+#include "rplisupportparser.h"
 
 namespace LeechCraft
 {
@@ -62,6 +63,7 @@ namespace Acetamide
 		IrcParser_ = new IrcParser (this);
 		CmdManager_ = new UserCommandManager (this);
 		ServerResponceManager_ = new ServerResponceManager (this);
+		RplISupportParser_ = new RplISupportParser (this);
 		connect (this,
 				SIGNAL (connected (const QString&)),
 				Account_->GetClientConnection ().get (),
@@ -983,6 +985,12 @@ namespace Acetamide
 		Q_UNUSED (nick);
 		Q_UNUSED (mode);
 		//TODO but I don't know how it use
+	}
+
+	void IrcServerHandler::ParserISupport (const QString& msg)
+	{
+		bool res = RplISupportParser_->ParseISupportReply (msg);
+		qDebug () << Q_FUNC_INFO << res;
 	}
 
 	void IrcServerHandler::connectionEstablished ()

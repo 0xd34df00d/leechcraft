@@ -44,6 +44,7 @@ namespace Acetamide
 	class IrcServerSocket;
 	class UserCommandManager;
 	class ServerResponceManager;
+	class RplISupportParser;
 
 	class IrcServerHandler : public QObject
 	{
@@ -56,6 +57,7 @@ namespace Acetamide
 		IrcServerSocket *Socket_;
 		UserCommandManager *CmdManager_;
 		ServerResponceManager *ServerResponceManager_;
+		RplISupportParser *RplISupportParser_;
 		ConnectionState ServerConnectionState_;
 		bool IsConsoleEnabled_;
 		bool IsInviteDialogActive_;
@@ -179,6 +181,8 @@ namespace Acetamide
 		void ParseChanMode (const QString&, const QString&, 
 				const QString& value = QString ());
 		void ParseUserMode (const QString&, const QString&);
+
+		void ParserISupport (const QString&);
 	private:
 		void SendToConsole (IMessage::Direction, const QString&);
 		void NickCmdError ();

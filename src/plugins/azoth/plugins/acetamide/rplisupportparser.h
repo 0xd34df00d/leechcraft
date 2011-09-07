@@ -16,12 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SERVERINFOWIDGET_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SERVERINFOWIDGET_H
+#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_RPLISUPPORTPARSER_H
+#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_RPLISUPPORTPARSER_H
 
-#include <QWidget>
-#include <interfaces/iconfigurablemuc.h>
-#include "ui_serverinfowidget.h"
+#include <QObject>
 
 namespace LeechCraft
 {
@@ -30,25 +28,18 @@ namespace Azoth
 namespace Acetamide
 {
 
-	class IrcServerCLEntry;
+	class IrcServerHandler;
 
-	class ServerInfoWidget : public QWidget
-							, public IMUCConfigWidget
+	class RplISupportParser : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMUCConfigWidget)
-
-		Ui::ServerInfoWidget Ui_;
-		IrcServerCLEntry *ISCLEntry_;
+		IrcServerHandler *ISH_;
 	public:
-		ServerInfoWidget (IrcServerCLEntry*, QWidget* = 0);
-		void dataReady ();
-		void accept ();
-	private:
-		void SetISupport ();
+		RplISupportParser (IrcServerHandler*);
+
+		bool ParseISupportReply (const QString&);
 	};
 }
 }
 }
-
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SERVERINFOWIDGET_H
+#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_RPLISUPPORTPARSER_H
