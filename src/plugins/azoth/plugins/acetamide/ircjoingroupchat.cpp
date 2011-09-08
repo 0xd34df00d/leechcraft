@@ -78,7 +78,8 @@ namespace Acetamide
 		}
 
 		SelectedAccount_ = acc;
-		acc->JoinServer (GetServerOptions (), GetChannelOptions ());
+		acc->JoinServer (GetServerOptions (), GetChannelOptions (),
+				Ui_.OnlyServerConnect_->isChecked ());
 	}
 
 	void IrcJoinGroupChat::Cancel ()

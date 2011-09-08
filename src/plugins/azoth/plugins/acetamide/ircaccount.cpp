@@ -207,7 +207,7 @@ namespace Acetamide
 	}
 
 	void IrcAccount::JoinServer (ServerOptions server,
-			ChannelOptions channel)
+			ChannelOptions channel, bool onlyServer)
 	{
 		if (server.ServerName_.isEmpty ())
 			server.ServerName_ = DefaultServer_;
@@ -229,10 +229,11 @@ namespace Acetamide
 		if (!ClientConnection_->IsServerExists (serverId))
 		{
 			ClientConnection_->JoinServer (server);
-			ClientConnection_->GetIrcServerHandler (serverId)->
-					Add2ChannelsQueue (channel);
+			if (!onlyServer)
+				ClientConnection_->GetIrcServerHandler (serverId)->
+						Add2ChannelsQueue (channel);
 		}
-		else if (!channel.ChannelName_.isEmpty ())
+		else if (!onlyServer)
 			ClientConnection_->JoinChannel (server, channel);
 	}
 
