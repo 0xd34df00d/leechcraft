@@ -20,6 +20,7 @@
 #define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_RPLISUPPORTPARSER_H
 
 #include <QObject>
+#include <QMap>
 
 namespace LeechCraft
 {
@@ -34,10 +35,13 @@ namespace Acetamide
 	{
 		Q_OBJECT
 		IrcServerHandler *ISH_;
+		QMap<QString, QString> ISupportMap_;
 	public:
 		RplISupportParser (IrcServerHandler*);
-
 		bool ParseISupportReply (const QString&);
+		QMap<QString, QString> GetISupportMap () const;
+	private:
+		void ConvertFromStdMapToQMap (const std::map<std::string, std::string>&);
 	};
 }
 }

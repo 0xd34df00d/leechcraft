@@ -78,6 +78,7 @@ namespace Acetamide
 		// IConfigurableMUC
 		QWidget* GetConfigurationWidget ();
 		void AcceptConfiguration (QWidget*);
+		QMap<QString, QString> GetISupport () const;
 	signals:
 		void gotNewParticipants (const QList<QObject*>&);
 		void mucSubjectChanged (const QString&);

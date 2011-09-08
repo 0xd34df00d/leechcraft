@@ -66,12 +66,12 @@ namespace Acetamide
 		QString NickName_;
 		QString OldNickName_;
 		QString LastSendId_;
-		QVariantMap ISupport_;
 		ServerOptions ServerOptions_;
 		QList<ChannelOptions> ChannelsQueue_;
 		std::auto_ptr<InviteChannelsDialog> InviteChannelsDialog_;
 		QHash<QString, ChannelHandler*> ChannelHandlers_;
 		QHash<QString, ServerParticipantEntry_ptr> Nick2Entry_;
+		QMap<QString, QString> ISupport_;
 	public:
 		IrcServerHandler (const ServerOptions&,
 				IrcAccount*);
@@ -183,6 +183,7 @@ namespace Acetamide
 		void ParseUserMode (const QString&, const QString&);
 
 		void ParserISupport (const QString&);
+		QMap<QString, QString> GetISupport () const;
 	private:
 		void SendToConsole (IMessage::Direction, const QString&);
 		void NickCmdError ();

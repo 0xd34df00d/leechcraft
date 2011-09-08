@@ -945,7 +945,7 @@ namespace Acetamide
 			const QList<std::string>& params, const QString& msg)
 	{
 		ISH_->JoinFromQueue ();
-		//TODO
+		
 		QString result;
 		Q_FOREACH (const std::string& param, params)
 			result.append (QString::fromUtf8 (param.c_str ())).append (" ");

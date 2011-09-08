@@ -39,12 +39,9 @@ namespace Acetamide
 
 	bool RplISupportParser::ParseISupportReply (const QString& reply)
 	{
-		bool key = false;
 		std::string param;
-		std::map<std::string, bool> boolParams;
-		std::map<std::string, bool>::value_type boolItem;
+		std::string val;
 		std::map<std::string, std::string> stringParams;
-		std::map<std::string, std::string>::value_type strItem;
 
 		range<> ascii (char (0x01), char (0x7F));
 		rule<> special = lexeme_d [ch_p ('[') | ']' | '\\' | '`' |
@@ -52,29 +49,45 @@ namespace Acetamide
 		rule<> nickname = (alpha_p | special)
 				>> * (alnum_p | special | ch_p ('-'));
 		rule<> nick = lexeme_d [nickname];
-
 		rule<> value = *(alnum_p | punct_p);
 		rule<> parameter = *alnum_p;
-		rule<> token = longest_d [(!ch_p ('-')/*[assign_a (key, true)]*/
-				>> parameter/*[assign_a (boolItem.first)]*/) |
-				(parameter[assign_a (param)] >> !(ch_p ('=') >>
-				value[insert_at_a(stringParams, param)]))];
-		rule<> isuppport = nick
-				>> ch_p (' ')
-				>> *(token >> ch_p (' '))
-				>> str_p(":are supported by this server");
+		rule<> token = !(ch_p('-') [assign_a (val, "false")])
+				>> parameter[assign_a (param)]
+				>> !(ch_p ('=') >> value [assign_a (val)]);
+		rule<> isuppport = nick >>
+				ch_p (' ') >>
+				*(eps_p[assign_a (val, "true")]
+						>> token[insert_at_a (stringParams, param, val)]
+						>> ch_p (' ')) >>
+				str_p(":are supported by this server");
 
 		bool res = parse (reply.toUtf8 ().constData (), isuppport).full;
-		std::map<std::string, std::string>::iterator it_start, it_end;
-		it_start = stringParams.begin ();
-		it_end = stringParams.end ();
-		for (it_start; it_start != it_end; ++it_start)
+		if (!res)
 		{
-			qDebug () << Q_FUNC_INFO << QString::fromUtf8 ( (*it_start).first.c_str ())
-					<< QString::fromUtf8 ( (*it_start).second.c_str ());
+			qWarning () << Q_FUNC_INFO
+					<< "input string is not a valide IRC ISupport message"
+					<< reply;
 		}
+		else
+			ConvertFromStdMapToQMap (stringParams);
+
 		return res;
 	}
+
+	QMap<QString, QString> RplISupportParser::GetISupportMap () const
+	{
+		return  ISupportMap_;
+	}
+
+	void RplISupportParser::ConvertFromStdMapToQMap (const std::map<std::string, std::string>& map)
+	{
+		std::map<std::string, std::string>::const_iterator it_begin = map.begin ();
+		std::map<std::string, std::string>::const_iterator it_end = map.end ();
+		for (it_begin; it_begin != it_end; ++it_begin)
+			ISupportMap_.insert (QString::fromUtf8 ( (*it_begin).first.c_str ()),
+					QString::fromUtf8 ( (*it_begin).second.c_str ()));
+	}
+
 }
 }
 }

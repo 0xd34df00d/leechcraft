@@ -989,8 +989,13 @@ namespace Acetamide
 
 	void IrcServerHandler::ParserISupport (const QString& msg)
 	{
-		bool res = RplISupportParser_->ParseISupportReply (msg);
-		qDebug () << Q_FUNC_INFO << res;
+		if (RplISupportParser_->ParseISupportReply (msg))
+			ISupport_ = RplISupportParser_->GetISupportMap ();
+	}
+
+	QMap<QString, QString> IrcServerHandler::GetISupport () const
+	{
+		return ISupport_;
 	}
 
 	void IrcServerHandler::connectionEstablished ()

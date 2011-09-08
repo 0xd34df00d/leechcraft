@@ -181,6 +181,10 @@ namespace Acetamide
 		// there is nothing to implement
 	}
 
+	QMap<QString, QString> IrcServerCLEntry::GetISupport () const
+	{
+		return ISH_->GetISupport ();
+	}
 
 };
 };

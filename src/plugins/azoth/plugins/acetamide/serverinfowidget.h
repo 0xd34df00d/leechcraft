@@ -20,6 +20,7 @@
 #define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SERVERINFOWIDGET_H
 
 #include <QWidget>
+#include <boost/function.hpp>
 #include <interfaces/iconfigurablemuc.h>
 #include "ui_serverinfowidget.h"
 
@@ -40,12 +41,23 @@ namespace Acetamide
 
 		Ui::ServerInfoWidget Ui_;
 		IrcServerCLEntry *ISCLEntry_;
+		QHash<QString, boost::function<void (const QString&)> > Parameter2Command_;
 	public:
 		ServerInfoWidget (IrcServerCLEntry*, QWidget* = 0);
-		void dataReady ();
-		void accept ();
 	private:
+		void Init ();
 		void SetISupport ();
+		void SetChanModes (const QString&);
+		void SetExcepts (const QString&);
+		void SetPrefix (const QString&); 
+		void SetSafeList (const QString&);
+		void SetTargMax (const QString&);
+		void SetInvEx (const QString&);
+		bool GetBoolFromString (const QString&);
+	public slots:
+		void accept ();
+	signals:
+		void dataReady ();
 	};
 }
 }
