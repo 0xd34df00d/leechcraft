@@ -38,11 +38,10 @@ namespace Acetamide
 
 		qsrand (time (NULL));
 
-		qRegisterMetaTypeStreamOperators<QList<QStringList> >("QList<QStringList>");
+		qRegisterMetaTypeStreamOperators<QList<QStringList> > ("QList<QStringList>");
 
 		SettingsDialog_.reset (new Util::XmlSettingsDialog);
-		SettingsDialog_->
-				RegisterObject (&XmlSettingsManager::Instance (),
+		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 					"azothacetamidesettings.xml");
 
 		Core::Instance ().Init ();
@@ -92,8 +91,7 @@ namespace Acetamide
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
 		QSet<QByteArray> classes;
-		classes <<
-				"org.LeechCraft.Plugins.Azoth.Plugins.IProtocolPlugin";
+		classes << "org.LeechCraft.Plugins.Azoth.Plugins.IProtocolPlugin";
 		return classes;
 	}
 
@@ -120,16 +118,15 @@ namespace Acetamide
 }
 }
 
-
-QDataStream &operator<< (QDataStream &out, const QList<QStringList> &list)
+QDataStream& operator<< (QDataStream& out, const QList<QStringList>& list)
 {
 	Q_FOREACH (const QStringList& subList, list)
-	out << subList;
-	
+		out << subList;
+
 	return out;
 }
 
-QDataStream &operator>> (QDataStream &in, QList<QStringList> &list)
+QDataStream& operator>> (QDataStream& in, QList<QStringList>& list)
 {
 	QStringList subList;
 	while (!in.atEnd ())
@@ -138,7 +135,7 @@ QDataStream &operator>> (QDataStream &in, QList<QStringList> &list)
 		list << subList;
 		subList.clear ();
 	}
-	
+
 	return in;
 }
 

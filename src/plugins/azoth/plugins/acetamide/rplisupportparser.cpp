@@ -76,15 +76,15 @@ namespace Acetamide
 
 	QMap<QString, QString> RplISupportParser::GetISupportMap () const
 	{
-		return  ISupportMap_;
+		return ISupportMap_;
 	}
 
 	void RplISupportParser::ConvertFromStdMapToQMap (const std::map<std::string, std::string>& map)
 	{
 		for (std::map<std::string, std::string>::const_iterator it_begin = map.begin (),
 				it_end = map.end (); it_begin != it_end; ++it_begin)
-			ISupportMap_.insert (QString::fromUtf8 ( (*it_begin).first.c_str ()),
-					QString::fromUtf8 ( (*it_begin).second.c_str ()));
+			ISupportMap_.insert (QString::fromUtf8 ((*it_begin).first.c_str ()),
+					QString::fromUtf8 ((*it_begin).second.c_str ()));
 	}
 
 }

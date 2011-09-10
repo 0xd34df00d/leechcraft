@@ -66,8 +66,8 @@ namespace Acetamide
 }
 }
 
-QDataStream &operator<<(QDataStream &out, const QList<QStringList> &myObj);
-QDataStream &operator>>(QDataStream &in, QList<QStringList> &myObj);
+QDataStream& operator<< (QDataStream& out, const QList<QStringList>& myObj);
+QDataStream& operator>> (QDataStream& in, QList<QStringList>& myObj);
 
 Q_DECLARE_METATYPE (QList<QStringList>)
 

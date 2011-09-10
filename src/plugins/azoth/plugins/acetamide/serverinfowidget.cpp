@@ -80,7 +80,7 @@ namespace Acetamide
 
 	void ServerInfoWidget::SetISupport ()
 	{
-		const QMap<QString, QString> info = ISCLEntry_->GetISupport ();
+		const QMap<QString, QString>& info = ISCLEntry_->GetISupport ();
 
 		for (QMap<QString, QString>::const_iterator it_begin = info.begin (),
 				it_end = info.end (); it_begin != it_end; ++it_begin)
@@ -90,7 +90,7 @@ namespace Acetamide
 
 	void ServerInfoWidget::SetChanModes (const QString& modes)
 	{
-		QStringList list = modes.split (',');
+		const QStringList& list = modes.split (',');
 
 		Ui_.ChanModesA_->setText (list.at (0));
 		Ui_.ChanModesB_->setText (list.at (1));
@@ -111,7 +111,7 @@ namespace Acetamide
 		const int rowCount = qMin (modeStr.length (), prefixStr.length ());
 
 		if (modeStr.length () != prefixStr.length ())
-			qWarning () << "count of modes is not equal to counts of prefixes";
+			qWarning () << "number of modes is not equal to number of prefixes";
 
 		Ui_.tableWidget->clear ();
 		Ui_.tableWidget->setRowCount (rowCount);
@@ -132,7 +132,7 @@ namespace Acetamide
 
 	void ServerInfoWidget::SetTargMax (const QString& str)
 	{
-		QStringList list = str.split (',');
+		const QStringList& list = str.split (',');
 
 		Ui_.TargetMax_->clear ();
 		Ui_.TargetMax_->setRowCount (list.count ());
