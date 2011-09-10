@@ -284,7 +284,7 @@ namespace Acetamide
 		if (params.isEmpty ())
 			return;
 
-		const QString target = QString::fromUtf8 (params.last ().c_str ());
+		const QString target = QString::fromUtf8 (params.first ().c_str ());
 		ISH_->IncomingMessage (nick, target, msg);
 	}
 
