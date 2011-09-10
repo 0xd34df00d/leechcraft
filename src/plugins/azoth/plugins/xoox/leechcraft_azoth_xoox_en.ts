@@ -262,158 +262,163 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::ClientConnection</name>
     <message>
-        <location filename="clientconnection.cpp" line="366"/>
+        <location filename="clientconnection.cpp" line="373"/>
         <source>This room is already joined.</source>
         <translation>This room is already joined.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="614"/>
+        <location filename="clientconnection.cpp" line="626"/>
         <source>This message is encrypted. Please decrypt it to view the original contents.</source>
         <oldsource>This message is encrypted. Please decrypt it to view the original contents</oldsource>
         <translation>This message is encrypted. Please decrypt it to view the original contents.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="749"/>
+        <location filename="clientconnection.cpp" line="761"/>
         <source>Data form from %1</source>
         <translation>Data form from %1</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="752"/>
+        <location filename="clientconnection.cpp" line="764"/>
         <source>You have received dataform from %1:</source>
         <translation>You have received dataform from %1:</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="814"/>
+        <location filename="clientconnection.cpp" line="828"/>
         <source>socket error: %1.</source>
         <translation>socket error: %1.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="819"/>
+        <location filename="clientconnection.cpp" line="833"/>
         <source>keep-alive error.</source>
         <translation>keep-alive error.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="822"/>
+        <location filename="clientconnection.cpp" line="836"/>
         <source>error while connecting: </source>
         <translation>error while connecting: </translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="839"/>
+        <location filename="clientconnection.cpp" line="840"/>
+        <source>no error.</source>
+        <translation>no error.</translation>
+    </message>
+    <message>
+        <location filename="clientconnection.cpp" line="856"/>
         <source>Account %1:</source>
         <translation>Account %1:</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1092"/>
+        <location filename="clientconnection.cpp" line="1119"/>
         <source>Enter CAPTCHA</source>
         <translation>Enter CAPTCHA</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1291"/>
+        <location filename="clientconnection.cpp" line="1326"/>
         <source>Error from %1: </source>
         <translation>Error from %1: </translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1296"/>
+        <location filename="clientconnection.cpp" line="1331"/>
         <source>Error text: %1.</source>
         <translation>Error text: %1.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1328"/>
+        <location filename="clientconnection.cpp" line="1391"/>
         <source>Bad request.</source>
         <translation>Bad request.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1330"/>
+        <location filename="clientconnection.cpp" line="1393"/>
         <source>Conflict (possibly, resource conflict).</source>
         <translation>Conflict (possibly, resource conflict).</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1332"/>
+        <location filename="clientconnection.cpp" line="1395"/>
         <source>Feature not implemented.</source>
         <translation>Feature not implemented.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1334"/>
+        <location filename="clientconnection.cpp" line="1397"/>
         <source>Forbidden.</source>
         <translation>Forbidden.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1337"/>
+        <location filename="clientconnection.cpp" line="1400"/>
         <source>Internal server error.</source>
         <translation>Internal server error.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1339"/>
+        <location filename="clientconnection.cpp" line="1402"/>
         <source>Item not found.</source>
         <translation>Item not found.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1341"/>
+        <location filename="clientconnection.cpp" line="1404"/>
         <source>JID is malformed.</source>
         <translation>JID is malformed.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1343"/>
+        <location filename="clientconnection.cpp" line="1406"/>
         <source>Data is not acceptable.</source>
         <translation>Data is not acceptable.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1345"/>
+        <location filename="clientconnection.cpp" line="1408"/>
         <source>Action is not allowed.</source>
         <translation>Action is not allowed.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1348"/>
+        <location filename="clientconnection.cpp" line="1411"/>
         <source>Not authorized.</source>
         <translation>Not authorized.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1350"/>
+        <location filename="clientconnection.cpp" line="1413"/>
         <source>Payment required.</source>
         <translation>Payment required.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1352"/>
+        <location filename="clientconnection.cpp" line="1415"/>
         <source>Recipient unavailable.</source>
         <translation>Recipient unavailable.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1354"/>
+        <location filename="clientconnection.cpp" line="1417"/>
         <source>Got redirect.</source>
         <translation>Got redirect.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1356"/>
+        <location filename="clientconnection.cpp" line="1419"/>
         <source>Registration required.</source>
         <translation>Registration required.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1358"/>
+        <location filename="clientconnection.cpp" line="1421"/>
         <source>Remote server not found.</source>
         <translation>Remote server not found.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1360"/>
+        <location filename="clientconnection.cpp" line="1423"/>
         <source>Timeout contacting remote server.</source>
         <translation>Timeout contacting remote server.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1362"/>
+        <location filename="clientconnection.cpp" line="1425"/>
         <source>Error due to resource constraint.</source>
         <translation>Error due to resource constraint.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1364"/>
+        <location filename="clientconnection.cpp" line="1427"/>
         <source>Service is unavailable at the moment.</source>
         <translation>Service is unavailable at the moment.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1366"/>
+        <location filename="clientconnection.cpp" line="1429"/>
         <source>Subscription is required to perform this action.</source>
         <translation>Subscription is required to perform this action.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1370"/>
+        <location filename="clientconnection.cpp" line="1433"/>
         <source>Other error.</source>
         <translation>Other error.</translation>
     </message>
@@ -510,17 +515,17 @@
         <translation>Privacy lists...</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="452"/>
+        <location filename="glooxaccount.cpp" line="517"/>
         <source>Unable to enable encryption for entry %1: no key has been set.</source>
         <translation>Unable to enable encryption for entry %1: no key has been set.</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="461"/>
+        <location filename="glooxaccount.cpp" line="526"/>
         <source>Unable to change encryption state for %1.</source>
         <translation>Unable to change encryption state for %1.</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="588"/>
+        <location filename="glooxaccount.cpp" line="660"/>
         <source>Enter password for %1:</source>
         <translation>Enter password for %1:</translation>
     </message>
@@ -546,49 +551,54 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::InBandAccountRegSecondPage</name>
     <message>
-        <location filename="inbandaccountregsecondpage.cpp" line="133"/>
+        <location filename="inbandaccountregsecondpage.cpp" line="138"/>
         <source>Connecting to %1...</source>
         <translation>Connecting to %1...</translation>
     </message>
     <message>
-        <location filename="inbandaccountregsecondpage.cpp" line="174"/>
+        <location filename="inbandaccountregsecondpage.cpp" line="179"/>
         <source>Service unavailable</source>
         <translation>Service unavailable</translation>
     </message>
     <message>
-        <location filename="inbandaccountregsecondpage.cpp" line="232"/>
+        <location filename="inbandaccountregsecondpage.cpp" line="237"/>
         <source>data conflict</source>
         <translation>data conflict</translation>
     </message>
     <message>
-        <location filename="inbandaccountregsecondpage.cpp" line="234"/>
+        <location filename="inbandaccountregsecondpage.cpp" line="239"/>
         <source>data is not acceptable</source>
         <translation>data is not acceptable</translation>
     </message>
     <message>
-        <location filename="inbandaccountregsecondpage.cpp" line="236"/>
+        <location filename="inbandaccountregsecondpage.cpp" line="241"/>
         <source>general error:</source>
         <translation>general error:</translation>
     </message>
     <message>
-        <location filename="inbandaccountregsecondpage.cpp" line="240"/>
+        <location filename="inbandaccountregsecondpage.cpp" line="245"/>
         <source>general registration error</source>
         <translation>general registration error</translation>
     </message>
     <message>
-        <location filename="inbandaccountregsecondpage.cpp" line="265"/>
+        <location filename="inbandaccountregsecondpage.cpp" line="270"/>
         <source>Socket error:</source>
         <translation>Socket error:</translation>
     </message>
     <message>
-        <location filename="inbandaccountregsecondpage.cpp" line="268"/>
+        <location filename="inbandaccountregsecondpage.cpp" line="273"/>
         <source>Keep alive error.</source>
         <translation>Keep alive error.</translation>
     </message>
     <message>
-        <location filename="inbandaccountregsecondpage.cpp" line="271"/>
+        <location filename="inbandaccountregsecondpage.cpp" line="276"/>
         <source>XMPP error:</source>
         <translation>XMPP error:</translation>
+    </message>
+    <message>
+        <location filename="inbandaccountregsecondpage.cpp" line="279"/>
+        <source>No error.</source>
+        <translation>No error.</translation>
     </message>
 </context>
 <context>
