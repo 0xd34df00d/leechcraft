@@ -6,7 +6,7 @@
     <message>
         <location filename="acceptriexdialog.ui" line="14"/>
         <source>Contact list change</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменение списка контактов</translation>
     </message>
 </context>
 <context>
@@ -291,53 +291,54 @@
     <message>
         <location filename="acceptriexdialog.cpp" line="35"/>
         <source>Action</source>
-        <translation type="unfinished"></translation>
+        <translation>Действие</translation>
     </message>
     <message>
         <location filename="acceptriexdialog.cpp" line="36"/>
         <source>ID</source>
-        <translation type="unfinished"></translation>
+        <translation>ID</translation>
     </message>
     <message>
         <location filename="acceptriexdialog.cpp" line="37"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя</translation>
     </message>
     <message>
         <location filename="acceptriexdialog.cpp" line="38"/>
         <source>Groups</source>
-        <translation type="unfinished"></translation>
+        <translation>Группы</translation>
     </message>
     <message>
         <location filename="acceptriexdialog.cpp" line="51"/>
         <source>add</source>
-        <translation type="unfinished"></translation>
+        <translation>добавить</translation>
     </message>
     <message>
         <location filename="acceptriexdialog.cpp" line="54"/>
         <source>delete</source>
-        <translation type="unfinished"></translation>
+        <translation>удалить</translation>
     </message>
     <message>
         <location filename="acceptriexdialog.cpp" line="57"/>
         <source>modify</source>
-        <translation type="unfinished"></translation>
+        <translation>изменить</translation>
     </message>
     <message>
         <location filename="acceptriexdialog.cpp" line="60"/>
         <source>(unknown)</source>
-        <translation type="unfinished"></translation>
+        <translation>(неизвестно)</translation>
     </message>
     <message>
         <location filename="acceptriexdialog.cpp" line="82"/>
         <source>%1 has suggested to modify your contact list:</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 предложил изменить ваш список контактов:</translation>
     </message>
     <message>
         <location filename="acceptriexdialog.cpp" line="84"/>
         <source>%1 has suggested to modify your contact list:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 предложил изменить ваш список контактов:
+%2</translation>
     </message>
 </context>
 <context>
@@ -1150,7 +1151,7 @@
     <message>
         <location filename="core.cpp" line="1557"/>
         <source>Share contacts...</source>
-        <translation type="unfinished"></translation>
+        <translation>Поделиться контактами...</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1568"/>
@@ -2257,32 +2258,32 @@
     <message>
         <location filename="shareriexdialog.cpp" line="41"/>
         <source>Select items to be shared with %1:</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите контакты, которыми Вы хотите поделиться с %1:</translation>
     </message>
     <message>
         <location filename="shareriexdialog.cpp" line="119"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя</translation>
     </message>
     <message>
         <location filename="shareriexdialog.cpp" line="120"/>
         <source>ID</source>
-        <translation type="unfinished"></translation>
+        <translation>ID</translation>
     </message>
     <message>
         <location filename="shareriexdialog.cpp" line="121"/>
         <source>Account</source>
-        <translation type="unfinished"></translation>
+        <translation>Аккаунт</translation>
     </message>
     <message>
         <location filename="shareriexdialog.cpp" line="122"/>
         <source>Groups</source>
-        <translation type="unfinished"></translation>
+        <translation>Группы</translation>
     </message>
     <message>
         <location filename="shareriexdialog.cpp" line="144"/>
         <source>General</source>
-        <translation type="unfinished">Общие</translation>
+        <translation>Общие</translation>
     </message>
 </context>
 <context>
@@ -2634,32 +2635,32 @@
     <message>
         <location filename="shareriexdialog.ui" line="14"/>
         <source>Share contacts</source>
-        <translation type="unfinished"></translation>
+        <translation>Обмен контактами</translation>
     </message>
     <message>
         <location filename="shareriexdialog.ui" line="29"/>
         <source>Filter:</source>
-        <translation type="unfinished"></translation>
+        <translation>Фильтр:</translation>
     </message>
     <message>
         <location filename="shareriexdialog.ui" line="44"/>
         <source>All accounts</source>
-        <translation type="unfinished"></translation>
+        <translation>Все аккаунты</translation>
     </message>
     <message>
         <location filename="shareriexdialog.ui" line="53"/>
         <source>Message:</source>
-        <translation type="unfinished">Сообщение:</translation>
+        <translation>Сообщение:</translation>
     </message>
     <message>
         <location filename="shareriexdialog.ui" line="81"/>
         <source>If checked, the information about the groups of the selected contacts would also be sent along with the sharing request.</source>
-        <translation type="unfinished"></translation>
+        <translation>Если отмечено, то вместе с запросом на обмен будет также отправлена информация о группах, которым принадлежат выбранные контакты.</translation>
     </message>
     <message>
         <location filename="shareriexdialog.ui" line="84"/>
         <source>Share groups</source>
-        <translation type="unfinished"></translation>
+        <translation>Делиться группами</translation>
     </message>
 </context>
 <context>

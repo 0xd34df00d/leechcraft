@@ -6,7 +6,7 @@
     <message>
         <location filename="acceptriexdialog.ui" line="14"/>
         <source>Contact list change</source>
-        <translation type="unfinished"></translation>
+        <translation>Contact list change</translation>
     </message>
 </context>
 <context>
@@ -291,53 +291,54 @@
     <message>
         <location filename="acceptriexdialog.cpp" line="35"/>
         <source>Action</source>
-        <translation type="unfinished"></translation>
+        <translation>Action</translation>
     </message>
     <message>
         <location filename="acceptriexdialog.cpp" line="36"/>
         <source>ID</source>
-        <translation type="unfinished"></translation>
+        <translation>ID</translation>
     </message>
     <message>
         <location filename="acceptriexdialog.cpp" line="37"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Name</translation>
     </message>
     <message>
         <location filename="acceptriexdialog.cpp" line="38"/>
         <source>Groups</source>
-        <translation type="unfinished"></translation>
+        <translation>Groups</translation>
     </message>
     <message>
         <location filename="acceptriexdialog.cpp" line="51"/>
         <source>add</source>
-        <translation type="unfinished"></translation>
+        <translation>add</translation>
     </message>
     <message>
         <location filename="acceptriexdialog.cpp" line="54"/>
         <source>delete</source>
-        <translation type="unfinished"></translation>
+        <translation>delete</translation>
     </message>
     <message>
         <location filename="acceptriexdialog.cpp" line="57"/>
         <source>modify</source>
-        <translation type="unfinished"></translation>
+        <translation>modify</translation>
     </message>
     <message>
         <location filename="acceptriexdialog.cpp" line="60"/>
         <source>(unknown)</source>
-        <translation type="unfinished"></translation>
+        <translation>(unknown)</translation>
     </message>
     <message>
         <location filename="acceptriexdialog.cpp" line="82"/>
         <source>%1 has suggested to modify your contact list:</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 has suggested to modify your contact list:</translation>
     </message>
     <message>
         <location filename="acceptriexdialog.cpp" line="84"/>
         <source>%1 has suggested to modify your contact list:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 has suggested to modify your contact list:
+%2</translation>
     </message>
 </context>
 <context>
@@ -1149,7 +1150,7 @@
     <message>
         <location filename="core.cpp" line="1557"/>
         <source>Share contacts...</source>
-        <translation type="unfinished"></translation>
+        <translation>Share contacts...</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1568"/>
@@ -2253,32 +2254,32 @@
     <message>
         <location filename="shareriexdialog.cpp" line="41"/>
         <source>Select items to be shared with %1:</source>
-        <translation type="unfinished"></translation>
+        <translation>Select items to be shared with %1:</translation>
     </message>
     <message>
         <location filename="shareriexdialog.cpp" line="119"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Name</translation>
     </message>
     <message>
         <location filename="shareriexdialog.cpp" line="120"/>
         <source>ID</source>
-        <translation type="unfinished"></translation>
+        <translation>ID</translation>
     </message>
     <message>
         <location filename="shareriexdialog.cpp" line="121"/>
         <source>Account</source>
-        <translation type="unfinished"></translation>
+        <translation>Account</translation>
     </message>
     <message>
         <location filename="shareriexdialog.cpp" line="122"/>
         <source>Groups</source>
-        <translation type="unfinished"></translation>
+        <translation>Groups</translation>
     </message>
     <message>
         <location filename="shareriexdialog.cpp" line="144"/>
         <source>General</source>
-        <translation type="unfinished">General</translation>
+        <translation>General</translation>
     </message>
 </context>
 <context>
@@ -2630,32 +2631,32 @@
     <message>
         <location filename="shareriexdialog.ui" line="14"/>
         <source>Share contacts</source>
-        <translation type="unfinished"></translation>
+        <translation>Share contacts</translation>
     </message>
     <message>
         <location filename="shareriexdialog.ui" line="29"/>
         <source>Filter:</source>
-        <translation type="unfinished"></translation>
+        <translation>Filter:</translation>
     </message>
     <message>
         <location filename="shareriexdialog.ui" line="44"/>
         <source>All accounts</source>
-        <translation type="unfinished"></translation>
+        <translation>All accounts</translation>
     </message>
     <message>
         <location filename="shareriexdialog.ui" line="53"/>
         <source>Message:</source>
-        <translation type="unfinished">Message:</translation>
+        <translation>Message:</translation>
     </message>
     <message>
         <location filename="shareriexdialog.ui" line="81"/>
         <source>If checked, the information about the groups of the selected contacts would also be sent along with the sharing request.</source>
-        <translation type="unfinished"></translation>
+        <translation>If checked, the information about the groups of the selected contacts would also be sent along with the sharing request.</translation>
     </message>
     <message>
         <location filename="shareriexdialog.ui" line="84"/>
         <source>Share groups</source>
-        <translation type="unfinished"></translation>
+        <translation>Share groups</translation>
     </message>
 </context>
 <context>
