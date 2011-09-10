@@ -26,6 +26,8 @@ namespace Azoth
 {
 namespace Xoox
 {
+	class EntryBase;
+
 	class RIEXManager : public QXmppClientExtension
 	{
 		Q_OBJECT
@@ -65,7 +67,7 @@ namespace Xoox
 		QStringList discoveryFeatures () const;
 		bool handleStanza (const QDomElement&);
 
-		void SuggestItems (QString to, QList<Item> items,
+		void SuggestItems (EntryBase *to, QList<Item> items,
 				QString message = QString ());
 	signals:
 		void gotItems (QString, QList<RIEXManager::Item>);

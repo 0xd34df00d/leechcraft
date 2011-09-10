@@ -20,6 +20,9 @@
 #include <QDomElement>
 #include <QXmppClient.h>
 #include <QXmppMessage.h>
+#include "core.h"
+#include "capsdatabase.h"
+#include "entrybase.h"
 
 namespace LeechCraft
 {
@@ -129,12 +132,8 @@ namespace Xoox
 		return false;
 	}
 
-	void RIEXManager::SuggestItems (QString to, QList<RIEXManager::Item> items, QString message)
+	void RIEXManager::SuggestItems (EntryBase *to, QList<RIEXManager::Item> items, QString message)
 	{
-		QXmppMessage msg;
-		msg.setTo (to);
-		msg.setBody (message);
-
 		QXmppElement x;
 		x.setTagName ("x");
 		x.setAttribute ("xmlns", NsRIEX);
@@ -175,9 +174,35 @@ namespace Xoox
 			x.appendChild (itElem);
 		}
 
-		msg.setExtensions (x);
+		QString suppRes;
 
-		client ()->sendPacket (msg);
+		CapsDatabase *db = Core::Instance ().GetCapsDatabase ();
+		Q_FOREACH (const QString& variant, to->Variants ())
+		{
+			const QByteArray& ver = to->GetVariantVerString (variant);
+			const QStringList& features = db->Get (ver);
+			if (features.contains (NsRIEX))
+			{
+				suppRes = variant;
+				break;
+			}
+		}
+
+		if (!suppRes.isEmpty ())
+		{
+			QXmppIq iq (QXmppIq::Set);
+			iq.setTo (to->GetJID () + '/' + suppRes);
+			iq.setExtensions (x);
+			client ()->sendPacket (iq);
+		}
+		else
+		{
+			QXmppMessage msg;
+			msg.setTo (to->GetHumanReadableID ());
+			msg.setBody (message);
+			msg.setExtensions (x);
+			client ()->sendPacket (msg);
+		}
 	}
 }
 }
