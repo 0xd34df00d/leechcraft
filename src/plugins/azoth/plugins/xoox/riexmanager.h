@@ -30,8 +30,42 @@ namespace Xoox
 	{
 		Q_OBJECT
 	public:
+		class Item
+		{
+		public:
+			enum Action
+			{
+				AAdd,
+				ADelete,
+				AModify
+			};
+		private:
+			Action Action_;
+
+			QString JID_;
+			QString Name_;
+			QStringList Groups_;
+		public:
+			Item ();
+			Item (Action action, QString jid, QString name, QStringList groups);
+
+			Action GetAction () const;
+			void SetAction (Action);
+
+			QString GetJID () const;
+			void SetJID (QString);
+
+			QString GetName () const;
+			void SetName (QString);
+
+			QStringList GetGroups () const;
+			void SetGroups (QStringList);
+		};
+
 		QStringList discoveryFeatures () const;
 		bool handleStanza (const QDomElement&);
+	signals:
+		void gotItems (QString, QList<Item>);
 	};
 }
 }

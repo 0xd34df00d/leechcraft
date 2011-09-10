@@ -28,6 +28,60 @@ namespace Xoox
 {
 	const QString NsRIEX = "http://jabber.org/protocol/rosterx";
 
+	RIEXManager::Item::Item ()
+	: Action_ (AAdd)
+	{
+	}
+
+	RIEXManager::Item::Item (RIEXManager::Item::Action action,
+			QString jid, QString name, QStringList groups)
+	: Action_ (action)
+	, JID_ (jid)
+	, Name_ (name)
+	, Groups_ (groups)
+	{
+	}
+
+	RIEXManager::Item::Action RIEXManager::Item::GetAction () const
+	{
+		return Action_;
+	}
+
+	void RIEXManager::Item::SetAction (RIEXManager::Item::Action action)
+	{
+		Action_ = action;
+	}
+
+	QString RIEXManager::Item::GetJID () const
+	{
+		return JID_;
+	}
+
+	void RIEXManager::Item::SetJID (QString jid)
+	{
+		JID_ = jid;
+	}
+
+	QString RIEXManager::Item::GetName () const
+	{
+		return Name_;
+	}
+
+	void RIEXManager::Item::SetName (QString name)
+	{
+		Name_ = name;
+	}
+
+	QStringList RIEXManager::Item::GetGroups () const
+	{
+		return Groups_;
+	}
+
+	void RIEXManager::Item::SetGroups (QStringList groups)
+	{
+		Groups_ = groups;
+	}
+
 	QStringList RIEXManager::discoveryFeatures () const
 	{
 		return QStringList (NsRIEX);
@@ -35,6 +89,42 @@ namespace Xoox
 
 	bool RIEXManager::handleStanza (const QDomElement& elem)
 	{
+		if (elem.tagName () != "message" ||
+				elem.attribute ("from").isEmpty ())
+			return false;
+
+		const QDomElement& x = elem.firstChildElement ("x");
+		if (x.namespaceURI () != NsRIEX)
+			return false;
+
+		QList<Item> items;
+
+		QDomElement item = x.firstChildElement ("item");
+		while (!item.isNull ())
+		{
+			QStringList groups;
+
+			QDomElement group = item.firstChildElement ("group");
+			while (!group.isNull ())
+			{
+				groups << group.text ();
+				group = group.nextSiblingElement ("group");
+			}
+
+			Item::Action act = Item::AAdd;
+			const QString& actAttr = item.attribute ("action");
+			if (actAttr == "modify")
+				act = Item::AModify;
+			else if (actAttr == "delete")
+				act = Item::ADelete;
+
+			items << Item (act, item.attribute ("jid"), item.attribute ("name"), groups);
+
+			item = item.nextSiblingElement ("item");
+		}
+
+		emit gotItems (elem.attribute ("from"), items);
+
 		return false;
 	}
 }
