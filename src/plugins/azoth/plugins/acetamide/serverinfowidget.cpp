@@ -81,10 +81,9 @@ namespace Acetamide
 	void ServerInfoWidget::SetISupport ()
 	{
 		const QMap<QString, QString> info = ISCLEntry_->GetISupport ();
-		QMap<QString, QString>::const_iterator it_begin = info.begin ();
-		QMap<QString, QString>::const_iterator it_end = info.end ();
 
-		for (it_begin; it_begin != it_end; ++it_begin)
+		for (QMap<QString, QString>::const_iterator it_begin = info.begin (),
+				it_end = info.end (); it_begin != it_end; ++it_begin)
 			if (Parameter2Command_.contains (it_begin.key ().toLower ()))
 				Parameter2Command_ [it_begin.key ().toLower ()] (it_begin.value ());
 	}
