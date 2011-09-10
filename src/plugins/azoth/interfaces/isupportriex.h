@@ -40,6 +40,14 @@ namespace Azoth
 		QStringList Groups_;
 	};
 
+	inline bool operator== (const RIEXItem& r1, const RIEXItem& r2)
+	{
+		return r1.Action_ == r2.Action_ &&
+			r1.ID_ == r2.ID_ &&
+			r1.Nick_ == r2.Nick_ &&
+			r1.Groups_ == r2.Groups_;
+	}
+
 	/** @brief Interface representing Roster Item Exchange-like things.
 	 *
 	 * This interface should be implemented by account objects that
