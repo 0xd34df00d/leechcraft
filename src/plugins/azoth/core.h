@@ -35,6 +35,7 @@
 #include "interfaces/iprotocol.h"
 #include "interfaces/iauthable.h"
 #include "interfaces/ichatstyleresourcesource.h"
+#include "interfaces/isupportriex.h"
 #include "sourcetrackingmodel.h"
 #include "animatediconmanager.h"
 
@@ -552,6 +553,8 @@ namespace Azoth
 
 		void handleFileOffered (QObject*);
 		void handleJobDeoffered (QObject*);
+
+		void handleRIEXItemsSuggested (QList<LeechCraft::Azoth::RIEXItem>, QObject*, QString);
 
 		/** Removes the entries in the client icon cache for the sender,
 		 * if obj is null, or for obj, if it is not null.
