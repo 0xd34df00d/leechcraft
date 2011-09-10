@@ -60,6 +60,8 @@ namespace Azoth
 	public:
 		virtual ~ISupportRIEX () {}
 
+		virtual void SuggestItems (QList<RIEXItem> items, QObject *entry, QString message) = 0;
+
 		virtual void riexItemsSuggested (QList<LeechCraft::Azoth::RIEXItem> items,
 				QObject *from, QString message) = 0;
 	};

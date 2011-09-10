@@ -168,6 +168,9 @@ namespace Xoox
 		MediaCallFeatures GetMediaCallFeatures () const;
 		QObject* Call (const QString& id, const QString& variant);
 
+		// ISupportRIEX
+		void SuggestItems (QList<RIEXItem>, QObject*, QString);
+
 #ifdef ENABLE_CRYPT
 		// ISupportPGP
 		void SetPrivateKey (const QCA::PGPKey&);
