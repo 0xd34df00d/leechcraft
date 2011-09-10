@@ -228,12 +228,18 @@ namespace Acetamide
 	}
 
 	void ServerResponceManager::GotJoin (const QString& nick, 
-			const QList<std::string>&, const QString& msg)
+			const QList<std::string>& params, const QString& msg)
 	{
 		if (nick == ISH_->GetNickName ())
 		{
+			QString channel;
+			if (!params.isEmpty ())
+				channel = QString::fromUtf8 (params.first ().c_str ());
+			else if (!msg.isEmpty ())
+				channel = msg;
+
 			ChannelOptions co;
-			co.ChannelName_ = msg;
+			co.ChannelName_ = channel;
 			co.ServerName_ = ISH_->GetServerOptions ().ServerName_.toLower ();
 			co.ChannelPassword_ = QString ();
 			ISH_->JoinedChannel (co);
