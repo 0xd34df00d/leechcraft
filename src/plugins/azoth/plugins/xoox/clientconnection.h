@@ -235,6 +235,7 @@ namespace Xoox
 		EntryStatus PresenceToStatus (const QXmppPresence&) const;
 		void HandleOtherPresence (const QXmppPresence&);
 		void HandleError (const QXmppIq&);
+		void HandleRIEX (QString, QList<RIEXManager::Item>, QString = QString ());
 		void InvokeCallbacks (const QXmppIq&);
 		QString HandleErrorCondition (const QXmppStanza::Error::Condition&);
 	public slots:
@@ -255,7 +256,7 @@ namespace Xoox
 		void handleMessageDelivered (const QString&);
 		void handleCaptchaReceived (const QString&, const QXmppDataForm&);
 		void handleRoomInvitation (const QString&, const QString&, const QString&);
-		void handleGotRIEXItems (QString, QList<RIEXManager::Item>);
+		void handleGotRIEXItems (QString, QList<RIEXManager::Item>, bool);
 
 		void handleBookmarksReceived (const QXmppBookmarkSet&);
 		void handleAutojoinQueue ();

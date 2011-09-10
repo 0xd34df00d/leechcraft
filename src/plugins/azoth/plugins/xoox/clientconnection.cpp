@@ -205,9 +205,9 @@ namespace Xoox
 				SLOT (handleRoomInvitation (QString, QString, QString)));
 
 		connect (RIEXManager_,
-				SIGNAL (gotItems (QString, QList<RIEXManager::Item>)),
+				SIGNAL (gotItems (QString, QList<RIEXManager::Item>, bool)),
 				this,
-				SLOT (handleGotRIEXItems (QString, QList<RIEXManager::Item>)));
+				SLOT (handleGotRIEXItems (QString, QList<RIEXManager::Item>, bool)));
 
 		connect (&Client_->rosterManager (),
 				SIGNAL (rosterReceived ()),
@@ -1055,27 +1055,7 @@ namespace Xoox
 
 		if (AwaitingRIEXItems_.contains (msg.from ()))
 		{
-			QList<RIEXItem> items;
-			Q_FOREACH (const RIEXManager::Item& item, AwaitingRIEXItems_.take (msg.from ()))
-			{
-				RIEXItem ri =
-				{
-					static_cast<RIEXItem::Action> (item.GetAction ()),
-					item.GetJID (),
-					item.GetName (),
-					item.GetGroups ()
-				};
-
-				items << ri;
-			}
-
-			if (!items.isEmpty ())
-				QMetaObject::invokeMethod (Account_,
-						"riexItemsSuggested",
-						Q_ARG (QList<LeechCraft::Azoth::RIEXItem>, items),
-						Q_ARG (QObject*, JID2CLEntry_.value (jid)),
-						Q_ARG (QString, msg.body ()));
-
+			HandleRIEX (msg.from (), AwaitingRIEXItems_.take (msg.from ()), msg.body ());
 			return;
 		}
 		else if (RoomHandlers_.contains (jid))
@@ -1176,9 +1156,12 @@ namespace Xoox
 		emit gotMUCInvitation (identifying, inviter, reason);
 	}
 
-	void ClientConnection::handleGotRIEXItems (QString msgFrom, QList<RIEXManager::Item> items)
+	void ClientConnection::handleGotRIEXItems (QString msgFrom, QList<RIEXManager::Item> items, bool msgPending)
 	{
-		AwaitingRIEXItems_ [msgFrom] += items;
+		if (msgPending)
+			AwaitingRIEXItems_ [msgFrom] += items;
+		else
+			HandleRIEX (msgFrom, items);
 	}
 
 	void ClientConnection::handleBookmarksReceived (const QXmppBookmarkSet& set)
@@ -1352,6 +1335,34 @@ namespace Xoox
 				typeText,
 				PCritical_);
 		Core::Instance ().SendEntity (e);
+	}
+
+	void ClientConnection::HandleRIEX (QString msgFrom, QList<RIEXManager::Item> origItems, QString body)
+	{
+		QList<RIEXItem> items;
+		Q_FOREACH (const RIEXManager::Item& item, origItems)
+		{
+			RIEXItem ri =
+			{
+				static_cast<RIEXItem::Action> (item.GetAction ()),
+				item.GetJID (),
+				item.GetName (),
+				item.GetGroups ()
+			};
+
+			items << ri;
+		}
+
+		QString jid;
+		QString resource;
+		Split (msgFrom, &jid, &resource);
+
+		if (!items.isEmpty ())
+			QMetaObject::invokeMethod (Account_,
+					"riexItemsSuggested",
+					Q_ARG (QList<LeechCraft::Azoth::RIEXItem>, items),
+					Q_ARG (QObject*, JID2CLEntry_.value (jid)),
+					Q_ARG (QString, body));
 	}
 
 	void ClientConnection::InvokeCallbacks (const QXmppIq& iq)
