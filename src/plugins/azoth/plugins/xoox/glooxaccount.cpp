@@ -475,9 +475,12 @@ namespace Xoox
 			}
 		}
 
-		ClientConnection_->GetRIEXManager ()->SuggestItems (entry, add, message);
-		ClientConnection_->GetRIEXManager ()->SuggestItems (entry, modify, message);
-		ClientConnection_->GetRIEXManager ()->SuggestItems (entry, del, message);
+		if (!add.isEmpty ())
+			ClientConnection_->GetRIEXManager ()->SuggestItems (entry, add, message);
+		if (!modify.isEmpty ())
+			ClientConnection_->GetRIEXManager ()->SuggestItems (entry, modify, message);
+		if (!del.isEmpty ())
+			ClientConnection_->GetRIEXManager ()->SuggestItems (entry, del, message);
 	}
 
 #ifdef ENABLE_CRYPT
