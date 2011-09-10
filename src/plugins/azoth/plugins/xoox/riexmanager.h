@@ -64,6 +64,9 @@ namespace Xoox
 
 		QStringList discoveryFeatures () const;
 		bool handleStanza (const QDomElement&);
+
+		void SuggestItems (QString to, QList<Item> items,
+				QString message = QString ());
 	signals:
 		void gotItems (QString, QList<Item>);
 	};

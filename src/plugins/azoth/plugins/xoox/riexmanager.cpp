@@ -19,6 +19,7 @@
 #include "riexmanager.h"
 #include <QDomElement>
 #include <QXmppClient.h>
+#include <QXmppMessage.h>
 
 namespace LeechCraft
 {
@@ -126,6 +127,57 @@ namespace Xoox
 		emit gotItems (elem.attribute ("from"), items);
 
 		return false;
+	}
+
+	void RIEXManager::SuggestItems (QString to, QList<RIEXManager::Item> items, QString message)
+	{
+		QXmppMessage msg;
+		msg.setTo (to);
+		msg.setBody (message);
+
+		QXmppElement x;
+		x.setTagName ("x");
+		x.setAttribute ("xmlns", NsRIEX);
+
+		Q_FOREACH (const RIEXManager::Item& item, items)
+		{
+			QXmppElement itElem;
+			itElem.setTagName ("item");
+
+			if (!item.GetJID ().isEmpty ())
+				itElem.setAttribute ("jid", item.GetJID ());
+
+			if (!item.GetName ().isEmpty ())
+				itElem.setAttribute ("name", item.GetName ());
+
+			switch (item.GetAction ())
+			{
+			case Item::AModify:
+				itElem.setAttribute ("action", "modify");
+				break;
+			case Item::ADelete:
+				itElem.setAttribute ("action", "delete");
+				break;
+			default:
+				itElem.setAttribute ("action", "add");
+				break;
+			}
+
+			Q_FOREACH (const QString& group, item.GetGroups ())
+			{
+				QXmppElement groupElem;
+				groupElem.setTagName ("group");
+				groupElem.setValue (group);
+
+				itElem.appendChild (groupElem);
+			}
+
+			x.appendChild (itElem);
+		}
+
+		msg.setExtensions (x);
+
+		client ()->sendPacket (msg);
 	}
 }
 }
