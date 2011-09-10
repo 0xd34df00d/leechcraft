@@ -270,8 +270,13 @@ namespace LeechCraft
 
 			QPair<quint64, quint64> AddTorrent::GetAvailableSpaceInDestination ()
 			{
+#ifdef Q_WS_WIN32
+				boost::filesystem::space_info space =
+						boost::filesystem::space (std::string (GetSavePath ().toUtf8 ().constData ()));
+#else
 				boost::filesystem::space_info space =
 						boost::filesystem::space (GetSavePath ().toStdWString ());
+#endif
 				return qMakePair<quint64, quint64> (space.available, space.capacity);
 			}
 		};
