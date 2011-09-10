@@ -98,6 +98,7 @@ SET (SRCS
 	locationdialog.cpp
 	msgformatterwidget.cpp
 	acceptriexdialog.cpp
+	shareriexdialog.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -135,6 +136,7 @@ SET (HEADERS
 	locationdialog.h
 	msgformatterwidget.h
 	acceptriexdialog.h
+	shareriexdialog.h
 	animatediconmanager.h
 	sourcetrackingmodel.h
 	interfaces/iprotocolplugin.h
@@ -162,6 +164,7 @@ SET (FORMS
 	callchatwidget.ui
 	locationdialog.ui
 	acceptriexdialog.ui
+	shareriexdialog.ui
 	)
 SET (RESOURCES azothresources.qrc)
 
