@@ -69,6 +69,7 @@
 #include "callmanager.h"
 #include "addcontactdialog.h"
 #include "acceptriexdialog.h"
+#include "shareriexdialog.h"
 
 namespace LeechCraft
 {
@@ -1371,6 +1372,7 @@ namespace Azoth
 		result << id2action.value ("copy_id");
 		result << id2action.value ("sep_afterjid");
 		result << id2action.value ("managepgp");
+		result << id2action.value ("shareRIEX");
 		result << id2action.value ("vcard");
 		result << id2action.value ("leave");
 		result << id2action.value ("authorize");
@@ -1549,6 +1551,17 @@ namespace Azoth
 			Action2Areas_ [manageGPG] << CLEAAContactListCtxtMenu;
 		}
 #endif
+
+		if (qobject_cast<ISupportRIEX*> (entry->GetParentAccount ()))
+		{
+			QAction *shareRIEX = new QAction (tr ("Share contacts..."), entry->GetObject ());
+			connect (shareRIEX,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (handleActionShareContactsTriggered ()));
+			Entry2Actions_ [entry] ["shareRIEX"] = shareRIEX;
+			Action2Areas_ [shareRIEX] << CLEAAContactListCtxtMenu;
+		}
 
 		if (entry->GetEntryType () != ICLEntry::ETMUC)
 		{
@@ -3419,6 +3432,51 @@ namespace Azoth
 		settings.endGroup ();
 	}
 #endif
+
+	void Core::handleActionShareContactsTriggered ()
+	{
+		QAction *action = qobject_cast<QAction*> (sender ());
+		if (!action)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< sender ()
+					<< "is not a QAction";
+			return;
+		}
+
+		ICLEntry *entry = action->
+				property ("Azoth/Entry").value<ICLEntry*> ();
+
+		ISupportRIEX *riex = qobject_cast<ISupportRIEX*> (entry->GetParentAccount ());
+		if (!riex)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< entry->GetParentAccount ()
+					<< "doesn't implement ISupportRIEX";
+			return;
+		}
+
+		ShareRIEXDialog dia (entry);
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		const bool shareGroups = dia.ShouldSuggestGroups ();
+
+		QList<RIEXItem> items;
+		Q_FOREACH (ICLEntry *toShare, dia.GetSelectedEntries ())
+		{
+			RIEXItem item =
+			{
+				RIEXItem::AAdd,
+				toShare->GetHumanReadableID (),
+				toShare->GetEntryName (),
+				shareGroups ? toShare->Groups () : QStringList ()
+			};
+			items << item;
+		}
+
+		riex->SuggestItems (items, entry->GetObject (), dia.GetMessage ());
+	}
 
 	void Core::handleActionVCardTriggered ()
 	{

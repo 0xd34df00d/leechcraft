@@ -578,6 +578,7 @@ namespace Azoth
 #ifdef ENABLE_CRYPT
 		void handleActionManagePGPTriggered ();
 #endif
+		void handleActionShareContactsTriggered ();
 		void handleActionVCardTriggered ();
 
 		void handleActionOpenChatTriggered ();
