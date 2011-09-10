@@ -20,16 +20,31 @@
 #define PLUGINS_AZOTH_INTERFACES_ISUPPORTRIEX_H
 #include <QFlags>
 #include <QMetaType>
+#include <QStringList>
 
 namespace LeechCraft
 {
 namespace Azoth
 {
+	struct RIEXItem
+	{
+		enum Action
+		{
+			AAdd,
+			ADelete,
+			AModify
+		} Action_;
+
+		QString ID_;
+		QString Nick_;
+		QStringList Groups_;
+	};
+
 	/** @brief Interface representing Roster Item Exchange-like things.
-	 * 
+	 *
 	 * This interface should be implemented by account objects that
 	 * support exchanging contact list items between different users.
-	 * 
+	 *
 	 * This interface is modeled after XEP-0144.
 	 */
 	class ISupportRIEX
@@ -37,20 +52,8 @@ namespace Azoth
 	public:
 		virtual ~ISupportRIEX () {}
 
-		/** @brief This signal should be emitted when adding a contact
-		 * should be suggested to the user.
-		 * 
-		 * For XMPP protocol, this signal may be emitted when new
-		 * contacts are pushed to the roster via Roster Exchange XEP.
-		 * 
-		 * @note This function is expected to be a signal.
-		 * 
-		 * @param[out] id The ID of the contact.
-		 * @param[out] nick The suggested nick of the contact.
-		 * @param[out] groups The suggested groups of the contact.
-		 */
-		virtual void addContactSuggested (const QString& id,
-				const QString& nick, const QStringList& groups) = 0;
+		virtual void riexItemsSuggested (QList<LeechCraft::Azoth::RIEXItem> items,
+				QObject *from, QString message) = 0;
 	};
 }
 }
