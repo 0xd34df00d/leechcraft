@@ -94,11 +94,12 @@ namespace Xoox
 	, CaptchaManager_ (new QXmppCaptchaManager)
 	, BobManager_ (new QXmppBobManager)
 	, CallManager_ (new QXmppCallManager)
-	, PubSubManager_ (new PubSubManager)	
+	, PubSubManager_ (new PubSubManager)
 	, PrivacyListsManager_ (new PrivacyListsManager)
 	, AdHocCommandManager_ (new AdHocCommandManager (this))
 	, AnnotationsManager_ (0)
 	, LastActivityManager_ (new LastActivityManager)
+	, RIEXManager_ (new RIEXManager)
 #ifdef ENABLE_CRYPT
 	, PGPManager_ (0)
 #endif
@@ -120,7 +121,7 @@ namespace Xoox
 		SetupLogger ();
 
 		LastState_.State_ = SOffline;
-		
+
 		QTimer *decrTimer = new QTimer (this);
 		connect (decrTimer,
 				SIGNAL (timeout ()),
@@ -131,7 +132,7 @@ namespace Xoox
 		QObject *proxyObj = qobject_cast<GlooxProtocol*> (account->
 					GetParentProtocol ())->GetProxyObject ();
 		ProxyObject_ = qobject_cast<IProxyObject*> (proxyObj);
-		
+
 		PubSubManager_->RegisterCreator<UserActivity> ();
 		PubSubManager_->RegisterCreator<UserMood> ();
 		PubSubManager_->RegisterCreator<UserTune> ();
@@ -140,12 +141,12 @@ namespace Xoox
 		PubSubManager_->SetAutosubscribe<UserMood> (true);
 		PubSubManager_->SetAutosubscribe<UserTune> (true);
 		PubSubManager_->SetAutosubscribe<UserLocation> (true);
-		
+
 		connect (PubSubManager_,
 				SIGNAL (gotEvent (const QString&, PEPEventBase*)),
 				this,
 				SLOT (handlePEPEvent (const QString&, PEPEventBase*)));
-		
+
 		InitializeQCA ();
 
 		Client_->addExtension (BobManager_);
@@ -160,9 +161,10 @@ namespace Xoox
 		Client_->addExtension (PrivacyListsManager_);
 		Client_->addExtension (CallManager_);
 		Client_->addExtension (LastActivityManager_);
+		Client_->addExtension (RIEXManager_);
 		Client_->addExtension (AdHocCommandManager_);
 		Client_->addExtension (new AdHocCommandServer (this));
-		
+
 		AnnotationsManager_ = new AnnotationsManager (this);
 
 		DiscoveryManager_->setClientCapabilitiesNode ("http://leechcraft.org/azoth");
@@ -196,11 +198,16 @@ namespace Xoox
 				SIGNAL (messageReceived (const QXmppMessage&)),
 				this,
 				SLOT (handleMessageReceived (const QXmppMessage&)));
-		
+
 		connect (MUCManager_,
 				SIGNAL (invitationReceived (QString, QString, QString)),
 				this,
 				SLOT (handleRoomInvitation (QString, QString, QString)));
+
+		connect (RIEXManager_,
+				SIGNAL (gotItems (QString, QList<RIEXManager::Item>)),
+				this,
+				SLOT (handleGotRIEXItems (QString, QList<RIEXManager::Item>)));
 
 		connect (&Client_->rosterManager (),
 				SIGNAL (rosterReceived ()),
@@ -228,7 +235,7 @@ namespace Xoox
 				SIGNAL (vCardReceived (const QXmppVCardIq&)),
 				this,
 				SLOT (handleVCardReceived (const QXmppVCardIq&)));
-		
+
 		connect (DeliveryReceiptsManager_,
 				SIGNAL (messageDelivered (const QString&)),
 				this,
@@ -238,7 +245,7 @@ namespace Xoox
 				SIGNAL (captchaFormReceived (const QString&, const QXmppDataForm&)),
 				this,
 				SLOT (handleCaptchaReceived (const QString&, const QXmppDataForm&)));
-		
+
 		connect (DiscoveryManager_,
 				SIGNAL (infoReceived (const QXmppDiscoveryIq&)),
 				CapsManager_,
@@ -255,7 +262,7 @@ namespace Xoox
 				SIGNAL (itemsReceived (const QXmppDiscoveryIq&)),
 				this,
 				SLOT (handleDiscoItems (const QXmppDiscoveryIq&)));
-		
+
 		connect (Client_->reconnectionManager (),
 				SIGNAL (reconnectingIn (int)),
 				this,
@@ -329,7 +336,7 @@ namespace Xoox
 			}
 		}
 	}
-	
+
 	GlooxAccountState ClientConnection::GetLastState () const
 	{
 		return LastState_;
@@ -352,9 +359,9 @@ namespace Xoox
 	void ClientConnection::SetOurJID (const QString& jid)
 	{
 		OurJID_ = jid;
-		
+
 		Split (jid, &OurBareJID_, &OurResource_);
-		
+
 		SelfContact_->UpdateJID (jid);
 	}
 
@@ -368,7 +375,7 @@ namespace Xoox
 			Core::Instance ().SendEntity (e);
 			return 0;
 		}
-		
+
 		if (!JoinQueue_.isEmpty ())
 		{
 			QList<JoinQueueItem>::iterator pos = std::find_if (JoinQueue_.begin (), JoinQueue_.end (),
@@ -392,7 +399,7 @@ namespace Xoox
 	{
 		return MUCManager_;
 	}
-	
+
 	QXmppDiscoveryManager* ClientConnection::GetDiscoveryManager () const
 	{
 		return DiscoveryManager_;
@@ -402,54 +409,54 @@ namespace Xoox
 	{
 		return XferManager_;
 	}
-	
+
 	CapsManager* ClientConnection::GetCapsManager () const
 	{
 		return CapsManager_;
 	}
-	
+
 	AnnotationsManager* ClientConnection::GetAnnotationsManager () const
 	{
 		return AnnotationsManager_;
 	}
-	
+
 	PubSubManager* ClientConnection::GetPubSubManager () const
 	{
 		return PubSubManager_;
 	}
-	
+
 	PrivacyListsManager* ClientConnection::GetPrivacyListsManager () const
 	{
 		return PrivacyListsManager_;
 	}
-	
+
 	QXmppCallManager* ClientConnection::GetCallManager () const
 	{
 		return CallManager_;
 	}
-	
+
 	AdHocCommandManager* ClientConnection::GetAdHocCommandManager () const
 	{
 		return AdHocCommandManager_;
 	}
-	
+
 #ifdef ENABLE_CRYPT
 	PgpManager* ClientConnection::GetPGPManager () const
 	{
 		return PGPManager_;
 	}
-	
+
 	bool ClientConnection::SetEncryptionEnabled (const QString& jid, bool enabled)
 	{
 		if (enabled)
 			Entries2Crypt_ << jid;
 		else
 			Entries2Crypt_.remove (jid);
-		
+
 		return true;
 	}
 #endif
-	
+
 	void ClientConnection::SetSignaledLog (bool signaled)
 	{
 		if (signaled)
@@ -479,20 +486,20 @@ namespace Xoox
 		else
 			CapsQueue_->Schedule (jid, FetchQueue::PLow);
 	}
-	
+
 	void ClientConnection::RequestInfo (const QString& jid,
 			DiscoCallback_t callback, const QString& node)
 	{
 		AwaitingDiscoInfo_ [jid] = callback;
-		
+
 		DiscoveryManager_->requestInfo (jid, node);
 	}
-	
+
 	void ClientConnection::RequestItems (const QString& jid,
 			DiscoCallback_t callback, const QString& node)
 	{
 		AwaitingDiscoItems_ [jid] = callback;
-		
+
 		DiscoveryManager_->requestItems (jid, node);
 	}
 
@@ -523,7 +530,7 @@ namespace Xoox
 					<< "is not authable";
 			return;
 		}
-		
+
 		if (ack)
 		{
 			authable->ResendAuth ();
@@ -533,11 +540,11 @@ namespace Xoox
 		}
 		else
 			authable->RevokeAuth ();
-		
+
 		GlooxCLEntry *entry = qobject_cast<GlooxCLEntry*> (entryObj);
 		entry->SetAuthRequested (false);
 	}
-	
+
 	void ClientConnection::AddEntry (const QString& id,
 			const QString& name, const QStringList& groups)
 	{
@@ -561,7 +568,7 @@ namespace Xoox
 		qDebug () << "Unsubscribe" << jid;
 		Client_->rosterManager ().unsubscribe (jid, reason);
 	}
-	
+
 	void ClientConnection::GrantSubscription (const QString& jid, const QString& reason)
 	{
 		qDebug () << "GrantSubscription" << jid;
@@ -587,43 +594,43 @@ namespace Xoox
 		if (ODSEntries_.contains (jid))
 			delete ODSEntries_.take (jid);
 	}
-	
+
 	void ClientConnection::SendPacketWCallback (const QXmppIq& packet,
 			QObject *obj, const QByteArray& method)
 	{
 		AwaitingPacketCallbacks_ [packet.to ()] [packet.id ()] = PacketCallback_t (obj, method);
 		Client_->sendPacket (packet);
 	}
-	
+
 	void ClientConnection::SendMessage (GlooxMessage *msgObj)
 	{
 		QXmppMessage msg = msgObj->GetMessage ();
 		if (msg.requestReceipt ())
 			UndeliveredMessages_ [msg.id ()] = msgObj;
 
-#ifdef ENABLE_CRYPT		
+#ifdef ENABLE_CRYPT
 		EntryBase *entry = qobject_cast<EntryBase*> (msgObj->OtherPart ());
 		if (entry &&
 				Entries2Crypt_.contains (entry->GetJID ()))
 		{
 			const QCA::PGPKey& key = PGPManager_->PublicKey (entry->GetJID ());
-			
+
 			if (!key.isNull ())
 			{
 				const QString& body = msg.body ();
 				msg.setBody (tr ("This message is encrypted. Please decrypt "
 								"it to view the original contents."));
-				
+
 				QXmppElement crypt;
 				crypt.setTagName ("x");
 				crypt.setAttribute ("xmlns", "jabber:x:encrypted");
 				crypt.setValue (PGPManager_->EncryptBody (key, body.toUtf8 ()));
-				
+
 				msg.setExtensions (msg.extensions () + QXmppElementList (crypt));
 			}
 		}
 #endif
-		
+
 		Client_->sendPacket (msg);
 	}
 
@@ -670,18 +677,18 @@ namespace Xoox
 	{
 		ScheduleFetchVCard (jid);
 	}
-	
+
 	void ClientConnection::FetchVCard (const QString& jid, VCardDialog *dia)
 	{
 		AwaitingVCardDialogs_ [jid] = QPointer<VCardDialog> (dia);
 		FetchVCard (jid);
 	}
-	
+
 	QXmppBookmarkSet ClientConnection::GetBookmarks () const
 	{
 		return BMManager_->bookmarks ();
 	}
-	
+
 	void ClientConnection::SetBookmarks (const QXmppBookmarkSet& set)
 	{
 		BMManager_->setBookmarks (set);
@@ -699,11 +706,11 @@ namespace Xoox
 		msg->SetDateTime (QDateTime::currentDateTime ());
 		return msg;
 	}
-	
+
 	void ClientConnection::SetupLogger ()
 	{
 		QFile::remove (Util::CreateIfNotExists ("azoth").filePath ("qxmpp.log"));
-		
+
 		QString jid;
 		QString bare;
 		Split (OurJID_, &jid, &bare);
@@ -739,16 +746,16 @@ namespace Xoox
 		if (resource)
 			*resource = (pos >= 0 ? jid.mid (pos + 1) : QString ());
 	}
-	
+
 	void ClientConnection::handlePendingForm (QXmppDataForm *formObj, const QString& from)
 	{
 		std::auto_ptr<QXmppDataForm> form (formObj);
 		FormBuilder fb (from, BobManager_);
-		
+
 		QDialog dia;
 		dia.setWindowTitle (tr ("Data form from %1").arg (from));
 		dia.setLayout (new QVBoxLayout ());
-		
+
 		dia.layout ()->addWidget (new QLabel (tr ("You have received "
 						"dataform from %1:").arg (from)));
 		dia.layout ()->addWidget (fb.CreateForm (*form));
@@ -778,26 +785,26 @@ namespace Xoox
 	{
 		IsConnected_ = true;
 		emit statusChanged (EntryStatus (LastState_.State_, LastState_.Status_));
-		
+
 		Client_->vCardManager ().requestVCard (OurBareJID_);
-		
+
 		connect (BMManager_,
 				SIGNAL (bookmarksReceived (const QXmppBookmarkSet&)),
 				this,
 				SLOT (handleBookmarksReceived (const QXmppBookmarkSet&)),
 				Qt::UniqueConnection);
-		
+
 		AnnotationsManager_->refetchNotes ();
-		
+
 		Q_FOREACH (RoomHandler *rh, RoomHandlers_)
 			rh->Join ();
 	}
-	
+
 	void ClientConnection::handleDisconnected ()
 	{
 		emit statusChanged (EntryStatus (SOffline, LastState_.Status_));
 	}
-	
+
 	void ClientConnection::handleReconnecting (int timeout)
 	{
 		qDebug () << "Azoth: reconnecting in"
@@ -828,7 +835,7 @@ namespace Xoox
 			str = tr ("no error.");
 			break;
 		}
-		
+
 		if (str.isEmpty ())
 		{
 			qWarning () << Q_FUNC_INFO
@@ -851,7 +858,7 @@ namespace Xoox
 	{
 		if (iq.error ().isValid ())
 			HandleError (iq);
-		
+
 		try
 		{
 			dynamic_cast<const QXmppActivityItem&> (iq);
@@ -860,7 +867,7 @@ namespace Xoox
 		catch (...)
 		{
 		}
-		
+
 		try
 		{
 			dynamic_cast<const QXmppPubSubIq&> (iq);
@@ -869,7 +876,7 @@ namespace Xoox
 		catch (...)
 		{
 		}
-		
+
 		InvokeCallbacks (iq);
 	}
 
@@ -888,11 +895,11 @@ namespace Xoox
 				entry->SetClientInfo (resource, presences [resource]);
 		}
 		emit gotRosterItems (items);
-		
+
 		Q_FOREACH (const QXmppMessage& msg, OfflineMsgQueue_)
 			handleMessageReceived (msg);
 		OfflineMsgQueue_.clear ();
-		
+
 		QPair<QString, PEPEventBase*> initialEvent;
 		Q_FOREACH (initialEvent, InitialEventQueue_)
 		{
@@ -938,10 +945,10 @@ namespace Xoox
 		QString jid;
 		QString nick;
 		Split (vcard.from (), &jid, &nick);
-		
+
 		if (jid.isEmpty ())
 			jid = OurBareJID_;
-		
+
 		if (AwaitingVCardDialogs_.contains (jid))
 		{
 			QPointer<VCardDialog> dia = AwaitingVCardDialogs_ [jid];
@@ -979,7 +986,7 @@ namespace Xoox
 			{
 				if (OurJID_ == pres.from ())
 					emit statusChanged (PresenceToStatus (pres));
-				
+
 				if (jid == OurBareJID_)
 				{
 					if (pres.type () == QXmppPresence::Available)
@@ -991,7 +998,7 @@ namespace Xoox
 					else
 						SelfContact_->RemoveVariant (resource);
 				}
-				
+
 				return;
 			}
 		}
@@ -1003,7 +1010,7 @@ namespace Xoox
 			qDebug () << "got signed presence" << jid;
 		}
 	}
-	
+
 	namespace
 	{
 		void HandleMessageForEntry (EntryBase *entry,
@@ -1018,7 +1025,7 @@ namespace Xoox
 				GlooxMessage *gm = new GlooxMessage (msg, conn);
 				entry->HandleMessage (gm);
 			}
-			
+
 			if (msg.isAttention ())
 				entry->HandleAttentionMessage (msg);
 		}
@@ -1037,11 +1044,36 @@ namespace Xoox
 		QString jid;
 		QString resource;
 		Split (msg.from (), &jid, &resource);
-		
+
 		if (EncryptedMessages_.contains (msg.from ()))
 			msg.setBody (EncryptedMessages_.take (msg.from ()));
 
-		if (RoomHandlers_.contains (jid))
+		if (AwaitingRIEXItems_.contains (msg.from ()))
+		{
+			QList<RIEXItem> items;
+			Q_FOREACH (const RIEXManager::Item& item, AwaitingRIEXItems_.take (msg.from ()))
+			{
+				RIEXItem ri =
+				{
+					static_cast<RIEXItem::Action> (item.GetAction ()),
+					item.GetJID (),
+					item.GetName (),
+					item.GetGroups ()
+				};
+
+				items << ri;
+			}
+
+			if (!items.isEmpty ())
+				QMetaObject::invokeMethod (Account_,
+						"riexItemsSuggested",
+						Q_ARG (QList<LeechCraft::Azoth::RIEXItem>, items),
+						Q_ARG (QObject*, JID2CLEntry_.value (jid)),
+						Q_ARG (QString, msg.body ()));
+
+			return;
+		}
+		else if (RoomHandlers_.contains (jid))
 			RoomHandlers_ [jid]->HandleMessage (msg, resource);
 		else if (JID2CLEntry_.contains (jid))
 			HandleMessageForEntry (JID2CLEntry_ [jid], msg, resource, this);
@@ -1063,13 +1095,13 @@ namespace Xoox
 			handleMessageReceived (msg);
 		}
 	}
-	
+
 	void ClientConnection::handlePEPEvent (const QString& from, PEPEventBase *event)
 	{
 		QString bare;
 		QString resource;
 		Split (from, &bare, &resource);
-		
+
 		if (!JID2CLEntry_.contains (bare))
 		{
 			if (JID2CLEntry_.isEmpty ())
@@ -1081,10 +1113,10 @@ namespace Xoox
 						<< JID2CLEntry_.keys ();
 			return;
 		}
-		
+
 		JID2CLEntry_ [bare]->HandlePEPEvent (resource, event);
 	}
-	
+
 	void ClientConnection::handleMessageDelivered (const QString& msgId)
 	{
 		QPointer<GlooxMessage> msg = UndeliveredMessages_.take (msgId);
@@ -1095,7 +1127,7 @@ namespace Xoox
 	void ClientConnection::handleCaptchaReceived (const QString& jid, const QXmppDataForm& dataForm)
 	{
 		FormBuilder builder (jid, BobManager_);
-		
+
 		std::auto_ptr<QDialog> dialog (new QDialog ());
 		QWidget *widget = builder.CreateForm (dataForm, dialog.get ());
 		dialog->setWindowTitle (widget->windowTitle ().isEmpty () ?
@@ -1105,7 +1137,7 @@ namespace Xoox
 		dialog->layout ()->addWidget (widget);
 		QDialogButtonBox *box = new QDialogButtonBox (QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
 		dialog->layout ()->addWidget (box);
-		
+
 		connect (box,
 				SIGNAL (accepted ()),
 				dialog.get (),
@@ -1114,14 +1146,14 @@ namespace Xoox
 				SIGNAL (rejected ()),
 				dialog.get (),
 				SLOT (reject ()));
-		
+
 		if (dialog->exec () != QDialog::Accepted)
 			return;
-		
+
 		QXmppDataForm form = builder.GetForm ();
 		CaptchaManager_->sendResponse (jid, form);
 	}
-	
+
 	void ClientConnection::handleRoomInvitation (const QString& room,
 			const QString& inviter, const QString& reason)
 	{
@@ -1139,6 +1171,11 @@ namespace Xoox
 		emit gotMUCInvitation (identifying, inviter, reason);
 	}
 
+	void ClientConnection::handleGotRIEXItems (QString msgFrom, QList<RIEXManager::Item> items)
+	{
+		AwaitingRIEXItems_ [msgFrom] += items;
+	}
+
 	void ClientConnection::handleBookmarksReceived (const QXmppBookmarkSet& set)
 	{
 		disconnect (BMManager_,
@@ -1150,7 +1187,7 @@ namespace Xoox
 		{
 			if (!conf.autoJoin ())
 				continue;
-			
+
 			JoinQueueItem item =
 			{
 				conf.jid (),
@@ -1158,13 +1195,13 @@ namespace Xoox
 			};
 			JoinQueue_ << item;
 		}
-		
+
 		if (JoinQueue_.size ())
 			QTimer::singleShot (10000,
 					this,
 					SLOT (handleAutojoinQueue ()));
 	}
-	
+
 	void ClientConnection::handleAutojoinQueue ()
 	{
 		if (JoinQueue_.isEmpty ())
@@ -1181,21 +1218,21 @@ namespace Xoox
 		emit gotRosterItems (entries);
 		JoinQueue_.clear ();
 	}
-	
+
 	void ClientConnection::handleDiscoInfo (const QXmppDiscoveryIq& iq)
 	{
 		const QString& jid = iq.from ();
 		if (AwaitingDiscoInfo_.contains (jid))
 			AwaitingDiscoInfo_ [jid] (iq);
 	}
-	
+
 	void ClientConnection::handleDiscoItems (const QXmppDiscoveryIq& iq)
 	{
 		const QString& jid = iq.from ();
 		if (AwaitingDiscoItems_.contains (jid))
 			AwaitingDiscoItems_ [jid] (iq);
 	}
-	
+
 	void ClientConnection::handleEncryptedMessageReceived (const QString& id,
 			const QString& decrypted)
 	{
@@ -1214,7 +1251,7 @@ namespace Xoox
 	{
 		qDebug () << Q_FUNC_INFO << id;
 	}
-	
+
 	void ClientConnection::handleLog (QXmppLogger::MessageType type, const QString& msg)
 	{
 		switch (type)
@@ -1229,7 +1266,7 @@ namespace Xoox
 			break;
 		}
 	}
-	
+
 	void ClientConnection::decrementErrAccumulators ()
 	{
 		if (SocketErrorAccumulator_ > 0)
@@ -1311,20 +1348,20 @@ namespace Xoox
 				PCritical_);
 		Core::Instance ().SendEntity (e);
 	}
-	
+
 	void ClientConnection::InvokeCallbacks (const QXmppIq& iq)
 	{
 		if (!AwaitingPacketCallbacks_.contains (iq.from ()))
 			return;
-		
+
 		const PacketID2Callback_t& cbs = AwaitingPacketCallbacks_ [iq.from ()];
 		if (!cbs.contains (iq.id ()))
 			return;
-	
+
 		const PacketCallback_t& cb = cbs [iq.id ()];
 		if (!cb.first)
 			return;
-		
+
 		QMetaObject::invokeMethod (cb.first,
 				cb.second,
 				Q_ARG (QXmppIq, iq));
@@ -1380,7 +1417,7 @@ namespace Xoox
 			return tr ("Other error.");
 		}
 	}
-	
+
 	void ClientConnection::InitializeQCA ()
 	{
 #ifdef ENABLE_CRYPT

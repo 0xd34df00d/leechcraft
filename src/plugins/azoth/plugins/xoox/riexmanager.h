@@ -68,7 +68,7 @@ namespace Xoox
 		void SuggestItems (QString to, QList<Item> items,
 				QString message = QString ());
 	signals:
-		void gotItems (QString, QList<Item>);
+		void gotItems (QString, QList<RIEXManager::Item>);
 	};
 }
 }

@@ -34,6 +34,7 @@
 #include <interfaces/imessage.h>
 #include "glooxclentry.h"
 #include "glooxaccount.h"
+#include "riexmanager.h"
 
 class QXmppMessage;
 class QXmppMucManager;
@@ -94,10 +95,11 @@ namespace Xoox
 		QXmppCallManager *CallManager_;
 		PubSubManager *PubSubManager_;
 		PrivacyListsManager *PrivacyListsManager_;
-		AdHocCommandManager *AdHocCommandManager_;		
+		AdHocCommandManager *AdHocCommandManager_;
 		AnnotationsManager *AnnotationsManager_;
 		LastActivityManager *LastActivityManager_;
-		
+		RIEXManager *RIEXManager_;
+
 #ifdef ENABLE_CRYPT
 		PgpManager *PGPManager_;
 #endif
@@ -105,7 +107,7 @@ namespace Xoox
 		QString OurJID_;
 		QString OurBareJID_;
 		QString OurResource_;
-		
+
 		SelfContact *SelfContact_;
 
 		GlooxAccount *Account_;
@@ -121,7 +123,7 @@ namespace Xoox
 		QHash<QString, RoomHandler*> RoomHandlers_;
 		GlooxAccountState LastState_;
 		QString Password_;
-		
+
 		struct JoinQueueItem
 		{
 			QString RoomJID_;
@@ -131,26 +133,28 @@ namespace Xoox
 
 		FetchQueue *VCardQueue_;
 		FetchQueue *CapsQueue_;
-		
+
 		int SocketErrorAccumulator_;
-		
+
 		QList<QXmppMessage> OfflineMsgQueue_;
 		QList<QPair<QString, PEPEventBase*> > InitialEventQueue_;
-		
+
 		QHash<QString, QPointer<VCardDialog> > AwaitingVCardDialogs_;
-		
+
 		QHash<QString, QPointer<GlooxMessage> > UndeliveredMessages_;
-		
+
 		QSet<QString> SignedPresences_;
 		QSet<QString> SignedMessages_;
 		QHash<QString, QString> EncryptedMessages_;
 		QSet<QString> Entries2Crypt_;
+
+		QHash<QString, QList<RIEXManager::Item> > AwaitingRIEXItems_;
 	public:
 		typedef boost::function<void (const QXmppDiscoveryIq&)> DiscoCallback_t;
 	private:
 		QHash<QString, DiscoCallback_t> AwaitingDiscoInfo_;
 		QHash<QString, DiscoCallback_t> AwaitingDiscoItems_;
-		
+
 		typedef QPair<QPointer<QObject>, QByteArray> PacketCallback_t;
 		typedef QHash<QString, PacketCallback_t> PacketID2Callback_t;
 		QHash<QString, PacketID2Callback_t> AwaitingPacketCallbacks_;
@@ -186,14 +190,14 @@ namespace Xoox
 		AdHocCommandManager* GetAdHocCommandManager () const;
 #ifdef ENABLE_CRYPT
 		PgpManager* GetPGPManager () const;
-		
+
 		bool SetEncryptionEnabled (const QString&, bool);
 #endif
-		
+
 		void SetSignaledLog (bool);
 
 		void RequestInfo (const QString&) const;
-		
+
 		void RequestInfo (const QString&, DiscoCallback_t, const QString& = "");
 		void RequestItems (const QString&, DiscoCallback_t, const QString& = "");
 
@@ -250,20 +254,21 @@ namespace Xoox
 		void handleMessageDelivered (const QString&);
 		void handleCaptchaReceived (const QString&, const QXmppDataForm&);
 		void handleRoomInvitation (const QString&, const QString&, const QString&);
-		
+		void handleGotRIEXItems (QString, QList<RIEXManager::Item>);
+
 		void handleBookmarksReceived (const QXmppBookmarkSet&);
 		void handleAutojoinQueue ();
-		
+
 		void handleDiscoInfo (const QXmppDiscoveryIq&);
 		void handleDiscoItems (const QXmppDiscoveryIq&);
-		
+
 		void handleEncryptedMessageReceived (const QString&, const QString&);
 		void handleSignedMessageReceived (const QString&);
 		void handleSignedPresenceReceived (const QString&);
 		void handleInvalidSignatureReceived (const QString&);
-		
+
 		void handleLog (QXmppLogger::MessageType, const QString&);
-		
+
 		void decrementErrAccumulators ();
 	private:
 		void InitializeQCA ();
