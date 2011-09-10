@@ -129,7 +129,7 @@ namespace Xoox
 
 		emit gotItems (elem.attribute ("from"), items);
 
-		return false;
+		return elem.tagName () == "iq";
 	}
 
 	void RIEXManager::SuggestItems (EntryBase *to, QList<RIEXManager::Item> items, QString message)
