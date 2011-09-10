@@ -44,6 +44,7 @@ namespace Azoth
 
 			QStandardItem *action = new QStandardItem;
 			action->setCheckState (Qt::Checked);
+			action->setCheckable (true);
 			switch (item.Action_)
 			{
 			case RIEXItem::AAdd:
