@@ -73,6 +73,8 @@ namespace LeechCraft
 				Creator_->setText (tr ("<unknown>"));
 				Comment_->setText (tr ("<unknown>"));
 				Date_->setText (tr ("<unknown>"));
+
+				updateAvailableSpace ();
 			}
 
 			void AddTorrent::SetFilename (const QString& filename)
