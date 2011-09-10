@@ -90,7 +90,7 @@ namespace Xoox
 
 	bool RIEXManager::handleStanza (const QDomElement& elem)
 	{
-		if (elem.tagName () != "message" ||
+		if ((elem.tagName () != "message" && elem.tagName () != "iq") ||
 				elem.attribute ("from").isEmpty ())
 			return false;
 
