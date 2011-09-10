@@ -188,6 +188,7 @@ namespace Xoox
 		PrivacyListsManager* GetPrivacyListsManager () const;
 		QXmppCallManager* GetCallManager () const;
 		AdHocCommandManager* GetAdHocCommandManager () const;
+		RIEXManager* GetRIEXManager () const;
 #ifdef ENABLE_CRYPT
 		PgpManager* GetPGPManager () const;
 

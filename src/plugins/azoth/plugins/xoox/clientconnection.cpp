@@ -440,6 +440,11 @@ namespace Xoox
 		return AdHocCommandManager_;
 	}
 
+	RIEXManager* ClientConnection::GetRIEXManager () const
+	{
+		return RIEXManager_;
+	}
+
 #ifdef ENABLE_CRYPT
 	PgpManager* ClientConnection::GetPGPManager () const
 	{
