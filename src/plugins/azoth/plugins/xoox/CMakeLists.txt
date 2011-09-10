@@ -61,6 +61,7 @@ SET (XOOX_SRCS
 	adhoccommandserver.cpp
 	adhoccommand.cpp
 	lastactivitymanager.cpp
+	riexmanager.cpp
 	)
 SET (XOOX_HEADERS
 	xoox.h
@@ -114,6 +115,7 @@ SET (XOOX_HEADERS
 	adhoccommandserver.h
 	adhoccommand.h
 	lastactivitymanager.h
+	riexmanager.h
 	)
 SET (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui
