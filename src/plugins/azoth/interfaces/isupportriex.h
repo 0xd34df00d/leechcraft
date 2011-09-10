@@ -60,5 +60,6 @@ namespace Azoth
 
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::ISupportRIEX,
 		"org.Deviant.LeechCraft.Azoth.ISupportRIEX/1.0");
+Q_DECLARE_METATYPE (LeechCraft::Azoth::RIEXItem);
 
 #endif
