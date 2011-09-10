@@ -154,6 +154,7 @@ namespace Azoth
 				itemName->setText (entry->GetEntryName ().isEmpty () ?
 							entry->GetHumanReadableID () :
 							entry->GetEntryName ());
+				itemName->setData (QVariant::fromValue<ICLEntry*> (entry));
 				row << itemName;
 
 				row << new QStandardItem (entry->GetHumanReadableID ());
