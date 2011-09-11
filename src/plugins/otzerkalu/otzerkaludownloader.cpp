@@ -134,7 +134,7 @@ namespace Otzerkalu
 		qDebug () << Q_FUNC_INFO << "Download finished";
 		--UrlCount_;
 		const FileData& data = FileMap_ [id];
-		if (!data.RecLevel_ && !Param_.RecLevel_)
+		if (!data.RecLevel_ && Param_.RecLevel_)
 			return;
 
 		const QString& filename = data.Filename_;
