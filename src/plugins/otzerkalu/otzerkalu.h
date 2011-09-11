@@ -41,6 +41,7 @@ namespace Otzerkalu
 		Q_OBJECT
 		Q_INTERFACES (IInfo IEntityHandler IJobHolder)
 		QStandardItemModel *RepresentationModel_;
+		ICoreProxy_ptr Proxy_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
