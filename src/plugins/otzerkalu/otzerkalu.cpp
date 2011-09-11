@@ -21,6 +21,7 @@
 #include <QIcon>
 #include <interfaces/entitytesthandleresult.h>
 #include "otzerkaludialog.h"
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
@@ -28,6 +29,8 @@ namespace Otzerkalu
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Proxy_ = proxy;
+		RepresentationModel_ = new QStandardItemModel (0, 1, this);
 	}
 
 	void Plugin::SecondInit ()
@@ -91,9 +94,33 @@ namespace Otzerkalu
 				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)),
 				this,
 				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)));
-		
+		connect (dl,
+				SIGNAL (fileDownloaded (QString)),
+				this,
+				SLOT (handleFileDownloaded (QString)));
 		dl->Begin ();
 	}
+	
+	QAbstractItemModel* Plugin::GetRepresentation () const
+	{
+		return RepresentationModel_;
+	}
+	
+	void Plugin::handleFileDownloaded (const QString & file)
+	{
+		if (file.isEmpty ())
+			return;
+		
+		const QString& format = file.split ("[.]").last ();
+		QIcon icon;
+		if (format == "css")
+			icon = Proxy_->GetIcon ("css");
+		else
+			icon = Proxy_->GetIcon ("poshuku_unknownurlicon");
+	
+		RepresentationModel_->appendRow (new QStandardItem (icon, file));
+	}
+
 }
 }
 

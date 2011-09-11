@@ -74,6 +74,11 @@ namespace Otzerkalu
 	{
 	}
 	
+	QString OtzerkaluDownloader::GetLastDownloaded () const
+	{
+		return DownloadedFiles_.last ();
+	}
+
 	void OtzerkaluDownloader::Begin ()
 	{
 		//Let's download the first URL
@@ -130,11 +135,12 @@ namespace Otzerkalu
 		qDebug () << Q_FUNC_INFO << "Download finished";
 		--UrlCount_;
 		const FileData& data = FileMap_ [id];
-		if (!data.RecLevel_ && !Param_.RecLevel_)
+		if (!data.RecLevel_ && Param_.RecLevel_)
 			return;
 
 		const QString& filename = data.Filename_;
 		DownloadedFiles_.append (filename);
+		emit fileDownloaded (filename);
 
 		QFile file (filename);
 		if (!file.open (QIODevice::ReadOnly))
