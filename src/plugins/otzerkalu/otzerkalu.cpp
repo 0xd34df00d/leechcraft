@@ -28,6 +28,7 @@ namespace Otzerkalu
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		RepresentationModel_ = new QStandardItemModel (0, 1, this);
 	}
 
 	void Plugin::SecondInit ()
@@ -91,9 +92,23 @@ namespace Otzerkalu
 				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)),
 				this,
 				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)));
-		
+		connect (dl,
+				SIGNAL (fileDownloaded (QString)),
+				this,
+				SLOT (handleFileDownloaded (QString)));
 		dl->Begin ();
 	}
+	
+	QAbstractItemModel* Plugin::GetRepresentation () const
+	{
+		return RepresentationModel_;
+	}
+	
+	void Plugin::handleFileDownloaded (const QString & file)
+	{
+		RepresentationModel_->appendRow (new QStandardItem (file));
+	}
+
 }
 }
 

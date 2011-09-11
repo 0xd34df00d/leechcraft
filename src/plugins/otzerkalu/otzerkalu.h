@@ -22,9 +22,11 @@
 #define PLUGINS_OTZERKALU_OTZERKALU_H
 #include <QObject>
 #include <QUrl>
+#include <QStandardItemModel>
 #include <interfaces/iinfo.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/structures.h>
+#include <interfaces/ijobholder.h>
 #include "otzerkaludownloader.h"
 
 namespace LeechCraft
@@ -34,9 +36,11 @@ namespace Otzerkalu
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IEntityHandler
+				 , public IJobHolder
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IEntityHandler)
+		Q_INTERFACES (IInfo IEntityHandler IJobHolder)
+		QStandardItemModel *RepresentationModel_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -47,10 +51,14 @@ namespace Otzerkalu
 		QIcon GetIcon () const;
 		EntityTestHandleResult CouldHandle (const Entity& entity) const;
 		void Handle (Entity entity);
+		QAbstractItemModel * GetRepresentation () const;
+
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&,
 				int*, QObject**);
+	private slots:
+		void handleFileDownloaded (const QString & file);
 	};
 }
 }
