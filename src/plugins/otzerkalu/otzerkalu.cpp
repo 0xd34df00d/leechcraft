@@ -19,6 +19,7 @@
 
 #include "otzerkalu.h"
 #include <QIcon>
+#include <QUrl>
 #include <interfaces/entitytesthandleresult.h>
 #include "otzerkaludialog.h"
 #include <interfaces/core/icoreproxy.h>
@@ -30,7 +31,7 @@ namespace Otzerkalu
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
-		RepresentationModel_ = new QStandardItemModel (0, 1, this);
+		RepresentationModel_ = new QStandardItemModel (this);
 	}
 
 	void Plugin::SecondInit ()
@@ -106,15 +107,22 @@ namespace Otzerkalu
 		return RepresentationModel_;
 	}
 	
-	void Plugin::handleFileDownloaded (const QString & file)
+	void Plugin::handleFileDownloaded (const QString& file)
 	{
 		if (file.isEmpty ())
 			return;
 		
-		const QString& format = file.split ("[.]").last ();
+		const QStringList& fileParser = file.split("[.]");
 		QIcon icon;
-		if (format == "css")
-			icon = Proxy_->GetIcon ("css");
+		if (!fileParser.isEmpty ())
+		{
+			const QString& format = fileParser.last ();
+			
+			if (format == "css")
+				icon = Proxy_->GetIcon ("css");
+			else
+				icon = Proxy_->GetIcon ("poshuku_unknownurlicon");
+		}
 		else
 			icon = Proxy_->GetIcon ("poshuku_unknownurlicon");
 	
