@@ -40,6 +40,7 @@ namespace Otzerkalu
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IEntityHandler IJobHolder)
+		
 		QStandardItemModel *RepresentationModel_;
 		ICoreProxy_ptr Proxy_;
 	public:
@@ -52,14 +53,14 @@ namespace Otzerkalu
 		QIcon GetIcon () const;
 		EntityTestHandleResult CouldHandle (const Entity& entity) const;
 		void Handle (Entity entity);
-		QAbstractItemModel * GetRepresentation () const;
+		QAbstractItemModel* GetRepresentation () const;
 
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&,
 				int*, QObject**);
 	private slots:
-		void handleFileDownloaded (const QString & file);
+		void handleFileDownloaded (const QString& file);
 	};
 }
 }

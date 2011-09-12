@@ -76,7 +76,7 @@ namespace Otzerkalu
 	
 	QString OtzerkaluDownloader::GetLastDownloaded () const
 	{
-		return DownloadedFiles_.last ();
+		return DownloadedFiles_.isEmpty () ? QString () : DownloadedFiles_.last ();
 	}
 
 	void OtzerkaluDownloader::Begin ()
