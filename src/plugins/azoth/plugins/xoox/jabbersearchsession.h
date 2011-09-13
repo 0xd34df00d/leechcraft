@@ -42,7 +42,7 @@ namespace Xoox
 	public:
 		JabberSearchSession (GlooxAccount *acc);
 
-		void RestartSearch ();
+		void RestartSearch (QString);
 		QAbstractItemModel* GetRepresentationModel () const;
 	};
 }

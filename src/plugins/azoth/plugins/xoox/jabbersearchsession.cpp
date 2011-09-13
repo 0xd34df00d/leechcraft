@@ -33,7 +33,7 @@ namespace Xoox
 	{
 	}
 
-	void JabberSearchSession::RestartSearch ()
+	void JabberSearchSession::RestartSearch (QString)
 	{
 
 	}

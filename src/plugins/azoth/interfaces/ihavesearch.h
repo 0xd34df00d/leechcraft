@@ -33,7 +33,7 @@ namespace Azoth
 	public:
 		virtual ~ISearchSession () {}
 
-		virtual void RestartSearch () = 0;
+		virtual void RestartSearch (QString server) = 0;
 
 		virtual QAbstractItemModel* GetRepresentationModel () const = 0;
 	};
