@@ -64,12 +64,12 @@ namespace Xoox
 		else if (SearchRequests_.remove (id))
 		{
 			const QDomElement& items = elem.firstChildElement ("query");
-			if (items.attribute ("xmlns") != NsJabberSearch)
+			if (items.isNull ())
 				return false;
 
 			const QDomElement& xForm = items.firstChildElement ("x");
 
-			QList<Item> result = xForm.attribute ("xmlns") == "jabber:x:data" ?
+			QList<Item> result = !xForm.isNull () ?
 					FromForm (xForm) :
 					FromStandardItems (items);
 
