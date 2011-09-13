@@ -54,7 +54,7 @@ namespace Xoox
 		if (FieldRequests_.remove (id))
 		{
 			const QDomElement& formElem = elem.firstChildElement ("query");
-			if (formElem.attribute ("xmlns") != NsJabberSearch)
+			if (formElem.isNull ())
 				return false;
 
 			emit gotSearchFields (elem.attribute ("from"), QXmppElement (formElem));
