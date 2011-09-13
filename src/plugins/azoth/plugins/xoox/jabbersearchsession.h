@@ -52,6 +52,7 @@ namespace Xoox
 	private slots:
 		void handleGotItems (const QString&, const QList<JabberSearchManager::Item>&);
 		void handleGotSearchFields (const QString&, const QXmppElement&);
+		void handleGotError (const QXmppIq&);
 	};
 }
 }

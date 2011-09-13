@@ -23,6 +23,7 @@
 #include "legacyformbuilder.h"
 #include "formbuilder.h"
 #include "util.h"
+#include <QMessageBox>
 
 namespace LeechCraft
 {
@@ -36,6 +37,10 @@ namespace Xoox
 	, Model_ (new QStandardItemModel (this))
 	, SM_ (acc->GetClientConnection ()->GetJabberSearchManager ())
 	{
+		connect (SM_,
+				SIGNAL (gotServerError (QXmppIq)),
+				this,
+				SLOT (handleGotError (QXmppIq)));
 	}
 
 	void JabberSearchSession::RestartSearch (QString server)
@@ -126,6 +131,54 @@ namespace Xoox
 				this,
 				SLOT (handleGotItems (QString, QList<JabberSearchManager::Item>)),
 				Qt::UniqueConnection);
+	}
+
+	void JabberSearchSession::handleGotError (const QXmppIq& iq)
+	{
+		if (CurrentServer_ != iq.from ())
+			return;
+
+		QString conditionText;
+		switch (iq.error ().condition ())
+		{
+		case QXmppStanza::Error::ServiceUnavailable:
+			conditionText = tr ("search service unavailable");
+			break;
+		case QXmppStanza::Error::FeatureNotImplemented:
+			conditionText = tr ("search feature not implemented");
+			break;
+		case QXmppStanza::Error::Forbidden:
+			conditionText = tr ("search is forbidden");
+			break;
+		case QXmppStanza::Error::RegistrationRequired:
+			conditionText = tr ("registration is required for performing search");
+			break;
+		case QXmppStanza::Error::NotAllowed:
+			conditionText = tr ("search not allowed");
+			break;
+		case QXmppStanza::Error::NotAuthorized:
+			conditionText = tr ("search not authorized");
+			break;
+		case QXmppStanza::Error::ResourceConstraint:
+			conditionText = tr ("too much search requests");
+			break;
+		default:
+			conditionText = tr ("unknown condition %1")
+					.arg (iq.error ().condition ());
+			break;
+		}
+
+		QString text = tr ("Error searching on server %1: %2.")
+				.arg (CurrentServer_)
+				.arg (conditionText);
+
+		if (!iq.error ().text ().isEmpty ())
+			text += " " + tr ("Original error text: %1.")
+					.arg (iq.error ().text ());
+
+		QMessageBox::warning (0,
+				"Search error",
+				text);
 	}
 }
 }

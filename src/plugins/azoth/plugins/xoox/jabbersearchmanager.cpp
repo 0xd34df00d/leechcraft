@@ -46,13 +46,15 @@ namespace Xoox
 
 	bool JabberSearchManager::handleStanza (const QDomElement& elem)
 	{
-		if (elem.tagName () != "iq" ||
-				elem.attribute ("type") != "result")
+		if (elem.tagName () != "iq")
 			return false;
 
 		const QString& id = elem.attribute ("id");
 		if (FieldRequests_.remove (id))
 		{
+			if (CheckError (elem))
+				return true;
+
 			const QDomElement& formElem = elem.firstChildElement ("query");
 			if (formElem.isNull ())
 				return false;
@@ -63,6 +65,9 @@ namespace Xoox
 		}
 		else if (SearchRequests_.remove (id))
 		{
+			if (CheckError (elem))
+				return true;
+
 			const QDomElement& items = elem.firstChildElement ("query");
 			if (items.isNull ())
 				return false;
@@ -127,6 +132,19 @@ namespace Xoox
 		query.setAttribute ("xmlns", NsJabberSearch);
 		query.appendChild (XooxUtil::Form2XmppElem (form));
 		SubmitSearchRequest (server, query);
+	}
+
+	bool JabberSearchManager::CheckError (const QDomElement& elem)
+	{
+		if (elem.firstChildElement ("error").isNull ())
+			return false;
+
+		QXmppIq iq;
+		iq.parse (elem);
+
+		emit gotServerError (iq);
+
+		return true;
 	}
 
 	QList<JabberSearchManager::Item> JabberSearchManager::FromForm (const QDomElement& xForm)

@@ -52,11 +52,13 @@ namespace Xoox
 		void SubmitSearchRequest (const QString& server, const QList<QXmppElement>&);
 		void SubmitSearchRequest (const QString& server, const QXmppDataForm&);
 	private:
+		bool CheckError (const QDomElement&);
 		QList<Item> FromForm (const QDomElement&);
 		QList<Item> FromStandardItems (const QDomElement&);
 	signals:
 		void gotSearchFields (const QString& server, const QXmppElement& containing);
 		void gotItems (const QString& server, const QList<JabberSearchManager::Item>& items);
+		void gotServerError (const QXmppIq& iq);
 	};
 }
 }
