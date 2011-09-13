@@ -20,6 +20,7 @@
 #define PLUGINS_AZOTH_PLUGINS_XOOX_JABBERSEARCHSESSION_H
 #include <QObject>
 #include <interfaces/ihavesearch.h>
+#include "jabbersearchmanager.h"
 
 class QStandardItemModel;
 
@@ -39,11 +40,18 @@ namespace Xoox
 
 		GlooxAccount *Acc_;
 		QStandardItemModel *Model_;
+
+		JabberSearchManager *SM_;
+
+		QString CurrentServer_;
 	public:
 		JabberSearchSession (GlooxAccount *acc);
 
 		void RestartSearch (QString);
 		QAbstractItemModel* GetRepresentationModel () const;
+	private slots:
+		void handleGotItems (const QString&, const QList<JabberSearchManager::Item>&);
+		void handleGotSearchFields (const QString&, const QXmppElement&);
 	};
 }
 }
