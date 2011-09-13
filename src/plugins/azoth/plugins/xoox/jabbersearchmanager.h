@@ -36,11 +36,7 @@ namespace Xoox
 	public:
 		struct Item
 		{
-			QString JID_;
-			QString First_;
-			QString Last_;
-			QString Nick_;
-			QString Email_;
+			QMap<QString, QString> Dictionary_;
 
 			Item ();
 			Item (const QString& jid,

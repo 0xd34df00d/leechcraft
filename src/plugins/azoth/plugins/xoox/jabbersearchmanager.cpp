@@ -36,12 +36,12 @@ namespace Xoox
 	JabberSearchManager::Item::Item (const QString& jid,
 			const QString& first, const QString& last,
 			const QString& nick, const QString& email)
-	: JID_ (jid)
-	, First_ (first)
-	, Last_ (last)
-	, Nick_ (nick)
-	, Email_ (email)
 	{
+		Dictionary_ ["JID"] = jid;
+		Dictionary_ [tr ("First name")] = first;
+		Dictionary_ [tr ("Last name")] = last;
+		Dictionary_ [tr ("Nick")] = nick;
+		Dictionary_ [tr ("E-Mail")] = email;
 	}
 
 	bool JabberSearchManager::handleStanza (const QDomElement& elem)
