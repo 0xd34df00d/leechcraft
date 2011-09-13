@@ -126,7 +126,7 @@ namespace Xoox
 		query.setTagName ("query");
 		query.setAttribute ("xmlns", NsJabberSearch);
 		query.appendChild (XooxUtil::Form2XmppElem (form));
-		SubmitSearchRequest (server, form);
+		SubmitSearchRequest (server, query);
 	}
 
 	QList<JabberSearchManager::Item> JabberSearchManager::FromForm (const QDomElement& xForm)
