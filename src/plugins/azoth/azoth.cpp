@@ -39,6 +39,7 @@
 #include "servicediscoverywidget.h"
 #include "accountslistwidget.h"
 #include "consolewidget.h"
+#include "searchwidget.h"
 
 namespace LeechCraft
 {
@@ -50,6 +51,7 @@ namespace Azoth
 
 		ChatTab::SetParentMultiTabs (this);
 		ServiceDiscoveryWidget::SetParentMultiTabs (this);
+		SearchWidget::SetParentMultiTabs (this);
 
 		Core::Instance ().SetProxy (proxy);
 
@@ -148,6 +150,15 @@ namespace Azoth
 			50,
 			TFOpenableByRequest
 		};
+		TabClassInfo searchTab =
+		{
+			"Search",
+			tr ("Search"),
+			tr ("A search tab allows to search within IM services"),
+			QIcon (),
+			55,
+			TFOpenableByRequest
+		};
 		TabClassInfo sdTab =
 		{
 			"SD",
@@ -171,6 +182,7 @@ namespace Azoth
 
 		TabClasses_ << chatTab;
 		TabClasses_ << mucTab;
+		TabClasses_ << searchTab;
 		TabClasses_ << sdTab;
 		TabClasses_ << consoleTab;
 	}
@@ -285,6 +297,15 @@ namespace Azoth
 					this,
 					SIGNAL (removeTab (QWidget*)));
 			emit addNewTab (tr ("Service discovery"), sd);
+		}
+		else if (tabClass == "Search")
+		{
+			SearchWidget *search = new SearchWidget;
+			connect (search,
+					SIGNAL (removeTab (QWidget*)),
+					this,
+					SIGNAL (removeTab (QWidget*)));
+			emit addNewTab (tr ("Search"), search);
 		}
 	}
 

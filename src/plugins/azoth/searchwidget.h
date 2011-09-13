@@ -19,6 +19,7 @@
 #ifndef PLUGINS_AZOTH_SEARCHWIDGET_H
 #define PLUGINS_AZOTH_SEARCHWIDGET_H
 #include <QWidget>
+#include <interfaces/ihavetabs.h>
 #include "ui_searchwidget.h"
 
 namespace LeechCraft
@@ -26,12 +27,25 @@ namespace LeechCraft
 namespace Azoth
 {
 	class SearchWidget : public QWidget
+					   , public ITabWidget
 	{
 		Q_OBJECT
+		Q_INTERFACES (ITabWidget);
+
+		static QObject *S_ParentMultiTabs_;
 
 		Ui::SearchWidget Ui_;
 	public:
+		static void SetParentMultiTabs (QObject*);
+
 		SearchWidget (QWidget* = 0);
+
+		TabClassInfo GetTabClassInfo () const;
+		QObject* ParentMultiTabs ();
+		void Remove ();
+		QToolBar* GetToolBar () const;
+	signals:
+		void removeTab (QWidget*);
 	};
 }
 }

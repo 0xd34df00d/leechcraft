@@ -22,10 +22,46 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+	QObject* SearchWidget::S_ParentMultiTabs_ = 0;
+
+	void SearchWidget::SetParentMultiTabs (QObject *parent)
+	{
+		S_ParentMultiTabs_ = parent;
+	}
+
 	SearchWidget::SearchWidget (QWidget *parent)
 	: QWidget (parent)
 	{
 		Ui_.setupUi (this);
+	}
+
+	TabClassInfo SearchWidget::GetTabClassInfo () const
+	{
+		TabClassInfo searchTab =
+		{
+			"Search",
+			tr ("Search"),
+			tr ("A search tab allows to search within IM services"),
+			QIcon (),
+			55,
+			TFOpenableByRequest
+		};
+		return searchTab;
+	}
+
+	QObject* SearchWidget::ParentMultiTabs ()
+	{
+		return S_ParentMultiTabs_;
+	}
+
+	void SearchWidget::Remove ()
+	{
+		emit removeTab (this);
+	}
+
+	QToolBar* SearchWidget::GetToolBar () const
+	{
+		return 0;
 	}
 }
 }
