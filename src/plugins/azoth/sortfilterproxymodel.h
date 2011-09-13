@@ -41,6 +41,7 @@ namespace Azoth
 		void showOfflineContacts (bool);
 	private slots:
 		void handleStatusOrderingChanged ();
+		void handleMUCDestroyed ();
 	protected:
 		bool filterAcceptsRow (int, const QModelIndex&) const;
 		bool lessThan (const QModelIndex&, const QModelIndex&) const;
