@@ -39,6 +39,7 @@
 #include "userlocation.h"
 #include "privacylistsconfigdialog.h"
 #include "mediacall.h"
+#include "jabbersearchsession.h"
 
 #ifdef ENABLE_CRYPT
 #include "pgpmanager.h"
@@ -354,6 +355,11 @@ namespace Xoox
 	QObject* GlooxAccount::CreateSDSession ()
 	{
 		return new SDSession (this);
+	}
+
+	QObject* GlooxAccount::CreateSearchSession ()
+	{
+		return new JabberSearchSession (this);
 	}
 
 	IHaveConsole::PacketFormat GlooxAccount::GetPacketFormat () const
