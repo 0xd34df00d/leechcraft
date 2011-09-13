@@ -17,6 +17,13 @@
  **********************************************************************/
 
 #include "searchwidget.h"
+#include <QTimer>
+#include <util/resourceloader.h>
+#include "interfaces/iaccount.h"
+#include "interfaces/ihavesearch.h"
+#include "interfaces/iextselfinfoaccount.h"
+#include "core.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -33,6 +40,42 @@ namespace Azoth
 	: QWidget (parent)
 	{
 		Ui_.setupUi (this);
+
+		connect (Ui_.Server_,
+				SIGNAL (returnPressed ()),
+				this,
+				SLOT (search ()));
+
+		Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
+		{
+			QObject *accObj = acc->GetObject ();
+			IHaveSearch *search = qobject_cast<IHaveSearch*> (accObj);
+			if (!search)
+				continue;
+
+			IExtSelfInfoAccount *self = qobject_cast<IExtSelfInfoAccount*> (accObj);
+			ICLEntry *selfEntry = self ?
+					qobject_cast<ICLEntry*> (self->GetSelfContact ()) :
+					0;
+			QIcon icon;
+			if (selfEntry)
+				icon = QPixmap::fromImage (selfEntry->GetAvatar ());
+			if (icon.isNull () && self)
+				icon = self->GetAccountIcon ();
+			if (icon.isNull ())
+			{
+				const QString& name = XmlSettingsManager::Instance ()
+						.property ("SystemIcons").toString () + "/default_avatar";
+				Util::ResourceLoader *rl = Core::Instance ()
+						.GetResourceLoader (Core::RLTSystemIconLoader);
+				icon = QIcon (rl->GetIconPath (name));
+			}
+
+			Ui_.AccountBox_->blockSignals (true);
+			Ui_.AccountBox_->addItem (icon, acc->GetAccountName (),
+					QVariant::fromValue<QObject*> (accObj));
+			Ui_.AccountBox_->blockSignals (false);
+		}
 	}
 
 	TabClassInfo SearchWidget::GetTabClassInfo () const
@@ -62,6 +105,44 @@ namespace Azoth
 	QToolBar* SearchWidget::GetToolBar () const
 	{
 		return 0;
+	}
+
+	IHaveSearch* SearchWidget::GetCurrentSearch () const
+	{
+		const int idx = Ui_.AccountBox_->currentIndex ();
+		QObject *accObj = Ui_.AccountBox_->itemData (idx).value<QObject*> ();
+		return qobject_cast<IHaveSearch*> (accObj);
+	}
+
+	void SearchWidget::search ()
+	{
+		IHaveSearch *search = GetCurrentSearch ();
+
+		QObject *sessObj = search->CreateSearchSession ();
+		ISearchSession *sess = qobject_cast<ISearchSession*> (sessObj);
+		CurrentSess_.reset (sess);
+
+		if (!sess)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< sessObj
+					<< "doesn't implement ISearchSession";
+			return;
+		}
+
+		sess->RestartSearch (Ui_.Server_->text ());
+
+		Ui_.ResultsTree_->setModel (sess->GetRepresentationModel ());
+	}
+
+	void SearchWidget::on_AccountBox__activated (int idx)
+	{
+		IHaveSearch *s = GetCurrentSearch ();
+		Ui_.Server_->setText (s->GetDefaultSearchServer ());
+
+		QTimer::singleShot (0,
+				this,
+				SLOT (search ()));
 	}
 }
 }

@@ -18,6 +18,7 @@
 
 #ifndef PLUGINS_AZOTH_SEARCHWIDGET_H
 #define PLUGINS_AZOTH_SEARCHWIDGET_H
+#include <boost/shared_ptr.hpp>
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
 #include "ui_searchwidget.h"
@@ -26,6 +27,9 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+	class IHaveSearch;
+	class ISearchSession;
+
 	class SearchWidget : public QWidget
 					   , public ITabWidget
 	{
@@ -35,6 +39,7 @@ namespace Azoth
 		static QObject *S_ParentMultiTabs_;
 
 		Ui::SearchWidget Ui_;
+		boost::shared_ptr<ISearchSession> CurrentSess_;
 	public:
 		static void SetParentMultiTabs (QObject*);
 
@@ -44,6 +49,11 @@ namespace Azoth
 		QObject* ParentMultiTabs ();
 		void Remove ();
 		QToolBar* GetToolBar () const;
+	private:
+		IHaveSearch* GetCurrentSearch () const;
+	private slots:
+		void search ();
+		void on_AccountBox__activated (int);
 	signals:
 		void removeTab (QWidget*);
 	};
