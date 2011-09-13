@@ -67,19 +67,11 @@ namespace Xoox
 			if (items.attribute ("xmlns") != NsJabberSearch)
 				return false;
 
-			QList<Item> result;
+			const QDomElement& xForm = items.firstChildElement ("x");
 
-			QDomElement item = items.firstChildElement ("item");
-			while (!item.isNull ())
-			{
-				result << Item (item.attribute ("jid"),
-						item.firstChildElement ("first").text (),
-						item.firstChildElement ("last").text (),
-						item.firstChildElement ("nick").text (),
-						item.firstChildElement ("email").text ());
-
-				item = item.nextSiblingElement ("item");
-			}
+			QList<Item> result = xForm.attribute ("xmlns") == "jabber:x:data" ?
+					FromForm (xForm) :
+					FromStandardItems (items);
 
 			emit gotItems (elem.attribute ("from"), result);
 
@@ -114,6 +106,85 @@ namespace Xoox
 		SearchRequests_ << iq.id ();
 
 		client ()->sendPacket (iq);
+	}
+
+	void JabberSearchManager::SubmitSearchRequest (const QString& server, const QList<QXmppElement>& fields)
+	{
+		QXmppElement query;
+		query.setTagName ("query");
+		query.setAttribute ("xmlns", NsJabberSearch);
+
+		Q_FOREACH (const QXmppElement& field, fields)
+			query.appendChild (field);
+
+		SubmitSearchRequest (server, query);
+	}
+
+	void JabberSearchManager::SubmitSearchRequest (const QString& server, const QXmppDataForm& form)
+	{
+		QXmppElement query;
+		query.setTagName ("query");
+		query.setAttribute ("xmlns", NsJabberSearch);
+		query.appendChild (XooxUtil::Form2XmppElem (form));
+		SubmitSearchRequest (server, form);
+	}
+
+	QList<JabberSearchManager::Item> JabberSearchManager::FromForm (const QDomElement& xForm)
+	{
+		QList<Item> result;
+
+		QMap<QString, QString> key2label;
+
+		const QDomElement& reported = xForm.firstChildElement ("reported");
+		QDomElement field = reported.firstChildElement ("field");
+		while (!field.isNull ())
+		{
+			key2label [field.attribute ("var")] = field.attribute ("label");
+			field = field.nextSiblingElement ("field");
+		}
+
+		QDomElement fItem = xForm.firstChildElement ("item");
+		while (!fItem.isNull ())
+		{
+			Item item;
+
+			field = fItem.firstChildElement ("field");
+			while (!field.isNull ())
+			{
+				const QString& label = key2label [field.attribute ("var")];
+				const QString& value = field.firstChildElement ("value").text ();
+
+				item.Dictionary_ [label] = value;
+
+				field = field.nextSiblingElement ("field");
+			}
+
+			if (!item.Dictionary_.isEmpty ())
+				result << item;
+
+			fItem = fItem.nextSiblingElement ("item");
+		}
+
+		return result;
+	}
+
+	QList<JabberSearchManager::Item> JabberSearchManager::FromStandardItems (const QDomElement& items)
+	{
+		QList<Item> result;
+
+		QDomElement item = items.firstChildElement ("item");
+		while (!item.isNull ())
+		{
+			result << Item (item.attribute ("jid"),
+					item.firstChildElement ("first").text (),
+					item.firstChildElement ("last").text (),
+					item.firstChildElement ("nick").text (),
+					item.firstChildElement ("email").text ());
+
+			item = item.nextSiblingElement ("item");
+		}
+
+		return result;
 	}
 }
 }
