@@ -306,6 +306,7 @@ namespace Azoth
 					this,
 					SIGNAL (removeTab (QWidget*)));
 			emit addNewTab (tr ("Search"), search);
+			emit raiseTab (search);
 		}
 	}
 
