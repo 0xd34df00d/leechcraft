@@ -191,7 +191,7 @@ namespace XooxUtil
 
 	bool RunFormDialog (QWidget *widget)
 	{
-		std::auto_ptr<QDialog> dialog (new QDialog ());
+		QDialog *dialog (new QDialog ());
 		dialog->setWindowTitle (widget->windowTitle ());
 		dialog->setLayout (new QVBoxLayout ());
 		dialog->layout ()->addWidget (widget);
@@ -199,15 +199,15 @@ namespace XooxUtil
 		dialog->layout ()->addWidget (box);
 		QObject::connect (box,
 				SIGNAL (accepted ()),
-				dialog.get (),
+				dialog,
 				SLOT (accept ()));
 		QObject::connect (box,
 				SIGNAL (rejected ()),
-				dialog.get (),
+				dialog,
 				SLOT (reject ()));
 
 		const bool result = dialog->exec () == QDialog::Accepted;
-		widget->setParent (0);
+		dialog->deleteLater ();
 		return result;
 	}
 }

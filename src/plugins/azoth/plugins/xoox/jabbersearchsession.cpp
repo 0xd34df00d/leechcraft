@@ -102,8 +102,8 @@ namespace Xoox
 		if (!xForm.isNull ())
 		{
 			FormBuilder fb;
-			std::auto_ptr<QWidget> w (fb.CreateForm (form));
-			if (!XooxUtil::RunFormDialog (w.get ()))
+			QWidget *w = fb.CreateForm (form);
+			if (!XooxUtil::RunFormDialog (w))
 				return;
 
 			QXmppDataForm form = fb.GetForm ();
@@ -114,8 +114,8 @@ namespace Xoox
 		else
 		{
 			LegacyFormBuilder fb;
-			std::auto_ptr<QWidget> w (fb.CreateForm (elem));
-			if (!XooxUtil::RunFormDialog (w.get ()))
+			QWidget *w = fb.CreateForm (elem);
+			if (!XooxUtil::RunFormDialog (w))
 				return;
 
 			SM_->SubmitSearchRequest (server, fb.GetFilledChildren ());
@@ -125,7 +125,7 @@ namespace Xoox
 				SIGNAL (gotItems (QString, QList<JabberSearchManager::Item>)),
 				this,
 				SLOT (handleGotItems (QString, QList<JabberSearchManager::Item>)),
-				Qt::QueuedConnection);
+				Qt::UniqueConnection);
 	}
 }
 }
