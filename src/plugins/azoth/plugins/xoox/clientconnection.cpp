@@ -67,6 +67,7 @@
 #include "selfcontact.h"
 #include "adhoccommandserver.h"
 #include "lastactivitymanager.h"
+#include "jabbersearchmanager.h"
 
 #ifdef ENABLE_CRYPT
 #include "pgpmanager.h"
@@ -99,6 +100,7 @@ namespace Xoox
 	, AdHocCommandManager_ (new AdHocCommandManager (this))
 	, AnnotationsManager_ (0)
 	, LastActivityManager_ (new LastActivityManager)
+	, JabberSearchManager_ (new JabberSearchManager)
 	, RIEXManager_ (new RIEXManager)
 #ifdef ENABLE_CRYPT
 	, PGPManager_ (0)
@@ -161,6 +163,7 @@ namespace Xoox
 		Client_->addExtension (PrivacyListsManager_);
 		Client_->addExtension (CallManager_);
 		Client_->addExtension (LastActivityManager_);
+		Client_->addExtension (JabberSearchManager_);
 		Client_->addExtension (RIEXManager_);
 		Client_->addExtension (AdHocCommandManager_);
 		Client_->addExtension (new AdHocCommandServer (this));
@@ -438,6 +441,11 @@ namespace Xoox
 	AdHocCommandManager* ClientConnection::GetAdHocCommandManager () const
 	{
 		return AdHocCommandManager_;
+	}
+
+	JabberSearchManager* ClientConnection::GetJabberSearchManager () const
+	{
+		return JabberSearchManager_;
 	}
 
 	RIEXManager* ClientConnection::GetRIEXManager () const
