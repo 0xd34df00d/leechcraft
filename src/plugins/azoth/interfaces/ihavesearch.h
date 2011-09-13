@@ -44,6 +44,8 @@ namespace Azoth
 		virtual ~IHaveSearch () {}
 
 		virtual QObject* CreateSearchSession () = 0;
+
+		virtual QString GetDefaultSearchServer () const = 0;
 	};
 }
 }

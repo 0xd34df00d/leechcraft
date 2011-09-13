@@ -86,6 +86,7 @@ namespace Xoox
 		Q_INTERFACES (LeechCraft::Azoth::IAccount
 				LeechCraft::Azoth::IExtSelfInfoAccount
 				LeechCraft::Azoth::IHaveServiceDiscovery
+				LeechCraft::Azoth::IHaveSearch
 				LeechCraft::Azoth::IHaveConsole
 				LeechCraft::Azoth::ISupportTune
 				LeechCraft::Azoth::ISupportMood
@@ -155,6 +156,7 @@ namespace Xoox
 
 		// IHaveSearch
 		QObject* CreateSearchSession ();
+		QString GetDefaultSearchServer () const;
 
 		// IHaveConsole
 		PacketFormat GetPacketFormat () const;

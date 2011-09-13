@@ -362,6 +362,17 @@ namespace Xoox
 		return new JabberSearchSession (this);
 	}
 
+	QString GlooxAccount::GetDefaultSearchServer () const
+	{
+		if (!Host_.isEmpty ())
+			return Host_;
+
+		const QString& second = JID_
+				.split ('@', QString::SkipEmptyParts).value (1);
+		const int slIdx = second.indexOf ('/');
+		return slIdx >= 0 ? second.left (slIdx) : second;
+	}
+
 	IHaveConsole::PacketFormat GlooxAccount::GetPacketFormat () const
 	{
 		return PFXML;
