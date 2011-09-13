@@ -49,6 +49,7 @@ namespace Azoth
 		Translator_.reset (Util::InstallTranslator ("azoth"));
 
 		ChatTab::SetParentMultiTabs (this);
+		ServiceDiscoveryWidget::SetParentMultiTabs (this);
 
 		Core::Instance ().SetProxy (proxy);
 
