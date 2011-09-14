@@ -109,6 +109,7 @@ OPTION (ENABLE_VGRABBER "Build vGrabber, the vkontakte.ru music/video getter" ON
 OPTION (ENABLE_ADVANCEDNOTIFICATIONS "Build Advanced Notifications module for more customizable notifications" OFF)
 OPTION (ENABLE_AZOTH "Build Azoth, the IM client" OFF)
 OPTION (ENABLE_BLACKDASH "Build BlackDash, the dashboard plugin for LeechCraft" OFF)
+OPTION (ENABLE_CHOROID "Build Choroid, image viewer" OFF)
 OPTION (ENABLE_EISKALTDCPP "Build EiskaltDC++ client" OFF)
 OPTION (ENABLE_GLANCE "Quick overview of tabs" OFF)
 OPTION (ENABLE_GMAILNOTIFIER "Build GMail Notifier which notifies about new mail in your GMail inbox" OFF)
@@ -174,6 +175,10 @@ ENDIF (ENABLE_TORRENT)
 IF (ENABLE_AGGREGATOR)
 	ADD_SUBDIRECTORY (plugins/aggregator)
 ENDIF (ENABLE_AGGREGATOR)
+
+IF (ENABLE_CHOROID)
+	ADD_SUBDIRECTORY (plugins/choroid)
+ENDIF (ENABLE_CHOROID)
 
 IF (ENABLE_POSHUKU)
 	ADD_SUBDIRECTORY (plugins/poshuku)
