@@ -49,12 +49,13 @@ namespace Azoth
 	, SmilesTooltip_ (new QWidget (this, Qt::Tool))
 	{
 		SmilesTooltip_->setWindowTitle (tr ("Emoticons"));
-		
+
 		setLayout (new QVBoxLayout ());
+		layout ()->setContentsMargins (0, 0, 0, 0);
 		QToolBar *toolbar = new QToolBar ();
 		toolbar->setIconSize (QSize (16, 16));
 		layout ()->addWidget (toolbar);
-		
+
 		FormatBold_ = toolbar->addAction (tr ("Bold"),
 				this,
 				SLOT (handleBold ()));
@@ -72,27 +73,27 @@ namespace Azoth
 				SLOT (handleUnderline ()));
 		FormatUnderline_->setCheckable (true);
 		FormatUnderline_->setProperty ("ActionIcon", "format_text_underline");
-		
+
 		FormatStrikeThrough_ = toolbar->addAction (tr ("Strike through"),
 				this,
 				SLOT (handleStrikeThrough ()));
 		FormatStrikeThrough_->setCheckable (true);
 		FormatStrikeThrough_->setProperty ("ActionIcon", "format_text_strikethrough");
-		
+
 		toolbar->addSeparator ();
-		
+
 		FormatColor_ = toolbar->addAction (tr ("Text color"),
 				this,
 				SLOT (handleTextColor ()));
 		FormatColor_->setProperty ("ActionIcon", "format_text_color");
-		
+
 		FormatFont_ = toolbar->addAction (tr ("Font"),
 				this,
 				SLOT (handleFont ()));
 		FormatFont_->setProperty ("ActionIcon", "format_text_font");
-		
+
 		toolbar->addSeparator ();
-		
+
 		FormatAlignLeft_ = toolbar->addAction (tr ("Align left"),
 				this,
 				SLOT (handleParaAlignment ()));
@@ -100,34 +101,34 @@ namespace Azoth
 		FormatAlignLeft_->setProperty ("Alignment", static_cast<int> (Qt::AlignLeft));
 		FormatAlignLeft_->setCheckable (true);
 		FormatAlignLeft_->setChecked (true);
-		
+
 		FormatAlignCenter_ = toolbar->addAction (tr ("Align center"),
 				this,
 				SLOT (handleParaAlignment ()));
 		FormatAlignCenter_->setProperty ("ActionIcon", "format_text_aligncenter");
 		FormatAlignCenter_->setProperty ("Alignment", static_cast<int> (Qt::AlignCenter));
 		FormatAlignCenter_->setCheckable (true);
-		
+
 		FormatAlignRight_ = toolbar->addAction (tr ("Align right"),
 				this,
 				SLOT (handleParaAlignment ()));
 		FormatAlignRight_->setProperty ("ActionIcon", "format_text_alignright");
 		FormatAlignRight_->setProperty ("Alignment", static_cast<int> (Qt::AlignRight));
 		FormatAlignRight_->setCheckable (true);
-		
+
 		FormatAlignJustify_ = toolbar->addAction (tr ("Align justify"),
 				this,
 				SLOT (handleParaAlignment ()));
 		FormatAlignJustify_->setProperty ("ActionIcon", "format_text_alignjustify");
 		FormatAlignJustify_->setProperty ("Alignment", static_cast<int> (Qt::AlignJustify));
 		FormatAlignJustify_->setCheckable (true);
-		
+
 		QActionGroup *alignGroup = new QActionGroup (this);
 		alignGroup->addAction (FormatAlignLeft_);
 		alignGroup->addAction (FormatAlignCenter_);
 		alignGroup->addAction (FormatAlignRight_);
 		alignGroup->addAction (FormatAlignJustify_);
-		
+
 		connect (Edit_,
 				SIGNAL (currentCharFormatChanged (const QTextCharFormat&)),
 				this,
@@ -136,14 +137,14 @@ namespace Azoth
 				SIGNAL (textChanged ()),
 				this,
 				SLOT (checkCleared ()));
-		
+
 		toolbar->addSeparator ();
-		
+
 		AddEmoticon_ = toolbar->addAction (tr ("Emoticons..."),
 				this,
 				SLOT (handleAddEmoticon ()));
 		AddEmoticon_->setProperty ("ActionIcon", "emoticons");
-		
+
 		XmlSettingsManager::Instance ().RegisterObject ("SmileIcons",
 				this, "handleEmoPackChanged");
 		handleEmoPackChanged ();
@@ -153,7 +154,7 @@ namespace Azoth
 	{
 		return HasCustomFormatting_;
 	}
-	
+
 	void MsgFormatterWidget::Clear ()
 	{
 		HasCustomFormatting_ = false;
@@ -181,9 +182,9 @@ namespace Azoth
 			return QString ();
 		else
 			body.insertBefore (style.cloneNode (true), elem);
-		
+
 		body.setTagName ("div");
-		
+
 		QDomDocument finalDoc;
 		finalDoc.appendChild (finalDoc.importNode (body, true));
 
@@ -192,7 +193,7 @@ namespace Azoth
 		result.remove ('\n');
 		return result;
 	}
-	
+
 	void MsgFormatterWidget::CharFormatActor (boost::function<void (QTextCharFormat*)> format)
 	{
 		QTextCursor cursor = Edit_->textCursor ();
@@ -208,19 +209,19 @@ namespace Azoth
 			format (&fmt);
 			Edit_->setCurrentCharFormat (fmt);
 		}
-		
+
 		HasCustomFormatting_ = true;
 	}
-	
+
 	void MsgFormatterWidget::BlockFormatActor (boost::function<void (QTextBlockFormat*)> format)
 	{
 		QTextBlockFormat fmt = Edit_->textCursor ().blockFormat ();
 		format (&fmt);
 		Edit_->textCursor ().setBlockFormat (fmt);
-		
+
 		HasCustomFormatting_ = true;
 	}
-	
+
 	QTextCharFormat MsgFormatterWidget::GetActualCharFormat () const
 	{
 		const QTextCursor& cursor = Edit_->textCursor ();
@@ -228,35 +229,35 @@ namespace Azoth
 				cursor.charFormat () :
 				Edit_->currentCharFormat ();
 	}
-	
+
 	void MsgFormatterWidget::handleBold ()
 	{
 		CharFormatActor (boost::bind (&QTextCharFormat::setFontWeight,
 						_1,
 						FormatBold_->isChecked () ? QFont::Bold : QFont::Normal));
 	}
-	
+
 	void MsgFormatterWidget::handleItalic ()
 	{
 		CharFormatActor (boost::bind (&QTextCharFormat::setFontItalic,
 						_1,
 						FormatItalic_->isChecked ()));
 	}
-	
+
 	void MsgFormatterWidget::handleUnderline ()
 	{
 		CharFormatActor (boost::bind (&QTextCharFormat::setFontUnderline,
 						_1,
 						FormatUnderline_->isChecked ()));
 	}
-	
+
 	void MsgFormatterWidget::handleStrikeThrough ()
 	{
 		CharFormatActor (boost::bind (&QTextCharFormat::setFontStrikeOut,
 						_1,
 						FormatStrikeThrough_->isChecked ()));
 	}
-	
+
 	void MsgFormatterWidget::handleTextColor ()
 	{
 		QBrush brush = GetActualCharFormat ().foreground ();
@@ -268,7 +269,7 @@ namespace Azoth
 						_1,
 						QBrush (color)));
 	}
-	
+
 	void MsgFormatterWidget::handleFont ()
 	{
 		QFont font = GetActualCharFormat ().font ();
@@ -276,12 +277,12 @@ namespace Azoth
 		font = QFontDialog::getFont (&ok, font, Edit_);
 		if (!ok)
 			return;
-		
+
 		CharFormatActor (boost::bind (&QTextCharFormat::setFont,
 						_1,
 						font));
 	}
-	
+
 	void MsgFormatterWidget::handleParaAlignment ()
 	{
 		Qt::Alignment alignment = static_cast<Qt::Alignment> (sender ()->
@@ -290,12 +291,12 @@ namespace Azoth
 						_1,
 						alignment));
 	}
-	
+
 	void MsgFormatterWidget::handleAddEmoticon ()
 	{
 		if (!SmilesTooltip_)
 			return;
-		
+
 		SmilesTooltip_->move (QCursor::pos ());
 		SmilesTooltip_->show ();
 
@@ -303,7 +304,7 @@ namespace Azoth
 		const QPoint& newPos = QCursor::pos () - QPoint (0, size.height ());
 		SmilesTooltip_->move (newPos);
 	}
-	
+
 	void MsgFormatterWidget::handleEmoPackChanged ()
 	{
 		const QString& emoPack = XmlSettingsManager::Instance ()
@@ -323,7 +324,7 @@ namespace Azoth
 				delete lay->takeAt (0);
 			delete lay;
 		}
-		
+
 		QGridLayout *layout = new QGridLayout (SmilesTooltip_);
 		layout->setSpacing (0);
 		layout->setContentsMargins (1, 1, 1, 1);
@@ -336,7 +337,7 @@ namespace Azoth
 			QAction *action = new QAction (icon, *i, this);
 			action->setToolTip (*i);
 			action->setProperty ("Text", *i);
-			
+
 			connect (action,
 					SIGNAL (triggered ()),
 					this,
@@ -344,29 +345,29 @@ namespace Azoth
 
 			QToolButton *button = new QToolButton ();
 			button->setDefaultAction (action);
-			
+
 			layout->addWidget (button, pos / numRows, pos % numRows);
 			++pos;
 		}
-		
+
 		SmilesTooltip_->setLayout (layout);
 	}
-	
+
 	void MsgFormatterWidget::insertEmoticon ()
 	{
 		const QString& text = sender ()->property ("Text").toString ();
 		Edit_->textCursor ().insertText (text + " ");
-		
+
 		if (SmilesTooltip_)
 			SmilesTooltip_->hide ();
 	}
-	
+
 	void MsgFormatterWidget::checkCleared ()
 	{
 		if (Edit_->toPlainText ().simplified ().isEmpty ())
 			updateState (Edit_->currentCharFormat ());
 	}
-	
+
 	void MsgFormatterWidget::updateState (const QTextCharFormat& fmt)
 	{
 		FormatBold_->setChecked (fmt.fontWeight () != QFont::Normal);
