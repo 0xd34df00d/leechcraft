@@ -17,13 +17,13 @@
  **********************************************************************/
 
 #include "syncdeltagenerator.h"
-#include "feed.h"
+#include "core.h"
 
 namespace LeechCraft
 {
 namespace Aggregator
 {
-	Sync::Payloads_t SyncDeltaGenerator::GetFeedAdded (const Feed& feed)
+	Sync::Payloads_t SyncDeltaGenerator::GetFeedAdded (Feed_ptr feedPtr)
 	{
 		Sync::Payloads_t result;
 		
@@ -31,17 +31,16 @@ namespace Aggregator
 		{
 			QDataStream ostr (&fp.Data_, QIODevice::WriteOnly);
 			ostr << static_cast<quint16> (PTFeedAdded);
-			ostr << feed.URL_;
+			Feed feed (*feedPtr);
+			feed.FeedID_ = FixFeedID (feed.FeedID_);
+			ostr << feed;
 		}
 		result << fp;
-		
-		Q_FOREACH (const Channel_ptr& c, feed.Channels_)
-			result += GetChanAdded (c);
 
 		return result;
 	}
 
-	Sync::Payloads_t SyncDeltaGenerator::GetChanAdded (Channel_ptr channel)
+	Sync::Payloads_t SyncDeltaGenerator::GetChanAdded (Channel_ptr channelPtr)
 	{
 		Sync::Payloads_t result;
 
@@ -50,6 +49,9 @@ namespace Aggregator
 		{
 			QDataStream ostr (&item.Data_, QIODevice::WriteOnly);
 			ostr << static_cast<quint16> (PTChanAdded);
+			Channel channel (*channelPtr);
+			channel.ChannelID_ = FixChanID (channel.ChannelID_);
+			channel.FeedID_ = FixFeedID (channel.FeedID_);
 			ostr << channel;
 		}
 		
@@ -58,7 +60,7 @@ namespace Aggregator
 		return result;
 	}
 
-	Sync::Payloads_t SyncDeltaGenerator::GetItemAdded (Item_ptr srcItem)
+	Sync::Payloads_t SyncDeltaGenerator::GetItemAdded (Item_ptr srcItemPtr)
 	{
 		Sync::Payloads_t result;
 		
@@ -67,6 +69,9 @@ namespace Aggregator
 		{
 			QDataStream ostr (&item.Data_, QIODevice::WriteOnly);
 			ostr << static_cast<quint16> (PTItemAdded);
+			Item srcItem (*srcItemPtr);
+			srcItem.ItemID_ = FixItemID (srcItem.ItemID_);
+			srcItem.ChannelID_ = FixChanID (srcItem.ChannelID_);
 			ostr << srcItem;
 		}
 
@@ -81,8 +86,55 @@ namespace Aggregator
 		
 		Sync::Payload item;
 		
+		
+		return result;
+	}
+	
+	void SyncDeltaGenerator::ParseDelta (const Sync::Payload& delta)
+	{
+		QDataStream istr (delta.Data_);
+		quint16 action = 0;
+		istr >> action;
+		
+		switch (action)
 		{
+		case PTFeedAdded:
+		{
+			Feed_ptr feed (new Feed);
+			istr >> *feed;
+			if (!Remote2LocalFeeds_.contains (feed->FeedID_))
+			{
+				IDType_t newID = Core::Instance ().GetStorageBackend ()->GetHighestID (PTFeed);
+				Remote2LocalFeeds_ [feed->FeedID_] = newID;
+			}
+			feed->FeedID_ = Remote2LocalFeeds_ [feed->FeedID_];
+
+			feeds_container_t feeds;
+			feeds.push_back (feed);
+			Core::Instance ().AddFeeds (feeds, QString ());
+			break;
 		}
+		default:
+			qWarning () << Q_FUNC_INFO
+					<< "unknown action"
+					<< action;
+			return;
+		}
+	}
+	
+	IDType_t SyncDeltaGenerator::FixFeedID (IDType_t id)
+	{
+		return Remote2LocalFeeds_.key (id, id);
+	}
+	
+	IDType_t SyncDeltaGenerator::FixChanID (IDType_t id)
+	{
+		return Remote2LocalChannels_.key (id, id);
+	}
+	
+	IDType_t SyncDeltaGenerator::FixItemID (IDType_t id)
+	{
+		return Remote2LocalItems_.key (id, id);
 	}
 }
 }

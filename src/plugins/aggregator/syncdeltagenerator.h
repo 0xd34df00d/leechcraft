@@ -18,8 +18,10 @@
 
 #ifndef PLUGINS_AGGREGATOR_SYNCDELTAGENERATOR_H
 #define PLUGINS_AGGREGATOR_SYNCDELTAGENERATOR_H
+#include <QMap>
 #include <interfaces/isyncable.h>
 #include <util/syncops.h>
+#include "feed.h"
 #include "channel.h"
 #include "item.h"
 
@@ -40,8 +42,13 @@ namespace Aggregator
 			PTChannelTagsChanged,
 			PTItemTagsChanged
 		};
+		
+		typedef QMap<IDType_t, IDType_t> IDMap_t;
+		IDMap_t Remote2LocalFeeds_;
+		IDMap_t Remote2LocalChannels_;
+		IDMap_t Remote2LocalItems_;
 	public:
-		Sync::Payloads_t GetFeedAdded (const Feed&);
+		Sync::Payloads_t GetFeedAdded (Feed_ptr);
 		Sync::Payloads_t GetChanAdded (Channel_ptr);
 		Sync::Payloads_t GetItemAdded (Item_ptr);
 		Sync::Payloads_t GetItemRead (Item_ptr, bool);
@@ -49,6 +56,10 @@ namespace Aggregator
 		Sync::Payloads_t GetItemTagsChanged (Item_ptr, const QStringList&);
 		
 		void ParseDelta (const Sync::Payload&);
+	private:
+		IDType_t FixFeedID (IDType_t);
+		IDType_t FixChanID (IDType_t);
+		IDType_t FixItemID (IDType_t);
 	};
 }
 }
