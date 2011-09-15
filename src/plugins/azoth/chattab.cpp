@@ -665,6 +665,14 @@ namespace Azoth
 
 		Ui_.VariantBox_->setVisible (variants.size () > 1);
 	}
+	
+	void ChatTab::handleAvatarChanged (const QImage& avatar)
+	{
+		Ui_.AvatarLabel_->setPixmap (QPixmap::fromImage (avatar));
+		Ui_.AvatarLabel_->setVisible (!avatar.isNull ());
+		
+		UpdateTextHeight 	();
+	}
 
 	void ChatTab::handleStatusChanged (const EntryStatus& status,
 			const QString& variant)
@@ -961,9 +969,14 @@ namespace Azoth
 				SIGNAL (availableVariantsChanged (const QStringList&)),
 				this,
 				SLOT (handleVariantsChanged (QStringList)));
+		connect (GetEntry<QObject> (),
+				SIGNAL (avatarChanged (const QImage&)),
+				this,
+				SLOT (handleAvatarChanged (const QImage&)));
 
 		ICLEntry *e = GetEntry<ICLEntry> ();
 		handleVariantsChanged (e->Variants ());
+		handleAvatarChanged (e->GetAvatar ());
 		Ui_.EntryInfo_->setText (e->GetEntryName ());
 
 		const QString& accName =
@@ -1467,6 +1480,11 @@ namespace Azoth
 		const int resHeight = std::min (height () / 3, std::max (docHeight, fontHeight));
 		Ui_.MsgEdit_->setMinimumHeight (resHeight);
 		Ui_.MsgEdit_->setMaximumHeight (resHeight);
+		
+		const QPixmap *px = Ui_.AvatarLabel_->pixmap ();
+		if (px && px->width () > 0)
+			Ui_.AvatarLabel_->setMaximumSize (resHeight,
+					resHeight * px->height () / px->width ());
 	}
 
 	void ChatTab::SetChatPartState (ChatPartState state)
