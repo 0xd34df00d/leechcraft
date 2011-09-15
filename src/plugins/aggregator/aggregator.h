@@ -47,16 +47,16 @@ namespace Aggregator
 	struct Aggregator_Impl;
 
 	class Aggregator : public QWidget
-						, public IInfo
-						, public IHaveTabs
-						, public ITabWidget
-						, public IHaveSettings
-						, public IJobHolder
-						, public IEntityHandler
-						, public IHaveShortcuts
-						, public IActionsExporter
-						, public IStartupWizard
-						, public IPluginReady
+					 , public IInfo
+					 , public IHaveTabs
+					 , public ITabWidget
+					 , public IHaveSettings
+					 , public IJobHolder
+					 , public IEntityHandler
+					 , public IHaveShortcuts
+					 , public IActionsExporter
+					 , public IStartupWizard
+					 , public IPluginReady
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo
