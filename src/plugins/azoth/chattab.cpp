@@ -1165,7 +1165,7 @@ namespace Azoth
 				SLOT (clearAvailableNick ()));
 		UpdateTextHeight ();
 
-		const int pos = Ui_.MainLayout_->indexOf (Ui_.MsgEdit_);
+		const int pos = Ui_.MainLayout_->indexOf (Ui_.View_) + 1;
 
 		MsgFormatter_ = new MsgFormatterWidget (Ui_.MsgEdit_);
 		Ui_.MainLayout_->insertWidget (pos, MsgFormatter_);
