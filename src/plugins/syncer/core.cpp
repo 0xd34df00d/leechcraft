@@ -143,9 +143,9 @@ namespace Syncer
 
 	void Core::handleDeltasRequired (Sync::Deltas_t *deltas, const QByteArray& fullChain)
 	{
-		QList<QByteArray> parts = fullChain.split ('$');
-		QByteArray pluginId = parts.at (0);
-		QByteArray chain = parts.at (1);
+		const QList<QByteArray>& parts = fullChain.split ('$');
+		const QByteArray& pluginId = parts.at (0);
+		const QByteArray& chain = parts.at (1);
 
 		if (!ID2Object_.contains (pluginId))
 		{
