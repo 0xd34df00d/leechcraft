@@ -237,7 +237,8 @@ namespace Syncer
 
 		if (sent + received)
 		{
-			QString text = tr ("Successfully synchronized plugin %1");
+			QString text = tr ("Successfully synchronized plugin %1")
+					.arg (GetNameForChain (chain));
 			text += ": ";
 			text += tr ("%n item(s) received", 0, received);
 			text += ", ";
