@@ -21,31 +21,28 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Syncer
+{
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		namespace Syncer
-		{
-			XmlSettingsManager::XmlSettingsManager ()
-			{
-				Util::BaseSettingsManager::Init ();
-			}
-
-			XmlSettingsManager& XmlSettingsManager::Instance ()
-			{
-				static XmlSettingsManager xsm;
-				return xsm;
-			}
-
-			QSettings* XmlSettingsManager::BeginSettings () const
-			{
-				QSettings *settings = new QSettings (QCoreApplication::organizationName (),
-						QCoreApplication::applicationName () + "_Syncer");
-				return settings;
-			}
-
-			void XmlSettingsManager::EndSettings (QSettings*) const
-			{
-			}
-		}
+		Util::BaseSettingsManager::Init ();
 	}
+
+	XmlSettingsManager& XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager xsm;
+		return xsm;
+	}
+
+	QSettings* XmlSettingsManager::BeginSettings () const
+	{
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Syncer");
+		return settings;
+	}
+
+	void XmlSettingsManager::EndSettings (QSettings*) const
+	{
+	}
+}
 }

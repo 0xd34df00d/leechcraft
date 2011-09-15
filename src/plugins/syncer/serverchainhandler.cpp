@@ -26,239 +26,236 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Syncer
+{
+	ServerChainHandler::ServerChainHandler (const QByteArray& chain, QObject *parent)
+	: QObject (parent)
+	, ServerConnection_ (new ServerConnection (chain, this))
+	, Chain_ (chain)
+	, NumLastSent_ (0)
+	, NumLastReceived_ (0)
 	{
-		namespace Syncer
+		Idle_ = new QState ();
+		ConnectionError_ = new QFinalState ();
+		LoginPending_ = new QState ();
+		LoginError_ = new QFinalState ();
+		Running_ = new QState ();
+		ReqMaxDeltaPending_ = new QState ();
+		GetDeltasPending_ = new QState ();
+		ProcessDeltas_ = new QState ();
+		PutDeltasPending_ = new QState ();
+		Finish_ = new QFinalState ();
+
+		Idle_->addTransition (this,
+				SIGNAL (initiated ()), LoginPending_);
+		connect (LoginPending_,
+				SIGNAL (entered ()),
+				ServerConnection_,
+				SLOT (performLogin ()));
+		LoginPending_->addTransition (this,
+				SIGNAL (fail ()), LoginError_);
+		LoginPending_->addTransition (this,
+				SIGNAL (success ()), Running_);
+		Running_->addTransition (ReqMaxDeltaPending_);
+		connect (ReqMaxDeltaPending_,
+				SIGNAL (entered ()),
+				ServerConnection_,
+				SLOT (reqMaxDelta ()));
+		ReqMaxDeltaPending_->addTransition (this,
+				SIGNAL (fail ()), ConnectionError_);
+		ReqMaxDeltaPending_->addTransition (this,
+				SIGNAL (hasNewDeltas ()), GetDeltasPending_);
+		ReqMaxDeltaPending_->addTransition (this,
+				SIGNAL (noNewDeltas ()), PutDeltasPending_);
+		connect (GetDeltasPending_,
+				SIGNAL (entered ()),
+				this,
+				SLOT (getNewDeltas ()));
+		GetDeltasPending_->addTransition (this,
+				SIGNAL (deltasReceived ()), ProcessDeltas_);
+		ProcessDeltas_->addTransition (this,
+				SIGNAL (deltasProcessed ()), PutDeltasPending_);
+		connect (PutDeltasPending_,
+				SIGNAL (entered ()),
+				this,
+				SLOT (handlePutDeltas ()));
+		PutDeltasPending_->addTransition (ServerConnection_,
+				SIGNAL (deltaOutOfOrder ()), Running_);
+		PutDeltasPending_->addTransition (this,
+				SIGNAL (fail ()), ConnectionError_);
+		PutDeltasPending_->addTransition (this,
+				SIGNAL (success ()), Finish_);
+
+		connect (&SM_,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleFinished ()));
+
+		SM_.addState (Idle_);
+		SM_.addState (ConnectionError_);
+		SM_.addState (LoginPending_);
+		SM_.addState (LoginError_);
+		SM_.addState (Running_);
+		SM_.addState (ReqMaxDeltaPending_);
+		SM_.addState (GetDeltasPending_);
+		SM_.addState (ProcessDeltas_);
+		SM_.addState (PutDeltasPending_);
+		SM_.addState (Finish_);
+		SM_.setInitialState (Idle_);
+
+		SM_.start ();
+
+		connect (ServerConnection_,
+				SIGNAL (maxDeltaIDReceived (quint32)),
+				this,
+				SLOT (handleMaxDeltaIDReceived (quint32)));
+		connect (ServerConnection_,
+				SIGNAL (success (const QList<QByteArray>&)),
+				this,
+				SLOT (handleSuccess (const QList<QByteArray>&)));
+		connect (ServerConnection_,
+				SIGNAL (fail ()),
+				this,
+				SIGNAL (fail ()));
+	}
+
+	void ServerChainHandler::Sync ()
+	{
+		qDebug () << Q_FUNC_INFO << Chain_;
+		if (SM_.isRunning ())
+			emit initiated ();
+		else
+			connect (&SM_,
+					SIGNAL (started ()),
+					this,
+					SIGNAL (initiated ()),
+					Qt::QueuedConnection);
+	}
+
+	void ServerChainHandler::getNewDeltas ()
+	{
+		quint32 lastId = Core::Instance ().GetLastID (Chain_);
+		ServerConnection_->getDeltas (lastId);
+	}
+
+	void ServerChainHandler::handleSuccess (const QList<QByteArray>& data)
+	{
+		QSet<QAbstractState*> conf = SM_.configuration ();
+		if (conf.contains (ReqMaxDeltaPending_))
 		{
-			ServerChainHandler::ServerChainHandler (const QByteArray& chain, QObject *parent)
-			: QObject (parent)
-			, ServerConnection_ (new ServerConnection (chain, this))
-			, Chain_ (chain)
-			, NumLastSent_ (0)
-			, NumLastReceived_ (0)
+			quint32 deltaId = 0;
+			if (!data.size ())
 			{
-				Idle_ = new QState ();
-				ConnectionError_ = new QFinalState ();
-				LoginPending_ = new QState ();
-				LoginError_ = new QFinalState ();
-				Running_ = new QState ();
-				ReqMaxDeltaPending_ = new QState ();
-				GetDeltasPending_ = new QState ();
-				ProcessDeltas_ = new QState ();
-				PutDeltasPending_ = new QState ();
-				Finish_ = new QFinalState ();
-
-				Idle_->addTransition (this,
-						SIGNAL (initiated ()), LoginPending_);
-				connect (LoginPending_,
-						SIGNAL (entered ()),
-						ServerConnection_,
-						SLOT (performLogin ()));
-				LoginPending_->addTransition (this,
-						SIGNAL (fail ()), LoginError_);
-				LoginPending_->addTransition (this,
-						SIGNAL (success ()), Running_);
-				Running_->addTransition (ReqMaxDeltaPending_);
-				connect (ReqMaxDeltaPending_,
-						SIGNAL (entered ()),
-						ServerConnection_,
-						SLOT (reqMaxDelta ()));
-				ReqMaxDeltaPending_->addTransition (this,
-						SIGNAL (fail ()), ConnectionError_);
-				ReqMaxDeltaPending_->addTransition (this,
-						SIGNAL (hasNewDeltas ()), GetDeltasPending_);
-				ReqMaxDeltaPending_->addTransition (this,
-						SIGNAL (noNewDeltas ()), PutDeltasPending_);
-				connect (GetDeltasPending_,
-						SIGNAL (entered ()),
-						this,
-						SLOT (getNewDeltas ()));
-				GetDeltasPending_->addTransition (this,
-						SIGNAL (deltasReceived ()), ProcessDeltas_);
-				ProcessDeltas_->addTransition (this,
-						SIGNAL (deltasProcessed ()), PutDeltasPending_);
-				connect (PutDeltasPending_,
-						SIGNAL (entered ()),
-						this,
-						SLOT (handlePutDeltas ()));
-				PutDeltasPending_->addTransition (ServerConnection_,
-						SIGNAL (deltaOutOfOrder ()), Running_);
-				PutDeltasPending_->addTransition (this,
-						SIGNAL (fail ()), ConnectionError_);
-				PutDeltasPending_->addTransition (this,
-						SIGNAL (success ()), Finish_);
-
-				connect (&SM_,
-						SIGNAL (finished ()),
-						this,
-						SLOT (handleFinished ()));
-
-				SM_.addState (Idle_);
-				SM_.addState (ConnectionError_);
-				SM_.addState (LoginPending_);
-				SM_.addState (LoginError_);
-				SM_.addState (Running_);
-				SM_.addState (ReqMaxDeltaPending_);
-				SM_.addState (GetDeltasPending_);
-				SM_.addState (ProcessDeltas_);
-				SM_.addState (PutDeltasPending_);
-				SM_.addState (Finish_);
-				SM_.setInitialState (Idle_);
-
-				SM_.start ();
-
-				connect (ServerConnection_,
-						SIGNAL (maxDeltaIDReceived (quint32)),
-						this,
-						SLOT (handleMaxDeltaIDReceived (quint32)));
-				connect (ServerConnection_,
-						SIGNAL (success (const QList<QByteArray>&)),
-						this,
-						SLOT (handleSuccess (const QList<QByteArray>&)));
-				connect (ServerConnection_,
-						SIGNAL (fail ()),
-						this,
-						SIGNAL (fail ()));
+				qWarning () << Q_FUNC_INFO
+						<< "insufficient number of lists for ReqMaxDeltaPending_ state";
+				emit fail ();
+				return;
 			}
+			QDataStream ds (data.at (0));
+			ds >> deltaId;
+			handleMaxDeltaIDReceived (deltaId);
+		}
+		else if (conf.contains (GetDeltasPending_))
+		{
+			emit deltasReceived ();
+			handleDeltasReceived (data);
+		}
+		else if (conf.contains (PutDeltasPending_))
+		{
+			if (NumLastSent_)
+				emit successfullySentDeltas (NumLastSent_, Chain_);
+			emit success ();
+		}
+		else
+			emit success ();
+	}
 
-			void ServerChainHandler::Sync ()
-			{
-				qDebug () << Q_FUNC_INFO << Chain_;
-				if (SM_.isRunning ())
-					emit initiated ();
-				else
-					connect (&SM_,
-							SIGNAL (started ()),
-							this,
-							SIGNAL (initiated ()),
-							Qt::QueuedConnection);
-			}
-
-			void ServerChainHandler::getNewDeltas ()
-			{
-				quint32 lastId = Core::Instance ().GetLastID (Chain_);
-				ServerConnection_->getDeltas (lastId);
-			}
-
-			void ServerChainHandler::handleSuccess (const QList<QByteArray>& data)
-			{
-				QSet<QAbstractState*> conf = SM_.configuration ();
-				if (conf.contains (ReqMaxDeltaPending_))
-				{
-					quint32 deltaId = 0;
-					if (!data.size ())
-					{
-						qWarning () << Q_FUNC_INFO
-								<< "insufficient number of lists for ReqMaxDeltaPending_ state";
-						emit fail ();
-						return;
-					}
-					QDataStream ds (data.at (0));
-					ds >> deltaId;
-					handleMaxDeltaIDReceived (deltaId);
-				}
-				else if (conf.contains (GetDeltasPending_))
-				{
-					emit deltasReceived ();
-					handleDeltasReceived (data);
-				}
-				else if (conf.contains (PutDeltasPending_))
-				{
-					if (NumLastSent_)
-						emit successfullySentDeltas (NumLastSent_, Chain_);
-					emit success ();
-				}
-				else
-					emit success ();
-			}
-
-			void ServerChainHandler::handleMaxDeltaIDReceived (quint32 deltaId)
-			{
-				quint32 lastId = Core::Instance ().GetLastID (Chain_);
-				if (lastId < deltaId)
-					emit hasNewDeltas ();
-				else if (lastId == deltaId)
-					emit noNewDeltas ();
-				else
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "our last ID is greater then remote last delta ID:"
-							<< lastId
-							<< deltaId;
-					emit fail ();
-				}
-			}
-
-			void ServerChainHandler::handleDeltasReceived (const QList<QByteArray>& deltas)
-			{
-				qDebug () << Q_FUNC_INFO << deltas.size ();
-				Q_FOREACH (const QByteArray& ba, deltas)
-					qDebug () << "obtained" << ba.toHex ();
-
-				Sync::Deltas_t parsed;
-				Q_FOREACH (const QByteArray& ba, deltas)
-				{
-					Sync::Delta delta;
-					QDataStream ds (ba);
-					try
-					{
-						ds >> delta;
-					}
-					catch (const std::exception& e)
-					{
-						qWarning () << Q_FUNC_INFO
-								<< e.what ();
-						break;
-					}
-					parsed << delta;
-				}
-
-				NumLastReceived_ = parsed.size ();
-
-				emit gotNewDeltas (parsed, Chain_);
-				emit deltasProcessed ();
-			}
-
-			void ServerChainHandler::handlePutDeltas ()
-			{
-				Sync::Deltas_t deltas;
-				emit deltasRequired (&deltas, Chain_);
-
-				NumLastSent_ = deltas.size ();
-
-				if (!deltas.size ())
-				{
-					emit success ();
-					return;
-				}
-
-				quint32 firstId = deltas.at (0).ID_;
-
-				QList<QByteArray> dBytes;
-				Q_FOREACH (const Sync::Delta& delta, deltas)
-				{
-					QByteArray ba;
-					{
-						QDataStream ds (&ba, QIODevice::WriteOnly);
-						ds << delta;
-					}
-					qDebug () << "serialized" << ba.toHex ();
-					dBytes << ba;
-				}
-				ServerConnection_->putDeltas (dBytes, firstId);
-			}
-
-			void ServerChainHandler::handleFinished ()
-			{
-				qDebug () << Q_FUNC_INFO;
-				QSet<QAbstractState*> conf = SM_.configuration ();
-				if (conf.contains (LoginError_))
-					emit loginError ();
-				else if (conf.contains (ConnectionError_))
-					emit connectionError ();
-				else if (conf.contains (Finish_))
-					emit finishedSuccessfully (NumLastSent_, NumLastReceived_);
-			}
+	void ServerChainHandler::handleMaxDeltaIDReceived (quint32 deltaId)
+	{
+		quint32 lastId = Core::Instance ().GetLastID (Chain_);
+		if (lastId < deltaId)
+			emit hasNewDeltas ();
+		else if (lastId == deltaId)
+			emit noNewDeltas ();
+		else
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "our last ID is greater then remote last delta ID:"
+					<< lastId
+					<< deltaId;
+			emit fail ();
 		}
 	}
+
+	void ServerChainHandler::handleDeltasReceived (const QList<QByteArray>& deltas)
+	{
+		qDebug () << Q_FUNC_INFO << deltas.size ();
+		Q_FOREACH (const QByteArray& ba, deltas)
+			qDebug () << "obtained" << ba.toHex ();
+
+		Sync::Deltas_t parsed;
+		Q_FOREACH (const QByteArray& ba, deltas)
+		{
+			Sync::Delta delta;
+			QDataStream ds (ba);
+			try
+			{
+				ds >> delta;
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< e.what ();
+				break;
+			}
+			parsed << delta;
+		}
+
+		NumLastReceived_ = parsed.size ();
+
+		emit gotNewDeltas (parsed, Chain_);
+		emit deltasProcessed ();
+	}
+
+	void ServerChainHandler::handlePutDeltas ()
+	{
+		Sync::Deltas_t deltas;
+		emit deltasRequired (&deltas, Chain_);
+
+		NumLastSent_ = deltas.size ();
+
+		if (!deltas.size ())
+		{
+			emit success ();
+			return;
+		}
+
+		quint32 firstId = deltas.at (0).ID_;
+
+		QList<QByteArray> dBytes;
+		Q_FOREACH (const Sync::Delta& delta, deltas)
+		{
+			QByteArray ba;
+			{
+				QDataStream ds (&ba, QIODevice::WriteOnly);
+				ds << delta;
+			}
+			qDebug () << "serialized" << ba.toHex ();
+			dBytes << ba;
+		}
+		ServerConnection_->putDeltas (dBytes, firstId);
+	}
+
+	void ServerChainHandler::handleFinished ()
+	{
+		qDebug () << Q_FUNC_INFO;
+		QSet<QAbstractState*> conf = SM_.configuration ();
+		if (conf.contains (LoginError_))
+			emit loginError ();
+		else if (conf.contains (ConnectionError_))
+			emit connectionError ();
+		else if (conf.contains (Finish_))
+			emit finishedSuccessfully (NumLastSent_, NumLastReceived_);
+	}
+}
 }
