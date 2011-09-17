@@ -298,7 +298,12 @@ namespace Xoox
 					elem.attribute ("xmlns") != "jabber:iq:register")
 				continue;
 
-			const QXmppElement& x = elem.firstChildElement ("x");
+			QXmppElement x = elem.firstChildElement ("x");
+
+			// Ugly workaround for ejabberd.
+			if (!x.attributeNames ().contains ("type"))
+				x.setAttribute ("type", "form");
+
 			form.parse (XooxUtil::XmppElem2DomElem (x));
 			if (!form.isNull ())
 				break;
