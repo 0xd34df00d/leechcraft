@@ -317,6 +317,7 @@ namespace Xoox
 			return;
 
 		form = builder.GetForm ();
+		form.setType (QXmppDataForm::Submit);
 
 		QXmppIq regIq;
 		regIq.setType (QXmppIq::Set);
