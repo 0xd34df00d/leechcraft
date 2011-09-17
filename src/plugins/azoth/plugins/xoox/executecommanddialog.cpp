@@ -245,7 +245,7 @@ namespace Xoox
 			return;
 
 		disconnect (Manager_,
-				SIGNAL (gotResult (QString, AdHocResult&)),
+				SIGNAL (gotResult (QString, AdHocResult)),
 				this,
 				SLOT (handleGotResult (QString, AdHocResult)));
 
