@@ -330,7 +330,6 @@ namespace Xoox
 		regIq.setExtensions (QXmppElementList (elem));
 
 		Account_->GetClientConnection ()->GetClient ()->sendPacket (regIq);
-		Account_->AddEntry (iq.from (), QString (), QStringList (tr ("Gateways")));
 	}
 }
 }
