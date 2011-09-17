@@ -29,6 +29,7 @@
 #include "vcarddialog.h"
 #include "formbuilder.h"
 #include "util.h"
+#include "executecommanddialog.h"
 
 namespace LeechCraft
 {
@@ -43,6 +44,7 @@ namespace Xoox
 		ID2Action_ ["view-vcard"] = boost::bind (&SDSession::ViewVCard, this, _1);
 		ID2Action_ ["add-to-roster"] = boost::bind (&SDSession::AddToRoster, this, _1);
 		ID2Action_ ["register"] = boost::bind (&SDSession::Register, this, _1);
+		ID2Action_ ["execute-ad-hoc"] = boost::bind (&SDSession::ExecuteAdHoc, this, _1);
 	}
 
 	namespace
@@ -108,6 +110,20 @@ namespace Xoox
 			result << QPair<QByteArray, QString> ("add-to-roster", tr ("Add to roster..."));
 		if (info.Caps_.contains ("jabber:iq:register"))
 			result << QPair<QByteArray, QString> ("register", tr ("Register..."));
+		if (info.Caps_.contains ("http://jabber.org/protocol/commands"))
+		{
+			bool found = false;
+			Q_FOREACH (const QXmppDiscoveryIq::Identity& id, info.Identities_)
+				if (id.category () == "automation" &&
+						id.type () == "command-node")
+				{
+					found = true;
+					break;
+				}
+
+			if (found)
+				result << QPair<QByteArray, QString> ("execute-ad-hoc", tr ("Execute..."));
+		}
 
 		return result;
 	}
@@ -213,7 +229,8 @@ namespace Xoox
 		{
 			iq.features (),
 			iq.identities (),
-			iq.from ()
+			iq.from (),
+			iq.queryNode ()
 		};
 		Item2Info_ [targetItem] = info;
 	}
@@ -287,6 +304,20 @@ namespace Xoox
 		iq.setExtensions (QXmppElementList (elem));
 
 		Account_->GetClientConnection ()->SendPacketWCallback (iq, this, "handleRegistrationForm");
+	}
+
+	void SDSession::ExecuteAdHoc (const SDSession::ItemInfo& info)
+	{
+		const QString& jid = info.JID_;
+		if (jid.isEmpty ())
+			return;
+
+		ExecuteCommandDialog *dia = new ExecuteCommandDialog (jid, info.Node_, Account_);
+		dia->show ();
+		connect (dia,
+				SIGNAL (finished (int)),
+				dia,
+				SLOT (deleteLater ()));
 	}
 
 	void SDSession::handleRegistrationForm (const QXmppIq& iq)
