@@ -166,12 +166,14 @@ namespace Xoox
 	{
 		QXmppElement queryElem;
 		Q_FOREACH (const QXmppElement& elem, iq.extensions ())
+		{
 			if (elem.tagName () == "query" &&
 					elem.attribute ("xmlns") == NsRegister)
 			{
 				queryElem = elem;
 				break;
 			}
+		}
 
 		if (queryElem.isNull ())
 		{
@@ -183,7 +185,8 @@ namespace Xoox
 		qDeleteAll (findChildren<QWidget*> ());
 
 		const QXmppElement& formElem = queryElem.firstChildElement ("x");
-		if (formElem.attribute ("xmlns") == NsRegister &&
+		if ((formElem.attribute ("xmlns") == NsRegister ||
+					formElem.attribute ("xmlns") == "jabber:x:data") &&
 				formElem.attribute ("type") == "form")
 		{
 			QXmppDataForm form;
