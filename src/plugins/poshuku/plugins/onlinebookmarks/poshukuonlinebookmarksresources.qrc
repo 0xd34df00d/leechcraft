@@ -1,5 +1,0 @@
-<RCC>
-  <qresource prefix="/plugins/poshuku/plugins/onlinebookmarks" >
-  	<file>resources/images/onlinebookmarks.svg</file>
-  </qresource>
-</RCC>
