@@ -21,6 +21,7 @@
 #include <QLabel>
 #include <QDomElement>
 #include <QLineEdit>
+#include <QXmppBobManager.h>
 #include "inbandaccountregfirstpage.h"
 #include "util.h"
 
@@ -35,12 +36,16 @@ namespace Xoox
 	InBandAccountRegSecondPage::InBandAccountRegSecondPage (InBandAccountRegFirstPage *first, QWidget *parent)
 	: QWizardPage (parent)
 	, Client_ (new QXmppClient (this))
+	, BobManager_ (new QXmppBobManager)
 	, FirstPage_ (first)
+	, FB_ (FormBuilder (QString (), BobManager_))
 	, Widget_ (0)
 	, State_ (SIdle)
 	{
 		Q_FOREACH (QXmppClientExtension *ext, Client_->extensions ())
 			Client_->removeExtension (ext);
+
+		Client_->addExtension (BobManager_);
 
 		setLayout (new QVBoxLayout);
 
