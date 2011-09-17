@@ -152,6 +152,11 @@ namespace Xoox
 				this,
 				SLOT (handleCurrentChanged (int)));
 
+		const int idx = addPage (new WaitPage (tr ("Please wait while "
+				"the selected command is executed.")));
+		if (currentId () != idx)
+			next ();
+
 		ExecuteCommand (AdHocCommand (QString (), command));
 	}
 
