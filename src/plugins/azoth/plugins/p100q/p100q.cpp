@@ -77,7 +77,7 @@ namespace p100q
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("Azoth p100q is plugin for nicer support of the psto.net microblogging service.");
+		return tr ("Azoth p100q enhances experience with the psto.net microblogging service.");
 	}
 
 	QIcon Plugin::GetIcon () const
