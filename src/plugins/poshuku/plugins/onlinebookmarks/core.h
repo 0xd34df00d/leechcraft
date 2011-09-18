@@ -22,23 +22,34 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 
+class QAbstractItemModel;
+class QStandardItemModel;
+
 namespace LeechCraft
 {
 namespace Poshuku
 {
 namespace OnlineBookmarks
 {
+
+	class AccountsSettings;
+
 	class Core : public QObject
 	{
 		Q_OBJECT
 
 		ICoreProxy_ptr CoreProxy_;
+		AccountsSettings *AccountsSettings_;
+		QStandardItemModel *ActiveServicesModel_;
 
 		Core ();
 	public:
 		static Core& Instance ();
 		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;
+
+		QAbstractItemModel* GetActiveServicesModel () const;
+		QWidget* GetAccountsSettingsWidget () const;
 	};
 }
 }

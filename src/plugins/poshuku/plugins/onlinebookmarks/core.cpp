@@ -17,6 +17,8 @@
  **********************************************************************/
 
 #include "core.h"
+#include <QStandardItemModel>
+#include "accountssettings.h"
 
 namespace LeechCraft
 {
@@ -25,6 +27,8 @@ namespace Poshuku
 namespace OnlineBookmarks
 {
 	Core::Core ()
+	: AccountsSettings_ (new AccountsSettings)
+	, ActiveServicesModel_ (new QStandardItemModel)
 	{
 	}
 
@@ -43,6 +47,17 @@ namespace OnlineBookmarks
 	{
 		return CoreProxy_;
 	}
+
+	QAbstractItemModel* Core::GetActiveServicesModel () const
+	{
+		return ActiveServicesModel_;
+	}
+
+	QWidget* Core::GetAccountsSettingsWidget () const
+	{
+		return AccountsSettings_;
+	}
+
 }
 }
 }

@@ -35,6 +35,10 @@ namespace OnlineBookmarks
 		SettingsDialog_.reset (new Util::XmlSettingsDialog);
 		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				"poshukuonlinebookmarkssettings.xml");
+		SettingsDialog_->SetCustomWidget ("Accounts",
+				Core::Instance ().GetAccountsSettingsWidget ());
+		SettingsDialog_->SetDataSource ("ActiveServices",
+				Core::Instance ().GetActiveServicesModel ());
 
 		Core::Instance ().SetProxy (proxy);
 	}
