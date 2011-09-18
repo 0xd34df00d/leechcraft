@@ -121,7 +121,7 @@ namespace p100q
 				QStringList tagslist = TagRX_.cap (1).split (", ");
 
 				Q_FOREACH (const QString& tagval, tagslist)
-					tags += QString (" <a href=\"azoth://msgeditreplace/S *%1\">%2</a> ")
+					tags += QString (" <a href=\"azoth://msgeditreplace/S *%1\" title=\"" + tr ("Subscribe to tag") + "\">%2</a> ")
 							.arg (QString (QUrl::toPercentEncoding (tagval)))
 							.arg (tagval);
 
@@ -138,11 +138,11 @@ namespace p100q
 		body.replace (PostRX_,
 				"<a href=\"azoth://msgeditreplace/%23\\1%20\">#\\1</a> "
 				"("
-				"<a href=\"azoth://msgeditreplace/S%20%23\\1\">S</a> "
-				"<a href=\"azoth://msgeditreplace/U%20%23\\1\">U</a> "
-				"<a href=\"azoth://msgeditreplace/%23\\1+\">+</a> "
-				"<a href=\"azoth://msgeditreplace/!%20%23\\1%20\">!</a> "
-				"<a href=\"azoth://msgeditreplace/~%20%23\\1%20\">~</a>"
+				"<a href=\"azoth://msgeditreplace/S%20%23\\1\" title=\"" + tr ("Subscribe") + "\">S</a> "
+				"<a href=\"azoth://msgeditreplace/U%20%23\\1\" title=\"" + tr ("Unsubscribe") + "\">U</a> "
+				"<a href=\"azoth://msgeditreplace/%23\\1+\" title=\"" + tr ("View") + "\">+</a> "
+				"<a href=\"azoth://msgeditreplace/!%20%23\\1%20\" title=\"" + tr ("Recommend") + "\">!</a> "
+				"<a href=\"azoth://msgeditreplace/~%20%23\\1%20\" title=\"" + tr ("Add to bookmarks") + "\">~</a>"
 				") "
 				);
 
@@ -152,22 +152,22 @@ namespace p100q
 							"width='32px' "
 							"height='32px' "
 							"src='http://psto.net/img/a/40/\\1.png'>"
-					" <a href=\"azoth://msgeditreplace/@\\1+\">@\\1</a> ");
+					" <a href=\"azoth://msgeditreplace/@\\1+\" title=\"" + tr ("View user's posts") + "\">@\\1</a> ");
 		else
 			body.replace (PostAuthorRX_,
-					" <a href=\"azoth://msgeditreplace/@\\1+\">@\\1</a> ");
+					" <a href=\"azoth://msgeditreplace/@\\1+\" title=\"" + tr ("View user's posts") + "\">@\\1</a> ");
 
 		body.replace(UserRX_,
-				" <a href=\"azoth://msgeditreplace/@\\1+\">@\\1</a> ");
+				" <a href=\"azoth://msgeditreplace/@\\1+\" title=\"" + tr ("View user's posts") + "\">@\\1</a> ");
 
 		body.replace (CommentRX_,
-				"<a href=\"azoth://msgeditreplace/%23\\1/\\2%20\">#\\1/\\2</a> "
-				"(<a href=\"azoth://msgeditreplace/U%20%23\\1\">U</a> "
-				" <a href=\"azoth://msgeditreplace/!%20%23\\1/\\2%20\">!</a> "
-				" <a href=\"azoth://msgeditreplace/~%20%23\\1/\\2%20\">~</a>) ");
+				"<a href=\"azoth://msgeditreplace/%23\\1/\\2%20\" title=\"" + tr ("Reply") + "\">#\\1/\\2</a> "
+				"(<a href=\"azoth://msgeditreplace/U%20%23\\1\" title=\"" + tr ("Unsubscribe from post") + "\">U</a> "
+				" <a href=\"azoth://msgeditreplace/!%20%23\\1/\\2%20\" title=\"" + tr ("Recommend this comment") + "\">!</a> "
+				" <a href=\"azoth://msgeditreplace/~%20%23\\1/\\2%20\" title=\"" + tr ("Add this comment to bookmarks") + "\">~</a>) ");
 
 		body.replace (PostByUserRX_,
-				" <a href=\"azoth://msgeditreplace/%23\\1+\">#\\1</a> ");
+				" <a href=\"azoth://msgeditreplace/%23\\1+\" title=\"" + tr ("View post") + "\">#\\1</a> ");
 
 		body.prepend("<div style=\"width:100%;overflow:auto;\">");
 		body += "</div>";
