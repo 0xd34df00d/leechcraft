@@ -665,12 +665,12 @@ namespace Azoth
 
 		Ui_.VariantBox_->setVisible (variants.size () > 1);
 	}
-	
+
 	void ChatTab::handleAvatarChanged (const QImage& avatar)
 	{
 		Ui_.AvatarLabel_->setPixmap (QPixmap::fromImage (avatar));
 		Ui_.AvatarLabel_->setVisible (!avatar.isNull ());
-		
+
 		UpdateTextHeight 	();
 	}
 
@@ -731,6 +731,31 @@ namespace Azoth
 		Ui_.EntryInfo_->setText (text);
 	}
 
+	namespace
+	{
+		void OpenChatWithText (QUrl url, const QString& id, ICLEntry *own)
+		{
+			QUrl newUrl = url;
+			newUrl.removeQueryItem ("hrid");
+
+			IAccount *account = qobject_cast<IAccount*> (own->GetParentAccount ());
+			Q_FOREACH (QObject *entryObj, account->GetCLEntries ())
+			{
+				ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+				if (!entry || entry->GetHumanReadableID () != id)
+					continue;
+
+				QWidget *w = Core::Instance ()
+						.GetChatTabsManager ()->OpenChat (entry);
+				QMetaObject::invokeMethod (w,
+						"handleViewLinkClicked",
+						Qt::QueuedConnection,
+						Q_ARG (QUrl, newUrl));
+				break;
+			}
+		}
+	}
+
 	void ChatTab::handleViewLinkClicked (const QUrl& url)
 	{
 		if (url.scheme () != "azoth")
@@ -743,9 +768,24 @@ namespace Azoth
 
 		if (url.host () == "msgeditreplace")
 		{
-			Ui_.MsgEdit_->setText (url.path ().mid (1));
-			Ui_.MsgEdit_->moveCursor (QTextCursor::End);
-			Ui_.MsgEdit_->setFocus ();
+			if (url.queryItems ().isEmpty ())
+			{
+				Ui_.MsgEdit_->setText (url.path ().mid (1));
+				Ui_.MsgEdit_->moveCursor (QTextCursor::End);
+				Ui_.MsgEdit_->setFocus ();
+			}
+			else
+			{
+				QPair<QString, QString> comma;
+				Q_FOREACH (comma, url.queryItems ())
+				{
+					if (comma.first == "hrid")
+					{
+						OpenChatWithText (url, comma.second, GetEntry<ICLEntry> ());
+						return;
+					}
+				}
+			}
 		}
 		else if (url.host () == "insertnick")
 		{
@@ -1480,7 +1520,7 @@ namespace Azoth
 		const int resHeight = std::min (height () / 3, std::max (docHeight, fontHeight));
 		Ui_.MsgEdit_->setMinimumHeight (resHeight);
 		Ui_.MsgEdit_->setMaximumHeight (resHeight);
-		
+
 		const QPixmap *px = Ui_.AvatarLabel_->pixmap ();
 		if (px && px->width () > 0)
 			Ui_.AvatarLabel_->setMaximumSize (resHeight,
