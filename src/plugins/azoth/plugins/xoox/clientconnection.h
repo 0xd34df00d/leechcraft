@@ -74,6 +74,7 @@ namespace Xoox
 	class AdHocCommandManager;
 	class LastActivityManager;
 	class JabberSearchManager;
+	class UserAvatarManager;
 
 #ifdef ENABLE_CRYPT
 	class PgpManager;
@@ -100,6 +101,7 @@ namespace Xoox
 		AnnotationsManager *AnnotationsManager_;
 		LastActivityManager *LastActivityManager_;
 		JabberSearchManager *JabberSearchManager_;
+		UserAvatarManager *UserAvatarManager_;
 		RIEXManager *RIEXManager_;
 
 #ifdef ENABLE_CRYPT
@@ -191,6 +193,7 @@ namespace Xoox
 		QXmppCallManager* GetCallManager () const;
 		AdHocCommandManager* GetAdHocCommandManager () const;
 		JabberSearchManager* GetJabberSearchManager () const;
+		UserAvatarManager* GetUserAvatarManager () const;
 		RIEXManager* GetRIEXManager () const;
 #ifdef ENABLE_CRYPT
 		PgpManager* GetPGPManager () const;

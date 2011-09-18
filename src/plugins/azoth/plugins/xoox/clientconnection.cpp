@@ -102,6 +102,7 @@ namespace Xoox
 	, AnnotationsManager_ (0)
 	, LastActivityManager_ (new LastActivityManager)
 	, JabberSearchManager_ (new JabberSearchManager)
+	, UserAvatarManager_ (0)
 	, RIEXManager_ (new RIEXManager)
 #ifdef ENABLE_CRYPT
 	, PGPManager_ (0)
@@ -150,8 +151,8 @@ namespace Xoox
 				this,
 				SLOT (handlePEPEvent (const QString&, PEPEventBase*)));
 
-		UserAvatarManager *uamgr = new UserAvatarManager (this);
-		connect (uamgr,
+		UserAvatarManager_ = new UserAvatarManager (this);
+		connect (UserAvatarManager_,
 				SIGNAL (avatarUpdated (QString, QImage)),
 				this,
 				SLOT (handlePEPAvatarUpdated (QString, QImage)));
@@ -453,6 +454,11 @@ namespace Xoox
 	JabberSearchManager* ClientConnection::GetJabberSearchManager () const
 	{
 		return JabberSearchManager_;
+	}
+
+	UserAvatarManager* ClientConnection::GetUserAvatarManager () const
+	{
+		return UserAvatarManager_;
 	}
 
 	RIEXManager* ClientConnection::GetRIEXManager () const
