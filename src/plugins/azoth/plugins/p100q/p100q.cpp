@@ -20,6 +20,8 @@
 #include "p100q.h"
 #include <QIcon>
 #include <QString>
+#include <QTranslator>
+#include <util/util.h>
 #include <interfaces/imessage.h>
 #include <interfaces/iclentry.h>
 #include "xmlsettingsmanager.h"
@@ -33,6 +35,8 @@ namespace p100q
 	const int PstoCommentPos = 6;
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		Translator_.reset (Util::InstallTranslator ("azoth_p100q"));
+
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"azothp100qsettings.xml");
