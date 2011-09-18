@@ -8,10 +8,12 @@ INCLUDE_DIRECTORIES (${POSHUKU_INCLUDE_DIR}
 SET (ONLINEBOOKMARKS_SRCS
 	onlinebookmarks.cpp
 	xmlsettingsmanager.cpp
+	core.cpp
 	)
 SET (ONLINEBOOKMARKS_HEADERS
 	onlinebookmarks.h
 	xmlsettingsmanager.h
+	core.h
 	)
 # SET (ONLINEBOOKMARKS_FORMS
 # 	)

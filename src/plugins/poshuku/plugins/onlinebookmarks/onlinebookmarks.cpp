@@ -18,6 +18,7 @@
 
 #include "onlinebookmarks.h"
 #include <QIcon>
+#include "core.h"
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
 #include "xmlsettingsmanager.h"
@@ -34,6 +35,8 @@ namespace OnlineBookmarks
 		SettingsDialog_.reset (new Util::XmlSettingsDialog);
 		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				"poshukuonlinebookmarkssettings.xml");
+
+		Core::Instance ().SetProxy (proxy);
 	}
 
 	void Plugin::SecondInit ()
