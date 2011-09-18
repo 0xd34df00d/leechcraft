@@ -193,11 +193,6 @@ namespace p100q
 
 		proxy->SetValue ("body", FormatBody (body));
 	}
-	
-	void Plugin::hookThemeReloaded (LeechCraft::IHookProxy_ptr proxy,
-			QObject *chatTab, QWebView *view, QObject *entry)
-	{
-	}
 }
 }
 }

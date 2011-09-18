@@ -78,10 +78,6 @@ namespace p100q
 				QObject *chatTab,
 				QString body,
 				QObject *message);
-		void hookThemeReloaded (LeechCraft::IHookProxy_ptr proxy,
-				QObject *chatTab,
-				QWebView *view,
-				QObject *entry);
 	};
 }
 }
