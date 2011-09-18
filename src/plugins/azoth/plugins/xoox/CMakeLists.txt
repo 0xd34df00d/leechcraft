@@ -64,6 +64,9 @@ SET (XOOX_SRCS
 	riexmanager.cpp
 	jabbersearchsession.cpp
 	jabbersearchmanager.cpp
+	useravatarmanager.cpp
+	useravatardata.cpp
+	useravatarmetadata.cpp
 	)
 SET (XOOX_HEADERS
 	xoox.h
@@ -120,6 +123,9 @@ SET (XOOX_HEADERS
 	riexmanager.h
 	jabbersearchsession.h
 	jabbersearchmanager.h
+	useravatarmanager.h
+	useravatardata.h
+	useravatarmetadata.h
 	)
 SET (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui

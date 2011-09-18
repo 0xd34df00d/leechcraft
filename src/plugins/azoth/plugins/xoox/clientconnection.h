@@ -256,6 +256,7 @@ namespace Xoox
 		void handlePresenceChanged (const QXmppPresence&);
 		void handleMessageReceived (QXmppMessage);
 		void handlePEPEvent (const QString&, PEPEventBase*);
+		void handlePEPAvatarUpdated (const QString&, const QImage&);
 		void handleMessageDelivered (const QString&);
 		void handleCaptchaReceived (const QString&, const QXmppDataForm&);
 		void handleRoomInvitation (const QString&, const QString&, const QString&);

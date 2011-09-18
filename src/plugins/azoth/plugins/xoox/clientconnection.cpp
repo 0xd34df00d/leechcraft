@@ -68,6 +68,7 @@
 #include "adhoccommandserver.h"
 #include "lastactivitymanager.h"
 #include "jabbersearchmanager.h"
+#include "useravatarmanager.h"
 
 #ifdef ENABLE_CRYPT
 #include "pgpmanager.h"
@@ -148,6 +149,12 @@ namespace Xoox
 				SIGNAL (gotEvent (const QString&, PEPEventBase*)),
 				this,
 				SLOT (handlePEPEvent (const QString&, PEPEventBase*)));
+
+		UserAvatarManager *uamgr = new UserAvatarManager (this);
+		connect (uamgr,
+				SIGNAL (avatarUpdated (QString, QImage)),
+				this,
+				SLOT (handlePEPAvatarUpdated (QString, QImage)));
 
 		InitializeQCA ();
 
@@ -1108,6 +1115,18 @@ namespace Xoox
 		}
 
 		JID2CLEntry_ [bare]->HandlePEPEvent (resource, event);
+	}
+
+	void ClientConnection::handlePEPAvatarUpdated (const QString& from, const QImage& image)
+	{
+		QString bare;
+		QString resource;
+		Split (from, &bare, &resource);
+
+		if (!JID2CLEntry_.contains (from))
+			return;
+
+		JID2CLEntry_ [from]->SetAvatar (image);
 	}
 
 	void ClientConnection::handleMessageDelivered (const QString& msgId)
