@@ -56,7 +56,7 @@ namespace Xoox
 		QXmppElement data;
 		data.setTagName ("data");
 		data.setAttribute ("xmlns", NsAvatarDataNode);
-		data.setValue (Saved_.toHex ());
+		data.setValue (Saved_.toBase64 ());
 
 		item.appendChild (data);
 
@@ -68,7 +68,7 @@ namespace Xoox
 		Hash_ = elem.attribute ("id").toLatin1 ();
 
 		const QDomElement& data = elem.firstChildElement ("data");
-		Saved_ = QByteArray::fromHex (data.text ().toLatin1 ().trimmed ());
+		Saved_ = QByteArray::fromBase64 (data.text ().toLatin1 ().trimmed ());
 
 		Img_ = QImage::fromData (Saved_);
 	}
