@@ -4,69 +4,69 @@
 <context>
     <name>LeechCraft::Azoth::p100q::Plugin</name>
     <message>
-        <location filename="p100q.cpp" line="76"/>
-        <source>Azoth p100q is plugin for nicer support of the psto.net microblogging service.</source>
+        <location filename="p100q.cpp" line="80"/>
+        <source>Azoth p100q enhances experience with the psto.net microblogging service.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="p100q.cpp" line="124"/>
+        <location filename="p100q.cpp" line="128"/>
         <source>Subscribe to tag</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="p100q.cpp" line="141"/>
+        <location filename="p100q.cpp" line="145"/>
         <source>Subscribe</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="p100q.cpp" line="142"/>
+        <location filename="p100q.cpp" line="146"/>
         <source>Unsubscribe</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="p100q.cpp" line="143"/>
+        <location filename="p100q.cpp" line="147"/>
         <source>View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="p100q.cpp" line="144"/>
+        <location filename="p100q.cpp" line="148"/>
         <source>Recommend</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="p100q.cpp" line="145"/>
+        <location filename="p100q.cpp" line="149"/>
         <source>Add to bookmarks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="p100q.cpp" line="155"/>
-        <location filename="p100q.cpp" line="158"/>
-        <location filename="p100q.cpp" line="161"/>
+        <location filename="p100q.cpp" line="159"/>
+        <location filename="p100q.cpp" line="162"/>
+        <location filename="p100q.cpp" line="165"/>
         <source>View user&apos;s posts</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="p100q.cpp" line="164"/>
+        <location filename="p100q.cpp" line="168"/>
         <source>Reply</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="p100q.cpp" line="165"/>
+        <location filename="p100q.cpp" line="169"/>
         <source>Unsubscribe from post</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="p100q.cpp" line="166"/>
+        <location filename="p100q.cpp" line="170"/>
         <source>Recommend this comment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="p100q.cpp" line="167"/>
+        <location filename="p100q.cpp" line="171"/>
         <source>Add this comment to bookmarks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="p100q.cpp" line="170"/>
+        <location filename="p100q.cpp" line="174"/>
         <source>View post</source>
         <translation type="unfinished"></translation>
     </message>
