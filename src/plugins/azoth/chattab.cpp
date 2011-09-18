@@ -733,9 +733,8 @@ namespace Azoth
 
 	namespace
 	{
-		void OpenChatWithText (QUrl url, const QString& id, ICLEntry *own)
+		void OpenChatWithText (QUrl newUrl, const QString& id, ICLEntry *own)
 		{
-			QUrl newUrl = url;
 			newUrl.removeQueryItem ("hrid");
 
 			IAccount *account = qobject_cast<IAccount*> (own->GetParentAccount ());
