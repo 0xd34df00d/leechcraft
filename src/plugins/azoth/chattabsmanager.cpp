@@ -62,13 +62,13 @@ namespace Azoth
 		OpenChat (entry);
 	}
 
-	void ChatTabsManager::OpenChat (const ICLEntry *entry)
+	QWidget* ChatTabsManager::OpenChat (const ICLEntry *entry)
 	{
 		const QString& id = entry->GetEntryID ();
 		if (Entry2Tab_.contains (id))
 		{
 			emit raiseTab (Entry2Tab_ [id]);
-			return;
+			return Entry2Tab_ [id];
 		}
 
 		EverOpened_ << id;
@@ -105,6 +105,8 @@ namespace Azoth
 		if (XmlSettingsManager::Instance ()
 				.property ("JumpToNewTabOnOpen").toBool ())
 			emit raiseTab (tab);
+
+		return tab;
 	}
 
 	void ChatTabsManager::CloseChat (const ICLEntry *entry)

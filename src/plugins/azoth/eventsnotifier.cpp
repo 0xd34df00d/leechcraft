@@ -32,17 +32,17 @@ namespace Azoth
 	: QObject (parent)
 	{
 	}
-	
+
 	void EventsNotifier::RegisterEntry (ICLEntry *entry)
 	{
 		QObject *entryObj = entry->GetObject ();
-		
+
 		connect (entryObj,
 				SIGNAL (chatPartStateChanged (const ChatPartState&, const QString&)),
 				this,
 				SLOT (handleChatPartStateChanged (const ChatPartState&, const QString&)));
 	}
-	
+
 	void EventsNotifier::handleChatPartStateChanged (const ChatPartState& state,
 			const QString&)
 	{
@@ -57,7 +57,7 @@ namespace Azoth
 					<< "doesn't implement ICLentry";
 			return;
 		}
-		
+
 		const QString& id = entry->GetEntryID ();
 		if (!ShouldNotifyNext_.value (id, true))
 			return;
@@ -79,14 +79,14 @@ namespace Azoth
 			Util::NotificationActionHandler *nh =
 					new Util::NotificationActionHandler (e, this);
 			nh->AddFunction (tr ("Open chat"),
-					boost::bind (static_cast<void (ChatTabsManager::*) (const ICLEntry*)> (&ChatTabsManager::OpenChat),
+					boost::bind (static_cast<QWidget* (ChatTabsManager::*) (const ICLEntry*)> (&ChatTabsManager::OpenChat),
 							Core::Instance ().GetChatTabsManager (),
 							entry));
 			nh->AddDependentObject (entry->GetObject ());
 			emit gotEntity (e);
 		}
 	}
-	
+
 	void EventsNotifier::handleEntryMadeCurrent (QObject *entryObj)
 	{
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
@@ -97,7 +97,7 @@ namespace Azoth
 					<< "doesn't implement ICLEntry";
 			return;
 		}
-		
+
 		ShouldNotifyNext_ [entry->GetEntryID ()] = true;
 	}
 }
