@@ -91,8 +91,7 @@ namespace Xoox
 
 		UserAvatarData *dEvent = dynamic_cast<UserAvatarData*> (event);
 		if (dEvent)
-		{
-		}
+			emit avatarUpdated (from, dEvent->GetImage ());
 	}
 
 	void UserAvatarManager::handleHTTPFinished ()
