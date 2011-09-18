@@ -46,6 +46,19 @@ namespace Xoox
 		Manager_->SetAutosubscribe<UserAvatarMetadata> (true);
 	}
 
+	void UserAvatarManager::PublishAvatar (const QImage& avatar)
+	{
+		if (!avatar.isNull ())
+		{
+			UserAvatarData data (avatar);
+
+			Manager_->PublishEvent (&data);
+		}
+
+		UserAvatarMetadata metadata (avatar);
+		Manager_->PublishEvent (&metadata);
+	}
+
 	void UserAvatarManager::handleEvent (const QString& from, PEPEventBase *event)
 	{
 		UserAvatarMetadata *mdEvent = dynamic_cast<UserAvatarMetadata*> (event);

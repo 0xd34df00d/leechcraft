@@ -38,6 +38,8 @@ namespace Xoox
 		ClientConnection *Conn_;
 	public:
 		UserAvatarManager (ClientConnection*);
+
+		void PublishAvatar (const QImage&);
 	private slots:
 		void handleEvent (const QString&, PEPEventBase*);
 		void handleHTTPFinished ();
