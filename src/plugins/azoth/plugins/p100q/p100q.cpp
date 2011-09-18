@@ -36,7 +36,7 @@ namespace p100q
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"azothp100qsettings.xml");
-		
+
 		PstoCommentRX_ =  QRegExp ("#[a-z]+/[0-9]+[:]", Qt::CaseInsensitive);
 		UserRX_ = QRegExp ("(?:[^>/]|<br />)@([\\w\\-]+)[ :]", Qt::CaseInsensitive);
 		PostAuthorRX_ = QRegExp ("<br />@([\\w\\-]+)[ :]", Qt::CaseInsensitive);
@@ -46,7 +46,7 @@ namespace p100q
 		TagRX_ = QRegExp ("<br />[*] ([^*,<]+(, [^*,<]+)*)");
 		ImgRX_ = QRegExp ("<a href=\"(http://[^<>\"]+[.](png|jpg|gif|jpeg))\">http://[^<>\"]+[.](png|jpg|gif|jpeg)</a>", Qt::CaseInsensitive);
 	}
-	
+
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
 	{
 		return XmlSettingsDialog_;
@@ -108,7 +108,7 @@ namespace p100q
 	}
 
 	QString Plugin::FormatBody (QString body)
-	{	
+	{
 		if (body.indexOf (PstoCommentRX_, 0) != PstoCommentPos)
 		{
 			QString tags, tag;
@@ -119,7 +119,7 @@ namespace p100q
 				tags = " * ";
 				tag = TagRX_.cap (0);
 				QStringList tagslist = TagRX_.cap (1).split (", ");
-				
+
 				Q_FOREACH (const QString& tagval, tagslist)
 					tags += QString (" <a href=\"azoth://msgeditreplace/S *%1\">%2</a> ")
 							.arg (QString (QUrl::toPercentEncoding (tagval)))
@@ -134,7 +134,7 @@ namespace p100q
 		if (showImg)
 			body.replace (ImgRX_,
 					"<p><a href=\"\\1\"><img style='max-height: 300px; max-width:300px;' src=\"\\1\"/></a><p/>");
-				
+
 		body.replace (PostRX_,
 				"<a href=\"azoth://msgeditreplace/%23\\1%20\">#\\1</a> "
 				"("
@@ -145,26 +145,30 @@ namespace p100q
 				"<a href=\"azoth://msgeditreplace/~%20%23\\1%20\">~</a>"
 				") "
 				);
-		
-		body.replace (PostAuthorRX_,
-				"<img style='float:left;margin-right:4px' "
-						"width='32px' "
-						"height='32px' "
-						"src='http://psto.net/img/a/40/\\1.png'>"
-				" <a href=\"azoth://msgeditreplace/@\\1+\">@\\1</a> ");
-		
+
+		if (XmlSettingsManager::Instance ().property ("ShowAvatars").toBool ())
+			body.replace (PostAuthorRX_,
+					"<img style='float:left;margin-right:4px' "
+							"width='32px' "
+							"height='32px' "
+							"src='http://psto.net/img/a/40/\\1.png'>"
+					" <a href=\"azoth://msgeditreplace/@\\1+\">@\\1</a> ");
+		else
+			body.replace (PostAuthorRX_,
+					" <a href=\"azoth://msgeditreplace/@\\1+\">@\\1</a> ");
+
 		body.replace(UserRX_,
 				" <a href=\"azoth://msgeditreplace/@\\1+\">@\\1</a> ");
-				
+
 		body.replace (CommentRX_,
 				"<a href=\"azoth://msgeditreplace/%23\\1/\\2%20\">#\\1/\\2</a> "
 				"(<a href=\"azoth://msgeditreplace/U%20%23\\1\">U</a> "
 				" <a href=\"azoth://msgeditreplace/!%20%23\\1/\\2%20\">!</a> "
 				" <a href=\"azoth://msgeditreplace/~%20%23\\1/\\2%20\">~</a>) ");
-				
+
 		body.replace (PostByUserRX_,
 				" <a href=\"azoth://msgeditreplace/%23\\1+\">#\\1</a> ");
-		
+
 		body.prepend("<div style=\"width:100%;overflow:auto;\">");
 		body += "</div>";
 		return body;
