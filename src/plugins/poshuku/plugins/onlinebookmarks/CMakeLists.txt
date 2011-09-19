@@ -10,6 +10,7 @@ SET (ONLINEBOOKMARKS_SRCS
 	xmlsettingsmanager.cpp
 	core.cpp
 	accountssettings.cpp
+	pluginmanager.cpp
 	)
 
 SET (ONLINEBOOKMARKS_HEADERS
@@ -17,6 +18,7 @@ SET (ONLINEBOOKMARKS_HEADERS
 	xmlsettingsmanager.h
 	core.h
 	accountssettings.h
+	pluginmanager.h
 	)
 
 SET (ONLINEBOOKMARKS_FORMS
@@ -45,10 +47,12 @@ ADD_LIBRARY (leechcraft_poshuku_onlinebookmarks SHARED
 	${ONLINEBOOKMARKS_UIS_H}
 	${ONLINEBOOKMARKS_RCCS}
 	)
+
 TARGET_LINK_LIBRARIES (leechcraft_poshuku_onlinebookmarks
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
+
 INSTALL (TARGETS leechcraft_poshuku_onlinebookmarks DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES ${ONLINEBOOKMARKS_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 INSTALL (FILES poshukuonlinebookmarkssettings.xml DESTINATION ${LC_SETTINGS_DEST})
