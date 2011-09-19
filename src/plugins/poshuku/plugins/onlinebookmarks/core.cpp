@@ -19,6 +19,7 @@
 #include "core.h"
 #include <QStandardItemModel>
 #include "accountssettings.h"
+#include "pluginmanager.h"
 
 namespace LeechCraft
 {
@@ -56,6 +57,18 @@ namespace OnlineBookmarks
 	QWidget* Core::GetAccountsSettingsWidget () const
 	{
 		return AccountsSettings_;
+	}
+
+	QSet<QByteArray> Core::GetExpectedPluginClasses () const
+	{
+		QSet<QByteArray> classes;
+		classes << "org.LeechCraft.Plugins.Poshuku.Plugins.OnlineBookmarks.IGeneralPlugin";
+		return classes;
+	}
+
+	void Core::AddPlugin (QObject *plugin)
+	{
+		PluginManager_->AddPlugin (plugin);
 	}
 
 }

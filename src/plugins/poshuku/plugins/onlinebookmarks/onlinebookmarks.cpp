@@ -18,10 +18,10 @@
 
 #include "onlinebookmarks.h"
 #include <QIcon>
-#include "core.h"
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
 #include "xmlsettingsmanager.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -81,6 +81,16 @@ namespace OnlineBookmarks
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
 	{
 		return SettingsDialog_;
+	}
+
+	QSet<QByteArray> Plugin::GetExpectedPluginClasses () const
+	{
+		return Core::Instance ().GetExpectedPluginClasses ();
+	}
+
+	void Plugin::AddPlugin (QObject *plugin)
+	{
+		Core::Instance ().AddPlugin (plugin);
 	}
 
 }

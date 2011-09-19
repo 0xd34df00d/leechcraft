@@ -24,6 +24,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/ihavesettings.h>
+#include <interfaces/ipluginready.h>
 
 namespace LeechCraft
 {
@@ -35,9 +36,10 @@ namespace OnlineBookmarks
 				, public IInfo
 				, public IPlugin2
 				, public IHaveSettings
+				, public IPluginReady
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
+		Q_INTERFACES (IInfo IPlugin2 IHaveSettings IPluginReady)
 
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
 		boost::shared_ptr<QTranslator> Translator_;
@@ -56,6 +58,10 @@ namespace OnlineBookmarks
 
 		// IHaveSettings methods
 		Util::XmlSettingsDialog_ptr GetSettingsDialog() const;
+
+		//IPluginReady
+		QSet<QByteArray> GetExpectedPluginClasses () const;
+		void AddPlugin (QObject*);
 	};
 }
 }

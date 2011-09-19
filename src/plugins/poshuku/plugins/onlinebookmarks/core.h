@@ -32,7 +32,11 @@ namespace Poshuku
 namespace OnlineBookmarks
 {
 
+class Plugin;
+
+
 	class AccountsSettings;
+	class PluginManager;
 
 	class Core : public QObject
 	{
@@ -41,6 +45,7 @@ namespace OnlineBookmarks
 		ICoreProxy_ptr CoreProxy_;
 		AccountsSettings *AccountsSettings_;
 		QStandardItemModel *ActiveServicesModel_;
+		boost::shared_ptr<PluginManager> PluginManager_;
 
 		Core ();
 	public:
@@ -50,6 +55,9 @@ namespace OnlineBookmarks
 
 		QAbstractItemModel* GetActiveServicesModel () const;
 		QWidget* GetAccountsSettingsWidget () const;
+
+		QSet<QByteArray> GetExpectedPluginClasses () const;
+		void AddPlugin (QObject*);
 	};
 }
 }
