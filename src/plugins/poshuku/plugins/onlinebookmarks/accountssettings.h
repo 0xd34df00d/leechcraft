@@ -16,10 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_BOOKMARKSDIALOG_H
-#define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_BOOKMARKSDIALOG_H
-#include <QDialog>
-#include "ui_bookmarksdialog.h"
+#ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_SETTINGS_H
+#define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_SETTINGS_H
+
+#include <QWidget>
+#include "ui_accountssettings.h"
+
+class QStandardItemModel;
 
 namespace LeechCraft
 {
@@ -27,20 +30,25 @@ namespace Poshuku
 {
 namespace OnlineBookmarks
 {
-	class BookmarksDialog : public QDialog
+	class AccountsSettings : public QWidget
 	{
 		Q_OBJECT
-		
-		Ui::BookmarksDialog_ Ui_;
+
+		Ui::AccountsSettings Ui_;
+
+		QStandardItemModel *AccountsModel_;
 	public:
-		BookmarksDialog (QWidget* parent = 0, Qt::WindowFlags f = 0);
-		void SetBookmark (const QString&, const QString&, const QStringList&);
-		void SendBookmark ();
+		AccountsSettings ();
 	public slots:
-		void sendBookmarkWithoutConfirm (bool);
+		void accept ();
+	private slots:
+		void on_Add__toggled (bool);
+		void on_Edit__toggled (bool);
+		void on_Delete__clicked ();
+		void on_AccountsView__clicked (const QModelIndex&);
 	};
 }
 }
 }
 
-#endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_BOOKMARKSDIALOG_H
+#endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_SETTINGS_H

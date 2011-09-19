@@ -18,13 +18,12 @@
 
 #ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_CORE_H
 #define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_CORE_H
+
 #include <QObject>
-#include <QDir>
-#include <interfaces/structures.h>
 #include <interfaces/iinfo.h>
 
+class QAbstractItemModel;
 class QStandardItemModel;
-class QNetworkAccessManager;
 
 namespace LeechCraft
 {
@@ -32,47 +31,25 @@ namespace Poshuku
 {
 namespace OnlineBookmarks
 {
-	class SyncBookmarks;
-	class AbstractBookmarksService;
-	class Settings;
+
+	class AccountsSettings;
 
 	class Core : public QObject
 	{
 		Q_OBJECT
 
-		ICoreProxy_ptr Proxy_;
-		QDir BookmarksDir_;
-		QList<AbstractBookmarksService*> ActiveBookmarksServices_;
-		QObject *PluginProxy_;
-		QStandardItemModel *Model_;
-		QStandardItemModel *ServiceModel_;
-		Settings *AccountsWidget_;
-		SyncBookmarks *BookmarksSyncManager_;
+		ICoreProxy_ptr CoreProxy_;
+		AccountsSettings *AccountsSettings_;
+		QStandardItemModel *ActiveServicesModel_;
 
 		Core ();
 	public:
 		static Core& Instance ();
-		void Init ();
-		void SendEntity (const Entity&);
-		QStandardItemModel* GetAccountModel () const;
-		SyncBookmarks* GetBookmarksSyncManager () const;
-		void SetActiveBookmarksServices (QList<AbstractBookmarksService*>);
-		QList<AbstractBookmarksService*> GetActiveBookmarksServices () const;
-		void SetPassword (const QString&, const QString&, const QString&);
-		QString GetPassword (const QString&, const QString&) const;
-		QNetworkAccessManager* GetNetworkAccessManager () const;
 		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;
-		void SetPluginProxy (QObject*);
-		QObject* GetBookmarksModel () const;
-		QDir GetBookmarksDir () const;
-		void SetBookmarksDir (const QDir&);
-		QStandardItemModel* GetServiceModel () const;
-		Settings* GetAccountsWidget ();
-		QStringList SanitizeTagsList (const QStringList&);
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
+
+		QAbstractItemModel* GetActiveServicesModel () const;
+		QWidget* GetAccountsSettingsWidget () const;
 	};
 }
 }
