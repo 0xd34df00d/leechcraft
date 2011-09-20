@@ -46,7 +46,7 @@ namespace ReadItLater
 
 	QString Plugin::GetName () const
 	{
-		return "OnlineBookmarks Read It Later";
+		return "Poshuku OB: Read It Later";
 	}
 
 	QString Plugin::GetInfo () const
