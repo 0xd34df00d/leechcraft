@@ -60,6 +60,7 @@ namespace Otzerkalu
 	public:
 		OtzerkaluDownloader (const DownloadParams& param, QObject *parent = 0);
 		QString GetLastDownloaded () const;
+		int FilesCount () const;
 		void Begin ();
 	private:
 		QString Download (const QUrl&, int);
