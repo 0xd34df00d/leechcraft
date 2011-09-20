@@ -30,6 +30,7 @@ namespace OnlineBookmarks
 	Core::Core ()
 	: AccountsSettings_ (new AccountsSettings)
 	, ActiveServicesModel_ (new QStandardItemModel)
+	, PluginManager_ (new PluginManager)
 	{
 	}
 
