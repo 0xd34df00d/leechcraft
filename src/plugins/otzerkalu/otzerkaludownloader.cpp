@@ -101,6 +101,11 @@ namespace Otzerkalu
 				Qt::UniqueConnection);
 	}
 	
+	int OtzerkaluDownloader::FilesCount () const
+	{
+		return DownloadedFiles_.count ();
+	}
+	
 	QList<QUrl> OtzerkaluDownloader::CSSParser (const QString& data) const
 	{
 		QRegExp UrlCSS ("(?s).*?:\\s*url\\s*\\((.*?)\\).*");
