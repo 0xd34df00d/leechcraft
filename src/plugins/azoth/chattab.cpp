@@ -391,9 +391,12 @@ namespace Azoth
 	{
 		UpdateTextHeight ();
 
-		SetChatPartState (CPSComposing);
-		TypeTimer_->stop ();
-		TypeTimer_->start ();
+		if (!Ui_.MsgEdit_->toPlainText ().isEmpty ())
+		{
+			SetChatPartState (CPSComposing);
+			TypeTimer_->stop ();
+			TypeTimer_->start ();
+		}
 	}
 
 	void ChatTab::on_SubjectButton__toggled (bool show)
