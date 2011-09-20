@@ -20,6 +20,7 @@
 #include "otzerkalu.h"
 #include <QIcon>
 #include <QUrl>
+#include <QStandardItemModel>
 #include <interfaces/entitytesthandleresult.h>
 #include "otzerkaludialog.h"
 #include <interfaces/core/icoreproxy.h>
@@ -32,6 +33,7 @@ namespace Otzerkalu
 	{
 		Proxy_ = proxy;
 		RepresentationModel_ = new QStandardItemModel (this);
+		RepresentationModel_->appendRow (new QStandardItem ("0 files are downloaded"));
 	}
 
 	void Plugin::SecondInit ()
@@ -82,24 +84,24 @@ namespace Otzerkalu
 		if (dialog.exec () != QDialog::Accepted)
 			return;
 
-		OtzerkaluDownloader *dl = new OtzerkaluDownloader (DownloadParams (dUrl, dialog.GetDir (),
+		DL_ = new OtzerkaluDownloader (DownloadParams (dUrl, dialog.GetDir (),
 					dialog.GetRecursionLevel (),
 					dialog.FetchFromExternalHosts ()),
 					this);
 		
-		connect (dl,
+		connect (DL_,
 				SIGNAL (gotEntity (const LeechCraft::Entity&)),
 				this,
 				SIGNAL (gotEntity (const LeechCraft::Entity&)));
-		connect (dl,
+		connect (DL_,
 				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)),
 				this,
 				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)));
-		connect (dl,
+		connect (DL_,
 				SIGNAL (fileDownloaded (QString)),
 				this,
 				SLOT (handleFileDownloaded (QString)));
-		dl->Begin ();
+		DL_->Begin ();
 	}
 	
 	QAbstractItemModel* Plugin::GetRepresentation () const
@@ -109,24 +111,7 @@ namespace Otzerkalu
 	
 	void Plugin::handleFileDownloaded (const QString& file)
 	{
-		if (file.isEmpty ())
-			return;
-		
-		const QStringList& fileParser = file.split("[.]");
-		QIcon icon;
-		if (!fileParser.isEmpty ())
-		{
-			const QString& format = fileParser.last ();
-			
-			if (format == "css")
-				icon = Proxy_->GetIcon ("css");
-			else
-				icon = Proxy_->GetIcon ("poshuku_unknownurlicon");
-		}
-		else
-			icon = Proxy_->GetIcon ("poshuku_unknownurlicon");
-	
-		RepresentationModel_->appendRow (new QStandardItem (icon, file));
+		RepresentationModel_->setItem (0, new QStandardItem (QString::number (DL_->FilesCount ()) + " files are downloaded"));
 	}
 
 }
