@@ -18,6 +18,7 @@
 
 #include "accountssettings.h"
 #include <QStandardItemModel>
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -38,6 +39,22 @@ namespace OnlineBookmarks
 
 		Ui_.LoginFrame_->hide ();
 		Ui_.Register_->hide ();
+		
+		Q_FOREACH (QObject *plugin, Core::Instance ().GetPlugins ())
+		{
+			IBookmarksService *ibs = qobject_cast<IBookmarksService*> (plugin);
+			if (!ibs)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< plugin
+						<< "doesn't implement IInfo";
+				continue;
+			}
+
+			Ui_.Services_->addItem (ibs->GetServiceIcon (), ibs->GetServiceName ());
+			Ui_.Services_->setItemData (Ui_.Services_->count () - 1,
+					QVariant::fromValue<QObject*> (plugin));
+		}
 	}
 
 	void AccountsSettings::accept ()
@@ -62,6 +79,8 @@ namespace OnlineBookmarks
 
 	void AccountsSettings::on_Edit__toggled (bool checked)
 	{
+		Ui_.Register_->hide ();
+
 		if (checked)
 		{
 			if (Ui_.Add_->isChecked ())
