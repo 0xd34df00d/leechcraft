@@ -21,6 +21,7 @@
 
 #include <QObject>
 #include <interfaces/iinfo.h>
+#include <interfaces/ibookmarksservice.h>
 
 class QAbstractItemModel;
 class QStandardItemModel;
@@ -32,10 +33,6 @@ namespace Poshuku
 namespace OnlineBookmarks
 {
 
-class Plugin;
-
-
-	class AccountsSettings;
 	class PluginManager;
 
 	class Core : public QObject
@@ -43,9 +40,10 @@ class Plugin;
 		Q_OBJECT
 
 		ICoreProxy_ptr CoreProxy_;
-		AccountsSettings *AccountsSettings_;
 		QStandardItemModel *ActiveServicesModel_;
 		boost::shared_ptr<PluginManager> PluginManager_;
+
+		QObjectList ServicesPlugins_;
 
 		Core ();
 	public:
@@ -54,10 +52,14 @@ class Plugin;
 		ICoreProxy_ptr GetProxy () const;
 
 		QAbstractItemModel* GetActiveServicesModel () const;
-		QWidget* GetAccountsSettingsWidget () const;
 
 		QSet<QByteArray> GetExpectedPluginClasses () const;
 		void AddPlugin (QObject*);
+
+		QObjectList GetPlugins () const;
+
+		QList<IBookmarksService*> GetBookmarksServices () const;
+		
 	};
 }
 }

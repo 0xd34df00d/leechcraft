@@ -28,8 +28,7 @@ namespace Poshuku
 namespace OnlineBookmarks
 {
 	Core::Core ()
-	: AccountsSettings_ (new AccountsSettings)
-	, ActiveServicesModel_ (new QStandardItemModel)
+	: ActiveServicesModel_ (new QStandardItemModel)
 	, PluginManager_ (new PluginManager)
 	{
 	}
@@ -55,11 +54,6 @@ namespace OnlineBookmarks
 		return ActiveServicesModel_;
 	}
 
-	QWidget* Core::GetAccountsSettingsWidget () const
-	{
-		return AccountsSettings_;
-	}
-
 	QSet<QByteArray> Core::GetExpectedPluginClasses () const
 	{
 		QSet<QByteArray> classes;
@@ -70,6 +64,25 @@ namespace OnlineBookmarks
 	void Core::AddPlugin (QObject *plugin)
 	{
 		PluginManager_->AddPlugin (plugin);
+		ServicesPlugins_ << plugin;
+	}
+
+	QObjectList Core::GetPlugins () const
+	{
+		return ServicesPlugins_;
+	}
+
+	QList<IBookmarksService*> Core::GetBookmarksServices () const
+	{
+		QList<IBookmarksService*> result;
+		Q_FOREACH (QObject *plugin, ServicesPlugins_)
+		{
+			IBookmarksService *bs = qobject_cast<IBookmarksService*> (plugin);
+			if (!bs)
+				continue;
+			result << bs;
+		}
+		return result;
 	}
 
 }
