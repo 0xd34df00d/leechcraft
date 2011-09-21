@@ -66,6 +66,16 @@ namespace ReadItLater
 		return classes;
 	}
 
+	QString Plugin::GetServiceName () const
+	{
+		return "Read It Later";
+	}
+
+	QIcon Plugin::GetServiceIcon () const
+	{
+		return QIcon ();
+	}
+
 }
 }
 }
