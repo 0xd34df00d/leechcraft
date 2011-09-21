@@ -19,6 +19,7 @@ SET (ONLINEBOOKMARKS_HEADERS
 	core.h
 	accountssettings.h
 	pluginmanager.h
+	interfaces/ibookmarksservice.h
 	)
 
 SET (ONLINEBOOKMARKS_FORMS
