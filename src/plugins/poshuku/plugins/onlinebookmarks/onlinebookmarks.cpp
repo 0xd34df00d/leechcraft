@@ -22,6 +22,7 @@
 #include <util/util.h>
 #include "xmlsettingsmanager.h"
 #include "core.h"
+#include "accountssettings.h"
 
 namespace LeechCraft
 {
@@ -35,16 +36,15 @@ namespace OnlineBookmarks
 		SettingsDialog_.reset (new Util::XmlSettingsDialog);
 		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				"poshukuonlinebookmarkssettings.xml");
-		SettingsDialog_->SetCustomWidget ("Accounts",
-				Core::Instance ().GetAccountsSettingsWidget ());
-		SettingsDialog_->SetDataSource ("ActiveServices",
-				Core::Instance ().GetActiveServicesModel ());
 
 		Core::Instance ().SetProxy (proxy);
 	}
 
 	void Plugin::SecondInit ()
 	{
+		SettingsDialog_->SetCustomWidget ("Accounts", new AccountsSettings);
+		SettingsDialog_->SetDataSource ("ActiveServices",
+				Core::Instance ().GetActiveServicesModel ());
 	}
 
 	void Plugin::Release ()
