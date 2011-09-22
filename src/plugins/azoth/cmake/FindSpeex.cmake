@@ -12,7 +12,7 @@
 #  BSD license.
 #  For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 #
-
+# Added more inrospection for WIN32 (c) 2011 DZhon (TheDZhon@gmail.com)
 
 if (SPEEX_LIBRARIES AND SPEEX_INCLUDE_DIRS)
   # in cache already
@@ -27,7 +27,20 @@ else (SPEEX_LIBRARIES AND SPEEX_INCLUDE_DIRS)
 
   #set(SPEEX_DEFINITIONS ${_SpeexCflags})
   set(SPEEX_DEFINITIONS "")
+  
+  IF(NOT DEFINED SPEEX_DIR)
+		IF(SPEEX_FIND_REQUIRED)
+			MESSAGE(FATAL_ERROR "Please set SPEEX_DIR variable")
+		ELSE(SPEEX_FIND_REQUIRED)
+			MESSAGE(STATUS "Please set SPEEX_DIR variable for speex support")
+		ENDIF(SPEEX_FIND_REQUIRED)
+  ENDIF(NOT DEFINED SPEEX_DIR)
 
+  IF(WIN32)
+	set(SPEEX_INCLUDE_WIN32 ${SPEEX_DIR}/include)
+	set(SPEEX_LIB_WIN32 ${SPEEX_DIR}/lib)
+  ENDIF(WIN32)  
+  
   find_path(SPEEX_INCLUDE_DIR
     NAMES
       speex/speex.h
@@ -38,18 +51,21 @@ else (SPEEX_LIBRARIES AND SPEEX_INCLUDE_DIRS)
       /usr/local/include
       /opt/local/include
       /sw/include
+	  ${SPEEX_INCLUDE_WIN32}
   )
 
   find_library(SPEEX_LIBRARY
     NAMES
       speex
       Speex
+	  libspeex.lib
     PATHS
       ${_SpeexLinkDir}
       /usr/lib
       /usr/local/lib
       /opt/local/lib
       /sw/lib
+	  ${SPEEX_LIB_WIN32}
   )
 
   if (SPEEX_LIBRARY)
