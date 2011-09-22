@@ -53,7 +53,7 @@ namespace OnlineBookmarks
 
 			Ui_.Services_->addItem (ibs->GetServiceIcon (), ibs->GetServiceName ());
 			Ui_.Services_->setItemData (Ui_.Services_->count () - 1,
-					QVariant::fromValue<QObject*> (plugin));
+					QVariant::fromValue<QObject*> (plugin), RServiceObject);
 		}
 	}
 
@@ -67,6 +67,7 @@ namespace OnlineBookmarks
 		{
 			if (Ui_.Edit_->isChecked ())
 				Ui_.Edit_->toggle ();
+
 			Ui_.ControlLayout_->insertWidget (1, Ui_.LoginFrame_);
 			Ui_.LoginFrame_->show ();
 		}

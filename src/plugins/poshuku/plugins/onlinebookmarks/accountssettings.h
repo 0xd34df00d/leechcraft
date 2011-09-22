@@ -38,6 +38,11 @@ namespace OnlineBookmarks
 
 		QStandardItemModel *AccountsModel_;
 	public:
+		enum ServiceObject
+		{
+			RServiceObject = Qt::UserRole + 1
+		};
+
 		AccountsSettings ();
 	public slots:
 		void accept ();
