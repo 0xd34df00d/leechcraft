@@ -18,6 +18,7 @@
 
 #include "readitlater.h"
 #include <QIcon>
+#include "readitlaterauthwidget.h"
 
 namespace LeechCraft
 {
@@ -74,6 +75,11 @@ namespace ReadItLater
 	QIcon Plugin::GetServiceIcon () const
 	{
 		return QIcon (":/plugins/poshuku/plugins/onlinebookmarks/plugins/readitlater/resources/images/readitlater.ico");
+	}
+
+	QWidget* Plugin::GetAuthWidget ()
+	{
+		return new ReadItLaterAuthWidget ();
 	}
 
 }

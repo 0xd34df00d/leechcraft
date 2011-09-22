@@ -29,8 +29,12 @@ namespace OnlineBookmarks
 	{
 	public:
 		virtual ~IBookmarksService () {};
+
 		virtual QString GetServiceName () const = 0;
+
 		virtual QIcon GetServiceIcon () const = 0;
+
+		virtual QWidget* GetAuthWidget () = 0;
 	};
 }
 }

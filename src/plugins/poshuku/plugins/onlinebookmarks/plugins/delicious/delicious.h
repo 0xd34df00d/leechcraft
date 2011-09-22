@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_DELICIOUS_DELICIOUS_H
-#define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_DELICIOUS_DELICIOUS_H
+#ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_PLUGINS_DELICIOUS_DELICIOUS_H
+#define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_PLUGINS_DELICIOUS_DELICIOUS_H
 
 #include <QObject>
 #include <interfaces/iinfo.h>
@@ -53,10 +53,11 @@ namespace Delicious
 
 		QString GetServiceName () const;
 		QIcon GetServiceIcon () const;
+		QWidget* GetAuthWidget ();
 	};
 }
 }
 }
 }
 
-#endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_DELICIOUS_DELICIOUS_H
+#endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_PLUGINS_DELICIOUS_DELICIOUS_H

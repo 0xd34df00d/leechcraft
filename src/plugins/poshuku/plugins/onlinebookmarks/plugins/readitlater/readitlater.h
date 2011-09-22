@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_READITLATER_READITLATER_H
-#define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_READITLATER_READITLATER_H
+#ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_PLUGINS_READITLATER_READITLATER_H
+#define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_PLUGINS_READITLATER_READITLATER_H
 
 #include <QObject>
 #include <interfaces/iinfo.h>
@@ -53,10 +53,11 @@ namespace ReadItLater
 
 		QString GetServiceName () const;
 		QIcon GetServiceIcon () const;
+		QWidget* GetAuthWidget();
 	};
 }
 }
 }
 }
 
-#endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_READITLATER_READITLATER_H
+#endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_PLUGINS_READITLATER_READITLATER_H

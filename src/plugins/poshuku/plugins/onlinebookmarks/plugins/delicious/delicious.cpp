@@ -76,6 +76,11 @@ namespace Delicious
 		return QIcon (":/plugins/poshuku/plugins/onlinebookmarks/plugins/delicious/resources/images/delicious.png");
 	}
 
+	QWidget* Plugin::GetAuthWidget ()
+	{
+		return 0;
+	}
+
 }
 }
 }
