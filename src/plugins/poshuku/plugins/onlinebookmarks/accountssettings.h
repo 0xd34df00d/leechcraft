@@ -20,6 +20,8 @@
 #define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_SETTINGS_H
 
 #include <QWidget>
+#include <interfaces/ibookmarksservice.h>
+#include <interfaces/iauthwidget.h>
 #include "ui_accountssettings.h"
 
 class QStandardItemModel;
@@ -37,6 +39,7 @@ namespace OnlineBookmarks
 		Ui::AccountsSettings Ui_;
 
 		QStandardItemModel *AccountsModel_;
+		QHash<IBookmarksService*, QWidget*> Service2AuthWidget_;
 	public:
 		enum ServiceObject
 		{
@@ -44,6 +47,7 @@ namespace OnlineBookmarks
 		};
 
 		AccountsSettings ();
+		~AccountsSettings ();
 	public slots:
 		void accept ();
 	private slots:

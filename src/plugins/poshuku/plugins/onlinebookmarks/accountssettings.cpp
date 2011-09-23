@@ -47,14 +47,35 @@ namespace OnlineBookmarks
 			{
 				qWarning () << Q_FUNC_INFO
 						<< plugin
-						<< "doesn't implement IInfo";
+						<< "doesn't implement IBookmarksService";
 				continue;
 			}
 
 			Ui_.Services_->addItem (ibs->GetServiceIcon (), ibs->GetServiceName ());
 			Ui_.Services_->setItemData (Ui_.Services_->count () - 1,
 					QVariant::fromValue<QObject*> (plugin), RServiceObject);
+
+			if (!Service2AuthWidget_.contains (ibs))
+			{
+				QWidget *widget = ibs->GetAuthWidget ();
+				if (!qobject_cast<IAuthWidget*> (widget))
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "auth widget for service"
+							<< ibs->GetServiceName ()
+							<< "is not a IAuthWidget"
+							<< widget;
+					return;
+				}
+
+				Service2AuthWidget_ [ibs] = widget;
+			}
 		}
+	}
+
+	AccountsSettings::~AccountsSettings ()
+	{
+		qDeleteAll (Service2AuthWidget_);
 	}
 
 	void AccountsSettings::accept ()
@@ -63,16 +84,34 @@ namespace OnlineBookmarks
 
 	void AccountsSettings::on_Add__toggled (bool checked)
 	{
+		QObject *plugin = Ui_.Services_->itemData (Ui_.Services_->currentIndex (),
+				RServiceObject).value<QObject*> ();
+		IBookmarksService *ibs = qobject_cast<IBookmarksService*> (plugin);
+		if (!ibs)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< plugin
+					<< "doesn't implement IBookmarksService";
+			return;
+		}
+
+		if (!Service2AuthWidget_.contains (ibs))
+			return;
+
 		if (checked)
 		{
 			if (Ui_.Edit_->isChecked ())
 				Ui_.Edit_->toggle ();
 
+			Ui_.AuthWidget_->layout ()->addWidget (Service2AuthWidget_ [ibs]);
+			Service2AuthWidget_ [ibs]->show ();
 			Ui_.ControlLayout_->insertWidget (1, Ui_.LoginFrame_);
 			Ui_.LoginFrame_->show ();
 		}
 		else
 		{
+			Ui_.AuthWidget_->layout ()->removeWidget (Service2AuthWidget_ [ibs]);
+			Service2AuthWidget_ [ibs]->hide ();
 			Ui_.ControlLayout_->removeWidget (Ui_.LoginFrame_);
 			Ui_.LoginFrame_->hide ();
 		}
