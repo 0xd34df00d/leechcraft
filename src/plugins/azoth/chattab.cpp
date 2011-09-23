@@ -492,6 +492,9 @@ namespace Azoth
 
 	void ChatTab::handleEncryptionStateChanged (QObject *entry, bool enabled)
 	{
+		if (entry != GetEntry<QObject> ())
+			return;
+
 		EnableEncryption_->blockSignals (true);
 		EnableEncryption_->setChecked (enabled);
 		EnableEncryption_->blockSignals (false);
