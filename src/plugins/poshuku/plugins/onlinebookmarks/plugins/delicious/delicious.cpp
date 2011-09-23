@@ -67,6 +67,11 @@ namespace Delicious
 		return classes;
 	}
 
+	IBookmarksService::Features Plugin::GetFeatures () const
+	{
+		return 0;
+	}
+
 	QString Plugin::GetServiceName () const
 	{
 		return "Delicious";
