@@ -67,6 +67,11 @@ namespace ReadItLater
 		return classes;
 	}
 
+	IBookmarksService::Features Plugin::GetFeatures () const
+	{
+		return FCanRegisterAccount;
+	}
+
 	QString Plugin::GetServiceName () const
 	{
 		return "Read It Later";

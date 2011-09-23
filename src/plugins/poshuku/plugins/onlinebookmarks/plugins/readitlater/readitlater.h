@@ -51,6 +51,7 @@ namespace ReadItLater
 
 		QSet<QByteArray> GetPluginClasses () const;
 
+		IBookmarksService::Features GetFeatures () const;
 		QString GetServiceName () const;
 		QIcon GetServiceIcon () const;
 		QWidget* GetAuthWidget();
