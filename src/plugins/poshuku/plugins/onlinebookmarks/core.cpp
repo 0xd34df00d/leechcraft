@@ -30,6 +30,7 @@ namespace OnlineBookmarks
 	Core::Core ()
 	: ActiveServicesModel_ (new QStandardItemModel)
 	, PluginManager_ (new PluginManager)
+	, AccountsSettings_ (new AccountsSettings)
 	{
 	}
 
@@ -52,6 +53,11 @@ namespace OnlineBookmarks
 	QAbstractItemModel* Core::GetActiveServicesModel () const
 	{
 		return ActiveServicesModel_;
+	}
+
+	AccountsSettings* Core::GetAccountsSettingsWidget () const
+	{
+		return AccountsSettings_;
 	}
 
 	QSet<QByteArray> Core::GetExpectedPluginClasses () const

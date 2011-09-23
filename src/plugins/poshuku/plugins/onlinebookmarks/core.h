@@ -34,6 +34,7 @@ namespace OnlineBookmarks
 {
 
 	class PluginManager;
+	class AccountsSettings;
 
 	class Core : public QObject
 	{
@@ -41,6 +42,7 @@ namespace OnlineBookmarks
 
 		ICoreProxy_ptr CoreProxy_;
 		QStandardItemModel *ActiveServicesModel_;
+		AccountsSettings* AccountsSettings_;
 		boost::shared_ptr<PluginManager> PluginManager_;
 
 		QObjectList ServicesPlugins_;
@@ -52,6 +54,7 @@ namespace OnlineBookmarks
 		ICoreProxy_ptr GetProxy () const;
 
 		QAbstractItemModel* GetActiveServicesModel () const;
+		AccountsSettings* GetAccountsSettingsWidget () const;
 
 		QSet<QByteArray> GetExpectedPluginClasses () const;
 		void AddPlugin (QObject*);
