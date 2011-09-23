@@ -42,9 +42,11 @@ namespace OnlineBookmarks
 
 	void Plugin::SecondInit ()
 	{
-		SettingsDialog_->SetCustomWidget ("Accounts", new AccountsSettings);
+		SettingsDialog_->SetCustomWidget ("Accounts",
+				Core::Instance ().GetAccountsSettingsWidget ());
 		SettingsDialog_->SetDataSource ("ActiveServices",
 				Core::Instance ().GetActiveServicesModel ());
+		Core::Instance ().GetAccountsSettingsWidget ()->InitServices ();
 	}
 
 	void Plugin::Release ()
