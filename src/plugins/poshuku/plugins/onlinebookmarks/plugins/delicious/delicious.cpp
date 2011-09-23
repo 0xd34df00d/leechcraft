@@ -18,6 +18,7 @@
 
 #include "delicious.h"
 #include <QIcon>
+#include "deliciousauthwidget.h"
 
 namespace LeechCraft
 {
@@ -78,7 +79,7 @@ namespace Delicious
 
 	QWidget* Plugin::GetAuthWidget ()
 	{
-		return 0;
+		return new DeliciousAuthWidget ();
 	}
 
 }
