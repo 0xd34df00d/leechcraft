@@ -48,6 +48,7 @@ namespace OnlineBookmarks
 
 		AccountsSettings ();
 		~AccountsSettings ();
+		void InitServices ();
 	public slots:
 		void accept ();
 	private slots:

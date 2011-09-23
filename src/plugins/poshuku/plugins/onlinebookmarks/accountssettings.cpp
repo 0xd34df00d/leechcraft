@@ -39,7 +39,15 @@ namespace OnlineBookmarks
 
 		Ui_.LoginFrame_->hide ();
 		Ui_.Register_->hide ();
-		
+	}
+
+	AccountsSettings::~AccountsSettings ()
+	{
+		qDeleteAll (Service2AuthWidget_);
+	}
+
+	void AccountsSettings::InitServices ()
+	{
 		Q_FOREACH (QObject *plugin, Core::Instance ().GetPlugins ())
 		{
 			IBookmarksService *ibs = qobject_cast<IBookmarksService*> (plugin);
@@ -73,11 +81,6 @@ namespace OnlineBookmarks
 		}
 	}
 
-	AccountsSettings::~AccountsSettings ()
-	{
-		qDeleteAll (Service2AuthWidget_);
-	}
-
 	void AccountsSettings::accept ()
 	{
 	}
@@ -94,6 +97,11 @@ namespace OnlineBookmarks
 					<< "doesn't implement IBookmarksService";
 			return;
 		}
+
+		if (ibs->GetFeatures () & IBookmarksService::FCanRegisterAccount)
+			Ui_.Register_->show ();
+		else
+			Ui_.Register_->hide ();
 
 		if (!Service2AuthWidget_.contains (ibs))
 			return;
