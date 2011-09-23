@@ -32,6 +32,16 @@ namespace ReadItLater
 		Ui_.setupUi (this);
 	}
 
+	QString ReadItLaterAuthWidget::GetLogin () const
+	{
+		return Ui_.Login_->text ();
+	}
+
+	QString ReadItLaterAuthWidget::GetPassword( ) const
+	{
+		return Ui_.Password_->text ();
+	}
+
 }
 }
 }

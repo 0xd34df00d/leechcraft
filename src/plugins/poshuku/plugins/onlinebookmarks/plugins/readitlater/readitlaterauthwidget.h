@@ -40,6 +40,8 @@ namespace ReadItLater
 		Ui::AuthWidget Ui_;
 	public:
 		ReadItLaterAuthWidget (QWidget* = 0);
+		QString GetLogin () const;
+		QString GetPassword () const;
 	};
 }
 }
