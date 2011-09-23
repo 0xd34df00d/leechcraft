@@ -83,7 +83,6 @@ namespace Xoox
 	const int ErrorLimit = 5;
 
 	ClientConnection::ClientConnection (const QString& jid,
-			const GlooxAccountState& state,
 			GlooxAccount *account)
 	: Client_ (new QXmppClient (this))
 	, MUCManager_ (new QXmppMucManager)
