@@ -85,7 +85,9 @@ namespace Xoox
 		// TODO check if participant supports this XEP.
 		// Need to wait until disco info storage is implemented.
 		QXmppMessage msg;
-		msg.setTo (GetJID ());
+		msg.setTo (GetJID () + (variant.isEmpty () ?
+						QString () :
+						('/' + variant)));
 		msg.setState (static_cast<QXmppMessage::State> (state));
 		Account_->GetClientConnection ()->
 				GetClient ()->sendPacket (msg);
