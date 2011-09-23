@@ -352,7 +352,7 @@ namespace Xoox
 			return true;
 		}
 		
-		bool MayChange (QXmppMucItem::Role ourRole,
+		bool MayChange (QXmppMucItem::Role,
 				QXmppMucItem::Affiliation ourAff,
 				RoomParticipantEntry *entry,
 				QXmppMucItem::Affiliation aff)
