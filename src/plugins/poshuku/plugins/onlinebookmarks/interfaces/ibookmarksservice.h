@@ -19,6 +19,8 @@
 #ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_IBOOKMARKSSERVICE_H
 #define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_IBOOKMARKSSERVICE_H
 
+#include <QFlag>
+
 namespace LeechCraft
 {
 namespace Poshuku
@@ -30,12 +32,21 @@ namespace OnlineBookmarks
 	public:
 		virtual ~IBookmarksService () {};
 
+		enum Feature
+		{
+			FCanRegisterAccount = 0x01
+		};
+		Q_DECLARE_FLAGS (Features, Feature);
+
+		virtual Features GetFeatures () const = 0;
+
 		virtual QString GetServiceName () const = 0;
 
 		virtual QIcon GetServiceIcon () const = 0;
 
 		virtual QWidget* GetAuthWidget () = 0;
 	};
+	Q_DECLARE_OPERATORS_FOR_FLAGS ( IBookmarksService::Features )
 }
 }
 }
