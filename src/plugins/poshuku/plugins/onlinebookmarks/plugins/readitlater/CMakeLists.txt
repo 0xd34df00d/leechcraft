@@ -7,12 +7,18 @@ INCLUDE_DIRECTORIES (${ONLINEBOOKMARKS_INCLUDE_DIR}
 
 SET (READITLATER_SRCS
 	readitlater.cpp
+	readitlaterservice.cpp
 	readitlaterauthwidget.cpp
+	readitlateraccount.cpp
+	readitlaterapi.cpp
 	)
 
 SET (READITLATER_HEADERS
 	readitlater.h
+	readitlaterservice.h
 	readitlaterauthwidget.h
+	readitlateraccount.h
+	readitlaterapi.h
 	)
 
 SET (READITLATER_FORMS readitlaterauthwidget.ui)
