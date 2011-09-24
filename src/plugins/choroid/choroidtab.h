@@ -23,6 +23,10 @@
 #include <interfaces/ihavetabs.h>
 #include "ui_choroidtab.h"
 
+class QFileSystemModel;
+class QStandardItemModel;
+class QGraphicsScene;
+
 namespace LeechCraft
 {
 namespace Choroid
@@ -37,6 +41,16 @@ namespace Choroid
 		QObject *Parent_;
 
 		Ui::ChoroidTab Ui_;
+
+		QGraphicsScene *Scene_;
+
+		QFileSystemModel *FSModel_;
+		QStandardItemModel *FilesModel_;
+
+		enum CustomRoles
+		{
+			CRFilePath = 100
+		};
 	public:
 		ChoroidTab (const TabClassInfo&, QObject*);
 
@@ -44,6 +58,9 @@ namespace Choroid
 		QObject* ParentMultiTabs ();
 		void Remove ();
 		QToolBar* GetToolBar () const;
+	private slots:
+		void handleDirTreeCurrentChanged (const QModelIndex&);
+		void handleFileChanged (const QModelIndex&);
 	signals:
 		void removeTab (QWidget*);
 	};
