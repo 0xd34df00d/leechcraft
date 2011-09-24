@@ -21,6 +21,7 @@
 #include <QCoreApplication>
 #include <QIcon>
 #include <QAction>
+#include <QTranslator>
 
 extern "C"
 {
@@ -87,6 +88,8 @@ namespace OTRoid
 
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		Translator_.reset (Util::InstallTranslator ("azoth_otroid"));
+
 		OTRL_INIT;
 
 		OtrDir_ = Util::CreateIfNotExists (".leechcraft/azoth/otr/");

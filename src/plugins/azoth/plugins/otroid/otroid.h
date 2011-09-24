@@ -18,6 +18,7 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_OTROID_OTROID_H
 #define PLUGINS_AZOTH_PLUGINS_OTROID_OTROID_H
+#include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <QDir>
 
@@ -46,6 +47,8 @@ namespace OTRoid
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2)
+
+		boost::shared_ptr<QTranslator> Translator_;
 
 		IProxyObject *AzothProxy_;
 
