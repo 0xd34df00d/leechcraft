@@ -19,6 +19,9 @@
 #include "otroid.h"
 #include <QCoreApplication>
 #include <QIcon>
+#include <libotr/privkey.h>
+#include <interfaces/iaccount.h>
+#include <interfaces/iclentry.h>
 #include <interfaces/imessage.h>
 #include <util/util.h>
 
@@ -28,13 +31,46 @@ namespace Azoth
 {
 namespace OTRoid
 {
+	namespace OTR
+	{
+		int IsLoggedIn (void *opData, const char *accName,
+				const char*, const char *recipient)
+		{
+			Plugin *p = static_cast<Plugin*> (opData);
+			return p->IsLoggedIn (QString::fromUtf8 (accName),
+					QString::fromUtf8 (recipient));
+		}
+
+		void InjectMessage (void *opData, const char *accName,
+				const char*, const char *recipient, const char *msg)
+		{
+			Plugin *p = static_cast<Plugin*> (opData);
+			p->InjectMsg (QString::fromUtf8 (accName),
+					QString::fromUtf8 (recipient),
+					QString::fromUtf8 (msg));
+		}
+	}
+
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		OTRL_INIT;
+
+		OtrDir_ = Util::CreateIfNotExists (".leechcraft/azoth/otr/");
+
+		UserState_ = otrl_userstate_create ();
+
+		otrl_privkey_read (UserState_, GetOTRFilename ("privkey"));
+		otrl_privkey_read_fingerprints (UserState_,
+				GetOTRFilename ("fingerprints"), NULL, NULL);
+
+		memset (&OtrOps_, 0, sizeof (OtrOps_));
+		OtrOps_.is_logged_in = &OTR::IsLoggedIn;
+		OtrOps_.inject_message = &OTR::InjectMessage;
 	}
 
 	void Plugin::SecondInit ()
 	{
-	}	
+	}
 
 	QByteArray Plugin::GetUniqueID () const
 	{
@@ -43,6 +79,7 @@ namespace OTRoid
 
 	void Plugin::Release ()
 	{
+		otrl_userstate_free (UserState_);
 	}
 
 	QString Plugin::GetName () const
@@ -65,6 +102,56 @@ namespace OTRoid
 		QSet<QByteArray> result;
 		result << "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin";
 		return result;
+	}
+
+	int Plugin::IsLoggedIn (const QString& accId, const QString& entryId)
+	{
+		QObject *entryObj = AzothProxy_->GetEntry (entryId, accId);
+		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+
+		if (!entry)
+			return -1;
+
+		return entry->Variants ().isEmpty () ? 0 : 1;
+	}
+
+	void Plugin::InjectMsg (const QString& accId,
+			const QString& entryId, const QString& body)
+	{
+		QObject *entryObj = AzothProxy_->GetEntry (entryId, accId);
+		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+
+		if (!entry)
+			return;
+
+		QObject *msgObj = entry->CreateMessage (IMessage::MTChatMessage,
+				QString (), body);
+		IMessage *msg = qobject_cast<IMessage*> (msgObj);
+		if (!msg)
+			return;
+
+		msg->Send ();
+	}
+
+	void Plugin::Notify (const QString& accId, const QString& entryId,
+			Priority prio, const QString& title,
+			const QString& prim, const QString& sec)
+	{
+		QString text = prim;
+		if (!sec.isEmpty ())
+			text += "<br />" + sec;
+
+		emit gotEntity (Util::MakeNotification (title, text, prio));
+	}
+
+	void Plugin::initPlugin (QObject *obj)
+	{
+		AzothProxy_ = qobject_cast<IProxyObject*> (obj);
+	}
+
+	const char* Plugin::GetOTRFilename (const QString& fname) const
+	{
+		return OtrDir_.absoluteFilePath (fname).toUtf8 ().constData ();
 	}
 }
 }

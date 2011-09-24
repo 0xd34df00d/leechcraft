@@ -19,9 +19,12 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_OTROID_OTROID_H
 #define PLUGINS_AZOTH_PLUGINS_OTROID_OTROID_H
 #include <QObject>
-#include <QRegExp>
+#include <QDir>
+#include <libotr/proto.h>
+#include <libotr/message.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
+#include <interfaces/iproxyobject.h>
 #include <interfaces/core/ihookproxy.h>
 
 class QTranslator;
@@ -38,6 +41,13 @@ namespace OTRoid
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2)
+
+		IProxyObject *AzothProxy_;
+
+		OtrlUserState UserState_;
+		OtrlMessageAppOps OtrOps_;
+
+		QDir OtrDir_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -48,6 +58,19 @@ namespace OTRoid
 		QIcon GetIcon () const;
 
 		QSet<QByteArray> GetPluginClasses () const;
+
+		int IsLoggedIn (const QString& accId, const QString& entryId);
+		void InjectMsg (const QString& accId,
+				const QString& entryId, const QString& msg);
+		void Notify (const QString& accId, const QString& entryId,
+				Priority, const QString& title,
+				const QString& primary, const QString& secondary);
+	public slots:
+		void initPlugin (QObject*);
+	private:
+		const char* GetOTRFilename (const QString&) const;
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }
