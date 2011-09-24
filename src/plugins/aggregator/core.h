@@ -24,6 +24,7 @@
 #include <QString>
 #include <QMap>
 #include <QPair>
+#include <QList>
 #include <QDateTime>
 #include <interfaces/idownload.h>
 #include <interfaces/core/icoreproxy.h>
@@ -110,6 +111,8 @@ namespace Aggregator
 		bool Initialized_;
 		AppWideActions AppWideActions_;
 		ItemsWidget *ReprWidget_;
+
+		QList<IDType_t> UpdatesQueue_;
 
 		PluginManager *PluginManager_;
 
@@ -216,6 +219,7 @@ namespace Aggregator
 		void saveSettings ();
 		void handleChannelDataUpdated (Channel_ptr);
 		void handleCustomUpdates ();
+		void rotateUpdatesQueue ();
 	private:
 		void UpdateUnreadItemsNumber () const;
 		void FetchPixmap (const Channel_ptr&);
