@@ -164,6 +164,8 @@ namespace OTRoid
 
 		QObject *msgObj = entry->CreateMessage (IMessage::MTChatMessage,
 				QString (), body);
+		msgObj->setProperty ("Azoth/HiddenMessage", true);
+
 		IMessage *msg = qobject_cast<IMessage*> (msgObj);
 		if (!msg)
 			return;
@@ -280,6 +282,7 @@ namespace OTRoid
 		if (ignore)
 		{
 			proxy->CancelDefault ();
+			msgObj->setProperty ("Azoth/HiddenMessage", true);
 			otrl_message_free (newMsg);
 			return;
 		}
