@@ -32,6 +32,11 @@ namespace ReadItLater
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		ReadItLaterService_.reset (new ReadItLaterService (proxy));
+
+		connect (ReadItLaterService_.get (),
+				SIGNAL (gotEntity (const LeechCraft::Entity&)),
+				this,
+				SIGNAL (gotEntity (const LeechCraft::Entity&)));
 	}
 
 	void Plugin::SecondInit ()
