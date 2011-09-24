@@ -20,8 +20,13 @@
 #define PLUGINS_AZOTH_PLUGINS_OTROID_OTROID_H
 #include <QObject>
 #include <QDir>
+
+extern "C"
+{
 #include <libotr/proto.h>
 #include <libotr/message.h>
+}
+
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/iproxyobject.h>
@@ -47,6 +52,8 @@ namespace OTRoid
 		OtrlUserState UserState_;
 		OtrlMessageAppOps OtrOps_;
 
+		QHash<QObject*, QAction*> Entry2Action_;
+
 		QDir OtrDir_;
 	public:
 		void Init (ICoreProxy_ptr);
@@ -65,10 +72,26 @@ namespace OTRoid
 		void Notify (const QString& accId, const QString& entryId,
 				Priority, const QString& title,
 				const QString& primary, const QString& secondary);
-	public slots:
-		void initPlugin (QObject*);
+		void WriteFingerprints ();
+		void LogMsg (const QString&);
+		QString GetAccountName (const QString& accId);
 	private:
 		const char* GetOTRFilename (const QString&) const;
+	public slots:
+		void initPlugin (QObject*);
+
+		void hookEntryActionAreasRequested (LeechCraft::IHookProxy_ptr proxy,
+				QObject *action,
+				QObject *entry);
+		void hookEntryActionsRequested (LeechCraft::IHookProxy_ptr proxy,
+				QObject *entry);
+		void hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
+				QObject *message);
+		void hookMessageCreated (LeechCraft::IHookProxy_ptr proxy,
+				QObject *chatTab,
+				QObject *message);
+	private slots:
+		void handleEntryDestroyed ();
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 	};
