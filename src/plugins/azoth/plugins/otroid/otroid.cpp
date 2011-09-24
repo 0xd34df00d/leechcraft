@@ -231,19 +231,11 @@ namespace OTRoid
 
 	void Plugin::hookEntryActionsRequested (IHookProxy_ptr proxy, QObject *entry)
 	{
+		if (qobject_cast<ICLEntry*> (entry)->GetEntryType () == ICLEntry::ETMUC)
+			return;
+
 		if (!Entry2Action_.contains (entry))
-		{
-			connect (entry,
-					SIGNAL (destroyed (QObject*)),
-					this,
-					SLOT (handleEntryDestroyed ()));
-
-			QAction *otr = new QAction (tr ("Enable OTR"), this);
-			otr->setCheckable (true);
-			otr->setProperty ("Azoth/OTRoid/IsGood", true);
-
-			Entry2Action_ [entry] = otr;
-		}
+			CreateActions (entry);
 
 		QList<QVariant> list = proxy->GetReturnValue ().toList ();
 		list << QVariant::fromValue<QObject*> (Entry2Action_ [entry]);
@@ -290,6 +282,11 @@ namespace OTRoid
 		{
 			msg->SetBody (QString::fromUtf8 (newMsg));
 			otrl_message_free (newMsg);
+
+			if (!Entry2Action_.contains (entryObj))
+				CreateActions (entryObj);
+
+			Entry2Action_ [entryObj]->setChecked (true);
 		}
 	}
 
@@ -345,6 +342,20 @@ namespace OTRoid
 	const char* Plugin::GetOTRFilename (const QString& fname) const
 	{
 		return OtrDir_.absoluteFilePath (fname).toUtf8 ().constData ();
+	}
+
+	void Plugin::CreateActions (QObject *entry)
+	{
+		connect (entry,
+				SIGNAL (destroyed (QObject*)),
+				this,
+				SLOT (handleEntryDestroyed ()));
+
+		QAction *otr = new QAction (tr ("Enable OTR"), this);
+		otr->setCheckable (true);
+		otr->setProperty ("Azoth/OTRoid/IsGood", true);
+
+		Entry2Action_ [entry] = otr;
 	}
 }
 }

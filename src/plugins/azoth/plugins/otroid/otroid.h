@@ -77,6 +77,7 @@ namespace OTRoid
 		QString GetAccountName (const QString& accId);
 	private:
 		const char* GetOTRFilename (const QString&) const;
+		void CreateActions (QObject*);
 	public slots:
 		void initPlugin (QObject*);
 
