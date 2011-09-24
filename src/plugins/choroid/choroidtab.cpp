@@ -17,44 +17,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_CHOROID_CHOROID_H
-#define PLUGINS_CHOROID_CHOROID_H
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/ihavetabs.h>
+#include "choroidtab.h"
 
 namespace LeechCraft
 {
 namespace Choroid
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IHaveTabs
+	ChoroidTab::ChoroidTab (const TabClassInfo& tc, QObject *parent)
+	: TabClass_ (tc)
+	, Parent_ (parent)
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs);
+		Ui_.setupUi (this);
+	}
 
-		TabClassInfo TabInfo_;
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+	TabClassInfo ChoroidTab::GetTabClassInfo () const
+	{
+		return TabClass_;
+	}
 
-		TabClasses_t GetTabClasses () const;
-		void TabOpenRequested (const QByteArray&);
-	signals:
-		void addNewTab (const QString&, QWidget*);
-		void removeTab (QWidget*);
-		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void statusBarChanged (QWidget*, const QString&);
-		void raiseTab (QWidget*);
-	};
+	QObject* ChoroidTab::ParentMultiTabs ()
+	{
+		return Parent_;
+	}
+
+	void ChoroidTab::Remove ()
+	{
+		emit removeTab (this);
+	}
+
+	QToolBar* ChoroidTab::GetToolBar () const
+	{
+		return 0;
+	}
 }
 }
-
-#endif

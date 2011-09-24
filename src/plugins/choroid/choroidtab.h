@@ -17,42 +17,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_CHOROID_CHOROID_H
-#define PLUGINS_CHOROID_CHOROID_H
-#include <QObject>
-#include <interfaces/iinfo.h>
+#ifndef PLUGINS_CHOROID_CHOROIDTAB_H
+#define PLUGINS_CHOROID_CHOROIDTAB_H
+#include <QWidget>
 #include <interfaces/ihavetabs.h>
+#include "ui_choroidtab.h"
 
 namespace LeechCraft
 {
 namespace Choroid
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IHaveTabs
+	class ChoroidTab : public QWidget
+					 , public ITabWidget
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs);
+		Q_INTERFACES (ITabWidget);
 
-		TabClassInfo TabInfo_;
+		const TabClassInfo TabClass_;
+		QObject *Parent_;
+
+		Ui::ChoroidTab Ui_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		ChoroidTab (const TabClassInfo&, QObject*);
 
-		TabClasses_t GetTabClasses () const;
-		void TabOpenRequested (const QByteArray&);
+		TabClassInfo GetTabClassInfo () const;
+		QObject* ParentMultiTabs ();
+		void Remove ();
+		QToolBar* GetToolBar () const;
 	signals:
-		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);
-		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void statusBarChanged (QWidget*, const QString&);
-		void raiseTab (QWidget*);
 	};
 }
 }
