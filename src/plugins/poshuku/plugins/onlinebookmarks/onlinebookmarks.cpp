@@ -47,6 +47,11 @@ namespace OnlineBookmarks
 		SettingsDialog_->SetDataSource ("ActiveServices",
 				Core::Instance ().GetActiveServicesModel ());
 		Core::Instance ().GetAccountsSettingsWidget ()->InitServices ();
+
+		connect (Core::Instance ().GetAccountsSettingsWidget (),
+				SIGNAL (gotEntity (const LeechCraft::Entity&)),
+				this,
+				SIGNAL (gotEntity (const LeechCraft::Entity&)));
 	}
 
 	void Plugin::Release ()

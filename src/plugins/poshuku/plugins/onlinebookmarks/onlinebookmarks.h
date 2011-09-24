@@ -62,6 +62,8 @@ namespace OnlineBookmarks
 		//IPluginReady
 		QSet<QByteArray> GetExpectedPluginClasses () const;
 		void AddPlugin (QObject*);
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }
