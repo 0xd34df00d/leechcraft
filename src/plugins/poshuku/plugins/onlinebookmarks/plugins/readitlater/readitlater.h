@@ -22,7 +22,7 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
-#include <interfaces/ibookmarksservice.h>
+#include <interfaces/iserviceplugin.h>
 
 namespace LeechCraft
 {
@@ -32,15 +32,21 @@ namespace OnlineBookmarks
 {
 namespace ReadItLater
 {
+
+	class ReadItLaterService;
+
 	class Plugin : public QObject
 				, public IPlugin2
 				, public IInfo
-				, public IBookmarksService
+				, public IServicePlugin
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2
-				LeechCraft::Poshuku::OnlineBookmarks::IBookmarksService)
+				LeechCraft::Poshuku::OnlineBookmarks::IServicePlugin)
+
+		boost::shared_ptr<ReadItLaterService> ReadItLaterService_;
 	public:
+		// IInfo
 		void Init (ICoreProxy_ptr proxy);
 		void SecondInit ();
 		void Release ();
@@ -49,12 +55,12 @@ namespace ReadItLater
 		QString GetInfo() const;
 		QIcon GetIcon() const;
 
+		// IPlugin2
 		QSet<QByteArray> GetPluginClasses () const;
 
-		IBookmarksService::Features GetFeatures () const;
-		QString GetServiceName () const;
-		QIcon GetServiceIcon () const;
-		QWidget* GetAuthWidget();
+		// IServicePlugin
+		QObject* GetObject ();
+		QObject* GetBookmarksService () const;
 	};
 }
 }

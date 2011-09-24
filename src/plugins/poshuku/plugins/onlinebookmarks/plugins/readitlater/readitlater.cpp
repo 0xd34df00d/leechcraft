@@ -19,6 +19,7 @@
 #include "readitlater.h"
 #include <QIcon>
 #include "readitlaterauthwidget.h"
+#include "readitlaterservice.h"
 
 namespace LeechCraft
 {
@@ -30,10 +31,12 @@ namespace ReadItLater
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		ReadItLaterService_.reset (new ReadItLaterService (proxy));
 	}
 
 	void Plugin::SecondInit ()
 	{
+		ReadItLaterService_->Prepare ();
 	}
 	
 	void Plugin::Release ()
@@ -63,28 +66,18 @@ namespace ReadItLater
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
 		QSet<QByteArray> classes;
-		classes << "org.LeechCraft.Plugins.Poshuku.Plugins.OnlineBookmarks.IGeneralPlugin";
+		classes << "org.LeechCraft.Plugins.Poshuku.Plugins.OnlineBookmarks.IServicePlugin";
 		return classes;
 	}
 
-	IBookmarksService::Features Plugin::GetFeatures () const
+	QObject* Plugin::GetObject ()
 	{
-		return FCanRegisterAccount;
+		return this;
 	}
 
-	QString Plugin::GetServiceName () const
+	QObject* Plugin::GetBookmarksService () const
 	{
-		return "Read It Later";
-	}
-
-	QIcon Plugin::GetServiceIcon () const
-	{
-		return QIcon (":/plugins/poshuku/plugins/onlinebookmarks/plugins/readitlater/resources/images/readitlater.ico");
-	}
-
-	QWidget* Plugin::GetAuthWidget ()
-	{
-		return new ReadItLaterAuthWidget ();
+		return qobject_cast<QObject*> (ReadItLaterService_.get ());
 	}
 
 }
