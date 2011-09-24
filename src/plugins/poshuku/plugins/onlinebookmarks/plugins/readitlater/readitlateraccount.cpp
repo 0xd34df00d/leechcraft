@@ -19,6 +19,7 @@
 #include "readitlateraccount.h"
 #include <QDataStream>
 #include <QtDebug>
+#include <util/util.h>
 
 namespace LeechCraft
 {
@@ -28,11 +29,9 @@ namespace OnlineBookmarks
 {
 namespace ReadItLater
 {
-	ReadItLaterAccount::ReadItLaterAccount (const QString& login,
-			const QString& password, QObject *parent)
+	ReadItLaterAccount::ReadItLaterAccount (const QString& login, QObject *parent)
 	: QObject (parent)
 	, Login_ (login)
-	, Password_ (password)
 	, AuthType_ (IAccount::ATHttpAuth)
 	, ParentService_ (parent)
 	{
@@ -64,6 +63,11 @@ namespace ReadItLater
 		return Password_;
 	}
 
+	void ReadItLaterAccount::SetPassword (const QString& pass)
+	{
+		Password_ = pass;
+	}
+
 	IAccount::AuthType ReadItLaterAccount::GetAuthType () const
 	{
 		return AuthType_;
@@ -85,8 +89,7 @@ namespace ReadItLater
 		{
 			QDataStream ostr (&result, QIODevice::WriteOnly);
 			ostr << version
-					<< Login_
-					<< Password_;
+					<< Login_;
 		}
 
 		return result;
@@ -109,11 +112,10 @@ namespace ReadItLater
 		}
 
 		QString login;
-		QString password;
-		in >> login
-				>> password;
-		return new ReadItLaterAccount (login, password, parent);
+		in >> login;
+		return new ReadItLaterAccount (login, parent);
 	}
+
 }
 }
 }

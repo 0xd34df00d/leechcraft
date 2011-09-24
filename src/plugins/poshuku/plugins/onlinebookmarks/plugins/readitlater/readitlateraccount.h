@@ -21,6 +21,7 @@
 
 #include <QObject>
 #include <interfaces/iaccount.h>
+#include <interfaces/structures.h>
 
 namespace LeechCraft
 {
@@ -44,12 +45,13 @@ namespace ReadItLater
 		IAccount::AuthType AuthType_;
 		QObject *ParentService_;
 	public:
-		ReadItLaterAccount (const QString&, const QString&, QObject* = 0);
+		ReadItLaterAccount (const QString&, QObject* = 0);
 		QObject* GetObject ();
 		QObject* GetParentService () const;
 		QByteArray GetAccountID () const;
 		QString GetLogin () const;
 		QString GetPassword () const;
+		void SetPassword (const QString&);
 		IAccount::AuthType GetAuthType () const;
 		QVariantMap GetIdentifyingData() const;
 		QByteArray Serialize () const ;
