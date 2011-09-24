@@ -16,4 +16,46 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
+
 #include "choroid.h"
+#include <QIcon>
+
+namespace LeechCraft
+{
+namespace Choroid
+{
+	void Plugin::Init (ICoreProxy_ptr)
+	{
+	}
+
+	void Plugin::SecondInit ()
+	{
+	}
+
+	QByteArray Plugin::GetUniqueID () const
+	{
+		return "org.LeechCraft.Choroid";
+	}
+
+	void Plugin::Release ()
+	{
+	}
+
+	QString Plugin::GetName () const
+	{
+		return "Choroid";
+	}
+
+	QString Plugin::GetInfo () const
+	{
+		return tr ("Image viewer for LeechCraft.");
+	}
+
+	QIcon Plugin::GetIcon() const
+	{
+		return QIcon ();
+	}
+}
+}
+
+Q_EXPORT_PLUGIN2 (leechcraft_choroid, LeechCraft::Choroid::Plugin);

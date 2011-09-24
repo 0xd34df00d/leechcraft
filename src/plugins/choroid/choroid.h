@@ -19,15 +19,28 @@
 
 #ifndef PLUGINS_CHOROID_CHOROID_H
 #define PLUGINS_CHOROID_CHOROID_H
+#include <QObject>
+#include <interfaces/iinfo.h>
 
 namespace LeechCraft
 {
 namespace Choroid
 {
-	class Choroid
+	class Plugin : public QObject
+				 , public IInfo
 	{
 		Q_OBJECT
+		Q_INTERFACES (IInfo);
+	public:
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		QByteArray GetUniqueID () const;
+		void Release ();
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
 	};
+}
 }
 
 #endif
