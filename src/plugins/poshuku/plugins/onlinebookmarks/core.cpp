@@ -18,6 +18,8 @@
 
 #include "core.h"
 #include <QStandardItemModel>
+#include <interfaces/iplugin2.h>
+#include <interfaces/iserviceplugin.h>
 #include "accountssettings.h"
 #include "pluginmanager.h"
 
@@ -63,34 +65,57 @@ namespace OnlineBookmarks
 	QSet<QByteArray> Core::GetExpectedPluginClasses () const
 	{
 		QSet<QByteArray> classes;
-		classes << "org.LeechCraft.Plugins.Poshuku.Plugins.OnlineBookmarks.IGeneralPlugin";
+		classes << "org.LeechCraft.Plugins.Poshuku.Plugins.OnlineBookmarks.IServicePlugin";
 		return classes;
 	}
 
 	void Core::AddPlugin (QObject *plugin)
 	{
+		IPlugin2 *plugin2 = qobject_cast<IPlugin2*> (plugin);
+		if (!plugin2)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< plugin
+					<< "isn't a IPlugin2";
+			return;
+		}
+
 		PluginManager_->AddPlugin (plugin);
+
+		QSet<QByteArray> classes = plugin2->GetPluginClasses ();
+		if (classes.contains ("org.LeechCraft.Plugins.Poshuku.Plugins.OnlineBookmarks.IServicePlugin"))
+		{
+			IServicePlugin *service = qobject_cast<IServicePlugin*> (plugin);
+			if (!service)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "plugin"
+						<< plugin
+						<< "tells it implements the IServicePlugin but cast failed";
+				return;
+			}
+			AddServicePlugin (service->GetBookmarksService ());
+		}
+	}
+
+	void Core::AddServicePlugin (QObject* plugin)
+	{
+		IBookmarksService *ibs = qobject_cast<IBookmarksService*> (plugin);
+		if (!plugin)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< plugin
+					<< "is not an IBookmarksService";
+			return;
+		}
+
 		ServicesPlugins_ << plugin;
 	}
 
-	QObjectList Core::GetPlugins () const
+	QObjectList Core::GetServicePlugins () const
 	{
 		return ServicesPlugins_;
 	}
-
-	QList<IBookmarksService*> Core::GetBookmarksServices () const
-	{
-		QList<IBookmarksService*> result;
-		Q_FOREACH (QObject *plugin, ServicesPlugins_)
-		{
-			IBookmarksService *bs = qobject_cast<IBookmarksService*> (plugin);
-			if (!bs)
-				continue;
-			result << bs;
-		}
-		return result;
-	}
-
 }
 }
 }

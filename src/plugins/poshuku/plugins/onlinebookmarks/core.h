@@ -21,7 +21,6 @@
 
 #include <QObject>
 #include <interfaces/iinfo.h>
-#include <interfaces/ibookmarksservice.h>
 
 class QAbstractItemModel;
 class QStandardItemModel;
@@ -59,10 +58,8 @@ namespace OnlineBookmarks
 		QSet<QByteArray> GetExpectedPluginClasses () const;
 		void AddPlugin (QObject*);
 
-		QObjectList GetPlugins () const;
-
-		QList<IBookmarksService*> GetBookmarksServices () const;
-		
+		void AddServicePlugin (QObject*);
+		QObjectList GetServicePlugins () const;
 	};
 }
 }
