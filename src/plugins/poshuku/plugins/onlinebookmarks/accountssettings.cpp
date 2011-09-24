@@ -18,7 +18,9 @@
 
 #include "accountssettings.h"
 #include <QStandardItemModel>
+#include <interfaces/iauthwidget.h>
 #include "core.h"
+#include "interfaces/iaccount.h"
 
 namespace LeechCraft
 {
@@ -34,7 +36,6 @@ namespace OnlineBookmarks
 		Ui_.AccountsView_->setModel (AccountsModel_);
 		Ui_.AccountsView_->expandAll ();
 
-		Ui_.Edit_->setEnabled (false);
 		Ui_.Delete_->setEnabled (false);
 
 		Ui_.LoginFrame_->hide ();
@@ -48,17 +49,9 @@ namespace OnlineBookmarks
 
 	void AccountsSettings::InitServices ()
 	{
-		Q_FOREACH (QObject *plugin, Core::Instance ().GetPlugins ())
+		Q_FOREACH (QObject *plugin, Core::Instance ().GetServicePlugins ())
 		{
 			IBookmarksService *ibs = qobject_cast<IBookmarksService*> (plugin);
-			if (!ibs)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< plugin
-						<< "doesn't implement IBookmarksService";
-				continue;
-			}
-
 			Ui_.Services_->addItem (ibs->GetServiceIcon (), ibs->GetServiceName ());
 			Ui_.Services_->setItemData (Ui_.Services_->count () - 1,
 					QVariant::fromValue<QObject*> (plugin), RServiceObject);
@@ -69,16 +62,36 @@ namespace OnlineBookmarks
 				if (!qobject_cast<IAuthWidget*> (widget))
 				{
 					qWarning () << Q_FUNC_INFO
-							<< "auth widget for service"
-							<< ibs->GetServiceName ()
+							<< "auth widget for plugin"
+							<< plugin
 							<< "is not a IAuthWidget"
 							<< widget;
-					return;
+					continue;
 				}
 
 				Service2AuthWidget_ [ibs] = widget;
 			}
+
+			connect (ibs->GetObject (),
+					SIGNAL (accountAdded (QObject*)),
+					this,
+					SLOT (addAccount (QObject*)));
+			connect (this,
+					SIGNAL (accountRemoved (QObject*)),
+					ibs->GetObject (),
+					SLOT (removeAccount (QObject*)));
+			
 		}
+	}
+
+	QModelIndex AccountsSettings::GetServiceIndex (QObject *serviceObj) const
+	{
+		for (int i = 0; i < AccountsModel_->rowCount (); ++i)
+			if (AccountsModel_->item (i)->
+						data (RServiceObject).value<QObject*> () == serviceObj)
+				return AccountsModel_->index (i, 0);
+
+			return QModelIndex ();
 	}
 
 	void AccountsSettings::accept ()
@@ -90,13 +103,6 @@ namespace OnlineBookmarks
 		QObject *plugin = Ui_.Services_->itemData (Ui_.Services_->currentIndex (),
 				RServiceObject).value<QObject*> ();
 		IBookmarksService *ibs = qobject_cast<IBookmarksService*> (plugin);
-		if (!ibs)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< plugin
-					<< "doesn't implement IBookmarksService";
-			return;
-		}
 
 		if (ibs->GetFeatures () & IBookmarksService::FCanRegisterAccount)
 			Ui_.Register_->show ();
@@ -106,11 +112,11 @@ namespace OnlineBookmarks
 		if (!Service2AuthWidget_.contains (ibs))
 			return;
 
+		IAuthWidget *aw = qobject_cast<IAuthWidget*> (Service2AuthWidget_ [ibs]);
+		aw->SetIdentifyingData (QVariantMap ());
+
 		if (checked)
 		{
-			if (Ui_.Edit_->isChecked ())
-				Ui_.Edit_->toggle ();
-
 			Ui_.AuthWidget_->layout ()->addWidget (Service2AuthWidget_ [ibs]);
 			Service2AuthWidget_ [ibs]->show ();
 			Ui_.ControlLayout_->insertWidget (1, Ui_.LoginFrame_);
@@ -125,53 +131,113 @@ namespace OnlineBookmarks
 		}
 	}
 
-	void AccountsSettings::on_Edit__toggled (bool checked)
-	{
-		Ui_.Register_->hide ();
-
-		if (checked)
-		{
-			if (Ui_.Add_->isChecked ())
-				Ui_.Add_->toggle ();
-			Ui_.ControlLayout_->insertWidget (2, Ui_.LoginFrame_);
-			Ui_.LoginFrame_->show ();
-		}
-		else
-		{
-			Ui_.ControlLayout_->removeWidget (Ui_.LoginFrame_);
-			Ui_.LoginFrame_->hide ();
-		}
-	}
-
 	void AccountsSettings::on_Delete__clicked ()
 	{
-		if (Ui_.AccountsView_->currentIndex ().parent () == QModelIndex ())
+		const QModelIndex& current = Ui_.AccountsView_->currentIndex ();
+		const QModelIndex& parentIndex = current.parent ();
+		if (parentIndex == QModelIndex ())
 			return;
-
-		AccountsModel_->removeRow (Ui_.AccountsView_->currentIndex ().row (),
-				Ui_.AccountsView_->currentIndex ().parent ());
 
 		if (Ui_.Add_->isChecked ())
 			Ui_.Add_->toggle ();
-		else if (Ui_.Edit_->isChecked ())
-			Ui_.Edit_->toggle ();
+
+		QObject *accObj = AccountsModel_->itemFromIndex (current)->
+				data (RAccountObject).value<QObject*> ();
+		emit accountRemoved (accObj);
+		
+		AccountsModel_->removeRow (current.row (), parentIndex);
+		
+		if (!AccountsModel_->rowCount (parentIndex))
+			AccountsModel_->removeRows (parentIndex.row (), 0);
+	}
+
+	void AccountsSettings::on_Auth__clicked ()
+	{
+		QObject *plugin = Ui_.Services_->itemData (Ui_.Services_->currentIndex (),
+				RServiceObject).value<QObject*> ();
+		IBookmarksService *ibs = qobject_cast<IBookmarksService*> (plugin);
+
+		IAuthWidget *aw = qobject_cast<IAuthWidget*> (Service2AuthWidget_ [ibs]);
+		if (!aw)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "auth widget for plugin"
+					<< plugin
+					<< "is not a IAuthWidget"
+					<< aw;
+			return;
+		}
+
+		ibs->CheckAuthData (aw->GetIdentifyingData ());
+	}
+
+	void AccountsSettings::on_Register__clicked ()
+	{
+		QObject *plugin = Ui_.Services_->itemData (Ui_.Services_->currentIndex (),
+				RServiceObject).value<QObject*> ();
+		IBookmarksService *ibs = qobject_cast<IBookmarksService*> (plugin);
+
+		IAuthWidget *aw = qobject_cast<IAuthWidget*> (Service2AuthWidget_ [ibs]);
+		if (!aw)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "auth widget for plugin"
+					<< plugin
+					<< "is not a IAuthWidget"
+					<< aw;
+			return;
+		}
+
+		ibs->RegisterAccount (aw->GetIdentifyingData ());
 	}
 
 	void AccountsSettings::on_AccountsView__clicked (const QModelIndex& index)
 	{
 		if (index.parent() == QModelIndex ())
-		{
-			if (Ui_.Edit_->isChecked ())
-				Ui_.Edit_->toggle ();
-
-			Ui_.Edit_->setEnabled (false);
 			Ui_.Delete_->setEnabled (false);
+		else
+			Ui_.Delete_->setEnabled (true);
+	}
+
+	void AccountsSettings::on_Services__currentIndexChanged (int index)
+	{
+		if (Ui_.Add_->isChecked ())
+			Ui_.Add_->toggle ();
+	}
+
+	void AccountsSettings::addAccount (QObject* accObj)
+	{
+		IBookmarksService *ibs = qobject_cast<IBookmarksService*> (sender ());
+		if (!ibs)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< sender ()
+					<< "ins't IBookmarksService";
+			return;
+		}
+
+		IAccount *account = qobject_cast<IAccount*> (accObj);
+		if (Id2Account_.contains (account->GetAccountID ()))
+			return;
+
+		Id2Account_ [account->GetAccountID ()] = accObj;
+
+		QModelIndex index = GetServiceIndex (ibs->GetObject ());
+		QStandardItem *parentItem;
+		if (index == QModelIndex ())
+		{
+			parentItem = new QStandardItem (ibs->GetServiceIcon (), ibs->GetServiceName ());
+			parentItem->setEditable (false);
+			parentItem->setData (QVariant::fromValue<QObject*> (sender ()), RServiceObject);
+			AccountsModel_->appendRow (parentItem);
 		}
 		else
-		{
-			Ui_.Edit_->setEnabled (true);
-			Ui_.Delete_->setEnabled (true);
-		}
+			parentItem = AccountsModel_->itemFromIndex (index);
+
+		QStandardItem *item = new QStandardItem (account->GetLogin ());
+		item->setData (QVariant::fromValue<QObject*> (accObj), RAccountObject);
+		item->setEditable (false);
+		parentItem->appendRow (item);
 	}
 
 }
