@@ -26,6 +26,8 @@
 class QFileSystemModel;
 class QStandardItemModel;
 class QGraphicsScene;
+class QGraphicsPixmapItem;
+class QFileInfo;
 
 namespace LeechCraft
 {
@@ -47,6 +49,8 @@ namespace Choroid
 		QFileSystemModel *FSModel_;
 		QStandardItemModel *FilesModel_;
 
+		QList<QGraphicsPixmapItem*> DirThumbs_;
+
 		enum CustomRoles
 		{
 			CRFilePath = 100
@@ -58,6 +62,8 @@ namespace Choroid
 		QObject* ParentMultiTabs ();
 		void Remove ();
 		QToolBar* GetToolBar () const;
+	private:
+		void AddThumb (const QFileInfo&);
 	private slots:
 		void handleDirTreeCurrentChanged (const QModelIndex&);
 		void handleFileChanged (const QModelIndex&);

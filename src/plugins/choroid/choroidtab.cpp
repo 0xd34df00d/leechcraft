@@ -23,6 +23,7 @@
 #include <QDateTime>
 #include <QGraphicsScene>
 #include <QGraphicsItem>
+#include <util/util.h>
 
 namespace LeechCraft
 {
@@ -35,9 +36,16 @@ namespace Choroid
 	, FSModel_ (new QFileSystemModel (this))
 	, FilesModel_ (new QStandardItemModel (this))
 	{
+		Scene_->setBackgroundBrush (palette ().brush (QPalette::Window));
 		Ui_.setupUi (this);
 
 		Ui_.View_->setScene (Scene_);
+		Ui_.View_->setRenderHints (QPainter::Antialiasing |
+				QPainter::TextAntialiasing |
+				QPainter::SmoothPixmapTransform |
+				QPainter::HighQualityAntialiasing);
+		Ui_.View_->setDragMode (QGraphicsView::ScrollHandDrag);
+		Ui_.View_->setOptimizationFlag (QGraphicsView::DontSavePainterState);
 
 		Ui_.VertSplitter_->setStretchFactor (1, 1);
 		Ui_.VertSplitter_->setStretchFactor (1, 2);
@@ -83,12 +91,43 @@ namespace Choroid
 		return 0;
 	}
 
+	void ChoroidTab::AddThumb (const QFileInfo& info)
+	{
+		const int spacing = 10;
+		const int width = 100;
+		const int height = 75;
+
+		QGraphicsPixmapItem *thumb = Scene_->addPixmap (QPixmap (QSize (width, height)));
+
+		const QString& str = fontMetrics ().elidedText (info.fileName (), Qt::ElideRight, width);
+		QGraphicsTextItem *text = Scene_->addText (str);
+
+		const int all = DirThumbs_.count () * (spacing + width);
+		const int col = all % Ui_.View_->width ();
+		const int row = all / Ui_.View_->width ();
+
+		const int fullHeight = height + 5 + fontMetrics ().height ();
+
+		thumb->setPos (col * (width + spacing), row * (fullHeight + spacing));
+		text->setPos (col * (width + spacing), row * (fullHeight + spacing) + height + 5);
+
+		DirThumbs_ << thumb;
+	}
+
 	void ChoroidTab::handleDirTreeCurrentChanged (const QModelIndex& index)
 	{
 		const QString& path = FSModel_->filePath (index);
 		Ui_.PathEdit_->setText (path);
 
 		FilesModel_->clear ();
+		DirThumbs_.clear ();
+		Scene_->clear ();
+
+		QStringList headers;
+		headers << tr ("Name")
+			<< tr ("Size")
+			<< tr ("Last modified");
+		FilesModel_->setHorizontalHeaderLabels (headers);
 
 		QStringList nf;
 		nf << "*.jpg"
@@ -101,13 +140,17 @@ namespace Choroid
 		{
 			QList<QStandardItem*> row;
 			row << new QStandardItem (info.fileName ());
-			row << new QStandardItem (info.size ());
+			row << new QStandardItem (Util::MakePrettySize (info.size ()));
 			row << new QStandardItem (info.lastModified ().toString ());
 
 			row.first ()->setData (info.absoluteFilePath (), CRFilePath);
 
 			FilesModel_->appendRow (row);
+
+			AddThumb (info);
 		}
+
+		//Scene_->setSceneRect (0, 0, Ui_.View_->width (), DirThumbs_.count () * (100 + 10);
 	}
 
 	void ChoroidTab::handleFileChanged (const QModelIndex& index)
@@ -119,9 +162,13 @@ namespace Choroid
 
 		const QString& path = index.sibling (index.row (), 0)
 				.data (CRFilePath).toString ();
+
 		QPixmap px (path);
+		Scene_->setSceneRect (px.rect ());
+
 		QGraphicsPixmapItem *item = Scene_->addPixmap (px);
 		item->ensureVisible ();
+		item->setTransformationMode (Qt::SmoothTransformation);
 	}
 }
 }
