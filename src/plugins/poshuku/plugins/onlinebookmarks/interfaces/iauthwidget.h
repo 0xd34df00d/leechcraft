@@ -19,6 +19,8 @@
 #ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_IAUTHWIDGET_H
 #define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_IAUTHWIDGET_H
 
+#include <QVariant>
+
 namespace LeechCraft
 {
 namespace Poshuku
@@ -30,9 +32,8 @@ namespace OnlineBookmarks
 	public:
 		virtual ~IAuthWidget () {};
 
-		virtual QString GetLogin () const = 0;
-
-		virtual QString GetPassword () const = 0;
+		virtual QVariantMap GetIdentifyingData () const = 0;
+		virtual void SetIdentifyingData (const QVariantMap&) = 0;
 	};
 }
 }

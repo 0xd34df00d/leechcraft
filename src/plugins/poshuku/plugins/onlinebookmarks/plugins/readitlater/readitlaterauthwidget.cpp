@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "readitlaterauthwidget.h"
+#include <QtDebug>
 
 namespace LeechCraft
 {
@@ -32,16 +33,19 @@ namespace ReadItLater
 		Ui_.setupUi (this);
 	}
 
-	QString ReadItLaterAuthWidget::GetLogin () const
+	QVariantMap ReadItLaterAuthWidget::GetIdentifyingData () const
 	{
-		return Ui_.Login_->text ();
+		QVariantMap map;
+		map ["Login"] = Ui_.Login_->text ();
+		map ["Password"] = Ui_.Password_->text ();
+		return map;
 	}
 
-	QString ReadItLaterAuthWidget::GetPassword( ) const
+	void ReadItLaterAuthWidget::SetIdentifyingData (const QVariantMap& map)
 	{
-		return Ui_.Password_->text ();
+		Ui_.Login_->setText (map ["Login"].toString ());
+		Ui_.Password_->setText (map ["Password"].toString ());
 	}
-
 }
 }
 }
