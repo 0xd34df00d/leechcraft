@@ -1266,6 +1266,9 @@ namespace Azoth
 			return;
 		}
 
+		if (msg->GetObject ()->property ("Azoth/HiddenMessage").toBool () == true)
+			return;
+
 		ICLEntry *parent = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
 
 		if (msg->GetDirection () == IMessage::DOut &&
