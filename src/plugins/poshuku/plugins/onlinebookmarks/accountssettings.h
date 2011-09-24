@@ -21,6 +21,7 @@
 
 #include <QWidget>
 #include <interfaces/ibookmarksservice.h>
+#include <util/util.h>
 #include "ui_accountssettings.h"
 
 class QStandardItemModel;
@@ -55,6 +56,9 @@ namespace OnlineBookmarks
 		void InitServices ();
 	private:
 		QModelIndex GetServiceIndex (QObject*) const;
+		void DeletePassword (QObject*);
+		void SavePassword (QObject*);
+		QString GetPassword (QObject*);
 	public slots:
 		void accept ();
 	private slots:
@@ -67,6 +71,7 @@ namespace OnlineBookmarks
 		void addAccount (QObject*);
 	signals:
 		void accountRemoved (QObject*);
+		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }
