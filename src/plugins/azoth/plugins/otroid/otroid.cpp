@@ -261,12 +261,11 @@ namespace OTRoid
 			return;
 		}
 
-		QObject *entryObj = msg->OtherPart ();
-		if (!Entry2Action_.contains (entryObj) ||
-				!Entry2Action_ [entryObj]->isChecked ())
+		QObject *entryObj = msg->ParentCLEntry ();
+		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+		if (entry->GetEntryType () == ICLEntry::ETMUC)
 			return;
 
-		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 		IAccount *acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
 		IProtocol *proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
 
