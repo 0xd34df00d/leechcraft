@@ -35,6 +35,8 @@ namespace ReadItLater
 	, AuthType_ (IAccount::ATHttpAuth)
 	, ParentService_ (parent)
 	, IsSyncing_ (false)
+	, LastUpload_ (QDateTime::currentDateTime ())
+	, LastDownload_ (QDateTime::currentDateTime ())
 	{
 	}
 
@@ -92,6 +94,26 @@ namespace ReadItLater
 		IsSyncing_ = sync;
 	}
 
+	QDateTime ReadItLaterAccount::GetLastDownloadDateTime () const
+	{
+		return LastDownload_;
+	}
+
+	void ReadItLaterAccount::SetLastDownloadDateTime (const QDateTime& dt)
+	{
+		LastDownload_ = dt;
+	}
+
+	QDateTime ReadItLaterAccount::GetLastUploadDateTime () const
+	{
+		return LastUpload_;
+	}
+
+	void ReadItLaterAccount::SetLastUploadDateTime (const QDateTime& dt)
+	{
+		LastUpload_ = dt;
+	}
+
 	QByteArray ReadItLaterAccount::Serialize () const
 	{
 		quint16 version = 1;
@@ -101,7 +123,9 @@ namespace ReadItLater
 			QDataStream ostr (&result, QIODevice::WriteOnly);
 			ostr << version
 					<< Login_
-					<< IsSyncing_;
+					<< IsSyncing_
+					<< LastUpload_
+					<< LastDownload_;
 		}
 
 		return result;
@@ -129,6 +153,8 @@ namespace ReadItLater
 			>> isSyncing;
 		ReadItLaterAccount *acc = new ReadItLaterAccount (login, parent);
 		acc->SetSyncing (isSyncing);
+		in >> acc->LastUpload_
+			>> acc->LastDownload_;
 		return acc;
 	}
 

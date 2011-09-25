@@ -242,7 +242,12 @@ namespace OnlineBookmarks
 
 	void Core::downloadBookmarks ()
 	{
-
+		Q_FOREACH (QObject *accObj, ActiveAccounts_)
+		{
+			IAccount *account = qobject_cast<IAccount*> (accObj);
+			IBookmarksService *ibs = qobject_cast<IBookmarksService*> (account->GetParentService ());
+			ibs->DownloadBookmarks (account, account->GetLastDownloadDateTime ());
+		}
 	}
 
 	void Core::downloadAllBookmarks ()
@@ -251,7 +256,7 @@ namespace OnlineBookmarks
 		{
 			IAccount *account = qobject_cast<IAccount*> (accObj);
 			IBookmarksService *ibs = qobject_cast<IBookmarksService*> (account->GetParentService ());
-			ibs->DownloadBookmarks (account, QDateTime::fromString ("01.01.2010", "dd.MM.yyyy"));
+			ibs->DownloadBookmarks (account, QDateTime::fromString ("01.01.1970", "dd.MM.yyyy"));
 		}
 	}
 

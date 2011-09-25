@@ -48,6 +48,10 @@ namespace OnlineBookmarks
 		virtual QVariantMap GetIdentifyingData () const = 0;
 		virtual bool IsSyncing () const = 0;
 		virtual void SetSyncing (bool) = 0;
+		virtual QDateTime GetLastUploadDateTime () const = 0;
+		virtual QDateTime GetLastDownloadDateTime () const = 0;
+		virtual void SetLastUploadDateTime (const QDateTime&) = 0;
+		virtual void SetLastDownloadDateTime (const QDateTime&) = 0;
 	};
 }
 }

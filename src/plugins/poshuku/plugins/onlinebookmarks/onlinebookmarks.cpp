@@ -25,6 +25,7 @@
 #include "xmlsettingsmanager.h"
 #include "core.h"
 #include "accountssettings.h"
+#include <QMessageBox>
 
 namespace LeechCraft
 {
@@ -148,7 +149,21 @@ namespace OnlineBookmarks
 
 	void Plugin::hookAddedToFavorites (IHookProxy_ptr, QString title, QString url, QStringList tags)
 	{
-		Core::Instance ().UploadBookmark (title, url, tags);
+		bool res = false;
+		if (!XmlSettingsManager::Instance ()->Property ("ConfirmSend", 0).toBool ())
+			res = true;
+		else
+		{
+			int result = QMessageBox::question (0,
+					"OnlineBookmarks",
+					tr ("Send bookmark to active services"),
+					QMessageBox::Ok | QMessageBox::Cancel,
+					QMessageBox::Ok);
+			if (result == QMessageBox::Ok)
+				res = true;
+		}
+		if (res)
+			Core::Instance ().UploadBookmark (title, url, tags);
 	}
 
 }

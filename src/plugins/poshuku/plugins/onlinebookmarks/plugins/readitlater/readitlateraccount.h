@@ -20,6 +20,7 @@
 #define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_PLUGINS_READITLATER_READITLATERACCOUNT_H
 
 #include <QObject>
+#include <QDateTime>
 #include <interfaces/iaccount.h>
 #include <interfaces/structures.h>
 
@@ -45,6 +46,8 @@ namespace ReadItLater
 		IAccount::AuthType AuthType_;
 		QObject *ParentService_;
 		bool IsSyncing_;
+		QDateTime LastUpload_;
+		QDateTime LastDownload_;
 	public:
 		ReadItLaterAccount (const QString&, QObject* = 0);
 		QObject* GetObject ();
@@ -57,6 +60,10 @@ namespace ReadItLater
 		QVariantMap GetIdentifyingData() const;
 		bool IsSyncing () const;
 		void SetSyncing (bool);
+		QDateTime GetLastDownloadDateTime () const;
+		void SetLastDownloadDateTime (const QDateTime&);
+		QDateTime GetLastUploadDateTime () const;
+		void SetLastUploadDateTime (const QDateTime&);
 		QByteArray Serialize () const ;
 		static ReadItLaterAccount* Deserialize (const QByteArray&, QObject *);
 	};

@@ -35,6 +35,8 @@ namespace Delicious
 	, AuthType_ (IAccount::ATHttpAuth)
 	, ParentService_ (parent)
 	, IsSyncing_ (false)
+	, LastUpload_ (QDateTime::currentDateTime ())
+	, LastDownload_ (QDateTime::currentDateTime ())
 	{
 	}
 
@@ -92,6 +94,26 @@ namespace Delicious
 		IsSyncing_ = sync;
 	}
 
+	QDateTime DeliciousAccount::GetLastDownloadDateTime () const
+	{
+		return LastDownload_;
+	}
+
+	void DeliciousAccount::SetLastDownloadDateTime (const QDateTime& dt)
+	{
+		LastDownload_ = dt;
+	}
+
+	QDateTime DeliciousAccount::GetLastUploadDateTime () const
+	{
+		return LastUpload_;
+	}
+
+	void DeliciousAccount::SetLastUploadDateTime (const QDateTime& dt)
+	{
+		LastUpload_ = dt;
+	}
+
 	QByteArray DeliciousAccount::Serialize () const
 	{
 		quint16 version = 1;
@@ -101,7 +123,9 @@ namespace Delicious
 			QDataStream ostr (&result, QIODevice::WriteOnly);
 			ostr << version
 					<< Login_
-					<< IsSyncing_;
+					<< IsSyncing_
+					<< LastUpload_
+					<< LastDownload_;
 		}
 
 		return result;
@@ -129,6 +153,8 @@ namespace Delicious
 			>> isSyncing;
 		DeliciousAccount *acc = new DeliciousAccount (login, parent);
 		acc->SetSyncing (isSyncing);
+		in >> acc->LastUpload_
+			>> acc->LastDownload_;
 		return acc;
 	}
 

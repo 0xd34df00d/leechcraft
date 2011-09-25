@@ -20,6 +20,7 @@
 #define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_PLUGINS_DELICIOUS_DELICIOUSACCOUNT_H
 
 #include <QObject>
+#include <QDateTime>
 #include <interfaces/iaccount.h>
 
 namespace LeechCraft
@@ -35,12 +36,14 @@ namespace Delicious
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Poshuku::OnlineBookmarks::IAccount)
-	public:
+
 		QString Login_;
 		QString Password_;
 		IAccount::AuthType AuthType_;
 		QObject *ParentService_;
 		bool IsSyncing_;
+		QDateTime LastUpload_;
+		QDateTime LastDownload_;
 	public:
 		DeliciousAccount (const QString&, QObject* = 0);
 		QObject* GetObject ();
@@ -53,6 +56,10 @@ namespace Delicious
 		QVariantMap GetIdentifyingData() const;
 		bool IsSyncing () const;
 		void SetSyncing (bool);
+		QDateTime GetLastDownloadDateTime () const;
+		void SetLastDownloadDateTime (const QDateTime&);
+		QDateTime GetLastUploadDateTime () const;
+		void SetLastUploadDateTime (const QDateTime&);
 		QByteArray Serialize () const ;
 		static DeliciousAccount* Deserialize (const QByteArray&, QObject *);
 	};
