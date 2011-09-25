@@ -18,6 +18,8 @@
 
 #include "onlinebookmarks.h"
 #include <QIcon>
+#include <QMenu>
+#include <QStandardItemModel>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
 #include "xmlsettingsmanager.h"
@@ -44,8 +46,6 @@ namespace OnlineBookmarks
 	{
 		SettingsDialog_->SetCustomWidget ("Accounts",
 				Core::Instance ().GetAccountsSettingsWidget ());
-		SettingsDialog_->SetDataSource ("ActiveServices",
-				Core::Instance ().GetActiveServicesModel ());
 		Core::Instance ().GetAccountsSettingsWidget ()->InitServices ();
 
 		connect (Core::Instance ().GetAccountsSettingsWidget (),
@@ -102,6 +102,53 @@ namespace OnlineBookmarks
 	void Plugin::AddPlugin (QObject *plugin)
 	{
 		Core::Instance ().AddPlugin (plugin);
+	}
+
+	void Plugin::initPlugin (QObject *proxy)
+	{
+		Core::Instance ().SetPluginProxy (proxy);
+	}
+
+	void Plugin::hookMoreMenuFillEnd (IHookProxy_ptr, QMenu *menu, QWebView*, QObject*)
+	{
+		QMenu *menuBookmarksSyn = menu->addMenu (tr ("Bookmarks Sync"));
+
+		QAction *sync = menuBookmarksSyn->addAction (tr ("Sync"));
+		sync->setProperty ("ActionIcon", "poshuku_onlinebookmarks_sync");
+
+		QAction *uploadOnly = menuBookmarksSyn->addAction (tr ("Upload only"));
+		uploadOnly->setProperty ("ActionIcon", "poshuku_onlinebookmarks_upload");
+
+		QAction *downloadOnly = menuBookmarksSyn->addAction (tr ("Download only"));
+		downloadOnly->setProperty ("ActionIcon", "poshuku_onlinebookmarks_download");
+
+		QAction *downloadAll = menuBookmarksSyn->addAction (tr ("Download all"));
+		downloadAll->setProperty ("ActionIcon", "poshuku_onlinebookmarks_downloadall");
+
+		connect (sync,
+				SIGNAL (triggered ()),
+				&Core::Instance (),
+				SLOT (syncBookmarks ()));
+
+		connect (uploadOnly,
+				SIGNAL (triggered ()),
+				&Core::Instance (),
+				SLOT (uploadBookmarks ()));
+
+		connect (downloadOnly,
+				SIGNAL (triggered ()),
+				&Core::Instance (),
+				SLOT (downloadBookmarks()));
+
+		connect (downloadAll,
+				SIGNAL (triggered ()),
+				&Core::Instance (),
+				SLOT (downloadAllBookmarks ()));
+	}
+
+	void Plugin::hookAddedToFavorites (IHookProxy_ptr, QString title, QString url, QStringList tags)
+	{
+		Core::Instance ().UploadBookmark (title, url, tags);
 	}
 
 }
