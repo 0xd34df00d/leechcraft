@@ -34,6 +34,7 @@ namespace ReadItLater
 	, Login_ (login)
 	, AuthType_ (IAccount::ATHttpAuth)
 	, ParentService_ (parent)
+	, IsSyncing_ (false)
 	{
 	}
 
@@ -81,6 +82,16 @@ namespace ReadItLater
 		return map;
 	}
 
+	bool ReadItLaterAccount::IsSyncing () const
+	{
+		return IsSyncing_;
+	}
+
+	void ReadItLaterAccount::SetSyncing (bool sync)
+	{
+		IsSyncing_ = sync;
+	}
+
 	QByteArray ReadItLaterAccount::Serialize () const
 	{
 		quint16 version = 1;
@@ -89,7 +100,8 @@ namespace ReadItLater
 		{
 			QDataStream ostr (&result, QIODevice::WriteOnly);
 			ostr << version
-					<< Login_;
+					<< Login_
+					<< IsSyncing_;
 		}
 
 		return result;
@@ -112,8 +124,12 @@ namespace ReadItLater
 		}
 
 		QString login;
-		in >> login;
-		return new ReadItLaterAccount (login, parent);
+		bool isSyncing;
+		in >> login
+			>> isSyncing;
+		ReadItLaterAccount *acc = new ReadItLaterAccount (login, parent);
+		acc->SetSyncing (isSyncing);
+		return acc;
 	}
 
 }

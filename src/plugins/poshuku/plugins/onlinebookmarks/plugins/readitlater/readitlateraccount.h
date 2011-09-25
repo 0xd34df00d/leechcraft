@@ -44,6 +44,7 @@ namespace ReadItLater
 		QString Password_;
 		IAccount::AuthType AuthType_;
 		QObject *ParentService_;
+		bool IsSyncing_;
 	public:
 		ReadItLaterAccount (const QString&, QObject* = 0);
 		QObject* GetObject ();
@@ -54,6 +55,8 @@ namespace ReadItLater
 		void SetPassword (const QString&);
 		IAccount::AuthType GetAuthType () const;
 		QVariantMap GetIdentifyingData() const;
+		bool IsSyncing () const;
+		void SetSyncing (bool);
 		QByteArray Serialize () const ;
 		static ReadItLaterAccount* Deserialize (const QByteArray&, QObject *);
 	};
