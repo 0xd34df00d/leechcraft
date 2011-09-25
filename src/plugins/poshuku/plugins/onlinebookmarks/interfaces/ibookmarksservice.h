@@ -59,11 +59,15 @@ namespace OnlineBookmarks
 
 		virtual void UploadBookmarks (IAccount*, const QVariantList&) = 0;
 
+		virtual void DownloadBookmarks (IAccount*, const QDateTime&) = 0;
+
 		virtual void saveAccounts () const = 0;
 
 		virtual void removeAccount (QObject*) = 0;
 
 		virtual void accountAdded (QObject*) = 0;
+
+		virtual void gotBookmarks (const QVariantList&) = 0;
 	};
 	Q_DECLARE_OPERATORS_FOR_FLAGS (IBookmarksService::Features)
 }
