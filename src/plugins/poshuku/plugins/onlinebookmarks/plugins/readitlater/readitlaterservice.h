@@ -22,6 +22,7 @@
 #include <QObject>
 #include <interfaces/ibookmarksservice.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/structures.h>
 
 class QNetworkReply;
 
@@ -42,7 +43,6 @@ namespace ReadItLater
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Poshuku::OnlineBookmarks::IBookmarksService)
-
 	public:
 		enum OperationType
 		{
@@ -73,6 +73,7 @@ namespace ReadItLater
 		QWidget* GetAuthWidget ();
 		void CheckAuthData (const QVariantMap&);
 		void RegisterAccount (const QVariantMap&);
+		void UploadBookmarks (IAccount*, const QVariantList&);
 	private:
 		void SendRequest (const QString&, const QByteArray&, Request);
 		void RestoreAccounts ();
@@ -83,6 +84,7 @@ namespace ReadItLater
 		void removeAccount (QObject*);
 	signals:
 		void accountAdded (QObject*);
+		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }

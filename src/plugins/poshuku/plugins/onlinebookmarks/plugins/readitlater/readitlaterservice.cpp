@@ -21,6 +21,7 @@
 #include <QNetworkReply>
 #include <QSettings>
 #include <QtDebug>
+#include <util/util.h>
 #include "readitlaterauthwidget.h"
 #include "readitlaterapi.h"
 #include "readitlateraccount.h"
@@ -103,6 +104,21 @@ namespace ReadItLater
 				req);
 	}
 
+	void ReadItLaterService::UploadBookmarks (IAccount *account, const QVariantList& bookmarks)
+	{
+		QByteArray uploadBookmarks = ReadItLaterApi_->GetUploadPayload (account->GetLogin(),
+				account->GetPassword (), bookmarks);
+
+		Request req;
+		req.Type_ = OTUpload;
+		req.Login_ = account->GetLogin ();
+		req.Password_ = account->GetPassword ();
+		
+		SendRequest (ReadItLaterApi_->GetUploadUrl (),
+				uploadBookmarks,
+				req);
+	}
+
 	void ReadItLaterService::SendRequest (const QString& urlSting,
 			const QByteArray& payload, Request req)
 	{
@@ -146,7 +162,6 @@ namespace ReadItLater
 						<< i;
 				continue;
 			}
-
 			Accounts_ << acc;
 			emit accountAdded (acc);
 		}
@@ -177,6 +192,8 @@ namespace ReadItLater
 		}
 
 		const QVariant& result = reply->attribute (QNetworkRequest::HttpStatusCodeAttribute);
+		Entity e;
+		QString msg;
 		switch (result.toInt ())
 		{
 			case 200:
@@ -185,22 +202,56 @@ namespace ReadItLater
 				{
 					ReadItLaterAccount *account =
 							new ReadItLaterAccount (Reply2Request_ [reply].Login_,
-									Reply2Request_ [reply].Password_,
 									this);
+					account->SetPassword (Reply2Request_ [reply].Password_);
 					Accounts_ << account;
 					saveAccounts ();
 					emit accountAdded (account);
 				}
+
+				switch (Reply2Request_ [reply].Type_)
+				{
+					case OTAuth:
+						msg = tr ("Authentification was successfull.");
+						break;
+					case OTRegister:
+						msg = tr ("Registration was successsfull.");
+						break;
+					case OTUpload:
+						msg = tr ("Bookmark(s) was send to service ReadItLater succesfully.");
+						break;
+					case OTDownload:
+						msg = tr ("Bookmark(s) was download from service ReadItLater succesfully.");
+						break;
+				}
+				e = Util::MakeNotification ("OnlineBookamarks",
+						msg,
+						PInfo_);
 				break;
 			case 400:
+				qWarning () << Q_FUNC_INFO
+						<< "Invalid request, please make sure you follow the documentation for proper syntax";
+				e = Util::MakeNotification ("OnlineBookamarks",
+						tr ("Invalid request.Please, report to developers."),
+						PWarning_);
 				break;
 			case 401:
+				e = Util::MakeNotification ("OnlineBookamarks",
+						tr ("Username and/or password is incorrect."),
+						PWarning_);
 				break;
 			case 403:
+				e = Util::MakeNotification ("OnlineBookamarks",
+						tr ("Rate limit exceeded, please wait a little bit before resubmitting."),
+						PWarning_);
 				break;
 			case 503:
+				e = Util::MakeNotification ("OnlineBookamarks",
+						tr ("Read It Later's sync server is down for scheduled maintenance."),
+						PWarning_);
 				break;
 		}
+		emit gotEntity (e);
 	}
 
 	void ReadItLaterService::saveAccounts () const
