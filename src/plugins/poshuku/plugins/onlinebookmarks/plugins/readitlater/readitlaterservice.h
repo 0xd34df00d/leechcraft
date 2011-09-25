@@ -74,6 +74,7 @@ namespace ReadItLater
 		void CheckAuthData (const QVariantMap&);
 		void RegisterAccount (const QVariantMap&);
 		void UploadBookmarks (IAccount*, const QVariantList&);
+		void DownloadBookmarks (IAccount*, const QDateTime&);
 	private:
 		void SendRequest (const QString&, const QByteArray&, Request);
 		void RestoreAccounts ();
@@ -85,6 +86,7 @@ namespace ReadItLater
 	signals:
 		void accountAdded (QObject*);
 		void gotEntity (const LeechCraft::Entity&);
+		void gotBookmarks (const QVariantList&);
 	};
 }
 }

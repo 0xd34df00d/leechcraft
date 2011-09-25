@@ -44,7 +44,11 @@ namespace ReadItLater
 		QByteArray GetRegisterPayload (const QString&, const QString&);
 		QString GetUploadUrl () const;
 		QByteArray GetUploadPayload (const QString&,
-				const QString&,const QVariantList&);
+				const QString&, const QVariantList&);
+		QString GetDownloadUrl () const;
+		QByteArray GetDownloadPayload (const QString&,
+				const QString&, const QDateTime&);
+		QVariantList GetDownloadedBookmarks (const QByteArray&);
 		
 	};
 }

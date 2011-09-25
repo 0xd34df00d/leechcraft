@@ -119,6 +119,21 @@ namespace ReadItLater
 				req);
 	}
 
+	void ReadItLaterService::DownloadBookmarks (IAccount *account, const QDateTime& from)
+	{
+		QByteArray downloadBookmarks = ReadItLaterApi_->GetDownloadPayload (account->GetLogin(),
+				account->GetPassword (), from);
+
+		Request req;
+		req.Type_ = OTDownload;
+		req.Login_ = account->GetLogin ();
+		req.Password_ = account->GetPassword ();
+
+		SendRequest (ReadItLaterApi_->GetDownloadUrl (),
+				downloadBookmarks,
+				req);
+	}
+
 	void ReadItLaterService::SendRequest (const QString& urlSting,
 			const QByteArray& payload, Request req)
 	{
@@ -177,6 +192,12 @@ namespace ReadItLater
 					<< "isn't a QNetworkReply";
 			return;
 		}
+
+		QVariantList downloadedBookmarks =
+				ReadItLaterApi_->GetDownloadedBookmarks (reply->readAll ());
+		if (!downloadedBookmarks.isEmpty ())
+			emit gotBookmarks (downloadedBookmarks);
+
 		reply->deleteLater ();
 	}
 
@@ -219,9 +240,6 @@ namespace ReadItLater
 						break;
 					case OTUpload:
 						msg = tr ("Bookmark(s) was send to service ReadItLater succesfully.");
-						break;
-					case OTDownload:
-						msg = tr ("Bookmark(s) was download from service ReadItLater succesfully.");
 						break;
 				}
 				e = Util::MakeNotification ("OnlineBookamarks",

@@ -21,6 +21,7 @@
 #include <QStringList>
 #include <qjson/parser.h>
 #include <qjson/serializer.h>
+#include <QDateTime>
 
 namespace LeechCraft
 {
@@ -98,6 +99,50 @@ namespace ReadItLater
 					QString::fromUtf8 (jsonTags.constData ()));
 		return res.toUtf8 ();
 	}
+
+	QString ReadItLaterApi::GetDownloadUrl () const
+	{
+		return "https://readitlaterlist.com/v2/get?";
+	}
+
+	QByteArray ReadItLaterApi::GetDownloadPayload (const QString& login,
+			const QString& password, const QDateTime& from)
+	{
+		return QString ("username=%1&password=%2&apikey=%3&since=%4&tags=1")
+				.arg (login,
+					password,
+					ApiKey_,
+					QString::number (from.toTime_t ())).toUtf8 ();
+	}
+
+	QVariantList ReadItLaterApi::GetDownloadedBookmarks (const QByteArray& content)
+	{
+		QJson::Parser parser;
+		bool ok;
+
+		const QVariantMap& result = parser.parse (content, &ok).toMap ();
+
+		if (!ok)
+			return QVariantList ();
+
+		const QVariantMap& nestedMap = result ["list"].toMap ();
+
+		QVariantList bookmarks;
+		Q_FOREACH (const QVariant& var, nestedMap)
+		{
+			QVariantMap record;
+			QVariantMap map = var.toMap ();
+
+			record ["Tags"] = map ["tags"].toStringList ();
+			record ["Title"] = map ["title"].toString ();
+			record ["URL"] = map ["url"].toString ();
+
+			bookmarks.push_back (record);
+		}
+
+		return bookmarks;
+	}
+
 }
 }
 }
