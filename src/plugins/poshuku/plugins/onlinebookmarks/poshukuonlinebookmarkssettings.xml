@@ -8,9 +8,6 @@
 		</tab>
 		<tab>
 			<label value="Sync options" />
-			<item type="listview" property="ActiveServices">
-				<label value="Select services" />
-			</item>
 			<item type="checkbox" property="ConfirmSend" state="off">
 				<label value="Confirm sending bookmarks on addition" />
 			</item>

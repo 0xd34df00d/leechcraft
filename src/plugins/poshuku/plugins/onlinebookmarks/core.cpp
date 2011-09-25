@@ -22,6 +22,7 @@
 #include <interfaces/iserviceplugin.h>
 #include "accountssettings.h"
 #include "pluginmanager.h"
+#include "interfaces/iaccount.h"
 
 namespace LeechCraft
 {
@@ -30,8 +31,7 @@ namespace Poshuku
 namespace OnlineBookmarks
 {
 	Core::Core ()
-	: ActiveServicesModel_ (new QStandardItemModel)
-	, PluginManager_ (new PluginManager)
+	: PluginManager_ (new PluginManager)
 	, AccountsSettings_ (new AccountsSettings)
 	{
 	}
@@ -52,9 +52,9 @@ namespace OnlineBookmarks
 		return CoreProxy_;
 	}
 
-	QAbstractItemModel* Core::GetActiveServicesModel () const
+	void Core::SetPluginProxy (QObject* proxy)
 	{
-		return ActiveServicesModel_;
+		PluginProxy_ = proxy;
 	}
 
 	AccountsSettings* Core::GetAccountsSettingsWidget () const
@@ -116,6 +116,61 @@ namespace OnlineBookmarks
 	{
 		return ServicesPlugins_;
 	}
+
+	void Core::AddActiveAccount (QObject* obj)
+	{
+		if (!ActiveAccounts_.contains (obj))
+			ActiveAccounts_ << obj;
+	}
+
+	void Core::SetActiveAccounts (QObjectList list)
+	{
+		ActiveAccounts_.clear ();
+		ActiveAccounts_.append (list);
+	}
+
+	QObjectList Core::GetActiveAccounts () const
+	{
+		return ActiveAccounts_;
+	}
+
+	void Core::UploadBookmark(const QString& title,
+			const QString& url, const QStringList& tags)
+	{
+		Q_FOREACH (QObject *accObj, ActiveAccounts_)
+		{
+			IAccount *account = qobject_cast<IAccount*> (accObj);
+			IBookmarksService *ibs = qobject_cast<IBookmarksService*> (account->GetParentService ());
+			QVariantList list;
+			QVariantMap map;
+			map ["Title"] = title;
+			map ["Url"] = url;
+			map ["Tags"] = tags;
+			list << map;
+			ibs->UploadBookmarks (account, list);
+		}
+	}
+
+	void Core::syncBookmarks ()
+	{
+
+	}
+
+	void Core::uploadBookmarks ()
+	{
+
+	}
+
+	void Core::downloadBookmarks ()
+	{
+
+	}
+
+	void Core::downloadAllBookmarks ()
+	{
+
+	}
+
 }
 }
 }

@@ -40,19 +40,19 @@ namespace OnlineBookmarks
 		Q_OBJECT
 
 		ICoreProxy_ptr CoreProxy_;
-		QStandardItemModel *ActiveServicesModel_;
+		QObject *PluginProxy_;
 		AccountsSettings* AccountsSettings_;
 		boost::shared_ptr<PluginManager> PluginManager_;
 
 		QObjectList ServicesPlugins_;
-
+		QObjectList ActiveAccounts_;
 		Core ();
 	public:
 		static Core& Instance ();
 		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;
+		void SetPluginProxy (QObject*);
 
-		QAbstractItemModel* GetActiveServicesModel () const;
 		AccountsSettings* GetAccountsSettingsWidget () const;
 
 		QSet<QByteArray> GetExpectedPluginClasses () const;
@@ -60,6 +60,18 @@ namespace OnlineBookmarks
 
 		void AddServicePlugin (QObject*);
 		QObjectList GetServicePlugins () const;
+
+		void AddActiveAccount (QObject*);
+		void SetActiveAccounts (QObjectList);
+		QObjectList GetActiveAccounts () const;
+
+		void UploadBookmark (const QString&,
+				const QString&, const QStringList&);
+	public slots:
+		void syncBookmarks ();
+		void uploadBookmarks ();
+		void downloadBookmarks ();
+		void downloadAllBookmarks ();
 	};
 }
 }
