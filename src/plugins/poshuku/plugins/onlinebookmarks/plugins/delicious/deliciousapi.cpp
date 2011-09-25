@@ -16,13 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_PLUGINS_DELICIOUS_DELICIOUS_H
-#define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_PLUGINS_DELICIOUS_DELICIOUS_H
+#include "deliciousapi.h"
 
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-#include <interfaces/iserviceplugin.h>
+#include <QtDebug>
+#include <QStringList>
+#include <qjson/parser.h>
+#include <qjson/serializer.h>
+#include <QDateTime>
 
 namespace LeechCraft
 {
@@ -32,36 +32,49 @@ namespace OnlineBookmarks
 {
 namespace Delicious
 {
-
-	class DeliciousService;
-
-	class Plugin : public QObject
-				, public IPlugin2
-				, public IInfo
-				, public IServicePlugin
+	DeliciousApi::DeliciousApi ()
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2
-				LeechCraft::Poshuku::OnlineBookmarks::IServicePlugin)
+	}
 
-		boost::shared_ptr<DeliciousService> DeliciousService_;
-	public:
-		void Init (ICoreProxy_ptr proxy);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID() const;
-		QString GetName() const;
-		QString GetInfo() const;
-		QIcon GetIcon() const;
+	QString DeliciousApi::GetAuthUrl () const
+	{
+		return QString ();
+	}
 
-		QSet<QByteArray> GetPluginClasses () const;
+	QByteArray DeliciousApi::GetAuthPayload (const QString&, const QString&)
+	{
+		return QByteArray ();
+	}
 
-		QObject* GetObject ();
-		QObject* GetBookmarksService () const;
-	};
+	QString DeliciousApi::GetUploadUrl () const
+	{
+		return QString ();
+	}
+
+	QByteArray DeliciousApi::GetUploadPayload (const QString&,
+			const QString&, const QVariantList&)
+	{
+		return QByteArray ();
+	}
+
+	QString DeliciousApi::GetDownloadUrl () const
+	{
+		return QString ();
+	}
+
+	QByteArray DeliciousApi::GetDownloadPayload (const QString& login,
+			const QString& password, const QDateTime& from)
+	{
+		return QByteArray ();
+	}
+
+	QVariantList DeliciousApi::GetDownloadedBookmarks (const QByteArray&)
+	{
+		return QVariantList ();
+	}
+
 }
 }
 }
 }
 
-#endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_PLUGINS_DELICIOUS_DELICIOUS_H

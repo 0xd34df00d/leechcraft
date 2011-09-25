@@ -19,6 +19,7 @@
 #include "delicious.h"
 #include <QIcon>
 #include "deliciousauthwidget.h"
+#include "deliciousservice.h"
 
 namespace LeechCraft
 {
@@ -30,10 +31,17 @@ namespace Delicious
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		DeliciousService_.reset (new DeliciousService (proxy));
+
+		connect (DeliciousService_.get (),
+				SIGNAL (gotEntity (const LeechCraft::Entity&)),
+				this,
+				SIGNAL (gotEntity (const LeechCraft::Entity&)));
 	}
 
 	void Plugin::SecondInit ()
 	{
+		DeliciousService_->Prepare ();
 	}
 	
 	void Plugin::Release ()
@@ -67,24 +75,14 @@ namespace Delicious
 		return classes;
 	}
 
-	IBookmarksService::Features Plugin::GetFeatures () const
+	QObject* Plugin::GetObject ()
 	{
-		return 0;
+		return this;
 	}
 
-	QString Plugin::GetServiceName () const
+	QObject* Plugin::GetBookmarksService () const
 	{
-		return "Delicious";
-	}
-
-	QIcon Plugin::GetServiceIcon () const
-	{
-		return QIcon (":/plugins/poshuku/plugins/onlinebookmarks/plugins/delicious/resources/images/delicious.png");
-	}
-
-	QWidget* Plugin::GetAuthWidget ()
-	{
-		return new DeliciousAuthWidget ();
+		return qobject_cast<QObject*> (DeliciousService_.get ());
 	}
 
 }

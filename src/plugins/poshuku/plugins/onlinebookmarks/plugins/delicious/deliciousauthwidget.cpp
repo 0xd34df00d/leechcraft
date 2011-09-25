@@ -32,14 +32,23 @@ namespace Delicious
 		Ui_.setupUi (this);
 	}
 
-	QString DeliciousAuthWidget::GetLogin () const
+	QVariantMap DeliciousAuthWidget::GetIdentifyingData () const
 	{
-		return Ui_.Login_->text ();
+		QVariantMap map;
+		map ["Login"] = Ui_.Login_->text ();
+		map ["Password"] = Ui_.Password_->text ();
+		map ["OAuth"] = Ui_.YahooID_->isChecked ();
+		return map;
 	}
 
-	QString DeliciousAuthWidget::GetPassword () const
+	void DeliciousAuthWidget::SetIdentifyingData (const QVariantMap& map)
 	{
-		return Ui_.Password_->text ();
+		Ui_.Login_->setText (map ["Login"].toString ());
+		Ui_.Password_->setText (map ["Password"].toString ());
+		bool oAuth = false;
+		if (map.contains ("OAuth"))
+			oAuth = map ["OAuth"].toBool ();
+		Ui_.YahooID_->setChecked (oAuth);
 	}
 
 }

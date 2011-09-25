@@ -40,9 +40,8 @@ namespace Delicious
 		Ui::AuthWidget Ui_;
 	public:
 		DeliciousAuthWidget (QWidget* = 0);
-
-		QString GetLogin () const;
-		QString GetPassword () const;
+		QVariantMap GetIdentifyingData () const;
+		void SetIdentifyingData (const QVariantMap&);
 	};
 }
 }

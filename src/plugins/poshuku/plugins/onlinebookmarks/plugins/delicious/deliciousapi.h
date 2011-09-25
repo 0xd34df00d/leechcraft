@@ -16,13 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_PLUGINS_DELICIOUS_DELICIOUS_H
-#define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_PLUGINS_DELICIOUS_DELICIOUS_H
+#ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_PLUGINS_DELICIOUS_DELICIOUSAPI_H
+#define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_PLUGINS_DELICIOUS_DELICIOUSAPI_H
 
 #include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-#include <interfaces/iserviceplugin.h>
+#include <QVariant>
 
 namespace LeechCraft
 {
@@ -32,36 +30,24 @@ namespace OnlineBookmarks
 {
 namespace Delicious
 {
-
-	class DeliciousService;
-
-	class Plugin : public QObject
-				, public IPlugin2
-				, public IInfo
-				, public IServicePlugin
+	class DeliciousApi : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2
-				LeechCraft::Poshuku::OnlineBookmarks::IServicePlugin)
-
-		boost::shared_ptr<DeliciousService> DeliciousService_;
 	public:
-		void Init (ICoreProxy_ptr proxy);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID() const;
-		QString GetName() const;
-		QString GetInfo() const;
-		QIcon GetIcon() const;
-
-		QSet<QByteArray> GetPluginClasses () const;
-
-		QObject* GetObject ();
-		QObject* GetBookmarksService () const;
+		DeliciousApi ();
+		QString GetAuthUrl () const;
+		QByteArray GetAuthPayload (const QString&, const QString&);
+		QString GetUploadUrl () const;
+		QByteArray GetUploadPayload (const QString&,
+				const QString&, const QVariantList&);
+		QString GetDownloadUrl () const;
+		QByteArray GetDownloadPayload (const QString&,
+				const QString&, const QDateTime&);
+		QVariantList GetDownloadedBookmarks (const QByteArray&);
 	};
 }
 }
 }
 }
 
-#endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_PLUGINS_DELICIOUS_DELICIOUS_H
+#endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_PLUGINS_DELICIOUS_DELICIOUSAPI_H

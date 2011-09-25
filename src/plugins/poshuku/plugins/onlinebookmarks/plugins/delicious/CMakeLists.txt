@@ -8,11 +8,17 @@ INCLUDE_DIRECTORIES (${ONLINEBOOKMARKS_INCLUDE_DIR}
 SET (DELICIOUS_SRCS
 	delicious.cpp
 	deliciousauthwidget.cpp
+	deliciousservice.cpp
+	deliciousaccount.cpp
+	deliciousapi.cpp
 	)
 
 SET (DELICIOUS_HEADERS
 	delicious.h
 	deliciousauthwidget.h
+	deliciousservice.h
+	deliciousaccount.h
+	deliciousapi.h
 	)
 
 SET (DELICIOUS_FORMS deliciousauthwidget.ui)
