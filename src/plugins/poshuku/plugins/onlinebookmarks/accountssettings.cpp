@@ -157,6 +157,23 @@ namespace OnlineBookmarks
 
 	void AccountsSettings::accept ()
 	{
+		QObjectList accounts;
+		for (int i = 0; i < AccountsModel_->rowCount (); ++i)
+		{
+			IBookmarksService *ibs = qobject_cast<IBookmarksService*> (AccountsModel_->
+					item (i)->data (RServiceObject).value<QObject*> ());
+			for (int j = 0; j < AccountsModel_->item (i)->rowCount (); ++j)
+			{
+				IAccount *acc = qobject_cast<IAccount*> (AccountsModel_->
+						item (i)->child (j)->data (RAccountObject).value<QObject*> ());
+				acc->SetSyncing (AccountsModel_->item (i)->child (j)->checkState () == Qt::Checked);
+				if (acc->IsSyncing ())
+					accounts << AccountsModel_->item (i)->child (j)->
+							data (RAccountObject).value<QObject*> ();
+			}
+			ibs->saveAccounts ();
+		}
+		Core::Instance ().SetActiveAccounts (accounts);
 	}
 
 	void AccountsSettings::on_Add__toggled (bool checked)
@@ -282,7 +299,10 @@ namespace OnlineBookmarks
 		if (Id2Account_.contains (account->GetAccountID ()))
 			return;
 
-		SavePassword (accObj);
+		if (!account->GetPassword ().isEmpty ())
+			SavePassword (accObj);
+		else
+			account->SetPassword (GetPassword (accObj));
 		Id2Account_ [account->GetAccountID ()] = accObj;
 		QModelIndex index = GetServiceIndex (ibs->GetObject ());
 		QStandardItem *parentItem;
@@ -299,6 +319,10 @@ namespace OnlineBookmarks
 		QStandardItem *item = new QStandardItem (account->GetLogin ());
 		item->setData (QVariant::fromValue<QObject*> (accObj), RAccountObject);
 		item->setEditable (false);
+		item->setCheckable (true);
+		item->setCheckState (account->IsSyncing () ? Qt::Checked : Qt::Unchecked);
+		if (account->IsSyncing ())
+			Core::Instance ().AddActiveAccount (accObj);
 		parentItem->appendRow (item);
 	}
 
