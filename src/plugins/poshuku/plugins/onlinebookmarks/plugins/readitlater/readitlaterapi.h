@@ -21,6 +21,7 @@
 
 #include <QObject>
 #include <QUrl>
+#include <QVariant>
 
 namespace LeechCraft
 {
@@ -41,6 +42,9 @@ namespace ReadItLater
 		QByteArray GetAuthPayload (const QString&, const QString&);
 		QString GetRegisterUrl () const;
 		QByteArray GetRegisterPayload (const QString&, const QString&);
+		QString GetUploadUrl () const;
+		QByteArray GetUploadPayload (const QString&,
+				const QString&,const QVariantList&);
 		
 	};
 }

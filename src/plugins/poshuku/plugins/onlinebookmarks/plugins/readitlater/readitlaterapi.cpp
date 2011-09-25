@@ -18,6 +18,9 @@
 
 #include "readitlaterapi.h"
 #include <QtDebug>
+#include <QStringList>
+#include <qjson/parser.h>
+#include <qjson/serializer.h>
 
 namespace LeechCraft
 {
@@ -54,6 +57,47 @@ namespace ReadItLater
 		return GetAuthPayload (login, pass);
 	}
 
+	QString ReadItLaterApi::GetUploadUrl () const
+	{
+		return "https://readitlaterlist.com/v2/send?";
+	}
+
+	QByteArray ReadItLaterApi::GetUploadPayload (const QString& login,
+			const QString& password, const QVariantList& bookmarks)
+	{
+		QVariantMap exportBookmarks, exportTags;
+		int i = 0;
+		int j = 0;
+		Q_FOREACH (const QVariant& record, bookmarks)
+		{
+			QVariantMap bookmark, tags;
+			bookmark.insert ("url", record.toMap () ["Url"].toString ());
+			bookmark.insert ("title", record.toMap () ["Title"].toString ());
+
+			if (!(record.toMap () ["Tags"].toStringList ().isEmpty ()))
+			{
+				tags.insert ("url", record.toMap () ["Url"].toString ());
+				tags.insert ("tags", record.toMap () ["Tags"].toString ());
+				exportTags.insert (QString::number (j++), tags);
+			}
+			exportBookmarks.insert(QString::number (i++), bookmark);
+		}
+
+		if (exportBookmarks.isEmpty ())
+			return QByteArray ();
+
+		QJson::Serializer serializer;
+		QByteArray jsonBookmarks = serializer.serialize (exportBookmarks);
+		QByteArray jsonTags = serializer.serialize (exportTags);
+
+		QString res = QString ("username=%1&password=%2&apikey=%3&new=%4&update_tags=%5")
+				.arg (login,
+					password,
+					ApiKey_,
+					QString::fromUtf8 (jsonBookmarks.constData ()),
+					QString::fromUtf8 (jsonTags.constData ()));
+		return res.toUtf8 ();
+	}
 }
 }
 }
