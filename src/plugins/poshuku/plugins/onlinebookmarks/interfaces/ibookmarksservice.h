@@ -29,6 +29,9 @@ namespace Poshuku
 {
 namespace OnlineBookmarks
 {
+
+	class IAccount;
+
 	class IBookmarksService
 	{
 	public:
@@ -54,11 +57,15 @@ namespace OnlineBookmarks
 
 		virtual void RegisterAccount (const QVariantMap&) = 0;
 
+		virtual void UploadBookmarks (IAccount*, const QVariantList&) = 0;
+
+		virtual void saveAccounts () const = 0;
+
 		virtual void removeAccount (QObject*) = 0;
 
 		virtual void accountAdded (QObject*) = 0;
 	};
-	Q_DECLARE_OPERATORS_FOR_FLAGS ( IBookmarksService::Features )
+	Q_DECLARE_OPERATORS_FOR_FLAGS (IBookmarksService::Features)
 }
 }
 }
