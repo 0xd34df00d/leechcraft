@@ -43,6 +43,7 @@ namespace OnlineBookmarks
 		virtual QByteArray GetAccountID () const = 0;
 		virtual QString GetLogin () const = 0;
 		virtual QString GetPassword () const = 0;
+		virtual void SetPassword (const QString&) = 0;
 		virtual IAccount::AuthType GetAuthType () const = 0;
 		virtual QVariantMap GetIdentifyingData () const = 0;
 	};
