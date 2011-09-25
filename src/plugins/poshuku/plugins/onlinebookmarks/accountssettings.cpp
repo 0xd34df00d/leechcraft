@@ -284,7 +284,6 @@ namespace OnlineBookmarks
 
 		SavePassword (accObj);
 		Id2Account_ [account->GetAccountID ()] = accObj;
-
 		QModelIndex index = GetServiceIndex (ibs->GetObject ());
 		QStandardItem *parentItem;
 		if (index == QModelIndex ())
