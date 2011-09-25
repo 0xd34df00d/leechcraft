@@ -83,6 +83,11 @@ namespace OnlineBookmarks
 		}
 	}
 
+	QStandardItemModel* AccountsSettings::GetAccountsModel () const
+	{
+		return AccountsModel_;
+	}
+
 	QModelIndex AccountsSettings::GetServiceIndex (QObject *serviceObj) const
 	{
 		for (int i = 0; i < AccountsModel_->rowCount (); ++i)
@@ -91,68 +96,6 @@ namespace OnlineBookmarks
 				return AccountsModel_->index (i, 0);
 
 			return QModelIndex ();
-	}
-
-	void AccountsSettings::DeletePassword (QObject* accObj)
-	{
-		IAccount *account = qobject_cast<IAccount*> (accObj);
-		QVariantList keys;
-		keys << account->GetAccountID ();
-
-		Entity e = Util::MakeEntity (keys,
-				QString (),
-				Internal,
-				"x-leechcraft/data-persistent-clear");
-		emit gotEntity (e);
-	}
-
-	void AccountsSettings::SavePassword (QObject *accObj)
-	{
-		QVariantList keys;
-		IAccount *account = qobject_cast<IAccount*> (accObj);
-		keys << account->GetAccountID ();
-
-		QVariantList passwordVar;
-		passwordVar << account->GetPassword ();
-		QVariantList values;
-		values << QVariant (passwordVar);
-
-		Entity e = Util::MakeEntity (keys,
-				QString (),
-				Internal,
-				"x-leechcraft/data-persistent-save");
-		e.Additional_ ["Values"] = values;
-		e.Additional_ ["Overwrite"] = true;
-
-		emit gotEntity (e);
-	}
-
-	QString AccountsSettings::GetPassword (QObject *accObj)
-	{
-		QVariantList keys;
-		IAccount *account = qobject_cast<IAccount*> (accObj);
-		keys << account->GetAccountID ();
-		
-		const QVariantList& result = Util::GetPersistentData (keys, this);
-		if (result.size () != 1)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "incorrect result size"
-					<< result;
-			return QString ();
-		}
-
-		const QVariantList& strVarList = result.at (0).toList ();
-		if (strVarList.isEmpty () ||
-				!strVarList.at (0).canConvert<QString> ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "invalid string variant list"
-					<< strVarList;
-			return QString ();
-		}
-
-		return strVarList.at (0).toString ();
 	}
 
 	void AccountsSettings::accept ()
@@ -221,7 +164,7 @@ namespace OnlineBookmarks
 
 		QObject *accObj = AccountsModel_->itemFromIndex (current)->
 				data (RAccountObject).value<QObject*> ();
-		DeletePassword (accObj);
+		Core::Instance ().DeletePassword (accObj);
 		emit accountRemoved (accObj);
 		
 		AccountsModel_->removeRow (current.row (), parentIndex);
@@ -300,9 +243,9 @@ namespace OnlineBookmarks
 			return;
 
 		if (!account->GetPassword ().isEmpty ())
-			SavePassword (accObj);
+			Core::Instance ().SavePassword (accObj);
 		else
-			account->SetPassword (GetPassword (accObj));
+			account->SetPassword (Core::Instance ().GetPassword (accObj));
 		Id2Account_ [account->GetAccountID ()] = accObj;
 		QModelIndex index = GetServiceIndex (ibs->GetObject ());
 		QStandardItem *parentItem;

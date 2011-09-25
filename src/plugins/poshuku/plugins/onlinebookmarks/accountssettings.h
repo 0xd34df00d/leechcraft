@@ -54,11 +54,9 @@ namespace OnlineBookmarks
 		AccountsSettings ();
 		~AccountsSettings ();
 		void InitServices ();
+		QStandardItemModel* GetAccountsModel () const;
 	private:
 		QModelIndex GetServiceIndex (QObject*) const;
-		void DeletePassword (QObject*);
-		void SavePassword (QObject*);
-		QString GetPassword (QObject*);
 	public slots:
 		void accept ();
 	private slots:
@@ -71,8 +69,6 @@ namespace OnlineBookmarks
 		void addAccount (QObject*);
 	signals:
 		void accountRemoved (QObject*);
-		void gotEntity (const LeechCraft::Entity&);
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 	};
 }
 }

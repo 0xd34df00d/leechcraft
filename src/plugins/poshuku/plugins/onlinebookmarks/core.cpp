@@ -20,9 +20,10 @@
 #include <QStandardItemModel>
 #include <interfaces/iplugin2.h>
 #include <interfaces/iserviceplugin.h>
+#include <interfaces/iaccount.h>
 #include "accountssettings.h"
 #include "pluginmanager.h"
-#include "interfaces/iaccount.h"
+#include <QDateTime>
 
 namespace LeechCraft
 {
@@ -110,6 +111,11 @@ namespace OnlineBookmarks
 		}
 
 		ServicesPlugins_ << plugin;
+
+		connect (plugin,
+				SIGNAL (gotBookmarks (const QVariantList&)),
+				this,
+				SLOT (handleGotBookmarks (const QVariantList&)));
 	}
 
 	QObjectList Core::GetServicePlugins () const
@@ -151,6 +157,79 @@ namespace OnlineBookmarks
 		}
 	}
 
+	void Core::DeletePassword (QObject *accObj)
+	{
+		IAccount *account = qobject_cast<IAccount*> (accObj);
+		QVariantList keys;
+		keys << account->GetAccountID ();
+
+		Entity e = Util::MakeEntity (keys,
+				QString (),
+				Internal,
+				"x-leechcraft/data-persistent-clear");
+		emit gotEntity (e);
+	}
+
+	QString Core::GetPassword (QObject *accObj)
+	{
+		QVariantList keys;
+		IAccount *account = qobject_cast<IAccount*> (accObj);
+		keys << account->GetAccountID ();
+
+		const QVariantList& result = Util::GetPersistentData (keys, this);
+		if (result.size () != 1)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "incorrect result size"
+					<< result;
+			return QString ();
+		}
+
+		const QVariantList& strVarList = result.at (0).toList ();
+		if (strVarList.isEmpty () ||
+				!strVarList.at (0).canConvert<QString> ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "invalid string variant list"
+					<< strVarList;
+			return QString ();
+		}
+
+		return strVarList.at (0).toString ();
+	}
+
+	void Core::SavePassword (QObject *accObj)
+	{
+		QVariantList keys;
+		IAccount *account = qobject_cast<IAccount*> (accObj);
+		keys << account->GetAccountID ();
+
+		QVariantList passwordVar;
+		passwordVar << account->GetPassword ();
+		QVariantList values;
+		values << QVariant (passwordVar);
+
+		Entity e = Util::MakeEntity (keys,
+				QString (),
+				Internal,
+				"x-leechcraft/data-persistent-save");
+		e.Additional_ ["Values"] = values;
+		e.Additional_ ["Overwrite"] = true;
+
+		emit gotEntity (e);
+	}
+
+	void Core::handleGotBookmarks (const QVariantList& importBookmarks)
+	{
+		LeechCraft::Entity eBookmarks = Util::MakeEntity (QVariant (),
+				QString (),
+				static_cast<LeechCraft::TaskParameter> (FromUserInitiated | OnlyHandle),
+				"x-leechcraft/browser-import-data");
+
+		eBookmarks.Additional_ ["BrowserBookmarks"] = importBookmarks;
+		emit gotEntity (eBookmarks);
+	}
+
 	void Core::syncBookmarks ()
 	{
 
@@ -168,7 +247,12 @@ namespace OnlineBookmarks
 
 	void Core::downloadAllBookmarks ()
 	{
-
+		Q_FOREACH (QObject *accObj, ActiveAccounts_)
+		{
+			IAccount *account = qobject_cast<IAccount*> (accObj);
+			IBookmarksService *ibs = qobject_cast<IBookmarksService*> (account->GetParentService ());
+			ibs->DownloadBookmarks (account, QDateTime::fromString ("01.01.2010", "dd.MM.yyyy"));
+		}
 	}
 
 }

@@ -21,6 +21,7 @@
 
 #include <QObject>
 #include <interfaces/iinfo.h>
+#include <util/util.h>
 
 class QAbstractItemModel;
 class QStandardItemModel;
@@ -67,11 +68,20 @@ namespace OnlineBookmarks
 
 		void UploadBookmark (const QString&,
 				const QString&, const QStringList&);
+
+		void DeletePassword (QObject*);
+		void SavePassword (QObject*);
+		QString GetPassword (QObject*);
+	private slots:
+		void handleGotBookmarks (const QVariantList&);
 	public slots:
 		void syncBookmarks ();
 		void uploadBookmarks ();
 		void downloadBookmarks ();
 		void downloadAllBookmarks ();
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
+		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 	};
 }
 }
