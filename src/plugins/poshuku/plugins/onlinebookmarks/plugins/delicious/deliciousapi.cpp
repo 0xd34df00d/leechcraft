@@ -1,3 +1,4 @@
+
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
  * Copyright (C) 2010-2011  Oleg Linkin
@@ -17,12 +18,10 @@
  **********************************************************************/
 
 #include "deliciousapi.h"
-
 #include <QtDebug>
 #include <QStringList>
-#include <qjson/parser.h>
-#include <qjson/serializer.h>
 #include <QDateTime>
+#include <QXmlStreamReader>
 
 namespace LeechCraft
 {
@@ -36,41 +35,90 @@ namespace Delicious
 	{
 	}
 
-	QString DeliciousApi::GetAuthUrl () const
+	QString DeliciousApi::GetAuthUrl (bool) const
 	{
-		return QString ();
+		return "https://%1:%2@api.del.icio.us/v1/posts/update";
 	}
 
-	QByteArray DeliciousApi::GetAuthPayload (const QString&, const QString&)
+	QString DeliciousApi::GetUploadUrl (bool) const
 	{
-		return QByteArray ();
+		return "https://%1:%2@api.del.icio.us/v1/posts/add?";
 	}
 
-	QString DeliciousApi::GetUploadUrl () const
+	QByteArray DeliciousApi::GetUploadPayload (const QVariant& bookmark)
 	{
-		return QString ();
+		QVariantMap map = bookmark.toMap ();
+		return QString ("&url=%1&description=%2&tags=%3")
+				.arg (map ["Url"].toString (),
+						map ["Title"].toString (),
+						map ["Tags"].toString ().split (',').join (" ")).toUtf8 ();
 	}
 
-	QByteArray DeliciousApi::GetUploadPayload (const QString&,
-			const QString&, const QVariantList&)
+	QString DeliciousApi::GetDownloadUrl (bool) const
 	{
-		return QByteArray ();
+		return "https://%1:%2@api.del.icio.us/v1/posts/all?";
 	}
 
-	QString DeliciousApi::GetDownloadUrl () const
+	QByteArray DeliciousApi::GetDownloadPayload (const QDateTime& from)
 	{
-		return QString ();
+		return QString ("&fromdt=%1&meta=yes").arg (from.toString ("yyyy-MM-ddThh:mm:ssZ")).toUtf8 ();
 	}
 
-	QByteArray DeliciousApi::GetDownloadPayload (const QString& login,
-			const QString& password, const QDateTime& from)
+	QVariantList DeliciousApi::ParseDownloadReply (const QByteArray& content)
 	{
-		return QByteArray ();
+		QVariantList list;
+		QVariantMap record;
+		QXmlStreamReader reply (content);
+		while (!reply.atEnd ())
+		{
+			reply.readNext();
+			if (reply.name () == "post")
+			{
+				record ["Url"] = reply.attributes ().value ("href").toString ();
+				record ["Title"] = reply.attributes ().value ("description").toString ();;
+				record ["Tags"] = reply.attributes ().value ("tag").toString ();
+				list << record;
+			}
+		}
+		if (reply.hasError ())
+			return QVariantList ();
+
+		return list;
 	}
 
-	QVariantList DeliciousApi::GetDownloadedBookmarks (const QByteArray&)
+	bool DeliciousApi::ParseAuthReply (const QByteArray& content)
 	{
-		return QVariantList ();
+		QXmlStreamReader reply (content);
+		while (!reply.atEnd ())
+		{
+			reply.readNext();
+			if (!reply.attributes ().hasAttribute ("update time"))
+				return false;
+		}
+		if (reply.hasError ())
+			return false;
+
+		return true;
+	}
+
+	bool DeliciousApi::ParseUploadReply (const QByteArray& content)
+	{
+		QXmlStreamReader reply (content);
+		while (!reply.atEnd ())
+		{
+			reply.readNext();
+			if (reply.name () == "result")
+			{
+				if (!reply.attributes ().hasAttribute ("code"))
+					return false;
+				else if (reply.attributes ().value ("code") != "done")
+					return false;
+			}
+		}
+		if (reply.hasError ())
+			return false;
+
+		return true;
 	}
 
 }

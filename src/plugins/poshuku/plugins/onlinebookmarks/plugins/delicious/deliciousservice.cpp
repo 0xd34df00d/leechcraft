@@ -20,6 +20,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QSettings>
+#include <util/util.h>
 #include <interfaces/iaccount.h>
 #include "deliciousauthwidget.h"
 #include "deliciousapi.h"
@@ -71,8 +72,8 @@ namespace Delicious
 
 	void DeliciousService::CheckAuthData (const QVariantMap& map)
 	{
-		const QString login = map ["Login"].toString ();
-		const QString password = map ["Password"].toString ();
+		const QString& login = map ["Login"].toString ();
+		const QString& password = map ["Password"].toString ();
 		bool oAuth = false;
 		if (map.contains ("OAuth"))
 			oAuth = map ["OAuth"].toBool ();
@@ -80,8 +81,15 @@ namespace Delicious
 		if (login.isEmpty () || password.isEmpty ())
 			return;
 
-		SendRequest (DeliciousApi_->GetAuthUrl (),
-				DeliciousApi_->GetAuthPayload (login, password));
+		Request req;
+		req.Type_ = OTAuth;
+		req.Login_ = login;
+		req.Password_ = password;
+		req.Count_ = 0;
+		req.Current_ = 0;
+
+		SendRequest (DeliciousApi_->GetAuthUrl ().arg (login, password),
+				QByteArray (), req);
 	}
 
 	void DeliciousService::RegisterAccount (const QVariantMap&)
@@ -90,30 +98,56 @@ namespace Delicious
 
 	void DeliciousService::UploadBookmarks (IAccount *account, const QVariantList& bookmarks)
 	{
-		QByteArray uploadBookmarks = DeliciousApi_->GetUploadPayload (account->GetLogin(),
-				account->GetPassword (), bookmarks);
-
-		SendRequest (DeliciousApi_->GetUploadUrl (),
-				uploadBookmarks);
+		int i = 0;
+		Q_FOREACH (const QVariant& var, bookmarks)
+		{
+			Request req;
+			req.Type_ = OTUpload;
+			req.Login_ = account->GetLogin ();
+			req.Password_ = account->GetPassword ();
+			req.Count_ = bookmarks.count ();
+			req.Current_ = i;
+			
+			SendRequest (DeliciousApi_->GetUploadUrl ()
+					.arg (account->GetLogin(), account->GetPassword ()),
+							DeliciousApi_->GetUploadPayload (var),
+							req );
+		}
 	}
 
 	void DeliciousService::DownloadBookmarks (IAccount *account, const QDateTime& from)
 	{
-		QByteArray downloadBookmarks = DeliciousApi_->GetDownloadPayload (account->GetLogin(),
-				account->GetPassword (), from);
+		Request req;
+		req.Type_ = OTDownload;
+		req.Login_ = account->GetLogin ();
+		req.Password_ = account->GetPassword ();
+		req.Count_ = 0;
+		req.Current_ = 0;
 
-		SendRequest (DeliciousApi_->GetDownloadUrl (),
-				downloadBookmarks);
+		SendRequest (DeliciousApi_->GetDownloadUrl ()
+				.arg (account->GetLogin (), account->GetPassword ()),
+						DeliciousApi_->GetDownloadPayload (from),
+						req);
 	}
 
-	void DeliciousService::SendRequest (const QString& urlString, const QByteArray& payload)
+	DeliciousAccount* DeliciousService::GetAccountByName (const QString& name)
+	{
+		Q_FOREACH (DeliciousAccount *account, Accounts_)
+		if (account->GetLogin () == name)
+			return account;
+		
+		return 0;
+	}
+
+	void DeliciousService::SendRequest (const QString& urlString,
+			const QByteArray& payload, const Request& req)
 	{
 		QUrl url (urlString);
 		QNetworkRequest request (url);
 		QNetworkReply *reply =  CoreProxy_->GetNetworkAccessManager ()->
 				post (request, payload);
 
-// 		Reply2Request_ [reply] = req;
+		Reply2Request_ [reply] = req;
 
 		connect (reply,
 				SIGNAL (finished ()),
@@ -163,12 +197,77 @@ namespace Delicious
 					<< "isn't a QNetworkReply";
 			return;
 		}
+
+		QVariantList downloadedBookmarks = DeliciousApi_->ParseDownloadReply (reply->readAll ());
+		if (!downloadedBookmarks.isEmpty ())
+		{
+			DeliciousAccount *account = GetAccountByName (Reply2Request_ [reply].Login_);
+			emit gotBookmarks (downloadedBookmarks);
+		}
+
 		reply->deleteLater ();
 	}
 
 	void DeliciousService::readyReadReply ()
 	{
+		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+		{
+			qWarning () << Q_FUNC_INFO
+			<< sender ()
+			<< "isn't a QNetworkReply";
+			return;
+		}
 
+		QByteArray result = reply->readAll ();
+		Entity e;
+		LeechCraft::Priority priority;
+		QString msg;
+		switch (Reply2Request_ [reply].Type_)
+		{
+			case OTAuth:
+				if (DeliciousApi_->ParseAuthReply (result))
+				{
+					DeliciousAccount *account =
+							new DeliciousAccount (Reply2Request_ [reply].Login_,
+									this);
+					account->SetPassword (Reply2Request_ [reply].Password_);
+					Accounts_ << account;
+					saveAccounts ();
+					emit accountAdded (account);
+					msg = tr ("Authentification was successfull.");
+					priority = LeechCraft::PInfo_;
+				}
+				else
+				{
+					msg = tr ("Invalid nickname or password.");
+					priority = LeechCraft::PWarning_;
+				}
+				e = Util::MakeNotification ("OnlineBookamarks",
+						msg,
+						priority);
+				break;
+			case OTUpload:
+				if (DeliciousApi_->ParseUploadReply (result))
+				{
+					if (Reply2Request_ [reply].Count_ == Reply2Request_[reply].Current_ + 1)
+					{
+						msg = tr ("Bookmark(s) was send to service Delicious succesfully.");
+						priority = LeechCraft::PInfo_;
+					}
+				}
+				else
+				{
+					msg = tr ("Error during sending bookmarks to Delicious.");
+					priority = LeechCraft::PWarning_;
+				}
+				e = Util::MakeNotification ("OnlineBookamarks",
+						msg,
+						priority);
+				break;
+		}
+
+		emit gotEntity (e);
 	}
 
 	void DeliciousService::saveAccounts () const

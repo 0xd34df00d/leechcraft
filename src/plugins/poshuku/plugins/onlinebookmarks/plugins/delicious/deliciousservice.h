@@ -42,9 +42,27 @@ namespace Delicious
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Poshuku::OnlineBookmarks::IBookmarksService)
 
+	public:
+		enum OperationType
+		{
+			OTAuth,
+			OTDownload,
+			OTUpload
+		};
+		
+		struct Request
+		{
+			OperationType Type_;
+			QString Login_;
+			QString Password_;
+			int Count_;
+			int Current_;
+		};
+	private:
 		ICoreProxy_ptr CoreProxy_;
 		boost::shared_ptr<DeliciousApi> DeliciousApi_;
 		QList<DeliciousAccount*> Accounts_;
+		QHash<QNetworkReply*, Request> Reply2Request_;
 	public:
 		DeliciousService (ICoreProxy_ptr);
 		void Prepare ();
@@ -57,8 +75,9 @@ namespace Delicious
 		void RegisterAccount (const QVariantMap&);
 		void UploadBookmarks (IAccount*, const QVariantList&);
 		void DownloadBookmarks (IAccount*, const QDateTime&);
+		DeliciousAccount* GetAccountByName (const QString&);
 	private:
-		void SendRequest (const QString&, const QByteArray&);
+		void SendRequest (const QString&, const QByteArray&, const Request&);
 		void RestoreAccounts ();
 	private slots:
 		void getReplyFinished ();
