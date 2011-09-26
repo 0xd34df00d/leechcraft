@@ -113,7 +113,7 @@ namespace ReadItLater
 		req.Type_ = OTUpload;
 		req.Login_ = account->GetLogin ();
 		req.Password_ = account->GetPassword ();
-		
+
 		SendRequest (ReadItLaterApi_->GetUploadUrl (),
 				uploadBookmarks,
 				req);
@@ -128,7 +128,6 @@ namespace ReadItLater
 		req.Type_ = OTDownload;
 		req.Login_ = account->GetLogin ();
 		req.Password_ = account->GetPassword ();
-
 		SendRequest (ReadItLaterApi_->GetDownloadUrl (),
 				downloadBookmarks,
 				req);

@@ -49,7 +49,17 @@
     </layout>
    </item>
    <item row="2" column="0">
-    <widget class="QTreeView" name="AccountsView_"/>
+    <widget class="QTreeView" name="AccountsView_">
+     <property name="editTriggers">
+      <set>QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed</set>
+     </property>
+     <property name="alternatingRowColors">
+      <bool>true</bool>
+     </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectItems</enum>
+     </property>
+    </widget>
    </item>
    <item row="2" column="1">
     <layout class="QVBoxLayout" name="ControlLayout_">

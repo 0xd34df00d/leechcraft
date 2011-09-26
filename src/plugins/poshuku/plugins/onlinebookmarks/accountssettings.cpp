@@ -21,6 +21,7 @@
 #include <interfaces/iauthwidget.h>
 #include "core.h"
 #include "interfaces/iaccount.h"
+#include <QDateTime>
 
 namespace LeechCraft
 {
@@ -35,6 +36,9 @@ namespace OnlineBookmarks
 
 		Ui_.AccountsView_->setModel (AccountsModel_);
 		Ui_.AccountsView_->expandAll ();
+		AccountsModel_->setHorizontalHeaderLabels (QStringList () << tr ("Account")
+				<< tr ("Last upload date")
+				<< tr ("Last download date"));
 
 		Ui_.Delete_->setEnabled (false);
 
@@ -166,9 +170,9 @@ namespace OnlineBookmarks
 				data (RAccountObject).value<QObject*> ();
 		Core::Instance ().DeletePassword (accObj);
 		emit accountRemoved (accObj);
-		
+
 		AccountsModel_->removeRow (current.row (), parentIndex);
-		
+
 		if (!AccountsModel_->rowCount (parentIndex))
 			AccountsModel_->removeRows (parentIndex.row (), 0);
 	}
@@ -259,14 +263,26 @@ namespace OnlineBookmarks
 		else
 			parentItem = AccountsModel_->itemFromIndex (index);
 
+		QList<QStandardItem*> record;
 		QStandardItem *item = new QStandardItem (account->GetLogin ());
 		item->setData (QVariant::fromValue<QObject*> (accObj), RAccountObject);
 		item->setEditable (false);
 		item->setCheckable (true);
 		item->setCheckState (account->IsSyncing () ? Qt::Checked : Qt::Unchecked);
+
+		QStandardItem *uploaditem = new QStandardItem (account->GetLastUploadDateTime ()
+				.toString ("dd.MM.yyyy hh:mm:ss"));
+		uploaditem->setEditable (false);
+
+		QStandardItem *downloaditem = new QStandardItem (account->GetLastDownloadDateTime ()
+				.toString ("dd.MM.yyyy hh:mm:ss"));
+		uploaditem->setEditable (false);
+
+		record << item << uploaditem << downloaditem;
+
 		if (account->IsSyncing ())
 			Core::Instance ().AddActiveAccount (accObj);
-		parentItem->appendRow (item);
+		parentItem->appendRow (record);
 	}
 
 }

@@ -149,11 +149,10 @@ namespace ReadItLater
 
 		QString login;
 		bool isSyncing;
-		in >> login
-			>> isSyncing;
+		in >> login;
 		ReadItLaterAccount *acc = new ReadItLaterAccount (login, parent);
-		acc->SetSyncing (isSyncing);
-		in >> acc->LastUpload_
+		in >> acc->IsSyncing_
+			>> acc->LastUpload_
 			>> acc->LastDownload_;
 		return acc;
 	}
