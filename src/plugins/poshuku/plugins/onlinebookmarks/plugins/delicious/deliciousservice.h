@@ -69,6 +69,7 @@ namespace Delicious
 		void accountAdded (QObject*);
 		void gotEntity (const LeechCraft::Entity&);
 		void gotBookmarks (const QVariantList&);
+		void bookmarksUploaded ();
 	};
 }
 }

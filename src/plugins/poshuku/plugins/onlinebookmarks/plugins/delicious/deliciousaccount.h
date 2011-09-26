@@ -44,6 +44,7 @@ namespace Delicious
 		bool IsSyncing_;
 		QDateTime LastUpload_;
 		QDateTime LastDownload_;
+		QVariantList DownloadedBookmarks_;
 	public:
 		DeliciousAccount (const QString&, QObject* = 0);
 		QObject* GetObject ();
@@ -60,8 +61,10 @@ namespace Delicious
 		void SetLastDownloadDateTime (const QDateTime&);
 		QDateTime GetLastUploadDateTime () const;
 		void SetLastUploadDateTime (const QDateTime&);
+		QVariantList GetBookmarksDiff (const QVariantList&);
+		void AppendDownloadedBookmarks (const QVariantList&);
 		QByteArray Serialize () const ;
-		static DeliciousAccount* Deserialize (const QByteArray&, QObject *);
+		static DeliciousAccount* Deserialize (const QByteArray&, QObject*);
 	};
 }
 }

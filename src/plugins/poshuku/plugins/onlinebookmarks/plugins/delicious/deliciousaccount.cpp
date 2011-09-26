@@ -114,6 +114,23 @@ namespace Delicious
 		LastUpload_ = dt;
 	}
 
+	QVariantList DeliciousAccount::GetBookmarksDiff (const QVariantList& list)
+	{
+		QVariantList diff;
+		Q_FOREACH (const QVariant& var, list)
+		if (!DownloadedBookmarks_.contains (var))
+			diff << var;
+
+		return diff;
+	}
+
+	void DeliciousAccount::AppendDownloadedBookmarks (const QVariantList& bookmarks)
+	{
+		Q_FOREACH (const QVariant& var, bookmarks)
+		if (!DownloadedBookmarks_.contains (var))
+			DownloadedBookmarks_ << var;
+	}
+	
 	QByteArray DeliciousAccount::Serialize () const
 	{
 		quint16 version = 1;
@@ -125,7 +142,8 @@ namespace Delicious
 					<< Login_
 					<< IsSyncing_
 					<< LastUpload_
-					<< LastDownload_;
+					<< LastDownload_
+					<< DownloadedBookmarks_;;
 		}
 
 		return result;
@@ -152,9 +170,10 @@ namespace Delicious
 		in >> login
 			>> isSyncing;
 		DeliciousAccount *acc = new DeliciousAccount (login, parent);
-		acc->SetSyncing (isSyncing);
-		in >> acc->LastUpload_
-			>> acc->LastDownload_;
+		in >> acc->IsSyncing_
+			>> acc->LastUpload_
+			>> acc->LastDownload_
+			>> acc->DownloadedBookmarks_;
 		return acc;
 	}
 
