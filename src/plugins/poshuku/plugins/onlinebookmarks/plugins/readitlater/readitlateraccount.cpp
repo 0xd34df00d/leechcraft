@@ -114,6 +114,23 @@ namespace ReadItLater
 		LastUpload_ = dt;
 	}
 
+	QVariantList ReadItLaterAccount::GetBookmarksDiff (const QVariantList& list)
+	{
+		QVariantList diff;
+		Q_FOREACH (const QVariant& var, list)
+			if (!DownloadedBookmarks_.contains (var))
+				diff << var;
+
+		return diff;
+	}
+
+	void ReadItLaterAccount::AppendDownloadedBookmarks (const QVariantList& bookmarks)
+	{
+		Q_FOREACH (const QVariant& var, bookmarks)
+			if (!DownloadedBookmarks_.contains (var))
+				DownloadedBookmarks_ << var;
+	}
+
 	QByteArray ReadItLaterAccount::Serialize () const
 	{
 		quint16 version = 1;
@@ -125,7 +142,8 @@ namespace ReadItLater
 					<< Login_
 					<< IsSyncing_
 					<< LastUpload_
-					<< LastDownload_;
+					<< LastDownload_
+					<< DownloadedBookmarks_;
 		}
 
 		return result;
@@ -153,7 +171,8 @@ namespace ReadItLater
 		ReadItLaterAccount *acc = new ReadItLaterAccount (login, parent);
 		in >> acc->IsSyncing_
 			>> acc->LastUpload_
-			>> acc->LastDownload_;
+			>> acc->LastDownload_
+			>> acc->DownloadedBookmarks_;
 		return acc;
 	}
 

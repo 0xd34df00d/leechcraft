@@ -133,6 +133,15 @@ namespace ReadItLater
 				req);
 	}
 
+	ReadItLaterAccount* ReadItLaterService::GetAccountByName (const QString& login)
+	{
+		Q_FOREACH (ReadItLaterAccount *account, Accounts_)
+			if (account->GetLogin () == login)
+				return account;
+
+		return 0;
+	}
+
 	void ReadItLaterService::SendRequest (const QString& urlSting,
 			const QByteArray& payload, Request req)
 	{
@@ -195,7 +204,13 @@ namespace ReadItLater
 		QVariantList downloadedBookmarks =
 				ReadItLaterApi_->GetDownloadedBookmarks (reply->readAll ());
 		if (!downloadedBookmarks.isEmpty ())
+		{
+			ReadItLaterAccount *account = GetAccountByName (Reply2Request_ [reply].Login_);
+			if (account)
+				account->AppendDownloadedBookmarks (downloadedBookmarks);
+
 			emit gotBookmarks (downloadedBookmarks);
+		}
 
 		reply->deleteLater ();
 	}
@@ -239,6 +254,7 @@ namespace ReadItLater
 						break;
 					case OTUpload:
 						msg = tr ("Bookmark(s) was send to service ReadItLater succesfully.");
+						emit bookmarksUploaded ();
 						break;
 				}
 				e = Util::MakeNotification ("OnlineBookamarks",

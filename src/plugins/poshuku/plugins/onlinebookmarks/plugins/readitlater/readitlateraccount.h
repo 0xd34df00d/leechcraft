@@ -48,6 +48,7 @@ namespace ReadItLater
 		bool IsSyncing_;
 		QDateTime LastUpload_;
 		QDateTime LastDownload_;
+		QVariantList DownloadedBookmarks_;
 	public:
 		ReadItLaterAccount (const QString&, QObject* = 0);
 		QObject* GetObject ();
@@ -64,8 +65,10 @@ namespace ReadItLater
 		void SetLastDownloadDateTime (const QDateTime&);
 		QDateTime GetLastUploadDateTime () const;
 		void SetLastUploadDateTime (const QDateTime&);
+		QVariantList GetBookmarksDiff (const QVariantList&);
+		void AppendDownloadedBookmarks (const QVariantList&);
 		QByteArray Serialize () const ;
-		static ReadItLaterAccount* Deserialize (const QByteArray&, QObject *);
+		static ReadItLaterAccount* Deserialize (const QByteArray&, QObject*);
 	};
 }
 }
