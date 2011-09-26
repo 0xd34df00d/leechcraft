@@ -19,6 +19,7 @@
 #include "core.h"
 #include <QStandardItemModel>
 #include <interfaces/iplugin2.h>
+#include <interfaces/iproxyobject.h>
 #include <interfaces/iserviceplugin.h>
 #include <interfaces/iaccount.h>
 #include "accountssettings.h"
@@ -116,6 +117,10 @@ namespace OnlineBookmarks
 				SIGNAL (gotBookmarks (const QVariantList&)),
 				this,
 				SLOT (handleGotBookmarks (const QVariantList&)));
+		connect (plugin,
+				SIGNAL (bookmarksUploaded ()),
+				this,
+				SLOT (bookmarksUpload ()));
 	}
 
 	QObjectList Core::GetServicePlugins () const
@@ -203,24 +208,39 @@ namespace OnlineBookmarks
 		QVariantList keys;
 		IAccount *account = qobject_cast<IAccount*> (accObj);
 		keys << account->GetAccountID ();
-
+		
 		QVariantList passwordVar;
 		passwordVar << account->GetPassword ();
 		QVariantList values;
 		values << QVariant (passwordVar);
-
+		
 		Entity e = Util::MakeEntity (keys,
 				QString (),
 				Internal,
 				"x-leechcraft/data-persistent-save");
 		e.Additional_ ["Values"] = values;
 		e.Additional_ ["Overwrite"] = true;
-
+		
 		emit gotEntity (e);
+	}
+
+	QObject* Core::GetBookmarksModel () const
+	{
+		IProxyObject *obj = qobject_cast<IProxyObject*> (PluginProxy_);
+		if (!obj)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "obj is not an IProxyObject"
+					<< PluginProxy_;
+			return 0;
+		}
+
+		return obj->GetFavoritesModel ();
 	}
 
 	void Core::handleGotBookmarks (const QVariantList& importBookmarks)
 	{
+		AccountsSettings_->UpdateAccountsTime ();
 		LeechCraft::Entity eBookmarks = Util::MakeEntity (QVariant (),
 				QString (),
 				static_cast<LeechCraft::TaskParameter> (FromUserInitiated | OnlyHandle),
@@ -230,14 +250,39 @@ namespace OnlineBookmarks
 		emit gotEntity (eBookmarks);
 	}
 
+	void Core::bookmarksUpload ()
+	{
+		AccountsSettings_->UpdateAccountsTime ();
+	}
+
 	void Core::syncBookmarks ()
 	{
-
+		downloadBookmarks ();
+		uploadBookmarks ();
 	}
 
 	void Core::uploadBookmarks ()
 	{
+		QVariantList result;
+		if (!QMetaObject::invokeMethod (GetBookmarksModel (),
+				"getItemsMap",
+				Q_RETURN_ARG (QList<QVariant>, result)))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "getItemsMap() metacall failed"
+					<< result;
+			return ;
+		}
 
+		if (result.isEmpty ())
+			return;
+
+		Q_FOREACH (QObject *accObj, ActiveAccounts_)
+		{
+			IAccount *account = qobject_cast<IAccount*> (accObj);
+			IBookmarksService *ibs = qobject_cast<IBookmarksService*> (account->GetParentService ());
+			ibs->UploadBookmarks (account, account->GetBookmarksDiff (result));
+		}
 	}
 
 	void Core::downloadBookmarks ()

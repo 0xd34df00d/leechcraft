@@ -52,6 +52,7 @@ namespace OnlineBookmarks
 		virtual QDateTime GetLastDownloadDateTime () const = 0;
 		virtual void SetLastUploadDateTime (const QDateTime&) = 0;
 		virtual void SetLastDownloadDateTime (const QDateTime&) = 0;
+		virtual QVariantList GetBookmarksDiff (const QVariantList&) = 0;
 	};
 }
 }

@@ -70,10 +70,13 @@ namespace OnlineBookmarks
 				const QString&, const QStringList&);
 
 		void DeletePassword (QObject*);
-		void SavePassword (QObject*);
 		QString GetPassword (QObject*);
+		void SavePassword (QObject*);
+	private:
+		QObject* GetBookmarksModel () const;
 	private slots:
 		void handleGotBookmarks (const QVariantList&);
+		void bookmarksUpload ();
 	public slots:
 		void syncBookmarks ();
 		void uploadBookmarks ();

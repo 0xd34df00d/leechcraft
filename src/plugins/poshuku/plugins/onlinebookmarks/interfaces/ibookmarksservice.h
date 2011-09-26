@@ -68,6 +68,8 @@ namespace OnlineBookmarks
 		virtual void accountAdded (QObject*) = 0;
 
 		virtual void gotBookmarks (const QVariantList&) = 0;
+
+		virtual void bookmarksUploaded () = 0;
 	};
 	Q_DECLARE_OPERATORS_FOR_FLAGS (IBookmarksService::Features)
 }

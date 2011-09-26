@@ -92,6 +92,21 @@ namespace OnlineBookmarks
 		return AccountsModel_;
 	}
 
+	void AccountsSettings::UpdateAccountsTime ()
+	{
+		for (int i = 0; i < AccountsModel_->rowCount (); ++i)
+			for (int j = 0; j < AccountsModel_->item (i)->rowCount (); ++j)
+			{
+				QObject *accObj = AccountsModel_->item (i)->child (j)->
+						data (RAccountObject).value<QObject*> ();
+				IAccount *account = qobject_cast<IAccount*> (accObj);
+				AccountsModel_->item (i)->child (j, 1)->
+						setText (account->GetLastUploadDateTime ().toString ("dd.MM.yyyy hh:mm:ss"));
+				AccountsModel_->item (i)->child (j, 2)->
+						setText (account->GetLastDownloadDateTime ().toString ("dd.MM.yyyy hh:mm:ss"));
+			}
+	}
+
 	QModelIndex AccountsSettings::GetServiceIndex (QObject *serviceObj) const
 	{
 		for (int i = 0; i < AccountsModel_->rowCount (); ++i)

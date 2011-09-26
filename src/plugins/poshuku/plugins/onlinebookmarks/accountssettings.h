@@ -55,7 +55,7 @@ namespace OnlineBookmarks
 		~AccountsSettings ();
 		void InitServices ();
 		QStandardItemModel* GetAccountsModel () const;
-	private:
+		void UpdateAccountsTime ();
 		QModelIndex GetServiceIndex (QObject*) const;
 	public slots:
 		void accept ();
