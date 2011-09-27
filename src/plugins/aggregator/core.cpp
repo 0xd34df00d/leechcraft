@@ -519,7 +519,7 @@ namespace Aggregator
 
 	IWebBrowser* Core::GetWebBrowser () const
 	{
-		qDebug () << "GetWebBrowser" << Proxy_->GetPluginsManager ()->
+		Proxy_->GetPluginsManager ()->
 				GetAllCastableRoots<IWebBrowser*> ();
 		return Proxy_->GetPluginsManager ()->
 				GetAllCastableTo<IWebBrowser*> ().value (0, 0);
