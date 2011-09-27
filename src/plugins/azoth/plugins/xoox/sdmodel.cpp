@@ -32,7 +32,7 @@ namespace Xoox
 	{
 	}
 	
-	bool SDModel::canFetchMore (const QModelIndex& p) const
+	bool SDModel::canFetchMore (const QModelIndex&) const
 	{
 		return true;
 	}

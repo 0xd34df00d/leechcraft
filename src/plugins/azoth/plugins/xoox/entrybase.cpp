@@ -47,6 +47,7 @@
 #include "roomhandler.h"
 #include "useravatardata.h"
 #include "useravatarmetadata.h"
+#include "capsdatabase.h"
 
 namespace LeechCraft
 {
@@ -79,13 +80,37 @@ namespace Xoox
 	{
 		Azoth::Util::StandardPurgeMessages (AllMessages_, before);
 	}
+	
+	namespace
+	{
+		bool CheckPartFeature (EntryBase *base, const QString& variant)
+		{
+			if (variant.isEmpty ())
+				return true;
+			
+			const QByteArray& ver = base->GetVariantVerString (variant);
+			if (ver.isEmpty ())
+				return true;
+			
+			const QStringList& feats = Core::Instance ().GetCapsDatabase ()->Get (ver);
+			if (feats.isEmpty ())
+				return true;
+			
+			return feats.contains ("http://jabber.org/protocol/chatstates");
+		}
+	}
 
 	void EntryBase::SetChatPartState (ChatPartState state, const QString& variant)
 	{
+		if (!CheckPartFeature (this, variant))
+			return;
+
 		// TODO check if participant supports this XEP.
 		// Need to wait until disco info storage is implemented.
 		QXmppMessage msg;
-		msg.setTo (GetJID ());
+		msg.setTo (GetJID () + (variant.isEmpty () ?
+						QString () :
+						('/' + variant)));
 		msg.setState (static_cast<QXmppMessage::State> (state));
 		Account_->GetClientConnection ()->
 				GetClient ()->sendPacket (msg);

@@ -21,9 +21,14 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	choroid.cpp
+	choroidtab.cpp
 	)
 SET (HEADERS
 	choroid.h
+	choroidtab.h
+	)
+SET (FORMS
+	choroidtab.ui
 	)
 #SET (TRANSLATIONS
 #	leechcraft_choroid_ru_RU.ts
@@ -34,6 +39,7 @@ SET (HEADERS
 #	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_choroid_en.qm
 #	)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
+QT4_WRAP_UI (UIS_H ${FORMS})
 
 #ADD_CUSTOM_COMMAND (OUTPUT
 #	${COMPILED_TRANSLATIONS}
@@ -45,6 +51,7 @@ ADD_LIBRARY (leechcraft_choroid SHARED
 #	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
+	${UIS_H}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_choroid
 	${QT_LIBRARIES}

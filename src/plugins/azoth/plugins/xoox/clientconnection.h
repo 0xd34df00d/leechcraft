@@ -164,7 +164,6 @@ namespace Xoox
 		QHash<QString, PacketID2Callback_t> AwaitingPacketCallbacks_;
 	public:
 		ClientConnection (const QString&,
-				const GlooxAccountState&,
 				GlooxAccount*);
 		virtual ~ClientConnection ();
 

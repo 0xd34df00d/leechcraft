@@ -519,7 +519,7 @@ namespace Aggregator
 
 	IWebBrowser* Core::GetWebBrowser () const
 	{
-		qDebug () << "GetWebBrowser" << Proxy_->GetPluginsManager ()->
+		Proxy_->GetPluginsManager ()->
 				GetAllCastableRoots<IWebBrowser*> ();
 		return Proxy_->GetPluginsManager ()->
 				GetAllCastableTo<IWebBrowser*> ().value (0, 0);
@@ -1271,6 +1271,81 @@ namespace Aggregator
 		}
 	}
 
+	void Core::rotateUpdatesQueue ()
+	{
+		if (UpdatesQueue_.isEmpty ())
+			return;
+
+		const IDType_t id = UpdatesQueue_.takeFirst ();
+
+		if (!UpdatesQueue_.isEmpty ())
+			QTimer::singleShot (2000,
+					this,
+					SLOT (rotateUpdatesQueue ()));
+
+		QString url = StorageBackend_->GetFeed (id)->URL_;
+		QList<int> keys = PendingJobs_.keys ();
+		Q_FOREACH (int key, keys)
+			if (PendingJobs_ [key].URL_ == url)
+			{
+				QObject *provider = ID2Downloader_ [key];
+				IDownload *downloader = qobject_cast<IDownload*> (provider);
+				if (downloader)
+				{
+					qWarning () << Q_FUNC_INFO
+						<< "stalled task detected from"
+						<< downloader
+						<< "trying to kill...";
+					downloader->KillTask (key);
+					ID2Downloader_.remove (key);
+					PendingJobs_.remove (key);
+					qWarning () << Q_FUNC_INFO
+						<< "killed!";
+				}
+				else
+					qWarning () << Q_FUNC_INFO
+						<< "provider is not a downloader:"
+						<< provider
+						<< "; cannot kill the task";
+				return;
+			}
+
+		QString filename = Util::GetTemporaryName ();
+
+		Entity e = Util::MakeEntity (QUrl (url),
+				filename,
+				LeechCraft::Internal |
+					LeechCraft::DoNotNotifyUser |
+					LeechCraft::DoNotSaveInHistory |
+					LeechCraft::NotPersistent |
+					LeechCraft::DoNotAnnounceEntity);
+
+		PendingJob pj =
+		{
+			PendingJob::RFeedUpdated,
+			url,
+			filename,
+			QStringList (),
+			boost::shared_ptr<Feed::FeedSettings> ()
+		};
+
+		int jobId = -1;
+		QObject *pr;
+		emit delegateEntity (e, &jobId, &pr);
+		if (jobId == -1)
+		{
+			qWarning () << Q_FUNC_INFO << url << "wasn't delegated";
+			emit gotEntity (Util::MakeNotification ("Aggregator",
+					tr ("Could not find plugin for feed with URL %1")
+						.arg (url), LeechCraft::PCritical_));
+			return;
+		}
+
+		HandleProvider (pr, jobId);
+		PendingJobs_ [jobId] = pj;
+		Updates_ [id] = QDateTime::currentDateTime ();
+	}
+
 	void Core::UpdateUnreadItemsNumber () const
 	{
 		emit unreadNumberChanged (ChannelsModel_->GetUnreadItemsNumber ());
@@ -1689,67 +1764,12 @@ namespace Aggregator
 
 	void Core::UpdateFeed (const IDType_t& id)
 	{
-		QString url = StorageBackend_->GetFeed (id)->URL_;
-		QList<int> keys = PendingJobs_.keys ();
-		Q_FOREACH (int key, keys)
-			if (PendingJobs_ [key].URL_ == url)
-			{
-				QObject *provider = ID2Downloader_ [key];
-				IDownload *downloader = qobject_cast<IDownload*> (provider);
-				if (downloader)
-				{
-					qWarning () << Q_FUNC_INFO
-						<< "stalled task detected from"
-						<< downloader
-						<< "trying to kill...";
-					downloader->KillTask (key);
-					ID2Downloader_.remove (key);
-					PendingJobs_.remove (key);
-					qWarning () << Q_FUNC_INFO
-						<< "killed!";
-				}
-				else
-					qWarning () << Q_FUNC_INFO
-						<< "provider is not a downloader:"
-						<< provider
-						<< "; cannot kill the task";
-				return;
-			}
+		if (UpdatesQueue_.isEmpty ())
+			QTimer::singleShot (500,
+					this,
+					SLOT (rotateUpdatesQueue ()));
 
-		QString filename = LeechCraft::Util::GetTemporaryName ();
-
-		LeechCraft::Entity e = LeechCraft::Util::MakeEntity (QUrl (url),
-				filename,
-				LeechCraft::Internal |
-					LeechCraft::DoNotNotifyUser |
-					LeechCraft::DoNotSaveInHistory |
-					LeechCraft::NotPersistent |
-					LeechCraft::DoNotAnnounceEntity);
-
-		PendingJob pj =
-		{
-			PendingJob::RFeedUpdated,
-			url,
-			filename,
-			QStringList (),
-			boost::shared_ptr<Feed::FeedSettings> ()
-		};
-
-		int jobId = -1;
-		QObject *pr;
-		emit delegateEntity (e, &jobId, &pr);
-		if (jobId == -1)
-		{
-			qWarning () << Q_FUNC_INFO << url << "wasn't delegated";
-			emit gotEntity (Util::MakeNotification ("Aggregator",
-					tr ("Could not find plugin for feed with URL %1")
-						.arg (url), LeechCraft::PCritical_));
-			return;
-		}
-
-		HandleProvider (pr, jobId);
-		PendingJobs_ [jobId] = pj;
-		Updates_ [id] = QDateTime::currentDateTime ();
+		UpdatesQueue_ << id;
 	}
 
 	void Core::HandleProvider (QObject *provider, int id)

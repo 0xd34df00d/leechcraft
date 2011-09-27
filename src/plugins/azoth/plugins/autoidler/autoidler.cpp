@@ -92,7 +92,7 @@ namespace Autoidler
 		return XmlSettingsDialog_;
 	}
 
-	quint64 Plugin::GetInactiveSeconds ()
+	int Plugin::GetInactiveSeconds ()
 	{
 		return IdleSeconds_;
 	}

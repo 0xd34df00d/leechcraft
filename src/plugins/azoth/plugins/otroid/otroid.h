@@ -16,48 +16,48 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_AUTOIDLER_AUTOIDLER_H
-#define PLUGINS_AZOTH_PLUGINS_AUTOIDLER_AUTOIDLER_H
+#ifndef PLUGINS_AZOTH_PLUGINS_OTROID_OTROID_H
+#define PLUGINS_AZOTH_PLUGINS_OTROID_OTROID_H
 #include <boost/shared_ptr.hpp>
 #include <QObject>
-#include <QMap>
+#include <QDir>
+
+extern "C"
+{
+#include <libotr/proto.h>
+#include <libotr/message.h>
+}
+
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
-#include <interfaces/ihavesettings.h>
-#include <interfaces/iclentry.h>
-#include <interfaces/ilastactivityprovider.h>
+#include <interfaces/iproxyobject.h>
+#include <interfaces/core/ihookproxy.h>
 
 class QTranslator;
-
-class Idle;
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-class IProxyObject;
-
-namespace Autoidler
+namespace OTRoid
 {
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
-				 , public IHaveSettings
-				 , public ILastActivityProvider
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 IHaveSettings LeechCraft::Azoth::ILastActivityProvider)
+		Q_INTERFACES (IInfo IPlugin2)
 
-		ICoreProxy_ptr Proxy_;
-		IProxyObject *AzothProxy_;
 		boost::shared_ptr<QTranslator> Translator_;
-		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 
-		boost::shared_ptr<Idle> Idle_;
+		IProxyObject *AzothProxy_;
 
-		QMap<QObject*, EntryStatus> OldStatuses_;
+		OtrlUserState UserState_;
+		OtrlMessageAppOps OtrOps_;
 
-		int IdleSeconds_;
+		QHash<QObject*, QAction*> Entry2Action_;
+
+		QDir OtrDir_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -69,13 +69,35 @@ namespace Autoidler
 
 		QSet<QByteArray> GetPluginClasses () const;
 
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-
-		int GetInactiveSeconds ();
+		int IsLoggedIn (const QString& accId, const QString& entryId);
+		void InjectMsg (const QString& accId,
+				const QString& entryId, const QString& msg);
+		void Notify (const QString& accId, const QString& entryId,
+				Priority, const QString& title,
+				const QString& primary, const QString& secondary);
+		void WriteFingerprints ();
+		void LogMsg (const QString&);
+		QString GetAccountName (const QString& accId);
+	private:
+		const char* GetOTRFilename (const QString&) const;
+		void CreateActions (QObject*);
 	public slots:
 		void initPlugin (QObject*);
+
+		void hookEntryActionAreasRequested (LeechCraft::IHookProxy_ptr proxy,
+				QObject *action,
+				QObject *entry);
+		void hookEntryActionsRequested (LeechCraft::IHookProxy_ptr proxy,
+				QObject *entry);
+		void hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
+				QObject *message);
+		void hookMessageCreated (LeechCraft::IHookProxy_ptr proxy,
+				QObject *chatTab,
+				QObject *message);
 	private slots:
-		void handleIdle (int);
+		void handleEntryDestroyed ();
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }

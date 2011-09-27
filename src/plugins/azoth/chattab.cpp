@@ -492,6 +492,9 @@ namespace Azoth
 
 	void ChatTab::handleEncryptionStateChanged (QObject *entry, bool enabled)
 	{
+		if (entry != GetEntry<QObject> ())
+			return;
+
 		EnableEncryption_->blockSignals (true);
 		EnableEncryption_->setChecked (enabled);
 		EnableEncryption_->blockSignals (false);
@@ -1262,6 +1265,9 @@ namespace Azoth
 					<< msg->OtherPart ();
 			return;
 		}
+
+		if (msg->GetObject ()->property ("Azoth/HiddenMessage").toBool () == true)
+			return;
 
 		ICLEntry *parent = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
 

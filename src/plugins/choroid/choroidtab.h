@@ -17,42 +17,58 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_CHOROID_CHOROID_H
-#define PLUGINS_CHOROID_CHOROID_H
-#include <QObject>
-#include <interfaces/iinfo.h>
+#ifndef PLUGINS_CHOROID_CHOROIDTAB_H
+#define PLUGINS_CHOROID_CHOROIDTAB_H
+#include <QWidget>
 #include <interfaces/ihavetabs.h>
+#include "ui_choroidtab.h"
+
+class QFileSystemModel;
+class QStandardItemModel;
+class QGraphicsScene;
+class QGraphicsPixmapItem;
+class QFileInfo;
 
 namespace LeechCraft
 {
 namespace Choroid
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IHaveTabs
+	class ChoroidTab : public QWidget
+					 , public ITabWidget
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs);
+		Q_INTERFACES (ITabWidget);
 
-		TabClassInfo TabInfo_;
+		const TabClassInfo TabClass_;
+		QObject *Parent_;
+
+		Ui::ChoroidTab Ui_;
+
+		QGraphicsScene *Scene_;
+
+		QFileSystemModel *FSModel_;
+		QStandardItemModel *FilesModel_;
+
+		QList<QGraphicsPixmapItem*> DirThumbs_;
+
+		enum CustomRoles
+		{
+			CRFilePath = 100
+		};
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		ChoroidTab (const TabClassInfo&, QObject*);
 
-		TabClasses_t GetTabClasses () const;
-		void TabOpenRequested (const QByteArray&);
+		TabClassInfo GetTabClassInfo () const;
+		QObject* ParentMultiTabs ();
+		void Remove ();
+		QToolBar* GetToolBar () const;
+	private:
+		void AddThumb (const QFileInfo&);
+	private slots:
+		void handleDirTreeCurrentChanged (const QModelIndex&);
+		void handleFileChanged (const QModelIndex&);
 	signals:
-		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);
-		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void statusBarChanged (QWidget*, const QString&);
-		void raiseTab (QWidget*);
 	};
 }
 }
