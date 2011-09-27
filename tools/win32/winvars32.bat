@@ -15,13 +15,14 @@ set QXMPP_LOCAL=C:\DEVLIBS\qxmpp-dev
 set QJSON_DIR=C:\DEVLIBS\qjson
 set SPEEX_DIR=C:\DEVLIBS\speex-1.2rc1
 
-set BUILD_RELEASE_AND_DEBUG=0
+set BUILD_RELEASE_AND_DEBUG=1
 
 rem == Collect variables ==
 
 set BUILD_TYPE=Debug
 
 rem Set these variables to proper paths of your system:
+
 set BOOST_BIN_DIR="%BOOST_ROOT%\stage\lib"
 set BOOST_VERSION="1_47"
 set LIBTORRENT_BIN_DIR="%TORRENT_DIR%\bin\msvc-10.0\debug\boost-link-shared\boost-source\threading-multi"

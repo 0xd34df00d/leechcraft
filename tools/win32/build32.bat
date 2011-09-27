@@ -1,6 +1,6 @@
 rem == generate script for MSVS sln file == 
 
-rem @echo off
+@echo off
 
 call "%~dp0\winvars32.bat"
 
