@@ -198,13 +198,16 @@ namespace Delicious
 			return;
 		}
 
-		QVariantList downloadedBookmarks = DeliciousApi_->ParseDownloadReply (reply->readAll ());
-		if (!downloadedBookmarks.isEmpty ())
+		if (Reply2Request_ [reply].Type_ == OTDownload)
 		{
-			DeliciousAccount *account = GetAccountByName (Reply2Request_ [reply].Login_);
-			emit gotBookmarks (downloadedBookmarks);
+			QByteArray result = reply->readAll ();
+			QVariantList downloadedBookmarks = DeliciousApi_->ParseDownloadReply (result);
+			if (!downloadedBookmarks.isEmpty ())
+			{
+				DeliciousAccount *account = GetAccountByName (Reply2Request_ [reply].Login_);
+				emit gotBookmarks (downloadedBookmarks);
+			}
 		}
-
 		reply->deleteLater ();
 	}
 
@@ -214,8 +217,8 @@ namespace Delicious
 		if (!reply)
 		{
 			qWarning () << Q_FUNC_INFO
-			<< sender ()
-			<< "isn't a QNetworkReply";
+					<< sender ()
+					<< "isn't a QNetworkReply";
 			return;
 		}
 

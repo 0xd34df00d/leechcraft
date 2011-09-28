@@ -92,13 +92,14 @@ namespace Delicious
 		while (!reply.atEnd ())
 		{
 			reply.readNext();
-			if (!reply.attributes ().hasAttribute ("update time"))
-				return false;
+			if (reply.name () == "update")
+				if (reply.attributes ().hasAttribute ("time"))
+					return true;
 		}
 		if (reply.hasError ())
 			return false;
 
-		return true;
+		return false;
 	}
 
 	bool DeliciousApi::ParseUploadReply (const QByteArray& content)
