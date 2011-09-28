@@ -48,6 +48,8 @@ namespace Xoox
 
 	GlooxProtocol::~GlooxProtocol ()
 	{
+		Q_FOREACH (QObject *acc, GetRegisteredAccounts ())
+			emit accountRemoved (acc);
 	}
 
 	void GlooxProtocol::Prepare ()
@@ -92,7 +94,7 @@ namespace Xoox
 	{
 		return "XMPP";
 	}
-	
+
 	QIcon GlooxProtocol::GetProtocolIcon () const
 	{
 		return QIcon (":/plugins/azoth/plugins/xoox/resources/images/jabbericon.svg");
@@ -102,7 +104,7 @@ namespace Xoox
 	{
 		return "Xoox.Gloox.XMPP";
 	}
-	
+
 	QList<QWidget*> GlooxProtocol::GetAccountRegistrationWidgets (AccountAddOptions options)
 	{
 		QList<QWidget*> result;
@@ -126,7 +128,7 @@ namespace Xoox
 
 		return result;
 	}
-	
+
 	void GlooxProtocol::RegisterAccount (const QString& name, const QList<QWidget*>& widgets)
 	{
 		if (!widgets.size ())
@@ -147,7 +149,7 @@ namespace Xoox
 					<< widgets;
 			return;
 		}
-		
+
 		GlooxAccount *account = new GlooxAccount (name, this);
 		account->FillSettings (w);
 
@@ -172,7 +174,7 @@ namespace Xoox
 	{
 		return new JoinGroupchatWidget ();
 	}
-	
+
 	QWidget* GlooxProtocol::GetMUCBookmarkEditorWidget ()
 	{
 		return new BookmarkEditWidget ();
@@ -186,12 +188,12 @@ namespace Xoox
 		accObj->deleteLater ();
 		saveAccounts ();
 	}
-	
+
 	bool GlooxProtocol::SupportsURI (const QUrl& url) const
 	{
 		return url.scheme () == "xmpp";
 	}
-	
+
 	void GlooxProtocol::HandleURI (const QUrl& url, QObject *accountObj)
 	{
 		GlooxAccount *acc = qobject_cast<GlooxAccount*> (accountObj);
@@ -218,7 +220,7 @@ namespace Xoox
 			}
 			queryItems [splitted.at (0)] = QUrl::fromPercentEncoding (splitted.value (1));
 		}
-			
+
 		qDebug () << "HANDLE" << queryItems;
 
 		const QString& path = url.path ();
