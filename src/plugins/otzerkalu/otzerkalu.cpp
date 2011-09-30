@@ -20,7 +20,6 @@
 #include "otzerkalu.h"
 #include <QIcon>
 #include <QUrl>
-#include <QStandardItemModel>
 #include <interfaces/entitytesthandleresult.h>
 #include "otzerkaludialog.h"
 #include <interfaces/core/icoreproxy.h>
@@ -33,7 +32,6 @@ namespace Otzerkalu
 	{
 		Proxy_ = proxy;
 		RepresentationModel_ = new QStandardItemModel (this);
-		RepresentationModel_->appendRow (new QStandardItem ("0 files are downloaded"));
 	}
 
 	void Plugin::SecondInit ()
@@ -83,25 +81,25 @@ namespace Otzerkalu
 		OtzerkaluDialog dialog;
 		if (dialog.exec () != QDialog::Accepted)
 			return;
-
-		DL_ = new OtzerkaluDownloader (DownloadParams (dUrl, dialog.GetDir (),
+		RepresentationModel_->appendRow (new QStandardItem ("0 files are downloaded"));
+		OtzerkaluDownloader *dl = new OtzerkaluDownloader (DownloadParams (dUrl, dialog.GetDir (),
 					dialog.GetRecursionLevel (),
 					dialog.FetchFromExternalHosts ()),
-					this);
-		
-		connect (DL_,
+					RepresentationModel_->rowCount (),
+					this);	
+		connect (dl,
 				SIGNAL (gotEntity (const LeechCraft::Entity&)),
 				this,
 				SIGNAL (gotEntity (const LeechCraft::Entity&)));
-		connect (DL_,
+		connect (dl,
 				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)),
 				this,
 				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)));
-		connect (DL_,
-				SIGNAL (fileDownloaded (QString)),
+		connect (dl,
+				SIGNAL (fileDownloaded (int, int)),
 				this,
-				SLOT (handleFileDownloaded (QString)));
-		DL_->Begin ();
+				SLOT (handleFileDownloaded (int, int)));
+		dl->Begin ();
 	}
 	
 	QAbstractItemModel* Plugin::GetRepresentation () const
@@ -109,9 +107,8 @@ namespace Otzerkalu
 		return RepresentationModel_;
 	}
 	
-	void Plugin::handleFileDownloaded (const QString& file)
+	void Plugin::handleFileDownloaded (int id, int count)
 	{
-		RepresentationModel_->setItem (0, new QStandardItem (QString::number (DL_->FilesCount ()) + " files are downloaded"));
 	}
 
 }

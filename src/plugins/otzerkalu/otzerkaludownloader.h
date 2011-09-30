@@ -56,9 +56,9 @@ namespace Otzerkalu
 		const DownloadParams Param_;
 		QMap<int, FileData> FileMap_;
 		QStringList DownloadedFiles_;
-		int UrlCount_;
+		int UrlCount_, ID_;
 	public:
-		OtzerkaluDownloader (const DownloadParams& param, QObject *parent = 0);
+		OtzerkaluDownloader (const DownloadParams& param, int id, QObject *parent = 0);
 		QString GetLastDownloaded () const;
 		int FilesCount () const;
 		void Begin ();
@@ -75,7 +75,7 @@ namespace Otzerkalu
 	signals:
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 		void gotEntity (const LeechCraft::Entity&);
-		void fileDownloaded (const QString& file);
+		void fileDownloaded (int id, int count);
 	};
 };
 };

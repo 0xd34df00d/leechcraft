@@ -67,10 +67,11 @@ namespace Otzerkalu
 	}
 
 	OtzerkaluDownloader::OtzerkaluDownloader (const DownloadParams& param,
-			QObject *parent)
+			int id, QObject *parent)
 	: QObject (parent)
 	, Param_ (param)
 	, UrlCount_ (0)
+	, ID_ (id)
 	{
 	}
 	
@@ -144,7 +145,7 @@ namespace Otzerkalu
 
 		const QString& filename = data.Filename_;
 		DownloadedFiles_.append (filename);
-		emit fileDownloaded (filename);
+		emit fileDownloaded (ID_, DownloadedFiles_.count ());
 
 		QFile file (filename);
 		if (!file.open (QIODevice::ReadOnly))
