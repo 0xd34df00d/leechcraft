@@ -145,6 +145,9 @@ namespace Choroid
 
 	void ChoroidTab::ShowImage (const QString& path)
 	{
+		QMetaObject::invokeMethod (DeclView_->rootObject (),
+				"showSingleImage",
+				Q_ARG (QVariant, QUrl::fromLocalFile (path)));
 	}
 
 	void ChoroidTab::handleDirTreeCurrentChanged (const QModelIndex& index)
