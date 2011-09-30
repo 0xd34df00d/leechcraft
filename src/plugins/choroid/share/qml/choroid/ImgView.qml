@@ -7,13 +7,9 @@ Rectangle {
         id: imageListDelegate
 
         Item {
-            width: imagesGrid.cellWidth
-            height: imagesGrid.cellHeight
+            width: imagesGrid.cellWidth - 2
+            height: imagesGrid.cellHeight - 2
             clip: true
-            anchors.rightMargin: 2
-            anchors.leftMargin: 2
-            anchors.bottomMargin: 2
-            anchors.topMargin: 2
 
             Image {
                 id: theImage
@@ -57,8 +53,8 @@ Rectangle {
         id: imagesGrid
         clip: true
         smooth: true
-        anchors.rightMargin: 2
-        anchors.leftMargin: 2
+        anchors.rightMargin: 5
+        anchors.leftMargin: 5
         anchors.bottomMargin: 2
         anchors.topMargin: 2
 
@@ -69,5 +65,15 @@ Rectangle {
         focus: true
         delegate: imageListDelegate
         model: filesListModel
+    }
+
+    Scrollbar {
+        id: verScrollBar
+        width: 5
+        height: parent.height - 12
+        anchors.left: imagesGrid.right
+        orientation: Qt.Vertical
+        position: imagesGrid.visibleArea.yPosition
+        pgSize: imagesGrid.visibleArea.heightRatio
     }
 }
