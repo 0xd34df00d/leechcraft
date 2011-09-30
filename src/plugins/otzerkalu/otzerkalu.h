@@ -22,7 +22,7 @@
 #define PLUGINS_OTZERKALU_OTZERKALU_H
 #include <QObject>
 #include <QUrl>
-
+#include <QStandardItemModel>
 #include <interfaces/iinfo.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/structures.h>
@@ -33,7 +33,6 @@ namespace LeechCraft
 {
 namespace Otzerkalu
 {
-	class QStandardItemModel;
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IEntityHandler
@@ -43,7 +42,6 @@ namespace Otzerkalu
 		Q_INTERFACES (IInfo IEntityHandler IJobHolder)
 		
 		QStandardItemModel *RepresentationModel_;
-		OtzerkaluDownloader *DL_;
 		ICoreProxy_ptr Proxy_;
 	public:
 		void Init (ICoreProxy_ptr);
@@ -62,7 +60,7 @@ namespace Otzerkalu
 		void delegateEntity (const LeechCraft::Entity&,
 				int*, QObject**);
 	private slots:
-		void handleFileDownloaded (const QString& file);
+		void handleFileDownloaded (int id, int count);
 	};
 }
 }
