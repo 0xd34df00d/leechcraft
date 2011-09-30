@@ -3,10 +3,10 @@ import QtQuick 1.0
 Rectangle {
     id: imgView
 
-	Component {
-		id: imageListDelegate
+    Component {
+        id: imageListDelegate
 
-		Item {
+        Item {
             width: imagesGrid.cellWidth
             height: imagesGrid.cellHeight
             clip: true
@@ -50,8 +50,8 @@ Rectangle {
                 font.italic: true
                 horizontalAlignment: Text.AlignHCenter
             }
-		}
-	}
+        }
+    }
 
     GridView {
         id: imagesGrid
