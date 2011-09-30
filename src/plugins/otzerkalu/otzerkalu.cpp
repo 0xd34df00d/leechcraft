@@ -109,6 +109,7 @@ namespace Otzerkalu
 	
 	void Plugin::handleFileDownloaded (int id, int count)
 	{
+		RepresentationModel_->setItem (id, new QStandardItem (QString::number (count) + " files are downloaded"));
 	}
 
 }
