@@ -20,19 +20,21 @@
 #ifndef PLUGINS_CHOROID_CHOROIDTAB_H
 #define PLUGINS_CHOROID_CHOROIDTAB_H
 #include <QWidget>
+#include <QDeclarativeView>
 #include <interfaces/ihavetabs.h>
 #include "ui_choroidtab.h"
 
 class QFileSystemModel;
 class QStandardItemModel;
-class QGraphicsScene;
-class QGraphicsPixmapItem;
 class QFileInfo;
+class QDeclarativeView;
 
 namespace LeechCraft
 {
 namespace Choroid
 {
+	class QMLItemModel;
+
 	class ChoroidTab : public QWidget
 					 , public ITabWidget
 	{
@@ -44,16 +46,23 @@ namespace Choroid
 
 		Ui::ChoroidTab Ui_;
 
-		QGraphicsScene *Scene_;
+		QDeclarativeView *DeclView_;
+
+		QMLItemModel *QMLFilesModel_;
 
 		QFileSystemModel *FSModel_;
 		QStandardItemModel *FilesModel_;
 
-		QList<QGraphicsPixmapItem*> DirThumbs_;
-
 		enum CustomRoles
 		{
 			CRFilePath = 100
+		};
+
+		enum ImagesListRoles
+		{
+			ILRFilename = 100,
+			ILRImage,
+			ILRFileSize
 		};
 	public:
 		ChoroidTab (const TabClassInfo&, QObject*);
@@ -63,10 +72,11 @@ namespace Choroid
 		void Remove ();
 		QToolBar* GetToolBar () const;
 	private:
-		void AddThumb (const QFileInfo&);
+		void LoadQML ();
 	private slots:
 		void handleDirTreeCurrentChanged (const QModelIndex&);
 		void handleFileChanged (const QModelIndex&);
+		void handleStatusChanged (QDeclarativeView::Status);
 	signals:
 		void removeTab (QWidget*);
 	};

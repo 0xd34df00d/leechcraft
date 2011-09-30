@@ -21,31 +21,45 @@
 #include <QFileSystemModel>
 #include <QStandardItemModel>
 #include <QDateTime>
-#include <QGraphicsScene>
-#include <QGraphicsItem>
+#include <QVBoxLayout>
+#include <QDeclarativeContext>
+#include <QDeclarativeError>
 #include <util/util.h>
 
 namespace LeechCraft
 {
 namespace Choroid
 {
+	class QMLItemModel : public QStandardItemModel
+	{
+	public:
+		QMLItemModel (QObject *parent = 0)
+		: QStandardItemModel (parent)
+		{
+		}
+
+		using QStandardItemModel::setRoleNames;
+	};
+
 	ChoroidTab::ChoroidTab (const TabClassInfo& tc, QObject *parent)
 	: TabClass_ (tc)
 	, Parent_ (parent)
-	, Scene_ (new QGraphicsScene (this))
+	, DeclView_ (new QDeclarativeView)
+	, QMLFilesModel_ (new QMLItemModel)
 	, FSModel_ (new QFileSystemModel (this))
 	, FilesModel_ (new QStandardItemModel (this))
 	{
-		Scene_->setBackgroundBrush (palette ().brush (QPalette::Window));
 		Ui_.setupUi (this);
 
-		Ui_.View_->setScene (Scene_);
-		Ui_.View_->setRenderHints (QPainter::Antialiasing |
-				QPainter::TextAntialiasing |
-				QPainter::SmoothPixmapTransform |
-				QPainter::HighQualityAntialiasing);
-		Ui_.View_->setDragMode (QGraphicsView::ScrollHandDrag);
-		Ui_.View_->setOptimizationFlag (QGraphicsView::DontSavePainterState);
+		Ui_.ViewFrame_->setLayout (new QVBoxLayout ());
+		Ui_.ViewFrame_->layout ()->addWidget (DeclView_);
+
+		connect (DeclView_,
+				SIGNAL (statusChanged (QDeclarativeView::Status)),
+				this,
+				SLOT (handleStatusChanged (QDeclarativeView::Status)));
+
+		LoadQML ();
 
 		Ui_.VertSplitter_->setStretchFactor (1, 1);
 		Ui_.VertSplitter_->setStretchFactor (1, 2);
@@ -91,27 +105,33 @@ namespace Choroid
 		return 0;
 	}
 
-	void ChoroidTab::AddThumb (const QFileInfo& info)
+	void ChoroidTab::LoadQML ()
 	{
-		const int spacing = 10;
-		const int width = 100;
-		const int height = 75;
+		QHash<int, QByteArray> roles;
+		roles [ILRFilename] = "filename";
+		roles [ILRImage] = "image";
+		roles [ILRFileSize] = "filesize";
+		QMLFilesModel_->setRoleNames (roles);
 
-		QGraphicsPixmapItem *thumb = Scene_->addPixmap (QPixmap (QSize (width, height)));
+		DeclView_->rootContext ()->setContextProperty ("filesListModel", QMLFilesModel_);
 
-		const QString& str = fontMetrics ().elidedText (info.fileName (), Qt::ElideRight, width);
-		QGraphicsTextItem *text = Scene_->addText (str);
+		QStringList candidates;
+#ifdef Q_WS_X11
+		candidates << "/usr/local/share/leechcraft/qml/choroid/"
+				<< "/usr/share/leechcraft/qml/choroid/";
+#elif defined (Q_WS_WIN32)
+		candidates << QApplication::applicationDirPath () + "/share/qml/choroid/";
+#endif
 
-		const int all = DirThumbs_.count () * (spacing + width);
-		const int col = all % Ui_.View_->width ();
-		const int row = all / Ui_.View_->width ();
+		QString fileLocation;
+		Q_FOREACH (const QString& cand, candidates)
+			if (QFile::exists (cand + "ImgView.qml"))
+			{
+				fileLocation = cand + "ImgView.qml";
+				break;
+			}
 
-		const int fullHeight = height + 5 + fontMetrics ().height ();
-
-		thumb->setPos (col * (width + spacing), row * (fullHeight + spacing));
-		text->setPos (col * (width + spacing), row * (fullHeight + spacing) + height + 5);
-
-		DirThumbs_ << thumb;
+		DeclView_->setSource (QUrl::fromLocalFile (fileLocation));
 	}
 
 	void ChoroidTab::handleDirTreeCurrentChanged (const QModelIndex& index)
@@ -120,8 +140,7 @@ namespace Choroid
 		Ui_.PathEdit_->setText (path);
 
 		FilesModel_->clear ();
-		DirThumbs_.clear ();
-		Scene_->clear ();
+		QMLFilesModel_->clear ();
 
 		QStringList headers;
 		headers << tr ("Name")
@@ -147,28 +166,36 @@ namespace Choroid
 
 			FilesModel_->appendRow (row);
 
-			AddThumb (info);
+			QStandardItem *qmlItem = new QStandardItem (info.fileName ());
+			qmlItem->setData (info.fileName (), ILRFilename);
+			qmlItem->setData (Util::MakePrettySize (info.size ()), ILRFileSize);
+			qmlItem->setData (QUrl::fromLocalFile (info.absoluteFilePath ()), ILRImage);
+			QMLFilesModel_->appendRow (qmlItem);
 		}
-
-		//Scene_->setSceneRect (0, 0, Ui_.View_->width (), DirThumbs_.count () * (100 + 10);
 	}
 
 	void ChoroidTab::handleFileChanged (const QModelIndex& index)
 	{
-		Scene_->clear ();
-
 		if (!index.isValid ())
 			return;
 
 		const QString& path = index.sibling (index.row (), 0)
 				.data (CRFilePath).toString ();
+	}
 
-		QPixmap px (path);
-		Scene_->setSceneRect (px.rect ());
-
-		QGraphicsPixmapItem *item = Scene_->addPixmap (px);
-		item->ensureVisible ();
-		item->setTransformationMode (Qt::SmoothTransformation);
+	void ChoroidTab::handleStatusChanged (QDeclarativeView::Status status)
+	{
+		if (status == QDeclarativeView::Error)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "got errors:"
+					<< DeclView_->errors ().size ();
+			Q_FOREACH (const QDeclarativeError& error, DeclView_->errors ())
+				qWarning () << error.toString ()
+						<< "["
+						<< error.description ()
+						<< "]";
+		}
 	}
 }
 }
