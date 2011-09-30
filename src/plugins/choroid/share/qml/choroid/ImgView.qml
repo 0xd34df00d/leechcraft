@@ -3,6 +3,8 @@ import QtQuick 1.0
 Rectangle {
     id: imgView
 
+    signal imageSelected(string imageId)
+
     Component {
         id: imageListDelegate
 
@@ -23,6 +25,13 @@ Rectangle {
                 asynchronous: true
 
                 source: image
+
+                MouseArea {
+                    anchors.fill: parent
+                    acceptedButtons: Qt.LeftButton
+
+                    onClicked: imgView.imageSelected(image)
+                }
             }
 
             Text {
