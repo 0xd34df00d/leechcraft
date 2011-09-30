@@ -107,6 +107,8 @@ namespace Choroid
 
 	void ChoroidTab::LoadQML ()
 	{
+		DeclView_->setResizeMode (QDeclarativeView::SizeRootObjectToView);
+
 		QHash<int, QByteArray> roles;
 		roles [ILRFilename] = "filename";
 		roles [ILRImage] = "image";
