@@ -40,9 +40,7 @@ namespace Azoth
 {
 namespace OTRoid
 {
-	namespace OTR
-	{
-		int IsLoggedIn (void *opData, const char *accName,
+	namespace OTR { int IsLoggedIn (void *opData, const char *accName,
 				const char*, const char *recipient)
 		{
 			Plugin *p = static_cast<Plugin*> (opData);
@@ -135,7 +133,7 @@ namespace OTRoid
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		return QIcon (":/plugins/azoth/plugins/otroid/resources/images/otroid.svg");
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
@@ -356,6 +354,7 @@ namespace OTRoid
 
 		QAction *otr = new QAction (tr ("Enable OTR"), this);
 		otr->setCheckable (true);
+		otr->setIcon (GetIcon ());
 		otr->setProperty ("Azoth/OTRoid/IsGood", true);
 
 		Entry2Action_ [entry] = otr;
