@@ -837,7 +837,7 @@
     </message>
     <message>
         <location filename="chattab.cpp" line="238"/>
-        <location filename="chattab.cpp" line="1439"/>
+        <location filename="chattab.cpp" line="1500"/>
         <source>Chat</source>
         <translation>Chat</translation>
     </message>
@@ -855,117 +855,117 @@
         </translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="439"/>
+        <location filename="chattab.cpp" line="442"/>
         <source>Select file to send</source>
         <translation>Selecciona el archivo para enviar</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="546"/>
+        <location filename="chattab.cpp" line="552"/>
         <source>File offered: %1.</source>
         <translation>Archivo ofrecido: %1.</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="581"/>
+        <location filename="chattab.cpp" line="587"/>
         <source>File transfer request</source>
         <translation>Solicitud de transferencia de archivo</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="582"/>
+        <location filename="chattab.cpp" line="588"/>
         <source>Would you like to accept or deny file transfer request for file %1?</source>
         <translation>¿Quieres aceptar o rechazar la solicitud de transferencia de archivo para el archivo%1?</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="590"/>
+        <location filename="chattab.cpp" line="596"/>
         <source>Select save path for incoming file</source>
         <translation>Seleccione ruta para guardar el archivo entrante</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="703"/>
+        <location filename="chattab.cpp" line="717"/>
         <source>participating</source>
         <translation>participando</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="706"/>
+        <location filename="chattab.cpp" line="720"/>
         <source>inactive</source>
         <translation>inactivo</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="709"/>
+        <location filename="chattab.cpp" line="723"/>
         <source>composing</source>
         <translation>está escribiendo</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="712"/>
+        <location filename="chattab.cpp" line="726"/>
         <source>paused composing</source>
         <translation>detuvo su escritura</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="715"/>
+        <location filename="chattab.cpp" line="729"/>
         <source>left the conversation</source>
         <translation>ha abandonado la conversación</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="805"/>
+        <location filename="chattab.cpp" line="858"/>
         <source>Room configuration</source>
         <translation>Configuración de la sala</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="920"/>
+        <location filename="chattab.cpp" line="973"/>
         <source>Clear chat window</source>
         <translation>Aclarar la ventana de chat</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="928"/>
+        <location filename="chattab.cpp" line="981"/>
         <source>Enable rich text</source>
         <translation>Permite texto enriquecido</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="940"/>
+        <location filename="chattab.cpp" line="993"/>
         <source>Quote selection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1013"/>
+        <location filename="chattab.cpp" line="1071"/>
         <source>Add to bookmarks...</source>
         <translation>Añadir a los marcadores...</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1024"/>
+        <location filename="chattab.cpp" line="1082"/>
         <source>Configure MUC...</source>
         <translation>Configurar MUC...</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1044"/>
+        <location filename="chattab.cpp" line="1102"/>
         <source>Send file...</source>
         <translation>Enviar el archivo...</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1066"/>
+        <location filename="chattab.cpp" line="1124"/>
         <source>Call...</source>
         <translation>Llamar...</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1088"/>
+        <location filename="chattab.cpp" line="1146"/>
         <source>Enable encryption</source>
         <translation>Activar la encriptación</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1283"/>
+        <location filename="chattab.cpp" line="1344"/>
         <source>MUC&apos;s participants: </source>
         <translation>MUC&apos;s participantes:</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1442"/>
+        <location filename="chattab.cpp" line="1503"/>
         <source>Conference</source>
         <translation>Sala de charla</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1445"/>
+        <location filename="chattab.cpp" line="1506"/>
         <source>Private chat</source>
         <translation>Chat privado</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1448"/>
+        <location filename="chattab.cpp" line="1509"/>
         <source>Unauthorized user</source>
         <translation>Usuario no autorizado</translation>
     </message>
@@ -2100,58 +2100,58 @@
         <translation>Emoticonos</translation>
     </message>
     <message>
-        <location filename="msgformatterwidget.cpp" line="58"/>
+        <location filename="msgformatterwidget.cpp" line="59"/>
         <source>Bold</source>
         <translation>Audaz</translation>
     </message>
     <message>
-        <location filename="msgformatterwidget.cpp" line="64"/>
+        <location filename="msgformatterwidget.cpp" line="65"/>
         <source>Italic</source>
         <translation>Itálico</translation>
     </message>
     <message>
-        <location filename="msgformatterwidget.cpp" line="70"/>
+        <location filename="msgformatterwidget.cpp" line="71"/>
         <source>Underline</source>
         <translation>Subrayado</translation>
     </message>
     <message>
-        <location filename="msgformatterwidget.cpp" line="76"/>
+        <location filename="msgformatterwidget.cpp" line="77"/>
         <source>Strike through</source>
         <translation>Huelga mediante</translation>
     </message>
     <message>
-        <location filename="msgformatterwidget.cpp" line="84"/>
+        <location filename="msgformatterwidget.cpp" line="85"/>
         <source>Text color</source>
         <translation>Color del texto</translation>
     </message>
     <message>
-        <location filename="msgformatterwidget.cpp" line="89"/>
+        <location filename="msgformatterwidget.cpp" line="90"/>
         <source>Font</source>
         <translation>Fondo</translation>
     </message>
     <message>
-        <location filename="msgformatterwidget.cpp" line="96"/>
+        <location filename="msgformatterwidget.cpp" line="97"/>
         <source>Align left</source>
         <translation>Alinear a la izquierda</translation>
     </message>
     <message>
-        <location filename="msgformatterwidget.cpp" line="104"/>
+        <location filename="msgformatterwidget.cpp" line="105"/>
         <source>Align center</source>
         <translation>Alinear al centro</translation>
     </message>
     <message>
-        <location filename="msgformatterwidget.cpp" line="111"/>
+        <location filename="msgformatterwidget.cpp" line="112"/>
         <source>Align right</source>
         <translation>Alinear a la derecha</translation>
     </message>
     <message>
-        <location filename="msgformatterwidget.cpp" line="118"/>
+        <location filename="msgformatterwidget.cpp" line="119"/>
         <source>Align justify</source>
         <translatorcomment>sledovalo osilit&apos;</translatorcomment>
         <translation>Align justify</translation>
     </message>
     <message>
-        <location filename="msgformatterwidget.cpp" line="142"/>
+        <location filename="msgformatterwidget.cpp" line="143"/>
         <source>Emoticons...</source>
         <translation>Emoticonos...</translation>
     </message>
@@ -2159,59 +2159,70 @@
 <context>
     <name>LeechCraft::Azoth::Plugin</name>
     <message>
-        <location filename="azoth.cpp" line="78"/>
+        <location filename="azoth.cpp" line="81"/>
         <source>Default input device</source>
         <translation>Dispositivo predeterminado de entrada</translation>
     </message>
     <message>
-        <location filename="azoth.cpp" line="84"/>
+        <location filename="azoth.cpp" line="87"/>
         <source>Default output device</source>
         <translation>Dispositivo predeterminado de salida</translation>
     </message>
     <message>
-        <location filename="azoth.cpp" line="135"/>
+        <location filename="azoth.cpp" line="138"/>
         <source>Chat</source>
         <translation>Chat</translation>
     </message>
     <message>
-        <location filename="azoth.cpp" line="136"/>
+        <location filename="azoth.cpp" line="139"/>
         <source>A tab with a chat session</source>
         <translation>Una ficha con una sesión de chat</translation>
     </message>
     <message>
-        <location filename="azoth.cpp" line="144"/>
+        <location filename="azoth.cpp" line="147"/>
         <source>MUC</source>
         <translation>MUC</translation>
     </message>
     <message>
-        <location filename="azoth.cpp" line="145"/>
+        <location filename="azoth.cpp" line="148"/>
         <source>A multiuser conference</source>
         <translation>Una conferencia multiusuario</translation>
     </message>
     <message>
-        <location filename="azoth.cpp" line="153"/>
-        <location filename="azoth.cpp" line="286"/>
+        <location filename="azoth.cpp" line="156"/>
+        <location filename="azoth.cpp" line="308"/>
+        <source>Search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="azoth.cpp" line="157"/>
+        <source>A search tab allows to search within IM services</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="azoth.cpp" line="165"/>
+        <location filename="azoth.cpp" line="299"/>
         <source>Service discovery</source>
         <translation>Descubrimiento de servicios</translation>
     </message>
     <message>
-        <location filename="azoth.cpp" line="154"/>
+        <location filename="azoth.cpp" line="166"/>
         <source>A service discovery tab that allows one to discover capabilities of remote entries</source>
         <translatorcomment>entradas remotas??</translatorcomment>
         <translation>La ficha del descubrimiento de servicios que permite al usuario descubrir capacidades de entradas remotas</translation>
     </message>
     <message>
-        <location filename="azoth.cpp" line="163"/>
+        <location filename="azoth.cpp" line="175"/>
         <source>IM console</source>
         <translation>IM consola</translation>
     </message>
     <message>
-        <location filename="azoth.cpp" line="164"/>
+        <location filename="azoth.cpp" line="176"/>
         <source>Protocol console, for example, XML console for a XMPP client protocol</source>
         <translation>Consola de protocolo, por ejemplo, XML consola para el protocolo de cliente XMPP</translation>
     </message>
     <message>
-        <location filename="azoth.cpp" line="204"/>
+        <location filename="azoth.cpp" line="217"/>
         <source>Extensible IM client for LeechCraft.</source>
         <translation>Extensible IM cliente para LeechCraft.</translation>
     </message>
@@ -2232,6 +2243,19 @@
         <location filename="proxyobject.cpp" line="360"/>
         <source>%1 changed status to %2 (%3)</source>
         <translation>%1 ha cambiado su estado a %2 (%3)</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Azoth::SearchWidget</name>
+    <message>
+        <location filename="searchwidget.cpp" line="86"/>
+        <source>Search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="searchwidget.cpp" line="87"/>
+        <source>A search tab allows to search within IM services</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
