@@ -3,6 +3,8 @@ import QtQuick 1.0
 Rectangle {
     id: imgView
 
+    Keys.onEscapePressed: { imgView.state = '' }
+
     signal imageSelected(string imageId)
 
     function showSingleImage(url) {
