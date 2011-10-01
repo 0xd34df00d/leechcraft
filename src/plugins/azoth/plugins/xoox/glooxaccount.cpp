@@ -268,6 +268,10 @@ namespace Xoox
 
 		RegenAccountIcon ();
 
+		const QString& pass = w->GetPassword ();
+		if (!pass.isNull ())
+			Core::Instance ().GetPluginProxy ()->SetPassword (pass, this);
+
 		if (lastState != SOffline)
 			ChangeState (EntryStatus (lastState, AccState_.Status_));
 

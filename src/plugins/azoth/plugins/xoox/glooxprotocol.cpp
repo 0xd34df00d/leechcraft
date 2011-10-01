@@ -138,7 +138,7 @@ namespace Xoox
 			return;
 		}
 
-		bool isNewAcc = widgets.at (0)->property ("IsNewAccount").toBool ();
+		const bool isNewAcc = widgets.at (0)->property ("IsNewAccount").toBool ();
 		const int pos = isNewAcc ? 3 : 0;
 		GlooxAccountConfigurationWidget *w =
 				qobject_cast<GlooxAccountConfigurationWidget*> (widgets.value (pos));
@@ -160,6 +160,13 @@ namespace Xoox
 			if (second)
 				qobject_cast<IProxyObject*> (ProxyObject_)->
 						SetPassword (second->GetPassword (), account);
+		}
+		else
+		{
+			const QString& pass = w->GetPassword ();
+			if (!pass.isNull ())
+				qobject_cast<IProxyObject*> (ProxyObject_)->
+						SetPassword (pass, account);
 		}
 
 		Accounts_ << account;
