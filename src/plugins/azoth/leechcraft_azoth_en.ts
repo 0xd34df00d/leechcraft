@@ -2190,12 +2190,12 @@
         <location filename="azoth.cpp" line="156"/>
         <location filename="azoth.cpp" line="308"/>
         <source>Search</source>
-        <translation type="unfinished"></translation>
+        <translation>Search</translation>
     </message>
     <message>
         <location filename="azoth.cpp" line="157"/>
         <source>A search tab allows to search within IM services</source>
-        <translation type="unfinished"></translation>
+        <translation>A search tab allows to search within IM services</translation>
     </message>
     <message>
         <location filename="azoth.cpp" line="165"/>
@@ -2247,12 +2247,12 @@
     <message>
         <location filename="searchwidget.cpp" line="86"/>
         <source>Search</source>
-        <translation type="unfinished"></translation>
+        <translation>Search</translation>
     </message>
     <message>
         <location filename="searchwidget.cpp" line="87"/>
         <source>A search tab allows to search within IM services</source>
-        <translation type="unfinished"></translation>
+        <translation>A search tab allows to search within IM services</translation>
     </message>
 </context>
 <context>
