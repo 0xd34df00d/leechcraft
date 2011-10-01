@@ -506,7 +506,7 @@ namespace Aggregator
 	{
 	}
 	
-	void Aggregator::Aggregator::ApplyDeltas (const Sync::Payloads_t& payloads, const Sync::ChainID_t& chain)
+	void Aggregator::ApplyDeltas (const Sync::Payloads_t& payloads, const Sync::ChainID_t& chain)
 	{
 	}
 

@@ -519,7 +519,7 @@ namespace Aggregator
 
 	IWebBrowser* Core::GetWebBrowser () const
 	{
-		qDebug () << "GetWebBrowser" << Proxy_->GetPluginsManager ()->
+		Proxy_->GetPluginsManager ()->
 				GetAllCastableRoots<IWebBrowser*> ();
 		return Proxy_->GetPluginsManager ()->
 				GetAllCastableTo<IWebBrowser*> ().value (0, 0);
@@ -1271,12 +1271,17 @@ namespace Aggregator
 		}
 	}
 
-	void Core::rotateUpdatesQueue()
+	void Core::rotateUpdatesQueue ()
 	{
 		if (UpdatesQueue_.isEmpty ())
 			return;
 
 		const IDType_t id = UpdatesQueue_.takeFirst ();
+
+		if (!UpdatesQueue_.isEmpty ())
+			QTimer::singleShot (2000,
+					this,
+					SLOT (rotateUpdatesQueue ()));
 
 		QString url = StorageBackend_->GetFeed (id)->URL_;
 		QList<int> keys = PendingJobs_.keys ();
@@ -1339,11 +1344,6 @@ namespace Aggregator
 		HandleProvider (pr, jobId);
 		PendingJobs_ [jobId] = pj;
 		Updates_ [id] = QDateTime::currentDateTime ();
-
-		if (!UpdatesQueue_.isEmpty ())
-			QTimer::singleShot (2000,
-					this,
-					SLOT (rotateUpdatesQueue ()));
 	}
 
 	void Core::UpdateUnreadItemsNumber () const
