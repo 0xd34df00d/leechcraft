@@ -144,7 +144,7 @@
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="101"/>
         <source>Update password...</source>
-        <translation type="unfinished"></translation>
+        <translation>Update password...</translation>
     </message>
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="109"/>
@@ -499,7 +499,7 @@
     <message>
         <location filename="executecommanddialog.cpp" line="155"/>
         <source>Please wait while the selected command is executed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Please wait while the selected command is executed.</translation>
     </message>
     <message>
         <location filename="executecommanddialog.cpp" line="165"/>
@@ -545,12 +545,12 @@
     <message>
         <location filename="glooxaccountconfigurationwidget.cpp" line="109"/>
         <source>Password update</source>
-        <translation type="unfinished"></translation>
+        <translation>Password update</translation>
     </message>
     <message>
         <location filename="glooxaccountconfigurationwidget.cpp" line="110"/>
         <source>Enter new password:</source>
-        <translation type="unfinished"></translation>
+        <translation>Enter new password:</translation>
     </message>
 </context>
 <context>
@@ -647,57 +647,57 @@
     <message>
         <location filename="jabbersearchsession.cpp" line="87"/>
         <source>(unknown)</source>
-        <translation type="unfinished"></translation>
+        <translation>(unknown)</translation>
     </message>
     <message>
         <location filename="jabbersearchsession.cpp" line="145"/>
         <source>search service unavailable</source>
-        <translation type="unfinished"></translation>
+        <translation>search service unavailable</translation>
     </message>
     <message>
         <location filename="jabbersearchsession.cpp" line="148"/>
         <source>search feature not implemented</source>
-        <translation type="unfinished"></translation>
+        <translation>search feature not implemented</translation>
     </message>
     <message>
         <location filename="jabbersearchsession.cpp" line="151"/>
         <source>search is forbidden</source>
-        <translation type="unfinished"></translation>
+        <translation>search is forbidden</translation>
     </message>
     <message>
         <location filename="jabbersearchsession.cpp" line="154"/>
         <source>registration is required for performing search</source>
-        <translation type="unfinished"></translation>
+        <translation>registration is required for performing search</translation>
     </message>
     <message>
         <location filename="jabbersearchsession.cpp" line="157"/>
         <source>search not allowed</source>
-        <translation type="unfinished"></translation>
+        <translation>search not allowed</translation>
     </message>
     <message>
         <location filename="jabbersearchsession.cpp" line="160"/>
         <source>search not authorized</source>
-        <translation type="unfinished"></translation>
+        <translation>search not authorized</translation>
     </message>
     <message>
         <location filename="jabbersearchsession.cpp" line="163"/>
         <source>too much search requests</source>
-        <translation type="unfinished"></translation>
+        <translation>too much search requests</translation>
     </message>
     <message>
         <location filename="jabbersearchsession.cpp" line="166"/>
         <source>unknown condition %1</source>
-        <translation type="unfinished"></translation>
+        <translation>unknown condition %1</translation>
     </message>
     <message>
         <location filename="jabbersearchsession.cpp" line="171"/>
         <source>Error searching on server %1: %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Error searching on server %1: %2.</translation>
     </message>
     <message>
         <location filename="jabbersearchsession.cpp" line="176"/>
         <source>Original error text: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Original error text: %1.</translation>
     </message>
 </context>
 <context>
@@ -720,22 +720,22 @@
     <message>
         <location filename="legacyformbuilder.cpp" line="67"/>
         <source>First name:</source>
-        <translation type="unfinished"></translation>
+        <translation>First name:</translation>
     </message>
     <message>
         <location filename="legacyformbuilder.cpp" line="69"/>
         <source>Last name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Last name:</translation>
     </message>
     <message>
         <location filename="legacyformbuilder.cpp" line="71"/>
         <source>Nick:</source>
-        <translation type="unfinished">Nick:</translation>
+        <translation>Nick:</translation>
     </message>
     <message>
         <location filename="legacyformbuilder.cpp" line="73"/>
         <source>E-Mail:</source>
-        <translation type="unfinished"></translation>
+        <translation>E-Mail:</translation>
     </message>
 </context>
 <context>
@@ -1124,7 +1124,7 @@
     <message>
         <location filename="sdsession.cpp" line="125"/>
         <source>Execute...</source>
-        <translation type="unfinished"></translation>
+        <translation>Execute...</translation>
     </message>
     <message>
         <location filename="sdsession.cpp" line="199"/>
