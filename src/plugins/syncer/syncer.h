@@ -26,36 +26,32 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Syncer
+{
+	class Plugin : public QObject
+					, public IInfo
+					, public IHaveSettings
 	{
-		namespace Syncer
-		{
-			class Plugin : public QObject
-						 , public IInfo
-						 , public IHaveSettings
-			{
-				Q_OBJECT
-				Q_INTERFACES (IInfo IHaveSettings)
+		Q_OBJECT
+		Q_INTERFACES (IInfo IHaveSettings)
 
-				std::auto_ptr<QTranslator> Translator_;
-				Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
-			public:
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
-				void Release ();
-				QByteArray GetUniqueID () const;
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-				QStringList Provides () const;
+		std::auto_ptr<QTranslator> Translator_;
+		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
+	public:
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		void Release ();
+		QByteArray GetUniqueID () const;
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
+		QStringList Provides () const;
 
-				Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-			signals:
-				void gotEntity (const LeechCraft::Entity&);
-			};
-		};
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
 	};
-};
+}
+}
 
 #endif
-

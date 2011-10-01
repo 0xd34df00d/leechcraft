@@ -21,6 +21,7 @@
 #include <QLabel>
 #include <QDomElement>
 #include <QLineEdit>
+#include <QXmppBobManager.h>
 #include "inbandaccountregfirstpage.h"
 #include "util.h"
 
@@ -35,12 +36,16 @@ namespace Xoox
 	InBandAccountRegSecondPage::InBandAccountRegSecondPage (InBandAccountRegFirstPage *first, QWidget *parent)
 	: QWizardPage (parent)
 	, Client_ (new QXmppClient (this))
+	, BobManager_ (new QXmppBobManager)
 	, FirstPage_ (first)
+	, FB_ (FormBuilder (QString (), BobManager_))
 	, Widget_ (0)
 	, State_ (SIdle)
 	{
 		Q_FOREACH (QXmppClientExtension *ext, Client_->extensions ())
 			Client_->removeExtension (ext);
+
+		Client_->addExtension (BobManager_);
 
 		setLayout (new QVBoxLayout);
 
@@ -166,12 +171,14 @@ namespace Xoox
 	{
 		QXmppElement queryElem;
 		Q_FOREACH (const QXmppElement& elem, iq.extensions ())
+		{
 			if (elem.tagName () == "query" &&
 					elem.attribute ("xmlns") == NsRegister)
 			{
 				queryElem = elem;
 				break;
 			}
+		}
 
 		if (queryElem.isNull ())
 		{
@@ -183,7 +190,8 @@ namespace Xoox
 		qDeleteAll (findChildren<QWidget*> ());
 
 		const QXmppElement& formElem = queryElem.firstChildElement ("x");
-		if (formElem.attribute ("xmlns") == NsRegister &&
+		if ((formElem.attribute ("xmlns") == NsRegister ||
+					formElem.attribute ("xmlns") == "jabber:x:data") &&
 				formElem.attribute ("type") == "form")
 		{
 			QXmppDataForm form;

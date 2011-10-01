@@ -41,23 +41,23 @@ namespace Xoox
 		{
 			setTitle (tr ("Fetching data..."));
 			setCommitPage (true);
-			
+
 			setLayout (new QVBoxLayout ());
 			layout ()->addWidget (new QLabel (text));
 		}
-		
+
 		bool isComplete () const
 		{
 			return DataFetched_;
 		}
-		
+
 		void SetDataFetched ()
 		{
 			DataFetched_ = true;
 			emit completeChanged ();
 		}
 	};
-	
+
 	class CommandsListPage : public QWizardPage
 	{
 		Ui::CommandsListPage Ui_;
@@ -73,7 +73,7 @@ namespace Xoox
 			Q_FOREACH (const AdHocCommand& cmd, commands)
 				Ui_.CommandsBox_->addItem (cmd.GetName ());
 		}
-		
+
 		AdHocCommand GetSelectedCommand () const
 		{
 			const int idx = Ui_.CommandsBox_->currentIndex ();
@@ -82,11 +82,11 @@ namespace Xoox
 					AdHocCommand (QString (), QString ());
 		}
 	};
-	
+
 	class CommandResultPage : public QWizardPage
 	{
 		Ui::CommandResultPage Ui_;
-		
+
 		AdHocResult Result_;
 		mutable FormBuilder FB_;
 	public:
@@ -96,24 +96,24 @@ namespace Xoox
 		{
 			Ui_.setupUi (this);
 			setCommitPage (true);
-			
+
 			Ui_.Actions_->addItems (result.GetActions ());
-			
+
 			const QXmppDataForm& form = result.GetDataForm ();
 			if (!form.isNull ())
 				Ui_.FormArea_->setWidget (FB_.CreateForm (form));
 		}
-		
+
 		QString GetSelectedAction () const
 		{
 			return Ui_.Actions_->currentText ();
 		}
-		
+
 		QXmppDataForm GetForm () const
 		{
 			return FB_.GetForm ();
 		}
-		
+
 		AdHocResult GetResult () const
 		{
 			return Result_;
@@ -128,15 +128,38 @@ namespace Xoox
 	, JID_ (jid)
 	{
 		Ui_.setupUi (this);
-		
+
 		connect (this,
 				SIGNAL (currentIdChanged (int)),
 				this,
 				SLOT (handleCurrentChanged (int)));
-		
+
 		RequestCommands ();
 	}
-	
+
+	ExecuteCommandDialog::ExecuteCommandDialog (const QString& jid,
+			const QString& command,
+			GlooxAccount *account, QWidget *parent)
+	: QWizard (parent)
+	, Account_ (account)
+	, Manager_ (account->GetClientConnection ()->GetAdHocCommandManager ())
+	, JID_ (jid)
+	{
+		Ui_.setupUi (this);
+
+		connect (this,
+				SIGNAL (currentIdChanged (int)),
+				this,
+				SLOT (handleCurrentChanged (int)));
+
+		const int idx = addPage (new WaitPage (tr ("Please wait while "
+				"the selected command is executed.")));
+		if (currentId () != idx)
+			next ();
+
+		ExecuteCommand (AdHocCommand (QString (), command));
+	}
+
 	void ExecuteCommandDialog::RequestCommands ()
 	{
 		const int idx = addPage (new WaitPage (tr ("Please wait while "
@@ -151,7 +174,7 @@ namespace Xoox
 				Qt::UniqueConnection);
 		Manager_->QueryCommands (JID_);
 	}
-	
+
 	void ExecuteCommandDialog::ExecuteCommand (const AdHocCommand& command)
 	{
 		connect (Manager_,
@@ -161,7 +184,7 @@ namespace Xoox
 				Qt::UniqueConnection);
 		Manager_->ExecuteCommand (JID_, command);
 	}
-	
+
 	void ExecuteCommandDialog::ProceedExecuting (const AdHocResult& result, const QString& action)
 	{
 		connect (Manager_,
@@ -198,13 +221,13 @@ namespace Xoox
 			const QString& action = crp->GetSelectedAction ();
 			if (action.isEmpty ())
 				return;
-		
+
 			AdHocResult result = crp->GetResult ();
 			result.SetDataForm (crp->GetForm ());
 			ProceedExecuting (result, action);
 		}
 	}
-	
+
 	void ExecuteCommandDialog::handleGotCommands (const QString& jid, const QList<AdHocCommand>& commands)
 	{
 		if (jid != JID_)
@@ -220,17 +243,17 @@ namespace Xoox
 					"is fetched.")));
 		next ();
 	}
-	
+
 	void ExecuteCommandDialog::handleGotResult (const QString& jid, const AdHocResult& result)
 	{
 		if (jid != JID_)
 			return;
 
 		disconnect (Manager_,
-				SIGNAL (gotResult (QString, AdHocResult&)),
+				SIGNAL (gotResult (QString, AdHocResult)),
 				this,
 				SLOT (handleGotResult (QString, AdHocResult)));
-		
+
 		addPage (new CommandResultPage (result));
 		if (!result.GetActions ().isEmpty ())
 			addPage (new WaitPage (tr ("Please wait while action "

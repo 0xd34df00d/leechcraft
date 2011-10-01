@@ -70,14 +70,14 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 , WasMaximized_ (false)
 , DefaultSystemStyleName_ (QApplication::style ()->objectName ())
 , IsQuitting_ (false)
-, Splash_ (new QSplashScreen (QPixmap (":/resources/images/splashscreen.png"),
+, Splash_ (new QSplashScreen (QPixmap (":/resources/images/funsplash.jpg"),
 		Qt::SplashScreen))
 {
 	Guard_ = new ToolbarGuard (this);
 	setUpdatesEnabled (false);
 
 	hide ();
-	Splash_->setMask (QPixmap (":/resources/images/splashscreen.png").mask ());
+	//Splash_->setMask (QPixmap (":/resources/images/funsplash.jpg").mask ());
 	Splash_->show ();
 	Splash_->setUpdatesEnabled (true);
 	Splash_->showMessage (tr ("Initializing LeechCraft..."), Qt::AlignLeft | Qt::AlignBottom);

@@ -25,65 +25,62 @@ class QFinalState;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Syncer
+{
+	class ServerConnection;
+
+	class ServerChainHandler : public QObject
 	{
-		namespace Syncer
-		{
-			class ServerConnection;
+		Q_OBJECT
 
-			class ServerChainHandler : public QObject
-			{
-				Q_OBJECT
+		QStateMachine SM_;
 
-				QStateMachine SM_;
+		ServerConnection *ServerConnection_;
+		QByteArray Chain_;
 
-				ServerConnection *ServerConnection_;
-				QByteArray Chain_;
+		QState *Idle_;
+		QFinalState *ConnectionError_;
+		QState *LoginPending_;
+		QFinalState *LoginError_;
+		QState *Running_;
+		QState *ReqMaxDeltaPending_;
+		QState *GetDeltasPending_;
+		QState *ProcessDeltas_;
+		QState *PutDeltasPending_;
+		QFinalState *Finish_;
 
-				QState *Idle_;
-				QFinalState *ConnectionError_;
-				QState *LoginPending_;
-				QFinalState *LoginError_;
-				QState *Running_;
-				QState *ReqMaxDeltaPending_;
-				QState *GetDeltasPending_;
-				QState *ProcessDeltas_;
-				QState *PutDeltasPending_;
-				QFinalState *Finish_;
+		quint32 NumLastSent_;
+		quint32 NumLastReceived_;
+	public:
+		ServerChainHandler (const QByteArray&, QObject*);
+	public:
+		void Sync ();
+	private slots:
+		void getNewDeltas ();
+		void handleSuccess (const QList<QByteArray>&);
+		void handleMaxDeltaIDReceived (quint32);
+		void handleDeltasReceived (const QList<QByteArray>&);
+		void handlePutDeltas ();
+		void handleFinished ();
+	signals:
+		void gotNewDeltas (const Sync::Deltas_t&, const QByteArray&);
+		void deltasRequired (Sync::Deltas_t*, const QByteArray&);
+		void successfullySentDeltas (quint32, const QByteArray&);
 
-				quint32 NumLastSent_;
-				quint32 NumLastReceived_;
-			public:
-				ServerChainHandler (const QByteArray&, QObject*);
-			public:
-				void Sync ();
-			private slots:
-				void getNewDeltas ();
-				void handleSuccess (const QList<QByteArray>&);
-				void handleMaxDeltaIDReceived (quint32);
-				void handleDeltasReceived (const QList<QByteArray>&);
-				void handlePutDeltas ();
-				void handleFinished ();
-			signals:
-				void gotNewDeltas (const Sync::Deltas_t&, const QByteArray&);
-				void deltasRequired (Sync::Deltas_t*, const QByteArray&);
-				void successfullySentDeltas (quint32, const QByteArray&);
+		void loginError ();
+		void connectionError ();
+		void finishedSuccessfully (quint32 sent, quint32 received);
 
-				void loginError ();
-				void connectionError ();
-				void finishedSuccessfully (quint32 sent, quint32 received);
-
-				// Used internally to control the statemachine.
-				void initiated ();
-				void hasNewDeltas ();
-				void noNewDeltas ();
-				void deltasReceived ();
-				void deltasProcessed ();
-				void fail ();
-				void success ();
-			};
-		}
-	}
+		// Used internally to control the statemachine.
+		void initiated ();
+		void hasNewDeltas ();
+		void noNewDeltas ();
+		void deltasReceived ();
+		void deltasProcessed ();
+		void fail ();
+		void success ();
+	};
+}
 }
 
 #endif

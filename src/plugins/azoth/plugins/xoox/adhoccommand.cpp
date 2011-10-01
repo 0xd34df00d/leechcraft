@@ -24,22 +24,22 @@ namespace Azoth
 {
 namespace Xoox
 {
-		AdHocCommand::AdHocCommand (const QString& name, const QString& node)
+	AdHocCommand::AdHocCommand (const QString& name, const QString& node)
 	: Name_ (name)
 	, Node_ (node)
 	{
 	}
-	
+
 	QString AdHocCommand::GetName () const
 	{
 		return Name_;
 	}
-	
+
 	void AdHocCommand::SetName (const QString& name)
 	{
 		Name_ = name;
 	}
-	
+
 	QString AdHocCommand::GetNode () const
 	{
 		return Node_;
@@ -49,7 +49,7 @@ namespace Xoox
 	{
 		Node_ = node;
 	}
-	
+
 	QString AdHocResult::GetNode () const
 	{
 		return Node_;

@@ -5,7 +5,10 @@
 		<groupbox>
 			<label value="p100q" />
 			<item type="checkbox" property="ShowImage" state="off">
-					<label value="Show images in psto's chat window" />
+				<label value="Show images in psto's chat window" />
+			</item>
+			<item type="checkbox" property="ShowAvatars" state="on">
+				<label value="Show avatars" />
 			</item>
 		</groupbox>
 	</page>

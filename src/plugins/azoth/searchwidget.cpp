@@ -135,7 +135,7 @@ namespace Azoth
 		Ui_.ResultsTree_->setModel (sess->GetRepresentationModel ());
 	}
 
-	void SearchWidget::on_AccountBox__activated (int idx)
+	void SearchWidget::on_AccountBox__activated (int)
 	{
 		IHaveSearch *s = GetCurrentSearch ();
 		Ui_.Server_->setText (s->GetDefaultSearchServer ());

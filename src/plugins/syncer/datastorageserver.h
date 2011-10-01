@@ -23,30 +23,27 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Syncer
+{
+	class ServerChainHandler;
+
+	class DataStorageServer : public DataStorageBase
 	{
-		namespace Syncer
-		{
-			class ServerChainHandler;
+		Q_OBJECT
 
-			class DataStorageServer : public DataStorageBase
-			{
-				Q_OBJECT
-
-				QHash<QByteArray, ServerChainHandler*> ChainHandlers_;
-			public:
-				DataStorageServer (QObject*);
-			public slots:
-				virtual void sync (const QByteArray&);
-			private slots:
-				void handleLoginError ();
-				void handleConnectionError ();
-				void handleFinishedSuccessfully (quint32, quint32);
-			private:
-				QByteArray GetChainForSender (QObject*);
-			};
-		}
-	}
+		QHash<QByteArray, ServerChainHandler*> ChainHandlers_;
+	public:
+		DataStorageServer (QObject*);
+	public slots:
+		virtual void sync (const QByteArray&);
+	private slots:
+		void handleLoginError ();
+		void handleConnectionError ();
+		void handleFinishedSuccessfully (quint32, quint32);
+	private:
+		QByteArray GetChainForSender (QObject*);
+	};
+}
 }
 
 #endif

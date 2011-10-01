@@ -23,6 +23,8 @@
 #include "legacyformbuilder.h"
 #include "formbuilder.h"
 
+class QXmppBobManager;
+
 namespace LeechCraft
 {
 namespace Azoth
@@ -36,17 +38,18 @@ namespace Xoox
 		Q_OBJECT
 
 		QXmppClient *Client_;
+		QXmppBobManager *BobManager_;
 		InBandAccountRegFirstPage *FirstPage_;
 		LegacyFormBuilder LFB_;
 		FormBuilder FB_;
 		QWidget *Widget_;
-		
+
 		enum FormType
 		{
 			FTLegacy,
 			FTNew
 		} FormType_;
-		
+
 		enum State
 		{
 			SError,
@@ -58,9 +61,9 @@ namespace Xoox
 		} State_;
 	public:
 		InBandAccountRegSecondPage (InBandAccountRegFirstPage*, QWidget* = 0);
-		
+
 		void Register ();
-		
+
 		QString GetJID () const;
 		QString GetPassword () const;
 

@@ -19,6 +19,7 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_P100Q_P100Q_H
 #define PLUGINS_AZOTH_PLUGINS_P100Q_P100Q_H
+#include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <QRegExp>
 #include <QUrl>
@@ -29,6 +30,8 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/core/ihookproxy.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+
+class QTranslator;
 
 namespace LeechCraft
 {
@@ -43,6 +46,8 @@ namespace p100q
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
+
+		boost::shared_ptr<QTranslator> Translator_;
 
 		QRegExp UserRX_;
 		QRegExp PostAuthorRX_;
@@ -78,10 +83,6 @@ namespace p100q
 				QObject *chatTab,
 				QString body,
 				QObject *message);
-		void hookThemeReloaded (LeechCraft::IHookProxy_ptr proxy,
-				QObject *chatTab,
-				QWebView *view,
-				QObject *entry);
 	};
 }
 }

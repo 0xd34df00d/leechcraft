@@ -45,6 +45,9 @@
 #include "executecommanddialog.h"
 #include "roomclentry.h"
 #include "roomhandler.h"
+#include "useravatardata.h"
+#include "useravatarmetadata.h"
+#include "capsdatabase.h"
 
 namespace LeechCraft
 {
@@ -72,18 +75,42 @@ namespace Xoox
 	{
 		return AllMessages_;
 	}
-	
+
 	void EntryBase::PurgeMessages (const QDateTime& before)
 	{
 		Azoth::Util::StandardPurgeMessages (AllMessages_, before);
 	}
 	
+	namespace
+	{
+		bool CheckPartFeature (EntryBase *base, const QString& variant)
+		{
+			if (variant.isEmpty ())
+				return true;
+			
+			const QByteArray& ver = base->GetVariantVerString (variant);
+			if (ver.isEmpty ())
+				return true;
+			
+			const QStringList& feats = Core::Instance ().GetCapsDatabase ()->Get (ver);
+			if (feats.isEmpty ())
+				return true;
+			
+			return feats.contains ("http://jabber.org/protocol/chatstates");
+		}
+	}
+
 	void EntryBase::SetChatPartState (ChatPartState state, const QString& variant)
 	{
+		if (!CheckPartFeature (this, variant))
+			return;
+
 		// TODO check if participant supports this XEP.
 		// Need to wait until disco info storage is implemented.
 		QXmppMessage msg;
-		msg.setTo (GetJID ());
+		msg.setTo (GetJID () + (variant.isEmpty () ?
+						QString () :
+						('/' + variant)));
 		msg.setState (static_cast<QXmppMessage::State> (state));
 		Account_->GetClientConnection ()->
 				GetClient ()->sendPacket (msg);
@@ -104,7 +131,7 @@ namespace Xoox
 	QList<QAction*> EntryBase::GetActions () const
 	{
 		QList<QAction*> additional;
-		
+
 		if (!Commands_)
 		{
 			Commands_ = new QAction (tr ("Commands..."), Account_);
@@ -114,7 +141,7 @@ namespace Xoox
 					SLOT (handleCommands ()));
 		}
 		additional << Commands_;
-		
+
 		return additional + Actions_;
 	}
 
@@ -151,12 +178,12 @@ namespace Xoox
 	{
 		return Variant2ClientInfo_ [var];
 	}
-	
+
 	IAdvancedCLEntry::AdvancedFeatures EntryBase::GetAdvancedFeatures () const
 	{
 		return AFSupportsAttention;
 	}
-	
+
 	void EntryBase::DrawAttention (const QString& text, const QString& variant)
 	{
 		const QString& to = variant.isEmpty () ?
@@ -179,7 +206,7 @@ namespace Xoox
 		AllMessages_ << msg;
 		emit gotMessage (msg);
 	}
-	
+
 	void EntryBase::HandlePEPEvent (QString variant, PEPEventBase *event)
 	{
 		const QStringList& vars = Variants ();
@@ -204,7 +231,7 @@ namespace Xoox
 			emit activityChanged (variant);
 			return;
 		}
-		
+
 		UserMood *mood = dynamic_cast<UserMood*> (event);
 		if (mood)
 		{
@@ -217,11 +244,11 @@ namespace Xoox
 				moodMap ["text"] = mood->GetText ();
 				Variant2ClientInfo_ [variant] ["user_mood"] = moodMap;
 			}
-			
+
 			emit moodChanged (variant);
 			return;
 		}
-		
+
 		UserTune *tune = dynamic_cast<UserTune*> (event);
 		if (tune)
 		{
@@ -239,11 +266,11 @@ namespace Xoox
 				tuneMap ["rating"] = tune->GetRating ();
 				Variant2ClientInfo_ [variant] ["user_tune"] = tuneMap;
 			}
-			
+
 			emit tuneChanged (variant);
 			return;
 		}
-		
+
 		UserLocation *location = dynamic_cast<UserLocation*> (event);
 		if (location)
 		{
@@ -252,20 +279,23 @@ namespace Xoox
 			emit locationChanged (variant);
 			return;
 		}
-		
+
+		if (dynamic_cast<UserAvatarData*> (event) || dynamic_cast<UserAvatarMetadata*> (event))
+			return;
+
 		qWarning () << Q_FUNC_INFO
 				<< "unhandled PEP event from"
 				<< GetJID ()
 				<< "resource"
 				<< variant;
 	}
-	
+
 	void EntryBase::HandleAttentionMessage (const QXmppMessage& msg)
 	{
 		QString jid;
 		QString resource;
 		ClientConnection::Split (msg.from (), &jid, &resource);
-		
+
 		emit attentionDrawn (msg.body (), resource);
 	}
 
@@ -285,7 +315,7 @@ namespace Xoox
 			return;
 
 		CurrentStatus_ [variant] = status;
-		
+
 		const QStringList& vars = Variants ();
 		if ((!existed || wasOffline) && !vars.isEmpty ())
 		{
@@ -302,14 +332,14 @@ namespace Xoox
 						Variant2ClientInfo_ [highest] [key] = info [key];
 			}
 		}
-		
+
 		emit statusChanged (status, variant);
-		
+
 		if (!existed ||
 				(existed && status.State_ == SOffline) ||
 				wasOffline)
 			emit availableVariantsChanged (vars);
-		
+
 		if (status.State_ != SOffline)
 		{
 			QXmppRosterManager& rm = Account_->
@@ -322,8 +352,8 @@ namespace Xoox
 				Variant2ClientInfo_ [variant] ["priority"] = p;
 			}
 		}
-		
-		
+
+
 		GlooxMessage *message = 0;
 		if (GetEntryType () == ETPrivateChat)
 			message = new GlooxMessage (IMessage::MTStatusMessage,
@@ -343,7 +373,7 @@ namespace Xoox
 		GlooxProtocol *proto = qobject_cast<GlooxProtocol*> (Account_->GetParentProtocol ());
 		IProxyObject *proxy = qobject_cast<IProxyObject*> (proto->GetProxyObject ());
 		const QString& state = proxy->StateToString (status.State_);
-		
+
 		const QString& nick = GetEntryName () + '/' + variant;
 		message->setProperty ("Azoth/Nick", nick);
 		message->setProperty ("Azoth/TargetState", state);
@@ -371,7 +401,7 @@ namespace Xoox
 
 		emit avatarChanged (Avatar_);
 	}
-	
+
 	QXmppVCardIq EntryBase::GetVCard () const
 	{
 		return VCardIq_;
@@ -385,11 +415,13 @@ namespace Xoox
 		if (!text.isEmpty ())
 			text = QString ("gloox VCard:\n") + text;
 		SetRawInfo (text);
-		SetAvatar (vcard.photo ());
+
+		if (!vcard.photo ().isEmpty ())
+			SetAvatar (vcard.photo ());
 
 		if (VCardDialog_)
 			VCardDialog_->UpdateInfo (vcard);
-		
+
 		Core::Instance ().ScheduleSaveRoster (10000);
 	}
 
@@ -424,15 +456,15 @@ namespace Xoox
 			name = "Unknown";
 		}
 		Variant2ClientInfo_ [variant] ["client_name"] = name;
-		
+
 		Variant2VerString_ [variant] = ver;
-		
+
 		QString reqJid = GetJID ();
 		if (GetEntryType () == ETChat)
 			reqJid = variant.isEmpty () ?
 					QString () :
 					reqJid + '/' + variant;
-		
+
 		if (!reqJid.isEmpty ())
 			Account_->GetClientConnection ()->
 					GetCapsManager ()->FetchCaps (reqJid, ver);
@@ -442,12 +474,12 @@ namespace Xoox
 	{
 		SetClientInfo (variant, pres.capabilityNode (), pres.capabilityVer ());
 	}
-	
+
 	GeolocationInfo_t EntryBase::GetGeolocationInfo (const QString& variant) const
 	{
 		return Location_ [variant];
 	}
-	
+
 	QByteArray EntryBase::GetVariantVerString (const QString& var) const
 	{
 		return Variant2VerString_ [var];
@@ -482,7 +514,7 @@ namespace Xoox
 
 		return text;
 	}
-	
+
 	void EntryBase::handleCommands ()
 	{
 		QString jid = GetJID ();
@@ -497,7 +529,7 @@ namespace Xoox
 					caps.contains (AdHocCommandManager::GetAdHocFeature ()))
 					commandable << var;
 			}
-			
+
 			if (commandable.isEmpty ())
 				return;
 			else if (commandable.size () == 1)
@@ -514,7 +546,7 @@ namespace Xoox
 						&ok);
 				if (!ok || var.isEmpty ())
 					return;
-				
+
 				jid += '/' + var;
 			}
 		}

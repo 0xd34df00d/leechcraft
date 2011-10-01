@@ -20,18 +20,15 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Syncer
+{
+	DataStorageBase::DataStorageBase (QObject *parent)
+	: QObject (parent)
 	{
-		namespace Syncer
-		{
-			DataStorageBase::DataStorageBase (QObject *parent)
-			: QObject (parent)
-			{
-			}
-
-			DataStorageBase::~DataStorageBase ()
-			{
-			}
-		}
 	}
+
+	DataStorageBase::~DataStorageBase ()
+	{
+	}
+}
 }

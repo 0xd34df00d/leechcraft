@@ -25,66 +25,63 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Syncer
+{
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		namespace Syncer
-		{
-			void Plugin::Init (ICoreProxy_ptr proxy)
-			{
-				Translator_.reset (Util::InstallTranslator ("syncer"));
+		Translator_.reset (Util::InstallTranslator ("syncer"));
 
-				Core::Instance ().SetProxy (proxy);
+		Core::Instance ().SetProxy (proxy);
 
-				XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
-				XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
-						"syncersettings.xml");
+		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
+		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
+				"syncersettings.xml");
 
-				connect (&Core::Instance (),
-						SIGNAL (gotEntity (const LeechCraft::Entity&)),
-						this,
-						SIGNAL (gotEntity (const LeechCraft::Entity&)));
-			}
+		connect (&Core::Instance (),
+				SIGNAL (gotEntity (const LeechCraft::Entity&)),
+				this,
+				SIGNAL (gotEntity (const LeechCraft::Entity&)));
+	}
 
-			void Plugin::SecondInit ()
-			{
-				Core::Instance ().SecondInit ();
-			}
+	void Plugin::SecondInit ()
+	{
+		Core::Instance ().SecondInit ();
+	}
 
-			void Plugin::Release ()
-			{
-			}
+	void Plugin::Release ()
+	{
+	}
 
-			QByteArray Plugin::GetUniqueID () const
-			{
-				return "org.LeechCraft.Syncer";
-			}
+	QByteArray Plugin::GetUniqueID () const
+	{
+		return "org.LeechCraft.Syncer";
+	}
 
-			QString Plugin::GetName () const
-			{
-				return "Syncer";
-			}
+	QString Plugin::GetName () const
+	{
+		return "Syncer";
+	}
 
-			QString Plugin::GetInfo () const
-			{
-				return tr ("Synchronization plugin for LeechCraft");
-			}
+	QString Plugin::GetInfo () const
+	{
+		return tr ("Synchronization plugin for LeechCraft");
+	}
 
-			QIcon Plugin::GetIcon () const
-			{
-				return QIcon ();
-			}
+	QIcon Plugin::GetIcon () const
+	{
+		return QIcon ();
+	}
 
-			QStringList Plugin::Provides () const
-			{
-				return QStringList ("syncplugin");
-			}
+	QStringList Plugin::Provides () const
+	{
+		return QStringList ("syncplugin");
+	}
 
-			Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
-			{
-				return XmlSettingsDialog_;
-			}
-		};
-	};
-};
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XmlSettingsDialog_;
+	}
+}
+}
 
-Q_EXPORT_PLUGIN2 (leechcraft_syncer, LeechCraft::Plugins::Syncer::Plugin);
+Q_EXPORT_PLUGIN2 (leechcraft_syncer, LeechCraft::Syncer::Plugin);

@@ -85,7 +85,7 @@ namespace Xoox
 	void GlooxAccount::Init ()
 	{
 		ClientConnection_.reset (new ClientConnection (JID_ + "/" + Resource_,
-						AccState_, this));
+						this));
 
 		TransferManager_.reset (new TransferManager (ClientConnection_->
 						GetTransferManager (),

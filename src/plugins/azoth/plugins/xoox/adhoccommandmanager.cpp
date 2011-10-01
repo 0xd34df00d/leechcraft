@@ -28,12 +28,12 @@ namespace Azoth
 namespace Xoox
 {
 	const QString NsAdHoc = "http://jabber.org/protocol/commands";
-		
+
 	QString AdHocCommandManager::GetAdHocFeature ()
 	{
 		return NsAdHoc;
 	}
-	
+
 	AdHocCommandManager::AdHocCommandManager (ClientConnection *conn)
 	: ClientConn_ (conn)
 	{
@@ -42,12 +42,12 @@ namespace Xoox
 				this,
 				SLOT (handleItemsReceived (const QXmppDiscoveryIq&)));
 	}
-	
+
 	void AdHocCommandManager::QueryCommands (const QString& jid)
 	{
 		ClientConn_->GetDiscoveryManager ()->requestItems (jid, NsAdHoc);
 	}
-	
+
 	void AdHocCommandManager::ExecuteCommand (const QString& jid,
 			const AdHocCommand& cmd)
 	{
@@ -60,11 +60,11 @@ namespace Xoox
 		QXmppIq iq (QXmppIq::Set);
 		iq.setTo (jid);
 		iq.setExtensions (command);
-		
+
 		PendingCommands_ << iq.id ();
 		client ()->sendPacket (iq);
 	}
-	
+
 	void AdHocCommandManager::ProceedExecuting (const QString& jid,
 			const AdHocResult& state, const QString& action)
 	{
@@ -89,32 +89,32 @@ namespace Xoox
 		QXmppIq iq (QXmppIq::Set);
 		iq.setTo (jid);
 		iq.setExtensions (command);
-		
+
 		PendingCommands_ << iq.id ();
 		client ()->sendPacket (iq);
 	}
-	
+
 	QStringList AdHocCommandManager::discoveryFeatures () const
 	{
 		return QStringList (NsAdHoc);
 	}
-	
+
 	bool AdHocCommandManager::handleStanza (const QDomElement& elem)
 	{
 		if (elem.tagName () != "iq" ||
 				!PendingCommands_.contains (elem.attribute ("id")))
 			return false;
-		
+
 		PendingCommands_.remove (elem.attribute ("id"));
-		
+
 		const QDomElement& command = elem.firstChildElement ("command");
 		if (command.namespaceURI () != NsAdHoc)
 			return false;
-		
+
 		AdHocResult result;
 		result.SetSessionID (command.attribute ("sessionid"));
 		result.SetNode (command.attribute ("node"));
-		
+
 		const QDomElement& actionsElem = command.firstChildElement ("actions");
 		if (!actionsElem.isNull ())
 		{
@@ -133,26 +133,35 @@ namespace Xoox
 
 				actionElem = actionElem.nextSiblingElement ();
 			}
-			
+
 			actionsList.prepend (def);
 
 			result.SetActions (actionsList);
 		}
 		else if (command.attribute ("status") == "executing")
 			result.SetActions (QStringList ("execute"));
-		
-		if (command.firstChildElement ("x").attribute ("type") == "form")
+
+		if (command.firstChildElement ("x").attribute ("xmlns") == "jabber:x:data")
 		{
 			QXmppDataForm form;
-			form.parse (command.firstChildElement ("x"));
+
+			QDomElement xForm = command.firstChildElement ("x");
+			if (!xForm.hasAttribute ("type"))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "kludge for unknown form types";
+				xForm.setAttribute ("type", "form");
+			}
+
+			form.parse (xForm);
 			result.SetDataForm (form);
 		}
-		
+
 		emit gotResult (elem.attribute ("from"), result);
-		
+
 		return true;
 	}
-	
+
 	void AdHocCommandManager::handleItemsReceived (const QXmppDiscoveryIq& iq)
 	{
 		if (iq.queryNode () != NsAdHoc)
@@ -164,7 +173,7 @@ namespace Xoox
 			AdHocCommand cmd (item.name (), item.node ());
 			commands << cmd;
 		}
-		
+
 		emit gotCommands (iq.from (), commands);
 	}
 }
