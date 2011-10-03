@@ -48,8 +48,9 @@ namespace Delicious
 	QByteArray DeliciousApi::GetUploadPayload (const QVariant& bookmark)
 	{
 		QVariantMap map = bookmark.toMap ();
+
 		return QString ("&url=%1&description=%2&tags=%3")
-				.arg (map ["Url"].toString (),
+				.arg (map ["URL"].toString (),
 						map ["Title"].toString (),
 						map ["Tags"].toString ().split (',').join (" ")).toUtf8 ();
 	}
@@ -68,20 +69,22 @@ namespace Delicious
 	{
 		QVariantList list;
 		QVariantMap record;
-		QXmlStreamReader reply (content);
-		while (!reply.atEnd ())
+		QXmlStreamReader xml (content);
+		while (!xml.atEnd () &&
+				!xml.hasError ())
 		{
-			reply.readNext();
-			if (reply.name () == "post")
-			{
-				record ["Url"] = reply.attributes ().value ("href").toString ();
-				record ["Title"] = reply.attributes ().value ("description").toString ();;
-				record ["Tags"] = reply.attributes ().value ("tag").toString ();
-				list << record;
-			}
+			QXmlStreamReader::TokenType token = xml.readNext ();
+			if (token == QXmlStreamReader::StartDocument)
+				continue;
+			if (token == QXmlStreamReader::StartElement)
+				if(xml.name() == "post")
+				{
+					record ["URL"] = xml.attributes ().value ("href").toString ();
+					record ["Title"] = xml.attributes ().value ("description").toString ();;
+					record ["Tags"] = xml.attributes ().value ("tag").toString ();
+					list << record;
+				}
 		}
-		if (reply.hasError ())
-			return QVariantList ();
 
 		return list;
 	}
@@ -110,16 +113,15 @@ namespace Delicious
 			reply.readNext();
 			if (reply.name () == "result")
 			{
-				if (!reply.attributes ().hasAttribute ("code"))
-					return false;
-				else if (reply.attributes ().value ("code") != "done")
-					return false;
+				if (reply.attributes ().hasAttribute ("code") &&
+						reply.attributes ().value ("code") == "done")
+					return true;
 			}
 		}
 		if (reply.hasError ())
 			return false;
 
-		return true;
+		return false;
 	}
 
 }

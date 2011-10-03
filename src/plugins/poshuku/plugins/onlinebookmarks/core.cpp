@@ -158,6 +158,8 @@ namespace OnlineBookmarks
 			map ["Url"] = url;
 			map ["Tags"] = tags;
 			list << map;
+			if (account->GetBookmarksDiff (list).isEmpty ())
+				continue;
 			ibs->UploadBookmarks (account, list);
 		}
 	}
@@ -283,6 +285,7 @@ namespace OnlineBookmarks
 			IBookmarksService *ibs = qobject_cast<IBookmarksService*> (account->GetParentService ());
 			ibs->UploadBookmarks (account, account->GetBookmarksDiff (result));
 		}
+		AccountsSettings_->UpdateAccountsTime ();
 	}
 
 	void Core::downloadBookmarks ()
@@ -293,6 +296,7 @@ namespace OnlineBookmarks
 			IBookmarksService *ibs = qobject_cast<IBookmarksService*> (account->GetParentService ());
 			ibs->DownloadBookmarks (account, account->GetLastDownloadDateTime ());
 		}
+		AccountsSettings_->UpdateAccountsTime ();
 	}
 
 	void Core::downloadAllBookmarks ()
@@ -303,6 +307,7 @@ namespace OnlineBookmarks
 			IBookmarksService *ibs = qobject_cast<IBookmarksService*> (account->GetParentService ());
 			ibs->DownloadBookmarks (account, QDateTime::fromString ("01.01.1970", "dd.MM.yyyy"));
 		}
+		AccountsSettings_->UpdateAccountsTime ();
 	}
 
 }

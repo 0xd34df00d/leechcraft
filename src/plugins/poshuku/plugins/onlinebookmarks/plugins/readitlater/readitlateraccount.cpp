@@ -166,7 +166,6 @@ namespace ReadItLater
 		}
 
 		QString login;
-		bool isSyncing;
 		in >> login;
 		ReadItLaterAccount *acc = new ReadItLaterAccount (login, parent);
 		in >> acc->IsSyncing_
