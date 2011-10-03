@@ -16,34 +16,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_PLUGINMANAGER_H
-#define PLUGINS_AGGREGATOR_PLUGINMANAGER_H
-#include <QVariant>
-#include <interfaces/core/ihookproxy.h>
-#include <util/basehookinterconnector.h>
-#include "interfaces/aggregator/item.h"
-#include "proxyobject.h"
+#ifndef PLUGINS_AGGREGATOR_INTERFACES_AGGREGATOR_IPROXYOBJECT_H
+#define PLUGINS_AGGREGATOR_INTERFACES_AGGREGATOR_IPROXYOBJECT_H
+#include <boost/shared_ptr.hpp>
 
 namespace LeechCraft
 {
 namespace Aggregator
 {
-	class PluginManager : public Util::BaseHookInterconnector
+	struct Item;
+	struct Channel;
+	struct Feed;
+
+	typedef boost::shared_ptr<Item> Item_ptr;
+	typedef boost::shared_ptr<Channel> Channel_ptr;
+	typedef boost::shared_ptr<Feed> Feed_ptr;
+
+	class IProxyObject
 	{
-		Q_OBJECT
-
-		boost::shared_ptr<ProxyObject> ProxyObject_;
 	public:
-		PluginManager (QObject* = 0);
+		virtual ~IProxyObject () {}
 
-		virtual void AddPlugin (QObject*);
-	signals:
-		void hookItemLoad (LeechCraft::IHookProxy_ptr proxy,
-				Item*);
-		void hookGotNewItems (LeechCraft::IHookProxy_ptr proxy,
-				QVariantList items);
+		virtual void AddFeed (Feed_ptr) = 0;
+		virtual void AddChannel (Channel_ptr) = 0;
+		virtual void AddItem (Item_ptr) = 0;
 	};
+
+	typedef boost::shared_ptr<IProxyObject> IProxyObject_ptr;
 }
 }
+
+Q_DECLARE_INTERFACE (LeechCraft::Aggregator::IProxyObject,
+		"org.Deviant.LeechCraft.Aggregator.IProxyObject/1.0");
 
 #endif

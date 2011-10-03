@@ -16,34 +16,40 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_PLUGINMANAGER_H
-#define PLUGINS_AGGREGATOR_PLUGINMANAGER_H
-#include <QVariant>
-#include <interfaces/core/ihookproxy.h>
-#include <util/basehookinterconnector.h>
-#include "interfaces/aggregator/item.h"
 #include "proxyobject.h"
+#include "core.h"
 
 namespace LeechCraft
 {
 namespace Aggregator
 {
-	class PluginManager : public Util::BaseHookInterconnector
+	ProxyObject::ProxyObject (QObject *parent)
+	: QObject (parent)
 	{
-		Q_OBJECT
+	}
 
-		boost::shared_ptr<ProxyObject> ProxyObject_;
-	public:
-		PluginManager (QObject* = 0);
+	void ProxyObject::AddFeed (Feed_ptr feed)
+	{
+		if (!feed->FeedID_)
+			feed->FeedID_ = Core::Instance ().GetPool (PTFeed).GetID ();
 
-		virtual void AddPlugin (QObject*);
-	signals:
-		void hookItemLoad (LeechCraft::IHookProxy_ptr proxy,
-				Item*);
-		void hookGotNewItems (LeechCraft::IHookProxy_ptr proxy,
-				QVariantList items);
-	};
+		Core::Instance ().GetStorageBackend ()->AddFeed (feed);
+	}
+
+	void ProxyObject::AddChannel (Channel_ptr channel)
+	{
+		if (!channel->ChannelID_)
+			channel->ChannelID_ = Core::Instance ().GetPool (PTChannel).GetID ();
+
+		Core::Instance ().GetStorageBackend ()->AddChannel (channel);
+	}
+
+	void ProxyObject::AddItem (Item_ptr item)
+	{
+		if (!item->ItemID_)
+			item->ItemID_ = Core::Instance ().GetPool (PTItem).GetID ();
+
+		Core::Instance ().GetStorageBackend ()->AddItem (item);
+	}
 }
 }
-
-#endif

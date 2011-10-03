@@ -16,32 +16,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_PLUGINMANAGER_H
-#define PLUGINS_AGGREGATOR_PLUGINMANAGER_H
-#include <QVariant>
-#include <interfaces/core/ihookproxy.h>
-#include <util/basehookinterconnector.h>
-#include "interfaces/aggregator/item.h"
-#include "proxyobject.h"
+#ifndef PLUGINS_AGGREGATOR_PROXYOBJECT_H
+#define PLUGINS_AGGREGATOR_PROXYOBJECT_H
+#include <QObject>
+#include "interfaces/aggregator/iproxyobject.h"
 
 namespace LeechCraft
 {
 namespace Aggregator
 {
-	class PluginManager : public Util::BaseHookInterconnector
+	class ProxyObject : public QObject
+					  , public IProxyObject
 	{
 		Q_OBJECT
-
-		boost::shared_ptr<ProxyObject> ProxyObject_;
+		Q_INTERFACES (LeechCraft::Aggregator::IProxyObject)
 	public:
-		PluginManager (QObject* = 0);
+		ProxyObject (QObject* = 0);
 
-		virtual void AddPlugin (QObject*);
-	signals:
-		void hookItemLoad (LeechCraft::IHookProxy_ptr proxy,
-				Item*);
-		void hookGotNewItems (LeechCraft::IHookProxy_ptr proxy,
-				QVariantList items);
+		void AddFeed (Feed_ptr);
+		void AddChannel (Channel_ptr);
+		void AddItem (Item_ptr);
 	};
 }
 }
