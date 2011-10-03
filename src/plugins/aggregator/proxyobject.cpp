@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "proxyobject.h"
+#include <boost/foreach.hpp>
 #include "core.h"
 
 namespace LeechCraft
@@ -28,26 +29,66 @@ namespace Aggregator
 	{
 	}
 
+	namespace
+	{
+		void FixItemID (Item_ptr item)
+		{
+			if (item->ItemID_)
+				return;
+
+			item->ItemID_ = Core::Instance ().GetPool (PTItem).GetID ();
+
+			BOOST_FOREACH (Enclosure& enc, item->Enclosures_)
+				enc.ItemID_ = item->ItemID_;
+		}
+
+		void FixChannelID (Channel_ptr channel)
+		{
+			if (channel->ChannelID_)
+				return;
+
+			channel->ChannelID_ = Core::Instance ().GetPool (PTChannel).GetID ();
+			Q_FOREACH (Item_ptr item, channel->Items_)
+			{
+				item->ChannelID_ = channel->ChannelID_;
+
+				FixItemID (item);
+			}
+		}
+
+		void FixFeedID (Feed_ptr feed)
+		{
+			if (feed->FeedID_)
+				return;
+
+			feed->FeedID_ = Core::Instance ().GetPool (PTFeed).GetID ();
+
+			Q_FOREACH (Channel_ptr channel, feed->Channels_)
+			{
+				channel->FeedID_ = feed->FeedID_;
+
+				FixChannelID (channel);
+			}
+		}
+	}
+
 	void ProxyObject::AddFeed (Feed_ptr feed)
 	{
-		if (!feed->FeedID_)
-			feed->FeedID_ = Core::Instance ().GetPool (PTFeed).GetID ();
+		FixFeedID (feed);
 
 		Core::Instance ().GetStorageBackend ()->AddFeed (feed);
 	}
 
 	void ProxyObject::AddChannel (Channel_ptr channel)
 	{
-		if (!channel->ChannelID_)
-			channel->ChannelID_ = Core::Instance ().GetPool (PTChannel).GetID ();
+		FixChannelID (channel);
 
 		Core::Instance ().GetStorageBackend ()->AddChannel (channel);
 	}
 
 	void ProxyObject::AddItem (Item_ptr item)
 	{
-		if (!item->ItemID_)
-			item->ItemID_ = Core::Instance ().GetPool (PTItem).GetID ();
+		FixItemID (item);
 
 		Core::Instance ().GetStorageBackend ()->AddItem (item);
 	}
