@@ -49,6 +49,7 @@
 #include "interfaces/iresourceplugin.h"
 #include "interfaces/iurihandler.h"
 #include "interfaces/irichtextmessage.h"
+#include "interfaces/iextselfinfoaccount.h"
 #ifdef ENABLE_CRYPT
 #include "interfaces/isupportpgp.h"
 #include "pgpkeyselectiondialog.h"
@@ -1183,8 +1184,52 @@ namespace Azoth
 		return tip;
 	}
 
-	void Core::HandleStatusChanged (const EntryStatus&,
-			ICLEntry *entry, const QString& variant)
+	Entity Core::BuildStatusNotification (const EntryStatus& entrySt,
+		ICLEntry *entry, const QString& variant)
+	{
+		if (entry->GetEntryType () != ICLEntry::ETChat)
+			return Entity ();
+
+		IAccount *acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
+		if (!LastAccountStatusChange_.contains (acc) ||
+				LastAccountStatusChange_ [acc].secsTo (QDateTime::currentDateTime ()) < 5)
+			return Entity ();
+
+		IExtSelfInfoAccount *extAcc =
+				qobject_cast<IExtSelfInfoAccount*> (entry->GetParentAccount ());
+		if (extAcc &&
+				extAcc->GetSelfContact () == entry->GetObject ())
+			return Entity ();
+
+		const QString& name = entry->GetEntryName ();
+		const QString& status = Status2Str (entrySt, PluginProxyObject_);
+
+		const QString& text = variant.isEmpty () ?
+				Core::tr ("%1 is now %2.")
+					.arg (name)
+					.arg (status) :
+				Core::tr ("%1/%2 is now %3.")
+					.arg (name)
+					.arg (variant)
+					.arg (status);
+
+		Entity e = Util::MakeNotification ("LeechCraft", text, PInfo_);
+		e.Mime_ += "+advanced";
+
+		BuildNotification (e, entry);
+		e.Additional_ ["org.LC.AdvNotifications.EventType"] = "org.LC.AdvNotifications.IM.StatusChange";
+		e.Additional_ ["NotificationPixmap"] =
+				QVariant::fromValue<QPixmap> (QPixmap::fromImage (entry->GetAvatar ()));
+
+		e.Additional_ ["org.LC.AdvNotifications.FullText"] = text;
+		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = text;
+		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
+
+		return e;
+	}
+
+	void Core::HandleStatusChanged (const EntryStatus& status,
+			ICLEntry *entry, const QString& variant, bool asSignal)
 	{
 		emit hookEntryStatusChanged (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy),
 				entry->GetObject (), variant);
@@ -1204,6 +1249,13 @@ namespace Azoth
 		const QString& id = entry->GetEntryID ();
 		if (!XferJobManager_->GetPendingIncomingJobsFor (id).isEmpty ())
 			CheckFileIcon (id);
+
+		if (asSignal)
+		{
+			const Entity& e = BuildStatusNotification (status, entry, variant);
+			if (!e.Mime_.isEmpty ())
+				emit gotEntity (e);
+		}
 	}
 
 	void Core::CheckFileIcon (const QString& id)
@@ -2251,6 +2303,11 @@ namespace Azoth
 			return;
 		}
 
+		if (status.State_ == SOffline)
+			LastAccountStatusChange_.remove (acc);
+		else if (!LastAccountStatusChange_.contains (acc))
+			LastAccountStatusChange_ [acc] = QDateTime::currentDateTime ();
+
 		const QByteArray& id = proto->GetProtocolID () + acc->GetAccountID ();
 		QByteArray serializedStatus;
 		{
@@ -2287,7 +2344,7 @@ namespace Azoth
 			return;
 		}
 
-		HandleStatusChanged (status, entry, variant);
+		HandleStatusChanged (status, entry, variant, true);
 	}
 
 	void Core::handleEntryPEPEvent (const QString&)

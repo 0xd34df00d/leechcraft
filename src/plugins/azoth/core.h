@@ -92,6 +92,8 @@ namespace Azoth
 		typedef QHash<QStandardItem*, Category2Item_t> Account2Category2Item_t;
 		Account2Category2Item_t Account2Category2Item_;
 
+		QHash<IAccount*, QDateTime> LastAccountStatusChange_;
+
 		typedef QHash<ICLEntry*, QList<QStandardItem*> > Entry2Items_t;
 		Entry2Items_t Entry2Items_;
 
@@ -363,10 +365,13 @@ namespace Azoth
 		 */
 		QString MakeTooltipString (ICLEntry *entry) const;
 
+		Entity BuildStatusNotification (const EntryStatus&,
+				ICLEntry*, const QString&);
+
 		/** Handles the event of status changes in a contact list entry.
 		 */
 		void HandleStatusChanged (const EntryStatus& status,
-				ICLEntry *entry, const QString& variant);
+				ICLEntry *entry, const QString& variant, bool asSignal = false);
 
 		/** Checks whether icon representing incoming file should be
 		 * drawn for the entry with the given id.
