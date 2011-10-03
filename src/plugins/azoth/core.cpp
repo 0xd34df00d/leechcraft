@@ -1312,11 +1312,12 @@ namespace Azoth
 		{
 			QString filename = "default/";
 			filename += entry->GetClientInfo (variant) ["client_type"].toString ();
-			QStringList variants;
-			variants << filename + ".svg"
-					<< filename + ".png"
-					<< filename + ".jpg";
-			result [variant] = QIcon (ResourceLoaders_ [RLTClientIconLoader]->GetPath (variants));
+
+			QString path = ResourceLoaders_ [RLTClientIconLoader]->GetIconPath (filename);
+			if (path.isNull ())
+				path = ResourceLoaders_ [RLTClientIconLoader]->GetIconPath ("default/unknown");
+
+			result [variant] = QIcon (path);
 		}
 
 		EntryClientIconCache_ [entry] = result;
