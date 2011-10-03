@@ -32,7 +32,6 @@ INCLUDE_DIRECTORIES (${Boost_INCLUDE_DIRS}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
 SET (SRCS
-	clearbutton.cpp
 	poshuku.cpp
 	xmlsettingsmanager.cpp
 	core.cpp
@@ -82,7 +81,6 @@ SET (SRCS
 	importentityhandler.cpp
 	)
 SET (HEADERS
-	clearbutton.h
 	poshuku.h
 	xmlsettingsmanager.h
 	core.h
@@ -170,7 +168,7 @@ ADD_LIBRARY (leechcraft_poshuku SHARED
 	${UIS_H}
 	${RCCS}
 	)
-	
+
 IF (ENABLE_IDN)
 	SET (IDN_LIB "idn")
 ENDIF (ENABLE_IDN)
