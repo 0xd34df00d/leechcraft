@@ -115,17 +115,17 @@ namespace LeechCraft
 			 * "plugin/directory/subdir".
 			 */
 			void AddLocalPrefix (QString prefix = QString ());
-			
+
 			/** @brief Lists the available files for the given option.
-			 * 
+			 *
 			 * The option should be the one of the elements of the model
 			 * returned by GetSubElemModel().
-			 * 
+			 *
 			 * This method supports basic filtering: list of name
 			 * filters could be passed via the names parameter, and
 			 * additional filter flags via the filters parameter. The
 			 * default is to perform no additional filtering.
-			 * 
+			 *
 			 * @param[in] option The option for which to list available
 			 * files/directories.
 			 * @param[in] names Name filters.
@@ -160,18 +160,18 @@ namespace LeechCraft
 			 * @sa Load(), GetIconPath()
 			 */
 			QString GetPath (const QStringList& pathVariants) const;
-			
+
 			/** @brief Calls GetPath() with standard variants for the
 			 * icon extensions.
-			 * 
+			 *
 			 * This functions just calls the GetPath() function with
 			 * standard icon extensions, that is, the path variants are
 			 * basename + (".svg", ".png", ".jpg")
-			 * 
+			 *
 			 * @param[in] basename Base name of the icon — without
 			 * extension.
 			 * @return The first found full path or null string
-			 * 
+			 *
 			 * @sa GetPath()
 			 */
 			QString GetIconPath (const QString& basename) const;
@@ -186,14 +186,14 @@ namespace LeechCraft
 			 * if nothing is found.
 			 */
 			QIODevice_ptr Load (const QStringList& pathVariants) const;
-			
+
 			/** @brief Returns the QIODevice for the corresponding resource.
-			 * 
+			 *
 			 * This function is the overloaded variant of Load(),
 			 * provided for convenience. This function constructs a
 			 * stringlist of a single element, the passed pathVariant,
 			 * and calls the other Load() with it.
-			 * 
+			 *
 			 * @param[in] pathVariant The path variant to try.
 			 * @return The QIODevice for the found path, or a null ptr
 			 * if nothing is found.
@@ -256,6 +256,8 @@ namespace LeechCraft
 			void ScanPath (const QString&);
 		private slots:
 			void handleDirectoryChanged (const QString&);
+		signals:
+			void watchedDirectoriesChanged ();
 		};
 	}
 }
