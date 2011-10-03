@@ -32,6 +32,7 @@
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/istartupwizard.h>
 #include <interfaces/ipluginready.h>
+#include <interfaces/isyncable.h>
 
 class QSystemTrayIcon;
 class QTranslator;
@@ -47,16 +48,17 @@ namespace Aggregator
 	struct Aggregator_Impl;
 
 	class Aggregator : public QWidget
-						, public IInfo
-						, public IHaveTabs
-						, public ITabWidget
-						, public IHaveSettings
-						, public IJobHolder
-						, public IEntityHandler
-						, public IHaveShortcuts
-						, public IActionsExporter
-						, public IStartupWizard
-						, public IPluginReady
+					 , public IInfo
+					 , public IHaveTabs
+					 , public ITabWidget
+					 , public IHaveSettings
+					 , public IJobHolder
+					 , public IEntityHandler
+					 , public IHaveShortcuts
+					 , public IActionsExporter
+					 , public IStartupWizard
+					 , public IPluginReady
+					 , public ISyncable
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo
@@ -68,7 +70,8 @@ namespace Aggregator
 				IHaveShortcuts
 				IStartupWizard
 				IActionsExporter
-				IPluginReady)
+				IPluginReady
+				ISyncable)
 
 		Aggregator_Impl *Impl_;
 	public:
@@ -108,6 +111,12 @@ namespace Aggregator
 
 		QSet<QByteArray> GetExpectedPluginClasses () const;
 		void AddPlugin (QObject*);
+		
+		Sync::ChainIDs_t AvailableChains () const;
+		Sync::Payloads_t GetAllDeltas (const Sync::ChainID_t&) const;
+		Sync::Payloads_t GetNewDeltas (const Sync::ChainID_t&) const;
+		void PurgeNewDeltas (const Sync::ChainID_t&, quint32);
+		void ApplyDeltas (const Sync::Payloads_t&, const Sync::ChainID_t&);
 	protected:
 		virtual void keyPressEvent (QKeyEvent*);
 	private:
@@ -148,6 +157,8 @@ namespace Aggregator
 		void changeTooltip (QWidget*, QWidget*);
 		void statusBarChanged (QWidget*, const QString&);
 		void raiseTab (QWidget*);
+		
+		void newDeltasAvailable (const LeechCraft::Sync::ChainID_t&);
 	};
 }
 }

@@ -132,7 +132,7 @@ namespace Azoth
 		
 		QMap<QString, QPair<QVariant, QIcon> > list;
 		
-		for (int i = 0; i < sizeof (moodStr) / sizeof (moodStr [0]); ++i)
+		for (uint i = 0; i < sizeof (moodStr) / sizeof (moodStr [0]); ++i)
 		{
 			QString name (moodStr [i]);
 			name [0] = name.at (0).toUpper ();

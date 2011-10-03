@@ -43,7 +43,7 @@ namespace Autoidler
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog);
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"azothautoidlersettings.xml");
-		
+
 		Idle_.reset (new Idle);
 		connect (Idle_.get (),
 				SIGNAL (secondsIdle (int)),
@@ -86,31 +86,31 @@ namespace Autoidler
 		result << "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin";
 		return result;
 	}
-	
+
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
 	{
 		return XmlSettingsDialog_;
 	}
-	
-	quint64 Plugin::GetInactiveSeconds ()
+
+	int Plugin::GetInactiveSeconds ()
 	{
 		return IdleSeconds_;
 	}
-	
+
 	void Plugin::initPlugin (QObject *proxy)
 	{
 		AzothProxy_ = qobject_cast<IProxyObject*> (proxy);
 	}
-	
+
 	void Plugin::handleIdle (int seconds)
 	{
 		IdleSeconds_ = seconds;
 		if (seconds && seconds % 60)
 			return;
-		
+
 		if (!XmlSettingsManager::Instance ().property ("EnableAutoidler").toBool ())
 			return;
-		
+
 		const int mins = seconds / 60;
 		if (!mins &&
 				!OldStatuses_.isEmpty ())
@@ -119,28 +119,28 @@ namespace Autoidler
 			{
 				if (!OldStatuses_.contains (accObj))
 					continue;
-				
+
 				IAccount *acc = qobject_cast<IAccount*> (accObj);
 				acc->ChangeState (OldStatuses_ [accObj]);
 			}
-			
+
 			OldStatuses_.clear ();
 		}
-		
+
 		if (!mins)
 			return;
-		
+
 		EntryStatus status;
-		
+
 		if (mins == XmlSettingsManager::Instance ().property ("AwayTimeout").toInt ())
 			status = EntryStatus (SAway,
 					XmlSettingsManager::Instance ().property ("AwayText").toString ());
 		else if (mins == XmlSettingsManager::Instance ().property ("NATimeout").toInt ())
-			status = EntryStatus (SDND,
+			status = EntryStatus (SXA,
 					XmlSettingsManager::Instance ().property ("NAText").toString ());
 		else
 			return;
-		
+
 		Q_FOREACH (QObject *accObj, AzothProxy_->GetAllAccounts ())
 		{
 			IAccount *acc = qobject_cast<IAccount*> (accObj);
@@ -148,10 +148,10 @@ namespace Autoidler
 			const EntryStatus& oldStatus = acc->GetState ();
 			if (oldStatus.State_ == SOffline)
 				continue;
-			
+
 			if (!OldStatuses_.contains (accObj))
 				OldStatuses_ [accObj] = oldStatus;
-			
+
 			acc->ChangeState (status);
 		}
 	}

@@ -75,6 +75,7 @@ SET (SRCS
 	actionsstructs.cpp
 	sqlstoragebackend_mysql.cpp
 	pluginmanager.cpp
+	syncdeltagenerator.cpp
 	)
 SET (HEADERS
     aggregator.h
@@ -120,6 +121,7 @@ SET (HEADERS
 	actionsstructs.h
 	sqlstoragebackend_mysql.h
 	pluginmanager.h
+	syncdeltagenerator.h
 	)
 SET (FORMS
     mainwidget.ui

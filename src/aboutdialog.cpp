@@ -115,6 +115,10 @@ namespace LeechCraft
 				QString (), "eual.jp@gmail.com",
 				QStringList (tr ("Ukrainian translations.")),
 				QList<int> () << 2011);
+		contribs << ContributorInfo ("Alia Eolova", "alieola",
+				"alieola@jabber.ru", "aeors-team@yandex.ru",
+				QStringList (tr ("Spanish translations.")),
+				QList<int> () << 2011);
 		contribs << ContributorInfo (QString (), "ForNeVeR",
 				"revenrof@jabber.ru", QString (),
 				QStringList ("Maintainer for the Microsoft Windows."),

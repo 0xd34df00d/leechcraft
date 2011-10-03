@@ -64,6 +64,9 @@ SET (XOOX_SRCS
 	riexmanager.cpp
 	jabbersearchsession.cpp
 	jabbersearchmanager.cpp
+	useravatarmanager.cpp
+	useravatardata.cpp
+	useravatarmetadata.cpp
 	)
 SET (XOOX_HEADERS
 	xoox.h
@@ -120,6 +123,9 @@ SET (XOOX_HEADERS
 	riexmanager.h
 	jabbersearchsession.h
 	jabbersearchmanager.h
+	useravatarmanager.h
+	useravatardata.h
+	useravatarmetadata.h
 	)
 SET (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui
@@ -145,7 +151,7 @@ IF (ENABLE_CRYPT)
 	SET (XOOX_HEADERS ${XOOX_HEADERS} pgpmanager.h)
 ENDIF (ENABLE_CRYPT)
 
-CreateTrVars ("azoth_xoox" "de;en;fr;it;ru_RU;uk_UA" XOOX_TRANSLATIONS XOOX_COMPILED_TRANSLATIONS)
+CreateTrVars ("azoth_xoox" "de;en;es;fr;it;ru_RU;uk_UA" XOOX_TRANSLATIONS XOOX_COMPILED_TRANSLATIONS)
 QT4_WRAP_CPP (XOOX_MOC_SRCS ${XOOX_HEADERS})
 QT4_WRAP_UI (XOOX_UIS_H ${XOOX_FORMS})
 QT4_ADD_RESOURCES (XOOX_RCCS ${XOOX_RESOURCES})

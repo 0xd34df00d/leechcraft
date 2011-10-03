@@ -25,7 +25,7 @@ namespace LeechCraft
 namespace Azoth
 {
 	/** @brief Interface for plugins providing last activity info.
-	 * 
+	 *
 	 * This interface should be implemented by plugins (yes, plugin
 	 * instance objects) that may provide information about
 	 * inactivity timeout.
@@ -34,15 +34,15 @@ namespace Azoth
 	{
 	public:
 		virtual ~ILastActivityProvider () {}
-		
+
 		/** @brief Number of seconds of inactivity.
-		 * 
+		 *
 		 * This method returns the number of seconds the user has been
 		 * inactive.
-		 * 
+		 *
 		 * @return Number of seconds of inactivity.
 		 */
-		virtual quint64 GetInactiveSeconds () = 0;
+		virtual int GetInactiveSeconds () = 0;
 	};
 }
 }

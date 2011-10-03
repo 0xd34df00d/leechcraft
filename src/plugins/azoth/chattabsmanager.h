@@ -43,7 +43,7 @@ namespace Azoth
 		ChatTabsManager(QObject* = 0);
 
 		void OpenChat (const QModelIndex&);
-		void OpenChat (const ICLEntry*);
+		QWidget* OpenChat (const ICLEntry*);
 		void CloseChat (const ICLEntry*);
 		bool IsActiveChat (const ICLEntry*) const;
 		bool IsOpenedChat (const QString&) const;
