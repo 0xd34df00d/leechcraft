@@ -1225,6 +1225,10 @@ namespace Azoth
 		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = text;
 		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
 
+		e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = entrySt.StatusString_;
+		e.Additional_ ["org.LC.Plugins.Azoth.NewStatus"] =
+				PluginProxyObject_->StateToString (entrySt.State_);
+
 		return e;
 	}
 
