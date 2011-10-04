@@ -1425,7 +1425,6 @@ namespace Poshuku
 
 	void BrowserWidget::handleUrlChanged (const QString& value)
 	{
-		emit urlChanged (value);
 		QString userText = value;
 #ifdef ENABLE_IDN
 		if (userText.contains ("xn--"))
@@ -1453,6 +1452,8 @@ namespace Poshuku
 		}
 #endif
 		Ui_.URLFrame_->GetEdit ()->setText (userText);
+
+		emit urlChanged (value);
 	}
 
 	void BrowserWidget::handleShortcutHistory ()
