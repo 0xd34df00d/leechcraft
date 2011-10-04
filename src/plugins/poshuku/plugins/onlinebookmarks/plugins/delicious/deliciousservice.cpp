@@ -144,6 +144,7 @@ namespace Delicious
 	{
 		QUrl url (urlString);
 		QNetworkRequest request (url);
+		Reply_.clear ();
 		QNetworkReply *reply =  CoreProxy_->GetNetworkAccessManager ()->
 				post (request, payload);
 
@@ -198,13 +199,16 @@ namespace Delicious
 			return;
 		}
 
-		QVariantList downloadedBookmarks = DeliciousApi_->ParseDownloadReply (reply->readAll ());
-		if (!downloadedBookmarks.isEmpty ())
+		if (Reply2Request_ [reply].Type_ == OTDownload)
 		{
-			DeliciousAccount *account = GetAccountByName (Reply2Request_ [reply].Login_);
-			emit gotBookmarks (downloadedBookmarks);
+			QVariantList downloadedBookmarks = DeliciousApi_->ParseDownloadReply (Reply_);
+			if (!downloadedBookmarks.isEmpty ())
+			{
+				DeliciousAccount *account = GetAccountByName (Reply2Request_ [reply].Login_);
+				account->AppendDownloadedBookmarks (downloadedBookmarks);
+				emit gotBookmarks (downloadedBookmarks);
+			}
 		}
-
 		reply->deleteLater ();
 	}
 
@@ -214,8 +218,8 @@ namespace Delicious
 		if (!reply)
 		{
 			qWarning () << Q_FUNC_INFO
-			<< sender ()
-			<< "isn't a QNetworkReply";
+					<< sender ()
+					<< "isn't a QNetworkReply";
 			return;
 		}
 
@@ -265,9 +269,12 @@ namespace Delicious
 						msg,
 						priority);
 				break;
+			case OTDownload:
+				Reply_.append (result);
+				break;
 		}
-
-		emit gotEntity (e);
+		if (!msg.isEmpty ())
+			emit gotEntity (e);
 	}
 
 	void DeliciousService::saveAccounts () const

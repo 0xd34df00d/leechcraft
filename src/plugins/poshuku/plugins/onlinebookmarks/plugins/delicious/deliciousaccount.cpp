@@ -166,9 +166,7 @@ namespace Delicious
 		}
 
 		QString login;
-		bool isSyncing;
-		in >> login
-			>> isSyncing;
+		in >> login;
 		DeliciousAccount *acc = new DeliciousAccount (login, parent);
 		in >> acc->IsSyncing_
 			>> acc->LastUpload_

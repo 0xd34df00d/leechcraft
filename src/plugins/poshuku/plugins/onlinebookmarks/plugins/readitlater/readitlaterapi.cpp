@@ -72,12 +72,12 @@ namespace ReadItLater
 		Q_FOREACH (const QVariant& record, bookmarks)
 		{
 			QVariantMap bookmark, tags;
-			bookmark.insert ("url", record.toMap () ["Url"].toString ());
+			bookmark.insert ("url", record.toMap () ["URL"].toString ());
 			bookmark.insert ("title", record.toMap () ["Title"].toString ());
 
 			if (!(record.toMap () ["Tags"].toStringList ().isEmpty ()))
 			{
-				tags.insert ("url", record.toMap () ["Url"].toString ());
+				tags.insert ("url", record.toMap () ["URL"].toString ());
 				tags.insert ("tags", record.toMap () ["Tags"].toString ());
 				exportTags.insert (QString::number (j++), tags);
 			}

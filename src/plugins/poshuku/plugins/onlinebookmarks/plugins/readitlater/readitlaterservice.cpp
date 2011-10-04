@@ -128,6 +128,7 @@ namespace ReadItLater
 		req.Type_ = OTDownload;
 		req.Login_ = account->GetLogin ();
 		req.Password_ = account->GetPassword ();
+		qDebug () << downloadBookmarks << req.Login_ << req.Password_;
 		SendRequest (ReadItLaterApi_->GetDownloadUrl (),
 				downloadBookmarks,
 				req);
@@ -202,7 +203,7 @@ namespace ReadItLater
 		}
 
 		QVariantList downloadedBookmarks =
-				ReadItLaterApi_->GetDownloadedBookmarks (reply->readAll ());
+				ReadItLaterApi_->GetDownloadedBookmarks (Bookmarks_);
 		if (!downloadedBookmarks.isEmpty ())
 		{
 			ReadItLaterAccount *account = GetAccountByName (Reply2Request_ [reply].Login_);
@@ -255,6 +256,9 @@ namespace ReadItLater
 					case OTUpload:
 						msg = tr ("Bookmark(s) was send to service ReadItLater succesfully.");
 						emit bookmarksUploaded ();
+						break;
+					case OTDownload:
+						Bookmarks_.append (reply->readAll ());
 						break;
 				}
 				e = Util::MakeNotification ("OnlineBookamarks",

@@ -63,6 +63,7 @@ namespace Delicious
 		boost::shared_ptr<DeliciousApi> DeliciousApi_;
 		QList<DeliciousAccount*> Accounts_;
 		QHash<QNetworkReply*, Request> Reply2Request_;
+		QByteArray Reply_;
 	public:
 		DeliciousService (ICoreProxy_ptr);
 		void Prepare ();
