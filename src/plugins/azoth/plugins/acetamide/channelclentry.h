@@ -43,7 +43,7 @@ namespace Acetamide
 						 , public IMUCEntry
 						 , public IMUCPerms
 						 , public IConfigurableMUC
-						 
+
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IMUCEntry
@@ -94,6 +94,7 @@ namespace Acetamide
 		void SetNick (const QString&);
 		QString GetGroupName () const;
 		QVariantMap GetIdentifyingData () const;
+		void InviteToMUC (const QString&, const QString&);
 
 		void HandleMessage (ChannelPublicMessage*);
 		void HandleNewParticipants (const QList<ICLEntry*>&);
@@ -118,11 +119,11 @@ namespace Acetamide
 		void RequestBanList ();
 		void RequestExceptList ();
 		void RequestInviteList ();
-		void SetBanListItem (const QString&, const QString&, 
+		void SetBanListItem (const QString&, const QString&,
 				const QDateTime&);
-		void SetExceptListItem (const QString&, const QString&, 
+		void SetExceptListItem (const QString&, const QString&,
 				const QDateTime&);
-		void SetInviteListItem (const QString&, const QString&, 
+		void SetInviteListItem (const QString&, const QString&,
 				const QDateTime&);
 		void SetIsWidgetRequest (bool);
 		bool GetIsWidgetRequest () const;
@@ -152,9 +153,9 @@ namespace Acetamide
 		void beenKicked (const QString&);
 		void beenBanned (const QString&);
 
-		void gotBanListItem (const QString&, 
+		void gotBanListItem (const QString&,
 				const QString&, const QDateTime&);
-		void gotExceptListItem (const QString&, 
+		void gotExceptListItem (const QString&,
 				const QString&, const QDateTime&);
 		void gotInviteListItem (const QString&,
 				const QString&, const QDateTime&);
