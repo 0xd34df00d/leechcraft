@@ -434,6 +434,7 @@ namespace Poshuku
 
 	void CustomWebPage::handleLoadStarted ()
 	{
+		emit loadingURL (mainFrame ()->url ());
 		emit hookLoadStarted (IHookProxy_ptr (new Util::DefaultHookProxy),
 				this);
 	}
