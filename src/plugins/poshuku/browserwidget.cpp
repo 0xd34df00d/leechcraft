@@ -1452,6 +1452,7 @@ namespace Poshuku
 		}
 #endif
 		Ui_.URLFrame_->GetEdit ()->setText (userText);
+		Ui_.URLFrame_->GetEdit ()->repaint ();
 
 		emit urlChanged (value);
 	}
