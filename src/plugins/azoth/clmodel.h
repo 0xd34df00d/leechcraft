@@ -34,8 +34,10 @@ namespace Azoth
 		QMimeData* mimeData (const QModelIndexList&) const;
 		bool dropMimeData (const QMimeData*, Qt::DropAction,
 				int, int, const QModelIndex&);
+		Qt::DropActions supportedDropActions () const;
 	private:
 		bool TryDropContact (const QMimeData*, int, const QModelIndex&);
+		bool TryDropFile (const QMimeData*, const QModelIndex&);
 	};
 }
 }

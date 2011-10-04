@@ -18,9 +18,11 @@
 
 #include "clmodel.h"
 #include <QMimeData>
+#include <QUrl>
 #include "interfaces/iclentry.h"
 #include "interfaces/iaccount.h"
 #include "core.h"
+#include "transferjobmanager.h"
 
 namespace LeechCraft
 {
@@ -34,7 +36,7 @@ namespace Azoth
 
 	QStringList CLModel::mimeTypes () const
 	{
-		return QStringList (CLEntryFormat);
+		return QStringList (CLEntryFormat) << "text/uri-list";
 	}
 
 	QMimeData* CLModel::mimeData (const QModelIndexList& indexes) const
@@ -70,6 +72,7 @@ namespace Azoth
 	bool CLModel::dropMimeData (const QMimeData *mime,
 			Qt::DropAction action, int row, int column, const QModelIndex& parent)
 	{
+		qDebug () << "drop" << mime->formats () << action;
 		if (action == Qt::IgnoreAction)
 			return true;
 
@@ -77,7 +80,15 @@ namespace Azoth
 				TryDropContact (mime, parent.row (), parent.parent ()))
 			return true;
 
+		if (TryDropFile (mime, parent))
+			return true;
+
 		return false;
+	}
+
+	Qt::DropActions CLModel::supportedDropActions () const
+	{
+		return static_cast<Qt::DropActions> (Qt::CopyAction | Qt::MoveAction | Qt::LinkAction);
 	}
 
 	bool CLModel::TryDropContact (const QMimeData *mime, int row, const QModelIndex& parent)
@@ -116,6 +127,40 @@ namespace Azoth
 			groups << newGrp;
 
 			entry->SetGroups (groups);
+		}
+
+		return true;
+	}
+
+	bool CLModel::TryDropFile (const QMimeData* mime, const QModelIndex& parent)
+	{
+		if (parent.data (Core::CLREntryType).value<Core::CLEntryType> () != Core::CLETContact)
+			return false;
+
+		QObject *entryObj = parent.data (Core::CLREntryObject).value<QObject*> ();
+		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+		if (entry->Variants ().isEmpty ())
+			return false;
+
+		IAccount *acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
+		ITransferManager *mgr = qobject_cast<ITransferManager*> (acc->GetTransferManager ());
+		if (!mgr)
+			return false;
+
+		const QList<QUrl>& urls = mime->urls ();
+		if (urls.isEmpty ())
+			return false;
+
+		Q_FOREACH (const QUrl& url, urls)
+		{
+			if (!url.isLocalFile ())
+				continue;
+
+			const QString& path = url.toLocalFile ();
+
+			QObject *job = mgr->SendFile (entry->GetEntryID (),
+					entry->Variants ().first (), path);
+			Core::Instance ().GetTransferJobManager()->HandleJob (job);
 		}
 
 		return true;

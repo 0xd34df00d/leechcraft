@@ -68,6 +68,8 @@ namespace Azoth
 		ProxyModel_->setSourceModel (Core::Instance ().GetCLModel ());
 		Ui_.CLTree_->setModel (ProxyModel_);
 
+		Ui_.CLTree_->viewport ()->setAcceptDrops (true);
+
 		connect (Core::Instance ().GetChatTabsManager (),
 				SIGNAL (entryMadeCurrent (QObject*)),
 				this,
