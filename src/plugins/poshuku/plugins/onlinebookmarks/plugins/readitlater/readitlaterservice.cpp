@@ -128,7 +128,6 @@ namespace ReadItLater
 		req.Type_ = OTDownload;
 		req.Login_ = account->GetLogin ();
 		req.Password_ = account->GetPassword ();
-		qDebug () << downloadBookmarks << req.Login_ << req.Password_;
 		SendRequest (ReadItLaterApi_->GetDownloadUrl (),
 				downloadBookmarks,
 				req);
@@ -202,8 +201,10 @@ namespace ReadItLater
 			return;
 		}
 
+		qDebug () << Bookmarks_;
 		QVariantList downloadedBookmarks =
 				ReadItLaterApi_->GetDownloadedBookmarks (Bookmarks_);
+		qDebug () << downloadedBookmarks;
 		if (!downloadedBookmarks.isEmpty ())
 		{
 			ReadItLaterAccount *account = GetAccountByName (Reply2Request_ [reply].Login_);
@@ -244,7 +245,7 @@ namespace ReadItLater
 					saveAccounts ();
 					emit accountAdded (account);
 				}
-
+				qDebug () << Reply2Request_ [reply].Type_;
 				switch (Reply2Request_ [reply].Type_)
 				{
 					case OTAuth:
@@ -259,6 +260,7 @@ namespace ReadItLater
 						break;
 					case OTDownload:
 						Bookmarks_.append (reply->readAll ());
+						qDebug () << Bookmarks_;
 						break;
 				}
 				e = Util::MakeNotification ("OnlineBookamarks",

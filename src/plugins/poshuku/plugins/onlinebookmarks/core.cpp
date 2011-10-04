@@ -210,19 +210,19 @@ namespace OnlineBookmarks
 		QVariantList keys;
 		IAccount *account = qobject_cast<IAccount*> (accObj);
 		keys << account->GetAccountID ();
-		
+
 		QVariantList passwordVar;
 		passwordVar << account->GetPassword ();
 		QVariantList values;
 		values << QVariant (passwordVar);
-		
+
 		Entity e = Util::MakeEntity (keys,
 				QString (),
 				Internal,
 				"x-leechcraft/data-persistent-save");
 		e.Additional_ ["Values"] = values;
 		e.Additional_ ["Overwrite"] = true;
-		
+
 		emit gotEntity (e);
 	}
 
@@ -305,7 +305,7 @@ namespace OnlineBookmarks
 		{
 			IAccount *account = qobject_cast<IAccount*> (accObj);
 			IBookmarksService *ibs = qobject_cast<IBookmarksService*> (account->GetParentService ());
-			ibs->DownloadBookmarks (account, QDateTime::fromString ("01.01.1970", "dd.MM.yyyy"));
+			ibs->DownloadBookmarks (account, QDateTime ());
 		}
 		AccountsSettings_->UpdateAccountsTime ();
 	}

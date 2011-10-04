@@ -172,4 +172,3 @@ namespace OnlineBookmarks
 
 Q_EXPORT_PLUGIN2 (leechcraft_poshuku_onlinebookmarks,
 		LeechCraft::Poshuku::OnlineBookmarks::Plugin);
- 

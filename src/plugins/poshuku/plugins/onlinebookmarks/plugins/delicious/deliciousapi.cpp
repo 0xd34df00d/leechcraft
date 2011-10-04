@@ -62,7 +62,10 @@ namespace Delicious
 
 	QByteArray DeliciousApi::GetDownloadPayload (const QDateTime& from)
 	{
-		return QString ("&fromdt=%1&meta=yes").arg (from.toString ("yyyy-MM-ddThh:mm:ssZ")).toUtf8 ();
+		if (from.isNull ())
+			return QString ("&meta=yes").toUtf8 ();
+		else
+			return QString ("&fromdt=%1&meta=yes").arg (from.toString ("yyyy-MM-ddThh:mm:ssZ")).toUtf8 ();
 	}
 
 	QVariantList DeliciousApi::ParseDownloadReply (const QByteArray& content)
