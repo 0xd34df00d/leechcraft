@@ -224,16 +224,6 @@ namespace Azoth
 		 */
 		void OpenChat (const QModelIndex& index);
 
-		/** Handles the given transfer job, taking ownership of it and
-		 * handling various events from it.
-		 *
-		 * @param[in] job The transfer job to handle, should implement
-		 * ITransferJob.
-		 *
-		 * @sa ITransferJob
-		 */
-		void HandleTransferJob (QObject *job);
-
 		TransferJobManager* GetTransferJobManager () const;
 
 		CallManager* GetCallManager () const;

@@ -532,11 +532,6 @@ namespace Azoth
 		ChatTabsManager_->OpenChat (contactIndex);
 	}
 
-	void Core::HandleTransferJob (QObject *job)
-	{
-		XferJobManager_->HandleJob (job);
-	}
-
 	TransferJobManager* Core::GetTransferJobManager () const
 	{
 		return XferJobManager_.get ();
