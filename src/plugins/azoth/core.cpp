@@ -71,6 +71,7 @@
 #include "addcontactdialog.h"
 #include "acceptriexdialog.h"
 #include "shareriexdialog.h"
+#include "mucinvitedialog.h"
 
 namespace LeechCraft
 {
@@ -1432,6 +1433,7 @@ namespace Azoth
 		result << id2action.value ("managepgp");
 		result << id2action.value ("shareRIEX");
 		result << id2action.value ("vcard");
+		result << id2action.value ("invite");
 		result << id2action.value ("leave");
 		result << id2action.value ("authorize");
 		result << id2action.value ("denyauth");
@@ -1689,6 +1691,16 @@ namespace Azoth
 		}
 		else if (entry->GetEntryType () == ICLEntry::ETMUC)
 		{
+			QAction *invite = new QAction (tr ("Invite..."), entry->GetObject ());
+			invite->setProperty ("ActionIcon", "azoth_invite");
+			connect (invite,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (handleActionInviteTriggered ()));
+			Entry2Actions_ [entry] ["invite"] = invite;
+			Action2Areas_ [invite] << CLEAAContactListCtxtMenu
+					<< CLEAATabCtxtMenu;
+
 			QAction *leave = new QAction (tr ("Leave"), entry->GetObject ());
 			leave->setProperty ("ActionIcon", "azoth_leave");
 			connect (leave,
@@ -1803,6 +1815,10 @@ namespace Azoth
 					<< entry->GetObject ()
 					<< entry->GetParentCLEntry ()
 					<< "doesn't implement IMUCEntry";
+
+		if (mucEntry)
+			Entry2Actions_ [entry] ["invite"]->
+					setEnabled (mucEntry->GetMUCFeatures () & IMUCEntry::MUCFCanInvite);
 
 		IMUCPerms *mucPerms = qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ());
 		if (entry->GetEntryType () == ICLEntry::ETPrivateChat)
@@ -3555,6 +3571,25 @@ namespace Azoth
 		ICLEntry *entry = action->
 				property ("Azoth/Entry").value<ICLEntry*> ();
 		entry->ShowInfo ();
+	}
+
+	void Core::handleActionInviteTriggered ()
+	{
+		ICLEntry *entry = sender ()->
+				property ("Azoth/Entry").value<ICLEntry*> ();
+		IMUCEntry *mucEntry =
+				qobject_cast<IMUCEntry*> (entry->GetObject ());
+
+		MUCInviteDialog dia (qobject_cast<IAccount*> (entry->GetParentAccount ()));
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		const QString& id = dia.GetID ();
+		const QString& msg = dia.GetMessage ();
+		if (id.isEmpty ())
+			return;
+
+		mucEntry->InviteToMUC (id, msg);
 	}
 
 	void Core::handleActionLeaveTriggered ()

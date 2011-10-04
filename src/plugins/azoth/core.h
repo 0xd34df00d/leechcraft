@@ -587,6 +587,7 @@ namespace Azoth
 		void handleActionVCardTriggered ();
 
 		void handleActionOpenChatTriggered ();
+		void handleActionInviteTriggered ();
 		void handleActionLeaveTriggered ();
 		void handleActionAuthorizeTriggered ();
 		void handleActionDenyAuthTriggered ();
