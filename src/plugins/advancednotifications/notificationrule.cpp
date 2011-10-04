@@ -19,6 +19,7 @@
 #include "notificationrule.h"
 #include <QStringList>
 #include <QtDebug>
+#include <plugins/azoth/plugins/rosenthal/hunspell/csutil.hxx>
 
 namespace LeechCraft
 {
@@ -45,6 +46,8 @@ namespace AdvancedNotifications
 
 	NotificationRule::NotificationRule ()
 	: Methods_ (NMNone)
+	, IsEnabled_ (true)
+	, IsSingleShot_ (false)
 	{
 	}
 
@@ -54,6 +57,8 @@ namespace AdvancedNotifications
 	, Category_ (cat)
 	, Types_ (types)
 	, Methods_ (NMNone)
+	, IsEnabled_ (true)
+	, IsSingleShot_ (false)
 	{
 	}
 
@@ -149,6 +154,26 @@ namespace AdvancedNotifications
 		CmdParams_ = params;
 	}
 
+	bool NotificationRule::IsEnabled () const
+	{
+		return IsEnabled_;
+	}
+
+	void NotificationRule::SetEnabled (bool enabled)
+	{
+		IsEnabled_ = enabled;
+	}
+
+	bool NotificationRule::IsSingleShot () const
+	{
+		return IsSingleShot_;
+	}
+
+	void NotificationRule::SetSingleShot (bool shot)
+	{
+		IsSingleShot_ = shot;
+	}
+
 	void NotificationRule::SetFieldMatches (const FieldMatches_t& matches)
 	{
 		FieldMatches_ = matches;
@@ -156,7 +181,7 @@ namespace AdvancedNotifications
 
 	void NotificationRule::Save (QDataStream& stream) const
 	{
-		stream << static_cast<quint8> (2)
+		stream << static_cast<quint8> (3)
 			<< Name_
 			<< Category_
 			<< Types_
@@ -164,6 +189,8 @@ namespace AdvancedNotifications
 			<< AudioParams_.Filename_
 			<< CmdParams_.Cmd_
 			<< CmdParams_.Args_
+			<< IsEnabled_
+			<< IsSingleShot_
 			<< static_cast<quint16> (FieldMatches_.size ());
 
 		Q_FOREACH (const FieldMatch& match, FieldMatches_)
@@ -174,7 +201,7 @@ namespace AdvancedNotifications
 	{
 		quint8 version = 0;
 		stream >> version;
-		if (version < 1 || version > 2)
+		if (version < 1 || version > 3)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unknown version"
@@ -192,6 +219,15 @@ namespace AdvancedNotifications
 		if (version >= 2)
 			stream >> CmdParams_.Cmd_
 				>> CmdParams_.Args_;
+
+		if (version >= 3)
+			stream >> IsEnabled_
+				>> IsSingleShot_;
+		else
+		{
+			IsEnabled_ = true;
+			IsSingleShot_ = false;
+		}
 
 		Methods_ = static_cast<NotificationMethods> (methods);
 

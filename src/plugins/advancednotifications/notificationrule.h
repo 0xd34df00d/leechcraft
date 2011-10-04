@@ -68,6 +68,9 @@ namespace AdvancedNotifications
 		TrayParams TrayParams_;
 		VisualParams VisualParams_;
 		CmdParams CmdParams_;
+
+		bool IsEnabled_;
+		bool IsSingleShot_;
 	public:
 		NotificationRule ();
 		NotificationRule (const QString& name,
@@ -101,6 +104,12 @@ namespace AdvancedNotifications
 
 		CmdParams GetCmdParams () const;
 		void SetCmdParams (const CmdParams&);
+
+		bool IsEnabled () const;
+		void SetEnabled (bool);
+
+		bool IsSingleShot () const;
+		void SetSingleShot (bool);
 
 		void Save (QDataStream&) const;
 		void Load (QDataStream&);

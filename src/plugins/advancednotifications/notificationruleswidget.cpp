@@ -93,6 +93,11 @@ namespace AdvancedNotifications
 				this,
 				SLOT (handleItemSelected (QModelIndex)));
 
+		connect (RulesModel_,
+				SIGNAL (itemChanged (QStandardItem*)),
+				this,
+				SLOT (handleItemChanged (QStandardItem*)));
+
 		Q_FOREACH (const QString& cat, Cat2HR_.keys ())
 			Ui_.EventCat_->addItem (Cat2HR_ [cat], cat);
 		on_EventCat__activated (0);
@@ -235,6 +240,10 @@ namespace AdvancedNotifications
 			cmdArgs << Ui_.CommandArgsTree_->topLevelItem (i)->text (0);
 		rule.SetCmdParams (CmdParams (Ui_.CommandLineEdit_->text ().simplified (), cmdArgs));
 
+		const QModelIndex& curIdx = Ui_.RulesTree_->currentIndex ();
+		QStandardItem *item = RulesModel_->itemFromIndex (curIdx.sibling (curIdx.row (), 0));
+		rule.SetEnabled (item ? item->checkState () == Qt::Checked : true);
+
 		return rule;
 	}
 
@@ -248,6 +257,10 @@ namespace AdvancedNotifications
 		items << new QStandardItem (rule.GetName ());
 		items << new QStandardItem (Cat2HR_ [rule.GetCategory ()]);
 		items << new QStandardItem (hrTypes.join ("; "));
+
+		items.first ()->setCheckable (true);
+		items.first ()->setCheckState (rule.IsEnabled () ? Qt::Checked : Qt::Unchecked);
+
 		return items;
 	}
 
@@ -378,10 +391,24 @@ namespace AdvancedNotifications
 		}
 	}
 
+	void NotificationRulesWidget::handleItemChanged (QStandardItem *item)
+	{
+		const int idx = item->row ();
+		const bool newState = item->checkState () == Qt::Checked;
+
+		if (newState == Rules_.at (idx).IsEnabled () ||
+				Rules_.at (idx).IsNull ())
+			return;
+
+		Rules_ [idx].SetEnabled (newState);
+
+		SaveSettings ();
+	}
+
 	void NotificationRulesWidget::on_AddRule__released ()
 	{
-		RulesModel_->insertRow (0, RuleToRow (NotificationRule ()));
 		Rules_.prepend (NotificationRule ());
+		RulesModel_->insertRow (0, RuleToRow (NotificationRule ()));
 	}
 
 	void NotificationRulesWidget::on_UpdateRule__released ()

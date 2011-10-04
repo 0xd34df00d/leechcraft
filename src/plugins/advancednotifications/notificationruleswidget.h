@@ -61,6 +61,7 @@ namespace AdvancedNotifications
 		void SaveSettings () const;
 	private slots:
 		void handleItemSelected (const QModelIndex&);
+		void handleItemChanged (QStandardItem*);
 
 		void on_AddRule__released ();
 		void on_UpdateRule__released ();
