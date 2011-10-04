@@ -95,6 +95,7 @@ SET (SRCS
 	activitydialog.cpp
 	mooddialog.cpp
 	callmanager.cpp
+	clmodel.cpp
 	callchatwidget.cpp
 	chattabwebview.cpp
 	locationdialog.cpp
@@ -135,6 +136,7 @@ SET (HEADERS
 	activitydialog.h
 	mooddialog.h
 	callmanager.h
+	clmodel.h
 	callchatwidget.h
 	chattabwebview.h
 	locationdialog.h

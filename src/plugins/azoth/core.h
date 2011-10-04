@@ -64,6 +64,8 @@ namespace Azoth
 	class CallManager;
 	class EventsNotifier;
 
+	class CLModel;
+
 	class Core : public QObject
 	{
 		Q_OBJECT
@@ -85,7 +87,7 @@ namespace Azoth
 		QObjectList ProtocolPlugins_;
 		QList<QAction*> AccountCreatorActions_;
 
-		QStandardItemModel *CLModel_;
+		CLModel *CLModel_;
 		ChatTabsManager *ChatTabsManager_;
 
 		typedef QHash<QString, QStandardItem*> Category2Item_t;

@@ -72,6 +72,7 @@
 #include "acceptriexdialog.h"
 #include "shareriexdialog.h"
 #include "mucinvitedialog.h"
+#include "clmodel.h"
 
 namespace LeechCraft
 {
@@ -127,7 +128,7 @@ namespace Azoth
 	, KeyStoreMgr_ (new QCA::KeyStoreManager)
 	, QCAEventHandler_ (new QCA::EventHandler)
 #endif
-	, CLModel_ (new QStandardItemModel (this))
+	, CLModel_ (new CLModel (this))
 	, ChatTabsManager_ (new ChatTabsManager (this))
 	, ItemIconManager_ (new AnimatedIconManager<QStandardItem*> (boost::bind (&QStandardItem::setIcon, _1, _2)))
 	, SmilesOptionsModel_ (new SourceTrackingModel<IEmoticonResourceSource> (QStringList (tr ("Smile pack"))))
@@ -1010,6 +1011,7 @@ namespace Azoth
 				catItem->setData (QVariant::fromValue<CLEntryType> (CLETCategory),
 						CLREntryType);
 				catItem->setData (cat, CLREntryCategory);
+				catItem->setFlags (catItem->flags () | Qt::ItemIsDropEnabled);
 				Account2Category2Item_ [account] [cat] = catItem;
 				account->appendRow (catItem);
 			}
@@ -1919,6 +1921,11 @@ namespace Azoth
 				CLREntryType);
 		clItem->setData (catItem->data (CLREntryCategory),
 				CLREntryCategory);
+
+		clItem->setFlags (clItem->flags () |
+				Qt::ItemIsDragEnabled |
+				Qt::ItemIsDropEnabled);
+
 		catItem->appendRow (clItem);
 
 		Entry2Items_ [clEntry] << clItem;
