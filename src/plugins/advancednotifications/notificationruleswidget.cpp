@@ -114,6 +114,18 @@ namespace AdvancedNotifications
 		return Rules_;
 	}
 
+	void NotificationRulesWidget::SetRuleEnabled (const NotificationRule& rule, bool enabled)
+	{
+		const int idx = Rules_.indexOf (rule);
+		if (idx == -1)
+			return;
+
+		Rules_ [idx].SetEnabled (enabled);
+		QStandardItem *item = RulesModel_->item (idx);
+		if (item)
+			item->setCheckState (enabled ? Qt::Checked : Qt::Unchecked);
+	}
+
 	void NotificationRulesWidget::LoadDefaultRules ()
 	{
 		NotificationRule chatMsg (tr ("Incoming chat messages"), CatIM,
@@ -243,6 +255,8 @@ namespace AdvancedNotifications
 		const QModelIndex& curIdx = Ui_.RulesTree_->currentIndex ();
 		QStandardItem *item = RulesModel_->itemFromIndex (curIdx.sibling (curIdx.row (), 0));
 		rule.SetEnabled (item ? item->checkState () == Qt::Checked : true);
+
+		rule.SetSingleShot (Ui_.RuleSingleShot_->checkState () == Qt::Checked);
 
 		return rule;
 	}
@@ -389,6 +403,10 @@ namespace AdvancedNotifications
 			Q_FOREACH (const QString& arg, cmdParams.Args_)
 				new QTreeWidgetItem (Ui_.CommandArgsTree_, QStringList (arg));
 		}
+
+		Ui_.RuleSingleShot_->setChecked (rule.IsSingleShot () ?
+					Qt::Checked :
+					Qt::Unchecked);
 	}
 
 	void NotificationRulesWidget::handleItemChanged (QStandardItem *item)

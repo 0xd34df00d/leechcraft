@@ -49,6 +49,7 @@ namespace AdvancedNotifications
 		NotificationRulesWidget (QWidget* = 0);
 
 		QList<NotificationRule> GetRules () const;
+		void SetRuleEnabled (const NotificationRule&, bool);
 	private:
 		void LoadDefaultRules ();
 		void LoadSettings ();

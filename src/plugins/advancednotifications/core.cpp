@@ -112,6 +112,9 @@ namespace AdvancedNotifications
 			if (!fieldsMatch)
 				continue;
 
+			if (rule.IsSingleShot ())
+				NRW_->SetRuleEnabled (rule, false);
+
 			result << rule;
 			break;
 		}

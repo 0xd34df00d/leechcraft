@@ -33,6 +33,8 @@ namespace AdvancedNotifications
 	{
 	};
 
+	bool operator== (const VisualParams&, const VisualParams&);
+
 	struct AudioParams
 	{
 		QString Filename_;
@@ -41,9 +43,13 @@ namespace AdvancedNotifications
 		AudioParams (const QString&);
 	};
 
+	bool operator== (const AudioParams&, const AudioParams&);
+
 	struct TrayParams
 	{
 	};
+
+	bool operator== (const TrayParams&, const TrayParams&);
 
 	struct CmdParams
 	{
@@ -53,6 +59,8 @@ namespace AdvancedNotifications
 		CmdParams ();
 		CmdParams (const QString&, const QStringList& = QStringList ());
 	};
+
+	bool operator== (const CmdParams&, const CmdParams&);
 
 	class NotificationRule
 	{
@@ -114,6 +122,8 @@ namespace AdvancedNotifications
 		void Save (QDataStream&) const;
 		void Load (QDataStream&);
 	};
+
+	bool operator== (const NotificationRule&, const NotificationRule&);
 }
 }
 
