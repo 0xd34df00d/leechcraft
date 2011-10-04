@@ -19,6 +19,7 @@
 #include "roomclentry.h"
 #include <QImage>
 #include <QtDebug>
+#include <QXmppMucManager.h>
 #include <interfaces/iproxyobject.h>
 #include <interfaces/azothutil.h>
 #include "glooxaccount.h"
@@ -210,7 +211,7 @@ namespace Xoox
 
 	IMUCEntry::MUCFeatures RoomCLEntry::GetMUCFeatures () const
 	{
-		return MUCFCanBeConfigured;
+		return MUCFCanBeConfigured | MUCFCanInvite;
 	}
 
 	QString RoomCLEntry::GetMUCSubject () const
@@ -284,8 +285,9 @@ namespace Xoox
 		return bare;
 	}
 
-	void RoomCLEntry::InviteToMUC (const QString& , const QString&)
+	void RoomCLEntry::InviteToMUC (const QString& id, const QString& msg)
 	{
+		RH_->GetRoom ()->sendInvitation (id, msg);
 	}
 
 	QMap<QByteArray, QList<QByteArray> > RoomCLEntry::GetPossiblePerms () const
