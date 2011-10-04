@@ -69,7 +69,7 @@ namespace AdvancedNotifications
 		Type2HR_ [TypeIMSubscrRevoke] = tr ("Authorization revoked");
 		Type2HR_ [TypeIMSubscrRequest] = tr ("Authorization requested");
 		Type2HR_ [TypeIMSubscrSub] = tr ("Contact subscribed");
-		Type2HR_ [TypeIMSubscrSub] = tr ("Contact unsubscribed");
+		Type2HR_ [TypeIMSubscrUnsub] = tr ("Contact unsubscribed");
 
 		Cat2Types_ [CatIM] << TypeIMAttention
 				<< TypeIMIncFile
