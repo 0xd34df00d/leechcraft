@@ -19,6 +19,7 @@
 #include "aboutdialog.h"
 #include "config.h"
 #include "core.h"
+#include "util/sysinfo.h"
 
 namespace LeechCraft
 {
@@ -183,10 +184,12 @@ namespace LeechCraft
 	void AboutDialog::BuildDiagInfo ()
 	{
 		QString text = QString ("LeechCraft ") + LEECHCRAFT_VERSION + "\n";
-		text += tr ("Built with Qt %1, running with Qt %2")
+		text += QString ("Built with Qt %1, running with Qt %2")
 				.arg (QT_VERSION_STR)
 				.arg (qVersion ());
 		text += "\n\n";
+
+		text += QString ("Running on: %1\n\n").arg (Util::SysInfo::GetOSName ());
 
 		QStringList loadedModules;
 		QStringList unPathedModules;
@@ -202,9 +205,9 @@ namespace LeechCraft
 				loadedModules << ("* " + ii->GetName () + " (" + path + ")");
 		}
 
-		text += tr ("Normal plugins:") + "\n" + loadedModules.join ("\n") + "\n\n";
+		text += QString ("Normal plugins:") + "\n" + loadedModules.join ("\n") + "\n\n";
 		if (!unPathedModules.isEmpty ())
-			text += tr ("Adapted plugins:") + "\n" + unPathedModules.join ("\n") + "\n\n";
+			text += QString ("Adapted plugins:") + "\n" + unPathedModules.join ("\n") + "\n\n";
 
 		Ui_.DiagInfo_->setPlainText (text);
 	}
