@@ -20,6 +20,7 @@
 #include <QMimeData>
 #include <QUrl>
 #include <QFileInfo>
+#include <QMessageBox>
 #include "interfaces/iclentry.h"
 #include "interfaces/iaccount.h"
 #include "core.h"
@@ -150,6 +151,26 @@ namespace Azoth
 
 		const QList<QUrl>& urls = mime->urls ();
 		if (urls.isEmpty ())
+			return false;
+
+		QString text;
+		if (urls.size () > 2)
+			text = tr ("Are you sure you want to send %1 files to %2?")
+					.arg (urls.size ())
+					.arg (entry->GetEntryName ());
+		else
+		{
+			QStringList list;
+			Q_FOREACH (const QUrl& url, urls)
+				list << QFileInfo (url.path ()).fileName ();
+			text = tr ("Are you sure you want to send %1 to %2?")
+					.arg ("<em>" + list.join (", ") + "</em>")
+					.arg (entry->GetEntryName ());
+		}
+		if (QMessageBox::question (0,
+					"LeechCraft",
+					text,
+					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 			return false;
 
 		Q_FOREACH (const QUrl& url, urls)
