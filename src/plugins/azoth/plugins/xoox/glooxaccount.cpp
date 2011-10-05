@@ -442,6 +442,15 @@ namespace Xoox
 
 	QObject* GlooxAccount::Call (const QString& id, const QString& variant)
 	{
+		if (id == qobject_cast<ICLEntry*> (GetSelfContact ())->GetEntryID ())
+		{
+			Core::Instance ().SendEntity (Util::MakeNotification ("LeechCraft",
+						tr ("Why would you call yourself?"),
+						PWarning_));
+
+			return 0;
+		}
+
 		QString target = GlooxCLEntry::JIDFromID (this, id);
 		QString var = variant;
 		if (var.isEmpty ())
