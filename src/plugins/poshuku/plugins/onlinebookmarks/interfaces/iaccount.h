@@ -20,6 +20,7 @@
 #define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_IACCOUNT_H
 
 #include <QVariant>
+#include <QDateTime>
 
 namespace LeechCraft
 {
@@ -37,19 +38,41 @@ namespace OnlineBookmarks
 		};
 
 		virtual ~IAccount () {};
-
+		//
 		virtual QObject* GetObject () = 0;
+
 		virtual QObject* GetParentService () const = 0;
+
+		//
 		virtual QByteArray GetAccountID () const = 0;
+
+		//
 		virtual QString GetLogin () const = 0;
+
+		//
 		virtual QString GetPassword () const = 0;
+
+		//
 		virtual void SetPassword (const QString&) = 0;
+
 		virtual IAccount::AuthType GetAuthType () const = 0;
 		virtual QVariantMap GetIdentifyingData () const = 0;
+
+		//
 		virtual bool IsSyncing () const = 0;
+
 		virtual void SetSyncing (bool) = 0;
+		//
 		virtual QDateTime GetLastUploadDateTime () const = 0;
+		//
 		virtual QDateTime GetLastDownloadDateTime () const = 0;
+
+		//
+		virtual void UploadBookmarks (const QVariantList&) = 0;
+
+		//
+		virtual void DownloadBookmarks (const QDateTime& from = QDateTime ()) = 0;
+
 		virtual void SetLastUploadDateTime (const QDateTime&) = 0;
 		virtual void SetLastDownloadDateTime (const QDateTime&) = 0;
 		virtual QVariantList GetBookmarksDiff (const QVariantList&) = 0;

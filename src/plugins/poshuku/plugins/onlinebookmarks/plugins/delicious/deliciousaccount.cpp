@@ -130,7 +130,7 @@ namespace Delicious
 		if (!DownloadedBookmarks_.contains (var))
 			DownloadedBookmarks_ << var;
 	}
-	
+
 	QByteArray DeliciousAccount::Serialize () const
 	{
 		quint16 version = 1;
@@ -173,6 +173,16 @@ namespace Delicious
 			>> acc->LastDownload_
 			>> acc->DownloadedBookmarks_;
 		return acc;
+	}
+
+	void DeliciousAccount::DownloadBookmarks (const QDateTime& from)
+	{
+
+	}
+
+	void DeliciousAccount::UploadBookmarks (const QVariantList&)
+	{
+
 	}
 
 }

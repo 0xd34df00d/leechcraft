@@ -43,14 +43,18 @@ namespace OnlineBookmarks
 		};
 		Q_DECLARE_FLAGS (Features, Feature);
 
+		//
 		virtual Features GetFeatures () const = 0;
 
 		virtual QObject* GetObject () = 0;
 
+		//
 		virtual QString GetServiceName () const = 0;
 
+		//
 		virtual QIcon GetServiceIcon () const = 0;
 
+		//
 		virtual QWidget* GetAuthWidget () = 0;
 
 		virtual void CheckAuthData (const QVariantMap&) = 0;
@@ -63,12 +67,16 @@ namespace OnlineBookmarks
 
 		virtual void saveAccounts () const = 0;
 
+		//
 		virtual void removeAccount (QObject*) = 0;
 
-		virtual void accountAdded (QObject*) = 0;
+		//
+		virtual void accountAdded (QObjectList) = 0;
 
+		//
 		virtual void gotBookmarks (const QVariantList&) = 0;
 
+		//
 		virtual void bookmarksUploaded () = 0;
 	};
 	Q_DECLARE_OPERATORS_FOR_FLAGS (IBookmarksService::Features)

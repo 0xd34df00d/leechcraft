@@ -18,13 +18,14 @@
 
 #include "core.h"
 #include <QStandardItemModel>
+#include <QDateTime>
 #include <interfaces/iplugin2.h>
 #include <interfaces/iproxyobject.h>
 #include <interfaces/iserviceplugin.h>
 #include <interfaces/iaccount.h>
 #include "accountssettings.h"
 #include "pluginmanager.h"
-#include <QDateTime>
+#include <xmlsettingsmanager.h>
 
 namespace LeechCraft
 {
@@ -117,10 +118,11 @@ namespace OnlineBookmarks
 				SIGNAL (gotBookmarks (const QVariantList&)),
 				this,
 				SLOT (handleGotBookmarks (const QVariantList&)));
+
 		connect (plugin,
 				SIGNAL (bookmarksUploaded ()),
 				this,
-				SLOT (bookmarksUpload ()));
+				SLOT (handleBookmarksUploaded ()));
 	}
 
 	QObjectList Core::GetServicePlugins () const
@@ -136,8 +138,7 @@ namespace OnlineBookmarks
 
 	void Core::SetActiveAccounts (QObjectList list)
 	{
-		ActiveAccounts_.clear ();
-		ActiveAccounts_.append (list);
+		ActiveAccounts_ = list;
 	}
 
 	QObjectList Core::GetActiveAccounts () const
@@ -145,24 +146,24 @@ namespace OnlineBookmarks
 		return ActiveAccounts_;
 	}
 
-	void Core::UploadBookmark(const QString& title,
-			const QString& url, const QStringList& tags)
-	{
-		Q_FOREACH (QObject *accObj, ActiveAccounts_)
-		{
-			IAccount *account = qobject_cast<IAccount*> (accObj);
-			IBookmarksService *ibs = qobject_cast<IBookmarksService*> (account->GetParentService ());
-			QVariantList list;
-			QVariantMap map;
-			map ["Title"] = title;
-			map ["Url"] = url;
-			map ["Tags"] = tags;
-			list << map;
-			if (account->GetBookmarksDiff (list).isEmpty ())
-				continue;
-			ibs->UploadBookmarks (account, list);
-		}
-	}
+// 	void Core::UploadBookmark(const QString& title,
+// 			const QString& url, const QStringList& tags)
+// 	{
+// 		Q_FOREACH (QObject *accObj, ActiveAccounts_)
+// 		{
+// 			IAccount *account = qobject_cast<IAccount*> (accObj);
+// 			IBookmarksService *ibs = qobject_cast<IBookmarksService*> (account->GetParentService ());
+// 			QVariantList list;
+// 			QVariantMap map;
+// 			map ["Title"] = title;
+// 			map ["Url"] = url;
+// 			map ["Tags"] = tags;
+// 			list << map;
+// 			if (account->GetBookmarksDiff (list).isEmpty ())
+// 				continue;
+// 			ibs->UploadBookmarks (account, list);
+// 		}
+// 	}
 
 	void Core::DeletePassword (QObject *accObj)
 	{
@@ -240,9 +241,28 @@ namespace OnlineBookmarks
 		return obj->GetFavoritesModel ();
 	}
 
+	QVariantList Core::GetUniqueBookmarks (IAccount *account,
+			const QVariantList& allBookmarks, bool byService)
+	{
+		QVariantList list;
+		Q_FOREACH (const QVariant& bookmark, allBookmarks)
+		{
+			QString url = bookmark.toMap () ["URL"].toString ();
+			if (url.isEmpty ())
+				continue;
+
+			if (!Url2Account_.contains (url))
+				list << bookmark;
+			else if (byService &&
+					Url2Account_ [url] != account &&
+					Url2Account_ [url]->GetParentService () == account->GetParentService ())
+				list << bookmark;
+		}
+		return list;
+	}
+
 	void Core::handleGotBookmarks (const QVariantList& importBookmarks)
 	{
-		AccountsSettings_->UpdateAccountsTime ();
 		LeechCraft::Entity eBookmarks = Util::MakeEntity (QVariant (),
 				QString (),
 				static_cast<LeechCraft::TaskParameter> (FromUserInitiated | OnlyHandle),
@@ -250,17 +270,32 @@ namespace OnlineBookmarks
 
 		eBookmarks.Additional_ ["BrowserBookmarks"] = importBookmarks;
 		emit gotEntity (eBookmarks);
+
+		IBookmarksService *ibs = qobject_cast<IBookmarksService*> (sender ());
+		if (!ibs)
+			return;
+
+		LeechCraft::Entity e = Util::MakeNotification ("OnlineBookmarks",
+				ibs->GetServiceName () + ": bookmarks downloaded successfully",
+				PInfo_);
+		emit gotEntity (e);
 	}
 
-	void Core::bookmarksUpload ()
+	void Core::handleBookmarksUploaded ()
 	{
-		AccountsSettings_->UpdateAccountsTime ();
+		IBookmarksService *ibs = qobject_cast<IBookmarksService*> (sender ());
+		if (!ibs)
+			return;
+
+		LeechCraft::Entity e = Util::MakeNotification ("OnlineBookmarks",
+				ibs->GetServiceName () + ": bookmarks uploaded successfully",
+				PInfo_);
+		emit gotEntity (e);
 	}
 
 	void Core::syncBookmarks ()
 	{
-		downloadBookmarks ();
-		uploadBookmarks ();
+		// TODO
 	}
 
 	void Core::uploadBookmarks ()
@@ -279,13 +314,42 @@ namespace OnlineBookmarks
 		if (result.isEmpty ())
 			return;
 
-		Q_FOREACH (QObject *accObj, ActiveAccounts_)
+		const int type = XmlSettingsManager::Instance ()->Property ("UploadType", 0).toInt ();
+		IAccount *account = 0;
+		IBookmarksService *ibs = 0;
+		switch (type)
 		{
-			IAccount *account = qobject_cast<IAccount*> (accObj);
-			IBookmarksService *ibs = qobject_cast<IBookmarksService*> (account->GetParentService ());
-			ibs->UploadBookmarks (account, account->GetBookmarksDiff (result));
+		case 0:
+			Q_FOREACH (QObject *accObj, ActiveAccounts_)
+			{
+				account = qobject_cast<IAccount*> (accObj);
+				if (!account)
+					continue;
+
+				account->UploadBookmarks (result);
+			}
+			break;
+		case 1:
+			Q_FOREACH (QObject *accObj, ActiveAccounts_)
+			{
+				account = qobject_cast<IAccount*> (accObj);
+				if (!account)
+					continue;
+				QVariantList list = GetUniqueBookmarks (account, result);
+				account->UploadBookmarks (list);
+			}
+			break;
+		case 2:
+			Q_FOREACH (QObject *accObj, ActiveAccounts_)
+			{
+				account = qobject_cast<IAccount*> (accObj);
+				if (!account)
+					continue;
+				QVariantList list = GetUniqueBookmarks (account, result, true);
+				account->UploadBookmarks (list);
+			}
+			break;
 		}
-		AccountsSettings_->UpdateAccountsTime ();
 	}
 
 	void Core::downloadBookmarks ()
@@ -296,7 +360,6 @@ namespace OnlineBookmarks
 			IBookmarksService *ibs = qobject_cast<IBookmarksService*> (account->GetParentService ());
 			ibs->DownloadBookmarks (account, account->GetLastDownloadDateTime ());
 		}
-		AccountsSettings_->UpdateAccountsTime ();
 	}
 
 	void Core::downloadAllBookmarks ()
@@ -307,7 +370,6 @@ namespace OnlineBookmarks
 			IBookmarksService *ibs = qobject_cast<IBookmarksService*> (account->GetParentService ());
 			ibs->DownloadBookmarks (account, QDateTime ());
 		}
-		AccountsSettings_->UpdateAccountsTime ();
 	}
 
 }

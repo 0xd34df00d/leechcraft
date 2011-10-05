@@ -69,6 +69,9 @@ namespace ReadItLater
 		void AppendDownloadedBookmarks (const QVariantList&);
 		QByteArray Serialize () const ;
 		static ReadItLaterAccount* Deserialize (const QByteArray&, QObject*);
+
+		void UploadBookmarks (const QVariantList&);
+		void DownloadBookmarks (const QDateTime& from = QDateTime ());
 	};
 }
 }

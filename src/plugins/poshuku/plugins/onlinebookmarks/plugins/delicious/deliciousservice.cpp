@@ -77,7 +77,7 @@ namespace Delicious
 		bool oAuth = false;
 		if (map.contains ("OAuth"))
 			oAuth = map ["OAuth"].toBool ();
-		
+
 		if (login.isEmpty () || password.isEmpty ())
 			return;
 
@@ -107,7 +107,7 @@ namespace Delicious
 			req.Password_ = account->GetPassword ();
 			req.Count_ = bookmarks.count ();
 			req.Current_ = i;
-			
+
 			SendRequest (DeliciousApi_->GetUploadUrl ()
 					.arg (account->GetLogin(), account->GetPassword ()),
 							DeliciousApi_->GetUploadPayload (var),
@@ -135,7 +135,7 @@ namespace Delicious
 		Q_FOREACH (DeliciousAccount *account, Accounts_)
 		if (account->GetLogin () == name)
 			return account;
-		
+
 		return 0;
 	}
 
@@ -184,7 +184,15 @@ namespace Delicious
 				continue;
 			}
 			Accounts_ << acc;
-			emit accountAdded (acc);
+		}
+
+		if (!Accounts_.isEmpty ())
+		{
+			QObjectList list;
+			Q_FOREACH (DeliciousAccount *acc, Accounts_)
+				list << acc->GetObject ();
+
+			emit accountAdded (list);
 		}
 	}
 
@@ -238,7 +246,7 @@ namespace Delicious
 					account->SetPassword (Reply2Request_ [reply].Password_);
 					Accounts_ << account;
 					saveAccounts ();
-					emit accountAdded (account);
+					emit accountAdded (QObjectList () <<  account->GetObject ());
 					msg = tr ("Authentification was successfull.");
 					priority = LeechCraft::PInfo_;
 				}

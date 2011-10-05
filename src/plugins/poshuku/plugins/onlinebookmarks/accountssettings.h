@@ -20,11 +20,12 @@
 #define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_SETTINGS_H
 
 #include <QWidget>
-#include <interfaces/ibookmarksservice.h>
 #include <util/util.h>
+#include <interfaces/ibookmarksservice.h>
 #include "ui_accountssettings.h"
 
 class QStandardItemModel;
+class QStandardItem;
 
 namespace LeechCraft
 {
@@ -37,36 +38,40 @@ namespace OnlineBookmarks
 		Q_OBJECT
 
 		Ui::AccountsSettings Ui_;
+
+		QHash<QStandardItem*, IBookmarksService*> Item2Service_;
+		QHash<QStandardItem*, IAccount*> Item2Account_;
+		QHash<QByteArray, QObject*> Id2Account_;
 		QHash<IBookmarksService*, QWidget*> Service2AuthWidget_;
 		QStandardItemModel *AccountsModel_;
-		QHash<QByteArray, QObject*> Id2Account_;
+		bool Scheduled_;
+		QWidget *LastWidget_;
 	public:
 		enum ServiceObject
 		{
 			RServiceObject = Qt::UserRole + 1
 		};
 
-		enum AccountObject
-		{
-			RAccountObject = Qt::UserRole + 2
-		};
-
 		AccountsSettings ();
 		~AccountsSettings ();
+
 		void InitServices ();
 		QStandardItemModel* GetAccountsModel () const;
-		void UpdateAccountsTime ();
+	private:
 		QModelIndex GetServiceIndex (QObject*) const;
+		void ScheduleResize ();
 	public slots:
 		void accept ();
 	private slots:
+		void resizeColumns ();
 		void on_Add__toggled (bool);
 		void on_Delete__clicked ();
 		void on_Auth__clicked ();
 		void on_Register__clicked ();
 		void on_AccountsView__clicked (const QModelIndex&);
 		void on_Services__currentIndexChanged (int);
-		void addAccount (QObject*);
+
+		void addAccount (QObjectList);
 	signals:
 		void accountRemoved (QObject*);
 	};

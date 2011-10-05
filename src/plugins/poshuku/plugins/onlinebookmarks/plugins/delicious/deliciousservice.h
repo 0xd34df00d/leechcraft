@@ -49,7 +49,7 @@ namespace Delicious
 			OTDownload,
 			OTUpload
 		};
-		
+
 		struct Request
 		{
 			OperationType Type_;
@@ -86,7 +86,7 @@ namespace Delicious
 		void saveAccounts () const;
 		void removeAccount (QObject*);
 	signals:
-		void accountAdded (QObject*);
+		void accountAdded (QObjectList);
 		void gotEntity (const LeechCraft::Entity&);
 		void gotBookmarks (const QVariantList&);
 		void bookmarksUploaded ();

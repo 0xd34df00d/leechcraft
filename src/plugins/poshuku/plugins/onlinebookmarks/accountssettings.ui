@@ -105,7 +105,7 @@
       </widget>
      </item>
      <item>
-      <spacer name="VerticalSpacer_">
+      <spacer name="verticalSpacer">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
        </property>
@@ -116,6 +116,20 @@
         </size>
        </property>
       </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="SyncCurrent_">
+       <property name="text">
+        <string>Sync current</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="SyncAll_">
+       <property name="text">
+        <string>Sync all</string>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QFrame" name="LoginFrame_">
@@ -157,7 +171,7 @@
             <number>-1</number>
            </property>
            <item row="0" column="0">
-            <layout class="QGridLayout" name="gridLayout_3"/>
+            <layout class="QGridLayout" name="AuthWidgetLayout_"/>
            </item>
           </layout>
          </widget>
@@ -193,6 +207,21 @@
     </widget>
    </item>
   </layout>
+  <action name="UploadBookmarks_">
+   <property name="text">
+    <string>Upload</string>
+   </property>
+  </action>
+  <action name="DownloadBookmarks_">
+   <property name="text">
+    <string>Download</string>
+   </property>
+  </action>
+  <action name="SyncBookmarks_">
+   <property name="text">
+    <string>Sync</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

@@ -20,8 +20,10 @@
 #define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_CORE_H
 
 #include <QObject>
+#include <QUrl>
 #include <interfaces/iinfo.h>
 #include <util/util.h>
+#include <interfaces/iaccount.h>
 
 class QAbstractItemModel;
 class QStandardItemModel;
@@ -47,6 +49,8 @@ namespace OnlineBookmarks
 
 		QObjectList ServicesPlugins_;
 		QObjectList ActiveAccounts_;
+		QHash<QString, IAccount*> Url2Account_;
+
 		Core ();
 	public:
 		static Core& Instance ();
@@ -66,17 +70,19 @@ namespace OnlineBookmarks
 		void SetActiveAccounts (QObjectList);
 		QObjectList GetActiveAccounts () const;
 
-		void UploadBookmark (const QString&,
-				const QString&, const QStringList&);
+// 		void UploadBookmark (const QString&,
+// 				const QString&, const QStringList&);
 
 		void DeletePassword (QObject*);
 		QString GetPassword (QObject*);
 		void SavePassword (QObject*);
 	private:
 		QObject* GetBookmarksModel () const;
+		QVariantList GetUniqueBookmarks (IAccount*,
+				const QVariantList&, bool byService = false);
 	private slots:
 		void handleGotBookmarks (const QVariantList&);
-		void bookmarksUpload ();
+		void handleBookmarksUploaded ();
 	public slots:
 		void syncBookmarks ();
 		void uploadBookmarks ();

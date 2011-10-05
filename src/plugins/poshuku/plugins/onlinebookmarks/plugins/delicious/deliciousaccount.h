@@ -65,6 +65,8 @@ namespace Delicious
 		void AppendDownloadedBookmarks (const QVariantList&);
 		QByteArray Serialize () const ;
 		static DeliciousAccount* Deserialize (const QByteArray&, QObject*);
+		void DownloadBookmarks (const QDateTime& from = QDateTime ());
+		void UploadBookmarks (const QVariantList&);
 	};
 }
 }

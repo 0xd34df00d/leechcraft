@@ -175,6 +175,16 @@ namespace ReadItLater
 		return acc;
 	}
 
+	void ReadItLaterAccount::UploadBookmarks (const QVariantList&)
+	{
+
+	}
+
+	void ReadItLaterAccount::DownloadBookmarks (const QDateTime& from)
+	{
+
+	}
+
 }
 }
 }

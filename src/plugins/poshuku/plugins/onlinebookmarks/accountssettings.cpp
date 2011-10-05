@@ -18,10 +18,12 @@
 
 #include "accountssettings.h"
 #include <QStandardItemModel>
-#include <interfaces/iauthwidget.h>
-#include "core.h"
-#include "interfaces/iaccount.h"
 #include <QDateTime>
+#include <QTimer>
+#include <interfaces/iauthwidget.h>
+#include <interfaces/iaccount.h>
+#include "core.h"
+#include <QLayout>
 
 namespace LeechCraft
 {
@@ -31,19 +33,19 @@ namespace OnlineBookmarks
 {
 	AccountsSettings::AccountsSettings ()
 	: AccountsModel_ (new QStandardItemModel (this))
+	, Scheduled_ (false)
+	, LastWidget_ (0)
 	{
 		Ui_.setupUi (this);
 
 		Ui_.AccountsView_->setModel (AccountsModel_);
-		Ui_.AccountsView_->expandAll ();
+
 		AccountsModel_->setHorizontalHeaderLabels (QStringList () << tr ("Account")
 				<< tr ("Last upload date")
 				<< tr ("Last download date"));
-
 		Ui_.Delete_->setEnabled (false);
-
-		Ui_.LoginFrame_->hide ();
 		Ui_.Register_->hide ();
+		Ui_.LoginFrame_->hide ();
 	}
 
 	AccountsSettings::~AccountsSettings ()
@@ -77,9 +79,10 @@ namespace OnlineBookmarks
 			}
 
 			connect (ibs->GetObject (),
-					SIGNAL (accountAdded (QObject*)),
+					SIGNAL (accountAdded (QObjectList)),
 					this,
-					SLOT (addAccount (QObject*)));
+					SLOT (addAccount (QObjectList)));
+
 			connect (this,
 					SIGNAL (accountRemoved (QObject*)),
 					ibs->GetObject (),
@@ -92,54 +95,55 @@ namespace OnlineBookmarks
 		return AccountsModel_;
 	}
 
-	void AccountsSettings::UpdateAccountsTime ()
-	{
-		for (int i = 0; i < AccountsModel_->rowCount (); ++i)
-			for (int j = 0; j < AccountsModel_->item (i)->rowCount (); ++j)
-			{
-				QObject *accObj = AccountsModel_->item (i)->child (j)->
-						data (RAccountObject).value<QObject*> ();
-				IAccount *account = qobject_cast<IAccount*> (accObj);
-				AccountsModel_->item (i)->child (j, 1)->
-						setText (account->GetLastUploadDateTime ().toString ("dd.MM.yyyy hh:mm:ss"));
-				AccountsModel_->item (i)->child (j, 2)->
-						setText (account->GetLastDownloadDateTime ().toString ("dd.MM.yyyy hh:mm:ss"));
-			}
-	}
-
 	QModelIndex AccountsSettings::GetServiceIndex (QObject *serviceObj) const
 	{
-		for (int i = 0; i < AccountsModel_->rowCount (); ++i)
+		for (int i = AccountsModel_->rowCount () - 1; i >= 0; --i)
 			if (AccountsModel_->item (i)->
-						data (RServiceObject).value<QObject*> () == serviceObj)
+					data (RServiceObject).value<QObject*> () == serviceObj)
 				return AccountsModel_->index (i, 0);
 
 			return QModelIndex ();
 	}
 
+	void AccountsSettings::ScheduleResize ()
+	{
+		if (Scheduled_)
+			return;
+
+		QTimer::singleShot (100, this, SLOT (resizeColumns ()));
+		Scheduled_ = true;
+	}
+
 	void AccountsSettings::accept ()
 	{
 		QObjectList accounts;
-		for (int i = 0; i < AccountsModel_->rowCount (); ++i)
-		{
-			IBookmarksService *ibs = qobject_cast<IBookmarksService*> (AccountsModel_->
-					item (i)->data (RServiceObject).value<QObject*> ());
-			for (int j = 0; j < AccountsModel_->item (i)->rowCount (); ++j)
+		Q_FOREACH (QStandardItem *item,  Item2Account_.keys ())
+			if (item->checkState () == Qt::Checked)
 			{
-				IAccount *acc = qobject_cast<IAccount*> (AccountsModel_->
-						item (i)->child (j)->data (RAccountObject).value<QObject*> ());
-				acc->SetSyncing (AccountsModel_->item (i)->child (j)->checkState () == Qt::Checked);
-				if (acc->IsSyncing ())
-					accounts << AccountsModel_->item (i)->child (j)->
-							data (RAccountObject).value<QObject*> ();
+				Item2Account_ [item]->SetSyncing (true);
+				accounts << Item2Account_ [item]->GetObject ();
 			}
-			ibs->saveAccounts ();
-		}
+
+		Q_FOREACH (IBookmarksService *service, Item2Service_.values ())
+			service->saveAccounts ();
+
 		Core::Instance ().SetActiveAccounts (accounts);
+	}
+
+	void AccountsSettings::resizeColumns ()
+	{
+		for (int i = 0; i < 3; ++i)
+			Ui_.AccountsView_->resizeColumnToContents (i);
 	}
 
 	void AccountsSettings::on_Add__toggled (bool checked)
 	{
+		if (LastWidget_)
+		{
+			Ui_.AuthWidget_->layout ()->removeWidget (LastWidget_);
+			LastWidget_->hide ();
+		}
+
 		QObject *plugin = Ui_.Services_->itemData (Ui_.Services_->currentIndex (),
 				RServiceObject).value<QObject*> ();
 		IBookmarksService *ibs = qobject_cast<IBookmarksService*> (plugin);
@@ -161,6 +165,7 @@ namespace OnlineBookmarks
 			Service2AuthWidget_ [ibs]->show ();
 			Ui_.ControlLayout_->insertWidget (1, Ui_.LoginFrame_);
 			Ui_.LoginFrame_->show ();
+			LastWidget_ = Service2AuthWidget_ [ibs];
 		}
 		else
 		{
@@ -174,6 +179,7 @@ namespace OnlineBookmarks
 	void AccountsSettings::on_Delete__clicked ()
 	{
 		const QModelIndex& current = Ui_.AccountsView_->currentIndex ();
+		QStandardItem *item = AccountsModel_->itemFromIndex (current);
 		const QModelIndex& parentIndex = current.parent ();
 		if (parentIndex == QModelIndex ())
 			return;
@@ -181,15 +187,13 @@ namespace OnlineBookmarks
 		if (Ui_.Add_->isChecked ())
 			Ui_.Add_->toggle ();
 
-		QObject *accObj = AccountsModel_->itemFromIndex (current)->
-				data (RAccountObject).value<QObject*> ();
-		Core::Instance ().DeletePassword (accObj);
-		emit accountRemoved (accObj);
+		Core::Instance ().DeletePassword (Item2Account_ [item]->GetObject ());
+		emit accountRemoved (Item2Account_ [item]->GetObject ());
 
 		AccountsModel_->removeRow (current.row (), parentIndex);
 
 		if (!AccountsModel_->rowCount (parentIndex))
-			AccountsModel_->removeRows (parentIndex.row (), 0);
+			AccountsModel_->removeRow (parentIndex.row ());
 	}
 
 	void AccountsSettings::on_Auth__clicked ()
@@ -240,13 +244,13 @@ namespace OnlineBookmarks
 			Ui_.Delete_->setEnabled (true);
 	}
 
-	void AccountsSettings::on_Services__currentIndexChanged (int index)
+	void AccountsSettings::on_Services__currentIndexChanged (int)
 	{
 		if (Ui_.Add_->isChecked ())
 			Ui_.Add_->toggle ();
 	}
 
-	void AccountsSettings::addAccount (QObject* accObj)
+	void AccountsSettings::addAccount (QObjectList accObjects)
 	{
 		IBookmarksService *ibs = qobject_cast<IBookmarksService*> (sender ());
 		if (!ibs)
@@ -257,47 +261,58 @@ namespace OnlineBookmarks
 			return;
 		}
 
-		IAccount *account = qobject_cast<IAccount*> (accObj);
-		if (Id2Account_.contains (account->GetAccountID ()))
-			return;
-
-		if (!account->GetPassword ().isEmpty ())
-			Core::Instance ().SavePassword (accObj);
-		else
-			account->SetPassword (Core::Instance ().GetPassword (accObj));
-		Id2Account_ [account->GetAccountID ()] = accObj;
-		QModelIndex index = GetServiceIndex (ibs->GetObject ());
-		QStandardItem *parentItem;
-		if (index == QModelIndex ())
+		Q_FOREACH (QObject *accObj, accObjects)
 		{
-			parentItem = new QStandardItem (ibs->GetServiceIcon (), ibs->GetServiceName ());
-			parentItem->setEditable (false);
-			parentItem->setData (QVariant::fromValue<QObject*> (sender ()), RServiceObject);
-			AccountsModel_->appendRow (parentItem);
+			IAccount *account = qobject_cast<IAccount*> (accObj);
+			if (Id2Account_.contains (account->GetAccountID ()))
+				continue;
+
+			if (!account->GetPassword ().isEmpty ())
+				Core::Instance ().SavePassword (accObj);
+			else
+				account->SetPassword (Core::Instance ().GetPassword (accObj));
+
+			Id2Account_ [account->GetAccountID ()] = accObj;
+			QModelIndex index = GetServiceIndex (ibs->GetObject ());
+			QStandardItem *parentItem;
+			if (index == QModelIndex ())
+			{
+				parentItem = new QStandardItem (ibs->GetServiceIcon (), ibs->GetServiceName ());
+				parentItem->setEditable (false);
+				Item2Service_ [parentItem] = ibs;
+				AccountsModel_->appendRow (parentItem);
+			}
+			else
+				parentItem = AccountsModel_->itemFromIndex (index);
+
+			QList<QStandardItem*> record;
+			QStandardItem *item = new QStandardItem (account->GetLogin ());
+			item->setEditable (false);
+			item->setCheckable (true);
+			item->setCheckState (account->IsSyncing () ? Qt::Checked : Qt::Unchecked);
+			Item2Account_ [item] = account;
+
+			QStandardItem *uploaditem = new QStandardItem (account->GetLastUploadDateTime ()
+					.toString (Qt::DefaultLocaleShortDate));
+			uploaditem->setEditable (false);
+
+			QStandardItem *downloaditem = new QStandardItem (account->GetLastDownloadDateTime ()
+					.toString (Qt::DefaultLocaleShortDate));
+			uploaditem->setEditable (false);
+
+			record << item
+					<< uploaditem
+					<< downloaditem;
+			parentItem->appendRow (record);
+
+			if (account->IsSyncing ())
+				Core::Instance ().AddActiveAccount (accObj);
+
+			Ui_.AccountsView_->expandAll ();
+
+			Scheduled_ = false;
+			ScheduleResize ();
 		}
-		else
-			parentItem = AccountsModel_->itemFromIndex (index);
-
-		QList<QStandardItem*> record;
-		QStandardItem *item = new QStandardItem (account->GetLogin ());
-		item->setData (QVariant::fromValue<QObject*> (accObj), RAccountObject);
-		item->setEditable (false);
-		item->setCheckable (true);
-		item->setCheckState (account->IsSyncing () ? Qt::Checked : Qt::Unchecked);
-
-		QStandardItem *uploaditem = new QStandardItem (account->GetLastUploadDateTime ()
-				.toString ("dd.MM.yyyy hh:mm:ss"));
-		uploaditem->setEditable (false);
-
-		QStandardItem *downloaditem = new QStandardItem (account->GetLastDownloadDateTime ()
-				.toString ("dd.MM.yyyy hh:mm:ss"));
-		uploaditem->setEditable (false);
-
-		record << item << uploaditem << downloaditem;
-
-		if (account->IsSyncing ())
-			Core::Instance ().AddActiveAccount (accObj);
-		parentItem->appendRow (record);
 	}
 
 }

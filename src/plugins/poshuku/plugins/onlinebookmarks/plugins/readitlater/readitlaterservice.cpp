@@ -186,7 +186,15 @@ namespace ReadItLater
 				continue;
 			}
 			Accounts_ << acc;
-			emit accountAdded (acc);
+		}
+
+		if (!Accounts_.isEmpty ())
+		{
+			QObjectList list;
+			Q_FOREACH (ReadItLaterAccount *acc, Accounts_)
+				list << acc->GetObject ();
+
+				emit accountAdded (list);
 		}
 	}
 
@@ -243,9 +251,9 @@ namespace ReadItLater
 					account->SetPassword (Reply2Request_ [reply].Password_);
 					Accounts_ << account;
 					saveAccounts ();
-					emit accountAdded (account);
+					emit accountAdded (QObjectList () << account->GetObject ());
 				}
-				qDebug () << Reply2Request_ [reply].Type_;
+
 				switch (Reply2Request_ [reply].Type_)
 				{
 					case OTAuth:
