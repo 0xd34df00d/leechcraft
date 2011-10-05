@@ -19,6 +19,7 @@
 #include "clmodel.h"
 #include <QMimeData>
 #include <QUrl>
+#include <QFileInfo>
 #include "interfaces/iclentry.h"
 #include "interfaces/iaccount.h"
 #include "core.h"
@@ -153,10 +154,10 @@ namespace Azoth
 
 		Q_FOREACH (const QUrl& url, urls)
 		{
-			if (!url.isLocalFile ())
-				continue;
-
 			const QString& path = url.toLocalFile ();
+
+			if (!QFileInfo (path).exists ())
+				continue;
 
 			QObject *job = mgr->SendFile (entry->GetEntryID (),
 					entry->Variants ().first (), path);
