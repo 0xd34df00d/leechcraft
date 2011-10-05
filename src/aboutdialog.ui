@@ -18,6 +18,9 @@
     <normaloff>:/resources/images/leechcraft.svg</normaloff>:/resources/images/leechcraft.svg</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="margin">
+    <number>3</number>
+   </property>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
@@ -64,6 +67,9 @@
        <string>About LeechCraft</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_2">
+       <property name="margin">
+        <number>3</number>
+       </property>
        <item>
         <widget class="QLabel" name="label">
          <property name="text">
@@ -104,6 +110,9 @@
        <string>Authors</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_3">
+       <property name="margin">
+        <number>3</number>
+       </property>
        <item>
         <widget class="QTextBrowser" name="Authors_">
          <property name="openLinks">
@@ -118,6 +127,9 @@
        <string>Contributors</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_5">
+       <property name="margin">
+        <number>3</number>
+       </property>
        <item>
         <widget class="QTextBrowser" name="Contributors_">
          <property name="openLinks">
@@ -132,6 +144,9 @@
        <string>Appreciations</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_6">
+       <property name="margin">
+        <number>3</number>
+       </property>
        <item>
         <widget class="QTextBrowser" name="textBrowser_4">
          <property name="html">
@@ -154,6 +169,9 @@ p, li { white-space: pre-wrap; }
        <string>Licensing</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_8">
+       <property name="margin">
+        <number>3</number>
+       </property>
        <item>
         <widget class="QTextBrowser" name="textBrowser_6">
          <property name="html">
@@ -309,6 +327,9 @@ p, li { white-space: pre-wrap; }
        <string>Third parties</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_7">
+       <property name="margin">
+        <number>3</number>
+       </property>
        <item>
         <widget class="QTextBrowser" name="textBrowser_5">
          <property name="html">
