@@ -452,13 +452,19 @@ namespace Xoox
 		}
 
 		QString target = GlooxCLEntry::JIDFromID (this, id);
+
 		QString var = variant;
 		if (var.isEmpty ())
 		{
 			QObject *entryObj = GetClientConnection ()->
 					GetCLEntry (target, QString ());
 			GlooxCLEntry *entry = qobject_cast<GlooxCLEntry*> (entryObj);
-			var = entry->Variants ().value (0);
+			if (entry)
+				var = entry->Variants ().value (0);
+			else
+				qWarning () << Q_FUNC_INFO
+						<< "null entry for"
+						<< target;
 		}
 		target += '/' + var;
 		return new MediaCall (this, ClientConnection_->GetCallManager ()->call (target));
