@@ -36,7 +36,7 @@ namespace Azoth
 	: QObject (parent)
 	{
 	}
-	
+
 	void CallManager::AddAccount (QObject *account)
 	{
 		if (!qobject_cast<ISupportMediaCalls*> (account))
@@ -47,7 +47,7 @@ namespace Azoth
 				this,
 				SLOT (handleIncomingCall (QObject*)));
 	}
-	
+
 	QObject* CallManager::Call (ICLEntry *entry, const QString& variant)
 	{
 		ISupportMediaCalls *ismc = qobject_cast<ISupportMediaCalls*> (entry->GetParentAccount ());
@@ -58,17 +58,26 @@ namespace Azoth
 					<< "parent account doesn't support media calls";
 			return 0;
 		}
-		
+
 		QObject *callObj = ismc->Call (entry->GetEntryID (), variant);
+		if (!callObj)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "got null call obj for"
+					<< entry->GetEntryID ()
+					<< variant;
+			return 0;
+		}
+
 		HandleCall (callObj);
 		return callObj;
 	}
-	
+
 	QObjectList CallManager::GetCallsForEntry (const QString& id) const
 	{
 		return Entry2Calls_ [id];
 	}
-	
+
 	namespace
 	{
 		QAudioDeviceInfo FindDevice (const QByteArray& property, QAudio::Mode mode)
@@ -90,7 +99,7 @@ namespace Azoth
 			return result;
 		}
 	}
-	
+
 	void CallManager::HandleCall (QObject *obj)
 	{
 		IMediaCall *mediaCall = qobject_cast<IMediaCall*> (obj);
@@ -104,17 +113,17 @@ namespace Azoth
 		}
 
 		Entry2Calls_ [mediaCall->GetSourceID ()] << obj;
-		
+
 		connect (obj,
 				SIGNAL (stateChanged (LeechCraft::Azoth::IMediaCall::State)),
 				this,
 				SLOT (handleStateChanged (LeechCraft::Azoth::IMediaCall::State)));
 	}
-	
+
 	void CallManager::handleIncomingCall (QObject *obj)
 	{
 		HandleCall (obj);
-		
+
 		IMediaCall *call = qobject_cast<IMediaCall*> (obj);
 
 		ICLEntry *entry = qobject_cast<ICLEntry*> (Core::Instance ().GetEntry (call->GetSourceID ()));
@@ -130,10 +139,10 @@ namespace Azoth
 		nh->AddFunction (tr ("Accept"), boost::bind (&IMediaCall::Accept, call));
 		nh->AddFunction (tr ("Hangup"), boost::bind (&IMediaCall::Hangup, call));
 		Core::Instance ().SendEntity (e);
-		
+
 		emit gotCall (obj);
 	}
-	
+
 	void CallManager::handleStateChanged (IMediaCall::State state)
 	{
 		IMediaCall *mediaCall = qobject_cast<IMediaCall*> (sender ());
@@ -160,7 +169,7 @@ namespace Azoth
 			QAudioInput *input = new QAudioInput (inInfo, inFormat, sender ());
 			input->setBufferSize (bufSize);
 			input->start (callAudioDev);
-			
+
 			qDebug () << input->state () << input->error () << inInfo.isFormatSupported (callFormat) << inInfo.supportedCodecs ();
 			qDebug () << output->state () << output->error ();
 		}
