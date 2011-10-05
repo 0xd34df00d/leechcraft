@@ -102,6 +102,7 @@ namespace AdiumStyles
 		Frame2Pack_ [frame] = pack;
 
 		QString cssStr = QString::fromUtf8 (css->readAll ());
+		FixImports (cssStr, css.get ());
 		FixCSS (cssStr, pack);
 
 		QString varCssStr;
@@ -112,6 +113,7 @@ namespace AdiumStyles
 			if (varCssDev && varCssDev->open (QIODevice::ReadOnly))
 			{
 				varCssStr = QString::fromUtf8 (varCssDev->readAll ());
+				FixImports (varCssStr, varCssDev.get ());
 				FixCSS (varCssStr, pack);
 			}
 		}
@@ -281,6 +283,45 @@ namespace AdiumStyles
 	{
 	}
 
+	void AdiumStyleSource::FixImports (QString& cssStr, QIODevice *dev) const
+	{
+		if (!cssStr.contains ("@import"))
+			return;
+
+		QFile *file = dynamic_cast<QFile*> (dev);
+		if (!file)
+			return;
+
+		const QUrl& baseUrl = QUrl::fromLocalFile (file->fileName ());
+
+		int pos = 0;
+		QRegExp cssUrlRx ("import\\s*url\\s*\\((.*)\\)");
+		cssUrlRx.setMinimal (true);
+		while ((pos = cssUrlRx.indexIn (cssStr, pos)) != -1)
+		{
+			QString url = cssUrlRx.cap (1);
+			if (url.contains ("://"))
+				continue;
+
+			const QChar side = url.at (0);
+			if (side == '\'' || side == '"')
+			{
+				url.chop (1);
+				url = url.mid (1);
+			}
+
+			const QString& path = baseUrl.resolved (url).toLocalFile ();
+
+			QFile extFile (path);
+			extFile.open (QIODevice::ReadOnly);
+			QString extStr = extFile.readAll ();
+			FixImports (extStr, &extFile);
+
+			cssStr.replace ('@' + cssUrlRx.cap (0), extStr);
+			pos += cssUrlRx.matchedLength ();
+		}
+	}
+
 	void AdiumStyleSource::FixCSS (QString& cssStr, const QString& pack) const
 	{
 		int pos = 0;
@@ -292,10 +333,12 @@ namespace AdiumStyles
 			if (url.contains ("://"))
 				continue;
 
-			if (url.at (url.size () - 1) == '"')
+			const QChar side = url.at (0);
+			if (side == '\'' || side == '"')
+			{
 				url.chop (1);
-			if (url.at (0) == '"')
 				url = url.mid (1);
+			}
 
 			url.prepend (pack + "/Contents/Resources/");
 			Util::QIODevice_ptr dev = StylesLoader_->Load (QStringList (url));
@@ -305,6 +348,12 @@ namespace AdiumStyles
 						QString::fromUtf8 (dev->readAll ().toBase64 ());
 				cssStr.replace (cssUrlRx.cap (1), replacement);
 			}
+			else
+				qWarning () << Q_FUNC_INFO
+						<< "unable to load external resource"
+						<< url
+						<< "for pack"
+						<< pack;
 			pos += cssUrlRx.matchedLength ();
 		}
 	}
