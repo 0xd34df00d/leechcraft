@@ -39,6 +39,8 @@ class IProxyObject;
 
 namespace AdiumStyles
 {
+	class PackProxyModel;
+
 	class AdiumStyleSource : public QObject
 						   , public IChatStyleResourceSource
 	{
@@ -48,21 +50,24 @@ namespace AdiumStyles
 		boost::shared_ptr<Util::ResourceLoader> StylesLoader_;
 		IProxyObject *Proxy_;
 
+		PackProxyModel *PackProxyModel_;
+
 		mutable QHash<QWebFrame*, QString> Frame2Pack_;
 		mutable QHash<QString, QList<QColor> > Coloring2Colors_;
 		mutable QString LastPack_;
-		
+
 		QHash<QObject*, QWebFrame*> Msg2Frame_;
-		
+
 		mutable QHash<QWebFrame*, QObject*> Frame2LastContact_;
 	public:
 		AdiumStyleSource (IProxyObject*, QObject* = 0);
-		
+
 		QAbstractItemModel* GetOptionsModel () const;
 		QString GetHTMLTemplate (const QString&, QObject*, QWebFrame*) const;
 		bool AppendMessage (QWebFrame*, QObject*, const ChatMsgAppendInfo&);
 		void FrameFocused (QWebFrame*);
 	private:
+		void FixCSS (QString&, const QString&) const;
 		void FixSrcs (QWebFrame*, const QString&);
 		QString ParseTemplate (QString templ, const QString& path,
 				QWebFrame*, QObject*, const ChatMsgAppendInfo&);
