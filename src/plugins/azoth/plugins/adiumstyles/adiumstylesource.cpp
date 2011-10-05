@@ -114,6 +114,7 @@ namespace AdiumStyles
 			{
 				varCssStr = QString::fromUtf8 (varCssDev->readAll ());
 				FixImports (varCssStr, varCssDev.get ());
+				varCssStr.remove ("../");
 				FixCSS (varCssStr, pack);
 			}
 		}
