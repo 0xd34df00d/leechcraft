@@ -20,6 +20,7 @@
 #include <QDataStream>
 #include <QtDebug>
 #include <util/util.h>
+#include <interfaces/ibookmarksservice.h>
 
 namespace LeechCraft
 {
@@ -32,7 +33,6 @@ namespace ReadItLater
 	ReadItLaterAccount::ReadItLaterAccount (const QString& login, QObject *parent)
 	: QObject (parent)
 	, Login_ (login)
-	, AuthType_ (IAccount::ATHttpAuth)
 	, ParentService_ (parent)
 	, IsSyncing_ (false)
 	, LastUpload_ (QDateTime::currentDateTime ())
@@ -48,6 +48,11 @@ namespace ReadItLater
 	QObject* ReadItLaterAccount::GetParentService () const
 	{
 		return ParentService_;
+	}
+
+	IAccount::AuthType ReadItLaterAccount::GetAuthType () const
+	{
+		return IAccount::ATHttpAuth;
 	}
 
 	QByteArray ReadItLaterAccount::GetAccountID () const
@@ -71,19 +76,6 @@ namespace ReadItLater
 		Password_ = pass;
 	}
 
-	IAccount::AuthType ReadItLaterAccount::GetAuthType () const
-	{
-		return AuthType_;
-	}
-
-	QVariantMap ReadItLaterAccount::GetIdentifyingData () const
-	{
-		QVariantMap map;
-		map ["Login"] = Login_;
-		map ["Password_"] = Password_;
-		return map;
-	}
-
 	bool ReadItLaterAccount::IsSyncing () const
 	{
 		return IsSyncing_;
@@ -99,36 +91,36 @@ namespace ReadItLater
 		return LastDownload_;
 	}
 
-	void ReadItLaterAccount::SetLastDownloadDateTime (const QDateTime& dt)
-	{
-		LastDownload_ = dt;
-	}
-
 	QDateTime ReadItLaterAccount::GetLastUploadDateTime () const
 	{
 		return LastUpload_;
 	}
 
-	void ReadItLaterAccount::SetLastUploadDateTime (const QDateTime& dt)
+	void ReadItLaterAccount::SetLastDownloadDateTime(const QDateTime& date)
 	{
-		LastUpload_ = dt;
+		LastDownload_ = date;
 	}
 
 	QVariantList ReadItLaterAccount::GetBookmarksDiff (const QVariantList& list)
 	{
 		QVariantList diff;
 		Q_FOREACH (const QVariant& var, list)
-			if (!DownloadedBookmarks_.contains (var))
-				diff << var;
-
+		if (!DownloadedBookmarks_.contains (var))
+			diff << var;
+		
 		return diff;
 	}
-
+	
 	void ReadItLaterAccount::AppendDownloadedBookmarks (const QVariantList& bookmarks)
 	{
 		Q_FOREACH (const QVariant& var, bookmarks)
-			if (!DownloadedBookmarks_.contains (var))
-				DownloadedBookmarks_ << var;
+		if (!DownloadedBookmarks_.contains (var))
+			DownloadedBookmarks_ << var;
+	}
+
+	void ReadItLaterAccount::SetLastUploadDateTime(const QDateTime& date)
+	{
+		LastUpload_ = date;
 	}
 
 	QByteArray ReadItLaterAccount::Serialize () const
@@ -175,16 +167,7 @@ namespace ReadItLater
 		return acc;
 	}
 
-	void ReadItLaterAccount::UploadBookmarks (const QVariantList&)
-	{
-
-	}
-
-	void ReadItLaterAccount::DownloadBookmarks (const QDateTime& from)
-	{
-
-	}
-
+	
 }
 }
 }

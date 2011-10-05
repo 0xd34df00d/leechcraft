@@ -22,6 +22,7 @@
 #include <QFlag>
 #include <QIcon>
 #include <QVariant>
+#include <QDateTime>
 
 namespace LeechCraft
 {
@@ -39,6 +40,8 @@ namespace OnlineBookmarks
 
 		enum Feature
 		{
+			FNone = 0,
+
 			FCanRegisterAccount = 0x01
 		};
 		Q_DECLARE_FLAGS (Features, Feature);
@@ -57,14 +60,19 @@ namespace OnlineBookmarks
 		//
 		virtual QWidget* GetAuthWidget () = 0;
 
+		//
 		virtual void CheckAuthData (const QVariantMap&) = 0;
 
+		//
 		virtual void RegisterAccount (const QVariantMap&) = 0;
 
+		//
 		virtual void UploadBookmarks (IAccount*, const QVariantList&) = 0;
+		
+		//
+		virtual void DownloadBookmarks (IAccount*, const QDateTime& from = QDateTime ()) = 0;
 
-		virtual void DownloadBookmarks (IAccount*, const QDateTime&) = 0;
-
+		//
 		virtual void saveAccounts () const = 0;
 
 		//
@@ -74,7 +82,7 @@ namespace OnlineBookmarks
 		virtual void accountAdded (QObjectList) = 0;
 
 		//
-		virtual void gotBookmarks (const QVariantList&) = 0;
+		virtual void gotBookmarks (IAccount*, const QVariantList&) = 0;
 
 		//
 		virtual void bookmarksUploaded () = 0;

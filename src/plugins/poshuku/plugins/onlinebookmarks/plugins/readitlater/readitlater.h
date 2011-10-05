@@ -46,19 +46,16 @@ namespace ReadItLater
 
 		boost::shared_ptr<ReadItLaterService> ReadItLaterService_;
 	public:
-		// IInfo
 		void Init (ICoreProxy_ptr proxy);
 		void SecondInit ();
 		void Release ();
-		QByteArray GetUniqueID() const;
-		QString GetName() const;
-		QString GetInfo() const;
-		QIcon GetIcon() const;
+		QByteArray GetUniqueID () const;
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
 
-		// IPlugin2
 		QSet<QByteArray> GetPluginClasses () const;
 
-		// IServicePlugin
 		QObject* GetObject ();
 		QObject* GetBookmarksService () const;
 	signals:

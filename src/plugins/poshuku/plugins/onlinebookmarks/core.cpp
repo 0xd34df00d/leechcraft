@@ -115,9 +115,9 @@ namespace OnlineBookmarks
 		ServicesPlugins_ << plugin;
 
 		connect (plugin,
-				SIGNAL (gotBookmarks (const QVariantList&)),
+				SIGNAL (gotBookmarks (IAccount*, const QVariantList&)),
 				this,
-				SLOT (handleGotBookmarks (const QVariantList&)));
+				SLOT (handleGotBookmarks (IAccount*, const QVariantList&)));
 
 		connect (plugin,
 				SIGNAL (bookmarksUploaded ()),
@@ -261,7 +261,20 @@ namespace OnlineBookmarks
 		return list;
 	}
 
-	void Core::handleGotBookmarks (const QVariantList& importBookmarks)
+	QVariantList Core::GetAllBookmarks () const
+	{
+		QVariantList result;
+		if (!QMetaObject::invokeMethod (GetBookmarksModel (),
+				"getItemsMap",
+				Q_RETURN_ARG (QList<QVariant>, result)))
+			qWarning () << Q_FUNC_INFO
+					<< "getItemsMap() metacall failed"
+					<< result;
+
+		return result;
+	}
+
+	void Core::handleGotBookmarks (IAccount *account, const QVariantList& importBookmarks)
 	{
 		LeechCraft::Entity eBookmarks = Util::MakeEntity (QVariant (),
 				QString (),
@@ -271,6 +284,9 @@ namespace OnlineBookmarks
 		eBookmarks.Additional_ ["BrowserBookmarks"] = importBookmarks;
 		emit gotEntity (eBookmarks);
 
+		Q_FOREACH (const QVariant& bookmark, importBookmarks)
+			Url2Account_ [bookmark.toMap () ["URL"].toString ()] = account;
+
 		IBookmarksService *ibs = qobject_cast<IBookmarksService*> (sender ());
 		if (!ibs)
 			return;
@@ -279,6 +295,7 @@ namespace OnlineBookmarks
 				ibs->GetServiceName () + ": bookmarks downloaded successfully",
 				PInfo_);
 		emit gotEntity (e);
+		AccountsSettings_->UpdateDates ();
 	}
 
 	void Core::handleBookmarksUploaded ()
@@ -291,26 +308,18 @@ namespace OnlineBookmarks
 				ibs->GetServiceName () + ": bookmarks uploaded successfully",
 				PInfo_);
 		emit gotEntity (e);
+		AccountsSettings_->UpdateDates ();
 	}
 
 	void Core::syncBookmarks ()
 	{
-		// TODO
+		downloadBookmarks ();
+		uploadBookmarks ();
 	}
 
 	void Core::uploadBookmarks ()
 	{
-		QVariantList result;
-		if (!QMetaObject::invokeMethod (GetBookmarksModel (),
-				"getItemsMap",
-				Q_RETURN_ARG (QList<QVariant>, result)))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "getItemsMap() metacall failed"
-					<< result;
-			return ;
-		}
-
+		QVariantList result = GetAllBookmarks ();
 		if (result.isEmpty ())
 			return;
 
@@ -319,36 +328,46 @@ namespace OnlineBookmarks
 		IBookmarksService *ibs = 0;
 		switch (type)
 		{
-		case 0:
-			Q_FOREACH (QObject *accObj, ActiveAccounts_)
-			{
-				account = qobject_cast<IAccount*> (accObj);
-				if (!account)
-					continue;
-
-				account->UploadBookmarks (result);
-			}
-			break;
-		case 1:
-			Q_FOREACH (QObject *accObj, ActiveAccounts_)
-			{
-				account = qobject_cast<IAccount*> (accObj);
-				if (!account)
-					continue;
-				QVariantList list = GetUniqueBookmarks (account, result);
-				account->UploadBookmarks (list);
-			}
-			break;
-		case 2:
-			Q_FOREACH (QObject *accObj, ActiveAccounts_)
-			{
-				account = qobject_cast<IAccount*> (accObj);
-				if (!account)
-					continue;
-				QVariantList list = GetUniqueBookmarks (account, result, true);
-				account->UploadBookmarks (list);
-			}
-			break;
+			case 0:
+				Q_FOREACH (QObject *accObj, ActiveAccounts_)
+				{
+					account = qobject_cast<IAccount*> (accObj);
+					if (!account)
+						continue;
+					ibs = qobject_cast<IBookmarksService*> (account->GetParentService ());
+					if (!ibs)
+						continue;
+					ibs->UploadBookmarks (account, result);
+				}
+				break;
+			case 1:
+				Q_FOREACH (QObject *accObj, ActiveAccounts_)
+				{
+					account = qobject_cast<IAccount*> (accObj);
+					if (!account)
+						continue;
+					ibs = qobject_cast<IBookmarksService*> (account->GetParentService ());
+					if (!ibs)
+						continue;
+					
+					QVariantList list = GetUniqueBookmarks (account, result);
+					ibs->UploadBookmarks (account, list);
+				}
+				break;
+			case 2:
+				Q_FOREACH (QObject *accObj, ActiveAccounts_)
+				{
+					account = qobject_cast<IAccount*> (accObj);
+					if (!account)
+						continue;
+					ibs = qobject_cast<IBookmarksService*> (account->GetParentService ());
+					if (!ibs)
+						continue;
+					
+					QVariantList list = GetUniqueBookmarks (account, result, true);
+					ibs->UploadBookmarks (account, list);
+				}
+				break;
 		}
 	}
 

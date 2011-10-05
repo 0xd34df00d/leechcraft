@@ -21,8 +21,8 @@
 
 #include <QObject>
 #include <QDateTime>
-#include <interfaces/iaccount.h>
 #include <interfaces/structures.h>
+#include <interfaces/iaccount.h>
 
 namespace LeechCraft
 {
@@ -32,10 +32,7 @@ namespace OnlineBookmarks
 {
 namespace ReadItLater
 {
-
-	class ReadItLaterService;
-
-	class ReadItLaterAccount : public QObject
+class ReadItLaterAccount : public QObject
 							, public IAccount
 	{
 		Q_OBJECT
@@ -43,35 +40,36 @@ namespace ReadItLater
 
 		QString Login_;
 		QString Password_;
-		IAccount::AuthType AuthType_;
+
 		QObject *ParentService_;
+
 		bool IsSyncing_;
+
 		QDateTime LastUpload_;
 		QDateTime LastDownload_;
+
 		QVariantList DownloadedBookmarks_;
 	public:
 		ReadItLaterAccount (const QString&, QObject* = 0);
+
 		QObject* GetObject ();
 		QObject* GetParentService () const;
+		IAccount::AuthType GetAuthType () const;
 		QByteArray GetAccountID () const;
 		QString GetLogin () const;
 		QString GetPassword () const;
 		void SetPassword (const QString&);
-		IAccount::AuthType GetAuthType () const;
-		QVariantMap GetIdentifyingData() const;
 		bool IsSyncing () const;
 		void SetSyncing (bool);
 		QDateTime GetLastDownloadDateTime () const;
-		void SetLastDownloadDateTime (const QDateTime&);
 		QDateTime GetLastUploadDateTime () const;
 		void SetLastUploadDateTime (const QDateTime&);
-		QVariantList GetBookmarksDiff (const QVariantList&);
+		void SetLastDownloadDateTime (const QDateTime&);
+		
 		void AppendDownloadedBookmarks (const QVariantList&);
+		QVariantList GetBookmarksDiff (const QVariantList&);
 		QByteArray Serialize () const ;
 		static ReadItLaterAccount* Deserialize (const QByteArray&, QObject*);
-
-		void UploadBookmarks (const QVariantList&);
-		void DownloadBookmarks (const QDateTime& from = QDateTime ());
 	};
 }
 }

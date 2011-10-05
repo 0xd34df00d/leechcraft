@@ -82,7 +82,7 @@ namespace ReadItLater
 
 	QObject* Plugin::GetBookmarksService () const
 	{
-		return qobject_cast<QObject*> (ReadItLaterService_.get ());
+		return ReadItLaterService_.get ();
 	}
 
 }

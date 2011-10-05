@@ -214,7 +214,7 @@ namespace Delicious
 			{
 				DeliciousAccount *account = GetAccountByName (Reply2Request_ [reply].Login_);
 				account->AppendDownloadedBookmarks (downloadedBookmarks);
-				emit gotBookmarks (downloadedBookmarks);
+				emit gotBookmarks (account, downloadedBookmarks);
 			}
 		}
 		reply->deleteLater ();

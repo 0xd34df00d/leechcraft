@@ -20,9 +20,9 @@
 #define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_PLUGINS_READITLATER_READITLATERSERVICE_H
 
 #include <QObject>
-#include <interfaces/ibookmarksservice.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/structures.h>
+#include <interfaces/ibookmarksservice.h>
 
 class QNetworkReply;
 
@@ -75,7 +75,7 @@ namespace ReadItLater
 		void CheckAuthData (const QVariantMap&);
 		void RegisterAccount (const QVariantMap&);
 		void UploadBookmarks (IAccount*, const QVariantList&);
-		void DownloadBookmarks (IAccount*, const QDateTime&);
+		void DownloadBookmarks (IAccount*, const QDateTime& from = QDateTime ());
 		ReadItLaterAccount* GetAccountByName (const QString&);
 	private:
 		void SendRequest (const QString&, const QByteArray&, Request);
@@ -88,7 +88,7 @@ namespace ReadItLater
 	signals:
 		void accountAdded (QObjectList);
 		void gotEntity (const LeechCraft::Entity&);
-		void gotBookmarks (const QVariantList&);
+		void gotBookmarks (IAccount*, const QVariantList&);
 		void bookmarksUploaded ();
 	};
 }

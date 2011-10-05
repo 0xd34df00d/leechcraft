@@ -95,14 +95,27 @@ namespace OnlineBookmarks
 		return AccountsModel_;
 	}
 
+	void AccountsSettings::UpdateDates ()
+	{
+		Q_FOREACH (QStandardItem *item, Item2Account_.keys ())
+		{
+			int row = item->row ();
+			AccountsModel_->item (row, 1)->
+					setText (Item2Account_ [item]->GetLastUploadDateTime ()
+						.toString (Qt::DefaultLocaleShortDate));
+			AccountsModel_->item (row, 2)->
+					setText (Item2Account_ [item]->GetLastDownloadDateTime ()
+						.toString (Qt::DefaultLocaleShortDate));
+		}
+	}
+
 	QModelIndex AccountsSettings::GetServiceIndex (QObject *serviceObj) const
 	{
-		for (int i = AccountsModel_->rowCount () - 1; i >= 0; --i)
-			if (AccountsModel_->item (i)->
-					data (RServiceObject).value<QObject*> () == serviceObj)
-				return AccountsModel_->index (i, 0);
+		Q_FOREACH (QStandardItem *item, Item2Service_.keys ())
+			if (Item2Service_ [item] == qobject_cast<IBookmarksService*> (serviceObj))
+				return item->index ();
 
-			return QModelIndex ();
+		return QModelIndex ();
 	}
 
 	void AccountsSettings::ScheduleResize ()
@@ -179,21 +192,26 @@ namespace OnlineBookmarks
 	void AccountsSettings::on_Delete__clicked ()
 	{
 		const QModelIndex& current = Ui_.AccountsView_->currentIndex ();
-		QStandardItem *item = AccountsModel_->itemFromIndex (current);
+		const int row = current.row ();
 		const QModelIndex& parentIndex = current.parent ();
 		if (parentIndex == QModelIndex ())
 			return;
+
+		QStandardItem *item = AccountsModel_->itemFromIndex (parentIndex)->child (row, 0);
 
 		if (Ui_.Add_->isChecked ())
 			Ui_.Add_->toggle ();
 
 		Core::Instance ().DeletePassword (Item2Account_ [item]->GetObject ());
 		emit accountRemoved (Item2Account_ [item]->GetObject ());
-
+		
 		AccountsModel_->removeRow (current.row (), parentIndex);
-
+		Item2Account_.remove (item);
 		if (!AccountsModel_->rowCount (parentIndex))
+		{
+			Item2Service_.remove (AccountsModel_->itemFromIndex (parentIndex));
 			AccountsModel_->removeRow (parentIndex.row ());
+		}
 	}
 
 	void AccountsSettings::on_Auth__clicked ()

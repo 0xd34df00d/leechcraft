@@ -57,6 +57,7 @@ namespace OnlineBookmarks
 
 		void InitServices ();
 		QStandardItemModel* GetAccountsModel () const;
+		void UpdateDates ();
 	private:
 		QModelIndex GetServiceIndex (QObject*) const;
 		void ScheduleResize ();

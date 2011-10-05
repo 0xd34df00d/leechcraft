@@ -88,7 +88,7 @@ namespace Delicious
 	signals:
 		void accountAdded (QObjectList);
 		void gotEntity (const LeechCraft::Entity&);
-		void gotBookmarks (const QVariantList&);
+		void gotBookmarks (IAccount*, const QVariantList&);
 		void bookmarksUploaded ();
 	};
 }

@@ -114,6 +114,7 @@ namespace ReadItLater
 		req.Login_ = account->GetLogin ();
 		req.Password_ = account->GetPassword ();
 
+		account->SetLastUploadDateTime (QDateTime::currentDateTime ());
 		SendRequest (ReadItLaterApi_->GetUploadUrl (),
 				uploadBookmarks,
 				req);
@@ -123,7 +124,7 @@ namespace ReadItLater
 	{
 		QByteArray downloadBookmarks = ReadItLaterApi_->GetDownloadPayload (account->GetLogin(),
 				account->GetPassword (), from);
-
+		account->SetLastDownloadDateTime (QDateTime::currentDateTime ());
 		Request req;
 		req.Type_ = OTDownload;
 		req.Login_ = account->GetLogin ();
@@ -170,6 +171,7 @@ namespace ReadItLater
 				QCoreApplication::applicationName () +
 					"_Poshuku_OnlineBookmarks_ReadItLater_Accounts");
 
+		QObjectList list;
 		int size = settings.beginReadArray ("Accounts");
 		for (int i = 0; i < size; ++i)
 		{
@@ -186,16 +188,10 @@ namespace ReadItLater
 				continue;
 			}
 			Accounts_ << acc;
+			list << acc->GetObject ();
 		}
 
-		if (!Accounts_.isEmpty ())
-		{
-			QObjectList list;
-			Q_FOREACH (ReadItLaterAccount *acc, Accounts_)
-				list << acc->GetObject ();
-
-				emit accountAdded (list);
-		}
+		emit accountAdded (list);
 	}
 
 	void ReadItLaterService::getReplyFinished ()
@@ -209,17 +205,18 @@ namespace ReadItLater
 			return;
 		}
 
-		qDebug () << Bookmarks_;
-		QVariantList downloadedBookmarks =
-				ReadItLaterApi_->GetDownloadedBookmarks (Bookmarks_);
-		qDebug () << downloadedBookmarks;
-		if (!downloadedBookmarks.isEmpty ())
+		if (Reply2Request_ [reply].Type_ == OTDownload)
 		{
-			ReadItLaterAccount *account = GetAccountByName (Reply2Request_ [reply].Login_);
-			if (account)
-				account->AppendDownloadedBookmarks (downloadedBookmarks);
+			QVariantList downloadedBookmarks =
+					ReadItLaterApi_->GetDownloadedBookmarks (Bookmarks_);
+			if (!downloadedBookmarks.isEmpty ())
+			{
+				ReadItLaterAccount *account = GetAccountByName (Reply2Request_ [reply].Login_);
+				if (account)
+					account->AppendDownloadedBookmarks (downloadedBookmarks);
 
-			emit gotBookmarks (downloadedBookmarks);
+				emit gotBookmarks (account, downloadedBookmarks);
+			}
 		}
 
 		reply->deleteLater ();
@@ -239,6 +236,7 @@ namespace ReadItLater
 		const QVariant& result = reply->attribute (QNetworkRequest::HttpStatusCodeAttribute);
 		Entity e;
 		QString msg;
+		LeechCraft::Priority priority;
 		switch (result.toInt ())
 		{
 			case 200:
@@ -252,52 +250,49 @@ namespace ReadItLater
 					Accounts_ << account;
 					saveAccounts ();
 					emit accountAdded (QObjectList () << account->GetObject ());
-				}
-
-				switch (Reply2Request_ [reply].Type_)
-				{
+					switch (Reply2Request_ [reply].Type_)
+					{
 					case OTAuth:
-						msg = tr ("Authentification was successfull.");
+						priority = PInfo_;
+						msg = tr ("Authentification has finished successfully");
 						break;
 					case OTRegister:
-						msg = tr ("Registration was successsfull.");
+						priority = PInfo_;
+						msg = tr ("Registration has finished successfully");
 						break;
-					case OTUpload:
-						msg = tr ("Bookmark(s) was send to service ReadItLater succesfully.");
-						emit bookmarksUploaded ();
-						break;
+					}
+				}
+				else
+					switch (Reply2Request_ [reply].Type_)
+					{
 					case OTDownload:
 						Bookmarks_.append (reply->readAll ());
-						qDebug () << Bookmarks_;
 						break;
-				}
-				e = Util::MakeNotification ("OnlineBookamarks",
-						msg,
-						PInfo_);
+					case OTUpload:
+						emit bookmarksUploaded ();
+						break;
+					}
 				break;
 			case 400:
-				qWarning () << Q_FUNC_INFO
-						<< "Invalid request, please make sure you follow the documentation for proper syntax";
-				e = Util::MakeNotification ("OnlineBookamarks",
-						tr ("Invalid request.Please, report to developers."),
-						PWarning_);
+				msg = tr ("Invalid request.Please, report to developers.");
+				priority = PWarning_;
 				break;
 			case 401:
-				e = Util::MakeNotification ("OnlineBookamarks",
-						tr ("Username and/or password is incorrect."),
-						PWarning_);
+				msg = tr ("Username and/or password is incorrect.");
+				priority = PWarning_;
 				break;
 			case 403:
-				e = Util::MakeNotification ("OnlineBookamarks",
-						tr ("Rate limit exceeded, please wait a little bit before resubmitting."),
-						PWarning_);
+				msg = tr ("Rate limit exceeded, please wait a little bit before resubmitting.");
+				priority = PWarning_;
 				break;
 			case 503:
-				e = Util::MakeNotification ("OnlineBookamarks",
-						tr ("Read It Later's sync server is down for scheduled maintenance."),
-						PWarning_);
+				msg = tr ("Read It Later's sync server is down for scheduled maintenance.");
+				priority = PWarning_;
 				break;
 		}
+		e = Util::MakeNotification ("OnlineBookamarks",
+				msg,
+				priority);
 		emit gotEntity (e);
 	}
 

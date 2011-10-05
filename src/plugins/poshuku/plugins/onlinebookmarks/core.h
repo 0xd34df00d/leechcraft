@@ -80,8 +80,9 @@ namespace OnlineBookmarks
 		QObject* GetBookmarksModel () const;
 		QVariantList GetUniqueBookmarks (IAccount*,
 				const QVariantList&, bool byService = false);
+		QVariantList GetAllBookmarks () const;
 	private slots:
-		void handleGotBookmarks (const QVariantList&);
+		void handleGotBookmarks (IAccount*, const QVariantList&);
 		void handleBookmarksUploaded ();
 	public slots:
 		void syncBookmarks ();
