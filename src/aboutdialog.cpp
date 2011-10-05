@@ -18,6 +18,7 @@
 
 #include "aboutdialog.h"
 #include "config.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -175,6 +176,36 @@ namespace LeechCraft
 		Q_FOREACH (const ContributorInfo& i, contribs)
 			formatted << i.Fmt ();
 		Ui_.Contributors_->setHtml (formatted.join ("<hr />"));
-	}
-};
 
+		BuildDiagInfo ();
+	}
+
+	void AboutDialog::BuildDiagInfo ()
+	{
+		QString text = QString ("LeechCraft ") + LEECHCRAFT_VERSION + "\n";
+		text += tr ("Built with Qt %1, running with Qt %2")
+				.arg (QT_VERSION_STR)
+				.arg (qVersion ());
+		text += "\n\n";
+
+		QStringList loadedModules;
+		QStringList unPathedModules;
+		PluginManager *pm = Core::Instance ().GetPluginManager ();
+		Q_FOREACH (QObject *plugin, pm->GetAllPlugins ())
+		{
+			const QString& path = pm->GetPluginLibraryPath (plugin);
+
+			IInfo *ii = qobject_cast<IInfo*> (plugin);
+			if (path.isEmpty ())
+				unPathedModules << ("* " + ii->GetName ());
+			else
+				loadedModules << ("* " + ii->GetName () + " (" + path + ")");
+		}
+
+		text += tr ("Normal plugins:") + "\n" + loadedModules.join ("\n") + "\n\n";
+		if (!unPathedModules.isEmpty ())
+			text += tr ("Adapted plugins:") + "\n" + unPathedModules.join ("\n") + "\n\n";
+
+		Ui_.DiagInfo_->setPlainText (text);
+	}
+}
