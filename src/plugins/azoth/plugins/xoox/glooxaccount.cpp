@@ -21,6 +21,7 @@
 #include <QInputDialog>
 #include <QtDebug>
 #include <QXmppCallManager.h>
+#include <util/util.h>
 #include <interfaces/iprotocol.h>
 #include <interfaces/iproxyobject.h>
 #include "glooxprotocol.h"
@@ -43,7 +44,6 @@
 
 #ifdef ENABLE_CRYPT
 #include "pgpmanager.h"
-#include <util/util.h>
 #endif
 
 namespace LeechCraft
