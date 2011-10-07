@@ -25,7 +25,7 @@
 #include <interfaces/iaccount.h>
 #include "accountssettings.h"
 #include "pluginmanager.h"
-#include <xmlsettingsmanager.h>
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {

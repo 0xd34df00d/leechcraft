@@ -100,10 +100,10 @@ namespace OnlineBookmarks
 		Q_FOREACH (QStandardItem *item, Item2Account_.keys ())
 		{
 			int row = item->row ();
-			AccountsModel_->item (row, 1)->
+			item->parent ()->child ( row, 1)->
 					setText (Item2Account_ [item]->GetLastUploadDateTime ()
 						.toString (Qt::DefaultLocaleShortDate));
-			AccountsModel_->item (row, 2)->
+			item->parent ()->child ( row, 2)->
 					setText (Item2Account_ [item]->GetLastDownloadDateTime ()
 						.toString (Qt::DefaultLocaleShortDate));
 		}
