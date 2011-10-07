@@ -776,13 +776,17 @@
 </context>
 <context>
     <name>LeechCraft::Azoth::CLModel</name>
-    <message>
+    <message numerus="yes">
         <location filename="clmodel.cpp" line="158"/>
-        <source>Are you sure you want to send %1 files to %2?</source>
-        <translation>Are you sure you want to send %1 files to %2?</translation>
+        <source>Are you sure you want to send %n files to %1?</source>
+        <oldsource>Are you sure you want to send %1 files to %2?</oldsource>
+        <translation>
+            <numerusform>Are you sure you want to send %n file to %1?</numerusform>
+            <numerusform>Are you sure you want to send %n files to %1?</numerusform>
+        </translation>
     </message>
     <message>
-        <location filename="clmodel.cpp" line="166"/>
+        <location filename="clmodel.cpp" line="165"/>
         <source>Are you sure you want to send %1 to %2?</source>
         <translation>Are you sure you want to send %1 to %2?</translation>
     </message>

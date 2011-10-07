@@ -155,8 +155,7 @@ namespace Azoth
 
 		QString text;
 		if (urls.size () > 2)
-			text = tr ("Are you sure you want to send %1 files to %2?")
-					.arg (urls.size ())
+			text = tr ("Are you sure you want to send %n files to %1?", 0, urls.size ())
 					.arg (entry->GetEntryName ());
 		else
 		{
