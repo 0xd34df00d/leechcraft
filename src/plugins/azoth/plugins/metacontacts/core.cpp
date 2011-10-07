@@ -112,9 +112,9 @@ namespace Metacontacts
 
 	bool Core::HandleRealEntryAddBegin (QObject *entryObj)
 	{
-		if (entryObj->metaObject ()->className () == "MetaEntry")
+		if (!qstrcmp (entryObj->metaObject ()->className (), "MetaEntry"))
 			return false;
-		
+
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 		if (!entry)
 		{

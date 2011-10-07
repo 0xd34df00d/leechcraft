@@ -42,7 +42,9 @@ namespace LeechCraft
 		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
 		QLabel *label = new QLabel (XSD_->GetLabel (item));
 		label->setWordWrap (false);
+
 		RangeWidget *widget = new RangeWidget ();
+		XSD_->SetTooltip (widget, item);
 		widget->setObjectName (item.attribute ("property"));
 		widget->SetMinimum (item.attribute ("minimum").toInt ());
 		widget->SetMaximum (item.attribute ("maximum").toInt ());

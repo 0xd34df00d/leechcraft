@@ -144,8 +144,11 @@ namespace LeechCraft
 			Q_FOREACH (const QString& prefix,
 					LocalPrefixesChain_ + GlobalPrefixesChain_)
 				Q_FOREACH (const QString& path, pathVariants)
-					if (QFile::exists (prefix + RelativePath_ + path))
-						return prefix + RelativePath_ + path;
+				{
+					const QString& can = QFileInfo (prefix + RelativePath_ + path).canonicalFilePath ();
+					if (QFile::exists (can))
+						return can;
+				}
 
 			return QString ();
 		}

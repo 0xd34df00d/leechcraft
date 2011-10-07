@@ -60,8 +60,11 @@ namespace LeechCraft
 			QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
 			QLabel *label = new QLabel (XSD_->GetLabel (item));
 			label->setWordWrap (false);
+
 			WidgetType *box = new WidgetType (XSD_);
+			XSD_->SetTooltip (box, item);
 			box->setObjectName (item.attribute ("property"));
+
 			if (item.hasAttribute ("minimum"))
 				box->setMinimum (Converter_ (item.attribute ("minimum")));
 			if (item.hasAttribute ("maximum"))
@@ -70,6 +73,7 @@ namespace LeechCraft
 				box->setSingleStep (Converter_ (item.attribute ("step")));
 			if (item.hasAttribute ("suffix"))
 				box->setSuffix (item.attribute ("suffix"));
+
 			Util::XmlSettingsDialog::LangElements langs = XSD_->GetLangElements (item);
 			if (langs.Valid_)
 			{
@@ -89,7 +93,7 @@ namespace LeechCraft
 
 			box->setProperty ("ItemHandler",
 					QVariant::fromValue<QObject*> (this));
-			
+
 			int row = lay->rowCount ();
 			lay->setColumnMinimumWidth (0, 10);
 			lay->setColumnStretch (0, 1);

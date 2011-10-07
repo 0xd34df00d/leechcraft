@@ -16,25 +16,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef ABOUTDIALOG_H
-#define ABOUTDIALOG_H
-#include <QDialog>
-#include "ui_aboutdialog.h"
+#ifndef UTIL_SYSINFO_H
+#define UTIL_SYSINFO_H
+#include "utilconfig.h"
+
+class QString;
 
 namespace LeechCraft
 {
-	/** Shows the About LeechCraft information.
-	 */
-	class AboutDialog : public QDialog
-	{
-		Q_OBJECT
-
-		Ui::AboutDialog Ui_;
-	public:
-		AboutDialog (QWidget* = 0);
-	private:
-		void BuildDiagInfo ();
-	};
+namespace Util
+{
+namespace SysInfo
+{
+	UTIL_API QString GetOSName ();
+}
+}
 }
 
 #endif

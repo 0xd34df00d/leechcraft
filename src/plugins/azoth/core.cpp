@@ -1120,7 +1120,7 @@ namespace Azoth
 		if (mucEntry)
 		{
 			const QString& jid = mucEntry->GetRealID (entry->GetObject ());
-			tip += "\n" + tr ("Real ID:") + ' ' + (jid.isEmpty () ? tr ("unknown") : jid);
+			tip += "<br />" + tr ("Real ID:") + ' ' + (jid.isEmpty () ? tr ("unknown") : jid);
 		}
 
 		IMUCPerms *mucPerms = qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ());
@@ -1803,6 +1803,11 @@ namespace Azoth
 				Entry2Actions_ [entry] ["authorization"]->setEnabled (isOnline);
 		}
 
+		IMUCEntry *thisMuc = qobject_cast<IMUCEntry*> (entry->GetObject ());
+		if (thisMuc)
+			Entry2Actions_ [entry] ["invite"]->
+					setEnabled (thisMuc->GetMUCFeatures () & IMUCEntry::MUCFCanInvite);
+
 		IMUCEntry *mucEntry =
 				qobject_cast<IMUCEntry*> (entry->GetParentCLEntry ());
 		if (entry->GetEntryType () == ICLEntry::ETPrivateChat &&
@@ -1812,10 +1817,6 @@ namespace Azoth
 					<< entry->GetObject ()
 					<< entry->GetParentCLEntry ()
 					<< "doesn't implement IMUCEntry";
-
-		if (mucEntry)
-			Entry2Actions_ [entry] ["invite"]->
-					setEnabled (mucEntry->GetMUCFeatures () & IMUCEntry::MUCFCanInvite);
 
 		IMUCPerms *mucPerms = qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ());
 		if (entry->GetEntryType () == ICLEntry::ETPrivateChat)

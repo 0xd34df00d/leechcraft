@@ -19,7 +19,6 @@
 #include "notificationrule.h"
 #include <QStringList>
 #include <QtDebug>
-#include <plugins/azoth/plugins/rosenthal/hunspell/csutil.hxx>
 
 namespace LeechCraft
 {

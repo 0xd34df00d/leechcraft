@@ -4,6 +4,82 @@ the rest.
 Links to the corresponding development digests are also given for the
 relevant blocks of changes, so one could easily lookup 
 
+!!! HEAD
+! Devel digest #13 ( http://leechcraft.org/devel-digest-13 ): 
+* Aggregator: stubs for sync support.
+* Azoth: support for protocols that support searching.
+* Azoth: show buddy avatar in chat tabs.
+* Azoth Autoidler: change status to XA instead of DND.
+* Azoth p100q: allow one to disable avatars.
+* Azoth p100q: hints for buttons.
+* Azoth Xoox: XEP-0055 (Jabber Search).
+* Azoth Xoox: experimental blind-written XEP-0084: User Avatar.
+* Azoth Xoox: kludges for incorrect registration forms from various
+  servers like ejabberd.
+* Azoth Xoox: lots of various small fixes.
+* BitTorrent: fixed torrents not being added correctly sometimes.
+
+!!! 0.4.90
+! Devel digest #12 ( http://leechcraft.org/devel-digest-12 ): 
+* Azoth: allow one to create new accounts from the Azoth menu.
+* Azoth: allow one to set different styles for chats and MUCs.
+* Azoth: support for protocols allowing exchanging the contacts.
+* Azoth: lots of bugfixes.
+* Azoth Acetamide: autoidentify.
+* Azoth AdiumStyles: added GoneDark theme to the default themes set.
+* Azoth AdiumStyles: fixed styling engine, more themes are supported now.
+* Azoth Xoox: introduced XEP-0144 (Roster Item Exchange).
+* BitTorrent: fixed Win32 build issues.
+
+! Devel digest #11 ( http://leechcraft.org/devel-digest-11 ): 
+* AdvancedNotifications: allow one to reload default set of rules.
+* AdvancedNotifications: support running external command.
+* Aggregator: support "Important".
+* Aggregator BodyFetch: disable support for things useless for parsing.
+* Aggregator BodyFetch: extended API.
+* Aggregator BodyFetch: huge perf optimization by caching scripts.
+* Aggregator BodyFetch: moved processing back to main thread to avoid
+  some QtWebkit-related threading issues.
+* Azoth: draw own avatar and protocol icon in the CL.
+* Azoth: fixed notifying about each MUC message in AN.
+* Azoth: lots of micro improvements.
+* Azoth: native support for '/leave' command.
+* Azoth: "Quote" action.
+* Azoth: somewhat fixed Ctrl+C in chats.
+* Azoth: somewhat optimized contact list delegate.
+* Azoth Acetamide: autofix channel names by prepending '#' if absent.
+* Azoth Acetamide: lots of different fixes.
+* Azoth Acetamide: support configuring channels, including chanmodes,
+  banlist, except list and invite list.
+* Azoth Acetamide: '/say' command.
+* Azoth p100q: fixed ordering of buttons.
+* Azoth Xoox: fixed handling self vCards.
+* BitTorrent: show free space when adding files.
+* Core: fixed a whole class of bugs arising from usage of already-
+  deleted objects in notifications actions.
+* Core: fixed incorrect dependencies calculation.
+* Overall: initial support for Qt 4.8.
+* Poshuku: correctly handle content resend errors.
+* Poshuku CleanWeb: fixed FlashOnClick.
+* Poshuku CleanWeb: frames with ads are also hidden now.
+* Poshuku CleanWeb: match plain strings as plain strings (speeds up).
+* Poshuku CleanWeb: support "third-party" attribute.
+
+! Devel digest #10 ( http://leechcraft.org/devel-digest-10 ): 
+* Azoth: suggest rejoining a MUC after being kicked.
+* Azoth: support disabling by-status grouping in the CL.
+* Azoth: support for PGP-enabled protocols/conversations.
+* Azoth Acetamide: '/msg' command.
+* Azoth Acetamide: bookmarks and autojoin support.
+* Azoth Metacontacts: added support for metacontacts.
+* Azoth Xoox: allow one to request voice in MUCs.
+* Azoth Xoox: introduced XEP-0027 (OpenPGP).
+* Azoth Xoox: self contact.
+* Azoth Xoox: support data forms in messages.
+* Azoth Xoox: support publishing vCards.
+* TabsList: search by title.
+* TabsList: show tabs numbers.
+
 !!! 0.4.85
 ! Devel digest #9 ( http://leechcraft.org/devel-digest-9 ):
 * Aggregator: more compatibility in fb2 generator.

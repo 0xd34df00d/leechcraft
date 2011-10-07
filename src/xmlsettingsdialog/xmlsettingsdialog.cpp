@@ -371,9 +371,10 @@ QString XmlSettingsDialog::GetLabel (const QDomElement& item) const
 
 QString XmlSettingsDialog::GetDescription (const QDomElement& item) const
 {
-	QDomElement label = item.firstChildElement ("descr");
+	QDomElement label = item.firstChildElement ("tooltip");
 	if (!label.isNull ())
-		return label.text ();
+		return QCoreApplication::translate (qPrintable (Basename_),
+				label.text ().toUtf8 ().constData ());
 	return QString ();
 }
 
