@@ -46,6 +46,10 @@ namespace Azoth
 				QObject *entry,
 				QWebView *webView);
 
+		void hookDnDEntry2Entry (LeechCraft::IHookProxy_ptr proxy,
+				QObject *source,
+				QObject *target);
+
 		/** @brief Hook for adjusting where CL entry actions appear.
 		 *
 		 * This hook is called to determine where the given action for

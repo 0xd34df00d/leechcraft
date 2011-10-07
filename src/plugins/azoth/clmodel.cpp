@@ -25,6 +25,7 @@
 #include "interfaces/iaccount.h"
 #include "core.h"
 #include "transferjobmanager.h"
+#include <util/defaulthookproxy.h>
 
 namespace LeechCraft
 {
@@ -78,6 +79,9 @@ namespace Azoth
 		if (action == Qt::IgnoreAction)
 			return true;
 
+		if (PerformHooks (mime, row, parent))
+			return true;
+
 		if (TryDropContact (mime, row, parent) ||
 				TryDropContact (mime, parent.row (), parent.parent ()))
 			return true;
@@ -91,6 +95,36 @@ namespace Azoth
 	Qt::DropActions CLModel::supportedDropActions () const
 	{
 		return static_cast<Qt::DropActions> (Qt::CopyAction | Qt::MoveAction | Qt::LinkAction);
+	}
+
+	bool CLModel::PerformHooks (const QMimeData *mime, int row, const QModelIndex& parent)
+	{
+		if (CheckHookDnDEntry2Entry (mime, row, parent))
+			return true;
+
+		return false;
+	}
+
+	bool CLModel::CheckHookDnDEntry2Entry (const QMimeData *mime, int row, const QModelIndex& parent)
+	{
+		if (row != -1 ||
+				!mime->hasFormat (CLEntryFormat) ||
+				parent.data (Core::CLREntryType).value<Core::CLEntryType> () != Core::CLETContact)
+			return false;
+
+		QDataStream stream (mime->data (CLEntryFormat));
+		QString sid;
+		stream >> sid;
+
+		QObject *source = Core::Instance ().GetEntry (sid);
+		if (!source)
+			return false;
+
+		QObject *target = parent.data (Core::CLREntryObject).value<QObject*> ();
+
+		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		emit hookDnDEntry2Entry (proxy, source, target);
+		return proxy->IsCancelled ();
 	}
 
 	bool CLModel::TryDropContact (const QMimeData *mime, int row, const QModelIndex& parent)
