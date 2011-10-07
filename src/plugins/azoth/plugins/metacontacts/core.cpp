@@ -25,6 +25,7 @@
 #include "metaaccount.h"
 #include "metaentry.h"
 #include "addtometacontactsdialog.h"
+#include <QInputDialog>
 
 namespace LeechCraft
 {
@@ -166,23 +167,51 @@ namespace Metacontacts
 			if (name.isEmpty ())
 				return;
 
-			const QString& id = QUuid::createUuid ().toString ();
-			existingMeta = new MetaEntry (id, Account_);
-			ConnectSignals (existingMeta);
+			existingMeta = CreateMetaEntry ();
 			existingMeta->SetEntryName (name);
-
-			Entries_ << existingMeta;
-
-			emit gotCLItems (QList<QObject*> () << existingMeta);
 		}
 
-		existingMeta->AddRealObject (real);
-		QMetaObject::invokeMethod (this,
-				"removedCLItems",
-				Qt::QueuedConnection,
-				Q_ARG (QList<QObject*>, QList<QObject*> () << realObj));
+		AddRealToMeta (existingMeta, real);
+	}
 
-		ScheduleSaveEntries ();
+	bool Core::HandleDnDEntry2Entry (QObject *sourceObj, QObject *targetObj)
+	{
+		if (qobject_cast<MetaEntry*> (sourceObj))
+			std::swap (sourceObj, targetObj);
+
+		ICLEntry *source = qobject_cast<ICLEntry*> (sourceObj);
+		ICLEntry *target = qobject_cast<ICLEntry*> (targetObj);
+
+		if (!source || !target)
+			return false;
+
+		if (qobject_cast<MetaEntry*> (sourceObj))
+			return false;
+
+		MetaEntry *targetME = qobject_cast<MetaEntry*> (targetObj);
+		if (targetME)
+		{
+			AddRealToMeta (targetME, source);
+			return true;
+		}
+
+		const QString& name = QInputDialog::getText (0,
+				"LeechCraft",
+				tr ("Enter the name of the new metacontact uniting %1 and %2:")
+					.arg (source->GetEntryName ())
+					.arg (target->GetEntryName ()),
+				QLineEdit::Normal,
+				source->GetEntryName ());
+		if (name.isEmpty ())
+			return false;
+
+		MetaEntry *entry = CreateMetaEntry ();
+		entry->SetEntryName (name);
+
+		AddRealToMeta (entry, source);
+		AddRealToMeta (entry, target);
+
+		return true;
 	}
 
 	void Core::RemoveEntry (MetaEntry *entry)
@@ -204,6 +233,30 @@ namespace Metacontacts
 				this,
 				SLOT (saveEntries ()));
 		SaveEntriesScheduled_ = true;
+	}
+
+	void Core::AddRealToMeta (MetaEntry *existingMeta, ICLEntry *real)
+	{
+		existingMeta->AddRealObject (real);
+		QMetaObject::invokeMethod (this,
+				"removedCLItems",
+				Qt::QueuedConnection,
+				Q_ARG (QList<QObject*>, QList<QObject*> () << real->GetObject ()));
+
+		ScheduleSaveEntries ();
+	}
+
+	MetaEntry* Core::CreateMetaEntry ()
+	{
+		const QString& id = QUuid::createUuid ().toString ();
+		MetaEntry *result = new MetaEntry (id, Account_);
+		ConnectSignals (result);
+
+		Entries_ << result;
+
+		emit gotCLItems (QList<QObject*> () << result);
+
+		return result;
 	}
 
 	void Core::ConnectSignals (MetaEntry *entry)
