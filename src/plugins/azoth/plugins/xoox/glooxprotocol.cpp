@@ -190,8 +190,14 @@ namespace Xoox
 	void GlooxProtocol::RemoveAccount (QObject *acc)
 	{
 		GlooxAccount *accObj = qobject_cast<GlooxAccount*> (acc);
+
+		QMetaObject::invokeMethod (accObj,
+				"removedCLItems",
+				Q_ARG (QList<QObject*>, accObj->GetCLEntries ()));
+
 		Accounts_.removeAll (accObj);
 		emit accountRemoved (accObj);
+
 		accObj->deleteLater ();
 		saveAccounts ();
 	}
