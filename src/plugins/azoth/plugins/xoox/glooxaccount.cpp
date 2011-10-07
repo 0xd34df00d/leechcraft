@@ -21,6 +21,7 @@
 #include <QInputDialog>
 #include <QtDebug>
 #include <QXmppCallManager.h>
+#include <util/util.h>
 #include <interfaces/iprotocol.h>
 #include <interfaces/iproxyobject.h>
 #include "glooxprotocol.h"
@@ -39,10 +40,10 @@
 #include "userlocation.h"
 #include "privacylistsconfigdialog.h"
 #include "mediacall.h"
+#include "jabbersearchsession.h"
 
 #ifdef ENABLE_CRYPT
 #include "pgpmanager.h"
-#include <util/util.h>
 #endif
 
 namespace LeechCraft
@@ -84,7 +85,7 @@ namespace Xoox
 	void GlooxAccount::Init ()
 	{
 		ClientConnection_.reset (new ClientConnection (JID_ + "/" + Resource_,
-						AccState_, this));
+						this));
 
 		TransferManager_.reset (new TransferManager (ClientConnection_->
 						GetTransferManager (),
@@ -267,6 +268,10 @@ namespace Xoox
 
 		RegenAccountIcon ();
 
+		const QString& pass = w->GetPassword ();
+		if (!pass.isNull ())
+			Core::Instance ().GetPluginProxy ()->SetPassword (pass, this);
+
 		if (lastState != SOffline)
 			ChangeState (EntryStatus (lastState, AccState_.Status_));
 
@@ -356,6 +361,22 @@ namespace Xoox
 		return new SDSession (this);
 	}
 
+	QObject* GlooxAccount::CreateSearchSession ()
+	{
+		return new JabberSearchSession (this);
+	}
+
+	QString GlooxAccount::GetDefaultSearchServer () const
+	{
+		if (!Host_.isEmpty ())
+			return Host_;
+
+		const QString& second = JID_
+				.split ('@', QString::SkipEmptyParts).value (1);
+		const int slIdx = second.indexOf ('/');
+		return slIdx >= 0 ? second.left (slIdx) : second;
+	}
+
 	IHaveConsole::PacketFormat GlooxAccount::GetPacketFormat () const
 	{
 		return PFXML;
@@ -421,14 +442,29 @@ namespace Xoox
 
 	QObject* GlooxAccount::Call (const QString& id, const QString& variant)
 	{
+		if (id == qobject_cast<ICLEntry*> (GetSelfContact ())->GetEntryID ())
+		{
+			Core::Instance ().SendEntity (Util::MakeNotification ("LeechCraft",
+						tr ("Why would you call yourself?"),
+						PWarning_));
+
+			return 0;
+		}
+
 		QString target = GlooxCLEntry::JIDFromID (this, id);
+
 		QString var = variant;
 		if (var.isEmpty ())
 		{
 			QObject *entryObj = GetClientConnection ()->
 					GetCLEntry (target, QString ());
 			GlooxCLEntry *entry = qobject_cast<GlooxCLEntry*> (entryObj);
-			var = entry->Variants ().value (0);
+			if (entry)
+				var = entry->Variants ().value (0);
+			else
+				qWarning () << Q_FUNC_INFO
+						<< "null entry for"
+						<< target;
 		}
 		target += '/' + var;
 		return new MediaCall (this, ClientConnection_->GetCallManager ()->call (target));

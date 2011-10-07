@@ -17,10 +17,14 @@
  **********************************************************************/
 
 #include "util.h"
+#include <memory>
 #include <QObject>
 #include <QHash>
 #include <QDomDocument>
 #include <QDomElement>
+#include <QDialog>
+#include <QDialogButtonBox>
+#include <QVBoxLayout>
 
 namespace LeechCraft
 {
@@ -163,7 +167,7 @@ namespace XooxUtil
 		static Node2ClientHR n2ch;
 		return n2ch.Node2ClientHR_.value (node);
 	}
-	
+
 	QDomElement XmppElem2DomElem (const QXmppElement& elem)
 	{
 		QByteArray arr;
@@ -174,7 +178,7 @@ namespace XooxUtil
 		doc.setContent (arr);
 		return doc.documentElement ();
 	}
-	
+
 	QXmppElement Form2XmppElem (const QXmppDataForm& form)
 	{
 		QByteArray formData;
@@ -183,6 +187,28 @@ namespace XooxUtil
 		QDomDocument doc;
 		doc.setContent (formData);
 		return doc.documentElement ();
+	}
+
+	bool RunFormDialog (QWidget *widget)
+	{
+		QDialog *dialog (new QDialog ());
+		dialog->setWindowTitle (widget->windowTitle ());
+		dialog->setLayout (new QVBoxLayout ());
+		dialog->layout ()->addWidget (widget);
+		QDialogButtonBox *box = new QDialogButtonBox (QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+		dialog->layout ()->addWidget (box);
+		QObject::connect (box,
+				SIGNAL (accepted ()),
+				dialog,
+				SLOT (accept ()));
+		QObject::connect (box,
+				SIGNAL (rejected ()),
+				dialog,
+				SLOT (reject ()));
+
+		const bool result = dialog->exec () == QDialog::Accepted;
+		dialog->deleteLater ();
+		return result;
 	}
 }
 }

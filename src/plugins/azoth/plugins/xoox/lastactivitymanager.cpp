@@ -40,7 +40,7 @@ namespace Xoox
 	bool LastActivityManager::handleStanza (const QDomElement& elem)
 	{
 		if (elem.tagName () != "iq")
-			return false;
+				return false;
 
 		const QDomElement& query = elem.firstChildElement ("query");
 		if (query.namespaceURI () != NsLastActivity)
@@ -58,7 +58,7 @@ namespace Xoox
 			if (!prov)
 				return false;
 
-			QXmppIq iq = CreateIq (from, prov->GetInactiveSeconds ());
+			QXmppIq iq = CreateIq (from, std::max (prov->GetInactiveSeconds (), 0));
 			iq.setType (QXmppIq::Result);
 			iq.setId (elem.attribute ("id"));
 
@@ -84,6 +84,7 @@ namespace Xoox
 		iq.setTo (to);
 
 		QXmppElement queryElem;
+		queryElem.setTagName ("query");
 		queryElem.setAttribute ("xmlns", NsLastActivity);
 		if (secs != -1)
 			queryElem.setAttribute ("seconds", QString::number (secs));

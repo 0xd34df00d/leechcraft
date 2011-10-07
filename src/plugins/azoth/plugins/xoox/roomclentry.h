@@ -58,7 +58,7 @@ namespace Xoox
 		QMap<QXmppMucItem::Role, QByteArray> Role2Str_;
 		QMap<QXmppMucItem::Affiliation, QByteArray> Aff2Str_;
 		QMap<QByteArray, QString> Translations_;
-		
+
 		mutable QAction *ActionRequestVoice_;
 	public:
 		RoomCLEntry (RoomHandler*, GlooxAccount*);
@@ -101,7 +101,8 @@ namespace Xoox
 		QString GetGroupName () const;
 		QVariantMap GetIdentifyingData () const;
 		QString GetRealID (QObject*) const;
-		
+		void InviteToMUC (const QString&, const QString&);
+
 		// IMUCPerms
 		QMap<QByteArray, QList<QByteArray> > GetPossiblePerms () const;
 		QMap<QByteArray, QByteArray> GetPerms (QObject *object) const;
@@ -110,7 +111,7 @@ namespace Xoox
 		void SetPerm (QObject*, const QByteArray&, const QByteArray&, const QString&);
 		bool IsLessByPerm (QObject*, QObject*) const;
 		QString GetUserString (const QByteArray&) const;
-		
+
 		// IConfigurableMUC
 		QWidget* GetConfigurationWidget ();
 		void AcceptConfiguration (QWidget*);

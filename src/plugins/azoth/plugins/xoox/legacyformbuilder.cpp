@@ -40,13 +40,13 @@ namespace Xoox
 			QLineEdit *edit = new QLineEdit (elem.value ());
 			edit->setObjectName ("field");
 			edit->setProperty ("FieldName", elem.tagName ());
-			
+
 			QHBoxLayout *lay = new QHBoxLayout (form);
 			lay->addWidget (label);
 			lay->addWidget (edit);
 			qobject_cast<QVBoxLayout*> (form->layout ())->addLayout (lay);
 		}
-		
+
 		void InstructionsActor (QWidget *form, const QXmppElement& elem)
 		{
 			QLabel *label = new QLabel (elem.value ());
@@ -63,10 +63,18 @@ namespace Xoox
 				_1, _2, tr ("Password:"));
 		Tag2Actor_ ["registered"] = boost::bind (LineEditActorImpl,
 				_1, _2, tr ("Registered:"));
+		Tag2Actor_ ["first"] = boost::bind (LineEditActorImpl,
+				_1, _2, tr ("First name:"));
+		Tag2Actor_ ["last"] = boost::bind (LineEditActorImpl,
+				_1, _2, tr ("Last name:"));
+		Tag2Actor_ ["nick"] = boost::bind (LineEditActorImpl,
+				_1, _2, tr ("Nick:"));
+		Tag2Actor_ ["email"] = boost::bind (LineEditActorImpl,
+				_1, _2, tr ("E-Mail:"));
 		Tag2Actor_ ["instructions"] = boost::bind (InstructionsActor,
 				_1, _2);
 	}
-	
+
 	QWidget* LegacyFormBuilder::CreateForm (const QXmppElement& containing,
 			QWidget *parent)
 	{
@@ -86,10 +94,10 @@ namespace Xoox
 
 			element = element.nextSiblingElement ();
 		}
-		
+
 		return Widget_;
 	}
-	
+
 	QList<QXmppElement> LegacyFormBuilder::GetFilledChildren () const
 	{
 		QList<QXmppElement> result;
@@ -103,22 +111,22 @@ namespace Xoox
 			elem.setValue (edit->text ());
 			result << elem;
 		}
-		
+
 		return result;
 	}
-	
+
 	QString LegacyFormBuilder::GetUsername () const
 	{
 		if (!Widget_)
 			return QString ();
-		
+
 		Q_FOREACH (QLineEdit *edit, Widget_->findChildren<QLineEdit*> ("field"))
 			if (edit->property ("FieldName").toString () == "username")
 				return edit->text ();
 
 		return QString ();
 	}
-	
+
 	QString LegacyFormBuilder::GetPassword () const
 	{
 		Q_FOREACH (QLineEdit *edit, Widget_->findChildren<QLineEdit*> ("field"))

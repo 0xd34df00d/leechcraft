@@ -32,6 +32,7 @@
 #include <interfaces/iaccount.h>
 #include <interfaces/iprotocol.h>
 #include <interfaces/iextselfinfoaccount.h>
+#include "packproxymodel.h"
 
 namespace LeechCraft
 {
@@ -43,6 +44,7 @@ namespace AdiumStyles
 	: QObject (parent)
 	, StylesLoader_ (new Util::ResourceLoader ("azoth/styles/adium/", this))
 	, Proxy_ (proxy)
+	, PackProxyModel_ (new PackProxyModel (StylesLoader_, this))
 	{
 		StylesLoader_->AddGlobalPrefix ();
 		StylesLoader_->AddLocalPrefix ();
@@ -50,17 +52,20 @@ namespace AdiumStyles
 
 	QAbstractItemModel* AdiumStyleSource::GetOptionsModel () const
 	{
-		return StylesLoader_->GetSubElemModel ();
+		return PackProxyModel_;
 	}
 
-	QString AdiumStyleSource::GetHTMLTemplate (const QString& pack,
+	QString AdiumStyleSource::GetHTMLTemplate (const QString& srcPack,
 			QObject *entryObj, QWebFrame *frame) const
 	{
-		if (pack != LastPack_)
+		if (srcPack != LastPack_)
 		{
 			Coloring2Colors_.clear ();
-			LastPack_ = pack;
+			LastPack_ = srcPack;
 		}
+
+		const QString& pack = PackProxyModel_->GetOrigName (srcPack);
+		const QString& varCss = PackProxyModel_->GetVariant (srcPack);
 
 		Frame2LastContact_.remove (frame);
 
@@ -97,35 +102,27 @@ namespace AdiumStyles
 		Frame2Pack_ [frame] = pack;
 
 		QString cssStr = QString::fromUtf8 (css->readAll ());
-		int pos = 0;
-		QRegExp cssUrlRx ("url\\s*\\((.*)\\)");
-		cssUrlRx.setMinimal (true);
-		while ((pos = cssUrlRx.indexIn (cssStr, pos)) != -1)
+		FixImports (cssStr, css.get ());
+		FixCSS (cssStr, pack);
+
+		QString varCssStr;
+		if (!varCss.isEmpty ())
 		{
-			QString url = cssUrlRx.cap (1);
-			if (url.contains ("://"))
-				continue;
-
-			if (url.at (url.size () - 1) == '"')
-				url.chop (1);
-			if (url.at (0) == '"')
-				url = url.mid (1);
-
-			url.prepend (pack + "/Contents/Resources/");
-			Util::QIODevice_ptr dev = StylesLoader_->Load (QStringList (url));
-			if (dev && dev->open (QIODevice::ReadOnly))
+			Util::QIODevice_ptr varCssDev = StylesLoader_->
+					Load (QStringList (prefix + "Variants/" + varCss + ".css"));
+			if (varCssDev && varCssDev->open (QIODevice::ReadOnly))
 			{
-				const QString replacement = "data:image/png;base64," +
-						QString::fromUtf8 (dev->readAll ().toBase64 ());
-				cssStr.replace (cssUrlRx.cap (1), replacement);
+				varCssStr = QString::fromUtf8 (varCssDev->readAll ());
+				FixImports (varCssStr, varCssDev.get ());
+				varCssStr.remove ("../");
+				FixCSS (varCssStr, pack);
 			}
-			pos += cssUrlRx.matchedLength ();
 		}
 
 		QString result;
 		result = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">";
 		result += "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" /><style type=\"text/css\">";
-		result += cssStr;
+		result += cssStr + varCssStr;
 		result += "</style><title></title></head><body>";
 		result += QString::fromUtf8 (header->readAll ());
 		result += "<div id=\"Chat\"><div id=\"insert\"></div></div>";
@@ -285,6 +282,81 @@ namespace AdiumStyles
 
 	void AdiumStyleSource::FrameFocused (QWebFrame*)
 	{
+	}
+
+	void AdiumStyleSource::FixImports (QString& cssStr, QIODevice *dev) const
+	{
+		if (!cssStr.contains ("@import"))
+			return;
+
+		QFile *file = dynamic_cast<QFile*> (dev);
+		if (!file)
+			return;
+
+		const QUrl& baseUrl = QUrl::fromLocalFile (file->fileName ());
+
+		int pos = 0;
+		QRegExp cssUrlRx ("import\\s*url\\s*\\((.*)\\)");
+		cssUrlRx.setMinimal (true);
+		while ((pos = cssUrlRx.indexIn (cssStr, pos)) != -1)
+		{
+			QString url = cssUrlRx.cap (1);
+			if (url.contains ("://"))
+				continue;
+
+			const QChar side = url.at (0);
+			if (side == '\'' || side == '"')
+			{
+				url.chop (1);
+				url = url.mid (1);
+			}
+
+			const QString& path = baseUrl.resolved (url).toLocalFile ();
+
+			QFile extFile (path);
+			extFile.open (QIODevice::ReadOnly);
+			QString extStr = extFile.readAll ();
+			FixImports (extStr, &extFile);
+
+			cssStr.replace ('@' + cssUrlRx.cap (0), extStr);
+			pos += cssUrlRx.matchedLength ();
+		}
+	}
+
+	void AdiumStyleSource::FixCSS (QString& cssStr, const QString& pack) const
+	{
+		int pos = 0;
+		QRegExp cssUrlRx ("url\\s*\\((.*)\\)");
+		cssUrlRx.setMinimal (true);
+		while ((pos = cssUrlRx.indexIn (cssStr, pos)) != -1)
+		{
+			QString url = cssUrlRx.cap (1);
+			if (url.contains ("://"))
+				continue;
+
+			const QChar side = url.at (0);
+			if (side == '\'' || side == '"')
+			{
+				url.chop (1);
+				url = url.mid (1);
+			}
+
+			url.prepend (pack + "/Contents/Resources/");
+			Util::QIODevice_ptr dev = StylesLoader_->Load (QStringList (url));
+			if (dev && dev->open (QIODevice::ReadOnly))
+			{
+				const QString replacement = "data:image/png;base64," +
+						QString::fromUtf8 (dev->readAll ().toBase64 ());
+				cssStr.replace (cssUrlRx.cap (1), replacement);
+			}
+			else
+				qWarning () << Q_FUNC_INFO
+						<< "unable to load external resource"
+						<< url
+						<< "for pack"
+						<< pack;
+			pos += cssUrlRx.matchedLength ();
+		}
 	}
 
 	void AdiumStyleSource::FixSrcs (QWebFrame *frame, const QString& pack)

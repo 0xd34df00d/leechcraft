@@ -78,7 +78,7 @@ ENDIF (QT_QTDECLARATIVE_FOUND)
 
 SET (RESOURCES advancednotificationsresources.qrc)
 
-CreateTrVars ("advancednotifications" "en;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
+CreateTrVars ("advancednotifications" "en;es;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})

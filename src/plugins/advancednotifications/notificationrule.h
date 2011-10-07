@@ -33,6 +33,8 @@ namespace AdvancedNotifications
 	{
 	};
 
+	bool operator== (const VisualParams&, const VisualParams&);
+
 	struct AudioParams
 	{
 		QString Filename_;
@@ -41,9 +43,13 @@ namespace AdvancedNotifications
 		AudioParams (const QString&);
 	};
 
+	bool operator== (const AudioParams&, const AudioParams&);
+
 	struct TrayParams
 	{
 	};
+
+	bool operator== (const TrayParams&, const TrayParams&);
 
 	struct CmdParams
 	{
@@ -53,6 +59,8 @@ namespace AdvancedNotifications
 		CmdParams ();
 		CmdParams (const QString&, const QStringList& = QStringList ());
 	};
+
+	bool operator== (const CmdParams&, const CmdParams&);
 
 	class NotificationRule
 	{
@@ -68,6 +76,9 @@ namespace AdvancedNotifications
 		TrayParams TrayParams_;
 		VisualParams VisualParams_;
 		CmdParams CmdParams_;
+
+		bool IsEnabled_;
+		bool IsSingleShot_;
 	public:
 		NotificationRule ();
 		NotificationRule (const QString& name,
@@ -102,9 +113,17 @@ namespace AdvancedNotifications
 		CmdParams GetCmdParams () const;
 		void SetCmdParams (const CmdParams&);
 
+		bool IsEnabled () const;
+		void SetEnabled (bool);
+
+		bool IsSingleShot () const;
+		void SetSingleShot (bool);
+
 		void Save (QDataStream&) const;
 		void Load (QDataStream&);
 	};
+
+	bool operator== (const NotificationRule&, const NotificationRule&);
 }
 }
 

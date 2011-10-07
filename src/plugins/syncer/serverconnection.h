@@ -24,49 +24,46 @@ class QTcpSocket;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Syncer
+{
+	class ServerConnection : public QObject
 	{
-		namespace Syncer
+		Q_OBJECT
+
+		QTcpSocket *Socket_;
+		QByteArray Chain_;
+	public:
+		enum ErrorCode
 		{
-			class ServerConnection : public QObject
-			{
-				Q_OBJECT
+			ECUnknownCommand = 0,
+			ECUserRegistered,
+			ECUserNotRegistered,
+			ECWrongPassword,
+			ECAlreadyConnected,
+			ECOddFilterParameters,
+			ECWrongDeltaID
+		};
 
-				QTcpSocket *Socket_;
-				QByteArray Chain_;
-			public:
-				enum ErrorCode
-				{
-					ECUnknownCommand = 0,
-					ECUserRegistered,
-					ECUserNotRegistered,
-					ECWrongPassword,
-					ECAlreadyConnected,
-					ECOddFilterParameters,
-					ECWrongDeltaID
-				};
+		ServerConnection (const QByteArray&, QObject* = 0);
 
-				ServerConnection (const QByteArray&, QObject* = 0);
+		static QByteArray FmtMsg (const QList<QByteArray>&);
+		static QList<QByteArray> UnfmtMsg (const QByteArray&);
 
-				static QByteArray FmtMsg (const QList<QByteArray>&);
-				static QList<QByteArray> UnfmtMsg (const QByteArray&);
-
-			public slots:
-				void performLogin ();
-				void reqMaxDelta ();
-				void getDeltas (quint32 from);
-				void putDeltas (const QList<QByteArray>&, quint32);
-			private slots:
-				void handleConnected ();
-				void handleReadyRead ();
-			signals:
-				void success (const QList<QByteArray>&);
-				void fail ();
-				void deltaOutOfOrder ();
-				void maxDeltaIDReceived (quint32);
-			};
-		}
-	}
+	public slots:
+		void performLogin ();
+		void reqMaxDelta ();
+		void getDeltas (quint32 from);
+		void putDeltas (const QList<QByteArray>&, quint32);
+	private slots:
+		void handleConnected ();
+		void handleReadyRead ();
+	signals:
+		void success (const QList<QByteArray>&);
+		void fail ();
+		void deltaOutOfOrder ();
+		void maxDeltaIDReceived (quint32);
+	};
+}
 }
 
 #endif

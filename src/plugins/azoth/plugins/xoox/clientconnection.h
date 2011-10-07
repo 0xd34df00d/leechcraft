@@ -73,6 +73,8 @@ namespace Xoox
 	class PrivacyListsManager;
 	class AdHocCommandManager;
 	class LastActivityManager;
+	class JabberSearchManager;
+	class UserAvatarManager;
 
 #ifdef ENABLE_CRYPT
 	class PgpManager;
@@ -98,6 +100,8 @@ namespace Xoox
 		AdHocCommandManager *AdHocCommandManager_;
 		AnnotationsManager *AnnotationsManager_;
 		LastActivityManager *LastActivityManager_;
+		JabberSearchManager *JabberSearchManager_;
+		UserAvatarManager *UserAvatarManager_;
 		RIEXManager *RIEXManager_;
 
 #ifdef ENABLE_CRYPT
@@ -160,7 +164,6 @@ namespace Xoox
 		QHash<QString, PacketID2Callback_t> AwaitingPacketCallbacks_;
 	public:
 		ClientConnection (const QString&,
-				const GlooxAccountState&,
 				GlooxAccount*);
 		virtual ~ClientConnection ();
 
@@ -188,6 +191,8 @@ namespace Xoox
 		PrivacyListsManager* GetPrivacyListsManager () const;
 		QXmppCallManager* GetCallManager () const;
 		AdHocCommandManager* GetAdHocCommandManager () const;
+		JabberSearchManager* GetJabberSearchManager () const;
+		UserAvatarManager* GetUserAvatarManager () const;
 		RIEXManager* GetRIEXManager () const;
 #ifdef ENABLE_CRYPT
 		PgpManager* GetPGPManager () const;
@@ -253,6 +258,7 @@ namespace Xoox
 		void handlePresenceChanged (const QXmppPresence&);
 		void handleMessageReceived (QXmppMessage);
 		void handlePEPEvent (const QString&, PEPEventBase*);
+		void handlePEPAvatarUpdated (const QString&, const QImage&);
 		void handleMessageDelivered (const QString&);
 		void handleCaptchaReceived (const QString&, const QXmppDataForm&);
 		void handleRoomInvitation (const QString&, const QString&, const QString&);

@@ -74,6 +74,7 @@ namespace Acetamide
 		QString GetGroupName () const;
 		QString GetRealID (QObject*) const;
 		QVariantMap GetIdentifyingData () const;
+		void InviteToMUC (const QString&, const QString&);
 
 		// IConfigurableMUC
 		QWidget* GetConfigurationWidget ();

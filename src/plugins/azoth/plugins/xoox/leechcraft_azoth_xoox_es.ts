@@ -6,42 +6,42 @@
     <message>
         <location filename="affiliationselectordialog.ui" line="14"/>
         <source>Select affiliation</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecciona afiliaciónes</translation>
     </message>
     <message>
         <location filename="affiliationselectordialog.ui" line="22"/>
         <source>JID:</source>
-        <translation type="unfinished"></translation>
+        <translation>JID:</translation>
     </message>
     <message>
         <location filename="affiliationselectordialog.ui" line="32"/>
         <source>Affiliation:</source>
-        <translation type="unfinished"></translation>
+        <translation>Afiliación:</translation>
     </message>
     <message>
         <location filename="affiliationselectordialog.ui" line="41"/>
         <source>Banned</source>
-        <translation type="unfinished"></translation>
+        <translation>Baneado</translation>
     </message>
     <message>
         <location filename="affiliationselectordialog.ui" line="48"/>
         <source>None</source>
-        <translation type="unfinished"></translation>
+        <translation>Ninguno</translation>
     </message>
     <message>
         <location filename="affiliationselectordialog.ui" line="55"/>
         <source>Member</source>
-        <translation type="unfinished"></translation>
+        <translation>Miembro</translation>
     </message>
     <message>
         <location filename="affiliationselectordialog.ui" line="65"/>
         <source>Admin</source>
-        <translation type="unfinished"></translation>
+        <translation>Administrador</translation>
     </message>
     <message>
         <location filename="affiliationselectordialog.ui" line="72"/>
         <source>Owner</source>
-        <translation type="unfinished"></translation>
+        <translation>Poseedor</translation>
     </message>
 </context>
 <context>
@@ -49,27 +49,27 @@
     <message>
         <location filename="bookmarkeditwidget.ui" line="38"/>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre:</translation>
     </message>
     <message>
         <location filename="bookmarkeditwidget.ui" line="48"/>
         <source>Room:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sala:</translation>
     </message>
     <message>
         <location filename="bookmarkeditwidget.ui" line="58"/>
         <source>Server:</source>
-        <translation type="unfinished"></translation>
+        <translation>Servidor:</translation>
     </message>
     <message>
         <location filename="bookmarkeditwidget.ui" line="68"/>
         <source>Nickname:</source>
-        <translation type="unfinished"></translation>
+        <translation>Apodo:</translation>
     </message>
     <message>
         <location filename="bookmarkeditwidget.ui" line="80"/>
         <source>Autojoin</source>
-        <translation type="unfinished"></translation>
+        <translation>Autoingreso</translation>
     </message>
 </context>
 <context>
@@ -77,7 +77,7 @@
     <message>
         <location filename="commandresultpage.ui" line="17"/>
         <source>Command result</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultado de comando</translation>
     </message>
 </context>
 <context>
@@ -85,12 +85,12 @@
     <message>
         <location filename="commandslistpage.ui" line="17"/>
         <source>Select command</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecciona comando</translation>
     </message>
     <message>
         <location filename="commandslistpage.ui" line="25"/>
         <source>Command to execute:</source>
-        <translation type="unfinished"></translation>
+        <translation>Comando para realizar:</translation>
     </message>
 </context>
 <context>
@@ -98,7 +98,8 @@
     <message>
         <location filename="executecommanddialog.ui" line="14"/>
         <source>Contact commands</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>?</translatorcomment>
+        <translation>Comandos de contactos</translation>
     </message>
 </context>
 <context>
@@ -106,7 +107,7 @@
     <message>
         <location filename="glooxaccountconfigurationdialog.ui" line="14"/>
         <source>Account configuration</source>
-        <translation type="unfinished"></translation>
+        <translation>Configuración de la cuenta</translation>
     </message>
 </context>
 <context>
@@ -114,52 +115,57 @@
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="27"/>
         <source>Basic</source>
-        <translation type="unfinished"></translation>
+        <translation>Básico</translation>
     </message>
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="39"/>
         <source>JID:</source>
-        <translation type="unfinished"></translation>
+        <translation>JID:</translation>
     </message>
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="53"/>
         <source>Nick:</source>
-        <translation type="unfinished"></translation>
+        <translation>Apodo:</translation>
     </message>
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="67"/>
         <source>Resource:</source>
-        <translation type="unfinished"></translation>
+        <translation>Resurso:</translation>
     </message>
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="74"/>
         <source>Azoth</source>
-        <translation type="unfinished"></translation>
+        <translation>Azoth</translation>
     </message>
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="81"/>
         <source>Priority:</source>
+        <translation>Prioridad:</translation>
+    </message>
+    <message>
+        <location filename="glooxaccountconfigurationwidget.ui" line="101"/>
+        <source>Update password...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="glooxaccountconfigurationwidget.ui" line="102"/>
+        <location filename="glooxaccountconfigurationwidget.ui" line="109"/>
         <source>Connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Conexion</translation>
     </message>
     <message>
-        <location filename="glooxaccountconfigurationwidget.ui" line="108"/>
+        <location filename="glooxaccountconfigurationwidget.ui" line="115"/>
         <source>Custom address</source>
-        <translation type="unfinished"></translation>
+        <translation>Dirección personalizada</translation>
     </message>
     <message>
-        <location filename="glooxaccountconfigurationwidget.ui" line="135"/>
+        <location filename="glooxaccountconfigurationwidget.ui" line="142"/>
         <source>Host:</source>
-        <translation type="unfinished"></translation>
+        <translation>Host:</translation>
     </message>
     <message>
-        <location filename="glooxaccountconfigurationwidget.ui" line="145"/>
+        <location filename="glooxaccountconfigurationwidget.ui" line="152"/>
         <source>Port:</source>
-        <translation type="unfinished"></translation>
+        <translation>Puerto:</translation>
     </message>
 </context>
 <context>
@@ -167,27 +173,27 @@
     <message>
         <location filename="inbandaccountregfirstpage.ui" line="22"/>
         <source>Please enter the name of the server you wish to register on:</source>
-        <translation type="unfinished"></translation>
+        <translation>Por favor, introduzca el nombre del servidor, en que quiere registrarse:</translation>
     </message>
     <message>
         <location filename="inbandaccountregfirstpage.ui" line="41"/>
         <source>draugr.de</source>
-        <translation type="unfinished"></translation>
+        <translation>draugr.de</translation>
     </message>
     <message>
         <location filename="inbandaccountregfirstpage.ui" line="46"/>
         <source>jabber.ru</source>
-        <translation type="unfinished"></translation>
+        <translation>jabber.ru</translation>
     </message>
     <message>
         <location filename="inbandaccountregfirstpage.ui" line="51"/>
         <source>neko.im</source>
-        <translation type="unfinished"></translation>
+        <translation>neko.im</translation>
     </message>
     <message>
         <location filename="inbandaccountregfirstpage.ui" line="56"/>
         <source>xabber.de</source>
-        <translation type="unfinished"></translation>
+        <translation>xabber.de</translation>
     </message>
 </context>
 <context>
@@ -195,17 +201,17 @@
     <message>
         <location filename="joingroupchatwidget.ui" line="26"/>
         <source>Server:</source>
-        <translation type="unfinished"></translation>
+        <translation>Servidor:</translation>
     </message>
     <message>
         <location filename="joingroupchatwidget.ui" line="40"/>
         <source>Room:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sala:</translation>
     </message>
     <message>
         <location filename="joingroupchatwidget.ui" line="54"/>
         <source>Nickname:</source>
-        <translation type="unfinished"></translation>
+        <translation>Apodo:</translation>
     </message>
 </context>
 <context>
@@ -214,313 +220,331 @@
         <location filename="adhoccommandserver.cpp" line="57"/>
         <location filename="adhoccommandserver.cpp" line="229"/>
         <source>Change status</source>
-        <translation type="unfinished"></translation>
+        <translation>Cambiar el estado</translation>
     </message>
     <message>
         <location filename="adhoccommandserver.cpp" line="67"/>
         <location filename="adhoccommandserver.cpp" line="300"/>
         <source>Leave groupchats</source>
-        <translation type="unfinished"></translation>
+        <translation>Abandonar conferencias</translation>
     </message>
     <message>
         <location filename="adhoccommandserver.cpp" line="209"/>
         <source>Status</source>
-        <translation type="unfinished"></translation>
+        <translation>Estado</translation>
     </message>
     <message>
         <location filename="adhoccommandserver.cpp" line="217"/>
         <source>Priority</source>
-        <translation type="unfinished"></translation>
+        <translation>Prioridad</translation>
     </message>
     <message>
         <location filename="adhoccommandserver.cpp" line="223"/>
         <source>Status message</source>
-        <translation type="unfinished"></translation>
+        <translation>Mensaje del estado</translation>
     </message>
     <message>
         <location filename="adhoccommandserver.cpp" line="230"/>
         <source>Choose the new status, priority and status message</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecciona, por favor, nuevos estado, prioridad y el mensaje de estado</translation>
     </message>
     <message>
         <location filename="adhoccommandserver.cpp" line="293"/>
         <source>Groupchats</source>
-        <translation type="unfinished"></translation>
+        <translation>Conferencias</translation>
     </message>
     <message>
         <location filename="adhoccommandserver.cpp" line="301"/>
         <source>Select the groupchats to leave</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecciona las conferencias para abandonar</translation>
     </message>
     <message>
         <location filename="adhoccommandserver.cpp" line="325"/>
         <source>leaving as the result of the remote command</source>
-        <translation type="unfinished"></translation>
+        <translation>abandonando como resultado del comando remoto</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Azoth::Xoox::ClientConnection</name>
     <message>
-        <location filename="clientconnection.cpp" line="373"/>
+        <location filename="clientconnection.cpp" line="383"/>
         <source>This room is already joined.</source>
-        <translation type="unfinished"></translation>
+        <translation>Usted ya está en esta sala de charla.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="626"/>
+        <location filename="clientconnection.cpp" line="646"/>
         <source>This message is encrypted. Please decrypt it to view the original contents.</source>
-        <translation type="unfinished"></translation>
+        <translation>Este mensaje está cifrado. Por favor, descifrala para ver el contenido original.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="761"/>
+        <location filename="clientconnection.cpp" line="781"/>
         <source>Data form from %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Forma de datos de %1</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="764"/>
+        <location filename="clientconnection.cpp" line="784"/>
         <source>You have received dataform from %1:</source>
-        <translation type="unfinished"></translation>
+        <translation>Usted ha recibido forma de datos de %1:</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="828"/>
+        <location filename="clientconnection.cpp" line="848"/>
         <source>socket error: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Error de socket: %1.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="833"/>
+        <location filename="clientconnection.cpp" line="853"/>
         <source>keep-alive error.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="clientconnection.cpp" line="836"/>
-        <source>error while connecting: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="clientconnection.cpp" line="840"/>
-        <source>no error.</source>
-        <translation type="unfinished"></translation>
+        <translation>error de mantenimiento.</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="856"/>
+        <source>error while connecting: </source>
+        <translation>Error al conectar:</translation>
+    </message>
+    <message>
+        <location filename="clientconnection.cpp" line="860"/>
+        <source>no error.</source>
+        <translation>no error.</translation>
+    </message>
+    <message>
+        <location filename="clientconnection.cpp" line="876"/>
         <source>Account %1:</source>
-        <translation type="unfinished"></translation>
+        <translation>Cuenta %1:</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1119"/>
+        <location filename="clientconnection.cpp" line="1151"/>
         <source>Enter CAPTCHA</source>
-        <translation type="unfinished"></translation>
+        <translation>Introduzca CAPTCHA</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1326"/>
+        <location filename="clientconnection.cpp" line="1358"/>
         <source>Error from %1: </source>
-        <translation type="unfinished"></translation>
+        <translation>Error de  %1:</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1331"/>
+        <location filename="clientconnection.cpp" line="1363"/>
         <source>Error text: %1.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="clientconnection.cpp" line="1391"/>
-        <source>Bad request.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="clientconnection.cpp" line="1393"/>
-        <source>Conflict (possibly, resource conflict).</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="clientconnection.cpp" line="1395"/>
-        <source>Feature not implemented.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="clientconnection.cpp" line="1397"/>
-        <source>Forbidden.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="clientconnection.cpp" line="1400"/>
-        <source>Internal server error.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="clientconnection.cpp" line="1402"/>
-        <source>Item not found.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="clientconnection.cpp" line="1404"/>
-        <source>JID is malformed.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="clientconnection.cpp" line="1406"/>
-        <source>Data is not acceptable.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="clientconnection.cpp" line="1408"/>
-        <source>Action is not allowed.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="clientconnection.cpp" line="1411"/>
-        <source>Not authorized.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="clientconnection.cpp" line="1413"/>
-        <source>Payment required.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="clientconnection.cpp" line="1415"/>
-        <source>Recipient unavailable.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="clientconnection.cpp" line="1417"/>
-        <source>Got redirect.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="clientconnection.cpp" line="1419"/>
-        <source>Registration required.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="clientconnection.cpp" line="1421"/>
-        <source>Remote server not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Texto de error: %1.</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="1423"/>
-        <source>Timeout contacting remote server.</source>
-        <translation type="unfinished"></translation>
+        <source>Bad request.</source>
+        <translation>Solicitud incorrecta.</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="1425"/>
-        <source>Error due to resource constraint.</source>
-        <translation type="unfinished"></translation>
+        <source>Conflict (possibly, resource conflict).</source>
+        <translation>Conflicto (posiblemente, el conflicto de recursos).</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="1427"/>
-        <source>Service is unavailable at the moment.</source>
-        <translation type="unfinished"></translation>
+        <source>Feature not implemented.</source>
+        <translation>Función no se aplica.</translation>
     </message>
     <message>
         <location filename="clientconnection.cpp" line="1429"/>
-        <source>Subscription is required to perform this action.</source>
-        <translation type="unfinished"></translation>
+        <source>Forbidden.</source>
+        <translation>Prohibido.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1433"/>
+        <location filename="clientconnection.cpp" line="1432"/>
+        <source>Internal server error.</source>
+        <translation>Error interno del servidor.</translation>
+    </message>
+    <message>
+        <location filename="clientconnection.cpp" line="1434"/>
+        <source>Item not found.</source>
+        <translation>Elemento no se encuentra.</translation>
+    </message>
+    <message>
+        <location filename="clientconnection.cpp" line="1436"/>
+        <source>JID is malformed.</source>
+        <translation>JID está mal formado.</translation>
+    </message>
+    <message>
+        <location filename="clientconnection.cpp" line="1438"/>
+        <source>Data is not acceptable.</source>
+        <translation>Información es inaceptable.</translation>
+    </message>
+    <message>
+        <location filename="clientconnection.cpp" line="1440"/>
+        <source>Action is not allowed.</source>
+        <translation>Acción no esta permitida.</translation>
+    </message>
+    <message>
+        <location filename="clientconnection.cpp" line="1443"/>
+        <source>Not authorized.</source>
+        <translation>No autorizado.</translation>
+    </message>
+    <message>
+        <location filename="clientconnection.cpp" line="1445"/>
+        <source>Payment required.</source>
+        <translation>Pago requerido.</translation>
+    </message>
+    <message>
+        <location filename="clientconnection.cpp" line="1447"/>
+        <source>Recipient unavailable.</source>
+        <translation>Destinatario no está disponible.</translation>
+    </message>
+    <message>
+        <location filename="clientconnection.cpp" line="1449"/>
+        <source>Got redirect.</source>
+        <translation>Se redirige.</translation>
+    </message>
+    <message>
+        <location filename="clientconnection.cpp" line="1451"/>
+        <source>Registration required.</source>
+        <translation>Se requiere inscripción.</translation>
+    </message>
+    <message>
+        <location filename="clientconnection.cpp" line="1453"/>
+        <source>Remote server not found.</source>
+        <translation>El servidor remoto no se encuentra.</translation>
+    </message>
+    <message>
+        <location filename="clientconnection.cpp" line="1455"/>
+        <source>Timeout contacting remote server.</source>
+        <translation>Tiempo de espera de contactar el servidor remoto.</translation>
+    </message>
+    <message>
+        <location filename="clientconnection.cpp" line="1457"/>
+        <source>Error due to resource constraint.</source>
+        <translation>Error debido a la limitación de recursos.</translation>
+    </message>
+    <message>
+        <location filename="clientconnection.cpp" line="1459"/>
+        <source>Service is unavailable at the moment.</source>
+        <translation>Servicio no está disponible en este momento.</translation>
+    </message>
+    <message>
+        <location filename="clientconnection.cpp" line="1461"/>
+        <source>Subscription is required to perform this action.</source>
+        <translation>La suscripción es necesaria para realizar esta acción.</translation>
+    </message>
+    <message>
+        <location filename="clientconnection.cpp" line="1465"/>
         <source>Other error.</source>
-        <translation type="unfinished"></translation>
+        <translation>Otro error.</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Azoth::Xoox::EntryBase</name>
     <message>
-        <location filename="entrybase.cpp" line="110"/>
+        <location filename="entrybase.cpp" line="137"/>
         <source>Commands...</source>
-        <translation type="unfinished"></translation>
+        <translation>Comandos...</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="136"/>
+        <location filename="entrybase.cpp" line="163"/>
         <source>Can&apos;t view info while offline</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede ver la información mientras está desconectado</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="352"/>
+        <location filename="entrybase.cpp" line="382"/>
         <source>%1 is now %2 (%3)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ahora esta %2 (%3)</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="459"/>
+        <location filename="entrybase.cpp" line="491"/>
         <source>Name: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre: %1</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="464"/>
+        <location filename="entrybase.cpp" line="496"/>
         <source>Nickname: %1
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Apodo: %1</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="467"/>
+        <location filename="entrybase.cpp" line="499"/>
         <source>URL: %1
 </source>
-        <translation type="unfinished"></translation>
+        <translation>URL: %1</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="470"/>
+        <location filename="entrybase.cpp" line="502"/>
         <source>Birthday: %1
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Cumpleaños: %1</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="473"/>
+        <location filename="entrybase.cpp" line="505"/>
         <source>Email: %1
 </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="entrybase.cpp" line="478"/>
-        <source>Photo:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="entrybase.cpp" line="509"/>
-        <source>Select resource</source>
-        <translation type="unfinished"></translation>
+        <translation>Correo electrónico: %1</translation>
     </message>
     <message>
         <location filename="entrybase.cpp" line="510"/>
+        <source>Photo:</source>
+        <translation>Foto:</translation>
+    </message>
+    <message>
+        <location filename="entrybase.cpp" line="541"/>
+        <source>Select resource</source>
+        <translation>Seleccionar el resurso</translation>
+    </message>
+    <message>
+        <location filename="entrybase.cpp" line="542"/>
         <source>Select resource for which to fetch the commands</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecciona los recursos para que buscar los comandos</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Azoth::Xoox::ExecuteCommandDialog</name>
     <message>
-        <location filename="executecommanddialog.cpp" line="142"/>
+        <location filename="executecommanddialog.cpp" line="155"/>
+        <source>Please wait while the selected command is executed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="executecommanddialog.cpp" line="165"/>
         <source>Please wait while the list of commands is fetched.</source>
-        <translation type="unfinished"></translation>
+        <translation>Por favor, espera mientras la lista de comandos se recupera.</translation>
     </message>
     <message>
-        <location filename="executecommanddialog.cpp" line="219"/>
+        <location filename="executecommanddialog.cpp" line="242"/>
         <source>Please wait while command result is fetched.</source>
-        <translation type="unfinished"></translation>
+        <translation>Por favor, espera mientras que el resultado de comando se recupera.</translation>
     </message>
     <message>
-        <location filename="executecommanddialog.cpp" line="236"/>
+        <location filename="executecommanddialog.cpp" line="259"/>
         <source>Please wait while action is performed</source>
-        <translation type="unfinished"></translation>
+        <translation>Por favor, espera mientras que la acción se realiza</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Azoth::Xoox::GlooxAccount</name>
     <message>
-        <location filename="glooxaccount.cpp" line="67"/>
+        <location filename="glooxaccount.cpp" line="68"/>
         <source>Privacy lists...</source>
-        <translation type="unfinished"></translation>
+        <translation>Listas de privacidad...</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="517"/>
+        <location filename="glooxaccount.cpp" line="538"/>
         <source>Unable to enable encryption for entry %1: no key has been set.</source>
-        <translation type="unfinished"></translation>
+        <translation>No es posible activar el cifrado para la entrada%1: no hay ninguna clave establecida.</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="526"/>
+        <location filename="glooxaccount.cpp" line="547"/>
         <source>Unable to change encryption state for %1.</source>
+        <translation>No se puede cambiar el estado de cifrado para %1.</translation>
+    </message>
+    <message>
+        <location filename="glooxaccount.cpp" line="681"/>
+        <source>Enter password for %1:</source>
+        <translation>Introduzca la contraseña para %1:</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Azoth::Xoox::GlooxAccountConfigurationWidget</name>
+    <message>
+        <location filename="glooxaccountconfigurationwidget.cpp" line="109"/>
+        <source>Password update</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="660"/>
-        <source>Enter password for %1:</source>
+        <location filename="glooxaccountconfigurationwidget.cpp" line="110"/>
+        <source>Enter new password:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -529,70 +553,70 @@
     <message>
         <location filename="glooxclentry.cpp" line="235"/>
         <source>Unauthorized users</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuarios no autorizados</translation>
     </message>
     <message>
         <location filename="glooxclentry.cpp" line="339"/>
         <source>Login</source>
-        <translation type="unfinished"></translation>
+        <translation>Entrar</translation>
     </message>
     <message>
         <location filename="glooxclentry.cpp" line="344"/>
         <source>Logout</source>
-        <translation type="unfinished"></translation>
+        <translation>Salir</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Azoth::Xoox::InBandAccountRegSecondPage</name>
     <message>
-        <location filename="inbandaccountregsecondpage.cpp" line="138"/>
+        <location filename="inbandaccountregsecondpage.cpp" line="143"/>
         <source>Connecting to %1...</source>
-        <translation type="unfinished"></translation>
+        <translation>Conectando a %1...</translation>
     </message>
     <message>
-        <location filename="inbandaccountregsecondpage.cpp" line="179"/>
+        <location filename="inbandaccountregsecondpage.cpp" line="186"/>
         <source>Service unavailable</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="inbandaccountregsecondpage.cpp" line="237"/>
-        <source>data conflict</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="inbandaccountregsecondpage.cpp" line="239"/>
-        <source>data is not acceptable</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="inbandaccountregsecondpage.cpp" line="241"/>
-        <source>general error:</source>
-        <translation type="unfinished"></translation>
+        <translation>Servicio no disponible</translation>
     </message>
     <message>
         <location filename="inbandaccountregsecondpage.cpp" line="245"/>
+        <source>data conflict</source>
+        <translation>conflicto de datos</translation>
+    </message>
+    <message>
+        <location filename="inbandaccountregsecondpage.cpp" line="247"/>
+        <source>data is not acceptable</source>
+        <translation>Información es inaceptable</translation>
+    </message>
+    <message>
+        <location filename="inbandaccountregsecondpage.cpp" line="249"/>
+        <source>general error:</source>
+        <translation>Error general:</translation>
+    </message>
+    <message>
+        <location filename="inbandaccountregsecondpage.cpp" line="253"/>
         <source>general registration error</source>
-        <translation type="unfinished"></translation>
+        <translation>Error general de registracion</translation>
     </message>
     <message>
-        <location filename="inbandaccountregsecondpage.cpp" line="270"/>
+        <location filename="inbandaccountregsecondpage.cpp" line="278"/>
         <source>Socket error:</source>
-        <translation type="unfinished"></translation>
+        <translation>Error de socket:</translation>
     </message>
     <message>
-        <location filename="inbandaccountregsecondpage.cpp" line="273"/>
+        <location filename="inbandaccountregsecondpage.cpp" line="281"/>
         <source>Keep alive error.</source>
-        <translation type="unfinished"></translation>
+        <translation>Error de mantenimiento.</translation>
     </message>
     <message>
-        <location filename="inbandaccountregsecondpage.cpp" line="276"/>
+        <location filename="inbandaccountregsecondpage.cpp" line="284"/>
         <source>XMPP error:</source>
-        <translation type="unfinished"></translation>
+        <translation>Error de XMPP:</translation>
     </message>
     <message>
-        <location filename="inbandaccountregsecondpage.cpp" line="279"/>
+        <location filename="inbandaccountregsecondpage.cpp" line="287"/>
         <source>No error.</source>
-        <translation type="unfinished"></translation>
+        <translation>No error.</translation>
     </message>
 </context>
 <context>
@@ -600,16 +624,74 @@
     <message>
         <location filename="inbandaccountregthirdpage.cpp" line="68"/>
         <source>Awaiting registration result...</source>
-        <translation type="unfinished"></translation>
+        <translation>En espera del resultado de inscripción...</translation>
     </message>
     <message>
         <location filename="inbandaccountregthirdpage.cpp" line="80"/>
         <source>Registration completed successfully. You may now further configure account properties.</source>
-        <translation type="unfinished"></translation>
+        <translation>Inscripción completo con éxito. Ahora puede seguir configurando las propiedades de cuenta.</translation>
     </message>
     <message>
         <location filename="inbandaccountregthirdpage.cpp" line="90"/>
         <source>Registration failed: %1.</source>
+        <translation>Error de  inscripción: %1.</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Azoth::Xoox::JabberSearchSession</name>
+    <message>
+        <location filename="jabbersearchsession.cpp" line="87"/>
+        <source>(unknown)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="jabbersearchsession.cpp" line="145"/>
+        <source>search service unavailable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="jabbersearchsession.cpp" line="148"/>
+        <source>search feature not implemented</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="jabbersearchsession.cpp" line="151"/>
+        <source>search is forbidden</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="jabbersearchsession.cpp" line="154"/>
+        <source>registration is required for performing search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="jabbersearchsession.cpp" line="157"/>
+        <source>search not allowed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="jabbersearchsession.cpp" line="160"/>
+        <source>search not authorized</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="jabbersearchsession.cpp" line="163"/>
+        <source>too much search requests</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="jabbersearchsession.cpp" line="166"/>
+        <source>unknown condition %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="jabbersearchsession.cpp" line="171"/>
+        <source>Error searching on server %1: %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="jabbersearchsession.cpp" line="176"/>
+        <source>Original error text: %1.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -618,16 +700,36 @@
     <message>
         <location filename="legacyformbuilder.cpp" line="61"/>
         <source>Username:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre de usuario:</translation>
     </message>
     <message>
         <location filename="legacyformbuilder.cpp" line="63"/>
         <source>Password:</source>
-        <translation type="unfinished"></translation>
+        <translation>Contraseña:</translation>
     </message>
     <message>
         <location filename="legacyformbuilder.cpp" line="65"/>
         <source>Registered:</source>
+        <translation>Registrado:</translation>
+    </message>
+    <message>
+        <location filename="legacyformbuilder.cpp" line="67"/>
+        <source>First name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="legacyformbuilder.cpp" line="69"/>
+        <source>Last name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="legacyformbuilder.cpp" line="71"/>
+        <source>Nick:</source>
+        <translation type="unfinished">Apodo:</translation>
+    </message>
+    <message>
+        <location filename="legacyformbuilder.cpp" line="73"/>
+        <source>E-Mail:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -636,7 +738,7 @@
     <message>
         <location filename="xoox.cpp" line="65"/>
         <source>XMPP (Jabber) protocol module using the QXmpp library.</source>
-        <translation type="unfinished"></translation>
+        <translation>Módulo de protocolo XMPP (Jabber) esta utilizando la biblioteca QXmpp.</translation>
     </message>
 </context>
 <context>
@@ -644,102 +746,103 @@
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="47"/>
         <source>Fetching names of privacy lists...</source>
-        <translation type="unfinished"></translation>
+        <translation>Obtención de los nombres de las listas de privacidad...</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="65"/>
         <source>Fetching list %1...</source>
-        <translation type="unfinished"></translation>
+        <translation>Obtención de la lista %1...</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="85"/>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="86"/>
         <source>Value</source>
-        <translation type="unfinished"></translation>
+        <translation>Valor</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="86"/>
         <source>Action</source>
-        <translation type="unfinished"></translation>
+        <translation>Acción</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="86"/>
         <source>Stanzas</source>
-        <translation type="unfinished"></translation>
+        <translation>Estrofas</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="97"/>
         <source>None</source>
-        <translation type="unfinished"></translation>
+        <translation>Ninguno</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="100"/>
         <source>JID</source>
-        <translation type="unfinished"></translation>
+        <translation>JID</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="103"/>
         <source>Subscription</source>
-        <translation type="unfinished"></translation>
+        <translation>Suscripción</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="106"/>
         <source>Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Grupo</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="112"/>
         <source>Allow</source>
-        <translation type="unfinished"></translation>
+        <translation>Permitir</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="113"/>
         <source>Deny</source>
-        <translation type="unfinished"></translation>
+        <translation>Prohibir</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="119"/>
         <source>All</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>no comprendo el contexto</translatorcomment>
+        <translation>Todo</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="123"/>
         <source>Messages</source>
-        <translation type="unfinished"></translation>
+        <translation>Mensajes</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="125"/>
         <source>Incoming presences</source>
-        <translation type="unfinished"></translation>
+        <translation>Presencias entrantes</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="127"/>
         <source>Outgoing presences</source>
-        <translation type="unfinished"></translation>
+        <translation>Presencias salientes</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="129"/>
         <source>IQ</source>
-        <translation type="unfinished"></translation>
+        <translation>IQ</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="168"/>
         <source>Please enter the name of the new list</source>
-        <translation type="unfinished"></translation>
+        <translation>Por favor, introduzca el nombre de nueva lista</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="193"/>
         <source>Unable to delete a list that is currently active or selected as default one.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede eliminar una lista que está actualmente activa o seleccionada como predeterminada.</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="200"/>
         <source>This list would be immediately and permanently deleted. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Esta lista sería inmediatamente y permanentemente eliminada. ¿Está seguro?</translation>
     </message>
 </context>
 <context>
@@ -747,22 +850,22 @@
     <message>
         <location filename="privacylistsitemdialog.cpp" line="126"/>
         <source>Both</source>
-        <translation type="unfinished"></translation>
+        <translation>Ambos</translation>
     </message>
     <message>
         <location filename="privacylistsitemdialog.cpp" line="127"/>
         <source>To</source>
-        <translation type="unfinished"></translation>
+        <translation>A</translation>
     </message>
     <message>
         <location filename="privacylistsitemdialog.cpp" line="128"/>
         <source>From</source>
-        <translation type="unfinished"></translation>
+        <translation>De</translation>
     </message>
     <message>
         <location filename="privacylistsitemdialog.cpp" line="129"/>
         <source>None</source>
-        <translation type="unfinished"></translation>
+        <translation>Ninguno</translation>
     </message>
 </context>
 <context>
@@ -770,72 +873,72 @@
     <message>
         <location filename="roomclentry.cpp" line="69"/>
         <source>Role</source>
-        <translation type="unfinished"></translation>
+        <translation>Rol</translation>
     </message>
     <message>
         <location filename="roomclentry.cpp" line="70"/>
         <source>Affiliation</source>
-        <translation type="unfinished"></translation>
+        <translation>Afiliación</translation>
     </message>
     <message>
         <location filename="roomclentry.cpp" line="71"/>
         <source>Kicked</source>
-        <translation type="unfinished"></translation>
+        <translation>Expulsado</translation>
     </message>
     <message>
         <location filename="roomclentry.cpp" line="72"/>
         <source>Visitor</source>
-        <translation type="unfinished"></translation>
+        <translation>Visitante</translation>
     </message>
     <message>
         <location filename="roomclentry.cpp" line="73"/>
         <source>Participant</source>
-        <translation type="unfinished"></translation>
+        <translation>Participante</translation>
     </message>
     <message>
         <location filename="roomclentry.cpp" line="74"/>
         <source>Moderator</source>
-        <translation type="unfinished"></translation>
+        <translation>Moderador</translation>
     </message>
     <message>
         <location filename="roomclentry.cpp" line="75"/>
         <source>Banned</source>
-        <translation type="unfinished"></translation>
+        <translation>Baneado</translation>
     </message>
     <message>
         <location filename="roomclentry.cpp" line="76"/>
         <source>None</source>
-        <translation type="unfinished"></translation>
+        <translation>Ninguno</translation>
     </message>
     <message>
         <location filename="roomclentry.cpp" line="77"/>
         <source>Member</source>
-        <translation type="unfinished"></translation>
+        <translation>Miembro</translation>
     </message>
     <message>
         <location filename="roomclentry.cpp" line="78"/>
         <source>Admin</source>
-        <translation type="unfinished"></translation>
+        <translation>Administrador</translation>
     </message>
     <message>
         <location filename="roomclentry.cpp" line="79"/>
         <source>Owner</source>
-        <translation type="unfinished"></translation>
+        <translation>Poseedor</translation>
     </message>
     <message>
         <location filename="roomclentry.cpp" line="128"/>
         <source>Multiuser chatrooms</source>
-        <translation type="unfinished"></translation>
+        <translation>Salas de chat multiusuario</translation>
     </message>
     <message>
         <location filename="roomclentry.cpp" line="179"/>
         <source>Request voice</source>
-        <translation type="unfinished"></translation>
+        <translation>Petición de voz</translation>
     </message>
     <message>
         <location filename="roomclentry.cpp" line="253"/>
         <source>%1 participants</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 participantes</translation>
     </message>
 </context>
 <context>
@@ -844,27 +947,27 @@
         <location filename="roomconfigwidget.cpp" line="68"/>
         <location filename="roomconfigwidget.cpp" line="78"/>
         <source>Reason</source>
-        <translation type="unfinished"></translation>
+        <translation>Motivo</translation>
     </message>
     <message>
         <location filename="roomconfigwidget.cpp" line="70"/>
         <source>Banned</source>
-        <translation type="unfinished"></translation>
+        <translation>Baneado</translation>
     </message>
     <message>
         <location filename="roomconfigwidget.cpp" line="71"/>
         <source>Members</source>
-        <translation type="unfinished"></translation>
+        <translation>Miembros</translation>
     </message>
     <message>
         <location filename="roomconfigwidget.cpp" line="72"/>
         <source>Admins</source>
-        <translation type="unfinished"></translation>
+        <translation>Administradores</translation>
     </message>
     <message>
         <location filename="roomconfigwidget.cpp" line="73"/>
         <source>Owners</source>
-        <translation type="unfinished"></translation>
+        <translation>Poseedores</translation>
     </message>
 </context>
 <context>
@@ -872,180 +975,181 @@
     <message>
         <location filename="roomhandler.cpp" line="123"/>
         <source>%1 has left the room</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ha salido de la sala</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="145"/>
         <source>%1 joined the room as %2 and %3</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ha entrado en la sala como %2 y %3</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="150"/>
         <source>%1 (%2) joined the room as %3 and %4</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 (%2) ha entrado en la sala como %3 y %4</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="173"/>
         <source>%1 changed status to %2 (%3)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ha cambiado su estado a %2 (%3)</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="192"/>
         <source>%1 changed nick to %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ha cambiado su apodo a %2</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="209"/>
         <source>%1 has been kicked</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ha sido expulsado</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="212"/>
         <source>%1 has been kicked: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ha sido expulsado: %2</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="229"/>
         <source>%1 has been banned</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ha sido baneado</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="232"/>
         <source>%1 has been banned: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ha sido baneado: %2</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="253"/>
         <source>%1 is now %2 and %3</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ahora esta %2 y %3</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="258"/>
         <source>%1 is now %2 and %3: %4</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ahora esta %2 y %3: %4</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="286"/>
         <source>Authorization required</source>
-        <translation type="unfinished"></translation>
+        <translation>Se requiere la autorización</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="287"/>
         <source>This room is password-protected. Please enter the password required to join this room.</source>
-        <translation type="unfinished"></translation>
+        <translation>Esta habitación está protegido con contraseña. Por favor, introduzca la contraseña necesaria para entrar.</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="310"/>
         <source>nickname already taken</source>
-        <translation type="unfinished"></translation>
+        <translation>Este apodo ya esta tomado</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="314"/>
         <source>access forbidden</source>
-        <translation type="unfinished"></translation>
+        <translation>Acceso prohibido</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="317"/>
         <source>password required</source>
-        <translation type="unfinished"></translation>
+        <translation>La contraseña se requiere</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="320"/>
         <source>malformed JID</source>
-        <translation type="unfinished"></translation>
+        <translation>malformado JID</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="323"/>
         <source>only registered users can enter this room</source>
-        <translation type="unfinished"></translation>
+        <translation>Sólo los usuarios registrados pueden entrar en esta sala</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="326"/>
         <source>unknown condition %1 (please report to developers)</source>
-        <translation type="unfinished"></translation>
+        <translation>la condición desconocida %1 (por favor, informe a los desarrolladores)</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="330"/>
         <source>Error for %1: %2 (original message: %3)</source>
-        <translation type="unfinished"></translation>
+        <translation>Error para %1: %2 (mensaje original: %3)</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="334"/>
         <source>no message</source>
-        <translation type="unfinished"></translation>
+        <translation>no mensaje</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="435"/>
         <source>%1 changed subject to %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ha cambiado el asunto a %2</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Azoth::Xoox::SDSession</name>
     <message>
-        <location filename="sdsession.cpp" line="73"/>
+        <location filename="sdsession.cpp" line="75"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="73"/>
+        <location filename="sdsession.cpp" line="75"/>
         <source>JID</source>
-        <translation type="unfinished"></translation>
+        <translation>JID</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="73"/>
+        <location filename="sdsession.cpp" line="75"/>
         <source>Node</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="sdsession.cpp" line="106"/>
-        <source>View VCard...</source>
-        <translation type="unfinished"></translation>
+        <translation>Nodo</translation>
     </message>
     <message>
         <location filename="sdsession.cpp" line="108"/>
-        <source>Add to roster...</source>
-        <translation type="unfinished"></translation>
+        <source>View VCard...</source>
+        <translation>Mirar VCard...</translation>
     </message>
     <message>
         <location filename="sdsession.cpp" line="110"/>
+        <source>Add to roster...</source>
+        <translation>Añadir a la lista de contactos...</translation>
+    </message>
+    <message>
+        <location filename="sdsession.cpp" line="112"/>
         <source>Register...</source>
+        <translatorcomment>&quot;se&quot;?</translatorcomment>
+        <translation>Registrar...</translation>
+    </message>
+    <message>
+        <location filename="sdsession.cpp" line="125"/>
+        <source>Execute...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="183"/>
+        <location filename="sdsession.cpp" line="199"/>
         <source>Identities:</source>
-        <translation type="unfinished"></translation>
+        <translation>Identidades:</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="191"/>
+        <location filename="sdsession.cpp" line="207"/>
         <source>Identity name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre de la identidad:</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="192"/>
+        <location filename="sdsession.cpp" line="208"/>
         <source>Category:</source>
-        <translation type="unfinished"></translation>
+        <translation>Categoría:</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="193"/>
+        <location filename="sdsession.cpp" line="209"/>
         <source>Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo:</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="194"/>
+        <location filename="sdsession.cpp" line="210"/>
         <source>Language:</source>
-        <translation type="unfinished"></translation>
+        <translation>Lengua:</translation>
     </message>
     <message>
-        <location filename="sdsession.cpp" line="204"/>
+        <location filename="sdsession.cpp" line="220"/>
         <source>Capabilities:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="sdsession.cpp" line="347"/>
-        <source>Gateways</source>
-        <translation type="unfinished"></translation>
+        <translation>Capacidades:</translation>
     </message>
 </context>
 <context>
@@ -1053,7 +1157,7 @@
     <message>
         <location filename="selfcontact.cpp" line="75"/>
         <source>Self contact</source>
-        <translation type="unfinished"></translation>
+        <translation>Su contacto</translation>
     </message>
 </context>
 <context>
@@ -1061,35 +1165,35 @@
     <message>
         <location filename="transferjob.cpp" line="94"/>
         <source>could not open incoming file %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede abrir el archivo entrante %1: %2</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Azoth::Xoox::VCardDialog</name>
     <message>
-        <location filename="vcarddialog.cpp" line="87"/>
+        <location filename="vcarddialog.cpp" line="88"/>
         <source>Capabilities</source>
-        <translation type="unfinished"></translation>
+        <translation>Capacidades</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="98"/>
+        <location filename="vcarddialog.cpp" line="99"/>
         <source>VCard for %1</source>
-        <translation type="unfinished"></translation>
+        <translation>VCard para %1</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="122"/>
+        <location filename="vcarddialog.cpp" line="123"/>
         <source>No photo</source>
-        <translation type="unfinished"></translation>
+        <translation>No foto</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="173"/>
+        <location filename="vcarddialog.cpp" line="177"/>
         <source>Choose new photo</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecciona la foto nueva</translation>
     </message>
     <message>
-        <location filename="vcarddialog.cpp" line="175"/>
+        <location filename="vcarddialog.cpp" line="179"/>
         <source>Images (*.png *.jpg *.gif);;All files (*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Imágenes (*.png *.jpg *.gif);;Todos los archivos (*.*)</translation>
     </message>
 </context>
 <context>
@@ -1097,7 +1201,7 @@
     <message>
         <location filename="executecommanddialog.cpp" line="42"/>
         <source>Fetching data...</source>
-        <translation type="unfinished"></translation>
+        <translation>Trayendo los datos...</translation>
     </message>
 </context>
 <context>
@@ -1105,74 +1209,74 @@
     <message>
         <location filename="privacylistsconfigdialog.ui" line="14"/>
         <source>Privacy lists</source>
-        <translation type="unfinished"></translation>
+        <translation>Listas de privacidad</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.ui" line="20"/>
         <source>Global configuration</source>
-        <translation type="unfinished"></translation>
+        <translation>Configuración global</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.ui" line="26"/>
         <source>Default list:</source>
-        <translation type="unfinished"></translation>
+        <translation>Lista predeterminada:</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.ui" line="36"/>
         <source>Active list:</source>
-        <translation type="unfinished"></translation>
+        <translation>Lista activa:</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.ui" line="49"/>
         <source>List configuration</source>
-        <translation type="unfinished"></translation>
+        <translation>Configuración de la lista</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.ui" line="57"/>
         <source>Configure list:</source>
-        <translation type="unfinished"></translation>
+        <translation>Configurar la lista:</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.ui" line="67"/>
         <location filename="privacylistsconfigdialog.ui" line="101"/>
         <source>Add...</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir...</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.ui" line="74"/>
         <location filename="privacylistsconfigdialog.ui" line="115"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Remover</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.ui" line="108"/>
         <source>Modify...</source>
-        <translation type="unfinished"></translation>
+        <translation>Modificar...</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.ui" line="122"/>
         <source>Move up</source>
-        <translation type="unfinished"></translation>
+        <translation>Subir</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.ui" line="129"/>
         <source>Move down</source>
-        <translation type="unfinished"></translation>
+        <translation>Bajar</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.ui" line="153"/>
         <source>Default policy:</source>
-        <translation type="unfinished"></translation>
+        <translation>Directiva predeterminada:</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.ui" line="161"/>
         <source>allow</source>
-        <translation type="unfinished"></translation>
+        <translation>Permitir</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.ui" line="166"/>
         <source>block</source>
-        <translation type="unfinished"></translation>
+        <translation>Bloquear</translation>
     </message>
 </context>
 <context>
@@ -1180,72 +1284,72 @@
     <message>
         <location filename="privacylistsitemdialog.ui" line="14"/>
         <source>Privacy rule</source>
-        <translation type="unfinished"></translation>
+        <translation>Regla de privacidad</translation>
     </message>
     <message>
         <location filename="privacylistsitemdialog.ui" line="25"/>
         <source>Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo:</translation>
     </message>
     <message>
         <location filename="privacylistsitemdialog.ui" line="33"/>
         <source>JID</source>
-        <translation type="unfinished"></translation>
+        <translation>JID</translation>
     </message>
     <message>
         <location filename="privacylistsitemdialog.ui" line="38"/>
         <source>Subscription</source>
-        <translation type="unfinished"></translation>
+        <translation>Suscripción</translation>
     </message>
     <message>
         <location filename="privacylistsitemdialog.ui" line="43"/>
         <source>Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Grupo</translation>
     </message>
     <message>
         <location filename="privacylistsitemdialog.ui" line="51"/>
         <source>Value:</source>
-        <translation type="unfinished"></translation>
+        <translation>Valor:</translation>
     </message>
     <message>
         <location filename="privacylistsitemdialog.ui" line="65"/>
         <source>Action:</source>
-        <translation type="unfinished"></translation>
+        <translation>Acción:</translation>
     </message>
     <message>
         <location filename="privacylistsitemdialog.ui" line="75"/>
         <source>Allow</source>
-        <translation type="unfinished"></translation>
+        <translation>Permitir</translation>
     </message>
     <message>
         <location filename="privacylistsitemdialog.ui" line="80"/>
         <source>Deny</source>
-        <translation type="unfinished"></translation>
+        <translation>Prohibir</translation>
     </message>
     <message>
         <location filename="privacylistsitemdialog.ui" line="88"/>
         <source>Stanza types</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipos de estrofa</translation>
     </message>
     <message>
         <location filename="privacylistsitemdialog.ui" line="94"/>
         <source>Message</source>
-        <translation type="unfinished"></translation>
+        <translation>Mensaje</translation>
     </message>
     <message>
         <location filename="privacylistsitemdialog.ui" line="101"/>
         <source>Incoming presence</source>
-        <translation type="unfinished"></translation>
+        <translation>Presencia entrante</translation>
     </message>
     <message>
         <location filename="privacylistsitemdialog.ui" line="108"/>
         <source>Outgoing presence</source>
-        <translation type="unfinished"></translation>
+        <translation>Presencia saliente</translation>
     </message>
     <message>
         <location filename="privacylistsitemdialog.ui" line="115"/>
         <source>IQ</source>
-        <translation type="unfinished"></translation>
+        <translation>IQ</translation>
     </message>
 </context>
 <context>
@@ -1253,58 +1357,58 @@
     <message>
         <location filename="formbuilder.cpp" line="93"/>
         <source>Unable to represent embedded media data.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="util.cpp" line="38"/>
-        <source>guest</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="util.cpp" line="40"/>
-        <source>visitor</source>
-        <translation type="unfinished"></translation>
+        <translation>Incapaz de representar a multimedia de los datos incrustados.</translation>
     </message>
     <message>
         <location filename="util.cpp" line="42"/>
-        <source>participant</source>
-        <translation type="unfinished"></translation>
+        <source>guest</source>
+        <translation>invitado</translation>
     </message>
     <message>
         <location filename="util.cpp" line="44"/>
-        <source>moderator</source>
-        <translation type="unfinished"></translation>
+        <source>visitor</source>
+        <translation>Visitante</translation>
     </message>
     <message>
         <location filename="util.cpp" line="46"/>
-        <location filename="util.cpp" line="65"/>
+        <source>participant</source>
+        <translation>Participante</translation>
+    </message>
+    <message>
+        <location filename="util.cpp" line="48"/>
+        <source>moderator</source>
+        <translation>Moderador</translation>
+    </message>
+    <message>
+        <location filename="util.cpp" line="50"/>
+        <location filename="util.cpp" line="69"/>
         <source>unspecified</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="util.cpp" line="55"/>
-        <source>outcast</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="util.cpp" line="57"/>
-        <source>newcomer</source>
-        <translation type="unfinished"></translation>
+        <translation>sin especificar</translation>
     </message>
     <message>
         <location filename="util.cpp" line="59"/>
-        <source>member</source>
-        <translation type="unfinished"></translation>
+        <source>outcast</source>
+        <translation>paria</translation>
     </message>
     <message>
         <location filename="util.cpp" line="61"/>
-        <source>admin</source>
-        <translation type="unfinished"></translation>
+        <source>newcomer</source>
+        <translation>novato</translation>
     </message>
     <message>
         <location filename="util.cpp" line="63"/>
+        <source>member</source>
+        <translation>Miembro</translation>
+    </message>
+    <message>
+        <location filename="util.cpp" line="65"/>
+        <source>admin</source>
+        <translation>Administrador</translation>
+    </message>
+    <message>
+        <location filename="util.cpp" line="67"/>
         <source>owner</source>
-        <translation type="unfinished"></translation>
+        <translation>propietario</translation>
     </message>
 </context>
 <context>
@@ -1312,27 +1416,27 @@
     <message>
         <location filename="roomconfigwidget.ui" line="27"/>
         <source>Permissions</source>
-        <translation type="unfinished"></translation>
+        <translation>Permisos</translation>
     </message>
     <message>
         <location filename="roomconfigwidget.ui" line="41"/>
         <source>Add...</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir...</translation>
     </message>
     <message>
         <location filename="roomconfigwidget.ui" line="48"/>
         <source>Modify...</source>
-        <translation type="unfinished"></translation>
+        <translation>Modificar...</translation>
     </message>
     <message>
         <location filename="roomconfigwidget.ui" line="55"/>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Remover</translation>
     </message>
     <message>
         <location filename="roomconfigwidget.ui" line="78"/>
         <source>Configuration</source>
-        <translation type="unfinished"></translation>
+        <translation>Configuración</translation>
     </message>
 </context>
 <context>
@@ -1340,97 +1444,98 @@
     <message>
         <location filename="vcarddialog.ui" line="24"/>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>General</translation>
     </message>
     <message>
         <location filename="vcarddialog.ui" line="38"/>
         <source>Real name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre real:</translation>
     </message>
     <message>
         <location filename="vcarddialog.ui" line="52"/>
         <source>Nick:</source>
-        <translation type="unfinished"></translation>
+        <translation>Apodo:</translation>
     </message>
     <message>
         <location filename="vcarddialog.ui" line="66"/>
         <source>Birthday:</source>
-        <translation type="unfinished"></translation>
+        <translation>Cumpleaños:</translation>
     </message>
     <message>
         <location filename="vcarddialog.ui" line="73"/>
         <source>Phone:</source>
-        <translation type="unfinished"></translation>
+        <translation>Teléfono:</translation>
     </message>
     <message>
         <location filename="vcarddialog.ui" line="87"/>
         <source>E-mail:</source>
-        <translation type="unfinished"></translation>
+        <translation>Correo electrónico:</translation>
     </message>
     <message>
         <location filename="vcarddialog.ui" line="104"/>
         <source>dd MMMM yyyy</source>
-        <translation type="unfinished"></translation>
+        <translation>dd MMMM yyyy</translation>
     </message>
     <message>
         <location filename="vcarddialog.ui" line="114"/>
         <source>URL:</source>
-        <translation type="unfinished"></translation>
+        <translation>URL: </translation>
     </message>
     <message>
         <location filename="vcarddialog.ui" line="128"/>
         <source>JID:</source>
-        <translation type="unfinished"></translation>
+        <translation>JID:</translation>
     </message>
     <message>
         <location filename="vcarddialog.ui" line="165"/>
         <source>No photo</source>
-        <translation type="unfinished"></translation>
+        <translation>No foto</translation>
     </message>
     <message>
         <location filename="vcarddialog.ui" line="185"/>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>Navegar...</translation>
     </message>
     <message>
         <location filename="vcarddialog.ui" line="192"/>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>Aclarar</translation>
     </message>
     <message>
         <location filename="vcarddialog.ui" line="202"/>
         <source>Work</source>
-        <translation type="unfinished"></translation>
+        <translation>Trabajo</translation>
     </message>
     <message>
         <location filename="vcarddialog.ui" line="214"/>
         <source>Organization name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre de la organización:</translation>
     </message>
     <message>
         <location filename="vcarddialog.ui" line="228"/>
         <source>Organization unit:</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>? перепроверить при возможности</translatorcomment>
+        <translation>Unidad organizativa:</translation>
     </message>
     <message>
         <location filename="vcarddialog.ui" line="242"/>
         <source>Title:</source>
-        <translation type="unfinished"></translation>
+        <translation>Título:</translation>
     </message>
     <message>
         <location filename="vcarddialog.ui" line="256"/>
         <source>Role:</source>
-        <translation type="unfinished"></translation>
+        <translation>Rol:</translation>
     </message>
     <message>
         <location filename="vcarddialog.ui" line="271"/>
         <source>Notes</source>
-        <translation type="unfinished"></translation>
+        <translation>Notas</translation>
     </message>
     <message>
         <location filename="vcarddialog.ui" line="284"/>
         <source>Client info</source>
-        <translation type="unfinished"></translation>
+        <translation>Info sobre cliente</translation>
     </message>
 </context>
 </TS>

@@ -30,7 +30,9 @@ INCLUDE_DIRECTORIES (
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
 
-IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} EQUAL 2.8 AND ${CMAKE_PATCH_VERSION} LESS 4)
+OPTION (ENABLE_QTMULTIMEDIA_KLUDGE "Enable kludges for finding QtMultimedia" OFF)
+
+IF ((${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} EQUAL 2.8 AND ${CMAKE_PATCH_VERSION} LESS 4) OR ENABLE_QTMULTIMEDIA_KLUDGE)
 	IF (${QT_VERSION_MINOR} EQUAL 6)
 		INCLUDE_DIRECTORIES (/usr/include/qt4/QtMultimedia)
 		SET (QTMULTIMEDIA_KLUDGE "QtMultimedia")
@@ -39,7 +41,7 @@ IF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} EQUAL 2.8 AND ${CMAKE_PATCH_VE
 		INCLUDE_DIRECTORIES (/usr/include/QtMobility)
 		SET (QTMULTIMEDIA_KLUDGE "QtMultimediaKit")
 	ENDIF (${QT_VERSION_MINOR} EQUAL 6)
-ENDIF (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} EQUAL 2.8 AND ${CMAKE_PATCH_VERSION} LESS 4)
+ENDIF ((${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} EQUAL 2.8 AND ${CMAKE_PATCH_VERSION} LESS 4) OR ENABLE_QTMULTIMEDIA_KLUDGE)
 
 OPTION (ENABLE_CRYPT "Enable QCA2-based support for PGP" ON)
 
@@ -93,12 +95,15 @@ SET (SRCS
 	activitydialog.cpp
 	mooddialog.cpp
 	callmanager.cpp
+	clmodel.cpp
 	callchatwidget.cpp
 	chattabwebview.cpp
 	locationdialog.cpp
 	msgformatterwidget.cpp
 	acceptriexdialog.cpp
 	shareriexdialog.cpp
+	searchwidget.cpp
+	mucinvitedialog.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -131,12 +136,15 @@ SET (HEADERS
 	activitydialog.h
 	mooddialog.h
 	callmanager.h
+	clmodel.h
 	callchatwidget.h
 	chattabwebview.h
 	locationdialog.h
 	msgformatterwidget.h
 	acceptriexdialog.h
 	shareriexdialog.h
+	searchwidget.h
+	mucinvitedialog.h
 	animatediconmanager.h
 	sourcetrackingmodel.h
 	interfaces/iprotocolplugin.h
@@ -165,6 +173,8 @@ SET (FORMS
 	locationdialog.ui
 	acceptriexdialog.ui
 	shareriexdialog.ui
+	searchwidget.ui
+	mucinvitedialog.ui
 	)
 SET (RESOURCES azothresources.qrc)
 
@@ -225,6 +235,7 @@ OPTION (ENABLE_AZOTH_LASTSEEN "Build plugin for keeping track of the date of con
 OPTION (ENABLE_AZOTH_METACONTACTS "Build support for metacontacts" ON)
 OPTION (ENABLE_AZOTH_MODNOK "Build Modnok for rendering and displaying LaTeX formulas" ON)
 OPTION (ENABLE_AZOTH_NATIVEEMOTICONS "Build support for Azoth's own emoticons packs" ON)
+OPTION (ENABLE_AZOTH_OTROID "Build OTRoid for supporting Off-the-Record messaging" OFF)
 OPTION (ENABLE_AZOTH_P100Q "Build plugin for the psto.net microblogging service" ON)
 OPTION (ENABLE_AZOTH_ROSENTHAL "Build Rosenthal, spellchecker plugin for Azoth" ON)
 OPTION (ENABLE_AZOTH_STANDARDSTYLES "Build support for standard Azoth styles" ON)
@@ -273,6 +284,9 @@ ENDIF (ENABLE_AZOTH_MODNOK)
 IF (ENABLE_AZOTH_NATIVEEMOTICONS)
 	ADD_SUBDIRECTORY (plugins/nativeemoticons)
 ENDIF (ENABLE_AZOTH_NATIVEEMOTICONS)
+IF (ENABLE_AZOTH_OTROID)
+	ADD_SUBDIRECTORY (plugins/otroid)
+ENDIF (ENABLE_AZOTH_OTROID)
 IF (ENABLE_AZOTH_P100Q)
 	ADD_SUBDIRECTORY (plugins/p100q)
 ENDIF (ENABLE_AZOTH_P100Q)

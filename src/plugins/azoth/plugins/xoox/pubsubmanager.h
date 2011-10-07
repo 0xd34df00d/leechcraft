@@ -36,7 +36,7 @@ namespace Xoox
 
 		typedef boost::function<PEPEventBase* ()> Creator_t;
 		QMap<QString, Creator_t> Node2Creator_;
-		
+
 		QMap<QString, bool> AutosubscribeNodes_;
 	public:
 		template<typename T>
@@ -45,18 +45,25 @@ namespace Xoox
 			RegisterCreator (T::GetNodeString (), StandardCreator<T>);
 		}
 		void RegisterCreator (const QString&, boost::function<PEPEventBase* ()>);
-		
+
 		template<typename T>
 		void SetAutosubscribe (bool enabled)
 		{
 			SetAutosubscribe (T::GetNodeString (), enabled);
 		}
 		void SetAutosubscribe (const QString&, bool);
-		
+
 		void PublishEvent (PEPEventBase*);
+
+		void RequestItem (const QString& jid,
+				const QString& node, const QString& id);
 
 		QStringList discoveryFeatures () const;
 		bool handleStanza (const QDomElement& elem);
+	private:
+		bool HandleIq (const QDomElement&);
+		bool HandleMessage (const QDomElement&);
+		void ParseItems (QDomElement, const QString&);
 	signals:
 		void gotEvent (const QString&, PEPEventBase*);
 	};

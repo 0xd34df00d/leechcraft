@@ -171,6 +171,10 @@ namespace Acetamide
 		return result;
 	}
 
+	void IrcServerCLEntry::InviteToMUC (const QString&, const QString&)
+	{
+	}
+
 	QWidget* IrcServerCLEntry::GetConfigurationWidget ()
 	{
 		return new ServerInfoWidget (this);

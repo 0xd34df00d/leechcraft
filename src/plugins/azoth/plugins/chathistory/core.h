@@ -42,31 +42,34 @@ namespace ChatHistory
 		: C_ (T::Instance ())
 		{}
 	};
-	
+
 	class StorageThread;
 
 	class Core : public QObject
 	{
 		Q_OBJECT
 		static boost::weak_ptr<Core> InstPtr_;
-		
+
 		StorageThread *StorageThread_;
 		IProxyObject *PluginProxy_;
 		QSet<QString> DisabledIDs_;
-		
+
 		TabClassInfo TabClass_;
-		
+
 		Core ();
 	public:
 		static boost::shared_ptr<Core> Instance ();
+
+		~Core ();
+
 		TabClassInfo GetTabClass () const;
-		
+
 		void SetPluginProxy (QObject*);
 		IProxyObject* GetPluginProxy () const;
-		
+
 		bool IsLoggingEnabled (QObject*) const;
 		void SetLoggingEnabled (QObject*, bool);
-		
+
 		void Process (QObject*);
 		void GetOurAccounts ();
 		void GetUsersForAccount (const QString&);

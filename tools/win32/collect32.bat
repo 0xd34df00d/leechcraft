@@ -1,16 +1,14 @@
-rem @echo off
+@echo off
 
-rem Set these variables to proper paths of your system:
-set BOOST_BIN_DIR="E:\Libs\boost_1_47_0\stage\lib"
-set BOOST_VERSION="1_47"
-set LIBTORRENT_BIN_DIR="E:\Libs\libtorrent\bin\msvc-10.0\release\boost-link-shared\boost-source\threading-multi"
-set OPENSSL_BIN_DIR="E:\Libs\OpenSSL-Win32"
-set QT_BIN_DIR="E:\Libs\Qt\4.8.0-b1\bin"
-set QJSON_DIR="E:\Libs\qjson\build\lib\MinSizeRel\"
+call "%~dp0\winvars32.bat"
 
-set LEECHCRAFT_ROOT_DIR="..\.."
-set LEECHCRAFT_BUILD_DIR="build32"
-set BUILD_TYPE="Release"
+set BOOST_LIB_SUFFIX=""
+set QT_LIB_SUFFIX=""
+rem Boost and Qt libraries have Debug suffixies in names
+if "%BUILD_TYPE%" == "Debug" (
+	set BOOST_LIB_SUFFIX="gd-"
+	set QT_LIB_SUFFIX="d"
+)
 
 rem This is the directory where LeechCraft will live
 set TARGET_DIR="LeechCraft"
@@ -33,39 +31,40 @@ mkdir %TARGET_DIR%\icons
 rem === SHARED COMPONENTS ===
 
 rem - Boost -
-copy %BOOST_BIN_DIR%\boost_date_time-vc100-mt-%BOOST_VERSION%.dll %TARGET_DIR%
-copy %BOOST_BIN_DIR%\boost_filesystem-vc100-mt-%BOOST_VERSION%.dll %TARGET_DIR%
-copy %BOOST_BIN_DIR%\boost_program_options-vc100-mt-%BOOST_VERSION%.dll %TARGET_DIR%
-copy %BOOST_BIN_DIR%\boost_system-vc100-mt-%BOOST_VERSION%.dll %TARGET_DIR%
-copy %BOOST_BIN_DIR%\boost_thread-vc100-mt-%BOOST_VERSION%.dll %TARGET_DIR%
+copy %BOOST_BIN_DIR%\boost_date_time-vc100-mt-%BOOST_LIB_SUFFIX%%BOOST_VERSION%.dll %TARGET_DIR%
+copy %BOOST_BIN_DIR%\boost_filesystem-vc100-mt-%BOOST_LIB_SUFFIX%%BOOST_VERSION%.dll %TARGET_DIR%
+copy %BOOST_BIN_DIR%\boost_program_options-vc100-mt-%BOOST_LIB_SUFFIX%%BOOST_VERSION%.dll %TARGET_DIR%
+copy %BOOST_BIN_DIR%\boost_system-vc100-mt-%BOOST_LIB_SUFFIX%%BOOST_VERSION%.dll %TARGET_DIR%
+copy %BOOST_BIN_DIR%\boost_thread-vc100-mt-%BOOST_LIB_SUFFIX%%BOOST_VERSION%.dll %TARGET_DIR%
+
 
 rem - Qt -
-copy %QT_BIN_DIR%\phonon4.dll %TARGET_DIR%
-copy %QT_BIN_DIR%\QtCore4.dll %TARGET_DIR%
-copy %QT_BIN_DIR%\QtDeclarative4.dll %TARGET_DIR%
-copy %QT_BIN_DIR%\QtGui4.dll %TARGET_DIR%
-copy %QT_BIN_DIR%\QtMultimedia4.dll %TARGET_DIR%
-copy %QT_BIN_DIR%\QtNetwork4.dll %TARGET_DIR%
-copy %QT_BIN_DIR%\QtScript4.dll %TARGET_DIR%
-copy %QT_BIN_DIR%\QtSql4.dll %TARGET_DIR%
-copy %QT_BIN_DIR%\QtSvg4.dll %TARGET_DIR%
-copy %QT_BIN_DIR%\QtWebKit4.dll %TARGET_DIR%
-copy %QT_BIN_DIR%\QtXml4.dll %TARGET_DIR%
-copy %QT_BIN_DIR%\QtXmlPatterns4.dll %TARGET_DIR%
+copy %QT_BIN_DIR%\phonon%QT_LIB_SUFFIX%4.dll %TARGET_DIR%
+copy %QT_BIN_DIR%\QtCore%QT_LIB_SUFFIX%4.dll %TARGET_DIR%
+copy %QT_BIN_DIR%\QtDeclarative%QT_LIB_SUFFIX%4.dll %TARGET_DIR%
+copy %QT_BIN_DIR%\QtGui%QT_LIB_SUFFIX%4.dll %TARGET_DIR%
+copy %QT_BIN_DIR%\QtMultimedia%QT_LIB_SUFFIX%4.dll %TARGET_DIR%
+copy %QT_BIN_DIR%\QtNetwork%QT_LIB_SUFFIX%4.dll %TARGET_DIR%
+copy %QT_BIN_DIR%\QtScript%QT_LIB_SUFFIX%4.dll %TARGET_DIR%
+copy %QT_BIN_DIR%\QtSql%QT_LIB_SUFFIX%4.dll %TARGET_DIR%
+copy %QT_BIN_DIR%\QtSvg%QT_LIB_SUFFIX%4.dll %TARGET_DIR%
+copy %QT_BIN_DIR%\QtWebKit%QT_LIB_SUFFIX%4.dll %TARGET_DIR%
+copy %QT_BIN_DIR%\QtXml%QT_LIB_SUFFIX%4.dll %TARGET_DIR%
+copy %QT_BIN_DIR%\QtXmlPatterns%QT_LIB_SUFFIX%4.dll %TARGET_DIR%
 
-copy %QT_BIN_DIR%\..\plugins\imageformats\qgif4.dll %TARGET_DIR%\plugins\imageformats
-copy %QT_BIN_DIR%\..\plugins\imageformats\qico4.dll %TARGET_DIR%\plugins\imageformats
-copy %QT_BIN_DIR%\..\plugins\imageformats\qjpeg4.dll %TARGET_DIR%\plugins\imageformats
-copy %QT_BIN_DIR%\..\plugins\imageformats\qmng4.dll %TARGET_DIR%\plugins\imageformats
-copy %QT_BIN_DIR%\..\plugins\imageformats\qsvg4.dll %TARGET_DIR%\plugins\imageformats
-copy %QT_BIN_DIR%\..\plugins\imageformats\qtiff4.dll %TARGET_DIR%\plugins\imageformats
+copy %QT_BIN_DIR%\..\plugins\imageformats\qgif%QT_LIB_SUFFIX%4.dll %TARGET_DIR%\plugins\imageformats
+copy %QT_BIN_DIR%\..\plugins\imageformats\qico%QT_LIB_SUFFIX%4.dll %TARGET_DIR%\plugins\imageformats
+copy %QT_BIN_DIR%\..\plugins\imageformats\qjpeg%QT_LIB_SUFFIX%4.dll %TARGET_DIR%\plugins\imageformats
+copy %QT_BIN_DIR%\..\plugins\imageformats\qmng%QT_LIB_SUFFIX%4.dll %TARGET_DIR%\plugins\imageformats
+copy %QT_BIN_DIR%\..\plugins\imageformats\qsvg%QT_LIB_SUFFIX%4.dll %TARGET_DIR%\plugins\imageformats
+copy %QT_BIN_DIR%\..\plugins\imageformats\qtiff%QT_LIB_SUFFIX%4.dll %TARGET_DIR%\plugins\imageformats
 
-copy %QT_BIN_DIR%\..\plugins\iconengines\qsvgicon4.dll %TARGET_DIR%\plugins\iconengines
+copy %QT_BIN_DIR%\..\plugins\iconengines\qsvgicon%QT_LIB_SUFFIX%4.dll %TARGET_DIR%\plugins\iconengines
 
-copy %QT_BIN_DIR%\..\plugins\phonon_backend\phonon_ds94.dll %TARGET_DIR%\plugins\phonon_backend
+copy %QT_BIN_DIR%\..\plugins\phonon_backend\phonon_ds9%QT_LIB_SUFFIX%4.dll %TARGET_DIR%\plugins\phonon_backend
 
-copy %QT_BIN_DIR%\..\plugins\sqldrivers\qsqlite4.dll %TARGET_DIR%\plugins\sqldrivers
-copy %QT_BIN_DIR%\..\plugins\sqldrivers\qsqlpsql4.dll %TARGET_DIR%\plugins\sqldrivers
+copy %QT_BIN_DIR%\..\plugins\sqldrivers\qsqlite%QT_LIB_SUFFIX%4.dll %TARGET_DIR%\plugins\sqldrivers
+copy %QT_BIN_DIR%\..\plugins\sqldrivers\qsqlpsql%QT_LIB_SUFFIX%4.dll %TARGET_DIR%\plugins\sqldrivers
 
 rem copy %QT_BIN_DIR%\..\translations\qt_*.qm %TARGET_DIR%\translations
 
@@ -77,7 +76,7 @@ rem - libtorrent -
 copy %LIBTORRENT_BIN_DIR%\torrent.dll %TARGET_DIR%
 
 rem - qjson -
-copy %QJSON_DIR%\qjson.dll %TARGET_DIR%
+copy %QJSON_BIN_DIR%\qjson.dll %TARGET_DIR%
 
 rem === LEECHCRAFT FILES ===
 

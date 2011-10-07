@@ -398,6 +398,7 @@ namespace Poshuku
 
 	void CustomWebPage::handleLinkClicked (const QUrl& url)
 	{
+		emit loadingURL (url);
 		emit hookLinkClicked (IHookProxy_ptr (new Util::DefaultHookProxy),
 				this, url);
 	}

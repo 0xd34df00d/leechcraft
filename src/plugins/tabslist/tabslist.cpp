@@ -141,6 +141,9 @@ namespace TabsList
 	{
 		ICoreTabWidget *tw = Proxy_->GetTabWidget ();
 
+		if (tw->WidgetCount () < 2)
+			return;
+
 		QWidget *widget = new QWidget (Proxy_->GetMainWindow (),
 				Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
 		widget->setAttribute (Qt::WA_TranslucentBackground);

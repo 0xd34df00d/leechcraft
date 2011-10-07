@@ -91,6 +91,9 @@ namespace AdvancedNotifications
 
 		Q_FOREACH (const NotificationRule& rule, NRW_->GetRules ())
 		{
+			if (!rule.IsEnabled ())
+				continue;
+
 			if (!rule.GetTypes ().contains (type))
 				continue;
 
@@ -108,6 +111,9 @@ namespace AdvancedNotifications
 
 			if (!fieldsMatch)
 				continue;
+
+			if (rule.IsSingleShot ())
+				NRW_->SetRuleEnabled (rule, false);
 
 			result << rule;
 			break;

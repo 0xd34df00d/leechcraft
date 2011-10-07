@@ -22,6 +22,7 @@
 #include <QXmppMucIq.h>
 
 class QDomElement;
+class QWidget;
 class QXmppDataForm;
 
 namespace LeechCraft
@@ -37,9 +38,11 @@ namespace XooxUtil
 
 	QString GetClientIDName (const QString&);
 	QString GetClientHRName (const QString&);
-	
+
 	QDomElement XmppElem2DomElem (const QXmppElement&);
 	QXmppElement Form2XmppElem (const QXmppDataForm&);
+
+	bool RunFormDialog (QWidget*);
 }
 }
 }

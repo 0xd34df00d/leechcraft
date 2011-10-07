@@ -484,6 +484,31 @@ namespace Aggregator
 	{
 		Core::Instance ().AddPlugin (plugin);
 	}
+	
+	Sync::ChainIDs_t Aggregator::AvailableChains () const
+	{
+		Sync::ChainIDs_t result;
+		result << "rss";
+		return result;
+	}
+	
+	Sync::Payloads_t Aggregator::GetAllDeltas (const Sync::ChainID_t& chain) const
+	{
+		return Sync::Payloads_t ();
+	}
+	
+	Sync::Payloads_t Aggregator::GetNewDeltas (const Sync::ChainID_t& chain) const
+	{
+		return Sync::Payloads_t ();
+	}
+	
+	void Aggregator::PurgeNewDeltas (const Sync::ChainID_t& chain, quint32 since)
+	{
+	}
+	
+	void Aggregator::ApplyDeltas (const Sync::Payloads_t& payloads, const Sync::ChainID_t& chain)
+	{
+	}
 
 	void Aggregator::keyPressEvent (QKeyEvent *e)
 	{

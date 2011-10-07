@@ -35,24 +35,36 @@ namespace Azoth
 	{
 		setDynamicSortFilter (true);
 		setFilterCaseSensitivity (Qt::CaseInsensitive);
-		
+
 		XmlSettingsManager::Instance ().RegisterObject ("OrderByStatus",
 				this, "handleStatusOrderingChanged");
 		handleStatusOrderingChanged ();
 	}
-	
+
 	void SortFilterProxyModel::SetMUCMode (bool muc)
 	{
 		MUCMode_ = muc;
 		invalidateFilter ();
-		
+
 		if (muc)
 		  emit mucMode ();
 	}
-	
+
 	void SortFilterProxyModel::SetMUC (QObject *mucEntry)
 	{
+		if (MUCEntry_)
+			disconnect (MUCEntry_,
+					SIGNAL (destroyed (QObject*)),
+					this,
+					SLOT (handleMUCDestroyed ()));
+
 		MUCEntry_ = qobject_cast<IMUCEntry*> (mucEntry) ? mucEntry : 0;
+		if (MUCEntry_)
+			connect (MUCEntry_,
+					SIGNAL (destroyed (QObject*)),
+					this,
+					SLOT (handleMUCDestroyed ()));
+
 		invalidateFilter ();
 	}
 
@@ -61,14 +73,20 @@ namespace Azoth
 		ShowOffline_ = show;
 		invalidateFilter ();
 	}
-	
+
 	void SortFilterProxyModel::handleStatusOrderingChanged ()
 	{
 		OrderByStatus_ = XmlSettingsManager::Instance ()
 				.property ("OrderByStatus").toBool ();
 		invalidate ();
 	}
-	
+
+	void SortFilterProxyModel::handleMUCDestroyed()
+	{
+		SetMUC (0);
+		SetMUCMode (false);
+	}
+
 	namespace
 	{
 		Core::CLEntryType GetType (const QModelIndex& idx)
@@ -133,7 +151,7 @@ namespace Azoth
 
 		ICLEntry *lE = GetEntry (left);
 		ICLEntry *rE = GetEntry (right);
-		
+
 		if (lE->GetEntryType () == ICLEntry::ETPrivateChat &&
 				rE->GetEntryType () == ICLEntry::ETPrivateChat &&
 				lE->GetParentCLEntry () == rE->GetParentCLEntry ())

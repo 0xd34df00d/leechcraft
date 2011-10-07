@@ -47,16 +47,16 @@ namespace Autoidler
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 IHaveSettings LeechCraft::Azoth::ILastActivityProvider)
-		
+
 		ICoreProxy_ptr Proxy_;
 		IProxyObject *AzothProxy_;
 		boost::shared_ptr<QTranslator> Translator_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
-		
+
 		boost::shared_ptr<Idle> Idle_;
-		
+
 		QMap<QObject*, EntryStatus> OldStatuses_;
-		
+
 		int IdleSeconds_;
 	public:
 		void Init (ICoreProxy_ptr);
@@ -68,10 +68,10 @@ namespace Autoidler
 		QIcon GetIcon () const;
 
 		QSet<QByteArray> GetPluginClasses () const;
-		
+
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-		
-		quint64 GetInactiveSeconds ();
+
+		int GetInactiveSeconds ();
 	public slots:
 		void initPlugin (QObject*);
 	private slots:

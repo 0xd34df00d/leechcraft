@@ -67,6 +67,8 @@
 #include "selfcontact.h"
 #include "adhoccommandserver.h"
 #include "lastactivitymanager.h"
+#include "jabbersearchmanager.h"
+#include "useravatarmanager.h"
 
 #ifdef ENABLE_CRYPT
 #include "pgpmanager.h"
@@ -81,7 +83,6 @@ namespace Xoox
 	const int ErrorLimit = 5;
 
 	ClientConnection::ClientConnection (const QString& jid,
-			const GlooxAccountState& state,
 			GlooxAccount *account)
 	: Client_ (new QXmppClient (this))
 	, MUCManager_ (new QXmppMucManager)
@@ -99,6 +100,8 @@ namespace Xoox
 	, AdHocCommandManager_ (new AdHocCommandManager (this))
 	, AnnotationsManager_ (0)
 	, LastActivityManager_ (new LastActivityManager)
+	, JabberSearchManager_ (new JabberSearchManager)
+	, UserAvatarManager_ (0)
 	, RIEXManager_ (new RIEXManager)
 #ifdef ENABLE_CRYPT
 	, PGPManager_ (0)
@@ -147,6 +150,12 @@ namespace Xoox
 				this,
 				SLOT (handlePEPEvent (const QString&, PEPEventBase*)));
 
+		UserAvatarManager_ = new UserAvatarManager (this);
+		connect (UserAvatarManager_,
+				SIGNAL (avatarUpdated (QString, QImage)),
+				this,
+				SLOT (handlePEPAvatarUpdated (QString, QImage)));
+
 		InitializeQCA ();
 
 		Client_->addExtension (BobManager_);
@@ -161,6 +170,7 @@ namespace Xoox
 		Client_->addExtension (PrivacyListsManager_);
 		Client_->addExtension (CallManager_);
 		Client_->addExtension (LastActivityManager_);
+		Client_->addExtension (JabberSearchManager_);
 		Client_->addExtension (RIEXManager_);
 		Client_->addExtension (AdHocCommandManager_);
 		Client_->addExtension (new AdHocCommandServer (this));
@@ -438,6 +448,16 @@ namespace Xoox
 	AdHocCommandManager* ClientConnection::GetAdHocCommandManager () const
 	{
 		return AdHocCommandManager_;
+	}
+
+	JabberSearchManager* ClientConnection::GetJabberSearchManager () const
+	{
+		return JabberSearchManager_;
+	}
+
+	UserAvatarManager* ClientConnection::GetUserAvatarManager () const
+	{
+		return UserAvatarManager_;
 	}
 
 	RIEXManager* ClientConnection::GetRIEXManager () const
@@ -1100,6 +1120,18 @@ namespace Xoox
 		}
 
 		JID2CLEntry_ [bare]->HandlePEPEvent (resource, event);
+	}
+
+	void ClientConnection::handlePEPAvatarUpdated (const QString& from, const QImage& image)
+	{
+		QString bare;
+		QString resource;
+		Split (from, &bare, &resource);
+
+		if (!JID2CLEntry_.contains (from))
+			return;
+
+		JID2CLEntry_ [from]->SetAvatar (image);
 	}
 
 	void ClientConnection::handleMessageDelivered (const QString& msgId)

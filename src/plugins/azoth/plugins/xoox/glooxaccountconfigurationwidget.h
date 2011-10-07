@@ -32,6 +32,8 @@ namespace Xoox
 		Q_OBJECT
 
 		Ui::GlooxAccountConfigurationWidget Ui_;
+
+		QString Password_;
 	public:
 		GlooxAccountConfigurationWidget (QWidget* = 0);
 
@@ -48,9 +50,13 @@ namespace Xoox
 		void SetHost (const QString&);
 		int GetPort () const;
 		void SetPort (int);
-	};		
+
+		QString GetPassword () const;
+	private slots:
+		void on_UpdatePassword__released ();
+	};
 }
 }
 }
-		
+
 #endif

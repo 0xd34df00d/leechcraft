@@ -391,9 +391,12 @@ namespace Azoth
 	{
 		UpdateTextHeight ();
 
-		SetChatPartState (CPSComposing);
-		TypeTimer_->stop ();
-		TypeTimer_->start ();
+		if (!Ui_.MsgEdit_->toPlainText ().isEmpty ())
+		{
+			SetChatPartState (CPSComposing);
+			TypeTimer_->stop ();
+			TypeTimer_->start ();
+		}
 	}
 
 	void ChatTab::on_SubjectButton__toggled (bool show)
@@ -442,7 +445,7 @@ namespace Azoth
 
 		QObject *job = XferManager_->SendFile (EntryID_,
 				Ui_.VariantBox_->currentText (), filename);
-		Core::Instance ().HandleTransferJob (job);
+		Core::Instance ().GetTransferJobManager ()->HandleJob (job);
 	}
 
 	void ChatTab::handleCallRequested ()
@@ -489,6 +492,9 @@ namespace Azoth
 
 	void ChatTab::handleEncryptionStateChanged (QObject *entry, bool enabled)
 	{
+		if (entry != GetEntry<QObject> ())
+			return;
+
 		EnableEncryption_->blockSignals (true);
 		EnableEncryption_->setChecked (enabled);
 		EnableEncryption_->blockSignals (false);
@@ -666,6 +672,14 @@ namespace Azoth
 		Ui_.VariantBox_->setVisible (variants.size () > 1);
 	}
 
+	void ChatTab::handleAvatarChanged (const QImage& avatar)
+	{
+		Ui_.AvatarLabel_->setPixmap (QPixmap::fromImage (avatar));
+		Ui_.AvatarLabel_->setVisible (!avatar.isNull ());
+
+		UpdateTextHeight 	();
+	}
+
 	void ChatTab::handleStatusChanged (const EntryStatus& status,
 			const QString& variant)
 	{
@@ -723,6 +737,30 @@ namespace Azoth
 		Ui_.EntryInfo_->setText (text);
 	}
 
+	namespace
+	{
+		void OpenChatWithText (QUrl newUrl, const QString& id, ICLEntry *own)
+		{
+			newUrl.removeQueryItem ("hrid");
+
+			IAccount *account = qobject_cast<IAccount*> (own->GetParentAccount ());
+			Q_FOREACH (QObject *entryObj, account->GetCLEntries ())
+			{
+				ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+				if (!entry || entry->GetHumanReadableID () != id)
+					continue;
+
+				QWidget *w = Core::Instance ()
+						.GetChatTabsManager ()->OpenChat (entry);
+				QMetaObject::invokeMethod (w,
+						"handleViewLinkClicked",
+						Qt::QueuedConnection,
+						Q_ARG (QUrl, newUrl));
+				break;
+			}
+		}
+	}
+
 	void ChatTab::handleViewLinkClicked (const QUrl& url)
 	{
 		if (url.scheme () != "azoth")
@@ -735,9 +773,24 @@ namespace Azoth
 
 		if (url.host () == "msgeditreplace")
 		{
-			Ui_.MsgEdit_->setText (url.path ().mid (1));
-			Ui_.MsgEdit_->moveCursor (QTextCursor::End);
-			Ui_.MsgEdit_->setFocus ();
+			if (url.queryItems ().isEmpty ())
+			{
+				Ui_.MsgEdit_->setText (url.path ().mid (1));
+				Ui_.MsgEdit_->moveCursor (QTextCursor::End);
+				Ui_.MsgEdit_->setFocus ();
+			}
+			else
+			{
+				QPair<QString, QString> comma;
+				Q_FOREACH (comma, url.queryItems ())
+				{
+					if (comma.first == "hrid")
+					{
+						OpenChatWithText (url, comma.second, GetEntry<ICLEntry> ());
+						return;
+					}
+				}
+			}
 		}
 		else if (url.host () == "insertnick")
 		{
@@ -961,9 +1014,14 @@ namespace Azoth
 				SIGNAL (availableVariantsChanged (const QStringList&)),
 				this,
 				SLOT (handleVariantsChanged (QStringList)));
+		connect (GetEntry<QObject> (),
+				SIGNAL (avatarChanged (const QImage&)),
+				this,
+				SLOT (handleAvatarChanged (const QImage&)));
 
 		ICLEntry *e = GetEntry<ICLEntry> ();
 		handleVariantsChanged (e->Variants ());
+		handleAvatarChanged (e->GetAvatar ());
 		Ui_.EntryInfo_->setText (e->GetEntryName ());
 
 		const QString& accName =
@@ -1152,7 +1210,7 @@ namespace Azoth
 				SLOT (clearAvailableNick ()));
 		UpdateTextHeight ();
 
-		const int pos = Ui_.MainLayout_->indexOf (Ui_.MsgEdit_);
+		const int pos = Ui_.MainLayout_->indexOf (Ui_.View_) + 1;
 
 		MsgFormatter_ = new MsgFormatterWidget (Ui_.MsgEdit_);
 		Ui_.MainLayout_->insertWidget (pos, MsgFormatter_);
@@ -1207,6 +1265,9 @@ namespace Azoth
 					<< msg->OtherPart ();
 			return;
 		}
+
+		if (msg->GetObject ()->property ("Azoth/HiddenMessage").toBool () == true)
+			return;
 
 		ICLEntry *parent = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
 
@@ -1467,6 +1528,11 @@ namespace Azoth
 		const int resHeight = std::min (height () / 3, std::max (docHeight, fontHeight));
 		Ui_.MsgEdit_->setMinimumHeight (resHeight);
 		Ui_.MsgEdit_->setMaximumHeight (resHeight);
+
+		const QPixmap *px = Ui_.AvatarLabel_->pixmap ();
+		if (px && px->width () > 0)
+			Ui_.AvatarLabel_->setMaximumSize (resHeight,
+					resHeight * px->height () / px->width ());
 	}
 
 	void ChatTab::SetChatPartState (ChatPartState state)

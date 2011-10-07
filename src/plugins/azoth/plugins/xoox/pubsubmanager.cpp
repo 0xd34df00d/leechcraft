@@ -36,12 +36,12 @@ namespace Xoox
 		Node2Creator_ [node] = creator;
 		SetAutosubscribe (node, false);
 	}
-	
+
 	void PubSubManager::SetAutosubscribe (const QString& node, bool enabled)
 	{
 		AutosubscribeNodes_ [node] = enabled;
 	}
-	
+
 	void PubSubManager::PublishEvent (PEPEventBase *event)
 	{
 		QXmppElement publish;
@@ -59,6 +59,29 @@ namespace Xoox
 		client ()->sendPacket (iq);
 	}
 
+	void PubSubManager::RequestItem (const QString& jid,
+			const QString& node, const QString& id)
+	{
+		QXmppElement item;
+		item.setTagName ("item");
+		item.setAttribute ("id", id);
+
+		QXmppElement items;
+		items.setTagName ("items");
+		items.setAttribute ("node", node);
+		items.appendChild (item);
+
+		QXmppElement pubsub;
+		pubsub.setTagName ("pubsub");
+		pubsub.setAttribute ("xmlns", NsPubSub);
+		pubsub.appendChild (items);
+
+		QXmppIq iq (QXmppIq::Get);
+		iq.setTo (jid);
+		iq.setExtensions (pubsub);
+		client ()->sendPacket (iq);
+	}
+
 	QStringList PubSubManager::discoveryFeatures () const
 	{
 		QStringList result;
@@ -71,19 +94,44 @@ namespace Xoox
 		}
 		return result;
 	}
-	
+
 	bool PubSubManager::handleStanza (const QDomElement& elem)
+	{
+		if (elem.tagName () == "message")
+			return HandleMessage (elem);
+		else if (elem.tagName () == "iq")
+			return HandleIq (elem);
+		else
+			return false;
+	}
+
+	bool PubSubManager::HandleIq (const QDomElement& elem)
+	{
+		const QDomElement& pubsub = elem.firstChildElement ("pubsub");
+		if (pubsub.namespaceURI () != NsPubSub)
+			return false;
+
+		ParseItems (pubsub.firstChildElement ("items"), elem.attribute ("from"));
+
+		return true;
+	}
+
+	bool PubSubManager::HandleMessage (const QDomElement& elem)
 	{
 		if (elem.tagName () != "message" || elem.attribute ("type") != "headline")
 			return false;
-		
+
 		const QDomElement& event = elem.firstChildElement ("event");
 		if (event.namespaceURI () != NsPubSubEvent)
 			return false;
-		
-		const QString& from = elem.attribute ("from");
-		
-		QDomElement items = event.firstChildElement ("items");
+
+		ParseItems (event.firstChildElement ("items"), elem.attribute ("from"));
+
+		return true;
+	}
+
+	void PubSubManager::ParseItems (QDomElement items, const QString& from)
+	{
 		while (!items.isNull ())
 		{
 			const QString& node = items.attribute ("node");
@@ -92,24 +140,22 @@ namespace Xoox
 				items = items.nextSiblingElement ("items");
 				continue;
 			}
-			
+
 			QDomElement item = items.firstChildElement ("item");
 			while (!item.isNull ())
 			{
 				PEPEventBase *eventObj = Node2Creator_ [node] ();
 				eventObj->Parse (item);
-				
+
 				emit gotEvent (from, eventObj);
-				
+
 				delete eventObj;
-				
+
 				item = item.nextSiblingElement ("item");
 			}
 
 			items = items.nextSiblingElement ("items");
 		}
-		
-		return true;
 	}
 }
 }

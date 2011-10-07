@@ -29,6 +29,7 @@
 #include "vcarddialog.h"
 #include "formbuilder.h"
 #include "util.h"
+#include "executecommanddialog.h"
 
 namespace LeechCraft
 {
@@ -43,8 +44,9 @@ namespace Xoox
 		ID2Action_ ["view-vcard"] = boost::bind (&SDSession::ViewVCard, this, _1);
 		ID2Action_ ["add-to-roster"] = boost::bind (&SDSession::AddToRoster, this, _1);
 		ID2Action_ ["register"] = boost::bind (&SDSession::Register, this, _1);
+		ID2Action_ ["execute-ad-hoc"] = boost::bind (&SDSession::ExecuteAdHoc, this, _1);
 	}
-	
+
 	namespace
 	{
 		template<typename T>
@@ -66,7 +68,7 @@ namespace Xoox
 			return items;
 		}
 	}
-	
+
 	void SDSession::SetQuery (const QString& query)
 	{
 		Model_->clear ();
@@ -77,7 +79,7 @@ namespace Xoox
 				query,
 				"");
 		JID2Node2Item_ [query] [""] = items.at (0);
-		
+
 		items.at (0)->setData (true, DRFetchedMore);
 
 		Account_->GetClientConnection ()->RequestInfo (query,
@@ -85,18 +87,18 @@ namespace Xoox
 		Account_->GetClientConnection ()->RequestItems (query,
 				boost::bind (&SDSession::HandleItems, this, _1));
 	}
-	
+
 	QAbstractItemModel* SDSession::GetRepresentationModel () const
 	{
 		return Model_;
 	}
-	
+
 	QList<QPair<QByteArray, QString> > SDSession::GetActionsFor (const QModelIndex& index)
 	{
 		QList<QPair<QByteArray, QString> > result;
 		if (!index.isValid ())
 			return result;
-		
+
 		const QModelIndex& sibling = index.sibling (index.row (), CName);
 		QStandardItem *item = Model_->itemFromIndex (sibling);
 		const ItemInfo& info = Item2Info_ [item];
@@ -108,19 +110,33 @@ namespace Xoox
 			result << QPair<QByteArray, QString> ("add-to-roster", tr ("Add to roster..."));
 		if (info.Caps_.contains ("jabber:iq:register"))
 			result << QPair<QByteArray, QString> ("register", tr ("Register..."));
+		if (info.Caps_.contains ("http://jabber.org/protocol/commands"))
+		{
+			bool found = false;
+			Q_FOREACH (const QXmppDiscoveryIq::Identity& id, info.Identities_)
+				if (id.category () == "automation" &&
+						id.type () == "command-node")
+				{
+					found = true;
+					break;
+				}
+
+			if (found)
+				result << QPair<QByteArray, QString> ("execute-ad-hoc", tr ("Execute..."));
+		}
 
 		return result;
 	}
-	
+
 	void SDSession::ExecuteAction (const QModelIndex& index, const QByteArray& id)
 	{
 		if (!index.isValid ())
 			return;
-		
+
 		const QModelIndex& sibling = index.sibling (index.row (), CName);
 		QStandardItem *item = Model_->itemFromIndex (sibling);
 		const ItemInfo& info = Item2Info_ [item];
-		
+
 		if (!ID2Action_.contains (id))
 		{
 			qWarning () << Q_FUNC_INFO
@@ -128,35 +144,35 @@ namespace Xoox
 					<< id;
 			return;
 		}
-		
+
 		ID2Action_ [id] (info);
 	}
-	
+
 	namespace
 	{
 		struct Appender
 		{
 			QStringList Strings_;
-			
+
 			Appender ()
 			{
 			}
-			
+
 			Appender& operator() (const QString& text, const QString& name)
 			{
 				if (!text.isEmpty ())
 					Strings_ << name + ' ' + text;
-				
+
 				return *this;
 			}
-			
+
 			QString operator() () const
 			{
 				return Strings_.join ("<br/>");
 			}
 		};
 	}
-	
+
 	void SDSession::HandleInfo (const QXmppDiscoveryIq& iq)
 	{
 		QStandardItem *item = JID2Node2Item_ [iq.from ()] [iq.queryNode ()];
@@ -167,11 +183,11 @@ namespace Xoox
 					<< iq.from ();
 			return;
 		}
-		
+
 		const QModelIndex& index = item->index ();
 		const QModelIndex& sibling = index.sibling (index.row (), CName);
 		QStandardItem *targetItem = Model_->itemFromIndex (sibling);
-		
+
 		if (iq.identities ().size () == 1)
 		{
 			const QXmppDiscoveryIq::Identity& id = iq.identities ().at (0);
@@ -179,7 +195,7 @@ namespace Xoox
 			if (!text.isEmpty ())
 				targetItem->setText (text);
 		}
-		
+
 		QString tooltip = "<strong>" + tr ("Identities:") + "</strong><ul>";
 		Q_FOREACH (const QXmppDiscoveryIq::Identity& id, iq.identities ())
 		{
@@ -208,16 +224,17 @@ namespace Xoox
 		}
 
 		targetItem->setToolTip (tooltip);
-		
+
 		ItemInfo info =
 		{
 			iq.features (),
 			iq.identities (),
-			iq.from ()
+			iq.from (),
+			iq.queryNode ()
 		};
 		Item2Info_ [targetItem] = info;
 	}
-	
+
 	void SDSession::HandleItems (const QXmppDiscoveryIq& iq)
 	{
 		QStandardItem *parentItem = JID2Node2Item_ [iq.from ()] [iq.queryNode ()];
@@ -228,7 +245,7 @@ namespace Xoox
 					<< iq.from ();
 			return;
 		}
-		
+
 		Q_FOREACH (const QXmppDiscoveryIq::Item& item, iq.items ())
 		{
 			QList<QStandardItem*> items = AppendRow (parentItem,
@@ -236,12 +253,12 @@ namespace Xoox
 					item.jid (),
 					item.node ());
 			JID2Node2Item_ [item.jid ()] [item.node ()] = items.at (0);
-			
+
 			Account_->GetClientConnection ()->RequestInfo (item.jid (),
 					boost::bind (&SDSession::HandleInfo, this, _1), item.node ());
 		}
 	}
-	
+
 	void SDSession::QueryItem (QStandardItem *item)
 	{
 		item->setData (true, DRFetchedMore);
@@ -251,33 +268,33 @@ namespace Xoox
 		Account_->GetClientConnection ()->RequestItems (jid,
 				boost::bind (&SDSession::HandleItems, this, _1), node);
 	}
-	
+
 	void SDSession::ViewVCard (const SDSession::ItemInfo& info)
 	{
 		const QString& jid = info.JID_;
 		if (jid.isEmpty ())
 			return;
-		
+
 		VCardDialog *dia = new VCardDialog;
 		dia->show ();
 		Account_->GetClientConnection ()->FetchVCard (jid, dia);
 	}
-	
+
 	void SDSession::AddToRoster (const SDSession::ItemInfo& info)
 	{
 		const QString& jid = info.JID_;
 		if (jid.isEmpty ())
 			return;
-		
+
 		Account_->AddEntry (jid, QString (), QStringList ());
 	}
-	
+
 	void SDSession::Register (const SDSession::ItemInfo& info)
 	{
 		const QString& jid = info.JID_;
 		if (jid.isEmpty ())
 			return;
-		
+
 		QXmppIq iq;
 		iq.setType (QXmppIq::Get);
 		iq.setTo (jid);
@@ -288,7 +305,21 @@ namespace Xoox
 
 		Account_->GetClientConnection ()->SendPacketWCallback (iq, this, "handleRegistrationForm");
 	}
-	
+
+	void SDSession::ExecuteAdHoc (const SDSession::ItemInfo& info)
+	{
+		const QString& jid = info.JID_;
+		if (jid.isEmpty ())
+			return;
+
+		ExecuteCommandDialog *dia = new ExecuteCommandDialog (jid, info.Node_, Account_);
+		dia->show ();
+		connect (dia,
+				SIGNAL (finished (int)),
+				dia,
+				SLOT (deleteLater ()));
+	}
+
 	void SDSession::handleRegistrationForm (const QXmppIq& iq)
 	{
 		QXmppDataForm form;
@@ -297,42 +328,33 @@ namespace Xoox
 			if (elem.tagName () != "query" ||
 					elem.attribute ("xmlns") != "jabber:iq:register")
 				continue;
-			
-			const QXmppElement& x = elem.firstChildElement ("x");
+
+			QXmppElement x = elem.firstChildElement ("x");
+
+			// Ugly workaround for ejabberd.
+			if (!x.attributeNames ().contains ("type"))
+				x.setAttribute ("type", "form");
+
 			form.parse (XooxUtil::XmppElem2DomElem (x));
 			if (!form.isNull ())
 				break;
 		}
-		
+
 		if (form.isNull ())
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "no form found, sorry";
 			return;
 		}
-		
+
 		FormBuilder builder;
 		QWidget *widget = builder.CreateForm (form);
-		std::auto_ptr<QDialog> dialog (new QDialog ());
-		dialog->setWindowTitle (widget->windowTitle ());
-		dialog->setLayout (new QVBoxLayout ());
-		dialog->layout ()->addWidget (widget);
-		QDialogButtonBox *box = new QDialogButtonBox (QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-		dialog->layout ()->addWidget (box);
-		connect (box,
-				SIGNAL (accepted ()),
-				dialog.get (),
-				SLOT (accept ()));
-		connect (box,
-				SIGNAL (rejected ()),
-				dialog.get (),
-				SLOT (reject ()));
-		
-		if (dialog->exec () != QDialog::Accepted)
+		if (!XooxUtil::RunFormDialog (widget))
 			return;
-		
+
 		form = builder.GetForm ();
-		
+		form.setType (QXmppDataForm::Submit);
+
 		QXmppIq regIq;
 		regIq.setType (QXmppIq::Set);
 		regIq.setTo (iq.from ());
@@ -342,9 +364,8 @@ namespace Xoox
 		elem.appendChild (XooxUtil::Form2XmppElem (form));
 
 		regIq.setExtensions (QXmppElementList (elem));
-		
+
 		Account_->GetClientConnection ()->GetClient ()->sendPacket (regIq);
-		Account_->AddEntry (iq.from (), QString (), QStringList (tr ("Gateways")));
 	}
 }
 }

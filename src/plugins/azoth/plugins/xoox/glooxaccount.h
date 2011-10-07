@@ -27,6 +27,7 @@
 #include <interfaces/iaccount.h>
 #include <interfaces/iextselfinfoaccount.h>
 #include <interfaces/ihaveservicediscovery.h>
+#include <interfaces/ihavesearch.h>
 #include <interfaces/imessage.h>
 #include <interfaces/ihaveconsole.h>
 #include <interfaces/isupporttune.h>
@@ -69,6 +70,7 @@ namespace Xoox
 					   , public IAccount
 					   , public IExtSelfInfoAccount
 					   , public IHaveServiceDiscovery
+					   , public IHaveSearch
 					   , public IHaveConsole
 					   , public ISupportTune
 					   , public ISupportMood
@@ -84,6 +86,7 @@ namespace Xoox
 		Q_INTERFACES (LeechCraft::Azoth::IAccount
 				LeechCraft::Azoth::IExtSelfInfoAccount
 				LeechCraft::Azoth::IHaveServiceDiscovery
+				LeechCraft::Azoth::IHaveSearch
 				LeechCraft::Azoth::IHaveConsole
 				LeechCraft::Azoth::ISupportTune
 				LeechCraft::Azoth::ISupportMood
@@ -150,6 +153,10 @@ namespace Xoox
 
 		// IHaveServiceDiscovery
 		QObject* CreateSDSession ();
+
+		// IHaveSearch
+		QObject* CreateSearchSession ();
+		QString GetDefaultSearchServer () const;
 
 		// IHaveConsole
 		PacketFormat GetPacketFormat () const;

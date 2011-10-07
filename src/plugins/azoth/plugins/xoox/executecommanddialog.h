@@ -41,6 +41,7 @@ namespace Xoox
 		QString JID_;
 	public:
 		ExecuteCommandDialog (const QString&, GlooxAccount*, QWidget* = 0);
+		ExecuteCommandDialog (const QString&, const QString&, GlooxAccount*, QWidget* = 0);
 	private:
 		void RequestCommands ();
 		void ExecuteCommand (const AdHocCommand&);

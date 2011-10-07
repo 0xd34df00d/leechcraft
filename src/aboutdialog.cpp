@@ -18,6 +18,8 @@
 
 #include "aboutdialog.h"
 #include "config.h"
+#include "core.h"
+#include "util/sysinfo.h"
 
 namespace LeechCraft
 {
@@ -115,6 +117,10 @@ namespace LeechCraft
 				QString (), "eual.jp@gmail.com",
 				QStringList (tr ("Ukrainian translations.")),
 				QList<int> () << 2011);
+		contribs << ContributorInfo ("Alia Eolova", "alieola",
+				"alieola@jabber.ru", "aeors-team@yandex.ru",
+				QStringList (tr ("Spanish translations.")),
+				QList<int> () << 2011);
 		contribs << ContributorInfo (QString (), "ForNeVeR",
 				"revenrof@jabber.ru", QString (),
 				QStringList ("Maintainer for the Microsoft Windows."),
@@ -171,6 +177,38 @@ namespace LeechCraft
 		Q_FOREACH (const ContributorInfo& i, contribs)
 			formatted << i.Fmt ();
 		Ui_.Contributors_->setHtml (formatted.join ("<hr />"));
-	}
-};
 
+		BuildDiagInfo ();
+	}
+
+	void AboutDialog::BuildDiagInfo ()
+	{
+		QString text = QString ("LeechCraft ") + LEECHCRAFT_VERSION + "\n";
+		text += QString ("Built with Qt %1, running with Qt %2")
+				.arg (QT_VERSION_STR)
+				.arg (qVersion ());
+		text += "\n\n";
+
+		text += QString ("Running on: %1\n\n").arg (Util::SysInfo::GetOSName ());
+
+		QStringList loadedModules;
+		QStringList unPathedModules;
+		PluginManager *pm = Core::Instance ().GetPluginManager ();
+		Q_FOREACH (QObject *plugin, pm->GetAllPlugins ())
+		{
+			const QString& path = pm->GetPluginLibraryPath (plugin);
+
+			IInfo *ii = qobject_cast<IInfo*> (plugin);
+			if (path.isEmpty ())
+				unPathedModules << ("* " + ii->GetName ());
+			else
+				loadedModules << ("* " + ii->GetName () + " (" + path + ")");
+		}
+
+		text += QString ("Normal plugins:") + "\n" + loadedModules.join ("\n") + "\n\n";
+		if (!unPathedModules.isEmpty ())
+			text += QString ("Adapted plugins:") + "\n" + unPathedModules.join ("\n") + "\n\n";
+
+		Ui_.DiagInfo_->setPlainText (text);
+	}
+}
