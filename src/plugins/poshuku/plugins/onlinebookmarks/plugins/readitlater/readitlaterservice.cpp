@@ -114,7 +114,6 @@ namespace ReadItLater
 		req.Login_ = account->GetLogin ();
 		req.Password_ = account->GetPassword ();
 
-		account->SetLastUploadDateTime (QDateTime::currentDateTime ());
 		SendRequest (ReadItLaterApi_->GetUploadUrl (),
 				uploadBookmarks,
 				req);
@@ -124,11 +123,13 @@ namespace ReadItLater
 	{
 		QByteArray downloadBookmarks = ReadItLaterApi_->GetDownloadPayload (account->GetLogin(),
 				account->GetPassword (), from);
-		account->SetLastDownloadDateTime (QDateTime::currentDateTime ());
+
 		Request req;
 		req.Type_ = OTDownload;
 		req.Login_ = account->GetLogin ();
 		req.Password_ = account->GetPassword ();
+		Account2ReplyContent_ [account].clear ();
+
 		SendRequest (ReadItLaterApi_->GetDownloadUrl (),
 				downloadBookmarks,
 				req);
@@ -207,15 +208,17 @@ namespace ReadItLater
 
 		if (Reply2Request_ [reply].Type_ == OTDownload)
 		{
-			QVariantList downloadedBookmarks =
-					ReadItLaterApi_->GetDownloadedBookmarks (Bookmarks_);
-			if (!downloadedBookmarks.isEmpty ())
+			ReadItLaterAccount *account = GetAccountByName (Reply2Request_ [reply].Login_);
+			if (account)
 			{
-				ReadItLaterAccount *account = GetAccountByName (Reply2Request_ [reply].Login_);
-				if (account)
+				QVariantList downloadedBookmarks = ReadItLaterApi_->
+						GetDownloadedBookmarks (Account2ReplyContent_ [account]);
+				if (!downloadedBookmarks.isEmpty ())
+				{
 					account->AppendDownloadedBookmarks (downloadedBookmarks);
-
-				emit gotBookmarks (account, downloadedBookmarks);
+					account->SetLastDownloadDateTime (QDateTime::currentDateTime ());
+					emit gotBookmarks (account, downloadedBookmarks);
+				}
 			}
 		}
 
@@ -239,56 +242,60 @@ namespace ReadItLater
 		LeechCraft::Priority priority;
 		switch (result.toInt ())
 		{
-			case 200:
-				if (Reply2Request_ [reply].Type_ == OTAuth ||
-						Reply2Request_ [reply].Type_ == OTRegister)
+		case 200:
+			if (Reply2Request_ [reply].Type_ == OTAuth ||
+					Reply2Request_ [reply].Type_ == OTRegister)
+			{
+				ReadItLaterAccount *account =
+						new ReadItLaterAccount (Reply2Request_ [reply].Login_,
+								this);
+				account->SetPassword (Reply2Request_ [reply].Password_);
+				Accounts_ << account;
+				saveAccounts ();
+				emit accountAdded (QObjectList () << account->GetObject ());
+				switch (Reply2Request_ [reply].Type_)
 				{
-					ReadItLaterAccount *account =
-							new ReadItLaterAccount (Reply2Request_ [reply].Login_,
-									this);
-					account->SetPassword (Reply2Request_ [reply].Password_);
-					Accounts_ << account;
-					saveAccounts ();
-					emit accountAdded (QObjectList () << account->GetObject ());
-					switch (Reply2Request_ [reply].Type_)
-					{
-					case OTAuth:
-						priority = PInfo_;
-						msg = tr ("Authentification has finished successfully");
-						break;
-					case OTRegister:
-						priority = PInfo_;
-						msg = tr ("Registration has finished successfully");
-						break;
-					}
+				case OTAuth:
+					priority = PInfo_;
+					msg = tr ("Authentification has finished successfully");
+					break;
+				case OTRegister:
+					priority = PInfo_;
+					msg = tr ("Registration has finished successfully");
+					break;
 				}
-				else
-					switch (Reply2Request_ [reply].Type_)
-					{
-					case OTDownload:
-						Bookmarks_.append (reply->readAll ());
-						break;
-					case OTUpload:
-						emit bookmarksUploaded ();
-						break;
-					}
-				break;
-			case 400:
-				msg = tr ("Invalid request.Please, report to developers.");
-				priority = PWarning_;
-				break;
-			case 401:
-				msg = tr ("Username and/or password is incorrect.");
-				priority = PWarning_;
-				break;
-			case 403:
-				msg = tr ("Rate limit exceeded, please wait a little bit before resubmitting.");
-				priority = PWarning_;
-				break;
-			case 503:
-				msg = tr ("Read It Later's sync server is down for scheduled maintenance.");
-				priority = PWarning_;
-				break;
+			}
+			else
+				switch (Reply2Request_ [reply].Type_)
+				{
+				case OTDownload:
+					Account2ReplyContent_ [GetAccountByName (Reply2Request_ [reply].Login_)]
+							.append (reply->readAll ());
+					break;
+				case OTUpload:
+					ReadItLaterAccount *account = GetAccountByName (Reply2Request_ [reply].Login_);
+					if (account)
+						account->SetLastUploadDateTime (QDateTime::currentDateTime ());
+					emit bookmarksUploaded ();
+					break;
+				}
+			break;
+		case 400:
+			msg = tr ("Invalid request.Please, report to developers.");
+			priority = PWarning_;
+			break;
+		case 401:
+			msg = tr ("Username and/or password is incorrect.");
+			priority = PWarning_;
+			break;
+		case 403:
+			msg = tr ("Rate limit exceeded, please wait a little bit before resubmitting.");
+			priority = PWarning_;
+			break;
+		case 503:
+			msg = tr ("Read It Later's sync server is down for scheduled maintenance.");
+			priority = PWarning_;
+			break;
 		}
 		e = Util::MakeNotification ("OnlineBookamarks",
 				msg,

@@ -63,7 +63,7 @@ namespace ReadItLater
 		boost::shared_ptr<ReadItLaterApi> ReadItLaterApi_;
 		QHash<QNetworkReply*, Request> Reply2Request_;
 		QList<ReadItLaterAccount*> Accounts_;
-		QByteArray Bookmarks_;
+		QHash<IAccount*, QByteArray> Account2ReplyContent_;
 	public:
 		ReadItLaterService (ICoreProxy_ptr);
 		void Prepare ();
