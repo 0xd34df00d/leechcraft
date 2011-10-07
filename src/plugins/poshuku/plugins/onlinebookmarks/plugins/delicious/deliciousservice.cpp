@@ -124,6 +124,7 @@ namespace Delicious
 		req.Count_ = 0;
 		req.Current_ = 0;
 		Account2ReplyContent_ [account].clear ();
+		
 		SendRequest (DeliciousApi_->GetDownloadUrl ()
 				.arg (account->GetLogin (), account->GetPassword ()),
 						DeliciousApi_->GetDownloadPayload (from),
@@ -272,10 +273,8 @@ namespace Delicious
 					priority = LeechCraft::PInfo_;
 					DeliciousAccount *account = GetAccountByName (Reply2Request_ [reply].Login_);
 					if (account)
-					{
-						qDebug () << "ACC_UPL" << account;
 						account->SetLastUploadDateTime (QDateTime::currentDateTime ());
-					}
+					emit bookmarksUploaded ();
 				}
 			}
 			else
