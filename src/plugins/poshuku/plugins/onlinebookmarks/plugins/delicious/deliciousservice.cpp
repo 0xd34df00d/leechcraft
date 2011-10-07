@@ -123,7 +123,7 @@ namespace Delicious
 		req.Password_ = account->GetPassword ();
 		req.Count_ = 0;
 		req.Current_ = 0;
-
+		Account2ReplyContent_ [account].clear ();
 		SendRequest (DeliciousApi_->GetDownloadUrl ()
 				.arg (account->GetLogin (), account->GetPassword ()),
 						DeliciousApi_->GetDownloadPayload (from),
@@ -144,7 +144,6 @@ namespace Delicious
 	{
 		QUrl url (urlString);
 		QNetworkRequest request (url);
-		Reply_.clear ();
 		QNetworkReply *reply =  CoreProxy_->GetNetworkAccessManager ()->
 				post (request, payload);
 
@@ -209,12 +208,17 @@ namespace Delicious
 
 		if (Reply2Request_ [reply].Type_ == OTDownload)
 		{
-			QVariantList downloadedBookmarks = DeliciousApi_->ParseDownloadReply (Reply_);
-			if (!downloadedBookmarks.isEmpty ())
+			DeliciousAccount *account = GetAccountByName (Reply2Request_ [reply].Login_);
+			if (account)
 			{
-				DeliciousAccount *account = GetAccountByName (Reply2Request_ [reply].Login_);
-				account->AppendDownloadedBookmarks (downloadedBookmarks);
-				emit gotBookmarks (account, downloadedBookmarks);
+				QVariantList downloadedBookmarks = DeliciousApi_->
+						ParseDownloadReply (Account2ReplyContent_ [account]);
+				if (!downloadedBookmarks.isEmpty ())
+				{
+					account->AppendDownloadedBookmarks (downloadedBookmarks);
+					account->SetLastDownloadDateTime (QDateTime::currentDateTime ());
+					emit gotBookmarks (account, downloadedBookmarks);
+				}
 			}
 		}
 		reply->deleteLater ();
@@ -237,49 +241,56 @@ namespace Delicious
 		QString msg;
 		switch (Reply2Request_ [reply].Type_)
 		{
-			case OTAuth:
-				if (DeliciousApi_->ParseAuthReply (result))
+		case OTAuth:
+			if (DeliciousApi_->ParseAuthReply (result))
+			{
+				DeliciousAccount *account =
+						new DeliciousAccount (Reply2Request_ [reply].Login_,
+								this);
+				account->SetPassword (Reply2Request_ [reply].Password_);
+				Accounts_ << account;
+				saveAccounts ();
+				emit accountAdded (QObjectList () <<  account->GetObject ());
+				msg = tr ("Authentification was successfull.");
+				priority = LeechCraft::PInfo_;
+			}
+			else
+			{
+				msg = tr ("Invalid nickname or password.");
+				priority = LeechCraft::PWarning_;
+			}
+			e = Util::MakeNotification ("OnlineBookamarks",
+					msg,
+					priority);
+			break;
+		case OTUpload:
+			if (DeliciousApi_->ParseUploadReply (result))
+			{
+				if (Reply2Request_ [reply].Count_ == Reply2Request_[reply].Current_ + 1)
 				{
-					DeliciousAccount *account =
-							new DeliciousAccount (Reply2Request_ [reply].Login_,
-									this);
-					account->SetPassword (Reply2Request_ [reply].Password_);
-					Accounts_ << account;
-					saveAccounts ();
-					emit accountAdded (QObjectList () <<  account->GetObject ());
-					msg = tr ("Authentification was successfull.");
+					msg = tr ("Bookmark(s) was send to service Delicious succesfully.");
 					priority = LeechCraft::PInfo_;
-				}
-				else
-				{
-					msg = tr ("Invalid nickname or password.");
-					priority = LeechCraft::PWarning_;
-				}
-				e = Util::MakeNotification ("OnlineBookamarks",
-						msg,
-						priority);
-				break;
-			case OTUpload:
-				if (DeliciousApi_->ParseUploadReply (result))
-				{
-					if (Reply2Request_ [reply].Count_ == Reply2Request_[reply].Current_ + 1)
+					DeliciousAccount *account = GetAccountByName (Reply2Request_ [reply].Login_);
+					if (account)
 					{
-						msg = tr ("Bookmark(s) was send to service Delicious succesfully.");
-						priority = LeechCraft::PInfo_;
+						qDebug () << "ACC_UPL" << account;
+						account->SetLastUploadDateTime (QDateTime::currentDateTime ());
 					}
 				}
-				else
-				{
-					msg = tr ("Error during sending bookmarks to Delicious.");
-					priority = LeechCraft::PWarning_;
-				}
-				e = Util::MakeNotification ("OnlineBookamarks",
-						msg,
-						priority);
-				break;
-			case OTDownload:
-				Reply_.append (result);
-				break;
+			}
+			else
+			{
+				msg = tr ("Error during sending bookmarks to Delicious.");
+				priority = LeechCraft::PWarning_;
+			}
+			e = Util::MakeNotification ("OnlineBookamarks",
+					msg,
+					priority);
+			break;
+		case OTDownload:
+			Account2ReplyContent_ [GetAccountByName (Reply2Request_ [reply].Login_)]
+					.append (result);
+			break;
 		}
 		if (!msg.isEmpty ())
 			emit gotEntity (e);
