@@ -44,7 +44,9 @@ namespace LeechCraft
 
 		void PlayListView::addItem (const QString& item)
 		{
-			PlayListModel_->setStringList (PlayListModel_->stringList () << item);
+			const int rowc = PlayListModel_->rowCount ();
+			PlayListModel_->insertRows (rowc, 1);
+			PlayListModel_->setData (PlayListModel_->index (rowc, 0), item);
 		}
 		
 		void PlayListView::handleDoubleClicked (const QModelIndex& index)
