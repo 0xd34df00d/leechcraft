@@ -25,6 +25,14 @@
     </message>
 </context>
 <context>
+    <name>LeechCraft::Azoth::Metacontacts::Core</name>
+    <message>
+        <location filename="core.cpp" line="210"/>
+        <source>Enter the name of the new metacontact uniting %1 and %2:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::Azoth::Metacontacts::ManageContactsDialog</name>
     <message>
         <location filename="managecontactsdialog.cpp" line="41"/>
