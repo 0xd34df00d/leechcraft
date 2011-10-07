@@ -22,6 +22,7 @@
 #include <QToolButton>
 #include <QMenu>
 #include <QFileDialog>
+#include <QFileInfo>
 
 #include "chooseurldialog.h"
 
@@ -108,7 +109,25 @@ namespace LeechCraft
 
 		void PlayListWidget::handleAddFolder ()
 		{
-				//TODO Recursive directory parsing
+			const QString& fileDir = QFileDialog::getExistingDirectory (this,
+					tr ("Choose directory"), QDir::homePath ());
+			
+			QStringList dirBuffer;
+			dirBuffer << fileDir;
+			while (!dirBuffer.isEmpty ())
+			{
+				const QDir& currDir = dirBuffer.first ();
+				const QFileInfoList& currInfoList = currDir.entryInfoList (QDir::NoDotAndDotDot
+						| QDir::Dirs | QDir::Files);
+				Q_FOREACH (const QFileInfo& entry, currInfoList)
+				{
+					if (entry.isDir ())
+						dirBuffer << entry.filePath ();
+					else if (entry.isFile ())
+						Ui_->PlayListView_->addItem (entry.absoluteFilePath ());
+				}
+				dirBuffer.pop_front ();
+			}
 		}
 		
 		void PlayListWidget::handleAddUrl ()
