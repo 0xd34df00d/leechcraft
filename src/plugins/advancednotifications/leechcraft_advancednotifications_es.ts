@@ -110,92 +110,92 @@
         <translation>Contacto ha cancelado su suscripción</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="114"/>
+        <location filename="notificationruleswidget.cpp" line="131"/>
         <source>Incoming chat messages</source>
         <translation>Mensajes entrantes de chat</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="120"/>
+        <location filename="notificationruleswidget.cpp" line="137"/>
         <source>MUC highlights</source>
         <translation>MUC resaltos</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="126"/>
+        <location filename="notificationruleswidget.cpp" line="143"/>
         <source>MUC invitations</source>
         <translation>MUC invitaciónes</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="132"/>
+        <location filename="notificationruleswidget.cpp" line="149"/>
         <source>Incoming file transfers</source>
         <translation>Transferencias de los archivos entrantes</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="137"/>
+        <location filename="notificationruleswidget.cpp" line="154"/>
         <source>Subscription requests</source>
         <translation>Solicitudes de suscripción</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="143"/>
+        <location filename="notificationruleswidget.cpp" line="160"/>
         <source>Subscription changes</source>
         <translation>Cambios de suscripción</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="151"/>
+        <location filename="notificationruleswidget.cpp" line="168"/>
         <source>Attention requests</source>
         <translation>Solicitudes de atención</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="175"/>
+        <location filename="notificationruleswidget.cpp" line="192"/>
         <source>Name</source>
         <translation>Nombre</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="176"/>
+        <location filename="notificationruleswidget.cpp" line="193"/>
         <source>Category</source>
         <translation>Categoría</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="177"/>
+        <location filename="notificationruleswidget.cpp" line="194"/>
         <source>Type</source>
         <translation>Tipo</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="186"/>
+        <location filename="notificationruleswidget.cpp" line="203"/>
         <source>Field name</source>
         <translation>Nombre de campo</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="187"/>
+        <location filename="notificationruleswidget.cpp" line="204"/>
         <source>Rule description</source>
         <translation>Descripción de la regla</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="304"/>
+        <location filename="notificationruleswidget.cpp" line="331"/>
         <source>&lt;empty matcher&gt;</source>
         <translation>&lt;empty matcher&gt;</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="448"/>
+        <location filename="notificationruleswidget.cpp" line="493"/>
         <source>Are you sure you want to replace all rules with the default set?</source>
         <translation>¿Está seguro que desea reemplazar todas las reglas con la configuración por defecto?</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="537"/>
+        <location filename="notificationruleswidget.cpp" line="582"/>
         <source>Select audio file</source>
         <translation>Selecciona el archivo de audio</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="539"/>
+        <location filename="notificationruleswidget.cpp" line="584"/>
         <source>Audio files (*.ogg *.wav *.flac *.mp3);;All files (*.*)</source>
         <translation>Audio archivos (*.ogg *.wav *.flac *.mp3);;Todos los archivos (*.*)</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="574"/>
+        <location filename="notificationruleswidget.cpp" line="619"/>
         <source>Please enter the argument:</source>
         <translation>Por favor, introduzca el argumento:</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="590"/>
+        <location filename="notificationruleswidget.cpp" line="635"/>
         <source>Please enter new argument text:</source>
         <translatorcomment>?</translatorcomment>
         <translation>Por favor introduzca el texto nuevo de argumento:</translation>
@@ -269,8 +269,8 @@
     </message>
     <message>
         <location filename="notificationruleswidget.ui" line="72"/>
-        <location filename="notificationruleswidget.ui" line="249"/>
-        <location filename="notificationruleswidget.ui" line="363"/>
+        <location filename="notificationruleswidget.ui" line="265"/>
+        <location filename="notificationruleswidget.ui" line="379"/>
         <source>Remove</source>
         <translation>Remover</translation>
     </message>
@@ -300,81 +300,86 @@
         <translation>Tipo del evento:</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="153"/>
+        <location filename="notificationruleswidget.ui" line="174"/>
         <source>Notify via:</source>
         <translation>Notificar por:</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="181"/>
+        <location filename="notificationruleswidget.ui" line="194"/>
         <source>Visual</source>
         <translation>Visual</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="188"/>
+        <location filename="notificationruleswidget.ui" line="187"/>
         <source>System tray</source>
         <translation>La bandeja del sistema</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="195"/>
-        <location filename="notificationruleswidget.ui" line="259"/>
+        <location filename="notificationruleswidget.ui" line="201"/>
+        <location filename="notificationruleswidget.ui" line="275"/>
         <source>Audio</source>
         <translation>Audio</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="202"/>
-        <location filename="notificationruleswidget.ui" line="310"/>
+        <location filename="notificationruleswidget.ui" line="208"/>
+        <location filename="notificationruleswidget.ui" line="326"/>
         <source>Command</source>
         <translation>Comando</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="214"/>
+        <location filename="notificationruleswidget.ui" line="218"/>
+        <source>Single shot</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="notificationruleswidget.ui" line="230"/>
         <source>Fields</source>
         <translation>Campos</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="223"/>
+        <location filename="notificationruleswidget.ui" line="239"/>
         <source>Matches:</source>
         <translation>Coincidencias:</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="235"/>
-        <location filename="notificationruleswidget.ui" line="349"/>
+        <location filename="notificationruleswidget.ui" line="251"/>
+        <location filename="notificationruleswidget.ui" line="365"/>
         <source>Add...</source>
         <translation>Añadir...</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="242"/>
-        <location filename="notificationruleswidget.ui" line="356"/>
+        <location filename="notificationruleswidget.ui" line="258"/>
+        <location filename="notificationruleswidget.ui" line="372"/>
         <source>Modify...</source>
         <translation>Modificar...</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="271"/>
+        <location filename="notificationruleswidget.ui" line="287"/>
         <source>File:</source>
         <translation>Archivo:</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="290"/>
+        <location filename="notificationruleswidget.ui" line="306"/>
         <source>Browse...</source>
         <translation>Navegar...</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="297"/>
+        <location filename="notificationruleswidget.ui" line="313"/>
         <source>Test</source>
         <translation>Prueba</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="319"/>
+        <location filename="notificationruleswidget.ui" line="335"/>
         <source>Command:</source>
         <translation>Comando:</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="329"/>
+        <location filename="notificationruleswidget.ui" line="345"/>
         <source>Arguments:</source>
         <translation>Argumentos:</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="339"/>
+        <location filename="notificationruleswidget.ui" line="355"/>
         <source>Argument</source>
         <translation>Argumento</translation>
     </message>
