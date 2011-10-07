@@ -185,13 +185,23 @@ namespace Metacontacts
 		if (!source || !target)
 			return false;
 
-		if (qobject_cast<MetaEntry*> (sourceObj))
-			return false;
-
 		MetaEntry *targetME = qobject_cast<MetaEntry*> (targetObj);
 		if (targetME)
 		{
-			AddRealToMeta (targetME, source);
+			MetaEntry *sourceME = qobject_cast<MetaEntry*> (sourceObj);
+
+			if (!sourceME)
+				AddRealToMeta (targetME, source);
+			else
+			{
+				const QObjectList& reals = sourceME->GetAvailEntryObjs ();
+
+				RemoveEntry (sourceME);
+
+				Q_FOREACH (QObject *real, reals)
+					AddRealToMeta (targetME, qobject_cast<ICLEntry*> (real));
+			}
+
 			return true;
 		}
 
