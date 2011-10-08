@@ -104,7 +104,7 @@ namespace OnlineBookmarks
 	void Core::AddServicePlugin (QObject* plugin)
 	{
 		IBookmarksService *ibs = qobject_cast<IBookmarksService*> (plugin);
-		if (!plugin)
+		if (!ibs)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< plugin
@@ -349,7 +349,7 @@ namespace OnlineBookmarks
 					ibs = qobject_cast<IBookmarksService*> (account->GetParentService ());
 					if (!ibs)
 						continue;
-					
+
 					QVariantList list = GetUniqueBookmarks (account, result);
 					ibs->UploadBookmarks (account, list);
 				}
@@ -363,7 +363,7 @@ namespace OnlineBookmarks
 					ibs = qobject_cast<IBookmarksService*> (account->GetParentService ());
 					if (!ibs)
 						continue;
-					
+
 					QVariantList list = GetUniqueBookmarks (account, result, true);
 					ibs->UploadBookmarks (account, list);
 				}
