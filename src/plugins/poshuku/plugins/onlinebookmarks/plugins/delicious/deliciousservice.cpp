@@ -124,7 +124,7 @@ namespace Delicious
 		req.Count_ = 0;
 		req.Current_ = 0;
 		Account2ReplyContent_ [account].clear ();
-		
+
 		SendRequest (DeliciousApi_->GetDownloadUrl ()
 				.arg (account->GetLogin (), account->GetPassword ()),
 						DeliciousApi_->GetDownloadPayload (from),
@@ -238,7 +238,7 @@ namespace Delicious
 
 		QByteArray result = reply->readAll ();
 		Entity e;
-		LeechCraft::Priority priority;
+		Priority priority = PInfo_;
 		QString msg;
 		switch (Reply2Request_ [reply].Type_)
 		{

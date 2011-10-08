@@ -239,7 +239,7 @@ namespace ReadItLater
 		const QVariant& result = reply->attribute (QNetworkRequest::HttpStatusCodeAttribute);
 		Entity e;
 		QString msg;
-		LeechCraft::Priority priority;
+		Priority priority = PInfo_;
 		switch (result.toInt ())
 		{
 		case 200:
