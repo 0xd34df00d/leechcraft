@@ -16,19 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_ONLINEBOOKMARKS_H
-#define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_ONLINEBOOKMARKS_H
+#ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_PLUGINS_READITLATER_READITLATER_H
+#define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_PLUGINS_READITLATER_READITLATER_H
 
 #include <QObject>
-#include <QTranslator>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
-#include <interfaces/ihavesettings.h>
-#include <interfaces/ipluginready.h>
-#include <interfaces/core/ihookproxy.h>
-
-class QMenu;
-class QWebView;
+#include <interfaces/iserviceplugin.h>
 
 namespace LeechCraft
 {
@@ -36,20 +30,23 @@ namespace Poshuku
 {
 namespace OnlineBookmarks
 {
+namespace ReadItLater
+{
+
+	class ReadItLaterService;
+
 	class Plugin : public QObject
-				, public IInfo
 				, public IPlugin2
-				, public IHaveSettings
-				, public IPluginReady
+				, public IInfo
+				, public IServicePlugin
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 IHaveSettings IPluginReady)
+		Q_INTERFACES (IInfo IPlugin2
+				LeechCraft::Poshuku::OnlineBookmarks::IServicePlugin)
 
-		Util::XmlSettingsDialog_ptr SettingsDialog_;
-		boost::shared_ptr<QTranslator> Translator_;
+		boost::shared_ptr<ReadItLaterService> ReadItLaterService_;
 	public:
-		// IInfo methods
-		void Init (ICoreProxy_ptr);
+		void Init (ICoreProxy_ptr proxy);
 		void SecondInit ();
 		void Release ();
 		QByteArray GetUniqueID () const;
@@ -57,25 +54,16 @@ namespace OnlineBookmarks
 		QString GetInfo () const;
 		QIcon GetIcon () const;
 
-		// IPlugin2 methods
 		QSet<QByteArray> GetPluginClasses () const;
 
-		// IHaveSettings methods
-		Util::XmlSettingsDialog_ptr GetSettingsDialog() const;
-
-		//IPluginReady
-		QSet<QByteArray> GetExpectedPluginClasses () const;
-		void AddPlugin (QObject*);
-	public slots:
-		void initPlugin (QObject*);
-		void hookMoreMenuFillEnd (LeechCraft::IHookProxy_ptr, QMenu*, QWebView*, QObject*);
-// 		void hookAddedToFavorites (LeechCraft::IHookProxy_ptr, QString, QString, QStringList);
+		QObject* GetObject ();
+		QObject* GetBookmarksService () const;
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 	};
 }
 }
 }
+}
 
-#endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_ONLINEBOOKMARKS_H
+#endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_PLUGINS_READITLATER_READITLATER_H

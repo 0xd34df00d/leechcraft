@@ -8,14 +8,23 @@
 		</tab>
 		<tab>
 			<label value="Sync options" />
-			<item type="listview" property="ActiveServices">
-				<label value="Select services" />
-			</item>
 			<item type="checkbox" property="ConfirmSend" state="off">
 				<label value="Confirm sending bookmarks on addition" />
 			</item>
 			<item type="checkbox" property="ShowServices" state="off">
 				<label value="Ask about services to send bookmarks to" />
+			</item>
+			<item type="combobox" property="UploadType">
+				<label value="Upload bookmarks type:"/>
+				<option name="0" default="true">
+					<label value="everything with everything" />
+				</option>
+				<option name="1">
+					<label value="only accounts" />
+				</option>
+				<option name="2">
+					<label value="only services" />
+				</option>
 			</item>
 			<item type="groupbox" property="DownloadGroup" checkable="true" state="off">
 				<label value="Download options" />
