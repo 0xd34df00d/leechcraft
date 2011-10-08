@@ -59,8 +59,8 @@ INSTALL (FILES poshukuonlinebookmarkssettings.xml DESTINATION ${LC_SETTINGS_DEST
 
 SET (ONLINEBOOKMARKS_INCLUDE_DIR ${CURRENT_SOURCE_DIR})
 
-OPTION (ENABLE_ONLINEBOOKMARKS_READITLATER "Build plugin for service Read It Later for OnlineBookmarks" ON)
-OPTION (ENABLE_ONLINEBOOKMARKS_DELICIOUS "Build plugin for service Delicious for OnlineBookmarks" OFF)
+OPTION (ENABLE_ONLINEBOOKMARKS_READITLATER "Build \"Read It Later\" support for OnlineBookmarks" ON)
+OPTION (ENABLE_ONLINEBOOKMARKS_DELICIOUS "Build \"Delicious\" support for OnlineBookmarks" ON)
 
 IF (ENABLE_ONLINEBOOKMARKS_READITLATER)
 	ADD_SUBDIRECTORY (plugins/readitlater)
