@@ -18,6 +18,7 @@
 
 #include "delicious.h"
 #include <QIcon>
+#include <util/util.h>
 #include "deliciousauthwidget.h"
 #include "deliciousservice.h"
 
@@ -31,6 +32,8 @@ namespace Delicious
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("poshuku_onlinebookmarks_delicious");
+
 		DeliciousService_.reset (new DeliciousService (proxy));
 
 		connect (DeliciousService_.get (),
@@ -43,7 +46,7 @@ namespace Delicious
 	{
 		DeliciousService_->Prepare ();
 	}
-	
+
 	void Plugin::Release ()
 	{
 	}
