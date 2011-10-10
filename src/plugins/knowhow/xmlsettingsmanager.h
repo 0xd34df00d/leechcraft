@@ -16,39 +16,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_KNOWHOW_KNOWHOW_H
-#define PLUGINS_KNOWHOW_KNOWHOW_H
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/ihavesettings.h>
+#ifndef PLUGINS_KNOWHOW_XMLSETTINGSMANAGER_H
+#define PLUGINS_KNOWHOW_XMLSETTINGSMANAGER_H
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
 namespace KnowHow
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IHaveSettings
+	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveSettings)
 
-		Util::XmlSettingsDialog_ptr SettingsDialog_;
+		XmlSettingsManager ();
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-	private slots:
-		void showTip ();
+		static XmlSettingsManager& Instance ();
+	protected:
+		virtual QSettings* BeginSettings () const;
+		virtual void EndSettings (QSettings*) const;
 	};
 }
 }
 
 #endif
-

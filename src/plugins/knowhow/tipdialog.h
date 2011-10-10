@@ -16,39 +16,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_KNOWHOW_KNOWHOW_H
-#define PLUGINS_KNOWHOW_KNOWHOW_H
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/ihavesettings.h>
+#ifndef PLUGINS_KNOWHOW_TIPDIALOG_H
+#define PLUGINS_KNOWHOW_TIPDIALOG_H
+#include <boost/shared_ptr.hpp>
+#include <QDialog>
+#include "ui_tipdialog.h"
+
+class QDomDocument;
 
 namespace LeechCraft
 {
 namespace KnowHow
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IHaveSettings
+	class TipDialog : public QDialog
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveSettings)
 
-		Util::XmlSettingsDialog_ptr SettingsDialog_;
+		Ui::TipDialog Ui_;
+		boost::shared_ptr<QDomDocument> Doc_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-	private slots:
-		void showTip ();
+		TipDialog (QWidget* = 0);
+	private:
+		QString GetTipByID (int);
+		void ShowTip (const QString&);
 	};
 }
 }
 
 #endif
-

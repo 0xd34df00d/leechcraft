@@ -15,6 +15,7 @@ IF (NOT QT_USE_FILE)
 	FIND_PACKAGE (LeechCraft REQUIRED)
 ENDIF (NOT QT_USE_FILE)
 
+SET (QT_USE_QTXML TRUE)
 INCLUDE (${QT_USE_FILE})
 INCLUDE_DIRECTORIES (
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -23,19 +24,30 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	knowhow.cpp
+	xmlsettingsmanager.cpp
+	tipdialog.cpp
 	)
 SET (HEADERS
 	knowhow.h
+	xmlsettingsmanager.h
+	tipdialog.h
+	)
+SET (FORMS
+	tipdialog.ui
 	)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
+QT4_WRAP_UI (UIS_H ${FORMS})
 
 ADD_LIBRARY (leechcraft_knowhow SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
+	${UIS_H}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_knowhow
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
 INSTALL (TARGETS leechcraft_knowhow DESTINATION ${LC_PLUGINS_DEST})
+INSTALL (FILES knowhowsettings.xml DESTINATION ${LC_SETTINGS_DEST})
+INSTALL (DIRECTORY share/knowhow DESTINATION share/leechcraft)

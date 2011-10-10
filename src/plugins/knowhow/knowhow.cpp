@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +18,12 @@
 
 #include "knowhow.h"
 #include <QIcon>
+#include <QTimer>
+#include <QDomDocument>
+#include <util/util.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include "xmlsettingsmanager.h"
+#include "tipdialog.h"
 
 namespace LeechCraft
 {
@@ -25,10 +31,20 @@ namespace KnowHow
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("knowhow");
+
+		SettingsDialog_.reset (new Util::XmlSettingsDialog ());
+		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
+				"knowhowsettings.xml");
 	}
 
 	void Plugin::SecondInit ()
 	{
+		if (XmlSettingsManager::Instance ()
+				.property ("ShowTips").toBool ())
+			QTimer::singleShot (10000,
+					this,
+					SLOT (showTip ()));
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -47,7 +63,7 @@ namespace KnowHow
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("");
+		return tr ("A simple plugin providing various tips of the day regarding LeechCraft.");
 	}
 
 	QIcon Plugin::GetIcon () const
@@ -55,9 +71,16 @@ namespace KnowHow
 		return QIcon ();
 	}
 
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return SettingsDialog_;
+	}
 
+	void Plugin::showTip ()
+	{
+		new TipDialog ();
+	}
 }
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_knowhow, LeechCraft::KnowHow::Plugin);
-
