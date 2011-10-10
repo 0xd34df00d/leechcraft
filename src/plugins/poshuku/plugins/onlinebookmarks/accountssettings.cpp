@@ -58,9 +58,9 @@ namespace OnlineBookmarks
 		Q_FOREACH (QObject *plugin, Core::Instance ().GetServicePlugins ())
 		{
 			IBookmarksService *ibs = qobject_cast<IBookmarksService*> (plugin);
-			Ui_.Services_->addItem (ibs->GetServiceIcon (), ibs->GetServiceName ());
-			Ui_.Services_->setItemData (Ui_.Services_->count () - 1,
-					QVariant::fromValue<QObject*> (plugin), RServiceObject);
+			QAction *act = new QAction (ibs->GetServiceIcon (), ibs->GetServiceName (), this);
+			Action2Service_ [act] = ibs;
+			Ui_.AddAccount_->addAction (act);
 
 			QWidget *widget = ibs->GetAuthWidget ();
 			if (!qobject_cast<IAuthWidget*> (widget))
@@ -147,44 +147,6 @@ namespace OnlineBookmarks
 			Ui_.AccountsView_->resizeColumnToContents (i);
 	}
 
-	void AccountsSettings::on_Add__toggled (bool checked)
-	{
-		if (LastWidget_)
-		{
-			Ui_.AuthWidget_->layout ()->removeWidget (LastWidget_);
-			LastWidget_->hide ();
-		}
-
-		QObject *plugin = Ui_.Services_->itemData (Ui_.Services_->currentIndex (),
-				RServiceObject).value<QObject*> ();
-		IBookmarksService *ibs = qobject_cast<IBookmarksService*> (plugin);
-
-		Ui_.Register_->setVisible (ibs->GetFeatures () &
-				IBookmarksService::FCanRegisterAccount);
-
-		if (!Service2AuthWidget_.contains (ibs))
-			return;
-
-		IAuthWidget *aw = qobject_cast<IAuthWidget*> (Service2AuthWidget_ [ibs]);
-		aw->SetIdentifyingData (QVariantMap ());
-
-		if (checked)
-		{
-			Ui_.AuthWidget_->layout ()->addWidget (Service2AuthWidget_ [ibs]);
-			Service2AuthWidget_ [ibs]->show ();
-			Ui_.ControlLayout_->insertWidget (1, Ui_.LoginFrame_);
-			Ui_.LoginFrame_->show ();
-			LastWidget_ = Service2AuthWidget_ [ibs];
-		}
-		else
-		{
-			Ui_.AuthWidget_->layout ()->removeWidget (Service2AuthWidget_ [ibs]);
-			Service2AuthWidget_ [ibs]->hide ();
-			Ui_.ControlLayout_->removeWidget (Ui_.LoginFrame_);
-			Ui_.LoginFrame_->hide ();
-		}
-	}
-
 	void AccountsSettings::on_Delete__clicked ()
 	{
 		const QModelIndex& current = Ui_.AccountsView_->currentIndex ();
@@ -195,12 +157,9 @@ namespace OnlineBookmarks
 
 		QStandardItem *item = AccountsModel_->itemFromIndex (parentIndex)->child (row, 0);
 
-		if (Ui_.Add_->isChecked ())
-			Ui_.Add_->toggle ();
-
 		Core::Instance ().DeletePassword (Item2Account_ [item]->GetObject ());
 		emit accountRemoved (Item2Account_ [item]->GetObject ());
-		
+
 		AccountsModel_->removeRow (current.row (), parentIndex);
 		Item2Account_.remove (item);
 		if (!AccountsModel_->rowCount (parentIndex))
@@ -212,18 +171,16 @@ namespace OnlineBookmarks
 
 	void AccountsSettings::on_Auth__clicked ()
 	{
-		QObject *plugin = Ui_.Services_->itemData (Ui_.Services_->currentIndex (),
-				RServiceObject).value<QObject*> ();
-		IBookmarksService *ibs = qobject_cast<IBookmarksService*> (plugin);
+		IBookmarksService *ibs = Service2AuthWidget_.key (LastWidget_);
+		if (!ibs)
+			return;
 
-		IAuthWidget *aw = qobject_cast<IAuthWidget*> (Service2AuthWidget_ [ibs]);
+		IAuthWidget *aw = qobject_cast<IAuthWidget*> (LastWidget_);
 		if (!aw)
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "auth widget for plugin"
-					<< plugin
 					<< "is not a IAuthWidget"
-					<< aw;
+					<< LastWidget_;
 			return;
 		}
 
@@ -232,18 +189,16 @@ namespace OnlineBookmarks
 
 	void AccountsSettings::on_Register__clicked ()
 	{
-		QObject *plugin = Ui_.Services_->itemData (Ui_.Services_->currentIndex (),
-				RServiceObject).value<QObject*> ();
-		IBookmarksService *ibs = qobject_cast<IBookmarksService*> (plugin);
+		IBookmarksService *ibs = Service2AuthWidget_.key (LastWidget_);
+		if (!ibs)
+			return;
 
-		IAuthWidget *aw = qobject_cast<IAuthWidget*> (Service2AuthWidget_ [ibs]);
+		IAuthWidget *aw = qobject_cast<IAuthWidget*> (LastWidget_);
 		if (!aw)
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "auth widget for plugin"
-					<< plugin
-					<< "is not a IAuthWidget"
-					<< aw;
+			<< "is not a IAuthWidget"
+			<< LastWidget_;
 			return;
 		}
 
@@ -255,10 +210,41 @@ namespace OnlineBookmarks
 		Ui_.Delete_->setEnabled (index.parent().isValid ());
 	}
 
-	void AccountsSettings::on_Services__currentIndexChanged (int)
+	void AccountsSettings::on_AddAccount__triggered (QAction *action)
 	{
-		if (Ui_.Add_->isChecked ())
-			Ui_.Add_->toggle ();
+		if (!Action2Service_.contains (action))
+			return;
+
+		if (LastWidget_)
+		{
+			Ui_.AuthWidget_->layout ()->removeWidget (LastWidget_);
+			LastWidget_->hide ();
+		}
+
+		IBookmarksService *ibs = Action2Service_ [action];
+
+		Ui_.Register_->setVisible (ibs->GetFeatures () &
+			IBookmarksService::FCanRegisterAccount);
+
+		if (!Service2AuthWidget_.contains (ibs))
+			return;
+
+		IAuthWidget *aw = qobject_cast<IAuthWidget*> (Service2AuthWidget_ [ibs]);
+		aw->SetIdentifyingData (QVariantMap ());
+
+		Ui_.AuthWidget_->layout ()->addWidget (Service2AuthWidget_ [ibs]);
+		Service2AuthWidget_ [ibs]->show ();
+		Ui_.ControlLayout_->insertWidget (1, Ui_.LoginFrame_);
+		Ui_.LoginFrame_->show ();
+		LastWidget_ = Service2AuthWidget_ [ibs];
+	}
+
+	void AccountsSettings::on_Close__clicked ()
+	{
+		Ui_.AuthWidget_->layout ()->removeWidget (LastWidget_);
+		LastWidget_->hide ();
+		Ui_.ControlLayout_->removeWidget (Ui_.LoginFrame_);
+		Ui_.LoginFrame_->hide ();
 	}
 
 	void AccountsSettings::addAccount (QObjectList accObjects)
