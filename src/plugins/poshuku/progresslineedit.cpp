@@ -44,8 +44,8 @@ namespace Poshuku
 		ClearButton_ = new QToolButton (this);
 		ClearButton_->setIcon (Core::Instance ().GetProxy ()->GetIcon ("clearall"));
 		ClearButton_->setCursor (Qt::PointingHandCursor);
-		ClearButton_->setStyleSheet("QToolButton { border: none; padding: 0px; }");
-		ClearButton_->hide();
+		ClearButton_->setStyleSheet ("QToolButton { border: none; padding: 0px; }");
+		ClearButton_->hide ();
 
 		int frameWidth = style ()->pixelMetric (QStyle::PM_DefaultFrameWidth);
 		setStyleSheet (QString ("QLineEdit { padding-right: %1px; } ")
@@ -111,7 +111,7 @@ namespace Poshuku
 	{
 		QSize sz = ClearButton_->sizeHint ();
 		int frameWidth = style ()->pixelMetric (QStyle::PM_DefaultFrameWidth);
-		ClearButton_->move(rect ().right () - frameWidth - sz.width (),
+		ClearButton_->move (rect ().right () - frameWidth - sz.width (),
 				(rect ().bottom () + 1 - sz.height ())/2);
 	}
 
