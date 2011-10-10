@@ -33,6 +33,8 @@ namespace KnowHow
 	{
 		Util::InstallTranslator ("knowhow");
 
+		Proxy_ = proxy;
+
 		SettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"knowhowsettings.xml");
@@ -78,7 +80,7 @@ namespace KnowHow
 
 	void Plugin::showTip ()
 	{
-		new TipDialog ();
+		new TipDialog (Proxy_);
 	}
 }
 }

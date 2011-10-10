@@ -26,8 +26,9 @@ namespace LeechCraft
 {
 namespace KnowHow
 {
-	TipDialog::TipDialog (QWidget *parent)
+	TipDialog::TipDialog (ICoreProxy_ptr proxy, QWidget *parent)
 	: QDialog (parent)
+	, Proxy_ (proxy)
 	{
 		Util::ResourceLoader rl ("knowhow/tips/");
 		rl.AddGlobalPrefix ();
@@ -67,6 +68,8 @@ namespace KnowHow
 				.Property ("StdTipIndex", -1).toInt () + 1;
 
 		Ui_.setupUi (this);
+		Ui_.Forward_->setIcon (Proxy_->GetIcon ("forward"));
+		Ui_.Backward_->setIcon (Proxy_->GetIcon ("back"));
 
 		ShowForIdx (idx);
 

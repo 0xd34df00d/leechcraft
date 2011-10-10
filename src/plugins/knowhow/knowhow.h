@@ -33,6 +33,7 @@ namespace KnowHow
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveSettings)
 
+		ICoreProxy_ptr Proxy_;
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
 	public:
 		void Init (ICoreProxy_ptr);
