@@ -3,7 +3,7 @@
 	<page>
 		<label value="KnowHow" />
 		<groupbox>
-			<label value="KDE" />
+			<label value="Behavior" />
 			<item type="checkbox" property="ShowTips" default="true">
 				<label value="Show tips on startup" />
 			</item>
