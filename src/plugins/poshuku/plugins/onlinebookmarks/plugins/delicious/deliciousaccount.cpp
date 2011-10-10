@@ -32,7 +32,6 @@ namespace Delicious
 	DeliciousAccount::DeliciousAccount (const QString& login, QObject *parent)
 	: QObject (parent)
 	, Login_ (login)
-	, AuthType_ (IAccount::ATHttpAuth)
 	, ParentService_ (parent)
 	, IsSyncing_ (false)
 	, LastUpload_ (QDateTime::currentDateTime ())
@@ -69,11 +68,6 @@ namespace Delicious
 	void DeliciousAccount::SetPassword (const QString& pass)
 	{
 		Password_ = pass;
-	}
-
-	IAccount::AuthType DeliciousAccount::GetAuthType () const
-	{
-		return AuthType_;
 	}
 
 	QVariantMap DeliciousAccount::GetIdentifyingData () const
@@ -118,8 +112,8 @@ namespace Delicious
 	{
 		QVariantList diff;
 		Q_FOREACH (const QVariant& var, list)
-		if (!DownloadedBookmarks_.contains (var))
-			diff << var;
+			if (!DownloadedBookmarks_.contains (var))
+				diff << var;
 
 		return diff;
 	}
@@ -127,8 +121,8 @@ namespace Delicious
 	void DeliciousAccount::AppendDownloadedBookmarks (const QVariantList& bookmarks)
 	{
 		Q_FOREACH (const QVariant& var, bookmarks)
-		if (!DownloadedBookmarks_.contains (var))
-			DownloadedBookmarks_ << var;
+			if (!DownloadedBookmarks_.contains (var))
+				DownloadedBookmarks_ << var;
 	}
 
 	QByteArray DeliciousAccount::Serialize () const
@@ -143,7 +137,7 @@ namespace Delicious
 					<< IsSyncing_
 					<< LastUpload_
 					<< LastDownload_
-					<< DownloadedBookmarks_;;
+					<< DownloadedBookmarks_;
 		}
 
 		return result;
@@ -173,16 +167,6 @@ namespace Delicious
 			>> acc->LastDownload_
 			>> acc->DownloadedBookmarks_;
 		return acc;
-	}
-
-	void DeliciousAccount::DownloadBookmarks (const QDateTime& from)
-	{
-
-	}
-
-	void DeliciousAccount::UploadBookmarks (const QVariantList&)
-	{
-
 	}
 
 }

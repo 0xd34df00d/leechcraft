@@ -47,7 +47,7 @@ namespace Delicious
 
 	IBookmarksService::Features DeliciousService::GetFeatures () const
 	{
-		return 0;
+		return FNone;
 	}
 
 	QObject* DeliciousService::GetObject ()
@@ -74,9 +74,7 @@ namespace Delicious
 	{
 		const QString& login = map ["Login"].toString ();
 		const QString& password = map ["Password"].toString ();
-		bool oAuth = false;
-		if (map.contains ("OAuth"))
-			oAuth = map ["OAuth"].toBool ();
+		bool oAuth = map.value ("OAuth", false).toBool ();
 
 		if (login.isEmpty () || password.isEmpty ())
 			return;
@@ -96,8 +94,17 @@ namespace Delicious
 	{
 	}
 
-	void DeliciousService::UploadBookmarks (IAccount *account, const QVariantList& bookmarks)
+	void DeliciousService::UploadBookmarks (QObject *accObj, const QVariantList& bookmarks)
 	{
+		IAccount *account = qobject_cast<IAccount*> (accObj);
+		if (!account)
+		{
+			qWarning () << Q_FUNC_INFO
+			<< "isn't an IAccount object"
+			<< accObj;
+			return;
+		}
+
 		int i = 0;
 		Q_FOREACH (const QVariant& var, bookmarks)
 		{
@@ -110,13 +117,22 @@ namespace Delicious
 
 			SendRequest (DeliciousApi_->GetUploadUrl ()
 					.arg (account->GetLogin(), account->GetPassword ()),
-							DeliciousApi_->GetUploadPayload (var),
-							req );
+						DeliciousApi_->GetUploadPayload (var),
+						req );
 		}
 	}
 
-	void DeliciousService::DownloadBookmarks (IAccount *account, const QDateTime& from)
+	void DeliciousService::DownloadBookmarks (QObject *accObj, const QDateTime& from)
 	{
+		IAccount *account = qobject_cast<IAccount*> (accObj);
+		if (!account)
+		{
+			qWarning () << Q_FUNC_INFO
+			<< "isn't an IAccount object"
+			<< accObj;
+			return;
+		}
+
 		Request req;
 		req.Type_ = OTDownload;
 		req.Login_ = account->GetLogin ();
@@ -127,8 +143,8 @@ namespace Delicious
 
 		SendRequest (DeliciousApi_->GetDownloadUrl ()
 				.arg (account->GetLogin (), account->GetPassword ()),
-						DeliciousApi_->GetDownloadPayload (from),
-						req);
+					DeliciousApi_->GetDownloadPayload (from),
+					req);
 	}
 
 	DeliciousAccount* DeliciousService::GetAccountByName (const QString& name)
@@ -179,7 +195,7 @@ namespace Delicious
 			if (!acc)
 			{
 				qWarning () << Q_FUNC_INFO
-						<< "unserializable acount"
+						<< "undeserializable account"
 						<< i;
 				continue;
 			}
@@ -212,7 +228,7 @@ namespace Delicious
 			DeliciousAccount *account = GetAccountByName (Reply2Request_ [reply].Login_);
 			if (account)
 			{
-				QVariantList downloadedBookmarks = DeliciousApi_->
+				const QVariantList& downloadedBookmarks = DeliciousApi_->
 						ParseDownloadReply (Account2ReplyContent_ [account]);
 				if (!downloadedBookmarks.isEmpty ())
 				{

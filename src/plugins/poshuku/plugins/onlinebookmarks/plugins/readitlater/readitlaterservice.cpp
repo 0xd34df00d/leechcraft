@@ -104,8 +104,17 @@ namespace ReadItLater
 				req);
 	}
 
-	void ReadItLaterService::UploadBookmarks (IAccount *account, const QVariantList& bookmarks)
+	void ReadItLaterService::UploadBookmarks (QObject *accObj, const QVariantList& bookmarks)
 	{
+		IAccount *account = qobject_cast<IAccount*> (accObj);
+		if (!account)
+		{
+			qWarning () << Q_FUNC_INFO
+			<< "isn't an IAccount object"
+			<< accObj;
+			return;
+		}
+
 		QByteArray uploadBookmarks = ReadItLaterApi_->GetUploadPayload (account->GetLogin(),
 				account->GetPassword (), bookmarks);
 
@@ -119,8 +128,17 @@ namespace ReadItLater
 				req);
 	}
 
-	void ReadItLaterService::DownloadBookmarks (IAccount *account, const QDateTime& from)
+	void ReadItLaterService::DownloadBookmarks (QObject *accObj, const QDateTime& from)
 	{
+		IAccount *account = qobject_cast<IAccount*> (accObj);
+		if (!account)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "isn't an IAccount object"
+					<< accObj;
+			return;
+		}
+
 		QByteArray downloadBookmarks = ReadItLaterApi_->GetDownloadPayload (account->GetLogin(),
 				account->GetPassword (), from);
 
@@ -263,11 +281,19 @@ namespace ReadItLater
 					priority = PInfo_;
 					msg = tr ("Registration has finished successfully");
 					break;
+				case OTDownload:
+					break;
+				case OTUpload:
+					break;
 				}
 			}
 			else
 				switch (Reply2Request_ [reply].Type_)
 				{
+				case OTAuth:
+					break;
+				case OTRegister:
+					break;
 				case OTDownload:
 					Account2ReplyContent_ [GetAccountByName (Reply2Request_ [reply].Login_)]
 							.append (reply->readAll ());

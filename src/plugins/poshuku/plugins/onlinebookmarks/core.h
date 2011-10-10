@@ -22,7 +22,6 @@
 #include <QObject>
 #include <QUrl>
 #include <interfaces/iinfo.h>
-#include <util/util.h>
 #include <interfaces/iaccount.h>
 
 class QAbstractItemModel;

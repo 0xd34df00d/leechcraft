@@ -67,10 +67,10 @@ namespace OnlineBookmarks
 		virtual void RegisterAccount (const QVariantMap&) = 0;
 
 		//
-		virtual void UploadBookmarks (IAccount*, const QVariantList&) = 0;
+		virtual void UploadBookmarks (QObject*, const QVariantList&) = 0;
 		
 		//
-		virtual void DownloadBookmarks (IAccount*, const QDateTime& from = QDateTime ()) = 0;
+		virtual void DownloadBookmarks (QObject*, const QDateTime& from = QDateTime ()) = 0;
 
 		//
 		virtual void saveAccounts () const = 0;
@@ -82,7 +82,7 @@ namespace OnlineBookmarks
 		virtual void accountAdded (QObjectList) = 0;
 
 		//
-		virtual void gotBookmarks (IAccount*, const QVariantList&) = 0;
+		virtual void gotBookmarks (QObject*, const QVariantList&) = 0;
 
 		//
 		virtual void bookmarksUploaded () = 0;

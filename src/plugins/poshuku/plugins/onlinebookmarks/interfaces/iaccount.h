@@ -31,12 +31,6 @@ namespace OnlineBookmarks
 	class IAccount
 	{
 	public:
-		enum AuthType
-		{
-			ATHttpAuth,
-			ATOAuth
-		};
-
 		virtual ~IAccount () {};
 
 		//
@@ -46,12 +40,12 @@ namespace OnlineBookmarks
 		virtual QObject* GetParentService () const = 0;
 
 		//
-		virtual IAccount::AuthType GetAuthType () const = 0;
+// 		virtual IAccount::AuthType GetAuthType () const = 0;
 
 		//
 		virtual QByteArray GetAccountID () const = 0;
 
-		
+
 		virtual QString GetLogin () const = 0;
 
 		//
@@ -71,10 +65,10 @@ namespace OnlineBookmarks
 
 		//
 		virtual void SetLastUploadDateTime (const QDateTime&) = 0;
-		
+
 		//
 		virtual void SetLastDownloadDateTime (const QDateTime&) = 0;
-		
+
 		//
 		virtual void SetSyncing (bool) = 0;
 	};

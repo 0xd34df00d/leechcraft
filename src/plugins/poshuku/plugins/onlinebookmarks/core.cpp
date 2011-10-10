@@ -22,7 +22,7 @@
 #include <interfaces/iplugin2.h>
 #include <interfaces/iproxyobject.h>
 #include <interfaces/iserviceplugin.h>
-#include <interfaces/iaccount.h>
+#include <util/util.h>
 #include "accountssettings.h"
 #include "pluginmanager.h"
 #include "xmlsettingsmanager.h"
@@ -55,7 +55,7 @@ namespace OnlineBookmarks
 		return CoreProxy_;
 	}
 
-	void Core::SetPluginProxy (QObject* proxy)
+	void Core::SetPluginProxy (QObject *proxy)
 	{
 		PluginProxy_ = proxy;
 	}
@@ -85,7 +85,7 @@ namespace OnlineBookmarks
 
 		PluginManager_->AddPlugin (plugin);
 
-		QSet<QByteArray> classes = plugin2->GetPluginClasses ();
+		const QSet<QByteArray>& classes = plugin2->GetPluginClasses ();
 		if (classes.contains ("org.LeechCraft.Plugins.Poshuku.Plugins.OnlineBookmarks.IServicePlugin"))
 		{
 			IServicePlugin *service = qobject_cast<IServicePlugin*> (plugin);
@@ -101,7 +101,7 @@ namespace OnlineBookmarks
 		}
 	}
 
-	void Core::AddServicePlugin (QObject* plugin)
+	void Core::AddServicePlugin (QObject *plugin)
 	{
 		IBookmarksService *ibs = qobject_cast<IBookmarksService*> (plugin);
 		if (!ibs)
@@ -130,7 +130,7 @@ namespace OnlineBookmarks
 		return ServicesPlugins_;
 	}
 
-	void Core::AddActiveAccount (QObject* obj)
+	void Core::AddActiveAccount (QObject *obj)
 	{
 		if (!ActiveAccounts_.contains (obj))
 			ActiveAccounts_ << obj;
@@ -328,46 +328,46 @@ namespace OnlineBookmarks
 		IBookmarksService *ibs = 0;
 		switch (type)
 		{
-			case 0:
-				Q_FOREACH (QObject *accObj, ActiveAccounts_)
-				{
-					account = qobject_cast<IAccount*> (accObj);
-					if (!account)
-						continue;
-					ibs = qobject_cast<IBookmarksService*> (account->GetParentService ());
-					if (!ibs)
-						continue;
-					ibs->UploadBookmarks (account, result);
-				}
-				break;
-			case 1:
-				Q_FOREACH (QObject *accObj, ActiveAccounts_)
-				{
-					account = qobject_cast<IAccount*> (accObj);
-					if (!account)
-						continue;
-					ibs = qobject_cast<IBookmarksService*> (account->GetParentService ());
-					if (!ibs)
-						continue;
+		case 0:
+			Q_FOREACH (QObject *accObj, ActiveAccounts_)
+			{
+				account = qobject_cast<IAccount*> (accObj);
+				if (!account)
+					continue;
+				ibs = qobject_cast<IBookmarksService*> (account->GetParentService ());
+				if (!ibs)
+					continue;
+				ibs->UploadBookmarks (account, result);
+			}
+			break;
+		case 1:
+			Q_FOREACH (QObject *accObj, ActiveAccounts_)
+			{
+				account = qobject_cast<IAccount*> (accObj);
+				if (!account)
+					continue;
+				ibs = qobject_cast<IBookmarksService*> (account->GetParentService ());
+				if (!ibs)
+					continue;
 
-					QVariantList list = GetUniqueBookmarks (account, result);
-					ibs->UploadBookmarks (account, list);
-				}
-				break;
-			case 2:
-				Q_FOREACH (QObject *accObj, ActiveAccounts_)
-				{
-					account = qobject_cast<IAccount*> (accObj);
-					if (!account)
-						continue;
-					ibs = qobject_cast<IBookmarksService*> (account->GetParentService ());
-					if (!ibs)
-						continue;
+				QVariantList list = GetUniqueBookmarks (account, result);
+				ibs->UploadBookmarks (account, list);
+			}
+			break;
+		case 2:
+			Q_FOREACH (QObject *accObj, ActiveAccounts_)
+			{
+				account = qobject_cast<IAccount*> (accObj);
+				if (!account)
+					continue;
+				ibs = qobject_cast<IBookmarksService*> (account->GetParentService ());
+				if (!ibs)
+					continue;
 
-					QVariantList list = GetUniqueBookmarks (account, result, true);
-					ibs->UploadBookmarks (account, list);
-				}
-				break;
+				QVariantList list = GetUniqueBookmarks (account, result, true);
+				ibs->UploadBookmarks (account, list);
+			}
+			break;
 		}
 	}
 
@@ -377,7 +377,7 @@ namespace OnlineBookmarks
 		{
 			IAccount *account = qobject_cast<IAccount*> (accObj);
 			IBookmarksService *ibs = qobject_cast<IBookmarksService*> (account->GetParentService ());
-			ibs->DownloadBookmarks (account, account->GetLastDownloadDateTime ());
+			ibs->DownloadBookmarks (account->GetObject (), account->GetLastDownloadDateTime ());
 		}
 	}
 
@@ -387,7 +387,7 @@ namespace OnlineBookmarks
 		{
 			IAccount *account = qobject_cast<IAccount*> (accObj);
 			IBookmarksService *ibs = qobject_cast<IBookmarksService*> (account->GetParentService ());
-			ibs->DownloadBookmarks (account, QDateTime ());
+			ibs->DownloadBookmarks (account->GetObject (), QDateTime ());
 		}
 	}
 
