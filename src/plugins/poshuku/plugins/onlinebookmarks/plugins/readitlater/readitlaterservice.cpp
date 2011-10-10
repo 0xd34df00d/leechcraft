@@ -104,8 +104,17 @@ namespace ReadItLater
 				req);
 	}
 
-	void ReadItLaterService::UploadBookmarks (IAccount *account, const QVariantList& bookmarks)
+	void ReadItLaterService::UploadBookmarks (QObject *accObj, const QVariantList& bookmarks)
 	{
+		IAccount *account = qobject_cast<IAccount*> (accObj);
+		if (!account)
+		{
+			qWarning () << Q_FUNC_INFO
+			<< "isn't an IAccount object"
+			<< accObj;
+			return;
+		}
+
 		QByteArray uploadBookmarks = ReadItLaterApi_->GetUploadPayload (account->GetLogin(),
 				account->GetPassword (), bookmarks);
 
@@ -119,8 +128,17 @@ namespace ReadItLater
 				req);
 	}
 
-	void ReadItLaterService::DownloadBookmarks (IAccount *account, const QDateTime& from)
+	void ReadItLaterService::DownloadBookmarks (QObject *accObj, const QDateTime& from)
 	{
+		IAccount *account = qobject_cast<IAccount*> (accObj);
+		if (!account)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "isn't an IAccount object"
+					<< accObj;
+			return;
+		}
+
 		QByteArray downloadBookmarks = ReadItLaterApi_->GetDownloadPayload (account->GetLogin(),
 				account->GetPassword (), from);
 
