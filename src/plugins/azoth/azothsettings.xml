@@ -71,6 +71,9 @@
 			<item type="checkbox" property="ShowMenuBar" default="true">
 				<label value="Show Azoth menu under the contact list" />
 			</item>
+			<item type="checkbox" property="ShowStatuses" default="true">
+				<label value="Show statuses" />
+			</item>
 			<item type="checkbox" property="ShowAvatars" default="true">
 				<label value="Show avatars" />
 			</item>

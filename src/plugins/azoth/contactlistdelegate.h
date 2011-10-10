@@ -30,9 +30,10 @@ namespace Azoth
 	class ContactListDelegate : public QStyledItemDelegate
 	{
 		Q_OBJECT
-		
+
 		bool ShowAvatars_;
 		bool ShowClientIcons_;
+		bool ShowStatuses_;
 		QString ActivityIconset_;
 		QString MoodIconset_;
 		QString SystemIconset_;
@@ -60,6 +61,7 @@ namespace Azoth
 		void handleActivityIconsetChanged ();
 		void handleMoodIconsetChanged ();
 		void handleSystemIconsetChanged ();
+		void handleShowStatusesChanged ();
 	};
 }
 }
