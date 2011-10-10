@@ -25,6 +25,7 @@
 
 class QModelIndex;
 class QToolBar;
+class QToolButton;
 
 namespace LeechCraft
 {
@@ -36,12 +37,14 @@ namespace Poshuku
 
 		bool IsCompleting_;
 		QString PreviousUrl_;
+		QToolButton *ClearButton_;
 	public:
 		ProgressLineEdit (QWidget* = 0);
 		virtual ~ProgressLineEdit ();
 		bool IsCompleting () const;
 	protected:
 		void keyPressEvent (QKeyEvent *);
+		void resizeEvent (QResizeEvent *);
 	private slots:
 		void handleCompleterActivated ();
 		void textChanged (const QString& text);

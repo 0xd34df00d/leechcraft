@@ -75,6 +75,7 @@ SET (SRCS
 	actionsstructs.cpp
 	sqlstoragebackend_mysql.cpp
 	pluginmanager.cpp
+	proxyobject.cpp
 	syncdeltagenerator.cpp
 	)
 SET (HEADERS
@@ -121,6 +122,7 @@ SET (HEADERS
 	actionsstructs.h
 	sqlstoragebackend_mysql.h
 	pluginmanager.h
+	proxyobject.h
 	syncdeltagenerator.h
 	)
 SET (FORMS

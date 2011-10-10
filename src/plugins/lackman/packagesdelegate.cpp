@@ -135,7 +135,8 @@ namespace LeechCraft
 						Qt::AlignBottom | Qt::AlignLeft, version);
 				titleWidth += QFontMetrics (titleOption.font).width (version) + CPadding;
 
-				QString tagsString = QFontMetrics (tagsFont).elidedText (tags.join ("; "),
+				const QString& tagsString =
+						QFontMetrics (tagsFont).elidedText (tags.join ("; "),
 								Qt::ElideMiddle, textWidth - titleWidth);
 
 				p.setFont (tagsFont);
@@ -169,7 +170,8 @@ namespace LeechCraft
 						Qt::AlignCenter, QIcon::Normal);
 
 				QWidget *layoutWidget = GetLayout (index);
-				QPoint actionPos (leftPos, shiftFromTop);
+				QPoint actionPos (r.width () - layoutWidget->width () - CPadding,
+						r.top () + CPadding + TextHeight (option));
 				if (layoutWidget->pos () != actionPos)
 					layoutWidget->move (actionPos);
 				if (!layoutWidget->isVisible ())
@@ -185,8 +187,8 @@ namespace LeechCraft
 				// one between webview and install/remove actions (if
 				// selected).
 				result.rheight () = TitleHeight (option) +
-						TextHeight (option) +
-						CActionsSize + CPadding * 2;
+						std::max (TextHeight (option), CActionsSize) +
+						CPadding * 2;
 
 				return result;
 			}

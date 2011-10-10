@@ -49,6 +49,7 @@ namespace AdvancedNotifications
 		NotificationRulesWidget (QWidget* = 0);
 
 		QList<NotificationRule> GetRules () const;
+		void SetRuleEnabled (const NotificationRule&, bool);
 	private:
 		void LoadDefaultRules ();
 		void LoadSettings ();
@@ -61,6 +62,7 @@ namespace AdvancedNotifications
 		void SaveSettings () const;
 	private slots:
 		void handleItemSelected (const QModelIndex&);
+		void handleItemChanged (QStandardItem*);
 
 		void on_AddRule__released ();
 		void on_UpdateRule__released ();

@@ -445,7 +445,7 @@ namespace Azoth
 
 		QObject *job = XferManager_->SendFile (EntryID_,
 				Ui_.VariantBox_->currentText (), filename);
-		Core::Instance ().HandleTransferJob (job);
+		Core::Instance ().GetTransferJobManager ()->HandleJob (job);
 	}
 
 	void ChatTab::handleCallRequested ()

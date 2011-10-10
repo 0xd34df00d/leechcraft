@@ -24,11 +24,18 @@ namespace Aggregator
 {
 	PluginManager::PluginManager (QObject *parent)
 	: Util::BaseHookInterconnector (parent)
+	, ProxyObject_ (new ProxyObject ())
 	{
 	}
 
 	void PluginManager::AddPlugin (QObject *plugin)
 	{
+		QByteArray sig = QMetaObject::normalizedSignature ("initPlugin (QObject*)");
+		if (plugin->metaObject ()->indexOfMethod (sig) != -1)
+			QMetaObject::invokeMethod (plugin,
+					"initPlugin",
+					Q_ARG (QObject*, ProxyObject_.get ()));
+
 		Util::BaseHookInterconnector::AddPlugin (plugin);
 	}
 }

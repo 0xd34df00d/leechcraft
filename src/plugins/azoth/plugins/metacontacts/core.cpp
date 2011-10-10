@@ -25,6 +25,7 @@
 #include "metaaccount.h"
 #include "metaentry.h"
 #include "addtometacontactsdialog.h"
+#include <QInputDialog>
 
 namespace LeechCraft
 {
@@ -44,7 +45,7 @@ namespace Metacontacts
 		static Core c;
 		return c;
 	}
-	
+
 	void Core::SetMetaAccount (MetaAccount *acc)
 	{
 		Account_ = acc;
@@ -56,7 +57,7 @@ namespace Metacontacts
 				SIGNAL (removedCLItems (const QList<QObject*>&)),
 				acc,
 				SIGNAL (removedCLItems (const QList<QObject*>&)));
-		
+
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Azoth_Metacontacts_Entries");
 		const int numEntries = settings.beginReadArray ("Entries");
@@ -70,7 +71,7 @@ namespace Metacontacts
 						<< "empty ID";
 				continue;
 			}
-			
+
 			const QString& name = settings.value ("Name").toString ();
 			if (name.isEmpty ())
 			{
@@ -95,13 +96,13 @@ namespace Metacontacts
 			entry->SetGroups (settings.value ("Groups").toStringList ());
 			entry->SetRealEntries (reals);
 			Entries_ << entry;
-			
+
 			Q_FOREACH (const QString& id, reals)
 				UnavailRealEntries_ [id] = entry;
 		}
 		settings.endArray ();
 	}
-	
+
 	QList<QObject*> Core::GetEntries () const
 	{
 		QList<QObject*> result;
@@ -112,9 +113,9 @@ namespace Metacontacts
 
 	bool Core::HandleRealEntryAddBegin (QObject *entryObj)
 	{
-		if (entryObj->metaObject ()->className () == "MetaEntry")
+		if (!qstrcmp (entryObj->metaObject ()->className (), "MetaEntry"))
 			return false;
-		
+
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 		if (!entry)
 		{
@@ -123,19 +124,19 @@ namespace Metacontacts
 					<< "doesn't implement ICLEntry";
 			return false;
 		}
-		
+
 		const QString& id = entry->GetEntryID ();
 		if (AvailRealEntries_.contains (id))
 			return true;
 
 		if (!UnavailRealEntries_.contains (id))
 			return false;
-		
+
 		MetaEntry *metaEntry = UnavailRealEntries_.take (id);
 		metaEntry->AddRealObject (entry);
-		
+
 		AvailRealEntries_ [id] = metaEntry;
-		
+
 		return true;
 	}
 
@@ -149,7 +150,7 @@ namespace Metacontacts
 					<< "doesn't implement ICLEntry";
 			return;
 		}
-		
+
 		QList<MetaEntry*> allowed = Entries_;
 		Q_FOREACH (MetaEntry *entry, allowed)
 			if (entry->GetRealEntries ().contains (real->GetEntryID ()))
@@ -158,54 +159,116 @@ namespace Metacontacts
 		AddToMetacontactsDialog dia (real, Entries_);
 		if (dia.exec () != QDialog::Accepted)
 			return;
-		
+
 		MetaEntry *existingMeta = dia.GetSelectedMeta ();
 		if (!existingMeta)
 		{
 			const QString& name = dia.GetNewMetaName ();
 			if (name.isEmpty ())
 				return;
-			
-			const QString& id = QUuid::createUuid ().toString ();
-			existingMeta = new MetaEntry (id, Account_);
-			ConnectSignals (existingMeta);
+
+			existingMeta = CreateMetaEntry ();
 			existingMeta->SetEntryName (name);
-			
-			Entries_ << existingMeta;
-			
-			emit gotCLItems (QList<QObject*> () << existingMeta);
 		}
-		
-		existingMeta->AddRealObject (real);
-		QMetaObject::invokeMethod (this,
-				"removedCLItems",
-				Qt::QueuedConnection,
-				Q_ARG (QList<QObject*>, QList<QObject*> () << realObj));
-		
-		ScheduleSaveEntries ();
+
+		AddRealToMeta (existingMeta, real);
 	}
-	
+
+	bool Core::HandleDnDEntry2Entry (QObject *sourceObj, QObject *targetObj)
+	{
+		if (qobject_cast<MetaEntry*> (sourceObj))
+			std::swap (sourceObj, targetObj);
+
+		ICLEntry *source = qobject_cast<ICLEntry*> (sourceObj);
+		ICLEntry *target = qobject_cast<ICLEntry*> (targetObj);
+
+		if (!source || !target)
+			return false;
+
+		MetaEntry *targetME = qobject_cast<MetaEntry*> (targetObj);
+		if (targetME)
+		{
+			MetaEntry *sourceME = qobject_cast<MetaEntry*> (sourceObj);
+
+			if (!sourceME)
+				AddRealToMeta (targetME, source);
+			else
+			{
+				const QObjectList& reals = sourceME->GetAvailEntryObjs ();
+
+				RemoveEntry (sourceME);
+
+				Q_FOREACH (QObject *real, reals)
+					AddRealToMeta (targetME, qobject_cast<ICLEntry*> (real));
+			}
+
+			return true;
+		}
+
+		const QString& name = QInputDialog::getText (0,
+				"LeechCraft",
+				tr ("Enter the name of the new metacontact uniting %1 and %2:")
+					.arg (source->GetEntryName ())
+					.arg (target->GetEntryName ()),
+				QLineEdit::Normal,
+				source->GetEntryName ());
+		if (name.isEmpty ())
+			return false;
+
+		MetaEntry *entry = CreateMetaEntry ();
+		entry->SetEntryName (name);
+
+		AddRealToMeta (entry, source);
+		AddRealToMeta (entry, target);
+
+		return true;
+	}
+
 	void Core::RemoveEntry (MetaEntry *entry)
 	{
 		Entries_.removeAll (entry);
 		emit removedCLItems (QObjectList () << entry);
-		
+
 		handleEntriesRemoved (entry->GetAvailEntryObjs ());
-		
+
 		entry->deleteLater ();
 	}
-	
+
 	void Core::ScheduleSaveEntries ()
 	{
 		if (SaveEntriesScheduled_)
 			return;
-		
+
 		QTimer::singleShot (1000,
 				this,
 				SLOT (saveEntries ()));
 		SaveEntriesScheduled_ = true;
 	}
-	
+
+	void Core::AddRealToMeta (MetaEntry *existingMeta, ICLEntry *real)
+	{
+		existingMeta->AddRealObject (real);
+		QMetaObject::invokeMethod (this,
+				"removedCLItems",
+				Qt::QueuedConnection,
+				Q_ARG (QList<QObject*>, QList<QObject*> () << real->GetObject ()));
+
+		ScheduleSaveEntries ();
+	}
+
+	MetaEntry* Core::CreateMetaEntry ()
+	{
+		const QString& id = QUuid::createUuid ().toString ();
+		MetaEntry *result = new MetaEntry (id, Account_);
+		ConnectSignals (result);
+
+		Entries_ << result;
+
+		emit gotCLItems (QList<QObject*> () << result);
+
+		return result;
+	}
+
 	void Core::ConnectSignals (MetaEntry *entry)
 	{
 		connect (entry,
@@ -217,7 +280,7 @@ namespace Metacontacts
 				this,
 				SLOT (handleEntryShouldBeRemoved ()));
 	}
-	
+
 	void Core::handleEntriesRemoved (const QList<QObject*>& entries)
 	{
 		Q_FOREACH (QObject *entryObj, entries)
@@ -234,7 +297,7 @@ namespace Metacontacts
 
 		ScheduleSaveEntries ();
 	}
-	
+
 	void Core::handleEntryShouldBeRemoved ()
 	{
 		MetaEntry *entry = qobject_cast<MetaEntry*> (sender ());
@@ -246,10 +309,10 @@ namespace Metacontacts
 					<< "to MetaEntry*";
 			return;
 		}
-		
+
 		RemoveEntry (entry);
 	}
-	
+
 	void Core::saveEntries ()
 	{
 		QSettings settings (QCoreApplication::organizationName (),
@@ -266,7 +329,7 @@ namespace Metacontacts
 			settings.setValue ("RealIDs", entry->GetRealEntries ());
 		}
 		settings.endArray ();
-		
+
 		SaveEntriesScheduled_ = false;
 	}
 }

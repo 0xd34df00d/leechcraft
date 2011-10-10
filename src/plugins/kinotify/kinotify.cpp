@@ -42,6 +42,11 @@ namespace LeechCraft
 				ThemeLoader_->AddLocalPrefix ();
 				ThemeLoader_->AddGlobalPrefix ();
 
+				connect (ThemeLoader_.get (),
+						SIGNAL (watchedDirectoriesChanged ()),
+						this,
+						SLOT (handleWatchedDirsChanged ()));
+
 				SettingsDialog_.reset (new Util::XmlSettingsDialog ());
 				SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 						"kinotifysettings.xml");
@@ -174,6 +179,11 @@ namespace LeechCraft
 				ActiveNotifications_.removeFirst ();
 				if (ActiveNotifications_.size ())
 					ActiveNotifications_.first ()->PrepareNotification ();
+			}
+
+			void Plugin::handleWatchedDirsChanged ()
+			{
+				KinotifyWidget::ClearThemeCache ();
 			}
 		};
 	};

@@ -42,6 +42,7 @@ namespace LeechCraft
 	{
 		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
 		QCheckBox *box = new QCheckBox (XSD_->GetLabel (item));
+		XSD_->SetTooltip (box, item);
 		box->setObjectName (item.attribute ("property"));
 
 		QVariant value = XSD_->GetValue (item);

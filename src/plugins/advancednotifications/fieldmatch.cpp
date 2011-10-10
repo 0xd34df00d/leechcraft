@@ -28,25 +28,25 @@ namespace AdvancedNotifications
 	: FieldType_ (QVariant::Invalid)
 	{
 	}
-	
+
 	FieldMatch::FieldMatch (QVariant::Type type)
 	: FieldType_ (type)
 	, Matcher_ (TypedMatcherBase::Create (type))
 	{
 	}
-	
+
 	FieldMatch::FieldMatch (QVariant::Type type,
 			TypedMatcherBase_ptr matcher)
 	: FieldType_ (type)
 	, Matcher_ (matcher)
 	{
 	}
-	
+
 	QString FieldMatch::GetPluginID () const
 	{
 		return PluginID_;
 	}
-	
+
 	void FieldMatch::SetPluginID (const QString& id)
 	{
 		PluginID_ = id;
@@ -56,12 +56,12 @@ namespace AdvancedNotifications
 	{
 		return FieldName_;
 	}
-	
+
 	void FieldMatch::SetFieldName (const QString& name)
 	{
 		FieldName_ = name;
 	}
-	
+
 	QVariant::Type FieldMatch::GetType () const
 	{
 		return FieldType_;
@@ -72,12 +72,12 @@ namespace AdvancedNotifications
 		FieldType_ = type;
 		Matcher_ = TypedMatcherBase::Create (type);
 	}
-	
+
 	TypedMatcherBase_ptr FieldMatch::GetMatcher () const
 	{
 		return Matcher_;
 	}
-	
+
 	void FieldMatch::Save (QDataStream& out) const
 	{
 		out << static_cast<quint8> (1)
@@ -98,7 +98,7 @@ namespace AdvancedNotifications
 					<< version;
 			return;
 		}
-		
+
 		QVariantMap map;
 		in >> PluginID_
 			>> FieldName_
@@ -107,6 +107,13 @@ namespace AdvancedNotifications
 		Matcher_ = TypedMatcherBase::Create (FieldType_);
 		if (Matcher_)
 			Matcher_->Load (map);
+	}
+
+	bool operator== (const FieldMatch& f1, const FieldMatch& f2)
+	{
+		return f1.GetType () == f2.GetType () &&
+			f1.GetPluginID () == f2.GetPluginID () &&
+			f1.GetFieldName () == f2.GetFieldName ();
 	}
 }
 }

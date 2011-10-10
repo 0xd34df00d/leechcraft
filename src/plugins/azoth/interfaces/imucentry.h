@@ -33,7 +33,7 @@ namespace Azoth
 	 * This class extends ICLEntry by providing methods and data
 	 * specific to MUCs. A well-written plugin should implement this
 	 * interface along with ICLEntry for MUC entries.
-	 * 
+	 *
 	 * See IConfigurableMUC if the MUC supports being configured and
 	 * IMUCPerms if the MUC supports adjusting permissions for its
 	 * participants.
@@ -50,10 +50,15 @@ namespace Azoth
 			 * configured.
 			 */
 			MUCFCanBeConfigured = 0x0001,
+
 			/** Room can have a (possibly empty) subject which may be
 			 * retrieved by GetMUCSubject().
 			 */
-			MUCFCanHaveSubject = 0x0002
+			MUCFCanHaveSubject = 0x0002,
+
+			/** Room supports invitations.
+			 */
+			MUCFCanInvite = 0x0004
 		};
 
 		Q_DECLARE_FLAGS (MUCFeatures, MUCFeature);
@@ -94,9 +99,9 @@ namespace Azoth
 		 * @return The list of participants of this MUC.
 		 */
 		virtual QList<QObject*> GetParticipants () = 0;
-		
+
 		/** @brief Requests to join the room.
-		 * 
+		 *
 		 * If the we aren't joined to this MUC (for example, there was a
 		 * nick conflict, or this entry represents a bookmark), the room
 		 * should be tried to be joined.
@@ -132,39 +137,59 @@ namespace Azoth
 		 * this room.
 		 */
 		virtual void SetNick (const QString& nick) = 0;
-		
+
 		/** @brief Returns human-readable name of participants' group.
-		 * 
+		 *
 		 * This function should return the human-readable name of the
 		 * group which holds the participants of this room.
-		 * 
+		 *
 		 * @return The human-readable name.
 		 */
 		virtual QString GetGroupName () const = 0;
-		
+
 		/** @brief Returns the real ID of a participant.
-		 * 
+		 *
 		 * This function should return a real protocol ID of the given
 		 * participant (JID for XMPP protocol, for example), or a null
 		 * string if the ID is unknown, or the given participant doesn't
 		 * belong to this room.
-		 * 
+		 *
 		 * @param[in] participant The participant for which to return
 		 * the real JID.
 		 * @return The real ID of a participant.
 		 */
 		virtual QString GetRealID (QObject *participant) const = 0;
-				
+
 		/** @brief Returns the data identifying this room.
-		 * 
+		 *
 		 * The returned variant map should have the same format as the
 		 * one from IMUCJoinWidget::GetIdentifyingData().
-		 * 
+		 *
 		 * @return The identifying data.
-		 * 
+		 *
 		 * @sa IMUCJoinWidget::GetIdentifyingData()
 		 */
 		virtual QVariantMap GetIdentifyingData () const = 0;
+
+		/** @brief Invites the user to this MUC.
+		 *
+		 * This function should invite the given user to this MUC by
+		 * means of the protocol, if applicable, or by a plain message
+		 * if not.
+		 *
+		 * User is identified by its protocol-specific ID, as returned
+		 * by ICLEntry::GetHumanReadableID().
+		 *
+		 * The invitation may contain an optional message.
+		 *
+		 * @param[in] userId The protocol-specific ID of the user to
+		 * invite.
+		 * @param[in] msg The optional message to send along with the
+		 * invite.
+		 *
+		 * @sa ICLEntry::GetHumanReadableID()
+		 */
+		virtual void InviteToMUC (const QString& userId, const QString& msg) = 0;
 
 		/** @brief Notifies about new participants in the room.
 		 *
@@ -172,7 +197,7 @@ namespace Azoth
 		 * room.
 		 *
 		 * @note This function is expected to be a signal.
-		 * 
+		 *
 		 * @param[out] parts The list of participants that joined.
 		 */
 		virtual void gotNewParticipants (const QList<QObject*>& parts) = 0;
@@ -183,49 +208,49 @@ namespace Azoth
 		 * to newSubj.
 		 *
 		 * @note This function is expected to be a signal.
-		 * 
+		 *
 		 * @param[out] newSubj The new subject of this room.
 		 */
 		virtual void mucSubjectChanged (const QString& newSubj) = 0;
-		
+
 		/** @brief Notifies about nick conflict.
-		 * 
+		 *
 		 * This signal should be emitted when room gets the error from
 		 * the server that the nickname is already in use.
-		 * 
+		 *
 		 * The signal handler could either call SetNick() with some
 		 * other nickname (in this case the room should automatically
 		 * try to rejoin) or do nothing it all (in this case the room
 		 * should, well, do nothing as well).
-		 * 
+		 *
 		 * This signal should be emitted only if the error arises while
 		 * joining, not as result of SetNick().
-		 * 
+		 *
 		 * @note This function is expected to be a signal.
-		 * 
+		 *
 		 * @param[out] usedNick The nickname that was used to join the
 		 * room.
 		 */
 		virtual void nicknameConflict (const QString& usedNick) = 0;
-		
+
 		/** @brief Notifies about participant being kicked.
-		 * 
+		 *
 		 * This signal should be emitted whenever our user gets kicked
 		 * from this room.
-		 * 
+		 *
 		 * @note This function is expected to be a signal.
-		 * 
+		 *
 		 * @param[out] reason The optional reason message.
 		 */
 		virtual void beenKicked (const QString& reason) = 0;
-		
+
 		/** @brief Notifies about participant being banned.
-		 * 
+		 *
 		 * This signal should be emitted whenever our user gets banned
 		 * from this room.
-		 * 
+		 *
 		 * @note This function is expected to be a signal.
-		 * 
+		 *
 		 * @param[out] reason The optional reason message.
 		 */
 		virtual void beenBanned (const QString& reason) = 0;

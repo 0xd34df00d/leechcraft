@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "glooxaccountconfigurationwidget.h"
+#include <QInputDialog>
 
 namespace LeechCraft
 {
@@ -94,6 +95,25 @@ namespace Xoox
 	{
 		Ui_.CustomAddress_->setChecked (port > 0);
 		Ui_.ConnectionPort_->setValue (port);
+	}
+
+	QString GlooxAccountConfigurationWidget::GetPassword () const
+	{
+		return Password_;
+	}
+
+	void GlooxAccountConfigurationWidget::on_UpdatePassword__released ()
+	{
+		bool ok = false;
+		Password_ = QInputDialog::getText (this,
+				tr ("Password update"),
+				tr ("Enter new password:"),
+				QLineEdit::Password,
+				QString (),
+				&ok);
+
+		if (Password_.isEmpty ())
+			Password_ = ok ? "" : QString ();
 	}
 }
 }

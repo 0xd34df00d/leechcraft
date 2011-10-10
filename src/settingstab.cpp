@@ -41,67 +41,77 @@ namespace LeechCraft
 		Ui_.setupUi (this);
 		Ui_.ListContents_->setLayout (new QVBoxLayout);
 		Ui_.DialogContents_->setLayout (new QVBoxLayout);
-		
+
 		ActionBack_->setProperty ("ActionIcon", "back");
 		connect (ActionBack_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleBackRequested ()));
-		
+
 		ActionApply_->setProperty ("ActionIcon", "apply");
 		connect (ActionApply_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleApply ()));
-		
+
 		ActionCancel_->setProperty ("ActionIcon", "cancel");
 		connect (ActionCancel_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleCancel ()));
 	}
-	
+
 	namespace
 	{
 		QStringList GetFirstClassPlugins (IPlugin2 *ip2)
 		{
 			const QSet<QByteArray>& classes = ip2->GetPluginClasses ();
-			const QObjectList& settables = Core::Instance ()
+			const QObjectList& pReady = Core::Instance ()
 					.GetPluginManager ()->GetAllCastableRoots<IPluginReady*> ();
+
 			QStringList result;
-			Q_FOREACH (QObject *obj, settables)
+
+			Q_FOREACH (QObject *obj, pReady)
 			{
+				if (obj == Core::Instance ().GetCoreInstanceObject ())
+					continue;
+
 				IPluginReady *ipr = qobject_cast<IPluginReady*> (obj);
 				if (ipr->GetExpectedPluginClasses ().intersect (classes).isEmpty ())
 					continue;
-				
+
 				IInfo *ii = qobject_cast<IInfo*> (obj);
 				result << SettingsTab::tr ("Plugins for %1")
 						.arg (ii->GetName ());
 			}
+
 			if (result.isEmpty ())
 				result << SettingsTab::tr ("General second-level plugins");
 			return result;
 		}
-		
+
 		QMap<QObject*, QStringList> BuildGroups (const QObjectList& settables)
 		{
 			QMap<QObject*, QStringList> result;
 			Q_FOREACH (QObject *obj, settables)
 			{
 				IPlugin2 *ip2 = qobject_cast<IPlugin2*> (obj);
+				const QStringList& firstClass = ip2 ?
+						GetFirstClassPlugins (ip2) :
+						QStringList ();
+
 				if (obj == Core::Instance ().GetCoreInstanceObject ())
 					result [obj] << "LeechCraft";
-				else if (ip2)
-					result [obj] = GetFirstClassPlugins (ip2);
+				else if (!firstClass.isEmpty ())
+					result [obj] = firstClass;
 				else
 					result [obj] << SettingsTab::tr ("General plugins");
 			}
-			
+
 			return result;
 		}
 	}
-	
+
 	void SettingsTab::Initialize ()
 	{
 		const QObjectList& settables = Core::Instance ()
@@ -111,7 +121,7 @@ namespace LeechCraft
 		QSet<QString> allGroups;
 		Q_FOREACH (const QStringList& value, obj2groups.values ())
 			allGroups += QSet<QString>::fromList (value);
-		
+
 		QMap<QString, QGroupBox*> group2box;
 		Q_FOREACH (const QString& group, allGroups)
 		{
@@ -119,20 +129,20 @@ namespace LeechCraft
 			box->setLayout (new Util::FlowLayout);
 			group2box [group] = box;
 		}
-		
+
 		QStringList keys = group2box.keys ();
 		if (keys.contains (tr ("General plugins")))
 		{
 			keys.removeAll (tr ("General plugins"));
 			keys.prepend (tr ("General plugins"));
 		}
-		
+
 		if (keys.removeAll ("LeechCraft"))
 			keys.prepend ("LeechCraft");
 
 		Q_FOREACH (const QString& key, keys)
 			Ui_.ListContents_->layout ()->addWidget (group2box [key]);
-			
+
 		Q_FOREACH (QObject *obj, settables)
 		{
 			IInfo *ii = qobject_cast<IInfo*> (obj);
@@ -156,10 +166,10 @@ namespace LeechCraft
 				group2box [group]->layout ()->addWidget (butt);
 			}
 		}
-		
+
 		qobject_cast<QBoxLayout*> (Ui_.ListContents_->layout ())->addStretch ();
 	}
-	
+
 	TabClassInfo SettingsTab::GetTabClassInfo () const
 	{
 		TabClassInfo setInfo =
@@ -173,22 +183,22 @@ namespace LeechCraft
 		};
 		return setInfo;
 	}
-	
+
 	QObject* SettingsTab::ParentMultiTabs ()
 	{
 		return Core::Instance ().GetCoreInstanceObject ();
 	}
-	
+
 	void SettingsTab::Remove ()
 	{
 		emit remove (this);
 	}
-	
+
 	QToolBar* SettingsTab::GetToolBar () const
 	{
 		return Toolbar_;
 	}
-	
+
 	void SettingsTab::handleSettingsCalled ()
 	{
 		QObject *obj = sender ()->property ("SettableObject").value<QObject*> ();
@@ -199,13 +209,13 @@ namespace LeechCraft
 					<< sender ();
 			return;
 		}
-		
+
 		CurrentIHS_ = obj;
-		
+
 		IInfo *ii = qobject_cast<IInfo*> (obj);
 		Ui_.SectionName_->setText (tr ("Settings for %1")
 				.arg (ii->GetName ()));
-		
+
 		IHaveSettings *ihs = qobject_cast<IHaveSettings*> (obj);
 		Ui_.DialogContents_->layout ()->addWidget (ihs->GetSettingsDialog ().get ());
 		ihs->GetSettingsDialog ()->show ();
@@ -213,16 +223,16 @@ namespace LeechCraft
 		const QStringList& pages = ihs->GetSettingsDialog ()->GetPages ();
 		Q_FOREACH (const QString& page, pages)
 			Ui_.Cats_->addTopLevelItem (new QTreeWidgetItem (QStringList (page)));
-			
+
 		Ui_.Cats_->setVisible (pages.size () != 1);
-		
+
 		Ui_.StackedWidget_->setCurrentIndex (1);
 		Toolbar_->addAction (ActionBack_);
 		Toolbar_->addSeparator ();
 		Toolbar_->addAction (ActionApply_);
 		Toolbar_->addAction (ActionCancel_);
 	}
-	
+
 	void SettingsTab::handleBackRequested ()
 	{
 		Toolbar_->clear ();
@@ -235,20 +245,20 @@ namespace LeechCraft
 			item->widget ()->hide ();
 			delete item;
 		}
-		
+
 		CurrentIHS_ = 0;
 	}
-	
+
 	void SettingsTab::handleApply ()
 	{
 		qobject_cast<IHaveSettings*> (CurrentIHS_)->GetSettingsDialog ()->accept ();
 	}
-	
+
 	void SettingsTab::handleCancel()
 	{
 		qobject_cast<IHaveSettings*> (CurrentIHS_)->GetSettingsDialog ()->reject ();
 	}
-	
+
 	void SettingsTab::on_Cats__currentItemChanged (QTreeWidgetItem *current)
 	{
 		if (!CurrentIHS_)
@@ -257,7 +267,7 @@ namespace LeechCraft
 					<< "called with null CurrentIHS_";
 			return;
 		}
-		
+
 		const int idx = Ui_.Cats_->indexOfTopLevelItem (current);
 		qobject_cast<IHaveSettings*> (CurrentIHS_)->GetSettingsDialog ()->SetPage (idx);
 	}

@@ -25,6 +25,8 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+class ICLEntry;
+
 namespace Metacontacts
 {
 	class MetaAccount;
@@ -33,29 +35,33 @@ namespace Metacontacts
 	class Core : public QObject
 	{
 		Q_OBJECT
-		
+
 		bool SaveEntriesScheduled_;
-		
+
 		MetaAccount *Account_;
 		QList<MetaEntry*> Entries_;
-		
+
 		QHash<QString, MetaEntry*> UnavailRealEntries_;
 		QHash<QString, MetaEntry*> AvailRealEntries_;
-		
+
 		Core ();
 	public:
 		static Core& Instance ();
-		
+
 		void SetMetaAccount (MetaAccount*);
 		QList<QObject*> GetEntries () const;
-		
+
 		bool HandleRealEntryAddBegin (QObject*);
 		void AddRealEntry (QObject*);
-		
+
+		bool HandleDnDEntry2Entry (QObject*, QObject*);
+
 		void RemoveEntry (MetaEntry*);
 
 		void ScheduleSaveEntries ();
 	private:
+		void AddRealToMeta (MetaEntry*, ICLEntry*);
+		MetaEntry* CreateMetaEntry ();
 		void ConnectSignals (MetaEntry*);
 	private slots:
 		void handleEntriesRemoved (const QList<QObject*>&);

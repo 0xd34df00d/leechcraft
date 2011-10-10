@@ -388,7 +388,7 @@ namespace Poshuku
 			menu->exec (mapToGlobal (e->pos ()));
 		else
 			QWebView::contextMenuEvent (e);
-		
+
 		if (menu)
 			delete menu;
 	}

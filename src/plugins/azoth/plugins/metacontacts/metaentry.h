@@ -40,30 +40,30 @@ namespace Metacontacts
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::ICLEntry
 				LeechCraft::Azoth::IAdvancedCLEntry)
-		
+
 		MetaAccount *Account_;
 		QString ID_;
 		QString Name_;
 		QStringList Groups_;
-		
+
 		QStringList UnavailableRealEntries_;
 		QList<QObject*> AvailableRealEntries_;
 		QMap<QString, QPair<QObject*, QString> > Variant2RealVariant_;
-		
+
 		QList<QObject*> Messages_;
-		
+
 		QAction *ActionMCSep_;
 		QAction *ActionManageContacts_;
 	public:
 		MetaEntry (const QString&, MetaAccount*);
-		
+
 		QObjectList GetAvailEntryObjs () const;
 		QStringList GetRealEntries () const;
 		void SetRealEntries (const QStringList&);
 		void AddRealObject (ICLEntry*);
-		
+
 		QString GetMetaVariant (QObject*, const QString&) const;
-		
+
 		// ICLEntry
 		QObject* GetObject ();
 		QObject* GetParentAccount () const;
@@ -98,19 +98,22 @@ namespace Metacontacts
 		void ConnectAdvancedSiganls (QObject*);
 	private:
 		void PerformRemoval (QObject*);
+		void SetNewEntryList (const QList<QObject*>&);
 	private slots:
 		void handleRealGotMessage (QObject*);
 		void handleRealStatusChanged (const EntryStatus&, const QString&);
 		void handleRealVariantsChanged (QStringList, QObject* = 0);
 		void handleRealNameChanged (const QString&);
 		void handleRealCPSChanged (const ChatPartState&, const QString&);
-		
+
 		void handleRealAttentionDrawn (const QString&, const QString&);
 		void handleRealMoodChanged (const QString&);
 		void handleRealActivityChanged (const QString&);
 		void handleRealTuneChanged (const QString&);
 		void handleRealLocationChanged (const QString&);
-		
+
+		void checkRemovedCLItems (const QList<QObject*>&);
+
 		void handleManageContacts ();
 	signals:
 		// ICLEntry
@@ -124,14 +127,14 @@ namespace Metacontacts
 		void chatPartStateChanged (const ChatPartState&, const QString&);
 		void permsChanged ();
 		void entryGenerallyChanged ();
-		
+
 		// IAdvancedCLEntry
 		void attentionDrawn (const QString&, const QString&);
 		void moodChanged (const QString&);
 		void activityChanged (const QString&);
 		void tuneChanged (const QString&);
 		void locationChanged (const QString&);
-		
+
 		// Own
 		void entriesRemoved (const QList<QObject*>&);
 		void shouldRemoveThis ();

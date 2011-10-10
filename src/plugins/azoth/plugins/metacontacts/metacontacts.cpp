@@ -33,9 +33,9 @@ namespace Metacontacts
 	void Plugin::Init (ICoreProxy_ptr)
 	{
 		Util::InstallTranslator ("azoth_metacontacts");
-		
+
 		Proto_ = new MetaProtocol (this);
-		
+
 		AddToMetacontacts_ = new QAction (tr ("Add to a metacontact..."), this);
 		connect (AddToMetacontacts_,
 				SIGNAL (triggered ()),
@@ -45,7 +45,7 @@ namespace Metacontacts
 
 	void Plugin::SecondInit ()
 	{
-	}	
+	}
 
 	QByteArray Plugin::GetUniqueID () const
 	{
@@ -78,35 +78,42 @@ namespace Metacontacts
 		result << "org.LeechCraft.Plugins.Azoth.Plugins.IProtocolPlugin";
 		return result;
 	}
-	
+
 	QObject* Plugin::GetObject ()
 	{
 		return this;
 	}
-	
+
 	QList<QObject*> Plugin::GetProtocols () const
 	{
 		QList<QObject*> result;
 		result << Proto_;
 		return result;
 	}
-	
+
 	void Plugin::hookAddingCLEntryBegin (IHookProxy_ptr proxy, QObject *entry)
 	{
 		if (Core::Instance ().HandleRealEntryAddBegin (entry))
 			proxy->CancelDefault ();
 	}
-	
+
+	void Plugin::hookDnDEntry2Entry (IHookProxy_ptr proxy,
+			QObject *source, QObject *target)
+	{
+		if (Core::Instance ().HandleDnDEntry2Entry (source, target))
+			proxy->CancelDefault ();
+	}
+
 	void Plugin::hookEntryActionAreasRequested (IHookProxy_ptr proxy,
 			QObject *action, QObject*)
 	{
 		if (action != AddToMetacontacts_)
 			return;
-		
+
 		const QStringList& oldList = proxy->GetReturnValue ().toStringList ();
 		proxy->SetReturnValue (oldList + QStringList ("contactListContextMenu"));
 	}
-	
+
 	void Plugin::hookEntryActionsRequested (IHookProxy_ptr proxy, QObject *entryObj)
 	{
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
@@ -116,11 +123,11 @@ namespace Metacontacts
 		QList<QVariant> list = proxy->GetReturnValue ().toList ();
 		list << QVariant::fromValue<QObject*> (AddToMetacontacts_);
 		proxy->SetReturnValue (list);
-		
+
 		AddToMetacontacts_->setProperty ("Azoth/Metacontacts/Object",
 				QVariant::fromValue<QObject*> (entryObj));
 	}
-	
+
 	void Plugin::handleAddToMetacontacts ()
 	{
 		QObject *entryObj = sender ()->
@@ -132,7 +139,7 @@ namespace Metacontacts
 					<< sender ();
 			return;
 		}
-		
+
 		Core::Instance ().AddRealEntry (entryObj);
 	}
 }

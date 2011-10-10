@@ -59,6 +59,8 @@ namespace Metacontacts
 	public slots:
 		void hookAddingCLEntryBegin (LeechCraft::IHookProxy_ptr proxy,
 				QObject *entry);
+		void hookDnDEntry2Entry (LeechCraft::IHookProxy_ptr,
+				QObject*, QObject*);
 		void hookEntryActionAreasRequested (LeechCraft::IHookProxy_ptr proxy,
 				QObject *action,
 				QObject *entry);

@@ -1,6 +1,5 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011 Minh Ngo
  * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,23 +16,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_CLEARBUTTON_H
-#define PLUGINS_POSHUKU_CLEARBUTTON_H
-#include <QToolButton>
+#ifndef PLUGINS_AGGREGATOR_INTERFACES_AGGREGATOR_IPROXYOBJECT_H
+#define PLUGINS_AGGREGATOR_INTERFACES_AGGREGATOR_IPROXYOBJECT_H
+#include <boost/shared_ptr.hpp>
 
 namespace LeechCraft
 {
-namespace Poshuku
+namespace Aggregator
 {
-	class ClearButton : public QToolButton
+	struct Item;
+	struct Channel;
+	struct Feed;
+
+	typedef boost::shared_ptr<Item> Item_ptr;
+	typedef boost::shared_ptr<Channel> Channel_ptr;
+	typedef boost::shared_ptr<Feed> Feed_ptr;
+
+	class IProxyObject
 	{
-		Q_OBJECT
 	public:
-		ClearButton (QWidget* parent = 0);
-	public slots:
-		void textChanged (const QString& text);
+		virtual ~IProxyObject () {}
+
+		virtual void AddFeed (Feed_ptr) = 0;
+		virtual void AddChannel (Channel_ptr) = 0;
+		virtual void AddItem (Item_ptr) = 0;
 	};
+
+	typedef boost::shared_ptr<IProxyObject> IProxyObject_ptr;
 }
 }
+
+Q_DECLARE_INTERFACE (LeechCraft::Aggregator::IProxyObject,
+		"org.Deviant.LeechCraft.Aggregator.IProxyObject/1.0");
 
 #endif
