@@ -96,8 +96,17 @@ namespace Delicious
 	{
 	}
 
-	void DeliciousService::UploadBookmarks (IAccount *account, const QVariantList& bookmarks)
+	void DeliciousService::UploadBookmarks (QObject *accObj, const QVariantList& bookmarks)
 	{
+		IAccount *account = qobject_cast<IAccount*> (accObj);
+		if (!account)
+		{
+			qWarning () << Q_FUNC_INFO
+			<< "isn't an IAccount object"
+			<< accObj;
+			return;
+		}
+
 		int i = 0;
 		Q_FOREACH (const QVariant& var, bookmarks)
 		{
@@ -115,8 +124,17 @@ namespace Delicious
 		}
 	}
 
-	void DeliciousService::DownloadBookmarks (IAccount *account, const QDateTime& from)
+	void DeliciousService::DownloadBookmarks (QObject *accObj, const QDateTime& from)
 	{
+		IAccount *account = qobject_cast<IAccount*> (accObj);
+		if (!account)
+		{
+			qWarning () << Q_FUNC_INFO
+			<< "isn't an IAccount object"
+			<< accObj;
+			return;
+		}
+
 		Request req;
 		req.Type_ = OTDownload;
 		req.Login_ = account->GetLogin ();
