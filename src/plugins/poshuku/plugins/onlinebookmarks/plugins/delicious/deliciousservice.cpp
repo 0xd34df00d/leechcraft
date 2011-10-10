@@ -238,7 +238,7 @@ namespace Delicious
 
 		QByteArray result = reply->readAll ();
 		Entity e;
-		LeechCraft::Priority priority;
+		LeechCraft::Priority priority = PInfo_;
 		QString msg;
 		switch (Reply2Request_ [reply].Type_)
 		{

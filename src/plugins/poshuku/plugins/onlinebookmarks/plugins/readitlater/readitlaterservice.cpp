@@ -239,7 +239,7 @@ namespace ReadItLater
 		const QVariant& result = reply->attribute (QNetworkRequest::HttpStatusCodeAttribute);
 		Entity e;
 		QString msg;
-		LeechCraft::Priority priority;
+		LeechCraft::Priority priority = PInfo_;
 		switch (result.toInt ())
 		{
 		case 200:
@@ -263,11 +263,19 @@ namespace ReadItLater
 					priority = PInfo_;
 					msg = tr ("Registration has finished successfully");
 					break;
+				case OTDownload:
+					break;
+				case OTUpload:
+					break;
 				}
 			}
 			else
 				switch (Reply2Request_ [reply].Type_)
 				{
+				case OTAuth:
+					break;
+				case OTRegister:
+					break;
 				case OTDownload:
 					Account2ReplyContent_ [GetAccountByName (Reply2Request_ [reply].Login_)]
 							.append (reply->readAll ());

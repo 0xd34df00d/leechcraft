@@ -104,7 +104,7 @@ namespace OnlineBookmarks
 	void Core::AddServicePlugin (QObject* plugin)
 	{
 		IBookmarksService *ibs = qobject_cast<IBookmarksService*> (plugin);
-		if (!plugin)
+		if (!ibs)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< plugin
