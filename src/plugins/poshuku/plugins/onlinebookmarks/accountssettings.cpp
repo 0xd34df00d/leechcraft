@@ -20,10 +20,10 @@
 #include <QStandardItemModel>
 #include <QDateTime>
 #include <QTimer>
+#include <QLayout>
 #include <interfaces/iauthwidget.h>
 #include <interfaces/iaccount.h>
 #include "core.h"
-#include <QLayout>
 
 namespace LeechCraft
 {
@@ -62,21 +62,18 @@ namespace OnlineBookmarks
 			Ui_.Services_->setItemData (Ui_.Services_->count () - 1,
 					QVariant::fromValue<QObject*> (plugin), RServiceObject);
 
-			if (!Service2AuthWidget_.contains (ibs))
+			QWidget *widget = ibs->GetAuthWidget ();
+			if (!qobject_cast<IAuthWidget*> (widget))
 			{
-				QWidget *widget = ibs->GetAuthWidget ();
-				if (!qobject_cast<IAuthWidget*> (widget))
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "auth widget for plugin"
-							<< plugin
-							<< "is not a IAuthWidget"
-							<< widget;
-					continue;
-				}
-
-				Service2AuthWidget_ [ibs] = widget;
+				qWarning () << Q_FUNC_INFO
+						<< "auth widget for plugin"
+						<< plugin
+						<< "is not a IAuthWidget"
+						<< widget;
+				continue;
 			}
+
+			Service2AuthWidget_ [ibs] = widget;
 
 			connect (ibs->GetObject (),
 					SIGNAL (accountAdded (QObjectList)),
@@ -100,10 +97,11 @@ namespace OnlineBookmarks
 		Q_FOREACH (QStandardItem *item, Item2Account_.keys ())
 		{
 			int row = item->row ();
-			item->parent ()->child ( row, 1)->
+			QStandardItem * parentItem = item->parent ();
+			parentItem->child ( row, 1)->
 					setText (Item2Account_ [item]->GetLastUploadDateTime ()
 						.toString (Qt::DefaultLocaleShortDate));
-			item->parent ()->child ( row, 2)->
+			parentItem->child ( row, 2)->
 					setText (Item2Account_ [item]->GetLastDownloadDateTime ()
 						.toString (Qt::DefaultLocaleShortDate));
 		}
@@ -161,10 +159,8 @@ namespace OnlineBookmarks
 				RServiceObject).value<QObject*> ();
 		IBookmarksService *ibs = qobject_cast<IBookmarksService*> (plugin);
 
-		if (ibs->GetFeatures () & IBookmarksService::FCanRegisterAccount)
-			Ui_.Register_->show ();
-		else
-			Ui_.Register_->hide ();
+		Ui_.Register_->setVisible (ibs->GetFeatures () &
+				IBookmarksService::FCanRegisterAccount);
 
 		if (!Service2AuthWidget_.contains (ibs))
 			return;
@@ -256,10 +252,7 @@ namespace OnlineBookmarks
 
 	void AccountsSettings::on_AccountsView__clicked (const QModelIndex& index)
 	{
-		if (index.parent() == QModelIndex ())
-			Ui_.Delete_->setEnabled (false);
-		else
-			Ui_.Delete_->setEnabled (true);
+		Ui_.Delete_->setEnabled (index.parent().isValid ());
 	}
 
 	void AccountsSettings::on_Services__currentIndexChanged (int)
@@ -291,9 +284,10 @@ namespace OnlineBookmarks
 				account->SetPassword (Core::Instance ().GetPassword (accObj));
 
 			Id2Account_ [account->GetAccountID ()] = accObj;
-			QModelIndex index = GetServiceIndex (ibs->GetObject ());
-			QStandardItem *parentItem;
-			if (index == QModelIndex ())
+
+			const QModelIndex& index = GetServiceIndex (ibs->GetObject ());
+			QStandardItem *parentItem = 0;
+			if (!index.isValid ())
 			{
 				parentItem = new QStandardItem (ibs->GetServiceIcon (), ibs->GetServiceName ());
 				parentItem->setEditable (false);
