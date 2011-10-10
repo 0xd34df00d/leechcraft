@@ -76,23 +76,6 @@
      </property>
     </widget>
    </item>
-   <item>
-    <widget class="LeechCraft::Poshuku::ClearButton" name="ClearButton_">
-     <property name="palette">
-      <palette>
-       <active/>
-       <inactive/>
-       <disabled/>
-      </palette>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">border: none;</string>
-     </property>
-     <property name="text">
-      <string>...</string>
-     </property>
-    </widget>
-   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -100,11 +83,6 @@
    <class>LeechCraft::Poshuku::ProgressLineEdit</class>
    <extends>QLineEdit</extends>
    <header>progresslineedit.h</header>
-  </customwidget>
-  <customwidget>
-   <class>LeechCraft::Poshuku::ClearButton</class>
-   <extends>QToolButton</extends>
-   <header>clearbutton.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
