@@ -65,19 +65,32 @@ namespace KnowHow
 
 		const int idx = XmlSettingsManager::Instance ()
 				.Property ("StdTipIndex", -1).toInt () + 1;
+
+		Ui_.setupUi (this);
+
+		ShowForIdx (idx);
+
+		setAttribute (Qt::WA_DeleteOnClose, true);
+		show ();
+	}
+
+	void TipDialog::ShowForIdx (int idx)
+	{
 		const QString& tip = GetTipByID (idx);
-		if (tip.isEmpty ())
+		if (tip.isEmpty () && !idx)
 		{
-			if (idx == 0)
-				qWarning () << Q_FUNC_INFO
-						<< "empty tip right for the first one!";
+			qWarning () << Q_FUNC_INFO
+					<< "empty tip right for the first one!";
+			return;
+		}
+		else if (tip.isEmpty ())
+		{
+			ShowForIdx (0);
 			return;
 		}
 
-		Ui_.setupUi (this);
+		XmlSettingsManager::Instance ().setProperty ("StdTipIndex", idx);
 		Ui_.TipEdit_->setText (tip);
-		setAttribute (Qt::WA_DeleteOnClose, true);
-		show ();
 	}
 
 	QString TipDialog::GetTipByID (int idx)
@@ -97,6 +110,23 @@ namespace KnowHow
 			return QString ();
 
 		return elem.text ().trimmed ();
+	}
+
+	void TipDialog::on_Forward__released ()
+	{
+		const int idx = XmlSettingsManager::Instance ()
+				.Property ("StdTipIndex", -1).toInt () + 1;
+		ShowForIdx (idx);
+	}
+
+	void TipDialog::on_Backward__released()
+	{
+		const int idx = XmlSettingsManager::Instance ()
+				.Property ("StdTipIndex", 1).toInt () - 1;
+		if (idx < 0)
+			return;
+
+		ShowForIdx (0);
 	}
 }
 }

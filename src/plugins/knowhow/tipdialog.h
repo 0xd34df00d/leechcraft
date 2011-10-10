@@ -37,8 +37,11 @@ namespace KnowHow
 	public:
 		TipDialog (QWidget* = 0);
 	private:
+		void ShowForIdx (int);
 		QString GetTipByID (int);
-		void ShowTip (const QString&);
+	private slots:
+		void on_Forward__released ();
+		void on_Backward__released ();
 	};
 }
 }
