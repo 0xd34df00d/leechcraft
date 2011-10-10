@@ -64,8 +64,7 @@ namespace Autopaste
 				QObject *chatTab,
 				QObject *entry,
 				int type,
-				QString variant,
-				QString text);
+				QString variant);
 	private slots:
 		void handleMetadata ();
 	signals:

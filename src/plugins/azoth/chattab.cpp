@@ -347,7 +347,8 @@ namespace Azoth
 						IMessage::MTChatMessage;
 
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
-		emit hookMessageWillCreated (proxy, this, e->GetObject (), type, variant, text);
+		proxy->SetValue ("text", text);
+		emit hookMessageWillCreated (proxy, this, e->GetObject (), type, variant);
 		if (proxy->IsCancelled ())
 			return;
 

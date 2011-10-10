@@ -792,7 +792,8 @@ namespace Azoth
 		const bool isRich = rtMsg && rtMsg->GetRichBody () == body;
 
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-		emit hookFormatBodyBegin (proxy, this, body, msgObj);
+		proxy->SetValue ("body", body);
+		emit hookFormatBodyBegin (proxy, this, msgObj);
 		if (!proxy->IsCancelled ())
 		{
 			proxy->FillValue ("body", body);
@@ -824,7 +825,8 @@ namespace Azoth
 			body = HandleSmiles (body);
 
 			proxy.reset (new Util::DefaultHookProxy);
-			emit hookFormatBodyEnd (proxy, this, body, msgObj);
+			proxy->SetValue ("body", body);
+			emit hookFormatBodyEnd (proxy, this, msgObj);
 			proxy->FillValue ("body", body);
 		}
 

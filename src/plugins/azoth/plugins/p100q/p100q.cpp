@@ -179,7 +179,7 @@ namespace p100q
 	}
 
 	void Plugin::hookFormatBodyEnd (IHookProxy_ptr proxy,
-			QObject*, QString body, QObject *msgObj)
+			QObject*, QObject *msgObj)
 	{
 		IMessage *msg = qobject_cast<IMessage*> (msgObj);
 		if (msg->GetDirection () != IMessage::DIn ||
@@ -199,7 +199,7 @@ namespace p100q
 		if (!other->GetEntryID ().contains ("psto@psto.net"))
 			return;
 
-		proxy->SetValue ("body", FormatBody (body));
+		proxy->SetValue ("body", FormatBody (proxy->GetValue ("body").toString ()));
 	}
 }
 }
