@@ -175,16 +175,6 @@ namespace Delicious
 		return acc;
 	}
 
-	void DeliciousAccount::DownloadBookmarks (const QDateTime& from)
-	{
-
-	}
-
-	void DeliciousAccount::UploadBookmarks (const QVariantList&)
-	{
-
-	}
-
 }
 }
 }
