@@ -35,14 +35,16 @@ namespace Delicious
 	{
 	}
 
-	QString DeliciousApi::GetAuthUrl (bool) const
+	QString DeliciousApi::GetAuthUrl (const DeliciousAccount::AuthType& at) const
 	{
-		return "https://%1:%2@api.del.icio.us/v1/posts/update";
+		if (at & DeliciousAccount::ATHttpAuth)
+			return "https://%1:%2@api.del.icio.us/v1/posts/update";
 	}
 
-	QString DeliciousApi::GetUploadUrl (bool) const
+	QString DeliciousApi::GetUploadUrl (const DeliciousAccount::AuthType& at) const
 	{
-		return "https://%1:%2@api.del.icio.us/v1/posts/add?";
+		if (at & DeliciousAccount::ATHttpAuth)
+			return "https://%1:%2@api.del.icio.us/v1/posts/add?";
 	}
 
 	QByteArray DeliciousApi::GetUploadPayload (const QVariant& bookmark)
@@ -55,9 +57,10 @@ namespace Delicious
 						map ["Tags"].toString ().split (',').join (" ")).toUtf8 ();
 	}
 
-	QString DeliciousApi::GetDownloadUrl (bool) const
+	QString DeliciousApi::GetDownloadUrl (const DeliciousAccount::AuthType& at) const
 	{
-		return "https://%1:%2@api.del.icio.us/v1/posts/all?";
+		if (at & DeliciousAccount::ATHttpAuth)
+			return "https://%1:%2@api.del.icio.us/v1/posts/all?";
 	}
 
 	QByteArray DeliciousApi::GetDownloadPayload (const QDateTime& from)
@@ -77,52 +80,72 @@ namespace Delicious
 				!xml.hasError ())
 		{
 			QXmlStreamReader::TokenType token = xml.readNext ();
+
 			if (token == QXmlStreamReader::StartDocument)
 				continue;
-			if (token == QXmlStreamReader::StartElement)
-				if(xml.name() == "post")
-				{
-					record ["URL"] = xml.attributes ().value ("href").toString ();
-					record ["Title"] = xml.attributes ().value ("description").toString ();;
-					record ["Tags"] = xml.attributes ().value ("tag").toString ();
-					list << record;
-				}
+
+			if (token == QXmlStreamReader::StartElement &&
+					xml.name() == "post")
+			{
+				record ["URL"] = xml.attributes ().value ("href").toString ();
+				record ["Title"] = xml.attributes ().value ("description").toString ();;
+				record ["Tags"] = xml.attributes ().value ("tag").toString ();
+				list << record;
+			}
 		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "Parsing finished with error"
+				<< xml.errorString ();
 
 		return list;
 	}
 
 	bool DeliciousApi::ParseAuthReply (const QByteArray& content)
 	{
-		QXmlStreamReader reply (content);
-		while (!reply.atEnd ())
+		QXmlStreamReader xml (content);
+		while (!xml.atEnd () &&
+				!xml.hasError ())
 		{
-			reply.readNext();
-			if (reply.name () == "update")
-				if (reply.attributes ().hasAttribute ("time"))
-					return true;
+			QXmlStreamReader::TokenType token = xml.readNext ();
+
+			if (token == QXmlStreamReader::StartDocument)
+				continue;
+
+			if (token == QXmlStreamReader::StartElement &&
+					xml.name() == "update" &&
+					xml.attributes ().hasAttribute ("time"))
+				return true;
 		}
-		if (reply.hasError ())
-			return false;
+
+		qWarning () << Q_FUNC_INFO
+				<< "Parsing finished with error"
+				<< xml.errorString ();
 
 		return false;
 	}
 
 	bool DeliciousApi::ParseUploadReply (const QByteArray& content)
 	{
-		QXmlStreamReader reply (content);
-		while (!reply.atEnd ())
+		QXmlStreamReader xml (content);
+		while (!xml.atEnd () &&
+				!xml.hasError ())
 		{
-			reply.readNext();
-			if (reply.name () == "result")
-			{
-				if (reply.attributes ().hasAttribute ("code") &&
-						reply.attributes ().value ("code") == "done")
-					return true;
-			}
+			QXmlStreamReader::TokenType token = xml.readNext ();
+
+			if (token == QXmlStreamReader::StartDocument)
+				continue;
+
+			if (token == QXmlStreamReader::StartElement &&
+					xml.name() == "result" &&
+					xml.attributes ().hasAttribute ("code") &&
+					xml.attributes ().value ("code") == "done")
+				return true;
 		}
-		if (reply.hasError ())
-			return false;
+
+		qWarning () << Q_FUNC_INFO
+				<< "Parsing finished with error"
+				<< xml.errorString ();
 
 		return false;
 	}

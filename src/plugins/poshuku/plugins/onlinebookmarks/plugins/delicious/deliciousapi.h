@@ -21,6 +21,7 @@
 
 #include <QObject>
 #include <QVariant>
+#include "deliciousaccount.h"
 
 namespace LeechCraft
 {
@@ -35,12 +36,16 @@ namespace Delicious
 		Q_OBJECT
 	public:
 		DeliciousApi ();
-		QString GetAuthUrl (bool oauth = false) const;
-		QString GetUploadUrl (bool oauth = false) const;
+
+		QString GetAuthUrl (const DeliciousAccount::AuthType& at = DeliciousAccount::ATHttpAuth) const;
+		QString GetUploadUrl (const DeliciousAccount::AuthType& at = DeliciousAccount::ATHttpAuth) const;
+
 		QByteArray GetUploadPayload (const QVariant&);
-		QString GetDownloadUrl (bool oauth = false) const;
+		QString GetDownloadUrl (const DeliciousAccount::AuthType& at = DeliciousAccount::ATHttpAuth) const;
+
 		QByteArray GetDownloadPayload (const QDateTime&);
 		QVariantList ParseDownloadReply (const QByteArray&);
+
 		bool ParseAuthReply (const QByteArray&);
 		bool ParseUploadReply (const QByteArray&);
 	};

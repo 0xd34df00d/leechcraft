@@ -47,7 +47,7 @@ namespace Delicious
 
 	IBookmarksService::Features DeliciousService::GetFeatures () const
 	{
-		return 0;
+		return FNone;
 	}
 
 	QObject* DeliciousService::GetObject ()
@@ -74,9 +74,7 @@ namespace Delicious
 	{
 		const QString& login = map ["Login"].toString ();
 		const QString& password = map ["Password"].toString ();
-		bool oAuth = false;
-		if (map.contains ("OAuth"))
-			oAuth = map ["OAuth"].toBool ();
+		bool oAuth = map.value ("OAuth", false).toBool ();
 
 		if (login.isEmpty () || password.isEmpty ())
 			return;
@@ -119,8 +117,8 @@ namespace Delicious
 
 			SendRequest (DeliciousApi_->GetUploadUrl ()
 					.arg (account->GetLogin(), account->GetPassword ()),
-							DeliciousApi_->GetUploadPayload (var),
-							req );
+						DeliciousApi_->GetUploadPayload (var),
+						req );
 		}
 	}
 
@@ -142,11 +140,11 @@ namespace Delicious
 		req.Count_ = 0;
 		req.Current_ = 0;
 		Account2ReplyContent_ [account].clear ();
-		
+
 		SendRequest (DeliciousApi_->GetDownloadUrl ()
 				.arg (account->GetLogin (), account->GetPassword ()),
-						DeliciousApi_->GetDownloadPayload (from),
-						req);
+					DeliciousApi_->GetDownloadPayload (from),
+					req);
 	}
 
 	DeliciousAccount* DeliciousService::GetAccountByName (const QString& name)
@@ -197,7 +195,7 @@ namespace Delicious
 			if (!acc)
 			{
 				qWarning () << Q_FUNC_INFO
-						<< "unserializable acount"
+						<< "undeserializable account"
 						<< i;
 				continue;
 			}
@@ -230,7 +228,7 @@ namespace Delicious
 			DeliciousAccount *account = GetAccountByName (Reply2Request_ [reply].Login_);
 			if (account)
 			{
-				QVariantList downloadedBookmarks = DeliciousApi_->
+				const QVariantList& downloadedBookmarks = DeliciousApi_->
 						ParseDownloadReply (Account2ReplyContent_ [account]);
 				if (!downloadedBookmarks.isEmpty ())
 				{

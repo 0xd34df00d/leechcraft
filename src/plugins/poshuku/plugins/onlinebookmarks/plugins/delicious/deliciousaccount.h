@@ -39,30 +39,44 @@ namespace Delicious
 
 		QString Login_;
 		QString Password_;
-		IAccount::AuthType AuthType_;
 		QObject *ParentService_;
+
 		bool IsSyncing_;
+
 		QDateTime LastUpload_;
 		QDateTime LastDownload_;
 		QVariantList DownloadedBookmarks_;
 	public:
+
+		enum AuthType
+		{
+			ATHttpAuth,
+			ATOAuth
+		};
+
 		DeliciousAccount (const QString&, QObject* = 0);
+
 		QObject* GetObject ();
 		QObject* GetParentService () const;
 		QByteArray GetAccountID () const;
 		QString GetLogin () const;
+
 		QString GetPassword () const;
 		void SetPassword (const QString&);
-		IAccount::AuthType GetAuthType () const;
+
 		QVariantMap GetIdentifyingData() const;
+
 		bool IsSyncing () const;
 		void SetSyncing (bool);
+
 		QDateTime GetLastDownloadDateTime () const;
 		void SetLastDownloadDateTime (const QDateTime&);
 		QDateTime GetLastUploadDateTime () const;
 		void SetLastUploadDateTime (const QDateTime&);
+
 		QVariantList GetBookmarksDiff (const QVariantList&);
 		void AppendDownloadedBookmarks (const QVariantList&);
+
 		QByteArray Serialize () const ;
 		static DeliciousAccount* Deserialize (const QByteArray&, QObject*);
 	};

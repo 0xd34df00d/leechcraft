@@ -54,7 +54,6 @@ class ReadItLaterAccount : public QObject
 
 		QObject* GetObject ();
 		QObject* GetParentService () const;
-		IAccount::AuthType GetAuthType () const;
 		QByteArray GetAccountID () const;
 		QString GetLogin () const;
 		QString GetPassword () const;
@@ -65,7 +64,7 @@ class ReadItLaterAccount : public QObject
 		QDateTime GetLastUploadDateTime () const;
 		void SetLastUploadDateTime (const QDateTime&);
 		void SetLastDownloadDateTime (const QDateTime&);
-		
+
 		void AppendDownloadedBookmarks (const QVariantList&);
 		QVariantList GetBookmarksDiff (const QVariantList&);
 		QByteArray Serialize () const ;
