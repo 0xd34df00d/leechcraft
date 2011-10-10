@@ -16,10 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_XMLSETTINGSMANAGER_H
-#define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_XMLSETTINGSMANAGER_H
-
-#include <xmlsettingsdialog/basesettingsmanager.h>
+#include "readitlaterauthwidget.h"
+#include <QtDebug>
 
 namespace LeechCraft
 {
@@ -27,19 +25,28 @@ namespace Poshuku
 {
 namespace OnlineBookmarks
 {
-	class XmlSettingsManager : public Util::BaseSettingsManager
+namespace ReadItLater
+{
+	ReadItLaterAuthWidget::ReadItLaterAuthWidget (QWidget *parent)
+	: QWidget (parent)
 	{
-		Q_OBJECT
-		
-		XmlSettingsManager ();
-	protected:
-		virtual void EndSettings (QSettings*) const;
-		virtual QSettings *BeginSettings() const;
-	public:
-		static XmlSettingsManager *Instance ();
-	};
-}
-}
-}
+		Ui_.setupUi (this);
+	}
 
-#endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_XMLSETTINGSMANAGER_H
+	QVariantMap ReadItLaterAuthWidget::GetIdentifyingData () const
+	{
+		QVariantMap map;
+		map ["Login"] = Ui_.Login_->text ();
+		map ["Password"] = Ui_.Password_->text ();
+		return map;
+	}
+
+	void ReadItLaterAuthWidget::SetIdentifyingData (const QVariantMap& map)
+	{
+		Ui_.Login_->setText (map ["Login"].toString ());
+		Ui_.Password_->setText (map ["Password"].toString ());
+	}
+}
+}
+}
+}

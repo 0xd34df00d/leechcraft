@@ -18,16 +18,14 @@
 
 #ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_SETTINGS_H
 #define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_SETTINGS_H
+
 #include <QWidget>
-#include "interfaces/structures.h"
-#include "ui_accounts.h"
+#include <util/util.h>
+#include <interfaces/ibookmarksservice.h>
+#include "ui_accountssettings.h"
 
 class QStandardItemModel;
-class QFrame;
-class QCheckBox;
-class QLineEdit;
-class QPushButton;
-class QModelIndex;
+class QStandardItem;
 
 namespace LeechCraft
 {
@@ -35,36 +33,45 @@ namespace Poshuku
 {
 namespace OnlineBookmarks
 {
-	class Core;
-	class AbstractBookmarksService;
-
-	class Settings : public QWidget
+	class AccountsSettings : public QWidget
 	{
 		Q_OBJECT
 
-		Ui::Accounts_ Ui_;
-		QStandardItemModel *Model_;
-		QList<AbstractBookmarksService*> BookmarksServices_;
+		Ui::AccountsSettings Ui_;
+
+		QHash<QStandardItem*, IBookmarksService*> Item2Service_;
+		QHash<QStandardItem*, IAccount*> Item2Account_;
+		QHash<QByteArray, QObject*> Id2Account_;
+		QHash<IBookmarksService*, QWidget*> Service2AuthWidget_;
+		QStandardItemModel *AccountsModel_;
+		bool Scheduled_;
+		QWidget *LastWidget_;
+		QHash<QAction*, IBookmarksService*> Action2Service_;
 	public:
-		Settings (QStandardItemModel*);
-		QString GetSelectedName () const;
-		void SetConfirmSend (bool);
+		AccountsSettings ();
+		~AccountsSettings ();
+
+		void InitServices ();
+		QStandardItemModel* GetAccountsModel () const;
+		void UpdateDates ();
 	private:
-		void ClearFrameState ();
-		void SetupServices ();
-		void ReadSettings ();
-		void SetApplyEnabled (const QString&, const QString&);
+		QModelIndex GetServiceIndex (QObject*) const;
+		void ScheduleResize ();
 	public slots:
 		void accept ();
 	private slots:
-		void on_Add__toggled (bool);
-		void on_Edit__toggled (bool);
-		void on_Delete__released ();
-		void handleStuff ();
-		void handleLoginTextChanged (const QString&);
-		void handlePasswordTextChanged (const QString&);
+		void resizeColumns ();
+
+		void on_Delete__clicked ();
+		void on_Auth__clicked ();
+		void on_Register__clicked ();
 		void on_AccountsView__clicked (const QModelIndex&);
-		void checkServiceAnswer (bool);
+		void on_AddAccount__triggered (QAction*);
+		void on_Close__clicked ();
+
+		void addAccount (QObjectList);
+	signals:
+		void accountRemoved (QObject*);
 	};
 }
 }

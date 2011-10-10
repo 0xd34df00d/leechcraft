@@ -16,10 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_BOOKMARKSDIALOG_H
-#define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_BOOKMARKSDIALOG_H
-#include <QDialog>
-#include "ui_bookmarksdialog.h"
+#ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_ISERVICEPLUGIN_H
+#define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_ISERVICEPLUGIN_H
 
 namespace LeechCraft
 {
@@ -27,20 +25,20 @@ namespace Poshuku
 {
 namespace OnlineBookmarks
 {
-	class BookmarksDialog : public QDialog
+	class IServicePlugin
 	{
-		Q_OBJECT
-		
-		Ui::BookmarksDialog_ Ui_;
 	public:
-		BookmarksDialog (QWidget* parent = 0, Qt::WindowFlags f = 0);
-		void SetBookmark (const QString&, const QString&, const QStringList&);
-		void SendBookmark ();
-	public slots:
-		void sendBookmarkWithoutConfirm (bool);
+		virtual ~IServicePlugin () {};
+
+		virtual QObject* GetObject () = 0;
+
+		virtual QObject* GetBookmarksService () const = 0;
 	};
 }
 }
 }
 
-#endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_BOOKMARKSDIALOG_H
+Q_DECLARE_INTERFACE (LeechCraft::Poshuku::OnlineBookmarks::IServicePlugin,
+		"org.Deviant.LeechCraft.Poshuku.OnlineBookmarks.IServicePlugin/1.0");
+
+#endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_ISERVICEPLUGIN_H

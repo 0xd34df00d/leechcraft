@@ -16,10 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_XMLSETTINGSMANAGER_H
-#define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_XMLSETTINGSMANAGER_H
+#ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_IAUTHWIDGET_H
+#define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_IAUTHWIDGET_H
 
-#include <xmlsettingsdialog/basesettingsmanager.h>
+#include <QVariant>
 
 namespace LeechCraft
 {
@@ -27,19 +27,19 @@ namespace Poshuku
 {
 namespace OnlineBookmarks
 {
-	class XmlSettingsManager : public Util::BaseSettingsManager
+	class IAuthWidget
 	{
-		Q_OBJECT
-		
-		XmlSettingsManager ();
-	protected:
-		virtual void EndSettings (QSettings*) const;
-		virtual QSettings *BeginSettings() const;
 	public:
-		static XmlSettingsManager *Instance ();
+		virtual ~IAuthWidget () {};
+
+		virtual QVariantMap GetIdentifyingData () const = 0;
+		virtual void SetIdentifyingData (const QVariantMap&) = 0;
 	};
 }
 }
 }
 
-#endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_XMLSETTINGSMANAGER_H
+Q_DECLARE_INTERFACE (LeechCraft::Poshuku::OnlineBookmarks::IAuthWidget,
+		"org.Deviant.LeechCraft.Poshuku.OnlineBookmarks.IAuthWidget/1.0");
+
+#endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_IAUTHWIDGET_H

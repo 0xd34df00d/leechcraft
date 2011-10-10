@@ -16,10 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_XMLSETTINGSMANAGER_H
-#define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_XMLSETTINGSMANAGER_H
+#ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_PLUGINMANAGER_H
+#define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_PLUGINMANAGER_H
 
-#include <xmlsettingsdialog/basesettingsmanager.h>
+#include <util/basehookinterconnector.h>
 
 namespace LeechCraft
 {
@@ -27,19 +27,16 @@ namespace Poshuku
 {
 namespace OnlineBookmarks
 {
-	class XmlSettingsManager : public Util::BaseSettingsManager
+	class PluginManager : public Util::BaseHookInterconnector
 	{
 		Q_OBJECT
-		
-		XmlSettingsManager ();
-	protected:
-		virtual void EndSettings (QSettings*) const;
-		virtual QSettings *BeginSettings() const;
 	public:
-		static XmlSettingsManager *Instance ();
+		PluginManager (QObject* = 0);
+
+		virtual void AddPlugin (QObject*);
 	};
 }
 }
 }
 
-#endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_XMLSETTINGSMANAGER_H
+#endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_PLUGINMANAGER_H

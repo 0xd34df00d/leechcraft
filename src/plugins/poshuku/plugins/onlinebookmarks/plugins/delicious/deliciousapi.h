@@ -16,13 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_ABSTRACTBOOKMARKSSERVICE_H
-#define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_ABSTRACTBOOKMARKSSERVICE_H
+#ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_PLUGINS_DELICIOUS_DELICIOUSAPI_H
+#define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_PLUGINS_DELICIOUS_DELICIOUSAPI_H
 
 #include <QObject>
-#include <QIcon>
-#include <QUrl>
-#include <QDateEdit>
+#include <QVariant>
+#include "deliciousaccount.h"
 
 namespace LeechCraft
 {
@@ -30,32 +29,29 @@ namespace Poshuku
 {
 namespace OnlineBookmarks
 {
-	class AbstractBookmarksService : public QObject
+namespace Delicious
+{
+	class DeliciousApi : public QObject
 	{
 		Q_OBJECT
-		
 	public:
-		AbstractBookmarksService (QObject *parent = 0) : QObject (parent) {}
+		DeliciousApi ();
 
-		virtual QString GetName () const = 0;
-		virtual QIcon GetIcon () const = 0;
-		virtual void CheckValidAccountData (const QString&, const QString&) = 0;
-		virtual void DownloadBookmarks (const QStringList&, const QDateTime&) = 0;
-		virtual void UploadBookmarks (const QStringList&, const QList<QVariant>&) = 0;
-	public slots:
-		virtual void getReplyFinished () = 0;
-		virtual void readyReadReply () = 0;
-	private:
-		virtual void ParseDownloadReply (const QByteArray&) = 0;
-		virtual void ParseUploadReply (bool) = 0;
-	signals:
-		void gotValidReply (bool);
-		void gotParseError (const QString&);
-		void gotDownloadReply (const QList<QVariant>&, const QUrl&);
-		void gotUploadReply (bool);
+		QString GetAuthUrl (const DeliciousAccount::AuthType& at = DeliciousAccount::ATHttpAuth) const;
+		QString GetUploadUrl (const DeliciousAccount::AuthType& at = DeliciousAccount::ATHttpAuth) const;
+
+		QByteArray GetUploadPayload (const QVariant&);
+		QString GetDownloadUrl (const DeliciousAccount::AuthType& at = DeliciousAccount::ATHttpAuth) const;
+
+		QByteArray GetDownloadPayload (const QDateTime&);
+		QVariantList ParseDownloadReply (const QByteArray&);
+
+		bool ParseAuthReply (const QByteArray&);
+		bool ParseUploadReply (const QByteArray&);
 	};
 }
 }
 }
+}
 
-#endif
+#endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_PLUGINS_DELICIOUS_DELICIOUSAPI_H

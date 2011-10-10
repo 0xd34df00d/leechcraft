@@ -16,10 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_XMLSETTINGSMANAGER_H
-#define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_XMLSETTINGSMANAGER_H
+#ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_PLUGINS_READITLATER_READITLATERAPI_H
+#define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_PLUGINS_READITLATER_READITLATERAPI_H
 
-#include <xmlsettingsdialog/basesettingsmanager.h>
+#include <QObject>
+#include <QUrl>
+#include <QVariant>
 
 namespace LeechCraft
 {
@@ -27,19 +29,31 @@ namespace Poshuku
 {
 namespace OnlineBookmarks
 {
-	class XmlSettingsManager : public Util::BaseSettingsManager
+namespace ReadItLater
+{
+	class ReadItLaterApi : public QObject
 	{
 		Q_OBJECT
-		
-		XmlSettingsManager ();
-	protected:
-		virtual void EndSettings (QSettings*) const;
-		virtual QSettings *BeginSettings() const;
+
+		const QString ApiKey_;
 	public:
-		static XmlSettingsManager *Instance ();
+		ReadItLaterApi ();
+		QString GetAuthUrl () const;
+		QByteArray GetAuthPayload (const QString&, const QString&);
+		QString GetRegisterUrl () const;
+		QByteArray GetRegisterPayload (const QString&, const QString&);
+		QString GetUploadUrl () const;
+		QByteArray GetUploadPayload (const QString&,
+				const QString&, const QVariantList&);
+		QString GetDownloadUrl () const;
+		QByteArray GetDownloadPayload (const QString&,
+				const QString&, const QDateTime&);
+		QVariantList GetDownloadedBookmarks (const QByteArray&);
+		
 	};
 }
 }
 }
+}
 
-#endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_XMLSETTINGSMANAGER_H
+#endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_PLUGINS_READITLATER_READITLATERAPI_H

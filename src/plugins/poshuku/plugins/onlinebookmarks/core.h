@@ -18,13 +18,14 @@
 
 #ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_CORE_H
 #define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_CORE_H
-#include <QObject>
-#include <QDir>
-#include <interfaces/structures.h>
-#include <interfaces/iinfo.h>
 
+#include <QObject>
+#include <QUrl>
+#include <interfaces/iinfo.h>
+#include <interfaces/iaccount.h>
+
+class QAbstractItemModel;
 class QStandardItemModel;
-class QNetworkAccessManager;
 
 namespace LeechCraft
 {
@@ -32,44 +33,61 @@ namespace Poshuku
 {
 namespace OnlineBookmarks
 {
-	class SyncBookmarks;
-	class AbstractBookmarksService;
-	class Settings;
+
+	class PluginManager;
+	class AccountsSettings;
 
 	class Core : public QObject
 	{
 		Q_OBJECT
 
-		ICoreProxy_ptr Proxy_;
-		QDir BookmarksDir_;
-		QList<AbstractBookmarksService*> ActiveBookmarksServices_;
+		ICoreProxy_ptr CoreProxy_;
 		QObject *PluginProxy_;
-		QStandardItemModel *Model_;
-		QStandardItemModel *ServiceModel_;
-		Settings *AccountsWidget_;
-		SyncBookmarks *BookmarksSyncManager_;
+		boost::shared_ptr<PluginManager> PluginManager_;
+		AccountsSettings* AccountsSettings_;
+
+		QObjectList ServicesPlugins_;
+		QObjectList ActiveAccounts_;
+		QHash<QString, IAccount*> Url2Account_;
 
 		Core ();
 	public:
 		static Core& Instance ();
-		void Init ();
-		void SendEntity (const Entity&);
-		QStandardItemModel* GetAccountModel () const;
-		SyncBookmarks* GetBookmarksSyncManager () const;
-		void SetActiveBookmarksServices (QList<AbstractBookmarksService*>);
-		QList<AbstractBookmarksService*> GetActiveBookmarksServices () const;
-		void SetPassword (const QString&, const QString&, const QString&);
-		QString GetPassword (const QString&, const QString&) const;
-		QNetworkAccessManager* GetNetworkAccessManager () const;
 		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;
 		void SetPluginProxy (QObject*);
+
+		AccountsSettings* GetAccountsSettingsWidget () const;
+
+		QSet<QByteArray> GetExpectedPluginClasses () const;
+		void AddPlugin (QObject*);
+
+		void AddServicePlugin (QObject*);
+		QObjectList GetServicePlugins () const;
+
+		void AddActiveAccount (QObject*);
+		void SetActiveAccounts (QObjectList);
+		QObjectList GetActiveAccounts () const;
+
+// 		void UploadBookmark (const QString&,
+// 				const QString&, const QStringList&);
+
+		void DeletePassword (QObject*);
+		QString GetPassword (QObject*);
+		void SavePassword (QObject*);
+	private:
 		QObject* GetBookmarksModel () const;
-		QDir GetBookmarksDir () const;
-		void SetBookmarksDir (const QDir&);
-		QStandardItemModel* GetServiceModel () const;
-		Settings* GetAccountsWidget ();
-		QStringList SanitizeTagsList (const QStringList&);
+		QVariantList GetUniqueBookmarks (IAccount*,
+				const QVariantList&, bool byService = false);
+		QVariantList GetAllBookmarks () const;
+	private slots:
+		void handleGotBookmarks (IAccount*, const QVariantList&);
+		void handleBookmarksUploaded ();
+	public slots:
+		void syncBookmarks ();
+		void uploadBookmarks ();
+		void downloadBookmarks ();
+		void downloadAllBookmarks ();
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);

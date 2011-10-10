@@ -16,10 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_XMLSETTINGSMANAGER_H
-#define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_XMLSETTINGSMANAGER_H
+#ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_PLUGINS_READITLATER_READITLATERAUTHWIDGET_H
+#define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_PLUGINS_READITLATER_READITLATERAUTHWIDGET_H
 
-#include <xmlsettingsdialog/basesettingsmanager.h>
+#include <QWidget>
+#include <interfaces/iauthwidget.h>
+#include "ui_readitlaterauthwidget.h"
 
 namespace LeechCraft
 {
@@ -27,19 +29,23 @@ namespace Poshuku
 {
 namespace OnlineBookmarks
 {
-	class XmlSettingsManager : public Util::BaseSettingsManager
+namespace ReadItLater
+{
+	class ReadItLaterAuthWidget : public QWidget
+								, public IAuthWidget
 	{
 		Q_OBJECT
-		
-		XmlSettingsManager ();
-	protected:
-		virtual void EndSettings (QSettings*) const;
-		virtual QSettings *BeginSettings() const;
+		Q_INTERFACES (LeechCraft::Poshuku::OnlineBookmarks::IAuthWidget)
+
+		Ui::AuthWidget Ui_;
 	public:
-		static XmlSettingsManager *Instance ();
+		ReadItLaterAuthWidget (QWidget* = 0);
+		QVariantMap GetIdentifyingData () const;
+		void SetIdentifyingData (const QVariantMap&);
 	};
 }
 }
 }
+}
 
-#endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_XMLSETTINGSMANAGER_H
+#endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_PLUGINS_READITLATER_READITLATERAUTHWIDGET_H
