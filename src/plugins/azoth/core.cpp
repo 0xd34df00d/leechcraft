@@ -193,6 +193,7 @@ namespace Azoth
 				SLOT (handleEntryMadeCurrent (QObject*)));
 
 		PluginManager_->RegisterHookable (this);
+		PluginManager_->RegisterHookable (CLModel_);
 
 		SmilesOptionsModel_->AddModel (new QStringListModel (QStringList (QString ())));
 

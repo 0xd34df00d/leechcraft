@@ -19,6 +19,7 @@
 #ifndef PLUGINS_AZOTH_CLMODEL_H
 #define PLUGINS_AZOTH_CLMODEL_H
 #include <QStandardItemModel>
+#include <interfaces/core/ihookproxy.h>
 
 namespace LeechCraft
 {
@@ -36,8 +37,13 @@ namespace Azoth
 				int, int, const QModelIndex&);
 		Qt::DropActions supportedDropActions () const;
 	private:
+		bool PerformHooks (const QMimeData*, int, const QModelIndex&);
+		bool CheckHookDnDEntry2Entry (const QMimeData*, int, const QModelIndex&);
 		bool TryDropContact (const QMimeData*, int, const QModelIndex&);
 		bool TryDropFile (const QMimeData*, const QModelIndex&);
+	signals:
+		void hookDnDEntry2Entry (LeechCraft::IHookProxy_ptr,
+				QObject*, QObject*);
 	};
 }
 }
