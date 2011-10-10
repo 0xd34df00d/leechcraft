@@ -131,5 +131,11 @@ namespace KnowHow
 
 		ShowForIdx (0);
 	}
+
+	void TipDialog::on_DontShow__stateChanged ()
+	{
+		const bool show = Ui_.DontShow_->checkState () == Qt::Unchecked;
+		XmlSettingsManager::Instance ().setProperty ("ShowTips", show);
+	}
 }
 }

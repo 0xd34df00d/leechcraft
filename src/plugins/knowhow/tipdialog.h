@@ -44,6 +44,7 @@ namespace KnowHow
 	private slots:
 		void on_Forward__released ();
 		void on_Backward__released ();
+		void on_DontShow__stateChanged ();
 	};
 }
 }
