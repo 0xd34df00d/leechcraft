@@ -17,9 +17,10 @@
  **********************************************************************/
 
 #include "aboutdialog.h"
+#include "util/sysinfo.h"
+#include "interfaces/ihavediaginfo.h"
 #include "config.h"
 #include "core.h"
-#include "util/sysinfo.h"
 
 namespace LeechCraft
 {
@@ -184,12 +185,12 @@ namespace LeechCraft
 	void AboutDialog::BuildDiagInfo ()
 	{
 		QString text = QString ("LeechCraft ") + LEECHCRAFT_VERSION + "\n";
-		text += QString ("Built with Qt %1, running with Qt %2")
+		text += QString ("Built with Qt %1, running with Qt %2\n")
 				.arg (QT_VERSION_STR)
 				.arg (qVersion ());
-		text += "\n\n";
 
-		text += QString ("Running on: %1\n\n").arg (Util::SysInfo::GetOSName ());
+		text += QString ("Running on: %1\n").arg (Util::SysInfo::GetOSName ());
+		text += "--------------------------------\n\n";
 
 		QStringList loadedModules;
 		QStringList unPathedModules;
@@ -203,6 +204,14 @@ namespace LeechCraft
 				unPathedModules << ("* " + ii->GetName ());
 			else
 				loadedModules << ("* " + ii->GetName () + " (" + path + ")");
+
+			IHaveDiagInfo *diagInfo = qobject_cast<IHaveDiagInfo*> (plugin);
+			if (diagInfo)
+			{
+				text += "Diag info for " + ii->GetName () + ":\n";
+				text += diagInfo->GetDiagInfoString ();
+				text += "\n--------------------------------\n\n";
+			}
 		}
 
 		text += QString ("Normal plugins:") + "\n" + loadedModules.join ("\n") + "\n\n";
