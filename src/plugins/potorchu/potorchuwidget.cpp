@@ -41,7 +41,7 @@ namespace LeechCraft
 		: QWidget (parent, f)
 		, ToolBar_ (new QToolBar (this))
 		, Ui_ (new Ui::PotorchuWidget)
-		{
+		{	
 			Ui_->setupUi (this);
 			Ui_->Player_->setFrameStyle (QFrame::Box | QFrame::Sunken);
 			Ui_->CommandFrame_->setFrameStyle (QFrame::NoFrame);

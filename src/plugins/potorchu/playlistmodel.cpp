@@ -25,7 +25,7 @@ namespace LeechCraft
 	namespace Potorchu
 	{
 		PlayListModel::PlayListModel (libvlc_instance_t *VLCInstance, QObject* parent)
-		: QStringListModel (parent)
+		: QAbstractItemModel (parent)
 		, VLCInstance_ (VLCInstance)
 		{
 			ML_ = libvlc_media_list_new (VLCInstance_);
@@ -48,17 +48,18 @@ namespace LeechCraft
 		
 		int PlayListModel::rowCount (const QModelIndex& parent) const
 		{
+			qDebug () << Q_FUNC_INFO <<  libvlc_media_list_count (ML_);
 			return libvlc_media_list_count (ML_);
 		}
 		
 		bool PlayListModel::insertRows (int row, int count, const QString& fileName)
 		{
-			libvlc_media_list_insert_media (ML_, libvlc_media_new_path (VLCInstance_, fileName.toAscii ()), row);
+			return !libvlc_media_list_insert_media (ML_, libvlc_media_new_path (VLCInstance_, fileName.toAscii ()), row);
 		}
 		
 		bool PlayListModel::removeRows (int row, int count, const QModelIndex& parent)
 		{
-			libvlc_media_list_remove_index (ML_, row);
+			return !libvlc_media_list_remove_index (ML_, row);
 		}
 		
 		void PlayListModel::addItem (const QString& item)
@@ -75,6 +76,7 @@ namespace LeechCraft
 		{
 			if (role == Qt::DisplayRole)
 			{
+				qDebug () << Q_FUNC_INFO;
 				libvlc_media_t *t = libvlc_media_list_item_at_index (ML_, index.row ());
 				libvlc_media_parse (t);
 				QString temp = XmlSettingsManager::Instance ().property ("PlayListTemplate").toString ();
@@ -91,7 +93,22 @@ namespace LeechCraft
 
 				return temp;
 			}
-			return QVariant ();
+			return QVariant ("Blah");
+		}
+		
+		QModelIndex PlayListModel::index (int row, int column, const QModelIndex& parent) const
+		{
+			return createIndex (row, column);
+		}
+		
+		QModelIndex PlayListModel::parent (const QModelIndex& index) const
+		{
+			return QModelIndex ();
+		}
+		
+		int PlayListModel::columnCount (const QModelIndex& parent) const
+		{
+			return 1;
 		}
 	}
 }

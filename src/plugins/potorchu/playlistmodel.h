@@ -29,7 +29,7 @@ namespace LeechCraft
 {
 	namespace Potorchu
 	{
-		class PlayListModel : public QStringListModel
+		class PlayListModel : public QAbstractItemModel
 		{
 			Q_OBJECT
 			libvlc_instance_t *VLCInstance_;
@@ -44,6 +44,10 @@ namespace LeechCraft
 			bool setData (const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
 			Qt::ItemFlags flags (const QModelIndex& index) const;
 			QVariant data (const QModelIndex& index, int role = Qt::DisplayRole) const;
+			
+			QModelIndex index (int row, int column, const QModelIndex& parent = QModelIndex ()) const;
+			QModelIndex parent (const QModelIndex& index) const;
+			int columnCount (const QModelIndex& parent = QModelIndex ()) const;
 		public slots:
 			void addItem (const QString& item);
 		};

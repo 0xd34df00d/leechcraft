@@ -25,9 +25,8 @@ namespace LeechCraft
 	{
 		PlayListView::PlayListView (QWidget *parent)
 		: QListView (parent)
+		, PlayListModel_ (NULL)
 		{
-			setModel (PlayListModel_);
-			setModelColumn (0);
 			connect (this,
 					SIGNAL (doubleClicked (QModelIndex)),
 					this,
@@ -37,6 +36,8 @@ namespace LeechCraft
 		void PlayListView::Init (libvlc_instance_t *VLCInstance)
 		{
 			PlayListModel_ = new PlayListModel (VLCInstance, this);
+			setModel (PlayListModel_);
+			setModelColumn (0);
 		}
 		
 		libvlc_media_list_t *PlayListView::GetMediaList ()
