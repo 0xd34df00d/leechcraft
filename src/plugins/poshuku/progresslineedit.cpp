@@ -50,11 +50,6 @@ namespace Poshuku
 		int frameWidth = style ()->pixelMetric (QStyle::PM_DefaultFrameWidth);
 		setStyleSheet (QString ("QLineEdit { padding-right: %1px; } ")
 				.arg (ClearButton_->sizeHint ().width () + frameWidth + 1));
-		QSize msz = minimumSizeHint ();
-		setMinimumSize (qMax (msz.width (),
-					ClearButton_->sizeHint ().height () + frameWidth * 2 + 2),
-				qMax (msz.height (),
-					ClearButton_->sizeHint ().height () + frameWidth * 2 + 2));
 
 		connect (ClearButton_,
 				SIGNAL (clicked ()),
