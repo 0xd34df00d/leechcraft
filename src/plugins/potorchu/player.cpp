@@ -27,19 +27,19 @@ namespace LeechCraft
 	namespace Potorchu
 	{
 		const int pos_slider_max = 10000;
-		const char * const vlc_args[] = {
+			
+		Player::Player (QWidget *parent, Qt::WindowFlags f)
+		: QFrame (parent, f)
+		, IsPlaying_ (false)
+		, ML_ (NULL)
+		{
+			const char * const vlc_args[] = {
 					"-I", "dummy",
 					"--ignore-config",
 					"--extraintf=logger",
 					"--verbose=2"
 			};
-			
-		Player::Player (QWidget *parent)
-		: QFrame (parent)
-		, IsPlaying_ (false)
-		, ML_ (NULL)
-		, Poller_ (new QTimer (this))
-		{
+			Poller_ = new QTimer (this);
 			VLCInstance_ = libvlc_new (sizeof (vlc_args) / sizeof (vlc_args[0]), vlc_args);
 			MLP_ = libvlc_media_list_player_new (VLCInstance_);
 			MP_ = libvlc_media_player_new (VLCInstance_);
@@ -60,6 +60,7 @@ namespace LeechCraft
 		
 		libvlc_instance_t *Player::Instance ()
 		{
+			qDebug () << Q_FUNC_INFO;
 			return VLCInstance_;
 		}
 		
@@ -79,11 +80,6 @@ namespace LeechCraft
 		int Player::Volume () const
 		{
 			return libvlc_audio_get_volume (MP_);
-		}
-		
-		QString Player::GetMeta (libvlc_meta_t meta) const
-		{
-			return QString ();
 		}
 		
 		int Player::Position () const
@@ -108,7 +104,9 @@ namespace LeechCraft
 		
 		void Player::play ()
 		{
+			libvlc_media_player_set_xwindow (MP_, winId ());
 			libvlc_media_list_player_play (MLP_);
+			IsPlaying_ = true;
 		}
 
 		void Player::stop ()
