@@ -337,7 +337,7 @@ namespace OnlineBookmarks
 				ibs = qobject_cast<IBookmarksService*> (account->GetParentService ());
 				if (!ibs)
 					continue;
-				ibs->UploadBookmarks (account, result);
+				ibs->UploadBookmarks (account->GetObject (), result);
 			}
 			break;
 		case 1:
@@ -351,7 +351,7 @@ namespace OnlineBookmarks
 					continue;
 
 				QVariantList list = GetUniqueBookmarks (account, result);
-				ibs->UploadBookmarks (account, list);
+				ibs->UploadBookmarks (account->GetObject (), list);
 			}
 			break;
 		case 2:
@@ -365,7 +365,7 @@ namespace OnlineBookmarks
 					continue;
 
 				QVariantList list = GetUniqueBookmarks (account, result, true);
-				ibs->UploadBookmarks (account, list);
+				ibs->UploadBookmarks (account->GetObject (), list);
 			}
 			break;
 		}
