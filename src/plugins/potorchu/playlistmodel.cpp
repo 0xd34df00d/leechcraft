@@ -20,7 +20,6 @@
 #include "playlistmodel.h"
 #include "xmlsettingsmanager.h"
 
-
 namespace LeechCraft
 {
 	namespace Potorchu
@@ -89,7 +88,6 @@ namespace LeechCraft
 				temp.replace ("%title%", title);
 				temp.replace ("%genre%", genre);
 				temp.replace ("%date%", date);
-				libvlc_media_release (t);
 
 				return temp;
 			}
