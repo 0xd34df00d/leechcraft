@@ -69,7 +69,7 @@ namespace AdvancedNotifications
 		Type2HR_ [TypeIMSubscrRevoke] = tr ("Authorization revoked");
 		Type2HR_ [TypeIMSubscrRequest] = tr ("Authorization requested");
 		Type2HR_ [TypeIMSubscrSub] = tr ("Contact subscribed");
-		Type2HR_ [TypeIMSubscrSub] = tr ("Contact unsubscribed");
+		Type2HR_ [TypeIMSubscrUnsub] = tr ("Contact unsubscribed");
 
 		Cat2Types_ [CatIM] << TypeIMAttention
 				<< TypeIMIncFile
@@ -93,6 +93,11 @@ namespace AdvancedNotifications
 				this,
 				SLOT (handleItemSelected (QModelIndex)));
 
+		connect (RulesModel_,
+				SIGNAL (itemChanged (QStandardItem*)),
+				this,
+				SLOT (handleItemChanged (QStandardItem*)));
+
 		Q_FOREACH (const QString& cat, Cat2HR_.keys ())
 			Ui_.EventCat_->addItem (Cat2HR_ [cat], cat);
 		on_EventCat__activated (0);
@@ -107,6 +112,18 @@ namespace AdvancedNotifications
 	QList<NotificationRule> NotificationRulesWidget::GetRules () const
 	{
 		return Rules_;
+	}
+
+	void NotificationRulesWidget::SetRuleEnabled (const NotificationRule& rule, bool enabled)
+	{
+		const int idx = Rules_.indexOf (rule);
+		if (idx == -1)
+			return;
+
+		Rules_ [idx].SetEnabled (enabled);
+		QStandardItem *item = RulesModel_->item (idx);
+		if (item)
+			item->setCheckState (enabled ? Qt::Checked : Qt::Unchecked);
 	}
 
 	void NotificationRulesWidget::LoadDefaultRules ()
@@ -235,6 +252,12 @@ namespace AdvancedNotifications
 			cmdArgs << Ui_.CommandArgsTree_->topLevelItem (i)->text (0);
 		rule.SetCmdParams (CmdParams (Ui_.CommandLineEdit_->text ().simplified (), cmdArgs));
 
+		const QModelIndex& curIdx = Ui_.RulesTree_->currentIndex ();
+		QStandardItem *item = RulesModel_->itemFromIndex (curIdx.sibling (curIdx.row (), 0));
+		rule.SetEnabled (item ? item->checkState () == Qt::Checked : true);
+
+		rule.SetSingleShot (Ui_.RuleSingleShot_->checkState () == Qt::Checked);
+
 		return rule;
 	}
 
@@ -248,6 +271,10 @@ namespace AdvancedNotifications
 		items << new QStandardItem (rule.GetName ());
 		items << new QStandardItem (Cat2HR_ [rule.GetCategory ()]);
 		items << new QStandardItem (hrTypes.join ("; "));
+
+		items.first ()->setCheckable (true);
+		items.first ()->setCheckState (rule.IsEnabled () ? Qt::Checked : Qt::Unchecked);
+
 		return items;
 	}
 
@@ -376,12 +403,30 @@ namespace AdvancedNotifications
 			Q_FOREACH (const QString& arg, cmdParams.Args_)
 				new QTreeWidgetItem (Ui_.CommandArgsTree_, QStringList (arg));
 		}
+
+		Ui_.RuleSingleShot_->setChecked (rule.IsSingleShot () ?
+					Qt::Checked :
+					Qt::Unchecked);
+	}
+
+	void NotificationRulesWidget::handleItemChanged (QStandardItem *item)
+	{
+		const int idx = item->row ();
+		const bool newState = item->checkState () == Qt::Checked;
+
+		if (newState == Rules_.at (idx).IsEnabled () ||
+				Rules_.at (idx).IsNull ())
+			return;
+
+		Rules_ [idx].SetEnabled (newState);
+
+		SaveSettings ();
 	}
 
 	void NotificationRulesWidget::on_AddRule__released ()
 	{
-		RulesModel_->insertRow (0, RuleToRow (NotificationRule ()));
 		Rules_.prepend (NotificationRule ());
+		RulesModel_->insertRow (0, RuleToRow (NotificationRule ()));
 	}
 
 	void NotificationRulesWidget::on_UpdateRule__released ()

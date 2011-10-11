@@ -135,7 +135,7 @@ namespace Acetamide
 	{
 		return QMap<QString, QVariant> ();
 	}
-	
+
 	QString ChannelCLEntry::GetRealID (QObject *participant) const
 	{
 		return QString ();
@@ -179,7 +179,7 @@ namespace Acetamide
 	{
 		return ICH_->GetParticipants ();
 	}
-	
+
 	// TODO implement this
 	void ChannelCLEntry::Join ()
 	{
@@ -200,7 +200,7 @@ namespace Acetamide
 	{
 		ICH_->SendPublicMessage ("/nick " + nick);
 	}
-	
+
 	QString ChannelCLEntry::GetGroupName () const
 	{
 		return ICH_->GetSelf ()->Groups ().value (0);
@@ -229,6 +229,10 @@ namespace Acetamide
 				GetServerOptions ().SSL_;
 
 		return result;
+	}
+
+	void ChannelCLEntry::InviteToMUC (const QString&, const QString&)
+	{
 	}
 
 	void ChannelCLEntry::HandleMessage (ChannelPublicMessage *msg)
@@ -326,19 +330,19 @@ namespace Acetamide
 		ICH_->RequestInviteList ();
 	}
 
-	void ChannelCLEntry::SetBanListItem (const QString& mask, 
+	void ChannelCLEntry::SetBanListItem (const QString& mask,
 			const QString& nick, const QDateTime& date)
 	{
 		emit gotBanListItem (mask, nick, date);
 	}
 
-	void ChannelCLEntry::SetExceptListItem (const QString& mask, 
+	void ChannelCLEntry::SetExceptListItem (const QString& mask,
 			const QString& nick, const QDateTime& date)
 	{
 		emit gotExceptListItem (mask, nick, date);
 	}
 
-	void ChannelCLEntry::SetInviteListItem (const QString& mask, 
+	void ChannelCLEntry::SetInviteListItem (const QString& mask,
 			const QString& nick, const QDateTime& date)
 	{
 		emit gotInviteListItem (mask, nick, date);

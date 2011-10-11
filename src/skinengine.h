@@ -18,11 +18,11 @@
 
 #ifndef SKINENGINE_H
 #define SKINENGINE_H
-#include <vector>
+#include <QObject>
 #include <QMap>
 #include <QString>
-#include <QList>
 #include <QDir>
+#include <QHash>
 
 class QIcon;
 class QAction;
@@ -31,14 +31,18 @@ class QFile;
 
 namespace LeechCraft
 {
-	class SkinEngine
+	class SkinEngine : public QObject
 	{
+		Q_OBJECT
+
 		QString OldIconSet_;
 		typedef QMap<int, QString> sizef_t;
 		QMap<QString, sizef_t> IconName2Path_;
 		QMap<QString, QString> IconName2FileName_;
 		QStringList IconSets_;
 		QStringList IconDirs_;
+
+		mutable QHash<QPair<QString, QString>, QIcon> IconCache_;
 
 		SkinEngine ();
 	public:
@@ -58,7 +62,9 @@ namespace LeechCraft
 		void ParseMapping (QFile&);
 		void CollectDir (const QString&, const QString&);
 		void CollectSubdir (QDir, const QString&, int);
-		std::vector<int> GetDirForBase (const QString&, const QString&);
+		QList<int> GetDirForBase (const QString&, const QString&);
+	private slots:
+		void flushCaches ();
 	};
 };
 

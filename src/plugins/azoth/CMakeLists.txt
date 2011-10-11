@@ -95,6 +95,7 @@ SET (SRCS
 	activitydialog.cpp
 	mooddialog.cpp
 	callmanager.cpp
+	clmodel.cpp
 	callchatwidget.cpp
 	chattabwebview.cpp
 	locationdialog.cpp
@@ -102,6 +103,7 @@ SET (SRCS
 	acceptriexdialog.cpp
 	shareriexdialog.cpp
 	searchwidget.cpp
+	mucinvitedialog.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -134,6 +136,7 @@ SET (HEADERS
 	activitydialog.h
 	mooddialog.h
 	callmanager.h
+	clmodel.h
 	callchatwidget.h
 	chattabwebview.h
 	locationdialog.h
@@ -141,6 +144,7 @@ SET (HEADERS
 	acceptriexdialog.h
 	shareriexdialog.h
 	searchwidget.h
+	mucinvitedialog.h
 	animatediconmanager.h
 	sourcetrackingmodel.h
 	interfaces/iprotocolplugin.h
@@ -170,6 +174,7 @@ SET (FORMS
 	acceptriexdialog.ui
 	shareriexdialog.ui
 	searchwidget.ui
+	mucinvitedialog.ui
 	)
 SET (RESOURCES azothresources.qrc)
 

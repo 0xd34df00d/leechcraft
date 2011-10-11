@@ -22,6 +22,7 @@
 #include <QStandardItemModel>
 #include <QDateTime>
 #include <QVBoxLayout>
+#include <QGraphicsObject>
 #include <QDeclarativeContext>
 #include <QDeclarativeError>
 #include <util/util.h>
@@ -134,6 +135,19 @@ namespace Choroid
 			}
 
 		DeclView_->setSource (QUrl::fromLocalFile (fileLocation));
+
+		QObject *item = DeclView_->rootObject ();
+		connect (item,
+				SIGNAL (imageSelected (QString)),
+				this,
+				SLOT (handleQMLImageSelected (QString)));
+	}
+
+	void ChoroidTab::ShowImage (const QString& path)
+	{
+		QMetaObject::invokeMethod (DeclView_->rootObject (),
+				"showSingleImage",
+				Q_ARG (QVariant, QUrl::fromLocalFile (path)));
 	}
 
 	void ChoroidTab::handleDirTreeCurrentChanged (const QModelIndex& index)
@@ -159,19 +173,21 @@ namespace Choroid
 		Q_FOREACH (const QFileInfo& info,
 				QDir (path).entryInfoList (nf, QDir::Files, QDir::Name))
 		{
+			const QString& absPath = info.absoluteFilePath ();
+
 			QList<QStandardItem*> row;
 			row << new QStandardItem (info.fileName ());
 			row << new QStandardItem (Util::MakePrettySize (info.size ()));
 			row << new QStandardItem (info.lastModified ().toString ());
 
-			row.first ()->setData (info.absoluteFilePath (), CRFilePath);
+			row.first ()->setData (absPath, CRFilePath);
 
 			FilesModel_->appendRow (row);
 
 			QStandardItem *qmlItem = new QStandardItem (info.fileName ());
 			qmlItem->setData (info.fileName (), ILRFilename);
 			qmlItem->setData (Util::MakePrettySize (info.size ()), ILRFileSize);
-			qmlItem->setData (QUrl::fromLocalFile (info.absoluteFilePath ()), ILRImage);
+			qmlItem->setData (QUrl::fromLocalFile (absPath), ILRImage);
 			QMLFilesModel_->appendRow (qmlItem);
 		}
 	}
@@ -183,6 +199,12 @@ namespace Choroid
 
 		const QString& path = index.sibling (index.row (), 0)
 				.data (CRFilePath).toString ();
+		ShowImage (path);
+	}
+
+	void ChoroidTab::handleQMLImageSelected (const QString& url)
+	{
+		ShowImage (QUrl (url).toLocalFile ());
 	}
 
 	void ChoroidTab::handleStatusChanged (QDeclarativeView::Status status)

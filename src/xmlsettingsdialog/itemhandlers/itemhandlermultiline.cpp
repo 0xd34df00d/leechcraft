@@ -48,6 +48,7 @@ namespace LeechCraft
 		QVariant value = XSD_->GetValue (item);
 
 		QTextEdit *edit = new QTextEdit ();
+		XSD_->SetTooltip (edit, item);
 		edit->setPlainText (value.toStringList ().join ("\n"));
 		edit->setObjectName (item.attribute ("property"));
 		edit->setMinimumWidth (QApplication::fontMetrics ()
@@ -77,7 +78,7 @@ namespace LeechCraft
 		}
 		edit->setPlainText (value.toStringList ().join ("\n"));
 	}
-	
+
 	QVariant ItemHandlerMultiLine::GetValue (const QDomElement& item,
 			QVariant value) const
 	{
@@ -87,7 +88,7 @@ namespace LeechCraft
 					def.toUtf8 ().constData ());
 		return def;
 	}
-	
+
 	void ItemHandlerMultiLine::UpdateValue (QDomElement& element,
 			const QVariant& value) const
 	{

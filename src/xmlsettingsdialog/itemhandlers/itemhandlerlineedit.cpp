@@ -48,6 +48,7 @@ namespace LeechCraft
 		QVariant value = XSD_->GetValue (item);
 
 		QLineEdit *edit = new QLineEdit (value.toString ());
+		XSD_->SetTooltip (edit, item);
 		edit->setObjectName (item.attribute ("property"));
 		edit->setMinimumWidth (QApplication::fontMetrics ()
 				.width ("thisismaybeadefaultsetting"));

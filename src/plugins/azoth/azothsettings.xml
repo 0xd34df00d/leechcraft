@@ -71,6 +71,9 @@
 			<item type="checkbox" property="ShowMenuBar" default="true">
 				<label value="Show Azoth menu under the contact list" />
 			</item>
+			<item type="checkbox" property="ShowStatuses" default="true">
+				<label value="Show statuses" />
+			</item>
 			<item type="checkbox" property="ShowAvatars" default="true">
 				<label value="Show avatars" />
 			</item>
@@ -79,9 +82,11 @@
 			</item>
 			<item type="checkbox" property="GroupContacts" default="true">
 				<label value="Group contacts" />
+				<tooltip>If this option is enabled, contacts would be grouped, otherwise, they will all appear in the same group.</tooltip>
 			</item>
 			<item type="checkbox" property="OrderByStatus" default="true">
 				<label value="Group contacts by status" />
+				<tooltip>If this option is enabled, contacts are ordered by status and then by name. Otherwise, they are ordered by name only.</tooltip>
 			</item>
 		</tab>
 		<tab>
@@ -94,6 +99,7 @@
 			</item>
 			<item type="checkbox" property="ShowRichTextMessageBody" default="true">
 				<label value="Show rich text message body (if available)" />
+				<tooltip>Whether rich text body of the messages should be used, if available. This is a default value, and the behavior could be changed for each opened chat window.</tooltip>
 			</item>
 			<item type="color" property="HighlightColor" default="#FF0000">
 				<label value="Highlight color:" />

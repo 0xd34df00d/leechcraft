@@ -18,14 +18,17 @@
 
 #ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_ONLINEBOOKMARKS_H
 #define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_ONLINEBOOKMARKS_H
+
+#include <QObject>
 #include <QTranslator>
 #include <interfaces/iinfo.h>
-#include <interfaces/ihavesettings.h>
 #include <interfaces/iplugin2.h>
+#include <interfaces/ihavesettings.h>
+#include <interfaces/ipluginready.h>
 #include <interfaces/core/ihookproxy.h>
 
-class QWebView;
 class QMenu;
+class QGraphicsWebView;
 
 namespace LeechCraft
 {
@@ -33,17 +36,19 @@ namespace Poshuku
 {
 namespace OnlineBookmarks
 {
-	class OnlineBookmarks 	: public QObject
-							, public IInfo
-							, public IHaveSettings
-							, public IPlugin2
+	class Plugin : public QObject
+				, public IInfo
+				, public IPlugin2
+				, public IHaveSettings
+				, public IPluginReady
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveSettings IPlugin2)
+		Q_INTERFACES (IInfo IPlugin2 IHaveSettings IPluginReady)
 
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
 		boost::shared_ptr<QTranslator> Translator_;
 	public:
+		// IInfo methods
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
 		void Release ();
@@ -51,12 +56,20 @@ namespace OnlineBookmarks
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+
+		// IPlugin2 methods
 		QSet<QByteArray> GetPluginClasses () const;
+
+		// IHaveSettings methods
+		Util::XmlSettingsDialog_ptr GetSettingsDialog() const;
+
+		//IPluginReady
+		QSet<QByteArray> GetExpectedPluginClasses () const;
+		void AddPlugin (QObject*);
 	public slots:
-		void hookMoreMenuFillEnd (LeechCraft::IHookProxy_ptr, QMenu*, QWebView*, QObject*);
 		void initPlugin (QObject*);
-		void hookAddedToFavorites (LeechCraft::IHookProxy_ptr, QString, QString, QStringList);
+		void hookMoreMenuFillEnd (LeechCraft::IHookProxy_ptr, QMenu*, QGraphicsWebView*, QObject*);
+// 		void hookAddedToFavorites (LeechCraft::IHookProxy_ptr, QString, QString, QStringList);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);

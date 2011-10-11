@@ -46,6 +46,7 @@ namespace LeechCraft
 	{
 		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
 		QComboBox *box = new QComboBox (XSD_);
+		XSD_->SetTooltip (box, item);
 		box->setObjectName (item.attribute ("property"));
 		if (item.hasAttribute ("maxVisibleItems"))
 			box->setMaxVisibleItems (item.attribute ("maxVisibleItems").toInt ());

@@ -81,7 +81,6 @@ namespace p100q
 	public slots:
 		void hookFormatBodyEnd (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab,
-				QString body,
 				QObject *message);
 	};
 }

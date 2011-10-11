@@ -24,6 +24,11 @@ namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
+	bool operator== (const VisualParams&, const VisualParams&)
+	{
+		return true;
+	}
+
 	AudioParams::AudioParams ()
 	{
 	}
@@ -31,6 +36,16 @@ namespace AdvancedNotifications
 	AudioParams::AudioParams (const QString& fname)
 	: Filename_ (fname)
 	{
+	}
+
+	bool operator== (const AudioParams& ap1, const AudioParams& ap2)
+	{
+		return ap1.Filename_ == ap2.Filename_;
+	}
+
+	bool operator== (const TrayParams&, const TrayParams&)
+	{
+		return true;
 	}
 
 	CmdParams::CmdParams ()
@@ -43,8 +58,16 @@ namespace AdvancedNotifications
 	{
 	}
 
+	bool operator== (const CmdParams& cp1, const CmdParams& cp2)
+	{
+		return cp1.Args_ == cp2.Args_ &&
+			cp1.Cmd_ == cp2.Cmd_;
+	}
+
 	NotificationRule::NotificationRule ()
 	: Methods_ (NMNone)
+	, IsEnabled_ (true)
+	, IsSingleShot_ (false)
 	{
 	}
 
@@ -54,6 +77,8 @@ namespace AdvancedNotifications
 	, Category_ (cat)
 	, Types_ (types)
 	, Methods_ (NMNone)
+	, IsEnabled_ (true)
+	, IsSingleShot_ (false)
 	{
 	}
 
@@ -149,6 +174,26 @@ namespace AdvancedNotifications
 		CmdParams_ = params;
 	}
 
+	bool NotificationRule::IsEnabled () const
+	{
+		return IsEnabled_;
+	}
+
+	void NotificationRule::SetEnabled (bool enabled)
+	{
+		IsEnabled_ = enabled;
+	}
+
+	bool NotificationRule::IsSingleShot () const
+	{
+		return IsSingleShot_;
+	}
+
+	void NotificationRule::SetSingleShot (bool shot)
+	{
+		IsSingleShot_ = shot;
+	}
+
 	void NotificationRule::SetFieldMatches (const FieldMatches_t& matches)
 	{
 		FieldMatches_ = matches;
@@ -156,7 +201,7 @@ namespace AdvancedNotifications
 
 	void NotificationRule::Save (QDataStream& stream) const
 	{
-		stream << static_cast<quint8> (2)
+		stream << static_cast<quint8> (3)
 			<< Name_
 			<< Category_
 			<< Types_
@@ -164,6 +209,8 @@ namespace AdvancedNotifications
 			<< AudioParams_.Filename_
 			<< CmdParams_.Cmd_
 			<< CmdParams_.Args_
+			<< IsEnabled_
+			<< IsSingleShot_
 			<< static_cast<quint16> (FieldMatches_.size ());
 
 		Q_FOREACH (const FieldMatch& match, FieldMatches_)
@@ -174,7 +221,7 @@ namespace AdvancedNotifications
 	{
 		quint8 version = 0;
 		stream >> version;
-		if (version < 1 || version > 2)
+		if (version < 1 || version > 3)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unknown version"
@@ -193,6 +240,15 @@ namespace AdvancedNotifications
 			stream >> CmdParams_.Cmd_
 				>> CmdParams_.Args_;
 
+		if (version >= 3)
+			stream >> IsEnabled_
+				>> IsSingleShot_;
+		else
+		{
+			IsEnabled_ = true;
+			IsSingleShot_ = false;
+		}
+
 		Methods_ = static_cast<NotificationMethods> (methods);
 
 		quint16 numMatches = 0;
@@ -204,6 +260,21 @@ namespace AdvancedNotifications
 			match.Load (stream);
 			FieldMatches_ << match;
 		}
+	}
+
+	bool operator== (const NotificationRule& r1, const NotificationRule& r2)
+	{
+		return r1.GetMethods () == r2.GetMethods () &&
+			r1.IsEnabled () == r2.IsEnabled () &&
+			r1.IsSingleShot () == r2.IsSingleShot () &&
+			r1.GetName () == r2.GetName () &&
+			r1.GetCategory () == r2.GetCategory () &&
+			r1.GetTypes () == r2.GetTypes () &&
+			r1.GetFieldMatches () == r2.GetFieldMatches () &&
+			r1.GetVisualParams () == r2.GetVisualParams () &&
+			r1.GetAudioParams () == r2.GetAudioParams () &&
+			r1.GetTrayParams () == r2.GetTrayParams () &&
+			r1.GetCmdParams () == r2.GetCmdParams ();
 	}
 }
 }

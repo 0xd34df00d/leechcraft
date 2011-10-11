@@ -51,6 +51,7 @@
 #include <QDataStream>
 #include <QRegExp>
 #include <QKeySequence>
+#include <QGraphicsScene>
 #include <util/util.h>
 #include <util/defaulthookproxy.h>
 #include <util/notificationactionhandler.h>
@@ -66,6 +67,7 @@
 #include "browserwidgetsettings.h"
 #include "bookmarkswidget.h"
 #include "historywidget.h"
+#include "customwebview.h"
 
 Q_DECLARE_METATYPE (QList<QObject*>);
 
@@ -76,6 +78,27 @@ namespace Poshuku
 	using LeechCraft::ActionInfo;
 
 	QObject *BrowserWidget::S_MultiTabsParent_ = 0;
+
+	namespace
+	{
+		class ResizeEventFilter : public QObject
+		{
+		public:
+			ResizeEventFilter (QObject *parent = 0)
+			: QObject (parent)
+			{
+			}
+		protected:
+			bool eventFilter (QObject *obj, QEvent *e)
+			{
+				if (e->type () == QEvent::Resize)
+					QMetaObject::invokeMethod (parent (),
+							"refitWebView", Qt::QueuedConnection);
+
+				return QObject::eventFilter (obj, e);
+			}
+		};
+	}
 
 	BrowserWidget::BrowserWidget (QWidget *parent)
 	: QWidget (parent)
@@ -90,43 +113,55 @@ namespace Poshuku
 		Ui_.Splitter_->setSizes (QList<int> () << 0 << 1000);
 		Ui_.Progress_->hide ();
 
-		Ui_.WebView_->SetBrowserWidget (this);
-		connect (Ui_.WebView_,
+		WebView_ = new CustomWebView;
+
+		QGraphicsScene *scene = new QGraphicsScene (this);
+		scene->addItem (WebView_);
+
+		Ui_.WebGraphicsView_->setScene (scene);
+		QTimer::singleShot (0,
+				this,
+				SLOT (refitWebView ()));
+
+		Ui_.WebGraphicsView_->installEventFilter (new ResizeEventFilter (this));
+
+		WebView_->SetBrowserWidget (this);
+		connect (WebView_,
 				SIGNAL (invalidateSettings ()),
 				this,
 				SIGNAL (invalidateSettings ()));
 
 		connect (ReloadTimer_,
 				SIGNAL (timeout ()),
-				Ui_.WebView_,
+				WebView_,
 				SLOT (reload ()));
 
-		Cut_ = Ui_.WebView_->pageAction (QWebPage::Cut);
+		Cut_ = WebView_->pageAction (QWebPage::Cut);
 		Cut_->setShortcutContext (Qt::WindowShortcut);
 		Cut_->setProperty ("ActionIcon", "poshuku_cut");
-		Copy_ = Ui_.WebView_->pageAction (QWebPage::Copy);
+		Copy_ = WebView_->pageAction (QWebPage::Copy);
 		Copy_->setShortcutContext (Qt::WindowShortcut);
 		Copy_->setProperty ("ActionIcon", "poshuku_copy");
-		Paste_ = Ui_.WebView_->pageAction (QWebPage::Paste);
+		Paste_ = WebView_->pageAction (QWebPage::Paste);
 		Paste_->setProperty ("ActionIcon", "poshuku_paste");
 
 		ToolBar_ = new QToolBar (this);
 		ToolBar_->setWindowTitle ("Poshuku");
 
-		Back_ = Ui_.WebView_->pageAction (QWebPage::Back);
+		Back_ = WebView_->pageAction (QWebPage::Back);
 		Back_->setParent (this);
 		Back_->setProperty ("ActionIcon", "poshuku_back");
 
-		Forward_ = Ui_.WebView_->pageAction (QWebPage::Forward);
+		Forward_ = WebView_->pageAction (QWebPage::Forward);
 		Forward_->setParent (this);
 		Forward_->setProperty ("ActionIcon", "poshuku_forward");
 
-		Reload_ = Ui_.WebView_->pageAction (QWebPage::Reload);
+		Reload_ = WebView_->pageAction (QWebPage::Reload);
 		Reload_->setProperty ("ActionIcon", "poshuku_reload");
 		Reload_->setIcon (Core::Instance ()
 				.GetProxy ()->GetIcon ("poshuku_reload"));
 
-		Stop_ = Ui_.WebView_->pageAction (QWebPage::Stop);
+		Stop_ = WebView_->pageAction (QWebPage::Stop);
 		Stop_->setProperty ("ActionIcon", "poshuku_stop");
 		Stop_->setIcon (Core::Instance ()
 				.GetProxy ()->GetIcon ("poshuku_stop"));
@@ -210,7 +245,7 @@ namespace Poshuku
 
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
 		QMenu *moreMenu = new QMenu (this);
-		emit hookMoreMenuFillBegin (proxy, moreMenu, Ui_.WebView_, this);
+		emit hookMoreMenuFillBegin (proxy, moreMenu, WebView_, this);
 		if (!proxy->IsCancelled ())
 		{
 			const QString tools = "Poshuku";
@@ -238,7 +273,7 @@ namespace Poshuku
 			WindowMenus_ [view] << Util::CreateSeparator (this);
 		}
 		proxy.reset (new Util::DefaultHookProxy ());
-		emit hookMoreMenuFillEnd (proxy, moreMenu, Ui_.WebView_, this);
+		emit hookMoreMenuFillEnd (proxy, moreMenu, WebView_, this);
 
 		if (moreMenu->actions ().size ())
 		{
@@ -281,7 +316,7 @@ namespace Poshuku
 				SIGNAL (triggered ()),
 				this,
 				SIGNAL (invalidateSettings ()));
-		connect (Ui_.WebView_,
+		connect (WebView_,
 				SIGNAL (addToFavorites (const QString&, const QString&)),
 				this,
 				SIGNAL (addToFavorites (const QString&, const QString&)));
@@ -315,15 +350,15 @@ namespace Poshuku
 				SLOT (handleSavePage ()));
 		connect (ZoomIn_,
 				SIGNAL (triggered ()),
-				Ui_.WebView_,
+				WebView_,
 				SLOT (zoomIn ()));
 		connect (ZoomOut_,
 				SIGNAL (triggered ()),
-				Ui_.WebView_,
+				WebView_,
 				SLOT (zoomOut ()));
 		connect (ZoomReset_,
 				SIGNAL (triggered ()),
-				Ui_.WebView_,
+				WebView_,
 				SLOT (zoomReset ()));
 
 		connect (Ui_.URLFrame_,
@@ -331,93 +366,93 @@ namespace Poshuku
 				this,
 				SLOT (handleURLFrameLoad (const QString&)));
 
-		connect (Ui_.WebView_,
+		connect (WebView_,
 				SIGNAL (titleChanged (const QString&)),
 				this,
 				SIGNAL (titleChanged (const QString&)));
-		connect (Ui_.WebView_,
+		connect (WebView_,
 				SIGNAL (titleChanged (const QString&)),
 				this,
 				SLOT (updateLogicalPath ()));
-		connect (Ui_.WebView_,
+		connect (WebView_,
 				SIGNAL (urlChanged (const QString&)),
 				this,
 				SLOT (handleUrlChanged (const QString&)));
-		connect (Ui_.WebView_,
+		connect (WebView_,
 				SIGNAL (urlChanged (const QString&)),
 				this,
 				SLOT (updateLogicalPath ()));
-		connect (Ui_.WebView_,
+		connect (WebView_,
 				SIGNAL (loadProgress (int)),
 				this,
 				SLOT (handleLoadProgress (int)));
-		connect (Ui_.WebView_,
+		connect (WebView_,
 				SIGNAL (loadProgress (int)),
 				this,
 				SLOT (handleIconChanged ()));
-		connect (Ui_.WebView_,
+		connect (WebView_,
 				SIGNAL (iconChanged ()),
 				this,
 				SLOT (handleIconChanged ()));
-		connect (Ui_.WebView_,
+		connect (WebView_,
 				SIGNAL (statusBarMessage (const QString&)),
 				this,
 				SLOT (handleStatusBarMessage (const QString&)));
-		connect (Ui_.WebView_,
+		connect (WebView_,
 				SIGNAL (gotEntity (const LeechCraft::Entity&)),
 				this,
 				SIGNAL (gotEntity (const LeechCraft::Entity&)));
-		connect (Ui_.WebView_,
+		connect (WebView_,
 				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)),
 				this,
 				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)));
-		connect (Ui_.WebView_,
+		connect (WebView_,
 				SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)),
 				this,
 				SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)));
-		connect (Ui_.WebView_->page (),
+		connect (WebView_->page (),
 				SIGNAL (linkHovered (const QString&,
 						const QString&,
 						const QString&)),
 				this,
 				SLOT (handleStatusBarMessage (const QString&)));
-		connect (Ui_.WebView_,
+		connect (WebView_,
 				SIGNAL (loadFinished (bool)),
 				this,
 				SLOT (checkLinkRels ()));
-		connect (Ui_.WebView_,
+		connect (WebView_,
 				SIGNAL (loadFinished (bool)),
 				this,
 				SLOT (setScrollPosition ()));
-		connect (Ui_.WebView_,
+		connect (WebView_,
 				SIGNAL (loadFinished (bool)),
 				this,
 				SLOT (pageFocus ()));
-		connect (Ui_.WebView_,
+		connect (WebView_,
 				SIGNAL (loadFinished (bool)),
 				this,
 				SLOT (updateTooltip ()));
-		connect (Ui_.WebView_,
+		connect (WebView_,
 				SIGNAL (loadFinished (bool)),
 				this,
 				SLOT (notifyLoadFinished (bool)));
-		connect (Ui_.WebView_,
+		connect (WebView_,
 				SIGNAL (loadFinished (bool)),
 				this,
 				SLOT (handleIconChanged ()));
-		connect (Ui_.WebView_,
+		connect (WebView_,
 				SIGNAL (loadStarted ()),
 				this,
 				SLOT (enableActions ()));
-		connect (Ui_.WebView_,
+		connect (WebView_,
 				SIGNAL (printRequested (QWebFrame*)),
 				this,
 				SLOT (handleViewPrint (QWebFrame*)));
-		connect (Ui_.WebView_,
+		connect (WebView_,
 				SIGNAL (closeRequested ()),
 				this,
 				SIGNAL (needToClose ()));
-		connect (Ui_.WebView_->page (),
+		connect (WebView_->page (),
 				SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)),
 				this,
 				SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)));
@@ -452,7 +487,7 @@ namespace Poshuku
 		RememberDialog_ = new PasswordRemember (Ui_.WebFrame_);
 		RememberDialog_->hide ();
 
-		connect (Ui_.WebView_,
+		connect (WebView_,
 				SIGNAL (storeFormData (const PageFormsData_t&)),
 				RememberDialog_,
 				SLOT (add (const PageFormsData_t&)));
@@ -524,10 +559,10 @@ namespace Poshuku
 
 	CustomWebView* BrowserWidget::GetView () const
 	{
-		return Ui_.WebView_;
+		return WebView_;
 	}
 
-	QWebView* BrowserWidget::GetWebView () const
+	QGraphicsWebView* BrowserWidget::GetWebView () const
 	{
 		return GetView ();
 	}
@@ -541,14 +576,14 @@ namespace Poshuku
 	{
 		QByteArray ba;
 		QDataStream out (&ba, QIODevice::WriteOnly);
-		out << *Ui_.WebView_->page ()->history ();
+		out << *WebView_->page ()->history ();
 		BrowserWidgetSettings result =
 		{
-			Ui_.WebView_->zoomFactor (),
+			WebView_->zoomFactor (),
 			NotifyWhenFinished_->isChecked (),
 			QTime (0, 0, 0).addMSecs (ReloadTimer_->interval ()),
 			ba,
-			Ui_.WebView_->page ()->mainFrame ()->scrollPosition ()
+			WebView_->page ()->mainFrame ()->scrollPosition ()
 		};
 		return result;
 	}
@@ -560,7 +595,7 @@ namespace Poshuku
 			qDebug () << Q_FUNC_INFO
 				<< "setting zoomfactor to"
 				<< settings.ZoomFactor_;
-			Ui_.WebView_->setZoomFactor (settings.ZoomFactor_);
+			WebView_->setZoomFactor (settings.ZoomFactor_);
 		}
 
 		NotifyWhenFinished_->setChecked (settings.NotifyWhenFinished_);
@@ -576,7 +611,7 @@ namespace Poshuku
 		if (settings.WebHistorySerialized_.size ())
 		{
 			QDataStream str (settings.WebHistorySerialized_);
-			str >> *Ui_.WebView_->page ()->history ();
+			str >> *WebView_->page ()->history ();
 		}
 
 		if (!settings.ScrollPosition_.isNull ())
@@ -596,7 +631,7 @@ namespace Poshuku
 		if (!url.isEmpty () && url.isValid ())
 		{
 			HtmlMode_ = false;
-			Ui_.WebView_->Load (url);
+			WebView_->Load (url);
 		}
 	}
 
@@ -609,7 +644,7 @@ namespace Poshuku
 	{
 		Ui_.URLFrame_->GetEdit ()->clear ();
 		HtmlMode_ = true;
-		Ui_.WebView_->setHtml (html, base);
+		WebView_->setHtml (html, base);
 	}
 
 	void BrowserWidget::SetNavBarVisible (bool visible)
@@ -782,8 +817,10 @@ namespace Poshuku
 
 		QPrintDialog *dialog = new QPrintDialog (printer.get (), this);
 		dialog->setWindowTitle (tr ("Print web page"));
-		if (!Ui_.WebView_->selectedText ().isEmpty ())
+		/* TODO
+		if (!WebView_->selectedText ().isEmpty ())
 			dialog->addEnabledOption (QAbstractPrintDialog::PrintSelection);
+		*/
 
 		if (dialog->exec () != QDialog::Accepted)
 			return;
@@ -818,13 +855,13 @@ namespace Poshuku
 	void BrowserWidget::handleIconChanged ()
 	{
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-		emit hookIconChanged (proxy, Ui_.WebView_->page (), this);
+		emit hookIconChanged (proxy, WebView_->page (), this);
 		if (proxy->IsCancelled ())
 			return;
 
-		QIcon icon = Ui_.WebView_->icon ();
+		QIcon icon = WebView_->icon ();
 		if (icon.isNull ())
-			icon = Core::Instance ().GetIcon (Ui_.WebView_->url ());
+			icon = Core::Instance ().GetIcon (WebView_->url ());
 
 		Ui_.URLFrame_->SetFavicon (icon);
 
@@ -894,8 +931,8 @@ namespace Poshuku
 
 	void BrowserWidget::handleAdd2Favorites ()
 	{
-		emit addToFavorites (Ui_.WebView_->title (),
-				Ui_.WebView_->url ().toString ());
+		emit addToFavorites (WebView_->title (),
+				WebView_->url ().toString ());
 	}
 
 	void BrowserWidget::handleFind ()
@@ -921,10 +958,10 @@ namespace Poshuku
 		if (PreviousFindText_ != text)
 		{
 			QWebPage::FindFlags nflags = flags | QWebPage::HighlightAllOccurrences;
-			Ui_.WebView_->page ()->findText (text, nflags);
+			WebView_->page ()->findText (text, nflags);
 			PreviousFindText_ = text;
 		}
-		bool found = Ui_.WebView_->page ()->findText (text, flags);
+		bool found = WebView_->page ()->findText (text, flags);
 		FindDialog_->SetSuccessful (found);
 	}
 
@@ -935,25 +972,25 @@ namespace Poshuku
 
 	void BrowserWidget::handlePrinting ()
 	{
-		PrintImpl (false, Ui_.WebView_->page ()->mainFrame ());
+		PrintImpl (false, WebView_->page ()->mainFrame ());
 	}
 
 	void BrowserWidget::handlePrintingWithPreview ()
 	{
-		PrintImpl (true, Ui_.WebView_->page ()->mainFrame ());
+		PrintImpl (true, WebView_->page ()->mainFrame ());
 	}
 
 	void BrowserWidget::handleScreenSave ()
 	{
-		QSize contentsSize = Ui_.WebView_->page ()->mainFrame ()->contentsSize ();
-		QSize oldSize = Ui_.WebView_->page ()->viewportSize ();
+		QSize contentsSize = WebView_->page ()->mainFrame ()->contentsSize ();
+		QSize oldSize = WebView_->page ()->viewportSize ();
 		QRegion clip (0, 0, contentsSize.width (), contentsSize.height ());
 
 		QPixmap image (contentsSize);
 		QPainter painter (&image);
-		Ui_.WebView_->page ()->setViewportSize (contentsSize);
-		Ui_.WebView_->page ()->mainFrame ()->render (&painter, clip);
-		Ui_.WebView_->page ()->setViewportSize (oldSize);
+		WebView_->page ()->setViewportSize (contentsSize);
+		WebView_->page ()->mainFrame ()->render (&painter, clip);
+		WebView_->page ()->setViewportSize (oldSize);
 
 		std::auto_ptr<ScreenShotSaveDialog> dia (new ScreenShotSaveDialog (image, this));
 		if (dia->exec () != QDialog::Accepted)
@@ -992,7 +1029,7 @@ namespace Poshuku
 
 	void BrowserWidget::handleViewSources ()
 	{
-		QString html = Ui_.WebView_->page ()->mainFrame ()->toHtml ();
+		QString html = WebView_->page ()->mainFrame ()->toHtml ();
 
 		Entity e = Util::MakeEntity (html,
 				QString (),
@@ -1016,7 +1053,7 @@ namespace Poshuku
 
 	void BrowserWidget::handleSavePage ()
 	{
-		Entity e = Util::MakeEntity (Ui_.WebView_->url (),
+		Entity e = Util::MakeEntity (WebView_->url (),
 				QString (),
 				FromUserInitiated);
 		e.Additional_ ["AllowedSemantics"] = QStringList ("fetch") << "save";
@@ -1030,9 +1067,9 @@ namespace Poshuku
 		edit->selectAll ();
 	}
 
-	QWebView* BrowserWidget::getWebView () const
+	QGraphicsWebView* BrowserWidget::getWebView () const
 	{
-		return Ui_.WebView_;
+		return WebView_;
 	}
 
 	QLineEdit* BrowserWidget::getAddressBar () const
@@ -1095,17 +1132,17 @@ namespace Poshuku
 			return;
 
 		const int previewWidth = 400;
-		if (!Ui_.WebView_->size ().isValid ())
+		if (!WebView_->size ().isValid ())
 			return;
 
-		QSize contentsSize = Ui_.WebView_->page ()->mainFrame ()->contentsSize ();
+		QSize contentsSize = WebView_->page ()->mainFrame ()->contentsSize ();
 		if (contentsSize.width () < 800)
 			contentsSize.scale (800, 1, Qt::KeepAspectRatioByExpanding);
 		int maxHeight = 0.8 * QApplication::desktop ()->
 			screenGeometry (this).height () * static_cast<double> (contentsSize.width ()) / previewWidth;
 		contentsSize.setHeight (std::min (contentsSize.height (), 3000));
-		QPoint scroll = Ui_.WebView_->page ()->mainFrame ()->scrollPosition ();
-		QSize oldSize = Ui_.WebView_->page ()->viewportSize ();
+		QPoint scroll = WebView_->page ()->mainFrame ()->scrollPosition ();
+		QSize oldSize = WebView_->page ()->viewportSize ();
 		QRegion clip (0, 0, contentsSize.width (), contentsSize.height ());
 
 		QPixmap pixmap (contentsSize);
@@ -1115,10 +1152,10 @@ namespace Poshuku
 		pixmap.fill (QColor (0, 0, 0, 0));
 
 		QPainter painter (&pixmap);
-		Ui_.WebView_->page ()->setViewportSize (contentsSize);
-		Ui_.WebView_->page ()->mainFrame ()->render (&painter, clip);
-		Ui_.WebView_->page ()->setViewportSize (oldSize);
-		Ui_.WebView_->page ()->mainFrame ()->setScrollPosition (scroll);
+		WebView_->page ()->setViewportSize (contentsSize);
+		WebView_->page ()->mainFrame ()->render (&painter, clip);
+		WebView_->page ()->setViewportSize (oldSize);
+		WebView_->page ()->mainFrame ()->setScrollPosition (scroll);
 		painter.end ();
 
 		QLabel *widget = new QLabel;
@@ -1161,9 +1198,9 @@ namespace Poshuku
 		ToolBar_->removeAction (ExternalLinks_->menuAction ());
 		ExternalLinks_->clear ();
 
-		QWebElementCollection links = Ui_.WebView_->
+		QWebElementCollection links = WebView_->
 				page ()->mainFrame ()->findAllElements ("link");
-		QUrl mainFrameURL = Ui_.WebView_->page ()->mainFrame ()->url ();
+		QUrl mainFrameURL = WebView_->page ()->mainFrame ()->url ();
 		bool inserted = false;
 		Q_FOREACH (QWebElement link, links)
 		{
@@ -1229,19 +1266,19 @@ namespace Poshuku
 	void BrowserWidget::pageFocus ()
 	{
 		if (!HtmlMode_ && isVisible ())
-			Ui_.WebView_->setFocus ();
+			WebView_->setFocus ();
 	}
 
 	void BrowserWidget::handleLoadProgress (int p)
 	{
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-		emit hookLoadProgress (proxy, Ui_.WebView_->page (), this, p);
+		emit hookLoadProgress (proxy, WebView_->page (), this, p);
 		if (proxy->IsCancelled ())
 			return;
 
 		proxy->FillValue ("progress", p);
 
-		QString title = Ui_.WebView_->title ();
+		QString title = WebView_->title ();
 		if (p > 0 && p < 100)
 			title.prepend (QString ("[%1%] ").arg (p));
 		emit titleChanged (title);
@@ -1279,7 +1316,7 @@ namespace Poshuku
 	{
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 		emit hookNotifyLoadFinished (proxy,
-				Ui_.WebView_,
+				WebView_,
 				this,
 				ok,
 				NotifyWhenFinished_->isChecked (),
@@ -1294,9 +1331,9 @@ namespace Poshuku
 				isVisible ())
 			return;
 
-		QString h = Ui_.WebView_->title ();
+		QString h = WebView_->title ();
 		if (h.isEmpty ())
-			h = Ui_.WebView_->url ().toString ();
+			h = WebView_->url ().toString ();
 		if (h.isEmpty ())
 			return;
 
@@ -1305,11 +1342,11 @@ namespace Poshuku
 
 		if (ok)
 			text = tr ("Page load finished: %1")
-				.arg (Qt::escape (Ui_.WebView_->title ()));
+				.arg (Qt::escape (WebView_->title ()));
 		else
 		{
 			text = tr ("Page load failed: %1")
-				.arg (Qt::escape (Ui_.WebView_->title ()));
+				.arg (Qt::escape (WebView_->title ()));
 			prio = PWarning_;
 		}
 
@@ -1335,7 +1372,7 @@ namespace Poshuku
 		}
 		codecs.sort ();
 
-		QString defaultEncoding = Ui_.WebView_->
+		QString defaultEncoding = WebView_->
 			settings ()->defaultTextEncoding ();
 		const int currentCodec = codecs.indexOf (defaultEncoding);
 
@@ -1369,7 +1406,7 @@ namespace Poshuku
 		QString encoding;
 		if (mib >= 0)
 			encoding = QTextCodec::codecForMib (mib)->name ();
-		Ui_.WebView_->settings ()->setDefaultTextEncoding (encoding);
+		WebView_->settings ()->setDefaultTextEncoding (encoding);
 		Reload_->trigger ();
 	}
 
@@ -1385,8 +1422,8 @@ namespace Poshuku
 		skip << "org.ru"
 			<< "net.ru";
 
-		QUrl url = Ui_.WebView_->url ();
-		QString title = Ui_.WebView_->title ();
+		QUrl url = WebView_->url ();
+		QString title = WebView_->title ();
 		if (title.isEmpty ())
 			title = tr ("No title");
 		QString host = url.host ();
@@ -1425,7 +1462,6 @@ namespace Poshuku
 
 	void BrowserWidget::handleUrlChanged (const QString& value)
 	{
-		emit urlChanged (value);
 		QString userText = value;
 #ifdef ENABLE_IDN
 		if (userText.contains ("xn--"))
@@ -1453,6 +1489,16 @@ namespace Poshuku
 		}
 #endif
 		Ui_.URLFrame_->GetEdit ()->setText (userText);
+		Ui_.URLFrame_->GetEdit ()->repaint ();
+
+		emit urlChanged (value);
+	}
+
+	void BrowserWidget::refitWebView ()
+	{
+		WebView_->resize (Ui_.WebGraphicsView_->viewport ()->size ());
+		Ui_.WebGraphicsView_->ensureVisible (WebView_, 0, 0);
+		Ui_.WebGraphicsView_->centerOn (WebView_);
 	}
 
 	void BrowserWidget::handleShortcutHistory ()
@@ -1485,7 +1531,7 @@ namespace Poshuku
 	{
 		int splitterSize = XmlSettingsManager::Instance ()->
 				Property ("HistoryBoormarksPanelSize", 250).toInt ();
-		int wSize = Ui_.WebView_->width ();
+		int wSize = WebView_->size ().width ();
 
 		if (!Ui_.Splitter_->sizes ().at (0))
 		{

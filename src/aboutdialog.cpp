@@ -17,7 +17,10 @@
  **********************************************************************/
 
 #include "aboutdialog.h"
+#include "util/sysinfo.h"
+#include "interfaces/ihavediaginfo.h"
 #include "config.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -133,6 +136,10 @@ namespace LeechCraft
 				QString (), "lk4d4@yander.ru",
 				QStringList ("Initial ebuilds for Gentoo Linux."),
 				QList<int> () << 2009);
+		contribs << ContributorInfo ("Maxim Kirenenko", "part1zan_ aka 0x73571ab",
+				"part1zancheg@gmail.com", "part1zancheg@gmail.com",
+				QStringList (tr ("Extensive and thorough testing.")),
+				QList<int> () << 2010 << 2011);
 		contribs << ContributorInfo (QString (), "Miha",
 				QString (), "miha@52.ru",
 				QStringList ("OpenSUSE package maintainer."),
@@ -175,6 +182,46 @@ namespace LeechCraft
 		Q_FOREACH (const ContributorInfo& i, contribs)
 			formatted << i.Fmt ();
 		Ui_.Contributors_->setHtml (formatted.join ("<hr />"));
-	}
-};
 
+		BuildDiagInfo ();
+	}
+
+	void AboutDialog::BuildDiagInfo ()
+	{
+		QString text = QString ("LeechCraft ") + LEECHCRAFT_VERSION + "\n";
+		text += QString ("Built with Qt %1, running with Qt %2\n")
+				.arg (QT_VERSION_STR)
+				.arg (qVersion ());
+
+		text += QString ("Running on: %1\n").arg (Util::SysInfo::GetOSName ());
+		text += "--------------------------------\n\n";
+
+		QStringList loadedModules;
+		QStringList unPathedModules;
+		PluginManager *pm = Core::Instance ().GetPluginManager ();
+		Q_FOREACH (QObject *plugin, pm->GetAllPlugins ())
+		{
+			const QString& path = pm->GetPluginLibraryPath (plugin);
+
+			IInfo *ii = qobject_cast<IInfo*> (plugin);
+			if (path.isEmpty ())
+				unPathedModules << ("* " + ii->GetName ());
+			else
+				loadedModules << ("* " + ii->GetName () + " (" + path + ")");
+
+			IHaveDiagInfo *diagInfo = qobject_cast<IHaveDiagInfo*> (plugin);
+			if (diagInfo)
+			{
+				text += "Diag info for " + ii->GetName () + ":\n";
+				text += diagInfo->GetDiagInfoString ();
+				text += "\n--------------------------------\n\n";
+			}
+		}
+
+		text += QString ("Normal plugins:") + "\n" + loadedModules.join ("\n") + "\n\n";
+		if (!unPathedModules.isEmpty ())
+			text += QString ("Adapted plugins:") + "\n" + unPathedModules.join ("\n") + "\n\n";
+
+		Ui_.DiagInfo_->setPlainText (text);
+	}
+}

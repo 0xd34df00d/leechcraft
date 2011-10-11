@@ -22,7 +22,7 @@
 #include <QString>
 #include <QRegExp>
 #include <QAction>
-#include <qwebview.h>
+#include <qgraphicswebview.h>
 #include <qwebframe.h>
 #include <qwebelement.h>
 #include <QtDebug>
@@ -268,7 +268,7 @@ namespace CleanWeb
 		}
 
 		QUrl blockUrl = blocker->property ("CleanWeb/URL").value<QUrl> ();
-		QWebView *view = qobject_cast<QWebView*> (blocker->
+		QGraphicsWebView *view = qobject_cast<QGraphicsWebView*> (blocker->
 					property ("CleanWeb/View").value<QObject*> ());
 		if (InitiateAdd (blockUrl.toString ()) && view)
 		{

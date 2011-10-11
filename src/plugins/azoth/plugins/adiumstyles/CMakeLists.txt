@@ -4,10 +4,12 @@ INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
 SET (ADIUMSTYLES_SRCS
 	adiumstyles.cpp
 	adiumstylesource.cpp
+	packproxymodel.cpp
 	)
 SET (ADIUMSTYLES_HEADERS
 	adiumstyles.h
 	adiumstylesource.h
+	packproxymodel.h
 	)
 QT4_WRAP_CPP (ADIUMSTYLES_MOC_SRCS ${ADIUMSTYLES_HEADERS})
 

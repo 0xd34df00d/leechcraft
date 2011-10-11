@@ -46,6 +46,10 @@ namespace Azoth
 				QObject *entry,
 				QWebView *webView);
 
+		void hookDnDEntry2Entry (LeechCraft::IHookProxy_ptr proxy,
+				QObject *source,
+				QObject *target);
+
 		/** @brief Hook for adjusting where CL entry actions appear.
 		 *
 		 * This hook is called to determine where the given action for
@@ -163,11 +167,9 @@ namespace Azoth
 				QObject *message);
 		void hookFormatBodyBegin (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab,
-				QString body,
 				QObject *message);
 		void hookFormatBodyEnd (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab,
-				QString body,
 				QObject *message);
 		void hookIsHighlightMessage (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message);
@@ -177,8 +179,7 @@ namespace Azoth
 				QObject *chatTab,
 				QObject *entry,
 				int type,
-				QString variant,
-				QString text);
+				QString variant);
 		void hookMessageCreated (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QObject *message);

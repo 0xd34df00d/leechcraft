@@ -30,10 +30,10 @@
 #include <qwebframe.h>
 #include <qwebpage.h>
 #include <qwebelement.h>
-#include <qwebview.h>
 #include <QCoreApplication>
 #include <QMenu>
 #include <QMainWindow>
+#include <qgraphicswebview.h>
 #include <util/util.h>
 #include <util/customnetworkreply.h>
 #include "xmlsettingsmanager.h"
@@ -473,7 +473,7 @@ namespace CleanWeb
 	}
 
 	void Core::HandleContextMenu (const QWebHitTestResult& r,
-		QWebView *view, QMenu *menu,
+		QGraphicsWebView *view, QMenu *menu,
 		LeechCraft::Poshuku::WebViewCtxMenuStage stage)
 	{
 		QUrl iurl = r.imageUrl ();

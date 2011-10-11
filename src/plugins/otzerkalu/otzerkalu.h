@@ -17,14 +17,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-
 #ifndef PLUGINS_OTZERKALU_OTZERKALU_H
 #define PLUGINS_OTZERKALU_OTZERKALU_H
 #include <QObject>
 #include <QUrl>
+#include <QStandardItemModel>
+#include <util/idpool.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/structures.h>
+#include <interfaces/ijobholder.h>
 #include "otzerkaludownloader.h"
 
 namespace LeechCraft
@@ -34,9 +36,18 @@ namespace Otzerkalu
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IEntityHandler
+				 , public IJobHolder
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IEntityHandler)
+		Q_INTERFACES (IInfo IEntityHandler IJobHolder)
+
+		QStandardItemModel *RepresentationModel_;
+		ICoreProxy_ptr Proxy_;
+		Util::IDPool<int> MirrorIDPool_;
+		enum Roles
+		{
+			RMirrorId = Qt::UserRole + 1
+		};
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -47,6 +58,10 @@ namespace Otzerkalu
 		QIcon GetIcon () const;
 		EntityTestHandleResult CouldHandle (const Entity& entity) const;
 		void Handle (Entity entity);
+		QAbstractItemModel* GetRepresentation () const;
+	private slots:
+		void handleFileDownloaded (int id, int count);
+		void handleMirroringFinished (int id);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&,

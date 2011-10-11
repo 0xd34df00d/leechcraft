@@ -32,7 +32,6 @@ INCLUDE_DIRECTORIES (${Boost_INCLUDE_DIRS}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
 SET (SRCS
-	clearbutton.cpp
 	poshuku.cpp
 	xmlsettingsmanager.cpp
 	core.cpp
@@ -82,7 +81,6 @@ SET (SRCS
 	importentityhandler.cpp
 	)
 SET (HEADERS
-	clearbutton.h
 	poshuku.h
 	xmlsettingsmanager.h
 	core.h
@@ -170,7 +168,7 @@ ADD_LIBRARY (leechcraft_poshuku SHARED
 	${UIS_H}
 	${RCCS}
 	)
-	
+
 IF (ENABLE_IDN)
 	SET (IDN_LIB "idn")
 ENDIF (ENABLE_IDN)
@@ -192,7 +190,7 @@ OPTION (ENABLE_POSHUKU_FATAPE "Build FatApe, support for GreaseMonkey userscript
 OPTION (ENABLE_POSHUKU_FILESCHEME "Build support of local file browsing for Poshuku browser" ON)
 OPTION (ENABLE_POSHUKU_FUA "Build user agent customization plugin for Poshuku browser" ON)
 OPTION (ENABLE_POSHUKU_KEYWORDS "Build support of url keywords for Poshuku browser" ON)
-OPTION (ENABLE_POSHUKU_ONLINEBOOKMARKS "Build support of online bookmark synchronization for Poshuku browser" ON)
+OPTION (ENABLE_POSHUKU_ONLINEBOOKMARKS "Build support of online bookmark synchronization for Poshuku browser" OFF)
 OPTION (ENABLE_POSHUKU_PINTAB "Build support of pinned tab for Poshuku browser" ON)
 OPTION (ENABLE_POSHUKU_WYFV "Build support of native flash-player's replacement for Poshuku browser" ON)
 

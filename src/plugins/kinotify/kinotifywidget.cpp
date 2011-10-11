@@ -41,6 +41,8 @@ namespace LeechCraft
 	{
 		namespace Kinotify
 		{
+			QMap<QString, QString> KinotifyWidget::ThemeCache_;
+
 			KinotifyWidget::KinotifyWidget (int timeout, QWidget *widget, int animationTimout)
 			: QWebView (widget)
 			, Timeout_ (timeout)
@@ -123,7 +125,12 @@ namespace LeechCraft
 			{
 				ThemeLoader_ = loader;
 			}
-			
+
+			void KinotifyWidget::ClearThemeCache ()
+			{
+				ThemeCache_.clear ();
+			}
+
 			void KinotifyWidget::SetEntity (const Entity& e)
 			{
 				E_ = e;
@@ -145,10 +152,10 @@ namespace LeechCraft
 					pixmap.load (ImagePath_);
 				else
 					pixmap.load (imgPath);
-				
+
 				return MakeImage (pixmap);
 			}
-			
+
 			const QByteArray KinotifyWidget::MakeImage (const QPixmap& pixmap)
 			{
 				QBuffer iconBuffer;
@@ -194,7 +201,7 @@ namespace LeechCraft
 				resize (DefaultSize_);
 				SetWidgetPlace ();
 			}
-			
+
 			void KinotifyWidget::OverrideImage (const QPixmap& px)
 			{
 				OverridePixmap_ = px;
@@ -242,7 +249,14 @@ namespace LeechCraft
 
 			void KinotifyWidget::LoadTheme (const QString& themePath)
 			{
+				if (ThemeCache_.contains (themePath))
+				{
+					Theme_ = ThemeCache_ [themePath];
+					return;
+				}
+
 				Theme_.clear ();
+
 				QFile content (themePath + "/tmp.html");
 				if (!content.open (QIODevice::ReadOnly))
 				{
@@ -284,6 +298,11 @@ namespace LeechCraft
 				Q_FOREACH (QString elem, imgDir.entryList (QStringList ("*.png")))
 					Theme_.replace (QString ("{%1}").arg (elem.left (elem.size () - 4)),
 							MakeImage (themePath + "/img/" + elem));
+
+				if (ThemeCache_.size () > 3)
+					ThemeCache_.clear ();
+
+				ThemeCache_ [themePath] = Theme_;
 			}
 
 			void KinotifyWidget::SetData ()
@@ -333,7 +352,7 @@ namespace LeechCraft
 				setWindowOpacity (0.0);
 				Machine_.start ();
 			}
-			
+
 			void KinotifyWidget::stateMachinePause ()
 			{
 				CloseTimer_->start (Timeout_);
@@ -365,12 +384,12 @@ namespace LeechCraft
 			{
 				page ()->mainFrame ()->addToJavaScriptWindowObject ("Action", Action_);
 			}
-			
+
 			void KinotifyWidget::handleLinkClicked (const QUrl& url)
 			{
 				if (!url.isValid ())
 					return;
-				
+
 				emit gotEntity (Util::MakeEntity (url,
 							QString (),
 							FromUserInitiated | OnlyHandle));

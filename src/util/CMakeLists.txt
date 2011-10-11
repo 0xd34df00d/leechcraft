@@ -35,6 +35,7 @@ SET (SRCS
 	flowlayout.cpp
 	socketerrorstrings.cpp
 	syncdeltamanager.cpp
+	sysinfo.cpp
 	)
 SET (HEADERS
 	tagscompleter.h
@@ -64,6 +65,7 @@ SET (HEADERS
 	flowlayout.h
 	socketerrorstrings.h
 	syncdeltamanager.h
+	sysinfo.h
 	idpool.h
 	)
 SET (FORMS

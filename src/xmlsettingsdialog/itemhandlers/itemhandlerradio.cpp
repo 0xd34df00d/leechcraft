@@ -49,6 +49,7 @@ namespace LeechCraft
 		while (!option.isNull ())
 		{
 			QRadioButton *button = new QRadioButton (XSD_->GetLabel (option));
+			XSD_->SetTooltip (button, option);
 			button->setObjectName (option.attribute ("name"));
 			group->AddButton (button,
 					option.hasAttribute ("default") &&

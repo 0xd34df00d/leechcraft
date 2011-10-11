@@ -32,8 +32,9 @@ namespace LeechCraft
 		Ui::AboutDialog Ui_;
 	public:
 		AboutDialog (QWidget* = 0);
+	private:
+		void BuildDiagInfo ();
 	};
-};
+}
 
 #endif
-

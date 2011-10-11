@@ -32,6 +32,7 @@
 #include <QHeaderView>
 #include <QInputDialog>
 #include <libtorrent/session.hpp>
+#include <libtorrent/version.hpp>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
@@ -380,6 +381,13 @@ namespace LeechCraft
 				}
 
 				return result;
+			}
+
+			QString TorrentPlugin::GetDiagInfoString () const
+			{
+				return QString ("Built with rb_libtorrent %1 (%2).")
+						.arg (LIBTORRENT_VERSION)
+						.arg (LIBTORRENT_REVISION);
 			}
 
 			void TorrentPlugin::on_OpenTorrent__triggered ()

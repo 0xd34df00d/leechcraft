@@ -73,9 +73,11 @@ namespace Choroid
 		QToolBar* GetToolBar () const;
 	private:
 		void LoadQML ();
+		void ShowImage (const QString&);
 	private slots:
 		void handleDirTreeCurrentChanged (const QModelIndex&);
 		void handleFileChanged (const QModelIndex&);
+		void handleQMLImageSelected (const QString&);
 		void handleStatusChanged (QDeclarativeView::Status);
 	signals:
 		void removeTab (QWidget*);

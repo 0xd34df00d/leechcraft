@@ -112,7 +112,7 @@ namespace LeechCraft
 						<< "; rel path:"
 						<< RelativePath_;
 		}
-		
+
 		QFileInfoList ResourceLoader::List (const QString& option,
 				const QStringList& nameFilters, QDir::Filters filters) const
 		{
@@ -130,12 +130,12 @@ namespace LeechCraft
 					const QString& fname = info.fileName ();
 					if (alreadyListed.contains (fname))
 						continue;
-					
+
 					alreadyListed << fname;
 					result << info;
 				}
 			}
-			
+
 			return result;
 		}
 
@@ -144,12 +144,15 @@ namespace LeechCraft
 			Q_FOREACH (const QString& prefix,
 					LocalPrefixesChain_ + GlobalPrefixesChain_)
 				Q_FOREACH (const QString& path, pathVariants)
-					if (QFile::exists (prefix + RelativePath_ + path))
-						return prefix + RelativePath_ + path;
+				{
+					const QString& can = QFileInfo (prefix + RelativePath_ + path).canonicalFilePath ();
+					if (QFile::exists (can))
+						return can;
+				}
 
 			return QString ();
 		}
-		
+
 		QString ResourceLoader::GetIconPath (const QString& basename) const
 		{
 			QStringList variants;
@@ -169,7 +172,7 @@ namespace LeechCraft
 			boost::shared_ptr<QFile> result (new QFile (path));
 			return result;
 		}
-		
+
 		QIODevice_ptr ResourceLoader::Load (const QString& pathVariant) const
 		{
 			return Load (QStringList (pathVariant));
@@ -204,6 +207,8 @@ namespace LeechCraft
 
 		void ResourceLoader::handleDirectoryChanged (const QString& path)
 		{
+			emit watchedDirectoriesChanged ();
+
 			QFileInfo fi (path);
 			if (fi.exists () &&
 					fi.isDir () &&

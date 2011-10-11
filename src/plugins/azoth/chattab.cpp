@@ -347,7 +347,8 @@ namespace Azoth
 						IMessage::MTChatMessage;
 
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
-		emit hookMessageWillCreated (proxy, this, e->GetObject (), type, variant, text);
+		proxy->SetValue ("text", text);
+		emit hookMessageWillCreated (proxy, this, e->GetObject (), type, variant);
 		if (proxy->IsCancelled ())
 			return;
 
@@ -445,7 +446,7 @@ namespace Azoth
 
 		QObject *job = XferManager_->SendFile (EntryID_,
 				Ui_.VariantBox_->currentText (), filename);
-		Core::Instance ().HandleTransferJob (job);
+		Core::Instance ().GetTransferJobManager ()->HandleJob (job);
 	}
 
 	void ChatTab::handleCallRequested ()
@@ -674,10 +675,18 @@ namespace Azoth
 
 	void ChatTab::handleAvatarChanged (const QImage& avatar)
 	{
-		Ui_.AvatarLabel_->setPixmap (QPixmap::fromImage (avatar));
+		const QPixmap& px = QPixmap::fromImage (avatar);
+		if (!px.isNull ())
+		{
+			const int maxHeight = Ui_.AvatarLabel_->
+					property ("Azoth/MaxHeight").toInt ();
+			const QSize& size = px.size ().boundedTo (QSize (maxHeight, maxHeight));
+			const QPixmap& scaled = px.scaled (size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+			Ui_.AvatarLabel_->setPixmap (scaled);
+			Ui_.AvatarLabel_->resize (scaled.size ());
+			Ui_.AvatarLabel_->setMaximumSize (scaled.size ());
+		}
 		Ui_.AvatarLabel_->setVisible (!avatar.isNull ());
-
-		UpdateTextHeight 	();
 	}
 
 	void ChatTab::handleStatusChanged (const EntryStatus& status,
@@ -1019,6 +1028,12 @@ namespace Azoth
 				this,
 				SLOT (handleAvatarChanged (const QImage&)));
 
+		const int resHeight = std::max (
+				std::max (Ui_.AccountName_->height (), Ui_.EntryInfo_->height ()),
+				Ui_.VariantBox_->height ()
+			);
+		Ui_.AvatarLabel_->setProperty ("Azoth/MaxHeight", resHeight);
+
 		ICLEntry *e = GetEntry<ICLEntry> ();
 		handleVariantsChanged (e->Variants ());
 		handleAvatarChanged (e->GetAvatar ());
@@ -1087,6 +1102,8 @@ namespace Azoth
 					SLOT (handleConfigureMUC ()));
 			TabToolbar_->addAction (configureMUC);
 		}
+
+		Ui_.AvatarLabel_->hide ();
 	}
 
 	void ChatTab::InitExtraActions ()
@@ -1528,11 +1545,6 @@ namespace Azoth
 		const int resHeight = std::min (height () / 3, std::max (docHeight, fontHeight));
 		Ui_.MsgEdit_->setMinimumHeight (resHeight);
 		Ui_.MsgEdit_->setMaximumHeight (resHeight);
-
-		const QPixmap *px = Ui_.AvatarLabel_->pixmap ();
-		if (px && px->width () > 0)
-			Ui_.AvatarLabel_->setMaximumSize (resHeight,
-					resHeight * px->height () / px->width ());
 	}
 
 	void ChatTab::SetChatPartState (ChatPartState state)

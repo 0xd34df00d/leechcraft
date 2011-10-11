@@ -64,6 +64,8 @@ namespace Azoth
 	class CallManager;
 	class EventsNotifier;
 
+	class CLModel;
+
 	class Core : public QObject
 	{
 		Q_OBJECT
@@ -85,12 +87,14 @@ namespace Azoth
 		QObjectList ProtocolPlugins_;
 		QList<QAction*> AccountCreatorActions_;
 
-		QStandardItemModel *CLModel_;
+		CLModel *CLModel_;
 		ChatTabsManager *ChatTabsManager_;
 
 		typedef QHash<QString, QStandardItem*> Category2Item_t;
 		typedef QHash<QStandardItem*, Category2Item_t> Account2Category2Item_t;
 		Account2Category2Item_t Account2Category2Item_;
+
+		QHash<IAccount*, QDateTime> LastAccountStatusChange_;
 
 		typedef QHash<ICLEntry*, QList<QStandardItem*> > Entry2Items_t;
 		Entry2Items_t Entry2Items_;
@@ -219,16 +223,6 @@ namespace Azoth
 		 * account or category, this function does nothing.
 		 */
 		void OpenChat (const QModelIndex& index);
-
-		/** Handles the given transfer job, taking ownership of it and
-		 * handling various events from it.
-		 *
-		 * @param[in] job The transfer job to handle, should implement
-		 * ITransferJob.
-		 *
-		 * @sa ITransferJob
-		 */
-		void HandleTransferJob (QObject *job);
 
 		TransferJobManager* GetTransferJobManager () const;
 
@@ -363,10 +357,13 @@ namespace Azoth
 		 */
 		QString MakeTooltipString (ICLEntry *entry) const;
 
+		Entity BuildStatusNotification (const EntryStatus&,
+				ICLEntry*, const QString&);
+
 		/** Handles the event of status changes in a contact list entry.
 		 */
 		void HandleStatusChanged (const EntryStatus& status,
-				ICLEntry *entry, const QString& variant);
+				ICLEntry *entry, const QString& variant, bool asSignal = false);
 
 		/** Checks whether icon representing incoming file should be
 		 * drawn for the entry with the given id.
@@ -582,6 +579,7 @@ namespace Azoth
 		void handleActionVCardTriggered ();
 
 		void handleActionOpenChatTriggered ();
+		void handleActionInviteTriggered ();
 		void handleActionLeaveTriggered ();
 		void handleActionAuthorizeTriggered ();
 		void handleActionDenyAuthTriggered ();
@@ -632,11 +630,9 @@ namespace Azoth
 				QObject *message);
 		void hookFormatBodyBegin (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab,
-				QString body,
 				QObject *message);
 		void hookFormatBodyEnd (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab,
-				QString body,
 				QObject *message);
 		void hookGonnaHandleSmiles (LeechCraft::IHookProxy_ptr proxy,
 				QString body,

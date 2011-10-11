@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="KnowHow" />
+		<groupbox>
+			<label value="Behavior" />
+			<item type="checkbox" property="ShowTips" default="true">
+				<label value="Show tips on startup" />
+			</item>
+		</groupbox>
+	</page>
+</settings>

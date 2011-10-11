@@ -22,6 +22,7 @@
 #include <interfaces/core/ihookproxy.h>
 #include <util/basehookinterconnector.h>
 #include "interfaces/aggregator/item.h"
+#include "proxyobject.h"
 
 namespace LeechCraft
 {
@@ -30,6 +31,8 @@ namespace Aggregator
 	class PluginManager : public Util::BaseHookInterconnector
 	{
 		Q_OBJECT
+
+		boost::shared_ptr<ProxyObject> ProxyObject_;
 	public:
 		PluginManager (QObject* = 0);
 

@@ -19,7 +19,7 @@
 #include "customwebview.h"
 #include <cmath>
 #include <qwebframe.h>
-#include <QMouseEvent>
+#include <QGraphicsSceneMouseEvent>
 #include <QMenu>
 #include <QApplication>
 #include <QBuffer>
@@ -42,8 +42,8 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
-	CustomWebView::CustomWebView (QWidget *parent)
-	: QWebView (parent)
+	CustomWebView::CustomWebView (QGraphicsItem *parent)
+	: QGraphicsWebView (parent)
 	, ScrollTimer_ (new QTimer (this))
 	, ScrollDelta_ (0)
 	, AccumulatedScrollShift_ (0)
@@ -179,7 +179,7 @@ namespace Poshuku
 			QNetworkAccessManager::Operation op, const QByteArray& ba)
 	{
 		emit titleChanged (tr ("Loading..."));
-		QWebView::load (req, op, ba);
+		QGraphicsWebView::load (req, op, ba);
 	}
 
 
@@ -205,14 +205,14 @@ namespace Poshuku
 		return string;
 	}
 
-	void CustomWebView::mousePressEvent (QMouseEvent *e)
+	void CustomWebView::mousePressEvent (QGraphicsSceneMouseEvent *e)
 	{
 		qobject_cast<CustomWebPage*> (page ())->SetButtons (e->buttons ());
 		qobject_cast<CustomWebPage*> (page ())->SetModifiers (e->modifiers ());
-		QWebView::mousePressEvent (e);
+		QGraphicsWebView::mousePressEvent (e);
 	}
 
-	void CustomWebView::wheelEvent (QWheelEvent *e)
+	void CustomWebView::wheelEvent (QGraphicsSceneWheelEvent *e)
 	{
 		if (e->modifiers () & Qt::ControlModifier)
 		{
@@ -222,7 +222,7 @@ namespace Poshuku
 			e->accept ();
 		}
 		else
-			QWebView::wheelEvent (e);
+			QGraphicsWebView::wheelEvent (e);
 	}
 
 	namespace
@@ -230,11 +230,11 @@ namespace Poshuku
 		const QRegExp UrlInText ("://|www\\.|\\w\\.\\w");
 	}
 
-	void CustomWebView::contextMenuEvent (QContextMenuEvent *e)
+	void CustomWebView::contextMenuEvent (QGraphicsSceneContextMenuEvent *e)
 	{
-		QPointer<QMenu> menu (new QMenu (this));
+		QPointer<QMenu> menu (new QMenu ());
 		QWebHitTestResult r = page ()->
-			mainFrame ()->hitTestContent (e->pos ());
+			mainFrame ()->hitTestContent (e->pos ().toPoint ());
 
 		IHookProxy_ptr proxy (new Util::DefaultHookProxy ());
 
@@ -385,10 +385,10 @@ namespace Poshuku
 				menu, WVSAfterFinish);
 
 		if (!menu->isEmpty ())
-			menu->exec (mapToGlobal (e->pos ()));
+			menu->exec (Browser_->mapToGlobal (e->pos ().toPoint ()));
 		else
-			QWebView::contextMenuEvent (e);
-		
+			QGraphicsWebView::contextMenuEvent (e);
+
 		if (menu)
 			delete menu;
 	}
@@ -398,6 +398,8 @@ namespace Poshuku
 		bool handled = false;
 		if (event->matches (QKeySequence::Copy))
 		{
+			pageAction (QWebPage::Copy)->trigger ();
+			/* TODO
 			const QString& text = selectedText ();
 			if (!text.isEmpty ())
 			{
@@ -405,6 +407,7 @@ namespace Poshuku
 						QClipboard::Clipboard);
 				handled = true;
 			}
+			*/
 		}
 		else if (event->key () == Qt::Key_F6)
 			Browser_->focusLineEdit ();
@@ -416,7 +419,7 @@ namespace Poshuku
 			ScrollDelta_ = 0;
 
 		if (!handled)
-			QWebView::keyReleaseEvent (event);
+			QGraphicsWebView::keyReleaseEvent (event);
 	}
 
 	int CustomWebView::LevelForZoom (qreal zoom)
@@ -593,7 +596,7 @@ namespace Poshuku
 		if (text.isEmpty ())
 			return;
 
-		SearchText *st = new SearchText (text, this);
+		SearchText *st = new SearchText (text, Browser_);
 		connect (st,
 				SIGNAL (gotEntity (const LeechCraft::Entity&)),
 				this,
@@ -604,6 +607,7 @@ namespace Poshuku
 
 	void CustomWebView::renderSettingsChanged ()
 	{
+#if QT_VERSION >= 0x040800
 		QPainter::RenderHints hints;
 		if (XmlSettingsManager::Instance ()->
 				property ("PrimitivesAntialiasing").toBool ())
@@ -619,6 +623,7 @@ namespace Poshuku
 			hints |= QPainter::HighQualityAntialiasing;
 
 		setRenderHints (hints);
+#endif
 	}
 
 	void CustomWebView::handleAutoscroll ()
