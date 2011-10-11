@@ -185,10 +185,13 @@ namespace Otzerkalu
 			WriteData (filename, page.mainFrame ()->toHtml ());
 
 		if (!UrlCount_)
+		{
 			emit gotEntity (Util::MakeNotification ("Otzerkalu",
 					tr ("Finished mirroring <em>%1</em>.")
 						.arg (Param_.DownloadUrl_.toString ()),
 					PInfo_));
+			emit mirroringFinished (ID_);
+		}
 	}
 
 	bool OtzerkaluDownloader::HTMLReplace (QWebElementCollection::iterator element,

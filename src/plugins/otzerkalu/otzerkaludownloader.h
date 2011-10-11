@@ -36,22 +36,22 @@ namespace Otzerkalu
 		QString DestDir_;
 		int RecLevel_;
 		bool FromOtherSite_;
-		
+
 		DownloadParams ();
 		DownloadParams (const QUrl& downloadUrl, const QString& destDir,
 				int recLevel, bool fromOtherSite);
 	};
-	
+
 	struct FileData
 	{
 		QUrl Url_;
 		QString Filename_;
 		int RecLevel_;
-		
+
 		FileData ();
 		FileData (const QUrl& url, const QString& filename, int recLevel);
 	};
-	
+
 	class OtzerkaluDownloader : public QObject
 	{
 		Q_OBJECT
@@ -78,6 +78,7 @@ namespace Otzerkalu
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 		void gotEntity (const LeechCraft::Entity&);
 		void fileDownloaded (int id, int count);
+		void mirroringFinished (int id);
 	};
 };
 };
