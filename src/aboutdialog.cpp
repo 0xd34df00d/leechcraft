@@ -136,6 +136,10 @@ namespace LeechCraft
 				QString (), "lk4d4@yander.ru",
 				QStringList ("Initial ebuilds for Gentoo Linux."),
 				QList<int> () << 2009);
+		contribs << ContributorInfo ("Maxim Kirenenko", "part1zan_ aka 0x73571ab",
+				"part1zancheg@gmail.com", "part1zancheg@gmail.com",
+				QStringList (tr ("Extensive and thorough testing.")),
+				QList<int> () << 2010 << 2011);
 		contribs << ContributorInfo (QString (), "Miha",
 				QString (), "miha@52.ru",
 				QStringList ("OpenSUSE package maintainer."),
