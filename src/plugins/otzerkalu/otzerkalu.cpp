@@ -77,16 +77,27 @@ namespace Otzerkalu
 		QUrl dUrl = entity.Entity_.toUrl ();
 		if (!dUrl.isValid ())
 			return;
-		
+
 		OtzerkaluDialog dialog;
 		if (dialog.exec () != QDialog::Accepted)
 			return;
-		RepresentationModel_->appendRow (new QStandardItem ("0 files are downloaded"));
+
+		const int id = MirrorIDPool_.GetID ();
+
+		QList<QStandardItem*> row;
+		row << new QStandardItem (tr ("Mirroring %1...").arg (dUrl.toString ()));
+		row << new QStandardItem ("0/0");
+		row << new QStandardItem ();
+		RepresentationModel_->appendRow (row);
+
+		row [0]->setData (id, RMirrorId);
+
 		OtzerkaluDownloader *dl = new OtzerkaluDownloader (DownloadParams (dUrl, dialog.GetDir (),
 					dialog.GetRecursionLevel (),
 					dialog.FetchFromExternalHosts ()),
-					RepresentationModel_->rowCount (),
-					this);	
+				id,
+				this);
+
 		connect (dl,
 				SIGNAL (gotEntity (const LeechCraft::Entity&)),
 				this,
@@ -101,15 +112,23 @@ namespace Otzerkalu
 				SLOT (handleFileDownloaded (int, int)));
 		dl->Begin ();
 	}
-	
+
 	QAbstractItemModel* Plugin::GetRepresentation () const
 	{
 		return RepresentationModel_;
 	}
-	
+
 	void Plugin::handleFileDownloaded (int id, int count)
 	{
-		RepresentationModel_->setItem (id, new QStandardItem (QString::number (count) + " files are downloaded"));
+		for (int i = 0; i < RepresentationModel_->rowCount (); ++i)
+		{
+			if (RepresentationModel_->item (i)->data (RMirrorId).toInt () != id)
+				continue;
+
+			RepresentationModel_->item (i, 1)->setText (QString ("%1/%2").arg (count).arg ("unknown"));
+
+			return;
+		}
 	}
 
 }
