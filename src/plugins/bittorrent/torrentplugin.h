@@ -32,6 +32,7 @@
 #include <interfaces/ihaveshortcuts.h>
 #include <interfaces/istartupwizard.h>
 #include <interfaces/iactionsexporter.h>
+#include <interfaces/ihavediaginfo.h>
 #include <util/tagscompleter.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "tabwidget.h"
@@ -64,10 +65,21 @@ namespace LeechCraft
 								, public IHaveShortcuts
 								, public IStartupWizard
 								, public IActionsExporter
+								, public IHaveDiagInfo
 			{
 				Q_OBJECT
 
-				Q_INTERFACES (IInfo IDownload IEntityHandler IJobHolder IImportExport ITaggableJobs IHaveSettings IHaveShortcuts IStartupWizard IActionsExporter);
+				Q_INTERFACES (IInfo
+						IDownload
+						IEntityHandler
+						IJobHolder
+						IImportExport
+						ITaggableJobs
+						IHaveSettings
+						IHaveShortcuts
+						IStartupWizard
+						IActionsExporter
+						IHaveDiagInfo);
 
 				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
 				std::auto_ptr<AddTorrent> AddTorrentDialog_;
@@ -175,6 +187,9 @@ namespace LeechCraft
 
 				// IToolBarEmbedder
 				QList<QAction*> GetActions (ActionsEmbedPlace) const;
+
+				// IHaveDiagInfo
+				QString GetDiagInfoString () const;
 			private slots:
 				void on_OpenTorrent__triggered ();
 				void on_OpenMultipleTorrents__triggered ();

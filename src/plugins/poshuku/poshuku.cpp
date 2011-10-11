@@ -28,6 +28,8 @@
 #include <QInputDialog>
 #include <QMenu>
 #include <QMainWindow>
+#include <qwebpage.h>
+#include <qwebkitversion.h>
 #include <QtDebug>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
@@ -286,7 +288,7 @@ namespace Poshuku
 		return Core::Instance ().GetWidget ();
 	}
 
-	QWebView* Poshuku::CreateWindow ()
+	QGraphicsWebView* Poshuku::CreateWindow ()
 	{
 		return Core::Instance ().MakeWebView ();
 	}
@@ -320,6 +322,13 @@ namespace Poshuku
 		result ["EACheckFavorites_"] = ActionInfo (CheckFavorites_->text (),
 				QKeySequence (), CheckFavorites_->icon ());
 		return result;
+	}
+
+	QString Poshuku::GetDiagInfoString () const
+	{
+		return QString ("Built with QtWebKit %1, running with QtWebKit %2")
+				.arg (QTWEBKIT_VERSION_STR)
+				.arg (qWebKitVersion ());
 	}
 
 	QList<QAction*> Poshuku::GetActions (ActionsEmbedPlace place) const
@@ -417,7 +426,12 @@ namespace Poshuku
 			<< "UserStyleSheet"
 			<< "OfflineStorageDB"
 			<< "LocalStorageDB"
-			<< "OfflineWebApplicationCache";
+			<< "OfflineWebApplicationCache"
+			<< "EnableXSSAuditing";
+#if QT_VERSION >= 0x040800
+		viewerSettings << "WebGLEnabled"
+			<< "HyperlinkAuditingEnabled";
+#endif
 		XmlSettingsManager::Instance ()->RegisterObject (viewerSettings,
 				this, "viewerSettingsChanged");
 
@@ -491,6 +505,14 @@ namespace Poshuku
 				XmlSettingsManager::Instance ()->property ("OfflineWebApplicationCache").toBool ());
 		QWebSettings::globalSettings ()->setAttribute (QWebSettings::LocalStorageEnabled,
 				XmlSettingsManager::Instance ()->property ("LocalStorageDB").toBool ());
+		QWebSettings::globalSettings ()->setAttribute (QWebSettings::XSSAuditingEnabled,
+				XmlSettingsManager::Instance ()->property ("EnableXSSAuditing").toBool ());
+#if QT_VERSION >= 0x040800
+		QWebSettings::globalSettings ()->setAttribute (QWebSettings::HyperlinkAuditingEnabled,
+				XmlSettingsManager::Instance ()->property ("EnableHyperlinkAuditing").toBool ());
+		QWebSettings::globalSettings ()->setAttribute (QWebSettings::WebGLEnabled,
+				XmlSettingsManager::Instance ()->property ("EnableWebGL").toBool ());
+#endif
 		QWebSettings::globalSettings ()->setUserStyleSheetUrl (QUrl (XmlSettingsManager::
 					Instance ()->property ("UserStyleSheet").toString ()));
 	}

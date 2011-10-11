@@ -37,7 +37,7 @@
 class QString;
 class QWidget;
 class QIcon;
-class QWebView;
+class QGraphicsWebView;
 class QAbstractItemModel;
 class QNetworkReply;
 class QNetworkAccessManager;
@@ -194,7 +194,7 @@ namespace Poshuku
 				const QList<QUrl>& urls);
 		void hookTabAdded (LeechCraft::IHookProxy_ptr,
 				QObject *browserWidget,
-				QWebView *view,
+				QGraphicsWebView *view,
 				const QUrl& url);
 		void hookUserAgentForUrlRequested (LeechCraft::IHookProxy_ptr,
 				const QUrl&, const QWebPage*) const;

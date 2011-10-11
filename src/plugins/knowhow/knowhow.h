@@ -16,40 +16,40 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PROGRESSLINEEDIT_H
-#define PLUGINS_POSHUKU_PROGRESSLINEEDIT_H
-#include <boost/shared_ptr.hpp>
-#include <QKeyEvent>
-#include <QLineEdit>
-#include <QToolButton>
-
-class QModelIndex;
-class QToolBar;
-class QToolButton;
+#ifndef PLUGINS_KNOWHOW_KNOWHOW_H
+#define PLUGINS_KNOWHOW_KNOWHOW_H
+#include <QObject>
+#include <interfaces/iinfo.h>
+#include <interfaces/ihavesettings.h>
 
 namespace LeechCraft
 {
-namespace Poshuku
+namespace KnowHow
 {
-	class ProgressLineEdit : public QLineEdit
+	class Plugin : public QObject
+				 , public IInfo
+				 , public IHaveSettings
 	{
 		Q_OBJECT
+		Q_INTERFACES (IInfo IHaveSettings)
 
-		bool IsCompleting_;
-		QString PreviousUrl_;
-		QToolButton *ClearButton_;
+		ICoreProxy_ptr Proxy_;
+		Util::XmlSettingsDialog_ptr SettingsDialog_;
 	public:
-		ProgressLineEdit (QWidget* = 0);
-		virtual ~ProgressLineEdit ();
-		bool IsCompleting () const;
-	protected:
-		void keyPressEvent (QKeyEvent *);
-		void resizeEvent (QResizeEvent *);
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		QByteArray GetUniqueID () const;
+		void Release ();
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
+
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	private slots:
-		void handleCompleterActivated ();
-		void textChanged (const QString& text);
+		void showTip ();
 	};
 }
 }
 
 #endif
+

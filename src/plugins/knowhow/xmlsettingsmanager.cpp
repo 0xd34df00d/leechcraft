@@ -1,6 +1,5 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011 Minh Ngo
  * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,23 +16,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_CLEARBUTTON_H
-#define PLUGINS_POSHUKU_CLEARBUTTON_H
-#include <QToolButton>
+#include "xmlsettingsmanager.h"
+#include <QCoreApplication>
 
 namespace LeechCraft
 {
-namespace Poshuku
+namespace KnowHow
 {
-	class ClearButton : public QToolButton
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		Q_OBJECT
-	public:
-		ClearButton (QWidget* parent = 0);
-	public slots:
-		void textChanged (const QString& text);
-	};
-}
-}
+		Util::BaseSettingsManager::Init ();
+	}
 
-#endif
+	XmlSettingsManager& XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager manager;
+		return manager;
+	}
+
+	QSettings* XmlSettingsManager::BeginSettings () const
+	{
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_KnowHow");
+		return settings;
+	}
+
+	void XmlSettingsManager::EndSettings (QSettings*) const
+	{
+	}
+}
+}

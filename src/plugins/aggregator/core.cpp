@@ -907,15 +907,6 @@ namespace Aggregator
 		return StorageBackend_.get ();
 	}
 
-	QWebView* Core::CreateWindow ()
-	{
-		IWebBrowser *browser = GetWebBrowser ();
-		if (!browser)
-			return 0;
-
-		return browser->CreateWindow ();
-	}
-
 	void Core::GetChannels (channels_shorts_t& channels) const
 	{
 		ids_t ids;

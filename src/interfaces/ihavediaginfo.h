@@ -1,6 +1,5 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011 Minh Ngo
  * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,31 +16,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "clearbutton.h"
-#include <QPainter>
-#include <QVariant>
-#include <interfaces/core/icoreproxy.h>
-#include "core.h"
+#ifndef INTERFACES_IDIAGINFO_H
+#define INTERFACES_IDIAGINFO_H
+#include <QtPlugin>
 
-namespace LeechCraft
-{
-namespace Poshuku
-{
-	ClearButton::ClearButton (QWidget *parent)
-	: QToolButton (parent)
-	{
-		setCursor (Qt::ArrowCursor);
-		setToolTip (tr ("Clear"));
-		setToolButtonStyle (Qt::ToolButtonIconOnly);
-		setVisible (false);
-		setFocusPolicy (Qt::NoFocus);
-		setBackgroundRole (QPalette::Light);
-		setIcon (Core::Instance ().GetProxy ()->GetIcon ("clearall"));
-	}
+class QString;
 
-	void ClearButton::textChanged (const QString& text)
-	{
-		setVisible (!text.isEmpty ());
-	}
-}
-}
+class IHaveDiagInfo
+{
+public:
+	virtual ~IHaveDiagInfo () {}
+
+	virtual QString GetDiagInfoString () const = 0;
+};
+
+Q_DECLARE_INTERFACE (IHaveDiagInfo, "org.Deviant.LeechCraft.IHaveDiagInfo/1.0");
+
+#endif

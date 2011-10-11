@@ -28,7 +28,7 @@
 #include <interfaces/core/ihookproxy.h>
 
 class QMenu;
-class QWebView;
+class QGraphicsWebView;
 
 namespace LeechCraft
 {
@@ -68,7 +68,7 @@ namespace OnlineBookmarks
 		void AddPlugin (QObject*);
 	public slots:
 		void initPlugin (QObject*);
-		void hookMoreMenuFillEnd (LeechCraft::IHookProxy_ptr, QMenu*, QWebView*, QObject*);
+		void hookMoreMenuFillEnd (LeechCraft::IHookProxy_ptr, QMenu*, QGraphicsWebView*, QObject*);
 // 		void hookAddedToFavorites (LeechCraft::IHookProxy_ptr, QString, QString, QStringList);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);

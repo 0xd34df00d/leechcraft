@@ -31,7 +31,6 @@ namespace Poshuku
 	public:
 		virtual ~IBrowserWidget () {}
 
-		virtual QWebView* GetWebView () const = 0;
 		virtual QLineEdit* GetURLEdit () const = 0;
 	};
 }

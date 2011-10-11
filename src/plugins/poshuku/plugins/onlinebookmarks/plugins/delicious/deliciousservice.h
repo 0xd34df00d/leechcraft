@@ -74,8 +74,8 @@ namespace Delicious
 		QWidget* GetAuthWidget ();
 		void CheckAuthData (const QVariantMap&);
 		void RegisterAccount (const QVariantMap&);
-		void UploadBookmarks (IAccount*, const QVariantList&);
-		void DownloadBookmarks (IAccount*, const QDateTime&);
+		void UploadBookmarks (QObject*, const QVariantList&);
+		void DownloadBookmarks (QObject*, const QDateTime&);
 		DeliciousAccount* GetAccountByName (const QString&);
 	private:
 		void SendRequest (const QString&, const QByteArray&, const Request&);
@@ -88,7 +88,7 @@ namespace Delicious
 	signals:
 		void accountAdded (QObjectList);
 		void gotEntity (const LeechCraft::Entity&);
-		void gotBookmarks (IAccount*, const QVariantList&);
+		void gotBookmarks (QObject*, const QVariantList&);
 		void bookmarksUploaded ();
 	};
 }

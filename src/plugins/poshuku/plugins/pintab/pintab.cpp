@@ -88,7 +88,7 @@ namespace PinTab
 	}
 
 	void Plugin::hookMoreMenuFillEnd (LeechCraft::IHookProxy_ptr proxy,
-			QMenu *menu, QWebView *webView, QObject *browserWidget)
+			QMenu *menu, QGraphicsWebView *webView, QObject *browserWidget)
 	{
 		QAction *pintab = new QAction (tr ("Pin tab"), browserWidget);
 
@@ -167,12 +167,12 @@ namespace PinTab
 	{
 		const QString& title = pinned ? "" : Pinned_.value (widget);
 		const QString& actionText = pinned ? tr ("Unpin tab") : tr ("Pin tab");
-		QWebView *webView = GetWebView (widget);
+		QGraphicsWebView *webView = GetWebView (widget);
 
 		if (!webView)
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "unable to get QWebView from"
+					<< "unable to get QGraphicsWebView from"
 					<< widget;
 			return;
 		}
@@ -201,7 +201,7 @@ namespace PinTab
 	}
 
 	void Plugin::hookTabAdded (LeechCraft::IHookProxy_ptr,
-		QObject *browserWidget, QWebView *view, const QUrl& url)
+		QObject *browserWidget, QGraphicsWebView *view, const QUrl& url)
 	{
 		if (PinnedUrls_.size () && PinnedUrls_.contains (url.toString ()))
 		{
@@ -216,12 +216,12 @@ namespace PinTab
 
 		Q_FOREACH (QObject *browserWidget, Pinned_.keys ())
 		{
-			QWebView *webView = GetWebView (browserWidget);
+			QGraphicsWebView *webView = GetWebView (browserWidget);
 
 			if (!webView)
 			{
 				qWarning () << Q_FUNC_INFO
-						<< "unable to get QWebView from"
+						<< "unable to get QGraphicsWebView from"
 						<< browserWidget;
 				continue;
 			}
@@ -243,13 +243,13 @@ namespace PinTab
 		settings.endArray();
 	}
 
-	QWebView* Plugin::GetWebView (QObject *browserWidget)
+	QGraphicsWebView* Plugin::GetWebView (QObject *browserWidget)
 	{
-		QWebView *view = NULL;
+		QGraphicsWebView *view = NULL;
 
 		QMetaObject::invokeMethod (browserWidget,
 			"getWebView",
-			Q_RETURN_ARG (QWebView*, view));
+			Q_RETURN_ARG (QGraphicsWebView*, view));
 
 		return view;
 	}

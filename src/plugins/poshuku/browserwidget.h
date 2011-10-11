@@ -21,6 +21,7 @@
 #include <boost/shared_ptr.hpp>
 #include <QWidget>
 #include <QTime>
+#include <qwebpage.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/iwebbrowser.h>
 #include <interfaces/ihaveshortcuts.h>
@@ -32,6 +33,8 @@
 class QToolBar;
 class QDataStream;
 class QShortcut;
+class QGraphicsWebView;
+class QWebFrame;
 
 namespace LeechCraft
 {
@@ -40,6 +43,7 @@ namespace Poshuku
 	class FindDialog;
 	class PasswordRemember;
 	struct BrowserWidgetSettings;
+	class CustomWebView;
 
 	class BrowserWidget : public QWidget
 						, public IBrowserWidget
@@ -88,6 +92,8 @@ namespace Poshuku
 		bool Own_;
 		QMap<QString, QList<QAction*> > WindowMenus_;
 
+		CustomWebView *WebView_;
+
 		static QObject* S_MultiTabsParent_;
 
 		friend class CustomWebView;
@@ -102,7 +108,7 @@ namespace Poshuku
 		void SetUnclosers (const QList<QAction*>&);
 		CustomWebView* GetView () const;
 		// This is the same as above but to satisfy the IBrowserWidget.
-		QWebView* GetWebView () const;
+		QGraphicsWebView* GetWebView () const;
 		QLineEdit* GetURLEdit () const;
 
 		BrowserWidgetSettings GetWidgetSettings () const;
@@ -134,7 +140,7 @@ namespace Poshuku
 		void focusLineEdit ();
 		void handleShortcutHistory ();
 		void handleShortcutBookmarks ();
-		QWebView* getWebView () const;
+		QGraphicsWebView* getWebView () const;
 		QLineEdit* getAddressBar () const;
 		QWidget* getSideBar () const;
 	private slots:
@@ -166,6 +172,7 @@ namespace Poshuku
 		void updateLogicalPath ();
 		void showSendersMenu ();
 		void handleUrlChanged (const QString&);
+		void refitWebView ();
 	signals:
 		void titleChanged (const QString&);
 		void urlChanged (const QString&);
@@ -194,14 +201,14 @@ namespace Poshuku
 				int progress);
 		void hookMoreMenuFillBegin (LeechCraft::IHookProxy_ptr proxy,
 				QMenu *menu,
-				QWebView *webView,
+				QGraphicsWebView *webView,
 				QObject *browserWidget);
 		void hookMoreMenuFillEnd (LeechCraft::IHookProxy_ptr proxy,
 				QMenu *menu,
-				QWebView *webView,
+				QGraphicsWebView *webView,
 				QObject *browserWidget);
 		void hookNotifyLoadFinished (LeechCraft::IHookProxy_ptr proxy,
-				QWebView *view,
+				QGraphicsWebView *view,
 				QObject *browserWidget,
 				bool ok,
 				bool notifyWhenFinished,

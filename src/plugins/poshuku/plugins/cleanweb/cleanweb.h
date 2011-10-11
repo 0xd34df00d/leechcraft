@@ -34,7 +34,7 @@
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 
-class QWebView;
+class QGraphicsWebView;
 
 namespace LeechCraft
 {
@@ -88,7 +88,7 @@ namespace CleanWeb
 		void hookWebPluginFactoryReload (LeechCraft::IHookProxy_ptr,
 				QList<IWebPlugin*>&);
 		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr,
-				QWebView*, QContextMenuEvent*,
+				QGraphicsWebView*, QContextMenuEvent*,
 				const QWebHitTestResult&, QMenu*,
 				WebViewCtxMenuStage);
 	signals:

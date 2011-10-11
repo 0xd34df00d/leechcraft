@@ -16,38 +16,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PROGRESSLINEEDIT_H
-#define PLUGINS_POSHUKU_PROGRESSLINEEDIT_H
+#ifndef PLUGINS_KNOWHOW_TIPDIALOG_H
+#define PLUGINS_KNOWHOW_TIPDIALOG_H
 #include <boost/shared_ptr.hpp>
-#include <QKeyEvent>
-#include <QLineEdit>
-#include <QToolButton>
+#include <QDialog>
+#include <interfaces/core/icoreproxy.h>
+#include "ui_tipdialog.h"
 
-class QModelIndex;
-class QToolBar;
-class QToolButton;
+class QDomDocument;
 
 namespace LeechCraft
 {
-namespace Poshuku
+namespace KnowHow
 {
-	class ProgressLineEdit : public QLineEdit
+	class TipDialog : public QDialog
 	{
 		Q_OBJECT
 
-		bool IsCompleting_;
-		QString PreviousUrl_;
-		QToolButton *ClearButton_;
+		Ui::TipDialog Ui_;
+		boost::shared_ptr<QDomDocument> Doc_;
+		ICoreProxy_ptr Proxy_;
 	public:
-		ProgressLineEdit (QWidget* = 0);
-		virtual ~ProgressLineEdit ();
-		bool IsCompleting () const;
-	protected:
-		void keyPressEvent (QKeyEvent *);
-		void resizeEvent (QResizeEvent *);
+		TipDialog (ICoreProxy_ptr, QWidget* = 0);
+	private:
+		void ShowForIdx (int);
+		QString GetTipByID (int);
 	private slots:
-		void handleCompleterActivated ();
-		void textChanged (const QString& text);
+		void on_Forward__released ();
+		void on_Backward__released ();
+		void on_DontShow__stateChanged ();
 	};
 }
 }
