@@ -19,8 +19,10 @@
 
 #include "otzerkalu.h"
 #include <QIcon>
+#include <QUrl>
 #include <interfaces/entitytesthandleresult.h>
 #include "otzerkaludialog.h"
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
@@ -28,6 +30,8 @@ namespace Otzerkalu
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Proxy_ = proxy;
+		RepresentationModel_ = new QStandardItemModel (this);
 	}
 
 	void Plugin::SecondInit ()
@@ -77,12 +81,12 @@ namespace Otzerkalu
 		OtzerkaluDialog dialog;
 		if (dialog.exec () != QDialog::Accepted)
 			return;
-
+		RepresentationModel_->appendRow (new QStandardItem ("0 files are downloaded"));
 		OtzerkaluDownloader *dl = new OtzerkaluDownloader (DownloadParams (dUrl, dialog.GetDir (),
 					dialog.GetRecursionLevel (),
 					dialog.FetchFromExternalHosts ()),
-					this);
-		
+					RepresentationModel_->rowCount (),
+					this);	
 		connect (dl,
 				SIGNAL (gotEntity (const LeechCraft::Entity&)),
 				this,
@@ -91,9 +95,23 @@ namespace Otzerkalu
 				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)),
 				this,
 				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)));
-		
+		connect (dl,
+				SIGNAL (fileDownloaded (int, int)),
+				this,
+				SLOT (handleFileDownloaded (int, int)));
 		dl->Begin ();
 	}
+	
+	QAbstractItemModel* Plugin::GetRepresentation () const
+	{
+		return RepresentationModel_;
+	}
+	
+	void Plugin::handleFileDownloaded (int id, int count)
+	{
+		RepresentationModel_->setItem (id, new QStandardItem (QString::number (count) + " files are downloaded"));
+	}
+
 }
 }
 

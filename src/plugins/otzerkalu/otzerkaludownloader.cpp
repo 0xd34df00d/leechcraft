@@ -67,13 +67,19 @@ namespace Otzerkalu
 	}
 
 	OtzerkaluDownloader::OtzerkaluDownloader (const DownloadParams& param,
-			QObject *parent)
+			int id, QObject *parent)
 	: QObject (parent)
 	, Param_ (param)
 	, UrlCount_ (0)
+	, ID_ (id)
 	{
 	}
 	
+	QString OtzerkaluDownloader::GetLastDownloaded () const
+	{
+		return DownloadedFiles_.isEmpty () ? QString () : DownloadedFiles_.last ();
+	}
+
 	void OtzerkaluDownloader::Begin ()
 	{
 		//Let's download the first URL
@@ -94,6 +100,11 @@ namespace Otzerkalu
 				this,
 				SLOT (handleJobFinished (int)),
 				Qt::UniqueConnection);
+	}
+	
+	int OtzerkaluDownloader::FilesCount () const
+	{
+		return DownloadedFiles_.count ();
 	}
 	
 	QList<QUrl> OtzerkaluDownloader::CSSParser (const QString& data) const
@@ -130,11 +141,12 @@ namespace Otzerkalu
 		qDebug () << Q_FUNC_INFO << "Download finished";
 		--UrlCount_;
 		const FileData& data = FileMap_ [id];
-		if (!data.RecLevel_ && !Param_.RecLevel_)
+		if (!data.RecLevel_ && Param_.RecLevel_)
 			return;
 
 		const QString& filename = data.Filename_;
 		DownloadedFiles_.append (filename);
+		emit fileDownloaded (ID_, DownloadedFiles_.count ());
 
 		QFile file (filename);
 		if (!file.open (QIODevice::ReadOnly))
