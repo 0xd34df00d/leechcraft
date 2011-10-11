@@ -90,13 +90,13 @@
 				</item>
 				<item type="combobox" property="SelectionBehavior">
 					<label lang="en" value="Tab selection behavior: " />
-					<option name="PreviouseActive" default="true">
+					<option name="PreviousActive" default="true">
 						<label lang="en" value="Select the previously selected tab" />
 					</option>
 					<option name="NextIndex">
 						<label lang="en" value="Select the tab to the right of the one being removed" />
 					</option>
-					<option name="PreviouseIndex">
+					<option name="PreviousIndex">
 						<label lang="en" value="Select the tab to the left of the one being removed" />
 					</option>
 				</item>

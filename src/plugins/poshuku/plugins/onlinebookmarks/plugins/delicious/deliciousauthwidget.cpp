@@ -45,9 +45,7 @@ namespace Delicious
 	{
 		Ui_.Login_->setText (map ["Login"].toString ());
 		Ui_.Password_->setText (map ["Password"].toString ());
-		bool oAuth = false;
-		if (map.contains ("OAuth"))
-			oAuth = map ["OAuth"].toBool ();
+		bool oAuth = map.value ("OAuth", false).toBool ();
 		Ui_.YahooID_->setChecked (oAuth);
 	}
 

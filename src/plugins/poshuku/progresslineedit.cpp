@@ -21,7 +21,9 @@
 #include <QCompleter>
 #include <QAbstractItemView>
 #include <QToolBar>
+#include <QToolButton>
 #include <QtDebug>
+#include <interfaces/core/icoreproxy.h>
 #include "urlcompletionmodel.h"
 #include "core.h"
 
@@ -38,6 +40,26 @@ namespace Poshuku
 		completer->setCompletionRole (URLCompletionModel::RoleURL);
 		completer->setCompletionMode (QCompleter::UnfilteredPopupCompletion);
 		setCompleter (completer);
+
+		ClearButton_ = new QToolButton (this);
+		ClearButton_->setIcon (Core::Instance ().GetProxy ()->GetIcon ("clearall"));
+		ClearButton_->setCursor (Qt::PointingHandCursor);
+		ClearButton_->setStyleSheet ("QToolButton { border: none; padding: 0px; }");
+		ClearButton_->hide ();
+
+		int frameWidth = style ()->pixelMetric (QStyle::PM_DefaultFrameWidth);
+		setStyleSheet (QString ("QLineEdit { padding-right: %1px; } ")
+				.arg (ClearButton_->sizeHint ().width () + frameWidth + 1));
+		QSize msz = minimumSizeHint ();
+		setMinimumSize (qMax (msz.width (),
+					ClearButton_->sizeHint ().height () + frameWidth * 2 + 2),
+				qMax (msz.height (),
+					ClearButton_->sizeHint ().height () + frameWidth * 2 + 2));
+
+		connect (ClearButton_,
+				SIGNAL (clicked ()),
+				this,
+				SLOT (clear ()));
 
 		connect (completer,
 				SIGNAL (activated (const QModelIndex&)),
@@ -85,10 +107,20 @@ namespace Poshuku
 		}
 	}
 
+	void ProgressLineEdit::resizeEvent (QResizeEvent*)
+	{
+		QSize sz = ClearButton_->sizeHint ();
+		int frameWidth = style ()->pixelMetric (QStyle::PM_DefaultFrameWidth);
+		ClearButton_->move (rect ().right () - frameWidth - sz.width (),
+				(rect ().bottom () + 1 - sz.height ())/2);
+	}
+
 	void ProgressLineEdit::textChanged (const QString& text)
 	{
+		ClearButton_->setVisible (!text.isEmpty ());
+
 		if (!text.isEmpty () && PreviousUrl_.isEmpty ())
-			PreviousUrl_ = text; 
+			PreviousUrl_ = text;
 	}
 }
 }
