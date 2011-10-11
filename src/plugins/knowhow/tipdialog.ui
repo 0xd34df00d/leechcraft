@@ -67,6 +67,13 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>TipEdit_</tabstop>
+  <tabstop>DontShow_</tabstop>
+  <tabstop>Backward_</tabstop>
+  <tabstop>Forward_</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
