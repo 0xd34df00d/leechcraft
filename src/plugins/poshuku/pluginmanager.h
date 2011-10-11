@@ -29,7 +29,7 @@
 #include "interfaces/poshukutypes.h"
 #include "interfaces/iwebplugin.h"
 
-class QWebView;
+class QGraphicsWebView;
 
 namespace LeechCraft
 {
@@ -543,14 +543,14 @@ namespace Poshuku
 		 *
 		 * @param proxy The standard hook proxy object.
 		 * @param menu The menu that's going to be filled.
-		 * @param webView The QWebView the menu is associated with.
+		 * @param webView The QGraphicsWebView the menu is associated with.
 		 * @param browserWidget The browser widget with the webView.
 		 *
 		 * @sa hookMoreMenuFillEnd()
 		 */
 		void hookMoreMenuFillBegin (LeechCraft::IHookProxy_ptr proxy,
 				QMenu *menu,
-				QWebView *webView,
+				QGraphicsWebView *webView,
 				QObject *browserWidget);
 
 		/** @brief Called when the "More" menu ends filling.
@@ -561,14 +561,14 @@ namespace Poshuku
 		 *
 		 * @param proxy The standard hook proxy object.
 		 * @param menu The menu that's finishing being filled.
-		 * @param webView The QWebView the menu is associated with.
+		 * @param webView The QGraphicsWebView the menu is associated with.
 		 * @param browserWidget The browser widget containing webView.
 		 *
 		 * @sa hookMoreMenuFillBegin()
 		 */
 		void hookMoreMenuFillEnd (LeechCraft::IHookProxy_ptr proxy,
 				QMenu *menu,
-				QWebView *webView,
+				QGraphicsWebView *webView,
 				QObject *browserWidget);
 
 		/** @brief Called when a page finishes loading and user
@@ -578,7 +578,7 @@ namespace Poshuku
 		 * IHookProxy::SetValue() with name "ok" and value of type bool.
 		 *
 		 * @param proxy The standard hook proxy object.
-		 * @param view The QWebView whose contents finished loading.
+		 * @param view The QGraphicsWebView whose contents finished loading.
 		 * @param browserWidget The browser widget containing the view.
 		 * @param ok Whether the page finished loading successfully.
 		 * @param notifyWhenFinished Whether user chose to be notified
@@ -590,7 +590,7 @@ namespace Poshuku
 		 * of loading them from an URL.
 		 */
 		void hookNotifyLoadFinished (LeechCraft::IHookProxy_ptr proxy,
-				QWebView *view,
+				QGraphicsWebView *view,
 				QObject *browserWidget,
 				bool ok,
 				bool notifyWhenFinished,
@@ -711,7 +711,7 @@ namespace Poshuku
 
 		void hookTabAdded (LeechCraft::IHookProxy_ptr proxy,
 				QObject *browserWidget,
-				QWebView *view,
+				QGraphicsWebView *view,
 				const QUrl& url);
 
 		void hookTabRemoveRequested (LeechCraft::IHookProxy_ptr proxy,
@@ -791,7 +791,7 @@ namespace Poshuku
 		 * multiple times for the given menu.
 		 *
 		 * @param proxy The standard hook proxy object.
-		 * @param view The QWebView for which the context menu is
+		 * @param view The QGraphicsWebView for which the context menu is
 		 * requested.
 		 * @param event The event object that triggered the context
 		 * menu.
@@ -801,7 +801,7 @@ namespace Poshuku
 		 * @param menuBuildStage The stage of the menu being built.
 		 */
 		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr proxy,
-				QWebView *view,
+				QGraphicsWebView *view,
 				QContextMenuEvent *event,
 				const QWebHitTestResult& hitTestResult,
 				QMenu *menu,

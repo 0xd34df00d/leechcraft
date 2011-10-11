@@ -34,7 +34,7 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "browserwidget.h"
 
-class QWebView;
+class QGraphicsWebView;
 
 namespace LeechCraft
 {
@@ -97,7 +97,7 @@ namespace Poshuku
 
 		void Open (const QString&);
 		IWebWidget* GetWidget () const;
-		QWebView* CreateWindow ();
+		QGraphicsWebView* CreateWindow ();
 
 		void SetShortcut (const QString&, const QKeySequences_t&);
 		QMap<QString, ActionInfo> GetActionInfo () const;

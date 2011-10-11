@@ -24,7 +24,7 @@
 #include <QMap>
 #include <QString>
 #include <QStringList>
-#include <QWebView>
+#include <QGraphicsWebView>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/core/ihookproxy.h>
@@ -63,7 +63,7 @@ namespace PinTab
 	private:
 		void ChangeTabTitle (QObject *widget, const QString& title);
 		void SetPinned (QObject *widget, QAction *action, bool pinned);
-		QWebView* GetWebView (QObject *browserWidget);
+		QGraphicsWebView* GetWebView (QObject *browserWidget);
 		void SavePinned ();
 	private slots:
 		void handlePinTabTriggered ();
@@ -71,7 +71,7 @@ namespace PinTab
 	public slots:
 		void hookMoreMenuFillEnd (LeechCraft::IHookProxy_ptr proxy,
 			QMenu *menu,
-			QWebView *webView,
+			QGraphicsWebView *webView,
 			QObject *browserWidget);
 		void hookTabBarContextMenuActions (LeechCraft::IHookProxy_ptr proxy,
 			const QObject *browserWidget) const;
@@ -79,7 +79,7 @@ namespace PinTab
 			QObject *browserWidget);
 		void hookTabAdded (LeechCraft::IHookProxy_ptr,
 			QObject *browserWidget,
-			QWebView *view,
+			QGraphicsWebView *view,
 			const QUrl& url);
 
 
