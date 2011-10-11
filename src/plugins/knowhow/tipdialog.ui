@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>486</width>
-    <height>294</height>
+    <height>265</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -33,6 +33,13 @@
       </spacer>
      </item>
      <item>
+      <widget class="QCheckBox" name="DontShow_">
+       <property name="text">
+        <string>Don't show this again</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="Backward_">
        <property name="text">
         <string>Previous</string>
@@ -43,30 +50,6 @@
       <widget class="QPushButton" name="Forward_">
        <property name="text">
         <string>Next</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
-      <spacer name="horizontalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="DontShow_">
-       <property name="text">
-        <string>Don't show this again</string>
        </property>
       </widget>
      </item>
