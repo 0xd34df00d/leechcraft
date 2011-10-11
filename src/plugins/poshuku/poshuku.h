@@ -30,6 +30,7 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/ihaveshortcuts.h>
+#include <interfaces/ihavediaginfo.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "browserwidget.h"
 
@@ -46,11 +47,20 @@ namespace Poshuku
 					, public IHaveSettings
 					, public IEntityHandler
 					, public IHaveShortcuts
+					, public IHaveDiagInfo
 					, public IWebBrowser
 					, public IActionsExporter
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs IHaveSettings IEntityHandler IPluginReady IWebBrowser IHaveShortcuts IActionsExporter)
+		Q_INTERFACES (IInfo
+				IHaveTabs
+				IHaveSettings
+				IEntityHandler
+				IPluginReady
+				IWebBrowser
+				IHaveShortcuts
+				IHaveDiagInfo
+				IActionsExporter)
 
 		QMenu *ToolMenu_;
 		QAction *ImportXbel_;
@@ -73,7 +83,7 @@ namespace Poshuku
 		QStringList Uses () const;
 		void SetProvider (QObject*, const QString&);
 		QIcon GetIcon () const;
-		
+
 		TabClasses_t GetTabClasses () const;
 		void TabOpenRequested (const QByteArray&);
 
@@ -91,6 +101,8 @@ namespace Poshuku
 
 		void SetShortcut (const QString&, const QKeySequences_t&);
 		QMap<QString, ActionInfo> GetActionInfo () const;
+
+		QString GetDiagInfoString () const;
 
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
 	private:

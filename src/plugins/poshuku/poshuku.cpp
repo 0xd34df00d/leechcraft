@@ -28,6 +28,8 @@
 #include <QInputDialog>
 #include <QMenu>
 #include <QMainWindow>
+#include <qwebpage.h>
+#include <qwebkitversion.h>
 #include <QtDebug>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
@@ -320,6 +322,13 @@ namespace Poshuku
 		result ["EACheckFavorites_"] = ActionInfo (CheckFavorites_->text (),
 				QKeySequence (), CheckFavorites_->icon ());
 		return result;
+	}
+
+	QString Poshuku::GetDiagInfoString () const
+	{
+		return QString ("Built with QtWebKit %1, running with QtWebKit %2")
+				.arg (QTWEBKIT_VERSION_STR)
+				.arg (qWebKitVersion ());
 	}
 
 	QList<QAction*> Poshuku::GetActions (ActionsEmbedPlace place) const
