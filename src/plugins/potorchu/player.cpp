@@ -139,6 +139,11 @@ namespace LeechCraft
 			float poss = (float) pos / (float) pos_slider_max;
 			libvlc_media_player_set_position (MP_, poss);
 		}
+		
+		void Player::playItem (int item)
+		{
+			libvlc_media_list_player_play_item_at_index (MLP_, item);
+		}
 	}
 }
 

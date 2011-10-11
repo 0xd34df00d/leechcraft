@@ -62,6 +62,7 @@ namespace LeechCraft
 			void stop ();
 			void pause ();
 			void play ();
+			void playItem (int item);
 			void next ();
 			void prev ();
 		signals:

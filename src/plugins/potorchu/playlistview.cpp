@@ -39,11 +39,6 @@ namespace LeechCraft
 			PlayListModel_ = new PlayListModel (VLCInstance, this);
 		}
 		
-		void PlayListView::nextFile ()
-		{
-			//
-		}
-		
 		libvlc_media_list_t *PlayListView::GetMediaList ()
 		{
 			return PlayListModel_->GetPlayList ();
@@ -56,7 +51,7 @@ namespace LeechCraft
 		
 		void PlayListView::handleDoubleClicked (const QModelIndex& index)
 		{
-			//
+			emit playItem (index.row ());
 		}
 		
 		void PlayListView::removeSelectedRows ()

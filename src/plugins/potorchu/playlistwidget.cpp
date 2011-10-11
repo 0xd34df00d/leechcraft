@@ -41,13 +41,9 @@ namespace LeechCraft
 			ActionBar_->setToolButtonStyle (Qt::ToolButtonIconOnly);
 			ActionBar_->setIconSize (QSize (16, 16));
 			connect (Ui_->PlayListView_,
-					SIGNAL (play (QString)),
+					SIGNAL (playItem (int)),
 					this,
-					SIGNAL (play (QString)));
-			connect (this,
-					SIGNAL (nextFile ()),
-					Ui_->PlayListView_,
-					SLOT (nextFile ()));
+					SIGNAL (playItem (int)));
 		}
 		
 		PlayListWidget::~PlayListWidget ()

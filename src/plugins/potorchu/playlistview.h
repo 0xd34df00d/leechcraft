@@ -39,11 +39,10 @@ namespace LeechCraft
 			libvlc_media_list_t *GetMediaList ();
 		public slots:
 			void removeSelectedRows ();
-			void nextFile ();
 		private slots:
 			void handleDoubleClicked (const QModelIndex& index);
 		signals:
-			void play (const QString& file);
+			void playItem (int item);
 		};
 	}
 }

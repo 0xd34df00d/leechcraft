@@ -55,23 +55,16 @@ namespace LeechCraft
 			connect (Ui_->PositionSlider_,
 					SIGNAL (sliderMoved (int)),
 					Ui_->Player_,
-					SLOT (changePosition (int)));
+					SLOT (setPosition (int)));
 			connect (Ui_->VolumeSlider_,
 					SIGNAL (sliderMoved (int)),
 					Ui_->Player_,
-					SLOT (changeVolume (int)));
+					SLOT (setVolume (int)));
+
 			connect (Ui_->PlayListWidget_,
-					SIGNAL (play (QString)),
+					SIGNAL (playItem (int)),
 					Ui_->Player_,
-					SLOT (playFile (QString)));
-			connect (this,
-					SIGNAL (nextFile ()),
-					Ui_->PlayListWidget_,
-					SIGNAL (nextFile ()));
-			connect (Ui_->PlayListWidget_,
-					SIGNAL (play (QString)),
-					this,
-					SLOT (handlePlay ()));
+					SLOT (playItem (int)));
 		}
 		
 		void PotorchuWidget::Init (ICoreProxy_ptr proxy)
@@ -106,6 +99,14 @@ namespace LeechCraft
 					SIGNAL (pause ()),
 					Ui_->Player_,
 					SLOT (pause ()));
+			connect (actionNext,
+					SIGNAL (triggered (bool)),
+					Ui_->Player_,
+					SLOT (next ()));
+			connect (actionPrev,
+					SIGNAL (triggered (bool)),
+					Ui_->Player_,
+					SLOT (prev ()));
 			
 			QAction *actionOpenFile = new QAction (proxy->GetIcon ("folder"),
 					tr ("Open File"), this);
@@ -152,7 +153,7 @@ namespace LeechCraft
 			Ui_->PositionSlider_->setValue (Ui_->Player_->Position ());
 			
 			if (Ui_->Player_->MediaPosition () > 0.996)
-				emit nextFile ();
+				Ui_->Player_->next ();
 		}
 
 		
