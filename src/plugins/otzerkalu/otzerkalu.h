@@ -17,7 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-
 #ifndef PLUGINS_OTZERKALU_OTZERKALU_H
 #define PLUGINS_OTZERKALU_OTZERKALU_H
 #include <QObject>
@@ -60,13 +59,13 @@ namespace Otzerkalu
 		EntityTestHandleResult CouldHandle (const Entity& entity) const;
 		void Handle (Entity entity);
 		QAbstractItemModel* GetRepresentation () const;
-
+	private slots:
+		void handleFileDownloaded (int id, int count);
+		void handleMirroringFinished (int id);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&,
 				int*, QObject**);
-	private slots:
-		void handleFileDownloaded (int id, int count);
 	};
 }
 }
