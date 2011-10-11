@@ -45,6 +45,8 @@ namespace LeechCraft
 			Ui_->setupUi (this);
 			Ui_->Player_->setFrameStyle (QFrame::Box | QFrame::Sunken);
 			Ui_->CommandFrame_->setFrameStyle (QFrame::NoFrame);
+			Ui_->PlayListWidget_->GetPlayListView ()->Init (Ui_->Player_->Instance ());
+			Ui_->Player_->Init (Ui_->PlayListWidget_->GetPlayListView ()->GetMediaList ());
 			Ui_->PlayListWidget_->setVisible (false);
 			connect (Ui_->Player_,
 					SIGNAL (timeout ()),
@@ -146,8 +148,8 @@ namespace LeechCraft
 		
 		void PotorchuWidget::updateInterface ()
 		{
-			Ui_->VolumeSlider_->setValue (Ui_->Player_->GetVolume ());
-			Ui_->PositionSlider_->setValue (Ui_->Player_->GetPosition ());
+			Ui_->VolumeSlider_->setValue (Ui_->Player_->Volume ());
+			Ui_->PositionSlider_->setValue (Ui_->Player_->Position ());
 			
 			if (Ui_->Player_->MediaPosition () > 0.996)
 				emit nextFile ();
@@ -191,7 +193,7 @@ namespace LeechCraft
 			if (dialog->exec () == QDialog::Accepted)
 			{
 				if (dialog->IsUrlValid ())
-					Ui_->Player_->playFile (dialog->GetUrl ().toAscii ());
+					Ui_->PlayListWidget_->GetPlayListView ()->addItem (dialog->GetUrl ());
 				else
 					QMessageBox::warning (this,
 							tr ("The URL's not valid"),
@@ -201,7 +203,7 @@ namespace LeechCraft
 		
 		void PotorchuWidget::handleOpenMediaContent (const QString& val)
 		{
-			Ui_->Player_->playFile (val.toAscii ());
+			Ui_->PlayListWidget_->GetPlayListView ()->addItem (val);
 		}
 
 		
@@ -210,7 +212,7 @@ namespace LeechCraft
 			const QString& fileName = QFileDialog::getOpenFileName (this,
 					tr ("Choose file"), QDir::homePath ());
 			if (!fileName.isEmpty ())
-				Ui_->Player_->playFile (fileName);
+				Ui_->PlayListWidget_->GetPlayListView ()->addItem (fileName);
 		}
 		
 		void PotorchuWidget::handlePlaylist ()

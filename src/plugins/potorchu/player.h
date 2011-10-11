@@ -27,7 +27,8 @@
 #include <QPushButton>
 #include <QFrame>
 #include <vlc/vlc.h>
-
+#include <vlc/libvlc_media_list.h>
+#include <vlc/libvlc_media_list_player.h>
 
 namespace LeechCraft
 {
@@ -39,25 +40,30 @@ namespace LeechCraft
 			QTimer *Poller_;
 			bool IsPlaying_;
 			libvlc_instance_t *VLCInstance_;
+			libvlc_media_list_player_t *MLP_;
+			libvlc_media_list_t *ML_;
 			libvlc_media_player_t *MP_;
-			libvlc_media_t *M_;
 		public:
-			Player (QWidget *parent = 0, Qt::WindowFlags f = 0);
+			Player (QWidget *parent = 0);
+			void Init (libvlc_media_list_t *ML);
 			virtual ~Player ();
+			
+			libvlc_instance_t *Instance ();
 			
 			QString GetMeta (libvlc_meta_t meta) const;
 			
-			int GetVolume () const;
-			int GetPosition () const;
+			int Volume () const;
+			int Position () const;
 			float MediaPosition () const;
-			bool IsPlayed () const;
+			bool IsPlaying () const;
 		public slots:
-			void playFile (const QString& file);
-			void changeVolume (int newVolume);
-			void changePosition (int newPosition);
+			void setVolume (int vol);
+			void setPosition (int pos);
 			void stop ();
 			void pause ();
 			void play ();
+			void next ();
+			void prev ();
 		signals:
 			void timeout ();
 		};

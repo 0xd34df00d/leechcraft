@@ -34,7 +34,9 @@ namespace LeechCraft
 			PlayListModel *PlayListModel_;
 		public:
 			PlayListView (QWidget *parent = 0);
+			void Init (libvlc_instance_t *VLCInstance);
 			void addItem (const QString& item);
+			libvlc_media_list_t *GetMediaList ();
 		public slots:
 			void removeSelectedRows ();
 			void nextFile ();

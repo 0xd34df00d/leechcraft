@@ -25,7 +25,7 @@ namespace LeechCraft
 {
 	namespace Potorchu
 	{
-		PlayListModel::PlayListModel (QObject* parent, libvlc_instance_t *VLCInstance)
+		PlayListModel::PlayListModel (libvlc_instance_t *VLCInstance, QObject* parent)
 		: QStringListModel (parent)
 		, VLCInstance_ (VLCInstance)
 		{
@@ -44,9 +44,7 @@ namespace LeechCraft
 		
 		bool PlayListModel::setData (const QModelIndex& index, const QVariant& value, int role)
 		{
-			libvlc_media_list_set_media (ML_,
-					libvlc_media_new_path (VLCInstance_, value.toString ().toAscii ()),
-					index.row ());
+			return true;
 		}
 		
 		int PlayListModel::rowCount (const QModelIndex& parent) const
@@ -63,7 +61,11 @@ namespace LeechCraft
 		{
 			libvlc_media_list_remove_index (ML_, row);
 		}
-			
+		
+		void PlayListModel::addItem (const QString& item)
+		{
+			libvlc_media_list_add_media (ML_, libvlc_media_new_path (VLCInstance_, item.toAscii ()));
+		}
 		
 		Qt::ItemFlags PlayListModel::flags (const QModelIndex& index) const
 		{

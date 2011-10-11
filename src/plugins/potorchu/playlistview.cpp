@@ -25,7 +25,6 @@ namespace LeechCraft
 	{
 		PlayListView::PlayListView (QWidget *parent)
 		: QListView (parent)
-		, PlayListModel_ (new PlayListModel (this))
 		{
 			setModel (PlayListModel_);
 			setModelColumn (0);
@@ -35,23 +34,29 @@ namespace LeechCraft
 					SLOT (handleDoubleClicked (QModelIndex)));
 		}
 		
+		void PlayListView::Init (libvlc_instance_t *VLCInstance)
+		{
+			PlayListModel_ = new PlayListModel (VLCInstance, this);
+		}
+		
 		void PlayListView::nextFile ()
 		{
-			const QModelIndex& index = currentIndex ();
-			emit play (PlayListModel_->index (index.row () + 1).data (Qt::EditRole).toString ());
-			setCurrentIndex (PlayListModel_->index (index.row () + 1));
+			//
+		}
+		
+		libvlc_media_list_t *PlayListView::GetMediaList ()
+		{
+			return PlayListModel_->GetPlayList ();
 		}
 
 		void PlayListView::addItem (const QString& item)
 		{
-			const int rowc = PlayListModel_->rowCount ();
-			PlayListModel_->insertRows (rowc, 1);
-			PlayListModel_->setData (PlayListModel_->index (rowc, 0), item);
+			PlayListModel_->addItem (item);
 		}
 		
 		void PlayListView::handleDoubleClicked (const QModelIndex& index)
 		{
-			emit play (index.data (Qt::EditRole).toString ());
+			//
 		}
 		
 		void PlayListView::removeSelectedRows ()

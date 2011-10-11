@@ -23,6 +23,7 @@
 #include <QMenu>
 #include <QFileDialog>
 #include <QFileInfo>
+#include <vlc/vlc.h>
 
 #include "chooseurldialog.h"
 
@@ -38,7 +39,7 @@ namespace LeechCraft
 			ActionBar_ = new QToolBar (Ui_->ActionFrame_);
 			Ui_->ActionFrame_->setFrameStyle (QFrame::NoFrame);
 			ActionBar_->setToolButtonStyle (Qt::ToolButtonIconOnly);
-			ActionBar_->setIconSize (QSize (13, 13));
+			ActionBar_->setIconSize (QSize (16, 16));
 			connect (Ui_->PlayListView_,
 					SIGNAL (play (QString)),
 					this,

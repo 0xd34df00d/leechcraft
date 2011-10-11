@@ -27,19 +27,24 @@ namespace LeechCraft
 	namespace Potorchu
 	{
 		const int pos_slider_max = 10000;
-		Player::Player (QWidget *parent, Qt::WindowFlags f)
-		: QFrame (parent, f)
-		, IsPlaying_ (false)
-		{
-			const char * const vlc_args[] = {
+		const char * const vlc_args[] = {
 					"-I", "dummy",
 					"--ignore-config",
 					"--extraintf=logger",
-					"--verbose=2"};
-			Poller_ = new QTimer (this);
+					"--verbose=2"
+			};
 			
+		Player::Player (QWidget *parent)
+		: QFrame (parent)
+		, IsPlaying_ (false)
+		, ML_ (NULL)
+		, Poller_ (new QTimer (this))
+		{
 			VLCInstance_ = libvlc_new (sizeof (vlc_args) / sizeof (vlc_args[0]), vlc_args);
+			MLP_ = libvlc_media_list_player_new (VLCInstance_);
 			MP_ = libvlc_media_player_new (VLCInstance_);
+			libvlc_media_list_player_set_media_player (MLP_, MP_);
+			
 			connect (Poller_,
 					SIGNAL (timeout ()),
 					this,
@@ -47,92 +52,92 @@ namespace LeechCraft
 			Poller_->start (100);
 		}
 		
+		void Player::Init (libvlc_media_list_t *ML)
+		{
+			ML_ = ML;
+			libvlc_media_list_player_set_media_list (MLP_, ML);
+		}
+		
+		libvlc_instance_t *Player::Instance ()
+		{
+			return VLCInstance_;
+		}
+		
 		Player::~Player ()
 		{
-			libvlc_media_player_stop (MP_);
+			libvlc_media_list_player_stop (MLP_);
+			libvlc_media_list_player_release (MLP_);
 			libvlc_media_player_release (MP_);
 			libvlc_release (VLCInstance_);
 		}
 		
-		void Player::playFile (const QString& file)
+		bool Player::IsPlaying () const
 		{
-			M_ = libvlc_media_new_path (VLCInstance_, file.toAscii ());
-			libvlc_media_player_set_media (MP_, M_);
-			
-			libvlc_media_player_set_xwindow (MP_, winId ());
-			
-			libvlc_media_player_play (MP_);
-			IsPlaying_ = true;
-		}
-		
-		bool Player::IsPlayed () const
-		{
-			if(!IsPlaying_)
-				return false;
-			libvlc_media_t *curMedia = libvlc_media_player_get_media (MP_);
-			return (curMedia != NULL);
+			return libvlc_media_list_player_is_playing (MLP_);
 		}
 
-		int Player::GetVolume () const
+		int Player::Volume () const
 		{
-			if (!IsPlayed ())
-				return -1;
-			int volume = libvlc_audio_get_volume (MP_);
-			return volume;
+			return libvlc_audio_get_volume (MP_);
 		}
 		
 		QString Player::GetMeta (libvlc_meta_t meta) const
 		{
-			libvlc_media_parse (M_);
-			return QString (libvlc_media_get_meta (M_, meta));
+			return QString ();
 		}
 		
-		int Player::GetPosition () const
+		int Player::Position () const
 		{
-			if (!IsPlayed ())
+			if (!IsPlaying ())
 				return -1;
 			float pos = libvlc_media_player_get_position (MP_);
-			int siderPos = (int)(pos * (float)(pos_slider_max));
-			return siderPos;
+			return (int)(pos * (float)(pos_slider_max));
 		}
 		
 		float Player::MediaPosition () const
 		{
-			if (!IsPlayed ())
+			if (!IsPlaying ())
 				return -1;
 			return libvlc_media_player_get_position (MP_);
 		}
 		
 		void Player::pause ()
 		{
-			libvlc_media_player_pause (MP_);
+			libvlc_media_list_player_pause (MLP_);
 		}
 		
 		void Player::play ()
 		{
-			libvlc_media_player_play (MP_);
+			libvlc_media_list_player_play (MLP_);
 		}
 
-		
 		void Player::stop ()
 		{
-			libvlc_media_player_stop (MP_);
+			libvlc_media_list_player_stop (MLP_);
 		}
 
-		
-		void Player::changeVolume (int newVolume)
+		void Player::next ()
 		{
-			libvlc_audio_set_volume (MP_, newVolume);
+			libvlc_media_list_player_next (MLP_);
+		}
+
+		void Player::prev ()
+		{
+			libvlc_media_list_player_previous (MLP_);
 		}
 		
-		void Player::changePosition (int newPosition)
+		void Player::setVolume (int vol)
 		{
-			libvlc_media_t *curMedia = libvlc_media_player_get_media (MP_);
-			if (curMedia == NULL)
+			libvlc_audio_set_volume (MP_, vol);
+		}
+		
+		void Player::setPosition (int pos)
+		{
+			libvlc_media_t *m = libvlc_media_list_media (ML_);
+			if (m == NULL)
 				return;
-			
-			float pos = (float)(newPosition) / (float) pos_slider_max;
-			libvlc_media_player_set_position (MP_, pos);
+			float poss = (float) pos / (float) pos_slider_max;
+			libvlc_media_player_set_position (MP_, poss);
 		}
 	}
 }
