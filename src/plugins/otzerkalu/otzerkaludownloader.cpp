@@ -30,7 +30,7 @@ namespace Otzerkalu
 	DownloadParams::DownloadParams ()
 	{
 	}
-	
+
 	DownloadParams::DownloadParams (const QUrl& downloadUrl,
 			const QString& destDir, int recLevel, bool fromOtherSite)
 	: DownloadUrl_ (downloadUrl)
@@ -39,7 +39,7 @@ namespace Otzerkalu
 	, FromOtherSite_ (fromOtherSite)
 	{
 	}
-	
+
 	namespace
 	{
 		Entity GetEntity (const QUrl& url, const QString& filename)
@@ -57,7 +57,7 @@ namespace Otzerkalu
 	FileData::FileData ()
 	{
 	}
-	
+
 	FileData::FileData (const QUrl& url,
 			const QString& filename, int recLevel)
 	: Url_ (url)
@@ -74,7 +74,7 @@ namespace Otzerkalu
 	, ID_ (id)
 	{
 	}
-	
+
 	QString OtzerkaluDownloader::GetLastDownloaded () const
 	{
 		return DownloadedFiles_.isEmpty () ? QString () : DownloadedFiles_.last ();
@@ -85,7 +85,7 @@ namespace Otzerkalu
 		//Let's download the first URL
 		Download (Param_.DownloadUrl_, Param_.RecLevel_);
 	}
-	
+
 	void OtzerkaluDownloader::HandleProvider (QObject *provider, int id,
 			const QUrl& url, const QString& filename, int recLevel)
 	{
@@ -101,12 +101,12 @@ namespace Otzerkalu
 				SLOT (handleJobFinished (int)),
 				Qt::UniqueConnection);
 	}
-	
+
 	int OtzerkaluDownloader::FilesCount () const
 	{
 		return DownloadedFiles_.count ();
 	}
-	
+
 	QList<QUrl> OtzerkaluDownloader::CSSParser (const QString& data) const
 	{
 		QRegExp UrlCSS ("(?s).*?:\\s*url\\s*\\((.*?)\\).*");
@@ -122,7 +122,7 @@ namespace Otzerkalu
 		}
 		return urlStack;
 	}
-	
+
 	QString OtzerkaluDownloader::CSSUrlReplace (const QString& value, const FileData& data)
 	{
 		const QList<QUrl>& urlStack = CSSParser (value);
@@ -135,7 +135,7 @@ namespace Otzerkalu
 		}
 		return d;
 	}
-	
+
 	void OtzerkaluDownloader::handleJobFinished (int id)
 	{
 		qDebug () << Q_FUNC_INFO << "Download finished";
@@ -181,15 +181,16 @@ namespace Otzerkalu
 				styleItr != styleColl.end (); ++styleItr)
 			(*styleItr).setInnerXml (CSSUrlReplace ((*styleItr).toInnerXml (), data));
 
-		if (!UrlCount_)
-			emit gotEntity (Util::MakeNotification (tr ("Download complete"),
-					tr ("Download complete %1")
-						.arg (Param_.DownloadUrl_.toString ()),
-					PInfo_));
 		if (haveLink)
 			WriteData (filename, page.mainFrame ()->toHtml ());
+
+		if (!UrlCount_)
+			emit gotEntity (Util::MakeNotification ("Otzerkalu",
+					tr ("Finished mirroring <em>%1</em>.")
+						.arg (Param_.DownloadUrl_.toString ()),
+					PInfo_));
 	}
-	
+
 	bool OtzerkaluDownloader::HTMLReplace (QWebElementCollection::iterator element,
 			const FileData& data)
 	{
@@ -220,10 +221,10 @@ namespace Otzerkalu
 		const QString& name = fi.fileName ();
 		const QString& path = Param_.DestDir_ + '/' + url.host () +
 				fi.path ();
-				
+
 		//If file name's empty, rename it to 'index.html'
 		const QString& file = path + '/' + (name.isEmpty () ? "index.html" : name);
-		
+
 		//If file's not a html file, add .html tail to the name
 		const QString& filename = url.hasQuery () ? file + "?" +
 				url.encodedQuery () + ".html" : file;
@@ -260,7 +261,7 @@ namespace Otzerkalu
 		}
 		++UrlCount_;
 		HandleProvider (pr, id, url, filename, recLevel);
-		
+
 		return filename;
 	}
 
