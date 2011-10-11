@@ -50,11 +50,6 @@ namespace ReadItLater
 		return ParentService_;
 	}
 
-	IAccount::AuthType ReadItLaterAccount::GetAuthType () const
-	{
-		return IAccount::ATHttpAuth;
-	}
-
 	QByteArray ReadItLaterAccount::GetAccountID () const
 	{
 		return QString ("org.LeechCraft.Poshuku.OnlineBookmarks.ReadItLater.%1")
@@ -107,10 +102,10 @@ namespace ReadItLater
 		Q_FOREACH (const QVariant& var, list)
 		if (!DownloadedBookmarks_.contains (var))
 			diff << var;
-		
+
 		return diff;
 	}
-	
+
 	void ReadItLaterAccount::AppendDownloadedBookmarks (const QVariantList& bookmarks)
 	{
 		Q_FOREACH (const QVariant& var, bookmarks)
@@ -167,7 +162,7 @@ namespace ReadItLater
 		return acc;
 	}
 
-	
+
 }
 }
 }

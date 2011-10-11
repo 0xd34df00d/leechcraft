@@ -46,12 +46,8 @@ namespace OnlineBookmarks
 		QStandardItemModel *AccountsModel_;
 		bool Scheduled_;
 		QWidget *LastWidget_;
+		QHash<QAction*, IBookmarksService*> Action2Service_;
 	public:
-		enum ServiceObject
-		{
-			RServiceObject = Qt::UserRole + 1
-		};
-
 		AccountsSettings ();
 		~AccountsSettings ();
 
@@ -65,12 +61,13 @@ namespace OnlineBookmarks
 		void accept ();
 	private slots:
 		void resizeColumns ();
-		void on_Add__toggled (bool);
+
 		void on_Delete__clicked ();
 		void on_Auth__clicked ();
 		void on_Register__clicked ();
 		void on_AccountsView__clicked (const QModelIndex&);
-		void on_Services__currentIndexChanged (int);
+		void on_AddAccount__triggered (QAction*);
+		void on_Close__clicked ();
 
 		void addAccount (QObjectList);
 	signals:

@@ -112,7 +112,7 @@ namespace OnlineBookmarks
 
 	void Plugin::hookMoreMenuFillEnd (IHookProxy_ptr, QMenu *menu, QWebView*, QObject*)
 	{
-		QMenu *menuBookmarksSyn = menu->addMenu (tr ("Bookmarks Sync"));
+		QMenu *menuBookmarksSyn = menu->addMenu (tr ("Sync bookmarks"));
 
 		QAction *sync = menuBookmarksSyn->addAction (tr ("Sync"));
 		sync->setProperty ("ActionIcon", "poshuku_onlinebookmarks_sync");
