@@ -20,25 +20,50 @@
 #include "playlistmodel.h"
 #include "xmlsettingsmanager.h"
 
+
 namespace LeechCraft
 {
 	namespace Potorchu
 	{
-		PlayListModel::PlayListModel (QObject* parent)
+		PlayListModel::PlayListModel (QObject* parent, libvlc_instance_t *VLCInstance)
 		: QStringListModel (parent)
+		, VLCInstance_ (VLCInstance)
 		{
-			const char * const vlc_args[] = {
-					"-I", "dummy",
-					"--ignore-config",
-					"--extraintf=logger",
-					"--verbose=2"};
-			VLCInstance_ = libvlc_new (sizeof (vlc_args) / sizeof (vlc_args[0]), vlc_args);
+			ML_ = libvlc_media_list_new (VLCInstance_);
 		}
 		
 		PlayListModel::~PlayListModel ()
 		{
-			libvlc_release (VLCInstance_);
+			libvlc_media_list_release (ML_);
 		}
+		
+		libvlc_media_list_t *PlayListModel::GetPlayList ()
+		{
+			return ML_;
+		}
+		
+		bool PlayListModel::setData (const QModelIndex& index, const QVariant& value, int role)
+		{
+			libvlc_media_list_set_media (ML_,
+					libvlc_media_new_path (VLCInstance_, value.toString ().toAscii ()),
+					index.row ());
+		}
+		
+		int PlayListModel::rowCount (const QModelIndex& parent) const
+		{
+			return libvlc_media_list_count (ML_);
+		}
+		
+		bool PlayListModel::insertRows (int row, int count, const QString& fileName)
+		{
+			libvlc_media_list_insert_media (ML_, libvlc_media_new_path (VLCInstance_, fileName.toAscii ()), row);
+		}
+		
+		bool PlayListModel::removeRows (int row, int count, const QModelIndex& parent)
+		{
+			libvlc_media_list_remove_index (ML_, row);
+		}
+			
 		
 		Qt::ItemFlags PlayListModel::flags (const QModelIndex& index) const
 		{
@@ -49,7 +74,7 @@ namespace LeechCraft
 		{
 			if (role == Qt::DisplayRole)
 			{
-				libvlc_media_t *t = libvlc_media_new_path (VLCInstance_, data (index, Qt::EditRole).toString ().toAscii ());
+				libvlc_media_t *t = libvlc_media_list_item_at_index (ML_, index.row ());
 				libvlc_media_parse (t);
 				QString temp = XmlSettingsManager::Instance ().property ("PlayListTemplate").toString ();
 				const QString& artist = QString (libvlc_media_get_meta (t, libvlc_meta_Artist));
@@ -66,7 +91,7 @@ namespace LeechCraft
 
 				return temp;
 			}
-			return QStringListModel::data (index, role);
+			return QVariant ();
 		}
 	}
 }

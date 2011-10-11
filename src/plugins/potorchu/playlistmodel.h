@@ -33,10 +33,16 @@ namespace LeechCraft
 		{
 			Q_OBJECT
 			libvlc_instance_t *VLCInstance_;
+			libvlc_media_list_t *ML_;
 		public:
-			PlayListModel (QObject *parent);
+			PlayListModel (QObject *parent, libvlc_instance_t *VLCInstance);
 			virtual ~PlayListModel ();
 			
+			libvlc_media_list_t *GetPlayList ();
+			int rowCount (const QModelIndex& parent = QModelIndex ()) const;
+			bool insertRows (int row, int count, const QString& fileName);
+			bool removeRows (int row, int count, const QModelIndex& parent = QModelIndex ());
+			bool setData (const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
 			Qt::ItemFlags flags (const QModelIndex& index) const;
 			QVariant data (const QModelIndex& index, int role = Qt::DisplayRole) const;
 		};
