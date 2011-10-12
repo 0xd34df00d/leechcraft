@@ -17,7 +17,7 @@
  **********************************************************************/
 
 #include "flashplaceholder.h"
-#include <qwebview.h>
+#include <qgraphicswebview.h>
 #include <qwebframe.h>
 #include <QFile>
 #include <QMenu>
@@ -67,10 +67,10 @@ namespace CleanWeb
 	void FlashPlaceHolder::handleLoadFlash ()
 	{
 		QWidget *parent = parentWidget ();
-		QWebView *view = 0;
+		QGraphicsWebView *view = 0;
 		while (parent)
 		{
-			if ((view = qobject_cast<QWebView*> (parent)))
+			if ((view = qobject_cast<QGraphicsWebView*> (parent)))
 				break;
 			parent = parent->parentWidget ();
 		}
@@ -114,10 +114,10 @@ namespace CleanWeb
 	void FlashPlaceHolder::handleHideFlash ()
 	{
 		QWidget *parent = parentWidget ();
-		QWebView *view = 0;
+		QGraphicsWebView *view = 0;
 		while (parent)
 		{
-			if ((view = qobject_cast<QWebView*> (parent)))
+			if ((view = qobject_cast<QGraphicsWebView*> (parent)))
 				break;
 			parent = parent->parentWidget ();
 		}

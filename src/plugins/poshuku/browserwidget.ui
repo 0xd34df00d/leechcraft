@@ -50,12 +50,9 @@
              <number>0</number>
             </property>
             <item>
-             <widget class="LeechCraft::Poshuku::CustomWebView" name="WebView_" native="true">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>1</verstretch>
-               </sizepolicy>
+             <widget class="QGraphicsView" name="WebGraphicsView_">
+              <property name="renderHints">
+               <set>QPainter::Antialiasing|QPainter::HighQualityAntialiasing|QPainter::SmoothPixmapTransform|QPainter::TextAntialiasing</set>
               </property>
              </widget>
             </item>
@@ -87,12 +84,6 @@
   </layout>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>LeechCraft::Poshuku::CustomWebView</class>
-   <extends>QWidget</extends>
-   <header>customwebview.h</header>
-   <container>1</container>
-  </customwidget>
   <customwidget>
    <class>LeechCraft::Poshuku::HideableTabWidget</class>
    <extends>QWidget</extends>

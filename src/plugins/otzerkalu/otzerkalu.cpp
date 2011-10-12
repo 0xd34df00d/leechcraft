@@ -19,8 +19,10 @@
 
 #include "otzerkalu.h"
 #include <QIcon>
+#include <QUrl>
 #include <interfaces/entitytesthandleresult.h>
 #include "otzerkaludialog.h"
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
@@ -28,6 +30,8 @@ namespace Otzerkalu
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Proxy_ = proxy;
+		RepresentationModel_ = new QStandardItemModel (this);
 	}
 
 	void Plugin::SecondInit ()
@@ -73,16 +77,27 @@ namespace Otzerkalu
 		QUrl dUrl = entity.Entity_.toUrl ();
 		if (!dUrl.isValid ())
 			return;
-		
+
 		OtzerkaluDialog dialog;
 		if (dialog.exec () != QDialog::Accepted)
 			return;
 
+		const int id = MirrorIDPool_.GetID ();
+
+		QList<QStandardItem*> row;
+		row << new QStandardItem (tr ("Mirroring %1...").arg (dUrl.toString ()));
+		row << new QStandardItem ("0/0");
+		row << new QStandardItem ();
+		RepresentationModel_->appendRow (row);
+
+		row [0]->setData (id, RMirrorId);
+
 		OtzerkaluDownloader *dl = new OtzerkaluDownloader (DownloadParams (dUrl, dialog.GetDir (),
 					dialog.GetRecursionLevel (),
 					dialog.FetchFromExternalHosts ()),
-					this);
-		
+				id,
+				this);
+
 		connect (dl,
 				SIGNAL (gotEntity (const LeechCraft::Entity&)),
 				this,
@@ -91,8 +106,47 @@ namespace Otzerkalu
 				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)),
 				this,
 				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)));
-		
+		connect (dl,
+				SIGNAL (fileDownloaded (int, int)),
+				this,
+				SLOT (handleFileDownloaded (int, int)));
+		connect (dl,
+				SIGNAL (mirroringFinished (int)),
+				this,
+				SLOT (handleMirroringFinished (int)));
+
 		dl->Begin ();
+	}
+
+	QAbstractItemModel* Plugin::GetRepresentation () const
+	{
+		return RepresentationModel_;
+	}
+
+	void Plugin::handleFileDownloaded (int id, int count)
+	{
+		for (int i = 0; i < RepresentationModel_->rowCount (); ++i)
+		{
+			if (RepresentationModel_->item (i)->data (RMirrorId).toInt () != id)
+				continue;
+
+			RepresentationModel_->item (i, 1)->setText (QString ("%1/%2").arg (count).arg ("unknown"));
+
+			return;
+		}
+	}
+
+	void Plugin::handleMirroringFinished (int id)
+	{
+		for (int i = 0; i < RepresentationModel_->rowCount (); ++i)
+		{
+			if (RepresentationModel_->item (i)->data (RMirrorId).toInt () != id)
+				continue;
+
+			qDeleteAll (RepresentationModel_->takeRow (i));
+
+			return;
+		}
 	}
 }
 }

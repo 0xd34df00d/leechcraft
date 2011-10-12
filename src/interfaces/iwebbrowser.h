@@ -102,7 +102,7 @@ public:
 	 */
 	virtual IWebWidget* GetWidget () const = 0;
 
-	virtual QWebView* CreateWindow () = 0;
+	//virtual QWebView* CreateWindow () = 0;
 
 	virtual ~IWebBrowser () {}
 };

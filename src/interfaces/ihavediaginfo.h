@@ -16,27 +16,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_IBROWSERWIDGET_H
-#define PLUGINS_POSHUKU_IBROWSERWIDGET_H
+#ifndef INTERFACES_IDIAGINFO_H
+#define INTERFACES_IDIAGINFO_H
+#include <QtPlugin>
 
-class QWebView;
-class QLineEdit;
+class QString;
 
-namespace LeechCraft
+class IHaveDiagInfo
 {
-namespace Poshuku
-{
-	class IBrowserWidget
-	{
-	public:
-		virtual ~IBrowserWidget () {}
+public:
+	virtual ~IHaveDiagInfo () {}
 
-		virtual QLineEdit* GetURLEdit () const = 0;
-	};
-}
-}
+	virtual QString GetDiagInfoString () const = 0;
+};
 
-Q_DECLARE_INTERFACE (LeechCraft::Poshuku::IBrowserWidget,
-		"org.Deviant.LeechCraft.Poshuku.IBrowserWidget/1.0");
+Q_DECLARE_INTERFACE (IHaveDiagInfo, "org.Deviant.LeechCraft.IHaveDiagInfo/1.0");
 
 #endif

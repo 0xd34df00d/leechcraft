@@ -168,7 +168,7 @@ namespace CleanWeb
 	}
 
 	void CleanWeb::hookWebViewContextMenu (IHookProxy_ptr,
-			QWebView *view,
+			QGraphicsWebView *view,
 			QContextMenuEvent*,
 			const QWebHitTestResult& r,
 			QMenu *menu,
