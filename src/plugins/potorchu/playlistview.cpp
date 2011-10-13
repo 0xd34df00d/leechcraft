@@ -25,24 +25,24 @@ namespace LeechCraft
 	{
 		PlayListView::PlayListView (QWidget *parent)
 		: QListView (parent)
-		, PlayListModel_ (NULL)
 		{
+			PlayListModel_ = new PlayListModel (this);
+			setModel (PlayListModel_);
+			setModelColumn (0);
 			connect (this,
 					SIGNAL (doubleClicked (QModelIndex)),
 					this,
 					SLOT (handleDoubleClicked (QModelIndex)));
 		}
 		
-		void PlayListView::Init (libvlc_instance_t *VLCInstance)
+		bool PlayListView::setPlayList (libvlc_media_list_t *ML)
 		{
-			PlayListModel_ = new PlayListModel (VLCInstance, this);
-			setModel (PlayListModel_);
-			setModelColumn (0);
+			return PlayListModel_->setPlayList (ML);
 		}
 		
-		libvlc_media_list_t *PlayListView::GetMediaList ()
+		bool PlayListView::setInstance (libvlc_instance_t *VLCInstance)
 		{
-			return PlayListModel_->GetPlayList ();
+			return PlayListModel_->setInstance (VLCInstance);
 		}
 
 		void PlayListView::addItem (const QString& item)

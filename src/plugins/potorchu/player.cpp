@@ -31,7 +31,6 @@ namespace LeechCraft
 		Player::Player (QWidget *parent, Qt::WindowFlags f)
 		: QFrame (parent, f)
 		, IsPlaying_ (false)
-		, ML_ (NULL)
 		{
 			const char * const vlc_args[] = {
 					"-I", "dummy",
@@ -45,6 +44,9 @@ namespace LeechCraft
 			MP_ = libvlc_media_player_new (VLCInstance_);
 			libvlc_media_list_player_set_media_player (MLP_, MP_);
 			
+			ML_ = libvlc_media_list_new (VLCInstance_);
+			libvlc_media_list_player_set_media_list (MLP_, ML_);
+			
 			connect (Poller_,
 					SIGNAL (timeout ()),
 					this,
@@ -52,15 +54,13 @@ namespace LeechCraft
 			Poller_->start (100);
 		}
 		
-		void Player::Init (libvlc_media_list_t *ML)
+		libvlc_media_list_t *Player::PlayList ()
 		{
-			ML_ = ML;
-			libvlc_media_list_player_set_media_list (MLP_, ML);
+			return ML_;
 		}
 		
 		libvlc_instance_t *Player::Instance ()
 		{
-			qDebug () << Q_FUNC_INFO;
 			return VLCInstance_;
 		}
 		
@@ -69,6 +69,7 @@ namespace LeechCraft
 			libvlc_media_list_player_stop (MLP_);
 			libvlc_media_list_player_release (MLP_);
 			libvlc_media_player_release (MP_);
+			libvlc_media_list_release (ML_);
 			libvlc_release (VLCInstance_);
 		}
 		

@@ -24,21 +24,25 @@ namespace LeechCraft
 {
 	namespace Potorchu
 	{
-		PlayListModel::PlayListModel (libvlc_instance_t *VLCInstance, QObject* parent)
+		PlayListModel::PlayListModel (QObject* parent)
 		: QAbstractItemModel (parent)
-		, VLCInstance_ (VLCInstance)
+		, VLCInstance_ (NULL)
+		, ML_ (NULL)
 		{
-			ML_ = libvlc_media_list_new (VLCInstance_);
 		}
 		
 		PlayListModel::~PlayListModel ()
 		{
-			libvlc_media_list_release (ML_);
 		}
 		
-		libvlc_media_list_t *PlayListModel::GetPlayList ()
+		bool PlayListModel::setPlayList (libvlc_media_list_t *ML)
 		{
-			return ML_;
+			ML_ = ML;
+		}
+		
+		bool PlayListModel::setInstance (libvlc_instance_t *VLCInstance)
+		{
+			VLCInstance_ = VLCInstance;
 		}
 		
 		bool PlayListModel::setData (const QModelIndex& index, const QVariant& value, int role)
@@ -48,23 +52,26 @@ namespace LeechCraft
 		
 		int PlayListModel::rowCount (const QModelIndex& parent) const
 		{
-			qDebug () << Q_FUNC_INFO <<  libvlc_media_list_count (ML_);
-			return libvlc_media_list_count (ML_);
+			return VLCInstance_ == NULL ? 0 : libvlc_media_list_count (ML_);
 		}
 		
 		bool PlayListModel::insertRows (int row, int count, const QString& fileName)
 		{
-			return !libvlc_media_list_insert_media (ML_, libvlc_media_new_path (VLCInstance_, fileName.toAscii ()), row);
+			return VLCInstance_ == NULL ? false
+					: !libvlc_media_list_insert_media (ML_,
+							libvlc_media_new_path (VLCInstance_, fileName.toAscii ()), row);
 		}
 		
 		bool PlayListModel::removeRows (int row, int count, const QModelIndex& parent)
 		{
-			return !libvlc_media_list_remove_index (ML_, row);
+			return VLCInstance_ == NULL ? false : !libvlc_media_list_remove_index (ML_, row);
 		}
 		
-		void PlayListModel::addItem (const QString& item)
+		bool PlayListModel::addItem (const QString& item)
 		{
-			libvlc_media_list_add_media (ML_, libvlc_media_new_path (VLCInstance_, item.toAscii ()));
+			return VLCInstance_ == NULL ? false
+					: !libvlc_media_list_add_media (ML_,
+							libvlc_media_new_path (VLCInstance_, item.toAscii ()));
 		}
 		
 		Qt::ItemFlags PlayListModel::flags (const QModelIndex& index) const
@@ -93,7 +100,7 @@ namespace LeechCraft
 
 				return temp;
 			}
-			return QVariant ("Blah");
+			return QVariant ();
 		}
 		
 		QModelIndex PlayListModel::index (int row, int column, const QModelIndex& parent) const

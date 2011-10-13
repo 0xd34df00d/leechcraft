@@ -32,7 +32,7 @@ namespace LeechCraft
 {
 namespace Potorchu
 {
-	class Potorchu : public QObject
+	class Plugin : public QObject
 				, public IInfo
 				, public IHaveTabs
 				, public IEntityHandler

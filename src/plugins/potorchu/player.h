@@ -45,13 +45,12 @@ namespace LeechCraft
 			libvlc_media_player_t *MP_;
 		public:
 			Player (QWidget *parent = 0, Qt::WindowFlags f = 0);
-			void Init (libvlc_media_list_t *ML);
 			virtual ~Player ();
 			
 			libvlc_instance_t *Instance ();
+			libvlc_media_list_t *PlayList ();
 			
 			QString GetMeta (libvlc_meta_t meta) const;
-			
 			int Volume () const;
 			int Position () const;
 			float MediaPosition () const;

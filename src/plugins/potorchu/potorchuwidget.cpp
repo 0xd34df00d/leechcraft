@@ -45,8 +45,9 @@ namespace LeechCraft
 			Ui_->setupUi (this);
 			Ui_->Player_->setFrameStyle (QFrame::Box | QFrame::Sunken);
 			Ui_->CommandFrame_->setFrameStyle (QFrame::NoFrame);
-			Ui_->PlayListWidget_->GetPlayListView ()->Init (Ui_->Player_->Instance ());
-			Ui_->Player_->Init (Ui_->PlayListWidget_->GetPlayListView ()->GetMediaList ());
+			PlayListView *view = Ui_->PlayListWidget_->GetPlayListView ();
+			view->setInstance (Ui_->Player_->Instance ());
+			view->setPlayList (Ui_->Player_->PlayList ());
 			Ui_->PlayListWidget_->setVisible (false);
 			connect (Ui_->Player_,
 					SIGNAL (timeout ()),
@@ -167,10 +168,9 @@ namespace LeechCraft
 			S_ParentMultiTabs_ = parent;
 		}
 
-
 		TabClassInfo PotorchuWidget::GetTabClassInfo () const
 		{
-			return qobject_cast<Potorchu *> (S_ParentMultiTabs_)->GetTabClasses ().first ();
+			return qobject_cast<Plugin *> (S_ParentMultiTabs_)->GetTabClasses ().first ();
 		}
 		
 		QObject* PotorchuWidget::ParentMultiTabs ()
