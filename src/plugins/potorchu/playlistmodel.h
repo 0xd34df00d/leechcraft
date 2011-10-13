@@ -46,7 +46,7 @@ namespace LeechCraft
 			
 			int rowCount (const QModelIndex& parent = QModelIndex ()) const;
 			bool insertRows (int row, const QString& fileName);
-			bool removeRows (int row, const QModelIndex& parent = QModelIndex ());
+			bool removeRows (int row);
 			Qt::ItemFlags flags (const QModelIndex& index) const;
 	
 		public slots:

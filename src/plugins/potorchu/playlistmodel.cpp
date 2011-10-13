@@ -87,11 +87,11 @@ namespace LeechCraft
 			return false;
 		}
 		
-		bool PlayListModel::removeRows (int row, const QModelIndex& parent)
+		bool PlayListModel::removeRows (int row)
 		{
 			if (!libvlc_media_list_remove_index (ML_, row))
 			{
-				QStringListModel::removeRows (row, 1, parent);
+				QStringListModel::removeRows (row, 1);
 				return true;
 			}
 			return false;

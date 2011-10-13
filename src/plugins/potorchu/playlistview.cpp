@@ -76,7 +76,7 @@ namespace LeechCraft
 		{
 			const QModelIndexList& indexList = selectedIndexes ();
 			Q_FOREACH (const QModelIndex& index, indexList)
-				PlayListModel_->removeRow (index.row ());
+				PlayListModel_->removeRows (index.row ());
 		}
 	}
 }

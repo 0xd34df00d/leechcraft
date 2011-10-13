@@ -151,6 +151,7 @@ namespace LeechCraft
 			Ui_->VolumeSlider_->setValue (Ui_->Player_->Volume ());
 			Ui_->PositionSlider_->setValue (Ui_->Player_->Position ());
 			
+			//TODO fix this code
 			if (Ui_->Player_->MediaPosition () > 0.996)
 				Ui_->Player_->next ();
 		}
