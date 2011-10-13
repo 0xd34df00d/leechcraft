@@ -25,7 +25,7 @@ namespace LeechCraft
 	namespace Potorchu
 	{
 		PlayListModel::PlayListModel (QObject* parent)
-		: QAbstractItemModel (parent)
+		: QStringListModel (parent)
 		, VLCInstance_ (NULL)
 		, ML_ (NULL)
 		{
@@ -45,46 +45,17 @@ namespace LeechCraft
 			VLCInstance_ = VLCInstance;
 		}
 		
-		bool PlayListModel::setData (const QModelIndex& index, const QVariant& value, int role)
-		{
-			return true;
-		}
-		
 		int PlayListModel::rowCount (const QModelIndex& parent) const
 		{
-			return VLCInstance_ == NULL ? 0 : libvlc_media_list_count (ML_);
+			return libvlc_media_list_count (ML_);
 		}
 		
 		bool PlayListModel::insertRows (int row, int count, const QString& fileName)
 		{
-			return VLCInstance_ == NULL ? false
-					: !libvlc_media_list_insert_media (ML_,
-							libvlc_media_new_path (VLCInstance_, fileName.toAscii ()), row);
-		}
-		
-		bool PlayListModel::removeRows (int row, int count, const QModelIndex& parent)
-		{
-			return VLCInstance_ == NULL ? false : !libvlc_media_list_remove_index (ML_, row);
-		}
-		
-		bool PlayListModel::addItem (const QString& item)
-		{
-			return VLCInstance_ == NULL ? false
-					: !libvlc_media_list_add_media (ML_,
-							libvlc_media_new_path (VLCInstance_, item.toAscii ()));
-		}
-		
-		Qt::ItemFlags PlayListModel::flags (const QModelIndex& index) const
-		{
-			return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
-		}
-		
-		QVariant PlayListModel::data (const QModelIndex& index, int role) const
-		{
-			if (role == Qt::DisplayRole)
+			if (!libvlc_media_list_insert_media (ML_,
+					libvlc_media_new_path (VLCInstance_, fileName.toAscii ()), row))
 			{
-				qDebug () << Q_FUNC_INFO;
-				libvlc_media_t *t = libvlc_media_list_item_at_index (ML_, index.row ());
+				libvlc_media_t *t = libvlc_media_list_item_at_index (ML_, row);
 				libvlc_media_parse (t);
 				QString temp = XmlSettingsManager::Instance ().property ("PlayListTemplate").toString ();
 				const QString& artist = QString (libvlc_media_get_meta (t, libvlc_meta_Artist));
@@ -98,24 +69,31 @@ namespace LeechCraft
 				temp.replace ("%genre%", genre);
 				temp.replace ("%date%", date);
 
-				return temp;
+				QStringListModel::insertRows (row, count);
+				setData (index (row), temp);
+				return true;
 			}
-			return QVariant ();
+			return false;
 		}
 		
-		QModelIndex PlayListModel::index (int row, int column, const QModelIndex& parent) const
+		bool PlayListModel::removeRows (int row, int count, const QModelIndex& parent)
 		{
-			return createIndex (row, column);
+			if (!libvlc_media_list_remove_index (ML_, row))
+			{
+				QStringListModel::removeRows (row, count, parent);
+				return true;
+			}
+			return false;
 		}
 		
-		QModelIndex PlayListModel::parent (const QModelIndex& index) const
+		bool PlayListModel::addItem (const QString& item)
 		{
-			return QModelIndex ();
+			return insertRows (rowCount (), 1, item);
 		}
 		
-		int PlayListModel::columnCount (const QModelIndex& parent) const
+		Qt::ItemFlags PlayListModel::flags (const QModelIndex& index) const
 		{
-			return 1;
+			return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
 		}
 	}
 }

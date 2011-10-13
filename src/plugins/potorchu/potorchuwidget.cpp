@@ -146,7 +146,6 @@ namespace LeechCraft
 			ActionPlay_->handlePlay ();
 			Ui_->Player_->play ();
 		}
-
 		
 		void PotorchuWidget::updateInterface ()
 		{
@@ -156,7 +155,6 @@ namespace LeechCraft
 			if (Ui_->Player_->MediaPosition () > 0.996)
 				Ui_->Player_->next ();
 		}
-
 		
 		PotorchuWidget::~PotorchuWidget ()
 		{
