@@ -335,16 +335,18 @@ namespace LeechCraft
 				QStringList args;
 #ifdef Q_WS_WIN
 				args << "x";
+				
+				QString outDirArg("-o");
+				outDirArg.append(dirname);
+				args << outDirArg;
+
+				args << path;
 #else
 				args << "xzf";
-#endif
 				args << path;
-#ifdef Q_WS_WIN
-				args << "-o";
-#else
 				args << "-C";
-#endif
 				args << dirname;
+#endif
 				unarch->setProperty ("PackageID", packageId);
 				unarch->setProperty ("StagingDirectory", dirname);
 				unarch->setProperty ("Path", path);
