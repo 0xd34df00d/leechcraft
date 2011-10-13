@@ -22,7 +22,6 @@
 #include <QToolButton>
 #include <QMenu>
 #include <QFileDialog>
-#include <QFileInfo>
 #include <vlc/vlc.h>
 
 #include "chooseurldialog.h"
@@ -108,23 +107,9 @@ namespace LeechCraft
 		{
 			const QString& fileDir = QFileDialog::getExistingDirectory (this,
 					tr ("Choose directory"), QDir::homePath ());
-			
-			QStringList dirBuffer;
-			dirBuffer << fileDir;
-			while (!dirBuffer.isEmpty ())
-			{
-				const QDir& currDir = dirBuffer.first ();
-				const QFileInfoList& currInfoList = currDir.entryInfoList (QDir::NoDotAndDotDot
-						| QDir::Dirs | QDir::Files);
-				Q_FOREACH (const QFileInfo& entry, currInfoList)
-				{
-					if (entry.isDir ())
-						dirBuffer << entry.filePath ();
-					else if (entry.isFile ())
-						Ui_->PlayListView_->addItem (entry.absoluteFilePath ());
-				}
-				dirBuffer.pop_front ();
-			}
+			const QFileInfoList& fileInfoList = StoragedFiles (fileDir);
+			Q_FOREACH (const QFileInfo& fileInfo, fileInfoList)
+				Ui_->PlayListView_->addItem (fileInfo.absoluteFilePath ());
 		}
 		
 		void PlayListWidget::handleAddUrl ()
@@ -137,6 +122,22 @@ namespace LeechCraft
 			}
 		}
 
-
+		QFileInfoList PlayListWidget::StoragedFiles (const QString& path)
+		{
+			QDir dir (path);
+			QFileInfoList list;
+			QFileInfoList fil = dir.entryInfoList (QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot);
+			if (!fil.isEmpty ())
+			{
+				Q_FOREACH (QFileInfo fi, fil)
+				{
+					if (fi.isDir ())
+						list << StoragedFiles (fi.absoluteFilePath ());
+					else
+						list << fi;
+				}
+			}
+			return list;
+		}
 	}
 }
