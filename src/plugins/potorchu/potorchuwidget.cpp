@@ -45,10 +45,9 @@ namespace LeechCraft
 			Ui_->setupUi (this);
 			Ui_->Player_->setFrameStyle (QFrame::Box | QFrame::Sunken);
 			Ui_->CommandFrame_->setFrameStyle (QFrame::NoFrame);
-			PlayListView *view = Ui_->PlayListWidget_->GetPlayListView ();
-			view->setInstance (Ui_->Player_->Instance ());
-			view->setPlayList (Ui_->Player_->PlayList ());
+			Ui_->Player_->SetPlayListView (Ui_->PlayListWidget_->GetPlayListView ());
 			Ui_->PlayListWidget_->setVisible (false);
+			
 			connect (Ui_->Player_,
 					SIGNAL (timeout ()),
 					this,

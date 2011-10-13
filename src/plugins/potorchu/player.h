@@ -30,6 +30,8 @@
 #include <vlc/libvlc_media_list.h>
 #include <vlc/libvlc_media_list_player.h>
 
+#include "playlistview.h"
+
 namespace LeechCraft
 {
 	namespace Potorchu
@@ -43,12 +45,14 @@ namespace LeechCraft
 			libvlc_media_list_player_t *MLP_;
 			libvlc_media_list_t *ML_;
 			libvlc_media_player_t *MP_;
+			PlayListView *PlayListView_;
 		public:
 			Player (QWidget *parent = 0, Qt::WindowFlags f = 0);
 			virtual ~Player ();
 			
 			libvlc_instance_t *Instance ();
 			libvlc_media_list_t *PlayList ();
+			void SetPlayListView (PlayListView *playListView);
 			
 			QString GetMeta (libvlc_meta_t meta) const;
 			int Volume () const;

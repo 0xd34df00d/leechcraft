@@ -29,18 +29,19 @@ namespace LeechCraft
 		, VLCInstance_ (NULL)
 		, ML_ (NULL)
 		{
+			CurrentIndex_ = -1;
 		}
 		
 		PlayListModel::~PlayListModel ()
 		{
 		}
 		
-		bool PlayListModel::setPlayList (libvlc_media_list_t *ML)
+		bool PlayListModel::SetPlayList (libvlc_media_list_t *ML)
 		{
 			ML_ = ML;
 		}
 		
-		bool PlayListModel::setInstance (libvlc_instance_t *VLCInstance)
+		bool PlayListModel::SetInstance (libvlc_instance_t *VLCInstance)
 		{
 			VLCInstance_ = VLCInstance;
 		}
@@ -50,7 +51,17 @@ namespace LeechCraft
 			return libvlc_media_list_count (ML_);
 		}
 		
-		bool PlayListModel::insertRows (int row, int count, const QString& fileName)
+		int PlayListModel::CurrentIndex () const
+		{
+			return CurrentIndex_;
+		}
+		
+		void PlayListModel::SetCurrentIndex (int val)
+		{
+			CurrentIndex_ = val;
+		}
+		
+		bool PlayListModel::insertRows (int row, const QString& fileName)
 		{
 			if (!libvlc_media_list_insert_media (ML_,
 					libvlc_media_new_path (VLCInstance_, fileName.toAscii ()), row))
@@ -69,18 +80,18 @@ namespace LeechCraft
 				temp.replace ("%genre%", genre);
 				temp.replace ("%date%", date);
 
-				QStringListModel::insertRows (row, count);
+				QStringListModel::insertRows (row, 1);
 				setData (index (row), temp);
 				return true;
 			}
 			return false;
 		}
 		
-		bool PlayListModel::removeRows (int row, int count, const QModelIndex& parent)
+		bool PlayListModel::removeRows (int row, const QModelIndex& parent)
 		{
 			if (!libvlc_media_list_remove_index (ML_, row))
 			{
-				QStringListModel::removeRows (row, count, parent);
+				QStringListModel::removeRows (row, 1, parent);
 				return true;
 			}
 			return false;
@@ -88,7 +99,7 @@ namespace LeechCraft
 		
 		bool PlayListModel::addItem (const QString& item)
 		{
-			return insertRows (rowCount (), 1, item);
+			return insertRows (rowCount (), item);
 		}
 		
 		Qt::ItemFlags PlayListModel::flags (const QModelIndex& index) const

@@ -34,10 +34,14 @@ namespace LeechCraft
 			PlayListModel *PlayListModel_;
 		public:
 			PlayListView (QWidget *parent = 0);
-			bool setPlayList (libvlc_media_list_t *ML);
-			bool setInstance (libvlc_instance_t *VLCInstance);
+			bool SetPlayList (libvlc_media_list_t *ML);
+			bool SetInstance (libvlc_instance_t *VLCInstance);
 			void addItem (const QString& item);
+			
+			int CurrentIndex () const;
+			int RowCount () const;
 		public slots:
+			void SetCurrentIndex (int val);
 			void removeSelectedRows ();
 		private slots:
 			void handleDoubleClicked (const QModelIndex& index);

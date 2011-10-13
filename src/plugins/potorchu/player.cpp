@@ -31,6 +31,7 @@ namespace LeechCraft
 		Player::Player (QWidget *parent, Qt::WindowFlags f)
 		: QFrame (parent, f)
 		, IsPlaying_ (false)
+		, PlayListView_ (NULL)
 		{
 			const char * const vlc_args[] = {
 					"-I", "dummy",
@@ -62,6 +63,13 @@ namespace LeechCraft
 		libvlc_instance_t *Player::Instance ()
 		{
 			return VLCInstance_;
+		}
+		
+		void Player::SetPlayListView (PlayListView *playListView)
+		{
+			PlayListView_ = playListView;
+			playListView->SetInstance (VLCInstance_);
+			playListView->SetPlayList (ML_);
 		}
 		
 		Player::~Player ()
@@ -118,11 +126,13 @@ namespace LeechCraft
 		void Player::next ()
 		{
 			libvlc_media_list_player_next (MLP_);
+			PlayListView_->SetCurrentIndex (PlayListView_->CurrentIndex () + 1);
 		}
 
 		void Player::prev ()
 		{
 			libvlc_media_list_player_previous (MLP_);
+			PlayListView_->SetCurrentIndex (PlayListView_->CurrentIndex () - 1);
 		}
 		
 		void Player::setVolume (int vol)
@@ -142,6 +152,7 @@ namespace LeechCraft
 		void Player::playItem (int item)
 		{
 			libvlc_media_list_player_play_item_at_index (MLP_, item);
+			PlayListView_->SetCurrentIndex (item);
 		}
 	}
 }

@@ -35,19 +35,36 @@ namespace LeechCraft
 					SLOT (handleDoubleClicked (QModelIndex)));
 		}
 		
-		bool PlayListView::setPlayList (libvlc_media_list_t *ML)
+		bool PlayListView::SetPlayList (libvlc_media_list_t *ML)
 		{
-			return PlayListModel_->setPlayList (ML);
+			return PlayListModel_->SetPlayList (ML);
 		}
 		
-		bool PlayListView::setInstance (libvlc_instance_t *VLCInstance)
+		int PlayListView::RowCount () const
 		{
-			return PlayListModel_->setInstance (VLCInstance);
+			return PlayListModel_->rowCount ();
+		}
+		
+		bool PlayListView::SetInstance (libvlc_instance_t *VLCInstance)
+		{
+			return PlayListModel_->SetInstance (VLCInstance);
+		}
+		
+		int PlayListView::CurrentIndex () const
+		{
+			return PlayListModel_->CurrentIndex ();
+		}
+		
+		void PlayListView::SetCurrentIndex (int val)
+		{
+			PlayListModel_->SetCurrentIndex (val);
+			setCurrentIndex (PlayListModel_->index (val));
 		}
 
 		void PlayListView::addItem (const QString& item)
 		{
-			PlayListModel_->addItem (item);
+			if (PlayListModel_->addItem(item) && PlayListModel_->rowCount () == 1)
+				SetCurrentIndex(0);
 		}
 		
 		void PlayListView::handleDoubleClicked (const QModelIndex& index)
