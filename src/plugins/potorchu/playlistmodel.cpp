@@ -59,6 +59,11 @@ namespace LeechCraft
 		void PlayListModel::SetCurrentIndex (int val)
 		{
 			CurrentIndex_ = val;
+			//TODO: a temporary solution. fix it later
+			if (val == rowCount ())
+			{
+				CurrentIndex_ = 0;
+			}
 		}
 		
 		bool PlayListModel::insertRows (int row, const QString& fileName)
