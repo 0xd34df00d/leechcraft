@@ -42,6 +42,7 @@ namespace LeechCraft
 			bool SetInstance (libvlc_instance_t *VLCInstance);
 			
 			int CurrentIndex () const;
+			libvlc_media_t *CurrentMedia ();
 			void SetCurrentIndex (int val);
 			
 			int rowCount (const QModelIndex& parent = QModelIndex ()) const;

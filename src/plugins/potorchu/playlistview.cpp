@@ -67,6 +67,11 @@ namespace LeechCraft
 				SetCurrentIndex(0);
 		}
 		
+		libvlc_media_t *PlayListView::CurrentMedia ()
+		{
+			return PlayListModel_->CurrentMedia ();
+		}
+		
 		void PlayListView::handleDoubleClicked (const QModelIndex& index)
 		{
 			emit playItem (index.row ());

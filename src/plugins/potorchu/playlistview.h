@@ -40,6 +40,8 @@ namespace LeechCraft
 			
 			int CurrentIndex () const;
 			int RowCount () const;
+			
+			libvlc_media_t *CurrentMedia ();
 		public slots:
 			void SetCurrentIndex (int val);
 			void removeSelectedRows ();

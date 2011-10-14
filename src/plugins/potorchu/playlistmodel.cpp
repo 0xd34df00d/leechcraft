@@ -66,6 +66,11 @@ namespace LeechCraft
 			}
 		}
 		
+		libvlc_media_t *PlayListModel::CurrentMedia ()
+		{
+			return libvlc_media_list_item_at_index (ML_, CurrentIndex_);
+		}
+		
 		bool PlayListModel::insertRows (int row, const QString& fileName)
 		{
 			if (!libvlc_media_list_insert_media (ML_,

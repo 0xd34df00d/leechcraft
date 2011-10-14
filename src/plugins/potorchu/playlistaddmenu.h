@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011 Minh Ngo
+ * Copyright (C) 2011  Minh Ngo
  * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,34 +17,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLAYLISTWIDGET_H
-#define PLAYLISTWIDGET_H
+#ifndef PLAYLISTADDMENU_H
+#define PLAYLISTADDMENU_H
 
-#include <QWidget>
-#include <QToolBar>
+#include <QMenu>
 #include <QFileInfoList>
-#include <interfaces/core/icoreproxy.h>
-
-#include "ui_playlistwidget.h"
+#include "playlistview.h"
 
 namespace LeechCraft
 {
 	namespace Potorchu
 	{
-		class PlayListWidget : public QWidget
+		class PlayListAddMenu : public QMenu
 		{
 			Q_OBJECT
-			Ui::PlayListWidget *Ui_;
-			QToolBar *ActionBar_;
+			PlayListView *PlayListView_;
 		public:
-			PlayListWidget (QWidget *parent = 0);
-			virtual ~PlayListWidget ();
-			void Init (ICoreProxy_ptr proxy);
-			PlayListView *GetPlayListView ();
-		signals:
-			void playItem (int item);
+			PlayListAddMenu (PlayListView *playListView, QWidget* parent);
+		private slots:
+			void handleAddUrl ();
+			void handleAddFolder ();
+			void handleAddFiles ();
+		private:
+			QFileInfoList StoragedFiles (const QString& path);
 		};
 	}
 }
-
-#endif // PLAYLISTWIDGET_H
+#endif // PLAYLISTADDMENU_H

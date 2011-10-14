@@ -25,6 +25,7 @@
 #include <vlc/vlc.h>
 
 #include "chooseurldialog.h"
+#include "playlistaddmenu.h"
 
 namespace LeechCraft
 {
@@ -61,17 +62,8 @@ namespace LeechCraft
 			actionAdd->setIcon (proxy->GetIcon ("add"));
 			actionAdd->setPopupMode (QToolButton::InstantPopup);
 			ActionBar_->addWidget (actionAdd);
-			QMenu *addMenu = new QMenu (this);
 			
-			QAction *addFiles = new QAction (tr ("Add files"), this);
-			QAction *addFolder = new QAction (tr ("Add folder"), this);
-			QAction *addURL = new QAction (tr ("Add URL"), this);
-			
-			addMenu->addAction (addFiles);
-			addMenu->addAction (addFolder);
-			addMenu->addAction (addURL);
-			
-			actionAdd->setMenu (addMenu);
+			actionAdd->setMenu (new PlayListAddMenu (Ui_->PlayListView_, this));
 			QAction *actionRemove = new QAction (proxy->GetIcon ("remove"),
 					tr ("Remove"), this);
 			ActionBar_->addAction (actionRemove);
@@ -80,64 +72,6 @@ namespace LeechCraft
 					SIGNAL (triggered (bool)),
 					Ui_->PlayListView_,
 					SLOT (removeSelectedRows ()));
-			
-			connect (addURL,
-					SIGNAL (triggered (bool)),
-					this,
-					SLOT (handleAddUrl ()));
-			connect (addFiles,
-					SIGNAL (triggered (bool)),
-					this,
-					SLOT (handleAddFiles ()));
-			connect (addFolder,
-					SIGNAL (triggered (bool)),
-					this,
-					SLOT (handleAddFolder ()));
-		}
-		
-		void PlayListWidget::handleAddFiles ()
-		{
-			const QStringList& fileNames = QFileDialog::getOpenFileNames (this,
-					tr ("Choose file"), QDir::homePath ());
-			Q_FOREACH (const QString& fileName, fileNames)
-				Ui_->PlayListView_->addItem (fileName);
-		}
-
-		void PlayListWidget::handleAddFolder ()
-		{
-			const QString& fileDir = QFileDialog::getExistingDirectory (this,
-					tr ("Choose directory"), QDir::homePath ());
-			const QFileInfoList& fileInfoList = StoragedFiles (fileDir);
-			Q_FOREACH (const QFileInfo& fileInfo, fileInfoList)
-				Ui_->PlayListView_->addItem (fileInfo.absoluteFilePath ());
-		}
-		
-		void PlayListWidget::handleAddUrl ()
-		{
-			ChooseURLDialog *d = new ChooseURLDialog (this);
-			if (d->exec () == QDialog::Accepted)
-			{
-				const QString& url = d->GetUrl ();
-				Ui_->PlayListView_->addItem (url);
-			}
-		}
-
-		QFileInfoList PlayListWidget::StoragedFiles (const QString& path)
-		{
-			QDir dir (path);
-			QFileInfoList list;
-			QFileInfoList fil = dir.entryInfoList (QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot);
-			if (!fil.isEmpty ())
-			{
-				Q_FOREACH (QFileInfo fi, fil)
-				{
-					if (fi.isDir ())
-						list << StoragedFiles (fi.absoluteFilePath ());
-					else
-						list << fi;
-				}
-			}
-			return list;
 		}
 	}
 }

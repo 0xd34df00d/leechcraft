@@ -41,6 +41,7 @@ namespace LeechCraft
 		: QWidget (parent, f)
 		, ToolBar_ (new QToolBar (this))
 		, Ui_ (new Ui::PotorchuWidget)
+		, LFSubmitter_ (new LastFMSubmitter (this))
 		{	
 			Ui_->setupUi (this);
 			Ui_->Player_->setFrameStyle (QFrame::Box | QFrame::Sunken);
@@ -153,7 +154,13 @@ namespace LeechCraft
 			
 			//TODO fix this code
 			if (Ui_->Player_->MediaPosition () > 0.996)
-				Ui_->Player_->next ();
+			{
+				Ui_->Player_->next ();	
+			}
+			else if (Ui_->Player_->MediaPosition () < 0.01)
+			{
+				//LFSubmitter_->NowPlaying (Ui_->PlayListWidget_->GetPlayListView ()->CurrentMedia ());
+			}
 		}
 		
 		PotorchuWidget::~PotorchuWidget ()
