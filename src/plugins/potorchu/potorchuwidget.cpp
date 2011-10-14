@@ -162,14 +162,9 @@ namespace LeechCraft
 			const QTime& currTime = Ui_->Player_->Time ();
 			const QTime& length = Ui_->Player_->Length ();
 			Ui_->TimeStamp_->setText ("[" + currTime.toString () + "/" + length.toString () + "]");
-			//TODO fix this code
+
 			if (length == currTime)
 				Ui_->Player_->next ();	
-			
-			//else if (Ui_->Player_->MediaPosition () < 0.01)
-			//{
-				//LFSubmitter_->NowPlaying (Ui_->PlayListWidget_->GetPlayListView ()->CurrentMedia ());
-			//}
 		}
 		
 		PotorchuWidget::~PotorchuWidget ()
