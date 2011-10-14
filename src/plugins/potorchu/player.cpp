@@ -115,7 +115,6 @@ namespace LeechCraft
 		{
 			return QTime (0, 0, 0).addMSecs (libvlc_media_player_get_length (MP_));
 		}
-
 		
 		void Player::pause ()
 		{

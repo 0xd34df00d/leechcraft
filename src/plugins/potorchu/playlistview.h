@@ -22,6 +22,7 @@
 
 #include <QListView>
 #include <QDebug>
+#include <QKeyEvent>
 #include "playlistmodel.h"
 
 namespace LeechCraft
@@ -38,10 +39,13 @@ namespace LeechCraft
 			bool SetInstance (libvlc_instance_t *VLCInstance);
 			void addItem (const QString& item);
 			
+			void keyPressEvent (QKeyEvent *event);
 			int CurrentIndex () const;
 			int RowCount () const;
 			
 			libvlc_media_t *CurrentMedia ();
+		private:
+			void moveSelect (int x, int y);
 		public slots:
 			void SetCurrentIndex (int val);
 			void removeSelectedRows ();

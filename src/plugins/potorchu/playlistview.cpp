@@ -59,12 +59,17 @@ namespace LeechCraft
 		{
 			PlayListModel_->SetCurrentIndex (val);
 			setCurrentIndex (PlayListModel_->index (val));
+			//if (val >=0 && val < RowCount ())
+			//	emit playItem (val);
 		}
 
 		void PlayListView::addItem (const QString& item)
 		{
 			if (PlayListModel_->addItem(item) && PlayListModel_->rowCount () == 1)
+			{
 				SetCurrentIndex(0);
+				emit playItem (0);
+			}
 		}
 		
 		libvlc_media_t *PlayListView::CurrentMedia ()
@@ -82,6 +87,34 @@ namespace LeechCraft
 			const QModelIndexList& indexList = selectedIndexes ();
 			Q_FOREACH (const QModelIndex& index, indexList)
 				PlayListModel_->removeRows (index.row ());
+		}
+		
+		void PlayListView::keyPressEvent (QKeyEvent *event)
+		{
+			const QModelIndex& curIndex = currentIndex ();
+			switch (event->key ())
+			{
+			case Qt::Key_Delete:
+				removeSelectedRows ();
+				break;
+			case Qt::Key_Return:
+				emit playItem (curIndex.row ());
+				break;
+			case Qt::Key_Up:
+				setCurrentIndex (model ()->index (curIndex.row () - 1, curIndex.column ()));
+				break;
+			case Qt::Key_Down:
+				setCurrentIndex (model ()->index (curIndex.row () + 1, curIndex.column ()));
+				break;
+			}
+		}
+		
+		void PlayListView::moveSelect (int x, int y)
+		{
+			if ( x < 0 || y < 1 || x >= model ()->rowCount ()
+					|| y >= model ()->columnCount ())
+				return;
+			setCurrentIndex (model ()->index (x, y));
 		}
 	}
 }

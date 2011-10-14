@@ -108,6 +108,10 @@ namespace LeechCraft
 					SIGNAL (triggered (bool)),
 					Ui_->Player_,
 					SLOT (prev ()));
+			connect (Ui_->PlayListWidget_,
+					SIGNAL (playItem (int)),
+					ActionPlay_,
+					SLOT (handlePlay ()));
 			
 			QAction *actionOpenFile = new QAction (proxy->GetIcon ("folder"),
 					tr ("Open File"), this);
@@ -151,16 +155,17 @@ namespace LeechCraft
 		{
 			Ui_->VolumeSlider_->setValue (Ui_->Player_->Volume ());
 			Ui_->PositionSlider_->setValue (Ui_->Player_->Position ());
-			Ui_->TimeStamp_->setText ("[" + Ui_->Player_->Time ().toString () + "/" + Ui_->Player_->Length ().toString () + "]");
+			const QTime& currTime = Ui_->Player_->Time ();
+			const QTime& length = Ui_->Player_->Length ();
+			Ui_->TimeStamp_->setText ("[" + currTime.toString () + "/" + length.toString () + "]");
 			//TODO fix this code
-			if (Ui_->Player_->MediaPosition () > 0.996)
-			{
+			if (length == currTime)
 				Ui_->Player_->next ();	
-			}
-			else if (Ui_->Player_->MediaPosition () < 0.01)
-			{
+			
+			//else if (Ui_->Player_->MediaPosition () < 0.01)
+			//{
 				//LFSubmitter_->NowPlaying (Ui_->PlayListWidget_->GetPlayListView ()->CurrentMedia ());
-			}
+			//}
 		}
 		
 		PotorchuWidget::~PotorchuWidget ()
