@@ -20,8 +20,6 @@
 #include "playlistwidget.h"
 #include <QToolBar>
 #include <QToolButton>
-#include <QMenu>
-#include <QFileDialog>
 #include <vlc/vlc.h>
 
 #include "chooseurldialog.h"

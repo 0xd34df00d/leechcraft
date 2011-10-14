@@ -151,7 +151,7 @@ namespace LeechCraft
 		{
 			Ui_->VolumeSlider_->setValue (Ui_->Player_->Volume ());
 			Ui_->PositionSlider_->setValue (Ui_->Player_->Position ());
-			
+			Ui_->TimeStamp_->setText ("[" + Ui_->Player_->Time ().toString () + "/" + Ui_->Player_->Length ().toString () + "]");
 			//TODO fix this code
 			if (Ui_->Player_->MediaPosition () > 0.996)
 			{

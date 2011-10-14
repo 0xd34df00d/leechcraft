@@ -19,9 +19,9 @@
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <layout class="QGridLayout" name="GlobalGridLayout_">
-       <item row="0" column="0" colspan="4">
+       <item row="0" column="0" colspan="5">
         <widget class="LeechCraft::Potorchu::Player" name="Player_">
          <property name="styleSheet">
           <string notr="true">padding: 25px; background: black;</string>
@@ -32,9 +32,6 @@
          <property name="frameShadow">
           <enum>QFrame::Raised</enum>
          </property>
-         <zorder>PlayListWidget_</zorder>
-         <zorder>PlayListWidget_</zorder>
-         <zorder>PlayListWidget_</zorder>
         </widget>
        </item>
        <item row="1" column="1">
@@ -72,7 +69,7 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="3">
+       <item row="1" column="4">
         <widget class="QSlider" name="VolumeSlider_">
          <property name="maximumSize">
           <size>
@@ -91,6 +88,13 @@
          </property>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="3">
+        <widget class="QLabel" name="TimeStamp_">
+         <property name="text">
+          <string>[00:00:00/00:00:00]</string>
          </property>
         </widget>
        </item>

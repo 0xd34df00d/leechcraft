@@ -106,6 +106,17 @@ namespace LeechCraft
 			return libvlc_media_player_get_position (MP_);
 		}
 		
+		QTime Player::Time () const
+		{
+			return QTime (0, 0, 0).addMSecs (libvlc_media_player_get_time (MP_));
+		}
+		
+		QTime Player::Length () const
+		{
+			return QTime (0, 0, 0).addMSecs (libvlc_media_player_get_length (MP_));
+		}
+
+		
 		void Player::pause ()
 		{
 			libvlc_media_list_player_pause (MLP_);

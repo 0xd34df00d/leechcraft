@@ -26,6 +26,7 @@
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QFrame>
+#include <QTime>
 #include <vlc/vlc.h>
 #include <vlc/libvlc_media_list.h>
 #include <vlc/libvlc_media_list_player.h>
@@ -54,11 +55,12 @@ namespace LeechCraft
 			libvlc_media_list_t *PlayList ();
 			void SetPlayListView (PlayListView *playListView);
 			
-			QString GetMeta (libvlc_meta_t meta) const;
 			int Volume () const;
 			int Position () const;
 			float MediaPosition () const;
 			bool IsPlaying () const;
+			QTime Time () const;
+			QTime Length () const;
 		public slots:
 			void setVolume (int vol);
 			void setPosition (int pos);
