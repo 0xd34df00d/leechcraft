@@ -8,6 +8,7 @@
 		</tab>
 		<tab>
 			<label value="Sync options" />
+			<item type="customwidget" label="own" name="QuickUpload" />
 			<item type="checkbox" property="ConfirmSend" state="off">
 				<label value="Confirm sending bookmarks on addition" />
 			</item>
@@ -30,35 +31,29 @@
 				<label value="Download options" />
 				<item type="combobox" property="DownloadPeriod">
 					<label value="Send bookmarks to selected services every"/>
-					<option name="0" default="true">
-						<label value="on action" />
-					</option>
-					<option name="1">
-						<label value="day" />
+					<option name="1" >
+						<label value="hour" />
 					</option>
 					<option name="2">
-						<label value="2 days" />
-					</option>
-					<option name="3">
-						<label value="3 days" />
+						<label value="2 hour" />
 					</option>
 					<option name="4">
-						<label value="4 days" />
+						<label value="4 hour" />
 					</option>
-					<option name="5">
-						<label value="5 days" />
+					<option name="8" default="true">
+						<label value="8 hour" />
 					</option>
-					<option name="6">
-						<label value="6 days" />
+					<option name="12">
+						<label value="12 hour" />
 					</option>
-					<option name="7">
+					<option name="24">
+						<label value="day" />
+					</option>
+					<option name="168">
 						<label value="week" />
 					</option>
-					<option name="30">
+					<option name="720">
 						<label value="month" />
-					</option>
-					<option name="365">
-						<label value="year" />
 					</option>
 				</item>
 			</item>
@@ -66,35 +61,29 @@
 				<label value="Upload options" />
 				<item type="combobox" property="UploadPeriod" >
 					<label value="Send bookmarks to selected services every"/>
-					<option name="0" default="true">
-						<label value="on action" />
-					</option>
-					<option name="1">
-						<label value="day" />
+					<option name="1" >
+						<label value="hour" />
 					</option>
 					<option name="2">
-						<label value="2 days" />
-					</option>
-					<option name="3">
-						<label value="3 days" />
+						<label value="2 hour" />
 					</option>
 					<option name="4">
-						<label value="4 days" />
+						<label value="4 hour" />
 					</option>
-					<option name="5">
-						<label value="5 days" />
+					<option name="8" default="true">
+						<label value="8 hour" />
 					</option>
-					<option name="6">
-						<label value="6 days" />
+					<option name="12">
+						<label value="12 hour" />
 					</option>
-					<option name="7">
+					<option name="24">
+						<label value="day" />
+					</option>
+					<option name="168">
 						<label value="week" />
 					</option>
-					<option name="30">
+					<option name="720">
 						<label value="month" />
-					</option>
-					<option name="365">
-						<label value="year" />
 					</option>
 				</item>
 			</item>
