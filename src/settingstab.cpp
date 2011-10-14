@@ -63,13 +63,13 @@ namespace LeechCraft
 
 	namespace
 	{
-		QStringList GetFirstClassPlugins (IPlugin2 *ip2)
+		QList<QPair<QString, QString> > GetFirstClassPlugins (IPlugin2 *ip2)
 		{
 			const QSet<QByteArray>& classes = ip2->GetPluginClasses ();
 			const QObjectList& pReady = Core::Instance ()
 					.GetPluginManager ()->GetAllCastableRoots<IPluginReady*> ();
 
-			QStringList result;
+			QList<QPair<QString, QString> > result;
 
 			Q_FOREACH (QObject *obj, pReady)
 			{
@@ -81,31 +81,51 @@ namespace LeechCraft
 					continue;
 
 				IInfo *ii = qobject_cast<IInfo*> (obj);
-				result << SettingsTab::tr ("Plugins for %1")
-						.arg (ii->GetName ());
+				result << qMakePair (SettingsTab::tr ("Plugins for %1")
+								.arg (ii->GetName ()),
+							ii->GetName ());
 			}
 
 			if (result.isEmpty ())
-				result << SettingsTab::tr ("General second-level plugins");
+				result << qMakePair (SettingsTab::tr ("General second-level plugins"), QString ());
 			return result;
 		}
 
-		QMap<QObject*, QStringList> BuildGroups (const QObjectList& settables)
+		QString NameForGroup (const QString& origName, const QString& group)
 		{
-			QMap<QObject*, QStringList> result;
+			QStringList origSplit = origName.split (' ', QString::SkipEmptyParts);
+			QStringList groupSplit = group.split (' ', QString::SkipEmptyParts);
+
+			if (origSplit.value (0) != groupSplit.value (0))
+				return origName;
+
+			while (origSplit.value (0) == groupSplit.value (0) &&
+					origSplit.size () > 1)
+			{
+				origSplit.removeFirst ();
+				if (!groupSplit.isEmpty ())
+					groupSplit.removeFirst ();
+			}
+
+			return origSplit.join (" ");
+		}
+
+		QMap<QObject*, QList<QPair<QString, QString> > > BuildGroups (const QObjectList& settables)
+		{
+			QMap<QObject*, QList<QPair<QString, QString> > > result;
 			Q_FOREACH (QObject *obj, settables)
 			{
 				IPlugin2 *ip2 = qobject_cast<IPlugin2*> (obj);
-				const QStringList& firstClass = ip2 ?
+				const QList<QPair<QString, QString> >& firstClass = ip2 ?
 						GetFirstClassPlugins (ip2) :
-						QStringList ();
+						QList<QPair<QString, QString> > ();
 
 				if (obj == Core::Instance ().GetCoreInstanceObject ())
-					result [obj] << "LeechCraft";
+					result [obj] << qMakePair (QString ("LeechCraft"), QString ());
 				else if (!firstClass.isEmpty ())
 					result [obj] = firstClass;
 				else
-					result [obj] << SettingsTab::tr ("General plugins");
+					result [obj] << qMakePair (SettingsTab::tr ("General plugins"), QString ());
 			}
 
 			return result;
@@ -117,17 +137,19 @@ namespace LeechCraft
 		const QObjectList& settables = Core::Instance ()
 				.GetPluginManager ()->GetAllCastableRoots<IHaveSettings*> ();
 
-		const QMap<QObject*, QStringList>& obj2groups = BuildGroups (settables);
-		QSet<QString> allGroups;
-		Q_FOREACH (const QStringList& value, obj2groups.values ())
-			allGroups += QSet<QString>::fromList (value);
+		const QMap<QObject*, QList<QPair<QString, QString> > >& obj2groups = BuildGroups (settables);
+		QSet<QPair<QString, QString> > allGroups;
+		QList<QPair<QString, QString> > list;
+		Q_FOREACH (list, obj2groups.values ())
+			allGroups += QSet<QPair<QString, QString> >::fromList (list);
 
 		QMap<QString, QGroupBox*> group2box;
-		Q_FOREACH (const QString& group, allGroups)
+		QPair<QString, QString> pair;
+		Q_FOREACH (pair, allGroups)
 		{
-			QGroupBox *box = new QGroupBox (group);
+			QGroupBox *box = new QGroupBox (pair.first);
 			box->setLayout (new Util::FlowLayout);
-			group2box [group] = box;
+			group2box [pair.first] = box;
 		}
 
 		QStringList keys = group2box.keys ();
@@ -149,21 +171,25 @@ namespace LeechCraft
 			const QIcon& icon = ii->GetIcon ().isNull () ?
 					QIcon (":/resources/images/defaultpluginicon.svg") :
 					ii->GetIcon ();
-			Q_FOREACH (const QString& group, obj2groups [obj])
+			Q_FOREACH (pair, obj2groups [obj])
 			{
 				QToolButton *butt = new QToolButton;
 				butt->setToolButtonStyle (Qt::ToolButtonTextUnderIcon);
-				butt->setText (ii->GetName ());
+
+				butt->setText (NameForGroup (ii->GetName (),
+						pair.second));
+
 				butt->setToolTip (ii->GetInfo ());
 				butt->setIconSize (QSize (64, 64));
 				butt->setIcon (icon);
 				butt->setProperty ("SettableObject",
 						QVariant::fromValue<QObject*> (obj));
+
 				connect (butt,
 						SIGNAL (released ()),
 						this,
 						SLOT (handleSettingsCalled ()));
-				group2box [group]->layout ()->addWidget (butt);
+				group2box [pair.first]->layout ()->addWidget (butt);
 			}
 		}
 
