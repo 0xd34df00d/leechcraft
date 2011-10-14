@@ -55,9 +55,11 @@ namespace LeechCraft
 			QObject* ParentMultiTabs ();
 			void Remove ();
 			QToolBar* GetToolBar () const;
+			
+			void keyPressEvent (QKeyEvent *event);
 		signals:
 			void needToClose ();
-			void nextFile ();
+			void playPause ();
 		public slots:
 			void handleOpenMediaContent (const QString& val);
 		private slots:

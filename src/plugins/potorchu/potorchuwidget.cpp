@@ -112,6 +112,10 @@ namespace LeechCraft
 					SIGNAL (playItem (int)),
 					ActionPlay_,
 					SLOT (handlePlay ()));
+			connect (this,
+					SIGNAL (playPause ()),
+					ActionPlay_,
+					SLOT (handleTriggered ()));
 			
 			QAction *actionOpenFile = new QAction (proxy->GetIcon ("folder"),
 					tr ("Open File"), this);
@@ -196,6 +200,15 @@ namespace LeechCraft
 		QToolBar* PotorchuWidget::GetToolBar () const
 		{
 			return ToolBar_;
+		}
+		
+		void PotorchuWidget::keyPressEvent (QKeyEvent *event)
+		{
+			switch (event->key ())
+			{
+			case Qt::Key_Space:
+				emit playPause ();
+			}
 		}
 		
 		void PotorchuWidget::handleOpenURL ()
