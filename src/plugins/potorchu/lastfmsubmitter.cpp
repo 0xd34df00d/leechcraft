@@ -51,7 +51,7 @@ namespace LeechCraft
 			doc.setContent (QString::fromUtf8 (reply->readAll ()));
 			QDomElement root = doc.documentElement ();
 			QDomNode node = root.firstChild ().firstChildElement ();
-			qDebug () << node.nodeValue ();
+			qDebug () << Q_FUNC_INFO << node.nodeValue ();
 			
 		}
 	}

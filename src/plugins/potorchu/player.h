@@ -72,6 +72,7 @@ namespace LeechCraft
 			void next ();
 			void prev ();
 			void separateDialog ();
+			void handleTimeout ();
 		signals:
 			void timeout ();
 		};

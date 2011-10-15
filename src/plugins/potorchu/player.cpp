@@ -53,6 +53,10 @@ namespace LeechCraft
 					SIGNAL (timeout ()),
 					this,
 					SIGNAL (timeout ()));
+			connect (Poller_,
+					SIGNAL (timeout ()),
+					this,
+					SLOT (handleTimeout ()));
 			Poller_->start (100);
 		}
 		
@@ -156,9 +160,6 @@ namespace LeechCraft
 		
 		void Player::setPosition (int pos)
 		{
-			libvlc_media_t *m = libvlc_media_list_media (ML_);
-			if (m == NULL)
-				return;
 			float poss = (float) pos / (float) pos_slider_max;
 			libvlc_media_player_set_position (MP_, poss);
 		}
@@ -174,7 +175,12 @@ namespace LeechCraft
 			SeparatePlayerWidget *w = new SeparatePlayerWidget (MP_, this);
 			w->show ();
 		}
-
+		
+		void Player::handleTimeout ()
+		{
+			if (libvlc_media_player_get_time (MP_) > libvlc_media_player_get_length (MP_) - 1000)
+				next ();
+		}
 	}
 }
 

@@ -58,12 +58,13 @@ namespace LeechCraft
 		
 		void PlayListModel::SetCurrentIndex (int val)
 		{
-			CurrentIndex_ = val;
 			//TODO: a temporary solution. fix it later
 			if (val == rowCount ())
 			{
 				CurrentIndex_ = 0;
 			}
+			else
+				CurrentIndex_ = val;
 		}
 		
 		libvlc_media_t *PlayListModel::CurrentMedia ()

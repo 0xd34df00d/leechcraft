@@ -187,12 +187,6 @@ namespace LeechCraft
 			const QTime& currTime = Ui_->Player_->Time ();
 			const QTime& length = Ui_->Player_->Length ();
 			Ui_->TimeStamp_->setText ("[" + currTime.toString () + "/" + length.toString () + "]");
-
-			if (length == currTime && Ui_->Player_->IsPlaying ())
-			{
-				Ui_->Player_->next ();
-				LFSubmitter_->NowPlaying (Ui_->Player_->Media ());
-			}
 		}
 		
 		PotorchuWidget::~PotorchuWidget ()
