@@ -30,6 +30,7 @@ INCLUDE_DIRECTORIES (
 	${VLC_INCLUDE_DIR}
 	)
 SET (SRCS
+	separateplayerwidget.cpp
 	playlistaddmenu.cpp
 	lastfmsubmitter.cpp
 	playlistmodel.cpp
@@ -43,6 +44,7 @@ SET (SRCS
 	potorchu.cpp
 	)
 SET (HEADERS
+	separateplayerwidget.h
 	playlistaddmenu.h
 	lastfmsubmitter.h
 	playlistmodel.h

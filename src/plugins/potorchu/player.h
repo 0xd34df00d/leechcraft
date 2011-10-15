@@ -70,6 +70,7 @@ namespace LeechCraft
 			void playItem (int item);
 			void next ();
 			void prev ();
+			void separateDialog ();
 		signals:
 			void timeout ();
 		};

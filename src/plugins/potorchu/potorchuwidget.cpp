@@ -100,6 +100,10 @@ namespace LeechCraft
 					SIGNAL (pause ()),
 					Ui_->Player_,
 					SLOT (pause ()));
+			connect (actionStop,
+					SIGNAL (triggered (bool)),
+					Ui_->Player_,
+					SLOT (stop ()));
 			connect (actionNext,
 					SIGNAL (triggered (bool)),
 					Ui_->Player_,
@@ -123,11 +127,15 @@ namespace LeechCraft
 					tr ("Open URL"), this);
 			QAction *playList = new QAction (proxy->GetIcon ("itemlist"),
 					tr ("Playlist"), this);
+			QAction *separateDialog = new QAction (proxy->GetIcon ("fullscreen"),
+					tr ("Open in the separate dialog"), this);
+			
 			playList->setCheckable (true);
 			
 			ToolBar_->addAction (actionOpenFile);
 			ToolBar_->addAction (actionOpenURL);
 			ToolBar_->addAction (playList);
+			ToolBar_->addAction (separateDialog);
 			
 			connect (actionOpenFile,
 					SIGNAL (triggered (bool)),
@@ -141,6 +149,10 @@ namespace LeechCraft
 					SIGNAL (triggered (bool)),
 					this,
 					SLOT (handlePlaylist ()));
+			connect (separateDialog,
+					SIGNAL (triggered (bool)),
+					Ui_->Player_,
+					SLOT (separateDialog ()));
 		}
 
 		void PotorchuWidget::handleStop ()
@@ -163,8 +175,8 @@ namespace LeechCraft
 			const QTime& length = Ui_->Player_->Length ();
 			Ui_->TimeStamp_->setText ("[" + currTime.toString () + "/" + length.toString () + "]");
 
-			if (length == currTime)
-				Ui_->Player_->next ();	
+			if (length == currTime && Ui_->Player_->IsPlaying ())
+				Ui_->Player_->next ();
 		}
 		
 		PotorchuWidget::~PotorchuWidget ()
@@ -224,7 +236,6 @@ namespace LeechCraft
 		{
 			Ui_->PlayListWidget_->GetPlayListView ()->addItem (val);
 		}
-
 		
 		void PotorchuWidget::handleOpenFile ()
 		{
@@ -238,7 +249,5 @@ namespace LeechCraft
 		{
 			Ui_->PlayListWidget_->setVisible (qobject_cast<QAction *> (sender ())->isChecked ());
 		}
-
-
 	}
 }

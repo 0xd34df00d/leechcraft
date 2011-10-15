@@ -21,6 +21,7 @@
 #include <QString>
 #include <QDebug>
 
+#include "separateplayerwidget.h"
 
 namespace LeechCraft
 {
@@ -30,7 +31,6 @@ namespace LeechCraft
 			
 		Player::Player (QWidget *parent, Qt::WindowFlags f)
 		: QFrame (parent, f)
-		, IsPlaying_ (false)
 		, PlayListView_ (NULL)
 		{
 			const char * const vlc_args[] = {
@@ -47,6 +47,7 @@ namespace LeechCraft
 			
 			ML_ = libvlc_media_list_new (VLCInstance_);
 			libvlc_media_list_player_set_media_list (MLP_, ML_);
+			libvlc_media_player_set_xwindow (MP_, winId ());
 			
 			connect (Poller_,
 					SIGNAL (timeout ()),
@@ -123,9 +124,7 @@ namespace LeechCraft
 		
 		void Player::play ()
 		{
-			libvlc_media_player_set_xwindow (MP_, winId ());
 			libvlc_media_list_player_play (MLP_);
-			IsPlaying_ = true;
 		}
 
 		void Player::stop ()
@@ -164,6 +163,13 @@ namespace LeechCraft
 			libvlc_media_list_player_play_item_at_index (MLP_, item);
 			PlayListView_->SetCurrentIndex (item);
 		}
+		
+		void Player::separateDialog ()
+		{
+			SeparatePlayerWidget *w = new SeparatePlayerWidget (MP_, this);
+			w->show ();
+		}
+
 	}
 }
 
