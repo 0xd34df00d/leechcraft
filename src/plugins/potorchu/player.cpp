@@ -57,7 +57,7 @@ namespace LeechCraft
 					SIGNAL (timeout ()),
 					this,
 					SLOT (handleTimeout ()));
-			Poller_->start (100);
+			Poller_->start (300);
 		}
 		
 		libvlc_media_list_t *Player::PlayList ()
