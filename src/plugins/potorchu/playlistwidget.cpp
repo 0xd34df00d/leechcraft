@@ -34,6 +34,7 @@ namespace LeechCraft
 		, Ui_ (new Ui::PlayListWidget) 
 		{
 			Ui_->setupUi (this);
+			setVisible (false);
 			ActionBar_ = new QToolBar (Ui_->ActionFrame_);
 			Ui_->ActionFrame_->setFrameStyle (QFrame::NoFrame);
 			ActionBar_->setToolButtonStyle (Qt::ToolButtonIconOnly);

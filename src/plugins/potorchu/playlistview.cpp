@@ -59,7 +59,9 @@ namespace LeechCraft
 		{
 			PlayListModel_->SetCurrentIndex (val);
 			setCurrentIndex (PlayListModel_->index (val));
-			//if (val >=0 && val < RowCount ())
+			
+			//BUG: Don't uncomment it
+			//if (val >= 0 && val < RowCount ())
 			//	emit playItem (val);
 		}
 

@@ -155,4 +155,3 @@ namespace Potorchu
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_potorchu, LeechCraft::Potorchu::Plugin);
-

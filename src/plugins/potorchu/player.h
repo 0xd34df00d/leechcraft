@@ -53,6 +53,7 @@ namespace LeechCraft
 			
 			libvlc_instance_t *Instance ();
 			libvlc_media_list_t *PlayList ();
+			libvlc_media_t *Media ();
 			void SetPlayListView (PlayListView *playListView);
 			
 			int Volume () const;

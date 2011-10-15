@@ -66,6 +66,11 @@ namespace LeechCraft
 			return VLCInstance_;
 		}
 		
+		libvlc_media_t *Player::Media ()
+		{
+			return libvlc_media_list_media (ML_);
+		}
+		
 		void Player::SetPlayListView (PlayListView *playListView)
 		{
 			PlayListView_ = playListView;

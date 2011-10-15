@@ -57,6 +57,9 @@ namespace LeechCraft
 			QToolBar* GetToolBar () const;
 			
 			void keyPressEvent (QKeyEvent *event);
+		private:
+			void InitCommandFrame (ICoreProxy_ptr);
+			void InitToolBar (ICoreProxy_ptr);
 		signals:
 			void needToClose ();
 			void playPause ();

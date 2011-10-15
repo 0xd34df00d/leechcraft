@@ -42,12 +42,11 @@ namespace LeechCraft
 		, ToolBar_ (new QToolBar (this))
 		, Ui_ (new Ui::PotorchuWidget)
 		, LFSubmitter_ (new LastFMSubmitter (this))
+		, ActionPlay_ (NULL)
 		{	
 			Ui_->setupUi (this);
 			Ui_->Player_->setFrameStyle (QFrame::Box | QFrame::Sunken);
 			Ui_->CommandFrame_->setFrameStyle (QFrame::NoFrame);
-			Ui_->Player_->SetPlayListView (Ui_->PlayListWidget_->GetPlayListView ());
-			Ui_->PlayListWidget_->setVisible (false);
 			
 			connect (Ui_->Player_,
 					SIGNAL (timeout ()),
@@ -61,57 +60,18 @@ namespace LeechCraft
 					SIGNAL (sliderMoved (int)),
 					Ui_->Player_,
 					SLOT (setVolume (int)));
-
-			connect (Ui_->PlayListWidget_,
-					SIGNAL (playItem (int)),
-					Ui_->Player_,
-					SLOT (playItem (int)));
 		}
 		
 		void PotorchuWidget::Init (ICoreProxy_ptr proxy)
 		{
 			Ui_->PlayListWidget_->Init (proxy);
-			QToolBar *bar = new QToolBar (Ui_->CommandFrame_);
-			bar->setToolButtonStyle (Qt::ToolButtonIconOnly);
-			bar->setIconSize (QSize (32, 32));
-			ActionPlay_ = new PlayPauseAction (QPair<QIcon, QIcon> (proxy->GetIcon ("start"),
-							proxy->GetIcon ("pause")),
-					Ui_->CommandFrame_);
-			QAction *actionStop = new QAction (proxy->GetIcon ("media_stop"),
-					tr ("Stop"), Ui_->CommandFrame_);
-			QAction *actionNext = new QAction (proxy->GetIcon ("media_skip_forward"),
-					tr ("Next"), Ui_->CommandFrame_);
-			QAction *actionPrev = new QAction (proxy->GetIcon ("media_skip_backward"),
-					tr ("Previous"), Ui_->CommandFrame_);
-			bar->addAction (actionPrev);
-			bar->addAction (ActionPlay_);
-			bar->addAction (actionStop);
-			bar->addAction (actionNext);
-	
-			connect (actionStop,
-					SIGNAL (triggered (bool)),
-					this,
-					SLOT (handleStop ()));
-			connect (ActionPlay_,
-					SIGNAL (play ()),
+			Ui_->Player_->SetPlayListView (Ui_->PlayListWidget_->GetPlayListView ());
+			
+			connect (Ui_->PlayListWidget_,
+					SIGNAL (playItem (int)),
 					Ui_->Player_,
-					SLOT (play ()));
-			connect (ActionPlay_,
-					SIGNAL (pause ()),
-					Ui_->Player_,
-					SLOT (pause ()));
-			connect (actionStop,
-					SIGNAL (triggered (bool)),
-					Ui_->Player_,
-					SLOT (stop ()));
-			connect (actionNext,
-					SIGNAL (triggered (bool)),
-					Ui_->Player_,
-					SLOT (next ()));
-			connect (actionPrev,
-					SIGNAL (triggered (bool)),
-					Ui_->Player_,
-					SLOT (prev ()));
+					SLOT (playItem (int)));
+
 			connect (Ui_->PlayListWidget_,
 					SIGNAL (playItem (int)),
 					ActionPlay_,
@@ -121,6 +81,12 @@ namespace LeechCraft
 					ActionPlay_,
 					SLOT (handleTriggered ()));
 			
+			InitToolBar (proxy);
+			InitCommandFrame (proxy);
+		}
+		
+		void PotorchuWidget::InitToolBar (ICoreProxy_ptr proxy)
+		{
 			QAction *actionOpenFile = new QAction (proxy->GetIcon ("folder"),
 					tr ("Open File"), this);
 			QAction *actionOpenURL = new QAction (proxy->GetIcon ("networkmonitor_plugin"),
@@ -154,6 +120,53 @@ namespace LeechCraft
 					Ui_->Player_,
 					SLOT (separateDialog ()));
 		}
+		
+		void PotorchuWidget::InitCommandFrame (ICoreProxy_ptr proxy)
+		{
+			QToolBar *bar = new QToolBar (Ui_->CommandFrame_);
+			bar->setToolButtonStyle (Qt::ToolButtonIconOnly);
+			bar->setIconSize (QSize (32, 32));
+			
+			ActionPlay_ = new PlayPauseAction (QPair<QIcon, QIcon> (proxy->GetIcon ("start"),
+							proxy->GetIcon ("pause")),
+					Ui_->CommandFrame_);
+			QAction *actionStop = new QAction (proxy->GetIcon ("media_stop"),
+					tr ("Stop"), Ui_->CommandFrame_);
+			QAction *actionNext = new QAction (proxy->GetIcon ("media_skip_forward"),
+					tr ("Next"), Ui_->CommandFrame_);
+			QAction *actionPrev = new QAction (proxy->GetIcon ("media_skip_backward"),
+					tr ("Previous"), Ui_->CommandFrame_);
+			
+			bar->addAction (actionPrev);
+			bar->addAction (ActionPlay_);
+			bar->addAction (actionStop);
+			bar->addAction (actionNext);
+	
+			connect (actionStop,
+					SIGNAL (triggered (bool)),
+					this,
+					SLOT (handleStop ()));
+			connect (actionStop,
+					SIGNAL (triggered (bool)),
+					Ui_->Player_,
+					SLOT (stop ()));
+			connect (actionNext,
+					SIGNAL (triggered (bool)),
+					Ui_->Player_,
+					SLOT (next ()));
+			connect (actionPrev,
+					SIGNAL (triggered (bool)),
+					Ui_->Player_,
+					SLOT (prev ()));
+			connect (ActionPlay_,
+					SIGNAL (play ()),
+					Ui_->Player_,
+					SLOT (play ()));
+			connect (ActionPlay_,
+					SIGNAL (pause ()),
+					Ui_->Player_,
+					SLOT (pause ()));
+		}
 
 		void PotorchuWidget::handleStop ()
 		{
@@ -176,7 +189,10 @@ namespace LeechCraft
 			Ui_->TimeStamp_->setText ("[" + currTime.toString () + "/" + length.toString () + "]");
 
 			if (length == currTime && Ui_->Player_->IsPlaying ())
+			{
 				Ui_->Player_->next ();
+				LFSubmitter_->NowPlaying (Ui_->Player_->Media ());
+			}
 		}
 		
 		PotorchuWidget::~PotorchuWidget ()
