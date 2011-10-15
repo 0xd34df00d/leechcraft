@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011 Minh Ngo
+ * Copyright (C) 2011  Minh Ngo
  * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,33 +17,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "xmlsettingsmanager.h"
-#include <QApplication>
+#ifndef LASTFMSUBMITTER_H
+#define LASTFMSUBMITTER_H
+
+#include <QObject>
+#include <QtNetwork/QNetworkAccessManager>
+#include <QtNetwork/QNetworkReply>
+#include <vlc/vlc.h>
+
+#include <QDebug>
 
 namespace LeechCraft
 {
 	namespace Potorchu
 	{
-		XmlSettingsManager::XmlSettingsManager ()
+		class LastFMSubmitter : public QObject
 		{
-			Util::BaseSettingsManager::Init ();
-		}
-
-		XmlSettingsManager& XmlSettingsManager::Instance ()
-		{
-			static XmlSettingsManager xsm;
-			return xsm;
-		}
-
-		void XmlSettingsManager::EndSettings (QSettings* settings) const
-		{
-		}
-
-		QSettings* XmlSettingsManager::BeginSettings () const
-		{
-			QSettings *settings = new QSettings (QCoreApplication::organizationName (),
-					QCoreApplication::applicationName () + "_Potorchu");
-			return settings;
-		}
+			Q_OBJECT
+			QNetworkAccessManager *Manager_;
+		public:
+			LastFMSubmitter (QObject* parent = 0);
+			void NowPlaying (libvlc_media_t *m);
+		private slots:
+			void getToken (QNetworkReply *reply);
+		};
 	}
 }
+
+#endif // LASTFMSUBMITTER_H

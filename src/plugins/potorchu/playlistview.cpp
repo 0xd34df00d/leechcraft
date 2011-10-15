@@ -25,8 +25,8 @@ namespace LeechCraft
 	{
 		PlayListView::PlayListView (QWidget *parent)
 		: QListView (parent)
-		, PlayListModel_ (new PlayListModel (this))
 		{
+			PlayListModel_ = new PlayListModel (this);
 			setModel (PlayListModel_);
 			setModelColumn (0);
 			connect (this,
@@ -35,28 +35,88 @@ namespace LeechCraft
 					SLOT (handleDoubleClicked (QModelIndex)));
 		}
 		
-		void PlayListView::nextFile ()
+		bool PlayListView::SetPlayList (libvlc_media_list_t *ML)
 		{
-			const QModelIndex& index = currentIndex ();
-			emit play (PlayListModel_->index (index.row () + 1).data (Qt::EditRole).toString ());
-			setCurrentIndex (PlayListModel_->index (index.row () + 1));
+			return PlayListModel_->SetPlayList (ML);
+		}
+		
+		int PlayListView::RowCount () const
+		{
+			return PlayListModel_->rowCount ();
+		}
+		
+		bool PlayListView::SetInstance (libvlc_instance_t *VLCInstance)
+		{
+			return PlayListModel_->SetInstance (VLCInstance);
+		}
+		
+		int PlayListView::CurrentIndex () const
+		{
+			return PlayListModel_->CurrentIndex ();
+		}
+		
+		void PlayListView::SetCurrentIndex (int val)
+		{
+			PlayListModel_->SetCurrentIndex (val);
+			setCurrentIndex (PlayListModel_->index (val));
+			//emit playItem (CurrentIndex ());
+			//BUG: Don't uncomment it
+			//if (val >= 0 && val < RowCount ())
+			//	emit playItem (val);
 		}
 
 		void PlayListView::addItem (const QString& item)
 		{
-			PlayListModel_->setStringList (PlayListModel_->stringList () << item);
+			if (PlayListModel_->addItem(item) && PlayListModel_->rowCount () == 1)
+			{
+				SetCurrentIndex(0);
+				emit playItem (0);
+			}
+		}
+		
+		libvlc_media_t *PlayListView::CurrentMedia ()
+		{
+			return PlayListModel_->CurrentMedia ();
 		}
 		
 		void PlayListView::handleDoubleClicked (const QModelIndex& index)
 		{
-			emit play (index.data (Qt::EditRole).toString ());
+			emit playItem (index.row ());
 		}
 		
 		void PlayListView::removeSelectedRows ()
 		{
 			const QModelIndexList& indexList = selectedIndexes ();
 			Q_FOREACH (const QModelIndex& index, indexList)
-				PlayListModel_->removeRow (index.row ());
+				PlayListModel_->removeRows (index.row ());
+		}
+		
+		void PlayListView::keyPressEvent (QKeyEvent *event)
+		{
+			const QModelIndex& curIndex = currentIndex ();
+			switch (event->key ())
+			{
+			case Qt::Key_Delete:
+				removeSelectedRows ();
+				break;
+			case Qt::Key_Return:
+				emit playItem (curIndex.row ());
+				break;
+			case Qt::Key_Up:
+				setCurrentIndex (model ()->index (curIndex.row () - 1, curIndex.column ()));
+				break;
+			case Qt::Key_Down:
+				setCurrentIndex (model ()->index (curIndex.row () + 1, curIndex.column ()));
+				break;
+			}
+		}
+		
+		void PlayListView::moveSelect (int x, int y)
+		{
+			if ( x < 0 || y < 1 || x >= model ()->rowCount ()
+					|| y >= model ()->columnCount ())
+				return;
+			setCurrentIndex (model ()->index (x, y));
 		}
 	}
 }

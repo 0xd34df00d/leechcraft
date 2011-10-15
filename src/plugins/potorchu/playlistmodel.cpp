@@ -26,30 +26,58 @@ namespace LeechCraft
 	{
 		PlayListModel::PlayListModel (QObject* parent)
 		: QStringListModel (parent)
+		, VLCInstance_ (NULL)
+		, ML_ (NULL)
 		{
-			const char * const vlc_args[] = {
-					"-I", "dummy",
-					"--ignore-config",
-					"--extraintf=logger",
-					"--verbose=2"};
-			VLCInstance_ = libvlc_new (sizeof (vlc_args) / sizeof (vlc_args[0]), vlc_args);
+			CurrentIndex_ = -1;
 		}
 		
 		PlayListModel::~PlayListModel ()
 		{
-			libvlc_release (VLCInstance_);
 		}
 		
-		Qt::ItemFlags PlayListModel::flags (const QModelIndex& index) const
+		bool PlayListModel::SetPlayList (libvlc_media_list_t *ML)
 		{
-			return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
+			ML_ = ML;
 		}
 		
-		QVariant PlayListModel::data (const QModelIndex& index, int role) const
+		bool PlayListModel::SetInstance (libvlc_instance_t *VLCInstance)
 		{
-			if (role == Qt::DisplayRole)
+			VLCInstance_ = VLCInstance;
+		}
+		
+		int PlayListModel::rowCount (const QModelIndex& parent) const
+		{
+			return libvlc_media_list_count (ML_);
+		}
+		
+		int PlayListModel::CurrentIndex () const
+		{
+			return CurrentIndex_;
+		}
+		
+		void PlayListModel::SetCurrentIndex (int val)
+		{
+			//TODO: a temporary solution. fix it later
+			if (val == rowCount ())
 			{
-				libvlc_media_t *t = libvlc_media_new_path (VLCInstance_, data (index, Qt::EditRole).toString ().toAscii ());
+				CurrentIndex_ = 0;
+			}
+			else
+				CurrentIndex_ = val;
+		}
+		
+		libvlc_media_t *PlayListModel::CurrentMedia ()
+		{
+			return libvlc_media_list_item_at_index (ML_, CurrentIndex_);
+		}
+		
+		bool PlayListModel::insertRows (int row, const QString& fileName)
+		{
+			if (!libvlc_media_list_insert_media (ML_,
+					libvlc_media_new_path (VLCInstance_, fileName.toAscii ()), row))
+			{
+				libvlc_media_t *t = libvlc_media_list_item_at_index (ML_, row);
 				libvlc_media_parse (t);
 				QString temp = XmlSettingsManager::Instance ().property ("PlayListTemplate").toString ();
 				const QString& artist = QString (libvlc_media_get_meta (t, libvlc_meta_Artist));
@@ -62,11 +90,32 @@ namespace LeechCraft
 				temp.replace ("%title%", title);
 				temp.replace ("%genre%", genre);
 				temp.replace ("%date%", date);
-				libvlc_media_release (t);
 
-				return temp;
+				QStringListModel::insertRows (row, 1);
+				setData (index (row), temp);
+				return true;
 			}
-			return QStringListModel::data (index, role);
+			return false;
+		}
+		
+		bool PlayListModel::removeRows (int row)
+		{
+			if (!libvlc_media_list_remove_index (ML_, row))
+			{
+				QStringListModel::removeRows (row, 1);
+				return true;
+			}
+			return false;
+		}
+		
+		bool PlayListModel::addItem (const QString& item)
+		{
+			return insertRows (rowCount (), item);
+		}
+		
+		Qt::ItemFlags PlayListModel::flags (const QModelIndex& index) const
+		{
+			return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
 		}
 	}
 }

@@ -20,10 +20,10 @@
 #include "playlistwidget.h"
 #include <QToolBar>
 #include <QToolButton>
-#include <QMenu>
-#include <QFileDialog>
+#include <vlc/vlc.h>
 
 #include "chooseurldialog.h"
+#include "playlistaddmenu.h"
 
 namespace LeechCraft
 {
@@ -34,18 +34,15 @@ namespace LeechCraft
 		, Ui_ (new Ui::PlayListWidget) 
 		{
 			Ui_->setupUi (this);
+			setVisible (false);
 			ActionBar_ = new QToolBar (Ui_->ActionFrame_);
 			Ui_->ActionFrame_->setFrameStyle (QFrame::NoFrame);
 			ActionBar_->setToolButtonStyle (Qt::ToolButtonIconOnly);
 			ActionBar_->setIconSize (QSize (16, 16));
 			connect (Ui_->PlayListView_,
-					SIGNAL (play (QString)),
+					SIGNAL (playItem (int)),
 					this,
-					SIGNAL (play (QString)));
-			connect (this,
-					SIGNAL (nextFile ()),
-					Ui_->PlayListView_,
-					SLOT (nextFile ()));
+					SIGNAL (playItem (int)));
 		}
 		
 		PlayListWidget::~PlayListWidget ()
@@ -64,17 +61,8 @@ namespace LeechCraft
 			actionAdd->setIcon (proxy->GetIcon ("add"));
 			actionAdd->setPopupMode (QToolButton::InstantPopup);
 			ActionBar_->addWidget (actionAdd);
-			QMenu *addMenu = new QMenu (this);
 			
-			QAction *addFiles = new QAction (tr ("Add files"), this);
-			QAction *addFolder = new QAction (tr ("Add folder"), this);
-			QAction *addURL = new QAction (tr ("Add URL"), this);
-			
-			addMenu->addAction (addFiles);
-			addMenu->addAction (addFolder);
-			addMenu->addAction (addURL);
-			
-			actionAdd->setMenu (addMenu);
+			actionAdd->setMenu (new PlayListAddMenu (Ui_->PlayListView_, this));
 			QAction *actionRemove = new QAction (proxy->GetIcon ("remove"),
 					tr ("Remove"), this);
 			ActionBar_->addAction (actionRemove);
@@ -83,44 +71,6 @@ namespace LeechCraft
 					SIGNAL (triggered (bool)),
 					Ui_->PlayListView_,
 					SLOT (removeSelectedRows ()));
-			
-			connect (addURL,
-					SIGNAL (triggered (bool)),
-					this,
-					SLOT (handleAddUrl ()));
-			connect (addFiles,
-					SIGNAL (triggered (bool)),
-					this,
-					SLOT (handleAddFiles ()));
-			connect (addFolder,
-					SIGNAL (triggered (bool)),
-					this,
-					SLOT (handleAddFolder ()));
 		}
-		
-		void PlayListWidget::handleAddFiles ()
-		{
-			const QStringList& fileNames = QFileDialog::getOpenFileNames (this,
-					tr ("Choose file"), QDir::homePath ());
-			Q_FOREACH (const QString& fileName, fileNames)
-				Ui_->PlayListView_->addItem (fileName);
-		}
-
-		void PlayListWidget::handleAddFolder ()
-		{
-				//TODO Recursive directory parsing
-		}
-		
-		void PlayListWidget::handleAddUrl ()
-		{
-			ChooseURLDialog *d = new ChooseURLDialog (this);
-			if (d->exec () == QDialog::Accepted)
-			{
-				const QString& url = d->GetUrl ();
-				Ui_->PlayListView_->addItem (url);
-			}
-		}
-
-
 	}
 }

@@ -21,7 +21,6 @@
 #define PLAYLISTMODEL_H
 
 #include <QStringListModel>
-#include <QStringList>
 #include <vlc/vlc.h>
 #include <QDebug>
 
@@ -33,12 +32,26 @@ namespace LeechCraft
 		{
 			Q_OBJECT
 			libvlc_instance_t *VLCInstance_;
+			libvlc_media_list_t *ML_;
+			int CurrentIndex_;
 		public:
 			PlayListModel (QObject *parent);
 			virtual ~PlayListModel ();
 			
+			bool SetPlayList (libvlc_media_list_t *ML);
+			bool SetInstance (libvlc_instance_t *VLCInstance);
+			
+			int CurrentIndex () const;
+			libvlc_media_t *CurrentMedia ();
+			void SetCurrentIndex (int val);
+			
+			int rowCount (const QModelIndex& parent = QModelIndex ()) const;
+			bool insertRows (int row, const QString& fileName);
+			bool removeRows (int row);
 			Qt::ItemFlags flags (const QModelIndex& index) const;
-			QVariant data (const QModelIndex& index, int role = Qt::DisplayRole) const;
+	
+		public slots:
+			bool addItem (const QString& item);
 		};
 	}
 }

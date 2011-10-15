@@ -22,6 +22,7 @@
 
 #include <QWidget>
 #include <QToolBar>
+#include <QFileInfoList>
 #include <interfaces/core/icoreproxy.h>
 
 #include "ui_playlistwidget.h"
@@ -40,13 +41,8 @@ namespace LeechCraft
 			virtual ~PlayListWidget ();
 			void Init (ICoreProxy_ptr proxy);
 			PlayListView *GetPlayListView ();
-		private slots:
-			void handleAddUrl ();
-			void handleAddFolder ();
-			void handleAddFiles ();
 		signals:
-			void play (const QString& file);
-			void nextFile ();
+			void playItem (int item);
 		};
 	}
 }

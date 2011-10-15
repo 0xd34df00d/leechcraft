@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011 Minh Ngo
+ * Copyright (C) 2011  Minh Ngo
  * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,33 +17,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "xmlsettingsmanager.h"
-#include <QApplication>
+#ifndef SEPARATEPLAYERWIDGET_H
+#define SEPARATEPLAYERWIDGET_H
+
+#include <QWidget>
+#include <QCloseEvent>
+#include <vlc/vlc.h>
 
 namespace LeechCraft
 {
 	namespace Potorchu
 	{
-		XmlSettingsManager::XmlSettingsManager ()
+		class SeparatePlayerWidget : public QWidget
 		{
-			Util::BaseSettingsManager::Init ();
-		}
-
-		XmlSettingsManager& XmlSettingsManager::Instance ()
-		{
-			static XmlSettingsManager xsm;
-			return xsm;
-		}
-
-		void XmlSettingsManager::EndSettings (QSettings* settings) const
-		{
-		}
-
-		QSettings* XmlSettingsManager::BeginSettings () const
-		{
-			QSettings *settings = new QSettings (QCoreApplication::organizationName (),
-					QCoreApplication::applicationName () + "_Potorchu");
-			return settings;
-		}
+			Q_OBJECT
+			
+			QWidget *PlayerWidget_;
+			libvlc_media_player_t *MP_;
+		public:
+			SeparatePlayerWidget (libvlc_media_player_t *MP, QWidget *playerWidget, QWidget *parent = 0);
+		protected:
+			void closeEvent (QCloseEvent *event);
+		private:
+			void changeWidget (QWidget *w);
+		};
 	}
 }
+#endif // SEPARATEPLAYERWIDGET_H

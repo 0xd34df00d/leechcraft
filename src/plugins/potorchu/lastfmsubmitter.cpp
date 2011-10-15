@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011 Minh Ngo
+ * Copyright (C) 2011  Minh Ngo
  * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,33 +17,42 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "xmlsettingsmanager.h"
-#include <QApplication>
+#include "lastfmsubmitter.h"
+#include <QtXml/QDomDocument>
 
 namespace LeechCraft
 {
 	namespace Potorchu
 	{
-		XmlSettingsManager::XmlSettingsManager ()
+		const char *api_key = "be076efd1c241366f27fde6fd024e567";
+		
+		LastFMSubmitter::LastFMSubmitter (QObject* parent)
+		: QObject (parent)
 		{
-			Util::BaseSettingsManager::Init ();
+			Manager_ = NULL;
 		}
-
-		XmlSettingsManager& XmlSettingsManager::Instance ()
+		
+		void LastFMSubmitter::NowPlaying (libvlc_media_t *m)
 		{
-			static XmlSettingsManager xsm;
-			return xsm;
+			const QUrl& apiUrl = QUrl (QString ("http://ws.audioscrobbler.com/2.0/?method=auth.getToken&api_key=")
+					+ api_key);
+	
+			Manager_ = new QNetworkAccessManager (this);
+			connect (Manager_,	
+					SIGNAL (finished (QNetworkReply*)),
+					this,
+					SLOT (getToken (QNetworkReply*)));
+			Manager_->get (QNetworkRequest (apiUrl));
 		}
-
-		void XmlSettingsManager::EndSettings (QSettings* settings) const
+		
+		void LastFMSubmitter::getToken (QNetworkReply *reply)
 		{
-		}
-
-		QSettings* XmlSettingsManager::BeginSettings () const
-		{
-			QSettings *settings = new QSettings (QCoreApplication::organizationName (),
-					QCoreApplication::applicationName () + "_Potorchu");
-			return settings;
+			QDomDocument doc;
+			doc.setContent (QString::fromUtf8 (reply->readAll ()));
+			QDomElement root = doc.documentElement ();
+			QDomNode node = root.firstChild ().firstChildElement ();
+			qDebug () << Q_FUNC_INFO << node.nodeValue ();
+			
 		}
 	}
 }

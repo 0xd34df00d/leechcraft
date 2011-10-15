@@ -37,7 +37,6 @@ namespace Potorchu
 	public slots:
 		void handlePause ();
 		void handlePlay ();
-	private slots:
 		void handleTriggered ();
 	signals:
 		void play ();

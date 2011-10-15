@@ -18,6 +18,7 @@ ENDIF (NOT QT_USE_FILE)
 SET (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 SET (QT_USE_QTGUI TRUE)
+SET (QT_USE_NETWORK TRUE)
 INCLUDE (${QT_USE_FILE})
 FIND_PACKAGE (VLC REQUIRED)
 
@@ -29,6 +30,9 @@ INCLUDE_DIRECTORIES (
 	${VLC_INCLUDE_DIR}
 	)
 SET (SRCS
+	separateplayerwidget.cpp
+	playlistaddmenu.cpp
+	lastfmsubmitter.cpp
 	playlistmodel.cpp
 	playlistview.cpp
 	xmlsettingsmanager.cpp
@@ -40,6 +44,9 @@ SET (SRCS
 	potorchu.cpp
 	)
 SET (HEADERS
+	separateplayerwidget.h
+	playlistaddmenu.h
+	lastfmsubmitter.h
 	playlistmodel.h
 	playlistview.h
 	xmlsettingsmanager.h
