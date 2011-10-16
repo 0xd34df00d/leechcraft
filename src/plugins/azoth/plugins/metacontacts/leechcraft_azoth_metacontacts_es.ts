@@ -29,7 +29,7 @@
     <message>
         <location filename="core.cpp" line="210"/>
         <source>Enter the name of the new metacontact uniting %1 and %2:</source>
-        <translation type="unfinished"></translation>
+        <translation>Introduzca el nombre del metacontacto nuevo uniendo %1 y %2:</translation>
     </message>
 </context>
 <context>
