@@ -42,7 +42,7 @@ namespace Laure
 	QSettings* XmlSettingsManager::BeginSettings () const
 	{
 		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Laure");
+				QCoreApplication::applicationName () + "_laure");
 		return settings;
 	}
 }

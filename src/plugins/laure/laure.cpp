@@ -35,7 +35,7 @@ namespace Laure
 		QCoreApplication::setApplicationVersion ("0.4.95");
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
-				"Lauresettings.xml");
+				"lauresettings.xml");
 
 		Proxy_ = proxy;
 
