@@ -64,6 +64,8 @@ namespace Laure
 	{
 		const QString& fileDir = QFileDialog::getExistingDirectory (this,
 				tr ("Choose directory"), QDir::homePath ());
+		if (fileDir.isEmpty ())
+			return;
 		const QFileInfoList& fileInfoList = StoragedFiles (fileDir);
 		Q_FOREACH (const QFileInfo& fileInfo, fileInfoList)
 			PlayListView_->addItem (fileInfo.absoluteFilePath ());

@@ -41,7 +41,8 @@ namespace Laure
 				"--verbose=2"
 		};
 		Poller_ = new QTimer (this);
-		VLCInstance_ = libvlc_new (sizeof (vlc_args) / sizeof (vlc_args[0]), vlc_args);
+		VLCInstance_ = libvlc_new (sizeof (vlc_args)
+				/ sizeof (vlc_args[0]), vlc_args);
 		MLP_ = libvlc_media_list_player_new (VLCInstance_);
 		MP_ = libvlc_media_player_new (VLCInstance_);
 		libvlc_media_list_player_set_media_player (MLP_, MP_);
