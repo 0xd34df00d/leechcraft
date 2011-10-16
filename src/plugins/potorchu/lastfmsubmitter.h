@@ -21,27 +21,30 @@
 #define LASTFMSUBMITTER_H
 
 #include <QObject>
-#include <QtNetwork/QNetworkAccessManager>
-#include <QtNetwork/QNetworkReply>
+#include <QNetworkAccessManager>
 #include <vlc/vlc.h>
-
-#include <QDebug>
+#include <lastfm.h>
 
 namespace LeechCraft
 {
-	namespace Potorchu
+namespace Potorchu
+{
+	class LastFMSubmitter : public QObject
 	{
-		class LastFMSubmitter : public QObject
-		{
-			Q_OBJECT
-			QNetworkAccessManager *Manager_;
-		public:
-			LastFMSubmitter (QObject* parent = 0);
-			void NowPlaying (libvlc_media_t *m);
-		private slots:
-			void getToken (QNetworkReply *reply);
-		};
-	}
+		Q_OBJECT
+		lastfm::Audioscrobbler *Scrobbler_;
+		QNetworkAccessManager *Manager_;
+	public:
+		LastFMSubmitter (QObject* parent = 0);
+		virtual ~LastFMSubmitter ();
+		
+		bool IsConnected () const;
+		void NowPlaying (libvlc_media_t *m);
+	private slots:
+		void status (int code);
+		void getSessionKey (QNetworkReply *result);
+	};
+}
 }
 
 #endif // LASTFMSUBMITTER_H

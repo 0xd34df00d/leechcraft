@@ -32,6 +32,7 @@ namespace LeechCraft
 		Player::Player (QWidget *parent, Qt::WindowFlags f)
 		: QFrame (parent, f)
 		, PlayListView_ (NULL)
+		, LFSubmitter_ (new LastFMSubmitter (this))
 		{
 			const char * const vlc_args[] = {
 					"-I", "dummy",
@@ -72,7 +73,7 @@ namespace LeechCraft
 		
 		libvlc_media_t *Player::Media ()
 		{
-			return libvlc_media_list_media (ML_);
+			return libvlc_media_player_get_media (MP_);
 		}
 		
 		void Player::SetPlayListView (PlayListView *playListView)
@@ -179,7 +180,10 @@ namespace LeechCraft
 		void Player::handleTimeout ()
 		{
 			if (libvlc_media_player_get_time (MP_) > libvlc_media_player_get_length (MP_) - 1000)
+			{
 				next ();
+				LFSubmitter_->NowPlaying (Media ());
+			}
 		}
 	}
 }

@@ -20,6 +20,7 @@
 #include "potorchu.h"
 #include <QIcon>
 #include <QUrl>
+#include <QCoreApplication>
 #include <util/util.h>
 
 #include "xmlsettingsmanager.h"
@@ -30,6 +31,8 @@ namespace Potorchu
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		QCoreApplication::setApplicationName ("LeechCraftPotorchu");
+		QCoreApplication::setApplicationVersion ("0.4.95");
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"potorchusettings.xml");

@@ -33,7 +33,7 @@ namespace LeechCraft
 			Q_OBJECT
 			PlayListView *PlayListView_;
 		public:
-			PlayListAddMenu (PlayListView *playListView, QWidget* parent);
+			PlayListAddMenu (PlayListView *playListView, QWidget *parent);
 		private slots:
 			void handleAddUrl ();
 			void handleAddFolder ();

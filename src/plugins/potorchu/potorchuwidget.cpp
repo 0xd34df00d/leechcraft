@@ -41,7 +41,6 @@ namespace LeechCraft
 		: QWidget (parent, f)
 		, ToolBar_ (new QToolBar (this))
 		, Ui_ (new Ui::PotorchuWidget)
-		, LFSubmitter_ (new LastFMSubmitter (this))
 		, ActionPlay_ (NULL)
 		{	
 			Ui_->setupUi (this);

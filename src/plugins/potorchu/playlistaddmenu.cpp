@@ -26,7 +26,7 @@ namespace LeechCraft
 {
 	namespace Potorchu
 	{
-		PlayListAddMenu::PlayListAddMenu (PlayListView *playListView, QWidget* parent)
+		PlayListAddMenu::PlayListAddMenu (PlayListView *playListView, QWidget *parent)
 		: QMenu (parent)
 		, PlayListView_ (playListView)
 		{
