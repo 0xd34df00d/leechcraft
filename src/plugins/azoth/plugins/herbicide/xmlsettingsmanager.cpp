@@ -43,7 +43,7 @@ namespace Herbicide
 	QSettings* XmlSettingsManager::BeginSettings () const
 	{
 		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Azoth_Autopaste");
+				QCoreApplication::applicationName () + "_Azoth_Herbicide");
 		return settings;
 	}
 }
