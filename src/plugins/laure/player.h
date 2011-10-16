@@ -20,24 +20,22 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include <QSlider>
-#include <QTimer>
 #include <QFrame>
-#include <QVBoxLayout>
-#include <QPushButton>
-#include <QFrame>
-#include <QTime>
+
 #include <vlc/vlc.h>
 #include <vlc/libvlc_media_list.h>
 #include <vlc/libvlc_media_list_player.h>
 
-#include "playlistview.h"
-#include "lastfmsubmitter.h"
-
+class QTime;
+class QPushButton;
+class QTimer;
+class QSlider;
 namespace LeechCraft
 {
 namespace Laure
 {
+	class PlayListView;
+	class LastFMSubmitter;
 	class Player : public QFrame
 	{
 		Q_OBJECT

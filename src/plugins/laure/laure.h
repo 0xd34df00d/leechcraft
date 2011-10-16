@@ -17,8 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_Laure_Laure_H
-#define PLUGINS_Laure_Laure_H
+#ifndef PLUGINS_LAURE_LAURE_H
+#define PLUGINS_LAURE_LAURE_H
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavetabs.h>
@@ -26,12 +26,12 @@
 #include <interfaces/entitytesthandleresult.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/ihavesettings.h>
-#include "laurewidget.h"
 
 namespace LeechCraft
 {
 namespace Laure
 {
+	class LaureWidget;
 	class Plugin : public QObject
 				, public IInfo
 				, public IHaveTabs

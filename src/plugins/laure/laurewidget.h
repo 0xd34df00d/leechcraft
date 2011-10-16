@@ -17,22 +17,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef LaureWIDGET_H
-#define LaureWIDGET_H
+#ifndef LAUREWIDGET_H
+#define LAUREWIDGET_H
 
 #include <QWidget>
-#include <QToolBar>
-#include <QUrl>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/iinfo.h>
-#include "player.h"
-#include "playlistwidget.h"
-#include "ui_laurewidget.h"
+
+namespace Ui
+{
+	class LaureWidget;
+};
+
+class QToolBar;
+class QUrl;
 
 namespace LeechCraft
 {
 namespace Laure
 {
+	class Player;
+	class PlayListWidget;
 	class PlayPauseAction;
 	class LaureWidget : public QWidget
 				, public ITabWidget
@@ -73,4 +78,4 @@ namespace Laure
 }
 }
 
-#endif // LaureWIDGET_H
+#endif // LAUREWIDGET_H

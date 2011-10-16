@@ -18,10 +18,15 @@
  **********************************************************************/
 
 #include "player.h"
-#include <QString>
 #include <QDebug>
+#include <QSlider>
+#include <QTimer>
+#include <QPushButton>
+#include <QTime>
 
 #include "separateplayerwidget.h"
+#include "playlistview.h"
+#include "lastfmsubmitter.h"
 
 namespace LeechCraft
 {

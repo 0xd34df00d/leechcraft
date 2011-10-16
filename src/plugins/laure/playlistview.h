@@ -21,14 +21,15 @@
 #define PLAYLISTVIEW_H
 
 #include <QListView>
-#include <QDebug>
-#include <QKeyEvent>
 #include "playlistmodel.h"
+
+class QKeyEvent;
 
 namespace LeechCraft
 {
 namespace Laure
 {
+	class PlayListModel;
 	class PlayListView : public QListView
 	{
 		Q_OBJECT

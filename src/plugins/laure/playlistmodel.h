@@ -22,7 +22,6 @@
 
 #include <QStringListModel>
 #include <vlc/vlc.h>
-#include <QDebug>
 
 namespace LeechCraft
 {

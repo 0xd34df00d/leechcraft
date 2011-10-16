@@ -22,7 +22,7 @@
 #include <QUrl>
 #include <QCoreApplication>
 #include <util/util.h>
-
+#include "laurewidget.h"
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft

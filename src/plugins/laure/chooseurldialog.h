@@ -21,8 +21,11 @@
 #define CHOOSEURLDIALOG_H
 
 #include <QDialog>
-#include <QUrl>
-#include "ui_chooseurldialog.h"
+
+namespace Ui
+{
+	class ChooseURLDialog;
+};
 
 namespace LeechCraft
 {

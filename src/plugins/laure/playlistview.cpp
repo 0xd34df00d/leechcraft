@@ -19,6 +19,8 @@
 
 #include "playlistview.h"
 
+#include <QKeyEvent>
+
 namespace LeechCraft
 {
 namespace Laure
@@ -103,10 +105,12 @@ namespace Laure
 			emit playItem (curIndex.row ());
 			break;
 		case Qt::Key_Up:
-			setCurrentIndex (model ()->index (curIndex.row () - 1, curIndex.column ()));
+			setCurrentIndex (model ()->index (curIndex.row () - 1,
+							curIndex.column ()));
 			break;
 		case Qt::Key_Down:
-			setCurrentIndex (model ()->index (curIndex.row () + 1, curIndex.column ()));
+			setCurrentIndex (model ()->index (curIndex.row () + 1,
+							curIndex.column ()));
 			break;
 		}
 	}

@@ -23,8 +23,8 @@ namespace LeechCraft
 {
 namespace Laure
 {
-	SeparatePlayerWidget::SeparatePlayerWidget (libvlc_media_player_t *MP, QWidget *playerWidget,
-			QWidget *parent)
+	SeparatePlayerWidget::SeparatePlayerWidget (libvlc_media_player_t *MP,
+			QWidget *playerWidget, QWidget *parent)
 	: QWidget (parent)
 	, PlayerWidget_ (playerWidget)
 	, MP_ (MP)

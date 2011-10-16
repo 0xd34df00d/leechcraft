@@ -21,16 +21,20 @@
 #define PLAYLISTWIDGET_H
 
 #include <QWidget>
-#include <QToolBar>
-#include <QFileInfoList>
 #include <interfaces/core/icoreproxy.h>
 
-#include "ui_playlistwidget.h"
+namespace Ui
+{
+	class PlayListWidget;
+};
+
+class QToolBar;
 
 namespace LeechCraft
 {
 namespace Laure
 {
+	class PlayListView;
 	class PlayListWidget : public QWidget
 	{
 		Q_OBJECT

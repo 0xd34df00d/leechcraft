@@ -22,12 +22,12 @@
 
 #include <QMenu>
 #include <QFileInfoList>
-#include "playlistview.h"
 
 namespace LeechCraft
 {
 namespace Laure
 {
+	class PlayListView;
 	class PlayListAddMenu : public QMenu
 	{
 		Q_OBJECT

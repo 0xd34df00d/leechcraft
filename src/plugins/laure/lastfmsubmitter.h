@@ -21,14 +21,21 @@
 #define LASTFMSUBMITTER_H
 
 #include <QObject>
-#include <QNetworkAccessManager>
 #include <vlc/vlc.h>
-#include <lastfm.h>
+
+namespace lastfm
+{
+	class Audioscrobbler;
+};
+
+class QNetworkAccessManager;
+class QNetworkReply;
 
 namespace LeechCraft
 {
 namespace Laure
 {
+
 	class LastFMSubmitter : public QObject
 	{
 		Q_OBJECT

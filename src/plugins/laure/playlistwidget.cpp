@@ -24,6 +24,7 @@
 
 #include "chooseurldialog.h"
 #include "playlistaddmenu.h"
+#include "ui_playlistwidget.h"
 
 namespace LeechCraft
 {

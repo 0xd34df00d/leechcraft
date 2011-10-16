@@ -18,6 +18,8 @@
  **********************************************************************/
 
 #include "chooseurldialog.h"
+#include "ui_chooseurldialog.h"
+#include <QUrl>
 
 namespace LeechCraft
 {

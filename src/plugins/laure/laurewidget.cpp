@@ -18,18 +18,25 @@
  **********************************************************************/
 
 #include "laurewidget.h"
+#include "ui_laurewidget.h"
+
 #include <QAction>
 #include <QFileDialog>
 #include <QDebug>
-#include <QVBoxLayout>
-#include <QWidgetAction>
 #include <QMessageBox>
+#include <QToolBar>
+#include <QUrl>
+#include <QTime>
+#include <QKeyEvent>
 
 #include <interfaces/core/icoreproxy.h>
 
 #include "laure.h"
 #include "playpauseaction.h"
 #include "chooseurldialog.h"
+#include "playlistview.h"
+#include "player.h"
+#include "playlistwidget.h"
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft

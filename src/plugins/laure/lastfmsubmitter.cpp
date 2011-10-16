@@ -20,8 +20,9 @@
 #include "lastfmsubmitter.h"
 
 #include <QCryptographicHash>
-
+#include <QNetworkAccessManager>
 #include <lastfm/Track>
+#include <lastfm.h>
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft

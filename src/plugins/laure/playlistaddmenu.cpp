@@ -20,6 +20,7 @@
 #include "playlistaddmenu.h"
 #include <QFileDialog>
 
+#include "playlistview.h"
 #include "chooseurldialog.h"
 
 namespace LeechCraft
@@ -85,7 +86,8 @@ namespace Laure
 	{
 		QDir dir (path);
 		QFileInfoList list;
-		QFileInfoList fil = dir.entryInfoList (QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot);
+		QFileInfoList fil = dir.entryInfoList (QDir::Dirs | QDir::Files
+				| QDir::NoDotAndDotDot);
 		if (!fil.isEmpty ())
 		{
 			Q_FOREACH (QFileInfo fi, fil)
