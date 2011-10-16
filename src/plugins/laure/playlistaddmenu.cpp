@@ -24,77 +24,77 @@
 
 namespace LeechCraft
 {
-	namespace Potorchu
+namespace Laure
+{
+	PlayListAddMenu::PlayListAddMenu (PlayListView *playListView, QWidget *parent)
+	: QMenu (parent)
+	, PlayListView_ (playListView)
 	{
-		PlayListAddMenu::PlayListAddMenu (PlayListView *playListView, QWidget *parent)
-		: QMenu (parent)
-		, PlayListView_ (playListView)
-		{
-			QAction *addFiles = new QAction (tr ("Add files"), this);
-			QAction *addFolder = new QAction (tr ("Add folder"), this);
-			QAction *addURL = new QAction (tr ("Add URL"), this);
-			
-			addAction (addFiles);
-			addAction (addFolder);
-			addAction (addURL);
-			
-			connect (addURL,
-					SIGNAL (triggered (bool)),
-					this,
-					SLOT (handleAddUrl ()));
-			connect (addFiles,
-					SIGNAL (triggered (bool)),
-					this,
-					SLOT (handleAddFiles ()));
-			connect (addFolder,
-					SIGNAL (triggered (bool)),
-					this,
-					SLOT (handleAddFolder ()));
-		}
+		QAction *addFiles = new QAction (tr ("Add files"), this);
+		QAction *addFolder = new QAction (tr ("Add folder"), this);
+		QAction *addURL = new QAction (tr ("Add URL"), this);
 		
-		void PlayListAddMenu::handleAddFiles ()
-		{
-			const QStringList& fileNames = QFileDialog::getOpenFileNames (this,
-					tr ("Choose file"), QDir::homePath ());
-			Q_FOREACH (const QString& fileName, fileNames)
-				PlayListView_->addItem (fileName);
-		}
-
-		void PlayListAddMenu::handleAddFolder ()
-		{
-			const QString& fileDir = QFileDialog::getExistingDirectory (this,
-					tr ("Choose directory"), QDir::homePath ());
-			const QFileInfoList& fileInfoList = StoragedFiles (fileDir);
-			Q_FOREACH (const QFileInfo& fileInfo, fileInfoList)
-				PlayListView_->addItem (fileInfo.absoluteFilePath ());
-		}
+		addAction (addFiles);
+		addAction (addFolder);
+		addAction (addURL);
 		
-		void PlayListAddMenu::handleAddUrl ()
-		{
-			ChooseURLDialog *d = new ChooseURLDialog (this);
-			if (d->exec () == QDialog::Accepted)
-			{
-				const QString& url = d->GetUrl ();
-				PlayListView_->addItem (url);
-			}
-		}
+		connect (addURL,
+				SIGNAL (triggered (bool)),
+				this,
+				SLOT (handleAddUrl ()));
+		connect (addFiles,
+				SIGNAL (triggered (bool)),
+				this,
+				SLOT (handleAddFiles ()));
+		connect (addFolder,
+				SIGNAL (triggered (bool)),
+				this,
+				SLOT (handleAddFolder ()));
+	}
+	
+	void PlayListAddMenu::handleAddFiles ()
+	{
+		const QStringList& fileNames = QFileDialog::getOpenFileNames (this,
+				tr ("Choose file"), QDir::homePath ());
+		Q_FOREACH (const QString& fileName, fileNames)
+			PlayListView_->addItem (fileName);
+	}
 
-		QFileInfoList PlayListAddMenu::StoragedFiles (const QString& path)
+	void PlayListAddMenu::handleAddFolder ()
+	{
+		const QString& fileDir = QFileDialog::getExistingDirectory (this,
+				tr ("Choose directory"), QDir::homePath ());
+		const QFileInfoList& fileInfoList = StoragedFiles (fileDir);
+		Q_FOREACH (const QFileInfo& fileInfo, fileInfoList)
+			PlayListView_->addItem (fileInfo.absoluteFilePath ());
+	}
+	
+	void PlayListAddMenu::handleAddUrl ()
+	{
+		ChooseURLDialog *d = new ChooseURLDialog (this);
+		if (d->exec () == QDialog::Accepted)
 		{
-			QDir dir (path);
-			QFileInfoList list;
-			QFileInfoList fil = dir.entryInfoList (QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot);
-			if (!fil.isEmpty ())
-			{
-				Q_FOREACH (QFileInfo fi, fil)
-				{
-					if (fi.isDir ())
-						list << StoragedFiles (fi.absoluteFilePath ());
-					else
-						list << fi;
-				}
-			}
-			return list;
+			const QString& url = d->GetUrl ();
+			PlayListView_->addItem (url);
 		}
 	}
+
+	QFileInfoList PlayListAddMenu::StoragedFiles (const QString& path)
+	{
+		QDir dir (path);
+		QFileInfoList list;
+		QFileInfoList fil = dir.entryInfoList (QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot);
+		if (!fil.isEmpty ())
+		{
+			Q_FOREACH (QFileInfo fi, fil)
+			{
+				if (fi.isDir ())
+					list << StoragedFiles (fi.absoluteFilePath ());
+				else
+					list << fi;
+			}
+		}
+		return list;
+	}
+}
 }

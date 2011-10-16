@@ -21,7 +21,7 @@
 
 namespace LeechCraft
 {
-namespace Potorchu
+namespace Laure
 {
 	PlayPauseAction::PlayPauseAction (const QPair<QIcon, QIcon>& playPausePair,
 			QObject *parent)

@@ -26,21 +26,21 @@
 
 namespace LeechCraft
 {
-	namespace Potorchu
+namespace Laure
+{
+	class PlayListAddMenu : public QMenu
 	{
-		class PlayListAddMenu : public QMenu
-		{
-			Q_OBJECT
-			PlayListView *PlayListView_;
-		public:
-			PlayListAddMenu (PlayListView *playListView, QWidget *parent);
-		private slots:
-			void handleAddUrl ();
-			void handleAddFolder ();
-			void handleAddFiles ();
-		private:
-			QFileInfoList StoragedFiles (const QString& path);
-		};
-	}
+		Q_OBJECT
+		PlayListView *PlayListView_;
+	public:
+		PlayListAddMenu (PlayListView *playListView, QWidget *parent);
+	private slots:
+		void handleAddUrl ();
+		void handleAddFolder ();
+		void handleAddFiles ();
+	private:
+		QFileInfoList StoragedFiles (const QString& path);
+	};
+}
 }
 #endif // PLAYLISTADDMENU_H

@@ -17,8 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POTORCHU_POTORCHU_H
-#define PLUGINS_POTORCHU_POTORCHU_H
+#ifndef PLUGINS_Laure_Laure_H
+#define PLUGINS_Laure_Laure_H
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavetabs.h>
@@ -26,11 +26,11 @@
 #include <interfaces/entitytesthandleresult.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/ihavesettings.h>
-#include "potorchuwidget.h"
+#include "laurewidget.h"
 
 namespace LeechCraft
 {
-namespace Potorchu
+namespace Laure
 {
 	class Plugin : public QObject
 				, public IInfo
@@ -42,7 +42,7 @@ namespace Potorchu
 		Q_INTERFACES (IInfo IHaveTabs IEntityHandler IHaveSettings)
 
 		TabClasses_t TabClasses_;
-		QList<PotorchuWidget *> Others_;
+		QList<LaureWidget *> Others_;
 		ICoreProxy_ptr Proxy_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 	public:
@@ -61,7 +61,7 @@ namespace Potorchu
 		void Handle (Entity entity);
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	private:
-		PotorchuWidget *createTab ();
+		LaureWidget *createTab ();
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);

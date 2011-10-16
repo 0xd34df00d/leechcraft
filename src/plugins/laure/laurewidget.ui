@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>PotorchuWidget</class>
- <widget class="QWidget" name="PotorchuWidget">
+ <class>LaureWidget</class>
+ <widget class="QWidget" name="LaureWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -37,7 +37,7 @@
         <number>0</number>
        </property>
        <item row="0" column="0" colspan="5">
-        <widget class="LeechCraft::Potorchu::Player" name="Player_">
+        <widget class="LeechCraft::Laure::Player" name="Player_">
          <property name="styleSheet">
           <string notr="true">padding: 25px; background: black;</string>
          </property>
@@ -115,7 +115,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="LeechCraft::Potorchu::PlayListWidget" name="PlayListWidget_" native="true">
+     <widget class="LeechCraft::Laure::PlayListWidget" name="PlayListWidget_" native="true">
       <property name="minimumSize">
        <size>
         <width>200</width>
@@ -129,13 +129,13 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>LeechCraft::Potorchu::Player</class>
+   <class>LeechCraft::Laure::Player</class>
    <extends>QFrame</extends>
    <header>player.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>LeechCraft::Potorchu::PlayListWidget</class>
+   <class>LeechCraft::Laure::PlayListWidget</class>
    <extends>QWidget</extends>
    <header>playlistwidget.h</header>
    <container>1</container>

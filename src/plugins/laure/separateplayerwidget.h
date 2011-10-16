@@ -26,21 +26,21 @@
 
 namespace LeechCraft
 {
-	namespace Potorchu
+namespace Laure
+{
+	class SeparatePlayerWidget : public QWidget
 	{
-		class SeparatePlayerWidget : public QWidget
-		{
-			Q_OBJECT
-			
-			QWidget *PlayerWidget_;
-			libvlc_media_player_t *MP_;
-		public:
-			SeparatePlayerWidget (libvlc_media_player_t *MP, QWidget *playerWidget, QWidget *parent = 0);
-		protected:
-			void closeEvent (QCloseEvent *event);
-		private:
-			void changeWidget (QWidget *w);
-		};
-	}
+		Q_OBJECT
+		
+		QWidget *PlayerWidget_;
+		libvlc_media_player_t *MP_;
+	public:
+		SeparatePlayerWidget (libvlc_media_player_t *MP, QWidget *playerWidget, QWidget *parent = 0);
+	protected:
+		void closeEvent (QCloseEvent *event);
+	private:
+		void changeWidget (QWidget *w);
+	};
+}
 }
 #endif // SEPARATEPLAYERWIDGET_H

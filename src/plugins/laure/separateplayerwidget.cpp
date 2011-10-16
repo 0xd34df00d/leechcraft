@@ -21,31 +21,31 @@
 
 namespace LeechCraft
 {
-	namespace Potorchu
+namespace Laure
+{
+	SeparatePlayerWidget::SeparatePlayerWidget (libvlc_media_player_t *MP, QWidget *playerWidget,
+			QWidget *parent)
+	: QWidget (parent)
+	, PlayerWidget_ (playerWidget)
+	, MP_ (MP)
 	{
-		SeparatePlayerWidget::SeparatePlayerWidget (libvlc_media_player_t *MP, QWidget *playerWidget,
-				QWidget *parent)
-		: QWidget (parent)
-		, PlayerWidget_ (playerWidget)
-		, MP_ (MP)
-		{
-			setPalette (QPalette (Qt::black));
-			changeWidget (this);
-		}
-
-		void SeparatePlayerWidget::closeEvent (QCloseEvent *event)
-		{
-			changeWidget (PlayerWidget_);
-			setParent (PlayerWidget_);
-		}
-		
-		void SeparatePlayerWidget::changeWidget (QWidget *w)
-		{
-			int time = libvlc_media_player_get_time (MP_);
-			libvlc_media_player_stop (MP_);
-			libvlc_media_player_set_xwindow (MP_, w->winId ());
-			libvlc_media_player_play (MP_);
-			libvlc_media_player_set_time (MP_, time);
-		}
+		setPalette (QPalette (Qt::black));
+		changeWidget (this);
 	}
+
+	void SeparatePlayerWidget::closeEvent (QCloseEvent *event)
+	{
+		changeWidget (PlayerWidget_);
+		setParent (PlayerWidget_);
+	}
+	
+	void SeparatePlayerWidget::changeWidget (QWidget *w)
+	{
+		int time = libvlc_media_player_get_time (MP_);
+		libvlc_media_player_stop (MP_);
+		libvlc_media_player_set_xwindow (MP_, w->winId ());
+		libvlc_media_player_play (MP_);
+		libvlc_media_player_set_time (MP_, time);
+	}
+}
 }

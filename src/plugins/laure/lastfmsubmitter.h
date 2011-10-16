@@ -27,7 +27,7 @@
 
 namespace LeechCraft
 {
-namespace Potorchu
+namespace Laure
 {
 	class LastFMSubmitter : public QObject
 	{

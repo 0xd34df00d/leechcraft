@@ -27,33 +27,33 @@
 
 namespace LeechCraft
 {
-	namespace Potorchu
+namespace Laure
+{
+	class PlayListView : public QListView
 	{
-		class PlayListView : public QListView
-		{
-			Q_OBJECT
-			PlayListModel *PlayListModel_;
-		public:
-			PlayListView (QWidget *parent = 0);
-			bool SetPlayList (libvlc_media_list_t *ML);
-			bool SetInstance (libvlc_instance_t *VLCInstance);
-			void addItem (const QString& item);
-			
-			void keyPressEvent (QKeyEvent *event);
-			int CurrentIndex () const;
-			int RowCount () const;
-			
-			libvlc_media_t *CurrentMedia ();
-		private:
-			void moveSelect (int x, int y);
-		public slots:
-			void SetCurrentIndex (int val);
-			void removeSelectedRows ();
-		private slots:
-			void handleDoubleClicked (const QModelIndex& index);
-		signals:
-			void playItem (int item);
-		};
-	}
+		Q_OBJECT
+		PlayListModel *PlayListModel_;
+	public:
+		PlayListView (QWidget *parent = 0);
+		bool SetPlayList (libvlc_media_list_t *ML);
+		bool SetInstance (libvlc_instance_t *VLCInstance);
+		void addItem (const QString& item);
+		
+		void keyPressEvent (QKeyEvent *event);
+		int CurrentIndex () const;
+		int RowCount () const;
+		
+		libvlc_media_t *CurrentMedia ();
+	private:
+		void moveSelect (int x, int y);
+	public slots:
+		void SetCurrentIndex (int val);
+		void removeSelectedRows ();
+	private slots:
+		void handleDoubleClicked (const QModelIndex& index);
+	signals:
+		void playItem (int item);
+	};
+}
 }
 #endif // PLAYLISTVIEW_H

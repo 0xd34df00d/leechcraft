@@ -26,20 +26,20 @@
 
 namespace LeechCraft
 {
-	namespace Potorchu
+namespace Laure
+{
+	class ChooseURLDialog : public QDialog
 	{
-		class ChooseURLDialog : public QDialog
-		{
-			Q_OBJECT
-			Ui::ChooseURLDialog *Ui_;
-		public:
-			ChooseURLDialog (QWidget *parent = 0);
-			virtual ~ChooseURLDialog ();
-			
-			QString GetUrl () const;
-			bool IsUrlValid () const;
-		};
-	}
+		Q_OBJECT
+		Ui::ChooseURLDialog *Ui_;
+	public:
+		ChooseURLDialog (QWidget *parent = 0);
+		virtual ~ChooseURLDialog ();
+		
+		QString GetUrl () const;
+		bool IsUrlValid () const;
+	};
+}
 }
 
 #endif // CHOOSEURLDIALOG_H

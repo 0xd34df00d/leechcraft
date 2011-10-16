@@ -27,50 +27,50 @@
 
 namespace LeechCraft
 {
-	namespace Potorchu
+namespace Laure
+{
+	PlayListWidget::PlayListWidget (QWidget *parent)
+	: QWidget (parent)
+	, Ui_ (new Ui::PlayListWidget) 
 	{
-		PlayListWidget::PlayListWidget (QWidget *parent)
-		: QWidget (parent)
-		, Ui_ (new Ui::PlayListWidget) 
-		{
-			Ui_->setupUi (this);
-			setVisible (false);
-			ActionBar_ = new QToolBar (Ui_->ActionFrame_);
-			Ui_->ActionFrame_->setFrameStyle (QFrame::NoFrame);
-			ActionBar_->setToolButtonStyle (Qt::ToolButtonIconOnly);
-			ActionBar_->setIconSize (QSize (16, 16));
-			connect (Ui_->PlayListView_,
-					SIGNAL (playItem (int)),
-					this,
-					SIGNAL (playItem (int)));
-		}
-		
-		PlayListWidget::~PlayListWidget ()
-		{
-			delete Ui_;
-		}
-		
-		PlayListView* PlayListWidget::GetPlayListView ()
-		{
-			return Ui_->PlayListView_;
-		}
-		
-		void PlayListWidget::Init (ICoreProxy_ptr proxy)
-		{
-			QToolButton *actionAdd = new QToolButton (this);
-			actionAdd->setIcon (proxy->GetIcon ("add"));
-			actionAdd->setPopupMode (QToolButton::InstantPopup);
-			ActionBar_->addWidget (actionAdd);
-			
-			actionAdd->setMenu (new PlayListAddMenu (Ui_->PlayListView_, this));
-			QAction *actionRemove = new QAction (proxy->GetIcon ("remove"),
-					tr ("Remove"), this);
-			ActionBar_->addAction (actionRemove);
-			
-			connect (actionRemove,
-					SIGNAL (triggered (bool)),
-					Ui_->PlayListView_,
-					SLOT (removeSelectedRows ()));
-		}
+		Ui_->setupUi (this);
+		setVisible (false);
+		ActionBar_ = new QToolBar (Ui_->ActionFrame_);
+		Ui_->ActionFrame_->setFrameStyle (QFrame::NoFrame);
+		ActionBar_->setToolButtonStyle (Qt::ToolButtonIconOnly);
+		ActionBar_->setIconSize (QSize (16, 16));
+		connect (Ui_->PlayListView_,
+				SIGNAL (playItem (int)),
+				this,
+				SIGNAL (playItem (int)));
 	}
+	
+	PlayListWidget::~PlayListWidget ()
+	{
+		delete Ui_;
+	}
+	
+	PlayListView* PlayListWidget::GetPlayListView ()
+	{
+		return Ui_->PlayListView_;
+	}
+	
+	void PlayListWidget::Init (ICoreProxy_ptr proxy)
+	{
+		QToolButton *actionAdd = new QToolButton (this);
+		actionAdd->setIcon (proxy->GetIcon ("add"));
+		actionAdd->setPopupMode (QToolButton::InstantPopup);
+		ActionBar_->addWidget (actionAdd);
+		
+		actionAdd->setMenu (new PlayListAddMenu (Ui_->PlayListView_, this));
+		QAction *actionRemove = new QAction (proxy->GetIcon ("remove"),
+				tr ("Remove"), this);
+		ActionBar_->addAction (actionRemove);
+		
+		connect (actionRemove,
+				SIGNAL (triggered (bool)),
+				Ui_->PlayListView_,
+				SLOT (removeSelectedRows ()));
+	}
+}
 }

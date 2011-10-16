@@ -29,22 +29,22 @@
 
 namespace LeechCraft
 {
-	namespace Potorchu
+namespace Laure
+{
+	class PlayListWidget : public QWidget
 	{
-		class PlayListWidget : public QWidget
-		{
-			Q_OBJECT
-			Ui::PlayListWidget *Ui_;
-			QToolBar *ActionBar_;
-		public:
-			PlayListWidget (QWidget *parent = 0);
-			virtual ~PlayListWidget ();
-			void Init (ICoreProxy_ptr proxy);
-			PlayListView *GetPlayListView ();
-		signals:
-			void playItem (int item);
-		};
-	}
+		Q_OBJECT
+		Ui::PlayListWidget *Ui_;
+		QToolBar *ActionBar_;
+	public:
+		PlayListWidget (QWidget *parent = 0);
+		virtual ~PlayListWidget ();
+		void Init (ICoreProxy_ptr proxy);
+		PlayListView *GetPlayListView ();
+	signals:
+		void playItem (int item);
+	};
+}
 }
 
 #endif // PLAYLISTWIDGET_H

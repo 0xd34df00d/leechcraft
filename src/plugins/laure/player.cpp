@@ -25,171 +25,171 @@
 
 namespace LeechCraft
 {
-	namespace Potorchu
+namespace Laure
+{
+	const int pos_slider_max = 10000;
+		
+	Player::Player (QWidget *parent, Qt::WindowFlags f)
+	: QFrame (parent, f)
+	, PlayListView_ (NULL)
+	, LFSubmitter_ (new LastFMSubmitter (this))
 	{
-		const int pos_slider_max = 10000;
-			
-		Player::Player (QWidget *parent, Qt::WindowFlags f)
-		: QFrame (parent, f)
-		, PlayListView_ (NULL)
-		, LFSubmitter_ (new LastFMSubmitter (this))
-		{
-			const char * const vlc_args[] = {
-					"-I", "dummy",
-					"--ignore-config",
-					"--extraintf=logger",
-					"--verbose=2"
-			};
-			Poller_ = new QTimer (this);
-			VLCInstance_ = libvlc_new (sizeof (vlc_args) / sizeof (vlc_args[0]), vlc_args);
-			MLP_ = libvlc_media_list_player_new (VLCInstance_);
-			MP_ = libvlc_media_player_new (VLCInstance_);
-			libvlc_media_list_player_set_media_player (MLP_, MP_);
-			
-			ML_ = libvlc_media_list_new (VLCInstance_);
-			libvlc_media_list_player_set_media_list (MLP_, ML_);
-			libvlc_media_player_set_xwindow (MP_, winId ());
-			
-			connect (Poller_,
-					SIGNAL (timeout ()),
-					this,
-					SIGNAL (timeout ()));
-			connect (Poller_,
-					SIGNAL (timeout ()),
-					this,
-					SLOT (handleTimeout ()));
-			Poller_->start (300);
-		}
+		const char * const vlc_args[] = {
+				"-I", "dummy",
+				"--ignore-config",
+				"--extraintf=logger",
+				"--verbose=2"
+		};
+		Poller_ = new QTimer (this);
+		VLCInstance_ = libvlc_new (sizeof (vlc_args) / sizeof (vlc_args[0]), vlc_args);
+		MLP_ = libvlc_media_list_player_new (VLCInstance_);
+		MP_ = libvlc_media_player_new (VLCInstance_);
+		libvlc_media_list_player_set_media_player (MLP_, MP_);
 		
-		libvlc_media_list_t *Player::PlayList ()
-		{
-			return ML_;
-		}
+		ML_ = libvlc_media_list_new (VLCInstance_);
+		libvlc_media_list_player_set_media_list (MLP_, ML_);
+		libvlc_media_player_set_xwindow (MP_, winId ());
 		
-		libvlc_instance_t *Player::Instance ()
-		{
-			return VLCInstance_;
-		}
-		
-		libvlc_media_t *Player::Media ()
-		{
-			return libvlc_media_player_get_media (MP_);
-		}
-		
-		void Player::SetPlayListView (PlayListView *playListView)
-		{
-			PlayListView_ = playListView;
-			playListView->SetInstance (VLCInstance_);
-			playListView->SetPlayList (ML_);
-		}
-		
-		Player::~Player ()
-		{
-			libvlc_media_list_player_stop (MLP_);
-			libvlc_media_list_player_release (MLP_);
-			libvlc_media_player_release (MP_);
-			libvlc_media_list_release (ML_);
-			libvlc_release (VLCInstance_);
-		}
-		
-		bool Player::IsPlaying () const
-		{
-			return libvlc_media_list_player_is_playing (MLP_);
-		}
+		connect (Poller_,
+				SIGNAL (timeout ()),
+				this,
+				SIGNAL (timeout ()));
+		connect (Poller_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (handleTimeout ()));
+		Poller_->start (300);
+	}
+	
+	libvlc_media_list_t *Player::PlayList ()
+	{
+		return ML_;
+	}
+	
+	libvlc_instance_t *Player::Instance ()
+	{
+		return VLCInstance_;
+	}
+	
+	libvlc_media_t *Player::Media ()
+	{
+		return libvlc_media_player_get_media (MP_);
+	}
+	
+	void Player::SetPlayListView (PlayListView *playListView)
+	{
+		PlayListView_ = playListView;
+		playListView->SetInstance (VLCInstance_);
+		playListView->SetPlayList (ML_);
+	}
+	
+	Player::~Player ()
+	{
+		libvlc_media_list_player_stop (MLP_);
+		libvlc_media_list_player_release (MLP_);
+		libvlc_media_player_release (MP_);
+		libvlc_media_list_release (ML_);
+		libvlc_release (VLCInstance_);
+	}
+	
+	bool Player::IsPlaying () const
+	{
+		return libvlc_media_list_player_is_playing (MLP_);
+	}
 
-		int Player::Volume () const
-		{
-			return libvlc_audio_get_volume (MP_);
-		}
-		
-		int Player::Position () const
-		{
-			if (!IsPlaying ())
-				return -1;
-			float pos = libvlc_media_player_get_position (MP_);
-			return (int)(pos * (float)(pos_slider_max));
-		}
-		
-		float Player::MediaPosition () const
-		{
-			if (!IsPlaying ())
-				return -1;
-			return libvlc_media_player_get_position (MP_);
-		}
-		
-		QTime Player::Time () const
-		{
-			return QTime (0, 0, 0).addMSecs (libvlc_media_player_get_time (MP_));
-		}
-		
-		QTime Player::Length () const
-		{
-			return QTime (0, 0, 0).addMSecs (libvlc_media_player_get_length (MP_));
-		}
-		
-		void Player::pause ()
-		{
-			libvlc_media_list_player_pause (MLP_);
-		}
-		
-		void Player::play ()
-		{
-			libvlc_media_list_player_play (MLP_);
-		}
+	int Player::Volume () const
+	{
+		return libvlc_audio_get_volume (MP_);
+	}
+	
+	int Player::Position () const
+	{
+		if (!IsPlaying ())
+			return -1;
+		float pos = libvlc_media_player_get_position (MP_);
+		return (int)(pos * (float)(pos_slider_max));
+	}
+	
+	float Player::MediaPosition () const
+	{
+		if (!IsPlaying ())
+			return -1;
+		return libvlc_media_player_get_position (MP_);
+	}
+	
+	QTime Player::Time () const
+	{
+		return QTime (0, 0, 0).addMSecs (libvlc_media_player_get_time (MP_));
+	}
+	
+	QTime Player::Length () const
+	{
+		return QTime (0, 0, 0).addMSecs (libvlc_media_player_get_length (MP_));
+	}
+	
+	void Player::pause ()
+	{
+		libvlc_media_list_player_pause (MLP_);
+	}
+	
+	void Player::play ()
+	{
+		libvlc_media_list_player_play (MLP_);
+	}
 
-		void Player::stop ()
-		{
-			libvlc_media_list_player_stop (MLP_);
-		}
+	void Player::stop ()
+	{
+		libvlc_media_list_player_stop (MLP_);
+	}
 
-		void Player::next ()
-		{
-			libvlc_media_list_player_next (MLP_);
-			PlayListView_->SetCurrentIndex (PlayListView_->CurrentIndex () + 1);
-		}
+	void Player::next ()
+	{
+		libvlc_media_list_player_next (MLP_);
+		PlayListView_->SetCurrentIndex (PlayListView_->CurrentIndex () + 1);
+	}
 
-		void Player::prev ()
+	void Player::prev ()
+	{
+		libvlc_media_list_player_previous (MLP_);
+		PlayListView_->SetCurrentIndex (PlayListView_->CurrentIndex () - 1);
+	}
+	
+	void Player::setVolume (int vol)
+	{
+		libvlc_audio_set_volume (MP_, vol);
+	}
+	
+	void Player::setPosition (int pos)
+	{
+		float poss = (float) pos / (float) pos_slider_max;
+		libvlc_media_player_set_position (MP_, poss);
+	}
+	
+	void Player::playItem (int item)
+	{
+		libvlc_media_list_player_play_item_at_index (MLP_, item);
+		PlayListView_->SetCurrentIndex (item);
+	}
+	
+	void Player::separateDialog ()
+	{
+		SeparatePlayerWidget *w = new SeparatePlayerWidget (MP_, this);
+		w->show ();
+	}
+	
+	void Player::handleTimeout ()
+	{
+		int time = libvlc_media_player_get_time (MP_);
+		int length = libvlc_media_player_get_length (MP_);
+		if (time > length - 200)
 		{
-			libvlc_media_list_player_previous (MLP_);
-			PlayListView_->SetCurrentIndex (PlayListView_->CurrentIndex () - 1);
+			next ();
 		}
-		
-		void Player::setVolume (int vol)
+		else if (time < 400)
 		{
-			libvlc_audio_set_volume (MP_, vol);
-		}
-		
-		void Player::setPosition (int pos)
-		{
-			float poss = (float) pos / (float) pos_slider_max;
-			libvlc_media_player_set_position (MP_, poss);
-		}
-		
-		void Player::playItem (int item)
-		{
-			libvlc_media_list_player_play_item_at_index (MLP_, item);
-			PlayListView_->SetCurrentIndex (item);
-		}
-		
-		void Player::separateDialog ()
-		{
-			SeparatePlayerWidget *w = new SeparatePlayerWidget (MP_, this);
-			w->show ();
-		}
-		
-		void Player::handleTimeout ()
-		{
-			int time = libvlc_media_player_get_time (MP_);
-			int length = libvlc_media_player_get_length (MP_);
-			if (time > length - 200)
-			{
-				next ();
-			}
-			else if (time < 400)
-			{
-				LFSubmitter_->NowPlaying (Media ());
-			}
+			LFSubmitter_->NowPlaying (Media ());
 		}
 	}
+}
 }
 

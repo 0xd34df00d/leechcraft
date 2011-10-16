@@ -36,48 +36,48 @@
 
 namespace LeechCraft
 {
-	namespace Potorchu
+namespace Laure
+{
+	class Player : public QFrame
 	{
-		class Player : public QFrame
-		{
-			Q_OBJECT
-			QTimer *Poller_;
-			bool IsPlaying_;
-			libvlc_instance_t *VLCInstance_;
-			libvlc_media_list_player_t *MLP_;
-			libvlc_media_list_t *ML_;
-			libvlc_media_player_t *MP_;
-			PlayListView *PlayListView_;
-			LastFMSubmitter *LFSubmitter_;
-		public:
-			Player (QWidget *parent = 0, Qt::WindowFlags f = 0);
-			virtual ~Player ();
-			
-			libvlc_instance_t *Instance ();
-			libvlc_media_list_t *PlayList ();
-			libvlc_media_t *Media ();
-			void SetPlayListView (PlayListView *playListView);
-			
-			int Volume () const;
-			int Position () const;
-			float MediaPosition () const;
-			bool IsPlaying () const;
-			QTime Time () const;
-			QTime Length () const;
-		public slots:
-			void setVolume (int vol);
-			void setPosition (int pos);
-			void stop ();
-			void pause ();
-			void play ();
-			void playItem (int item);
-			void next ();
-			void prev ();
-			void separateDialog ();
-			void handleTimeout ();
-		signals:
-			void timeout ();
-		};
-	}
+		Q_OBJECT
+		QTimer *Poller_;
+		bool IsPlaying_;
+		libvlc_instance_t *VLCInstance_;
+		libvlc_media_list_player_t *MLP_;
+		libvlc_media_list_t *ML_;
+		libvlc_media_player_t *MP_;
+		PlayListView *PlayListView_;
+		LastFMSubmitter *LFSubmitter_;
+	public:
+		Player (QWidget *parent = 0, Qt::WindowFlags f = 0);
+		virtual ~Player ();
+		
+		libvlc_instance_t *Instance ();
+		libvlc_media_list_t *PlayList ();
+		libvlc_media_t *Media ();
+		void SetPlayListView (PlayListView *playListView);
+		
+		int Volume () const;
+		int Position () const;
+		float MediaPosition () const;
+		bool IsPlaying () const;
+		QTime Time () const;
+		QTime Length () const;
+	public slots:
+		void setVolume (int vol);
+		void setPosition (int pos);
+		void stop ();
+		void pause ();
+		void play ();
+		void playItem (int item);
+		void next ();
+		void prev ();
+		void separateDialog ();
+		void handleTimeout ();
+	signals:
+		void timeout ();
+	};
+}
 }
 #endif // PLAYER_H

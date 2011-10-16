@@ -26,34 +26,34 @@
 
 namespace LeechCraft
 {
-	namespace Potorchu
+namespace Laure
+{
+	class PlayListModel : public QStringListModel
 	{
-		class PlayListModel : public QStringListModel
-		{
-			Q_OBJECT
-			libvlc_instance_t *VLCInstance_;
-			libvlc_media_list_t *ML_;
-			int CurrentIndex_;
-		public:
-			PlayListModel (QObject *parent);
-			virtual ~PlayListModel ();
-			
-			bool SetPlayList (libvlc_media_list_t *ML);
-			bool SetInstance (libvlc_instance_t *VLCInstance);
-			
-			int CurrentIndex () const;
-			libvlc_media_t *CurrentMedia ();
-			void SetCurrentIndex (int val);
-			
-			int rowCount (const QModelIndex& parent = QModelIndex ()) const;
-			bool insertRows (int row, const QString& fileName);
-			bool removeRows (int row);
-			Qt::ItemFlags flags (const QModelIndex& index) const;
-	
-		public slots:
-			bool addItem (const QString& item);
-		};
-	}
+		Q_OBJECT
+		libvlc_instance_t *VLCInstance_;
+		libvlc_media_list_t *ML_;
+		int CurrentIndex_;
+	public:
+		PlayListModel (QObject *parent);
+		virtual ~PlayListModel ();
+		
+		bool SetPlayList (libvlc_media_list_t *ML);
+		bool SetInstance (libvlc_instance_t *VLCInstance);
+		
+		int CurrentIndex () const;
+		libvlc_media_t *CurrentMedia ();
+		void SetCurrentIndex (int val);
+		
+		int rowCount (const QModelIndex& parent = QModelIndex ()) const;
+		bool insertRows (int row, const QString& fileName);
+		bool removeRows (int row);
+		Qt::ItemFlags flags (const QModelIndex& index) const;
+
+	public slots:
+		bool addItem (const QString& item);
+	};
+}
 }
 
 #endif // PLAYLISTMODEL_H

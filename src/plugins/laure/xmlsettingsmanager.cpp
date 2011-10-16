@@ -22,28 +22,28 @@
 
 namespace LeechCraft
 {
-	namespace Potorchu
+namespace Laure
+{
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		XmlSettingsManager::XmlSettingsManager ()
-		{
-			Util::BaseSettingsManager::Init ();
-		}
-
-		XmlSettingsManager& XmlSettingsManager::Instance ()
-		{
-			static XmlSettingsManager xsm;
-			return xsm;
-		}
-
-		void XmlSettingsManager::EndSettings (QSettings* settings) const
-		{
-		}
-
-		QSettings* XmlSettingsManager::BeginSettings () const
-		{
-			QSettings *settings = new QSettings (QCoreApplication::organizationName (),
-					QCoreApplication::applicationName () + "_Potorchu");
-			return settings;
-		}
+		Util::BaseSettingsManager::Init ();
 	}
+
+	XmlSettingsManager& XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager xsm;
+		return xsm;
+	}
+
+	void XmlSettingsManager::EndSettings (QSettings* settings) const
+	{
+	}
+
+	QSettings* XmlSettingsManager::BeginSettings () const
+	{
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Laure");
+		return settings;
+	}
+}
 }

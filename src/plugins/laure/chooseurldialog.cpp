@@ -21,31 +21,31 @@
 
 namespace LeechCraft
 {
-	namespace Potorchu
+namespace Laure
+{
+	ChooseURLDialog::ChooseURLDialog (QWidget *parent)
+	: QDialog (parent)
+	, Ui_ (new Ui::ChooseURLDialog)
 	{
-		ChooseURLDialog::ChooseURLDialog (QWidget *parent)
-		: QDialog (parent)
-		, Ui_ (new Ui::ChooseURLDialog)
-		{
-			Ui_->setupUi (this);
-		}
-		
-		ChooseURLDialog::~ChooseURLDialog ()
-		{
-			delete Ui_;
-		}
-		
-		QString ChooseURLDialog::GetUrl () const
-		{
-			return Ui_->Url_->text ();
-		}
-		
-		bool ChooseURLDialog::IsUrlValid () const
-		{
-			return QUrl (Ui_->Url_->text ()).isValid ();
-		}
-
-
-
+		Ui_->setupUi (this);
 	}
+	
+	ChooseURLDialog::~ChooseURLDialog ()
+	{
+		delete Ui_;
+	}
+	
+	QString ChooseURLDialog::GetUrl () const
+	{
+		return Ui_->Url_->text ();
+	}
+	
+	bool ChooseURLDialog::IsUrlValid () const
+	{
+		return QUrl (Ui_->Url_->text ()).isValid ();
+	}
+
+
+
+}
 }

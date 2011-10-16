@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "potorchu.h"
+#include "laure.h"
 #include <QIcon>
 #include <QUrl>
 #include <QCoreApplication>
@@ -27,24 +27,24 @@
 
 namespace LeechCraft
 {
-namespace Potorchu
+namespace Laure
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		QCoreApplication::setApplicationName ("LeechCraftPotorchu");
+		QCoreApplication::setApplicationName ("LeechCraftLaure");
 		QCoreApplication::setApplicationVersion ("0.4.95");
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
-				"potorchusettings.xml");
+				"Lauresettings.xml");
 
 		Proxy_ = proxy;
 
-		PotorchuWidget::SetParentMultiTabs (this);
+		LaureWidget::SetParentMultiTabs (this);
 
 		TabClassInfo tabClass =
 		{
-			"Potorchu",
-			"Potorchu",
+			"Laure",
+			"Laure",
 			GetInfo (),
 			GetIcon (),
 			50,
@@ -59,7 +59,7 @@ namespace Potorchu
 
 	QByteArray Plugin::GetUniqueID () const
 	{
-		return "org.LeechCraft.Potorchu";
+		return "org.LeechCraft.Laure";
 	}
 
 	void Plugin::Release ()
@@ -68,7 +68,7 @@ namespace Potorchu
 
 	QString Plugin::GetName () const
 	{
-		return "Potorchu";
+		return "Laure";
 	}
 
 	QString Plugin::GetInfo () const
@@ -88,7 +88,7 @@ namespace Potorchu
 
 	void Plugin::TabOpenRequested (const QByteArray& tabClass)
 	{
-		if (tabClass == "Potorchu")
+		if (tabClass == "Laure")
 			createTab ();
 		else
 		{
@@ -100,11 +100,11 @@ namespace Potorchu
 
 	void Plugin::handleNeedToClose ()
 	{
-		PotorchuWidget *w = qobject_cast<PotorchuWidget*> (sender ());
+		LaureWidget *w = qobject_cast<LaureWidget*> (sender ());
 		if (!w)
 		{
 			qWarning () << Q_FUNC_INFO
-				<< "not a PotorchuWidget*"
+				<< "not a LaureWidget*"
 				<< sender ();
 			return;
 		}
@@ -113,9 +113,9 @@ namespace Potorchu
 		w->deleteLater ();
 	}
 
-	PotorchuWidget *Plugin::createTab ()
+	LaureWidget *Plugin::createTab ()
 	{
-		PotorchuWidget *w = new PotorchuWidget ();
+		LaureWidget *w = new LaureWidget ();
 		w->Init (Proxy_);
 		connect (w,
 				SIGNAL (needToClose ()),
@@ -123,7 +123,7 @@ namespace Potorchu
 				SLOT (handleNeedToClose ()));
 
 		Others_ << w;
-		emit addNewTab (tr ("Potorchu"), w);
+		emit addNewTab (tr ("Laure"), w);
 		emit changeTabIcon (w, QIcon ());
 		emit raiseTab (w);
 		return w;
@@ -151,10 +151,10 @@ namespace Potorchu
 	void Plugin::Handle (Entity entity)
 	{
 		const QString& dest = entity.Entity_.toString ();
-		PotorchuWidget *w = createTab ();
+		LaureWidget *w = createTab ();
 		w->handleOpenMediaContent (dest);
 	}
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_potorchu, LeechCraft::Potorchu::Plugin);
+Q_EXPORT_PLUGIN2 (leechcraft_laure, LeechCraft::Laure::Plugin);

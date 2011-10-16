@@ -22,101 +22,101 @@
 
 namespace LeechCraft
 {
-	namespace Potorchu
+namespace Laure
+{
+	PlayListModel::PlayListModel (QObject* parent)
+	: QStringListModel (parent)
+	, VLCInstance_ (NULL)
+	, ML_ (NULL)
 	{
-		PlayListModel::PlayListModel (QObject* parent)
-		: QStringListModel (parent)
-		, VLCInstance_ (NULL)
-		, ML_ (NULL)
-		{
-			CurrentIndex_ = -1;
-		}
-		
-		PlayListModel::~PlayListModel ()
-		{
-		}
-		
-		bool PlayListModel::SetPlayList (libvlc_media_list_t *ML)
-		{
-			ML_ = ML;
-		}
-		
-		bool PlayListModel::SetInstance (libvlc_instance_t *VLCInstance)
-		{
-			VLCInstance_ = VLCInstance;
-		}
-		
-		int PlayListModel::rowCount (const QModelIndex& parent) const
-		{
-			return libvlc_media_list_count (ML_);
-		}
-		
-		int PlayListModel::CurrentIndex () const
-		{
-			return CurrentIndex_;
-		}
-		
-		void PlayListModel::SetCurrentIndex (int val)
-		{
-			//TODO: a temporary solution. fix it later
-			if (val == rowCount ())
-			{
-				CurrentIndex_ = 0;
-			}
-			else
-				CurrentIndex_ = val;
-		}
-		
-		libvlc_media_t *PlayListModel::CurrentMedia ()
-		{
-			return libvlc_media_list_item_at_index (ML_, CurrentIndex_);
-		}
-		
-		bool PlayListModel::insertRows (int row, const QString& fileName)
-		{
-			if (!libvlc_media_list_insert_media (ML_,
-					libvlc_media_new_path (VLCInstance_, fileName.toAscii ()), row))
-			{
-				libvlc_media_t *t = libvlc_media_list_item_at_index (ML_, row);
-				libvlc_media_parse (t);
-				QString temp = XmlSettingsManager::Instance ().property ("PlayListTemplate").toString ();
-				const QString& artist = QString (libvlc_media_get_meta (t, libvlc_meta_Artist));
-				const QString& album = QString (libvlc_media_get_meta (t, libvlc_meta_Album));
-				const QString& title = QString (libvlc_media_get_meta (t, libvlc_meta_Title));
-				const QString& genre = QString (libvlc_media_get_meta (t, libvlc_meta_Genre));
-				const QString& date = QString (libvlc_media_get_meta (t, libvlc_meta_Date));
-				temp.replace ("%artist%", artist);
-				temp.replace ("%album%", album);
-				temp.replace ("%title%", title);
-				temp.replace ("%genre%", genre);
-				temp.replace ("%date%", date);
-
-				QStringListModel::insertRows (row, 1);
-				setData (index (row), temp);
-				return true;
-			}
-			return false;
-		}
-		
-		bool PlayListModel::removeRows (int row)
-		{
-			if (!libvlc_media_list_remove_index (ML_, row))
-			{
-				QStringListModel::removeRows (row, 1);
-				return true;
-			}
-			return false;
-		}
-		
-		bool PlayListModel::addItem (const QString& item)
-		{
-			return insertRows (rowCount (), item);
-		}
-		
-		Qt::ItemFlags PlayListModel::flags (const QModelIndex& index) const
-		{
-			return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
-		}
+		CurrentIndex_ = -1;
 	}
+	
+	PlayListModel::~PlayListModel ()
+	{
+	}
+	
+	bool PlayListModel::SetPlayList (libvlc_media_list_t *ML)
+	{
+		ML_ = ML;
+	}
+	
+	bool PlayListModel::SetInstance (libvlc_instance_t *VLCInstance)
+	{
+		VLCInstance_ = VLCInstance;
+	}
+	
+	int PlayListModel::rowCount (const QModelIndex& parent) const
+	{
+		return libvlc_media_list_count (ML_);
+	}
+	
+	int PlayListModel::CurrentIndex () const
+	{
+		return CurrentIndex_;
+	}
+	
+	void PlayListModel::SetCurrentIndex (int val)
+	{
+		//TODO: a temporary solution. fix it later
+		if (val == rowCount ())
+		{
+			CurrentIndex_ = 0;
+		}
+		else
+			CurrentIndex_ = val;
+	}
+	
+	libvlc_media_t *PlayListModel::CurrentMedia ()
+	{
+		return libvlc_media_list_item_at_index (ML_, CurrentIndex_);
+	}
+	
+	bool PlayListModel::insertRows (int row, const QString& fileName)
+	{
+		if (!libvlc_media_list_insert_media (ML_,
+				libvlc_media_new_path (VLCInstance_, fileName.toAscii ()), row))
+		{
+			libvlc_media_t *t = libvlc_media_list_item_at_index (ML_, row);
+			libvlc_media_parse (t);
+			QString temp = XmlSettingsManager::Instance ().property ("PlayListTemplate").toString ();
+			const QString& artist = QString (libvlc_media_get_meta (t, libvlc_meta_Artist));
+			const QString& album = QString (libvlc_media_get_meta (t, libvlc_meta_Album));
+			const QString& title = QString (libvlc_media_get_meta (t, libvlc_meta_Title));
+			const QString& genre = QString (libvlc_media_get_meta (t, libvlc_meta_Genre));
+			const QString& date = QString (libvlc_media_get_meta (t, libvlc_meta_Date));
+			temp.replace ("%artist%", artist);
+			temp.replace ("%album%", album);
+			temp.replace ("%title%", title);
+			temp.replace ("%genre%", genre);
+			temp.replace ("%date%", date);
+
+			QStringListModel::insertRows (row, 1);
+			setData (index (row), temp);
+			return true;
+		}
+		return false;
+	}
+	
+	bool PlayListModel::removeRows (int row)
+	{
+		if (!libvlc_media_list_remove_index (ML_, row))
+		{
+			QStringListModel::removeRows (row, 1);
+			return true;
+		}
+		return false;
+	}
+	
+	bool PlayListModel::addItem (const QString& item)
+	{
+		return insertRows (rowCount (), item);
+	}
+	
+	Qt::ItemFlags PlayListModel::flags (const QModelIndex& index) const
+	{
+		return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
+	}
+}
 }
 
