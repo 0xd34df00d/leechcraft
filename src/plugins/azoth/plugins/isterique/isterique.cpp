@@ -19,6 +19,7 @@
 #include "isterique.h"
 #include <QIcon>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <util/util.h>
 #include <interfaces/imessage.h>
 #include "xmlsettingsmanager.h"
 
@@ -30,6 +31,8 @@ namespace Isterique
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		Util::InstallTranslator ("azoth_isterique");
+
 		SettingsDialog_.reset (new Util::XmlSettingsDialog);
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"azothisteriquesettings.xml");
