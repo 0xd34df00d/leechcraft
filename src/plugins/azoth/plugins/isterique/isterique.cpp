@@ -18,7 +18,9 @@
 
 #include "isterique.h"
 #include <QIcon>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/imessage.h>
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -28,6 +30,9 @@ namespace Isterique
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		SettingsDialog_.reset (new Util::XmlSettingsDialog);
+		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
+				"azothisteriquesettings.xml");
 	}
 
 	void Plugin::SecondInit ()
@@ -65,6 +70,11 @@ namespace Isterique
 		return result;
 	}
 
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return SettingsDialog_;
+	}
+
 	void Plugin::hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
 			QObject *message)
 	{
@@ -74,6 +84,12 @@ namespace Isterique
 
 		if (msg->GetMessageType () != IMessage::MTChatMessage &&
 				msg->GetMessageType () != IMessage::MTMUCMessage)
+			return;
+
+		if ((msg->GetMessageType () == IMessage::MTChatMessage &&
+				!XmlSettingsManager::Instance ().property ("EnableForChats").toBool ()) ||
+			(msg->GetMessageType () == IMessage::MTMUCMessage &&
+				!XmlSettingsManager::Instance ().property ("EnableForMUCs").toBool ()))
 			return;
 
 		QString str = msg->GetBody ();
@@ -92,8 +108,10 @@ namespace Isterique
 				++caps;
 		}
 
+		double ratio = static_cast<double> (XmlSettingsManager::Instance ()
+					.property ("CapsPercentage").toInt ()) / 100;
 		if (alphaLength > 3 &&
-				static_cast<double> (caps) / alphaLength < 0.9)
+				static_cast<double> (caps) / alphaLength < ratio)
 			return;
 
 		for (int i = 0, size = str.length (); i < size; ++i)
