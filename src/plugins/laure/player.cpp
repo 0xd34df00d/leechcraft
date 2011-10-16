@@ -179,9 +179,14 @@ namespace LeechCraft
 		
 		void Player::handleTimeout ()
 		{
-			if (libvlc_media_player_get_time (MP_) > libvlc_media_player_get_length (MP_) - 1000)
+			int time = libvlc_media_player_get_time (MP_);
+			int length = libvlc_media_player_get_length (MP_);
+			if (time > length - 200)
 			{
 				next ();
+			}
+			else if (time < 400)
+			{
 				LFSubmitter_->NowPlaying (Media ());
 			}
 		}

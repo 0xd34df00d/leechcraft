@@ -104,7 +104,7 @@ namespace Potorchu
 	{
 		QDomDocument doc;
 		doc.setContent (QString::fromUtf8 (result->readAll ()));
-		
+		qDebug () << Q_FUNC_INFO << doc.toString ();
 		QDomNodeList domList = doc.documentElement ()
 				.elementsByTagName ("key");
 		if (domList.size () > 0)
@@ -112,8 +112,8 @@ namespace Potorchu
 			lastfm::ws::SessionKey = doc.documentElement ()
 					.elementsByTagName ("key").at (0).toElement ()
 					.text ();
-		
-			Scrobbler_ = new lastfm::Audioscrobbler ("LeechCraftPotorchu");
+			
+			Scrobbler_ = new lastfm::Audioscrobbler ("0.4.90");
 		
 			connect (Scrobbler_,
 					SIGNAL (status (int)),
@@ -131,6 +131,7 @@ namespace Potorchu
 		
 	void LastFMSubmitter::NowPlaying (libvlc_media_t *m)
 	{
+		qDebug () << Q_FUNC_INFO << m << IsConnected ();
 		if (m == NULL || !IsConnected ())
 			return;
 		lastfm::Track track;
@@ -139,6 +140,8 @@ namespace Potorchu
 		mutableTrack.setTitle (libvlc_media_get_meta (m, libvlc_meta_Title));
 		mutableTrack.setAlbum (libvlc_media_get_meta (m, libvlc_meta_Album));
 		mutableTrack.setArtist (libvlc_media_get_meta (m, libvlc_meta_Artist));
+
+		qDebug () << Q_FUNC_INFO << libvlc_media_get_meta (m, libvlc_meta_Title);
 		Scrobbler_->nowPlaying (track);
 	}
 
