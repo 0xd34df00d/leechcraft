@@ -17,9 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLAYLISTADDMENU_H
-#define PLAYLISTADDMENU_H
-
+#ifndef PLUGINS_LAURE_PLAYLISTADDMENU_H
+#define PLUGINS_LAURE_PLAYLISTADDMENU_H
 #include <QMenu>
 #include <QFileInfoList>
 
@@ -38,9 +37,8 @@ namespace Laure
 		void handleAddUrl ();
 		void handleAddFolder ();
 		void handleAddFiles ();
-	private:
-		QFileInfoList StoragedFiles (const QString& path);
+		QFileInfoList StoragedFiles (const QString&);
 	};
 }
 }
-#endif // PLAYLISTADDMENU_H
+#endif // PLUGINS_LAURE_PLAYLISTADDMENU_H

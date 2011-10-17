@@ -17,8 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef SEPARATEPLAYERWIDGET_H
-#define SEPARATEPLAYERWIDGET_H
+#ifndef PLUGINS_LAURE_SEPARATEPLAYERWIDGET_H
+#define PLUGINS_LAURE_SEPARATEPLAYERWIDGET_H
 
 #include <QWidget>
 #include <QCloseEvent>
@@ -37,10 +37,10 @@ namespace Laure
 		SeparatePlayerWidget (libvlc_media_player_t *MP,
 				QWidget *playerWidget, QWidget *parent = 0);
 	protected:
-		void closeEvent (QCloseEvent *event);
+		void closeEvent (QCloseEvent *);
 	private:
-		void changeWidget (QWidget *w);
+		void changeWidget (QWidget *);
 	};
 }
 }
-#endif // SEPARATEPLAYERWIDGET_H
+#endif // PLUGINS_LAURE_SEPARATEPLAYERWIDGET_H

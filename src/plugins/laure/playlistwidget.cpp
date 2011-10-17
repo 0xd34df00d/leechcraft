@@ -32,42 +32,35 @@ namespace Laure
 	: QWidget (parent)
 	{
 		Ui_.setupUi (this);
-		setVisible (false);
-		ActionBar_ = new QToolBar (Ui_.ActionFrame_);
-		Ui_.ActionFrame_->setFrameStyle (QFrame::NoFrame);
+		setVisible (false);	
+		
+		QToolButton *actionAdd = new QToolButton (this);
+		actionAdd->setPopupMode (QToolButton::InstantPopup);
+		actionAdd->setProperty ("ActionIcon", "add");
+		actionAdd->setMenu (new PlayListAddMenu (Ui_.PlayListView_, this));
+		
+		QAction *actionRemove = new QAction (tr ("Remove"), this);
+		actionRemove->setProperty ("ActionIcon", "remove");
+		
+		ActionBar_ =new QToolBar (Ui_.ActionFrame_);
 		ActionBar_->setToolButtonStyle (Qt::ToolButtonIconOnly);
 		ActionBar_->setIconSize (QSize (16, 16));
-		connect (Ui_.PlayListView_,
-				SIGNAL (playItem (int)),
-				this,
-				SIGNAL (playItem (int)));
-	}
-	
-	PlayListWidget::~PlayListWidget ()
-	{
-	}
-	
-	PlayListView* PlayListWidget::GetPlayListView ()
-	{
-		return Ui_.PlayListView_;
-	}
-	
-	void PlayListWidget::Init (ICoreProxy_ptr proxy)
-	{
-		QToolButton *actionAdd = new QToolButton (this);
-		actionAdd->setIcon (proxy->GetIcon ("add"));
-		actionAdd->setPopupMode (QToolButton::InstantPopup);
 		ActionBar_->addWidget (actionAdd);
-		
-		actionAdd->setMenu (new PlayListAddMenu (Ui_.PlayListView_, this));
-		QAction *actionRemove = new QAction (proxy->GetIcon ("remove"),
-				tr ("Remove"), this);
 		ActionBar_->addAction (actionRemove);
 		
 		connect (actionRemove,
 				SIGNAL (triggered (bool)),
 				Ui_.PlayListView_,
 				SLOT (removeSelectedRows ()));
+		connect (Ui_.PlayListView_,
+				SIGNAL (playItem (int)),
+				this,
+				SIGNAL (playItem (int)));
+	}
+	
+	PlayListView* PlayListWidget::GetPlayListView ()
+	{
+		return Ui_.PlayListView_;
 	}
 }
 }

@@ -32,10 +32,6 @@ namespace Laure
 		CurrentIndex_ = -1;
 	}
 	
-	PlayListModel::~PlayListModel ()
-	{
-	}
-	
 	bool PlayListModel::SetPlayList (libvlc_media_list_t *ML)
 	{
 		ML_ = ML;

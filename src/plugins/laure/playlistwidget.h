@@ -17,8 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLAYLISTWIDGET_H
-#define PLAYLISTWIDGET_H
+#ifndef PLUGINS_LAURE_PLAYLISTWIDGET_H
+#define PLUGINS_LAURE_PLAYLISTWIDGET_H
 
 #include <QWidget>
 #include <interfaces/core/icoreproxy.h>
@@ -37,14 +37,12 @@ namespace Laure
 		Ui::PlayListWidget Ui_;
 		QToolBar *ActionBar_;
 	public:
-		PlayListWidget (QWidget *parent = 0);
-		virtual ~PlayListWidget ();
-		void Init (ICoreProxy_ptr proxy);
+		PlayListWidget (QWidget * = 0);
 		PlayListView *GetPlayListView ();
 	signals:
-		void playItem (int item);
+		void playItem (int);
 	};
 }
 }
 
-#endif // PLAYLISTWIDGET_H
+#endif // PLUGINS_LAURE_PLAYLISTWIDGET_H

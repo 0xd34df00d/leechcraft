@@ -40,14 +40,13 @@ namespace LeechCraft
 namespace Laure
 {
 	QObject *LaureWidget::S_ParentMultiTabs_ = 0;
+	
 	LaureWidget::LaureWidget (QWidget *parent, Qt::WindowFlags f)
 	: QWidget (parent, f)
 	, ToolBar_ (new QToolBar (this))
 	, ActionPlay_ (NULL)
 	{	
 		Ui_.setupUi (this);
-		Ui_.Player_->setFrameStyle (QFrame::Box | QFrame::Sunken);
-		Ui_.CommandFrame_->setFrameStyle (QFrame::NoFrame);
 		
 		connect (Ui_.Player_,
 				SIGNAL (timeout ()),
@@ -65,7 +64,6 @@ namespace Laure
 	
 	void LaureWidget::Init (ICoreProxy_ptr proxy)
 	{
-		Ui_.PlayListWidget_->Init (proxy);
 		Ui_.Player_->SetPlayListView (Ui_.PlayListWidget_->GetPlayListView ());
 		
 		connect (Ui_.PlayListWidget_,
@@ -82,20 +80,22 @@ namespace Laure
 				ActionPlay_,
 				SLOT (handleTriggered ()));
 		
-		InitToolBar (proxy);
-		InitCommandFrame (proxy);
+		InitToolBar ();
+		InitCommandFrame ();
 	}
 	
-	void LaureWidget::InitToolBar (ICoreProxy_ptr proxy)
+	void LaureWidget::InitToolBar ()
 	{
-		QAction *actionOpenFile = new QAction (proxy->GetIcon ("folder"),
-				tr ("Open File"), this);
-		QAction *actionOpenURL = new QAction (proxy->GetIcon ("networkmonitor_plugin"),
-				tr ("Open URL"), this);
-		QAction *playList = new QAction (proxy->GetIcon ("itemlist"),
-				tr ("Playlist"), this);
-		QAction *separateDialog = new QAction (proxy->GetIcon ("fullscreen"),
-				tr ("Open in the separate dialog"), this);
+		QAction *actionOpenFile = new QAction (tr ("Open File"), this);
+		QAction *actionOpenURL = new QAction (tr ("Open URL"), this);
+		QAction *playList = new QAction (tr ("Playlist"), this);
+		QAction *separateDialog = new QAction (tr ("Open in the separate dialog"),
+				this);
+		
+		actionOpenFile->setProperty ("ActionIcon", "folder");
+		actionOpenURL->setProperty ("ActionIcon", "networkmonitor_plugin");
+		playList->setProperty ("ActionIcon", "itemlist");
+		separateDialog->setProperty ("ActionIcon", "fullscreen");
 		
 		playList->setCheckable (true);
 		
@@ -122,21 +122,21 @@ namespace Laure
 				SLOT (separateDialog ()));
 	}
 	
-	void LaureWidget::InitCommandFrame (ICoreProxy_ptr proxy)
+	void LaureWidget::InitCommandFrame ()
 	{
 		QToolBar *bar = new QToolBar (Ui_.CommandFrame_);
 		bar->setToolButtonStyle (Qt::ToolButtonIconOnly);
 		bar->setIconSize (QSize (32, 32));
 		
-		ActionPlay_ = new PlayPauseAction (QPair<QIcon, QIcon> (proxy->GetIcon ("start"),
-						proxy->GetIcon ("pause")),
-				Ui_.CommandFrame_);
-		QAction *actionStop = new QAction (proxy->GetIcon ("media_stop"),
-				tr ("Stop"), Ui_.CommandFrame_);
-		QAction *actionNext = new QAction (proxy->GetIcon ("media_skip_forward"),
-				tr ("Next"), Ui_.CommandFrame_);
-		QAction *actionPrev = new QAction (proxy->GetIcon ("media_skip_backward"),
-				tr ("Previous"), Ui_.CommandFrame_);
+		ActionPlay_ = new PlayPauseAction (Ui_.CommandFrame_);
+		
+		QAction *actionStop = new QAction (tr ("Stop"), Ui_.CommandFrame_);
+		QAction *actionNext = new QAction (tr ("Next"), Ui_.CommandFrame_);
+		QAction *actionPrev = new QAction (tr ("Previous"), Ui_.CommandFrame_);
+		
+		actionStop->setProperty ("ActionIcon", "media_stop");
+		actionNext->setProperty ("ActionIcon", "media_skip_forward");
+		actionPrev->setProperty ("ActionIcon", "media_skip_backward");
 		
 		bar->addAction (actionPrev);
 		bar->addAction (ActionPlay_);
@@ -188,10 +188,6 @@ namespace Laure
 		const QTime& currTime = Ui_.Player_->Time ();
 		const QTime& length = Ui_.Player_->Length ();
 		Ui_.TimeStamp_->setText ("[" + currTime.toString () + "/" + length.toString () + "]");
-	}
-	
-	LaureWidget::~LaureWidget ()
-	{
 	}
 	
 	void LaureWidget::SetParentMultiTabs (QObject* parent)

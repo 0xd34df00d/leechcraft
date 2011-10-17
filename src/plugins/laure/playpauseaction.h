@@ -17,8 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLAYPAUSEACTION_H
-#define PLAYPAUSEACTION_H
+#ifndef PLUGINS_LAURE_PLAYPAUSEACTION_H
+#define PLUGINS_LAURE_PLAYPAUSEACTION_H
 #include <QAction>
 
 namespace LeechCraft
@@ -29,11 +29,9 @@ namespace Laure
 	{
 		Q_OBJECT
 
-		QPair<QIcon, QIcon> PlayPausePair_;
 		bool Play_;
 	public:
-		PlayPauseAction (const QPair<QIcon, QIcon>& playPausePair,
-				QObject *parent = 0);
+		PlayPauseAction (QObject * = 0);
 	public slots:
 		void handlePause ();
 		void handlePlay ();
@@ -45,4 +43,4 @@ namespace Laure
 }
 }
 
-#endif // PLAYPAUSECTION_H
+#endif // PLUGINS_LAURE_PLAYPAUSECTION_H

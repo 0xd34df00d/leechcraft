@@ -43,7 +43,7 @@ namespace Laure
 		Q_INTERFACES (IInfo IHaveTabs IEntityHandler IHaveSettings)
 
 		TabClasses_t TabClasses_;
-		QList<LaureWidget *> Others_;
+		QList<LaureWidget*> Others_;
 		ICoreProxy_ptr Proxy_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 	public:
@@ -58,11 +58,11 @@ namespace Laure
 		TabClasses_t GetTabClasses () const;
 		void TabOpenRequested (const QByteArray& tabClass);
 
-		EntityTestHandleResult CouldHandle (const Entity& entity) const;
-		void Handle (Entity entity);
+		EntityTestHandleResult CouldHandle (const Entity&) const;
+		void Handle (Entity);
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	private:
-		LaureWidget *createTab ();
+		LaureWidget* CreateTab ();
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);

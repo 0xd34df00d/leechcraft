@@ -17,8 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLAYER_H
-#define PLAYER_H
+#ifndef PLUGINS_LAURE_PLAYER_H
+#define PLUGINS_LAURE_PLAYER_H
 
 #include <QFrame>
 #include <vlc/vlc.h>
@@ -53,7 +53,7 @@ namespace Laure
 		libvlc_instance_t *Instance ();
 		libvlc_media_list_t *PlayList ();
 		libvlc_media_t *Media ();
-		void SetPlayListView (PlayListView *playListView);
+		void SetPlayListView (PlayListView *);
 		
 		int Volume () const;
 		int Position () const;
@@ -62,12 +62,12 @@ namespace Laure
 		QTime Time () const;
 		QTime Length () const;
 	public slots:
-		void setVolume (int vol);
-		void setPosition (int pos);
+		void setVolume (int);
+		void setPosition (int);
 		void stop ();
 		void pause ();
 		void play ();
-		void playItem (int item);
+		void playItem (int);
 		void next ();
 		void prev ();
 		void separateDialog ();
@@ -77,4 +77,4 @@ namespace Laure
 	};
 }
 }
-#endif // PLAYER_H
+#endif // PLUGINS_LAURE_PLAYER_H

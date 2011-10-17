@@ -17,8 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef CHOOSEURLDIALOG_H
-#define CHOOSEURLDIALOG_H
+#ifndef PLUGINS_LAURE_CHOOSEURLDIALOG_H
+#define PLUGINS_LAURE_CHOOSEURLDIALOG_H
 #include <QDialog>
 #include "ui_chooseurldialog.h"
 
@@ -31,8 +31,7 @@ namespace Laure
 		Q_OBJECT
 		Ui::ChooseURLDialog Ui_;
 	public:
-		ChooseURLDialog (QWidget *parent = 0);
-		virtual ~ChooseURLDialog ();
+		ChooseURLDialog (QWidget * = 0);
 		
 		QString GetUrl () const;
 		bool IsUrlValid () const;
@@ -40,4 +39,4 @@ namespace Laure
 }
 }
 
-#endif // CHOOSEURLDIALOG_H
+#endif // PLUGINS_LAURE_CHOOSEURLDIALOG_H

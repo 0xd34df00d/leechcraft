@@ -17,9 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLAYLISTVIEW_H
-#define PLAYLISTVIEW_H
-
+#ifndef PLUGINS_LAURE_PLAYLISTVIEW_H
+#define PLUGINS_LAURE_PLAYLISTVIEW_H
 #include <QListView>
 #include "playlistmodel.h"
 
@@ -35,12 +34,12 @@ namespace Laure
 		Q_OBJECT
 		PlayListModel *PlayListModel_;
 	public:
-		PlayListView (QWidget *parent = 0);
-		bool SetPlayList (libvlc_media_list_t *ML);
-		bool SetInstance (libvlc_instance_t *VLCInstance);
-		void addItem (const QString& item);
+		PlayListView (QWidget * = 0);
+		bool SetPlayList (libvlc_media_list_t *);
+		bool SetInstance (libvlc_instance_t *);
+		void addItem (const QString&);
 		
-		void keyPressEvent (QKeyEvent *event);
+		void keyPressEvent (QKeyEvent *);
 		int CurrentIndex () const;
 		int RowCount () const;
 		
@@ -48,13 +47,13 @@ namespace Laure
 	private:
 		void moveSelect (int x, int y);
 	public slots:
-		void SetCurrentIndex (int val);
+		void SetCurrentIndex (int);
 		void removeSelectedRows ();
 	private slots:
-		void handleDoubleClicked (const QModelIndex& index);
+		void handleDoubleClicked (const QModelIndex&);
 	signals:
-		void playItem (int item);
+		void playItem (int);
 	};
 }
 }
-#endif // PLAYLISTVIEW_H
+#endif // PLUGINS_LAURE_PLAYLISTVIEW_H

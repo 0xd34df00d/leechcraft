@@ -60,7 +60,6 @@ namespace Laure
 
 	LastFMSubmitter::LastFMSubmitter (QObject* parent)
 	: QObject (parent)
-	, Scrobbler_ (NULL)
 	{
 		lastfm::ws::ApiKey = "be076efd1c241366f27fde6fd024e567";
 		lastfm::ws::SharedSecret = "8352aead3be59ab319cd4e578d374843";
@@ -94,11 +93,6 @@ namespace Laure
 
 		Manager_->get (QNetworkRequest (QUrl (url)));
 	}
-
-	LastFMSubmitter::~LastFMSubmitter ()
-	{
-		delete Scrobbler_;
-	}
 		
 	void LastFMSubmitter::getSessionKey (QNetworkReply *result)
 	{
@@ -113,9 +107,9 @@ namespace Laure
 					.elementsByTagName ("key").at (0).toElement ()
 					.text ();
 			
-			Scrobbler_ = new lastfm::Audioscrobbler ("0.4.90");
+			Scrobbler_.reset (new lastfm::Audioscrobbler ("0.4.90"));
 		
-			connect (Scrobbler_,
+			connect (Scrobbler_.get (),
 					SIGNAL (status (int)),
 					this,
 					SLOT (status (int)));
@@ -124,16 +118,15 @@ namespace Laure
 		
 	void LastFMSubmitter::status (int code)
 	{
-		qDebug () << Q_FUNC_INFO
-				<< tr ("LastFMSubmitter status:")
-				<< code;
+		// code
 	}
 		
 	void LastFMSubmitter::NowPlaying (libvlc_media_t *m)
 	{
 		qDebug () << Q_FUNC_INFO << m << IsConnected ();
-		if (m == NULL || !IsConnected ())
+		if (!m || !IsConnected ())
 			return;
+		
 		lastfm::Track track;
 		lastfm::MutableTrack mutableTrack (track);
 		libvlc_media_parse (m);

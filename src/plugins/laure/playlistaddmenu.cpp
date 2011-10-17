@@ -66,6 +66,7 @@ namespace Laure
 				tr ("Choose directory"), QDir::homePath ());
 		if (fileDir.isEmpty ())
 			return;
+		
 		const QFileInfoList& fileInfoList = StoragedFiles (fileDir);
 		Q_FOREACH (const QFileInfo& fileInfo, fileInfoList)
 			PlayListView_->addItem (fileInfo.absoluteFilePath ());
@@ -73,10 +74,10 @@ namespace Laure
 	
 	void PlayListAddMenu::handleAddUrl ()
 	{
-		ChooseURLDialog *d = new ChooseURLDialog (this);
-		if (d->exec () == QDialog::Accepted)
+		ChooseURLDialog d;
+		if (d.exec () == QDialog::Accepted)
 		{
-			const QString& url = d->GetUrl ();
+			const QString& url = d.GetUrl ();
 			PlayListView_->addItem (url);
 		}
 	}
@@ -87,15 +88,16 @@ namespace Laure
 		QFileInfoList list;
 		QFileInfoList fil = dir.entryInfoList (QDir::Dirs
 				| QDir::Files | QDir::NoDotAndDotDot);
-		if (!fil.isEmpty ())
+		
+		if (fil.isEmpty ())
+			return QFileInfoList ();
+		
+		Q_FOREACH (QFileInfo fi, fil)
 		{
-			Q_FOREACH (QFileInfo fi, fil)
-			{
-				if (fi.isDir ())
-					list << StoragedFiles (fi.absoluteFilePath ());
-				else
-					list << fi;
-			}
+			if (fi.isDir ())
+				list << StoragedFiles (fi.absoluteFilePath ());
+			else
+ 				list << fi;
 		}
 		return list;
 	}

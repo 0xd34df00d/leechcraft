@@ -29,11 +29,7 @@ namespace Laure
 	{
 		Ui_.setupUi (this);
 	}
-	
-	ChooseURLDialog::~ChooseURLDialog ()
-	{
-	}
-	
+
 	QString ChooseURLDialog::GetUrl () const
 	{
 		return Ui_.Url_->text ();

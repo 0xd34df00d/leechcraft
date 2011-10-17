@@ -17,8 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLAYLISTMODEL_H
-#define PLAYLISTMODEL_H
+#ifndef PLUGINS_LAURE_PLAYLISTMODEL_H
+#define PLUGINS_LAURE_PLAYLISTMODEL_H
 
 #include <QStringListModel>
 #include <vlc/vlc.h>
@@ -34,25 +34,24 @@ namespace Laure
 		libvlc_media_list_t *ML_;
 		int CurrentIndex_;
 	public:
-		PlayListModel (QObject *parent);
-		virtual ~PlayListModel ();
+		PlayListModel (QObject *);
 		
-		bool SetPlayList (libvlc_media_list_t *ML);
-		bool SetInstance (libvlc_instance_t *VLCInstance);
+		bool SetPlayList (libvlc_media_list_t *);
+		bool SetInstance (libvlc_instance_t *);
 		
 		int CurrentIndex () const;
 		libvlc_media_t *CurrentMedia ();
-		void SetCurrentIndex (int val);
+		void SetCurrentIndex (int);
 		
-		int rowCount (const QModelIndex& parent = QModelIndex ()) const;
+		int rowCount (const QModelIndex& = QModelIndex ()) const;
 		bool insertRows (int row, const QString& fileName);
-		bool removeRows (int row);
-		Qt::ItemFlags flags (const QModelIndex& index) const;
+		bool removeRows (int);
+		Qt::ItemFlags flags (const QModelIndex&) const;
 
 	public slots:
-		bool addItem (const QString& item);
+		bool addItem (const QString&);
 	};
 }
 }
 
-#endif // PLAYLISTMODEL_H
+#endif // PLUGINS_LAURE_PLAYLISTMODEL_H

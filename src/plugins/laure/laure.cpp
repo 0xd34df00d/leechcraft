@@ -89,7 +89,7 @@ namespace Laure
 	void Plugin::TabOpenRequested (const QByteArray& tabClass)
 	{
 		if (tabClass == "Laure")
-			createTab ();
+			CreateTab ();
 		else
 		{
 			qWarning () << Q_FUNC_INFO
@@ -113,7 +113,7 @@ namespace Laure
 		w->deleteLater ();
 	}
 
-	LaureWidget *Plugin::createTab ()
+	LaureWidget* Plugin::CreateTab ()
 	{
 		LaureWidget *w = new LaureWidget ();
 		w->Init (Proxy_);
@@ -151,7 +151,7 @@ namespace Laure
 	void Plugin::Handle (Entity entity)
 	{
 		const QString& dest = entity.Entity_.toString ();
-		LaureWidget *w = createTab ();
+		LaureWidget *w = CreateTab ();
 		w->handleOpenMediaContent (dest);
 	}
 }

@@ -37,6 +37,7 @@ namespace Laure
 	: QFrame (parent, f)
 	, PlayListView_ (NULL)
 	, LFSubmitter_ (new LastFMSubmitter (this))
+	, Poller_ (new QTimer (this))
 	{
 		const char * const vlc_args[] = {
 				"-I", "dummy",
@@ -44,7 +45,7 @@ namespace Laure
 				"--extraintf=logger",
 				"--verbose=2"
 		};
-		Poller_ = new QTimer (this);
+
 		VLCInstance_ = libvlc_new (sizeof (vlc_args)
 				/ sizeof (vlc_args[0]), vlc_args);
 		MLP_ = libvlc_media_list_player_new (VLCInstance_);
@@ -111,8 +112,9 @@ namespace Laure
 	{
 		if (!IsPlaying ())
 			return -1;
+		
 		float pos = libvlc_media_player_get_position (MP_);
-		return (int)(pos * (float)(pos_slider_max));
+		return pos * static_cast<float> (pos_slider_max);
 	}
 	
 	float Player::MediaPosition () const
@@ -186,7 +188,7 @@ namespace Laure
 	{
 		int time = libvlc_media_player_get_time (MP_);
 		int length = libvlc_media_player_get_length (MP_);
-		if (time > length - 200)
+		if (length - time < 200)
 		{
 			next ();
 		}

@@ -23,13 +23,11 @@ namespace LeechCraft
 {
 namespace Laure
 {
-	PlayPauseAction::PlayPauseAction (const QPair<QIcon, QIcon>& playPausePair,
-			QObject *parent)
+	PlayPauseAction::PlayPauseAction (QObject *parent)
 	: QAction (parent)
-	, PlayPausePair_ (playPausePair)
 	, Play_ (false)
 	{
-		setIcon (PlayPausePair_.first);
+		setProperty ("ActionIcon", "start");
 		connect (this,
 				SIGNAL (triggered (bool)),
 				this,
@@ -39,25 +37,25 @@ namespace Laure
 	void PlayPauseAction::handlePause ()
 	{
 		Play_ = false;
-		setIcon (PlayPausePair_.first);
+		setProperty ("ActionIcon", "start");
 	}
 
 	void PlayPauseAction::handlePlay ()
 	{
 		Play_ = true;
-		setIcon (PlayPausePair_.second);
+		setProperty ("ActionIcon", "pause");
 	}
 
 	void PlayPauseAction::handleTriggered ()
 	{
 		if ((Play_ = !Play_))
 		{
-			setIcon (PlayPausePair_.second);
+			setProperty ("ActionIcon", "pause");
 			emit play ();
 		}
 		else
 		{
-			setIcon (PlayPausePair_.first);
+			setProperty ("ActionIcon", "start");
 			emit pause ();
 		}
 	}

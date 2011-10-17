@@ -17,9 +17,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef LASTFMSUBMITTER_H
-#define LASTFMSUBMITTER_H
+#ifndef PLUGINS_LAURE_LASTFMSUBMITTER_H
+#define PLUGINS_LAURE_LASTFMSUBMITTER_H
 #include <QObject>
+#include <boost/shared_ptr.hpp>
 #include <vlc/vlc.h>
 
 namespace lastfm
@@ -34,23 +35,21 @@ namespace LeechCraft
 {
 namespace Laure
 {
-
 	class LastFMSubmitter : public QObject
 	{
 		Q_OBJECT
-		lastfm::Audioscrobbler *Scrobbler_;
+		boost::shared_ptr<lastfm::Audioscrobbler> Scrobbler_;
 		QNetworkAccessManager *Manager_;
 	public:
-		LastFMSubmitter (QObject* parent = 0);
-		virtual ~LastFMSubmitter ();
+		LastFMSubmitter (QObject* = 0);
 		
 		bool IsConnected () const;
-		void NowPlaying (libvlc_media_t *m);
+		void NowPlaying (libvlc_media_t *);
 	private slots:
-		void status (int code);
-		void getSessionKey (QNetworkReply *result);
+		void status (int);
+		void getSessionKey (QNetworkReply *);
 	};
 }
 }
 
-#endif // LASTFMSUBMITTER_H
+#endif // PLUGINS_LAURE_LASTFMSUBMITTER_H

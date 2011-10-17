@@ -17,8 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef LAUREWIDGET_H
-#define LAUREWIDGET_H
+#ifndef PLUGINS_LAURE_LAUREWIDGET_H
+#define PLUGINS_LAURE_LAUREWIDGET_H
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/iinfo.h>
@@ -34,34 +34,37 @@ namespace Laure
 	class Player;
 	class PlayListWidget;
 	class PlayPauseAction;
+	
 	class LaureWidget : public QWidget
 				, public ITabWidget
 	{
 		Q_OBJECT
 		Q_INTERFACES (ITabWidget)
-		QToolBar *ToolBar_;
+		
 		static QObject *S_ParentMultiTabs_;
+		
+		QToolBar *ToolBar_;
 		Ui::LaureWidget Ui_;
 		PlayPauseAction *ActionPlay_;
 	public:
 		LaureWidget (QWidget *parent = 0, Qt::WindowFlags f = 0);
+		
 		void Init (ICoreProxy_ptr);
-		virtual ~LaureWidget ();
-		static void SetParentMultiTabs (QObject *parent);
+		static void SetParentMultiTabs (QObject *);
 		TabClassInfo GetTabClassInfo () const;
 		QObject* ParentMultiTabs ();
 		void Remove ();
 		QToolBar* GetToolBar () const;
 		
-		void keyPressEvent (QKeyEvent *event);
+		void keyPressEvent (QKeyEvent *);
 	private:
-		void InitCommandFrame (ICoreProxy_ptr);
-		void InitToolBar (ICoreProxy_ptr);
+		void InitCommandFrame ();
+		void InitToolBar ();
 	signals:
 		void needToClose ();
 		void playPause ();
 	public slots:
-		void handleOpenMediaContent (const QString& val);
+		void handleOpenMediaContent (const QString&);
 	private slots:
 		void handleOpenFile ();
 		void handleOpenURL ();
@@ -73,4 +76,4 @@ namespace Laure
 }
 }
 
-#endif // LAUREWIDGET_H
+#endif // PLUGINS_LAURE_LAUREWIDGET_H
