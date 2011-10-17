@@ -174,9 +174,7 @@ namespace p100q
 
 		body.replace (PostByUserRX_,
 				" <a href=\"azoth://msgeditreplace/%23\\1+\" title=\"" + tr ("View post") + "\">#\\1</a> ");
-
-		body.prepend("<div style=\"width:100%;overflow:auto;\">");
-		body += "</div>";
+		body.replace (0, 6, "");
 		return body;
 	}
 
