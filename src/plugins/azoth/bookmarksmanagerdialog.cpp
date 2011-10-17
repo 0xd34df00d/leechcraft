@@ -63,13 +63,34 @@ namespace Azoth
 					continue;
 				}
 
+				if (!qobject_cast<ISupportBookmarks*> (accObj))
+					continue;
+
 				Ui_.AccountBox_->addItem (account->GetAccountName (),
 						QVariant::fromValue<IAccount*> (account));
+
+				connect (accObj,
+						SIGNAL (bookmarksChanged ()),
+						this,
+						SLOT (handleBookmarksChanged ()));
 			}
 		}
 
 		if (Ui_.AccountBox_->count ())
 			on_AccountBox__currentIndexChanged (0);
+	}
+
+	void BookmarksManagerDialog::FocusOn (IAccount *acc)
+	{
+		const QVariant& accVar =
+				QVariant::fromValue<IAccount*> (acc);
+
+		for (int i = 0; i < Ui_.AccountBox_->count (); ++i)
+			if (Ui_.AccountBox_->itemData (i) == accVar)
+			{
+				Ui_.AccountBox_->setCurrentIndex (i);
+				break;
+			}
 	}
 
 	void BookmarksManagerDialog::SuggestSaving (QObject *entryObj)
@@ -145,6 +166,8 @@ namespace Azoth
 			return;
 		}
 
+		qDebug () << Q_FUNC_INFO << supBms->GetBookmarkedMUCs ().size ();
+
 		const QByteArray& accId = account->GetAccountID ();
 		Q_FOREACH (const QVariant& var, supBms->GetBookmarkedMUCs ())
 		{
@@ -171,6 +194,17 @@ namespace Azoth
 		CurrentEditor_ = qobject_cast<IMUCBookmarkEditorWidget*> (w);
 		if (CurrentEditor_)
 			Ui_.BMFrameLayout_->addWidget (w);
+	}
+
+	void BookmarksManagerDialog::handleBookmarksChanged ()
+	{
+		const int curIdx = Ui_.AccountBox_->currentIndex ();
+
+		IAccount *acc = qobject_cast<IAccount*> (sender ());
+		if (acc != Ui_.AccountBox_->itemData (curIdx).value<IAccount*> ())
+			return;
+
+		on_AccountBox__currentIndexChanged (curIdx);
 	}
 
 	void BookmarksManagerDialog::handleCurrentBMChanged (const QModelIndex& current)
