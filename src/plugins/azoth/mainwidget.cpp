@@ -44,6 +44,7 @@
 #include "mooddialog.h"
 #include "locationdialog.h"
 #include "util.h"
+#include "interfaces/isupportbookmarks.h"
 
 namespace LeechCraft
 {
@@ -148,6 +149,12 @@ namespace Azoth
 				SIGNAL (triggered ()),
 				this,
 				SLOT (joinAccountConference ()));
+
+		AccountManageBookmarks_ = new QAction (tr ("Manage bookmarks..."), this);
+		connect (AccountManageBookmarks_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (manageAccountBookmarks ()));
 
 		AccountAddContact_ = new QAction (tr ("Add contact..."), this);
 		connect (AccountAddContact_,
@@ -362,8 +369,16 @@ namespace Azoth
 
 			AccountAddContact_->setProperty ("Azoth/AccountObject", objVar);
 			actions << AccountJoinConference_;
-			actions << AccountAddContact_;
 
+			if (qobject_cast<ISupportBookmarks*> (objVar.value<QObject*> ()))
+			{
+				actions << AccountManageBookmarks_;
+				AccountManageBookmarks_->setProperty ("Azoth/AccountObject", objVar);
+
+				actions << Util::CreateSeparator (menu);
+			}
+
+			actions << AccountAddContact_;
 			actions << Util::CreateSeparator (menu);
 
 			Q_FOREACH (QAction *act, MenuChangeStatus_->actions ())
@@ -558,6 +573,21 @@ namespace Azoth
 		JoinConferenceDialog *dia = new JoinConferenceDialog (accounts,
 				Core::Instance ().GetProxy ()->GetMainWindow ());
 		dia->show ();
+		dia->setAttribute (Qt::WA_DeleteOnClose, true);
+	}
+
+	void MainWidget::manageAccountBookmarks ()
+	{
+		IAccount *account = GetAccountFromSender (Q_FUNC_INFO);
+		if (!account)
+			return;
+
+		BookmarksManagerDialog *dia =
+				new BookmarksManagerDialog (Core::Instance ()
+						.GetProxy ()->GetMainWindow ());
+		dia->FocusOn (account);
+		dia->show ();
+		dia->setAttribute (Qt::WA_DeleteOnClose, true);
 	}
 
 	void MainWidget::addAccountContact ()

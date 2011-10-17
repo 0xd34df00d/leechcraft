@@ -48,6 +48,7 @@ namespace Azoth
 		QMenu *TrayChangeStatus_;
 
 		QAction *AccountJoinConference_;
+		QAction *AccountManageBookmarks_;
 		QAction *AccountAddContact_;
 		QAction *AccountSetActivity_;
 		QAction *AccountSetMood_;
@@ -75,6 +76,7 @@ namespace Azoth
 
 		void handleCatRenameTriggered ();
 		void joinAccountConference ();
+		void manageAccountBookmarks ();
 		void addAccountContact ();
 		void handleAccountSetActivity ();
 		void handleAccountSetMood ();
