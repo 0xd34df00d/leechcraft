@@ -125,7 +125,7 @@ OPTION (ENABLE_VFSCORE "Build VFS core" OFF)
 OPTION (ENABLE_FTP "Build LCFTP, the FTP client" ON)
 OPTION (ENABLE_JUFFED "Build JuffEd, the advanced text editor" OFF)
 OPTION (ENABLE_OTZERKALU "Build Otzerkalu, which allows one to download web sites recursively" OFF)
-OPTION (ENABLE_POTORCHU "Build Potorchu, the new generation audio/video player" OFF)
+OPTION (ENABLE_LAURE "Build Laure, the new generation audio/video player" OFF)
 OPTION (ENABLE_TRANSPARENTARCH "Build TransparentArch, the plugin for transparent access to archives in various formats" OFF)
 
 ENABLE_TESTING ()
