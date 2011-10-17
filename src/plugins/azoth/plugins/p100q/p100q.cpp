@@ -126,7 +126,7 @@ namespace p100q
 
 				Q_FOREACH (const QString& tagval, tagslist)
 				{
-					QString t = QString (QUrl::toPercentEncoding (tagval)).replace ("%2F", "\/");
+					QString t = QString (QUrl::toPercentEncoding (tagval)).replace ("%2F", "/");
 					tags += QString (" <a href=\"azoth://msgeditreplace/S *%1\" title=\"" + tr ("Subscribe to tag") + "\">%2</a> ")
 							.arg (t)
 							.arg (tagval);
