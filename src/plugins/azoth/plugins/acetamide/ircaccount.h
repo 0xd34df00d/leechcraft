@@ -145,6 +145,8 @@ namespace Acetamide
 		void scheduleClientDestruction ();
 
 		void gotConsolePacket (const QByteArray&, int);
+
+		void bookmarksChanged ();
 	};
 
 	typedef boost::shared_ptr<IrcAccount> IrcAccount_ptr;

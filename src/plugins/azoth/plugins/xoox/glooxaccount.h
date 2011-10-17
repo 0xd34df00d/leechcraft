@@ -232,7 +232,8 @@ namespace Xoox
 		void statusChanged (const EntryStatus&);
 		void mucInvitationReceived (const QVariantMap&,
 				const QString&, const QString&);
-		void bookmarksUpdated ();
+
+		void bookmarksChanged ();
 
 		void riexItemsSuggested (QList<LeechCraft::Azoth::RIEXItem> items,
 				QObject*, QString);

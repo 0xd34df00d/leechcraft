@@ -259,7 +259,7 @@ namespace Xoox
 		connect (BMManager_,
 				SIGNAL (bookmarksReceived (QXmppBookmarkSet)),
 				Account_,
-				SIGNAL (bookmarksUpdated ()));
+				SIGNAL (bookmarksChanged ()));
 
 		connect (DiscoveryManager_,
 				SIGNAL (infoReceived (const QXmppDiscoveryIq&)),

@@ -69,6 +69,8 @@ namespace Azoth
 		 * @param[in] bookmarks The list of variant maps with bookmarks.
 		 */
 		virtual void SetBookmarkedMUCs (const QVariantList& bookmarks) = 0;
+
+		virtual void bookmarksChanged () = 0;
 	};
 }
 }
