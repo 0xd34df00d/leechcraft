@@ -19,7 +19,6 @@
 
 #ifndef LASTFMSUBMITTER_H
 #define LASTFMSUBMITTER_H
-
 #include <QObject>
 #include <vlc/vlc.h>
 

@@ -19,15 +19,10 @@
 
 #ifndef LAUREWIDGET_H
 #define LAUREWIDGET_H
-
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/iinfo.h>
-
-namespace Ui
-{
-	class LaureWidget;
-};
+#include "ui_laurewidget.h"
 
 class QToolBar;
 class QUrl;
@@ -46,7 +41,7 @@ namespace Laure
 		Q_INTERFACES (ITabWidget)
 		QToolBar *ToolBar_;
 		static QObject *S_ParentMultiTabs_;
-		Ui::LaureWidget *Ui_;
+		Ui::LaureWidget Ui_;
 		PlayPauseAction *ActionPlay_;
 	public:
 		LaureWidget (QWidget *parent = 0, Qt::WindowFlags f = 0);

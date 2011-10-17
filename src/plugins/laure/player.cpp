@@ -23,7 +23,6 @@
 #include <QTimer>
 #include <QPushButton>
 #include <QTime>
-
 #include "separateplayerwidget.h"
 #include "playlistview.h"
 #include "lastfmsubmitter.h"

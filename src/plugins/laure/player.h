@@ -21,7 +21,6 @@
 #define PLAYER_H
 
 #include <QFrame>
-
 #include <vlc/vlc.h>
 #include <vlc/libvlc_media_list.h>
 #include <vlc/libvlc_media_list_player.h>

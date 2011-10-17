@@ -21,10 +21,8 @@
 #include <QToolBar>
 #include <QToolButton>
 #include <vlc/vlc.h>
-
 #include "chooseurldialog.h"
 #include "playlistaddmenu.h"
-#include "ui_playlistwidget.h"
 
 namespace LeechCraft
 {
@@ -32,15 +30,14 @@ namespace Laure
 {
 	PlayListWidget::PlayListWidget (QWidget *parent)
 	: QWidget (parent)
-	, Ui_ (new Ui::PlayListWidget) 
 	{
-		Ui_->setupUi (this);
+		Ui_.setupUi (this);
 		setVisible (false);
-		ActionBar_ = new QToolBar (Ui_->ActionFrame_);
-		Ui_->ActionFrame_->setFrameStyle (QFrame::NoFrame);
+		ActionBar_ = new QToolBar (Ui_.ActionFrame_);
+		Ui_.ActionFrame_->setFrameStyle (QFrame::NoFrame);
 		ActionBar_->setToolButtonStyle (Qt::ToolButtonIconOnly);
 		ActionBar_->setIconSize (QSize (16, 16));
-		connect (Ui_->PlayListView_,
+		connect (Ui_.PlayListView_,
 				SIGNAL (playItem (int)),
 				this,
 				SIGNAL (playItem (int)));
@@ -48,12 +45,11 @@ namespace Laure
 	
 	PlayListWidget::~PlayListWidget ()
 	{
-		delete Ui_;
 	}
 	
 	PlayListView* PlayListWidget::GetPlayListView ()
 	{
-		return Ui_->PlayListView_;
+		return Ui_.PlayListView_;
 	}
 	
 	void PlayListWidget::Init (ICoreProxy_ptr proxy)
@@ -63,14 +59,14 @@ namespace Laure
 		actionAdd->setPopupMode (QToolButton::InstantPopup);
 		ActionBar_->addWidget (actionAdd);
 		
-		actionAdd->setMenu (new PlayListAddMenu (Ui_->PlayListView_, this));
+		actionAdd->setMenu (new PlayListAddMenu (Ui_.PlayListView_, this));
 		QAction *actionRemove = new QAction (proxy->GetIcon ("remove"),
 				tr ("Remove"), this);
 		ActionBar_->addAction (actionRemove);
 		
 		connect (actionRemove,
 				SIGNAL (triggered (bool)),
-				Ui_->PlayListView_,
+				Ui_.PlayListView_,
 				SLOT (removeSelectedRows ()));
 	}
 }

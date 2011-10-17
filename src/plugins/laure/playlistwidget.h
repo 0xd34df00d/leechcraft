@@ -22,11 +22,7 @@
 
 #include <QWidget>
 #include <interfaces/core/icoreproxy.h>
-
-namespace Ui
-{
-	class PlayListWidget;
-};
+#include "ui_playlistwidget.h"
 
 class QToolBar;
 
@@ -38,7 +34,7 @@ namespace Laure
 	class PlayListWidget : public QWidget
 	{
 		Q_OBJECT
-		Ui::PlayListWidget *Ui_;
+		Ui::PlayListWidget Ui_;
 		QToolBar *ActionBar_;
 	public:
 		PlayListWidget (QWidget *parent = 0);

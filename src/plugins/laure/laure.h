@@ -32,6 +32,7 @@ namespace LeechCraft
 namespace Laure
 {
 	class LaureWidget;
+	
 	class Plugin : public QObject
 				, public IInfo
 				, public IHaveTabs

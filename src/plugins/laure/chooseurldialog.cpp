@@ -18,7 +18,6 @@
  **********************************************************************/
 
 #include "chooseurldialog.h"
-#include "ui_chooseurldialog.h"
 #include <QUrl>
 
 namespace LeechCraft
@@ -27,24 +26,22 @@ namespace Laure
 {
 	ChooseURLDialog::ChooseURLDialog (QWidget *parent)
 	: QDialog (parent)
-	, Ui_ (new Ui::ChooseURLDialog)
 	{
-		Ui_->setupUi (this);
+		Ui_.setupUi (this);
 	}
 	
 	ChooseURLDialog::~ChooseURLDialog ()
 	{
-		delete Ui_;
 	}
 	
 	QString ChooseURLDialog::GetUrl () const
 	{
-		return Ui_->Url_->text ();
+		return Ui_.Url_->text ();
 	}
 	
 	bool ChooseURLDialog::IsUrlValid () const
 	{
-		return QUrl (Ui_->Url_->text ()).isValid ();
+		return QUrl (Ui_.Url_->text ()).isValid ();
 	}
 
 

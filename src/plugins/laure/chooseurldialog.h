@@ -19,13 +19,8 @@
 
 #ifndef CHOOSEURLDIALOG_H
 #define CHOOSEURLDIALOG_H
-
 #include <QDialog>
-
-namespace Ui
-{
-	class ChooseURLDialog;
-};
+#include "ui_chooseurldialog.h"
 
 namespace LeechCraft
 {
@@ -34,7 +29,7 @@ namespace Laure
 	class ChooseURLDialog : public QDialog
 	{
 		Q_OBJECT
-		Ui::ChooseURLDialog *Ui_;
+		Ui::ChooseURLDialog Ui_;
 	public:
 		ChooseURLDialog (QWidget *parent = 0);
 		virtual ~ChooseURLDialog ();

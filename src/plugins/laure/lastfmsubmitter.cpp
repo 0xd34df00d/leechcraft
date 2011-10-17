@@ -18,7 +18,6 @@
  **********************************************************************/
 
 #include "lastfmsubmitter.h"
-
 #include <QCryptographicHash>
 #include <QNetworkAccessManager>
 #include <lastfm/Track>
