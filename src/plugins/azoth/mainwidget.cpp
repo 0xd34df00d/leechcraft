@@ -30,6 +30,8 @@
 #include "interfaces/isupportactivity.h"
 #include "interfaces/isupportmood.h"
 #include "interfaces/isupportgeolocation.h"
+#include "interfaces/isupportbookmarks.h"
+#include "interfaces/imucjoinwidget.h"
 #include "core.h"
 #include "sortfilterproxymodel.h"
 #include "setstatusdialog.h"
@@ -44,7 +46,6 @@
 #include "mooddialog.h"
 #include "locationdialog.h"
 #include "util.h"
-#include "interfaces/isupportbookmarks.h"
 
 namespace LeechCraft
 {
@@ -372,6 +373,38 @@ namespace Azoth
 
 			if (qobject_cast<ISupportBookmarks*> (objVar.value<QObject*> ()))
 			{
+				ISupportBookmarks *supBms =
+						qobject_cast<ISupportBookmarks*> (objVar.value<QObject*> ());
+				QVariantList bms = supBms->GetBookmarkedMUCs ();
+				if (!bms.isEmpty ())
+				{
+					QMenu *bmsMenu = new QMenu (tr ("Join bookmarked conference"));
+					actions << bmsMenu->menuAction ();
+
+					Q_FOREACH (const QObject *mucObj,
+							qobject_cast<IAccount*> (objVar.value<QObject*> ())->GetCLEntries ())
+					{
+						IMUCEntry *muc = qobject_cast<IMUCEntry*> (mucObj);
+						if (!muc)
+							continue;
+
+						bms.removeAll (muc->GetIdentifyingData ());
+					}
+
+					Q_FOREACH (const QVariant& bm, bms)
+					{
+						const QVariantMap& map = bm.toMap ();
+
+						QAction *act = bmsMenu->addAction (map ["HumanReadableName"].toString ());
+						act->setProperty ("Azoth/AccountObject", objVar);
+						act->setProperty ("Azoth/BMData", bm);
+						connect (act,
+								SIGNAL (triggered ()),
+								this,
+								SLOT (joinAccountConfFromBM ()));
+					}
+				}
+
 				actions << AccountManageBookmarks_;
 				AccountManageBookmarks_->setProperty ("Azoth/AccountObject", objVar);
 
@@ -574,6 +607,22 @@ namespace Azoth
 				Core::Instance ().GetProxy ()->GetMainWindow ());
 		dia->show ();
 		dia->setAttribute (Qt::WA_DeleteOnClose, true);
+	}
+
+	void MainWidget::joinAccountConfFromBM ()
+	{
+		IAccount *account = GetAccountFromSender (Q_FUNC_INFO);
+		if (!account)
+			return;
+
+		const QVariant& bmData = sender ()->property ("Azoth/BMData");
+		if (bmData.isNull ())
+			return;
+
+		IProtocol *proto = qobject_cast<IProtocol*> (account->GetParentProtocol ());
+		IMUCJoinWidget *imjw = qobject_cast<IMUCJoinWidget*> (proto->GetMUCJoinWidget ());
+		imjw->SetIdentifyingData (bmData.toMap ());
+		imjw->Join (account->GetObject ());
 	}
 
 	void MainWidget::manageAccountBookmarks ()

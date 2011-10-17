@@ -76,6 +76,7 @@ namespace Azoth
 
 		void handleCatRenameTriggered ();
 		void joinAccountConference ();
+		void joinAccountConfFromBM ();
 		void manageAccountBookmarks ();
 		void addAccountContact ();
 		void handleAccountSetActivity ();
