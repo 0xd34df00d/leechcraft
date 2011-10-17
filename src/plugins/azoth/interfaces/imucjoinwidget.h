@@ -77,7 +77,7 @@ namespace Azoth
 		 * user. Second field is AccountID, the corresponding value
 		 * should be a QByteArray with the ID of the selected account
 		 * (IAccount::GetAccountID()).
-		 * 
+		 *
 		 * Of course, all the data in the map should be serializable,
 		 * since it would be stored in QSettings.
 		 *
@@ -88,32 +88,6 @@ namespace Azoth
 		 * @sa SetIdentifyingData()
 		 */
 		virtual QVariantMap GetIdentifyingData () const = 0;
-
-		/** @brief Returns the list of bookmarked MUCs, if any.
-		 *
-		 * The returned list is a list of QVariantMaps which should have
-		 * the same format as the ones returned from the
-		 * GetIdentifyingData(). Please refer to documentation for
-		 * GetIdentifyingData() for more information about maps'
-		 * contents.
-		 *
-		 * @return List of bookmarks parameters.
-		 *
-		 * @sa GetIdentifyingData()
-		 */
-		virtual QVariantList GetBookmarkedMUCs () const = 0;
-		
-		/** @brief Sets the bookmarked MUCs for the given account.
-		 * 
-		 * The passed list is typically based on the result of the
-		 * corresponding IMUCBookmarkEditWidget::GetIdentifyingData()
-		 * return values.
-		 * 
-		 * @param[in] account Account for which the bookmarks should be
-		 * set.
-		 * @param[in] bookmarks The list of variant maps with bookmarks.
-		 */
-		virtual void SetBookmarkedMUCs (QObject *account, const QVariantList& bookmarks) = 0;
 
 		/** @brief Sets the previously saved join parameters.
 		 *
@@ -126,14 +100,14 @@ namespace Azoth
 		 * @sa GetIdentifyingData()
 		 */
 		virtual void SetIdentifyingData (const QVariantMap& data) = 0;
-		
+
 		/** @brief Notifies about validity of the input.
-		 * 
+		 *
 		 * This signal should be emitted whenever the validity of the
 		 * input data is changed.
-		 * 
+		 *
 		 * @note This function is expected to be a signal.
-		 * 
+		 *
 		 * @param[out] isValid Whether the data given by the user is
 		 * valid.
 		 */

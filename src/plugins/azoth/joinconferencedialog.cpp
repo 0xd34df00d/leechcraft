@@ -22,6 +22,7 @@
 #include <QtDebug>
 #include "interfaces/iprotocol.h"
 #include "interfaces/imucjoinwidget.h"
+#include "interfaces/isupportbookmarks.h"
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -35,6 +36,10 @@ namespace Azoth
 
 		Q_FOREACH (IAccount *acc, accounts)
 		{
+			ISupportBookmarks *supBms = qobject_cast<ISupportBookmarks*> (acc->GetObject ());
+			if (!supBms)
+				continue;
+
 			IProtocol *proto =
 					qobject_cast<IProtocol*> (acc->GetParentProtocol ());
 
@@ -42,7 +47,7 @@ namespace Azoth
 			if (!Proto2Joiner_.contains (proto))
 			{
 				joiner = proto->GetMUCJoinWidget ();
-				if (!qobject_cast<IMUCJoinWidget*> (joiner))	
+				if (!qobject_cast<IMUCJoinWidget*> (joiner))
 				{
 					qWarning () << Q_FUNC_INFO
 							<< "joiner widget for account"
@@ -58,12 +63,9 @@ namespace Azoth
 
 			IMUCJoinWidget *imjw = qobject_cast<IMUCJoinWidget*> (joiner);
 
-			Q_FOREACH (const QVariant& item, imjw->GetBookmarkedMUCs ())
+			Q_FOREACH (const QVariant& item, supBms->GetBookmarkedMUCs ())
 			{
 				const QVariantMap& map = item.toMap ();
-				if (map ["AccountID"].toByteArray () != acc->GetAccountID ())
-					continue;
-
 				const QString& name = map ["HumanReadableName"].toString ();
 				if (name.isEmpty ())
 					continue;
@@ -99,7 +101,7 @@ namespace Azoth
 						map);
 			}
 		}
-		
+
 		if (Ui_.HistoryBox_->count ())
 			QMetaObject::invokeMethod (this,
 					"on_HistoryBox__activated",
@@ -110,7 +112,7 @@ namespace Azoth
 	{
 		qDeleteAll (Proto2Joiner_.values ());
 	}
-	
+
 	void JoinConferenceDialog::SetIdentifyingData (const QVariantMap& ident)
 	{
 		FillWidget (ident);
@@ -232,14 +234,14 @@ namespace Azoth
 				SIGNAL (validityChanged (bool)),
 				this,
 				SLOT (handleValidityChanged (bool)));
-		
+
 		adjustSize ();
 
 		qobject_cast<IMUCJoinWidget*> (joiner)->AccountSelected (accObj);
 	}
 
 	void JoinConferenceDialog::on_BookmarksBox__activated (int idx)
-	{	
+	{
 		const QVariantMap& map = Ui_.BookmarksBox_->itemData (idx).toMap ();
 		FillWidget (map);
 	}
@@ -249,12 +251,12 @@ namespace Azoth
 		const QVariantMap& map = Ui_.HistoryBox_->itemData (idx).toMap ();
 		FillWidget (map);
 	}
-	
+
 	void JoinConferenceDialog::handleValidityChanged (bool isValid)
 	{
 		Ui_.ButtonBox_->button (QDialogButtonBox::Ok)->setEnabled (isValid);
 	}
-	
+
 	void JoinConferenceDialog::FillWidget (const QVariantMap& map)
 	{
 		const QByteArray& id = map ["AccountID"].toByteArray ();

@@ -41,6 +41,7 @@
 #include "privacylistsconfigdialog.h"
 #include "mediacall.h"
 #include "jabbersearchsession.h"
+#include "bookmarkeditwidget.h"
 
 #ifdef ENABLE_CRYPT
 #include "pgpmanager.h"
@@ -517,6 +518,65 @@ namespace Xoox
 			ClientConnection_->GetRIEXManager ()->SuggestItems (entry, modify, message);
 		if (!del.isEmpty ())
 			ClientConnection_->GetRIEXManager ()->SuggestItems (entry, del, message);
+	}
+
+	QWidget* GlooxAccount::GetMUCBookmarkEditorWidget ()
+	{
+		return new BookmarkEditWidget ();
+	}
+
+	QVariantList GlooxAccount::GetBookmarkedMUCs () const
+	{
+		QVariantList result;
+
+		const QXmppBookmarkSet& set = GetBookmarks ();
+
+		Q_FOREACH (const QXmppBookmarkConference& conf, set.conferences ())
+		{
+			const QStringList& split = conf.jid ().split ('@', QString::SkipEmptyParts);
+			if (split.size () != 2)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "incorrectly split jid for conf"
+						<< conf.jid ()
+						<< split;
+				continue;
+			}
+
+			QVariantMap cm;
+			cm ["HumanReadableName"] = QString ("%1 (%2)")
+					.arg (conf.jid ())
+					.arg (conf.nickName ());
+			cm ["AccountID"] = GetAccountID ();
+			cm ["Nick"] = conf.nickName ();
+			cm ["Room"] = split.at (0);
+			cm ["Server"] = split.at (1);
+			cm ["Autojoin"] = conf.autoJoin ();
+			cm ["StoredName"] = conf.name ();
+			result << cm;
+		}
+
+		return result;
+	}
+
+	void GlooxAccount::SetBookmarkedMUCs (const QVariantList& datas)
+	{
+		QList<QXmppBookmarkConference> mucs;
+		Q_FOREACH (const QVariant& var, datas)
+		{
+			const QVariantMap& map = var.toMap ();
+			QXmppBookmarkConference conf;
+			conf.setAutoJoin (map.value ("Autojoin").toBool ());
+			conf.setJid (map.value ("Room").toString () + '@' + map.value ("Server").toString ());
+			conf.setNickName (map.value ("Nick").toString ());
+			conf.setName (map.value ("StoredName").toString ());
+			mucs << conf;
+		}
+
+		QXmppBookmarkSet set;
+		set.setConferences (mucs);
+		set.setUrls (GetBookmarks ().urls ());
+		SetBookmarks (set);
 	}
 
 #ifdef ENABLE_CRYPT
