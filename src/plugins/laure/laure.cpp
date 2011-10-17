@@ -24,6 +24,7 @@
 #include <util/util.h>
 #include "laurewidget.h"
 #include "xmlsettingsmanager.h"
+#include "lastfmsubmitter.h"
 
 namespace LeechCraft
 {
@@ -38,7 +39,7 @@ namespace Laure
 				"lauresettings.xml");
 
 		Proxy_ = proxy;
-
+		LFSubmitter_ = new LastFMSubmitter (proxy, this);
 		LaureWidget::SetParentMultiTabs (this);
 
 		TabClassInfo tabClass =

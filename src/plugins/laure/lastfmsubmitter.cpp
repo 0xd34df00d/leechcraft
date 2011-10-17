@@ -58,15 +58,15 @@ namespace Laure
 		return Scrobbler_ != NULL;
 	}
 
-	LastFMSubmitter::LastFMSubmitter (QObject* parent)
+	LastFMSubmitter::LastFMSubmitter (ICoreProxy_ptr proxy, QObject* parent)
 	: QObject (parent)
 	{
 		lastfm::ws::ApiKey = "be076efd1c241366f27fde6fd024e567";
 		lastfm::ws::SharedSecret = "8352aead3be59ab319cd4e578d374843";
 		lastfm::ws::Username = XmlSettingsManager::Instance ()
 				.property ("lastfm.login").toString ();
-			
-		Manager_ = new QNetworkAccessManager (this);
+				
+		Manager_ = proxy.get ()->GetNetworkAccessManager ();
 			
 		connect (Manager_,
 				SIGNAL ( finished (QNetworkReply*)),
@@ -98,7 +98,6 @@ namespace Laure
 	{
 		QDomDocument doc;
 		doc.setContent (QString::fromUtf8 (result->readAll ()));
-		qDebug () << Q_FUNC_INFO << doc.toString ();
 		QDomNodeList domList = doc.documentElement ()
 				.elementsByTagName ("key");
 		if (domList.size () > 0)
@@ -107,7 +106,7 @@ namespace Laure
 					.elementsByTagName ("key").at (0).toElement ()
 					.text ();
 			
-			Scrobbler_.reset (new lastfm::Audioscrobbler ("0.4.90"));
+			Scrobbler_.reset (new lastfm::Audioscrobbler ("tst"));
 		
 			connect (Scrobbler_.get (),
 					SIGNAL (status (int)),
@@ -123,7 +122,6 @@ namespace Laure
 		
 	void LastFMSubmitter::NowPlaying (libvlc_media_t *m)
 	{
-		qDebug () << Q_FUNC_INFO << m << IsConnected ();
 		if (!m || !IsConnected ())
 			return;
 		
@@ -134,7 +132,6 @@ namespace Laure
 		mutableTrack.setAlbum (libvlc_media_get_meta (m, libvlc_meta_Album));
 		mutableTrack.setArtist (libvlc_media_get_meta (m, libvlc_meta_Artist));
 
-		qDebug () << Q_FUNC_INFO << libvlc_media_get_meta (m, libvlc_meta_Title);
 		Scrobbler_->nowPlaying (track);
 	}
 }

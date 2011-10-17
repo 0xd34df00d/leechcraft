@@ -34,7 +34,6 @@ namespace LeechCraft
 namespace Laure
 {
 	class PlayListView;
-	class LastFMSubmitter;
 	class Player : public QFrame
 	{
 		Q_OBJECT
@@ -45,7 +44,6 @@ namespace Laure
 		libvlc_media_list_t *ML_;
 		libvlc_media_player_t *MP_;
 		PlayListView *PlayListView_;
-		LastFMSubmitter *LFSubmitter_;
 	public:
 		Player (QWidget *parent = 0, Qt::WindowFlags f = 0);
 		virtual ~Player ();

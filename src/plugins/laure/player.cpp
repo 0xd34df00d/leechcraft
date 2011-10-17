@@ -25,7 +25,6 @@
 #include <QTime>
 #include "separateplayerwidget.h"
 #include "playlistview.h"
-#include "lastfmsubmitter.h"
 
 namespace LeechCraft
 {
@@ -36,7 +35,6 @@ namespace Laure
 	Player::Player (QWidget *parent, Qt::WindowFlags f)
 	: QFrame (parent, f)
 	, PlayListView_ (NULL)
-	, LFSubmitter_ (new LastFMSubmitter (this))
 	, Poller_ (new QTimer (this))
 	{
 		const char * const vlc_args[] = {
@@ -189,13 +187,7 @@ namespace Laure
 		int time = libvlc_media_player_get_time (MP_);
 		int length = libvlc_media_player_get_length (MP_);
 		if (length - time < 200)
-		{
 			next ();
-		}
-		else if (time < 400)
-		{
-			LFSubmitter_->NowPlaying (Media ());
-		}
 	}
 }
 }

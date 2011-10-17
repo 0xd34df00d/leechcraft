@@ -22,6 +22,7 @@
 #include <QObject>
 #include <boost/shared_ptr.hpp>
 #include <vlc/vlc.h>
+#include <interfaces/core/icoreproxy.h>
 
 namespace lastfm
 {
@@ -41,7 +42,7 @@ namespace Laure
 		boost::shared_ptr<lastfm::Audioscrobbler> Scrobbler_;
 		QNetworkAccessManager *Manager_;
 	public:
-		LastFMSubmitter (QObject* = 0);
+		LastFMSubmitter (ICoreProxy_ptr proxy, QObject *parent = 0);
 		
 		bool IsConnected () const;
 		void NowPlaying (libvlc_media_t *);

@@ -32,7 +32,7 @@ namespace LeechCraft
 namespace Laure
 {
 	class LaureWidget;
-	
+	class LastFMSubmitter;
 	class Plugin : public QObject
 				, public IInfo
 				, public IHaveTabs
@@ -46,6 +46,7 @@ namespace Laure
 		QList<LaureWidget*> Others_;
 		ICoreProxy_ptr Proxy_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
+		LastFMSubmitter *LFSubmitter_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
