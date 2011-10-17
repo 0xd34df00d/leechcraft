@@ -44,7 +44,7 @@ namespace p100q
 		PstoCommentRX_ =  QRegExp ("#[a-z]+/[0-9]+[:]", Qt::CaseInsensitive);
 		UserRX_ = QRegExp ("(?:[^>/]|<br />)@([\\w\\-]+)[ :]", Qt::CaseInsensitive);
 		PostAuthorRX_ = QRegExp ("<br />@([\\w\\-]+)[ :]", Qt::CaseInsensitive);
-		PostRX_ = QRegExp ("#([a-zA-Z0-9]+) ", Qt::CaseInsensitive);
+		PostRX_ = QRegExp ("#([a-zA-Z0-9]+)[ :]", Qt::CaseInsensitive);
 		PostByUserRX_ = QRegExp ("\\s#([a-zA-Z0-9]+)", Qt::CaseInsensitive);
 		CommentRX_ = QRegExp ("#([a-zA-Z0-9]+)/([0-9]+)", Qt::CaseInsensitive);
 		TagRX_ = QRegExp ("<br />[*] ([^*,<]+(, [^*,<]+)*)");
@@ -125,10 +125,12 @@ namespace p100q
 				QStringList tagslist = TagRX_.cap (1).split (", ");
 
 				Q_FOREACH (const QString& tagval, tagslist)
+				{
+					QString t = QString (QUrl::toPercentEncoding (tagval)).replace ("%2F", "\/");
 					tags += QString (" <a href=\"azoth://msgeditreplace/S *%1\" title=\"" + tr ("Subscribe to tag") + "\">%2</a> ")
-							.arg (QString (QUrl::toPercentEncoding (tagval)))
+							.arg (t)
 							.arg (tagval);
-
+				}
 				delta = body.length ();
 				body.replace (tag, tags);
 				pos += body.length () - delta;
@@ -172,8 +174,9 @@ namespace p100q
 
 		body.replace (PostByUserRX_,
 				" <a href=\"azoth://msgeditreplace/%23\\1+\" title=\"" + tr ("View post") + "\">#\\1</a> ");
-
-		body.prepend("<div style=\"width:100%;overflow:auto;\">");
+		while (body.startsWith ("<br />"))
+			body = body.mid (6);
+		body.prepend ("<div style=\"width:100%;overflow:auto;\">");
 		body += "</div>";
 		return body;
 	}
