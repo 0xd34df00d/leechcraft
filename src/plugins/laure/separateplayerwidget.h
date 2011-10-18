@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011 Minh Ngo
+ * Copyright (C) 2011  Minh Ngo
  * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,33 +17,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLAYPAUSEACTION_H
-#define PLAYPAUSEACTION_H
-#include <QAction>
+#ifndef PLUGINS_LAURE_SEPARATEPLAYERWIDGET_H
+#define PLUGINS_LAURE_SEPARATEPLAYERWIDGET_H
+
+#include <QWidget>
+#include <QCloseEvent>
+#include <vlc/vlc.h>
 
 namespace LeechCraft
 {
-namespace Potorchu
+namespace Laure
 {
-	class PlayPauseAction : public QAction
+	class SeparatePlayerWidget : public QWidget
 	{
 		Q_OBJECT
-
-		QPair<QIcon, QIcon> PlayPausePair_;
-		bool Play_;
+		
+		QWidget *PlayerWidget_;
+		libvlc_media_player_t *MP_;
 	public:
-		PlayPauseAction (const QPair<QIcon, QIcon>& playPausePair,
-				QObject *parent = 0);
-	public slots:
-		void handlePause ();
-		void handlePlay ();
-	private slots:
-		void handleTriggered ();
-	signals:
-		void play ();
-		void pause();
+		SeparatePlayerWidget (libvlc_media_player_t *MP,
+				QWidget *playerWidget, QWidget *parent = 0);
+	protected:
+		void closeEvent (QCloseEvent*);
+	private:
+		void changeWidget (QWidget*);
 	};
 }
 }
-
-#endif // PLAYPAUSECTION_H
+#endif // PLUGINS_LAURE_SEPARATEPLAYERWIDGET_H

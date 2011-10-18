@@ -17,49 +17,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "playpauseaction.h"
+#ifndef PLUGINS_LAURE_PLAYLISTWIDGET_H
+#define PLUGINS_LAURE_PLAYLISTWIDGET_H
+
+#include <QWidget>
+#include <interfaces/core/icoreproxy.h>
+#include "ui_playlistwidget.h"
+
+class QToolBar;
 
 namespace LeechCraft
 {
-namespace Potorchu
+namespace Laure
 {
-	PlayPauseAction::PlayPauseAction (const QPair<QIcon, QIcon>& playPausePair,
-			QObject *parent)
-	: QAction (parent)
-	, PlayPausePair_ (playPausePair)
-	, Play_ (false)
+	class PlayListView;
+	
+	class PlayListWidget : public QWidget
 	{
-		setIcon (PlayPausePair_.first);
-		connect (this,
-				SIGNAL (triggered (bool)),
-				this,
-				SLOT (handleTriggered ()));
-	}
-
-	void PlayPauseAction::handlePause ()
-	{
-		Play_ = false;
-		setIcon (PlayPausePair_.first);
-	}
-
-	void PlayPauseAction::handlePlay ()
-	{
-		Play_ = true;
-		setIcon (PlayPausePair_.second);
-	}
-
-	void PlayPauseAction::handleTriggered ()
-	{
-		if ((Play_ = !Play_))
-		{
-			setIcon (PlayPausePair_.second);
-			emit play ();
-		}
-		else
-		{
-			setIcon (PlayPausePair_.first);
-			emit pause ();
-		}
-	}
+		Q_OBJECT
+		
+		Ui::PlayListWidget Ui_;
+		QToolBar *ActionBar_;
+	public:
+		PlayListWidget (QWidget* = 0);
+		PlayListView* GetPlayListView () const;
+	signals:
+		void itemPlayed (int);
+	};
 }
 }
+
+#endif // PLUGINS_LAURE_PLAYLISTWIDGET_H

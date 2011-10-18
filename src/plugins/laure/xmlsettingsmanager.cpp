@@ -17,26 +17,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef XMLSETTINGSMANAGER_H
-#define XMLSETTINGSMANAGER_H
-#include <xmlsettingsdialog/basesettingsmanager.h>
+#include "xmlsettingsmanager.h"
+#include <QApplication>
 
 namespace LeechCraft
 {
-	namespace Potorchu
+namespace Laure
+{
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		class XmlSettingsManager : public Util::BaseSettingsManager
-		{
-			Q_OBJECT
+		Util::BaseSettingsManager::Init ();
+	}
 
-			XmlSettingsManager ();
-		public:
-			static XmlSettingsManager& Instance ();
-		protected:
-			virtual QSettings* BeginSettings () const;
-			virtual void EndSettings (QSettings*) const;
-		};
+	XmlSettingsManager& XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager xsm;
+		return xsm;
+	}
+
+	void XmlSettingsManager::EndSettings (QSettings* settings) const
+	{
+	}
+
+	QSettings* XmlSettingsManager::BeginSettings () const
+	{
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Laure");
+		return settings;
 	}
 }
-
-#endif // XMLSETTINGSMANAGER_H
+}

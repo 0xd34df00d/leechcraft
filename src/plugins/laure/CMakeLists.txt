@@ -4,7 +4,7 @@ IF (NOT QT_USE_FILE)
 		cmake_policy (SET CMP0003 NEW)
 	ENDIF (COMMAND cmake_policy)
 
-	PROJECT (leechcraft_potorchu)
+	PROJECT (leechcraft_laure)
 
 	IF (NOT CMAKE_MODULE_PATH)
 		SET (CMAKE_MODULE_PATH "/usr/local/share/leechcraft/cmake;/usr/share/leechcraft/cmake")
@@ -18,8 +18,11 @@ ENDIF (NOT QT_USE_FILE)
 SET (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 SET (QT_USE_QTGUI TRUE)
+SET (QT_USE_QTNETWORK TRUE)
+SET (QT_USE_QTXML TRUE)
 INCLUDE (${QT_USE_FILE})
 FIND_PACKAGE (VLC REQUIRED)
+FIND_PACKAGE (LastFM REQUIRED)
 
 INCLUDE_DIRECTORIES (
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -27,8 +30,12 @@ INCLUDE_DIRECTORIES (
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	${VLC_INCLUDE_DIR}
+	${LastFM_INCLUDE_DIR}
 	)
 SET (SRCS
+	separateplayerwidget.cpp
+	playlistaddmenu.cpp
+	lastfmsubmitter.cpp
 	playlistmodel.cpp
 	playlistview.cpp
 	xmlsettingsmanager.cpp
@@ -36,10 +43,13 @@ SET (SRCS
 	chooseurldialog.cpp
 	playpauseaction.cpp
 	player.cpp
-	potorchuwidget.cpp
-	potorchu.cpp
+	laurewidget.cpp
+	laure.cpp
 	)
 SET (HEADERS
+	separateplayerwidget.h
+	playlistaddmenu.h
+	lastfmsubmitter.h
 	playlistmodel.h
 	playlistview.h
 	xmlsettingsmanager.h
@@ -47,31 +57,32 @@ SET (HEADERS
 	chooseurldialog.h
 	playpauseaction.h
 	player.h
-	potorchuwidget.h
-	potorchu.h
+	laurewidget.h
+	laure.h
 	)
 SET (FORMS
-	potorchuwidget.ui
+	laurewidget.ui
 	chooseurldialog.ui
 	playlistwidget.ui
 )
-SET (RESOURCES potorchuresources.qrc)
+SET (RESOURCES laureresources.qrc)
 
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 QT4_WRAP_UI (FORMS_HEADERS ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
-ADD_LIBRARY (leechcraft_potorchu SHARED
+ADD_LIBRARY (leechcraft_laure SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
 	${FORMS_HEADERS}
 	${RCCS}
 	)
-TARGET_LINK_LIBRARIES (leechcraft_potorchu
+TARGET_LINK_LIBRARIES (leechcraft_laure
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${VLC_LIBRARIES}
+	${LastFM_LIBRARIES}
 	)
-INSTALL (TARGETS leechcraft_potorchu DESTINATION ${LC_PLUGINS_DEST})
-INSTALL (FILES potorchusettings.xml DESTINATION ${LC_SETTINGS_DEST})
+INSTALL (TARGETS leechcraft_laure DESTINATION ${LC_PLUGINS_DEST})
+INSTALL (FILES lauresettings.xml DESTINATION ${LC_SETTINGS_DEST})

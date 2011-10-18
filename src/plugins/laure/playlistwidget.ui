@@ -11,17 +11,25 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
+   <property name="horizontalSpacing">
+    <number>2</number>
+   </property>
+   <property name="margin">
+    <number>1</number>
+   </property>
    <item row="0" column="0">
     <layout class="QGridLayout" name="gridLayout">
+     <property name="spacing">
+      <number>0</number>
+     </property>
      <item row="1" column="0">
       <widget class="QFrame" name="ActionFrame_">
        <property name="minimumSize">
         <size>
          <width>0</width>
-         <height>24</height>
+         <height>30</height>
         </size>
        </property>
        <property name="maximumSize">
@@ -31,7 +39,7 @@
         </size>
        </property>
        <property name="frameShape">
-        <enum>QFrame::StyledPanel</enum>
+        <enum>QFrame::NoFrame</enum>
        </property>
        <property name="frameShadow">
         <enum>QFrame::Raised</enum>
@@ -39,7 +47,7 @@
       </widget>
      </item>
      <item row="0" column="0">
-      <widget class="LeechCraft::Potorchu::PlayListView" name="PlayListView_"/>
+      <widget class="LeechCraft::Laure::PlayListView" name="PlayListView_"/>
      </item>
     </layout>
    </item>
@@ -47,7 +55,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>LeechCraft::Potorchu::PlayListView</class>
+   <class>LeechCraft::Laure::PlayListView</class>
    <extends>QListView</extends>
    <header>playlistview.h</header>
   </customwidget>

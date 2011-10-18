@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011 Minh Ngo
+ * Copyright (C) 2011  Minh Ngo
  * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,33 +17,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "xmlsettingsmanager.h"
-#include <QApplication>
+#include "separateplayerwidget.h"
 
 namespace LeechCraft
 {
-	namespace Potorchu
+namespace Laure
+{
+	SeparatePlayerWidget::SeparatePlayerWidget (libvlc_media_player_t *MP,
+			QWidget *playerWidget, QWidget *parent)
+	: QWidget (parent)
+	, PlayerWidget_ (playerWidget)
+	, MP_ (MP)
 	{
-		XmlSettingsManager::XmlSettingsManager ()
-		{
-			Util::BaseSettingsManager::Init ();
-		}
-
-		XmlSettingsManager& XmlSettingsManager::Instance ()
-		{
-			static XmlSettingsManager xsm;
-			return xsm;
-		}
-
-		void XmlSettingsManager::EndSettings (QSettings* settings) const
-		{
-		}
-
-		QSettings* XmlSettingsManager::BeginSettings () const
-		{
-			QSettings *settings = new QSettings (QCoreApplication::organizationName (),
-					QCoreApplication::applicationName () + "_Azoth_p100q");
-			return settings;
-		}
+		setPalette (QPalette (Qt::black));
+		changeWidget (this);
 	}
+
+	void SeparatePlayerWidget::closeEvent (QCloseEvent *event)
+	{
+		changeWidget (PlayerWidget_);
+		setParent (PlayerWidget_);
+	}
+	
+	void SeparatePlayerWidget::changeWidget (QWidget *w)
+	{
+		int time = libvlc_media_player_get_time (MP_);
+		libvlc_media_player_stop (MP_);
+		libvlc_media_player_set_xwindow (MP_, w->winId ());
+		libvlc_media_player_play (MP_);
+		libvlc_media_player_set_time (MP_, time);
+	}
+}
 }

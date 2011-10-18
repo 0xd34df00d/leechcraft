@@ -17,38 +17,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLAYLISTWIDGET_H
-#define PLAYLISTWIDGET_H
-
-#include <QWidget>
-#include <QToolBar>
-#include <interfaces/core/icoreproxy.h>
-
-#include "ui_playlistwidget.h"
+#ifndef PLUGINS_LAURE_PLAYPAUSEACTION_H
+#define PLUGINS_LAURE_PLAYPAUSEACTION_H
+#include <QAction>
 
 namespace LeechCraft
 {
-	namespace Potorchu
+namespace Laure
+{
+	class PlayPauseAction : public QAction
 	{
-		class PlayListWidget : public QWidget
-		{
-			Q_OBJECT
-			Ui::PlayListWidget *Ui_;
-			QToolBar *ActionBar_;
-		public:
-			PlayListWidget (QWidget *parent = 0);
-			virtual ~PlayListWidget ();
-			void Init (ICoreProxy_ptr proxy);
-			PlayListView *GetPlayListView ();
-		private slots:
-			void handleAddUrl ();
-			void handleAddFolder ();
-			void handleAddFiles ();
-		signals:
-			void play (const QString& file);
-			void nextFile ();
-		};
-	}
+		Q_OBJECT
+
+		bool Play_;
+	public:
+		PlayPauseAction (QObject* = 0);
+	public slots:
+		void handlePause ();
+		void handlePlay ();
+		void handleTriggered ();
+	signals:
+		void play ();
+		void pause();
+	};
+}
 }
 
-#endif // PLAYLISTWIDGET_H
+#endif // PLUGINS_LAURE_PLAYPAUSECTION_H

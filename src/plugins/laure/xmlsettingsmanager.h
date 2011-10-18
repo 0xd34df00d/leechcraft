@@ -17,50 +17,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLAYER_H
-#define PLAYER_H
-
-#include <QSlider>
-#include <QTimer>
-#include <QFrame>
-#include <QVBoxLayout>
-#include <QPushButton>
-#include <QFrame>
-#include <vlc/vlc.h>
-
+#ifndef PLUGINS_LAURE_XMLSETTINGSMANAGER_H
+#define PLUGINS_LAURE_XMLSETTINGSMANAGER_H
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
-	namespace Potorchu
+namespace Laure
+{
+	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
-		class Player : public QFrame
-		{
-			Q_OBJECT
-			QTimer *Poller_;
-			bool IsPlaying_;
-			libvlc_instance_t *VLCInstance_;
-			libvlc_media_player_t *MP_;
-			libvlc_media_t *M_;
-		public:
-			Player (QWidget *parent = 0, Qt::WindowFlags f = 0);
-			virtual ~Player ();
-			
-			QString GetMeta (libvlc_meta_t meta) const;
-			
-			int GetVolume () const;
-			int GetPosition () const;
-			float MediaPosition () const;
-			bool IsPlayed () const;
-		public slots:
-			void playFile (const QString& file);
-			void changeVolume (int newVolume);
-			void changePosition (int newPosition);
-			void stop ();
-			void pause ();
-			void play ();
-		signals:
-			void timeout ();
-		};
-	}
+		Q_OBJECT
+
+		XmlSettingsManager ();
+	public:
+		static XmlSettingsManager& Instance ();
+	protected:
+		virtual QSettings* BeginSettings () const;
+		virtual void EndSettings (QSettings*) const;
+	};
 }
-#endif // PLAYER_H
+}
+
+#endif // PLUGINS_LAURE_XMLSETTINGSMANAGER_H

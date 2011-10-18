@@ -17,32 +17,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLAYLISTVIEW_H
-#define PLAYLISTVIEW_H
-
-#include <QListView>
-#include <QDebug>
-#include "playlistmodel.h"
+#ifndef PLUGINS_LAURE_PLAYLISTMODEL_H
+#define PLUGINS_LAURE_PLAYLISTMODEL_H
+#include <QStandardItemModel>
+#include <vlc/vlc.h>
 
 namespace LeechCraft
 {
-	namespace Potorchu
+namespace Laure
+{
+	class PlayListModel : public QStandardItemModel
 	{
-		class PlayListView : public QListView
-		{
-			Q_OBJECT
-			PlayListModel *PlayListModel_;
-		public:
-			PlayListView (QWidget *parent = 0);
-			void addItem (const QString& item);
-		public slots:
-			void removeSelectedRows ();
-			void nextFile ();
-		private slots:
-			void handleDoubleClicked (const QModelIndex& index);
-		signals:
-			void play (const QString& file);
-		};
-	}
+		Q_OBJECT
+		
+		libvlc_instance_t *VLCInstance_;
+		libvlc_media_list_t *ML_;
+		int CurrentIndex_;
+	public:
+		PlayListModel (QObject *);
+		
+		bool SetPlayList (libvlc_media_list_t*);
+		bool SetInstance (libvlc_instance_t*);
+		
+		int CurrentIndex () const;
+		libvlc_media_t* CurrentMedia ();
+		void SetCurrentIndex (int);
+		
+		bool insertRows (int row, const QString& fileName);
+		bool removeRows (int);
+		Qt::ItemFlags flags (const QModelIndex&) const;
+		
+		void appendRow (QStandardItem*);
+	};
 }
-#endif // PLAYLISTVIEW_H
+}
+
+#endif // PLUGINS_LAURE_PLAYLISTMODEL_H

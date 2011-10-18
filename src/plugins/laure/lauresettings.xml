@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="Potorchu" />
+		<groupbox>
+			<label value="Playlist" />
+			<item type="lineedit" property="PlayListTemplate" default="%artist% - %album% - %title%">
+				<label value="Playlist view template: " />
+			</item>
+		</groupbox>
+		<groupbox>
+			<label value="Last.FM" />
+			<item type="lineedit" property="lastfm.url" default="http://ws.audioscrobbler.com/2.0/">
+					<label value="Scrobber URL (with '/' at the end): " />
+			</item>
+			<item type="lineedit" property="lastfm.login">
+				<label value="Login: " />
+			</item>
+			<item type="lineedit" property="lastfm.password" password="true">
+				<label value="Password: " />
+			</item>
+		</groupbox>
+	</page>
+</settings>
