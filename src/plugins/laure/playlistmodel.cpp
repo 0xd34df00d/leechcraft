@@ -25,7 +25,7 @@ namespace LeechCraft
 namespace Laure
 {
 	PlayListModel::PlayListModel (QObject* parent)
-	: QStringListModel (parent)
+	: QStandardItemModel (parent)
 	, VLCInstance_ (NULL)
 	, ML_ (NULL)
 	{
@@ -42,11 +42,6 @@ namespace Laure
 		VLCInstance_ = VLCInstance;
 	}
 	
-	int PlayListModel::rowCount (const QModelIndex& parent) const
-	{
-		return libvlc_media_list_count (ML_);
-	}
-	
 	int PlayListModel::CurrentIndex () const
 	{
 		return CurrentIndex_;
@@ -56,9 +51,9 @@ namespace Laure
 	{
 		//TODO: a temporary solution. fix it later
 		if (val == rowCount ())
-		{
 			CurrentIndex_ = 0;
-		}
+		else if (val == -1)
+			CurrentIndex_ = rowCount () - 1;
 		else
 			CurrentIndex_ = val;
 	}
@@ -68,12 +63,11 @@ namespace Laure
 		return libvlc_media_list_item_at_index (ML_, CurrentIndex_);
 	}
 	
-	bool PlayListModel::insertRows (int row, const QString& fileName)
+	void PlayListModel::appendRow (QStandardItem *item)
 	{
-		if (!libvlc_media_list_insert_media (ML_,
-				libvlc_media_new_path (VLCInstance_, fileName.toAscii ()), row))
+		libvlc_media_t *t = libvlc_media_new_path (VLCInstance_, item->text ().toAscii ());
+		if (!libvlc_media_list_add_media (ML_, t))
 		{
-			libvlc_media_t *t = libvlc_media_list_item_at_index (ML_, row);
 			libvlc_media_parse (t);
 			QString temp = XmlSettingsManager::Instance ().property ("PlayListTemplate").toString ();
 			const QString& artist = QString (libvlc_media_get_meta (t, libvlc_meta_Artist));
@@ -86,27 +80,17 @@ namespace Laure
 			temp.replace ("%title%", title);
 			temp.replace ("%genre%", genre);
 			temp.replace ("%date%", date);
-
-			QStringListModel::insertRows (row, 1);
-			setData (index (row), temp);
-			return true;
+			
+			QStandardItemModel::appendRow (new QStandardItem (temp));
 		}
-		return false;
 	}
 	
 	bool PlayListModel::removeRows (int row)
 	{
 		if (!libvlc_media_list_remove_index (ML_, row))
-		{
-			QStringListModel::removeRows (row, 1);
-			return true;
-		}
+			return QStandardItemModel::removeRows (row, 1);
+		
 		return false;
-	}
-	
-	bool PlayListModel::addItem (const QString& item)
-	{
-		return insertRows (rowCount (), item);
 	}
 	
 	Qt::ItemFlags PlayListModel::flags (const QModelIndex& index) const

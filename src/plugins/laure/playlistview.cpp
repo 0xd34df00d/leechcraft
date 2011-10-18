@@ -60,16 +60,13 @@ namespace Laure
 	void PlayListView::SetCurrentIndex (int val)
 	{
 		PlayListModel_->SetCurrentIndex (val);
-		setCurrentIndex (PlayListModel_->index (val));
-		//emit playItem (CurrentIndex ());
-		//BUG: Don't uncomment it
-		//if (val >= 0 && val < RowCount ())
-		//	emit playItem (val);
+		setCurrentIndex (PlayListModel_->index (val, 0	));
 	}
 
 	void PlayListView::addItem (const QString& item)
 	{
-		if (PlayListModel_->addItem(item) && PlayListModel_->rowCount () == 1)
+		PlayListModel_->appendRow (new QStandardItem (item));
+		if (PlayListModel_->rowCount () == 1)
 		{
 			SetCurrentIndex(0);
 			emit playItem (0);
@@ -123,4 +120,4 @@ namespace Laure
 		setCurrentIndex (model ()->index (x, y));
 	}
 }
-}
+}	

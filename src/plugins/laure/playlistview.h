@@ -19,6 +19,7 @@
 
 #ifndef PLUGINS_LAURE_PLAYLISTVIEW_H
 #define PLUGINS_LAURE_PLAYLISTVIEW_H
+
 #include <QListView>
 #include "playlistmodel.h"
 
