@@ -230,7 +230,7 @@ namespace Laure
 		if (dialog->exec () == QDialog::Accepted)
 		{
 			if (dialog->IsUrlValid ())
-				Ui_.PlayListWidget_->GetPlayListView ()->addItem (dialog->GetUrl ());
+				Ui_.PlayListWidget_->GetPlayListView ()->AddItem (dialog->GetUrl ());
 			else
 				QMessageBox::warning (this,
 						tr ("The URL's not valid"),
@@ -240,7 +240,7 @@ namespace Laure
 	
 	void LaureWidget::handleOpenMediaContent (const QString& val)
 	{
-		Ui_.PlayListWidget_->GetPlayListView ()->addItem (val);
+		Ui_.PlayListWidget_->GetPlayListView ()->AddItem (val);
 	}
 	
 	void LaureWidget::handleOpenFile ()
@@ -248,7 +248,7 @@ namespace Laure
 		const QString& fileName = QFileDialog::getOpenFileName (this,
 				tr ("Choose file"), QDir::homePath ());
 		if (!fileName.isEmpty ())
-			Ui_.PlayListWidget_->GetPlayListView ()->addItem (fileName);
+			Ui_.PlayListWidget_->GetPlayListView ()->AddItem (fileName);
 	}
 	
 	void LaureWidget::handlePlaylist ()

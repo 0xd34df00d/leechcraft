@@ -63,7 +63,7 @@ namespace Laure
 		setCurrentIndex (PlayListModel_->index (val, 0	));
 	}
 
-	void PlayListView::addItem (const QString& item)
+	void PlayListView::AddItem (const QString& item)
 	{
 		PlayListModel_->appendRow (new QStandardItem (item));
 		if (PlayListModel_->rowCount () == 1)
@@ -112,7 +112,7 @@ namespace Laure
 		}
 	}
 	
-	void PlayListView::moveSelect (int x, int y)
+	void PlayListView::MoveSelect (int x, int y)
 	{
 		if ( x < 0 || y < 1 || x >= model ()->rowCount ()
 				|| y >= model ()->columnCount ())

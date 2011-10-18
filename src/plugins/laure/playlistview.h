@@ -39,7 +39,7 @@ namespace Laure
 		PlayListView (QWidget* = 0);
 		bool SetPlayList (libvlc_media_list_t*);
 		bool SetInstance (libvlc_instance_t*);
-		void addItem (const QString&);
+		void AddItem (const QString&);
 		
 		void keyPressEvent (QKeyEvent*);
 		int CurrentIndex () const;
@@ -47,7 +47,7 @@ namespace Laure
 		
 		libvlc_media_t* CurrentMedia ();
 	private:
-		void moveSelect (int x, int y);
+		void MoveSelect (int x, int y);
 	public slots:
 		void SetCurrentIndex (int);
 		void removeSelectedRows ();

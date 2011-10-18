@@ -57,7 +57,7 @@ namespace Laure
 		const QStringList& fileNames = QFileDialog::getOpenFileNames (this,
 				tr ("Choose file"), QDir::homePath ());
 		Q_FOREACH (const QString& fileName, fileNames)
-			PlayListView_->addItem (fileName);
+			PlayListView_->AddItem (fileName);
 	}
 
 	void PlayListAddMenu::handleAddFolder ()
@@ -69,7 +69,7 @@ namespace Laure
 		
 		const QFileInfoList& fileInfoList = StoragedFiles (fileDir);
 		Q_FOREACH (const QFileInfo& fileInfo, fileInfoList)
-			PlayListView_->addItem (fileInfo.absoluteFilePath ());
+			PlayListView_->AddItem (fileInfo.absoluteFilePath ());
 	}
 	
 	void PlayListAddMenu::handleAddUrl ()
@@ -78,7 +78,7 @@ namespace Laure
 		if (d.exec () == QDialog::Accepted)
 		{
 			const QString& url = d.GetUrl ();
-			PlayListView_->addItem (url);
+			PlayListView_->AddItem (url);
 		}
 	}
 
