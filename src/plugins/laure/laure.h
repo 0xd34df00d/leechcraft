@@ -17,8 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POTORCHU_POTORCHU_H
-#define PLUGINS_POTORCHU_POTORCHU_H
+#ifndef PLUGINS_LAURE_LAURE_H
+#define PLUGINS_LAURE_LAURE_H
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavetabs.h>
@@ -26,13 +26,14 @@
 #include <interfaces/entitytesthandleresult.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/ihavesettings.h>
-#include "potorchuwidget.h"
 
 namespace LeechCraft
 {
-namespace Potorchu
+namespace Laure
 {
-	class Potorchu : public QObject
+	class LaureWidget;
+	class LastFMSubmitter;
+	class Plugin : public QObject
 				, public IInfo
 				, public IHaveTabs
 				, public IEntityHandler
@@ -42,9 +43,10 @@ namespace Potorchu
 		Q_INTERFACES (IInfo IHaveTabs IEntityHandler IHaveSettings)
 
 		TabClasses_t TabClasses_;
-		QList<PotorchuWidget *> Others_;
+		QList<LaureWidget*> Others_;
 		ICoreProxy_ptr Proxy_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
+		LastFMSubmitter *LFSubmitter_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -57,11 +59,11 @@ namespace Potorchu
 		TabClasses_t GetTabClasses () const;
 		void TabOpenRequested (const QByteArray& tabClass);
 
-		EntityTestHandleResult CouldHandle (const Entity& entity) const;
-		void Handle (Entity entity);
+		EntityTestHandleResult CouldHandle (const Entity&) const;
+		void Handle (Entity);
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	private:
-		PotorchuWidget *createTab ();
+		LaureWidget* CreateTab ();
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);

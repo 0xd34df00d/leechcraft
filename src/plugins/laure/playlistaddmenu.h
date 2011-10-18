@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011 Minh Ngo
+ * Copyright (C) 2011  Minh Ngo
  * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,29 +17,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef CHOOSEURLDIALOG_H
-#define CHOOSEURLDIALOG_H
-
-#include <QDialog>
-#include <QUrl>
-#include "ui_chooseurldialog.h"
+#ifndef PLUGINS_LAURE_PLAYLISTADDMENU_H
+#define PLUGINS_LAURE_PLAYLISTADDMENU_H
+#include <QMenu>
+#include <QFileInfoList>
 
 namespace LeechCraft
 {
-	namespace Potorchu
+namespace Laure
+{
+	class PlayListView;
+	class PlayListAddMenu : public QMenu
 	{
-		class ChooseURLDialog : public QDialog
-		{
-			Q_OBJECT
-			Ui::ChooseURLDialog *Ui_;
-		public:
-			ChooseURLDialog (QWidget *parent = 0);
-			virtual ~ChooseURLDialog ();
-			
-			QString GetUrl () const;
-			bool IsUrlValid () const;
-		};
-	}
+		Q_OBJECT
+		
+		PlayListView *PlayListView_;
+	public:
+		PlayListAddMenu (PlayListView *playListView, QWidget *parent);
+	private slots:
+		void handleAddUrl ();
+		void handleAddFolder ();
+		void handleAddFiles ();
+		QFileInfoList StoragedFiles (const QString&);
+	};
 }
-
-#endif // CHOOSEURLDIALOG_H
+}
+#endif // PLUGINS_LAURE_PLAYLISTADDMENU_H

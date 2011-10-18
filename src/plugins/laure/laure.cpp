@@ -17,31 +17,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "potorchu.h"
+#include "laure.h"
 #include <QIcon>
 #include <QUrl>
+#include <QCoreApplication>
 #include <util/util.h>
-
+#include "laurewidget.h"
 #include "xmlsettingsmanager.h"
+#include "lastfmsubmitter.h"
 
 namespace LeechCraft
 {
-namespace Potorchu
+namespace Laure
 {
-	void Potorchu::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		QCoreApplication::setApplicationName ("LeechCraftLaure");
+		QCoreApplication::setApplicationVersion ("0.4.95");
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
-				"potorchusettings.xml");
+				"lauresettings.xml");
 
 		Proxy_ = proxy;
-
-		PotorchuWidget::SetParentMultiTabs (this);
+		LFSubmitter_ = new LastFMSubmitter (proxy, this);
+		LaureWidget::SetParentMultiTabs (this);
 
 		TabClassInfo tabClass =
 		{
-			"Potorchu",
-			"Potorchu",
+			"Laure",
+			"Laure",
 			GetInfo (),
 			GetIcon (),
 			50,
@@ -50,43 +54,43 @@ namespace Potorchu
 		TabClasses_ << tabClass;
 	}
 
-	void Potorchu::SecondInit ()
+	void Plugin::SecondInit ()
 	{
 	}
 
-	QByteArray Potorchu::GetUniqueID () const
+	QByteArray Plugin::GetUniqueID () const
 	{
-		return "org.LeechCraft.Potorchu";
+		return "org.LeechCraft.Laure";
 	}
 
-	void Potorchu::Release ()
+	void Plugin::Release ()
 	{
 	}
 
-	QString Potorchu::GetName () const
+	QString Plugin::GetName () const
 	{
-		return "Potorchu";
+		return "Laure";
 	}
 
-	QString Potorchu::GetInfo () const
+	QString Plugin::GetInfo () const
 	{
-		return tr ("");
+		return tr ("Media player based on libvlc");
 	}
 
-	QIcon Potorchu::GetIcon () const
+	QIcon Plugin::GetIcon () const
 	{
 		return QIcon ();
 	}
 
-	TabClasses_t Potorchu::GetTabClasses () const
+	TabClasses_t Plugin::GetTabClasses () const
 	{
 		return TabClasses_;
 	}
 
-	void Potorchu::TabOpenRequested (const QByteArray& tabClass)
+	void Plugin::TabOpenRequested (const QByteArray& tabClass)
 	{
-		if (tabClass == "Potorchu")
-			createTab ();
+		if (tabClass == "Laure")
+			CreateTab ();
 		else
 		{
 			qWarning () << Q_FUNC_INFO
@@ -95,13 +99,13 @@ namespace Potorchu
 		}
 	}
 
-	void Potorchu::handleNeedToClose ()
+	void Plugin::handleNeedToClose ()
 	{
-		PotorchuWidget *w = qobject_cast<PotorchuWidget*> (sender ());
+		LaureWidget *w = qobject_cast<LaureWidget*> (sender ());
 		if (!w)
 		{
 			qWarning () << Q_FUNC_INFO
-				<< "not a PotorchuWidget*"
+				<< "not a LaureWidget*"
 				<< sender ();
 			return;
 		}
@@ -110,9 +114,9 @@ namespace Potorchu
 		w->deleteLater ();
 	}
 
-	PotorchuWidget *Potorchu::createTab ()
+	LaureWidget* Plugin::CreateTab ()
 	{
-		PotorchuWidget *w = new PotorchuWidget ();
+		LaureWidget *w = new LaureWidget ();
 		w->Init (Proxy_);
 		connect (w,
 				SIGNAL (needToClose ()),
@@ -120,19 +124,19 @@ namespace Potorchu
 				SLOT (handleNeedToClose ()));
 
 		Others_ << w;
-		emit addNewTab (tr ("Potorchu"), w);
+		emit addNewTab (tr ("Laure"), w);
 		emit changeTabIcon (w, QIcon ());
 		emit raiseTab (w);
 		return w;
 	}
 
-	Util::XmlSettingsDialog_ptr Potorchu::GetSettingsDialog () const
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
 	{
 		return XmlSettingsDialog_;
 	}
 
 
-	EntityTestHandleResult Potorchu::CouldHandle (const Entity& entity) const
+	EntityTestHandleResult Plugin::CouldHandle (const Entity& entity) const
 	{
 		bool stat = false;
 		if (entity.Mime_ == "application/ogg" ||
@@ -145,14 +149,13 @@ namespace Potorchu
 				EntityTestHandleResult ();
 	}
 
-	void Potorchu::Handle (Entity entity)
+	void Plugin::Handle (Entity entity)
 	{
 		const QString& dest = entity.Entity_.toString ();
-		PotorchuWidget *w = createTab ();
+		LaureWidget *w = CreateTab ();
 		w->handleOpenMediaContent (dest);
 	}
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_potorchu, LeechCraft::Potorchu::Potorchu);
-
+Q_EXPORT_PLUGIN2 (leechcraft_laure, LeechCraft::Laure::Plugin);

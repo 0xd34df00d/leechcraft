@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011 Minh Ngo
+ * Copyright (C) 2011  Minh Ngo
  * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,30 +17,41 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLAYLISTMODEL_H
-#define PLAYLISTMODEL_H
-
-#include <QStringListModel>
-#include <QStringList>
+#ifndef PLUGINS_LAURE_LASTFMSUBMITTER_H
+#define PLUGINS_LAURE_LASTFMSUBMITTER_H
+#include <QObject>
+#include <boost/shared_ptr.hpp>
 #include <vlc/vlc.h>
-#include <QDebug>
+#include <interfaces/core/icoreproxy.h>
+
+namespace lastfm
+{
+	class Audioscrobbler;
+};
+
+class QNetworkAccessManager;
+class QNetworkReply;
 
 namespace LeechCraft
 {
-	namespace Potorchu
+namespace Laure
+{
+	class LastFMSubmitter : public QObject
 	{
-		class PlayListModel : public QStringListModel
-		{
-			Q_OBJECT
-			libvlc_instance_t *VLCInstance_;
-		public:
-			PlayListModel (QObject *parent);
-			virtual ~PlayListModel ();
-			
-			Qt::ItemFlags flags (const QModelIndex& index) const;
-			QVariant data (const QModelIndex& index, int role = Qt::DisplayRole) const;
-		};
-	}
+		Q_OBJECT
+		
+		boost::shared_ptr<lastfm::Audioscrobbler> Scrobbler_;
+		QNetworkAccessManager *Manager_;
+	public:
+		LastFMSubmitter (ICoreProxy_ptr proxy, QObject *parent = 0);
+		
+		bool IsConnected () const;
+		void NowPlaying (libvlc_media_t*);
+	private slots:
+		void status (int);
+		void getSessionKey (QNetworkReply*);
+	};
+}
 }
 
-#endif // PLAYLISTMODEL_H
+#endif // PLUGINS_LAURE_LASTFMSUBMITTER_H
