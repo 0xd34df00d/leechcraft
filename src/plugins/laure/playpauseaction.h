@@ -31,7 +31,7 @@ namespace Laure
 
 		bool Play_;
 	public:
-		PlayPauseAction (QObject * = 0);
+		PlayPauseAction (QObject* = 0);
 	public slots:
 		void handlePause ();
 		void handlePlay ();

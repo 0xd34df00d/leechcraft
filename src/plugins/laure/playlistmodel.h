@@ -35,8 +35,8 @@ namespace Laure
 	public:
 		PlayListModel (QObject *);
 		
-		bool SetPlayList (libvlc_media_list_t *);
-		bool SetInstance (libvlc_instance_t *);
+		bool SetPlayList (libvlc_media_list_t*);
+		bool SetInstance (libvlc_instance_t*);
 		
 		int CurrentIndex () const;
 		libvlc_media_t *CurrentMedia ();
@@ -46,7 +46,7 @@ namespace Laure
 		bool removeRows (int);
 		Qt::ItemFlags flags (const QModelIndex&) const;
 		
-		void appendRow (QStandardItem *);
+		void appendRow (QStandardItem*);
 	};
 }
 }

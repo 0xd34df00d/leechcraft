@@ -50,7 +50,7 @@ namespace Laure
 		LaureWidget (QWidget *parent = 0, Qt::WindowFlags f = 0);
 		
 		void Init (ICoreProxy_ptr);
-		static void SetParentMultiTabs (QObject *);
+		static void SetParentMultiTabs (QObject*);
 		TabClassInfo GetTabClassInfo () const;
 		QObject* ParentMultiTabs ();
 		void Remove ();

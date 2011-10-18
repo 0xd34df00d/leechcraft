@@ -31,13 +31,14 @@ namespace LeechCraft
 namespace Laure
 {
 	class PlayListView;
+	
 	class PlayListWidget : public QWidget
 	{
 		Q_OBJECT
 		Ui::PlayListWidget Ui_;
 		QToolBar *ActionBar_;
 	public:
-		PlayListWidget (QWidget * = 0);
+		PlayListWidget (QWidget* = 0);
 		PlayListView *GetPlayListView ();
 	signals:
 		void playItem (int);

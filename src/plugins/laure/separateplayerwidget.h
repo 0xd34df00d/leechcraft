@@ -37,9 +37,9 @@ namespace Laure
 		SeparatePlayerWidget (libvlc_media_player_t *MP,
 				QWidget *playerWidget, QWidget *parent = 0);
 	protected:
-		void closeEvent (QCloseEvent *);
+		void closeEvent (QCloseEvent*);
 	private:
-		void changeWidget (QWidget *);
+		void changeWidget (QWidget*);
 	};
 }
 }

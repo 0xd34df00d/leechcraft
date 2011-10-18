@@ -31,7 +31,7 @@ namespace Laure
 		Q_OBJECT
 		Ui::ChooseURLDialog Ui_;
 	public:
-		ChooseURLDialog (QWidget * = 0);
+		ChooseURLDialog (QWidget* = 0);
 		
 		QString GetUrl () const;
 		bool IsUrlValid () const;

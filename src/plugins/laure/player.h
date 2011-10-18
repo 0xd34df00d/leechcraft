@@ -40,6 +40,7 @@ namespace Laure
 	typedef boost::shared_ptr<libvlc_media_list_t> libvlc_media_list_ptr;
 	typedef boost::shared_ptr<libvlc_media_list_player_t> libvlc_media_list_player_ptr;
 	typedef boost::shared_ptr<libvlc_media_player_t> libvlc_media_player_ptr;
+	
 	class Player : public QFrame
 	{
 		Q_OBJECT
@@ -56,7 +57,7 @@ namespace Laure
 		libvlc_instance_t *Instance ();
 		libvlc_media_list_t *PlayList ();
 		libvlc_media_t *Media ();
-		void SetPlayListView (PlayListView *);
+		void SetPlayListView (PlayListView*);
 		
 		int Volume () const;
 		int Position () const;
