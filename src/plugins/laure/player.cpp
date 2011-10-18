@@ -34,8 +34,8 @@ namespace Laure
 		
 	Player::Player (QWidget *parent, Qt::WindowFlags f)
 	: QFrame (parent, f)
-	, PlayListView_ (NULL)
 	, Poller_ (new QTimer (this))
+	, PlayListView_ (NULL)
 	{
 		const char * const vlc_args[] = {
 				"-I", "dummy",
