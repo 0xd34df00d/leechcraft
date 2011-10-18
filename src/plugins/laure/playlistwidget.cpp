@@ -19,7 +19,6 @@
 
 #include "playlistwidget.h"
 #include <QToolBar>
-#include <QToolButton>
 #include <vlc/vlc.h>
 #include "chooseurldialog.h"
 #include "playlistaddmenu.h"
@@ -34,18 +33,17 @@ namespace Laure
 		Ui_.setupUi (this);
 		setVisible (false);	
 		
-		QToolButton *actionAdd = new QToolButton (this);
-		actionAdd->setPopupMode (QToolButton::InstantPopup);
+		QAction *actionAdd = new QAction (this);
 		actionAdd->setProperty ("ActionIcon", "add");
 		actionAdd->setMenu (new PlayListAddMenu (Ui_.PlayListView_, this));
-		
+		actionAdd->setMenuRole (QAction::ApplicationSpecificRole);
 		QAction *actionRemove = new QAction (tr ("Remove"), this);
 		actionRemove->setProperty ("ActionIcon", "remove");
 		
 		ActionBar_ = new QToolBar (Ui_.ActionFrame_);
 		ActionBar_->setToolButtonStyle (Qt::ToolButtonIconOnly);
 		ActionBar_->setIconSize (QSize (16, 16));
-		ActionBar_->addWidget (actionAdd);
+		ActionBar_->addAction (actionAdd);
 		ActionBar_->addAction (actionRemove);
 		
 		connect (actionRemove,
