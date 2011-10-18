@@ -45,7 +45,7 @@ namespace Laure
 		int CurrentIndex () const;
 		int RowCount () const;
 		
-		libvlc_media_t *CurrentMedia ();
+		libvlc_media_t* CurrentMedia ();
 	private:
 		void moveSelect (int x, int y);
 	public slots:

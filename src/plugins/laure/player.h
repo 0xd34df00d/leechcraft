@@ -55,9 +55,9 @@ namespace Laure
 	public:
 		Player (QWidget *parent = 0, Qt::WindowFlags f = 0);
 		
-		libvlc_instance_t *Instance ();
-		libvlc_media_list_t *PlayList ();
-		libvlc_media_t *Media ();
+		libvlc_instance_t* Instance ();
+		libvlc_media_list_t* PlayList ();
+		libvlc_media_t* Media ();
 		void SetPlayListView (PlayListView*);
 		
 		int Volume () const;

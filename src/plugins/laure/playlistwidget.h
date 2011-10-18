@@ -40,7 +40,7 @@ namespace Laure
 		QToolBar *ActionBar_;
 	public:
 		PlayListWidget (QWidget* = 0);
-		PlayListView *GetPlayListView ();
+		PlayListView* GetPlayListView ();
 	signals:
 		void playItem (int);
 	};

@@ -40,7 +40,7 @@ namespace Laure
 		bool SetInstance (libvlc_instance_t*);
 		
 		int CurrentIndex () const;
-		libvlc_media_t *CurrentMedia ();
+		libvlc_media_t* CurrentMedia ();
 		void SetCurrentIndex (int);
 		
 		bool insertRows (int row, const QString& fileName);

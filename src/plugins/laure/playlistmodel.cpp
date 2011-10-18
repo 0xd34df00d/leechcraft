@@ -58,7 +58,7 @@ namespace Laure
 			CurrentIndex_ = val;
 	}
 	
-	libvlc_media_t *PlayListModel::CurrentMedia ()
+	libvlc_media_t* PlayListModel::CurrentMedia ()
 	{
 		return libvlc_media_list_item_at_index (ML_, CurrentIndex_);
 	}

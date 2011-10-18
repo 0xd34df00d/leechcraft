@@ -73,7 +73,7 @@ namespace Laure
 		}
 	}
 	
-	libvlc_media_t *PlayListView::CurrentMedia ()
+	libvlc_media_t* PlayListView::CurrentMedia ()
 	{
 		return PlayListModel_->CurrentMedia ();
 	}

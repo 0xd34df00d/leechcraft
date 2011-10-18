@@ -70,17 +70,17 @@ namespace Laure
 		Poller_->start (300);
 	}
 	
-	libvlc_media_list_t *Player::PlayList ()
+	libvlc_media_list_t* Player::PlayList ()
 	{
 		return ML_.get ();
 	}
 	
-	libvlc_instance_t *Player::Instance ()
+	libvlc_instance_t* Player::Instance ()
 	{
 		return VLCInstance_.get ();
 	}
 	
-	libvlc_media_t *Player::Media ()
+	libvlc_media_t* Player::Media ()
 	{
 		return libvlc_media_player_get_media (MP_.get ());
 	}
