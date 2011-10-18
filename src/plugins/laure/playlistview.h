@@ -37,8 +37,8 @@ namespace Laure
 		PlayListModel *PlayListModel_;
 	public:
 		PlayListView (QWidget* = 0);
-		bool SetPlayList (libvlc_media_list_t*);
-		bool SetInstance (libvlc_instance_t*);
+		void SetPlayList (libvlc_media_list_t*);
+		void SetInstance (libvlc_instance_t*);
 		void AddItem (const QString&);
 		int CurrentIndex () const;
 		int RowCount () const;

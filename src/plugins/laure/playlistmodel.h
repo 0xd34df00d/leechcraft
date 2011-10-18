@@ -36,8 +36,8 @@ namespace Laure
 	public:
 		PlayListModel (QObject *);
 		
-		bool SetPlayList (libvlc_media_list_t*);
-		bool SetInstance (libvlc_instance_t*);
+		void SetPlayList (libvlc_media_list_t*);
+		void SetInstance (libvlc_instance_t*);
 		
 		int CurrentIndex () const;
 		libvlc_media_t* CurrentMedia ();

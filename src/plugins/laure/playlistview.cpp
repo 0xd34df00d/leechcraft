@@ -37,9 +37,9 @@ namespace Laure
 				SLOT (handleDoubleClicked (QModelIndex)));
 	}
 	
-	bool PlayListView::SetPlayList (libvlc_media_list_t *ML)
+	void PlayListView::SetPlayList (libvlc_media_list_t *ML)
 	{
-		return PlayListModel_->SetPlayList (ML);
+		PlayListModel_->SetPlayList (ML);
 	}
 	
 	int PlayListView::RowCount () const
@@ -47,7 +47,7 @@ namespace Laure
 		return PlayListModel_->rowCount ();
 	}
 	
-	bool PlayListView::SetInstance (libvlc_instance_t *VLCInstance)
+	void PlayListView::SetInstance (libvlc_instance_t *VLCInstance)
 	{
 		return PlayListModel_->SetInstance (VLCInstance);
 	}

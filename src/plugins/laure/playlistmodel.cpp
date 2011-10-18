@@ -32,12 +32,12 @@ namespace Laure
 		CurrentIndex_ = -1;
 	}
 	
-	bool PlayListModel::SetPlayList (libvlc_media_list_t *ML)
+	void PlayListModel::SetPlayList (libvlc_media_list_t *ML)
 	{
 		ML_ = ML;
 	}
 	
-	bool PlayListModel::SetInstance (libvlc_instance_t *VLCInstance)
+	void PlayListModel::SetInstance (libvlc_instance_t *VLCInstance)
 	{
 		VLCInstance_ = VLCInstance;
 	}
