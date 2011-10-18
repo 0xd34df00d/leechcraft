@@ -40,12 +40,11 @@ namespace Laure
 		bool SetPlayList (libvlc_media_list_t*);
 		bool SetInstance (libvlc_instance_t*);
 		void AddItem (const QString&);
-		
-		void keyPressEvent (QKeyEvent*);
 		int CurrentIndex () const;
 		int RowCount () const;
-		
 		libvlc_media_t* CurrentMedia ();
+	protected:
+		void keyPressEvent (QKeyEvent*);
 	private:
 		void MoveSelect (int x, int y);
 	public slots:
