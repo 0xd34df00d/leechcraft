@@ -44,15 +44,20 @@ namespace Laure
 				"--verbose=2"
 		};
 
-		VLCInstance_ = libvlc_new (sizeof (vlc_args)
-				/ sizeof (vlc_args[0]), vlc_args);
-		MLP_ = libvlc_media_list_player_new (VLCInstance_);
-		MP_ = libvlc_media_player_new (VLCInstance_);
-		libvlc_media_list_player_set_media_player (MLP_, MP_);
+		VLCInstance_ = libvlc_instance_ptr (libvlc_new (sizeof (vlc_args)
+				/ sizeof (vlc_args[0]), vlc_args), libvlc_release);
+		MLP_ = libvlc_media_list_player_ptr (libvlc_media_list_player_new (VLCInstance_.get ()),
+				libvlc_media_list_player_release);
 		
-		ML_ = libvlc_media_list_new (VLCInstance_);
-		libvlc_media_list_player_set_media_list (MLP_, ML_);
-		libvlc_media_player_set_xwindow (MP_, winId ());
+		MP_ = libvlc_media_player_ptr (libvlc_media_player_new (VLCInstance_.get ()),
+				libvlc_media_player_release);
+		libvlc_media_list_player_set_media_player (MLP_.get (), MP_.get ());
+		
+		ML_ = libvlc_media_list_ptr (libvlc_media_list_new (VLCInstance_.get ()),
+				libvlc_media_list_release);
+		
+		libvlc_media_list_player_set_media_list (MLP_.get (), ML_.get ());
+		libvlc_media_player_set_xwindow (MP_.get (), winId ());
 		
 		connect (Poller_,
 				SIGNAL (timeout ()),
@@ -67,43 +72,34 @@ namespace Laure
 	
 	libvlc_media_list_t *Player::PlayList ()
 	{
-		return ML_;
+		return ML_.get ();
 	}
 	
 	libvlc_instance_t *Player::Instance ()
 	{
-		return VLCInstance_;
+		return VLCInstance_.get ();
 	}
 	
 	libvlc_media_t *Player::Media ()
 	{
-		return libvlc_media_player_get_media (MP_);
+		return libvlc_media_player_get_media (MP_.get ());
 	}
 	
 	void Player::SetPlayListView (PlayListView *playListView)
 	{
 		PlayListView_ = playListView;
-		playListView->SetInstance (VLCInstance_);
-		playListView->SetPlayList (ML_);
-	}
-	
-	Player::~Player ()
-	{
-		libvlc_media_list_player_stop (MLP_);
-		libvlc_media_list_player_release (MLP_);
-		libvlc_media_player_release (MP_);
-		libvlc_media_list_release (ML_);
-		libvlc_release (VLCInstance_);
+		playListView->SetInstance (VLCInstance_.get ());
+		playListView->SetPlayList (ML_.get ());
 	}
 	
 	bool Player::IsPlaying () const
 	{
-		return libvlc_media_list_player_is_playing (MLP_);
+		return libvlc_media_list_player_is_playing (MLP_.get ());
 	}
 
 	int Player::Volume () const
 	{
-		return libvlc_audio_get_volume (MP_);
+		return libvlc_audio_get_volume (MP_.get ());
 	}
 	
 	int Player::Position () const
@@ -111,7 +107,7 @@ namespace Laure
 		if (!IsPlaying ())
 			return -1;
 		
-		float pos = libvlc_media_player_get_position (MP_);
+		float pos = libvlc_media_player_get_position (MP_.get ());
 		return pos * static_cast<float> (pos_slider_max);
 	}
 	
@@ -119,74 +115,80 @@ namespace Laure
 	{
 		if (!IsPlaying ())
 			return -1;
-		return libvlc_media_player_get_position (MP_);
+		return libvlc_media_player_get_position (MP_.get ());
 	}
 	
 	QTime Player::Time () const
 	{
-		return QTime (0, 0, 0).addMSecs (libvlc_media_player_get_time (MP_));
+		int i;
+		QTime time = QTime (0, 0);
+		return (i = libvlc_media_player_get_time (MP_.get ())) < 0 ?
+				time : time.addMSecs (i);
 	}
 	
 	QTime Player::Length () const
 	{
-		return QTime (0, 0, 0).addMSecs (libvlc_media_player_get_length (MP_));
+		int i;
+		QTime time = QTime (0, 0);
+		return (i = libvlc_media_player_get_length (MP_.get ())) < 0 ?
+				time : time.addMSecs (i);
 	}
 	
 	void Player::pause ()
 	{
-		libvlc_media_list_player_pause (MLP_);
+		libvlc_media_list_player_pause (MLP_.get ());
 	}
 	
 	void Player::play ()
 	{
-		libvlc_media_list_player_play (MLP_);
+		libvlc_media_list_player_play (MLP_.get ());
 	}
 
 	void Player::stop ()
 	{
-		libvlc_media_list_player_stop (MLP_);
+		libvlc_media_list_player_stop (MLP_.get ());
 	}
 
 	void Player::next ()
 	{
-		libvlc_media_list_player_next (MLP_);
+		libvlc_media_list_player_next (MLP_.get ());
 		PlayListView_->SetCurrentIndex (PlayListView_->CurrentIndex () + 1);
 	}
 
 	void Player::prev ()
 	{
-		libvlc_media_list_player_previous (MLP_);
+		libvlc_media_list_player_previous (MLP_.get ());
 		PlayListView_->SetCurrentIndex (PlayListView_->CurrentIndex () - 1);
 	}
 	
 	void Player::setVolume (int vol)
 	{
-		libvlc_audio_set_volume (MP_, vol);
+		libvlc_audio_set_volume (MP_.get (), vol);
 	}
 	
 	void Player::setPosition (int pos)
 	{
 		float poss = (float) pos / (float) pos_slider_max;
-		libvlc_media_player_set_position (MP_, poss);
+		libvlc_media_player_set_position (MP_.get (), poss);
 	}
 	
 	void Player::playItem (int item)
 	{
-		libvlc_media_list_player_play_item_at_index (MLP_, item);
+		libvlc_media_list_player_play_item_at_index (MLP_.get (), item);
 		PlayListView_->SetCurrentIndex (item);
 	}
 	
 	void Player::separateDialog ()
 	{
-		SeparatePlayerWidget *w = new SeparatePlayerWidget (MP_, this);
+		SeparatePlayerWidget *w = new SeparatePlayerWidget (MP_.get (), this);
 		w->show ();
 	}
 	
 	void Player::handleTimeout ()
 	{
-		int time = libvlc_media_player_get_time (MP_);
-		int length = libvlc_media_player_get_length (MP_);
-		if (length - time < 200)
+		int time = libvlc_media_player_get_time (MP_.get ());
+		int length = libvlc_media_player_get_length (MP_.get ());
+		if (length - time < 200 && IsPlaying ())
 			next ();
 	}
 }

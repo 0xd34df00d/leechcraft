@@ -21,6 +21,7 @@
 #define PLUGINS_LAURE_PLAYER_H
 
 #include <QFrame>
+#include <boost/shared_ptr.hpp>
 #include <vlc/vlc.h>
 #include <vlc/libvlc_media_list.h>
 #include <vlc/libvlc_media_list_player.h>
@@ -29,24 +30,28 @@ class QTime;
 class QPushButton;
 class QTimer;
 class QSlider;
+
 namespace LeechCraft
 {
 namespace Laure
 {
 	class PlayListView;
+	typedef boost::shared_ptr<libvlc_instance_t> libvlc_instance_ptr;
+	typedef boost::shared_ptr<libvlc_media_list_t> libvlc_media_list_ptr;
+	typedef boost::shared_ptr<libvlc_media_list_player_t> libvlc_media_list_player_ptr;
+	typedef boost::shared_ptr<libvlc_media_player_t> libvlc_media_player_ptr;
 	class Player : public QFrame
 	{
 		Q_OBJECT
 		QTimer *Poller_;
 		bool IsPlaying_;
-		libvlc_instance_t *VLCInstance_;
-		libvlc_media_list_player_t *MLP_;
-		libvlc_media_list_t *ML_;
-		libvlc_media_player_t *MP_;
+		libvlc_instance_ptr VLCInstance_;
+		libvlc_media_list_ptr ML_;
+		libvlc_media_list_player_ptr MLP_;
+		libvlc_media_player_ptr MP_;
 		PlayListView *PlayListView_;
 	public:
 		Player (QWidget *parent = 0, Qt::WindowFlags f = 0);
-		virtual ~Player ();
 		
 		libvlc_instance_t *Instance ();
 		libvlc_media_list_t *PlayList ();
