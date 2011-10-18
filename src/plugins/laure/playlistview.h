@@ -43,17 +43,18 @@ namespace Laure
 		int CurrentIndex () const;
 		int RowCount () const;
 		libvlc_media_t* CurrentMedia ();
+		void SetCurrentIndex (int);
 	protected:
 		void keyPressEvent (QKeyEvent*);
 	private:
 		void MoveSelect (int x, int y);
 	public slots:
-		void SetCurrentIndex (int);
+
 		void removeSelectedRows ();
 	private slots:
 		void handleDoubleClicked (const QModelIndex&);
 	signals:
-		void playItem (int);
+		void itemPlayed (int);
 	};
 }
 }

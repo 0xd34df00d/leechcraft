@@ -51,12 +51,12 @@ namespace Laure
 				Ui_.PlayListView_,
 				SLOT (removeSelectedRows ()));
 		connect (Ui_.PlayListView_,
-				SIGNAL (playItem (int)),
+				SIGNAL (itemPlayed (int)),
 				this,
-				SIGNAL (playItem (int)));
+				SIGNAL (itemPlayed (int)));
 	}
 	
-	PlayListView* PlayListWidget::GetPlayListView ()
+	PlayListView* PlayListWidget::GetPlayListView () const
 	{
 		return Ui_.PlayListView_;
 	}

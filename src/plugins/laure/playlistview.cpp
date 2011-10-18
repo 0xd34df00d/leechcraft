@@ -68,8 +68,8 @@ namespace Laure
 		PlayListModel_->appendRow (new QStandardItem (item));
 		if (PlayListModel_->rowCount () == 1)
 		{
-			SetCurrentIndex(0);
-			emit playItem (0);
+			SetCurrentIndex (0);
+			emit itemPlayed (0);
 		}
 	}
 	
@@ -80,7 +80,7 @@ namespace Laure
 	
 	void PlayListView::handleDoubleClicked (const QModelIndex& index)
 	{
-		emit playItem (index.row ());
+		emit itemPlayed (index.row ());
 	}
 	
 	void PlayListView::removeSelectedRows ()
@@ -99,7 +99,7 @@ namespace Laure
 			removeSelectedRows ();
 			break;
 		case Qt::Key_Return:
-			emit playItem (curIndex.row ());
+			emit itemPlayed (curIndex.row ());
 			break;
 		case Qt::Key_Up:
 			setCurrentIndex (model ()->index (curIndex.row () - 1,

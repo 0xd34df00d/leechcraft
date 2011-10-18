@@ -67,12 +67,12 @@ namespace Laure
 		Ui_.Player_->SetPlayListView (Ui_.PlayListWidget_->GetPlayListView ());
 		
 		connect (Ui_.PlayListWidget_,
-				SIGNAL (playItem (int)),
+				SIGNAL (itemPlayed (int)),
 				Ui_.Player_,
 				SLOT (playItem (int)));
 
 		connect (Ui_.PlayListWidget_,
-				SIGNAL (playItem (int)),
+				SIGNAL (itemPlayed (int)),
 				ActionPlay_,
 				SLOT (handlePlay ()));
 		connect (this,
