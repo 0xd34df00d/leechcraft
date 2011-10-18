@@ -35,6 +35,7 @@ namespace Laure
 	class PlayListWidget : public QWidget
 	{
 		Q_OBJECT
+		
 		Ui::PlayListWidget Ui_;
 		QToolBar *ActionBar_;
 	public:

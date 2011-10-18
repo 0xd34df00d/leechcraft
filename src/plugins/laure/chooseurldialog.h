@@ -29,6 +29,7 @@ namespace Laure
 	class ChooseURLDialog : public QDialog
 	{
 		Q_OBJECT
+		
 		Ui::ChooseURLDialog Ui_;
 	public:
 		ChooseURLDialog (QWidget* = 0);

@@ -29,6 +29,7 @@ namespace Laure
 	class PlayListModel : public QStandardItemModel
 	{
 		Q_OBJECT
+		
 		libvlc_instance_t *VLCInstance_;
 		libvlc_media_list_t *ML_;
 		int CurrentIndex_;

@@ -33,6 +33,7 @@ namespace Laure
 	class PlayListView : public QListView
 	{
 		Q_OBJECT
+		
 		PlayListModel *PlayListModel_;
 	public:
 		PlayListView (QWidget* = 0);

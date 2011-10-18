@@ -30,6 +30,7 @@ namespace Laure
 	class PlayListAddMenu : public QMenu
 	{
 		Q_OBJECT
+		
 		PlayListView *PlayListView_;
 	public:
 		PlayListAddMenu (PlayListView *playListView, QWidget *parent);

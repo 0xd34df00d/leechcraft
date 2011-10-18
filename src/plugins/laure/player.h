@@ -44,6 +44,7 @@ namespace Laure
 	class Player : public QFrame
 	{
 		Q_OBJECT
+		
 		QTimer *Poller_;
 		bool IsPlaying_;
 		libvlc_instance_ptr VLCInstance_;

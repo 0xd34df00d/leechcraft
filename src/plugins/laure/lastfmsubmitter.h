@@ -39,6 +39,7 @@ namespace Laure
 	class LastFMSubmitter : public QObject
 	{
 		Q_OBJECT
+		
 		boost::shared_ptr<lastfm::Audioscrobbler> Scrobbler_;
 		QNetworkAccessManager *Manager_;
 	public:
