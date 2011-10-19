@@ -32,8 +32,8 @@ namespace Laure
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		QCoreApplication::setApplicationName ("LeechCraftLaure");
-		QCoreApplication::setApplicationVersion ("0.4.95");
+		// Ignotus is a fucking moron with total lack of knowledge and
+		// skill and the ability to read documentation. Triple-check his code.
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"lauresettings.xml");
