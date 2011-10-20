@@ -88,6 +88,7 @@ namespace Xoox
 		QString GetRawInfo () const;
 		void ShowInfo ();
 		QMap<QString, QVariant> GetClientInfo (const QString&) const;
+		void MarkMsgsRead ();
 
 		// IMUCEntry
 		MUCFeatures GetMUCFeatures () const;

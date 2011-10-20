@@ -136,6 +136,10 @@ namespace Acetamide
 		return QMap<QString, QVariant> ();
 	}
 
+	void ChannelCLEntry::MarkMsgsRead ()
+	{
+	}
+
 	QString ChannelCLEntry::GetRealID (QObject *participant) const
 	{
 		return QString ();
