@@ -588,6 +588,10 @@ namespace Xoox
 	{
 		RoomParticipantEntry_ptr entry (new RoomParticipantEntry (nick,
 					this, Account_));
+		connect (entry.get (),
+				SIGNAL (messagesAreRead ()),
+				this,
+				SLOT (handleMessagesAreRead ()));
 		Nick2Entry_ [nick] = entry;
 		if (announce)
 			Account_->handleGotRosterItems (QList<QObject*> () << entry.get ());
@@ -693,10 +697,15 @@ namespace Xoox
 			MakeLeaveMessage (pres, nick);
 
 		if (us)
+		{
 			Leave (QString (), false);
+			return;
+		}
 
-		Nick2Entry_.remove (nick);
-		Account_->handleEntryRemoved (entry.get ());
+		if (entry->HasUnreadMsgs ())
+			entry->SetStatus (EntryStatus (SOffline, item.reason ()), QString ());
+		else
+			RemoveEntry (entry.get ());
 	}
 
 	void RoomHandler::requestVoice ()
@@ -723,6 +732,27 @@ namespace Xoox
 		msg.setExtensions (XooxUtil::Form2XmppElem (form));
 
 		Account_->GetClientConnection ()->GetClient ()->sendPacket (msg);
+	}
+
+	void RoomHandler::handleMessagesAreRead ()
+	{
+		RoomParticipantEntry *entry = qobject_cast<RoomParticipantEntry*> (sender ());
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< sender ()
+					<< "is not a RoomParticipantEntry";
+			return;
+		}
+
+		if (entry->GetStatus (QString ()).State_ == SOffline)
+			RemoveEntry (entry);
+	}
+
+	void RoomHandler::RemoveEntry (RoomParticipantEntry *entry)
+	{
+		Nick2Entry_.remove (entry->GetNick ());
+		Account_->handleEntryRemoved (entry);
 	}
 
 	void RoomHandler::RemoveThis ()

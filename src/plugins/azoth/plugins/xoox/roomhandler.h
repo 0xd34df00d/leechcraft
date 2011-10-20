@@ -75,7 +75,7 @@ namespace Xoox
 				QXmppMucItem::Affiliation, const QString&);
 		void SetRole (RoomParticipantEntry*,
 				QXmppMucItem::Role, const QString&);
-		
+
 		QXmppMucRoom* GetRoom () const;
 
 		void HandleErrorPresence (const QXmppPresence&, const QString&);
@@ -95,8 +95,10 @@ namespace Xoox
 		void handleParticipantAdded (const QString&);
 		void handleParticipantChanged (const QString&);
 		void handleParticipantRemoved (const QString&);
-		
+
 		void requestVoice ();
+
+		void handleMessagesAreRead ();
 	private:
 		/** Creates a new entry for the given nick.
 		 */
@@ -113,6 +115,8 @@ namespace Xoox
 				const QString&);
 		void HandleNickConflict ();
 		void HandlePasswordRequired ();
+
+		void RemoveEntry (RoomParticipantEntry*);
 
 		void RemoveThis ();
 	signals:
