@@ -626,6 +626,8 @@ namespace Azoth
 			++NumUnreadMsgs_;
 			ReformatTitle ();
 		}
+		else
+			GetEntry<ICLEntry> ()->MarkMsgsRead ();
 
 		const int idx = Ui_.VariantBox_->findText (msg->GetOtherVariant ());
 		if (idx != -1)
