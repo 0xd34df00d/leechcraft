@@ -474,6 +474,16 @@ namespace Azoth
 		 */
 		virtual QMap<QString, QVariant> GetClientInfo (const QString& variant) const = 0;
 
+		/** @brief Called whenever new messages are read.
+		 *
+		 * This function is called by Azoth Core whenever any unread
+		 * messages that could be present in this entry are read. For
+		 * example, this may happen when user opens the chat tab with
+		 * this entry.
+		 *
+		 * Please note that this function is always called, even when
+		 * there are no messages at all, for example.
+		 */
 		virtual void MarkMsgsRead () = 0;
 
 		/** @brief This signal should be emitted whenever a new message
