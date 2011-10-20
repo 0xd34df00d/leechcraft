@@ -33,6 +33,7 @@ INCLUDE_DIRECTORIES (
 	${LastFM_INCLUDE_DIR}
 	)
 SET (SRCS
+	laurecore.cpp
 	separateplayerwidget.cpp
 	playlistaddmenu.cpp
 	lastfmsubmitter.cpp
@@ -47,6 +48,7 @@ SET (SRCS
 	laure.cpp
 	)
 SET (HEADERS
+	laurecore.h
 	separateplayerwidget.h
 	playlistaddmenu.h
 	lastfmsubmitter.h
