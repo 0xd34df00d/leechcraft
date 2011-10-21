@@ -97,6 +97,7 @@ namespace Azoth
 
 		void handleRowsInserted (const QModelIndex&, int, int);
 		void rebuildTreeExpansions ();
+		void expandIndex (const QPersistentModelIndex&);
 		void on_CLTree__expanded (const QModelIndex&);
 		void on_CLTree__collapsed (const QModelIndex&);
 

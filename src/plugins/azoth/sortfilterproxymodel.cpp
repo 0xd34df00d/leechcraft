@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "sortfilterproxymodel.h"
+#include <QTimer>
 #include "core.h"
 #include "interfaces/iclentry.h"
 #include "interfaces/imucperms.h"
@@ -83,7 +84,9 @@ namespace Azoth
 	{
 		OrderByStatus_ = XmlSettingsManager::Instance ()
 				.property ("OrderByStatus").toBool ();
-		invalidate ();
+		QTimer::singleShot (0,
+				this,
+				SLOT (invalidate ()));
 	}
 
 	void SortFilterProxyModel::handleHideMUCPartsChanged ()
