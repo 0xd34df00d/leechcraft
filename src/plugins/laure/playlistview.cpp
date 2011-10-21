@@ -18,8 +18,8 @@
  **********************************************************************/
 
 #include "playlistview.h"
-
 #include <QKeyEvent>
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -37,57 +37,37 @@ namespace Laure
 				SLOT (handleDoubleClicked (QModelIndex)));
 	}
 	
-	void PlayListView::SetPlayList (libvlc_media_list_t *ML)
+	void PlayListView::selectRow (int val)
 	{
-		PlayListModel_->SetPlayList (ML);
-	}
-	
-	int PlayListView::RowCount () const
-	{
-		return PlayListModel_->rowCount ();
-	}
-	
-	void PlayListView::SetInstance (libvlc_instance_t *VLCInstance)
-	{
-		return PlayListModel_->SetInstance (VLCInstance);
-	}
-	
-	int PlayListView::CurrentIndex () const
-	{
-		return PlayListModel_->CurrentIndex ();
-	}
-	
-	void PlayListView::SetCurrentIndex (int val)
-	{
-		PlayListModel_->SetCurrentIndex (val);
-		setCurrentIndex (PlayListModel_->index (val, 0	));
+		setCurrentIndex (model ()->index (val, 0));
 	}
 
-	void PlayListView::AddItem (const QString& item)
+	void PlayListView::AddItem (const MediaMeta& item)
 	{
-		PlayListModel_->appendRow (new QStandardItem (item));
-		if (PlayListModel_->rowCount () == 1)
-		{
-			SetCurrentIndex (0);
-			emit itemPlayed (0);
-		}
+		QString temp = XmlSettingsManager::Instance ()
+				.property ("PlayListTemplate").toString ();
+		temp.replace ("%artist%", item.Artist_);
+		temp.replace ("%album%", item.Album_);
+		temp.replace ("%title%", item.Title_);
+		temp.replace ("%genre%", item.Genre_);
+		temp.replace ("%date%", item.Date_);	
+		PlayListModel_->appendRow (new QStandardItem (temp));
 	}
 	
-	libvlc_media_t* PlayListView::CurrentMedia ()
-	{
-		return PlayListModel_->CurrentMedia ();
-	}
 	
 	void PlayListView::handleDoubleClicked (const QModelIndex& index)
 	{
-		emit itemPlayed (index.row ());
+		emit playItem (index.row ());
 	}
 	
 	void PlayListView::removeSelectedRows ()
 	{
 		const QModelIndexList& indexList = selectedIndexes ();
 		Q_FOREACH (const QModelIndex& index, indexList)
-			PlayListModel_->removeRows (index.row ());
+		{
+			PlayListModel_->removeRows (index.row (), 1);
+			emit itemRemoved (index.row ());
+		}
 	}
 	
 	void PlayListView::keyPressEvent (QKeyEvent *event)
@@ -99,25 +79,15 @@ namespace Laure
 			removeSelectedRows ();
 			break;
 		case Qt::Key_Return:
-			emit itemPlayed (curIndex.row ());
+			emit playItem (curIndex.row ());
 			break;
 		case Qt::Key_Up:
-			setCurrentIndex (model ()->index (curIndex.row () - 1,
-							curIndex.column ()));
+			setCurrentIndex (model ()->index (curIndex.row () - 1, 0));
 			break;
 		case Qt::Key_Down:
-			setCurrentIndex (model ()->index (curIndex.row () + 1,
-							curIndex.column ()));
+			setCurrentIndex (model ()->index (curIndex.row () + 1, 0));
 			break;
 		}
-	}
-	
-	void PlayListView::MoveSelect (int x, int y)
-	{
-		if ( x < 0 || y < 1 || x >= model ()->rowCount ()
-				|| y >= model ()->columnCount ())
-			return;
-		setCurrentIndex (model ()->index (x, y));
 	}
 }
 }	

@@ -30,15 +30,15 @@ namespace Laure
 	class PlayListAddMenu : public QMenu
 	{
 		Q_OBJECT
-		
-		PlayListView *PlayListView_;
 	public:
-		PlayListAddMenu (PlayListView *playListView, QWidget *parent);
+		PlayListAddMenu (QWidget* = 0);
 	private slots:
 		void handleAddUrl ();
 		void handleAddFolder ();
 		void handleAddFiles ();
 		QFileInfoList StoragedFiles (const QString&);
+	signals:
+		void addItem (const QString&);
 	};
 }
 }

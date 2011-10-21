@@ -122,6 +122,14 @@ namespace Laure
 				SIGNAL (needToClose ()),
 				this,
 				SLOT (handleNeedToClose ()));
+		connect (w,
+				SIGNAL (nowPlayed (MediaInfo)),
+				LFSubmitter_,
+				SLOT (nowPlaying (MediaInfo)));
+		connect (w,
+				SIGNAL (played ()),
+				LFSubmitter_,
+				SLOT (submit ()));
 
 		Others_ << w;
 		emit addNewTab (tr ("Laure"), w);

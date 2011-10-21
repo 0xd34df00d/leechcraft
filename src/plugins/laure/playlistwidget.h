@@ -24,8 +24,6 @@
 #include <interfaces/core/icoreproxy.h>
 #include "ui_playlistwidget.h"
 
-class QToolBar;
-
 namespace LeechCraft
 {
 namespace Laure
@@ -37,12 +35,15 @@ namespace Laure
 		Q_OBJECT
 		
 		Ui::PlayListWidget Ui_;
-		QToolBar *ActionBar_;
 	public:
 		PlayListWidget (QWidget* = 0);
-		PlayListView* GetPlayListView () const;
+	public slots:
+		void handleItemAdded (const MediaMeta&);
+		void handleItemPlayed (int);
 	signals:
-		void itemPlayed (int);
+		void itemAddedRequest (const QString&);
+		void itemRemoved (int);
+		void playItem (int);
 	};
 }
 }

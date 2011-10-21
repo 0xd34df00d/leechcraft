@@ -26,9 +26,8 @@ namespace LeechCraft
 {
 namespace Laure
 {
-	PlayListAddMenu::PlayListAddMenu (PlayListView *playListView, QWidget *parent)
+	PlayListAddMenu::PlayListAddMenu (QWidget *parent)
 	: QMenu (parent)
-	, PlayListView_ (playListView)
 	{
 		QAction *addFiles = new QAction (tr ("Add files"), this);
 		QAction *addFolder = new QAction (tr ("Add folder"), this);
@@ -57,7 +56,7 @@ namespace Laure
 		const QStringList& fileNames = QFileDialog::getOpenFileNames (this,
 				tr ("Choose file"), QDir::homePath ());
 		Q_FOREACH (const QString& fileName, fileNames)
-			PlayListView_->AddItem (fileName);
+			emit addItem (fileName);
 	}
 
 	void PlayListAddMenu::handleAddFolder ()
@@ -69,17 +68,14 @@ namespace Laure
 		
 		const QFileInfoList& fileInfoList = StoragedFiles (fileDir);
 		Q_FOREACH (const QFileInfo& fileInfo, fileInfoList)
-			PlayListView_->AddItem (fileInfo.absoluteFilePath ());
+			emit addItem (fileInfo.absoluteFilePath ());
 	}
 	
 	void PlayListAddMenu::handleAddUrl ()
 	{
 		ChooseURLDialog d;
 		if (d.exec () == QDialog::Accepted)
-		{
-			const QString& url = d.GetUrl ();
-			PlayListView_->AddItem (url);
-		}
+			emit addItem (d.GetUrl ());
 	}
 
 	QFileInfoList PlayListAddMenu::StoragedFiles (const QString& path)

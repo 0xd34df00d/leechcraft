@@ -24,7 +24,7 @@
 #include <QPushButton>
 #include <QTime>
 #include "separateplayerwidget.h"
-#include "playlistview.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -32,32 +32,12 @@ namespace Laure
 {
 	const int pos_slider_max = 10000;
 		
-	Player::Player (QWidget *parent, Qt::WindowFlags f)
-	: QFrame (parent, f)
+	Player::Player (QWidget *parent)
+	: QFrame (parent)
 	, Poller_ (new QTimer (this))
-	, PlayListView_ (NULL)
+	, Core_ (new Core (this))
 	{
-		const char * const vlc_args[] = {
-				"-I", "dummy",
-				"--ignore-config",
-				"--extraintf=logger",
-				"--verbose=2"
-		};
-
-		VLCInstance_ = libvlc_instance_ptr (libvlc_new (sizeof (vlc_args)
-				/ sizeof (vlc_args[0]), vlc_args), libvlc_release);
-		MLP_ = libvlc_media_list_player_ptr (libvlc_media_list_player_new (VLCInstance_.get ()),
-				libvlc_media_list_player_release);
-		
-		MP_ = libvlc_media_player_ptr (libvlc_media_player_new (VLCInstance_.get ()),
-				libvlc_media_player_release);
-		libvlc_media_list_player_set_media_player (MLP_.get (), MP_.get ());
-		
-		ML_ = libvlc_media_list_ptr (libvlc_media_list_new (VLCInstance_.get ()),
-				libvlc_media_list_release);
-		
-		libvlc_media_list_player_set_media_list (MLP_.get (), ML_.get ());
-		libvlc_media_player_set_xwindow (MP_.get (), winId ());
+		Core_->setWindow (winId ());
 		
 		connect (Poller_,
 				SIGNAL (timeout ()),
@@ -70,126 +50,47 @@ namespace Laure
 		Poller_->start (300);
 	}
 	
-	libvlc_media_list_t* Player::PlayList ()
+	Core* Player::GetCore ()
 	{
-		return ML_.get ();
+		return Core_;
 	}
 	
-	libvlc_instance_t* Player::Instance ()
+	QTime Player::Time ()
 	{
-		return VLCInstance_.get ();
+		return IntToQTime (Core_->Time ());
 	}
 	
-	libvlc_media_t* Player::Media ()
+	QTime Player::Length ()
 	{
-		return libvlc_media_player_get_media (MP_.get ());
-	}
-	
-	void Player::SetPlayListView (PlayListView *playListView)
-	{
-		PlayListView_ = playListView;
-		playListView->SetInstance (VLCInstance_.get ());
-		playListView->SetPlayList (ML_.get ());
-	}
-	
-	bool Player::IsPlaying () const
-	{
-		return libvlc_media_list_player_is_playing (MLP_.get ());
-	}
-
-	int Player::Volume () const
-	{
-		return libvlc_audio_get_volume (MP_.get ());
+		return IntToQTime (Core_->Length ());
 	}
 	
 	int Player::Position () const
 	{
-		if (!IsPlaying ())
+		if (!Core_->IsPlaying ())
 			return -1;
-		
-		float pos = libvlc_media_player_get_position (MP_.get ());
-		return pos * static_cast<float> (pos_slider_max);
-	}
-	
-	float Player::MediaPosition () const
-	{
-		if (!IsPlaying ())
-			return -1;
-		return libvlc_media_player_get_position (MP_.get ());
-	}
-	
-	QTime Player::Time () const
-	{
-		int i;
-		QTime time = QTime (0, 0);
-		return (i = libvlc_media_player_get_time (MP_.get ())) < 0 ?
-				time : time.addMSecs (i);
-	}
-	
-	QTime Player::Length () const
-	{
-		int i;
-		QTime time = QTime (0, 0);
-		return (i = libvlc_media_player_get_length (MP_.get ())) < 0 ?
-				time : time.addMSecs (i);
-	}
-	
-	void Player::pause ()
-	{
-		libvlc_media_list_player_pause (MLP_.get ());
-	}
-	
-	void Player::play ()
-	{
-		libvlc_media_list_player_play (MLP_.get ());
+
+		return Core_->MediaPosition () * static_cast<float> (pos_slider_max);
 	}
 
-	void Player::stop ()
-	{
-		libvlc_media_list_player_stop (MLP_.get ());
-	}
 
-	void Player::next ()
-	{
-		libvlc_media_list_player_next (MLP_.get ());
-		PlayListView_->SetCurrentIndex (PlayListView_->CurrentIndex () + 1);
-	}
-
-	void Player::prev ()
-	{
-		libvlc_media_list_player_previous (MLP_.get ());
-		PlayListView_->SetCurrentIndex (PlayListView_->CurrentIndex () - 1);
-	}
-	
-	void Player::setVolume (int vol)
-	{
-		libvlc_audio_set_volume (MP_.get (), vol);
-	}
-	
 	void Player::setPosition (int pos)
 	{
-		float poss = (float) pos / (float) pos_slider_max;
-		libvlc_media_player_set_position (MP_.get (), poss);
-	}
-	
-	void Player::playItem (int item)
-	{
-		libvlc_media_list_player_play_item_at_index (MLP_.get (), item);
-		PlayListView_->SetCurrentIndex (item);
-	}
-	
-	void Player::separateDialog ()
-	{
-		SeparatePlayerWidget *w = new SeparatePlayerWidget (MP_.get (), this);
-		w->show ();
+		Core_->setPosition (static_cast<float> (pos) / pos_slider_max);
 	}
 	
 	void Player::handleTimeout ()
 	{
-		int time = libvlc_media_player_get_time (MP_.get ());
-		int length = libvlc_media_player_get_length (MP_.get ());
-		if (length - time < 200 && IsPlaying ())
-			next ();
+		int time = Core_->Time ();
+		int length = Core_->Length ();
+		if (length - time < 200 && Core_->IsPlaying ())
+			Core_->next ();
+	}
+	
+	QTime Player::IntToQTime (int val)
+	{
+		QTime time = QTime (0, 0);
+		return val < 0 ? time : time.addMSecs (val);
 	}
 }
 }
