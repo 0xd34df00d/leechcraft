@@ -34,6 +34,7 @@
 #include "player.h"
 #include "playlistwidget.h"
 #include "xmlsettingsmanager.h"
+#include <QTimer>
 
 namespace LeechCraft
 {
@@ -44,10 +45,10 @@ namespace Laure
 	LaureWidget::LaureWidget (QWidget *parent, Qt::WindowFlags f)
 	: QWidget (parent, f)
 	, ToolBar_ (new QToolBar (this))
-	, ActionPlay_ (NULL)
+	, Core_ (new Core (this))
 	{	
 		Ui_.setupUi (this);
-		Core *core = Ui_.Player_->GetCore ();
+		Ui_.Player_->setCore (Core_);
 		
 		connect (Ui_.Player_,
 				SIGNAL (timeout ()),
@@ -59,39 +60,39 @@ namespace Laure
 				SLOT (setPosition (int)));
 		connect (Ui_.VolumeSlider_,
 				SIGNAL (sliderMoved (int)),
-				core,
+				Core_,
 				SLOT (setVolume (int)));
-		connect (core,
+		connect (Core_,
 				SIGNAL (nowPlayed (MediaMeta)),
 				this,
 				SIGNAL (nowPlayed (MediaMeta)));
-		connect (core,
+		connect (Core_,
 				SIGNAL (played ()),
 				this,
 				SIGNAL (played ()));
 		connect (Ui_.PlayListWidget_,
 				SIGNAL (itemAddedRequest (QString)),
-				core,
+				Core_,
 				SLOT (addRow (QString)));
-		connect (core,
+		connect (Core_,
 				SIGNAL (itemAdded (MediaMeta)),
 				Ui_.PlayListWidget_,
 				SLOT (handleItemAdded (MediaMeta)));
 		connect (Ui_.PlayListWidget_,
 				SIGNAL (itemRemoved (int)),
-				core,
+				Core_,
 				SLOT (removeRow (int)));
 		connect (Ui_.PlayListWidget_,
 				SIGNAL (playItem (int)),
-				core,
+				Core_,
 				SLOT (playItem (int)));
-		connect (core,
+		connect (Core_,
 				SIGNAL (itemPlayed (int)),
 				Ui_.PlayListWidget_,
 				SLOT (handleItemPlayed (int)));
 		connect (this,
 				SIGNAL (addItem (QString)),
-				core,
+				Core_,
 				SLOT (addRow (QString)));
 	}
 	
@@ -137,8 +138,8 @@ namespace Laure
 		bar->setToolButtonStyle (Qt::ToolButtonIconOnly);
 		bar->setIconSize (QSize (32, 32));
 		
-		ActionPlay_ = new PlayPauseAction (Ui_.CommandFrame_);
-		
+		PlayPauseAction *actionPlay = new PlayPauseAction (tr ("Play"), Ui_.CommandFrame_);
+	
 		QAction *actionStop = new QAction (tr ("Stop"), Ui_.CommandFrame_);
 		QAction *actionNext = new QAction (tr ("Next"), Ui_.CommandFrame_);
 		QAction *actionPrev = new QAction (tr ("Previous"), Ui_.CommandFrame_);
@@ -148,57 +149,47 @@ namespace Laure
 		actionPrev->setProperty ("ActionIcon", "media_skip_backward");
 		
 		bar->addAction (actionPrev);
-		bar->addAction (ActionPlay_);
+		bar->addAction (actionPlay);
 		bar->addAction (actionStop);
 		bar->addAction (actionNext);
 		
-		Core *core = Ui_.Player_->GetCore ();
-
+		connect (Core_,
+				SIGNAL (itemPlayed (int)),
+				actionPlay,
+				SLOT (handlePlay ()));
 		connect (actionStop,
 				SIGNAL (triggered (bool)),
-				this,
-				SLOT (handleStop ()));
+				actionPlay,
+				SLOT (handlePause ()));
 		connect (actionStop,
 				SIGNAL (triggered (bool)),
-				core,
+				Core_,
 				SLOT (stop ()));
 		connect (actionNext,
 				SIGNAL (triggered (bool)),
-				core,
+				Core_,
 				SLOT (next ()));
 		connect (actionPrev,
 				SIGNAL (triggered (bool)),
-				core,
+				Core_,
 				SLOT (prev ()));
-		connect (ActionPlay_,
+		connect (actionPlay,
 				SIGNAL (play ()),
-				core,
+				Core_,
 				SLOT (play ()));
-		connect (ActionPlay_,
+		connect (actionPlay,
 				SIGNAL (pause ()),
-				core,
+				Core_,
 				SLOT (pause ()));
 		connect (this,
 				SIGNAL (playPause ()),
-				ActionPlay_,
+				actionPlay,
 				SLOT (handleTriggered ()));
-		
-	}
-
-	void LaureWidget::handleStop ()
-	{
-		ActionPlay_->handlePause ();
-	}
-
-	void LaureWidget::handlePlay ()
-	{
-		ActionPlay_->handlePlay ();
 	}
 	
 	void LaureWidget::updateInterface ()
 	{
-		Core *core = Ui_.Player_->GetCore ();
-		Ui_.VolumeSlider_->setValue (core->Volume ());
+		Ui_.VolumeSlider_->setValue (Core_->Volume ());
 		Ui_.PositionSlider_->setValue (Ui_.Player_->Position ());
 		const QTime& currTime = Ui_.Player_->Time ();
 		const QTime& length = Ui_.Player_->Length ();

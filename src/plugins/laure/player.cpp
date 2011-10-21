@@ -35,10 +35,8 @@ namespace Laure
 	Player::Player (QWidget *parent)
 	: QFrame (parent)
 	, Poller_ (new QTimer (this))
-	, Core_ (new Core (this))
-	{
-		Core_->setWindow (winId ());
-		
+	, Core_ (NULL)
+	{	
 		connect (Poller_,
 				SIGNAL (timeout ()),
 				this,
@@ -50,24 +48,39 @@ namespace Laure
 		Poller_->start (300);
 	}
 	
-	Core* Player::GetCore ()
+	void Player::setCore (Core *core)
 	{
-		return Core_;
+		Core_ = core;
 	}
+	
+	namespace
+	{
+		QTime IntToQTime (int val)
+		{
+			QTime time = QTime (0, 0);
+			return val < 0 ? time : time.addMSecs (val);
+		}
+	};
 	
 	QTime Player::Time ()
 	{
+		if (!Core_)
+			return QTime ();
+		
 		return IntToQTime (Core_->Time ());
 	}
 	
 	QTime Player::Length ()
 	{
+		if (!Core_)
+			return QTime ();
+		
 		return IntToQTime (Core_->Length ());
 	}
 	
 	int Player::Position () const
 	{
-		if (!Core_->IsPlaying ())
+		if (!(Core_ && Core_->IsPlaying ()))
 			return -1;
 
 		return Core_->MediaPosition () * static_cast<float> (pos_slider_max);
@@ -76,21 +89,21 @@ namespace Laure
 
 	void Player::setPosition (int pos)
 	{
+		if (!Core_)
+			return;
+		
 		Core_->setPosition (static_cast<float> (pos) / pos_slider_max);
 	}
 	
 	void Player::handleTimeout ()
 	{
+		if (!Core_)
+			return;
+		
 		int time = Core_->Time ();
 		int length = Core_->Length ();
 		if (length - time < 200 && Core_->IsPlaying ())
 			Core_->next ();
-	}
-	
-	QTime Player::IntToQTime (int val)
-	{
-		QTime time = QTime (0, 0);
-		return val < 0 ? time : time.addMSecs (val);
 	}
 }
 }

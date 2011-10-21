@@ -123,9 +123,9 @@ namespace Laure
 				this,
 				SLOT (handleNeedToClose ()));
 		connect (w,
-				SIGNAL (nowPlayed (MediaInfo)),
+				SIGNAL (nowPlayed (MediaMeta)),
 				LFSubmitter_,
-				SLOT (nowPlaying (MediaInfo)));
+				SLOT (nowPlaying (MediaMeta)));
 		connect (w,
 				SIGNAL (played ()),
 				LFSubmitter_,

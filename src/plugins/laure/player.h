@@ -43,15 +43,13 @@ namespace Laure
 	public:
 		Player (QWidget* = 0);
 		
-		Core* GetCore ();
+		void setCore (Core *core);
 		QTime Time ();
 		QTime Length ();
 		int Position () const;
 	public slots:
 		void setPosition (int);
 		void handleTimeout ();
-	private:
-		QTime IntToQTime (int val);
 	signals:
 		void timeout ();
 	};

@@ -39,6 +39,7 @@ namespace Laure
 	struct MediaMeta
 	{
 		QString Artist_, Album_, Title_, Genre_, Date_;
+		int TrackNumber_;
 		int Length_;
 	};
 	
@@ -74,6 +75,8 @@ namespace Laure
 		void prev ();
 		void setVolume (int);
 		void setPosition (float);
+	private slots:
+		void NowPlaying ();
 	signals:
 		void nowPlayed (const MediaMeta&);
 		void played ();

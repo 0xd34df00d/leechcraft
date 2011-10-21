@@ -18,16 +18,17 @@
  **********************************************************************/
 
 #include "playpauseaction.h"
+#include <QDebug>
 
 namespace LeechCraft
 {
 namespace Laure
 {
-	PlayPauseAction::PlayPauseAction (QObject *parent)
-	: QAction (parent)
-	, Play_ (false)
+	PlayPauseAction::PlayPauseAction (const QString& text, QObject *parent)
+	: QAction (text, parent)
+	, Play_ (0)
 	{
-		setProperty ("ActionIcon", "start");
+		SetIcon ();
 		connect (this,
 				SIGNAL (triggered (bool)),
 				this,
@@ -36,28 +37,29 @@ namespace Laure
 
 	void PlayPauseAction::handlePause ()
 	{
-		Play_ = false;
-		setProperty ("ActionIcon", "start");
+		Play_ = 0;
+		SetIcon ();
 	}
 
 	void PlayPauseAction::handlePlay ()
 	{
-		Play_ = true;
-		setProperty ("ActionIcon", "pause");
+		Play_ = 1;
+		SetIcon ();
 	}
 
 	void PlayPauseAction::handleTriggered ()
 	{
-		if ((Play_ = !Play_))
-		{
-			setProperty ("ActionIcon", "pause");
+		if (Play_ ^= 1)
 			emit play ();
-		}
 		else
-		{
-			setProperty ("ActionIcon", "start");
 			emit pause ();
-		}
+		SetIcon ();
 	}
+	
+	void PlayPauseAction::SetIcon ()
+	{
+		setProperty ("ActionIcon", Play_ ? "pause" : "start");
+	}
+
 }
 }

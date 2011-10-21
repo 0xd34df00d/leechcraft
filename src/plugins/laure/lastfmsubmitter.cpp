@@ -127,13 +127,16 @@ namespace Laure
 		mutableTrack.setTitle (info.Title_);
 		mutableTrack.setAlbum (info.Album_);
 		mutableTrack.setArtist (info.Artist_);
-		mutableTrack.setDuration (info.Length_ / 1000);
+		mutableTrack.setDuration (info.Length_);
+		mutableTrack.setTrackNumber (info.TrackNumber_);
+		mutableTrack.setMbid (lastfm::Mbid ("1"));
 		Scrobbler_->nowPlaying (track);
 		Scrobbler_->cache (track);
 	}
 	
 	void LastFMSubmitter::submit ()
 	{
+		qDebug () << Q_FUNC_INFO << "Submit";
 		Scrobbler_->submit ();
 	}
 
