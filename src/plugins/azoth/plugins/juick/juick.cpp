@@ -96,12 +96,12 @@ namespace Juick
 
 	QString Plugin::GetName () const
 	{
-		return "juick";
+		return "Azoth Juick";
 	}
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("juick is plugin for nicer support of the juick.com microblogging service.");
+		return tr ("Azoth Juick provides nicer support for the juick.com microblogging service.");
 	}
 
 	QIcon Plugin::GetIcon () const
