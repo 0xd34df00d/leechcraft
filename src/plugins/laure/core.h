@@ -76,7 +76,7 @@ namespace Laure
 		void setVolume (int);
 		void setPosition (float);
 	private slots:
-		void NowPlaying ();
+		void nowPlaying ();
 	signals:
 		void nowPlayed (const MediaMeta&);
 		void played ();

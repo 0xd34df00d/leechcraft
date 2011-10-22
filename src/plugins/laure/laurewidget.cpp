@@ -26,6 +26,7 @@
 #include <QUrl>
 #include <QTime>
 #include <QKeyEvent>
+#include <QTimer>
 #include <interfaces/core/icoreproxy.h>
 #include "laure.h"
 #include "playpauseaction.h"
@@ -34,7 +35,6 @@
 #include "player.h"
 #include "playlistwidget.h"
 #include "xmlsettingsmanager.h"
-#include <QTimer>
 
 namespace LeechCraft
 {

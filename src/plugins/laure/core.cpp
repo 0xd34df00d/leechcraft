@@ -21,7 +21,7 @@
 #include <QString>
 #include <QTime>
 #include <QDebug>
-#include <qtimer.h>
+#include <QTimer>
 
 namespace LeechCraft
 {
@@ -53,9 +53,12 @@ namespace Laure
 	
 	MediaMeta Core::ItemMeta (int row) const
 	{
-		libvlc_media_t *m = libvlc_media_list_item_at_index (List_.get (), row);
-		libvlc_media_parse (m);
 		MediaMeta meta;
+		libvlc_media_t *m = libvlc_media_list_item_at_index (List_.get (), row);
+		if (!m)
+			return meta;
+		
+		libvlc_media_parse (m);
 		meta.Artist_ = libvlc_media_get_meta (m, libvlc_meta_Artist);
 		meta.Album_ = libvlc_media_get_meta (m, libvlc_meta_Album);
 		meta.Title_ = libvlc_media_get_meta (m, libvlc_meta_Title);
@@ -87,9 +90,9 @@ namespace Laure
 	
 	float Core::MediaPosition () const
 	{
-		return IsPlaying ()
-				? libvlc_media_player_get_position (Player_.get ())
-				: -1;
+		return IsPlaying () ?
+				libvlc_media_player_get_position (Player_.get ()) :
+				-1;
 	}
 	
 	int Core::Time () const
@@ -116,9 +119,11 @@ namespace Laure
 	{
 		libvlc_media_ptr m (libvlc_media_new_path (Instance_.get (), item.toAscii ()),
 				libvlc_media_release);
-		if (libvlc_media_list_add_media (List_.get (), m.get ()))
-			libvlc_media_release (m.get ());
-		else
+		
+		libvlc_media_track_info_t *info = NULL;
+		libvlc_media_get_tracks_info (m.get (), &info);
+		
+		if (!libvlc_media_list_add_media (List_.get (), m.get ()))
 			emit itemAdded (ItemMeta (RowCount () - 1));
 	}
 	
@@ -131,13 +136,14 @@ namespace Laure
 			CurrentItem_ = count - 1;
 		else
 			CurrentItem_ = val;
+		
 		libvlc_media_list_player_play_item_at_index (LPlayer_.get (), CurrentItem_);
 		emit (itemPlayed (CurrentItem_));
-		QTimer::singleShot (5000, this, SLOT (NowPlaying ()));
+		QTimer::singleShot (5000, this, SLOT (nowPlaying ()));
 		
 	}
 	
-	void Core::NowPlaying ()
+	void Core::nowPlaying ()
 	{
 		MediaMeta meta = ItemMeta (CurrentItem_);
 		meta.Length_ = libvlc_media_player_get_length (Player_.get ()) / 1000;
@@ -180,7 +186,5 @@ namespace Laure
 	{
 		libvlc_media_player_set_position (Player_.get (), pos);
 	}
-	
-	
 }
 }
