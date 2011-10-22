@@ -87,7 +87,6 @@ namespace Aggregator
 		delete JobHolderRepresentation_;
 		delete ChannelsFilterModel_;
 		delete ChannelsModel_;
-		delete ReprWidget_;
 
 		StorageBackend_.reset ();
 		XmlSettingsManager::Instance ()->Release ();
