@@ -27,6 +27,11 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+	/** @brief Interface for accounts supporting bookmarks.
+	 *
+	 * This interface should be implemented by accounts that support
+	 * bookmarking conferences.
+	 */
 	class ISupportBookmarks
 	{
 	public:
@@ -66,10 +71,25 @@ namespace Azoth
 		 * corresponding IMUCBookmarkEditWidget::GetIdentifyingData()
 		 * return values.
 		 *
+		 * The bookmarksChanged() signal should be emitted soon after
+		 * this call.
+		 *
 		 * @param[in] bookmarks The list of variant maps with bookmarks.
+		 *
+		 * @sa bookmarksChanged()
 		 */
 		virtual void SetBookmarkedMUCs (const QVariantList& bookmarks) = 0;
 
+		/** @brief Notifies that bookmarks have been changed.
+		 *
+		 * This signal should be emitted whenever the list of the
+		 * bookmarks changes. Particularly, it should be emitted after
+		 * SetBookmarkedMUCs() is called, for example, when server
+		 * acknowledges bookmarks are saved successfully if they are
+		 * stored remotely, or immediately if they are stored locally.
+		 *
+		 * @sa SetBookmarkedMUCs()
+		 */
 		virtual void bookmarksChanged () = 0;
 	};
 }

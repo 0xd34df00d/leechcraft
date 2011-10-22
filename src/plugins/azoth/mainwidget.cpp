@@ -855,11 +855,16 @@ namespace Azoth
 	{
 		QString BuildPath (const QModelIndex& index)
 		{
+			if (!index.isValid ())
+				return QString ();
+
 			QString path = "CLTreeState/Expanded/" + index.data ().toString ();
 			QModelIndex parent = index;
 			while ((parent = parent.parent ()).isValid ())
 				path.prepend (parent.data ().toString () + "/");
+
 			path = path.toUtf8 ().toBase64 ().replace ('/', '_');
+
 			return path;
 		}
 	}
@@ -878,19 +883,19 @@ namespace Azoth
 
 				const bool expanded = XmlSettingsManager::Instance ().Property (path, true).toBool ();
 				if (expanded)
-					QMetaObject::invokeMethod (Ui_.CLTree_,
-							"expand",
+					QMetaObject::invokeMethod (this,
+							"expandIndex",
 							Qt::QueuedConnection,
-							Q_ARG (QModelIndex, index));
+							Q_ARG (QPersistentModelIndex, QPersistentModelIndex (index)));
 
 				if (clModel->rowCount (index))
 					handleRowsInserted (index, 0, ProxyModel_->rowCount (index) - 1);
 			}
 			else if (type == Core::CLETAccount)
-				QMetaObject::invokeMethod (Ui_.CLTree_,
-						"expand",
+				QMetaObject::invokeMethod (this,
+						"expandIndex",
 						Qt::QueuedConnection,
-						Q_ARG (QModelIndex, index));
+						Q_ARG (QPersistentModelIndex, QPersistentModelIndex (index)));
 		}
 	}
 
@@ -901,11 +906,23 @@ namespace Azoth
 					0, Core::Instance ().GetCLModel ()->rowCount () - 1);
 	}
 
+	void MainWidget::expandIndex (const QPersistentModelIndex& pIdx)
+	{
+		if (!pIdx.isValid ())
+			return;
+
+		Ui_.CLTree_->expand (pIdx);
+	}
+
 	namespace
 	{
 		void SetExpanded (const QModelIndex& idx, bool expanded)
 		{
-			XmlSettingsManager::Instance ().setProperty (BuildPath (idx).toUtf8 (), expanded);
+			const QString& path = BuildPath (idx);
+			if (path.isEmpty ())
+				return;
+
+			XmlSettingsManager::Instance ().setProperty (path.toUtf8 (), expanded);
 		}
 	}
 

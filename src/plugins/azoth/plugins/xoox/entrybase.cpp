@@ -59,6 +59,7 @@ namespace Xoox
 	: QObject (parent)
 	, Commands_ (0)
 	, Account_ (parent)
+	, HasUnreadMsgs_ (false)
 	{
 		connect (this,
 				SIGNAL (locationChanged (const QString&, QObject*)),
@@ -80,22 +81,22 @@ namespace Xoox
 	{
 		Azoth::Util::StandardPurgeMessages (AllMessages_, before);
 	}
-	
+
 	namespace
 	{
 		bool CheckPartFeature (EntryBase *base, const QString& variant)
 		{
 			if (variant.isEmpty ())
 				return true;
-			
+
 			const QByteArray& ver = base->GetVariantVerString (variant);
 			if (ver.isEmpty ())
 				return true;
-			
+
 			const QStringList& feats = Core::Instance ().GetCapsDatabase ()->Get (ver);
 			if (feats.isEmpty ())
 				return true;
-			
+
 			return feats.contains ("http://jabber.org/protocol/chatstates");
 		}
 	}
@@ -179,6 +180,12 @@ namespace Xoox
 		return Variant2ClientInfo_ [var];
 	}
 
+	void EntryBase::MarkMsgsRead ()
+	{
+		HasUnreadMsgs_ = false;
+		emit messagesAreRead ();
+	}
+
 	IAdvancedCLEntry::AdvancedFeatures EntryBase::GetAdvancedFeatures () const
 	{
 		return AFSupportsAttention;
@@ -199,6 +206,8 @@ namespace Xoox
 
 	void EntryBase::HandleMessage (GlooxMessage *msg)
 	{
+		HasUnreadMsgs_ = true;
+
 		GlooxProtocol *proto = qobject_cast<GlooxProtocol*> (Account_->GetParentProtocol ());
 		IProxyObject *proxy = qobject_cast<IProxyObject*> (proto->GetProxyObject ());
 		proxy->PreprocessMessage (msg);
@@ -430,6 +439,11 @@ namespace Xoox
 		RawInfo_ = rawinfo;
 
 		emit rawinfoChanged (RawInfo_);
+	}
+
+	bool EntryBase::HasUnreadMsgs () const
+	{
+		return HasUnreadMsgs_;
 	}
 
 	void EntryBase::SetClientInfo (const QString& variant,

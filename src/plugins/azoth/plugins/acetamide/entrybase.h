@@ -58,6 +58,7 @@ namespace Acetamide
 		QString GetRawInfo () const;
 		void ShowInfo ();
 		QMap<QString, QVariant> GetClientInfo (const QString&) const;
+		void MarkMsgsRead ();
 
 		virtual QString GetEntryID () const = 0;
 

@@ -28,6 +28,7 @@
 #include <QWebElement>
 #include <QTextCodec>
 #include <QWindowsStyle>
+#include <QFileDialog>
 #include <QtDebug>
 #include <util/util.h>
 #include <util/defaulthookproxy.h>
@@ -328,6 +329,13 @@ namespace Poshuku
 			menu->addSeparator ();
 			menu->addAction (tr ("Save image..."),
 					this, SLOT (saveImage ()));
+
+			QAction *spx = menu->addAction (tr ("Save pixmap..."),
+					this, SLOT (savePixmap ()));
+			spx->setToolTip (tr ("Saves the rendered pixmap without redownloading."));
+			spx->setProperty ("Poshuku/OrigPX", r.pixmap ());
+			spx->setProperty ("Poshuku/OrigURL", r.imageUrl ());
+
 			menu->addAction (tr ("Copy image"),
 					this, SLOT (copyImage ()));
 			menu->addAction (tr ("Copy image location"),
@@ -575,6 +583,61 @@ namespace Poshuku
 	void CustomWebView::saveImage ()
 	{
 		pageAction (QWebPage::DownloadImageToDisk)->trigger ();
+	}
+
+	void CustomWebView::savePixmap ()
+	{
+		QAction *action = qobject_cast<QAction*> (sender ());
+		if (!action)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "sender is not an action"
+					<< sender ();
+			return;
+		}
+
+		const QPixmap& px = action->property ("Poshuku/OrigPX").value<QPixmap> ();
+		if (px.isNull ())
+			return;
+
+		const QUrl& url = action->property ("Poshuku/OrigURL").value<QUrl> ();
+		const QString origName = url.scheme () == "data" ?
+				QString () :
+				QFileInfo (url.path ()).fileName ();
+
+		QString filter;
+		QString fname = QFileDialog::getSaveFileName (0,
+				tr ("Save pixmap"),
+				QDir::homePath () + '/' + origName,
+				tr ("PNG image (*.png);;JPG image (*.jpg);;All files (*.*)"),
+				&filter);
+
+		if (fname.isEmpty ())
+			return;
+
+		if (QFileInfo (fname).suffix ().isEmpty ())
+		{
+			if (filter.contains ("png"))
+				fname += ".png";
+			else if (filter.contains ("jpg"))
+				fname += ".jpg";
+		}
+
+		QFile file (fname);
+		if (!file.open (QIODevice::WriteOnly))
+		{
+			emit gotEntity (Util::MakeNotification ("Poshuku",
+						tr ("Unable to save the image. Unable to open file for writing: %1.")
+							.arg (file.errorString ()),
+						PCritical_));
+			return;
+		}
+
+		const QString& suf = QFileInfo (fname).suffix ();
+		const bool isLossless = suf.toLower () == "png";
+		px.save (&file,
+				suf.toUtf8 ().constData (),
+				isLossless ? 0 : 100);
 	}
 
 	void CustomWebView::copyImage ()

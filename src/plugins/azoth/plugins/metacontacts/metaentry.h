@@ -86,6 +86,7 @@ namespace Metacontacts
 		void ShowInfo ();
 		QList<QAction*> GetActions () const;
 		QMap<QString, QVariant> GetClientInfo (const QString&) const;
+		void MarkMsgsRead ();
 
 		// IAdvancedCLEntry
 		AdvancedFeatures GetAdvancedFeatures () const;

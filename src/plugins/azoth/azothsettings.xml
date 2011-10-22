@@ -122,6 +122,9 @@
 			<item type="checkbox" property="AutoMUCMode" default="false">
 				<label value="Automatically switch roster to conference mode when needed" />
 			</item>
+			<item type="checkbox" property="HideMUCPartsInWholeCL" default="false">
+				<label value="Hide MUC participants in Whole CL mode" />
+			</item>
 			<item type="checkbox" property="IsAutojoinAllowed" default="true">
 				<label value="Autojoin allowed" />
 			</item>

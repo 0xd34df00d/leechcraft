@@ -262,6 +262,10 @@ namespace Metacontacts
 				variant);
 	}
 
+	void MetaEntry::MarkMsgsRead ()
+	{
+	}
+
 	IAdvancedCLEntry::AdvancedFeatures MetaEntry::GetAdvancedFeatures () const
 	{
 		return AFSupportsAttention;
