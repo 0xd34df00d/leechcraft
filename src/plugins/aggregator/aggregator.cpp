@@ -87,7 +87,6 @@ namespace Aggregator
 		boost::shared_ptr<Util::XmlSettingsDialog> XmlSettingsDialog_;
 		std::auto_ptr<Util::TagsCompleter> TagsLineCompleter_;
 		std::auto_ptr<QSystemTrayIcon> TrayIcon_;
-		std::auto_ptr<QTranslator> Translator_;
 		std::auto_ptr<RegexpMatcherUi> RegexpMatcherUi_;
 
 		QModelIndex SelectedRepr_;
@@ -104,7 +103,7 @@ namespace Aggregator
 		setProperty ("IsUnremoveable", true);
 
 		Impl_ = new Aggregator_Impl;
-		Impl_->Translator_.reset (LeechCraft::Util::InstallTranslator ("aggregator"));
+		Util::InstallTranslator ("aggregator");
 
 		Impl_->TabInfo_.TabClass_ = "Aggregator";
 		Impl_->TabInfo_.VisibleName_ = GetName ();
@@ -484,28 +483,28 @@ namespace Aggregator
 	{
 		Core::Instance ().AddPlugin (plugin);
 	}
-	
+
 	Sync::ChainIDs_t Aggregator::AvailableChains () const
 	{
 		Sync::ChainIDs_t result;
 		result << "rss";
 		return result;
 	}
-	
+
 	Sync::Payloads_t Aggregator::GetAllDeltas (const Sync::ChainID_t& chain) const
 	{
 		return Sync::Payloads_t ();
 	}
-	
+
 	Sync::Payloads_t Aggregator::GetNewDeltas (const Sync::ChainID_t& chain) const
 	{
 		return Sync::Payloads_t ();
 	}
-	
+
 	void Aggregator::PurgeNewDeltas (const Sync::ChainID_t& chain, quint32 since)
 	{
 	}
-	
+
 	void Aggregator::ApplyDeltas (const Sync::Payloads_t& payloads, const Sync::ChainID_t& chain)
 	{
 	}
