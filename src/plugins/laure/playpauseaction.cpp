@@ -61,7 +61,6 @@ namespace Laure
 	{
 		setProperty ("ActionIcon", Play_ ? "pause" : "start");
 	}
-
 }
 }
       

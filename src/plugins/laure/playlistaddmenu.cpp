@@ -19,6 +19,9 @@
 
 #include "playlistaddmenu.h"
 #include <QFileDialog>
+#include <QDebug>
+#include <boost/shared_ptr.hpp>
+#include <magic.h>
 #include "playlistview.h"
 #include "chooseurldialog.h"
 
@@ -29,6 +32,14 @@ namespace Laure
 	PlayListAddMenu::PlayListAddMenu (QWidget *parent)
 	: QMenu (parent)
 	{
+#ifdef Q_WS_WIN
+		SupportedFormat_ << "3gp" << "asf" << "wmv" << "au" << "avi"
+				<< "flv" << "mov" << "mp4" << "ogm" << "ogg"
+				<< "mkv" << "mka" << "ts" << "mpg" << "mp3"
+				<< "mp2" << "nsc" << "nsv" << "nut" << "a52"
+				<< "dts" << "aac" << "flac" << "dv" << "vid"
+				<< "tta" << "tac" << "ty" << "wav" << "xa";
+#endif
 		QAction *addFiles = new QAction (tr ("Add files"), this);
 		QAction *addFolder = new QAction (tr ("Add folder"), this);
 		QAction *addURL = new QAction (tr ("Add URL"), this);
@@ -92,10 +103,29 @@ namespace Laure
 		{
 			if (fi.isDir ())
 				list << StoragedFiles (fi.absoluteFilePath ());
-			else
+			else if (IsFileSupported (fi))
  				list << fi;
 		}
 		return list;
+	}
+	
+	bool PlayListAddMenu::IsFileSupported (const QFileInfo& file)
+	{
+#ifdef Q_WS_X11
+		boost::shared_ptr<magic_set> magic (magic_open (MAGIC_MIME_TYPE),
+				magic_close);
+	
+		magic_load (magic.get (), NULL);
+		const QString& mime =  QString (magic_file (magic.get (),
+						file.absoluteFilePath ().toAscii ()));
+		return mime.contains ("audio") || mime.contains ("video");		
+#endif
+#ifdef Q_WS_WIN
+		Q_FOREACH (const QString& format, SupportedFormat_)
+			if (file.suffix () == format)
+				return true;
+		return false;
+#endif
 	}
 }
 }

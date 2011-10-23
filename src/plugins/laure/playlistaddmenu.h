@@ -30,6 +30,9 @@ namespace Laure
 	class PlayListAddMenu : public QMenu
 	{
 		Q_OBJECT
+#ifdef Q_WS_WIN
+		QStringList SupportedFormat_;
+#endif
 	public:
 		PlayListAddMenu (QWidget* = 0);
 	private slots:
@@ -37,6 +40,8 @@ namespace Laure
 		void handleAddFolder ();
 		void handleAddFiles ();
 		QFileInfoList StoragedFiles (const QString&);
+	private:
+		bool IsFileSupported (const QFileInfo&);
 	signals:
 		void addItem (const QString&);
 	};
