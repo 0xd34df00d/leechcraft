@@ -138,21 +138,7 @@ namespace AdiumStyles
 			return result;
 		}
 
-		if (entry->GetEntryType () == ICLEntry::ETMUC)
-		{
-			IMUCEntry *mucEntry = qobject_cast<IMUCEntry*> (entryObj);
-			if (!mucEntry)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< entryObj
-						<< "claims to be a MUC but doesn't implement IMUCEntry";
-				return result;
-			}
-
-			result.replace ("%chatName%", mucEntry->GetMUCSubject ());
-		}
-		else
-			result.replace ("%chatName%", entry->GetEntryName ());
+		result.replace ("%chatName%", entry->GetEntryName ());
 
 		return result;
 	}
