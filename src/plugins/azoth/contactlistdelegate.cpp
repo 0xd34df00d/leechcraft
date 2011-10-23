@@ -413,8 +413,9 @@ namespace Azoth
 				Qt::AlignVCenter | Qt::AlignLeft,
 				option.fontMetrics.elidedText (name, Qt::ElideRight, textWidth));
 
-		p.drawPixmap (QPoint (CPadding, CPadding),
-				stateIcon.pixmap (iconSize, iconSize));
+		const QPixmap& stateIconPx = stateIcon.pixmap (iconSize, iconSize);
+		p.drawPixmap (QPoint (CPadding, (sHeight - stateIconPx.height ()) / 2),
+				stateIconPx);
 
 		if (!avatarImg.isNull ())
 			p.drawPixmap (QPoint (textShift + textWidth + clientsIconsWidth + CPadding, CPadding),
@@ -424,7 +425,7 @@ namespace Azoth
 
 		Q_FOREACH (const QIcon& icon, clientIcons)
 		{
-			p.drawPixmap (QPoint (currentShift, CPadding),
+			p.drawPixmap (QPoint (currentShift, (sHeight - stateIconPx.height ()) / 2),
 					icon.pixmap (clientIconSize, clientIconSize));
 			currentShift += clientIconSize + CPadding;
 		}
