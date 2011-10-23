@@ -104,10 +104,11 @@ void SkinEngine::UpdateIconSet (const QList<QAction*>& actions)
 	{
 		if (!(*i)->property ("ActionIcon").isValid ())
 			continue;
-		QString actionIcon = (*i)->property ("ActionIcon").toString ();
-		QString actionIconOff = (*i)->property ("ActionIconOff").toString ();
 
-		(*i)->setIcon (GetIcon (actionIcon, actionIconOff));
+		SetIcon (*i);
+
+		if ((*i)->property ("WatchActionIconChange").toBool ())
+			(*i)->installEventFilter (this);
 	}
 }
 
@@ -146,6 +147,20 @@ QStringList SkinEngine::ListIcons () const
 	return IconSets_;
 }
 
+bool SkinEngine::eventFilter (QObject *obj, QEvent *e)
+{
+	if (e->type () != QEvent::DynamicPropertyChange)
+		return QObject::eventFilter (obj, e);
+
+	QAction *act = qobject_cast<QAction*> (obj);
+	if (!act)
+		return QObject::eventFilter (obj, e);
+
+	SetIcon (act);
+
+	return QObject::eventFilter (obj, e);
+}
+
 QString SkinEngine::GetIconName (const QString& actionIcon) const
 {
 	QString icon;
@@ -154,6 +169,14 @@ QString SkinEngine::GetIconName (const QString& actionIcon) const
 	else
 		icon = QString ("lc_") + actionIcon;
 	return icon;
+}
+
+void SkinEngine::SetIcon (QAction *act)
+{
+	QString actionIcon = act->property ("ActionIcon").toString ();
+	QString actionIconOff = act->property ("ActionIconOff").toString ();
+
+	act->setIcon (GetIcon (actionIcon, actionIconOff));
 }
 
 void SkinEngine::FindIconSets ()
