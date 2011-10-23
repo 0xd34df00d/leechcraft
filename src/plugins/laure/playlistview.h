@@ -20,7 +20,7 @@
 #ifndef PLUGINS_LAURE_PLAYLISTVIEW_H
 #define PLUGINS_LAURE_PLAYLISTVIEW_H
 
-#include <QListView>
+#include <QTreeView>
 #include "playlistmodel.h"
 #include "core.h"
 
@@ -32,7 +32,7 @@ namespace Laure
 {
 	class PlayListModel;
 	
-	class PlayListView : public QListView
+	class PlayListView : public QTreeView
 	{
 		Q_OBJECT
 		

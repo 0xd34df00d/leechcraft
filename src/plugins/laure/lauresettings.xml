@@ -4,8 +4,20 @@
 		<label value="Potorchu" />
 		<groupbox>
 			<label value="Playlist" />
-			<item type="lineedit" property="PlayListTemplate" default="%artist% - %album% - %title%">
+			<item type="lineedit" property="PlaylistFormat" default="%artist% - %album% - %title%">
 				<label value="Playlist view template: " />
+			</item>
+			<item type="color" property="PlaylistFirstBackground" default="#000000">
+				<label value="First item's background color: " />
+			</item>
+			<item type="color" property="PlaylistFirstText" default="#FFFFFF">
+				<label value="First item's text color: " />
+			</item>
+			<item type="color" property="PlaylistSecondBackground" default="#FFFFFF">
+				<label value="Second item's background color: " />
+			</item>
+			<item type="color" property="PlaylistSecondText" default="#000000">
+				<label value="Second item's text color: " />
 			</item>
 		</groupbox>
 		<groupbox>

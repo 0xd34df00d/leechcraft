@@ -31,7 +31,7 @@ namespace Laure
 	: QWidget (parent)
 	{
 		Ui_.setupUi (this);
-		setVisible (false);	
+		setVisible (false);
 		
 		QAction *actionAdd = new QAction (tr ("Add"), this);
 		QAction *actionRemove = new QAction (tr ("Remove"), this);

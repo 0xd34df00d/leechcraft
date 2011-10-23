@@ -30,7 +30,6 @@ namespace Laure
 		Q_OBJECT
 	public:
 		PlayListModel (QObject *);
-
 		Qt::ItemFlags flags (const QModelIndex&) const;
 	};
 }

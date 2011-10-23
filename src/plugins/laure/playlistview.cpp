@@ -20,17 +20,20 @@
 #include "playlistview.h"
 #include <QKeyEvent>
 #include "xmlsettingsmanager.h"
+#include <QHeaderView>
 
 namespace LeechCraft
 {
 namespace Laure
 {
 	PlayListView::PlayListView (QWidget *parent)
-	: QListView (parent)
+	: QTreeView (parent)
 	{
 		PlayListModel_ = new PlayListModel (this);
 		setModel (PlayListModel_);
-		setModelColumn (0);
+		setSelectionMode (ContiguousSelection);
+		setAlternatingRowColors (true);
+		header ()->hide ();
 		connect (this,
 				SIGNAL (doubleClicked (QModelIndex)),
 				this,
@@ -45,7 +48,7 @@ namespace Laure
 	void PlayListView::AddItem (const MediaMeta& item)
 	{
 		QString temp = XmlSettingsManager::Instance ()
-				.property ("PlayListTemplate").toString ();
+				.property ("PlaylistFormat").toString ();
 		temp.replace ("%artist%", item.Artist_);
 		temp.replace ("%album%", item.Album_);
 		temp.replace ("%title%", item.Title_);
@@ -65,7 +68,7 @@ namespace Laure
 		const QModelIndexList& indexList = selectedIndexes ();
 		Q_FOREACH (const QModelIndex& index, indexList)
 		{
-			PlayListModel_->removeRows (index.row (), 1);
+			PlayListModel_->removeRows (index.row (), indexList.count ());
 			emit itemRemoved (index.row ());
 		}
 	}
