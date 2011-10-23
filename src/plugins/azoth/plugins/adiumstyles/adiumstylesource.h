@@ -68,9 +68,6 @@ namespace AdiumStyles
 		bool AppendMessage (QWebFrame*, QObject*, const ChatMsgAppendInfo&);
 		void FrameFocused (QWebFrame*);
 	private:
-		void FixImports (QString&, QIODevice*) const;
-		void FixCSS (QString&, const QString&) const;
-		void FixSrcs (QWebFrame*, const QString&);
 		QString ParseTemplate (QString templ, const QString& path,
 				QWebFrame*, QObject*, const ChatMsgAppendInfo&);
 		QList<QColor> CreateColors (const QString&);
