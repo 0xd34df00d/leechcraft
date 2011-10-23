@@ -157,6 +157,9 @@ namespace AdiumStyles
 		}
 
 		result.replace ("%chatName%", entry->GetEntryName ());
+		if (result.contains ("%incomingIconPath%"))
+			result.replace ("%incomingIconPath%",
+					Util::GetAsBase64Src (entry->GetAvatar ()));
 
 		return result;
 	}
