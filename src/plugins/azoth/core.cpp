@@ -650,6 +650,17 @@ namespace Azoth
 		return src->GetHTMLTemplate (opt, entry, frame);
 	}
 
+	QUrl Core::GetSelectedChatTemplateURL (QObject *entry) const
+	{
+		IChatStyleResourceSource *src = GetCurrentChatStyle (entry);
+		if (!src)
+			return QUrl ();
+
+		const QString& opt = XmlSettingsManager::Instance ()
+				.property (GetStyleOptName (entry)).toString ();
+		return src->GetBaseURL (opt);
+	}
+
 	bool Core::AppendMessageByTemplate (QWebFrame *frame,
 			QObject *message, const ChatMsgAppendInfo& info)
 	{
