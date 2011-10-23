@@ -37,7 +37,6 @@ namespace Azoth
 {
 	const int CContactShift = 20;
 	const int CPadding = 2;
-	const int AvatarPaddingBottom = 2;
 
 	ContactListDelegate::ContactListDelegate (QTreeView* parent)
 	: QStyledItemDelegate (parent)
@@ -143,7 +142,7 @@ namespace Azoth
 		const QImage& avatarImg = Core::Instance ().GetAvatar (extAcc ?
 					qobject_cast<ICLEntry*> (extAcc->GetSelfContact ()) :
 					0,
-				iconSize - AvatarPaddingBottom);
+				iconSize);
 
 		QPoint pxDraw = o.rect.topRight () - QPoint (CPadding, 0);
 
@@ -158,7 +157,7 @@ namespace Azoth
 
 		if (!accIcon.isNull ())
 		{
-			const int size = std::min (16, iconSize - AvatarPaddingBottom);
+			const int size = std::min (16, iconSize);
 			const QPixmap& px = accIcon.pixmap (size, size);
 			pxDraw.rx () -= px.width ();
 			const QPoint& delta = QPoint (0, (iconSize - px.height ()) / 2);
@@ -275,7 +274,7 @@ namespace Azoth
 		QString name = index.data (Qt::DisplayRole).value<QString> ();
 		const QString status = entry->GetStatus ().StatusString_.replace ('\n', ' ');
 		const QImage& avatarImg = ShowAvatars_ ?
-				Core::Instance ().GetAvatar (entry, iconSize - AvatarPaddingBottom) :
+				Core::Instance ().GetAvatar (entry, iconSize) :
 				QImage ();
 		const int unreadNum = index.data (Core::CLRUnreadMsgCount).toInt ();
 		const QString& unreadStr = unreadNum ?
