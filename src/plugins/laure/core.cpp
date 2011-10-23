@@ -33,6 +33,17 @@ namespace Laure
 			"--extraintf=logger",
 			"--verbose=2"
 	};
+
+	namespace
+	{
+		void preparsed_changed (const libvlc_event_t *event, void *user_data)
+		{
+			(void)event;
+
+			int *received = static_cast<int*> (user_data);
+			*received = true;
+		}
+	};
 	
 	Core::Core (QObject* parent)
 	: QObject (parent)
@@ -120,9 +131,6 @@ namespace Laure
 		libvlc_media_ptr m (libvlc_media_new_path (Instance_.get (), item.toAscii ()),
 				libvlc_media_release);
 		
-		libvlc_media_track_info_t *info = NULL;
-		libvlc_media_get_tracks_info (m.get (), &info);
-		
 		if (!libvlc_media_list_add_media (List_.get (), m.get ()))
 			emit itemAdded (ItemMeta (RowCount () - 1));
 	}
@@ -163,6 +171,8 @@ namespace Laure
 	void Core::play ()
 	{
 		libvlc_media_player_play (Player_.get ());
+		if (!IsPlaying ())
+			emit paused ();
 	}
 	
 	void Core::next ()

@@ -82,6 +82,7 @@ namespace Laure
 		void played ();
 		void itemPlayed (int);
 		void itemAdded (const MediaMeta&);
+		void paused ();
 	};
 }
 }

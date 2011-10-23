@@ -28,6 +28,7 @@ namespace Laure
 	: QAction (text, parent)
 	, Play_ (0)
 	{
+		setProperty ("WatchActionIconChange", true);
 		SetIcon ();
 		connect (this,
 				SIGNAL (triggered (bool)),

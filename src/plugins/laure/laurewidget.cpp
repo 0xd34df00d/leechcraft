@@ -154,6 +154,10 @@ namespace Laure
 		bar->addAction (actionNext);
 		
 		connect (Core_,
+				SIGNAL (paused ()),
+				actionPlay,
+				SLOT (handlePause ()));
+		connect (Core_,
 				SIGNAL (itemPlayed (int)),
 				actionPlay,
 				SLOT (handlePlay ()));
