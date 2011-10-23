@@ -54,6 +54,7 @@ namespace Azoth
 		QAction *AccountSetMood_;
 		QAction *AccountSetLocation_;
 		QAction *AccountConsole_;
+		QAction *AccountModify_;
 
 		QMap<QString, bool> FstLevelExpands_;
 		QMap<QString, QMap<QString, bool> > SndLevelExpands_;
@@ -83,6 +84,7 @@ namespace Azoth
 		void handleAccountSetMood ();
 		void handleAccountSetLocation ();
 		void handleAccountConsole ();
+		void handleAccountModify ();
 
 		void handleManageBookmarks ();
 		void handleAddAccountRequested ();

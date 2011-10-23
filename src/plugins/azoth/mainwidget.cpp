@@ -187,6 +187,12 @@ namespace Azoth
 				this,
 				SLOT (handleAccountConsole ()));
 
+		AccountModify_ = new QAction (tr ("Modify..."), this);
+		connect (AccountModify_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleAccountModify ()));
+
 		XmlSettingsManager::Instance ().RegisterObject ("ShowMenuBar",
 				this, "menuBarVisibilityToggled");
 		menuBarVisibilityToggled ();
@@ -460,6 +466,12 @@ namespace Azoth
 				AccountConsole_->setProperty ("Azoth/AccountObject", objVar);
 				actions << AccountConsole_;
 			}
+
+			actions << Util::CreateSeparator (menu);
+
+			AccountModify_->setProperty ("Azoth/AccountObject", objVar);
+			actions << AccountModify_;
+
 			break;
 		}
 		default:
@@ -741,6 +753,15 @@ namespace Azoth
 		}
 
 		emit gotConsoleWidget (Account2CW_ [account]);
+	}
+
+	void MainWidget::handleAccountModify ()
+	{
+		IAccount *account = GetAccountFromSender (Q_FUNC_INFO);
+		if (!account)
+			return;
+
+		account->OpenConfigurationDialog ();
 	}
 
 	void MainWidget::handleManageBookmarks ()
