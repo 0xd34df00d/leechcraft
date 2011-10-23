@@ -327,7 +327,11 @@ namespace Poshuku
 	QString Poshuku::GetDiagInfoString () const
 	{
 		return QString ("Built with QtWebKit %1, running with QtWebKit %2")
+#ifdef QTWEBKIT_VERSION_STR
 				.arg (QTWEBKIT_VERSION_STR)
+#else
+				.arg ("unknown (QTWEBKIT_VERSION_STR is not defined)")
+#endif
 				.arg (qWebKitVersion ());
 	}
 
@@ -505,8 +509,10 @@ namespace Poshuku
 				XmlSettingsManager::Instance ()->property ("OfflineWebApplicationCache").toBool ());
 		QWebSettings::globalSettings ()->setAttribute (QWebSettings::LocalStorageEnabled,
 				XmlSettingsManager::Instance ()->property ("LocalStorageDB").toBool ());
+#if QT_VERSION >= 0x040700
 		QWebSettings::globalSettings ()->setAttribute (QWebSettings::XSSAuditingEnabled,
 				XmlSettingsManager::Instance ()->property ("EnableXSSAuditing").toBool ());
+#endif
 #if QT_VERSION >= 0x040800
 		QWebSettings::globalSettings ()->setAttribute (QWebSettings::HyperlinkAuditingEnabled,
 				XmlSettingsManager::Instance ()->property ("EnableHyperlinkAuditing").toBool ());
