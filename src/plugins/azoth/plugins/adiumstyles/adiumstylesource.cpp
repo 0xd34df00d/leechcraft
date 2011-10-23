@@ -196,7 +196,10 @@ namespace AdiumStyles
 		else
 			filename = "Action.html";
 
-		if (!isNextMsg)
+		if (msg->GetMessageType () != IMessage::MTMUCMessage &&
+			msg->GetMessageType () != IMessage::MTChatMessage)
+			Frame2LastContact_.remove (frame);
+		else if (!isNextMsg)
 			Frame2LastContact_ [frame] = kindaSender;
 
 		Util::QIODevice_ptr content = StylesLoader_->

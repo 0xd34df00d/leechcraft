@@ -5,39 +5,49 @@
     <name>AboutDialog</name>
     <message>
         <location filename="aboutdialog.ui" line="14"/>
-        <location filename="aboutdialog.ui" line="64"/>
+        <location filename="aboutdialog.ui" line="67"/>
         <source>About LeechCraft</source>
         <translation>About LeechCraft</translation>
     </message>
     <message utf8="true">
-        <location filename="aboutdialog.ui" line="70"/>
+        <location filename="aboutdialog.ui" line="76"/>
         <source>LeechCraft — a crossplatform modular internet-client, featuring plugins for a web browser, news feed reader, BitTorrent, FTP and lots of others.</source>
         <translation>LeechCraft — a crossplatform modular internet-client, featuring plugins for a web browser, news feed reader, BitTorrent, FTP and lots of others.</translation>
     </message>
     <message>
-        <location filename="aboutdialog.ui" line="104"/>
+        <location filename="aboutdialog.ui" line="110"/>
         <source>Authors</source>
         <translation>Authors</translation>
     </message>
     <message>
-        <location filename="aboutdialog.ui" line="118"/>
+        <location filename="aboutdialog.ui" line="127"/>
         <source>Contributors</source>
         <translation>Contributors</translation>
     </message>
     <message>
-        <location filename="aboutdialog.ui" line="132"/>
+        <location filename="aboutdialog.ui" line="144"/>
         <source>Appreciations</source>
         <translation>Appreciations</translation>
     </message>
     <message>
-        <location filename="aboutdialog.ui" line="154"/>
+        <location filename="aboutdialog.ui" line="169"/>
         <source>Licensing</source>
         <translation>Licensing</translation>
     </message>
     <message>
-        <location filename="aboutdialog.ui" line="309"/>
+        <location filename="aboutdialog.ui" line="327"/>
         <source>Third parties</source>
         <translation>Third parties</translation>
+    </message>
+    <message>
+        <location filename="aboutdialog.ui" line="350"/>
+        <source>Diagnostic info</source>
+        <translation>Diagnostic info</translation>
+    </message>
+    <message>
+        <location filename="aboutdialog.ui" line="359"/>
+        <source>Add this information to your bug reports, if any:</source>
+        <translation>Add this information to your bug reports, if any:</translation>
     </message>
 </context>
 <context>
@@ -314,81 +324,122 @@
 <context>
     <name>LeechCraft::AboutDialog</name>
     <message>
-        <location filename="aboutdialog.cpp" line="74"/>
+        <location filename="aboutdialog.cpp" line="77"/>
         <source>Years: %1</source>
         <translation>Years: %1</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="93"/>
+        <location filename="aboutdialog.cpp" line="96"/>
         <source>Lead developer and original author.</source>
         <translation>Lead developer and original author.</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="97"/>
+        <location filename="aboutdialog.cpp" line="100"/>
         <source>Firefox importer in New Life.</source>
         <translation>Firefox importer in New Life.</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="98"/>
+        <location filename="aboutdialog.cpp" line="101"/>
         <source>Poshuku OnlineBookmarks.</source>
         <translation>Poshuku OnlineBookmarks.</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="99"/>
+        <location filename="aboutdialog.cpp" line="102"/>
         <source>Azoth Acetamide: IRC support for Azoth.</source>
         <translation>Azoth Acetamide: IRC support for Azoth.</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="100"/>
-        <location filename="aboutdialog.cpp" line="106"/>
-        <location filename="aboutdialog.cpp" line="141"/>
-        <location filename="aboutdialog.cpp" line="158"/>
+        <location filename="aboutdialog.cpp" line="103"/>
+        <source>Chrome-style tabs.</source>
+        <translation>Chrome-style tabs.</translation>
+    </message>
+    <message>
+        <location filename="aboutdialog.cpp" line="104"/>
+        <location filename="aboutdialog.cpp" line="111"/>
+        <location filename="aboutdialog.cpp" line="161"/>
+        <location filename="aboutdialog.cpp" line="165"/>
+        <location filename="aboutdialog.cpp" line="182"/>
         <source>Various patches.</source>
         <translation>Various patches.</translation>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="110"/>
+        <source>SecMan SecureStorage.</source>
+        <translation>SecMan SecureStorage.</translation>
+    </message>
+    <message>
+        <location filename="aboutdialog.cpp" line="115"/>
         <source>Initial PKGBUILDs for Arch Linux.</source>
         <translation>Initial PKGBUILDs for Arch Linux.</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="114"/>
-        <location filename="aboutdialog.cpp" line="159"/>
+        <location filename="aboutdialog.cpp" line="119"/>
+        <location filename="aboutdialog.cpp" line="183"/>
         <source>Ukrainian translations.</source>
         <translation>Ukrainian translations.</translation>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="123"/>
+        <source>Spanish translations.</source>
+        <translation>Spanish translations.</translation>
+    </message>
+    <message>
+        <location filename="aboutdialog.cpp" line="127"/>
+        <source>Artwork designer.</source>
+        <translation>Artwork designer.</translation>
+    </message>
+    <message>
+        <location filename="aboutdialog.cpp" line="131"/>
+        <source>French translations.</source>
+        <translation>French translations.</translation>
+    </message>
+    <message>
+        <location filename="aboutdialog.cpp" line="132"/>
+        <source>Italian translations.</source>
+        <translation>Italian translations.</translation>
+    </message>
+    <message>
+        <location filename="aboutdialog.cpp" line="133"/>
+        <source>Public relations.</source>
+        <translation>Public relations.</translation>
+    </message>
+    <message>
+        <location filename="aboutdialog.cpp" line="142"/>
         <source>openSUSE package maintainer</source>
         <translation>openSUSE package maintainer</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="124"/>
+        <location filename="aboutdialog.cpp" line="143"/>
         <source>Fedora package maintainer</source>
         <translation>Fedora package maintainer</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="137"/>
+        <location filename="aboutdialog.cpp" line="151"/>
+        <source>Extensive and thorough testing.</source>
+        <translation>Extensive and thorough testing.</translation>
+    </message>
+    <message>
+        <location filename="aboutdialog.cpp" line="160"/>
         <source>FatApe plugin, the GreaseMonkey support layer for Poshuku.</source>
         <translation>FatApe plugin, the GreaseMonkey support layer for Poshuku.</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="145"/>
+        <location filename="aboutdialog.cpp" line="169"/>
         <source>Graphical artwork.</source>
         <translation>Graphical artwork.</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="149"/>
+        <location filename="aboutdialog.cpp" line="173"/>
         <source>Arabic translations.</source>
         <translation>Arabic translations.</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="153"/>
+        <location filename="aboutdialog.cpp" line="177"/>
         <source>Esperanto translations</source>
         <translation>Esperanto translations</translation>
     </message>
     <message>
-        <location filename="aboutdialog.cpp" line="157"/>
+        <location filename="aboutdialog.cpp" line="181"/>
         <source>Aggregator fixes and improvements.</source>
         <translation>Aggregator fixes and improvements.</translation>
     </message>
@@ -425,43 +476,43 @@
 <context>
     <name>LeechCraft::Core</name>
     <message>
-        <location filename="core.cpp" line="311"/>
+        <location filename="core.cpp" line="304"/>
         <source>No plugins are able to download &quot;%1&quot;</source>
         <translation>No plugins are able to download &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="482"/>
+        <location filename="core.cpp" line="454"/>
         <source>Do you really want to clear the network cache?</source>
         <translation>Do you really want to clear the network cache?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="494"/>
+        <location filename="core.cpp" line="466"/>
         <source>Do you really want to clear cookies?</source>
         <translation>Do you really want to clear cookies?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="738"/>
-        <location filename="core.cpp" line="755"/>
+        <location filename="core.cpp" line="690"/>
+        <location filename="core.cpp" line="707"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="739"/>
+        <location filename="core.cpp" line="691"/>
         <source>Could not add task to the selected downloader, would you like to try another one?</source>
         <translation>Could not add task to the selected downloader, would you like to try another one?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="756"/>
+        <location filename="core.cpp" line="708"/>
         <source>Could not handle task with the selected handler, would you like to try another one?</source>
         <translation>Could not handle task with the selected handler, would you like to try another one?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="794"/>
+        <location filename="core.cpp" line="746"/>
         <source>Could not handle download entity %1.</source>
         <translation>Could not handle download entity %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="821"/>
+        <location filename="core.cpp" line="773"/>
         <source>Plugin load error</source>
         <translation>Plugin load error</translation>
     </message>
@@ -469,17 +520,17 @@
 <context>
     <name>LeechCraft::CoreInstanceObject</name>
     <message>
-        <location filename="coreinstanceobject.cpp" line="163"/>
+        <location filename="coreinstanceobject.cpp" line="165"/>
         <source>LeechCraft Core module.</source>
         <translation>LeechCraft Core module.</translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="185"/>
+        <location filename="coreinstanceobject.cpp" line="187"/>
         <source>Settings</source>
         <translation>Settings</translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="197"/>
+        <location filename="coreinstanceobject.cpp" line="216"/>
         <source>Context-dependent</source>
         <translation>Context-dependent</translation>
     </message>
@@ -627,23 +678,23 @@
 <context>
     <name>LeechCraft::NetworkAccessManager</name>
     <message>
-        <location filename="networkaccessmanager.cpp" line="170"/>
-        <location filename="networkaccessmanager.cpp" line="182"/>
+        <location filename="networkaccessmanager.cpp" line="172"/>
+        <location filename="networkaccessmanager.cpp" line="184"/>
         <source>%1&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
         <translation>%1&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</translation>
     </message>
     <message>
-        <location filename="networkaccessmanager.cpp" line="210"/>
+        <location filename="networkaccessmanager.cpp" line="212"/>
         <source>&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;has SSL errors. What do you want to do?</source>
         <translation>&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;has SSL errors. What do you want to do?</translation>
     </message>
     <message>
-        <location filename="networkaccessmanager.cpp" line="249"/>
+        <location filename="networkaccessmanager.cpp" line="251"/>
         <source>Could not create Core directory.</source>
         <translation>Could not create Core directory.</translation>
     </message>
     <message>
-        <location filename="networkaccessmanager.cpp" line="257"/>
+        <location filename="networkaccessmanager.cpp" line="259"/>
         <source>Could not save cookies, error opening cookie file.</source>
         <translation>Could not save cookies, error opening cookie file.</translation>
     </message>
@@ -664,62 +715,72 @@
 <context>
     <name>LeechCraft::PluginManager</name>
     <message>
-        <location filename="pluginmanager.cpp" line="50"/>
+        <location filename="pluginmanager.cpp" line="51"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="51"/>
+        <location filename="pluginmanager.cpp" line="52"/>
         <source>Description</source>
         <translation>Description</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="225"/>
+        <location filename="pluginmanager.cpp" line="230"/>
+        <source>The following plugins would also be disabled as the result:</source>
+        <translation>The following plugins would also be disabled as the result:</translation>
+    </message>
+    <message>
+        <location filename="pluginmanager.cpp" line="232"/>
+        <source>Are you sure you want to disable this one?</source>
+        <translation>Are you sure you want to disable this one?</translation>
+    </message>
+    <message>
+        <location filename="pluginmanager.cpp" line="270"/>
         <source>Initializing %1: stage one...</source>
         <translation>Initializing %1: stage one...</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="296"/>
+        <location filename="pluginmanager.cpp" line="356"/>
         <source>Initializing %1: stage two...</source>
         <translation>Initializing %1: stage two...</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="548"/>
+        <location filename="pluginmanager.cpp" line="608"/>
         <source>Refusing to load plugin from %1 because it&apos;s not a file.</source>
         <translation>Refusing to load plugin from %1 because it&apos;s not a file.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="561"/>
+        <location filename="pluginmanager.cpp" line="621"/>
         <source>Could not load plugin from %1: %2.</source>
         <translation>Could not load plugin from %1: %2.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="580"/>
+        <location filename="pluginmanager.cpp" line="640"/>
         <source>Could not load plugin from %1: failed to construct plugin instance with exception %2.</source>
         <translation>Could not load plugin from %1: failed to construct plugin instance with exception %2.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="592"/>
+        <location filename="pluginmanager.cpp" line="652"/>
         <source>Could not load plugin from %1: failed to construct plugin instance.</source>
         <translation>Could not load plugin from %1: failed to construct plugin instance.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="604"/>
+        <location filename="pluginmanager.cpp" line="664"/>
         <source>Could not load plugin from %1: unable to cast plugin instance to IInfo*.</source>
         <translation>Could not load plugin from %1: unable to cast plugin instance to IInfo*.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="616"/>
+        <location filename="pluginmanager.cpp" line="676"/>
         <source>Plugin with ID %1 is already loaded from %2; aborting load from %3.</source>
         <translation>Plugin with ID %1 is already loaded from %2; aborting load from %3.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="663"/>
+        <location filename="pluginmanager.cpp" line="723"/>
         <source>Could not load plugin from %1: unable to get name/info/icon with exception %2.</source>
         <translation>Could not load plugin from %1: unable to get name/info/icon with exception %2.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="675"/>
+        <location filename="pluginmanager.cpp" line="735"/>
         <source>Could not load plugin from %1: unable to get name/info/icon.</source>
         <translation>Could not load plugin from %1: unable to get name/info/icon.</translation>
     </message>
@@ -760,35 +821,35 @@
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="settingstab.cpp" line="79"/>
+        <location filename="settingstab.cpp" line="84"/>
         <source>Plugins for %1</source>
         <translation>Plugins for %1</translation>
     </message>
     <message>
-        <location filename="settingstab.cpp" line="83"/>
+        <location filename="settingstab.cpp" line="90"/>
         <source>General second-level plugins</source>
         <translation>General second-level plugins</translation>
     </message>
     <message>
-        <location filename="settingstab.cpp" line="98"/>
-        <location filename="settingstab.cpp" line="124"/>
-        <location filename="settingstab.cpp" line="126"/>
-        <location filename="settingstab.cpp" line="127"/>
+        <location filename="settingstab.cpp" line="128"/>
+        <location filename="settingstab.cpp" line="156"/>
+        <location filename="settingstab.cpp" line="158"/>
+        <location filename="settingstab.cpp" line="159"/>
         <source>General plugins</source>
         <translation>General plugins</translation>
     </message>
     <message>
-        <location filename="settingstab.cpp" line="168"/>
+        <location filename="settingstab.cpp" line="204"/>
         <source>Settings</source>
         <translation>Settings</translation>
     </message>
     <message>
-        <location filename="settingstab.cpp" line="169"/>
+        <location filename="settingstab.cpp" line="205"/>
         <source>LeechCraft-wide settings dashboard</source>
         <translation>LeechCraft-wide settings dashboard</translation>
     </message>
     <message>
-        <location filename="settingstab.cpp" line="206"/>
+        <location filename="settingstab.cpp" line="242"/>
         <source>Settings for %1</source>
         <translation>Settings for %1</translation>
     </message>
@@ -921,7 +982,7 @@
 <context>
     <name>LeechCraft::TagsManager</name>
     <message>
-        <location filename="tagsmanager.cpp" line="33"/>
+        <location filename="tagsmanager.cpp" line="34"/>
         <source>untagged</source>
         <translation>untagged</translation>
     </message>
@@ -960,12 +1021,12 @@
 <context>
     <name>LeechCraft::Util::FlatToFoldersProxyModel</name>
     <message>
-        <location filename="util/flattofoldersproxymodel.cpp" line="100"/>
+        <location filename="util/flattofoldersproxymodel.cpp" line="101"/>
         <source>untagged</source>
         <translation>untagged</translation>
     </message>
     <message>
-        <location filename="util/flattofoldersproxymodel.cpp" line="104"/>
+        <location filename="util/flattofoldersproxymodel.cpp" line="105"/>
         <source>&lt;unknown tag&gt;</source>
         <translation>&lt;unknown tag&gt;</translation>
     </message>
@@ -1069,7 +1130,7 @@ If you have read and really understood all these letters, click Cancel button in
         <translation>Could not create %1</translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="95"/>
+        <location filename="coreinstanceobject.cpp" line="96"/>
         <source>System</source>
         <translation>System</translation>
     </message>

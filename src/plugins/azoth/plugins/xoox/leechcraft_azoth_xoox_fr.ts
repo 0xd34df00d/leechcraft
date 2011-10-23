@@ -431,61 +431,61 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::EntryBase</name>
     <message>
-        <location filename="entrybase.cpp" line="137"/>
+        <location filename="entrybase.cpp" line="138"/>
         <source>Commands...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="163"/>
+        <location filename="entrybase.cpp" line="164"/>
         <source>Can&apos;t view info while offline</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="382"/>
+        <location filename="entrybase.cpp" line="391"/>
         <source>%1 is now %2 (%3)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="491"/>
+        <location filename="entrybase.cpp" line="505"/>
         <source>Name: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="496"/>
+        <location filename="entrybase.cpp" line="510"/>
         <source>Nickname: %1
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="499"/>
+        <location filename="entrybase.cpp" line="513"/>
         <source>URL: %1
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="502"/>
+        <location filename="entrybase.cpp" line="516"/>
         <source>Birthday: %1
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="505"/>
+        <location filename="entrybase.cpp" line="519"/>
         <source>Email: %1
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="510"/>
+        <location filename="entrybase.cpp" line="524"/>
         <source>Photo:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="541"/>
+        <location filename="entrybase.cpp" line="555"/>
         <source>Select resource</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="542"/>
+        <location filename="entrybase.cpp" line="556"/>
         <source>Select resource for which to fetch the commands</source>
         <translation type="unfinished"></translation>
     </message>
@@ -942,7 +942,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="254"/>
+        <location filename="roomclentry.cpp" line="258"/>
         <source>%1 participants</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1070,21 +1070,31 @@
     </message>
     <message>
         <location filename="roomhandler.cpp" line="326"/>
+        <source>remote server not found (try contacting your server&apos;s administrator)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="roomhandler.cpp" line="329"/>
+        <source>timeout connecting to remote server (try contacting your server&apos;s administrator)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="roomhandler.cpp" line="332"/>
         <source>unknown condition %1 (please report to developers)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="330"/>
+        <location filename="roomhandler.cpp" line="336"/>
         <source>Error for %1: %2 (original message: %3)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="334"/>
+        <location filename="roomhandler.cpp" line="340"/>
         <source>no message</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="435"/>
+        <location filename="roomhandler.cpp" line="441"/>
         <source>%1 changed subject to %2</source>
         <translation type="unfinished"></translation>
     </message>

@@ -31,6 +31,14 @@
         <source>Third parties</source>
         <translation>Partes terza</translation>
     </message>
+    <message>
+        <source>Diagnostic info</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add this information to your bug reports, if any:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>AuthenticationDialog</name>
@@ -312,6 +320,38 @@
         <source>Fedora package maintainer</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Chrome-style tabs.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SecMan SecureStorage.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Spanish translations.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Artwork designer.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>French translations.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Italian translations.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Public relations.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Extensive and thorough testing.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::Application</name>
@@ -578,6 +618,14 @@
     </message>
     <message>
         <source>Plugin with ID %1 is already loaded from %2; aborting load from %3.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The following plugins would also be disabled as the result:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure you want to disable this one?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
