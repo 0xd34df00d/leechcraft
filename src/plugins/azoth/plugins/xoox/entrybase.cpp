@@ -206,7 +206,8 @@ namespace Xoox
 
 	void EntryBase::HandleMessage (GlooxMessage *msg)
 	{
-		HasUnreadMsgs_ = true;
+		if (msg->GetMessageType () == IMessage::MTChatMessage)
+			HasUnreadMsgs_ = true;
 
 		GlooxProtocol *proto = qobject_cast<GlooxProtocol*> (Account_->GetParentProtocol ());
 		IProxyObject *proxy = qobject_cast<IProxyObject*> (proto->GetProxyObject ());
