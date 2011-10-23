@@ -171,19 +171,12 @@ namespace Azoth
 	{
 		const QRect& r = o.rect;
 
-		if ((o.state & QStyle::State_Selected) ||
-				(o.state & QStyle::State_MouseOver))
-		{
-			QStyle *style = o.widget ?
-					o.widget->style () :
-					QApplication::style ();
+		QStyle *style = o.widget ?
+				o.widget->style () :
+				QApplication::style ();
 
-			const int oldLeft = o.rect.left ();
-			o.rect.setLeft (0);
-			style->drawPrimitive (QStyle::PE_PanelItemViewItem,
-					&o, painter, o.widget);
-			o.rect.setLeft (oldLeft);
-		}
+		style->drawPrimitive (QStyle::PE_PanelButtonCommand,
+				&o, painter, o.widget);
 
 		const int unread = index.data (Core::CLRUnreadMsgCount).toInt ();
 		if (unread)
@@ -232,10 +225,6 @@ namespace Azoth
 		painter->save ();
 
 		painter->setRenderHints (QPainter::HighQualityAntialiasing | QPainter::Antialiasing);
-
-		QPainterPath bgPath;
-		bgPath.addRoundedRect (r.adjusted (-r.topLeft ().x (), 0, 0, 0), 4, 4);
-		painter->drawPath (bgPath);
 
 		if (rem >= o.fontMetrics.width (str))
 		{
