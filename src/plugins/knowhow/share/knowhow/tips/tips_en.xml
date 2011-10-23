@@ -22,14 +22,16 @@
 		You don't have to use tabbar to navigate between tabs. Just hit &lt;em>Ctrl+Alt+L&lt;/em>, and the list of tabs would pop-up. Currently active tab would be focused. You can move the focus by cursor arrows and select another tab by hitting &lt;em>Space&lt;/em>.&lt;br/>&lt;br/>
 
 		Two more hints: hitting &lt;em>Esc&lt;/em> just closes the list, and typing first few letters of the tab title move focus to it.
+
+		This feature is provided by the &lt;em>TabsList&lt;/em> plugin, so install it if you need it.
 	</tip>
 	<tip id="5">
-		You can install additional iconsets, emoticons and chat window styles via the LackMan plugin. Just open LackMan's tab, select the packages for installation, hit "Install" and go to the settings of the corresponding plugin to activate the newly installed stuff.
+		You can install additional iconsets, emoticons, chat window styles, etc., via the &lt;em>LackMan&lt;/em> plugin. Just open LackMan's tab, select the packages for installation, hit "Install" and go to the settings of the corresponding plugin to activate the newly installed stuff.
 	</tip>
 	<tip id="6">
 		When submitting bugreports, open the "About" dialog of LeechCraft, if possible, and paste the information from the "Diagnostic info" tab into your bugreport. That would make things simpler both for you and for us.
 	</tip>
 	<tip id="7">
-		You can configure almost every aspect of LeechCraft. Try taking some time for walking through LeechCraft's settings and noting what can be configured.
+		LeechCraft is a highly configurable internet-client. Explore the settings to configure everything to your taste!
 	</tip>
 </tips>
