@@ -40,6 +40,7 @@ namespace Azoth
 
 	ContactListDelegate::ContactListDelegate (QTreeView* parent)
 	: QStyledItemDelegate (parent)
+	, ContactHeight_ (24)
 	, View_ (parent)
 	{
 		handleShowAvatarsChanged ();
@@ -48,6 +49,7 @@ namespace Azoth
 		handleMoodIconsetChanged ();
 		handleSystemIconsetChanged ();
 		handleShowStatusesChanged ();
+		handleContactHeightChanged ();
 
 		XmlSettingsManager::Instance ().RegisterObject ("ShowAvatars",
 				this, "handleShowAvatarsChanged");
@@ -61,6 +63,8 @@ namespace Azoth
 				this, "handleSystemIconsetChanged");
 		XmlSettingsManager::Instance ().RegisterObject ("ShowStatuses",
 				this, "handleShowStatusesChanged");
+		XmlSettingsManager::Instance ().RegisterObject ("RosterContactHeight",
+				this, "handleContactHeightChanged");
 	}
 
 	void ContactListDelegate::paint (QPainter *painter,
@@ -95,8 +99,8 @@ namespace Azoth
 		switch (index.data (Core::CLREntryType).value<Core::CLEntryType> ())
 		{
 		case Core::CLETContact:
-			if (size.height () < 24)
-				size.setHeight (24);
+			if (size.height () < ContactHeight_)
+				size.setHeight (ContactHeight_);
 			break;
 		case Core::CLETAccount:
 			size.setHeight (size.height () * 1.5);
@@ -498,6 +502,18 @@ namespace Azoth
 				.property ("ShowStatuses").toBool ();
 
 		View_->viewport ()->update ();
+		View_->update ();
+	}
+
+	void ContactListDelegate::handleContactHeightChanged ()
+	{
+		ContactHeight_ = XmlSettingsManager::Instance ()
+				.property ("RosterContactHeight").toInt ();
+		if (ContactHeight_ <= 0)
+			ContactHeight_ = 24;
+
+		View_->viewport ()->update ();
+		View_->update ();
 	}
 }
 }
