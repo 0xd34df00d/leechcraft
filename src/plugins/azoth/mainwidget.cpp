@@ -57,6 +57,8 @@ namespace Azoth
 	, MenuButton_ (new QToolButton (this))
 	, ProxyModel_ (new SortFilterProxyModel ())
 	{
+		qRegisterMetaType<QPersistentModelIndex> ("QPersistentModelIndex");
+
 		MainMenu_->setIcon (QIcon (":/plugins/azoth/resources/images/azoth.svg"));
 
 		Ui_.setupUi (this);
