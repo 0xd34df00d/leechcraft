@@ -63,6 +63,7 @@ namespace AdiumStyles
 		AdiumStyleSource (IProxyObject*, QObject* = 0);
 
 		QAbstractItemModel* GetOptionsModel () const;
+		QUrl GetBaseURL (const QString&) const;
 		QString GetHTMLTemplate (const QString&, QObject*, QWebFrame*) const;
 		bool AppendMessage (QWebFrame*, QObject*, const ChatMsgAppendInfo&);
 		void FrameFocused (QWebFrame*);

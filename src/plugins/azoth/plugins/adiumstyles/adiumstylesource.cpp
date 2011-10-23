@@ -55,6 +55,24 @@ namespace AdiumStyles
 		return PackProxyModel_;
 	}
 
+	QUrl AdiumStyleSource::GetBaseURL (const QString& srcPack) const
+	{
+		const QString& pack = PackProxyModel_->GetOrigName (srcPack);
+		const QString& prefix = pack + "/Contents/Resources/";
+
+		const QString& path = StylesLoader_->
+				GetPath (QStringList (prefix + "main.css"));
+		if (path.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "empty base URL for"
+					<< srcPack;
+			return QUrl ();
+		}
+
+		return QUrl::fromLocalFile (path);
+	}
+
 	QString AdiumStyleSource::GetHTMLTemplate (const QString& srcPack,
 			QObject *entryObj, QWebFrame *frame) const
 	{
