@@ -91,7 +91,7 @@ void XmlSettingsDialog::RegisterObject (QObject* obj, const QString& basename)
 			<< basename;
 		return;
 	}
-	QByteArray data = file.readAll ();
+	const QByteArray& data = file.readAll ();
 	file.close ();
 
 	QString emsg;
@@ -106,7 +106,7 @@ void XmlSettingsDialog::RegisterObject (QObject* obj, const QString& basename)
 			<< emsg;
 		return;
 	}
-	QDomElement root = Document_->documentElement ();
+	const QDomElement& root = Document_->documentElement ();
 	if (root.tagName () != "settings")
 	{
 		qWarning () << "Bad settings file";
@@ -147,15 +147,15 @@ void XmlSettingsDialog::MergeXml (const QByteArray& newXml)
 	QDomNodeList nodes = newDoc.elementsByTagName ("item");
 	for (int i = 0; i < nodes.size (); ++i)
 	{
-		QDomElement elem = nodes.at (i).toElement ();
+		const QDomElement& elem = nodes.at (i).toElement ();
 		if (elem.isNull ())
 			continue;
 
-		QString propName = elem.attribute ("property");
+		const QString& propName = elem.attribute ("property");
 		if (!props.contains (propName.toLatin1 ()))
 			continue;
 
-		QVariant value = GetValue (elem);
+		const QVariant& value = GetValue (elem);
 		if (value.isNull ())
 			continue;
 
@@ -218,7 +218,7 @@ void XmlSettingsDialog::HandleDeclaration (const QDomElement& decl)
 
 void XmlSettingsDialog::ParsePage (const QDomElement& page)
 {
-	QString sectionTitle = GetLabel (page);
+	const QString& sectionTitle = GetLabel (page);
 	Titles_ << sectionTitle;
 
 	QWidget *baseWidget = new QWidget;
@@ -226,10 +226,10 @@ void XmlSettingsDialog::ParsePage (const QDomElement& page)
 	QGridLayout *lay = new QGridLayout;
 	lay->setContentsMargins (0, 0, 0, 0);
 	baseWidget->setLayout (lay);
-	baseWidget->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
+	baseWidget->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Fixed);
 
 	ParseEntity (page, baseWidget);
-	QSpacerItem *verticalSpacer = new QSpacerItem (10, 20, QSizePolicy::Minimum, QSizePolicy::Minimum);
+	QSpacerItem *verticalSpacer = new QSpacerItem (10, 20, QSizePolicy::Maximum, QSizePolicy::Expanding);
 	lay->addItem (verticalSpacer, lay->rowCount (), 0);
 }
 
@@ -249,7 +249,7 @@ void XmlSettingsDialog::ParseEntity (const QDomElement& entity, QWidget *baseWid
 		QGridLayout *groupLayout = new QGridLayout ();
 		groupLayout->setContentsMargins (2, 2, 2, 2);
 		box->setLayout (groupLayout);
-		box->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
+		box->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Fixed);
 		ParseEntity (gbox, box);
 
 		QGridLayout *lay = qobject_cast<QGridLayout*> (baseWidget->layout ());
@@ -257,7 +257,7 @@ void XmlSettingsDialog::ParseEntity (const QDomElement& entity, QWidget *baseWid
 
 		gbox = gbox.nextSiblingElement ("groupbox");
 
-		QSpacerItem *verticalSpacer = new QSpacerItem (10, 20, QSizePolicy::Minimum, QSizePolicy::Expanding);
+		QSpacerItem *verticalSpacer = new QSpacerItem (10, 20, QSizePolicy::Minimum, QSizePolicy::Fixed);
 		groupLayout->addItem (verticalSpacer, groupLayout->rowCount (), 0);
 	}
 
@@ -321,9 +321,9 @@ void XmlSettingsDialog::ParseEntity (const QDomElement& entity, QWidget *baseWid
 
 void XmlSettingsDialog::ParseItem (const QDomElement& item, QWidget *baseWidget)
 {
-	QString type = item.attribute ("type");
+	const QString& type = item.attribute ("type");
 
-	QString property = item.attribute ("property");
+	const QString& property = item.attribute ("property");
 
 	if (type.isEmpty () || type.isNull ())
 		return;
@@ -380,7 +380,7 @@ QString XmlSettingsDialog::GetDescription (const QDomElement& item) const
 
 void XmlSettingsDialog::SetTooltip (QWidget *widget, const QDomElement& from) const
 {
-	QString descr = GetDescription (from);
+	const QString& descr = GetDescription (from);
 	if (!descr.isEmpty ())
 		widget->setToolTip (descr);
 }
@@ -415,7 +415,7 @@ QString XmlSettingsDialog::GetBasename () const
 
 QVariant XmlSettingsDialog::GetValue (const QDomElement& item, bool ignoreObject) const
 {
-	QString property = item.attribute ("property");
+	const QString& property = item.attribute ("property");
 
 	QVariant value;
 	if (ignoreObject)
@@ -428,7 +428,7 @@ QVariant XmlSettingsDialog::GetValue (const QDomElement& item, bool ignoreObject
 	}
 	else
 	{
-		QVariant tmpValue = WorkingObject_->property (property.toLatin1 ().constData ());
+		const QVariant& tmpValue = WorkingObject_->property (property.toLatin1 ().constData ());
 		if (tmpValue.isValid ())
 			return tmpValue;
 	}
@@ -462,12 +462,12 @@ QList<QImage> XmlSettingsDialog::GetImages (const QDomElement& item) const
 		}
 		else
 		{
-			QByteArray base64 = binary.text ().toLatin1 ();
+			const QByteArray& base64 = binary.text ().toLatin1 ();
 			data = QByteArray::fromBase64 (base64);
 		}
 		if (binary.attribute ("type") == "image")
 		{
-			QImage image = QImage::fromData (data);
+			const QImage& image = QImage::fromData (data);
 			if (!image.isNull ())
 				result << image;
 		}
@@ -486,8 +486,8 @@ void XmlSettingsDialog::UpdateXml (bool whole)
 			if (!elem.hasAttribute ("property"))
 				continue;
 
-			QString name = elem.attribute ("property");
-			QVariant value = WorkingObject_->property (name.toLatin1 ().constData ());
+			const QString& name = elem.attribute ("property");
+			const QVariant& value = WorkingObject_->property (name.toLatin1 ().constData ());
 
 			UpdateSingle (name, value, elem);
 		}
@@ -499,10 +499,10 @@ void XmlSettingsDialog::UpdateXml (bool whole)
 				end = props.end (); i != end; ++i)
 		{
 			QDomElement element;
-			QString name = i.key ();
+			const QString& name = i.key ();
 			for (int j = 0, size = nodes.size (); j < size; ++j)
 			{
-				QDomElement e = nodes.at (j).toElement ();
+				const QDomElement& e = nodes.at (j).toElement ();
 				if (e.isNull ())
 					continue;
 				if (e.attribute ("property") == name)
@@ -537,7 +537,7 @@ bool XmlSettingsDialog::eventFilter (QObject *obj, QEvent *event)
 {
 	if (event->type () == QEvent::DynamicPropertyChange)
 	{
-		QByteArray name = static_cast<QDynamicPropertyChangeEvent*> (event)->propertyName ();
+		const QByteArray& name = static_cast<QDynamicPropertyChangeEvent*> (event)->propertyName ();
 
 		QWidget *widget = findChild<QWidget*> (name);
 		if (widget)

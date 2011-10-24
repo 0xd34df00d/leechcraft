@@ -45,7 +45,7 @@ namespace LeechCraft
 		XSD_->SetTooltip (box, item);
 		box->setObjectName (item.attribute ("property"));
 
-		QVariant value = XSD_->GetValue (item);
+		const QVariant& value = XSD_->GetValue (item);
 
 		box->setCheckState (value.toBool () ? Qt::Checked : Qt::Unchecked);
 		connect (box,

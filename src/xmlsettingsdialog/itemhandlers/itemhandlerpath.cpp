@@ -53,7 +53,7 @@ namespace LeechCraft
 			type = FilePicker::TSaveFileName;
 
 		FilePicker *picker = new FilePicker (type, XSD_);
-		QVariant value = XSD_->GetValue (item);
+		const QVariant& value = XSD_->GetValue (item);
 		picker->SetText (value.toString ());
 		picker->setObjectName (item.attribute ("property"));
 		if (item.attribute ("onCancel") == "clear")
