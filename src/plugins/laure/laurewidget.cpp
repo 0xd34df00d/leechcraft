@@ -59,7 +59,7 @@ namespace Laure
 				Ui_.Player_,
 				SLOT (setPosition (int)));
 		connect (Ui_.VolumeSlider_,
-				SIGNAL (sliderMoved (int)),
+				SIGNAL (valueChanged (int)),
 				Core_,
 				SLOT (setVolume (int)));
 		connect (Core_,

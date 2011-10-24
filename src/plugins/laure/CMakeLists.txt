@@ -35,6 +35,7 @@ INCLUDE_DIRECTORIES (
 	${MAGIC_INCLUDE_DIR}
 	)
 SET (SRCS
+	widgets/volumeslider.cpp
 	core.cpp
 	separateplayerwidget.cpp
 	playlistaddmenu.cpp
@@ -50,6 +51,7 @@ SET (SRCS
 	laure.cpp
 	)
 SET (HEADERS
+	widgets/volumeslider.h
 	core.h
 	separateplayerwidget.h
 	playlistaddmenu.h
