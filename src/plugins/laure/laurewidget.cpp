@@ -49,7 +49,7 @@ namespace Laure
 	{	
 		Ui_.setupUi (this);
 		Ui_.Player_->setCore (Core_);
-		
+
 		connect (Ui_.Player_,
 				SIGNAL (timeout ()),
 				this,
@@ -75,9 +75,9 @@ namespace Laure
 				Core_,
 				SLOT (addRow (QString)));
 		connect (Core_,
-				SIGNAL (itemAdded (MediaMeta)),
+				SIGNAL (itemAdded (MediaMeta, QString)),
 				Ui_.PlayListWidget_,
-				SLOT (handleItemAdded (MediaMeta)));
+				SLOT (handleItemAdded (MediaMeta, QString)));
 		connect (Ui_.PlayListWidget_,
 				SIGNAL (itemRemoved (int)),
 				Core_,

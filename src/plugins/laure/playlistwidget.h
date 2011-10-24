@@ -38,8 +38,9 @@ namespace Laure
 	public:
 		PlayListWidget (QWidget* = 0);
 	public slots:
-		void handleItemAdded (const MediaMeta&);
+		void handleItemAdded (const MediaMeta&, const QString&);
 		void handleItemPlayed (int);
+		void handleExportPlayList ();
 	signals:
 		void itemAddedRequest (const QString&);
 		void itemRemoved (int);

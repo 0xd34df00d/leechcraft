@@ -22,6 +22,7 @@
 #include <QTime>
 #include <QDebug>
 #include <QTimer>
+#include <QFile>
 
 namespace LeechCraft
 {
@@ -132,7 +133,7 @@ namespace Laure
 				libvlc_media_release);
 		
 		if (!libvlc_media_list_add_media (List_.get (), m.get ()))
-			emit itemAdded (ItemMeta (RowCount () - 1));
+			emit itemAdded (ItemMeta (RowCount () - 1), item);
 	}
 	
 	void Core::playItem (int val)

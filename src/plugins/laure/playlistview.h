@@ -41,8 +41,10 @@ namespace Laure
 	public:
 		PlayListView (QWidget* = 0);
 		
-		void AddItem (const MediaMeta&);
+		void AddItem (const MediaMeta&, const QString&);
 		void Play (int);
+		int RowCount () const;
+		QVariant Data (int row, int column);
 	protected:
 		void keyPressEvent (QKeyEvent*);
 	public slots:

@@ -26,6 +26,7 @@ namespace Laure
 	PlayListModel::PlayListModel (QObject* parent)
 	: QStandardItemModel (parent)
 	{
+		setColumnCount (2);
 	}
 	
 	Qt::ItemFlags PlayListModel::flags (const QModelIndex& index) const

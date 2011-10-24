@@ -89,10 +89,7 @@ namespace Laure
 		
 		const QFileInfoList& fileInfoList = StoragedFiles (fileDir);
 		Q_FOREACH (const QFileInfo& fileInfo, fileInfoList)
-		{
-			qDebug () << Q_FUNC_INFO << fileInfo.absoluteFilePath ();
 			emit addItem (fileInfo.absoluteFilePath ());
-		}
 	}
 	
 	void PlayListAddMenu::handleAddUrl ()

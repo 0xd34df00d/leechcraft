@@ -20,6 +20,7 @@
 #include "playlistview.h"
 #include <QKeyEvent>
 #include <QHeaderView>
+#include <QDebug>
 #include "xmlsettingsmanager.h"
 #include "nowplayingdelegate.h"
 
@@ -35,6 +36,7 @@ namespace Laure
 		setModel (PlayListModel_);
 		setSelectionMode (ContiguousSelection);
 		setAlternatingRowColors (true);
+		hideColumn (1);
 		setItemDelegate (new NowPlayingDelegate (this));
 		header ()->hide ();
 		connect (this,
@@ -43,12 +45,22 @@ namespace Laure
 				SLOT (handleDoubleClicked (QModelIndex)));
 	}
 	
+	QVariant PlayListView::Data (int row, int column)
+	{
+		return PlayListModel_->data (PlayListModel_->index (row, column));
+	}
+	
+	int PlayListView::RowCount () const
+	{
+		return PlayListModel_->rowCount ();
+	}
+	
 	void PlayListView::selectRow (int val)
 	{
 		setCurrentIndex (model ()->index (val, 0));
 	}
 
-	void PlayListView::AddItem (const MediaMeta& item)
+	void PlayListView::AddItem (const MediaMeta& item, const QString& fileName)
 	{
 		QString temp = XmlSettingsManager::Instance ()
 				.property ("PlaylistFormat").toString ();
@@ -57,7 +69,10 @@ namespace Laure
 		temp.replace ("%title%", item.Title_);
 		temp.replace ("%genre%", item.Genre_);
 		temp.replace ("%date%", item.Date_);
-		PlayListModel_->appendRow (new QStandardItem (temp));
+		QList<QStandardItem*> list;
+		list << new QStandardItem (temp);
+		list << new QStandardItem (fileName);
+		PlayListModel_->appendRow (list);
 	}
 	
 	void PlayListView::Play (int row)
