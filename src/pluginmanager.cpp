@@ -232,6 +232,28 @@ namespace LeechCraft
 							tr ("Are you sure you want to disable this one?"),
 						QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 					return false;
+
+				QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "-pg");
+				settings.beginGroup ("Plugins");
+
+				Q_FOREACH (QObject *obj, oldSet)
+				{
+					if (!Obj2Loader_.contains (obj))
+						continue;
+
+					QPluginLoader_ptr dl = Obj2Loader_ [obj];
+
+					settings.beginGroup (dl->fileName ());
+					settings.setValue ("AllowLoad", false);
+					settings.endGroup ();
+
+					const int row = AvailablePlugins_.indexOf (dl);
+					const QModelIndex& dIdx = createIndex (row, 0);
+					emit dataChanged (dIdx, dIdx);
+				}
+
+				settings.endGroup ();
 			}
 		}
 
