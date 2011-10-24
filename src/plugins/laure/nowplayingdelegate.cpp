@@ -17,34 +17,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LAURE_VOLUMESLIDER_H
-#define PLUGINS_LAURE_VOLUMESLIDER_H
-
-#include <QSlider>
-#include <QPixmap>
-
-class QMouseEvent;
+#include "nowplayingdelegate.h"
+#include <QPainter>
+#include <QDebug>
 
 namespace LeechCraft
 {
 namespace Laure
 {
-	class VolumeSlider : public QSlider
+	NowPlayingDelegate::NowPlayingDelegate (QObject *parent)
+	: QItemDelegate (parent)
 	{
-		Q_OBJECT
-		QPixmap VolumeSliderInset_, VolumeSliderGradient_;
-	public:
-		VolumeSlider (QWidget* = 0);
-	protected:
-		void paintEvent (QPaintEvent *ev);
-		void mousePressEvent (QMouseEvent *ev);
-		void mouseMoveEvent (QMouseEvent *ev);
-	private:
-		void GenerateGradient ();
-	private slots:
-		void slotAnimTimer ();
-	};
+		
+	}
+	
+	void NowPlayingDelegate::paint (QPainter *painter, const QStyleOptionViewItem& option,
+				const QModelIndex& index) const
+	{
+		bool played = index.data (Qt::UserRole).toBool ();
+		qDebug () << Q_FUNC_INFO << played;
+		if (played)
+		{
+			painter->fillRect (option.rect, Qt::gray);
+		}
+		QItemDelegate::paint (painter, option, index);
+	}
 }
 }
-
-#endif // PLUGINS_LAURE_VOLUMESLIDER_H

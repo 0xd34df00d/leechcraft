@@ -71,6 +71,7 @@ namespace Laure
 	void PlayListWidget::handleItemPlayed (int row)
 	{
 		Ui_.PlayListView_->selectRow (row);
+		Ui_.PlayListView_->Play (row);
 	}
 	
 	void PlayListWidget::handleItemAdded (const MediaMeta& meta)

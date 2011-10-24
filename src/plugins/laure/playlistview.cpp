@@ -19,8 +19,9 @@
 
 #include "playlistview.h"
 #include <QKeyEvent>
-#include "xmlsettingsmanager.h"
 #include <QHeaderView>
+#include "xmlsettingsmanager.h"
+#include "nowplayingdelegate.h"
 
 namespace LeechCraft
 {
@@ -28,11 +29,13 @@ namespace Laure
 {
 	PlayListView::PlayListView (QWidget *parent)
 	: QTreeView (parent)
+	, PlayListModel_ (new PlayListModel (this))
+	, CurrentItem_ (-1)
 	{
-		PlayListModel_ = new PlayListModel (this);
 		setModel (PlayListModel_);
 		setSelectionMode (ContiguousSelection);
 		setAlternatingRowColors (true);
+		setItemDelegate (new NowPlayingDelegate (this));
 		header ()->hide ();
 		connect (this,
 				SIGNAL (doubleClicked (QModelIndex)),
@@ -53,11 +56,20 @@ namespace Laure
 		temp.replace ("%album%", item.Album_);
 		temp.replace ("%title%", item.Title_);
 		temp.replace ("%genre%", item.Genre_);
-		temp.replace ("%date%", item.Date_);	
+		temp.replace ("%date%", item.Date_);
 		PlayListModel_->appendRow (new QStandardItem (temp));
 	}
 	
-	
+	void PlayListView::Play (int row)
+	{
+		QStandardItem *it = PlayListModel_->item (CurrentItem_);
+		if (it)
+			it->setData (false, Qt::UserRole);
+		it = PlayListModel_->item (row);
+		it->setData (true, Qt::UserRole);
+		CurrentItem_ = row;
+	}
+
 	void PlayListView::handleDoubleClicked (const QModelIndex& index)
 	{
 		emit playItem (index.row ());

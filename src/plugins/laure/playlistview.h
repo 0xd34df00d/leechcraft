@@ -37,16 +37,17 @@ namespace Laure
 		Q_OBJECT
 		
 		PlayListModel *PlayListModel_;
+		int CurrentItem_;
 	public:
 		PlayListView (QWidget* = 0);
 		
 		void AddItem (const MediaMeta&);
+		void Play (int);
 	protected:
 		void keyPressEvent (QKeyEvent*);
 	public slots:
 		void selectRow (int);
 		void removeSelectedRows ();
-		void handleItemAdded (); 
 	private slots:
 		void handleDoubleClicked (const QModelIndex&);
 	signals:
