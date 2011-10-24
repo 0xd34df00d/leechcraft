@@ -57,7 +57,7 @@ namespace LeechCraft
 			option = option.nextSiblingElement ("option");
 		}
 
-		QVariant value = XSD_->GetValue (item);
+		const QVariant& value = XSD_->GetValue (item);
 
 		connect (group,
 				SIGNAL (valueChanged ()),

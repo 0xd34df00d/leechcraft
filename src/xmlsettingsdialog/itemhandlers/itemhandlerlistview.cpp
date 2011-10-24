@@ -47,7 +47,7 @@ namespace LeechCraft
 		
 		QListView *list = new QListView (XSD_);
 		
-		QString prop = item.attribute ("property");
+		const QString& prop = item.attribute ("property");
 		list->setObjectName (prop);
 		
 		Factory_->RegisterDatasourceSetter (prop,
