@@ -49,7 +49,6 @@ namespace Laure
 	{	
 		Ui_.setupUi (this);
 		Ui_.Player_->setCore (Core_);
-		Core_->setWindow (Ui_.Player_);
 		
 		connect (Ui_.Player_,
 				SIGNAL (timeout ()),

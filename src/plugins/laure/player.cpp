@@ -51,6 +51,7 @@ namespace Laure
 	void Player::setCore (Core *core)
 	{
 		Core_ = core;
+		Core_->setWindow (winId ());
 	}
 	
 	namespace
