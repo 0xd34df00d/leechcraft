@@ -23,6 +23,7 @@
 #include <boost/shared_ptr.hpp>
 #include <vlc/vlc.h>
 #include <interfaces/core/icoreproxy.h>
+#include "core.h"
 
 namespace lastfm
 {
@@ -46,7 +47,9 @@ namespace Laure
 		LastFMSubmitter (ICoreProxy_ptr proxy, QObject *parent = 0);
 		
 		bool IsConnected () const;
-		void NowPlaying (libvlc_media_t*);
+	public slots:
+		void nowPlaying (const MediaMeta&);
+		void submit ();
 	private slots:
 		void status (int);
 		void getSessionKey (QNetworkReply*);

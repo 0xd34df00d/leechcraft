@@ -26,10 +26,21 @@ namespace LeechCraft
 {
 namespace Laure
 {
-	PlayListAddMenu::PlayListAddMenu (PlayListView *playListView, QWidget *parent)
+	PlayListAddMenu::PlayListAddMenu (QWidget *parent)
 	: QMenu (parent)
-	, PlayListView_ (playListView)
 	{
+#ifdef Q_WS_X11
+		Magic_ = shared_ptr<magic_set> (magic_open (MAGIC_MIME_TYPE),
+				magic_close);
+		magic_load (Magic_.get (), NULL);
+#elif defined (Q_WS_WIN)
+		Formats_ << "3gp" << "asf" << "wmv" << "au" << "avi"
+				<< "flv" << "mov" << "mp4" << "ogm" << "ogg"
+				<< "mkv" << "mka" << "ts" << "mpg" << "mp3"
+				<< "mp2" << "nsc" << "nsv" << "nut" << "a52"
+				<< "dts" << "aac" << "flac" << "dv" << "vid"
+				<< "tta" << "tac" << "ty" << "wav" << "xa";
+#endif
 		QAction *addFiles = new QAction (tr ("Add files"), this);
 		QAction *addFolder = new QAction (tr ("Add folder"), this);
 		QAction *addURL = new QAction (tr ("Add URL"), this);
@@ -57,7 +68,7 @@ namespace Laure
 		const QStringList& fileNames = QFileDialog::getOpenFileNames (this,
 				tr ("Choose file"), QDir::homePath ());
 		Q_FOREACH (const QString& fileName, fileNames)
-			PlayListView_->AddItem (fileName);
+			emit addItem (fileName);
 	}
 
 	void PlayListAddMenu::handleAddFolder ()
@@ -69,17 +80,14 @@ namespace Laure
 		
 		const QFileInfoList& fileInfoList = StoragedFiles (fileDir);
 		Q_FOREACH (const QFileInfo& fileInfo, fileInfoList)
-			PlayListView_->AddItem (fileInfo.absoluteFilePath ());
+			emit addItem (fileInfo.absoluteFilePath ());
 	}
 	
 	void PlayListAddMenu::handleAddUrl ()
 	{
 		ChooseURLDialog d;
 		if (d.exec () == QDialog::Accepted)
-		{
-			const QString& url = d.GetUrl ();
-			PlayListView_->AddItem (url);
-		}
+			emit addItem (d.GetUrl ());
 	}
 
 	QFileInfoList PlayListAddMenu::StoragedFiles (const QString& path)
@@ -96,10 +104,24 @@ namespace Laure
 		{
 			if (fi.isDir ())
 				list << StoragedFiles (fi.absoluteFilePath ());
-			else
+			else if (IsFileSupported (fi))
  				list << fi;
 		}
 		return list;
+	}
+	
+	bool PlayListAddMenu::IsFileSupported (const QFileInfo& file)
+	{
+#ifdef Q_WS_X11
+		const QString& mime =  QString (magic_file (Magic_.get (),
+						file.absoluteFilePath ().toAscii ()));
+		return mime.contains ("audio") || mime.contains ("video");		
+#elif defined (Q_WS_WIN)
+		Q_FOREACH (const QString& format, Formats_)
+			if (file.suffix () == format)
+				return true;
+		return false;
+#endif
 	}
 }
 }

@@ -31,34 +31,52 @@ namespace Laure
 	: QWidget (parent)
 	{
 		Ui_.setupUi (this);
-		setVisible (false);	
+		setVisible (false);
 		
-		QAction *actionAdd = new QAction (this);
-		actionAdd->setProperty ("ActionIcon", "add");
-		actionAdd->setMenu (new PlayListAddMenu (Ui_.PlayListView_, this));
-		actionAdd->setMenuRole (QAction::ApplicationSpecificRole);
+		QAction *actionAdd = new QAction (tr ("Add"), this);
 		QAction *actionRemove = new QAction (tr ("Remove"), this);
+		PlayListAddMenu *menu = new PlayListAddMenu (this);
+		
+		actionAdd->setProperty ("ActionIcon", "add");
 		actionRemove->setProperty ("ActionIcon", "remove");
 		
-		ActionBar_ = new QToolBar (Ui_.ActionFrame_);
-		ActionBar_->setToolButtonStyle (Qt::ToolButtonIconOnly);
-		ActionBar_->setIconSize (QSize (16, 16));
-		ActionBar_->addAction (actionAdd);
-		ActionBar_->addAction (actionRemove);
+		actionAdd->setMenu (menu);
+		actionAdd->setMenuRole (QAction::ApplicationSpecificRole);
+		
+		
+		QToolBar *actionBar = new QToolBar (Ui_.ActionFrame_);
+		actionBar->setToolButtonStyle (Qt::ToolButtonIconOnly);
+		actionBar->setIconSize (QSize (16, 16));
+		actionBar->addAction (actionAdd);
+		actionBar->addAction (actionRemove);
 		
 		connect (actionRemove,
 				SIGNAL (triggered (bool)),
 				Ui_.PlayListView_,
 				SLOT (removeSelectedRows ()));
-		connect (Ui_.PlayListView_,
-				SIGNAL (itemPlayed (int)),
+		connect (menu,
+				SIGNAL (addItem (QString)),
 				this,
-				SIGNAL (itemPlayed (int)));
+				SIGNAL (itemAddedRequest (QString)));
+		connect (Ui_.PlayListView_,
+				SIGNAL (itemRemoved (int)),
+				this,
+				SIGNAL (itemRemoved (int)));
+		connect (Ui_.PlayListView_,
+				SIGNAL (playItem (int)),
+				this,
+				SIGNAL (playItem (int)));
 	}
 	
-	PlayListView* PlayListWidget::GetPlayListView () const
+	void PlayListWidget::handleItemPlayed (int row)
 	{
-		return Ui_.PlayListView_;
+		Ui_.PlayListView_->selectRow (row);
+		Ui_.PlayListView_->Play (row);
+	}
+	
+	void PlayListWidget::handleItemAdded (const MediaMeta& meta)
+	{
+		Ui_.PlayListView_->AddItem (meta);
 	}
 }
 }

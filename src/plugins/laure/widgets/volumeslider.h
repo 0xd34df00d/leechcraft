@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011 Minh Ngo
+ * Copyright (C) 2011  Minh Ngo
  * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,22 +17,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LAURE_PLAYLISTMODEL_H
-#define PLUGINS_LAURE_PLAYLISTMODEL_H
-#include <QStandardItemModel>
+#ifndef PLUGINS_LAURE_VOLUMESLIDER_H
+#define PLUGINS_LAURE_VOLUMESLIDER_H
+
+#include <QSlider>
+#include <QPixmap>
+
+class QMouseEvent;
 
 namespace LeechCraft
 {
 namespace Laure
 {
-	class PlayListModel : public QStandardItemModel
+	class VolumeSlider : public QSlider
 	{
 		Q_OBJECT
+		QPixmap VolumeSliderInset_, VolumeSliderGradient_;
 	public:
-		PlayListModel (QObject *);
-		Qt::ItemFlags flags (const QModelIndex&) const;
+		VolumeSlider (QWidget* = 0);
+	protected:
+		void paintEvent (QPaintEvent *ev);
+		void mousePressEvent (QMouseEvent *ev);
+		void mouseMoveEvent (QMouseEvent *ev);
+	private:
+		void GenerateGradient ();
+	private slots:
+		void slotAnimTimer ();
 	};
 }
 }
 
-#endif // PLUGINS_LAURE_PLAYLISTMODEL_H
+#endif // PLUGINS_LAURE_VOLUMESLIDER_H

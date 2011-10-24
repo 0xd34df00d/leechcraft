@@ -120,19 +120,25 @@ namespace Laure
 		// code
 	}
 		
-	void LastFMSubmitter::NowPlaying (libvlc_media_t *m)
+	void LastFMSubmitter::nowPlaying (const MediaMeta& info)
 	{
-		if (!m || !IsConnected ())
-			return;
-		
 		lastfm::Track track;
 		lastfm::MutableTrack mutableTrack (track);
-		libvlc_media_parse (m);
-		mutableTrack.setTitle (libvlc_media_get_meta (m, libvlc_meta_Title));
-		mutableTrack.setAlbum (libvlc_media_get_meta (m, libvlc_meta_Album));
-		mutableTrack.setArtist (libvlc_media_get_meta (m, libvlc_meta_Artist));
-
+		mutableTrack.setTitle (info.Title_);
+		mutableTrack.setAlbum (info.Album_);
+		mutableTrack.setArtist (info.Artist_);
+		mutableTrack.setDuration (info.Length_);
+		mutableTrack.setTrackNumber (info.TrackNumber_);
+		mutableTrack.setMbid (lastfm::Mbid ("1"));
 		Scrobbler_->nowPlaying (track);
+		Scrobbler_->cache (track);
 	}
+	
+	void LastFMSubmitter::submit ()
+	{
+		qDebug () << Q_FUNC_INFO << "Submit";
+		Scrobbler_->submit ();
+	}
+
 }
 }

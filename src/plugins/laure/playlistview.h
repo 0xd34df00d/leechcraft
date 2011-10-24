@@ -20,8 +20,9 @@
 #ifndef PLUGINS_LAURE_PLAYLISTVIEW_H
 #define PLUGINS_LAURE_PLAYLISTVIEW_H
 
-#include <QListView>
+#include <QTreeView>
 #include "playlistmodel.h"
+#include "core.h"
 
 class QKeyEvent;
 
@@ -30,31 +31,28 @@ namespace LeechCraft
 namespace Laure
 {
 	class PlayListModel;
-	class PlayListView : public QListView
+	
+	class PlayListView : public QTreeView
 	{
 		Q_OBJECT
 		
 		PlayListModel *PlayListModel_;
+		int CurrentItem_;
 	public:
 		PlayListView (QWidget* = 0);
-		void SetPlayList (libvlc_media_list_t*);
-		void SetInstance (libvlc_instance_t*);
-		void AddItem (const QString&);
-		int CurrentIndex () const;
-		int RowCount () const;
-		libvlc_media_t* CurrentMedia ();
-		void SetCurrentIndex (int);
+		
+		void AddItem (const MediaMeta&);
+		void Play (int);
 	protected:
 		void keyPressEvent (QKeyEvent*);
-	private:
-		void MoveSelect (int x, int y);
 	public slots:
-
+		void selectRow (int);
 		void removeSelectedRows ();
 	private slots:
 		void handleDoubleClicked (const QModelIndex&);
 	signals:
-		void itemPlayed (int);
+		void itemRemoved (int);
+		void playItem (int);
 	};
 }
 }

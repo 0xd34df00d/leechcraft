@@ -26,6 +26,7 @@
 #include <QUrl>
 #include <QTime>
 #include <QKeyEvent>
+#include <QTimer>
 #include <interfaces/core/icoreproxy.h>
 #include "laure.h"
 #include "playpauseaction.h"
@@ -44,9 +45,10 @@ namespace Laure
 	LaureWidget::LaureWidget (QWidget *parent, Qt::WindowFlags f)
 	: QWidget (parent, f)
 	, ToolBar_ (new QToolBar (this))
-	, ActionPlay_ (NULL)
+	, Core_ (new Core (this))
 	{	
 		Ui_.setupUi (this);
+		Ui_.Player_->setCore (Core_);
 		
 		connect (Ui_.Player_,
 				SIGNAL (timeout ()),
@@ -57,29 +59,45 @@ namespace Laure
 				Ui_.Player_,
 				SLOT (setPosition (int)));
 		connect (Ui_.VolumeSlider_,
-				SIGNAL (sliderMoved (int)),
-				Ui_.Player_,
+				SIGNAL (valueChanged (int)),
+				Core_,
 				SLOT (setVolume (int)));
+		connect (Core_,
+				SIGNAL (nowPlayed (MediaMeta)),
+				this,
+				SIGNAL (nowPlayed (MediaMeta)));
+		connect (Core_,
+				SIGNAL (played ()),
+				this,
+				SIGNAL (played ()));
+		connect (Ui_.PlayListWidget_,
+				SIGNAL (itemAddedRequest (QString)),
+				Core_,
+				SLOT (addRow (QString)));
+		connect (Core_,
+				SIGNAL (itemAdded (MediaMeta)),
+				Ui_.PlayListWidget_,
+				SLOT (handleItemAdded (MediaMeta)));
+		connect (Ui_.PlayListWidget_,
+				SIGNAL (itemRemoved (int)),
+				Core_,
+				SLOT (removeRow (int)));
+		connect (Ui_.PlayListWidget_,
+				SIGNAL (playItem (int)),
+				Core_,
+				SLOT (playItem (int)));
+		connect (Core_,
+				SIGNAL (itemPlayed (int)),
+				Ui_.PlayListWidget_,
+				SLOT (handleItemPlayed (int)));
+		connect (this,
+				SIGNAL (addItem (QString)),
+				Core_,
+				SLOT (addRow (QString)));
 	}
 	
 	void LaureWidget::Init (ICoreProxy_ptr proxy)
 	{
-		Ui_.Player_->SetPlayListView (Ui_.PlayListWidget_->GetPlayListView ());
-		
-		connect (Ui_.PlayListWidget_,
-				SIGNAL (itemPlayed (int)),
-				Ui_.Player_,
-				SLOT (playItem (int)));
-
-		connect (Ui_.PlayListWidget_,
-				SIGNAL (itemPlayed (int)),
-				ActionPlay_,
-				SLOT (handlePlay ()));
-		connect (this,
-				SIGNAL (playPause ()),
-				ActionPlay_,
-				SLOT (handleTriggered ()));
-		
 		InitToolBar ();
 		InitCommandFrame ();
 	}
@@ -89,20 +107,16 @@ namespace Laure
 		QAction *actionOpenFile = new QAction (tr ("Open File"), this);
 		QAction *actionOpenURL = new QAction (tr ("Open URL"), this);
 		QAction *playList = new QAction (tr ("Playlist"), this);
-		QAction *separateDialog = new QAction (tr ("Open in the separate dialog"),
-				this);
 		
 		actionOpenFile->setProperty ("ActionIcon", "folder");
 		actionOpenURL->setProperty ("ActionIcon", "networkmonitor_plugin");
 		playList->setProperty ("ActionIcon", "itemlist");
-		separateDialog->setProperty ("ActionIcon", "fullscreen");
 		
 		playList->setCheckable (true);
 		
 		ToolBar_->addAction (actionOpenFile);
 		ToolBar_->addAction (actionOpenURL);
 		ToolBar_->addAction (playList);
-		ToolBar_->addAction (separateDialog);
 		
 		connect (actionOpenFile,
 				SIGNAL (triggered (bool)),
@@ -116,10 +130,6 @@ namespace Laure
 				SIGNAL (triggered (bool)),
 				this,
 				SLOT (handlePlaylist ()));
-		connect (separateDialog,
-				SIGNAL (triggered (bool)),
-				Ui_.Player_,
-				SLOT (separateDialog ()));
 	}
 	
 	void LaureWidget::InitCommandFrame ()
@@ -128,8 +138,8 @@ namespace Laure
 		bar->setToolButtonStyle (Qt::ToolButtonIconOnly);
 		bar->setIconSize (QSize (32, 32));
 		
-		ActionPlay_ = new PlayPauseAction (Ui_.CommandFrame_);
-		
+		PlayPauseAction *actionPlay = new PlayPauseAction (tr ("Play"), Ui_.CommandFrame_);
+	
 		QAction *actionStop = new QAction (tr ("Stop"), Ui_.CommandFrame_);
 		QAction *actionNext = new QAction (tr ("Next"), Ui_.CommandFrame_);
 		QAction *actionPrev = new QAction (tr ("Previous"), Ui_.CommandFrame_);
@@ -139,51 +149,51 @@ namespace Laure
 		actionPrev->setProperty ("ActionIcon", "media_skip_backward");
 		
 		bar->addAction (actionPrev);
-		bar->addAction (ActionPlay_);
+		bar->addAction (actionPlay);
 		bar->addAction (actionStop);
 		bar->addAction (actionNext);
-
+		
+		connect (Core_,
+				SIGNAL (paused ()),
+				actionPlay,
+				SLOT (handlePause ()));
+		connect (Core_,
+				SIGNAL (itemPlayed (int)),
+				actionPlay,
+				SLOT (handlePlay ()));
 		connect (actionStop,
 				SIGNAL (triggered (bool)),
-				this,
-				SLOT (handleStop ()));
+				actionPlay,
+				SLOT (handlePause ()));
 		connect (actionStop,
 				SIGNAL (triggered (bool)),
-				Ui_.Player_,
+				Core_,
 				SLOT (stop ()));
 		connect (actionNext,
 				SIGNAL (triggered (bool)),
-				Ui_.Player_,
+				Core_,
 				SLOT (next ()));
 		connect (actionPrev,
 				SIGNAL (triggered (bool)),
-				Ui_.Player_,
+				Core_,
 				SLOT (prev ()));
-		connect (ActionPlay_,
+		connect (actionPlay,
 				SIGNAL (play ()),
-				Ui_.Player_,
+				Core_,
 				SLOT (play ()));
-		connect (ActionPlay_,
+		connect (actionPlay,
 				SIGNAL (pause ()),
-				Ui_.Player_,
+				Core_,
 				SLOT (pause ()));
-	}
-
-	void LaureWidget::handleStop ()
-	{
-		ActionPlay_->handlePause ();
-		Ui_.Player_->stop ();
-	}
-
-	void LaureWidget::handlePlay ()
-	{
-		ActionPlay_->handlePlay ();
-		Ui_.Player_->play ();
+		connect (this,
+				SIGNAL (playPause ()),
+				actionPlay,
+				SLOT (handleTriggered ()));
 	}
 	
 	void LaureWidget::updateInterface ()
 	{
-		Ui_.VolumeSlider_->setValue (Ui_.Player_->Volume ());
+		Ui_.VolumeSlider_->setValue (Core_->Volume ());
 		Ui_.PositionSlider_->setValue (Ui_.Player_->Position ());
 		const QTime& currTime = Ui_.Player_->Time ();
 		const QTime& length = Ui_.Player_->Length ();
@@ -230,7 +240,7 @@ namespace Laure
 		if (dialog->exec () == QDialog::Accepted)
 		{
 			if (dialog->IsUrlValid ())
-				Ui_.PlayListWidget_->GetPlayListView ()->AddItem (dialog->GetUrl ());
+				emit addItem (dialog->GetUrl ());
 			else
 				QMessageBox::warning (this,
 						tr ("The URL's not valid"),
@@ -240,7 +250,7 @@ namespace Laure
 	
 	void LaureWidget::handleOpenMediaContent (const QString& val)
 	{
-		Ui_.PlayListWidget_->GetPlayListView ()->AddItem (val);
+		emit addItem (val);
 	}
 	
 	void LaureWidget::handleOpenFile ()
@@ -248,7 +258,7 @@ namespace Laure
 		const QString& fileName = QFileDialog::getOpenFileName (this,
 				tr ("Choose file"), QDir::homePath ());
 		if (!fileName.isEmpty ())
-			Ui_.PlayListWidget_->GetPlayListView ()->AddItem (fileName);
+			emit addItem (fileName);
 	}
 	
 	void LaureWidget::handlePlaylist ()
