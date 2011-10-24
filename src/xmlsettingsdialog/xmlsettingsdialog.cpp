@@ -226,10 +226,10 @@ void XmlSettingsDialog::ParsePage (const QDomElement& page)
 	QGridLayout *lay = new QGridLayout;
 	lay->setContentsMargins (0, 0, 0, 0);
 	baseWidget->setLayout (lay);
-	baseWidget->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
+	baseWidget->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Fixed);
 
 	ParseEntity (page, baseWidget);
-	QSpacerItem *verticalSpacer = new QSpacerItem (10, 20, QSizePolicy::Minimum, QSizePolicy::Minimum);
+	QSpacerItem *verticalSpacer = new QSpacerItem (10, 20, QSizePolicy::Maximum, QSizePolicy::Expanding);
 	lay->addItem (verticalSpacer, lay->rowCount (), 0);
 }
 
@@ -249,7 +249,7 @@ void XmlSettingsDialog::ParseEntity (const QDomElement& entity, QWidget *baseWid
 		QGridLayout *groupLayout = new QGridLayout ();
 		groupLayout->setContentsMargins (2, 2, 2, 2);
 		box->setLayout (groupLayout);
-		box->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
+		box->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Fixed);
 		ParseEntity (gbox, box);
 
 		QGridLayout *lay = qobject_cast<QGridLayout*> (baseWidget->layout ());
@@ -257,7 +257,7 @@ void XmlSettingsDialog::ParseEntity (const QDomElement& entity, QWidget *baseWid
 
 		gbox = gbox.nextSiblingElement ("groupbox");
 
-		QSpacerItem *verticalSpacer = new QSpacerItem (10, 20, QSizePolicy::Minimum, QSizePolicy::Expanding);
+		QSpacerItem *verticalSpacer = new QSpacerItem (10, 20, QSizePolicy::Minimum, QSizePolicy::Fixed);
 		groupLayout->addItem (verticalSpacer, groupLayout->rowCount (), 0);
 	}
 
