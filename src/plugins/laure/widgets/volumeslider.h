@@ -38,6 +38,7 @@ namespace Laure
 	protected:
 		void paintEvent (QPaintEvent *ev);
 		void mousePressEvent (QMouseEvent *ev);
+		void mouseMoveEvent (QMouseEvent *ev);
 	private:
 		void GenerateGradient ();
 	private slots:

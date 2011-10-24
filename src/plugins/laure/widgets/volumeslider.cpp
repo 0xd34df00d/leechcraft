@@ -77,5 +77,10 @@ namespace Laure
 			QSlider::setValue (QStyle::sliderValueFromPosition(minimum (),
 							maximum (), ev->pos ().x (), width () - 2));
 	}
+	
+	void VolumeSlider::mouseMoveEvent (QMouseEvent *ev)
+	{
+		mousePressEvent (ev);
+	}
 }
 }
