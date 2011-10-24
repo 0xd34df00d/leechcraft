@@ -33,6 +33,10 @@ namespace Laure
 {
 	class LaureWidget;
 	class LastFMSubmitter;
+
+	/** @author Minh Ngo <nlminhtl@gmail.com>
+	 * @brief An implementation of the Laure's plugin interface
+	 */
 	class Plugin : public QObject
 				, public IInfo
 				, public IHaveTabs

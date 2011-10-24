@@ -19,8 +19,11 @@
 
 #include "playlistaddmenu.h"
 #include <QFileDialog>
+#include <QDebug>
+#include <QRegExp>
 #include "playlistview.h"
 #include "chooseurldialog.h"
+#include <QUrl>
 
 namespace LeechCraft
 {
@@ -44,10 +47,12 @@ namespace Laure
 		QAction *addFiles = new QAction (tr ("Add files"), this);
 		QAction *addFolder = new QAction (tr ("Add folder"), this);
 		QAction *addURL = new QAction (tr ("Add URL"), this);
+		QAction *importPL = new QAction (tr ("Import PlayList"), this);
 		
 		addAction (addFiles);
 		addAction (addFolder);
 		addAction (addURL);
+		addAction (importPL);
 		
 		connect (addURL,
 				SIGNAL (triggered (bool)),
@@ -61,6 +66,10 @@ namespace Laure
 				SIGNAL (triggered (bool)),
 				this,
 				SLOT (handleAddFolder ()));
+		connect (importPL,
+				SIGNAL (triggered (bool)),
+				this,
+				SLOT (handleImportPlayList ()));
 	}
 	
 	void PlayListAddMenu::handleAddFiles ()
@@ -80,7 +89,10 @@ namespace Laure
 		
 		const QFileInfoList& fileInfoList = StoragedFiles (fileDir);
 		Q_FOREACH (const QFileInfo& fileInfo, fileInfoList)
+		{
+			qDebug () << Q_FUNC_INFO << fileInfo.absoluteFilePath ();
 			emit addItem (fileInfo.absoluteFilePath ());
+		}
 	}
 	
 	void PlayListAddMenu::handleAddUrl ()
@@ -88,6 +100,41 @@ namespace Laure
 		ChooseURLDialog d;
 		if (d.exec () == QDialog::Accepted)
 			emit addItem (d.GetUrl ());
+	}
+	
+	void PlayListAddMenu::handleImportPlayList ()
+	{
+		const QString& fileName = QFileDialog::getOpenFileName (this,
+				tr ("Choose playlist"), QDir::homePath (), "*.m3u");
+		if (fileName.isEmpty ())
+			return;
+		const QString& mime = QString (magic_file (Magic_.get (), fileName.toAscii ()));
+		if (!mime.contains ("text"))
+			return;
+		const QFileInfo& fileInfo = fileName;
+		if (!fileInfo.suffix ().compare ("m3u", Qt::CaseInsensitive))
+			LoadM3U (fileName);
+		
+	}
+	
+	void PlayListAddMenu::LoadM3U (const QString& fileName)
+	{
+		QUrl globalUrl (fileName);
+		QFile file (fileName);
+		if (!file.open (QIODevice::ReadOnly| QIODevice::Text))
+			return;
+		while (!file.atEnd ())
+		{
+			QString line = file.readLine ();
+			line.chop (1);
+			if (line.indexOf (QRegExp ("#EXT(M3U)|(INF)")) < 0)
+			{
+				QUrl url (line);
+				if (url.isRelative ())
+					url = globalUrl.resolved (url);
+				emit addItem (url.toString ());
+			}
+		}
 	}
 
 	QFileInfoList PlayListAddMenu::StoragedFiles (const QString& path)

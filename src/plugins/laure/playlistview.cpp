@@ -78,11 +78,12 @@ namespace Laure
 	void PlayListView::removeSelectedRows ()
 	{
 		const QModelIndexList& indexList = selectedIndexes ();
-		Q_FOREACH (const QModelIndex& index, indexList)
-		{
-			PlayListModel_->removeRows (index.row (), indexList.count ());
-			emit itemRemoved (index.row ());
-		}
+		const int c = indexList.count ();
+		const int first = indexList.first ().row ();
+		PlayListModel_->removeRows (first, indexList.count ());
+		for (int i = 0; i < c; ++i)
+			emit itemRemoved (first);
+	
 	}
 	
 	void PlayListView::keyPressEvent (QKeyEvent *event)

@@ -35,7 +35,6 @@ namespace Laure
 				const QModelIndex& index) const
 	{
 		bool played = index.data (Qt::UserRole).toBool ();
-		qDebug () << Q_FUNC_INFO << played;
 		if (played)
 		{
 			painter->fillRect (option.rect, Qt::gray);

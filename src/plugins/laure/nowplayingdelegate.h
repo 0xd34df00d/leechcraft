@@ -17,42 +17,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LAURE_PLAYLISTADDMENU_H
-#define PLUGINS_LAURE_PLAYLISTADDMENU_H
-#include <QMenu>
-#include <QFileInfoList>
-#include <boost/shared_ptr.hpp>
-#include <magic.h>
+#ifndef PLUGINS_LAURE_NOWPLAYINGDELEGATE_H
+#define PLUGINS_LAURE_NOWPLAYINGDELEGATE_H
 
-using boost::shared_ptr;
+#include <QItemDelegate>
+
+class QPainter;
 
 namespace LeechCraft
 {
 namespace Laure
 {
-	class PlayListView;
-	class PlayListAddMenu : public QMenu
+	class NowPlayingDelegate : public QItemDelegate
 	{
 		Q_OBJECT
-#ifdef Q_WS_X11
-		shared_ptr<magic_set> Magic_;
-#elif defined (Q_WS_WIN)
-		QStringList Formats_;
-#endif
 	public:
-		PlayListAddMenu (QWidget* = 0);
-	private slots:
-		void handleAddUrl ();
-		void handleAddFolder ();
-		void handleAddFiles ();
-		void handleImportPlayList ();
-		QFileInfoList StoragedFiles (const QString&);
-	private:
-		bool IsFileSupported (const QFileInfo&);
-		void LoadM3U (const QString&);
-	signals:
-		void addItem (const QString&);
+		NowPlayingDelegate (QObject* = 0);
+		void paint (QPainter *painter, const QStyleOptionViewItem& option,
+				const QModelIndex& index) const;
 	};
 }
 }
-#endif // PLUGINS_LAURE_PLAYLISTADDMENU_H
+
+#endif // PLUGINS_LAURE_NOWPLAYINGDELEGATE_H

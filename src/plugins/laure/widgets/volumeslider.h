@@ -29,6 +29,9 @@ namespace LeechCraft
 {
 namespace Laure
 {
+	/** @author Minh Ngo <nlminhtl@gmail.com>
+	 * @brief An implementation of the Volume slider
+	 */
 	class VolumeSlider : public QSlider
 	{
 		Q_OBJECT

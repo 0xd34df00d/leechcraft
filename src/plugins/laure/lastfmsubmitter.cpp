@@ -136,7 +136,6 @@ namespace Laure
 	
 	void LastFMSubmitter::submit ()
 	{
-		qDebug () << Q_FUNC_INFO << "Submit";
 		Scrobbler_->submit ();
 	}
 
