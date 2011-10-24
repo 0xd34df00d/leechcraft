@@ -36,7 +36,7 @@ namespace Laure
 	: QFrame (parent)
 	, Poller_ (new QTimer (this))
 	, Core_ (NULL)
-	{	
+	{
 		connect (Poller_,
 				SIGNAL (timeout ()),
 				this,
