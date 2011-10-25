@@ -675,12 +675,12 @@
     <message>
         <location filename="customwebview.cpp" line="333"/>
         <source>Save pixmap...</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить с экрана...</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="335"/>
         <source>Saves the rendered pixmap without redownloading.</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохраняет уже отрисованное изображение без повторного закачивания.</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="339"/>
@@ -756,17 +756,17 @@
     <message>
         <location filename="customwebview.cpp" line="610"/>
         <source>Save pixmap</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранение изображения</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="612"/>
         <source>PNG image (*.png);;JPG image (*.jpg);;All files (*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Изображение PNG (*.png);;Изображение JPG (*.jpg);;Все файлы (*.*)</translation>
     </message>
     <message>
         <location filename="customwebview.cpp" line="630"/>
         <source>Unable to save the image. Unable to open file for writing: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно сохранить изображение. Невозможно открыть файл на запись: %1.</translation>
     </message>
 </context>
 <context>
@@ -1194,12 +1194,12 @@
     <message>
         <location filename="dummy.cpp" line="18"/>
         <source>Enable XSS auditing</source>
-        <translation type="unfinished"></translation>
+        <translation>Включить аудит XSS</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="19"/>
         <source>Enable hyperlink auditing</source>
-        <translation type="unfinished"></translation>
+        <translation>Включить аудит гиперссылок</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="20"/>
@@ -1362,7 +1362,7 @@
     <message>
         <location filename="dummy.cpp" line="54"/>
         <source>Enable WebGL</source>
-        <translation type="unfinished"></translation>
+        <translation>Включить WebGL</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="55"/>
