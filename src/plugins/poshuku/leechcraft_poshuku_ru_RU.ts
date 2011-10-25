@@ -1198,256 +1198,266 @@
     </message>
     <message>
         <location filename="dummy.cpp" line="19"/>
+        <source>Specifies whether requests should be monitored for cross-site scripting attempts. Suspicious attempts would be blocked. This feature may have a slight negative impact on performance.</source>
+        <translation>Указывает, отслеживать ли попытки атак типа cross-site scripting в запросах. Подозрительные запросы будут блокированы. Включение этой опции может иметь небольшое негативное влияние на производительность.</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="20"/>
         <source>Enable hyperlink auditing</source>
         <translation>Включить аудит гиперссылок</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="20"/>
+        <location filename="dummy.cpp" line="21"/>
+        <source>Enable sending hyperlink auditing pings.</source>
+        <translation>Указывает, посылать ли информацию для HTML5-аудита гиперссылок.</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="22"/>
         <source>Offline storage database</source>
         <translation>Оффлайн-хранилище</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="21"/>
+        <location filename="dummy.cpp" line="23"/>
         <source>Offline web application cache</source>
         <translation>Оффлайн-кэш веб-приложений</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="22"/>
+        <location filename="dummy.cpp" line="24"/>
         <source>Local storage database</source>
         <translation>Локальное хранилище</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="23"/>
+        <location filename="dummy.cpp" line="25"/>
         <source>Store local link history</source>
         <translation>Хранить локальную историю ссылок</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="24"/>
+        <location filename="dummy.cpp" line="26"/>
         <source>Clear history items older than:</source>
         <translation>Удалять историю старше, чем:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="25"/>
+        <location filename="dummy.cpp" line="27"/>
         <source> days</source>
         <translation> дней</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="26"/>
+        <location filename="dummy.cpp" line="28"/>
         <source>Keep less than: </source>
         <translation>Хранить не более:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="27"/>
+        <location filename="dummy.cpp" line="29"/>
         <source> items</source>
         <translation> записей</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="28"/>
+        <location filename="dummy.cpp" line="30"/>
         <source>Cookies...</source>
         <translation>Cookies...</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="29"/>
+        <location filename="dummy.cpp" line="31"/>
         <source>Clear favicon database</source>
         <translation>Очистить базу значков сайтов</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="30"/>
+        <location filename="dummy.cpp" line="32"/>
         <source>Cache</source>
         <translation>Кэш</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="31"/>
+        <location filename="dummy.cpp" line="33"/>
         <source>Offline storage</source>
         <translation>Оффлайн-хранилище</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="32"/>
+        <location filename="dummy.cpp" line="34"/>
         <source>Offline storage default quota:</source>
         <translation>Квота оффлайн-хранилища по умолчанию:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="33"/>
+        <location filename="dummy.cpp" line="35"/>
         <source> KB</source>
         <translation> КБ</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="34"/>
+        <location filename="dummy.cpp" line="36"/>
         <source>In-memory</source>
         <translation>В памяти</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="35"/>
+        <location filename="dummy.cpp" line="37"/>
         <source>Prefetch DNS entries</source>
         <translation>Предварительно разрешать адреса DNS</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="36"/>
+        <location filename="dummy.cpp" line="38"/>
         <source>Maximum pages:</source>
         <translation>Максимум страниц:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="37"/>
+        <location filename="dummy.cpp" line="39"/>
         <source>Minimum dead capacity:</source>
         <translation>Минимальная мёртвая ёмкость:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="38"/>
         <location filename="dummy.cpp" line="40"/>
         <location filename="dummy.cpp" line="42"/>
+        <location filename="dummy.cpp" line="44"/>
         <source> MB</source>
         <translation> МБ</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="39"/>
+        <location filename="dummy.cpp" line="41"/>
         <source>Maximum dead capacity:</source>
         <translation>Максимальная мёртвая ёмкость:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="41"/>
+        <location filename="dummy.cpp" line="43"/>
         <source>Total capacity:</source>
         <translation>Общая ёмкость:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="43"/>
+        <location filename="dummy.cpp" line="45"/>
         <source>Clear in-memory caches</source>
         <translation>Очистить кэши в памяти</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="44"/>
+        <location filename="dummy.cpp" line="46"/>
         <source>Storage</source>
         <translation>Хранилище</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="45"/>
+        <location filename="dummy.cpp" line="47"/>
         <source>Viewer settings</source>
         <translation>Параметры просмотрщика</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="46"/>
-        <location filename="dummy.cpp" line="47"/>
+        <location filename="dummy.cpp" line="48"/>
+        <location filename="dummy.cpp" line="49"/>
         <source>Dynamic content</source>
         <translation>Динамическое содержимое</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="48"/>
+        <location filename="dummy.cpp" line="50"/>
         <source>Load images automatically</source>
         <translation>Автоматически загружать изображения</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="49"/>
+        <location filename="dummy.cpp" line="51"/>
         <source>Allow Javascript</source>
         <translation>Разрешить Javascript</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="50"/>
+        <location filename="dummy.cpp" line="52"/>
         <source>Allow Java</source>
         <translation>Разрешить Java</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="51"/>
+        <location filename="dummy.cpp" line="53"/>
         <source>Allow plugins</source>
         <translation>Разрешить плагины</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="52"/>
+        <location filename="dummy.cpp" line="54"/>
         <source>Javascript programs can open new windows</source>
         <translation>Javascript-программы могут открывать новые окна</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="53"/>
+        <location filename="dummy.cpp" line="55"/>
         <source>Javascript programs can access clipboard</source>
         <translation>Javascript-программы могут работать с буфером обмена</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="54"/>
+        <location filename="dummy.cpp" line="56"/>
         <source>Enable WebGL</source>
         <translation>Включить WebGL</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="55"/>
+        <location filename="dummy.cpp" line="57"/>
         <source>Developer extras</source>
         <translation>Дополнения для разработчика</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="56"/>
-        <location filename="dummy.cpp" line="57"/>
+        <location filename="dummy.cpp" line="58"/>
+        <location filename="dummy.cpp" line="59"/>
         <source>Fonts</source>
         <translation>Шрифты</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="58"/>
+        <location filename="dummy.cpp" line="60"/>
         <source>Standard font:</source>
         <translation>Стандартный шрифт:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="59"/>
+        <location filename="dummy.cpp" line="61"/>
         <source>Fixed font:</source>
         <translation>Моноширинный шрифт:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="60"/>
+        <location filename="dummy.cpp" line="62"/>
         <source>Serif font:</source>
         <translation>Шрифт с засечками:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="61"/>
+        <location filename="dummy.cpp" line="63"/>
         <source>SansSerif font:</source>
         <translation>Шрифт без засечек:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="62"/>
+        <location filename="dummy.cpp" line="64"/>
         <source>Cursive font:</source>
         <translation>Курсивный шрифт:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="63"/>
+        <location filename="dummy.cpp" line="65"/>
         <source>Fantasy font:</source>
         <translation>Fantasy-шрифт:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="64"/>
+        <location filename="dummy.cpp" line="66"/>
         <source>Sizes</source>
         <translation>Размеры</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="65"/>
+        <location filename="dummy.cpp" line="67"/>
         <source>Minimum font size:</source>
         <translation>Минимальный размер шрифта:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="66"/>
+        <location filename="dummy.cpp" line="68"/>
         <source>Default font size:</source>
         <translation>Размер шрифта по умолчанию:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="67"/>
+        <location filename="dummy.cpp" line="69"/>
         <source>Default fixed font size:</source>
         <translation>Размер фиксированного шрифта по умолчанию:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="68"/>
-        <location filename="dummy.cpp" line="69"/>
+        <location filename="dummy.cpp" line="70"/>
+        <location filename="dummy.cpp" line="71"/>
         <source>Rendering</source>
         <translation>Отображение</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="70"/>
+        <location filename="dummy.cpp" line="72"/>
         <source>Antialias primitives if possible</source>
         <translation>По возможности сглаживать примитивы</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="71"/>
+        <location filename="dummy.cpp" line="73"/>
         <source>Antialias text if possible</source>
         <translation>По возможности сглаживать текст</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="72"/>
+        <location filename="dummy.cpp" line="74"/>
         <source>Smooth pixmap transform</source>
         <translation>Гладкое преобразование изображений</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="73"/>
+        <location filename="dummy.cpp" line="75"/>
         <source>High-quality antialiasing</source>
         <translation>Высококачественное сглаживание</translation>
     </message>

@@ -1189,256 +1189,266 @@
     </message>
     <message>
         <location filename="dummy.cpp" line="19"/>
-        <source>Enable hyperlink auditing</source>
+        <source>Specifies whether requests should be monitored for cross-site scripting attempts. Suspicious attempts would be blocked. This feature may have a slight negative impact on performance.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="20"/>
+        <source>Enable hyperlink auditing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="21"/>
+        <source>Enable sending hyperlink auditing pings.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="22"/>
         <source>Offline storage database</source>
         <translation>Base de datos de almacenamiento offline</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="21"/>
+        <location filename="dummy.cpp" line="23"/>
         <source>Offline web application cache</source>
         <translation>Web sin conexión caché de la aplicación</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="22"/>
+        <location filename="dummy.cpp" line="24"/>
         <source>Local storage database</source>
         <translation>Base de datos de almacenamiento local</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="23"/>
+        <location filename="dummy.cpp" line="25"/>
         <source>Store local link history</source>
         <translation>Almacenar el historial de enlace local</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="24"/>
+        <location filename="dummy.cpp" line="26"/>
         <source>Clear history items older than:</source>
         <translation>Borrar los elementos del historial más antiguos que:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="25"/>
+        <location filename="dummy.cpp" line="27"/>
         <source> days</source>
         <translation>Dias</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="26"/>
+        <location filename="dummy.cpp" line="28"/>
         <source>Keep less than: </source>
         <translation>Dejar menos que:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="27"/>
+        <location filename="dummy.cpp" line="29"/>
         <source> items</source>
         <translation>artículos</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="28"/>
+        <location filename="dummy.cpp" line="30"/>
         <source>Cookies...</source>
         <translation>Cookies...</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="29"/>
+        <location filename="dummy.cpp" line="31"/>
         <source>Clear favicon database</source>
         <translation>Borrar la base de favicon  datos</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="30"/>
+        <location filename="dummy.cpp" line="32"/>
         <source>Cache</source>
         <translation>Caché</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="31"/>
+        <location filename="dummy.cpp" line="33"/>
         <source>Offline storage</source>
         <translation>Almacenamiento fuera de línea</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="32"/>
+        <location filename="dummy.cpp" line="34"/>
         <source>Offline storage default quota:</source>
         <translation>Almacenamiento fuera de línea cuota predeterminada:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="33"/>
+        <location filename="dummy.cpp" line="35"/>
         <source> KB</source>
         <translation>KB</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="34"/>
+        <location filename="dummy.cpp" line="36"/>
         <source>In-memory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="35"/>
+        <location filename="dummy.cpp" line="37"/>
         <source>Prefetch DNS entries</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="36"/>
+        <location filename="dummy.cpp" line="38"/>
         <source>Maximum pages:</source>
         <translation>Páginas como máximo:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="37"/>
+        <location filename="dummy.cpp" line="39"/>
         <source>Minimum dead capacity:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="38"/>
         <location filename="dummy.cpp" line="40"/>
         <location filename="dummy.cpp" line="42"/>
+        <location filename="dummy.cpp" line="44"/>
         <source> MB</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="39"/>
+        <location filename="dummy.cpp" line="41"/>
         <source>Maximum dead capacity:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="41"/>
+        <location filename="dummy.cpp" line="43"/>
         <source>Total capacity:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="43"/>
+        <location filename="dummy.cpp" line="45"/>
         <source>Clear in-memory caches</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="44"/>
+        <location filename="dummy.cpp" line="46"/>
         <source>Storage</source>
         <translation>Almacenamiento</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="45"/>
+        <location filename="dummy.cpp" line="47"/>
         <source>Viewer settings</source>
         <translation>configuración del visor</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="46"/>
-        <location filename="dummy.cpp" line="47"/>
+        <location filename="dummy.cpp" line="48"/>
+        <location filename="dummy.cpp" line="49"/>
         <source>Dynamic content</source>
         <translation>El contenido dinámico</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="48"/>
+        <location filename="dummy.cpp" line="50"/>
         <source>Load images automatically</source>
         <translation>Cargar imágenes automáticamente</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="49"/>
+        <location filename="dummy.cpp" line="51"/>
         <source>Allow Javascript</source>
         <translation>Permitir Javascript</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="50"/>
+        <location filename="dummy.cpp" line="52"/>
         <source>Allow Java</source>
         <translation>Permitir java</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="51"/>
+        <location filename="dummy.cpp" line="53"/>
         <source>Allow plugins</source>
         <translation>Permitir plugins</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="52"/>
+        <location filename="dummy.cpp" line="54"/>
         <source>Javascript programs can open new windows</source>
         <translation>Programas de Javascript pueden abrir nuevas ventanas</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="53"/>
+        <location filename="dummy.cpp" line="55"/>
         <source>Javascript programs can access clipboard</source>
         <translation>Programas de Javascript tienen acceso al portapapeles</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="54"/>
+        <location filename="dummy.cpp" line="56"/>
         <source>Enable WebGL</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="55"/>
+        <location filename="dummy.cpp" line="57"/>
         <source>Developer extras</source>
         <translation>desarrollador extras</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="56"/>
-        <location filename="dummy.cpp" line="57"/>
+        <location filename="dummy.cpp" line="58"/>
+        <location filename="dummy.cpp" line="59"/>
         <source>Fonts</source>
         <translation>Tipos de letra </translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="58"/>
+        <location filename="dummy.cpp" line="60"/>
         <source>Standard font:</source>
         <translation>Tipo de letra normal:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="59"/>
+        <location filename="dummy.cpp" line="61"/>
         <source>Fixed font:</source>
         <translation>Tipo fijo:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="60"/>
+        <location filename="dummy.cpp" line="62"/>
         <source>Serif font:</source>
         <translation>Tipo de letra Serif:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="61"/>
+        <location filename="dummy.cpp" line="63"/>
         <source>SansSerif font:</source>
         <translation>Tipo de letra SansSerif:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="62"/>
+        <location filename="dummy.cpp" line="64"/>
         <source>Cursive font:</source>
         <translation>Tipo de letra Cursive:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="63"/>
+        <location filename="dummy.cpp" line="65"/>
         <source>Fantasy font:</source>
         <translation>Tipo de letra Fantasy:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="64"/>
+        <location filename="dummy.cpp" line="66"/>
         <source>Sizes</source>
         <translation>Tamaños</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="65"/>
+        <location filename="dummy.cpp" line="67"/>
         <source>Minimum font size:</source>
         <translation>Tamaño minimal de letras:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="66"/>
+        <location filename="dummy.cpp" line="68"/>
         <source>Default font size:</source>
         <translation>Tamaño de letra predeterminado:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="67"/>
+        <location filename="dummy.cpp" line="69"/>
         <source>Default fixed font size:</source>
         <translation>Tamaño de letra predeterminado fijo:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="68"/>
-        <location filename="dummy.cpp" line="69"/>
+        <location filename="dummy.cpp" line="70"/>
+        <location filename="dummy.cpp" line="71"/>
         <source>Rendering</source>
         <translation>Rendering</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="70"/>
+        <location filename="dummy.cpp" line="72"/>
         <source>Antialias primitives if possible</source>
         <translation>Antialias primitivas, si es posible</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="71"/>
+        <location filename="dummy.cpp" line="73"/>
         <source>Antialias text if possible</source>
         <translation>Suavizar texto si es posible</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="72"/>
+        <location filename="dummy.cpp" line="74"/>
         <source>Smooth pixmap transform</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="73"/>
+        <location filename="dummy.cpp" line="75"/>
         <source>High-quality antialiasing</source>
         <translation type="unfinished"></translation>
     </message>
