@@ -28,12 +28,7 @@ namespace LeechCraft
 {
 namespace Laure
 {
-	const char * const vlc_args[] = {
-			"-I", "dummy",
-			"--ignore-config",
-			"--extraintf=logger",
-			"--verbose=2"
-	};
+	const char * const vlc_args[] = {};
 
 	namespace
 	{
