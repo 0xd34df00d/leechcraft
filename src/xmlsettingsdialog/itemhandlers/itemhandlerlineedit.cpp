@@ -45,7 +45,7 @@ namespace LeechCraft
 		QLabel *label = new QLabel (XSD_->GetLabel (item));
 		label->setWordWrap (false);
 
-		QVariant value = XSD_->GetValue (item);
+		const QVariant& value = XSD_->GetValue (item);
 
 		QLineEdit *edit = new QLineEdit (value.toString ());
 		XSD_->SetTooltip (edit, item);
