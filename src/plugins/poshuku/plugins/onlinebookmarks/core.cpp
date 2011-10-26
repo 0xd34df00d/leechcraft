@@ -291,6 +291,7 @@ namespace OnlineBookmarks
 			QStandardItem *item = new QStandardItem (account->GetLogin ());
 			item->setEditable (false);
 			item->setCheckable (true);
+			item->setCheckState (account->IsQuickUpload () ? Qt::Checked : Qt::Unchecked);
 			Item2Account_ [item] = account;
 			parentItem->appendRow (item);
 		}
@@ -406,7 +407,10 @@ namespace OnlineBookmarks
 	void Core::handleItemChanged (QStandardItem *item)
 	{
 		if (item->checkState () == Qt::Unchecked)
+		{
+			Item2Account_ [item]->SetQuickUpload (false);
 			return;
+		}
 
 		QStandardItem *parentItem = item->parent ();
 		for (int i = 0; i < parentItem->rowCount (); ++i)
@@ -414,8 +418,15 @@ namespace OnlineBookmarks
 			QStandardItem *childItem = parentItem->child (i);
 			if (childItem != item &&
 					childItem->checkState () == Qt::Checked)
+			{
 				childItem->setCheckState (Qt::Unchecked);
+				if (Item2Account_.contains (childItem))
+					Item2Account_ [childItem]->SetQuickUpload (false);
+			}
+
 		}
+
+		Item2Account_ [item]->SetQuickUpload (true);
 	}
 
 	void Core::syncBookmarks ()
