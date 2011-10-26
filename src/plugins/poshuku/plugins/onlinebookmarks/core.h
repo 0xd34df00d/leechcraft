@@ -57,6 +57,9 @@ namespace OnlineBookmarks
 		QHash<QStandardItem*, IAccount*> Item2Account_;
 		QHash<QStandardItem*, IBookmarksService*> Item2Service_;
 
+		QTimer *DownloadTimer_;
+		QTimer *UploadTimer_;
+
 		Core ();
 	public:
 		static Core& Instance ();
@@ -104,6 +107,9 @@ namespace OnlineBookmarks
 		void downloadBookmarks ();
 		void downloadAllBookmarks ();
 		void removeAccount (QObject*);
+
+		void checkDownloadPeriod ();
+		void checkUploadPeriod ();
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);

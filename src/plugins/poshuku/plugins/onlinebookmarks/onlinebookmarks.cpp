@@ -48,6 +48,14 @@ namespace OnlineBookmarks
 		SettingsDialog_->SetCustomWidget ("Accounts",
 				Core::Instance ().GetAccountsSettingsWidget ());
 		Core::Instance ().GetAccountsSettingsWidget ()->InitServices ();
+		SettingsDialog_->SetDataSource ("QuickUploadAccounts",
+				Core::Instance ().GetQuickUploadModel ());
+
+		if (XmlSettingsManager::Instance ()->Property ("DownloadGroup", false).toBool ())
+			Core::Instance ().checkDownloadPeriod ();
+
+		if (XmlSettingsManager::Instance ()->Property ("UploadGroup", false).toBool ())
+			Core::Instance ().checkUploadPeriod ();
 
 		connect (&Core::Instance (),
 				SIGNAL (gotEntity (const LeechCraft::Entity&)),

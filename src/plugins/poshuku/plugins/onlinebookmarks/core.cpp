@@ -26,6 +26,7 @@
 #include "accountssettings.h"
 #include "pluginmanager.h"
 #include "xmlsettingsmanager.h"
+#include <QTimer>
 
 namespace LeechCraft
 {
@@ -37,11 +38,27 @@ namespace OnlineBookmarks
 	: PluginManager_ (new PluginManager)
 	, AccountsSettings_ (new AccountsSettings)
 	, QuickUploadModel_ (new QStandardItemModel)
+	, DownloadTimer_ (new QTimer (this))
+	, UploadTimer_ (new QTimer (this))
 	{
 		connect (QuickUploadModel_,
 				SIGNAL (itemChanged (QStandardItem*)),
 				this,
 				SLOT (handleItemChanged (QStandardItem*)),
+				Qt::UniqueConnection);
+
+		DownloadTimer_->setSingleShot (true);
+		connect (DownloadTimer_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (checkDownloadPeriod ()),
+				Qt::UniqueConnection);
+
+		UploadTimer_->setSingleShot (true);
+		connect (UploadTimer_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (checkUploadPeriod ()),
 				Qt::UniqueConnection);
 	}
 
@@ -506,6 +523,43 @@ namespace OnlineBookmarks
 		}
 	}
 
+	void Core::checkDownloadPeriod ()
+	{
+		uint downloadPeriod = XmlSettingsManager::Instance ()->
+				property ("DownloadPeriod").toInt () * 3600;
+		uint lastCheckTimeInSec = XmlSettingsManager::Instance ()->Property ("LastDownloadCheck",
+				0).toInt ();
+
+		uint diff = lastCheckTimeInSec + downloadPeriod - QDateTime::currentDateTime ().toTime_t ();
+		if (diff > 0)
+			DownloadTimer_->start (diff);
+		else
+		{
+			downloadBookmarks ();
+			XmlSettingsManager::Instance ()->setProperty ("LastDownloadCheck",
+					QDateTime::currentDateTime ().toTime_t ());
+			DownloadTimer_->start (downloadPeriod);
+		}
+	}
+
+	void Core::checkUploadPeriod ()
+	{
+		uint uploadPeriod = XmlSettingsManager::Instance ()->
+				property ("UploadPeriod").toInt () * 3600;
+		uint lastCheckTimeInSec = XmlSettingsManager::Instance ()->Property ("LastUploadCheck",
+				0).toInt ();
+
+		uint diff = lastCheckTimeInSec + uploadPeriod - QDateTime::currentDateTime ().toTime_t ();
+		if (diff > 0)
+			UploadTimer_->start (diff);
+		else
+		{
+			uploadBookmarks ();
+			XmlSettingsManager::Instance ()->setProperty ("LastUploadCheck",
+					QDateTime::currentDateTime ().toTime_t ());
+			DownloadTimer_->start (uploadPeriod);
+		}
+	}
 }
 }
 }
