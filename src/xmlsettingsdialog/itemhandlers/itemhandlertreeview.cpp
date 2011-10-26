@@ -47,11 +47,16 @@ namespace LeechCraft
 		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
 
 		QTreeView *tree = new QTreeView (XSD_);
-		tree->setHeaderHidden (true);
 		tree->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
 
 		QString prop = item.attribute ("property");
 		tree->setObjectName (prop);
+
+		if (item.hasAttribute ("hideHeader") &&
+				item.attribute ("hideHeader") == "true")
+			tree->setHeaderHidden (true);
+		else
+			tree->setHeaderHidden (false);
 
 		Factory_->RegisterDatasourceSetter (prop,
 				boost::bind (&ItemHandlerTreeView::SetDataSource, this, _1, _2));
