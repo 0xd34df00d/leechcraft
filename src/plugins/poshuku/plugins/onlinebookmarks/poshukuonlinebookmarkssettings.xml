@@ -8,7 +8,12 @@
 		</tab>
 		<tab>
 			<label value="Sync options" />
-			<item type="customwidget" label="own" name="QuickUpload" />
+			<item type="treeview" property="QuickUploadAccounts">
+				<label value="Select account for quick upload (only one per service)" />
+			</item>
+			<item type="checkbox" property="UploadInOneClick" state="on">
+				<label value="Upload bookmark in one click" />
+			</item>
 			<item type="checkbox" property="ConfirmSend" state="off">
 				<label value="Confirm sending bookmarks on addition" />
 			</item>
@@ -35,16 +40,16 @@
 						<label value="hour" />
 					</option>
 					<option name="2">
-						<label value="2 hour" />
+						<label value="2 hours" />
 					</option>
 					<option name="4">
-						<label value="4 hour" />
+						<label value="4 hours" />
 					</option>
 					<option name="8" default="true">
-						<label value="8 hour" />
+						<label value="8 hours" />
 					</option>
 					<option name="12">
-						<label value="12 hour" />
+						<label value="12 hours" />
 					</option>
 					<option name="24">
 						<label value="day" />
@@ -65,16 +70,16 @@
 						<label value="hour" />
 					</option>
 					<option name="2">
-						<label value="2 hour" />
+						<label value="2 hours" />
 					</option>
 					<option name="4">
-						<label value="4 hour" />
+						<label value="4 hours" />
 					</option>
 					<option name="8" default="true">
-						<label value="8 hour" />
+						<label value="8 hours" />
 					</option>
 					<option name="12">
-						<label value="12 hour" />
+						<label value="12 hours" />
 					</option>
 					<option name="24">
 						<label value="day" />
