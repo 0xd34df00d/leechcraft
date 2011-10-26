@@ -40,9 +40,6 @@ namespace OnlineBookmarks
 		virtual QObject* GetParentService () const = 0;
 
 		//
-// 		virtual IAccount::AuthType GetAuthType () const = 0;
-
-		//
 		virtual QByteArray GetAccountID () const = 0;
 
 
