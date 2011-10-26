@@ -8,7 +8,7 @@
 		</tab>
 		<tab>
 			<label value="Sync options" />
-			<item type="treeview" property="QuickUploadAccounts">
+			<item type="treeview" property="QuickUploadAccounts" hideHeader="true">
 				<label value="Select account for quick upload (only one per service)" />
 			</item>
 			<item type="checkbox" property="UploadInOneClick" state="on">
