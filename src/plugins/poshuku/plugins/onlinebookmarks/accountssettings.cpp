@@ -145,7 +145,7 @@ namespace OnlineBookmarks
 
 		Core::Instance ().SetActiveAccounts (accounts);
 
-		Core::Instance ().SaveQuickUploadSettings ();
+		Core::Instance ().SetQuickUploadButtons ();
 	}
 
 	void AccountsSettings::resizeColumns ()
