@@ -65,6 +65,8 @@ namespace OnlineBookmarks
 				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)),
 				this,
 				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)));
+
+		Core::Instance ().SetQuickUploadButtons ();
 	}
 
 	void Plugin::Release ()

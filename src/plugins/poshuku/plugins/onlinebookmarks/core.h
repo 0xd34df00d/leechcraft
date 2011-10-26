@@ -83,7 +83,6 @@ namespace OnlineBookmarks
 
 // 		void UploadBookmark (const QString&,
 // 				const QString&, const QStringList&);
-
 		void DeletePassword (QObject*);
 		QString GetPassword (QObject*);
 		void SavePassword (QObject*);
@@ -91,7 +90,7 @@ namespace OnlineBookmarks
 		void AddAccounts (QObjectList);
 		QModelIndex GetServiceIndex (QObject *) const;
 
-		void SaveQuickUploadSettings ();
+		void SetQuickUploadButtons ();
 	private:
 		QObject* GetBookmarksModel () const;
 		QVariantList GetUniqueBookmarks (IAccount*,

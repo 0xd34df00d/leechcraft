@@ -306,7 +306,7 @@ namespace OnlineBookmarks
 		return QModelIndex ();
 	}
 
-	void Core::SaveQuickUploadSettings ()
+	void Core::SetQuickUploadButtons ()
 	{
 
 	}
