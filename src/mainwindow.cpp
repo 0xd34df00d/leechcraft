@@ -404,6 +404,9 @@ void LeechCraft::MainWindow::SetStatusBar ()
 	statusBar ()->addPermanentWidget (Clock_);
 	if (!isFullScreen ())
 		Clock_->hide ();
+
+	QLBar_ = new QToolBar ();
+	statusBar ()->addPermanentWidget (QLBar_);
 }
 
 void LeechCraft::MainWindow::ReadSettings ()
@@ -717,11 +720,8 @@ void LeechCraft::MainWindow::doDelayedInit ()
 
 		SkinEngine::Instance ().UpdateIconSet (actions);
 
-		Q_FOREACH (QAction *action, actions)
-			Ui_.MainTabWidget_->
-					AddAction2TabBarLayout (QTabBar::RightSide, action);
-		Ui_.MainTabWidget_->AddAction2TabBarLayout (QTabBar::RightSide,
-						Util::CreateSeparator (this));
+		QLBar_->addSeparator ();
+		QLBar_->addActions (actions);
 	}
 
 	FillTray ();
