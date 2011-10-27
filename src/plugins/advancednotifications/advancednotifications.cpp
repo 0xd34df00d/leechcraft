@@ -21,6 +21,7 @@
 #include <interfaces/entitytesthandleresult.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/resourceloader.h>
+#include <util/util.h>
 #include "generalhandler.h"
 #include "xmlsettingsmanager.h"
 #include "notificationruleswidget.h"
@@ -33,6 +34,8 @@ namespace AdvancedNotifications
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("advancednotifications");
+
 		Proxy_ = proxy;
 		Core::Instance ().SetProxy (proxy);
 
