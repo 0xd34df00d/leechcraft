@@ -16,52 +16,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_ADVANCEDNOTIFICATIONS_H
-#define PLUGINS_ADVANCEDNOTIFICATIONS_ADVANCEDNOTIFICATIONS_H
-#include <boost/shared_ptr.hpp>
+#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_ENABLESOUNDACTIONMANAGER_H
+#define PLUGINS_ADVANCEDNOTIFICATIONS_ENABLESOUNDACTIONMANAGER_H
 #include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/ientityhandler.h>
-#include <interfaces/ihavesettings.h>
 #include <interfaces/iactionsexporter.h>
+
+class QAction;
 
 namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
-	class GeneralHandler;
-	class EnableSoundActionManager;
-
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IEntityHandler
-				 , public IHaveSettings
-				 , public IActionsExporter
+	class EnableSoundActionManager : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IEntityHandler IHaveSettings IActionsExporter)
 
-		ICoreProxy_ptr Proxy_;
-		Util::XmlSettingsDialog_ptr SettingsDialog_;
-		boost::shared_ptr<GeneralHandler> GeneralHandler_;
-		EnableSoundActionManager *EnableSoundMgr_;
+		QAction *EnableAction_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-
-		EntityTestHandleResult CouldHandle (const Entity&) const;
-		void Handle (Entity);
-
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+		EnableSoundActionManager (QObject* = 0);
 
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
+	private slots:
+		void xsdPropChanged ();
+		void enableSounds (bool);
 	};
 }
 }
