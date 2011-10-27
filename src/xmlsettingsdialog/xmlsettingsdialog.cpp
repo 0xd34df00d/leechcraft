@@ -226,11 +226,23 @@ void XmlSettingsDialog::ParsePage (const QDomElement& page)
 	QGridLayout *lay = new QGridLayout;
 	lay->setContentsMargins (0, 0, 0, 0);
 	baseWidget->setLayout (lay);
-	baseWidget->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
 
 	ParseEntity (page, baseWidget);
-	QSpacerItem *verticalSpacer = new QSpacerItem (10, 20, QSizePolicy::Minimum, QSizePolicy::Minimum);
-	lay->addItem (verticalSpacer, lay->rowCount (), 0);
+
+	bool foundExpanding = false;
+
+	Q_FOREACH (QWidget *w, baseWidget->findChildren<QWidget*> ())
+		if (w->sizePolicy ().verticalPolicy () & QSizePolicy::ExpandFlag)
+		{
+			foundExpanding = true;
+			break;
+		}
+
+	if (!foundExpanding)
+	{
+		QSpacerItem *verticalSpacer = new QSpacerItem (0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
+		lay->addItem (verticalSpacer, lay->rowCount (), 0, 1, 2);
+	}
 }
 
 void XmlSettingsDialog::ParseEntity (const QDomElement& entity, QWidget *baseWidget)
@@ -249,16 +261,13 @@ void XmlSettingsDialog::ParseEntity (const QDomElement& entity, QWidget *baseWid
 		QGridLayout *groupLayout = new QGridLayout ();
 		groupLayout->setContentsMargins (2, 2, 2, 2);
 		box->setLayout (groupLayout);
-		box->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
+
 		ParseEntity (gbox, box);
 
 		QGridLayout *lay = qobject_cast<QGridLayout*> (baseWidget->layout ());
 		lay->addWidget (box, lay->rowCount (), 0);
 
 		gbox = gbox.nextSiblingElement ("groupbox");
-
-		QSpacerItem *verticalSpacer = new QSpacerItem (10, 20, QSizePolicy::Minimum, QSizePolicy::Expanding);
-		groupLayout->addItem (verticalSpacer, groupLayout->rowCount (), 0);
 	}
 
 	QDomElement scroll = entity.firstChildElement ("scrollarea");
@@ -282,7 +291,10 @@ void XmlSettingsDialog::ParseEntity (const QDomElement& entity, QWidget *baseWid
 				area->setVerticalScrollBarPolicy (Qt::ScrollBarAlwaysOff);
 		}
 
+		area->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
+
 		QFrame *areaWidget = new QFrame;
+		areaWidget->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
 		QGridLayout *areaLayout = new QGridLayout;
 		areaWidget->setLayout (areaLayout);
 		ParseEntity (scroll, areaWidget);
@@ -293,8 +305,6 @@ void XmlSettingsDialog::ParseEntity (const QDomElement& entity, QWidget *baseWid
 		lay->addWidget (area, lay->rowCount (), 0, 1, 2);
 
 		scroll = scroll.nextSiblingElement ("scrollarea");
-		QSpacerItem *verticalSpacer = new QSpacerItem (10, 20, QSizePolicy::Minimum, QSizePolicy::Expanding);
-		lay->addItem (verticalSpacer, lay->rowCount (), 0, 1, 1);
 	}
 
 	QDomElement tab = entity.firstChildElement ("tab");
@@ -309,11 +319,11 @@ void XmlSettingsDialog::ParseEntity (const QDomElement& entity, QWidget *baseWid
 			QGridLayout *widgetLay = new QGridLayout;
 			widgetLay->setContentsMargins (0, 0, 0, 0);
 			page->setLayout (widgetLay);
-			page->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
 			tabs->addTab (page, GetLabel (tab));
 			ParseEntity (tab, page);
 			tab = tab.nextSiblingElement ("tab");
-			QSpacerItem *verticalSpacer = new QSpacerItem (10, 20, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+			QSpacerItem *verticalSpacer = new QSpacerItem (0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
 			widgetLay->addItem (verticalSpacer, widgetLay->rowCount (), 0, 1, 1);
 		}
 	}
