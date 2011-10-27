@@ -35,6 +35,7 @@
 #include <interfaces/core/ipluginsmanager.h>
 
 class QGraphicsWebView;
+class QGraphicsSceneContextMenuEvent;
 
 namespace LeechCraft
 {
@@ -88,7 +89,8 @@ namespace CleanWeb
 		void hookWebPluginFactoryReload (LeechCraft::IHookProxy_ptr,
 				QList<IWebPlugin*>&);
 		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr,
-				QGraphicsWebView*, QContextMenuEvent*,
+				QGraphicsWebView*,
+				QGraphicsSceneContextMenuEvent*,
 				const QWebHitTestResult&, QMenu*,
 				WebViewCtxMenuStage);
 	signals:
