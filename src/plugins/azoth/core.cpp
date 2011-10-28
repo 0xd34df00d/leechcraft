@@ -650,6 +650,17 @@ namespace Azoth
 		return src->GetHTMLTemplate (opt, entry, frame);
 	}
 
+	QUrl Core::GetSelectedChatTemplateURL (QObject *entry) const
+	{
+		IChatStyleResourceSource *src = GetCurrentChatStyle (entry);
+		if (!src)
+			return QUrl ();
+
+		const QString& opt = XmlSettingsManager::Instance ()
+				.property (GetStyleOptName (entry)).toString ();
+		return src->GetBaseURL (opt);
+	}
+
 	bool Core::AppendMessageByTemplate (QWebFrame *frame,
 			QObject *message, const ChatMsgAppendInfo& info)
 	{
@@ -1894,7 +1905,8 @@ namespace Azoth
 		Entry2Items_ [qobject_cast<ICLEntry*> (entryObj)].removeAll (item);
 
 		QStandardItem *category = item->parent ();
-		QString text = category->text ();
+		const int unread = item->data (CLRUnreadMsgCount).toInt ();
+
 		ItemIconManager_->Cancel (item);
 		category->removeRow (item->row ());
 
@@ -1902,8 +1914,16 @@ namespace Azoth
 		{
 			QStandardItem *account = category->parent ();
 			ItemIconManager_->Cancel (category);
+
+			const QString& text = category->text ();
+
 			account->removeRow (category->row ());
 			Account2Category2Item_ [account].remove (text);
+		}
+		else if (unread)
+		{
+			const int sum = category->data (CLRUnreadMsgCount).toInt ();
+			category->setData (std::max (sum - unread, 0), CLRUnreadMsgCount);
 		}
 	}
 

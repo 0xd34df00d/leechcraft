@@ -235,16 +235,7 @@ namespace LeechCraft
 				void AddText (QString& text, const QStringList& urls)
 				{
 					Q_FOREACH (const QString& url, urls)
-					{
-						boost::optional<QByteArray> opt =
-								Core::Instance ().GetExtResourceManager ()->
-										GetResourceData (QUrl::fromEncoded (url.toUtf8 ()));
-						if (!opt || opt->isEmpty ())
-							continue;
-
-						text += QString ("<img src='data:image/png;base64,%1' alt='' /><br />")
-								.arg (QString (opt->toBase64 ()));
-					}
+						text += "<img src='" + url + "' alt='Image' /><br />";
 				}
 			}
 
@@ -252,8 +243,15 @@ namespace LeechCraft
 			{
 				QString text;
 				AddText (text, index.data (PackagesModel::PMRThumbnails).toStringList ());
-				text += index.data (PackagesModel::PMRLongDescription).toString ();
-				AddText (text, index.data (PackagesModel::PMRScreenshots).toStringList ());
+
+				QString descr = index.data (PackagesModel::PMRLongDescription).toString ();
+				if (!descr.contains ("<br"))
+					descr.replace ("\n\n", "<br/><br/>");
+				text += descr;
+
+				const QStringList& screens = index.data (PackagesModel::PMRScreenshots).toStringList ();
+				text += "<hr/>";
+				AddText (text, screens);
 
 				Ui_.Browser_->SetHtml (text);
 

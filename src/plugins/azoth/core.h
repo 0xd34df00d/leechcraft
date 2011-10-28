@@ -297,6 +297,7 @@ namespace Azoth
 		QList<CLEntryActionArea> GetAreasForAction (const QAction *action) const;
 
 		QString GetSelectedChatTemplate (QObject *entry, QWebFrame *frame) const;
+		QUrl GetSelectedChatTemplateURL (QObject*) const;
 
 		bool AppendMessageByTemplate (QWebFrame*, QObject*, const ChatMsgAppendInfo&);
 

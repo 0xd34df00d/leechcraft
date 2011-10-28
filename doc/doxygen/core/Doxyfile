@@ -25,33 +25,33 @@ DOXYFILE_ENCODING      = UTF-8
 # The PROJECT_NAME tag is a single word (or a sequence of words surrounded 
 # by quotes) that should identify the project.
 
-PROJECT_NAME           = "LeechCraft Azoth"
+PROJECT_NAME           = LeechCraft
 
 # The PROJECT_NUMBER tag can be used to enter a project or revision number. 
 # This could be handy for archiving the generated documentation or 
 # if some version control system is used.
 
-PROJECT_NUMBER         = 0.4.90-516-g87a9591
+PROJECT_NUMBER         = 0.4.80-66-gf1646eb
 
 # Using the PROJECT_BRIEF tag one can provide an optional one line description 
 # for a project that appears at the top of each page and should give viewer 
 # a quick idea about the purpose of the project. Keep the description short.
 
-PROJECT_BRIEF          = "Modular multiprotocol IM plugin for LeechCraft"
+PROJECT_BRIEF          = "Modular cross-platform feature rich internet client."
 
 # With the PROJECT_LOGO tag one can specify an logo or icon that is 
 # included in the documentation. The maximum height of the logo should not 
 # exceed 55 pixels and the maximum width should not exceed 200 pixels. 
 # Doxygen will copy the logo to the output directory.
 
-PROJECT_LOGO           = /home/d34df00d/Programming/leechcraft/doc/doxygen/azoth/azoth.png
+PROJECT_LOGO           = /home/d34df00d/Programming/leechcraft/doc/doxygen/core/leechcraft.png
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) 
 # base path where the generated documentation will be put. 
 # If a relative path is entered, it will be relative to the location 
 # where doxygen was started. If left blank the current directory will be used.
 
-OUTPUT_DIRECTORY       = /home/d34df00d/Programming/leechcraft/doc/doxygen/azoth/out
+OUTPUT_DIRECTORY       = /home/d34df00d/Programming/leechcraft/doc/doxygen/core/out
 
 # If the CREATE_SUBDIRS tag is set to YES, then doxygen will create 
 # 4096 sub-directories (in 2 levels) under the output directory of each output 
@@ -619,7 +619,7 @@ WARN_LOGFILE           =
 # directories like "/usr/src/myproject". Separate the files or directories 
 # with spaces.
 
-INPUT                  = /home/d34df00d/Programming/leechcraft/src/plugins/azoth/interfaces
+INPUT                  = /home/d34df00d/Programming/leechcraft/src/interfaces
 
 # This tag can be used to specify the character encoding of the source files 
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding, which is 

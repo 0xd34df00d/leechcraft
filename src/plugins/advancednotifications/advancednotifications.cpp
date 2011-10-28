@@ -21,10 +21,12 @@
 #include <interfaces/entitytesthandleresult.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/resourceloader.h>
+#include <util/util.h>
 #include "generalhandler.h"
 #include "xmlsettingsmanager.h"
 #include "notificationruleswidget.h"
 #include "core.h"
+#include "enablesoundactionmanager.h"
 
 namespace LeechCraft
 {
@@ -32,8 +34,9 @@ namespace AdvancedNotifications
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Proxy_ = proxy;
+		Util::InstallTranslator ("advancednotifications");
 
+		Proxy_ = proxy;
 		Core::Instance ().SetProxy (proxy);
 
 		connect (&Core::Instance (),
@@ -50,6 +53,8 @@ namespace AdvancedNotifications
 				Core::Instance ().GetAudioThemeLoader ()->GetSubElemModel ());
 
 		GeneralHandler_.reset (new GeneralHandler (proxy));
+
+		EnableSoundMgr_ = new EnableSoundActionManager (this);
 	}
 
 	void Plugin::SecondInit ()
@@ -104,6 +109,13 @@ namespace AdvancedNotifications
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
 	{
 		return SettingsDialog_;
+	}
+
+	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace aep) const
+	{
+		QList<QAction*> result;
+		result << EnableSoundMgr_->GetActions (aep);
+		return result;
 	}
 }
 }

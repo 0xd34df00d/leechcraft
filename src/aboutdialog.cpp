@@ -79,6 +79,35 @@ namespace LeechCraft
 
 				return result;
 			}
+
+			QString FmtWeb () const
+			{
+				QString result = "<dt>";
+				if (!Name_.isEmpty ())
+					result += Name_;
+				if (!Name_.isEmpty () && !Nick_.isEmpty ())
+					result += " aka ";
+				if (!Nick_.isEmpty ())
+					result += Nick_;
+				result += "</dt><dd>";
+
+				if (!Email_.isEmpty ())
+					result += QString ("Email: <a href=\"mailto:%1\">%1</a>")
+							.arg (Email_);
+
+				result += "<ul>";
+				Q_FOREACH (const QString& r, Roles_)
+					result += QString ("<li>%1</li>")
+							.arg (r);
+				result += "</ul>";
+
+				result += AboutDialog::tr ("Years: %1")
+						.arg (Years_.join (", "));
+
+				result += "</dd>";
+
+				return result;
+			}
 		};
 	}
 
@@ -192,6 +221,21 @@ namespace LeechCraft
 		Q_FOREACH (const ContributorInfo& i, contribs)
 			formatted << i.Fmt ();
 		Ui_.Contributors_->setHtml (formatted.join ("<hr />"));
+
+		if (QCoreApplication::arguments ().contains ("--format-contribs-for-web"))
+		{
+			formatted.clear ();
+
+			Q_FOREACH (const ContributorInfo& i, authors)
+				formatted << i.FmtWeb ();
+
+			formatted << QString () << QString ();
+
+			Q_FOREACH (const ContributorInfo& i, contribs)
+				formatted << i.FmtWeb ();
+
+			qDebug () << formatted.join ("\n\n");
+		}
 
 		BuildDiagInfo ();
 	}

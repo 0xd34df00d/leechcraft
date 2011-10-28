@@ -169,7 +169,7 @@ namespace CleanWeb
 
 	void CleanWeb::hookWebViewContextMenu (IHookProxy_ptr,
 			QGraphicsWebView *view,
-			QContextMenuEvent*,
+			QGraphicsSceneContextMenuEvent*,
 			const QWebHitTestResult& r,
 			QMenu *menu,
 			WebViewCtxMenuStage stage)

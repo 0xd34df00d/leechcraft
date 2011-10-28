@@ -191,7 +191,8 @@ namespace Azoth
 					tr ("Unable to load style, "
 						"please check you've enabled at least one styles plugin.") +
 					"</h1>";
-		Ui_.View_->setHtml (data);
+		Ui_.View_->setHtml (data,
+				Core::Instance ().GetSelectedChatTemplateURL (GetEntry<QObject> ()));
 
 		Q_FOREACH (IMessage *msg, HistoryMessages_)
 			AppendMessage (msg);

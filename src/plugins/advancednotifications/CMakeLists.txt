@@ -37,6 +37,7 @@ SET (SRCS
 	visualhandler.cpp
 	audiohandler.cpp
 	cmdrunhandler.cpp
+	enablesoundactionmanager.cpp
 	)
 SET (HEADERS
 	advancednotifications.h
@@ -53,6 +54,7 @@ SET (HEADERS
 	visualhandler.h
 	audiohandler.h
 	cmdrunhandler.h
+	enablesoundactionmanager.h
 	)
 SET (FORMS
 	notificationruleswidget.ui

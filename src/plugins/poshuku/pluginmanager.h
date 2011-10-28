@@ -30,6 +30,7 @@
 #include "interfaces/iwebplugin.h"
 
 class QGraphicsWebView;
+class QGraphicsSceneContextMenuEvent;
 
 namespace LeechCraft
 {
@@ -800,12 +801,11 @@ namespace Poshuku
 		 * @param menu The menu being built.
 		 * @param menuBuildStage The stage of the menu being built.
 		 */
-		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr proxy,
-				QGraphicsWebView *view,
-				QContextMenuEvent *event,
-				const QWebHitTestResult& hitTestResult,
-				QMenu *menu,
-				WebViewCtxMenuStage menuBuildStage);
+		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr,
+				QGraphicsWebView*,
+				QGraphicsSceneContextMenuEvent*,
+				const QWebHitTestResult&, QMenu*,
+				WebViewCtxMenuStage);
 
 		/** @brief Called from QWebPage::windowCloseRequested().
 		 *

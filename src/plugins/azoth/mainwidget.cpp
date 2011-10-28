@@ -57,6 +57,8 @@ namespace Azoth
 	, MenuButton_ (new QToolButton (this))
 	, ProxyModel_ (new SortFilterProxyModel ())
 	{
+		qRegisterMetaType<QPersistentModelIndex> ("QPersistentModelIndex");
+
 		MainMenu_->setIcon (QIcon (":/plugins/azoth/resources/images/azoth.svg"));
 
 		Ui_.setupUi (this);
@@ -186,6 +188,12 @@ namespace Azoth
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleAccountConsole ()));
+
+		AccountModify_ = new QAction (tr ("Modify..."), this);
+		connect (AccountModify_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleAccountModify ()));
 
 		XmlSettingsManager::Instance ().RegisterObject ("ShowMenuBar",
 				this, "menuBarVisibilityToggled");
@@ -460,6 +468,12 @@ namespace Azoth
 				AccountConsole_->setProperty ("Azoth/AccountObject", objVar);
 				actions << AccountConsole_;
 			}
+
+			actions << Util::CreateSeparator (menu);
+
+			AccountModify_->setProperty ("Azoth/AccountObject", objVar);
+			actions << AccountModify_;
+
 			break;
 		}
 		default:
@@ -741,6 +755,15 @@ namespace Azoth
 		}
 
 		emit gotConsoleWidget (Account2CW_ [account]);
+	}
+
+	void MainWidget::handleAccountModify ()
+	{
+		IAccount *account = GetAccountFromSender (Q_FUNC_INFO);
+		if (!account)
+			return;
+
+		account->OpenConfigurationDialog ();
 	}
 
 	void MainWidget::handleManageBookmarks ()
