@@ -393,7 +393,8 @@ namespace Poshuku
 				menu, WVSAfterFinish);
 
 		if (!menu->isEmpty ())
-			menu->exec (Browser_->mapToGlobal (e->pos ().toPoint ()));
+			menu->exec (Browser_->GetGraphicsView ()->viewport ()->
+					mapToGlobal (e->pos ().toPoint ()));
 		else
 			QGraphicsWebView::contextMenuEvent (e);
 

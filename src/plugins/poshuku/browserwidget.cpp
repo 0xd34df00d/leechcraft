@@ -557,14 +557,14 @@ namespace Poshuku
 		}
 	}
 
+	QGraphicsView* BrowserWidget::GetGraphicsView () const
+	{
+		return Ui_.WebGraphicsView_;
+	}
+
 	CustomWebView* BrowserWidget::GetView () const
 	{
 		return WebView_;
-	}
-
-	QGraphicsWebView* BrowserWidget::GetWebView () const
-	{
-		return GetView ();
 	}
 
 	QLineEdit* BrowserWidget::GetURLEdit () const
