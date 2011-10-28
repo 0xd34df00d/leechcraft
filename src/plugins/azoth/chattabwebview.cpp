@@ -32,17 +32,17 @@ namespace Azoth
 	: QWebView (parent)
 	{
 	}
-	
+
 	void ChatTabWebView::contextMenuEvent (QContextMenuEvent *e)
 	{
 		QPointer<QMenu> menu (new QMenu (this));
 		const QWebHitTestResult r = page ()->
 				mainFrame ()->hitTestContent (e->pos ());
-		
+
 		if (!r.linkUrl ().isEmpty ())
 		{
 			const QUrl& url = r.linkUrl ();
-			
+
 			menu->addAction (tr ("Open"),
 					this,
 					SLOT (handleOpenLink ()))->setData (url);
@@ -52,20 +52,21 @@ namespace Azoth
 			menu->addAction (pageAction (QWebPage::CopyLinkToClipboard));
 			menu->addSeparator ();
 		}
-		
+
 		if (!page ()->selectedText ().isEmpty ())
 			menu->addAction (pageAction (QWebPage::Copy));
-		
+
 		if (!r.imageUrl ().isEmpty ())
 			menu->addAction (pageAction (QWebPage::CopyImageToClipboard));
-		
-		menu->addAction (pageAction (QWebPage::InspectElement));
-		
+
+		if (settings ()->testAttribute (QWebSettings::DeveloperExtrasEnabled))
+			menu->addAction (pageAction (QWebPage::InspectElement));
+
 		menu->exec (mapToGlobal (e->pos ()));
 		if (menu)
 			delete menu;
 	}
-	
+
 	void ChatTabWebView::handleOpenLink ()
 	{
 		QAction *action = qobject_cast<QAction*> (sender ());
@@ -74,7 +75,7 @@ namespace Azoth
 				static_cast<TaskParameters> (OnlyHandle | FromUserInitiated));
 		Core::Instance ().SendEntity (e);
 	}
-	
+
 	void ChatTabWebView::handleSaveLink ()
 	{
 		QAction *action = qobject_cast<QAction*> (sender ());
