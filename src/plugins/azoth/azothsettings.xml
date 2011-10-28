@@ -213,6 +213,9 @@
 			<item type="checkbox" property="ShowStatusChangesEvents" default="false">
 				<label value="Show status changes" />
 			</item>
+			<item type="checkbox" property="ShowJoinsLeaves" default="true">
+				<label value="Show joins and leaves in MUCs" />
+			</item>
 		</tab>
 	</page>
 	<page>

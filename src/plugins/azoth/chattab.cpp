@@ -1300,6 +1300,11 @@ namespace Azoth
 				!XmlSettingsManager::Instance ().property ("ShowStatusChangesEvents").toBool ())
 			return;
 
+		if ((msg->GetMessageSubType () == IMessage::MSTParticipantJoin ||
+					msg->GetMessageSubType () == IMessage::MSTParticipantLeave) &&
+				!XmlSettingsManager::Instance ().property ("ShowJoinsLeaves").toBool ())
+			return;
+
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 		emit hookGonnaAppendMsg (proxy, msg->GetObject ());
 		if (proxy->IsCancelled ())
