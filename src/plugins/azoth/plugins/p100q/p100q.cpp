@@ -48,7 +48,7 @@ namespace p100q
 		PostByUserRX_ = QRegExp ("\\s#([a-zA-Z0-9]+)", Qt::CaseInsensitive);
 		CommentRX_ = QRegExp ("#([a-zA-Z0-9]+)/([0-9]+)", Qt::CaseInsensitive);
 		TagRX_ = QRegExp ("<br />[*] ([^*,<]+(, [^*,<]+)*)");
-		ImgRX_ = QRegExp ("<a href=\"(http://[^<>\"]+[.](png|jpg|gif|jpeg))\">http://[^<>\"]+[.](png|jpg|gif|jpeg)</a>", Qt::CaseInsensitive);
+		ImgRX_ = QRegExp ("<br /><a href=\"(http://[^\"]+[.](png|gif|jpe?g))\">[^<]*</a>", Qt::CaseInsensitive);
 	}
 
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
