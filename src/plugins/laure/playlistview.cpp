@@ -95,6 +95,9 @@ namespace Laure
 	{
 		const QModelIndexList& indexList = selectedIndexes ();
 		const int c = indexList.count ();
+		if (!c)
+			return;
+		
 		const int first = indexList.first ().row ();
 		PlayListModel_->removeRows (first, indexList.count ());
 		for (int i = c - 1; i > -1; --i)
