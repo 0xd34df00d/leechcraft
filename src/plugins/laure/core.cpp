@@ -114,11 +114,12 @@ namespace Laure
 	
 	void Core::addRow (const QString& item)
 	{
-		libvlc_media_ptr m (libvlc_media_new_path (Instance_.get (), item.toAscii ()),
-				libvlc_media_release);
+		libvlc_media_t *m = libvlc_media_new_path (Instance_.get (), item.toAscii ());
 		
-		if (!libvlc_media_list_add_media (List_.get (), m.get ()))
+		if (!libvlc_media_list_add_media (List_.get (), m))
 			emit itemAdded (GetItemMeta (RowCount () - 1), item);
+		else
+			libvlc_media_release (m);
 	}
 	
 	void Core::playItem (int val)
