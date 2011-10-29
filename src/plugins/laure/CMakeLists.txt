@@ -36,7 +36,7 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	nowplayingdelegate.cpp
-	widgets/volumeslider.cpp
+	volumeslider.cpp
 	core.cpp
 	separateplayerwidget.cpp
 	playlistaddmenu.cpp
@@ -53,7 +53,7 @@ SET (SRCS
 	)
 SET (HEADERS
 	nowplayingdelegate.h
-	widgets/volumeslider.h
+	volumeslider.h
 	core.h
 	separateplayerwidget.h
 	playlistaddmenu.h

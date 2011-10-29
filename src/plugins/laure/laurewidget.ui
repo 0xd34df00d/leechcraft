@@ -149,7 +149,7 @@
   <customwidget>
    <class>LeechCraft::Laure::VolumeSlider</class>
    <extends>QSlider</extends>
-   <header>widgets/volumeslider.h</header>
+   <header>volumeslider.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
