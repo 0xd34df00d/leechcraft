@@ -398,6 +398,8 @@ void LeechCraft::MainWindow::SetStatusBar ()
 	SpeedGraph_ = new GraphWidget (Qt::green, Qt::red);
 	SpeedGraph_->setMinimumWidth (250);
 
+	const int height = statusBar ()->sizeHint ().height ();
+
 	statusBar ()->addPermanentWidget (SpeedGraph_);
 	statusBar ()->addPermanentWidget (DownloadSpeed_);
 	statusBar ()->addPermanentWidget (UploadSpeed_);
@@ -406,6 +408,8 @@ void LeechCraft::MainWindow::SetStatusBar ()
 		Clock_->hide ();
 
 	QLBar_ = new QToolBar ();
+	QLBar_->setIconSize (QSize (height - 1, height - 1));
+	QLBar_->setMaximumHeight (height - 1);
 	statusBar ()->addPermanentWidget (QLBar_);
 }
 
