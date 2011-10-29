@@ -21,7 +21,6 @@
 #define PLUGINS_LAURE_PLAYER_H
 
 #include <QFrame>
-#include "core.h"
 
 class QTime;
 class QPushButton;
@@ -32,7 +31,7 @@ namespace LeechCraft
 {
 namespace Laure
 {
-	class LaureCore;
+	class Core;
 	
 	class Player : public QFrame
 	{

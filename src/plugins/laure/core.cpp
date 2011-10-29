@@ -29,17 +29,6 @@ namespace LeechCraft
 namespace Laure
 {
 	const char * const vlc_args[] = {};
-
-	namespace
-	{
-		void preparsed_changed (const libvlc_event_t *event, void *user_data)
-		{
-			(void)event;
-
-			int *received = static_cast<int*> (user_data);
-			*received = true;
-		}
-	};
 	
 	Core::Core (QObject* parent)
 	: QObject (parent)
@@ -58,7 +47,7 @@ namespace Laure
 		libvlc_media_list_player_set_media_list (LPlayer_.get (), List_.get ());
 	}
 	
-	MediaMeta Core::ItemMeta (int row) const
+	MediaMeta Core::GetItemMeta (int row) const
 	{
 		MediaMeta meta;
 		libvlc_media_t *m = libvlc_media_list_item_at_index (List_.get (), row);
@@ -128,7 +117,7 @@ namespace Laure
 				libvlc_media_release);
 		
 		if (!libvlc_media_list_add_media (List_.get (), m.get ()))
-			emit itemAdded (ItemMeta (RowCount () - 1), item);
+			emit itemAdded (GetItemMeta (RowCount () - 1), item);
 	}
 	
 	void Core::playItem (int val)
@@ -144,12 +133,11 @@ namespace Laure
 		libvlc_media_list_player_play_item_at_index (LPlayer_.get (), CurrentItem_);
 		emit (itemPlayed (CurrentItem_));
 		QTimer::singleShot (5000, this, SLOT (nowPlaying ()));
-		
 	}
 	
 	void Core::nowPlaying ()
 	{
-		MediaMeta meta = ItemMeta (CurrentItem_);
+		MediaMeta meta = GetItemMeta (CurrentItem_);
 		meta.Length_ = libvlc_media_player_get_length (Player_.get ()) / 1000;
 		emit nowPlayed (meta);
 	}

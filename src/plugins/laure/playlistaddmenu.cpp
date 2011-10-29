@@ -21,9 +21,10 @@
 #include <QFileDialog>
 #include <QDebug>
 #include <QRegExp>
+#include <QUrl>
 #include "playlistview.h"
 #include "chooseurldialog.h"
-#include <QUrl>
+
 
 namespace LeechCraft
 {
@@ -33,7 +34,7 @@ namespace Laure
 	: QMenu (parent)
 	{
 #ifdef Q_WS_X11
-		Magic_ = shared_ptr<magic_set> (magic_open (MAGIC_MIME_TYPE),
+		Magic_ = boost::shared_ptr<magic_set> (magic_open (MAGIC_MIME_TYPE),
 				magic_close);
 		magic_load (Magic_.get (), NULL);
 #elif defined (Q_WS_WIN)
@@ -47,7 +48,7 @@ namespace Laure
 		QAction *addFiles = new QAction (tr ("Add files"), this);
 		QAction *addFolder = new QAction (tr ("Add folder"), this);
 		QAction *addURL = new QAction (tr ("Add URL"), this);
-		QAction *importPL = new QAction (tr ("Import PlayList"), this);
+		QAction *importPL = new QAction (tr ("Import playList"), this);
 		
 		addAction (addFiles);
 		addAction (addFolder);
@@ -105,21 +106,23 @@ namespace Laure
 				tr ("Choose playlist"), QDir::homePath (), "*.m3u");
 		if (fileName.isEmpty ())
 			return;
+		
 		const QString& mime = QString (magic_file (Magic_.get (), fileName.toAscii ()));
 		if (!mime.contains ("text"))
 			return;
-		const QFileInfo& fileInfo = fileName;
-		if (!fileInfo.suffix ().compare ("m3u", Qt::CaseInsensitive))
-			LoadM3U (fileName);
 		
+		if (!QFileInfo (fileName).suffix ().compare ("m3u", Qt::CaseInsensitive))
+			LoadM3U (fileName);
 	}
 	
 	void PlayListAddMenu::LoadM3U (const QString& fileName)
 	{
 		QUrl globalUrl (fileName);
 		QFile file (fileName);
+		
 		if (!file.open (QIODevice::ReadOnly| QIODevice::Text))
 			return;
+		
 		while (!file.atEnd ())
 		{
 			QString line = file.readLine ();
@@ -154,10 +157,10 @@ namespace Laure
 		return list;
 	}
 	
-	bool PlayListAddMenu::IsFileSupported (const QFileInfo& file)
+	bool PlayListAddMenu::IsFileSupported (const QFileInfo& file) const
 	{
 #ifdef Q_WS_X11
-		const QString& mime =  QString (magic_file (Magic_.get (),
+		const QString& mime = QString (magic_file (Magic_.get (),
 						file.absoluteFilePath ().toAscii ()));
 		return mime.contains ("audio") || mime.contains ("video");		
 #elif defined (Q_WS_WIN)

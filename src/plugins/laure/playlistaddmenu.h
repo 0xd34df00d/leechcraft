@@ -24,8 +24,6 @@
 #include <boost/shared_ptr.hpp>
 #include <magic.h>
 
-using boost::shared_ptr;
-
 namespace LeechCraft
 {
 namespace Laure
@@ -35,7 +33,7 @@ namespace Laure
 	{
 		Q_OBJECT
 #ifdef Q_WS_X11
-		shared_ptr<magic_set> Magic_;
+		boost::shared_ptr<magic_set> Magic_;
 #elif defined (Q_WS_WIN)
 		QStringList Formats_;
 #endif
@@ -48,7 +46,7 @@ namespace Laure
 		void handleImportPlayList ();
 		QFileInfoList StoragedFiles (const QString&);
 	private:
-		bool IsFileSupported (const QFileInfo&);
+		bool IsFileSupported (const QFileInfo&) const;
 		void LoadM3U (const QString&);
 	signals:
 		void addItem (const QString&);

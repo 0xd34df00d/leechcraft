@@ -38,6 +38,7 @@ namespace Laure
 		QAction *actionAdd = new QAction (tr ("Add"), this);
 		QAction *actionRemove = new QAction (tr ("Remove"), this);
 		QAction *exportAction = new QAction (tr ("Export to m3u"), this);
+		
 		PlayListAddMenu *menu = new PlayListAddMenu (this);
 		
 		actionAdd->setProperty ("ActionIcon", "add");

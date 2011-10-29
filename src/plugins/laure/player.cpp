@@ -58,10 +58,9 @@ namespace Laure
 	{
 		QTime IntToQTime (int val)
 		{
-			QTime time = QTime (0, 0);
-			return val < 0 ? time : time.addMSecs (val);
+			return val < 0 ? QTime () : QTime (0, 0).addMSecs (val);
 		}
-	};
+	}
 	
 	QTime Player::Time ()
 	{
@@ -84,7 +83,7 @@ namespace Laure
 		if (!(Core_ && Core_->IsPlaying ()))
 			return -1;
 
-		return Core_->MediaPosition () * static_cast<float> (pos_slider_max);
+		return Core_->MediaPosition () * pos_slider_max;
 	}
 
 
@@ -101,8 +100,8 @@ namespace Laure
 		if (!Core_)
 			return;
 		
-		int time = Core_->Time ();
-		int length = Core_->Length ();
+		const int time = Core_->Time ();
+		const int length = Core_->Length ();
 		if (length - time < 200 && Core_->IsPlaying ())
 			Core_->next ();
 	}

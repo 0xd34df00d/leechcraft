@@ -20,11 +20,9 @@
 #ifndef PLUGINS_LAURE_CORE_H
 #define PLUGINS_LAURE_CORE_H
 
-#include <QObject>
 #include <boost/shared_ptr.hpp>
+#include <QObject>
 #include <vlc/vlc.h>
-
-using boost::shared_ptr;
 
 class QTime;
 
@@ -32,11 +30,11 @@ namespace LeechCraft
 {
 namespace Laure
 {
-	typedef shared_ptr<libvlc_instance_t> libvlc_instance_ptr;
-	typedef shared_ptr<libvlc_media_list_t> libvlc_media_list_ptr;
-	typedef shared_ptr<libvlc_media_list_player_t> libvlc_media_list_player_ptr;
-	typedef shared_ptr<libvlc_media_player_t> libvlc_media_player_ptr;
-	typedef shared_ptr<libvlc_media_t> libvlc_media_ptr;
+	typedef boost::shared_ptr<libvlc_instance_t> libvlc_instance_ptr;
+	typedef boost::shared_ptr<libvlc_media_list_t> libvlc_media_list_ptr;
+	typedef boost::shared_ptr<libvlc_media_list_player_t> libvlc_media_list_player_ptr;
+	typedef boost::shared_ptr<libvlc_media_player_t> libvlc_media_player_ptr;
+	typedef boost::shared_ptr<libvlc_media_t> libvlc_media_ptr;
 	
 	struct MediaMeta
 	{
@@ -64,7 +62,7 @@ namespace Laure
 		int Time () const;
 		int Length () const;
 		float MediaPosition () const;
-		MediaMeta ItemMeta (int row) const;
+		MediaMeta GetItemMeta (int row) const;
 	public slots:
 		void addRow (const QString&);
 		void setWindow (int);

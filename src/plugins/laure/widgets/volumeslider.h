@@ -35,6 +35,7 @@ namespace Laure
 	class VolumeSlider : public QSlider
 	{
 		Q_OBJECT
+		
 		QPixmap VolumeSliderInset_, VolumeSliderGradient_;
 	public:
 		VolumeSlider (QWidget* = 0);

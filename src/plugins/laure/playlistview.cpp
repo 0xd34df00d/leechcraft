@@ -62,15 +62,16 @@ namespace Laure
 
 	void PlayListView::AddItem (const MediaMeta& item, const QString& fileName)
 	{
-		QString temp = XmlSettingsManager::Instance ()
+		QString format = XmlSettingsManager::Instance ()
 				.property ("PlaylistFormat").toString ();
-		temp.replace ("%artist%", item.Artist_);
-		temp.replace ("%album%", item.Album_);
-		temp.replace ("%title%", item.Title_);
-		temp.replace ("%genre%", item.Genre_);
-		temp.replace ("%date%", item.Date_);
+		format.replace ("%artist%", item.Artist_);
+		format.replace ("%album%", item.Album_);
+		format.replace ("%title%", item.Title_);
+		format.replace ("%genre%", item.Genre_);
+		format.replace ("%date%", item.Date_);
+		
 		QList<QStandardItem*> list;
-		list << new QStandardItem (temp);
+		list << new QStandardItem (format);
 		list << new QStandardItem (fileName);
 		PlayListModel_->appendRow (list);
 	}
@@ -96,7 +97,7 @@ namespace Laure
 		const int c = indexList.count ();
 		const int first = indexList.first ().row ();
 		PlayListModel_->removeRows (first, indexList.count ());
-		for (int i = 0; i < c; ++i)
+		for (int i = c - 1; i > -1; --i)
 			emit itemRemoved (first);
 	
 	}
