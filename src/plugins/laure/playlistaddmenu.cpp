@@ -33,11 +33,11 @@ namespace Laure
 	PlayListAddMenu::PlayListAddMenu (QWidget *parent)
 	: QMenu (parent)
 	{
-#ifdef Q_WS_X11
+#ifdef HAVE_MAGIC
 		Magic_ = boost::shared_ptr<magic_set> (magic_open (MAGIC_MIME_TYPE),
 				magic_close);
 		magic_load (Magic_.get (), NULL);
-#elif defined (Q_WS_WIN)
+#else
 		Formats_ << "3gp" << "asf" << "wmv" << "au" << "avi"
 				<< "flv" << "mov" << "mp4" << "ogm" << "ogg"
 				<< "mkv" << "mka" << "ts" << "mpg" << "mp3"
@@ -159,11 +159,11 @@ namespace Laure
 	
 	bool PlayListAddMenu::IsFileSupported (const QFileInfo& file) const
 	{
-#ifdef Q_WS_X11
+#ifdef HAVE_MAGIC
 		const QString& mime = QString (magic_file (Magic_.get (),
 						file.absoluteFilePath ().toAscii ()));
 		return mime.contains ("audio") || mime.contains ("video");		
-#elif defined (Q_WS_WIN)
+#else
 		Q_FOREACH (const QString& format, Formats_)
 			if (file.suffix () == format)
 				return true;

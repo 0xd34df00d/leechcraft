@@ -32,9 +32,9 @@ namespace Laure
 	class PlayListAddMenu : public QMenu
 	{
 		Q_OBJECT
-#ifdef Q_WS_X11
+#ifdef HAVE_MAGIC
 		boost::shared_ptr<magic_set> Magic_;
-#elif defined (Q_WS_WIN)
+#else
 		QStringList Formats_;
 #endif
 	public:
