@@ -78,6 +78,14 @@ namespace Laure
 				SIGNAL (itemAdded (MediaMeta, QString)),
 				Ui_.PlayListWidget_,
 				SLOT (handleItemAdded (MediaMeta, QString)));
+		connect (Core_,
+				SIGNAL (gotEntity (Entity)),
+				this,
+				SIGNAL (gotEntity (Entity)));
+		connect (Core_,
+				SIGNAL (delegateEntity (Entity, int*, QObject**)),
+				this,
+				SIGNAL (delegateEntity (Entity, int*, QObject**)));
 		connect (Ui_.PlayListWidget_,
 				SIGNAL (itemRemoved (int)),
 				Core_,
@@ -94,6 +102,14 @@ namespace Laure
 				SIGNAL (addItem (QString)),
 				Core_,
 				SLOT (addRow (QString)));
+		connect (Ui_.PlayListWidget_,
+				SIGNAL (gotEntity (Entity)),
+				this,
+				SIGNAL (gotEntity (Entity)));
+		connect (Ui_.PlayListWidget_,
+				SIGNAL (delegateEntity (Entity, int*, QObject**)),
+				this,
+				SIGNAL (delegateEntity (Entity, int*, QObject**)));
 	}
 	
 	void LaureWidget::Init (ICoreProxy_ptr proxy)

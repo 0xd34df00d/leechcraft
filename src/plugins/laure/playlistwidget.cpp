@@ -22,6 +22,7 @@
 #include <QFileDialog>
 #include <QTextStream>
 #include <vlc/vlc.h>
+#include <util/util.h>
 #include "chooseurldialog.h"
 #include "playlistaddmenu.h"
 
@@ -99,8 +100,13 @@ namespace Laure
 		
 		QFile file (fileName);
 		if (!file.open (QIODevice::WriteOnly | QIODevice::Text))
+		{
+			emit gotEntity (Util::MakeNotification ("Laure",
+					tr ("Can't export %1")
+							.arg (fileName),
+					PInfo_));
 			return;
-		
+		}
 		QTextStream out (&file);
 		out << "#EXTM3U\n";
 		

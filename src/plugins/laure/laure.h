@@ -76,6 +76,9 @@ namespace Laure
 		void changeTooltip (QWidget*, QWidget*);
 		void statusBarChanged (QWidget*, const QString&);
 		void raiseTab (QWidget*);
+		
+		void gotEntity (const Entity&);
+		void delegateEntity (const Entity&, int*, QObject**);
 	private slots:
 		void handleNeedToClose ();
 	};

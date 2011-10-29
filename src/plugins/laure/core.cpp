@@ -23,6 +23,7 @@
 #include <QDebug>
 #include <QTimer>
 #include <QFile>
+#include <util/util.h>
 
 namespace LeechCraft
 {
@@ -131,6 +132,12 @@ namespace Laure
 			CurrentItem_ = val;
 		
 		libvlc_media_list_player_play_item_at_index (LPlayer_.get (), CurrentItem_);
+		
+		//Without track length
+		const MediaMeta& meta = GetItemMeta (val);
+		emit gotEntity (Util::MakeNotification ("Laure",
+				tr ("%1 - %2").arg (meta.Artist_).arg (meta.Title_),
+					PInfo_));
 		emit (itemPlayed (CurrentItem_));
 		QTimer::singleShot (5000, this, SLOT (nowPlaying ()));
 	}

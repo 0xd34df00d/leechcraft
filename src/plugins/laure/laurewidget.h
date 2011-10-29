@@ -66,6 +66,9 @@ namespace Laure
 		void nowPlayed (const MediaMeta&);
 		void played ();
 		void addItem (const QString&);
+		void gotEntity (const Entity&);
+		void delegateEntity (const Entity&,
+				int*, QObject**);
 	public slots:
 		void handleOpenMediaContent (const QString&);
 	private slots:

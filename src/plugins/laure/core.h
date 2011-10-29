@@ -23,6 +23,8 @@
 #include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <vlc/vlc.h>
+#include <interfaces/ientityhandler.h>
+#include <interfaces/entitytesthandleresult.h>
 
 class QTime;
 
@@ -83,6 +85,9 @@ namespace Laure
 		void itemPlayed (int);
 		void itemAdded (const MediaMeta&, const QString&);
 		void paused ();
+		
+		void gotEntity (const Entity&);
+		void delegateEntity (const Entity&, int*, QObject**);
 	};
 }
 }

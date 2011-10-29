@@ -128,6 +128,14 @@ namespace Laure
 				SIGNAL (played ()),
 				LFSubmitter_,
 				SLOT (submit ()));
+		connect (w,
+				SIGNAL (gotEntity (Entity)),
+				this,
+				SIGNAL (gotEntity (Entity)));
+		connect (w,
+				SIGNAL (delegateEntity (Entity, int*, QObject**)),
+				this,
+				SIGNAL (delegateEntity (Entity, int*, QObject**)));
 
 		Others_ << w;
 		emit addNewTab (tr ("Laure"), w);
