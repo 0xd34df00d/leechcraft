@@ -31,18 +31,18 @@ namespace LeechCraft
 {
 namespace Laure
 {
-	class Core;
+	class VLCWrapper;
 	
 	class Player : public QFrame
 	{
 		Q_OBJECT
 		
 		QTimer *Poller_;
-		Core *Core_;
+		VLCWrapper *VLCWrapper_;
 	public:
 		Player (QWidget* = 0);
 		
-		void setCore (Core *core);
+		void setVLCWrapper (VLCWrapper *core);
 		QTime Time ();
 		QTime Length ();
 		int Position () const;

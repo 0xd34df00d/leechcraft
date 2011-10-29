@@ -23,7 +23,7 @@
 #include <boost/shared_ptr.hpp>
 #include <vlc/vlc.h>
 #include <interfaces/core/icoreproxy.h>
-#include "core.h"
+#include "vlcwrapper.h"
 
 namespace lastfm
 {

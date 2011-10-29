@@ -41,7 +41,7 @@ INCLUDE_DIRECTORIES (
 SET (SRCS
 	nowplayingdelegate.cpp
 	volumeslider.cpp
-	core.cpp
+	vlcwrapper.cpp
 	separateplayerwidget.cpp
 	playlistaddmenu.cpp
 	lastfmsubmitter.cpp
@@ -58,7 +58,7 @@ SET (SRCS
 SET (HEADERS
 	nowplayingdelegate.h
 	volumeslider.h
-	core.h
+	vlcwrapper.h
 	separateplayerwidget.h
 	playlistaddmenu.h
 	lastfmsubmitter.h

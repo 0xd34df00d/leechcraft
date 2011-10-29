@@ -45,7 +45,7 @@ namespace Laure
 		
 		QToolBar *ToolBar_;
 		Ui::LaureWidget Ui_;
-		Core *Core_;
+		VLCWrapper *VLCWrapper_;
 	public:
 		LaureWidget (QWidget *parent = 0, Qt::WindowFlags f = 0);
 		

@@ -45,10 +45,10 @@ namespace Laure
 	LaureWidget::LaureWidget (QWidget *parent, Qt::WindowFlags f)
 	: QWidget (parent, f)
 	, ToolBar_ (new QToolBar (this))
-	, Core_ (new Core (this))
+	, VLCWrapper_ (new VLCWrapper (this))
 	{	
 		Ui_.setupUi (this);
-		Ui_.Player_->setCore (Core_);
+		Ui_.Player_->setVLCWrapper (VLCWrapper_);
 
 		connect (Ui_.Player_,
 				SIGNAL (timeout ()),
@@ -60,47 +60,47 @@ namespace Laure
 				SLOT (setPosition (int)));
 		connect (Ui_.VolumeSlider_,
 				SIGNAL (valueChanged (int)),
-				Core_,
+				VLCWrapper_,
 				SLOT (setVolume (int)));
-		connect (Core_,
+		connect (VLCWrapper_,
 				SIGNAL (nowPlayed (MediaMeta)),
 				this,
 				SIGNAL (nowPlayed (MediaMeta)));
-		connect (Core_,
+		connect (VLCWrapper_,
 				SIGNAL (played ()),
 				this,
 				SIGNAL (played ()));
 		connect (Ui_.PlayListWidget_,
 				SIGNAL (itemAddedRequest (QString)),
-				Core_,
+				VLCWrapper_,
 				SLOT (addRow (QString)));
-		connect (Core_,
+		connect (VLCWrapper_,
 				SIGNAL (itemAdded (MediaMeta, QString)),
 				Ui_.PlayListWidget_,
 				SLOT (handleItemAdded (MediaMeta, QString)));
-		connect (Core_,
+		connect (VLCWrapper_,
 				SIGNAL (gotEntity (Entity)),
 				this,
 				SIGNAL (gotEntity (Entity)));
-		connect (Core_,
+		connect (VLCWrapper_,
 				SIGNAL (delegateEntity (Entity, int*, QObject**)),
 				this,
 				SIGNAL (delegateEntity (Entity, int*, QObject**)));
 		connect (Ui_.PlayListWidget_,
 				SIGNAL (itemRemoved (int)),
-				Core_,
+				VLCWrapper_,
 				SLOT (removeRow (int)));
 		connect (Ui_.PlayListWidget_,
 				SIGNAL (playItem (int)),
-				Core_,
+				VLCWrapper_,
 				SLOT (playItem (int)));
-		connect (Core_,
+		connect (VLCWrapper_,
 				SIGNAL (itemPlayed (int)),
 				Ui_.PlayListWidget_,
 				SLOT (handleItemPlayed (int)));
 		connect (this,
 				SIGNAL (addItem (QString)),
-				Core_,
+				VLCWrapper_,
 				SLOT (addRow (QString)));
 		connect (Ui_.PlayListWidget_,
 				SIGNAL (gotEntity (Entity)),
@@ -169,11 +169,11 @@ namespace Laure
 		bar->addAction (actionStop);
 		bar->addAction (actionNext);
 		
-		connect (Core_,
+		connect (VLCWrapper_,
 				SIGNAL (paused ()),
 				actionPlay,
 				SLOT (handlePause ()));
-		connect (Core_,
+		connect (VLCWrapper_,
 				SIGNAL (itemPlayed (int)),
 				actionPlay,
 				SLOT (handlePlay ()));
@@ -183,23 +183,23 @@ namespace Laure
 				SLOT (handlePause ()));
 		connect (actionStop,
 				SIGNAL (triggered (bool)),
-				Core_,
+				VLCWrapper_,
 				SLOT (stop ()));
 		connect (actionNext,
 				SIGNAL (triggered (bool)),
-				Core_,
+				VLCWrapper_,
 				SLOT (next ()));
 		connect (actionPrev,
 				SIGNAL (triggered (bool)),
-				Core_,
+				VLCWrapper_,
 				SLOT (prev ()));
 		connect (actionPlay,
 				SIGNAL (play ()),
-				Core_,
+				VLCWrapper_,
 				SLOT (play ()));
 		connect (actionPlay,
 				SIGNAL (pause ()),
-				Core_,
+				VLCWrapper_,
 				SLOT (pause ()));
 		connect (this,
 				SIGNAL (playPause ()),
@@ -209,7 +209,7 @@ namespace Laure
 	
 	void LaureWidget::updateInterface ()
 	{
-		Ui_.VolumeSlider_->setValue (Core_->Volume ());
+		Ui_.VolumeSlider_->setValue (VLCWrapper_->Volume ());
 		Ui_.PositionSlider_->setValue (Ui_.Player_->Position ());
 		const QTime& currTime = Ui_.Player_->Time ();
 		const QTime& length = Ui_.Player_->Length ();

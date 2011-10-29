@@ -22,7 +22,7 @@
 
 #include <QTreeView>
 #include "playlistmodel.h"
-#include "core.h"
+#include "vlcwrapper.h"
 
 class QKeyEvent;
 

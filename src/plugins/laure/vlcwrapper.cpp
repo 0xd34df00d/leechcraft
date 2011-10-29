@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "core.h"
+#include "vlcwrapper.h"
 #include <QString>
 #include <QTime>
 #include <QDebug>
@@ -31,7 +31,7 @@ namespace Laure
 {
 	const char * const vlc_args[] = {};
 	
-	Core::Core (QObject* parent)
+	VLCWrapper::VLCWrapper (QObject* parent)
 	: QObject (parent)
 	, CurrentItem_ (-1)
 	{	
@@ -48,7 +48,7 @@ namespace Laure
 		libvlc_media_list_player_set_media_list (LPlayer_.get (), List_.get ());
 	}
 	
-	MediaMeta Core::GetItemMeta (int row) const
+	MediaMeta VLCWrapper::GetItemMeta (int row) const
 	{
 		MediaMeta meta;
 		libvlc_media_t *m = libvlc_media_list_item_at_index (List_.get (), row);
@@ -65,54 +65,54 @@ namespace Laure
 		return meta;
 	}
 	
-	int Core::RowCount () const
+	int VLCWrapper::RowCount () const
 	{
 		return libvlc_media_list_count (List_.get ());
 	}
 	
-	int Core::CurrentItem () const
+	int VLCWrapper::CurrentItem () const
 	{
 		return CurrentItem_;
 	}
 	
-	bool Core::IsPlaying () const
+	bool VLCWrapper::IsPlaying () const
 	{
 		return libvlc_media_list_player_is_playing (LPlayer_.get ());
 	}
 	
-	int Core::Volume () const
+	int VLCWrapper::Volume () const
 	{
 		return libvlc_audio_get_volume (Player_.get ());
 	}
 	
-	float Core::MediaPosition () const
+	float VLCWrapper::MediaPosition () const
 	{
 		return IsPlaying () ?
 				libvlc_media_player_get_position (Player_.get ()) :
 				-1;
 	}
 	
-	int Core::Time () const
+	int VLCWrapper::Time () const
 	{
 		return libvlc_media_player_get_time (Player_.get ());
 	}
 	
-	int Core::Length () const
+	int VLCWrapper::Length () const
 	{
 		return libvlc_media_player_get_length (Player_.get ());
 	}
 	
-	void Core::setWindow (int winId)
+	void VLCWrapper::setWindow (int winId)
 	{
 		libvlc_media_player_set_xwindow (Player_.get (), winId);
 	}
 
-	bool Core::removeRow (int pos)
+	bool VLCWrapper::removeRow (int pos)
 	{
 		return !libvlc_media_list_remove_index (List_.get (), pos);
 	}
 	
-	void Core::addRow (const QString& item)
+	void VLCWrapper::addRow (const QString& item)
 	{
 		libvlc_media_t *m = libvlc_media_new_path (Instance_.get (), item.toAscii ());
 		
@@ -122,7 +122,7 @@ namespace Laure
 			libvlc_media_release (m);
 	}
 	
-	void Core::playItem (int val)
+	void VLCWrapper::playItem (int val)
 	{
 		const int count = RowCount ();
 		if (val == count)
@@ -143,48 +143,48 @@ namespace Laure
 		QTimer::singleShot (5000, this, SLOT (nowPlaying ()));
 	}
 	
-	void Core::nowPlaying ()
+	void VLCWrapper::nowPlaying ()
 	{
 		MediaMeta meta = GetItemMeta (CurrentItem_);
 		meta.Length_ = libvlc_media_player_get_length (Player_.get ()) / 1000;
 		emit nowPlayed (meta);
 	}
 	
-	void Core::stop ()
+	void VLCWrapper::stop ()
 	{
 		libvlc_media_player_stop (Player_.get ());
 	}
 	
-	void Core::pause ()
+	void VLCWrapper::pause ()
 	{
 		libvlc_media_player_pause (Player_.get ());
 	}
 	
-	void Core::play ()
+	void VLCWrapper::play ()
 	{
 		libvlc_media_player_play (Player_.get ());
 		if (!IsPlaying ())
 			emit paused ();
 	}
 	
-	void Core::next ()
+	void VLCWrapper::next ()
 	{
 		emit played ();
 		playItem (CurrentItem_ + 1);
 	}
 	
-	void Core::prev ()
+	void VLCWrapper::prev ()
 	{
 		emit played ();
 		playItem (CurrentItem_ - 1);
 	}
 	
-	void Core::setVolume (int vol)
+	void VLCWrapper::setVolume (int vol)
 	{
 		libvlc_audio_set_volume (Player_.get (), vol);
 	}
 	
-	void Core::setPosition (float pos)
+	void VLCWrapper::setPosition (float pos)
 	{
 		libvlc_media_player_set_position (Player_.get (), pos);
 	}

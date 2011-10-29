@@ -45,7 +45,7 @@ namespace Laure
 		int Length_;
 	};
 	
-	class Core : public QObject
+	class VLCWrapper : public QObject
 	{
 		Q_OBJECT
 		
@@ -55,7 +55,7 @@ namespace Laure
 		libvlc_media_list_player_ptr LPlayer_;
 		libvlc_media_player_ptr Player_;
 	public:
-		Core (QObject* = 0);
+		VLCWrapper (QObject* = 0);
 		
 		int RowCount () const;
 		int CurrentItem () const;

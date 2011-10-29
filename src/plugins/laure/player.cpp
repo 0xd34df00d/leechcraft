@@ -24,7 +24,7 @@
 #include <QPushButton>
 #include <QTime>
 #include "separateplayerwidget.h"
-#include "core.h"
+#include "vlcwrapper.h"
 
 namespace LeechCraft
 {
@@ -35,7 +35,7 @@ namespace Laure
 	Player::Player (QWidget *parent)
 	: QFrame (parent)
 	, Poller_ (new QTimer (this))
-	, Core_ (NULL)
+	, VLCWrapper_ (NULL)
 	{
 		connect (Poller_,
 				SIGNAL (timeout ()),
@@ -48,10 +48,10 @@ namespace Laure
 		Poller_->start (300);
 	}
 	
-	void Player::setCore (Core *core)
+	void Player::setVLCWrapper (VLCWrapper *core)
 	{
-		Core_ = core;
-		Core_->setWindow (winId ());
+		VLCWrapper_ = core;
+		VLCWrapper_->setWindow (winId ());
 	}
 	
 	namespace
@@ -64,46 +64,46 @@ namespace Laure
 	
 	QTime Player::Time ()
 	{
-		if (!Core_)
+		if (!VLCWrapper_)
 			return QTime ();
 		
-		return IntToQTime (Core_->Time ());
+		return IntToQTime (VLCWrapper_->Time ());
 	}
 	
 	QTime Player::Length ()
 	{
-		if (!Core_)
+		if (!VLCWrapper_)
 			return QTime ();
 		
-		return IntToQTime (Core_->Length ());
+		return IntToQTime (VLCWrapper_->Length ());
 	}
 	
 	int Player::Position () const
 	{
-		if (!(Core_ && Core_->IsPlaying ()))
+		if (!(VLCWrapper_ && VLCWrapper_->IsPlaying ()))
 			return -1;
 
-		return Core_->MediaPosition () * pos_slider_max;
+		return VLCWrapper_->MediaPosition () * pos_slider_max;
 	}
 
 
 	void Player::setPosition (int pos)
 	{
-		if (!Core_)
+		if (!VLCWrapper_)
 			return;
 		
-		Core_->setPosition (static_cast<float> (pos) / pos_slider_max);
+		VLCWrapper_->setPosition (static_cast<float> (pos) / pos_slider_max);
 	}
 	
 	void Player::handleTimeout ()
 	{
-		if (!Core_)
+		if (!VLCWrapper_)
 			return;
 		
-		const int time = Core_->Time ();
-		const int length = Core_->Length ();
-		if (length - time < 200 && Core_->IsPlaying ())
-			Core_->next ();
+		const int time = VLCWrapper_->Time ();
+		const int length = VLCWrapper_->Length ();
+		if (length - time < 200 && VLCWrapper_->IsPlaying ())
+			VLCWrapper_->next ();
 	}
 }
 }
