@@ -30,9 +30,6 @@ namespace lastfm
 	class Audioscrobbler;
 };
 
-class QNetworkAccessManager;
-class QNetworkReply;
-
 namespace LeechCraft
 {
 namespace Laure
@@ -42,7 +39,6 @@ namespace Laure
 		Q_OBJECT
 		
 		boost::shared_ptr<lastfm::Audioscrobbler> Scrobbler_;
-		QNetworkAccessManager *Manager_;
 	public:
 		LastFMSubmitter (ICoreProxy_ptr proxy, QObject *parent = 0);
 		
@@ -52,7 +48,7 @@ namespace Laure
 		void submit ();
 	private slots:
 		void status (int);
-		void getSessionKey (QNetworkReply*);
+		void getSessionKey ();
 	};
 }
 }

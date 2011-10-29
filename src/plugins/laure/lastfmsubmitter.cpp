@@ -23,6 +23,7 @@
 #include <lastfm/Track>
 #include <lastfm.h>
 #include "xmlsettingsmanager.h"
+#include <sys/socket.h>
 
 namespace LeechCraft
 {
@@ -66,12 +67,7 @@ namespace Laure
 		lastfm::ws::Username = XmlSettingsManager::Instance ()
 				.property ("lastfm.login").toString ();
 				
-		Manager_ = proxy.get ()->GetNetworkAccessManager ();
-			
-		connect (Manager_,
-				SIGNAL ( finished (QNetworkReply*)),
-				this,
-				SLOT (getSessionKey (QNetworkReply*)));
+		QNetworkAccessManager *manager = proxy.get ()->GetNetworkAccessManager ();
 		
 		const QString& password = XmlSettingsManager::Instance ()
 				.property ("lastfm.password").toString ();
@@ -91,13 +87,19 @@ namespace Laure
 				.arg (lastfm::ws::ApiKey)
 				.arg (api_sig);
 
-		Manager_->get (QNetworkRequest (QUrl (url)));
+		QNetworkReply *reply = manager->get (QNetworkRequest (QUrl (url)));
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (getSessionKey ()));
 	}
 		
-	void LastFMSubmitter::getSessionKey (QNetworkReply *result)
+	void LastFMSubmitter::getSessionKey ()
 	{
+		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
 		QDomDocument doc;
-		doc.setContent (QString::fromUtf8 (result->readAll ()));
+		doc.setContent (QString::fromUtf8 (reply->readAll ()));
+		reply->deleteLater ();
 		QDomNodeList domList = doc.documentElement ()
 				.elementsByTagName ("key");
 		if (domList.size () > 0)
