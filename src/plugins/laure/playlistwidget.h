@@ -19,12 +19,10 @@
 
 #ifndef PLUGINS_LAURE_PLAYLISTWIDGET_H
 #define PLUGINS_LAURE_PLAYLISTWIDGET_H
-
 #include <QWidget>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/structures.h>
 #include "ui_playlistwidget.h"
-
-class QToolBar;
 
 namespace LeechCraft
 {
@@ -37,12 +35,18 @@ namespace Laure
 		Q_OBJECT
 		
 		Ui::PlayListWidget Ui_;
-		QToolBar *ActionBar_;
 	public:
 		PlayListWidget (QWidget* = 0);
-		PlayListView* GetPlayListView () const;
+	public slots:
+		void handleItemAdded (const MediaMeta&, const QString&);
+		void handleItemPlayed (int);
+		void handleExportPlayList ();
 	signals:
-		void itemPlayed (int);
+		void itemAddedRequest (const QString&);
+		void itemRemoved (int);
+		void playItem (int);
+		void gotEntity (const Entity&);
+		void delegateEntity (const Entity&, int*, QObject**);
 	};
 }
 }

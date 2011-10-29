@@ -19,7 +19,10 @@
 
 #include "playlistwidget.h"
 #include <QToolBar>
+#include <QFileDialog>
+#include <QTextStream>
 #include <vlc/vlc.h>
+#include <util/util.h>
 #include "chooseurldialog.h"
 #include "playlistaddmenu.h"
 
@@ -31,34 +34,84 @@ namespace Laure
 	: QWidget (parent)
 	{
 		Ui_.setupUi (this);
-		setVisible (false);	
+		setVisible (false);
 		
-		QAction *actionAdd = new QAction (this);
-		actionAdd->setProperty ("ActionIcon", "add");
-		actionAdd->setMenu (new PlayListAddMenu (Ui_.PlayListView_, this));
-		actionAdd->setMenuRole (QAction::ApplicationSpecificRole);
+		QAction *actionAdd = new QAction (tr ("Add"), this);
 		QAction *actionRemove = new QAction (tr ("Remove"), this);
-		actionRemove->setProperty ("ActionIcon", "remove");
+		QAction *exportAction = new QAction (tr ("Export to m3u"), this);
 		
-		ActionBar_ = new QToolBar (Ui_.ActionFrame_);
-		ActionBar_->setToolButtonStyle (Qt::ToolButtonIconOnly);
-		ActionBar_->setIconSize (QSize (16, 16));
-		ActionBar_->addAction (actionAdd);
-		ActionBar_->addAction (actionRemove);
+		PlayListAddMenu *menu = new PlayListAddMenu (this);
+		
+		actionAdd->setProperty ("ActionIcon", "add");
+		actionRemove->setProperty ("ActionIcon", "remove");
+		exportAction->setProperty ("ActionIcon", "documentsaveas");
+		
+		actionAdd->setMenu (menu);
+		actionAdd->setMenuRole (QAction::ApplicationSpecificRole);
+		
+		QToolBar *actionBar = new QToolBar (Ui_.ActionFrame_);
+		actionBar->setToolButtonStyle (Qt::ToolButtonIconOnly);
+		actionBar->setIconSize (QSize (16, 16));
+		actionBar->addAction (actionAdd);
+		actionBar->addAction (actionRemove);
+		actionBar->addAction (exportAction);
 		
 		connect (actionRemove,
 				SIGNAL (triggered (bool)),
 				Ui_.PlayListView_,
 				SLOT (removeSelectedRows ()));
-		connect (Ui_.PlayListView_,
-				SIGNAL (itemPlayed (int)),
+		connect (exportAction,
+				SIGNAL (triggered (bool)),
 				this,
-				SIGNAL (itemPlayed (int)));
+				SLOT (handleExportPlayList ()));
+		connect (menu,
+				SIGNAL (addItem (QString)),
+				this,
+				SIGNAL (itemAddedRequest (QString)));
+		connect (Ui_.PlayListView_,
+				SIGNAL (itemRemoved (int)),
+				this,
+				SIGNAL (itemRemoved (int)));
+		connect (Ui_.PlayListView_,
+				SIGNAL (playItem (int)),
+				this,
+				SIGNAL (playItem (int)));
 	}
 	
-	PlayListView* PlayListWidget::GetPlayListView () const
+	void PlayListWidget::handleItemPlayed (int row)
 	{
-		return Ui_.PlayListView_;
+		Ui_.PlayListView_->selectRow (row);
+		Ui_.PlayListView_->Play (row);
+	}
+	
+	void PlayListWidget::handleItemAdded (const MediaMeta& meta,
+			const QString& fileName)
+	{
+		Ui_.PlayListView_->AddItem (meta, fileName);
+	}
+	
+	void PlayListWidget::handleExportPlayList ()
+	{
+		const QString& fileName = QFileDialog::getSaveFileName (this,
+				tr ("Save to playlist"), QDir::homePath (),
+				"*.m3u");
+		if (fileName.isEmpty ())
+			return;
+		
+		QFile file (fileName);
+		if (!file.open (QIODevice::WriteOnly | QIODevice::Text))
+		{
+			emit gotEntity (Util::MakeNotification ("Laure",
+					tr ("Can't export %1")
+							.arg (fileName),
+					PInfo_));
+			return;
+		}
+		QTextStream out (&file);
+		out << "#EXTM3U\n";
+		
+		for (int i = 0, c = Ui_.PlayListView_->RowCount (); i < c; ++i)
+			out << Ui_.PlayListView_->Data (i, 1).toString () << '\n';
 	}
 }
 }

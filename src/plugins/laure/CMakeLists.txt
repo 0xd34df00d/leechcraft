@@ -23,6 +23,11 @@ SET (QT_USE_QTXML TRUE)
 INCLUDE (${QT_USE_FILE})
 FIND_PACKAGE (VLC REQUIRED)
 FIND_PACKAGE (LastFM REQUIRED)
+FIND_PACKAGE (MAGIC REQUIRED)
+
+IF (MAGIC_FOUND)
+	ADD_DEFINITIONS (-DHAVE_MAGIC)
+ENDIF (MAGIC_FOUND)
 
 INCLUDE_DIRECTORIES (
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -31,8 +36,12 @@ INCLUDE_DIRECTORIES (
 	${LEECHCRAFT_INCLUDE_DIR}
 	${VLC_INCLUDE_DIR}
 	${LastFM_INCLUDE_DIR}
+	${MAGIC_INCLUDE_DIR}
 	)
 SET (SRCS
+	nowplayingdelegate.cpp
+	volumeslider.cpp
+	vlcwrapper.cpp
 	separateplayerwidget.cpp
 	playlistaddmenu.cpp
 	lastfmsubmitter.cpp
@@ -47,6 +56,9 @@ SET (SRCS
 	laure.cpp
 	)
 SET (HEADERS
+	nowplayingdelegate.h
+	volumeslider.h
+	vlcwrapper.h
 	separateplayerwidget.h
 	playlistaddmenu.h
 	lastfmsubmitter.h
@@ -83,6 +95,7 @@ TARGET_LINK_LIBRARIES (leechcraft_laure
 	${LEECHCRAFT_LIBRARIES}
 	${VLC_LIBRARIES}
 	${LastFM_LIBRARIES}
+	${MAGIC_LIBRARIES}
 	)
 INSTALL (TARGETS leechcraft_laure DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES lauresettings.xml DESTINATION ${LC_SETTINGS_DEST})

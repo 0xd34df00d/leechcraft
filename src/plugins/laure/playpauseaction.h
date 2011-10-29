@@ -29,13 +29,15 @@ namespace Laure
 	{
 		Q_OBJECT
 
-		bool Play_;
+		int Play_;
 	public:
-		PlayPauseAction (QObject* = 0);
+		PlayPauseAction (const QString& text, QObject *parent = 0);
+		void SetIcon ();
 	public slots:
 		void handlePause ();
 		void handlePlay ();
 		void handleTriggered ();
+		
 	signals:
 		void play ();
 		void pause();

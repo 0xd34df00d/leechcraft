@@ -21,10 +21,6 @@
 #define PLUGINS_LAURE_PLAYER_H
 
 #include <QFrame>
-#include <boost/shared_ptr.hpp>
-#include <vlc/vlc.h>
-#include <vlc/libvlc_media_list.h>
-#include <vlc/libvlc_media_list_player.h>
 
 class QTime;
 class QPushButton;
@@ -35,47 +31,23 @@ namespace LeechCraft
 {
 namespace Laure
 {
-	class PlayListView;
-	typedef boost::shared_ptr<libvlc_instance_t> libvlc_instance_ptr;
-	typedef boost::shared_ptr<libvlc_media_list_t> libvlc_media_list_ptr;
-	typedef boost::shared_ptr<libvlc_media_list_player_t> libvlc_media_list_player_ptr;
-	typedef boost::shared_ptr<libvlc_media_player_t> libvlc_media_player_ptr;
+	class VLCWrapper;
 	
 	class Player : public QFrame
 	{
 		Q_OBJECT
 		
 		QTimer *Poller_;
-		bool IsPlaying_;
-		libvlc_instance_ptr VLCInstance_;
-		libvlc_media_list_ptr ML_;
-		libvlc_media_list_player_ptr MLP_;
-		libvlc_media_player_ptr MP_;
-		PlayListView *PlayListView_;
+		VLCWrapper *VLCWrapper_;
 	public:
-		Player (QWidget *parent = 0, Qt::WindowFlags f = 0);
+		Player (QWidget* = 0);
 		
-		libvlc_instance_t* Instance ();
-		libvlc_media_list_t* PlayList ();
-		libvlc_media_t* Media ();
-		void SetPlayListView (PlayListView*);
-		
-		int Volume () const;
+		void SetVLCWrapper (VLCWrapper *core);
+		QTime Time ();
+		QTime Length ();
 		int Position () const;
-		float MediaPosition () const;
-		bool IsPlaying () const;
-		QTime Time () const;
-		QTime Length () const;
 	public slots:
-		void setVolume (int);
 		void setPosition (int);
-		void stop ();
-		void pause ();
-		void play ();
-		void playItem (int);
-		void next ();
-		void prev ();
-		void separateDialog ();
 		void handleTimeout ();
 	signals:
 		void timeout ();

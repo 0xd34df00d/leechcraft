@@ -21,6 +21,8 @@
 #define PLUGINS_LAURE_PLAYLISTADDMENU_H
 #include <QMenu>
 #include <QFileInfoList>
+#include <boost/shared_ptr.hpp>
+#include <magic.h>
 
 namespace LeechCraft
 {
@@ -30,15 +32,24 @@ namespace Laure
 	class PlayListAddMenu : public QMenu
 	{
 		Q_OBJECT
-		
-		PlayListView *PlayListView_;
+#ifdef HAVE_MAGIC
+		boost::shared_ptr<magic_set> Magic_;
+#else
+		QStringList Formats_;
+#endif
 	public:
-		PlayListAddMenu (PlayListView *playListView, QWidget *parent);
+		PlayListAddMenu (QWidget* = 0);
 	private slots:
 		void handleAddUrl ();
 		void handleAddFolder ();
 		void handleAddFiles ();
+		void handleImportPlayList ();
 		QFileInfoList StoragedFiles (const QString&);
+	private:
+		bool IsFileSupported (const QFileInfo&) const;
+		void LoadM3U (const QString&);
+	signals:
+		void addItem (const QString&);
 	};
 }
 }

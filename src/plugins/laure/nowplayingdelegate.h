@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011 Minh Ngo
+ * Copyright (C) 2011  Minh Ngo
  * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,22 +17,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "playlistmodel.h"
+#ifndef PLUGINS_LAURE_NOWPLAYINGDELEGATE_H
+#define PLUGINS_LAURE_NOWPLAYINGDELEGATE_H
+
+#include <QItemDelegate>
+
+class QPainter;
 
 namespace LeechCraft
 {
 namespace Laure
 {
-	PlayListModel::PlayListModel (QObject* parent)
-	: QStandardItemModel (parent)
+	class NowPlayingDelegate : public QItemDelegate
 	{
-		setColumnCount (2);
-	}
-	
-	Qt::ItemFlags PlayListModel::flags (const QModelIndex& index) const
-	{
-		return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
-	}
+		Q_OBJECT
+	public:
+		NowPlayingDelegate (QObject* = 0);
+		void paint (QPainter *painter, const QStyleOptionViewItem& option,
+				const QModelIndex& index) const;
+	};
 }
 }
 
+#endif // PLUGINS_LAURE_NOWPLAYINGDELEGATE_H

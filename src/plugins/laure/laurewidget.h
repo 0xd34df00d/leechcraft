@@ -45,7 +45,7 @@ namespace Laure
 		
 		QToolBar *ToolBar_;
 		Ui::LaureWidget Ui_;
-		PlayPauseAction *ActionPlay_;
+		VLCWrapper *VLCWrapper_;
 	public:
 		LaureWidget (QWidget *parent = 0, Qt::WindowFlags f = 0);
 		
@@ -63,13 +63,17 @@ namespace Laure
 	signals:
 		void needToClose ();
 		void playPause ();
+		void nowPlayed (const MediaMeta&);
+		void played ();
+		void addItem (const QString&);
+		void gotEntity (const Entity&);
+		void delegateEntity (const Entity&,
+				int*, QObject**);
 	public slots:
 		void handleOpenMediaContent (const QString&);
 	private slots:
 		void handleOpenFile ();
 		void handleOpenURL ();
-		void handleStop ();
-		void handlePlay ();
 		void updateInterface ();
 		void handlePlaylist ();
 	};
