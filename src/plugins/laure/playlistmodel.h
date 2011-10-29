@@ -28,7 +28,13 @@ namespace Laure
 	class PlayListModel : public QStandardItemModel
 	{
 		Q_OBJECT
+		
 	public:
+		enum
+		{
+			IsPlayingRole = Qt::UserRole + 1
+		};
+		
 		PlayListModel (QObject *);
 		Qt::ItemFlags flags (const QModelIndex&) const;
 	};

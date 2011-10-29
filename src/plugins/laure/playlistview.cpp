@@ -80,9 +80,9 @@ namespace Laure
 	{
 		QStandardItem *it = PlayListModel_->item (CurrentItem_);
 		if (it)
-			it->setData (false, Qt::UserRole);
+			it->setData (false, PlayListModel::IsPlayingRole);
 		it = PlayListModel_->item (row);
-		it->setData (true, Qt::UserRole);
+		it->setData (true, PlayListModel::IsPlayingRole);
 		CurrentItem_ = row;
 	}
 

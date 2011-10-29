@@ -20,6 +20,7 @@
 #include "nowplayingdelegate.h"
 #include <QPainter>
 #include <QDebug>
+#include "playlistmodel.h"
 
 namespace LeechCraft
 {
@@ -34,11 +35,10 @@ namespace Laure
 	void NowPlayingDelegate::paint (QPainter *painter, const QStyleOptionViewItem& option,
 				const QModelIndex& index) const
 	{
-		bool played = index.data (Qt::UserRole).toBool ();
+		const bool played = index.data (PlayListModel::IsPlayingRole).toBool ();
 		if (played)
-		{
 			painter->fillRect (option.rect, Qt::gray);
-		}
+
 		QItemDelegate::paint (painter, option, index);
 	}
 }
