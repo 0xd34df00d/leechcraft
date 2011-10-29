@@ -22,7 +22,6 @@
 #include <QWidget>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/structures.h>
-#include <interfaces/ientityhandler.h>
 #include "ui_playlistwidget.h"
 
 namespace LeechCraft

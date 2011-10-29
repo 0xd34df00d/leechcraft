@@ -48,7 +48,7 @@ namespace Laure
 		Poller_->start (300);
 	}
 	
-	void Player::setVLCWrapper (VLCWrapper *core)
+	void Player::SetVLCWrapper (VLCWrapper *core)
 	{
 		VLCWrapper_ = core;
 		VLCWrapper_->setWindow (winId ());

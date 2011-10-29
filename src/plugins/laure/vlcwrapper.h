@@ -24,7 +24,6 @@
 #include <QObject>
 #include <vlc/vlc.h>
 #include <interfaces/ientityhandler.h>
-#include <interfaces/entitytesthandleresult.h>
 
 class QTime;
 

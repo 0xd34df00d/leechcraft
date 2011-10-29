@@ -42,7 +42,7 @@ namespace Laure
 	public:
 		Player (QWidget* = 0);
 		
-		void setVLCWrapper (VLCWrapper *core);
+		void SetVLCWrapper (VLCWrapper *core);
 		QTime Time ();
 		QTime Length ();
 		int Position () const;

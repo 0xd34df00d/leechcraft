@@ -23,7 +23,6 @@
 #include <lastfm/Track>
 #include <lastfm.h>
 #include "xmlsettingsmanager.h"
-#include <sys/socket.h>
 
 namespace LeechCraft
 {
@@ -67,7 +66,7 @@ namespace Laure
 		lastfm::ws::Username = XmlSettingsManager::Instance ()
 				.property ("lastfm.login").toString ();
 				
-		QNetworkAccessManager *manager = proxy.get ()->GetNetworkAccessManager ();
+		QNetworkAccessManager *manager = proxy->GetNetworkAccessManager ();
 		
 		const QString& password = XmlSettingsManager::Instance ()
 				.property ("lastfm.password").toString ();

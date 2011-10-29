@@ -48,7 +48,7 @@ namespace Laure
 	, VLCWrapper_ (new VLCWrapper (this))
 	{	
 		Ui_.setupUi (this);
-		Ui_.Player_->setVLCWrapper (VLCWrapper_);
+		Ui_.Player_->SetVLCWrapper (VLCWrapper_);
 
 		connect (Ui_.Player_,
 				SIGNAL (timeout ()),
