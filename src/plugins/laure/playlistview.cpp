@@ -18,28 +18,36 @@
  **********************************************************************/
 
 #include "playlistview.h"
-
 #include <QKeyEvent>
+#include <QHeaderView>
+#include <QDebug>
+#include "xmlsettingsmanager.h"
+#include "nowplayingdelegate.h"
 
 namespace LeechCraft
 {
 namespace Laure
 {
 	PlayListView::PlayListView (QWidget *parent)
-	: QListView (parent)
+	: QTreeView (parent)
+	, PlayListModel_ (new PlayListModel (this))
+	, CurrentItem_ (-1)
 	{
-		PlayListModel_ = new PlayListModel (this);
 		setModel (PlayListModel_);
-		setModelColumn (0);
+		setSelectionMode (ContiguousSelection);
+		setAlternatingRowColors (true);
+		hideColumn (1);
+		setItemDelegate (new NowPlayingDelegate (this));
+		header ()->hide ();
 		connect (this,
 				SIGNAL (doubleClicked (QModelIndex)),
 				this,
 				SLOT (handleDoubleClicked (QModelIndex)));
 	}
 	
-	void PlayListView::SetPlayList (libvlc_media_list_t *ML)
+	QVariant PlayListView::Data (int row, int column)
 	{
-		PlayListModel_->SetPlayList (ML);
+		return PlayListModel_->data (PlayListModel_->index (row, column));
 	}
 	
 	int PlayListView::RowCount () const
@@ -47,47 +55,54 @@ namespace Laure
 		return PlayListModel_->rowCount ();
 	}
 	
-	void PlayListView::SetInstance (libvlc_instance_t *VLCInstance)
+	void PlayListView::selectRow (int val)
 	{
-		return PlayListModel_->SetInstance (VLCInstance);
-	}
-	
-	int PlayListView::CurrentIndex () const
-	{
-		return PlayListModel_->CurrentIndex ();
-	}
-	
-	void PlayListView::SetCurrentIndex (int val)
-	{
-		PlayListModel_->SetCurrentIndex (val);
-		setCurrentIndex (PlayListModel_->index (val, 0	));
+		setCurrentIndex (model ()->index (val, 0));
 	}
 
-	void PlayListView::AddItem (const QString& item)
+	void PlayListView::AddItem (const MediaMeta& item, const QString& fileName)
 	{
-		PlayListModel_->appendRow (new QStandardItem (item));
-		if (PlayListModel_->rowCount () == 1)
-		{
-			SetCurrentIndex (0);
-			emit itemPlayed (0);
-		}
+		QString format = XmlSettingsManager::Instance ()
+				.property ("PlaylistFormat").toString ();
+		format.replace ("%artist%", item.Artist_);
+		format.replace ("%album%", item.Album_);
+		format.replace ("%title%", item.Title_);
+		format.replace ("%genre%", item.Genre_);
+		format.replace ("%date%", item.Date_);
+		
+		QList<QStandardItem*> list;
+		list << new QStandardItem (format);
+		list << new QStandardItem (fileName);
+		PlayListModel_->appendRow (list);
 	}
 	
-	libvlc_media_t* PlayListView::CurrentMedia ()
+	void PlayListView::Play (int row)
 	{
-		return PlayListModel_->CurrentMedia ();
+		QStandardItem *it = PlayListModel_->item (CurrentItem_);
+		if (it)
+			it->setData (false, PlayListModel::IsPlayingRole);
+		it = PlayListModel_->item (row);
+		it->setData (true, PlayListModel::IsPlayingRole);
+		CurrentItem_ = row;
 	}
-	
+
 	void PlayListView::handleDoubleClicked (const QModelIndex& index)
 	{
-		emit itemPlayed (index.row ());
+		emit playItem (index.row ());
 	}
 	
 	void PlayListView::removeSelectedRows ()
 	{
 		const QModelIndexList& indexList = selectedIndexes ();
-		Q_FOREACH (const QModelIndex& index, indexList)
-			PlayListModel_->removeRows (index.row ());
+		const int c = indexList.count ();
+		if (!c)
+			return;
+		
+		const int first = indexList.first ().row ();
+		PlayListModel_->removeRows (first, indexList.count ());
+		for (int i = c - 1; i > -1; --i)
+			emit itemRemoved (first);
+	
 	}
 	
 	void PlayListView::keyPressEvent (QKeyEvent *event)
@@ -99,25 +114,15 @@ namespace Laure
 			removeSelectedRows ();
 			break;
 		case Qt::Key_Return:
-			emit itemPlayed (curIndex.row ());
+			emit playItem (curIndex.row ());
 			break;
 		case Qt::Key_Up:
-			setCurrentIndex (model ()->index (curIndex.row () - 1,
-							curIndex.column ()));
+			setCurrentIndex (model ()->index (curIndex.row () - 1, 0));
 			break;
 		case Qt::Key_Down:
-			setCurrentIndex (model ()->index (curIndex.row () + 1,
-							curIndex.column ()));
+			setCurrentIndex (model ()->index (curIndex.row () + 1, 0));
 			break;
 		}
-	}
-	
-	void PlayListView::MoveSelect (int x, int y)
-	{
-		if ( x < 0 || y < 1 || x >= model ()->rowCount ()
-				|| y >= model ()->columnCount ())
-			return;
-		setCurrentIndex (model ()->index (x, y));
 	}
 }
 }	

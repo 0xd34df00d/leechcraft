@@ -31,6 +31,7 @@ namespace Laure
 	class SeparatePlayerWidget : public QWidget
 	{
 		Q_OBJECT
+		
 		QWidget *PlayerWidget_;
 		libvlc_media_player_t *MP_;
 	public:

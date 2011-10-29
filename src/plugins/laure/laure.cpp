@@ -32,8 +32,6 @@ namespace Laure
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		// Ignotus is a fucking moron with total lack of knowledge and
-		// skill and the ability to read documentation. Triple-check his code.
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"lauresettings.xml");
@@ -122,6 +120,22 @@ namespace Laure
 				SIGNAL (needToClose ()),
 				this,
 				SLOT (handleNeedToClose ()));
+		connect (w,
+				SIGNAL (nowPlayed (MediaMeta)),
+				LFSubmitter_,
+				SLOT (nowPlaying (MediaMeta)));
+		connect (w,
+				SIGNAL (played ()),
+				LFSubmitter_,
+				SLOT (submit ()));
+		connect (w,
+				SIGNAL (gotEntity (Entity)),
+				this,
+				SIGNAL (gotEntity (Entity)));
+		connect (w,
+				SIGNAL (delegateEntity (Entity, int*, QObject**)),
+				this,
+				SIGNAL (delegateEntity (Entity, int*, QObject**)));
 
 		Others_ << w;
 		emit addNewTab (tr ("Laure"), w);

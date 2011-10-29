@@ -19,24 +19,41 @@
 
 #include "playlistaddmenu.h"
 #include <QFileDialog>
+#include <QDebug>
+#include <QRegExp>
+#include <QUrl>
 #include "playlistview.h"
 #include "chooseurldialog.h"
+
 
 namespace LeechCraft
 {
 namespace Laure
 {
-	PlayListAddMenu::PlayListAddMenu (PlayListView *playListView, QWidget *parent)
+	PlayListAddMenu::PlayListAddMenu (QWidget *parent)
 	: QMenu (parent)
-	, PlayListView_ (playListView)
 	{
+#ifdef HAVE_MAGIC
+		Magic_ = boost::shared_ptr<magic_set> (magic_open (MAGIC_MIME_TYPE),
+				magic_close);
+		magic_load (Magic_.get (), NULL);
+#else
+		Formats_ << "3gp" << "asf" << "wmv" << "au" << "avi"
+				<< "flv" << "mov" << "mp4" << "ogm" << "ogg"
+				<< "mkv" << "mka" << "ts" << "mpg" << "mp3"
+				<< "mp2" << "nsc" << "nsv" << "nut" << "a52"
+				<< "dts" << "aac" << "flac" << "dv" << "vid"
+				<< "tta" << "tac" << "ty" << "wav" << "xa";
+#endif
 		QAction *addFiles = new QAction (tr ("Add files"), this);
 		QAction *addFolder = new QAction (tr ("Add folder"), this);
 		QAction *addURL = new QAction (tr ("Add URL"), this);
+		QAction *importPL = new QAction (tr ("Import playList"), this);
 		
 		addAction (addFiles);
 		addAction (addFolder);
 		addAction (addURL);
+		addAction (importPL);
 		
 		connect (addURL,
 				SIGNAL (triggered (bool)),
@@ -50,6 +67,10 @@ namespace Laure
 				SIGNAL (triggered (bool)),
 				this,
 				SLOT (handleAddFolder ()));
+		connect (importPL,
+				SIGNAL (triggered (bool)),
+				this,
+				SLOT (handleImportPlayList ()));
 	}
 	
 	void PlayListAddMenu::handleAddFiles ()
@@ -57,7 +78,7 @@ namespace Laure
 		const QStringList& fileNames = QFileDialog::getOpenFileNames (this,
 				tr ("Choose file"), QDir::homePath ());
 		Q_FOREACH (const QString& fileName, fileNames)
-			PlayListView_->AddItem (fileName);
+			emit addItem (fileName);
 	}
 
 	void PlayListAddMenu::handleAddFolder ()
@@ -69,16 +90,50 @@ namespace Laure
 		
 		const QFileInfoList& fileInfoList = StoragedFiles (fileDir);
 		Q_FOREACH (const QFileInfo& fileInfo, fileInfoList)
-			PlayListView_->AddItem (fileInfo.absoluteFilePath ());
+			emit addItem (fileInfo.absoluteFilePath ());
 	}
 	
 	void PlayListAddMenu::handleAddUrl ()
 	{
 		ChooseURLDialog d;
 		if (d.exec () == QDialog::Accepted)
+			emit addItem (d.GetUrl ());
+	}
+	
+	void PlayListAddMenu::handleImportPlayList ()
+	{
+		const QString& fileName = QFileDialog::getOpenFileName (this,
+				tr ("Choose playlist"), QDir::homePath (), "*.m3u");
+		if (fileName.isEmpty ())
+			return;
+		
+		const QString& mime = QString (magic_file (Magic_.get (), fileName.toAscii ()));
+		if (!mime.contains ("text"))
+			return;
+		
+		if (!QFileInfo (fileName).suffix ().compare ("m3u", Qt::CaseInsensitive))
+			LoadM3U (fileName);
+	}
+	
+	void PlayListAddMenu::LoadM3U (const QString& fileName)
+	{
+		QUrl globalUrl (fileName);
+		QFile file (fileName);
+		
+		if (!file.open (QIODevice::ReadOnly| QIODevice::Text))
+			return;
+		
+		while (!file.atEnd ())
 		{
-			const QString& url = d.GetUrl ();
-			PlayListView_->AddItem (url);
+			QString line = file.readLine ();
+			line.chop (1);
+			if (line.indexOf (QRegExp ("#EXT(M3U)|(INF)")) < 0)
+			{
+				QUrl url (line);
+				if (url.isRelative ())
+					url = globalUrl.resolved (url);
+				emit addItem (url.toString ());
+			}
 		}
 	}
 
@@ -96,10 +151,24 @@ namespace Laure
 		{
 			if (fi.isDir ())
 				list << StoragedFiles (fi.absoluteFilePath ());
-			else
+			else if (IsFileSupported (fi))
  				list << fi;
 		}
 		return list;
+	}
+	
+	bool PlayListAddMenu::IsFileSupported (const QFileInfo& file) const
+	{
+#ifdef HAVE_MAGIC
+		const QString& mime = QString (magic_file (Magic_.get (),
+						file.absoluteFilePath ().toAscii ()));
+		return mime.contains ("audio") || mime.contains ("video");		
+#else
+		Q_FOREACH (const QString& format, Formats_)
+			if (file.suffix () == format)
+				return true;
+		return false;
+#endif
 	}
 }
 }

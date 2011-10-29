@@ -33,6 +33,10 @@ namespace Laure
 {
 	class LaureWidget;
 	class LastFMSubmitter;
+
+	/** @author Minh Ngo <nlminhtl@gmail.com>
+	 * @brief An implementation of the Laure's plugin interface
+	 */
 	class Plugin : public QObject
 				, public IInfo
 				, public IHaveTabs
@@ -72,6 +76,9 @@ namespace Laure
 		void changeTooltip (QWidget*, QWidget*);
 		void statusBarChanged (QWidget*, const QString&);
 		void raiseTab (QWidget*);
+		
+		void gotEntity (const Entity&);
+		void delegateEntity (const Entity&, int*, QObject**);
 	private slots:
 		void handleNeedToClose ();
 	};

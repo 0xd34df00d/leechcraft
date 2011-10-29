@@ -11,6 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
+   <string/>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="leftMargin">
@@ -84,7 +85,13 @@
         </widget>
        </item>
        <item row="1" column="3">
-        <widget class="QSlider" name="VolumeSlider_">
+        <widget class="LeechCraft::Laure::VolumeSlider" name="VolumeSlider_">
+         <property name="minimumSize">
+          <size>
+           <width>110</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="maximumSize">
           <size>
            <width>100</width>
@@ -138,6 +145,11 @@
    <extends>QWidget</extends>
    <header>playlistwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>LeechCraft::Laure::VolumeSlider</class>
+   <extends>QSlider</extends>
+   <header>volumeslider.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

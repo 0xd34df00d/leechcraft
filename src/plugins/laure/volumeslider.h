@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011 Minh Ngo
+ * Copyright (C) 2011  Minh Ngo
  * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,22 +17,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "playlistmodel.h"
+#ifndef PLUGINS_LAURE_VOLUMESLIDER_H
+#define PLUGINS_LAURE_VOLUMESLIDER_H
+
+#include <QSlider>
+#include <QPixmap>
+
+class QMouseEvent;
 
 namespace LeechCraft
 {
 namespace Laure
 {
-	PlayListModel::PlayListModel (QObject* parent)
-	: QStandardItemModel (parent)
+	/** @author Minh Ngo <nlminhtl@gmail.com>
+	 * @brief An implementation of the Volume slider
+	 */
+	class VolumeSlider : public QSlider
 	{
-		setColumnCount (2);
-	}
-	
-	Qt::ItemFlags PlayListModel::flags (const QModelIndex& index) const
-	{
-		return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
-	}
+		Q_OBJECT
+		
+		QPixmap VolumeSliderInset_, VolumeSliderGradient_;
+	public:
+		VolumeSlider (QWidget* = 0);
+	protected:
+		void paintEvent (QPaintEvent *ev);
+		void mousePressEvent (QMouseEvent *ev);
+		void mouseMoveEvent (QMouseEvent *ev);
+	private:
+		void GenerateGradient ();
+	private slots:
+		void slotAnimTimer ();
+	};
 }
 }
 
+#endif // PLUGINS_LAURE_VOLUMESLIDER_H

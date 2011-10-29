@@ -66,12 +66,7 @@ namespace Laure
 		lastfm::ws::Username = XmlSettingsManager::Instance ()
 				.property ("lastfm.login").toString ();
 				
-		Manager_ = proxy.get ()->GetNetworkAccessManager ();
-			
-		connect (Manager_,
-				SIGNAL ( finished (QNetworkReply*)),
-				this,
-				SLOT (getSessionKey (QNetworkReply*)));
+		QNetworkAccessManager *manager = proxy->GetNetworkAccessManager ();
 		
 		const QString& password = XmlSettingsManager::Instance ()
 				.property ("lastfm.password").toString ();
@@ -91,13 +86,19 @@ namespace Laure
 				.arg (lastfm::ws::ApiKey)
 				.arg (api_sig);
 
-		Manager_->get (QNetworkRequest (QUrl (url)));
+		QNetworkReply *reply = manager->get (QNetworkRequest (QUrl (url)));
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (getSessionKey ()));
 	}
 		
-	void LastFMSubmitter::getSessionKey (QNetworkReply *result)
+	void LastFMSubmitter::getSessionKey ()
 	{
+		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
 		QDomDocument doc;
-		doc.setContent (QString::fromUtf8 (result->readAll ()));
+		doc.setContent (QString::fromUtf8 (reply->readAll ()));
+		reply->deleteLater ();
 		QDomNodeList domList = doc.documentElement ()
 				.elementsByTagName ("key");
 		if (domList.size () > 0)
@@ -120,19 +121,24 @@ namespace Laure
 		// code
 	}
 		
-	void LastFMSubmitter::NowPlaying (libvlc_media_t *m)
+	void LastFMSubmitter::nowPlaying (const MediaMeta& info)
 	{
-		if (!m || !IsConnected ())
-			return;
-		
 		lastfm::Track track;
 		lastfm::MutableTrack mutableTrack (track);
-		libvlc_media_parse (m);
-		mutableTrack.setTitle (libvlc_media_get_meta (m, libvlc_meta_Title));
-		mutableTrack.setAlbum (libvlc_media_get_meta (m, libvlc_meta_Album));
-		mutableTrack.setArtist (libvlc_media_get_meta (m, libvlc_meta_Artist));
-
+		mutableTrack.setTitle (info.Title_);
+		mutableTrack.setAlbum (info.Album_);
+		mutableTrack.setArtist (info.Artist_);
+		mutableTrack.setDuration (info.Length_);
+		mutableTrack.setTrackNumber (info.TrackNumber_);
+		mutableTrack.setMbid (lastfm::Mbid ("1"));
 		Scrobbler_->nowPlaying (track);
+		Scrobbler_->cache (track);
 	}
+	
+	void LastFMSubmitter::submit ()
+	{
+		Scrobbler_->submit ();
+	}
+
 }
 }

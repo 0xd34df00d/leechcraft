@@ -20,7 +20,6 @@
 #ifndef PLUGINS_LAURE_PLAYLISTMODEL_H
 #define PLUGINS_LAURE_PLAYLISTMODEL_H
 #include <QStandardItemModel>
-#include <vlc/vlc.h>
 
 namespace LeechCraft
 {
@@ -30,24 +29,14 @@ namespace Laure
 	{
 		Q_OBJECT
 		
-		libvlc_instance_t *VLCInstance_;
-		libvlc_media_list_t *ML_;
-		int CurrentIndex_;
 	public:
+		enum
+		{
+			IsPlayingRole = Qt::UserRole + 1
+		};
+		
 		PlayListModel (QObject *);
-		
-		void SetPlayList (libvlc_media_list_t*);
-		void SetInstance (libvlc_instance_t*);
-		
-		int CurrentIndex () const;
-		libvlc_media_t* CurrentMedia ();
-		void SetCurrentIndex (int);
-		
-		bool insertRows (int row, const QString& fileName);
-		bool removeRows (int);
 		Qt::ItemFlags flags (const QModelIndex&) const;
-		
-		void appendRow (QStandardItem*);
 	};
 }
 }

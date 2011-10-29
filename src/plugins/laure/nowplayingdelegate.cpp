@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011 Minh Ngo
+ * Copyright (C) 2011  Minh Ngo
  * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,22 +17,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
+#include "nowplayingdelegate.h"
+#include <QPainter>
+#include <QDebug>
 #include "playlistmodel.h"
 
 namespace LeechCraft
 {
 namespace Laure
 {
-	PlayListModel::PlayListModel (QObject* parent)
-	: QStandardItemModel (parent)
+	NowPlayingDelegate::NowPlayingDelegate (QObject *parent)
+	: QItemDelegate (parent)
 	{
-		setColumnCount (2);
+		
 	}
 	
-	Qt::ItemFlags PlayListModel::flags (const QModelIndex& index) const
+	void NowPlayingDelegate::paint (QPainter *painter, const QStyleOptionViewItem& option,
+				const QModelIndex& index) const
 	{
-		return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
+		const bool played = index.data (PlayListModel::IsPlayingRole).toBool ();
+		if (played)
+			painter->fillRect (option.rect, Qt::gray);
+
+		QItemDelegate::paint (painter, option, index);
 	}
 }
 }
-
