@@ -17,10 +17,12 @@
  **********************************************************************/
 
 #include "groupsenddialog.h"
+#include <boost/function.hpp>
 #include <QStandardItemModel>
 #include "interfaces/iclentry.h"
 #include "interfaces/imessage.h"
 #include "core.h"
+#include <boost/bind.hpp>
 
 namespace LeechCraft
 {
@@ -91,6 +93,45 @@ namespace Azoth
 		}
 
 		Ui_.Message_->clear ();
+	}
+
+	void GroupSendDialog::on_AllButton__released()
+	{
+		Q_FOREACH (QStandardItem *item, Entry2Item_.values ())
+			item->setCheckState (Qt::Checked);
+	}
+
+	void GroupSendDialog::on_NoneButton__released()
+	{
+		Q_FOREACH (QStandardItem *item, Entry2Item_.values ())
+			item->setCheckState (Qt::Unchecked);
+	}
+
+	namespace
+	{
+		void MarkOnly (const QList<QStandardItem*>& items, boost::function<bool (State)> f)
+		{
+			Q_FOREACH (QStandardItem *item, items)
+			{
+				QObject *entryObj = item->data ().value<QObject*> ();
+				ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+
+				const Qt::CheckState state = f (entry->GetStatus ().State_) ?
+						Qt::Checked :
+						Qt::Unchecked;
+				item->setCheckState (state);
+			}
+		}
+	}
+
+	void GroupSendDialog::on_OnlineButton__released ()
+	{
+		MarkOnly (Entry2Item_.values (), !boost::bind (std::equal_to<State> (), SOffline, _1));
+	}
+
+	void GroupSendDialog::on_OfflineButton__released ()
+	{
+		MarkOnly (Entry2Item_.values (), boost::bind (std::equal_to<State> (), SOffline, _1));
 	}
 
 	void GroupSendDialog::handleEntryDestroyed ()

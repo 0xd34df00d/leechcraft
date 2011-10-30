@@ -40,6 +40,10 @@ namespace Azoth
 	private slots:
 		void on_Message__textChanged ();
 		void on_SendButton__released ();
+		void on_AllButton__released ();
+		void on_NoneButton__released ();
+		void on_OnlineButton__released ();
+		void on_OfflineButton__released ();
 		void handleEntryDestroyed ();
 	};
 }
