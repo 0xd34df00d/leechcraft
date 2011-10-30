@@ -20,11 +20,12 @@
 #include <boost/bind.hpp>
 #include <QLabel>
 #include <QGridLayout>
+#include <QHBoxLayout>
 #include <QComboBox>
+#include <QPushButton>
 #include <QtDebug>
 #include "../scripter.h"
 #include "../itemhandlerfactory.h"
-#include <boost/concept_check.hpp>
 
 namespace LeechCraft
 {
@@ -45,7 +46,12 @@ namespace LeechCraft
 	void ItemHandlerCombobox::Handle (const QDomElement& item, QWidget *pwidget)
 	{
 		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
+
+		QHBoxLayout *hboxLay = new QHBoxLayout;
 		QComboBox *box = new QComboBox (XSD_);
+
+		hboxLay->addWidget (box);
+
 		XSD_->SetTooltip (box, item);
 		box->setObjectName (item.attribute ("property"));
 		if (item.hasAttribute ("maxVisibleItems"))
@@ -61,6 +67,20 @@ namespace LeechCraft
 			Propname2Combobox_ [prop] = box;
 			Propname2Item_ [prop] = item;
 		}
+
+		if (item.hasAttribute ("moreThisStuff"))
+		{
+			QPushButton *moreButt = new QPushButton (tr ("More stuff.."));
+			hboxLay->addWidget (moreButt);
+
+			moreButt->setObjectName (item.attribute ("moreThisStuff"));
+			connect (moreButt,
+					SIGNAL (released ()),
+					XSD_,
+					SLOT (handleMoreThisStuffRequested ()));
+		}
+
+		hboxLay->addStretch ();
 
 		QDomElement option = item.firstChildElement ("option");
 		while (!option.isNull ())
@@ -93,7 +113,7 @@ namespace LeechCraft
 			QStringList fromScript = scripter.GetOptions ();
 			Q_FOREACH (const QString& elm, scripter.GetOptions ())
 				box->addItem (scripter.HumanReadableOption (elm),
-						elm); 
+						elm);
 		}
 
 		int pos = box->findData (XSD_->GetValue (item));
@@ -113,7 +133,7 @@ namespace LeechCraft
 
 		int row = lay->rowCount ();
 		lay->addWidget (label, row, 0, Qt::AlignRight);
-		lay->addWidget (box, row, 1);
+		lay->addLayout (hboxLay, row, 1);
 	}
 
 	void ItemHandlerCombobox::SetValue (QWidget *widget, const QVariant& value) const
