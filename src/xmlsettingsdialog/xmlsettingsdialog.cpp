@@ -608,6 +608,11 @@ void XmlSettingsDialog::handleCustomDestroyed ()
 	Customs_.removeAll (widget);
 }
 
+void XmlSettingsDialog::handleMoreThisStuffRequested ()
+{
+	emit moreThisStuffRequested (sender ()->objectName ());
+}
+
 void XmlSettingsDialog::handlePushButtonReleased ()
 {
 	emit pushButtonClicked (sender ()->objectName ());
