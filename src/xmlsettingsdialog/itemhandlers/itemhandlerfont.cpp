@@ -41,7 +41,7 @@ namespace LeechCraft
 	void ItemHandlerFont::Handle (const QDomElement& item, QWidget *pwidget)
 	{
 		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
-		QString labelString = XSD_->GetLabel (item);
+		const QString& labelString = XSD_->GetLabel (item);
 		QLabel *label = new QLabel (labelString);
 		label->setWordWrap (false);
 
@@ -71,7 +71,7 @@ namespace LeechCraft
 			if (element.hasAttribute ("default"))
 			{
 				QFont font;
-				QString defStr = element.attribute ("default");
+				const QString& defStr = element.attribute ("default");
 				if (font.fromString (defStr))
 					value = font;
 				else

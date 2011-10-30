@@ -41,7 +41,7 @@ namespace LeechCraft
 	void ItemHandlerColor::Handle (const QDomElement& item, QWidget *pwidget)
 	{
 		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
-		QString labelString = XSD_->GetLabel (item);
+		const QString& labelString = XSD_->GetLabel (item);
 		QLabel *label = new QLabel (labelString);
 		label->setWordWrap (false);
 

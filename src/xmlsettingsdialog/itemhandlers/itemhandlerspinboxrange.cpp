@@ -49,7 +49,7 @@ namespace LeechCraft
 		widget->SetMinimum (item.attribute ("minimum").toInt ());
 		widget->SetMaximum (item.attribute ("maximum").toInt ());
 
-		QVariant value = XSD_->GetValue (item);
+		const QVariant& value = XSD_->GetValue (item);
 
 		widget->SetRange (value);
 		connect (widget,
@@ -72,7 +72,7 @@ namespace LeechCraft
 				value.isNull () ||
 				!value.canConvert<QList<QVariant> > ())
 		{
-			QStringList parts = item.attribute ("default").split (":");
+			const QStringList& parts = item.attribute ("default").split (":");
 			QList<QVariant> result;
 			if (parts.size () != 2)
 			{
@@ -103,7 +103,7 @@ namespace LeechCraft
 	void ItemHandlerSpinboxRange::UpdateValue (QDomElement& element,
 			const QVariant& value) const
 	{
-		QStringList vals = value.toStringList ();
+		const QStringList& vals = value.toStringList ();
 		if (vals.size () != 2)
 		{
 			qWarning () << Q_FUNC_INFO

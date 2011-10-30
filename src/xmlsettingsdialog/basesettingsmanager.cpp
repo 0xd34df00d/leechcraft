@@ -102,7 +102,7 @@ bool BaseSettingsManager::event (QEvent *e)
 
 	QDynamicPropertyChangeEvent *event = dynamic_cast<QDynamicPropertyChangeEvent*> (e);
 
-	QByteArray name = event->propertyName ();
+	const QByteArray& name = event->propertyName ();
 	Settings_->setValue (name, property (name));
 
 	if (Properties2Object_.contains (name))

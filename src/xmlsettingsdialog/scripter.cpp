@@ -37,16 +37,16 @@ Scripter::Scripter (const QDomElement& elem)
 QStringList Scripter::GetOptions ()
 {
 	Reset ();
-	QDomElement valueGenerator = Container_.firstChildElement ("valueGenerator");
+	const QDomElement& valueGenerator = Container_.firstChildElement ("valueGenerator");
 	QStringList result;
 	if (valueGenerator.isNull ())
 	{
 		qDebug () << Q_FUNC_INFO << "container has no valueGenerator";
 		return result;
 	}
-	QString script = GetScript (valueGenerator);
+	const QString& script = GetScript (valueGenerator);
 
-	QString str = Engine_->evaluate (script).toString ();
+	const QString& str = Engine_->evaluate (script).toString ();
 	if (Engine_->hasUncaughtException ())
 	{
 		qWarning () << Q_FUNC_INFO
@@ -58,9 +58,9 @@ QStringList Scripter::GetOptions ()
 
 	FeedRequiredClasses ();
 
-	QScriptValue global = Engine_->globalObject ();
+	const QScriptValue& global = Engine_->globalObject ();
 
-	QVariant options = global.property ("GetOptions").call ().toVariant ();
+	const QVariant& options = global.property ("GetOptions").call ().toVariant ();
 
 	result = options.toString ().split (",", QString::KeepEmptyParts);
 	return result;
@@ -69,7 +69,7 @@ QStringList Scripter::GetOptions ()
 
 QString Scripter::HumanReadableOption (const QString& name)
 {
-	QScriptValue global = Engine_->globalObject ();
+	const QScriptValue& global = Engine_->globalObject ();
 
 	QScriptValueList args;
 	args << QScriptValue (Engine_.get (), name);
@@ -83,7 +83,7 @@ QString Scripter::GetScript (const QDomElement& elem) const
 	QString programText;
 	if (elem.attribute ("place") == "file")
 	{
-		QString fileName = elem.text ();
+		const QString& fileName = elem.text ();
 		QFile file (fileName);
 		if (!file.open (QIODevice::ReadOnly))
 		{
@@ -107,14 +107,12 @@ QString Scripter::GetScript (const QDomElement& elem) const
 void Scripter::FeedRequiredClasses () const
 {
 	QScriptValue global = Engine_->globalObject ();
-	QStringList classes = global.property ("RequiredClasses").call ()
+	const QStringList& classes = global.property ("RequiredClasses").call ()
 		.toString ().split (" ", QString::SkipEmptyParts);
 
-	for (QStringList::const_iterator i = classes.begin (),
-			end = classes.end (); i != end; ++i)
-		global.setProperty (*i,
-				TypeRegister::Instance ().GetValueForName (*i,
-					Engine_.get ()));
+	Q_FOREACH (const QString& elm, classes)
+		global.setProperty (elm, TypeRegister::Instance ().GetValueForName (elm,
+						Engine_.get ()));
 
 	global.setProperty ("Settings", Engine_->newQObject (Settings_.get ()));
 	qScriptRegisterMetaType (Engine_.get (), toScriptValue, fromScriptValue);

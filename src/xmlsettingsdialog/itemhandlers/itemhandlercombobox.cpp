@@ -55,7 +55,7 @@ namespace LeechCraft
 				item.attribute ("mayHaveDataSource").toLower () == "true";
 		if (mayHaveDataSource)
 		{
-			QString prop = item.attribute ("property");
+			const QString& prop = item.attribute ("property");
 			Factory_->RegisterDatasourceSetter (prop,
 					boost::bind (&ItemHandlerCombobox::SetDataSource, this, _1, _2, _3));
 			Propname2Combobox_ [prop] = box;
@@ -65,10 +65,10 @@ namespace LeechCraft
 		QDomElement option = item.firstChildElement ("option");
 		while (!option.isNull ())
 		{
-			QList<QImage> images = XSD_->GetImages (option);
+			const QList<QImage>& images = XSD_->GetImages (option);
 			if (images.size ())
 			{
-				QIcon icon = QIcon (QPixmap::fromImage (images.at (0)));
+				const QIcon& icon = QIcon (QPixmap::fromImage (images.at (0)));
 				box->addItem (icon,
 						XSD_->GetLabel (option),
 						option.attribute ("name"));
@@ -91,10 +91,9 @@ namespace LeechCraft
 			Scripter scripter (scriptContainer);
 
 			QStringList fromScript = scripter.GetOptions ();
-			for (QStringList::const_iterator i = fromScript.begin (),
-					end = fromScript.end (); i != end; ++i)
-				box->addItem (scripter.HumanReadableOption (*i),
-						*i);
+			Q_FOREACH (const QString& elm, scripter.GetOptions ())
+				box->addItem (scripter.HumanReadableOption (elm),
+						elm); 
 		}
 
 		int pos = box->findData (XSD_->GetValue (item));
@@ -175,7 +174,7 @@ namespace LeechCraft
 
 		box->setModel (model);
 
-		QVariant data = xsd->GetValue (Propname2Item_ [prop]);
+		const QVariant& data = xsd->GetValue (Propname2Item_ [prop]);
 		int pos = box->findData (data);
 		if (pos == -1)
 		{
