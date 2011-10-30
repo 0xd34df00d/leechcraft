@@ -76,6 +76,7 @@ namespace Azoth
 		void applyFastStatus ();
 
 		void handleCatRenameTriggered ();
+		void handleSendGroupMsgTriggered ();
 		void joinAccountConference ();
 		void joinAccountConfFromBM ();
 		void manageAccountBookmarks ();

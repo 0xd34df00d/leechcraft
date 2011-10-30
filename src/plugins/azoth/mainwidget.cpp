@@ -46,6 +46,7 @@
 #include "mooddialog.h"
 #include "locationdialog.h"
 #include "util.h"
+#include "groupsenddialog.h"
 
 namespace LeechCraft
 {
@@ -364,6 +365,18 @@ namespace Azoth
 					this,
 					SLOT (handleCatRenameTriggered ()));
 			actions << rename;
+
+			QAction *sendMsg = new QAction (tr ("Send message..."), menu);
+			QList<QVariant> entries;
+			for (int i = 0, cnt = index.model ()->rowCount (index);
+					i < cnt; ++i)
+				entries << index.child (i, 0).data (Core::CLREntryObject);
+			sendMsg->setProperty ("Azoth/Entries", entries);
+			connect (sendMsg,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (handleSendGroupMsgTriggered ()));
+			actions << sendMsg;
 			break;
 		}
 		case Core::CLETAccount:
@@ -607,6 +620,19 @@ namespace Azoth
 				entry->SetGroups (groups);
 			}
 		}
+	}
+
+	void MainWidget::handleSendGroupMsgTriggered ()
+	{
+		QList<QObject*> entries;
+
+		Q_FOREACH (const QVariant& entryVar,
+				sender ()->property ("Azoth/Entries").toList ())
+			entries << entryVar.value<QObject*> ();
+
+		GroupSendDialog *dlg = new GroupSendDialog (entries, this);
+		dlg->setAttribute (Qt::WA_DeleteOnClose, true);
+		dlg->show ();
 	}
 
 	void MainWidget::joinAccountConference ()

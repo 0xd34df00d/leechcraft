@@ -104,6 +104,7 @@ SET (SRCS
 	shareriexdialog.cpp
 	searchwidget.cpp
 	mucinvitedialog.cpp
+	groupsenddialog.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -145,6 +146,7 @@ SET (HEADERS
 	shareriexdialog.h
 	searchwidget.h
 	mucinvitedialog.h
+	groupsenddialog.h
 	animatediconmanager.h
 	sourcetrackingmodel.h
 	interfaces/iprotocolplugin.h
@@ -175,6 +177,7 @@ SET (FORMS
 	shareriexdialog.ui
 	searchwidget.ui
 	mucinvitedialog.ui
+	groupsenddialog.ui
 	)
 SET (RESOURCES azothresources.qrc)
 
@@ -263,7 +266,7 @@ IF (ENABLE_AZOTH_DEPESTER)
 ENDIF (ENABLE_AZOTH_DEPESTER)
 IF (ENABLE_AZOTH_EMBEDMEDIA)
     ADD_SUBDIRECTORY (plugins/embedmedia)
-ENDIF (ENABLE_AZOTH_EMBEDMEDIA) 
+ENDIF (ENABLE_AZOTH_EMBEDMEDIA)
 IF (ENABLE_AZOTH_HERBICIDE)
 	ADD_SUBDIRECTORY (plugins/herbicide)
 ENDIF (ENABLE_AZOTH_HERBICIDE)
