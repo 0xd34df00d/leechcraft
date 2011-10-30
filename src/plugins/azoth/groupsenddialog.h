@@ -44,6 +44,7 @@ namespace Azoth
 		void on_NoneButton__released ();
 		void on_OnlineButton__released ();
 		void on_OfflineButton__released ();
+		void handleEntryStatusChanged ();
 		void handleEntryDestroyed ();
 	};
 }

@@ -58,6 +58,10 @@ namespace Azoth
 					SIGNAL (destroyed (QObject*)),
 					this,
 					SLOT (handleEntryDestroyed ()));
+			connect (entryObj,
+					SIGNAL (statusChanged (EntryStatus, QString)),
+					this,
+					SLOT (handleEntryStatusChanged ()));
 		}
 
 		Ui_.setupUi (this);
@@ -132,6 +136,18 @@ namespace Azoth
 	void GroupSendDialog::on_OfflineButton__released ()
 	{
 		MarkOnly (Entry2Item_.values (), boost::bind (std::equal_to<State> (), SOffline, _1));
+	}
+
+	void GroupSendDialog::handleEntryStatusChanged ()
+	{
+		QStandardItem *item = Entry2Item_ [sender ()];
+		if (!item)
+			return;
+
+		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
+		const QIcon& icon = Core::Instance ()
+				.GetIconForState (entry->GetStatus ().State_);
+		item->setIcon (icon);
 	}
 
 	void GroupSendDialog::handleEntryDestroyed ()
