@@ -59,6 +59,7 @@
 #include "callchatwidget.h"
 #include "chattabwebview.h"
 #include "msgformatterwidget.h"
+#include "actionsmanager.h"
 
 namespace LeechCraft
 {
@@ -247,13 +248,14 @@ namespace Azoth
 
 	QList<QAction*> ChatTab::GetTabBarContextMenuActions () const
 	{
-		QList<QAction*> allActions = Core::Instance ()
-				.GetEntryActions (GetEntry<ICLEntry> ());
+		ActionsManager *manager = Core::Instance ().GetActionsManager ();
+		QList<QAction*> allActions = manager->
+				GetEntryActions (GetEntry<ICLEntry> ());
 		QList<QAction*> result;
 		Q_FOREACH (QAction *act, allActions)
 		{
-			if (Core::Instance ().GetAreasForAction (act)
-					.contains (Core::CLEAATabCtxtMenu) ||
+			if (manager->GetAreasForAction (act)
+					.contains (ActionsManager::CLEAATabCtxtMenu) ||
 				act->isSeparator ())
 				result << act;
 		}
@@ -1180,8 +1182,9 @@ namespace Azoth
 #endif
 
 		QList<QAction*> coreActions;
-		Q_FOREACH (QAction *action, Core::Instance ().GetEntryActions (e))
-			if (Core::Instance ().GetAreasForAction (action).contains (Core::CLEAAToolbar))
+		ActionsManager *manager = Core::Instance ().GetActionsManager ();
+		Q_FOREACH (QAction *action, manager->GetEntryActions (e))
+			if (manager->GetAreasForAction (action).contains (ActionsManager::CLEAAToolbar))
 				coreActions << action;
 
 		if (!coreActions.isEmpty ())

@@ -47,6 +47,7 @@
 #include "locationdialog.h"
 #include "util.h"
 #include "groupsenddialog.h"
+#include "actionsmanager.h"
 
 namespace LeechCraft
 {
@@ -338,6 +339,8 @@ namespace Azoth
 		if (!index.isValid ())
 			return;
 
+		ActionsManager *manager = Core::Instance ().GetActionsManager ();
+
 		QMenu *menu = new QMenu (tr ("Entry context menu"));
 		QList<QAction*> actions;
 		switch (index.data (Core::CLREntryType).value<Core::CLEntryType> ())
@@ -346,10 +349,10 @@ namespace Azoth
 		{
 			QObject *obj = index.data (Core::CLREntryObject).value<QObject*> ();
 			ICLEntry *entry = qobject_cast<ICLEntry*> (obj);
-			const QList<QAction*>& allActions = Core::Instance ().GetEntryActions (entry);
+			const QList<QAction*>& allActions = manager->GetEntryActions (entry);
 			Q_FOREACH (QAction *action, allActions)
-				if (Core::Instance ().GetAreasForAction (action)
-						.contains (Core::CLEAAContactListCtxtMenu) ||
+				if (manager->GetAreasForAction (action)
+						.contains (ActionsManager::CLEAAContactListCtxtMenu) ||
 					action->isSeparator ())
 					actions << action;
 			break;

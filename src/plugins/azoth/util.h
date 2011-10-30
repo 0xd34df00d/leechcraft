@@ -34,6 +34,9 @@ namespace Azoth
 	QString GetActivityIconName (const QString&, const QString&);
 
 	void InitiateAccountAddition (QWidget *parent = 0);
+
+	void AuthorizeEntry (ICLEntry*);
+	void DenyAuthForEntry (ICLEntry*);
 }
 }
 

@@ -105,6 +105,7 @@ SET (SRCS
 	searchwidget.cpp
 	mucinvitedialog.cpp
 	groupsenddialog.cpp
+	actionsmanager.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -147,6 +148,7 @@ SET (HEADERS
 	searchwidget.h
 	mucinvitedialog.h
 	groupsenddialog.h
+	actionsmanager.h
 	animatediconmanager.h
 	sourcetrackingmodel.h
 	interfaces/iprotocolplugin.h
