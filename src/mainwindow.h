@@ -121,7 +121,6 @@ namespace LeechCraft
 		void on_MainTabWidget__currentChanged (int);
 		void handleShortcutFullscreenMode ();
 		void handleToolButtonStyleChanged ();
-		void handleIconSize ();
 		void handleNewTabMenuRequested ();
 		void handleRestoreActionAdded (QAction*);
 		void updateSpeedIndicators ();
