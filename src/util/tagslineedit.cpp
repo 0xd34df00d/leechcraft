@@ -96,6 +96,13 @@ void TagsLineEdit::handleTagsUpdated (const QStringList& tags)
 			SLOT (handleSelectionChanged (const QStringList&)));
 }
 
+void TagsLineEdit::setTags (const QStringList& tags)
+{
+	setText (tags.join ("; "));
+	if (CategorySelector_.get ())
+		CategorySelector_->SetSelections (tags);
+}
+
 void TagsLineEdit::handleSelectionChanged (const QStringList& tags)
 {
 	setText (tags.join ("; "));
