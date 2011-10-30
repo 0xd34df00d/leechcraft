@@ -23,48 +23,45 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace LackMan
+{
+	class PackagesModel : public QAbstractItemModel
 	{
-		namespace LackMan
+		Q_OBJECT
+
+		QList<ListPackageInfo> Packages_;
+	public:
+		enum PackageModelRole
 		{
-			class PackagesModel : public QAbstractItemModel
-			{
-				Q_OBJECT
+			PMRShortDescription = Qt::UserRole + 1,
+			PMRLongDescription,
+			PMRTags,
+			PMRType,
+			PMRPackageID,
+			PMRInstalled,
+			PMRUpgradable,
+			PMRVersion,
+			PMRThumbnails,
+			PMRScreenshots,
+			PMRSize
+		};
+		PackagesModel (QObject* = 0);
 
-				QList<ListPackageInfo> Packages_;
-			public:
-				enum PackageModelRole
-				{
-					PMRShortDescription = Qt::UserRole + 1,
-					PMRLongDescription,
-					PMRTags,
-					PMRType,
-					PMRPackageID,
-					PMRInstalled,
-					PMRUpgradable,
-					PMRVersion,
-					PMRThumbnails,
-					PMRScreenshots,
-					PMRSize
-				};
-				PackagesModel (QObject* = 0);
+		virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
+		virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
+		virtual Qt::ItemFlags flags (const QModelIndex&) const;
+		virtual QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const;
+		virtual QModelIndex parent (const QModelIndex&) const;
+		virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
 
-				virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
-				virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
-				virtual Qt::ItemFlags flags (const QModelIndex&) const;
-				virtual QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const;
-				virtual QModelIndex parent (const QModelIndex&) const;
-				virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
-
-				void AddRow (const ListPackageInfo&);
-				void UpdateRow (const ListPackageInfo&);
-				void RemovePackage (int);
-				ListPackageInfo FindPackage (const QString&) const;
-				int GetRow (int packageId) const;
-				void Clear ();
-			};
-		}
-	}
+		void AddRow (const ListPackageInfo&);
+		void UpdateRow (const ListPackageInfo&);
+		void RemovePackage (int);
+		ListPackageInfo FindPackage (const QString&) const;
+		int GetRow (int packageId) const;
+		void Clear ();
+	};
+}
 }
 
 #endif

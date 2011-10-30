@@ -28,53 +28,50 @@ class QToolButton;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace LackMan
+{
+	class PackagesModel;
+
+	class PackagesDelegate : public QStyledItemDelegate
 	{
-		namespace LackMan
-		{
-			class PackagesModel;
+		Q_OBJECT
 
-			class PackagesDelegate : public QStyledItemDelegate
-			{
-				Q_OBJECT
+		static const int CPadding;
+		static const int CIconSize;
+		static const int CActionsSize;
+		static const int CTitleSizeDelta;
+		static const int CNumLines;
 
-				static const int CPadding;
-				static const int CIconSize;
-				static const int CActionsSize;
-				static const int CTitleSizeDelta;
-				static const int CNumLines;
+		mutable QModelIndex CurrentSelection_;
+		mutable QHash<int, QToolButton*> Row2InstallRemove_;
+		mutable QHash<int, QToolButton*> Row2Update_;
+		mutable QHash<int, QWidget*> Row2Layout_;
+		mutable QHash<QModelIndex, bool> WasInstalled_;
+		mutable QHash<QModelIndex, bool> WasUpgradable_;
 
-				mutable QModelIndex CurrentSelection_;
-				mutable QHash<int, QToolButton*> Row2InstallRemove_;
-				mutable QHash<int, QToolButton*> Row2Update_;
-				mutable QHash<int, QWidget*> Row2Layout_;
-				mutable QHash<QModelIndex, bool> WasInstalled_;
-				mutable QHash<QModelIndex, bool> WasUpgradable_;
+		QWidget * const Viewport_;
+		QAbstractItemModel * const Model_;
+	public:
+		PackagesDelegate (QTreeView* = 0);
 
-				QWidget * const Viewport_;
-				QAbstractItemModel * const Model_;
-			public:
-				PackagesDelegate (QTreeView* = 0);
-
-				void paint (QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const;
-				QSize sizeHint (const QStyleOptionViewItem&, const QModelIndex&) const;
-			private:
-				int TitleHeight (const QStyleOptionViewItem&) const;
-				int TextHeight (const QStyleOptionViewItem&) const;
-				QToolButton* GetInstallRemove (const QModelIndex&) const;
-				QToolButton* GetUpdate (const QModelIndex&) const;
-				QWidget* GetLayout (const QModelIndex&) const;
-			public slots:
-				void handleRowChanged (const QModelIndex&, const QModelIndex&);
-				void invalidateWidgetPositions ();
-				void hideOverflousActions (const QModelIndex&, int, int);
-			private slots:
-				void handleAction ();
-				void handleRowActionFinished (int);
-				void handlePackageUpdateToggled (int, bool);
-			};
-		}
-	}
+		void paint (QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const;
+		QSize sizeHint (const QStyleOptionViewItem&, const QModelIndex&) const;
+	private:
+		int TitleHeight (const QStyleOptionViewItem&) const;
+		int TextHeight (const QStyleOptionViewItem&) const;
+		QToolButton* GetInstallRemove (const QModelIndex&) const;
+		QToolButton* GetUpdate (const QModelIndex&) const;
+		QWidget* GetLayout (const QModelIndex&) const;
+	public slots:
+		void handleRowChanged (const QModelIndex&, const QModelIndex&);
+		void invalidateWidgetPositions ();
+		void hideOverflousActions (const QModelIndex&, int, int);
+	private slots:
+		void handleAction ();
+		void handleRowActionFinished (int);
+		void handlePackageUpdateToggled (int, bool);
+	};
+}
 }
 
 #endif

@@ -21,130 +21,127 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace LackMan
+{
+	RepoInfo::RepoInfo ()
 	{
-		namespace LackMan
+	}
+
+	RepoInfo::RepoInfo (const QUrl& url)
+	: URL_ (url)
+	{
+	}
+
+	RepoInfo::RepoInfo (const QUrl& url, const QString& name,
+			const QString& shortDescr, const QStringList& components)
+	: URL_ (url)
+	, Name_ (name)
+	, ShortDescr_ (shortDescr)
+	, Components_ (components)
+	{
+	}
+
+	const QUrl& RepoInfo::GetUrl () const
+	{
+		return URL_;
+	}
+
+	void RepoInfo::SetUrl (const QUrl& url)
+	{
+		URL_ = url;
+	}
+
+	const QString& RepoInfo::GetName () const
+	{
+		return Name_;
+	}
+
+	void RepoInfo::SetName (const QString& name)
+	{
+		Name_ = name;
+	}
+
+	const QString& RepoInfo::GetShortDescr () const
+	{
+		return ShortDescr_;
+	}
+
+	void RepoInfo::SetShortDescr (const QString& descr)
+	{
+		ShortDescr_ = descr;
+	}
+
+	const QString& RepoInfo::GetLongDescr () const
+	{
+		return LongDescr_;
+	}
+
+	void RepoInfo::SetLongDescr (const QString& descr)
+	{
+		LongDescr_ = descr;
+	}
+
+	const MaintainerInfo& RepoInfo::GetMaintainer () const
+	{
+		return Maintainer_;
+	}
+
+	void RepoInfo::SetMaintainer (const MaintainerInfo& maint)
+	{
+		Maintainer_ = maint;
+	}
+
+	const QStringList& RepoInfo::GetComponents () const
+	{
+		return Components_;
+	}
+
+	void RepoInfo::SetComponents (const QStringList& components)
+	{
+		Components_.clear ();
+		Q_FOREACH (const QString& c, components)
+			Components_ << c.simplified ();
+	}
+
+	bool operator== (const Dependency& dep1, const Dependency& dep2)
+	{
+		return dep1.Type_ == dep2.Type_ &&
+				dep1.Name_ == dep2.Name_ &&
+				dep1.Version_ == dep2.Version_;
+	}
+
+	void PackageInfo::Dump () const
+	{
+		qDebug () << "Package name: " << Name_
+				<< "; versions:" << Versions_
+				<< "; type:" << Type_
+				<< "; language:" << Language_
+				<< "; description:" << Description_
+				<< "; long descr:" << LongDescription_
+				<< "; tags:" << Tags_
+				<< "; maintainer:" << MaintName_ << MaintEmail_
+				<< "; icon:" << IconURL_
+				<< "; package sizes:" << PackageSizes_
+				<< "; dependencies:";
+		Q_FOREACH (QString version, Deps_.keys ())
+			Q_FOREACH (const Dependency& d, Deps_ [version])
+				qDebug () << "\t" << version << d.Type_ << d.Name_ << d.Version_;
+		if (Images_.size ())
 		{
-			RepoInfo::RepoInfo ()
-			{
-			}
-
-			RepoInfo::RepoInfo (const QUrl& url)
-			: URL_ (url)
-			{
-			}
-
-			RepoInfo::RepoInfo (const QUrl& url, const QString& name,
-					const QString& shortDescr, const QStringList& components)
-			: URL_ (url)
-			, Name_ (name)
-			, ShortDescr_ (shortDescr)
-			, Components_ (components)
-			{
-			}
-
-			const QUrl& RepoInfo::GetUrl () const
-			{
-				return URL_;
-			}
-
-			void RepoInfo::SetUrl (const QUrl& url)
-			{
-				URL_ = url;
-			}
-
-			const QString& RepoInfo::GetName () const
-			{
-				return Name_;
-			}
-
-			void RepoInfo::SetName (const QString& name)
-			{
-				Name_ = name;
-			}
-
-			const QString& RepoInfo::GetShortDescr () const
-			{
-				return ShortDescr_;
-			}
-
-			void RepoInfo::SetShortDescr (const QString& descr)
-			{
-				ShortDescr_ = descr;
-			}
-
-			const QString& RepoInfo::GetLongDescr () const
-			{
-				return LongDescr_;
-			}
-
-			void RepoInfo::SetLongDescr (const QString& descr)
-			{
-				LongDescr_ = descr;
-			}
-
-			const MaintainerInfo& RepoInfo::GetMaintainer () const
-			{
-				return Maintainer_;
-			}
-
-			void RepoInfo::SetMaintainer (const MaintainerInfo& maint)
-			{
-				Maintainer_ = maint;
-			}
-
-			const QStringList& RepoInfo::GetComponents () const
-			{
-				return Components_;
-			}
-
-			void RepoInfo::SetComponents (const QStringList& components)
-			{
-				Components_.clear ();
-				Q_FOREACH (const QString& c, components)
-					Components_ << c.simplified ();
-			}
-
-			bool operator== (const Dependency& dep1, const Dependency& dep2)
-			{
-				return dep1.Type_ == dep2.Type_ &&
-						dep1.Name_ == dep2.Name_ &&
-						dep1.Version_ == dep2.Version_;
-			}
-
-			void PackageInfo::Dump () const
-			{
-				qDebug () << "Package name: " << Name_
-						<< "; versions:" << Versions_
-						<< "; type:" << Type_
-						<< "; language:" << Language_
-						<< "; description:" << Description_
-						<< "; long descr:" << LongDescription_
-						<< "; tags:" << Tags_
-						<< "; maintainer:" << MaintName_ << MaintEmail_
-						<< "; icon:" << IconURL_
-						<< "; package sizes:" << PackageSizes_
-						<< "; dependencies:";
-				Q_FOREACH (QString version, Deps_.keys ())
-					Q_FOREACH (const Dependency& d, Deps_ [version])
-						qDebug () << "\t" << version << d.Type_ << d.Name_ << d.Version_;
-				if (Images_.size ())
-				{
-					qDebug () << "; images:";
-					Q_FOREACH (const Image& img, Images_)
-						qDebug () << "\t" << img.Type_ << img.URL_;
-				}
-			}
-
-			bool operator== (const ListPackageInfo& lpi1, const ListPackageInfo& lpi2)
-			{
-				return lpi1.PackageID_ == lpi2.PackageID_;
-			}
-
-			uint qHash (const Dependency& dep)
-			{
-				return qHash (QString::number (dep.Type_) + dep.Name_ + dep.Version_);
-			}
+			qDebug () << "; images:";
+			Q_FOREACH (const Image& img, Images_)
+				qDebug () << "\t" << img.Type_ << img.URL_;
 		}
 	}
+
+	bool operator== (const ListPackageInfo& lpi1, const ListPackageInfo& lpi2)
+	{
+		return lpi1.PackageID_ == lpi2.PackageID_;
+	}
+
+	uint qHash (const Dependency& dep)
+	{
+		return qHash (QString::number (dep.Type_) + dep.Name_ + dep.Version_);
+	}
+}
 }

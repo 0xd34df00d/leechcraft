@@ -22,13 +22,10 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
-	{
-		namespace LackMan
-		{
-			bool IsVersionLess (const QString& lver, const QString& rver);
-		}
-	}
+namespace LackMan
+{
+	bool IsVersionLess (const QString& lver, const QString& rver);
+}
 }
 
 #endif

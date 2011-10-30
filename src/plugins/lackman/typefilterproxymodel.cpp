@@ -21,38 +21,35 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace LackMan
+{
+	TypeFilterProxyModel::TypeFilterProxyModel (QObject *parent)
+	: QSortFilterProxyModel (parent)
+	, Mode_ (FMAll)
 	{
-		namespace LackMan
+	}
+
+	void TypeFilterProxyModel::SetFilterMode (TypeFilterProxyModel::FilterMode fm)
+	{
+		Mode_ = fm;
+		invalidateFilter ();
+	}
+
+	bool TypeFilterProxyModel::filterAcceptsRow (int row, const QModelIndex& parent) const
+	{
+		QModelIndex index = sourceModel ()->index (row, 0, parent);
+		switch (Mode_)
 		{
-			TypeFilterProxyModel::TypeFilterProxyModel (QObject *parent)
-			: QSortFilterProxyModel (parent)
-			, Mode_ (FMAll)
-			{
-			}
-
-			void TypeFilterProxyModel::SetFilterMode (TypeFilterProxyModel::FilterMode fm)
-			{
-				Mode_ = fm;
-				invalidateFilter ();
-			}
-
-			bool TypeFilterProxyModel::filterAcceptsRow (int row, const QModelIndex& parent) const
-			{
-				QModelIndex index = sourceModel ()->index (row, 0, parent);
-				switch (Mode_)
-				{
-				case FMInstalled:
-					return index.data (PackagesModel::PMRInstalled).toBool ();
-				case FMNotInstalled:
-					return !index.data (PackagesModel::PMRInstalled).toBool ();
-				case FMUpgradable:
-					return index.data (PackagesModel::PMRUpgradable).toBool ();
-				case FMAll:
-				default:
-					return true;
-				}
-			}
+		case FMInstalled:
+			return index.data (PackagesModel::PMRInstalled).toBool ();
+		case FMNotInstalled:
+			return !index.data (PackagesModel::PMRInstalled).toBool ();
+		case FMUpgradable:
+			return index.data (PackagesModel::PMRUpgradable).toBool ();
+		case FMAll:
+		default:
+			return true;
 		}
 	}
+}
 }

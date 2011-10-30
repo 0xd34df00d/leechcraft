@@ -26,201 +26,198 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace LackMan
+{
+	struct MaintainerInfo
 	{
-		namespace LackMan
+		QString Name_;
+		QString Email_;
+	};
+
+	typedef QList<MaintainerInfo> MaintainerInfoList;
+
+	class RepoInfo
+	{
+		QUrl URL_;
+		QString Name_;
+		QString ShortDescr_;
+		QString LongDescr_;
+
+		MaintainerInfo Maintainer_;
+		QStringList Components_;
+	public:
+		explicit RepoInfo ();
+		explicit RepoInfo (const QUrl&);
+		RepoInfo (const QUrl& url, const QString& name,
+				const QString& shortDescr, const QStringList& components);
+
+		const QUrl& GetUrl () const;
+		void SetUrl (const QUrl&);
+		const QString& GetName () const;
+		void SetName (const QString&);
+		const QString& GetShortDescr () const;
+		void SetShortDescr (const QString&);
+		const QString& GetLongDescr () const;
+		void SetLongDescr (const QString&);
+		const MaintainerInfo& GetMaintainer () const;
+		void SetMaintainer (const MaintainerInfo&);
+		const QStringList& GetComponents () const;
+		void SetComponents (const QStringList&);
+	};
+
+	struct PackageShortInfo
+	{
+		QString Name_;
+		QStringList Versions_;
+	};
+
+	typedef QList<PackageShortInfo> PackageShortInfoList;
+
+	struct Dependency
+	{
+		enum Type
 		{
-			struct MaintainerInfo
-			{
-				QString Name_;
-				QString Email_;
-			};
+			TRequires,
+			TProvides,
+			TMAX
+		} Type_;
 
-			typedef QList<MaintainerInfo> MaintainerInfoList;
+		/** Dependency version `relation` candidate version.
+			*/
+		enum Relation
+		{
+			G, //!< G Dependency version should be greater than candidate's.
+			E, //!< E Dependency version should be equal to candidate's.
+			L, //!< L Dependency version should be less than candidate's.
+			GE,//!< GE Dependency version should be greater or equal to candidate's.
+			LE //!< LE Dependency version should be less or equal to candidate's.
+		};
 
-			class RepoInfo
-			{
-				QUrl URL_;
-				QString Name_;
-				QString ShortDescr_;
-				QString LongDescr_;
+		QString Name_;
+		QString Version_;
+	};
 
-				MaintainerInfo Maintainer_;
-				QStringList Components_;
-			public:
-				explicit RepoInfo ();
-				explicit RepoInfo (const QUrl&);
-				RepoInfo (const QUrl& url, const QString& name,
-						const QString& shortDescr, const QStringList& components);
+	typedef QList<Dependency> DependencyList;
 
-				const QUrl& GetUrl () const;
-				void SetUrl (const QUrl&);
-				const QString& GetName () const;
-				void SetName (const QString&);
-				const QString& GetShortDescr () const;
-				void SetShortDescr (const QString&);
-				const QString& GetLongDescr () const;
-				void SetLongDescr (const QString&);
-				const MaintainerInfo& GetMaintainer () const;
-				void SetMaintainer (const MaintainerInfo&);
-				const QStringList& GetComponents () const;
-				void SetComponents (const QStringList&);
-			};
+	bool operator== (const Dependency&, const Dependency&);
 
-			struct PackageShortInfo
-			{
-				QString Name_;
-				QStringList Versions_;				
-			};
+	struct Image
+	{
+		enum Type
+		{
+			TScreenshot,
+			TThumbnail
+		} Type_;
+		QString URL_;
+	};
 
-			typedef QList<PackageShortInfo> PackageShortInfoList;
+	struct PackageInfo : PackageShortInfo
+	{
+		enum Type
+		{
+			/** @brief Package with a plugin for LeechCraft.
+				*
+				* Contents of packages of this type would be
+				* installed into ~/.leechcraft/plugins/scriptable/$language
+				*/
+			TPlugin,
 
-			struct Dependency
-			{
-				enum Type
-				{
-					TRequires,
-					TProvides,
-					TMAX
-				} Type_;
+			/** @brief Translation (or a set of translations).
+				*
+				* Contents of packages of this type would be
+				* installed into ~/.leechcraft/translations
+				*/
+			TTranslation,
 
-				/** Dependency version `relation` candidate version.
-				 */
-				enum Relation
-				{
-					G, //!< G Dependency version should be greater than candidate's.
-					E, //!< E Dependency version should be equal to candidate's.
-					L, //!< L Dependency version should be less than candidate's.
-					GE,//!< GE Dependency version should be greater or equal to candidate's.
-					LE //!< LE Dependency version should be less or equal to candidate's.
-				};
+			/** @brief Iconset package.
+				*
+				* Contents of packages of this type would be
+				* installed into ~/.leechcraft/icons
+				*/
+			TIconset,
 
-				QString Name_;
-				QString Version_;
-			};
+			/** @brief Plain data package.
+				*
+				* Use this if nothing else is appropriate.
+				*
+				* Contents of packages of this type would be
+				* installed into ~/.leechcraft/data
+				*/
+			TData,
 
-			typedef QList<Dependency> DependencyList;
+			/** @brief Theme package.
+				*
+				* Contents of packages of this type would be
+				* installed into ~/.leechcraft/data
+				*/
+			TTheme
+		} Type_;
+		QString Language_;
+		QString Description_;
+		QString LongDescription_;
+		QStringList Tags_;
+		QMap<QString, DependencyList> Deps_;
+		QString MaintName_;
+		QString MaintEmail_;
+		QUrl IconURL_;
+		QList<Image> Images_;
+		QMap<QString, qint64> PackageSizes_;
 
-			bool operator== (const Dependency&, const Dependency&);
+		void Dump () const;
+	};
 
-			struct Image
-			{
-				enum Type
-				{
-					TScreenshot,
-					TThumbnail
-				} Type_;
-				QString URL_;
-			};
+	/** This contains those and only those fields which are
+		* displayed in the Packages list.
+		*/
+	struct ListPackageInfo
+	{
+		int PackageID_;
+		QString Name_;
+		QString Version_;
+		QString ShortDescription_;
+		QString LongDescription_;
+		PackageInfo::Type Type_;
+		QString Language_;
+		QUrl IconURL_;
+		QStringList Tags_;
+		bool HasNewVersion_;
+		bool IsInstalled_;
+	};
 
-			struct PackageInfo : PackageShortInfo
-			{
-				enum Type
-				{
-					/** @brief Package with a plugin for LeechCraft.
-					 * 
-					 * Contents of packages of this type would be
-					 * installed into ~/.leechcraft/plugins/scriptable/$language
-					 */
-					TPlugin,
+	bool operator== (const ListPackageInfo&, const ListPackageInfo&);
 
-					/** @brief Translation (or a set of translations).
-					 * 
-					 * Contents of packages of this type would be
-					 * installed into ~/.leechcraft/translations
-					 */
-					TTranslation,
+	typedef boost::function<bool (const QString&, const QString&)> Comparator_t;
 
-					/** @brief Iconset package.
-					 * 
-					 * Contents of packages of this type would be
-					 * installed into ~/.leechcraft/icons
-					 */
-					TIconset,
+	extern QMap<Dependency::Relation, Comparator_t> Relation2comparator;
 
-					/** @brief Plain data package.
-					 * 
-					 * Use this if nothing else is appropriate.
-					 * 
-					 * Contents of packages of this type would be
-					 * installed into ~/.leechcraft/data
-					 */
-					TData,
-					
-					/** @brief Theme package.
-					 * 
-					 * Contents of packages of this type would be
-					 * installed into ~/.leechcraft/data
-					 */
-					TTheme
-				} Type_;
-				QString Language_;
-				QString Description_;
-				QString LongDescription_;
-				QStringList Tags_;
-				QMap<QString, DependencyList> Deps_;
-				QString MaintName_;
-				QString MaintEmail_;
-				QUrl IconURL_;
-				QList<Image> Images_;
-				QMap<QString, qint64> PackageSizes_;
+	/** Describes an installed dependency. Installed dependency may
+		* come either from system package manager of be installed
+		* by LackMan. Source enum is used to distinguish between
+		* these two cases.
+		*/
+	struct InstalledDependencyInfo
+	{
+		Dependency Dep_;
 
-				void Dump () const;
-			};
+		/** Whether package was installed via standard system
+			* means like system package manager or via LackMan.
+			*/
+		enum Source
+		{
+			SSystem,//!< SSystem Package came from system.
+			SLackMan//!< SLackMan Package came via LackMan.
+		} Source_;
+	};
 
-			/** This contains those and only those fields which are
-			 * displayed in the Packages list.
-			 */
-			struct ListPackageInfo
-			{
-				int PackageID_;
-				QString Name_;
-				QString Version_;
-				QString ShortDescription_;
-				QString LongDescription_;
-				PackageInfo::Type Type_;
-				QString Language_;
-				QUrl IconURL_;
-				QStringList Tags_;
-				bool HasNewVersion_;
-				bool IsInstalled_;
-			};
+	typedef QList<InstalledDependencyInfo> InstalledDependencyInfoList;
 
-			bool operator== (const ListPackageInfo&, const ListPackageInfo&);
-
-			typedef boost::function<bool (const QString&, const QString&)> Comparator_t;
-
-			extern QMap<Dependency::Relation, Comparator_t> Relation2comparator;
-
-			/** Describes an installed dependency. Installed dependency may
-			 * come either from system package manager of be installed
-			 * by LackMan. Source enum is used to distinguish between
-			 * these two cases.
-			 */
-			struct InstalledDependencyInfo
-			{
-				Dependency Dep_;
-
-				/** Whether package was installed via standard system
-				 * means like system package manager or via LackMan.
-				 */
-				enum Source
-				{
-					SSystem,//!< SSystem Package came from system.
-					SLackMan//!< SLackMan Package came via LackMan.
-				} Source_;
-			};
-
-			typedef QList<InstalledDependencyInfo> InstalledDependencyInfoList;
-
-			uint qHash (const Dependency&);
-		}
-	}
+	uint qHash (const Dependency&);
+}
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Plugins::LackMan::RepoInfo);
-Q_DECLARE_METATYPE (LeechCraft::Plugins::LackMan::PackageShortInfo);
-Q_DECLARE_METATYPE (LeechCraft::Plugins::LackMan::PackageShortInfoList);
-Q_DECLARE_METATYPE (LeechCraft::Plugins::LackMan::PackageInfo);
+Q_DECLARE_METATYPE (LeechCraft::LackMan::RepoInfo);
+Q_DECLARE_METATYPE (LeechCraft::LackMan::PackageShortInfo);
+Q_DECLARE_METATYPE (LeechCraft::LackMan::PackageShortInfoList);
+Q_DECLARE_METATYPE (LeechCraft::LackMan::PackageInfo);
 
 #endif
