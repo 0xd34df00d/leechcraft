@@ -6,47 +6,47 @@
     <message>
         <location filename="bookmarkeditwidget.ui" line="20"/>
         <source>Autojoin</source>
-        <translation type="unfinished"></translation>
+        <translation>Entrar automáticamente</translation>
     </message>
     <message>
         <location filename="bookmarkeditwidget.ui" line="39"/>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre:</translation>
     </message>
     <message>
         <location filename="bookmarkeditwidget.ui" line="49"/>
         <source>Nickname:</source>
-        <translation type="unfinished"></translation>
+        <translation>Apodo:</translation>
     </message>
     <message>
         <location filename="bookmarkeditwidget.ui" line="59"/>
         <source>Server:</source>
-        <translation type="unfinished"></translation>
+        <translation>Servidor:</translation>
     </message>
     <message>
         <location filename="bookmarkeditwidget.ui" line="69"/>
         <source>Port:</source>
-        <translation type="unfinished"></translation>
+        <translation>Puerto:</translation>
     </message>
     <message>
         <location filename="bookmarkeditwidget.ui" line="83"/>
         <source>Encoding:</source>
-        <translation type="unfinished"></translation>
+        <translation>Codificación:</translation>
     </message>
     <message>
         <location filename="bookmarkeditwidget.ui" line="93"/>
         <source>Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Canal:</translation>
     </message>
     <message>
         <location filename="bookmarkeditwidget.ui" line="103"/>
         <source>Password:</source>
-        <translation type="unfinished"></translation>
+        <translation>Contraseña:</translation>
     </message>
     <message>
         <location filename="bookmarkeditwidget.ui" line="117"/>
         <source>Use SSL:</source>
-        <translation type="unfinished"></translation>
+        <translation>Usar SSL:</translation>
     </message>
 </context>
 <context>
@@ -54,102 +54,102 @@
     <message>
         <location filename="channelconfigwidget.ui" line="24"/>
         <source>Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Modo</translation>
     </message>
     <message>
         <location filename="channelconfigwidget.ui" line="32"/>
         <source>Only channel  operator can change topic</source>
-        <translation type="unfinished"></translation>
+        <translation>Operador de canal sólo puede cambiar el tema</translation>
     </message>
     <message>
         <location filename="channelconfigwidget.ui" line="39"/>
         <source>Block messages from outside</source>
-        <translation type="unfinished"></translation>
+        <translation>Bloquear los mensajes desde fuera</translation>
     </message>
     <message>
         <location filename="channelconfigwidget.ui" line="46"/>
         <source>Secret channel</source>
-        <translation type="unfinished"></translation>
+        <translation>Canal secreto</translation>
     </message>
     <message>
         <location filename="channelconfigwidget.ui" line="53"/>
         <source>Private channel</source>
-        <translation type="unfinished"></translation>
+        <translation>Canal privado</translation>
     </message>
     <message>
         <location filename="channelconfigwidget.ui" line="60"/>
         <source>Only by invite</source>
-        <translation type="unfinished"></translation>
+        <translation>Sólo por invitación</translation>
     </message>
     <message>
         <location filename="channelconfigwidget.ui" line="67"/>
         <source>Moderate channel</source>
-        <translation type="unfinished"></translation>
+        <translation>Moderar el canal</translation>
     </message>
     <message>
         <location filename="channelconfigwidget.ui" line="74"/>
         <source>Server Reop Flag</source>
-        <translation type="unfinished"></translation>
+        <translation>Server Reop Flag</translation>
     </message>
     <message>
         <location filename="channelconfigwidget.ui" line="83"/>
         <source>Max users:</source>
-        <translation type="unfinished"></translation>
+        <translation>Max usuarios:</translation>
     </message>
     <message>
         <location filename="channelconfigwidget.ui" line="110"/>
         <source>Password:</source>
-        <translation type="unfinished"></translation>
+        <translation>Contraseña:</translation>
     </message>
     <message>
         <location filename="channelconfigwidget.ui" line="138"/>
         <source>Ban list</source>
-        <translation type="unfinished"></translation>
+        <translation>Lista de baneados</translation>
     </message>
     <message>
         <location filename="channelconfigwidget.ui" line="146"/>
         <location filename="channelconfigwidget.ui" line="205"/>
         <location filename="channelconfigwidget.ui" line="264"/>
         <source>Search:</source>
-        <translation type="unfinished"></translation>
+        <translation>Buscar:</translation>
     </message>
     <message>
         <location filename="channelconfigwidget.ui" line="160"/>
         <location filename="channelconfigwidget.ui" line="222"/>
         <location filename="channelconfigwidget.ui" line="278"/>
         <source>Host mask:</source>
-        <translation type="unfinished"></translation>
+        <translation>Host mask:</translation>
     </message>
     <message>
         <location filename="channelconfigwidget.ui" line="170"/>
         <location filename="channelconfigwidget.ui" line="232"/>
         <location filename="channelconfigwidget.ui" line="288"/>
         <source>u</source>
-        <translation type="unfinished"></translation>
+        <translation>u</translation>
     </message>
     <message>
         <location filename="channelconfigwidget.ui" line="177"/>
         <location filename="channelconfigwidget.ui" line="239"/>
         <location filename="channelconfigwidget.ui" line="295"/>
         <source>+</source>
-        <translation type="unfinished"></translation>
+        <translation>+</translation>
     </message>
     <message>
         <location filename="channelconfigwidget.ui" line="184"/>
         <location filename="channelconfigwidget.ui" line="246"/>
         <location filename="channelconfigwidget.ui" line="302"/>
         <source>-</source>
-        <translation type="unfinished"></translation>
+        <translation>-</translation>
     </message>
     <message>
         <location filename="channelconfigwidget.ui" line="197"/>
         <source>Exception list</source>
-        <translation type="unfinished"></translation>
+        <translation>Lista de excepciones</translation>
     </message>
     <message>
         <location filename="channelconfigwidget.ui" line="256"/>
         <source>Invite list</source>
-        <translation type="unfinished"></translation>
+        <translation>Lista de invitados</translation>
     </message>
 </context>
 <context>
@@ -157,17 +157,17 @@
     <message>
         <location filename="invitechannelsdialog.ui" line="14"/>
         <source>Invites</source>
-        <translation type="unfinished"></translation>
+        <translation>Invitaciónes</translation>
     </message>
     <message>
         <location filename="invitechannelsdialog.ui" line="20"/>
         <source>You have received invites for the following channels. Select the channels you want to join:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ha recibido invitaciones para los siguientes canales. Elija los canales a que quiere entrar:</translation>
     </message>
     <message>
         <location filename="invitechannelsdialog.ui" line="39"/>
         <source>From now on: </source>
-        <translation type="unfinished"></translation>
+        <translation>Desde ahora en:</translation>
     </message>
 </context>
 <context>
@@ -175,7 +175,7 @@
     <message>
         <location filename="ircaccountconfigurationdialog.ui" line="14"/>
         <source>Create account</source>
-        <translation type="unfinished"></translation>
+        <translation>Crear la cuenta</translation>
     </message>
 </context>
 <context>
@@ -183,47 +183,47 @@
     <message>
         <location filename="ircaccountconfigurationwidget.ui" line="30"/>
         <source>User profile</source>
-        <translation type="unfinished"></translation>
+        <translation>Perfil de usuario</translation>
     </message>
     <message>
         <location filename="ircaccountconfigurationwidget.ui" line="36"/>
         <source>Real name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre real:</translation>
     </message>
     <message>
         <location filename="ircaccountconfigurationwidget.ui" line="46"/>
         <source>User name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre del usuario:</translation>
     </message>
     <message>
         <location filename="ircaccountconfigurationwidget.ui" line="56"/>
         <source>Nicks (one per line):</source>
-        <translation type="unfinished"></translation>
+        <translation>Apodos (un a la línea):</translation>
     </message>
     <message>
         <location filename="ircaccountconfigurationwidget.ui" line="71"/>
         <source>Default settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajustes por defecto</translation>
     </message>
     <message>
         <location filename="ircaccountconfigurationwidget.ui" line="79"/>
         <source>IRC server:</source>
-        <translation type="unfinished"></translation>
+        <translation>Servidor IRC:</translation>
     </message>
     <message>
         <location filename="ircaccountconfigurationwidget.ui" line="89"/>
         <source>Port:</source>
-        <translation type="unfinished"></translation>
+        <translation>Puerto:</translation>
     </message>
     <message>
         <location filename="ircaccountconfigurationwidget.ui" line="103"/>
         <source>Encoding:</source>
-        <translation type="unfinished"></translation>
+        <translation>Codificación:</translation>
     </message>
     <message>
         <location filename="ircaccountconfigurationwidget.ui" line="113"/>
         <source>Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Canal:</translation>
     </message>
 </context>
 <context>
@@ -231,47 +231,47 @@
     <message>
         <location filename="ircjoingroupchat.ui" line="24"/>
         <source>Join parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Parametros de la sesión</translation>
     </message>
     <message>
         <location filename="ircjoingroupchat.ui" line="35"/>
         <source>Server:</source>
-        <translation type="unfinished"></translation>
+        <translation>Servidor:</translation>
     </message>
     <message>
         <location filename="ircjoingroupchat.ui" line="49"/>
         <source>Port:</source>
-        <translation type="unfinished"></translation>
+        <translation>Puerto:</translation>
     </message>
     <message>
         <location filename="ircjoingroupchat.ui" line="66"/>
         <source>Channel:</source>
-        <translation type="unfinished"></translation>
+        <translation>Canal:</translation>
     </message>
     <message>
         <location filename="ircjoingroupchat.ui" line="80"/>
         <source>Nickname:</source>
-        <translation type="unfinished"></translation>
+        <translation>Apodo:</translation>
     </message>
     <message>
         <location filename="ircjoingroupchat.ui" line="90"/>
         <source>Password:</source>
-        <translation type="unfinished"></translation>
+        <translation>Contraseña:</translation>
     </message>
     <message>
         <location filename="ircjoingroupchat.ui" line="104"/>
         <source>Encoding:</source>
-        <translation type="unfinished"></translation>
+        <translation>Codificación:</translation>
     </message>
     <message>
         <location filename="ircjoingroupchat.ui" line="116"/>
         <source>Secure connection (SSL)</source>
-        <translation type="unfinished"></translation>
+        <translation>Conexión segura (SSL)</translation>
     </message>
     <message>
         <location filename="ircjoingroupchat.ui" line="123"/>
         <source>Connect only to server</source>
-        <translation type="unfinished"></translation>
+        <translation>Conectarse solo al servidor</translation>
     </message>
 </context>
 <context>
@@ -279,7 +279,7 @@
     <message>
         <location filename="channelclentry.cpp" line="90"/>
         <source>Channels</source>
-        <translation type="unfinished"></translation>
+        <translation>Canales</translation>
     </message>
 </context>
 <context>
@@ -287,31 +287,31 @@
     <message>
         <location filename="channelconfigwidget.cpp" line="46"/>
         <source>Ban mask</source>
-        <translation type="unfinished"></translation>
+        <translation>Máscara de ban</translation>
     </message>
     <message>
         <location filename="channelconfigwidget.cpp" line="47"/>
         <location filename="channelconfigwidget.cpp" line="52"/>
         <location filename="channelconfigwidget.cpp" line="57"/>
         <source>Set by</source>
-        <translation type="unfinished"></translation>
+        <translation>Puesto por</translation>
     </message>
     <message>
         <location filename="channelconfigwidget.cpp" line="48"/>
         <location filename="channelconfigwidget.cpp" line="53"/>
         <location filename="channelconfigwidget.cpp" line="58"/>
         <source>Date</source>
-        <translation type="unfinished"></translation>
+        <translation>Fecha</translation>
     </message>
     <message>
         <location filename="channelconfigwidget.cpp" line="51"/>
         <source>Except mask</source>
-        <translation type="unfinished"></translation>
+        <translation>Máscara de excepción</translation>
     </message>
     <message>
         <location filename="channelconfigwidget.cpp" line="56"/>
         <source>Invite mask</source>
-        <translation type="unfinished"></translation>
+        <translation>Máscara de invitación</translation>
     </message>
 </context>
 <context>
@@ -319,129 +319,129 @@
     <message>
         <location filename="channelhandler.cpp" line="175"/>
         <source>%1 joined the channel</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ha entrado al canal</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="191"/>
         <source>%1 has left the channel (%2)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ha salido del canal (%2)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="193"/>
         <source>%1 has left the channel</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ha salido del canal</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="214"/>
         <source>You have been kicked by %1 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Ud. ha sido expulsado por %1 %2</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="217"/>
         <source>You kicked %1 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Ha expulsado %1 %2</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="220"/>
         <source>%1 has been kicked by %2 %3</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ha sido expulsado por %2 %3</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="354"/>
         <location filename="channelhandler.cpp" line="368"/>
         <location filename="channelhandler.cpp" line="382"/>
         <source>%1 set by %2 on %3</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 puesto por %2 a %3</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="400"/>
         <source>Channel mode set to invite only channel (+i)</source>
-        <translation type="unfinished"></translation>
+        <translation>Modo del canal &quot;invitados&quot; (+i) esta activado</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="402"/>
         <source>Channel mode set to non invite only channel (-i)</source>
-        <translation type="unfinished"></translation>
+        <translation>Modo del canal &quot;invitados&quot;  esta desactivado (-i)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="413"/>
         <source>Channel mode set to moderate channel (+m)</source>
-        <translation type="unfinished"></translation>
+        <translation>Modo del canal &quot;moderado&quot; (+m) esta activado</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="415"/>
         <source>Channel mode set to unmoderate channel (-m)</source>
-        <translation type="unfinished"></translation>
+        <translation>Modo del canal &quot;moderado&quot;  esta desactivado (-m)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="426"/>
         <source>Channel mode set to block outside messages (+n)</source>
-        <translation type="unfinished"></translation>
+        <translation>Modo del canal &quot;no texto exterior&quot; (+n) esta activado</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="428"/>
         <source>Channel mode set to not block outside messages (-n)</source>
-        <translation type="unfinished"></translation>
+        <translation>Modo del canal &quot;no texto exterior&quot;  esta desactivado (-n)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="439"/>
         <source>Channel mode set to private channel (+p)</source>
-        <translation type="unfinished"></translation>
+        <translation>Modo del canal &quot;privado&quot; (+p) esta activado</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="441"/>
         <source>Channel mode set to non private channel (-p)</source>
-        <translation type="unfinished"></translation>
+        <translation>Modo del canal &quot;privado&quot; esta desactivado (-p)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="452"/>
         <source>Channel mode set to secret channel (+s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Modo del canal &quot;secreto&quot; (+s) esta activado</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="454"/>
         <source>Channel mode set to non secret channel (-s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Modo del canal &quot;secreto&quot;  esta desactivado (-s)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="465"/>
         <source>Reop flag is set (+r)</source>
-        <translation type="unfinished"></translation>
+        <translation>Reop flag esta activado (+r)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="467"/>
         <source>Reop flag is remove (-r)</source>
-        <translation type="unfinished"></translation>
+        <translation>Reop flag esta desactivado (-r)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="478"/>
         <source>Change topic available only for channel operators (+t)</source>
-        <translation type="unfinished"></translation>
+        <translation>Modo del canal &quot;topic restringido&quot; (+t) esta activado</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="480"/>
         <source>Change topic available not only for channel operators (-t)</source>
-        <translation type="unfinished"></translation>
+        <translation>Modo del canal  &quot;topic restringido&quot; esta desactivado (-t)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="491"/>
         <source>Limit user set to %1 (+l)</source>
-        <translation type="unfinished"></translation>
+        <translation>Límite del canal establecido %1 (+l)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="493"/>
         <source>Remove limit user (-l)</source>
-        <translation type="unfinished"></translation>
+        <translation>Remover el límite del canal (-l)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="504"/>
         <source>Channel key set to %1 (+k)</source>
-        <translation type="unfinished"></translation>
+        <translation>Clave del canal establecida %1 (+k)</translation>
     </message>
     <message>
         <location filename="channelhandler.cpp" line="506"/>
         <source>Remove channel key (-k)</source>
-        <translation type="unfinished"></translation>
+        <translation>Remover la clave del canal (-k)</translation>
     </message>
 </context>
 <context>
@@ -449,7 +449,7 @@
     <message>
         <location filename="clientconnection.cpp" line="118"/>
         <source>This channel is already joined.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ya esta en este canal.</translation>
     </message>
 </context>
 <context>
@@ -457,32 +457,32 @@
     <message>
         <location filename="invitechannelsdialog.cpp" line="43"/>
         <source>Join</source>
-        <translation type="unfinished"></translation>
+        <translation>Entrar</translation>
     </message>
     <message>
         <location filename="invitechannelsdialog.cpp" line="44"/>
         <source>Channel name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre del canal</translation>
     </message>
     <message>
         <location filename="invitechannelsdialog.cpp" line="45"/>
         <source>Nickname</source>
-        <translation type="unfinished"></translation>
+        <translation>Apodo</translation>
     </message>
     <message>
         <location filename="invitechannelsdialog.cpp" line="59"/>
         <source>Always ask</source>
-        <translation type="unfinished"></translation>
+        <translation>Siempre preguntar</translation>
     </message>
     <message>
         <location filename="invitechannelsdialog.cpp" line="64"/>
         <source>Always join</source>
-        <translation type="unfinished"></translation>
+        <translation>Siempre entrar</translation>
     </message>
     <message>
         <location filename="invitechannelsdialog.cpp" line="69"/>
         <source>Always ignore</source>
-        <translation type="unfinished"></translation>
+        <translation>Siempre ignorar</translation>
     </message>
 </context>
 <context>
@@ -490,12 +490,12 @@
     <message>
         <location filename="ircprotocol.cpp" line="248"/>
         <source>This channel needs password.</source>
-        <translation type="unfinished"></translation>
+        <translation>Este canal necesita la contraseña.</translation>
     </message>
     <message>
         <location filename="ircprotocol.cpp" line="249"/>
         <source>Password:</source>
-        <translation type="unfinished"></translation>
+        <translation>Contraseña:</translation>
     </message>
 </context>
 <context>
@@ -503,7 +503,7 @@
     <message>
         <location filename="ircserverclentry.cpp" line="83"/>
         <source>Servers</source>
-        <translation type="unfinished"></translation>
+        <translation>Servidores</translation>
     </message>
 </context>
 <context>
@@ -511,77 +511,77 @@
     <message>
         <location filename="ircserverhandler.cpp" line="367"/>
         <source>%1 changed nickname to %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ha cambiado su nick a %2</translation>
     </message>
     <message>
         <location filename="ircserverhandler.cpp" line="560"/>
         <source> is a </source>
-        <translation type="unfinished"></translation>
+        <translation>es</translation>
     </message>
     <message>
         <location filename="ircserverhandler.cpp" line="565"/>
         <source> is on server</source>
-        <translation type="unfinished"></translation>
+        <translation>esta en el servidor</translation>
     </message>
     <message>
         <location filename="ircserverhandler.cpp" line="571"/>
         <source>Begin of WHOIS reply:</source>
-        <translation type="unfinished"></translation>
+        <translation>Inicio de la respuesta WHOIS:</translation>
     </message>
     <message>
         <location filename="ircserverhandler.cpp" line="578"/>
         <source>Begin of WHOWAS reply:</source>
-        <translation type="unfinished"></translation>
+        <translation>Inicio de la respuesta WHOWAS:</translation>
     </message>
     <message>
         <location filename="ircserverhandler.cpp" line="585"/>
         <source>Begin of WHO reply:</source>
-        <translation type="unfinished"></translation>
+        <translation>Inicio de la respuesta WHO:</translation>
     </message>
     <message>
         <location filename="ircserverhandler.cpp" line="592"/>
         <source>Begin of LINKS reply:</source>
-        <translation type="unfinished"></translation>
+        <translation>Inicio de la respuesta LINKS:</translation>
     </message>
     <message>
         <location filename="ircserverhandler.cpp" line="599"/>
         <source>Begin of INFO reply:</source>
-        <translation type="unfinished"></translation>
+        <translation>Inicio de la respuesta INFO:</translation>
     </message>
     <message>
         <location filename="ircserverhandler.cpp" line="606"/>
         <source>Begin of MOTD reply:</source>
-        <translation type="unfinished"></translation>
+        <translation>Inicio de la respuesta MOTD:</translation>
     </message>
     <message>
         <location filename="ircserverhandler.cpp" line="613"/>
         <source>Begin of USERS reply:</source>
-        <translation type="unfinished"></translation>
+        <translation>Inicio de la respuesta USERS:</translation>
     </message>
     <message>
         <location filename="ircserverhandler.cpp" line="620"/>
         <source>Begin of TRACE reply:</source>
-        <translation type="unfinished"></translation>
+        <translation>Inicio de la respuesta TRACE:</translation>
     </message>
     <message>
         <location filename="ircserverhandler.cpp" line="627"/>
         <source>Begin of STATS reply:</source>
-        <translation type="unfinished"></translation>
+        <translation>Inicio de la respuesta STATS:</translation>
     </message>
     <message>
         <location filename="ircserverhandler.cpp" line="970"/>
         <source> added to your ban list.</source>
-        <translation type="unfinished"></translation>
+        <translation>esta añadido a su lista de baneados.</translation>
     </message>
     <message>
         <location filename="ircserverhandler.cpp" line="973"/>
         <source> added to your except list.</source>
-        <translation type="unfinished"></translation>
+        <translation>esta añadido a su lista de excepciónes.</translation>
     </message>
     <message>
         <location filename="ircserverhandler.cpp" line="976"/>
         <source> added to your invite list.</source>
-        <translation type="unfinished"></translation>
+        <translation>esta añadido a su lista de invitados.</translation>
     </message>
 </context>
 <context>
@@ -589,27 +589,28 @@
     <message>
         <location filename="nickservidentifywidget.cpp" line="40"/>
         <source>Server</source>
-        <translation type="unfinished"></translation>
+        <translation>Servidor</translation>
     </message>
     <message>
         <location filename="nickservidentifywidget.cpp" line="41"/>
         <source>Nickname</source>
-        <translation type="unfinished"></translation>
+        <translation>Apodo</translation>
     </message>
     <message>
         <location filename="nickservidentifywidget.cpp" line="42"/>
         <source>NickServ nickname</source>
-        <translation type="unfinished"></translation>
+        <translation>NickServ nick</translation>
     </message>
     <message>
         <location filename="nickservidentifywidget.cpp" line="43"/>
         <source>NickServ auth string</source>
-        <translation type="unfinished"></translation>
+        <translation>Cadena de autenticación NickServ</translation>
     </message>
     <message>
         <location filename="nickservidentifywidget.cpp" line="44"/>
         <source>Auth message</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>! ?</translatorcomment>
+        <translation>Mensaje de autorización</translation>
     </message>
 </context>
 <context>
@@ -617,7 +618,7 @@
     <message>
         <location filename="acetamide.cpp" line="83"/>
         <source>IRC protocol support.</source>
-        <translation type="unfinished"></translation>
+        <translation>Compatible con el protocolo IRC.</translation>
     </message>
 </context>
 <context>
@@ -625,7 +626,7 @@
     <message>
         <location filename="serverparticipantentry.cpp" line="42"/>
         <source>Quit chat</source>
-        <translation type="unfinished"></translation>
+        <translation>Salir del chat</translation>
     </message>
 </context>
 <context>
@@ -633,17 +634,17 @@
     <message>
         <location filename="serverresponcemanager.cpp" line="338"/>
         <source> invites you to a channel </source>
-        <translation type="unfinished"></translation>
+        <translation>le invita al canal</translation>
     </message>
     <message>
         <location filename="serverresponcemanager.cpp" line="346"/>
         <source>You invite </source>
-        <translation type="unfinished"></translation>
+        <translation>Usted invita</translation>
     </message>
     <message>
         <location filename="serverresponcemanager.cpp" line="347"/>
         <source> to a channel </source>
-        <translation type="unfinished"></translation>
+        <translation>al canal</translation>
     </message>
     <message>
         <location filename="serverresponcemanager.cpp" line="379"/>
@@ -652,62 +653,62 @@
         <location filename="serverresponcemanager.cpp" line="401"/>
         <location filename="serverresponcemanager.cpp" line="409"/>
         <source>Received request %1 from %2, sending response</source>
-        <translation type="unfinished"></translation>
+        <translation>Recibido solicitud %1 de %2, enviamos la respuesta</translation>
     </message>
     <message>
         <location filename="serverresponcemanager.cpp" line="438"/>
         <source>Received answer CTCP-%1 from %2: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Recibido la respuesta CTCP %1 de %2: %3</translation>
     </message>
     <message>
         <location filename="serverresponcemanager.cpp" line="514"/>
         <source> connected via </source>
-        <translation type="unfinished"></translation>
+        <translation>conectado por</translation>
     </message>
     <message>
         <location filename="serverresponcemanager.cpp" line="546"/>
         <source>End of WHOIS</source>
-        <translation type="unfinished"></translation>
+        <translation>Fin de WHOIS</translation>
     </message>
     <message>
         <location filename="serverresponcemanager.cpp" line="558"/>
         <source> on the channels : </source>
-        <translation type="unfinished"></translation>
+        <translation>en canales :</translation>
     </message>
     <message>
         <location filename="serverresponcemanager.cpp" line="576"/>
         <source>End of WHOWAS</source>
-        <translation type="unfinished"></translation>
+        <translation>Fin de WHOWAS</translation>
     </message>
     <message>
         <location filename="serverresponcemanager.cpp" line="598"/>
         <source>End of WHO</source>
-        <translation type="unfinished"></translation>
+        <translation>Fin de WHO</translation>
     </message>
     <message>
         <location filename="serverresponcemanager.cpp" line="608"/>
         <source> summoning to IRC</source>
-        <translation type="unfinished"></translation>
+        <translation>convocando a IRC</translation>
     </message>
     <message>
         <location filename="serverresponcemanager.cpp" line="634"/>
         <source>End of LINKS</source>
-        <translation type="unfinished"></translation>
+        <translation>Fin de LINKS</translation>
     </message>
     <message>
         <location filename="serverresponcemanager.cpp" line="648"/>
         <source>End of INFO</source>
-        <translation type="unfinished"></translation>
+        <translation>Fin de INFO</translation>
     </message>
     <message>
         <location filename="serverresponcemanager.cpp" line="662"/>
         <source>End of MOTD</source>
-        <translation type="unfinished"></translation>
+        <translation>Fin de MOTD</translation>
     </message>
     <message>
         <location filename="serverresponcemanager.cpp" line="727"/>
         <source>End of USERS</source>
-        <translation type="unfinished"></translation>
+        <translation>Fin de USERS</translation>
     </message>
 </context>
 <context>
@@ -715,32 +716,32 @@
     <message>
         <location filename="newnickservidentifydialog.ui" line="14"/>
         <source>New NickServ identification</source>
-        <translation type="unfinished"></translation>
+        <translation>NickServ identificacion nueva</translation>
     </message>
     <message>
         <location filename="newnickservidentifydialog.ui" line="22"/>
         <source>Nickname:</source>
-        <translation type="unfinished"></translation>
+        <translation>Apodo:</translation>
     </message>
     <message>
         <location filename="newnickservidentifydialog.ui" line="32"/>
         <source>NickServ nickname:</source>
-        <translation type="unfinished"></translation>
+        <translation>NickServ nick:</translation>
     </message>
     <message>
         <location filename="newnickservidentifydialog.ui" line="42"/>
         <source>NickServ auth string:</source>
-        <translation type="unfinished"></translation>
+        <translation>Cadena de autenticación NickServ:</translation>
     </message>
     <message>
         <location filename="newnickservidentifydialog.ui" line="52"/>
         <source>Auth message:</source>
-        <translation type="unfinished"></translation>
+        <translation>Mensaje de autorización:</translation>
     </message>
     <message>
         <location filename="newnickservidentifydialog.ui" line="62"/>
         <source>Server name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre del servidor:</translation>
     </message>
 </context>
 <context>
@@ -748,22 +749,22 @@
     <message>
         <location filename="nickservidentifywidget.ui" line="14"/>
         <source>NickServ identifies</source>
-        <translation type="unfinished"></translation>
+        <translation>NickServ identifica</translation>
     </message>
     <message>
         <location filename="nickservidentifywidget.ui" line="28"/>
         <source>Add</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir</translation>
     </message>
     <message>
         <location filename="nickservidentifywidget.ui" line="35"/>
         <source>Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Editar</translation>
     </message>
     <message>
         <location filename="nickservidentifywidget.ui" line="42"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Borrar</translation>
     </message>
 </context>
 <context>
@@ -1114,22 +1115,22 @@ p, li { white-space: pre-wrap; }
         <location filename="dummy.cpp" line="2"/>
         <location filename="dummy.cpp" line="3"/>
         <source>Acetamide</source>
-        <translation type="unfinished"></translation>
+        <translation>Acetamide</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="4"/>
         <source>Autodisconnect from server when no channels are active</source>
-        <translation type="unfinished"></translation>
+        <translation>Desconectarse automáticamente del servidor cuando no hay canales activos</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="5"/>
         <source>Show invite dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar el dialogo de invitación</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="6"/>
         <source>NickServ identify</source>
-        <translation type="unfinished"></translation>
+        <translation>NickServ identificar</translation>
     </message>
 </context>
 </TS>
