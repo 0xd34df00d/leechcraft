@@ -334,7 +334,7 @@ namespace Azoth
 
 	void MainWidget::on_CLTree__customContextMenuRequested (const QPoint& pos)
 	{
-		const QModelIndex& index = Ui_.CLTree_->indexAt (pos);
+		const QModelIndex& index = ProxyModel_->mapToSource (Ui_.CLTree_->indexAt (pos));
 		if (!index.isValid ())
 			return;
 
