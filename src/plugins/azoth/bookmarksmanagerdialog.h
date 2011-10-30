@@ -48,11 +48,12 @@ namespace Azoth
 		void SuggestSaving (QObject*);
 	private:
 		void Save ();
+		bool CheckSave (const QModelIndex&);
 		QStandardItem* GetSelectedItem () const;
 	private slots:
 		void on_AccountBox__currentIndexChanged (int);
 		void handleBookmarksChanged ();
-		void handleCurrentBMChanged (const QModelIndex&);
+		void handleCurrentBMChanged (const QModelIndex&, const QModelIndex&);
 		void on_RemoveButton__released ();
 		void on_AddButton__released ();
 		void on_ApplyButton__released ();
