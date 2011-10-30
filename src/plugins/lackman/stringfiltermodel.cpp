@@ -50,7 +50,7 @@ namespace LackMan
 				GetTagsManager ()->Split (filterString);
 		QSet<QString> userDefined = QSet<QString>::fromList (queryList);
 
-		return !userDefined.intersect (tags).empty ();
+		return tags.contains (userDefined);
 	}
 }
 }
