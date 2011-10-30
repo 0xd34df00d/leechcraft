@@ -26,6 +26,7 @@
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/iactionsexporter.h>
+#include <interfaces/ientityhandler.h>
 #include "ui_lackman.h"
 
 class QSortFilterProxyModel;
@@ -39,14 +40,15 @@ namespace LackMan
 	class StringFilterModel;
 
 	class Plugin : public QWidget
-					, public IInfo
-					, public IHaveTabs
-					, public ITabWidget
-					, public IHaveSettings
-					, public IActionsExporter
+				 , public IInfo
+				 , public IHaveTabs
+				 , public ITabWidget
+				 , public IHaveSettings
+				 , public IActionsExporter
+				 , public IEntityHandler
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs ITabWidget IHaveSettings IActionsExporter)
+		Q_INTERFACES (IInfo IHaveTabs ITabWidget IHaveSettings IActionsExporter IEntityHandler)
 
 		Ui::LackMan Ui_;
 		std::auto_ptr<QTranslator> Translator_;
@@ -82,6 +84,9 @@ namespace LackMan
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
+
+		EntityTestHandleResult CouldHandle (const Entity&) const;
+		void Handle (Entity);
 	private slots:
 		void handleTagsUpdated (const QStringList&);
 		void on_PackageStatus__currentIndexChanged (int);

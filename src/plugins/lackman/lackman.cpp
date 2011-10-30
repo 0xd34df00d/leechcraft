@@ -25,6 +25,8 @@
 #include <util/categoryselector.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/core/itagsmanager.h>
+#include <interfaces/entitytesthandleresult.h>
 #include "core.h"
 #include "packagesdelegate.h"
 #include "pendingmanager.h"
@@ -175,7 +177,10 @@ namespace LackMan
 	void Plugin::TabOpenRequested (const QByteArray& tabClass)
 	{
 		if (tabClass == "Lackman")
+		{
 			emit addNewTab (GetName (), this);
+			emit raiseTab (this);
+		}
 		else
 			qWarning () << Q_FUNC_INFO
 					<< "unknown tab class"
@@ -216,6 +221,41 @@ namespace LackMan
 			result << UpgradeAll_;
 		}
 		return result;
+	}
+
+	EntityTestHandleResult Plugin::CouldHandle (const Entity& entity) const
+	{
+		if (entity.Mime_ != "x-leechcraft/package-manager-action")
+			return EntityTestHandleResult ();
+
+		return EntityTestHandleResult (EntityTestHandleResult::PIdeal);
+	}
+
+	void Plugin::Handle (Entity entity)
+	{
+		const QString& action = entity.Entity_.toString ();
+		if (action == "ListPackages")
+		{
+			TypeFilter_->SetFilterMode (TypeFilterProxyModel::FMAll);
+
+			const QStringList& tags = entity.Additional_ ["Tags"].toStringList ();
+
+			if (!tags.isEmpty ())
+			{
+				const QString& filter = Core::Instance ().GetProxy ()->
+						GetTagsManager ()->Join (tags);
+				FilterString_->setFilterFixedString (filter);
+
+				Ui_.SearchLine_->setTags (tags);
+			}
+			else
+			{
+				const QString& filter = entity.Additional_ ["FilterString"].toString ();
+				Ui_.SearchLine_->setText (filter);
+			}
+
+			TabOpenRequested ("Lackman");
+		}
 	}
 
 	void Plugin::handleTagsUpdated (const QStringList& tags)
