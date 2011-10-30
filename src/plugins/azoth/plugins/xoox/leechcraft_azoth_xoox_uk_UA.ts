@@ -441,55 +441,55 @@
         <translation>Не можна переглядати інформацію з офлайну</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="391"/>
+        <location filename="entrybase.cpp" line="392"/>
         <source>%1 is now %2 (%3)</source>
         <translation>%1 тепер %2 (%3)</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="505"/>
+        <location filename="entrybase.cpp" line="506"/>
         <source>Name: %1</source>
         <translation>Ім&apos;я: %1</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="510"/>
+        <location filename="entrybase.cpp" line="511"/>
         <source>Nickname: %1
 </source>
         <translation>Нік: %1
 </translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="513"/>
+        <location filename="entrybase.cpp" line="514"/>
         <source>URL: %1
 </source>
         <translation>URL: %1
 </translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="516"/>
+        <location filename="entrybase.cpp" line="517"/>
         <source>Birthday: %1
 </source>
         <translation>День народження: %1
 </translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="519"/>
+        <location filename="entrybase.cpp" line="520"/>
         <source>Email: %1
 </source>
         <translation>Email: %1
 </translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="524"/>
+        <location filename="entrybase.cpp" line="525"/>
         <source>Photo:</source>
         <translation>Фото:</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="555"/>
+        <location filename="entrybase.cpp" line="556"/>
         <source>Select resource</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="556"/>
+        <location filename="entrybase.cpp" line="557"/>
         <source>Select resource for which to fetch the commands</source>
         <translation type="unfinished"></translation>
     </message>

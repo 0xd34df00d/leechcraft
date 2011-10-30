@@ -440,51 +440,51 @@
         <translation>No se puede ver la información mientras está desconectado</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="391"/>
+        <location filename="entrybase.cpp" line="392"/>
         <source>%1 is now %2 (%3)</source>
         <translation>%1 ahora esta %2 (%3)</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="505"/>
+        <location filename="entrybase.cpp" line="506"/>
         <source>Name: %1</source>
         <translation>Nombre: %1</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="510"/>
+        <location filename="entrybase.cpp" line="511"/>
         <source>Nickname: %1
 </source>
         <translation>Apodo: %1</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="513"/>
+        <location filename="entrybase.cpp" line="514"/>
         <source>URL: %1
 </source>
         <translation>URL: %1</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="516"/>
+        <location filename="entrybase.cpp" line="517"/>
         <source>Birthday: %1
 </source>
         <translation>Cumpleaños: %1</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="519"/>
+        <location filename="entrybase.cpp" line="520"/>
         <source>Email: %1
 </source>
         <translation>Correo electrónico: %1</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="524"/>
+        <location filename="entrybase.cpp" line="525"/>
         <source>Photo:</source>
         <translation>Foto:</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="555"/>
+        <location filename="entrybase.cpp" line="556"/>
         <source>Select resource</source>
         <translation>Seleccionar el resurso</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="556"/>
+        <location filename="entrybase.cpp" line="557"/>
         <source>Select resource for which to fetch the commands</source>
         <translation>Selecciona los recursos para que buscar los comandos</translation>
     </message>
