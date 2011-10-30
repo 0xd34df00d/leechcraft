@@ -47,7 +47,7 @@ namespace LeechCraft
 		box->setLayout (groupLayout);
 		box->setCheckable (true);
 
-		QVariant value = XSD_->GetValue (item);
+		const QVariant& value = XSD_->GetValue (item);
 
 		box->setChecked (value.toBool ());
 		connect (box,

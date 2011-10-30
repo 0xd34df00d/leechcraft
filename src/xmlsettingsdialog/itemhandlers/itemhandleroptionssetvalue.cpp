@@ -31,7 +31,7 @@ namespace LeechCraft
 		for (int i = 0; i < options.size (); ++i)
 			options.at (i).toElement ().removeAttribute ("default");
 
-		QString optName = value.toString ();
+		const QString& optName = value.toString ();
 		for (int i = 0; i < options.size (); ++i)
 		{
 			QDomElement option = options.at (i).toElement ();
