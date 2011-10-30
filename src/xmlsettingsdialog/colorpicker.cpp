@@ -17,29 +17,45 @@
  **********************************************************************/
 
 #include "colorpicker.h"
+#include <QLabel>
+#include <QPushButton>
+#include <QHBoxLayout>
 #include <QColorDialog>
+#include <QApplication>
+#include <QtDebug>
 
 namespace LeechCraft
 {
 	ColorPicker::ColorPicker (const QString& title, QWidget *parent)
-	: QPushButton (parent)
+	: QWidget (parent)
 	, Title_ (title)
 	{
 		if (Title_.isEmpty ())
 			Title_ = tr ("Choose color");
-		setAutoFillBackground (true);
-		setFlat (true);
-		connect (this,
+		Label_ = new QLabel (this);
+		ChooseButton_ = new QPushButton (tr ("Choose..."));
+		QHBoxLayout *lay = new QHBoxLayout;
+		lay->setContentsMargins (0, 0, 0, 0);
+		lay->addWidget (Label_);
+		lay->addWidget (ChooseButton_);
+		setLayout (lay);
+		connect (ChooseButton_,
 				SIGNAL (released ()),
 				this,
 				SLOT (chooseColor ()));
+		Label_->setMinimumWidth (QApplication::fontMetrics ()
+				.width ("  #RRRRGGGGBBBB  "));
 	}
 
 	void ColorPicker::SetCurrentColor (const QColor& color)
 	{
-		QPalette pal = palette ();
-		pal.setColor (QPalette::Button, color);
-		setPalette (pal);
+		Color_ = color;
+
+		int height = QApplication::fontMetrics ().height ();
+		int width = 1.62 * height;
+		QPixmap pixmap (width, height);
+		pixmap.fill (Color_);
+		Label_->setPixmap (pixmap);
 	}
 
 	QColor ColorPicker::GetCurrentColor () const
@@ -49,11 +65,12 @@ namespace LeechCraft
 
 	void ColorPicker::chooseColor ()
 	{
-		const QColor& color = QColorDialog::getColor (Color_,
+		QColor color = QColorDialog::getColor (Color_,
 				this,
 				Title_);
 
-		if (color == Color_ || !color.isValid ())
+		if (color == Color_ ||
+				!color.isValid ())
 			return;
 
 		SetCurrentColor (color);
