@@ -130,7 +130,6 @@ namespace Laure
 		mutableTrack.setArtist (info.Artist_);
 		mutableTrack.setDuration (info.Length_);
 		mutableTrack.setTrackNumber (info.TrackNumber_);
-		mutableTrack.setMbid (lastfm::Mbid ("1"));
 		Scrobbler_->nowPlaying (track);
 		Scrobbler_->cache (track);
 	}

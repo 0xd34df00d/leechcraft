@@ -75,7 +75,6 @@ SET (HEADERS
 SET (FORMS
 	laurewidget.ui
 	chooseurldialog.ui
-	playlistwidget.ui
 )
 SET (RESOURCES laureresources.qrc)
 

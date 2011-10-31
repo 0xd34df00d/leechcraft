@@ -20,6 +20,7 @@
 #include "playlistwidget.h"
 #include <QToolBar>
 #include <QFileDialog>
+#include <QDockWidget>
 #include <QTextStream>
 #include <vlc/vlc.h>
 #include <util/util.h>
@@ -32,9 +33,15 @@ namespace Laure
 {
 	PlayListWidget::PlayListWidget (QWidget *parent)
 	: QWidget (parent)
+	, GridLayout_ (new QGridLayout (this))
 	{
-		Ui_.setupUi (this);
+		setLayout (GridLayout_);
 		setVisible (false);
+		PlayListView_ = new PlayListView (this);
+		ActionBar_ = new QToolBar (this);
+		
+		GridLayout_->addWidget (PlayListView_, 0, 0);
+		GridLayout_->addWidget (ActionBar_, 1, 0);
 		
 		QAction *actionAdd = new QAction (tr ("Add"), this);
 		QAction *actionRemove = new QAction (tr ("Remove"), this);
@@ -49,16 +56,15 @@ namespace Laure
 		actionAdd->setMenu (menu);
 		actionAdd->setMenuRole (QAction::ApplicationSpecificRole);
 		
-		QToolBar *actionBar = new QToolBar (Ui_.ActionFrame_);
-		actionBar->setToolButtonStyle (Qt::ToolButtonIconOnly);
-		actionBar->setIconSize (QSize (16, 16));
-		actionBar->addAction (actionAdd);
-		actionBar->addAction (actionRemove);
-		actionBar->addAction (exportAction);
+		ActionBar_->setToolButtonStyle (Qt::ToolButtonIconOnly);
+		ActionBar_->setIconSize (QSize (16, 16));
+		ActionBar_->addAction (actionAdd);
+		ActionBar_->addAction (actionRemove);
+		ActionBar_->addAction (exportAction);
 		
 		connect (actionRemove,
 				SIGNAL (triggered (bool)),
-				Ui_.PlayListView_,
+				PlayListView_,
 				SLOT (removeSelectedRows ()));
 		connect (exportAction,
 				SIGNAL (triggered (bool)),
@@ -68,11 +74,11 @@ namespace Laure
 				SIGNAL (addItem (QString)),
 				this,
 				SIGNAL (itemAddedRequest (QString)));
-		connect (Ui_.PlayListView_,
+		connect (PlayListView_,
 				SIGNAL (itemRemoved (int)),
 				this,
 				SIGNAL (itemRemoved (int)));
-		connect (Ui_.PlayListView_,
+		connect (PlayListView_,
 				SIGNAL (playItem (int)),
 				this,
 				SIGNAL (playItem (int)));
@@ -80,14 +86,14 @@ namespace Laure
 	
 	void PlayListWidget::handleItemPlayed (int row)
 	{
-		Ui_.PlayListView_->selectRow (row);
-		Ui_.PlayListView_->Play (row);
+		PlayListView_->selectRow (row);
+		PlayListView_->Play (row);
 	}
 	
 	void PlayListWidget::handleItemAdded (const MediaMeta& meta,
 			const QString& fileName)
 	{
-		Ui_.PlayListView_->AddItem (meta, fileName);
+		PlayListView_->AddItem (meta, fileName);
 	}
 	
 	void PlayListWidget::handleExportPlayList ()
@@ -110,8 +116,25 @@ namespace Laure
 		QTextStream out (&file);
 		out << "#EXTM3U\n";
 		
-		for (int i = 0, c = Ui_.PlayListView_->RowCount (); i < c; ++i)
-			out << Ui_.PlayListView_->Data (i, 1).toString () << '\n';
+		for (int i = 0, c = PlayListView_->RowCount (); i < c; ++i)
+			out << PlayListView_->Data (i, 1).toString () << '\n';
+	}
+	
+	void PlayListWidget::MoveDockWidget (Qt::Orientation orientation)
+	{
+		GridLayout_->removeWidget (ActionBar_);
+		GridLayout_->removeWidget (PlayListView_);
+		GridLayout_->addWidget (PlayListView_, 0, 0);
+		if (orientation == Qt::Horizontal)
+		{
+			GridLayout_->addWidget (ActionBar_, 1, 0);
+			ActionBar_->setOrientation (Qt::Horizontal);
+		}
+		else
+		{
+			GridLayout_->addWidget (ActionBar_, 0, 1);
+			ActionBar_->setOrientation (Qt::Vertical);
+		}
 	}
 }
 }
