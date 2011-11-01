@@ -42,8 +42,6 @@ namespace Laure
 		QGridLayout *GridLayout_;
 	public:
 		PlayListWidget (QWidget* = 0);
-		
-		void MoveDockWidget (Qt::Orientation);
 	public slots:
 		void handleItemAdded (const MediaMeta&, const QString&);
 		void handleItemPlayed (int);

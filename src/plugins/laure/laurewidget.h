@@ -76,7 +76,6 @@ namespace Laure
 		void handleOpenURL ();
 		void updateInterface ();
 		void handlePlaylist (bool);
-		void handleVideoMode (bool);
 	};
 }
 }

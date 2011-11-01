@@ -119,22 +119,5 @@ namespace Laure
 		for (int i = 0, c = PlayListView_->RowCount (); i < c; ++i)
 			out << PlayListView_->Data (i, 1).toString () << '\n';
 	}
-	
-	void PlayListWidget::MoveDockWidget (Qt::Orientation orientation)
-	{
-		GridLayout_->removeWidget (ActionBar_);
-		GridLayout_->removeWidget (PlayListView_);
-		GridLayout_->addWidget (PlayListView_, 0, 0);
-		if (orientation == Qt::Horizontal)
-		{
-			GridLayout_->addWidget (ActionBar_, 1, 0);
-			ActionBar_->setOrientation (Qt::Horizontal);
-		}
-		else
-		{
-			GridLayout_->addWidget (ActionBar_, 0, 1);
-			ActionBar_->setOrientation (Qt::Vertical);
-		}
-	}
 }
 }

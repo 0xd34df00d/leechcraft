@@ -123,21 +123,16 @@ namespace Laure
 		QAction *actionOpenFile = new QAction (tr ("Open File"), this);
 		QAction *actionOpenURL = new QAction (tr ("Open URL"), this);
 		QAction *playList = new QAction (tr ("Playlist"), this);
-		QAction *videoMode = new QAction (tr ("Video mode"), this);
 		
 		actionOpenFile->setProperty ("ActionIcon", "folder");
 		actionOpenURL->setProperty ("ActionIcon", "networkmonitor_plugin");
 		playList->setProperty ("ActionIcon", "itemlist");
-		videoMode->setProperty ("ActionIcon", "video");
 		
 		playList->setCheckable (true);
-		videoMode->setCheckable (true);
-		videoMode->setChecked (true);
 		
 		ToolBar_->addAction (actionOpenFile);
 		ToolBar_->addAction (actionOpenURL);
 		ToolBar_->addAction (playList);
-		ToolBar_->addAction (videoMode);
 		
 		connect (actionOpenFile,
 				SIGNAL (triggered (bool)),
@@ -151,14 +146,6 @@ namespace Laure
 				SIGNAL (triggered (bool)),
 				this,
 				SLOT (handlePlaylist (bool)));
-		connect (videoMode,
-				SIGNAL (triggered (bool)),
-				this,
-				SLOT (handleVideoMode (bool)));
-		connect (videoMode,
-				SIGNAL (triggered (bool)),
-				playList,
-				SLOT (setChecked (bool)));
 	}
 	
 	void LaureWidget::InitCommandFrame ()
@@ -295,22 +282,5 @@ namespace Laure
 		Ui_.PlayListWidget_->setVisible (checked);
 	}
 	
-	void LaureWidget::handleVideoMode (bool checked)
-	{
-		handlePlaylist (true);
-		Ui_.Player_->setVisible (checked);
-		if (checked)
-		{
-			Ui_.GlobalGridLayout_->removeWidget (Ui_.PlayListWidget_);
-			Ui_.PlayListWidget_->MoveDockWidget (Qt::Horizontal);
-			Ui_.Splitter_->addWidget (Ui_.PlayListWidget_);
-			VLCWrapper_->setWindow (Ui_.Player_->winId ());
-		}
-		else
-		{	
-			Ui_.GlobalGridLayout_->addWidget (Ui_.PlayListWidget_, 0, 0, 1, 4);
-			Ui_.PlayListWidget_->MoveDockWidget (Qt::Vertical);
-		}
-	}
 }
 }
