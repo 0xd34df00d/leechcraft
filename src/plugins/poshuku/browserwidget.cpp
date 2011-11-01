@@ -30,6 +30,7 @@
 #include <QDesktopWidget>
 #include <QtDebug>
 #include <QToolBar>
+#include <QToolButton>
 #include <QBuffer>
 #include <QDial>
 #include <QMenu>
@@ -180,10 +181,23 @@ namespace Poshuku
 				property ("NotifyFinishedByDefault").toBool ());
 
 
-		Add2Favorites_ = new QAction (tr ("Bookmark..."),
-				this);
-		Add2Favorites_->setProperty ("ActionIcon", "poshuku_addtofavorites");
+		Add2Favorites_ = new QAction (tr ("Bookmark..."), this);
+		Add2Favorites_->setProperty ("ActionIcon", "poshuku_addbookmark");
 		Add2Favorites_->setEnabled (false);
+
+		ProgressLineEdit *pli = qobject_cast<ProgressLineEdit*> (GetURLEdit ());
+		if (!pli)
+			qWarning () << Q_FUNC_INFO
+					<< "isn't a ProgressLineEdit object"
+					<< GetURLEdit ();
+		else
+		{
+			pli->InsertToolButton (0, Add2Favorites_);
+			connect (GetURLEdit (),
+					SIGNAL (textChanged (const QString&)),
+					this,
+					SLOT (handleUrlTextChanged (const QString&)));
+		}
 
 		Find_ = new QAction (tr ("Find..."),
 				this);
@@ -1499,6 +1513,20 @@ namespace Poshuku
 		WebView_->resize (Ui_.WebGraphicsView_->viewport ()->size ());
 		Ui_.WebGraphicsView_->ensureVisible (WebView_, 0, 0);
 		Ui_.WebGraphicsView_->centerOn (WebView_);
+	}
+
+	void BrowserWidget::handleUrlTextChanged (const QString& url)
+	{
+		ProgressLineEdit *pli = qobject_cast<ProgressLineEdit*> (GetURLEdit ());
+		if (!pli)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "isn't a ProgressLineEdit object"
+					<< GetURLEdit ();
+			return;
+		}
+
+		pli->GetButtonFromAction (Add2Favorites_)->setVisible (!url.isEmpty ());
 	}
 
 	void BrowserWidget::handleShortcutHistory ()

@@ -173,6 +173,7 @@ namespace Poshuku
 		void showSendersMenu ();
 		void handleUrlChanged (const QString&);
 		void refitWebView ();
+		void handleUrlTextChanged (const QString&);
 	signals:
 		void titleChanged (const QString&);
 		void urlChanged (const QString&);
