@@ -21,7 +21,6 @@
 #include <boost/shared_ptr.hpp>
 #include <QKeyEvent>
 #include <QLineEdit>
-#include <QToolButton>
 
 class QModelIndex;
 class QToolBar;
@@ -37,14 +36,22 @@ namespace Poshuku
 
 		bool IsCompleting_;
 		QString PreviousUrl_;
+
 		QToolButton *ClearButton_;
+
+		QList<QToolButton*> Buttons_;
+		QHash<QAction*, QToolButton*> Action2Button_;
 	public:
 		ProgressLineEdit (QWidget* = 0);
 		virtual ~ProgressLineEdit ();
 		bool IsCompleting () const;
+
+		QToolButton* AddToolButton (QAction*);
+		QToolButton* InsertToolButton (int, QAction*);
+		QToolButton* GetButtonFromAction (QAction*);
 	protected:
-		void keyPressEvent (QKeyEvent *);
-		void resizeEvent (QResizeEvent *);
+		void keyPressEvent (QKeyEvent*);
+		void resizeEvent (QResizeEvent*);
 	private slots:
 		void handleCompleterActivated ();
 		void textChanged (const QString& text);
