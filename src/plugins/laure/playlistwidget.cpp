@@ -42,6 +42,8 @@ namespace Laure
 		
 		GridLayout_->addWidget (PlayListView_, 0, 0);
 		GridLayout_->addWidget (ActionBar_, 1, 0);
+		GridLayout_->setSpacing (0);
+		GridLayout_->setMargin (0);
 		
 		QAction *actionAdd = new QAction (tr ("Add"), this);
 		QAction *actionRemove = new QAction (tr ("Remove"), this);
@@ -117,7 +119,7 @@ namespace Laure
 		out << "#EXTM3U\n";
 		
 		for (int i = 0, c = PlayListView_->RowCount (); i < c; ++i)
-			out << PlayListView_->Data (i, 1).toString () << '\n';
+			out << PlayListView_->Data (i, 0).toString () << '\n';
 	}
 }
 }

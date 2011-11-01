@@ -26,7 +26,12 @@ namespace Laure
 	PlayListModel::PlayListModel (QObject* parent)
 	: QStandardItemModel (parent)
 	{
-		setColumnCount (2);
+		setColumnCount (6);
+		setHeaderData (1, Qt::Horizontal,  tr ("Artist"));
+		setHeaderData (2, Qt::Horizontal, tr ("Title"));
+		setHeaderData (3, Qt::Horizontal, tr ("Album"));
+		setHeaderData (4, Qt::Horizontal, tr ("Genre"));
+		setHeaderData (5, Qt::Horizontal, tr ("Date"));
 	}
 	
 	Qt::ItemFlags PlayListModel::flags (const QModelIndex& index) const
