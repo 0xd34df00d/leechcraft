@@ -96,7 +96,8 @@ namespace Laure
 			return;
 		
 		const int first = indexList.first ().row ();
-		PlayListModel_->removeRows (first, indexList.count ());
+		PlayListModel_->removeRows (first, indexList.count ()
+				/ (PlayListRowCount - 1));
 		for (int i = c - 1; i > -1; --i)
 			emit itemRemoved (first);
 	
