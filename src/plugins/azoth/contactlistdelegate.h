@@ -34,6 +34,7 @@ namespace Azoth
 		bool ShowAvatars_;
 		bool ShowClientIcons_;
 		bool ShowStatuses_;
+		int ContactHeight_;
 		QString ActivityIconset_;
 		QString MoodIconset_;
 		QString SystemIconset_;
@@ -43,6 +44,7 @@ namespace Azoth
 		QTreeView *View_;
 	public:
 		ContactListDelegate (QTreeView* = 0);
+
 		virtual void paint (QPainter*,
 				const QStyleOptionViewItem&, const QModelIndex&) const;
 		virtual QSize sizeHint (const QStyleOptionViewItem&,
@@ -62,6 +64,7 @@ namespace Azoth
 		void handleMoodIconsetChanged ();
 		void handleSystemIconsetChanged ();
 		void handleShowStatusesChanged ();
+		void handleContactHeightChanged ();
 	};
 }
 }

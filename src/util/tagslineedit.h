@@ -70,6 +70,8 @@ namespace LeechCraft
 			 */
 			UTIL_API void insertTag (const QString& string);
 			UTIL_API void handleTagsUpdated (const QStringList&);
+
+			UTIL_API void setTags (const QStringList&);
 		private slots:
 			void handleSelectionChanged (const QStringList&);
 		protected:

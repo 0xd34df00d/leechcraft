@@ -31,25 +31,29 @@ namespace Azoth
 {
 	class IMUCJoinWidget;
 	class IMUCBookmarkEditorWidget;
+	class IAccount;
 
 	class BookmarksManagerDialog : public QDialog
 	{
 		Q_OBJECT
-		
+
 		Ui::BookmarksManagerDialog Ui_;
 		QMap<QByteArray, IMUCJoinWidget*> Proto2Joiner_;
 		QStandardItemModel *BMModel_;
 		IMUCBookmarkEditorWidget *CurrentEditor_;
 	public:
 		BookmarksManagerDialog (QWidget* = 0);
-		
+
+		void FocusOn (IAccount*);
 		void SuggestSaving (QObject*);
 	private:
 		void Save ();
+		bool CheckSave (const QModelIndex&);
 		QStandardItem* GetSelectedItem () const;
 	private slots:
 		void on_AccountBox__currentIndexChanged (int);
-		void handleCurrentBMChanged (const QModelIndex&);
+		void handleBookmarksChanged ();
+		void handleCurrentBMChanged (const QModelIndex&, const QModelIndex&);
 		void on_RemoveButton__released ();
 		void on_AddButton__released ();
 		void on_ApplyButton__released ();

@@ -209,6 +209,10 @@ namespace Xoox
 		return QMap<QString, QVariant> ();
 	}
 
+	void RoomCLEntry::MarkMsgsRead ()
+	{
+	}
+
 	IMUCEntry::MUCFeatures RoomCLEntry::GetMUCFeatures () const
 	{
 		return MUCFCanBeConfigured | MUCFCanInvite;

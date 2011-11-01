@@ -59,6 +59,11 @@ namespace Azoth
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"azothsettings.xml");
 
+		connect (XmlSettingsDialog_.get (),
+				SIGNAL (moreThisStuffRequested (const QString&)),
+				this,
+				SLOT (handleMoreThisStuff (const QString&)));
+
 		XmlSettingsDialog_->SetDataSource ("StatusIcons",
 				Core::Instance ().GetResourceLoader (Core::RLTStatusIconLoader)->
 					GetSubElemModel ());
@@ -320,6 +325,31 @@ namespace Azoth
 		QModelIndex si = Core::Instance ().GetProxy ()->MapToSource (index);
 		TransferJobManager *mgr = Core::Instance ().GetTransferJobManager ();
 		mgr->SelectionChanged (si.model () == mgr->GetSummaryModel () ? si : QModelIndex ());
+	}
+
+	void Plugin::handleMoreThisStuff (const QString& id)
+	{
+		QMap<QString, QStringList> id2tags;
+		id2tags ["StatusIcons"] << "azoth" << "status icons";
+		id2tags ["MoodIcons"] << "azoth" << "mood icons";
+		id2tags ["Smiles"] << "azoth" << "emoticons";
+		id2tags ["ClientIcons"] << "azoth" << "client icons";
+		id2tags ["AffIcons"] << "azoth" << "affiliation icons";
+		id2tags ["ActivityIcons"] << "azoth" << "activity icons";
+		id2tags ["SystemIcons"] << "azoth" << "system icons";
+		id2tags ["ChatWindowStyles"] << "azoth" << "chat styles";
+
+		const QStringList& tags = id2tags [id];
+		if (tags.isEmpty ())
+			return;
+
+		Entity e = Util::MakeEntity ("ListPackages",
+				QString (),
+				FromUserInitiated,
+				"x-leechcraft/package-manager-action");
+		e.Additional_ ["Tags"] = tags;
+
+		emit gotEntity (e);
 	}
 
 	void Plugin::handleConsoleWidget (ConsoleWidget *cw)

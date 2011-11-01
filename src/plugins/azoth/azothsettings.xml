@@ -8,49 +8,49 @@
 		<label value="Appearance" />
 		<tab>
 			<label value="Themes" />
-			<item type="combobox" property="StatusIcons" mayHaveDataSource="true">
+			<item type="combobox" property="StatusIcons" mayHaveDataSource="true" moreThisStuff="StatusIcons">
 				<label value="Status icons:" />
 				<option name="oxygen" default="true">
 					<label value="Oxygen" />
 				</option>
 			</item>
-			<item type="combobox" property="SmileIcons" mayHaveDataSource="true">
+			<item type="combobox" property="SmileIcons" mayHaveDataSource="true" moreThisStuff="Smiles">
 				<label value="Smiles:" />
 				<option name="None" default="true">
 					<label value="None" />
 				</option>
 			</item>
-			<item type="combobox" property="ClientIcons" mayHaveDataSource="true">
+			<item type="combobox" property="ClientIcons" mayHaveDataSource="true" moreThisStuff="ClientIcons">
 				<label value="Client icons:" />
 				<option name="default" default="true">
 					<label value="default" />
 				</option>
 			</item>
-			<item type="combobox" property="AffIcons" mayHaveDataSource="true">
+			<item type="combobox" property="AffIcons" mayHaveDataSource="true" moreThisStuff="AffIcons">
 				<label value="Affiliation icons:" />
 				<option name="default" default="true">
 					<label value="default" />
 				</option>
 			</item>
-			<item type="combobox" property="MoodIcons" mayHaveDataSource="true">
+			<item type="combobox" property="MoodIcons" mayHaveDataSource="true" moreThisStuff="MoodIcons">
 				<label value="User mood icons:" />
 				<option name="default" default="true">
 					<label value="default" />
 				</option>
 			</item>
-			<item type="combobox" property="ActivityIcons" mayHaveDataSource="true">
+			<item type="combobox" property="ActivityIcons" mayHaveDataSource="true" moreThisStuff="ActivityIcons">
 				<label value="User activity icons:" />
 				<option name="default" default="true">
 					<label value="default" />
 				</option>
 			</item>
-			<item type="combobox" property="SystemIcons" mayHaveDataSource="true">
+			<item type="combobox" property="SystemIcons" mayHaveDataSource="true" moreThisStuff="SystemIcons">
 				<label value="General icons:" />
 				<option name="default" default="true">
 					<label value="default" />
 				</option>
 			</item>
-			<item type="combobox" property="ChatWindowStyle" mayHaveDataSource="true">
+			<item type="combobox" property="ChatWindowStyle" mayHaveDataSource="true" moreThisStuff="ChatWindowStyles">
 				<label value="Chat window style:" />
 				<option name="Basic" default="true">
 					<label value="Basic" />
@@ -88,6 +88,10 @@
 				<label value="Group contacts by status" />
 				<tooltip>If this option is enabled, contacts are ordered by status and then by name. Otherwise, they are ordered by name only.</tooltip>
 			</item>
+			<item type="spinbox" property="RosterContactHeight" default="20" minimum="8" maximum="96">
+				<label value="Distance between contacts in roster:" />
+				<suffix value=" px" />
+			</item>
 		</tab>
 		<tab>
 			<label value="Chat windows" />
@@ -121,6 +125,9 @@
 			</item>
 			<item type="checkbox" property="AutoMUCMode" default="false">
 				<label value="Automatically switch roster to conference mode when needed" />
+			</item>
+			<item type="checkbox" property="HideMUCPartsInWholeCL" default="false">
+				<label value="Hide MUC participants in Whole CL mode" />
 			</item>
 			<item type="checkbox" property="IsAutojoinAllowed" default="true">
 				<label value="Autojoin allowed" />
@@ -205,6 +212,9 @@
 			<label value="Chat windows" />
 			<item type="checkbox" property="ShowStatusChangesEvents" default="false">
 				<label value="Show status changes" />
+			</item>
+			<item type="checkbox" property="ShowJoinsLeaves" default="true">
+				<label value="Show joins and leaves in MUCs" />
 			</item>
 		</tab>
 	</page>

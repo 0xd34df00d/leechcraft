@@ -77,20 +77,21 @@ namespace Azoth
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
 		QAbstractItemModel* GetRepresentation () const;
-		
+
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
 		QMap<QString, QList<QAction*> > GetMenuActions () const;
-		
+
 		EntityTestHandleResult CouldHandle (const Entity&) const;
 		void Handle (Entity);
-	
+
 		TabClasses_t GetTabClasses () const;
 		void TabOpenRequested (const QByteArray&);
-		
+
 		QList<ANFieldData> GetANFields () const;
 	public slots:
 		void handleTasksTreeSelectionCurrentRowChanged (const QModelIndex&, const QModelIndex&);
 	private slots:
+		void handleMoreThisStuff (const QString&);
 		void handleConsoleWidget (ConsoleWidget*);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);

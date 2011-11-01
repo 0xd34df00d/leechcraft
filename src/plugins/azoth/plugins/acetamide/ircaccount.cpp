@@ -33,6 +33,7 @@
 #include "xmlsettingsmanager.h"
 #include "ircserverhandler.h"
 #include "channelhandler.h"
+#include "bookmarkeditwidget.h"
 
 namespace LeechCraft
 {
@@ -148,7 +149,7 @@ namespace Acetamide
 	{
 		AccountID_ = id.toUtf8 ();
 	}
-	
+
 	QList<QAction*> IrcAccount::GetActions () const
 	{
 		return QList<QAction*> ();
@@ -198,8 +199,8 @@ namespace Acetamide
 		DefaultPort_ = widget->GetDefaultPort ();
 		DefaultEncoding_ = widget->GetDefaultEncoding ();
 		DefaultChannel_ = widget->GetDefaultChannel ();
-		
-		
+
+
 		if (lastState != SOffline)
 			ChangeState (EntryStatus (lastState, QString ()));
 
@@ -251,6 +252,61 @@ namespace Acetamide
 			return QList<IrcBookmark> ();
 
 		return ClientConnection_->GetBookmarks ();
+	}
+
+	QWidget* IrcAccount::GetMUCBookmarkEditorWidget ()
+	{
+		return new BookmarkEditWidget ();
+	}
+
+	QVariantList IrcAccount::GetBookmarkedMUCs () const
+	{
+		QVariantList result;
+
+		const QList<IrcBookmark>& bookmarks = GetBookmarks ();
+		Q_FOREACH (const IrcBookmark& channel, bookmarks)
+		{
+			QVariantMap cm;
+			cm ["HumanReadableName"] = QString ("%1@%2 (%3)")
+					.arg (channel.ChannelName_ )
+					.arg (channel.ServerName_)
+					.arg (channel.NickName_);
+			cm ["AccountID"] = GetAccountID ();
+			cm ["Server"] = channel.ServerName_;
+			cm ["Port"] = channel.ServerPort_;
+			cm ["Encoding"] = channel.ServerEncoding_;
+			cm ["Channel"] = channel.ChannelName_;
+			cm ["Password"] = channel.ChannelPassword_;
+			cm ["Nickname"] = channel.NickName_;
+			cm ["SSL"] = channel.SSL_;
+			cm ["Autojoin"] = channel.AutoJoin_;
+			cm ["StoredName"] = channel.Name_;
+			result << cm;
+		}
+
+		return result;
+	}
+
+	void IrcAccount::SetBookmarkedMUCs (const QVariantList& datas)
+	{
+		QList<IrcBookmark> channels;
+		Q_FOREACH (const QVariant& var, datas)
+		{
+			const QVariantMap& map = var.toMap ();
+			IrcBookmark bookmark;
+			bookmark.AutoJoin_  = map.value ("Autojoin").toBool ();
+			bookmark.ServerName_ = map.value ("Server").toString ();
+			bookmark.ServerPort_ = map.value ("Port").toInt ();
+			bookmark.ServerEncoding_ = map.value ("Encoding").toString ();
+			bookmark.ChannelName_ = map.value ("Channel").toString ();
+			bookmark.ChannelPassword_ = map.value ("Password").toString ();
+			bookmark.SSL_ = map.value ("SSL").toBool ();
+			bookmark.NickName_ = map.value ("Nickname").toString ();
+			bookmark.Name_ = map.value ("StoredName").toString ();
+			channels << bookmark;
+		}
+
+		SetBookmarks (channels);
 	}
 
 	EntryStatus IrcAccount::GetState () const

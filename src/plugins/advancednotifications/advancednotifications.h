@@ -23,24 +23,28 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/ihavesettings.h>
+#include <interfaces/iactionsexporter.h>
 
 namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
 	class GeneralHandler;
+	class EnableSoundActionManager;
 
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IEntityHandler
 				 , public IHaveSettings
+				 , public IActionsExporter
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IEntityHandler IHaveSettings)
-		
+		Q_INTERFACES (IInfo IEntityHandler IHaveSettings IActionsExporter)
+
 		ICoreProxy_ptr Proxy_;
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
 		boost::shared_ptr<GeneralHandler> GeneralHandler_;
+		EnableSoundActionManager *EnableSoundMgr_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -49,11 +53,13 @@ namespace AdvancedNotifications
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
-		
+
 		EntityTestHandleResult CouldHandle (const Entity&) const;
 		void Handle (Entity);
-		
+
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+
+		QList<QAction*> GetActions (ActionsEmbedPlace) const;
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 	};

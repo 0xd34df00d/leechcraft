@@ -45,10 +45,9 @@ namespace LeechCraft
 		QGridLayout *groupLayout = new QGridLayout ();
 		groupLayout->setContentsMargins (2, 2, 2, 2);
 		box->setLayout (groupLayout);
-		box->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
 		box->setCheckable (true);
 
-		QVariant value = XSD_->GetValue (item);
+		const QVariant& value = XSD_->GetValue (item);
 
 		box->setChecked (value.toBool ());
 		connect (box,
@@ -62,8 +61,6 @@ namespace LeechCraft
 
 		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
 		lay->addWidget (box, lay->rowCount (), 0, 1, 2);
-		QSpacerItem *verticalSpacer = new QSpacerItem (10, 20, QSizePolicy::Minimum, QSizePolicy::Expanding);
-		lay->addItem (verticalSpacer, lay->rowCount (), 0);
 	}
 
 	void ItemHandlerGroupbox::SetValue (QWidget *widget,

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="Azoth Isterique" />
+		<groupbox>
+			<label value="Azoth Isterique" />
+			<item type="checkbox" property="EnableForChats" default="false">
+				<label value="Enable for chats" />
+			</item>
+			<item type="checkbox" property="EnableForMUCs" default="false">
+				<label value="Enable for MUCs" />
+			</item>
+			<item type="spinbox" property="CapsPercentage" default="70" minimum="1" maximum="100">
+				<label value="Percentage of caps letters in message:" />
+				<suffix value="%" />
+			</item>
+		</groupbox>
+	</page>
+</settings>

@@ -61,9 +61,8 @@ namespace Xoox
 		QList<QWidget*> GetAccountRegistrationWidgets (AccountAddOptions);
 		void RegisterAccount (const QString&, const QList<QWidget*>&);
 		QWidget* GetMUCJoinWidget ();
-		QWidget* GetMUCBookmarkEditorWidget ();
 		void RemoveAccount (QObject*);
-		
+
 		bool SupportsURI (const QUrl&) const;
 		void HandleURI (const QUrl&, QObject*);
 	private:

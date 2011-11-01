@@ -7,21 +7,6 @@
 			<item type="checkbox" property="UseTabScrollButtons" state="on">
 				<label lang="en" value="Use tab scroll buttons" />
 			</item>
-			<item type="combobox" property="IconSize">
-				<label lang="en" value="Icon size" />
-				<option name="0" default="true">
-					<label lang="en" value="System default" />
-				</option>
-				<option name="16">
-					<label lang="en" value="16x16" />
-				</option>
-				<option name="24">
-					<label lang="en" value="24x24" />
-				</option>
-				<option name="32">
-					<label lang="en" value="32x32" />
-				</option>
-			</item>
 			<item type="combobox" property="ToolButtonStyle">
 				<label lang="en" value="Tool button style:" />
 				<option name="iconOnly" default="true">

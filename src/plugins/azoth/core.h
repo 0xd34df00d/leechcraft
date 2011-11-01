@@ -50,6 +50,7 @@ namespace Util
 }
 namespace Azoth
 {
+
 	struct EntryStatus;
 	class ICLEntry;
 	class IAccount;
@@ -63,6 +64,7 @@ namespace Azoth
 	class TransferJobManager;
 	class CallManager;
 	class EventsNotifier;
+	class ActionsManager;
 
 	class CLModel;
 
@@ -99,8 +101,7 @@ namespace Azoth
 		typedef QHash<ICLEntry*, QList<QStandardItem*> > Entry2Items_t;
 		Entry2Items_t Entry2Items_;
 
-		typedef QHash<const ICLEntry*, QHash<QByteArray, QAction*> > Entry2Actions_t;
-		Entry2Actions_t Entry2Actions_;
+		ActionsManager *ActionsManager_;
 
 		typedef QHash<QString, QObject*> ID2Entry_t;
 		ID2Entry_t ID2Entry_;
@@ -159,18 +160,6 @@ namespace Azoth
 				*/
 			CLETContact
 		};
-
-		enum CLEntryActionArea
-		{
-			CLEAATabCtxtMenu,
-			CLEAAContactListCtxtMenu,
-			CLEAAApplicationMenu,
-			CLEAAToolbar,
-			CLEAAMAX
-		};
-	private:
-		typedef QHash<const QAction*, QList<CLEntryActionArea> > Action2Areas_t;
-		Action2Areas_t Action2Areas_;
 	public:
 		static Core& Instance ();
 		void Release ();
@@ -284,19 +273,10 @@ namespace Azoth
 		 */
 		QImage GetAvatar (ICLEntry *entry, int size);
 
-		/** Returns an up-to-date list of actions suitable for the given
-		 * entry.
-		 */
-		QList<QAction*> GetEntryActions (ICLEntry *entry);
-
-		/** Returns the list of preferred areas for the given action.
-		 *
-		 * The action should be the one returned from GetEntryActions(),
-		 * otherwise an empty list would be returned.
-		 */
-		QList<CLEntryActionArea> GetAreasForAction (const QAction *action) const;
+		ActionsManager* GetActionsManager () const;
 
 		QString GetSelectedChatTemplate (QObject *entry, QWebFrame *frame) const;
+		QUrl GetSelectedChatTemplateURL (QObject*) const;
 
 		bool AppendMessageByTemplate (QWebFrame*, QObject*, const ChatMsgAppendInfo&);
 
@@ -311,6 +291,19 @@ namespace Azoth
 		QString FormatNickname (QString, IMessage*, const QString& color);
 		QString FormatBody (QString body, IMessage *msg);
 		QString HandleSmiles (QString body);
+
+		/** This function increases the number of unread messages by
+		 * the given amount, which may be negative.
+		 */
+		void IncreaseUnreadCount (ICLEntry *entry, int amount = 1);
+
+		/** Calls the given func on the sending entry, asking for reason
+		 * for the action, if it should. The text may contain %1, in
+		 * which case it'd be replaced with the result if
+		 * ICLEntry::GetEntryName().
+		 */
+		void ManipulateAuth (const QString& id, const QString& text,
+				boost::function<void (IAuthable*, const QString&)> func);
 	private:
 		/** Adds the protocol object. The object must implement
 		 * IProtocolPlugin interface.
@@ -370,18 +363,10 @@ namespace Azoth
 		 */
 		void CheckFileIcon (const QString& id);
 
-		/** This function increases the number of unread messages by
-		 * the given amount, which may be negative.
-		 */
-		void IncreaseUnreadCount (ICLEntry *entry, int amount = 1);
-
 		/** This functions calculates new value of number of unread
 		 * items for the chain of parents of the given item.
 		 */
 		void RecalculateUnreadForParents (QStandardItem*);
-
-		void CreateActionsForEntry (ICLEntry*);
-		void UpdateActionsForEntry (ICLEntry*);
 
 		/** Asks user for reason for the given action, possibly showing
 		 * the given text. The id may be used to distinguish between
@@ -394,14 +379,6 @@ namespace Azoth
 		void NotifyWithReason (QObject*, const QString&,
 				const char*, const QString&,
 				const QString&, const QString&);
-
-		/** Calls the given func on the sending entry, asking for reason
-		 * for the action, if it should. The text may contain %1, in
-		 * which case it'd be replaced with the result if
-		 * ICLEntry::GetEntryName().
-		 */
-		void ManipulateAuth (const QString& id, const QString& text,
-				boost::function<void (IAuthable*, const QString&)> func);
 
 		/** Removes one item representing the given CL entry.
 		 */
@@ -564,31 +541,6 @@ namespace Azoth
 
 		void invalidateSmoothAvatarCache ();
 
-		void handleActionDrawAttention ();
-		void handleActionRenameTriggered ();
-		void handleActionChangeGroupsTriggered ();
-		void handleActionRemoveTriggered ();
-		void handleActionGrantAuthTriggered ();
-		void handleActionRevokeAuthTriggered ();
-		void handleActionUnsubscribeTriggered ();
-		void handleActionRerequestTriggered ();
-#ifdef ENABLE_CRYPT
-		void handleActionManagePGPTriggered ();
-#endif
-		void handleActionShareContactsTriggered ();
-		void handleActionVCardTriggered ();
-
-		void handleActionOpenChatTriggered ();
-		void handleActionInviteTriggered ();
-		void handleActionLeaveTriggered ();
-		void handleActionAuthorizeTriggered ();
-		void handleActionDenyAuthTriggered ();
-
-		void handleActionAddContactFromMUC ();
-		void handleActionCopyMUCPartID ();
-
-		void handleActionPermTriggered ();
-
 #ifdef ENABLE_CRYPT
 		void handleQCAEvent (int, const QCA::Event&);
 		void handleQCABusyFinished ();
@@ -611,11 +563,6 @@ namespace Azoth
 		void hookAddingCLEntryBegin (LeechCraft::IHookProxy_ptr proxy,
 				QObject *entry);
 		void hookAddingCLEntryEnd (LeechCraft::IHookProxy_ptr proxy,
-				QObject *entry);
-		void hookEntryActionAreasRequested (LeechCraft::IHookProxy_ptr proxy,
-				QObject *action,
-				QObject *entry);
-		void hookEntryActionsRequested (LeechCraft::IHookProxy_ptr proxy,
 				QObject *entry);
 		void hookEntryStatusChanged (LeechCraft::IHookProxy_ptr proxy,
 				QObject *entry,
@@ -650,8 +597,6 @@ namespace Azoth
 }
 
 Q_DECLARE_METATYPE (LeechCraft::Azoth::Core::CLEntryType);
-Q_DECLARE_METATYPE (LeechCraft::Azoth::Core::CLEntryActionArea);
 Q_DECLARE_METATYPE (LeechCraft::Azoth::ICLEntry*);
 
 #endif
-

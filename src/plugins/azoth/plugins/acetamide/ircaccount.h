@@ -24,6 +24,7 @@
 #include <interfaces/iaccount.h>
 #include <interfaces/imessage.h>
 #include <interfaces/ihaveconsole.h>
+#include <interfaces/isupportbookmarks.h>
 #include "core.h"
 #include "localtypes.h"
 
@@ -44,9 +45,12 @@ namespace Acetamide
 	class IrcAccount : public QObject
 						, public IAccount
 						, public IHaveConsole
+						, public ISupportBookmarks
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IAccount LeechCraft::Azoth::IHaveConsole);
+		Q_INTERFACES (LeechCraft::Azoth::IAccount
+				LeechCraft::Azoth::IHaveConsole
+				LeechCraft::Azoth::ISupportBookmarks);
 
 		QString AccountName_;
 		IrcProtocol *ParentProtocol_;
@@ -86,7 +90,7 @@ namespace Acetamide
 
 		QByteArray GetAccountID () const;
 		void SetAccountID (const QString&);
-		
+
 		QList<QAction*> GetActions () const;
 
 		void OpenConfigurationDialog ();
@@ -97,6 +101,9 @@ namespace Acetamide
 		void SetBookmarks (const QList<IrcBookmark>&);
 		QList<IrcBookmark> GetBookmarks () const;
 
+		QWidget* GetMUCBookmarkEditorWidget ();
+		QVariantList GetBookmarkedMUCs () const;
+		void SetBookmarkedMUCs (const QVariantList&);
 
 		EntryStatus GetState () const;
 		void ChangeState (const EntryStatus&);
@@ -138,6 +145,8 @@ namespace Acetamide
 		void scheduleClientDestruction ();
 
 		void gotConsolePacket (const QByteArray&, int);
+
+		void bookmarksChanged ();
 	};
 
 	typedef boost::shared_ptr<IrcAccount> IrcAccount_ptr;

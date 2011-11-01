@@ -27,75 +27,72 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace LackMan
+{
+	class RepoInfoFetcher : public QObject
 	{
-		namespace LackMan
+		Q_OBJECT
+
+		struct PendingRI
 		{
-			class RepoInfoFetcher : public QObject
-			{
-				Q_OBJECT
+			QUrl URL_;
+			QString Location_;
+		};
+		QHash<int, PendingRI> PendingRIs_;
 
-				struct PendingRI
-				{
-					QUrl URL_;
-					QString Location_;
-				};
-				QHash<int, PendingRI> PendingRIs_;
+		struct PendingComponent
+		{
+			QUrl URL_;
+			QString Location_;
+			QString Component_;
+			int RepoID_;
+		};
+		QHash<int, PendingComponent> PendingComponents_;
 
-				struct PendingComponent
-				{
-					QUrl URL_;
-					QString Location_;
-					QString Component_;
-					int RepoID_;
-				};
-				QHash<int, PendingComponent> PendingComponents_;
+		struct PendingPackage
+		{
+			QUrl URL_;
+			QUrl BaseURL_;
+			QString Location_;
+			QString PackageName_;
+			QList<QString> NewVersions_;
+			int ComponentId_;
+		};
+		QHash<int, PendingPackage> PendingPackages_;
+	public:
+		RepoInfoFetcher (QObject*);
 
-				struct PendingPackage
-				{
-					QUrl URL_;
-					QUrl BaseURL_;
-					QString Location_;
-					QString PackageName_;
-					QList<QString> NewVersions_;
-					int ComponentId_;
-				};
-				QHash<int, PendingPackage> PendingPackages_;
-			public:
-				RepoInfoFetcher (QObject*);
+		void FetchFor (QUrl);
+		void FetchComponent (QUrl, int, const QString& component);
+		void FetchPackageInfo (const QUrl& url,
+				const QString& name,
+				const QList<QString>& newVers,
+				int componentId);
+	private slots:
+		void handleRIFinished (int);
+		void handleRIRemoved (int);
+		void handleRIError (int, IDownload::Error);
+		void handleComponentFinished (int);
+		void handleComponentRemoved (int);
+		void handleComponentError (int, IDownload::Error);
+		void handlePackageFinished (int);
+		void handlePackageRemoved (int);
+		void handlePackageError (int, IDownload::Error);
 
-				void FetchFor (QUrl);
-				void FetchComponent (QUrl, int, const QString& component);
-				void FetchPackageInfo (const QUrl& url,
-						const QString& name,
-						const QList<QString>& newVers,
-						int componentId);
-			private slots:
-				void handleRIFinished (int);
-				void handleRIRemoved (int);
-				void handleRIError (int, IDownload::Error);
-				void handleComponentFinished (int);
-				void handleComponentRemoved (int);
-				void handleComponentError (int, IDownload::Error);
-				void handlePackageFinished (int);
-				void handlePackageRemoved (int);
-				void handlePackageError (int, IDownload::Error);
+		void handleRepoUnarchFinished (int, QProcess::ExitStatus);
+		void handleComponentUnarchFinished (int, QProcess::ExitStatus);
+		void handlePackageUnarchFinished (int, QProcess::ExitStatus);
+		void handleUnarchError (QProcess::ProcessError);
+	signals:
+		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
+		void gotEntity (const LeechCraft::Entity&);
 
-				void handleRepoUnarchFinished (int, QProcess::ExitStatus);
-				void handleComponentUnarchFinished (int, QProcess::ExitStatus);
-				void handlePackageUnarchFinished (int, QProcess::ExitStatus);
-				void handleUnarchError (QProcess::ProcessError);
-			signals:
-				void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
-				void gotEntity (const LeechCraft::Entity&);
-
-				void infoFetched (const RepoInfo&);
-				void componentFetched (const PackageShortInfoList& packages,
-						const QString& component, int repoId);
-				void packageFetched (const PackageInfo&, int componentId);
-			};
-		}
-	}
+		void infoFetched (const RepoInfo&);
+		void componentFetched (const PackageShortInfoList& packages,
+				const QString& component, int repoId);
+		void packageFetched (const PackageInfo&, int componentId);
+	};
+}
 }
 
 #endif

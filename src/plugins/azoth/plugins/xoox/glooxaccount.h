@@ -36,6 +36,7 @@
 #include <interfaces/isupportgeolocation.h>
 #include <interfaces/isupportmediacalls.h>
 #include <interfaces/isupportriex.h>
+#include <interfaces/isupportbookmarks.h>
 #ifdef ENABLE_CRYPT
 #include <interfaces/isupportpgp.h>
 #endif
@@ -78,6 +79,7 @@ namespace Xoox
 					   , public ISupportGeolocation
 					   , public ISupportMediaCalls
 					   , public ISupportRIEX
+					   , public ISupportBookmarks
 #ifdef ENABLE_CRYPT
 					   , public ISupportPGP
 #endif
@@ -94,6 +96,7 @@ namespace Xoox
 				LeechCraft::Azoth::ISupportGeolocation
 				LeechCraft::Azoth::ISupportMediaCalls
 				LeechCraft::Azoth::ISupportRIEX
+				LeechCraft::Azoth::ISupportBookmarks
 #ifdef ENABLE_CRYPT
 				LeechCraft::Azoth::ISupportPGP
 #endif
@@ -178,6 +181,11 @@ namespace Xoox
 		// ISupportRIEX
 		void SuggestItems (QList<RIEXItem>, QObject*, QString);
 
+		// ISupportBookmarks
+		QWidget* GetMUCBookmarkEditorWidget ();
+		QVariantList GetBookmarkedMUCs () const;
+		void SetBookmarkedMUCs (const QVariantList&);
+
 #ifdef ENABLE_CRYPT
 		// ISupportPGP
 		void SetPrivateKey (const QCA::PGPKey&);
@@ -224,6 +232,8 @@ namespace Xoox
 		void statusChanged (const EntryStatus&);
 		void mucInvitationReceived (const QVariantMap&,
 				const QString&, const QString&);
+
+		void bookmarksChanged ();
 
 		void riexItemsSuggested (QList<LeechCraft::Azoth::RIEXItem> items,
 				QObject*, QString);

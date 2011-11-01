@@ -449,7 +449,7 @@ namespace Poshuku
 	void Core::ReloadAll ()
 	{
 		Q_FOREACH (BrowserWidget *widget, Widgets_)
-			widget->GetWebView ()->
+			widget->GetView ()->
 					pageAction (QWebPage::Reload)->trigger ();
 	}
 

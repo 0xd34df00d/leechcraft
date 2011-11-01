@@ -39,18 +39,18 @@ namespace Acetamide
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IProtocol LeechCraft::Azoth::IURIHandler);
-		
+
 		QObject *ParentProtocolPlugin_;
 		QList<IrcAccount*> IrcAccounts_;
 		QObject *ProxyObject_;
 	public:
 		IrcProtocol (QObject*);
 		virtual ~IrcProtocol ();
-		
+
 		void Prepare ();
 		QObject* GetProxyObject () const;
 		void SetProxyObject (QObject*);
-		
+
 		QObject* GetObject ();
 		ProtocolFeatures GetFeatures () const;
 		QList<QObject*> GetRegisteredAccounts ();
@@ -62,7 +62,6 @@ namespace Acetamide
 		QList<QWidget*> GetAccountRegistrationWidgets (AccountAddOptions);
 		void RegisterAccount (const QString&, const QList<QWidget*>&);
 		QWidget* GetMUCJoinWidget ();
-		QWidget* GetMUCBookmarkEditorWidget ();
 		void RemoveAccount (QObject*);
 
 		void HandleURI(const QUrl&, QObject*);

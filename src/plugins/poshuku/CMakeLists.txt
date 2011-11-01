@@ -190,7 +190,7 @@ OPTION (ENABLE_POSHUKU_FATAPE "Build FatApe, support for GreaseMonkey userscript
 OPTION (ENABLE_POSHUKU_FILESCHEME "Build support of local file browsing for Poshuku browser" ON)
 OPTION (ENABLE_POSHUKU_FUA "Build user agent customization plugin for Poshuku browser" ON)
 OPTION (ENABLE_POSHUKU_KEYWORDS "Build support of url keywords for Poshuku browser" ON)
-OPTION (ENABLE_POSHUKU_ONLINEBOOKMARKS "Build support of online bookmark synchronization for Poshuku browser" OFF)
+OPTION (ENABLE_POSHUKU_ONLINEBOOKMARKS "Build support of online bookmark synchronization for Poshuku browser" ON)
 OPTION (ENABLE_POSHUKU_PINTAB "Build support of pinned tab for Poshuku browser" ON)
 OPTION (ENABLE_POSHUKU_WYFV "Build support of native flash-player's replacement for Poshuku browser" ON)
 

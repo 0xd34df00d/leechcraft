@@ -48,11 +48,13 @@ namespace Azoth
 		QMenu *TrayChangeStatus_;
 
 		QAction *AccountJoinConference_;
+		QAction *AccountManageBookmarks_;
 		QAction *AccountAddContact_;
 		QAction *AccountSetActivity_;
 		QAction *AccountSetMood_;
 		QAction *AccountSetLocation_;
 		QAction *AccountConsole_;
+		QAction *AccountModify_;
 
 		QMap<QString, bool> FstLevelExpands_;
 		QMap<QString, QMap<QString, bool> > SndLevelExpands_;
@@ -74,12 +76,16 @@ namespace Azoth
 		void applyFastStatus ();
 
 		void handleCatRenameTriggered ();
+		void handleSendGroupMsgTriggered ();
 		void joinAccountConference ();
+		void joinAccountConfFromBM ();
+		void manageAccountBookmarks ();
 		void addAccountContact ();
 		void handleAccountSetActivity ();
 		void handleAccountSetMood ();
 		void handleAccountSetLocation ();
 		void handleAccountConsole ();
+		void handleAccountModify ();
 
 		void handleManageBookmarks ();
 		void handleAddAccountRequested ();
@@ -94,6 +100,7 @@ namespace Azoth
 
 		void handleRowsInserted (const QModelIndex&, int, int);
 		void rebuildTreeExpansions ();
+		void expandIndex (const QPersistentModelIndex&);
 		void on_CLTree__expanded (const QModelIndex&);
 		void on_CLTree__collapsed (const QModelIndex&);
 

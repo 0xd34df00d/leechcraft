@@ -30,6 +30,8 @@
 #include "interfaces/isupportactivity.h"
 #include "interfaces/isupportmood.h"
 #include "interfaces/isupportgeolocation.h"
+#include "interfaces/isupportbookmarks.h"
+#include "interfaces/imucjoinwidget.h"
 #include "core.h"
 #include "sortfilterproxymodel.h"
 #include "setstatusdialog.h"
@@ -44,6 +46,8 @@
 #include "mooddialog.h"
 #include "locationdialog.h"
 #include "util.h"
+#include "groupsenddialog.h"
+#include "actionsmanager.h"
 
 namespace LeechCraft
 {
@@ -55,6 +59,8 @@ namespace Azoth
 	, MenuButton_ (new QToolButton (this))
 	, ProxyModel_ (new SortFilterProxyModel ())
 	{
+		qRegisterMetaType<QPersistentModelIndex> ("QPersistentModelIndex");
+
 		MainMenu_->setIcon (QIcon (":/plugins/azoth/resources/images/azoth.svg"));
 
 		Ui_.setupUi (this);
@@ -149,6 +155,12 @@ namespace Azoth
 				this,
 				SLOT (joinAccountConference ()));
 
+		AccountManageBookmarks_ = new QAction (tr ("Manage bookmarks..."), this);
+		connect (AccountManageBookmarks_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (manageAccountBookmarks ()));
+
 		AccountAddContact_ = new QAction (tr ("Add contact..."), this);
 		connect (AccountAddContact_,
 				SIGNAL (triggered ()),
@@ -178,6 +190,12 @@ namespace Azoth
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleAccountConsole ()));
+
+		AccountModify_ = new QAction (tr ("Modify..."), this);
+		connect (AccountModify_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleAccountModify ()));
 
 		XmlSettingsManager::Instance ().RegisterObject ("ShowMenuBar",
 				this, "menuBarVisibilityToggled");
@@ -317,9 +335,11 @@ namespace Azoth
 
 	void MainWidget::on_CLTree__customContextMenuRequested (const QPoint& pos)
 	{
-		const QModelIndex& index = Ui_.CLTree_->indexAt (pos);
+		const QModelIndex& index = ProxyModel_->mapToSource (Ui_.CLTree_->indexAt (pos));
 		if (!index.isValid ())
 			return;
+
+		ActionsManager *manager = Core::Instance ().GetActionsManager ();
 
 		QMenu *menu = new QMenu (tr ("Entry context menu"));
 		QList<QAction*> actions;
@@ -329,10 +349,10 @@ namespace Azoth
 		{
 			QObject *obj = index.data (Core::CLREntryObject).value<QObject*> ();
 			ICLEntry *entry = qobject_cast<ICLEntry*> (obj);
-			const QList<QAction*>& allActions = Core::Instance ().GetEntryActions (entry);
+			const QList<QAction*>& allActions = manager->GetEntryActions (entry);
 			Q_FOREACH (QAction *action, allActions)
-				if (Core::Instance ().GetAreasForAction (action)
-						.contains (Core::CLEAAContactListCtxtMenu) ||
+				if (manager->GetAreasForAction (action)
+						.contains (ActionsManager::CLEAAContactListCtxtMenu) ||
 					action->isSeparator ())
 					actions << action;
 			break;
@@ -348,6 +368,18 @@ namespace Azoth
 					this,
 					SLOT (handleCatRenameTriggered ()));
 			actions << rename;
+
+			QAction *sendMsg = new QAction (tr ("Send message..."), menu);
+			QList<QVariant> entries;
+			for (int i = 0, cnt = index.model ()->rowCount (index);
+					i < cnt; ++i)
+				entries << index.child (i, 0).data (Core::CLREntryObject);
+			sendMsg->setProperty ("Azoth/Entries", entries);
+			connect (sendMsg,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (handleSendGroupMsgTriggered ()));
+			actions << sendMsg;
 			break;
 		}
 		case Core::CLETAccount:
@@ -362,8 +394,48 @@ namespace Azoth
 
 			AccountAddContact_->setProperty ("Azoth/AccountObject", objVar);
 			actions << AccountJoinConference_;
-			actions << AccountAddContact_;
 
+			if (qobject_cast<ISupportBookmarks*> (objVar.value<QObject*> ()))
+			{
+				ISupportBookmarks *supBms =
+						qobject_cast<ISupportBookmarks*> (objVar.value<QObject*> ());
+				QVariantList bms = supBms->GetBookmarkedMUCs ();
+				if (!bms.isEmpty ())
+				{
+					QMenu *bmsMenu = new QMenu (tr ("Join bookmarked conference"));
+					actions << bmsMenu->menuAction ();
+
+					Q_FOREACH (const QObject *mucObj,
+							qobject_cast<IAccount*> (objVar.value<QObject*> ())->GetCLEntries ())
+					{
+						IMUCEntry *muc = qobject_cast<IMUCEntry*> (mucObj);
+						if (!muc)
+							continue;
+
+						bms.removeAll (muc->GetIdentifyingData ());
+					}
+
+					Q_FOREACH (const QVariant& bm, bms)
+					{
+						const QVariantMap& map = bm.toMap ();
+
+						QAction *act = bmsMenu->addAction (map ["HumanReadableName"].toString ());
+						act->setProperty ("Azoth/AccountObject", objVar);
+						act->setProperty ("Azoth/BMData", bm);
+						connect (act,
+								SIGNAL (triggered ()),
+								this,
+								SLOT (joinAccountConfFromBM ()));
+					}
+				}
+
+				actions << AccountManageBookmarks_;
+				AccountManageBookmarks_->setProperty ("Azoth/AccountObject", objVar);
+
+				actions << Util::CreateSeparator (menu);
+			}
+
+			actions << AccountAddContact_;
 			actions << Util::CreateSeparator (menu);
 
 			Q_FOREACH (QAction *act, MenuChangeStatus_->actions ())
@@ -412,6 +484,12 @@ namespace Azoth
 				AccountConsole_->setProperty ("Azoth/AccountObject", objVar);
 				actions << AccountConsole_;
 			}
+
+			actions << Util::CreateSeparator (menu);
+
+			AccountModify_->setProperty ("Azoth/AccountObject", objVar);
+			actions << AccountModify_;
+
 			break;
 		}
 		default:
@@ -547,6 +625,19 @@ namespace Azoth
 		}
 	}
 
+	void MainWidget::handleSendGroupMsgTriggered ()
+	{
+		QList<QObject*> entries;
+
+		Q_FOREACH (const QVariant& entryVar,
+				sender ()->property ("Azoth/Entries").toList ())
+			entries << entryVar.value<QObject*> ();
+
+		GroupSendDialog *dlg = new GroupSendDialog (entries, this);
+		dlg->setAttribute (Qt::WA_DeleteOnClose, true);
+		dlg->show ();
+	}
+
 	void MainWidget::joinAccountConference ()
 	{
 		IAccount *account = GetAccountFromSender (Q_FUNC_INFO);
@@ -558,6 +649,37 @@ namespace Azoth
 		JoinConferenceDialog *dia = new JoinConferenceDialog (accounts,
 				Core::Instance ().GetProxy ()->GetMainWindow ());
 		dia->show ();
+		dia->setAttribute (Qt::WA_DeleteOnClose, true);
+	}
+
+	void MainWidget::joinAccountConfFromBM ()
+	{
+		IAccount *account = GetAccountFromSender (Q_FUNC_INFO);
+		if (!account)
+			return;
+
+		const QVariant& bmData = sender ()->property ("Azoth/BMData");
+		if (bmData.isNull ())
+			return;
+
+		IProtocol *proto = qobject_cast<IProtocol*> (account->GetParentProtocol ());
+		IMUCJoinWidget *imjw = qobject_cast<IMUCJoinWidget*> (proto->GetMUCJoinWidget ());
+		imjw->SetIdentifyingData (bmData.toMap ());
+		imjw->Join (account->GetObject ());
+	}
+
+	void MainWidget::manageAccountBookmarks ()
+	{
+		IAccount *account = GetAccountFromSender (Q_FUNC_INFO);
+		if (!account)
+			return;
+
+		BookmarksManagerDialog *dia =
+				new BookmarksManagerDialog (Core::Instance ()
+						.GetProxy ()->GetMainWindow ());
+		dia->FocusOn (account);
+		dia->show ();
+		dia->setAttribute (Qt::WA_DeleteOnClose, true);
 	}
 
 	void MainWidget::addAccountContact ()
@@ -662,6 +784,15 @@ namespace Azoth
 		}
 
 		emit gotConsoleWidget (Account2CW_ [account]);
+	}
+
+	void MainWidget::handleAccountModify ()
+	{
+		IAccount *account = GetAccountFromSender (Q_FUNC_INFO);
+		if (!account)
+			return;
+
+		account->OpenConfigurationDialog ();
 	}
 
 	void MainWidget::handleManageBookmarks ()
@@ -776,11 +907,16 @@ namespace Azoth
 	{
 		QString BuildPath (const QModelIndex& index)
 		{
+			if (!index.isValid ())
+				return QString ();
+
 			QString path = "CLTreeState/Expanded/" + index.data ().toString ();
 			QModelIndex parent = index;
 			while ((parent = parent.parent ()).isValid ())
 				path.prepend (parent.data ().toString () + "/");
+
 			path = path.toUtf8 ().toBase64 ().replace ('/', '_');
+
 			return path;
 		}
 	}
@@ -799,19 +935,19 @@ namespace Azoth
 
 				const bool expanded = XmlSettingsManager::Instance ().Property (path, true).toBool ();
 				if (expanded)
-					QMetaObject::invokeMethod (Ui_.CLTree_,
-							"expand",
+					QMetaObject::invokeMethod (this,
+							"expandIndex",
 							Qt::QueuedConnection,
-							Q_ARG (QModelIndex, index));
+							Q_ARG (QPersistentModelIndex, QPersistentModelIndex (index)));
 
 				if (clModel->rowCount (index))
 					handleRowsInserted (index, 0, ProxyModel_->rowCount (index) - 1);
 			}
 			else if (type == Core::CLETAccount)
-				QMetaObject::invokeMethod (Ui_.CLTree_,
-						"expand",
+				QMetaObject::invokeMethod (this,
+						"expandIndex",
 						Qt::QueuedConnection,
-						Q_ARG (QModelIndex, index));
+						Q_ARG (QPersistentModelIndex, QPersistentModelIndex (index)));
 		}
 	}
 
@@ -822,11 +958,23 @@ namespace Azoth
 					0, Core::Instance ().GetCLModel ()->rowCount () - 1);
 	}
 
+	void MainWidget::expandIndex (const QPersistentModelIndex& pIdx)
+	{
+		if (!pIdx.isValid ())
+			return;
+
+		Ui_.CLTree_->expand (pIdx);
+	}
+
 	namespace
 	{
 		void SetExpanded (const QModelIndex& idx, bool expanded)
 		{
-			XmlSettingsManager::Instance ().setProperty (BuildPath (idx).toUtf8 (), expanded);
+			const QString& path = BuildPath (idx);
+			if (path.isEmpty ())
+				return;
+
+			XmlSettingsManager::Instance ().setProperty (path.toUtf8 (), expanded);
 		}
 	}
 

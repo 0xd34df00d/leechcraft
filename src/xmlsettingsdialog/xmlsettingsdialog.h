@@ -221,9 +221,11 @@ namespace LeechCraft
 			virtual void reject ();
 		private slots:
 			void handleCustomDestroyed ();
+			void handleMoreThisStuffRequested ();
 			void handlePushButtonReleased ();
 		signals:
 			XMLSETTINGSMANAGER_API void pushButtonClicked (const QString&);
+			XMLSETTINGSMANAGER_API void moreThisStuffRequested (const QString&);
 		};
 	};
 };

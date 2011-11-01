@@ -256,6 +256,11 @@ namespace Xoox
 				this,
 				SLOT (handleCaptchaReceived (const QString&, const QXmppDataForm&)));
 
+		connect (BMManager_,
+				SIGNAL (bookmarksReceived (QXmppBookmarkSet)),
+				Account_,
+				SIGNAL (bookmarksChanged ()));
+
 		connect (DiscoveryManager_,
 				SIGNAL (infoReceived (const QXmppDiscoveryIq&)),
 				CapsManager_,

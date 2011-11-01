@@ -76,6 +76,8 @@ namespace LeechCraft
 		bool IsQuitting_;
 		QSplashScreen *Splash_;
 
+		QToolBar *QLBar_;
+
 		QMenu *MenuView_;
 		QMenu *MenuTools_;
 	public:
@@ -87,7 +89,7 @@ namespace LeechCraft
 		void SetAdditionalTitle (const QString&);
 		ToolbarGuard* GetGuard () const;
 		FancyPopupManager* GetFancyPopupManager () const;
-		
+
 		void ToggleViewActionVisiblity (QDockWidget*, bool);
 
 		void AddMenus (const QMap<QString, QList<QAction*> >&);
@@ -119,7 +121,6 @@ namespace LeechCraft
 		void on_MainTabWidget__currentChanged (int);
 		void handleShortcutFullscreenMode ();
 		void handleToolButtonStyleChanged ();
-		void handleIconSize ();
 		void handleNewTabMenuRequested ();
 		void handleRestoreActionAdded (QAction*);
 		void updateSpeedIndicators ();

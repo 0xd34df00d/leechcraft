@@ -54,8 +54,11 @@ namespace LeechCraft
 		void UpdateIconSet (const QList<QAction*>&);
 		void UpdateIconSet (const QList<QTabWidget*>&);
 		QStringList ListIcons () const;
+	protected:
+		bool eventFilter (QObject*, QEvent*);
 	private:
 		QString GetIconName (const QString&) const;
+		void SetIcon (QAction*);
 		void FindIconSets ();
 		void FindIcons ();
 		void FillMapping (const QString&, const QString&);

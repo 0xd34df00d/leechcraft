@@ -71,7 +71,7 @@
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
              <horstretch>0</horstretch>
-             <verstretch>3</verstretch>
+             <verstretch>2</verstretch>
             </sizepolicy>
            </property>
            <property name="rootIsDecorated">
@@ -90,7 +90,7 @@
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
              <horstretch>0</horstretch>
-             <verstretch>1</verstretch>
+             <verstretch>3</verstretch>
             </sizepolicy>
            </property>
            <property name="title">
@@ -183,15 +183,15 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>LeechCraft::Util::TagsLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header location="global">util/tagslineedit.h</header>
+  </customwidget>
+  <customwidget>
    <class>LeechCraft::Util::SelectableBrowser</class>
    <extends>QWidget</extends>
    <header location="global">util/selectablebrowser.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>LeechCraft::Util::TagsLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header location="global">util/tagslineedit.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

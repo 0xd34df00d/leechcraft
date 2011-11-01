@@ -22,41 +22,38 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace LackMan
+{
+	DelegateButtonGroup::DelegateButtonGroup (QObject *parent)
+	: QObject (parent)
 	{
-		namespace LackMan
-		{
-			DelegateButtonGroup::DelegateButtonGroup (QObject *parent)
-			: QObject (parent)
-			{
-			}
-
-			void DelegateButtonGroup::AddButton (QAbstractButton *button)
-			{
-				Buttons_ << button;
-				connect (button,
-						SIGNAL (toggled (bool)),
-						this,
-						SLOT (handleButtonToggled (bool)));
-			}
-
-			void DelegateButtonGroup::handleButtonToggled (bool toggled)
-			{
-				QAbstractButton *button = qobject_cast<QAbstractButton*> (sender ());
-				if (!button)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "sender is not a QAbstractButton*"
-							<< sender ();
-					return;
-				}
-
-				if (toggled)
-					Q_FOREACH (QAbstractButton *otherButton, Buttons_)
-						if (otherButton != button &&
-								otherButton->isChecked ())
-							otherButton->setChecked (false);
-			}
-		}
 	}
+
+	void DelegateButtonGroup::AddButton (QAbstractButton *button)
+	{
+		Buttons_ << button;
+		connect (button,
+				SIGNAL (toggled (bool)),
+				this,
+				SLOT (handleButtonToggled (bool)));
+	}
+
+	void DelegateButtonGroup::handleButtonToggled (bool toggled)
+	{
+		QAbstractButton *button = qobject_cast<QAbstractButton*> (sender ());
+		if (!button)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "sender is not a QAbstractButton*"
+					<< sender ();
+			return;
+		}
+
+		if (toggled)
+			Q_FOREACH (QAbstractButton *otherButton, Buttons_)
+				if (otherButton != button &&
+						otherButton->isChecked ())
+					otherButton->setChecked (false);
+	}
+}
 }

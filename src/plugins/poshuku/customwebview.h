@@ -89,6 +89,7 @@ namespace Poshuku
 		void openImageHere ();
 		void openImageInNewTab ();
 		void saveImage ();
+		void savePixmap ();
 		void copyImage ();
 		void copyImageLocation ();
 		void searchSelectedText ();

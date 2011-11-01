@@ -22,71 +22,68 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace LackMan
+{
+	QString Numerize (QString version)
 	{
-		namespace LackMan
-		{
-			QString Numerize (QString version)
-			{
-				static const QStringList mods = QStringList () << "-rc"
-						<< "-pre"
-						<< "-beta"
-						<< "-alpha";
-				static QStringList replacements;
-				int modsSize = mods.size ();
-				if (replacements.isEmpty ())
-					for (int i = 0; i < modsSize; ++i)
-						replacements << QString (".%1.").arg (-i - 1);
+		static const QStringList mods = QStringList () << "-rc"
+				<< "-pre"
+				<< "-beta"
+				<< "-alpha";
+		static QStringList replacements;
+		int modsSize = mods.size ();
+		if (replacements.isEmpty ())
+			for (int i = 0; i < modsSize; ++i)
+				replacements << QString (".%1.").arg (-i - 1);
 
-				for (int i = 0; i < modsSize; ++i)
-					version.replace (mods.at (i), replacements.at (i));
+		for (int i = 0; i < modsSize; ++i)
+			version.replace (mods.at (i), replacements.at (i));
 
-				return version;
-			}
-
-			bool IsVersionLess (const QString& leftVer, const QString& rightVer)
-			{
-				if (leftVer == rightVer)
-					return false;
-
-				QString leftNum = Numerize (leftVer);
-				QString rightNum = Numerize (rightVer);
-
-#ifdef VERSIONCOMPARATOR_DEBUG
-				qDebug () << leftVer << "->" << leftNum
-						<< rightVer << "->" << rightNum;
-#endif
-
-				QStringList leftParts = leftNum.split ('.',
-						QString::SkipEmptyParts);
-				QStringList rightParts = rightNum.split ('.',
-						QString::SkipEmptyParts);
-
-				int maxSize = std::max (leftParts.size (), rightParts.size ());
-				for (int i = leftParts.size (); i < maxSize; ++i)
-					leftParts << "0";
-				for (int i = rightParts.size (); i < maxSize; ++i)
-					rightParts << "0";
-
-#ifdef VERSIONCOMPARATOR_DEBUG
-				qDebug () << leftParts << rightParts;
-#endif
-
-				for (int i = 0; i < maxSize; ++i)
-				{
-					int left = leftParts.at (i).toInt ();
-					int right = rightParts.at (i).toInt ();
-#ifdef VERSIONCOMPARATOR_DEBUG
-					qDebug () << left << right;
-#endif
-					if (left < right)
-						return true;
-					else if (left > right)
-						return false;
-				}
-
-				return false;
-			}
-		}
+		return version;
 	}
+
+	bool IsVersionLess (const QString& leftVer, const QString& rightVer)
+	{
+		if (leftVer == rightVer)
+			return false;
+
+		QString leftNum = Numerize (leftVer);
+		QString rightNum = Numerize (rightVer);
+
+#ifdef VERSIONCOMPARATOR_DEBUG
+		qDebug () << leftVer << "->" << leftNum
+				<< rightVer << "->" << rightNum;
+#endif
+
+		QStringList leftParts = leftNum.split ('.',
+				QString::SkipEmptyParts);
+		QStringList rightParts = rightNum.split ('.',
+				QString::SkipEmptyParts);
+
+		int maxSize = std::max (leftParts.size (), rightParts.size ());
+		for (int i = leftParts.size (); i < maxSize; ++i)
+			leftParts << "0";
+		for (int i = rightParts.size (); i < maxSize; ++i)
+			rightParts << "0";
+
+#ifdef VERSIONCOMPARATOR_DEBUG
+		qDebug () << leftParts << rightParts;
+#endif
+
+		for (int i = 0; i < maxSize; ++i)
+		{
+			int left = leftParts.at (i).toInt ();
+			int right = rightParts.at (i).toInt ();
+#ifdef VERSIONCOMPARATOR_DEBUG
+			qDebug () << left << right;
+#endif
+			if (left < right)
+				return true;
+			else if (left > right)
+				return false;
+		}
+
+		return false;
+	}
+}
 }

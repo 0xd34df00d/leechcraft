@@ -22,19 +22,16 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace LackMan
+{
+	class StringFilterModel : public QSortFilterProxyModel
 	{
-		namespace LackMan
-		{
-			class StringFilterModel : public QSortFilterProxyModel
-			{
-			public:
-				StringFilterModel (QObject* = 0);
-			protected:
-				bool filterAcceptsRow (int, const QModelIndex&) const;
-			};
-		}
-	}
+	public:
+		StringFilterModel (QObject* = 0);
+	protected:
+		bool filterAcceptsRow (int, const QModelIndex&) const;
+	};
+}
 }
 
 #endif

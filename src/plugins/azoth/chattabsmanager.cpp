@@ -190,6 +190,15 @@ namespace Azoth
 		Q_FOREACH (ChatTab_ptr tab, Entry2Tab_.values ())
 			if (tab != curTab)
 				tab->TabLostCurrent ();
+
+		ICLEntry *entry = qobject_cast<ICLEntry*> (curTab->GetCLEntry ());
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "chat's tab is not an ICLEntry";
+			return;
+		}
+		entry->MarkMsgsRead ();
 	}
 
 	bool ChatTabsManager::eventFilter (QObject* obj, QEvent *event)

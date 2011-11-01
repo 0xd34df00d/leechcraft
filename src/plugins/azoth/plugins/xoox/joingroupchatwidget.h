@@ -50,8 +50,6 @@ namespace Xoox
 		void Cancel ();
 
 		QVariantMap GetIdentifyingData () const;
-		QVariantList GetBookmarkedMUCs () const;
-		void SetBookmarkedMUCs (QObject*, const QVariantList&);
 		void SetIdentifyingData (const QVariantMap& data);
 	private slots:
 		void checkValidity ();

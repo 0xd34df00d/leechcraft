@@ -32,26 +32,24 @@ namespace Azoth
 namespace Acetamide
 {
 	class IrcAccount;
-	
+
 	class IrcJoinGroupChat : public QWidget
 						   , public IMUCJoinWidget
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IMUCJoinWidget)
-		
+
 		Ui::IrcJoinGroupChat Ui_;
 		IrcAccount *SelectedAccount_;
 	public:
 		IrcJoinGroupChat (QWidget* = 0);
-		
+
 		void AccountSelected (QObject*);
 		void Join (QObject*);
 		void Cancel ();
-		QVariantList GetBookmarkedMUCs () const;
-		void SetBookmarkedMUCs (QObject*, const QVariantList&);
 		void SetIdentifyingData (const QVariantMap&);
 		QVariantMap GetIdentifyingData () const;
-		
+
 		QString GetServer () const;
 		int GetPort () const;
 		QString GetChannel () const;

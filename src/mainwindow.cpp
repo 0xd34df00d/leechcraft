@@ -82,11 +82,11 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	Splash_->setUpdatesEnabled (true);
 	Splash_->showMessage (tr ("Initializing LeechCraft..."), Qt::AlignLeft | Qt::AlignBottom);
 	QApplication::processEvents ();
-	
+
 #ifdef Q_WS_WIN
 	new WinWarnDialog;
 #endif
-	
+
 	Core::Instance ();
 
 	InitializeInterface ();
@@ -108,7 +108,7 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 
 	Core::Instance ().SetReallyMainWindow (this);
 	Core::Instance ().DelayedInit ();
-	
+
 	Splash_->showMessage (tr ("Finalizing..."), Qt::AlignLeft | Qt::AlignBottom);
 
 	connect (Core::Instance ().GetNewTabMenuManager (),
@@ -144,7 +144,7 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 		IsShown_ = false;
 		hide ();
 	}
-	
+
 	Splash_->finish (this);
 
 	WasMaximized_ = isMaximized ();
@@ -159,7 +159,7 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 			SIGNAL (activated ()),
 			this,
 			SLOT (handleShortcutFullscreenMode ()));
-	
+
 	CloseTabShortcut_ = new QShortcut (QString ("Ctrl+W"),
 			this,
 			SLOT (handleCloseCurrentTab ()),
@@ -228,7 +228,7 @@ void LeechCraft::MainWindow::AddMenus (const QMap<QString, QList<QAction*> >& me
 			const QList<QAction*>& actions = Ui_.ActionMenu_->menu ()->actions ();
 			Q_FOREACH (QAction *action, actions)
 				if (action->menu () &&
-					action->text () == menuName)	
+					action->text () == menuName)
 				{
 					toInsert = action->menu ();
 					break;
@@ -343,9 +343,6 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	XmlSettingsManager::Instance ()->RegisterObject ("ToolButtonStyle",
 			this, "handleToolButtonStyleChanged");
 	handleToolButtonStyleChanged ();
-	XmlSettingsManager::Instance ()->RegisterObject ("IconSize",
-			this, "handleIconSize");
-	handleIconSize ();
 
 	LanguageOnLoad_ = XmlSettingsManager::Instance ()->property ("Language").toString ();
 
@@ -398,12 +395,19 @@ void LeechCraft::MainWindow::SetStatusBar ()
 	SpeedGraph_ = new GraphWidget (Qt::green, Qt::red);
 	SpeedGraph_->setMinimumWidth (250);
 
+	const int height = statusBar ()->sizeHint ().height ();
+
 	statusBar ()->addPermanentWidget (SpeedGraph_);
 	statusBar ()->addPermanentWidget (DownloadSpeed_);
 	statusBar ()->addPermanentWidget (UploadSpeed_);
 	statusBar ()->addPermanentWidget (Clock_);
 	if (!isFullScreen ())
 		Clock_->hide ();
+
+	QLBar_ = new QToolBar ();
+	QLBar_->setIconSize (QSize (height - 1, height - 1));
+	QLBar_->setMaximumHeight (height - 1);
+	statusBar ()->addPermanentWidget (QLBar_);
 }
 
 void LeechCraft::MainWindow::ReadSettings ()
@@ -628,14 +632,6 @@ void LeechCraft::MainWindow::handleToolButtonStyleChanged ()
 	setToolButtonStyle (GetToolButtonStyle ());
 }
 
-void LeechCraft::MainWindow::handleIconSize ()
-{
-	int size = XmlSettingsManager::Instance ()->
-		property ("IconSize").toInt ();
-	if (size)
-		setIconSize (QSize (size, size));
-}
-
 void LeechCraft::MainWindow::handleNewTabMenuRequested ()
 {
 	QMenu *ntmenu = Core::Instance ()
@@ -702,7 +698,7 @@ void LeechCraft::MainWindow::doDelayedInit ()
 	for (QObjectList::const_iterator i = shortcuts.begin (),
 			end = shortcuts.end (); i != end; ++i)
 		ShortcutManager_->AddObject (*i);
-	
+
 	QList<IActionsExporter*> exporters = Core::Instance ()
 			.GetPluginManager ()->GetAllCastableTo<IActionsExporter*> ();
 	Q_FOREACH (IActionsExporter *exp, exporters)
@@ -710,16 +706,15 @@ void LeechCraft::MainWindow::doDelayedInit ()
 		QMap<QString, QList<QAction*> > map = exp->GetMenuActions ();
 		if (!map.isEmpty ())
 			AddMenus (map);
-		
+
 		QList<QAction*> actions = exp->GetActions (AEPQuickLaunch);
 		if (actions.isEmpty ())
 			continue;
 
-		Q_FOREACH (QAction *action, actions)
-			Ui_.MainTabWidget_->
-					AddAction2TabBarLayout (QTabBar::RightSide, action);
-		Ui_.MainTabWidget_->AddAction2TabBarLayout (QTabBar::RightSide,
-						Util::CreateSeparator (this));
+		SkinEngine::Instance ().UpdateIconSet (actions);
+
+		QLBar_->addSeparator ();
+		QLBar_->addActions (actions);
 	}
 
 	FillTray ();
@@ -784,7 +779,7 @@ void LeechCraft::MainWindow::FillToolMenu ()
 	QMenu *ntm = Core::Instance ()
 		.GetNewTabMenuManager ()->GetNewTabMenu ();
 	Ui_.MainTabWidget_->SetAddTabButtonContextMenu (ntm);
-	
+
 	QMenu *atm = Core::Instance ()
 		.GetNewTabMenuManager ()->GetAdditionalMenu ();
 
@@ -829,7 +824,7 @@ void LeechCraft::MainWindow::InitializeShortcuts ()
 			SIGNAL (activated ()),
 			Ui_.MainTabWidget_,
 			SLOT (setPreviousTab ()));
-	
+
 	for (int i = 0; i < 10; ++i)
 	{
 		QString seqStr = QString ("Ctrl+\\, %1").arg (i);

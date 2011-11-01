@@ -24,33 +24,30 @@ class QAbstractButton;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace LackMan
+{
+	/** @brief Button group with 0 or 1 checked buttons.
+		*
+		* Usual QButtonGroup doesn't allow to have no checked
+		* buttons at all. This class is used to work around this
+		* and allows one to have no checked buttons.
+		*
+		* Used in PackagesDelegate to represent the update or
+		* (install|remove) action group.
+		*/
+	class DelegateButtonGroup : public QObject
 	{
-		namespace LackMan
-		{
-			/** @brief Button group with 0 or 1 checked buttons.
-			 *
-			 * Usual QButtonGroup doesn't allow to have no checked
-			 * buttons at all. This class is used to work around this
-			 * and allows one to have no checked buttons.
-			 *
-			 * Used in PackagesDelegate to represent the update or
-			 * (install|remove) action group.
-			 */
-			class DelegateButtonGroup : public QObject
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				QList<QAbstractButton*> Buttons_;
-			public:
-				DelegateButtonGroup(QObject* = 0);
+		QList<QAbstractButton*> Buttons_;
+	public:
+		DelegateButtonGroup(QObject* = 0);
 
-				void AddButton (QAbstractButton*);
-			private slots:
-				void handleButtonToggled (bool);
-			};
-		}
-	}
+		void AddButton (QAbstractButton*);
+	private slots:
+		void handleButtonToggled (bool);
+	};
+}
 }
 
 #endif

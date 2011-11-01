@@ -25,18 +25,15 @@ class QString;
 
 namespace LeechCraft
 {
-	namespace Plugins
-	{
-		namespace LackMan
-		{
-			RepoInfo ParseRepoInfo (const QUrl& url, const QString& data);
-			PackageShortInfoList ParseComponent (const QByteArray& data);
-			PackageInfo ParsePackage (const QByteArray& data,
-					const QUrl& baseUrl,
-					const QString& packageName,
-					const QStringList& packageVersions);
-		}
-	}
+namespace LackMan
+{
+	RepoInfo ParseRepoInfo (const QUrl& url, const QString& data);
+	PackageShortInfoList ParseComponent (const QByteArray& data);
+	PackageInfo ParsePackage (const QByteArray& data,
+			const QUrl& baseUrl,
+			const QString& packageName,
+			const QStringList& packageVersions);
+}
 }
 
 #endif

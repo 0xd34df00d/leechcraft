@@ -21,6 +21,7 @@
 #include <QWizard>
 #include <interfaces/structures.h>
 #include "interfaces/iclentry.h"
+#include "interfaces/iaccount.h"
 #include "addaccountwizardfirstpage.h"
 
 namespace LeechCraft
@@ -56,6 +57,36 @@ namespace Azoth
 		wizard->addPage (new AddAccountWizardFirstPage (wizard));
 
 		wizard->show ();
+	}
+
+	void AuthorizeEntry (ICLEntry *entry)
+	{
+		IAccount *account =
+				qobject_cast<IAccount*> (entry->GetParentAccount ());
+		if (!account)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "parent account doesn't implement IAccount:"
+					<< entry->GetParentAccount ();
+			return;
+		}
+		const QString& id = entry->GetHumanReadableID ();
+		account->Authorize (entry->GetObject ());
+		account->RequestAuth (id);
+	}
+
+	void DenyAuthForEntry (ICLEntry *entry)
+	{
+		IAccount *account =
+				qobject_cast<IAccount*> (entry->GetParentAccount ());
+		if (!account)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "parent account doesn't implement IAccount:"
+					<< entry->GetParentAccount ();
+			return;
+		}
+		account->DenyAuth (entry->GetObject ());
 	}
 }
 }

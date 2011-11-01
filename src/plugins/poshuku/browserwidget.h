@@ -106,9 +106,9 @@ namespace Poshuku
 		void InitShortcuts ();
 
 		void SetUnclosers (const QList<QAction*>&);
+
+		QGraphicsView* GetGraphicsView () const;
 		CustomWebView* GetView () const;
-		// This is the same as above but to satisfy the IBrowserWidget.
-		QGraphicsWebView* GetWebView () const;
 		QLineEdit* GetURLEdit () const;
 
 		BrowserWidgetSettings GetWidgetSettings () const;

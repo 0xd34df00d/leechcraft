@@ -28,7 +28,6 @@
 #include "core.h"
 #include "joingroupchatwidget.h"
 #include "glooxaccountconfigurationwidget.h"
-#include "bookmarkeditwidget.h"
 #include "inbandaccountregfirstpage.h"
 #include "inbandaccountregsecondpage.h"
 #include "inbandaccountregthirdpage.h"
@@ -180,11 +179,6 @@ namespace Xoox
 	QWidget* GlooxProtocol::GetMUCJoinWidget ()
 	{
 		return new JoinGroupchatWidget ();
-	}
-
-	QWidget* GlooxProtocol::GetMUCBookmarkEditorWidget ()
-	{
-		return new BookmarkEditWidget ();
 	}
 
 	void GlooxProtocol::RemoveAccount (QObject *acc)

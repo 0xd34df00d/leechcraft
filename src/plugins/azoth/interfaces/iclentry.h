@@ -81,11 +81,11 @@ namespace Azoth
 	 * about their chat widgets at all. Instead, such entry would need
 	 * to implement IMultiTabsWidget, for example, and the corresponding
 	 * plugin would need to be a IMultiTabs.
-	 * 
+	 *
 	 * This interface provides only more or less basic functionality.
 	 * Advanced features, like drawing attention and such, are in
 	 * IAdvancedCLEntry.
-	 * 
+	 *
 	 * @sa IAdvancedCLEntry
 	 */
 	class ICLEntry
@@ -101,7 +101,7 @@ namespace Azoth
 			/** This entry is permanent and would appear in the next
 			 * session too. It makes sense to save it to disk, for
 			 * example, when shutting down.
-			 * 
+			 *
 			 * This also means that the entry has been accepted into
 			 * some kind of contact list by the user.
 			 */
@@ -338,25 +338,25 @@ namespace Azoth
 		 * @return The list of messages.
 		 */
 		virtual QList<QObject*> GetAllMessages () const = 0;
-		
+
 		/** @brief Purges messages before the given date.
-		 * 
+		 *
 		 * This function should purge all the messages before the given
 		 * date. After the call, the corresponding messages should not
 		 * appear in the result of GetAllMessages() function. It's also
 		 * suggested to remove them from any internal memory storage to
 		 * conserve memory.
-		 * 
+		 *
 		 * If before is an invalid date, this function should purge all
 		 * messages.
-		 * 
+		 *
 		 * @param[in] before The date before which messages should be
 		 * purged.
 		 */
 		virtual void PurgeMessages (const QDateTime& before) = 0;
-		
+
 		/** @brief Notifies about our chat participation state change.
-		 * 
+		 *
 		 * If variant is a null string, a variant with the highest
 		 * priority should be used.
 		 *
@@ -422,7 +422,7 @@ namespace Azoth
 		 *   negative values indicating that the message won't be
 		 *   delivered to this resource unless it was explicitly created
 		 *   to be targeted at this resource.
-		 * 
+		 *
 		 * The following keys are optional:
 		 * - user_activity
 		 *   The corresponding value is a map itself, mapping QString to
@@ -433,7 +433,7 @@ namespace Azoth
 		 * - user_tune
 		 *   The corresponding value is a map itself, mapping QString to
 		 *   QString or int (see below).
-		 * 
+		 *
 		 * The map for the user_activity can have the following keys,
 		 * where the first one is required and others are optional:
 		 * - general
@@ -446,7 +446,7 @@ namespace Azoth
 		 * information about the semantics.
 		 * Empty "general" key means that the entity stopped publishing
 		 * activity information.
-		 * 
+		 *
 		 * The map for the user_mood can have the following keys, where
 		 * the first one is required and others are optional:
 		 * - mood
@@ -456,7 +456,7 @@ namespace Azoth
 		 * information about the semantics.
 		 * Empty "mood" key means that the entity stopped publishing
 		 * mood information.
-		 * 
+		 *
 		 * The map for the user_tune can have the following keys:
 		 * - artist of type QString
 		 * - source of type QString (usually it will contain the album
@@ -473,6 +473,18 @@ namespace Azoth
 		 * @return Human-readable client name of the variant.
 		 */
 		virtual QMap<QString, QVariant> GetClientInfo (const QString& variant) const = 0;
+
+		/** @brief Called whenever new messages are read.
+		 *
+		 * This function is called by Azoth Core whenever any unread
+		 * messages that could be present in this entry are read. For
+		 * example, this may happen when user opens the chat tab with
+		 * this entry.
+		 *
+		 * Please note that this function is always called, even when
+		 * there are no messages at all, for example.
+		 */
+		virtual void MarkMsgsRead () = 0;
 
 		/** @brief This signal should be emitted whenever a new message
 		 * is received.
@@ -556,20 +568,20 @@ namespace Azoth
 		 */
 		virtual void chatPartStateChanged (const ChatPartState& state,
 				const QString& variant) = 0;
-				
+
 		/** @brief This signal should be emitted if it's a MUC
 		 * participant and his role/affiliation changes.
-		 * 
+		 *
 		 * @note This function is expected to be a signal in subclasses.
 		 */
 		virtual void permsChanged () = 0;
-		
+
 		/** @brief This signal should be emitted when the entry changes.
-		 * 
+		 *
 		 * This signal should be emitted only if no other signals apply
 		 * (even those from IAdvancedCLEntry or such): it is some kind
 		 * of a fall-back notification.
-		 * 
+		 *
 		 * @note This function is expected to be a signal in subclasses.
 		 */
 		virtual void entryGenerallyChanged () = 0;

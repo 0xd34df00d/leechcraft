@@ -51,7 +51,7 @@ namespace Acetamide
 	{
 		Util::StandardPurgeMessages (AllMessages_, before);
 	}
-	
+
 	void EntryBase::SetChatPartState (ChatPartState, const QString&)
 	{
 	}
@@ -83,6 +83,10 @@ namespace Acetamide
 	QMap<QString, QVariant> EntryBase::GetClientInfo (const QString&) const
 	{
 		return QMap<QString, QVariant> ();
+	}
+
+	void EntryBase::MarkMsgsRead ()
+	{
 	}
 
 	void EntryBase::HandleMessage (IrcMessage *msg)

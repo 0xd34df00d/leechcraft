@@ -26,6 +26,7 @@
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/iactionsexporter.h>
+#include <interfaces/ientityhandler.h>
 #include "ui_lackman.h"
 
 class QSortFilterProxyModel;
@@ -33,77 +34,78 @@ class QStringListModel;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace LackMan
+{
+	class TypeFilterProxyModel;
+	class StringFilterModel;
+
+	class Plugin : public QWidget
+				 , public IInfo
+				 , public IHaveTabs
+				 , public ITabWidget
+				 , public IHaveSettings
+				 , public IActionsExporter
+				 , public IEntityHandler
 	{
-		namespace LackMan
-		{
-			class TypeFilterProxyModel;
-			class StringFilterModel;
+		Q_OBJECT
+		Q_INTERFACES (IInfo IHaveTabs ITabWidget IHaveSettings IActionsExporter IEntityHandler)
 
-			class Plugin : public QWidget
-						 , public IInfo
-						 , public IHaveTabs
-						 , public ITabWidget
-						 , public IHaveSettings
-						 , public IActionsExporter
-			{
-				Q_OBJECT
-				Q_INTERFACES (IInfo IHaveTabs ITabWidget IHaveSettings IActionsExporter)
+		Ui::LackMan Ui_;
+		std::auto_ptr<QTranslator> Translator_;
+		StringFilterModel *FilterString_;
+		TypeFilterProxyModel *TypeFilter_;
+		Util::XmlSettingsDialog_ptr SettingsDialog_;
+		QStringListModel *TagsModel_;
 
-				Ui::LackMan Ui_;
-				std::auto_ptr<QTranslator> Translator_;
-				StringFilterModel *FilterString_;
-				TypeFilterProxyModel *TypeFilter_;
-				Util::XmlSettingsDialog_ptr SettingsDialog_;
-				QStringListModel *TagsModel_;
+		QAction *UpdateAll_;
+		QAction *UpgradeAll_;
+		QAction *Apply_;
+		QAction *Cancel_;
+		QToolBar *Toolbar_;
 
-				QAction *UpdateAll_;
-				QAction *UpgradeAll_;
-				QAction *Apply_;
-				QAction *Cancel_;
-				QToolBar *Toolbar_;
-				
-				TabClassInfo TabClass_;
-			public:
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
-				void Release ();
-				QByteArray GetUniqueID () const;
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-				
-				TabClasses_t GetTabClasses () const;
-				void TabOpenRequested (const QByteArray&);
-				
-				TabClassInfo GetTabClassInfo () const;
-				QObject* ParentMultiTabs ();
-				void Remove ();
-				QToolBar* GetToolBar () const;
+		TabClassInfo TabClass_;
+	public:
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		void Release ();
+		QByteArray GetUniqueID () const;
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
 
-				Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+		TabClasses_t GetTabClasses () const;
+		void TabOpenRequested (const QByteArray&);
 
-				QList<QAction*> GetActions (ActionsEmbedPlace) const;
-			private slots:
-				void handleTagsUpdated (const QStringList&);
-				void on_PackageStatus__currentIndexChanged (int);
-				void handlePackageSelected (const QModelIndex&);
-				void handleFetchListUpdated (const QList<int>&);
-			private:
-				void BuildActions ();
-			signals:
-				void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
-				void gotEntity (const LeechCraft::Entity&);
-				void addNewTab (const QString&, QWidget*);
-				void removeTab (QWidget*);
-				void changeTabName (QWidget*, const QString&);
-				void changeTabIcon (QWidget*, const QIcon&);
-				void changeTooltip (QWidget*, QWidget*);
-				void statusBarChanged (QWidget*, const QString&);
-				void raiseTab (QWidget*);
-			};
-		}
-	}
+		TabClassInfo GetTabClassInfo () const;
+		QObject* ParentMultiTabs ();
+		void Remove ();
+		QToolBar* GetToolBar () const;
+
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+
+		QList<QAction*> GetActions (ActionsEmbedPlace) const;
+
+		EntityTestHandleResult CouldHandle (const Entity&) const;
+		void Handle (Entity);
+	private slots:
+		void handleTagsUpdated (const QStringList&);
+		void on_PackageStatus__currentIndexChanged (int);
+		void handlePackageSelected (const QModelIndex&);
+		void handleFetchListUpdated (const QList<int>&);
+	private:
+		void BuildActions ();
+	signals:
+		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
+		void gotEntity (const LeechCraft::Entity&);
+		void addNewTab (const QString&, QWidget*);
+		void removeTab (QWidget*);
+		void changeTabName (QWidget*, const QString&);
+		void changeTabIcon (QWidget*, const QIcon&);
+		void changeTooltip (QWidget*, QWidget*);
+		void statusBarChanged (QWidget*, const QString&);
+		void raiseTab (QWidget*);
+	};
+}
 }
 
 #endif

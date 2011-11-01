@@ -267,163 +267,163 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::ClientConnection</name>
     <message>
-        <location filename="clientconnection.cpp" line="383"/>
+        <location filename="clientconnection.cpp" line="388"/>
         <source>This room is already joined.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="646"/>
+        <location filename="clientconnection.cpp" line="651"/>
         <source>This message is encrypted. Please decrypt it to view the original contents.</source>
         <oldsource>This message is encrypted. Please decrypt it to view the original contents</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="781"/>
+        <location filename="clientconnection.cpp" line="786"/>
         <source>Data form from %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="784"/>
+        <location filename="clientconnection.cpp" line="789"/>
         <source>You have received dataform from %1:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="848"/>
+        <location filename="clientconnection.cpp" line="853"/>
         <source>socket error: %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="853"/>
+        <location filename="clientconnection.cpp" line="858"/>
         <source>keep-alive error.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="856"/>
+        <location filename="clientconnection.cpp" line="861"/>
         <source>error while connecting: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="860"/>
+        <location filename="clientconnection.cpp" line="865"/>
         <source>no error.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="876"/>
+        <location filename="clientconnection.cpp" line="881"/>
         <source>Account %1:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1151"/>
+        <location filename="clientconnection.cpp" line="1156"/>
         <source>Enter CAPTCHA</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1358"/>
+        <location filename="clientconnection.cpp" line="1363"/>
         <source>Error from %1: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1363"/>
+        <location filename="clientconnection.cpp" line="1368"/>
         <source>Error text: %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1423"/>
+        <location filename="clientconnection.cpp" line="1428"/>
         <source>Bad request.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1425"/>
+        <location filename="clientconnection.cpp" line="1430"/>
         <source>Conflict (possibly, resource conflict).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1427"/>
+        <location filename="clientconnection.cpp" line="1432"/>
         <source>Feature not implemented.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1429"/>
+        <location filename="clientconnection.cpp" line="1434"/>
         <source>Forbidden.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1432"/>
+        <location filename="clientconnection.cpp" line="1437"/>
         <source>Internal server error.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1434"/>
+        <location filename="clientconnection.cpp" line="1439"/>
         <source>Item not found.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1436"/>
+        <location filename="clientconnection.cpp" line="1441"/>
         <source>JID is malformed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1438"/>
+        <location filename="clientconnection.cpp" line="1443"/>
         <source>Data is not acceptable.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1440"/>
+        <location filename="clientconnection.cpp" line="1445"/>
         <source>Action is not allowed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1443"/>
+        <location filename="clientconnection.cpp" line="1448"/>
         <source>Not authorized.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1445"/>
+        <location filename="clientconnection.cpp" line="1450"/>
         <source>Payment required.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1447"/>
+        <location filename="clientconnection.cpp" line="1452"/>
         <source>Recipient unavailable.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1449"/>
+        <location filename="clientconnection.cpp" line="1454"/>
         <source>Got redirect.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1451"/>
+        <location filename="clientconnection.cpp" line="1456"/>
         <source>Registration required.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1453"/>
+        <location filename="clientconnection.cpp" line="1458"/>
         <source>Remote server not found.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1455"/>
+        <location filename="clientconnection.cpp" line="1460"/>
         <source>Timeout contacting remote server.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1457"/>
+        <location filename="clientconnection.cpp" line="1462"/>
         <source>Error due to resource constraint.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1459"/>
+        <location filename="clientconnection.cpp" line="1464"/>
         <source>Service is unavailable at the moment.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1461"/>
+        <location filename="clientconnection.cpp" line="1466"/>
         <source>Subscription is required to perform this action.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1465"/>
+        <location filename="clientconnection.cpp" line="1470"/>
         <source>Other error.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -431,61 +431,61 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::EntryBase</name>
     <message>
-        <location filename="entrybase.cpp" line="137"/>
+        <location filename="entrybase.cpp" line="138"/>
         <source>Commands...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="163"/>
+        <location filename="entrybase.cpp" line="164"/>
         <source>Can&apos;t view info while offline</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="382"/>
+        <location filename="entrybase.cpp" line="392"/>
         <source>%1 is now %2 (%3)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="491"/>
+        <location filename="entrybase.cpp" line="506"/>
         <source>Name: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="496"/>
+        <location filename="entrybase.cpp" line="511"/>
         <source>Nickname: %1
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="499"/>
+        <location filename="entrybase.cpp" line="514"/>
         <source>URL: %1
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="502"/>
+        <location filename="entrybase.cpp" line="517"/>
         <source>Birthday: %1
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="505"/>
+        <location filename="entrybase.cpp" line="520"/>
         <source>Email: %1
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="510"/>
+        <location filename="entrybase.cpp" line="525"/>
         <source>Photo:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="541"/>
+        <location filename="entrybase.cpp" line="556"/>
         <source>Select resource</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="542"/>
+        <location filename="entrybase.cpp" line="557"/>
         <source>Select resource for which to fetch the commands</source>
         <translation type="unfinished"></translation>
     </message>
@@ -516,22 +516,27 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::GlooxAccount</name>
     <message>
-        <location filename="glooxaccount.cpp" line="68"/>
+        <location filename="glooxaccount.cpp" line="69"/>
         <source>Privacy lists...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="538"/>
+        <location filename="glooxaccount.cpp" line="449"/>
+        <source>Why would you call yourself?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="glooxaccount.cpp" line="613"/>
         <source>Unable to enable encryption for entry %1: no key has been set.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="547"/>
+        <location filename="glooxaccount.cpp" line="622"/>
         <source>Unable to change encryption state for %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="681"/>
+        <location filename="glooxaccount.cpp" line="756"/>
         <source>Enter password for %1:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -872,72 +877,72 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::RoomCLEntry</name>
     <message>
-        <location filename="roomclentry.cpp" line="69"/>
+        <location filename="roomclentry.cpp" line="70"/>
         <source>Role</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="70"/>
+        <location filename="roomclentry.cpp" line="71"/>
         <source>Affiliation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="71"/>
+        <location filename="roomclentry.cpp" line="72"/>
         <source>Kicked</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="72"/>
+        <location filename="roomclentry.cpp" line="73"/>
         <source>Visitor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="73"/>
+        <location filename="roomclentry.cpp" line="74"/>
         <source>Participant</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="74"/>
+        <location filename="roomclentry.cpp" line="75"/>
         <source>Moderator</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="75"/>
+        <location filename="roomclentry.cpp" line="76"/>
         <source>Banned</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="76"/>
+        <location filename="roomclentry.cpp" line="77"/>
         <source>None</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="77"/>
+        <location filename="roomclentry.cpp" line="78"/>
         <source>Member</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="78"/>
+        <location filename="roomclentry.cpp" line="79"/>
         <source>Admin</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="79"/>
+        <location filename="roomclentry.cpp" line="80"/>
         <source>Owner</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="128"/>
+        <location filename="roomclentry.cpp" line="129"/>
         <source>Multiuser chatrooms</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="179"/>
+        <location filename="roomclentry.cpp" line="180"/>
         <source>Request voice</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="253"/>
+        <location filename="roomclentry.cpp" line="258"/>
         <source>%1 participants</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1065,21 +1070,31 @@
     </message>
     <message>
         <location filename="roomhandler.cpp" line="326"/>
+        <source>remote server not found (try contacting your server&apos;s administrator)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="roomhandler.cpp" line="329"/>
+        <source>timeout connecting to remote server (try contacting your server&apos;s administrator)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="roomhandler.cpp" line="332"/>
         <source>unknown condition %1 (please report to developers)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="330"/>
+        <location filename="roomhandler.cpp" line="336"/>
         <source>Error for %1: %2 (original message: %3)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="334"/>
+        <location filename="roomhandler.cpp" line="340"/>
         <source>no message</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="435"/>
+        <location filename="roomhandler.cpp" line="441"/>
         <source>%1 changed subject to %2</source>
         <translation type="unfinished"></translation>
     </message>

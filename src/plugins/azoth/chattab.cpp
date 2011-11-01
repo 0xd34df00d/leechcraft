@@ -59,6 +59,7 @@
 #include "callchatwidget.h"
 #include "chattabwebview.h"
 #include "msgformatterwidget.h"
+#include "actionsmanager.h"
 
 namespace LeechCraft
 {
@@ -191,7 +192,8 @@ namespace Azoth
 					tr ("Unable to load style, "
 						"please check you've enabled at least one styles plugin.") +
 					"</h1>";
-		Ui_.View_->setHtml (data);
+		Ui_.View_->setHtml (data,
+				Core::Instance ().GetSelectedChatTemplateURL (GetEntry<QObject> ()));
 
 		Q_FOREACH (IMessage *msg, HistoryMessages_)
 			AppendMessage (msg);
@@ -246,13 +248,14 @@ namespace Azoth
 
 	QList<QAction*> ChatTab::GetTabBarContextMenuActions () const
 	{
-		QList<QAction*> allActions = Core::Instance ()
-				.GetEntryActions (GetEntry<ICLEntry> ());
+		ActionsManager *manager = Core::Instance ().GetActionsManager ();
+		QList<QAction*> allActions = manager->
+				GetEntryActions (GetEntry<ICLEntry> ());
 		QList<QAction*> result;
 		Q_FOREACH (QAction *act, allActions)
 		{
-			if (Core::Instance ().GetAreasForAction (act)
-					.contains (Core::CLEAATabCtxtMenu) ||
+			if (manager->GetAreasForAction (act)
+					.contains (ActionsManager::CLEAATabCtxtMenu) ||
 				act->isSeparator ())
 				result << act;
 		}
@@ -626,6 +629,8 @@ namespace Azoth
 			++NumUnreadMsgs_;
 			ReformatTitle ();
 		}
+		else
+			GetEntry<ICLEntry> ()->MarkMsgsRead ();
 
 		const int idx = Ui_.VariantBox_->findText (msg->GetOtherVariant ());
 		if (idx != -1)
@@ -1177,8 +1182,9 @@ namespace Azoth
 #endif
 
 		QList<QAction*> coreActions;
-		Q_FOREACH (QAction *action, Core::Instance ().GetEntryActions (e))
-			if (Core::Instance ().GetAreasForAction (action).contains (Core::CLEAAToolbar))
+		ActionsManager *manager = Core::Instance ().GetActionsManager ();
+		Q_FOREACH (QAction *action, manager->GetEntryActions (e))
+			if (manager->GetAreasForAction (action).contains (ActionsManager::CLEAAToolbar))
 				coreActions << action;
 
 		if (!coreActions.isEmpty ())
@@ -1295,6 +1301,11 @@ namespace Azoth
 		if (msg->GetMessageSubType () == IMessage::MSTParticipantStatusChange &&
 				(!parent || parent->GetEntryType () == ICLEntry::ETMUC) &&
 				!XmlSettingsManager::Instance ().property ("ShowStatusChangesEvents").toBool ())
+			return;
+
+		if ((msg->GetMessageSubType () == IMessage::MSTParticipantJoin ||
+					msg->GetMessageSubType () == IMessage::MSTParticipantLeave) &&
+				!XmlSettingsManager::Instance ().property ("ShowJoinsLeaves").toBool ())
 			return;
 
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);

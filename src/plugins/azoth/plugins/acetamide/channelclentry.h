@@ -76,6 +76,8 @@ namespace Acetamide
 		void SetChatPartState (ChatPartState, const QString&);
 		QList<QAction*> GetActions () const;
 		QMap<QString, QVariant> GetClientInfo (const QString&) const;
+		void MarkMsgsRead ();
+
 		QString GetRealID (QObject*) const;
 
 		EntryStatus GetStatus (const QString& variant = QString ()) const;

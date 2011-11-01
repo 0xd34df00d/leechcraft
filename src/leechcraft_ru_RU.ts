@@ -32,6 +32,14 @@
         <source>Third parties</source>
         <translation>Третьи стороны</translation>
     </message>
+    <message>
+        <source>Diagnostic info</source>
+        <translation>Диагностическая информация</translation>
+    </message>
+    <message>
+        <source>Add this information to your bug reports, if any:</source>
+        <translation>Добавьте эту информацию к вашему сообщению об ошибке:</translation>
+    </message>
 </context>
 <context>
     <name>AuthenticationDialog</name>
@@ -286,7 +294,7 @@
     </message>
     <message>
         <source>Ukrainian translations.</source>
-        <translation>Украинский перевод.</translation>
+        <translation>Украинская локализация.</translation>
     </message>
     <message>
         <source>Graphical artwork.</source>
@@ -294,11 +302,11 @@
     </message>
     <message>
         <source>Arabic translations.</source>
-        <translation>Арабский перевод.</translation>
+        <translation>Арабская локализация.</translation>
     </message>
     <message>
         <source>Esperanto translations</source>
-        <translation>Перевод на эсперанто</translation>
+        <translation>Локализация на эсперанто</translation>
     </message>
     <message>
         <source>Aggregator fixes and improvements.</source>
@@ -315,6 +323,38 @@
     <message>
         <source>Fedora package maintainer</source>
         <translation>Мейнтейнер под Fedora</translation>
+    </message>
+    <message>
+        <source>Chrome-style tabs.</source>
+        <translation>Вкладки в стиле Chrome.</translation>
+    </message>
+    <message>
+        <source>SecMan SecureStorage.</source>
+        <translation>SecMan SecureStorage.</translation>
+    </message>
+    <message>
+        <source>Spanish translations.</source>
+        <translation>Переводы на испанский.</translation>
+    </message>
+    <message>
+        <source>Artwork designer.</source>
+        <translation>Графический дизайн.</translation>
+    </message>
+    <message>
+        <source>French translations.</source>
+        <translation>Французская локализация.</translation>
+    </message>
+    <message>
+        <source>Italian translations.</source>
+        <translation>Итальянская локализация.</translation>
+    </message>
+    <message>
+        <source>Public relations.</source>
+        <translation>Взаимодействие с сообществом.</translation>
+    </message>
+    <message>
+        <source>Extensive and thorough testing.</source>
+        <translation>Мощное и изощренное тестирование.</translation>
     </message>
 </context>
 <context>
@@ -583,6 +623,14 @@
     <message>
         <source>Plugin with ID %1 is already loaded from %2; aborting load from %3.</source>
         <translation>Модуль с ID %1 уже загружен из %2, так что не грузим из %3.</translation>
+    </message>
+    <message>
+        <source>The following plugins would also be disabled as the result:</source>
+        <translation>Следующие модули также будут отключены:</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to disable this one?</source>
+        <translation>Вы уверены, что хотите отключить этот модуль?</translation>
     </message>
 </context>
 <context>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tips>
 	<tip id="0">
-		You can stop IM spammers from bugging you via the Azoth Herbicide plugin. Just open &lt;em>Settings&lt;/em> → &lt;em>Azoth Herbicide&lt;/em> and enable the plugin.&lt;br/>&lt;br/>
+		You can stop IM spammers from bugging you with the help of the Azoth Herbicide plugin. Just open &lt;em>Settings&lt;/em> → &lt;em>Azoth Herbicide&lt;/em> and enable the plugin.&lt;br/>&lt;br/>
 
 		You can either use one of the predefined questions or set your own.
 	</tip>
@@ -22,5 +22,16 @@
 		You don't have to use tabbar to navigate between tabs. Just hit &lt;em>Ctrl+Alt+L&lt;/em>, and the list of tabs would pop-up. Currently active tab would be focused. You can move the focus by cursor arrows and select another tab by hitting &lt;em>Space&lt;/em>.&lt;br/>&lt;br/>
 
 		Two more hints: hitting &lt;em>Esc&lt;/em> just closes the list, and typing first few letters of the tab title move focus to it.
+
+		This feature is provided by the &lt;em>TabsList&lt;/em> plugin, so install it if you need it.
+	</tip>
+	<tip id="5">
+		You can install additional iconsets, emoticons, chat window styles, etc., via the &lt;em>LackMan&lt;/em> plugin. Just open LackMan's tab, select the packages for installation, hit "Install" and go to the settings of the corresponding plugin to activate the newly installed stuff.
+	</tip>
+	<tip id="6">
+		When submitting bugreports, open the "About" dialog of LeechCraft, if possible, and paste the information from the "Diagnostic info" tab into your bugreport. That would make things simpler both for you and for us.
+	</tip>
+	<tip id="7">
+		LeechCraft is a highly configurable internet-client. Explore the settings to configure everything to your taste!
 	</tip>
 </tips>
