@@ -104,5 +104,22 @@
   </action>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>FastStatusButton_</sender>
+   <signal>triggered(QAction*)</signal>
+   <receiver>FastStatusButton_</receiver>
+   <slot>showMenu()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>188</x>
+     <y>398</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>188</x>
+     <y>398</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
