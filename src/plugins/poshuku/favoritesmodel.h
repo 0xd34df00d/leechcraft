@@ -73,6 +73,8 @@ namespace Poshuku
 		void ChangeURL (const QModelIndex&, const QString&);
 		const items_t& GetItems () const;
 		void SetCheckResults (const QMap<QString, QString>&);
+
+		bool IsUrlExists (const QString&);
 	private:
 		QStringList GetVisibleTags (int) const;
 	public slots:

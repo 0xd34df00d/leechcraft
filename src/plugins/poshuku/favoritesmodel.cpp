@@ -255,6 +255,16 @@ namespace Poshuku
 		CheckResults_ = res;
 	}
 
+	bool FavoritesModel::IsUrlExists (const QString& url)
+	{
+		items_t::iterator pos =
+		std::find_if (Items_.begin (), Items_.end (), ItemFinder (url));
+		if (pos == Items_.end ())
+			return false;
+
+		return true;
+	}
+
 	QStringList FavoritesModel::GetVisibleTags (int index) const
 	{
 		QStringList user;
