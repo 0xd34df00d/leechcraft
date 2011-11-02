@@ -326,6 +326,10 @@ namespace Poshuku
 		ExternalLinks_->menuAction ()->
 			setProperty ("ActionIcon", "poshuku_externalentities");
 
+		ExternalLinksAction_ = new QAction (this);
+		ExternalLinksAction_->setText ("External links");
+		ExternalLinksAction_->setProperty ("ActionIcon", "poshuku_rss");
+
 		QWidgetAction *addressBar = new QWidgetAction (this);
 		addressBar->setDefaultWidget (Ui_.URLFrame_);
 		ToolBar_->addAction (addressBar);
@@ -1234,7 +1238,17 @@ namespace Poshuku
 		if (HtmlMode_)
 			return;
 
-		ToolBar_->removeAction (ExternalLinks_->menuAction ());
+		ProgressLineEdit *pli = qobject_cast<ProgressLineEdit*> (GetURLEdit ());
+		if (!pli)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "isn't a ProgressLineEdit object"
+					<< GetURLEdit ();
+			return;
+		}
+
+		pli->RemoveToolButton (ExternalLinksAction_);
+
 		ExternalLinks_->clear ();
 
 		QWebElementCollection links = WebView_->
@@ -1281,7 +1295,16 @@ namespace Poshuku
 				act->setData (QVariant::fromValue<LeechCraft::Entity> (e));
 				if (!inserted)
 				{
-					ToolBar_->addAction (ExternalLinks_->menuAction ());
+					QToolButton * btn = pli->AddToolButton (ExternalLinksAction_);
+					pli->SetVisible (-1, ExternalLinksAction_, true);
+					btn->setMenu (ExternalLinks_);
+					btn->setArrowType (Qt::NoArrow);
+					btn->setPopupMode (QToolButton::InstantPopup);
+					const QString& newStyle = QString("::menu-indicator { image: url("");}"
+							"::menu-button { image: url(""); }"
+							"::menu-arrow { image: url(data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==);}");
+					btn->setStyleSheet(btn->styleSheet () + newStyle);
+
 					connect (ExternalLinks_->menuAction (),
 							SIGNAL (triggered ()),
 							this,

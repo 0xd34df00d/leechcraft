@@ -80,6 +80,7 @@ namespace Poshuku
 		QAction *RecentlyClosedAction_;
 		QAction *HistoryAction_;
 		QAction *BookmarksAction_;
+		QAction *ExternalLinksAction_;
 		QPoint OnLoadPos_;
 		QMenu *ChangeEncoding_;
 		QMenu *RecentlyClosed_;
