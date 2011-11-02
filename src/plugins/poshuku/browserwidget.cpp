@@ -959,7 +959,7 @@ namespace Poshuku
 
 	void BrowserWidget::handleAdd2Favorites ()
 	{
-		const QString url = WebView_->url ().toString ();
+		const QString& url = WebView_->url ().toString ();
 		checkPageAsFavorite (url);
 
 		if (Core::Instance ().IsUrlInFavourites (url))
@@ -1550,20 +1550,19 @@ namespace Poshuku
 					<< GetURLEdit ();
 			return;
 		}
-
-		pli->GetButtonFromAction (Add2Favorites_)->setVisible (!url.isEmpty ());
-
 		checkPageAsFavorite (url);
+		pli->SetVisible (0, Add2Favorites_, !url.isEmpty ());
 	}
 
 	void BrowserWidget::checkPageAsFavorite (const QString& url)
 	{
-		if (url != WebView_->url ().toString ())
+		if (url != WebView_->url ().toString () &&
+				url != GetURLEdit ()->text ())
 			return;
 
 		if (Core::Instance ().IsUrlInFavourites (url))
 		{
-			Add2Favorites_->setIcon (Core::Instance ().GetProxy ()->GetIcon ("poshuku_removebookmark"));
+			Add2Favorites_->setProperty ("ActionIcon", "poshuku_removebookmark");
 			Add2Favorites_->setText (tr ("Remove bookmark"));
 			Add2Favorites_->setToolTip (tr ("Remove bookmark"));
 
@@ -1573,15 +1572,12 @@ namespace Poshuku
 						<< "isn't a ProgressLineEdit object"
 						<< GetURLEdit ();
 			else
-			{
-				QToolButton * btn = pli->GetButtonFromAction (Add2Favorites_);
-				btn->setIcon (Core::Instance ().GetProxy ()->GetIcon ("poshuku_removebookmark"));
-				btn->setToolTip (tr ("Remove bookmark"));
-			}
+				pli->GetButtonFromAction (Add2Favorites_)->
+						setIcon (Core::Instance ().GetProxy ()->GetIcon ("poshuku_removebookmark"));
 		}
 		else
 		{
-			Add2Favorites_->setIcon (Core::Instance ().GetProxy ()->GetIcon ("poshuku_addbookmark"));
+			Add2Favorites_->setProperty ("ActionIcon", "poshuku_addbookmark");
 			Add2Favorites_->setText (tr ("Add bookmark"));
 			Add2Favorites_->setToolTip (tr ("Add bookmark"));
 
@@ -1591,11 +1587,8 @@ namespace Poshuku
 						<< "isn't a ProgressLineEdit object"
 						<< GetURLEdit ();
 			else
-			{
-				QToolButton * btn = pli->GetButtonFromAction (Add2Favorites_);
-				btn->setIcon (Core::Instance ().GetProxy ()->GetIcon ("poshuku_addbookmark"));
-				btn->setToolTip (tr ("Add bookmark"));
-			}
+				pli->GetButtonFromAction (Add2Favorites_)->
+						setIcon (Core::Instance ().GetProxy ()->GetIcon ("poshuku_addbookmark"));
 		}
 	}
 
