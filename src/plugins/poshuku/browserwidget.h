@@ -138,11 +138,13 @@ namespace Poshuku
 		void SetSplitterSizes (int);
 	public slots:
 		void focusLineEdit ();
+		void updateBookmarksState (bool);
 		void handleShortcutHistory ();
 		void handleShortcutBookmarks ();
 		QGraphicsWebView* getWebView () const;
 		QLineEdit* getAddressBar () const;
 		QWidget* getSideBar () const;
+		void checkPageAsFavorite (const QString&);
 	private slots:
 		void handleIconChanged ();
 		void handleStatusBarMessage (const QString&);

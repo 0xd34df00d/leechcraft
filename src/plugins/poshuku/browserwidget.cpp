@@ -197,6 +197,16 @@ namespace Poshuku
 					SIGNAL (textChanged (const QString&)),
 					this,
 					SLOT (handleUrlTextChanged (const QString&)));
+
+			connect (&Core::Instance (),
+					SIGNAL (bookmarkAdded (const QString&)),
+					this,
+					SLOT (checkPageAsFavorite (const QString&)));
+
+			connect (&Core::Instance (),
+					SIGNAL (bookmarkRemoved (const QString&)),
+					this,
+					SLOT (checkPageAsFavorite (const QString&)));
 		}
 
 		Find_ = new QAction (tr ("Find..."),
@@ -490,6 +500,10 @@ namespace Poshuku
 				this,
 				SLOT (focusLineEdit ()));
 
+		connect (WebView_,
+				SIGNAL (loadFinished (bool)),
+				this,
+				SLOT (updateBookmarksState (bool)));
 		FindDialog_ = new FindDialog (Ui_.WebFrame_);
 		FindDialog_->hide ();
 
@@ -945,8 +959,13 @@ namespace Poshuku
 
 	void BrowserWidget::handleAdd2Favorites ()
 	{
-		emit addToFavorites (WebView_->title (),
-				WebView_->url ().toString ());
+		const QString url = WebView_->url ().toString ();
+		checkPageAsFavorite (url);
+
+		if (Core::Instance ().IsUrlInFavourites (url))
+			Core::Instance ().GetFavoritesModel ()->removeItem (url);
+		else
+			emit addToFavorites (WebView_->title (), url);
 	}
 
 	void BrowserWidget::handleFind ()
@@ -1079,6 +1098,12 @@ namespace Poshuku
 		QLineEdit *edit = Ui_.URLFrame_->GetEdit ();
 		edit->setFocus (Qt::OtherFocusReason);
 		edit->selectAll ();
+	}
+
+	void BrowserWidget::updateBookmarksState (bool state)
+	{
+		if (state)
+			checkPageAsFavorite (WebView_->url ().toString ());
 	}
 
 	QGraphicsWebView* BrowserWidget::getWebView () const
@@ -1527,6 +1552,51 @@ namespace Poshuku
 		}
 
 		pli->GetButtonFromAction (Add2Favorites_)->setVisible (!url.isEmpty ());
+
+		checkPageAsFavorite (url);
+	}
+
+	void BrowserWidget::checkPageAsFavorite (const QString& url)
+	{
+		if (url != WebView_->url ().toString ())
+			return;
+
+		if (Core::Instance ().IsUrlInFavourites (url))
+		{
+			Add2Favorites_->setIcon (Core::Instance ().GetProxy ()->GetIcon ("poshuku_removebookmark"));
+			Add2Favorites_->setText (tr ("Remove bookmark"));
+			Add2Favorites_->setToolTip (tr ("Remove bookmark"));
+
+			ProgressLineEdit *pli = qobject_cast<ProgressLineEdit*> (GetURLEdit ());
+			if (!pli)
+				qWarning () << Q_FUNC_INFO
+						<< "isn't a ProgressLineEdit object"
+						<< GetURLEdit ();
+			else
+			{
+				QToolButton * btn = pli->GetButtonFromAction (Add2Favorites_);
+				btn->setIcon (Core::Instance ().GetProxy ()->GetIcon ("poshuku_removebookmark"));
+				btn->setToolTip (tr ("Remove bookmark"));
+			}
+		}
+		else
+		{
+			Add2Favorites_->setIcon (Core::Instance ().GetProxy ()->GetIcon ("poshuku_addbookmark"));
+			Add2Favorites_->setText (tr ("Add bookmark"));
+			Add2Favorites_->setToolTip (tr ("Add bookmark"));
+
+			ProgressLineEdit *pli = qobject_cast<ProgressLineEdit*> (GetURLEdit ());
+			if (!pli)
+				qWarning () << Q_FUNC_INFO
+						<< "isn't a ProgressLineEdit object"
+						<< GetURLEdit ();
+			else
+			{
+				QToolButton * btn = pli->GetButtonFromAction (Add2Favorites_);
+				btn->setIcon (Core::Instance ().GetProxy ()->GetIcon ("poshuku_addbookmark"));
+				btn->setToolTip (tr ("Add bookmark"));
+			}
+		}
 	}
 
 	void BrowserWidget::handleShortcutHistory ()
