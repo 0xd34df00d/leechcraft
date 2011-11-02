@@ -274,10 +274,27 @@ namespace Poshuku
 		return user;
 	}
 
+	FavoritesModel::FavoritesItem FavoritesModel::GetItemFromUrl (const QString& url)
+	{
+		Q_FOREACH (FavoritesItem item, Items_)
+			if (item.URL_ == url)
+				return item;
+
+		return FavoritesItem ();
+	}
+
 	void FavoritesModel::removeItem (const QModelIndex& index)
 	{
-		Core::Instance ().GetStorageBackend ()->
-			RemoveFromFavorites (Items_ [index.row ()]);
+		QString url = Items_ [index.row ()].URL_;
+		Core::Instance ().GetStorageBackend ()->RemoveFromFavorites (Items_ [index.row ()]);
+		Core::Instance ().RemoveFromFavorites (url);
+	}
+
+	void FavoritesModel::removeItem (const QString& url)
+	{
+		FavoritesItem item = GetItemFromUrl (url);
+		Core::Instance ().GetStorageBackend ()->RemoveFromFavorites (item);
+		Core::Instance ().RemoveFromFavorites (url);
 	}
 
 	void FavoritesModel::handleItemAdded (const FavoritesModel::FavoritesItem& item)
