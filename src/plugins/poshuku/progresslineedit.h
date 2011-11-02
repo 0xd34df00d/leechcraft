@@ -39,7 +39,7 @@ namespace Poshuku
 
 		QToolButton *ClearButton_;
 
-		QList<QToolButton*> Buttons_;
+		QList<QToolButton*> VisibleButtons_;
 		QHash<QAction*, QToolButton*> Action2Button_;
 	public:
 		ProgressLineEdit (QWidget* = 0);
@@ -49,6 +49,9 @@ namespace Poshuku
 		QToolButton* AddToolButton (QAction*);
 		QToolButton* InsertToolButton (int, QAction*);
 		QToolButton* GetButtonFromAction (QAction*);
+		void RemoveToolButton (QAction*);
+		void SetVisible (int, QAction*, bool);
+		void RepaintButtons ();
 	protected:
 		void keyPressEvent (QKeyEvent*);
 		void resizeEvent (QResizeEvent*);

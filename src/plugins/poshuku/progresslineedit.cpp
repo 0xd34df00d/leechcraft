@@ -83,21 +83,23 @@ namespace Poshuku
 
 	QToolButton* ProgressLineEdit::AddToolButton (QAction *action)
 	{
-		return InsertToolButton (Buttons_.count (), action);
+		return InsertToolButton (-1, action);
 	}
 
 	QToolButton* ProgressLineEdit::InsertToolButton (int id, QAction *action)
 	{
+		if (Action2Button_.contains (action))
+			return 0;
+
 		QToolButton *button = new QToolButton (this);
 		button->setCursor (Qt::PointingHandCursor);
 		button->setDefaultAction (action);
-		button->setStyleSheet ("QToolButton { border: none; padding: 0px; }");
+		button->setStyleSheet ("QToolButton {border: none; padding: 0px;}");
 		button->hide ();
 
-		Buttons_.insert (id, button);
 		Action2Button_ [action] = button;
 
-		QSize msz = minimumSizeHint ();
+		const QSize& msz = minimumSizeHint ();
 		setMinimumSize (qMax (msz.width (), button->sizeHint ().height () + 2),
 				qMax (msz.height (), button->sizeHint ().height () + 2));
 
@@ -110,6 +112,48 @@ namespace Poshuku
 			return Action2Button_ [action];
 
 		return 0;
+	}
+
+	void ProgressLineEdit::RemoveToolButton (QAction* action)
+	{
+		if (!Action2Button_.contains (action))
+			return;
+
+		QToolButton * btn = Action2Button_.take (action);
+		VisibleButtons_.removeAll (btn);
+		btn->deleteLater ();;
+		RepaintButtons ();
+	}
+
+	void ProgressLineEdit::SetVisible (int id, QAction *action, bool visible)
+	{
+		if (!Action2Button_.contains (action))
+			return;
+
+		QToolButton * btn = Action2Button_ [action];
+		if (!visible)
+		{
+			VisibleButtons_.removeAll (btn);
+			btn->hide ();
+		}
+		else if (!VisibleButtons_.contains (btn))
+		{
+			if (id == -1 ||
+					id > VisibleButtons_.count ())
+				id = VisibleButtons_.count () - 1;
+			else if (id < 0 &&
+					id != -1)
+				id = 0;
+
+			VisibleButtons_.insert (id, btn);
+			btn->show ();
+		}
+		RepaintButtons ();
+	}
+
+	void ProgressLineEdit::RepaintButtons ()
+	{
+		resizeEvent (0);
 	}
 
 	void ProgressLineEdit::handleCompleterActivated ()
@@ -135,16 +179,12 @@ namespace Poshuku
 
 	void ProgressLineEdit::resizeEvent (QResizeEvent*)
 	{
-		QSize sz = ClearButton_->sizeHint ();
-		int frameWidth = style ()->pixelMetric (QStyle::PM_DefaultFrameWidth);
-		ClearButton_->move (rect ().right () - frameWidth - sz.width (),
-				(rect ().bottom () + 1 - sz.height ())/2);
-
-		int rigthBorder = sz.width ();
-		for (int i = Buttons_.count () - 1; i >= 0; --i)
+		const int frameWidth = style ()->pixelMetric (QStyle::PM_DefaultFrameWidth);
+		int rigthBorder = 0;
+		for (int i = VisibleButtons_.count () - 1; i >= 0; --i)
 		{
-			QToolButton *btn = Buttons_ [i];
-			QSize bmSz = btn->sizeHint ();
+			QToolButton *btn = VisibleButtons_ [i];
+			const QSize& bmSz = btn->sizeHint ();
 			rigthBorder += bmSz.width ();
 			btn->move (rect ().right () - frameWidth - rigthBorder,
 					(rect ().bottom () + 1 - bmSz.height ())/2);
@@ -153,8 +193,18 @@ namespace Poshuku
 
 	void ProgressLineEdit::textChanged (const QString& text)
 	{
-		ClearButton_->setVisible (!text.isEmpty ());
+		if (text.isEmpty ())
+		{
+			VisibleButtons_.removeAll (ClearButton_);
+			ClearButton_->hide ();
+		}
+		else if (!VisibleButtons_.contains (ClearButton_))
+		{
+			VisibleButtons_.push_back (ClearButton_);
+			ClearButton_->show ();
+		}
 
+		RepaintButtons ();
 		if (!text.isEmpty () && PreviousUrl_.isEmpty ())
 			PreviousUrl_ = text;
 	}
