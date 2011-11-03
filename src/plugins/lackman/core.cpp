@@ -22,6 +22,7 @@
 #include <QString>
 #include <QStandardItemModel>
 #include <QDir>
+#include <QTimer>
 #include <QtDebug>
 #include <util/util.h>
 #include <xmlsettingsdialog/datasourceroles.h>
@@ -108,6 +109,10 @@ namespace LackMan
 		QStandardItem *item = new QStandardItem (tr ("URL"));
 		item->setData (DataSources::DFTUrl, DataSources::DSRFieldType);
 		ReposModel_->setHorizontalHeaderItem (0, item);
+
+		QTimer::singleShot (20000,
+				this,
+				SLOT (timeredUpdateAllRequested ()));
 	}
 
 	Core& Core::Instance ()
@@ -907,6 +912,17 @@ namespace LackMan
 			qDebug () << "would update" << url << components;
 			UpdateRepo (url, components);
 		}
+	}
+
+	void Core::timeredUpdateAllRequested ()
+	{
+		updateAllRequested ();
+
+		const int hours = XmlSettingsManager::Instance ()->
+				property ("UpdatesCheckInterval").toInt ();
+		QTimer::singleShot (hours * 3600 * 1000,
+				this,
+				SLOT (timeredUpdateAllRequested ()));
 	}
 
 	void Core::upgradeAllRequested ()

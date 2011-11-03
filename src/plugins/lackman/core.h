@@ -106,6 +106,7 @@ namespace LackMan
 		void WriteSettings ();
 	public slots:
 		void updateAllRequested ();
+		void timeredUpdateAllRequested ();
 		void upgradeAllRequested ();
 		void cancelPending ();
 		void acceptPending ();

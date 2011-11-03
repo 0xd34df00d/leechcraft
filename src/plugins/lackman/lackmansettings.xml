@@ -1,10 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
 	<page>
-		<label value="Packages" />
-		<groupbox>
-			<label lang="en" value="Packages" />
-			<item type="dataview" property="RepositoryList" />
-		</groupbox>
+		<label value="Repositories" />
+		<tab>
+			<label value="Repositories list" />
+			<groupbox>
+				<label lang="en" value="Repositories" />
+				<item type="dataview" property="RepositoryList" />
+			</groupbox>
+		</tab>
+		<tab>
+			<label value="Updates" />
+			<item type="combobox" property="UpdatesCheckInterval">
+				<label value="Interval between updates check:" />
+				<option name="8">
+					<label value="8 hours" />
+				</option>
+				<option name="24" default="true">
+					<label value="1 day" />
+				</option>
+				<option name="48">
+					<label value="2 days" />
+				</option>
+				<option name="168">
+					<label value="1 week" />
+				</option>
+			</item>
+		</tab>
 	</page>
 </settings>
