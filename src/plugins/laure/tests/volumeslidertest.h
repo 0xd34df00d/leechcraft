@@ -20,7 +20,9 @@
 #include <QObject>
 #include <QtTest>
 
-#include <volumeslider.h>
+#include "../volumeslider.h"
+
+using namespace LeechCraft::Laure;
 
 class VolumeSliderTest : public QObject
 {
@@ -28,7 +30,7 @@ class VolumeSliderTest : public QObject
 private slots:
 	void setValue ()
 	{
-		LeechCraft::Laure::VolumeSlider slider;
+		VolumeSlider slider;
 		slider.setValue (2);
 		QVERIFY (slider.value () == 2);
 	}
