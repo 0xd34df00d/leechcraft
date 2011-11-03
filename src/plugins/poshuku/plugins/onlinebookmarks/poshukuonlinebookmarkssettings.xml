@@ -11,13 +11,13 @@
 			<item type="treeview" property="QuickUploadAccounts" hideHeader="true">
 				<label value="Select account for quick upload (only one per service)" />
 			</item>
-			<item type="checkbox" property="UploadInOneClick" state="on">
+			<item type="checkbox" property="UploadInOneClick" default="true">
 				<label value="Upload bookmark in one click" />
 			</item>
-			<item type="checkbox" property="ConfirmSend" state="off">
+			<item type="checkbox" property="ConfirmSend" default="false">
 				<label value="Confirm sending bookmarks on addition" />
 			</item>
-			<item type="checkbox" property="ShowServices" state="off">
+			<item type="checkbox" property="ShowServices" default="false">
 				<label value="Ask about services to send bookmarks to" />
 			</item>
 			<item type="combobox" property="UploadType">
@@ -32,7 +32,7 @@
 					<label value="only services" />
 				</option>
 			</item>
-			<item type="groupbox" property="DownloadGroup" checkable="true" state="off">
+			<item type="groupbox" property="DownloadGroup" checkable="true" default="false">
 				<label value="Download options" />
 				<item type="combobox" property="DownloadPeriod">
 					<label value="Send bookmarks to selected services every"/>
@@ -62,7 +62,7 @@
 					</option>
 				</item>
 			</item>
-			<item type="groupbox" property="UploadGroup" checkable="true" state="off">
+			<item type="groupbox" property="UploadGroup" checkable="true" default="false">
 				<label value="Upload options" />
 				<item type="combobox" property="UploadPeriod" >
 					<label value="Send bookmarks to selected services every"/>
