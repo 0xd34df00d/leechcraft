@@ -34,6 +34,9 @@
 			<item type="checkbox" property="CloseEmptyDelegatedPages" default="on">
 				<label lang="en" value="Automatically close empty pages with delegated content" />
 			</item>
+			<item type="checkbox" property="BookmarkInOneClick" default="off">
+				<label lang="en" value="Add bookmark in one click" />
+			</item>
 			<item type="lineedit" property="ExternalSchemes" default="smb nfs telnet imap pop nntp news">
 				<label lang="en" value="Open these schemes using external applications:" />
 			</item>

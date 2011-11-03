@@ -139,6 +139,8 @@ namespace OnlineBookmarks
 			service->saveAccounts ();
 
 		Core::Instance ().SetActiveAccounts (accounts);
+
+		Core::Instance ().SetQuickUploadButtons ();
 	}
 
 	void AccountsSettings::resizeColumns ()
@@ -159,6 +161,7 @@ namespace OnlineBookmarks
 
 		Core::Instance ().DeletePassword (Item2Account_ [item]->GetObject ());
 		emit accountRemoved (Item2Account_ [item]->GetObject ());
+		Core::Instance ().removeAccount (Item2Account_ [item]->GetObject ());
 
 		AccountsModel_->removeRow (current.row (), parentIndex);
 		Item2Account_.remove (item);
@@ -258,6 +261,7 @@ namespace OnlineBookmarks
 			return;
 		}
 
+		QObjectList accounts;
 		Q_FOREACH (QObject *accObj, accObjects)
 		{
 			IAccount *account = qobject_cast<IAccount*> (accObj);
@@ -270,6 +274,8 @@ namespace OnlineBookmarks
 				account->SetPassword (Core::Instance ().GetPassword (accObj));
 
 			Id2Account_ [account->GetAccountID ()] = accObj;
+
+			accounts << accObj;
 
 			const QModelIndex& index = GetServiceIndex (ibs->GetObject ());
 			QStandardItem *parentItem = 0;
@@ -311,6 +317,8 @@ namespace OnlineBookmarks
 			Scheduled_ = false;
 			ScheduleResize ();
 		}
+
+		Core::Instance ().AddAccounts (accounts);
 	}
 
 }

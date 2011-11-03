@@ -45,6 +45,8 @@ class ReadItLaterAccount : public QObject
 
 		bool IsSyncing_;
 
+		bool IsQuickUpload_;
+
 		QDateTime LastUpload_;
 		QDateTime LastDownload_;
 
@@ -56,10 +58,16 @@ class ReadItLaterAccount : public QObject
 		QObject* GetParentService () const;
 		QByteArray GetAccountID () const;
 		QString GetLogin () const;
+
 		QString GetPassword () const;
 		void SetPassword (const QString&);
+
 		bool IsSyncing () const;
 		void SetSyncing (bool);
+
+		bool IsQuickUpload () const;
+		void SetQuickUpload (bool);
+
 		QDateTime GetLastDownloadDateTime () const;
 		QDateTime GetLastUploadDateTime () const;
 		void SetLastUploadDateTime (const QDateTime&);
