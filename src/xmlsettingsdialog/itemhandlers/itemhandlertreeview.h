@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2010-2011  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,47 +16,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PROGRESSLINEEDIT_H
-#define PLUGINS_POSHUKU_PROGRESSLINEEDIT_H
-#include <boost/shared_ptr.hpp>
-#include <QKeyEvent>
-#include <QLineEdit>
+#ifndef XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERTREEVIEW_H
+#define XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERTREEVIEW_H
 
-class QModelIndex;
-class QToolBar;
-class QToolButton;
+#include "itemhandlerbase.h"
+#include <QHash>
+
+class QTreeView;
 
 namespace LeechCraft
 {
-namespace Poshuku
-{
-	class ProgressLineEdit : public QLineEdit
+	class ItemHandlerFactory;
+
+	class ItemHandlerTreeView : public ItemHandlerBase
 	{
-		Q_OBJECT
-
-		bool IsCompleting_;
-		QString PreviousUrl_;
-
-		QToolButton *ClearButton_;
-
-		QList<QToolButton*> Buttons_;
-		QHash<QAction*, QToolButton*> Action2Button_;
+		ItemHandlerFactory *Factory_;
+		QHash<QString, QTreeView*> Propname2TreeView_;
 	public:
-		ProgressLineEdit (QWidget* = 0);
-		virtual ~ProgressLineEdit ();
-		bool IsCompleting () const;
+		ItemHandlerTreeView (ItemHandlerFactory*);
+		virtual ~ItemHandlerTreeView ();
 
-		QToolButton* AddToolButton (QAction*);
-		QToolButton* InsertToolButton (int, QAction*);
-		QToolButton* GetButtonFromAction (QAction*);
+		bool CanHandle (const QDomElement&) const;
+		void Handle (const QDomElement&, QWidget*);
+		QVariant GetValue (const QDomElement&, QVariant) const;
+		void SetValue (QWidget*, const QVariant&) const;
+		void UpdateValue (QDomElement&, const QVariant&) const;
 	protected:
-		void keyPressEvent (QKeyEvent*);
-		void resizeEvent (QResizeEvent*);
-	private slots:
-		void handleCompleterActivated ();
-		void textChanged (const QString& text);
+		QVariant GetValue (QObject*) const;
+	private:
+		void SetDataSource (const QString&, QAbstractItemModel*);
 	};
-}
 }
 
 #endif

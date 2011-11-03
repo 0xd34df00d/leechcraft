@@ -43,6 +43,7 @@ SET (SRCS
 	itemhandlers/itemhandlercustomwidget.cpp
 	itemhandlers/itemhandlerdataview.cpp
 	itemhandlers/itemhandlerlistview.cpp
+	itemhandlers/itemhandlertreeview.cpp
 	widgets/dataviewwidget.cpp
 	)
 SET (HEADERS
@@ -83,6 +84,7 @@ SET (HEADERS
 	itemhandlers/itemhandlercustomwidget.h
 	itemhandlers/itemhandlerdataview.h
 	itemhandlers/itemhandlerlistview.h
+	itemhandlers/itemhandlertreeview.h
 	widgets/dataviewwidget.h
 	)
 SET (FORMS

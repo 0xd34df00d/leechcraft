@@ -145,6 +145,9 @@ namespace Poshuku
 
 		QIcon GetIcon (const QUrl&) const;
 		QString GetUserAgent (const QUrl&, const QWebPage* = 0) const;
+
+		bool IsUrlInFavourites (const QString&);
+		void RemoveFromFavorites (const QString&);
 	private:
 		void RestoreSession (bool);
 		void HandleHistory (CustomWebView*);
@@ -184,7 +187,8 @@ namespace Poshuku
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 		void couldHandle (const LeechCraft::Entity&, bool*);
 		void newUnclose (QAction*);
-
+		void bookmarkAdded (const QString&);
+		void bookmarkRemoved (const QString&);
 		// Hook support signals
 		void hookAddToFavoritesRequested (LeechCraft::IHookProxy_ptr,
 				QString title, QString url);

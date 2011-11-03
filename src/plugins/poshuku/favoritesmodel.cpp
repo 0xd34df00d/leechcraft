@@ -255,6 +255,16 @@ namespace Poshuku
 		CheckResults_ = res;
 	}
 
+	bool FavoritesModel::IsUrlExists (const QString& url)
+	{
+		items_t::iterator pos =
+		std::find_if (Items_.begin (), Items_.end (), ItemFinder (url));
+		if (pos == Items_.end ())
+			return false;
+
+		return true;
+	}
+
 	QStringList FavoritesModel::GetVisibleTags (int index) const
 	{
 		QStringList user;
@@ -264,10 +274,27 @@ namespace Poshuku
 		return user;
 	}
 
+	FavoritesModel::FavoritesItem FavoritesModel::GetItemFromUrl (const QString& url)
+	{
+		Q_FOREACH (FavoritesItem item, Items_)
+			if (item.URL_ == url)
+				return item;
+
+		return FavoritesItem ();
+	}
+
 	void FavoritesModel::removeItem (const QModelIndex& index)
 	{
-		Core::Instance ().GetStorageBackend ()->
-			RemoveFromFavorites (Items_ [index.row ()]);
+		QString url = Items_ [index.row ()].URL_;
+		Core::Instance ().GetStorageBackend ()->RemoveFromFavorites (Items_ [index.row ()]);
+		Core::Instance ().RemoveFromFavorites (url);
+	}
+
+	void FavoritesModel::removeItem (const QString& url)
+	{
+		FavoritesItem item = GetItemFromUrl (url);
+		Core::Instance ().GetStorageBackend ()->RemoveFromFavorites (item);
+		Core::Instance ().RemoveFromFavorites (url);
 	}
 
 	void FavoritesModel::handleItemAdded (const FavoritesModel::FavoritesItem& item)

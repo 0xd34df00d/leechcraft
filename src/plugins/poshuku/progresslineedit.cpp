@@ -50,11 +50,6 @@ namespace Poshuku
 		int frameWidth = style ()->pixelMetric (QStyle::PM_DefaultFrameWidth);
 		setStyleSheet (QString ("QLineEdit { padding-right: %1px; } ")
 				.arg (ClearButton_->sizeHint ().width () + frameWidth + 1));
-		QSize msz = minimumSizeHint ();
-		setMinimumSize (qMax (msz.width (),
-					ClearButton_->sizeHint ().height () + frameWidth * 2 + 2),
-				qMax (msz.height (),
-					ClearButton_->sizeHint ().height () + frameWidth * 2 + 2));
 
 		connect (ClearButton_,
 				SIGNAL (clicked ()),
@@ -86,6 +81,37 @@ namespace Poshuku
 		return IsCompleting_;
 	}
 
+	QToolButton* ProgressLineEdit::AddToolButton (QAction *action)
+	{
+		return InsertToolButton (Buttons_.count (), action);
+	}
+
+	QToolButton* ProgressLineEdit::InsertToolButton (int id, QAction *action)
+	{
+		QToolButton *button = new QToolButton (this);
+		button->setCursor (Qt::PointingHandCursor);
+		button->setDefaultAction (action);
+		button->setStyleSheet ("QToolButton { border: none; padding: 0px; }");
+		button->hide ();
+
+		Buttons_.insert (id, button);
+		Action2Button_ [action] = button;
+
+		QSize msz = minimumSizeHint ();
+		setMinimumSize (qMax (msz.width (), button->sizeHint ().height () + 2),
+				qMax (msz.height (), button->sizeHint ().height () + 2));
+
+		return button;
+	}
+
+	QToolButton* ProgressLineEdit::GetButtonFromAction (QAction *action)
+	{
+		if (Action2Button_.contains (action))
+			return Action2Button_ [action];
+
+		return 0;
+	}
+
 	void ProgressLineEdit::handleCompleterActivated ()
 	{
 		PreviousUrl_ = text ();
@@ -113,6 +139,16 @@ namespace Poshuku
 		int frameWidth = style ()->pixelMetric (QStyle::PM_DefaultFrameWidth);
 		ClearButton_->move (rect ().right () - frameWidth - sz.width (),
 				(rect ().bottom () + 1 - sz.height ())/2);
+
+		int rigthBorder = sz.width ();
+		for (int i = Buttons_.count () - 1; i >= 0; --i)
+		{
+			QToolButton *btn = Buttons_ [i];
+			QSize bmSz = btn->sizeHint ();
+			rigthBorder += bmSz.width ();
+			btn->move (rect ().right () - frameWidth - rigthBorder,
+					(rect ().bottom () + 1 - bmSz.height ())/2);
+		}
 	}
 
 	void ProgressLineEdit::textChanged (const QString& text)
