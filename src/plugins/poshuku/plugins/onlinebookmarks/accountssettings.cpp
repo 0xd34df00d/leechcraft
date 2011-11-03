@@ -84,11 +84,6 @@ namespace OnlineBookmarks
 					SIGNAL (accountRemoved (QObject*)),
 					ibs->GetObject (),
 					SLOT (removeAccount (QObject*)));
-
-			connect (this,
-					SIGNAL (accountRemoved (QObject*)),
-					&Core::Instance (),
-					SLOT (removeAccount (QObject*)));
 		}
 	}
 
@@ -166,6 +161,7 @@ namespace OnlineBookmarks
 
 		Core::Instance ().DeletePassword (Item2Account_ [item]->GetObject ());
 		emit accountRemoved (Item2Account_ [item]->GetObject ());
+		Core::Instance ().removeAccount (Item2Account_ [item]->GetObject ());
 
 		AccountsModel_->removeRow (current.row (), parentIndex);
 		Item2Account_.remove (item);

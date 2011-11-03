@@ -19,6 +19,7 @@
 #include "core.h"
 #include <QStandardItemModel>
 #include <QDateTime>
+#include <QTimer>
 #include <interfaces/iplugin2.h>
 #include <interfaces/iproxyobject.h>
 #include <interfaces/iserviceplugin.h>
@@ -26,7 +27,6 @@
 #include "accountssettings.h"
 #include "pluginmanager.h"
 #include "xmlsettingsmanager.h"
-#include <QTimer>
 
 namespace LeechCraft
 {
@@ -267,6 +267,7 @@ namespace OnlineBookmarks
 						<< accObj;
 				continue;
 			}
+
 			IBookmarksService *ibs = qobject_cast<IBookmarksService*> (account->GetParentService ());
 			if (!ibs)
 			{
@@ -423,7 +424,6 @@ namespace OnlineBookmarks
 				if (Item2Account_.contains (childItem))
 					Item2Account_ [childItem]->SetQuickUpload (false);
 			}
-
 		}
 
 		Item2Account_ [item]->SetQuickUpload (true);
@@ -538,8 +538,8 @@ namespace OnlineBookmarks
 	{
 		uint downloadPeriod = XmlSettingsManager::Instance ()->
 				property ("DownloadPeriod").toInt () * 3600;
-		uint lastCheckTimeInSec = XmlSettingsManager::Instance ()->Property ("LastDownloadCheck",
-				0).toInt ();
+		uint lastCheckTimeInSec = XmlSettingsManager::Instance ()->
+				Property ("LastDownloadCheck", 0).toInt ();
 
 		uint diff = lastCheckTimeInSec + downloadPeriod - QDateTime::currentDateTime ().toTime_t ();
 		if (diff > 0)
@@ -557,8 +557,8 @@ namespace OnlineBookmarks
 	{
 		uint uploadPeriod = XmlSettingsManager::Instance ()->
 				property ("UploadPeriod").toInt () * 3600;
-		uint lastCheckTimeInSec = XmlSettingsManager::Instance ()->Property ("LastUploadCheck",
-				0).toInt ();
+		uint lastCheckTimeInSec = XmlSettingsManager::Instance ()->
+				Property ("LastUploadCheck", 0).toInt ();
 
 		uint diff = lastCheckTimeInSec + uploadPeriod - QDateTime::currentDateTime ().toTime_t ();
 		if (diff > 0)

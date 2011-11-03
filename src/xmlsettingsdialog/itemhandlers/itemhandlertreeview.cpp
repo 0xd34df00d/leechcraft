@@ -52,11 +52,7 @@ namespace LeechCraft
 		QString prop = item.attribute ("property");
 		tree->setObjectName (prop);
 
-		if (item.hasAttribute ("hideHeader") &&
-				item.attribute ("hideHeader") == "true")
-			tree->setHeaderHidden (true);
-		else
-			tree->setHeaderHidden (false);
+		tree->setHeaderHidden (item.attribute ("hideHeader") == "true");
 
 		Factory_->RegisterDatasourceSetter (prop,
 				boost::bind (&ItemHandlerTreeView::SetDataSource, this, _1, _2));
