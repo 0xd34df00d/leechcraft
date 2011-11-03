@@ -1104,10 +1104,9 @@ namespace Poshuku
 		edit->selectAll ();
 	}
 
-	void BrowserWidget::updateBookmarksState (bool state)
+	void BrowserWidget::updateBookmarksState (bool)
 	{
-		if (state)
-			checkPageAsFavorite (WebView_->url ().toString ());
+		checkPageAsFavorite (WebView_->url ().toString ());
 	}
 
 	QGraphicsWebView* BrowserWidget::getWebView () const

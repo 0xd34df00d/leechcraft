@@ -74,7 +74,7 @@ namespace Poshuku
 		const items_t& GetItems () const;
 		void SetCheckResults (const QMap<QString, QString>&);
 
-		bool IsUrlExists (const QString&);
+		bool IsUrlExists (const QString&) const;
 	private:
 		QStringList GetVisibleTags (int) const;
 		FavoritesItem GetItemFromUrl (const QString& url);
