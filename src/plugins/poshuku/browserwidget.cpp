@@ -52,6 +52,7 @@
 #include <QRegExp>
 #include <QKeySequence>
 #include <QGraphicsScene>
+#include <QGraphicsOpacityEffect>
 #include <util/util.h>
 #include <util/defaulthookproxy.h>
 #include <util/notificationactionhandler.h>
@@ -878,7 +879,38 @@ namespace Poshuku
 
 		proxy->FillValue ("message", msg);
 
-		emit statusBarChanged (msg);
+		if (msg.isEmpty ())
+		{
+			LinkTextItem_.reset ();
+			return;
+		}
+
+		LinkTextItem_.reset (new QGraphicsTextItem (WebView_));
+		LinkTextItem_->setZValue (1);
+
+		const QFontMetrics metrics (LinkTextItem_->font ());
+
+		msg = metrics.elidedText (msg, Qt::ElideMiddle, WebView_->boundingRect ().width () * 2 / 3);
+
+		LinkTextItem_->setPlainText (msg);
+
+		const int textHeight = metrics.boundingRect (msg).height ();
+		const qreal x = 1;
+		const qreal y = WebView_->boundingRect ().height () - textHeight - 7;
+		LinkTextItem_->setX (x);
+		LinkTextItem_->setY (y);
+
+		QGraphicsRectItem *rect = new QGraphicsRectItem (0, 0,
+				LinkTextItem_->boundingRect ().width (),
+				LinkTextItem_->boundingRect ().height (),
+				LinkTextItem_.get ());
+		rect->setFlag (QGraphicsItem::ItemStacksBehindParent);
+		rect->setBrush (palette ().color (QPalette::AlternateBase));
+		rect->setPen (QPen (palette ().color (QPalette::Text), 0.5));
+
+		QGraphicsOpacityEffect *eff = new QGraphicsOpacityEffect ();
+		eff->setOpacity (0.8);
+		rect->setGraphicsEffect (eff);
 	}
 
 	void BrowserWidget::handleURLFrameLoad (const QString& text)
