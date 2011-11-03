@@ -88,7 +88,7 @@ namespace OnlineBookmarks
 		void SavePassword (QObject*);
 
 		void AddAccounts (QObjectList);
-		QModelIndex GetServiceIndex (QObject *) const;
+		QModelIndex GetServiceIndex (QObject*) const;
 
 		void SetQuickUploadButtons ();
 	private:
