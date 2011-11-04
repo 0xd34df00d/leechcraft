@@ -27,16 +27,23 @@ namespace Laure
 	: QStandardItemModel (parent)
 	{
 		setColumnCount (PlayListRowCount);
-		setHeaderData (1, Qt::Horizontal,  tr ("Artist"));
-		setHeaderData (2, Qt::Horizontal, tr ("Title"));
-		setHeaderData (3, Qt::Horizontal, tr ("Album"));
-		setHeaderData (4, Qt::Horizontal, tr ("Genre"));
-		setHeaderData (5, Qt::Horizontal, tr ("Date"));
+		HeaderName_ << tr ("Artist")
+				<< tr ("Title")
+				<< tr ("Album")
+				<< tr ("Genre")
+				<< tr ("Date");
+		for (int i = 1; i < 6; ++i)
+			setHeaderData (i, Qt::Horizontal, HeaderName_[i - 1]);
 	}
 	
 	Qt::ItemFlags PlayListModel::flags (const QModelIndex& index) const
 	{
 		return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
+	}
+	
+	QStringList PlayListModel::Header () const
+	{
+		return HeaderName_;
 	}
 }
 }

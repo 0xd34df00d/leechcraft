@@ -20,7 +20,9 @@
 #include "playlistview.h"
 #include <QKeyEvent>
 #include <QHeaderView>
+#include <QMenu>
 #include "nowplayingdelegate.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -35,11 +37,21 @@ namespace Laure
 		setSelectionMode (ContiguousSelection);
 		setAlternatingRowColors (true);
 		hideColumn (0);
+
+		for (int i = 1; i < 6; ++i)
+		{
+			const QString& itemName = "Header" + QString::number (i);
+			setColumnHidden (i, !XmlSettingsManager::Instance ()
+					.property (itemName.toAscii ()).toBool ());
+		}
+					
 		NowPlayingDelegate *delegate = new NowPlayingDelegate (this);
 		delegate->SetPlayListModel (PlayListModel_);
 		setItemDelegate (delegate);
 		setSizePolicy (QSizePolicy::Minimum, QSizePolicy::Minimum);
+		
 		header ()->setResizeMode (QHeaderView::ResizeToContents);
+		
 		connect (this,
 				SIGNAL (doubleClicked (QModelIndex)),
 				this,

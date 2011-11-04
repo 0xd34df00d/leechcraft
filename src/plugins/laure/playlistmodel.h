@@ -30,6 +30,7 @@ namespace Laure
 	{
 		Q_OBJECT
 		
+		QStringList HeaderName_;
 	public:
 		enum
 		{
@@ -37,6 +38,7 @@ namespace Laure
 		};
 		
 		PlayListModel (QObject *);
+		QStringList Header () const;
 		Qt::ItemFlags flags (const QModelIndex&) const;
 	};
 }

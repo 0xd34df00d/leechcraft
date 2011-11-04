@@ -3,15 +3,33 @@
 	<page>
 		<label value="Laure" />
 		<groupbox>
+			<label value="Playlist" />
+			<item type="checkbox" property="Header1" default="true">
+				<label value="Show Artist" />
+			</item>
+			<item type="checkbox" property="Header2" default="true">
+				<label value="Show Title" />
+			</item>
+			<item type="checkbox" property="Header3" default="true">
+				<label value="Show Album" />
+			</item>
+			<item type="checkbox" property="Header4" default="true">
+				<label value="Show Genre" />
+			</item>
+			<item type="checkbox" property="Header5" default="true">
+				<label value="Show Date" />
+			</item>
+		</groupbox>
+		<groupbox>
 			<label value="Last.FM" />
 			<item type="lineedit" property="lastfm.url" default="http://ws.audioscrobbler.com/2.0/">
-					<label value="Scrobber URL (with '/' at the end): " />
+				<label value="Scrobber URL (with '/' at the end):" />
 			</item>
 			<item type="lineedit" property="lastfm.login">
-				<label value="Login: " />
+				<label value="Login:" />
 			</item>
 			<item type="lineedit" property="lastfm.password" password="true">
-				<label value="Password: " />
+				<label value="Password:" />
 			</item>
 		</groupbox>
 	</page>
