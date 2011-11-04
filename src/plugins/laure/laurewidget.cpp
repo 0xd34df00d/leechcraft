@@ -160,6 +160,10 @@ namespace Laure
 				SIGNAL (triggered (bool)),
 				this,
 				SLOT (handleVideoMode (bool)));
+		connect (this,
+				SIGNAL (playListMode (bool)),
+				playList,
+				SLOT (setDisabled(bool)));
 	}
 	
 	void LaureWidget::InitCommandFrame ()
@@ -299,8 +303,8 @@ namespace Laure
 			Ui_.GlobalGridLayout_->addWidget (Ui_.PlayListWidget_, 0, 1, 1, 4);
 
 		Ui_.Player_->setVisible (checked);
-		Ui_.PlayListWidget_->show ();
-		emit playListMode (true);
+		Ui_.PlayListWidget_->setVisible (!checked);
+		emit playListMode (!checked);
 	}
 }
 }
