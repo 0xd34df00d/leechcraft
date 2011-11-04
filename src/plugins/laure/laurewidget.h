@@ -69,13 +69,14 @@ namespace Laure
 		void gotEntity (const Entity&);
 		void delegateEntity (const Entity&,
 				int*, QObject**);
+		void playListMode (bool);
 	public slots:
 		void handleOpenMediaContent (const QString&);
 	private slots:
 		void handleOpenFile ();
 		void handleOpenURL ();
 		void updateInterface ();
-		void handlePlaylist (bool);
+		void handleVideoMode (bool);
 	};
 }
 }
