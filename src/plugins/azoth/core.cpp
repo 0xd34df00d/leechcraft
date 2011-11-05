@@ -864,16 +864,29 @@ namespace Azoth
 		if (!src)
 			return body;
 
-		const QString& img = QString ("<img src=\"%1\" title=\"%2\" />");
+		const QString& img = QString ("<img src=\"%2\" title=\"%1\" />");
+		QList<QByteArray> rawDatas;
 		Q_FOREACH (const QString& str, src->GetEmoticonStrings (pack))
 		{
 			const QString& escaped = Qt::escape (str);
 			if (!body.contains (escaped))
 				continue;
-			const QByteArray& rawData = src->GetImage (pack, str);
+
+			bool safeReplace = true;
+			Q_FOREACH (const QByteArray& rd, rawDatas)
+				if (rd.indexOf (escaped) != -1)
+				{
+					safeReplace = false;
+					break;
+				}
+			if (!safeReplace)
+				continue;
+
+			const QByteArray& rawData = src->GetImage (pack, str).toBase64 ();
+			rawDatas << rawData;
 			const QString& smileStr = img
-					.arg (QString ("data:image/png;base64," + rawData.toBase64 ()))
-					.arg (str);
+					.arg (str)
+					.arg (QString ("data:image/png;base64," + rawData));
 			body.replace (escaped, smileStr);
 		}
 
