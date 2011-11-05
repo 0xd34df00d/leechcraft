@@ -68,6 +68,8 @@ namespace LeechCraft
 			Propname2Item_ [prop] = item;
 		}
 
+		hboxLay->addStretch ();
+
 		if (item.hasAttribute ("moreThisStuff"))
 		{
 			QPushButton *moreButt = new QPushButton (tr ("More stuff.."));
@@ -79,8 +81,6 @@ namespace LeechCraft
 					XSD_,
 					SLOT (handleMoreThisStuffRequested ()));
 		}
-
-		hboxLay->addStretch ();
 
 		QDomElement option = item.firstChildElement ("option");
 		while (!option.isNull ())
