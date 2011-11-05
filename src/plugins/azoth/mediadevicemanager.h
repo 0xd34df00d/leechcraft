@@ -30,7 +30,8 @@ namespace LeechCraft
 namespace Azoth
 {
 	class IMediaCall;
-	class IODeviceSink;
+
+	class CallAudioHandler;
 
 	class MediaDeviceManager : public QObject
 	{
@@ -48,15 +49,6 @@ namespace Azoth
 		QMap<DeviceType, QGst::PropertyProbePtr> Type2Probe_;
 		QMap<DeviceType, QStringList> Type2Devices_;
 
-		class CallAudioHandler
-		{
-			boost::shared_ptr<IODeviceSink> IODeviceSink_;
-
-			QGst::PipelinePtr OutPipe_;
-			QGst::PipelinePtr InPipe_;
-		public:
-			CallAudioHandler (IMediaCall*);
-		};
 		typedef boost::shared_ptr<CallAudioHandler> CallAudioHandler_ptr;
 
 		QMap<IMediaCall*, CallAudioHandler_ptr> Call2AudioHandler_;

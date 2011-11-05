@@ -36,7 +36,17 @@ namespace LeechCraft
 {
 namespace Azoth
 {
-	MediaDeviceManager::CallAudioHandler::CallAudioHandler (IMediaCall *call)
+	class CallAudioHandler
+	{
+		boost::shared_ptr<IODeviceSink> IODeviceSink_;
+
+		QGst::PipelinePtr OutPipe_;
+		QGst::PipelinePtr InPipe_;
+	public:
+		CallAudioHandler (IMediaCall*);
+	};
+
+	CallAudioHandler::CallAudioHandler (IMediaCall *call)
 	: IODeviceSink_ (new IODeviceSink (call->GetAudioDevice ()))
 	{
 		QGst::BinPtr outAudioBin;
@@ -96,7 +106,7 @@ namespace Azoth
 
 	void MediaDeviceManager::HandleCall (IMediaCall *call)
 	{
-		Call2AudioHandler_ [call] = new CallAudioHandler (call);
+		Call2AudioHandler_ [call] = CallAudioHandler_ptr (new CallAudioHandler (call));
 	}
 
 	void MediaDeviceManager::FindDevices (MediaDeviceManager::DeviceType device)
