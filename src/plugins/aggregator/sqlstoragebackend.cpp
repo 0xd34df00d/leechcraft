@@ -1658,6 +1658,32 @@ namespace Aggregator
 		}
 	}
 
+	void SQLStorageBackend::RemoveChannel (const IDType_t& channelId)
+	{
+		Util::DBLock lock (DB_);
+		try
+		{
+			lock.Init ();
+		}
+		catch (const std::runtime_error& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< e.what ();
+			return;
+		}
+
+		RemoveChannel_.bindValue (":channel_id", channelId);
+		if (!RemoveChannel_.exec ())
+		{
+			Util::DBLock::DumpError (RemoveChannel_);
+			return;
+		}
+
+		RemoveChannel_.finish ();
+
+		lock.Good ();
+	}
+
 	void SQLStorageBackend::RemoveFeed (const IDType_t& feedId)
 	{
 		Util::DBLock lock (DB_);

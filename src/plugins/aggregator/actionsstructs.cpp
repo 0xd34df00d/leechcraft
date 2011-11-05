@@ -86,6 +86,10 @@ namespace Aggregator
 				parent);
 		ActionMarkChannelAsUnread_->setObjectName ("ActionMarkChannelAsUnread_");
 
+		ActionRemoveChannel_ = new QAction (tr ("Remove channel"),
+				parent);
+		ActionRemoveChannel_->setObjectName ("ActionRemoveChannel_");
+
 		ActionChannelSettings_ = new QAction (tr ("Settings..."),
 				parent);
 		ActionChannelSettings_->setObjectName ("ActionChannelSettings_");

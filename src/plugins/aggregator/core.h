@@ -151,6 +151,7 @@ namespace Aggregator
 		void AddFeed (const QString&, const QStringList&,
 				FeedSettings_ptr = FeedSettings_ptr ());
 		void RemoveFeed (const QModelIndex&);
+		void RemoveChannel (const QModelIndex&);
 		ItemsWidget* GetReprWidget () const;
 
 		/** Returns the channels model as it is.

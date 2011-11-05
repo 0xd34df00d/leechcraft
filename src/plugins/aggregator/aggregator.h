@@ -111,7 +111,7 @@ namespace Aggregator
 
 		QSet<QByteArray> GetExpectedPluginClasses () const;
 		void AddPlugin (QObject*);
-		
+
 		Sync::ChainIDs_t AvailableChains () const;
 		Sync::Payloads_t GetAllDeltas (const Sync::ChainID_t&) const;
 		Sync::Payloads_t GetNewDeltas (const Sync::ChainID_t&) const;
@@ -130,6 +130,7 @@ namespace Aggregator
 	private slots:
 		void on_ActionAddFeed__triggered ();
 		void on_ActionRemoveFeed__triggered ();
+		void on_ActionRemoveChannel__triggered ();
 		void on_ActionUpdateSelectedFeed__triggered ();
 		void on_ActionRegexpMatcher__triggered ();
 		void on_ActionImportOPML__triggered ();
@@ -157,7 +158,7 @@ namespace Aggregator
 		void changeTooltip (QWidget*, QWidget*);
 		void statusBarChanged (QWidget*, const QString&);
 		void raiseTab (QWidget*);
-		
+
 		void newDeltasAvailable (const LeechCraft::Sync::ChainID_t&);
 	};
 }

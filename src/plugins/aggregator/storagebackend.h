@@ -311,6 +311,18 @@ namespace Aggregator
 		 */
 		virtual void RemoveItem (const IDType_t& id) = 0;
 
+		/** @brief Removes an already existing channel.
+		 *
+		 * This function should remove the given channel, leaving other
+		 * channels from the corresponding feed intact.
+		 *
+		 * If the specified channel doesn't exist, this function should
+		 * do nothing.
+		 *
+		 * @param[in] id Channel ID.
+		 */
+		virtual void RemoveChannel (const IDType_t& id) = 0;
+
 		/** @brief Removes an already existing feed.
 		 *
 		 * If the specified feed doesn't exist, this function should do
