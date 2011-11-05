@@ -123,11 +123,14 @@ namespace Laure
 		
 	void LastFMSubmitter::nowPlaying (const MediaMeta& info)
 	{
+		Scrobbler_->submit ();
 		lastfm::Track track;
 		lastfm::MutableTrack mutableTrack (track);
 		mutableTrack.setTitle (info.Title_);
 		mutableTrack.setAlbum (info.Album_);
 		mutableTrack.setArtist (info.Artist_);
+		mutableTrack.stamp ();
+		mutableTrack.setSource (lastfm::Track::Player);
 		mutableTrack.setDuration (info.Length_);
 		mutableTrack.setTrackNumber (info.TrackNumber_);
 		Scrobbler_->nowPlaying (track);

@@ -102,7 +102,9 @@ namespace Laure
 		
 		const int time = VLCWrapper_->Time ();
 		const int length = VLCWrapper_->Length ();
-		if (length - time < 200 && VLCWrapper_->IsPlaying ())
+		
+		//TODO: Rewrite this code
+		if (length - time < 800 && VLCWrapper_->IsPlaying ())
 			VLCWrapper_->next ();
 	}
 }
