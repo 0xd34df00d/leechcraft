@@ -46,6 +46,7 @@ namespace Xoox
 		void Accept ();
 		void Hangup ();
 		QIODevice* GetAudioDevice ();
+		AudioParams GetAudioParams ();
 		QIODevice* GetVideoDevice ();
 	private slots:
 		void handleStateChanged (QXmppCall::State);

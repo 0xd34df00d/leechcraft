@@ -27,6 +27,14 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+	struct AudioParams
+	{
+		QString Codec_;
+		int SampleRate_;
+		int SampleSize_;
+		int NumChannels_;
+	};
+
 	class IMediaCall
 	{
 	public:
@@ -55,6 +63,8 @@ namespace Azoth
 		virtual void Hangup () = 0;
 
 		virtual QIODevice* GetAudioDevice () = 0;
+
+		virtual AudioParams GetAudioParams () = 0;
 
 		virtual QIODevice* GetVideoDevice () = 0;
 

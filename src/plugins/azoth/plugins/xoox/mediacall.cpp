@@ -76,6 +76,19 @@ namespace Xoox
 		return Call_->audioChannel ();
 	}
 
+	AudioParams MediaCall::GetAudioParams ()
+	{
+		const QXmppJinglePayloadType payload = Call_->audioChannel ()->payloadType ();
+		AudioParams params
+		{
+			payload.name (),
+			payload.clockrate (),
+			16,
+			payload.channels ()
+		};
+		return params;
+	}
+
 	QIODevice* MediaCall::GetVideoDevice ()
 	{
 		return 0;
