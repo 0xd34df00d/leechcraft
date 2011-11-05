@@ -31,6 +31,8 @@ INCLUDE_DIRECTORIES (
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	${QTGSTREAMER_INCLUDE_DIR}
+	${QTGSTREAMER_INCLUDE_DIR}/QGst
+	${QTGSTREAMER_INCLUDES}
 	)
 
 OPTION (ENABLE_CRYPT "Enable QCA2-based support for PGP" ON)
@@ -97,6 +99,7 @@ SET (SRCS
 	groupsenddialog.cpp
 	actionsmanager.cpp
 	mediadevicemanager.cpp
+	iodevicesink.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -141,6 +144,7 @@ SET (HEADERS
 	groupsenddialog.h
 	actionsmanager.h
 	mediadevicemanager.h
+	iodevicesink.h
 	animatediconmanager.h
 	sourcetrackingmodel.h
 	interfaces/iprotocolplugin.h

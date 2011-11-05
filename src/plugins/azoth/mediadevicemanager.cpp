@@ -24,10 +24,12 @@
 #include <QGst/ChildProxy>
 #include <QGst/PropertyProbe>
 #include <QGst/Bin>
+#include <QGst/Pipeline>
 #include <QGlib/Connect>
 #include <QGlib/Error>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
+#include "iodevicesink.h"
 
 namespace LeechCraft
 {
@@ -71,21 +73,6 @@ namespace Azoth
 
 	void MediaDeviceManager::FeedAudioDevice (QIODevice *audioDevice)
 	{
-		QGst::BinPtr audioBin;
-		try
-		{
-			audioBin = QGst::Bin::fromDescription("autoaudiosrc name=\"audiosrc\" ! audioconvert ! "
-												"audioresample ! audiorate ! speexenc ! queue");
-		}
-		catch (const QGlib::Error & error)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "failed to create audio bin:"
-					<< error;
-			return;
-		}
-
-		QGst::ElementPtr sink = QGst::ElementFactory::make("filesink");
 	}
 
 	void MediaDeviceManager::FindDevices (MediaDeviceManager::DeviceType device)
