@@ -221,6 +221,9 @@ namespace Aggregator
 				ChannelActions_.ActionUpdateSelectedFeed_);
 		Impl_->Ui_.Feeds_->addAction (Util::CreateSeparator (Impl_->Ui_.Feeds_));
 		Impl_->Ui_.Feeds_->addAction (Impl_->
+				ChannelActions_.ActionRemoveChannel_);
+		Impl_->Ui_.Feeds_->addAction (Util::CreateSeparator (Impl_->Ui_.Feeds_));
+		Impl_->Ui_.Feeds_->addAction (Impl_->
 				ChannelActions_.ActionChannelSettings_);
 		Impl_->Ui_.Feeds_->addAction (Util::CreateSeparator (Impl_->Ui_.Feeds_));
 		Impl_->Ui_.Feeds_->addAction (Impl_->
@@ -681,12 +684,34 @@ namespace Aggregator
 				tr ("You are going to permanently remove the feed:"
 					"<br />%1<br /><br />"
 					"Are you really sure that you want to do it?",
-					"Feed removing confirmation").arg (name),
+					"Feed removal confirmation").arg (name),
 				QMessageBox::Ok | QMessageBox::Cancel,
 				this);
 		mb.setWindowModality (Qt::WindowModal);
 		if (mb.exec () == QMessageBox::Ok)
 			Core::Instance ().RemoveFeed (ds);
+	}
+
+	void Aggregator::on_ActionRemoveChannel__triggered ()
+	{
+		QModelIndex ds = GetRelevantIndex ();
+
+		if (!ds.isValid ())
+			return;
+
+		QString name = ds.sibling (ds.row (), 0).data ().toString ();
+
+		QMessageBox mb (QMessageBox::Warning,
+				"LeechCraft",
+				tr ("You are going to remove the channel:"
+					"<br />%1<br /><br />"
+					"Are you really sure that you want to do it?",
+					"Channel removal confirmation").arg (name),
+				QMessageBox::Ok | QMessageBox::Cancel,
+				this);
+		mb.setWindowModality (Qt::WindowModal);
+		if (mb.exec () == QMessageBox::Ok)
+			Core::Instance ().RemoveChannel (ds);
 	}
 
 	void Aggregator::Perform (boost::function<void (const QModelIndex&)> func)

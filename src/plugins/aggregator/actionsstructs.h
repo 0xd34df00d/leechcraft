@@ -51,6 +51,7 @@ namespace Aggregator
 		QAction *ActionUpdateSelectedFeed_;
 		QAction *ActionMarkChannelAsRead_;
 		QAction *ActionMarkChannelAsUnread_;
+		QAction *ActionRemoveChannel_;
 		QAction *ActionChannelSettings_;
 
 		void SetupActionsStruct (QWidget*);
