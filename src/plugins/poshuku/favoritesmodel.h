@@ -73,12 +73,16 @@ namespace Poshuku
 		void ChangeURL (const QModelIndex&, const QString&);
 		const items_t& GetItems () const;
 		void SetCheckResults (const QMap<QString, QString>&);
+
+		bool IsUrlExists (const QString&) const;
 	private:
 		QStringList GetVisibleTags (int) const;
+		FavoritesItem GetItemFromUrl (const QString& url);
 	public slots:
 		bool addItem (const QString&, const QString&, const QStringList&);
 		QList<QVariant> getItemsMap () const;
 		void removeItem (const QModelIndex&);
+		void removeItem (const QString&);
 		void handleItemAdded (const FavoritesModel::FavoritesItem&);
 		void handleItemUpdated (const FavoritesModel::FavoritesItem&);
 		void handleItemRemoved (const FavoritesModel::FavoritesItem&);

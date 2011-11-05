@@ -697,6 +697,16 @@ namespace Poshuku
 			*/
 	}
 
+	bool Core::IsUrlInFavourites (const QString& url)
+	{
+		return FavoritesModel_->IsUrlExists (url);
+	}
+
+	void Core::RemoveFromFavorites (const QString& url)
+	{
+		emit bookmarkRemoved (url);
+	}
+
 	void Core::Unregister (BrowserWidget *widget)
 	{
 		widgets_t::iterator pos =
@@ -982,15 +992,28 @@ namespace Poshuku
 					qApp->activeWindow ()));
 
 		bool result = false;
+		bool oneClick = XmlSettingsManager::Instance ()->property ("BookmarkInOneClick").toBool ();
+
 		do
 		{
-			if (dia->exec () == QDialog::Rejected)
-				return;
+			if (!oneClick)
+			{
+				if (dia->exec () == QDialog::Rejected)
+					return;
 
-			result = FavoritesModel_->addItem (dia->GetTitle (),
-					url, dia->GetTags ());
+				result = FavoritesModel_->addItem (dia->GetTitle (),
+						url, dia->GetTags ());
+			}
+			else
+			{
+				result = FavoritesModel_->addItem (title,
+						url, QStringList ());
+				oneClick = false;
+			}
 		}
 		while (!result);
+
+		emit bookmarkAdded (url);
 	}
 
 	void Core::handleStatusBarChanged (const QString& msg)
