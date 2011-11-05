@@ -65,6 +65,7 @@ namespace Azoth
 
 		OutPipe_ = QGst::Pipeline::create ();
 		OutPipe_->add (outAudioBin, IODeviceSink_->element ());
+		outAudioBin->link (IODeviceSink_->element ());
 		OutPipe_->setState (QGst::StatePlaying);
 	}
 

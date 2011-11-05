@@ -100,6 +100,7 @@ SET (SRCS
 	actionsmanager.cpp
 	mediadevicemanager.cpp
 	iodevicesink.cpp
+	iodevicesrc.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -145,6 +146,7 @@ SET (HEADERS
 	actionsmanager.h
 	mediadevicemanager.h
 	iodevicesink.h
+	iodevicesrc.h
 	animatediconmanager.h
 	sourcetrackingmodel.h
 	interfaces/iprotocolplugin.h
