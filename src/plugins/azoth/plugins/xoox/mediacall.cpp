@@ -17,7 +17,6 @@
  **********************************************************************/
 
 #include "mediacall.h"
-#include <QAudioFormat>
 #include <QXmppCallManager.h>
 #include <QXmppRtpChannel.h>
 #include "clientconnection.h"
@@ -39,7 +38,7 @@ namespace Xoox
 				this,
 				SLOT (handleStateChanged (QXmppCall::State)));
 	}
-	
+
 	IMediaCall::Direction MediaCall::GetDirection () const
 	{
 		switch (Call_->direction ())
@@ -50,7 +49,7 @@ namespace Xoox
 			return DOut;
 		}
 	}
-	
+
 	QString MediaCall::GetSourceID () const
 	{
 		QString jid;
@@ -58,17 +57,17 @@ namespace Xoox
 		ClientConnection::Split (Call_->jid (), &jid, &var);
 		return Account_->GetAccountID () + '_' + jid;
 	}
-	
+
 	void MediaCall::Accept ()
 	{
 		Call_->accept ();
 	}
-	
+
 	void MediaCall::Hangup ()
 	{
 		Call_->hangup ();
 	}
-	
+
 	QIODevice* MediaCall::GetAudioDevice ()
 	{
 		QXmppJinglePayloadType payload = Call_->audioChannel ()->payloadType ();
@@ -76,28 +75,12 @@ namespace Xoox
 		qDebug () << payload.channels () << payload.clockrate ();
 		return Call_->audioChannel ();
 	}
-	
-	QAudioFormat MediaCall::GetAudioFormat ()
-	{
-		const QXmppJinglePayloadType& payload =
-				Call_->audioChannel ()->payloadType ();
-		QAudioFormat result;
-#if QT_VERSION >= 0x040700
-		result.setSampleRate (payload.clockrate ());
-		result.setChannelCount (payload.channels ());
-#endif
-		result.setSampleSize (16);
-		result.setCodec ("audio/pcm");
-		result.setByteOrder (QAudioFormat::LittleEndian);
-		result.setSampleType (QAudioFormat::SignedInt);
-		return result;
-	}
-	
+
 	QIODevice* MediaCall::GetVideoDevice ()
 	{
 		return 0;
 	}
-	
+
 	void MediaCall::handleStateChanged (QXmppCall::State state)
 	{
 		emit stateChanged (static_cast<State> (state));

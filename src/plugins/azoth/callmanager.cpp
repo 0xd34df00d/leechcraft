@@ -18,15 +18,13 @@
 
 #include "callmanager.h"
 #include <boost/bind.hpp>
-#include <QAudioDeviceInfo>
-#include <QAudioInput>
-#include <QAudioOutput>
 #include <QtDebug>
 #include <util/util.h>
 #include <util/notificationactionhandler.h>
 #include "interfaces/iclentry.h"
 #include "xmlsettingsmanager.h"
 #include "core.h"
+#include "mediadevicemanager.h"
 
 namespace LeechCraft
 {
@@ -78,28 +76,6 @@ namespace Azoth
 		return Entry2Calls_ [id];
 	}
 
-	namespace
-	{
-		QAudioDeviceInfo FindDevice (const QByteArray& property, QAudio::Mode mode)
-		{
-			const QString& name = XmlSettingsManager::Instance ()
-					.property (property).toString ();
-
-			QAudioDeviceInfo result = mode == QAudio::AudioInput ?
-					QAudioDeviceInfo::defaultInputDevice () :
-					QAudioDeviceInfo::defaultOutputDevice ();
-			Q_FOREACH (const QAudioDeviceInfo& info,
-					QAudioDeviceInfo::availableDevices (mode))
-				if (info.deviceName () == name)
-				{
-					result = info;
-					break;
-				}
-
-			return result;
-		}
-	}
-
 	void CallManager::HandleCall (QObject *obj)
 	{
 		IMediaCall *mediaCall = qobject_cast<IMediaCall*> (obj);
@@ -149,6 +125,8 @@ namespace Azoth
 		if (state == IMediaCall::SActive)
 		{
 			QIODevice *callAudioDev = mediaCall->GetAudioDevice ();
+			Core::Instance ().GetMediaDeviceManager ()->FeedAudioDevice (callAudioDev);
+			/*
 			QAudioDeviceInfo inInfo = FindDevice ("InputAudioDevice", QAudio::AudioInput);
 			QAudioDeviceInfo outInfo = FindDevice ("OutputAudioDevice", QAudio::AudioOutput);
 
@@ -172,6 +150,7 @@ namespace Azoth
 
 			qDebug () << input->state () << input->error () << inInfo.isFormatSupported (callFormat) << inInfo.supportedCodecs ();
 			qDebug () << output->state () << output->error ();
+			*/
 		}
 	}
 }

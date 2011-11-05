@@ -16,43 +16,45 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_MEDIACALL_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_MEDIACALL_H
+#ifndef PLUGINS_AZOTH_MEDIADEVICEMANAGER_H
+#define PLUGINS_AZOTH_MEDIADEVICEMANAGER_H
 #include <QObject>
-#include <QXmppCallManager.h>
-#include <interfaces/imediacall.h>
+#include <QMap>
+#include <QStringList>
+#include <QGst/Global>
+#include <QGst/PropertyProbe>
+#include <interfaces/ihavesettings.h>
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-namespace Xoox
-{
-	class GlooxAccount;
-
-	class MediaCall : public QObject
-					, public IMediaCall
+	class MediaDeviceManager : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMediaCall);
 
-		QXmppCall *Call_;
-		GlooxAccount *Account_;
+		Util::XmlSettingsDialog_ptr XSD_;
+
 	public:
-		MediaCall (GlooxAccount*, QXmppCall*);
+		enum DeviceType
+		{
+			DTAudioIn,
+			DTAudioOut
+		};
+	private:
+		QMap<DeviceType, QGst::PropertyProbePtr> Type2Probe_;
+		QMap<DeviceType, QStringList> Type2Devices_;
+	public:
+		MediaDeviceManager (QObject* = 0);
 
-		Direction GetDirection () const;
-		QString GetSourceID () const;
-		void Accept ();
-		void Hangup ();
-		QIODevice* GetAudioDevice ();
-		QIODevice* GetVideoDevice ();
-	private slots:
-		void handleStateChanged (QXmppCall::State);
-	signals:
-		void stateChanged (LeechCraft::Azoth::IMediaCall::State);
+		void SetXSD (Util::XmlSettingsDialog_ptr);
+
+		void FeedAudioDevice (QIODevice*);
+	private:
+		void FindDevices (DeviceType);
+		void ProbeForDevices (const QGst::PropertyProbePtr&);
+		void AddDevices (DeviceType, const QStringList& = QStringList ());
 	};
-}
 }
 }
 

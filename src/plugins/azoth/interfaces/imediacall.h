@@ -31,13 +31,13 @@ namespace Azoth
 	{
 	public:
 		virtual ~IMediaCall () {}
-		
+
 		enum Direction
 		{
 			DIn,
 			DOut
 		};
-		
+
 		enum State
 		{
 			SConnecting,
@@ -45,21 +45,19 @@ namespace Azoth
 			SDisconnecting,
 			SFinished
 		};
-		
+
 		virtual Direction GetDirection () const = 0;
-		
+
 		virtual QString GetSourceID () const = 0;
-		
+
 		virtual void Accept () = 0;
 
 		virtual void Hangup () = 0;
-		
+
 		virtual QIODevice* GetAudioDevice () = 0;
-		
-		virtual QAudioFormat GetAudioFormat () = 0;
-		
+
 		virtual QIODevice* GetVideoDevice () = 0;
-		
+
 		virtual void stateChanged (State) = 0;
 	};
 }

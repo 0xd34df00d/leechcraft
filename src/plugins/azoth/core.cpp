@@ -69,6 +69,7 @@
 #include "acceptriexdialog.h"
 #include "clmodel.h"
 #include "actionsmanager.h"
+#include "mediadevicemanager.h"
 
 namespace LeechCraft
 {
@@ -135,6 +136,7 @@ namespace Azoth
 	, XferJobManager_ (new TransferJobManager)
 	, CallManager_ (new CallManager)
 	, EventsNotifier_ (new EventsNotifier)
+	, MediaDeviceManager_ (new MediaDeviceManager)
 	{
 		FillANFields ();
 
@@ -219,6 +221,8 @@ namespace Azoth
 		KeyStoreMgr_.reset ();
 		QCAInit_.reset ();
 #endif
+
+		MediaDeviceManager_.reset ();
 	}
 
 	void Core::SetProxy (ICoreProxy_ptr proxy)
@@ -256,6 +260,11 @@ namespace Azoth
 	QAbstractItemModel* Core::GetChatStylesOptionsModel()
 	{
 		return ChatStylesOptionsModel_.get ();
+	}
+
+	MediaDeviceManager* Core::GetMediaDeviceManager () const
+	{
+		return MediaDeviceManager_.get ();
 	}
 
 	QSet<QByteArray> Core::GetExpectedPluginClasses () const

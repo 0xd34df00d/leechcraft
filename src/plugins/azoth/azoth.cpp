@@ -23,7 +23,6 @@
 #include <QVBoxLayout>
 #include <QMenu>
 #include <QStringListModel>
-#include <QAudioDeviceInfo>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/imwproxy.h>
 #include <interfaces/core/icoreproxy.h>
@@ -40,11 +39,22 @@
 #include "accountslistwidget.h"
 #include "consolewidget.h"
 #include "searchwidget.h"
+#include "mediadevicemanager.h"
 
 namespace LeechCraft
 {
 namespace Azoth
 {
+	namespace
+	{
+		QStringList FindDevices (const char *devName)
+		{
+			QStringList result;
+
+			return result;
+		}
+	}
+
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Translator_.reset (Util::InstallTranslator ("azoth"));
@@ -82,18 +92,6 @@ namespace Azoth
 		XmlSettingsDialog_->SetDataSource ("SystemIcons",
 				Core::Instance ().GetResourceLoader (Core::RLTSystemIconLoader)->
 					GetSubElemModel ());
-
-		QStringList audioIns (tr ("Default input device"));
-		Q_FOREACH (const QAudioDeviceInfo& info,
-				QAudioDeviceInfo::availableDevices (QAudio::AudioInput))
-			audioIns << info.deviceName ();
-		XmlSettingsDialog_->SetDataSource ("InputAudioDevice", new QStringListModel (audioIns));
-
-		QStringList audioOuts (tr ("Default output device"));
-		Q_FOREACH (const QAudioDeviceInfo& info,
-				QAudioDeviceInfo::availableDevices (QAudio::AudioOutput))
-			audioOuts << info.deviceName ();
-		XmlSettingsDialog_->SetDataSource ("OutputAudioDevice", new QStringListModel (audioOuts));
 
 		XmlSettingsDialog_->SetCustomWidget ("AccountsWidget", new AccountsListWidget);
 
@@ -200,6 +198,8 @@ namespace Azoth
 				Core::Instance ().GetChatStylesOptionsModel ());
 		XmlSettingsDialog_->SetDataSource ("MUCWindowStyle",
 				Core::Instance ().GetChatStylesOptionsModel ());
+
+		Core::Instance ().GetMediaDeviceManager ()->SetXSD (XmlSettingsDialog_);
 	}
 
 	void Plugin::Release ()

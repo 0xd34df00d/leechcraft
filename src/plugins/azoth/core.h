@@ -65,6 +65,7 @@ namespace Azoth
 	class CallManager;
 	class EventsNotifier;
 	class ActionsManager;
+	class MediaDeviceManager;
 
 	class CLModel;
 
@@ -135,6 +136,8 @@ namespace Azoth
 		boost::shared_ptr<CallManager> CallManager_;
 		boost::shared_ptr<EventsNotifier> EventsNotifier_;
 
+		boost::shared_ptr<MediaDeviceManager> MediaDeviceManager_;
+
 		Core ();
 	public:
 		enum CLRoles
@@ -173,6 +176,7 @@ namespace Azoth
 		QAbstractItemModel* GetSmilesOptionsModel () const;
 		IEmoticonResourceSource* GetCurrentEmoSource () const;
 		QAbstractItemModel* GetChatStylesOptionsModel ();
+		MediaDeviceManager* GetMediaDeviceManager () const;
 
 		QSet<QByteArray> GetExpectedPluginClasses () const;
 		void AddPlugin (QObject*);
