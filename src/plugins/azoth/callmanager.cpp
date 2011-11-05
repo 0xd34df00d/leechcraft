@@ -124,8 +124,7 @@ namespace Azoth
 		IMediaCall *mediaCall = qobject_cast<IMediaCall*> (sender ());
 		if (state == IMediaCall::SActive)
 		{
-			QIODevice *callAudioDev = mediaCall->GetAudioDevice ();
-			Core::Instance ().GetMediaDeviceManager ()->FeedAudioDevice (callAudioDev);
+			Core::Instance ().GetMediaDeviceManager ()->HandleCall (mediaCall);
 			/*
 			QAudioDeviceInfo inInfo = FindDevice ("InputAudioDevice", QAudio::AudioInput);
 			QAudioDeviceInfo outInfo = FindDevice ("OutputAudioDevice", QAudio::AudioOutput);

@@ -28,6 +28,7 @@
 #include <QGlib/Connect>
 #include <QGlib/Error>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include "interfaces/imediacall.h"
 #include "xmlsettingsmanager.h"
 #include "iodevicesink.h"
 
@@ -35,6 +36,28 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+	MediaDeviceManager::CallAudioHandler::CallAudioHandler (IMediaCall *call)
+	: IODeviceSink_ (new IODeviceSink (call->GetAudioDevice ()))
+	{
+		QGst::BinPtr outAudioBin;
+		try
+		{
+			outAudioBin = QGst::Bin::fromDescription ("autoaudiosrc name=\"audiosrc\" ! audioconvert ! "
+												"audioresample ! audiorate ! speexenc ! queue");
+		}
+		catch (const QGlib::Error& error)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "failed to create audio source bin:"
+					<< error;
+			return;
+		}
+
+		OutPipe_ = QGst::Pipeline::create ();
+		OutPipe_->add (outAudioBin, IODeviceSink_->element ());
+		OutPipe_->setState (QGst::StatePlaying);
+	}
+
 	MediaDeviceManager::MediaDeviceManager (QObject *parent)
 	: QObject (parent)
 	{
@@ -71,8 +94,9 @@ namespace Azoth
 		}
 	}
 
-	void MediaDeviceManager::FeedAudioDevice (QIODevice *audioDevice)
+	void MediaDeviceManager::HandleCall (IMediaCall *call)
 	{
+		Call2AudioHandler_ [call] = new CallAudioHandler (call);
 	}
 
 	void MediaDeviceManager::FindDevices (MediaDeviceManager::DeviceType device)
