@@ -127,7 +127,10 @@ namespace AdiumStyles
 			Util::QIODevice_ptr varCssDev = StylesLoader_->
 					Load (QStringList (prefix + "Variants/" + varCss + ".css"));
 			if (varCssDev && varCssDev->open (QIODevice::ReadOnly))
+			{
 				varCssStr = QString::fromUtf8 (varCssDev->readAll ());
+				varCssStr.remove ("../");
+			}
 		}
 
 		QString result;

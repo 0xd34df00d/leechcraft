@@ -543,6 +543,7 @@ namespace Aggregator
 		virtual void AddChannel (Channel_ptr);
 		virtual void AddItem (Item_ptr);
 		virtual void RemoveItem (const IDType_t&);
+		virtual void RemoveChannel (const IDType_t&);
 		virtual void RemoveFeed (const IDType_t&);
 		virtual bool UpdateFeedsStorage (int, int);
 		virtual bool UpdateChannelsStorage (int, int);

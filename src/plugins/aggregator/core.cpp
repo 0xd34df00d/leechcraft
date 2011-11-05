@@ -501,6 +501,30 @@ namespace Aggregator
 		UpdateUnreadItemsNumber ();
 	}
 
+	void Core::RemoveChannel (const QModelIndex& index)
+	{
+		if (!index.isValid ())
+			return;
+
+		ChannelShort channel;
+		try
+		{
+			channel = ChannelsModel_->GetChannelForIndex (index);
+		}
+		catch (const std::exception& e)
+		{
+			ErrorNotification (tr ("Channel removal error"),
+					tr ("Could not remove the channel: %1")
+					.arg (e.what ()));
+			return;
+		}
+
+		ChannelsModel_->RemoveChannel (channel);
+		emit channelRemoved (channel.ChannelID_);
+
+		StorageBackend_->RemoveChannel (channel.ChannelID_);
+	}
+
 	ItemsWidget* Core::GetReprWidget () const
 	{
 		return ReprWidget_;
