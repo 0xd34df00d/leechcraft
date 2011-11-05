@@ -17,31 +17,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LAURE_NOWPLAYINGDELEGATE_H
-#define PLUGINS_LAURE_NOWPLAYINGDELEGATE_H
+#include <QObject>
+#include <QtTest>
 
-#include <QItemDelegate>
+#include "../volumeslider.h"
 
-class QPainter;
+using namespace LeechCraft::Laure;
 
-namespace LeechCraft
+class VolumeSliderTest : public QObject
 {
-namespace Laure
-{
-	class PlayListModel;
-	
-	class NowPlayingDelegate : public QItemDelegate
+	Q_OBJECT
+private slots:
+	void setValue ()
 	{
-		Q_OBJECT
-		
-		PlayListModel *Model_;
-	public:
-		NowPlayingDelegate (QObject* = 0);
-		void SetPlayListModel (PlayListModel *model);
-		void paint (QPainter *painter, const QStyleOptionViewItem& option,
-				const QModelIndex& id) const;
-	};
-}
-}
-
-#endif // PLUGINS_LAURE_NOWPLAYINGDELEGATE_H
+		VolumeSlider slider;
+		slider.setValue (2);
+		QVERIFY (slider.value () == 2);
+	}
+};

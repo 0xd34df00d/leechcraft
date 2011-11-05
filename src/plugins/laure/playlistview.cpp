@@ -20,9 +20,9 @@
 #include "playlistview.h"
 #include <QKeyEvent>
 #include <QHeaderView>
-#include <QDebug>
-#include "xmlsettingsmanager.h"
+#include <QMenu>
 #include "nowplayingdelegate.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -36,9 +36,22 @@ namespace Laure
 		setModel (PlayListModel_);
 		setSelectionMode (ContiguousSelection);
 		setAlternatingRowColors (true);
-		hideColumn (1);
-		setItemDelegate (new NowPlayingDelegate (this));
-		header ()->hide ();
+		hideColumn (0);
+
+		for (int i = 1; i < 6; ++i)
+		{
+			const QString& itemName = "Header" + QString::number (i);
+			setColumnHidden (i, !XmlSettingsManager::Instance ()
+					.property (itemName.toAscii ()).toBool ());
+		}
+					
+		NowPlayingDelegate *delegate = new NowPlayingDelegate (this);
+		delegate->SetPlayListModel (PlayListModel_);
+		setItemDelegate (delegate);
+		setSizePolicy (QSizePolicy::Minimum, QSizePolicy::Minimum);
+		
+		header ()->setResizeMode (QHeaderView::ResizeToContents);
+		
 		connect (this,
 				SIGNAL (doubleClicked (QModelIndex)),
 				this,
@@ -62,17 +75,13 @@ namespace Laure
 
 	void PlayListView::AddItem (const MediaMeta& item, const QString& fileName)
 	{
-		QString format = XmlSettingsManager::Instance ()
-				.property ("PlaylistFormat").toString ();
-		format.replace ("%artist%", item.Artist_);
-		format.replace ("%album%", item.Album_);
-		format.replace ("%title%", item.Title_);
-		format.replace ("%genre%", item.Genre_);
-		format.replace ("%date%", item.Date_);
-		
 		QList<QStandardItem*> list;
-		list << new QStandardItem (format);
 		list << new QStandardItem (fileName);
+		list << new QStandardItem (item.Artist_);
+		list << new QStandardItem (item.Title_);
+		list << new QStandardItem (item.Album_);
+		list << new QStandardItem (item.Genre_);
+		list << new QStandardItem (item.Date_);
 		PlayListModel_->appendRow (list);
 	}
 	
@@ -99,7 +108,8 @@ namespace Laure
 			return;
 		
 		const int first = indexList.first ().row ();
-		PlayListModel_->removeRows (first, indexList.count ());
+		PlayListModel_->removeRows (first, indexList.count ()
+				/ (PlayListRowCount - 1));
 		for (int i = c - 1; i > -1; --i)
 			emit itemRemoved (first);
 	

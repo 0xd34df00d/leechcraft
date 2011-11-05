@@ -25,10 +25,12 @@ namespace LeechCraft
 {
 namespace Laure
 {
+	const int PlayListRowCount = 6;
 	class PlayListModel : public QStandardItemModel
 	{
 		Q_OBJECT
 		
+		QStringList HeaderName_;
 	public:
 		enum
 		{
@@ -36,6 +38,7 @@ namespace Laure
 		};
 		
 		PlayListModel (QObject *);
+		QStringList Header () const;
 		Qt::ItemFlags flags (const QModelIndex&) const;
 	};
 }
