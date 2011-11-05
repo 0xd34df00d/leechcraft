@@ -74,7 +74,7 @@ namespace Azoth
 		OutPipe_->setState (QGst::StatePlaying);
 		
 		InPipe_ = QGst::Pipeline::create ();
-		InPipe_->add (inAudioBin, IODeviceSrc_->element ());
+		InPipe_->add (IODeviceSrc_->element (), inAudioBin);
 		inAudioBin->link (IODeviceSrc_->element ());
 		InPipe_->setState (QGst::StatePlaying);
 	}
