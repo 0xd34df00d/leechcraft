@@ -384,6 +384,8 @@ namespace Qrosp
 		case AEPTrayMenu:
 			args << "AEPTrayMenu";
 			break;
+		case AEPMax:
+			break;
 		}
 		return SCALL (QList<QAction*>) ("GetActions", args);
 	}

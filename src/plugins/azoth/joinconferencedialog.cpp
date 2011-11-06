@@ -61,8 +61,6 @@ namespace Azoth
 			else
 				joiner = Proto2Joiner_ [proto];
 
-			IMUCJoinWidget *imjw = qobject_cast<IMUCJoinWidget*> (joiner);
-
 			Q_FOREACH (const QVariant& item, supBms->GetBookmarkedMUCs ())
 			{
 				const QVariantMap& map = item.toMap ();
