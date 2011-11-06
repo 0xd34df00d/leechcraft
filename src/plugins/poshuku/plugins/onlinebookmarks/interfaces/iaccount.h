@@ -40,9 +40,6 @@ namespace OnlineBookmarks
 		virtual QObject* GetParentService () const = 0;
 
 		//
-// 		virtual IAccount::AuthType GetAuthType () const = 0;
-
-		//
 		virtual QByteArray GetAccountID () const = 0;
 
 
@@ -58,6 +55,9 @@ namespace OnlineBookmarks
 		virtual bool IsSyncing () const = 0;
 
 		//
+		virtual bool IsQuickUpload () const = 0;
+
+		//
 		virtual QDateTime GetLastUploadDateTime () const = 0;
 
 		//
@@ -71,6 +71,8 @@ namespace OnlineBookmarks
 
 		//
 		virtual void SetSyncing (bool) = 0;
+
+		virtual void SetQuickUpload (bool) = 0;
 	};
 }
 }

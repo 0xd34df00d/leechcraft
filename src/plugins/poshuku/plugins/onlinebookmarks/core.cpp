@@ -19,6 +19,7 @@
 #include "core.h"
 #include <QStandardItemModel>
 #include <QDateTime>
+#include <QTimer>
 #include <interfaces/iplugin2.h>
 #include <interfaces/iproxyobject.h>
 #include <interfaces/iserviceplugin.h>
@@ -36,7 +37,29 @@ namespace OnlineBookmarks
 	Core::Core ()
 	: PluginManager_ (new PluginManager)
 	, AccountsSettings_ (new AccountsSettings)
+	, QuickUploadModel_ (new QStandardItemModel)
+	, DownloadTimer_ (new QTimer (this))
+	, UploadTimer_ (new QTimer (this))
 	{
+		connect (QuickUploadModel_,
+				SIGNAL (itemChanged (QStandardItem*)),
+				this,
+				SLOT (handleItemChanged (QStandardItem*)),
+				Qt::UniqueConnection);
+
+		DownloadTimer_->setSingleShot (true);
+		connect (DownloadTimer_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (checkDownloadPeriod ()),
+				Qt::UniqueConnection);
+
+		UploadTimer_->setSingleShot (true);
+		connect (UploadTimer_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (checkUploadPeriod ()),
+				Qt::UniqueConnection);
 	}
 
 	Core& Core::Instance ()
@@ -63,6 +86,11 @@ namespace OnlineBookmarks
 	AccountsSettings* Core::GetAccountsSettingsWidget () const
 	{
 		return AccountsSettings_;
+	}
+
+	QAbstractItemModel* Core::GetQuickUploadModel () const
+	{
+		return QuickUploadModel_;
 	}
 
 	QSet<QByteArray> Core::GetExpectedPluginClasses () const
@@ -115,9 +143,9 @@ namespace OnlineBookmarks
 		ServicesPlugins_ << plugin;
 
 		connect (plugin,
-				SIGNAL (gotBookmarks (IAccount*, const QVariantList&)),
+				SIGNAL (gotBookmarks (QObject*, const QVariantList&)),
 				this,
-				SLOT (handleGotBookmarks (IAccount*, const QVariantList&)));
+				SLOT (handleGotBookmarks (QObject*, const QVariantList&)));
 
 		connect (plugin,
 				SIGNAL (bookmarksUploaded ()),
@@ -227,6 +255,63 @@ namespace OnlineBookmarks
 		emit gotEntity (e);
 	}
 
+	void Core::AddAccounts (QObjectList accObjects)
+	{
+		Q_FOREACH (QObject *accObj, accObjects)
+		{
+			IAccount *account = qobject_cast<IAccount*> (accObj);
+			if (!account)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "isn't an IAccount object"
+						<< accObj;
+				continue;
+			}
+
+			IBookmarksService *ibs = qobject_cast<IBookmarksService*> (account->GetParentService ());
+			if (!ibs)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "isn't an IBookmarksService"
+						<< account->GetParentService ();
+				continue;
+			}
+
+			const QModelIndex& index = GetServiceIndex (ibs->GetObject ());
+			QStandardItem *parentItem = 0;
+			if (!index.isValid ())
+			{
+				parentItem = new QStandardItem (ibs->GetServiceIcon (), ibs->GetServiceName ());
+				parentItem->setEditable (false);
+				Item2Service_ [parentItem] = ibs;
+				QuickUploadModel_->appendRow (parentItem);
+			}
+			else
+				parentItem = QuickUploadModel_->itemFromIndex (index);
+
+			QStandardItem *item = new QStandardItem (account->GetLogin ());
+			item->setEditable (false);
+			item->setCheckable (true);
+			item->setCheckState (account->IsQuickUpload () ? Qt::Checked : Qt::Unchecked);
+			Item2Account_ [item] = account;
+			parentItem->appendRow (item);
+		}
+	}
+
+	QModelIndex Core::GetServiceIndex (QObject *object) const
+	{
+		Q_FOREACH (QStandardItem *item, Item2Service_.keys ())
+		if (Item2Service_ [item] == qobject_cast<IBookmarksService*> (object))
+			return item->index ();
+
+		return QModelIndex ();
+	}
+
+	void Core::SetQuickUploadButtons ()
+	{
+
+	}
+
 	QObject* Core::GetBookmarksModel () const
 	{
 		IProxyObject *obj = qobject_cast<IProxyObject*> (PluginProxy_);
@@ -274,8 +359,17 @@ namespace OnlineBookmarks
 		return result;
 	}
 
-	void Core::handleGotBookmarks (IAccount *account, const QVariantList& importBookmarks)
+	void Core::handleGotBookmarks (QObject *accObj, const QVariantList& importBookmarks)
 	{
+		IAccount *account = qobject_cast<IAccount*> (accObj);
+		if (!account)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "isn't an IAccount object"
+					<< accObj;
+			return;
+		}
+
 		LeechCraft::Entity eBookmarks = Util::MakeEntity (QVariant (),
 				QString (),
 				static_cast<LeechCraft::TaskParameter> (FromUserInitiated | OnlyHandle),
@@ -309,6 +403,30 @@ namespace OnlineBookmarks
 				PInfo_);
 		emit gotEntity (e);
 		AccountsSettings_->UpdateDates ();
+	}
+
+	void Core::handleItemChanged (QStandardItem *item)
+	{
+		if (item->checkState () == Qt::Unchecked)
+		{
+			Item2Account_ [item]->SetQuickUpload (false);
+			return;
+		}
+
+		QStandardItem *parentItem = item->parent ();
+		for (int i = 0; i < parentItem->rowCount (); ++i)
+		{
+			QStandardItem *childItem = parentItem->child (i);
+			if (childItem != item &&
+					childItem->checkState () == Qt::Checked)
+			{
+				childItem->setCheckState (Qt::Unchecked);
+				if (Item2Account_.contains (childItem))
+					Item2Account_ [childItem]->SetQuickUpload (false);
+			}
+		}
+
+		Item2Account_ [item]->SetQuickUpload (true);
 	}
 
 	void Core::syncBookmarks ()
@@ -391,7 +509,68 @@ namespace OnlineBookmarks
 		}
 	}
 
-}
-}
-}
+	void Core::removeAccount (QObject *accObj)
+	{
+		IAccount *account = qobject_cast<IAccount*> (accObj);
+		if (!account)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "isn't an IAccount object"
+					<< accObj;
+			return;
+		}
 
+		QStandardItem *item = Item2Account_.key (account);
+		if (item)
+		{
+			const QModelIndex& parentIndex = item->parent ()->index ();
+			QuickUploadModel_->removeRow (item->row (), parentIndex);
+			if (!QuickUploadModel_->rowCount (parentIndex))
+			{
+				Item2Service_.remove (QuickUploadModel_->itemFromIndex (parentIndex));
+				QuickUploadModel_->removeRow (parentIndex.row ());
+			}
+			Item2Account_.remove (item);
+		}
+	}
+
+	void Core::checkDownloadPeriod ()
+	{
+		uint downloadPeriod = XmlSettingsManager::Instance ()->
+				property ("DownloadPeriod").toInt () * 3600;
+		uint lastCheckTimeInSec = XmlSettingsManager::Instance ()->
+				Property ("LastDownloadCheck", 0).toInt ();
+
+		uint diff = lastCheckTimeInSec + downloadPeriod - QDateTime::currentDateTime ().toTime_t ();
+		if (diff > 0)
+			DownloadTimer_->start (diff);
+		else
+		{
+			downloadBookmarks ();
+			XmlSettingsManager::Instance ()->setProperty ("LastDownloadCheck",
+					QDateTime::currentDateTime ().toTime_t ());
+			DownloadTimer_->start (downloadPeriod);
+		}
+	}
+
+	void Core::checkUploadPeriod ()
+	{
+		uint uploadPeriod = XmlSettingsManager::Instance ()->
+				property ("UploadPeriod").toInt () * 3600;
+		uint lastCheckTimeInSec = XmlSettingsManager::Instance ()->
+				Property ("LastUploadCheck", 0).toInt ();
+
+		uint diff = lastCheckTimeInSec + uploadPeriod - QDateTime::currentDateTime ().toTime_t ();
+		if (diff > 0)
+			UploadTimer_->start (diff);
+		else
+		{
+			uploadBookmarks ();
+			XmlSettingsManager::Instance ()->setProperty ("LastUploadCheck",
+					QDateTime::currentDateTime ().toTime_t ());
+			DownloadTimer_->start (uploadPeriod);
+		}
+	}
+}
+}
+}

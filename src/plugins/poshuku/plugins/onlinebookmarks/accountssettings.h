@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_SETTINGS_H
-#define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_SETTINGS_H
+#ifndef PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_ACCOUNTSETTINGS_H
+#define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_ACCOUNTSETTINGS_H
 
 #include <QWidget>
 #include <util/util.h>
@@ -77,4 +77,4 @@ namespace OnlineBookmarks
 }
 }
 
-#endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_SETTINGS_H
+#endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_ACCOUNTSETTINGS_H

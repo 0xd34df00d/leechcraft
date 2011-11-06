@@ -21,11 +21,14 @@
 
 #include <QObject>
 #include <QUrl>
+#include <QModelIndex>
 #include <interfaces/iinfo.h>
 #include <interfaces/iaccount.h>
+#include <interfaces/ibookmarksservice.h>
 
 class QAbstractItemModel;
 class QStandardItemModel;
+class QStandardItem;
 
 namespace LeechCraft
 {
@@ -44,11 +47,18 @@ namespace OnlineBookmarks
 		ICoreProxy_ptr CoreProxy_;
 		QObject *PluginProxy_;
 		boost::shared_ptr<PluginManager> PluginManager_;
-		AccountsSettings* AccountsSettings_;
+		AccountsSettings *AccountsSettings_;
+		QStandardItemModel *QuickUploadModel_;
 
 		QObjectList ServicesPlugins_;
 		QObjectList ActiveAccounts_;
 		QHash<QString, IAccount*> Url2Account_;
+
+		QHash<QStandardItem*, IAccount*> Item2Account_;
+		QHash<QStandardItem*, IBookmarksService*> Item2Service_;
+
+		QTimer *DownloadTimer_;
+		QTimer *UploadTimer_;
 
 		Core ();
 	public:
@@ -58,6 +68,8 @@ namespace OnlineBookmarks
 		void SetPluginProxy (QObject*);
 
 		AccountsSettings* GetAccountsSettingsWidget () const;
+
+		QAbstractItemModel* GetQuickUploadModel () const;
 
 		QSet<QByteArray> GetExpectedPluginClasses () const;
 		void AddPlugin (QObject*);
@@ -71,23 +83,32 @@ namespace OnlineBookmarks
 
 // 		void UploadBookmark (const QString&,
 // 				const QString&, const QStringList&);
-
 		void DeletePassword (QObject*);
 		QString GetPassword (QObject*);
 		void SavePassword (QObject*);
+
+		void AddAccounts (QObjectList);
+		QModelIndex GetServiceIndex (QObject*) const;
+
+		void SetQuickUploadButtons ();
 	private:
 		QObject* GetBookmarksModel () const;
 		QVariantList GetUniqueBookmarks (IAccount*,
 				const QVariantList&, bool byService = false);
 		QVariantList GetAllBookmarks () const;
 	private slots:
-		void handleGotBookmarks (IAccount*, const QVariantList&);
+		void handleGotBookmarks (QObject*, const QVariantList&);
 		void handleBookmarksUploaded ();
+		void handleItemChanged (QStandardItem*);
 	public slots:
 		void syncBookmarks ();
 		void uploadBookmarks ();
 		void downloadBookmarks ();
 		void downloadAllBookmarks ();
+		void removeAccount (QObject*);
+
+		void checkDownloadPeriod ();
+		void checkUploadPeriod ();
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
