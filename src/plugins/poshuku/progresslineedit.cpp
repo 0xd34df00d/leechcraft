@@ -83,13 +83,13 @@ namespace Poshuku
 
 	QToolButton* ProgressLineEdit::AddToolButton (QAction *action)
 	{
-		return InsertToolButton (-1, action);
+		return InsertToolButton (action);
 	}
 
-	QToolButton* ProgressLineEdit::InsertToolButton (int id, QAction *action)
+	QToolButton* ProgressLineEdit::InsertToolButton (QAction *action, int id)
 	{
 		if (Action2Button_.contains (action))
-			return 0;
+			return Action2Button_ [action];
 
 		QToolButton *button = new QToolButton (this);
 		button->setCursor (Qt::PointingHandCursor);
@@ -114,14 +114,14 @@ namespace Poshuku
 		return 0;
 	}
 
-	void ProgressLineEdit::RemoveToolButton (QAction* action)
+	void ProgressLineEdit::RemoveToolButton (QAction *action)
 	{
 		if (!Action2Button_.contains (action))
 			return;
 
-		QToolButton * btn = Action2Button_.take (action);
+		QToolButton *btn = Action2Button_.take (action);
 		VisibleButtons_.removeAll (btn);
-		btn->deleteLater ();;
+		btn->deleteLater ();
 		RepaintButtons ();
 	}
 
@@ -130,7 +130,7 @@ namespace Poshuku
 		if (!Action2Button_.contains (action))
 			return;
 
-		QToolButton * btn = Action2Button_ [action];
+		QToolButton *btn = Action2Button_ [action];
 		if (!visible)
 		{
 			VisibleButtons_.removeAll (btn);
@@ -153,7 +153,16 @@ namespace Poshuku
 
 	void ProgressLineEdit::RepaintButtons ()
 	{
-		resizeEvent (0);
+		const int frameWidth = style ()->pixelMetric (QStyle::PM_DefaultFrameWidth);
+		int rigthBorder = 0;
+		for (int i = VisibleButtons_.count () - 1; i >= 0; --i)
+		{
+			QToolButton *btn = VisibleButtons_ [i];
+			const QSize& bmSz = btn->sizeHint ();
+			rigthBorder += bmSz.width ();
+			btn->move (rect ().right () - frameWidth - rigthBorder,
+					   (rect ().bottom () + 1 - bmSz.height ())/2);
+		}
 	}
 
 	void ProgressLineEdit::handleCompleterActivated ()
@@ -179,16 +188,7 @@ namespace Poshuku
 
 	void ProgressLineEdit::resizeEvent (QResizeEvent*)
 	{
-		const int frameWidth = style ()->pixelMetric (QStyle::PM_DefaultFrameWidth);
-		int rigthBorder = 0;
-		for (int i = VisibleButtons_.count () - 1; i >= 0; --i)
-		{
-			QToolButton *btn = VisibleButtons_ [i];
-			const QSize& bmSz = btn->sizeHint ();
-			rigthBorder += bmSz.width ();
-			btn->move (rect ().right () - frameWidth - rigthBorder,
-					(rect ().bottom () + 1 - bmSz.height ())/2);
-		}
+		RepaintButtons ();
 	}
 
 	void ProgressLineEdit::textChanged (const QString& text)

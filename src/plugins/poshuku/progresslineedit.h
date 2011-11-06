@@ -47,17 +47,17 @@ namespace Poshuku
 		bool IsCompleting () const;
 
 		QToolButton* AddToolButton (QAction*);
-		QToolButton* InsertToolButton (int, QAction*);
+		QToolButton* InsertToolButton ( QAction*, int = -1);
 		QToolButton* GetButtonFromAction (QAction*);
 		void RemoveToolButton (QAction*);
 		void SetVisible (int, QAction*, bool);
-		void RepaintButtons ();
 	protected:
 		void keyPressEvent (QKeyEvent*);
 		void resizeEvent (QResizeEvent*);
 	private slots:
 		void handleCompleterActivated ();
 		void textChanged (const QString& text);
+		void RepaintButtons ();
 	};
 }
 }

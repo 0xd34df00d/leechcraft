@@ -189,11 +189,11 @@ namespace Poshuku
 		ProgressLineEdit *pli = qobject_cast<ProgressLineEdit*> (GetURLEdit ());
 		if (!pli)
 			qWarning () << Q_FUNC_INFO
-					<< "isn't a ProgressLineEdit object"
-					<< GetURLEdit ();
+					<< GetURLEdit ()
+					<< "isn't a ProgressLineEdit object";
 		else
 		{
-			pli->InsertToolButton (0, Add2Favorites_);
+			pli->InsertToolButton (Add2Favorites_, 0);
 			connect (GetURLEdit (),
 					SIGNAL (textChanged (const QString&)),
 					this,
@@ -1273,8 +1273,8 @@ namespace Poshuku
 		if (!pli)
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "isn't a ProgressLineEdit object"
-					<< GetURLEdit ();
+					<< GetURLEdit ()
+					<< "isn't a ProgressLineEdit object";
 			return;
 		}
 
@@ -1326,15 +1326,15 @@ namespace Poshuku
 				act->setData (QVariant::fromValue<LeechCraft::Entity> (e));
 				if (!inserted)
 				{
-					QToolButton * btn = pli->AddToolButton (ExternalLinksAction_);
+					QToolButton *btn = pli->AddToolButton (ExternalLinksAction_);
 					pli->SetVisible (-1, ExternalLinksAction_, true);
 					btn->setMenu (ExternalLinks_);
 					btn->setArrowType (Qt::NoArrow);
 					btn->setPopupMode (QToolButton::InstantPopup);
-					const QString& newStyle = QString("::menu-indicator { image: url("");}"
+					const QString& newStyle = QString ("::menu-indicator { image: url("");}"
 							"::menu-button { image: url(""); }"
 							"::menu-arrow { image: url(data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==);}");
-					btn->setStyleSheet(btn->styleSheet () + newStyle);
+					btn->setStyleSheet (btn->styleSheet () + newStyle);
 
 					connect (ExternalLinks_->menuAction (),
 							SIGNAL (triggered ()),
@@ -1600,8 +1600,8 @@ namespace Poshuku
 		if (!pli)
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "isn't a ProgressLineEdit object"
-					<< GetURLEdit ();
+					<< GetURLEdit ()
+					<< "isn't a ProgressLineEdit object";
 			return;
 		}
 		checkPageAsFavorite (url);
@@ -1623,8 +1623,8 @@ namespace Poshuku
 			ProgressLineEdit *pli = qobject_cast<ProgressLineEdit*> (GetURLEdit ());
 			if (!pli)
 				qWarning () << Q_FUNC_INFO
-						<< "isn't a ProgressLineEdit object"
-						<< GetURLEdit ();
+						<< GetURLEdit ()
+						<< "isn't a ProgressLineEdit object";
 			else
 				pli->GetButtonFromAction (Add2Favorites_)->
 						setIcon (Core::Instance ().GetProxy ()->GetIcon ("poshuku_removebookmark"));
@@ -1638,8 +1638,8 @@ namespace Poshuku
 			ProgressLineEdit *pli = qobject_cast<ProgressLineEdit*> (GetURLEdit ());
 			if (!pli)
 				qWarning () << Q_FUNC_INFO
-						<< "isn't a ProgressLineEdit object"
-						<< GetURLEdit ();
+						<< GetURLEdit ()
+						<< "isn't a ProgressLineEdit object";
 			else
 				pli->GetButtonFromAction (Add2Favorites_)->
 						setIcon (Core::Instance ().GetProxy ()->GetIcon ("poshuku_addbookmark"));
