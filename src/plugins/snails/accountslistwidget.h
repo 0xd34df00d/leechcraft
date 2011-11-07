@@ -32,8 +32,6 @@ namespace Snails
 		Ui::AccountsListWidget Ui_;
 	public:
 		AccountsListWidget (QWidget* = 0);
-
-		void SetAccountsModel (QAbstractItemModel*);
 	private slots:
 		void on_AddButton__released ();
 		void on_ModifyButton__released ();

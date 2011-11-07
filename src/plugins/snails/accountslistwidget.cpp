@@ -17,6 +17,8 @@
  **********************************************************************/
 
 #include "accountslistwidget.h"
+#include "account.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -26,15 +28,20 @@ namespace Snails
 	: QWidget (parent)
 	{
 		Ui_.setupUi (this);
-	}
 
-	void AccountsListWidget::SetAccountsModel (QAbstractItemModel *model)
-	{
-		Ui_.AccountsTree_->setModel (model);
+		Ui_.AccountsTree_->setModel (Core::Instance ().GetAccountsModel ());
 	}
 
 	void AccountsListWidget::on_AddButton__released ()
 	{
+		Account_ptr acc (new Account);
+
+		acc->OpenConfigDialog ();
+
+		if (acc->IsNull ())
+			return;
+
+		Core::Instance ().AddAccount (acc);
 	}
 
 	void AccountsListWidget::on_ModifyButton__released ()

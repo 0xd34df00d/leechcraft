@@ -40,9 +40,7 @@ namespace Snails
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "snailssettings.xml");
 
-		auto alw = new AccountsListWidget ();
-		alw->SetAccountsModel (Core::Instance ().GetAccountsModel ());
-		XSD_->SetCustomWidget ("AccountsWidget", alw);
+		XSD_->SetCustomWidget ("AccountsWidget", new AccountsListWidget ());
 	}
 
 	void Plugin::SecondInit ()

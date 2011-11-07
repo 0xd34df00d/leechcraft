@@ -43,6 +43,40 @@ namespace Snails
 				<< tr ("Server")
 				<< tr ("Type");
 		AccountsModel_->setHorizontalHeaderLabels (headers);
+
+		LoadAccounts ();
+	}
+
+	Core& Core::Instance ()
+	{
+		static Core c;
+		return c;
+	}
+
+	QAbstractItemModel* Core::GetAccountsModel () const
+	{
+		return AccountsModel_;
+	}
+
+	void Core::AddAccount (Account_ptr account)
+	{
+		Accounts_ << account;
+
+		QList<QStandardItem*> row;
+		row << new QStandardItem (account->GetName ());
+		row << new QStandardItem (account->GetServer ());
+		row << new QStandardItem (account->GetType ());
+		AccountsModel_->appendRow (row);
+
+		SaveAccounts ();
+	}
+
+	void Core::SaveAccounts () const
+	{
+	}
+
+	void Core::LoadAccounts ()
+	{
 	}
 }
 }

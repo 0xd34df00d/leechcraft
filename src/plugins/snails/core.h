@@ -19,6 +19,7 @@
 #ifndef PLUGINS_SNAILS_CORE_H
 #define PLUGINS_SNAILS_CORE_H
 #include <QObject>
+#include "account.h"
 
 class QAbstractItemModel;
 class QStandardItemModel;
@@ -32,12 +33,17 @@ namespace Snails
 		Q_OBJECT
 
 		QStandardItemModel *AccountsModel_;
+		QList<Account_ptr> Accounts_;
 
 		Core ();
 	public:
 		static Core& Instance ();
 
 		QAbstractItemModel* GetAccountsModel () const;
+		void AddAccount (Account_ptr);
+	private:
+		void SaveAccounts () const;
+		void LoadAccounts ();
 	};
 }
 }
