@@ -20,7 +20,7 @@
 #include <QObject>
 #include <QtTest>
 
-#include "../volumeslider.h"
+#include <volumeslider.h>
 
 using namespace LeechCraft::Laure;
 
