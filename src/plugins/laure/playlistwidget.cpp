@@ -36,12 +36,11 @@ namespace Laure
 	: QWidget (parent)
 	, GridLayout_ (new QGridLayout (this))
 	, PlayListModel_ (new PlayListModel (this))
-	, PlayListView_ (new PlayListView (PlayListModel_, this))
 	, ActionBar_ (new QToolBar (this))
 	{
 		setLayout (GridLayout_);
 		setVisible (false);
-		
+		PlayListView_ = new PlayListView (PlayListModel_, this);
 		GridLayout_->addWidget (PlayListView_, 0, 0);
 		GridLayout_->addWidget (ActionBar_, 1, 0);
 		GridLayout_->setSpacing (0);
