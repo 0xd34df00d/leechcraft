@@ -38,10 +38,10 @@ namespace Laure
 	{
 		Q_OBJECT
 		
-		PlayListView *PlayListView_;
-		PlayListModel *PlayListModel_;
-		QToolBar *ActionBar_;
 		QGridLayout *GridLayout_;
+		PlayListModel *PlayListModel_;
+		PlayListView *PlayListView_;
+		QToolBar *ActionBar_;
 	public:
 		PlayListWidget (QWidget* = 0);
 	public slots:
