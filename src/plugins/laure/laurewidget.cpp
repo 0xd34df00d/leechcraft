@@ -49,7 +49,7 @@ namespace Laure
 	{	
 		Ui_.setupUi (this);
 		Ui_.Player_->SetVLCWrapper (VLCWrapper_);
-
+		
 		connect (Ui_.Player_,
 				SIGNAL (timeout ()),
 				this,
@@ -63,13 +63,13 @@ namespace Laure
 				VLCWrapper_,
 				SLOT (setVolume (int)));
 		connect (VLCWrapper_,
-				SIGNAL (nowPlayed (MediaMeta)),
+				SIGNAL (currentTrackMeta (MediaMeta)),
 				this,
-				SIGNAL (nowPlayed (MediaMeta)));
+				SIGNAL (currentTrackMeta (MediaMeta)));
 		connect (VLCWrapper_,
-				SIGNAL (played ()),
+				SIGNAL (trackFinished ()),
 				this,
-				SIGNAL (played ()));
+				SIGNAL (trackFinished ()));
 		connect (Ui_.PlayListWidget_,
 				SIGNAL (itemAddedRequest (QString)),
 				VLCWrapper_,
@@ -123,16 +123,22 @@ namespace Laure
 		QAction *actionOpenFile = new QAction (tr ("Open File"), this);
 		QAction *actionOpenURL = new QAction (tr ("Open URL"), this);
 		QAction *playList = new QAction (tr ("Playlist"), this);
+		QAction *videoMode = new QAction (tr ("Video mode"), this);
 		
 		actionOpenFile->setProperty ("ActionIcon", "folder");
 		actionOpenURL->setProperty ("ActionIcon", "networkmonitor_plugin");
 		playList->setProperty ("ActionIcon", "itemlist");
+		videoMode->setProperty ("ActionIcon", "video");
 		
 		playList->setCheckable (true);
+		videoMode->setCheckable (true);
+		
+		videoMode->setChecked (true);
 		
 		ToolBar_->addAction (actionOpenFile);
 		ToolBar_->addAction (actionOpenURL);
 		ToolBar_->addAction (playList);
+		ToolBar_->addAction (videoMode);
 		
 		connect (actionOpenFile,
 				SIGNAL (triggered (bool)),
@@ -144,8 +150,20 @@ namespace Laure
 				SLOT (handleOpenURL ()));
 		connect (playList,
 				SIGNAL (triggered (bool)),
+				Ui_.PlayListWidget_,
+				SLOT (setVisible (bool)));
+		connect (this,
+				SIGNAL (playListMode (bool)),
+				playList,
+				SLOT (setChecked (bool)));
+		connect (videoMode,
+				SIGNAL (triggered (bool)),
 				this,
-				SLOT (handlePlaylist ()));
+				SLOT (handleVideoMode (bool)));
+		connect (this,
+				SIGNAL (playListMode (bool)),
+				playList,
+				SLOT (setDisabled (bool)));
 	}
 	
 	void LaureWidget::InitCommandFrame ()
@@ -277,9 +295,16 @@ namespace Laure
 			emit addItem (fileName);
 	}
 	
-	void LaureWidget::handlePlaylist ()
+	void LaureWidget::handleVideoMode (bool checked)
 	{
-		Ui_.PlayListWidget_->setVisible (qobject_cast<QAction *> (sender ())->isChecked ());
+		if (checked)
+			Ui_.Splitter_->addWidget (Ui_.PlayListWidget_);
+		else
+			Ui_.GlobalGridLayout_->addWidget (Ui_.PlayListWidget_, 0, 1, 1, 4);
+
+		Ui_.Player_->setVisible (checked);
+		Ui_.PlayListWidget_->setVisible (!checked);
+		emit playListMode (!checked);
 	}
 }
 }

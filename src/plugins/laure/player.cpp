@@ -41,10 +41,6 @@ namespace Laure
 				SIGNAL (timeout ()),
 				this,
 				SIGNAL (timeout ()));
-		connect (Poller_,
-				SIGNAL (timeout ()),
-				this,
-				SLOT (handleTimeout ()));
 		Poller_->start (300);
 	}
 	
@@ -93,17 +89,6 @@ namespace Laure
 			return;
 		
 		VLCWrapper_->setPosition (static_cast<float> (pos) / pos_slider_max);
-	}
-	
-	void Player::handleTimeout ()
-	{
-		if (!VLCWrapper_)
-			return;
-		
-		const int time = VLCWrapper_->Time ();
-		const int length = VLCWrapper_->Length ();
-		if (length - time < 200 && VLCWrapper_->IsPlaying ())
-			VLCWrapper_->next ();
 	}
 }
 }

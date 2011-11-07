@@ -17,30 +17,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "nowplayingdelegate.h"
-#include <QPainter>
-#include <QDebug>
-#include "playlistmodel.h"
+#include <QObject>
+#include <QtTest>
 
-namespace LeechCraft
+#include <volumeslider.h>
+
+using namespace LeechCraft::Laure;
+
+class VolumeSliderTest : public QObject
 {
-namespace Laure
-{
-	NowPlayingDelegate::NowPlayingDelegate (QObject *parent)
-	: QItemDelegate (parent)
+	Q_OBJECT
+private slots:
+	void setValue ()
 	{
+		VolumeSlider slider;
+		slider.setValue (2);
+		QVERIFY (slider.value () == 2);
 	}
-	
-	void NowPlayingDelegate::paint (QPainter *painter, const QStyleOptionViewItem& option,
-				const QModelIndex& id) const
-	{
-		const bool played = id.sibling (id.row (), 0)
-				.data (PlayListModel::IsPlayingRole).toBool ();
-				
-		if (played)
-			painter->fillRect (option.rect, Qt::gray);
-		
-		QItemDelegate::paint (painter, option, id);
-	}
-}
-}
+};

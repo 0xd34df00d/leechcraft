@@ -121,11 +121,11 @@ namespace Laure
 				this,
 				SLOT (handleNeedToClose ()));
 		connect (w,
-				SIGNAL (nowPlayed (MediaMeta)),
+				SIGNAL (currentTrackMeta (MediaMeta)),
 				LFSubmitter_,
-				SLOT (nowPlaying (MediaMeta)));
+				SLOT (sendTrack (MediaMeta)));
 		connect (w,
-				SIGNAL (played ()),
+				SIGNAL (trackFinished ()),
 				LFSubmitter_,
 				SLOT (submit ()));
 		connect (w,

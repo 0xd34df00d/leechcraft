@@ -23,10 +23,19 @@ namespace LeechCraft
 {
 namespace Laure
 {
+	const int PlayListColumnCount = 6;
+	
 	PlayListModel::PlayListModel (QObject* parent)
 	: QStandardItemModel (parent)
 	{
-		setColumnCount (2);
+		setColumnCount (PlayListColumnCount);
+		HeaderNames_ << tr ("Artist")
+				<< tr ("Title")
+				<< tr ("Album")
+				<< tr ("Genre")
+				<< tr ("Date");
+		for (int i = 1; i < PlayListColumnCount; ++i)
+			setHeaderData (i, Qt::Horizontal, HeaderNames_ [i - 1]);
 	}
 	
 	Qt::ItemFlags PlayListModel::flags (const QModelIndex& index) const

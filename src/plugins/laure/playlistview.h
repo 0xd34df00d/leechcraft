@@ -21,7 +21,6 @@
 #define PLUGINS_LAURE_PLAYLISTVIEW_H
 
 #include <QTreeView>
-#include "playlistmodel.h"
 #include "vlcwrapper.h"
 
 class QKeyEvent;
@@ -39,12 +38,10 @@ namespace Laure
 		PlayListModel *PlayListModel_;
 		int CurrentItem_;
 	public:
-		PlayListView (QWidget* = 0);
+		PlayListView (PlayListModel *model, QWidget* = 0);
 		
 		void AddItem (const MediaMeta&, const QString&);
 		void Play (int);
-		int RowCount () const;
-		QVariant Data (int row, int column);
 	protected:
 		void keyPressEvent (QKeyEvent*);
 	public slots:
