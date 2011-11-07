@@ -117,6 +117,7 @@ OPTION (ENABLE_SHELLOPEN "Build ShellOpen, the plugin supporting handling entiti
 OPTION (ENABLE_SYNCER "Build Syncer, the synchronization plugin for LeechCraft" OFF)
 OPTION (ENABLE_TABSLIST "Quick overview of tabs" OFF)
 OPTION (ENABLE_VFSCORE "Build VFS core" OFF)
+OPTION (ENABLE_SNAILS "Build Snails, LeechCraft mail client" OFF)
 
 # Defunct
 OPTION (ENABLE_FTP "Build LCFTP, the FTP client" ON)
@@ -311,6 +312,10 @@ ENDIF (ENABLE_VFSCORE)
 IF (ENABLE_KNOWHOW)
 	ADD_SUBDIRECTORY (plugins/knowhow)
 ENDIF (ENABLE_KNOWHOW)
+
+IF (ENABLE_SNAILS)
+	ADD_SUBDIRECTORY (plugins/snails)
+ENDIF (ENABLE_SNAILS)
 
 SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTXML TRUE)
