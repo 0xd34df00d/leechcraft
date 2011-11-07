@@ -21,6 +21,7 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/ihavesettings.h>
 
 namespace LeechCraft
 {
@@ -29,11 +30,13 @@ namespace Snails
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IHaveTabs
+				 , public IHaveSettings
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs)
+		Q_INTERFACES (IInfo IHaveTabs IHaveSettings)
 
 		TabClassInfo MailTabClass_;
+		Util::XmlSettingsDialog_ptr XSD_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -45,6 +48,8 @@ namespace Snails
 
 		TabClasses_t GetTabClasses () const;
 		void TabOpenRequested (const QByteArray&);
+
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);

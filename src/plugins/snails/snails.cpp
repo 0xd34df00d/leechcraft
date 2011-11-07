@@ -18,7 +18,9 @@
 
 #include "snails.h"
 #include <QIcon>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "mailtab.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -32,6 +34,9 @@ namespace Snails
 		MailTabClass_.Icon_ = GetIcon ();
 		MailTabClass_.Priority_ = 55;
 		MailTabClass_.Features_ = TFOpenableByRequest;
+
+		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "snailssettings.xml");
 	}
 
 	void Plugin::SecondInit ()
@@ -87,6 +92,11 @@ namespace Snails
 			qWarning () << Q_FUNC_INFO
 					<< "unknown tab class"
 					<< tabClass;
+	}
+
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XSD_;
 	}
 }
 }

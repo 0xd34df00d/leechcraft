@@ -27,11 +27,13 @@ SET (SRCS
 	snails.cpp
 	core.cpp
 	mailtab.cpp
+	xmlsettingsmanager.cpp
 	)
 SET (HEADERS
 	snails.h
 	core.h
 	mailtab.h
+	xmlsettingsmanager.h
 	)
 SET (FORMS
 	mailtab.ui
@@ -51,3 +53,4 @@ TARGET_LINK_LIBRARIES (leechcraft_snails
 	vmime
 	)
 INSTALL (TARGETS leechcraft_snails DESTINATION ${LC_PLUGINS_DEST})
+INSTALL (FILES snailssettings.xml DESTINATION ${LC_SETTINGS_DEST})
