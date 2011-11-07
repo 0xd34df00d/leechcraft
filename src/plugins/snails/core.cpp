@@ -18,6 +18,9 @@
 
 #include "core.h"
 #include <QStandardItemModel>
+#include <QSettings>
+#include <QCoreApplication>
+#include <QtDebug>
 
 #if Q_WS_WIN
 #include <vmime/platforms/windows/windowsHandler.hpp>
@@ -60,6 +63,13 @@ namespace Snails
 
 	void Core::AddAccount (Account_ptr account)
 	{
+		AddAccountImpl (account);
+
+		SaveAccounts ();
+	}
+
+	void Core::AddAccountImpl (Account_ptr account)
+	{
 		Accounts_ << account;
 
 		QList<QStandardItem*> row;
@@ -67,16 +77,39 @@ namespace Snails
 		row << new QStandardItem (account->GetServer ());
 		row << new QStandardItem (account->GetType ());
 		AccountsModel_->appendRow (row);
-
-		SaveAccounts ();
 	}
 
 	void Core::SaveAccounts () const
 	{
+		QList<QVariant> serialized;
+		Q_FOREACH (Account_ptr acc, Accounts_)
+			serialized << acc->Serialize ();
+
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Snails_Accounts");
+		settings.setValue ("Accounts", serialized);
 	}
 
 	void Core::LoadAccounts ()
 	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Snails_Accounts");
+		Q_FOREACH (const QVariant& var, settings.value ("Accounts").toList ())
+		{
+			Account_ptr acc (new Account);
+			try
+			{
+				acc->Deserialize (var.toByteArray ());
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to deserialize account, sorry :("
+						<< e.what ();
+				continue;
+			}
+			AddAccountImpl (acc);
+		}
 	}
 }
 }

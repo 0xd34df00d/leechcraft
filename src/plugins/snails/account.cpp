@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "account.h"
+#include <stdexcept>
 #include <QUuid>
 #include <QDataStream>
 #include "accountconfigdialog.h"
@@ -61,12 +62,57 @@ namespace Snails
 	QByteArray Account::Serialize () const
 	{
 		QByteArray result;
+
 		QDataStream out (&result, QIODevice::WriteOnly);
+		out << static_cast<quint8> (1);
+		out << ID_
+			<< AccName_
+			<< Login_
+			<< UseTLS_
+			<< TLSRequired_
+			<< SMTPNeedsAuth_
+			<< APOP_
+			<< APOPFail_
+			<< InHost_
+			<< InPort_
+			<< OutHost_
+			<< OutPort_
+			<< OutLogin_
+			<< static_cast<quint8> (InType_)
+			<< static_cast<quint8> (OutType_);
+
 		return result;
 	}
 
-	void Account::Deserialize (const QByteArray&)
+	void Account::Deserialize (const QByteArray& arr)
 	{
+		QDataStream in (arr);
+		quint8 version = 0;
+		in >> version;
+
+		if (version != 1)
+			throw std::runtime_error (qPrintable ("Unknown version " + QString::number (version)));
+
+		quint8 inType = 0, outType = 0;
+
+		in >> ID_
+			>> AccName_
+			>> Login_
+			>> UseTLS_
+			>> TLSRequired_
+			>> SMTPNeedsAuth_
+			>> APOP_
+			>> APOPFail_
+			>> InHost_
+			>> InPort_
+			>> OutHost_
+			>> OutPort_
+			>> OutLogin_
+			>> inType
+			>> outType;
+
+		InType_ = static_cast<InType> (inType);
+		OutType_ = static_cast<OutType> (outType);
 	}
 
 	void Account::OpenConfigDialog ()

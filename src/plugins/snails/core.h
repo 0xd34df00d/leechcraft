@@ -42,6 +42,7 @@ namespace Snails
 		QAbstractItemModel* GetAccountsModel () const;
 		void AddAccount (Account_ptr);
 	private:
+		void AddAccountImpl (Account_ptr);
 		void SaveAccounts () const;
 		void LoadAccounts ();
 	};
