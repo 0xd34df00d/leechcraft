@@ -1,9 +1,9 @@
 # - Try to find lastfm 0.3.3
 # Once done this will define
 #
-#  LastFM_FOUND - system has libvlc
-#  LastFM_DIRS - the livlc include directory
-#  LastFM_LIBRARIES - Link these to use libvlc
+#  LastFM_FOUND - system has liblastfm
+#  LastFM_DIRS - the liblastfm include directory
+#  LastFM_LIBRARIES - Link these to use liblastfm
 #
 #  Copyright (C) 2011  Minh Ngo <nlminhtl@gmail.com>
 #
