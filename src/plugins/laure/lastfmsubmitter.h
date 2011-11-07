@@ -34,9 +34,8 @@ namespace LeechCraft
 {
 namespace Laure
 {
-	/** @author Minh Ngo <nlminhtl@gmail.com>
-	 * @brief The LastFMSubmitter class provides a simple interface for
-	 * interacting with the last.fm scrobbling service.
+	/** @brief The LastFMSubmitter class provides a simple interface for interacting with the last.fm scrobbling service.
+	 *  @author Minh Ngo <nlminhtl@gmail.com>
 	 */
 	class LastFMSubmitter : public QObject
 	{
@@ -46,6 +45,7 @@ namespace Laure
 	public:
 		/** @brief Constructs a new LastFMSubmitter with the given
 		 * ICoreProxy_ptr and parent.
+		 * 
 		 * @sa ICoreProxy_ptr
 		 */
 		LastFMSubmitter (ICoreProxy_ptr proxy, QObject *parent = 0);
@@ -58,6 +58,7 @@ namespace Laure
 		
 		/** @brief Send meta informations about the current playback to
 		 * the last.fm service.
+		 * 
 		 * @sa MediaMeta
 		 */
 		void nowPlaying (const MediaMeta&);
@@ -67,12 +68,7 @@ namespace Laure
 		 */
 		void submit ();
 	private slots:
-		/** @brief Show scrobbling status in an appropriate manner
-		 */
 		void status (int);
-		
-		/** @brief Get the session key for accessing to last.fm services.
-		 */
 		void getSessionKey ();
 	};
 }

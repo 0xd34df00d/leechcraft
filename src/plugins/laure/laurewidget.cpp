@@ -163,7 +163,7 @@ namespace Laure
 		connect (this,
 				SIGNAL (playListMode (bool)),
 				playList,
-				SLOT (setDisabled(bool)));
+				SLOT (setDisabled (bool)));
 	}
 	
 	void LaureWidget::InitCommandFrame ()

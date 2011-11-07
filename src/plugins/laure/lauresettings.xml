@@ -22,9 +22,6 @@
 		</groupbox>
 		<groupbox>
 			<label value="Last.FM" />
-			<item type="lineedit" property="lastfm.url" default="http://ws.audioscrobbler.com/2.0/">
-				<label value="Scrobber URL (with '/' at the end):" />
-			</item>
 			<item type="lineedit" property="lastfm.login">
 				<label value="Login:" />
 			</item>

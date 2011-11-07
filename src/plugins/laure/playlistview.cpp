@@ -38,16 +38,14 @@ namespace Laure
 		setAlternatingRowColors (true);
 		hideColumn (0);
 
-		for (int i = 1; i < 6; ++i)
+		for (int i = 1; i < PlayListModel_->rowCount (); ++i)
 		{
 			const QString& itemName = "Header" + QString::number (i);
 			setColumnHidden (i, !XmlSettingsManager::Instance ()
 					.property (itemName.toAscii ()).toBool ());
 		}
-					
-		NowPlayingDelegate *delegate = new NowPlayingDelegate (this);
-		delegate->SetPlayListModel (PlayListModel_);
-		setItemDelegate (delegate);
+
+		setItemDelegate (new NowPlayingDelegate (this));
 		setSizePolicy (QSizePolicy::Minimum, QSizePolicy::Minimum);
 		
 		header ()->setResizeMode (QHeaderView::ResizeToContents);
@@ -109,7 +107,7 @@ namespace Laure
 		
 		const int first = indexList.first ().row ();
 		PlayListModel_->removeRows (first, indexList.count ()
-				/ (PlayListRowCount - 1));
+				/ (PlayListModel_->rowCount () - 1));
 		for (int i = c - 1; i > -1; --i)
 			emit itemRemoved (first);
 	

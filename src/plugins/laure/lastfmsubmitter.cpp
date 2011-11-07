@@ -76,8 +76,7 @@ namespace Laure
 		const QString& api_sig = ApiSig (lastfm::ws::ApiKey, authToken,
 				"auth.getMobileSession", lastfm::ws::Username,
 				lastfm::ws::SharedSecret);
-		const QString& scrobblingSite =  XmlSettingsManager::Instance ()
-				.property ("lastfm.url").toString ();
+		const QString& scrobblingSite =  "http://ws.audioscrobbler.com/2.0/";
 		const QString& url = QString ("%1?method=%2&username=%3&authToken=%4&api_key=%5&api_sig=%6")
 				.arg (scrobblingSite)
 				.arg ("auth.getMobileSession")

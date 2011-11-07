@@ -28,21 +28,13 @@ namespace Laure
 {
 	NowPlayingDelegate::NowPlayingDelegate (QObject *parent)
 	: QItemDelegate (parent)
-	, Model_ (NULL)
-	{	
-	}
-	
-	void NowPlayingDelegate::SetPlayListModel (PlayListModel *model)
 	{
-		Model_ = model;
 	}
 	
 	void NowPlayingDelegate::paint (QPainter *painter, const QStyleOptionViewItem& option,
 				const QModelIndex& id) const
 	{
-		if (!Model_)
-			return;
-		const bool played = Model_->index (id.row (), 0)
+		const bool played = id.sibling (id.row (), 0)
 				.data (PlayListModel::IsPlayingRole).toBool ();
 				
 		if (played)

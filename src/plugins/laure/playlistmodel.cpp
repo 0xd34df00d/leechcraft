@@ -23,10 +23,12 @@ namespace LeechCraft
 {
 namespace Laure
 {
+	const int PlayListColumnCount = 6;
+	
 	PlayListModel::PlayListModel (QObject* parent)
 	: QStandardItemModel (parent)
 	{
-		setColumnCount (PlayListRowCount);
+		setColumnCount (PlayListColumnCount);
 		HeaderName_ << tr ("Artist")
 				<< tr ("Title")
 				<< tr ("Album")
@@ -39,11 +41,6 @@ namespace Laure
 	Qt::ItemFlags PlayListModel::flags (const QModelIndex& index) const
 	{
 		return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
-	}
-	
-	QStringList PlayListModel::Header () const
-	{
-		return HeaderName_;
 	}
 }
 }

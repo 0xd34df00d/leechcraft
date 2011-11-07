@@ -34,10 +34,8 @@ namespace Laure
 	{
 		Q_OBJECT
 		
-		PlayListModel *Model_;
 	public:
 		NowPlayingDelegate (QObject* = 0);
-		void SetPlayListModel (PlayListModel *model);
 		void paint (QPainter *painter, const QStyleOptionViewItem& option,
 				const QModelIndex& id) const;
 	};
