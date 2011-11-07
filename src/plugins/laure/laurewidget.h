@@ -63,19 +63,20 @@ namespace Laure
 	signals:
 		void needToClose ();
 		void playPause ();
-		void nowPlayed (const MediaMeta&);
-		void played ();
+		void currentTrackMeta (const MediaMeta&);
+		void trackFinished ();
 		void addItem (const QString&);
 		void gotEntity (const Entity&);
 		void delegateEntity (const Entity&,
 				int*, QObject**);
+		void playListMode (bool);
 	public slots:
 		void handleOpenMediaContent (const QString&);
 	private slots:
 		void handleOpenFile ();
 		void handleOpenURL ();
 		void updateInterface ();
-		void handlePlaylist ();
+		void handleVideoMode (bool);
 	};
 }
 }

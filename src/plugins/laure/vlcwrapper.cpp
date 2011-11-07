@@ -31,6 +31,21 @@ namespace Laure
 {
 	const char * const vlc_args[] = {};
 	
+	namespace
+	{
+		void ListEventCallback (const libvlc_event_t *event, void *data)
+		{
+			VLCWrapper *wrapper = static_cast<VLCWrapper*> (data);
+			switch (event->type)
+			{
+			case libvlc_MediaListPlayerNextItemSet:
+				wrapper->handledHasPlayed ();
+				wrapper->handleNextItemSet ();
+				break;
+			}
+		}
+	}
+	
 	VLCWrapper::VLCWrapper (QObject* parent)
 	: QObject (parent)
 	, CurrentItem_ (-1)
@@ -46,6 +61,31 @@ namespace Laure
 		
 		libvlc_media_list_player_set_media_player (LPlayer_.get (), Player_.get ());
 		libvlc_media_list_player_set_media_list (LPlayer_.get (), List_.get ());
+		
+		libvlc_event_manager_t *listEventManager = libvlc_media_list_player_event_manager (LPlayer_.get ());
+		libvlc_event_attach (listEventManager, libvlc_MediaListPlayerNextItemSet,
+				     ListEventCallback, this);
+	}
+	
+	void VLCWrapper::handleNextItemSet ()
+	{
+		libvlc_media_list_t *list = List_.get ();
+		int index = libvlc_media_list_index_of_item (list,
+				libvlc_media_player_get_media (Player_.get ()));
+		
+		const MediaMeta& meta = GetItemMeta (index);
+		emit gotEntity (Util::MakeNotification ("Laure",
+				tr ("%1 - %2").arg (meta.Artist_).arg (meta.Title_),
+					PInfo_));
+		
+		CurrentItem_ = index;
+		emit (itemPlayed (CurrentItem_));
+		QTimer::singleShot (5000, this, SLOT (nowPlaying ()));
+	}
+	
+	void VLCWrapper::handledHasPlayed ()
+	{
+		emit trackFinished ();
 	}
 	
 	MediaMeta VLCWrapper::GetItemMeta (int row) const
@@ -134,20 +174,14 @@ namespace Laure
 		
 		libvlc_media_list_player_play_item_at_index (LPlayer_.get (), CurrentItem_);
 		
-		//Without track length
-		const MediaMeta& meta = GetItemMeta (val);
-		emit gotEntity (Util::MakeNotification ("Laure",
-				tr ("%1 - %2").arg (meta.Artist_).arg (meta.Title_),
-					PInfo_));
-		emit (itemPlayed (CurrentItem_));
-		QTimer::singleShot (5000, this, SLOT (nowPlaying ()));
+		handleNextItemSet ();
 	}
 	
 	void VLCWrapper::nowPlaying ()
 	{
 		MediaMeta meta = GetItemMeta (CurrentItem_);
 		meta.Length_ = libvlc_media_player_get_length (Player_.get ()) / 1000;
-		emit nowPlayed (meta);
+		emit currentTrackMeta (meta);
 	}
 	
 	void VLCWrapper::stop ()
@@ -169,14 +203,12 @@ namespace Laure
 	
 	void VLCWrapper::next ()
 	{
-		emit played ();
-		playItem (CurrentItem_ + 1);
+		libvlc_media_list_player_next (LPlayer_.get ());
 	}
 	
 	void VLCWrapper::prev ()
 	{
-		emit played ();
-		playItem (CurrentItem_ - 1);
+		libvlc_media_list_player_previous (LPlayer_.get ());
 	}
 	
 	void VLCWrapper::setVolume (int vol)

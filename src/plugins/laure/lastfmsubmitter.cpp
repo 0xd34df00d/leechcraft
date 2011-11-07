@@ -57,6 +57,8 @@ namespace Laure
 	{
 		return Scrobbler_ != NULL;
 	}
+	
+	const QString ScrobblingSite_ = "http://ws.audioscrobbler.com/2.0/";
 
 	LastFMSubmitter::LastFMSubmitter (ICoreProxy_ptr proxy, QObject* parent)
 	: QObject (parent)
@@ -76,10 +78,8 @@ namespace Laure
 		const QString& api_sig = ApiSig (lastfm::ws::ApiKey, authToken,
 				"auth.getMobileSession", lastfm::ws::Username,
 				lastfm::ws::SharedSecret);
-		const QString& scrobblingSite =  XmlSettingsManager::Instance ()
-				.property ("lastfm.url").toString ();
 		const QString& url = QString ("%1?method=%2&username=%3&authToken=%4&api_key=%5&api_sig=%6")
-				.arg (scrobblingSite)
+				.arg (ScrobblingSite_)
 				.arg ("auth.getMobileSession")
 				.arg (lastfm::ws::Username)
 				.arg (authToken)
@@ -121,16 +121,18 @@ namespace Laure
 		// code
 	}
 		
-	void LastFMSubmitter::nowPlaying (const MediaMeta& info)
+	void LastFMSubmitter::sendTrack (const MediaMeta& info)
 	{
+		Scrobbler_->submit ();
 		lastfm::Track track;
 		lastfm::MutableTrack mutableTrack (track);
 		mutableTrack.setTitle (info.Title_);
 		mutableTrack.setAlbum (info.Album_);
 		mutableTrack.setArtist (info.Artist_);
+		mutableTrack.stamp ();
+		mutableTrack.setSource (lastfm::Track::Player);
 		mutableTrack.setDuration (info.Length_);
 		mutableTrack.setTrackNumber (info.TrackNumber_);
-		mutableTrack.setMbid (lastfm::Mbid ("1"));
 		Scrobbler_->nowPlaying (track);
 		Scrobbler_->cache (track);
 	}

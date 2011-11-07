@@ -17,30 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "nowplayingdelegate.h"
-#include <QPainter>
-#include <QDebug>
-#include "playlistmodel.h"
+#include "volumeslidertest.h"
 
-namespace LeechCraft
-{
-namespace Laure
-{
-	NowPlayingDelegate::NowPlayingDelegate (QObject *parent)
-	: QItemDelegate (parent)
-	{
-	}
-	
-	void NowPlayingDelegate::paint (QPainter *painter, const QStyleOptionViewItem& option,
-				const QModelIndex& id) const
-	{
-		const bool played = id.sibling (id.row (), 0)
-				.data (PlayListModel::IsPlayingRole).toBool ();
-				
-		if (played)
-			painter->fillRect (option.rect, Qt::gray);
-		
-		QItemDelegate::paint (painter, option, id);
-	}
-}
-}
+QTEST_MAIN (VolumeSliderTest)

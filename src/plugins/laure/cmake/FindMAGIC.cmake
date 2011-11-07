@@ -1,9 +1,9 @@
 # - Try to find libmagic 5.07
 # Once done this will define
 #
-#  MAGIC_FOUND - system has libvlc
-#  MAGIC_INCLUDE_DIRS - the livlc include directory
-#  MAGIC_LIBRARIES - Link these to use libvlc
+#  MAGIC_FOUND - system has libmagic
+#  MAGIC_INCLUDE_DIRS - the libmagic include directory
+#  MAGIC_LIBRARIES - Link these to use libmagic
 #
 #  Copyright (C) 2011 Minh Ngo <nlminhtl@gmail.com>
 #

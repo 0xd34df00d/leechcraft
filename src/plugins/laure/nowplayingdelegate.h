@@ -28,13 +28,16 @@ namespace LeechCraft
 {
 namespace Laure
 {
+	class PlayListModel;
+	
 	class NowPlayingDelegate : public QItemDelegate
 	{
 		Q_OBJECT
+		
 	public:
 		NowPlayingDelegate (QObject* = 0);
 		void paint (QPainter *painter, const QStyleOptionViewItem& option,
-				const QModelIndex& index) const;
+				const QModelIndex& id) const;
 	};
 }
 }

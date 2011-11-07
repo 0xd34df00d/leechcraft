@@ -24,6 +24,7 @@
 #include <QPixmap>
 
 class QMouseEvent;
+class QPaintEvent;
 
 namespace LeechCraft
 {
@@ -45,8 +46,6 @@ namespace Laure
 		void mouseMoveEvent (QMouseEvent *ev);
 	private:
 		void GenerateGradient ();
-	private slots:
-		void slotAnimTimer ();
 	};
 }
 }

@@ -48,7 +48,6 @@ namespace Laure
 		int Position () const;
 	public slots:
 		void setPosition (int);
-		void handleTimeout ();
 	signals:
 		void timeout ();
 	};

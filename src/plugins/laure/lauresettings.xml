@@ -1,35 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
 	<page>
-		<label value="Potorchu" />
+		<label value="Laure" />
 		<groupbox>
 			<label value="Playlist" />
-			<item type="lineedit" property="PlaylistFormat" default="%artist% - %album% - %title%">
-				<label value="Playlist view template: " />
+			<item type="checkbox" property="Header1" default="true">
+				<label value="Show Artist" />
 			</item>
-			<item type="color" property="PlaylistFirstBackground" default="#000000">
-				<label value="First item's background color: " />
+			<item type="checkbox" property="Header2" default="true">
+				<label value="Show Title" />
 			</item>
-			<item type="color" property="PlaylistFirstText" default="#FFFFFF">
-				<label value="First item's text color: " />
+			<item type="checkbox" property="Header3" default="true">
+				<label value="Show Album" />
 			</item>
-			<item type="color" property="PlaylistSecondBackground" default="#FFFFFF">
-				<label value="Second item's background color: " />
+			<item type="checkbox" property="Header4" default="true">
+				<label value="Show Genre" />
 			</item>
-			<item type="color" property="PlaylistSecondText" default="#000000">
-				<label value="Second item's text color: " />
+			<item type="checkbox" property="Header5" default="true">
+				<label value="Show Date" />
 			</item>
 		</groupbox>
 		<groupbox>
 			<label value="Last.FM" />
-			<item type="lineedit" property="lastfm.url" default="http://ws.audioscrobbler.com/2.0/">
-					<label value="Scrobber URL (with '/' at the end): " />
-			</item>
 			<item type="lineedit" property="lastfm.login">
-				<label value="Login: " />
+				<label value="Login:" />
 			</item>
 			<item type="lineedit" property="lastfm.password" password="true">
-				<label value="Password: " />
+				<label value="Password:" />
 			</item>
 		</groupbox>
 	</page>

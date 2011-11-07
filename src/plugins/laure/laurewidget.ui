@@ -27,9 +27,15 @@
     <number>0</number>
    </property>
    <item row="0" column="0">
-    <widget class="QSplitter" name="splitter">
+    <widget class="QSplitter" name="Splitter_">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="handleWidth">
+      <number>3</number>
+     </property>
+     <property name="childrenCollapsible">
+      <bool>true</bool>
      </property>
      <widget class="QWidget" name="layoutWidget">
       <layout class="QGridLayout" name="GlobalGridLayout_">
