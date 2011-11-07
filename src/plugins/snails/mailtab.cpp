@@ -43,6 +43,7 @@ namespace Snails
 	void MailTab::Remove ()
 	{
 		emit removeTab (this);
+		deleteLater ();
 	}
 
 	QToolBar* MailTab::GetToolBar () const
