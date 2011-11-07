@@ -21,6 +21,8 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "mailtab.h"
 #include "xmlsettingsmanager.h"
+#include "accountslistwidget.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -37,6 +39,10 @@ namespace Snails
 
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "snailssettings.xml");
+
+		auto alw = new AccountsListWidget ();
+		alw->SetAccountsModel (Core::Instance ().GetAccountsModel ());
+		XSD_->SetCustomWidget ("AccountsWidget", alw);
 	}
 
 	void Plugin::SecondInit ()
@@ -78,7 +84,7 @@ namespace Snails
 	{
 		if (tabClass == "mail")
 		{
-			MailTab *mt = new MailTab (MailTabClass_, this);
+			auto mt = new MailTab (MailTabClass_, this);
 
 			connect (mt,
 					SIGNAL (removeTab (QWidget*)),

@@ -28,15 +28,18 @@ SET (SRCS
 	core.cpp
 	mailtab.cpp
 	xmlsettingsmanager.cpp
+	accountslistwidget.cpp
 	)
 SET (HEADERS
 	snails.h
 	core.h
 	mailtab.h
 	xmlsettingsmanager.h
+	accountslistwidget.h
 	)
 SET (FORMS
 	mailtab.ui
+	accountslistwidget.ui
 	)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 QT4_WRAP_UI (UIS_H ${FORMS})

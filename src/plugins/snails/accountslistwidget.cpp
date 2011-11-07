@@ -16,30 +16,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SNAILS_CORE_H
-#define PLUGINS_SNAILS_CORE_H
-#include <QObject>
-
-class QAbstractItemModel;
-class QStandardItemModel;
+#include "accountslistwidget.h"
 
 namespace LeechCraft
 {
 namespace Snails
 {
-	class Core : public QObject
+	AccountsListWidget::AccountsListWidget (QWidget *parent)
+	: QWidget (parent)
 	{
-		Q_OBJECT
+		Ui_.setupUi (this);
+	}
 
-		QStandardItemModel *AccountsModel_;
+	void AccountsListWidget::SetAccountsModel (QAbstractItemModel *model)
+	{
+		Ui_.AccountsTree_->setModel (model);
+	}
 
-		Core ();
-	public:
-		static Core& Instance ();
+	void AccountsListWidget::on_AddButton__released ()
+	{
+	}
 
-		QAbstractItemModel* GetAccountsModel () const;
-	};
+	void AccountsListWidget::on_ModifyButton__released ()
+	{
+	}
+
+	void AccountsListWidget::on_RemoveButton__released ()
+	{
+	}
 }
 }
-
-#endif

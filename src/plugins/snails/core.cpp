@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "core.h"
+#include <QStandardItemModel>
 
 #if Q_WS_WIN
 #include <vmime/platforms/windows/windowsHandler.hpp>
@@ -29,13 +30,19 @@ namespace LeechCraft
 namespace Snails
 {
 	Core::Core ()
-	: QObject ()
+	: AccountsModel_ (new QStandardItemModel)
 	{
 #if Q_WS_WIN
 		vmime::platform::setHandler<vmime::platforms::windows::windowsHandler> ();
 #else
 		vmime::platform::setHandler<vmime::platforms::posix::posixHandler> ();
 #endif
+
+		QStringList headers;
+		headers << tr ("Name")
+				<< tr ("Server")
+				<< tr ("Type");
+		AccountsModel_->setHorizontalHeaderLabels (headers);
 	}
 }
 }
