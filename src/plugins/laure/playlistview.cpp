@@ -38,7 +38,7 @@ namespace Laure
 		setAlternatingRowColors (true);
 		hideColumn (0);
 
-		for (int i = 1; i < PlayListModel_->rowCount (); ++i)
+		for (int i = 1; i < PlayListModel_->columnCount (); ++i)
 		{
 			const QString& itemName = "Header" + QString::number (i);
 			setColumnHidden (i, !XmlSettingsManager::Instance ()

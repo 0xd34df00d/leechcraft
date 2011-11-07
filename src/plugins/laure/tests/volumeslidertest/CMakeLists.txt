@@ -1,6 +1,5 @@
 INCLUDE_DIRECTORIES (
 	${LAURE_SOURCE_DIR}
-	${LAURE_BINARY_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	)
 QT4_WRAP_CPP (VOLUMESLIDERTEST_MOC "volumeslidertest.h")
@@ -9,7 +8,7 @@ ADD_EXECUTABLE (lc_laure_volumeslidertest
 	volumeslidertest.cpp
 	${LAURE_SOURCE_DIR}/volumeslider.cpp
 	${VOLUMESLIDER_MOC}
-	${LAURE_MOC_RCCS}
+	${MOC_RCCS}
 	${VOLUMESLIDERTEST_MOC}
 )
 TARGET_LINK_LIBRARIES (lc_laure_volumeslidertest

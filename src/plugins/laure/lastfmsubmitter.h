@@ -51,20 +51,19 @@ namespace Laure
 		LastFMSubmitter (ICoreProxy_ptr proxy, QObject *parent = 0);
 		
 		/** @brief Returns connection state of the Scrobbler.
-		 * @return true if it's connected, false in another case.
+		 * 
+		 * @return true if it's connected, false otherwise.
 		 */
 		bool IsConnected () const;
 	public slots:
 		
-		/** @brief Send meta informations about the current playback to
-		 * the last.fm service.
+		/** @brief Send meta info about the current track to the last.fm service.
 		 * 
 		 * @sa MediaMeta
 		 */
-		void nowPlaying (const MediaMeta&);
+		void sendCurrentTrack (const MediaMeta&);
 		
-		/** @brief Submit the submission cache for the current user to
-		 * the last.fm service.
+		/** @brief Submit the submission cache for the current user to the last.fm service.
 		 */
 		void submit ();
 	private slots:

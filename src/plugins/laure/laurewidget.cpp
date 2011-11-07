@@ -63,13 +63,13 @@ namespace Laure
 				VLCWrapper_,
 				SLOT (setVolume (int)));
 		connect (VLCWrapper_,
-				SIGNAL (nowPlayed (MediaMeta)),
+				SIGNAL (currentTrackMeta (MediaMeta)),
 				this,
-				SIGNAL (nowPlayed (MediaMeta)));
+				SIGNAL (currentTrackMeta (MediaMeta)));
 		connect (VLCWrapper_,
-				SIGNAL (played ()),
+				SIGNAL (trackFinished ()),
 				this,
-				SIGNAL (played ()));
+				SIGNAL (trackFinished ()));
 		connect (Ui_.PlayListWidget_,
 				SIGNAL (itemAddedRequest (QString)),
 				VLCWrapper_,

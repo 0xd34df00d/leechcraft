@@ -29,13 +29,13 @@ namespace Laure
 	: QStandardItemModel (parent)
 	{
 		setColumnCount (PlayListColumnCount);
-		HeaderName_ << tr ("Artist")
+		HeaderNames_ << tr ("Artist")
 				<< tr ("Title")
 				<< tr ("Album")
 				<< tr ("Genre")
 				<< tr ("Date");
-		for (int i = 1; i < 6; ++i)
-			setHeaderData (i, Qt::Horizontal, HeaderName_[i - 1]);
+		for (int i = 1; i < PlayListColumnCount; ++i)
+			setHeaderData (i, Qt::Horizontal, HeaderNames_ [i - 1]);
 	}
 	
 	Qt::ItemFlags PlayListModel::flags (const QModelIndex& index) const

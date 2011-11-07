@@ -57,6 +57,8 @@ namespace Laure
 	{
 		return Scrobbler_ != NULL;
 	}
+	
+	const QString& scrobblingSite = "http://ws.audioscrobbler.com/2.0/";
 
 	LastFMSubmitter::LastFMSubmitter (ICoreProxy_ptr proxy, QObject* parent)
 	: QObject (parent)
@@ -76,7 +78,6 @@ namespace Laure
 		const QString& api_sig = ApiSig (lastfm::ws::ApiKey, authToken,
 				"auth.getMobileSession", lastfm::ws::Username,
 				lastfm::ws::SharedSecret);
-		const QString& scrobblingSite =  "http://ws.audioscrobbler.com/2.0/";
 		const QString& url = QString ("%1?method=%2&username=%3&authToken=%4&api_key=%5&api_sig=%6")
 				.arg (scrobblingSite)
 				.arg ("auth.getMobileSession")
@@ -120,7 +121,7 @@ namespace Laure
 		// code
 	}
 		
-	void LastFMSubmitter::nowPlaying (const MediaMeta& info)
+	void LastFMSubmitter::sendCurrentTrack (const MediaMeta& info)
 	{
 		Scrobbler_->submit ();
 		lastfm::Track track;

@@ -63,8 +63,8 @@ namespace Laure
 	signals:
 		void needToClose ();
 		void playPause ();
-		void nowPlayed (const MediaMeta&);
-		void played ();
+		void currentTrackMeta (const MediaMeta&);
+		void trackFinished ();
 		void addItem (const QString&);
 		void gotEntity (const Entity&);
 		void delegateEntity (const Entity&,
