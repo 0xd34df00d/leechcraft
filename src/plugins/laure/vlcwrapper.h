@@ -76,6 +76,9 @@ namespace Laure
 		void prev ();
 		void setVolume (int);
 		void setPosition (float);
+		
+		void handledHasPlayed ();
+		void handleNextItemSetted ();
 	private slots:
 		void nowPlaying ();
 	signals:

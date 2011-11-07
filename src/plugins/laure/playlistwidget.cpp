@@ -63,11 +63,7 @@ namespace Laure
 		ActionBar_->addAction (actionAdd);
 		ActionBar_->addAction (actionRemove);
 		ActionBar_->addAction (exportAction);
-		
-		connect (actionAdd,
-				SIGNAL (triggered (bool)),
-				menu,
-				SLOT (show ()));
+
 		connect (actionRemove,
 				SIGNAL (triggered (bool)),
 				PlayListView_,
