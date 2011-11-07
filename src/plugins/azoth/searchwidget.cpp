@@ -100,6 +100,7 @@ namespace Azoth
 	void SearchWidget::Remove ()
 	{
 		emit removeTab (this);
+		deleteLater ();
 	}
 
 	QToolBar* SearchWidget::GetToolBar () const
