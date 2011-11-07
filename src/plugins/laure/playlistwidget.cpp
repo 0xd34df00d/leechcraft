@@ -26,6 +26,7 @@
 #include <util/util.h>
 #include "chooseurldialog.h"
 #include "playlistaddmenu.h"
+#include "playlistmodel.h"
 
 namespace LeechCraft
 {
@@ -34,11 +35,12 @@ namespace Laure
 	PlayListWidget::PlayListWidget (QWidget *parent)
 	: QWidget (parent)
 	, GridLayout_ (new QGridLayout (this))
+	, PlayListModel_ (new PlayListModel (this))
+	, PlayListView_ (new PlayListView (PlayListModel_, this))
+	, ActionBar_ (new QToolBar (this))
 	{
 		setLayout (GridLayout_);
 		setVisible (false);
-		PlayListView_ = new PlayListView (this);
-		ActionBar_ = new QToolBar (this);
 		
 		GridLayout_->addWidget (PlayListView_, 0, 0);
 		GridLayout_->addWidget (ActionBar_, 1, 0);
@@ -118,8 +120,9 @@ namespace Laure
 		QTextStream out (&file);
 		out << "#EXTM3U\n";
 		
-		for (int i = 0, c = PlayListView_->RowCount (); i < c; ++i)
-			out << PlayListView_->Data (i, 0).toString () << '\n';
+		for (int i = 0, c = PlayListModel_->rowCount (); i < c; ++i)
+			out << PlayListModel_->data (PlayListModel_->index (i, 0))
+					.toString () << '\n';
 	}
 }
 }

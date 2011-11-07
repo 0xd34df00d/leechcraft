@@ -23,14 +23,15 @@
 #include <QMenu>
 #include "nowplayingdelegate.h"
 #include "xmlsettingsmanager.h"
+#include "playlistmodel.h"
 
 namespace LeechCraft
 {
 namespace Laure
 {
-	PlayListView::PlayListView (QWidget *parent)
+	PlayListView::PlayListView (PlayListModel *model, QWidget *parent)
 	: QTreeView (parent)
-	, PlayListModel_ (new PlayListModel (this))
+	, PlayListModel_ (model)
 	, CurrentItem_ (-1)
 	{
 		setModel (PlayListModel_);
@@ -54,16 +55,6 @@ namespace Laure
 				SIGNAL (doubleClicked (QModelIndex)),
 				this,
 				SLOT (handleDoubleClicked (QModelIndex)));
-	}
-	
-	QVariant PlayListView::Data (int row, int column)
-	{
-		return PlayListModel_->data (PlayListModel_->index (row, column));
-	}
-	
-	int PlayListView::RowCount () const
-	{
-		return PlayListModel_->rowCount ();
 	}
 	
 	void PlayListView::selectRow (int val)

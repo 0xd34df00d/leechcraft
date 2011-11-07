@@ -32,12 +32,14 @@ namespace LeechCraft
 namespace Laure
 {
 	class PlayListView;
+	class PlayListModel;
 	
 	class PlayListWidget : public QWidget
 	{
 		Q_OBJECT
 		
 		PlayListView *PlayListView_;
+		PlayListModel *PlayListModel_;
 		QToolBar *ActionBar_;
 		QGridLayout *GridLayout_;
 	public:
