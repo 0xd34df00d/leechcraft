@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_IODEVICESINK_H
-#define PLUGINS_AZOTH_IODEVICESINK_H
+#ifndef PLUGINS_AZOTH_IODEVICESRC_H
+#define PLUGINS_AZOTH_IODEVICESRC_H
 #include <QGst/Global>
 #define QTGSTREAMERUTILS_EXPORT Q_DECL_IMPORT
 #include <QGst/Utils/ApplicationSource>

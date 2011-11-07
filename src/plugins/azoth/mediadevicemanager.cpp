@@ -31,6 +31,7 @@
 #include "interfaces/imediacall.h"
 #include "xmlsettingsmanager.h"
 #include "iodevicesink.h"
+#include "iodevicesrc.h"
 
 namespace LeechCraft
 {
@@ -39,7 +40,8 @@ namespace Azoth
 	class CallAudioHandler
 	{
 		boost::shared_ptr<IODeviceSink> IODeviceSink_;
-
+		boost::shared_ptr<IODeviceSrc> IODeviceSrc_;
+		
 		QGst::PipelinePtr OutPipe_;
 		QGst::PipelinePtr InPipe_;
 	public:
@@ -48,12 +50,15 @@ namespace Azoth
 
 	CallAudioHandler::CallAudioHandler (IMediaCall *call)
 	: IODeviceSink_ (new IODeviceSink (call->GetAudioDevice ()))
+	, IODeviceSrc_ (new IODeviceSrc (call->GetAudioDevice ()))
 	{
-		QGst::BinPtr outAudioBin;
+		QGst::BinPtr outAudioBin, inAudioBin;
 		try
 		{
 			outAudioBin = QGst::Bin::fromDescription ("autoaudiosrc name=\"audiosrc\" ! audioconvert ! "
-												"audioresample ! audiorate ! speexenc ! queue");
+					"audioresample ! audiorate ! speexenc ! queue");
+			inAudioBin = QGst::Bin::fromDescription ("autoaudiosink name=\"audiosink\" ! audioconvert ! "
+					"audioresample ! audiorate ! speexenc ! queue");
 		}
 		catch (const QGlib::Error& error)
 		{
@@ -67,6 +72,11 @@ namespace Azoth
 		OutPipe_->add (outAudioBin, IODeviceSink_->element ());
 		outAudioBin->link (IODeviceSink_->element ());
 		OutPipe_->setState (QGst::StatePlaying);
+		
+		InPipe_ = QGst::Pipeline::create ();
+		InPipe_->add (IODeviceSrc_->element (), inAudioBin);
+		inAudioBin->link (IODeviceSrc_->element ());
+		InPipe_->setState (QGst::StatePlaying);
 	}
 
 	MediaDeviceManager::MediaDeviceManager (QObject *parent)
@@ -100,7 +110,7 @@ namespace Azoth
 			case MediaDeviceManager::DTAudioIn:
 				return "autoaudiosrc";
 			case MediaDeviceManager::DTAudioOut:
-				return "autoaudiosrc";
+				return "autoaudiosink";
 			}
 		}
 	}
@@ -171,7 +181,7 @@ namespace Azoth
 			const QString& deviceName = propertyProbe->
 					property ("device-name").toString();
 
-			names << QString ("%1 (%2)").arg(deviceName, device.toString ());
+			names << QString ("%1 (%2)").arg (deviceName, device.toString ());
 			Type2Devices_ [type] << device.toString ();
 		}
 
