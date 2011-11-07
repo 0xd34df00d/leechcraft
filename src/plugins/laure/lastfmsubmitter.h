@@ -61,7 +61,7 @@ namespace Laure
 		 * 
 		 * @sa MediaMeta
 		 */
-		void sendCurrentTrack (const MediaMeta&);
+		void sendTrack (const MediaMeta&);
 		
 		/** @brief Submit the submission cache for the current user.
 		 */

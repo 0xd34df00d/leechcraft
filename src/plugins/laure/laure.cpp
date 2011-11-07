@@ -123,7 +123,7 @@ namespace Laure
 		connect (w,
 				SIGNAL (currentTrackMeta (MediaMeta)),
 				LFSubmitter_,
-				SLOT (sendCurrentTrack (MediaMeta)));
+				SLOT (sendTrack (MediaMeta)));
 		connect (w,
 				SIGNAL (trackFinished ()),
 				LFSubmitter_,

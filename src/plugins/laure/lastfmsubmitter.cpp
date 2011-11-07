@@ -121,7 +121,7 @@ namespace Laure
 		// code
 	}
 		
-	void LastFMSubmitter::sendCurrentTrack (const MediaMeta& info)
+	void LastFMSubmitter::sendTrack (const MediaMeta& info)
 	{
 		Scrobbler_->submit ();
 		lastfm::Track track;
