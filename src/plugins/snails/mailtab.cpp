@@ -16,45 +16,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SNAILS_SNAILS_H
-#define PLUGINS_SNAILS_SNAILS_H
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/ihavetabs.h>
+#include "mailtab.h"
 
 namespace LeechCraft
 {
 namespace Snails
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IHaveTabs
+	MailTab::MailTab (const TabClassInfo& tc, QObject *pmt, QWidget *parent)
+	: QWidget (parent)
+	, TabClass_ (tc)
+	, PMT_ (pmt)
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs)
+		Ui_.setupUi (this);
+	}
 
-		TabClassInfo MailTabClass_;
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+	TabClassInfo MailTab::GetTabClassInfo () const
+	{
+		return TabClass_;
+	}
 
-		TabClasses_t GetTabClasses () const;
-		void TabOpenRequested (const QByteArray&);
-	signals:
-		void addNewTab (const QString&, QWidget*);
-		void removeTab (QWidget*);
-		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void statusBarChanged (QWidget*, const QString&);
-		void raiseTab (QWidget*);
-	};
+	QObject* MailTab::ParentMultiTabs ()
+	{
+		return PMT_;
+	}
+
+	void MailTab::Remove ()
+	{
+		emit removeTab (this);
+	}
+
+	QToolBar* MailTab::GetToolBar () const
+	{
+		return 0;
+	}
 }
 }
-
-#endif
-

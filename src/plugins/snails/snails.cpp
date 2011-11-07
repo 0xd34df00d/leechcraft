@@ -18,6 +18,7 @@
 
 #include "snails.h"
 #include <QIcon>
+#include "mailtab.h"
 
 namespace LeechCraft
 {
@@ -25,6 +26,12 @@ namespace Snails
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		MailTabClass_.TabClass_ = "mail";
+		MailTabClass_.VisibleName_ = tr ("Mail");
+		MailTabClass_.Description_ = tr ("Mail tab.");
+		MailTabClass_.Icon_ = GetIcon ();
+		MailTabClass_.Priority_ = 55;
+		MailTabClass_.Features_ = TFOpenableByRequest;
 	}
 
 	void Plugin::SecondInit ()
@@ -55,7 +62,32 @@ namespace Snails
 		return QIcon ();
 	}
 
+	TabClasses_t Plugin::GetTabClasses () const
+	{
+		TabClasses_t result;
+		result << MailTabClass_;
+		return result;
+	}
 
+	void Plugin::TabOpenRequested (const QByteArray& tabClass)
+	{
+		if (tabClass == "mail")
+		{
+			MailTab *mt = new MailTab (MailTabClass_, this);
+
+			connect (mt,
+					SIGNAL (removeTab (QWidget*)),
+					this,
+					SIGNAL (removeTab (QWidget*)));
+
+			emit addNewTab (MailTabClass_.VisibleName_, mt);
+			emit raiseTab (mt);
+		}
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "unknown tab class"
+					<< tabClass;
+	}
 }
 }
 

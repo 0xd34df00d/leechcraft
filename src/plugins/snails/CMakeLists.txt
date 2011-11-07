@@ -15,6 +15,8 @@ IF (NOT QT_USE_FILE)
 	FIND_PACKAGE (LeechCraft REQUIRED)
 ENDIF (NOT QT_USE_FILE)
 
+SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+
 INCLUDE (${QT_USE_FILE})
 INCLUDE_DIRECTORIES (
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -24,17 +26,24 @@ INCLUDE_DIRECTORIES (
 SET (SRCS
 	snails.cpp
 	core.cpp
+	mailtab.cpp
 	)
 SET (HEADERS
 	snails.h
 	core.h
+	mailtab.h
+	)
+SET (FORMS
+	mailtab.ui
 	)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
+QT4_WRAP_UI (UIS_H ${FORMS})
 
 ADD_LIBRARY (leechcraft_snails SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
+	${UIS_H}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_snails
 	${QT_LIBRARIES}
