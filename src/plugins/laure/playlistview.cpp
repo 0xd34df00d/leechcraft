@@ -107,10 +107,9 @@ namespace Laure
 		
 		const int first = indexList.first ().row ();
 		PlayListModel_->removeRows (first, indexList.count ()
-				/ (PlayListModel_->rowCount () - 1));
+				/ (PlayListModel_->columnCount () - 1));
 		for (int i = c - 1; i > -1; --i)
 			emit itemRemoved (first);
-	
 	}
 	
 	void PlayListView::keyPressEvent (QKeyEvent *event)
