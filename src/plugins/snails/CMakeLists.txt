@@ -23,9 +23,11 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	snails.cpp
+	core.cpp
 	)
 SET (HEADERS
 	snails.h
+	core.h
 	)
 QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 
