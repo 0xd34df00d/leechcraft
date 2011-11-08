@@ -366,6 +366,7 @@ namespace Snails
 	{
 		Core::Instance ().GetStorage ()->SaveMessages (this, messages);
 		emit mailChanged ();
+		emit gotNewMessages (messages);
 	}
 }
 }

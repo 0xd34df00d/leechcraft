@@ -114,6 +114,7 @@ namespace Snails
 		void handleMsgHeaders (QList<Message_ptr>);
 	signals:
 		void mailChanged ();
+		void gotNewMessages (QList<Message_ptr>);
 	};
 
 	typedef std::shared_ptr<Account> Account_ptr;
