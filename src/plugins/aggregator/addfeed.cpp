@@ -41,7 +41,10 @@ namespace Aggregator
 
 	QString AddFeed::GetURL () const
 	{
-		return URL_->text ().simplified ();
+		QString result = URL_->text ().simplified ();
+		if (result.startsWith ("itpc"))
+			result.replace (0, 4, "http");
+		return result;			
 	}
 
 	QStringList AddFeed::GetTags () const
