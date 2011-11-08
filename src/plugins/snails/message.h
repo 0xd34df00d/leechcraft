@@ -39,8 +39,12 @@ namespace Snails
 		QDateTime Date_;
 		QStringList Recipients_;
 		QString Subject_;
+
+		QString Body_;
 	public:
 		Message (QObject* = 0);
+
+		bool IsFullyFetched () const;
 
 		QByteArray GetID () const;
 		void SetID (const QByteArray&);
@@ -66,6 +70,7 @@ namespace Snails
 		void Dump () const;
 
 		QByteArray Serialize () const;
+		void Deserialize (const QByteArray&);
 	};
 
 	typedef std::shared_ptr<Message> Message_ptr;

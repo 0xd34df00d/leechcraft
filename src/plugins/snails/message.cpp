@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "message.h"
+#include <stdexcept>
 #include <QtDebug>
 
 namespace LeechCraft
@@ -26,6 +27,11 @@ namespace Snails
 	Message::Message (QObject *parent)
 	: QObject (parent)
 	{
+	}
+
+	bool Message::IsFullyFetched () const
+	{
+		return !Body_.isEmpty ();
 	}
 
 	QByteArray Message::GetID () const
@@ -123,6 +129,22 @@ namespace Snails
 			<< Subject_;
 
 		return result;
+	}
+
+	void Message::Deserialize (const QByteArray& data)
+	{
+		QDataStream str (data);
+		quint8 version = 0;
+		str >> version;
+		if (version != 1)
+			throw std::runtime_error (qPrintable ("Failed to deserialize Message: unknown version " + QString::number (version)));
+
+		str >> ID_
+			>> From_
+			>> FromEmail_
+			>> Date_
+			>> Recipients_
+			>> Subject_;
 	}
 }
 }
