@@ -21,6 +21,7 @@
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
 #include "ui_mailtab.h"
+#include "account.h"
 
 class QStandardItemModel;
 
@@ -42,6 +43,8 @@ namespace Snails
 		QObject *PMT_;
 
 		QStandardItemModel *MailModel_;
+
+		Account_ptr CurrAcc_;
 	public:
 		MailTab (const TabClassInfo&, QObject*, QWidget* = 0);
 
@@ -50,8 +53,9 @@ namespace Snails
 		void Remove ();
 		QToolBar* GetToolBar () const;
 	private slots:
-		void on_AccountsTree__currentChanged (const QModelIndex&);
+		void handleCurrentAccountChanged (const QModelIndex&);
 		void handleFetchNewMail ();
+		void handleGotNewMessages (QList<Message_ptr>);
 	signals:
 		void removeTab (QWidget*);
 	};

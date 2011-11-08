@@ -20,6 +20,7 @@
 #include <QToolBar>
 #include <QStandardItemModel>
 #include "core.h"
+#include "storage.h"
 
 namespace LeechCraft
 {
@@ -36,6 +37,11 @@ namespace Snails
 
 		Ui_.AccountsTree_->setModel (Core::Instance ().GetAccountsModel ());
 		Ui_.MailTree_->setModel (MailModel_);
+
+		connect (Ui_.AccountsTree_->selectionModel (),
+				SIGNAL (currentChanged (QModelIndex, QModelIndex)),
+				this,
+				SLOT (handleCurrentAccountChanged (QModelIndex)));
 
 		QAction *fetch = new QAction (tr ("Fetch new mail"), this);
 		TabToolbar_->addAction (fetch);
@@ -66,26 +72,56 @@ namespace Snails
 		return TabToolbar_;
 	}
 
-	void MailTab::on_AccountsTree__currentChanged (const QModelIndex& idx)
+	void MailTab::handleCurrentAccountChanged (const QModelIndex& idx)
 	{
 		MailModel_->clear ();
+		if (CurrAcc_)
+			disconnect (CurrAcc_.get (),
+					0,
+					this,
+					0);
 
-		Account_ptr acc = Core::Instance ().GetAccount (idx);
-		if (acc)
+		CurrAcc_ = Core::Instance ().GetAccount (idx);
+		if (!CurrAcc_)
 			return;
+
+		connect (CurrAcc_.get (),
+				SIGNAL (gotNewMessages (QList<Message_ptr>)),
+				this,
+				SLOT (handleGotNewMessages (QList<Message_ptr>)));
 
 		QStringList headers;
 		headers << tr ("From")
 				<< tr ("Subject")
-				<< tr ("Date");
+				<< tr ("Date")
+				<< tr ("Size");
 		MailModel_->setHorizontalHeaderLabels (headers);
 
+		handleGotNewMessages (Core::Instance ().GetStorage ()->
+					LoadMessages (CurrAcc_.get ()));
 	}
 
 	void MailTab::handleFetchNewMail ()
 	{
 		Q_FOREACH (auto acc, Core::Instance ().GetAccounts ())
 			acc->FetchNewHeaders (1);
+	}
+
+	void MailTab::handleGotNewMessages (QList<Message_ptr> messages)
+	{
+		Q_FOREACH (Message_ptr message, messages)
+		{
+			const QString& fromName = message->GetFrom ();
+			const QString& from = fromName.isEmpty () ?
+					message->GetFromEmail () :
+					fromName + " <" + message->GetFromEmail () + ">";
+			QList<QStandardItem*> row;
+			row << new QStandardItem (from);
+			row << new QStandardItem (message->GetSubject ());
+			row << new QStandardItem (message->GetDate ().toString ());
+			row << new QStandardItem (QString::number (message->GetSize ()));
+			MailModel_->appendRow (row);
+		}
 	}
 }
 }
