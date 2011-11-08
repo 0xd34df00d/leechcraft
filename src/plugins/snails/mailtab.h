@@ -22,6 +22,8 @@
 #include <interfaces/ihavetabs.h>
 #include "ui_mailtab.h"
 
+class QStandardItemModel;
+
 namespace LeechCraft
 {
 namespace Snails
@@ -38,6 +40,8 @@ namespace Snails
 
 		TabClassInfo TabClass_;
 		QObject *PMT_;
+
+		QStandardItemModel *MailModel_;
 	public:
 		MailTab (const TabClassInfo&, QObject*, QWidget* = 0);
 
@@ -46,6 +50,7 @@ namespace Snails
 		void Remove ();
 		QToolBar* GetToolBar () const;
 	private slots:
+		void on_AccountsTree__currentChanged (const QModelIndex&);
 		void handleFetchNewMail ();
 	signals:
 		void removeTab (QWidget*);

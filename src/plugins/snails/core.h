@@ -24,6 +24,7 @@
 
 class QAbstractItemModel;
 class QStandardItemModel;
+class QModelIndex;
 
 namespace LeechCraft
 {
@@ -48,6 +49,7 @@ namespace Snails
 
 		QAbstractItemModel* GetAccountsModel () const;
 		QList<Account_ptr> GetAccounts () const;
+		Account_ptr GetAccount (const QModelIndex&) const;
 		Storage* GetStorage () const;
 
 		void AddAccount (Account_ptr);

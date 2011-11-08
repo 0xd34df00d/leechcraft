@@ -78,6 +78,14 @@ namespace Snails
 		return Accounts_;
 	}
 
+	Account_ptr Core::GetAccount (const QModelIndex& index) const
+	{
+		if (!index.isValid ())
+			return Account_ptr ();
+
+		return Accounts_ [index.row ()];
+	}
+
 	Storage* Core::GetStorage () const
 	{
 		return Storage_;

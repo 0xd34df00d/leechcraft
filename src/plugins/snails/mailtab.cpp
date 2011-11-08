@@ -18,6 +18,7 @@
 
 #include "mailtab.h"
 #include <QToolBar>
+#include <QStandardItemModel>
 #include "core.h"
 
 namespace LeechCraft
@@ -29,10 +30,12 @@ namespace Snails
 	, TabToolbar_ (new QToolBar)
 	, TabClass_ (tc)
 	, PMT_ (pmt)
+	, MailModel_ (new QStandardItemModel (this))
 	{
 		Ui_.setupUi (this);
 
 		Ui_.AccountsTree_->setModel (Core::Instance ().GetAccountsModel ());
+		Ui_.MailTree_->setModel (MailModel_);
 
 		QAction *fetch = new QAction (tr ("Fetch new mail"), this);
 		TabToolbar_->addAction (fetch);
@@ -63,12 +66,26 @@ namespace Snails
 		return TabToolbar_;
 	}
 
+	void MailTab::on_AccountsTree__currentChanged (const QModelIndex& idx)
+	{
+		MailModel_->clear ();
+
+		Account_ptr acc = Core::Instance ().GetAccount (idx);
+		if (acc)
+			return;
+
+		QStringList headers;
+		headers << tr ("From")
+				<< tr ("Subject")
+				<< tr ("Date");
+		MailModel_->setHorizontalHeaderLabels (headers);
+
+	}
+
 	void MailTab::handleFetchNewMail ()
 	{
 		Q_FOREACH (auto acc, Core::Instance ().GetAccounts ())
-		{
 			acc->FetchNewHeaders (1);
-		}
 	}
 }
 }

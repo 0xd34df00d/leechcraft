@@ -27,6 +27,7 @@
 #include "accountconfigdialog.h"
 #include "accountthread.h"
 #include "accountthreadworker.h"
+#include "storage.h"
 
 namespace LeechCraft
 {
@@ -363,7 +364,8 @@ namespace Snails
 
 	void Account::handleMsgHeaders (QList<Message_ptr> messages)
 	{
-
+		Core::Instance ().GetStorage ()->SaveMessages (this, messages);
+		emit mailChanged ();
 	}
 }
 }

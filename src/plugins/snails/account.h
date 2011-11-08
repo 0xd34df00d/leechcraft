@@ -112,6 +112,8 @@ namespace Snails
 		void buildOutURL (QString*);
 		void getPassword (QString*);
 		void handleMsgHeaders (QList<Message_ptr>);
+	signals:
+		void mailChanged ();
 	};
 
 	typedef std::shared_ptr<Account> Account_ptr;
