@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "storage.h"
+#include <stdexcept>
 #include <QFile>
 #include <QApplication>
 #include <util/util.h>
@@ -37,18 +38,7 @@ namespace Snails
 
 	void Storage::SaveMessages (Account *acc, const QList<Message_ptr>& msgs)
 	{
-		const QByteArray id = acc->GetID ().toHex ();
-
-		QDir dir = SDir_;
-		if (!dir.exists (id))
-			dir.mkdir (id);
-		if (!dir.cd (id))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to cd into"
-					<< dir.filePath (id);
-			return;
-		}
+		const QDir& dir = DirForAccount (acc);
 
 		Q_FOREACH (Message_ptr msg, msgs)
 		{
@@ -74,6 +64,94 @@ namespace Snails
 
 			qApp->processEvents ();
 		}
+	}
+
+	QList<Message_ptr> Storage::LoadMessages (Account *acc)
+	{
+		QList<Message_ptr> result;
+
+		const QDir& dir = DirForAccount (acc);
+		Q_FOREACH (auto str, dir.entryList (QDir::NoDotAndDotDot | QDir::Dirs))
+		{
+			QDir subdir = dir;
+			if (!subdir.cd (str))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to cd to"
+						<< str;
+				continue;
+			}
+
+			Q_FOREACH (auto str, subdir.entryList (QDir::NoDotAndDotDot | QDir::Files))
+			{
+				QFile file (str);
+				if (!file.open (QIODevice::ReadOnly))
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "unable to open"
+							<< str
+							<< file.errorString ();
+					continue;
+				}
+
+				Message_ptr msg (new Message);
+				try
+				{
+					msg->Deserialize (qUncompress (file.readAll ()));
+					result << msg;
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "error deserializing the message from"
+							<< file.fileName ()
+							<< e.what ();
+					continue;
+				}
+			}
+		}
+
+		return result;
+	}
+
+	int Storage::GetNumMessages (Account *acc) const
+	{
+		int result = 0;
+
+		const QDir& dir = DirForAccount (acc);
+		Q_FOREACH (auto str, dir.entryList (QDir::NoDotAndDotDot | QDir::Dirs))
+		{
+			QDir subdir = dir;
+			if (!subdir.cd (str))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to cd to"
+						<< str;
+				continue;
+			}
+
+			result += subdir.entryList (QDir::NoDotAndDotDot | QDir::Files).size ();
+		}
+
+		return result;
+	}
+
+	QDir Storage::DirForAccount (Account *acc) const
+	{
+		const QByteArray& id = acc->GetID ().toHex ();
+
+		QDir dir = SDir_;
+		if (!dir.exists (id))
+			dir.mkdir (id);
+		if (!dir.cd (id))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to cd into"
+					<< dir.filePath (id);
+			throw std::runtime_error ("Unable to cd to the dir");
+		}
+
+		return dir;
 	}
 }
 }
