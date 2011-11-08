@@ -36,6 +36,7 @@ SET (SRCS
 	message.cpp
 	accountthread.cpp
 	accountthreadworker.cpp
+	progresslistener.cpp
 	)
 SET (HEADERS
 	snails.h
@@ -48,6 +49,7 @@ SET (HEADERS
 	message.h
 	accountthread.h
 	accountthreadworker.h
+	progresslistener.h
 	)
 SET (FORMS
 	mailtab.ui
