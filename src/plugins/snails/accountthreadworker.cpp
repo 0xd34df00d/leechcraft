@@ -135,6 +135,33 @@ namespace Snails
 				vmime::create<VMimeAuth> (Account::DOut, A_));
 	}
 
+	namespace
+	{
+		class FetchProgressListener : public vmime::utility::progressListener
+		{
+		public:
+			bool cancel () const
+			{
+				return false;
+			}
+
+			void start (const int predictedTotal)
+			{
+				qDebug () << "start:" << predictedTotal;
+			}
+
+			void progress (const int current, const int currentTotal)
+			{
+				qDebug () << "progress:" << current << currentTotal;
+			}
+
+			void stop (const int total)
+			{
+				qDebug () << "stop:" << total;
+			}
+		};
+	}
+
 	void AccountThreadWorker::fetchNewHeaders (int from)
 	{
 		qDebug () << Q_FUNC_INFO << from;
@@ -161,7 +188,8 @@ namespace Snails
 
 		try
 		{
-			folder->fetchMessages (messages, desiredFlags);
+			std::unique_ptr<FetchProgressListener> ptr (new FetchProgressListener);
+			folder->fetchMessages (messages, desiredFlags, ptr.get ());
 		}
 		catch (const vmime::exceptions::operation_not_supported& ons)
 		{
