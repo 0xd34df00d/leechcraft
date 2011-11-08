@@ -236,7 +236,9 @@ namespace Snails
 
 			try
 			{
-				msg->SetSubject (header->Subject ()->getValue ().dynamicCast<const vmime::text> ()->getConvertedText (utf8cs).c_str ());
+				auto str = header->Subject ()->getValue ()
+						.dynamicCast<const vmime::text> ()->getConvertedText (utf8cs);
+				msg->SetSubject (QString::fromUtf8 (str.c_str ()));
 			}
 			catch (const vmime::exceptions::no_such_field&)
 			{
