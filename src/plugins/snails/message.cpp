@@ -101,7 +101,7 @@ namespace Snails
 	void Message::Dump () const
 	{
 		qDebug () << Q_FUNC_INFO
-				<< ID_
+				<< ID_.toBase64 ()
 				<< From_
 				<< FromEmail_
 				<< Date_
