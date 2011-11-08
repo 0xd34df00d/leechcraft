@@ -125,7 +125,7 @@ namespace Aggregator
 			if (url.scheme () != "file" &&
 					url.scheme () != "http" &&
 					url.scheme () != "https" &&
-			   		url.scheme () != "itpc")
+					url.scheme () != "itpc")
 				return false;
 		}
 		else
@@ -136,7 +136,7 @@ namespace Aggregator
 				return true;
 			if (url.scheme () != "http" &&
 					url.scheme () != "https" &&
-			   		url.scheme () != "itpc")
+					url.scheme () != "itpc")
 				return false;
 
 			if (e.Mime_ != "application/atom+xml" &&

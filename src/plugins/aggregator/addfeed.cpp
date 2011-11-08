@@ -41,11 +41,12 @@ namespace Aggregator
 
 	QString AddFeed::GetURL () const
 	{
-		if(URL_->text().startsWith("itpc"))
+		if (URL_->text ().startsWith ("itpc"))
 		{
-			QString uri = "http";
-			URL_->setText(URL_->text().replace(0, 4, uri));
-			return URL_->text ().simplified ();
+			QString result = URL_->text ().simplified ();
+			if (result.startsWith ("itpc"))
+				result.replace (0, 4, "http");
+			return result;
 		}
 		else
 		{
