@@ -20,6 +20,8 @@
 #define PLUGINS_SNAILS_ACCOUNTTHREADWORKER_H
 #include <QObject>
 #include <vmime/net/session.hpp>
+#include <vmime/net/message.hpp>
+#include "message.h"
 
 namespace LeechCraft
 {
@@ -38,11 +40,13 @@ namespace Snails
 	private:
 		vmime::ref<vmime::net::store> MakeStore ();
 		vmime::ref<vmime::net::transport> MakeTransport ();
+		Message_ptr FromHeaders (const vmime::ref<vmime::net::message>&) const;
 	public slots:
 		void fetchNewHeaders (int);
 		void rebuildSessConfig ();
 	signals:
 		void error (const QString&);
+		void gotMsgHeaders (QList<Message_ptr>);
 	};
 }
 }

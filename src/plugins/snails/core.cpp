@@ -28,18 +28,25 @@
 #include <vmime/platforms/posix/posixHandler.hpp>
 #endif
 
+#include "message.h"
+#include "storage.h"
+
 namespace LeechCraft
 {
 namespace Snails
 {
 	Core::Core ()
 	: AccountsModel_ (new QStandardItemModel)
+	, Storage_ (new Storage (this))
 	{
 #if Q_WS_WIN
 		vmime::platform::setHandler<vmime::platforms::windows::windowsHandler> ();
 #else
 		vmime::platform::setHandler<vmime::platforms::posix::posixHandler> ();
 #endif
+
+		qRegisterMetaType<Message_ptr> ("LeechCraft::Snails::Message_ptr");
+		qRegisterMetaType<QList<Message_ptr>> ("QList<LeechCraft::Snails::Message_ptr>");
 
 		QStringList headers;
 		headers << tr ("Name")
@@ -69,6 +76,11 @@ namespace Snails
 	QList<Account_ptr> Core::GetAccounts () const
 	{
 		return Accounts_;
+	}
+
+	Storage* Core::GetStorage () const
+	{
+		return Storage_;
 	}
 
 	void Core::AddAccount (Account_ptr account)

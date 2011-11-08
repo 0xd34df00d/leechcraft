@@ -43,6 +43,11 @@ namespace Snails
 				W_,
 				SLOT (rebuildSessConfig ()));
 
+		connect (W_,
+				SIGNAL (gotMsgHeaders (QList<Message_ptr>)),
+				A_,
+				SLOT (handleMsgHeaders (QList<Message_ptr>)));
+
 		QThread::run ();
 		delete W_;
 	}

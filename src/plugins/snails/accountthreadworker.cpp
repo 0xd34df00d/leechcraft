@@ -29,6 +29,7 @@
 #include <vmime/dateTime.hpp>
 #include "message.h"
 #include "account.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -135,31 +136,50 @@ namespace Snails
 				vmime::create<VMimeAuth> (Account::DOut, A_));
 	}
 
-	namespace
+	Message_ptr AccountThreadWorker::FromHeaders (const vmime::ref<vmime::net::message>& message) const
 	{
-		class FetchProgressListener : public vmime::utility::progressListener
+		auto utf8cs = vmime::charset ("utf-8");
+
+		Message_ptr msg (new Message);
+		msg->SetID (message->getUniqueId ().c_str ());
+		msg->SetSize (message->getSize ());
+
+		auto header = message->getHeader ();
+
+		try
 		{
-		public:
-			bool cancel () const
-			{
-				return false;
-			}
+			auto mbox = header->From ()->getValue ().dynamicCast<const vmime::mailbox> ();
+			msg->SetFromEmail (QString::fromUtf8 (mbox->getEmail ().c_str ()));
+			msg->SetFrom (QString::fromUtf8 (mbox->getName ().getConvertedText (utf8cs).c_str ()));
+		}
+		catch (const vmime::exceptions::no_such_field& nsf)
+		{
+			qWarning () << "no 'from' data";
+		}
 
-			void start (const int predictedTotal)
-			{
-				qDebug () << "start:" << predictedTotal;
-			}
+		try
+		{
+			auto origDate = header->Date ()->getValue ().dynamicCast<const vmime::datetime> ();
+			auto date = vmime::utility::datetimeUtils::toUniversalTime (*origDate);
+			QDate qdate (date.getYear (), date.getMonth (), date.getDay ());
+			QTime time (date.getHour (), date.getMinute (), date.getSecond ());
+			msg->SetDate (QDateTime (qdate, time, Qt::UTC));
+		}
+		catch (const vmime::exceptions::no_such_field&)
+		{
+		}
 
-			void progress (const int current, const int currentTotal)
-			{
-				qDebug () << "progress:" << current << currentTotal;
-			}
+		try
+		{
+			auto str = header->Subject ()->getValue ()
+					.dynamicCast<const vmime::text> ()->getConvertedText (utf8cs);
+			msg->SetSubject (QString::fromUtf8 (str.c_str ()));
+		}
+		catch (const vmime::exceptions::no_such_field&)
+		{
+		}
 
-			void stop (const int total)
-			{
-				qDebug () << "stop:" << total;
-			}
-		};
+		return msg;
 	}
 
 	void AccountThreadWorker::fetchNewHeaders (int from)
@@ -188,8 +208,7 @@ namespace Snails
 
 		try
 		{
-			std::unique_ptr<FetchProgressListener> ptr (new FetchProgressListener);
-			folder->fetchMessages (messages, desiredFlags, ptr.get ());
+			folder->fetchMessages (messages, desiredFlags);
 		}
 		catch (const vmime::exceptions::operation_not_supported& ons)
 		{
@@ -199,55 +218,14 @@ namespace Snails
 			return;
 		}
 
-		auto utf8cs = vmime::charset ("utf-8");
-
 		QList<Message_ptr> newMessages;
-
 		Q_FOREACH (auto message, messages)
-		{
-			Message_ptr msg (new Message);
-			msg->SetID (message->getUniqueId ().c_str ());
-			msg->SetSize (message->getSize ());
+			newMessages << FromHeaders (message);
 
-			auto header = message->getHeader ();
-
-			try
-			{
-				auto mbox = header->From ()->getValue ().dynamicCast<const vmime::mailbox> ();
-				msg->SetFromEmail (QString::fromUtf8 (mbox->getEmail ().c_str ()));
-				msg->SetFrom (QString::fromUtf8 (mbox->getName ().getConvertedText (utf8cs).c_str ()));
-			}
-			catch (const vmime::exceptions::no_such_field& nsf)
-			{
-				qWarning () << "no 'from' data";
-			}
-
-			try
-			{
-				auto origDate = header->Date ()->getValue ().dynamicCast<const vmime::datetime> ();
-				auto date = vmime::utility::datetimeUtils::toUniversalTime (*origDate);
-				QDate qdate (date.getYear (), date.getMonth (), date.getDay ());
-				QTime time (date.getHour (), date.getMinute (), date.getSecond ());
-				msg->SetDate (QDateTime (qdate, time, Qt::UTC));
-			}
-			catch (const vmime::exceptions::no_such_field&)
-			{
-			}
-
-			try
-			{
-				auto str = header->Subject ()->getValue ()
-						.dynamicCast<const vmime::text> ()->getConvertedText (utf8cs);
-				msg->SetSubject (QString::fromUtf8 (str.c_str ()));
-			}
-			catch (const vmime::exceptions::no_such_field&)
-			{
-			}
-
-			newMessages << msg;
-
+		Q_FOREACH (auto msg, newMessages)
 			msg->Dump ();
-		}
+
+		emit gotMsgHeaders (newMessages);
 	}
 
 	void AccountThreadWorker::rebuildSessConfig ()

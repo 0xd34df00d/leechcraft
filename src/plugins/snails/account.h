@@ -20,6 +20,7 @@
 #define PLUGINS_SNAILS_ACCOUNT_H
 #include <memory>
 #include <QObject>
+#include "message.h"
 
 class QMutex;
 
@@ -110,6 +111,7 @@ namespace Snails
 		void buildInURL (QString*);
 		void buildOutURL (QString*);
 		void getPassword (QString*);
+		void handleMsgHeaders (QList<Message_ptr>);
 	};
 
 	typedef std::shared_ptr<Account> Account_ptr;

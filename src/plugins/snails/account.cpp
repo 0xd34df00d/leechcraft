@@ -360,5 +360,10 @@ namespace Snails
 
 		Core::Instance ().SendEntity (e);
 	}
+
+	void Account::handleMsgHeaders (QList<Message_ptr> messages)
+	{
+
+	}
 }
 }

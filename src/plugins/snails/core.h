@@ -29,12 +29,16 @@ namespace LeechCraft
 {
 namespace Snails
 {
+	class Storage;
+
 	class Core : public QObject
 	{
 		Q_OBJECT
 
 		QStandardItemModel *AccountsModel_;
 		QList<Account_ptr> Accounts_;
+
+		Storage *Storage_;
 
 		Core ();
 	public:
@@ -44,6 +48,8 @@ namespace Snails
 
 		QAbstractItemModel* GetAccountsModel () const;
 		QList<Account_ptr> GetAccounts () const;
+		Storage* GetStorage () const;
+
 		void AddAccount (Account_ptr);
 	private:
 		void AddAccountImpl (Account_ptr);
