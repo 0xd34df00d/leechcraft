@@ -22,6 +22,7 @@
 #include <QObject>
 #include <QDateTime>
 #include <QStringList>
+#include <QMetaType>
 
 namespace LeechCraft
 {
@@ -63,10 +64,15 @@ namespace Snails
 		void SetSubject (const QString&);
 
 		void Dump () const;
+
+		QByteArray Serialize () const;
 	};
 
 	typedef std::shared_ptr<Message> Message_ptr;
 }
 }
+
+Q_DECLARE_METATYPE (LeechCraft::Snails::Message_ptr);
+Q_DECLARE_METATYPE (QList<LeechCraft::Snails::Message_ptr>);
 
 #endif

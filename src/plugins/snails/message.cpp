@@ -108,5 +108,21 @@ namespace Snails
 				<< Recipients_
 				<< Subject_;
 	}
+
+	QByteArray Message::Serialize () const
+	{
+		QByteArray result;
+
+		QDataStream str (&result, QIODevice::WriteOnly);
+		str << static_cast<quint8> (1)
+			<< ID_
+			<< From_
+			<< FromEmail_
+			<< Date_
+			<< Recipients_
+			<< Subject_;
+
+		return result;
+	}
 }
 }
