@@ -17,6 +17,8 @@
  **********************************************************************/
 
 #include "mailtab.h"
+#include <QToolBar>
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -24,10 +26,20 @@ namespace Snails
 {
 	MailTab::MailTab (const TabClassInfo& tc, QObject *pmt, QWidget *parent)
 	: QWidget (parent)
+	, TabToolbar_ (new QToolBar)
 	, TabClass_ (tc)
 	, PMT_ (pmt)
 	{
 		Ui_.setupUi (this);
+
+		Ui_.AccountsTree_->setModel (Core::Instance ().GetAccountsModel ());
+
+		QAction *fetch = new QAction (tr ("Fetch new mail"), this);
+		TabToolbar_->addAction (fetch);
+		connect (fetch,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleFetchNewMail ()));
 	}
 
 	TabClassInfo MailTab::GetTabClassInfo () const
@@ -48,7 +60,15 @@ namespace Snails
 
 	QToolBar* MailTab::GetToolBar () const
 	{
-		return 0;
+		return TabToolbar_;
+	}
+
+	void MailTab::handleFetchNewMail ()
+	{
+		Q_FOREACH (auto acc, Core::Instance ().GetAccounts ())
+		{
+			acc->FetchNewHeaders (1);
+		}
 	}
 }
 }

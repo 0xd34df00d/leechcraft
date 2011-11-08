@@ -34,6 +34,8 @@ namespace Snails
 
 		Ui::MailTab Ui_;
 
+		QToolBar *TabToolbar_;
+
 		TabClassInfo TabClass_;
 		QObject *PMT_;
 	public:
@@ -43,6 +45,8 @@ namespace Snails
 		QObject* ParentMultiTabs ();
 		void Remove ();
 		QToolBar* GetToolBar () const;
+	private slots:
+		void handleFetchNewMail ();
 	signals:
 		void removeTab (QWidget*);
 	};
