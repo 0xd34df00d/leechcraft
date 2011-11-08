@@ -124,16 +124,19 @@ namespace Aggregator
 		{
 			if (url.scheme () != "file" &&
 					url.scheme () != "http" &&
-					url.scheme () != "https")
+					url.scheme () != "https" &&
+			   		url.scheme () != "itpc")
 				return false;
 		}
 		else
 		{
 			if (url.scheme () == "feed")
 				return true;
-
+			if (url.scheme () == "itpc")
+				return true;
 			if (url.scheme () != "http" &&
-					url.scheme () != "https")
+					url.scheme () != "https" &&
+			   		url.scheme () != "itpc")
 				return false;
 
 			if (e.Mime_ != "application/atom+xml" &&
@@ -211,6 +214,8 @@ namespace Aggregator
 				str.replace (0, 4, "http");
 			else if (str.startsWith ("feed:"))
 				str.remove  (0, 5);
+			else if (str.startsWith ("itpc://"))
+				str.replace (0, 4, "http");
 
 			LeechCraft::Aggregator::AddFeed af (str);
 			if (af.exec () == QDialog::Accepted)
