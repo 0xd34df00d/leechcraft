@@ -46,7 +46,9 @@ namespace Snails
 #endif
 
 		qRegisterMetaType<Message_ptr> ("LeechCraft::Snails::Message_ptr");
+		qRegisterMetaType<Message_ptr> ("Message_ptr");
 		qRegisterMetaType<QList<Message_ptr>> ("QList<LeechCraft::Snails::Message_ptr>");
+		qRegisterMetaType<QList<Message_ptr>> ("QList<Message_ptr>");
 
 		QStringList headers;
 		headers << tr ("Name")
