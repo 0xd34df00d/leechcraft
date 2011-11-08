@@ -16,42 +16,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SNAILS_CORE_H
-#define PLUGINS_SNAILS_CORE_H
+#ifndef PLUGINS_SNAILS_ACCOUNTTHREADWORKER_H
+#define PLUGINS_SNAILS_ACCOUNTTHREADWORKER_H
 #include <QObject>
-#include <interfaces/structures.h>
-#include "account.h"
-
-class QAbstractItemModel;
-class QStandardItemModel;
+#include <vmime/net/session.hpp>
 
 namespace LeechCraft
 {
 namespace Snails
 {
-	class Core : public QObject
+	class Account;
+
+	class AccountThreadWorker : public QObject
 	{
 		Q_OBJECT
 
-		QStandardItemModel *AccountsModel_;
-		QList<Account_ptr> Accounts_;
-
-		Core ();
+		Account *A_;
+		vmime::ref<vmime::net::session> Session_;
 	public:
-		static Core& Instance ();
-
-		void SendEntity (const Entity&);
-
-		QAbstractItemModel* GetAccountsModel () const;
-		QList<Account_ptr> GetAccounts () const;
-		void AddAccount (Account_ptr);
+		AccountThreadWorker (Account*);
 	private:
-		void AddAccountImpl (Account_ptr);
-		void SaveAccounts () const;
-		void LoadAccounts ();
+		vmime::ref<vmime::net::store> MakeStore ();
+		vmime::ref<vmime::net::transport> MakeTransport ();
+	public slots:
+		void fetchNewHeaders (int);
+		void rebuildSessConfig ();
 	signals:
-		void gotEntity (const LeechCraft::Entity&);
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
+		void error (const QString&);
 	};
 }
 }

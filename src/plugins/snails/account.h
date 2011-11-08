@@ -20,17 +20,23 @@
 #define PLUGINS_SNAILS_ACCOUNT_H
 #include <memory>
 #include <QObject>
-#include <vmime/net/session.hpp>
+
+class QMutex;
 
 namespace LeechCraft
 {
 namespace Snails
 {
+	class AccountThread;
+	class AccountThreadWorker;
+
 	class Account : public QObject
 	{
 		Q_OBJECT
 
-		vmime::ref<vmime::net::session> Session_;
+		friend class AccountThreadWorker;
+		AccountThread *Thread_;
+		QMutex *AccMutex_;
 
 		QByteArray ID_;
 		QString AccName_;
@@ -52,7 +58,6 @@ namespace Snails
 		int OutPort_;
 
 		QString OutLogin_;
-
 	public:
 		enum Direction
 		{
@@ -83,6 +88,8 @@ namespace Snails
 		QString GetServer () const;
 		QString GetType () const;
 
+		void FetchNewHeaders (int) const;
+
 		QByteArray Serialize () const;
 		void Deserialize (const QByteArray&);
 
@@ -93,11 +100,16 @@ namespace Snails
 		QString GetInUsername ();
 		QString GetOutUsername ();
 	private:
+		QMutex* GetMutex () const;
+
 		void RebuildSessConfig ();
-		vmime::ref<vmime::net::store> MakeStore ();
-		vmime::ref<vmime::net::transport> MakeTransport ();
-		QString BuildInURL () const;
-		QString BuildOutURL () const;
+		QString BuildInURL ();
+		QString BuildOutURL ();
+		QString GetPassImpl ();
+	private slots:
+		void buildInURL (QString*);
+		void buildOutURL (QString*);
+		void getPassword (QString*);
 	};
 
 	typedef std::shared_ptr<Account> Account_ptr;

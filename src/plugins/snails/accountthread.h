@@ -16,42 +16,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SNAILS_CORE_H
-#define PLUGINS_SNAILS_CORE_H
-#include <QObject>
-#include <interfaces/structures.h>
-#include "account.h"
-
-class QAbstractItemModel;
-class QStandardItemModel;
+#ifndef PLUGINS_SNAILS_ACCOUNTTHREAD_H
+#define PLUGINS_SNAILS_ACCOUNTTHREAD_H
+#include <QThread>
 
 namespace LeechCraft
 {
 namespace Snails
 {
-	class Core : public QObject
+	class Account;
+	class AccountThreadWorker;
+
+	class AccountThread : public QThread
 	{
 		Q_OBJECT
 
-		QStandardItemModel *AccountsModel_;
-		QList<Account_ptr> Accounts_;
-
-		Core ();
+		Account *A_;
+		AccountThreadWorker *W_;
 	public:
-		static Core& Instance ();
+		AccountThread (Account*);
 
-		void SendEntity (const Entity&);
-
-		QAbstractItemModel* GetAccountsModel () const;
-		QList<Account_ptr> GetAccounts () const;
-		void AddAccount (Account_ptr);
-	private:
-		void AddAccountImpl (Account_ptr);
-		void SaveAccounts () const;
-		void LoadAccounts ();
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
+		AccountThreadWorker* GetWorker () const;
+	protected:
+		void run ();
 	};
 }
 }

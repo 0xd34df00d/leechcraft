@@ -17,6 +17,8 @@ ENDIF (NOT QT_USE_FILE)
 
 SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
 
+SET (QT_USE_QTWEBKIT TRUE)
+
 INCLUDE (${QT_USE_FILE})
 INCLUDE_DIRECTORIES (
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -31,6 +33,9 @@ SET (SRCS
 	accountslistwidget.cpp
 	account.cpp
 	accountconfigdialog.cpp
+	message.cpp
+	accountthread.cpp
+	accountthreadworker.cpp
 	)
 SET (HEADERS
 	snails.h
@@ -40,6 +45,9 @@ SET (HEADERS
 	accountslistwidget.h
 	account.h
 	accountconfigdialog.h
+	message.h
+	accountthread.h
+	accountthreadworker.h
 	)
 SET (FORMS
 	mailtab.ui

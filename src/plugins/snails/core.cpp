@@ -66,6 +66,11 @@ namespace Snails
 		return AccountsModel_;
 	}
 
+	QList<Account_ptr> Core::GetAccounts () const
+	{
+		return Accounts_;
+	}
+
 	void Core::AddAccount (Account_ptr account)
 	{
 		AddAccountImpl (account);

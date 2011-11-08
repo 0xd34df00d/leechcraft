@@ -21,123 +21,24 @@
 #include <QUuid>
 #include <QDataStream>
 #include <QInputDialog>
-#include <vmime/security/defaultAuthenticator.hpp>
-#include <vmime/net/transport.hpp>
-#include <vmime/net/store.hpp>
+#include <QMutex>
 #include <util/util.h>
 #include "core.h"
 #include "accountconfigdialog.h"
+#include "accountthread.h"
+#include "accountthreadworker.h"
 
 namespace LeechCraft
 {
 namespace Snails
 {
-	namespace
-	{
-		class VMimeAuth : public vmime::security::defaultAuthenticator
-		{
-			Account::Direction Dir_;
-			Account *Acc_;
-		public:
-			VMimeAuth (Account::Direction, Account*);
-
-			const vmime::string getUsername () const;
-			const vmime::string getPassword () const;
-		private:
-			QByteArray GetID () const
-			{
-				QByteArray id = "org.LeechCraft.Snails.PassForAccount/" + Acc_->GetID ();
-				id += Dir_ == Account::DOut ? "/Out" : "/In";
-				return id;
-			}
-
-			QString GetPassImpl () const;
-		};
-
-		VMimeAuth::VMimeAuth (Account::Direction dir, Account *acc)
-		: Dir_ (dir)
-		, Acc_ (acc)
-		{
-		}
-
-		const vmime::string VMimeAuth::getUsername () const
-		{
-			switch (Dir_)
-			{
-			case Account::DOut:
-				return Acc_->GetOutUsername ().toUtf8 ().constData ();
-			default:
-				return Acc_->GetInUsername ().toUtf8 ().constData ();
-			}
-		}
-
-		const vmime::string VMimeAuth::getPassword () const
-		{
-			QString pass = GetPassImpl ();
-			if (!pass.isEmpty ())
-				return pass.toUtf8 ().constData ();
-
-			pass = QInputDialog::getText (0,
-					"LeechCraft",
-					Account::tr ("Enter password for account %1:")
-							.arg (Acc_->GetName ()),
-					QLineEdit::Password);
-			if (pass.isEmpty ())
-				return vmime::string ();
-
-			QList<QVariant> keys;
-			keys << GetID ();
-
-			QList<QVariant> passwordVar;
-			passwordVar << pass;
-			QList<QVariant> values;
-			values << QVariant (passwordVar);
-
-			Entity e = Util::MakeEntity (keys,
-					QString (),
-					Internal,
-					"x-leechcraft/data-persistent-save");
-			e.Additional_ ["Values"] = values;
-			e.Additional_ ["Overwrite"] = true;
-
-			Core::Instance ().SendEntity (e);
-
-			return pass.toUtf8 ().constData ();
-		}
-
-		QString VMimeAuth::GetPassImpl () const
-		{
-			QList<QVariant> keys;
-			keys << GetID ();
-			const QVariantList& result =
-				Util::GetPersistentData (keys, &Core::Instance ());
-			if (result.size () != 1)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "incorrect result size"
-						<< result;
-				return QString ();
-			}
-
-			const QVariantList& strVarList = result.at (0).toList ();
-			if (strVarList.isEmpty () ||
-					!strVarList.at (0).canConvert<QString> ())
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "invalid string variant list"
-						<< strVarList;
-				return QString ();
-			}
-
-			return strVarList.at (0).toString ();
-		}
-	}
-
 	Account::Account (QObject *parent)
 	: QObject (parent)
-	, Session_ (vmime::create<vmime::net::session> ())
+	, Thread_ (new AccountThread (this))
+	, AccMutex_ (new QMutex (QMutex::Recursive))
 	, ID_ (QUuid::createUuid ().toByteArray ())
 	{
+		Thread_->start (QThread::LowPriority);
 	}
 
 	QByteArray Account::GetID () const
@@ -159,6 +60,7 @@ namespace Snails
 
 	QString Account::GetType () const
 	{
+		QMutexLocker l (GetMutex ());
 		switch (InType_)
 		{
 		case ITIMAP:
@@ -172,8 +74,20 @@ namespace Snails
 		}
 	}
 
+	void Account::FetchNewHeaders (int from) const
+	{
+		qDebug () << Thread_->GetWorker ()->thread ();
+		qDebug () << QThread::currentThread ();
+		QMetaObject::invokeMethod (Thread_->GetWorker (),
+				"fetchNewHeaders",
+				Qt::QueuedConnection,
+				Q_ARG (int, from));
+	}
+
 	QByteArray Account::Serialize () const
 	{
+		QMutexLocker l (GetMutex ());
+
 		QByteArray result;
 
 		QDataStream out (&result, QIODevice::WriteOnly);
@@ -210,70 +124,77 @@ namespace Snails
 
 		quint8 inType = 0, outType = 0;
 
-		in >> ID_
-			>> AccName_
-			>> Login_
-			>> UseSASL_
-			>> SASLRequired_
-			>> UseTLS_
-			>> TLSRequired_
-			>> SMTPNeedsAuth_
-			>> APOP_
-			>> APOPFail_
-			>> InHost_
-			>> InPort_
-			>> OutHost_
-			>> OutPort_
-			>> OutLogin_
-			>> inType
-			>> outType;
+		{
+			QMutexLocker l (GetMutex ());
+			in >> ID_
+				>> AccName_
+				>> Login_
+				>> UseSASL_
+				>> SASLRequired_
+				>> UseTLS_
+				>> TLSRequired_
+				>> SMTPNeedsAuth_
+				>> APOP_
+				>> APOPFail_
+				>> InHost_
+				>> InPort_
+				>> OutHost_
+				>> OutPort_
+				>> OutLogin_
+				>> inType
+				>> outType;
 
-		InType_ = static_cast<InType> (inType);
-		OutType_ = static_cast<OutType> (outType);
-
-		RebuildSessConfig ();
+			InType_ = static_cast<InType> (inType);
+			OutType_ = static_cast<OutType> (outType);
+		}
 	}
 
 	void Account::OpenConfigDialog ()
 	{
 		std::unique_ptr<AccountConfigDialog> dia (new AccountConfigDialog);
 
-		dia->SetName (AccName_);
-		dia->SetLogin (Login_);
-		dia->SetUseSASL (UseSASL_);
-		dia->SetSASLRequired (SASLRequired_);
-		dia->SetUseTLS (UseTLS_);
-		dia->SetTLSRequired (TLSRequired_);
-		dia->SetSMTPAuth (SMTPNeedsAuth_);
-		dia->SetAPOP (APOP_);
-		dia->SetAPOPRequired (APOPFail_);
-		dia->SetInHost (InHost_);
-		dia->SetInPort (InPort_);
-		dia->SetOutHost (OutHost_);
-		dia->SetOutPort (OutPort_);
-		dia->SetOutLogin (OutLogin_);
-		dia->SetInType (InType_);
-		dia->SetOutType (OutType_);
+		{
+			QMutexLocker l (GetMutex ());
+			dia->SetName (AccName_);
+			dia->SetLogin (Login_);
+			dia->SetUseSASL (UseSASL_);
+			dia->SetSASLRequired (SASLRequired_);
+			dia->SetUseTLS (UseTLS_);
+			dia->SetTLSRequired (TLSRequired_);
+			dia->SetSMTPAuth (SMTPNeedsAuth_);
+			dia->SetAPOP (APOP_);
+			dia->SetAPOPRequired (APOPFail_);
+			dia->SetInHost (InHost_);
+			dia->SetInPort (InPort_);
+			dia->SetOutHost (OutHost_);
+			dia->SetOutPort (OutPort_);
+			dia->SetOutLogin (OutLogin_);
+			dia->SetInType (InType_);
+			dia->SetOutType (OutType_);
+		}
 
 		if (dia->exec () != QDialog::Accepted)
 			return;
 
-		AccName_ = dia->GetName ();
-		Login_ = dia->GetLogin ();
-		UseSASL_ = dia->GetUseSASL ();
-		SASLRequired_ = dia->GetSASLRequired ();
-		UseTLS_ = dia->GetUseTLS ();
-		TLSRequired_ = dia->GetTLSRequired ();
-		SMTPNeedsAuth_ = dia->GetSMTPAuth ();
-		APOP_ = dia->GetAPOP ();
-		APOPFail_ = dia->GetAPOPRequired ();
-		InHost_ = dia->GetInHost ();
-		InPort_ = dia->GetInPort ();
-		OutHost_ = dia->GetOutHost ();
-		OutPort_ = dia->GetOutPort ();
-		OutLogin_ = dia->GetOutLogin ();
-		InType_ = dia->GetInType ();
-		OutType_ = dia->GetOutType ();
+		{
+			QMutexLocker l (GetMutex ());
+			AccName_ = dia->GetName ();
+			Login_ = dia->GetLogin ();
+			UseSASL_ = dia->GetUseSASL ();
+			SASLRequired_ = dia->GetSASLRequired ();
+			UseTLS_ = dia->GetUseTLS ();
+			TLSRequired_ = dia->GetTLSRequired ();
+			SMTPNeedsAuth_ = dia->GetSMTPAuth ();
+			APOP_ = dia->GetAPOP ();
+			APOPFail_ = dia->GetAPOPRequired ();
+			InHost_ = dia->GetInHost ();
+			InPort_ = dia->GetInPort ();
+			OutHost_ = dia->GetOutHost ();
+			OutPort_ = dia->GetOutPort ();
+			OutLogin_ = dia->GetOutLogin ();
+			InType_ = dia->GetInType ();
+			OutType_ = dia->GetOutType ();
+		}
 
 		RebuildSessConfig ();
 	}
@@ -294,63 +215,22 @@ namespace Snails
 		return OutLogin_;
 	}
 
+	QMutex* Account::GetMutex () const
+	{
+		return AccMutex_;
+	}
+
 	void Account::RebuildSessConfig ()
 	{
-		Session_->getProperties ().removeAllProperties ();
-
-		vmime::string prefix;
-		switch (InType_)
-		{
-		case ITIMAP:
-			prefix = "store.imap.";
-			break;
-		case ITPOP3:
-			prefix = "store.pop3.";
-			Session_->getProperties () [prefix + "options.apop"] = APOP_;
-			Session_->getProperties () [prefix + "options.apop.fallback"] = APOPFail_;
-			break;
-		case ITMaildir:
-			prefix = "store.maildir.";
-			break;
-		}
-
-		Session_->getProperties () [prefix + "options.sasl"] = UseSASL_;
-		Session_->getProperties () [prefix + "options.sasl.fallback"] = SASLRequired_;
-		Session_->getProperties () [prefix + "connection.tls"] = UseTLS_;
-		Session_->getProperties () [prefix + "connection.tls.required"] = TLSRequired_;
-		Session_->getProperties () [prefix + "server.address"] = InHost_.toUtf8 ().constData ();
-		Session_->getProperties () [prefix + "server.port"] = InPort_;
-		Session_->getProperties () [prefix + "server.rootpath"] = InHost_.toUtf8 ().constData ();
-
-		vmime::string opref;
-		switch (OutType_)
-		{
-		case OTSMTP:
-			opref = "transport.smtp.";
-			Session_->getProperties () [opref + "options.need-authentication"] = SMTPNeedsAuth_;
-			break;
-		case OTSendmail:
-			opref = "transport.sendmail.";
-			break;
-		}
-		Session_->getProperties () [opref + "server.address"] = OutHost_.toUtf8 ().constData ();
-		Session_->getProperties () [opref + "server.port"] = OutPort_;
+		QMetaObject::invokeMethod (Thread_->GetWorker (),
+				"rebuildSessConfig",
+				Qt::QueuedConnection);
 	}
 
-	vmime::utility::ref<vmime::net::store> Account::MakeStore ()
+	QString Account::BuildInURL ()
 	{
-		return Session_->getStore (vmime::utility::url (BuildInURL ().toUtf8 ().constData ()),
-				vmime::create<VMimeAuth> (DIn, this));
-	}
+		QMutexLocker l (GetMutex ());
 
-	vmime::utility::ref<vmime::net::transport> Account::MakeTransport ()
-	{
-		return Session_->getTransport (vmime::utility::url (BuildOutURL ().toUtf8 ().constData ()),
-				vmime::create<VMimeAuth> (DOut, this));
-	}
-
-	QString Account::BuildInURL () const
-	{
 		QString result;
 
 		switch (InType_)
@@ -366,16 +246,32 @@ namespace Snails
 			break;
 		}
 
+		if (InType_ != ITMaildir)
+		{
+			result += Login_;
+			result += ":";
+
+			QString pass;
+			getPassword (&pass);
+
+			result += pass + '@';
+		}
+
 		result += InHost_;
 
-		if (InType_ != ITMaildir)
-			result += ":" + QString::number (InPort_);
+		// TODO
+		//if (InType_ != ITMaildir)
+			//result += ":" + QString::number (InPort_);
+
+		qDebug () << Q_FUNC_INFO << result;
 
 		return result;
 	}
 
-	QString Account::BuildOutURL () const
+	QString Account::BuildOutURL ()
 	{
+		QMutexLocker l (GetMutex ());
+
 		QString result;
 
 		switch (OutType_)
@@ -390,6 +286,79 @@ namespace Snails
 		}
 
 		return result;
+	}
+
+	QString Account::GetPassImpl ()
+	{
+		QList<QVariant> keys;
+		keys << GetID ();
+		const QVariantList& result =
+			Util::GetPersistentData (keys, &Core::Instance ());
+		if (result.size () != 1)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "incorrect result size"
+					<< result;
+			return QString ();
+		}
+
+		const QVariantList& strVarList = result.at (0).toList ();
+		if (strVarList.isEmpty () ||
+				!strVarList.at (0).canConvert<QString> ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "invalid string variant list"
+					<< strVarList;
+			return QString ();
+		}
+
+		return strVarList.at (0).toString ();
+	}
+
+	void Account::buildInURL (QString *res)
+	{
+		*res = BuildInURL ();
+	}
+
+	void Account::buildOutURL (QString *res)
+	{
+		*res = BuildOutURL ();
+	}
+
+	void Account::getPassword (QString *outPass)
+	{
+		QString pass = GetPassImpl ();
+		if (!pass.isEmpty ())
+		{
+			*outPass = pass;
+			return;
+		}
+
+		pass = QInputDialog::getText (0,
+				"LeechCraft",
+				Account::tr ("Enter password for account %1:")
+						.arg (GetName ()),
+				QLineEdit::Password);
+		*outPass = pass;
+		if (pass.isEmpty ())
+			return;
+
+		QList<QVariant> keys;
+		keys << GetID ();
+
+		QList<QVariant> passwordVar;
+		passwordVar << pass;
+		QList<QVariant> values;
+		values << QVariant (passwordVar);
+
+		Entity e = Util::MakeEntity (keys,
+				QString (),
+				Internal,
+				"x-leechcraft/data-persistent-save");
+		e.Additional_ ["Values"] = values;
+		e.Additional_ ["Overwrite"] = true;
+
+		Core::Instance ().SendEntity (e);
 	}
 }
 }
