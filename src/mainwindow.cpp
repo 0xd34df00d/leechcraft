@@ -837,27 +837,6 @@ void LeechCraft::MainWindow::InitializeShortcuts ()
 	}
 }
 
-namespace
-{
-	QVariant ClipboardToEcontent (QString selection)
-	{
-		QVariant econtent;
-		if (selection=="")
-			return econtent;
-		if (QFile::exists (selection))
-			econtent = QUrl::fromLocalFile (selection);
-		else
-		{
-			QUrl url (selection);
-			if (url.isValid ())
-				econtent = url;
-			else
-				econtent = selection;
-		}
-		return econtent;
-	}
-};
-
 void LeechCraft::MainWindow::ShowMenuAndBar (bool show)
 {
 	int cur = Ui_.MainTabWidget_->CurrentIndex ();
