@@ -37,6 +37,15 @@ namespace Snails
 		MailTabClass_.Priority_ = 55;
 		MailTabClass_.Features_ = TFOpenableByRequest;
 
+		connect (&Core::Instance (),
+				SIGNAL (gotEntity (LeechCraft::Entity)),
+				this,
+				SIGNAL (gotEntity (LeechCraft::Entity)));
+		connect (&Core::Instance (),
+				SIGNAL (delegateEntity (LeechCraft::Entity,int*,QObject**)),
+				this,
+				SIGNAL (delegateEntity (LeechCraft::Entity,int*,QObject**)));
+
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "snailssettings.xml");
 

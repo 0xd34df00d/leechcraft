@@ -122,6 +122,26 @@ namespace Snails
 		Ui_.OutLogin_->setText (login);
 	}
 
+	bool AccountConfigDialog::GetUseSASL () const
+	{
+		return Ui_.UseSASL_->checkState () == Qt::Checked;
+	}
+
+	void AccountConfigDialog::SetUseSASL (bool use)
+	{
+		Ui_.UseSASL_->setCheckState (use ? Qt::Checked : Qt::Unchecked);
+	}
+
+	bool AccountConfigDialog::GetSASLRequired () const
+	{
+		return Ui_.SASLRequired_->checkState () == Qt::Checked;
+	}
+
+	void AccountConfigDialog::SetSASLRequired (bool req)
+	{
+		Ui_.SASLRequired_->setCheckState (req ? Qt::Checked : Qt::Unchecked);
+	}
+
 	bool AccountConfigDialog::GetUseTLS () const
 	{
 		return Ui_.UseTLS_->checkState () == Qt::Checked;

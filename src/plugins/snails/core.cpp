@@ -56,6 +56,11 @@ namespace Snails
 		return c;
 	}
 
+	void Core::SendEntity (const Entity& e)
+	{
+		emit gotEntity (e);
+	}
+
 	QAbstractItemModel* Core::GetAccountsModel () const
 	{
 		return AccountsModel_;

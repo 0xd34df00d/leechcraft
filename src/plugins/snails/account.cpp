@@ -20,16 +20,129 @@
 #include <stdexcept>
 #include <QUuid>
 #include <QDataStream>
+#include <QInputDialog>
+#include <vmime/security/defaultAuthenticator.hpp>
+#include <vmime/net/transport.hpp>
+#include <vmime/net/store.hpp>
+#include <util/util.h>
+#include "core.h"
 #include "accountconfigdialog.h"
 
 namespace LeechCraft
 {
 namespace Snails
 {
+	namespace
+	{
+		class VMimeAuth : public vmime::security::defaultAuthenticator
+		{
+			Account::Direction Dir_;
+			Account *Acc_;
+		public:
+			VMimeAuth (Account::Direction, Account*);
+
+			const vmime::string getUsername () const;
+			const vmime::string getPassword () const;
+		private:
+			QByteArray GetID () const
+			{
+				QByteArray id = "org.LeechCraft.Snails.PassForAccount/" + Acc_->GetID ();
+				id += Dir_ == Account::DOut ? "/Out" : "/In";
+				return id;
+			}
+
+			QString GetPassImpl () const;
+		};
+
+		VMimeAuth::VMimeAuth (Account::Direction dir, Account *acc)
+		: Dir_ (dir)
+		, Acc_ (acc)
+		{
+		}
+
+		const vmime::string VMimeAuth::getUsername () const
+		{
+			switch (Dir_)
+			{
+			case Account::DOut:
+				return Acc_->GetOutUsername ().toUtf8 ().constData ();
+			default:
+				return Acc_->GetInUsername ().toUtf8 ().constData ();
+			}
+		}
+
+		const vmime::string VMimeAuth::getPassword () const
+		{
+			QString pass = GetPassImpl ();
+			if (!pass.isEmpty ())
+				return pass.toUtf8 ().constData ();
+
+			pass = QInputDialog::getText (0,
+					"LeechCraft",
+					Account::tr ("Enter password for account %1:")
+							.arg (Acc_->GetName ()),
+					QLineEdit::Password);
+			if (pass.isEmpty ())
+				return vmime::string ();
+
+			QList<QVariant> keys;
+			keys << GetID ();
+
+			QList<QVariant> passwordVar;
+			passwordVar << pass;
+			QList<QVariant> values;
+			values << QVariant (passwordVar);
+
+			Entity e = Util::MakeEntity (keys,
+					QString (),
+					Internal,
+					"x-leechcraft/data-persistent-save");
+			e.Additional_ ["Values"] = values;
+			e.Additional_ ["Overwrite"] = true;
+
+			Core::Instance ().SendEntity (e);
+
+			return pass.toUtf8 ().constData ();
+		}
+
+		QString VMimeAuth::GetPassImpl () const
+		{
+			QList<QVariant> keys;
+			keys << GetID ();
+			const QVariantList& result =
+				Util::GetPersistentData (keys, &Core::Instance ());
+			if (result.size () != 1)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "incorrect result size"
+						<< result;
+				return QString ();
+			}
+
+			const QVariantList& strVarList = result.at (0).toList ();
+			if (strVarList.isEmpty () ||
+					!strVarList.at (0).canConvert<QString> ())
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "invalid string variant list"
+						<< strVarList;
+				return QString ();
+			}
+
+			return strVarList.at (0).toString ();
+		}
+	}
+
 	Account::Account (QObject *parent)
 	: QObject (parent)
+	, Session_ (vmime::create<vmime::net::session> ())
 	, ID_ (QUuid::createUuid ().toByteArray ())
 	{
+	}
+
+	QByteArray Account::GetID () const
+	{
+		return ID_;
 	}
 
 	QString Account::GetName () const
@@ -68,6 +181,8 @@ namespace Snails
 		out << ID_
 			<< AccName_
 			<< Login_
+			<< UseSASL_
+			<< SASLRequired_
 			<< UseTLS_
 			<< TLSRequired_
 			<< SMTPNeedsAuth_
@@ -98,6 +213,8 @@ namespace Snails
 		in >> ID_
 			>> AccName_
 			>> Login_
+			>> UseSASL_
+			>> SASLRequired_
 			>> UseTLS_
 			>> TLSRequired_
 			>> SMTPNeedsAuth_
@@ -113,6 +230,8 @@ namespace Snails
 
 		InType_ = static_cast<InType> (inType);
 		OutType_ = static_cast<OutType> (outType);
+
+		RebuildSessConfig ();
 	}
 
 	void Account::OpenConfigDialog ()
@@ -121,6 +240,8 @@ namespace Snails
 
 		dia->SetName (AccName_);
 		dia->SetLogin (Login_);
+		dia->SetUseSASL (UseSASL_);
+		dia->SetSASLRequired (SASLRequired_);
 		dia->SetUseTLS (UseTLS_);
 		dia->SetTLSRequired (TLSRequired_);
 		dia->SetSMTPAuth (SMTPNeedsAuth_);
@@ -139,6 +260,8 @@ namespace Snails
 
 		AccName_ = dia->GetName ();
 		Login_ = dia->GetLogin ();
+		UseSASL_ = dia->GetUseSASL ();
+		SASLRequired_ = dia->GetSASLRequired ();
 		UseTLS_ = dia->GetUseTLS ();
 		TLSRequired_ = dia->GetTLSRequired ();
 		SMTPNeedsAuth_ = dia->GetSMTPAuth ();
@@ -151,12 +274,122 @@ namespace Snails
 		OutLogin_ = dia->GetOutLogin ();
 		InType_ = dia->GetInType ();
 		OutType_ = dia->GetOutType ();
+
+		RebuildSessConfig ();
 	}
 
 	bool Account::IsNull () const
 	{
 		return AccName_.isEmpty () ||
 			Login_.isEmpty ();
+	}
+
+	QString Account::GetInUsername ()
+	{
+		return Login_;
+	}
+
+	QString Account::GetOutUsername ()
+	{
+		return OutLogin_;
+	}
+
+	void Account::RebuildSessConfig ()
+	{
+		Session_->getProperties ().removeAllProperties ();
+
+		vmime::string prefix;
+		switch (InType_)
+		{
+		case ITIMAP:
+			prefix = "store.imap.";
+			break;
+		case ITPOP3:
+			prefix = "store.pop3.";
+			Session_->getProperties () [prefix + "options.apop"] = APOP_;
+			Session_->getProperties () [prefix + "options.apop.fallback"] = APOPFail_;
+			break;
+		case ITMaildir:
+			prefix = "store.maildir.";
+			break;
+		}
+
+		Session_->getProperties () [prefix + "options.sasl"] = UseSASL_;
+		Session_->getProperties () [prefix + "options.sasl.fallback"] = SASLRequired_;
+		Session_->getProperties () [prefix + "connection.tls"] = UseTLS_;
+		Session_->getProperties () [prefix + "connection.tls.required"] = TLSRequired_;
+		Session_->getProperties () [prefix + "server.address"] = InHost_.toUtf8 ().constData ();
+		Session_->getProperties () [prefix + "server.port"] = InPort_;
+		Session_->getProperties () [prefix + "server.rootpath"] = InHost_.toUtf8 ().constData ();
+
+		vmime::string opref;
+		switch (OutType_)
+		{
+		case OTSMTP:
+			opref = "transport.smtp.";
+			Session_->getProperties () [opref + "options.need-authentication"] = SMTPNeedsAuth_;
+			break;
+		case OTSendmail:
+			opref = "transport.sendmail.";
+			break;
+		}
+		Session_->getProperties () [opref + "server.address"] = OutHost_.toUtf8 ().constData ();
+		Session_->getProperties () [opref + "server.port"] = OutPort_;
+	}
+
+	vmime::utility::ref<vmime::net::store> Account::MakeStore ()
+	{
+		return Session_->getStore (vmime::utility::url (BuildInURL ().toUtf8 ().constData ()),
+				vmime::create<VMimeAuth> (DIn, this));
+	}
+
+	vmime::utility::ref<vmime::net::transport> Account::MakeTransport ()
+	{
+		return Session_->getTransport (vmime::utility::url (BuildOutURL ().toUtf8 ().constData ()),
+				vmime::create<VMimeAuth> (DOut, this));
+	}
+
+	QString Account::BuildInURL () const
+	{
+		QString result;
+
+		switch (InType_)
+		{
+		case ITIMAP:
+			result = "imap://";
+			break;
+		case ITPOP3:
+			result = "pop3://";
+			break;
+		case ITMaildir:
+			result = "maildir://localhost";
+			break;
+		}
+
+		result += InHost_;
+
+		if (InType_ != ITMaildir)
+			result += ":" + QString::number (InPort_);
+
+		return result;
+	}
+
+	QString Account::BuildOutURL () const
+	{
+		QString result;
+
+		switch (OutType_)
+		{
+		case OTSMTP:
+			result = "smtp://";
+			result += OutHost_ + ":" + QString::number (OutPort_);
+			break;
+		case OTSendmail:
+			result = "sendmail://localhost";
+			break;
+		}
+
+		return result;
 	}
 }
 }

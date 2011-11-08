@@ -20,6 +20,7 @@
 #define PLUGINS_SNAILS_ACCOUNT_H
 #include <memory>
 #include <QObject>
+#include <vmime/net/session.hpp>
 
 namespace LeechCraft
 {
@@ -29,10 +30,14 @@ namespace Snails
 	{
 		Q_OBJECT
 
+		vmime::ref<vmime::net::session> Session_;
+
 		QByteArray ID_;
 		QString AccName_;
 
 		QString Login_;
+		bool UseSASL_;
+		bool SASLRequired_;
 		bool UseTLS_;
 		bool TLSRequired_;
 
@@ -49,6 +54,12 @@ namespace Snails
 		QString OutLogin_;
 
 	public:
+		enum Direction
+		{
+			DIn,
+			DOut
+		};
+
 		enum InType
 		{
 			ITIMAP,
@@ -67,6 +78,7 @@ namespace Snails
 	public:
 		Account (QObject* = 0);
 
+		QByteArray GetID () const;
 		QString GetName () const;
 		QString GetServer () const;
 		QString GetType () const;
@@ -77,6 +89,15 @@ namespace Snails
 		void OpenConfigDialog ();
 
 		bool IsNull () const;
+
+		QString GetInUsername ();
+		QString GetOutUsername ();
+	private:
+		void RebuildSessConfig ();
+		vmime::ref<vmime::net::store> MakeStore ();
+		vmime::ref<vmime::net::transport> MakeTransport ();
+		QString BuildInURL () const;
+		QString BuildOutURL () const;
 	};
 
 	typedef std::shared_ptr<Account> Account_ptr;

@@ -19,6 +19,7 @@
 #ifndef PLUGINS_SNAILS_CORE_H
 #define PLUGINS_SNAILS_CORE_H
 #include <QObject>
+#include <interfaces/structures.h>
 #include "account.h"
 
 class QAbstractItemModel;
@@ -39,12 +40,17 @@ namespace Snails
 	public:
 		static Core& Instance ();
 
+		void SendEntity (const Entity&);
+
 		QAbstractItemModel* GetAccountsModel () const;
 		void AddAccount (Account_ptr);
 	private:
 		void AddAccountImpl (Account_ptr);
 		void SaveAccounts () const;
 		void LoadAccounts ();
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
+		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 	};
 }
 }

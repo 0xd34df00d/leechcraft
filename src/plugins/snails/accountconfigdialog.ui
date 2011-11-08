@@ -17,7 +17,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
@@ -237,6 +237,20 @@
        <string>Auth options</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="QCheckBox" name="UseSASL_">
+         <property name="text">
+          <string>Use SASL</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="SASLRequired_">
+         <property name="text">
+          <string>SASL required</string>
+         </property>
+        </widget>
+       </item>
        <item>
         <widget class="QCheckBox" name="UseTLS_">
          <property name="text">

@@ -57,6 +57,9 @@ namespace Snails
 		void changeTabIcon (QWidget*, const QIcon&);
 		void statusBarChanged (QWidget*, const QString&);
 		void raiseTab (QWidget*);
+
+		void gotEntity (const LeechCraft::Entity&);
+		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 	};
 }
 }

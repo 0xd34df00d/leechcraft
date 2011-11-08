@@ -61,6 +61,12 @@ namespace Snails
 		QString GetOutLogin () const;
 		void SetOutLogin (const QString&);
 
+		bool GetUseSASL () const;
+		void SetUseSASL (bool);
+
+		bool GetSASLRequired () const;
+		void SetSASLRequired (bool);
+
 		bool GetUseTLS () const;
 		void SetUseTLS (bool);
 
