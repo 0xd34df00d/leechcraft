@@ -31,7 +31,7 @@ namespace Snails
 
 	bool Message::IsFullyFetched () const
 	{
-		return !Body_.isEmpty ();
+		return !Body_.isEmpty () || !HTMLBody_.isEmpty ();
 	}
 
 	QByteArray Message::GetID () const
@@ -114,6 +114,16 @@ namespace Snails
 		Body_ = body;
 	}
 
+	QString Message::GetHTMLBody () const
+	{
+		return HTMLBody_;
+	}
+
+	void Message::SetHTMLBody (const QString& body)
+	{
+		HTMLBody_ = body;
+	}
+
 	void Message::Dump () const
 	{
 		qDebug () << Q_FUNC_INFO
@@ -123,7 +133,9 @@ namespace Snails
 				<< FromEmail_
 				<< Date_
 				<< Recipients_
-				<< Subject_;
+				<< Subject_
+				<< Body_
+				<< HTMLBody_;
 	}
 
 	QByteArray Message::Serialize () const
@@ -138,7 +150,9 @@ namespace Snails
 			<< FromEmail_
 			<< Date_
 			<< Recipients_
-			<< Subject_;
+			<< Subject_
+			<< Body_
+			<< HTMLBody_;
 
 		return result;
 	}
@@ -157,7 +171,9 @@ namespace Snails
 			>> FromEmail_
 			>> Date_
 			>> Recipients_
-			>> Subject_;
+			>> Subject_
+			>> Body_
+			>> HTMLBody_;
 	}
 }
 }

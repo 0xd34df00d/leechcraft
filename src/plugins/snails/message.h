@@ -41,6 +41,7 @@ namespace Snails
 		QString Subject_;
 
 		QString Body_;
+		QString HTMLBody_;
 	public:
 		Message (QObject* = 0);
 
@@ -69,6 +70,9 @@ namespace Snails
 
 		QString GetBody () const;
 		void SetBody (const QString&);
+
+		QString GetHTMLBody () const;
+		void SetHTMLBody (const QString&);
 
 		void Dump () const;
 
