@@ -174,25 +174,6 @@ namespace OnlineBookmarks
 		return ActiveAccounts_;
 	}
 
-// 	void Core::UploadBookmark(const QString& title,
-// 			const QString& url, const QStringList& tags)
-// 	{
-// 		Q_FOREACH (QObject *accObj, ActiveAccounts_)
-// 		{
-// 			IAccount *account = qobject_cast<IAccount*> (accObj);
-// 			IBookmarksService *ibs = qobject_cast<IBookmarksService*> (account->GetParentService ());
-// 			QVariantList list;
-// 			QVariantMap map;
-// 			map ["Title"] = title;
-// 			map ["Url"] = url;
-// 			map ["Tags"] = tags;
-// 			list << map;
-// 			if (account->GetBookmarksDiff (list).isEmpty ())
-// 				continue;
-// 			ibs->UploadBookmarks (account, list);
-// 		}
-// 	}
-
 	void Core::DeletePassword (QObject *accObj)
 	{
 		IAccount *account = qobject_cast<IAccount*> (accObj);

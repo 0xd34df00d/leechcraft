@@ -81,8 +81,6 @@ namespace OnlineBookmarks
 		void SetActiveAccounts (QObjectList);
 		QObjectList GetActiveAccounts () const;
 
-// 		void UploadBookmark (const QString&,
-// 				const QString&, const QStringList&);
 		void DeletePassword (QObject*);
 		QString GetPassword (QObject*);
 		void SavePassword (QObject*);

@@ -14,12 +14,6 @@
 			<item type="checkbox" property="UploadInOneClick" default="true">
 				<label value="Upload bookmark in one click" />
 			</item>
-			<item type="checkbox" property="ConfirmSend" default="false">
-				<label value="Confirm sending bookmarks on addition" />
-			</item>
-			<item type="checkbox" property="ShowServices" default="false">
-				<label value="Ask about services to send bookmarks to" />
-			</item>
 			<item type="combobox" property="UploadType">
 				<label value="Upload bookmarks type:"/>
 				<option name="0" default="true">
