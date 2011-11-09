@@ -27,11 +27,13 @@
 #include <vmime/net/message.hpp>
 #include <vmime/utility/datetimeUtils.hpp>
 #include <vmime/dateTime.hpp>
+#include <vmime/charsetConverter.hpp>
+#include <vmime/messageParser.hpp>
+#include <vmime/htmlTextPart.hpp>
 #include "message.h"
 #include "account.h"
 #include "core.h"
 #include "progresslistener.h"
-#include <boost/property_map/property_map.hpp>
 
 namespace LeechCraft
 {
@@ -184,6 +186,21 @@ namespace Snails
 		return msg;
 	}
 
+	namespace
+	{
+		vmime::ref<vmime::message> FromNetMessage (const vmime::ref<vmime::net::message>& msg)
+		{
+			vmime::string msgStr;
+			vmime::utility::outputStreamStringAdapter outStr (msgStr);
+			msg->extract (outStr);
+
+			auto fullMsg = vmime::create<vmime::message> ();
+			fullMsg->parse (msgStr);
+
+			return fullMsg;
+		}
+	}
+
 	void AccountThreadWorker::FetchMessagesPOP3 (int from)
 	{
 		auto store = MakeStore ();
@@ -225,6 +242,73 @@ namespace Snails
 			return;
 		}
 
+		auto newMessages = FetchFullMessages (messages);
+
+		emit gotMsgHeaders (newMessages);
+	}
+
+	namespace
+	{
+		template<typename T>
+		QString Stringize (const T& t, const vmime::charset& source)
+		{
+			vmime::string str;
+			vmime::utility::outputStreamStringAdapter out (str);
+			vmime::utility::charsetFilteredOutputStream fout (source,
+					vmime::charset ("utf-8"), out);
+
+			t->extract (fout);
+			fout.flush ();
+
+			return QString::fromUtf8 (str.c_str ());
+		}
+
+		template<typename T>
+		QString Stringize (const T& t)
+		{
+			vmime::string str;
+			vmime::utility::outputStreamStringAdapter out (str);
+
+			t->extract (out);
+
+			return QString::fromUtf8 (str.c_str ());
+		}
+
+		void FullifyHeaderMessage (Message_ptr msg, const vmime::ref<vmime::message>& full)
+		{
+			vmime::messageParser mp (full);
+
+			QString html;
+			QString plain;
+
+			Q_FOREACH (auto tp, mp.getTextPartList ())
+			{
+				if (tp->getType ().getType () != vmime::mediaTypes::TEXT)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "non-text in text part"
+							<< tp->getType ().getType ().c_str ();
+					continue;
+				}
+
+				if (tp->getType ().getSubType () == vmime::mediaTypes::TEXT_HTML)
+				{
+					auto htp = tp.dynamicCast<const vmime::htmlTextPart> ();
+					html = Stringize (htp->getText (), htp->getCharset ());
+					plain = Stringize (htp->getPlainText (), htp->getCharset ());
+				}
+				else if (plain.isEmpty () &&
+						tp->getType ().getSubType () == vmime::mediaTypes::TEXT_PLAIN)
+					plain = Stringize (tp->getText (), tp->getCharset ());
+			}
+
+			msg->SetBody (plain);
+			msg->SetHTMLBody (html);
+		}
+	}
+
+	QList<Message_ptr> AccountThreadWorker::FetchFullMessages (const std::vector<vmime::utility::ref<vmime::net::message>>& messages)
+	{
 		auto context = tr ("Fetching messages for %1")
 					.arg (A_->GetName ());
 
@@ -235,8 +319,8 @@ namespace Snails
 		QMetaObject::invokeMethod (pl,
 				"start",
 				Q_ARG (const int, messages.size ()));
-		int i = 0;
 
+		int i = 0;
 		QList<Message_ptr> newMessages;
 		Q_FOREACH (auto message, messages)
 		{
@@ -245,22 +329,18 @@ namespace Snails
 					Q_ARG (const int, ++i),
 					Q_ARG (const int, messages.size ()));
 
-			newMessages << FromHeaders (message);
+			auto msgObj = FromHeaders (message);
 
-			vmime::string msgStr;
-			vmime::utility::outputStreamStringAdapter outStr (msgStr);
-			message->extract (outStr);
-			qDebug () << QString::fromUtf8 (msgStr.c_str ());
+			FullifyHeaderMessage (msgObj, FromNetMessage (message));
+
+			newMessages << msgObj;
 		}
 
 		QMetaObject::invokeMethod (pl,
 					"stop",
 					Q_ARG (const int, messages.size ()));
 
-		Q_FOREACH (auto msg, newMessages)
-			msg->Dump ();
-
-		emit gotMsgHeaders (newMessages);
+		return newMessages;
 	}
 
 	void AccountThreadWorker::fetchNewHeaders (int from)

@@ -156,10 +156,14 @@ namespace Snails
 		html += "<em>From</em>: %2<br /><br />";
 		html += "%3";
 
+		qDebug () << Q_FUNC_INFO << msg->GetBody () << msg->GetHTMLBody ();
+
+		const QString& htmlBody = msg->GetHTMLBody ();
+
 		Ui_.MailView_->setHtml (html
 				.arg (msg->GetSubject ())
 				.arg (Qt::escape (GetFrom (msg)))
-				.arg (msg->GetBody ()));
+				.arg (htmlBody.isEmpty () ? "<pre>" + msg->GetBody () + "</pre> " : htmlBody));
 	}
 
 	void MailTab::handleFetchNewMail ()
