@@ -104,6 +104,16 @@ namespace Snails
 		Subject_ = subj;
 	}
 
+	QString Message::GetBody () const
+	{
+		return Body_;
+	}
+
+	void Message::SetBody (const QString& body)
+	{
+		Body_ = body;
+	}
+
 	void Message::Dump () const
 	{
 		qDebug () << Q_FUNC_INFO

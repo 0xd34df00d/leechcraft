@@ -67,6 +67,9 @@ namespace Snails
 		QString GetSubject () const;
 		void SetSubject (const QString&);
 
+		QString GetBody () const;
+		void SetBody (const QString&);
+
 		void Dump () const;
 
 		QByteArray Serialize () const;
