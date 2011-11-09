@@ -38,6 +38,13 @@ namespace Snails
 	, Thread_ (new AccountThread (this))
 	, AccMutex_ (new QMutex (QMutex::Recursive))
 	, ID_ (QUuid::createUuid ().toByteArray ())
+	, UseSASL_ (false)
+	, SASLRequired_ (false)
+	, UseTLS_ (true)
+	, TLSRequired_ (false)
+	, SMTPNeedsAuth_ (true)
+	, APOP_ (false)
+	, APOPFail_ (false)
 	{
 		Thread_->start (QThread::LowPriority);
 	}
