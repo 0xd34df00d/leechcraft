@@ -209,6 +209,8 @@ namespace Snails
 			InType_ = dia->GetInType ();
 			OutType_ = dia->GetOutType ();
 		}
+
+		emit accountChanged ();
 	}
 
 	bool Account::IsNull () const

@@ -117,6 +117,7 @@ namespace Snails
 		void mailChanged ();
 		void gotNewMessages (QList<Message_ptr>);
 		void gotProgressListener (ProgressListener_g_ptr);
+		void accountChanged ();
 	};
 
 	typedef std::shared_ptr<Account> Account_ptr;
