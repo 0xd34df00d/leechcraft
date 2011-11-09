@@ -70,7 +70,6 @@ namespace Snails
 
 	void ProgressManager::handlePLDestroyed ()
 	{
-		qDebug () << sender () << Listener2Row_ << Listener2Row_ [sender ()];
 		QStandardItem *item = Listener2Row_.take (sender ());
 		Model_->removeRow (item->row ());
 	}
