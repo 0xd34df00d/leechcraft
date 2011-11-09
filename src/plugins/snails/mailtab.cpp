@@ -19,6 +19,8 @@
 #include "mailtab.h"
 #include <QToolBar>
 #include <QStandardItemModel>
+#include <QTextDocument>
+#include <util/util.h>
 #include "core.h"
 #include "storage.h"
 
@@ -42,6 +44,10 @@ namespace Snails
 				SIGNAL (currentChanged (QModelIndex, QModelIndex)),
 				this,
 				SLOT (handleCurrentAccountChanged (QModelIndex)));
+		connect (Ui_.MailTree_->selectionModel (),
+				SIGNAL (currentChanged (QModelIndex, QModelIndex)),
+				this,
+				SLOT (handleMailSelected (QModelIndex)));
 
 		QAction *fetch = new QAction (tr ("Fetch new mail"), this);
 		TabToolbar_->addAction (fetch);
@@ -101,6 +107,61 @@ namespace Snails
 					LoadMessages (CurrAcc_.get ()));
 	}
 
+	namespace
+	{
+		QString GetFrom (Message_ptr message)
+		{
+			const QString& fromName = message->GetFrom ();
+			return fromName.isEmpty () ?
+					message->GetFromEmail () :
+					fromName + " <" + message->GetFromEmail () + ">";
+		}
+	}
+
+	void MailTab::handleMailSelected (const QModelIndex& idx)
+	{
+		if (!CurrAcc_)
+		{
+			Ui_.MailView_->setHtml (QString ());
+			return;
+		}
+
+		const QByteArray& id = idx.sibling (idx.row (), 0)
+				.data (RID).toByteArray ();
+
+		Message_ptr msg;
+		try
+		{
+			msg = Core::Instance ().GetStorage ()->
+					LoadMessage (CurrAcc_.get (), id);
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to load message"
+					<< CurrAcc_->GetID ().toHex ()
+					<< id.toHex ()
+					<< e.what ();
+
+			const QString& html = tr ("<h2>Unable to load mail</h2><em>%1</em>").arg (e.what ());
+			Ui_.MailView_->setHtml (html);
+			return;
+		}
+
+		if (!msg->IsFullyFetched ())
+			CurrAcc_->FetchWholeMessage (msg->GetID ());
+
+		QString html;
+		html += "<em>Subject</em>: %1<br />";
+		html += "<em>From</em>: %2<br /><br />";
+		html += "%3";
+
+		Ui_.MailView_->setHtml (html
+				.arg (msg->GetSubject ())
+				.arg (Qt::escape (GetFrom (msg)))
+				.arg (msg->GetBody ()));
+	}
+
 	void MailTab::handleFetchNewMail ()
 	{
 		Q_FOREACH (auto acc, Core::Instance ().GetAccounts ())
@@ -111,16 +172,14 @@ namespace Snails
 	{
 		Q_FOREACH (Message_ptr message, messages)
 		{
-			const QString& fromName = message->GetFrom ();
-			const QString& from = fromName.isEmpty () ?
-					message->GetFromEmail () :
-					fromName + " <" + message->GetFromEmail () + ">";
 			QList<QStandardItem*> row;
-			row << new QStandardItem (from);
+			row << new QStandardItem (GetFrom (message));
 			row << new QStandardItem (message->GetSubject ());
 			row << new QStandardItem (message->GetDate ().toString ());
-			row << new QStandardItem (QString::number (message->GetSize ()));
+			row << new QStandardItem (Util::MakePrettySize (message->GetSize ()));
 			MailModel_->appendRow (row);
+
+			row.first ()->setData (message->GetID (), RID);
 		}
 	}
 }

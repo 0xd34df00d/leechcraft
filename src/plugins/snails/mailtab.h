@@ -43,8 +43,12 @@ namespace Snails
 		QObject *PMT_;
 
 		QStandardItemModel *MailModel_;
-
 		Account_ptr CurrAcc_;
+
+		enum Roles
+		{
+			RID = Qt::UserRole + 1
+		};
 	public:
 		MailTab (const TabClassInfo&, QObject*, QWidget* = 0);
 
@@ -54,6 +58,7 @@ namespace Snails
 		QToolBar* GetToolBar () const;
 	private slots:
 		void handleCurrentAccountChanged (const QModelIndex&);
+		void handleMailSelected (const QModelIndex&);
 		void handleFetchNewMail ();
 		void handleGotNewMessages (QList<Message_ptr>);
 	signals:
