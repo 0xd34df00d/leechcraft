@@ -30,6 +30,8 @@
 #include "message.h"
 #include "account.h"
 #include "core.h"
+#include "progresslistener.h"
+#include <boost/property_map/property_map.hpp>
 
 namespace LeechCraft
 {
@@ -206,7 +208,14 @@ namespace Snails
 
 		try
 		{
-			folder->fetchMessages (messages, desiredFlags);
+			auto context = tr ("Fetching headers for %1")
+					.arg (A_->GetName ());
+
+			auto pl = new ProgressListener (context);
+			pl->deleteLater ();
+			emit gotProgressListener (ProgressListener_g_ptr (pl));
+
+			folder->fetchMessages (messages, desiredFlags, pl);
 		}
 		catch (const vmime::exceptions::operation_not_supported& ons)
 		{
@@ -216,9 +225,26 @@ namespace Snails
 			return;
 		}
 
+		auto context = tr ("Fetching messages for %1")
+					.arg (A_->GetName ());
+
+		auto pl = new ProgressListener (context);
+		pl->deleteLater ();
+		emit gotProgressListener (ProgressListener_g_ptr (pl));
+
+		QMetaObject::invokeMethod (pl,
+				"start",
+				Q_ARG (const int, messages.size ()));
+		int i = 0;
+
 		QList<Message_ptr> newMessages;
 		Q_FOREACH (auto message, messages)
 		{
+			QMetaObject::invokeMethod (pl,
+					"progress",
+					Q_ARG (const int, ++i),
+					Q_ARG (const int, messages.size ()));
+
 			newMessages << FromHeaders (message);
 
 			vmime::string msgStr;
@@ -226,6 +252,10 @@ namespace Snails
 			message->extract (outStr);
 			qDebug () << QString::fromUtf8 (msgStr.c_str ());
 		}
+
+		QMetaObject::invokeMethod (pl,
+					"stop",
+					Q_ARG (const int, messages.size ()));
 
 		Q_FOREACH (auto msg, newMessages)
 			msg->Dump ();

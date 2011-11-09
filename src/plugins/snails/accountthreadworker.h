@@ -21,6 +21,7 @@
 #include <QObject>
 #include <vmime/net/session.hpp>
 #include <vmime/net/message.hpp>
+#include "progresslistener.h"
 #include "message.h"
 
 namespace LeechCraft
@@ -48,6 +49,7 @@ namespace Snails
 		void rebuildSessConfig ();
 	signals:
 		void error (const QString&);
+		void gotProgressListener (ProgressListener_g_ptr);
 		void gotMsgHeaders (QList<Message_ptr>);
 	};
 }

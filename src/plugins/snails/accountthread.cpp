@@ -47,6 +47,10 @@ namespace Snails
 				SIGNAL (gotMsgHeaders (QList<Message_ptr>)),
 				A_,
 				SLOT (handleMsgHeaders (QList<Message_ptr>)));
+		connect (W_,
+				SIGNAL (gotProgressListener (ProgressListener_g_ptr)),
+				A_,
+				SIGNAL (gotProgressListener (ProgressListener_g_ptr)));
 
 		QThread::run ();
 		delete W_;

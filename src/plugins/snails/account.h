@@ -21,6 +21,7 @@
 #include <memory>
 #include <QObject>
 #include "message.h"
+#include "progresslistener.h"
 
 class QMutex;
 
@@ -116,6 +117,7 @@ namespace Snails
 	signals:
 		void mailChanged ();
 		void gotNewMessages (QList<Message_ptr>);
+		void gotProgressListener (ProgressListener_g_ptr);
 	};
 
 	typedef std::shared_ptr<Account> Account_ptr;
