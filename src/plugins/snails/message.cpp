@@ -107,7 +107,8 @@ namespace Snails
 	void Message::Dump () const
 	{
 		qDebug () << Q_FUNC_INFO
-				<< ID_.toBase64 ()
+				<< ID_.toHex ()
+				<< Size_
 				<< From_
 				<< FromEmail_
 				<< Date_
@@ -122,6 +123,7 @@ namespace Snails
 		QDataStream str (&result, QIODevice::WriteOnly);
 		str << static_cast<quint8> (1)
 			<< ID_
+			<< Size_
 			<< From_
 			<< FromEmail_
 			<< Date_
@@ -140,6 +142,7 @@ namespace Snails
 			throw std::runtime_error (qPrintable ("Failed to deserialize Message: unknown version " + QString::number (version)));
 
 		str >> ID_
+			>> Size_
 			>> From_
 			>> FromEmail_
 			>> Date_
