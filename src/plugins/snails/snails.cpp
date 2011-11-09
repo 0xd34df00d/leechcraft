@@ -23,6 +23,7 @@
 #include "xmlsettingsmanager.h"
 #include "accountslistwidget.h"
 #include "core.h"
+#include "progressmanager.h"
 
 namespace LeechCraft
 {
@@ -110,6 +111,11 @@ namespace Snails
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
 	{
 		return XSD_;
+	}
+
+	QAbstractItemModel* Plugin::GetRepresentation () const
+	{
+		return Core::Instance ().GetProgressManager ()->GetRepresentation ();
 	}
 }
 }

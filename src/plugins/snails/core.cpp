@@ -30,6 +30,7 @@
 
 #include "message.h"
 #include "storage.h"
+#include "progressmanager.h"
 
 namespace LeechCraft
 {
@@ -38,6 +39,7 @@ namespace Snails
 	Core::Core ()
 	: AccountsModel_ (new QStandardItemModel)
 	, Storage_ (new Storage (this))
+	, ProgressManager_ (new ProgressManager (this))
 	{
 #if Q_WS_WIN
 		vmime::platform::setHandler<vmime::platforms::windows::windowsHandler> ();
@@ -49,6 +51,7 @@ namespace Snails
 		qRegisterMetaType<Message_ptr> ("Message_ptr");
 		qRegisterMetaType<QList<Message_ptr>> ("QList<LeechCraft::Snails::Message_ptr>");
 		qRegisterMetaType<QList<Message_ptr>> ("QList<Message_ptr>");
+		qRegisterMetaType<ProgressListener_g_ptr> ("ProgressListener_g_ptr");
 
 		QStringList headers;
 		headers << tr ("Name")
@@ -93,6 +96,11 @@ namespace Snails
 		return Storage_;
 	}
 
+	ProgressManager* Core::GetProgressManager () const
+	{
+		return ProgressManager_;
+	}
+
 	void Core::AddAccount (Account_ptr account)
 	{
 		AddAccountImpl (account);
@@ -109,6 +117,8 @@ namespace Snails
 		row << new QStandardItem (account->GetServer ());
 		row << new QStandardItem (account->GetType ());
 		AccountsModel_->appendRow (row);
+
+		ProgressManager_->AddAccount (account.get ());
 	}
 
 	void Core::SaveAccounts () const

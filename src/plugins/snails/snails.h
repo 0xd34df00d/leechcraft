@@ -19,9 +19,11 @@
 #ifndef PLUGINS_SNAILS_SNAILS_H
 #define PLUGINS_SNAILS_SNAILS_H
 #include <QObject>
+#include <QModelIndex>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihavesettings.h>
+#include <interfaces/ijobholder.h>
 
 namespace LeechCraft
 {
@@ -31,9 +33,10 @@ namespace Snails
 				 , public IInfo
 				 , public IHaveTabs
 				 , public IHaveSettings
+				 , public IJobHolder
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs IHaveSettings)
+		Q_INTERFACES (IInfo IHaveTabs IHaveSettings IJobHolder)
 
 		TabClassInfo MailTabClass_;
 		Util::XmlSettingsDialog_ptr XSD_;
@@ -50,6 +53,8 @@ namespace Snails
 		void TabOpenRequested (const QByteArray&);
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+
+		QAbstractItemModel* GetRepresentation () const;
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);
