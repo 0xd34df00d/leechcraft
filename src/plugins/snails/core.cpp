@@ -105,7 +105,7 @@ namespace Snails
 	{
 		AddAccountImpl (account);
 
-		SaveAccounts ();
+		saveAccounts ();
 	}
 
 	void Core::AddAccountImpl (Account_ptr account)
@@ -119,17 +119,11 @@ namespace Snails
 		AccountsModel_->appendRow (row);
 
 		ProgressManager_->AddAccount (account.get ());
-	}
 
-	void Core::SaveAccounts () const
-	{
-		QList<QVariant> serialized;
-		Q_FOREACH (Account_ptr acc, Accounts_)
-			serialized << acc->Serialize ();
-
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Snails_Accounts");
-		settings.setValue ("Accounts", serialized);
+		connect (account.get (),
+				SIGNAL (accountChanged ()),
+				this,
+				SLOT (saveAccounts ()));
 	}
 
 	void Core::LoadAccounts ()
@@ -152,6 +146,17 @@ namespace Snails
 			}
 			AddAccountImpl (acc);
 		}
+	}
+
+	void Core::saveAccounts () const
+	{
+		QList<QVariant> serialized;
+		Q_FOREACH (Account_ptr acc, Accounts_)
+			serialized << acc->Serialize ();
+
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Snails_Accounts");
+		settings.setValue ("Accounts", serialized);
 	}
 }
 }

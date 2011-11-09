@@ -60,8 +60,9 @@ namespace Snails
 		void AddAccount (Account_ptr);
 	private:
 		void AddAccountImpl (Account_ptr);
-		void SaveAccounts () const;
 		void LoadAccounts ();
+	private slots:
+		void saveAccounts () const;
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
