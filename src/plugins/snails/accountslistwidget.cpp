@@ -46,6 +46,15 @@ namespace Snails
 
 	void AccountsListWidget::on_ModifyButton__released ()
 	{
+		const QModelIndex& current = Ui_.AccountsTree_->currentIndex ();
+		if (!current.isValid ())
+			return;
+
+		Account_ptr acc = Core::Instance ().GetAccount (current);
+		if (!acc)
+			return;
+
+		acc->OpenConfigDialog ();
 	}
 
 	void AccountsListWidget::on_RemoveButton__released ()
