@@ -182,10 +182,8 @@ namespace Snails
 		return msg;
 	}
 
-	void AccountThreadWorker::fetchNewHeaders (int from)
+	void AccountThreadWorker::FetchMessagesPOP3 (int from)
 	{
-		qDebug () << Q_FUNC_INFO << from;
-
 		auto store = MakeStore ();
 		store->setProperty ("connection.tls", true);
 		store->connect ();
@@ -220,12 +218,69 @@ namespace Snails
 
 		QList<Message_ptr> newMessages;
 		Q_FOREACH (auto message, messages)
+		{
 			newMessages << FromHeaders (message);
+
+			vmime::string msgStr;
+			vmime::utility::outputStreamStringAdapter outStr (msgStr);
+			message->extract (outStr);
+			qDebug () << QString::fromUtf8 (msgStr.c_str ());
+		}
 
 		Q_FOREACH (auto msg, newMessages)
 			msg->Dump ();
 
 		emit gotMsgHeaders (newMessages);
+	}
+
+	void AccountThreadWorker::fetchNewHeaders (int from)
+	{
+		switch (A_->InType_)
+		{
+		case Account::ITPOP3:
+			FetchMessagesPOP3 (from);
+			break;
+		case Account::ITIMAP:
+			break;
+		case Account::ITMaildir:
+			break;
+		}
+	}
+
+	void AccountThreadWorker::fetchWholeMessage (const QByteArray& sid)
+	{
+		if (A_->InType_ == Account::ITPOP3)
+			return;
+
+		vmime::string id (sid.constData ());
+
+		auto store = MakeStore ();
+		store->setProperty ("connection.tls", true);
+		store->connect ();
+		auto folder = store->getDefaultFolder ();
+		folder->open (vmime::net::folder::MODE_READ_ONLY);
+
+		auto messages = folder->getMessages ();
+		auto pos = std::find_if (messages.begin (), messages.end (),
+				[id] (const vmime::ref<vmime::net::message>& message) { return message->getUniqueId () == id; });
+		if (pos == messages.end ())
+		{
+			Q_FOREACH (auto msg, messages)
+				qWarning () << QByteArray (msg->getUniqueId ().c_str ()).toHex ();
+			qWarning () << Q_FUNC_INFO
+					<< "message with ID"
+					<< sid.toHex ()
+					<< "not found in"
+					<< messages.size ();
+			return;
+		}
+
+		vmime::string msgStr;
+		vmime::utility::outputStreamStringAdapter outStr (msgStr);
+		(*pos)->extract (outStr);
+
+		auto msg = vmime::create<vmime::message> ();
+		msg->parse (msgStr);
 	}
 
 	void AccountThreadWorker::rebuildSessConfig ()

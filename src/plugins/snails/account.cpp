@@ -82,14 +82,20 @@ namespace Snails
 		}
 	}
 
-	void Account::FetchNewHeaders (int from) const
+	void Account::FetchNewHeaders (int from)
 	{
-		qDebug () << Thread_->GetWorker ()->thread ();
-		qDebug () << QThread::currentThread ();
 		QMetaObject::invokeMethod (Thread_->GetWorker (),
 				"fetchNewHeaders",
 				Qt::QueuedConnection,
 				Q_ARG (int, from));
+	}
+
+	void Account::FetchWholeMessage (const QByteArray& id)
+	{
+		QMetaObject::invokeMethod (Thread_->GetWorker (),
+				"fetchWholeMessage",
+				Qt::QueuedConnection,
+				Q_ARG (QByteArray, id));
 	}
 
 	QByteArray Account::Serialize () const

@@ -41,8 +41,10 @@ namespace Snails
 		vmime::ref<vmime::net::store> MakeStore ();
 		vmime::ref<vmime::net::transport> MakeTransport ();
 		Message_ptr FromHeaders (const vmime::ref<vmime::net::message>&) const;
+		void FetchMessagesPOP3 (int);
 	public slots:
 		void fetchNewHeaders (int);
+		void fetchWholeMessage (const QByteArray&);
 		void rebuildSessConfig ();
 	signals:
 		void error (const QString&);

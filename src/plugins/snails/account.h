@@ -89,7 +89,8 @@ namespace Snails
 		QString GetServer () const;
 		QString GetType () const;
 
-		void FetchNewHeaders (int) const;
+		void FetchNewHeaders (int);
+		void FetchWholeMessage (const QByteArray&);
 
 		QByteArray Serialize () const;
 		void Deserialize (const QByteArray&);
