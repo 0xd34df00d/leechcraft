@@ -18,6 +18,8 @@
 
 #ifndef PLUGINS_SNAILS_PROGRESSLISTENER_H
 #define PLUGINS_SNAILS_PROGRESSLISTENER_H
+#include <QMetaType>
+#include <QPointer>
 #include <QObject>
 #include <vmime/utility/progressListener.hpp>
 
@@ -29,8 +31,12 @@ namespace Snails
 						   , public vmime::utility::progressListener
 	{
 		Q_OBJECT
+
+		QString Context_;
 	public:
-		ProgressListener (QObject* = 0);
+		ProgressListener (const QString&, QObject* = 0);
+
+		QString GetContext () const;
 
 		bool cancel () const;
 	signals:
@@ -38,7 +44,11 @@ namespace Snails
 		void progress (const int, const int);
 		void stop (const int);
 	};
+
+	typedef QPointer<ProgressListener> ProgressListener_g_ptr;
 }
 }
+
+Q_DECLARE_METATYPE (LeechCraft::Snails::ProgressListener_g_ptr);
 
 #endif
