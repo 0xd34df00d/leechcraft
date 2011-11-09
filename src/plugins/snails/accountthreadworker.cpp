@@ -392,50 +392,5 @@ namespace Snails
 		auto msg = vmime::create<vmime::message> ();
 		msg->parse (msgStr);
 	}
-
-	void AccountThreadWorker::rebuildSessConfig ()
-	{
-		return;
-		QMutexLocker l (A_->GetMutex ());
-		Session_->getProperties ().removeAllProperties ();
-
-		vmime::string prefix;
-		switch (A_->InType_)
-		{
-		case Account::ITIMAP:
-			prefix = "store.imap.";
-			break;
-		case Account::ITPOP3:
-			prefix = "store.pop3.";
-			Session_->getProperties () [prefix + "options.apop"] = A_->APOP_;
-			Session_->getProperties () [prefix + "options.apop.fallback"] = A_->APOPFail_;
-			break;
-		case Account::ITMaildir:
-			prefix = "store.maildir.";
-			break;
-		}
-
-		Session_->getProperties () [prefix + "options.sasl"] = A_->UseSASL_;
-		Session_->getProperties () [prefix + "options.sasl.fallback"] = A_->SASLRequired_;
-		Session_->getProperties () [prefix + "connection.tls"] = A_->UseTLS_;
-		Session_->getProperties () [prefix + "connection.tls.required"] = A_->TLSRequired_;
-		Session_->getProperties () [prefix + "server.address"] = A_->InHost_.toUtf8 ().constData ();
-		Session_->getProperties () [prefix + "server.port"] = A_->InPort_;
-		Session_->getProperties () [prefix + "server.rootpath"] = A_->InHost_.toUtf8 ().constData ();
-
-		vmime::string opref;
-		switch (A_->OutType_)
-		{
-		case Account::OTSMTP:
-			opref = "transport.smtp.";
-			Session_->getProperties () [opref + "options.need-authentication"] = A_->SMTPNeedsAuth_;
-			break;
-		case Account::OTSendmail:
-			opref = "transport.sendmail.";
-			break;
-		}
-		Session_->getProperties () [opref + "server.address"] = A_->OutHost_.toUtf8 ().constData ();
-		Session_->getProperties () [opref + "server.port"] = A_->OutPort_;
-	}
 }
 }

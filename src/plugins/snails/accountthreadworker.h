@@ -47,7 +47,6 @@ namespace Snails
 	public slots:
 		void fetchNewHeaders (int);
 		void fetchWholeMessage (const QByteArray&);
-		void rebuildSessConfig ();
 	signals:
 		void error (const QString&);
 		void gotProgressListener (ProgressListener_g_ptr);

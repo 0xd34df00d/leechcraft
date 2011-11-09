@@ -105,7 +105,6 @@ namespace Snails
 	private:
 		QMutex* GetMutex () const;
 
-		void RebuildSessConfig ();
 		QString BuildInURL ();
 		QString BuildOutURL ();
 		QString GetPassImpl ();

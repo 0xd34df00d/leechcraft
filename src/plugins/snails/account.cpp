@@ -209,8 +209,6 @@ namespace Snails
 			InType_ = dia->GetInType ();
 			OutType_ = dia->GetOutType ();
 		}
-
-		RebuildSessConfig ();
 	}
 
 	bool Account::IsNull () const
@@ -232,13 +230,6 @@ namespace Snails
 	QMutex* Account::GetMutex () const
 	{
 		return AccMutex_;
-	}
-
-	void Account::RebuildSessConfig ()
-	{
-		QMetaObject::invokeMethod (Thread_->GetWorker (),
-				"rebuildSessConfig",
-				Qt::QueuedConnection);
 	}
 
 	QString Account::BuildInURL ()
