@@ -41,6 +41,7 @@ namespace Snails
 
 		void SaveMessages (Account*, const QList<Message_ptr>&);
 		QList<Message_ptr> LoadMessages (Account*);
+		Message_ptr LoadMessage (Account*, const QByteArray&);
 		int GetNumMessages (Account*) const;
 	private:
 		QDir DirForAccount (Account*) const;

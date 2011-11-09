@@ -84,7 +84,7 @@ namespace Snails
 
 			Q_FOREACH (auto str, subdir.entryList (QDir::NoDotAndDotDot | QDir::Files))
 			{
-				QFile file (str);
+				QFile file (subdir.filePath (str));
 				if (!file.open (QIODevice::ReadOnly))
 				{
 					qWarning () << Q_FUNC_INFO
@@ -112,6 +112,44 @@ namespace Snails
 		}
 
 		return result;
+	}
+
+	Message_ptr Storage::LoadMessage (Account *acc, const QByteArray& id)
+	{
+		QDir dir = DirForAccount (acc);
+		if (!dir.cd (id.toHex ().left (2)))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to cd to"
+					<< dir.filePath (id.toHex ().left (2));
+			throw std::runtime_error ("Unable to cd to the directory");
+		}
+
+		QFile file (dir.filePath (id.toHex ()));
+		if (!file.open (QIODevice::ReadOnly))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to open"
+					<< file.fileName ()
+					<< file.errorString ();
+			throw std::runtime_error ("Unable to open the message file");
+		}
+
+		Message_ptr msg (new Message);
+		try
+		{
+			msg->Deserialize (qUncompress (file.readAll ()));
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "error deserializing the message from"
+					<< file.fileName ()
+					<< e.what ();
+			throw;
+		}
+
+		return msg;
 	}
 
 	int Storage::GetNumMessages (Account *acc) const
