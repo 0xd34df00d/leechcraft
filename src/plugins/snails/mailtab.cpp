@@ -57,7 +57,7 @@ namespace Snails
 				SLOT (handleMailSelected (QModelIndex)));
 
 		QAction *fetch = new QAction (tr ("Fetch new mail"), this);
-		fetch->setProperty ("ActionIcon", "update");
+		fetch->setProperty ("ActionIcon", "fetchall");
 		TabToolbar_->addAction (fetch);
 		connect (fetch,
 				SIGNAL (triggered ()),
