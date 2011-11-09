@@ -26,6 +26,15 @@ namespace Snails
 	: QDialog (parent)
 	{
 		Ui_.setupUi (this);
+
+		connect (Ui_.InType_,
+				SIGNAL (currentIndexChanged (int)),
+				this,
+				SLOT (resetInPort ()));
+		connect (Ui_.UseTLS_,
+				SIGNAL (stateChanged (int)),
+				this,
+				SLOT (resetInPort ()));
 	}
 
 	QString AccountConfigDialog::GetName () const
@@ -190,6 +199,17 @@ namespace Snails
 	void AccountConfigDialog::SetAPOPRequired (bool req)
 	{
 		Ui_.APOPRequired_->setCheckState (req ? Qt::Checked : Qt::Unchecked);
+	}
+
+	void AccountConfigDialog::resetInPort ()
+	{
+		QMap<int, QMap<bool, int>> values;
+		values [Account::ITIMAP] [true] = 993;
+		values [Account::ITIMAP] [false] = 143;
+		values [Account::ITPOP3] [true] = 995;
+		values [Account::ITPOP3] [false] = 110;
+
+		Ui_.InPort_->setValue (values [Ui_.InType_->currentIndex ()] [Ui_.UseTLS_->checkState () == Qt::Checked]);
 	}
 }
 }

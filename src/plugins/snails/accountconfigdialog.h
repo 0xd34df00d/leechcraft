@@ -81,6 +81,8 @@ namespace Snails
 
 		bool GetAPOPRequired () const;
 		void SetAPOPRequired (bool);
+	private slots:
+		void resetInPort ();
 	};
 }
 }
