@@ -131,13 +131,18 @@ namespace Snails
 
 		auto st = Session_->getStore (vmime::utility::url (url.toUtf8 ().constData ()));
 		st->setCertificateVerifier (vmime::create<CertVerifier> ());
+
+		st->setProperty ("connection.tls", A_->UseTLS_);
+		st->setProperty ("connection.tls.required", A_->TLSRequired_);
+		st->setProperty ("options.sasl", A_->UseSASL_);
+		st->setProperty ("options.sasl.fallback", A_->SASLRequired_);
+
 		return st;
 	}
 
 	vmime::utility::ref<vmime::net::transport> AccountThreadWorker::MakeTransport ()
 	{
-		return Session_->getTransport (vmime::utility::url (A_->BuildOutURL ().toUtf8 ().constData ()),
-				vmime::create<VMimeAuth> (Account::DOut, A_));
+		return Session_->getTransport (vmime::utility::url (A_->BuildOutURL ().toUtf8 ().constData ()));
 	}
 
 	Message_ptr AccountThreadWorker::FromHeaders (const vmime::ref<vmime::net::message>& message) const
@@ -365,8 +370,8 @@ namespace Snails
 		vmime::string id (sid.constData ());
 
 		auto store = MakeStore ();
-		store->setProperty ("connection.tls", true);
 		store->connect ();
+
 		auto folder = store->getDefaultFolder ();
 		folder->open (vmime::net::folder::MODE_READ_ONLY);
 
