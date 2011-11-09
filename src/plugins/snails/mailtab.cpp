@@ -20,6 +20,7 @@
 #include <QToolBar>
 #include <QStandardItemModel>
 #include <QTextDocument>
+#include <QSortFilterProxyModel>
 #include <util/util.h>
 #include "core.h"
 #include "storage.h"
@@ -34,11 +35,17 @@ namespace Snails
 	, TabClass_ (tc)
 	, PMT_ (pmt)
 	, MailModel_ (new QStandardItemModel (this))
+	, MailSortFilterModel_ (new QSortFilterProxyModel (this))
 	{
 		Ui_.setupUi (this);
 
 		Ui_.AccountsTree_->setModel (Core::Instance ().GetAccountsModel ());
-		Ui_.MailTree_->setModel (MailModel_);
+
+		MailSortFilterModel_->setDynamicSortFilter (true);
+		MailSortFilterModel_->setSortRole (RSort);
+		MailSortFilterModel_->setSourceModel (MailModel_);
+		MailSortFilterModel_->sort (2, Qt::DescendingOrder);
+		Ui_.MailTree_->setModel (MailSortFilterModel_);
 
 		connect (Ui_.AccountsTree_->selectionModel (),
 				SIGNAL (currentChanged (QModelIndex, QModelIndex)),
@@ -50,6 +57,7 @@ namespace Snails
 				SLOT (handleMailSelected (QModelIndex)));
 
 		QAction *fetch = new QAction (tr ("Fetch new mail"), this);
+		fetch->setProperty ("ActionIcon", "updateall");
 		TabToolbar_->addAction (fetch);
 		connect (fetch,
 				SIGNAL (triggered ()),
@@ -81,6 +89,7 @@ namespace Snails
 	void MailTab::handleCurrentAccountChanged (const QModelIndex& idx)
 	{
 		MailModel_->clear ();
+		MailID2Item_.clear ();
 		if (CurrAcc_)
 			disconnect (CurrAcc_.get (),
 					0,
@@ -118,7 +127,7 @@ namespace Snails
 		}
 	}
 
-	void MailTab::handleMailSelected (const QModelIndex& idx)
+	void MailTab::handleMailSelected (const QModelIndex& sidx)
 	{
 		if (!CurrAcc_)
 		{
@@ -126,6 +135,7 @@ namespace Snails
 			return;
 		}
 
+		const QModelIndex& idx = MailSortFilterModel_->mapToSource (sidx);
 		const QByteArray& id = idx.sibling (idx.row (), 0)
 				.data (RID).toByteArray ();
 
@@ -153,17 +163,19 @@ namespace Snails
 
 		QString html;
 		html += "<em>Subject</em>: %1<br />";
-		html += "<em>From</em>: %2<br /><br />";
-		html += "%3";
-
-		qDebug () << Q_FUNC_INFO << msg->GetBody () << msg->GetHTMLBody ();
+		html += "<em>From</em>: %2<br />";
+		html += "<em>On</em>: %3<hr />";
+		html += "%4";
 
 		const QString& htmlBody = msg->GetHTMLBody ();
 
 		Ui_.MailView_->setHtml (html
 				.arg (msg->GetSubject ())
 				.arg (Qt::escape (GetFrom (msg)))
-				.arg (htmlBody.isEmpty () ? "<pre>" + msg->GetBody () + "</pre> " : htmlBody));
+				.arg (msg->GetDate ().toString ())
+				.arg (htmlBody.isEmpty () ?
+						"<pre>" + Qt::escape (msg->GetBody ()) + "</pre> " :
+						htmlBody));
 	}
 
 	void MailTab::handleFetchNewMail ()
@@ -176,6 +188,9 @@ namespace Snails
 	{
 		Q_FOREACH (Message_ptr message, messages)
 		{
+			if (MailID2Item_.contains (message->GetID ()))
+				MailModel_->removeRow (MailID2Item_ [message->GetID ()]->row ());
+
 			QList<QStandardItem*> row;
 			row << new QStandardItem (GetFrom (message));
 			row << new QStandardItem (message->GetSubject ());
@@ -183,7 +198,13 @@ namespace Snails
 			row << new QStandardItem (Util::MakePrettySize (message->GetSize ()));
 			MailModel_->appendRow (row);
 
-			row.first ()->setData (message->GetID (), RID);
+			row [CFrom]->setData (row [CFrom]->text (), RSort);
+			row [CSubj]->setData (row [CSubj]->text (), RSort);
+			row [CDate]->setData (message->GetDate (), RSort);
+			row [CSize]->setData (message->GetSize (), RSort);
+
+			row [CFrom]->setData (message->GetID (), RID);
+			MailID2Item_ [message->GetID ()] = row.first ();
 		}
 	}
 }

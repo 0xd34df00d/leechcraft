@@ -24,6 +24,8 @@
 #include "account.h"
 
 class QStandardItemModel;
+class QStandardItem;
+class QSortFilterProxyModel;
 
 namespace LeechCraft
 {
@@ -43,11 +45,22 @@ namespace Snails
 		QObject *PMT_;
 
 		QStandardItemModel *MailModel_;
+		QHash<QByteArray, QStandardItem*> MailID2Item_;
+		QSortFilterProxyModel *MailSortFilterModel_;
 		Account_ptr CurrAcc_;
 
 		enum Roles
 		{
-			RID = Qt::UserRole + 1
+			RID = Qt::UserRole + 1,
+			RSort
+		};
+
+		enum Columns
+		{
+			CFrom,
+			CSubj,
+			CDate,
+			CSize
 		};
 	public:
 		MailTab (const TabClassInfo&, QObject*, QWidget* = 0);
