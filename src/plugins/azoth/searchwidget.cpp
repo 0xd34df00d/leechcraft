@@ -84,7 +84,7 @@ namespace Azoth
 		{
 			"Search",
 			tr ("Search"),
-			tr ("A search tab allows to search within IM services"),
+			tr ("A search tab allows one to search within IM services"),
 			QIcon (),
 			55,
 			TFOpenableByRequest

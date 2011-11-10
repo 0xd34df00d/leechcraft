@@ -420,7 +420,7 @@ LangString DESC_GLANCEPLUGIN ${LANG_ENGLISH} "Provides thumbnailed grid overview
 LangString DESC_GMAILNOTIFIERPLUGIN ${LANG_ENGLISH} "Notifies about new mail in your GMail inbox."
 LangString DESC_POSHUKUFATAPEPLUGIN ${LANG_ENGLISH} "Adds support for GreaseMonkey userscripts."
 LangString DESC_POSHUKUONLINEBOOKMARKSPLUGIN ${LANG_ENGLISH} "Allows one to synchronize bookmarks with services like Read It Later."
-LangString DESC_TABSLISTPLUGIN ${LANG_ENGLISH} "Shows the list of currently opened tabs and allows to quickly navigate between them."
+LangString DESC_TABSLISTPLUGIN ${LANG_ENGLISH} "Shows the list of currently opened tabs and allows one to quickly navigate between them."
 
 LangString DESC_MAINFILES ${LANG_RUSSIAN} "ядро LeechCraft."
 LangString DESC_QT ${LANG_RUSSIAN} "Ѕиблиотеки Qt."
