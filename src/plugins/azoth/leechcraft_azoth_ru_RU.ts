@@ -2309,7 +2309,7 @@
     </message>
     <message>
         <location filename="azoth.cpp" line="162"/>
-        <source>A search tab allows to search within IM services</source>
+        <source>A search tab allows one to search within IM services</source>
         <translation>Вкладка поиска позволяет искать в IM-сервисах</translation>
     </message>
     <message>
@@ -2361,7 +2361,7 @@
     </message>
     <message>
         <location filename="searchwidget.cpp" line="87"/>
-        <source>A search tab allows to search within IM services</source>
+        <source>A search tab allows one to search within IM services</source>
         <translation>Вкладка поиска позволяет искать в IM-сервисах</translation>
     </message>
 </context>
