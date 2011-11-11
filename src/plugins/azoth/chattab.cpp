@@ -1012,6 +1012,8 @@ namespace Azoth
 				SLOT (handleQuoteSelection ()));
 		TabToolbar_->addAction (quoteSelection);
 		TabToolbar_->addSeparator ();
+
+		Ui_.View_->SetQuoteAction (quoteSelection);
 	}
 
 	void ChatTab::InitEntry()
