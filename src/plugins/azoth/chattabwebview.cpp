@@ -62,6 +62,12 @@ namespace Azoth
 		if (settings ()->testAttribute (QWebSettings::DeveloperExtrasEnabled))
 			menu->addAction (pageAction (QWebPage::InspectElement));
 
+		if (menu->isEmpty ())
+		{
+			delete menu;
+			return;
+		}
+
 		menu->exec (mapToGlobal (e->pos ()));
 		if (menu)
 			delete menu;
