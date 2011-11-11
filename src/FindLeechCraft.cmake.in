@@ -26,6 +26,12 @@ ELSE()
 	ENDIF()
 ENDIF()
 
+IF (NOT CMAKE_VERSION VERSION_LESS 2.8.6)
+	MESSAGE (STATUS "CMake 2.8.6 or greater found, enabling automoc...")
+	SET (CMAKE_AUTOMOC TRUE)
+	SET (LC_NO_MOC TRUE)
+ENDIF (NOT CMAKE_VERSION VERSION_LESS 2.8.6)
+
 FUNCTION (CreateTrVars PlugName Langs TranVar CompiledTranVar)
 	STRING (LENGTH "${PlugName}" _pnameLength)
 	SET (_basename "leechcraft")

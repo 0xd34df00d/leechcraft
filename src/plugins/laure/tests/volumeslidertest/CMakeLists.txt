@@ -2,8 +2,10 @@ INCLUDE_DIRECTORIES (
 	${LAURE_SOURCE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	)
-QT4_WRAP_CPP (VOLUMESLIDERTEST_MOC "volumeslidertest.h")
-QT4_WRAP_CPP (VOLUMESLIDER_MOC ${LAURE_SOURCE_DIR}/volumeslider.h)
+IF (NOT LC_NO_MOC)
+	QT4_WRAP_CPP (VOLUMESLIDERTEST_MOC "volumeslidertest.h")
+	QT4_WRAP_CPP (VOLUMESLIDER_MOC ${LAURE_SOURCE_DIR}/volumeslider.h)
+ENDIF (NOT LC_NO_MOC)
 ADD_EXECUTABLE (lc_laure_volumeslidertest
 	volumeslidertest.cpp
 	${LAURE_SOURCE_DIR}/volumeslider.cpp

@@ -60,7 +60,9 @@ SET (FORMS
 	accountslistwidget.ui
 	accountconfigdialog.ui
 	)
-QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
+IF (NOT LC_NO_MOC)
+	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
+ENDIF (NOT LC_NO_MOC)
 QT4_WRAP_UI (UIS_H ${FORMS})
 
 ADD_LIBRARY (leechcraft_snails SHARED
