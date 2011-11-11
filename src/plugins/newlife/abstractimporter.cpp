@@ -16,34 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_NEWLIFE_ABSTRACTIMPORTER_H
-#define PLUGINS_NEWLIFE_ABSTRACTIMPORTER_H
-#include <QObject>
-
-class QWizardPage;
+#include "abstractimporter.h"
 
 namespace LeechCraft
 {
-	struct Entity;
-
 	namespace Plugins
 	{
 		namespace NewLife
 		{
-			class AbstractImporter : public QObject
+			AbstractImporter::AbstractImporter (QObject *parent)
+			: QObject (parent)
 			{
-				Q_OBJECT
-			public:
-				AbstractImporter (QObject* = 0);
-
-				virtual QStringList GetNames () const = 0;
-				virtual QList<QWizardPage*> GetWizardPages () const = 0;
-			signals:
-				void gotEntity (const LeechCraft::Entity&);
-			};
+			}
 		};
 	};
 };
-
-#endif
 

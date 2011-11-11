@@ -36,6 +36,7 @@ SET (SRCS
 	lifereaimporter.cpp
 	ktorrentimportpage.cpp
 	ktorrentimporter.cpp
+	abstractimporter.cpp
 	firefoximporter/firefoximportpage.cpp
 	firefoximporter/firefoximporter.cpp
 	firefoximporter/firefoxprofileselectpage.cpp
