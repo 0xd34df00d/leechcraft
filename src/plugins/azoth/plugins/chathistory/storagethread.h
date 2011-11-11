@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_CHATHISTORY_CHATHISTORYWIDGET_H
-#define PLUGINS_AZOTH_PLUGINS_CHATHISTORY_CHATHISTORYWIDGET_H
+#ifndef PLUGINS_AZOTH_PLUGINS_CHATHISTORY_STORAGETHREAD_H
+#define PLUGINS_AZOTH_PLUGINS_CHATHISTORY_STORAGETHREAD_H
 #include <boost/shared_ptr.hpp>
 #include <QThread>
 
@@ -32,11 +32,11 @@ namespace ChatHistory
 	class StorageThread : public QThread
 	{
 		Q_OBJECT
-		
+
 		boost::shared_ptr<Storage> Storage_;
 	public:
 		StorageThread (QObject* = 0);
-		
+
 		Storage* GetStorage ();
 	protected:
 		virtual void run ();
