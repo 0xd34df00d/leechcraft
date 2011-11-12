@@ -54,7 +54,7 @@ namespace Snails
 			QByteArray GetID () const
 			{
 				QByteArray id = "org.LeechCraft.Snails.PassForAccount/" + Acc_->GetID ();
-				id += Dir_ == Account::DOut ? "/Out" : "/In";
+				id += Dir_ == Account::Direction::Out ? "/Out" : "/In";
 				return id;
 			}
 		};
@@ -69,7 +69,7 @@ namespace Snails
 		{
 			switch (Dir_)
 			{
-			case Account::DOut:
+			case Account::Direction::Out:
 				return Acc_->GetOutUsername ().toUtf8 ().constData ();
 			default:
 				return Acc_->GetInUsername ().toUtf8 ().constData ();
@@ -206,15 +206,15 @@ namespace Snails
 		}
 	}
 
-	void AccountThreadWorker::FetchMessagesPOP3 (int from)
+	void AccountThreadWorker::FetchMessagesPOP3 (Account::FetchFlags fetchFlags)
 	{
 		auto store = MakeStore ();
 		store->setProperty ("connection.tls", true);
 		store->connect ();
 		auto folder = store->getDefaultFolder ();
-		folder->open (vmime::net::folder::MODE_READ_ONLY);
+		folder->open (vmime::net::folder::MODE_READ_WRITE);
 
-		auto messages = folder->getMessages (from);
+		auto messages = folder->getMessages ();
 		if (!messages.size ())
 			return;
 
@@ -247,7 +247,83 @@ namespace Snails
 			return;
 		}
 
+		if (fetchFlags & Account::FetchNew)
+		{
+			if (folder->getFetchCapabilities () & vmime::net::folder::FETCH_FLAGS)
+			{
+				auto pos = std::remove_if (messages.begin (), messages.end (),
+						[] (decltype (messages.front ()) msg) { return msg->getFlags () & vmime::net::message::FLAG_SEEN; });
+				messages.erase (pos, messages.end ());
+				qDebug () << "fetching only new msgs:" << messages.size ();
+			}
+			else
+			{
+				qDebug () << "folder hasn't advertised support for flags :(";
+			}
+		}
+
 		auto newMessages = FetchFullMessages (messages);
+
+		emit gotMsgHeaders (newMessages);
+	}
+
+	void AccountThreadWorker::FetchMessagesIMAP (Account::FetchFlags fetchFlags)
+	{
+		auto store = MakeStore ();
+		store->setProperty ("connection.tls", true);
+		store->connect ();
+		auto folder = store->getDefaultFolder ();
+		folder->open (vmime::net::folder::MODE_READ_WRITE);
+
+		auto messages = folder->getMessages ();
+		if (!messages.size ())
+			return;
+
+		qDebug () << "know about" << messages.size () << "messages";
+		int desiredFlags = vmime::net::folder::FETCH_FLAGS |
+					vmime::net::folder::FETCH_SIZE |
+					vmime::net::folder::FETCH_UID |
+					vmime::net::folder::FETCH_ENVELOPE;
+		desiredFlags &= folder->getFetchCapabilities ();
+
+		qDebug () << "folder supports" << folder->getFetchCapabilities ()
+				<< "so we gonna fetch" << desiredFlags;
+
+		try
+		{
+			auto context = tr ("Fetching headers for %1")
+					.arg (A_->GetName ());
+
+			auto pl = new ProgressListener (context);
+			pl->deleteLater ();
+			emit gotProgressListener (ProgressListener_g_ptr (pl));
+
+			folder->fetchMessages (messages, desiredFlags, pl);
+		}
+		catch (const vmime::exceptions::operation_not_supported& ons)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "fetch operation not supported:"
+					<< ons.what ();
+			return;
+		}
+
+		if (fetchFlags & Account::FetchNew)
+		{
+			if (folder->getFetchCapabilities () & vmime::net::folder::FETCH_FLAGS)
+			{
+				auto pos = std::remove_if (messages.begin (), messages.end (),
+						[] (const vmime::ref<vmime::net::message>& msg) { return msg->getFlags () & vmime::net::message::FLAG_SEEN; });
+				messages.erase (pos, messages.end ());
+				qDebug () << "fetching only new msgs:" << messages.size ();
+			}
+			else
+				qDebug () << "folder hasn't advertised support for flags :(";
+		}
+
+		QList<Message_ptr> newMessages;
+		std::transform (messages.begin (), messages.end (), std::back_inserter (newMessages),
+				[this] (decltype (messages.front ()) msg) { return FromHeaders (msg); });
 
 		emit gotMsgHeaders (newMessages);
 	}
@@ -348,23 +424,24 @@ namespace Snails
 		return newMessages;
 	}
 
-	void AccountThreadWorker::fetchNewHeaders (int from)
+	void AccountThreadWorker::fetchNewHeaders (Account::FetchFlags flags)
 	{
 		switch (A_->InType_)
 		{
-		case Account::ITPOP3:
-			FetchMessagesPOP3 (from);
+		case Account::InType::POP3:
+			FetchMessagesPOP3 (flags);
 			break;
-		case Account::ITIMAP:
+		case Account::InType::IMAP:
+			FetchMessagesIMAP (flags);
 			break;
-		case Account::ITMaildir:
+		case Account::InType::Maildir:
 			break;
 		}
 	}
 
 	void AccountThreadWorker::fetchWholeMessage (const QByteArray& sid)
 	{
-		if (A_->InType_ == Account::ITPOP3)
+		if (A_->InType_ == Account::InType::POP3)
 			return;
 
 		vmime::string id (sid.constData ());

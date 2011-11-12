@@ -61,7 +61,7 @@ namespace Snails
 
 	QString Account::GetServer () const
 	{
-		return InType_ == ITMaildir ?
+		return InType_ == InType::Maildir ?
 			QString () :
 			InHost_ + ':' + QString::number (InPort_);
 	}
@@ -71,23 +71,23 @@ namespace Snails
 		QMutexLocker l (GetMutex ());
 		switch (InType_)
 		{
-		case ITIMAP:
+		case InType::IMAP:
 			return "IMAP";
-		case ITPOP3:
+		case InType::POP3:
 			return "POP3";
-		case ITMaildir:
+		case InType::Maildir:
 			return "Maildir";
 		default:
 			return "<unknown>";
 		}
 	}
 
-	void Account::FetchNewHeaders (int from)
+	void Account::FetchNewHeaders (Account::FetchFlags flags)
 	{
 		QMetaObject::invokeMethod (Thread_->GetWorker (),
 				"fetchNewHeaders",
 				Qt::QueuedConnection,
-				Q_ARG (int, from));
+				Q_ARG (Account::FetchFlags, flags));
 	}
 
 	void Account::FetchWholeMessage (const QByteArray& id)
@@ -242,18 +242,18 @@ namespace Snails
 
 		switch (InType_)
 		{
-		case ITIMAP:
+		case InType::IMAP:
 			result = "imap://";
 			break;
-		case ITPOP3:
+		case InType::POP3:
 			result = "pop3://";
 			break;
-		case ITMaildir:
+		case InType::Maildir:
 			result = "maildir://localhost";
 			break;
 		}
 
-		if (InType_ != ITMaildir)
+		if (InType_ != InType::Maildir)
 		{
 			result += Login_;
 			result += ":";
@@ -283,11 +283,11 @@ namespace Snails
 
 		switch (OutType_)
 		{
-		case OTSMTP:
+		case OutType::SMTP:
 			result = "smtp://";
 			result += OutHost_ + ":" + QString::number (OutPort_);
 			break;
-		case OTSendmail:
+		case OutType::Sendmail:
 			result = "sendmail://localhost";
 			break;
 		}

@@ -61,23 +61,23 @@ namespace Snails
 
 		QString OutLogin_;
 	public:
-		enum Direction
+		enum class Direction
 		{
-			DIn,
-			DOut
+			In,
+			Out
 		};
 
-		enum InType
+		enum class InType
 		{
-			ITIMAP,
-			ITPOP3,
-			ITMaildir
+			IMAP,
+			POP3,
+			Maildir
 		};
 
-		enum OutType
+		enum class OutType
 		{
-			OTSMTP,
-			OTSendmail
+			SMTP,
+			Sendmail
 		};
 
 		enum FetchFlag
@@ -98,7 +98,7 @@ namespace Snails
 		QString GetServer () const;
 		QString GetType () const;
 
-		void FetchNewHeaders (int);
+		void FetchNewHeaders (FetchFlags);
 		void FetchWholeMessage (const QByteArray&);
 
 		QByteArray Serialize () const;

@@ -181,7 +181,7 @@ namespace Snails
 	void MailTab::handleFetchNewMail ()
 	{
 		Q_FOREACH (auto acc, Core::Instance ().GetAccounts ())
-			acc->FetchNewHeaders (1);
+			acc->FetchNewHeaders (Account::FetchNew);
 	}
 
 	void MailTab::handleGotNewMessages (QList<Message_ptr> messages)
