@@ -154,6 +154,9 @@ namespace Snails
 		msg->SetID (message->getUniqueId ().c_str ());
 		msg->SetSize (message->getSize ());
 
+		if (message->getFlags () & vmime::net::message::FLAG_SEEN)
+			msg->SetRead (true);
+
 		auto header = message->getHeader ();
 
 		try
@@ -194,16 +197,9 @@ namespace Snails
 
 	namespace
 	{
-		vmime::ref<vmime::message> FromNetMessage (const vmime::ref<vmime::net::message>& msg)
+		vmime::ref<vmime::message> FromNetMessage (vmime::ref<vmime::net::message> msg)
 		{
-			vmime::string msgStr;
-			vmime::utility::outputStreamStringAdapter outStr (msgStr);
-			msg->extract (outStr);
-
-			auto fullMsg = vmime::create<vmime::message> ();
-			fullMsg->parse (msgStr);
-
-			return fullMsg;
+			return msg->getParsedMessage ();
 		}
 	}
 
@@ -470,6 +466,12 @@ namespace Snails
 		}
 
 		qDebug () << "found corresponding message, fullifying...";
+
+		folder->fetchMessage (*pos, vmime::net::folder::FETCH_FLAGS |
+					vmime::net::folder::FETCH_UID |
+					vmime::net::folder::FETCH_CONTENT_INFO |
+					vmime::net::folder::FETCH_STRUCTURE |
+					vmime::net::folder::FETCH_FULL_HEADER);
 
 		FullifyHeaderMessage (origMsg, FromNetMessage (*pos));
 
