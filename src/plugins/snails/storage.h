@@ -36,6 +36,7 @@ namespace Snails
 
 		QDir SDir_;
 		QSettings Settings_;
+		QHash<QByteArray, bool> IsMessageRead_;
 	public:
 		Storage (QObject* = 0);
 
@@ -43,8 +44,12 @@ namespace Snails
 		QList<Message_ptr> LoadMessages (Account*);
 		Message_ptr LoadMessage (Account*, const QByteArray&);
 		int GetNumMessages (Account*) const;
+
+		bool IsMessageRead (Account*, const QByteArray&);
 	private:
 		QDir DirForAccount (Account*) const;
+
+		void UpdateCaches (Message_ptr);
 	};
 }
 }
