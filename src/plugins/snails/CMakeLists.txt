@@ -39,6 +39,7 @@ SET (SRCS
 	progresslistener.cpp
 	storage.cpp
 	progressmanager.cpp
+	mailtreedelegate.cpp
 	)
 SET (HEADERS
 	snails.h
@@ -54,6 +55,7 @@ SET (HEADERS
 	progresslistener.h
 	storage.h
 	progressmanager.h
+	mailtreedelegate.h
 	)
 SET (FORMS
 	mailtab.ui
