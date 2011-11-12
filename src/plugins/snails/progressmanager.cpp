@@ -51,9 +51,9 @@ namespace Snails
 			return;
 
 		connect (pl,
-				SIGNAL (stop (int)),
+				SIGNAL (destroyed (QObject*)),
 				this,
-				SLOT (handlePLDestroyed ()));
+				SLOT (handlePLDestroyed (QObject)));
 		connect (pl,
 				SIGNAL (progress (int, int)),
 				this,
@@ -68,9 +68,12 @@ namespace Snails
 		Listener2Row_ [pl] = row.last ();
 	}
 
-	void ProgressManager::handlePLDestroyed ()
+	void ProgressManager::handlePLDestroyed (QObject *obj)
 	{
-		QStandardItem *item = Listener2Row_.take (sender ());
+		QStandardItem *item = Listener2Row_.take (obj);
+		if (!item)
+			return;
+
 		Model_->removeRow (item->row ());
 	}
 

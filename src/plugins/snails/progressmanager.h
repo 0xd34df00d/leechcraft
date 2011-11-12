@@ -45,7 +45,7 @@ namespace Snails
 		void AddAccount (Account*);
 	private slots:
 		void handlePL (ProgressListener_g_ptr);
-		void handlePLDestroyed ();
+		void handlePLDestroyed (QObject*);
 		void handleProgress (const int, const int);
 	};
 }
