@@ -193,7 +193,6 @@ namespace Snails
 	void MailTab::handleMessageBodyFetched (Message_ptr msg)
 	{
 		const QModelIndex& cur = Ui_.MailTree_->currentIndex ();
-		qDebug () << Q_FUNC_INFO << cur.data (Roles::ID).toByteArray ().toHex () << msg->GetID ().toHex ();
 		if (cur.data (Roles::ID).toByteArray () != msg->GetID ())
 			return;
 
