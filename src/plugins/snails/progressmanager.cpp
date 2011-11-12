@@ -53,7 +53,7 @@ namespace Snails
 		connect (pl,
 				SIGNAL (destroyed (QObject*)),
 				this,
-				SLOT (handlePLDestroyed (QObject)));
+				SLOT (handlePLDestroyed (QObject*)));
 		connect (pl,
 				SIGNAL (progress (int, int)),
 				this,
