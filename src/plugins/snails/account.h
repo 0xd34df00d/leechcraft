@@ -79,6 +79,14 @@ namespace Snails
 			OTSMTP,
 			OTSendmail
 		};
+
+		enum FetchFlag
+		{
+			FetchAll = 0x01,
+			FetchNew = 0x02
+		};
+
+		Q_DECLARE_FLAGS (FetchFlags, FetchFlag);
 	private:
 		InType InType_;
 		OutType OutType_;
@@ -123,5 +131,7 @@ namespace Snails
 	typedef std::shared_ptr<Account> Account_ptr;
 }
 }
+
+Q_DECLARE_METATYPE (LeechCraft::Snails::Account::FetchFlags);
 
 #endif

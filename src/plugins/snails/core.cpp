@@ -52,6 +52,7 @@ namespace Snails
 		qRegisterMetaType<QList<Message_ptr>> ("QList<LeechCraft::Snails::Message_ptr>");
 		qRegisterMetaType<QList<Message_ptr>> ("QList<Message_ptr>");
 		qRegisterMetaType<ProgressListener_g_ptr> ("ProgressListener_g_ptr");
+		qRegisterMetaType<Account::FetchFlags> ("Account::FetchFlags");
 
 		QStringList headers;
 		headers << tr ("Name")
