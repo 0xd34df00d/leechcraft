@@ -132,6 +132,7 @@ namespace Snails
 		auto st = Session_->getStore (vmime::utility::url (url.toUtf8 ().constData ()));
 		st->setCertificateVerifier (vmime::create<CertVerifier> ());
 
+		qDebug () << Q_FUNC_INFO << A_->UseTLS_;
 		st->setProperty ("connection.tls", A_->UseTLS_);
 		st->setProperty ("connection.tls.required", A_->TLSRequired_);
 		st->setProperty ("options.sasl", A_->UseSASL_);
@@ -270,7 +271,6 @@ namespace Snails
 	void AccountThreadWorker::FetchMessagesIMAP (Account::FetchFlags fetchFlags)
 	{
 		auto store = MakeStore ();
-		store->setProperty ("connection.tls", true);
 		store->connect ();
 		auto folder = store->getDefaultFolder ();
 		folder->open (vmime::net::folder::MODE_READ_WRITE);
@@ -279,19 +279,14 @@ namespace Snails
 		if (!messages.size ())
 			return;
 
-		qDebug () << "know about" << messages.size () << "messages";
-		int desiredFlags = vmime::net::folder::FETCH_FLAGS |
+		const int desiredFlags = vmime::net::folder::FETCH_FLAGS |
 					vmime::net::folder::FETCH_SIZE |
 					vmime::net::folder::FETCH_UID |
 					vmime::net::folder::FETCH_ENVELOPE;
-		desiredFlags &= folder->getFetchCapabilities ();
-
-		qDebug () << "folder supports" << folder->getFetchCapabilities ()
-				<< "so we gonna fetch" << desiredFlags;
 
 		try
 		{
-			auto context = tr ("Fetching headers for %1")
+			const auto& context = tr ("Fetching headers for %1")
 					.arg (A_->GetName ());
 
 			auto pl = new ProgressListener (context);
@@ -390,7 +385,7 @@ namespace Snails
 
 	QList<Message_ptr> AccountThreadWorker::FetchFullMessages (const std::vector<vmime::utility::ref<vmime::net::message>>& messages)
 	{
-		auto context = tr ("Fetching messages for %1")
+		const auto& context = tr ("Fetching messages for %1")
 					.arg (A_->GetName ());
 
 		auto pl = new ProgressListener (context);
@@ -439,20 +434,27 @@ namespace Snails
 		}
 	}
 
-	void AccountThreadWorker::fetchWholeMessage (const QByteArray& sid)
+	void AccountThreadWorker::fetchWholeMessage (Message_ptr origMsg)
 	{
+		if (!origMsg)
+			return;
+
 		if (A_->InType_ == Account::InType::POP3)
 			return;
 
+		const QByteArray& sid = origMsg->GetID ();
 		vmime::string id (sid.constData ());
+		qDebug () << Q_FUNC_INFO << sid.toHex ();
 
 		auto store = MakeStore ();
 		store->connect ();
 
 		auto folder = store->getDefaultFolder ();
-		folder->open (vmime::net::folder::MODE_READ_ONLY);
+		folder->open (vmime::net::folder::MODE_READ_WRITE);
 
 		auto messages = folder->getMessages ();
+		folder->fetchMessages (messages, vmime::net::folder::FETCH_UID);
+
 		auto pos = std::find_if (messages.begin (), messages.end (),
 				[id] (const vmime::ref<vmime::net::message>& message) { return message->getUniqueId () == id; });
 		if (pos == messages.end ())
@@ -467,12 +469,13 @@ namespace Snails
 			return;
 		}
 
-		vmime::string msgStr;
-		vmime::utility::outputStreamStringAdapter outStr (msgStr);
-		(*pos)->extract (outStr);
+		qDebug () << "found corresponding message, fullifying...";
 
-		auto msg = vmime::create<vmime::message> ();
-		msg->parse (msgStr);
+		FullifyHeaderMessage (origMsg, FromNetMessage (*pos));
+
+		qDebug () << "done";
+
+		emit messageBodyFetched (origMsg);
 	}
 }
 }

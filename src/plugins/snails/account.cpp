@@ -90,12 +90,12 @@ namespace Snails
 				Q_ARG (Account::FetchFlags, flags));
 	}
 
-	void Account::FetchWholeMessage (const QByteArray& id)
+	void Account::FetchWholeMessage (Message_ptr msg)
 	{
 		QMetaObject::invokeMethod (Thread_->GetWorker (),
 				"fetchWholeMessage",
 				Qt::QueuedConnection,
-				Q_ARG (QByteArray, id));
+				Q_ARG (Message_ptr, msg));
 	}
 
 	QByteArray Account::Serialize () const
@@ -373,6 +373,12 @@ namespace Snails
 		Core::Instance ().GetStorage ()->SaveMessages (this, messages);
 		emit mailChanged ();
 		emit gotNewMessages (messages);
+	}
+
+	void Account::handleMessageBodyFetched (Message_ptr msg)
+	{
+		Core::Instance ().GetStorage ()->SaveMessages (this, { msg });
+		emit messageBodyFetched (msg);
 	}
 }
 }

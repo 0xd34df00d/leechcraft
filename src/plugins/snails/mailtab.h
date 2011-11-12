@@ -51,16 +51,16 @@ namespace Snails
 
 		enum Roles
 		{
-			RID = Qt::UserRole + 1,
-			RSort
+			ID = Qt::UserRole + 1,
+			Sort
 		};
 
 		enum Columns
 		{
-			CFrom,
-			CSubj,
-			CDate,
-			CSize
+			From,
+			Subj,
+			Date,
+			Size
 		};
 	public:
 		MailTab (const TabClassInfo&, QObject*, QWidget* = 0);
@@ -73,6 +73,7 @@ namespace Snails
 		void handleCurrentAccountChanged (const QModelIndex&);
 		void handleMailSelected (const QModelIndex&);
 		void handleFetchNewMail ();
+		void handleMessageBodyFetched (Message_ptr);
 		void handleGotNewMessages (QList<Message_ptr>);
 	signals:
 		void removeTab (QWidget*);

@@ -42,7 +42,7 @@ namespace Snails
 		Ui_.AccountsTree_->setModel (Core::Instance ().GetAccountsModel ());
 
 		MailSortFilterModel_->setDynamicSortFilter (true);
-		MailSortFilterModel_->setSortRole (RSort);
+		MailSortFilterModel_->setSortRole (Roles::Sort);
 		MailSortFilterModel_->setSourceModel (MailModel_);
 		MailSortFilterModel_->sort (2, Qt::DescendingOrder);
 		Ui_.MailTree_->setModel (MailSortFilterModel_);
@@ -104,6 +104,10 @@ namespace Snails
 				SIGNAL (gotNewMessages (QList<Message_ptr>)),
 				this,
 				SLOT (handleGotNewMessages (QList<Message_ptr>)));
+		connect (CurrAcc_.get (),
+				SIGNAL (messageBodyFetched (Message_ptr)),
+				this,
+				SLOT (handleMessageBodyFetched (Message_ptr)));
 
 		QStringList headers;
 		headers << tr ("From")
@@ -137,7 +141,7 @@ namespace Snails
 
 		const QModelIndex& idx = MailSortFilterModel_->mapToSource (sidx);
 		const QByteArray& id = idx.sibling (idx.row (), 0)
-				.data (RID).toByteArray ();
+				.data (Roles::ID).toByteArray ();
 
 		Message_ptr msg;
 		try
@@ -159,7 +163,7 @@ namespace Snails
 		}
 
 		if (!msg->IsFullyFetched ())
-			CurrAcc_->FetchWholeMessage (msg->GetID ());
+			CurrAcc_->FetchWholeMessage (msg);
 
 		QString html;
 		html += "<em>Subject</em>: %1<br />";
@@ -167,7 +171,9 @@ namespace Snails
 		html += "<em>On</em>: %3<hr />";
 		html += "%4";
 
-		const QString& htmlBody = msg->GetHTMLBody ();
+		const QString& htmlBody = msg->IsFullyFetched () ?
+				msg->GetHTMLBody () :
+				"<em>" + tr ("Fetching the message...") + "</em>";
 
 		Ui_.MailView_->setHtml (html
 				.arg (msg->GetSubject ())
@@ -184,6 +190,16 @@ namespace Snails
 			acc->FetchNewHeaders (Account::FetchNew);
 	}
 
+	void MailTab::handleMessageBodyFetched (Message_ptr msg)
+	{
+		const QModelIndex& cur = Ui_.MailTree_->currentIndex ();
+		qDebug () << Q_FUNC_INFO << cur.data (Roles::ID).toByteArray ().toHex () << msg->GetID ().toHex ();
+		if (cur.data (Roles::ID).toByteArray () != msg->GetID ())
+			return;
+
+		handleMailSelected (cur);
+	}
+
 	void MailTab::handleGotNewMessages (QList<Message_ptr> messages)
 	{
 		Q_FOREACH (Message_ptr message, messages)
@@ -198,12 +214,12 @@ namespace Snails
 			row << new QStandardItem (Util::MakePrettySize (message->GetSize ()));
 			MailModel_->appendRow (row);
 
-			row [CFrom]->setData (row [CFrom]->text (), RSort);
-			row [CSubj]->setData (row [CSubj]->text (), RSort);
-			row [CDate]->setData (message->GetDate (), RSort);
-			row [CSize]->setData (message->GetSize (), RSort);
+			row [Columns::From]->setData (row [Columns::From]->text (), Roles::Sort);
+			row [Columns::Subj]->setData (row [Columns::Subj]->text (), Roles::Sort);
+			row [Columns::Date]->setData (message->GetDate (), Roles::Sort);
+			row [Columns::Size]->setData (message->GetSize (), Roles::Sort);
 
-			row [CFrom]->setData (message->GetID (), RID);
+			row [Columns::From]->setData (message->GetID (), Roles::ID);
 			MailID2Item_ [message->GetID ()] = row.first ();
 		}
 	}

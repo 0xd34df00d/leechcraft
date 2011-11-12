@@ -99,7 +99,7 @@ namespace Snails
 		QString GetType () const;
 
 		void FetchNewHeaders (FetchFlags);
-		void FetchWholeMessage (const QByteArray&);
+		void FetchWholeMessage (Message_ptr);
 
 		QByteArray Serialize () const;
 		void Deserialize (const QByteArray&);
@@ -121,11 +121,13 @@ namespace Snails
 		void buildOutURL (QString*);
 		void getPassword (QString*);
 		void handleMsgHeaders (QList<Message_ptr>);
+		void handleMessageBodyFetched (Message_ptr);
 	signals:
 		void mailChanged ();
 		void gotNewMessages (QList<Message_ptr>);
 		void gotProgressListener (ProgressListener_g_ptr);
 		void accountChanged ();
+		void messageBodyFetched (Message_ptr);
 	};
 
 	typedef std::shared_ptr<Account> Account_ptr;

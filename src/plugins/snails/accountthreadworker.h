@@ -48,11 +48,12 @@ namespace Snails
 		QList<Message_ptr> FetchFullMessages (const std::vector<vmime::ref<vmime::net::message>>&);
 	public slots:
 		void fetchNewHeaders (Account::FetchFlags);
-		void fetchWholeMessage (const QByteArray&);
+		void fetchWholeMessage (Message_ptr);
 	signals:
 		void error (const QString&);
 		void gotProgressListener (ProgressListener_g_ptr);
 		void gotMsgHeaders (QList<Message_ptr>);
+		void messageBodyFetched (Message_ptr);
 	};
 }
 }
