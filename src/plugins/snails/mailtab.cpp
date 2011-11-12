@@ -24,6 +24,7 @@
 #include <util/util.h>
 #include "core.h"
 #include "storage.h"
+#include "mailtreedelegate.h"
 
 namespace LeechCraft
 {
@@ -45,6 +46,7 @@ namespace Snails
 		MailSortFilterModel_->setSortRole (Roles::Sort);
 		MailSortFilterModel_->setSourceModel (MailModel_);
 		MailSortFilterModel_->sort (2, Qt::DescendingOrder);
+		Ui_.MailTree_->setItemDelegate (new MailTreeDelegate (this));
 		Ui_.MailTree_->setModel (MailSortFilterModel_);
 
 		connect (Ui_.AccountsTree_->selectionModel (),
@@ -162,6 +164,9 @@ namespace Snails
 			return;
 		}
 
+		msg->SetRead (true);
+		Core::Instance ().GetStorage ()->SaveMessages (CurrAcc_.get (), { msg });
+
 		if (!msg->IsFullyFetched ())
 			CurrAcc_->FetchWholeMessage (msg);
 
@@ -218,8 +223,34 @@ namespace Snails
 			row [Columns::Date]->setData (message->GetDate (), Roles::Sort);
 			row [Columns::Size]->setData (message->GetSize (), Roles::Sort);
 
-			row [Columns::From]->setData (message->GetID (), Roles::ID);
+			Q_FOREACH (auto item, row)
+				item->setData (message->GetID (), Roles::ID);
 			MailID2Item_ [message->GetID ()] = row.first ();
+
+			updateReadStatus (message->GetID (), message->IsRead ());
+
+			connect (message.get (),
+					SIGNAL (readStatusChanged (const QByteArray&, bool)),
+					this,
+					SLOT (updateReadStatus (const QByteArray&, bool)),
+					Qt::QueuedConnection);
+		}
+	}
+
+	void MailTab::updateReadStatus (const QByteArray& id, bool isRead)
+	{
+		qDebug () << Q_FUNC_INFO << id << isRead << MailID2Item_.contains (id);
+		if (!MailID2Item_.contains (id))
+			return;
+
+		QStandardItem *item = MailID2Item_ [id];
+		const QModelIndex& sIdx = item->index ();
+		for (int i = 0; i < Columns::Max; ++i)
+		{
+			QStandardItem *other = MailModel_->
+					itemFromIndex (sIdx.sibling (sIdx.row (), i));
+			other->setData (isRead, Roles::ReadStatus);
+			other->setText (other->text ());
 		}
 	}
 }
