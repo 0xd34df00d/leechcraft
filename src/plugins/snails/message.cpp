@@ -26,6 +26,7 @@ namespace Snails
 {
 	Message::Message (QObject *parent)
 	: QObject (parent)
+	, IsRead_ (false)
 	{
 	}
 
@@ -124,6 +125,16 @@ namespace Snails
 		HTMLBody_ = body;
 	}
 
+	bool Message::IsRead () const
+	{
+		return IsRead_;
+	}
+
+	void Message::SetRead (bool read)
+	{
+		IsRead_ = read;
+	}
+
 	void Message::Dump () const
 	{
 		qDebug () << Q_FUNC_INFO
@@ -134,6 +145,7 @@ namespace Snails
 				<< Date_
 				<< Recipients_
 				<< Subject_
+				<< IsRead_
 				<< Body_
 				<< HTMLBody_;
 	}
@@ -151,6 +163,7 @@ namespace Snails
 			<< Date_
 			<< Recipients_
 			<< Subject_
+			<< IsRead_
 			<< Body_
 			<< HTMLBody_;
 
@@ -172,6 +185,7 @@ namespace Snails
 			>> Date_
 			>> Recipients_
 			>> Subject_
+			>> IsRead_
 			>> Body_
 			>> HTMLBody_;
 	}
