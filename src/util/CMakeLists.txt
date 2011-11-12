@@ -18,7 +18,6 @@ SET (SRCS
 	mergemodel.cpp
 	dblock.cpp
 	customcookiejar.cpp
-	modeltest.cpp
 	backendselector.cpp
 	structuresops.cpp
 	listmodel.cpp
@@ -48,7 +47,6 @@ SET (HEADERS
 	mergemodel.h
 	dblock.h
 	customcookiejar.h
-	modeltest.h
 	backendselector.h
 	structuresops.h
 	listmodel.h
