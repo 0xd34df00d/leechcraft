@@ -24,7 +24,9 @@
 #include <util/util.h>
 #include "laurewidget.h"
 #include "xmlsettingsmanager.h"
+#ifdef HAVE_LASTFM
 #include "lastfmsubmitter.h"
+#endif
 
 namespace LeechCraft
 {
@@ -37,7 +39,9 @@ namespace Laure
 				"lauresettings.xml");
 
 		Proxy_ = proxy;
+#ifdef HAVE_LASTFM
 		LFSubmitter_ = new LastFMSubmitter (proxy, this);
+#endif
 		LaureWidget::SetParentMultiTabs (this);
 
 		TabClassInfo tabClass =
@@ -120,6 +124,7 @@ namespace Laure
 				SIGNAL (needToClose ()),
 				this,
 				SLOT (handleNeedToClose ()));
+#ifdef HAVE_LASTFM
 		connect (w,
 				SIGNAL (currentTrackMeta (MediaMeta)),
 				LFSubmitter_,
@@ -128,6 +133,7 @@ namespace Laure
 				SIGNAL (trackFinished ()),
 				LFSubmitter_,
 				SLOT (submit ()));
+#endif
 		connect (w,
 				SIGNAL (gotEntity (Entity)),
 				this,
