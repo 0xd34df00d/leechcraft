@@ -83,6 +83,8 @@ namespace Snails
 
 		QByteArray Serialize () const;
 		void Deserialize (const QByteArray&);
+	signals:
+		void readStatusChanged (const QByteArray&, bool);
 	};
 
 	typedef std::shared_ptr<Message> Message_ptr;

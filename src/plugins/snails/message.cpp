@@ -132,7 +132,11 @@ namespace Snails
 
 	void Message::SetRead (bool read)
 	{
+		const bool shouldEmit = read != IsRead_;
 		IsRead_ = read;
+
+		if (shouldEmit)
+			emit readStatusChanged (GetID (), read);
 	}
 
 	void Message::Dump () const
