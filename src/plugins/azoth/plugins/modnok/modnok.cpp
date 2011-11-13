@@ -51,11 +51,14 @@ namespace Modnok
 				this, "clearCaches");
 
 		QStringList candidates;
-		candidates << "/usr/local/bin/lc_azoth_modnok_latexconvert.sh"
-				<< "/usr/bin/lc_azoth_modnok_latexconvert.sh";
+		candidates << "/usr/local/bin"
+				<< "/usr/bin"
+				<< "/usr/local/share/leechcraft/azoth"
+				<< "/usr/share/leechcraft/azoth";
 
-		Q_FOREACH (const QString& path, candidates)
+		Q_FOREACH (const QString& dir, candidates)
 		{
+			const QString& path = dir + "/lc_azoth_modnok_latexconvert.sh";
 			QFileInfo info (path);
 			if (info.exists () &&
 					info.isReadable () &&
