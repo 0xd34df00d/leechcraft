@@ -156,6 +156,31 @@ namespace Snails
 		return msg;
 	}
 
+	QSet<QByteArray> Storage::LoadIDs (Account *acc)
+	{
+		QSet<QByteArray> result;
+
+		const QDir& dir = DirForAccount (acc);
+		Q_FOREACH (const auto& str,
+				dir.entryList (QDir::NoDotAndDotDot | QDir::Dirs))
+		{
+			QDir subdir = dir;
+			if (!subdir.cd (str))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to cd to"
+						<< str;
+				continue;
+			}
+
+			Q_FOREACH (const auto& str,
+					subdir.entryList (QDir::NoDotAndDotDot | QDir::Files))
+				result << QByteArray::fromHex (str.toUtf8 ());
+		}
+
+		return result;
+	}
+
 	int Storage::GetNumMessages (Account *acc) const
 	{
 		int result = 0;

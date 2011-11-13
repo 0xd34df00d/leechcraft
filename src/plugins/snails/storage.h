@@ -22,6 +22,7 @@
 #include <QDir>
 #include <QSettings>
 #include <QHash>
+#include <QSet>
 #include "message.h"
 
 namespace LeechCraft
@@ -43,6 +44,7 @@ namespace Snails
 		void SaveMessages (Account*, const QList<Message_ptr>&);
 		QList<Message_ptr> LoadMessages (Account*);
 		Message_ptr LoadMessage (Account*, const QByteArray&);
+		QSet<QByteArray> LoadIDs (Account*);
 		int GetNumMessages (Account*) const;
 		bool HasMessagesIn (Account*) const;
 
