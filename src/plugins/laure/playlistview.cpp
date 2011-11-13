@@ -57,9 +57,9 @@ namespace Laure
 				SLOT (handleDoubleClicked (QModelIndex)));
 	}
 	
-	void PlayListView::selectRow (int val)
+	void PlayListView::selectRow (int row)
 	{
-		setCurrentIndex (model ()->index (val, 0));
+		setCurrentIndex (model ()->index (row, 0));
 	}
 
 	void PlayListView::AddItem (const MediaMeta& item, const QString& fileName)
