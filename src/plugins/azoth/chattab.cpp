@@ -815,9 +815,11 @@ namespace Azoth
 
 	void ChatTab::InsertNick (const QString& nicknameHtml)
 	{
+		const QString& post = XmlSettingsManager::Instance ()
+				.property ("PostAddressText").toString ();
 		QTextCursor cursor = Ui_.MsgEdit_->textCursor ();
 		cursor.insertHtml (cursor.atStart () ?
-				nicknameHtml + ": " :
+				nicknameHtml + post + " " :
 				" &nbsp;" + nicknameHtml + " ");
 		Ui_.MsgEdit_->setFocus ();
 	}
@@ -1423,11 +1425,14 @@ namespace Azoth
 				NickFirstPart_ = text.mid (pos + 1, cursorPosition - pos -1);
 		}
 
+		const QString& post = XmlSettingsManager::Instance ()
+				.property ("PostAddressText").toString ();
+
 		if (AvailableNickList_.isEmpty ())
 		{
 			Q_FOREACH (const QString& item, currentMUCParticipants)
 				if (item.startsWith (NickFirstPart_, Qt::CaseInsensitive))
-					AvailableNickList_ << item + (pos == -1 ? ": " : " ");
+					AvailableNickList_ << item + (pos == -1 ? post : "") + " ";
 
 			if (AvailableNickList_.isEmpty ())
 				return;
@@ -1442,7 +1447,7 @@ namespace Azoth
 
 			Q_FOREACH (const QString& item, currentMUCParticipants)
 				if (item.startsWith (NickFirstPart_, Qt::CaseInsensitive))
-					newAvailableNick << item + (pos == -1 ? ": " : " ");
+					newAvailableNick << item + (pos == -1 ? post : "") + " ";
 
 			if ((newAvailableNick != AvailableNickList_) && (!newAvailableNick.isEmpty ()))
 			{

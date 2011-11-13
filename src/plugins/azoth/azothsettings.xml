@@ -101,6 +101,9 @@
 			<item type="lineedit" property="PostNickText" default=":">
 				<label value="Post-nick text:" />
 			</item>
+			<item type="lineedit" property="PostAddressText" default=":">
+				<label value="Post-address text:" />
+			</item>
 			<item type="checkbox" property="ShowRichTextMessageBody" default="true">
 				<label value="Show rich text message body (if available)" />
 				<tooltip>Whether rich text body of the messages should be used, if available. This is a default value, and the behavior could be changed for each opened chat window.</tooltip>
