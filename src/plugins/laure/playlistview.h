@@ -86,8 +86,9 @@ namespace Laure
 		 */
 		void itemRemoved (int index);
 		
-		/** @brief This signal's emmited when the item index needs to be
-		 * played.
+		/** @brief This signal notifies that the given item needs to be played.
+		 * 
+		 * @param[out] index The index of the item to play.
 		 */
 		void playItem (int index);
 	};
