@@ -63,7 +63,7 @@ namespace ReadItLater
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("Sync local bookmarks with your account in Read It Later");
+		return tr ("Sync local bookmarks with your Read It Later account.");
 	}
 
 	QIcon Plugin::GetIcon () const
