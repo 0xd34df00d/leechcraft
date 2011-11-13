@@ -41,7 +41,7 @@ namespace Laure
 		QPixmap VolumeSliderInset_, VolumeSliderGradient_;
 	public:
 		/** @brief Constructs a new VolumeSlider class
-		 * with the given model and parent.
+		 * with the given parent.
 		 */
 		VolumeSlider (QWidget* = 0);
 	protected:

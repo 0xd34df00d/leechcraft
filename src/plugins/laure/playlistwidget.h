@@ -48,7 +48,7 @@ namespace Laure
 		QToolBar *ActionBar_;
 	public:
 		/** @brief Constructs a new PlayListWidget class
-		 * with the given model and parent.
+		 * with the given parent.
 		 */
 		PlayListWidget (QWidget* = 0);
 	public slots:
