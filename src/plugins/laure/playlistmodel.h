@@ -25,6 +25,10 @@ namespace LeechCraft
 {
 namespace Laure
 {
+	/** @brief Provides a model for storing playlist data.
+	 * 
+	 * @author Minh Ngo <nlminhtl@gmail.com>
+	 */
 	class PlayListModel : public QStandardItemModel
 	{
 		Q_OBJECT
@@ -33,10 +37,19 @@ namespace Laure
 	public:
 		enum
 		{
+			/** @brief The data used in NowPlayingDelegate for determine
+			 * the now playing item.
+			 */
 			IsPlayingRole = Qt::UserRole + 1
 		};
 		
+		/** @brief Constructs a new PlayListModel class
+		 * with the given parent.
+		 */
 		PlayListModel (QObject *);
+		
+		/** @brief Returns the item flags for the given index.
+		 */
 		Qt::ItemFlags flags (const QModelIndex&) const;
 	};
 }
