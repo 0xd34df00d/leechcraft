@@ -648,7 +648,9 @@ namespace LeechCraft
 
 		if (!(numHandlers + numDownloaders))
 		{
-			if (p.Entity_.toUrl ().isValid ())
+			if (p.Entity_.toUrl ().isValid () &&
+					(p.Parameters_ & FromUserInitiated) &&
+					!(p.Parameters_ & OnlyDownload))
 			{
 				QDesktopServices::openUrl (p.Entity_.toUrl ());
 				return true;
