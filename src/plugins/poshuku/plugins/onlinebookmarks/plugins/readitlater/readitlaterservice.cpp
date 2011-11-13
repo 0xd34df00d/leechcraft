@@ -275,7 +275,7 @@ namespace ReadItLater
 				{
 				case OTAuth:
 					priority = PInfo_;
-					msg = tr ("Authentification has finished successfully");
+					msg = tr ("Authentication has finished successfully");
 					break;
 				case OTRegister:
 					priority = PInfo_;
