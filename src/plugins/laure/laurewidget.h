@@ -35,6 +35,10 @@ namespace Laure
 	class PlayListWidget;
 	class PlayPauseAction;
 	
+	/** @brief Represents a tab in LeechCraft tabs system.
+	 * 
+	 * @author Minh Ngo <nlminhtl@gmail.com>
+	 */
 	class LaureWidget : public QWidget
 				, public ITabWidget
 	{
@@ -47,15 +51,65 @@ namespace Laure
 		Ui::LaureWidget Ui_;
 		VLCWrapper *VLCWrapper_;
 	public:
+		/** @brief Constructs a new LaureWidget tab
+		 * with the given parent and flags.
+		 */
 		LaureWidget (QWidget *parent = 0, Qt::WindowFlags f = 0);
 		
-		void Init (ICoreProxy_ptr);
+		/** @brief This method sets the pointer to the Laure plugin instance object
+		 * 
+		 * that is later returned by the ITabWidget::GetParentPlugin().
+		 * 
+		 * @sa ITabWidget::GetParentPlugin()
+		 */
 		static void SetParentMultiTabs (QObject*);
-		TabClassInfo GetTabClassInfo () const;
-		QObject* ParentMultiTabs ();
-		void Remove ();
-		QToolBar* GetToolBar () const;
 		
+		/** @brief Returns the description of the tab class of this tab.
+		 * 
+		 * The entry must be the same as the one with the same TabClass_
+		 * returned from the IHaveTabs::GetTabClasses().
+		 * 
+		 * @return The tab class description.
+		 * 
+		 * @sa IHavetabs::GetTabClasses()
+		 */
+		TabClassInfo GetTabClassInfo () const;
+		
+		/** @brief Returns the pointer to the plugin this tab belongs to.
+		 * 
+		 * The returned object must implement IHaveTabs and must be the one
+		 * that called IHaveTabs::addNewTab() with this tab as the
+		 * parameter.
+		 * 
+		 * @return The pointer to the plugin that this tab belongs to.
+		 */
+		QObject* ParentMultiTabs ();
+		
+		/** @brief Requests to remove the tab.
+		 * 
+		 * This method is called by LeechCraft Core (or other plugins) when
+		 * this tab should be closed, for example, when user clicked on the
+		 * 'x' in the tab bar. The tab may ask the user if he really wants
+		 * to close the tab, for example. The tab is free to ignore the
+		 * close request (in this case nothing should be done at all) or
+		 * accept it by emitting IHavetabs::removeTab() signal, passing this
+		 * tab widget as its parameter.
+		 */
+		void Remove ();
+		
+		/** @brief Requests tab's toolbar.
+		 * 
+		 * This method is called to obtain the tab toolbar. In current
+		 * implementation, it would be shown on top of the LeechCraft's main
+		 * window.
+		 * 
+		 * If the tab has no toolbar, 0 should be returned.
+		 * 
+		 * @return The tab's toolbar, or 0 if there is no toolbar.
+		 */
+		QToolBar* GetToolBar () const;
+	
+	protected:
 		void keyPressEvent (QKeyEvent *);
 	private:
 		void InitCommandFrame ();

@@ -114,10 +114,7 @@ namespace Laure
 				SIGNAL (playbackModeChanged (PlaybackMode)),
 				VLCWrapper_,
 				SLOT (setPlaybackMode (PlaybackMode)));
-	}
-	
-	void LaureWidget::Init (ICoreProxy_ptr proxy)
-	{
+		
 		InitToolBar ();
 		InitCommandFrame ();
 	}

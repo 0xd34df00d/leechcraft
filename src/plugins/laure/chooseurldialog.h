@@ -28,6 +28,7 @@ namespace Laure
 {
 	/** @brief The ChooseURLDialog class provides a simple dialog
 	 * for choosing media contents by links.
+	 * 
 	 *  @author Minh Ngo <nlminhtl@gmail.com>
 	 */
 	class ChooseURLDialog : public QDialog

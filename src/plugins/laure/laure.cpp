@@ -119,7 +119,7 @@ namespace Laure
 	LaureWidget* Plugin::CreateTab ()
 	{
 		LaureWidget *w = new LaureWidget ();
-		w->Init (Proxy_);
+		
 		connect (w,
 				SIGNAL (needToClose ()),
 				this,

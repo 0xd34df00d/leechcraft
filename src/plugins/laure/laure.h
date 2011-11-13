@@ -35,6 +35,7 @@ namespace Laure
 	class LastFMSubmitter;
 
 	/** @brief An implementation of the Laure's plugin interface
+	 * 
 	 *  @author Minh Ngo <nlminhtl@gmail.com>
 	 */
 	class Plugin : public QObject
