@@ -166,6 +166,7 @@ namespace Snails
 
 		msg->SetRead (true);
 		Core::Instance ().GetStorage ()->SaveMessages (CurrAcc_.get (), { msg });
+		updateReadStatus (msg->GetID (), true);
 
 		if (!msg->IsFullyFetched ())
 			CurrAcc_->FetchWholeMessage (msg);
@@ -228,18 +229,11 @@ namespace Snails
 			MailID2Item_ [message->GetID ()] = row.first ();
 
 			updateReadStatus (message->GetID (), message->IsRead ());
-
-			connect (message.get (),
-					SIGNAL (readStatusChanged (const QByteArray&, bool)),
-					this,
-					SLOT (updateReadStatus (const QByteArray&, bool)),
-					Qt::QueuedConnection);
 		}
 	}
 
 	void MailTab::updateReadStatus (const QByteArray& id, bool isRead)
 	{
-		qDebug () << Q_FUNC_INFO << id << isRead << MailID2Item_.contains (id);
 		if (!MailID2Item_.contains (id))
 			return;
 
@@ -250,8 +244,11 @@ namespace Snails
 			QStandardItem *other = MailModel_->
 					itemFromIndex (sIdx.sibling (sIdx.row (), i));
 			other->setData (isRead, Roles::ReadStatus);
-			other->setText (other->text ());
 		}
+		QMetaObject::invokeMethod (MailModel_,
+				"dataChanged",
+				Q_ARG (QModelIndex, sIdx.sibling (sIdx.row (), 0)),
+				Q_ARG (QModelIndex, sIdx.sibling (sIdx.row (), Columns::Max - 1)));
 	}
 }
 }
