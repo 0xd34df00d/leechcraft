@@ -28,7 +28,7 @@
     <name>LeechCraft::Poshuku::OnlineBookmarks::Delicious::DeliciousService</name>
     <message>
         <location filename="deliciousservice.cpp" line="255"/>
-        <source>Authentification was successfull.</source>
+        <source>Authentication was successfull.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -38,7 +38,7 @@
     </message>
     <message>
         <location filename="deliciousservice.cpp" line="272"/>
-        <source>Bookmark(s) was send to service Delicious succesfully.</source>
+        <source>Bookmark(s) was send to service Delicious successfully.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
