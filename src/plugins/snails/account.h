@@ -121,6 +121,7 @@ namespace Snails
 		void buildOutURL (QString*);
 		void getPassword (QString*);
 		void handleMsgHeaders (QList<Message_ptr>);
+		void handleGotUpdatedMessages (QList<Message_ptr>);
 		void handleMessageBodyFetched (Message_ptr);
 	signals:
 		void mailChanged ();

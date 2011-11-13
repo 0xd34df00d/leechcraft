@@ -34,6 +34,7 @@
 #include "account.h"
 #include "core.h"
 #include "progresslistener.h"
+#include "storage.h"
 
 namespace LeechCraft
 {
@@ -299,24 +300,28 @@ namespace Snails
 			return;
 		}
 
-		if (fetchFlags & Account::FetchNew)
-		{
-			if (folder->getFetchCapabilities () & vmime::net::folder::FETCH_FLAGS)
-			{
-				auto pos = std::remove_if (messages.begin (), messages.end (),
-						[] (const vmime::ref<vmime::net::message>& msg) { return msg->getFlags () & vmime::net::message::FLAG_SEEN; });
-				messages.erase (pos, messages.end ());
-				qDebug () << "fetching only new msgs:" << messages.size ();
-			}
-			else
-				qDebug () << "folder hasn't advertised support for flags :(";
-		}
+		const QSet<QByteArray>& existing = Core::Instance ().GetStorage ()->LoadIDs (A_);
 
 		QList<Message_ptr> newMessages;
 		std::transform (messages.begin (), messages.end (), std::back_inserter (newMessages),
 				[this] (decltype (messages.front ()) msg) { return FromHeaders (msg); });
 
+		QList<Message_ptr> updatedMessages;
+		Q_FOREACH (Message_ptr msg, newMessages)
+		{
+			if (!existing.contains (msg->GetID ()))
+				continue;
+
+			newMessages.removeAll (msg);
+
+			auto updated = Core::Instance ().GetStorage ()->
+					LoadMessage (A_, msg->GetID ());
+			updated->SetRead (msg->IsRead ());
+			updatedMessages << updated;
+		}
+
 		emit gotMsgHeaders (newMessages);
+		emit gotUpdatedMessages (updatedMessages);
 	}
 
 	namespace

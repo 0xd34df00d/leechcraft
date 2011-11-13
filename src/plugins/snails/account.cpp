@@ -375,6 +375,13 @@ namespace Snails
 		emit gotNewMessages (messages);
 	}
 
+	void Account::handleGotUpdatedMessages (QList<Message_ptr> messages)
+	{
+		Core::Instance ().GetStorage ()->SaveMessages (this, messages);
+		emit mailChanged ();
+		emit gotNewMessages (messages);
+	}
+
 	void Account::handleMessageBodyFetched (Message_ptr msg)
 	{
 		Core::Instance ().GetStorage ()->SaveMessages (this, { msg });

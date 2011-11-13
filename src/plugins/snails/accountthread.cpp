@@ -55,6 +55,10 @@ namespace Snails
 				SIGNAL (messageBodyFetched (Message_ptr)),
 				A_,
 				SLOT (handleMessageBodyFetched (Message_ptr)));
+		connect (W_,
+				SIGNAL (gotUpdatedMessages (QList<Message_ptr>)),
+				A_,
+				SLOT (handleGotUpdatedMessages (QList<Message_ptr>)));
 
 		QThread::run ();
 		delete W_;

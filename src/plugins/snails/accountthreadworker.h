@@ -54,6 +54,7 @@ namespace Snails
 		void gotProgressListener (ProgressListener_g_ptr);
 		void gotMsgHeaders (QList<Message_ptr>);
 		void messageBodyFetched (Message_ptr);
+		void gotUpdatedMessages (QList<Message_ptr>);
 	};
 }
 }
