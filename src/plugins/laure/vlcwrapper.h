@@ -44,6 +44,14 @@ namespace Laure
 		int Length_;
 	};
 	
+	typedef enum
+	{
+		PlaybackModeDefault,
+		PlaybackModeRepeat,
+		PlaybackModeLoop
+		//...
+	} PlaybackMode;
+	
 	class VLCWrapper : public QObject
 	{
 		Q_OBJECT
@@ -57,12 +65,12 @@ namespace Laure
 		VLCWrapper (QObject* = 0);
 		
 		int RowCount () const;
-		int CurrentItem () const;
+		int GetCurrentIndex () const;
 		bool IsPlaying () const;
-		int Volume () const;
-		int Time () const;
-		int Length () const;
-		float MediaPosition () const;
+		int GetVolume () const;
+		int GetTime () const;
+		int GetLength () const;
+		float GetMediaPosition () const;
 		MediaMeta GetItemMeta (int row) const;
 	public slots:
 		void addRow (const QString&);
@@ -76,6 +84,7 @@ namespace Laure
 		void prev ();
 		void setVolume (int);
 		void setPosition (float);
+		void setPlaybackMode (PlaybackMode mode);
 		
 		void handledHasPlayed ();
 		void handleNextItemSet ();

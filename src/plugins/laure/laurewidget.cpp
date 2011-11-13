@@ -110,6 +110,10 @@ namespace Laure
 				SIGNAL (delegateEntity (Entity, int*, QObject**)),
 				this,
 				SIGNAL (delegateEntity (Entity, int*, QObject**)));
+		connect (Ui_.PlayListWidget_,
+				SIGNAL (playbackModeChanged (PlaybackMode)),
+				VLCWrapper_,
+				SLOT (setPlaybackMode (PlaybackMode)));
 	}
 	
 	void LaureWidget::Init (ICoreProxy_ptr proxy)
@@ -227,7 +231,7 @@ namespace Laure
 	
 	void LaureWidget::updateInterface ()
 	{
-		Ui_.VolumeSlider_->setValue (VLCWrapper_->Volume ());
+		Ui_.VolumeSlider_->setValue (VLCWrapper_->GetVolume ());
 		Ui_.PositionSlider_->setValue (Ui_.Player_->Position ());
 		const QTime& currTime = Ui_.Player_->Time ();
 		const QTime& length = Ui_.Player_->Length ();

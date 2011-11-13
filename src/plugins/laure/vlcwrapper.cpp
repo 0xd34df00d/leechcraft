@@ -101,7 +101,9 @@ namespace Laure
 		meta.Title_ = libvlc_media_get_meta (m, libvlc_meta_Title);
 		meta.Genre_ = libvlc_media_get_meta (m, libvlc_meta_Genre);
 		meta.Date_ = libvlc_media_get_meta (m, libvlc_meta_Date);
-		meta.TrackNumber_ = QString (libvlc_media_get_meta (m, libvlc_meta_TrackNumber)).toInt ();
+		meta.TrackNumber_ = QString (libvlc_media_get_meta (m,
+						libvlc_meta_TrackNumber))
+				.toInt ();
 		return meta;
 	}
 	
@@ -110,7 +112,7 @@ namespace Laure
 		return libvlc_media_list_count (List_.get ());
 	}
 	
-	int VLCWrapper::CurrentItem () const
+	int VLCWrapper::GetCurrentIndex () const
 	{
 		return CurrentItem_;
 	}
@@ -120,24 +122,24 @@ namespace Laure
 		return libvlc_media_list_player_is_playing (LPlayer_.get ());
 	}
 	
-	int VLCWrapper::Volume () const
+	int VLCWrapper::GetVolume () const
 	{
 		return libvlc_audio_get_volume (Player_.get ());
 	}
 	
-	float VLCWrapper::MediaPosition () const
+	float VLCWrapper::GetMediaPosition () const
 	{
 		return IsPlaying () ?
 				libvlc_media_player_get_position (Player_.get ()) :
 				-1;
 	}
 	
-	int VLCWrapper::Time () const
+	int VLCWrapper::GetTime () const
 	{
 		return libvlc_media_player_get_time (Player_.get ());
 	}
 	
-	int VLCWrapper::Length () const
+	int VLCWrapper::GetLength () const
 	{
 		return libvlc_media_player_get_length (Player_.get ());
 	}
@@ -154,12 +156,33 @@ namespace Laure
 	
 	void VLCWrapper::addRow (const QString& item)
 	{
-		libvlc_media_t *m = libvlc_media_new_path (Instance_.get (), item.toAscii ());
+		libvlc_media_t *m = libvlc_media_new_path (Instance_.get (),
+				item.toAscii ());
 		
 		if (!libvlc_media_list_add_media (List_.get (), m))
 			emit itemAdded (GetItemMeta (RowCount () - 1), item);
 		else
 			libvlc_media_release (m);
+	}
+	
+	void VLCWrapper::setPlaybackMode (PlaybackMode mode)
+	{
+		libvlc_media_list_player_t *list = LPlayer_.get ();
+		switch (mode)
+		{
+		case PlaybackModeDefault:
+			libvlc_media_list_player_set_playback_mode (list,
+					libvlc_playback_mode_default);
+			break;
+		case PlaybackModeLoop:
+			libvlc_media_list_player_set_playback_mode (list,
+					libvlc_playback_mode_loop);
+			break;
+		case PlaybackModeRepeat:
+			libvlc_media_list_player_set_playback_mode (list,
+					libvlc_playback_mode_repeat);
+			break;
+		}
 	}
 	
 	void VLCWrapper::playItem (int val)
@@ -172,7 +195,8 @@ namespace Laure
 		else
 			CurrentItem_ = val;
 		
-		libvlc_media_list_player_play_item_at_index (LPlayer_.get (), CurrentItem_);
+		libvlc_media_list_player_play_item_at_index (LPlayer_.get (),
+				CurrentItem_);
 		
 		handleNextItemSet ();
 	}
@@ -180,7 +204,8 @@ namespace Laure
 	void VLCWrapper::nowPlaying ()
 	{
 		MediaMeta meta = GetItemMeta (CurrentItem_);
-		meta.Length_ = libvlc_media_player_get_length (Player_.get ()) / 1000;
+		meta.Length_ = libvlc_media_player_get_length (Player_.get ())
+				/ 1000;
 		emit currentTrackMeta (meta);
 	}
 	

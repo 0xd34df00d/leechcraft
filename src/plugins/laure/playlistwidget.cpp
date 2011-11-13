@@ -27,6 +27,7 @@
 #include "chooseurldialog.h"
 #include "playlistaddmenu.h"
 #include "playlistmodel.h"
+#include "playbackmodemenu.h"
 
 namespace LeechCraft
 {
@@ -50,35 +51,45 @@ namespace Laure
 		
 		QAction *actionAdd = new QAction (tr ("Add"), this);
 		QAction *actionRemove = new QAction (tr ("Remove"), this);
-		QAction *exportAction = new QAction (tr ("Export to m3u"), this);
+		QAction *actionPlayback = new QAction (tr ("Playback mode"), this);
+		QAction *actionExport = new QAction (tr ("Export to m3u"), this);
 		
-		PlayListAddMenu *menu = new PlayListAddMenu (this);
+		PlayListAddMenu *menuAdd = new PlayListAddMenu (this);
+		PlaybackModeMenu *menuMode = new PlaybackModeMenu (this);
 		
 		actionAdd->setProperty ("ActionIcon", "add");
 		actionRemove->setProperty ("ActionIcon", "remove");
-		exportAction->setProperty ("ActionIcon", "documentsaveas");
+		actionExport->setProperty ("ActionIcon", "documentsaveas");
 		
-		actionAdd->setMenu (menu);
+		actionAdd->setMenu (menuAdd);
 		actionAdd->setMenuRole (QAction::ApplicationSpecificRole);
+		
+		actionPlayback->setMenu (menuMode);
+		actionPlayback->setMenuRole (QAction::ApplicationSpecificRole);
 		
 		ActionBar_->setToolButtonStyle (Qt::ToolButtonIconOnly);
 		ActionBar_->setIconSize (QSize (16, 16));
 		ActionBar_->addAction (actionAdd);
 		ActionBar_->addAction (actionRemove);
-		ActionBar_->addAction (exportAction);
+		ActionBar_->addAction (actionPlayback);
+		ActionBar_->addAction (actionExport);
 
 		connect (actionRemove,
 				SIGNAL (triggered (bool)),
 				PlayListView_,
 				SLOT (removeSelectedRows ()));
-		connect (exportAction,
+		connect (actionExport,
 				SIGNAL (triggered (bool)),
 				this,
 				SLOT (handleExportPlayList ()));
-		connect (menu,
+		connect (menuAdd,
 				SIGNAL (addItem (QString)),
 				this,
 				SIGNAL (itemAddedRequest (QString)));
+		connect (menuMode,
+				SIGNAL (playbackModeChanged (PlaybackMode)),
+				this,
+				SIGNAL (playbackModeChanged (PlaybackMode)));
 		connect (PlayListView_,
 				SIGNAL (itemRemoved (int)),
 				this,

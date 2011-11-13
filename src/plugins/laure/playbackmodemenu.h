@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011 Minh Ngo
+ * Copyright (C) 2011  Minh Ngo
  * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,46 +17,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LAURE_PLAYLISTWIDGET_H
-#define PLUGINS_LAURE_PLAYLISTWIDGET_H
-#include <QWidget>
-#include <interfaces/core/icoreproxy.h>
-#include <interfaces/structures.h>
-#include "playlistview.h"
+#ifndef PLUGINS_LAURE_PLAYBACKMODEMENU_H
+#define PLUGINS_LAURE_PLAYBACKMODEMENU_H
 
-class QDockWidget;
-class QGridLayout;
+#include <QMenu>
+#include "vlcwrapper.h"
 
 namespace LeechCraft
 {
 namespace Laure
 {
-	class PlayListView;
-	class PlayListModel;
-	
-	class PlayListWidget : public QWidget
+	class PlaybackModeMenu : public QMenu
 	{
 		Q_OBJECT
-		
-		QGridLayout *GridLayout_;
-		PlayListModel *PlayListModel_;
-		PlayListView *PlayListView_;
-		QToolBar *ActionBar_;
+		PlaybackMode PlaybackMode_;
 	public:
-		PlayListWidget (QWidget* = 0);
-	public slots:
-		void handleItemAdded (const MediaMeta&, const QString&);
-		void handleItemPlayed (int);
-		void handleExportPlayList ();
+		PlaybackModeMenu (QWidget* = 0);
+		
+		PlaybackMode GetPlaybackMode () const;
+	private slots:
+		void handleMenuDefault ();
+		void handleMenuRepeat ();
+		void handleMenuLoop ();
 	signals:
-		void itemAddedRequest (const QString&);
-		void itemRemoved (int);
-		void playItem (int);
-		void gotEntity (const Entity&);
-		void delegateEntity (const Entity&, int*, QObject**);
 		void playbackModeChanged (PlaybackMode);
 	};
 }
 }
-
-#endif // PLUGINS_LAURE_PLAYLISTWIDGET_H
+#endif // PLUGINS_LAURE_PLAYBACKMODEMENU_H

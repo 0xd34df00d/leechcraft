@@ -51,6 +51,7 @@ INCLUDE_DIRECTORIES (
 	)
 
 SET (SRCS
+	playbackmodemenu.cpp
 	nowplayingdelegate.cpp
 	volumeslider.cpp
 	vlcwrapper.cpp
@@ -68,6 +69,7 @@ SET (SRCS
 	laure.cpp
 	)
 SET (HEADERS
+	playbackmodemenu.h
 	nowplayingdelegate.h
 	volumeslider.h
 	vlcwrapper.h

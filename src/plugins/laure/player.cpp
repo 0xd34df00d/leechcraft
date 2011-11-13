@@ -63,7 +63,7 @@ namespace Laure
 		if (!VLCWrapper_)
 			return QTime ();
 		
-		return IntToQTime (VLCWrapper_->Time ());
+		return IntToQTime (VLCWrapper_->GetTime ());
 	}
 	
 	QTime Player::Length ()
@@ -71,7 +71,7 @@ namespace Laure
 		if (!VLCWrapper_)
 			return QTime ();
 		
-		return IntToQTime (VLCWrapper_->Length ());
+		return IntToQTime (VLCWrapper_->GetLength ());
 	}
 	
 	int Player::Position () const
@@ -79,7 +79,7 @@ namespace Laure
 		if (!(VLCWrapper_ && VLCWrapper_->IsPlaying ()))
 			return -1;
 
-		return VLCWrapper_->MediaPosition () * pos_slider_max;
+		return VLCWrapper_->GetMediaPosition () * pos_slider_max;
 	}
 
 
