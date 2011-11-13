@@ -44,6 +44,7 @@ namespace Snails
 		QList<Message_ptr> LoadMessages (Account*);
 		Message_ptr LoadMessage (Account*, const QByteArray&);
 		int GetNumMessages (Account*) const;
+		bool HasMessagesIn (Account*) const;
 
 		bool IsMessageRead (Account*, const QByteArray&);
 	private:

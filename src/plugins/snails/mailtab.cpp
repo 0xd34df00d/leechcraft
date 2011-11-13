@@ -192,8 +192,11 @@ namespace Snails
 
 	void MailTab::handleFetchNewMail ()
 	{
+		Storage *st = Core::Instance ().GetStorage ();
 		Q_FOREACH (auto acc, Core::Instance ().GetAccounts ())
-			acc->FetchNewHeaders (Account::FetchNew);
+			acc->FetchNewHeaders (st->HasMessagesIn (acc.get ()) ?
+						Account::FetchNew:
+						Account::FetchAll);
 	}
 
 	void MailTab::handleMessageBodyFetched (Message_ptr msg)

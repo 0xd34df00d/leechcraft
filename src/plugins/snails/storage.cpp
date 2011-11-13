@@ -178,6 +178,11 @@ namespace Snails
 		return result;
 	}
 
+	bool Storage::HasMessagesIn (Account *acc) const
+	{
+		return GetNumMessages (acc);
+	}
+
 	bool Storage::IsMessageRead (Account *acc, const QByteArray& id)
 	{
 		if (IsMessageRead_.contains (id))
