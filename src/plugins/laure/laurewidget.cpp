@@ -305,7 +305,6 @@ namespace Laure
 
 		Ui_.Player_->setVisible (checked);
 		Ui_.PlayListWidget_->setVisible (!checked);
-		emit playListMode (!checked);
 	}
 }
 }

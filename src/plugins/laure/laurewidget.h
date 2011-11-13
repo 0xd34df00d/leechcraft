@@ -57,7 +57,6 @@ namespace Laure
 		LaureWidget (QWidget *parent = 0, Qt::WindowFlags f = 0);
 		
 		/** @brief This method sets the pointer to the Laure plugin instance object
-		 * 
 		 * that is later returned by the ITabWidget::GetParentPlugin().
 		 * 
 		 * @sa ITabWidget::GetParentPlugin()
@@ -115,16 +114,88 @@ namespace Laure
 		void InitCommandFrame ();
 		void InitToolBar ();
 	signals:
+		/** @brief This signal's emitted to notify the Core
+		 * that this tab needs to be closed.
+		 */
 		void needToClose ();
+		
+		/** @brief This signal's emmited when the PlayPauseAction
+		 * is clicked.
+		 */
 		void playPause ();
+		
+		/** @brief This signal's emmited for sending media meta info
+		 * to the desired destination.
+		 * 
+		 * @param[out] mediameta media meta info
+		 */
 		void currentTrackMeta (const MediaMeta&);
+		
+		/** @brief This signal's emmited when the current track's finished.
+		 */
 		void trackFinished ();
+		
+		/** @brief This signal's emmited when the media item's added to
+		 * the playlist.
+		 *
+		 * @param[out] location media file location
+		 */
 		void addItem (const QString&);
+		
+		/** @brief This signal is emitted by plugin to notify the Core and
+		 * other plugins about an entity.
+		 *
+		 * In this case, the plugin doesn't care what would happen next to
+		 * the entity after the announcement and whether it would be catched
+		 * by any other plugin at all. This is the opposite to the semantics
+		 * of delegateEntity().
+		 *
+		 * This signal is typically emitted, for example, when a plugin has
+		 * just finished downloading something and wants to notify other
+		 * plugins about newly created files.
+		 *
+		 * This signal is asynchronous: the handling happends after the
+		 * control gets back to the event loop.
+		 *
+		 * @note This function is expected to be a signal in subclasses.
+		 *
+		 * @param[out] entity The entity.
+		 */
 		void gotEntity (const Entity&);
-		void delegateEntity (const Entity&,
-				int*, QObject**);
-		void playListMode (bool);
+		
+		/** @brief This signal is emitted by plugin to delegate the entity
+		 * to an another plugin.
+		 *
+		 * In this case, the plugin actually cares whether the entity would
+		 * be handled. This signal is typically used, for example, to
+		 * delegate a download request.
+		 *
+		 * id and provider are used in download delegation requests. If
+		 * these parameters are not NULL and the entity is handled, they are
+		 * set to the task ID returned by the corresponding IDownload
+		 * instance and the main plugin instance of the handling plugin,
+		 * respectively. Thus, setting the id to a non-NULL value means that
+		 * only downloading may occur as result but no handling.
+		 *
+		 * Nevertheless, if you need to enable entity handlers to handle
+		 * your request as well, you may leave the id parameter as NULL and
+		 * just set the provider to a non-NULL value.
+		 *
+		 * @note This function is expected to be a signal in subclasses.
+		 *
+		 * @param[out] entity The entity to delegate.
+		 * @param[in] id The pointer to the variable that would contain the
+		 * task ID of this delegate request, or NULL.
+		 * @param[in] provider The pointer to the main plugin instance of
+		 * the plugin that handles this delegate request, or NULL.
+		 */
+		void delegateEntity (const Entity&, int*, QObject**);
 	public slots:
+		/** @brief This handle's called for adding media files to the
+		 * playlist.
+		 * 
+		 * @param[in] location media file location.
+		 */
 		void handleOpenMediaContent (const QString&);
 	private slots:
 		void handleOpenFile ();
