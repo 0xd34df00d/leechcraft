@@ -268,7 +268,7 @@ namespace Delicious
 				Accounts_ << account;
 				saveAccounts ();
 				emit accountAdded (QObjectList () <<  account->GetObject ());
-				msg = tr ("Authentification was successfull.");
+				msg = tr ("Authentication was successfull.");
 				priority = LeechCraft::PInfo_;
 			}
 			else
@@ -285,7 +285,7 @@ namespace Delicious
 			{
 				if (Reply2Request_ [reply].Count_ == Reply2Request_[reply].Current_ + 1)
 				{
-					msg = tr ("Bookmark(s) was send to service Delicious succesfully.");
+					msg = tr ("Bookmark(s) was send to service Delicious successfully.");
 					priority = LeechCraft::PInfo_;
 					DeliciousAccount *account = GetAccountByName (Reply2Request_ [reply].Login_);
 					if (account)
