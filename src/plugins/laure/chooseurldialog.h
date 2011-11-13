@@ -26,15 +26,34 @@ namespace LeechCraft
 {
 namespace Laure
 {
+	/** @brief The ChooseURLDialog class provides a simple dialog
+	 * for choosing media contents by links.
+	 *  @author Minh Ngo <nlminhtl@gmail.com>
+	 */
 	class ChooseURLDialog : public QDialog
 	{
 		Q_OBJECT
 		
 		Ui::ChooseURLDialog Ui_;
 	public:
+		/** @brief Constructs a new ChooseURLDialog dialog
+		 * with the given parent.
+		 */
 		ChooseURLDialog (QWidget* = 0);
 		
+		/** @brief Returns the media URL.
+		 * 
+		 * @returns QString with an URL.
+		 */
 		QString GetUrl () const;
+		
+		/** @brief This function's used to verify the string returned
+		 * by GetURL.
+		 *
+		 * @return true if the string is valid, false otherwise.
+		 * 
+		 * @sa GetURL()
+		 */
 		bool IsUrlValid () const;
 	};
 }
