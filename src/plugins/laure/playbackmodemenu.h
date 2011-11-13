@@ -27,13 +27,24 @@ namespace LeechCraft
 {
 namespace Laure
 {
+	/** @brief Provides a menu for choosing a playback mode.
+	 * 
+	 * @author Minh Ngo <nlminhtl@gmail.com>
+	 */
 	class PlaybackModeMenu : public QMenu
 	{
 		Q_OBJECT
 		PlaybackMode PlaybackMode_;
 	public:
+		/** @brief Constructs a new PlaybackModeMenu class
+		 * with the given parent.
+		 */
 		PlaybackModeMenu (QWidget* = 0);
 		
+		/** @brief Returns the playback mode.
+		 * 
+		 * @sa PlaybackMode
+		 */
 		PlaybackMode GetPlaybackMode () const;
 	private slots:
 		void handleMenuDefault ();
