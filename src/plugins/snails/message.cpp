@@ -75,6 +75,26 @@ namespace Snails
 		FromEmail_ = fe;
 	}
 
+	QString Message::GetTo () const
+	{
+		return To_;
+	}
+
+	void Message::SetTo (const QString& to)
+	{
+		To_ = to;
+	}
+
+	QString Message::GetToEmail () const
+	{
+		return ToEmail_;
+	}
+
+	void Message::SetToEmail (const QString& email)
+	{
+		ToEmail_ = email;
+	}
+
 	QDateTime Message::GetDate () const
 	{
 		return Date_;
@@ -146,6 +166,8 @@ namespace Snails
 				<< Size_
 				<< From_
 				<< FromEmail_
+				<< To_
+				<< ToEmail_
 				<< Date_
 				<< Recipients_
 				<< Subject_
@@ -164,6 +186,8 @@ namespace Snails
 			<< Size_
 			<< From_
 			<< FromEmail_
+			<< To_
+			<< ToEmail_
 			<< Date_
 			<< Recipients_
 			<< Subject_
@@ -186,6 +210,8 @@ namespace Snails
 			>> Size_
 			>> From_
 			>> FromEmail_
+			>> To_
+			>> ToEmail_
 			>> Date_
 			>> Recipients_
 			>> Subject_

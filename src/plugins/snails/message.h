@@ -36,6 +36,8 @@ namespace Snails
 		quint64 Size_;
 		QString From_;
 		QString FromEmail_;
+		QString To_;
+		QString ToEmail_;
 		QDateTime Date_;
 		QStringList Recipients_;
 		QString Subject_;
@@ -60,6 +62,12 @@ namespace Snails
 
 		QString GetFromEmail () const;
 		void SetFromEmail (const QString&);
+
+		QString GetTo () const;
+		void SetTo (const QString&);
+
+		QString GetToEmail () const;
+		void SetToEmail (const QString&);
 
 		QDateTime GetDate () const;
 		void SetDate (const QDateTime&);
