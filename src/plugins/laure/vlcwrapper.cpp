@@ -154,13 +154,13 @@ namespace Laure
 		return !libvlc_media_list_remove_index (List_.get (), pos);
 	}
 	
-	void VLCWrapper::addRow (const QString& item)
+	void VLCWrapper::addRow (const QString& location)
 	{
 		libvlc_media_t *m = libvlc_media_new_path (Instance_.get (),
-				item.toAscii ());
+				location.toAscii ());
 		
 		if (!libvlc_media_list_add_media (List_.get (), m))
-			emit itemAdded (GetItemMeta (RowCount () - 1), item);
+			emit itemAdded (GetItemMeta (RowCount () - 1), location);
 		else
 			libvlc_media_release (m);
 	}
