@@ -28,6 +28,11 @@ class QModelIndex;
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class ResourceLoader;
+}
+
 namespace Snails
 {
 	class Storage;
@@ -43,9 +48,13 @@ namespace Snails
 		Storage *Storage_;
 		ProgressManager *ProgressManager_;
 
+		std::shared_ptr<Util::ResourceLoader> MsgView_;
+
 		Core ();
 	public:
 		static Core& Instance ();
+
+		void Release ();
 
 		void SendEntity (const Entity&);
 
@@ -56,6 +65,7 @@ namespace Snails
 
 		Storage* GetStorage () const;
 		ProgressManager* GetProgressManager () const;
+		QString GetMsgViewTemplate () const;
 
 		void AddAccount (Account_ptr);
 	private:

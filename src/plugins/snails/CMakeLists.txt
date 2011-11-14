@@ -80,3 +80,4 @@ TARGET_LINK_LIBRARIES (leechcraft_snails
 	)
 INSTALL (TARGETS leechcraft_snails DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES snailssettings.xml DESTINATION ${LC_SETTINGS_DEST})
+INSTALL (DIRECTORY share/snails DESTINATION share/leechcraft)

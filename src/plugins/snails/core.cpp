@@ -28,6 +28,7 @@
 #include <vmime/platforms/posix/posixHandler.hpp>
 #endif
 
+#include <util/resourceloader.h>
 #include "message.h"
 #include "storage.h"
 #include "progressmanager.h"
@@ -40,12 +41,16 @@ namespace Snails
 	: AccountsModel_ (new QStandardItemModel)
 	, Storage_ (new Storage (this))
 	, ProgressManager_ (new ProgressManager (this))
+	, MsgView_ (new Util::ResourceLoader ("snails/msgview"))
 	{
 #if Q_WS_WIN
 		vmime::platform::setHandler<vmime::platforms::windows::windowsHandler> ();
 #else
 		vmime::platform::setHandler<vmime::platforms::posix::posixHandler> ();
 #endif
+
+		MsgView_->AddGlobalPrefix ();
+		MsgView_->AddLocalPrefix ();
 
 		qRegisterMetaType<Message_ptr> ("LeechCraft::Snails::Message_ptr");
 		qRegisterMetaType<Message_ptr> ("Message_ptr");
@@ -67,6 +72,11 @@ namespace Snails
 	{
 		static Core c;
 		return c;
+	}
+
+	void Core::Release ()
+	{
+		MsgView_.reset ();
 	}
 
 	void Core::SendEntity (const Entity& e)
@@ -100,6 +110,15 @@ namespace Snails
 	ProgressManager* Core::GetProgressManager () const
 	{
 		return ProgressManager_;
+	}
+
+	QString Core::GetMsgViewTemplate () const
+	{
+		auto dev = MsgView_->Load ("default/msgview.html");
+		if (!dev || !dev->open (QIODevice::ReadOnly))
+			return tr ("<h1 style='color:#f00'>Unable to load message view template.</h1>");
+
+		return QString::fromUtf8 (dev->readAll ());
 	}
 
 	void Core::AddAccount (Account_ptr account)

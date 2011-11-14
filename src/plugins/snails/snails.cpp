@@ -64,6 +64,7 @@ namespace Snails
 
 	void Plugin::Release ()
 	{
+		Core::Instance ().Release ();
 	}
 
 	QString Plugin::GetName () const

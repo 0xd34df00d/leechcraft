@@ -171,23 +171,21 @@ namespace Snails
 		if (!msg->IsFullyFetched ())
 			CurrAcc_->FetchWholeMessage (msg);
 
-		QString html;
-		html += "<em>Subject</em>: %1<br />";
-		html += "<em>From</em>: %2<br />";
-		html += "<em>On</em>: %3<hr />";
-		html += "%4";
+		QString html = Core::Instance ().GetMsgViewTemplate ();
+		html.replace ("{subject}", msg->GetSubject ());
+		html.replace ("{from}", msg->GetFrom ());
+		html.replace ("{fromEmail}", msg->GetFromEmail ());
+		html.replace ("{date}", msg->GetDate ().toString ());
 
 		const QString& htmlBody = msg->IsFullyFetched () ?
 				msg->GetHTMLBody () :
 				"<em>" + tr ("Fetching the message...") + "</em>";
 
-		Ui_.MailView_->setHtml (html
-				.arg (msg->GetSubject ())
-				.arg (Qt::escape (GetFrom (msg)))
-				.arg (msg->GetDate ().toString ())
-				.arg (htmlBody.isEmpty () ?
-						"<pre>" + Qt::escape (msg->GetBody ()) + "</pre> " :
-						htmlBody));
+		html.replace ("{body}", htmlBody.isEmpty () ?
+					"<pre>" + Qt::escape (msg->GetBody ()) + "</pre> " :
+					htmlBody);
+
+		Ui_.MailView_->setHtml (html);
 	}
 
 	void MailTab::handleFetchNewMail ()
