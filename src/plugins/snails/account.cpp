@@ -105,7 +105,7 @@ namespace Snails
 		QByteArray result;
 
 		QDataStream out (&result, QIODevice::WriteOnly);
-		out << static_cast<quint8> (1);
+		out << static_cast<quint8> (2);
 		out << ID_
 			<< AccName_
 			<< Login_
@@ -122,7 +122,9 @@ namespace Snails
 			<< OutPort_
 			<< OutLogin_
 			<< static_cast<quint8> (InType_)
-			<< static_cast<quint8> (OutType_);
+			<< static_cast<quint8> (OutType_)
+			<< UserName_
+			<< UserEmail_;
 
 		return result;
 	}
@@ -133,7 +135,7 @@ namespace Snails
 		quint8 version = 0;
 		in >> version;
 
-		if (version != 1)
+		if (version < 1 || version > 2)
 			throw std::runtime_error (qPrintable ("Unknown version " + QString::number (version)));
 
 		quint8 inType = 0, outType = 0;
@@ -160,6 +162,10 @@ namespace Snails
 
 			InType_ = static_cast<InType> (inType);
 			OutType_ = static_cast<OutType> (outType);
+
+			if (version >= 2)
+				in >> UserName_
+					>> UserEmail_;
 		}
 	}
 
@@ -170,6 +176,8 @@ namespace Snails
 		{
 			QMutexLocker l (GetMutex ());
 			dia->SetName (AccName_);
+			dia->SetUserName (UserName_);
+			dia->SetUserEmail (UserEmail_);
 			dia->SetLogin (Login_);
 			dia->SetUseSASL (UseSASL_);
 			dia->SetSASLRequired (SASLRequired_);
@@ -193,6 +201,8 @@ namespace Snails
 		{
 			QMutexLocker l (GetMutex ());
 			AccName_ = dia->GetName ();
+			UserName_ = dia->GetUserName ();
+			UserEmail_ = dia->GetUserEmail ();
 			Login_ = dia->GetLogin ();
 			UseSASL_ = dia->GetUseSASL ();
 			SASLRequired_ = dia->GetSASLRequired ();

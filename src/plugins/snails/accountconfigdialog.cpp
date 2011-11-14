@@ -47,6 +47,25 @@ namespace Snails
 		Ui_.AccName_->setText (name);
 	}
 
+	QString AccountConfigDialog::GetUserName () const
+	{
+		return Ui_.UserName_->text ();
+	}
+
+	void AccountConfigDialog::SetUserName (const QString& name)
+	{
+		Ui_.UserName_->setText (name);
+	}
+
+	QString AccountConfigDialog::GetUserEmail () const
+	{
+		return Ui_.UserEmail_->text ();
+	}
+
+	void AccountConfigDialog::SetUserEmail (const QString& email)
+	{
+		Ui_.UserEmail_->setText (email);
+	}
 
 	QString AccountConfigDialog::GetLogin () const
 	{

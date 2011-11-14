@@ -37,6 +37,12 @@ namespace Snails
 		QString GetName () const;
 		void SetName (const QString&);
 
+		QString GetUserName () const;
+		void SetUserName (const QString&);
+
+		QString GetUserEmail () const;
+		void SetUserEmail (const QString&);
+
 		QString GetLogin () const;
 		void SetLogin (const QString&);
 

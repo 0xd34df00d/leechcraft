@@ -41,7 +41,10 @@ namespace Snails
 		QMutex *AccMutex_;
 
 		QByteArray ID_;
+
 		QString AccName_;
+		QString UserName_;
+		QString UserEmail_;
 
 		QString Login_;
 		bool UseSASL_;
