@@ -82,10 +82,10 @@ namespace Snails
 		}
 	}
 
-	void Account::FetchNewHeaders (Account::FetchFlags flags)
+	void Account::Synchronize (Account::FetchFlags flags)
 	{
 		QMetaObject::invokeMethod (Thread_->GetWorker (),
-				"fetchNewHeaders",
+				"synchronize",
 				Qt::QueuedConnection,
 				Q_ARG (Account::FetchFlags, flags));
 	}

@@ -101,7 +101,7 @@ namespace Snails
 		QString GetServer () const;
 		QString GetType () const;
 
-		void FetchNewHeaders (FetchFlags);
+		void Synchronize (FetchFlags);
 		void FetchWholeMessage (Message_ptr);
 		void SendMessage (Message_ptr);
 
