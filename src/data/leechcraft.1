@@ -1,18 +1,27 @@
-.TH LEECHCRAFT "1" "Jul 2009"
-
+.TH LEECHCRAFT "1" "Nov 2011"
 .SH NAME
-LeechCraft \- Extensible plugin-based internet-client
-
+\fBLeechCraft\fR \- Extensible modular internet-client.
 .SH SYNOPSIS
-.B leechcraft [options] [entity]
-
+.B leechcraft [options] [\fIentity\fR\fB]\fR
 .SH DESCRIPTION
 .B LeechCraft
-is an extensible cross-platfrom plugin-based internet-client. Currently plugins
-include, but are not limited to, Poshuku (WebKit-based browser), BitTorrent
-(BitTorrent client), Aggregator (RSS/Atom feed reader) and SeekThru (OpenSearch
-client).
-
+is an extensible cross-platfrom modular internet-client. Modularity means it is
+plugin-based: each task is done by a separate plugin. Currently plugins
+include, but are not limited to, the following:
+.RS
+.IP \(bu 4
+\fBAggregator\fR - RSS/Atom feed reader.
+.IP \(bu 4
+\fBAzoth\fR - multiprotocol IM client, currently supporting XMPP/IRC and lots of
+other stuff.
+.IP \(bu 4
+\fBBitTorrent\fR - well, BitTorrent client.
+.IP \(bu 4
+\fBLackMan\fR - userspace package manager for easy installation of iconsets,
+emoticons, themes, scripting plugins and other similar things.
+.IP \(bu 4
+\fBPoshuku\fR - WebKit-based web browser.
+.RE
 .SH OPTIONS
 .SS Common Qt Options
 .TP
@@ -24,56 +33,110 @@ Specify the user stylesheet to use when rendering widgets.
 .TP
 .B -reverse
 Sets the application's layout direction to right-to-left.
-
 .SS Options Specific to LeechCraft
 .TP
-.B entity
+.B \fIentity\fR
 The entity to handle by LeechCraft. This could be, for example, a torrent file
 name or an URL.
 .TP
-.B -automatic
+.B -v [ --version ]
+Print LeechCraft version and exit.
+.TP
+.B --automatic
 Don't consider this entity to be added as a result of user's action. This way
-LeechCraft would try to minimize the number of dialogues with user. Suitable for
+LeechCraft would try to minimize the number of dialogs with user. Suitable for
 adding entities from cron or some other sources, where the user could be AFK.
+.IP
+This only makes sense if an \fIentity\fR has been specified.
 .TP
-.B -handle
-The item should be handled only. Useful when settings LeechCraft as default
-browser. This way it won't ask if the item should be open in Poshuku or
-downloaded to the disk.
+.B -H [ --handle ]
+The item must be handled, not downloaded. Useful when setting LeechCraft as
+default browser: this way it won't ask if the item should be opened in Poshuku
+or downloaded.
+.IP
+This only makes sense if an \fIentity\fR has been specified.
 .TP
-.B -download
-The item should be downloaded only, similar to the previous option.
+.B -D [ --download ]
+The item must be downloaded only, not handled. This is similar to the
+\fB\-H\fR option, but does the reverse.
+.IP
+This only makes sense if an \fIentity\fR has been specified.
 .TP
-.B -nolog
-Disable custom logger to the files in ~/.leechcraft and print everything to
+.B -T [ --type ] \fIarg\fR
+Defines the type of the passed \fBentity\fR. It could be one of the
+following:
+.RS
+.IP \(bu 4
+\fIurl\fR for URLs that come from user input.
+.IP \(bu 4
+\fIurl_encoded\fR for percent-encoded URLs.
+.IP \(bu 4
+\fIfile\fR for local file paths.
+.RE
+.IP
+By default, \fIurl\fR is assumed.
+.IP
+This only makes sense if an \fIentity\fR has been specified.
+.TP
+.B -P [ --plugin ] \fIpath\fR
+Use this option only if you know what you are doing.
+.IP
+Loads only plugin from the given \fIpath\fR. Specifying this option effectively
+disables loading plugins from standard places, so only given plugin would be
+loaded. Moreover, the given plugin's dependencies aren't evaluated, so you
+should load them by hand, specifying multiple \fB-P\fR options.
+.IP
+As already been said, multiple \fB-P\fR options could be specified, resulting
+in multiple plugins being loaded.
+.IP
+If this option is specified, LeechCraft doesn't check if it is already running,
+it just starts up and loads the given plugin(s). So, be careful with this
+option: you could either end up with lots of LeechCraft instances running or
+have your data corrupt if the specified plugin doesn't support sharing data
+between multiple running instances.
+.TP
+.B --nolog
+Disable custom logger that writes logs to
+~/.leechcraft/{debug,warning,critical}.log and print everything to
 stdout/stderr.
 .TP
-.B -bt
-Print backtrace with warning-level log messages.
+.B --bt
+Print backtrace along with warning-level log entries. Helps tracing where do
+the warning entries come from.
 .TP
-.B -clrsckt
+.B --clrsckt
 Clear stalled local socket. Useful when LeechCraft doesn't start up and you know
 that no other instances are running.
 .TP
-.B -autorestart
+.B --no-app-catch
+Disables catching all the exceptions in QApplication::notify(). Useful for
+debugging purposes only and shouldn't be used for live setups.
+.TP
+.B --autorestart
 Automatically restart if closed. This is done via Session Manager, so it won't
 work everywhere.
 .TP
-.B -help
-Print short help message.
-
-.SH BUGS
-Please report bugs to \fIhttp://leechcraft.org\fR.
-
-.SH AUTHOR
-The author of LeechCraft is Georg Rudoy <0xd34df00d@gmail.com>.
+.B --help
+Print a short help message.
+.SH FILES
+LeechCraft stores user-specific stuff in two places: \fI~/.config/Deviant\fR
+for settings and \fI~/.leechcraft\fR for more "heavy" data like browser cache,
+RSS reader databases, and such.
 .PP
-This manual page was written by Georg Rudoy <0xd34df00d@gmail.com>.
+Plugins are loaded from \fI/usr/local/lib/leechcraft/plugins\fR and
+\fI/usr/lib/leechcraft/plugins\fR.
+.SH BUGS
+There are many of them. Please report bugs to \fIhttp://leechcraft.org\fR.
+.SH AUTHOR
+The authors of LeechCraft are listed in its About dialog as well as on this web
+page: \fIhttp://leechcraft.org/our-team\fR.
+.PP
+This manual page was written by Georg Rudoy <\fI0xd34df00d@gmail.com\fR>.
 .PP
 Permission is granted to copy, distribute and/or modify this document under the
 terms of the
-GNU Lesser General Public License, Version 3 or any later version published by
-the Free Software Foundation.
+GNU General Public License, Version 3 or any later version published by the
+Free Software Foundation.
 .PP
 On Debian systems, the complete text of the GNU General Public License can be
-found in /usr/share/common-licenses/LGPL.
+found in /usr/share/common-licenses/GPL.
