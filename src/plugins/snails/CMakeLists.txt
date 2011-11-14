@@ -40,6 +40,7 @@ SET (SRCS
 	storage.cpp
 	progressmanager.cpp
 	mailtreedelegate.cpp
+	composemessagetab.cpp
 	)
 SET (HEADERS
 	snails.h
@@ -56,11 +57,13 @@ SET (HEADERS
 	storage.h
 	progressmanager.h
 	mailtreedelegate.h
+	composemessagetab.h
 	)
 SET (FORMS
 	mailtab.ui
 	accountslistwidget.ui
 	accountconfigdialog.ui
+	composemessagetab.ui
 	)
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})

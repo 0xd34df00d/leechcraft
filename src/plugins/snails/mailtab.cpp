@@ -182,7 +182,7 @@ namespace Snails
 				"<em>" + tr ("Fetching the message...") + "</em>";
 
 		html.replace ("{body}", htmlBody.isEmpty () ?
-					"<pre>" + Qt::escape (msg->GetBody ()) + "</pre> " :
+					"<pre>" + Qt::escape (msg->GetBody ()) + "</pre>" :
 					htmlBody);
 
 		Ui_.MailView_->setHtml (html);

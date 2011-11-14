@@ -24,6 +24,7 @@
 #include "accountslistwidget.h"
 #include "core.h"
 #include "progressmanager.h"
+#include "composemessagetab.h"
 
 namespace LeechCraft
 {
@@ -31,12 +32,15 @@ namespace Snails
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		MailTabClass_.TabClass_ = "mail";
-		MailTabClass_.VisibleName_ = tr ("Mail");
-		MailTabClass_.Description_ = tr ("Mail tab.");
-		MailTabClass_.Icon_ = GetIcon ();
-		MailTabClass_.Priority_ = 55;
-		MailTabClass_.Features_ = TFOpenableByRequest;
+		MailTabClass_ = { "mail", tr ("Mail"),
+				tr ("Mail tab."),
+				GetIcon (), 55, TFOpenableByRequest };
+		ComposeTabClass_ = { "compose", tr ("Compose mail"),
+				tr ("Allows one to compose outgoing mail messages."),
+				QIcon (), 60, TFOpenableByRequest };
+
+		ComposeMessageTab::SetParentPlugin (this);
+		ComposeMessageTab::SetTabClassInfo (ComposeTabClass_);
 
 		connect (&Core::Instance (),
 				SIGNAL (gotEntity (LeechCraft::Entity)),
@@ -102,6 +106,18 @@ namespace Snails
 
 			emit addNewTab (MailTabClass_.VisibleName_, mt);
 			emit raiseTab (mt);
+		}
+		else if (tabClass == "compose")
+		{
+			auto ct = new ComposeMessageTab ();
+
+			connect (ct,
+					SIGNAL (removeTab (QWidget*)),
+					this,
+					SIGNAL (removeTab (QWidget*)));
+
+			emit addNewTab (ct->GetTabClassInfo ().VisibleName_, ct);
+			emit raiseTab (ct);
 		}
 		else
 			qWarning () << Q_FUNC_INFO

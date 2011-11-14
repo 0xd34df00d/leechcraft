@@ -39,6 +39,7 @@ namespace Snails
 		Q_INTERFACES (IInfo IHaveTabs IHaveSettings IJobHolder)
 
 		TabClassInfo MailTabClass_;
+		TabClassInfo ComposeTabClass_;
 		Util::XmlSettingsDialog_ptr XSD_;
 	public:
 		void Init (ICoreProxy_ptr);
