@@ -138,7 +138,7 @@ namespace Snails
 
 		st->setProperty ("connection.tls", A_->UseTLS_);
 		st->setProperty ("connection.tls.required", A_->TLSRequired_);
-		st->setProperty ("options.sasl", true);
+		st->setProperty ("options.sasl", A_->UseSASL_);
 		st->setProperty ("options.sasl.fallback", A_->SASLRequired_);
 
 		return st;
@@ -181,7 +181,7 @@ namespace Snails
 		trp->setCertificateVerifier (vmime::create<CertVerifier> ());
 		trp->setProperty ("connection.tls", A_->UseTLS_);
 		trp->setProperty ("connection.tls.required", A_->TLSRequired_);
-		trp->setProperty ("options.sasl", A_->UseSASL_);
+		trp->setProperty ("options.sasl", true);
 		trp->setProperty ("options.sasl.fallback", A_->SASLRequired_);
 
 		return trp;
