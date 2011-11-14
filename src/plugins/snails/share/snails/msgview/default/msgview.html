@@ -4,9 +4,10 @@
 		<title>Message</title>
 	</head>
 	<body>
-		<strong>{subject}</strong><br/>
-		<em>From</em>: {from} (<a href="mailto:{fromEmail}">{fromEmail}</a>)<br />
-		<em>Date</em>: {date}<hr />
-		<div>{body}</div>
+		<span class="field_subject">{subject}</span><br/>
+		<span class="field_from">From</span>: {from} (<a href="mailto:{fromEmail}">{fromEmail}</a>)<br />
+		<span class="field_to">To</span>: {to}<br />
+		<span class="field_date">Date</span>: {date}<hr />
+		<div class="msg_body">{body}</div>
 	</body>
 </html>

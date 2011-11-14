@@ -131,6 +131,31 @@ namespace Snails
 					message->GetFromEmail () :
 					fromName + " <" + message->GetFromEmail () + ">";
 		}
+
+		QString HTMLize (const QList<QPair<QString, QString>>& adds)
+		{
+			QStringList result;
+
+			Q_FOREACH (const auto& pair, adds)
+			{
+				const bool hasName = !pair.first.isEmpty ();
+
+				QString thisStr;
+
+				if (hasName)
+					thisStr += "<span style='address_name'>" + pair.first + "</span> &lt;";
+
+				thisStr += QString ("<span style='address_email'><a href='mailto:%1'>%1</a></span>")
+						.arg (pair.second);
+
+				if (hasName)
+					thisStr += '>';
+
+				result << thisStr;
+			}
+
+			return result.join (", ");
+		}
 	}
 
 	void MailTab::handleMailSelected (const QModelIndex& sidx)
@@ -175,6 +200,7 @@ namespace Snails
 		html.replace ("{subject}", msg->GetSubject ());
 		html.replace ("{from}", msg->GetFrom ());
 		html.replace ("{fromEmail}", msg->GetFromEmail ());
+		html.replace ("{to}", HTMLize (msg->GetTo ()));
 		html.replace ("{date}", msg->GetDate ().toString ());
 
 		const QString& htmlBody = msg->IsFullyFetched () ?
@@ -192,7 +218,7 @@ namespace Snails
 	{
 		Storage *st = Core::Instance ().GetStorage ();
 		Q_FOREACH (auto acc, Core::Instance ().GetAccounts ())
-			acc->FetchNewHeaders (st->HasMessagesIn (acc.get ()) ?
+			acc->Synchronize (st->HasMessagesIn (acc.get ()) ?
 						Account::FetchNew:
 						Account::FetchAll);
 	}
