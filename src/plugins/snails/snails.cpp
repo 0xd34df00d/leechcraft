@@ -90,6 +90,7 @@ namespace Snails
 	{
 		TabClasses_t result;
 		result << MailTabClass_;
+		result << ComposeTabClass_;
 		return result;
 	}
 
