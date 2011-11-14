@@ -79,6 +79,16 @@ namespace Snails
 		MsgView_.reset ();
 	}
 
+	void Core::SetProxy (ICoreProxy_ptr proxy)
+	{
+		Proxy_ = proxy;
+	}
+
+	ICoreProxy_ptr Core::GetProxy () const
+	{
+		return Proxy_;
+	}
+
 	void Core::SendEntity (const Entity& e)
 	{
 		emit gotEntity (e);

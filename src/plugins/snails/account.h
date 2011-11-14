@@ -119,11 +119,12 @@ namespace Snails
 
 		QString BuildInURL ();
 		QString BuildOutURL ();
-		QString GetPassImpl ();
+		QString GetPassImpl (Direction);
+		QByteArray GetStoreID (Direction) const;
 	private slots:
 		void buildInURL (QString*);
 		void buildOutURL (QString*);
-		void getPassword (QString*);
+		void getPassword (QString*, Direction = Direction::In);
 		void handleMsgHeaders (QList<Message_ptr>);
 		void handleGotUpdatedMessages (QList<Message_ptr>);
 		void handleMessageBodyFetched (Message_ptr);

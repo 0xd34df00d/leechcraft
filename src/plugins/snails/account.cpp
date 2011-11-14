@@ -302,26 +302,41 @@ namespace Snails
 	{
 		QMutexLocker l (GetMutex ());
 
-		QString result;
+		if (OutType_ == OutType::Sendmail)
+			return "sendmail://localhost";
 
-		switch (OutType_)
+		QString result = UseTLS_ ? "smtps://" : "smtp://";
+
+		if (SMTPNeedsAuth_)
 		{
-		case OutType::SMTP:
-			result = "smtp://";
-			result += OutHost_ + ":" + QString::number (OutPort_);
-			break;
-		case OutType::Sendmail:
-			result = "sendmail://localhost";
-			break;
+			QString pass;
+			if (OutLogin_.isEmpty ())
+			{
+				result += Login_;
+				getPassword (&pass);
+			}
+			else
+			{
+				result += OutLogin_;
+				getPassword (&pass, Direction::Out);
+			}
+			result += ":" + pass;
+
+			result.replace ('@', "%40");
+			result += '@';
 		}
+
+		result += OutHost_ + ":" + QString::number (OutPort_);
+
+		qDebug () << Q_FUNC_INFO << result;
 
 		return result;
 	}
 
-	QString Account::GetPassImpl ()
+	QString Account::GetPassImpl (Direction dir)
 	{
 		QList<QVariant> keys;
-		keys << GetID ();
+		keys << GetStoreID (dir);
 		const QVariantList& result =
 			Util::GetPersistentData (keys, &Core::Instance ());
 		if (result.size () != 1)
@@ -345,6 +360,14 @@ namespace Snails
 		return strVarList.at (0).toString ();
 	}
 
+	QByteArray Account::GetStoreID (Account::Direction dir) const
+	{
+		QByteArray result = GetID ();
+		if (dir == Direction::Out)
+			result += "/out";
+		return result;
+	}
+
 	void Account::buildInURL (QString *res)
 	{
 		*res = BuildInURL ();
@@ -355,9 +378,9 @@ namespace Snails
 		*res = BuildOutURL ();
 	}
 
-	void Account::getPassword (QString *outPass)
+	void Account::getPassword (QString *outPass, Direction dir)
 	{
-		QString pass = GetPassImpl ();
+		QString pass = GetPassImpl (dir);
 		if (!pass.isEmpty ())
 		{
 			*outPass = pass;
@@ -374,7 +397,7 @@ namespace Snails
 			return;
 
 		QList<QVariant> keys;
-		keys << GetID ();
+		keys << GetStoreID (dir);
 
 		QList<QVariant> passwordVar;
 		passwordVar << pass;

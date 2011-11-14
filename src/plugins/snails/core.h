@@ -20,6 +20,7 @@
 #define PLUGINS_SNAILS_CORE_H
 #include <QObject>
 #include <interfaces/structures.h>
+#include <interfaces/core/icoreproxy.h>
 #include "account.h"
 
 class QAbstractItemModel;
@@ -42,6 +43,8 @@ namespace Snails
 	{
 		Q_OBJECT
 
+		ICoreProxy_ptr Proxy_;
+
 		QStandardItemModel *AccountsModel_;
 		QList<Account_ptr> Accounts_;
 
@@ -53,8 +56,10 @@ namespace Snails
 		Core ();
 	public:
 		static Core& Instance ();
-
 		void Release ();
+
+		void SetProxy (ICoreProxy_ptr);
+		ICoreProxy_ptr GetProxy () const;
 
 		void SendEntity (const Entity&);
 

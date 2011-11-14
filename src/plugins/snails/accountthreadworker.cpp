@@ -18,6 +18,7 @@
 
 #include "accountthreadworker.h"
 #include <QMutexLocker>
+#include <QUrl>
 #include <QtDebug>
 #include <vmime/security/defaultAuthenticator.hpp>
 #include <vmime/security/cert/defaultCertificateVerifier.hpp>
@@ -135,10 +136,9 @@ namespace Snails
 		auto st = Session_->getStore (vmime::utility::url (url.toUtf8 ().constData ()));
 		st->setCertificateVerifier (vmime::create<CertVerifier> ());
 
-		qDebug () << Q_FUNC_INFO << A_->UseTLS_;
 		st->setProperty ("connection.tls", A_->UseTLS_);
 		st->setProperty ("connection.tls.required", A_->TLSRequired_);
-		st->setProperty ("options.sasl", A_->UseSASL_);
+		st->setProperty ("options.sasl", true);
 		st->setProperty ("options.sasl.fallback", A_->SASLRequired_);
 
 		return st;
@@ -146,7 +146,45 @@ namespace Snails
 
 	vmime::utility::ref<vmime::net::transport> AccountThreadWorker::MakeTransport ()
 	{
-		return Session_->getTransport (vmime::utility::url (A_->BuildOutURL ().toUtf8 ().constData ()));
+		QString url;
+
+		QMetaObject::invokeMethod (A_,
+				"buildOutURL",
+				Qt::BlockingQueuedConnection,
+				Q_ARG (QString*, &url));
+
+		QString username;
+		QString password;
+		bool setAuth = false;
+		if (A_->SMTPNeedsAuth_ &&
+				A_->OutType_ == Account::OutType::SMTP)
+		{
+			setAuth = true;
+
+			QUrl parsed = QUrl::fromEncoded (url.toUtf8 ());
+			username = parsed.userName ();
+			password = parsed.password ();
+
+			parsed.setUserName (QString ());
+			parsed.setPassword (QString ());
+			url = QString::fromUtf8 (parsed.toEncoded ());
+		}
+
+		auto trp = Session_->getTransport (vmime::utility::url (url.toUtf8 ().constData ()));
+
+		if (setAuth)
+		{
+			trp->setProperty ("options.need-authentication", true);
+			trp->setProperty ("auth.username", username.toUtf8 ().constData ());
+			trp->setProperty ("auth.password", password.toUtf8 ().constData ());
+		}
+		trp->setCertificateVerifier (vmime::create<CertVerifier> ());
+		trp->setProperty ("connection.tls", A_->UseTLS_);
+		trp->setProperty ("connection.tls.required", A_->TLSRequired_);
+		trp->setProperty ("options.sasl", A_->UseSASL_);
+		trp->setProperty ("options.sasl.fallback", A_->SASLRequired_);
+
+		return trp;
 	}
 
 	namespace
@@ -553,15 +591,29 @@ namespace Snails
 		mb.getTextPart ()->setText (vmime::create<vmime::stringContentHandler> (msg->GetBody ().toUtf8 ().constData ()));
 
 		auto vMsg = mb.construct ();
+		const auto& userAgent = QString ("LeechCraft Snails %1")
+				.arg (Core::Instance ().GetProxy ()->GetVersion ());
+		vMsg->getHeader ()->UserAgent ()->setValue (userAgent.toUtf8 ().constData ());
 
-		qDebug () << Q_FUNC_INFO
-				<< vMsg->generate ().c_str ();
+		auto pl = new ProgressListener (tr ("Sending message %1...").arg (msg->GetSubject ()));
+		pl->deleteLater ();
+		emit gotProgressListener (ProgressListener_g_ptr (pl));
 
-		/*
 		auto transport = MakeTransport ();
-		transport->connect ();
-		transport->send (vMsg);
-		*/
+		try
+		{
+			transport->connect ();
+		}
+		catch (const vmime::exceptions::authentication_error& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "authentication error:"
+					<< e.what ()
+					<< "with response"
+					<< e.response ().c_str ();
+			return;
+		}
+		transport->send (vMsg, pl);
 	}
 }
 }

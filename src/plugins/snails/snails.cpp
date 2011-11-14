@@ -42,6 +42,8 @@ namespace Snails
 		ComposeMessageTab::SetParentPlugin (this);
 		ComposeMessageTab::SetTabClassInfo (ComposeTabClass_);
 
+		Core::Instance ().SetProxy (proxy);
+
 		connect (&Core::Instance (),
 				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,
