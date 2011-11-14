@@ -58,6 +58,7 @@ namespace Laure
 		void LoadM3U (const QString&);
 	signals:
 		/** @brief This signal's emmited when the media file's chosen.
+		 * 
 		 * @param[out] location Media file location
 		 */
 		void addItem (const QString& location);
