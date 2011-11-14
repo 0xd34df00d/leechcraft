@@ -35,10 +35,10 @@ namespace Snails
 		static QObject *S_ParentPlugin_;
 		static TabClassInfo S_TabClassInfo_;
 
-
 		Ui::ComposeMessageTab Ui_;
 
 		QToolBar *Toolbar_;
+		QMenu *AccountsMenu_;
 	public:
 		static void SetParentPlugin (QObject*);
 		static void SetTabClassInfo (const TabClassInfo&);

@@ -18,6 +18,10 @@
 
 #include "composemessagetab.h"
 #include <QToolBar>
+#include <QWebFrame>
+#include <QMenu>
+#include "message.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -42,14 +46,30 @@ namespace Snails
 	{
 		Ui_.setupUi (this);
 
-		QAction *send = new QAction (tr ("Send"));
+		QAction *send = new QAction (tr ("Send"), this);
 		send->setProperty ("ActionIcon", "msgsend");
 		connect (send,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleSend ()));
-
 		Toolbar_->addAction (send);
+
+		AccountsMenu_ = new QMenu (tr ("Accounts"));
+		AccountsMenu_->menuAction ()->setProperty ("ActionIcon", "accounts");
+		QActionGroup *accsGroup = new QActionGroup (this);
+		Q_FOREACH (Account_ptr account, Core::Instance ().GetAccounts ())
+		{
+			QAction *act = new QAction (account->GetName (), this);
+			accsGroup->addAction (act);
+			act->setCheckable (true);
+			act->setChecked (true);
+			act->setProperty ("Account", QVariant::fromValue<Account_ptr> (account));
+
+			AccountsMenu_->addAction (act);
+		}
+		Toolbar_->addAction (AccountsMenu_->menuAction ());
+
+		Ui_.MsgEdit_->page ()->setContentEditable (true);
 	}
 
 	TabClassInfo ComposeMessageTab::GetTabClassInfo () const
@@ -65,6 +85,7 @@ namespace Snails
 	void ComposeMessageTab::Remove ()
 	{
 		emit removeTab (this);
+		deleteLater ();
 	}
 
 	QToolBar* ComposeMessageTab::GetToolBar () const
@@ -74,7 +95,24 @@ namespace Snails
 
 	void ComposeMessageTab::handleSend ()
 	{
+		Account_ptr account;
+		Q_FOREACH (QAction *act, AccountsMenu_->actions ())
+		{
+			if (!act->isChecked ())
+				continue;
 
+			account = act->property ("Account").value<Account_ptr> ();
+			break;
+		}
+		if (!account)
+			return;
+
+		Message_ptr message (new Message);
+		message->SetTo ({ { QString (),  Ui_.To_->text () } });
+		message->SetSubject (Ui_.Subject_->text ());
+		message->SetBody (Ui_.MsgEdit_->page ()->mainFrame ()->toPlainText ());
+
+		account->SendMessage (message);
 	}
 }
 }
