@@ -192,8 +192,8 @@ namespace Snails
 		QPair<QString, QString> Mailbox2Strings (const vmime::ref<const vmime::mailbox>& mbox)
 		{
 			return {
-						QString::fromUtf8 (mbox->getEmail ().c_str ()),
-						QString::fromUtf8 (mbox->getName ().getConvertedText (vmime::charsets::UTF_8).c_str ())
+						QString::fromUtf8 (mbox->getName ().getConvertedText (vmime::charsets::UTF_8).c_str ()),
+						QString::fromUtf8 (mbox->getEmail ().c_str ())
 					};
 		}
 	}
@@ -215,8 +215,8 @@ namespace Snails
 		{
 			auto mbox = header->From ()->getValue ().dynamicCast<const vmime::mailbox> ();
 			auto pair = Mailbox2Strings (mbox);
-			msg->SetFromEmail (pair.first);
-			msg->SetFrom (pair.second);
+			msg->SetFromEmail (pair.second);
+			msg->SetFrom (pair.first);
 		}
 		catch (const vmime::exceptions::no_such_field& nsf)
 		{
@@ -338,10 +338,9 @@ namespace Snails
 		emit gotMsgHeaders (newMessages);
 	}
 
-	void AccountThreadWorker::FetchMessagesIMAP (Account::FetchFlags fetchFlags)
+	void AccountThreadWorker::FetchMessagesIMAP (Account::FetchFlags fetchFlags,
+			vmime::ref<vmime::net::store> store)
 	{
-		auto store = MakeStore ();
-		store->connect ();
 		auto folder = store->getDefaultFolder ();
 		folder->open (vmime::net::folder::MODE_READ_WRITE);
 
@@ -424,6 +423,11 @@ namespace Snails
 			return QString::fromUtf8 (str.c_str ());
 		}
 
+		QString Stringize (const vmime::word& w)
+		{
+			return QString::fromUtf8 (w.getConvertedText (vmime::charsets::UTF_8).c_str ());
+		}
+
 		void FullifyHeaderMessage (Message_ptr msg, const vmime::ref<vmime::message>& full)
 		{
 			vmime::messageParser mp (full);
@@ -455,6 +459,26 @@ namespace Snails
 			msg->SetBody (plain);
 			msg->SetHTMLBody (html);
 		}
+	}
+
+	void AccountThreadWorker::SyncIMAPFolders (vmime::ref<vmime::net::store> store)
+	{
+		auto root = store->getRootFolder ();
+
+		QList<QStringList> paths;
+
+		auto folders = root->getFolders (true);
+		Q_FOREACH (vmime::ref<vmime::net::folder> folder, root->getFolders (true))
+		{
+			QStringList pathList;
+			const auto& path = folder->getFullPath ();
+			for (int i = 0; i < path.getSize (); ++i)
+				pathList << Stringize (path.getComponentAt (i));
+
+			paths << pathList;
+		}
+
+		emit gotFolders (paths);
 	}
 
 	QList<Message_ptr> AccountThreadWorker::FetchFullMessages (const std::vector<vmime::utility::ref<vmime::net::message>>& messages)
@@ -493,7 +517,7 @@ namespace Snails
 		return newMessages;
 	}
 
-	void AccountThreadWorker::fetchNewHeaders (Account::FetchFlags flags)
+	void AccountThreadWorker::synchronize (Account::FetchFlags flags)
 	{
 		switch (A_->InType_)
 		{
@@ -501,8 +525,13 @@ namespace Snails
 			FetchMessagesPOP3 (flags);
 			break;
 		case Account::InType::IMAP:
-			FetchMessagesIMAP (flags);
+		{
+			auto store = MakeStore ();
+			store->connect ();
+			FetchMessagesIMAP (flags, store);
+			SyncIMAPFolders (store);
 			break;
+		}
 		case Account::InType::Maildir:
 			break;
 		}
