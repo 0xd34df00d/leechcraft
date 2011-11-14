@@ -49,6 +49,7 @@ namespace Snails
 	public slots:
 		void fetchNewHeaders (Account::FetchFlags);
 		void fetchWholeMessage (Message_ptr);
+		void sendMessage (Message_ptr);
 	signals:
 		void error (const QString&);
 		void gotProgressListener (ProgressListener_g_ptr);

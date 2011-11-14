@@ -98,6 +98,19 @@ namespace Snails
 				Q_ARG (Message_ptr, msg));
 	}
 
+	void Account::SendMessage (Message_ptr msg)
+	{
+		if (msg->GetFrom ().isEmpty ())
+			msg->SetFrom (UserName_);
+		if (msg->GetFromEmail ().isEmpty ())
+			msg->SetFromEmail (UserEmail_);
+
+		QMetaObject::invokeMethod (Thread_->GetWorker (),
+				"sendMessage",
+				Qt::QueuedConnection,
+				Q_ARG (Message_ptr, msg));
+	}
+
 	QByteArray Account::Serialize () const
 	{
 		QMutexLocker l (GetMutex ());

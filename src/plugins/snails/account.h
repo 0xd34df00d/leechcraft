@@ -103,6 +103,7 @@ namespace Snails
 
 		void FetchNewHeaders (FetchFlags);
 		void FetchWholeMessage (Message_ptr);
+		void SendMessage (Message_ptr);
 
 		QByteArray Serialize () const;
 		void Deserialize (const QByteArray&);
