@@ -136,5 +136,6 @@ namespace Snails
 }
 
 Q_DECLARE_METATYPE (LeechCraft::Snails::Account::FetchFlags);
+Q_DECLARE_METATYPE (LeechCraft::Snails::Account_ptr);
 
 #endif
