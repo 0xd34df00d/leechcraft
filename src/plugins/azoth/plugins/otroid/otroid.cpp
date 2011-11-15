@@ -256,7 +256,8 @@ namespace OTRoid
 
 		QObject *entryObj = msg->ParentCLEntry ();
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
-		if (entry->GetEntryType () == ICLEntry::ETMUC)
+		if (!entry ||
+				entry->GetEntryType () == ICLEntry::ETMUC)
 			return;
 
 		IAccount *acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
