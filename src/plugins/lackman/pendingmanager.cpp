@@ -166,9 +166,7 @@ namespace LackMan
 	void PendingManager::ReinitRootItems ()
 	{
 		PendingModel_->clear ();
-		for (int i = AInstall; i < AMAX; ++i)
-			if (RootItemForAction_.contains (static_cast<Action> (i)))
-				delete RootItemForAction_ [static_cast<Action> (i)];
+		RootItemForAction_.clear ();
 
 		RootItemForAction_ [AInstall] =
 				new QStandardItem (Core::Instance ().GetProxy ()->GetIcon ("addjob"),
