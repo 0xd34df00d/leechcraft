@@ -2104,6 +2104,9 @@ namespace Azoth
 		if (proxy->IsCancelled ())
 			return;
 
+		proxy.reset (new Util::DefaultHookProxy);
+		emit hookGotMessage2 (proxy, msgObj);
+
 		if (msg->GetMessageType () != IMessage::MTMUCMessage &&
 				msg->GetMessageType () != IMessage::MTChatMessage)
 			return;

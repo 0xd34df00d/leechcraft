@@ -586,6 +586,8 @@ namespace Azoth
 				QString pack);
 		void hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message);
+		void hookGotMessage2 (LeechCraft::IHookProxy_ptr proxy,
+				QObject *message);
 		void hookIsHighlightMessage (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message);
 		void hookShouldCountUnread (LeechCraft::IHookProxy_ptr proxy,
