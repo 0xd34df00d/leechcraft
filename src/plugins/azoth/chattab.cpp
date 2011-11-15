@@ -1312,6 +1312,14 @@ namespace Azoth
 				!XmlSettingsManager::Instance ().property ("ShowJoinsLeaves").toBool ())
 			return;
 
+		if (msg->GetMessageSubType () == IMessage::MSTParticipantEndedConversation)
+		{
+			if (!XmlSettingsManager::Instance ().property ("ShowEndConversations").toBool ())
+				return;
+			else
+				msg->SetBody (tr ("Participant ended the conversation."));
+		}
+
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 		emit hookGonnaAppendMsg (proxy, msg->GetObject ());
 		if (proxy->IsCancelled ())

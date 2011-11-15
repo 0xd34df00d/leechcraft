@@ -216,6 +216,9 @@
 			<item type="checkbox" property="ShowStatusChangesEvents" default="false">
 				<label value="Show status changes" />
 			</item>
+			<item type="checkbox" property="ShowEndConversations" default="true">
+				<label value="Show when participant ends conversation" />
+			</item>
 			<item type="checkbox" property="ShowJoinsLeaves" default="true">
 				<label value="Show joins and leaves in MUCs" />
 			</item>
