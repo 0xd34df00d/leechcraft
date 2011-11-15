@@ -1317,7 +1317,8 @@ namespace Azoth
 			if (!XmlSettingsManager::Instance ().property ("ShowEndConversations").toBool ())
 				return;
 			else
-				msg->SetBody (tr ("Participant ended the conversation."));
+				msg->SetBody (tr ("%1 ended the conversation.")
+						.arg (other->GetEntryName ()));
 		}
 
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
