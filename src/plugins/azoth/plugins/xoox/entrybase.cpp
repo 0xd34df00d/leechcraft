@@ -312,6 +312,17 @@ namespace Xoox
 	void EntryBase::UpdateChatState (QXmppMessage::State state, const QString& variant)
 	{
 		emit chatPartStateChanged (static_cast<ChatPartState> (state), variant);
+
+		if (state == QXmppMessage::Gone)
+		{
+			GlooxMessage *msg = new GlooxMessage (IMessage::MTEventMessage,
+					IMessage::DIn,
+					GetJID (),
+					variant,
+					Account_->GetClientConnection ().get ());
+			msg->SetMessageSubType (IMessage::MSTParticipantEndedConversation);
+			HandleMessage (msg);
+		}
 	}
 
 	void EntryBase::SetStatus (const EntryStatus& status, const QString& variant)
@@ -362,7 +373,6 @@ namespace Xoox
 				Variant2ClientInfo_ [variant] ["priority"] = p;
 			}
 		}
-
 
 		GlooxMessage *message = 0;
 		if (GetEntryType () == ETPrivateChat)

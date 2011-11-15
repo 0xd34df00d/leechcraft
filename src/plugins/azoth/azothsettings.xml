@@ -138,6 +138,9 @@
 			<item type="checkbox" property="SendChatStates" default="true">
 				<label value="Send chat state events" />
 			</item>
+			<item type="checkbox" property="SendEndConversations" default="true">
+				<label value="Notify remote participant when you've ended conversation" />
+			</item>
 			<item type="checkbox" property="UseAltNick" default="true">
 				<label value="Use alternative nickname" />
 			</item>
@@ -215,6 +218,9 @@
 			<label value="Chat windows" />
 			<item type="checkbox" property="ShowStatusChangesEvents" default="false">
 				<label value="Show status changes" />
+			</item>
+			<item type="checkbox" property="ShowEndConversations" default="true">
+				<label value="Show when participant ends conversation" />
 			</item>
 			<item type="checkbox" property="ShowJoinsLeaves" default="true">
 				<label value="Show joins and leaves in MUCs" />

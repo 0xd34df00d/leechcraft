@@ -544,6 +544,9 @@ namespace Azoth
 	bool Core::ShouldCountUnread (const ICLEntry *entry,
 			IMessage *msg)
 	{
+		if (msg->GetObject ()->property ("Azoth/HiddenMessage"))
+			return false;
+
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 		emit hookShouldCountUnread (proxy, msg->GetObject ());
 		if (proxy->IsCancelled ())

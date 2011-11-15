@@ -1312,6 +1312,15 @@ namespace Azoth
 				!XmlSettingsManager::Instance ().property ("ShowJoinsLeaves").toBool ())
 			return;
 
+		if (msg->GetMessageSubType () == IMessage::MSTParticipantEndedConversation)
+		{
+			if (!XmlSettingsManager::Instance ().property ("ShowEndConversations").toBool ())
+				return;
+			else
+				msg->SetBody (tr ("%1 ended the conversation.")
+						.arg (other->GetEntryName ()));
+		}
+
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 		emit hookGonnaAppendMsg (proxy, msg->GetObject ());
 		if (proxy->IsCancelled ())
@@ -1582,7 +1591,10 @@ namespace Azoth
 			return;
 
 		PreviousState_ = state;
-		entry->SetChatPartState (state, Ui_.VariantBox_->currentText ());
+
+		if (state != CPSGone ||
+				XmlSettingsManager::Instance ().property ("SendEndConversations").toBool ())
+			entry->SetChatPartState (state, Ui_.VariantBox_->currentText ());
 	}
 
 	void ChatTab::prepareMessageText (const QString& text)

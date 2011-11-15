@@ -44,7 +44,6 @@
 #include "drawattentiondialog.h"
 #include "groupeditordialog.h"
 #include "shareriexdialog.h"
-#include "pgpkeyselectiondialog.h"
 #include "mucinvitedialog.h"
 #include "addcontactdialog.h"
 
