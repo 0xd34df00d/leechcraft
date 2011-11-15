@@ -1591,7 +1591,10 @@ namespace Azoth
 			return;
 
 		PreviousState_ = state;
-		entry->SetChatPartState (state, Ui_.VariantBox_->currentText ());
+
+		if (state != CPSGone ||
+				XmlSettingsManager::Instance ().property ("SendEndConversations").toBool ())
+			entry->SetChatPartState (state, Ui_.VariantBox_->currentText ());
 	}
 
 	void ChatTab::prepareMessageText (const QString& text)
