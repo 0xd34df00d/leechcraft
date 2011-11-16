@@ -19,6 +19,7 @@
 #include "deliciousaccount.h"
 #include <QDataStream>
 #include <QtDebug>
+#include <QIcon>
 #include <util/util.h>
 
 namespace LeechCraft
@@ -134,6 +135,16 @@ namespace Delicious
 		Q_FOREACH (const QVariant& var, bookmarks)
 			if (!DownloadedBookmarks_.contains (var))
 				DownloadedBookmarks_ << var;
+	}
+
+	QIcon DeliciousAccount::GetBookmarkUploadStatusIcon () const
+	{
+		return QIcon (":/plugins/poshuku/plugins/onlinebookmarks/plugins/delicious/resources/images/notuploaded.png");
+	}
+
+	QIcon DeliciousAccount::GetBookmarkNotUploadStatusIcon () const
+	{
+		return QIcon (":/plugins/poshuku/plugins/onlinebookmarks/plugins/delicious/resources/images/notuploaded.png");
 	}
 
 	QByteArray DeliciousAccount::Serialize () const

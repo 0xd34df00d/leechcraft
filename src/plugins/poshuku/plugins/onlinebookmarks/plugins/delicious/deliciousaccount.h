@@ -82,6 +82,9 @@ namespace Delicious
 		QVariantList GetBookmarksDiff (const QVariantList&);
 		void AppendDownloadedBookmarks (const QVariantList&);
 
+		virtual QIcon GetBookmarkUploadStatusIcon () const;
+		virtual QIcon GetBookmarkNotUploadStatusIcon () const;
+
 		QByteArray Serialize () const ;
 		static DeliciousAccount* Deserialize (const QByteArray&, QObject*);
 	};
