@@ -35,7 +35,6 @@ namespace ReadItLater
 	, Login_ (login)
 	, ParentService_ (parent)
 	, IsSyncing_ (false)
-	, IsQuickUpload_ (false)
 	, LastUpload_ (QDateTime::currentDateTime ())
 	, LastDownload_ (QDateTime::currentDateTime ())
 	{
@@ -82,16 +81,6 @@ namespace ReadItLater
 		IsSyncing_ = sync;
 	}
 
-	bool ReadItLaterAccount::IsQuickUpload () const
-	{
-		return IsQuickUpload_;
-	}
-
-	void ReadItLaterAccount::SetQuickUpload (bool quick)
-	{
-		IsQuickUpload_ = quick;
-	}
-
 	QDateTime ReadItLaterAccount::GetLastDownloadDateTime () const
 	{
 		return LastDownload_;
@@ -124,16 +113,6 @@ namespace ReadItLater
 		return diff;
 	}
 
-	QIcon ReadItLaterAccount::GetBookmarkUploadStatusIcon () const
-	{
-		return QIcon (":/plugins/poshuku/plugins/onlinebookmarks/plugins/readitlater/resources/images/uploaded.png");
-	}
-
-	QIcon ReadItLaterAccount::GetBookmarkNotUploadStatusIcon () const
-	{
-		return QIcon (":/plugins/poshuku/plugins/onlinebookmarks/plugins/readitlater/resources/images/notuploaded.png");
-	}
-
 	void ReadItLaterAccount::SetLastUploadDateTime(const QDateTime& date)
 	{
 		LastUpload_ = date;
@@ -149,7 +128,6 @@ namespace ReadItLater
 			ostr << version
 					<< Login_
 					<< IsSyncing_
-					<< IsQuickUpload_
 					<< LastUpload_
 					<< LastDownload_
 					<< DownloadedBookmarks_;
@@ -178,13 +156,11 @@ namespace ReadItLater
 		in >> login;
 		ReadItLaterAccount *acc = new ReadItLaterAccount (login, parent);
 		in >> acc->IsSyncing_
-			>> acc->IsQuickUpload_
 			>> acc->LastUpload_
 			>> acc->LastDownload_
 			>> acc->DownloadedBookmarks_;
 		return acc;
 	}
-
 
 }
 }

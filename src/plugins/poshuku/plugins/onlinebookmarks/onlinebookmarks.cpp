@@ -50,8 +50,6 @@ namespace OnlineBookmarks
 		SettingsDialog_->SetCustomWidget ("Accounts",
 				Core::Instance ().GetAccountsSettingsWidget ());
 		Core::Instance ().GetAccountsSettingsWidget ()->InitServices ();
-		SettingsDialog_->SetDataSource ("QuickUploadAccounts",
-				Core::Instance ().GetQuickUploadModel ());
 
 		if (XmlSettingsManager::Instance ()->Property ("DownloadGroup", false).toBool ())
 			Core::Instance ().checkDownloadPeriod ();
@@ -155,35 +153,6 @@ namespace OnlineBookmarks
 				SIGNAL (triggered ()),
 				&Core::Instance (),
 				SLOT (downloadAllBookmarks ()));
-	}
-
-	void Plugin::hookTabAdded (IHookProxy_ptr, QObject* browserWidget, QGraphicsWebView*, const QUrl&)
-	{
-		IBrowserWidget *widget = qobject_cast<IBrowserWidget*> (browserWidget);
-		if (!widget)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< browserWidget
-					<< "isn't an IBrowserWidget";
-			return;
-		}
-
-		IAddressBar *iab = qobject_cast<IAddressBar*> (widget->GetURLEdit ());
-		if (!iab)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< widget->GetURLEdit ()
-					<< "isn't an IAddressBar";
-			return;
-		}
-
-		connect (iab->GetObject (),
-				SIGNAL (actionTriggered (QAction*, const QString&)),
-				&Core::Instance (),
-				SLOT (handleQuickUploadTriggered (QAction*, const QString&)));
-
-		Q_FOREACH (QAction *action, Core::Instance ().GetQuickUploadActions ())
-			iab->AddAction (action, true);
 	}
 
 }

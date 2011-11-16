@@ -43,8 +43,6 @@ namespace Delicious
 
 		bool IsSyncing_;
 
-		bool IsQuickUpload_;
-
 		QDateTime LastUpload_;
 		QDateTime LastDownload_;
 		QVariantList DownloadedBookmarks_;
@@ -71,9 +69,6 @@ namespace Delicious
 		bool IsSyncing () const;
 		void SetSyncing (bool);
 
-		bool IsQuickUpload () const;
-		void SetQuickUpload (bool);
-
 		QDateTime GetLastDownloadDateTime () const;
 		void SetLastDownloadDateTime (const QDateTime&);
 		QDateTime GetLastUploadDateTime () const;
@@ -81,9 +76,6 @@ namespace Delicious
 
 		QVariantList GetBookmarksDiff (const QVariantList&);
 		void AppendDownloadedBookmarks (const QVariantList&);
-
-		virtual QIcon GetBookmarkUploadStatusIcon () const;
-		virtual QIcon GetBookmarkNotUploadStatusIcon () const;
 
 		QByteArray Serialize () const ;
 		static DeliciousAccount* Deserialize (const QByteArray&, QObject*);

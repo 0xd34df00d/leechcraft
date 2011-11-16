@@ -159,7 +159,6 @@ namespace OnlineBookmarks
 
 		Core::Instance ().DeletePassword (Item2Account_ [item]->GetObject ());
 		emit accountRemoved (Item2Account_ [item]->GetObject ());
-		Core::Instance ().removeAccount (Item2Account_ [item]->GetObject ());
 
 		AccountsModel_->removeRow (current.row (), parentIndex);
 		Item2Account_.remove (item);
@@ -315,8 +314,6 @@ namespace OnlineBookmarks
 			Scheduled_ = false;
 			ScheduleResize ();
 		}
-
-		Core::Instance ().AddAccounts (accounts);
 	}
 
 }

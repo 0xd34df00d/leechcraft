@@ -49,7 +49,6 @@ namespace OnlineBookmarks
 		QObject *PluginProxy_;
 		boost::shared_ptr<PluginManager> PluginManager_;
 		AccountsSettings *AccountsSettings_;
-		QStandardItemModel *QuickUploadModel_;
 
 		QObjectList ServicesPlugins_;
 		QObjectList ActiveAccounts_;
@@ -57,9 +56,6 @@ namespace OnlineBookmarks
 
 		QHash<QStandardItem*, IAccount*> Item2Account_;
 		QHash<QStandardItem*, IBookmarksService*> Item2Service_;
-
-		QList<IAccount*> QuickUploadAccounts_;
-		QHash<QAction*, IAccount*> Action2Account_;
 
 		QTimer *DownloadTimer_;
 		QTimer *UploadTimer_;
@@ -72,8 +68,6 @@ namespace OnlineBookmarks
 		void SetPluginProxy (QObject*);
 
 		AccountsSettings* GetAccountsSettingsWidget () const;
-
-		QAbstractItemModel* GetQuickUploadModel () const;
 
 		QSet<QByteArray> GetExpectedPluginClasses () const;
 		void AddPlugin (QObject*);
@@ -89,10 +83,7 @@ namespace OnlineBookmarks
 		QString GetPassword (QObject*);
 		void SavePassword (QObject*);
 
-		void AddAccounts (QObjectList);
 		QModelIndex GetServiceIndex (QObject*) const;
-
-		QList<QAction*> GetQuickUploadActions ();
 	private:
 		QObject* GetBookmarksModel () const;
 		QVariantList GetUniqueBookmarks (IAccount*,
@@ -101,18 +92,14 @@ namespace OnlineBookmarks
 	private slots:
 		void handleGotBookmarks (QObject*, const QVariantList&);
 		void handleBookmarksUploaded ();
-		void handleItemChanged (QStandardItem*);
 	public slots:
 		void syncBookmarks ();
 		void uploadBookmarks ();
 		void downloadBookmarks ();
 		void downloadAllBookmarks ();
-		void removeAccount (QObject*);
 
 		void checkDownloadPeriod ();
 		void checkUploadPeriod ();
-
-		void handleQuickUploadTriggered (QAction*, const QString&);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);

@@ -105,6 +105,12 @@ namespace Poshuku
 		button->setCursor (Qt::PointingHandCursor);
 		button->setDefaultAction (action);
 		button->setStyleSheet ("QToolButton {border: none; padding: 0px;}");
+
+		connect (button,
+				SIGNAL (triggered (QAction*)),
+				this,
+				SLOT (handleTriggeredButton (QAction*)));
+
 		button->hide ();
 
 		if (hideOnEmtpyUrl)

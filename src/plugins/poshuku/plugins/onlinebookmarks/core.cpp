@@ -38,16 +38,9 @@ namespace OnlineBookmarks
 	Core::Core ()
 	: PluginManager_ (new PluginManager)
 	, AccountsSettings_ (new AccountsSettings)
-	, QuickUploadModel_ (new QStandardItemModel)
 	, DownloadTimer_ (new QTimer (this))
 	, UploadTimer_ (new QTimer (this))
 	{
-		connect (QuickUploadModel_,
-				SIGNAL (itemChanged (QStandardItem*)),
-				this,
-				SLOT (handleItemChanged (QStandardItem*)),
-				Qt::UniqueConnection);
-
 		DownloadTimer_->setSingleShot (true);
 		connect (DownloadTimer_,
 				SIGNAL (timeout ()),
@@ -87,11 +80,6 @@ namespace OnlineBookmarks
 	AccountsSettings* Core::GetAccountsSettingsWidget () const
 	{
 		return AccountsSettings_;
-	}
-
-	QAbstractItemModel* Core::GetQuickUploadModel () const
-	{
-		return QuickUploadModel_;
 	}
 
 	QSet<QByteArray> Core::GetExpectedPluginClasses () const
@@ -237,53 +225,6 @@ namespace OnlineBookmarks
 		emit gotEntity (e);
 	}
 
-	void Core::AddAccounts (QObjectList accObjects)
-	{
-		Q_FOREACH (QObject *accObj, accObjects)
-		{
-			IAccount *account = qobject_cast<IAccount*> (accObj);
-			if (!account)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "isn't an IAccount object"
-						<< accObj;
-				continue;
-			}
-
-			IBookmarksService *ibs = qobject_cast<IBookmarksService*> (account->GetParentService ());
-			if (!ibs)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "isn't an IBookmarksService"
-						<< account->GetParentService ();
-				continue;
-			}
-
-			const QModelIndex& index = GetServiceIndex (ibs->GetObject ());
-			QStandardItem *parentItem = 0;
-			if (!index.isValid ())
-			{
-				parentItem = new QStandardItem (ibs->GetServiceIcon (), ibs->GetServiceName ());
-				parentItem->setEditable (false);
-				Item2Service_ [parentItem] = ibs;
-				QuickUploadModel_->appendRow (parentItem);
-			}
-			else
-				parentItem = QuickUploadModel_->itemFromIndex (index);
-
-			QStandardItem *item = new QStandardItem (account->GetLogin ());
-			item->setEditable (false);
-			item->setCheckable (true);
-			if (account->IsQuickUpload ())
-			{
-				item->setCheckState (Qt::Checked);
-				QuickUploadAccounts_ << account;
-			}
-			Item2Account_ [item] = account;
-			parentItem->appendRow (item);
-		}
-	}
-
 	QModelIndex Core::GetServiceIndex (QObject *object) const
 	{
 		Q_FOREACH (QStandardItem *item, Item2Service_.keys ())
@@ -291,20 +232,6 @@ namespace OnlineBookmarks
 			return item->index ();
 
 		return QModelIndex ();
-	}
-
-	QList<QAction*> Core::GetQuickUploadActions ()
-	{
-		QList<QAction*> result;
-
-		Q_FOREACH (IAccount *account, QuickUploadAccounts_)
-		{
-			QAction *action = new QAction (account->GetBookmarkNotUploadStatusIcon (), "", this);
-			Action2Account_ [action] = account;
-			result << action;
-		}
-
-		return result;
 	}
 
 	QObject* Core::GetBookmarksModel () const
@@ -400,54 +327,24 @@ namespace OnlineBookmarks
 		AccountsSettings_->UpdateDates ();
 	}
 
-	void Core::handleItemChanged (QStandardItem *item)
+	void Core::syncBookmarks ()
 	{
-		if (item->checkState () == Qt::Unchecked)
-		{
-			Item2Account_ [item]->SetQuickUpload (false);
-			QuickUploadAccounts_.removeAll (Item2Account_ [item]);
+		downloadBookmarks ();
+		uploadBookmarks ();
+	}
+
+	void Core::uploadBookmarks ()
+	{
+		QVariantList result = GetAllBookmarks ();
+		if (result.isEmpty ())
 			return;
-		}
 
-		QStandardItem *parentItem = item->parent ();
-		for (int i = 0; i < parentItem->rowCount (); ++i)
+		const int type = XmlSettingsManager::Instance ()->Property ("UploadType", 0).toInt ();
+		IAccount *account = 0;
+		IBookmarksService *ibs = 0;
+		switch (type)
 		{
-			QStandardItem *childItem = parentItem->child (i);
-			if (childItem != item &&
-					childItem->checkState () == Qt::Checked)
-			{
-				childItem->setCheckState (Qt::Unchecked);
-				if (Item2Account_.contains (childItem))
-				{
-					Item2Account_ [childItem]->SetQuickUpload (false);
-					QuickUploadAccounts_.removeAll (Item2Account_ [childItem]);
-				}
-									}
-								}
-
-								Item2Account_ [item]->SetQuickUpload (true);
-								if (!QuickUploadAccounts_.contains( Item2Account_ [item]))
-									QuickUploadAccounts_ << Item2Account_ [item];
-							}
-
-							void Core::syncBookmarks ()
-							{
-								downloadBookmarks ();
-								uploadBookmarks ();
-							}
-
-							void Core::uploadBookmarks ()
-							{
-								QVariantList result = GetAllBookmarks ();
-								if (result.isEmpty ())
-									return;
-
-								const int type = XmlSettingsManager::Instance ()->Property ("UploadType", 0).toInt ();
-								IAccount *account = 0;
-								IBookmarksService *ibs = 0;
-								switch (type)
-								{
-								case 0:
+		case 0:
 			Q_FOREACH (QObject *accObj, ActiveAccounts_)
 			{
 				account = qobject_cast<IAccount*> (accObj);
@@ -510,31 +407,6 @@ namespace OnlineBookmarks
 		}
 	}
 
-	void Core::removeAccount (QObject *accObj)
-	{
-		IAccount *account = qobject_cast<IAccount*> (accObj);
-		if (!account)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "isn't an IAccount object"
-					<< accObj;
-			return;
-		}
-
-		QStandardItem *item = Item2Account_.key (account);
-		if (item)
-		{
-			const QModelIndex& parentIndex = item->parent ()->index ();
-			QuickUploadModel_->removeRow (item->row (), parentIndex);
-			if (!QuickUploadModel_->rowCount (parentIndex))
-			{
-				Item2Service_.remove (QuickUploadModel_->itemFromIndex (parentIndex));
-				QuickUploadModel_->removeRow (parentIndex.row ());
-			}
-			Item2Account_.remove (item);
-		}
-	}
-
 	void Core::checkDownloadPeriod ()
 	{
 		uint downloadPeriod = XmlSettingsManager::Instance ()->
@@ -571,11 +443,6 @@ namespace OnlineBookmarks
 					QDateTime::currentDateTime ().toTime_t ());
 			DownloadTimer_->start (uploadPeriod);
 		}
-	}
-
-	void Core::handleQuickUploadTriggered (QAction *action, const QString& text)
-	{
-
 	}
 
 }
