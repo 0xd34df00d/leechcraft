@@ -102,6 +102,16 @@ namespace StandardStyles
 		return data;
 	}
 
+	namespace
+	{
+		QString WrapNickPart (const QString& part, const QString& color)
+		{
+			return "<span class='nickname' style='color: " + color + "'>" +
+					Qt::escape (part) +
+					"</span>";
+		}
+	}
+
 	bool StandardStyleSource::AppendMessage (QWebFrame *frame,
 			QObject *msgObj, const ChatMsgAppendInfo& info)
 	{
@@ -150,8 +160,12 @@ namespace StandardStyles
 		const QString dateBegin ("<span class='datetime'>");
 		const QString dateEnd ("</span>");
 
-		const QString& preNick = Qt::escape (azothSettings->property ("PreNickText").toString ());
-		const QString& postNick = Qt::escape (azothSettings->property ("PostNickText").toString ());
+		const QString& preNick =
+				WrapNickPart (azothSettings->property ("PreNickText").toString (),
+						nickColor);
+		const QString& postNick =
+				WrapNickPart (azothSettings->property ("PostNickText").toString (),
+						nickColor);
 
 		QString divClass;
 		QString statusIconName;
@@ -185,7 +199,9 @@ namespace StandardStyles
 				}
 				else
 				{
-					string.append (Proxy_->FormatNickname (preNick + entryName + postNick, msg->GetObject (), nickColor));
+					string.append (preNick);
+					string.append (Proxy_->FormatNickname (entryName, msg->GetObject (), nickColor));
+					string.append (postNick);
 					string.append (' ');
 					if (divClass.isEmpty ())
 						divClass = isHighlightMsg ?
@@ -238,7 +254,9 @@ namespace StandardStyles
 			}
 			else
 			{
+				string.append (preNick);
 				string.append (Proxy_->FormatNickname (preNick + nick + postNick, msg->GetObject (), nickColor));
+				string.append (postNick);
 				string.append (' ');
 			}
 			if (divClass.isEmpty ())
