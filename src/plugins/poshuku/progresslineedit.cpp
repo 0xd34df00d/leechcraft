@@ -81,12 +81,22 @@ namespace Poshuku
 		return IsCompleting_;
 	}
 
-	QToolButton* ProgressLineEdit::AddToolButton (QAction *action)
+	QObject* ProgressLineEdit::GetObject ()
 	{
-		return InsertToolButton (action);
+		return this;
 	}
 
-	QToolButton* ProgressLineEdit::InsertToolButton (QAction *action, int id)
+	int ProgressLineEdit::ButtonsCount () const
+	{
+		return VisibleButtons_.count ();
+	}
+
+	QToolButton* ProgressLineEdit::AddAction (QAction *action, bool hideOnEmtpyUrl)
+	{
+		return InsertAction (action, 1, hideOnEmtpyUrl);
+	}
+
+	QToolButton* ProgressLineEdit::InsertAction (QAction *action, int id, bool hideOnEmtpyUrl)
 	{
 		if (Action2Button_.contains (action))
 			return Action2Button_ [action];
@@ -97,16 +107,26 @@ namespace Poshuku
 		button->setStyleSheet ("QToolButton {border: none; padding: 0px;}");
 		button->hide ();
 
+		if (hideOnEmtpyUrl)
+			HideButtons_ << button;
+
 		Action2Button_ [action] = button;
+
+		if (id == -1)
+			VisibleButtons_.insert (ButtonsCount () - 1, button);
+		else
+			VisibleButtons_.insert (id, button);
 
 		const QSize& msz = minimumSizeHint ();
 		setMinimumSize (qMax (msz.width (), button->sizeHint ().height () + 2),
 				qMax (msz.height (), button->sizeHint ().height () + 2));
 
+		RepaintButtons ();
+
 		return button;
 	}
 
-	QToolButton* ProgressLineEdit::GetButtonFromAction (QAction *action)
+	QToolButton* ProgressLineEdit::GetButtonFromAction (QAction *action) const
 	{
 		if (Action2Button_.contains (action))
 			return Action2Button_ [action];
@@ -114,55 +134,25 @@ namespace Poshuku
 		return 0;
 	}
 
-	void ProgressLineEdit::RemoveToolButton (QAction *action)
+	void ProgressLineEdit::RemoveAction (QAction *action)
 	{
 		if (!Action2Button_.contains (action))
 			return;
 
 		QToolButton *btn = Action2Button_.take (action);
 		VisibleButtons_.removeAll (btn);
+		HideButtons_.removeAll (btn);
 		btn->deleteLater ();
 		RepaintButtons ();
 	}
 
-	void ProgressLineEdit::SetVisible (int id, QAction *action, bool visible)
+	void ProgressLineEdit::SetVisible (QAction *action, bool visible)
 	{
 		if (!Action2Button_.contains (action))
 			return;
 
-		QToolButton *btn = Action2Button_ [action];
-		if (!visible)
-		{
-			VisibleButtons_.removeAll (btn);
-			btn->hide ();
-		}
-		else if (!VisibleButtons_.contains (btn))
-		{
-			if (id == -1 ||
-					id > VisibleButtons_.count ())
-				id = VisibleButtons_.count () - 1;
-			else if (id < 0 &&
-					id != -1)
-				id = 0;
-
-			VisibleButtons_.insert (id, btn);
-			btn->show ();
-		}
+		Action2Button_ [action]->setVisible (visible);
 		RepaintButtons ();
-	}
-
-	void ProgressLineEdit::RepaintButtons ()
-	{
-		const int frameWidth = style ()->pixelMetric (QStyle::PM_DefaultFrameWidth);
-		int rigthBorder = 0;
-		for (int i = VisibleButtons_.count () - 1; i >= 0; --i)
-		{
-			QToolButton *btn = VisibleButtons_ [i];
-			const QSize& bmSz = btn->sizeHint ();
-			rigthBorder += bmSz.width ();
-			btn->move (rect ().right () - frameWidth - rigthBorder,
-					   (rect ().bottom () + 1 - bmSz.height ())/2);
-		}
 	}
 
 	void ProgressLineEdit::handleCompleterActivated ()
@@ -197,16 +187,41 @@ namespace Poshuku
 		{
 			VisibleButtons_.removeAll (ClearButton_);
 			ClearButton_->hide ();
+			Q_FOREACH (QToolButton *btn, HideButtons_)
+				btn->hide ();
 		}
 		else if (!VisibleButtons_.contains (ClearButton_))
 		{
 			VisibleButtons_.push_back (ClearButton_);
 			ClearButton_->show ();
+			Q_FOREACH (QToolButton *btn, HideButtons_)
+				btn->show ();
 		}
 
 		RepaintButtons ();
+
 		if (!text.isEmpty () && PreviousUrl_.isEmpty ())
 			PreviousUrl_ = text;
 	}
+
+	void ProgressLineEdit::RepaintButtons ()
+	{
+		const int frameWidth = style ()->pixelMetric (QStyle::PM_DefaultFrameWidth);
+		int rigthBorder = 0;
+		for (int i = VisibleButtons_.count () - 1; i >= 0; --i)
+		{
+			QToolButton *btn = VisibleButtons_ [i];
+			const QSize& bmSz = btn->sizeHint ();
+			rigthBorder += bmSz.width ();
+			btn->move (rect ().right () - frameWidth - rigthBorder,
+					   (rect ().bottom () + 1 - bmSz.height ())/2);
+		}
+	}
+
+	void ProgressLineEdit::handleTriggeredButton (QAction *action)
+	{
+		emit actionTriggered (action, text ());
+	}
+
 }
 }
