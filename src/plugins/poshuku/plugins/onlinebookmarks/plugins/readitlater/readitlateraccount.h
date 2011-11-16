@@ -75,6 +75,10 @@ class ReadItLaterAccount : public QObject
 
 		void AppendDownloadedBookmarks (const QVariantList&);
 		QVariantList GetBookmarksDiff (const QVariantList&);
+
+		virtual QIcon GetBookmarkUploadStatusIcon () const;
+		virtual QIcon GetBookmarkNotUploadStatusIcon () const;
+
 		QByteArray Serialize () const ;
 		static ReadItLaterAccount* Deserialize (const QByteArray&, QObject*);
 	};

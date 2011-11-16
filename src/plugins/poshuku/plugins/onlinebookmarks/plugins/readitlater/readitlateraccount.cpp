@@ -107,6 +107,13 @@ namespace ReadItLater
 		LastDownload_ = date;
 	}
 
+	void ReadItLaterAccount::AppendDownloadedBookmarks (const QVariantList& bookmarks)
+	{
+		Q_FOREACH (const QVariant& var, bookmarks)
+		if (!DownloadedBookmarks_.contains (var))
+			DownloadedBookmarks_ << var;
+	}
+
 	QVariantList ReadItLaterAccount::GetBookmarksDiff (const QVariantList& list)
 	{
 		QVariantList diff;
@@ -117,11 +124,14 @@ namespace ReadItLater
 		return diff;
 	}
 
-	void ReadItLaterAccount::AppendDownloadedBookmarks (const QVariantList& bookmarks)
+	QIcon ReadItLaterAccount::GetBookmarkUploadStatusIcon () const
 	{
-		Q_FOREACH (const QVariant& var, bookmarks)
-		if (!DownloadedBookmarks_.contains (var))
-			DownloadedBookmarks_ << var;
+		return QIcon (":/plugins/poshuku/plugins/onlinebookmarks/plugins/readitlater/resources/images/uploaded.png");
+	}
+
+	QIcon ReadItLaterAccount::GetBookmarkNotUploadStatusIcon () const
+	{
+		return QIcon (":/plugins/poshuku/plugins/onlinebookmarks/plugins/readitlater/resources/images/notuploaded.png");
 	}
 
 	void ReadItLaterAccount::SetLastUploadDateTime(const QDateTime& date)
