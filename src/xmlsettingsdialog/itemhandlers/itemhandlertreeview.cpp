@@ -66,7 +66,7 @@ namespace LeechCraft
 
 		int row = lay->rowCount ();
 		lay->addWidget (label, row, 0, Qt::AlignLeft);
-		lay->addWidget (tree, row + 1, 0);
+		lay->addWidget (tree, row + 1, 0, 1, -1);
 	}
 
 	QVariant ItemHandlerTreeView::GetValue (const QDomElement&, QVariant) const
