@@ -118,10 +118,7 @@ namespace Poshuku
 
 		Action2Button_ [action] = button;
 
-		if (id == -1)
-			VisibleButtons_.insert (ButtonsCount () - 1, button);
-		else
-			VisibleButtons_.insert (id, button);
+		VisibleButtons_.insert (id == -1 ? ButtonsCount () - 1 : id, button);
 
 		const QSize& msz = minimumSizeHint ();
 		setMinimumSize (qMax (msz.width (), button->sizeHint ().height () + 2),
@@ -213,14 +210,14 @@ namespace Poshuku
 	void ProgressLineEdit::RepaintButtons ()
 	{
 		const int frameWidth = style ()->pixelMetric (QStyle::PM_DefaultFrameWidth);
-		int rigthBorder = 0;
+		int rightBorder = 0;
 		for (int i = VisibleButtons_.count () - 1; i >= 0; --i)
 		{
 			QToolButton *btn = VisibleButtons_ [i];
 			const QSize& bmSz = btn->sizeHint ();
-			rigthBorder += bmSz.width ();
-			btn->move (rect ().right () - frameWidth - rigthBorder,
-					   (rect ().bottom () + 1 - bmSz.height ())/2);
+			rightBorder += bmSz.width ();
+			btn->move (rect ().right () - frameWidth - rightBorder,
+					   (rect ().bottom () + 1 - bmSz.height ()) / 2);
 		}
 	}
 
