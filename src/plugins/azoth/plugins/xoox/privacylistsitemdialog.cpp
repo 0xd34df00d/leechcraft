@@ -30,7 +30,7 @@ namespace Xoox
 	{
 		Ui_.setupUi (this);
 	}
-	
+
 	PrivacyListItem PrivacyListsItemDialog::GetItem () const
 	{
 		PrivacyListItem result;
@@ -39,7 +39,7 @@ namespace Xoox
 		result.SetAction (Ui_.Action_->currentIndex () == ANAllow ?
 					PrivacyListItem::AAllow :
 					PrivacyListItem::ADeny);
-		
+
 		switch (Ui_.Type_->currentIndex ())
 		{
 		case TNJID:
@@ -52,7 +52,7 @@ namespace Xoox
 			result.SetType (PrivacyListItem::TSubscription);
 			break;
 		}
-		
+
 		PrivacyListItem::StanzaTypes stanzas = PrivacyListItem::STNone;
 		if (Ui_.StanzaMessage_->checkState () == Qt::Checked)
 			stanzas |= PrivacyListItem::STMessage;
@@ -62,15 +62,15 @@ namespace Xoox
 			stanzas |= PrivacyListItem::STPresenceOut;
 		if (Ui_.StanzaIQ_->checkState () == Qt::Checked)
 			stanzas |= PrivacyListItem::STIq;
-		
+
 		if (stanzas == PrivacyListItem::STNone)
 			stanzas = PrivacyListItem::STAll;
-		
+
 		result.SetStanzaTypes (stanzas);
 
 		return result;
 	}
-	
+
 	void PrivacyListsItemDialog::SetItem (const PrivacyListItem& item)
 	{
 		Ui_.Action_->setCurrentIndex (item.GetAction () == PrivacyListItem::AAllow ?
@@ -89,10 +89,12 @@ namespace Xoox
 		case PrivacyListItem::TSubscription:
 			index = TNSubscription;
 			break;
+		case PrivacyListItem::TNone:
+			break;
 		}
 		Ui_.Type_->setCurrentIndex (index);
 		on_Type__currentIndexChanged (index);
-		
+
 		if (index == TNSubscription)
 		{
 			const int idx = Ui_.Value_->findData (item.GetValue ());
@@ -101,7 +103,7 @@ namespace Xoox
 		}
 		else
 			Ui_.Value_->setEditText (item.GetValue ());
-		
+
 		const PrivacyListItem::StanzaTypes stanzas = item.GetStanzaTypes ();
 		if (stanzas != PrivacyListItem::STAll)
 		{
@@ -115,14 +117,14 @@ namespace Xoox
 				Ui_.StanzaOutPres_->setCheckState (Qt::Checked);
 		}
 	}
-	
+
 	void PrivacyListsItemDialog::on_Type__currentIndexChanged (int type)
 	{
 		Ui_.Value_->clear ();
 		if (type == TNSubscription)
 		{
 			Ui_.Value_->setEditable (false);
-			
+
 			Ui_.Value_->addItem (tr ("Both"), "both");
 			Ui_.Value_->addItem (tr ("To"), "to");
 			Ui_.Value_->addItem (tr ("From"), "from");

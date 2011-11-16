@@ -29,17 +29,18 @@ namespace Laure
 	NowPlayingDelegate::NowPlayingDelegate (QObject *parent)
 	: QItemDelegate (parent)
 	{
-		
 	}
 	
 	void NowPlayingDelegate::paint (QPainter *painter, const QStyleOptionViewItem& option,
-				const QModelIndex& index) const
+				const QModelIndex& id) const
 	{
-		const bool played = index.data (PlayListModel::IsPlayingRole).toBool ();
+		const bool played = id.sibling (id.row (), 0)
+				.data (PlayListModel::IsPlayingRole).toBool ();
+				
 		if (played)
 			painter->fillRect (option.rect, Qt::gray);
-
-		QItemDelegate::paint (painter, option, index);
+		
+		QItemDelegate::paint (painter, option, id);
 	}
 }
 }

@@ -223,7 +223,7 @@ namespace ChatHistory
 		proxy->SetReturnValue (list);
 	}
 
-	void Plugin::hookGotMessage (LeechCraft::IHookProxy_ptr,
+	void Plugin::hookGotMessage2 (LeechCraft::IHookProxy_ptr,
 				QObject *message)
 	{
 		if (message->property ("Azoth/HiddenMessage").toBool () == true)

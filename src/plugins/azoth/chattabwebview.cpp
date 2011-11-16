@@ -30,7 +30,13 @@ namespace Azoth
 {
 	ChatTabWebView::ChatTabWebView (QWidget *parent)
 	: QWebView (parent)
+	, QuoteAct_ (0)
 	{
+	}
+
+	void ChatTabWebView::SetQuoteAction (QAction *act)
+	{
+		QuoteAct_ = act;
 	}
 
 	void ChatTabWebView::contextMenuEvent (QContextMenuEvent *e)
@@ -54,13 +60,23 @@ namespace Azoth
 		}
 
 		if (!page ()->selectedText ().isEmpty ())
+		{
 			menu->addAction (pageAction (QWebPage::Copy));
+			menu->addAction (QuoteAct_);
+			menu->addSeparator ();
+		}
 
 		if (!r.imageUrl ().isEmpty ())
 			menu->addAction (pageAction (QWebPage::CopyImageToClipboard));
 
 		if (settings ()->testAttribute (QWebSettings::DeveloperExtrasEnabled))
 			menu->addAction (pageAction (QWebPage::InspectElement));
+
+		if (menu->isEmpty ())
+		{
+			delete menu;
+			return;
+		}
 
 		menu->exec (mapToGlobal (e->pos ()));
 		if (menu)

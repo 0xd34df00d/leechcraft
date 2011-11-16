@@ -63,7 +63,7 @@ namespace Delicious
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("Sync local bookmarks with your account in Delicious");
+		return tr ("Sync local bookmarks with your Del.icio.us account.");
 	}
 
 	QIcon Plugin::GetIcon () const

@@ -647,7 +647,17 @@ namespace LeechCraft
 					dia->Add (qobject_cast<IInfo*> (plugin), qobject_cast<IEntityHandler*> (plugin));
 
 		if (!(numHandlers + numDownloaders))
-			return false;
+		{
+			if (p.Entity_.toUrl ().isValid () &&
+					(p.Parameters_ & FromUserInitiated) &&
+					!(p.Parameters_ & OnlyDownload))
+			{
+				QDesktopServices::openUrl (p.Entity_.toUrl ());
+				return true;
+			}
+			else
+				return false;
+		}
 
 		const bool bcastCandidate = !id && !pr && numHandlers;
 
@@ -747,6 +757,7 @@ namespace LeechCraft
 					.arg (string));
 			return false;
 		}
+
 		return true;
 	}
 

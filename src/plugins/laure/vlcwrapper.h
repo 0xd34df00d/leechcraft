@@ -76,11 +76,14 @@ namespace Laure
 		void prev ();
 		void setVolume (int);
 		void setPosition (float);
+		
+		void handledHasPlayed ();
+		void handleNextItemSet ();
 	private slots:
 		void nowPlaying ();
 	signals:
-		void nowPlayed (const MediaMeta&);
-		void played ();
+		void currentTrackMeta (const MediaMeta&);
+		void trackFinished ();
 		void itemPlayed (int);
 		void itemAdded (const MediaMeta&, const QString&);
 		void paused ();

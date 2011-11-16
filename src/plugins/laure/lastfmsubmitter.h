@@ -34,17 +34,37 @@ namespace LeechCraft
 {
 namespace Laure
 {
+	/** @brief The LastFMSubmitter class provides a simple interface for interacting with the last.fm scrobbling service.
+	 *  @author Minh Ngo <nlminhtl@gmail.com>
+	 */
 	class LastFMSubmitter : public QObject
 	{
 		Q_OBJECT
 		
 		boost::shared_ptr<lastfm::Audioscrobbler> Scrobbler_;
 	public:
+		/** @brief Constructs a new LastFMSubmitter with the given
+		 * ICoreProxy_ptr and parent.
+		 * 
+		 * @sa ICoreProxy_ptr
+		 */
 		LastFMSubmitter (ICoreProxy_ptr proxy, QObject *parent = 0);
 		
+		/** @brief Returns connection state of the Scrobbler.
+		 * 
+		 * @return true if it's connected, false otherwise.
+		 */
 		bool IsConnected () const;
 	public slots:
-		void nowPlaying (const MediaMeta&);
+		
+		/** @brief Send meta info about the current track to the last.fm service.
+		 * 
+		 * @sa MediaMeta
+		 */
+		void sendTrack (const MediaMeta&);
+		
+		/** @brief Submit the submission cache for the current user.
+		 */
 		void submit ();
 	private slots:
 		void status (int);

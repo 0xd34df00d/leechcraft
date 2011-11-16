@@ -55,7 +55,7 @@
     <message>
         <location filename="authenticationdialog.ui" line="13"/>
         <source>Authentication required</source>
-        <translation>Authentification nécessaire</translation>
+        <translation>Authentication nécessaire</translation>
     </message>
     <message>
         <location filename="authenticationdialog.ui" line="29"/>

@@ -64,10 +64,10 @@ namespace LeechCraft
 
 		LeftToolBar_->setSizePolicy (QSizePolicy::Minimum, QSizePolicy::Minimum);
 		RightToolBar_->setSizePolicy (QSizePolicy::Minimum, QSizePolicy::Minimum);
-		
+
 		LeftToolBar_->setMaximumHeight (25);
 		RightToolBar_->setMaximumHeight (25);
-		
+
 		QPointer<QVBoxLayout> leftToolBarLayout = new QVBoxLayout;
 		QPointer<QVBoxLayout> rightToolBarLayout = new QVBoxLayout;
 		leftToolBarLayout->addWidget (LeftToolBar_);
@@ -85,8 +85,8 @@ namespace LeechCraft
 		MainToolBarLayout_ = new QHBoxLayout;
 		MainToolBarLayout_->setSpacing (0);
 		MainToolBarLayout_->setContentsMargins (0, 0, 0, 0);
-		
-		MainToolBarLayout_->addSpacerItem (new QSpacerItem (1, 1, 
+
+		MainToolBarLayout_->addSpacerItem (new QSpacerItem (1, 1,
 				QSizePolicy::Minimum, QSizePolicy::Minimum));
 
 		MainLayout_ = new QVBoxLayout (this);
@@ -197,7 +197,7 @@ namespace LeechCraft
 
 		MainStackedWidget_->removeWidget (Widget (index));
 		MainTabBar_->removeTab (index);
-		
+
 		Widgets_.remove (index);
 		QList<int> keys = Widgets_.keys ();
 		for (QList<int>::const_iterator i = keys.begin (),
@@ -301,7 +301,7 @@ namespace LeechCraft
 	QString SeparateTabWidget::TabText (int index) const
 	{
 		return IsPinTab (index) ?
-				MainTabBar_->GetPinTabText (index) : 
+				MainTabBar_->GetPinTabText (index) :
 				MainTabBar_->tabText (index);
 	}
 
@@ -355,7 +355,7 @@ namespace LeechCraft
 			RightToolBar_->addWidget (w);
 	}
 
-	void SeparateTabWidget::AddAction2TabBarLayout (QTabBar::ButtonPosition pos, 
+	void SeparateTabWidget::AddAction2TabBarLayout (QTabBar::ButtonPosition pos,
 			QAction *action)
 	{
 		if (pos == QTabBar::LeftSide)

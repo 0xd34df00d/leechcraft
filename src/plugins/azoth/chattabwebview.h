@@ -27,8 +27,12 @@ namespace Azoth
 	class ChatTabWebView : public QWebView
 	{
 		Q_OBJECT
+
+		QAction *QuoteAct_;
 	public:
 		ChatTabWebView (QWidget* = 0);
+
+		void SetQuoteAction (QAction*);
 	protected:
 		void contextMenuEvent (QContextMenuEvent*);
 	private slots:

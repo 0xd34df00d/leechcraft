@@ -101,6 +101,9 @@
 			<item type="lineedit" property="PostNickText" default=":">
 				<label value="Post-nick text:" />
 			</item>
+			<item type="lineedit" property="PostAddressText" default=":">
+				<label value="Post-address text:" />
+			</item>
 			<item type="checkbox" property="ShowRichTextMessageBody" default="true">
 				<label value="Show rich text message body (if available)" />
 				<tooltip>Whether rich text body of the messages should be used, if available. This is a default value, and the behavior could be changed for each opened chat window.</tooltip>
@@ -134,6 +137,9 @@
 			</item>
 			<item type="checkbox" property="SendChatStates" default="true">
 				<label value="Send chat state events" />
+			</item>
+			<item type="checkbox" property="SendEndConversations" default="true">
+				<label value="Notify remote participant when you've ended conversation" />
 			</item>
 			<item type="checkbox" property="UseAltNick" default="true">
 				<label value="Use alternative nickname" />
@@ -212,6 +218,9 @@
 			<label value="Chat windows" />
 			<item type="checkbox" property="ShowStatusChangesEvents" default="false">
 				<label value="Show status changes" />
+			</item>
+			<item type="checkbox" property="ShowEndConversations" default="true">
+				<label value="Show when participant ends conversation" />
 			</item>
 			<item type="checkbox" property="ShowJoinsLeaves" default="true">
 				<label value="Show joins and leaves in MUCs" />

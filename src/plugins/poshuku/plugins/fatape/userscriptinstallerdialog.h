@@ -33,7 +33,7 @@ namespace FatApe
 	class UserScriptInstallerDialog : public QDialog
     {
 		Q_OBJECT
-		
+
 		Plugin *Plugin_;
 		QString TempScriptPath_;
 		Ui::UserScriptInstallerDialog Ui_;
@@ -49,9 +49,9 @@ namespace FatApe
 				const QUrl& scriptUrl, QWidget *parent = 0);
 		QString TempScriptPath () const;
 	private slots:
-		void scriptFetchFinished (QNetworkReply *reply);
-		void on_Install__released (); 
-		void on_ShowSource__released (); 
+		void scriptFetchFinished ();
+		void on_Install__released ();
+		void on_ShowSource__released ();
 		void on_Cancel__released ();
     };
 }

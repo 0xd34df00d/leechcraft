@@ -544,6 +544,9 @@ namespace Azoth
 	bool Core::ShouldCountUnread (const ICLEntry *entry,
 			IMessage *msg)
 	{
+		if (msg->GetObject ()->property ("Azoth/HiddenMessage").toBool ())
+			return false;
+
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 		emit hookShouldCountUnread (proxy, msg->GetObject ());
 		if (proxy->IsCancelled ())
@@ -864,16 +867,29 @@ namespace Azoth
 		if (!src)
 			return body;
 
-		const QString& img = QString ("<img src=\"%1\" title=\"%2\" />");
+		const QString& img = QString ("<img src=\"%2\" title=\"%1\" />");
+		QList<QByteArray> rawDatas;
 		Q_FOREACH (const QString& str, src->GetEmoticonStrings (pack))
 		{
 			const QString& escaped = Qt::escape (str);
 			if (!body.contains (escaped))
 				continue;
-			const QByteArray& rawData = src->GetImage (pack, str);
+
+			bool safeReplace = true;
+			Q_FOREACH (const QByteArray& rd, rawDatas)
+				if (rd.indexOf (escaped) != -1)
+				{
+					safeReplace = false;
+					break;
+				}
+			if (!safeReplace)
+				continue;
+
+			const QByteArray& rawData = src->GetImage (pack, str).toBase64 ();
+			rawDatas << rawData;
 			const QString& smileStr = img
-					.arg (QString ("data:image/png;base64," + rawData.toBase64 ()))
-					.arg (str);
+					.arg (str)
+					.arg (QString ("data:image/png;base64," + rawData));
 			body.replace (escaped, smileStr);
 		}
 
@@ -2087,6 +2103,9 @@ namespace Azoth
 		emit hookGotMessage (proxy, msgObj);
 		if (proxy->IsCancelled ())
 			return;
+
+		proxy.reset (new Util::DefaultHookProxy);
+		emit hookGotMessage2 (proxy, msgObj);
 
 		if (msg->GetMessageType () != IMessage::MTMUCMessage &&
 				msg->GetMessageType () != IMessage::MTChatMessage)

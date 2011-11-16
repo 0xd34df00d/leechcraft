@@ -102,6 +102,16 @@ namespace StandardStyles
 		return data;
 	}
 
+	namespace
+	{
+		QString WrapNickPart (const QString& part, const QString& color)
+		{
+			return "<span class='nickname' style='color: " + color + "'>" +
+					Qt::escape (part) +
+					"</span>";
+		}
+	}
+
 	bool StandardStyleSource::AppendMessage (QWebFrame *frame,
 			QObject *msgObj, const ChatMsgAppendInfo& info)
 	{
@@ -150,12 +160,12 @@ namespace StandardStyles
 		const QString dateBegin ("<span class='datetime'>");
 		const QString dateEnd ("</span>");
 
-		const QString& preNick = dateBegin +
-				azothSettings->property ("PreNickText").toString () +
-				dateEnd;
-		const QString& postNick = dateBegin +
-				azothSettings->property ("PostNickText").toString () +
-				dateEnd;
+		const QString& preNick =
+				WrapNickPart (azothSettings->property ("PreNickText").toString (),
+						nickColor);
+		const QString& postNick =
+				WrapNickPart (azothSettings->property ("PostNickText").toString (),
+						nickColor);
 
 		QString divClass;
 		QString statusIconName;
@@ -178,20 +188,19 @@ namespace StandardStyles
 			case IMessage::MTMUCMessage:
 			{
 				statusIconName = "notification_chat_receive";
-				entryName = Proxy_->FormatNickname (entryName, msg->GetObject (), nickColor);
 
 				if (body.startsWith ("/me "))
 				{
 					body = body.mid (3);
 					string.append ("* ");
-					string.append (entryName);
+					string.append (Proxy_->FormatNickname (entryName, msg->GetObject (), nickColor));
 					string.append (' ');
 					divClass = "slashmechatmsg";
 				}
 				else
 				{
 					string.append (preNick);
-					string.append (entryName);
+					string.append (Proxy_->FormatNickname (entryName, msg->GetObject (), nickColor));
 					string.append (postNick);
 					string.append (' ');
 					if (divClass.isEmpty ())
@@ -239,14 +248,14 @@ namespace StandardStyles
 			{
 				body = body.mid (3);
 				string.append ("* ");
-				string.append (nick);
+				string.append (Proxy_->FormatNickname (nick, msg->GetObject (), nickColor));
 				string.append (' ');
 				divClass = "slashmechatmsg";
 			}
 			else
 			{
 				string.append (preNick);
-				string.append (Proxy_->FormatNickname (nick, msg->GetObject (), nickColor));
+				string.append (Proxy_->FormatNickname (preNick + nick + postNick, msg->GetObject (), nickColor));
 				string.append (postNick);
 				string.append (' ');
 			}

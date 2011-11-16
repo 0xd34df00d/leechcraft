@@ -89,7 +89,7 @@ namespace ChatHistory
 				QObject *entry);
 		void hookEntryActionsRequested (LeechCraft::IHookProxy_ptr proxy,
 				QObject *entry);
-		void hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
+		void hookGotMessage2 (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message);
 	private slots:
 		void handleGotChatLogs (const QString&,

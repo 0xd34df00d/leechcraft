@@ -268,7 +268,7 @@ namespace Delicious
 				Accounts_ << account;
 				saveAccounts ();
 				emit accountAdded (QObjectList () <<  account->GetObject ());
-				msg = tr ("Authentification was successfull.");
+				msg = tr ("Authentication successfull.");
 				priority = LeechCraft::PInfo_;
 			}
 			else
@@ -276,16 +276,16 @@ namespace Delicious
 				msg = tr ("Invalid nickname or password.");
 				priority = LeechCraft::PWarning_;
 			}
-			e = Util::MakeNotification ("OnlineBookamarks",
+			e = Util::MakeNotification ("OnlineBookmarks",
 					msg,
 					priority);
 			break;
 		case OTUpload:
 			if (DeliciousApi_->ParseUploadReply (result))
 			{
-				if (Reply2Request_ [reply].Count_ == Reply2Request_[reply].Current_ + 1)
+				if (Reply2Request_ [reply].Count_ == Reply2Request_ [reply].Current_ + 1)
 				{
-					msg = tr ("Bookmark(s) was send to service Delicious succesfully.");
+					msg = tr ("Bookmarks were sent to Del.icio.us.");
 					priority = LeechCraft::PInfo_;
 					DeliciousAccount *account = GetAccountByName (Reply2Request_ [reply].Login_);
 					if (account)
@@ -295,10 +295,10 @@ namespace Delicious
 			}
 			else
 			{
-				msg = tr ("Error during sending bookmarks to Delicious.");
+				msg = tr ("Error sending bookmarks to Del.icio.us.");
 				priority = LeechCraft::PWarning_;
 			}
-			e = Util::MakeNotification ("OnlineBookamarks",
+			e = Util::MakeNotification ("OnlineBookmarks",
 					msg,
 					priority);
 			break;

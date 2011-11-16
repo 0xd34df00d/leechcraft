@@ -22,19 +22,26 @@
 #include <QWidget>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/structures.h>
-#include "ui_playlistwidget.h"
+#include "playlistview.h"
+
+class QDockWidget;
+class QGridLayout;
 
 namespace LeechCraft
 {
 namespace Laure
 {
 	class PlayListView;
+	class PlayListModel;
 	
 	class PlayListWidget : public QWidget
 	{
 		Q_OBJECT
 		
-		Ui::PlayListWidget Ui_;
+		QGridLayout *GridLayout_;
+		PlayListModel *PlayListModel_;
+		PlayListView *PlayListView_;
+		QToolBar *ActionBar_;
 	public:
 		PlayListWidget (QWidget* = 0);
 	public slots:

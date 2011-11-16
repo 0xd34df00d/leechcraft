@@ -34,8 +34,7 @@ namespace LeechCraft
 			{
 				Q_OBJECT
 			public:
-				AbstractImporter (QObject *parent = 0) : QObject (parent) {}
-				virtual ~AbstractImporter () {}
+				AbstractImporter (QObject* = 0);
 
 				virtual QStringList GetNames () const = 0;
 				virtual QList<QWizardPage*> GetWizardPages () const = 0;

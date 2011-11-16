@@ -29,6 +29,7 @@ namespace Laure
 	{
 		Q_OBJECT
 		
+		QStringList HeaderNames_;
 	public:
 		enum
 		{

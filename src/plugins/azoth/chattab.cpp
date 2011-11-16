@@ -815,9 +815,11 @@ namespace Azoth
 
 	void ChatTab::InsertNick (const QString& nicknameHtml)
 	{
+		const QString& post = XmlSettingsManager::Instance ()
+				.property ("PostAddressText").toString ();
 		QTextCursor cursor = Ui_.MsgEdit_->textCursor ();
 		cursor.insertHtml (cursor.atStart () ?
-				nicknameHtml + ": " :
+				nicknameHtml + post + " " :
 				" &nbsp;" + nicknameHtml + " ");
 		Ui_.MsgEdit_->setFocus ();
 	}
@@ -1012,6 +1014,8 @@ namespace Azoth
 				SLOT (handleQuoteSelection ()));
 		TabToolbar_->addAction (quoteSelection);
 		TabToolbar_->addSeparator ();
+
+		Ui_.View_->SetQuoteAction (quoteSelection);
 	}
 
 	void ChatTab::InitEntry()
@@ -1308,6 +1312,15 @@ namespace Azoth
 				!XmlSettingsManager::Instance ().property ("ShowJoinsLeaves").toBool ())
 			return;
 
+		if (msg->GetMessageSubType () == IMessage::MSTParticipantEndedConversation)
+		{
+			if (!XmlSettingsManager::Instance ().property ("ShowEndConversations").toBool ())
+				return;
+			else
+				msg->SetBody (tr ("%1 ended the conversation.")
+						.arg (other->GetEntryName ()));
+		}
+
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 		emit hookGonnaAppendMsg (proxy, msg->GetObject ());
 		if (proxy->IsCancelled ())
@@ -1421,11 +1434,14 @@ namespace Azoth
 				NickFirstPart_ = text.mid (pos + 1, cursorPosition - pos -1);
 		}
 
+		const QString& post = XmlSettingsManager::Instance ()
+				.property ("PostAddressText").toString ();
+
 		if (AvailableNickList_.isEmpty ())
 		{
 			Q_FOREACH (const QString& item, currentMUCParticipants)
 				if (item.startsWith (NickFirstPart_, Qt::CaseInsensitive))
-					AvailableNickList_ << item + (pos == -1 ? ": " : " ");
+					AvailableNickList_ << item + (pos == -1 ? post : "") + " ";
 
 			if (AvailableNickList_.isEmpty ())
 				return;
@@ -1440,7 +1456,7 @@ namespace Azoth
 
 			Q_FOREACH (const QString& item, currentMUCParticipants)
 				if (item.startsWith (NickFirstPart_, Qt::CaseInsensitive))
-					newAvailableNick << item + (pos == -1 ? ": " : " ");
+					newAvailableNick << item + (pos == -1 ? post : "") + " ";
 
 			if ((newAvailableNick != AvailableNickList_) && (!newAvailableNick.isEmpty ()))
 			{
@@ -1575,7 +1591,10 @@ namespace Azoth
 			return;
 
 		PreviousState_ = state;
-		entry->SetChatPartState (state, Ui_.VariantBox_->currentText ());
+
+		if (state != CPSGone ||
+				XmlSettingsManager::Instance ().property ("SendEndConversations").toBool ())
+			entry->SetChatPartState (state, Ui_.VariantBox_->currentText ());
 	}
 
 	void ChatTab::prepareMessageText (const QString& text)

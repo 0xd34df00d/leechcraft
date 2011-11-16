@@ -31,7 +31,7 @@
     <name>LeechCraft::Poshuku::OnlineBookmarks::ReadItLater::ReadItLaterService</name>
     <message>
         <location filename="readitlaterservice.cpp" line="260"/>
-        <source>Authentification has finished successfully</source>
+        <source>Authentication has finished successfully</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

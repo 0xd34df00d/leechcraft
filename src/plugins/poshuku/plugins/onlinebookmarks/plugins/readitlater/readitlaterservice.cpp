@@ -275,11 +275,11 @@ namespace ReadItLater
 				{
 				case OTAuth:
 					priority = PInfo_;
-					msg = tr ("Authentification has finished successfully");
+					msg = tr ("Authentication has finished successfully.");
 					break;
 				case OTRegister:
 					priority = PInfo_;
-					msg = tr ("Registration has finished successfully");
+					msg = tr ("Registration has finished successfully.");
 					break;
 				case OTDownload:
 					break;
@@ -307,11 +307,11 @@ namespace ReadItLater
 				}
 			break;
 		case 400:
-			msg = tr ("Invalid request.Please, report to developers.");
+			msg = tr ("Invalid request. Please report to developers.");
 			priority = PWarning_;
 			break;
 		case 401:
-			msg = tr ("Username and/or password is incorrect.");
+			msg = tr ("Incorrect username or password.");
 			priority = PWarning_;
 			break;
 		case 403:
@@ -323,7 +323,7 @@ namespace ReadItLater
 			priority = PWarning_;
 			break;
 		}
-		e = Util::MakeNotification ("OnlineBookamarks",
+		e = Util::MakeNotification ("OnlineBookmarks",
 				msg,
 				priority);
 		emit gotEntity (e);

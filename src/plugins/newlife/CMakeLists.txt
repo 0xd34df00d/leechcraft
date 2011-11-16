@@ -36,6 +36,7 @@ SET (SRCS
 	lifereaimporter.cpp
 	ktorrentimportpage.cpp
 	ktorrentimporter.cpp
+	abstractimporter.cpp
 	firefoximporter/firefoximportpage.cpp
 	firefoximporter/firefoximporter.cpp
 	firefoximporter/firefoxprofileselectpage.cpp
@@ -64,7 +65,9 @@ SET (FORMS
 SET (RESOURCES newliferesources.qrc)
 CreateTrVars ("newlife" "ar;be;de;en;fr;it;pl;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
 
-QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
+IF (NOT LC_NO_MOC)
+	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
+ENDIF (NOT LC_NO_MOC)
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
