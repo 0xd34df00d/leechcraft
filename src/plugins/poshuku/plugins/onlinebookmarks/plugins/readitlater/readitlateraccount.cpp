@@ -99,16 +99,16 @@ namespace ReadItLater
 	void ReadItLaterAccount::AppendDownloadedBookmarks (const QVariantList& bookmarks)
 	{
 		Q_FOREACH (const QVariant& var, bookmarks)
-		if (!DownloadedBookmarks_.contains (var))
-			DownloadedBookmarks_ << var;
+			if (!DownloadedBookmarks_.contains (var))
+				DownloadedBookmarks_ << var;
 	}
 
 	QVariantList ReadItLaterAccount::GetBookmarksDiff (const QVariantList& list)
 	{
 		QVariantList diff;
 		Q_FOREACH (const QVariant& var, list)
-		if (!DownloadedBookmarks_.contains (var))
-			diff << var;
+			if (!DownloadedBookmarks_.contains (var))
+				diff << var;
 
 		return diff;
 	}

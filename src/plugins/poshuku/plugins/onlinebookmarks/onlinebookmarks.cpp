@@ -23,8 +23,6 @@
 #include <QMessageBox>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
-#include <browserwidget.h>
-#include <progresslineedit.h>
 #include "xmlsettingsmanager.h"
 #include "core.h"
 #include "accountssettings.h"
