@@ -23,6 +23,8 @@
 #include <QMessageBox>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
+#include <browserwidget.h>
+#include <progresslineedit.h>
 #include "xmlsettingsmanager.h"
 #include "core.h"
 #include "accountssettings.h"
@@ -65,8 +67,6 @@ namespace OnlineBookmarks
 				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)),
 				this,
 				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)));
-
-		Core::Instance ().SetQuickUploadButtons ();
 	}
 
 	void Plugin::Release ()
@@ -155,6 +155,35 @@ namespace OnlineBookmarks
 				SIGNAL (triggered ()),
 				&Core::Instance (),
 				SLOT (downloadAllBookmarks ()));
+	}
+
+	void Plugin::hookTabAdded (IHookProxy_ptr, QObject* browserWidget, QGraphicsWebView*, const QUrl&)
+	{
+		IBrowserWidget *widget = qobject_cast<IBrowserWidget*> (browserWidget);
+		if (!widget)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< browserWidget
+					<< "isn't an IBrowserWidget";
+			return;
+		}
+
+		IAddressBar *iab = qobject_cast<IAddressBar*> (widget->GetURLEdit ());
+		if (!iab)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< widget->GetURLEdit ()
+					<< "isn't an IAddressBar";
+			return;
+		}
+
+		connect (iab->GetObject (),
+				SIGNAL (actionTriggered (QAction*, const QString&)),
+				&Core::Instance (),
+				SLOT (handleQuickUploadTriggered (QAction*, const QString&)));
+
+		Q_FOREACH (QAction *action, Core::Instance ().GetQuickUploadActions ())
+			iab->AddAction (action, true);
 	}
 
 }

@@ -26,6 +26,7 @@
 #include <interfaces/iaccount.h>
 #include <interfaces/ibookmarksservice.h>
 
+class QLineEdit;
 class QAbstractItemModel;
 class QStandardItemModel;
 class QStandardItem;
@@ -56,6 +57,9 @@ namespace OnlineBookmarks
 
 		QHash<QStandardItem*, IAccount*> Item2Account_;
 		QHash<QStandardItem*, IBookmarksService*> Item2Service_;
+
+		QList<IAccount*> QuickUploadAccounts_;
+		QHash<QAction*, IAccount*> Action2Account_;
 
 		QTimer *DownloadTimer_;
 		QTimer *UploadTimer_;
@@ -88,7 +92,7 @@ namespace OnlineBookmarks
 		void AddAccounts (QObjectList);
 		QModelIndex GetServiceIndex (QObject*) const;
 
-		void SetQuickUploadButtons ();
+		QList<QAction*> GetQuickUploadActions ();
 	private:
 		QObject* GetBookmarksModel () const;
 		QVariantList GetUniqueBookmarks (IAccount*,
@@ -107,6 +111,8 @@ namespace OnlineBookmarks
 
 		void checkDownloadPeriod ();
 		void checkUploadPeriod ();
+
+		void handleQuickUploadTriggered (QAction*, const QString&);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
