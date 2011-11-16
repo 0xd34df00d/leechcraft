@@ -187,8 +187,8 @@ namespace FatApe
 	void Plugin::hookAcceptNavigationRequest (LeechCraft::IHookProxy_ptr proxy, QWebPage *page,
 			QWebFrame *frame, QNetworkRequest request, QWebPage::NavigationType type)
 	{
-		if (!request.url ().toString ().endsWith ("user.js", Qt::CaseInsensitive) ||
-			request.url ().scheme () == "file")
+		if (!request.url ().path ().endsWith ("user.js", Qt::CaseInsensitive) ||
+				request.url ().scheme () == "file")
 			return;
 
 		UserScriptInstallerDialog installer (this,
@@ -231,8 +231,6 @@ namespace FatApe
 		items << name << description;
 		Model_->appendRow (items);
 	}
-
-
 }
 }
 }
