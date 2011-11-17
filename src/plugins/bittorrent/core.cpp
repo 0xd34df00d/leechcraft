@@ -2522,37 +2522,7 @@ namespace LeechCraft
 
 			void Core::setProxySettings ()
 			{
-				libtorrent::proxy_settings trackerProxySettings, peerProxySettings;
-				if (XmlSettingsManager::Instance ()->property ("TrackerProxyEnabled").toBool ())
-				{
-					trackerProxySettings.hostname = XmlSettingsManager::Instance ()->
-						property ("TrackerProxyAddress").toString ().toStdString ();
-					trackerProxySettings.port = XmlSettingsManager::Instance ()->
-						property ("TrackerProxyPort").toInt ();
-					QStringList auth = XmlSettingsManager::Instance ()->
-						property ("TrackerProxyAuth").toString ().split ('@');
-					if (auth.size ())
-						trackerProxySettings.username = auth.at (0).toStdString ();
-					if (auth.size () > 1)
-						trackerProxySettings.password = auth.at (1).toStdString ();
-					bool passworded = trackerProxySettings.username.size ();
-					QString pt = XmlSettingsManager::Instance ()->property ("TrackerProxyType").toString ();
-					if (pt == "http")
-						trackerProxySettings.type = passworded ?
-							libtorrent::proxy_settings::http_pw :
-							libtorrent::proxy_settings::http;
-					else if (pt == "socks4")
-						trackerProxySettings.type = libtorrent::proxy_settings::socks4;
-					else if (pt == "socks5")
-						trackerProxySettings.type = passworded ?
-							libtorrent::proxy_settings::socks5_pw :
-							libtorrent::proxy_settings::socks5;
-					else
-						trackerProxySettings.type = libtorrent::proxy_settings::none;
-				}
-				else
-					trackerProxySettings.type = libtorrent::proxy_settings::none;
-
+				libtorrent::proxy_settings peerProxySettings;
 				if (XmlSettingsManager::Instance ()->property ("PeerProxyEnabled").toBool ())
 				{
 					peerProxySettings.hostname = XmlSettingsManager::Instance ()->
@@ -2583,9 +2553,7 @@ namespace LeechCraft
 				else
 					peerProxySettings.type = libtorrent::proxy_settings::none;
 
-				Session_->set_peer_proxy (peerProxySettings);
-				Session_->set_web_seed_proxy (peerProxySettings);
-				Session_->set_tracker_proxy (trackerProxySettings);
+				Session_->set_proxy (peerProxySettings);
 			}
 
 			void Core::setGeneralSettings ()
