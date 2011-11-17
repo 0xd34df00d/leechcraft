@@ -24,7 +24,6 @@
 #include <interfaces/iproxyobject.h>
 #include <interfaces/iserviceplugin.h>
 #include <util/util.h>
-#include <progresslineedit.h>
 #include "accountssettings.h"
 #include "pluginmanager.h"
 #include "xmlsettingsmanager.h"

@@ -21,7 +21,7 @@
 #include <boost/shared_ptr.hpp>
 #include <QKeyEvent>
 #include <QLineEdit>
-#include <interfaces/iaddressbar.h>
+#include "interfaces/iaddressbar.h"
 
 class QModelIndex;
 class QToolBar;
@@ -49,8 +49,8 @@ namespace Poshuku
 		ProgressLineEdit (QWidget* = 0);
 		virtual ~ProgressLineEdit ();
 		bool IsCompleting () const;
-		QObject* GetObject();
-		int ButtonsCount() const;
+		QObject* GetObject ();
+		int ButtonsCount () const;
 		QToolButton* AddAction (QAction*, bool = false);
 		QToolButton* InsertAction (QAction*, int pos = -1, bool = false);
 		QToolButton* GetButtonFromAction (QAction*) const;
