@@ -43,7 +43,9 @@ namespace Laure
 		
 		/** @brief Returns the media URL.
 		 * 
-		 * @return QString with an URL.
+		 * @return string with an URL.
+		 * 
+		 * @sa IsUrlValid()
 		 */
 		QString GetUrl () const;
 		

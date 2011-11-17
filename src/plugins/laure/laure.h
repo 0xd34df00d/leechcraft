@@ -34,7 +34,7 @@ namespace Laure
 	class LaureWidget;
 	class LastFMSubmitter;
 
-	/** @brief Main plugin instance class
+	/** @brief Main plugin instance class.
 	 * 
 	 *  @author Minh Ngo <nlminhtl@gmail.com>
 	 */
@@ -76,7 +76,7 @@ namespace Laure
 		void removeTab (QWidget*);
 		void changeTabName (QWidget*, const QString&);
 		void changeTabIcon (QWidget*, const QIcon&);
-		//void changeTooltip (QWidget*, QWidget*);
+		void changeTooltip (QWidget*, QWidget*);
 		void statusBarChanged (QWidget*, const QString&);
 		void raiseTab (QWidget*);
 		void gotEntity (const Entity&);

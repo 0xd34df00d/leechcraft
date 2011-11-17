@@ -63,7 +63,7 @@ namespace Laure
 		QToolBar* GetToolBar () const;
 	
 	protected:
-		void keyPressEvent (QKeyEvent *);
+		void keyPressEvent (QKeyEvent*);
 	private:
 		void InitCommandFrame ();
 		void InitToolBar ();
@@ -73,23 +73,23 @@ namespace Laure
 		 */
 		void needToClose ();
 		
-		/** @brief This signal's emmited when the PlayPauseAction
+		/** @brief This signal's emited when the PlayPauseAction
 		 * is clicked.
 		 */
 		void playPause ();
 		
-		/** @brief This signal's emmited for sending media meta info
+		/** @brief This signal's emited for sending media meta info
 		 * to the desired destination.
 		 * 
 		 * @param[out] mediameta media meta info
 		 */
 		void currentTrackMeta (const MediaMeta&);
 		
-		/** @brief This signal's emmited when the current track's finished.
+		/** @brief This signal's emited when the current track's finished.
 		 */
 		void trackFinished ();
 		
-		/** @brief This signal's emmited when the media item's added to
+		/** @brief This signal's emited when the media item's added to
 		 * the playlist.
 		 *
 		 * @param[out] location media file location

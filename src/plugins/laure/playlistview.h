@@ -80,7 +80,7 @@ namespace Laure
 	private slots:
 		void handleDoubleClicked (const QModelIndex&);
 	signals:
-		/** @brief This signal's emmited when the item index's removed.
+		/** @brief This signal's emited when the item index's removed.
 		 * 
 		 * @param[out] index Item index
 		 */
