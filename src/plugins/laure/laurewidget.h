@@ -89,7 +89,7 @@ namespace Laure
 		 */
 		void trackFinished ();
 		
-		/** @brief This signal's emited when the media item's added to
+		/** @brief This signal's emited when the media item needs to be added to
 		 * the playlist.
 		 *
 		 * @param[out] location media file location

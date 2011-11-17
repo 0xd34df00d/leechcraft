@@ -19,7 +19,6 @@
 
 #ifndef PLUGINS_LAURE_PLAYBACKMODEMENU_H
 #define PLUGINS_LAURE_PLAYBACKMODEMENU_H
-
 #include <QMenu>
 #include "vlcwrapper.h"
 
@@ -42,8 +41,6 @@ namespace Laure
 		PlaybackModeMenu (QWidget* = 0);
 		
 		/** @brief Returns the playback mode.
-		 * 
-		 * @sa PlaybackMode
 		 */
 		PlaybackMode GetPlaybackMode () const;
 	private slots:
@@ -54,8 +51,6 @@ namespace Laure
 		/** @brief This signal's emited when a playback mode's chosen.
 		 * 
 		 * @param[out] mode playback mode
-		 * 
-		 * @sa PlaybackMode
 		 */
 		void playbackModeChanged (PlaybackMode);
 	};

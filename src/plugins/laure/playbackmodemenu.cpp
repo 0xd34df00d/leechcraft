@@ -24,7 +24,7 @@ namespace LeechCraft
 {
 namespace Laure
 {
-	PlaybackModeMenu::PlaybackModeMenu (QWidget * parent)
+	PlaybackModeMenu::PlaybackModeMenu (QWidget *parent)
 	: QMenu (parent)
 	, PlaybackMode_ (PlaybackModeDefault)
 	{
