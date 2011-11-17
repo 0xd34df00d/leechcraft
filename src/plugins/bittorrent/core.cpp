@@ -2780,7 +2780,7 @@ namespace LeechCraft
 
 			void Core::setLoggingSettings ()
 			{
-				int mask = 0;
+				boost::uint32_t mask = 0;
 				if (XmlSettingsManager::Instance ()->property ("PerformanceWarning").toBool ())
 					mask |= libtorrent::alert::performance_warning;
 				if (XmlSettingsManager::Instance ()->property ("NotificationError").toBool ())
