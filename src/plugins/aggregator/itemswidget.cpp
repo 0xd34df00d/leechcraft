@@ -1204,6 +1204,7 @@ namespace Aggregator
 					link = item->Link_;
 			}
 
+			Impl_->Ui_.ItemView_->SetHtml (QString (), QUrl ());
 			Impl_->Ui_.ItemView_->SetHtml (preHtml + html + "</body></html>", link);
 
 			const QModelIndex& sourceIndex =
