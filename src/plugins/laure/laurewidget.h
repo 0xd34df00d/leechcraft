@@ -56,56 +56,10 @@ namespace Laure
 		 */
 		LaureWidget (QWidget *parent = 0, Qt::WindowFlags f = 0);
 		
-		/** @brief This method sets the pointer to the Laure plugin instance object
-		 * that is later returned by the ITabWidget::GetParentPlugin().
-		 * 
-		 * @sa ITabWidget::GetParentPlugin()
-		 */
 		static void SetParentMultiTabs (QObject*);
-		
-		/** @brief Returns the description of the tab class of this tab.
-		 * 
-		 * The entry must be the same as the one with the same TabClass_
-		 * returned from the IHaveTabs::GetTabClasses().
-		 * 
-		 * @return The tab class description.
-		 * 
-		 * @sa IHavetabs::GetTabClasses()
-		 */
 		TabClassInfo GetTabClassInfo () const;
-		
-		/** @brief Returns the pointer to the plugin this tab belongs to.
-		 * 
-		 * The returned object must implement IHaveTabs and must be the one
-		 * that called IHaveTabs::addNewTab() with this tab as the
-		 * parameter.
-		 * 
-		 * @return The pointer to the plugin that this tab belongs to.
-		 */
 		QObject* ParentMultiTabs ();
-		
-		/** @brief Requests to remove the tab.
-		 * 
-		 * This method is called by LeechCraft Core (or other plugins) when
-		 * this tab should be closed, for example, when user clicked on the
-		 * 'x' in the tab bar. The tab may ask the user if he really wants
-		 * to close the tab, for example. The tab is free to ignore the
-		 * close request (in this case nothing should be done at all) or
-		 * accept it by emitting IHavetabs::removeTab() signal, passing this
-		 * tab widget as its parameter.
-		 */
 		void Remove ();
-		
-		/** @brief Requests tab's toolbar.
-		 * 
-		 * This method is called to obtain the tab toolbar. In current
-		 * implementation, it would be shown on top of the LeechCraft's main
-		 * window.
-		 * 
-		 * If the tab has no toolbar, 0 should be returned.
-		 * 
-		 * @return The tab's toolbar, or 0 if there is no toolbar.
-		 */
 		QToolBar* GetToolBar () const;
 	
 	protected:
@@ -142,53 +96,7 @@ namespace Laure
 		 */
 		void addItem (const QString&);
 		
-		/** @brief This signal is emitted by plugin to notify the Core and
-		 * other plugins about an entity.
-		 *
-		 * In this case, the plugin doesn't care what would happen next to
-		 * the entity after the announcement and whether it would be catched
-		 * by any other plugin at all. This is the opposite to the semantics
-		 * of delegateEntity().
-		 *
-		 * This signal is typically emitted, for example, when a plugin has
-		 * just finished downloading something and wants to notify other
-		 * plugins about newly created files.
-		 *
-		 * This signal is asynchronous: the handling happends after the
-		 * control gets back to the event loop.
-		 *
-		 * @note This function is expected to be a signal in subclasses.
-		 *
-		 * @param[out] entity The entity.
-		 */
 		void gotEntity (const Entity&);
-		
-		/** @brief This signal is emitted by plugin to delegate the entity
-		 * to an another plugin.
-		 *
-		 * In this case, the plugin actually cares whether the entity would
-		 * be handled. This signal is typically used, for example, to
-		 * delegate a download request.
-		 *
-		 * id and provider are used in download delegation requests. If
-		 * these parameters are not NULL and the entity is handled, they are
-		 * set to the task ID returned by the corresponding IDownload
-		 * instance and the main plugin instance of the handling plugin,
-		 * respectively. Thus, setting the id to a non-NULL value means that
-		 * only downloading may occur as result but no handling.
-		 *
-		 * Nevertheless, if you need to enable entity handlers to handle
-		 * your request as well, you may leave the id parameter as NULL and
-		 * just set the provider to a non-NULL value.
-		 *
-		 * @note This function is expected to be a signal in subclasses.
-		 *
-		 * @param[out] entity The entity to delegate.
-		 * @param[in] id The pointer to the variable that would contain the
-		 * task ID of this delegate request, or NULL.
-		 * @param[in] provider The pointer to the main plugin instance of
-		 * the plugin that handles this delegate request, or NULL.
-		 */
 		void delegateEntity (const Entity&, int*, QObject**);
 	public slots:
 		/** @brief This handle's called for adding media files to the

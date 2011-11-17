@@ -26,8 +26,7 @@ namespace LeechCraft
 {
 namespace Laure
 {
-	/** @brief The ChooseURLDialog class provides a simple dialog
-	 * for choosing media contents by links.
+	/** @brief The class provides a simple dialog for entering links to media content.
 	 * 
 	 *  @author Minh Ngo <nlminhtl@gmail.com>
 	 */
@@ -44,12 +43,11 @@ namespace Laure
 		
 		/** @brief Returns the media URL.
 		 * 
-		 * @returns QString with an URL.
+		 * @return QString with an URL.
 		 */
 		QString GetUrl () const;
 		
-		/** @brief This function's used to verify the string returned
-		 * by GetURL.
+		/** @brief Verifies the string returned by GetUrl ().
 		 *
 		 * @return true if the string is valid, false otherwise.
 		 * 
