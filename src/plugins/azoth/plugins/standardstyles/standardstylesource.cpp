@@ -255,7 +255,7 @@ namespace StandardStyles
 			else
 			{
 				string.append (preNick);
-				string.append (Proxy_->FormatNickname (preNick + nick + postNick, msg->GetObject (), nickColor));
+				string.append (Proxy_->FormatNickname (nick, msg->GetObject (), nickColor));
 				string.append (postNick);
 				string.append (' ');
 			}
