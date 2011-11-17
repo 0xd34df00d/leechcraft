@@ -22,26 +22,41 @@
 #include <QFileDialog>
 #include <QDockWidget>
 #include <QTextStream>
+#include <QStandardItemModel>
 #include <vlc/vlc.h>
 #include <util/util.h>
 #include "chooseurldialog.h"
 #include "playlistaddmenu.h"
-#include "playlistmodel.h"
 #include "playbackmodemenu.h"
 
 namespace LeechCraft
 {
 namespace Laure
 {
+	const int PlayListColumnCount = 6;
+	
 	PlayListWidget::PlayListWidget (QWidget *parent)
 	: QWidget (parent)
 	, GridLayout_ (new QGridLayout (this))
-	, PlayListModel_ (new PlayListModel (this))
+	, PlayListModel_ (new QStandardItemModel (this))
 	, PlayListView_ (new PlayListView (PlayListModel_, this))
 	, ActionBar_ (new QToolBar (this))
 	{
 		setLayout (GridLayout_);
 		setVisible (false);
+		
+		PlayListModel_->setColumnCount (PlayListColumnCount);
+		
+		QStringList headers;
+		
+		headers << tr ("Artist")
+				<< tr ("Title")
+				<< tr ("Album")
+				<< tr ("Genre")
+				<< tr ("Date");
+		for (int i = 1; i < PlayListColumnCount; ++i)
+			PlayListModel_->setHeaderData (i, Qt::Horizontal,
+					headers [i - 1]);
 		
 		GridLayout_->addWidget (PlayListView_, 0, 0);
 		
@@ -103,7 +118,7 @@ namespace Laure
 	void PlayListWidget::handleItemPlayed (int row)
 	{
 		PlayListView_->selectRow (row);
-		PlayListView_->Play (row);
+		PlayListView_->MarkPlayingItem (row);
 	}
 	
 	void PlayListWidget::handleItemAdded (const MediaMeta& meta,

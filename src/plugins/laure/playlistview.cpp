@@ -20,16 +20,16 @@
 #include "playlistview.h"
 #include <QKeyEvent>
 #include <QHeaderView>
+#include <QStandardItemModel>
 #include <QMenu>
 #include "nowplayingdelegate.h"
 #include "xmlsettingsmanager.h"
-#include "playlistmodel.h"
 
 namespace LeechCraft
 {
 namespace Laure
 {
-	PlayListView::PlayListView (PlayListModel *model, QWidget *parent)
+	PlayListView::PlayListView (QStandardItemModel *model, QWidget *parent)
 	: QTreeView (parent)
 	, PlayListModel_ (model)
 	, CurrentItem_ (-1)
@@ -71,16 +71,21 @@ namespace Laure
 		list << new QStandardItem (item.Album_);
 		list << new QStandardItem (item.Genre_);
 		list << new QStandardItem (item.Date_);
+		
+		Q_FOREACH (QStandardItem *itemList, list)
+			itemList->setFlags (Qt::ItemIsSelectable | Qt::ItemIsEnabled
+					| Qt::ItemIsDropEnabled);
+			
 		PlayListModel_->appendRow (list);
 	}
 	
-	void PlayListView::Play (int row)
+	void PlayListView::MarkPlayingItem (int row)
 	{
 		QStandardItem *it = PlayListModel_->item (CurrentItem_);
 		if (it)
-			it->setData (false, PlayListModel::IsPlayingRole);
+			it->setData (false, Roles::IsPlayingRole);
 		it = PlayListModel_->item (row);
-		it->setData (true, PlayListModel::IsPlayingRole);
+		it->setData (true, Roles::IsPlayingRole);
 		CurrentItem_ = row;
 	}
 

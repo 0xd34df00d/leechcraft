@@ -15,6 +15,8 @@ IF (NOT QT_USE_FILE)
 	FIND_PACKAGE (LeechCraft REQUIRED)
 ENDIF (NOT QT_USE_FILE)
 
+SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+
 SET (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 OPTION (TESTS_LAURE "Enable Laure tests" OFF)
@@ -58,7 +60,6 @@ SET (SRCS
 	separateplayerwidget.cpp
 	playlistaddmenu.cpp
 	lastfmsubmitter.cpp
-	playlistmodel.cpp
 	playlistview.cpp
 	xmlsettingsmanager.cpp
 	playlistwidget.cpp
@@ -76,7 +77,6 @@ SET (HEADERS
 	separateplayerwidget.h
 	playlistaddmenu.h
 	lastfmsubmitter.h
-	playlistmodel.h
 	playlistview.h
 	xmlsettingsmanager.h
 	playlistwidget.h

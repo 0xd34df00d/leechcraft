@@ -24,12 +24,16 @@
 #include "vlcwrapper.h"
 
 class QKeyEvent;
+class QStandardItemModel;
 
 namespace LeechCraft
 {
 namespace Laure
 {
-	class PlayListModel;
+	enum Roles
+	{
+		IsPlayingRole = Qt::UserRole + 1
+	};
 	
 	/** @brief Provides a model/view implementation of a playlist view.
 	 * 
@@ -39,17 +43,15 @@ namespace Laure
 	{
 		Q_OBJECT
 		
-		PlayListModel *PlayListModel_;
+		QStandardItemModel *PlayListModel_;
 		int CurrentItem_;
 	public:
 		/** @brief Constructs a new PlayListView class
 		 * with the given model and parent.
 		 * 
 		 * @param[in] model Playlist model
-		 * 
-		 * @sa PlayListModel
 		 */
-		PlayListView (PlayListModel *model, QWidget* = 0);
+		PlayListView (QStandardItemModel *model, QWidget* = 0);
 		
 		/** @brief This method adds the item into the playlist.
 		 * 
@@ -64,7 +66,7 @@ namespace Laure
 		 * 
 		 * @param[in] row  Item index
 		 */
-		void Play (int row);
+		void MarkPlayingItem (int row);
 	protected:
 		void keyPressEvent (QKeyEvent*);
 	public slots:

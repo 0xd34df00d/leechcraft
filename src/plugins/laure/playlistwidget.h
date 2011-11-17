@@ -26,13 +26,13 @@
 
 class QDockWidget;
 class QGridLayout;
+class QStandardItemModel;
 
 namespace LeechCraft
 {
 namespace Laure
 {
 	class PlayListView;
-	class PlayListModel;
 	
 	/** @brief Provides a playlist widget with control tool buttons.
 	 * 
@@ -43,7 +43,7 @@ namespace Laure
 		Q_OBJECT
 		
 		QGridLayout *GridLayout_;
-		PlayListModel *PlayListModel_;
+		QStandardItemModel *PlayListModel_;
 		PlayListView *PlayListView_;
 		QToolBar *ActionBar_;
 	public:
