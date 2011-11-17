@@ -85,7 +85,7 @@ namespace Snails
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		return QIcon (":/resources/images/snails.svg");
 	}
 
 	TabClasses_t Plugin::GetTabClasses () const
