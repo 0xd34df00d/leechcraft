@@ -212,53 +212,7 @@ namespace Laure
 		 */
 		void paused ();
 		
-		/** @brief This signal is emitted by plugin to notify the Core and
-		 * other plugins about an entity.
-		 *
-		 * In this case, the plugin doesn't care what would happen next to
-		 * the entity after the announcement and whether it would be catched
-		 * by any other plugin at all. This is the opposite to the semantics
-		 * of delegateEntity().
-		 *
-		 * This signal is typically emitted, for example, when a plugin has
-		 * just finished downloading something and wants to notify other
-		 * plugins about newly created files.
-		 *
-		 * This signal is asynchronous: the handling happends after the
-		 * control gets back to the event loop.
-		 *
-		 * @note This function is expected to be a signal in subclasses.
-		 *
-		 * @param[out] entity The entity.
-		 */
 		void gotEntity (const Entity&);
-		
-		/** @brief This signal is emitted by plugin to delegate the entity
-		 * to an another plugin.
-		 *
-		 * In this case, the plugin actually cares whether the entity would
-		 * be handled. This signal is typically used, for example, to
-		 * delegate a download request.
-		 *
-		 * id and provider are used in download delegation requests. If
-		 * these parameters are not NULL and the entity is handled, they are
-		 * set to the task ID returned by the corresponding IDownload
-		 * instance and the main plugin instance of the handling plugin,
-		 * respectively. Thus, setting the id to a non-NULL value means that
-		 * only downloading may occur as result but no handling.
-		 *
-		 * Nevertheless, if you need to enable entity handlers to handle
-		 * your request as well, you may leave the id parameter as NULL and
-		 * just set the provider to a non-NULL value.
-		 *
-		 * @note This function is expected to be a signal in subclasses.
-		 *
-		 * @param[out] entity The entity to delegate.
-		 * @param[in] id The pointer to the variable that would contain the
-		 * task ID of this delegate request, or NULL.
-		 * @param[in] provider The pointer to the main plugin instance of
-		 * the plugin that handles this delegate request, or NULL.
-		 */
 		void delegateEntity (const Entity&, int*, QObject**);
 	};
 }
