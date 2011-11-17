@@ -115,24 +115,24 @@ namespace Xoox
 		"weak",
 		"worried"
 	};
-	
+
 	QString UserMood::GetNodeString ()
 	{
 		return NsMoodNode;
 	}
-	
+
 	QXmppElement UserMood::ToXML () const
 	{
 		QXmppElement mood;
 		mood.setTagName ("mood");
 		mood.setAttribute ("xmlns", NsMoodNode);
-		
+
 		if (Mood_ != MoodEmpty)
 		{
 			QXmppElement elem;
 			elem.setTagName (MoodStr [Mood_]);
 			mood.appendChild (elem);
-			
+
 			if (!Text_.isEmpty ())
 			{
 				QXmppElement text;
@@ -147,16 +147,16 @@ namespace Xoox
 		result.appendChild (mood);
 		return result;
 	}
-	
+
 	void UserMood::Parse (const QDomElement& elem)
 	{
 		Mood_ = MoodEmpty;
 		Text_.clear ();
-		
+
 		QDomElement moodElem = elem.firstChildElement ("mood");
 		if (moodElem.namespaceURI () != NsMoodNode)
 			return;
-		
+
 		QDomElement mood = moodElem.firstChildElement ();
 		while (!mood.isNull ())
 		{
@@ -169,36 +169,42 @@ namespace Xoox
 			mood = mood.nextSiblingElement ();
 		}
 	}
-	
+
 	QString UserMood::Node () const
 	{
 		return GetNodeString ();
 	}
-	
+
 	PEPEventBase* UserMood::Clone () const
 	{
 		return new UserMood (*this);
 	}
-	
+
 	UserMood::Mood UserMood::GetMood () const
 	{
 		return Mood_;
 	}
-	
+
 	void UserMood::SetMood (UserMood::Mood mood)
 	{
 		Mood_ = mood;
 	}
-	
+
 	QString UserMood::GetMoodStr () const
 	{
 		return Mood_ == MoodEmpty ?
 				QString () :
 				MoodStr [Mood_];
 	}
-	
+
 	void UserMood::SetMoodStr (const QString& str)
 	{
+		if (str.isEmpty ())
+		{
+			Mood_ = MoodEmpty;
+			return;
+		}
+
 		for (int m = MoodEmpty + 1; m <= Worried; ++m)
 			if (MoodStr [m] == str)
 			{
@@ -206,12 +212,12 @@ namespace Xoox
 				break;
 			}
 	}
-	
+
 	QString UserMood::GetText () const
 	{
 		return Text_;
 	}
-	
+
 	void UserMood::SetText (const QString& text)
 	{
 		Text_ = text;
