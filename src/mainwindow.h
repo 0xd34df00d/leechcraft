@@ -101,6 +101,7 @@ namespace LeechCraft
 	protected:
 		virtual void closeEvent (QCloseEvent*);
 		virtual void keyPressEvent (QKeyEvent*);
+		virtual void keyReleaseEvent (QKeyEvent*);
 	private:
 		void InitializeInterface ();
 		void SetStatusBar ();

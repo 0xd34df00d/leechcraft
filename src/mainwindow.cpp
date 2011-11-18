@@ -869,21 +869,24 @@ void LeechCraft::MainWindow::ShowMenuAndBar (bool show)
 	Ui_.ActionFullscreenMode_->setChecked (!show);
 }
 
-void LeechCraft::MainWindow::keyPressEvent(QKeyEvent* e)
+void LeechCraft::MainWindow::keyPressEvent (QKeyEvent *e)
+{
+	int index = (e->key () & ~Qt::CTRL) - Qt::Key_0;
+	if (index == 0)
+		index = 10;
+	--index;
+	if (index >= 0 && index < std::min (10, Ui_.MainTabWidget_->WidgetCount ()))
+		Ui_.MainTabWidget_->setCurrentIndex (index);
+}
+
+void LeechCraft::MainWindow::keyReleaseEvent (QKeyEvent *e)
 {
 	if (e->key () == Qt::Key_Alt &&
-			XmlSettingsManager::Instance ()->property ("ToolBarVisibilityManipulation").toBool ())
-	{
-		on_ActionShowToolBar__triggered (!IsToolBarVisible_);
-		Ui_.ActionShowToolBar_->setChecked (IsToolBarVisible_);
-	}
-	else
-	{
-		int index = (e->key () & ~Qt::CTRL) - Qt::Key_0;
-		if (index == 0)
-			index = 10;
-		--index;
-		if (index >= 0 && index < std::min (10, Ui_.MainTabWidget_->WidgetCount ()))
-			Ui_.MainTabWidget_->setCurrentIndex (index);
-	}
+		XmlSettingsManager::Instance ()->property ("ToolBarVisibilityManipulation").toBool ())
+		{
+			on_ActionShowToolBar__triggered (!IsToolBarVisible_);
+			Ui_.ActionShowToolBar_->setChecked (IsToolBarVisible_);
+		}
 }
+
+
