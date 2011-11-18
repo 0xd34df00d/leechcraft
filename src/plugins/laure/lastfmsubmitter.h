@@ -100,6 +100,8 @@ namespace Laure
 		void getSessionKey ();
 	signals:
 		/** @brief This signal is emitted to show status in an appropriate manner.
+		 * 
+		 * See https://github.com/mxcl/liblastfm/blob/master/src/scrobble/Audioscrobbler.h
 		 */
 		void status (int code);
 	};
