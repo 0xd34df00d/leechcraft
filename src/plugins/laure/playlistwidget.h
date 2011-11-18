@@ -82,23 +82,23 @@ namespace Laure
 		 */
 		void itemAddedRequest (const QString& location);
 		
-		/** @brief This signal's emmited when the item index's removed.
+		/** @brief This signal is emmited when the item index's removed.
 		 * 
 		 * @param[out] index Item index.
 		 */
-		void itemRemoved (int);
+		void itemRemoved (int index);
 		
 		/** @brief This signal notifies that the given item needs to be played.
 		 * 
 		 * @param[out] index The index of the item to play.
 		 */
-		void playItem (int);
+		void playItem (int index);
 		
 
 		void gotEntity (const Entity&);
 		void delegateEntity (const Entity&, int*, QObject**);
 		
-		/** @brief This signal's emmited when the playback mode is changed.
+		/** @brief This signal is emmited when the playback mode is changed.
 		 * 
 		 * @param[out] mode New playback mode.
 		 * 

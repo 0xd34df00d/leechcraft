@@ -34,7 +34,7 @@ namespace Laure
 				const QModelIndex& id) const
 	{
 		const bool played = id.sibling (id.row (), 0)
-				.data (Roles::IsPlayingRole).toBool ();
+				.data (IsPlayingRole).toBool ();
 				
 		if (played)
 			painter->fillRect (option.rect, Qt::gray);

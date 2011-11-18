@@ -34,7 +34,9 @@ namespace LeechCraft
 {
 namespace Laure
 {
-	/** @brief The LastFMSubmitter class provides a simple interface for interacting with the last.fm scrobbling service.
+	/** @brief The LastFMSubmitter class provides a simple interface for
+	 * interacting with the last.fm scrobbling service.
+	 * 
 	 *  @author Minh Ngo <nlminhtl@gmail.com>
 	 */
 	class LastFMSubmitter : public QObject
@@ -52,7 +54,7 @@ namespace Laure
 		
 		/** @brief Returns connection state of the Scrobbler.
 		 * 
-		 * @return true if it's connected, false otherwise.
+		 * @return True if it's connected, false otherwise.
 		 */
 		bool IsConnected () const;
 	public slots:

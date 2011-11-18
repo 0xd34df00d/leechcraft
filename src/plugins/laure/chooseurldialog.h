@@ -43,7 +43,7 @@ namespace Laure
 		
 		/** @brief Returns the media URL.
 		 * 
-		 * @return string with an URL.
+		 * @return String with an URL.
 		 * 
 		 * @sa IsUrlValid()
 		 */
@@ -51,7 +51,7 @@ namespace Laure
 		
 		/** @brief Verifies the string returned by GetUrl().
 		 * 
-		 * @return true if the string is valid, false otherwise.
+		 * @return True if the string is valid, false otherwise.
 		 * 
 		 * @sa GetUrl()
 		 */

@@ -283,9 +283,9 @@ namespace Laure
 		}
 	}
 	
-	void LaureWidget::handleOpenMediaContent (const QString& val)
+	void LaureWidget::handleOpenMediaContent (const QString& location)
 	{
-		emit addItem (val);
+		emit addItem (location);
 	}
 	
 	void LaureWidget::handleOpenFile ()

@@ -76,7 +76,7 @@ namespace Laure
 		 */
 		void setPosition (int pos);
 	signals:
-		/** @brief This signal's emited to update the GUI interface.
+		/** @brief This signal is emitted to update the GUI interface.
 		 */
 		void timeout ();
 	};

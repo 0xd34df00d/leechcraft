@@ -83,7 +83,7 @@ namespace Laure
 		
 		/** @brief Returns playing state.
 		 * 
-		 * @return true if it's playing, false otherwise.
+		 * @return True if it's playing, false otherwise.
 		 */
 		bool IsPlaying () const;
 		
@@ -107,7 +107,7 @@ namespace Laure
 		 * 
 		 * @param[in] row Item index.
 		 * 
-		 * @return media meta info
+		 * @return Media meta info.
 		 * 
 		 * @sa MediaMeta
 		 */
@@ -183,24 +183,24 @@ namespace Laure
 	private slots:
 		void nowPlaying ();
 	signals:
-		/** @brief This signal's emmited to notify about the current track
+		/** @brief This signal is emmited to notify about the current track
 		 * media meta info.
 		 * 
 		 * @param[out] meta Media meta info.
 		 */
 		void currentTrackMeta (const MediaMeta& meta);
 		
-		/** @brief This signal's emmited when the track's finished.
+		/** @brief This signal is emmited when the track's finished.
 		 */
 		void trackFinished ();
 		
-		/** @brief This signal's emmited when the item index is played.
+		/** @brief This signal is emmited when the item index is played.
 		 *
 		 * @param[out] index Item index.
 		 */ 
 		void itemPlayed (int index);
 		
-		/** @brief This signal's emmited when the media file's added to
+		/** @brief This signal is emmited when the media file's added to
 		 * libvlc media list.
 		 * 
 		 * @param[out] meta Media meta info.
@@ -210,7 +210,7 @@ namespace Laure
 		 */
 		void itemAdded (const MediaMeta& meta, const QString& location);
 		
-		/** @brief This signal's emmited when it's paused.
+		/** @brief This signal is emmited when it's paused.
 		 */
 		void paused ();
 		
