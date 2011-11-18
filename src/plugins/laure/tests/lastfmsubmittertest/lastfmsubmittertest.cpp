@@ -17,31 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LAURE_VOLUMESLIDERTEST_H
-#define PLUGINS_LAURE_VOLUMESLIDERTEST_H
-#include <QObject>
-#include <QtTest>
+#include "lastfmsubmittertest.h"
 
-#include <volumeslider.h>
-
-using namespace LeechCraft::Laure;
-
-/** @brief Provides test units for the VolumeSlider class.
- * 
- * @sa VolumeSlider
- * 
- *  @author Minh Ngo <nlminhtl@gmail.com>
- */
-class VolumeSliderTest : public QObject
-{
-	Q_OBJECT
-private slots:
-	void setValue ()
-	{
-		VolumeSlider slider;
-		slider.setValue (2);
-		QVERIFY (slider.value () == 2);
-	}
-};
-
-#endif // PLUGINS_LAURE_VOLUMESLIDERTEST_H
+QTEST_MAIN (LastFMSubmitterTest)

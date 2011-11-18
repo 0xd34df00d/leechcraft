@@ -17,31 +17,43 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LAURE_VOLUMESLIDERTEST_H
-#define PLUGINS_LAURE_VOLUMESLIDERTEST_H
+#ifndef PLUGINS_LAURE_LASTFMSUBMITTERTEST_H
+#define PLUGINS_LAURE_LASTFMSUBMITTERTEST_H
+#include "userinfo.h"
 #include <QObject>
 #include <QtTest>
-
-#include <volumeslider.h>
+#include <lastfmsubmitter.h>
 
 using namespace LeechCraft::Laure;
 
 /** @brief Provides test units for the VolumeSlider class.
  * 
+ * Change definitions in userinfo.h to configure this test unit.
+ * 
  * @sa VolumeSlider
  * 
- *  @author Minh Ngo <nlminhtl@gmail.com>
+ * @author Minh Ngo <nlminhtl@gmail.com>
  */
-class VolumeSliderTest : public QObject
+class LastFMSubmitterTest : public QObject
 {
 	Q_OBJECT
+	LastFMSubmitter *Submitter_;
 private slots:
-	void setValue ()
+	void loginTest ()
 	{
-		VolumeSlider slider;
-		slider.setValue (2);
-		QVERIFY (slider.value () == 2);
+		QNetworkAccessManager *manager = new QNetworkAccessManager (this);
+		Submitter_ = new LastFMSubmitter (manager, this);
+		
+		connect (Submitter_,
+				SIGNAL (status (int)),
+				this,
+				SLOT (loginTestFinished (int)));
+	}
+	
+	void loginTestFinished (int code)
+	{
+		QVERIFY (Submitter_ ->IsConnected ());
 	}
 };
 
-#endif // PLUGINS_LAURE_VOLUMESLIDERTEST_H
+#endif // PLUGINS_LAURE_LASTFMSUBMITTERTEST_H

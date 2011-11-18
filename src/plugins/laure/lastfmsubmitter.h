@@ -46,11 +46,9 @@ namespace Laure
 		boost::shared_ptr<lastfm::Audioscrobbler> Scrobbler_;
 	public:
 		/** @brief Constructs a new LastFMSubmitter with the given
-		 * ICoreProxy_ptr and parent.
-		 * 
-		 * @sa ICoreProxy_ptr
+		 * QNetworkAccessManager and parent.
 		 */
-		LastFMSubmitter (ICoreProxy_ptr proxy, QObject *parent = 0);
+		LastFMSubmitter (QNetworkAccessManager *manager, QObject *parent = 0);
 		
 		/** @brief Returns connection state of the Scrobbler.
 		 * 
@@ -71,8 +69,11 @@ namespace Laure
 		 */
 		void submit ();
 	private slots:
-		void status (int);
 		void getSessionKey ();
+	signals:
+		/** @brief This signal is emitted to show status in an appropriate manner.
+		 */
+		void status (int code);
 	};
 }
 }

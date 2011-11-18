@@ -22,7 +22,11 @@
 #include <QNetworkAccessManager>
 #include <lastfm/Track>
 #include <lastfm.h>
+#ifdef HAVE_LASTFMSUBMITTER_TEST
+#include <userinfo.h>
+#else
 #include "xmlsettingsmanager.h"
+#endif
 
 namespace LeechCraft
 {
@@ -60,18 +64,22 @@ namespace Laure
 	
 	const QString ScrobblingSite_ = "http://ws.audioscrobbler.com/2.0/";
 
-	LastFMSubmitter::LastFMSubmitter (ICoreProxy_ptr proxy, QObject* parent)
+	LastFMSubmitter::LastFMSubmitter (QNetworkAccessManager *manager, QObject *parent)
 	: QObject (parent)
 	{
 		lastfm::ws::ApiKey = "be076efd1c241366f27fde6fd024e567";
 		lastfm::ws::SharedSecret = "8352aead3be59ab319cd4e578d374843";
+#ifdef HAVE_LASTFMSUBMITTER_TEST
+		lastfm::ws::Username = USERNAME;
+		
+		const QString password (PASSWORD);
+#else
 		lastfm::ws::Username = XmlSettingsManager::Instance ()
 				.property ("lastfm.login").toString ();
-				
-		QNetworkAccessManager *manager = proxy->GetNetworkAccessManager ();
 		
 		const QString& password = XmlSettingsManager::Instance ()
 				.property ("lastfm.password").toString ();
+#endif			
 		const QString& authToken = AuthToken (lastfm::ws::Username,
 				password);
 		
@@ -112,17 +120,15 @@ namespace Laure
 			connect (Scrobbler_.get (),
 					SIGNAL (status (int)),
 					this,
-					SLOT (status (int)));
+					SIGNAL (status (int)));
 		}
-	}
-		
-	void LastFMSubmitter::status (int code)
-	{
-		// code
 	}
 		
 	void LastFMSubmitter::sendTrack (const MediaMeta& info)
 	{
+		if (!IsConnected ())
+			return;
+		
 		Scrobbler_->submit ();
 		lastfm::Track track;
 		lastfm::MutableTrack mutableTrack (track);
@@ -139,6 +145,9 @@ namespace Laure
 	
 	void LastFMSubmitter::submit ()
 	{
+		if (!IsConnected ())
+			return;
+		
 		Scrobbler_->submit ();
 	}
 
