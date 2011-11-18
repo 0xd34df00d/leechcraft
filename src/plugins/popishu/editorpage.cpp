@@ -207,6 +207,9 @@ namespace LeechCraft
 				handleOtherPrefs ();
 
 				ShowConsole (false);
+
+				Ui_.ActionWrapWords_->trigger ();
+				Ui_.ActionShowLineNumbers_->trigger ();
 			}
 
 			EditorPage::~EditorPage ()
