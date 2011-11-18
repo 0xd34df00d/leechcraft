@@ -53,7 +53,6 @@ namespace Laure
 		PlaybackModeDefault,
 		PlaybackModeRepeat,
 		PlaybackModeLoop
-		//...
 	};
 	
 	/** @brief Provides a wrapper around libvlc functions.
