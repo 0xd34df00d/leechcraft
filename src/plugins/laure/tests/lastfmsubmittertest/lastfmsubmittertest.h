@@ -19,16 +19,18 @@
 
 #ifndef PLUGINS_LAURE_LASTFMSUBMITTERTEST_H
 #define PLUGINS_LAURE_LASTFMSUBMITTERTEST_H
-#include "userinfo.h"
 #include <QObject>
 #include <QtTest>
 #include <lastfmsubmitter.h>
+
+#define USERNAME "username"
+#define PASSWORD "password"
 
 using namespace LeechCraft::Laure;
 
 /** @brief Provides test units for the VolumeSlider class.
  * 
- * Change definitions in userinfo.h to configure this test unit.
+ * Change definitions of USERNAME and PASSWORD to configure this test unit.
  * 
  * @sa VolumeSlider
  * 
@@ -42,12 +44,17 @@ private slots:
 	void loginTest ()
 	{
 		QNetworkAccessManager *manager = new QNetworkAccessManager (this);
-		Submitter_ = new LastFMSubmitter (manager, this);
+		Submitter_ = new LastFMSubmitter (this);
 		
 		connect (Submitter_,
 				SIGNAL (status (int)),
 				this,
 				SLOT (loginTestFinished (int)));
+		
+		Submitter_->SetUsername (USERNAME);
+		Submitter_->SetPassword (PASSWORD);
+		
+		Submitter_->Init (manager);
 	}
 	
 	void loginTestFinished (int code)

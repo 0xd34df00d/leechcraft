@@ -44,15 +44,45 @@ namespace Laure
 		Q_OBJECT
 		
 		boost::shared_ptr<lastfm::Audioscrobbler> Scrobbler_;
+		QString Password_;
 	public:
-		/** @brief Constructs a new LastFMSubmitter with the given
-		 * QNetworkAccessManager and parent.
+		/** @brief Constructs a new LastFMSubmitter with the given parent.
 		 */
-		LastFMSubmitter (QNetworkAccessManager *manager, QObject *parent = 0);
+		LastFMSubmitter (QObject *parent = 0);
+		
+		/** @brief Initializes the submitter.
+		 * 
+		 * This method is called to generate last.fm session key and
+		 * connect to the last.fm service.
+		 * 
+		 * Don't call it before setting up username and password.
+		 * 
+		 * @param[in] manager Network access manager.
+		 * 
+		 * @sa SetUsername()
+		 * @sa SetPassword()
+		 */
+		void Init (QNetworkAccessManager *manager);
+		
+		/** @brief Sets last.fm username for connecting to the service.
+		 * 
+		 * @param[in] username Username.
+		 * 
+		 * @sa SetPassword()
+		 */
+		void SetUsername (const QString& username);
+		
+		/** @brief Sets last.fm password for connecting to the service.
+		 * 
+		 * @param[in] password Password.
+		 */
+		void SetPassword (const QString& password);
 		
 		/** @brief Returns connection state of the Scrobbler.
 		 * 
 		 * @return True if it's connected, false otherwise.
+		 * 
+		 * @sa SetUsername()
 		 */
 		bool IsConnected () const;
 	public slots:

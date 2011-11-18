@@ -40,8 +40,14 @@ namespace Laure
 
 		Proxy_ = proxy;
 #ifdef HAVE_LASTFM
-		LFSubmitter_ = new LastFMSubmitter (proxy->GetNetworkAccessManager (),
-				this);
+		LFSubmitter_ = new LastFMSubmitter (this);
+		
+		LFSubmitter_->SetUsername (XmlSettingsManager::Instance ()
+				.property ("lastfm.login").toString ());
+		LFSubmitter_->SetPassword (XmlSettingsManager::Instance ()
+				.property ("lastfm.password").toString ());
+		
+		LFSubmitter_->Init (proxy->GetNetworkAccessManager ());
 #endif
 		LaureWidget::SetParentMultiTabs (this);
 

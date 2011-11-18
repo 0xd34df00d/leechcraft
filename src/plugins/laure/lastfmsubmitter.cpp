@@ -22,11 +22,6 @@
 #include <QNetworkAccessManager>
 #include <lastfm/Track>
 #include <lastfm.h>
-#ifdef HAVE_LASTFMSUBMITTER_TEST
-#include <userinfo.h>
-#else
-#include "xmlsettingsmanager.h"
-#endif
 
 namespace LeechCraft
 {
@@ -62,26 +57,29 @@ namespace Laure
 		return Scrobbler_ != NULL;
 	}
 	
+	void LastFMSubmitter::SetPassword (const QString& password)
+	{
+		Password_ = password;
+	}
+	
+	void LastFMSubmitter::SetUsername (const QString& username)
+	{
+		lastfm::ws::Username = username;
+	}
+	
 	const QString ScrobblingSite_ = "http://ws.audioscrobbler.com/2.0/";
 
-	LastFMSubmitter::LastFMSubmitter (QNetworkAccessManager *manager, QObject *parent)
+	LastFMSubmitter::LastFMSubmitter (QObject *parent)
 	: QObject (parent)
 	{
 		lastfm::ws::ApiKey = "be076efd1c241366f27fde6fd024e567";
 		lastfm::ws::SharedSecret = "8352aead3be59ab319cd4e578d374843";
-#ifdef HAVE_LASTFMSUBMITTER_TEST
-		lastfm::ws::Username = USERNAME;
-		
-		const QString password (PASSWORD);
-#else
-		lastfm::ws::Username = XmlSettingsManager::Instance ()
-				.property ("lastfm.login").toString ();
-		
-		const QString& password = XmlSettingsManager::Instance ()
-				.property ("lastfm.password").toString ();
-#endif			
+	}
+	
+	void LastFMSubmitter::Init (QNetworkAccessManager *manager)
+	{
 		const QString& authToken = AuthToken (lastfm::ws::Username,
-				password);
+				Password_);
 		
 		const QString& api_sig = ApiSig (lastfm::ws::ApiKey, authToken,
 				"auth.getMobileSession", lastfm::ws::Username,
