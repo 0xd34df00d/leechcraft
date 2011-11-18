@@ -90,8 +90,6 @@ namespace Laure
 		/** @brief Send meta info about the current track to the last.fm service.
 		 * 
 		 * @param[in] info Media meta info.
-		 * 
-		 * @sa MediaMeta
 		 */
 		void sendTrack (const MediaMeta& info);
 		
