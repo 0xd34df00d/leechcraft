@@ -1331,8 +1331,9 @@ namespace Poshuku
 					btn->setMenu (ExternalLinks_);
 					btn->setArrowType (Qt::NoArrow);
 					btn->setPopupMode (QToolButton::InstantPopup);
-					const QString newStyle =
-							QString ("::menu-indicator { image: url(data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==);}");
+					const QString newStyle ("::menu-indicator { image: "
+							"url(data:image/gif;base64,R0lGODlhAQABAPABAP///"
+							"wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==);}");
 					btn->setStyleSheet (btn->styleSheet () + newStyle);
 
 					connect (ExternalLinks_->menuAction (),

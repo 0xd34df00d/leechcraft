@@ -26,7 +26,6 @@
 #include <interfaces/iaccount.h>
 #include <interfaces/ibookmarksservice.h>
 
-class QLineEdit;
 class QAbstractItemModel;
 class QStandardItemModel;
 class QStandardItem;

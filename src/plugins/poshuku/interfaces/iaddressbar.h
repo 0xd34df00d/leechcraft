@@ -43,7 +43,7 @@ namespace Poshuku
 		virtual QToolButton* GetButtonFromAction (QAction *action) const = 0;
 
 		virtual void SetVisible (QAction *action, bool visible) = 0;
-
+	protected:
 		virtual void actionTriggered (QAction *action, const QString& text) = 0;
 	};
 }
