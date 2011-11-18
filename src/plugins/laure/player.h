@@ -51,7 +51,7 @@ namespace Laure
 		
 		/** @brief Sets a libvlc wrapper.
 		 * 
-		 * @param[in] core VLCWrapper
+		 * @param[in] core VLCWrapper.
 		 * 
 		 * @sa VLCWrapper
 		 */
@@ -72,7 +72,7 @@ namespace Laure
 		
 		/** @brief Sets media position.
 		 * 
-		 * @param[in] pos Media postion
+		 * @param[in] pos Media postion.
 		 */
 		void setPosition (int pos);
 	signals:

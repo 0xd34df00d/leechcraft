@@ -49,14 +49,14 @@ namespace Laure
 		/** @brief Constructs a new PlayListView class
 		 * with the given model and parent.
 		 * 
-		 * @param[in] model Playlist model
+		 * @param[in] model Playlist model.
 		 */
 		PlayListView (QStandardItemModel *model, QWidget* = 0);
 		
 		/** @brief This method adds the item into the playlist.
 		 * 
-		 * @param[in] item Media meta info
-		 * @param[in] fileName Media file location
+		 * @param[in] item Media meta info.
+		 * @param[in] fileName Media file location.
 		 * 
 		 * @sa MediaMeta
 		 */
@@ -64,7 +64,7 @@ namespace Laure
 		
 		/** @brief This method sets the playing item.
 		 * 
-		 * @param[in] row  Item index
+		 * @param[in] row  Item index.
 		 */
 		void MarkPlayingItem (int row);
 	protected:
@@ -72,7 +72,7 @@ namespace Laure
 	public slots:
 		/** @brief This slot's called to select the item row.
 		 * 
-		 * @param[in] row Item index
+		 * @param[in] row Item index.
 		 */
 		void selectRow (int row);
 		
@@ -84,7 +84,7 @@ namespace Laure
 	signals:
 		/** @brief This signal's emited when the item index's removed.
 		 * 
-		 * @param[out] index Item index
+		 * @param[out] index Item index.
 		 */
 		void itemRemoved (int index);
 		

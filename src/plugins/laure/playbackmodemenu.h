@@ -50,7 +50,7 @@ namespace Laure
 	signals:
 		/** @brief This signal's emited when a playback mode's chosen.
 		 * 
-		 * @param[out] mode playback mode
+		 * @param[out] mode Playback mode.
 		 */
 		void playbackModeChanged (PlaybackMode);
 	};

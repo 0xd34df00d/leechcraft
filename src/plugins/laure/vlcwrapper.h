@@ -105,7 +105,7 @@ namespace Laure
 		
 		/** @brief Returns media meta info of the item row.
 		 * 
-		 * @param[in] row Item index
+		 * @param[in] row Item index.
 		 * 
 		 * @return media meta info
 		 * 
@@ -115,23 +115,25 @@ namespace Laure
 	public slots:
 		/** @brief Adds media file to the libvlc media list.
 		 * 
-		 * @param[in] location Media file location
+		 * @param[in] location Media file location.
 		 */
 		void addRow (const QString& location);
 		
 		/** @brief Sets the video frame window.
 		 *
-		 * @param[in] winId Window identifier
+		 * @param[in] winId Window identifier.
 		 */
 		void setWindow (int winId);
 		
 		/** @brief Removes the media item in the pos row.
-		 * @param[in] pos Item index
+		 * 
+		 * @param[in] pos Item index.
 		 */
 		bool removeRow (int pos);
 		
 		/** @brief Plays the media item.
-		 * @param[in] val Item index
+		 * 
+		 * @param[in] val Item index.
 		 */
 		void playItem (int val);
 		
@@ -165,7 +167,7 @@ namespace Laure
 		
 		/** @brief Sets playback mode.
 		 * 
-		 * @param mode Playback mode
+		 * @param mode Playback mode.
 		 * 
 		 * @sa PlaybackMode
 		 */
@@ -184,7 +186,7 @@ namespace Laure
 		/** @brief This signal's emmited to notify about the current track
 		 * media meta info.
 		 * 
-		 * @param[out] meta Media meta info
+		 * @param[out] meta Media meta info.
 		 */
 		void currentTrackMeta (const MediaMeta& meta);
 		
@@ -194,15 +196,15 @@ namespace Laure
 		
 		/** @brief This signal's emmited when the item index is played.
 		 *
-		 * @param[out] index Item index
+		 * @param[out] index Item index.
 		 */ 
 		void itemPlayed (int index);
 		
 		/** @brief This signal's emmited when the media file's added to
 		 * libvlc media list.
 		 * 
-		 * @param[out] meta Media meta info
-		 * @param[out] location Media file location
+		 * @param[out] meta Media meta info.
+		 * @param[out] location Media file location.
 		 *
 		 * @sa MediaMeta
 		 */

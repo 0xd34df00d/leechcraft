@@ -49,11 +49,11 @@ namespace Laure
 		 */
 		QString GetUrl () const;
 		
-		/** @brief Verifies the string returned by GetUrl ().
-		 *
+		/** @brief Verifies the string returned by GetUrl().
+		 * 
 		 * @return true if the string is valid, false otherwise.
 		 * 
-		 * @sa GetURL()
+		 * @sa GetUrl()
 		 */
 		bool IsUrlValid () const;
 	};

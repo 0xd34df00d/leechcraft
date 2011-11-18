@@ -81,7 +81,7 @@ namespace Laure
 		/** @brief This signal's emited for sending media meta info
 		 * to the desired destination.
 		 * 
-		 * @param[out] mediameta media meta info
+		 * @param[out] mediameta Media meta info.
 		 */
 		void currentTrackMeta (const MediaMeta&);
 		
@@ -92,7 +92,7 @@ namespace Laure
 		/** @brief This signal's emited when the media item needs to be added to
 		 * the playlist.
 		 *
-		 * @param[out] location media file location
+		 * @param[out] location Media file location.
 		 */
 		void addItem (const QString&);
 		
@@ -102,7 +102,7 @@ namespace Laure
 		/** @brief This handle's called for adding media files to the
 		 * playlist.
 		 * 
-		 * @param[in] location media file location.
+		 * @param[in] location Media file location.
 		 */
 		void handleOpenMediaContent (const QString&);
 	private slots:

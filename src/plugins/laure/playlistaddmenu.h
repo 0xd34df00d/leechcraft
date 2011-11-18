@@ -59,7 +59,7 @@ namespace Laure
 	signals:
 		/** @brief This signal's emited when the media file's chosen.
 		 * 
-		 * @param[out] location Media file location
+		 * @param[out] location Media file location.
 		 */
 		void addItem (const QString& location);
 	};
