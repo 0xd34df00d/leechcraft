@@ -56,7 +56,7 @@ namespace Laure
 		//...
 	};
 	
-	/** @brief Provides a wrap around libvlc functions.
+	/** @brief Provides a wrapper around libvlc functions.
 	 * 
 	 * @author Minh Ngo <nlminhtl@gmail.com>
 	 */
@@ -79,13 +79,13 @@ namespace Laure
 		 */
 		int RowCount () const;
 		
-		/** @brief Returns current played item index.
+		/** @brief Returns currently playing item index.
 		 */
 		int GetCurrentIndex () const;
 		
-		/** @brief Returns playing state.
+		/** @brief Returns playback state.
 		 * 
-		 * @return True if it's playing, false otherwise.
+		 * @return True if it is playing, false otherwise.
 		 */
 		bool IsPlaying () const;
 		
@@ -95,29 +95,29 @@ namespace Laure
 		
 		/** @brief Get the current track time (in ms).
 		 *
-		 * @return The track time (in ms), or -1 if there is no media.
+		 * @return The track time (in ms), or  a negative value if there
+		 * is no media.
 		 */
 		int GetTime () const;
 		
 		/** @brief Get the current track length (in ms).
 		 *
-		 * @return The track length (in ms), or -1 if there is no media.
+		 * @return The track length (in ms), or  a negative value if there
+		 * is no media.
 		 */
 		int GetLength () const;
 		
-		/** @brief Returns current media position as a part of 1.
+		/** @brief Returns current media position in the [0; 1] interval.
 		 * 
-		 * @return Track position, or -1. in case of error.
+		 * @return Track position, or a negative value. in case of error.
 		 */
 		float GetMediaPosition () const;
 		
-		/** @brief Returns media meta info of the item row.
+		/** @brief Returns media meta info for the item in the given row.
 		 * 
 		 * @param[in] row Item index.
 		 * 
 		 * @return Media meta info.
-		 * 
-		 * @sa MediaMeta
 		 */
 		MediaMeta GetItemMeta (int row) const;
 	public slots:
@@ -130,7 +130,7 @@ namespace Laure
 		/** @brief Sets the video frame window.
 		 *
 		 * Set an X Window System drawable where the media player should render its
-		 * video output. If LibVLC was built without X11 output support, then this has
+		 * video output. If libvlc was built without X11 output support, then this has
 		 * no effects.
 		 * 
 		 * @param[in] winId Window identifier.
@@ -190,7 +190,7 @@ namespace Laure
 		 */
 		void setVolume (int vol);
 		
-		/** @brief Sets media position as a part of 1.
+		/** @brief Sets media position in the [0; 1] interval.
 		 */
 		void setPosition (float);
 		
@@ -202,11 +202,11 @@ namespace Laure
 		 */
 		void setPlaybackMode (PlaybackMode mode);
 		
-		/** @brief Is called when the track's finished.
+		/** @brief Is called when the track is finished.
 		 */
 		void handledHasPlayed ();
 		
-		/** @brief Is called when the next item's chosen.
+		/** @brief Is called when the next item is chosen.
 		 */
 		void handleNextItemSet ();
 	private slots:
@@ -216,12 +216,10 @@ namespace Laure
 		 * media meta info.
 		 * 
 		 * @param[out] meta Media meta info.
-		 * 
-		 * @sa MediaMeta
 		 */
 		void currentTrackMeta (const MediaMeta& meta);
 		
-		/** @brief Is emitted when the track's finished.
+		/** @brief Is emitted when the track is finished.
 		 */
 		void trackFinished ();
 		
@@ -231,17 +229,15 @@ namespace Laure
 		 */ 
 		void itemPlayed (int index);
 		
-		/** @brief Is emitted when the media file's added to
+		/** @brief Is emitted when the media file is added to
 		 * libvlc media list.
 		 * 
 		 * @param[out] meta Media meta info.
 		 * @param[out] location Media file location.
-		 *
-		 * @sa MediaMeta
 		 */
 		void itemAdded (const MediaMeta& meta, const QString& location);
 		
-		/** @brief Is emitted when it's paused.
+		/** @brief Is emitted when playback is paused.
 		 */
 		void paused ();
 		

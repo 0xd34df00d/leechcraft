@@ -25,7 +25,7 @@ namespace LeechCraft
 {
 namespace Laure
 {
-	/** @brief Provides a setting manager for Laure plugin.
+	/** @brief Provides a settings manager for Laure plugin.
 	 * 
 	 * @author Minh Ngo <nlminhtl@gmail.com>
 	 */

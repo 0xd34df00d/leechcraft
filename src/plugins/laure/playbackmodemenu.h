@@ -50,7 +50,7 @@ namespace Laure
 		void handleMenuRepeat ();
 		void handleMenuLoop ();
 	signals:
-		/** @brief Is emitted when a playback mode's chosen.
+		/** @brief Is emitted when a playback mode is chosen.
 		 * 
 		 * @param[out] mode Playback mode.
 		 * 

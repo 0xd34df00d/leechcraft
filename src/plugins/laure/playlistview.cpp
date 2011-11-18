@@ -29,7 +29,7 @@ namespace LeechCraft
 {
 namespace Laure
 {
-	const int playlistColumnCount = 6;
+	const int PlaylistColumnCount = 6;
 	
 	PlayListView::PlayListView (QStandardItemModel *model, QWidget *parent)
 	: QTreeView (parent)
@@ -37,7 +37,7 @@ namespace Laure
 	, CurrentItem_ (-1)
 	{
 		setModel (PlayListModel_);
-		PlayListModel_->setColumnCount (playlistColumnCount);
+		PlayListModel_->setColumnCount (PlaylistColumnCount);
 		setSelectionMode (ContiguousSelection);
 		setAlternatingRowColors (true);
 		hideColumn (0);

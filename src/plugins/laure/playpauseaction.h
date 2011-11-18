@@ -52,12 +52,12 @@ namespace Laure
 	private slots:
 		void handleTriggered ();
 	signals:
-		/** @brief Is emitted when the state's changed to the
+		/** @brief Is emitted when the state is changed to the
 		 * play state.
 		 */
 		void play ();
 		
-		/** @brief Is emitted when the state's changed to the
+		/** @brief Is emitted when the state is changed to the
 		 * pause state.
 		 */
 		void pause();

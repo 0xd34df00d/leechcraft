@@ -86,7 +86,7 @@ namespace Laure
 		 */
 		void currentTrackMeta (const MediaMeta& mediameta);
 		
-		/** @brief Is emitted when the current track's finished.
+		/** @brief Is emitted when the current track is finished.
 		 */
 		void trackFinished ();
 		

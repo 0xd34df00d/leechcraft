@@ -80,7 +80,7 @@ namespace Laure
 		
 		/** @brief Returns connection state of the Scrobbler.
 		 * 
-		 * @return True if it's connected, false otherwise.
+		 * @return True if it is connected, false otherwise.
 		 * 
 		 * @sa SetUsername()
 		 */

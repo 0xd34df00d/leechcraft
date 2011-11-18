@@ -278,8 +278,8 @@ namespace Laure
 				emit addItem (dialog->GetUrl ());
 			else
 				QMessageBox::warning (this,
-						tr ("The URL's not valid"),
-						tr ("The URL's not valid"));
+						tr ("The URL is not valid"),
+						tr ("The URL is not valid"));
 		}
 	}
 	

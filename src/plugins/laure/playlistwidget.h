@@ -83,7 +83,7 @@ namespace Laure
 		 */
 		void itemAddedRequest (const QString& location);
 		
-		/** @brief Is emitted when the item index's removed.
+		/** @brief Is emitted when the item index is removed.
 		 * 
 		 * @param[out] index Item index.
 		 */
