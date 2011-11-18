@@ -53,7 +53,7 @@ namespace Laure
 		 */
 		PlayListView (QStandardItemModel *model, QWidget* = 0);
 		
-		/** @brief This method adds the item into the playlist.
+		/** @brief Adds the item into the playlist.
 		 * 
 		 * @param[in] item Media meta info.
 		 * @param[in] fileName Media file location.
@@ -62,7 +62,7 @@ namespace Laure
 		 */
 		void AddItem (const MediaMeta& item, const QString& fileName);
 		
-		/** @brief This method sets the playing item.
+		/** @brief Sets the playing item.
 		 * 
 		 * @param[in] row  Item index.
 		 */
@@ -70,25 +70,25 @@ namespace Laure
 	protected:
 		void keyPressEvent (QKeyEvent*);
 	public slots:
-		/** @brief This slot's called to select the item row.
+		/** @brief Is called to select the item row.
 		 * 
 		 * @param[in] row Item index.
 		 */
 		void selectRow (int row);
 		
-		/** @brief This slot's called to remove selected rows.
+		/** @brief Is called to remove selected rows.
 		 */
 		void removeSelectedRows ();
 	private slots:
 		void handleDoubleClicked (const QModelIndex&);
 	signals:
-		/** @brief This signal is emitted when the item index's removed.
+		/** @brief Is emitted when the item index's removed.
 		 * 
 		 * @param[out] index Item index.
 		 */
 		void itemRemoved (int index);
 		
-		/** @brief This signal notifies that the given item needs to be played.
+		/** @brief Notifies that the given item needs to be played.
 		 * 
 		 * @param[out] index The index of the item to play.
 		 */

@@ -202,17 +202,17 @@ namespace Laure
 		 */
 		void setPlaybackMode (PlaybackMode mode);
 		
-		/** @brief This slot's called when the track's finished.
+		/** @brief Is called when the track's finished.
 		 */
 		void handledHasPlayed ();
 		
-		/** @brief This slot's called when the next item's chosen.
+		/** @brief Is called when the next item's chosen.
 		 */
 		void handleNextItemSet ();
 	private slots:
 		void nowPlaying ();
 	signals:
-		/** @brief This signal is emmited to notify about the current track
+		/** @brief Is emitted to notify about the current track
 		 * media meta info.
 		 * 
 		 * @param[out] meta Media meta info.
@@ -221,17 +221,17 @@ namespace Laure
 		 */
 		void currentTrackMeta (const MediaMeta& meta);
 		
-		/** @brief This signal is emmited when the track's finished.
+		/** @brief Is emitted when the track's finished.
 		 */
 		void trackFinished ();
 		
-		/** @brief This signal is emmited when the item index is played.
+		/** @brief Is emitted when the item index is played.
 		 *
 		 * @param[out] index Item index.
 		 */ 
 		void itemPlayed (int index);
 		
-		/** @brief This signal is emmited when the media file's added to
+		/** @brief Is emitted when the media file's added to
 		 * libvlc media list.
 		 * 
 		 * @param[out] meta Media meta info.
@@ -241,7 +241,7 @@ namespace Laure
 		 */
 		void itemAdded (const MediaMeta& meta, const QString& location);
 		
-		/** @brief This signal is emmited when it's paused.
+		/** @brief Is emitted when it's paused.
 		 */
 		void paused ();
 		

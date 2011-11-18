@@ -39,6 +39,7 @@ using namespace LeechCraft::Laure;
 class LastFMSubmitterTest : public QObject
 {
 	Q_OBJECT
+	
 	LastFMSubmitter *Submitter_;
 private slots:
 	void loginTest ()

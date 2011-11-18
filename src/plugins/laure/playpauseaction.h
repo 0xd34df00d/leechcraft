@@ -42,22 +42,22 @@ namespace Laure
 	private:
 		void SetIcon ();
 	public slots:
-		/** @brief This slot's called for changing to the pause state.
+		/** @brief Changes to the pause state.
 		 */
 		void handlePause ();
 		
-		/** @brief This slot's called for changing to the play state.
+		/** @brief Changes to the play state.
 		 */
 		void handlePlay ();
 	private slots:
 		void handleTriggered ();
 	signals:
-		/** @brief This signal is emmited when the state's changed to the
+		/** @brief Is emitted when the state's changed to the
 		 * play state.
 		 */
 		void play ();
 		
-		/** @brief This signal is emmited when the state's changed to the
+		/** @brief Is emitted when the state's changed to the
 		 * pause state.
 		 */
 		void pause();

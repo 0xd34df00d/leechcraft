@@ -52,7 +52,7 @@ namespace Laure
 		 */
 		PlayListWidget (QWidget* = 0);
 	public slots:
-		/** @brief This slot's called when the media file has added to
+		/** @brief Is called when the media file has added to
 		 * VLCWrapper.
 		 * 
 		 * @param[in] meta Media meta info.
@@ -63,7 +63,7 @@ namespace Laure
 		 */
 		void handleItemAdded (const MediaMeta& meta, const QString& fileName);
 		
-		/** @brief This slot's called when the media item has played
+		/** @brief Is called when the media item has played
 		 * in VLCWrapper.
 		 * 
 		 * @param[in] row Item index.
@@ -74,7 +74,7 @@ namespace Laure
 	private slots:
 		void handleExportPlayList ();
 	signals:
-		/** @brief This signal notifies that the media file needs to be
+		/** @brief Notifies that the media file needs to be
 		 * added to VLCWrapper.
 		 * 
 		 * @param[out] location Media file location.
@@ -83,13 +83,13 @@ namespace Laure
 		 */
 		void itemAddedRequest (const QString& location);
 		
-		/** @brief This signal is emmited when the item index's removed.
+		/** @brief Is emitted when the item index's removed.
 		 * 
 		 * @param[out] index Item index.
 		 */
 		void itemRemoved (int index);
 		
-		/** @brief This signal notifies that the given item needs to be played.
+		/** @brief Notifies that the given item needs to be played.
 		 * 
 		 * @param[out] index The index of the item to play.
 		 */
@@ -99,7 +99,7 @@ namespace Laure
 		void gotEntity (const Entity&);
 		void delegateEntity (const Entity&, int*, QObject**);
 		
-		/** @brief This signal is emmited when the playback mode is changed.
+		/** @brief Is emitted when the playback mode is changed.
 		 * 
 		 * @param[out] mode New playback mode.
 		 * 

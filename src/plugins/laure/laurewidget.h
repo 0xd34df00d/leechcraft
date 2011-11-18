@@ -70,28 +70,27 @@ namespace Laure
 		void InitCommandFrame ();
 		void InitToolBar ();
 	signals:
-		/** @brief This signal is emitted to notify the Core
-		 * that this tab needs to be closed.
+		/** @brief Is emitted to notify the Core that this tab needs to
+		 * be closed.
 		 */
 		void needToClose ();
 		
-		/** @brief This signal is emitted when the PlayPauseAction
-		 * is clicked.
+		/** @brief Is emitted when the PlayPauseAction is clicked.
 		 */
 		void playPause ();
 		
-		/** @brief This signal is emitted for sending media meta info
-		 * to the desired destination.
+		/** @brief Is emitted for sending media meta info to the desired
+		 * destination.
 		 * 
 		 * @param[out] mediameta Media meta info.
 		 */
 		void currentTrackMeta (const MediaMeta& mediameta);
 		
-		/** @brief This signal is emitted when the current track's finished.
+		/** @brief Is emitted when the current track's finished.
 		 */
 		void trackFinished ();
 		
-		/** @brief This signal is emitted when the media item needs to be added to
+		/** @brief Is emitted when the media item needs to be added to
 		 * the playlist.
 		 *
 		 * @param[out] location Media file location.
@@ -101,8 +100,7 @@ namespace Laure
 		void gotEntity (const Entity&);
 		void delegateEntity (const Entity&, int*, QObject**);
 	public slots:
-		/** @brief This handle's called for adding media files to the
-		 * playlist.
+		/** @brief Is called for adding media files to the playlist.
 		 * 
 		 * @param[in] location Media file location.
 		 */

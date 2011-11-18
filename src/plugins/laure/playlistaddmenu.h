@@ -57,7 +57,7 @@ namespace Laure
 		bool IsFileSupported (const QFileInfo&) const;
 		void LoadM3U (const QString&);
 	signals:
-		/** @brief This signal is emitted when the media file's chosen.
+		/** @brief Is emitted when the media file's chosen.
 		 * 
 		 * @param[out] location Media file location.
 		 */
