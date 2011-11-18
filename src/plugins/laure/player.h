@@ -65,14 +65,22 @@ namespace Laure
 		 */
 		QTime GetLength () const;
 		
-		/** @brief Returns current media position.
+		/** @brief Returns current media position as the track slider position.
+		 * 
+		 * The minimum media position is 0. The maximum position is 10000.
+		 * 
+		 * @sa setPosition()
 		 */
 		int GetPosition () const;
 	public slots:
 		
-		/** @brief Sets media position.
+		/** @brief Sets media position as the track slider position.
+		 * 
+		 * The minimum media position is 0. The maximum position is 10000.
 		 * 
 		 * @param[in] pos Media postion.
+		 * 
+		 * @sa GetPosition()
 		 */
 		void setPosition (int pos);
 	signals:

@@ -59,6 +59,7 @@ namespace Laure
 		 * @param[in] fileName Media file location.
 		 * 
 		 * @sa VLCWrapper
+		 * @sa MediaMeta
 		 */
 		void handleItemAdded (const MediaMeta& meta, const QString& fileName);
 		

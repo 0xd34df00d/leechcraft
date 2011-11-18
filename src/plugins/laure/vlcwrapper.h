@@ -46,13 +46,15 @@ namespace Laure
 		int Length_;
 	};
 	
-	typedef enum
+	/** @brief Defines playback modes for playlist.
+	 */
+	enum  PlaybackMode
 	{
 		PlaybackModeDefault,
 		PlaybackModeRepeat,
 		PlaybackModeLoop
 		//...
-	} PlaybackMode;
+	};
 	
 	/** @brief Provides a wrap around libvlc functions.
 	 * 
@@ -77,7 +79,7 @@ namespace Laure
 		 */
 		int RowCount () const;
 		
-		/** @brief Returns current played item.
+		/** @brief Returns current played item index.
 		 */
 		int GetCurrentIndex () const;
 		
@@ -91,15 +93,21 @@ namespace Laure
 		 */
 		int GetVolume () const;
 		
-		/** @brief Returns current media playing time.
+		/** @brief Get the current track time (in ms).
+		 *
+		 * @return The track time (in ms), or -1 if there is no media.
 		 */
 		int GetTime () const;
 		
-		/** @brief Returns current media playing length.
+		/** @brief Get the current track length (in ms).
+		 *
+		 * @return The track length (in ms), or -1 if there is no media.
 		 */
 		int GetLength () const;
 		
 		/** @brief Returns current media position as a part of 1.
+		 * 
+		 * @return Track position, or -1. in case of error.
 		 */
 		float GetMediaPosition () const;
 		
@@ -121,6 +129,10 @@ namespace Laure
 		
 		/** @brief Sets the video frame window.
 		 *
+		 * Set an X Window System drawable where the media player should render its
+		 * video output. If LibVLC was built without X11 output support, then this has
+		 * no effects.
+		 * 
 		 * @param[in] winId Window identifier.
 		 */
 		void setWindow (int winId);
@@ -138,22 +150,39 @@ namespace Laure
 		void playItem (int val);
 		
 		/** @brief Stop playing.
+		 * 
+		 * No effect if there is no media.
+		 * 
+		 * @sa play()
+		 * @sa pause()
 		 */
 		void stop ();
 		
 		/** @brief Pause.
+		 * 
+		 * No effect if there is no media.
+		 * 
+		 * @sa stop()
+		 * @sa play()
 		 */
 		void pause ();
 		
 		/** @brief Play.
+		 * 
+		 * @sa stop()
+		 * @sa pause()
 		 */
 		void play ();
 		
 		/** @brief Play the next list media item.
+		 * 
+		 * @sa prev()
 		 */
 		void next ();
 		
 		/** @brief Play the previous list media item.
+		 * 
+		 * @sa next()
 		 */
 		void prev ();
 		
@@ -165,7 +194,7 @@ namespace Laure
 		 */
 		void setPosition (float);
 		
-		/** @brief Sets playback mode.
+		/** @brief Sets the playback mode for the playlist.
 		 * 
 		 * @param mode Playback mode.
 		 * 
@@ -187,6 +216,8 @@ namespace Laure
 		 * media meta info.
 		 * 
 		 * @param[out] meta Media meta info.
+		 * 
+		 * @sa MediaMeta
 		 */
 		void currentTrackMeta (const MediaMeta& meta);
 		

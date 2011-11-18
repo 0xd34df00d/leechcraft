@@ -51,6 +51,10 @@ namespace Laure
 		
 		/** @brief Verifies the string returned by GetUrl().
 		 * 
+		 * The Url is run through a conformance test. Every part of the
+		 * Url must conform to the standard encoding rules of the URI
+		 * standard for the URL to be reported as valid.
+		 * 
 		 * @return True if the string is valid, false otherwise.
 		 * 
 		 * @sa GetUrl()

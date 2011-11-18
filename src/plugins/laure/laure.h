@@ -37,6 +37,11 @@ namespace Laure
 	/** @brief Main plugin instance class.
 	 * 
 	 *  @author Minh Ngo <nlminhtl@gmail.com>
+	 * 
+	 * @sa IInfo
+	 * @sa IHaveTabs
+	 * @sa IEntityHandler
+	 * @sa IHaveSettings
 	 */
 	class Plugin : public QObject
 				, public IInfo

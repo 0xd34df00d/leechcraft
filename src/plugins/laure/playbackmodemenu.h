@@ -41,6 +41,8 @@ namespace Laure
 		PlaybackModeMenu (QWidget* = 0);
 		
 		/** @brief Returns the playback mode.
+		 * 
+		 * @sa PlaybackMode
 		 */
 		PlaybackMode GetPlaybackMode () const;
 	private slots:
@@ -51,6 +53,8 @@ namespace Laure
 		/** @brief This signal is emitted when a playback mode's chosen.
 		 * 
 		 * @param[out] mode Playback mode.
+		 * 
+		 * @sa PlaybackMode
 		 */
 		void playbackModeChanged (PlaybackMode mode);
 	};

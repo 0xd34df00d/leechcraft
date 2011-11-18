@@ -38,6 +38,8 @@ namespace Laure
 	/** @brief Represents a tab in LeechCraft tabs system.
 	 * 
 	 * @author Minh Ngo <nlminhtl@gmail.com>
+	 * 
+	 * @sa ITabWidget
 	 */
 	class LaureWidget : public QWidget
 				, public ITabWidget
