@@ -26,7 +26,7 @@ namespace LeechCraft
 {
 namespace Laure
 {
-	/** @brief The class provides a simple dialog for entering links to media content.
+	/** @brief Provides a simple dialog for entering links to media content.
 	 * 
 	 *  @author Minh Ngo <nlminhtl@gmail.com>
 	 */
