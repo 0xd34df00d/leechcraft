@@ -512,6 +512,8 @@ namespace Azoth
 			return;
 
 		entry->PurgeMessages (QDateTime ());
+		qDeleteAll (HistoryMessages_);
+		HistoryMessages_.clear ();
 		PrepareTheme ();
 	}
 
