@@ -29,8 +29,11 @@
 #include <Qsci/qscilexercmake.h>
 #include <Qsci/qscilexercpp.h>
 #include <Qsci/qscilexercss.h>
+#include <Qsci/qscilexerdiff.h>
 #include <Qsci/qscilexerhtml.h>
 #include <Qsci/qscilexerjavascript.h>
+#include <Qsci/qscilexermatlab.h>
+#include <Qsci/qscilexeroctave.h>
 #include <Qsci/qscilexerpython.h>
 #include <Qsci/qscilexerruby.h>
 #include <Qsci/qscilexersql.h>
@@ -69,12 +72,16 @@ namespace LeechCraft
 				DEFPAIR (C++, cxx);
 				DEFPAIR (C++, hxx);
 				DEFPAIR (CSS, css);
+				DEFPAIR (Diff, diff);
+				DEFPAIR (Diff, patch);
 				DEFPAIR (HTML, htm);
 				DEFPAIR (HTML, html);
 				DEFPAIR (HTML, xhtml);
 				DEFPAIR (JavaScript, es);
 				DEFPAIR (JavaScript, js);
 				DEFPAIR (JavaScript, qs);
+				DEFPAIR (MatLab, mat);
+				DEFPAIR (Octave, m);
 				DEFPAIR (Python, py);
 				DEFPAIR (Ruby, rb);
 				DEFPAIR (SQL, sql);
@@ -96,8 +103,11 @@ namespace LeechCraft
 				DoctypeMenu_->addAction ("CMake")->setCheckable (true);
 				DoctypeMenu_->addAction ("C++")->setCheckable (true);
 				DoctypeMenu_->addAction ("CSS")->setCheckable (true);
+				DoctypeMenu_->addAction ("Diff")->setCheckable (true);
 				DoctypeMenu_->addAction ("HTML")->setCheckable (true);
 				DoctypeMenu_->addAction ("JavaScript")->setCheckable (true);
+				DoctypeMenu_->addAction ("MatLab")->setCheckable (true);
+				DoctypeMenu_->addAction ("Octave")->setCheckable (true);
 				DoctypeMenu_->addAction ("Python")->setCheckable (true);
 				DoctypeMenu_->addAction ("Ruby")->setCheckable (true);
 				DoctypeMenu_->addAction ("SQL")->setCheckable (true);
@@ -698,10 +708,16 @@ namespace LeechCraft
 					result = new QsciLexerCPP (Ui_.TextEditor_);
 				else if (lang == "CSS")
 					result = new QsciLexerCSS (Ui_.TextEditor_);
+				else if (lang == "Diff")
+					result = new QsciLexerDiff (Ui_.TextEditor_);
 				else if (lang == "HTML")
 					result = new QsciLexerHTML (Ui_.TextEditor_);
 				else if (lang == "JavaScript")
 					result = new QsciLexerJavaScript (Ui_.TextEditor_);
+				else if (lang == "MatLab")
+					result = new QsciLexerMatlab (Ui_.TextEditor_);
+				else if (lang == "Octave")
+					result = new QsciLexerOctave (Ui_.TextEditor_);
 				else if (lang == "Python")
 					result = new QsciLexerPython (Ui_.TextEditor_);
 				else if (lang == "Ruby")
