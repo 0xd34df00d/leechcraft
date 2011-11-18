@@ -30,7 +30,7 @@ namespace Laure
 {
 	class PlayListModel;
 	
-	/** @brief Provides display and editing facilities for playlist items
+	/** @brief Provides display facilities for playlist items
 	 * from a model.
 	 * 
 	 * @author Minh Ngo <nlminhtl@gmail.com>

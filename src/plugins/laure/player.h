@@ -59,15 +59,15 @@ namespace Laure
 		
 		/** @brief Returns current media time in the QTime format.
 		 */
-		QTime Time ();
+		QTime GetTime () const;
 		
 		/** @brief Returns current media length in the QTime format.
 		 */
-		QTime Length ();
+		QTime GetLength () const;
 		
 		/** @brief Returns current media position.
 		 */
-		int Position () const;
+		int GetPosition () const;
 	public slots:
 		
 		/** @brief Sets media position.

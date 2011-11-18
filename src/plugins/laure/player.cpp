@@ -58,7 +58,7 @@ namespace Laure
 		}
 	}
 	
-	QTime Player::Time ()
+	QTime Player::GetTime () const
 	{
 		if (!VLCWrapper_)
 			return QTime ();
@@ -66,7 +66,7 @@ namespace Laure
 		return IntToQTime (VLCWrapper_->GetTime ());
 	}
 	
-	QTime Player::Length ()
+	QTime Player::GetLength () const
 	{
 		if (!VLCWrapper_)
 			return QTime ();
@@ -74,14 +74,13 @@ namespace Laure
 		return IntToQTime (VLCWrapper_->GetLength ());
 	}
 	
-	int Player::Position () const
+	int Player::GetPosition () const
 	{
 		if (!(VLCWrapper_ && VLCWrapper_->IsPlaying ()))
 			return -1;
 
 		return VLCWrapper_->GetMediaPosition () * pos_slider_max;
 	}
-
 
 	void Player::setPosition (int pos)
 	{
