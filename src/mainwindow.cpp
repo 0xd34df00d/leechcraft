@@ -346,7 +346,7 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	XmlSettingsManager::Instance ()->RegisterObject ("ToolButtonStyle",
 			this, "handleToolButtonStyleChanged");
 	handleToolButtonStyleChanged ();
-	XmlSettingsManager::Instance ()->RegisterObject ("ToolBarVisiabilityManipulation",
+	XmlSettingsManager::Instance ()->RegisterObject ("ToolBarVisibilityManipulation",
 			this, "handleToolBarManipulationChanged");
 	handleToolBarManipulationChanged ();
 
@@ -649,7 +649,7 @@ void LeechCraft::MainWindow::handleToolButtonStyleChanged ()
 
 void MainWindow::handleToolBarManipulationChanged ()
 {
-	if (XmlSettingsManager::Instance ()->property ("ToolBarVisiabilityManipulation").toBool())
+	if (XmlSettingsManager::Instance ()->property ("ToolBarVisibilityManipulation").toBool())
 		MenuView_->insertAction (0, Ui_.ActionShowToolBar_);
 	else
 		MenuView_->removeAction (Ui_.ActionShowToolBar_);
@@ -864,7 +864,7 @@ void LeechCraft::MainWindow::ShowMenuAndBar (bool show)
 {
 	int cur = Ui_.MainTabWidget_->CurrentIndex ();
 	if (Core::Instance ().GetToolBar (cur) &&
-			!XmlSettingsManager::Instance ()->property ("ToolBarVisiabilityManipulation").toBool ())
+			!XmlSettingsManager::Instance ()->property ("ToolBarVisibilityManipulation").toBool ())
 		Core::Instance ().GetToolBar (cur)->setVisible (show);
 	Ui_.ActionFullscreenMode_->setChecked (!show);
 }
@@ -872,7 +872,7 @@ void LeechCraft::MainWindow::ShowMenuAndBar (bool show)
 void LeechCraft::MainWindow::keyPressEvent(QKeyEvent* e)
 {
 	if (e->key () == Qt::Key_Alt &&
-			XmlSettingsManager::Instance ()->property ("ToolBarVisiabilityManipulation").toBool ())
+			XmlSettingsManager::Instance ()->property ("ToolBarVisibilityManipulation").toBool ())
 	{
 		on_ActionShowToolBar__triggered (!IsToolBarVisible_);
 		Ui_.ActionShowToolBar_->setChecked (IsToolBarVisible_);
