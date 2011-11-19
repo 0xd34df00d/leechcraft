@@ -882,11 +882,11 @@ void LeechCraft::MainWindow::keyPressEvent (QKeyEvent *e)
 void LeechCraft::MainWindow::keyReleaseEvent (QKeyEvent *e)
 {
 	if (e->key () == Qt::Key_Alt &&
-		XmlSettingsManager::Instance ()->property ("ToolBarVisibilityManipulation").toBool ())
-		{
-			on_ActionShowToolBar__triggered (!IsToolBarVisible_);
-			Ui_.ActionShowToolBar_->setChecked (IsToolBarVisible_);
-		}
+			XmlSettingsManager::Instance ()->property ("ToolBarVisibilityManipulation").toBool ())
+	{
+		on_ActionShowToolBar__triggered (!IsToolBarVisible_);
+		Ui_.ActionShowToolBar_->setChecked (IsToolBarVisible_);
+	}
 }
 
 
