@@ -113,7 +113,8 @@ namespace Pogooglue
 
 		SelectedText_ = view->page ()->selectedText ();
 
-		menu->addAction (tr ("Google It..."),
+		menu->addAction (QIcon (":/plugins/poshuku/plugins/pogooglue/resources/images/google.png"),
+				tr ("Google It..."),
 				this,
 				SLOT (handleGoogleIt ()));
 	}
