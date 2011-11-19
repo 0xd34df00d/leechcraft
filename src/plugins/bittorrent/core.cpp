@@ -2553,7 +2553,7 @@ namespace LeechCraft
 				}
 				else
 					peerProxySettings.type = libtorrent::proxy_settings::none;
-#if LIBTORRENT_VERSION_TINY > 4
+#if (LIBTORRENT_VERSION_MINOR == 15 && LIBTORRENT_VERSION_TINY > 4) || LIBTORRENT_VERSION_MINOR > 15
 				Session_->set_proxy (peerProxySettings);
 #else
 				Session_->set_peer_proxy (peerProxySettings);
