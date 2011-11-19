@@ -45,8 +45,6 @@ class ReadItLaterAccount : public QObject
 
 		bool IsSyncing_;
 
-		bool IsQuickUpload_;
-
 		QDateTime LastUpload_;
 		QDateTime LastDownload_;
 
@@ -65,9 +63,6 @@ class ReadItLaterAccount : public QObject
 		bool IsSyncing () const;
 		void SetSyncing (bool);
 
-		bool IsQuickUpload () const;
-		void SetQuickUpload (bool);
-
 		QDateTime GetLastDownloadDateTime () const;
 		QDateTime GetLastUploadDateTime () const;
 		void SetLastUploadDateTime (const QDateTime&);
@@ -75,6 +70,7 @@ class ReadItLaterAccount : public QObject
 
 		void AppendDownloadedBookmarks (const QVariantList&);
 		QVariantList GetBookmarksDiff (const QVariantList&);
+
 		QByteArray Serialize () const ;
 		static ReadItLaterAccount* Deserialize (const QByteArray&, QObject*);
 	};

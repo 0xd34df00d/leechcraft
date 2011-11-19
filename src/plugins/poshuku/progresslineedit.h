@@ -21,6 +21,7 @@
 #include <boost/shared_ptr.hpp>
 #include <QKeyEvent>
 #include <QLineEdit>
+#include "interfaces/iaddressbar.h"
 
 class QModelIndex;
 class QToolBar;
@@ -31,8 +32,10 @@ namespace LeechCraft
 namespace Poshuku
 {
 	class ProgressLineEdit : public QLineEdit
+							, public IAddressBar
 	{
 		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Poshuku::IAddressBar);
 
 		bool IsCompleting_;
 		QString PreviousUrl_;
@@ -40,17 +43,19 @@ namespace Poshuku
 		QToolButton *ClearButton_;
 
 		QList<QToolButton*> VisibleButtons_;
+		QList<QToolButton*> HideButtons_;
 		QHash<QAction*, QToolButton*> Action2Button_;
 	public:
 		ProgressLineEdit (QWidget* = 0);
 		virtual ~ProgressLineEdit ();
 		bool IsCompleting () const;
-
-		QToolButton* AddToolButton (QAction*);
-		QToolButton* InsertToolButton ( QAction*, int = -1);
-		QToolButton* GetButtonFromAction (QAction*);
-		void RemoveToolButton (QAction*);
-		void SetVisible (int, QAction*, bool);
+		QObject* GetObject ();
+		int ButtonsCount () const;
+		QToolButton* AddAction (QAction*, bool = false);
+		QToolButton* InsertAction (QAction*, int pos = -1, bool = false);
+		QToolButton* GetButtonFromAction (QAction*) const;
+		void RemoveAction (QAction*);
+		void SetVisible (QAction*, bool);
 	protected:
 		void keyPressEvent (QKeyEvent*);
 		void resizeEvent (QResizeEvent*);
@@ -58,6 +63,9 @@ namespace Poshuku
 		void handleCompleterActivated ();
 		void textChanged (const QString& text);
 		void RepaintButtons ();
+		void handleTriggeredButton (QAction*);
+	signals:
+		void actionTriggered (QAction*, const QString&);
 	};
 }
 }
