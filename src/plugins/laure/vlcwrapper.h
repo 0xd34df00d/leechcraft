@@ -208,6 +208,14 @@ namespace Laure
 		/** @brief Is called when the next item is chosen.
 		 */
 		void handleNextItemSet ();
+		
+		/** @brief Sets and save the meta of the media.
+		 * 
+		 * @param[in] type Media type.
+		 * @param[in] value New media meta info.
+		 * @param[in] index Playlist item index.
+		 */
+		void setMeta (libvlc_meta_t type, const QString& value, int index); 
 	private slots:
 		void nowPlaying ();
 	signals:

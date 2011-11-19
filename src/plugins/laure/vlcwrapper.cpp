@@ -185,6 +185,13 @@ namespace Laure
 		}
 	}
 	
+	void VLCWrapper::setMeta (libvlc_meta_t type, const QString& value, int index)
+	{
+		auto m = libvlc_media_list_item_at_index (List_.get (), index);
+		libvlc_media_set_meta (m, type, value.toAscii ());
+		libvlc_media_save_meta (m);
+	}
+	
 	void VLCWrapper::playItem (int val)
 	{
 		const int count = RowCount ();

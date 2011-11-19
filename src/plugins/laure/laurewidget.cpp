@@ -50,6 +50,10 @@ namespace Laure
 		Ui_.setupUi (this);
 		Ui_.Player_->SetVLCWrapper (VLCWrapper_);
 		
+		connect (Ui_.PlayListWidget_,
+				SIGNAL (metaChangedRequest (libvlc_meta_t, QString, int)),
+				VLCWrapper_,
+				SLOT (setMeta (libvlc_meta_t, QString, int)));
 		connect (Ui_.Player_,
 				SIGNAL (timeout ()),
 				this,

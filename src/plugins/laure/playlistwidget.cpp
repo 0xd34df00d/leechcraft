@@ -33,8 +33,6 @@ namespace LeechCraft
 {
 namespace Laure
 {
-	const int PlayListColumnCount = 6;
-	
 	PlayListWidget::PlayListWidget (QWidget *parent)
 	: QWidget (parent)
 	, GridLayout_ (new QGridLayout (this))
@@ -45,8 +43,6 @@ namespace Laure
 		setLayout (GridLayout_);
 		setVisible (false);
 		
-		PlayListModel_->setColumnCount (PlayListColumnCount);
-		
 		QStringList headers;
 		
 		headers << tr ("Artist")
@@ -54,9 +50,15 @@ namespace Laure
 				<< tr ("Album")
 				<< tr ("Genre")
 				<< tr ("Date");
-		for (int i = 1; i < PlayListColumnCount; ++i)
+		for (int i = 1, count = PlayListModel_->columnCount ();
+				i < count; ++i)
 			PlayListModel_->setHeaderData (i, Qt::Horizontal,
 					headers [i - 1]);
+		
+		connect (PlayListModel_,
+				SIGNAL (itemChanged (QStandardItem*)),
+				this,
+				SLOT (handleItemChanged (QStandardItem*)));
 		
 		GridLayout_->addWidget (PlayListView_, 0, 0);
 		
@@ -113,6 +115,40 @@ namespace Laure
 				SIGNAL (playItem (int)),
 				this,
 				SIGNAL (playItem (int)));
+	}
+	
+	namespace
+	{
+		int MetaType (int row)
+		{
+			switch (row)
+			{
+			case 1:
+				return libvlc_meta_Artist;
+			case 2:
+				return libvlc_meta_Title;
+			case 3:
+				return libvlc_meta_Album;
+			case 4:
+				return libvlc_meta_Genre;
+			case 5:
+				return libvlc_meta_Date;
+			default:
+				return -1;
+			}
+		}
+	}
+	
+	void PlayListWidget::handleItemChanged (QStandardItem *item)
+	{
+		int type = MetaType (item->column ());
+		if (type == -1)
+			return;
+		
+		emit metaChangedRequest (static_cast<libvlc_meta_t> (type),
+				item->data (Qt::DisplayRole).toString ()
+						.toAscii (),
+				item->row ());
 	}
 	
 	void PlayListWidget::handleItemPlayed (int row)

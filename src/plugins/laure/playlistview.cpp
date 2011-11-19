@@ -29,7 +29,7 @@ namespace LeechCraft
 {
 namespace Laure
 {
-	const int PlaylistColumnCount = 6;
+	const int PlayListColumnCount = 6;
 	
 	PlayListView::PlayListView (QStandardItemModel *model, QWidget *parent)
 	: QTreeView (parent)
@@ -37,7 +37,10 @@ namespace Laure
 	, CurrentItem_ (-1)
 	{
 		setModel (PlayListModel_);
-		PlayListModel_->setColumnCount (PlaylistColumnCount);
+		
+		PlayListModel_->setColumnCount (PlayListColumnCount);
+		
+		setEditTriggers (SelectedClicked);
 		setSelectionMode (ContiguousSelection);
 		setAlternatingRowColors (true);
 		hideColumn (0);
@@ -90,7 +93,7 @@ namespace Laure
 		
 		Q_FOREACH (QStandardItem *itemList, list)
 			itemList->setFlags (Qt::ItemIsSelectable | Qt::ItemIsEnabled
-					| Qt::ItemIsDropEnabled);
+					| Qt::ItemIsDropEnabled | Qt::ItemIsEditable);
 			
 		PlayListModel_->appendRow (list);
 	}

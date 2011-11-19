@@ -25,6 +25,7 @@
 
 class QKeyEvent;
 class QStandardItemModel;
+class QMouseEvent;
 
 namespace LeechCraft
 {
