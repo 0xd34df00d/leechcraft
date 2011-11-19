@@ -99,7 +99,7 @@ namespace ChatHistory
 		EntryCacheGetter_.prepare ("SELECT VisibleName FROM azoth_entrycache WHERE Id = :id;");
 
 		EntryCacheSetter_ = QSqlQuery (*DB_);
-		EntryCacheSetter_.prepare ("INSERT INTO azoth_entrycache (Id, VisibleName) "
+		EntryCacheSetter_.prepare ("INSERT OR REPLACE INTO azoth_entrycache (Id, VisibleName) "
 				"VALUES (:id, :visible_name);");
 
 		try
@@ -122,7 +122,7 @@ namespace ChatHistory
 					<< "unable to get saved accounts, we would be a bit more inefficient";
 		}
 	}
-	
+
 	void Storage::InitializeTables ()
 	{
 		Util::DBLock lock (*DB_);
@@ -166,7 +166,7 @@ namespace ChatHistory
 		{
 			if (tables.contains (table))
 				continue;
-			
+
 			const QString& queryStr = table2query [table];
 			if (!query.exec (queryStr))
 			{
@@ -174,10 +174,10 @@ namespace ChatHistory
 				throw std::runtime_error ("Unable to create tables for Azoth history");
 			}
 		}
-		
+
 		lock.Good ();
 	}
-	
+
 	QHash<QString, qint32> Storage::GetUsers ()
 	{
 		if (!UserSelector_.exec ())
@@ -185,15 +185,15 @@ namespace ChatHistory
 			Util::DBLock::DumpError (UserSelector_);
 			throw std::runtime_error ("Unable to perform user selection for Azoth history");
 		}
-		
+
 		QHash<QString, qint32> result;
 		while (UserSelector_.next ())
 			result [UserSelector_.value (1).toString ()] =
 					UserSelector_.value (0).toInt ();
-		
+
 		return result;
 	}
-	
+
 	qint32 Storage::GetUserID (const QString& entryId)
 	{
 		UserIDSelector_.bindValue (":entry_id", entryId);
@@ -202,15 +202,15 @@ namespace ChatHistory
 			Util::DBLock::DumpError (UserIDSelector_);
 			throw std::runtime_error ("ChatHistory::Storage::GetUserID: unable to get user's ID");
 		}
-		
+
 		if (!UserIDSelector_.next ())
 			return -1;
-		
+
 		qint32 result = UserIDSelector_.value (0).toInt ();
 		UserIDSelector_.finish ();
 		return result;
 	}
-	
+
 	void Storage::AddUser (const QString& id)
 	{
 		UserInserter_.bindValue (":entry_id", id);
@@ -220,7 +220,7 @@ namespace ChatHistory
 			return;
 		}
 		UserInserter_.finish ();
-		
+
 		try
 		{
 			Users_ [id] = GetUserID (id);
@@ -234,7 +234,7 @@ namespace ChatHistory
 					<< e.what ();
 		}
 	}
-	
+
 	QHash<QString, qint32> Storage::GetAccounts()
 	{
 		if (!AccountSelector_.exec ())
@@ -242,7 +242,7 @@ namespace ChatHistory
 			Util::DBLock::DumpError (AccountSelector_);
 			throw std::runtime_error ("Unable to perform account selection for Azoth history");
 		}
-		
+
 		QHash<QString, qint32> result;
 		while (AccountSelector_.next ())
 			result [AccountSelector_.value (1).toString ()] =
@@ -250,24 +250,24 @@ namespace ChatHistory
 
 		return result;
 	}
-	
+
 	qint32 Storage::GetAccountID (const QString& accId)
 	{
 		AccountIDSelector_.bindValue (":account_id", accId);
-		if (!AccountIDSelector_.exec ())	
+		if (!AccountIDSelector_.exec ())
 		{
 			Util::DBLock::DumpError (AccountIDSelector_);
 			throw std::runtime_error ("ChatHistory::Storage::GetAccountID: unable to get account ID");
 		}
-		
+
 		if (!AccountIDSelector_.next ())
 			return -1;
-		
+
 		qint32 result = AccountIDSelector_.value (0).toInt ();
 		AccountIDSelector_.finish ();
 		return result;
 	}
-	
+
 	void Storage::AddAccount (const QString& id)
 	{
 		AccountInserter_.bindValue (":account_id", id);
@@ -277,7 +277,7 @@ namespace ChatHistory
 			return;
 		}
 		AccountInserter_.finish ();
-		
+
 		try
 		{
 			Accounts_ [id] = GetAccountID (id);
@@ -291,7 +291,7 @@ namespace ChatHistory
 					<< e.what ();
 		}
 	}
-	
+
 	void Storage::addMessage (const QVariantMap& data)
 	{
 		Util::DBLock lock (*DB_);
@@ -306,7 +306,7 @@ namespace ChatHistory
 					<< e.what ();
 			return;
 		}
-		
+
 		const QString& entryID = data ["EntryID"].toString ();
 
 		if (!Users_.contains (entryID))
@@ -324,7 +324,7 @@ namespace ChatHistory
 				return;
 			}
 		}
-		
+
 		EntryCacheSetter_.bindValue (":id", Users_ [entryID]);
 		EntryCacheSetter_.bindValue (":visible_name", data ["VisibleName"]);
 		if (!EntryCacheSetter_.exec ())
@@ -378,15 +378,15 @@ namespace ChatHistory
 			Util::DBLock::DumpError (MessageDumper_);
 			return;
 		}
-		
+
 		lock.Good ();
 	}
-	
+
 	void Storage::getOurAccounts ()
 	{
 		emit gotOurAccounts (Accounts_.keys ());
 	}
-	
+
 	void Storage::getUsersForAccount (const QString& accountId)
 	{
 		if (!Accounts_.contains (accountId))
@@ -398,25 +398,25 @@ namespace ChatHistory
 					<< Accounts_;
 			return;
 		}
-		
+
 		UsersForAccountGetter_.bindValue (":account_id", Accounts_ [accountId]);
 		if (!UsersForAccountGetter_.exec ())
 		{
 			Util::DBLock::DumpError (UsersForAccountGetter_);
 			return;
 		}
-		
+
 		QStringList result;
 		QStringList cachedNames;
 		while (UsersForAccountGetter_.next ())
 		{
 			const int id = UsersForAccountGetter_.value (0).toInt ();
 			result << UsersForAccountGetter_.value (1).toString ();
-			
+
 			EntryCacheGetter_.bindValue (":id", id);
 			if (!EntryCacheGetter_.exec ())
 				Util::DBLock::DumpError (EntryCacheGetter_);
-			
+
 			EntryCacheGetter_.next ();
 			cachedNames << EntryCacheGetter_.value (0).toString ();
 		}
@@ -424,7 +424,7 @@ namespace ChatHistory
 
 		emit gotUsersForAccount (result, accountId, cachedNames);
 	}
-	
+
 	void Storage::getChatLogs (const QString& accountId,
 			const QString& entryId, int backpages, int amount)
 	{
@@ -451,13 +451,13 @@ namespace ChatHistory
 		HistoryGetter_.bindValue (":account_id", Accounts_ [accountId]);
 		HistoryGetter_.bindValue (":limit", amount);
 		HistoryGetter_.bindValue (":offset", amount * backpages);
-		
+
 		if (!HistoryGetter_.exec ())
 		{
 			Util::DBLock::DumpError (HistoryGetter_);
 			return;
 		}
-		
+
 		QList<QVariant> result;
 		while (HistoryGetter_.next ())
 		{
@@ -469,10 +469,10 @@ namespace ChatHistory
 			map ["Type"] = HistoryGetter_.value (4);
 			result.prepend (map);
 		}
-		
+
 		emit gotChatLogs (accountId, entryId, backpages, amount, result);
 	}
-	
+
 	void Storage::search (const QString& accountId,
 			const QString& entryId, const QString& text, int shift)
 	{
@@ -513,12 +513,12 @@ namespace ChatHistory
 					<< "unable to move to the next entry";
 			return;
 		}
-		
+
 		const int index = LogsSearcher_.value (0).toInt ();
-		
+
 		emit gotSearchPosition (accountId, entryId, index);
 	}
-	
+
 	void Storage::clearHistory (const QString& accountId, const QString& entryId)
 	{
 		if (!Accounts_.contains (accountId) ||
@@ -532,7 +532,7 @@ namespace ChatHistory
 		}
 		HistoryClearer_.bindValue (":entry_id", Users_ [entryId]);
 		HistoryClearer_.bindValue (":account_id", Accounts_ [accountId]);
-		
+
 		if (!HistoryClearer_.exec ())
 			Util::DBLock::DumpError (HistoryClearer_);
 	}

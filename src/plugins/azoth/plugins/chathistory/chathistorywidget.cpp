@@ -32,7 +32,7 @@ namespace Azoth
 namespace ChatHistory
 {
 	Plugin *ChatHistoryWidget::S_ParentMultiTabs_ = 0;
-	
+
 	const int Amount = 50;
 
 	void ChatHistoryWidget::SetParentMultiTabs (Plugin *ch)
@@ -54,10 +54,11 @@ namespace ChatHistory
 		Ui_.setupUi (this);
 
 		SortFilter_->setDynamicSortFilter (true);
+		SortFilter_->setSortCaseSensitivity (Qt::CaseInsensitive);
 		SortFilter_->setSourceModel (ContactsModel_);
 		SortFilter_->sort (0);
 		Ui_.Contacts_->setModel (SortFilter_);
-		
+
 		connect (Ui_.ContactsSearch_,
 				SIGNAL (textChanged (const QString&)),
 				SortFilter_,
@@ -66,7 +67,7 @@ namespace ChatHistory
 				SIGNAL (currentRowChanged (const QModelIndex&, const QModelIndex&)),
 				this,
 				SLOT (handleContactSelected (const QModelIndex&)));
-		
+
 		connect (Core::Instance ().get (),
 				SIGNAL (gotUsersForAccount (const QStringList&, const QString&, const QStringList&)),
 				this,
@@ -83,7 +84,7 @@ namespace ChatHistory
 				SIGNAL (gotSearchPosition (const QString&, const QString&, int)),
 				this,
 				SLOT (handleGotSearchPosition (const QString&, const QString&, int)));
-		
+
 		Toolbar_->addAction (tr ("Previous"),
 				this,
 				SLOT (previousHistory ()))->
@@ -100,13 +101,13 @@ namespace ChatHistory
 
 		Core::Instance ()->GetOurAccounts ();
 	}
-	
+
 	void ChatHistoryWidget::Remove ()
 	{
 		emit removeSelf (this);
 		deleteLater ();
 	}
-	
+
 	QToolBar* ChatHistoryWidget::GetToolBar () const
 	{
 		return Toolbar_;
@@ -116,17 +117,17 @@ namespace ChatHistory
 	{
 		return Core::Instance ()->GetTabClass ();
 	}
-	
+
 	QObject* ChatHistoryWidget::ParentMultiTabs ()
 	{
 		return S_ParentMultiTabs_;
 	}
-	
+
 	QList<QAction*> ChatHistoryWidget::GetTabBarContextMenuActions () const
 	{
 		return QList<QAction*> ();
 	}
-	
+
 	void ChatHistoryWidget::handleGotOurAccounts (const QStringList& accounts)
 	{
 		IProxyObject *proxy = Core::Instance ()->GetPluginProxy ();
@@ -158,7 +159,7 @@ namespace ChatHistory
 						<< EntryToFocus_->GetObject ();
 				return;
 			}
-			
+
 			const QString& id = entryAcc->GetAccountID ();
 			for (int i = 0; i < Ui_.AccountBox_->count (); ++i)
 				if (id == Ui_.AccountBox_->itemData (i).toString ())
@@ -169,7 +170,7 @@ namespace ChatHistory
 				}
 		}
 	}
-	
+
 	void ChatHistoryWidget::handleGotUsersForAccount (const QStringList& users,
 			const QString& id, const QStringList& nameCache)
 	{
@@ -178,7 +179,7 @@ namespace ChatHistory
 
 		IProxyObject *proxy = Core::Instance ()->GetPluginProxy ();
 		ContactsModel_->clear ();
-		
+
 		QStandardItem *ourFocus = 0;
 		const QString& focusId = EntryToFocus_ ?
 				EntryToFocus_->GetEntryID () :
@@ -189,21 +190,20 @@ namespace ChatHistory
 			ICLEntry *entry = qobject_cast<ICLEntry*> (proxy->GetEntry (user, id));
 			const QString& name = entry ?
 					entry->GetEntryName () :
-					(nameCache.value (i).isEmpty () ? 
+					(nameCache.value (i).isEmpty () ?
 						user :
 						nameCache.value (i));
-					
+
 			EntryID2NameCache_ [user] = name;
 
 			QStandardItem *item = new QStandardItem (name);
 			item->setData (user, MRIDRole);
 			ContactsModel_->appendRow (item);
-			
+
 			if (!ourFocus && user == focusId)
 				ourFocus = item;
 		}
-		
-		
+
 		if (ourFocus)
 		{
 			const QModelIndex& idx = ContactsModel_->indexFromItem (ourFocus);
@@ -211,7 +211,7 @@ namespace ChatHistory
 					setCurrentIndex (idx, QItemSelectionModel::SelectCurrent);
 		}
 	}
-	
+
 	void ChatHistoryWidget::handleGotChatLogs (const QString& accountId,
 			const QString& entryId, int, int, const QVariant& logsVar)
 	{
@@ -243,7 +243,7 @@ namespace ChatHistory
 
 		QList<QColor> colors = Core::Instance ()->
 				GetPluginProxy ()->GenerateColors ("hash");
-				
+
 		int scrollPos = -1;
 
 		Q_FOREACH (const QVariant& logVar, logsVar.toList ())
@@ -251,7 +251,7 @@ namespace ChatHistory
 			const QVariantMap& map = logVar.toMap ();
 
 			const bool isChat = map ["Type"] == "CHAT";
-			
+
 			QString html;
 			if (SearchResultPosition_ == Amount - Amount_)
 				html = QString ("<div style='background-color: %1'>")
@@ -287,19 +287,19 @@ namespace ChatHistory
 						GetPluginProxy ()->GetNickColor (var, colors);
 				html += "<font color=\"" + color + "\">" + var + "</font>";
 			}
-			
+
 			html += postNick + ' ' + map ["Message"].toString ()
 					.replace ('<', "&lt;")
 					.replace ('\n', "<br/>");
 
 			if (isChat)
 			{
-				html.prepend (QString ("<font color=\"#") + 
+				html.prepend (QString ("<font color=\"#") +
 						(map ["Direction"] == "IN" ? "0000dd" : "dd0000") +
 						"\">");
 				html += "</font>";
 			}
-			
+
 			if (SearchResultPosition_ == Amount - Amount_++)
 			{
 				html += "</div>";
@@ -308,7 +308,7 @@ namespace ChatHistory
 
 			Ui_.HistView_->append (html);
 		}
-		
+
 		if (scrollPos >= 0)
 		{
 			QTextCursor cur (Ui_.HistView_->document ());
@@ -317,7 +317,7 @@ namespace ChatHistory
 			Ui_.HistView_->ensureCursorVisible ();
 		}
 	}
-	
+
 	void ChatHistoryWidget::handleGotSearchPosition (const QString& accountId,
 			const QString& entryId, int position)
 	{
@@ -333,7 +333,7 @@ namespace ChatHistory
 						.arg (PreviousSearchText_));
 			return;
 		}
-			
+
 		Backpages_ = position / Amount;
 		SearchResultPosition_ = position % Amount;
 		RequestLogs ();
@@ -343,10 +343,10 @@ namespace ChatHistory
 	{
 		const QString& id = Ui_.AccountBox_->itemData (idx).toString ();
 		Core::Instance ()->GetUsersForAccount (id);
-		
+
 		Ui_.HistorySearch_->clear ();
 	}
-	
+
 	void ChatHistoryWidget::handleContactSelected (const QModelIndex& index)
 	{
 		CurrentAccount_ = Ui_.AccountBox_->
@@ -354,12 +354,12 @@ namespace ChatHistory
 		CurrentEntry_ = index.data (MRIDRole).toString ();
 		Backpages_ = 0;
 		SearchResultPosition_ = -1;
-		
+
 		Ui_.HistorySearch_->clear ();
 
 		RequestLogs ();
 	}
-	
+
 	void ChatHistoryWidget::on_HistorySearch__returnPressed ()
 	{
 		const QString& text = Ui_.HistorySearch_->text ();
@@ -371,7 +371,7 @@ namespace ChatHistory
 			RequestLogs ();
 			return;
 		}
-		
+
 		if (text == PreviousSearchText_)
 			++SearchShift_;
 		else
@@ -379,30 +379,30 @@ namespace ChatHistory
 			SearchShift_ = 0;
 			PreviousSearchText_ = text;
 		}
-		
+
 		RequestSearch ();
 	}
-	
+
 	void ChatHistoryWidget::previousHistory ()
 	{
 		if (Amount_ < Amount)
 			return;
-		
+
 		++Backpages_;
 		SearchResultPosition_ = -1;
 		RequestLogs ();
 	}
-	
+
 	void ChatHistoryWidget::nextHistory ()
 	{
 		if (Backpages_ <= 0)
 			return;
-		
+
 		--Backpages_;
 		SearchResultPosition_ = -1;
 		RequestLogs ();
 	}
-	
+
 	void ChatHistoryWidget::clearHistory ()
 	{
 		if (CurrentAccount_.isEmpty () ||
@@ -413,19 +413,19 @@ namespace ChatHistory
 						.arg (CurrentEntry_),
 					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 			return;
-		
+
 		Core::Instance ()->ClearHistory (CurrentAccount_, CurrentEntry_);
-		
+
 		Backpages_ = 0;
 		RequestLogs ();
 	}
-	
+
 	void ChatHistoryWidget::RequestLogs ()
 	{
 		Core::Instance ()->GetChatLogs (CurrentAccount_,
 				CurrentEntry_, Backpages_, Amount);
 	}
-	
+
 	void ChatHistoryWidget::RequestSearch()
 	{
 		Core::Instance ()->Search (CurrentAccount_,
