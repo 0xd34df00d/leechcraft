@@ -225,6 +225,5 @@ namespace Poshuku
 	{
 		emit actionTriggered (action, text ());
 	}
-
 }
 }
