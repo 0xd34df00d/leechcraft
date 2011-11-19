@@ -72,6 +72,7 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 , IsQuitting_ (false)
 , Splash_ (new QSplashScreen (QPixmap (":/resources/images/funsplash.jpg"),
 		Qt::SplashScreen))
+, IsToolBarVisible_ (true)
 {
 	Guard_ = new ToolbarGuard (this);
 	setUpdatesEnabled (false);
@@ -165,6 +166,8 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 			SLOT (handleCloseCurrentTab ()),
 			0,
 			Qt::ApplicationShortcut);
+
+    Ui_.ActionShowToolBar_->setChecked (IsToolBarVisible_);
 }
 
 void LeechCraft::MainWindow::handleShortcutFullscreenMode ()
@@ -343,6 +346,9 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	XmlSettingsManager::Instance ()->RegisterObject ("ToolButtonStyle",
 			this, "handleToolButtonStyleChanged");
 	handleToolButtonStyleChanged ();
+	XmlSettingsManager::Instance ()->RegisterObject ("ToolBarVisibilityManipulation",
+			this, "handleToolBarManipulationChanged");
+	handleToolBarManipulationChanged ();
 
 	LanguageOnLoad_ = XmlSettingsManager::Instance ()->property ("Language").toString ();
 
@@ -606,8 +612,17 @@ void LeechCraft::MainWindow::on_MainTabWidget__currentChanged (int index)
 {
 	QToolBar *bar = Core::Instance ().GetToolBar (index);
 	GetGuard ()->AddToolbar (bar);
-	if (Ui_.MainTabWidget_->WidgetCount () > 0 && bar)
-		bar->setVisible (!isFullScreen ());
+	if (Ui_.MainTabWidget_->WidgetCount () > 0 &&
+			bar)
+		bar->setVisible (IsToolBarVisible_);
+}
+
+void MainWindow::on_ActionShowToolBar__triggered (bool visible)
+{
+	IsToolBarVisible_ = visible;
+	QToolBar *bar = Core::Instance ().GetToolBar (Ui_.MainTabWidget_->CurrentIndex ());
+	if (bar)
+		bar->setVisible (IsToolBarVisible_);
 }
 
 namespace
@@ -630,6 +645,14 @@ namespace
 void LeechCraft::MainWindow::handleToolButtonStyleChanged ()
 {
 	setToolButtonStyle (GetToolButtonStyle ());
+}
+
+void MainWindow::handleToolBarManipulationChanged ()
+{
+	if (XmlSettingsManager::Instance ()->property ("ToolBarVisibilityManipulation").toBool())
+		MenuView_->insertAction (0, Ui_.ActionShowToolBar_);
+	else
+		MenuView_->removeAction (Ui_.ActionShowToolBar_);
 }
 
 void LeechCraft::MainWindow::handleNewTabMenuRequested ()
@@ -840,13 +863,13 @@ void LeechCraft::MainWindow::InitializeShortcuts ()
 void LeechCraft::MainWindow::ShowMenuAndBar (bool show)
 {
 	int cur = Ui_.MainTabWidget_->CurrentIndex ();
-	if (Core::Instance ().GetToolBar (cur))
+	if (Core::Instance ().GetToolBar (cur) &&
+			!XmlSettingsManager::Instance ()->property ("ToolBarVisibilityManipulation").toBool ())
 		Core::Instance ().GetToolBar (cur)->setVisible (show);
-	Ui_.MainTabWidget_->SetToolBarVisible (show);
 	Ui_.ActionFullscreenMode_->setChecked (!show);
 }
 
-void LeechCraft::MainWindow::keyPressEvent(QKeyEvent* e)
+void LeechCraft::MainWindow::keyPressEvent (QKeyEvent *e)
 {
 	int index = (e->key () & ~Qt::CTRL) - Qt::Key_0;
 	if (index == 0)
@@ -855,3 +878,15 @@ void LeechCraft::MainWindow::keyPressEvent(QKeyEvent* e)
 	if (index >= 0 && index < std::min (10, Ui_.MainTabWidget_->WidgetCount ()))
 		Ui_.MainTabWidget_->setCurrentIndex (index);
 }
+
+void LeechCraft::MainWindow::keyReleaseEvent (QKeyEvent *e)
+{
+	if (e->key () == Qt::Key_Alt &&
+			XmlSettingsManager::Instance ()->property ("ToolBarVisibilityManipulation").toBool ())
+	{
+		on_ActionShowToolBar__triggered (!IsToolBarVisible_);
+		Ui_.ActionShowToolBar_->setChecked (IsToolBarVisible_);
+	}
+}
+
+
