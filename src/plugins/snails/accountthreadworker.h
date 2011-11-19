@@ -46,7 +46,7 @@ namespace Snails
 		Message_ptr FromHeaders (const vmime::ref<vmime::net::message>&) const;
 		void FetchMessagesPOP3 (Account::FetchFlags);
 		void FetchMessagesIMAP (Account::FetchFlags, const QList<QStringList>&, vmime::ref<vmime::net::store>);
-		void FetchMessagesInFolder (vmime::ref<vmime::net::folder>);
+		void FetchMessagesInFolder (const QStringList&, vmime::ref<vmime::net::folder>);
 		void SyncIMAPFolders (vmime::ref<vmime::net::store>);
 		QList<Message_ptr> FetchFullMessages (const std::vector<vmime::ref<vmime::net::message>>&);
 	public slots:

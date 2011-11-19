@@ -338,28 +338,37 @@ namespace Snails
 		emit gotMsgHeaders (newMessages);
 	}
 
+	namespace
+	{
+		vmime::net::folder::path Folder2Path (const QStringList& folder)
+		{
+			if (folder.isEmpty ())
+				return vmime::net::folder::path ("INBOX");
+
+			vmime::net::folder::path path;
+			Q_FOREACH (const auto& comp, folder)
+				path.appendComponent (vmime::word (comp.toUtf8 ().constData (), vmime::charsets::UTF_8));
+			return path;
+		}
+	}
+
 	void AccountThreadWorker::FetchMessagesIMAP (Account::FetchFlags fetchFlags,
 			const QList<QStringList>& origFolders, vmime::ref<vmime::net::store> store)
 	{
-		QList<decltype (store->getDefaultFolder ())> folders { store->getDefaultFolder () };
+		FetchMessagesInFolder (QStringList ("INBOX"), store->getDefaultFolder ());
 
 		Q_FOREACH (const auto& folder, origFolders)
 		{
 			if (folder == QStringList ("INBOX"))
 				continue;
 
-			vmime::net::folder::path path;
-			Q_FOREACH (const auto& comp, folder)
-				path.appendComponent (vmime::word (comp.toUtf8 ().constData (), vmime::charsets::UTF_8));
-
-			folders << store->getFolder (path);
+			auto netFolder = store->getFolder (Folder2Path (folder));
+			FetchMessagesInFolder (folder, netFolder);
 		}
-
-		Q_FOREACH (auto folder, folders)
-			FetchMessagesInFolder (folder);
 	}
 
-	void AccountThreadWorker::FetchMessagesInFolder (vmime::utility::ref<vmime::net::folder> folder)
+	void AccountThreadWorker::FetchMessagesInFolder (const QStringList& folderName,
+			vmime::utility::ref<vmime::net::folder> folder)
 	{
 		folder->open (vmime::net::folder::MODE_READ_WRITE);
 		auto messages = folder->getMessages ();
@@ -394,7 +403,12 @@ namespace Snails
 
 		QList<Message_ptr> newMessages;
 		std::transform (messages.begin (), messages.end (), std::back_inserter (newMessages),
-				[this] (decltype (messages.front ()) msg) { return FromHeaders (msg); });
+				[this, &folderName] (decltype (messages.front ()) msg)
+				{
+					auto res = FromHeaders (msg);
+					res->SetFolder (folderName);
+					return res;
+				});
 
 		QList<Message_ptr> updatedMessages;
 		Q_FOREACH (Message_ptr msg, newMessages)
@@ -573,7 +587,7 @@ namespace Snails
 		auto store = MakeStore ();
 		store->connect ();
 
-		auto folder = store->getDefaultFolder ();
+		auto folder = store->getFolder (Folder2Path (origMsg->GetFolder ()));
 		folder->open (vmime::net::folder::MODE_READ_WRITE);
 
 		auto messages = folder->getMessages ();
