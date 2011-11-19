@@ -23,6 +23,7 @@
 #include <QObject>
 
 class QTcpSocket;
+class QSslSocket;
 
 namespace LeechCraft
 {
@@ -40,7 +41,10 @@ namespace Acetamide
 
 		IrcAccount *Account_;
 		IrcServerHandler *ISH_;
-		boost::shared_ptr<QTcpSocket> TcpSocket_ptr;
+
+		bool SSL_;
+
+		boost::shared_ptr<QTcpSocket> Socket_ptr;
 	public:
 		IrcServerSocket (IrcServerHandler*);
 		void ConnectToHost (const QString&, int);
