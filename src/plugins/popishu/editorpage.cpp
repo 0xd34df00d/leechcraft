@@ -32,8 +32,10 @@
 #include <Qsci/qscilexerdiff.h>
 #include <Qsci/qscilexerhtml.h>
 #include <Qsci/qscilexerjavascript.h>
+#if QSCINTILLA_VERSION >= 0x020501
 #include <Qsci/qscilexermatlab.h>
 #include <Qsci/qscilexeroctave.h>
+#endif
 #include <Qsci/qscilexerpython.h>
 #include <Qsci/qscilexerruby.h>
 #include <Qsci/qscilexersql.h>
@@ -80,8 +82,10 @@ namespace LeechCraft
 				DEFPAIR (JavaScript, es);
 				DEFPAIR (JavaScript, js);
 				DEFPAIR (JavaScript, qs);
+#if QSCINTILLA_VERSION >= 0x020501
 				DEFPAIR (MatLab, mat);
 				DEFPAIR (Octave, m);
+#endif
 				DEFPAIR (Python, py);
 				DEFPAIR (Ruby, rb);
 				DEFPAIR (SQL, sql);
@@ -106,8 +110,10 @@ namespace LeechCraft
 				DoctypeMenu_->addAction ("Diff")->setCheckable (true);
 				DoctypeMenu_->addAction ("HTML")->setCheckable (true);
 				DoctypeMenu_->addAction ("JavaScript")->setCheckable (true);
+#if QSCINTILLA_VERSION >= 0x020501
 				DoctypeMenu_->addAction ("MatLab")->setCheckable (true);
 				DoctypeMenu_->addAction ("Octave")->setCheckable (true);
+#endif
 				DoctypeMenu_->addAction ("Python")->setCheckable (true);
 				DoctypeMenu_->addAction ("Ruby")->setCheckable (true);
 				DoctypeMenu_->addAction ("SQL")->setCheckable (true);
@@ -717,10 +723,12 @@ namespace LeechCraft
 					result = new QsciLexerHTML (Ui_.TextEditor_);
 				else if (lang == "JavaScript")
 					result = new QsciLexerJavaScript (Ui_.TextEditor_);
+#if QSCINTILLA_VERSION >= 0x020501
 				else if (lang == "MatLab")
 					result = new QsciLexerMatlab (Ui_.TextEditor_);
 				else if (lang == "Octave")
 					result = new QsciLexerOctave (Ui_.TextEditor_);
+#endif
 				else if (lang == "Python")
 					result = new QsciLexerPython (Ui_.TextEditor_);
 				else if (lang == "Ruby")
