@@ -26,34 +26,86 @@
 
 class QDockWidget;
 class QGridLayout;
+class QStandardItemModel;
 
 namespace LeechCraft
 {
 namespace Laure
 {
 	class PlayListView;
-	class PlayListModel;
 	
+	/** @brief Provides a playlist widget with control tool buttons.
+	 * 
+	 * @author Minh Ngo <nlminhtl@gmail.com>
+	 */
 	class PlayListWidget : public QWidget
 	{
 		Q_OBJECT
 		
 		QGridLayout *GridLayout_;
-		PlayListModel *PlayListModel_;
+		QStandardItemModel *PlayListModel_;
 		PlayListView *PlayListView_;
 		QToolBar *ActionBar_;
 	public:
+		/** @brief Constructs a new PlayListWidget class
+		 * with the given parent.
+		 */
 		PlayListWidget (QWidget* = 0);
 	public slots:
-		void handleItemAdded (const MediaMeta&, const QString&);
-		void handleItemPlayed (int);
+		/** @brief Is called when the media file has added to
+		 * VLCWrapper.
+		 * 
+		 * @param[in] meta Media meta info.
+		 * @param[in] fileName Media file location.
+		 * 
+		 * @sa VLCWrapper
+		 * @sa MediaMeta
+		 */
+		void handleItemAdded (const MediaMeta& meta, const QString& fileName);
+		
+		/** @brief Is called when the media item has played
+		 * in VLCWrapper.
+		 * 
+		 * @param[in] row Item index.
+		 * 
+		 * @sa VLCWrapper
+		 */
+		void handleItemPlayed (int row);
+	private slots:
 		void handleExportPlayList ();
 	signals:
-		void itemAddedRequest (const QString&);
-		void itemRemoved (int);
-		void playItem (int);
+		/** @brief Notifies that the media file needs to be
+		 * added to VLCWrapper.
+		 * 
+		 * @param[out] location Media file location.
+		 * 
+		 * @sa VLCWrapper
+		 */
+		void itemAddedRequest (const QString& location);
+		
+		/** @brief Is emitted when the item index is removed.
+		 * 
+		 * @param[out] index Item index.
+		 */
+		void itemRemoved (int index);
+		
+		/** @brief Notifies that the given item needs to be played.
+		 * 
+		 * @param[out] index The index of the item to play.
+		 */
+		void playItem (int index);
+		
+
 		void gotEntity (const Entity&);
 		void delegateEntity (const Entity&, int*, QObject**);
+		
+		/** @brief Is emitted when the playback mode is changed.
+		 * 
+		 * @param[out] mode New playback mode.
+		 * 
+		 * @sa PlaybackMode
+		 */
+		void playbackModeChanged (PlaybackMode mode);
 	};
 }
 }

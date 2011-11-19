@@ -24,7 +24,9 @@
 #include <util/util.h>
 #include "laurewidget.h"
 #include "xmlsettingsmanager.h"
+#ifdef HAVE_LASTFM
 #include "lastfmsubmitter.h"
+#endif
 
 namespace LeechCraft
 {
@@ -37,7 +39,16 @@ namespace Laure
 				"lauresettings.xml");
 
 		Proxy_ = proxy;
-		LFSubmitter_ = new LastFMSubmitter (proxy, this);
+#ifdef HAVE_LASTFM
+		LFSubmitter_ = new LastFMSubmitter (this);
+		
+		LFSubmitter_->SetUsername (XmlSettingsManager::Instance ()
+				.property ("lastfm.login").toString ());
+		LFSubmitter_->SetPassword (XmlSettingsManager::Instance ()
+				.property ("lastfm.password").toString ());
+		
+		LFSubmitter_->Init (proxy->GetNetworkAccessManager ());
+#endif
 		LaureWidget::SetParentMultiTabs (this);
 
 		TabClassInfo tabClass =
@@ -115,11 +126,12 @@ namespace Laure
 	LaureWidget* Plugin::CreateTab ()
 	{
 		LaureWidget *w = new LaureWidget ();
-		w->Init (Proxy_);
+		
 		connect (w,
 				SIGNAL (needToClose ()),
 				this,
 				SLOT (handleNeedToClose ()));
+#ifdef HAVE_LASTFM
 		connect (w,
 				SIGNAL (currentTrackMeta (MediaMeta)),
 				LFSubmitter_,
@@ -128,6 +140,7 @@ namespace Laure
 				SIGNAL (trackFinished ()),
 				LFSubmitter_,
 				SLOT (submit ()));
+#endif
 		connect (w,
 				SIGNAL (gotEntity (Entity)),
 				this,

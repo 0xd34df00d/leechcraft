@@ -22,25 +22,41 @@
 #include <QFileDialog>
 #include <QDockWidget>
 #include <QTextStream>
+#include <QStandardItemModel>
 #include <vlc/vlc.h>
 #include <util/util.h>
 #include "chooseurldialog.h"
 #include "playlistaddmenu.h"
-#include "playlistmodel.h"
+#include "playbackmodemenu.h"
 
 namespace LeechCraft
 {
 namespace Laure
 {
+	const int PlayListColumnCount = 6;
+	
 	PlayListWidget::PlayListWidget (QWidget *parent)
 	: QWidget (parent)
 	, GridLayout_ (new QGridLayout (this))
-	, PlayListModel_ (new PlayListModel (this))
+	, PlayListModel_ (new QStandardItemModel (this))
 	, PlayListView_ (new PlayListView (PlayListModel_, this))
 	, ActionBar_ (new QToolBar (this))
 	{
 		setLayout (GridLayout_);
 		setVisible (false);
+		
+		PlayListModel_->setColumnCount (PlayListColumnCount);
+		
+		QStringList headers;
+		
+		headers << tr ("Artist")
+				<< tr ("Title")
+				<< tr ("Album")
+				<< tr ("Genre")
+				<< tr ("Date");
+		for (int i = 1; i < PlayListColumnCount; ++i)
+			PlayListModel_->setHeaderData (i, Qt::Horizontal,
+					headers [i - 1]);
 		
 		GridLayout_->addWidget (PlayListView_, 0, 0);
 		
@@ -50,35 +66,45 @@ namespace Laure
 		
 		QAction *actionAdd = new QAction (tr ("Add"), this);
 		QAction *actionRemove = new QAction (tr ("Remove"), this);
-		QAction *exportAction = new QAction (tr ("Export to m3u"), this);
+		QAction *actionPlayback = new QAction (tr ("Playback mode"), this);
+		QAction *actionExport = new QAction (tr ("Export to m3u"), this);
 		
-		PlayListAddMenu *menu = new PlayListAddMenu (this);
+		PlayListAddMenu *menuAdd = new PlayListAddMenu (this);
+		PlaybackModeMenu *menuMode = new PlaybackModeMenu (this);
 		
 		actionAdd->setProperty ("ActionIcon", "add");
 		actionRemove->setProperty ("ActionIcon", "remove");
-		exportAction->setProperty ("ActionIcon", "documentsaveas");
+		actionExport->setProperty ("ActionIcon", "documentsaveas");
 		
-		actionAdd->setMenu (menu);
+		actionAdd->setMenu (menuAdd);
 		actionAdd->setMenuRole (QAction::ApplicationSpecificRole);
+		
+		actionPlayback->setMenu (menuMode);
+		actionPlayback->setMenuRole (QAction::ApplicationSpecificRole);
 		
 		ActionBar_->setToolButtonStyle (Qt::ToolButtonIconOnly);
 		ActionBar_->setIconSize (QSize (16, 16));
 		ActionBar_->addAction (actionAdd);
 		ActionBar_->addAction (actionRemove);
-		ActionBar_->addAction (exportAction);
+		ActionBar_->addAction (actionPlayback);
+		ActionBar_->addAction (actionExport);
 
 		connect (actionRemove,
 				SIGNAL (triggered (bool)),
 				PlayListView_,
 				SLOT (removeSelectedRows ()));
-		connect (exportAction,
+		connect (actionExport,
 				SIGNAL (triggered (bool)),
 				this,
 				SLOT (handleExportPlayList ()));
-		connect (menu,
+		connect (menuAdd,
 				SIGNAL (addItem (QString)),
 				this,
 				SIGNAL (itemAddedRequest (QString)));
+		connect (menuMode,
+				SIGNAL (playbackModeChanged (PlaybackMode)),
+				this,
+				SIGNAL (playbackModeChanged (PlaybackMode)));
 		connect (PlayListView_,
 				SIGNAL (itemRemoved (int)),
 				this,
@@ -92,7 +118,7 @@ namespace Laure
 	void PlayListWidget::handleItemPlayed (int row)
 	{
 		PlayListView_->selectRow (row);
-		PlayListView_->Play (row);
+		PlayListView_->MarkPlayingItem (row);
 	}
 	
 	void PlayListWidget::handleItemAdded (const MediaMeta& meta,

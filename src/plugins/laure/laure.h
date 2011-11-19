@@ -34,8 +34,14 @@ namespace Laure
 	class LaureWidget;
 	class LastFMSubmitter;
 
-	/** @author Minh Ngo <nlminhtl@gmail.com>
-	 * @brief An implementation of the Laure's plugin interface
+	/** @brief Main plugin instance class.
+	 * 
+	 *  @author Minh Ngo <nlminhtl@gmail.com>
+	 * 
+	 * @sa IInfo
+	 * @sa IHaveTabs
+	 * @sa IEntityHandler
+	 * @sa IHaveSettings
 	 */
 	class Plugin : public QObject
 				, public IInfo
@@ -50,7 +56,9 @@ namespace Laure
 		QList<LaureWidget*> Others_;
 		ICoreProxy_ptr Proxy_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
+#ifdef HAVE_LASTFM
 		LastFMSubmitter *LFSubmitter_;
+#endif
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -59,12 +67,12 @@ namespace Laure
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
-
 		TabClasses_t GetTabClasses () const;
 		void TabOpenRequested (const QByteArray& tabClass);
-
+		
 		EntityTestHandleResult CouldHandle (const Entity&) const;
 		void Handle (Entity);
+		
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	private:
 		LaureWidget* CreateTab ();
@@ -76,7 +84,6 @@ namespace Laure
 		void changeTooltip (QWidget*, QWidget*);
 		void statusBarChanged (QWidget*, const QString&);
 		void raiseTab (QWidget*);
-		
 		void gotEntity (const Entity&);
 		void delegateEntity (const Entity&, int*, QObject**);
 	private slots:

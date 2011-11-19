@@ -24,34 +24,75 @@
 #include "vlcwrapper.h"
 
 class QKeyEvent;
+class QStandardItemModel;
 
 namespace LeechCraft
 {
 namespace Laure
 {
-	class PlayListModel;
+	enum Roles
+	{
+		IsPlayingRole = Qt::UserRole + 1
+	};
 	
+	/** @brief Provides a model/view implementation of a playlist view.
+	 * 
+	 * @author Minh Ngo <nlminhtl@gmail.com>
+	 */
 	class PlayListView : public QTreeView
 	{
 		Q_OBJECT
 		
-		PlayListModel *PlayListModel_;
+		QStandardItemModel *PlayListModel_;
 		int CurrentItem_;
 	public:
-		PlayListView (PlayListModel *model, QWidget* = 0);
+		/** @brief Constructs a new PlayListView class
+		 * with the given model and parent.
+		 * 
+		 * @param[in] model Playlist model.
+		 */
+		PlayListView (QStandardItemModel *model, QWidget* = 0);
 		
-		void AddItem (const MediaMeta&, const QString&);
-		void Play (int);
+		/** @brief Adds the item into the playlist.
+		 * 
+		 * @param[in] item Media meta info.
+		 * @param[in] fileName Media file location.
+		 * 
+		 * @sa MediaMeta
+		 */
+		void AddItem (const MediaMeta& item, const QString& fileName);
+		
+		/** @brief Sets the playing item.
+		 * 
+		 * @param[in] row  Item index.
+		 */
+		void MarkPlayingItem (int row);
 	protected:
 		void keyPressEvent (QKeyEvent*);
 	public slots:
-		void selectRow (int);
+		/** @brief Is called to select the item row.
+		 * 
+		 * @param[in] row Item index.
+		 */
+		void selectRow (int row);
+		
+		/** @brief Is called to remove selected rows.
+		 */
 		void removeSelectedRows ();
 	private slots:
 		void handleDoubleClicked (const QModelIndex&);
 	signals:
-		void itemRemoved (int);
-		void playItem (int);
+		/** @brief Is emitted when the item index is removed.
+		 * 
+		 * @param[out] index Item index.
+		 */
+		void itemRemoved (int index);
+		
+		/** @brief Notifies that the given item needs to be played.
+		 * 
+		 * @param[out] index The index of the item to play.
+		 */
+		void playItem (int index);
 	};
 }
 }

@@ -110,10 +110,11 @@ namespace Laure
 				SIGNAL (delegateEntity (Entity, int*, QObject**)),
 				this,
 				SIGNAL (delegateEntity (Entity, int*, QObject**)));
-	}
-	
-	void LaureWidget::Init (ICoreProxy_ptr proxy)
-	{
+		connect (Ui_.PlayListWidget_,
+				SIGNAL (playbackModeChanged (PlaybackMode)),
+				VLCWrapper_,
+				SLOT (setPlaybackMode (PlaybackMode)));
+		
 		InitToolBar ();
 		InitCommandFrame ();
 	}
@@ -227,10 +228,10 @@ namespace Laure
 	
 	void LaureWidget::updateInterface ()
 	{
-		Ui_.VolumeSlider_->setValue (VLCWrapper_->Volume ());
-		Ui_.PositionSlider_->setValue (Ui_.Player_->Position ());
-		const QTime& currTime = Ui_.Player_->Time ();
-		const QTime& length = Ui_.Player_->Length ();
+		Ui_.VolumeSlider_->setValue (VLCWrapper_->GetVolume ());
+		Ui_.PositionSlider_->setValue (Ui_.Player_->GetPosition ());
+		const QTime& currTime = Ui_.Player_->GetTime ();
+		const QTime& length = Ui_.Player_->GetLength ();
 		Ui_.TimeStamp_->setText ("[" + currTime.toString () + "/" + length.toString () + "]");
 	}
 	
@@ -277,14 +278,14 @@ namespace Laure
 				emit addItem (dialog->GetUrl ());
 			else
 				QMessageBox::warning (this,
-						tr ("The URL's not valid"),
-						tr ("The URL's not valid"));
+						tr ("The URL is not valid"),
+						tr ("The URL is not valid"));
 		}
 	}
 	
-	void LaureWidget::handleOpenMediaContent (const QString& val)
+	void LaureWidget::handleOpenMediaContent (const QString& location)
 	{
-		emit addItem (val);
+		emit addItem (location);
 	}
 	
 	void LaureWidget::handleOpenFile ()
@@ -304,7 +305,6 @@ namespace Laure
 
 		Ui_.Player_->setVisible (checked);
 		Ui_.PlayListWidget_->setVisible (!checked);
-		emit playListMode (!checked);
 	}
 }
 }

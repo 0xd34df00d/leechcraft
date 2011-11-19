@@ -26,15 +26,39 @@ namespace LeechCraft
 {
 namespace Laure
 {
+	/** @brief Provides a simple dialog for entering links to media content.
+	 * 
+	 *  @author Minh Ngo <nlminhtl@gmail.com>
+	 */
 	class ChooseURLDialog : public QDialog
 	{
 		Q_OBJECT
 		
 		Ui::ChooseURLDialog Ui_;
 	public:
+		/** @brief Constructs a new ChooseURLDialog dialog
+		 * with the given parent.
+		 */
 		ChooseURLDialog (QWidget* = 0);
 		
+		/** @brief Returns the media URL.
+		 * 
+		 * @return String with an URL.
+		 * 
+		 * @sa IsUrlValid()
+		 */
 		QString GetUrl () const;
+		
+		/** @brief Verifies the string returned by GetUrl().
+		 * 
+		 * The Url is run through a conformance test. Every part of the
+		 * Url must conform to the standard encoding rules of the URI
+		 * standard for the URL to be reported as valid.
+		 * 
+		 * @return True if the string is valid, false otherwise.
+		 * 
+		 * @sa GetUrl()
+		 */
 		bool IsUrlValid () const;
 	};
 }

@@ -30,8 +30,9 @@ namespace LeechCraft
 {
 namespace Laure
 {
-	/** @author Minh Ngo <nlminhtl@gmail.com>
-	 * @brief An implementation of the Volume slider
+	/** @brief An implementation of the Volume slider
+	 * 
+	 *  @author Minh Ngo <nlminhtl@gmail.com>
 	 */
 	class VolumeSlider : public QSlider
 	{
@@ -39,6 +40,9 @@ namespace Laure
 		
 		QPixmap VolumeSliderInset_, VolumeSliderGradient_;
 	public:
+		/** @brief Constructs a new VolumeSlider class
+		 * with the given parent.
+		 */
 		VolumeSlider (QWidget* = 0);
 	protected:
 		void paintEvent (QPaintEvent *ev);

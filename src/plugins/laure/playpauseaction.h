@@ -25,21 +25,41 @@ namespace LeechCraft
 {
 namespace Laure
 {
+	/** @brief Provides a play and pause actions in the single QAction.
+	 * 
+	 * @author Minh Ngo <nlminhtl@gmail.com>
+	 */
 	class PlayPauseAction : public QAction
 	{
 		Q_OBJECT
 
 		int Play_;
 	public:
-		PlayPauseAction (const QString& text, QObject *parent = 0);
+		/** @brief Constructs a new PlayPauseAction class
+		 * with the given text and parent.
+		 */
+		PlayPauseAction (const QString& text, QObject *parent = 0);	
+	private:
 		void SetIcon ();
 	public slots:
+		/** @brief Changes to the pause state.
+		 */
 		void handlePause ();
-		void handlePlay ();
-		void handleTriggered ();
 		
+		/** @brief Changes to the play state.
+		 */
+		void handlePlay ();
+	private slots:
+		void handleTriggered ();
 	signals:
+		/** @brief Is emitted when the state is changed to the
+		 * play state.
+		 */
 		void play ();
+		
+		/** @brief Is emitted when the state is changed to the
+		 * pause state.
+		 */
 		void pause();
 	};
 }
