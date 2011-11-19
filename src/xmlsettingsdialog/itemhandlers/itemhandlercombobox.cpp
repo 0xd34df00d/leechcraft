@@ -72,7 +72,7 @@ namespace LeechCraft
 
 		if (item.hasAttribute ("moreThisStuff"))
 		{
-			QPushButton *moreButt = new QPushButton (tr ("More stuff.."));
+			QPushButton *moreButt = new QPushButton (tr ("More stuff..."));
 			hboxLay->addWidget (moreButt);
 
 			moreButt->setObjectName (item.attribute ("moreThisStuff"));
