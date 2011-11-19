@@ -68,7 +68,7 @@ namespace Pogooglue
 
 	void Plugin::handleGoogleIt ()
 	{
-		LeechCraft::Entity e;
+		Entity e;
 
 		QString withoutPercent = SelectedText_;
 		withoutPercent.remove (QRegExp ("%%??",
@@ -114,7 +114,7 @@ namespace Pogooglue
 		SelectedText_ = view->page ()->selectedText ();
 
 		menu->addAction (QIcon (":/plugins/poshuku/plugins/pogooglue/resources/images/google.png"),
-				tr ("Google It..."),
+				tr ("Google It!"),
 				this,
 				SLOT (handleGoogleIt ()));
 	}

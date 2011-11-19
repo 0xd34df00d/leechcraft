@@ -195,7 +195,7 @@ OPTION (ENABLE_POSHUKU_KEYWORDS "Build support of url keywords for Poshuku brows
 OPTION (ENABLE_POSHUKU_ONLINEBOOKMARKS "Build support of online bookmark synchronization for Poshuku browser" ON)
 OPTION (ENABLE_POSHUKU_PINTAB "Build support of pinned tab for Poshuku browser" ON)
 OPTION (ENABLE_POSHUKU_WYFV "Build support of native flash-player's replacement for Poshuku browser" ON)
-OPTION (ENABLE_POSHUKU_POGOOGLUE "Build support of selected text search in google" ON)
+OPTION (ENABLE_POSHUKU_POGOOGLUE "Build support for searching selected text in Google" ON)
 
 IF (ENABLE_POSHUKU_CLEANWEB)
 	ADD_SUBDIRECTORY (plugins/cleanweb)
