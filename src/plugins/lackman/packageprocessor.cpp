@@ -112,7 +112,19 @@ namespace LackMan
 			}
 			else if (fi.isDir ())
 			{
-				if (!QDir (fi.path ()).rmdir (fi.fileName ()))
+				const QStringList& entries = QDir (fi.absoluteFilePath ())
+						.entryList (QDir::NoDotAndDotDot | QDir::AllEntries);
+				if (!entries.isEmpty ())
+				{
+#ifndef QT_NO_DEBUG
+					qDebug () << Q_FUNC_INFO
+							<< "non-empty directory"
+							<< fi.absoluteFilePath ()
+							<< entries;
+#endif
+					continue;
+				}
+				else if (!QDir (fi.path ()).rmdir (fi.fileName ()))
 				{
 					qWarning () << Q_FUNC_INFO
 							<< "could not remove directory"
