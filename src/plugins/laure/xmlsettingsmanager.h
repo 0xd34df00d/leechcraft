@@ -25,12 +25,18 @@ namespace LeechCraft
 {
 namespace Laure
 {
+	/** @brief Provides a settings manager for Laure plugin.
+	 * 
+	 * @author Minh Ngo <nlminhtl@gmail.com>
+	 */
 	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
 		Q_OBJECT
 
 		XmlSettingsManager ();
 	public:
+		/** @brief Returns a global XmlSettingsManager instance.
+		 */
 		static XmlSettingsManager& Instance ();
 	protected:
 		virtual QSettings* BeginSettings () const;

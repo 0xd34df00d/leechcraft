@@ -28,6 +28,10 @@ namespace LeechCraft
 {
 namespace Laure
 {
+	/** @brief Provides a separate video frame widget.
+	 * 
+	 * @author Minh Ngo <nlminhtl@gmail.com>
+	 */
 	class SeparatePlayerWidget : public QWidget
 	{
 		Q_OBJECT

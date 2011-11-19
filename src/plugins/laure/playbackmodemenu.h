@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011 Minh Ngo
+ * Copyright (C) 2011  Minh Ngo
  * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,31 +17,47 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "playlistmodel.h"
+#ifndef PLUGINS_LAURE_PLAYBACKMODEMENU_H
+#define PLUGINS_LAURE_PLAYBACKMODEMENU_H
+#include <QMenu>
+#include "vlcwrapper.h"
 
 namespace LeechCraft
 {
 namespace Laure
 {
-	const int PlayListColumnCount = 6;
-	
-	PlayListModel::PlayListModel (QObject* parent)
-	: QStandardItemModel (parent)
+	/** @brief Provides a menu for choosing a playback mode.
+	 * 
+	 * @author Minh Ngo <nlminhtl@gmail.com>
+	 */
+	class PlaybackModeMenu : public QMenu
 	{
-		setColumnCount (PlayListColumnCount);
-		HeaderNames_ << tr ("Artist")
-				<< tr ("Title")
-				<< tr ("Album")
-				<< tr ("Genre")
-				<< tr ("Date");
-		for (int i = 1; i < PlayListColumnCount; ++i)
-			setHeaderData (i, Qt::Horizontal, HeaderNames_ [i - 1]);
-	}
-	
-	Qt::ItemFlags PlayListModel::flags (const QModelIndex& index) const
-	{
-		return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
-	}
+		Q_OBJECT
+		PlaybackMode PlaybackMode_;
+	public:
+		/** @brief Constructs a new PlaybackModeMenu class
+		 * with the given parent.
+		 */
+		PlaybackModeMenu (QWidget* = 0);
+		
+		/** @brief Returns the playback mode.
+		 * 
+		 * @sa PlaybackMode
+		 */
+		PlaybackMode GetPlaybackMode () const;
+	private slots:
+		void handleMenuDefault ();
+		void handleMenuRepeat ();
+		void handleMenuLoop ();
+	signals:
+		/** @brief Is emitted when a playback mode is chosen.
+		 * 
+		 * @param[out] mode Playback mode.
+		 * 
+		 * @sa PlaybackMode
+		 */
+		void playbackModeChanged (PlaybackMode mode);
+	};
 }
 }
-
+#endif // PLUGINS_LAURE_PLAYBACKMODEMENU_H

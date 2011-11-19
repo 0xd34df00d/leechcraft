@@ -34,7 +34,9 @@ namespace LeechCraft
 {
 namespace Laure
 {
-	/** @brief The LastFMSubmitter class provides a simple interface for interacting with the last.fm scrobbling service.
+	/** @brief The LastFMSubmitter class provides a simple interface for
+	 * interacting with the last.fm scrobbling service.
+	 * 
 	 *  @author Minh Ngo <nlminhtl@gmail.com>
 	 */
 	class LastFMSubmitter : public QObject
@@ -42,33 +44,66 @@ namespace Laure
 		Q_OBJECT
 		
 		boost::shared_ptr<lastfm::Audioscrobbler> Scrobbler_;
+		QString Password_;
 	public:
-		/** @brief Constructs a new LastFMSubmitter with the given
-		 * ICoreProxy_ptr and parent.
-		 * 
-		 * @sa ICoreProxy_ptr
+		/** @brief Constructs a new LastFMSubmitter with the given parent.
 		 */
-		LastFMSubmitter (ICoreProxy_ptr proxy, QObject *parent = 0);
+		LastFMSubmitter (QObject *parent = 0);
+		
+		/** @brief Initializes the submitter.
+		 * 
+		 * This method is called to generate last.fm session key and
+		 * connect to the last.fm service.
+		 * 
+		 * Don't call it before setting up username and password.
+		 * 
+		 * @param[in] manager Network access manager.
+		 * 
+		 * @sa SetUsername()
+		 * @sa SetPassword()
+		 */
+		void Init (QNetworkAccessManager *manager);
+		
+		/** @brief Sets last.fm username for connecting to the service.
+		 * 
+		 * @param[in] username Username.
+		 * 
+		 * @sa SetPassword()
+		 */
+		void SetUsername (const QString& username);
+		
+		/** @brief Sets last.fm password for connecting to the service.
+		 * 
+		 * @param[in] password Password.
+		 */
+		void SetPassword (const QString& password);
 		
 		/** @brief Returns connection state of the Scrobbler.
 		 * 
-		 * @return true if it's connected, false otherwise.
+		 * @return True if it is connected, false otherwise.
+		 * 
+		 * @sa SetUsername()
 		 */
 		bool IsConnected () const;
 	public slots:
 		
 		/** @brief Send meta info about the current track to the last.fm service.
 		 * 
-		 * @sa MediaMeta
+		 * @param[in] info Media meta info.
 		 */
-		void sendTrack (const MediaMeta&);
+		void sendTrack (const MediaMeta& info);
 		
 		/** @brief Submit the submission cache for the current user.
 		 */
 		void submit ();
 	private slots:
-		void status (int);
 		void getSessionKey ();
+	signals:
+		/** @brief Is emitted to show status in an appropriate manner.
+		 * 
+		 * See https://github.com/mxcl/liblastfm/blob/master/src/scrobble/Audioscrobbler.h
+		 */
+		void status (int code);
 	};
 }
 }

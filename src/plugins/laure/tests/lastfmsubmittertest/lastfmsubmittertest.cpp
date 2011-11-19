@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011 Minh Ngo
+ * Copyright (C) 2011  Minh Ngo
  * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,29 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LAURE_PLAYLISTMODEL_H
-#define PLUGINS_LAURE_PLAYLISTMODEL_H
-#include <QStandardItemModel>
+#include "lastfmsubmittertest.h"
 
-namespace LeechCraft
-{
-namespace Laure
-{
-	class PlayListModel : public QStandardItemModel
-	{
-		Q_OBJECT
-		
-		QStringList HeaderNames_;
-	public:
-		enum
-		{
-			IsPlayingRole = Qt::UserRole + 1
-		};
-		
-		PlayListModel (QObject *);
-		Qt::ItemFlags flags (const QModelIndex&) const;
-	};
-}
-}
-
-#endif // PLUGINS_LAURE_PLAYLISTMODEL_H
+QTEST_MAIN (LastFMSubmitterTest)

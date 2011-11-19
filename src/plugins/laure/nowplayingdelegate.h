@@ -30,12 +30,23 @@ namespace Laure
 {
 	class PlayListModel;
 	
+	/** @brief Provides display facilities for playlist items
+	 * from a model.
+	 * 
+	 * @author Minh Ngo <nlminhtl@gmail.com>
+	 */
 	class NowPlayingDelegate : public QItemDelegate
 	{
 		Q_OBJECT
-		
 	public:
+		/** @brief Constructs a new NowPlayingDelegate class
+		 * with the given parent.
+		 */
 		NowPlayingDelegate (QObject* = 0);
+		
+		/** @brief Renders the delegate using the given painter and
+		 * style option for the item specified by index.
+		 */
 		void paint (QPainter *painter, const QStyleOptionViewItem& option,
 				const QModelIndex& id) const;
 	};

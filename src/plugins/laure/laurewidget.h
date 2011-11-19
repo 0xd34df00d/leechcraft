@@ -35,6 +35,12 @@ namespace Laure
 	class PlayListWidget;
 	class PlayPauseAction;
 	
+	/** @brief Represents a tab in LeechCraft tabs system.
+	 * 
+	 * @author Minh Ngo <nlminhtl@gmail.com>
+	 * 
+	 * @sa ITabWidget
+	 */
 	class LaureWidget : public QWidget
 				, public ITabWidget
 	{
@@ -47,31 +53,58 @@ namespace Laure
 		Ui::LaureWidget Ui_;
 		VLCWrapper *VLCWrapper_;
 	public:
+		/** @brief Constructs a new LaureWidget tab
+		 * with the given parent and flags.
+		 */
 		LaureWidget (QWidget *parent = 0, Qt::WindowFlags f = 0);
 		
-		void Init (ICoreProxy_ptr);
 		static void SetParentMultiTabs (QObject*);
 		TabClassInfo GetTabClassInfo () const;
 		QObject* ParentMultiTabs ();
 		void Remove ();
 		QToolBar* GetToolBar () const;
-		
-		void keyPressEvent (QKeyEvent *);
+	
+	protected:
+		void keyPressEvent (QKeyEvent*);
 	private:
 		void InitCommandFrame ();
 		void InitToolBar ();
 	signals:
+		/** @brief Is emitted to notify the Core that this tab needs to
+		 * be closed.
+		 */
 		void needToClose ();
+		
+		/** @brief Is emitted when the PlayPauseAction is clicked.
+		 */
 		void playPause ();
-		void currentTrackMeta (const MediaMeta&);
+		
+		/** @brief Is emitted for sending media meta info to the desired
+		 * destination.
+		 * 
+		 * @param[out] mediameta Media meta info.
+		 */
+		void currentTrackMeta (const MediaMeta& mediameta);
+		
+		/** @brief Is emitted when the current track is finished.
+		 */
 		void trackFinished ();
-		void addItem (const QString&);
+		
+		/** @brief Is emitted when the media item needs to be added to
+		 * the playlist.
+		 *
+		 * @param[out] location Media file location.
+		 */
+		void addItem (const QString& location);
+		
 		void gotEntity (const Entity&);
-		void delegateEntity (const Entity&,
-				int*, QObject**);
-		void playListMode (bool);
+		void delegateEntity (const Entity&, int*, QObject**);
 	public slots:
-		void handleOpenMediaContent (const QString&);
+		/** @brief Is called for adding media files to the playlist.
+		 * 
+		 * @param[in] location Media file location.
+		 */
+		void handleOpenMediaContent (const QString& location);
 	private slots:
 		void handleOpenFile ();
 		void handleOpenURL ();

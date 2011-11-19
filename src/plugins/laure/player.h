@@ -33,6 +33,10 @@ namespace Laure
 {
 	class VLCWrapper;
 	
+	/** @brief Provides a video frame.
+	 * 
+	 * @author Minh Ngo <nlminhtl@gmail.com>
+	 */
 	class Player : public QFrame
 	{
 		Q_OBJECT
@@ -40,15 +44,48 @@ namespace Laure
 		QTimer *Poller_;
 		VLCWrapper *VLCWrapper_;
 	public:
+		/** @brief Constructs a new PlaybackModeMenu class
+		 * with the given parent.
+		 */
 		Player (QWidget* = 0);
 		
+		/** @brief Sets a libvlc wrapper.
+		 * 
+		 * @param[in] core VLCWrapper.
+		 * 
+		 * @sa VLCWrapper
+		 */
 		void SetVLCWrapper (VLCWrapper *core);
-		QTime Time ();
-		QTime Length ();
-		int Position () const;
+		
+		/** @brief Returns current media time in the QTime format.
+		 */
+		QTime GetTime () const;
+		
+		/** @brief Returns current media length in the QTime format.
+		 */
+		QTime GetLength () const;
+		
+		/** @brief Returns current media position as the track slider position.
+		 * 
+		 * The minimum media position is 0. The maximum position is 10000.
+		 * 
+		 * @sa setPosition()
+		 */
+		int GetPosition () const;
 	public slots:
-		void setPosition (int);
+		
+		/** @brief Sets media position as the track slider position.
+		 * 
+		 * The minimum media position is 0. The maximum position is 10000.
+		 * 
+		 * @param[in] pos Media postion.
+		 * 
+		 * @sa GetPosition()
+		 */
+		void setPosition (int pos);
 	signals:
+		/** @brief Is emitted to update the GUI interface.
+		 */
 		void timeout ();
 	};
 }

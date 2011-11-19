@@ -37,6 +37,8 @@ namespace Laure
 	typedef boost::shared_ptr<libvlc_media_player_t> libvlc_media_player_ptr;
 	typedef boost::shared_ptr<libvlc_media_t> libvlc_media_ptr;
 	
+	/** @brief Provides a structure for storing media meta info
+	 */
 	struct MediaMeta
 	{
 		QString Artist_, Album_, Title_, Genre_, Date_;
@@ -44,6 +46,19 @@ namespace Laure
 		int Length_;
 	};
 	
+	/** @brief Defines playback modes for playlist.
+	 */
+	enum  PlaybackMode
+	{
+		PlaybackModeDefault,
+		PlaybackModeRepeat,
+		PlaybackModeLoop
+	};
+	
+	/** @brief Provides a wrapper around libvlc functions.
+	 * 
+	 * @author Minh Ngo <nlminhtl@gmail.com>
+	 */
 	class VLCWrapper : public QObject
 	{
 		Q_OBJECT
@@ -54,38 +69,175 @@ namespace Laure
 		libvlc_media_list_player_ptr LPlayer_;
 		libvlc_media_player_ptr Player_;
 	public:
+		/** @brief Constructs a new VLCWrapper class
+		 * with the given parent.
+		 */
 		VLCWrapper (QObject* = 0);
 		
+		/** @brief Returns libvlc playlist item count.
+		 */
 		int RowCount () const;
-		int CurrentItem () const;
+		
+		/** @brief Returns currently playing item index.
+		 */
+		int GetCurrentIndex () const;
+		
+		/** @brief Returns playback state.
+		 * 
+		 * @return True if it is playing, false otherwise.
+		 */
 		bool IsPlaying () const;
-		int Volume () const;
-		int Time () const;
-		int Length () const;
-		float MediaPosition () const;
+		
+		/** @brief Returns current volume.
+		 */
+		int GetVolume () const;
+		
+		/** @brief Get the current track time (in ms).
+		 *
+		 * @return The track time (in ms), or  a negative value if there
+		 * is no media.
+		 */
+		int GetTime () const;
+		
+		/** @brief Get the current track length (in ms).
+		 *
+		 * @return The track length (in ms), or  a negative value if there
+		 * is no media.
+		 */
+		int GetLength () const;
+		
+		/** @brief Returns current media position in the [0; 1] interval.
+		 * 
+		 * @return Track position, or a negative value. in case of error.
+		 */
+		float GetMediaPosition () const;
+		
+		/** @brief Returns media meta info for the item in the given row.
+		 * 
+		 * @param[in] row Item index.
+		 * 
+		 * @return Media meta info.
+		 */
 		MediaMeta GetItemMeta (int row) const;
 	public slots:
-		void addRow (const QString&);
-		void setWindow (int);
-		bool removeRow (int);
-		void playItem (int);
+		/** @brief Adds media file to the libvlc media list.
+		 * 
+		 * @param[in] location Media file location.
+		 */
+		void addRow (const QString& location);
+		
+		/** @brief Sets the video frame window.
+		 *
+		 * Set an X Window System drawable where the media player should render its
+		 * video output. If libvlc was built without X11 output support, then this has
+		 * no effects.
+		 * 
+		 * @param[in] winId Window identifier.
+		 */
+		void setWindow (int winId);
+		
+		/** @brief Removes the media item in the pos row.
+		 * 
+		 * @param[in] pos Item index.
+		 */
+		bool removeRow (int pos);
+		
+		/** @brief Plays the media item.
+		 * 
+		 * @param[in] val Item index.
+		 */
+		void playItem (int val);
+		
+		/** @brief Stop playing.
+		 * 
+		 * No effect if there is no media.
+		 * 
+		 * @sa play()
+		 * @sa pause()
+		 */
 		void stop ();
+		
+		/** @brief Pause.
+		 * 
+		 * No effect if there is no media.
+		 * 
+		 * @sa stop()
+		 * @sa play()
+		 */
 		void pause ();
+		
+		/** @brief Play.
+		 * 
+		 * @sa stop()
+		 * @sa pause()
+		 */
 		void play ();
+		
+		/** @brief Play the next list media item.
+		 * 
+		 * @sa prev()
+		 */
 		void next ();
+		
+		/** @brief Play the previous list media item.
+		 * 
+		 * @sa next()
+		 */
 		void prev ();
-		void setVolume (int);
+		
+		/** @brief Sets a volume.
+		 */
+		void setVolume (int vol);
+		
+		/** @brief Sets media position in the [0; 1] interval.
+		 */
 		void setPosition (float);
 		
+		/** @brief Sets the playback mode for the playlist.
+		 * 
+		 * @param mode Playback mode.
+		 * 
+		 * @sa PlaybackMode
+		 */
+		void setPlaybackMode (PlaybackMode mode);
+		
+		/** @brief Is called when the track is finished.
+		 */
 		void handledHasPlayed ();
+		
+		/** @brief Is called when the next item is chosen.
+		 */
 		void handleNextItemSet ();
 	private slots:
 		void nowPlaying ();
 	signals:
-		void currentTrackMeta (const MediaMeta&);
+		/** @brief Is emitted to notify about the current track
+		 * media meta info.
+		 * 
+		 * @param[out] meta Media meta info.
+		 */
+		void currentTrackMeta (const MediaMeta& meta);
+		
+		/** @brief Is emitted when the track is finished.
+		 */
 		void trackFinished ();
-		void itemPlayed (int);
-		void itemAdded (const MediaMeta&, const QString&);
+		
+		/** @brief Is emitted when the item index is played.
+		 *
+		 * @param[out] index Item index.
+		 */ 
+		void itemPlayed (int index);
+		
+		/** @brief Is emitted when the media file is added to
+		 * libvlc media list.
+		 * 
+		 * @param[out] meta Media meta info.
+		 * @param[out] location Media file location.
+		 */
+		void itemAdded (const MediaMeta& meta, const QString& location);
+		
+		/** @brief Is emitted when playback is paused.
+		 */
 		void paused ();
 		
 		void gotEntity (const Entity&);
