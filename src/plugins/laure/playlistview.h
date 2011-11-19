@@ -81,6 +81,7 @@ namespace Laure
 		void removeSelectedRows ();
 	private slots:
 		void handleDoubleClicked (const QModelIndex&);
+		void handleHideHeaders ();
 	signals:
 		/** @brief Is emitted when the item index is removed.
 		 * 

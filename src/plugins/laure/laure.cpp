@@ -42,12 +42,14 @@ namespace Laure
 #ifdef HAVE_LASTFM
 		LFSubmitter_ = new LastFMSubmitter (this);
 		
-		LFSubmitter_->SetUsername (XmlSettingsManager::Instance ()
-				.property ("lastfm.login").toString ());
-		LFSubmitter_->SetPassword (XmlSettingsManager::Instance ()
-				.property ("lastfm.password").toString ());
+		handleSubmitterInit ();
 		
-		LFSubmitter_->Init (proxy->GetNetworkAccessManager ());
+		QList<QByteArray> propNames;
+		propNames.push_back ("lastfm.login");
+		propNames.push_back ("lastfm.password");
+		
+		XmlSettingsManager::Instance ().RegisterObject (propNames,
+				this, "handleSubmitterInit");
 #endif
 		LaureWidget::SetParentMultiTabs (this);
 
@@ -62,6 +64,18 @@ namespace Laure
 		};
 		TabClasses_ << tabClass;
 	}
+	
+#ifdef HAVE_LASTFM	
+	void Plugin::handleSubmitterInit ()
+	{
+		LFSubmitter_->SetUsername (XmlSettingsManager::Instance ()
+				.property ("lastfm.login").toString ());
+		LFSubmitter_->SetPassword (XmlSettingsManager::Instance ()
+				.property ("lastfm.password").toString ());
+		
+		LFSubmitter_->Init (Proxy_->GetNetworkAccessManager ());
+	}
+#endif
 
 	void Plugin::SecondInit ()
 	{

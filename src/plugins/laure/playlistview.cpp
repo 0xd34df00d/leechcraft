@@ -42,12 +42,15 @@ namespace Laure
 		setAlternatingRowColors (true);
 		hideColumn (0);
 
-		for (int i = 1; i < PlayListModel_->columnCount (); ++i)
-		{
-			const QString& itemName = "Header" + QString::number (i);
-			setColumnHidden (i, !XmlSettingsManager::Instance ()
-					.property (itemName.toAscii ()).toBool ());
-		}
+		handleHideHeaders ();
+		
+		QList<QByteArray> propNames;
+		
+		for (int i = 0; i < PlayListModel_->columnCount (); ++i)
+			propNames.push_back ("Header" + QString::number (i).toAscii ());
+		
+		XmlSettingsManager::Instance ().RegisterObject (propNames, this,
+				"handleHideHeaders");
 
 		setItemDelegate (new NowPlayingDelegate (this));
 		setSizePolicy (QSizePolicy::Minimum, QSizePolicy::Minimum);
@@ -58,6 +61,16 @@ namespace Laure
 				SIGNAL (doubleClicked (QModelIndex)),
 				this,
 				SLOT (handleDoubleClicked (QModelIndex)));
+	}
+	
+	void PlayListView::handleHideHeaders ()
+	{
+		for (int i = 1; i < PlayListModel_->columnCount (); ++i)
+		{
+			const QString& itemName = "Header" + QString::number (i);
+			setColumnHidden (i, !XmlSettingsManager::Instance ()
+					.property (itemName.toAscii ()).toBool ());
+		}
 	}
 	
 	void PlayListView::selectRow (int row)
@@ -84,7 +97,7 @@ namespace Laure
 	
 	void PlayListView::MarkPlayingItem (int row)
 	{
-		QStandardItem *it = PlayListModel_->item (CurrentItem_);
+		auto it = PlayListModel_->item (CurrentItem_);
 		if (it)
 			it->setData (false, Roles::IsPlayingRole);
 		it = PlayListModel_->item (row);
