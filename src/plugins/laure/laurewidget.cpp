@@ -173,7 +173,7 @@ namespace Laure
 		bar->setToolButtonStyle (Qt::ToolButtonIconOnly);
 		bar->setIconSize (QSize (32, 32));
 		
-		PlayPauseAction *actionPlay = new PlayPauseAction (tr ("Play"), Ui_.CommandFrame_);
+		QAction *actionPlay = new PlayPauseAction (tr ("Play"), Ui_.CommandFrame_);
 	
 		QAction *actionStop = new QAction (tr ("Stop"), Ui_.CommandFrame_);
 		QAction *actionNext = new QAction (tr ("Next"), Ui_.CommandFrame_);
@@ -271,7 +271,7 @@ namespace Laure
 	
 	void LaureWidget::handleOpenURL ()
 	{
-		ChooseURLDialog *dialog = new ChooseURLDialog (this);
+		auto dialog = new ChooseURLDialog (this);
 		if (dialog->exec () == QDialog::Accepted)
 		{
 			if (dialog->IsUrlValid ())

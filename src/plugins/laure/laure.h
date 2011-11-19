@@ -88,6 +88,9 @@ namespace Laure
 		void delegateEntity (const Entity&, int*, QObject**);
 	private slots:
 		void handleNeedToClose ();
+#ifdef HAVE_LASTFM
+		void handleSubmitterInit ();
+#endif
 	};
 }
 }

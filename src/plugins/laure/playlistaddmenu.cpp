@@ -141,7 +141,7 @@ namespace Laure
 	{
 		QDir dir (path);
 		QFileInfoList list;
-		QFileInfoList fil = dir.entryInfoList (QDir::Dirs
+		auto fil = dir.entryInfoList (QDir::Dirs
 				| QDir::Files | QDir::NoDotAndDotDot);
 		
 		if (fil.isEmpty ())
@@ -160,8 +160,8 @@ namespace Laure
 	bool PlayListAddMenu::IsFileSupported (const QFileInfo& file) const
 	{
 #ifdef HAVE_MAGIC
-		const QString& mime = QString (magic_file (Magic_.get (),
-						file.absoluteFilePath ().toAscii ()));
+		const QString& mime = magic_file (Magic_.get (),
+				file.absoluteFilePath ().toAscii ());
 		return mime.contains ("audio") || mime.contains ("video");		
 #else
 		Q_FOREACH (const QString& format, Formats_)

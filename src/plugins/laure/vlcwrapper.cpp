@@ -62,14 +62,14 @@ namespace Laure
 		libvlc_media_list_player_set_media_player (LPlayer_.get (), Player_.get ());
 		libvlc_media_list_player_set_media_list (LPlayer_.get (), List_.get ());
 		
-		libvlc_event_manager_t *listEventManager = libvlc_media_list_player_event_manager (LPlayer_.get ());
+		auto listEventManager = libvlc_media_list_player_event_manager (LPlayer_.get ());
 		libvlc_event_attach (listEventManager, libvlc_MediaListPlayerNextItemSet,
 				     ListEventCallback, this);
 	}
 	
 	void VLCWrapper::handleNextItemSet ()
 	{
-		libvlc_media_list_t *list = List_.get ();
+		auto list = List_.get ();
 		int index = libvlc_media_list_index_of_item (list,
 				libvlc_media_player_get_media (Player_.get ()));
 		
@@ -91,7 +91,7 @@ namespace Laure
 	MediaMeta VLCWrapper::GetItemMeta (int row) const
 	{
 		MediaMeta meta;
-		libvlc_media_t *m = libvlc_media_list_item_at_index (List_.get (), row);
+		auto m = libvlc_media_list_item_at_index (List_.get (), row);
 		if (!m)
 			return meta;
 		
@@ -156,7 +156,7 @@ namespace Laure
 	
 	void VLCWrapper::addRow (const QString& location)
 	{
-		libvlc_media_t *m = libvlc_media_new_path (Instance_.get (),
+		auto m = libvlc_media_new_path (Instance_.get (),
 				location.toAscii ());
 		
 		if (!libvlc_media_list_add_media (List_.get (), m))
@@ -167,7 +167,7 @@ namespace Laure
 	
 	void VLCWrapper::setPlaybackMode (PlaybackMode mode)
 	{
-		libvlc_media_list_player_t *list = LPlayer_.get ();
+		auto list = LPlayer_.get ();
 		switch (mode)
 		{
 		case PlaybackModeDefault:
