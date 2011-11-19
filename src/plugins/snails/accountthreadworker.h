@@ -21,6 +21,7 @@
 #include <QObject>
 #include <vmime/net/session.hpp>
 #include <vmime/net/message.hpp>
+#include <vmime/net/folder.hpp>
 #include "progresslistener.h"
 #include "message.h"
 #include "account.h"
@@ -44,11 +45,12 @@ namespace Snails
 		vmime::ref<vmime::net::transport> MakeTransport ();
 		Message_ptr FromHeaders (const vmime::ref<vmime::net::message>&) const;
 		void FetchMessagesPOP3 (Account::FetchFlags);
-		void FetchMessagesIMAP (Account::FetchFlags, vmime::ref<vmime::net::store>);
+		void FetchMessagesIMAP (Account::FetchFlags, const QList<QStringList>&, vmime::ref<vmime::net::store>);
+		void FetchMessagesInFolder (vmime::ref<vmime::net::folder>);
 		void SyncIMAPFolders (vmime::ref<vmime::net::store>);
 		QList<Message_ptr> FetchFullMessages (const std::vector<vmime::ref<vmime::net::message>>&);
 	public slots:
-		void synchronize (Account::FetchFlags);
+		void synchronize (Account::FetchFlags, const QList<QStringList>&);
 		void fetchWholeMessage (Message_ptr);
 		void sendMessage (Message_ptr);
 	signals:

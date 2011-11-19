@@ -49,10 +49,11 @@ namespace Snails
 		AccountFolderManager (QObject* = 0);
 
 		QList<QStringList> GetFolders () const;
+		QList<QStringList> GetSyncFolders () const;
 		FolderFlags GetFolderFlags (const QStringList&) const;
 	private:
 		void ClearFolderFlags ();
-		void AppendFolderFlags (const QStringList, FolderFlag);
+		void AppendFolderFlags (const QStringList&, FolderFlag);
 
 		void SetFolders (const QList<QStringList>&);
 

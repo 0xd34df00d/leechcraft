@@ -339,11 +339,29 @@ namespace Snails
 	}
 
 	void AccountThreadWorker::FetchMessagesIMAP (Account::FetchFlags fetchFlags,
-			vmime::ref<vmime::net::store> store)
+			const QList<QStringList>& origFolders, vmime::ref<vmime::net::store> store)
 	{
-		auto folder = store->getDefaultFolder ();
-		folder->open (vmime::net::folder::MODE_READ_WRITE);
+		QList<decltype (store->getDefaultFolder ())> folders { store->getDefaultFolder () };
 
+		Q_FOREACH (const auto& folder, origFolders)
+		{
+			if (folder == QStringList ("INBOX"))
+				continue;
+
+			vmime::net::folder::path path;
+			Q_FOREACH (const auto& comp, folder)
+				path.appendComponent (vmime::word (comp.toUtf8 ().constData (), vmime::charsets::UTF_8));
+
+			folders << store->getFolder (path);
+		}
+
+		Q_FOREACH (auto folder, folders)
+			FetchMessagesInFolder (folder);
+	}
+
+	void AccountThreadWorker::FetchMessagesInFolder (vmime::utility::ref<vmime::net::folder> folder)
+	{
+		folder->open (vmime::net::folder::MODE_READ_WRITE);
 		auto messages = folder->getMessages ();
 		if (!messages.size ())
 			return;
@@ -388,8 +406,11 @@ namespace Snails
 
 			auto updated = Core::Instance ().GetStorage ()->
 					LoadMessage (A_, msg->GetID ());
-			updated->SetRead (msg->IsRead ());
-			updatedMessages << updated;
+			if (updated->IsRead () != msg->IsRead ())
+			{
+				updated->SetRead (msg->IsRead ());
+				updatedMessages << updated;
+			}
 		}
 
 		emit gotMsgHeaders (newMessages);
@@ -517,7 +538,7 @@ namespace Snails
 		return newMessages;
 	}
 
-	void AccountThreadWorker::synchronize (Account::FetchFlags flags)
+	void AccountThreadWorker::synchronize (Account::FetchFlags flags, const QList<QStringList>& folders)
 	{
 		switch (A_->InType_)
 		{
@@ -528,7 +549,7 @@ namespace Snails
 		{
 			auto store = MakeStore ();
 			store->connect ();
-			FetchMessagesIMAP (flags, store);
+			FetchMessagesIMAP (flags, folders, store);
 			SyncIMAPFolders (store);
 			break;
 		}

@@ -38,9 +38,29 @@ namespace Snails
 		return Folders_;
 	}
 
+	QList<QStringList> AccountFolderManager::GetSyncFolders () const
+	{
+		QList<QStringList> result;
+
+		std::copy_if (Folders_.begin (), Folders_.end (), std::back_inserter (result),
+				[this] (const QStringList& folder) { return Folder2Flags_ [folder] & FolderSyncable; });
+
+		return result;
+	}
+
 	AccountFolderManager::FolderFlags AccountFolderManager::GetFolderFlags (const QStringList& folder) const
 	{
 		return Folder2Flags_ [folder];
+	}
+
+	void AccountFolderManager::ClearFolderFlags ()
+	{
+		Folder2Flags_.clear ();
+	}
+
+	void AccountFolderManager::AppendFolderFlags (const QStringList& folder, FolderFlag flags)
+	{
+		Folder2Flags_ [folder] |= flags;
 	}
 
 	void AccountFolderManager::SetFolders (const QList<QStringList>& folders)

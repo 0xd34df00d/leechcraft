@@ -84,12 +84,18 @@ namespace Snails
 		}
 	}
 
+	AccountFolderManager* Account::GetFolderManager () const
+	{
+		return FolderManager_;
+	}
+
 	void Account::Synchronize (Account::FetchFlags flags)
 	{
 		QMetaObject::invokeMethod (Thread_->GetWorker (),
 				"synchronize",
 				Qt::QueuedConnection,
-				Q_ARG (Account::FetchFlags, flags));
+				Q_ARG (Account::FetchFlags, flags),
+				Q_ARG (QList<QStringList>, FolderManager_->GetSyncFolders ()));
 	}
 
 	void Account::FetchWholeMessage (Message_ptr msg)
@@ -219,12 +225,10 @@ namespace Snails
 
 			const auto& folders = FolderManager_->GetFolders ();
 			dia->SetAllFolders (folders);
-			QList<QStringList> toSync;
+			const auto& toSync = FolderManager_->GetSyncFolders ();
 			Q_FOREACH (const auto& folder, folders)
 			{
 				const auto flags = FolderManager_->GetFolderFlags (folder);
-				if (flags & AccountFolderManager::FolderSyncable)
-					toSync << folder;
 				if (flags & AccountFolderManager::FolderOutgoing)
 					dia->SetOutFolder (folder);
 			}
