@@ -39,6 +39,8 @@ namespace Snails
 		AccountThreadWorker* GetWorker () const;
 	protected:
 		void run ();
+	private:
+		void ConnectSignals ();
 	};
 }
 }

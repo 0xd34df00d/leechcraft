@@ -31,6 +31,7 @@ namespace Snails
 {
 	class AccountThread;
 	class AccountThreadWorker;
+	class AccountFolderManager;
 
 	class Account : public QObject
 	{
@@ -93,6 +94,8 @@ namespace Snails
 	private:
 		InType InType_;
 		OutType OutType_;
+
+		AccountFolderManager *FolderManager_;
 	public:
 		Account (QObject* = 0);
 
@@ -100,6 +103,8 @@ namespace Snails
 		QString GetName () const;
 		QString GetServer () const;
 		QString GetType () const;
+
+		AccountFolderManager* GetFolderManager () const;
 
 		void Synchronize (FetchFlags);
 		void FetchWholeMessage (Message_ptr);
@@ -127,6 +132,7 @@ namespace Snails
 		void getPassword (QString*, Direction = Direction::In);
 		void handleMsgHeaders (QList<Message_ptr>);
 		void handleGotUpdatedMessages (QList<Message_ptr>);
+		void handleGotFolders (QList<QStringList>);
 		void handleMessageBodyFetched (Message_ptr);
 	signals:
 		void mailChanged ();

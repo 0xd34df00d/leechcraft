@@ -28,6 +28,7 @@
 #include "accountthread.h"
 #include "accountthreadworker.h"
 #include "storage.h"
+#include "accountfoldermanager.h"
 
 namespace LeechCraft
 {
@@ -45,6 +46,7 @@ namespace Snails
 	, SMTPNeedsAuth_ (true)
 	, APOP_ (false)
 	, APOPFail_ (false)
+	, FolderManager_ (new AccountFolderManager (this))
 	{
 		Thread_->start (QThread::LowPriority);
 	}
@@ -118,7 +120,7 @@ namespace Snails
 		QByteArray result;
 
 		QDataStream out (&result, QIODevice::WriteOnly);
-		out << static_cast<quint8> (2);
+		out << static_cast<quint8> (3);
 		out << ID_
 			<< AccName_
 			<< Login_
@@ -137,7 +139,8 @@ namespace Snails
 			<< static_cast<quint8> (InType_)
 			<< static_cast<quint8> (OutType_)
 			<< UserName_
-			<< UserEmail_;
+			<< UserEmail_
+			<< FolderManager_->Serialize ();
 
 		return result;
 	}
@@ -148,7 +151,7 @@ namespace Snails
 		quint8 version = 0;
 		in >> version;
 
-		if (version < 1 || version > 2)
+		if (version < 1 || version > 3)
 			throw std::runtime_error (qPrintable ("Unknown version " + QString::number (version)));
 
 		quint8 inType = 0, outType = 0;
@@ -179,6 +182,13 @@ namespace Snails
 			if (version >= 2)
 				in >> UserName_
 					>> UserEmail_;
+
+			if (version >= 3)
+			{
+				QByteArray fstate;
+				in >> fstate;
+				FolderManager_->Deserialize (fstate);
+			}
 		}
 	}
 
@@ -426,6 +436,11 @@ namespace Snails
 		Core::Instance ().GetStorage ()->SaveMessages (this, messages);
 		emit mailChanged ();
 		emit gotNewMessages (messages);
+	}
+
+	void Account::handleGotFolders (QList<QStringList> folders)
+	{
+		FolderManager_->SetFolders (folders);
 	}
 
 	void Account::handleMessageBodyFetched (Message_ptr msg)

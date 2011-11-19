@@ -43,6 +43,14 @@ namespace Snails
 				W_,
 				SLOT (rebuildSessConfig ()));
 
+		ConnectSignals ();
+
+		QThread::run ();
+		delete W_;
+	}
+
+	void AccountThread::ConnectSignals ()
+	{
 		connect (W_,
 				SIGNAL (gotMsgHeaders (QList<Message_ptr>)),
 				A_,
@@ -59,9 +67,10 @@ namespace Snails
 				SIGNAL (gotUpdatedMessages (QList<Message_ptr>)),
 				A_,
 				SLOT (handleGotUpdatedMessages (QList<Message_ptr>)));
-
-		QThread::run ();
-		delete W_;
+		connect (W_,
+				SIGNAL (gotFolders (QList<QStringList>)),
+				A_,
+				SLOT (handleGotFolders (QList<QStringList>)));
 	}
 }
 }
