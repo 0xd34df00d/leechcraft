@@ -254,6 +254,14 @@ namespace Snails
 			OutLogin_ = dia->GetOutLogin ();
 			InType_ = dia->GetInType ();
 			OutType_ = dia->GetOutType ();
+
+			FolderManager_->ClearFolderFlags ();
+			const auto& out = dia->GetOutFolder ();
+			if (!out.isEmpty ())
+				FolderManager_->AppendFolderFlags (out, AccountFolderManager::FolderOutgoing);
+
+			Q_FOREACH (const auto& sync, dia->GetFoldersToSync ())
+				FolderManager_->AppendFolderFlags (sync, AccountFolderManager::FolderSyncable);
 		}
 
 		emit accountChanged ();
