@@ -51,7 +51,7 @@ namespace Pogooglue
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("Selected text search support in google");
+		return tr ("Google search support for selected text");
 	}
 
 	QIcon Plugin::GetIcon () const
