@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "accountconfigdialog.h"
+#include <QMenu>
 
 namespace LeechCraft
 {
@@ -26,6 +27,8 @@ namespace Snails
 	: QDialog (parent)
 	{
 		Ui_.setupUi (this);
+		Ui_.BrowseToSync_->setMenu (new QMenu (tr ("Folders to sync")));
+		Ui_.OutgoingFolder_->addItem (QString ());
 
 		connect (Ui_.InType_,
 				SIGNAL (currentIndexChanged (int)),
@@ -220,6 +223,59 @@ namespace Snails
 		Ui_.APOPRequired_->setCheckState (req ? Qt::Checked : Qt::Unchecked);
 	}
 
+	void AccountConfigDialog::SetAllFolders (const QList<QStringList>& folders)
+	{
+		Q_FOREACH (const auto& f, folders)
+		{
+			const auto& name = f.join ("/");
+			Ui_.OutgoingFolder_->addItem (name, f);
+
+			auto act = Ui_.BrowseToSync_->menu ()->addAction (name);
+			act->setCheckable (true);
+			act->setData (f);
+
+			connect (act,
+					SIGNAL (toggled (bool)),
+					this,
+					SLOT (rebuildFoldersToSyncLine ()));
+		}
+	}
+
+	QList<QStringList> AccountConfigDialog::GetFoldersToSync () const
+	{
+		QList<QStringList> result;
+		Q_FOREACH (const auto& action, Ui_.BrowseToSync_->menu ()->actions ())
+			if (action->isChecked ())
+				result << action->data ().toStringList ();
+
+		return result;
+	}
+
+	void AccountConfigDialog::SetFoldersToSync (const QList<QStringList>& folders)
+	{
+		Q_FOREACH (const auto& action, Ui_.BrowseToSync_->menu ()->actions ())
+		{
+			const auto& folder = action->data ().toStringList ();
+			action->setChecked (folders.contains (folder));
+		}
+
+		rebuildFoldersToSyncLine ();
+	}
+
+	QStringList AccountConfigDialog::GetOutFolder () const
+	{
+		return Ui_.OutgoingFolder_->itemData (Ui_.OutgoingFolder_->currentIndex ()).toStringList ();
+	}
+
+	void AccountConfigDialog::SetOutFolder (const QStringList& folder)
+	{
+		const int idx = Ui_.OutgoingFolder_->findData (folder);
+		if (idx == -1)
+			return;
+
+		Ui_.OutgoingFolder_->setCurrentIndex (-1);
+	}
+
 	void AccountConfigDialog::resetInPort ()
 	{
 		QMap<Account::InType, QMap<bool, int>> values;
@@ -231,6 +287,14 @@ namespace Snails
 		const Account::InType selected = static_cast<Account::InType> (Ui_.InType_->currentIndex ());
 		const bool tls = Ui_.UseTLS_->checkState () == Qt::Checked;
 		Ui_.InPort_->setValue (values [selected] [tls]);
+	}
+
+	void AccountConfigDialog::rebuildFoldersToSyncLine ()
+	{
+		const auto& sync = GetFoldersToSync ();
+		const auto& folders = std::accumulate (sync.begin (), sync.end (), QStringList (),
+				[] (QStringList fs, const QStringList& f) { return fs << f.join ("/"); });
+		Ui_.FoldersToSync_->setText (folders.join ("; "));
 	}
 }
 }

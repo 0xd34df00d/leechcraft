@@ -87,8 +87,17 @@ namespace Snails
 
 		bool GetAPOPRequired () const;
 		void SetAPOPRequired (bool);
+
+		void SetAllFolders (const QList<QStringList>&);
+
+		QList<QStringList> GetFoldersToSync () const;
+		void SetFoldersToSync (const QList<QStringList>&);
+
+		QStringList GetOutFolder () const;
+		void SetOutFolder (const QStringList&);
 	private slots:
 		void resetInPort ();
+		void rebuildFoldersToSyncLine ();
 	};
 }
 }

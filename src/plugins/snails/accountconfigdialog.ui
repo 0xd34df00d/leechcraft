@@ -17,7 +17,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>4</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
@@ -374,7 +374,22 @@
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QComboBox" name="FoldersToSync_"/>
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <widget class="QLineEdit" name="FoldersToSync_">
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="BrowseToSync_">
+             <property name="text">
+              <string>Select...</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </item>
          <item row="1" column="0">
           <widget class="QLabel" name="label_14">
@@ -384,7 +399,7 @@
           </widget>
          </item>
          <item row="1" column="1">
-          <widget class="QComboBox" name="Outgoing_"/>
+          <widget class="QComboBox" name="OutgoingFolder_"/>
          </item>
         </layout>
        </item>
@@ -396,7 +411,7 @@
          <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
-           <height>198</height>
+           <height>196</height>
           </size>
          </property>
         </spacer>

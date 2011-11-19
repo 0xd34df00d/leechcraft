@@ -216,6 +216,19 @@ namespace Snails
 			dia->SetOutLogin (OutLogin_);
 			dia->SetInType (InType_);
 			dia->SetOutType (OutType_);
+
+			const auto& folders = FolderManager_->GetFolders ();
+			dia->SetAllFolders (folders);
+			QList<QStringList> toSync;
+			Q_FOREACH (const auto& folder, folders)
+			{
+				const auto flags = FolderManager_->GetFolderFlags (folder);
+				if (flags & AccountFolderManager::FolderSyncable)
+					toSync << folder;
+				if (flags & AccountFolderManager::FolderOutgoing)
+					dia->SetOutFolder (folder);
+			}
+			dia->SetFoldersToSync (toSync);
 		}
 
 		if (dia->exec () != QDialog::Accepted)
