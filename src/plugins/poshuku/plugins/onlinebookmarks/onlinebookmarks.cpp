@@ -48,8 +48,6 @@ namespace OnlineBookmarks
 		SettingsDialog_->SetCustomWidget ("Accounts",
 				Core::Instance ().GetAccountsSettingsWidget ());
 		Core::Instance ().GetAccountsSettingsWidget ()->InitServices ();
-		SettingsDialog_->SetDataSource ("QuickUploadAccounts",
-				Core::Instance ().GetQuickUploadModel ());
 
 		if (XmlSettingsManager::Instance ()->Property ("DownloadGroup", false).toBool ())
 			Core::Instance ().checkDownloadPeriod ();
@@ -65,8 +63,6 @@ namespace OnlineBookmarks
 				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)),
 				this,
 				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)));
-
-		Core::Instance ().SetQuickUploadButtons ();
 	}
 
 	void Plugin::Release ()
@@ -156,25 +152,6 @@ namespace OnlineBookmarks
 				&Core::Instance (),
 				SLOT (downloadAllBookmarks ()));
 	}
-
-// 	void Plugin::hookAddedToFavorites (IHookProxy_ptr, QString title, QString url, QStringList tags)
-// 	{
-// 		bool res = false;
-// 		if (!XmlSettingsManager::Instance ()->Property ("ConfirmSend", 0).toBool ())
-// 			res = true;
-// 		else
-// 		{
-// 			int result = QMessageBox::question (0,
-// 					"OnlineBookmarks",
-// 					tr ("Send bookmark to active services"),
-// 					QMessageBox::Ok | QMessageBox::Cancel,
-// 					QMessageBox::Ok);
-// 			if (result == QMessageBox::Ok)
-// 				res = true;
-// 		}
-// 		if (res)
-// 			Core::Instance ().UploadBookmark (title, url, tags);
-// 	}
 
 }
 }

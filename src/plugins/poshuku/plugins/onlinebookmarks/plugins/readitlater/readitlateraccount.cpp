@@ -35,7 +35,6 @@ namespace ReadItLater
 	, Login_ (login)
 	, ParentService_ (parent)
 	, IsSyncing_ (false)
-	, IsQuickUpload_ (false)
 	, LastUpload_ (QDateTime::currentDateTime ())
 	, LastDownload_ (QDateTime::currentDateTime ())
 	{
@@ -82,16 +81,6 @@ namespace ReadItLater
 		IsSyncing_ = sync;
 	}
 
-	bool ReadItLaterAccount::IsQuickUpload () const
-	{
-		return IsQuickUpload_;
-	}
-
-	void ReadItLaterAccount::SetQuickUpload (bool quick)
-	{
-		IsQuickUpload_ = quick;
-	}
-
 	QDateTime ReadItLaterAccount::GetLastDownloadDateTime () const
 	{
 		return LastDownload_;
@@ -107,21 +96,21 @@ namespace ReadItLater
 		LastDownload_ = date;
 	}
 
+	void ReadItLaterAccount::AppendDownloadedBookmarks (const QVariantList& bookmarks)
+	{
+		Q_FOREACH (const QVariant& var, bookmarks)
+			if (!DownloadedBookmarks_.contains (var))
+				DownloadedBookmarks_ << var;
+	}
+
 	QVariantList ReadItLaterAccount::GetBookmarksDiff (const QVariantList& list)
 	{
 		QVariantList diff;
 		Q_FOREACH (const QVariant& var, list)
-		if (!DownloadedBookmarks_.contains (var))
-			diff << var;
+			if (!DownloadedBookmarks_.contains (var))
+				diff << var;
 
 		return diff;
-	}
-
-	void ReadItLaterAccount::AppendDownloadedBookmarks (const QVariantList& bookmarks)
-	{
-		Q_FOREACH (const QVariant& var, bookmarks)
-		if (!DownloadedBookmarks_.contains (var))
-			DownloadedBookmarks_ << var;
 	}
 
 	void ReadItLaterAccount::SetLastUploadDateTime(const QDateTime& date)
@@ -139,7 +128,6 @@ namespace ReadItLater
 			ostr << version
 					<< Login_
 					<< IsSyncing_
-					<< IsQuickUpload_
 					<< LastUpload_
 					<< LastDownload_
 					<< DownloadedBookmarks_;
@@ -168,13 +156,11 @@ namespace ReadItLater
 		in >> login;
 		ReadItLaterAccount *acc = new ReadItLaterAccount (login, parent);
 		in >> acc->IsSyncing_
-			>> acc->IsQuickUpload_
 			>> acc->LastUpload_
 			>> acc->LastDownload_
 			>> acc->DownloadedBookmarks_;
 		return acc;
 	}
-
 
 }
 }
