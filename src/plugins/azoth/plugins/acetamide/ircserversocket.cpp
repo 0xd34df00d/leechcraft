@@ -18,6 +18,7 @@
 
 #include "ircserversocket.h"
 #include <QTcpSocket>
+#include <QSslSocket>
 #include "ircserverhandler.h"
 #include "clientconnection.h"
 
@@ -31,63 +32,70 @@ namespace Acetamide
 	: QObject (ish)
 	, Account_ (ish->GetAccount ())
 	, ISH_ (ish)
+	, SSL_ (ish->GetServerOptions ().SSL_)
 	{
-		TcpSocket_ptr.reset (new QTcpSocket);
+		Socket_ptr.reset (!SSL_ ? new QTcpSocket : new QSslSocket);
 		Init ();
 	}
 
 	void IrcServerSocket::ConnectToHost (const QString& host, int port)
 	{
-		TcpSocket_ptr->connectToHost (host, port);
+		if (!SSL_)
+			Socket_ptr->connectToHost (host, port);
+		else
+		{
+			QSslSocket *sslSocket = qobject_cast<QSslSocket*> (Socket_ptr.get ());
+			sslSocket->connectToHostEncrypted (host, port);
+		}
 	}
 
 	void IrcServerSocket::DisconnectFromHost ()
 	{
-		TcpSocket_ptr->disconnectFromHost ();
+		Socket_ptr->disconnectFromHost ();
 	}
 
 	void IrcServerSocket::Send (const QString& message)
 	{
-		if (!TcpSocket_ptr->isWritable ())
+		if (!Socket_ptr->isWritable ())
 		{
 			qWarning () << Q_FUNC_INFO
-					<< TcpSocket_ptr->error ()
-					<< TcpSocket_ptr->errorString ();
+					<< Socket_ptr->error ()
+					<< Socket_ptr->errorString ();
 			return;
 		}
 
-		if (TcpSocket_ptr->write (message.toAscii ()) == -1)
+		if (Socket_ptr->write (message.toAscii ()) == -1)
 		{
 			qWarning () << Q_FUNC_INFO
-					<< TcpSocket_ptr->error ()
-					<< TcpSocket_ptr->errorString ();
+					<< Socket_ptr->error ()
+					<< Socket_ptr->errorString ();
 			return;
 		}
 	}
 
 	void IrcServerSocket::Close ()
 	{
-		TcpSocket_ptr->close ();
+		Socket_ptr->close ();
 	}
 
 	void IrcServerSocket::Init ()
 	{
-		connect (TcpSocket_ptr.get (),
+		connect (Socket_ptr.get (),
 				SIGNAL (readyRead ()),
 				this,
 				SLOT (readReply ()));
 
-		connect (TcpSocket_ptr.get (),
+		connect (Socket_ptr.get (),
 				SIGNAL (connected ()),
 				ISH_,
 				SLOT (connectionEstablished ()));
 
-		connect (TcpSocket_ptr.get (),
+		connect (Socket_ptr.get (),
 				SIGNAL (disconnected ()),
 				ISH_,
 				SLOT (connectionClosed ()));
 
-		connect (TcpSocket_ptr.get (),
+		connect (Socket_ptr.get (),
 				SIGNAL (error (QAbstractSocket::SocketError)),
 				Account_->GetClientConnection ().get (),
 				SLOT (handleError (QAbstractSocket::SocketError)));
@@ -95,8 +103,8 @@ namespace Acetamide
 
 	void IrcServerSocket::readReply ()
 	{
-		while (TcpSocket_ptr->canReadLine ())
-			ISH_->ReadReply (TcpSocket_ptr->readLine ());
+		while (Socket_ptr->canReadLine ())
+			ISH_->ReadReply (Socket_ptr->readLine ());
 	}
 
 };
