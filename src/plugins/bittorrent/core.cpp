@@ -56,6 +56,7 @@
 #include <libtorrent/storage.hpp>
 #include <libtorrent/file.hpp>
 #include <libtorrent/magnet_uri.hpp>
+#include <libtorrent/version.hpp>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
@@ -2552,8 +2553,13 @@ namespace LeechCraft
 				}
 				else
 					peerProxySettings.type = libtorrent::proxy_settings::none;
-
+#if LIBTORRENT_VERSION_TINY > 4
 				Session_->set_proxy (peerProxySettings);
+#else
+				Session_->set_peer_proxy (peerProxySettings);
+				Session_->set_tracker_proxy (peerProxySettings);
+				Session_->set_web_seed_proxy (peerProxySettings);
+#endif
 			}
 
 			void Core::setGeneralSettings ()
