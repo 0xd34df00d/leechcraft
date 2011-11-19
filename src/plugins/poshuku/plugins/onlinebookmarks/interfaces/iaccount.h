@@ -21,6 +21,7 @@
 
 #include <QVariant>
 #include <QDateTime>
+#include <QIcon>
 
 namespace LeechCraft
 {
@@ -55,9 +56,6 @@ namespace OnlineBookmarks
 		virtual bool IsSyncing () const = 0;
 
 		//
-		virtual bool IsQuickUpload () const = 0;
-
-		//
 		virtual QDateTime GetLastUploadDateTime () const = 0;
 
 		//
@@ -71,8 +69,6 @@ namespace OnlineBookmarks
 
 		//
 		virtual void SetSyncing (bool) = 0;
-
-		virtual void SetQuickUpload (bool) = 0;
 	};
 }
 }

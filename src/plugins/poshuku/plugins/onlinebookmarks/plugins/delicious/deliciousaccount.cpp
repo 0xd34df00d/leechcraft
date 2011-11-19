@@ -19,6 +19,7 @@
 #include "deliciousaccount.h"
 #include <QDataStream>
 #include <QtDebug>
+#include <QIcon>
 #include <util/util.h>
 
 namespace LeechCraft
@@ -34,7 +35,6 @@ namespace Delicious
 	, Login_ (login)
 	, ParentService_ (parent)
 	, IsSyncing_ (false)
-	, IsQuickUpload_ (false)
 	, LastUpload_ (QDateTime::currentDateTime ())
 	, LastDownload_ (QDateTime::currentDateTime ())
 	{
@@ -89,16 +89,6 @@ namespace Delicious
 		IsSyncing_ = sync;
 	}
 
-	bool DeliciousAccount::IsQuickUpload () const
-	{
-		return IsQuickUpload_;
-	}
-
-	void DeliciousAccount::SetQuickUpload (bool quick)
-	{
-		IsQuickUpload_ = quick;
-	}
-
 	QDateTime DeliciousAccount::GetLastDownloadDateTime () const
 	{
 		return LastDownload_;
@@ -146,7 +136,6 @@ namespace Delicious
 			ostr << version
 					<< Login_
 					<< IsSyncing_
-					<< IsQuickUpload_
 					<< LastUpload_
 					<< LastDownload_
 					<< DownloadedBookmarks_;
@@ -175,7 +164,6 @@ namespace Delicious
 		in >> login;
 		DeliciousAccount *acc = new DeliciousAccount (login, parent);
 		in >> acc->IsSyncing_
-			>> acc->IsQuickUpload_
 			>> acc->LastUpload_
 			>> acc->LastDownload_
 			>> acc->DownloadedBookmarks_;
