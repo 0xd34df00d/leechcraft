@@ -34,7 +34,7 @@ namespace Acetamide
 	, ISH_ (ish)
 	, SSL_ (ish->GetServerOptions ().SSL_)
 	{
-		Socket_ptr.reset (!SSL_ ? new QTcpSocket : new QSslSocket);
+		Socket_ptr.reset (SSL_ ? new QSslSocket : new QTcpSocket);
 		Init ();
 	}
 
@@ -44,8 +44,8 @@ namespace Acetamide
 			Socket_ptr->connectToHost (host, port);
 		else
 		{
-			QSslSocket *sslSocket = qobject_cast<QSslSocket*> (Socket_ptr.get ());
-			sslSocket->connectToHostEncrypted (host, port);
+			boost::shared_ptr<QSslSocket> s = boost::dynamic_pointer_cast<QSslSocket> (Socket_ptr);
+			s->connectToHostEncrypted (host, port);
 		}
 	}
 
