@@ -32,6 +32,7 @@
 #include "message.h"
 #include "storage.h"
 #include "progressmanager.h"
+#include "accountfoldermanager.h"
 
 namespace LeechCraft
 {
@@ -152,6 +153,10 @@ namespace Snails
 
 		connect (account.get (),
 				SIGNAL (accountChanged ()),
+				this,
+				SLOT (saveAccounts ()));
+		connect (account->GetFolderManager (),
+				SIGNAL (foldersUpdated ()),
 				this,
 				SLOT (saveAccounts ()));
 	}
