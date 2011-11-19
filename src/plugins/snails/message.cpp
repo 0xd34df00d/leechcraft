@@ -45,6 +45,16 @@ namespace Snails
 		ID_ = id;
 	}
 
+	QStringList Message::GetFolder () const
+	{
+		return Folder_;
+	}
+
+	void Message::SetFolder (const QStringList& folder)
+	{
+		Folder_ = folder;
+	}
+
 	quint64 Message::GetSize () const
 	{
 		return Size_;
@@ -153,6 +163,7 @@ namespace Snails
 	{
 		qDebug () << Q_FUNC_INFO
 				<< ID_.toHex ()
+				<< Folder_
 				<< Size_
 				<< From_
 				<< FromEmail_
@@ -172,6 +183,7 @@ namespace Snails
 		QDataStream str (&result, QIODevice::WriteOnly);
 		str << static_cast<quint8> (1)
 			<< ID_
+			<< Folder_
 			<< Size_
 			<< From_
 			<< FromEmail_
@@ -195,6 +207,7 @@ namespace Snails
 			throw std::runtime_error (qPrintable ("Failed to deserialize Message: unknown version " + QString::number (version)));
 
 		str >> ID_
+			>> Folder_
 			>> Size_
 			>> From_
 			>> FromEmail_
