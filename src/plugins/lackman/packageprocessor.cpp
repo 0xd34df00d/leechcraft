@@ -78,22 +78,22 @@ namespace LackMan
 			throw std::runtime_error (str.toUtf8 ().constData ());
 		}
 
-		QDir packageDir = Core::Instance ().GetPackageDir (packageId);
+		const QDir& packageDir = Core::Instance ().GetPackageDir (packageId);
 
-		QByteArray fileData = file.readAll ();
+		const QByteArray& fileData = file.readAll ();
 		QStringList files = QString::fromUtf8 (fileData)
 				.split ('\n', QString::SkipEmptyParts);
 		files.sort ();
 		std::reverse (files.begin (), files.end ());
 		Q_FOREACH (const QString& packageFilename, files)
 		{
-			QString fullName = packageDir.filePath (packageFilename);
+			const QString& fullName = packageDir.filePath (packageFilename);
 #ifndef QT_NO_DEBUG
 			qDebug () << Q_FUNC_INFO
 					<< "gonna remove"
 					<< fullName;
 #endif
-			QFileInfo fi (fullName);
+			const QFileInfo fi (fullName);
 
 			if (fi.isFile ())
 			{
@@ -147,7 +147,7 @@ namespace LackMan
 					<< "could not delete DB file"
 					<< file.fileName ()
 					<< file.errorString ();
-			QString str = tr ("Could not remove database file %1: %2.")
+			const QString& str = tr ("Could not remove database file %1: %2.")
 					.arg (file.fileName ())
 					.arg (file.errorString ());
 			throw std::runtime_error (str.toUtf8 ().constData ());
@@ -156,7 +156,7 @@ namespace LackMan
 
 	void PackageProcessor::Install (int packageId)
 	{
-		QUrl url = GetURLFor (packageId);
+		const QUrl& url = GetURLFor (packageId);
 
 		ExternalResourceManager *erm = PrepareResourceManager ();
 
