@@ -1010,6 +1010,7 @@ namespace Azoth
 
 		QAction *quoteSelection = new QAction (tr ("Quote selection"), this);
 		quoteSelection->setProperty ("ActionIcon", "quote");
+		quoteSelection->setShortcut (QString ("Ctrl+Q"));
 		connect (quoteSelection,
 				SIGNAL (triggered ()),
 				this,
