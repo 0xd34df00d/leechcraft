@@ -27,7 +27,7 @@
 using namespace LeechCraft;
 using namespace LeechCraft::Laure;
 
-/** @brief Provides test units for the VLCWrapperTest class.
+/** @test Provides test units for the VLCWrapper class.
  * 
  * Needs internet connection for playing the media file.
  * 
