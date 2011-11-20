@@ -166,6 +166,8 @@ namespace Azoth
 				SLOT (handleActionOpenChatTriggered ()));
 		Entry2Actions_ [entry] ["openchat"] = openChat;
 		Action2Areas_ [openChat] << CLEAAContactListCtxtMenu;
+		if (entry->GetEntryType () == ICLEntry::ETPrivateChat)
+			Action2Areas_ [openChat] << CLEAAChatCtxtMenu;
 
 		if (advEntry)
 		{
@@ -284,7 +286,8 @@ namespace Azoth
 			Entry2Actions_ [entry] ["vcard"] = vcard;
 			Action2Areas_ [vcard] << CLEAAContactListCtxtMenu
 					<< CLEAATabCtxtMenu
-					<< CLEAAToolbar;
+					<< CLEAAToolbar
+					<< CLEAAChatCtxtMenu;
 		}
 
 		IMUCPerms *perms = qobject_cast<IMUCPerms*> (entry->GetParentCLEntry ());
@@ -297,7 +300,8 @@ namespace Azoth
 				{
 					QMenu *changeClass = new QMenu (perms->GetUserString (permClass));
 					Entry2Actions_ [entry] [permClass] = changeClass->menuAction ();
-					Action2Areas_ [changeClass->menuAction ()] << CLEAAContactListCtxtMenu;
+					Action2Areas_ [changeClass->menuAction ()] << CLEAAContactListCtxtMenu
+							<< CLEAAChatCtxtMenu;
 
 					Q_FOREACH (const QByteArray& perm, possible [permClass])
 					{
@@ -324,7 +328,8 @@ namespace Azoth
 					SLOT (handleActionAddContactFromMUC ()));
 			Entry2Actions_ [entry] ["add_contact"] = addContact;
 			Action2Areas_ [addContact] << CLEAAContactListCtxtMenu
-					<< CLEAATabCtxtMenu;
+					<< CLEAATabCtxtMenu
+					<< CLEAAChatCtxtMenu;
 
 			QAction *copyId = new QAction (tr ("Copy ID"), entry->GetObject ());
 			copyId->setProperty ("ActionIcon", "copy");
@@ -333,7 +338,8 @@ namespace Azoth
 					this,
 					SLOT (handleActionCopyMUCPartID ()));
 			Entry2Actions_ [entry] ["copy_id"] = copyId;
-			Action2Areas_ [copyId] << CLEAAContactListCtxtMenu;
+			Action2Areas_ [copyId] << CLEAAContactListCtxtMenu
+					<< CLEAAChatCtxtMenu;
 
 			QAction *sep = Util::CreateSeparator (entry->GetObject ());
 			Entry2Actions_ [entry] ["sep_afterjid"] = sep;
