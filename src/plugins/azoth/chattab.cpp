@@ -535,7 +535,7 @@ namespace Azoth
 		split << QString ();
 
 		const QString& toInsert = split.join ("\n");
-		QTextCursor cur (Ui_.MsgEdit_->document ());
+		QTextCursor cur = Ui_.MsgEdit_->textCursor ();
 		cur.insertText (toInsert);
 	}
 
