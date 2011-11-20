@@ -116,6 +116,9 @@ namespace Pogooglue
 
 		SelectedText_ = view->page ()->selectedText ();
 
+		if (SelectedText_.isEmpty ())
+			return;
+
 		menu->addAction (QIcon (":/plugins/poshuku/plugins/pogooglue/resources/images/google.png"),
 				tr ("Google It!"),
 				this,

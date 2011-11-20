@@ -19,7 +19,6 @@
 
 #ifndef PLUGINS_POSHUKU_PLUGINS_POGOOGLUE_POGOOGLUE_H
 #define PLUGINS_POSHUKU_PLUGINS_POGOOGLUE_POGOOGLUE_H
-
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
