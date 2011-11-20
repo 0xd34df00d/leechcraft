@@ -1,6 +1,7 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
  * Copyright (C) 2010-2011  Oleg Linkin
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +21,7 @@
 #include <QIcon>
 #include <QMenu>
 #include <QGraphicsWebView>
+#include <util/util.h>
 
 namespace LeechCraft
 {
@@ -29,6 +31,7 @@ namespace Pogooglue
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("poshuku_pogooglue");
 	}
 
 	void Plugin::SecondInit ()
@@ -112,6 +115,9 @@ namespace Pogooglue
 			return;
 
 		SelectedText_ = view->page ()->selectedText ();
+
+		if (SelectedText_.isEmpty ())
+			return;
 
 		menu->addAction (QIcon (":/plugins/poshuku/plugins/pogooglue/resources/images/google.png"),
 				tr ("Google It!"),

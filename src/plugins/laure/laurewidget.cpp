@@ -50,42 +50,14 @@ namespace Laure
 		Ui_.setupUi (this);
 		Ui_.Player_->SetVLCWrapper (VLCWrapper_);
 		
-		connect (Ui_.Player_,
-				SIGNAL (timeout ()),
-				this,
-				SLOT (updateInterface ()));
-		connect (Ui_.PositionSlider_,
-				SIGNAL (sliderMoved (int)),
-				Ui_.Player_,
-				SLOT (setPosition (int)));
-		connect (Ui_.VolumeSlider_,
-				SIGNAL (valueChanged (int)),
+		connect (Ui_.PlayListWidget_,
+				SIGNAL (metaChangedRequest (libvlc_meta_t, QString, int)),
 				VLCWrapper_,
-				SLOT (setVolume (int)));
-		connect (VLCWrapper_,
-				SIGNAL (currentTrackMeta (MediaMeta)),
-				this,
-				SIGNAL (currentTrackMeta (MediaMeta)));
-		connect (VLCWrapper_,
-				SIGNAL (trackFinished ()),
-				this,
-				SIGNAL (trackFinished ()));
+				SLOT (setMeta (libvlc_meta_t, QString, int)));
 		connect (Ui_.PlayListWidget_,
 				SIGNAL (itemAddedRequest (QString)),
 				VLCWrapper_,
 				SLOT (addRow (QString)));
-		connect (VLCWrapper_,
-				SIGNAL (itemAdded (MediaMeta, QString)),
-				Ui_.PlayListWidget_,
-				SLOT (handleItemAdded (MediaMeta, QString)));
-		connect (VLCWrapper_,
-				SIGNAL (gotEntity (Entity)),
-				this,
-				SIGNAL (gotEntity (Entity)));
-		connect (VLCWrapper_,
-				SIGNAL (delegateEntity (Entity, int*, QObject**)),
-				this,
-				SIGNAL (delegateEntity (Entity, int*, QObject**)));
 		connect (Ui_.PlayListWidget_,
 				SIGNAL (itemRemoved (int)),
 				VLCWrapper_,
@@ -94,14 +66,6 @@ namespace Laure
 				SIGNAL (playItem (int)),
 				VLCWrapper_,
 				SLOT (playItem (int)));
-		connect (VLCWrapper_,
-				SIGNAL (itemPlayed (int)),
-				Ui_.PlayListWidget_,
-				SLOT (handleItemPlayed (int)));
-		connect (this,
-				SIGNAL (addItem (QString)),
-				VLCWrapper_,
-				SLOT (addRow (QString)));
 		connect (Ui_.PlayListWidget_,
 				SIGNAL (gotEntity (Entity)),
 				this,
@@ -114,6 +78,50 @@ namespace Laure
 				SIGNAL (playbackModeChanged (PlaybackMode)),
 				VLCWrapper_,
 				SLOT (setPlaybackMode (PlaybackMode)));
+		
+		connect (Ui_.Player_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (updateInterface ()));
+		connect (Ui_.PositionSlider_,
+				SIGNAL (sliderMoved (int)),
+				Ui_.Player_,
+				SLOT (setPosition (int)));
+		connect (Ui_.VolumeSlider_,
+				SIGNAL (valueChanged (int)),
+				VLCWrapper_,
+				SLOT (setVolume (int)));
+		
+		connect (VLCWrapper_,
+				SIGNAL (currentTrackMeta (MediaMeta)),
+				this,
+				SIGNAL (currentTrackMeta (MediaMeta)));
+		connect (VLCWrapper_,
+				SIGNAL (trackFinished ()),
+				this,
+				SIGNAL (trackFinished ()));
+		connect (VLCWrapper_,
+				SIGNAL (itemAdded (MediaMeta, QString)),
+				Ui_.PlayListWidget_,
+				SLOT (handleItemAdded (MediaMeta, QString)));
+		connect (VLCWrapper_,
+				SIGNAL (gotEntity (Entity)),
+				this,
+				SIGNAL (gotEntity (Entity)));
+		connect (VLCWrapper_,
+				SIGNAL (delegateEntity (Entity, int*, QObject**)),
+				this,
+				SIGNAL (delegateEntity (Entity, int*, QObject**)));
+
+		connect (VLCWrapper_,
+				SIGNAL (itemPlayed (int)),
+				Ui_.PlayListWidget_,
+				SLOT (handleItemPlayed (int)));
+		
+		connect (this,
+				SIGNAL (addItem (QString)),
+				VLCWrapper_,
+				SLOT (addRow (QString)));
 		
 		InitToolBar ();
 		InitCommandFrame ();
@@ -161,10 +169,6 @@ namespace Laure
 				SIGNAL (triggered (bool)),
 				this,
 				SLOT (handleVideoMode (bool)));
-		connect (this,
-				SIGNAL (playListMode (bool)),
-				playList,
-				SLOT (setDisabled (bool)));
 	}
 	
 	void LaureWidget::InitCommandFrame ()
@@ -173,7 +177,7 @@ namespace Laure
 		bar->setToolButtonStyle (Qt::ToolButtonIconOnly);
 		bar->setIconSize (QSize (32, 32));
 		
-		PlayPauseAction *actionPlay = new PlayPauseAction (tr ("Play"), Ui_.CommandFrame_);
+		auto actionPlay = new PlayPauseAction (tr ("Play"), Ui_.CommandFrame_);
 	
 		QAction *actionStop = new QAction (tr ("Stop"), Ui_.CommandFrame_);
 		QAction *actionNext = new QAction (tr ("Next"), Ui_.CommandFrame_);
@@ -271,16 +275,9 @@ namespace Laure
 	
 	void LaureWidget::handleOpenURL ()
 	{
-		ChooseURLDialog *dialog = new ChooseURLDialog (this);
-		if (dialog->exec () == QDialog::Accepted)
-		{
-			if (dialog->IsUrlValid ())
-				emit addItem (dialog->GetUrl ());
-			else
-				QMessageBox::warning (this,
-						tr ("The URL is not valid"),
-						tr ("The URL is not valid"));
-		}
+		auto dialog = new ChooseURLDialog (this);
+		if (dialog->exec () == QDialog::Accepted && dialog->IsUrlValid ())
+			emit addItem (dialog->GetUrl ());
 	}
 	
 	void LaureWidget::handleOpenMediaContent (const QString& location)

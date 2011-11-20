@@ -781,6 +781,11 @@ namespace Azoth
 			QUrl url ("azoth://insertnick/");
 			url.addEncodedQueryItem ("nick", QUrl::toPercentEncoding (nick));
 
+			ICLEntry *other = qobject_cast<ICLEntry*> (msg->OtherPart ());
+			if (other)
+				url.addEncodedQueryItem ("entryId",
+						QUrl::toPercentEncoding (other->GetEntryID ()));
+
 			string.append ("<span class='nickname'><a href=\"");
 			string.append (url.toEncoded ());
 			string.append ("\" class='nicklink' style='text-decoration:none; color:");

@@ -44,6 +44,7 @@ namespace Azoth
 			CLEAAContactListCtxtMenu,
 			CLEAAApplicationMenu,
 			CLEAAToolbar,
+			CLEAAChatCtxtMenu,
 			CLEAAMAX
 		};
 	private:

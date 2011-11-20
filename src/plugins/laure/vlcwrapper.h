@@ -118,7 +118,7 @@ namespace Laure
 		 * 
 		 * @return Media meta info.
 		 */
-		MediaMeta GetItemMeta (int row) const;
+		MediaMeta GetItemMeta (int row, const QString& location = QString ()) const;
 	public slots:
 		/** @brief Adds media file to the libvlc media list.
 		 * 
@@ -208,6 +208,14 @@ namespace Laure
 		/** @brief Is called when the next item is chosen.
 		 */
 		void handleNextItemSet ();
+		
+		/** @brief Sets and save the meta of the media.
+		 * 
+		 * @param[in] type Media type.
+		 * @param[in] value New media meta info.
+		 * @param[in] index Playlist item index.
+		 */
+		void setMeta (libvlc_meta_t type, const QString& value, int index); 
 	private slots:
 		void nowPlaying ();
 	signals:
