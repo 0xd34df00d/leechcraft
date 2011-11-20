@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011 Minh Ngo
+ * Copyright (C) 2011  Minh Ngo
  * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,27 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "chooseurldialog.h"
-#include <QUrl>
+#include "vlcwrappertest.h"
 
-namespace LeechCraft
-{
-namespace Laure
-{
-	ChooseURLDialog::ChooseURLDialog (QWidget *parent)
-	: QDialog (parent)
-	{
-		Ui_.setupUi (this);
-	}
-
-	QString ChooseURLDialog::GetUrl () const
-	{
-		return Ui_.Url_->text ();
-	}
-	
-	bool ChooseURLDialog::IsUrlValid () const
-	{
-		return QUrl (Ui_.Url_->text ()).isValid ();
-	}
-}
-}
+QTEST_MAIN (VLCWrapperTest)

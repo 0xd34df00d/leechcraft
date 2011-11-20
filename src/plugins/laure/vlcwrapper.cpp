@@ -23,6 +23,7 @@
 #include <QDebug>
 #include <QTimer>
 #include <QFile>
+#include <QUrl>
 #include <util/util.h>
 
 namespace LeechCraft
@@ -62,14 +63,14 @@ namespace Laure
 		libvlc_media_list_player_set_media_player (LPlayer_.get (), Player_.get ());
 		libvlc_media_list_player_set_media_list (LPlayer_.get (), List_.get ());
 		
-		libvlc_event_manager_t *listEventManager = libvlc_media_list_player_event_manager (LPlayer_.get ());
+		auto listEventManager = libvlc_media_list_player_event_manager (LPlayer_.get ());
 		libvlc_event_attach (listEventManager, libvlc_MediaListPlayerNextItemSet,
 				     ListEventCallback, this);
 	}
 	
 	void VLCWrapper::handleNextItemSet ()
 	{
-		libvlc_media_list_t *list = List_.get ();
+		auto list = List_.get ();
 		int index = libvlc_media_list_index_of_item (list,
 				libvlc_media_player_get_media (Player_.get ()));
 		
@@ -88,19 +89,28 @@ namespace Laure
 		emit trackFinished ();
 	}
 	
-	MediaMeta VLCWrapper::GetItemMeta (int row) const
+	MediaMeta VLCWrapper::GetItemMeta (int row, const QString& location) const
 	{
 		MediaMeta meta;
-		libvlc_media_t *m = libvlc_media_list_item_at_index (List_.get (), row);
+		auto m = libvlc_media_list_item_at_index (List_.get (), row);
 		if (!m)
 			return meta;
 		
+		if (!QUrl (location).scheme ().isEmpty ())
+		{
+			meta.Artist_ = tr ("Internet stream");
+			meta.Title_ = location;
+			return meta;
+		}
+		
 		libvlc_media_parse (m);
+
 		meta.Artist_ = libvlc_media_get_meta (m, libvlc_meta_Artist);
 		meta.Album_ = libvlc_media_get_meta (m, libvlc_meta_Album);
 		meta.Title_ = libvlc_media_get_meta (m, libvlc_meta_Title);
 		meta.Genre_ = libvlc_media_get_meta (m, libvlc_meta_Genre);
 		meta.Date_ = libvlc_media_get_meta (m, libvlc_meta_Date);
+
 		meta.TrackNumber_ = QString (libvlc_media_get_meta (m,
 						libvlc_meta_TrackNumber))
 				.toInt ();
@@ -156,18 +166,18 @@ namespace Laure
 	
 	void VLCWrapper::addRow (const QString& location)
 	{
-		libvlc_media_t *m = libvlc_media_new_path (Instance_.get (),
+		auto m = libvlc_media_new_path (Instance_.get (),
 				location.toAscii ());
-		
+
 		if (!libvlc_media_list_add_media (List_.get (), m))
-			emit itemAdded (GetItemMeta (RowCount () - 1), location);
+			emit itemAdded (GetItemMeta (RowCount () - 1, location), location);
 		else
 			libvlc_media_release (m);
 	}
 	
 	void VLCWrapper::setPlaybackMode (PlaybackMode mode)
 	{
-		libvlc_media_list_player_t *list = LPlayer_.get ();
+		auto list = LPlayer_.get ();
 		switch (mode)
 		{
 		case PlaybackModeDefault:
@@ -185,6 +195,13 @@ namespace Laure
 		}
 	}
 	
+	void VLCWrapper::setMeta (libvlc_meta_t type, const QString& value, int index)
+	{
+		auto m = libvlc_media_list_item_at_index (List_.get (), index);
+		libvlc_media_set_meta (m, type, value.toAscii ());
+		libvlc_media_save_meta (m);
+	}
+	
 	void VLCWrapper::playItem (int val)
 	{
 		const int count = RowCount ();
@@ -197,8 +214,6 @@ namespace Laure
 		
 		libvlc_media_list_player_play_item_at_index (LPlayer_.get (),
 				CurrentItem_);
-		
-		handleNextItemSet ();
 	}
 	
 	void VLCWrapper::nowPlaying ()

@@ -27,6 +27,7 @@
 class QDockWidget;
 class QGridLayout;
 class QStandardItemModel;
+class QStandardItem;
 
 namespace LeechCraft
 {
@@ -73,6 +74,7 @@ namespace Laure
 		void handleItemPlayed (int row);
 	private slots:
 		void handleExportPlayList ();
+		void handleItemChanged (QStandardItem*);
 	signals:
 		/** @brief Notifies that the media file needs to be
 		 * added to VLCWrapper.
@@ -82,6 +84,15 @@ namespace Laure
 		 * @sa VLCWrapper
 		 */
 		void itemAddedRequest (const QString& location);
+		
+		/** @brief Notifies that the media meta needs to be changed.
+		 * 
+		 * @param[in] type Media type.
+		 * @param[in] value New media meta info.
+		 * @param[in] index Playlist item index.
+		 */
+		void metaChangedRequest (libvlc_meta_t type, const QString& value,
+				int index);
 		
 		/** @brief Is emitted when the item index is removed.
 		 * 

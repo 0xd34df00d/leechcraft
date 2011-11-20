@@ -105,21 +105,19 @@ namespace Laure
 		QDomDocument doc;
 		doc.setContent (QString::fromUtf8 (reply->readAll ()));
 		reply->deleteLater ();
-		QDomNodeList domList = doc.documentElement ()
+		const auto& domList = doc.documentElement ()
 				.elementsByTagName ("key");
-		if (domList.size () > 0)
-		{
-			lastfm::ws::SessionKey = doc.documentElement ()
-					.elementsByTagName ("key").at (0).toElement ()
-					.text ();
-			
-			Scrobbler_.reset (new lastfm::Audioscrobbler ("tst"));
+		if (!domList.size ())
+			return;
 		
-			connect (Scrobbler_.get (),
-					SIGNAL (status (int)),
-					this,
-					SIGNAL (status (int)));
-		}
+		lastfm::ws::SessionKey = domList.at (0).toElement ().text ();
+			
+		Scrobbler_.reset (new lastfm::Audioscrobbler ("tst"));
+		
+		connect (Scrobbler_.get (),
+				SIGNAL (status (int)),
+				this,
+				SIGNAL (status (int)));
 	}
 		
 	void LastFMSubmitter::sendTrack (const MediaMeta& info)

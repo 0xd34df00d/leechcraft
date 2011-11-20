@@ -26,7 +26,7 @@
 
 using namespace LeechCraft::Laure;
 
-/** @brief Provides test units for the VolumeSlider class.
+/** @test Provides test units for the VolumeSlider class.
  * 
  * @sa VolumeSlider
  * 
