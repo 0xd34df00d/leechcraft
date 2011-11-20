@@ -96,7 +96,7 @@ namespace Laure
 	void PlayListAddMenu::handleAddUrl ()
 	{
 		ChooseURLDialog d;
-		if (d.exec () == QDialog::Accepted)
+		if (d.exec () == QDialog::Accepted && d.IsUrlValid ())
 			emit addItem (d.GetUrl ());
 	}
 	

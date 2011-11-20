@@ -23,6 +23,7 @@
 #include <QDebug>
 #include <QTimer>
 #include <QFile>
+#include <QUrl>
 #include <util/util.h>
 
 namespace LeechCraft
@@ -88,19 +89,28 @@ namespace Laure
 		emit trackFinished ();
 	}
 	
-	MediaMeta VLCWrapper::GetItemMeta (int row) const
+	MediaMeta VLCWrapper::GetItemMeta (int row, const QString& location) const
 	{
 		MediaMeta meta;
 		auto m = libvlc_media_list_item_at_index (List_.get (), row);
 		if (!m)
 			return meta;
 		
+		if (!QUrl (location).scheme ().isEmpty ())
+		{
+			meta.Artist_ = tr ("Internet stream");
+			meta.Title_ = location;
+			return meta;
+		}
+		
 		libvlc_media_parse (m);
+
 		meta.Artist_ = libvlc_media_get_meta (m, libvlc_meta_Artist);
 		meta.Album_ = libvlc_media_get_meta (m, libvlc_meta_Album);
 		meta.Title_ = libvlc_media_get_meta (m, libvlc_meta_Title);
 		meta.Genre_ = libvlc_media_get_meta (m, libvlc_meta_Genre);
 		meta.Date_ = libvlc_media_get_meta (m, libvlc_meta_Date);
+
 		meta.TrackNumber_ = QString (libvlc_media_get_meta (m,
 						libvlc_meta_TrackNumber))
 				.toInt ();
@@ -158,9 +168,9 @@ namespace Laure
 	{
 		auto m = libvlc_media_new_path (Instance_.get (),
 				location.toAscii ());
-		
+
 		if (!libvlc_media_list_add_media (List_.get (), m))
-			emit itemAdded (GetItemMeta (RowCount () - 1), location);
+			emit itemAdded (GetItemMeta (RowCount () - 1, location), location);
 		else
 			libvlc_media_release (m);
 	}
@@ -204,8 +214,6 @@ namespace Laure
 		
 		libvlc_media_list_player_play_item_at_index (LPlayer_.get (),
 				CurrentItem_);
-		
-		handleNextItemSet ();
 	}
 	
 	void VLCWrapper::nowPlaying ()

@@ -118,7 +118,7 @@ namespace Laure
 		 * 
 		 * @return Media meta info.
 		 */
-		MediaMeta GetItemMeta (int row) const;
+		MediaMeta GetItemMeta (int row, const QString& location = QString ()) const;
 	public slots:
 		/** @brief Adds media file to the libvlc media list.
 		 * 
