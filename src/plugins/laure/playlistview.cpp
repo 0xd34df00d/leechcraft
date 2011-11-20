@@ -29,7 +29,7 @@ namespace LeechCraft
 {
 namespace Laure
 {
-	const int PlaylistColumnCount = 6;
+	const int PlayListColumnCount = 6;
 	
 	PlayListView::PlayListView (QStandardItemModel *model, QWidget *parent)
 	: QTreeView (parent)
@@ -37,17 +37,23 @@ namespace Laure
 	, CurrentItem_ (-1)
 	{
 		setModel (PlayListModel_);
-		PlayListModel_->setColumnCount (PlaylistColumnCount);
+		
+		PlayListModel_->setColumnCount (PlayListColumnCount);
+		
+		setEditTriggers (SelectedClicked);
 		setSelectionMode (ContiguousSelection);
 		setAlternatingRowColors (true);
 		hideColumn (0);
 
-		for (int i = 1; i < PlayListModel_->columnCount (); ++i)
-		{
-			const QString& itemName = "Header" + QString::number (i);
-			setColumnHidden (i, !XmlSettingsManager::Instance ()
-					.property (itemName.toAscii ()).toBool ());
-		}
+		handleHideHeaders ();
+		
+		QList<QByteArray> propNames;
+		
+		for (int i = 0; i < PlayListModel_->columnCount (); ++i)
+			propNames.push_back ("Header" + QString::number (i).toAscii ());
+		
+		XmlSettingsManager::Instance ().RegisterObject (propNames, this,
+				"handleHideHeaders");
 
 		setItemDelegate (new NowPlayingDelegate (this));
 		setSizePolicy (QSizePolicy::Minimum, QSizePolicy::Minimum);
@@ -58,6 +64,16 @@ namespace Laure
 				SIGNAL (doubleClicked (QModelIndex)),
 				this,
 				SLOT (handleDoubleClicked (QModelIndex)));
+	}
+	
+	void PlayListView::handleHideHeaders ()
+	{
+		for (int i = 1; i < PlayListModel_->columnCount (); ++i)
+		{
+			const QString& itemName = "Header" + QString::number (i);
+			setColumnHidden (i, !XmlSettingsManager::Instance ()
+					.property (itemName.toAscii ()).toBool ());
+		}
 	}
 	
 	void PlayListView::selectRow (int row)
@@ -77,14 +93,14 @@ namespace Laure
 		
 		Q_FOREACH (QStandardItem *itemList, list)
 			itemList->setFlags (Qt::ItemIsSelectable | Qt::ItemIsEnabled
-					| Qt::ItemIsDropEnabled);
+					| Qt::ItemIsDropEnabled | Qt::ItemIsEditable);
 			
 		PlayListModel_->appendRow (list);
 	}
 	
 	void PlayListView::MarkPlayingItem (int row)
 	{
-		QStandardItem *it = PlayListModel_->item (CurrentItem_);
+		auto it = PlayListModel_->item (CurrentItem_);
 		if (it)
 			it->setData (false, Roles::IsPlayingRole);
 		it = PlayListModel_->item (row);

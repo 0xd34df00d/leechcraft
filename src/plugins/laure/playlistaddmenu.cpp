@@ -96,7 +96,7 @@ namespace Laure
 	void PlayListAddMenu::handleAddUrl ()
 	{
 		ChooseURLDialog d;
-		if (d.exec () == QDialog::Accepted)
+		if (d.exec () == QDialog::Accepted && d.IsUrlValid ())
 			emit addItem (d.GetUrl ());
 	}
 	
@@ -141,8 +141,7 @@ namespace Laure
 	{
 		QDir dir (path);
 		QFileInfoList list;
-		QFileInfoList fil = dir.entryInfoList (QDir::Dirs
-				| QDir::Files | QDir::NoDotAndDotDot);
+		const auto& fil = dir.entryInfoList (QDir::AllEntries | QDir::NoDotAndDotDot);
 		
 		if (fil.isEmpty ())
 			return QFileInfoList ();
@@ -160,8 +159,8 @@ namespace Laure
 	bool PlayListAddMenu::IsFileSupported (const QFileInfo& file) const
 	{
 #ifdef HAVE_MAGIC
-		const QString& mime = QString (magic_file (Magic_.get (),
-						file.absoluteFilePath ().toAscii ()));
+		const QString& mime = magic_file (Magic_.get (),
+				file.absoluteFilePath ().toAscii ());
 		return mime.contains ("audio") || mime.contains ("video");		
 #else
 		Q_FOREACH (const QString& format, Formats_)
