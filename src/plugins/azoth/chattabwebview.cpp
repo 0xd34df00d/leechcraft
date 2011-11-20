@@ -21,6 +21,7 @@
 #include <QWebHitTestResult>
 #include <QPointer>
 #include <QMenu>
+#include <QDesktopServices>
 #include <util/util.h>
 #include "interfaces/iclentry.h"
 #include "core.h"
@@ -109,6 +110,9 @@ namespace Azoth
 		menu->addAction (tr ("Save..."),
 				this,
 				SLOT (handleSaveLink ()))->setData (url);
+		menu->addAction (tr ("Open externally"),
+				this,
+				SLOT (handleOpenExternally ()))->setData (url);
 		menu->addAction (pageAction (QWebPage::CopyLinkToClipboard));
 		menu->addSeparator ();
 	}
@@ -120,6 +124,16 @@ namespace Azoth
 				QString (),
 				static_cast<TaskParameters> (OnlyHandle | FromUserInitiated));
 		Core::Instance ().SendEntity (e);
+	}
+
+	void ChatTabWebView::handleOpenExternally ()
+	{
+		QAction *action = qobject_cast<QAction*> (sender ());
+		const QUrl& url = action->data ().toUrl ();
+		if (url.isEmpty ())
+			return;
+
+		QDesktopServices::openUrl (url);
 	}
 
 	void ChatTabWebView::handleSaveLink ()
