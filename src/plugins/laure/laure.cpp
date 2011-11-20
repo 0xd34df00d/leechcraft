@@ -34,6 +34,8 @@ namespace Laure
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("laure");
+
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"lauresettings.xml");
@@ -41,13 +43,13 @@ namespace Laure
 		Proxy_ = proxy;
 #ifdef HAVE_LASTFM
 		LFSubmitter_ = new LastFMSubmitter (this);
-		
+
 		handleSubmitterInit ();
-		
+
 		QList<QByteArray> propNames;
 		propNames << "lastfm.login";
 		propNames << "lastfm.password";
-		
+
 		XmlSettingsManager::Instance ().RegisterObject (propNames,
 				this, "handleSubmitterInit");
 #endif
@@ -64,15 +66,15 @@ namespace Laure
 		};
 		TabClasses_ << tabClass;
 	}
-	
-#ifdef HAVE_LASTFM	
+
+#ifdef HAVE_LASTFM
 	void Plugin::handleSubmitterInit ()
 	{
 		LFSubmitter_->SetUsername (XmlSettingsManager::Instance ()
 				.property ("lastfm.login").toString ());
 		LFSubmitter_->SetPassword (XmlSettingsManager::Instance ()
 				.property ("lastfm.password").toString ());
-		
+
 		LFSubmitter_->Init (Proxy_->GetNetworkAccessManager ());
 	}
 #endif
@@ -140,7 +142,7 @@ namespace Laure
 	LaureWidget* Plugin::CreateTab ()
 	{
 		LaureWidget *w = new LaureWidget ();
-		
+
 		connect (w,
 				SIGNAL (needToClose ()),
 				this,
