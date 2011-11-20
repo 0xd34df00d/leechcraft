@@ -22,7 +22,9 @@
 #include <QPointer>
 #include <QMenu>
 #include <util/util.h>
+#include "interfaces/iclentry.h"
 #include "core.h"
+#include "actionsmanager.h"
 
 namespace LeechCraft
 {
@@ -47,16 +49,10 @@ namespace Azoth
 
 		if (!r.linkUrl ().isEmpty ())
 		{
-			const QUrl& url = r.linkUrl ();
-
-			menu->addAction (tr ("Open"),
-					this,
-					SLOT (handleOpenLink ()))->setData (url);
-			menu->addAction (tr ("Save..."),
-					this,
-					SLOT (handleSaveLink ()))->setData (url);
-			menu->addAction (pageAction (QWebPage::CopyLinkToClipboard));
-			menu->addSeparator ();
+			if (r.linkUrl ().scheme () == "azoth")
+				HandleNick (menu, r.linkUrl ());
+			else
+				HandleURL (menu, r.linkUrl ());
 		}
 
 		if (!page ()->selectedText ().isEmpty ())
@@ -81,6 +77,40 @@ namespace Azoth
 		menu->exec (mapToGlobal (e->pos ()));
 		if (menu)
 			delete menu;
+	}
+
+	void ChatTabWebView::HandleNick (QMenu *menu, const QUrl& nickUrl)
+	{
+		const QString& entryId = nickUrl.queryItemValue ("entryId").toUtf8 ();
+		if (entryId.isEmpty ())
+			return;
+
+		ICLEntry *entry = qobject_cast<ICLEntry*> (Core::Instance ().GetEntry (entryId));
+		if (!entry)
+			return;
+
+		QList<QAction*> actions;
+
+		ActionsManager *manager = Core::Instance ().GetActionsManager ();
+		QList<QAction*> allActions = manager->GetEntryActions (entry);
+		Q_FOREACH (QAction *act, allActions)
+			if (manager->GetAreasForAction (act)
+					.contains (ActionsManager::CLEAAChatCtxtMenu))
+				actions << act;
+
+		menu->addActions (actions);
+	}
+
+	void ChatTabWebView::HandleURL (QMenu *menu, const QUrl& url)
+	{
+		menu->addAction (tr ("Open"),
+				this,
+				SLOT (handleOpenLink ()))->setData (url);
+		menu->addAction (tr ("Save..."),
+				this,
+				SLOT (handleSaveLink ()))->setData (url);
+		menu->addAction (pageAction (QWebPage::CopyLinkToClipboard));
+		menu->addSeparator ();
 	}
 
 	void ChatTabWebView::handleOpenLink ()
