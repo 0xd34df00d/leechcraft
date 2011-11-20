@@ -862,11 +862,8 @@ void LeechCraft::MainWindow::InitializeShortcuts ()
 
 void LeechCraft::MainWindow::ShowMenuAndBar (bool show)
 {
-	int cur = Ui_.MainTabWidget_->CurrentIndex ();
-	if (Core::Instance ().GetToolBar (cur) &&
-			!XmlSettingsManager::Instance ()->property ("ToolBarVisibilityManipulation").toBool ())
-		Core::Instance ().GetToolBar (cur)->setVisible (show);
-	Ui_.ActionFullscreenMode_->setChecked (!show);
+	if (XmlSettingsManager::Instance ()->property ("ToolBarVisibilityManipulation").toBool ())
+		Ui_.ActionFullscreenMode_->setChecked (!show);
 }
 
 void LeechCraft::MainWindow::keyPressEvent (QKeyEvent *e)
