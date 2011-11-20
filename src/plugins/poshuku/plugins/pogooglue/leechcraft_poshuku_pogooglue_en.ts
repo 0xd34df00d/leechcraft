@@ -6,12 +6,12 @@
     <message>
         <location filename="pogooglue.cpp" line="55"/>
         <source>Allows one to search for selected text in Google in two clicks.</source>
-        <translation type="unfinished"></translation>
+        <translation>Allows one to search for selected text in Google in two clicks.</translation>
     </message>
     <message>
         <location filename="pogooglue.cpp" line="118"/>
         <source>Google It!</source>
-        <translation type="unfinished"></translation>
+        <translation>Google It!</translation>
     </message>
 </context>
 </TS>
