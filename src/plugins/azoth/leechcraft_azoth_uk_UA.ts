@@ -290,12 +290,12 @@
     <message>
         <location filename="groupsenddialog.ui" line="61"/>
         <source>Offline</source>
-        <translation>Офлайн</translation>
+        <translation>Відключений</translation>
     </message>
     <message>
         <location filename="groupsenddialog.ui" line="80"/>
         <source>Send</source>
-        <translation type="unfinished"></translation>
+        <translation>Вiдправити</translation>
     </message>
 </context>
 <context>
@@ -986,8 +986,6 @@
         <oldsource>Are you sure you want to send %1 files to %2?</oldsource>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -1419,8 +1417,6 @@
         <source>%n message(s) in</source>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -1600,12 +1596,12 @@
     <message>
         <location filename="proxyobject.cpp" line="134"/>
         <source>Not available</source>
-        <translation>Розширений відійшов</translation>
+        <translation>Недоступний</translation>
     </message>
     <message>
         <location filename="proxyobject.cpp" line="136"/>
         <source>Offline</source>
-        <translation>Офлайн</translation>
+        <translation>Відключений</translation>
     </message>
     <message>
         <location filename="proxyobject.cpp" line="138"/>
@@ -1639,12 +1635,12 @@
     <message>
         <location filename="groupsenddialog.cpp" line="36"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Им&apos;я</translation>
     </message>
     <message>
         <location filename="groupsenddialog.cpp" line="36"/>
         <source>ID</source>
-        <translation type="unfinished"></translation>
+        <translation>ID</translation>
     </message>
 </context>
 <context>
@@ -1726,12 +1722,12 @@
     <message>
         <location filename="mainwidget.cpp" line="273"/>
         <source>Not available</source>
-        <translation>Розширений відійшов</translation>
+        <translation>Недоступний</translation>
     </message>
     <message>
         <location filename="mainwidget.cpp" line="277"/>
         <source>Offline</source>
-        <translation>Офлайн</translation>
+        <translation>Відключений</translation>
     </message>
     <message>
         <location filename="mainwidget.cpp" line="284"/>
@@ -1741,7 +1737,7 @@
     <message>
         <location filename="mainwidget.cpp" line="372"/>
         <source>Send message...</source>
-        <translation type="unfinished"></translation>
+        <translation>Відправити повідомлення...</translation>
     </message>
     <message>
         <location filename="mainwidget.cpp" line="405"/>
@@ -1783,7 +1779,7 @@
     <message>
         <location filename="mainwidget.cpp" line="240"/>
         <source>Show offline contacts</source>
-        <translation>Показати контакти, що в офлайні</translation>
+        <translation>Показати вiдключенi контакти</translation>
     </message>
     <message>
         <location filename="mainwidget.cpp" line="362"/>
@@ -2326,7 +2322,7 @@
         <location filename="azoth.cpp" line="161"/>
         <location filename="azoth.cpp" line="313"/>
         <source>Search</source>
-        <translation type="unfinished"></translation>
+        <translation>Пошук</translation>
     </message>
     <message>
         <location filename="azoth.cpp" line="162"/>
@@ -2795,12 +2791,12 @@
     <message>
         <location filename="setstatusdialog.ui" line="56"/>
         <source>Not available</source>
-        <translation>Розширений відійшов</translation>
+        <translation>Недоступний</translation>
     </message>
     <message>
         <location filename="setstatusdialog.ui" line="61"/>
         <source>Offline</source>
-        <translation>Офлайн</translation>
+        <translation>Відключений</translation>
     </message>
 </context>
 <context>
@@ -3257,7 +3253,7 @@
     <message>
         <location filename="dummy.cpp" line="90"/>
         <source>Not available is okay</source>
-        <translation>Розширений відійшов — це нормально</translation>
+        <translation>Недоступний i це добре</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="91"/>
@@ -3272,7 +3268,7 @@
     <message>
         <location filename="dummy.cpp" line="93"/>
         <source>Offline:</source>
-        <translation>Офлайн:</translation>
+        <translation>Відключений:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="94"/>
