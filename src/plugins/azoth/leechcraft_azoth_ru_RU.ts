@@ -283,7 +283,7 @@
     <message>
         <location filename="groupsenddialog.ui" line="54"/>
         <source>Online</source>
-        <translation>Онлайн</translation>
+        <translation>Доступен</translation>
     </message>
     <message>
         <location filename="groupsenddialog.ui" line="61"/>
@@ -1577,7 +1577,7 @@
     <message>
         <location filename="proxyobject.cpp" line="126"/>
         <source>Online</source>
-        <translation>Онлайн</translation>
+        <translation>Доступен</translation>
     </message>
     <message>
         <location filename="proxyobject.cpp" line="128"/>
@@ -1587,7 +1587,7 @@
     <message>
         <location filename="proxyobject.cpp" line="130"/>
         <source>Away</source>
-        <translation>Ушёл</translation>
+        <translation>Отсутствую</translation>
     </message>
     <message>
         <location filename="proxyobject.cpp" line="132"/>
@@ -1597,12 +1597,12 @@
     <message>
         <location filename="proxyobject.cpp" line="134"/>
         <source>Extended away</source>
-        <translation>Расширенный ушёл</translation>
+        <translation>Недоступен</translation>
     </message>
     <message>
         <location filename="proxyobject.cpp" line="136"/>
         <source>Offline</source>
-        <translation>Оффлайн</translation>
+        <translation>Отключён</translation>
     </message>
     <message>
         <location filename="proxyobject.cpp" line="138"/>
@@ -1703,7 +1703,7 @@
     <message>
         <location filename="mainwidget.cpp" line="257"/>
         <source>Online</source>
-        <translation>Онлайн</translation>
+        <translation>Доступен</translation>
     </message>
     <message>
         <location filename="mainwidget.cpp" line="261"/>
@@ -1713,7 +1713,7 @@
     <message>
         <location filename="mainwidget.cpp" line="265"/>
         <source>Away</source>
-        <translation>Ушёл</translation>
+        <translation>Отсутствую</translation>
     </message>
     <message>
         <location filename="mainwidget.cpp" line="269"/>
@@ -1723,7 +1723,7 @@
     <message>
         <location filename="mainwidget.cpp" line="273"/>
         <source>Extended away</source>
-        <translation>Расширенный ушёл</translation>
+        <translation>Недоступен</translation>
     </message>
     <message>
         <location filename="mainwidget.cpp" line="277"/>
@@ -2582,7 +2582,7 @@
     <message>
         <location filename="locationdialog.ui" line="104"/>
         <source>Bearing:</source>
-        <translation type="unfinished"></translation>
+        <translation>Азимут:</translation>
     </message>
     <message>
         <location filename="locationdialog.ui" line="138"/>
@@ -2622,7 +2622,7 @@
     <message>
         <location filename="locationdialog.ui" line="229"/>
         <source>Locality:</source>
-        <translation type="unfinished"></translation>
+        <translation>Район:</translation>
     </message>
     <message>
         <location filename="locationdialog.ui" line="239"/>
@@ -2765,7 +2765,7 @@
     <message>
         <location filename="setstatusdialog.ui" line="36"/>
         <source>Online</source>
-        <translation>Онлайн</translation>
+        <translation>Доступен</translation>
     </message>
     <message>
         <location filename="setstatusdialog.ui" line="41"/>
@@ -2775,7 +2775,7 @@
     <message>
         <location filename="setstatusdialog.ui" line="46"/>
         <source>Away</source>
-        <translation>Ушёл</translation>
+        <translation>Отсутствую</translation>
     </message>
     <message>
         <location filename="setstatusdialog.ui" line="51"/>
@@ -2785,7 +2785,7 @@
     <message>
         <location filename="setstatusdialog.ui" line="56"/>
         <source>Extended away</source>
-        <translation>Расширенный ушёл</translation>
+        <translation>Недоступен</translation>
     </message>
     <message>
         <location filename="setstatusdialog.ui" line="61"/>
@@ -3205,12 +3205,12 @@
     <message>
         <location filename="dummy.cpp" line="82"/>
         <source>I&apos;m online!</source>
-        <translation>Я онлайн!</translation>
+        <translation>Я на связи!</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="83"/>
         <source>Online:</source>
-        <translation>Онлайн:</translation>
+        <translation>Доступен:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="84"/>
@@ -3225,12 +3225,12 @@
     <message>
         <location filename="dummy.cpp" line="86"/>
         <source>Oh, seems like I&apos;m away</source>
-        <translation>Хех, похоже, я ушёл</translation>
+        <translation>Хм, скорее всего я отошел</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="87"/>
         <source>Away:</source>
-        <translation>Ушёл:</translation>
+        <translation>Отсутствую:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="88"/>
@@ -3245,12 +3245,12 @@
     <message>
         <location filename="dummy.cpp" line="90"/>
         <source>Extended away is okay</source>
-        <translation>Расширенный ушёл — это хорошо</translation>
+        <translation>Недоступен и это хорошо</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="91"/>
         <source>XA:</source>
-        <translation>Расширенный ушёл:</translation>
+        <translation>Недоступен:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="92"/>
