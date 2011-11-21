@@ -1591,8 +1591,8 @@
     </message>
     <message>
         <location filename="proxyobject.cpp" line="134"/>
-        <source>Extended away</source>
-        <translation>Extended away</translation>
+        <source>Not available</source>
+        <translation>Not available</translation>
     </message>
     <message>
         <location filename="proxyobject.cpp" line="136"/>
@@ -1717,8 +1717,8 @@
     </message>
     <message>
         <location filename="mainwidget.cpp" line="273"/>
-        <source>Extended away</source>
-        <translation>Extended away</translation>
+        <source>Not available</source>
+        <translation>Not available</translation>
     </message>
     <message>
         <location filename="mainwidget.cpp" line="277"/>
@@ -2779,8 +2779,8 @@
     </message>
     <message>
         <location filename="setstatusdialog.ui" line="56"/>
-        <source>Extended away</source>
-        <translation>Extended away</translation>
+        <source>Not available</source>
+        <translation>Not available</translation>
     </message>
     <message>
         <location filename="setstatusdialog.ui" line="61"/>
@@ -3239,8 +3239,8 @@
     </message>
     <message>
         <location filename="dummy.cpp" line="90"/>
-        <source>Extended away is okay</source>
-        <translation>Extended away is okay</translation>
+        <source>Not available is okay</source>
+        <translation>Not available is okay</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="91"/>

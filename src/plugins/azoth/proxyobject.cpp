@@ -131,7 +131,7 @@ namespace Azoth
 		case SDND:
 			return Core::tr ("Do not disturb");
 		case SXA:
-			return Core::tr ("Extended away");
+			return Core::tr ("Not available");
 		case SOffline:
 			return Core::tr ("Offline");
 		default:

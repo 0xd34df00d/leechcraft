@@ -270,7 +270,7 @@ namespace Azoth
 					setProperty ("Azoth/TargetState",
 							QVariant::fromValue<State> (SDND));
 		result ->addAction (Core::Instance ().GetIconForState (SXA),
-				tr ("Extended away"), this, slot)->
+				tr ("Not available"), this, slot)->
 					setProperty ("Azoth/TargetState",
 							QVariant::fromValue<State> (SXA));
 		result ->addAction (Core::Instance ().GetIconForState (SOffline),
