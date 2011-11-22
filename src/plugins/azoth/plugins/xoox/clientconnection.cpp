@@ -1222,7 +1222,7 @@ namespace Xoox
 		}
 
 		if (JoinQueue_.size ())
-			QTimer::singleShot (10000,
+			QTimer::singleShot (3000,
 					this,
 					SLOT (handleAutojoinQueue ()));
 	}
@@ -1237,11 +1237,13 @@ namespace Xoox
 		if (!qobject_cast<IProxyObject*> (proto->GetProxyObject ())->IsAutojoinAllowed ())
 			return;
 
-		QList<QObject*> entries;
-		Q_FOREACH (const JoinQueueItem& item, JoinQueue_)
-			entries << JoinRoom (item.RoomJID_, item.Nickname_);
-		emit gotRosterItems (entries);
-		JoinQueue_.clear ();
+		const JoinQueueItem& it = JoinQueue_.takeFirst ();
+		emit gotRosterItems (QList<QObject*> () << JoinRoom (it.RoomJID_, it.Nickname_));
+
+		if (!JoinQueue_.isEmpty ())
+			QTimer::singleShot (2000,
+					this,
+					SLOT (handleAutojoinQueue ()));
 	}
 
 	void ClientConnection::handleDiscoInfo (const QXmppDiscoveryIq& iq)
