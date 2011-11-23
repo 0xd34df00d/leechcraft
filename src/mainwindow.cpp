@@ -118,7 +118,7 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 			SLOT (handleRestoreActionAdded (QAction*)));
 
 	QTimer *speedUpd = new QTimer (this);
-	speedUpd->setInterval (1000);
+	speedUpd->setInterval (2000);
 	connect (speedUpd,
 			SIGNAL (timeout ()),
 			this,
