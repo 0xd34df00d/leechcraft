@@ -1222,7 +1222,7 @@ namespace Xoox
 		}
 
 		if (JoinQueue_.size ())
-			QTimer::singleShot (3000,
+			QTimer::singleShot (500,
 					this,
 					SLOT (handleAutojoinQueue ()));
 	}
