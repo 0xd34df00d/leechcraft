@@ -26,6 +26,7 @@
 #include "util/structuresops.h"
 
 class QSystemTrayIcon;
+class QTimer;
 
 namespace LeechCraft
 {
@@ -44,6 +45,8 @@ namespace LeechCraft
 		dates_t Dates_;
 
 		QSystemTrayIcon *TrayIcon_;
+
+		QTimer *Timer_;
 	public:
 		/** Constructs the manager.
 		 */
@@ -52,7 +55,7 @@ namespace LeechCraft
 
 		/** Pushes the message to the message array. Shows the popup if
 		 * it was hidden, appends the message otherwise.
-		 * 
+		 *
 		 * @param[in] n The notification.
 		 */
 		void ShowMessage (const Entity&);
