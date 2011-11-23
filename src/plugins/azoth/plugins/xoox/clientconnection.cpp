@@ -1222,7 +1222,7 @@ namespace Xoox
 		}
 
 		if (JoinQueue_.size ())
-			QTimer::singleShot (500,
+			QTimer::singleShot (3000,
 					this,
 					SLOT (handleAutojoinQueue ()));
 	}
@@ -1241,7 +1241,7 @@ namespace Xoox
 		emit gotRosterItems (QList<QObject*> () << JoinRoom (it.RoomJID_, it.Nickname_));
 
 		if (!JoinQueue_.isEmpty ())
-			QTimer::singleShot (2000,
+			QTimer::singleShot (800,
 					this,
 					SLOT (handleAutojoinQueue ()));
 	}
