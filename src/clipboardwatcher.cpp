@@ -33,7 +33,7 @@ namespace LeechCraft
 				SIGNAL (timeout ()),
 				this,
 				SLOT (handleClipboardTimer ()));
-		ClipboardWatchdog_->start (2000);
+		ClipboardWatchdog_->start (5000);
 	}
 
 	ClipboardWatcher::~ClipboardWatcher ()
