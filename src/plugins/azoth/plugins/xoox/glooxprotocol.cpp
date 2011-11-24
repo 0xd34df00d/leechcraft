@@ -31,6 +31,7 @@
 #include "inbandaccountregfirstpage.h"
 #include "inbandaccountregsecondpage.h"
 #include "inbandaccountregthirdpage.h"
+#include "clientconnection.h"
 
 namespace LeechCraft
 {
@@ -247,12 +248,47 @@ namespace Xoox
 		else if (queryItems.contains ("roster") ||
 				queryItems.contains ("subscribe"))
 		{
-			QString name = queryItems ["name"];
-			QStringList groups (queryItems ["group"]);
+			const QString& name = queryItems ["name"];
+			const QStringList groups (queryItems ["group"]);
 			acc->AddEntry (path, name, groups);
 			if (queryItems.contains ("subscribe"))
 				acc->RequestAuth (path, QString (), name, groups);
 		}
+		else if (queryItems.contains ("message"))
+		{
+			const QString& body = queryItems ["body"];
+
+			QString jid;
+			QString variant;
+			ClientConnection::Split (path, &jid, &variant);
+			if (jid.isEmpty ())
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "empty jid for path"
+						<< path
+						<< url.toString ();
+				return;
+			}
+
+			QObject *entryObj = acc->GetClientConnection ()->
+					GetCLEntry (jid, variant);
+			if (!entryObj)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "entry for the given jid not found"
+						<< jid
+						<< variant;
+				return;
+			}
+			ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+
+			Core::Instance ().GetPluginProxy ()->OpenChat (entry->GetEntryID (),
+					acc->GetAccountID (), body, variant);
+		}
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "unhandled query items"
+					<< queryItems;
 	}
 
 	void GlooxProtocol::saveAccounts () const
