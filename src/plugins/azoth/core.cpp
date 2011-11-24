@@ -1604,6 +1604,37 @@ namespace Azoth
 				QStringList ("org.LC.AdvNotifications.IM.StatusChange"));
 	}
 
+	namespace
+	{
+		template<typename T>
+		T FindTop (const QMap<T, int>& map)
+		{
+			T maxT = T ();
+			int max = 0;
+			Q_FOREACH (const T& t, map.keys ())
+			{
+				const int val = map [t];
+				if (val > max)
+				{
+					max = val;
+					maxT = t;
+				}
+			}
+
+			return maxT;
+		}
+	}
+
+	void Core::UpdateInitState (State state)
+	{
+		const State prevTop = FindTop (StateCounter_);
+		++StateCounter_ [state];
+		const State newTop = FindTop (StateCounter_);
+
+		if (newTop != prevTop)
+			emit topStatusChanged (newTop);
+	}
+
 #ifdef ENABLE_CRYPT
 	void Core::RestoreKeyForAccount (IAccount *acc)
 	{
@@ -1777,6 +1808,8 @@ namespace Azoth
 				QDataStream stream (var.toByteArray ());
 				stream >> s;
 				account->ChangeState (s);
+
+				UpdateInitState (s.State_);
 			}
 		}
 		else

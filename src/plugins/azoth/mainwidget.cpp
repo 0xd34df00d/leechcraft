@@ -139,7 +139,7 @@ namespace Azoth
 
 		Ui_.FastStatusButton_->setMenu (CreateStatusChangeMenu (SLOT (fastStateChangeRequested ())));
 		Ui_.FastStatusButton_->setDefaultAction (new QAction (tr ("Set status"), this));
-		UpdateFastStatusButton (SOnline);
+		updateFastStatusButton (SOnline);
 		connect (Ui_.FastStatusButton_->defaultAction (),
 				SIGNAL (triggered ()),
 				this,
@@ -200,6 +200,11 @@ namespace Azoth
 		XmlSettingsManager::Instance ().RegisterObject ("ShowMenuBar",
 				this, "menuBarVisibilityToggled");
 		menuBarVisibilityToggled ();
+
+		connect (&Core::Instance (),
+				SIGNAL (topStatusChanged (LeechCraft::Azoth::State)),
+				this,
+				SLOT (updateFastStatusButton (LeechCraft::Azoth::State)));
 	}
 
 	QList<QAction*> MainWidget::GetMenuActions()
@@ -288,13 +293,6 @@ namespace Azoth
 		return result;
 	}
 
-	void MainWidget::UpdateFastStatusButton (State state)
-	{
-		Ui_.FastStatusButton_->defaultAction ()->setIcon (Core::Instance ().GetIconForState (state));
-		Ui_.FastStatusButton_->setProperty ("Azoth/TargetState",
-				QVariant::fromValue<State> (state));
-	}
-
 	IAccount* MainWidget::GetAccountFromSender (const char *func)
 	{
 		if (!sender ())
@@ -323,6 +321,13 @@ namespace Azoth
 					<< "could not be cast to IAccount";
 
 		return account;
+	}
+
+	void MainWidget::updateFastStatusButton (State state)
+	{
+		Ui_.FastStatusButton_->defaultAction ()->setIcon (Core::Instance ().GetIconForState (state));
+		Ui_.FastStatusButton_->setProperty ("Azoth/TargetState",
+				QVariant::fromValue<State> (state));
 	}
 
 	void MainWidget::on_CLTree__activated (const QModelIndex& index)
@@ -555,7 +560,7 @@ namespace Azoth
 
 	void MainWidget::fastStateChangeRequested ()
 	{
-		UpdateFastStatusButton (sender ()->
+		updateFastStatusButton (sender ()->
 					property ("Azoth/TargetState").value<State> ());
 		applyFastStatus ();
 	}
