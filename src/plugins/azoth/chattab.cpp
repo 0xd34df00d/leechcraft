@@ -782,7 +782,8 @@ namespace Azoth
 		if (url.scheme () != "azoth")
 		{
 			Entity e = Util::MakeEntity (url,
-					QString (), static_cast<TaskParameter> (FromUserInitiated | OnlyHandle));
+					QString (),
+					static_cast<TaskParameter> (FromUserInitiated | OnlyHandle | ShouldQuerySource));
 			Core::Instance ().SendEntity (e);
 			return;
 		}
