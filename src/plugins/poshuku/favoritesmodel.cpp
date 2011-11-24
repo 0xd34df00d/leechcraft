@@ -280,7 +280,18 @@ namespace Poshuku
 
 	void FavoritesModel::removeItem (const QModelIndex& index)
 	{
-		const QString& url = Items_ [index.row ()].URL_;
+		if (!index.isValid () ||
+				index.row () < 0 ||
+				index.row () > Items_.size ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "invalid index"
+					<< index
+					<< Items_.size ();
+			return;
+		}
+
+		const QString url = Items_ [index.row ()].URL_;
 		Core::Instance ().GetStorageBackend ()->RemoveFromFavorites (Items_ [index.row ()]);
 		Core::Instance ().RemoveFromFavorites (url);
 	}
