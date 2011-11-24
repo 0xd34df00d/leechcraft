@@ -1610,6 +1610,15 @@ namespace Azoth
 		Ui_.MsgEdit_->setText (Ui_.MsgEdit_->toPlainText () + text);
 	}
 
+	void ChatTab::selectVariant (const QString& var)
+	{
+		const int idx = Ui_.VariantBox_->findText (var);
+		if (idx == -1)
+			return;
+
+		Ui_.VariantBox_->setCurrentIndex (idx);
+	}
+
 	QTextEdit* ChatTab::getMsgEdit ()
 	{
 		return Ui_.MsgEdit_;
