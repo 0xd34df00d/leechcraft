@@ -23,6 +23,7 @@
 #include "interfaces/iaccount.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
+#include "chattabsmanager.h"
 
 namespace LeechCraft
 {
@@ -186,6 +187,24 @@ namespace Azoth
 	QObject* ProxyObject::GetEntry (const QString& entryID, const QString&) const
 	{
 		return Core::Instance ().GetEntry (entryID);
+	}
+
+	void ProxyObject::OpenChat (const QString& entryID, const QString& accID,
+			const QString& message, const QString& variant) const
+	{
+		ChatTabsManager *mgr = Core::Instance ().GetChatTabsManager ();
+
+		ICLEntry *entry = qobject_cast<ICLEntry*> (GetEntry (entryID, accID));
+		QWidget *chat = mgr->OpenChat (entry);
+
+		QMetaObject::invokeMethod (chat,
+				"prepareMessageText",
+				Qt::QueuedConnection,
+				Q_ARG (QString, message));
+		QMetaObject::invokeMethod (chat,
+				"selectVariant",
+				Qt::QueuedConnection,
+				Q_ARG (QString, variant));
 	}
 
 	QString ProxyObject::GetSelectedChatTemplate (QObject *entry, QWebFrame *frame) const

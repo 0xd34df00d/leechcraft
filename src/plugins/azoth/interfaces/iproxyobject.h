@@ -37,19 +37,19 @@ namespace Azoth
 	{
 	public:
 		virtual ~IProxyObject () {}
-		
+
 		enum PublicResourceLoader
 		{
 			PRLClientIcons,
 			PRLStatusIcons,
 			PRLSystemIcons
 		};
-		
+
 		/** @brief Returns the Core's settings manager object.
-		 * 
+		 *
 		 * The returned object's properties could be queried to find out
 		 * the settings and parameters of Core's settings.
-		 * 
+		 *
 		 * @return Core's settings manager object.
 		 */
 		virtual QObject* GetSettingsManager () = 0;
@@ -102,9 +102,9 @@ namespace Azoth
 		 * @return The name of the operating system.
 		 */
 		virtual QString GetOSName () = 0;
-		
+
 		/** @brief Queries whether autojoin is allowed.
-		 * 
+		 *
 		 * @return Whether autojoin is allowed.
 		 */
 		virtual bool IsAutojoinAllowed () = 0;
@@ -136,47 +136,52 @@ namespace Azoth
 		 * @sa AuthStatusToString()
 		 */
 		virtual AuthStatus AuthStatusFromString (const QString& str) const = 0;
-		
+
 		/** @brief Returns the account object for the given account ID.
-		 * 
+		 *
 		 * If there is no such account, NULL is returned.
-		 * 
+		 *
 		 * @param[in] accID The unique account ID.
-		 * 
+		 *
 		 * @return Account object implementing IAccount, or NULL if no
 		 * such account exists.
 		 */
 		virtual QObject* GetAccount (const QString& accID) const = 0;
-		
+
 		/** @brief Returns all the accounts registered in Azoth.
-		 * 
+		 *
 		 * @return The list of objects implementing IAccount.
 		 */
 		virtual QList<QObject*> GetAllAccounts () const = 0;
-		
+
 		/** @brief Returns the entry object for the given entry ID.
-		 * 
+		 *
 		 * @param[in] entryID The entry ID.
 		 * @param[in] accID The account ID to which this entry
 		 * belongs.
-		 * 
+		 *
 		 * @return Entry object, or NULL if no such entry exists.
 		 */
 		virtual QObject* GetEntry (const QString& entryID, const QString& accID) const = 0;
-		
+
+		virtual void OpenChat (const QString& entryID,
+				const QString& accID,
+				const QString& message = QString (),
+				const QString& variant = QString ()) const = 0;
+
 		virtual QString GetSelectedChatTemplate (QObject*, QWebFrame*) const = 0;
-		
+
 		virtual QList<QColor> GenerateColors (const QString& scheme) const = 0;
 		virtual QString GetNickColor (const QString& nick, const QList<QColor>& colors) const = 0;
 
 		virtual QString FormatDate (QDateTime, QObject*) const = 0;
 		virtual QString FormatNickname (QString, QObject*, const QString&) const = 0;
 		virtual QString FormatBody (QString, QObject*) const = 0;
-		
+
 		virtual void PreprocessMessage (QObject*) = 0;
-		
+
 		virtual Util::ResourceLoader* GetResourceLoader (PublicResourceLoader loader) const = 0;
-		
+
 		virtual QIcon GetIconForState (State state) const = 0;
 	};
 }
