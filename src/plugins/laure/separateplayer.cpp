@@ -17,35 +17,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "separateplayerwidget.h"
+#include "separateplayer.h"
+#include <QCloseEvent>
 
 namespace LeechCraft
 {
 namespace Laure
 {
-	SeparatePlayerWidget::SeparatePlayerWidget (libvlc_media_player_t *MP,
-			QWidget *playerWidget, QWidget *parent)
-	: QWidget (parent)
-	, PlayerWidget_ (playerWidget)
-	, MP_ (MP)
+	SeparatePlayer::SeparatePlayer (QWidget *parent, Qt::WindowFlags f)
+	: QWidget (parent, f)
 	{
 		setPalette (QPalette (Qt::black));
-		changeWidget (this);
-	}
-
-	void SeparatePlayerWidget::closeEvent (QCloseEvent *event)
-	{
-		changeWidget (PlayerWidget_);
-		setParent (PlayerWidget_);
 	}
 	
-	void SeparatePlayerWidget::changeWidget (QWidget *w)
+	void SeparatePlayer::closeEvent (QCloseEvent *event)
 	{
-		int time = libvlc_media_player_get_time (MP_);
-		libvlc_media_player_stop (MP_);
-		libvlc_media_player_set_xwindow (MP_, w->winId ());
-		libvlc_media_player_play (MP_);
-		libvlc_media_player_set_time (MP_, time);
+		emit closed ();
+		event->accept ();
 	}
 }
 }
