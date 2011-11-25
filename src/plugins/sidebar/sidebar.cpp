@@ -19,10 +19,13 @@
 #include "sidebar.h"
 #include <QIcon>
 #include <QAction>
+#include <QMainWindow>
+#include <QStatusBar>
 #include <interfaces/imwproxy.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/iactionsexporter.h>
+#include <interfaces/ihavetabs.h>
 
 namespace LeechCraft
 {
@@ -41,10 +44,39 @@ namespace Sidebar
 		SepAfterQL_ = Bar_->addSeparator ();
 
 		Proxy_->GetMWProxy ()->AddToolbar (Bar_, Qt::LeftToolBarArea);
+		Proxy_->GetMainWindow ()->statusBar ()->hide ();
 	}
 
 	void Plugin::SecondInit ()
 	{
+		auto hasTabs = Proxy_->GetPluginsManager ()->
+				GetAllCastableRoots<IHaveTabs*> ();
+		Q_FOREACH (QObject *ihtObj, hasTabs)
+		{
+			IHaveTabs *iht = qobject_cast<IHaveTabs*> (ihtObj);
+
+			Q_FOREACH (const TabClassInfo& tc, iht->GetTabClasses ())
+			{
+				if (!(tc.Features_ & TabFeature::TFOpenableByRequest) ||
+						(tc.Features_ & TabFeature::TFSingle))
+					continue;
+
+				if (tc.Icon_.isNull ())
+					continue;
+
+				QAction *act = new QAction (tc.Icon_,
+						tc.VisibleName_, this);
+				act->setProperty ("Sidebar/Object",
+						QVariant::fromValue<QObject*> (ihtObj));
+				act->setProperty ("Sidebar/TabClass", tc.TabClass_);
+				connect (act,
+						SIGNAL (triggered (bool)),
+						this,
+						SLOT (openNewTab ()));
+
+				Bar_->insertAction (SepAfterPlugins_, act);
+			}
+		}
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -97,6 +129,17 @@ namespace Sidebar
 				Bar_->insertAction (SepAfterQL_, action);
 			}
 		}
+	}
+
+	void Plugin::openNewTab ()
+	{
+		QObject *pluginObj = sender ()->
+				property ("Sidebar/Object").value<QObject*> ();
+		const QByteArray& tc = sender ()->
+				property ("Sidebar/TabClass").toByteArray ();
+
+		IHaveTabs *iht = qobject_cast<IHaveTabs*> (pluginObj);
+		iht->TabOpenRequested (tc);
 	}
 }
 }

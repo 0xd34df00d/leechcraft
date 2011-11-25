@@ -51,6 +51,8 @@ namespace Sidebar
 		QSet<QByteArray> GetPluginClasses () const;
 	public slots:
 		void hookGonnaFillQuickLaunch (LeechCraft::IHookProxy_ptr);
+	private slots:
+		void openNewTab ();
 	};
 }
 }
