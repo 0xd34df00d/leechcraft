@@ -120,10 +120,11 @@ OPTION (ENABLE_POPISHU "Build Popishu, a simple QScintilla-based text editor" OF
 OPTION (ENABLE_QROSP "Build Qrosp, the scripting support plugin" OFF)
 OPTION (ENABLE_SECMAN "Build SecMan, security & personal data manager" OFF)
 OPTION (ENABLE_SHELLOPEN "Build ShellOpen, the plugin supporting handling entities via external applications" ON)
+OPTION (ENABLE_SIDEBAR "Build Sidebar, a nice side bar with quick launch, tabs and tray areas" OFF)
+OPTION (ENABLE_SNAILS "Build Snails, LeechCraft mail client" OFF)
 OPTION (ENABLE_SYNCER "Build Syncer, the synchronization plugin for LeechCraft" OFF)
 OPTION (ENABLE_TABSLIST "Quick overview of tabs" OFF)
 OPTION (ENABLE_VFSCORE "Build VFS core" OFF)
-OPTION (ENABLE_SNAILS "Build Snails, LeechCraft mail client" OFF)
 
 # Defunct
 OPTION (ENABLE_FTP "Build LCFTP, the FTP client" ON)
@@ -322,6 +323,10 @@ ENDIF (ENABLE_KNOWHOW)
 IF (ENABLE_SNAILS)
 	ADD_SUBDIRECTORY (plugins/snails)
 ENDIF (ENABLE_SNAILS)
+
+IF (ENABLE_SIDEBAR)
+	ADD_SUBDIRECTORY (plugins/sidebar)
+ENDIF (ENABLE_SIDEBAR)
 
 SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTXML TRUE)
