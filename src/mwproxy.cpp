@@ -27,15 +27,21 @@ namespace LeechCraft
 	: QObject (parent)
 	{
 	}
-	
+
 	void MWProxy::AddDockWidget (Qt::DockWidgetArea area, QDockWidget *w)
 	{
 		Core::Instance ().GetReallyMainWindow ()->addDockWidget (area, w);
 		ToggleViewActionVisiblity (w, true);
 	}
-	
+
 	void MWProxy::ToggleViewActionVisiblity (QDockWidget *w, bool visible)
 	{
 		Core::Instance ().GetReallyMainWindow ()->ToggleViewActionVisiblity (w, visible);
+	}
+
+	void MWProxy::AddToolbar (QToolBar *bar, Qt::ToolBarArea area)
+	{
+		bar->setParent (Core::Instance ().GetReallyMainWindow ());
+		Core::Instance ().GetReallyMainWindow ()->addToolBar (area, bar);
 	}
 }

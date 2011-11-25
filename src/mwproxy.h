@@ -30,9 +30,10 @@ namespace LeechCraft
 		Q_INTERFACES (IMWProxy)
 	public:
 		MWProxy (QObject* = 0);
-		
+
 		void AddDockWidget (Qt::DockWidgetArea, QDockWidget*);
 		void ToggleViewActionVisiblity (QDockWidget*, bool);
+		void AddToolbar (QToolBar*, Qt::ToolBarArea);
 	};
 }
 
