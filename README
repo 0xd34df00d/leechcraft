@@ -6,23 +6,39 @@ stream podcasts (and other media files) and much more.
 Plugins are easily added and integrated with each other with no effort.
 
 Currently it includes following plugins:
+* AdvancedNotifications, a highly flexible, powerful and configurable
+  notifications framework.
 * Aggregator, RSS/Atom feed reader.
 * AnHero, crash handler.
 * Auscrie, the screen shooter.
 * Azoth, the modular IM client.
+  * Azoth AdiumStyles, support for Adium styles.
   * Azoth Acetamide, support for IRC protocol.
+  * Azoth Autoidle for autochanging status due to inactivity timeout.
+  * Azoth Autopaste for autopasting long texts to pastebins instead of
+    chat sessions.
   * Azoth ChatHistory for storing chat history.
+  * Azoth Depester for ignoring specific multiuser chat participants.
+  * Azoth EmbedMedia for displaying media objects directly in the chat
+    window.
+  * Azoth Herbicide, a basic antispam plugin.
   * Azoth HiLi for custom highlights in MUCs.
   * Azoth Juick for enhanced support for juick.com microblogging service.
+  * Azoth LastSeen, for client-side recording of contacts' last online
+    and availability time.
+  * Azoth Metacontacts, support for metacontacts.
   * Azoth NativeEmoticons, for support own/Psi+/Kopete emoticons packs.
   * Azoth p100q for enhanced support for psto.net microblogging service.
+  * Azoth Rosenthal for enabling spellchecker in chat sessions.
   * Azoth StandardStyles for support for basic chat window styles.
   * Azoth Xoox, support for XMPP protocol.
+  * Azoth Xtazy for publishing currently playing tune.
 * BitTorrent, the BitTorrent client.
 * CSTP, simple HTTP implementation.
 * DBusManager, D-Bus for the LeechCraft.
 * DeadLyrics, LyricWiki.org API.
 * EiskaltDC++, the Direct Connect and Advanced Direct Connect client.
+* Glance for providing thumbnailed grid overview of tabs.
 * GMail Notifier, which notifies about new mail on GMail inboxes.
 * HistoryHolder, which keeps track of the downloads history.
 * Kinotify, which provides fancy kinetic notifications.
@@ -36,6 +52,8 @@ Currently it includes following plugins:
   * Poshuku CleanWeb, AdBlock+-compatible ad blocker.
   * Poshuku FileScheme, support for the file:// browsing.
   * Poshuku FUA, which allows one to set fake user agents per domain.
+  * Poshuku OnlineBookmarks for syncing bookmarks with services like
+    Read It Later.
   * Poshuku WYFV, which allows one to play flash video on some sites without
     Flash installed.
 * Qrosp, scripting support for LeechCraft via Qross library.
@@ -46,6 +64,8 @@ Currently it includes following plugins:
 * Syncer, for synchronizing data and state between different machines
   running LeechCraft.
 * Tab++, for better tabs management.
+* TabsList, plugin showing the list of currently opened tabs and
+  allowing one to quickly navigate between them.
 * vGrabber, vkontakte.ru audio/video player/downloader.
 
 == Getting LeechCraft ==
