@@ -31,6 +31,7 @@ namespace LeechCraft
 	public:
 		CorePlugin2Manager (QObject* = 0);
 	signals:
+		void hookGonnaFillQuickLaunch (LeechCraft::IHookProxy_ptr proxy);
 		void hookNAMCreateRequest (LeechCraft::IHookProxy_ptr proxy,
 					QNetworkAccessManager *manager,
 					QNetworkAccessManager::Operation *op,

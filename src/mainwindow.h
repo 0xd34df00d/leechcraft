@@ -26,6 +26,7 @@
 #include <QModelIndex>
 #include <QToolButton>
 #include "ui_leechcraft.h"
+#include "interfaces/core/ihookproxy.h"
 
 class QLabel;
 class QDockWidget;
@@ -136,10 +137,13 @@ namespace LeechCraft
 		void doDelayedInit ();
 		void handleLoadProgress (const QString&);
 	private:
+		void FillQuickLaunch ();
 		void FillTray ();
 		void FillToolMenu ();
 		void InitializeShortcuts ();
 		void ShowMenuAndBar (bool);
+	signals:
+		void hookGonnaFillQuickLaunch (LeechCraft::IHookProxy_ptr);
 	};
 };
 
