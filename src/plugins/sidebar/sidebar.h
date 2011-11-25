@@ -38,7 +38,10 @@ namespace Sidebar
 
 		QToolBar *Bar_;
 		QAction *SepAfterPlugins_;
+		QAction *SepAfterTabs_;
 		QAction *SepAfterQL_;
+
+		QMap<QWidget*, QAction*> TabActions_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -49,9 +52,15 @@ namespace Sidebar
 		QIcon GetIcon () const;
 
 		QSet<QByteArray> GetPluginClasses () const;
+	private:
+		void UpdateActionPosition (QAction*);
 	public slots:
 		void hookGonnaFillQuickLaunch (LeechCraft::IHookProxy_ptr);
 	private slots:
+		void handleNewTab (const QString&, QWidget*);
+		void handleChangeTabName (QWidget*, const QString&);
+		void handleChangeTabIcon (QWidget*, const QIcon&);
+		void handleRemoveTab (QWidget*);
 		void openNewTab ();
 	};
 }

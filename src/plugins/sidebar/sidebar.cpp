@@ -41,10 +41,33 @@ namespace Sidebar
 		Bar_->setIconSize (QSize (48, 48));
 
 		SepAfterPlugins_ = Bar_->addSeparator ();
+		SepAfterTabs_ = Bar_->addSeparator ();
 		SepAfterQL_ = Bar_->addSeparator ();
 
 		Proxy_->GetMWProxy ()->AddToolbar (Bar_, Qt::LeftToolBarArea);
 		Proxy_->GetMainWindow ()->statusBar ()->hide ();
+
+		auto hasTabs = Proxy_->GetPluginsManager ()->
+				GetAllCastableRoots<IHaveTabs*> ();
+		Q_FOREACH (QObject *ihtObj, hasTabs)
+		{
+			connect (ihtObj,
+					SIGNAL (addNewTab (const QString&, QWidget*)),
+					this,
+					SLOT (handleNewTab (const QString&, QWidget*)));
+			connect (ihtObj,
+					SIGNAL (removeTab (QWidget*)),
+					this,
+					SLOT (handleRemoveTab (QWidget*)));
+			connect (ihtObj,
+					SIGNAL (changeTabName (QWidget*, const QString&)),
+					this,
+					SLOT (handleChangeTabName (QWidget*, const QString&)));
+			connect (ihtObj,
+					SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
+					this,
+					SLOT (handleChangeTabIcon (QWidget*, const QIcon&)));
+		}
 	}
 
 	void Plugin::SecondInit ()
@@ -110,6 +133,24 @@ namespace Sidebar
 		return result;
 	}
 
+	void Plugin::UpdateActionPosition (QAction *act)
+	{
+		const QString& name = act->text ();
+
+		Bar_->removeAction (act);
+
+		bool found = false;
+		Q_FOREACH (QAction *other, TabActions_.values ())
+			if (QString::localeAwareCompare (other->text (), name) > 0)
+			{
+				Bar_->insertAction (other, act);
+				found = true;
+			}
+
+		if (!found)
+			Bar_->insertAction (SepAfterTabs_, act);
+	}
+
 	void Plugin::hookGonnaFillQuickLaunch (IHookProxy_ptr proxy)
 	{
 		proxy->CancelDefault ();
@@ -129,6 +170,50 @@ namespace Sidebar
 				Bar_->insertAction (SepAfterQL_, action);
 			}
 		}
+	}
+
+	namespace
+	{
+		QIcon GetDefIcon ()
+		{
+			return QIcon (":/resources/images/defaultpluginicon.svg");
+		}
+	}
+
+	void Plugin::handleNewTab (const QString& name, QWidget *w)
+	{
+		QAction *act = new QAction (GetDefIcon (), name, this);
+		act->setProperty ("Sidebar/Widget", QVariant::fromValue<QObject*> (w));
+		TabActions_ [w] = act;
+
+		UpdateActionPosition (act);
+	}
+
+	void Plugin::handleChangeTabName (QWidget *w, const QString& name)
+	{
+		if (!TabActions_.contains (w))
+			return;
+
+		QAction *act = TabActions_ [w];
+		act->setText (name);
+		UpdateActionPosition (act);
+	}
+
+	void Plugin::handleChangeTabIcon (QWidget *w, const QIcon& icon)
+	{
+		if (!TabActions_.contains (w))
+			return;
+
+		QIcon toSet = GetDefIcon ();
+		if (!icon.isNull ())
+			toSet = QIcon (icon.pixmap (48, 48).scaled (48, 48));
+
+		TabActions_ [w]->setIcon (toSet);
+	}
+
+	void Plugin::handleRemoveTab (QWidget *w)
+	{
+		delete TabActions_.take (w);
 	}
 
 	void Plugin::openNewTab ()
