@@ -17,35 +17,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LAURE_SEPARATEPLAYERWIDGET_H
-#define PLUGINS_LAURE_SEPARATEPLAYERWIDGET_H
-
+#ifndef PLUGINS_LAURE_SEPARATEPLAYER_H
+#define PLUGINS_LAURE_SEPARATEPLAYER_H
 #include <QWidget>
-#include <QCloseEvent>
-#include <vlc/vlc.h>
 
 namespace LeechCraft
 {
 namespace Laure
 {
 	/** @brief Provides a separate video frame widget.
-	 * 
+	 *
 	 * @author Minh Ngo <nlminhtl@gmail.com>
 	 */
-	class SeparatePlayerWidget : public QWidget
+	class SeparatePlayer : public QWidget
 	{
 		Q_OBJECT
-		
-		QWidget *PlayerWidget_;
-		libvlc_media_player_t *MP_;
 	public:
-		SeparatePlayerWidget (libvlc_media_player_t *MP,
-				QWidget *playerWidget, QWidget *parent = 0);
+		/** @brief Constructs a new SeparatePlayer tab
+		 * with the given parent and flags.
+		 */
+		SeparatePlayer (QWidget *parent = 0, Qt::WindowFlags f = 0);
 	protected:
 		void closeEvent (QCloseEvent*);
-	private:
-		void changeWidget (QWidget*);
+	signals:
+		void closed ();
 	};
 }
 }
-#endif // PLUGINS_LAURE_SEPARATEPLAYERWIDGET_H
+
+#endif // PLUGINS_LAURE_SEPARATEPLAYER_H

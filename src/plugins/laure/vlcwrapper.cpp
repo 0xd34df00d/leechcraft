@@ -154,9 +154,14 @@ namespace Laure
 		return libvlc_media_player_get_length (Player_.get ());
 	}
 	
-	void VLCWrapper::setWindow (int winId)
+	void VLCWrapper::setWindow (uint winId)
 	{
-		libvlc_media_player_set_xwindow (Player_.get (), winId);
+		libvlc_media_player_t *m = Player_.get ();
+		int time = libvlc_media_player_get_time (m);
+		libvlc_media_player_stop (m);
+		libvlc_media_player_set_xwindow (m, winId);
+		libvlc_media_player_play (m);
+		libvlc_media_player_set_time (m, time);
 	}
 
 	bool VLCWrapper::removeRow (int pos)

@@ -134,7 +134,7 @@ namespace Laure
 		 * 
 		 * @param[in] winId Window identifier.
 		 */
-		void setWindow (int winId);
+		void setWindow (uint winId);
 		
 		/** @brief Removes the media item in the pos row.
 		 * 

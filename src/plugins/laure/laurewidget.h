@@ -19,6 +19,7 @@
 
 #ifndef PLUGINS_LAURE_LAUREWIDGET_H
 #define PLUGINS_LAURE_LAUREWIDGET_H
+#include <boost/shared_ptr.hpp>
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/iinfo.h>
@@ -34,6 +35,7 @@ namespace Laure
 	class Player;
 	class PlayListWidget;
 	class PlayPauseAction;
+	class SeparatePlayer;
 	
 	/** @brief Represents a tab in LeechCraft tabs system.
 	 * 
@@ -52,6 +54,8 @@ namespace Laure
 		QToolBar *ToolBar_;
 		Ui::LaureWidget Ui_;
 		VLCWrapper *VLCWrapper_;
+		boost::shared_ptr<SeparatePlayer> SeparatePlayer_;
+		QAction *DetachedVideo_;
 	public:
 		/** @brief Constructs a new LaureWidget tab
 		 * with the given parent and flags.
@@ -110,6 +114,8 @@ namespace Laure
 		void handleOpenURL ();
 		void updateInterface ();
 		void handleVideoMode (bool);
+		void handleDetachPlayer (bool);
+		void handleSeparatePlayerClosed ();
 	};
 }
 }
