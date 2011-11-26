@@ -28,6 +28,8 @@ namespace LeechCraft
 {
 namespace Sidebar
 {
+	class SBWidget;
+
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
@@ -37,10 +39,7 @@ namespace Sidebar
 
 		ICoreProxy_ptr Proxy_;
 
-		QToolBar *Bar_;
-		QAction *SepAfterPlugins_;
-		QAction *SepAfterTabs_;
-		QAction *SepAfterQL_;
+		SBWidget *Bar_;
 
 		QMap<QWidget*, QAction*> TabActions_;
 
@@ -58,7 +57,6 @@ namespace Sidebar
 
 		QSet<QByteArray> GetPluginClasses () const;
 	private:
-		void UpdateActionPosition (QAction*);
 		void ScheduleUpdate ();
 	public slots:
 		void hookGonnaFillQuickLaunch (LeechCraft::IHookProxy_ptr);
@@ -68,6 +66,7 @@ namespace Sidebar
 		void handleChangeTabName (QWidget*, const QString&);
 		void handleChangeTabIcon (QWidget*, const QIcon&);
 		void handleRemoveTab (QWidget*);
+		void handleSelectTab ();
 		void openNewTab ();
 	};
 }

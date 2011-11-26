@@ -21,12 +21,14 @@
 #include <QAction>
 #include <QMainWindow>
 #include <QStatusBar>
+#include <QTimer>
 #include <interfaces/imwproxy.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/core/icoretabwidget.h>
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/ihavetabs.h>
-#include <QTimer>
+#include "sbwidget.h"
 
 namespace LeechCraft
 {
@@ -38,16 +40,9 @@ namespace Sidebar
 
 		Proxy_ = proxy;
 
-		Bar_ = new QToolBar (tr ("Sidebar"));
-		Bar_->setFloatable (false);
-		Bar_->setMovable (false);
-		Bar_->setIconSize (QSize (32, 32));
+		Bar_ = new SBWidget;
 
-		SepAfterPlugins_ = Bar_->addSeparator ();
-		SepAfterTabs_ = Bar_->addSeparator ();
-		SepAfterQL_ = Bar_->addSeparator ();
-
-		Proxy_->GetMWProxy ()->AddToolbar (Bar_, Qt::LeftToolBarArea);
+		Proxy_->GetMWProxy ()->AddSideWidget (Bar_);
 		Proxy_->GetMainWindow ()->statusBar ()->hide ();
 
 		auto hasTabs = Proxy_->GetPluginsManager ()->
@@ -100,7 +95,7 @@ namespace Sidebar
 						this,
 						SLOT (openNewTab ()));
 
-				Bar_->insertAction (SepAfterPlugins_, act);
+				Bar_->AddTabOpenAction (act);
 			}
 		}
 	}
@@ -136,24 +131,6 @@ namespace Sidebar
 		return result;
 	}
 
-	void Plugin::UpdateActionPosition (QAction *act)
-	{
-		const QString& name = act->text ();
-
-		Bar_->removeAction (act);
-
-		bool found = false;
-		Q_FOREACH (QAction *other, TabActions_.values ())
-			if (QString::localeAwareCompare (other->text (), name) > 0)
-			{
-				Bar_->insertAction (other, act);
-				found = true;
-			}
-
-		if (!found)
-			Bar_->insertAction (SepAfterTabs_, act);
-	}
-
 	void Plugin::ScheduleUpdate ()
 	{
 		if (ActionUpdateScheduled_)
@@ -181,7 +158,7 @@ namespace Sidebar
 			Q_FOREACH (QAction *action, actions)
 			{
 				Proxy_->RegisterSkinnable (action);
-				Bar_->insertAction (SepAfterQL_, action);
+				Bar_->AddQLAction (action);
 			}
 		}
 	}
@@ -199,10 +176,7 @@ namespace Sidebar
 		ActionUpdateScheduled_ = false;
 
 		Q_FOREACH (QAction *act, ActionTextUpdates_.keys ())
-		{
 			act->setText (ActionTextUpdates_ [act]);
-			UpdateActionPosition (act);
-		}
 
 		Q_FOREACH (QAction *act, ActionIconUpdates_.keys ())
 		{
@@ -224,7 +198,12 @@ namespace Sidebar
 		act->setProperty ("Sidebar/Widget", QVariant::fromValue<QObject*> (w));
 		TabActions_ [w] = act;
 
-		UpdateActionPosition (act);
+		Bar_->AddCurTabAction (act);
+
+		connect (act,
+				SIGNAL (triggered (bool)),
+				this,
+				SLOT (handleSelectTab ()));
 	}
 
 	void Plugin::handleChangeTabName (QWidget *w, const QString& name)
@@ -248,9 +227,18 @@ namespace Sidebar
 	void Plugin::handleRemoveTab (QWidget *w)
 	{
 		QAction *act = TabActions_.take (w);
+		Bar_->RemoveCurTabAction (act);
 		ActionIconUpdates_.remove (act);
 		ActionTextUpdates_.remove (act);
 		delete act;
+	}
+
+	void Plugin::handleSelectTab ()
+	{
+		QWidget *tw = qobject_cast<QWidget*> (sender ()->
+					property ("Sidebar/Widget").value<QObject*> ());
+
+		Proxy_->GetTabWidget ()->setCurrentWidget (tw);
 	}
 
 	void Plugin::openNewTab ()
