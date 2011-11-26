@@ -38,7 +38,7 @@ namespace Sidebar
 		Bar_ = new QToolBar (tr ("Sidebar"));
 		Bar_->setFloatable (false);
 		Bar_->setMovable (false);
-		Bar_->setIconSize (QSize (48, 48));
+		Bar_->setIconSize (QSize (32, 32));
 
 		SepAfterPlugins_ = Bar_->addSeparator ();
 		SepAfterTabs_ = Bar_->addSeparator ();
