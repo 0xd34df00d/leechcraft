@@ -22,6 +22,7 @@
 
 class QDockWidget;
 class QToolBar;
+class QWidget;
 
 /** @brief This interface is used for manipulating the main window.
  *
@@ -31,6 +32,13 @@ class QToolBar;
 class IMWProxy
 {
 public:
+	enum WidgetArea
+	{
+		WALeft,
+		WARight,
+		WABottom
+	};
+
 	virtual ~IMWProxy () {}
 
 	/** @brief Adds the given dock widget to the given area.
@@ -69,6 +77,18 @@ public:
 	 * @param[in] area The area where the toolbar should be added.
 	 */
 	virtual void AddToolbar (QToolBar *toolbar, Qt::ToolBarArea area = Qt::TopToolBarArea) = 0;
+
+	/** @brief Adds the given widget at the given area.
+	 *
+	 * @param[in] widget The widget to add.
+	 * @param[in] area The area where the widget should be added.
+	 */
+	virtual void AddSideWidget (QWidget *widget, WidgetArea area = WALeft) = 0;
+
+	/** @brief Activates the given tab.
+	 *
+	 * @param[in] widget The widget of the tab to activate.
+	 */
 };
 
 Q_DECLARE_INTERFACE (IMWProxy, "org.Deviant.LeechCraft.IMWProxy/1.0");

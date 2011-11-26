@@ -24,14 +24,14 @@
     <normaloff>:/resources/images/leechcraft.svg</normaloff>:/resources/images/leechcraft.svg</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QGridLayout" name="gridLayout">
-    <property name="margin">
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <property name="spacing">
      <number>1</number>
     </property>
-    <property name="spacing">
-     <number>2</number>
+    <property name="margin">
+     <number>0</number>
     </property>
-    <item row="0" column="0">
+    <item>
      <widget class="LeechCraft::SeparateTabWidget" name="MainTabWidget_" native="true"/>
     </item>
    </layout>
