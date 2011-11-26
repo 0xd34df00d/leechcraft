@@ -217,6 +217,9 @@ namespace Sidebar
 
 	void Plugin::handleNewTab (const QString& name, QWidget *w)
 	{
+		if (TabActions_.contains (w))
+			return;
+
 		QAction *act = new QAction (GetDefIcon (), name, this);
 		act->setProperty ("Sidebar/Widget", QVariant::fromValue<QObject*> (w));
 		TabActions_ [w] = act;
