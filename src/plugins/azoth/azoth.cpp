@@ -23,7 +23,11 @@
 #include <QVBoxLayout>
 #include <QMenu>
 #include <QStringListModel>
+
+#ifdef ENABLE_MEDIACALLS
 #include <QAudioDeviceInfo>
+#endif
+
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/imwproxy.h>
 #include <interfaces/core/icoreproxy.h>
@@ -83,6 +87,7 @@ namespace Azoth
 				Core::Instance ().GetResourceLoader (Core::RLTSystemIconLoader)->
 					GetSubElemModel ());
 
+#ifdef ENABLE_MEDIACALLS
 		QStringList audioIns (tr ("Default input device"));
 		Q_FOREACH (const QAudioDeviceInfo& info,
 				QAudioDeviceInfo::availableDevices (QAudio::AudioInput))
@@ -94,6 +99,7 @@ namespace Azoth
 				QAudioDeviceInfo::availableDevices (QAudio::AudioOutput))
 			audioOuts << info.deviceName ();
 		XmlSettingsDialog_->SetDataSource ("OutputAudioDevice", new QStringListModel (audioOuts));
+#endif
 
 		XmlSettingsDialog_->SetCustomWidget ("AccountsWidget", new AccountsListWidget);
 

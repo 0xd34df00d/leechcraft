@@ -18,9 +18,13 @@
 
 #include "callmanager.h"
 #include <boost/bind.hpp>
+
+#ifdef ENABLE_MEDIACALLS
 #include <QAudioDeviceInfo>
 #include <QAudioInput>
 #include <QAudioOutput>
+#endif
+
 #include <QtDebug>
 #include <util/util.h>
 #include <util/notificationactionhandler.h>
@@ -50,6 +54,7 @@ namespace Azoth
 
 	QObject* CallManager::Call (ICLEntry *entry, const QString& variant)
 	{
+#ifdef ENABLE_MEDIACALLS
 		ISupportMediaCalls *ismc = qobject_cast<ISupportMediaCalls*> (entry->GetParentAccount ());
 		if (!ismc)
 		{
@@ -71,6 +76,9 @@ namespace Azoth
 
 		HandleCall (callObj);
 		return callObj;
+#else
+		return 0;
+#endif
 	}
 
 	QObjectList CallManager::GetCallsForEntry (const QString& id) const
@@ -78,6 +86,7 @@ namespace Azoth
 		return Entry2Calls_ [id];
 	}
 
+#ifdef ENABLE_MEDIACALLS
 	namespace
 	{
 		QAudioDeviceInfo FindDevice (const QByteArray& property, QAudio::Mode mode)
@@ -99,6 +108,7 @@ namespace Azoth
 			return result;
 		}
 	}
+#endif
 
 	void CallManager::HandleCall (QObject *obj)
 	{
@@ -145,6 +155,7 @@ namespace Azoth
 
 	void CallManager::handleStateChanged (IMediaCall::State state)
 	{
+#ifdef ENABLE_MEDIACALLS
 		IMediaCall *mediaCall = qobject_cast<IMediaCall*> (sender ());
 		if (state == IMediaCall::SActive)
 		{
@@ -173,6 +184,7 @@ namespace Azoth
 			qDebug () << input->state () << input->error () << inInfo.isFormatSupported (callFormat) << inInfo.supportedCodecs ();
 			qDebug () << output->state () << output->error ();
 		}
+#endif
 	}
 }
 }

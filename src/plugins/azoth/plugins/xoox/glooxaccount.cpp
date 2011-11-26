@@ -39,7 +39,11 @@
 #include "useractivity.h"
 #include "userlocation.h"
 #include "privacylistsconfigdialog.h"
+
+#ifdef ENABLE_MEDIACALLS
 #include "mediacall.h"
+#endif
+
 #include "jabbersearchsession.h"
 #include "bookmarkeditwidget.h"
 
@@ -153,10 +157,12 @@ namespace Xoox
 				this,
 				SIGNAL (mucInvitationReceived (QVariantMap, QString, QString)));
 
+#ifdef ENABLE_MEDIACALLS
 		connect (ClientConnection_->GetCallManager (),
 				SIGNAL (callReceived (QXmppCall*)),
 				this,
 				SLOT (handleIncomingCall (QXmppCall*)));
+#endif
 
 		RegenAccountIcon ();
 	}
@@ -436,6 +442,7 @@ namespace Xoox
 		return entry->GetGeolocationInfo (variant);
 	}
 
+#ifdef ENABLE_MEDIACALLS
 	ISupportMediaCalls::MediaCallFeatures GlooxAccount::GetMediaCallFeatures () const
 	{
 		return MCFSupportsAudioCalls;
@@ -470,6 +477,7 @@ namespace Xoox
 		target += '/' + var;
 		return new MediaCall (this, ClientConnection_->GetCallManager ()->call (target));
 	}
+#endif
 
 	void GlooxAccount::SuggestItems (QList<RIEXItem> items, QObject *to, QString message)
 	{
@@ -808,10 +816,12 @@ namespace Xoox
 		ClientConnection_.reset ();
 	}
 
+#ifdef ENABLE_MEDIACALLS
 	void GlooxAccount::handleIncomingCall (QXmppCall *call)
 	{
 		emit called (new MediaCall (this, call));
 	}
+#endif
 }
 }
 }

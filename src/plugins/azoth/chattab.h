@@ -125,8 +125,10 @@ namespace Azoth
 		void handleRichTextToggled ();
 		void handleQuoteSelection ();
 		void handleSendFile ();
+#ifdef ENABLE_MEDIACALLS
 		void handleCallRequested ();
 		void handleCall (QObject*);
+#endif
 #ifdef ENABLE_CRYPT
 		void handleEnableEncryption ();
 		void handleEncryptionStateChanged (QObject*, bool);

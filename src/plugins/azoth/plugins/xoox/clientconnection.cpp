@@ -94,7 +94,9 @@ namespace Xoox
 	, DeliveryReceiptsManager_ (new QXmppDeliveryReceiptsManager)
 	, CaptchaManager_ (new QXmppCaptchaManager)
 	, BobManager_ (new QXmppBobManager)
+#ifdef ENABLE_MEDIACALLS
 	, CallManager_ (new QXmppCallManager)
+#endif
 	, PubSubManager_ (new PubSubManager)
 	, PrivacyListsManager_ (new PrivacyListsManager)
 	, AdHocCommandManager_ (new AdHocCommandManager (this))
@@ -168,7 +170,9 @@ namespace Xoox
 		Client_->addExtension (CaptchaManager_);
 		Client_->addExtension (new LegacyEntityTimeExt);
 		Client_->addExtension (PrivacyListsManager_);
+#ifdef ENABLE_MEDIACALLS
 		Client_->addExtension (CallManager_);
+#endif
 		Client_->addExtension (LastActivityManager_);
 		Client_->addExtension (JabberSearchManager_);
 		Client_->addExtension (RIEXManager_);
@@ -445,10 +449,12 @@ namespace Xoox
 		return PrivacyListsManager_;
 	}
 
+#ifdef ENABLE_MEDIACALLS
 	QXmppCallManager* ClientConnection::GetCallManager () const
 	{
 		return CallManager_;
 	}
+#endif
 
 	AdHocCommandManager* ClientConnection::GetAdHocCommandManager () const
 	{
