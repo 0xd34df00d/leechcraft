@@ -25,17 +25,24 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	sidebar.cpp
+	sbwidget.cpp
 	)
 SET (HEADERS
 	sidebar.h
+	sbwidget.h
+	)
+SET (FORMS
+	sbwidget.ui
 	)
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 ENDIF (NOT LC_NO_MOC)
+QT4_WRAP_UI (UIS_H ${FORMS})
 
 ADD_LIBRARY (leechcraft_sidebar SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
+	${UIS_H}
 	${MOC_SRCS}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_sidebar
