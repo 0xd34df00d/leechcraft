@@ -183,7 +183,8 @@ namespace Sidebar
 			const QIcon& icon = ActionIconUpdates_ [act];
 			QIcon toSet = GetDefIcon ();
 			if (!icon.isNull ())
-				toSet = QIcon (icon.pixmap (48, 48).scaled (48, 48));
+				toSet = QIcon (icon.pixmap (48, 48).scaled (48, 48,
+							Qt::KeepAspectRatio, Qt::SmoothTransformation));
 
 			act->setIcon (toSet);
 		}
