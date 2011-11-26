@@ -19,6 +19,7 @@
 #ifndef PLUGINS_SIDEBAR_SIDEBAR_H
 #define PLUGINS_SIDEBAR_SIDEBAR_H
 #include <QObject>
+#include <QIcon>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/core/ihookproxy.h>
@@ -42,6 +43,10 @@ namespace Sidebar
 		QAction *SepAfterQL_;
 
 		QMap<QWidget*, QAction*> TabActions_;
+
+		bool ActionUpdateScheduled_;
+		QMap<QAction*, QString> ActionTextUpdates_;
+		QMap<QAction*, QIcon> ActionIconUpdates_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -54,9 +59,11 @@ namespace Sidebar
 		QSet<QByteArray> GetPluginClasses () const;
 	private:
 		void UpdateActionPosition (QAction*);
+		void ScheduleUpdate ();
 	public slots:
 		void hookGonnaFillQuickLaunch (LeechCraft::IHookProxy_ptr);
 	private slots:
+		void handleUpdates ();
 		void handleNewTab (const QString&, QWidget*);
 		void handleChangeTabName (QWidget*, const QString&);
 		void handleChangeTabIcon (QWidget*, const QIcon&);

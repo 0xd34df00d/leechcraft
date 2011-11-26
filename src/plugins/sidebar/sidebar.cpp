@@ -26,6 +26,7 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/ihavetabs.h>
+#include <QTimer>
 
 namespace LeechCraft
 {
@@ -33,6 +34,8 @@ namespace Sidebar
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		ActionUpdateScheduled_ = false;
+
 		Proxy_ = proxy;
 
 		Bar_ = new QToolBar (tr ("Sidebar"));
@@ -151,6 +154,17 @@ namespace Sidebar
 			Bar_->insertAction (SepAfterTabs_, act);
 	}
 
+	void Plugin::ScheduleUpdate ()
+	{
+		if (ActionUpdateScheduled_)
+			return;
+
+		ActionUpdateScheduled_ = true;
+		QTimer::singleShot (700,
+				this,
+				SLOT (handleUpdates ()));
+	}
+
 	void Plugin::hookGonnaFillQuickLaunch (IHookProxy_ptr proxy)
 	{
 		proxy->CancelDefault ();
@@ -180,6 +194,27 @@ namespace Sidebar
 		}
 	}
 
+	void Plugin::handleUpdates ()
+	{
+		ActionUpdateScheduled_ = false;
+
+		Q_FOREACH (QAction *act, ActionTextUpdates_.keys ())
+		{
+			act->setText (ActionTextUpdates_ [act]);
+			UpdateActionPosition (act);
+		}
+
+		Q_FOREACH (QAction *act, ActionIconUpdates_.keys ())
+		{
+			const QIcon& icon = ActionIconUpdates_ [act];
+			QIcon toSet = GetDefIcon ();
+			if (!icon.isNull ())
+				toSet = QIcon (icon.pixmap (48, 48).scaled (48, 48));
+
+			act->setIcon (toSet);
+		}
+	}
+
 	void Plugin::handleNewTab (const QString& name, QWidget *w)
 	{
 		QAction *act = new QAction (GetDefIcon (), name, this);
@@ -194,9 +229,8 @@ namespace Sidebar
 		if (!TabActions_.contains (w))
 			return;
 
-		QAction *act = TabActions_ [w];
-		act->setText (name);
-		UpdateActionPosition (act);
+		ActionTextUpdates_ [TabActions_ [w]] = name;
+		ScheduleUpdate ();
 	}
 
 	void Plugin::handleChangeTabIcon (QWidget *w, const QIcon& icon)
@@ -204,16 +238,16 @@ namespace Sidebar
 		if (!TabActions_.contains (w))
 			return;
 
-		QIcon toSet = GetDefIcon ();
-		if (!icon.isNull ())
-			toSet = QIcon (icon.pixmap (48, 48).scaled (48, 48));
-
-		TabActions_ [w]->setIcon (toSet);
+		ActionIconUpdates_ [TabActions_ [w]] = icon;
+		ScheduleUpdate ();
 	}
 
 	void Plugin::handleRemoveTab (QWidget *w)
 	{
-		delete TabActions_.take (w);
+		QAction *act = TabActions_.take (w);
+		ActionIconUpdates_.remove (act);
+		ActionTextUpdates_.remove (act);
+		delete act;
 	}
 
 	void Plugin::openNewTab ()
