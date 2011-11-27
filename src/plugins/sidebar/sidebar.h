@@ -22,6 +22,7 @@
 #include <QIcon>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
+#include <interfaces/iactionsexporter.h>
 #include <interfaces/core/ihookproxy.h>
 
 namespace LeechCraft
@@ -58,10 +59,13 @@ namespace Sidebar
 		QSet<QByteArray> GetPluginClasses () const;
 	private:
 		void ScheduleUpdate ();
+		void AddToQuickLaunch (const QList<QAction*>&);
+		void AddToLCTray (const QList<QAction*>&);
 	public slots:
 		void hookGonnaFillQuickLaunch (LeechCraft::IHookProxy_ptr);
 	private slots:
 		void handleUpdates ();
+		void handleGotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 		void handleNewTab (const QString&, QWidget*);
 		void handleChangeTabName (QWidget*, const QString&);
 		void handleChangeTabIcon (QWidget*, const QIcon&);
