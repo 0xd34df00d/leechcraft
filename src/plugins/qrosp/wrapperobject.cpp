@@ -384,6 +384,9 @@ namespace Qrosp
 		case AEPTrayMenu:
 			args << "AEPTrayMenu";
 			break;
+		case AEPLCTray:
+			args << "AEPLCTray";
+			break;
 		case AEPMax:
 			break;
 		}
@@ -418,6 +421,12 @@ namespace Qrosp
 	}
 
 	void WrapperObject::raiseTab (QWidget*)
+	{
+		qWarning () << Q_FUNC_INFO
+				<< "is called, but this should never happen";
+	}
+
+	void WrapperObject::gotActions (QList<QAction*>, ActionsEmbedPlace)
 	{
 		qWarning () << Q_FUNC_INFO
 				<< "is called, but this should never happen";

@@ -45,7 +45,7 @@ namespace Sidebar
 		Proxy_->GetMWProxy ()->AddSideWidget (Bar_);
 		Proxy_->GetMainWindow ()->statusBar ()->hide ();
 
-		auto hasTabs = Proxy_->GetPluginsManager ()->
+		const auto& hasTabs = Proxy_->GetPluginsManager ()->
 				GetAllCastableRoots<IHaveTabs*> ();
 		Q_FOREACH (QObject *ihtObj, hasTabs)
 		{
@@ -66,6 +66,14 @@ namespace Sidebar
 					this,
 					SLOT (handleChangeTabIcon (QWidget*, const QIcon&)));
 		}
+
+		const auto& hasActions = Proxy_->GetPluginsManager ()->
+				GetAllCastableRoots<IActionsExporter*> ();
+		Q_FOREACH (QObject *actObj, hasActions)
+			connect (actObj,
+					SIGNAL (gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)),
+					this,
+					SLOT (handleGotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)));
 	}
 
 	void Plugin::SecondInit ()
@@ -97,6 +105,15 @@ namespace Sidebar
 
 				Bar_->AddTabOpenAction (act);
 			}
+		}
+
+		const auto& hasActions = Proxy_->GetPluginsManager ()->
+				GetAllCastableTo<IActionsExporter*> ();
+		Q_FOREACH (IActionsExporter *exp, hasActions)
+		{
+			const auto& acts = exp->GetActions (AEPLCTray);
+			if (!acts.isEmpty ())
+				AddToLCTray (acts);
 		}
 	}
 
@@ -142,6 +159,24 @@ namespace Sidebar
 				SLOT (handleUpdates ()));
 	}
 
+	void Plugin::AddToQuickLaunch (const QList<QAction*>& actions)
+	{
+		Q_FOREACH (QAction *action, actions)
+		{
+			Proxy_->RegisterSkinnable (action);
+			Bar_->AddQLAction (action);
+		}
+	}
+
+	void Plugin::AddToLCTray (const QList<QAction*>& actions)
+	{
+		Q_FOREACH (QAction *action, actions)
+		{
+			Proxy_->RegisterSkinnable (action);
+			Bar_->AddTrayAction (action);
+		}
+	}
+
 	void Plugin::hookGonnaFillQuickLaunch (IHookProxy_ptr proxy)
 	{
 		proxy->CancelDefault ();
@@ -155,11 +190,7 @@ namespace Sidebar
 			if (actions.isEmpty ())
 				continue;
 
-			Q_FOREACH (QAction *action, actions)
-			{
-				Proxy_->RegisterSkinnable (action);
-				Bar_->AddQLAction (action);
-			}
+			AddToQuickLaunch (actions);
 		}
 	}
 
@@ -188,6 +219,14 @@ namespace Sidebar
 
 			act->setIcon (toSet);
 		}
+	}
+
+	void Plugin::handleGotActions (QList<QAction*> actions, ActionsEmbedPlace aep)
+	{
+		if (aep == AEPQuickLaunch)
+			AddToQuickLaunch (actions);
+		else if (aep == AEPLCTray)
+			AddToLCTray (actions);
 	}
 
 	void Plugin::handleNewTab (const QString& name, QWidget *w)

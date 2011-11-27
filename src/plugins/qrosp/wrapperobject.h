@@ -94,6 +94,7 @@ namespace Qrosp
 		void changeTabIcon (QWidget*, const QIcon&);
 		void statusBarChanged (QWidget*, const QString&);
 		void raiseTab (QWidget*);
+		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 	private:
 		template<typename T>
 		struct Call

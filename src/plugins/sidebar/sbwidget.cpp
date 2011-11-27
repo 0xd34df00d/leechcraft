@@ -18,6 +18,7 @@
 
 #include "sbwidget.h"
 #include <QToolButton>
+#include <util/flowlayout.h>
 
 namespace LeechCraft
 {
@@ -25,9 +26,11 @@ namespace Sidebar
 {
 	SBWidget::SBWidget (QWidget *parent)
 	: QWidget (parent)
+	, TrayLay_ (new Util::FlowLayout (1, 1, 1))
 	, IconSize_ (QSize (48, 48))
 	{
 		Ui_.setupUi (this);
+		static_cast<QVBoxLayout*> (layout ())->addLayout (TrayLay_);
 
 		setMaximumWidth (50);
 	}
@@ -61,6 +64,26 @@ namespace Sidebar
 	void SBWidget::RemoveCurTabAction (QAction *act)
 	{
 		delete CurTab2Button_.take (act);
+	}
+
+	void SBWidget::AddTrayAction (QAction *act)
+	{
+		connect (act,
+				SIGNAL (destroyed (QObject*)),
+				this,
+				SLOT (handleTrayActDestroyed ()));
+
+		auto tb = new QToolButton;
+		tb->setIconSize (IconSize_ / 2.1);
+		tb->setDefaultAction (act);
+		TrayAct2Button_ [act] = tb;
+
+		TrayLay_->addWidget (tb);
+	}
+
+	void SBWidget::handleTrayActDestroyed ()
+	{
+		delete TrayAct2Button_.take (static_cast<QAction*> (sender ()));
 	}
 }
 }

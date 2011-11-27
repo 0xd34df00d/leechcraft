@@ -109,6 +109,8 @@ namespace ChatHistory
 		void raiseTab (QWidget*);
 
 		void gotLastMessages (QObject*, const QList<QObject*>&);
+
+		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 	};
 }
 }

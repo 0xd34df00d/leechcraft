@@ -160,6 +160,8 @@ namespace Aggregator
 		void raiseTab (QWidget*);
 
 		void newDeltasAvailable (const LeechCraft::Sync::ChainID_t&);
+
+		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 	};
 }
 }

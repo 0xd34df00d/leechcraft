@@ -22,6 +22,10 @@
 #include <QXmppCallManager.h>
 #include <interfaces/imediacall.h>
 
+#ifndef ENABLE_MEDIACALLS
+#error Dont include this if media calls are disabled.
+#endif
+
 namespace LeechCraft
 {
 namespace Azoth
@@ -35,12 +39,12 @@ namespace Xoox
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IMediaCall);
-		
+
 		QXmppCall *Call_;
 		GlooxAccount *Account_;
 	public:
 		MediaCall (GlooxAccount*, QXmppCall*);
-		
+
 		Direction GetDirection () const;
 		QString GetSourceID () const;
 		void Accept ();

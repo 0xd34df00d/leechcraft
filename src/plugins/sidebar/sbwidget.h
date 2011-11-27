@@ -25,6 +25,11 @@ class QToolButton;
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class FlowLayout;
+}
+
 namespace Sidebar
 {
 	class SBWidget : public QWidget
@@ -32,9 +37,12 @@ namespace Sidebar
 		Q_OBJECT
 
 		Ui::SBWidget Ui_;
+		Util::FlowLayout *TrayLay_;
+
 		const QSize IconSize_;
 
 		QMap<QAction*, QToolButton*> CurTab2Button_;
+		QMap<QAction*, QToolButton*> TrayAct2Button_;
 	public:
 		SBWidget (QWidget* = 0);
 
@@ -42,6 +50,9 @@ namespace Sidebar
 		void AddQLAction (QAction*);
 		void AddCurTabAction (QAction*);
 		void RemoveCurTabAction (QAction*);
+		void AddTrayAction (QAction*);
+	private slots:
+		void handleTrayActDestroyed ();
 	};
 }
 }

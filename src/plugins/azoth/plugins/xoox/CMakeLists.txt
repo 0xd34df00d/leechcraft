@@ -53,7 +53,6 @@ SET (XOOX_SRCS
 	imagemediawidget.cpp
 	privacylistsconfigdialog.cpp
 	privacylistsitemdialog.cpp
-	mediacall.cpp
 	adhoccommandmanager.cpp
 	executecommanddialog.cpp
 	userlocation.cpp
@@ -112,7 +111,6 @@ SET (XOOX_HEADERS
 	imagemediawidget.h
 	privacylistsconfigdialog.h
 	privacylistsitemdialog.h
-	mediacall.h
 	adhoccommandmanager.h
 	executecommanddialog.h
 	userlocation.h
@@ -150,6 +148,13 @@ IF (ENABLE_CRYPT)
 	SET (XOOX_SRCS ${XOOX_SRCS} pgpmanager.cpp)
 	SET (XOOX_HEADERS ${XOOX_HEADERS} pgpmanager.h)
 ENDIF (ENABLE_CRYPT)
+
+IF (ENABLE_MEDIACALLS)
+	ADD_DEFINITIONS (-DENABLE_MEDIACALLS)
+
+	SET (XOOX_SRCS ${XOOX_SRCS} mediacall.cpp)
+	SET (XOOX_HEADERS ${XOOX_HEADERS} mediacall.h)
+ENDIF (ENABLE_MEDIACALLS)
 
 CreateTrVars ("azoth_xoox" "de;en;es;fr;it;ru_RU;uk_UA" XOOX_TRANSLATIONS XOOX_COMPILED_TRANSLATIONS)
 IF (NOT LC_NO_MOC)

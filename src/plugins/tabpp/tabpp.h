@@ -68,6 +68,8 @@ namespace LeechCraft
 
 				void SetShortcut (const QString&, const QKeySequences_t&);
 				QMap<QString, ActionInfo> GetActionInfo () const;
+			signals:
+				void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 			};
 		};
 	};

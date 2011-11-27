@@ -452,6 +452,7 @@ namespace Azoth
 		Core::Instance ().GetTransferJobManager ()->HandleJob (job);
 	}
 
+#ifdef ENABLE_MEDIACALLS
 	void ChatTab::handleCallRequested ()
 	{
 		QObject *callObj = Core::Instance ().GetCallManager ()->
@@ -471,6 +472,7 @@ namespace Azoth
 		const int idx = Ui_.MainLayout_->indexOf (Ui_.View_);
 		Ui_.MainLayout_->insertWidget (idx, widget);
 	}
+#endif
 
 #ifdef ENABLE_CRYPT
 	void ChatTab::handleEnableEncryption ()
@@ -1148,6 +1150,7 @@ namespace Azoth
 				handleFileOffered (object);
 		}
 
+#ifdef ENABLE_MEDIACALLS
 		if (qobject_cast<ISupportMediaCalls*> (accObj) &&
 				e->GetEntryType () == ICLEntry::ETChat)
 		{
@@ -1169,6 +1172,7 @@ namespace Azoth
 							GetCallsForEntry (EntryID_))
 				handleCall (object);
 		}
+#endif
 
 #ifdef ENABLE_CRYPT
 		if (qobject_cast<ISupportPGP*> (accObj))
