@@ -19,6 +19,7 @@
 #include "liznoo.h"
 #include <QIcon>
 #include <QAction>
+#include "dbusconnector.h"
 
 namespace LeechCraft
 {
@@ -26,6 +27,7 @@ namespace Liznoo
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		new DBusConnector ();
 	}
 
 	void Plugin::SecondInit ()
