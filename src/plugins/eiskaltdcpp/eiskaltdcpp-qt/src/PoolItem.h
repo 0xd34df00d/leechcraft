@@ -12,6 +12,9 @@
 #include <boost/pool/pool_alloc.hpp>
 #include <assert.h>
 
+#ifndef POOLITEM_POOL_DEFINED
+#define POOLITEM_POOL_DEFINED
+
 template <class T>
 class PoolItem{
 public:
@@ -43,8 +46,11 @@ private:
     static boost::fast_pool_allocator<T> pool;
 };
 
+
 template <class T>
 boost::fast_pool_allocator<T> PoolItem<T>::pool = boost::fast_pool_allocator<T>();
+
+#endif
 #else
 template <class T>
 class PoolItem;
