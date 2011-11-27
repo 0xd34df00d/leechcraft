@@ -26,7 +26,7 @@ namespace Sidebar
 {
 	SBWidget::SBWidget (QWidget *parent)
 	: QWidget (parent)
-	, TrayLay_ (new Util::FlowLayout (1, 1, 1))
+	, TrayLay_ (new Util::FlowLayout (1, 0, 1))
 	, IconSize_ (QSize (48, 48))
 	{
 		Ui_.setupUi (this);
@@ -74,7 +74,10 @@ namespace Sidebar
 				SLOT (handleTrayActDestroyed ()));
 
 		auto tb = new QToolButton;
-		tb->setIconSize (IconSize_ / 2.1);
+		const int w = maximumWidth () - TrayLay_->margin () * 2;
+		tb->setMaximumSize (w, w);
+		tb->setIconSize (IconSize_);
+		tb->setAutoRaise (true);
 		tb->setDefaultAction (act);
 		TrayAct2Button_ [act] = tb;
 
