@@ -29,7 +29,12 @@ namespace Liznoo
 				<< ID_
 				<< Percentage_
 				<< TimeToFull_
-				<< TimeToEmpty_;
+				<< TimeToEmpty_
+				<< Voltage_
+				<< Energy_
+				<< EnergyFull_
+				<< EnergyRate_
+				<< Technology_;
 	}
 }
 }

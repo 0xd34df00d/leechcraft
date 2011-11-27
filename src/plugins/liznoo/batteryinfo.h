@@ -30,8 +30,16 @@ namespace Liznoo
 		QString ID_;
 		
 		int Percentage_;
+
 		qlonglong TimeToFull_;
 		qlonglong TimeToEmpty_;
+		double Voltage_;
+		
+		double Energy_;
+		double EnergyFull_;
+		double EnergyRate_;
+		
+		QString Technology_;
 		
 		void Dump ();
 	};
