@@ -26,9 +26,13 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	liznoo.cpp
+	dbusconnector.cpp
+	batteryinfo.cpp
 	)
 SET (HEADERS
 	liznoo.h
+	dbusconnector.h
+	batteryinfo.h
 	)
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
