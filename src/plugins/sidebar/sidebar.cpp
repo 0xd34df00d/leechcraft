@@ -106,6 +106,15 @@ namespace Sidebar
 				Bar_->AddTabOpenAction (act);
 			}
 		}
+
+		const auto& hasActions = Proxy_->GetPluginsManager ()->
+				GetAllCastableTo<IActionsExporter*> ();
+		Q_FOREACH (IActionsExporter *exp, hasActions)
+		{
+			const auto& acts = exp->GetActions (AEPLCTray);
+			if (!acts.isEmpty ())
+				AddToLCTray (acts);
+		}
 	}
 
 	QByteArray Plugin::GetUniqueID () const
