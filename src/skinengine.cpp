@@ -355,7 +355,7 @@ void SkinEngine::CollectDir (const QString& folder, const QString& iconSet)
 				if (!IconDirs_.size () || IconDirs_.contains (*j))
 					CollectSubdir (current, *j, *i);
 		}
-		else if (*i >= 16 && *i <= 32)
+		else if (*i >= 16 && *i <= 64)
 		{
 			QString number = QString::number (*i);
 			current.cd (number + 'x' + number);
