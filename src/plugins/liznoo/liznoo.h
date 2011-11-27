@@ -21,6 +21,7 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iactionsexporter.h>
+#include "batteryinfo.h"
 
 namespace LeechCraft
 {
@@ -35,7 +36,9 @@ namespace Liznoo
 		Q_OBJECT
 		Q_INTERFACES (IInfo IActionsExporter)
 
+		ICoreProxy_ptr Proxy_;
 		DBusThread *Thread_;
+		QMap<QString, QAction*> Battery2Action_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -47,6 +50,7 @@ namespace Liznoo
 
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
 	private slots:
+		void handleBatteryInfo (Liznoo::BatteryInfo);
 		void handleThreadStarted ();
 	signals:
 		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);

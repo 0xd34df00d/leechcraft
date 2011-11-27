@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "dbusconnector.h"
+#include <QTimer>
 #include <QDBusInterface>
 #include <QDBusReply>
 #include <QtDebug>
@@ -43,23 +44,26 @@ namespace Liznoo
 			   this,
 			   SLOT (requeryDevice (const QString&)));
 		
+		QTimer::singleShot (1000,
+				this,
+				SLOT (enumerateDevices ()));
+	}
+	
+	void DBusConnector::enumerateDevices()
+	{
 		QDBusInterface face ("org.freedesktop.UPower",
 				"/org/freedesktop/UPower",
 				"org.freedesktop.UPower",
 				SB_);
-		
+
 		auto res = face.call ("EnumerateDevices");
 		Q_FOREACH (QVariant argument, res.arguments ())
 		{
 			auto arg = argument.value<QDBusArgument> ();
-			arg.beginArray ();
-			while (!arg.atEnd ())
-			{
-				QString str;
-				arg >> str;
-				requeryDevice (str);
-			}
-			arg.endArray ();
+			QStringList paths;
+			arg >> paths;
+			Q_FOREACH (const QString& path, paths)
+				requeryDevice (path);
 		}
 	}
 	
@@ -99,7 +103,7 @@ namespace Liznoo
 		info.EnergyRate_ = face.property ("EnergyRate").toDouble ();
 		info.Technology_ = TechIdToString (face.property ("Technology").toInt ());
 		
-		info.Dump ();
+		emit batteryInfoUpdated (info);
 	}
 }
 }

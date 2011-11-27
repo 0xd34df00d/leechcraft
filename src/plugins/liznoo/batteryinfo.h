@@ -18,8 +18,8 @@
 
 #ifndef PLUGINS_LIZNOO_BATTERYINFO_H
 #define PLUGINS_LIZNOO_BATTERYINFO_H
-#include <QtGlobal>
 #include <QString>
+#include <QMetaType>
 
 namespace LeechCraft
 {
@@ -45,5 +45,7 @@ namespace Liznoo
 	};
 }
 }
+
+Q_DECLARE_METATYPE (LeechCraft::Liznoo::BatteryInfo);
 
 #endif

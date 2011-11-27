@@ -20,6 +20,7 @@
 #define PLUGINS_LIZNOO_DBUSCONNECTOR_H
 #include <QObject>
 #include <QDBusConnection>
+#include "batteryinfo.h"
 
 namespace LeechCraft
 {
@@ -33,7 +34,10 @@ namespace Liznoo
 	public:
 		DBusConnector (QObject* = 0);
 	private slots:
+		void enumerateDevices ();
 		void requeryDevice (const QString&);
+	signals:
+		void batteryInfoUpdated (Liznoo::BatteryInfo);
 	};
 }
 }
