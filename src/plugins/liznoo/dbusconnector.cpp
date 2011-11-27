@@ -49,9 +49,34 @@ namespace Liznoo
 				SB_);
 		
 		auto res = face.call ("EnumerateDevices");
-		qDebug () << "devices:" << res.arguments ();
 		Q_FOREACH (QVariant argument, res.arguments ())
-			qDebug () << argument.toString ();
+		{
+			auto arg = argument.value<QDBusArgument> ();
+			arg.beginArray ();
+			while (!arg.atEnd ())
+			{
+				QString str;
+				arg >> str;
+				requeryDevice (str);
+			}
+			arg.endArray ();
+		}
+	}
+	
+	namespace
+	{
+		QString TechIdToString (int id)
+		{
+			QMap<int, QString> id2str;
+			id2str [1] = "Li-Ion";
+			id2str [2] = "Li-Polymer";
+			id2str [3] = "Li-Iron-Phosphate";
+			id2str [4] = "Lead acid";
+			id2str [5] = "NiCd";
+			id2str [6] = "NiMh";
+			
+			return id2str.value (id, "<unknown>");
+		}
 	}
 	
 	void DBusConnector::requeryDevice (const QString& id)
@@ -60,17 +85,19 @@ namespace Liznoo
 				id,
 				"org.freedesktop.UPower.Device",
 				SB_);
-		auto res = face.call ("Type");
-		qDebug () << Q_FUNC_INFO << res.errorMessage ();
-		qDebug () << face.property ("Type");
-		if (QDBusReply<int> (face.call ("Type")) != 2)
+		if (face.property ("Type").toInt () != 2)
 			return;
 		
 		BatteryInfo info;
 		info.ID_ = id;
-		info.Percentage_ = QDBusReply<double> (face.call ("Percentage"));
-		info.TimeToFull_ = QDBusReply<qlonglong> (face.call ("TimeToFull"));
-		info.TimeToEmpty_ = QDBusReply<qlonglong> (face.call ("TimeToEmpty"));
+		info.Percentage_ = face.property ("Percentage").toInt ();
+		info.TimeToFull_ = face.property ("TimeToFull").toLongLong ();
+		info.TimeToEmpty_ = face.property ("TimeToEmpty").toLongLong ();
+		info.Voltage_ = face.property ("Voltage").toDouble ();
+		info.Energy_ = face.property ("Energy").toDouble ();
+		info.EnergyFull_ = face.property ("EnergyFull").toDouble ();
+		info.EnergyRate_ = face.property ("EnergyRate").toDouble ();
+		info.Technology_ = TechIdToString (face.property ("Technology").toInt ());
 		
 		info.Dump ();
 	}
