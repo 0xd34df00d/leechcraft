@@ -16,42 +16,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LIZNOO_LIZNOO_H
-#define PLUGINS_LIZNOO_LIZNOO_H
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iactionsexporter.h>
+#include "dbusthread.h"
+#include "dbusconnector.h"
 
 namespace LeechCraft
 {
 namespace Liznoo
 {
-	class DBusThread;
-
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IActionsExporter
+	DBusThread::DBusThread(QObject *parent)
+	: QThread (parent)
+	, Conn_ (0)
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IActionsExporter)
-
-		DBusThread *Thread_;
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-
-		QList<QAction*> GetActions (ActionsEmbedPlace) const;
-	private slots:
-		void handleThreadStarted ();
-	signals:
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
-	};
+	}
+	
+	DBusConnector* DBusThread::GetConnector () const
+	{
+		return Conn_;
+	}
+	
+	void DBusThread::run ()
+	{
+		Conn_ = new DBusConnector;
+		QThread::run ();
+		delete Conn_;
+		Conn_ = 0;
+	}
 }
 }
-
-#endif

@@ -28,11 +28,13 @@ SET (SRCS
 	liznoo.cpp
 	dbusconnector.cpp
 	batteryinfo.cpp
+	dbusthread.cpp
 	)
 SET (HEADERS
 	liznoo.h
 	dbusconnector.h
 	batteryinfo.h
+	dbusthread.h
 	)
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})

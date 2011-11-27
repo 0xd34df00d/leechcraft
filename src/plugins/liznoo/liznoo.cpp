@@ -20,6 +20,7 @@
 #include <QIcon>
 #include <QAction>
 #include "dbusconnector.h"
+#include "dbusthread.h"
 
 namespace LeechCraft
 {
@@ -27,7 +28,12 @@ namespace Liznoo
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		new DBusConnector ();
+		Thread_ = new DBusThread;
+		connect (Thread_,
+				SIGNAL(started ()),
+				this,
+				SLOT (handleThreadStarted ()));
+		Thread_->start (QThread::LowestPriority);
 	}
 
 	void Plugin::SecondInit ()
@@ -41,6 +47,8 @@ namespace Liznoo
 
 	void Plugin::Release ()
 	{
+		if (!Thread_->wait (1000))
+			Thread_->terminate ();
 	}
 
 	QString Plugin::GetName () const
@@ -67,8 +75,12 @@ namespace Liznoo
 		
 		return result;
 	}
+	
+	void Plugin::handleThreadStarted ()
+	{
+		qDebug () << Thread_->GetConnector ();
+	}
 }
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_liznoo, LeechCraft::Liznoo::Plugin);
-
