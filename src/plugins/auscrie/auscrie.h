@@ -59,6 +59,8 @@ namespace LeechCraft
 				void Post (const QByteArray&);
 			signals:
 				void gotEntity (const LeechCraft::Entity&);
+
+				void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 			};
 		};
 	};

@@ -50,10 +50,12 @@ namespace Glance
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
-		
+
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
 	public slots:
 		void on_ActionGlance__triggered ();
+	signals:
+		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 	};
 };
 };

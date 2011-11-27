@@ -61,6 +61,8 @@ namespace LeechCraft
 			public slots:
 				void handleCurrentChanged (const QModelIndex&);
 				void filterUpdated ();
+			signals:
+				void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 			};
 		};
 	};

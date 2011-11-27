@@ -221,6 +221,8 @@ namespace LeechCraft
 				void gotEntity (const LeechCraft::Entity&);
 				void jobFinished (int);
 				void jobRemoved (int);
+
+				void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 			};
 		};
 	};
