@@ -102,13 +102,13 @@ void SkinEngine::UpdateIconSet (const QList<QAction*>& actions)
 	for (QList<QAction*>::const_iterator i = actions.begin (),
 			end = actions.end (); i != end; ++i)
 	{
+		if ((*i)->property ("WatchActionIconChange").toBool ())
+			(*i)->installEventFilter (this);
+
 		if (!(*i)->property ("ActionIcon").isValid ())
 			continue;
 
 		SetIcon (*i);
-
-		if ((*i)->property ("WatchActionIconChange").toBool ())
-			(*i)->installEventFilter (this);
 	}
 }
 
