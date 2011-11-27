@@ -6,7 +6,7 @@
     <message>
         <location filename="acceptriexdialog.ui" line="14"/>
         <source>Contact list change</source>
-        <translation type="unfinished"></translation>
+        <translation>Cambio de la lista de contactos</translation>
     </message>
 </context>
 <context>
@@ -267,17 +267,17 @@
     <message>
         <location filename="groupsenddialog.ui" line="14"/>
         <source>Group send</source>
-        <translation type="unfinished"></translation>
+        <translation>Enviar al grupo</translation>
     </message>
     <message>
         <location filename="groupsenddialog.ui" line="36"/>
         <source>All</source>
-        <translation type="unfinished"></translation>
+        <translation>Todos</translation>
     </message>
     <message>
         <location filename="groupsenddialog.ui" line="43"/>
         <source>None</source>
-        <translation type="unfinished">Ninguno</translation>
+        <translation>Ninguno</translation>
     </message>
     <message>
         <location filename="groupsenddialog.ui" line="54"/>
@@ -292,7 +292,7 @@
     <message>
         <location filename="groupsenddialog.ui" line="80"/>
         <source>Send</source>
-        <translation type="unfinished"></translation>
+        <translation>Enviar</translation>
     </message>
 </context>
 <context>
@@ -323,53 +323,54 @@
     <message>
         <location filename="acceptriexdialog.cpp" line="35"/>
         <source>Action</source>
-        <translation type="unfinished"></translation>
+        <translation>Acción</translation>
     </message>
     <message>
         <location filename="acceptriexdialog.cpp" line="36"/>
         <source>ID</source>
-        <translation type="unfinished"></translation>
+        <translation>ID</translation>
     </message>
     <message>
         <location filename="acceptriexdialog.cpp" line="37"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre</translation>
     </message>
     <message>
         <location filename="acceptriexdialog.cpp" line="38"/>
         <source>Groups</source>
-        <translation type="unfinished"></translation>
+        <translation>Grupos</translation>
     </message>
     <message>
         <location filename="acceptriexdialog.cpp" line="51"/>
         <source>add</source>
-        <translation type="unfinished"></translation>
+        <translation>añadir</translation>
     </message>
     <message>
         <location filename="acceptriexdialog.cpp" line="54"/>
         <source>delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Borrar</translation>
     </message>
     <message>
         <location filename="acceptriexdialog.cpp" line="57"/>
         <source>modify</source>
-        <translation type="unfinished"></translation>
+        <translation>Modificar</translation>
     </message>
     <message>
         <location filename="acceptriexdialog.cpp" line="60"/>
         <source>(unknown)</source>
-        <translation type="unfinished"></translation>
+        <translation>(desconocido)</translation>
     </message>
     <message>
         <location filename="acceptriexdialog.cpp" line="82"/>
         <source>%1 has suggested to modify your contact list:</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ha propuesto a modificar su lista de contactos:</translation>
     </message>
     <message>
         <location filename="acceptriexdialog.cpp" line="84"/>
         <source>%1 has suggested to modify your contact list:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ha propuesto a modificar su lista de contactos:
+%2</translation>
     </message>
 </context>
 <context>
@@ -393,157 +394,157 @@
 <context>
     <name>LeechCraft::Azoth::ActionsManager</name>
     <message>
-        <location filename="actionsmanager.cpp" line="161"/>
+        <location filename="actionsmanager.cpp" line="162"/>
         <source>Open chat</source>
         <translation>Abrir chat</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="174"/>
+        <location filename="actionsmanager.cpp" line="173"/>
         <source>Draw attention...</source>
         <translation>Llamar la atención...</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="184"/>
+        <location filename="actionsmanager.cpp" line="183"/>
         <source>Rename</source>
         <translation>Renombrar\</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="195"/>
+        <location filename="actionsmanager.cpp" line="194"/>
         <source>Change groups...</source>
         <translation>Cambiar grupos...</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="207"/>
+        <location filename="actionsmanager.cpp" line="206"/>
         <source>Authorization</source>
         <translation>Autorización</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="212"/>
+        <location filename="actionsmanager.cpp" line="211"/>
         <source>Grant</source>
         <translation>Conceder</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="217"/>
+        <location filename="actionsmanager.cpp" line="216"/>
         <source>Grant with reason...</source>
         <translation>Conceder con motivo...</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="222"/>
+        <location filename="actionsmanager.cpp" line="221"/>
         <source>Revoke</source>
         <translation>Anular</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="227"/>
+        <location filename="actionsmanager.cpp" line="226"/>
         <source>Revoke with reason...</source>
         <translation>Anular con motivo...</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="232"/>
+        <location filename="actionsmanager.cpp" line="231"/>
         <source>Unsubscribe</source>
         <translation>Anular su suscripción</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="237"/>
+        <location filename="actionsmanager.cpp" line="236"/>
         <source>Unsubscribe with reason...</source>
         <translation>Anular su suscripción con motivo...</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="242"/>
+        <location filename="actionsmanager.cpp" line="241"/>
         <source>Rerequest authentication</source>
         <translation>Resolicitar autenticación</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="247"/>
+        <location filename="actionsmanager.cpp" line="246"/>
         <source>Rerequest authentication with reason...</source>
         <translation>Resolicitar autenticación con motivo...</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="256"/>
+        <location filename="actionsmanager.cpp" line="255"/>
         <source>Manage PGP keys...</source>
         <translation>Gestionar las claves PGP...</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="269"/>
+        <location filename="actionsmanager.cpp" line="268"/>
         <source>Share contacts...</source>
-        <translation type="unfinished"></translation>
+        <translation>Compartir contactos...</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="280"/>
+        <location filename="actionsmanager.cpp" line="279"/>
         <source>VCard</source>
         <translation>VCard</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="323"/>
+        <location filename="actionsmanager.cpp" line="320"/>
         <source>Add to contact list...</source>
         <translation>Añadir a la lista de contactos...</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="334"/>
+        <location filename="actionsmanager.cpp" line="330"/>
         <source>Copy ID</source>
         <translation>Copiar ID</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="350"/>
+        <location filename="actionsmanager.cpp" line="345"/>
         <source>Invite...</source>
-        <translation type="unfinished"></translation>
+        <translation>Invitar...</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="360"/>
+        <location filename="actionsmanager.cpp" line="355"/>
         <source>Leave</source>
         <translation>Abandonar</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="372"/>
+        <location filename="actionsmanager.cpp" line="367"/>
         <source>Authorize</source>
         <translation>Autorizar</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="381"/>
+        <location filename="actionsmanager.cpp" line="376"/>
         <source>Deny authorization</source>
         <translation>Denegar la autorización</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="392"/>
+        <location filename="actionsmanager.cpp" line="387"/>
         <source>Remove</source>
         <translation>Remover</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="580"/>
+        <location filename="actionsmanager.cpp" line="575"/>
         <source>Rename contact</source>
         <translation>Renombrar contacto</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="581"/>
+        <location filename="actionsmanager.cpp" line="576"/>
         <source>Please enter new name for the contact %1:</source>
         <translation>Por favor, introduzca el nombre noevo para el contacto %1:</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="647"/>
+        <location filename="actionsmanager.cpp" line="642"/>
         <source>Enter reason for granting authorization to %1:</source>
         <translation>Introduzca el motivo de conceder autorización para %1:</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="654"/>
+        <location filename="actionsmanager.cpp" line="649"/>
         <source>Enter reason for revoking authorization from %1:</source>
         <translation>Introduzca el motivo para anular la autorización para %1:</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="661"/>
+        <location filename="actionsmanager.cpp" line="656"/>
         <source>Enter reason for unsubscribing from %1:</source>
         <translation>Introduzca el motivo para cancelar la suscripción a %1:</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="668"/>
+        <location filename="actionsmanager.cpp" line="663"/>
         <source>Enter reason for rerequesting authorization from %1:</source>
         <translation>Introduzca el motivo para resolicitar autenticación de %1:</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="690"/>
+        <location filename="actionsmanager.cpp" line="685"/>
         <source>The parent account %1 for entry %2 doesn&apos;t support encryption.</source>
         <translation>La cuenta matriz %1 for entry %2 no soporta la encripcio!n.</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="697"/>
+        <location filename="actionsmanager.cpp" line="692"/>
         <source>Please select the key for %1 (%2).</source>
         <translation>Por favor, seleccione la clave para %1 (%2).</translation>
     </message>
@@ -960,12 +961,7 @@
     <message>
         <location filename="bookmarksmanagerdialog.cpp" line="259"/>
         <source>Save the bookmark?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="bookmarksmanagerdialog.cpp" line="260"/>
-        <source>You&apos;ve changed the bookmark. Do you want to save the changes?</source>
-        <translation type="unfinished"></translation>
+        <translation>¿Guardar el marcador?</translation>
     </message>
     <message>
         <location filename="bookmarksmanagerdialog.cpp" line="294"/>
@@ -979,15 +975,15 @@
         <location filename="clmodel.cpp" line="192"/>
         <source>Are you sure you want to send %n files to %1?</source>
         <oldsource>Are you sure you want to send %1 files to %2?</oldsource>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Esta seguro que quiere enviar % archivo a %1?</numerusform>
+            <numerusform>Esta seguro que quiere enviar %n archivos a %1?</numerusform>
         </translation>
     </message>
     <message>
         <location filename="clmodel.cpp" line="199"/>
         <source>Are you sure you want to send %1 to %2?</source>
-        <translation type="unfinished"></translation>
+        <translation>Esta seguro que quiere enviar %1 a %2?</translation>
     </message>
 </context>
 <context>
@@ -1055,7 +1051,7 @@
     </message>
     <message>
         <location filename="chattab.cpp" line="240"/>
-        <location filename="chattab.cpp" line="1547"/>
+        <location filename="chattab.cpp" line="1528"/>
         <source>Chat</source>
         <translation>Chat</translation>
     </message>
@@ -1078,117 +1074,112 @@
         <translation>Selecciona el archivo para enviar</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="558"/>
+        <location filename="chattab.cpp" line="556"/>
         <source>File offered: %1.</source>
         <translation>Archivo ofrecido: %1.</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="593"/>
+        <location filename="chattab.cpp" line="591"/>
         <source>File transfer request</source>
         <translation>Solicitud de transferencia de archivo</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="594"/>
+        <location filename="chattab.cpp" line="592"/>
         <source>Would you like to accept or deny file transfer request for file %1?</source>
         <translation>¿Quieres aceptar o rechazar la solicitud de transferencia de archivo para el archivo%1?</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="602"/>
+        <location filename="chattab.cpp" line="600"/>
         <source>Select save path for incoming file</source>
         <translation>Seleccione ruta para guardar el archivo entrante</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="733"/>
+        <location filename="chattab.cpp" line="731"/>
         <source>participating</source>
         <translation>participando</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="736"/>
+        <location filename="chattab.cpp" line="734"/>
         <source>inactive</source>
         <translation>inactivo</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="739"/>
+        <location filename="chattab.cpp" line="737"/>
         <source>composing</source>
         <translation>está escribiendo</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="742"/>
+        <location filename="chattab.cpp" line="740"/>
         <source>paused composing</source>
         <translation>detuvo su escritura</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="745"/>
+        <location filename="chattab.cpp" line="743"/>
         <source>left the conversation</source>
         <translation>ha abandonado la conversación</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="876"/>
+        <location filename="chattab.cpp" line="872"/>
         <source>Room configuration</source>
         <translation>Configuración de la sala</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="991"/>
+        <location filename="chattab.cpp" line="987"/>
         <source>Clear chat window</source>
         <translation>Aclarar la ventana de chat</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="999"/>
+        <location filename="chattab.cpp" line="995"/>
         <source>Enable rich text</source>
         <translation>Permite texto enriquecido</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1011"/>
+        <location filename="chattab.cpp" line="1007"/>
         <source>Quote selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar la cita</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1098"/>
+        <location filename="chattab.cpp" line="1091"/>
         <source>Add to bookmarks...</source>
         <translation>Añadir a los marcadores...</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1109"/>
+        <location filename="chattab.cpp" line="1102"/>
         <source>Configure MUC...</source>
         <translation>Configurar MUC...</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1131"/>
+        <location filename="chattab.cpp" line="1124"/>
         <source>Send file...</source>
         <translation>Enviar el archivo...</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1153"/>
+        <location filename="chattab.cpp" line="1146"/>
         <source>Call...</source>
         <translation>Llamar...</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1175"/>
+        <location filename="chattab.cpp" line="1168"/>
         <source>Enable encryption</source>
         <translation>Activar la encriptación</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1323"/>
-        <source>%1 ended the conversation.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="chattab.cpp" line="1388"/>
+        <location filename="chattab.cpp" line="1372"/>
         <source>MUC&apos;s participants: </source>
         <translation>MUC&apos;s participantes:</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1550"/>
+        <location filename="chattab.cpp" line="1531"/>
         <source>Conference</source>
         <translation>Sala de charla</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1553"/>
+        <location filename="chattab.cpp" line="1534"/>
         <source>Private chat</source>
         <translation>Chat privado</translation>
     </message>
     <message>
-        <location filename="chattab.cpp" line="1556"/>
+        <location filename="chattab.cpp" line="1537"/>
         <source>Unauthorized user</source>
         <translation>Usuario no autorizado</translation>
     </message>
@@ -1196,19 +1187,14 @@
 <context>
     <name>LeechCraft::Azoth::ChatTabWebView</name>
     <message>
-        <location filename="chattabwebview.cpp" line="107"/>
+        <location filename="chattabwebview.cpp" line="46"/>
         <source>Open</source>
         <translation>Abrir</translation>
     </message>
     <message>
-        <location filename="chattabwebview.cpp" line="110"/>
+        <location filename="chattabwebview.cpp" line="49"/>
         <source>Save...</source>
         <translation>Guardar...</translation>
-    </message>
-    <message>
-        <location filename="chattabwebview.cpp" line="113"/>
-        <source>Open externally</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1247,160 +1233,160 @@
         <translation>Por favor, selecciona la cuenta para controlar URI %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="910"/>
+        <location filename="core.cpp" line="889"/>
         <source>Unauthorized users</source>
         <translation>Usuarios no autorizados</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="916"/>
+        <location filename="core.cpp" line="895"/>
         <source>Contacts</source>
         <translation>Contactos</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1029"/>
+        <location filename="core.cpp" line="1008"/>
         <source>General</source>
         <translation>General</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1094"/>
+        <location filename="core.cpp" line="1073"/>
         <source>Mood:</source>
         <translation>Humor:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1103"/>
+        <location filename="core.cpp" line="1082"/>
         <source>Activity:</source>
         <translation>Actividad:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1119"/>
+        <location filename="core.cpp" line="1098"/>
         <source>Now listening to:</source>
         <translation>Ahora escuchando:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1130"/>
+        <location filename="core.cpp" line="1109"/>
         <source>from</source>
         <translation>de</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1147"/>
+        <location filename="core.cpp" line="1126"/>
         <source>In groups: </source>
         <translation>En grupos:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1156"/>
+        <location filename="core.cpp" line="1135"/>
         <source>Real ID:</source>
         <translation>ID real:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1156"/>
+        <location filename="core.cpp" line="1135"/>
         <source>unknown</source>
         <translation>desconocido</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1196"/>
+        <location filename="core.cpp" line="1175"/>
         <source>Using:</source>
         <translation>Usando:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1239"/>
+        <location filename="core.cpp" line="1218"/>
         <source>%1 is now %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ahora es %2.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1242"/>
+        <location filename="core.cpp" line="1221"/>
         <source>%1/%2 is now %3.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1/%2 ahora es %3.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2228"/>
-        <location filename="core.cpp" line="2316"/>
+        <location filename="core.cpp" line="2204"/>
+        <location filename="core.cpp" line="2292"/>
         <source>Open chat</source>
         <translation>Abrir chat</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2267"/>
+        <location filename="core.cpp" line="2243"/>
         <source>Authorize</source>
         <translation>Autorizar</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1454"/>
+        <location filename="core.cpp" line="1433"/>
         <source>Enter reason</source>
         <translation>Introducir el motivo</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1577"/>
+        <location filename="core.cpp" line="1556"/>
         <source>Message body</source>
         <translation>El cuerpo del mensaje</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1578"/>
+        <location filename="core.cpp" line="1557"/>
         <source>Original human-readable message body.</source>
         <translation>Original, legible por humanos, cuerpo del mensaje.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1583"/>
+        <location filename="core.cpp" line="1562"/>
         <source>Sender name</source>
         <translation>Nombre del remitente</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1584"/>
+        <location filename="core.cpp" line="1563"/>
         <source>Human-readable name of the sender of the message.</source>
         <translation>Nombre del remitente del mensaje, legible por humanos.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1589"/>
+        <location filename="core.cpp" line="1568"/>
         <source>Sender ID</source>
         <translation>ID del remitente</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1590"/>
+        <location filename="core.cpp" line="1569"/>
         <source>Human-readable ID of the sender (protocol-specific).</source>
         <translation>Leible por humanos ID del remitente (protocolo-específico).</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1595"/>
+        <location filename="core.cpp" line="1574"/>
         <source>Sender groups</source>
         <translation>Grupos de remitentes</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1596"/>
+        <location filename="core.cpp" line="1575"/>
         <source>Groups to which the sender belongs.</source>
         <translation>Grupos, a que pertenece el remitente.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1601"/>
+        <location filename="core.cpp" line="1580"/>
         <source>New status</source>
         <translation>Nuevo estado</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1602"/>
+        <location filename="core.cpp" line="1581"/>
         <source>The new status string of the contact.</source>
         <translatorcomment>Poco incorrecta, se puede mejorar.</translatorcomment>
         <translation>Nuevo estado de contacto.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2140"/>
+        <location filename="core.cpp" line="2116"/>
         <source>Incoming chat message from &lt;em&gt;%1&lt;/em&gt;.</source>
         <translation>Mensaje de chat entrante de &lt;em&gt;%1&lt;/em&gt;.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2148"/>
+        <location filename="core.cpp" line="2124"/>
         <source>Incoming chat message from &lt;em&gt;%1&lt;/em&gt;: &lt;em&gt;%2&lt;/em&gt;.</source>
         <translation>Mensaje de chat entrante de &lt;em&gt;%1&lt;/em&gt;: &lt;em&gt;%2&lt;/em&gt;.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2161"/>
+        <location filename="core.cpp" line="2137"/>
         <source>Highlighted in conference &lt;em&gt;%1&lt;/em&gt; by &lt;em&gt;%2&lt;/em&gt;.</source>
         <translation>Destacado en la sala de charla &lt;em&gt;%1&lt;/em&gt; por &lt;em&gt;%2&lt;/em&gt;.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2170"/>
+        <location filename="core.cpp" line="2146"/>
         <source>Highlighted in conference &lt;em&gt;%1&lt;/em&gt; by &lt;em&gt;%2&lt;/em&gt;: &lt;em&gt;%3&lt;/em&gt;.</source>
         <translation>Destacado en la sala de charla &lt;em&gt;%1&lt;/em&gt; por &lt;em&gt;%2&lt;/em&gt;: &lt;em&gt;%3&lt;/em&gt;.</translation>
     </message>
     <message numerus="yes">
-        <location filename="core.cpp" line="2205"/>
-        <location filename="core.cpp" line="2217"/>
+        <location filename="core.cpp" line="2181"/>
+        <location filename="core.cpp" line="2193"/>
         <source>%n message(s) from</source>
         <translation>
             <numerusform>%n mensaje de</numerusform>
@@ -1408,15 +1394,15 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="core.cpp" line="2209"/>
+        <location filename="core.cpp" line="2185"/>
         <source>%n message(s) in</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n mensaje en</numerusform>
+            <numerusform>%n mensajes en</numerusform>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="core.cpp" line="2223"/>
+        <location filename="core.cpp" line="2199"/>
         <source>%n message(s)</source>
         <translation>
             <numerusform>%n mensaje</numerusform>
@@ -1424,147 +1410,147 @@
         </translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2249"/>
+        <location filename="core.cpp" line="2225"/>
         <source>Subscription requested by %1.</source>
         <translation>Suscripción pedida por  %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2251"/>
+        <location filename="core.cpp" line="2227"/>
         <source>Subscription requested by %1: %2.</source>
         <translation>Suscripción pedida por  %1: %2.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2270"/>
+        <location filename="core.cpp" line="2246"/>
         <source>Deny</source>
         <translation>Negar</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2273"/>
+        <location filename="core.cpp" line="2249"/>
         <source>View info</source>
         <translation>Mirar a la info</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2296"/>
+        <location filename="core.cpp" line="2272"/>
         <source>%1 requests your attention</source>
         <translation>%1 solicita a su atención</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2298"/>
+        <location filename="core.cpp" line="2274"/>
         <source>%1 requests your attention: %2</source>
         <translation>%1 solicita a su atención: %2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2309"/>
+        <location filename="core.cpp" line="2285"/>
         <source>Attention requested</source>
         <translation>Atención solicitada</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2310"/>
+        <location filename="core.cpp" line="2286"/>
         <source>Attention requested by %1</source>
         <translation>Atención solicitada por %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2348"/>
+        <location filename="core.cpp" line="2324"/>
         <source>Nickname conflict</source>
         <translation>Conflicta de nick</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2349"/>
+        <location filename="core.cpp" line="2325"/>
         <source>You have specified a nickname for %1 that&apos;s already used. Would you like to try to join with another nick?</source>
         <translation>Ha especificado un apodo para %1 que ya se utiliza. ¿Le gustaría tratar de usar otro apodo?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2358"/>
+        <location filename="core.cpp" line="2334"/>
         <source>Enter new nick</source>
         <translation>Introduzca nick nuevo</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2359"/>
+        <location filename="core.cpp" line="2335"/>
         <source>Enter new nick for joining %1 (%2 is already used):</source>
         <translation>Introduzca el apodo nuevo para entrar en %1 (%2 esta ya isado):</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2385"/>
+        <location filename="core.cpp" line="2361"/>
         <source>You have been kicked from %1. Do you want to rejoin?</source>
         <translation>Usted ha sido expulsado de %1. ¿Quiere reincorporarse?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2387"/>
+        <location filename="core.cpp" line="2363"/>
         <source>You have been kicked from %1: %2. Do you want to rejoin?</source>
         <translation>Usted ha sido expulsado de %1: %2. ¿Quiere reincorporarse?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2410"/>
+        <location filename="core.cpp" line="2386"/>
         <source>You have been banned from %1.</source>
         <translation>Usted ha sido baneado de %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2412"/>
+        <location filename="core.cpp" line="2388"/>
         <source>You have been banned from %1: %2.</source>
         <translation>Usted ha sido baneado de %1: %2.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2465"/>
+        <location filename="core.cpp" line="2441"/>
         <source>%1 (%2) subscribed to us.</source>
         <translation>%1 (%2) suscribió a nosotros.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2466"/>
+        <location filename="core.cpp" line="2442"/>
         <source>%1 (%2) subscribed to us: %3.</source>
         <translation>%1 (%2) suscribió a nosotros: %3.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2479"/>
+        <location filename="core.cpp" line="2455"/>
         <source>%1 (%2) unsubscribed from us.</source>
         <translation>%1 (%2) ha cancelado la suscripción a nosotros.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2480"/>
+        <location filename="core.cpp" line="2456"/>
         <source>%1 (%2) unsubscribed from us: %3.</source>
         <translation>%1 (%2) ha cancelado la suscripción a nosotros: %3.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2493"/>
+        <location filename="core.cpp" line="2469"/>
         <source>%1 unsubscribed from us.</source>
         <translation>%1 ha cancelado la suscripción a nosotros.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2495"/>
+        <location filename="core.cpp" line="2471"/>
         <source>%1 unsubscribed from us: %2.</source>
         <translation>%1 ha cancelado la suscripción a nosotros: %2.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2509"/>
+        <location filename="core.cpp" line="2485"/>
         <source>%1 (%2) cancelled our subscription.</source>
         <translation>%1 (%2) ha cancelado nuestra suscripción.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2510"/>
+        <location filename="core.cpp" line="2486"/>
         <source>%1 (%2) cancelled our subscription: %3.</source>
         <translation>%1 (%2) ha cancelado nuestra suscripción: %3.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2521"/>
+        <location filename="core.cpp" line="2497"/>
         <source>%1 (%2) granted subscription.</source>
         <translation>%1 (%2) ha concedido suscripción.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2522"/>
+        <location filename="core.cpp" line="2498"/>
         <source>%1 (%2) granted subscription: %3.</source>
         <translation>%1 (%2) ha concedido suscripción: %3.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2540"/>
+        <location filename="core.cpp" line="2516"/>
         <source>You have been invited to %1 by %2.</source>
         <translation>Usted esta invitado a %1 por %2.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2543"/>
+        <location filename="core.cpp" line="2519"/>
         <source>You have been invited to %1 by %2: %3</source>
         <translation>Usted esta invitado a %1 por %2: %3</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2561"/>
+        <location filename="core.cpp" line="2537"/>
         <source>Join</source>
         <translation>Participar</translation>
     </message>
@@ -1590,7 +1576,7 @@
     </message>
     <message>
         <location filename="proxyobject.cpp" line="134"/>
-        <source>Not available</source>
+        <source>Extended away</source>
         <translation>No disponible</translation>
     </message>
     <message>
@@ -1630,18 +1616,18 @@
     <message>
         <location filename="groupsenddialog.cpp" line="36"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre</translation>
     </message>
     <message>
         <location filename="groupsenddialog.cpp" line="36"/>
         <source>ID</source>
-        <translation type="unfinished"></translation>
+        <translation>ID</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Azoth::JoinConferenceDialog</name>
     <message>
-        <location filename="joinconferencedialog.cpp" line="78"/>
+        <location filename="joinconferencedialog.cpp" line="80"/>
         <source>%1 (%2, %3)</source>
         <translation>%1 (%2,%3)</translation>
     </message>
@@ -1709,7 +1695,7 @@
     <message>
         <location filename="mainwidget.cpp" line="234"/>
         <source>Add account...</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir cuenta...</translation>
     </message>
     <message>
         <location filename="mainwidget.cpp" line="240"/>
@@ -1743,7 +1729,7 @@
     </message>
     <message>
         <location filename="mainwidget.cpp" line="273"/>
-        <source>Not available</source>
+        <source>Extended away</source>
         <translation>No disponible</translation>
     </message>
     <message>
@@ -1771,12 +1757,12 @@
     <message>
         <location filename="mainwidget.cpp" line="372"/>
         <source>Send message...</source>
-        <translation type="unfinished"></translation>
+        <translation>Enviar mensaje...</translation>
     </message>
     <message>
         <location filename="mainwidget.cpp" line="405"/>
         <source>Join bookmarked conference</source>
-        <translation type="unfinished"></translation>
+        <translation>Entrar en la sala marcada</translation>
     </message>
     <message>
         <location filename="mainwidget.cpp" line="588"/>
@@ -2317,12 +2303,12 @@
         <location filename="azoth.cpp" line="161"/>
         <location filename="azoth.cpp" line="313"/>
         <source>Search</source>
-        <translation type="unfinished"></translation>
+        <translation>Buscar</translation>
     </message>
     <message>
         <location filename="azoth.cpp" line="162"/>
-        <source>A search tab allows one to search within IM services</source>
-        <translation type="unfinished"></translation>
+        <source>A search tab allows to search within IM services</source>
+        <translation>Una ficha de búsqueda permite buscar dentro de los servicios de mensajería instantánea</translation>
     </message>
     <message>
         <location filename="azoth.cpp" line="170"/>
@@ -2370,12 +2356,12 @@
     <message>
         <location filename="searchwidget.cpp" line="86"/>
         <source>Search</source>
-        <translation type="unfinished"></translation>
+        <translation>Buscar</translation>
     </message>
     <message>
         <location filename="searchwidget.cpp" line="87"/>
-        <source>A search tab allows one to search within IM services</source>
-        <translation type="unfinished"></translation>
+        <source>A search tab allows to search within IM services</source>
+        <translation>Una ficha de búsqueda permite buscar dentro de los servicios de mensajería instantánea</translation>
     </message>
 </context>
 <context>
@@ -2402,27 +2388,27 @@
     <message>
         <location filename="shareriexdialog.cpp" line="41"/>
         <source>Select items to be shared with %1:</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccióna artículos para compartir con %1:</translation>
     </message>
     <message>
         <location filename="shareriexdialog.cpp" line="119"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre</translation>
     </message>
     <message>
         <location filename="shareriexdialog.cpp" line="120"/>
         <source>ID</source>
-        <translation type="unfinished"></translation>
+        <translation>ID</translation>
     </message>
     <message>
         <location filename="shareriexdialog.cpp" line="121"/>
         <source>Account</source>
-        <translation type="unfinished"></translation>
+        <translation>Cuenta</translation>
     </message>
     <message>
         <location filename="shareriexdialog.cpp" line="122"/>
         <source>Groups</source>
-        <translation type="unfinished"></translation>
+        <translation>Grupos</translation>
     </message>
     <message>
         <location filename="shareriexdialog.cpp" line="144"/>
@@ -2676,12 +2662,12 @@
     <message>
         <location filename="mucinvitedialog.ui" line="14"/>
         <source>Invite to a MUC</source>
-        <translation type="unfinished"></translation>
+        <translation>Invitar a la sala de charla</translation>
     </message>
     <message>
         <location filename="mucinvitedialog.ui" line="23"/>
         <source>Invitee:</source>
-        <translation type="unfinished"></translation>
+        <translation>Invitación:</translation>
     </message>
     <message>
         <location filename="mucinvitedialog.ui" line="37"/>
@@ -2786,7 +2772,7 @@
     </message>
     <message>
         <location filename="setstatusdialog.ui" line="56"/>
-        <source>Not available</source>
+        <source>Extended away</source>
         <translation>No disponible</translation>
     </message>
     <message>
@@ -2800,17 +2786,17 @@
     <message>
         <location filename="shareriexdialog.ui" line="14"/>
         <source>Share contacts</source>
-        <translation type="unfinished"></translation>
+        <translation>Compartir contactos</translation>
     </message>
     <message>
         <location filename="shareriexdialog.ui" line="29"/>
         <source>Filter:</source>
-        <translation type="unfinished"></translation>
+        <translation>Filtrar:</translation>
     </message>
     <message>
         <location filename="shareriexdialog.ui" line="44"/>
         <source>All accounts</source>
-        <translation type="unfinished"></translation>
+        <translation>Todas cuentas</translation>
     </message>
     <message>
         <location filename="shareriexdialog.ui" line="53"/>
@@ -2820,12 +2806,12 @@
     <message>
         <location filename="shareriexdialog.ui" line="81"/>
         <source>If checked, the information about the groups of the selected contacts would also be sent along with the sharing request.</source>
-        <translation type="unfinished"></translation>
+        <translation>Si se selecciona, la información sobre los grupos de los contactos seleccionados también será enviada junto con la solicitud para compartir.</translation>
     </message>
     <message>
         <location filename="shareriexdialog.ui" line="84"/>
         <source>Share groups</source>
-        <translation type="unfinished"></translation>
+        <translation>Compartir grupos</translation>
     </message>
 </context>
 <context>
@@ -2913,12 +2899,12 @@
     <message>
         <location filename="dummy.cpp" line="21"/>
         <source>Custom theme for multiuser chats</source>
-        <translation type="unfinished"></translation>
+        <translation>Tema personalizado para las salas de charla</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="22"/>
         <source>MUC window style:</source>
-        <translation type="unfinished"></translation>
+        <translation>Estílo de la ventana de MUC:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="24"/>
@@ -2933,7 +2919,7 @@
     <message>
         <location filename="dummy.cpp" line="26"/>
         <source>Show statuses</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar los estados</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="27"/>
@@ -2953,7 +2939,7 @@
     <message>
         <location filename="dummy.cpp" line="30"/>
         <source>If this option is enabled, contacts would be grouped, otherwise, they will all appear in the same group.</source>
-        <translation type="unfinished"></translation>
+        <translation>Si esta opción está activada, los contactos se agrupan, de lo contrario, todos ellos aparecen en el mismo grupo.</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="31"/>
@@ -2963,21 +2949,21 @@
     <message>
         <location filename="dummy.cpp" line="32"/>
         <source>If this option is enabled, contacts are ordered by status and then by name. Otherwise, they are ordered by name only.</source>
-        <translation type="unfinished"></translation>
+        <translation>Si esta opción está activada, los contactos se agrupan por su estado y despues por su nombre, de lo contrario, se agrupan solo por el nombre.</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="33"/>
         <source>Distance between contacts in roster:</source>
-        <translation type="unfinished"></translation>
+        <translation>Distancia entre los contactos en la lista:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="34"/>
         <source> px</source>
-        <translation type="unfinished"></translation>
+        <translation>px</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="35"/>
-        <location filename="dummy.cpp" line="76"/>
+        <location filename="dummy.cpp" line="74"/>
         <source>Chat windows</source>
         <translation>Ventanas de chat</translation>
     </message>
@@ -2994,303 +2980,288 @@
     </message>
     <message>
         <location filename="dummy.cpp" line="38"/>
-        <source>Post-address text:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="39"/>
         <source>Show rich text message body (if available)</source>
         <translation>Mostrar el texto enriquecido en el cuerpo del mensaje (si está disponible)</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="40"/>
+        <location filename="dummy.cpp" line="39"/>
         <source>Whether rich text body of the messages should be used, if available. This is a default value, and the behavior could be changed for each opened chat window.</source>
-        <translation type="unfinished"></translation>
+        <translation>El cuerpo de texto enriquecido de los mensajes será utilizado, si está disponible. Esto es un valor por defecto, y el comportamiento se puede cambiar para cada ventana de conversación abierta.</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="41"/>
+        <location filename="dummy.cpp" line="40"/>
         <source>Highlight color:</source>
         <translation>Color de resaltado:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="42"/>
+        <location filename="dummy.cpp" line="41"/>
         <source>Font size:</source>
         <translation>Tamaño de la letra:</translation>
     </message>
     <message>
+        <location filename="dummy.cpp" line="42"/>
         <location filename="dummy.cpp" line="43"/>
-        <location filename="dummy.cpp" line="44"/>
         <source>Behavior</source>
         <translation>Behavior</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="45"/>
+        <location filename="dummy.cpp" line="44"/>
         <source>Jump to new tab on open</source>
         <translation>Saltar a la nueva ficha al abrir</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="46"/>
+        <location filename="dummy.cpp" line="45"/>
         <source>Close conferences tabs when leaving</source>
         <translation>Serrar las fichas de conferencias abandonandolas</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="47"/>
+        <location filename="dummy.cpp" line="46"/>
         <source>Automatically switch roster to conference mode when needed</source>
         <translation>Cambia automáticamente la lista de contactos al modo de conferencias cuando sea necesario</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="48"/>
+        <location filename="dummy.cpp" line="47"/>
         <source>Hide MUC participants in Whole CL mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Ocultar los participantes de salas de charla en el modo de Toda lista</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="49"/>
+        <location filename="dummy.cpp" line="48"/>
         <source>Autojoin allowed</source>
         <translation>Autoingreso permitido</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="50"/>
+        <location filename="dummy.cpp" line="49"/>
         <source>Send chat state events</source>
         <translation>Enviar en el chat los eventos de estado</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="51"/>
-        <source>Notify remote participant when you&apos;ve ended conversation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="52"/>
+        <location filename="dummy.cpp" line="50"/>
         <source>Use alternative nickname</source>
         <translation>Usar otro nick</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="53"/>
+        <location filename="dummy.cpp" line="51"/>
         <source>Send message on:</source>
         <translation>Enviar mensaje por:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="54"/>
+        <location filename="dummy.cpp" line="52"/>
         <source>Enter</source>
         <translation>Enter</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="55"/>
+        <location filename="dummy.cpp" line="53"/>
         <source>Shift+Enter</source>
         <translation>Shift+Enter</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="56"/>
+        <location filename="dummy.cpp" line="54"/>
         <source>Ctrl+Enter</source>
         <translation>Ctrl+Enter</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="57"/>
+        <location filename="dummy.cpp" line="55"/>
         <source>Load at most messages from history:</source>
         <translation>Carga más mensajes de la historia:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="58"/>
+        <location filename="dummy.cpp" line="56"/>
         <source>Alternative nickname for chat rooms:</source>
         <translation>El nick alternativo para las salas de charla:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="59"/>
+        <location filename="dummy.cpp" line="57"/>
         <source>Default file transfers save path:</source>
         <translation>La ruta predeterminada para guardar los archivos:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="60"/>
+        <location filename="dummy.cpp" line="58"/>
         <source>Notifications</source>
         <translation>Notificaciones</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="61"/>
+        <location filename="dummy.cpp" line="59"/>
         <source>Incoming messages</source>
         <translation>Mensajes entrantes</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="62"/>
+        <location filename="dummy.cpp" line="60"/>
         <source>Notify about incoming messages</source>
         <translation>Notificar sobre los mensajes entrantes</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="63"/>
+        <location filename="dummy.cpp" line="61"/>
         <source>Notify when remote contact starts composing a message:</source>
         <translation>Notificarme cuando el contacto remoto esta escribiendome el mensaje:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="64"/>
+        <location filename="dummy.cpp" line="62"/>
         <source>always</source>
         <translation>siempre</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="65"/>
+        <location filename="dummy.cpp" line="63"/>
         <source>in opened chats</source>
         <translation>en chats abiertos</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="66"/>
+        <location filename="dummy.cpp" line="64"/>
         <source>never</source>
         <translation>nunca</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="67"/>
+        <location filename="dummy.cpp" line="65"/>
         <source>Notify about highlights in conferences</source>
         <translatorcomment>llamadas?!</translatorcomment>
         <translation>Notificame sobre las llamadas en conferencia</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="68"/>
+        <location filename="dummy.cpp" line="66"/>
         <source>Show triggering message in notifications</source>
         <translation>Mostrar el mensaje activacional en las notificaciones</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="69"/>
+        <location filename="dummy.cpp" line="67"/>
         <source>Ignore when someone draws our attention</source>
         <translation>Ignorar cuando alguen llama nuestra atencion</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="70"/>
+        <location filename="dummy.cpp" line="68"/>
         <source>Subscriptions</source>
         <translation>Suscripciones</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="71"/>
+        <location filename="dummy.cpp" line="69"/>
         <source>Notify when someone not present in contact-list unsubscribes</source>
         <translation>Notificame cuando alguien no presente en la lista de contactos desuscribe</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="72"/>
+        <location filename="dummy.cpp" line="70"/>
         <source>Notify when someone subscribes to us</source>
         <translation>Notificame cuando alguien se suscribe a nosotros</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="73"/>
+        <location filename="dummy.cpp" line="71"/>
         <source>Notify when someone unsubscribes from us</source>
         <translation>Notificame cuando alguien desuscribe de nosotros</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="74"/>
+        <location filename="dummy.cpp" line="72"/>
         <source>Notify when someone cancels our subscription</source>
         <translation>Notificame cuando alguen cancela nuestra suscripción</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="75"/>
+        <location filename="dummy.cpp" line="73"/>
         <source>Notify when someone grants us subscription</source>
         <translation>Notificame cuando alguen nos concede la suscripción</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="77"/>
+        <location filename="dummy.cpp" line="75"/>
         <source>Show status changes</source>
         <translation>Mostrar los cambios de estado</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="78"/>
-        <source>Show when participant ends conversation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="79"/>
+        <location filename="dummy.cpp" line="76"/>
         <source>Show joins and leaves in MUCs</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar las entradas y salidas en las salas de charla</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="80"/>
+        <location filename="dummy.cpp" line="77"/>
         <source>Statuses</source>
         <translation>Estados</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="81"/>
+        <location filename="dummy.cpp" line="78"/>
         <source>Default status texts</source>
         <translation>Textos de estados predeterminados</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="82"/>
+        <location filename="dummy.cpp" line="79"/>
         <source>I&apos;m online!</source>
         <translation>Estoy conectado!</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="83"/>
+        <location filename="dummy.cpp" line="80"/>
         <source>Online:</source>
         <translation>Conectado:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="84"/>
+        <location filename="dummy.cpp" line="81"/>
         <source>Wanna chat :3</source>
         <translation>Quiero chatear. :)</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="85"/>
+        <location filename="dummy.cpp" line="82"/>
         <source>Free to chat:</source>
         <translation>Disponible para conversar:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="86"/>
+        <location filename="dummy.cpp" line="83"/>
         <source>Oh, seems like I&apos;m away</source>
         <translation>Oh, parece que estoy lejos</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="87"/>
+        <location filename="dummy.cpp" line="84"/>
         <source>Away:</source>
         <translation>Ausente:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="88"/>
+        <location filename="dummy.cpp" line="85"/>
         <source>Please leave me alone now</source>
         <translation>Por favor, déjame en paz ahora</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="89"/>
+        <location filename="dummy.cpp" line="86"/>
         <source>DND:</source>
         <translation>DND:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="90"/>
-        <source>Not available is okay</source>
+        <location filename="dummy.cpp" line="87"/>
+        <source>Extended away is okay</source>
         <translation>No disponible, esta bien</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="91"/>
+        <location filename="dummy.cpp" line="88"/>
         <source>XA:</source>
         <translation>XA:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="92"/>
+        <location filename="dummy.cpp" line="89"/>
         <source>I turned off my machine to get some life</source>
         <translation>He desactivado mi máquina para obtener un poco de vida</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="93"/>
+        <location filename="dummy.cpp" line="90"/>
         <source>Offline:</source>
         <translation>Desconectado:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="94"/>
+        <location filename="dummy.cpp" line="91"/>
         <source>Devices</source>
         <translation>Dispositivos</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="95"/>
+        <location filename="dummy.cpp" line="92"/>
         <source>Audio devices</source>
         <translation>Los dispositivos de audio</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="96"/>
+        <location filename="dummy.cpp" line="93"/>
         <source>Input audio device:</source>
         <translation>Entrada de audio:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="97"/>
+        <location filename="dummy.cpp" line="94"/>
         <source>Default input device</source>
         <translation>Dispositivo predeterminado de entrada</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="98"/>
+        <location filename="dummy.cpp" line="95"/>
         <source>Output audio device:</source>
         <translation>Salida de audio:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="99"/>
+        <location filename="dummy.cpp" line="96"/>
         <source>Default output device</source>
         <translation>Dispositivo predeterminado de salida</translation>
     </message>
