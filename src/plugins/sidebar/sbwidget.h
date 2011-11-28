@@ -1,6 +1,5 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011  Minh Ngo
  * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,35 +16,45 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LAURE_SEPARATEPLAYERWIDGET_H
-#define PLUGINS_LAURE_SEPARATEPLAYERWIDGET_H
-
+#ifndef PLUGINS_SIDEBAR_SBWIDGET_H
+#define PLUGINS_SIDEBAR_SBWIDGET_H
 #include <QWidget>
-#include <QCloseEvent>
-#include <vlc/vlc.h>
+#include "ui_sbwidget.h"
+
+class QToolButton;
 
 namespace LeechCraft
 {
-namespace Laure
+namespace Util
 {
-	/** @brief Provides a separate video frame widget.
-	 * 
-	 * @author Minh Ngo <nlminhtl@gmail.com>
-	 */
-	class SeparatePlayerWidget : public QWidget
+	class FlowLayout;
+}
+
+namespace Sidebar
+{
+	class SBWidget : public QWidget
 	{
 		Q_OBJECT
-		
-		QWidget *PlayerWidget_;
-		libvlc_media_player_t *MP_;
+
+		Ui::SBWidget Ui_;
+		Util::FlowLayout *TrayLay_;
+
+		const QSize IconSize_;
+
+		QMap<QAction*, QToolButton*> CurTab2Button_;
+		QMap<QAction*, QToolButton*> TrayAct2Button_;
 	public:
-		SeparatePlayerWidget (libvlc_media_player_t *MP,
-				QWidget *playerWidget, QWidget *parent = 0);
-	protected:
-		void closeEvent (QCloseEvent*);
-	private:
-		void changeWidget (QWidget*);
+		SBWidget (QWidget* = 0);
+
+		void AddTabOpenAction (QAction*);
+		void AddQLAction (QAction*);
+		void AddCurTabAction (QAction*);
+		void RemoveCurTabAction (QAction*);
+		void AddTrayAction (QAction*);
+	private slots:
+		void handleTrayActDestroyed ();
 	};
 }
 }
-#endif // PLUGINS_LAURE_SEPARATEPLAYERWIDGET_H
+
+#endif

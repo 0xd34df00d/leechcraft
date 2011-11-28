@@ -113,6 +113,8 @@ namespace Azoth
 		Entry2SmoothAvatarCache_t Entry2SmoothAvatarCache_;
 
 		AnimatedIconManager<QStandardItem*> *ItemIconManager_;
+
+		QMap<State, int> StateCounter_;
 	public:
 		enum ResourceLoaderType
 		{
@@ -394,6 +396,8 @@ namespace Azoth
 
 		void FillANFields ();
 
+		void UpdateInitState (State);
+
 #ifdef ENABLE_CRYPT
 		void RestoreKeyForAccount (IAccount*);
 		void RestoreKeyForEntry (ICLEntry*);
@@ -548,6 +552,7 @@ namespace Azoth
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
+		void topStatusChanged (LeechCraft::Azoth::State);
 
 		/** Convenient signal for rethrowing the event of an account
 		 * being added.

@@ -35,6 +35,7 @@
 #include "player.h"
 #include "playlistwidget.h"
 #include "xmlsettingsmanager.h"
+#include "separateplayer.h"
 
 namespace LeechCraft
 {
@@ -49,6 +50,13 @@ namespace Laure
 	{	
 		Ui_.setupUi (this);
 		Ui_.Player_->SetVLCWrapper (VLCWrapper_);
+		
+		SeparatePlayer_.reset (new SeparatePlayer);
+		
+		connect (SeparatePlayer_.get (),
+				SIGNAL (closed ()),
+				this,
+				SLOT (handleSeparatePlayerClosed ()));
 		
 		connect (Ui_.PlayListWidget_,
 				SIGNAL (metaChangedRequest (libvlc_meta_t, QString, int)),
@@ -133,21 +141,26 @@ namespace Laure
 		QAction *actionOpenURL = new QAction (tr ("Open URL"), this);
 		QAction *playList = new QAction (tr ("Playlist"), this);
 		QAction *videoMode = new QAction (tr ("Video mode"), this);
+		DetachedVideo_ = new QAction (tr ("Detached video"), this);
 		
 		actionOpenFile->setProperty ("ActionIcon", "folder");
 		actionOpenURL->setProperty ("ActionIcon", "networkmonitor_plugin");
 		playList->setProperty ("ActionIcon", "itemlist");
 		videoMode->setProperty ("ActionIcon", "video");
+		DetachedVideo_->setProperty ("ActionIcon", "fullscreen");
 		
 		playList->setCheckable (true);
 		videoMode->setCheckable (true);
+		DetachedVideo_->setCheckable (true);
 		
 		videoMode->setChecked (true);
+		DetachedVideo_->setChecked (false);
 		
 		ToolBar_->addAction (actionOpenFile);
 		ToolBar_->addAction (actionOpenURL);
 		ToolBar_->addAction (playList);
 		ToolBar_->addAction (videoMode);
+		ToolBar_->addAction (DetachedVideo_);
 		
 		connect (actionOpenFile,
 				SIGNAL (triggered (bool)),
@@ -161,14 +174,14 @@ namespace Laure
 				SIGNAL (triggered (bool)),
 				Ui_.PlayListWidget_,
 				SLOT (setVisible (bool)));
-		connect (this,
-				SIGNAL (playListMode (bool)),
-				playList,
-				SLOT (setChecked (bool)));
 		connect (videoMode,
 				SIGNAL (triggered (bool)),
 				this,
 				SLOT (handleVideoMode (bool)));
+		connect (DetachedVideo_,
+				SIGNAL (triggered (bool)),
+				this,
+				SLOT (handleDetachPlayer (bool)));
 	}
 	
 	void LaureWidget::InitCommandFrame ()
@@ -302,6 +315,26 @@ namespace Laure
 
 		Ui_.Player_->setVisible (checked);
 		Ui_.PlayListWidget_->setVisible (!checked);
+	}
+	
+	void LaureWidget::handleDetachPlayer (bool checked)
+	{
+		if (checked)
+		{
+			VLCWrapper_->setWindow (SeparatePlayer_->winId ());
+			SeparatePlayer_->show ();
+		}
+		else
+		{
+			VLCWrapper_->setWindow (Ui_.Player_->winId ());
+			SeparatePlayer_->hide ();
+		}
+	}
+	
+	void LaureWidget::handleSeparatePlayerClosed ()
+	{
+		DetachedVideo_->setChecked (false);
+		handleDetachPlayer (false);
 	}
 }
 }

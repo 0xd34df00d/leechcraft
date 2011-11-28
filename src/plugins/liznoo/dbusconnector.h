@@ -1,6 +1,5 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011  Minh Ngo
  * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,35 +16,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "separateplayerwidget.h"
+#ifndef PLUGINS_LIZNOO_DBUSCONNECTOR_H
+#define PLUGINS_LIZNOO_DBUSCONNECTOR_H
+#include <QObject>
+#include <QDBusConnection>
+#include "batteryinfo.h"
 
 namespace LeechCraft
 {
-namespace Laure
+namespace Liznoo
 {
-	SeparatePlayerWidget::SeparatePlayerWidget (libvlc_media_player_t *MP,
-			QWidget *playerWidget, QWidget *parent)
-	: QWidget (parent)
-	, PlayerWidget_ (playerWidget)
-	, MP_ (MP)
+	class DBusConnector : public QObject
 	{
-		setPalette (QPalette (Qt::black));
-		changeWidget (this);
-	}
+		Q_OBJECT
+		
+		QDBusConnection SB_;
+	public:
+		DBusConnector (QObject* = 0);
+	private slots:
+		void enumerateDevices ();
+		void requeryDevice (const QString&);
+	signals:
+		void batteryInfoUpdated (Liznoo::BatteryInfo);
+	};
+}
+}
 
-	void SeparatePlayerWidget::closeEvent (QCloseEvent *event)
-	{
-		changeWidget (PlayerWidget_);
-		setParent (PlayerWidget_);
-	}
-	
-	void SeparatePlayerWidget::changeWidget (QWidget *w)
-	{
-		int time = libvlc_media_player_get_time (MP_);
-		libvlc_media_player_stop (MP_);
-		libvlc_media_player_set_xwindow (MP_, w->winId ());
-		libvlc_media_player_play (MP_);
-		libvlc_media_player_set_time (MP_, time);
-	}
-}
-}
+#endif

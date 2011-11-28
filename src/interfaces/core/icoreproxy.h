@@ -177,6 +177,15 @@ public:
 	 * Just to avoid nasty reinterpret_casts.
 	 */
 	virtual QObject* GetSelf () = 0;
+
+	/** @brief Registers the given action as having skinnable icons.
+	 *
+	 * Registers the given action so that it automatically gets its icon
+	 * updated whenever the current iconset changes.
+	 *
+	 * @param[in] action The action to register.
+	 */
+	virtual void RegisterSkinnable (QAction *action) = 0;
 };
 
 typedef boost::shared_ptr<ICoreProxy> ICoreProxy_ptr;

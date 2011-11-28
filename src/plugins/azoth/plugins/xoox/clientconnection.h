@@ -48,8 +48,10 @@ class QXmppEntityTimeManager;
 class QXmppDeliveryReceiptsManager;
 class QXmppCaptchaManager;
 class QXmppBobManager;
+#ifdef ENABLE_MEDIACALLS
 class QXmppCallManager;
 class QXmppCall;
+#endif
 
 namespace LeechCraft
 {
@@ -94,7 +96,9 @@ namespace Xoox
 		QXmppDeliveryReceiptsManager *DeliveryReceiptsManager_;
 		QXmppCaptchaManager *CaptchaManager_;
 		QXmppBobManager *BobManager_;
+#ifdef ENABLE_MEDIACALLS
 		QXmppCallManager *CallManager_;
+#endif
 		PubSubManager *PubSubManager_;
 		PrivacyListsManager *PrivacyListsManager_;
 		AdHocCommandManager *AdHocCommandManager_;
@@ -189,7 +193,9 @@ namespace Xoox
 		AnnotationsManager* GetAnnotationsManager () const;
 		PubSubManager* GetPubSubManager () const;
 		PrivacyListsManager* GetPrivacyListsManager () const;
+#ifdef ENABLE_MEDIACALLS
 		QXmppCallManager* GetCallManager () const;
+#endif
 		AdHocCommandManager* GetAdHocCommandManager () const;
 		JabberSearchManager* GetJabberSearchManager () const;
 		UserAvatarManager* GetUserAvatarManager () const;

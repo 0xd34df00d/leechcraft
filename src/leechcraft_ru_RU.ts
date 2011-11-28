@@ -131,6 +131,21 @@
     </message>
 </context>
 <context>
+    <name>DataViewWidget</name>
+    <message>
+        <source>Add...</source>
+        <translation>Добавить...</translation>
+    </message>
+    <message>
+        <source>Modify...</source>
+        <translation>Изменить...</translation>
+    </message>
+    <message>
+        <source>Remove</source>
+        <translation>Удалить</translation>
+    </message>
+</context>
+<context>
     <name>HandlerChoiceDialog</name>
     <message>
         <source>Choose entity handler</source>
@@ -206,10 +221,6 @@
         <translation>Выход</translation>
     </message>
     <message>
-        <source>Main toolbar</source>
-        <translation type="obsolete">Главная панель инструментов</translation>
-    </message>
-    <message>
         <source>New tab</source>
         <translation>Новая вкладка</translation>
     </message>
@@ -250,16 +261,8 @@
         <translation>F10</translation>
     </message>
     <message>
-        <source>Glance...</source>
-        <translation type="obsolete">Glance...</translation>
-    </message>
-    <message>
-        <source>Show a quick overview of tabs</source>
-        <translation type="obsolete">Показать миниатюры вкладок</translation>
-    </message>
-    <message>
-        <source>Ctrl+G</source>
-        <translation type="obsolete">Ctrl+G</translation>
+        <source>Show toolbar</source>
+        <translation>Показывать панель инструментов</translation>
     </message>
 </context>
 <context>
@@ -490,6 +493,13 @@
     <message>
         <source>Select save location</source>
         <translation>Выберите место сохранения</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::ItemHandlerCombobox</name>
+    <message>
+        <source>More stuff...</source>
+        <translation>Больше такого...</translation>
     </message>
 </context>
 <context>
@@ -1091,26 +1101,6 @@ LeechCraft для Windows — довольно экспериментальна�
         <translation>Использовать кнопки прокрути вкладок</translation>
     </message>
     <message>
-        <source>Icon size</source>
-        <translation>Размер значков</translation>
-    </message>
-    <message>
-        <source>System default</source>
-        <translation>По умолчанию</translation>
-    </message>
-    <message>
-        <source>16x16</source>
-        <translation>16x16</translation>
-    </message>
-    <message>
-        <source>24x24</source>
-        <translation>24x24</translation>
-    </message>
-    <message>
-        <source>32x32</source>
-        <translation>32x32</translation>
-    </message>
-    <message>
         <source>Tool button style:</source>
         <translation>Стиль кнопок на панели управления:</translation>
     </message>
@@ -1129,26 +1119,6 @@ LeechCraft для Windows — довольно экспериментальна�
     <message>
         <source>The text appears under the icon</source>
         <translation>Текст под значком</translation>
-    </message>
-    <message>
-        <source>Tab bar location:</source>
-        <translation type="obsolete">Положение панели вкладок:</translation>
-    </message>
-    <message>
-        <source>Top</source>
-        <translation type="obsolete">Сверху</translation>
-    </message>
-    <message>
-        <source>Bottom</source>
-        <translation type="obsolete">Снизу</translation>
-    </message>
-    <message>
-        <source>Left</source>
-        <translation type="obsolete">Слева</translation>
-    </message>
-    <message>
-        <source>Right</source>
-        <translation type="obsolete">Справа</translation>
     </message>
     <message>
         <source>Icon set:</source>
@@ -1333,6 +1303,10 @@ LeechCraft для Windows — довольно экспериментальна�
     <message>
         <source>Select the tab to the left of the one being removed</source>
         <translation>Слева от закрытой вкладки</translation>
+    </message>
+    <message>
+        <source>Manual toolbar visibility control</source>
+        <translation>Ручное управление видимостью панели инструментов</translation>
     </message>
 </context>
 </TS>

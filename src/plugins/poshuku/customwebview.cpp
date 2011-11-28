@@ -76,7 +76,6 @@ namespace Poshuku
 				SIGNAL (timeout ()),
 				this,
 				SLOT (handleAutoscroll ()));
-		ScrollTimer_->start (30);
 
 		CustomWebPage *page = new CustomWebPage (this);
 		setPage (page);
@@ -422,10 +421,17 @@ namespace Poshuku
 			Browser_->focusLineEdit ();
 		else if (event->modifiers () == Qt::SHIFT &&
 				(event->key () == Qt::Key_PageUp || event->key () == Qt::Key_PageDown))
+		{
 			ScrollDelta_ += event->key () == Qt::Key_PageUp ? -0.1 : 0.1;
+			if (!ScrollTimer_->isActive ())
+				ScrollTimer_->start (30);
+		}
 		else if (event->modifiers () == Qt::SHIFT &&
 				event->key () == Qt::Key_Plus)
+		{
 			ScrollDelta_ = 0;
+			ScrollTimer_->stop ();
+		}
 
 		if (!handled)
 			QGraphicsWebView::keyReleaseEvent (event);

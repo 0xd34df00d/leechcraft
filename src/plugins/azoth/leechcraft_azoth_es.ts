@@ -6,7 +6,7 @@
     <message>
         <location filename="acceptriexdialog.ui" line="14"/>
         <source>Contact list change</source>
-        <translation type="unfinished"></translation>
+        <translation>Cambio de la lista de contactos</translation>
     </message>
 </context>
 <context>
@@ -267,17 +267,17 @@
     <message>
         <location filename="groupsenddialog.ui" line="14"/>
         <source>Group send</source>
-        <translation type="unfinished"></translation>
+        <translation>Enviar al grupo</translation>
     </message>
     <message>
         <location filename="groupsenddialog.ui" line="36"/>
         <source>All</source>
-        <translation type="unfinished"></translation>
+        <translation>Todos</translation>
     </message>
     <message>
         <location filename="groupsenddialog.ui" line="43"/>
         <source>None</source>
-        <translation type="unfinished">Ninguno</translation>
+        <translation>Ninguno</translation>
     </message>
     <message>
         <location filename="groupsenddialog.ui" line="54"/>
@@ -292,7 +292,7 @@
     <message>
         <location filename="groupsenddialog.ui" line="80"/>
         <source>Send</source>
-        <translation type="unfinished"></translation>
+        <translation>Enviar</translation>
     </message>
 </context>
 <context>
@@ -323,53 +323,54 @@
     <message>
         <location filename="acceptriexdialog.cpp" line="35"/>
         <source>Action</source>
-        <translation type="unfinished"></translation>
+        <translation>Acción</translation>
     </message>
     <message>
         <location filename="acceptriexdialog.cpp" line="36"/>
         <source>ID</source>
-        <translation type="unfinished"></translation>
+        <translation>ID</translation>
     </message>
     <message>
         <location filename="acceptriexdialog.cpp" line="37"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre</translation>
     </message>
     <message>
         <location filename="acceptriexdialog.cpp" line="38"/>
         <source>Groups</source>
-        <translation type="unfinished"></translation>
+        <translation>Grupos</translation>
     </message>
     <message>
         <location filename="acceptriexdialog.cpp" line="51"/>
         <source>add</source>
-        <translation type="unfinished"></translation>
+        <translation>añadir</translation>
     </message>
     <message>
         <location filename="acceptriexdialog.cpp" line="54"/>
         <source>delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Borrar</translation>
     </message>
     <message>
         <location filename="acceptriexdialog.cpp" line="57"/>
         <source>modify</source>
-        <translation type="unfinished"></translation>
+        <translation>Modificar</translation>
     </message>
     <message>
         <location filename="acceptriexdialog.cpp" line="60"/>
         <source>(unknown)</source>
-        <translation type="unfinished"></translation>
+        <translation>(desconocido)</translation>
     </message>
     <message>
         <location filename="acceptriexdialog.cpp" line="82"/>
         <source>%1 has suggested to modify your contact list:</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ha propuesto a modificar su lista de contactos:</translation>
     </message>
     <message>
         <location filename="acceptriexdialog.cpp" line="84"/>
         <source>%1 has suggested to modify your contact list:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ha propuesto a modificar su lista de contactos:
+%2</translation>
     </message>
 </context>
 <context>
@@ -465,7 +466,7 @@
     <message>
         <location filename="actionsmanager.cpp" line="268"/>
         <source>Share contacts...</source>
-        <translation type="unfinished"></translation>
+        <translation>Compartir contactos...</translation>
     </message>
     <message>
         <location filename="actionsmanager.cpp" line="279"/>
@@ -485,7 +486,7 @@
     <message>
         <location filename="actionsmanager.cpp" line="345"/>
         <source>Invite...</source>
-        <translation type="unfinished"></translation>
+        <translation>Invitar...</translation>
     </message>
     <message>
         <location filename="actionsmanager.cpp" line="355"/>
@@ -960,7 +961,7 @@
     <message>
         <location filename="bookmarksmanagerdialog.cpp" line="259"/>
         <source>Save the bookmark?</source>
-        <translation type="unfinished"></translation>
+        <translation>¿Guardar el marcador?</translation>
     </message>
     <message>
         <location filename="bookmarksmanagerdialog.cpp" line="294"/>
@@ -974,14 +975,15 @@
         <location filename="clmodel.cpp" line="192"/>
         <source>Are you sure you want to send %n files to %1?</source>
         <oldsource>Are you sure you want to send %1 files to %2?</oldsource>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Esta seguro que quiere enviar % archivo a %1?</numerusform>
+            <numerusform>Esta seguro que quiere enviar %n archivos a %1?</numerusform>
         </translation>
     </message>
     <message>
         <location filename="clmodel.cpp" line="199"/>
         <source>Are you sure you want to send %1 to %2?</source>
-        <translation type="unfinished"></translation>
+        <translation>Esta seguro que quiere enviar %1 a %2?</translation>
     </message>
 </context>
 <context>
@@ -1134,7 +1136,7 @@
     <message>
         <location filename="chattab.cpp" line="1007"/>
         <source>Quote selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar la cita</translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="1091"/>
@@ -1288,12 +1290,12 @@
     <message>
         <location filename="core.cpp" line="1218"/>
         <source>%1 is now %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ahora es %2.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1221"/>
         <source>%1/%2 is now %3.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1/%2 ahora es %3.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="2204"/>
@@ -1394,8 +1396,9 @@
     <message numerus="yes">
         <location filename="core.cpp" line="2185"/>
         <source>%n message(s) in</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n mensaje en</numerusform>
+            <numerusform>%n mensajes en</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -1613,12 +1616,12 @@
     <message>
         <location filename="groupsenddialog.cpp" line="36"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre</translation>
     </message>
     <message>
         <location filename="groupsenddialog.cpp" line="36"/>
         <source>ID</source>
-        <translation type="unfinished"></translation>
+        <translation>ID</translation>
     </message>
 </context>
 <context>
@@ -1692,7 +1695,7 @@
     <message>
         <location filename="mainwidget.cpp" line="234"/>
         <source>Add account...</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir cuenta...</translation>
     </message>
     <message>
         <location filename="mainwidget.cpp" line="240"/>
@@ -1754,12 +1757,12 @@
     <message>
         <location filename="mainwidget.cpp" line="372"/>
         <source>Send message...</source>
-        <translation type="unfinished"></translation>
+        <translation>Enviar mensaje...</translation>
     </message>
     <message>
         <location filename="mainwidget.cpp" line="405"/>
         <source>Join bookmarked conference</source>
-        <translation type="unfinished"></translation>
+        <translation>Entrar en la sala marcada</translation>
     </message>
     <message>
         <location filename="mainwidget.cpp" line="588"/>
@@ -2300,12 +2303,12 @@
         <location filename="azoth.cpp" line="161"/>
         <location filename="azoth.cpp" line="313"/>
         <source>Search</source>
-        <translation type="unfinished"></translation>
+        <translation>Buscar</translation>
     </message>
     <message>
         <location filename="azoth.cpp" line="162"/>
-        <source>A search tab allows one to search within IM services</source>
-        <translation type="unfinished"></translation>
+        <source>A search tab allows to search within IM services</source>
+        <translation>Una ficha de búsqueda permite buscar dentro de los servicios de mensajería instantánea</translation>
     </message>
     <message>
         <location filename="azoth.cpp" line="170"/>
@@ -2353,12 +2356,12 @@
     <message>
         <location filename="searchwidget.cpp" line="86"/>
         <source>Search</source>
-        <translation type="unfinished"></translation>
+        <translation>Buscar</translation>
     </message>
     <message>
         <location filename="searchwidget.cpp" line="87"/>
-        <source>A search tab allows one to search within IM services</source>
-        <translation type="unfinished"></translation>
+        <source>A search tab allows to search within IM services</source>
+        <translation>Una ficha de búsqueda permite buscar dentro de los servicios de mensajería instantánea</translation>
     </message>
 </context>
 <context>
@@ -2385,27 +2388,27 @@
     <message>
         <location filename="shareriexdialog.cpp" line="41"/>
         <source>Select items to be shared with %1:</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccióna artículos para compartir con %1:</translation>
     </message>
     <message>
         <location filename="shareriexdialog.cpp" line="119"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre</translation>
     </message>
     <message>
         <location filename="shareriexdialog.cpp" line="120"/>
         <source>ID</source>
-        <translation type="unfinished"></translation>
+        <translation>ID</translation>
     </message>
     <message>
         <location filename="shareriexdialog.cpp" line="121"/>
         <source>Account</source>
-        <translation type="unfinished"></translation>
+        <translation>Cuenta</translation>
     </message>
     <message>
         <location filename="shareriexdialog.cpp" line="122"/>
         <source>Groups</source>
-        <translation type="unfinished"></translation>
+        <translation>Grupos</translation>
     </message>
     <message>
         <location filename="shareriexdialog.cpp" line="144"/>
@@ -2659,12 +2662,12 @@
     <message>
         <location filename="mucinvitedialog.ui" line="14"/>
         <source>Invite to a MUC</source>
-        <translation type="unfinished"></translation>
+        <translation>Invitar a la sala de charla</translation>
     </message>
     <message>
         <location filename="mucinvitedialog.ui" line="23"/>
         <source>Invitee:</source>
-        <translation type="unfinished"></translation>
+        <translation>Invitación:</translation>
     </message>
     <message>
         <location filename="mucinvitedialog.ui" line="37"/>
@@ -2783,17 +2786,17 @@
     <message>
         <location filename="shareriexdialog.ui" line="14"/>
         <source>Share contacts</source>
-        <translation type="unfinished"></translation>
+        <translation>Compartir contactos</translation>
     </message>
     <message>
         <location filename="shareriexdialog.ui" line="29"/>
         <source>Filter:</source>
-        <translation type="unfinished"></translation>
+        <translation>Filtrar:</translation>
     </message>
     <message>
         <location filename="shareriexdialog.ui" line="44"/>
         <source>All accounts</source>
-        <translation type="unfinished"></translation>
+        <translation>Todas cuentas</translation>
     </message>
     <message>
         <location filename="shareriexdialog.ui" line="53"/>
@@ -2803,12 +2806,12 @@
     <message>
         <location filename="shareriexdialog.ui" line="81"/>
         <source>If checked, the information about the groups of the selected contacts would also be sent along with the sharing request.</source>
-        <translation type="unfinished"></translation>
+        <translation>Si se selecciona, la información sobre los grupos de los contactos seleccionados también será enviada junto con la solicitud para compartir.</translation>
     </message>
     <message>
         <location filename="shareriexdialog.ui" line="84"/>
         <source>Share groups</source>
-        <translation type="unfinished"></translation>
+        <translation>Compartir grupos</translation>
     </message>
 </context>
 <context>
@@ -2896,12 +2899,12 @@
     <message>
         <location filename="dummy.cpp" line="21"/>
         <source>Custom theme for multiuser chats</source>
-        <translation type="unfinished"></translation>
+        <translation>Tema personalizado para las salas de charla</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="22"/>
         <source>MUC window style:</source>
-        <translation type="unfinished"></translation>
+        <translation>Estílo de la ventana de MUC:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="24"/>
@@ -2916,7 +2919,7 @@
     <message>
         <location filename="dummy.cpp" line="26"/>
         <source>Show statuses</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar los estados</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="27"/>
@@ -2936,7 +2939,7 @@
     <message>
         <location filename="dummy.cpp" line="30"/>
         <source>If this option is enabled, contacts would be grouped, otherwise, they will all appear in the same group.</source>
-        <translation type="unfinished"></translation>
+        <translation>Si esta opción está activada, los contactos se agrupan, de lo contrario, todos ellos aparecen en el mismo grupo.</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="31"/>
@@ -2946,17 +2949,17 @@
     <message>
         <location filename="dummy.cpp" line="32"/>
         <source>If this option is enabled, contacts are ordered by status and then by name. Otherwise, they are ordered by name only.</source>
-        <translation type="unfinished"></translation>
+        <translation>Si esta opción está activada, los contactos se agrupan por su estado y despues por su nombre, de lo contrario, se agrupan solo por el nombre.</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="33"/>
         <source>Distance between contacts in roster:</source>
-        <translation type="unfinished"></translation>
+        <translation>Distancia entre los contactos en la lista:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="34"/>
         <source> px</source>
-        <translation type="unfinished"></translation>
+        <translation>px</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="35"/>
@@ -2983,7 +2986,7 @@
     <message>
         <location filename="dummy.cpp" line="39"/>
         <source>Whether rich text body of the messages should be used, if available. This is a default value, and the behavior could be changed for each opened chat window.</source>
-        <translation type="unfinished"></translation>
+        <translation>El cuerpo de texto enriquecido de los mensajes será utilizado, si está disponible. Esto es un valor por defecto, y el comportamiento se puede cambiar para cada ventana de conversación abierta.</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="40"/>
@@ -3019,7 +3022,7 @@
     <message>
         <location filename="dummy.cpp" line="47"/>
         <source>Hide MUC participants in Whole CL mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Ocultar los participantes de salas de charla en el modo de Toda lista</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="48"/>
@@ -3160,7 +3163,7 @@
     <message>
         <location filename="dummy.cpp" line="76"/>
         <source>Show joins and leaves in MUCs</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar las entradas y salidas en las salas de charla</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="77"/>

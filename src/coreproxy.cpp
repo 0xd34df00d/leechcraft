@@ -128,4 +128,9 @@ namespace LeechCraft
 	{
 		return this;
 	}
+
+	void CoreProxy::RegisterSkinnable (QAction *act)
+	{
+		SkinEngine::Instance ().UpdateIconSet (QList<QAction*> () << act);
+	}
 }

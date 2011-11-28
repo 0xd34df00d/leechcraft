@@ -145,7 +145,7 @@
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="101"/>
         <source>Update password...</source>
-        <translation type="unfinished"></translation>
+        <translation>Actualizar la contraseña...</translation>
     </message>
     <message>
         <location filename="glooxaccountconfigurationwidget.ui" line="109"/>
@@ -494,7 +494,7 @@
     <message>
         <location filename="executecommanddialog.cpp" line="155"/>
         <source>Please wait while the selected command is executed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Por favor, espera mientras el comando seleccionado se realizará.</translation>
     </message>
     <message>
         <location filename="executecommanddialog.cpp" line="165"/>
@@ -522,7 +522,7 @@
     <message>
         <location filename="glooxaccount.cpp" line="449"/>
         <source>Why would you call yourself?</source>
-        <translation type="unfinished"></translation>
+        <translation>¿Por qué quería llamar a si mismo?</translation>
     </message>
     <message>
         <location filename="glooxaccount.cpp" line="613"/>
@@ -545,12 +545,12 @@
     <message>
         <location filename="glooxaccountconfigurationwidget.cpp" line="109"/>
         <source>Password update</source>
-        <translation type="unfinished"></translation>
+        <translation>Actualización de la contraseña</translation>
     </message>
     <message>
         <location filename="glooxaccountconfigurationwidget.cpp" line="110"/>
         <source>Enter new password:</source>
-        <translation type="unfinished"></translation>
+        <translation>Introduzca nueva contraseña:</translation>
     </message>
 </context>
 <context>
@@ -647,57 +647,57 @@
     <message>
         <location filename="jabbersearchsession.cpp" line="87"/>
         <source>(unknown)</source>
-        <translation type="unfinished"></translation>
+        <translation>(desconocido)</translation>
     </message>
     <message>
         <location filename="jabbersearchsession.cpp" line="145"/>
         <source>search service unavailable</source>
-        <translation type="unfinished"></translation>
+        <translation>Servicio de búsqueda no esta disponible</translation>
     </message>
     <message>
         <location filename="jabbersearchsession.cpp" line="148"/>
         <source>search feature not implemented</source>
-        <translation type="unfinished"></translation>
+        <translation>La función de búsqueda no se aplica</translation>
     </message>
     <message>
         <location filename="jabbersearchsession.cpp" line="151"/>
         <source>search is forbidden</source>
-        <translation type="unfinished"></translation>
+        <translation>la búsqueda esta prohibida</translation>
     </message>
     <message>
         <location filename="jabbersearchsession.cpp" line="154"/>
         <source>registration is required for performing search</source>
-        <translation type="unfinished"></translation>
+        <translation>es necesario registrarse para acabar la búsqueda</translation>
     </message>
     <message>
         <location filename="jabbersearchsession.cpp" line="157"/>
         <source>search not allowed</source>
-        <translation type="unfinished"></translation>
+        <translation>la búsqueda no esta permitida</translation>
     </message>
     <message>
         <location filename="jabbersearchsession.cpp" line="160"/>
         <source>search not authorized</source>
-        <translation type="unfinished"></translation>
+        <translation>la búsqueda no autorizada</translation>
     </message>
     <message>
         <location filename="jabbersearchsession.cpp" line="163"/>
         <source>too much search requests</source>
-        <translation type="unfinished"></translation>
+        <translation>Exceso de solicitudes de búsqueda</translation>
     </message>
     <message>
         <location filename="jabbersearchsession.cpp" line="166"/>
         <source>unknown condition %1</source>
-        <translation type="unfinished"></translation>
+        <translation>condición desconocida %1</translation>
     </message>
     <message>
         <location filename="jabbersearchsession.cpp" line="171"/>
         <source>Error searching on server %1: %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Error en buscar en el servidor %1: %2.</translation>
     </message>
     <message>
         <location filename="jabbersearchsession.cpp" line="176"/>
         <source>Original error text: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>El texto original del error: %1.</translation>
     </message>
 </context>
 <context>
@@ -720,22 +720,22 @@
     <message>
         <location filename="legacyformbuilder.cpp" line="67"/>
         <source>First name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre:</translation>
     </message>
     <message>
         <location filename="legacyformbuilder.cpp" line="69"/>
         <source>Last name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Apellido:</translation>
     </message>
     <message>
         <location filename="legacyformbuilder.cpp" line="71"/>
         <source>Nick:</source>
-        <translation type="unfinished">Apodo:</translation>
+        <translation>Apodo:</translation>
     </message>
     <message>
         <location filename="legacyformbuilder.cpp" line="73"/>
         <source>E-Mail:</source>
-        <translation type="unfinished"></translation>
+        <translation>Correo electrónico:</translation>
     </message>
 </context>
 <context>
@@ -1070,12 +1070,12 @@
     <message>
         <location filename="roomhandler.cpp" line="326"/>
         <source>remote server not found (try contacting your server&apos;s administrator)</source>
-        <translation type="unfinished"></translation>
+        <translation>El servidor remoto no se encuentra (prueba a contactar con vuestro administrador del servidor)</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="329"/>
         <source>timeout connecting to remote server (try contacting your server&apos;s administrator)</source>
-        <translation type="unfinished"></translation>
+        <translation>timeout en conexión al servidor remoto (prueba a contactar con vuestro administrador del servidor)</translation>
     </message>
     <message>
         <location filename="roomhandler.cpp" line="332"/>
@@ -1134,7 +1134,7 @@
     <message>
         <location filename="sdsession.cpp" line="125"/>
         <source>Execute...</source>
-        <translation type="unfinished"></translation>
+        <translation>Executar...</translation>
     </message>
     <message>
         <location filename="sdsession.cpp" line="199"/>

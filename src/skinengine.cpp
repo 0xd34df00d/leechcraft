@@ -102,13 +102,13 @@ void SkinEngine::UpdateIconSet (const QList<QAction*>& actions)
 	for (QList<QAction*>::const_iterator i = actions.begin (),
 			end = actions.end (); i != end; ++i)
 	{
+		if ((*i)->property ("WatchActionIconChange").toBool ())
+			(*i)->installEventFilter (this);
+
 		if (!(*i)->property ("ActionIcon").isValid ())
 			continue;
 
 		SetIcon (*i);
-
-		if ((*i)->property ("WatchActionIconChange").toBool ())
-			(*i)->installEventFilter (this);
 	}
 }
 
@@ -355,7 +355,7 @@ void SkinEngine::CollectDir (const QString& folder, const QString& iconSet)
 				if (!IconDirs_.size () || IconDirs_.contains (*j))
 					CollectSubdir (current, *j, *i);
 		}
-		else if (*i >= 16 && *i <= 32)
+		else if (*i >= 16 && *i <= 64)
 		{
 			QString number = QString::number (*i);
 			current.cd (number + 'x' + number);

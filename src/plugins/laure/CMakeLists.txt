@@ -54,11 +54,11 @@ INCLUDE_DIRECTORIES (
 	)
 
 SET (SRCS
+	separateplayer.cpp
 	playbackmodemenu.cpp
 	nowplayingdelegate.cpp
 	volumeslider.cpp
 	vlcwrapper.cpp
-	separateplayerwidget.cpp
 	playlistaddmenu.cpp
 	lastfmsubmitter.cpp
 	playlistview.cpp
@@ -71,11 +71,11 @@ SET (SRCS
 	laure.cpp
 	)
 SET (HEADERS
+	separateplayer.h
 	playbackmodemenu.h
 	nowplayingdelegate.h
 	volumeslider.h
 	vlcwrapper.h
-	separateplayerwidget.h
 	playlistaddmenu.h
 	lastfmsubmitter.h
 	playlistview.h
@@ -98,7 +98,14 @@ IF (NOT LC_NO_MOC)
 ENDIF (NOT LC_NO_MOC)
 QT4_WRAP_UI (FORMS_HEADERS ${FORMS})
 QT4_ADD_RESOURCES (RCCS ${RESOURCES})
+CreateTrVars ("laure" "en;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
 
+ADD_CUSTOM_COMMAND (OUTPUT
+	${COMPILED_TRANSLATIONS}
+	COMMAND "${QT_LRELEASE_EXECUTABLE}" ${TRANSLATIONS}
+	DEPENDS ${TRANSLATIONS}
+	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+	)
 ADD_LIBRARY (leechcraft_laure SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
@@ -116,6 +123,7 @@ TARGET_LINK_LIBRARIES (leechcraft_laure
 
 INSTALL (TARGETS leechcraft_laure DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES lauresettings.xml DESTINATION ${LC_SETTINGS_DEST})
+INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 
 SET (LAURE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 

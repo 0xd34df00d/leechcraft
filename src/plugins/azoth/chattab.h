@@ -111,6 +111,7 @@ namespace Azoth
 	public slots:
 		void prepareMessageText (const QString&);
 		void appendMessageText (const QString&);
+		void selectVariant (const QString&);
 		QTextEdit* getMsgEdit ();
 	private slots:
 		void clearAvailableNick ();
@@ -124,8 +125,10 @@ namespace Azoth
 		void handleRichTextToggled ();
 		void handleQuoteSelection ();
 		void handleSendFile ();
+#ifdef ENABLE_MEDIACALLS
 		void handleCallRequested ();
 		void handleCall (QObject*);
+#endif
 #ifdef ENABLE_CRYPT
 		void handleEnableEncryption ();
 		void handleEncryptionStateChanged (QObject*, bool);

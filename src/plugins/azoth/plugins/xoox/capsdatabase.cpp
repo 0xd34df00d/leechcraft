@@ -44,7 +44,7 @@ QDataStream& operator>> (QDataStream& in, QXmppDiscoveryIq::Identity& id)
 				<< version;
 		return in;
 	}
-	
+
 	QString category, language, name, type;
 	in >> category
 		>> language
@@ -54,7 +54,7 @@ QDataStream& operator>> (QDataStream& in, QXmppDiscoveryIq::Identity& id)
 	id.setLanguage (language);
 	id.setName (name);
 	id.setType (type);
-	
+
 	return in;
 }
 
@@ -72,83 +72,83 @@ namespace Xoox
 		qRegisterMetaTypeStreamOperators<QXmppDiscoveryIq::Identity> ("QXmppDiscoveryIq::Identity");
 		Load ();
 	}
-	
+
 	bool CapsDatabase::Contains (const QByteArray& hash) const
 	{
 		return Ver2Features_.contains (hash) &&
 				Ver2Identities_.contains (hash);
 	}
-	
+
 	QStringList CapsDatabase::Get (const QByteArray& hash) const
 	{
 		return Ver2Features_ [hash];
 	}
-	
+
 	void CapsDatabase::Set (const QByteArray& hash, const QStringList& features)
 	{
 		Ver2Features_ [hash] = features;
 		ScheduleSave ();
 	}
-	
+
 	QList<QXmppDiscoveryIq::Identity> CapsDatabase::GetIdentities (const QByteArray& hash) const
 	{
 		return Ver2Identities_ [hash];
 	}
-	
+
 	void CapsDatabase::SetIdentities (const QByteArray& hash,
 			const QList<QXmppDiscoveryIq::Identity>& ids)
 	{
 		Ver2Identities_ [hash] = ids;
 		ScheduleSave ();
 	}
-	
+
 	void CapsDatabase::save () const
 	{
 		QDir dir = Util::CreateIfNotExists ("azoth/xoox");
 		QFile file (dir.filePath ("caps_s.db"));
 		if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))
 		{
-			qWarning () << Q_FUNC_INFO	
+			qWarning () << Q_FUNC_INFO
 					<< "unable to open file"
 					<< file.fileName ()
 					<< "for writing:"
 					<< file.errorString ();
 			return;
 		}
-		
+
 		QDataStream stream (&file);
 		stream << static_cast<quint8> (2)
 				<< Ver2Features_
 				<< Ver2Identities_;
-				
+
 		SaveScheduled_ = false;
 	}
-	
+
 	void CapsDatabase::ScheduleSave ()
 	{
 		if (SaveScheduled_)
 			return;
-		
+
 		SaveScheduled_ = true;
-		QTimer::singleShot (1000,
+		QTimer::singleShot (10000,
 				this,
 				SLOT (save ()));
 	}
-	
+
 	void CapsDatabase::Load ()
 	{
 		QDir dir = Util::CreateIfNotExists ("azoth/xoox");
 		QFile file (dir.filePath ("caps_s.db"));
 		if (!file.open (QIODevice::ReadOnly))
 		{
-			qWarning () << Q_FUNC_INFO	
+			qWarning () << Q_FUNC_INFO
 					<< "unable to open file"
 					<< file.fileName ()
 					<< "for reading:"
 					<< file.errorString ();
 			return;
 		}
-		
+
 		QDataStream stream (&file);
 		quint8 ver = 0;
 		stream >> ver;

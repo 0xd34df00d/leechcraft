@@ -27,15 +27,41 @@ namespace LeechCraft
 	: QObject (parent)
 	{
 	}
-	
+
 	void MWProxy::AddDockWidget (Qt::DockWidgetArea area, QDockWidget *w)
 	{
 		Core::Instance ().GetReallyMainWindow ()->addDockWidget (area, w);
 		ToggleViewActionVisiblity (w, true);
 	}
-	
+
 	void MWProxy::ToggleViewActionVisiblity (QDockWidget *w, bool visible)
 	{
 		Core::Instance ().GetReallyMainWindow ()->ToggleViewActionVisiblity (w, visible);
+	}
+
+	void MWProxy::AddToolbar (QToolBar *bar, Qt::ToolBarArea area)
+	{
+		bar->setParent (Core::Instance ().GetReallyMainWindow ());
+		Core::Instance ().GetReallyMainWindow ()->addToolBar (area, bar);
+	}
+
+	void MWProxy::AddSideWidget (QWidget *w, WidgetArea area)
+	{
+		MainWindow *mw = Core::Instance ().GetReallyMainWindow ();
+		QHBoxLayout *lay = qobject_cast<QHBoxLayout*> (mw->centralWidget ()->layout ());
+
+		switch (area)
+		{
+		case WALeft:
+			lay->insertWidget (0, w, 0, Qt::AlignTop);
+			break;
+		case WARight:
+			lay->addWidget (w, 0, Qt::AlignTop);
+			break;
+		case WABottom:
+			qWarning () << Q_FUNC_INFO
+					<< "not implemented yet";
+			break;
+		}
 	}
 }

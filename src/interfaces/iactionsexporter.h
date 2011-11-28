@@ -32,6 +32,7 @@ namespace LeechCraft
 		AEPCommonContextMenu,
 		AEPQuickLaunch,
 		AEPTrayMenu,
+		AEPLCTray,
 		AEPMax = 100
 	};
 }
@@ -49,23 +50,35 @@ public:
 	 * Returns the list of actions that will be inserted into the Tools
 	 * menu.
 	 *
-	 * @return The list of actions.
+	 * @param[in] area The area where the actions should be placed.
+	 *
+	 * @return The list of actions for the given area.
 	 */
-	virtual QList<QAction*> GetActions (LeechCraft::ActionsEmbedPlace) const = 0;
-	
+	virtual QList<QAction*> GetActions (LeechCraft::ActionsEmbedPlace area) const = 0;
+
 	/** @brief Returns the actions to embed into the menu.
-	 * 
+	 *
 	 * For each string key found in the returned map, the corresponding
 	 * list of QActions would be added to the submenu under that name in
 	 * the main menu. That allows several different plugins to insert
 	 * actions into one menu easily.
-	 * 
+	 *
 	 * @return The map of menu name -> list of its actions.
 	 */
 	virtual QMap<QString, QList<QAction*> > GetMenuActions () const
 	{
 		return QMap<QString, QList<QAction*> > ();
 	}
+protected:
+	/** @brief Notifies about new actions for the given area.
+	 *
+	 * The sender of this signal remains the owner of actions, and it
+	 * may delete them at any given time.
+	 *
+	 * @param[out] actions The list of new actions for the given area.
+	 * @param[out] area The area where these actions should be placed.
+	 */
+	virtual void gotActions (QList<QAction*> actions, LeechCraft::ActionsEmbedPlace area) = 0;
 };
 
 Q_DECLARE_INTERFACE (IActionsExporter, "org.Deviant.LeechCraft.IActionsExporter/1.0");

@@ -452,6 +452,7 @@ namespace Azoth
 		Core::Instance ().GetTransferJobManager ()->HandleJob (job);
 	}
 
+#ifdef ENABLE_MEDIACALLS
 	void ChatTab::handleCallRequested ()
 	{
 		QObject *callObj = Core::Instance ().GetCallManager ()->
@@ -471,6 +472,7 @@ namespace Azoth
 		const int idx = Ui_.MainLayout_->indexOf (Ui_.View_);
 		Ui_.MainLayout_->insertWidget (idx, widget);
 	}
+#endif
 
 #ifdef ENABLE_CRYPT
 	void ChatTab::handleEnableEncryption ()
@@ -782,7 +784,8 @@ namespace Azoth
 		if (url.scheme () != "azoth")
 		{
 			Entity e = Util::MakeEntity (url,
-					QString (), static_cast<TaskParameter> (FromUserInitiated | OnlyHandle));
+					QString (),
+					static_cast<TaskParameter> (FromUserInitiated | OnlyHandle | ShouldQuerySource));
 			Core::Instance ().SendEntity (e);
 			return;
 		}
@@ -1010,6 +1013,7 @@ namespace Azoth
 
 		QAction *quoteSelection = new QAction (tr ("Quote selection"), this);
 		quoteSelection->setProperty ("ActionIcon", "quote");
+		quoteSelection->setShortcut (QString ("Ctrl+Q"));
 		connect (quoteSelection,
 				SIGNAL (triggered ()),
 				this,
@@ -1146,6 +1150,7 @@ namespace Azoth
 				handleFileOffered (object);
 		}
 
+#ifdef ENABLE_MEDIACALLS
 		if (qobject_cast<ISupportMediaCalls*> (accObj) &&
 				e->GetEntryType () == ICLEntry::ETChat)
 		{
@@ -1167,6 +1172,7 @@ namespace Azoth
 							GetCallsForEntry (EntryID_))
 				handleCall (object);
 		}
+#endif
 
 #ifdef ENABLE_CRYPT
 		if (qobject_cast<ISupportPGP*> (accObj))
@@ -1607,6 +1613,15 @@ namespace Azoth
 	void ChatTab::appendMessageText (const QString& text)
 	{
 		Ui_.MsgEdit_->setText (Ui_.MsgEdit_->toPlainText () + text);
+	}
+
+	void ChatTab::selectVariant (const QString& var)
+	{
+		const int idx = Ui_.VariantBox_->findText (var);
+		if (idx == -1)
+			return;
+
+		Ui_.VariantBox_->setCurrentIndex (idx);
 	}
 
 	QTextEdit* ChatTab::getMsgEdit ()

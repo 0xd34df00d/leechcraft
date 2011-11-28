@@ -77,7 +77,9 @@ namespace Xoox
 					   , public ISupportMood
 					   , public ISupportActivity
 					   , public ISupportGeolocation
+#ifdef ENABLE_MEDIACALLS
 					   , public ISupportMediaCalls
+#endif
 					   , public ISupportRIEX
 					   , public ISupportBookmarks
 #ifdef ENABLE_CRYPT
@@ -94,7 +96,9 @@ namespace Xoox
 				LeechCraft::Azoth::ISupportMood
 				LeechCraft::Azoth::ISupportActivity
 				LeechCraft::Azoth::ISupportGeolocation
+#ifdef ENABLE_MEDIACALLS
 				LeechCraft::Azoth::ISupportMediaCalls
+#endif
 				LeechCraft::Azoth::ISupportRIEX
 				LeechCraft::Azoth::ISupportBookmarks
 #ifdef ENABLE_CRYPT
@@ -174,9 +178,11 @@ namespace Xoox
 		void SetGeolocationInfo (const GeolocationInfo_t&);
 		GeolocationInfo_t GetUserGeolocationInfo (QObject*, const QString&) const;
 
+#ifdef ENABLE_MEDIACALLS
 		// ISupportMediaCalls
 		MediaCallFeatures GetMediaCallFeatures () const;
 		QObject* Call (const QString& id, const QString& variant);
+#endif
 
 		// ISupportRIEX
 		void SuggestItems (QList<RIEXItem>, QObject*, QString);
@@ -219,7 +225,9 @@ namespace Xoox
 		void feedClientPassword ();
 		void showPrivacyDialog ();
 		void handleDestroyClient ();
+#ifdef ENABLE_MEDIACALLS
 		void handleIncomingCall (QXmppCall*);
+#endif
 	signals:
 		void gotCLItems (const QList<QObject*>&);
 		void removedCLItems (const QList<QObject*>&);
@@ -242,7 +250,9 @@ namespace Xoox
 
 		void geolocationInfoChanged (const QString&, QObject*);
 
+#ifdef ENABLE_MEDIACALLS
 		void called (QObject*);
+#endif
 
 #ifdef ENABLE_CRYPT
 		void signatureVerified (QObject*, bool);

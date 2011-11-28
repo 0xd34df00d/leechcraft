@@ -62,6 +62,8 @@ namespace AdvancedNotifications
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
+
+		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 	};
 }
 }

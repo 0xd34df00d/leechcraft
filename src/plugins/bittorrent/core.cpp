@@ -262,13 +262,13 @@ namespace LeechCraft
 						SIGNAL (timeout ()),
 						this,
 						SLOT (checkFinished ()));
-				FinishedTimer_->start (100);
+				FinishedTimer_->start (2000);
 
 				connect (WarningWatchdog_.get (),
 						SIGNAL (timeout ()),
 						this,
 						SLOT (queryLibtorrentForWarnings ()));
-				WarningWatchdog_->start (100);
+				WarningWatchdog_->start (2000);
 
 				connect (ScrapeTimer_.get (),
 						SIGNAL (timeout ()),

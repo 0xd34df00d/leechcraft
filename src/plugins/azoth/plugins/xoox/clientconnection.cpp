@@ -94,7 +94,9 @@ namespace Xoox
 	, DeliveryReceiptsManager_ (new QXmppDeliveryReceiptsManager)
 	, CaptchaManager_ (new QXmppCaptchaManager)
 	, BobManager_ (new QXmppBobManager)
+#ifdef ENABLE_MEDIACALLS
 	, CallManager_ (new QXmppCallManager)
+#endif
 	, PubSubManager_ (new PubSubManager)
 	, PrivacyListsManager_ (new PrivacyListsManager)
 	, AdHocCommandManager_ (new AdHocCommandManager (this))
@@ -168,7 +170,9 @@ namespace Xoox
 		Client_->addExtension (CaptchaManager_);
 		Client_->addExtension (new LegacyEntityTimeExt);
 		Client_->addExtension (PrivacyListsManager_);
+#ifdef ENABLE_MEDIACALLS
 		Client_->addExtension (CallManager_);
+#endif
 		Client_->addExtension (LastActivityManager_);
 		Client_->addExtension (JabberSearchManager_);
 		Client_->addExtension (RIEXManager_);
@@ -445,10 +449,12 @@ namespace Xoox
 		return PrivacyListsManager_;
 	}
 
+#ifdef ENABLE_MEDIACALLS
 	QXmppCallManager* ClientConnection::GetCallManager () const
 	{
 		return CallManager_;
 	}
+#endif
 
 	AdHocCommandManager* ClientConnection::GetAdHocCommandManager () const
 	{
@@ -1222,7 +1228,7 @@ namespace Xoox
 		}
 
 		if (JoinQueue_.size ())
-			QTimer::singleShot (10000,
+			QTimer::singleShot (3000,
 					this,
 					SLOT (handleAutojoinQueue ()));
 	}
@@ -1237,11 +1243,13 @@ namespace Xoox
 		if (!qobject_cast<IProxyObject*> (proto->GetProxyObject ())->IsAutojoinAllowed ())
 			return;
 
-		QList<QObject*> entries;
-		Q_FOREACH (const JoinQueueItem& item, JoinQueue_)
-			entries << JoinRoom (item.RoomJID_, item.Nickname_);
-		emit gotRosterItems (entries);
-		JoinQueue_.clear ();
+		const JoinQueueItem& it = JoinQueue_.takeFirst ();
+		emit gotRosterItems (QList<QObject*> () << JoinRoom (it.RoomJID_, it.Nickname_));
+
+		if (!JoinQueue_.isEmpty ())
+			QTimer::singleShot (800,
+					this,
+					SLOT (handleAutojoinQueue ()));
 	}
 
 	void ClientConnection::handleDiscoInfo (const QXmppDiscoveryIq& iq)

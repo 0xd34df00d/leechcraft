@@ -60,8 +60,11 @@ namespace AdiumStyles
 		const QString& pack = PackProxyModel_->GetOrigName (srcPack);
 		const QString& prefix = pack + "/Contents/Resources/";
 
-		const QString& path = StylesLoader_->
-				GetPath (QStringList (prefix + "main.css"));
+		QString path = StylesLoader_->
+				GetPath (QStringList (prefix + "Header.html"));
+		if (path.isEmpty ())
+			path = StylesLoader_->
+					GetPath (QStringList (prefix + "main.css"));
 		if (path.isEmpty ())
 		{
 			qWarning () << Q_FUNC_INFO
@@ -96,7 +99,7 @@ namespace AdiumStyles
 		Util::QIODevice_ptr css = StylesLoader_->
 				Load (QStringList (prefix + "main.css"));
 
-		if (!header || !footer || !css)
+		if (!header)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "could not load HTML template for pack"
@@ -105,21 +108,23 @@ namespace AdiumStyles
 		}
 
 		if (!header->open (QIODevice::ReadOnly) ||
-				!footer->open (QIODevice::ReadOnly) ||
-				!css->open (QIODevice::ReadOnly))
+				(footer && !footer->open (QIODevice::ReadOnly)) ||
+				(css && !css->open (QIODevice::ReadOnly)))
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unable to open source files for"
 					<< pack
 					<< header->errorString ()
-					<< footer->errorString ()
-					<< css->errorString ();
+					<< (footer ? footer->errorString () : "empty footer")
+					<< (css ? css->errorString () : "empty css");
 			return QString ();
 		}
 
 		Frame2Pack_ [frame] = pack;
 
-		QString cssStr = QString::fromUtf8 (css->readAll ());
+		QString cssStr = css ?
+				QString::fromUtf8 (css->readAll ()) :
+				QString ();
 
 		QString varCssStr;
 		if (!varCss.isEmpty ())
@@ -140,7 +145,8 @@ namespace AdiumStyles
 		result += "</style><title></title></head><body>";
 		result += QString::fromUtf8 (header->readAll ());
 		result += "<div id=\"Chat\"><div id=\"insert\"></div></div>";
-		result += QString::fromUtf8 (footer->readAll ());
+		if (footer)
+			result += QString::fromUtf8 (footer->readAll ());
 		result += "</body></html>";
 
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
