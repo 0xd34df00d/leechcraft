@@ -18,6 +18,14 @@
 
 #include "tabsessmanager.h"
 #include <QIcon>
+#include <QTimer>
+#include <QSettings>
+#include <QCoreApplication>
+#include <QtDebug>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/ihaverecoverabletabs.h>
+#include <interfaces/ihavetabs.h>
 
 namespace LeechCraft
 {
@@ -25,10 +33,23 @@ namespace TabSessManager
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Proxy_ = proxy;
+		IsRecovering_ = true;
+
+		const auto& roots = Proxy_->GetPluginsManager ()->
+				GetAllCastableRoots<IHaveRecoverableTabs*> ();
+		Q_FOREACH (QObject *root, roots)
+			connect (root,
+					SIGNAL (addNewTab (const QString&, QWidget*)),
+					this,
+					SLOT (handleNewTab (const QString&, QWidget*)));
 	}
 
 	void Plugin::SecondInit ()
 	{
+		QTimer::singleShot (5000,
+				this,
+				SLOT (recover ()));
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -54,8 +75,128 @@ namespace TabSessManager
 	{
 		return QIcon ();
 	}
+
+	void Plugin::handleNewTab (const QString&, QWidget *widget)
+	{
+		auto tab = qobject_cast<IRecoverableTab*> (widget);
+		if (!tab)
+			return;
+
+		Tabs_ << widget;
+
+		connect (widget,
+				SIGNAL (tabRecoverDataChanged ()),
+				this,
+				SLOT (handleTabRecoverDataChanged ()));
+		connect (widget,
+				SIGNAL (destroyed (QObject*)),
+				this,
+				SLOT (handleTabDestroyed ()));
+
+		if (!tab->GetTabRecoverData ().isEmpty ())
+			handleTabRecoverDataChanged ();
+	}
+
+	void Plugin::handleTabDestroyed ()
+	{
+		Tabs_.remove (sender ());
+
+		handleTabRecoverDataChanged ();
+	}
+
+	void Plugin::recover ()
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_TabSessManager");
+
+		QDataStream str (settings.value ("Data").toByteArray ());
+
+		struct RecInfo
+		{
+			QByteArray Data_;
+			QString Name_;
+			QIcon Icon_;
+		};
+
+		QHash<QByteArray, QObject*> pluginCache;
+		QHash<QObject*, QList<RecInfo>> tabs;
+		while (!str.atEnd ())
+		{
+			QByteArray pluginId;
+			QByteArray recData;
+			QString name;
+			QIcon icon;
+
+			str >> pluginId >> recData >> name >> icon;
+			if (!pluginCache.contains (pluginId))
+			{
+				QObject *obj = Proxy_->GetPluginsManager ()->
+						GetPluginByID (pluginId);
+				pluginCache [pluginId] = obj;
+			}
+
+			QObject *plugin = pluginCache [pluginId];
+			tabs [plugin] << RecInfo { recData, name, icon };
+
+			qDebug () << "got restore data for" << pluginId << name << plugin;
+		}
+
+		Q_FOREACH (QObject *plugin, tabs.keys ())
+		{
+			auto ihrt = qobject_cast<IHaveRecoverableTabs*> (plugin);
+			if (!ihrt)
+				continue;
+
+			QList<QByteArray> datas;
+			const auto& infos = tabs [plugin];
+			std::transform (infos.begin (), infos.end (), std::back_inserter (datas),
+					[] (const RecInfo& rec) { return rec.Data_; });
+			qDebug () << "recovering" << plugin << infos.size ();
+			ihrt->RecoverTabs (datas);
+		}
+
+		IsRecovering_ = false;
+	}
+
+	void Plugin::handleTabRecoverDataChanged ()
+	{
+		qDebug () << Q_FUNC_INFO << IsRecovering_ << Proxy_->IsShuttingDown ();
+		if (IsRecovering_ || Proxy_->IsShuttingDown ())
+			return;
+
+		qDebug () << "saving restore data";
+
+		QByteArray result;
+
+		QDataStream str (&result, QIODevice::WriteOnly);
+		Q_FOREACH (auto tab, Tabs_)
+		{
+			ITabWidget *tw = qobject_cast<ITabWidget*> (tab);
+			if (!tw)
+				continue;
+
+			IInfo *plugin = qobject_cast<IInfo*> (tw->ParentMultiTabs ());
+			if (!plugin)
+				continue;
+
+			auto rec = qobject_cast<IRecoverableTab*> (tab);
+			const auto& data = rec->GetTabRecoverData ();
+			if (data.isEmpty ())
+				continue;
+
+			str << plugin->GetUniqueID ()
+					<< data
+					<< rec->GetTabRecoverName ()
+					<< rec->GetTabRecoverIcon ();
+
+			qDebug () << "appended data for" << plugin->GetUniqueID () << rec->GetTabRecoverName ();
+		}
+
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_TabSessManager");
+		settings.setValue ("Data", result);
+	}
 }
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_tabsessmanager, LeechCraft::TabSessManager::Plugin);
-

@@ -21,6 +21,8 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 
+class IRecoverableTab;
+
 namespace LeechCraft
 {
 namespace TabSessManager
@@ -30,6 +32,10 @@ namespace TabSessManager
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo)
+
+		ICoreProxy_ptr Proxy_;
+		QSet<QObject*> Tabs_;
+		bool IsRecovering_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -38,6 +44,11 @@ namespace TabSessManager
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+	private slots:
+		void handleNewTab (const QString&, QWidget*);
+		void handleTabDestroyed ();
+		void recover ();
+		void handleTabRecoverDataChanged ();
 	};
 }
 }
