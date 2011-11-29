@@ -161,7 +161,9 @@ namespace OnlineBookmarks
 		emit accountRemoved (Item2Account_ [item]->GetObject ());
 
 		AccountsModel_->removeRow (current.row (), parentIndex);
+		Id2Account_.remove (Item2Account_ [item]->GetAccountID ());
 		Item2Account_.remove (item);
+
 		if (!AccountsModel_->rowCount (parentIndex))
 		{
 			Item2Service_.remove (AccountsModel_->itemFromIndex (parentIndex));
