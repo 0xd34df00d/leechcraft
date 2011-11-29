@@ -44,7 +44,6 @@ SET (SRCS
 	favoritesdelegate.cpp
 	favoritestreeview.cpp
 	customwebpage.cpp
-	restoresessiondialog.cpp
 	historymodel.cpp
 	storagebackend.cpp
 	sqlstoragebackend.cpp
@@ -93,7 +92,6 @@ SET (HEADERS
 	favoritesdelegate.h
 	favoritestreeview.h
 	customwebpage.h
-	restoresessiondialog.h
 	historymodel.h
 	storagebackend.h
 	sqlstoragebackend.h
@@ -134,7 +132,6 @@ SET (HEADERS
 SET (FORMS
 	browserwidget.ui
 	addtofavoritesdialog.ui
-	restoresessiondialog.ui
 	finddialog.ui
 	screenshotsavedialog.ui
 	cookieseditdialog.ui

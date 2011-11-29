@@ -51,7 +51,6 @@
 #include "customwebview.h"
 #include "addtofavoritesdialog.h"
 #include "xmlsettingsmanager.h"
-#include "restoresessiondialog.h"
 #include "sqlstoragebackend.h"
 #include "xbelparser.h"
 #include "xbelgenerator.h"
