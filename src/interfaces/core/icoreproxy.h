@@ -18,8 +18,7 @@
 
 #ifndef INTERFACES_CORE_ICOREPROXY_H
 #define INTERFACES_CORE_ICOREPROXY_H
-#include <boost/function.hpp>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QtNetwork/QNetworkAccessManager>
 #include <QTabBar>
 
@@ -188,7 +187,7 @@ public:
 	virtual void RegisterSkinnable (QAction *action) = 0;
 };
 
-typedef boost::shared_ptr<ICoreProxy> ICoreProxy_ptr;
+typedef std::shared_ptr<ICoreProxy> ICoreProxy_ptr;
 
 Q_DECLARE_INTERFACE (ICoreProxy, "org.Deviant.LeechCraft.ICoreProxy/1.0");
 

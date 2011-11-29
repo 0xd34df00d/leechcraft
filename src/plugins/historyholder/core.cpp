@@ -18,6 +18,7 @@
 
 #include "core.h"
 #include <typeinfo>
+#include <stdexcept>
 #include <QUrl>
 #include <QSettings>
 #include <QTextCodec>

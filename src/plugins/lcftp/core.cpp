@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "core.h"
+#include <stdexcept>
 #include <QUrl>
 #include <QMutexLocker>
 #include <QFileInfo>

@@ -36,7 +36,7 @@ namespace LeechCraft
 				Q_OBJECT
 				Q_INTERFACES (IInfo)
 
-				std::auto_ptr<QTranslator> Translator_;
+				std::unique_ptr<QTranslator> Translator_;
 			public:
 				void Init (ICoreProxy_ptr);
 				void SecondInit ();

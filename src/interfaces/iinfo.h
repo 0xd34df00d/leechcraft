@@ -18,14 +18,14 @@
 
 #ifndef INTERFACES_IINFO_H
 #define INTERFACES_IINFO_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QString>
 #include <QStringList>
 #include <QtPlugin>
 #include "structures.h"
 
 class ICoreProxy;
-typedef boost::shared_ptr<ICoreProxy> ICoreProxy_ptr;
+typedef std::shared_ptr<ICoreProxy> ICoreProxy_ptr;
 
 /** @brief Required interface for every plugin.
  *
