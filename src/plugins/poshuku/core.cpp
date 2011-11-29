@@ -89,20 +89,6 @@ namespace Poshuku
 		TabClass_.Priority_ = 80;
 		TabClass_.Features_ = TFOpenableByRequest;
 
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Poshuku");
-		int size = settings.beginReadArray ("Saved session");
-		if (size)
-			for (int i = 0; i < size; ++i)
-			{
-				settings.setArrayIndex (i);
-				QString title = settings.value ("Title").toString ();
-				QString url = settings.value ("URL").toString ();
-				SavedSessionState_ << QPair<QString, QString> (title, url);
-				SavedSessionSettings_ << settings.value ("Settings").value<BrowserWidgetSettings> ();
-			}
-		settings.endArray ();
-
 		PluginManager_.reset (new PluginManager (this));
 		PluginManager_->RegisterHookable (this);
 
@@ -203,7 +189,6 @@ namespace Poshuku
 
 	void Core::Release ()
 	{
-		saveSession ();
 		IsShuttingDown_ = true;
 		while (Widgets_.begin () != Widgets_.end ())
 			delete *Widgets_.begin ();
@@ -431,10 +416,6 @@ namespace Poshuku
 				SIGNAL (tooltipChanged (QWidget*)),
 				this,
 				SLOT (handleTooltipChanged (QWidget*)));
-		connect (widget,
-				SIGNAL (invalidateSettings ()),
-				this,
-				SLOT (saveSingleSession ()));
 		connect (widget,
 				SIGNAL (raiseTab (QWidget*)),
 				this,
@@ -751,61 +732,6 @@ namespace Poshuku
 		}
 
 		Widgets_.erase (pos);
-
-		saveSession ();
-	}
-
-	void Core::RestoreSession (bool ask)
-	{
-		if (!SavedSessionState_.size ()) ;
-		else if (ask)
-		{
-			std::auto_ptr<RestoreSessionDialog> dia (new RestoreSessionDialog (Core::Instance ().GetProxy ()->GetMainWindow ()));
-			bool added = false;
-			for (int i = 0; i < SavedSessionState_.size (); ++i)
-			{
-				QPair<QString, QString> pair = SavedSessionState_.at (i);
-				QString title = pair.first;
-				QString url = pair.second;
-				if (url.isEmpty ())
-					continue;
-				dia->AddPair (title, url);
-				added = true;
-			}
-
-			if (added &&
-					dia->exec () == QDialog::Accepted)
-			{
-				RestoredURLs_ = dia->GetSelectedURLs ();
-				QTimer::singleShot (2000, this, SLOT (restorePages ()));
-			}
-			else
-				saveSession ();
-		}
-		else
-		{
-			for (int i = 0; i < SavedSessionState_.size (); ++i)
-			{
-				QString url = SavedSessionState_.at (i).second;
-				if (url.isEmpty ())
-					continue;
-				RestoredURLs_ << i;
-			}
-			QTimer::singleShot (2000, this, SLOT (restorePages ()));
-		}
-
-		QList<QUrl> toRestore;
-		Q_FOREACH (int idx, RestoredURLs_)
-			toRestore << SavedSessionState_ [idx].second;
-
-		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-		emit hookSessionRestoreScheduled (proxy,
-				toRestore);
-		if (proxy->IsCancelled ())
-		{
-			RestoredURLs_.clear ();
-			SavedSessionState_.clear ();
-		}
 	}
 
 	void Core::HandleHistory (CustomWebView *view)
@@ -951,15 +877,11 @@ namespace Poshuku
 	void Core::handleTitleChanged (const QString& newTitle)
 	{
 		emit changeTabName (dynamic_cast<QWidget*> (sender ()), newTitle);
-
-		saveSingleSession ();
 	}
 
 	void Core::handleURLChanged (const QString&)
 	{
 		HandleHistory (dynamic_cast<BrowserWidget*> (sender ())->GetView ());
-
-		saveSingleSession ();
 	}
 
 	void Core::handleIconChanged (const QIcon& newIcon)
@@ -973,8 +895,6 @@ namespace Poshuku
 		emit removeTab (w);
 
 		w->deleteLater ();
-
-		saveSession ();
 	}
 
 	void Core::handleAddToFavorites (QString title, QString url)
@@ -1029,98 +949,6 @@ namespace Poshuku
 	void Core::favoriteTagsUpdated (const QStringList& tags)
 	{
 		XmlSettingsManager::Instance ()->setProperty ("FavoriteTags", tags);
-	}
-
-	void Core::saveSession ()
-	{
-		if (IsShuttingDown_ || !Initialized_)
-			return;
-
-		QList<QString> titles;
-		QList<QString> urls;
-		QList<BrowserWidgetSettings> bwsettings;
-		for (widgets_t::const_iterator i = Widgets_.begin (),
-				end = Widgets_.end (); i != end; ++i)
-		{
-			titles << (*i)->GetView ()->title ();
-			urls << (*i)->GetView ()->url ().toString ();
-			bwsettings << (*i)->GetWidgetSettings ();
-		}
-
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Poshuku");
-		settings.beginWriteArray ("Saved session");
-		settings.remove ("");
-		for (int i = 0; i < titles.size (); ++i)
-		{
-			settings.setArrayIndex (i);
-			settings.setValue ("Title", titles.at (i));
-			settings.setValue ("URL", urls.at (i));
-			settings.setValue ("Settings", QVariant::fromValue<BrowserWidgetSettings> (bwsettings.at (i)));
-		}
-		settings.endArray ();
-		settings.sync ();
-	}
-
-	void Core::saveSingleSession ()
-	{
-		BrowserWidget *source = qobject_cast<BrowserWidget*> (sender ());
-		if (!source)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "sender is not a BrowserWidget*"
-				<< sender ();
-			return;
-		}
-
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Poshuku");
-		settings.beginWriteArray ("Saved session");
-		for (int i = 0, size = Widgets_.size (); i < size; ++i)
-			if (Widgets_.at (i) == source)
-			{
-				settings.setArrayIndex (i);
-				settings.setValue ("Title", source->GetView ()->title ());
-				settings.setValue ("URL", source->GetView ()->url ().toString ());
-				settings.setValue ("Settings",
-						QVariant::fromValue<BrowserWidgetSettings> (source->GetWidgetSettings ()));
-				break;
-			}
-
-		// It looks like QSettings determines array size by last used index
-		// no matter what was passed to QSettings::beginWriteArray (). Forcing correct size
-		settings.setArrayIndex (Widgets_.size () - 1);
-		settings.endArray ();
-		settings.sync ();
-	}
-
-	void Core::restorePages ()
-	{
-		for (QList<int>::const_iterator i = RestoredURLs_.begin (),
-				end = RestoredURLs_.end (); i != end; ++i)
-		{
-			int idx = *i;
-			NewURL (SavedSessionState_.at (idx).second)->
-				SetWidgetSettings (SavedSessionSettings_.at (idx));
-		}
-
-		SavedSessionState_.clear ();
-		SavedSessionSettings_.clear ();
-
-		saveSession ();
-	}
-
-	void Core::postConstruct ()
-	{
-		bool cleanShutdown = XmlSettingsManager::Instance ()->
-			Property ("CleanShutdown", true).toBool ();
-		XmlSettingsManager::Instance ()->setProperty ("CleanShutdown", false);
-
-		if (!cleanShutdown)
-			RestoreSession (true);
-		else if (XmlSettingsManager::Instance ()->
-				property ("RestorePreviousSession").toBool ())
-			RestoreSession (false);
 	}
 }
 }

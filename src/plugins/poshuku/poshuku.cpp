@@ -355,6 +355,12 @@ namespace Poshuku
 		return result;
 	}
 
+	void Poshuku::RecoverTabs (const QList<QByteArray>& datas)
+	{
+		Q_FOREACH (const QByteArray& data, datas)
+			Core::Instance ().NewURL (QUrl ())->SetTabRecoverData (data);
+	}
+
 	void Poshuku::InitConnections ()
 	{
 		connect (XmlSettingsDialog_.get (),

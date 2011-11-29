@@ -31,6 +31,7 @@
 #include <interfaces/ientityhandler.h>
 #include <interfaces/ihaveshortcuts.h>
 #include <interfaces/ihavediaginfo.h>
+#include <interfaces/ihaverecoverabletabs.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "browserwidget.h"
 
@@ -50,6 +51,7 @@ namespace Poshuku
 					, public IHaveDiagInfo
 					, public IWebBrowser
 					, public IActionsExporter
+					, public IHaveRecoverableTabs
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo
@@ -60,7 +62,8 @@ namespace Poshuku
 				IWebBrowser
 				IHaveShortcuts
 				IHaveDiagInfo
-				IActionsExporter)
+				IActionsExporter
+				IHaveRecoverableTabs)
 
 		QMenu *ToolMenu_;
 		QAction *ImportXbel_;
@@ -105,6 +108,8 @@ namespace Poshuku
 		QString GetDiagInfoString () const;
 
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
+
+		void RecoverTabs (const QList<QByteArray>&);
 	private:
 		void InitConnections ();
 		void RegisterSettings ();
@@ -131,6 +136,8 @@ namespace Poshuku
 		void couldHandle (const LeechCraft::Entity&, bool*);
 
 		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
+
+		void tabRecovered (const QByteArray&, QWidget*);
 	};
 }
 }

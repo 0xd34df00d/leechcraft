@@ -26,6 +26,7 @@
 #include <interfaces/iwebbrowser.h>
 #include <interfaces/ihaveshortcuts.h>
 #include <interfaces/structures.h>
+#include <interfaces/ihaverecoverabletabs.h>
 #include <interfaces/core/ihookproxy.h>
 #include "interfaces/ibrowserwidget.h"
 #include "ui_browserwidget.h"
@@ -49,9 +50,10 @@ namespace Poshuku
 						, public IBrowserWidget
 						, public IWebWidget
 						, public ITabWidget
+						, public IRecoverableTab
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Poshuku::IBrowserWidget IWebWidget ITabWidget)
+		Q_INTERFACES (LeechCraft::Poshuku::IBrowserWidget IWebWidget ITabWidget IRecoverableTab)
 
 		Ui::BrowserWidget Ui_;
 
@@ -133,6 +135,11 @@ namespace Poshuku
 		QObject* ParentMultiTabs ();
 		TabClassInfo GetTabClassInfo () const;
 
+		void SetTabRecoverData (const QByteArray&);
+		QByteArray GetTabRecoverData () const;
+		QString GetTabRecoverName () const;
+		QIcon GetTabRecoverIcon () const;
+
 		void SetOnLoadScrollPoint (const QPoint&);
 	private:
 		void PrintImpl (bool, QWebFrame*);
@@ -189,8 +196,8 @@ namespace Poshuku
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 		void couldHandle (const LeechCraft::Entity&, bool*);
-		void invalidateSettings ();
 		void raiseTab (QWidget*);
+		void tabRecoverDataChanged ();
 
 		// Hook support
 		void hookFindText (LeechCraft::IHookProxy_ptr proxy,

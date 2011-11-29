@@ -131,7 +131,11 @@ namespace Poshuku
 		connect (WebView_,
 				SIGNAL (invalidateSettings ()),
 				this,
-				SIGNAL (invalidateSettings ()));
+				SIGNAL (tabRecoverDataChanged ()));
+		connect (WebView_,
+				SIGNAL (urlChanged (QUrl)),
+				this,
+				SIGNAL (tabRecoverDataChanged ()));
 
 		connect (ReloadTimer_,
 				SIGNAL (timeout ()),
@@ -344,7 +348,7 @@ namespace Poshuku
 		connect (NotifyWhenFinished_,
 				SIGNAL (triggered ()),
 				this,
-				SIGNAL (invalidateSettings ()));
+				SIGNAL (tabRecoverDataChanged ()));
 		connect (WebView_,
 				SIGNAL (addToFavorites (const QString&, const QString&)),
 				this,
@@ -832,6 +836,43 @@ namespace Poshuku
 		return Core::Instance ().GetTabClass ();
 	}
 
+	void BrowserWidget::SetTabRecoverData (const QByteArray& data)
+	{
+		QUrl url;
+		BrowserWidgetSettings settings;
+
+		QDataStream str (data);
+		str >> url
+			>> settings;
+
+		qDebug () << Q_FUNC_INFO << url;
+		qDebug () << data;
+
+		SetURL (url);
+		SetWidgetSettings (settings);
+	}
+
+	QByteArray BrowserWidget::GetTabRecoverData () const
+	{
+		QByteArray result;
+		QDataStream str (&result, QIODevice::WriteOnly);
+		str << WebView_->url ();
+		str << GetWidgetSettings ();
+		qDebug () << Q_FUNC_INFO << WebView_->url ();
+		qDebug () << result;
+		return result;
+	}
+
+	QString BrowserWidget::GetTabRecoverName () const
+	{
+		return WebView_->title ();
+	}
+
+	QIcon BrowserWidget::GetTabRecoverIcon () const
+	{
+		return WebView_->icon ();
+	}
+
 	void BrowserWidget::SetOnLoadScrollPoint (const QPoint& sp)
 	{
 		OnLoadPos_ = sp;
@@ -990,7 +1031,7 @@ namespace Poshuku
 			ReloadTimer_->stop ();
 		}
 
-		emit invalidateSettings ();
+		emit tabRecoverDataChanged ();
 	}
 
 	void BrowserWidget::handleAdd2Favorites ()
