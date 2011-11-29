@@ -21,12 +21,17 @@
 #include <QList>
 #include <QByteArray>
 
+class QWidget;
+class QIcon;
+
 class IRecoverableTab
 {
 public:
 	virtual ~IRecoverableTab () {}
 
 	virtual QByteArray GetTabRecoverData () const = 0;
+	virtual QString GetTabRecoverName () const = 0;
+	virtual QIcon GetTabRecoverIcon () const = 0;
 protected:
 	virtual void tabRecoverDataChanged () = 0;
 };
@@ -37,6 +42,8 @@ public:
 	virtual ~IHaveRecoverableTabs () {}
 
 	virtual void RecoverTabs (const QList<QByteArray>&) = 0;
+protected:
+	virtual void tabRecovered (const QByteArray&, QWidget*) = 0;
 };
 
 Q_DECLARE_INTERFACE (IRecoverableTab, "org.Deviant.LeechCraft.IRecoverableTab/1.0");
