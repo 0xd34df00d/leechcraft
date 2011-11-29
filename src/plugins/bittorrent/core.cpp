@@ -662,14 +662,14 @@ namespace LeechCraft
 				return true;
 			}
 
-			std::auto_ptr<TorrentInfo> Core::GetTorrentStats () const
+			std::unique_ptr<TorrentInfo> Core::GetTorrentStats () const
 			{
 				if (!CheckValidity (CurrentTorrent_))
 					throw std::runtime_error ("Invalid torrent for stats");
 
 				const libtorrent::torrent_handle& handle = Handles_.at (CurrentTorrent_).Handle_;
 
-				std::auto_ptr<TorrentInfo> result (new TorrentInfo);
+				std::unique_ptr<TorrentInfo> result (new TorrentInfo);
 				result->Info_.reset (new libtorrent::torrent_info (handle.get_torrent_info ()));
 				result->Status_ = handle.status ();
 				result->Destination_ = QString::fromUtf8 (handle.save_path ().directory_string ().c_str ());

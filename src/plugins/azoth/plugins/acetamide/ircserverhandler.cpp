@@ -247,7 +247,7 @@ namespace Acetamide
 		IrcParser_->JoinCommand (cmd.join (" "));
 	}
 
-	void IrcServerHandler::JoinParticipant (const QString& nick, 
+	void IrcServerHandler::JoinParticipant (const QString& nick,
 			const QString& msg)
 	{
 		QString channelID = (msg + "@" + ServerOptions_.ServerName_).toLower ();
@@ -303,7 +303,7 @@ namespace Acetamide
 			IrcParser_->PrivMsgCommand (cmd);
 	}
 
-	void IrcServerHandler::IncomingMessage (const QString& nick, 
+	void IrcServerHandler::IncomingMessage (const QString& nick,
 			const QString& target, const QString& msg)
 	{
 		const QString channelID = target + "@" + ServerOptions_.ServerName_;
@@ -350,7 +350,7 @@ namespace Acetamide
 		}
 	}
 
-	void IrcServerHandler::ChangeNickname (const QString& nick, 
+	void IrcServerHandler::ChangeNickname (const QString& nick,
 			const QString& msg)
 	{
 		if (!IsParticipantExists (nick))
@@ -464,7 +464,7 @@ namespace Acetamide
 		IrcParser_->PongCommand (QStringList () << msg);
 	}
 
-	void IrcServerHandler::GotTopic (const QString& channel, 
+	void IrcServerHandler::GotTopic (const QString& channel,
 			const QString& message)
 	{
 		QString channelId = (channel + "@" + ServerOptions_.ServerName_).toLower ();
@@ -476,7 +476,7 @@ namespace Acetamide
 	}
 
 	void IrcServerHandler::KickUserFromChannel (const QString& nick,
-			const QString& channel, const QString& target, 
+			const QString& channel, const QString& target,
 			const QString& msg)
 	{
 		QString channelID = (channel + "@" + ServerOptions_.ServerName_).toLower ();
@@ -485,16 +485,15 @@ namespace Acetamide
 			ChannelHandlers_ [channelID]->KickParticipant (target, msg, nick);
 	}
 
-	void IrcServerHandler::GotInvitation (const QString& nick, 
+	void IrcServerHandler::GotInvitation (const QString& nick,
 			const QString& msg)
 	{
 		if (IsInviteDialogActive_)
 			InviteChannelsDialog_->AddInvitation (msg, nick);
 		else
 		{
-			std::auto_ptr<InviteChannelsDialog> dic (new InviteChannelsDialog (msg, nick));
 			IsInviteDialogActive_ = true;
-			InviteChannelsDialog_ = dic;
+			InviteChannelsDialog_.reset (new InviteChannelsDialog (msg, nick));
 			InviteChannelsDialog_->setModal (true);
 
 			connect (InviteChannelsDialog_.get (),
@@ -513,7 +512,7 @@ namespace Acetamide
 							IMessage::MSTOther);
 		else
 			ServerCLEntry_->HandleMessage (CreateMessage (IMessage::MTEventMessage,
-					ServerID_, 
+					ServerID_,
 					msg));
 	}
 
@@ -536,11 +535,11 @@ namespace Acetamide
 					IMessage::MSTOther);
 	}
 
-	void IrcServerHandler::GotNames (const QString& channel, 
+	void IrcServerHandler::GotNames (const QString& channel,
 			const QStringList& participants)
 	{
 		const QString channelID = (channel + "@" + ServerOptions_.ServerName_).toLower ();
-		if (IsChannelExists (channelID) && 
+		if (IsChannelExists (channelID) &&
 				!ChannelHandlers_ [channelID]->IsRosterReceived ())
 			Q_FOREACH (const QString& nick, participants)
 				ChannelHandlers_ [channelID]->SetChannelUser (nick);
@@ -549,12 +548,12 @@ namespace Acetamide
 	void IrcServerHandler::GotEndOfNames (const QString& channel)
 	{
 		const QString channelID = (channel + "@" + ServerOptions_.ServerName_).toLower ();
-		if (IsChannelExists (channelID) && 
+		if (IsChannelExists (channelID) &&
 				!ChannelHandlers_ [channelID]->IsRosterReceived ())
 			ChannelHandlers_ [channelID]->SetRosterReceived (true);
 	}
 
-	void IrcServerHandler::ShowUserHost (const QString& nick, 
+	void IrcServerHandler::ShowUserHost (const QString& nick,
 			const QString& host)
 	{
 		ShowAnswer (nick + tr (" is a ") + host);
@@ -628,7 +627,7 @@ namespace Acetamide
 		ShowAnswer (msg);
 	}
 
-	void IrcServerHandler::ShowBanList (const QString& channel, 
+	void IrcServerHandler::ShowBanList (const QString& channel,
 			const QString& mask, const QString& nick, const QDateTime& time)
 	{
 		const QString channelId = (channel + "@" + ServerOptions_.ServerName_).toLower ();
@@ -643,7 +642,7 @@ namespace Acetamide
 		ShowAnswer (msg);
 	}
 
-	void IrcServerHandler::ShowExceptList (const QString& channel, 
+	void IrcServerHandler::ShowExceptList (const QString& channel,
 			const QString& mask, const QString& nick, const QDateTime& time)
 	{
 		const QString channelId = (channel + "@" + ServerOptions_.ServerName_).toLower ();
@@ -658,13 +657,13 @@ namespace Acetamide
 		ShowAnswer (msg);
 	}
 
-	void IrcServerHandler::ShowInviteList (const QString& channel, 
+	void IrcServerHandler::ShowInviteList (const QString& channel,
 			const QString& mask, const QString& nick, const QDateTime& time)
 	{
 		const QString channelId = (channel + "@" + ServerOptions_.ServerName_).toLower ();
 		if (!IsChannelExists (channelId))
 			return;
-		
+
 		ChannelHandlers_ [channelId]->SetInviteListItem (mask, nick, time);
 	}
 
@@ -864,8 +863,8 @@ namespace Acetamide
 				NickCmdError ();
 			}
 		}
-		else 
-			ServerResponceManager_->DoAction (cmd, 
+		else
+			ServerResponceManager_->DoAction (cmd,
 					IrcParser_->GetIrcMessageOptions ().Nick_,
 					IrcParser_->GetIrcMessageOptions ().Parameters_,
 					IrcParser_->GetIrcMessageOptions ().Message_);
@@ -896,7 +895,7 @@ namespace Acetamide
 				(channel + "@" + ServerOptions_.ServerName_).toLower ());
 	}
 
-	void IrcServerHandler::ParseChanMode (const QString& channel, 
+	void IrcServerHandler::ParseChanMode (const QString& channel,
 			const QString& mode, const QString& value)
 	{
 		if (mode.isEmpty ())
@@ -979,7 +978,7 @@ namespace Acetamide
 		}
 	}
 
-	void IrcServerHandler::ParseUserMode (const QString& nick, 
+	void IrcServerHandler::ParseUserMode (const QString& nick,
 			const QString& mode)
 	{
 		Q_UNUSED (nick);

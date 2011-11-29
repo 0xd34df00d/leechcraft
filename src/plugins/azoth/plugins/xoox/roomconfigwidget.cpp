@@ -61,7 +61,7 @@ namespace Xoox
 		RoomHandler_->requestConfiguration ();
 		RoomHandler_->requestPermissions ();
 	}
-	
+
 	QMap<QXmppMucItem::Affiliation, QStandardItem*> RoomConfigWidget::InitModel () const
 	{
 		PermsModel_->clear ();
@@ -82,7 +82,7 @@ namespace Xoox
 		}
 		return aff2cat;
 	}
-	
+
 	void RoomConfigWidget::SendItem (const QXmppMucItem& item)
 	{
 		QList<QXmppMucItem> items;
@@ -91,34 +91,34 @@ namespace Xoox
 		iq.setTo (JID_);
 		iq.setType (QXmppIq::Set);
 		iq.setItems (items);
-		
+
 		GlooxAccount *account = qobject_cast<GlooxAccount*> (Room_->GetParentAccount ());
 		account->GetClientConnection ()->GetClient ()->sendPacket (iq);
 	}
-	
+
 	QStandardItem* RoomConfigWidget::GetCurrentItem () const
 	{
 		const QModelIndex& index = Ui_.PermsTree_->currentIndex ();
 		if (!index.isValid ())
 			return 0;
-		
+
 		const QModelIndex& sibling = index.sibling (index.row (), 0);
 		return PermsModel_->itemFromIndex (sibling);
 	}
-	
+
 	void RoomConfigWidget::accept ()
 	{
 		QXmppDataForm form = FB_->GetForm ();
 		form.setType (QXmppDataForm::Submit);
 		RoomHandler_->setConfiguration (form);
 	}
-	
+
 	void RoomConfigWidget::on_AddPerm__released ()
 	{
 		std::auto_ptr<AffiliationSelectorDialog> dia (new AffiliationSelectorDialog (this));
 		if (dia->exec () != QDialog::Accepted)
 			return;
-		
+
 		const QString& jid = dia->GetJID ();
 		if (jid.isEmpty ())
 			return;
@@ -127,16 +127,16 @@ namespace Xoox
 		item.setJid (jid);
 		item.setAffiliation (dia->GetAffiliation ());
 		SendItem (item);
-		
+
 		handlePermsReceived (QList<QXmppMucItem> () << item);
 	}
-	
+
 	void RoomConfigWidget::on_ModifyPerm__released ()
 	{
 		QStandardItem *stdItem = GetCurrentItem ();
 		if (!stdItem)
 			return;
-		
+
 		QStandardItem *parent = stdItem->parent ();
 		if (!Aff2Cat_.values ().contains (parent))
 		{
@@ -147,53 +147,53 @@ namespace Xoox
 					<< stdItem;
 			return;
 		}
-		
-		const QXmppMucItem::Affiliation aff = Aff2Cat_.key (parent);		
+
+		const QXmppMucItem::Affiliation aff = Aff2Cat_.key (parent);
 		const QString& jid = stdItem->text ();
 
-		std::auto_ptr<AffiliationSelectorDialog> dia (new AffiliationSelectorDialog (this));
+		std::unique_ptr<AffiliationSelectorDialog> dia (new AffiliationSelectorDialog (this));
 		dia->SetJID (jid);
 		dia->SetAffiliation (aff);
 		if (dia->exec () != QDialog::Accepted)
 			return;
-		
+
 		const QString& newJid = dia->GetJID ();
 		if (newJid.isEmpty ())
 			return;
-		
+
 		parent->removeRow (stdItem->row ());
-		
+
 		QXmppMucItem item;
 		item.setJid (newJid);
 		item.setAffiliation (dia->GetAffiliation ());
 		SendItem (item);
-		
+
 		if (item.affiliation () != QXmppMucItem::NoAffiliation)
 			handlePermsReceived (QList<QXmppMucItem> () << item);
 	}
-	
+
 	void RoomConfigWidget::on_RemovePerm__released ()
 	{
 		QStandardItem *stdItem = GetCurrentItem ();
 		if (!stdItem)
 			return;
-		
+
 		const QString& jid = stdItem->text ();
 		if (jid.isEmpty ())
 			return;
-		
+
 		QStandardItem *parent = stdItem->parent ();
 		if (!parent)
 			return;
-		
+
 		parent->removeRow (stdItem->row ());
-		
+
 		QXmppMucItem item;
 		item.setJid (jid);
 		item.setAffiliation (QXmppMucItem::NoAffiliation);
 		SendItem (item);
 	}
-	
+
 	void RoomConfigWidget::handleConfigurationReceived (const QXmppDataForm& form)
 	{
 		if (sender () != RoomHandler_)
@@ -203,7 +203,7 @@ namespace Xoox
 		Ui_.ScrollArea_->setWidget (FormWidget_);
 		emit dataReady ();
 	}
-	
+
 	void RoomConfigWidget::handlePermsReceived (const QList<QXmppMucItem>& perms)
 	{
 		if (qobject_cast<QXmppMucRoom*> (sender ()) &&
@@ -220,7 +220,7 @@ namespace Xoox
 						<< perm.affiliation ();
 				continue;
 			}
-			
+
 			QList<QStandardItem*> items;
 			items << new QStandardItem (perm.jid ());
 			items << new QStandardItem (perm.reason ());
@@ -228,7 +228,7 @@ namespace Xoox
 				item->setEditable (false);
 			parentItem->appendRow (items);
 		}
-		
+
 		Q_FOREACH (QStandardItem *item, Aff2Cat_.values ())
 		{
 			item->sortChildren (0);

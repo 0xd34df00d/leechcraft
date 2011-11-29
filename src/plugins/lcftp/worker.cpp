@@ -81,7 +81,7 @@ namespace LeechCraft
 					Wrapper *w = static_cast<Wrapper*> (userp);
 					return w->ListDir (buf, size, nmemb);
 				}
-				
+
 				int progress_function (void *userp,
 						double dltotal, double dlnow,
 						double ultotal, double ulnow)
@@ -252,7 +252,7 @@ namespace LeechCraft
 				curl_easy_setopt (Handle_.get (),
 						CURLOPT_MAX_SEND_SPEED_LARGE, limit);
 			}
-			
+
 			QString Worker::GetLog () const
 			{
 				return QString ();
@@ -377,7 +377,7 @@ namespace LeechCraft
 						itemUrl,
 						fp.size,
 						dt,
-						fp.flagtrycwd,
+						static_cast<bool> (fp.flagtrycwd),
 						name,
 						td
 					};
@@ -407,7 +407,7 @@ namespace LeechCraft
 			{
 				return File_->read (buffer, size * nmemb);
 			}
-			
+
 			size_t Worker::ListDir (void *buffer, size_t size, size_t nmemb)
 			{
 				const char *start = static_cast<char*> (buffer);
@@ -415,7 +415,7 @@ namespace LeechCraft
 				ListBuffer_->buffer ().append (start, result);
 				return result;
 			}
-			
+
 			int Worker::Progress (double dlt, double dln, double ult, double uln)
 			{
 				DLNow_ = dln;

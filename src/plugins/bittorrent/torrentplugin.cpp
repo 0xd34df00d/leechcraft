@@ -416,7 +416,7 @@ namespace LeechCraft
 			void TorrentPlugin::on_OpenMultipleTorrents__triggered ()
 			{
 				AddMultipleTorrents dialog (Core::Instance ()->GetProxy ()->GetMainWindow ());
-				std::auto_ptr<TagsCompleter> completer (new TagsCompleter (dialog.GetEdit (), this));
+				std::unique_ptr<TagsCompleter> completer (new TagsCompleter (dialog.GetEdit (), this));
 				dialog.GetEdit ()->AddSelector ();
 
 				if (dialog.exec () == QDialog::Rejected)

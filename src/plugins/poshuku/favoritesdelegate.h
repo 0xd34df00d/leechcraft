@@ -30,7 +30,7 @@ namespace Poshuku
 	{
 		Q_OBJECT
 
-		mutable std::auto_ptr<Util::TagsCompleter> TagsCompleter_;
+		mutable std::unique_ptr<Util::TagsCompleter> TagsCompleter_;
 	public:
 		FavoritesDelegate (QObject* = 0);
 

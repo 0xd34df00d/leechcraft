@@ -40,8 +40,8 @@ namespace Poshuku
 
 		Ui::BookmarksWidget Ui_;
 		boost::shared_ptr<Util::FlatToFoldersProxyModel> FlatToFolders_;
-		std::auto_ptr<FilterModel> FavoritesFilterModel_;
-		std::auto_ptr<Util::TagsCompleter> FavoritesFilterLineCompleter_;
+		std::unique_ptr<FilterModel> FavoritesFilterModel_;
+		std::unique_ptr<Util::TagsCompleter> FavoritesFilterLineCompleter_;
 	public:
 		BookmarksWidget (QWidget* = 0);
 	private slots:

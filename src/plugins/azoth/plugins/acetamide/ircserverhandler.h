@@ -68,7 +68,7 @@ namespace Acetamide
 		QString LastSendId_;
 		ServerOptions ServerOptions_;
 		QList<ChannelOptions> ChannelsQueue_;
-		std::auto_ptr<InviteChannelsDialog> InviteChannelsDialog_;
+		std::unique_ptr<InviteChannelsDialog> InviteChannelsDialog_;
 		QHash<QString, ChannelHandler*> ChannelHandlers_;
 		QHash<QString, ServerParticipantEntry_ptr> Nick2Entry_;
 		QMap<QString, QString> ISupport_;
@@ -128,7 +128,7 @@ namespace Acetamide
 
 		void PongMessage (const QString&);
 		void GotTopic (const QString&, const QString&);
-		void KickUserFromChannel (const QString&, const QString&, 
+		void KickUserFromChannel (const QString&, const QString&,
 				const QString&, const QString&);
 		void GotInvitation (const QString&, const QString&);
 		void ShowAnswer (const QString&);
@@ -147,16 +147,16 @@ namespace Acetamide
 		void ShowUsersReply (const QString&);
 		void ShowTraceReply (const QString&);
 		void ShowStatsReply (const QString&);
-		void ShowBanList (const QString&, 
+		void ShowBanList (const QString&,
 				const QString&, const QString&, const QDateTime&);
 		void ShowBanListEnd (const QString&);
-		void ShowExceptList (const QString&, 
+		void ShowExceptList (const QString&,
 				const QString&, const QString&, const QDateTime&);
 		void ShowExceptListEnd (const QString&);
-		void ShowInviteList (const QString&, 
+		void ShowInviteList (const QString&,
 				const QString&, const QString&, const QDateTime&);
 		void ShowInviteListEnd (const QString&);
-		
+
 		void SendPublicMessage (const QString&, const QString&);
 		void SendPrivateMessage (IrcMessage*);
 		void SendMessage2Server (const QStringList&);
@@ -178,7 +178,7 @@ namespace Acetamide
 
 		void SayCommand (const QStringList&);
 
-		void ParseChanMode (const QString&, const QString&, 
+		void ParseChanMode (const QString&, const QString&,
 				const QString& value = QString ());
 		void ParseUserMode (const QString&, const QString&);
 

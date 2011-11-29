@@ -814,7 +814,7 @@ namespace Azoth
 
 	void MainWidget::handleAddContactRequested ()
 	{
-		std::auto_ptr<AddContactDialog> dia (new AddContactDialog (0, this));
+		std::unique_ptr<AddContactDialog> dia (new AddContactDialog (0, this));
 		if (dia->exec () != QDialog::Accepted)
 			return;
 

@@ -85,9 +85,9 @@ namespace Aggregator
 
 		boost::shared_ptr<Util::FlatToFoldersProxyModel> FlatToFolders_;
 		boost::shared_ptr<Util::XmlSettingsDialog> XmlSettingsDialog_;
-		std::auto_ptr<Util::TagsCompleter> TagsLineCompleter_;
-		std::auto_ptr<QSystemTrayIcon> TrayIcon_;
-		std::auto_ptr<RegexpMatcherUi> RegexpMatcherUi_;
+		std::unique_ptr<Util::TagsCompleter> TagsLineCompleter_;
+		std::unique_ptr<QSystemTrayIcon> TrayIcon_;
+		std::unique_ptr<RegexpMatcherUi> RegexpMatcherUi_;
 
 		QModelIndex SelectedRepr_;
 

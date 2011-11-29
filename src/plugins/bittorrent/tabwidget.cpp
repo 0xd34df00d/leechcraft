@@ -418,7 +418,7 @@ namespace LeechCraft
 				Ui_.TorrentSuperSeeding_->setCheckState (Core::Instance ()->
 						IsTorrentSuperSeeding () ? Qt::Checked : Qt::Unchecked);
 
-				std::auto_ptr<TorrentInfo> i;
+				std::unique_ptr<TorrentInfo> i;
 				try
 				{
 					i = Core::Instance ()->GetTorrentStats ();

@@ -86,10 +86,10 @@ namespace LeechCraft
 				std::auto_ptr<QTimer> OverallStatsUpdateTimer_;
 				std::auto_ptr<QTime> LastPeersUpdate_;
 				bool TorrentSelectionChanged_;
-				std::auto_ptr<LeechCraft::Util::TagsCompleter> TagsAddDiaCompleter_;
-				std::auto_ptr<TabWidget> TabWidget_;
-				std::auto_ptr<QToolBar> Toolbar_;
-				std::auto_ptr<QAction> OpenTorrent_,
+				std::unique_ptr<LeechCraft::Util::TagsCompleter> TagsAddDiaCompleter_;
+				std::unique_ptr<TabWidget> TabWidget_;
+				std::unique_ptr<QToolBar> Toolbar_;
+				std::unique_ptr<QAction> OpenTorrent_,
 					RemoveTorrent_,
 					Resume_,
 					Stop_,
@@ -107,7 +107,7 @@ namespace LeechCraft
 					MakeMagnetLink_,
 					Import_,
 					Export_;
-				std::auto_ptr<QTranslator> Translator_;
+				std::unique_ptr<QTranslator> Translator_;
 
 				SpeedSelectorAction *DownSelectorAction_,
 						*UpSelectorAction_;

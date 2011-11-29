@@ -123,7 +123,7 @@ namespace LeechCraft
 				HandleDict_t Handles_;
 				QList<QString> Headers_;
 				mutable int CurrentTorrent_;
-				std::auto_ptr<QTimer> SettingsSaveTimer_, FinishedTimer_, WarningWatchdog_, ScrapeTimer_;
+				std::unique_ptr<QTimer> SettingsSaveTimer_, FinishedTimer_, WarningWatchdog_, ScrapeTimer_;
 				boost::shared_ptr<PiecesModel> PiecesModel_;
 				boost::shared_ptr<PeersModel> PeersModel_;
 				boost::shared_ptr<TorrentFilesModel> TorrentFilesModel_;
@@ -193,7 +193,7 @@ namespace LeechCraft
 				libtorrent::torrent_info GetTorrentInfo (const QString&);
 				libtorrent::torrent_info GetTorrentInfo (const QByteArray&);
 				bool IsValidTorrent (const QByteArray&) const;
-				std::auto_ptr<TorrentInfo> GetTorrentStats () const;
+				std::unique_ptr<TorrentInfo> GetTorrentStats () const;
 				libtorrent::session_status GetOverallStats () const;
 				void GetPerTracker (pertrackerstats_t&) const;
 				int GetListenPort () const;

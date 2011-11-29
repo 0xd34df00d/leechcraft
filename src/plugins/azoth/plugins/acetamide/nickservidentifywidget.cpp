@@ -141,13 +141,13 @@ namespace Acetamide
 		if (!index.isValid ())
 			return;
 
-		std::auto_ptr<NewNickServIdentifyDialog> nns (new NewNickServIdentifyDialog (0));
+		std::unique_ptr<NewNickServIdentifyDialog> nns (new NewNickServIdentifyDialog (0));
 		nns->SetServer (Model_->item(index.row (), 0)->text ());
 		nns->SetNickName (Model_->item(index.row (), 1)->text ());
 		nns->SetNickServNickName (Model_->item(index.row (), 2)->text ());
 		nns->SetAuthString (Model_->item(index.row (), 3)->text ());
 		nns->SetAuthMessage (Model_->item(index.row (), 4)->text ());
-		
+
 		if (nns->exec () == QDialog::Rejected)
 			return;
 
