@@ -64,6 +64,7 @@ namespace LeechCraft
 		boost::shared_ptr<NewTabMenuManager> NewTabMenuManager_;
 		boost::shared_ptr<CoreInstanceObject> CoreInstanceObject_;
 		QList<Entity> QueuedEntities_;
+		bool IsShuttingDown_;
 
 		Core ();
 	public:
@@ -78,6 +79,8 @@ namespace LeechCraft
 		virtual ~Core ();
 		static Core& Instance ();
 		void Release ();
+
+		bool IsShuttingDown () const;
 
 		/** Sets the pointer to the main window.
 		 */

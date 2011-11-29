@@ -56,6 +56,7 @@ namespace LeechCraft
 		QString GetVersion () const;
 		QObject* GetSelf ();
 		void RegisterSkinnable (QAction*);
+		bool IsShuttingDown ();
 	};
 };
 

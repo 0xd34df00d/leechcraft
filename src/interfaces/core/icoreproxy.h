@@ -185,6 +185,8 @@ public:
 	 * @param[in] action The action to register.
 	 */
 	virtual void RegisterSkinnable (QAction *action) = 0;
+
+	virtual bool IsShuttingDown () = 0;
 };
 
 typedef std::shared_ptr<ICoreProxy> ICoreProxy_ptr;

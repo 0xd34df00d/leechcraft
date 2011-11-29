@@ -85,6 +85,7 @@ namespace LeechCraft
 	, LocalSocketHandler_ (new LocalSocketHandler)
 	, NewTabMenuManager_ (new NewTabMenuManager)
 	, CoreInstanceObject_ (new CoreInstanceObject)
+	, IsShuttingDown_ (false)
 	{
 		CoreInstanceObject_->GetCorePluginManager ()->RegisterHookable (NetworkAccessManager_.get ());
 
@@ -148,6 +149,7 @@ namespace LeechCraft
 
 	void Core::Release ()
 	{
+		IsShuttingDown_ = true;
 		LocalSocketHandler_.reset ();
 		XmlSettingsManager::Instance ()->setProperty ("FirstStart", "false");
 		ClipboardWatcher_.reset ();
@@ -161,6 +163,11 @@ namespace LeechCraft
 		NetworkAccessManager_.reset ();
 
 		StorageBackend_.reset ();
+	}
+
+	bool Core::IsShuttingDown () const
+	{
+		return IsShuttingDown_;
 	}
 
 	void Core::SetReallyMainWindow (MainWindow *win)
