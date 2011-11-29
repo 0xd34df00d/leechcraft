@@ -91,6 +91,8 @@ namespace SecureStorage
 		bool IsPasswordCorrect (const CryptoSystem& cs);
 		bool IsPasswordEmpty ();
 		bool IsPasswordSet ();
+	signals:
+		void gotActions (QList<QAction*>, ActionsEmbedPlace);
 	};
 }
 }
