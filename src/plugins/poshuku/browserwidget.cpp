@@ -865,7 +865,9 @@ namespace Poshuku
 
 	QString BrowserWidget::GetTabRecoverName () const
 	{
-		return WebView_->title ();
+		return QString ("%1 (%2)")
+				.arg (WebView_->title ())
+				.arg (WebView_->url ().toString ());
 	}
 
 	QIcon BrowserWidget::GetTabRecoverIcon () const
