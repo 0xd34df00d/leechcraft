@@ -1,12 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="uk_UA">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="uk_UA" version="2.0">
 <context>
     <name>AcceptRIEXDialog</name>
     <message>
         <location filename="acceptriexdialog.ui" line="14"/>
         <source>Contact list change</source>
-        <translation type="unfinished"></translation>
+        <translation>Змінити список</translation>
     </message>
 </context>
 <context>
@@ -193,7 +191,6 @@
     <message>
         <location filename="callchatwidget.ui" line="47"/>
         <source>Hangup</source>
-        <translatorcomment>???????</translatorcomment>
         <translation>Повісити</translation>
     </message>
 </context>
@@ -243,7 +240,6 @@
     <message>
         <location filename="drawattentiondialog.ui" line="14"/>
         <source>Draw attention</source>
-        <translatorcomment>досл.</translatorcomment>
         <translation>Зверніть увагу</translation>
     </message>
     <message>
@@ -270,12 +266,12 @@
     <message>
         <location filename="groupsenddialog.ui" line="14"/>
         <source>Group send</source>
-        <translation type="unfinished"></translation>
+        <translation>Угруповане надсилання</translation>
     </message>
     <message>
         <location filename="groupsenddialog.ui" line="36"/>
         <source>All</source>
-        <translation type="unfinished"></translation>
+        <translation>Усі</translation>
     </message>
     <message>
         <location filename="groupsenddialog.ui" line="43"/>
@@ -326,53 +322,53 @@
     <message>
         <location filename="acceptriexdialog.cpp" line="35"/>
         <source>Action</source>
-        <translation type="unfinished"></translation>
+        <translation>Акція</translation>
     </message>
     <message>
         <location filename="acceptriexdialog.cpp" line="36"/>
         <source>ID</source>
-        <translation type="unfinished"></translation>
+        <translation>ID</translation>
     </message>
     <message>
         <location filename="acceptriexdialog.cpp" line="37"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Назва</translation>
     </message>
     <message>
         <location filename="acceptriexdialog.cpp" line="38"/>
         <source>Groups</source>
-        <translation type="unfinished"></translation>
+        <translation>Групи</translation>
     </message>
     <message>
         <location filename="acceptriexdialog.cpp" line="51"/>
         <source>add</source>
-        <translation type="unfinished"></translation>
+        <translation>додавати</translation>
     </message>
     <message>
         <location filename="acceptriexdialog.cpp" line="54"/>
         <source>delete</source>
-        <translation type="unfinished"></translation>
+        <translation>видаляти</translation>
     </message>
     <message>
         <location filename="acceptriexdialog.cpp" line="57"/>
         <source>modify</source>
-        <translation type="unfinished"></translation>
+        <translation>модіфікувати</translation>
     </message>
     <message>
         <location filename="acceptriexdialog.cpp" line="60"/>
         <source>(unknown)</source>
-        <translation type="unfinished"></translation>
+        <translation>(Невідоме)</translation>
     </message>
     <message>
         <location filename="acceptriexdialog.cpp" line="82"/>
         <source>%1 has suggested to modify your contact list:</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 запропонував модіфікувати свій список контактів:</translation>
     </message>
     <message>
         <location filename="acceptriexdialog.cpp" line="84"/>
         <source>%1 has suggested to modify your contact list:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 запропонував модіфікувати свій список контактів: %2</translation>
     </message>
 </context>
 <context>
@@ -468,7 +464,7 @@
     <message>
         <location filename="actionsmanager.cpp" line="269"/>
         <source>Share contacts...</source>
-        <translation type="unfinished"></translation>
+        <translation>Спільне використання контактів ...</translation>
     </message>
     <message>
         <location filename="actionsmanager.cpp" line="280"/>
@@ -488,7 +484,7 @@
     <message>
         <location filename="actionsmanager.cpp" line="350"/>
         <source>Invite...</source>
-        <translation type="unfinished"></translation>
+        <translation>Інветувати ...</translation>
     </message>
     <message>
         <location filename="actionsmanager.cpp" line="360"/>
@@ -556,7 +552,6 @@
     <message>
         <location filename="activitydialog.cpp" line="40"/>
         <source>doing_chores</source>
-        <translatorcomment>дословно</translatorcomment>
         <translation>на випадковій роботі</translation>
     </message>
     <message>
@@ -733,7 +728,6 @@
     <message>
         <location filename="activitydialog.cpp" line="79"/>
         <source>working_out</source>
-        <translatorcomment>дословоно</translatorcomment>
         <translation>розробляє</translation>
     </message>
     <message>
@@ -965,12 +959,12 @@
     <message>
         <location filename="bookmarksmanagerdialog.cpp" line="259"/>
         <source>Save the bookmark?</source>
-        <translation type="unfinished"></translation>
+        <translation>Засейвувати букмарку?</translation>
     </message>
     <message>
         <location filename="bookmarksmanagerdialog.cpp" line="260"/>
         <source>You&apos;ve changed the bookmark. Do you want to save the changes?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ви змінили букмарки. Ви бажаєте засейвувати зміни?</translation>
     </message>
     <message>
         <location filename="bookmarksmanagerdialog.cpp" line="294"/>
@@ -984,14 +978,12 @@
         <location filename="clmodel.cpp" line="192"/>
         <source>Are you sure you want to send %n files to %1?</source>
         <oldsource>Are you sure you want to send %1 files to %2?</oldsource>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-        </translation>
+        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
         <location filename="clmodel.cpp" line="199"/>
         <source>Are you sure you want to send %1 to %2?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ви дійсно хочете відправити %1 в %2?</translation>
     </message>
 </context>
 <context>
@@ -1037,7 +1029,7 @@
     <message>
         <location filename="callmanager.cpp" line="140"/>
         <source>Hangup</source>
-        <translation></translation>
+        <translation>Повісити</translation>
     </message>
 </context>
 <context>
@@ -1055,11 +1047,7 @@
     <message numerus="yes">
         <location filename="chattab.cpp" line="316"/>
         <source>%1 (%n participant(s))</source>
-        <translation>
-            <numerusform>%1 (%n учасник)</numerusform>
-            <numerusform>%1 (%n учасники)</numerusform>
-            <numerusform>%1 (%n учасники)</numerusform>
-        </translation>
+        <translation><numerusform>%1 (%n учасник)</numerusform><numerusform>%1 (%n учасники)</numerusform><numerusform>%1 (%n учасники)</numerusform></translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="991"/>
@@ -1139,7 +1127,7 @@
     <message>
         <location filename="chattab.cpp" line="1011"/>
         <source>Quote selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Цитатувати селекцію</translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="1131"/>
@@ -1180,7 +1168,7 @@
     <message>
         <location filename="chattab.cpp" line="1323"/>
         <source>%1 ended the conversation.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 розмову ся скінчив.</translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="1550"/>
@@ -1213,7 +1201,7 @@
     <message>
         <location filename="chattabwebview.cpp" line="113"/>
         <source>Open externally</source>
-        <translation type="unfinished"></translation>
+        <translation>Відкрити ззовні</translation>
     </message>
 </context>
 <context>
@@ -1237,6 +1225,27 @@
 <context>
     <name>LeechCraft::Azoth::Core</name>
     <message>
+        <location filename="core.cpp" line="910"/>
+        <source>Unauthorized users</source>
+        <translation>Неавторизовані користувачі</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="1029"/>
+        <source>General</source>
+        <translation>Загальне</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="1147"/>
+        <source>In groups: </source>
+        <translation>У групах:</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="2228"/>
+        <location filename="core.cpp" line="2316"/>
+        <source>Open chat</source>
+        <translation>Відкрити чат</translation>
+    </message>
+    <message>
         <location filename="core.cpp" line="131"/>
         <source>Smile pack</source>
         <translation>Набір емоційок</translation>
@@ -1252,19 +1261,9 @@
         <translation>Будь ласка виберіть акаунт для обробку URI %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="910"/>
-        <source>Unauthorized users</source>
-        <translation>Неавторизовані користувачі</translation>
-    </message>
-    <message>
         <location filename="core.cpp" line="916"/>
         <source>Contacts</source>
         <translation>Контакти</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="1029"/>
-        <source>General</source>
-        <translation>Загальне</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1094"/>
@@ -1287,11 +1286,6 @@
         <translation>з</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1147"/>
-        <source>In groups: </source>
-        <translation>У групах:</translation>
-    </message>
-    <message>
         <location filename="core.cpp" line="1156"/>
         <source>Real ID:</source>
         <translation>Реальній ID:</translation>
@@ -1309,18 +1303,12 @@
     <message>
         <location filename="core.cpp" line="1239"/>
         <source>%1 is now %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 зараз %2</translation>
     </message>
     <message>
         <location filename="core.cpp" line="1242"/>
         <source>%1/%2 is now %3.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="2228"/>
-        <location filename="core.cpp" line="2316"/>
-        <source>Open chat</source>
-        <translation>Відкрити чат</translation>
+        <translation>%1/%2 нині %3.</translation>
     </message>
     <message>
         <location filename="core.cpp" line="2267"/>
@@ -1406,27 +1394,17 @@
         <location filename="core.cpp" line="2205"/>
         <location filename="core.cpp" line="2217"/>
         <source>%n message(s) from</source>
-        <translation>
-            <numerusform>%n повідомлення від</numerusform>
-            <numerusform>%n повідомленнь від</numerusform>
-            <numerusform>%n повідомленнь від</numerusform>
-        </translation>
+        <translation><numerusform>%n повідомлення від</numerusform><numerusform>%n повідомленнь від</numerusform><numerusform>%n повідомленнь від</numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="core.cpp" line="2209"/>
         <source>%n message(s) in</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-        </translation>
+        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="core.cpp" line="2223"/>
         <source>%n message(s)</source>
-        <translation>
-            <numerusform>%n повідомлення(нь)</numerusform>
-            <numerusform>%n повідомленнь</numerusform>
-            <numerusform>%n повідомленнь</numerusform>
-        </translation>
+        <translation><numerusform>%n повідомлення(нь)</numerusform><numerusform>%n повідомленнь</numerusform><numerusform>%n повідомленнь</numerusform></translation>
     </message>
     <message>
         <location filename="core.cpp" line="2249"/>
@@ -1692,7 +1670,7 @@
     <message>
         <location filename="mainwidget.cpp" line="234"/>
         <source>Add account...</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати обліковий запис ...</translation>
     </message>
     <message>
         <location filename="mainwidget.cpp" line="255"/>
@@ -1742,7 +1720,7 @@
     <message>
         <location filename="mainwidget.cpp" line="405"/>
         <source>Join bookmarked conference</source>
-        <translation type="unfinished"></translation>
+        <translation>Реєстрація на збукмарчиій конференції</translation>
     </message>
     <message>
         <location filename="mainwidget.cpp" line="588"/>
@@ -1807,7 +1785,6 @@
     <message>
         <location filename="mooddialog.cpp" line="42"/>
         <source>amorous</source>
-        <translatorcomment>дословно.</translatorcomment>
         <translation>влюбливий</translation>
     </message>
     <message>
@@ -1828,7 +1805,6 @@
     <message>
         <location filename="mooddialog.cpp" line="46"/>
         <source>aroused</source>
-        <translatorcomment>дословно</translatorcomment>
         <translation>спричинений</translation>
     </message>
     <message>
@@ -2315,7 +2291,6 @@
     <message>
         <location filename="azoth.cpp" line="153"/>
         <source>A multiuser conference</source>
-        <translatorcomment>дословно</translatorcomment>
         <translation>Багатокористувацька конференція</translation>
     </message>
     <message>
@@ -2327,7 +2302,7 @@
     <message>
         <location filename="azoth.cpp" line="162"/>
         <source>A search tab allows one to search within IM services</source>
-        <translation type="unfinished"></translation>
+        <translation>Вкладки пошуку дозволяють шукати з IM сервісами</translation>
     </message>
     <message>
         <location filename="azoth.cpp" line="170"/>
@@ -2374,12 +2349,12 @@
     <message>
         <location filename="searchwidget.cpp" line="86"/>
         <source>Search</source>
-        <translation type="unfinished"></translation>
+        <translation>Пошук</translation>
     </message>
     <message>
         <location filename="searchwidget.cpp" line="87"/>
         <source>A search tab allows one to search within IM services</source>
-        <translation type="unfinished"></translation>
+        <translation>Вкладки пошуку дозволяє шукати з IM сервісами</translation>
     </message>
 </context>
 <context>
@@ -2397,7 +2372,6 @@
     <message>
         <location filename="servicediscoverywidget.cpp" line="142"/>
         <source>Discovery actions</source>
-        <translatorcomment>дословно</translatorcomment>
         <translation>Відкриття дії</translation>
     </message>
 </context>
@@ -2406,27 +2380,27 @@
     <message>
         <location filename="shareriexdialog.cpp" line="41"/>
         <source>Select items to be shared with %1:</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибір елементів для спільного використання з %1:</translation>
     </message>
     <message>
         <location filename="shareriexdialog.cpp" line="119"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Назва</translation>
     </message>
     <message>
         <location filename="shareriexdialog.cpp" line="120"/>
         <source>ID</source>
-        <translation type="unfinished"></translation>
+        <translation>ID</translation>
     </message>
     <message>
         <location filename="shareriexdialog.cpp" line="121"/>
         <source>Account</source>
-        <translation type="unfinished"></translation>
+        <translation>Обліковий запис</translation>
     </message>
     <message>
         <location filename="shareriexdialog.cpp" line="122"/>
         <source>Groups</source>
-        <translation type="unfinished"></translation>
+        <translation>Групи</translation>
     </message>
     <message>
         <location filename="shareriexdialog.cpp" line="144"/>
@@ -2575,7 +2549,6 @@
     <message>
         <location filename="locationdialog.ui" line="60"/>
         <source>Altitude:</source>
-        <translatorcomment>дословно</translatorcomment>
         <translation>Підйом:</translation>
     </message>
     <message>
@@ -2586,7 +2559,6 @@
     <message>
         <location filename="locationdialog.ui" line="104"/>
         <source>Bearing:</source>
-        <translatorcomment>дословно</translatorcomment>
         <translation>Орієнтація:</translation>
     </message>
     <message>
@@ -2607,7 +2579,6 @@
     <message>
         <location filename="locationdialog.ui" line="168"/>
         <source>Datum:</source>
-        <translatorcomment>дословно</translatorcomment>
         <translation>Характеристика:</translation>
     </message>
     <message>
@@ -2681,12 +2652,12 @@
     <message>
         <location filename="mucinvitedialog.ui" line="14"/>
         <source>Invite to a MUC</source>
-        <translation type="unfinished"></translation>
+        <translation>Запросити до MUC</translation>
     </message>
     <message>
         <location filename="mucinvitedialog.ui" line="23"/>
         <source>Invitee:</source>
-        <translation type="unfinished"></translation>
+        <translation>Запрошених:</translation>
     </message>
     <message>
         <location filename="mucinvitedialog.ui" line="37"/>
@@ -2804,17 +2775,17 @@
     <message>
         <location filename="shareriexdialog.ui" line="14"/>
         <source>Share contacts</source>
-        <translation type="unfinished"></translation>
+        <translation>Спільне використання контактів</translation>
     </message>
     <message>
         <location filename="shareriexdialog.ui" line="29"/>
         <source>Filter:</source>
-        <translation type="unfinished"></translation>
+        <translation>Фільтр:</translation>
     </message>
     <message>
         <location filename="shareriexdialog.ui" line="44"/>
         <source>All accounts</source>
-        <translation type="unfinished"></translation>
+        <translation>Всі облікові записи</translation>
     </message>
     <message>
         <location filename="shareriexdialog.ui" line="53"/>
@@ -2824,12 +2795,12 @@
     <message>
         <location filename="shareriexdialog.ui" line="81"/>
         <source>If checked, the information about the groups of the selected contacts would also be sent along with the sharing request.</source>
-        <translation type="unfinished"></translation>
+        <translation>Якщо зачекбоксено, інформація про групи вибраних контактів буде також направлена разом із спільного запиту.</translation>
     </message>
     <message>
         <location filename="shareriexdialog.ui" line="84"/>
         <source>Share groups</source>
-        <translation type="unfinished"></translation>
+        <translation>Спільне використання груп</translation>
     </message>
 </context>
 <context>
@@ -2891,7 +2862,6 @@
     <message>
         <location filename="dummy.cpp" line="13"/>
         <source>User mood icons:</source>
-        <translatorcomment>дословно</translatorcomment>
         <translation>Іконки настрою користувача:</translation>
     </message>
     <message>
@@ -2929,12 +2899,12 @@
     <message>
         <location filename="dummy.cpp" line="21"/>
         <source>Custom theme for multiuser chats</source>
-        <translation type="unfinished"></translation>
+        <translation>Настроювані теми для багатокористувацьких чатів</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="22"/>
         <source>MUC window style:</source>
-        <translation type="unfinished"></translation>
+        <translation>MUC стиль вікна:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="25"/>
@@ -2944,7 +2914,7 @@
     <message>
         <location filename="dummy.cpp" line="26"/>
         <source>Show statuses</source>
-        <translation type="unfinished"></translation>
+        <translation>Показувати статуси</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="27"/>
@@ -2964,7 +2934,7 @@
     <message>
         <location filename="dummy.cpp" line="30"/>
         <source>If this option is enabled, contacts would be grouped, otherwise, they will all appear in the same group.</source>
-        <translation type="unfinished"></translation>
+        <translation>Якщо ця опція включена, контакти будуть згруповані, а навпаки, вони будуть всі перебувати в одній групі.</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="31"/>
@@ -2974,17 +2944,17 @@
     <message>
         <location filename="dummy.cpp" line="32"/>
         <source>If this option is enabled, contacts are ordered by status and then by name. Otherwise, they are ordered by name only.</source>
-        <translation type="unfinished"></translation>
+        <translation>Якщо ця опція включена, контакти відсортовані за статусом, а потім за ім’ям. В іншому випадку вони відсортовані тілько за ім’ям.</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="33"/>
         <source>Distance between contacts in roster:</source>
-        <translation type="unfinished"></translation>
+        <translation>Відстань між контактами у ростері:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="34"/>
         <source> px</source>
-        <translation type="unfinished"></translation>
+        <translation>пікселів</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="36"/>
@@ -2999,7 +2969,7 @@
     <message>
         <location filename="dummy.cpp" line="38"/>
         <source>Post-address text:</source>
-        <translation type="unfinished"></translation>
+        <translation>Повідомлення після адреси:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="39"/>
@@ -3009,7 +2979,7 @@
     <message>
         <location filename="dummy.cpp" line="40"/>
         <source>Whether rich text body of the messages should be used, if available. This is a default value, and the behavior could be changed for each opened chat window.</source>
-        <translation type="unfinished"></translation>
+        <translation>Використовувати річтекст у повідомленні за можливістю. Це значення за замовченням, та поведінка може бути змінена для кожного відкритого вікна чату.</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="41"/>
@@ -3040,7 +3010,7 @@
     <message>
         <location filename="dummy.cpp" line="48"/>
         <source>Hide MUC participants in Whole CL mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Приховати MUC учасників </translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="49"/>
@@ -3055,7 +3025,7 @@
     <message>
         <location filename="dummy.cpp" line="51"/>
         <source>Notify remote participant when you&apos;ve ended conversation</source>
-        <translation type="unfinished"></translation>
+        <translation>Повідомте віддалених учасників, коли у вас закінчилася розмова</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="52"/>
@@ -3070,17 +3040,17 @@
     <message>
         <location filename="dummy.cpp" line="54"/>
         <source>Enter</source>
-        <translation></translation>
+        <translation>Вхід</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="55"/>
         <source>Shift+Enter</source>
-        <translation></translation>
+        <translation>Shift + Enter</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="56"/>
         <source>Ctrl+Enter</source>
-        <translation></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="57"/>
@@ -3091,7 +3061,6 @@
     <message>
         <location filename="dummy.cpp" line="58"/>
         <source>Alternative nickname for chat rooms:</source>
-        <translatorcomment>дословно</translatorcomment>
         <translation>Альтернативний нік для кімнат чату:</translation>
     </message>
     <message>
@@ -3193,12 +3162,12 @@
     <message>
         <location filename="dummy.cpp" line="78"/>
         <source>Show when participant ends conversation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="79"/>
         <source>Show joins and leaves in MUCs</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="80"/>
