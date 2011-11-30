@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="es_ES">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="es" version="2.0">
 <context>
     <name>AffiliationSelectorDialog</name>
     <message>
@@ -98,7 +96,6 @@
     <message>
         <location filename="executecommanddialog.ui" line="14"/>
         <source>Contact commands</source>
-        <translatorcomment>?</translatorcomment>
         <translation>Comandos de contactos</translation>
     </message>
 </context>
@@ -211,6 +208,7 @@
     <message>
         <location filename="joingroupchatwidget.ui" line="54"/>
         <source>Nickname:</source>
+        <oldsource>NIckname:</oldsource>
         <translation>Apodo:</translation>
     </message>
 </context>
@@ -274,6 +272,7 @@
     <message>
         <location filename="clientconnection.cpp" line="651"/>
         <source>This message is encrypted. Please decrypt it to view the original contents.</source>
+        <oldsource>This message is encrypted. Please decrypt it to view the original contents</oldsource>
         <translation>Este mensaje está cifrado. Por favor, descifrala para ver el contenido original.</translation>
     </message>
     <message>
@@ -743,6 +742,7 @@
     <message>
         <location filename="xoox.cpp" line="65"/>
         <source>XMPP (Jabber) protocol module using the QXmpp library.</source>
+        <oldsource>XMPP (Jabber) protocol support via Gloox library.</oldsource>
         <translation>Módulo de protocolo XMPP (Jabber) esta utilizando la biblioteca QXmpp.</translation>
     </message>
 </context>
@@ -811,7 +811,6 @@
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="119"/>
         <source>All</source>
-        <translatorcomment>no comprendo el contexto</translatorcomment>
         <translation>Todo</translation>
     </message>
     <message>
@@ -1030,6 +1029,7 @@
     <message>
         <location filename="roomhandler.cpp" line="258"/>
         <source>%1 is now %2 and %3: %4</source>
+        <oldsource>%1 is now %2 and %3: %2</oldsource>
         <translation>%1 ahora esta %2 y %3: %4</translation>
     </message>
     <message>
@@ -1128,7 +1128,6 @@
     <message>
         <location filename="sdsession.cpp" line="112"/>
         <source>Register...</source>
-        <translatorcomment>&quot;se&quot;?</translatorcomment>
         <translation>Registrar...</translation>
     </message>
     <message>
@@ -1370,11 +1369,6 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="formbuilder.cpp" line="93"/>
-        <source>Unable to represent embedded media data.</source>
-        <translation>Incapaz de representar a multimedia de los datos incrustados.</translation>
-    </message>
-    <message>
         <location filename="util.cpp" line="42"/>
         <source>guest</source>
         <translation>invitado</translation>
@@ -1424,6 +1418,11 @@
         <location filename="util.cpp" line="67"/>
         <source>owner</source>
         <translation>propietario</translation>
+    </message>
+    <message>
+        <location filename="formbuilder.cpp" line="93"/>
+        <source>Unable to represent embedded media data.</source>
+        <translation>Incapaz de representar a multimedia de los datos incrustados.</translation>
     </message>
 </context>
 <context>
@@ -1529,7 +1528,6 @@
     <message>
         <location filename="vcarddialog.ui" line="228"/>
         <source>Organization unit:</source>
-        <translatorcomment>? перепроверить при возможности</translatorcomment>
         <translation>Unidad organizativa:</translation>
     </message>
     <message>
