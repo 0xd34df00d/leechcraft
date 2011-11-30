@@ -21,6 +21,9 @@
 #include <QTimer>
 #include <QSettings>
 #include <QCoreApplication>
+#include <QMenu>
+#include <QInputDialog>
+#include <QMainWindow>
 #include <QtDebug>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -45,6 +48,17 @@ namespace TabSessManager
 					SIGNAL (addNewTab (const QString&, QWidget*)),
 					this,
 					SLOT (handleNewTab (const QString&, QWidget*)));
+
+		SessMgrMenu_ = new QMenu (tr ("Sessions"));
+		SessMgrMenu_->addAction (tr ("Save current session..."),
+				this,
+				SLOT (saveCustomSession ()));
+		SessMgrMenu_->addSeparator ();
+
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_TabSessManager");
+		Q_FOREACH (const auto& group, settings.childGroups ())
+			AddCustomSession (group);
 	}
 
 	void Plugin::SecondInit ()
@@ -79,6 +93,52 @@ namespace TabSessManager
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon ();
+	}
+
+	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace place) const
+	{
+		QList<QAction*> result;
+		if (place == AEPToolsMenu)
+			result << SessMgrMenu_->menuAction ();
+		return result;
+	}
+
+	QByteArray Plugin::GetCurrentSession () const
+	{
+		QByteArray result;
+		QDataStream str (&result, QIODevice::WriteOnly);
+		Q_FOREACH (auto tab, Tabs_)
+		{
+			ITabWidget *tw = qobject_cast<ITabWidget*> (tab);
+			if (!tw)
+				continue;
+
+			IInfo *plugin = qobject_cast<IInfo*> (tw->ParentMultiTabs ());
+			if (!plugin)
+				continue;
+
+			auto rec = qobject_cast<IRecoverableTab*> (tab);
+			const auto& data = rec->GetTabRecoverData ();
+			if (data.isEmpty ())
+				continue;
+
+			str << plugin->GetUniqueID ()
+					<< data
+					<< rec->GetTabRecoverName ()
+					<< rec->GetTabRecoverIcon ();
+
+			qDebug () << "appended data for" << plugin->GetUniqueID () << rec->GetTabRecoverName ();
+		}
+
+		return result;
+	}
+
+	void Plugin::AddCustomSession (const QString& name)
+	{
+		QAction *act = SessMgrMenu_->addAction (name,
+				this,
+				SLOT (loadCustomSession ()));
+		act->setProperty ("TabSessManager/SessName", name);
 	}
 
 	void Plugin::handleNewTab (const QString&, QWidget *widget)
@@ -156,6 +216,23 @@ namespace TabSessManager
 
 			tabs = dia.GetPages ();
 		}
+
+		void OpenTabs (const QHash<QObject*, QList<RecInfo>>& tabs)
+		{
+			Q_FOREACH (QObject *plugin, tabs.keys ())
+			{
+				auto ihrt = qobject_cast<IHaveRecoverableTabs*> (plugin);
+				if (!ihrt)
+					continue;
+
+				QList<QByteArray> datas;
+				const auto& infos = tabs [plugin];
+				std::transform (infos.begin (), infos.end (), std::back_inserter (datas),
+						[] (const RecInfo& rec) { return rec.Data_; });
+				qDebug () << "recovering" << plugin << infos.size ();
+				ihrt->RecoverTabs (datas);
+			}
+		}
 	}
 
 	void Plugin::recover ()
@@ -169,19 +246,7 @@ namespace TabSessManager
 		if (!settings.value ("CleanShutdown", false).toBool ())
 			AskTabs (tabs);
 
-		Q_FOREACH (QObject *plugin, tabs.keys ())
-		{
-			auto ihrt = qobject_cast<IHaveRecoverableTabs*> (plugin);
-			if (!ihrt)
-				continue;
-
-			QList<QByteArray> datas;
-			const auto& infos = tabs [plugin];
-			std::transform (infos.begin (), infos.end (), std::back_inserter (datas),
-					[] (const RecInfo& rec) { return rec.Data_; });
-			qDebug () << "recovering" << plugin << infos.size ();
-			ihrt->RecoverTabs (datas);
-		}
+		OpenTabs (tabs);
 
 		IsRecovering_ = false;
 		settings.setValue ("CleanShutdown", false);
@@ -195,35 +260,46 @@ namespace TabSessManager
 
 		qDebug () << "saving restore data";
 
-		QByteArray result;
-
-		QDataStream str (&result, QIODevice::WriteOnly);
-		Q_FOREACH (auto tab, Tabs_)
-		{
-			ITabWidget *tw = qobject_cast<ITabWidget*> (tab);
-			if (!tw)
-				continue;
-
-			IInfo *plugin = qobject_cast<IInfo*> (tw->ParentMultiTabs ());
-			if (!plugin)
-				continue;
-
-			auto rec = qobject_cast<IRecoverableTab*> (tab);
-			const auto& data = rec->GetTabRecoverData ();
-			if (data.isEmpty ())
-				continue;
-
-			str << plugin->GetUniqueID ()
-					<< data
-					<< rec->GetTabRecoverName ()
-					<< rec->GetTabRecoverIcon ();
-
-			qDebug () << "appended data for" << plugin->GetUniqueID () << rec->GetTabRecoverName ();
-		}
+		const auto& result = GetCurrentSession ();
 
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_TabSessManager");
 		settings.setValue ("Data", result);
+	}
+
+	void Plugin::saveCustomSession ()
+	{
+		const QString& name = QInputDialog::getText (Proxy_->GetMainWindow (),
+				tr ("Custom session"),
+				tr ("Enter the name of the session:"));
+		if (name.isEmpty ())
+			return;
+
+		const auto& result = GetCurrentSession ();
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_TabSessManager");
+		settings.beginGroup (name);
+		settings.setValue ("Data", result);
+		settings.endGroup ();
+
+		AddCustomSession (name);
+	}
+
+	void Plugin::loadCustomSession ()
+	{
+		const QString& name = sender ()->
+				property ("TabSessManager/SessName").toString ();
+		if (name.isEmpty ())
+			return;
+
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_TabSessManager");
+		settings.beginGroup (name);
+		QDataStream str (settings.value ("Data").toByteArray ());
+		settings.endGroup ();
+
+		auto tabs = GetTabsFromStream (str, Proxy_);
+		OpenTabs (tabs);
 	}
 }
 }

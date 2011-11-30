@@ -20,6 +20,7 @@
 #define PLUGINS_TABSESSMANAGER_TABSESSMANAGER_H
 #include <QObject>
 #include <interfaces/iinfo.h>
+#include <interfaces/iactionsexporter.h>
 
 class IRecoverableTab;
 
@@ -29,13 +30,16 @@ namespace TabSessManager
 {
 	class Plugin : public QObject
 				 , public IInfo
+				 , public IActionsExporter
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo)
+		Q_INTERFACES (IInfo IActionsExporter)
 
 		ICoreProxy_ptr Proxy_;
 		QSet<QObject*> Tabs_;
 		bool IsRecovering_;
+
+		QMenu *SessMgrMenu_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -44,11 +48,20 @@ namespace TabSessManager
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+
+		QList<QAction*> GetActions (ActionsEmbedPlace) const;
+	private:
+		QByteArray GetCurrentSession () const;
+		void AddCustomSession (const QString&);
 	private slots:
 		void handleNewTab (const QString&, QWidget*);
 		void handleTabDestroyed ();
 		void recover ();
 		void handleTabRecoverDataChanged ();
+		void saveCustomSession ();
+		void loadCustomSession ();
+	signals:
+		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 	};
 }
 }
