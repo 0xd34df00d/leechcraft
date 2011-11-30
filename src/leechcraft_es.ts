@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="es">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="es" version="2.0">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -42,12 +40,12 @@
     <message>
         <location filename="aboutdialog.ui" line="350"/>
         <source>Diagnostic info</source>
-        <translation type="unfinished"></translation>
+        <translation>Información de diagnóstico</translation>
     </message>
     <message>
         <location filename="aboutdialog.ui" line="359"/>
         <source>Add this information to your bug reports, if any:</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir esta información a sus informes de error, en su caso:</translation>
     </message>
 </context>
 <context>
@@ -169,17 +167,17 @@
     <message>
         <location filename="xmlsettingsdialog/widgets/dataviewwidget.ui" line="25"/>
         <source>Add...</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir...</translation>
     </message>
     <message>
         <location filename="xmlsettingsdialog/widgets/dataviewwidget.ui" line="32"/>
         <source>Modify...</source>
-        <translation type="unfinished"></translation>
+        <translation>Modificar...</translation>
     </message>
     <message>
         <location filename="xmlsettingsdialog/widgets/dataviewwidget.ui" line="39"/>
         <source>Remove</source>
-        <translation type="unfinished">Quitar</translation>
+        <translation>Eliminar</translation>
     </message>
 </context>
 <context>
@@ -283,21 +281,6 @@
         <translation>Registro</translation>
     </message>
     <message>
-        <location filename="leechcraft.ui" line="140"/>
-        <source>Show toolbar</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="leechcraft.ui" line="129"/>
-        <source>New tab</source>
-        <translation>Nueva etiqueta</translation>
-    </message>
-    <message>
-        <location filename="leechcraft.ui" line="132"/>
-        <source>Ctrl+T</source>
-        <translation>Ctrl+T</translation>
-    </message>
-    <message>
         <location filename="leechcraft.ui" line="91"/>
         <source>About LeechCraft...</source>
         <translation>Sobre LeechCraft...</translation>
@@ -326,6 +309,21 @@
         <location filename="leechcraft.ui" line="124"/>
         <source>Ctrl+W</source>
         <translation>Ctrl+W</translation>
+    </message>
+    <message>
+        <location filename="leechcraft.ui" line="140"/>
+        <source>Show toolbar</source>
+        <translation>Mostrar barra de herramientas</translation>
+    </message>
+    <message>
+        <location filename="leechcraft.ui" line="129"/>
+        <source>New tab</source>
+        <translation>Nueva etiqueta</translation>
+    </message>
+    <message>
+        <location filename="leechcraft.ui" line="132"/>
+        <source>Ctrl+T</source>
+        <translation>Ctrl+T</translation>
     </message>
 </context>
 <context>
@@ -359,7 +357,7 @@
     <message>
         <location filename="aboutdialog.cpp" line="132"/>
         <source>Chrome-style tabs.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichas en el estílo de Chrome</translation>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="133"/>
@@ -373,7 +371,7 @@
     <message>
         <location filename="aboutdialog.cpp" line="139"/>
         <source>SecMan SecureStorage.</source>
-        <translation type="unfinished"></translation>
+        <translation>Almacenamiento seguro SecMan</translation>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="144"/>
@@ -389,27 +387,27 @@
     <message>
         <location filename="aboutdialog.cpp" line="152"/>
         <source>Spanish translations.</source>
-        <translation type="unfinished"></translation>
+        <translation>Traducciones al español.</translation>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="156"/>
         <source>Artwork designer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Diseñador.</translation>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="160"/>
         <source>French translations.</source>
-        <translation type="unfinished"></translation>
+        <translation>Traducciones al francés.</translation>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="161"/>
         <source>Italian translations.</source>
-        <translation type="unfinished"></translation>
+        <translation>Traducciones al italiano.</translation>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="162"/>
         <source>Public relations.</source>
-        <translation type="unfinished"></translation>
+        <translation>Las relaciones públicas.</translation>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="171"/>
@@ -424,7 +422,7 @@
     <message>
         <location filename="aboutdialog.cpp" line="180"/>
         <source>Extensive and thorough testing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pruebas exhaustivas y minuciosas.</translation>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="189"/>
@@ -621,7 +619,7 @@
     <message>
         <location filename="xmlsettingsdialog/itemhandlers/itemhandlercombobox.cpp" line="75"/>
         <source>More stuff...</source>
-        <translation type="unfinished"></translation>
+        <translation>Más cosas...</translation>
     </message>
 </context>
 <context>
@@ -725,7 +723,7 @@
     <message>
         <location filename="newtabmenumanager.cpp" line="31"/>
         <source>Additional tab menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Menú de la ficha adicional</translation>
     </message>
 </context>
 <context>
@@ -743,12 +741,12 @@
     <message>
         <location filename="pluginmanager.cpp" line="230"/>
         <source>The following plugins would also be disabled as the result:</source>
-        <translation type="unfinished"></translation>
+        <translation>Los siguientes plugins también serán discapacitados como el resultado:</translation>
     </message>
     <message>
         <location filename="pluginmanager.cpp" line="232"/>
         <source>Are you sure you want to disable this one?</source>
-        <translation type="unfinished"></translation>
+        <translation>¿Seguro que desea desactivar este?</translation>
     </message>
     <message>
         <location filename="pluginmanager.cpp" line="292"/>
@@ -806,12 +804,12 @@
     <message>
         <location filename="separatetabwidget.cpp" line="52"/>
         <source>Pin tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Pin tab</translation>
     </message>
     <message>
         <location filename="separatetabwidget.cpp" line="53"/>
         <source>Unpin tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Unpin tab</translation>
     </message>
 </context>
 <context>
@@ -979,7 +977,7 @@
     <message>
         <location filename="startupwizard.cpp" line="32"/>
         <source>Startup wizard</source>
-        <translation></translation>
+        <translation>Asistente de inicio</translation>
     </message>
     <message>
         <location filename="startupwizard.cpp" line="77"/>
@@ -1053,10 +1051,13 @@
         <location filename="winwarndialog.cpp" line="38"/>
         <source>Seems like you are running Microsoft Windows.
 
-LeechCraft for Windows is quite experimental and unstable, some builds may use unstable versions of third-party libraries, and, moreover, LeechCraft is known to have more bugs and less features on Windows than on other, saner operating systems. That&apos;s because we have not so much developers running Windows, and most of the users use other OSes. Sorry for that, we hope you&apos;ll understand us.
+LeechCraft for Windows is quite experimental and unstable, some builds may use unstable versions of third-party libraries, and, moreover, LeechCraft is known to have more bugs and less features on Windows than on other, saner operating systems. That's because we have not so much developers running Windows, and most of the users use other OSes. Sorry for that, we hope you'll understand us.
 
 If you have read and really understood all these letters, click Cancel button in this dialog so that it won&apos;t pop up again next time you run LeechCraft.</source>
-        <translation type="unfinished"></translation>
+        <translation>Parece que está ejecutando Microsoft Windows.
+ LeechCraft para Windows es bastante experimental e inestable, algunas versiones pueden utilizar las versiones inestables de bibliotecas de terceros, y, además, se sabe que  LeechCraft  tiene más errores y menos bueno en Windows que en otros sistemas. Eso es porque nuestros desarrolladores usan mas otros sistemas, que Windows, y la mayoría de los usuarios utilizan otros sistemas operativos tambien. Perdóna por eso; esperamos que nos entiendan. 
+
+Si usted ha leído y entendido bien todas estas cartas, haga clic en el botón Cancelar en este cuadro de diálogo para que no volverá a aparecer la próxima vez que ejecute LeechCraft.</translation>
     </message>
 </context>
 <context>
@@ -1125,10 +1126,7 @@ If you have read and really understood all these letters, click Cancel button in
     <message numerus="yes">
         <location filename="util/util.cpp" line="125"/>
         <source>%n day(s), </source>
-        <translation>
-            <numerusform>%n dia(s), </numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation><numerusform>%n dia</numerusform><numerusform>%n días</numerusform></translation>
     </message>
     <message>
         <location filename="util/util.cpp" line="221"/>
@@ -1462,7 +1460,7 @@ If you have read and really understood all these letters, click Cancel button in
     <message>
         <location filename="dummy.cpp" line="26"/>
         <source>Manual toolbar visibility control</source>
-        <translation type="unfinished"></translation>
+        <translation>Control manual de la visibilidad de la barra de herramientas</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="27"/>
@@ -1472,22 +1470,22 @@ If you have read and really understood all these letters, click Cancel button in
     <message>
         <location filename="dummy.cpp" line="28"/>
         <source>Tab selection behavior: </source>
-        <translation type="unfinished"></translation>
+        <translation>Tab selection behavior: </translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="29"/>
         <source>Select the previously selected tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccione la pestaña seleccionada previamente</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="30"/>
         <source>Select the tab to the right of the one being removed</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccione la pestaña a la derecha de la que se ha eliminado</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="31"/>
         <source>Select the tab to the left of the one being removed</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccione la pestaña a la izquierda de la que se ha eliminado</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="32"/>
