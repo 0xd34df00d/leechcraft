@@ -23,18 +23,27 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	tabsessmanager.cpp
+	restoresessiondialog.cpp
+	recinfo.cpp
 	)
 SET (HEADERS
 	tabsessmanager.h
+	restoresessiondialog.h
+	recinfo.h
+	)
+SET (FORMS
+	restoresessiondialog.ui
 	)
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 ENDIF (NOT LC_NO_MOC)
+QT4_WRAP_UI (UIS_H ${FORMS})
 
 ADD_LIBRARY (leechcraft_tabsessmanager SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
+	${UIS_H}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_tabsessmanager
 	${QT_LIBRARIES}

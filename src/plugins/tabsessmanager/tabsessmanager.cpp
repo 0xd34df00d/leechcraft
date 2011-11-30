@@ -26,6 +26,8 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/ihaverecoverabletabs.h>
 #include <interfaces/ihavetabs.h>
+#include "restoresessiondialog.h"
+#include "recinfo.h"
 
 namespace LeechCraft
 {
@@ -59,6 +61,9 @@ namespace TabSessManager
 
 	void Plugin::Release ()
 	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_TabSessManager");
+		settings.setValue ("CleanShutdown", true);
 	}
 
 	QString Plugin::GetName () const
@@ -104,42 +109,65 @@ namespace TabSessManager
 		handleTabRecoverDataChanged ();
 	}
 
+	namespace
+	{
+		QHash<QObject*, QList<RecInfo>> GetTabsFromStream (QDataStream& str, ICoreProxy_ptr proxy)
+		{
+			QHash<QByteArray, QObject*> pluginCache;
+			QHash<QObject*, QList<RecInfo>> tabs;
+
+			while (!str.atEnd ())
+			{
+				QByteArray pluginId;
+				QByteArray recData;
+				QString name;
+				QIcon icon;
+
+				str >> pluginId >> recData >> name >> icon;
+				if (!pluginCache.contains (pluginId))
+				{
+					QObject *obj = proxy->GetPluginsManager ()->
+							GetPluginByID (pluginId);
+					pluginCache [pluginId] = obj;
+				}
+
+				QObject *plugin = pluginCache [pluginId];
+				tabs [plugin] << RecInfo { recData, name, icon };
+
+				qDebug () << "got restore data for" << pluginId << name << plugin;
+			}
+
+			Q_FOREACH (QObject *obj, tabs.keys (QList<RecInfo> ()))
+				tabs.remove (obj);
+
+			return tabs;
+		}
+
+		void AskTabs (QHash<QObject*, QList<RecInfo>>& tabs)
+		{
+			RestoreSessionDialog dia;
+			dia.SetPages (tabs);
+
+			if (dia.exec () != QDialog::Accepted)
+			{
+				tabs.clear ();
+				return;
+			}
+
+			tabs = dia.GetPages ();
+		}
+	}
+
 	void Plugin::recover ()
 	{
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_TabSessManager");
 
 		QDataStream str (settings.value ("Data").toByteArray ());
+		auto tabs = GetTabsFromStream (str, Proxy_);
 
-		struct RecInfo
-		{
-			QByteArray Data_;
-			QString Name_;
-			QIcon Icon_;
-		};
-
-		QHash<QByteArray, QObject*> pluginCache;
-		QHash<QObject*, QList<RecInfo>> tabs;
-		while (!str.atEnd ())
-		{
-			QByteArray pluginId;
-			QByteArray recData;
-			QString name;
-			QIcon icon;
-
-			str >> pluginId >> recData >> name >> icon;
-			if (!pluginCache.contains (pluginId))
-			{
-				QObject *obj = Proxy_->GetPluginsManager ()->
-						GetPluginByID (pluginId);
-				pluginCache [pluginId] = obj;
-			}
-
-			QObject *plugin = pluginCache [pluginId];
-			tabs [plugin] << RecInfo { recData, name, icon };
-
-			qDebug () << "got restore data for" << pluginId << name << plugin;
-		}
+		if (!settings.value ("CleanShutdown", false).toBool ())
+			AskTabs (tabs);
 
 		Q_FOREACH (QObject *plugin, tabs.keys ())
 		{
@@ -156,6 +184,7 @@ namespace TabSessManager
 		}
 
 		IsRecovering_ = false;
+		settings.setValue ("CleanShutdown", false);
 	}
 
 	void Plugin::handleTabRecoverDataChanged ()
