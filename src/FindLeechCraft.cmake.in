@@ -53,5 +53,5 @@ SET (LC_QML_DEST @LC_QML_DEST@)
 SET (LC_INSTALLEDMANIFEST_DEST @LC_INSTALLEDMANIFEST_DEST@)
 
 IF (UNIX)
-	SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fno-strict-aliasing")
+	SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fno-strict-aliasing -std=c++0x")
 ENDIF (UNIX)
