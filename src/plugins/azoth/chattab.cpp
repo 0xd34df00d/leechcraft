@@ -239,7 +239,7 @@ namespace Azoth
 			"ChatTab",
 			tr ("Chat"),
 			tr ("A tab with a chat session"),
-			QIcon (),
+			QIcon (":/plugins/azoth/resources/images/chattabclass.svg"),
 			0,
 			TFEmpty
 		};
