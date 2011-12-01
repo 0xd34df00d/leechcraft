@@ -238,7 +238,7 @@ namespace Sidebar
 		act->setProperty ("Sidebar/Widget", QVariant::fromValue<QObject*> (w));
 		TabActions_ [w] = act;
 
-		Bar_->AddCurTabAction (act);
+		Bar_->AddCurTabAction (act, w);
 
 		connect (act,
 				SIGNAL (triggered (bool)),
@@ -267,7 +267,7 @@ namespace Sidebar
 	void Plugin::handleRemoveTab (QWidget *w)
 	{
 		QAction *act = TabActions_.take (w);
-		Bar_->RemoveCurTabAction (act);
+		Bar_->RemoveCurTabAction (act, w);
 		ActionIconUpdates_.remove (act);
 		ActionTextUpdates_.remove (act);
 		delete act;

@@ -30,6 +30,8 @@ namespace Util
 	class FlowLayout;
 }
 
+struct TabClassInfo;
+
 namespace Sidebar
 {
 	class SBWidget : public QWidget
@@ -41,6 +43,9 @@ namespace Sidebar
 
 		const QSize IconSize_;
 
+		QMap<QByteArray, QList<QAction*>> TabClass2Action_;
+		QMap<QByteArray, QToolButton*> TabClass2Folder_;
+
 		QMap<QAction*, QToolButton*> CurTab2Button_;
 		QMap<QAction*, QToolButton*> TrayAct2Button_;
 	public:
@@ -48,10 +53,16 @@ namespace Sidebar
 
 		void AddTabOpenAction (QAction*);
 		void AddQLAction (QAction*);
-		void AddCurTabAction (QAction*);
-		void RemoveCurTabAction (QAction*);
+		void AddCurTabAction (QAction*, QWidget*);
+		void RemoveCurTabAction (QAction*, QWidget*);
 		void AddTrayAction (QAction*);
+	private:
+		QToolButton* AddTabButton (QAction*, QLayout*);
+		void FoldTabClass (const TabClassInfo&, QAction*);
+		void AddToFolder (const QByteArray&, QAction*);
+		void UnfoldTabClass (const TabClassInfo&);
 	private slots:
+		void showFolded ();
 		void handleTrayActDestroyed ();
 	};
 }
