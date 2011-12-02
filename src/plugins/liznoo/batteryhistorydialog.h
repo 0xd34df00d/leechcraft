@@ -23,6 +23,8 @@
 #include "ui_batteryhistorydialog.h"
 #include "batteryhistory.h"
 
+class QwtPlotCurve;
+
 namespace LeechCraft
 {
 namespace Liznoo
@@ -32,8 +34,11 @@ namespace Liznoo
 		Q_OBJECT
 
 		Ui::BatteryHistoryDialog Ui_;
+		
+		QwtPlotCurve *Percent_;
+		QwtPlotCurve *Energy_;
 	public:
-		BatteryHistoryDialog (QWidget* = 0);
+		BatteryHistoryDialog (int, QWidget* = 0);
 
 		void UpdateHistory (const QLinkedList<BatteryHistory>&);
 	};

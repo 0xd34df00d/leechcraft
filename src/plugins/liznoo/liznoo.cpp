@@ -107,7 +107,6 @@ namespace Liznoo
 			else
 				name += "100";
 
-			qDebug () << name;
 			return name;
 		}
 	}
@@ -202,13 +201,15 @@ namespace Liznoo
 				Battery2Dialog_.contains (id))
 			return;
 
-		auto dialog = new BatteryHistoryDialog;
+		auto dialog = new BatteryHistoryDialog (HistSize);
 		dialog->UpdateHistory (Battery2History_ [id]);
+		dialog->setAttribute (Qt::WA_DeleteOnClose);
 		Battery2Dialog_ [id] = dialog;
 		connect (dialog,
 				SIGNAL (destroyed (QObject*)),
 				this,
 				SLOT (handleBatteryDialogDestroyed ()));
+		dialog->show ();
 	}
 
 	void Plugin::handleBatteryDialogDestroyed ()
@@ -229,6 +230,7 @@ namespace Liznoo
 				SIGNAL (timeout ()),
 				this,
 				SLOT (handleUpdateHistory ()));
+		timer->start (3000);
 	}
 }
 }

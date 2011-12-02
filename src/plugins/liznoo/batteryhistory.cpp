@@ -24,7 +24,7 @@ namespace LeechCraft
 namespace Liznoo
 {
 	BatteryHistory::BatteryHistory (const BatteryInfo& info)
-	: Percentage_ (info)
+	: Percentage_ (info.Percentage_)
 	, Voltage_ (info.Voltage_)
 	, Energy_ (info.Energy_)
 	, EnergyRate_ (info.EnergyRate_)
