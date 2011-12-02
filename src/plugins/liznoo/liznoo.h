@@ -19,15 +19,17 @@
 #ifndef PLUGINS_LIZNOO_LIZNOO_H
 #define PLUGINS_LIZNOO_LIZNOO_H
 #include <QObject>
+#include <QLinkedList>
 #include <interfaces/iinfo.h>
 #include <interfaces/iactionsexporter.h>
-#include "batteryinfo.h"
+#include "batteryhistory.h"
 
 namespace LeechCraft
 {
 namespace Liznoo
 {
 	class DBusThread;
+	class BatteryHistoryDialog;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -39,6 +41,9 @@ namespace Liznoo
 		ICoreProxy_ptr Proxy_;
 		DBusThread *Thread_;
 		QMap<QString, QAction*> Battery2Action_;
+		QMap<QString, BatteryInfo> Battery2LastInfo_;
+		QMap<QString, BatteryHistoryDialog*> Battery2Dialog_;
+		QMap<QString, QLinkedList<BatteryHistory>> Battery2History_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -51,6 +56,9 @@ namespace Liznoo
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
 	private slots:
 		void handleBatteryInfo (Liznoo::BatteryInfo);
+		void handleUpdateHistory ();
+		void handleHistoryTriggered ();
+		void handleBatteryDialogDestroyed ();
 		void handleThreadStarted ();
 	signals:
 		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);

@@ -29,21 +29,28 @@ SET (SRCS
 	dbusconnector.cpp
 	batteryinfo.cpp
 	dbusthread.cpp
+	batteryhistorydialog.cpp
 	)
 SET (HEADERS
 	liznoo.h
 	dbusconnector.h
 	batteryinfo.h
 	dbusthread.h
+	batteryhistorydialog.h
+	)
+SET (FORMS
+	batteryhistorydialog.ui
 	)
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 ENDIF (NOT LC_NO_MOC)
+QT4_WRAP_UI (UIS_H ${FORMS})
 
 ADD_LIBRARY (leechcraft_liznoo SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
+	${UIS_H}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_liznoo
 	${QT_LIBRARIES}

@@ -16,36 +16,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LIZNOO_BATTERYINFO_H
-#define PLUGINS_LIZNOO_BATTERYINFO_H
-#include <QString>
-#include <QMetaType>
+#ifndef PLUGINS_LIZNOO_BATTERYHISTORYDIALOG_H
+#define PLUGINS_LIZNOO_BATTERYHISTORYDIALOG_H
+#include <QObject>
+#include <QLinkedList>
+#include "ui_batteryhistorydialog.h"
+#include "batteryhistory.h"
 
 namespace LeechCraft
 {
 namespace Liznoo
 {
-	struct BatteryInfo
+	class BatteryHistoryDialog : public QDialog
 	{
-		QString ID_;
+		Q_OBJECT
 
-		char Percentage_;
+		Ui::BatteryHistoryDialog Ui_;
+	public:
+		BatteryHistoryDialog (QWidget* = 0);
 
-		qlonglong TimeToFull_;
-		qlonglong TimeToEmpty_;
-		double Voltage_;
-
-		double Energy_;
-		double EnergyFull_;
-		double EnergyRate_;
-
-		QString Technology_;
-
-		void Dump ();
+		void UpdateHistory (const QLinkedList<BatteryHistory>&);
 	};
 }
 }
-
-Q_DECLARE_METATYPE (LeechCraft::Liznoo::BatteryInfo);
 
 #endif
