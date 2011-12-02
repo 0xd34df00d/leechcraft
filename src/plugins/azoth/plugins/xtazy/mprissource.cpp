@@ -28,13 +28,13 @@ namespace Azoth
 namespace Xtazy
 {
 	const QString MPRISPrefix = "org.mpris";
-	
+
 	enum MPRISVersion
 	{
 		MV1 = 1,
 		MV2
 	};
-	
+
 	namespace
 	{
 		MPRISVersion GetVersion (const QString& service)
@@ -44,14 +44,14 @@ namespace Xtazy
 					MV2;
 		}
 	}
-	
+
 	enum PlayStatus
 	{
 		PSPlaying = 0,
 		PSPaused,
 		PSStopped
 	};
-	
+
 	namespace
 	{
 		PlayStatus GetMPRIS2PlayStatus (const QString& status)
@@ -64,7 +64,7 @@ namespace Xtazy
 				return PSStopped;
 		}
 	}
-	
+
 	QDBusArgument& operator<< (QDBusArgument& arg, const PlayerStatus& ps)
 	{
 		arg.beginStructure ();
@@ -75,7 +75,7 @@ namespace Xtazy
 		arg.endStructure ();
 		return arg;
 	}
-	
+
 	const QDBusArgument& operator>> (const QDBusArgument& arg, PlayerStatus& ps)
 	{
 		arg.beginStructure ();
@@ -101,14 +101,14 @@ namespace Xtazy
 		Q_FOREACH (const QString& player, Players_)
 			ConnectToBus (player);
 
-		SB_.disconnect ("org.freedesktop.DBus",
+		SB_.connect ("org.freedesktop.DBus",
 				"/org/freedesktop/DBus",
 				"org.freedesktop.DBus",
 				"NameOwnerChanged",
 				this,
 				SLOT (checkMPRISService (QString, QString, QString)));
 	}
-	
+
 	MPRISSource::~MPRISSource ()
 	{
 		Q_FOREACH (const QString& player, Players_)
@@ -121,7 +121,7 @@ namespace Xtazy
 				this,
 				SLOT (checkMPRISService (QString, QString, QString)));
 	}
-	
+
 	void MPRISSource::ConnectToBus (const QString& service)
 	{
 		switch (GetVersion (service))
@@ -150,7 +150,7 @@ namespace Xtazy
 						SLOT (handlePropertyChange (QDBusMessage)));
 		}
 	}
-	
+
 	void MPRISSource::DisconnectFromBus (const QString& service)
 	{
 		switch (GetVersion (service))
@@ -179,7 +179,7 @@ namespace Xtazy
 						SLOT (handlePropertyChange (QDBusMessage)));
 		}
 	}
-	
+
 	TuneSourceBase::TuneInfo_t MPRISSource::GetTuneMV2 (const QVariantMap& map)
 	{
 		TuneInfo_t result;
@@ -195,7 +195,7 @@ namespace Xtazy
 			result ["length"] = map ["xesam:length"].toLongLong () / 1000000;
 		return result;
 	}
-	
+
 	void MPRISSource::handlePropertyChange (const QDBusMessage& msg)
 	{
 		QDBusArgument arg = msg.arguments ().at (1).value<QDBusArgument> ();
@@ -222,7 +222,7 @@ namespace Xtazy
 			handlePlayerStatusChange (status);
 		}
 	}
-	
+
 	void MPRISSource::handlePlayerStatusChange (PlayerStatus ps)
 	{
 		if (ps.PlayStatus_ != PSPlaying)
@@ -234,7 +234,7 @@ namespace Xtazy
 		else if (!Tune_.isEmpty ())
 			emit tuneInfoChanged (Tune_);
 	}
-	
+
 	void MPRISSource::handleTrackChange (const QVariantMap& map)
 	{
 		TuneInfo_t tune = map;
@@ -242,21 +242,21 @@ namespace Xtazy
 			tune ["source"] = tune.take ("album");
 		if (tune.contains ("time"))
 			tune ["length"] = tune.take ("time");
-		
+
 		if (tune == Tune_)
 			return;
-		
+
 		Tune_ = tune;
 		if (!Tune_.isEmpty ())
 			emit tuneInfoChanged (Tune_);
 	}
-	
+
 	void MPRISSource::checkMPRISService (QString name,
 			QString, QString newOwner)
 	{
 		if (!name.startsWith (MPRISPrefix))
 			return;
-		
+
 		const int playerIdx = Players_.indexOf (name);
 		if (playerIdx == -1)
 		{
