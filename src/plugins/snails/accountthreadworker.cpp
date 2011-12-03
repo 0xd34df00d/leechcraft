@@ -17,9 +17,9 @@
  **********************************************************************/
 
 #include "accountthreadworker.h"
-#include <fstream>
 #include <QMutexLocker>
 #include <QUrl>
+#include <QFile>
 #include <QtDebug>
 #include <vmime/security/defaultAuthenticator.hpp>
 #include <vmime/security/cert/defaultCertificateVerifier.hpp>
@@ -40,6 +40,7 @@
 #include "progresslistener.h"
 #include "storage.h"
 #include "vmimeconversions.h"
+#include "outputiodevadapter.h"
 
 namespace LeechCraft
 {
@@ -634,16 +635,17 @@ namespace Snails
 
 			auto data = att->getData ();
 
-			std::ofstream ostr (path.toUtf8 ().constData ());
-			if (!ostr.is_open ())
+			QFile file (path);
+			if (!file.open (QIODevice::WriteOnly))
 			{
 				qWarning () << Q_FUNC_INFO
 						<< "unable to open"
-						<< path;
+						<< path
+						<< file.errorString ();
 				return;
 			}
 
-			auto adapter = vmime::utility::outputStreamAdapter (ostr);
+			OutputIODevAdapter adapter (&file);
 			data->extract (adapter,
 					MkPgListener (tr ("Fetching attachment %1...").arg (attName)));
 
