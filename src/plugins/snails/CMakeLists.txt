@@ -44,6 +44,7 @@ SET (SRCS
 	accountfoldermanager.cpp
 	attdescr.cpp
 	vmimeconversions.cpp
+	outputiodevadapter.cpp
 	)
 SET (HEADERS
 	snails.h
@@ -64,6 +65,7 @@ SET (HEADERS
 	accountfoldermanager.h
 	attdescr.h
 	vmimeconversions.h
+	outputiodevadapter.h
 	)
 SET (FORMS
 	mailtab.ui
