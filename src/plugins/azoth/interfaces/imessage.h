@@ -185,6 +185,16 @@ namespace Azoth
 		 */
 		virtual void Send () = 0;
 
+		/** @brief Stores the message.
+		 *
+		 * After calling this function this message should be present in
+		 * the messages list returned by ICLEntry::GetAllMessages(), but
+		 * the message shouldn't be sent.
+		 *
+		 * @sa ICLEntry::GetAllMessages()
+		 */
+		virtual void Store () = 0;
+
 		/** @brief Returns the direction of this message.
 		 *
 		 * @return The direction of this message.

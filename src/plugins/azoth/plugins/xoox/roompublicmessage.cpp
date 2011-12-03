@@ -99,6 +99,14 @@ namespace Xoox
 		client->sendPacket (msg);
 	}
 
+	void RoomPublicMessage::Store ()
+	{
+		if (!ParentEntry_)
+			return;
+
+		ParentEntry_->HandleMessage (this);
+	}
+
 	IMessage::Direction RoomPublicMessage::GetDirection () const
 	{
 		return Direction_;
@@ -154,12 +162,12 @@ namespace Xoox
 	{
 		Datetime_ = dt;
 	}
-	
+
 	QString RoomPublicMessage::GetRichBody () const
 	{
 		return XHTML_;
 	}
-	
+
 	void RoomPublicMessage::SetRichBody (const QString& xhtml)
 	{
 		XHTML_ = xhtml;

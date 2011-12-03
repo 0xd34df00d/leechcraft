@@ -32,7 +32,7 @@ namespace ChatHistory
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IMessage);
-		
+
 		Direction Direction_;
 		QObject *OtherPart_;
 		QString Variant_;
@@ -44,9 +44,10 @@ namespace ChatHistory
 				const QString& variant,
 				const QString& body,
 				const QDateTime& datetime);
-		
+
 		QObject* GetObject ();
 		void Send ();
+		void Store ();
 		Direction GetDirection () const;
 		MessageType GetMessageType () const;
 		MessageSubType GetMessageSubType () const;

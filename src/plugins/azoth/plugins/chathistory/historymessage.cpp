@@ -37,16 +37,22 @@ namespace ChatHistory
 	, DateTime_ (dt)
 	{
 	}
-	
+
 	QObject* HistoryMessage::GetObject ()
 	{
 		return this;
 	}
-	
+
 	void HistoryMessage::Send ()
 	{
 		qWarning () << Q_FUNC_INFO
 				<< "unable to send history message";
+	}
+
+	void HistoryMessage::Store ()
+	{
+		qWarning () << Q_FUNC_INFO
+				<< "unable to store history message";
 	}
 
 	IMessage::Direction HistoryMessage::GetDirection () const

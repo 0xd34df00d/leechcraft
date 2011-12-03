@@ -61,6 +61,7 @@ namespace Acetamide
 				ClientConnection *conn);
 		QObject* GetObject ();
 		void Send ();
+		void Store ();
 		Direction GetDirection () const;
 		MessageType GetMessageType () const;
 		MessageSubType GetMessageSubType () const;

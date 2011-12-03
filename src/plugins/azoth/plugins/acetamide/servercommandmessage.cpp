@@ -28,8 +28,8 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	ServerCommandMessage::ServerCommandMessage (const QString& msg, 
-			IrcServerCLEntry *entry) 
+	ServerCommandMessage::ServerCommandMessage (const QString& msg,
+			IrcServerCLEntry *entry)
 	: QObject (entry)
 	, ParentEntry_ (entry)
 	, Message_ (msg)
@@ -66,6 +66,12 @@ namespace Acetamide
 		ParentEntry_->GetIrcServerHandler ()->SetLastSendID (QString ());
 		ParentEntry_->GetIrcServerHandler ()->
 				SendMessage2Server (Message_.split (' '));
+	}
+
+	void ServerCommandMessage::Store ()
+	{
+		qWarning () << Q_FUNC_INFO
+				<< "cannot store ServerCommandMessage";
 	}
 
 	IMessage::Direction ServerCommandMessage::GetDirection () const

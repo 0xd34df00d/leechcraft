@@ -89,6 +89,14 @@ namespace Acetamide
 		}
 	}
 
+	void IrcMessage::Store ()
+	{
+		ServerParticipantEntry_ptr entry =
+				Connection_->GetIrcServerHandler (ID_)->
+						GetParticipantEntry (GetOtherVariant ());
+		entry->HandleMessage (this);
+	}
+
 	IMessage::Direction IrcMessage::GetDirection () const
 	{
 		return Direction_;

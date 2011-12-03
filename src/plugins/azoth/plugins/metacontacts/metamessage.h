@@ -34,15 +34,16 @@ namespace Metacontacts
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IMessage);
-		
+
 		MetaEntry *Entry_;
 		QObject *MessageObj_;
 		IMessage *Message_;
 	public:
 		MetaMessage (QObject*, MetaEntry*);
-		
+
 		QObject* GetObject ();
 		void Send ();
+		void Store ();
 		Direction GetDirection () const;
 		MessageType GetMessageType () const;
 		MessageSubType GetMessageSubType () const;
@@ -52,7 +53,7 @@ namespace Metacontacts
 		void SetBody (const QString&);
 		QDateTime GetDateTime () const;
 		void SetDateTime (const QDateTime&);
-		
+
 		IMessage* GetOriginalMessage () const;
 	};
 }

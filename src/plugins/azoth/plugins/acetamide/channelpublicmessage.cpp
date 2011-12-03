@@ -70,6 +70,14 @@ namespace Acetamide
 		ParentEntry_->GetChannelHandler ()->SendPublicMessage (Message_);
 	}
 
+	void ChannelPublicMessage::Store ()
+	{
+		if (!ParentEntry_)
+			return;
+
+		ParentEntry_->HandleMessage (this);
+	}
+
 	IMessage::Direction ChannelPublicMessage::GetDirection () const
 	{
 		return Direction_;

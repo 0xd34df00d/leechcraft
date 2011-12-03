@@ -51,7 +51,7 @@ namespace Xoox
 		QDateTime DateTime_;
 		QXmppMessage Message_;
 		ClientConnection *Connection_;
-		
+
 		bool IsDelivered_;
 	public:
 		GlooxMessage (IMessage::MessageType type,
@@ -65,6 +65,7 @@ namespace Xoox
 		// IMessage
 		QObject* GetObject ();
 		void Send ();
+		void Store ();
 		Direction GetDirection () const;
 		MessageType GetMessageType () const;
 		MessageSubType GetMessageSubType () const;
@@ -75,14 +76,14 @@ namespace Xoox
 		void SetBody (const QString&);
 		QDateTime GetDateTime () const;
 		void SetDateTime (const QDateTime&);
-		
+
 		// IAdvancedMessage
 		bool IsDelivered () const;
-		
+
 		// IRichTextMessage
 		QString GetRichBody () const;
 		void SetRichBody (const QString&);
-		
+
 		void SetDelivered (bool);
 
 		QXmppMessage GetMessage () const;

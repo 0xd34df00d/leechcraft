@@ -52,7 +52,7 @@ namespace Xoox
 		QString FromVariant_;
 		MessageType Type_;
 		MessageSubType SubType_;
-		
+
 		QString XHTML_;
 	public:
 		RoomPublicMessage (const QString&, RoomCLEntry*);
@@ -66,6 +66,7 @@ namespace Xoox
 
 		QObject* GetObject ();
 		void Send ();
+		void Store ();
 		Direction GetDirection () const;
 		MessageType GetMessageType () const;
 		MessageSubType GetMessageSubType () const;

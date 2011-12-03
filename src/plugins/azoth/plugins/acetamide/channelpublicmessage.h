@@ -58,6 +58,7 @@ namespace Acetamide
 
 		QObject* GetObject ();
 		void Send ();
+		void Store ();
 		Direction GetDirection () const;
 		MessageType GetMessageType () const;
 		void SetMessageType (IMessage::MessageType);
