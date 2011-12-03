@@ -391,7 +391,7 @@ namespace Snails
 				[this, &folderName] (decltype (messages.front ()) msg)
 				{
 					auto res = FromHeaders (msg);
-					res->SetFolder (folderName);
+					res->AddFolder (folderName);
 					return res;
 				});
 
@@ -403,13 +403,27 @@ namespace Snails
 
 			newMessages.removeAll (msg);
 
+			bool isUpdated = false;
+
 			auto updated = Core::Instance ().GetStorage ()->
 					LoadMessage (A_, msg->GetID ());
+
 			if (updated->IsRead () != msg->IsRead ())
 			{
 				updated->SetRead (msg->IsRead ());
-				updatedMessages << updated;
+				isUpdated = true;
 			}
+
+			auto sumFolders = updated->GetFolders ();
+			if (!folderName.isEmpty () &&
+					!sumFolders.contains (folderName))
+			{
+				updated->AddFolder (folderName);
+				isUpdated = true;
+			}
+
+			if (isUpdated)
+				updatedMessages << updated;
 		}
 
 		emit gotMsgHeaders (newMessages);
@@ -559,7 +573,7 @@ namespace Snails
 		auto store = MakeStore ();
 		store->connect ();
 
-		auto folder = store->getFolder (Folder2Path (origMsg->GetFolder ()));
+		auto folder = store->getFolder (Folder2Path (origMsg->GetFolders ().value (0)));
 		folder->open (vmime::net::folder::MODE_READ_WRITE);
 
 		auto messages = folder->getMessages ();
@@ -607,7 +621,7 @@ namespace Snails
 		auto store = MakeStore ();
 		store->connect ();
 
-		auto folder = store->getFolder (Folder2Path (msg->GetFolder ()));
+		auto folder = store->getFolder (Folder2Path (msg->GetFolders ().value (0)));
 		folder->open (vmime::net::folder::MODE_READ_WRITE);
 
 		auto messages = folder->getMessages ();

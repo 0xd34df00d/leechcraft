@@ -35,7 +35,7 @@ namespace Snails
 		Q_OBJECT
 
 		QByteArray ID_;
-		QStringList Folder_;
+		QList<QStringList> Folders_;
 		quint64 Size_;
 		QString From_;
 		QString FromEmail_;
@@ -58,8 +58,9 @@ namespace Snails
 		QByteArray GetID () const;
 		void SetID (const QByteArray&);
 
-		QStringList GetFolder () const;
-		void SetFolder (const QStringList&);
+		QList<QStringList> GetFolders () const;
+		void AddFolder (const QStringList&);
+		void SetFolders (const QList<QStringList>&);
 
 		quint64 GetSize () const;
 		void SetSize (quint64);
