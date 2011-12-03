@@ -39,10 +39,6 @@ namespace Snails
 	{
 		W_ = new AccountThreadWorker (A_);
 
-		QTimer::singleShot (0,
-				W_,
-				SLOT (rebuildSessConfig ()));
-
 		ConnectSignals ();
 
 		QThread::run ();
