@@ -110,6 +110,9 @@ namespace Snails
 		void FetchWholeMessage (Message_ptr);
 		void SendMessage (Message_ptr);
 
+		void FetchAttachment (Message_ptr,
+				const QString&, const QString&);
+
 		QByteArray Serialize () const;
 		void Deserialize (const QByteArray&);
 

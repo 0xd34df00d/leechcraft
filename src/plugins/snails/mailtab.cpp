@@ -21,6 +21,8 @@
 #include <QStandardItemModel>
 #include <QTextDocument>
 #include <QSortFilterProxyModel>
+#include <QMenu>
+#include <QFileDialog>
 #include <util/util.h>
 #include "core.h"
 #include "storage.h"
@@ -33,12 +35,15 @@ namespace Snails
 	MailTab::MailTab (const TabClassInfo& tc, QObject *pmt, QWidget *parent)
 	: QWidget (parent)
 	, TabToolbar_ (new QToolBar)
+	, MsgToolbar_ (new QToolBar (tr ("Message actions")))
 	, TabClass_ (tc)
 	, PMT_ (pmt)
 	, MailModel_ (new QStandardItemModel (this))
 	, MailSortFilterModel_ (new QSortFilterProxyModel (this))
 	{
 		Ui_.setupUi (this);
+		FillMsgToolbar ();
+		Ui_.MailTreeLay_->insertWidget (0, MsgToolbar_);
 
 		Ui_.AccountsTree_->setModel (Core::Instance ().GetAccountsModel ());
 
@@ -86,6 +91,20 @@ namespace Snails
 	QToolBar* MailTab::GetToolBar () const
 	{
 		return TabToolbar_;
+	}
+
+	void MailTab::FillMsgToolbar ()
+	{
+		MsgReply_ = new QAction (tr ("Reply..."), this);
+		connect (MsgReply_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleReply ()));
+
+		MsgAttachments_ = new QMenu (tr ("Attachments"));
+
+		MsgToolbar_->addAction (MsgReply_);
+		MsgToolbar_->addAction (MsgAttachments_->menuAction ());
 	}
 
 	void MailTab::handleCurrentAccountChanged (const QModelIndex& idx)
@@ -212,6 +231,41 @@ namespace Snails
 					htmlBody);
 
 		Ui_.MailView_->setHtml (html);
+
+		MsgAttachments_->clear ();
+		MsgAttachments_->setEnabled (!msg->GetAttachments ().isEmpty ());
+		Q_FOREACH (const auto& att, msg->GetAttachments ())
+		{
+			const QString& actName = att.GetName () +
+					" (" + Util::MakePrettySize (att.GetSize ()) + ")";
+			QAction *act = MsgAttachments_->addAction (actName,
+					this,
+					SLOT (handleAttachment ()));
+			act->setProperty ("Snails/MsgId", id);
+			act->setProperty ("Snails/AttName", att.GetName ());
+		}
+	}
+
+	void MailTab::handleReply ()
+	{
+	}
+
+	void MailTab::handleAttachment ()
+	{
+		if (!CurrAcc_)
+			return;
+
+		const auto& path = QFileDialog::getSaveFileName (0,
+				tr ("Save attachment"),
+				QDir::homePath ());
+		if (path.isEmpty ())
+			return;
+
+		const auto& id = sender ()->property ("Snails/MsgId").toByteArray ();
+		const auto& name = sender ()->property ("Snails/AttName").toString ();
+
+		auto msg = Core::Instance ().GetStorage ()->LoadMessage (CurrAcc_.get (), id);
+		CurrAcc_->FetchAttachment (msg, name, path);
 	}
 
 	void MailTab::handleFetchNewMail ()

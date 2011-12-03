@@ -119,6 +119,17 @@ namespace Snails
 				Q_ARG (Message_ptr, msg));
 	}
 
+	void Account::FetchAttachment (Message_ptr msg,
+			const QString& attName, const QString& path)
+	{
+		QMetaObject::invokeMethod (Thread_->GetWorker (),
+				"fetchAttachment",
+				Qt::QueuedConnection,
+				Q_ARG (Message_ptr, msg),
+				Q_ARG (QString, attName),
+				Q_ARG (QString, path));
+	}
+
 	QByteArray Account::Serialize () const
 	{
 		QMutexLocker l (GetMutex ());

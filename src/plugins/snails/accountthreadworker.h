@@ -49,9 +49,11 @@ namespace Snails
 		void FetchMessagesInFolder (const QStringList&, vmime::ref<vmime::net::folder>);
 		void SyncIMAPFolders (vmime::ref<vmime::net::store>);
 		QList<Message_ptr> FetchFullMessages (const std::vector<vmime::ref<vmime::net::message>>&);
+		ProgressListener* MkPgListener (const QString&);
 	public slots:
 		void synchronize (Account::FetchFlags, const QList<QStringList>&);
 		void fetchWholeMessage (Message_ptr);
+		void fetchAttachment (Message_ptr, const QString&, const QString&);
 		void sendMessage (Message_ptr);
 	signals:
 		void error (const QString&);

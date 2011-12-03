@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string/>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QVBoxLayout" name="verticalLayout_4">
    <item>
     <widget class="QSplitter" name="splitter_3">
      <property name="orientation">
@@ -30,7 +30,13 @@
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
-      <widget class="QTreeView" name="MailTree_"/>
+      <widget class="QWidget" name="verticalLayoutWidget">
+       <layout class="QVBoxLayout" name="MailTreeLay_">
+        <item>
+         <widget class="QTreeView" name="MailTree_"/>
+        </item>
+       </layout>
+      </widget>
       <widget class="QWebView" name="MailView_">
        <property name="url">
         <url>

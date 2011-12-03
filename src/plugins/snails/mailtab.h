@@ -40,6 +40,10 @@ namespace Snails
 		Ui::MailTab Ui_;
 
 		QToolBar *TabToolbar_;
+		QToolBar *MsgToolbar_;
+
+		QAction *MsgReply_;
+		QMenu *MsgAttachments_;
 
 		TabClassInfo TabClass_;
 		QObject *PMT_;
@@ -71,9 +75,13 @@ namespace Snails
 		QObject* ParentMultiTabs ();
 		void Remove ();
 		QToolBar* GetToolBar () const;
+	private:
+		void FillMsgToolbar ();
 	private slots:
 		void handleCurrentAccountChanged (const QModelIndex&);
 		void handleMailSelected (const QModelIndex&);
+		void handleReply ();
+		void handleAttachment ();
 		void handleFetchNewMail ();
 		void handleMessageBodyFetched (Message_ptr);
 		void handleGotNewMessages (QList<Message_ptr>);
