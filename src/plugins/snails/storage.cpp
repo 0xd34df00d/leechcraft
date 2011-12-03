@@ -45,7 +45,7 @@ namespace Snails
 			if (msg->GetID ().isEmpty ())
 				continue;
 
-			const QString dirName = msg->GetID ().toHex ().left (2);
+			const QString dirName = msg->GetID ().toHex ().right (3);
 
 			QDir msgDir = dir;
 			if (!dir.exists (dirName))
@@ -120,11 +120,11 @@ namespace Snails
 	Message_ptr Storage::LoadMessage (Account *acc, const QByteArray& id)
 	{
 		QDir dir = DirForAccount (acc);
-		if (!dir.cd (id.toHex ().left (2)))
+		if (!dir.cd (id.toHex ().right (3)))
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unable to cd to"
-					<< dir.filePath (id.toHex ().left (2));
+					<< dir.filePath (id.toHex ().right (3));
 			throw std::runtime_error ("Unable to cd to the directory");
 		}
 
