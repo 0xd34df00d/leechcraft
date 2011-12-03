@@ -159,6 +159,21 @@ namespace Snails
 			emit readStatusChanged (GetID (), read);
 	}
 
+	QList<AttDescr> Message::GetAttachments () const
+	{
+		return Attachments_;
+	}
+
+	void Message::AddAttachment (const AttDescr& att)
+	{
+		Attachments_ << att;
+	}
+
+	void Message::SetAttachmentList (const QList<AttDescr>& list)
+	{
+		Attachments_ = list;
+	}
+
 	void Message::Dump () const
 	{
 		qDebug () << Q_FUNC_INFO
@@ -174,6 +189,9 @@ namespace Snails
 				<< IsRead_
 				<< Body_
 				<< HTMLBody_;
+		qDebug () << Attachments_.size () << "attachments";
+		Q_FOREACH (const auto& att, Attachments_)
+			att.Dump ();
 	}
 
 	QByteArray Message::Serialize () const
@@ -193,7 +211,8 @@ namespace Snails
 			<< Subject_
 			<< IsRead_
 			<< Body_
-			<< HTMLBody_;
+			<< HTMLBody_
+			<< Attachments_;
 
 		return result;
 	}
@@ -217,7 +236,8 @@ namespace Snails
 			>> Subject_
 			>> IsRead_
 			>> Body_
-			>> HTMLBody_;
+			>> HTMLBody_
+			>> Attachments_;
 	}
 }
 }

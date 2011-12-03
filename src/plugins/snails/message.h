@@ -24,6 +24,7 @@
 #include <QStringList>
 #include <QMetaType>
 #include <QPair>
+#include "attdescr.h"
 
 namespace LeechCraft
 {
@@ -47,6 +48,8 @@ namespace Snails
 		QString HTMLBody_;
 
 		bool IsRead_;
+
+		QList<AttDescr> Attachments_;
 	public:
 		Message (QObject* = 0);
 
@@ -87,6 +90,10 @@ namespace Snails
 
 		bool IsRead () const;
 		void SetRead (bool);
+
+		QList<AttDescr> GetAttachments () const;
+		void AddAttachment (const AttDescr&);
+		void SetAttachmentList (const QList<AttDescr>&);
 
 		void Dump () const;
 
