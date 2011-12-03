@@ -22,6 +22,7 @@
 #include <vmime/net/session.hpp>
 #include <vmime/net/message.hpp>
 #include <vmime/net/folder.hpp>
+#include <interfaces/structures.h>
 #include "progresslistener.h"
 #include "message.h"
 #include "account.h"
@@ -57,6 +58,7 @@ namespace Snails
 		void sendMessage (Message_ptr);
 	signals:
 		void error (const QString&);
+		void gotEntity (const LeechCraft::Entity&);
 		void gotProgressListener (ProgressListener_g_ptr);
 		void gotMsgHeaders (QList<Message_ptr>);
 		void messageBodyFetched (Message_ptr);

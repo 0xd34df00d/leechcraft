@@ -33,6 +33,7 @@
 #include <vmime/messageBuilder.hpp>
 #include <vmime/htmlTextPart.hpp>
 #include <vmime/stringContentHandler.hpp>
+#include <util/util.h>
 #include "message.h"
 #include "account.h"
 #include "core.h"
@@ -645,6 +646,13 @@ namespace Snails
 			auto adapter = vmime::utility::outputStreamAdapter (ostr);
 			data->extract (adapter,
 					MkPgListener (tr ("Fetching attachment %1...").arg (attName)));
+
+			const auto& e = Util::MakeNotification ("Snails",
+					tr ("Attachment %1 fetched successfully.")
+						.arg (attName),
+					PInfo_);
+			emit gotEntity (e);
+
 			break;
 		}
 	}

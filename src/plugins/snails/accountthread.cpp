@@ -20,6 +20,7 @@
 #include <QTimer>
 #include "account.h"
 #include "accountthreadworker.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -67,6 +68,10 @@ namespace Snails
 				SIGNAL (gotFolders (QList<QStringList>)),
 				A_,
 				SLOT (handleGotFolders (QList<QStringList>)));
+		connect (W_,
+				SIGNAL (gotEntity (LeechCraft::Entity)),
+				&Core::Instance (),
+				SIGNAL (gotEntity (LeechCraft::Entity)));
 	}
 }
 }
