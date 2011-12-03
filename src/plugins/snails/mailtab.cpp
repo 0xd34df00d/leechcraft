@@ -255,14 +255,15 @@ namespace Snails
 		if (!CurrAcc_)
 			return;
 
+		const auto& name = sender ()->property ("Snails/AttName").toString ();
+
 		const auto& path = QFileDialog::getSaveFileName (0,
 				tr ("Save attachment"),
-				QDir::homePath ());
+				QDir::homePath () + '/' + name);
 		if (path.isEmpty ())
 			return;
 
 		const auto& id = sender ()->property ("Snails/MsgId").toByteArray ();
-		const auto& name = sender ()->property ("Snails/AttName").toString ();
 
 		auto msg = Core::Instance ().GetStorage ()->LoadMessage (CurrAcc_.get (), id);
 		CurrAcc_->FetchAttachment (msg, name, path);
