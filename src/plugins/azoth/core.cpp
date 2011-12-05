@@ -170,6 +170,8 @@ namespace Azoth
 		{
 			rl->AddLocalPrefix ();
 			rl->AddGlobalPrefix ();
+
+			rl->SetCacheParams (1000, 0);
 		}
 
 		connect (ChatTabsManager_,
@@ -1384,8 +1386,7 @@ namespace Azoth
 		filename += '/';
 		filename += affName;
 
-		const QString& path = ResourceLoaders_ [RLTAffIconLoader]->GetIconPath (filename);
-		return QIcon (path);
+		return QIcon (ResourceLoaders_ [RLTAffIconLoader]->LoadPixmap (filename));
 	}
 
 	QMap<QString, QIcon> Core::GetClientIconForEntry (ICLEntry *entry)
@@ -1401,11 +1402,11 @@ namespace Azoth
 		{
 			const QString& filename = pack + entry->GetClientInfo (variant) ["client_type"].toString ();
 
-			QString path = ResourceLoaders_ [RLTClientIconLoader]->GetIconPath (filename);
-			if (path.isNull ())
-				path = ResourceLoaders_ [RLTClientIconLoader]->GetIconPath (pack + "unknown");
+			QPixmap pixmap = ResourceLoaders_ [RLTClientIconLoader]->LoadPixmap (filename);
+			if (pixmap.isNull ())
+				pixmap = ResourceLoaders_ [RLTClientIconLoader]->LoadPixmap (pack + "unknown");
 
-			result [variant] = QIcon (path);
+			result [variant] = QIcon (pixmap);
 		}
 
 		EntryClientIconCache_ [entry] = result;
@@ -1424,7 +1425,7 @@ namespace Azoth
 		{
 			const QString& name = XmlSettingsManager::Instance ()
 					.property ("SystemIcons").toString () + "/default_avatar";
-			avatar = QImage (ResourceLoaders_ [RLTSystemIconLoader]->GetIconPath (name));
+			avatar = ResourceLoaders_ [RLTSystemIconLoader]->LoadPixmap (name).toImage ();
 		}
 
 		const QImage& scaled = avatar.scaled (size, size,
