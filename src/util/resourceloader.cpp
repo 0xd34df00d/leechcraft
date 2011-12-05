@@ -212,6 +212,8 @@ namespace LeechCraft
 				qDebug () << "RL cache hit:" << path;
 				boost::shared_ptr<QBuffer> result (new QBuffer ());
 				result->setData (*CachePathContents_ [path]);
+				if (open)
+					result->open (QIODevice::ReadOnly);
 				return result;
 			}
 
