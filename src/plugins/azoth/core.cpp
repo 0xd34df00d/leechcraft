@@ -1275,12 +1275,12 @@ namespace Azoth
 		const QString& tip = MakeTooltipString (entry);
 
 		const State state = entry->GetStatus ().State_;
-		const QString& icon = GetIconPathForState (state);
+		Util::QIODevice_ptr icon = GetIconPathForState (state);
 
 		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
 		{
 			item->setToolTip (tip);
-			ItemIconManager_->SetIcon (item, icon);
+			ItemIconManager_->SetIcon (item, icon.get ());
 		}
 
 		const QString& id = entry->GetEntryID ();
@@ -1315,10 +1315,9 @@ namespace Azoth
 
 		const QString& filename = XmlSettingsManager::Instance ()
 				.property ("StatusIcons").toString () + "/file";
-		const QString& fileIcon = ResourceLoaders_ [RLTStatusIconLoader]->GetIconPath (filename);
-
+		Util::QIODevice_ptr fileIcon = ResourceLoaders_ [RLTStatusIconLoader]->LoadIcon (filename, true);
 		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
-			ItemIconManager_->SetIcon (item, fileIcon);
+			ItemIconManager_->SetIcon (item, fileIcon.get ());
 	}
 
 	void Core::IncreaseUnreadCount (ICLEntry* entry, int amount)
@@ -1331,52 +1330,58 @@ namespace Azoth
 			}
 	}
 
-	QString Core::GetIconPathForState (State state) const
+	namespace
 	{
-		QString iconName;
-		switch (state)
+		QString GetStateIconFilename (State state)
 		{
-		case SOnline:
-			iconName = "online";
-			break;
-		case SChat:
-			iconName = "chatty";
-			break;
-		case SAway:
-			iconName = "away";
-			break;
-		case SDND:
-			iconName = "dnd";
-			break;
-		case SXA:
-			iconName = "xa";
-			break;
-		case SOffline:
-			iconName = "offline";
-			break;
-		case SConnecting:
-			iconName = "connect";
-			break;
-		default:
-			iconName = "perr";
-			break;
+			QString iconName;
+			switch (state)
+			{
+			case SOnline:
+				iconName = "online";
+				break;
+			case SChat:
+				iconName = "chatty";
+				break;
+			case SAway:
+				iconName = "away";
+				break;
+			case SDND:
+				iconName = "dnd";
+				break;
+			case SXA:
+				iconName = "xa";
+				break;
+			case SOffline:
+				iconName = "offline";
+				break;
+			case SConnecting:
+				iconName = "connect";
+				break;
+			default:
+				iconName = "perr";
+				break;
+			}
+
+			QString filename = XmlSettingsManager::Instance ()
+					.property ("StatusIcons").toString ();
+			filename += '/';
+			filename += iconName;
+
+			return filename;
 		}
+	}
 
-		QString filename = XmlSettingsManager::Instance ()
-				.property ("StatusIcons").toString ();
-		filename += '/';
-		filename += iconName;
-		QStringList variants;
-		variants << filename + ".svg"
-				<< filename + ".png"
-				<< filename + ".jpg";
-
-		return ResourceLoaders_ [RLTStatusIconLoader]->GetPath (variants);
+	Util::QIODevice_ptr Core::GetIconPathForState (State state) const
+	{
+		const QString& filename = GetStateIconFilename (state);
+		return ResourceLoaders_ [RLTStatusIconLoader]->LoadIcon (filename);
 	}
 
 	QIcon Core::GetIconForState (State state) const
 	{
-		return QIcon (GetIconPathForState (state));
+		const QString& filename = GetStateIconFilename (state);
+		return ResourceLoaders_ [RLTStatusIconLoader]->LoadPixmap (filename);
 	}
 
 	QIcon Core::GetAffIcon (const QByteArray& affName) const
@@ -1734,7 +1739,8 @@ namespace Azoth
 				CLRAccountObject);
 		accItem->setData (QVariant::fromValue<CLEntryType> (CLETAccount),
 				CLREntryType);
-		ItemIconManager_->SetIcon (accItem, GetIconPathForState (account->GetState ().State_));
+		ItemIconManager_->SetIcon (accItem,
+				GetIconPathForState (account->GetState ().State_).get ());
 		CLModel_->appendRow (accItem);
 
 		accItem->setEditable (false);
@@ -1994,7 +2000,8 @@ namespace Azoth
 			if (item->data (CLRAccountObject).value<QObject*> () != sender ())
 				continue;
 
-			ItemIconManager_->SetIcon (item, GetIconPathForState (status.State_));
+			ItemIconManager_->SetIcon (item,
+					GetIconPathForState (status.State_).get ());
 			return;
 		}
 
@@ -2601,7 +2608,7 @@ namespace Azoth
 
 	void Core::updateStatusIconset ()
 	{
-		QMap<State, QString> State2IconCache_;
+		QMap<State, Util::QIODevice_ptr> State2IconCache_;
 		Q_FOREACH (ICLEntry *entry, Entry2Items_.keys ())
 		{
 			State state = entry->GetStatus ().State_;
@@ -2609,7 +2616,7 @@ namespace Azoth
 				State2IconCache_ [state] = GetIconPathForState (state);
 
 			Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
-				ItemIconManager_->SetIcon (item, State2IconCache_ [state]);
+				ItemIconManager_->SetIcon (item, State2IconCache_ [state].get ());
 		}
 	}
 

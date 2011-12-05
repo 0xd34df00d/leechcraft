@@ -27,6 +27,7 @@
 #ifdef ENABLE_CRYPT
 #include <QtCrypto>
 #endif
+#include <util/resourceloader.h>
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/ianemitter.h>
 #include "interfaces/iinfo.h"
@@ -235,7 +236,7 @@ namespace Azoth
 		/** Returns the name of the icon from the current iconset for
 		 * the given contact list entry state.
 		 */
-		QString GetIconPathForState (State state) const;
+		Util::QIODevice_ptr GetIconPathForState (State state) const;
 
 		/** Returns an icon from the current iconset for the given
 		 * contact list entry state.
