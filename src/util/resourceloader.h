@@ -22,12 +22,15 @@
 #include <QObject>
 #include <QStringList>
 #include <QDir>
+#include <QCache>
 #include "utilconfig.h"
 
 class QAbstractItemModel;
 class QStandardItemModel;
 class QSortFilterProxyModel;
 class QFileSystemWatcher;
+class QTimer;
+class QPixmap;
 
 namespace LeechCraft
 {
@@ -89,6 +92,9 @@ namespace LeechCraft
 			QSortFilterProxyModel *SortModel_;
 
 			QFileSystemWatcher *Watcher_;
+
+			QTimer *CacheFlushTimer_;
+			mutable QCache<QString, QByteArray> CachePathContents_;
 		public:
 			/** @brief Initializes the loader with the given path.
 			 *
@@ -115,6 +121,30 @@ namespace LeechCraft
 			 * "plugin/directory/subdir".
 			 */
 			void AddLocalPrefix (QString prefix = QString ());
+
+			/** @brief Sets the caching parameters of this loader.
+			 *
+			 * This function sets the size of the cache in kibibytes
+			 * and the timeout between cache flushes in milliseconds.
+			 * That's it, the cache would be flushed each timeout
+			 * milliseconds automatically. If timeout is less than 0,
+			 * then automatic cache flushing is disabled.
+			 *
+			 * @param[in] size The size of the cache in kibibytes.
+			 * @param[in] timeout The timeout between cache flushes.
+			 *
+			 * @sa FlushCache()
+			 */
+			void SetCacheParams (int size, int timeout);
+
+			/** @brief Forcefully flushes the cache.
+			 *
+			 * This function may be used to flush the contents of this
+			 * resource loader cache. It may be useful, for example,
+			 * when the resources have been updated on disk, and the
+			 * new versions should be updated right now.
+			 */
+			void FlushCache ();
 
 			/** @brief Lists the available files for the given option.
 			 *
@@ -297,6 +327,7 @@ namespace LeechCraft
 			void ScanPath (const QString&);
 		private slots:
 			void handleDirectoryChanged (const QString&);
+			void handleFlushCaches ();
 		signals:
 			void watchedDirectoriesChanged ();
 		};

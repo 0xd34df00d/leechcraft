@@ -23,7 +23,9 @@
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
 #include <QFileSystemWatcher>
+#include <QTimer>
 #include <QtDebug>
+#include <QBuffer>
 
 namespace LeechCraft
 {
@@ -36,6 +38,8 @@ namespace LeechCraft
 		, AttrFilters_ (QDir::Dirs | QDir::NoDotAndDotDot | QDir::Readable)
 		, SortModel_ (new QSortFilterProxyModel (this))
 		, Watcher_ (new QFileSystemWatcher (this))
+		, CacheFlushTimer_ (new QTimer (this))
+		, CachePathContents_ (0)
 		{
 			if (RelativePath_.startsWith ('/'))
 				RelativePath_ = RelativePath_.mid (1);
@@ -50,6 +54,11 @@ namespace LeechCraft
 					SIGNAL (directoryChanged (const QString&)),
 					this,
 					SLOT (handleDirectoryChanged (const QString&)));
+
+			connect (CacheFlushTimer_,
+					SIGNAL (timeout ()),
+					this,
+					SLOT (handleFlushCaches ()));
 		}
 
 		void ResourceLoader::AddLocalPrefix (QString prefix)
@@ -111,6 +120,27 @@ namespace LeechCraft
 						<< prefixes
 						<< "; rel path:"
 						<< RelativePath_;
+		}
+
+		void ResourceLoader::SetCacheParams (int size, int timeout)
+		{
+			if (size <= 0)
+			{
+				CacheFlushTimer_->stop ();
+				CachePathContents_.clear ();
+			}
+			else
+			{
+				if (timeout > 0)
+					CacheFlushTimer_->start (timeout);
+
+				CachePathContents_.setMaxCost (size * 1024);
+			}
+		}
+
+		void ResourceLoader::FlushCache ()
+		{
+			CachePathContents_.clear ();
 		}
 
 		QFileInfoList ResourceLoader::List (const QString& option,
@@ -177,7 +207,31 @@ namespace LeechCraft
 			if (path.isNull ())
 				return QIODevice_ptr ();
 
+			if (CachePathContents_.contains (path))
+			{
+				qDebug () << "RL cache hit:" << path;
+				boost::shared_ptr<QBuffer> result (new QBuffer ());
+				result->setData (*CachePathContents_ [path]);
+				return result;
+			}
+
 			boost::shared_ptr<QFile> result (new QFile (path));
+
+			if (!result->isSequential () &&
+					result->size () < CachePathContents_.maxCost () / 2)
+			{
+				qDebug () << "RL cache miss:" << path;
+				if (result->open (QIODevice::ReadOnly))
+				{
+					const QByteArray& data = result->readAll ();
+					CachePathContents_.insert (path, new QByteArray (data), data.size ());
+					result->close ();
+				}
+			}
+
+			if (open)
+				result->open (QIODevice::ReadOnly);
+
 			return result;
 		}
 
@@ -238,6 +292,11 @@ namespace LeechCraft
 					fi.isDir () &&
 					fi.isReadable ())
 				ScanPath (path);
+		}
+
+		void ResourceLoader::handleFlushCaches ()
+		{
+			CachePathContents_.clear ();
 		}
 	}
 }
