@@ -236,7 +236,7 @@ namespace AdiumStyles
 		}
 
 		const QString& newSelector = QString ("div[id=\"Chat\"]");
-		const QString& nextSelector = QString ("div[id=\"insert\"]");
+		const QString& nextSelector = QString ("*[id=\"insert\"]");
 		QWebElement chat = frame->findFirstElement (isNextMsg ? nextSelector : newSelector);
 		if (chat.isNull ())
 		{
