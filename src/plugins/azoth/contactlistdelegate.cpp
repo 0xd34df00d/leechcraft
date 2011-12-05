@@ -513,6 +513,8 @@ namespace Azoth
 		if (ContactHeight_ <= 0)
 			ContactHeight_ = 24;
 
+		View_->setIconSize (QSize (ContactHeight_, ContactHeight_));
+
 		View_->viewport ()->update ();
 		View_->update ();
 	}
