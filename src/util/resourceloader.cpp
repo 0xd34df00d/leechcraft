@@ -153,17 +153,25 @@ namespace LeechCraft
 			return QString ();
 		}
 
-		QString ResourceLoader::GetIconPath (const QString& basename) const
+		namespace
 		{
-			QStringList variants;
-			variants << basename + ".svg"
-					<< basename + ".png"
-					<< basename + ".jpg"
-					<< basename + ".gif";
-			return GetPath (variants);
+			QStringList IconizeBasename (const QString& basename)
+			{
+				QStringList variants;
+				variants << basename + ".svg"
+						<< basename + ".png"
+						<< basename + ".jpg"
+						<< basename + ".gif";
+				return variants;
+			}
 		}
 
-		QIODevice_ptr ResourceLoader::Load (const QStringList& pathVariants) const
+		QString ResourceLoader::GetIconPath (const QString& basename) const
+		{
+			return GetPath (IconizeBasename (basename));
+		}
+
+		QIODevice_ptr ResourceLoader::Load (const QStringList& pathVariants, bool open) const
 		{
 			QString path = GetPath (pathVariants);
 			if (path.isNull ())
@@ -173,9 +181,25 @@ namespace LeechCraft
 			return result;
 		}
 
-		QIODevice_ptr ResourceLoader::Load (const QString& pathVariant) const
+		QIODevice_ptr ResourceLoader::Load (const QString& pathVariant, bool open) const
 		{
-			return Load (QStringList (pathVariant));
+			return Load (QStringList (pathVariant), open);
+		}
+
+		QIODevice_ptr ResourceLoader::LoadIcon (const QString& basename, bool open) const
+		{
+			return Load (IconizeBasename (basename), open);
+		}
+
+		QPixmap ResourceLoader::LoadPixmap (const QString& basename) const
+		{
+			auto dev = LoadIcon (basename, true);
+			if (!dev)
+				return QPixmap ();
+
+			QPixmap px;
+			px.loadFromData (dev->readAll ());
+			return px;
 		}
 
 		QAbstractItemModel* ResourceLoader::GetSubElemModel () const
