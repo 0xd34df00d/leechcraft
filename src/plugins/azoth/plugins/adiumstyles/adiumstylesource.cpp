@@ -196,9 +196,12 @@ namespace AdiumStyles
 		QObject *kindaSender = in ? msg->OtherPart () : reinterpret_cast<QObject*> (42);
 		const bool isNextMsg = Frame2LastContact_.contains (frame) &&
 				kindaSender == Frame2LastContact_ [frame];
+		const bool isSlashMe = msg->GetBody ()
+				.trimmed ().startsWith ("/me ");
 		QString filename;
-		if (msg->GetMessageType () == IMessage::MTChatMessage ||
-				msg->GetMessageType () == IMessage::MTMUCMessage)
+		if ((msg->GetMessageType () == IMessage::MTChatMessage ||
+					msg->GetMessageType () == IMessage::MTMUCMessage) &&
+				!isSlashMe)
 			filename = isNextMsg ?
 					"NextContent.html" :
 					"Content.html";
@@ -206,7 +209,7 @@ namespace AdiumStyles
 			filename = "Action.html";
 
 		if (msg->GetMessageType () != IMessage::MTMUCMessage &&
-			msg->GetMessageType () != IMessage::MTChatMessage)
+				msg->GetMessageType () != IMessage::MTChatMessage)
 			Frame2LastContact_.remove (frame);
 		else if (!isNextMsg)
 			Frame2LastContact_ [frame] = kindaSender;
@@ -456,6 +459,11 @@ namespace AdiumStyles
 			body = richMsg->GetRichBody ();
 		if (body.isEmpty ())
 			body = msg->GetBody ();
+
+		if (body.startsWith ("/me "))
+			body = QString ("* %1 %2")
+					.arg (senderNick)
+					.arg (body.mid (4));
 
 		body = Proxy_->FormatBody (body, msgObj);
 
