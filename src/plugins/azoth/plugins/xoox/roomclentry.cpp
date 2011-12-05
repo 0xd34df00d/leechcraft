@@ -356,7 +356,7 @@ namespace Xoox
 			if (ourRole != QXmppMucItem::ModeratorRole)
 				return false;
 
-			if (ourAff <= aff)
+			if (ourAff < aff)
 				return false;
 
 			return true;
