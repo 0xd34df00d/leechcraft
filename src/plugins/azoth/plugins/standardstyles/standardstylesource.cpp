@@ -44,6 +44,8 @@ namespace StandardStyles
 	{
 		StylesLoader_->AddGlobalPrefix ();
 		StylesLoader_->AddLocalPrefix ();
+
+		StylesLoader_->SetCacheParams (256, 0);
 	}
 
 	QAbstractItemModel* StandardStyleSource::GetOptionsModel() const
@@ -62,6 +64,8 @@ namespace StandardStyles
 		{
 			Coloring2Colors_.clear ();
 			LastPack_ = pack;
+
+			StylesLoader_->FlushCache ();
 		}
 
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
