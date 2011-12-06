@@ -91,7 +91,7 @@ namespace Azoth
 		iconsPropList << "StatusIcons"
 				<< "ClientIcon"
 				<< "AffIcons"
-				<< "MoodIcon"
+				<< "MoodIcons"
 				<< "ActivityIcons"
 				<< "SystemIcons";
 		XmlSettingsManager::Instance ().RegisterObject (iconsPropList,

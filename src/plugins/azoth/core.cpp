@@ -1375,7 +1375,7 @@ namespace Azoth
 	Util::QIODevice_ptr Core::GetIconPathForState (State state) const
 	{
 		const QString& filename = GetStateIconFilename (state);
-		return ResourceLoaders_ [RLTStatusIconLoader]->LoadIcon (filename);
+		return ResourceLoaders_ [RLTStatusIconLoader]->LoadIcon (filename, true);
 	}
 
 	QIcon Core::GetIconForState (State state) const
@@ -2616,7 +2616,10 @@ namespace Azoth
 				State2IconCache_ [state] = GetIconPathForState (state);
 
 			Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
-				ItemIconManager_->SetIcon (item, State2IconCache_ [state].get ());
+			{
+				Util::QIODevice_ptr dev = State2IconCache_ [state];
+				ItemIconManager_->SetIcon (item, dev.get ());
+			}
 		}
 	}
 

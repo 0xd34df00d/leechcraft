@@ -52,7 +52,7 @@ namespace Azoth
 		, Setter_ (setter)
 		{
 		}
-		
+
 		void SetIcon (const T& t, const QString& name)
 		{
 			QFile file (name);
@@ -63,7 +63,7 @@ namespace Azoth
 						<< name;
 				return;
 			}
-			
+
 			SetIcon (t, &file);
 		}
 
@@ -71,6 +71,8 @@ namespace Azoth
 		{
 			Cancel (t);
 
+			if (dev && dev->atEnd ())
+				dev->seek (0);
 			QImageReader reader (dev);
 			const int w = reader.size ().width ();
 			const int h = reader.size ().height ();
@@ -80,7 +82,7 @@ namespace Azoth
 				Setter_ (t, QIcon (QPixmap::fromImage (reader.read ())));
 				return;
 			}
-			
+
 			int delay = 0;
 			QList<QImage> images;
 			if (reader.supportsAnimation ())
@@ -91,7 +93,7 @@ namespace Azoth
 					images << image;
 					image = reader.read ();
 				}
-				
+
 				delay = reader.nextImageDelay ();
 			}
 			else if (!(w % h))
@@ -103,23 +105,23 @@ namespace Azoth
 					images << image.copy (frame * h, 0, h, h);
 					++frame;
 				}
-				
+
 				delay = 200;
 			}
-			
+
 			IconInfo info =
 			{
 				0,
 				images,
 				startTimer (delay)
 			};
-			
+
 			Setter_ (t, QIcon (QPixmap::fromImage (images.first ())));
-			
+
 			Object2Icon_ [t] = info;
 			Timer2Object_ [info.TimerID_] = t;
 		}
-		
+
 		void Cancel (const T& t)
 		{
 			if (!Object2Icon_.contains (t))
@@ -133,15 +135,15 @@ namespace Azoth
 		void timerEvent (QTimerEvent *e)
 		{
 			QObject::timerEvent (e);
-			
+
 			const int id = e->timerId ();
-			
+
 			const T& t = Timer2Object_ [id];
 			IconInfo info = Object2Icon_ [t];
 			if (++info.CurrentFrame_ == info.Images_.size ())
 				info.CurrentFrame_ = 0;
 			Setter_ (t, QIcon (QPixmap::fromImage (info.Images_ [info.CurrentFrame_])));
-			
+
 			Object2Icon_ [t] = info;
 		}
 	};
