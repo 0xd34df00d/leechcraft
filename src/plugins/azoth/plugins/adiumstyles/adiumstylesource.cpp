@@ -48,6 +48,8 @@ namespace AdiumStyles
 	{
 		StylesLoader_->AddGlobalPrefix ();
 		StylesLoader_->AddLocalPrefix ();
+
+		StylesLoader_->SetCacheParams (2048, 0);
 	}
 
 	QAbstractItemModel* AdiumStyleSource::GetOptionsModel () const
@@ -83,6 +85,8 @@ namespace AdiumStyles
 		{
 			Coloring2Colors_.clear ();
 			LastPack_ = srcPack;
+
+			StylesLoader_->FlushCache ();
 		}
 
 		const QString& pack = PackProxyModel_->GetOrigName (srcPack);
