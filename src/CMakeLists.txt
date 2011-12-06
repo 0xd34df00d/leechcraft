@@ -562,6 +562,7 @@ INSTALL (FILES xmlsettingsdialog/datasourceroles.h DESTINATION include/leechcraf
 INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/config.h DESTINATION include/leechcraft/)
 
 INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/FindLeechCraft.cmake DESTINATION share/leechcraft/cmake/)
+INSTALL (FILES InitLCPlugin.cmake DESTINATION /usr/share/cmake/Modules)
 
 INSTALL (DIRECTORY freedesktop/icons/ DESTINATION share/icons/hicolor
 	PATTERN ".svn" EXCLUDE)
