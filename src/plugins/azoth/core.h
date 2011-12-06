@@ -546,6 +546,8 @@ namespace Azoth
 
 		void invalidateSmoothAvatarCache ();
 
+		void flushIconCaches ();
+
 #ifdef ENABLE_CRYPT
 		void handleQCAEvent (int, const QCA::Event&);
 		void handleQCABusyFinished ();

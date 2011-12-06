@@ -2928,6 +2928,12 @@ namespace Azoth
 		updateItem ();
 	}
 
+	void Core::flushIconCaches ()
+	{
+		Q_FOREACH (boost::shared_ptr<Util::ResourceLoader> rl, ResourceLoaders_.values ())
+			rl->FlushCache ();
+	}
+
 #ifdef ENABLE_CRYPT
 	void Core::handleQCAEvent (int id, const QCA::Event& event)
 	{

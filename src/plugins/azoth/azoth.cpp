@@ -87,6 +87,17 @@ namespace Azoth
 				Core::Instance ().GetResourceLoader (Core::RLTSystemIconLoader)->
 					GetSubElemModel ());
 
+		QList<QByteArray> iconsPropList;
+		iconsPropList << "StatusIcons"
+				<< "ClientIcon"
+				<< "AffIcons"
+				<< "MoodIcon"
+				<< "ActivityIcons"
+				<< "SystemIcons";
+		XmlSettingsManager::Instance ().RegisterObject (iconsPropList,
+				&Core::Instance (),
+				"flushIconCaches");
+
 #ifdef ENABLE_MEDIACALLS
 		QStringList audioIns (tr ("Default input device"));
 		Q_FOREACH (const QAudioDeviceInfo& info,
