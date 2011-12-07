@@ -15,12 +15,14 @@ IF (NOT QT_USE_FILE)
 	FIND_PACKAGE (LeechCraft REQUIRED)
 ENDIF (NOT QT_USE_FILE)
 
-SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+IF (NOT MSVC)
+	SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+ENDIF (NOT MSVC)
 
 SET (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 OPTION (TESTS_LAURE "Enable Laure tests" OFF)
-OPTION (ENABLE_LASTFM "Enable Last.fm submitter" ON)
+OPTION (ENABLE_LASTFM "Enable Last.fm submitter" OFF)
 
 SET (QT_USE_QTGUI TRUE)
 SET (QT_USE_QTNETWORK TRUE)
@@ -31,8 +33,20 @@ IF (TESTS_LAURE)
 ENDIF (TESTS_LAURE)
 
 FIND_PACKAGE (VLC REQUIRED)
-FIND_PACKAGE (LastFM REQUIRED)
-FIND_PACKAGE (MAGIC REQUIRED)
+
+IF (ENABLE_LASTFM)
+	FIND_PACKAGE (LastFM REQUIRED)
+	IF (LastFM_FOUND)
+		ADD_DEFINITIONS (-DHAVE_LASTFM)
+	ENDIF (LastFM_FOUND)	
+ENDIF (ENABLE_LASTFM)
+
+IF (NOT MSVC)
+	FIND_PACKAGE (MAGIC REQUIRED)
+	IF (MAGIC_FOUND)
+		ADD_DEFINITIONS (-DHAVE_MAGIC)
+	ENDIF (MAGIC_FOUND)
+ENDIF (NOT MSVC)
 
 IF (LastFM_FOUND)
 	ADD_DEFINITIONS (-DHAVE_LASTFM)
@@ -60,7 +74,6 @@ SET (SRCS
 	volumeslider.cpp
 	vlcwrapper.cpp
 	playlistaddmenu.cpp
-	lastfmsubmitter.cpp
 	playlistview.cpp
 	xmlsettingsmanager.cpp
 	playlistwidget.cpp
@@ -77,7 +90,6 @@ SET (HEADERS
 	volumeslider.h
 	vlcwrapper.h
 	playlistaddmenu.h
-	lastfmsubmitter.h
 	playlistview.h
 	xmlsettingsmanager.h
 	playlistwidget.h
@@ -91,6 +103,12 @@ SET (FORMS
 	laurewidget.ui
 	chooseurldialog.ui
 )
+
+IF (ENABLE_LASTFM)
+	SET (SRCS ${SRCS} lastfmsubmitter.cpp)
+	SET (HEADERS ${HEADERS} lastfmsubmitter.h)
+ENDIF (ENABLE_LASTFM)
+
 SET (RESOURCES laureresources.qrc)
 
 IF (NOT LC_NO_MOC)
@@ -109,6 +127,7 @@ ADD_CUSTOM_COMMAND (OUTPUT
 ADD_LIBRARY (leechcraft_laure SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
+	${HEADERS}
 	${MOC_SRCS}
 	${FORMS_HEADERS}
 	${RCCS}

@@ -22,7 +22,10 @@
 #include <QMenu>
 #include <QFileInfoList>
 #include <boost/shared_ptr.hpp>
-#include <magic.h>
+
+#ifdef HAVE_MAGIC
+	#include <magic.h>
+#endif
 
 namespace LeechCraft
 {
