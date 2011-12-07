@@ -141,6 +141,7 @@ namespace Xoox
 
 		FetchQueue *VCardQueue_;
 		FetchQueue *CapsQueue_;
+		FetchQueue *VersionQueue_;
 
 		int SocketErrorAccumulator_;
 
@@ -188,6 +189,7 @@ namespace Xoox
 
 		QXmppMucManager* GetMUCManager () const;
 		QXmppDiscoveryManager* GetDiscoveryManager () const;
+		QXmppVersionManager* GetVersionManager () const;
 		QXmppTransferManager* GetTransferManager () const;
 		CapsManager* GetCapsManager () const;
 		AnnotationsManager* GetAnnotationsManager () const;
@@ -261,6 +263,7 @@ namespace Xoox
 		void handleRosterChanged (const QString&);
 		void handleRosterItemRemoved (const QString&);
 		void handleVCardReceived (const QXmppVCardIq&);
+		void handleVersionReceived (const QXmppVersionIq&);
 		void handlePresenceChanged (const QXmppPresence&);
 		void handleMessageReceived (QXmppMessage);
 		void handlePEPEvent (const QString&, PEPEventBase*);

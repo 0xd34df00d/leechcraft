@@ -119,6 +119,8 @@ namespace Xoox
 				jid.contains ("gmail.com") ? 1700 : 300, 1, this))
 	, CapsQueue_ (new FetchQueue (boost::bind (&QXmppDiscoveryManager::requestInfo, DiscoveryManager_, _1, ""),
 				jid.contains ("gmail.com") ? 1000 : 200, 1, this))
+	, VersionQueue_ (new FetchQueue ([this] (QString str) { Client_->versionManager ().requestVersion (str); },
+				jid.contains ("gmail.com") ? 1200 : 250, 1, this))
 	, SocketErrorAccumulator_ (0)
 	{
 		SetOurJID (OurJID_);
@@ -249,6 +251,11 @@ namespace Xoox
 				SIGNAL (vCardReceived (const QXmppVCardIq&)),
 				this,
 				SLOT (handleVCardReceived (const QXmppVCardIq&)));
+
+		connect (&Client_->versionManager (),
+				SIGNAL (versionReceived (const QXmppVersionIq&)),
+				this,
+				SLOT (handleVersionReceived (const QXmppVersionIq&)));
 
 		connect (DeliveryReceiptsManager_,
 				SIGNAL (messageDelivered (const QString&)),
@@ -422,6 +429,11 @@ namespace Xoox
 	QXmppDiscoveryManager* ClientConnection::GetDiscoveryManager () const
 	{
 		return DiscoveryManager_;
+	}
+
+	QXmppVersionManager* ClientConnection::GetVersionManager () const
+	{
+		return &Client_->versionManager ();
 	}
 
 	QXmppTransferManager* ClientConnection::GetTransferManager () const
@@ -1001,6 +1013,20 @@ namespace Xoox
 			SelfContact_->SetVCard (vcard);
 	}
 
+	void ClientConnection::handleVersionReceived (const QXmppVersionIq& version)
+	{
+		QString jid;
+		QString nick;
+		Split (version.from (), &jid, &nick);
+
+		if (JID2CLEntry_.contains (jid))
+			JID2CLEntry_ [jid]->SetClientVersion (nick, version);
+		else if (RoomHandlers_.contains (jid))
+			RoomHandlers_ [jid]->GetParticipantEntry (nick)->SetClientVersion (QString (), version);
+		else if (OurBareJID_ == jid)
+			SelfContact_->SetClientVersion (nick, version);
+	}
+
 	void ClientConnection::handlePresenceChanged (const QXmppPresence& pres)
 	{
 		if (pres.type () != QXmppPresence::Unavailable &&
@@ -1041,6 +1067,7 @@ namespace Xoox
 
 		JID2CLEntry_ [jid]->SetClientInfo (resource, pres);
 		JID2CLEntry_ [jid]->SetStatus (PresenceToStatus (pres), resource);
+		VersionQueue_->Schedule (pres.from ());
 		if (SignedPresences_.remove (jid))
 		{
 			qDebug () << "got signed presence" << jid;
@@ -1531,6 +1558,7 @@ namespace Xoox
 				entry = new GlooxCLEntry (bareJID, Account_);
 				JID2CLEntry_ [bareJID] = entry;
 				ScheduleFetchVCard (bareJID);
+				VersionQueue_->Schedule (bareJID);
 			}
 		}
 		else
@@ -1555,7 +1583,10 @@ namespace Xoox
 					vcard.email ().isEmpty () &&
 					vcard.firstName ().isEmpty () &&
 					vcard.lastName ().isEmpty ())
+			{
 				ScheduleFetchVCard (bareJID);
+				VersionQueue_->Schedule (bareJID);
+			}
 		}
 		return entry;
 	}
