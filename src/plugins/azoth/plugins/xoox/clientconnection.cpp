@@ -115,9 +115,9 @@ namespace Xoox
 	, CapsManager_ (new CapsManager (this))
 	, IsConnected_ (false)
 	, FirstTimeConnect_ (true)
-	, VCardQueue_ (new FetchQueue (boost::bind (&QXmppVCardManager::requestVCard, &Client_->vCardManager (), _1),
+	, VCardQueue_ (new FetchQueue ([this] (QString str) { Client_->vCardManager ().requestVCard (str); },
 				jid.contains ("gmail.com") ? 1700 : 300, 1, this))
-	, CapsQueue_ (new FetchQueue (boost::bind (&QXmppDiscoveryManager::requestInfo, DiscoveryManager_, _1, ""),
+	, CapsQueue_ (new FetchQueue ([this] (QString str) { DiscoveryManager_->requestInfo (str, ""); },
 				jid.contains ("gmail.com") ? 1000 : 200, 1, this))
 	, VersionQueue_ (new FetchQueue ([this] (QString str) { Client_->versionManager ().requestVersion (str); },
 				jid.contains ("gmail.com") ? 1200 : 250, 1, this))
