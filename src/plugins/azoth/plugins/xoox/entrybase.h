@@ -24,11 +24,13 @@
 #include <QVariant>
 #include <QXmppMessage.h>
 #include <QXmppVCardIq.h>
+#include <QXmppVersionIq.h>
 #include <interfaces/iclentry.h>
 #include <interfaces/iadvancedclentry.h>
 #include <interfaces/isupportgeolocation.h>
 
 class QXmppPresence;
+class QXmppVersionIq;
 
 namespace LeechCraft
 {
@@ -70,6 +72,7 @@ namespace Xoox
 
 		QMap<QString, QMap<QString, QVariant> > Variant2ClientInfo_;
 		QMap<QString, QByteArray> Variant2VerString_;
+		QMap<QString, QXmppVersionIq> Variant2Version_;
 
 		bool HasUnreadMsgs_;
 	public:
@@ -109,6 +112,7 @@ namespace Xoox
 
 		void SetClientInfo (const QString&, const QString&, const QByteArray&);
 		void SetClientInfo (const QString&, const QXmppPresence&);
+		void SetClientVersion (const QString&, const QXmppVersionIq&);
 
 		GeolocationInfo_t GetGeolocationInfo (const QString&) const;
 
