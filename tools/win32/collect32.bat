@@ -78,6 +78,10 @@ copy %LIBTORRENT_BIN_DIR%\torrent.dll %TARGET_DIR%
 rem - qjson -
 copy %QJSON_BIN_DIR%\qjson.dll %TARGET_DIR%
 
+rem - VLC -
+copy %VLC_DIR%\libvlc.dll %TARGET_DIR%
+copy %VLC_DIR%\libvlccore.dll %TARGET_DIR%
+
 rem === LEECHCRAFT FILES ===
 
 rem - Main files -
