@@ -471,6 +471,8 @@ namespace Azoth
 		 */
 		void handleEntryPermsChanged (ICLEntry *entry = 0);
 
+		void handleEntryGenerallyChanged ();
+
 		/** Handles the message receival from contact list entries.
 		 */
 		void handleEntryGotMessage (QObject *msg);
