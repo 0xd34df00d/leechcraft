@@ -40,21 +40,23 @@ namespace Xoox
 		GlooxAccount *Account_;
 		QString JID_;
 		QXmppAnnotationsIq::NoteItem Note_;
-		
+
 		QXmppVCardIq VCard_;
 	public:
 		VCardDialog (QWidget* = 0);
 		VCardDialog (EntryBase*, QWidget* = 0);
 
 		void UpdateInfo (const QXmppVCardIq&);
+	private:
+		void InitConnections (EntryBase*);
+		void EnableEditableMode ();
+		void UpdateNote (GlooxAccount*, const QString&);
 	private slots:
+		void rebuildClientInfo ();
 		void setNote ();
 		void publishVCard ();
 		void on_PhotoBrowse__released ();
 		void on_PhotoClear__released ();
-	private:
-		void EnableEditableMode ();
-		void UpdateNote (GlooxAccount*, const QString&);
 	};
 }
 }

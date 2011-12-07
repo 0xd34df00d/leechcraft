@@ -71,25 +71,9 @@ namespace Xoox
 		Ui_.EditBirthday_->setVisible (false);
 
 		GlooxAccount *acc = qobject_cast<GlooxAccount*> (entry->GetParentAccount ());
-		CapsManager *mgr = acc->GetClientConnection ()->GetCapsManager ();
 
-		QString html;
-		Q_FOREACH (const QString& variant, entry->Variants ())
-		{
-			const QMap<QString, QVariant>& info = entry->GetClientInfo (variant);
-			const QString& client = info ["client_name"].toString ();
-
-			html += "<strong>" + client + "</strong> (" +
-					QString::number (info ["priority"].toInt ()) + ")<br />";
-
-			const QStringList& caps =
-					mgr->GetCaps (entry->GetVariantVerString (variant));
-			if (caps.size ())
-				html += "<strong>" + tr ("Capabilities") +
-						"</strong>:<ul><li>" + caps.join ("</li><li>") + "</li></ul>";
-		}
-
-		Ui_.ClientInfo_->setHtml (html);
+		InitConnections (entry);
+		rebuildClientInfo ();
 	}
 
 	void VCardDialog::UpdateInfo (const QXmppVCardIq& vcard)
@@ -126,6 +110,55 @@ namespace Xoox
 		Ui_.OrgUnit_->setText (vcard.orgUnit ());
 		Ui_.Title_->setText (vcard.title ());
 		Ui_.Role_->setText (vcard.role ());
+	}
+
+	void VCardDialog::InitConnections (EntryBase *entry)
+	{
+		connect (entry,
+				SIGNAL (statusChanged (const EntryStatus&, const QString&)),
+				this,
+				SLOT (rebuildClientInfo ()));
+		connect (entry,
+				SIGNAL (entryGenerallyChanged ()),
+				this,
+				SLOT (rebuildClientInfo ()));
+	}
+
+	void VCardDialog::rebuildClientInfo ()
+	{
+		if (!Account_)
+			return;
+
+		EntryBase *entry = qobject_cast<EntryBase*> (Account_->GetClientConnection ()->GetCLEntry (JID_));
+		CapsManager *mgr = Account_->GetClientConnection ()->GetCapsManager ();
+
+		QString html;
+		Q_FOREACH (const QString& variant, entry->Variants ())
+		{
+			const auto& info = entry->GetClientInfo (variant);
+			const QString& client = info ["raw_client_name"].toString ();
+
+			html += "<strong>" + client + "</strong> (" +
+					QString::number (info ["priority"].toInt ()) + ")<br />";
+
+			const auto& version = entry->GetClientVersion (variant);
+			auto gapp = [&html] (QString user, QString part)
+			{
+				if (!part.isEmpty ())
+					html += user + ": " + part + "<br />";
+			};
+			gapp (tr ("Name"), version.name ());
+			gapp (tr ("Version"), version.version ());
+			gapp (tr ("OS"), version.os ());
+
+			const QStringList& caps =
+					mgr->GetCaps (entry->GetVariantVerString (variant));
+			if (caps.size ())
+				html += "<strong>" + tr ("Capabilities") +
+						"</strong>:<ul><li>" + caps.join ("</li><li>") + "</li></ul>";
+		}
+
+		Ui_.ClientInfo_->setHtml (html);
 	}
 
 	void VCardDialog::setNote ()
@@ -220,6 +253,11 @@ namespace Xoox
 		Note_ = acc->GetClientConnection ()->
 				GetAnnotationsManager ()->GetNote (jid);
 		Ui_.NotesEdit_->setPlainText (Note_.note ());
+
+		rebuildClientInfo ();
+
+		QObject *entryObj = acc->GetClientConnection ()->GetCLEntry (jid);
+		InitConnections (qobject_cast<EntryBase*> (entryObj));
 	}
 }
 }
