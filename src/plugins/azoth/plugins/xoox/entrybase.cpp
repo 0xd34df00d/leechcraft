@@ -498,6 +498,7 @@ namespace Xoox
 			name = "Unknown";
 		}
 		Variant2ClientInfo_ [variant] ["client_name"] = name;
+		Variant2ClientInfo_ [variant] ["raw_client_name"] = name;
 
 		Variant2VerString_ [variant] = ver;
 
@@ -532,6 +533,11 @@ namespace Xoox
 	QByteArray EntryBase::GetVariantVerString (const QString& var) const
 	{
 		return Variant2VerString_ [var];
+	}
+
+	QXmppVersionIq EntryBase::GetClientVersion (const QString& var) const
+	{
+		return Variant2Version_ [var];
 	}
 
 	QString EntryBase::FormatRawInfo (const QXmppVCardIq& vcard)

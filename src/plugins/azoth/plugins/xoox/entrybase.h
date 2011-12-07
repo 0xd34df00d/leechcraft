@@ -117,6 +117,7 @@ namespace Xoox
 		GeolocationInfo_t GetGeolocationInfo (const QString&) const;
 
 		QByteArray GetVariantVerString (const QString&) const;
+		QXmppVersionIq GetClientVersion (const QString&) const;
 	private:
 		QString FormatRawInfo (const QXmppVCardIq&);
 	private slots:
