@@ -1162,13 +1162,17 @@ namespace Azoth
 		if (mucPerms)
 		{
 			tip += "<hr />";
-			const QMap<QByteArray, QByteArray>& perms =
+			const QMap<QByteArray, QList<QByteArray> >& perms =
 					mucPerms->GetPerms (entry->GetObject ());
 			Q_FOREACH (const QByteArray& permClass, perms.keys ())
 			{
 				tip += mucPerms->GetUserString (permClass);
 				tip += ": ";
-				tip += mucPerms->GetUserString (perms [permClass]);
+
+				QStringList users;
+				Q_FOREACH (const QByteArray& perm, perms [permClass])
+					users << mucPerms->GetUserString (perm);
+				tip += users.join ("; ");
 				tip += "<br />";
 			}
 		}

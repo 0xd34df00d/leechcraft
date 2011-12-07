@@ -263,9 +263,9 @@ namespace Acetamide
 		return QByteArray ();
 	}
 
-	QMap<QByteArray, QByteArray> ChannelCLEntry::GetPerms (QObject*) const
+	QMap<QByteArray, QList<QByteArray> > ChannelCLEntry::GetPerms (QObject*) const
 	{
-		return QMap<QByteArray, QByteArray> ();
+		return QMap<QByteArray, QList<QByteArray> > ();
 	}
 
 	void ChannelCLEntry::SetPerm (QObject*,
@@ -290,6 +290,11 @@ namespace Acetamide
 
 	bool ChannelCLEntry::MayChangePerm (QObject*,
 			const QByteArray&, const QByteArray&) const
+	{
+		return false;
+	}
+
+	bool ChannelCLEntry::IsMultiPerm (const QByteArray&) const
 	{
 		return false;
 	}

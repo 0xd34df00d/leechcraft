@@ -299,25 +299,25 @@ namespace Xoox
 		return Perms_;
 	}
 
-	QMap<QByteArray, QByteArray> RoomCLEntry::GetPerms (QObject *participant) const
+	QMap<QByteArray, QList<QByteArray> > RoomCLEntry::GetPerms (QObject *participant) const
 	{
 		if (!participant)
 			participant = RH_->GetSelf ();
 
-		QMap<QByteArray, QByteArray> result;
+		QMap<QByteArray, QList<QByteArray> > result;
 		RoomParticipantEntry *entry = qobject_cast<RoomParticipantEntry*> (participant);
 		if (!entry)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< participant
 					<< "is not a RoomParticipantEntry";
-			result ["permclass_role"] = "norole";
-			result ["permclass_aff"] = "noaffiliation";
+			result ["permclass_role"] << "norole";
+			result ["permclass_aff"] << "noaffiliation";
 		}
 		else
 		{
-			result ["permclass_role"] = Role2Str_.value (entry->GetRole (), "invalid");
-			result ["permclass_aff"] = Aff2Str_.value (entry->GetAffiliation (), "invalid");
+			result ["permclass_role"] << Role2Str_.value (entry->GetRole (), "invalid");
+			result ["permclass_aff"] << Aff2Str_.value (entry->GetAffiliation (), "invalid");
 		}
 		return result;
 	}
@@ -456,6 +456,11 @@ namespace Xoox
 		}
 
 		return e1->GetRole () < e2->GetRole ();
+	}
+
+	bool RoomCLEntry::IsMultiPerm (const QByteArray&) const
+	{
+		return false;
 	}
 
 	QString RoomCLEntry::GetUserString (const QByteArray& id) const

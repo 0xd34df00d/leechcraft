@@ -491,7 +491,7 @@ namespace Azoth
 						const QByteArray& perm = action->property ("Azoth/TargetPerm").toByteArray ();
 						action->setEnabled (mucPerms->MayChangePerm (entryObj,
 									permClass, perm));
-						action->setChecked (perm == mucPerms->GetPerms (entryObj) [permClass]);
+						action->setChecked (mucPerms->GetPerms (entryObj) [permClass].contains (perm));
 					}
 			}
 

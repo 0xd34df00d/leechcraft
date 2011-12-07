@@ -104,7 +104,7 @@ namespace Acetamide
 
 		// IMUCPerms
 		QByteArray GetAffName (QObject*) const;
-		QMap<QByteArray, QByteArray> GetPerms (QObject*) const;
+		QMap<QByteArray, QList<QByteArray> > GetPerms (QObject*) const;
 		void SetPerm (QObject*, const QByteArray&, const QByteArray&,
 					  const QString&);
 		QMap<QByteArray, QList<QByteArray> > GetPossiblePerms () const;
@@ -112,6 +112,7 @@ namespace Acetamide
 		bool IsLessByPerm (QObject*, QObject*) const;
 		bool MayChangePerm (QObject*, const QByteArray&,
 							const QByteArray&) const;
+		bool IsMultiPerm (const QByteArray&) const;
 
 		ChannelModes GetChannelModes () const;
 
