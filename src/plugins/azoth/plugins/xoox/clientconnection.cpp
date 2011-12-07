@@ -687,6 +687,15 @@ namespace Xoox
 		return Client_;
 	}
 
+	QObject* ClientConnection::GetCLEntry (const QString& fullJid) const
+	{
+		QString bare;
+		QString variant;
+		Split (fullJid, &bare, &variant);
+
+		return GetCLEntry (bare, variant);
+	}
+
 	QObject* ClientConnection::GetCLEntry (const QString& bareJid, const QString& variant) const
 	{
 		if (RoomHandlers_.contains (bareJid))
@@ -730,6 +739,11 @@ namespace Xoox
 	{
 		AwaitingVCardDialogs_ [jid] = QPointer<VCardDialog> (dia);
 		FetchVCard (jid);
+	}
+
+	void ClientConnection::FetchVersion (const QString& jid)
+	{
+		VersionQueue_->Schedule (jid);
 	}
 
 	QXmppBookmarkSet ClientConnection::GetBookmarks () const

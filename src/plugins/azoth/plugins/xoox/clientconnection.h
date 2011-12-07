@@ -231,11 +231,13 @@ namespace Xoox
 		void SendPacketWCallback (const QXmppIq&, QObject*, const QByteArray&);
 		void SendMessage (GlooxMessage*);
 		QXmppClient* GetClient () const;
+		QObject* GetCLEntry (const QString& fullJid) const;
 		QObject* GetCLEntry (const QString& bareJid, const QString& variant) const;
 		GlooxCLEntry* AddODSCLEntry (OfflineDataSource_ptr);
 		QList<QObject*> GetCLEntries () const;
 		void FetchVCard (const QString&);
 		void FetchVCard (const QString&, VCardDialog*);
+		void FetchVersion (const QString&);
 		QXmppBookmarkSet GetBookmarks () const;
 		void SetBookmarks (const QXmppBookmarkSet&);
 		GlooxMessage* CreateMessage (IMessage::MessageType,
