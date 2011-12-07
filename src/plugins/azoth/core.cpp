@@ -951,6 +951,10 @@ namespace Azoth
 				this,
 				SLOT (handleEntryPermsChanged ()));
 		connect (clEntry->GetObject (),
+				SIGNAL (entryGenerallyChanged ()),
+				this,
+				SLOT (handleEntryGenerallyChanged ()));
+		connect (clEntry->GetObject (),
 				SIGNAL (avatarChanged (const QImage&)),
 				this,
 				SLOT (invalidateSmoothAvatarCache ()));
@@ -2114,6 +2118,22 @@ namespace Azoth
 			item->setData (name, CLRAffiliation);
 			item->setToolTip (tip);
 		}
+	}
+
+	void Core::handleEntryGenerallyChanged ()
+	{
+		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< sender ()
+					<< "could not be casted to ICLEntry";
+			return;
+		}
+
+		const QString& tip = MakeTooltipString (entry);
+		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
+			item->setToolTip (tip);
 	}
 
 	void Core::handleEntryGotMessage (QObject *msgObj)
