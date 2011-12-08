@@ -182,7 +182,7 @@ namespace Metacontacts
 		ICLEntry *source = qobject_cast<ICLEntry*> (sourceObj);
 		ICLEntry *target = qobject_cast<ICLEntry*> (targetObj);
 
-		if (!source || !target)
+		if (!source || !target || source == target)
 			return false;
 
 		MetaEntry *targetME = qobject_cast<MetaEntry*> (targetObj);
