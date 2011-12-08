@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_AZOTH_CORE_H
 #define PLUGINS_AZOTH_CORE_H
-#include <boost/function.hpp>
+#include <functional>
 #include <boost/scoped_ptr.hpp>
 #include <QObject>
 #include <QSet>
@@ -306,7 +306,7 @@ namespace Azoth
 		 * ICLEntry::GetEntryName().
 		 */
 		void ManipulateAuth (const QString& id, const QString& text,
-				boost::function<void (IAuthable*, const QString&)> func);
+				std::function<void (IAuthable*, const QString&)> func);
 	private:
 		/** Adds the protocol object. The object must implement
 		 * IProtocolPlugin interface.

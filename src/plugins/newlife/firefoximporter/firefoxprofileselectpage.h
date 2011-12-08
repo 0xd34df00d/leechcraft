@@ -19,9 +19,8 @@
 
 #ifndef PLUGINS_NEWLIFE_FIREFOXPROFILESELECTPAGE_H
 #define PLUGINS_NEWLIFE_FIREFOXPROFILESELECTPAGE_H
-
 #include "ui_firefoxprofileselectpage.h"
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QWizardPage>
 
 
@@ -39,13 +38,13 @@ namespace LeechCraft
 			class FirefoxProfileSelectPage : public QWizardPage
 			{
 				Q_OBJECT
-				
+
 					Ui::FirefoxProfileSelectPage Ui_;
-					boost::shared_ptr<QSqlDatabase> DB_;
+					std::shared_ptr<QSqlDatabase> DB_;
 				public:
 					FirefoxProfileSelectPage (QWidget* = 0);
 					virtual ~FirefoxProfileSelectPage ();
-					
+
 					virtual int nextId () const;
 					virtual void initializePage ();
 					QString GetProfileDirectory (const QString&) const;

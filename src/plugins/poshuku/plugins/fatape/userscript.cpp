@@ -18,8 +18,6 @@
 
 #include "userscript.h"
 #include <algorithm>
-#include <boost/bind.hpp>
-#include <boost/function.hpp>
 #include <QCoreApplication>
 #include <QtDebug>
 #include <QDesktopServices>
@@ -70,7 +68,7 @@ namespace FatApe
 	{
 		ScriptPath_ = script.ScriptPath_;
 		Metadata_ = script.Metadata_;
-		Enabled_ = script.Enabled_;		
+		Enabled_ = script.Enabled_;
 	}
 
 	void UserScript::ParseMetadata ()
@@ -115,17 +113,13 @@ namespace FatApe
 	{
 		QList<QRegExp> include;
 		QList<QRegExp> exclude;
-		boost::function<bool (QRegExp&)> match = 
-			boost::bind (&QRegExp::indexIn,
-					_1,
-					pageUrl,
-					0,
-					QRegExp::CaretAtZero) != -1;
-				
+		auto match = [pageUrl] (QRegExp& rx)
+				{ return rx.indexIn (pageUrl, 0, QRegExp::CaretAtZero) != -1; };
+
 		BuildPatternsList (include);
 		BuildPatternsList (exclude, false);
-		
-		return any (include.begin (), include.end (), match) && 
+
+		return any (include.begin (), include.end (), match) &&
 				!any (exclude.begin (), exclude.end (), match);
 	}
 
@@ -133,7 +127,7 @@ namespace FatApe
 	{
 		if (!Enabled_)
 			return;
-		
+
 		QFile script (ScriptPath_);
 
 		if (!script.open (QFile::ReadOnly))
@@ -164,7 +158,7 @@ namespace FatApe
 				.arg (gmLayerId)
 				.arg (content.readAll ());
 
-		frame->addToJavaScriptWindowObject (gmLayerId, 
+		frame->addToJavaScriptWindowObject (gmLayerId,
 				new GreaseMonkey (frame, proxy, *this));
 		frame->evaluateJavaScript (toInject);
 	}
@@ -193,14 +187,14 @@ namespace FatApe
 				.trimmed ();
 		QUrl resourceUrl (resource);
 		const QString& resourceFile = QFileInfo (resourceUrl.path ()).fileName ();
-		
-		return resourceFile.isEmpty () ? 
+
+		return resourceFile.isEmpty () ?
 			QString () :
 			QFileInfo (Util::CreateIfNotExists ("data/poshuku/fatape/scripts/resources"),
 				QString ("%1%2_%3")
 					.arg (qHash (Namespace ()))
 					.arg (qHash (Name ()))
-					.arg (resourceFile)).absoluteFilePath ();		
+					.arg (resourceFile)).absoluteFilePath ();
 	}
 
 	QString UserScript::Path() const
@@ -274,7 +268,7 @@ namespace FatApe
 			DownloadRequired (required, networkManager);
 	}
 
-	void UserScript::DownloadResource (const QString& resource, 
+	void UserScript::DownloadResource (const QString& resource,
 			QNetworkAccessManager *networkManager)
 	{
 		const QString& resourceName = resource.mid (0, resource.indexOf (" "));
@@ -283,13 +277,13 @@ namespace FatApe
 
 		resourceRequest.setUrl (QUrl (resourceUrl));
 		QNetworkReply *reply = networkManager->get (resourceRequest);
-		QObject::connect (reply, 
-				SIGNAL (finished ()), 
-				new ResourceDownloadHandler (resourceName, this, reply), 
-				SLOT (handleFinished ()));		
+		QObject::connect (reply,
+				SIGNAL (finished ()),
+				new ResourceDownloadHandler (resourceName, this, reply),
+				SLOT (handleFinished ()));
 	}
 
-	void UserScript::DownloadRequired (const QString& required, 
+	void UserScript::DownloadRequired (const QString& required,
 			QNetworkAccessManager *networkManager)
 	{
 		//TODO

@@ -17,12 +17,11 @@
  **********************************************************************/
 
 #include "groupsenddialog.h"
-#include <boost/function.hpp>
+#include <functional>
 #include <QStandardItemModel>
 #include "interfaces/iclentry.h"
 #include "interfaces/imessage.h"
 #include "core.h"
-#include <boost/bind.hpp>
 
 namespace LeechCraft
 {
@@ -113,7 +112,7 @@ namespace Azoth
 
 	namespace
 	{
-		void MarkOnly (const QList<QStandardItem*>& items, boost::function<bool (State)> f)
+		void MarkOnly (const QList<QStandardItem*>& items, std::function<bool (State)> f)
 		{
 			Q_FOREACH (QStandardItem *item, items)
 			{
@@ -130,12 +129,12 @@ namespace Azoth
 
 	void GroupSendDialog::on_OnlineButton__released ()
 	{
-		MarkOnly (Entry2Item_.values (), !boost::bind (std::equal_to<State> (), SOffline, _1));
+		MarkOnly (Entry2Item_.values (), [] (State st) { return st != SOffline; });
 	}
 
 	void GroupSendDialog::on_OfflineButton__released ()
 	{
-		MarkOnly (Entry2Item_.values (), boost::bind (std::equal_to<State> (), SOffline, _1));
+		MarkOnly (Entry2Item_.values (), [] (State st) { return st == SOffline; });
 	}
 
 	void GroupSendDialog::handleEntryStatusChanged ()

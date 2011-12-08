@@ -18,7 +18,6 @@
 
 #include "cleanweb.h"
 #include <typeinfo>
-#include <boost/bind.hpp>
 #include <QIcon>
 #include <QTextCodec>
 #include <QtDebug>

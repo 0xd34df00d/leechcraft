@@ -17,7 +17,6 @@
  **********************************************************************/
 
 #include "sdsession.h"
-#include <boost/bind.hpp>
 #include <QStandardItemModel>
 #include <QDomElement>
 #include <QtDebug>
@@ -41,10 +40,10 @@ namespace Xoox
 	: Model_ (new SDModel (this))
 	, Account_ (account)
 	{
-		ID2Action_ ["view-vcard"] = boost::bind (&SDSession::ViewVCard, this, _1);
-		ID2Action_ ["add-to-roster"] = boost::bind (&SDSession::AddToRoster, this, _1);
-		ID2Action_ ["register"] = boost::bind (&SDSession::Register, this, _1);
-		ID2Action_ ["execute-ad-hoc"] = boost::bind (&SDSession::ExecuteAdHoc, this, _1);
+		ID2Action_ ["view-vcard"] = [this] (const ItemInfo& ii) { ViewVCard (ii); };
+		ID2Action_ ["add-to-roster"] = [this] (const ItemInfo& ii) { AddToRoster (ii); };
+		ID2Action_ ["register"] = [this] (const ItemInfo& ii) { Register (ii); };
+		ID2Action_ ["execute-ad-hoc"] = [this] (const ItemInfo& ii) { ExecuteAdHoc (ii); };
 	}
 
 	namespace
@@ -74,7 +73,7 @@ namespace Xoox
 		Model_->clear ();
 		Model_->setHorizontalHeaderLabels (QStringList (tr ("Name")) << tr ("JID") << tr ("Node"));
 
-		QList<QStandardItem*> items = AppendRow (Model_,
+		auto items = AppendRow (Model_,
 				QStringList (query) << query << "",
 				query,
 				"");
@@ -83,9 +82,9 @@ namespace Xoox
 		items.at (0)->setData (true, DRFetchedMore);
 
 		Account_->GetClientConnection ()->RequestInfo (query,
-				boost::bind (&SDSession::HandleInfo, this, _1));
+				[this] (const QXmppDiscoveryIq& iq) { HandleInfo (iq); });
 		Account_->GetClientConnection ()->RequestItems (query,
-				boost::bind (&SDSession::HandleItems, this, _1));
+				[this] (const QXmppDiscoveryIq& iq) { HandleItems (iq); });
 	}
 
 	QAbstractItemModel* SDSession::GetRepresentationModel () const
@@ -93,9 +92,9 @@ namespace Xoox
 		return Model_;
 	}
 
-	QList<QPair<QByteArray, QString> > SDSession::GetActionsFor (const QModelIndex& index)
+	QList<QPair<QByteArray, QString>> SDSession::GetActionsFor (const QModelIndex& index)
 	{
-		QList<QPair<QByteArray, QString> > result;
+		QList<QPair<QByteArray, QString>> result;
 		if (!index.isValid ())
 			return result;
 
@@ -113,7 +112,7 @@ namespace Xoox
 		if (info.Caps_.contains ("http://jabber.org/protocol/commands"))
 		{
 			bool found = false;
-			Q_FOREACH (const QXmppDiscoveryIq::Identity& id, info.Identities_)
+			Q_FOREACH (const auto& id, info.Identities_)
 				if (id.category () == "automation" &&
 						id.type () == "command-node")
 				{
@@ -197,7 +196,7 @@ namespace Xoox
 		}
 
 		QString tooltip = "<strong>" + tr ("Identities:") + "</strong><ul>";
-		Q_FOREACH (const QXmppDiscoveryIq::Identity& id, iq.identities ())
+		Q_FOREACH (const auto& id, iq.identities ())
 		{
 			if (id.name ().isEmpty ())
 				continue;
@@ -246,16 +245,17 @@ namespace Xoox
 			return;
 		}
 
-		Q_FOREACH (const QXmppDiscoveryIq::Item& item, iq.items ())
+		Q_FOREACH (const auto& item, iq.items ())
 		{
-			QList<QStandardItem*> items = AppendRow (parentItem,
+			auto items = AppendRow (parentItem,
 					QStringList (item.name ()) << item.jid () << item.node (),
 					item.jid (),
 					item.node ());
 			JID2Node2Item_ [item.jid ()] [item.node ()] = items.at (0);
 
 			Account_->GetClientConnection ()->RequestInfo (item.jid (),
-					boost::bind (&SDSession::HandleInfo, this, _1), item.node ());
+					[this] (const QXmppDiscoveryIq& iq) { HandleInfo (iq); },
+					item.node ());
 		}
 	}
 
@@ -266,7 +266,8 @@ namespace Xoox
 		const QString& jid = item->data (DRJID).toString ();
 		const QString& node = item->data (DRNode).toString ();
 		Account_->GetClientConnection ()->RequestItems (jid,
-				boost::bind (&SDSession::HandleItems, this, _1), node);
+				[this] (const QXmppDiscoveryIq& iq) { HandleItems (iq); },
+				node);
 	}
 
 	void SDSession::ViewVCard (const SDSession::ItemInfo& info)

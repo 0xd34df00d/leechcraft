@@ -17,8 +17,6 @@
  **********************************************************************/
 
 #include "findproxy.h"
-#include <boost/bind.hpp>
-#include <boost/function.hpp>
 #include <util/mergemodel.h>
 #include "core.h"
 
@@ -29,24 +27,24 @@ namespace LeechCraft
 		namespace SeekThru
 		{
 			using LeechCraft::Util::MergeModel;
-			
+
 			FindProxy::FindProxy (const LeechCraft::Request& r)
 			: R_ (r)
 			, MergeModel_ (new MergeModel (QStringList ("1") << "2" << "3"))
 			{
 			}
-			
+
 			FindProxy::~FindProxy ()
 			{
 				Q_FOREACH (SearchHandler_ptr sh, Handlers_)
 					MergeModel_->RemoveModel (sh.get ());
 			}
-			
+
 			QAbstractItemModel* FindProxy::GetModel ()
 			{
 				return MergeModel_.get ();
 			}
-			
+
 			QByteArray FindProxy::GetUniqueSearchID () const
 			{
 				return QString ("org.LeechCraft.SeekThru.%1.%2")
@@ -69,7 +67,7 @@ namespace LeechCraft
 					sh->Start (R_);
 				}
 			}
-			
+
 		};
 	};
 };

@@ -17,7 +17,6 @@
  **********************************************************************/
 
 #include "core.h"
-#include <boost/bind.hpp>
 #include <QtDebug>
 #include <QDBusError>
 #include <QDBusConnection>

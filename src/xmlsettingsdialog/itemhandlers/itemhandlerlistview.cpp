@@ -17,7 +17,6 @@
  **********************************************************************/
 
 #include "itemhandlerlistview.h"
-#include <boost/bind.hpp>
 #include <QDomElement>
 #include <QLabel>
 #include <QListView>
@@ -31,40 +30,41 @@ namespace LeechCraft
 	: Factory_ (factory)
 	{
 	}
-    
+
 	ItemHandlerListView::~ItemHandlerListView ()
 	{
 	}
-	
+
 	bool ItemHandlerListView::CanHandle (const QDomElement& element) const
 	{
 		return element.attribute ("type") == "listview";
 	}
-	
+
 	void ItemHandlerListView::Handle (const QDomElement& item, QWidget *pwidget)
 	{
 		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
-		
+
 		QListView *list = new QListView (XSD_);
-		
+
 		const QString& prop = item.attribute ("property");
 		list->setObjectName (prop);
-		
+
 		Factory_->RegisterDatasourceSetter (prop,
-				boost::bind (&ItemHandlerListView::SetDataSource, this, _1, _2));
+				[this] (const QString& str, QAbstractItemModel *m, Util::XmlSettingsDialog*)
+					{ SetDataSource (str, m); });
 		Propname2Listview_ [prop] = list;
-		
+
 		QLabel *label = new QLabel (XSD_->GetLabel (item));
 		label->setWordWrap (false);
 
 		list->setProperty ("ItemHandler",
 				QVariant::fromValue<QObject*> (this));
-		
+
 		int row = lay->rowCount ();
 		lay->addWidget (label, row, 0, Qt::AlignLeft);
 		lay->addWidget (list, row + 1, 0);
 	}
-	
+
 	QVariant ItemHandlerListView::GetValue (const QDomElement&, QVariant) const
 	{
 		return QVariant ();
@@ -82,7 +82,7 @@ namespace LeechCraft
 	{
 		return QVariant ();
 	}
-	
+
 	void ItemHandlerListView::SetDataSource (const QString& prop, QAbstractItemModel *model)
 	{
 		QListView *list = Propname2Listview_ [prop];

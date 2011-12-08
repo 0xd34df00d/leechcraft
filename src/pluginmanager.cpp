@@ -18,7 +18,6 @@
 
 #include <stdexcept>
 #include <algorithm>
-#include <boost/bind.hpp>
 #include <QApplication>
 #include <QDir>
 #include <QStringList>
@@ -280,8 +279,8 @@ namespace LeechCraft
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "-pg");
 		settings.beginGroup ("Plugins");
-		boost::shared_ptr<void> groupGuard (static_cast<void*> (0),
-				boost::bind (&QSettings::endGroup, &settings));
+		std::shared_ptr<void> groupGuard (static_cast<void*> (0),
+				[&settings] (void*) { settings.endGroup (); });
 
 		Q_FOREACH (QObject *obj, ordered)
 		{

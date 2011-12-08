@@ -17,8 +17,7 @@
  **********************************************************************/
 
 #include "juick.h"
-#include <boost/bind.hpp>
-#include <boost/function.hpp>
+#include <functional>
 #include <QCoreApplication>
 #include <QIcon>
 #include <QMessageBox>
@@ -40,7 +39,7 @@ namespace Juick
 		QString Text_;
 		QRegExp CheckRX_;
 		QString FixPattern_;
-		boost::function<QString& (QString&)> Correction_;
+		std::function<QString (QString)> Correction_;
 	public:
 		Typo (const QString& text, const QString& checkPattern, const QString& fixPattern)
 		: Text_ (text)
@@ -49,7 +48,7 @@ namespace Juick
 		{}
 
 		Typo (const QString& text, const QString& checkPattern,
-			boost::function<QString& (QString&)> correction)
+				std::function<QString (QString)> correction)
 		: Text_ (text)
 		, CheckRX_ (checkPattern)
 		, Correction_ (correction)
@@ -63,7 +62,7 @@ namespace Juick
 		QString& Correction ()
 		{
 			if (Correction_)
-				Correction_ (Text_);
+				Text_ = Correction_ (Text_);
 			else if (CheckRX_.indexIn (Text_) != -1)
 				Text_.replace (CheckRX_, FixPattern_);
 			return Text_;
@@ -240,13 +239,7 @@ namespace Juick
 			Typo (text, QString::fromUtf8 ("^ШТМШЕУ "), QString ("INVITE ")),
 			Typo (text, QString::fromUtf8 ("^МСФКВ$"), QString ("VCARD")),
 			Typo (text, QString::fromUtf8 ("^ЗШТП$"), QString ("PING")),
-			Typo (text, QString::fromUtf8 ("^№+$"),
-					boost::bind (
-						static_cast<replace_t> (&QString::replace),
-						_1,
-						QString::fromUtf8 ("№"),
-						"#",
-						Qt::CaseInsensitive))
+			Typo (text, QString::fromUtf8 ("^№+$"), [] (QString str) { return str.replace ("№", "#"); })
 		};
 
 		for (int i = 0; i < static_cast<int> (sizeof (typos) / sizeof (Typo)); ++i)

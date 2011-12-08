@@ -17,13 +17,11 @@
  **********************************************************************/
 
 #include "itemhandlerspinboxdouble.h"
-#include <boost/bind.hpp>
 
 namespace LeechCraft
 {
 	ItemHandlerSpinboxDouble::ItemHandlerSpinboxDouble ()
-	: ItemHandlerSpinboxBase<QDoubleSpinBox, double> (Converter_t (boost::bind (&QString::toDouble,
-					_1, static_cast<bool*> (0))),
+	: ItemHandlerSpinboxBase<QDoubleSpinBox, double> ([] (QString str) { return str.toDouble (); },
 			"doublespinbox",
 			SIGNAL (valueChanged (double)))
 	{

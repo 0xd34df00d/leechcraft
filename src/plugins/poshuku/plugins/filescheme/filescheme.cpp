@@ -18,7 +18,6 @@
 
 #include "filescheme.h"
 #include <typeinfo>
-#include <boost/bind.hpp>
 #include <QIcon>
 #include <util/util.h>
 #include "schemereply.h"

@@ -18,7 +18,6 @@
 
 #include <stdexcept>
 #include <numeric>
-#include <boost/bind.hpp>
 #include <boost/foreach.hpp>
 #include <QtDebug>
 #include <QImage>
@@ -354,9 +353,8 @@ namespace Aggregator
 				channels_shorts_t channels;
 				StorageBackend_->GetChannels (channels, feedId);
 				std::for_each (channels.begin (), channels.end (),
-						boost::bind (&ChannelsModel::AddChannel,
-							ChannelsModel_,
-							_1));
+						[ChannelsModel_] (ChannelShort chan)
+							{ ChannelsModel_->AddChannel (chan); });
 			}
 
 			for (int type = 0; type < PTMAX; ++type)
@@ -1515,20 +1513,16 @@ namespace Aggregator
 		for (size_t i = 0; i < channels.size (); ++i)
 		{
 			Channel_ptr channel = channels [i];
-			std::for_each (channel->Items_.begin (),
-					channel->Items_.end (),
-					boost::bind (FixDate,
-						_1));
+			std::for_each (channel->Items_.begin (), channel->Items_.end (),
+					[] (Item_ptr item) { FixDate (item); });
 
 			channel->Tags_ = pj.Tags_;
 			ChannelsModel_->AddChannel (channel->ToShort ());
 			StorageBackend_->AddChannel (channel);
 
-			std::for_each (channel->Items_.begin (),
-					channel->Items_.end (),
-					boost::bind (&RegexpMatcherManager::HandleItem,
-						&RegexpMatcherManager::Instance (),
-						_1));
+			std::for_each (channel->Items_.begin (), channel->Items_.end (),
+					[] (Item_ptr item)
+						{ RegexpMatcherManager::Instance ().HandleItem (item); });
 
 			emit hookGotNewItems (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy),
 					GetItems (channel));

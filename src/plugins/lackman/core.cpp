@@ -17,7 +17,7 @@
  **********************************************************************/
 
 #include "core.h"
-#include <boost/bind.hpp>
+#include <stdexcept>
 #include <QApplication>
 #include <QString>
 #include <QStandardItemModel>
@@ -52,12 +52,10 @@ namespace LackMan
 	, ReposModel_ (new QStandardItemModel (this))
 	{
 		Relation2comparator [Dependency::L] = IsVersionLess;
-		Relation2comparator [Dependency::G] = boost::bind (Relation2comparator [Dependency::L], _2, _1);
-		Relation2comparator [Dependency::GE] = boost::bind (std::logical_not<bool> (),
-				boost::bind (Relation2comparator [Dependency::L], _1, _2));
-		Relation2comparator [Dependency::E] = std::equal_to<QString> ();
-		Relation2comparator [Dependency::LE] = boost::bind (std::logical_not<bool> (),
-				boost::bind (Relation2comparator [Dependency::G], _1, _2));
+		Relation2comparator [Dependency::G] = [] (QString l, QString r) { return Relation2comparator [Dependency::L] (r, l); };
+		Relation2comparator [Dependency::GE] = [] (QString l, QString r) { return !Relation2comparator [Dependency::L] (l, r); };
+		Relation2comparator [Dependency::E] = [] (QString l, QString r) { return r == l; };
+		Relation2comparator [Dependency::LE] = [] (QString l, QString r) { return !Relation2comparator [Dependency::G] (l, r); };
 
 		connect (Storage_,
 				SIGNAL (packageRemoved (int)),
@@ -625,11 +623,10 @@ namespace LackMan
 
 		Q_FOREACH (const QString& packageName, infos.keys ())
 		{
-			QList<ListPackageInfo> list = infos [packageName];
+			auto list = infos [packageName];
 			std::sort (list.begin (), list.end (),
-					boost::bind (IsVersionLess,
-							boost::bind (&ListPackageInfo::Version_, _1),
-							boost::bind (&ListPackageInfo::Version_, _2)));
+					[] (ListPackageInfo i1, ListPackageInfo i2)
+						{ return IsVersionLess (i1.Version_, i2.Version_); });
 			ListPackageInfo last = list.last ();
 
 			Q_FOREACH (const InstalledDependencyInfo& idi,

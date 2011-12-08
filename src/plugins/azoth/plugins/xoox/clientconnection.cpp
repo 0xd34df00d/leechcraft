@@ -17,8 +17,6 @@
  **********************************************************************/
 
 #include "clientconnection.h"
-#include <boost/bind.hpp>
-#include <boost/fusion/container.hpp>
 #include <QTimer>
 #include <QtDebug>
 #include <QXmppClient.h>
@@ -404,9 +402,8 @@ namespace Xoox
 
 		if (!JoinQueue_.isEmpty ())
 		{
-			QList<JoinQueueItem>::iterator pos = std::find_if (JoinQueue_.begin (), JoinQueue_.end (),
-					boost::bind (std::equal_to<QString> (), jid,
-						boost::bind (&JoinQueueItem::RoomJID_, _1)));
+			auto pos = std::find_if (JoinQueue_.begin (), JoinQueue_.end (),
+					[&jid] (const JoinQueueItem& it) { return it.RoomJID_ == jid; });
 			if (pos != JoinQueue_.end ())
 				JoinQueue_.erase (pos);
 		}

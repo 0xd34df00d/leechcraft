@@ -18,7 +18,6 @@
 
 #include "metaentry.h"
 #include <algorithm>
-#include <boost/bind.hpp>
 #include <QDateTime>
 #include <QVariant>
 #include <QImage>
@@ -176,12 +175,9 @@ namespace Metacontacts
 
 	QObject* MetaEntry::CreateMessage (IMessage::MessageType type, const QString& variant, const QString& body)
 	{
-		return ActWithVariant<QObject*, ICLEntry*> (boost::bind (&ICLEntry::CreateMessage,
-					_1,
-					type,
-					_2,
-					body),
-				variant);
+		auto f = [type, body] (ICLEntry *e, const QString& v)
+				{ return e->CreateMessage (type, v, body); };
+		return ActWithVariant<QObject*, ICLEntry*> (f, variant);
 	}
 
 	namespace
@@ -211,19 +207,14 @@ namespace Metacontacts
 
 	void MetaEntry::SetChatPartState (ChatPartState state, const QString& variant)
 	{
-		ActWithVariant<void, ICLEntry*> (boost::bind (&ICLEntry::SetChatPartState,
-					_1,
-					state,
-					_2),
-				variant);
+		auto f = [state] (ICLEntry *e, const QString& v) { e->SetChatPartState (state, v); };
+		ActWithVariant<void, ICLEntry*> (f, variant);
 	}
 
 	EntryStatus MetaEntry::GetStatus (const QString& variant) const
 	{
-		return ActWithVariant<EntryStatus, ICLEntry*> (boost::bind (&ICLEntry::GetStatus,
-					_1,
-					_2),
-				variant);
+		auto f = [] (ICLEntry *e, const QString& v) { return e->GetStatus (v); };
+		return ActWithVariant<EntryStatus, ICLEntry*> (f, variant);
 	}
 
 	QImage MetaEntry::GetAvatar () const
@@ -256,10 +247,8 @@ namespace Metacontacts
 
 	QMap<QString, QVariant> MetaEntry::GetClientInfo (const QString& variant) const
 	{
-		return ActWithVariant<QMap<QString, QVariant>, ICLEntry*> (boost::bind (&ICLEntry::GetClientInfo,
-					_1,
-					_2),
-				variant);
+		auto f = [] (ICLEntry *e, const QString& v) { return e->GetClientInfo (v); };
+		return ActWithVariant<QMap<QString, QVariant>, ICLEntry*> (f, 	variant);
 	}
 
 	void MetaEntry::MarkMsgsRead ()
@@ -273,11 +262,8 @@ namespace Metacontacts
 
 	void MetaEntry::DrawAttention (const QString& text, const QString& variant)
 	{
-		ActWithVariant<void, IAdvancedCLEntry*> (boost::bind (&IAdvancedCLEntry::DrawAttention,
-					_1,
-					text,
-					_2),
-				variant);
+		auto f = [text] (IAdvancedCLEntry *e, const QString& v) { e->DrawAttention (text, v); };
+		ActWithVariant<void, IAdvancedCLEntry*> (f, variant);
 	}
 
 	template<typename T, typename U>

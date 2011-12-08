@@ -17,8 +17,6 @@
  **********************************************************************/
 
 #include "customwebpage.h"
-#include <boost/bind.hpp>
-#include <boost/function.hpp>
 #include <QtDebug>
 #include <QFile>
 #include <QBuffer>
@@ -886,32 +884,26 @@ namespace Poshuku
 		ElementsData_t::const_iterator FindElement (const ElementData& filled,
 				const ElementsData_t& list, bool strict)
 		{
-			boost::function<bool (const ElementData&)> typeChecker =
-					boost::bind (&ElementData::Type_, _1) == filled.Type_;
-			boost::function<bool (const ElementData&)> urlChecker =
-					boost::bind (&ElementData::PageURL_, _1) == filled.PageURL_;
-			boost::function<bool (const ElementData&)> formIdChecker =
-					boost::bind (&ElementData::FormID_, _1) == filled.FormID_;
+			auto typeChecker = [filled] (const ElementData& ed)
+				{ return ed.Type_ == filled.Type_; };
+			auto urlChecker = [filled] (const ElementData& ed)
+				{ return ed.PageURL_ == filled.PageURL_; };
+			auto formIdChecker = [filled] (const ElementData& ed)
+				{ return ed.FormID_ == filled.FormID_; };
 
-			ElementsData_t::const_iterator pos =
-					std::find_if (list.begin (), list.end (),
-							boost::bind (std::logical_and<bool> (),
-									boost::bind (typeChecker, _1),
-									boost::bind (std::logical_and<bool> (),
-											boost::bind (urlChecker, _1),
-											boost::bind (formIdChecker, _1))));
+			auto pos = std::find_if (list.begin (), list.end (),
+					[typeChecker, urlChecker, formIdChecker] (const ElementData& ed)
+						{ return typeChecker (ed) && urlChecker (ed) && formIdChecker (ed); });
 			if (!strict)
 			{
 				if (pos == list.end ())
 					pos = std::find_if (list.begin (), list.end (),
-							boost::bind (std::logical_and<bool> (),
-									boost::bind (typeChecker, _1),
-									boost::bind (formIdChecker, _1)));
+							[typeChecker, formIdChecker] (const ElementData& ed)
+								{ return typeChecker (ed) && formIdChecker (ed); });
 				if (pos == list.end ())
 					pos = std::find_if (list.begin (), list.end (),
-							boost::bind (std::logical_and<bool> (),
-									boost::bind (typeChecker, _1),
-									boost::bind (urlChecker, _1)));
+							[typeChecker, urlChecker] (const ElementData& ed)
+								{ return typeChecker (ed) && urlChecker (ed); });
 			}
 
 			return pos;

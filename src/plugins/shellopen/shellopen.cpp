@@ -17,7 +17,6 @@
  **********************************************************************/
 
 #include "shellopen.h"
-#include <boost/bind.hpp>
 #include <QIcon>
 #include <QDesktopServices>
 #include <QUrl>
@@ -100,7 +99,7 @@ namespace LeechCraft
 						PInfo_);
 				Util::NotificationActionHandler *nh =
 						new Util::NotificationActionHandler (notif);
-				nh->AddFunction (tr ("Open"), boost::bind (QDesktopServices::openUrl, url));
+				nh->AddFunction (tr ("Open"), [url] () { QDesktopServices::openUrl (url); });
 
 				emit gotEntity (notif);
 			}

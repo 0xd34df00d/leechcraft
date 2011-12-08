@@ -19,8 +19,6 @@
 #ifndef PLUGINS_LACKMAN_CORE_H
 #define PLUGINS_LACKMAN_CORE_H
 #include <boost/shared_ptr.hpp>
-#include <boost/function.hpp>
-#include <boost/bind.hpp>
 #include <QObject>
 #include <QModelIndex>
 #include <interfaces/iinfo.h>

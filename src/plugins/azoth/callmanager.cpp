@@ -17,7 +17,6 @@
  **********************************************************************/
 
 #include "callmanager.h"
-#include <boost/bind.hpp>
 
 #ifdef ENABLE_MEDIACALLS
 #include <QAudioDeviceInfo>
@@ -146,8 +145,8 @@ namespace Azoth
 				PInfo_);
 		Util::NotificationActionHandler *nh =
 				new Util::NotificationActionHandler (e, this);
-		nh->AddFunction (tr ("Accept"), boost::bind (&IMediaCall::Accept, call));
-		nh->AddFunction (tr ("Hangup"), boost::bind (&IMediaCall::Hangup, call));
+		nh->AddFunction (tr ("Accept"), [call] () { call->Accept (); });
+		nh->AddFunction (tr ("Hangup"), [call] () { call->Hangup (); });
 		Core::Instance ().SendEntity (e);
 
 		emit gotCall (obj);

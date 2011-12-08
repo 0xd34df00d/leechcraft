@@ -17,7 +17,6 @@
  **********************************************************************/
 
 #include "itemhandlercombobox.h"
-#include <boost/bind.hpp>
 #include <QLabel>
 #include <QGridLayout>
 #include <QHBoxLayout>
@@ -63,7 +62,8 @@ namespace LeechCraft
 		{
 			const QString& prop = item.attribute ("property");
 			Factory_->RegisterDatasourceSetter (prop,
-					boost::bind (&ItemHandlerCombobox::SetDataSource, this, _1, _2, _3));
+					[this] (const QString& str, QAbstractItemModel *m, Util::XmlSettingsDialog *xsd)
+						{ SetDataSource (str, m, xsd); });
 			Propname2Combobox_ [prop] = box;
 			Propname2Item_ [prop] = item;
 		}

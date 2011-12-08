@@ -18,7 +18,6 @@
 
 #include "msgformatterwidget.h"
 #include <cmath>
-#include <boost/bind.hpp>
 #include <QVBoxLayout>
 #include <QTextEdit>
 #include <QToolBar>
@@ -194,7 +193,7 @@ namespace Azoth
 		return result;
 	}
 
-	void MsgFormatterWidget::CharFormatActor (boost::function<void (QTextCharFormat*)> format)
+	void MsgFormatterWidget::CharFormatActor (std::function<void (QTextCharFormat*)> format)
 	{
 		QTextCursor cursor = Edit_->textCursor ();
 		if (cursor.hasSelection ())
@@ -213,7 +212,7 @@ namespace Azoth
 		HasCustomFormatting_ = true;
 	}
 
-	void MsgFormatterWidget::BlockFormatActor (boost::function<void (QTextBlockFormat*)> format)
+	void MsgFormatterWidget::BlockFormatActor (std::function<void (QTextBlockFormat*)> format)
 	{
 		QTextBlockFormat fmt = Edit_->textCursor ().blockFormat ();
 		format (&fmt);
@@ -232,30 +231,26 @@ namespace Azoth
 
 	void MsgFormatterWidget::handleBold ()
 	{
-		CharFormatActor (boost::bind (&QTextCharFormat::setFontWeight,
-						_1,
-						FormatBold_->isChecked () ? QFont::Bold : QFont::Normal));
+		CharFormatActor ([FormatBold_] (QTextCharFormat *fmt)
+				{ fmt->setFontWeight (FormatBold_->isChecked () ? QFont::Bold : QFont::Normal); });
 	}
 
 	void MsgFormatterWidget::handleItalic ()
 	{
-		CharFormatActor (boost::bind (&QTextCharFormat::setFontItalic,
-						_1,
-						FormatItalic_->isChecked ()));
+		CharFormatActor ([FormatItalic_] (QTextCharFormat *fmt)
+				{ fmt->setFontItalic (FormatItalic_->isChecked ()); });
 	}
 
 	void MsgFormatterWidget::handleUnderline ()
 	{
-		CharFormatActor (boost::bind (&QTextCharFormat::setFontUnderline,
-						_1,
-						FormatUnderline_->isChecked ()));
+		CharFormatActor ([FormatUnderline_] (QTextCharFormat *fmt)
+				{ fmt->setFontUnderline (FormatUnderline_->isChecked ()); });
 	}
 
 	void MsgFormatterWidget::handleStrikeThrough ()
 	{
-		CharFormatActor (boost::bind (&QTextCharFormat::setFontStrikeOut,
-						_1,
-						FormatStrikeThrough_->isChecked ()));
+		CharFormatActor ([FormatStrikeThrough_] (QTextCharFormat *fmt)
+				{ fmt->setFontStrikeOut (FormatStrikeThrough_->isChecked ()); });
 	}
 
 	void MsgFormatterWidget::handleTextColor ()
@@ -265,9 +260,8 @@ namespace Azoth
 		if (!color.isValid ())
 			return;
 
-		CharFormatActor (boost::bind (&QTextFormat::setForeground,
-						_1,
-						QBrush (color)));
+		CharFormatActor ([color] (QTextFormat *fmt)
+				{ fmt->setForeground (QBrush (color)); });
 	}
 
 	void MsgFormatterWidget::handleFont ()
@@ -278,18 +272,16 @@ namespace Azoth
 		if (!ok)
 			return;
 
-		CharFormatActor (boost::bind (&QTextCharFormat::setFont,
-						_1,
-						font));
+		CharFormatActor ([font] (QTextCharFormat *fmt)
+				{ fmt->setFont (font); });
 	}
 
 	void MsgFormatterWidget::handleParaAlignment ()
 	{
 		Qt::Alignment alignment = static_cast<Qt::Alignment> (sender ()->
 					property ("Alignment").toInt ());
-		BlockFormatActor (boost::bind (&QTextBlockFormat::setAlignment,
-						_1,
-						alignment));
+		BlockFormatActor ([alignment] (QTextBlockFormat* fmt)
+				{ fmt->setAlignment (alignment); });
 	}
 
 	void MsgFormatterWidget::handleAddEmoticon ()

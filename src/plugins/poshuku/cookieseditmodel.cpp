@@ -18,8 +18,6 @@
 
 #include "cookieseditmodel.h"
 #include <stdexcept>
-#include <boost/function.hpp>
-#include <boost/bind.hpp>
 #include <QtDebug>
 #include <QNetworkAccessManager>
 #include <QString>
@@ -32,28 +30,26 @@ namespace LeechCraft
 namespace Poshuku
 {
 	using LeechCraft::Util::CustomCookieJar;
-	
+
 	CookiesEditModel::CookiesEditModel (QObject *parent)
 	: QStandardItemModel (parent)
 	{
 		setHorizontalHeaderLabels (QStringList (tr ("Domain (cookie name)")));
 		Jar_ = qobject_cast<CustomCookieJar*> (Core::Instance ()
 					.GetNetworkAccessManager ()->cookieJar ());
-	
-		QList<QNetworkCookie> cookies = Jar_->allCookies ();
-		typedef boost::function<QString (const QNetworkCookie&)> name_t;
+
+		auto cookies = Jar_->allCookies ();
 		std::stable_sort (cookies.begin (), cookies.end (),
-				boost::bind (std::less<QString> (),
-					boost::bind<QString> (name_t (&QNetworkCookie::domain), _1),
-					boost::bind<QString> (name_t (&QNetworkCookie::domain), _2)));
+				[] (const QNetworkCookie& c1, const QNetworkCookie& c2)
+					{ return c1.domain () < c2.domain (); });
 		int idx = 0;
 		Q_FOREACH (QNetworkCookie cookie, cookies)
 			Cookies_ [idx++] = cookie;
-	
+
 		for (int i = 0; i < Cookies_.size (); ++i)
 		{
 			QString domain = Cookies_ [i].domain ();
-	
+
 			QList<QStandardItem*> foundItems = findItems (domain);
 			QStandardItem *parent = 0;
 			if (!foundItems.size ())
@@ -71,7 +67,7 @@ namespace Poshuku
 			parent->appendRow (item);
 		}
 	}
-	
+
 	QNetworkCookie CookiesEditModel::GetCookie (const QModelIndex& index) const
 	{
 		if (!index.isValid ())
@@ -85,8 +81,8 @@ namespace Poshuku
 				return Cookies_ [i];
 		}
 	}
-	
-	void CookiesEditModel::SetCookie (const QModelIndex& index, 
+
+	void CookiesEditModel::SetCookie (const QModelIndex& index,
 			const QNetworkCookie& cookie)
 	{
 		if (index.isValid ())
@@ -102,15 +98,15 @@ namespace Poshuku
 		}
 		else
 			AddCookie (cookie);
-	
+
 		Jar_->setAllCookies (Cookies_.values ());
 	}
-	
+
 	void CookiesEditModel::RemoveCookie (const QModelIndex& index)
 	{
 		if (!index.isValid ())
 			return;
-	
+
 		QStandardItem *item = itemFromIndex (index);
 		int i = item->data ().toInt ();
 		if (i == -1)
@@ -128,16 +124,16 @@ namespace Poshuku
 		}
 		Jar_->setAllCookies (Cookies_.values ());
 	}
-	
+
 	void CookiesEditModel::AddCookie (const QNetworkCookie& cookie)
 	{
 		int i = 0;
 		if (Cookies_.size ())
 			i = (Cookies_.end () - 1).key () + 1;
 		Cookies_ [i] = cookie;
-	
+
 		QString domain = cookie.domain ();
-	
+
 		QList<QStandardItem*> foundItems = findItems (domain);
 		QStandardItem *parent = 0;
 		if (!foundItems.size ())
@@ -153,7 +149,7 @@ namespace Poshuku
 		item->setData (i);
 		item->setEditable (false);
 		parent->appendRow (item);
-	
+
 		Jar_->setAllCookies (Cookies_.values ());
 	}
 }

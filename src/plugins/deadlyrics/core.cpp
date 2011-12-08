@@ -18,7 +18,6 @@
 
 #include "core.h"
 #include <algorithm>
-#include <boost/bind.hpp>
 #include <QCryptographicHash>
 #include <QUrl>
 #include <QtDebug>

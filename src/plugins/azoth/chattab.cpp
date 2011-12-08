@@ -17,7 +17,6 @@
  **********************************************************************/
 
 #include "chattab.h"
-#include <boost/bind.hpp>
 #include <QWebFrame>
 #include <QWebElement>
 #include <QTextDocument>
@@ -951,11 +950,8 @@ namespace Azoth
 				HistoryMessages_ << msg;
 			else
 			{
-				QList<IMessage*>::iterator pos =
-						std::find_if (HistoryMessages_.begin (), HistoryMessages_.end (),
-								boost::bind (std::greater<QDateTime> (),
-										boost::bind (&IMessage::GetDateTime, _1),
-										dt));
+				auto pos = std::find_if (HistoryMessages_.begin (), HistoryMessages_.end (),
+						[dt] (IMessage *msg) { return msg->GetDateTime () > dt; });
 				HistoryMessages_.insert (pos, msg);
 			}
 		}

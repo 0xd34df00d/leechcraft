@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "xmlparsers.h"
+#include <stdexcept>
 #include <QUrl>
 #include <QString>
 #include <QXmlQuery>

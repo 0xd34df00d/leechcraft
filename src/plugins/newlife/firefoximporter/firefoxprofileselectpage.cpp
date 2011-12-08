@@ -18,7 +18,6 @@
 
 
 #include "firefoxprofileselectpage.h"
-#include <boost/bind.hpp>
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlRecord>
@@ -30,8 +29,6 @@
 #include <QDateTime>
 #include <QXmlStreamWriter>
 #include <util/util.h>
-
-
 
 namespace LeechCraft
 {
@@ -48,16 +45,16 @@ namespace LeechCraft
 
 			FirefoxProfileSelectPage::~FirefoxProfileSelectPage ()
 			{
-				QSqlDatabase::database ("Import connection").close ();			
+				QSqlDatabase::database ("Import connection").close ();
 				DB_.reset ();
 				QSqlDatabase::removeDatabase ("Import connection");
 			}
-			
+
 			int FirefoxProfileSelectPage::nextId () const
 			{
 				return -1;
 			}
-			
+
 			void FirefoxProfileSelectPage::initializePage ()
 			{
 				connect (wizard (),
@@ -69,15 +66,15 @@ namespace LeechCraft
 						SIGNAL (gotEntity (const LeechCraft::Entity&)),
 						wizard (),
 						SIGNAL (gotEntity (const LeechCraft::Entity&)));
-				
+
 				connect (Ui_.ProfileList_,
 						SIGNAL (currentIndexChanged (int)),
 						this,
 						SLOT (checkImportDataAvailable (int)));
-				
+
  				GetProfileList (field ("ProfileFile").toString ());
 			}
-			
+
 			void FirefoxProfileSelectPage::GetProfileList (const QString& filename)
 			{
 				QSettings settings (filename, QSettings::IniFormat);
@@ -113,10 +110,10 @@ namespace LeechCraft
 					Ui_.ProfileList_->setCurrentIndex (0);
 					return;
 				}
-				
+
 				QString profilePath = GetProfileDirectory (Ui_.ProfileList_->currentText ());
-				
-				QString rssSql ("SELECT COUNT(ann.id) FROM moz_items_annos ann,moz_bookmarks bm " 
+
+				QString rssSql ("SELECT COUNT(ann.id) FROM moz_items_annos ann,moz_bookmarks bm "
 						"WHERE ann.item_id IN (SELECT item_id FROM moz_items_annos WHERE "
 						" anno_attribute_id = (SELECT id FROM moz_anno_attributes WHERE name "
 						"= 'livemark/feedURI')) AND (ann.anno_attribute_id = 4 OR "
@@ -130,26 +127,26 @@ namespace LeechCraft
 						"= ann.item_id) AND bm.fk IS NOT NULL AND bm.fk IN (SELECT id "
 						"FROM moz_places WHERE url LIKE 'http%' OR url LIKE 'ftp%' OR url "
 						"like 'file%') AND bm.id > 100 AND bm.fk = pl.id AND bm.title NOT NULL");
-				QString historySql ("SELECT COUNT(moz_places.url) FROM moz_historyvisits," 
+				QString historySql ("SELECT COUNT(moz_places.url) FROM moz_historyvisits,"
 						"moz_places WHERE moz_places.id = moz_historyvisits.place_id");
-				
+
 				if (profilePath.isEmpty ())
 					return;
-				
+
 				QSqlQuery query = GetQuery (bookmarksSql);
-				QSqlRecord record = query.record();				
+				QSqlRecord record = query.record();
 				Ui_.BookmarksImport_->setEnabled (record.value (0).toInt ());
-				
+
 				query = GetQuery (historySql);
-				record = query.record();				
+				record = query.record();
 				Ui_.HistoryImport_->setEnabled (record.value (0).toInt ());
-				
+
 				query = GetQuery (bookmarksSql);
 				record = query.record();
 				Ui_.RssImport_->setEnabled (record.value (0).toInt ());
 			}
 
-			
+
 			QString FirefoxProfileSelectPage::GetProfileDirectory (const QString& profileName) const
 			{
 				QString profilesFile = field ("ProfileFile").toString ();
@@ -158,24 +155,24 @@ namespace LeechCraft
 				Q_FOREACH (const QString& groupName, settings.childGroups ())
 				{
 					// Call settings.endGroup() on scope exit no matter what.
-					boost::shared_ptr<void> guard (static_cast<void*> (0), 
-							boost::bind (&QSettings::endGroup, &settings));
+					std::shared_ptr<void> guard (static_cast<void*> (0),
+							[&settings] (void*) { settings.endGroup (); });
 					settings.beginGroup (groupName);
 					if (settings.value ("Name").toString () == profileName)
-					{	
+					{
 						profilePath = settings.value ("Path").toString ();
 						break;
-					}		
+					}
 				}
 				if (profilePath.isEmpty ())
 					return QString ();
-				
+
 				QFileInfo file (profilesFile);
 				profilePath = file.absolutePath ().append ("/").append (profilePath);
-				
-				return profilePath; 
+
+				return profilePath;
 			}
-			
+
 			QList<QVariant> FirefoxProfileSelectPage::GetHistory ()
 			{
 				QString sql ("SELECT moz_places.url, moz_places.title, moz_historyvisits.visit_date "
@@ -273,7 +270,7 @@ namespace LeechCraft
 						if (rssQuery.value (2).toInt () == site)
 							omplLine ["SiteUrl"] = rssQuery.value (3).toString ();
 						if (rssQuery.value (2).toInt () == feed)
-							omplLine ["FeedUrl"] = rssQuery.value (3).toString ();						
+							omplLine ["FeedUrl"] = rssQuery.value (3).toString ();
 						if (prevItemId == rssQuery.value (1).toInt ())
 							opmlData.push_back (omplLine);
 						else
@@ -358,34 +355,34 @@ namespace LeechCraft
 				}
 				return QSqlQuery ();
 			}
-			
+
 			void FirefoxProfileSelectPage::handleAccepted ()
-			{	
+			{
 				if (IsFirefoxRunning ())
 					return;
-					
+
 				if (Ui_.HistoryImport_->isEnabled () && Ui_.HistoryImport_->isChecked ())
 				{
 					Entity eHistory = Util::MakeEntity (QUrl::fromLocalFile (GetProfileDirectory (Ui_.ProfileList_->currentText ())),
 						QString (),
 						FromUserInitiated,
 						"x-leechcraft/browser-import-data");
-				
+
 					eHistory.Additional_ ["BrowserHistory"] = GetHistory ();
 					emit gotEntity (eHistory);
 				}
-				
+
 				if (Ui_.BookmarksImport_->isEnabled () && Ui_.BookmarksImport_->isChecked ())
 				{
 					Entity eBookmarks = Util::MakeEntity (QUrl::fromLocalFile (GetProfileDirectory (Ui_.ProfileList_->currentText ())),
 							QString (),
 							FromUserInitiated,
 							"x-leechcraft/browser-import-data");
-				
+
 					eBookmarks.Additional_ ["BrowserBookmarks"] = GetBookmarks ();
 					emit gotEntity (eBookmarks);
 				}
-				
+
 				if (Ui_.RssImport_->isEnabled () && Ui_.RssImport_->isChecked ())
 				{
 					QString opmlFile = GetImportOpmlFile ();
@@ -399,7 +396,7 @@ namespace LeechCraft
 				}
 				DB_->close ();
 			}
-			
+
 			bool FirefoxProfileSelectPage::IsFirefoxRunning()
 			{
 				QFileInfo ffStarted (GetProfileDirectory (Ui_.ProfileList_->currentText ()) + "/lock");

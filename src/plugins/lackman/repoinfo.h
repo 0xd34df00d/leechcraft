@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_LACKMAN_REPOINFO_H
 #define PLUGINS_LACKMAN_REPOINFO_H
-#include <boost/function.hpp>
+#include <functional>
 #include <QMetaType>
 #include <QStringList>
 #include <QUrl>
@@ -186,7 +186,7 @@ namespace LackMan
 
 	bool operator== (const ListPackageInfo&, const ListPackageInfo&);
 
-	typedef boost::function<bool (const QString&, const QString&)> Comparator_t;
+	typedef std::function<bool (const QString&, const QString&)> Comparator_t;
 
 	extern QMap<Dependency::Relation, Comparator_t> Relation2comparator;
 

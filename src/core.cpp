@@ -20,8 +20,6 @@
 #include <stdexcept>
 #include <list>
 #include <functional>
-#include <boost/bind.hpp>
-#include <boost/function.hpp>
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QtDebug>
@@ -526,12 +524,7 @@ namespace LeechCraft
 				const QObjectList& plugins = Core::Instance ().GetPluginManager ()->
 					GetAllCastableRoots<IDownload*> ();
 				*pr = *std::find_if (plugins.begin (), plugins.end (),
-						boost::bind (std::equal_to<IDownload*> (),
-							sd,
-							boost::bind<IDownload*> (
-								static_cast<IDownload* (*) (const QObject*)> (qobject_cast<IDownload*>),
-								_1
-								)));
+						[sd] (QObject *d) { return qobject_cast<IDownload*> (d) == sd; });
 			}
 
 			return true;

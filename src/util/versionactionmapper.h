@@ -18,7 +18,7 @@
 
 #ifndef UTIL_VERSIONACTIONMAPPER_H
 #define UTIL_VERSIONACTIONMAPPER_H
-#include <boost/function.hpp>
+#include <functional>
 #include <QDataStream>
 #include <QMap>
 
@@ -30,7 +30,7 @@ namespace LeechCraft
 		class VersionActionMapper
 		{
 		public:
-			typedef boost::function<bool (QDataStream&)> Functor_t;
+			typedef std::function<bool (QDataStream&)> Functor_t;
 		private:
 			typedef QMap<ActionType, Functor_t> Action2Functor_t;
 			typedef QMap<VerType, Action2Functor_t> Version2Functors_t;

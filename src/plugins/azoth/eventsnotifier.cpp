@@ -17,7 +17,6 @@
  **********************************************************************/
 
 #include "eventsnotifier.h"
-#include <boost/bind.hpp>
 #include <util/util.h>
 #include <util/notificationactionhandler.h>
 #include "core.h"
@@ -79,9 +78,7 @@ namespace Azoth
 			Util::NotificationActionHandler *nh =
 					new Util::NotificationActionHandler (e, this);
 			nh->AddFunction (tr ("Open chat"),
-					boost::bind (static_cast<QWidget* (ChatTabsManager::*) (const ICLEntry*)> (&ChatTabsManager::OpenChat),
-							Core::Instance ().GetChatTabsManager (),
-							entry));
+					[entry] () { Core::Instance ().GetChatTabsManager ()->OpenChat (entry); });
 			nh->AddDependentObject (entry->GetObject ());
 			emit gotEntity (e);
 		}

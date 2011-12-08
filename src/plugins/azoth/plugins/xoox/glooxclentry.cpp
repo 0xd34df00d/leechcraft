@@ -17,7 +17,6 @@
  **********************************************************************/
 
 #include "glooxclentry.h"
-#include <boost/bind.hpp>
 #include <QStringList>
 #include <QAction>
 #include <QtDebug>

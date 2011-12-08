@@ -17,7 +17,6 @@
  **********************************************************************/
 
 #include "legacyformbuilder.h"
-#include <boost/bind.hpp>
 #include <QWidget>
 #include <QVBoxLayout>
 #include <QLabel>
@@ -57,22 +56,22 @@ namespace Xoox
 	LegacyFormBuilder::LegacyFormBuilder ()
 	: Widget_ (0)
 	{
-		Tag2Actor_ ["username"] = boost::bind (LineEditActorImpl,
-				_1, _2, tr ("Username:"));
-		Tag2Actor_ ["password"] = boost::bind (LineEditActorImpl,
-				_1, _2, tr ("Password:"));
-		Tag2Actor_ ["registered"] = boost::bind (LineEditActorImpl,
-				_1, _2, tr ("Registered:"));
-		Tag2Actor_ ["first"] = boost::bind (LineEditActorImpl,
-				_1, _2, tr ("First name:"));
-		Tag2Actor_ ["last"] = boost::bind (LineEditActorImpl,
-				_1, _2, tr ("Last name:"));
-		Tag2Actor_ ["nick"] = boost::bind (LineEditActorImpl,
-				_1, _2, tr ("Nick:"));
-		Tag2Actor_ ["email"] = boost::bind (LineEditActorImpl,
-				_1, _2, tr ("E-Mail:"));
-		Tag2Actor_ ["instructions"] = boost::bind (InstructionsActor,
-				_1, _2);
+		Tag2Actor_ ["username"] = [] (QWidget *f, const QXmppElement& e)
+			{ LineEditActorImpl (f, e, tr ("Username:")); };
+		Tag2Actor_ ["password"] = [] (QWidget *f, const QXmppElement& e)
+			{ LineEditActorImpl (f, e, tr ("Password:")); };
+		Tag2Actor_ ["registered"] = [] (QWidget *f, const QXmppElement& e)
+			{ LineEditActorImpl (f, e, tr ("Registered:")); };
+		Tag2Actor_ ["first"] = [] (QWidget *f, const QXmppElement& e)
+			{ LineEditActorImpl (f, e, tr ("First name:")); };
+		Tag2Actor_ ["last"] = [] (QWidget *f, const QXmppElement& e)
+			{ LineEditActorImpl (f, e, tr ("Last name:")); };
+		Tag2Actor_ ["nick"] = [] (QWidget *f, const QXmppElement& e)
+			{ LineEditActorImpl (f, e, tr ("Nick:")); };
+		Tag2Actor_ ["email"] = [] (QWidget *f, const QXmppElement& e)
+			{ LineEditActorImpl (f, e, tr ("E-Mail:")); };
+		Tag2Actor_ ["instructions"] = [] (QWidget *f, const QXmppElement& e)
+			{ InstructionsActor (f, e); };
 	}
 
 	QWidget* LegacyFormBuilder::CreateForm (const QXmppElement& containing,

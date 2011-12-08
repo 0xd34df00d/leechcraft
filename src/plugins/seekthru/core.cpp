@@ -18,8 +18,7 @@
 
 #include "core.h"
 #include <algorithm>
-#include <boost/bind.hpp>
-#include <boost/function.hpp>
+#include <stdexcept>
 #include <QDomDocument>
 #include <QMetaType>
 #include <QFile>
@@ -53,11 +52,11 @@ namespace LeechCraft
 				qRegisterMetaTypeStreamOperators<Description> ("LeechCraft::Plugins::SeekThru::Description");
 
 				ActionMapper_.AddFunctor (0, DADescrAdded,
-						boost::bind (&Core::HandleDADescrAdded, this, _1));
+						[this] (QDataStream& str) { return HandleDADescrAdded (str); });
 				ActionMapper_.AddFunctor (0, DADescrRemoved,
-						boost::bind (&Core::HandleDADescrRemoved, this, _1));
+						[this] (QDataStream& str) { return HandleDADescrRemoved (str); });
 				ActionMapper_.AddFunctor (0, DATagsChanged,
-						boost::bind (&Core::HandleDATagsChanged, this, _1));
+						[this] (QDataStream& str) { return HandleDATagsChanged (str); });
 
 				ReadSettings ();
 			}
@@ -716,9 +715,8 @@ namespace LeechCraft
 					return false;
 				}
 
-				QList<Description>::iterator pos =
-						std::find_if (Descriptions_.begin (), Descriptions_.end (),
-								boost::bind (&Description::ShortName_, _1) == descr.ShortName_);
+				auto pos = std::find_if (Descriptions_.begin (), Descriptions_.end (),
+						[descr] (const Description& d) { return d.ShortName_ == descr.ShortName_; });
 				if (pos == Descriptions_.end ())
 				{
 					Descriptions_ << descr;
@@ -744,9 +742,8 @@ namespace LeechCraft
 					return false;
 				}
 
-				QList<Description>::iterator pos =
-						std::find_if (Descriptions_.begin (), Descriptions_.end (),
-								boost::bind (&Description::ShortName_, _1) == shortName);
+				auto pos = std::find_if (Descriptions_.begin (), Descriptions_.end (),
+						[shortName] (const Description& d) { return d.ShortName_ == shortName; });
 				if (pos != Descriptions_.end ())
 					Descriptions_.erase (pos);
 				return false;
@@ -766,9 +763,8 @@ namespace LeechCraft
 					return false;
 				}
 
-				QList<Description>::iterator pos =
-						std::find_if (Descriptions_.begin (), Descriptions_.end (),
-								boost::bind (&Description::ShortName_, _1) == shortName);
+				auto pos = std::find_if (Descriptions_.begin (), Descriptions_.end (),
+						[shortName] (const Description& d) { return d.ShortName_ == shortName; });
 				if (pos != Descriptions_.end ())
 				{
 					SetTags (std::distance (Descriptions_.begin (), pos), tags);

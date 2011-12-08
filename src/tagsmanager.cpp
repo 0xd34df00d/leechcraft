@@ -18,7 +18,6 @@
 
 #include "tagsmanager.h"
 #include <stdexcept>
-#include <boost/bind.hpp>
 #include <QStringList>
 #include <QSettings>
 #include <QCoreApplication>

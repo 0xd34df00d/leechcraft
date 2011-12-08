@@ -17,7 +17,6 @@
  **********************************************************************/
 
 #include "itemhandlerdataview.h"
-#include <boost/bind.hpp>
 #include <QGridLayout>
 #include <QDialog>
 #include <QSpinBox>
@@ -59,7 +58,8 @@ namespace LeechCraft
 		view->setObjectName (prop);
 
 		Factory_->RegisterDatasourceSetter (prop,
-				boost::bind (&ItemHandlerDataView::SetDataSource, this, _1, _2));
+				[this] (const QString& str, QAbstractItemModel *m, Util::XmlSettingsDialog*)
+					{ SetDataSource (str, m); });
 		Propname2DataView_ [prop] = view;
 
 		lay->addWidget (view, lay->rowCount (), 0);

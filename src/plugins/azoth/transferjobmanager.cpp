@@ -17,7 +17,6 @@
  **********************************************************************/
 
 #include "transferjobmanager.h"
-#include <boost/bind.hpp>
 #include <QUrl>
 #include <QStandardItemModel>
 #include <QDesktopServices>
@@ -67,12 +66,12 @@ namespace Azoth
 				this,
 				SLOT (handleFileOffered (QObject*)));
 	}
-	
+
 	QObjectList TransferJobManager::GetPendingIncomingJobsFor (const QString& id)
 	{
 		return Entry2Incoming_ [id];
 	}
-	
+
 	void TransferJobManager::SelectionChanged (const QModelIndex& idx)
 	{
 		Selected_ = idx;
@@ -162,7 +161,7 @@ namespace Azoth
 			path = QFileDialog::getSaveFileName (0,
 					tr ("Select default path for incoming files"),
 					path);
-			
+
 			if (!path.isEmpty ())
 				XmlSettingsManager::Instance ().setProperty ("DefaultXferSavePath", path);
 		}
@@ -231,7 +230,7 @@ namespace Azoth
 	{
 		return SummaryModel_;
 	}
-	
+
 	void TransferJobManager::HandleDeoffer (QObject *jobObj)
 	{
 		ITransferJob *job = qobject_cast<ITransferJob*> (jobObj);
@@ -269,9 +268,9 @@ namespace Azoth
 					<< "could not be casted to ITransferJob";
 			return;
 		}
-		
+
 		const QString& id = job->GetSourceID ();
-		
+
 		Entry2Incoming_ [id] << jobObj;
 
 		Entity e = Util::MakeNotification ("Azoth",
@@ -280,7 +279,7 @@ namespace Azoth
 					.arg (Util::MakePrettySize (job->GetSize ()))
 					.arg (GetContactName (id)),
 				PInfo_);
-		
+
 		ICLEntry *entry = GetContact (id);
 		BuildNotification (e, entry);
 		e.Additional_ ["org.LC.AdvNotifications.EventID"] =
@@ -293,10 +292,8 @@ namespace Azoth
 
 		Util::NotificationActionHandler *nh =
 				new Util::NotificationActionHandler (e, this);
-		nh->AddFunction ("Accept",
-				boost::bind (&TransferJobManager::AcceptJob, this, jobObj, QString ()));
-		nh->AddFunction ("Deny",
-				boost::bind (&TransferJobManager::DenyJob, this, jobObj));
+		nh->AddFunction ("Accept", [this, jobObj] () { AcceptJob (jobObj, QString ()); });
+		nh->AddFunction ("Deny", [this, jobObj] () { DenyJob (jobObj); });
 		nh->AddDependentObject (jobObj);
 
 		Core::Instance ().SendEntity (e);
@@ -312,7 +309,7 @@ namespace Azoth
 					<< "is not an ITransferJob";
 			return;
 		}
-		
+
 		HandleDeoffer (sender ());
 
 		const QString& other = GetContactName (job->GetSourceID ());
@@ -395,7 +392,7 @@ namespace Azoth
 					.arg (name);
 			break;
 		}
-		
+
 		if (state != TSOffer)
 			HandleDeoffer (sender ());
 
@@ -434,12 +431,12 @@ namespace Azoth
 					.arg (Util::MakePrettySize (total))
 					.arg (done * 100 / total));
 	}
-	
+
 	void TransferJobManager::handleAbortAction ()
 	{
 		if (!Selected_.isValid ())
 			return;
-		
+
 		QStandardItem *item = SummaryModel_->itemFromIndex (Selected_);
 		if (!item)
 		{
@@ -448,7 +445,7 @@ namespace Azoth
 					<< Selected_;
 			return;
 		}
-		
+
 		QObject *jobObj = item->data (MRJobObject).value<QObject*> ();
 		ITransferJob *job = qobject_cast<ITransferJob*> (jobObj);
 		if (!job)
@@ -459,7 +456,7 @@ namespace Azoth
 					<< Selected_;
 			return;
 		}
-		
+
 		job->Abort ();
 	}
 }

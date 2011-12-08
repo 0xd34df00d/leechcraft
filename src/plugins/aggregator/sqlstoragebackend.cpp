@@ -18,7 +18,6 @@
 
 #include "sqlstoragebackend.h"
 #include <stdexcept>
-#include <boost/bind.hpp>
 #include <boost/optional.hpp>
 #include <QDir>
 #include <QDebug>
@@ -1263,9 +1262,7 @@ namespace Aggregator
 		try
 		{
 			std::for_each (feed->Channels_.begin (), feed->Channels_.end (),
-					boost::bind (&SQLStorageBackend::AddChannel,
-						this,
-						_1));
+					[this] (Channel_ptr chan) { AddChannel (chan); });
 		}
 		catch (const std::runtime_error& e)
 		{
@@ -1507,9 +1504,7 @@ namespace Aggregator
 		InsertChannel_.finish ();
 
 		std::for_each (channel->Items_.begin (), channel->Items_.end (),
-				boost::bind (&SQLStorageBackend::AddItem,
-					this,
-					_1));
+				[this] (Item_ptr item) { AddItem (item); });
 	}
 
 	void SQLStorageBackend::AddItem (Item_ptr item)

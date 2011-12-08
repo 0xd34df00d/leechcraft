@@ -16,10 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include <boost/preprocessor/seq/size.hpp>
-#include <boost/preprocessor/seq/elem.hpp>
-#include <boost/preprocessor/repetition/repeat.hpp>
-#include <boost/bind.hpp>
 #include <QMessageBox>
 #include <QtDebug>
 #include <QSortFilterProxyModel>
@@ -738,12 +734,12 @@ namespace Aggregator
 
 	void Aggregator::on_ActionMarkChannelAsRead__triggered ()
 	{
-		Perform (boost::bind (&Core::MarkChannelAsRead, &Core::Instance (), _1));
+		Perform ([] (const QModelIndex& mi) { Core::Instance ().MarkChannelAsRead (mi); });
 	}
 
 	void Aggregator::on_ActionMarkChannelAsUnread__triggered ()
 	{
-		Perform (boost::bind (&Core::MarkChannelAsUnread, &Core::Instance (), _1));
+		Perform ([] (const QModelIndex& mi) { Core::Instance ().MarkChannelAsRead (mi); });
 	}
 
 	void Aggregator::on_ActionChannelSettings__triggered ()
@@ -752,7 +748,7 @@ namespace Aggregator
 		if (!index.isValid ())
 			return;
 
-		std::auto_ptr<FeedSettings> dia (new FeedSettings (index, this));
+		std::unique_ptr<FeedSettings> dia (new FeedSettings (index, this));
 		dia->exec ();
 	}
 
@@ -780,7 +776,8 @@ namespace Aggregator
 
 	void Aggregator::on_ActionUpdateSelectedFeed__triggered ()
 	{
-		Perform (boost::bind (&Core::UpdateFeed, &Core::Instance (), _1, IsRepr ()));
+		const bool repr = IsRepr ();
+		Perform ([repr] (const QModelIndex& mi) { Core::Instance ().UpdateFeed (mi, repr); });
 	}
 
 	void Aggregator::on_ActionRegexpMatcher__triggered ()

@@ -100,13 +100,14 @@ namespace LeechCraft
 
 				ct.add_tracker (params.AnnounceURL_.toStdString ());
 
-				std::auto_ptr<QProgressDialog> pd (new QProgressDialog ());
+				std::unique_ptr<QProgressDialog> pd (new QProgressDialog ());
 				pd->setWindowTitle (tr ("Hashing torrent..."));
 				pd->setMaximum (ct.num_pieces ());
 
 				boost::system::error_code hashesError;
 				libtorrent::set_piece_hashes (ct, fullPath.branch_path (),
-						boost::bind (&UpdateProgress, _1, pd.get ()), hashesError);
+						[this, &pd] (int i) { UpdateProgress (i, pd.get ()); },
+						hashesError);
 				if (hashesError)
 				{
 					QString message = QString::fromUtf8 (hashesError.message ().c_str ());

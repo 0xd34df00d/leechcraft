@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_AZOTH_MSGFORMATTERWIDGET_H
 #define PLUGINS_AZOTH_MSGFORMATTERWIDGET_H
-#include <boost/function.hpp>
+#include <functional>
 #include <QWidget>
 #include <QTextCharFormat>
 #include <QTextBlockFormat>
@@ -33,13 +33,13 @@ namespace Azoth
 	class MsgFormatterWidget : public QWidget
 	{
 		Q_OBJECT
-		
+
 		QTextEdit *Edit_;
-		
+
 		const QTextCharFormat StockCharFormat_;
 		const QTextBlockFormat StockBlockFormat_;
 		const QTextFrameFormat StockFrameFormat_;
-		
+
 		QAction *FormatBold_;
 		QAction *FormatItalic_;
 		QAction *FormatUnderline_;
@@ -47,26 +47,26 @@ namespace Azoth
 
 		QAction *FormatColor_;
 		QAction *FormatFont_;
-		
+
 		QAction *FormatAlignLeft_;
 		QAction *FormatAlignCenter_;
 		QAction *FormatAlignRight_;
 		QAction *FormatAlignJustify_;
-		
+
 		QAction *AddEmoticon_;
-		
+
 		bool HasCustomFormatting_;
-		
+
 		QWidget *SmilesTooltip_;
 	public:
 		MsgFormatterWidget (QTextEdit*, QWidget* = 0);
-		
+
 		bool HasCustomFormatting () const;
 		void Clear ();
 		QString GetNormalizedRichText () const;
 	private:
-		void CharFormatActor (boost::function<void (QTextCharFormat*)>);
-		void BlockFormatActor (boost::function<void (QTextBlockFormat*)>);
+		void CharFormatActor (std::function<void (QTextCharFormat*)>);
+		void BlockFormatActor (std::function<void (QTextBlockFormat*)>);
 		QTextCharFormat GetActualCharFormat () const;
 	private slots:
 		void handleBold ();
@@ -76,13 +76,13 @@ namespace Azoth
 
 		void handleTextColor ();
 		void handleFont ();
-		
+
 		void handleParaAlignment ();
-		
+
 		void handleAddEmoticon ();
 		void handleEmoPackChanged ();
 		void insertEmoticon ();
-		
+
 		void checkCleared ();
 		void updateState (const QTextCharFormat&);
 	};

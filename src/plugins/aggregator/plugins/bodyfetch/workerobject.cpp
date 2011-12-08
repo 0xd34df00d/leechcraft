@@ -17,8 +17,6 @@
  **********************************************************************/
 
 #include "workerobject.h"
-#include <boost/bind.hpp>
-#include <boost/function.hpp>
 #include <QUrl>
 #include <QFile>
 #include <QWebPage>
@@ -65,12 +63,12 @@ namespace BodyFetch
 				SLOT (clearCaches ()));
 		timer->start (10000);
 	}
-	
+
 	void WorkerObject::SetLoaderInstance (IScriptLoaderInstance *inst)
 	{
 		Inst_ = inst;
 	}
-	
+
 	bool WorkerObject::IsOk () const
 	{
 		return Inst_;
@@ -79,12 +77,12 @@ namespace BodyFetch
 	void WorkerObject::AppendItems (const QVariantList& items)
 	{
 		Items_ << items;
-		
+
 		QTimer::singleShot (500,
 				this,
 				SLOT (process ()));
 	}
-	
+
 	void WorkerObject::ProcessItems (const QVariantList& items)
 	{
 		if (!Inst_)
@@ -93,16 +91,16 @@ namespace BodyFetch
 					<< "null instance loader, aborting";
 			return;
 		}
-		
+
 		if (EnumeratedCache_.isEmpty ())
 			EnumeratedCache_ = Inst_->EnumerateScripts ();
-		
+
 		QHash<QString, IScript_ptr> channel2script;
-		
+
 		Q_FOREACH (const QVariant& item, items)
 		{
 			const QVariantMap& map = item.toMap ();
-			
+
 			const QString& channelLinkStr = map ["ChannelLink"].toString ();
 
 			IScript_ptr script = channel2script.value (channelLinkStr);
@@ -113,7 +111,7 @@ namespace BodyFetch
 					continue;
 				channel2script [channelLinkStr] = script;
 			}
-			
+
 			QVariantList args;
 			args << map ["ItemLink"];
 			args << map ["ItemCommentsPageLink"];
@@ -130,7 +128,7 @@ namespace BodyFetch
 			emit downloadRequested (url);
 		}
 	}
-	
+
 	IScript_ptr WorkerObject::GetScriptForChannel (const QString& channel)
 	{
 		if (CachedScripts_.contains (channel))
@@ -147,7 +145,7 @@ namespace BodyFetch
 				script.reset ();
 			}
 		}
-		
+
 		if (!ChannelLink2ScriptID_.contains (channel))
 		{
 			const QString& scriptId = FindScriptForChannel (channel);
@@ -159,7 +157,7 @@ namespace BodyFetch
 
 			ChannelLink2ScriptID_ [channel] = scriptId;
 		}
-		
+
 		if (ChannelLink2ScriptID_ [channel].isEmpty ())
 		{
 			ChannelLink2ScriptID_.remove (channel);
@@ -169,12 +167,12 @@ namespace BodyFetch
 
 		if (!script)
 			script = Inst_->LoadScript (ChannelLink2ScriptID_ [channel]);
-		
+
 		CachedScripts_ [channel] = script;
-		
+
 		return script;
 	}
-	
+
 	QString WorkerObject::FindScriptForChannel (const QString& link)
 	{
 		Q_FOREACH (const QString& id, EnumeratedCache_)
@@ -183,10 +181,10 @@ namespace BodyFetch
 			if (script->InvokeMethod ("CanHandle", QVariantList () << link).toBool ())
 				return id;
 		}
-		
+
 		return QString ();
 	}
-	
+
 	namespace
 	{
 		QStringList GetReplacements (IScript_ptr script, const QString& method)
@@ -203,10 +201,11 @@ namespace BodyFetch
 			return result;
 		}
 
+		template<typename Func>
 		QString ParseWithSelectors (QWebFrame *frame,
 				const QStringList& selectors,
 				int amount,
-				boost::function<QString (const QWebElement&)> func)
+				Func func)
 		{
 			QString result;
 
@@ -216,49 +215,49 @@ namespace BodyFetch
 				for (int i = 0, size = std::min (amount, col.count ());
 						i < size; ++i)
 					result += func (col.at (i)).simplified ();
-				
+
 				qApp->processEvents ();
 			}
-			
+
 			return result;
 		}
 	}
-	
+
 	QString WorkerObject::Parse (const QString& contents, IScript_ptr script)
 	{
 		const QStringList& firstTagOut = GetReplacements (script, "KeepFirstTag");
 		const QStringList& allTagsOut = GetReplacements (script, "KeepAllTags");
 		const QStringList& firstTagIn = GetReplacements (script, "KeepFirstTagInnerXml");
-		
+
 		qApp->processEvents ();
-		
+
 		if (firstTagOut.isEmpty () &&
 				allTagsOut.isEmpty () &&
 				firstTagIn.isEmpty ())
 			return script->InvokeMethod ("Strip", QVariantList () << contents).toString ();
-		
+
 		QWebPage page;
 		page.settings ()->setAttribute (QWebSettings::DeveloperExtrasEnabled, false);
 		page.settings ()->setAttribute (QWebSettings::JavascriptEnabled, false);
 		page.settings ()->setAttribute (QWebSettings::AutoLoadImages, false);
 		page.settings ()->setAttribute (QWebSettings::PluginsEnabled, false);
 		page.mainFrame ()->setHtml (contents);
-		
+
 		qApp->processEvents ();
-		
+
 		QString result;
 		result += ParseWithSelectors (page.mainFrame (),
-				firstTagOut, 1, boost::bind (&QWebElement::toOuterXml, _1));
+				firstTagOut, 1, [] (const QWebElement& e) { return e.toOuterXml (); });
 		result += ParseWithSelectors (page.mainFrame (),
-				allTagsOut, 1000, boost::bind (&QWebElement::toOuterXml, _1));
+				allTagsOut, 1000, [] (const QWebElement& e) { return e.toOuterXml (); });
 		result += ParseWithSelectors (page.mainFrame (),
-				firstTagIn, 1, boost::bind (&QWebElement::toInnerXml, _1));
+				firstTagIn, 1, [] (const QWebElement& e) { return e.toInnerXml (); });
 
 		result.remove ("</br>");
 
 		return result;
 	}
-	
+
 	void WorkerObject::WriteFile (const QString& contents, quint64 itemId) const
 	{
 		QDir dir = StorageDir_;
@@ -273,15 +272,15 @@ namespace BodyFetch
 					<< file.errorString ();
 			return;
 		}
-		
+
 		file.write (contents.toUtf8 ());
 	}
-	
+
 	QString WorkerObject::Recode (const QByteArray& rawContents) const
 	{
 		const QByteArray stupidCharset ("meta charset=");
 		const int stupidPos = rawContents.indexOf (stupidCharset);
-		
+
 		if (stupidPos >= 0)
 		{
 			const int begin = stupidPos + stupidCharset.size ();
@@ -289,7 +288,7 @@ namespace BodyFetch
 			if (sep == '\'' || sep == '"')
 			{
 				const int end = rawContents.indexOf (sep, begin + 1);
-				
+
 				const QByteArray& enca = rawContents.mid (begin + 1, end - begin - 1);
 				qDebug () << "detected encoding" << enca;
 				QTextCodec *codec = QTextCodec::codecForName (enca);
@@ -307,7 +306,7 @@ namespace BodyFetch
 				codec->toUnicode (rawContents) :
 				QString::fromUtf8 (rawContents);
 	}
-	
+
 	namespace
 	{
 		struct ProcessingGuard
@@ -319,23 +318,23 @@ namespace BodyFetch
 			{
 				*P_ = true;
 			}
-			
+
 			~ProcessingGuard ()
 			{
 				*P_ = false;
 			}
 		};
 	}
-	
+
 	void WorkerObject::ScheduleRechecking ()
 	{
 		if (RecheckScheduled_)
 			return;
-		
+
 		QTimer::singleShot (1000,
 				this,
 				SLOT (recheckFinished ()));
-		
+
 		RecheckScheduled_ = true;
 	}
 
@@ -374,7 +373,7 @@ namespace BodyFetch
 		file.close ();
 		file.remove ();
 		const QString& result = Parse (contents, script);
-		
+
 		if (result.isEmpty ())
 		{
 			qWarning () << Q_FUNC_INFO
@@ -382,14 +381,14 @@ namespace BodyFetch
 					<< url;
 			return;
 		}
-		
+
 		const quint64 id = URL2ItemID_.take (url);
 		qApp->processEvents ();
 		WriteFile (result, id);
 		qApp->processEvents ();
 		emit newBodyFetched (id);
 	}
-	
+
 	void WorkerObject::recheckFinished ()
 	{
 		RecheckScheduled_ = false;
@@ -403,12 +402,12 @@ namespace BodyFetch
 		const QPair<QUrl, QString>& item = FetchedQueue_.takeFirst ();
 		handleDownloadFinished (item.first, item.second);
 	}
-	
+
 	void WorkerObject::process ()
 	{
 		if (Items_.isEmpty ())
 			return;
-		
+
 		if (!IsProcessing_)
 			ProcessItems (QVariantList () << Items_.takeFirst ());
 
@@ -417,12 +416,12 @@ namespace BodyFetch
 					this,
 					SLOT (process ()));
 	}
-	
+
 	void WorkerObject::clearCaches ()
 	{
 		if (IsProcessing_)
 			return;
-		
+
 		EnumeratedCache_.clear ();
 		CachedScripts_.clear ();
 	}

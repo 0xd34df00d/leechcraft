@@ -17,7 +17,6 @@
  **********************************************************************/
 
 #include "kinotify.h"
-#include <boost/bind.hpp>
 #include <QMainWindow>
 #include <QIcon>
 #include <QTimer>

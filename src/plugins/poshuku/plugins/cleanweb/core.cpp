@@ -18,7 +18,6 @@
 
 #include "core.h"
 #include <algorithm>
-#include <boost/bind.hpp>
 #include <QNetworkRequest>
 #include <QRegExp>
 #include <QFile>
@@ -703,8 +702,7 @@ namespace CleanWeb
 		QStringList lines;
 		std::transform (rawLines.begin (), rawLines.end (),
 				std::back_inserter (lines),
-				boost::bind (&QString::trimmed,
-					_1));
+				[] (const QString& t) { return t.trimmed (); });
 
 		Filter f;
 		std::for_each (lines.begin (), lines.end (),

@@ -22,7 +22,6 @@
 #include <idna.h>
 #endif
 
-#include <boost/bind.hpp>
 #include <boost/preprocessor/seq/size.hpp>
 #include <boost/preprocessor/seq/elem.hpp>
 #include <boost/preprocessor/repetition/repeat.hpp>
@@ -1488,7 +1487,7 @@ namespace Poshuku
 
 		Entity e = Util::MakeNotification ("Poshuku", text, prio);
 		Util::NotificationActionHandler *nh = new Util::NotificationActionHandler (e, this);
-		nh->AddFunction (tr ("Open"), boost::bind (&BrowserWidget::raiseTab, this, this));
+		nh->AddFunction (tr ("Open"), [this] () { emit raiseTab (this); });
 		nh->AddDependentObject (this);
 		emit gotEntity (e);
 	}

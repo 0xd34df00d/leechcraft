@@ -17,7 +17,6 @@
  **********************************************************************/
 
 #include "core.h"
-#include <boost/bind.hpp>
 #include <QIcon>
 #include <QAction>
 #include <QStandardItemModel>
@@ -127,7 +126,8 @@ namespace Azoth
 	, CLModel_ (new CLModel (this))
 	, ChatTabsManager_ (new ChatTabsManager (this))
 	, ActionsManager_ (new ActionsManager (this))
-	, ItemIconManager_ (new AnimatedIconManager<QStandardItem*> (boost::bind (&QStandardItem::setIcon, _1, _2)))
+	, ItemIconManager_ (new AnimatedIconManager<QStandardItem*> ([] (QStandardItem *it, const QIcon& ic)
+						{ it->setIcon (ic); }))
 	, SmilesOptionsModel_ (new SourceTrackingModel<IEmoticonResourceSource> (QStringList (tr ("Smile pack"))))
 	, ChatStylesOptionsModel_ (new SourceTrackingModel<IChatStyleResourceSource> (QStringList (tr ("Chat style"))))
 	, PluginManager_ (new PluginManager)
@@ -1470,7 +1470,7 @@ namespace Azoth
 	}
 
 	void Core::ManipulateAuth (const QString& id, const QString& text,
-			boost::function<void (IAuthable*, const QString&)> func)
+			std::function<void (IAuthable*, const QString&)> func)
 	{
 		QAction *action = qobject_cast<QAction*> (sender ());
 		if (!action)
@@ -2291,9 +2291,7 @@ namespace Azoth
 		Util::NotificationActionHandler *nh =
 				new Util::NotificationActionHandler (e, this);
 		nh->AddFunction (tr ("Open chat"),
-				boost::bind (static_cast<QWidget* (ChatTabsManager::*) (const ICLEntry*)> (&ChatTabsManager::OpenChat),
-						ChatTabsManager_,
-						parentCL));
+				[parentCL, ChatTabsManager_] () { ChatTabsManager_->OpenChat (parentCL); });
 		nh->AddDependentObject (parentCL->GetObject ());
 
 		emit gotEntity (e);
@@ -2329,15 +2327,9 @@ namespace Azoth
 
 		Util::NotificationActionHandler *nh =
 				new Util::NotificationActionHandler (e, this);
-		nh->AddFunction (tr ("Authorize"),
-				boost::bind (AuthorizeEntry,
-						entry));
-		nh->AddFunction (tr ("Deny"),
-				boost::bind (DenyAuthForEntry,
-						entry));
-		nh->AddFunction (tr ("View info"),
-				boost::bind (&ICLEntry::ShowInfo,
-						entry));
+		nh->AddFunction (tr ("Authorize"), [this, entry] () { AuthorizeEntry (entry); });
+		nh->AddFunction (tr ("Deny"), [this, entry] () { DenyAuthForEntry (entry); });
+		nh->AddFunction (tr ("View info"), [entry] () { entry->ShowInfo (); });
 		nh->AddDependentObject (entry->GetObject ());
 		emit gotEntity (e);
 	}
@@ -2379,9 +2371,7 @@ namespace Azoth
 		Util::NotificationActionHandler *nh =
 				new Util::NotificationActionHandler (e, this);
 		nh->AddFunction (tr ("Open chat"),
-				boost::bind (static_cast<QWidget* (ChatTabsManager::*) (const ICLEntry*)> (&ChatTabsManager::OpenChat),
-						ChatTabsManager_,
-						entry));
+				[entry, ChatTabsManager_] () { ChatTabsManager_->OpenChat (entry); });
 		nh->AddDependentObject (entry->GetObject ());
 
 		emit gotEntity (e);
@@ -2623,8 +2613,7 @@ namespace Azoth
 		e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = reason;
 
 		Util::NotificationActionHandler *nh = new Util::NotificationActionHandler (e);
-		nh->AddFunction (tr ("Join"), boost::bind (&Core::SuggestJoiningMUC,
-					this, acc, ident));
+		nh->AddFunction (tr ("Join"), [this, acc, ident] () { SuggestJoiningMUC (acc, ident); });
 		nh->AddDependentObject (acc->GetObject ());
 
 		emit gotEntity (e);

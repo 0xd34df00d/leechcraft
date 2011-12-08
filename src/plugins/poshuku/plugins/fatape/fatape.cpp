@@ -17,8 +17,6 @@
  **********************************************************************/
 
 #include "fatape.h"
-#include <boost/bind.hpp>
-#include <boost/function.hpp>
 #include <QDesktopServices>
 #include <QDir>
 #include <QIcon>
@@ -136,13 +134,8 @@ namespace FatApe
 	void Plugin::hookInitialLayoutCompleted (LeechCraft::IHookProxy_ptr proxy,
 			QWebPage *page, QWebFrame *frame)
 	{
-		boost::function<bool (const UserScript&)> match =
-			boost::bind (&UserScript::MatchToPage,
-					_1,
-					frame->url ().toString ());
-		boost::function<void (const UserScript&)> inject =
-			boost::bind (&UserScript::Inject, _1, frame, Proxy_);
-
+		auto match = [frame] (const UserScript& us) { return us.MatchToPage (frame->url ().toString ()); };
+		auto inject = [frame, this] (const UserScript& us) { us.Inject (frame, Proxy_); };
 
 		apply_if (UserScripts_.begin (), UserScripts_.end (), match, inject);
 	}

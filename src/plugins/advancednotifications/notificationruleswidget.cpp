@@ -17,7 +17,6 @@
  **********************************************************************/
 
 #include "notificationruleswidget.h"
-#include <boost/bind.hpp>
 #include <QSettings>
 #include <QStandardItemModel>
 #include <QFileDialog>
@@ -310,12 +309,8 @@ namespace AdvancedNotifications
 		else
 		{
 			const QList<ANFieldData>& fields = iae->GetANFields ();
-			QList<ANFieldData>::const_iterator pos =
-					std::find_if (fields.begin (), fields.end (),
-							boost::bind (std::equal_to<QString> (),
-									fieldName,
-									boost::bind (&ANFieldData::ID_,
-											_1)));
+			auto pos = std::find_if (fields.begin (), fields.end (),
+					[&fieldName] (decltype (fields.front ()) field) { return field.ID_ == fieldName; });
 			if (pos != fields.end ())
 				fieldName = pos->Name_;
 			else
