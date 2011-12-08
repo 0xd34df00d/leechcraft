@@ -377,6 +377,9 @@ namespace Xoox
 				wasOffline)
 			emit availableVariantsChanged (vars);
 
+		if ((!existed || wasOffline) && status.State_ != SOffline)
+			Account_->GetClientConnection ()->FetchVersion (GetJID () + '/' + variant);
+
 		if (status.State_ != SOffline)
 		{
 			QXmppRosterManager& rm = Account_->

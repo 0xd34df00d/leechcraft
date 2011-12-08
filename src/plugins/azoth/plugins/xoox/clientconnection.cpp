@@ -1081,7 +1081,6 @@ namespace Xoox
 
 		JID2CLEntry_ [jid]->SetClientInfo (resource, pres);
 		JID2CLEntry_ [jid]->SetStatus (PresenceToStatus (pres), resource);
-		VersionQueue_->Schedule (pres.from ());
 		if (SignedPresences_.remove (jid))
 		{
 			qDebug () << "got signed presence" << jid;
