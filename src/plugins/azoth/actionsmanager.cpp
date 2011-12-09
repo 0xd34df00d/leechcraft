@@ -30,6 +30,7 @@
 #include "interfaces/imucperms.h"
 #include "interfaces/iadvancedclentry.h"
 #include "interfaces/imucentry.h"
+#include "interfaces/iauthable.h"
 #include "interfaces/iaccount.h"
 
 #ifdef ENABLE_CRYPT
@@ -141,6 +142,47 @@ namespace Azoth
 		QHash<QByteArray, QAction*> actions = Entry2Actions_.take (entry);
 		Q_FOREACH (QAction *action, actions.values ())
 			Action2Areas_.remove (action);
+	}
+
+	QString ActionsManager::GetReason (const QString&, const QString& text)
+	{
+		return QInputDialog::getText (0,
+					tr ("Enter reason"),
+					text);
+	}
+
+	void ActionsManager::ManipulateAuth (const QString& id, const QString& text,
+			std::function<void (IAuthable*, const QString&)> func)
+	{
+		QAction *action = qobject_cast<QAction*> (sender ());
+		if (!action)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< sender ()
+					<< "is not a QAction";
+			return;
+		}
+
+		ICLEntry *entry = action->
+				property ("Azoth/Entry").value<ICLEntry*> ();
+		IAuthable *authable =
+				qobject_cast<IAuthable*> (entry->GetObject ());
+		if (!authable)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< entry->GetObject ()
+					<< "doesn't implement IAuthable";
+			return;
+		}
+
+		QString reason;
+		if (action->property ("Azoth/WithReason").toBool ())
+		{
+			reason = GetReason (id, text.arg (entry->GetEntryName ()));
+			if (reason.isEmpty ())
+				return;
+		}
+		func (authable, reason);
 	}
 
 	void ActionsManager::CreateActionsForEntry (ICLEntry *entry)
@@ -643,32 +685,31 @@ namespace Azoth
 
 	void ActionsManager::handleActionGrantAuthTriggered()
 	{
-		Core::Instance ().ManipulateAuth ("grantauth",
+		ManipulateAuth ("grantauth",
 				tr ("Enter reason for granting authorization to %1:"),
 				&IAuthable::ResendAuth);
 	}
 
 	void ActionsManager::handleActionRevokeAuthTriggered ()
 	{
-		Core::Instance ().ManipulateAuth ("revokeauth",
+		ManipulateAuth ("revokeauth",
 				tr ("Enter reason for revoking authorization from %1:"),
 				&IAuthable::RevokeAuth);
 	}
 
 	void ActionsManager::handleActionUnsubscribeTriggered ()
 	{
-		Core::Instance ().ManipulateAuth ("unsubscribe",
+		ManipulateAuth ("unsubscribe",
 				tr ("Enter reason for unsubscribing from %1:"),
 				&IAuthable::Unsubscribe);
 	}
 
 	void ActionsManager::handleActionRerequestTriggered ()
 	{
-		Core::Instance ().ManipulateAuth ("rerequestauth",
+		ManipulateAuth ("rerequestauth",
 				tr ("Enter reason for rerequesting authorization from %1:"),
 				&IAuthable::RerequestAuth);
 	}
-
 
 #ifdef ENABLE_CRYPT
 	void ActionsManager::handleActionManagePGPTriggered ()
