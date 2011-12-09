@@ -205,6 +205,9 @@ namespace TabSessManager
 
 		void AskTabs (QHash<QObject*, QList<RecInfo>>& tabs)
 		{
+			if (tabs.isEmpty ())
+				return;
+
 			RestoreSessionDialog dia;
 			dia.SetPages (tabs);
 
