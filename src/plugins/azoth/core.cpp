@@ -1452,47 +1452,6 @@ namespace Azoth
 		category->setData (sum, CLRUnreadMsgCount);
 	}
 
-	QString Core::GetReason (const QString&, const QString& text)
-	{
-		return QInputDialog::getText (0,
-					tr ("Enter reason"),
-					text);
-	}
-
-	void Core::ManipulateAuth (const QString& id, const QString& text,
-			boost::function<void (IAuthable*, const QString&)> func)
-	{
-		QAction *action = qobject_cast<QAction*> (sender ());
-		if (!action)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< sender ()
-					<< "is not a QAction";
-			return;
-		}
-
-		ICLEntry *entry = action->
-				property ("Azoth/Entry").value<ICLEntry*> ();
-		IAuthable *authable =
-				qobject_cast<IAuthable*> (entry->GetObject ());
-		if (!authable)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< entry->GetObject ()
-					<< "doesn't implement IAuthable";
-			return;
-		}
-
-		QString reason;
-		if (action->property ("Azoth/WithReason").toBool ())
-		{
-			reason = GetReason (id, text.arg (entry->GetEntryName ()));
-			if (reason.isEmpty ())
-				return;
-		}
-		func (authable, reason);
-	}
-
 	void Core::RemoveCLItem (QStandardItem *item)
 	{
 		QObject *entryObj = item->data (CLREntryObject).value<QObject*> ();
