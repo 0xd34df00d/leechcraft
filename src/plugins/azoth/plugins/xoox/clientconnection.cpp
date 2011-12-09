@@ -740,6 +740,7 @@ namespace Xoox
 
 	void ClientConnection::FetchVersion (const QString& jid)
 	{
+		qDebug () << Q_FUNC_INFO << jid;
 		VersionQueue_->Schedule (jid);
 	}
 
@@ -1568,7 +1569,7 @@ namespace Xoox
 				entry = new GlooxCLEntry (bareJID, Account_);
 				JID2CLEntry_ [bareJID] = entry;
 				ScheduleFetchVCard (bareJID);
-				VersionQueue_->Schedule (bareJID);
+				FetchVersion (bareJID);
 			}
 		}
 		else
@@ -1595,7 +1596,7 @@ namespace Xoox
 					vcard.lastName ().isEmpty ())
 			{
 				ScheduleFetchVCard (bareJID);
-				VersionQueue_->Schedule (bareJID);
+				FetchVersion (bareJID);
 			}
 		}
 		return entry;

@@ -378,7 +378,12 @@ namespace Xoox
 			emit availableVariantsChanged (vars);
 
 		if ((!existed || wasOffline) && status.State_ != SOffline)
-			Account_->GetClientConnection ()->FetchVersion (GetJID () + '/' + variant);
+		{
+			const QString& jid = variant.isEmpty () ?
+					GetJID () :
+					GetJID () + '/' + variant;
+			Account_->GetClientConnection ()->FetchVersion (jid);
+		}
 
 		if (status.State_ != SOffline)
 		{

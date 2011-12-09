@@ -630,7 +630,6 @@ namespace Xoox
 		entry->SetClientInfo ("", pres);
 
 		Account_->GetClientConnection ()->FetchVCard (jid);
-		Account_->GetClientConnection ()->FetchVersion (jid);
 		MakeJoinMessage (pres, nick);
 	}
 
