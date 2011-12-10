@@ -1156,7 +1156,9 @@ namespace Xoox
 		QString resource;
 		Split (from, &bare, &resource);
 
-		if (!JID2CLEntry_.contains (bare))
+		if (bare == OurBareJID_)
+			SelfContact_->HandlePEPEvent (resource, event);
+		else if (!JID2CLEntry_.contains (bare))
 		{
 			if (JID2CLEntry_.isEmpty ())
 				InitialEventQueue_ << qMakePair (from, event->Clone ());
@@ -1165,10 +1167,9 @@ namespace Xoox
 						<< "unknown PEP event source"
 						<< from
 						<< JID2CLEntry_.keys ();
-			return;
 		}
-
-		JID2CLEntry_ [bare]->HandlePEPEvent (resource, event);
+		else
+			JID2CLEntry_ [bare]->HandlePEPEvent (resource, event);
 	}
 
 	void ClientConnection::handlePEPAvatarUpdated (const QString& from, const QImage& image)
