@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_AZOTH_ACTIONSMANAGER_H
 #define PLUGINS_AZOTH_ACTIONSMANAGER_H
-#include <functional>
+#include <boost/function.hpp>
 #include <QObject>
 #include <QHash>
 #include <QMetaType>
@@ -62,7 +62,7 @@ namespace Azoth
 	private:
 		QString GetReason (const QString& id, const QString& text);
 		void ManipulateAuth (const QString& id, const QString& text,
-				std::function<void (IAuthable*, const QString&)> func);
+				boost::function<void (IAuthable*, const QString&)> func);
 		void CreateActionsForEntry (ICLEntry*);
 		void UpdateActionsForEntry (ICLEntry*);
 	private slots:

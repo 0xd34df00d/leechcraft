@@ -152,7 +152,7 @@ namespace Azoth
 	}
 
 	void ActionsManager::ManipulateAuth (const QString& id, const QString& text,
-			std::function<void (IAuthable*, const QString&)> func)
+			boost::function<void (IAuthable*, const QString&)> func)
 	{
 		QAction *action = qobject_cast<QAction*> (sender ());
 		if (!action)
