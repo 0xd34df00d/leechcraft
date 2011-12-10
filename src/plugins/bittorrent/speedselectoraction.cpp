@@ -88,8 +88,8 @@ namespace LeechCraft
 				{
 					settings.setArrayIndex (i);
 					int dv = settings.value (Setting_ + "Value").toInt ();
-					Call ([dv] (QComboBox *box)
-							{ box->addItem (tr ("%1 KiB/s").arg (dv), dv); });
+					const auto& str = tr ("%1 KiB/s").arg (dv);
+					Call ([dv, str] (QComboBox *box) { box->addItem (str, dv); });
 				}
 				settings.endArray ();
 				settings.endGroup ();
