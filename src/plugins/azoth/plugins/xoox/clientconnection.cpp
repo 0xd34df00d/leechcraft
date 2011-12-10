@@ -1052,29 +1052,28 @@ namespace Xoox
 		QString resource;
 		Split (pres.from (), &jid, &resource);
 
-		if (!JID2CLEntry_.contains (jid))
+		if (jid == OurBareJID_)
+		{
+			if (OurJID_ == pres.from ())
+				emit statusChanged (PresenceToStatus (pres));
+
+			if (pres.type () == QXmppPresence::Available)
+			{
+				SelfContact_->SetClientInfo (resource, pres);
+				SelfContact_->UpdatePriority (resource, pres.status ().priority ());
+				SelfContact_->SetStatus (PresenceToStatus (pres), resource);
+			}
+			else
+				SelfContact_->RemoveVariant (resource);
+
+			return;
+		}
+		else if (!JID2CLEntry_.contains (jid))
 		{
 			if (ODSEntries_.contains (jid))
 				ConvertFromODS (jid, Client_->rosterManager ().getRosterEntry (jid));
 			else
-			{
-				if (OurJID_ == pres.from ())
-					emit statusChanged (PresenceToStatus (pres));
-
-				if (jid == OurBareJID_)
-				{
-					if (pres.type () == QXmppPresence::Available)
-					{
-						SelfContact_->SetClientInfo (resource, pres);
-						SelfContact_->UpdatePriority (resource, pres.status ().priority ());
-						SelfContact_->SetStatus (PresenceToStatus (pres), resource);
-					}
-					else
-						SelfContact_->RemoveVariant (resource);
-				}
-
 				return;
-			}
 		}
 
 		JID2CLEntry_ [jid]->SetClientInfo (resource, pres);
