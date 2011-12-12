@@ -385,8 +385,12 @@ namespace Acetamide
 		IrcMessageOptions_.Nick_.clear ();
 		IrcMessageOptions_.Message_.clear ();
 		IrcMessageOptions_.Parameters_.clear ();
-
+		IrcMessageOptions_.UserName_.clear ();
+		IrcMessageOptions_.Host_.clear ();
+		
 		std::string nickStr;
+		std::string userStr;
+		std::string hostStr;
 		std::string commandStr;
 		std::string msgStr;
 		QList<std::string> opts;
@@ -397,18 +401,18 @@ namespace Acetamide
 		rule<> shortname = *(alnum_p
 				>> *(alnum_p || ch_p ('-'))
 				>> *alnum_p);
-		rule<> hostname = shortname
+		rule<> hostname = (shortname
 				>> *(ch_p ('.')
-				>> shortname);
+				>> shortname))[assign_a (hostStr)];
 		rule<> nickname = (alpha_p | special)
 				>> * (alnum_p | special | ch_p ('-'));
 		rule<> user =  +(ascii - '\r' - '\n' - ' ' - '@' - '\0');
 		rule<> host = lexeme_d [+(anychar_p - ' ')] ;
-		rule<> nick = lexeme_d [nickname [assign_a (nickStr)]
+		rule<> nick = lexeme_d [nickname[assign_a (nickStr)]
 				>> !(!(ch_p ('!')
-				>> user)
+				>> user[assign_a (userStr)])
 				>> ch_p ('@')
-				>> host)];
+				>> host[assign_a (hostStr)])];
 		rule<> nospcrlfcl = (anychar_p - '\0' - '\r' - '\n' -
 				' ' - ':');
 		rule<> lastParam = lexeme_d [ch_p (' ')
@@ -446,6 +450,8 @@ namespace Acetamide
 					QString::fromUtf8 (commandStr.c_str ()).toLower ();
 			IrcMessageOptions_.Message_ =
 					QString::fromUtf8 (msgStr.c_str ());
+			IrcMessageOptions_.UserName_ = QString::fromUtf8 (userStr.c_str ());
+			IrcMessageOptions_.Host_ = QString::fromUtf8 (hostStr.c_str ());
 			IrcMessageOptions_.Parameters_ = opts;
 		}
 
