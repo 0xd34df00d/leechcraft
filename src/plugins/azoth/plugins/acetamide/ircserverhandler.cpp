@@ -114,7 +114,10 @@ namespace Acetamide
 	{
 		QList<QObject*> result;
 		Q_FOREACH (ChannelHandler *ich, ChannelHandlers_.values ())
+		{
+			result << ich->GetParticipants ();
 			result << ich->GetCLEntry ();
+		}
 
 		Q_FOREACH (ServerParticipantEntry_ptr spe, Nick2Entry_.values ())
 			result << spe.get ();
@@ -125,9 +128,10 @@ namespace Acetamide
 	QStringList IrcServerHandler::GetPrivateChats () const
 	{
 		QStringList result;
-		Q_FOREACH (ServerParticipantEntry_ptr spe, Nick2Entry_.values ())
-			if (spe->IsPrivateChat ())
-				result << spe->GetEntryName ();
+		//TODO
+// 		Q_FOREACH (ServerParticipantEntry_ptr spe, Nick2Entry_.values ())
+// 			if (spe->IsPrivateChat ())
+// 				result << spe->GetEntryName ();
 		return result;
 	}
 
@@ -141,9 +145,10 @@ namespace Acetamide
 	QList<ServerParticipantEntry_ptr> IrcServerHandler::GetParticipantsOnChannel (const QString& channel)
 	{
 		QList<ServerParticipantEntry_ptr> result;
-		Q_FOREACH (ServerParticipantEntry_ptr spe, Nick2Entry_.values ())
-			if (spe->GetChannels ().contains (channel))
-				result << spe;
+		//TODO
+// 		Q_FOREACH (ServerParticipantEntry_ptr spe, Nick2Entry_.values ())
+// 			if (spe->GetChannels ().contains (channel))
+// 				result << spe;
 		return result;
 	}
 
@@ -278,14 +283,13 @@ namespace Acetamide
 
 	void IrcServerHandler::QuitParticipant (const QString& nick, const QString& msg)
 	{
-		if (IsParticipantExists (nick))
-			Q_FOREACH (const QString& channel, Nick2Entry_ [nick]->GetChannels ())
-			{
-				QString channelID = channel + "@" + ServerOptions_.ServerName_;
-				if (IsChannelExists (channelID))
-					ChannelHandlers_ [channelID]->LeaveParticipant (nick,
-							msg);
-			}
+		Q_FOREACH (ChannelHandler *ich, ChannelHandlers_.values ())
+		{
+			if (!ich->IsUserExists (nick))
+				continue;
+
+			ich->LeaveParticipant (nick, msg);
+		}
 	}
 
 	void IrcServerHandler::SendMessage (const QStringList& cmd)
@@ -322,7 +326,8 @@ namespace Acetamide
 			message->SetBody (msg);
 			message->SetDateTime (QDateTime::currentDateTime ());
 			entry->SetStatus (EntryStatus (SOnline, QString ()));
-			entry->SetPrivateChat (true);
+			//TODO
+// 			entry->SetPrivateChat (true);
 			entry->HandleMessage (message);
 		}
 	}
@@ -337,6 +342,7 @@ namespace Acetamide
 		if (list.isEmpty ())
 			return;
 
+		
 		Q_FOREACH (const NickServIdentify& nsi, list)
 		{
 			QRegExp authRegExp (nsi.AuthString_,
@@ -360,17 +366,17 @@ namespace Acetamide
 					<< nick;
 			return;
 		}
-
-		Q_FOREACH (const QString& channel, Nick2Entry_ [nick]->GetChannels ())
-		{
-			const QString id = (channel + "@" + ServerOptions_.ServerName_).toLower ();
-			const QString mess = tr ("%1 changed nickname to %2").arg (nick, msg);
-
-			if (IsChannelExists (id))
-				ChannelHandlers_ [id]->ShowServiceMessage (mess,
-						IMessage::MTStatusMessage,
-						IMessage::MSTParticipantNickChange);
-		}
+		//TODO
+// 		Q_FOREACH (const QString& channel, Nick2Entry_ [nick]->GetChannels ())
+// 		{
+// 			const QString id = (channel + "@" + ServerOptions_.ServerName_).toLower ();
+// 			const QString mess = tr ("%1 changed nickname to %2").arg (nick, msg);
+// 
+// 			if (IsChannelExists (id))
+// 				ChannelHandlers_ [id]->ShowServiceMessage (mess,
+// 						IMessage::MTStatusMessage,
+// 						IMessage::MSTParticipantNickChange);
+// 		}
 
 		Account_->handleEntryRemoved (Nick2Entry_ [nick].get ());
 		ServerParticipantEntry_ptr entry = Nick2Entry_.take (nick);
@@ -459,6 +465,17 @@ namespace Acetamide
 			IrcParser_->ChanModeCommand (QStringList () << channel << "-l");
 	}
 
+	void IrcServerHandler::SetNewChannelMode (const QString& channel,
+			const QString& mode, const QString& target)
+	{
+		const QString channelId = (channel + "@" + ServerOptions_.ServerName_).toLower ();
+		if (!IsChannelExists (channelId))
+			return;
+
+		IrcParser_->ChanModeCommand (QStringList () << channel << mode << target);
+	}
+
+	
 	void IrcServerHandler::PongMessage (const QString& msg)
 	{
 		IrcParser_->PongCommand (QStringList () << msg);
@@ -483,6 +500,15 @@ namespace Acetamide
 
 		if (IsChannelExists (channelID))
 			ChannelHandlers_ [channelID]->KickParticipant (target, msg, nick);
+	}
+
+	void IrcServerHandler::KickParticipant (const QString& channel,
+			const QString& nick, const QString& reason)
+	{
+		QString channelID = (channel + "@" + ServerOptions_.ServerName_).toLower ();
+		
+		if (IsChannelExists (channelID))
+			IrcParser_->KickCommand (QStringList () << channel << nick << reason);
 	}
 
 	void IrcServerHandler::GotInvitation (const QString& nick,
@@ -511,9 +537,11 @@ namespace Acetamide
 							IMessage::MTEventMessage,
 							IMessage::MSTOther);
 		else
+		{
 			ServerCLEntry_->HandleMessage (CreateMessage (IMessage::MTEventMessage,
 					ServerID_,
 					msg));
+		}
 	}
 
 	void IrcServerHandler::CTCPReply (const QString& nick,
@@ -833,9 +861,10 @@ namespace Acetamide
 
 	void IrcServerHandler::CloseAllPrivateChats ()
 	{
-		Q_FOREACH (ServerParticipantEntry_ptr spe, Nick2Entry_.values ())
-			if (spe->IsPrivateChat ())
-				spe->closePrivateChat (true);
+		//TODO
+// 		Q_FOREACH (ServerParticipantEntry_ptr spe, Nick2Entry_.values ())
+// 			if (spe->IsPrivateChat ())
+// 				spe->closePrivateChat (true);
 	}
 
 	void IrcServerHandler::SetLastSendID (const QString& str)
@@ -872,7 +901,7 @@ namespace Acetamide
 
 	ServerParticipantEntry_ptr IrcServerHandler::CreateParticipantEntry (const QString& nick)
 	{
-		ServerParticipantEntry_ptr entry (new ServerParticipantEntry (nick, ServerID_, Account_));
+		ServerParticipantEntry_ptr entry (new ServerParticipantEntry (nick, this, Account_));
 		Account_->handleGotRosterItems (QList<QObject*> () << entry.get ());
 		return entry;
 	}
@@ -914,21 +943,35 @@ namespace Acetamide
 			switch (mode [i].toAscii ())
 			{
 			case 'o':
-				if (!value.isEmpty () && IsParticipantExists (value))
+				if (!value.isEmpty () &&
+						ChannelHandlers_ [channelID]->IsUserExists (value))
 				{
+					ChannelParticipantEntry_ptr entry =
+							ChannelHandlers_ [channelID]->GetParticipantEntry (value);
+					QString msg;
 					if (action)
-						Nick2Entry_ [value]->AddRole (channel, Operator);
+						entry->SetRole (ChannelRole::Operator);
 					else
-						Nick2Entry_ [value]->RemoveRole (channel, Operator);
+						entry->RemoveRole (ChannelRole::Operator);
+
+					ChannelHandlers_ [channelID]->MakePermsChangedMessage (value,
+							ChannelRole::Operator, action);
 				}
 				break;
 			case 'v':
-				if (!value.isEmpty () && IsParticipantExists (value))
+				if (!value.isEmpty () &&
+						ChannelHandlers_ [channelID]->IsUserExists (value))
 				{
+					ChannelParticipantEntry_ptr entry =
+							ChannelHandlers_ [channelID]->GetParticipantEntry (value);
+					QString msg;
 					if (action)
-						Nick2Entry_ [value]->AddRole (channel, Voiced);
+						entry->SetRole (ChannelRole::Voiced);
 					else
-						Nick2Entry_ [value]->RemoveRole (channel, Voiced);
+						entry->RemoveRole (ChannelRole::Voiced);
+
+					ChannelHandlers_ [channelID]->MakePermsChangedMessage (value,
+							ChannelRole::Voiced, action);
 				}
 				break;
 			case 'a':
@@ -944,7 +987,21 @@ namespace Acetamide
 					ChannelHandlers_ [channelID]->SetBlockOutsideMessagesMode (action);
 				break;
 			case 'q':
-				// may be it is nessesary
+				if (GetISupport ().contains ("PREFIX") && 
+						GetISupport () ["PREFIX"].contains ('q'))
+					if (!value.isEmpty () &&
+							ChannelHandlers_ [channelID]->IsUserExists (value))
+					{
+						ChannelParticipantEntry_ptr entry =
+						ChannelHandlers_ [channelID]->GetParticipantEntry (value);
+						if (action)
+							entry->SetRole (ChannelRole::Owner);
+						else
+							entry->RemoveRole (ChannelRole::Owner);
+
+						ChannelHandlers_ [channelID]->MakePermsChangedMessage (value,
+								ChannelRole::Owner, action);
+					}
 				break;
 			case 'p':
 					ChannelHandlers_ [channelID]->SetPrivateMode (action);

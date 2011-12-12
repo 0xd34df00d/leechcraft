@@ -246,7 +246,11 @@ namespace Acetamide
 			return;
 		}
 
-		ISH_->JoinParticipant (nick, msg);
+		QString channel = msg;
+		if (channel.isEmpty ())
+			channel = QString::fromUtf8 (params.last ().c_str ());
+
+		ISH_->JoinParticipant (nick, channel);
 	}
 
 	void ServerResponceManager::GotPart (const QString& nick, 

@@ -125,11 +125,14 @@ namespace Acetamide
 		void AddInviteListItem (const QString&, QString);
 		void RemoveInviteListItem (const QString&, QString);
 		void SetNewChannelModes (const QString&, const ChannelModes&);
-
+		void SetNewChannelMode (const QString&, const QString&, const QString&);
+		
 		void PongMessage (const QString&);
 		void GotTopic (const QString&, const QString&);
 		void KickUserFromChannel (const QString&, const QString&,
 				const QString&, const QString&);
+		void KickParticipant (const QString&, const QString&,
+				const QString&);
 		void GotInvitation (const QString&, const QString&);
 		void ShowAnswer (const QString&);
 		void CTCPReply (const QString&, const QString&, const QString&);
