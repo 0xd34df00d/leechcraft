@@ -8,8 +8,8 @@ SET (EMBEDMEDIA_HEADERS
 	embedmedia.h
 	)
 SET (EMBEDMEDIA_RESOURCES
-    embedmedia.qrc
-    )
+	embedmedia.qrc
+	)
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (EMBEDMEDIA_MOC_SRCS ${EMBEDMEDIA_HEADERS})
 ENDIF (NOT LC_NO_MOC)
