@@ -49,6 +49,8 @@ namespace Acetamide
 
 	IrcProtocol::~IrcProtocol ()
 	{
+		Q_FOREACH (QObject *acc, GetRegisteredAccounts ())
+			emit accountRemoved (acc);
 	}
 
 	void IrcProtocol::Prepare ()
