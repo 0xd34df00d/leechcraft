@@ -55,8 +55,6 @@ namespace Acetamide
 
 	enum ChannelRole
 	{
-		Outcast,
-		NoRole,
 		Participant,
 		Voiced,
 		HalfOperator,
@@ -65,9 +63,20 @@ namespace Acetamide
 		Owner
 	};
 
+	enum ChannelManagment
+	{
+		Kick,
+		BanByName,
+		BanByDomain,
+		BanByUserAndDomain,
+		KickAndBan
+	};
+	
 	struct IrcMessageOptions
 	{
 		QString Nick_;
+		QString UserName_;
+		QString Host_;
 		QString Command_;
 		QString Message_;
 		QList<std::string> Parameters_;

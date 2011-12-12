@@ -15,6 +15,7 @@ SET (ACETAMIDE_SRCS
 	channelclentry.cpp
 	channelconfigwidget.cpp
 	channelhandler.cpp
+	channelparticipantentry.cpp
 	channelpublicmessage.cpp
 	clientconnection.cpp
 	core.cpp
@@ -26,6 +27,7 @@ SET (ACETAMIDE_SRCS
 	ircjoingroupchat.cpp
 	ircmessage.cpp
 	ircparser.cpp
+	ircparticipantentry.cpp
 	ircprotocol.cpp
 	ircserversocket.cpp
 	ircserverclentry.cpp
@@ -50,6 +52,7 @@ SET (ACETAMIDE_HEADERS
 	channelclentry.h
 	channelconfigwidget.h
 	channelhandler.h
+	channelparticipantentry.h
 	channelpublicmessage.h
 	clientconnection.h
 	core.h
@@ -61,6 +64,7 @@ SET (ACETAMIDE_HEADERS
 	ircjoingroupchat.h
 	ircmessage.h
 	ircparser.h
+	ircparticipantentry.h
 	ircprotocol.h
 	ircserversocket.h
 	ircserverclentry.h

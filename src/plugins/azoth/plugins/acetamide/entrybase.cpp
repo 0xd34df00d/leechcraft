@@ -96,7 +96,6 @@ namespace Acetamide
 		IProxyObject *proxy =
 				qobject_cast<IProxyObject*> (proto->GetProxyObject ());
 		proxy->PreprocessMessage (msg);
-
 		AllMessages_ << msg;
 		emit gotMessage (msg);
 	}

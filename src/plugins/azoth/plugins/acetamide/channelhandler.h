@@ -23,7 +23,7 @@
 #include <QHash>
 #include <interfaces/imessage.h>
 #include "localtypes.h"
-#include "serverparticipantentry.h"
+#include "channelparticipantentry.h"
 
 namespace LeechCraft
 {
@@ -44,8 +44,8 @@ namespace Acetamide
 		IrcServerHandler *ISH_;
 		ChannelOptions ChannelOptions_;
 		bool IsRosterReceived_;
-		QHash<QString, ServerParticipantEntry_ptr> Nick2Entry_;
-		ChannelModes ChannelMode_; 
+		QHash<QString, ChannelParticipantEntry_ptr> Nick2Entry_;
+		ChannelModes ChannelMode_;
 	public:
 		ChannelHandler (IrcServerHandler*, const ChannelOptions&);
 		QString GetChannelID () const;
@@ -54,7 +54,10 @@ namespace Acetamide
 		ChannelOptions GetChannelOptions () const;
 		QList<QObject*> GetParticipants () const;
 
-		ServerParticipantEntry_ptr GetSelf ();
+		ChannelParticipantEntry_ptr GetSelf ();
+		ChannelParticipantEntry_ptr GetParticipantEntry (const QString&);
+
+		bool IsUserExists (const QString&) const;
 
 		IrcMessage* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);
@@ -73,7 +76,9 @@ namespace Acetamide
 		void MakeLeaveMessage (const QString&, const QString&);
 		void MakeKickMessage (const QString&, const QString&,
 				const QString&);
-
+		void MakePermsChangedMessage (const QString&,
+				ChannelRole, bool);
+		
 		void SetMUCSubject (const QString&);
 		QString GetMUCSubject () const;
 
@@ -83,6 +88,10 @@ namespace Acetamide
 
 		void KickParticipant (const QString&, const QString&, 
 				const QString&);
+
+		void SetRole (ChannelParticipantEntry*, const ChannelRole&, const QString&);
+		void ManageWithParticipant (ChannelParticipantEntry*, const ChannelManagment&);
+
 
 		void RemoveThis ();
 
@@ -114,6 +123,7 @@ namespace Acetamide
 		void SetNewChannelModes (const ChannelModes&);
 	private:
 		bool RemoveUserFromChannel (const QString&);
+		ChannelParticipantEntry_ptr CreateParticipantEntry (const QString&);
 	signals:
 		void updateChanModes (const ChannelModes&);
 	};
