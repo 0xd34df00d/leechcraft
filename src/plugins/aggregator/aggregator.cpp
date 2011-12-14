@@ -438,8 +438,7 @@ namespace Aggregator
 
 	QList<QWizardPage*> Aggregator::GetWizardPages () const
 	{
-		std::auto_ptr<WizardGenerator> wg (new WizardGenerator);
-		return wg->GetPages ();
+		return WizardGenerator ().GetPages ();
 	}
 
 	QList<QAction*> Aggregator::GetActions (ActionsEmbedPlace place) const
