@@ -84,11 +84,11 @@ namespace Acetamide
 			messageList << channelList.join (",")
 					<< passwords;
 		}
-		else if (cmd == "kick" && !message.isEmpty ())
-		{
-			if (ISH_->IsParticipantExists (messageList.first ()))
-				messageList.insert (0, channelName);
-		}
+// 		else if (cmd == "kick" && !message.isEmpty ())
+// 		{
+// 			if (ISH_->IsParticipantExists (messageList.first ()))
+// 				messageList.insert (0, channelName);
+// 		}
 		else if (cmd == "say")
 			messageList.insert (0, channelName);
 

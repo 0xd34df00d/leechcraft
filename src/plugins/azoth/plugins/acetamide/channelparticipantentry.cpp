@@ -17,10 +17,12 @@
  **********************************************************************/
 
 #include "channelparticipantentry.h"
+#include <QMenu>
 #include "channelhandler.h"
 #include "channelclentry.h"
 #include "ircmessage.h"
 #include "ircaccount.h"
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
@@ -33,6 +35,24 @@ namespace Acetamide
 	: IrcParticipantEntry (nick, acc)
 	, ICH_ (ich)
 	{
+		QMenu *infoMenu = new QMenu (tr ("Information"));
+		const QIcon& icon = Core::Instance ().GetProxy ()->GetIcon ("azoth_acetamide_who_user");
+		infoMenu->addAction (icon,
+				"/WHOIS " + Nick_,
+				this,
+				SLOT (handleWhoIs ()));
+
+		infoMenu->addAction (icon,
+				"/WHOWAS " + Nick_,
+				this,
+				SLOT (handleWhoWas ()));
+
+		infoMenu->addAction (icon,
+				"/WHO " + Nick_,
+				this,
+				SLOT (handleWho ()));
+
+		Actions_.insert (0, infoMenu->menuAction ());
 	}
 
 	QObject* ChannelParticipantEntry::GetParentCLEntry () const
@@ -101,6 +121,21 @@ namespace Acetamide
 	{
 		if (Roles_.contains (role))
 			Roles_.removeAll (role);
+	}
+
+	void ChannelParticipantEntry::handleWhoIs ()
+	{
+		ICH_->handleWhoIs (Nick_);
+	}
+	
+	void ChannelParticipantEntry::handleWhoWas ()
+	{
+		ICH_->handleWhoWas (Nick_);
+	}
+	
+	void ChannelParticipantEntry::handleWho ()
+	{
+		ICH_->handleWho (Nick_);
 	}
 }
 }

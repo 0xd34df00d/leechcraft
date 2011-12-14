@@ -85,14 +85,12 @@ namespace Acetamide
 		QList<QObject*> GetCLEntries () const;
 		QStringList GetPrivateChats () const;
 		ChannelHandler* GetChannelHandler (const QString&);
-		QList<ServerParticipantEntry_ptr> GetParticipantsOnChannel (const QString&);
 		QList<ChannelHandler*> GetChannelHandlers () const;
 
 		IrcMessage* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);
 
 		bool IsChannelExists (const QString&);
-		bool IsParticipantExists (const QString&);
 
 		void SetLongMessageState (bool);
 		bool IsLongMessageInProcess () const;
@@ -187,6 +185,10 @@ namespace Acetamide
 
 		void ParserISupport (const QString&);
 		QMap<QString, QString> GetISupport () const;
+
+		void RequestWho (const QString&, const QString&);
+		void RequestWhoIs (const QString&, const QString&);
+		void RequestWhoWas (const QString&, const QString&);
 	private:
 		void SendToConsole (IMessage::Direction, const QString&);
 		void NickCmdError ();

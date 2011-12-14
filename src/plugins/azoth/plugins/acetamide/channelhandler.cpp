@@ -660,6 +660,21 @@ namespace Acetamide
 		return entry;
 	}
 
+	void ChannelHandler::handleWhoIs (const QString& nick)
+	{
+		ISH_->RequestWhoIs (ChannelID_, nick);
+	}
+
+	void ChannelHandler::handleWhoWas (const QString& nick)
+	{
+		ISH_->RequestWhoWas (ChannelID_, nick);
+	}
+
+	void ChannelHandler::handleWho (const QString& nick)
+	{
+		ISH_->RequestWho (ChannelID_, nick);
+	}
+
 };
 };
 };

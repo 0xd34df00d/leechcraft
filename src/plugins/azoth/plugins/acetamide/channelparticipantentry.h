@@ -60,6 +60,10 @@ namespace Acetamide
 
 		void SetRole (const ChannelRole&);
 		void RemoveRole (const ChannelRole&);
+	private slots:
+		void handleWhoIs ();
+		void handleWhoWas ();
+		void handleWho ();
 	};
 
 	typedef boost::shared_ptr<ChannelParticipantEntry> ChannelParticipantEntry_ptr;

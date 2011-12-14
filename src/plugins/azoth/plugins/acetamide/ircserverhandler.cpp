@@ -142,16 +142,6 @@ namespace Acetamide
 				0;
 	}
 
-	QList<ServerParticipantEntry_ptr> IrcServerHandler::GetParticipantsOnChannel (const QString& channel)
-	{
-		QList<ServerParticipantEntry_ptr> result;
-		//TODO
-// 		Q_FOREACH (ServerParticipantEntry_ptr spe, Nick2Entry_.values ())
-// 			if (spe->GetChannels ().contains (channel))
-// 				result << spe;
-		return result;
-	}
-
 	QList<ChannelHandler*> IrcServerHandler::GetChannelHandlers () const
 	{
 		return ChannelHandlers_.values ();
@@ -176,11 +166,6 @@ namespace Acetamide
 		return ChannelHandlers_.contains (channelID);
 	}
 
-	bool IrcServerHandler::IsParticipantExists (const QString& nick)
-	{
-		return Nick2Entry_.contains (nick);
-	}
-
 	void IrcServerHandler::SetLongMessageState (bool state)
 	{
 		IsLongMessageInProcess_ = state;
@@ -198,7 +183,8 @@ namespace Acetamide
 
 	void IrcServerHandler::Add2ChannelsQueue (const ChannelOptions& ch)
 	{
-		if (!ChannelsQueue_.contains (ch) && !ch.ChannelName_.isEmpty ())
+		if (!ChannelsQueue_.contains (ch) &&
+				!ch.ChannelName_.isEmpty ())
 			ChannelsQueue_ << ch;
 	}
 
@@ -359,13 +345,13 @@ namespace Acetamide
 	void IrcServerHandler::ChangeNickname (const QString& nick,
 			const QString& msg)
 	{
-		if (!IsParticipantExists (nick))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "there is no such nick"
-					<< nick;
-			return;
-		}
+// 		if (!IsParticipantExists (nick))
+// 		{
+// 			qWarning () << Q_FUNC_INFO
+// 					<< "there is no such nick"
+// 					<< nick;
+// 			return;
+// 		}
 		//TODO
 // 		Q_FOREACH (const QString& channel, Nick2Entry_ [nick]->GetChannels ())
 // 		{
@@ -826,8 +812,8 @@ namespace Acetamide
 
 	ServerParticipantEntry_ptr IrcServerHandler::GetParticipantEntry (const QString& nick)
 	{
-		if (IsParticipantExists (nick))
-			return Nick2Entry_ [nick];
+// 		if (IsParticipantExists (nick))
+// 			return Nick2Entry_ [nick];
 		ServerParticipantEntry_ptr entry (CreateParticipantEntry (nick));
 		Nick2Entry_ [nick] = entry;
 		return entry;
@@ -894,10 +880,10 @@ namespace Acetamide
 		}
 		else
 		{
-			QString nick = IrcParser_->GetIrcMessageOptions ().Nick_ + "!" +
-			IrcParser_->GetIrcMessageOptions ().UserName_ + "@" +
-			IrcParser_->GetIrcMessageOptions ().Host_;
-			qWarning () << nick;
+			//TODO
+// 			QString nick = IrcParser_->GetIrcMessageOptions ().Nick_ + "!" +
+// 			IrcParser_->GetIrcMessageOptions ().UserName_ + "@" +
+// 			IrcParser_->GetIrcMessageOptions ().Host_;
 			ServerResponceManager_->DoAction (cmd,
 					IrcParser_->GetIrcMessageOptions ().Nick_,
 					IrcParser_->GetIrcMessageOptions ().Parameters_,
@@ -1058,6 +1044,24 @@ namespace Acetamide
 	QMap<QString, QString> IrcServerHandler::GetISupport () const
 	{
 		return ISupport_;
+	}
+
+	void IrcServerHandler::RequestWhoIs (const QString& id, const QString& nick)
+	{
+		LastSendId_ = id;
+		IrcParser_->WhoisCommand (QStringList () << nick);
+	}
+
+	void IrcServerHandler::RequestWhoWas (const QString& id, const QString& nick)
+	{
+		LastSendId_ = id;
+		IrcParser_->WhowasCommand (QStringList () << nick);
+	}
+
+	void IrcServerHandler::RequestWho (const QString& id, const QString& nick)
+	{
+		LastSendId_ = id;
+		IrcParser_->WhoCommand (QStringList () << nick);
 	}
 
 	void IrcServerHandler::connectionEstablished ()

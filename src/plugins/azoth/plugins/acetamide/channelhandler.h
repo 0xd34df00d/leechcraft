@@ -123,6 +123,10 @@ namespace Acetamide
 	private:
 		bool RemoveUserFromChannel (const QString&);
 		ChannelParticipantEntry_ptr CreateParticipantEntry (const QString&);
+	public slots:
+		void handleWhoIs (const QString&);
+		void handleWhoWas (const QString&);
+		void handleWho (const QString&);
 	signals:
 		void updateChanModes (const ChannelModes&);
 	};
