@@ -102,7 +102,6 @@ namespace Acetamide
 		if (Roles_.contains (role))
 			Roles_.removeAll (role);
 	}
-
 }
 }
 }

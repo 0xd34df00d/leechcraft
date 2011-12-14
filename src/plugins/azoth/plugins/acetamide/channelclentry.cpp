@@ -469,7 +469,7 @@ namespace Acetamide
 					<< "is not a ChannelParticipantEntry";
 			return false;
 		}
-		
+
 		const ChannelRole ourRole = ICH_->GetSelf ()->HighestRole ();
 
 		if (permClass == "permclass_role")

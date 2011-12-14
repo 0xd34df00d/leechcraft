@@ -94,7 +94,6 @@ namespace Acetamide
 	{
 		HostName_ = host;
 	}
-
 }
 }
 }

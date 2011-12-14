@@ -215,7 +215,8 @@ namespace Acetamide
 
 	void ChannelHandler::MakeJoinMessage (const QString& nick)
 	{
-		QString msg  = tr ("%1 joined the channel").arg (nick);
+		QString msg  = tr ("%1 joined the channel as %2").arg (nick)
+				.arg (ChannelCLEntry_->Role2String (Nick2Entry_ [nick]->HighestRole ()));
 
 		ChannelPublicMessage *message =
 				new ChannelPublicMessage (msg,

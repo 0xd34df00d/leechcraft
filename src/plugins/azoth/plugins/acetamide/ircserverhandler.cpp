@@ -893,10 +893,16 @@ namespace Acetamide
 			}
 		}
 		else
+		{
+			QString nick = IrcParser_->GetIrcMessageOptions ().Nick_ + "!" +
+			IrcParser_->GetIrcMessageOptions ().UserName_ + "@" +
+			IrcParser_->GetIrcMessageOptions ().Host_;
+			qWarning () << nick;
 			ServerResponceManager_->DoAction (cmd,
 					IrcParser_->GetIrcMessageOptions ().Nick_,
 					IrcParser_->GetIrcMessageOptions ().Parameters_,
 					IrcParser_->GetIrcMessageOptions ().Message_);
+		}
 	}
 
 	ServerParticipantEntry_ptr IrcServerHandler::CreateParticipantEntry (const QString& nick)
