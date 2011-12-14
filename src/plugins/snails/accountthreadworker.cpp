@@ -20,6 +20,7 @@
 #include <QMutexLocker>
 #include <QUrl>
 #include <QFile>
+#include <QTimer>
 #include <QtDebug>
 #include <vmime/security/defaultAuthenticator.hpp>
 #include <vmime/security/cert/defaultCertificateVerifier.hpp>
@@ -121,14 +122,41 @@ namespace Snails
 		std::vector<vmime::ref<vmime::security::cert::X509Certificate>> CertVerifier::TrustedCerts_;
 	}
 
+	class TimerGuard
+	{
+		QTimer *T_;
+		int Timeout_;
+	public:
+		TimerGuard (QTimer *t, int timeout = 30000)
+		: T_ (t)
+		, Timeout_ (timeout)
+		{
+			T_->stop ();
+		}
+
+		~TimerGuard ()
+		{
+			T_->start (Timeout_);
+		}
+	};
+
 	AccountThreadWorker::AccountThreadWorker (Account *parent)
 	: A_ (parent)
+	, DisconnectTimer_ (new QTimer (this))
 	{
 		Session_ = vmime::create<vmime::net::session> ();
+
+		connect (DisconnectTimer_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (timeoutDisconnect ()));
 	}
 
 	vmime::utility::ref<vmime::net::store> AccountThreadWorker::MakeStore ()
 	{
+		if (CachedStore_)
+			return CachedStore_;
+
 		QString url;
 
 		QMetaObject::invokeMethod (A_,
@@ -143,6 +171,10 @@ namespace Snails
 		st->setProperty ("connection.tls.required", A_->TLSRequired_);
 		st->setProperty ("options.sasl", A_->UseSASL_);
 		st->setProperty ("options.sasl.fallback", A_->SASLRequired_);
+
+		CachedStore_ = st;
+
+		st->connect ();
 
 		return st;
 	}
@@ -272,8 +304,6 @@ namespace Snails
 	void AccountThreadWorker::FetchMessagesPOP3 (Account::FetchFlags fetchFlags)
 	{
 		auto store = MakeStore ();
-		store->setProperty ("connection.tls", true);
-		store->connect ();
 		auto folder = store->getDefaultFolder ();
 		folder->open (vmime::net::folder::MODE_READ_WRITE);
 
@@ -547,8 +577,9 @@ namespace Snails
 			break;
 		case Account::InType::IMAP:
 		{
+			TimerGuard g (DisconnectTimer_);
+
 			auto store = MakeStore ();
-			store->connect ();
 			FetchMessagesIMAP (flags, folders, store);
 			SyncIMAPFolders (store);
 			break;
@@ -566,12 +597,13 @@ namespace Snails
 		if (A_->InType_ == Account::InType::POP3)
 			return;
 
+		TimerGuard g (DisconnectTimer_);
+
 		const QByteArray& sid = origMsg->GetID ();
 		vmime::string id (sid.constData ());
 		qDebug () << Q_FUNC_INFO << sid.toHex ();
 
 		auto store = MakeStore ();
-		store->connect ();
 
 		auto folder = store->getFolder (Folder2Path (origMsg->GetFolders ().value (0)));
 		folder->open (vmime::net::folder::MODE_READ_WRITE);
@@ -614,12 +646,13 @@ namespace Snails
 		if (A_->InType_ == Account::InType::POP3)
 			return;
 
+		TimerGuard g (DisconnectTimer_);
+
 		const auto& msgId = msg->GetID ();
 		vmime::string id (msgId.constData ());
 		qDebug () << Q_FUNC_INFO << msgId.toHex ();
 
 		auto store = MakeStore ();
-		store->connect ();
 
 		auto folder = store->getFolder (Folder2Path (msg->GetFolders ().value (0)));
 		folder->open (vmime::net::folder::MODE_READ_WRITE);
@@ -692,6 +725,8 @@ namespace Snails
 		if (!msg)
 			return;
 
+		TimerGuard g (DisconnectTimer_);
+
 		vmime::messageBuilder mb;
 		mb.setSubject (vmime::text (msg->GetSubject ().toUtf8 ().constData ()));
 		mb.setExpeditor (FromPair (msg->GetFrom (), msg->GetFromEmail ()));
@@ -726,6 +761,12 @@ namespace Snails
 			return;
 		}
 		transport->send (vMsg, pl);
+	}
+
+	void AccountThreadWorker::timeoutDisconnect ()
+	{
+		CachedStore_->disconnect ();
+		CachedStore_ = vmime::ref<vmime::net::store> ();
 	}
 }
 }
