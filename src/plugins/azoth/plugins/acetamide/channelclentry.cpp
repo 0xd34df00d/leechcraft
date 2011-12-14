@@ -57,7 +57,7 @@ namespace Acetamide
 		Translations_ ["permclass_role"] = tr ("Role");
 		Translations_ ["participant"] = tr ("Participant");
 		
-		Translations_ ["permclass_managment"] = tr ("Managment");
+		Translations_ ["permclass_managment"] = tr ("Kick&Ban");
 		Translations_ ["kick"] = tr ("Kick");
 		Translations_ ["ban_by_name"] = tr ("Ban by nickname");
 		Translations_ ["ban_by_domain"] = tr ("Ban by mask (*!*@domain)");
