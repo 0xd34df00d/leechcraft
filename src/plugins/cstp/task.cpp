@@ -300,6 +300,11 @@ namespace LeechCraft
 				{
 					RedirectHistory_ << newUrl;
 
+					disconnect (Reply_.get (),
+							0,
+							this,
+							0);
+
 					QMetaObject::invokeMethod (this,
 							"redirectedConstruction",
 							Qt::QueuedConnection,
@@ -382,7 +387,6 @@ namespace LeechCraft
 				if (To_ && FileSizeAtStart_ >= 0)
 				{
 					To_->close ();
-					To_->size ();
 					To_->resize (FileSizeAtStart_);
 					To_->open (QIODevice::ReadWrite);
 				}
