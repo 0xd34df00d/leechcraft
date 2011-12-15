@@ -392,6 +392,8 @@ namespace Azoth
 		 */
 		void handleMucJoinRequested ();
 	private slots:
+		void handleNewProtocols (const QList<QObject*>&);
+
 		/** Handles a new account. This account may be both a new one
 		 * (added as a result of user's actions) and already existing
 		 * one (in case it was just read from settings, for example).

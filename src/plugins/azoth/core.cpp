@@ -587,24 +587,12 @@ namespace Azoth
 		{
 			ProtocolPlugins_ << plugin;
 
-			QIcon icon = qobject_cast<IInfo*> (plugin)->GetIcon ();
-			Q_FOREACH (QObject *protoObj, ipp->GetProtocols ())
-			{
-				IProtocol *proto = qobject_cast<IProtocol*> (protoObj);
+			handleNewProtocols (ipp->GetProtocols ());
 
-				Q_FOREACH (QObject *accObj,
-						proto->GetRegisteredAccounts ())
-					addAccount (accObj);
-
-				connect (proto->GetObject (),
-						SIGNAL (accountAdded (QObject*)),
-						this,
-						SLOT (addAccount (QObject*)));
-				connect (proto->GetObject (),
-						SIGNAL (accountRemoved (QObject*)),
-						this,
-						SLOT (handleAccountRemoved (QObject*)));
-			}
+			connect (plugin,
+					SIGNAL (gotNewProtocols (QList<QObject*>)),
+					this,
+					SLOT (handleNewProtocols (QList<QObject*>)));
 		}
 	}
 
@@ -1679,6 +1667,27 @@ namespace Azoth
 
 		JoinConferenceDialog *dia = new JoinConferenceDialog (accounts, Proxy_->GetMainWindow ());
 		dia->show ();
+	}
+
+	void Core::handleNewProtocols (const QList<QObject*>& protocols)
+	{
+		Q_FOREACH (QObject *protoObj, protocols)
+		{
+			IProtocol *proto = qobject_cast<IProtocol*> (protoObj);
+
+			Q_FOREACH (QObject *accObj,
+					proto->GetRegisteredAccounts ())
+				addAccount (accObj);
+
+			connect (proto->GetObject (),
+					SIGNAL (accountAdded (QObject*)),
+					this,
+					SLOT (addAccount (QObject*)));
+			connect (proto->GetObject (),
+					SIGNAL (accountRemoved (QObject*)),
+					this,
+					SLOT (handleAccountRemoved (QObject*)));
+		}
 	}
 
 	void Core::addAccount (QObject *accObject)
