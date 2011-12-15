@@ -54,6 +54,8 @@ namespace Azoth
 		 * @sa IProtocol
 		 */
 		virtual QList<QObject*> GetProtocols () const = 0;
+	protected:
+		virtual void gotNewProtocols (const QList<QObject*>& protocols) = 0;
 	};
 }
 }

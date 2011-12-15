@@ -68,6 +68,8 @@ namespace Metacontacts
 				QObject *entry);
 	private slots:
 		void handleAddToMetacontacts ();
+	signals:
+		void gotNewProtocols (const QList<QObject*>&);
 	};
 }
 }
