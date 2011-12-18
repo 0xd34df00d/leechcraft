@@ -209,7 +209,6 @@ namespace LeechCraft
 
 			if (CachePathContents_.contains (path))
 			{
-				qDebug () << "RL cache hit:" << path;
 				boost::shared_ptr<QBuffer> result (new QBuffer ());
 				result->setData (*CachePathContents_ [path]);
 				if (open)
@@ -222,7 +221,6 @@ namespace LeechCraft
 			if (!result->isSequential () &&
 					result->size () < CachePathContents_.maxCost () / 2)
 			{
-				qDebug () << "RL cache miss:" << path;
 				if (result->open (QIODevice::ReadOnly))
 				{
 					const QByteArray& data = result->readAll ();

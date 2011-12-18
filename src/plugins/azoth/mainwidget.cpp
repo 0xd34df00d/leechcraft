@@ -139,7 +139,7 @@ namespace Azoth
 
 		Ui_.FastStatusButton_->setMenu (CreateStatusChangeMenu (SLOT (fastStateChangeRequested ())));
 		Ui_.FastStatusButton_->setDefaultAction (new QAction (tr ("Set status"), this));
-		updateFastStatusButton (SOnline);
+		updateFastStatusButton (SOffline);
 		connect (Ui_.FastStatusButton_->defaultAction (),
 				SIGNAL (triggered ()),
 				this,

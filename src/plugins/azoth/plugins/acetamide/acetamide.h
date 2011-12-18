@@ -61,6 +61,7 @@ namespace Acetamide
 		void initPlugin (QObject*);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
+		void gotNewProtocols (const QList<QObject*>&);
 	};
 }
 }

@@ -16,21 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_XOOX_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_XOOX_H
-#include <boost/shared_ptr.hpp>
-#include <QObject>
+#ifndef PLUGINS_AZOTH_PLUGINS_ASTRALITY_ASTRALITY_H
+#define PLUGINS_AZOTH_PLUGINS_ASTRALITY_ASTRALITY_H
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/iprotocolplugin.h>
-
-class QTranslator;
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-namespace Xoox
+namespace Astrality
 {
 	class Plugin : public QObject
 					, public IInfo
@@ -38,9 +34,7 @@ namespace Xoox
 					, public IProtocolPlugin
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IProtocolPlugin)
-
-		boost::shared_ptr<QTranslator> Translator_;
+		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IProtocolPlugin);
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -49,10 +43,6 @@ namespace Xoox
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
-		QStringList Provides () const;
-		QStringList Needs () const;
-		QStringList Uses () const;
-		void SetProvider (QObject*, const QString&);
 
 		QSet<QByteArray> GetPluginClasses () const;
 
@@ -62,7 +52,6 @@ namespace Xoox
 		void initPlugin (QObject*);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
-
 		void gotNewProtocols (const QList<QObject*>&);
 	};
 }
@@ -70,4 +59,3 @@ namespace Xoox
 }
 
 #endif
-
