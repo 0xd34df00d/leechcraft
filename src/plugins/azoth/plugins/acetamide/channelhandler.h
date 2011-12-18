@@ -34,38 +34,49 @@ namespace Acetamide
 	class ChannelCLEntry;
 	class IrcMessage;
 	class IrcServerHandler;
+	class ChannelsManager;
 
 	class ChannelHandler : public QObject
 	{
 		Q_OBJECT
+
+		ChannelCLEntry *ChannelCLEntry_;
+		ChannelsManager *CM_;
+
 		QString ChannelID_;
 		QString Subject_;
-		ChannelCLEntry *ChannelCLEntry_;
-		IrcServerHandler *ISH_;
+
 		ChannelOptions ChannelOptions_;
+
 		bool IsRosterReceived_;
-		QHash<QString, ChannelParticipantEntry_ptr> Nick2Entry_;
+
+		QHash<QString, ChannelParticipantEntry*> Nick2Entry_;
+
 		ChannelModes ChannelMode_;
 	public:
-		ChannelHandler (IrcServerHandler*, const ChannelOptions&);
+		ChannelHandler (const ChannelOptions& options, ChannelsManager* manager);
 		QString GetChannelID () const;
 		ChannelCLEntry* GetCLEntry () const;
-		IrcServerHandler* GetIrcServerHandler () const;
+
+		ChannelsManager* GetChannelsManager () const;
+
 		ChannelOptions GetChannelOptions () const;
 		QList<QObject*> GetParticipants () const;
 
-		ChannelParticipantEntry_ptr GetSelf ();
-		ChannelParticipantEntry_ptr GetParticipantEntry (const QString&);
+		ChannelParticipantEntry* GetSelf ();
+		ChannelParticipantEntry* GetParticipantEntry (const QString&);
 
 		bool IsUserExists (const QString&) const;
 
 		IrcMessage* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);
 
+		void ChangeNickname (const QString& oldNick, const QString& newNick);
+
 		bool IsRosterReceived () const;
 		void SetRosterReceived (bool);
 
-		void ShowServiceMessage (const QString&, IMessage::MessageType,
+		void HandleServiceMessage (const QString&, IMessage::MessageType,
 				IMessage::MessageSubType);
 
 		void SendPublicMessage (const QString&);
@@ -78,21 +89,20 @@ namespace Acetamide
 				const QString&);
 		void MakePermsChangedMessage (const QString&,
 				ChannelRole, bool);
-		
+
 		void SetMUCSubject (const QString&);
 		QString GetMUCSubject () const;
 
 		void Leave (const QString&);
 		void CloseChannel ();
+
 		void LeaveParticipant (const QString&, const QString&);
 
-		void KickParticipant (const QString&, const QString&, 
+		void KickParticipant (const QString&, const QString&,
 				const QString&);
 
 		void SetRole (ChannelParticipantEntry*, const ChannelRole&, const QString&);
 		void ManageWithParticipant (ChannelParticipantEntry*, const ChannelManagment&);
-
-		void RemoveThis ();
 
 		void RequestBanList ();
 		void RequestExceptList ();
@@ -103,11 +113,11 @@ namespace Acetamide
 		void RemoveExceptListItem (QString);
 		void AddInviteListItem (QString);
 		void RemoveInviteListItem (QString);
-		void SetBanListItem (const QString&, const QString&, 
+		void SetBanListItem (const QString&, const QString&,
 				const QDateTime&);
-		void SetExceptListItem (const QString&, const QString&, 
+		void SetExceptListItem (const QString&, const QString&,
 				const QDateTime&);
-		void SetInviteListItem (const QString&, const QString&, 
+		void SetInviteListItem (const QString&, const QString&,
 				const QDateTime&);
 		ChannelModes GetChannelModes () const;
 		void SetInviteMode (bool);
@@ -122,7 +132,8 @@ namespace Acetamide
 		void SetNewChannelModes (const ChannelModes&);
 	private:
 		bool RemoveUserFromChannel (const QString&);
-		ChannelParticipantEntry_ptr CreateParticipantEntry (const QString&);
+		ChannelParticipantEntry* CreateParticipantEntry (const QString&);
+		void RemoveThis ();
 	public slots:
 		void handleWhoIs (const QString&);
 		void handleWhoWas (const QString&);

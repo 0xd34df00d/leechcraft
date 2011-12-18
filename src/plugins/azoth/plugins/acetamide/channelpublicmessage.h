@@ -40,7 +40,7 @@ namespace Acetamide
 		Q_INTERFACES (LeechCraft::Azoth::IMessage);
 
 		QPointer<ChannelCLEntry> ParentEntry_;
-		ChannelParticipantEntry_ptr ParticipantEntry_;
+		ChannelParticipantEntry* ParticipantEntry_;
 		QString Message_;
 		QDateTime Datetime_;
 		Direction Direction_;
@@ -54,7 +54,7 @@ namespace Acetamide
 				ChannelCLEntry*,
 				MessageType,
 				MessageSubType,
-				ChannelParticipantEntry_ptr = ChannelParticipantEntry_ptr ());
+				ChannelParticipantEntry* = 0);
 
 		QObject* GetObject ();
 		void Send ();

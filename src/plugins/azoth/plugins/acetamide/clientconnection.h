@@ -68,7 +68,6 @@ namespace Acetamide
 
 		IrcServerHandler* GetIrcServerHandler (const QString&);
 		void ClosePrivateChat (QString, const QString&);
-		void CloseServer (const QString&);
 		void DisconnectFromAll ();
 		void QuitServer (const QStringList&);
 

@@ -28,16 +28,16 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	ServerResponceManager::ServerResponceManager (IrcServerHandler *ish) 
+	ServerResponceManager::ServerResponceManager (IrcServerHandler *ish)
 	: QObject (ish)
 	, ISH_ (ish)
 	{
 		Init ();
 	}
 
-	void ServerResponceManager::DoAction (const QString& cmd, 
-			const QString& nick, 
-			const QList<std::string>& params, 
+	void ServerResponceManager::DoAction (const QString& cmd,
+			const QString& nick,
+			const QList<std::string>& params,
 			const QString& msg)
 	{
 		if (cmd == "privmsg" && IsCTCPMessage (msg))
@@ -50,7 +50,7 @@ namespace Acetamide
 
 	void ServerResponceManager::Init ()
 	{
-		Command2Action_ ["join"] = boost::bind (&ServerResponceManager::GotJoin, 
+		Command2Action_ ["join"] = boost::bind (&ServerResponceManager::GotJoin,
 				this, _1, _2, _3);
 		Command2Action_ ["part"] = boost::bind (&ServerResponceManager::GotPart,
 					this, _1, _2, _3);
@@ -227,7 +227,7 @@ namespace Acetamide
 		return msg.startsWith ('\001') && msg.endsWith ('\001');
 	}
 
-	void ServerResponceManager::GotJoin (const QString& nick, 
+	void ServerResponceManager::GotJoin (const QString& nick,
 			const QList<std::string>& params, const QString& msg)
 	{
 		if (nick == ISH_->GetNickName ())
@@ -253,7 +253,7 @@ namespace Acetamide
 		ISH_->JoinParticipant (nick, channel);
 	}
 
-	void ServerResponceManager::GotPart (const QString& nick, 
+	void ServerResponceManager::GotPart (const QString& nick,
 			const QList<std::string>& params, const QString& msg)
 	{
 		if (params.isEmpty ())
@@ -269,20 +269,16 @@ namespace Acetamide
 		ISH_->LeaveParticipant (nick, channel, msg);
 	}
 
-	void ServerResponceManager::GotQuit (const QString& nick, 
+	void ServerResponceManager::GotQuit (const QString& nick,
 			const QList<std::string>& , const QString& msg)
 	{
-		
 		if (nick == ISH_->GetNickName ())
-		{
 			ISH_->QuitServer ();
-			return;
-		}
-
-		ISH_->QuitParticipant (nick, msg);
+		else
+			ISH_->QuitParticipant (nick, msg);
 	}
 
-	void ServerResponceManager::GotPrivMsg (const QString& nick, 
+	void ServerResponceManager::GotPrivMsg (const QString& nick,
 			const QList<std::string>& params, const QString& msg)
 	{
 		if (params.isEmpty ())
@@ -292,13 +288,13 @@ namespace Acetamide
 		ISH_->IncomingMessage (nick, target, msg);
 	}
 
-	void ServerResponceManager::GotNoticeMsg (const QString& nick, 
+	void ServerResponceManager::GotNoticeMsg (const QString& nick,
 			const QList<std::string>&, const QString& msg)
 	{
 		ISH_->IncomingNoticeMessage (nick, msg);
 	}
 
-	void ServerResponceManager::GotNick (const QString& nick, 
+	void ServerResponceManager::GotNick (const QString& nick,
 			const QList<std::string>& , const QString& msg)
 	{
 		ISH_->ChangeNickname (nick, msg);
@@ -310,14 +306,14 @@ namespace Acetamide
 		ISH_->PongMessage (msg);
 	}
 
-	void ServerResponceManager::GotTopic (const QString&, 
+	void ServerResponceManager::GotTopic (const QString&,
 			const QList<std::string>& params, const QString& msg)
 	{
 		QString channel = QString::fromUtf8 (params.last ().c_str ());
 		ISH_->GotTopic (channel, msg);
 	}
 
-	void ServerResponceManager::GotKick (const QString& nick, 
+	void ServerResponceManager::GotKick (const QString& nick,
 			const QList<std::string>& params, const QString& msg)
 	{
 		const QString channel = QString::fromUtf8 (params.first ().c_str ());
@@ -325,10 +321,10 @@ namespace Acetamide
 		if (nick == target)
 			return;
 
-		ISH_->KickUserFromChannel (nick, channel, target, msg);
+		ISH_->GotKickCommand (nick, channel, target, msg);
 	}
 
-	void ServerResponceManager::GotInvitation (const QString& nick, 
+	void ServerResponceManager::GotInvitation (const QString& nick,
 			const QList<std::string>&, const QString& msg)
 	{
 		if (XmlSettingsManager::Instance ().property ("ShowInviteDialog").toBool ())
@@ -339,20 +335,20 @@ namespace Acetamide
 		else if (XmlSettingsManager::Instance ().property ("InviteActionByDefault").toInt () == 1)
 			GotJoin (QString (), QList<std::string> (), msg);
 
-		ISH_->ShowAnswer (nick + tr (" invites you to a channel ") + msg);
+		ISH_->ShowAnswer ("invite", nick + tr (" invites you to a channel ") + msg);
 	}
 
-	void ServerResponceManager::ShowInviteMessage (const QString&, 
+	void ServerResponceManager::ShowInviteMessage (const QString&,
 			const QList<std::string>& params, const QString&)
 	{
 		if (params.count () < 3)
 			return;
 		QString msg = tr ("You invite ") + QString::fromUtf8 (params.at (1).c_str ()) +
 				tr (" to a channel ") + QString::fromUtf8 (params.at (2).c_str ());
-		ISH_->ShowAnswer (msg);
+		ISH_->ShowAnswer ("invite", msg);
 	}
 
-	void ServerResponceManager::GotCTCPReply (const QString& nick, 
+	void ServerResponceManager::GotCTCPReply (const QString& nick,
 			const QList<std::string>& params, const QString& msg)
 	{
 		if (params.isEmpty ())
@@ -360,55 +356,55 @@ namespace Acetamide
 
 		if (msg.isEmpty ())
 			return;
-		
+
 		QStringList ctcpList = msg.mid (1, msg.length () - 2).split (' ');
 		if (ctcpList.isEmpty ())
 			return;
-		
+
 		QString cmd;
 		QString outputMessage;
 		const QString version = QString ("%1 %2 %3").arg ("Acetamide",
 				"2.0",
 				"(C) 2011 by the LeechCraft team");
 		const QDateTime currentDT = QDateTime::currentDateTime ();
-		const QString firstPartOutput = QString ("%1 %2 - %3").arg ("Acetamide", 
-				"2.0", 
+		const QString firstPartOutput = QString ("%1 %2 - %3").arg ("Acetamide",
+				"2.0",
 				"http://www.leechcraft.org");
 		const QString target = QString::fromUtf8 (params.last ().c_str ());
 
 		if (ctcpList.at (0).toLower () == "version")
 		{
-			cmd = QString ("%1 %2%3").arg ("\001VERSION", 
+			cmd = QString ("%1 %2%3").arg ("\001VERSION",
 					version, QChar ('\001'));
 			outputMessage = tr ("Received request %1 from %2, sending response")
 					.arg ("VERSION", nick);
 		}
 		else if (ctcpList.at (0).toLower () == "ping")
 		{
-			cmd = QString ("%1 %2%3").arg ("\001PING ", 
+			cmd = QString ("%1 %2%3").arg ("\001PING ",
 					QString::number (currentDT.toTime_t ()), QChar ('\001'));
 			outputMessage = tr ("Received request %1 from %2, sending response")
 					.arg ("PING", nick);
 		}
 		else if (ctcpList.at (0).toLower () == "time")
 		{
-			cmd = QString ("%1 %2%3").arg ("\001TIME", 
-					currentDT.toString ("ddd MMM dd hh:mm:ss yyyy"), 
+			cmd = QString ("%1 %2%3").arg ("\001TIME",
+					currentDT.toString ("ddd MMM dd hh:mm:ss yyyy"),
 					QChar ('\001'));
 			outputMessage = tr ("Received request %1 from %2, sending response")
 					.arg ("TIME", nick);
 		}
 		else if (ctcpList.at (0).toLower () == "source")
 		{
-			cmd = QString ("%1 %2 %3").arg ("\001SOURCE", firstPartOutput, 
+			cmd = QString ("%1 %2 %3").arg ("\001SOURCE", firstPartOutput,
 					QChar ('\001'));
 			outputMessage = tr ("Received request %1 from %2, sending response")
 					.arg ("SOURCE", nick);
 		}
 		else if (ctcpList.at (0).toLower () == "clientinfo")
 		{
-			cmd = QString ("%1 %2 - %3 %4 %5").arg ("\001CLIENTINFO", 
-					firstPartOutput, "Supported tags:", 
+			cmd = QString ("%1 %2 - %3 %4 %5").arg ("\001CLIENTINFO",
+					firstPartOutput, "Supported tags:",
 					"VERSION PING TIME SOURCE CLIENTINFO", QChar ('\001'));
 			outputMessage = tr ("Received request %1 from %2, sending response")
 					.arg ("CLIENTINFO", nick);
@@ -426,7 +422,7 @@ namespace Acetamide
 		ISH_->CTCPReply (nick, cmd, outputMessage);
 	}
 
-	void ServerResponceManager::GotCTCPRequestResult (const QString& nick, 
+	void ServerResponceManager::GotCTCPRequestResult (const QString& nick,
 			const QList<std::string>& params, const QString& msg)
 	{
 		if (QString::fromUtf8 (params.first ().c_str ()) != ISH_->GetNickName())
@@ -445,7 +441,7 @@ namespace Acetamide
 		ISH_->CTCPRequestResult (output);
 	}
 
-	void ServerResponceManager::GotNames (const QString&, 
+	void ServerResponceManager::GotNames (const QString&,
 			const QList<std::string>& params, const QString& msg)
 	{
 		const QString channel = QString::fromUtf8 (params.last ().c_str ());
@@ -453,26 +449,26 @@ namespace Acetamide
 		ISH_->GotNames (channel, participants);
 	}
 
-	void ServerResponceManager::GotEndOfNames (const QString&, 
+	void ServerResponceManager::GotEndOfNames (const QString&,
 			const QList<std::string>& params, const QString&)
 	{
 		const QString channel = QString::fromUtf8 (params.last ().c_str ());
 		ISH_->GotEndOfNames (channel);
 	}
 
-	void ServerResponceManager::GotAwayReply (const QString&, 
+	void ServerResponceManager::GotAwayReply (const QString&,
 			const QList<std::string>& params, const QString& msg)
 	{
 		if (params.isEmpty ())
 			return;
 		const QString target = QString::fromUtf8 (params.last ().c_str ());
-		ISH_->ShowAnswer (target + " " + msg);
+		ISH_->ShowAnswer ("away", target + " " + msg);
 	}
 
-	void ServerResponceManager::GotSetAway (const QString&, 
+	void ServerResponceManager::GotSetAway (const QString&,
 			const QList<std::string>&, const QString& msg)
 	{
-		ISH_->ShowAnswer (msg);
+		ISH_->ShowAnswer ("away", msg);
 	}
 
 	void ServerResponceManager::GotUserHost (const QString&,
@@ -486,20 +482,19 @@ namespace Acetamide
 		}
 	}
 
-	void ServerResponceManager::GotIson (const QString&, 
+	void ServerResponceManager::GotIson (const QString&,
 			const QList<std::string>&, const QString& msg)
 	{
 		Q_FOREACH (const QString& str, msg.split (' '))
 			ISH_->ShowIsUserOnServer (str);
 	}
 
-	void ServerResponceManager::GotWhoIsUser (const QString& server, 
+	void ServerResponceManager::GotWhoIsUser (const QString& server,
 			const QList<std::string>& params, const QString& msg)
 	{
 		if (params.count () < 4)
 			return;
 
-		ISH_->SetLongMessageState (true);
 		const QString message = QString::fromUtf8 (params.at (1).c_str ()) +
 				" - " + QString::fromUtf8 (params.at (2).c_str ()) + "@"
 				+ QString::fromUtf8 (params.at (3).c_str ()) +
@@ -507,13 +502,12 @@ namespace Acetamide
 		ISH_->ShowWhoIsReply (message);
 	}
 
-	void ServerResponceManager::GotWhoIsServer (const QString&, 
+	void ServerResponceManager::GotWhoIsServer (const QString&,
 			const QList<std::string>& params, const QString& msg)
 	{
 		if (params.count () < 3)
 			return;
 
-		ISH_->SetLongMessageState (true);
 		QString message = QString::fromUtf8 (params.at (1).c_str ()) +
 		tr (" connected via ") +
 		QString::fromUtf8 (params.at (2).c_str ()) +
@@ -521,23 +515,22 @@ namespace Acetamide
 		ISH_->ShowWhoIsReply (message);
 	}
 
-	void ServerResponceManager::GotWhoIsOperator (const QString&, 
+	void ServerResponceManager::GotWhoIsOperator (const QString&,
 			const QList<std::string>& params, const QString& msg)
 	{
 		if (params.count () < 2)
 			return;
 
-		ISH_->ShowWhoIsReply (QString::fromUtf8 (params.at (1).c_str ()) + 
+		ISH_->ShowWhoIsReply (QString::fromUtf8 (params.at (1).c_str ()) +
 				" " + msg);
 	}
 
-	void ServerResponceManager::GotWhoIsIdle (const QString&, 
+	void ServerResponceManager::GotWhoIsIdle (const QString&,
 			const QList<std::string>& params, const QString& msg)
 	{
 		if (params.count () < 2)
 			return;
 
-		ISH_->SetLongMessageState (true);
 		QString message = QString::fromUtf8 (params.at (0).c_str ()) +
 				" " + QString::fromUtf8 (params.at (1).c_str ()) +
 				" " + msg;
@@ -547,41 +540,37 @@ namespace Acetamide
 	void ServerResponceManager::GotEndOfWhoIs (const QString&,
 			const QList<std::string>&, const QString& msg)
 	{
-		ISH_->ShowWhoIsReply (tr ("End of WHOIS"));
-		ISH_->SetLongMessageState (false);
+		ISH_->ShowWhoIsReply (msg, true);
 	}
 
-	void ServerResponceManager::GotWhoIsChannels (const QString&, 
+	void ServerResponceManager::GotWhoIsChannels (const QString&,
 			const QList<std::string>& params, const QString& msg)
 	{
 		if (params.count () < 2)
 			return;
 
-		ISH_->SetLongMessageState (true);
 		QString message = QString::fromUtf8 (params.at (1).c_str ()) +
 				tr (" on the channels : ") + msg;
 		ISH_->ShowWhoIsReply (message);
 	}
 
-	void ServerResponceManager::GotWhoWas (const QString&, 
+	void ServerResponceManager::GotWhoWas (const QString&,
 			const QList<std::string>& params, const QString& msg)
 	{
 		const QString message = QString::fromUtf8 (params.at (1).c_str ()) +
 				" - " + QString::fromUtf8 (params.at (2).c_str ()) + "@"
 				+ QString::fromUtf8 (params.at (3).c_str ()) +
 				" (" + msg + ")";
-		ISH_->SetLongMessageState (true);
 		ISH_->ShowWhoWasReply (message);
 	}
 
-	void ServerResponceManager::GotEndOfWhoWas (const QString&, 
+	void ServerResponceManager::GotEndOfWhoWas (const QString&,
 			const QList<std::string>&, const QString& msg)
 	{
-		ISH_->ShowWhoWasReply (tr ("End of WHOWAS"));
-		ISH_->SetLongMessageState (false);
+        ISH_->ShowWhoWasReply (msg, true);
 	}
 
-	void ServerResponceManager::GotWho (const QString&, 
+	void ServerResponceManager::GotWho (const QString&,
 			const QList<std::string>& params, const QString& msg)
 	{
 		if (params.isEmpty ())
@@ -592,124 +581,115 @@ namespace Acetamide
 				" - " + QString::fromUtf8 (params.at (2).c_str ()) + "@"
 				+ QString::fromUtf8 (params.at (3).c_str ()) +
 				" (" + msg.split (' ').at (1) + ")";
-		ISH_->SetLongMessageState (true);
 		ISH_->ShowWhoReply (message);
 	}
 
-	void ServerResponceManager::GotEndOfWho (const QString&, 
-			const QList<std::string>&, const QString&)
+	void ServerResponceManager::GotEndOfWho (const QString&,
+			const QList<std::string>&, const QString& msg)
 	{
-		ISH_->ShowWhoReply (tr ("End of WHO"));
-		ISH_->SetLongMessageState (false);
+        ISH_->ShowWhoReply (msg, true);
 	}
 
-	void ServerResponceManager::GotSummoning (const QString&, 
+	void ServerResponceManager::GotSummoning (const QString&,
 			const QList<std::string>& params, const QString&)
 	{
 		if (params.count () < 2)
 			return;
-		ISH_->ShowAnswer (QString::fromUtf8 (params.at (1).c_str ()) + 
+		ISH_->ShowAnswer ("summon", QString::fromUtf8 (params.at (1).c_str ()) +
 				tr (" summoning to IRC"));
 	}
 
-	void ServerResponceManager::GotVersion (const QString&, 
+	void ServerResponceManager::GotVersion (const QString&,
 			const QList<std::string>& params, const QString& msg)
 	{
 		QString string;
 		Q_FOREACH (std::string str, params)
 			string.append(QString::fromUtf8 (str.c_str ()) + " ");
-		ISH_->ShowAnswer (string + msg);
+		ISH_->ShowAnswer ("version", string + msg);
 	}
 
-	void ServerResponceManager::GotLinks (const QString&, 
+	void ServerResponceManager::GotLinks (const QString&,
 			const QList<std::string>& params, const QString& msg)
 	{
 		QString str;
 		for (int i = 0; i < params.count (); ++i)
 			if (i)
 				str.append(QString::fromUtf8 (params [i].c_str ()) + " ");
-		ISH_->SetLongMessageState (true);
 		ISH_->ShowLinksReply (str + msg);
 	}
 
-	void ServerResponceManager::GotEndOfLinks (const QString&, 
-			const QList<std::string>&, const QString&)
+	void ServerResponceManager::GotEndOfLinks (const QString&,
+			const QList<std::string>&, const QString& msg)
 	{
-		ISH_->ShowLinksReply (tr ("End of LINKS"));
-		ISH_->SetLongMessageState (false);
+        ISH_->ShowLinksReply (msg, true);
 	}
 
 	void ServerResponceManager::GotInfo (const QString&,
 			const QList<std::string>&, const QString& msg)
 	{
-		ISH_->SetLongMessageState (true);
 		ISH_->ShowInfoReply (msg);
 	}
 
 	void ServerResponceManager::GotEndOfInfo (const QString&,
-			const QList<std::string>&, const QString&)
-	{
-		ISH_->ShowInfoReply (tr ("End of INFO"));
-		ISH_->SetLongMessageState (false);
-	}
-
-	void ServerResponceManager::GotMotd (const QString&, 
 			const QList<std::string>&, const QString& msg)
 	{
-		ISH_->SetLongMessageState (true);
+        ISH_->ShowInfoReply (msg, true);
+	}
+
+	void ServerResponceManager::GotMotd (const QString&,
+			const QList<std::string>&, const QString& msg)
+	{
 		ISH_->ShowMotdReply (msg);
 	}
 
-	void ServerResponceManager::GotEndOfMotd (const QString&, 
-			const QList<std::string>&, const QString&)
-	{
-		ISH_->ShowMotdReply (tr ("End of MOTD"));
-		ISH_->SetLongMessageState (false);
-	}
-
-	void ServerResponceManager::GotYoureOper (const QString&, 
+	void ServerResponceManager::GotEndOfMotd (const QString&,
 			const QList<std::string>&, const QString& msg)
 	{
-		ISH_->ShowAnswer (msg);
+        ISH_->ShowMotdReply (msg, true);
 	}
 
-	void ServerResponceManager::GotRehash (const QString&, 
+	void ServerResponceManager::GotYoureOper (const QString&,
+			const QList<std::string>&, const QString& msg)
+	{
+		ISH_->ShowAnswer ("oper", msg);
+	}
+
+	void ServerResponceManager::GotRehash (const QString&,
 			const QList<std::string>& params, const QString& msg)
 	{
 		if (params.isEmpty ())
 			return;
-		ISH_->ShowAnswer (QString::fromUtf8 (params.last ().c_str ()) + 
+		ISH_->ShowAnswer ("rehash", QString::fromUtf8 (params.last ().c_str ()) +
 			" :" + msg);
 	}
 
-	void ServerResponceManager::GotTime (const QString&, 
+	void ServerResponceManager::GotTime (const QString&,
 			const QList<std::string>& params, const QString& msg)
 	{
 		if (params.isEmpty ())
 			return;
-		ISH_->ShowAnswer (QString::fromUtf8 (params.last ().c_str ()) + 
+		ISH_->ShowAnswer ("time", QString::fromUtf8 (params.last ().c_str ()) +
 				" :" + msg);
 	}
 
-	void ServerResponceManager::GotLuserOnlyMsg (const QString&, 
+	void ServerResponceManager::GotLuserOnlyMsg (const QString&,
 			const QList<std::string>&, const QString& msg)
 	{
-		ISH_->ShowAnswer (msg);
+		ISH_->ShowAnswer ("luser", msg);
 	}
 
-	void ServerResponceManager::GotLuserParamsWithMsg (const QString&, 
+	void ServerResponceManager::GotLuserParamsWithMsg (const QString&,
 			const QList<std::string>& params, const QString& msg)
 	{
 		if (params.isEmpty ())
 			return;
-		ISH_->ShowAnswer (QString::fromUtf8 (params.last ().c_str ()) + ":" 
+		ISH_->ShowAnswer ("luser", QString::fromUtf8 (params.last ().c_str ()) + ":"
 				+ msg);
 	}
 
 	void ServerResponceManager::GotUsersStart (const QString&,
 			const QList<std::string>& , const QString& msg)
 	{
-		ISH_->SetLongMessageState (true);
 		ISH_->ShowUsersReply (msg);
 	}
 
@@ -728,8 +708,7 @@ namespace Acetamide
 	void ServerResponceManager::GotEndOfUsers (const QString&,
 			const QList<std::string>&, const QString&)
 	{
-		ISH_->ShowUsersReply (tr ("End of USERS"));
-		ISH_->SetLongMessageState (false);
+		ISH_->ShowUsersReply (tr ("End of USERS"), true);
 	}
 
 	void ServerResponceManager::GotTraceLink (const QString&,
@@ -740,7 +719,6 @@ namespace Acetamide
 		QString message;
 		Q_FOREACH (const std::string& str, params.mid (1))
 			message += QString::fromUtf8 (str.c_str ()) + " ";
-		ISH_->SetLongMessageState (true);
 		ISH_->ShowTraceReply (message);
 	}
 
@@ -752,7 +730,7 @@ namespace Acetamide
 		QString message;
 		Q_FOREACH (const std::string& str, params.mid (1))
 			message += QString::fromUtf8 (str.c_str ()) + " ";
-		ISH_->ShowAnswer (message);
+		ISH_->ShowAnswer ("trace", message);
 	}
 
 	void ServerResponceManager::GotTraceHandshake (const QString&,
@@ -861,8 +839,7 @@ namespace Acetamide
 			return;
 		QString server = QString::fromUtf8 (params
 				.at (params.count () - 1).c_str ());
-		ISH_->ShowTraceReply (server + " " + msg);
-		ISH_->SetLongMessageState (false);
+		ISH_->ShowTraceReply (server + " " + msg, true);
 	}
 
 	void ServerResponceManager::GotStatsLinkInfo (const QString&,
@@ -873,7 +850,6 @@ namespace Acetamide
 		QString message;
 		Q_FOREACH (const std::string& str, params.mid (1))
 			message += QString::fromUtf8 (str.c_str ()) + " ";
-		ISH_->SetLongMessageState (true);
 		ISH_->ShowStatsReply (message);
 	}
 
@@ -895,8 +871,7 @@ namespace Acetamide
 			return;
 		QString letter = QString::fromUtf8 (params
 				.at (params.count () - 1).c_str ());
-		ISH_->ShowStatsReply (letter + " " + msg);
-		ISH_->SetLongMessageState (false);
+		ISH_->ShowStatsReply (letter + " " + msg, true);
 	}
 
 	void ServerResponceManager::GotStatsUptime (const QString&,
@@ -921,25 +896,25 @@ namespace Acetamide
 	{
 		if (params.isEmpty ())
 			return;
-		ISH_->ShowAnswer (QString::fromUtf8 (params.last ().c_str ()) + ":" + msg);
+		ISH_->ShowAnswer ("admin", QString::fromUtf8 (params.last ().c_str ()) + ":" + msg);
 	}
 
 	void ServerResponceManager::GotAdminLoc1 (const QString&,
 			const QList<std::string>&, const QString& msg)
 	{
-		ISH_->ShowAnswer (msg);
+		ISH_->ShowAnswer ("admin", msg);
 	}
 
 	void ServerResponceManager::GotAdminLoc2 (const QString&,
 			const QList<std::string>&, const QString& msg)
 	{
-		ISH_->ShowAnswer (msg);
+		ISH_->ShowAnswer ("admin", msg);
 	}
 
 	void ServerResponceManager::GotAdminEmail (const QString&,
 			const QList<std::string>&, const QString& msg)
 	{
-		ISH_->ShowAnswer (msg);
+		ISH_->ShowAnswer ("admin", msg);
 	}
 
 	void ServerResponceManager::GotTryAgain (const QString&,
@@ -948,29 +923,29 @@ namespace Acetamide
 		if (params.isEmpty ())
 			return;
 		QString cmd = QString::fromUtf8 (params.last ().c_str ());
-		ISH_->ShowAnswer (cmd + ":" + msg);
+		ISH_->ShowAnswer ("error", cmd + ":" + msg);
 	}
 
-	void ServerResponceManager::GotISupport (const QString&, 
+	void ServerResponceManager::GotISupport (const QString&,
 			const QList<std::string>& params, const QString& msg)
 	{
 		ISH_->JoinFromQueue ();
-		
+
 		QString result;
 		Q_FOREACH (const std::string& param, params)
 			result.append (QString::fromUtf8 (param.c_str ())).append (" ");
 		result.append (":").append (msg);
 		ISH_->ParserISupport (result);
-		ISH_->ShowAnswer (result);
+		ISH_->ShowAnswer ("mode", result);
 	}
 
-	void ServerResponceManager::GotChannelMode (const QString& nick, 
+	void ServerResponceManager::GotChannelMode (const QString& nick,
 			const QList<std::string>& params, const QString& msg)
 	{
 		if (params.isEmpty ())
 			return;
 
-		if (params.count () == 1 && 
+		if (params.count () == 1 &&
 				QString::fromUtf8 (params.first ().c_str ()) == ISH_->GetNickName ())
 		{
 			ISH_->ParseUserMode (QString::fromUtf8 (params.first ().c_str ()),
@@ -981,10 +956,10 @@ namespace Acetamide
 		const QString channel = QString::fromUtf8 (params.first ().c_str ());
 
 		if (params.count () == 2)
-			ISH_->ParseChanMode (channel, 
+			ISH_->ParseChanMode (channel,
 					QString::fromUtf8 (params.at (1).c_str ()));
 		else if (params.count () == 3)
-			ISH_->ParseChanMode (channel, 
+			ISH_->ParseChanMode (channel,
 					QString::fromUtf8 (params.at (1).c_str ()),
 					QString::fromUtf8 (params.at (2).c_str ()));
 	}
@@ -1003,7 +978,7 @@ namespace Acetamide
 					QString::fromUtf8 (params.at (3).c_str ()));
 	}
 
-	void ServerResponceManager::GotBanList (const QString&, 
+	void ServerResponceManager::GotBanList (const QString&,
 			const QList<std::string>& params, const QString&)
 	{
 		const int count = params.count ();
@@ -1026,19 +1001,17 @@ namespace Acetamide
 
 		if (count > 4)
 			time = QDateTime::fromTime_t (QString::fromUtf8 (params.at (4).c_str ()).toInt ());
-		
-		ISH_->SetLongMessageState (true);
+
 		ISH_->ShowBanList (channel, mask, nick, time);
 	}
 
-	void ServerResponceManager::GotBanListEnd (const QString&, 
+	void ServerResponceManager::GotBanListEnd (const QString&,
 			const QList<std::string>&, const QString& msg)
 	{
 		ISH_->ShowBanListEnd (msg);
-		ISH_->SetLongMessageState (false);
 	}
 
-	void ServerResponceManager::GotExceptList (const QString&, 
+	void ServerResponceManager::GotExceptList (const QString&,
 			const QList<std::string>& params, const QString&)
 	{
 		const int count = params.count ();
@@ -1046,7 +1019,7 @@ namespace Acetamide
 		QString nick;
 		QString mask;
 		QDateTime time;
-		
+
 		if (count > 2)
 		{
 			channel = QString::fromUtf8 (params.at (1).c_str ());
@@ -1061,19 +1034,17 @@ namespace Acetamide
 
 		if (count > 4)
 			time = QDateTime::fromTime_t (QString::fromUtf8 (params.at (4).c_str ()).toInt ());
-		
-		ISH_->SetLongMessageState (true);
+
 		ISH_->ShowExceptList (channel, mask, nick, time);
 	}
 
-	void ServerResponceManager::GotExceptListEnd (const QString&, 
+	void ServerResponceManager::GotExceptListEnd (const QString&,
 			const QList<std::string>&, const QString& msg)
 	{
 		ISH_->ShowExceptListEnd (msg);
-		ISH_->SetLongMessageState (false);
 	}
 
-	void ServerResponceManager::GotInviteList (const QString&, 
+	void ServerResponceManager::GotInviteList (const QString&,
 			const QList<std::string>& params, const QString&)
 	{
 		const int count = params.count ();
@@ -1081,7 +1052,7 @@ namespace Acetamide
 		QString nick;
 		QString mask;
 		QDateTime time;
-		
+
 		if (count > 2)
 		{
 			channel = QString::fromUtf8 (params.at (1).c_str ());
@@ -1096,16 +1067,14 @@ namespace Acetamide
 
 		if (count > 4)
 			time = QDateTime::fromTime_t (QString::fromUtf8 (params.at (4).c_str ()).toInt ());
-		
-		ISH_->SetLongMessageState (true);
+
 		ISH_->ShowInviteList (channel, mask, nick, time);
 	}
 
-	void ServerResponceManager::GotInviteListEnd (const QString&, 
+	void ServerResponceManager::GotInviteListEnd (const QString&,
 			const QList<std::string>&, const QString& msg)
 	{
 		ISH_->ShowInviteListEnd (msg);
-		ISH_->SetLongMessageState (false);
 	}
 }
 }

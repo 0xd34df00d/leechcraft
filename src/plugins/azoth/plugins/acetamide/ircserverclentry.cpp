@@ -129,7 +129,7 @@ namespace Acetamide
 
 	void IrcServerCLEntry::Leave (const QString&)
 	{
-		Account_->GetClientConnection ()->CloseServer (ISH_->GetServerID_ ());
+		ISH_->QuitServer ();
 	}
 
 	QString IrcServerCLEntry::GetNick () const

@@ -22,6 +22,7 @@
 #include "ircaccount.h"
 #include "ircmessage.h"
 #include "ircserverhandler.h"
+#include "channelsmanager.h"
 
 namespace LeechCraft
 {
@@ -29,10 +30,10 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	ChannelHandler::ChannelHandler (IrcServerHandler *ish, const
-			ChannelOptions& channel)
+	ChannelHandler::ChannelHandler (const ChannelOptions& channel,
+			ChannelsManager *cm)
 	: ChannelID_ (channel.ChannelName_ + "@" + channel.ServerName_)
-	, ISH_ (ish)
+	, CM_ (cm)
 	, ChannelOptions_ (channel)
 	, IsRosterReceived_ (false)
 	{
@@ -53,9 +54,9 @@ namespace Acetamide
 		return ChannelCLEntry_;
 	}
 
-	IrcServerHandler* ChannelHandler::GetIrcServerHandler () const
+	ChannelsManager* ChannelHandler::GetChannelsManager () const
 	{
-		return ISH_;
+		return CM_;
 	}
 
 	ChannelOptions ChannelHandler::GetChannelOptions () const
@@ -66,26 +67,26 @@ namespace Acetamide
 	QList<QObject*> ChannelHandler::GetParticipants () const
 	{
 		QList<QObject*> result;
-		Q_FOREACH (ChannelParticipantEntry_ptr spe, Nick2Entry_.values ())
-			result << spe.get ();
+		Q_FOREACH (ChannelParticipantEntry* cpe, Nick2Entry_.values ())
+			result << cpe;
 		return result;
 	}
 
-	ChannelParticipantEntry_ptr ChannelHandler::GetSelf ()
+	ChannelParticipantEntry* ChannelHandler::GetSelf ()
 	{
-		Q_FOREACH (ChannelParticipantEntry_ptr spe, Nick2Entry_.values ())
-			if (spe->GetEntryName () == ISH_->GetNickName ())
-				return spe;
+		Q_FOREACH (ChannelParticipantEntry *cpe, Nick2Entry_.values ())
+			if (cpe->GetEntryName () == CM_->GetOurNick ())
+				return cpe;
 
-		return ChannelParticipantEntry_ptr ();
+		return 0;
 	}
 
-	ChannelParticipantEntry_ptr ChannelHandler::GetParticipantEntry (const QString& nick)
+	ChannelParticipantEntry* ChannelHandler::GetParticipantEntry (const QString& nick)
 	{
 		if (Nick2Entry_.contains (nick))
 			return Nick2Entry_ [nick];
 
-		ChannelParticipantEntry_ptr entry (CreateParticipantEntry (nick));
+		ChannelParticipantEntry* entry (CreateParticipantEntry (nick));
 		Nick2Entry_ [nick] = entry;
 		return entry;
 	}
@@ -101,12 +102,27 @@ namespace Acetamide
 		IrcMessage *msg = new IrcMessage (t,
 				IMessage::DIn,
 				variant,
-				ISH_->GetNickName (),
-				ISH_->GetAccount ()->GetClientConnection ().get ());
+				CM_->GetOurNick (),
+				CM_->GetAccount ()->GetClientConnection ().get ());
 		msg->SetBody (body);
 		msg->SetDateTime (QDateTime::currentDateTime ());
 
 		return msg;
+	}
+
+	void ChannelHandler::ChangeNickname (const QString& oldNick, const QString& newNick)
+	{
+		const QString mess = tr ("%1 has changed nickname to %2")
+				.arg (oldNick, newNick);
+		HandleServiceMessage (mess,
+				IMessage::MTStatusMessage,
+				IMessage::MSTParticipantNickChange);
+
+		CM_->GetAccount()->handleEntryRemoved (Nick2Entry_ [oldNick]);
+		ChannelParticipantEntry* entry = Nick2Entry_.take (oldNick);
+		entry->SetEntryName (newNick);
+		CM_->GetAccount()->handleGotRosterItems (QList<QObject*> () << entry);
+		Nick2Entry_ [newNick] = entry;
 	}
 
 	bool ChannelHandler::IsRosterReceived () const
@@ -119,7 +135,7 @@ namespace Acetamide
 		IsRosterReceived_ = status;
 	}
 
-	void ChannelHandler::ShowServiceMessage (const QString& msg,
+	void ChannelHandler::HandleServiceMessage (const QString& msg,
 			IMessage::MessageType mt, IMessage::MessageSubType mst)
 	{
 		ChannelPublicMessage *message = new ChannelPublicMessage (msg,
@@ -132,27 +148,16 @@ namespace Acetamide
 
 	void ChannelHandler::SendPublicMessage (const QString& msg)
 	{
-		if (GetSelf () == ChannelParticipantEntry_ptr ())
+		if (GetSelf () == 0)
 			return;
 
-		bool command = false;
-		if (msg.startsWith ('/'))
-		{
-			ISH_->ParseMessageForCommand (msg, ChannelID_);
-			command = true;
-			ShowServiceMessage (msg, IMessage::MTEventMessage, IMessage::MSTOther);
-		}
-		else
-		{
-			ISH_->SendPublicMessage (msg, ChannelID_);
-			HandleIncomingMessage (ISH_->GetNickName (), msg);
-		}
+		CM_->SendPublicMessage (ChannelOptions_.ChannelName_, msg);
 	}
 
 	void ChannelHandler::HandleIncomingMessage (const QString& nick,
 			const QString& msg)
 	{
-		ChannelParticipantEntry_ptr entry = GetParticipantEntry (nick);
+		ChannelParticipantEntry* entry = GetParticipantEntry (nick);
 
 		ChannelPublicMessage *message =
 				new ChannelPublicMessage (msg,
@@ -170,9 +175,9 @@ namespace Acetamide
 		bool hasRole = false;
 		QChar roleSign;
 
-		if (ISH_->GetISupport ().contains ("PREFIX"))
+		if (CM_->GetISupport ().contains ("PREFIX"))
 		{
-			QStringList prefixList = ISH_->GetISupport () ["PREFIX"].split (')');
+			QStringList prefixList = CM_->GetISupport () ["PREFIX"].split (')');
 			int id = prefixList.at (1).indexOf (nick [0]);
 			if (id != -1)
 			{
@@ -182,7 +187,7 @@ namespace Acetamide
 			}
 		}
 
-		ChannelParticipantEntry_ptr entry = GetParticipantEntry (nickName);
+		ChannelParticipantEntry* entry = GetParticipantEntry (nickName);
 		ChannelRole role;
 		if (hasRole)
 			switch (roleSign.toAscii ())
@@ -254,10 +259,12 @@ namespace Acetamide
 		if (!msg.isEmpty ())
 			reason = ":" + msg;
 
-		if (nick == ISH_->GetNickName ())
+		const QString& ourNick = CM_->GetOurNick ();
+
+		if (nick == ourNick)
 			mess = tr ("You have been kicked by %1 %2")
 					.arg (who, reason);
-		else if (who == ISH_->GetNickName ())
+		else if (who == ourNick)
 			mess = tr ("You kicked %1 %2")
 					.arg (nick, reason);
 		else
@@ -281,7 +288,7 @@ namespace Acetamide
 			msg = tr ("%1 is now %2").arg (nick, roleStr);
 		else
 			msg = tr ("%1 is now not %2").arg (nick, roleStr);
-		
+
 		ChannelPublicMessage *message = new ChannelPublicMessage (msg,
 				IMessage::DIn,
 				ChannelCLEntry_,
@@ -290,9 +297,12 @@ namespace Acetamide
 				GetParticipantEntry (nick));
 		ChannelCLEntry_->HandleMessage (message);
 	}
-	
+
 	void ChannelHandler::SetMUCSubject (const QString& subject)
 	{
+		if (Subject_ == subject)
+			return;
+
 		Subject_ = subject;
 
 		ChannelPublicMessage *message =
@@ -311,28 +321,23 @@ namespace Acetamide
 
 	void ChannelHandler::Leave (const QString& msg)
 	{
-		ISH_->LeaveChannel (ChannelOptions_.ChannelName_, msg);
+		CM_->LeaveChannel (ChannelOptions_.ChannelName_.toLower (), msg);
+		CloseChannel ();
 	}
 
 	void ChannelHandler::CloseChannel ()
 	{
-		Q_FOREACH (ChannelParticipantEntry_ptr entry, Nick2Entry_.values ())
-		{
-			ISH_->GetAccount ()->handleEntryRemoved (entry.get ());
-			ISH_->RemoveParticipantEntry (entry->GetEntryName ());
-		}
-
 		RemoveThis ();
 	}
 
-	void ChannelHandler::LeaveParticipant (const QString& nick, 
+	void ChannelHandler::LeaveParticipant (const QString& nick,
 			const QString& msg)
 	{
 		if (RemoveUserFromChannel (nick))
 			MakeLeaveMessage (nick, msg);
 	}
 
-	void ChannelHandler::KickParticipant (const QString& nick, 
+	void ChannelHandler::KickParticipant (const QString& nick,
 			const QString& target, const QString& msg)
 	{
 		if (RemoveUserFromChannel (target))
@@ -381,7 +386,7 @@ namespace Acetamide
 		}
 
 		if (!mode.isEmpty ())
-			ISH_->SetNewChannelMode (ChannelOptions_.ChannelName_,
+			CM_->SetNewChannelMode (ChannelOptions_.ChannelName_,
 					mode, entry->GetEntryName ());
 	}
 
@@ -400,12 +405,12 @@ namespace Acetamide
 			AddBanListItem ("*!*@" + entry->GetHostName ());
 			break;
 		case ChannelManagment::Kick:
-			ISH_->KickParticipant (ChannelOptions_.ChannelName_,
+			CM_->KickCommand (ChannelOptions_.ChannelName_,
 					entry->GetEntryName (), "");
 			break;
 		case ChannelManagment::KickAndBan:
 			AddBanListItem (entry->GetEntryName () + "!*@*");
-			ISH_->KickParticipant (ChannelOptions_.ChannelName_,
+			CM_->KickCommand (ChannelOptions_.ChannelName_,
 					entry->GetEntryName (), "");
 			break;
 		}
@@ -413,64 +418,63 @@ namespace Acetamide
 
 	void ChannelHandler::RemoveThis ()
 	{
-		Q_FOREACH (ChannelParticipantEntry_ptr entry, Nick2Entry_.values ())
-			ISH_->GetAccount ()->handleEntryRemoved (entry.get());
-
+		Q_FOREACH (ChannelParticipantEntry *entry, Nick2Entry_.values ())
+			CM_->GetAccount ()->handleEntryRemoved (entry);
 		Nick2Entry_.clear ();
 
-		ISH_->GetAccount ()->handleEntryRemoved (ChannelCLEntry_);
+		CM_->GetAccount ()->handleEntryRemoved (ChannelCLEntry_);
 
-		ISH_->UnregisterChannel (this);
+		CM_->UnregisterChannel (this);
 
 		deleteLater ();
 	}
 
 	void ChannelHandler::RequestBanList ()
 	{
-		ISH_->GetBanList (ChannelOptions_.ChannelName_);
+		CM_->RequestBanList (ChannelOptions_.ChannelName_);
 	}
 
 	void ChannelHandler::RequestExceptList ()
 	{
-		ISH_->GetExceptList (ChannelOptions_.ChannelName_);
+		CM_->RequestExceptList (ChannelOptions_.ChannelName_);
 	}
 
 	void ChannelHandler::RequestInviteList ()
 	{
-		ISH_->GetInviteList (ChannelOptions_.ChannelName_);
+		CM_->RequestInviteList (ChannelOptions_.ChannelName_);
 	}
 
 	void ChannelHandler::AddBanListItem (QString mask)
 	{
-		ISH_->AddBanListItem (ChannelOptions_.ChannelName_, mask);
+		CM_->AddBanListItem (ChannelOptions_.ChannelName_, mask);
 	}
 
 	void ChannelHandler::RemoveBanListItem (QString mask)
 	{
-		ISH_->RemoveBanListItem (ChannelOptions_.ChannelName_, mask);
+		CM_->RemoveBanListItem (ChannelOptions_.ChannelName_, mask);
 	}
 
 	void ChannelHandler::AddExceptListItem (QString mask)
 	{
-		ISH_->AddExceptListItem (ChannelOptions_.ChannelName_, mask);
+		CM_->AddExceptListItem (ChannelOptions_.ChannelName_, mask);
 	}
 
 	void ChannelHandler::RemoveExceptListItem (QString mask)
 	{
-		ISH_->RemoveExceptListItem (ChannelOptions_.ChannelName_, mask);
+		CM_->RemoveExceptListItem (ChannelOptions_.ChannelName_, mask);
 	}
 
 	void ChannelHandler::AddInviteListItem (QString mask)
 	{
-		ISH_->AddInviteListItem (ChannelOptions_.ChannelName_, mask);
+		CM_->AddInviteListItem (ChannelOptions_.ChannelName_, mask);
 	}
 
 	void ChannelHandler::RemoveInviteListItem (QString mask)
 	{
-		ISH_->RemoveInviteListItem (ChannelOptions_.ChannelName_, mask);
+		CM_->RemoveInviteListItem (ChannelOptions_.ChannelName_, mask);
 	}
 
-	void ChannelHandler::SetBanListItem (const QString& mask, 
+	void ChannelHandler::SetBanListItem (const QString& mask,
 			const QString& nick, const QDateTime& date)
 	{
 		ChannelCLEntry_->SetBanListItem (mask, nick, date);
@@ -480,11 +484,11 @@ namespace Acetamide
 					.arg (mask)
 					.arg (nick)
 					.arg (date.toString ("dd.MM.yyyy hh:mm:ss"));
-			ShowServiceMessage (msg, IMessage::MTEventMessage, IMessage::MSTOther);
+			HandleServiceMessage (msg, IMessage::MTEventMessage, IMessage::MSTOther);
 		}
 	}
 
-	void ChannelHandler::SetExceptListItem (const QString& mask, 
+	void ChannelHandler::SetExceptListItem (const QString& mask,
 			const QString& nick, const QDateTime& date)
 	{
 		ChannelCLEntry_->SetExceptListItem (mask, nick, date);
@@ -494,11 +498,11 @@ namespace Acetamide
 					.arg (mask)
 					.arg (nick)
 					.arg (date.toString ("dd.MM.yyyy hh:mm:ss"));
-			ShowServiceMessage (msg, IMessage::MTEventMessage, IMessage::MSTOther);
+			HandleServiceMessage (msg, IMessage::MTEventMessage, IMessage::MSTOther);
 		}
 	}
 
-	void ChannelHandler::SetInviteListItem (const QString& mask, 
+	void ChannelHandler::SetInviteListItem (const QString& mask,
 			const QString& nick, const QDateTime& date)
 	{
 		ChannelCLEntry_->SetInviteListItem (mask, nick, date);
@@ -508,7 +512,7 @@ namespace Acetamide
 					.arg (mask)
 					.arg (nick)
 					.arg (date.toString ("dd.MM.yyyy hh:mm:ss"));
-			ShowServiceMessage (msg, IMessage::MTEventMessage, IMessage::MSTOther);
+			HandleServiceMessage (msg, IMessage::MTEventMessage, IMessage::MSTOther);
 		}
 	}
 
@@ -525,7 +529,7 @@ namespace Acetamide
 			msg = tr ("Channel mode set to invite only channel (+i)");
 		else
 			msg = tr ("Channel mode set to non invite only channel (-i)");
-		ShowServiceMessage (msg,
+		HandleServiceMessage (msg,
 				IMessage::MTEventMessage, IMessage::MSTOther);
 		emit updateChanModes (ChannelMode_);
 	}
@@ -538,7 +542,7 @@ namespace Acetamide
 			msg = tr ("Channel mode set to moderate channel (+m)");
 		else
 			msg = tr ("Channel mode set to unmoderate channel (-m)");
-		ShowServiceMessage (msg,
+		HandleServiceMessage (msg,
 				IMessage::MTEventMessage, IMessage::MSTOther);
 		emit updateChanModes (ChannelMode_);
 	}
@@ -551,7 +555,7 @@ namespace Acetamide
 			msg = tr ("Channel mode set to block outside messages (+n)");
 		else
 			msg = tr ("Channel mode set to not block outside messages (-n)");
-		ShowServiceMessage (msg,
+		HandleServiceMessage (msg,
 				IMessage::MTEventMessage, IMessage::MSTOther);
 		emit updateChanModes (ChannelMode_);
 	}
@@ -564,7 +568,7 @@ namespace Acetamide
 			msg = tr ("Channel mode set to private channel (+p)");
 		else
 			msg = tr ("Channel mode set to non private channel (-p)");
-		ShowServiceMessage (msg,
+		HandleServiceMessage (msg,
 				IMessage::MTEventMessage, IMessage::MSTOther);
 		emit updateChanModes (ChannelMode_);
 	}
@@ -577,7 +581,7 @@ namespace Acetamide
 			msg = tr ("Channel mode set to secret channel (+s)");
 		else
 			msg = tr ("Channel mode set to non secret channel (-s)");
-		ShowServiceMessage (msg,
+		HandleServiceMessage (msg,
 				IMessage::MTEventMessage, IMessage::MSTOther);
 		emit updateChanModes (ChannelMode_);
 	}
@@ -590,7 +594,7 @@ namespace Acetamide
 			msg = tr ("Reop flag is set (+r)");
 		else
 			msg = tr ("Reop flag is remove (-r)");
-		ShowServiceMessage (msg,
+		HandleServiceMessage (msg,
 				IMessage::MTEventMessage, IMessage::MSTOther);
 		emit updateChanModes (ChannelMode_);
 	}
@@ -603,7 +607,7 @@ namespace Acetamide
 			msg = tr ("Change topic available only for channel operators (+t)");
 		else
 			msg = tr ("Change topic available not only for channel operators (-t)");
-		ShowServiceMessage (msg,
+		HandleServiceMessage (msg,
 				IMessage::MTEventMessage, IMessage::MSTOther);
 		emit updateChanModes (ChannelMode_);
 	}
@@ -616,7 +620,7 @@ namespace Acetamide
 			msg = tr ("Limit user set to %1 (+l)").arg (limit);
 		else
 			msg = tr ("Remove limit user (-l)");
-		ShowServiceMessage (msg,
+		HandleServiceMessage (msg,
 				IMessage::MTEventMessage, IMessage::MSTOther);
 		emit updateChanModes (ChannelMode_);
 	}
@@ -629,14 +633,14 @@ namespace Acetamide
 			msg = tr ("Channel key set to %1 (+k)").arg (key);
 		else
 			msg = tr ("Remove channel key (-k)");
-		ShowServiceMessage (msg,
+		HandleServiceMessage (msg,
 				IMessage::MTEventMessage, IMessage::MSTOther);
 		emit updateChanModes (ChannelMode_);
 	}
 
 	void ChannelHandler::SetNewChannelModes(const ChannelModes& modes)
 	{
-		ISH_->SetNewChannelModes (ChannelOptions_.ChannelName_, modes);
+		CM_->SetNewChannelModes (ChannelOptions_.ChannelName_, modes);
 	}
 
 	bool ChannelHandler::RemoveUserFromChannel (const QString& nick)
@@ -644,35 +648,34 @@ namespace Acetamide
 		if (!Nick2Entry_.contains (nick))
 			return false;
 
-		ChannelParticipantEntry_ptr entry = Nick2Entry_ [nick];
+		ChannelParticipantEntry* entry = Nick2Entry_ [nick];
 		Nick2Entry_.remove (nick);
-		ISH_->GetAccount ()->handleEntryRemoved (entry.get ());
-		ISH_->RemoveParticipantEntry (nick);
+		CM_->GetAccount ()->handleEntryRemoved (entry);
 
 		return true;
 	}
 
-	ChannelParticipantEntry_ptr ChannelHandler::CreateParticipantEntry (const QString& nick)
+	ChannelParticipantEntry* ChannelHandler::CreateParticipantEntry (const QString& nick)
 	{
-		ChannelParticipantEntry_ptr entry (new ChannelParticipantEntry (nick,
-				this, ISH_->GetAccount ()));
-		ISH_->GetAccount ()->handleGotRosterItems (QList<QObject*> () << entry.get ());
+		ChannelParticipantEntry* entry (new ChannelParticipantEntry (nick,
+				this, CM_->GetAccount ()));
+		CM_->GetAccount ()->handleGotRosterItems (QList<QObject*> () << entry);
 		return entry;
 	}
 
 	void ChannelHandler::handleWhoIs (const QString& nick)
 	{
-		ISH_->RequestWhoIs (ChannelID_, nick);
+		CM_->RequestWhoIs (ChannelOptions_.ChannelName_.toLower (), nick);
 	}
 
 	void ChannelHandler::handleWhoWas (const QString& nick)
 	{
-		ISH_->RequestWhoWas (ChannelID_, nick);
+		CM_->RequestWhoWas (ChannelOptions_.ChannelName_.toLower (), nick);
 	}
 
 	void ChannelHandler::handleWho (const QString& nick)
 	{
-		ISH_->RequestWho (ChannelID_, nick);
+		CM_->RequestWho (ChannelOptions_.ChannelName_.toLower (), nick);
 	}
 
 };

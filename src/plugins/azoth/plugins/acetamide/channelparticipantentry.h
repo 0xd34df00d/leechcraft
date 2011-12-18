@@ -65,8 +65,6 @@ namespace Acetamide
 		void handleWhoWas ();
 		void handleWho ();
 	};
-
-	typedef boost::shared_ptr<ChannelParticipantEntry> ChannelParticipantEntry_ptr;
 }
 }
 }

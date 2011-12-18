@@ -21,9 +21,9 @@
 #include "channelhandler.h"
 #include "channelpublicmessage.h"
 #include "ircmessage.h"
-#include "ircserverhandler.h"
 #include "ircaccount.h"
 #include "channelconfigwidget.h"
+#include "channelsmanager.h"
 
 namespace LeechCraft
 {
@@ -32,7 +32,7 @@ namespace Azoth
 namespace Acetamide
 {
 	ChannelCLEntry::ChannelCLEntry (ChannelHandler *handler)
-	: QObject (handler->GetIrcServerHandler ()->GetAccount ())
+	: QObject (handler->GetChannelsManager ()->GetAccount ())
 	, ICH_ (handler)
 	, IsWidgetRequest_ (false)
 	{
@@ -56,7 +56,7 @@ namespace Acetamide
 
 		Translations_ ["permclass_role"] = tr ("Role");
 		Translations_ ["participant"] = tr ("Participant");
-		
+
 		Translations_ ["permclass_managment"] = tr ("Kick&Ban");
 		Translations_ ["kick"] = tr ("Kick");
 		Translations_ ["ban_by_name"] = tr ("Ban by nickname");
@@ -64,7 +64,7 @@ namespace Acetamide
 		Translations_ ["ban_by_user_and_domain"] = tr ("Ban by mask (*!user@domain)");
 		Translations_ ["kick_and_ban"] = tr ("Kick and ban");
 
-		QMap<QString, QString> iSupport = ICH_->GetIrcServerHandler ()->GetISupport ();
+		QMap<QString, QString> iSupport = ICH_->GetChannelsManager ()->GetISupport ();
 		if (iSupport.contains ("PREFIX"))
 		{
 			QString roles = iSupport ["PREFIX"].split (')').at (0);
@@ -117,7 +117,7 @@ namespace Acetamide
 
 	QObject* ChannelCLEntry::GetParentAccount () const
 	{
-		return ICH_->GetIrcServerHandler ()->GetAccount ();
+		return ICH_->GetChannelsManager ()->GetAccount ();
 	}
 
 	ICLEntry::Features ChannelCLEntry::GetEntryFeatures () const
@@ -141,9 +141,9 @@ namespace Acetamide
 
 	QString ChannelCLEntry::GetEntryID () const
 	{
-		return ICH_->GetIrcServerHandler ()->GetAccount ()->
-				GetAccountID () + "_" + ICH_->
-				GetIrcServerHandler ()->GetServerID_ () + "_" +
+		return ICH_->GetChannelsManager ()->GetAccount ()->
+				GetAccountID () + "_" +
+				ICH_->GetChannelsManager ()->GetServerID () + "_" +
 				ICH_->GetChannelID ();
 	}
 
@@ -263,7 +263,7 @@ namespace Acetamide
 
 	QString ChannelCLEntry::GetNick () const
 	{
-		return ICH_->GetIrcServerHandler ()->GetNickName ();
+		return ICH_->GetChannelsManager ()->GetOurNick ();
 	}
 
 	void ChannelCLEntry::SetNick (const QString& nick)
@@ -280,23 +280,18 @@ namespace Acetamide
 	{
 		QVariantMap result;
 		result ["HumanReadableName"] = QString ("%1 on %2@%3:%4")
-				.arg (ICH_->GetIrcServerHandler ()->GetNickName ())
+				.arg (GetNick ())
 				.arg (ICH_->GetChannelOptions ().ChannelName_)
 				.arg (ICH_->GetChannelOptions ().ServerName_)
-				.arg (ICH_->GetIrcServerHandler ()->
-					GetServerOptions ().ServerPort_);
-		result ["AccountID"] = ICH_->GetIrcServerHandler ()->
+				.arg (ICH_->GetChannelsManager ()->GetServerOptions ().ServerPort_);
+		result ["AccountID"] = ICH_->GetChannelsManager ()->
 				GetAccount ()->GetAccountID ();
-		result ["Nickname"] = ICH_->GetIrcServerHandler ()->
-				GetNickName ();
+		result ["Nickname"] = GetNick();
 		result ["Channel"] = ICH_->GetChannelOptions ().ChannelName_;
 		result ["Server"] = ICH_->GetChannelOptions ().ServerName_;
-		result ["Port"] = ICH_->GetIrcServerHandler ()->
-				GetServerOptions ().ServerPort_;
-		result ["Encoding"] = ICH_->GetIrcServerHandler ()->
-				GetServerOptions ().ServerEncoding_;
-		result ["SSL"] = ICH_->GetIrcServerHandler ()->
-				GetServerOptions ().SSL_;
+		result ["Port"] = ICH_->GetChannelsManager ()->GetServerOptions ().ServerPort_;
+		result ["Encoding"] = ICH_->GetChannelsManager ()->GetServerOptions ().ServerEncoding_;
+		result ["SSL"] = ICH_->GetChannelsManager ()->GetServerOptions ().SSL_;
 
 		return result;
 	}
@@ -341,8 +336,8 @@ namespace Acetamide
 	QMap<QByteArray, QList<QByteArray> >  ChannelCLEntry::GetPerms (QObject *participant) const
 	{
 		if (!participant)
-			participant = ICH_->GetSelf ().get ();
-		
+			participant = ICH_->GetSelf ();
+
 		QMap<QByteArray, QList<QByteArray> >  result;
 		ChannelParticipantEntry *entry = qobject_cast<ChannelParticipantEntry*> (participant);
 		if (!entry)
@@ -372,7 +367,7 @@ namespace Acetamide
 					<< "is not a ChannelParticipantEntry";
 			return;
 		}
-		
+
 		if (permClass == "permclass_role")
 			ICH_->SetRole (entry, Role2Str_.key (perm), reason);
 		if (permClass == "permclass_managment")
@@ -441,13 +436,13 @@ namespace Acetamide
 				const QString& nick)
 		{
 			ChannelRole role = entry->HighestRole ();
-			
+
 			if (ourRole < ChannelRole::HalfOperator)
 				return false;
-			
+
 			if (ourRole == ChannelRole::Owner)
 				return true;
-			
+
 			if (role > ourRole)
 				return false;
 
@@ -457,7 +452,7 @@ namespace Acetamide
 			return true;
 		}
 	}
-	
+
 	bool ChannelCLEntry::MayChangePerm (QObject *participant,
 			const QByteArray& permClass, const QByteArray& perm) const
 	{

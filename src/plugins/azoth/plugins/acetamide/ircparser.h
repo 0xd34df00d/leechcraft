@@ -40,12 +40,17 @@ namespace Acetamide
 		IrcServerHandler *ISH_;
 		ServerOptions ServerOptions_;
 		IrcMessageOptions IrcMessageOptions_;
+
+		QStringList LongAnswerCommands_;
 	public:
 		IrcParser (IrcServerHandler*);
+
+		bool IsCmdHasLongAnswer (const QString cmd);
+
 		void AuthCommand ();
 		void UserCommand ();
 		void NickCommand (const QStringList&);
-		void JoinCommand (const QString&);
+		void JoinCommand (const QStringList&);
 		void PrivMsgCommand (const QStringList&);
 		void PartCommand (const QStringList&);
 		void PongCommand (const QStringList&);

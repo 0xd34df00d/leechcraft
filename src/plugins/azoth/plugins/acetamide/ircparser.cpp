@@ -37,6 +37,22 @@ namespace Acetamide
 	: ISH_ (sh)
 	, ServerOptions_ (sh->GetServerOptions ())
 	{
+		LongAnswerCommands_ << "mode"
+				<< "names"
+				<< "motd"
+				<< "stats"
+				<< "links"
+				<< "info"
+				<< "who"
+				<< "whois"
+				<< "whowas"
+				<< "users"
+				<< "trace";
+	}
+
+	bool IrcParser::IsCmdHasLongAnswer (const QString cmd)
+	{
+		return LongAnswerCommands_.contains (cmd.toLower ());
 	}
 
 	void IrcParser::AuthCommand ()
@@ -68,9 +84,9 @@ namespace Acetamide
 		ISH_->SendCommand (nickCmd);
 	}
 
-	void IrcParser::JoinCommand (const QString& channel)
+	void IrcParser::JoinCommand (const QStringList& cmd)
 	{
-		QString joinCmd = QString ("JOIN " + channel + "\r\n");
+		QString joinCmd = QString ("JOIN " + cmd.join(" ") + "\r\n");
 		ISH_->SendCommand (joinCmd);
 	}
 
@@ -94,7 +110,7 @@ namespace Acetamide
 
 	void IrcParser::PongCommand (const QStringList& msg)
 	{
-		QString pongCmd = QString ("PONG :" + EncodingList (msg).join (" ") + 
+		QString pongCmd = QString ("PONG :" + EncodingList (msg).join (" ") +
 				"\r\n");
 		ISH_->SendCommand (pongCmd);
 	}
@@ -113,7 +129,7 @@ namespace Acetamide
 		QString ctcpCmd;
 		if (encodedCmd.count () > 2)
 			ctcpCmd = "PRIVMSG " + encodedCmd.first () + " :\001" +
-					encodedCmd.at (1) + " " + QStringList (encodedCmd.mid (2)).join (" ") + 
+					encodedCmd.at (1) + " " + QStringList (encodedCmd.mid (2)).join (" ") +
 					"\001\r\n";
 		else
 			ctcpCmd = "PRIVMSG " + encodedCmd.first () + " :\001" +
@@ -216,21 +232,21 @@ namespace Acetamide
 
 	void IrcParser::StatsCommand (const QStringList& cmd)
 	{
-		QString statsCmd = QString ("STATS " + EncodingList (cmd).join (" ") + 
+		QString statsCmd = QString ("STATS " + EncodingList (cmd).join (" ") +
 				"\r\n");
 		ISH_->SendCommand (statsCmd);
 	}
 
 	void IrcParser::LinksCommand (const QStringList& cmd)
 	{
-		QString linksCmd = QString ("LINKS " + EncodingList (cmd).join (" ") + 
+		QString linksCmd = QString ("LINKS " + EncodingList (cmd).join (" ") +
 				"\r\n");
 		ISH_->SendCommand (linksCmd);
 	}
 
 	void IrcParser::TimeCommand (const QStringList& cmd)
 	{
-		QString timeCmd = QString ("TIME " + EncodingList (cmd).join (" ") + 
+		QString timeCmd = QString ("TIME " + EncodingList (cmd).join (" ") +
 				"\r\n");
 		ISH_->SendCommand (timeCmd);
 	}
@@ -244,35 +260,35 @@ namespace Acetamide
 
 	void IrcParser::TraceCommand (const QStringList& cmd)
 	{
-		QString traceCmd = QString ("TRACE " + EncodingList (cmd).join (" ") + 
+		QString traceCmd = QString ("TRACE " + EncodingList (cmd).join (" ") +
 				"\r\n");
 		ISH_->SendCommand (traceCmd);
 	}
 
 	void IrcParser::AdminCommand (const QStringList& cmd)
 	{
-		QString adminCmd = QString ("ADMIN " + EncodingList (cmd).join (" ") + 
+		QString adminCmd = QString ("ADMIN " + EncodingList (cmd).join (" ") +
 				"\r\n");
 		ISH_->SendCommand (adminCmd);
 	}
 
 	void IrcParser::InfoCommand (const QStringList& cmd)
 	{
-		QString infoCmd = QString ("INFO " + EncodingList (cmd).join (" ") + 
+		QString infoCmd = QString ("INFO " + EncodingList (cmd).join (" ") +
 				"\r\n");
 		ISH_->SendCommand (infoCmd);
 	}
 
 	void IrcParser::WhoCommand (const QStringList& cmd)
 	{
-		QString whoCmd = QString ("WHO " + EncodingList (cmd).join (" ") + 
+		QString whoCmd = QString ("WHO " + EncodingList (cmd).join (" ") +
 				"\r\n");
 		ISH_->SendCommand (whoCmd);
 	}
 
 	void IrcParser::WhoisCommand (const QStringList& cmd)
 	{
-		QString whoisCmd = QString ("WHOIS " + EncodingList (cmd).join (" ") + 
+		QString whoisCmd = QString ("WHOIS " + EncodingList (cmd).join (" ") +
 				"\r\n");
 		ISH_->SendCommand (whoisCmd);
 	}
@@ -294,7 +310,7 @@ namespace Acetamide
 
 	void IrcParser::PingCommand (const QStringList& cmd)
 	{
-		QString pingCmd = QString ("PING " + EncodingList (cmd).join (" ") + 
+		QString pingCmd = QString ("PING " + EncodingList (cmd).join (" ") +
 				"\r\n");
 		ISH_->SendCommand (pingCmd);
 	}
@@ -387,7 +403,7 @@ namespace Acetamide
 		IrcMessageOptions_.Parameters_.clear ();
 		IrcMessageOptions_.UserName_.clear ();
 		IrcMessageOptions_.Host_.clear ();
-		
+
 		std::string nickStr;
 		std::string userStr;
 		std::string hostStr;

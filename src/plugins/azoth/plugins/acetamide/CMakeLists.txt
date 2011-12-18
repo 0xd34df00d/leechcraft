@@ -9,7 +9,7 @@ INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}/azoth
 	)
 
-SET (ACETAMIDE_SRCS
+SET (ACETAMIDE_SRCS 
 	acetamide.cpp
 	bookmarkeditwidget.cpp
 	channelclentry.cpp
@@ -17,6 +17,7 @@ SET (ACETAMIDE_SRCS
 	channelhandler.cpp
 	channelparticipantentry.cpp
 	channelpublicmessage.cpp
+	channelsmanager.cpp
 	clientconnection.cpp
 	core.cpp
 	entrybase.cpp
@@ -54,6 +55,7 @@ SET (ACETAMIDE_HEADERS
 	channelhandler.h
 	channelparticipantentry.h
 	channelpublicmessage.h
+	channelsmanager.h
 	clientconnection.h
 	core.h
 	entrybase.h

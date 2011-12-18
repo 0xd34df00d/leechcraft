@@ -86,7 +86,7 @@ namespace Acetamide
 				QString::number (server.ServerPort_);
 
 		IrcServerHandler *ish = new IrcServerHandler (server, Account_);
-		
+
 		ish->SetConsoleEnabled (IsConsoleEnabled_);
 		if (IsConsoleEnabled_)
 			connect (ish,
@@ -100,7 +100,7 @@ namespace Acetamide
 					this,
 					SLOT (handleLog (IMessage::Direction, const QString&)));
 		ServerHandlers_ [serverId] = ish;
-		
+
 		ish->ConnectToServer ();
 	}
 
@@ -184,12 +184,6 @@ namespace Acetamide
 			const QString& nick)
 	{
 		ServerHandlers_ [serverId]->ClosePrivateChat (nick);
-	}
-
-	void ClientConnection::CloseServer (const QString& serverId)
-	{
-		if (ServerHandlers_.contains (serverId))
-			ServerHandlers_ [serverId]->DisconnectFromServer ();
 	}
 
 	void ClientConnection::DisconnectFromAll ()
