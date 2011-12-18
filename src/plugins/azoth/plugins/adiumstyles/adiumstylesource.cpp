@@ -170,6 +170,21 @@ namespace AdiumStyles
 		return result;
 	}
 
+	namespace
+	{
+		IMessage::Direction GetMsgDirection (IMessage *msg)
+		{
+			if (msg->GetMessageType () != IMessage::MTMUCMessage)
+				return msg->GetDirection ();
+
+			IMUCEntry *muc = qobject_cast<IMUCEntry*> (msg->ParentCLEntry ());
+			ICLEntry *part = qobject_cast<ICLEntry*> (msg->OtherPart ());
+			return muc->GetNick () == part->GetEntryName () ?
+					IMessage::DOut :
+					IMessage::DIn;
+		}
+	}
+
 	bool AdiumStyleSource::AppendMessage (QWebFrame *frame,
 			QObject *msgObj, const ChatMsgAppendInfo& info)
 	{
@@ -192,7 +207,7 @@ namespace AdiumStyles
 			return false;
 		}
 
-		const bool in = msg->GetDirection () == IMessage::DIn;
+		const bool in = GetMsgDirection (msg) == IMessage::DIn;
 		const QString& prefix = pack + "/Contents/Resources/" +
 				(in ? "Incoming" : "Outgoing") +
 				'/';
