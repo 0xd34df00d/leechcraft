@@ -206,7 +206,8 @@ namespace ChatHistory
 
 		if (ourFocus)
 		{
-			const QModelIndex& idx = ContactsModel_->indexFromItem (ourFocus);
+			QModelIndex idx = ContactsModel_->indexFromItem (ourFocus);
+			idx = SortFilter_->mapFromSource (idx);
 			Ui_.Contacts_->selectionModel ()->
 					setCurrentIndex (idx, QItemSelectionModel::SelectCurrent);
 		}
