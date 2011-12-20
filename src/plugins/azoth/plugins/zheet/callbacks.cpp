@@ -347,11 +347,20 @@ namespace Zheet
 	{
 		QTcpSocket *sock = 0;
 		if (isSSL)
-			sock = new QSslSocket (this);
+		{
+			auto ssl = new QSslSocket (this);
+			connect (ssl,
+					SIGNAL (sslErrors (QList<QSslError>)),
+					ssl,
+					SLOT (ignoreSslErrors ()));
+			ssl->connectToHostEncrypted (QString::fromUtf8 (server.c_str ()), port);
+			sock = ssl;
+		}
 		else
+		{
 			sock = new QTcpSocket (this);
-
-		sock->connectToHost (QString::fromUtf8 (server.c_str ()), port);
+			sock->connectToHost (QString::fromUtf8 (server.c_str ()), port);
+		}
 
 		*connected = true;
 
