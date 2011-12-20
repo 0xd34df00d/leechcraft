@@ -16,9 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "zheet.h"
-#include <QIcon>
-#include <util/util.h>
 #include "core.h"
 #include "msnprotocol.h"
 
@@ -28,62 +25,16 @@ namespace Azoth
 {
 namespace Zheet
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
-	{
-		Core::Instance ().GetProtocol ()->setParent (this);
-	}
-
-	void Plugin::SecondInit ()
+	Core::Core ()
+	: Protocol_ (new MSNProtocol)
 	{
 	}
 
-	void Plugin::Release ()
+	Core& Core::Instance ()
 	{
-	}
-
-	QByteArray Plugin::GetUniqueID () const
-	{
-		return "org.LeechCraft.Azoth.Zheet";
-	}
-
-	QString Plugin::GetName () const
-	{
-		return "Zheet";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("Support for the MSN protocol.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
-	}
-
-	QSet<QByteArray> Plugin::GetPluginClasses () const
-	{
-		QSet<QByteArray> classes;
-		classes << "org.LeechCraft.Plugins.Azoth.Plugins.IProtocolPlugin";
-		return classes;
-	}
-
-	QObject* Plugin::GetObject ()
-	{
-		return this;
-	}
-
-	QList<QObject*> Plugin::GetProtocols () const
-	{
-		return QList<QObject*> () << Core::Instance ().GetProtocol ();
-	}
-
-	void Plugin::initPlugin (QObject *proxy)
-	{
+		static Core c;
+		return c;
 	}
 }
 }
 }
-
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_zheet, LeechCraft::Azoth::Zheet::Plugin);
-

@@ -16,11 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "zheet.h"
-#include <QIcon>
-#include <util/util.h>
-#include "core.h"
 #include "msnprotocol.h"
+#include <QIcon>
 
 namespace LeechCraft
 {
@@ -28,62 +25,64 @@ namespace Azoth
 {
 namespace Zheet
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
-	{
-		Core::Instance ().GetProtocol ()->setParent (this);
-	}
-
-	void Plugin::SecondInit ()
+	MSNProtocol::MSNProtocol (QObject*)
+	: QObject ()
 	{
 	}
 
-	void Plugin::Release ()
-	{
-	}
-
-	QByteArray Plugin::GetUniqueID () const
-	{
-		return "org.LeechCraft.Azoth.Zheet";
-	}
-
-	QString Plugin::GetName () const
-	{
-		return "Zheet";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("Support for the MSN protocol.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
-	}
-
-	QSet<QByteArray> Plugin::GetPluginClasses () const
-	{
-		QSet<QByteArray> classes;
-		classes << "org.LeechCraft.Plugins.Azoth.Plugins.IProtocolPlugin";
-		return classes;
-	}
-
-	QObject* Plugin::GetObject ()
+	QObject* MSNProtocol::GetObject ()
 	{
 		return this;
 	}
 
-	QList<QObject*> Plugin::GetProtocols () const
+	IProtocol::ProtocolFeatures MSNProtocol::GetFeatures () const
 	{
-		return QList<QObject*> () << Core::Instance ().GetProtocol ();
+		return PFNone;
 	}
 
-	void Plugin::initPlugin (QObject *proxy)
+	QList<QObject*> MSNProtocol::GetRegisteredAccounts ()
+	{
+		return QList<QObject*> ();
+	}
+
+	QObject* MSNProtocol::GetParentProtocolPlugin () const
+	{
+		return parent ();
+	}
+
+	QString MSNProtocol::GetProtocolName() const
+	{
+		return "MSN";
+	}
+
+	QIcon MSNProtocol::GetProtocolIcon () const
+	{
+		return QIcon ();
+	}
+
+	QByteArray MSNProtocol::GetProtocolID () const
+	{
+		return "msn.libmsn";
+	}
+
+	QList<QWidget*> MSNProtocol::GetAccountRegistrationWidgets (IProtocol::AccountAddOptions)
+	{
+		return QList<QWidget*> ();
+	}
+
+	void MSNProtocol::RegisterAccount (const QString&, const QList<QWidget*>&)
+	{
+
+	}
+
+	QWidget* MSNProtocol::GetMUCJoinWidget ()
+	{
+		return 0;
+	}
+
+	void MSNProtocol::RemoveAccount (QObject*)
 	{
 	}
 }
 }
 }
-
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_zheet, LeechCraft::Azoth::Zheet::Plugin);
-
