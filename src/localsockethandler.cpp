@@ -76,6 +76,7 @@ namespace LeechCraft
 		QDataStream in (read);
 		QStringList arguments;
 		in >> arguments;
+		arguments.removeFirst ();
 
 		std::vector<std::string> strings;
 		Q_FOREACH (const QString& arg, arguments)
@@ -83,8 +84,7 @@ namespace LeechCraft
 
 		boost::program_options::options_description desc;
 		boost::program_options::command_line_parser parser (strings);
-		boost::program_options::variables_map map =
-				qobject_cast<Application*> (qApp)->Parse (parser, &desc);
+		auto map = qobject_cast<Application*> (qApp)->Parse (parser, &desc);
 		DoLine (map);
 	}
 
