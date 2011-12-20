@@ -18,6 +18,7 @@
 
 #include "callbacks.h"
 #include <QSslSocket>
+#include <QTcpServer>
 #include <util/util.h>
 #include "core.h"
 
@@ -157,23 +158,189 @@ namespace Zheet
 
 	}
 
-	void Callbacks::handleSocketActivated (int socket)
+	void Callbacks::addedContactToGroup (MSN::NotificationServerConnection *conn, bool added, std::string groupId, std::string contactId)
 	{
-		if (!Conn_)
-			return;
 
-		auto notifier = qobject_cast<QSocketNotifier*> (sender ());
-		if (!notifier)
-			return;
+	}
 
-		auto c = Conn_->connectionWithSocket (reinterpret_cast<void*> (socket));
-		if (!c)
-			return;
+	void Callbacks::removedContactFromGroup (MSN::NotificationServerConnection *conn, bool removed, std::string groupId, std::string contactId)
+	{
 
-		if (notifier->type () == QSocketNotifier::Read)
-			c->dataArrivedOnSocket ();
-		else if (notifier->type () == QSocketNotifier::Write)
-			c->socketIsWritable ();
+	}
+
+	void Callbacks::addedContactToAddressBook (MSN::NotificationServerConnection *conn, bool added, std::string passport, std::string displayName, std::string guid)
+	{
+
+	}
+
+	void Callbacks::removedContactFromAddressBook (MSN::NotificationServerConnection *conn, bool removed, std::string contactId, std::string passport)
+	{
+
+	}
+
+	void Callbacks::enabledContactOnAddressBook (MSN::NotificationServerConnection *conn, bool enabled, std::string contactId, std::string passport)
+	{
+
+	}
+
+	void Callbacks::disabledContactOnAddressBook (MSN::NotificationServerConnection *conn, bool disabled, std::string contactId)
+	{
+
+	}
+
+	void Callbacks::gotSwitchboard (MSN::SwitchboardServerConnection *conn, const void *tag)
+	{
+
+	}
+
+	void Callbacks::buddyJoinedConversation (MSN::SwitchboardServerConnection *conn, MSN::Passport buddy, std::string friendlyname, int is_initial)
+	{
+
+	}
+
+	void Callbacks::buddyLeftConversation (MSN::SwitchboardServerConnection *conn, MSN::Passport buddy)
+	{
+
+	}
+
+	void Callbacks::gotInstantMessage (MSN::SwitchboardServerConnection *conn, MSN::Passport buddy, std::string friendlyname, MSN::Message *msg)
+	{
+
+	}
+
+	void Callbacks::gotMessageSentACK (MSN::SwitchboardServerConnection *conn, int trID)
+	{
+
+	}
+
+	void Callbacks::gotEmoticonNotification (MSN::SwitchboardServerConnection *conn, MSN::Passport buddy, std::string alias, std::string msnobject)
+	{
+
+	}
+
+	void Callbacks::failedSendingMessage (MSN::Connection *conn)
+	{
+
+	}
+
+	void Callbacks::gotNudge (MSN::SwitchboardServerConnection *conn, MSN::Passport username)
+	{
+
+	}
+
+	void Callbacks::gotVoiceClipNotification (MSN::SwitchboardServerConnection *conn, MSN::Passport username, std::string msnobject)
+	{
+
+	}
+
+	void Callbacks::gotWinkNotification (MSN::SwitchboardServerConnection *conn, MSN::Passport username, std::string msnobject)
+	{
+
+	}
+
+	void Callbacks::gotInk (MSN::SwitchboardServerConnection *conn, MSN::Passport username, std::string image)
+	{
+
+	}
+
+	void Callbacks::gotActionMessage (MSN::SwitchboardServerConnection *conn, MSN::Passport username, std::string message)
+	{
+
+	}
+
+	void Callbacks::buddyTyping (MSN::SwitchboardServerConnection *conn, MSN::Passport buddy, std::string friendlyname)
+	{
+
+	}
+
+	void Callbacks::gotInitialEmailNotification (MSN::NotificationServerConnection *conn, int msgs_inbox, int unread_inbox, int msgs_folders, int unread_folders)
+	{
+
+	}
+
+	void Callbacks::gotNewEmailNotification (MSN::NotificationServerConnection *conn, std::string from, std::string subject)
+	{
+
+	}
+
+	void Callbacks::fileTransferProgress (MSN::SwitchboardServerConnection *conn, unsigned int sessionID, long long unsigned int transferred, long long unsigned int total)
+	{
+
+	}
+
+	void Callbacks::fileTransferFailed (MSN::SwitchboardServerConnection *conn, unsigned int sessionID, MSN::fileTransferError error)
+	{
+
+	}
+
+	void Callbacks::fileTransferSucceeded (MSN::SwitchboardServerConnection *conn, unsigned int sessionID)
+	{
+
+	}
+
+	void Callbacks::fileTransferInviteResponse (MSN::SwitchboardServerConnection *conn, unsigned int sessionID, bool response)
+	{
+
+	}
+
+	void Callbacks::gotVoiceClipFile (MSN::SwitchboardServerConnection *conn, unsigned int sessionID, std::string file)
+	{
+
+	}
+
+	void Callbacks::gotEmoticonFile (MSN::SwitchboardServerConnection *conn, unsigned int sessionID, std::string alias, std::string file)
+	{
+
+	}
+
+	void Callbacks::gotWinkFile (MSN::SwitchboardServerConnection *conn, unsigned int sessionID, std::string file)
+	{
+
+	}
+
+	void Callbacks::gotNewConnection (MSN::Connection *conn)
+	{
+
+	}
+
+	void Callbacks::gotOIMList (MSN::NotificationServerConnection *conn, std::vector<MSN::eachOIM> OIMs)
+	{
+
+	}
+
+	void Callbacks::gotOIM (MSN::NotificationServerConnection *conn, bool success, std::string id, std::string message)
+	{
+
+	}
+
+	void Callbacks::gotOIMSendConfirmation (MSN::NotificationServerConnection *conn, bool success, int id)
+	{
+
+	}
+
+	void Callbacks::gotOIMDeleteConfirmation (MSN::NotificationServerConnection *conn, bool success, std::string id)
+	{
+
+	}
+
+	void Callbacks::gotContactDisplayPicture (MSN::SwitchboardServerConnection *conn, MSN::Passport passport, std::string filename)
+	{
+
+	}
+
+	void Callbacks::connectionReady (MSN::Connection *conn)
+	{
+
+	}
+
+	void Callbacks::closingConnection (MSN::Connection *conn)
+	{
+
+	}
+
+	void Callbacks::changedStatus (MSN::NotificationServerConnection *conn, MSN::BuddyStatus state)
+	{
+
 	}
 
 	void* Callbacks::connectToServer (std::string server, int port, bool *connected, bool isSSL)
@@ -191,6 +358,29 @@ namespace Zheet
 		void *res = reinterpret_cast<void*> (sock->socketDescriptor ());
 		Sockets_ [res] = sock;
 		return res;
+	}
+
+	void Callbacks::askFileTransfer (MSN::SwitchboardServerConnection *conn, MSN::fileTransferInvite ft)
+	{
+
+	}
+
+	int Callbacks::listenOnPort (int port)
+	{
+		QTcpServer *serv = new QTcpServer (this);
+		serv->listen (QHostAddress::Any, port);
+		return serv->socketDescriptor ();
+	}
+
+	std::string Callbacks::getOurIP ()
+	{
+		// TODO
+		return "127.0.0.1";
+	}
+
+	std::string Callbacks::getSecureHTTPProxy ()
+	{
+		return "";
 	}
 
 	int Callbacks::getSocketFileDescriptor (void *sock)
@@ -211,6 +401,25 @@ namespace Zheet
 	void Callbacks::gotInboxUrl (MSN::NotificationServerConnection*, MSN::hotmailInfo)
 	{
 		// TODO
+	}
+
+	void Callbacks::handleSocketActivated (int socket)
+	{
+		if (!Conn_)
+			return;
+
+		auto notifier = qobject_cast<QSocketNotifier*> (sender ());
+		if (!notifier)
+			return;
+
+		auto c = Conn_->connectionWithSocket (reinterpret_cast<void*> (socket));
+		if (!c)
+			return;
+
+		if (notifier->type () == QSocketNotifier::Read)
+			c->dataArrivedOnSocket ();
+		else if (notifier->type () == QSocketNotifier::Write)
+			c->socketIsWritable ();
 	}
 }
 }
