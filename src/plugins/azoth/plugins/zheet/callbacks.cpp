@@ -18,6 +18,8 @@
 
 #include "callbacks.h"
 #include <QSslSocket>
+#include <util/util.h>
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -25,17 +27,22 @@ namespace Azoth
 {
 namespace Zheet
 {
+	Callbacks::Callbacks (QObject *parent)
+	: QObject (parent)
+	{
+	}
+
+	void Callbacks::SetNotificationServerConnection (MSN::NotificationServerConnection *conn)
+	{
+		Conn_ = conn;
+	}
+
 	namespace
 	{
 		int Sock2Num (void *sock)
 		{
 			return reinterpret_cast<long> (sock);
 		}
-	}
-
-	void Callbacks::SetNotificationServerConnection (MSN::NotificationServerConnection *conn)
-	{
-		Conn_ = conn;
 	}
 
 	void Callbacks::registerSocket (void *sock, int read, int write, bool)
@@ -67,6 +74,87 @@ namespace Zheet
 	{
 		Sockets_ [sock]->close ();
 		delete Sockets_.take (sock);
+	}
+
+	void Callbacks::showError (MSN::Connection *conn, std::string msg)
+	{
+		auto name = conn->myNotificationServer ()->myDisplayName;
+
+		const QString& str = tr ("Error for MSN account %1: %2.")
+				.arg (QString::fromUtf8 (name.c_str ()))
+				.arg (QString::fromUtf8 (msg.c_str ()));
+		const Entity& e = Util::MakeNotification ("MSN Error", str, PWarning_);
+		Core::Instance ().SendEntity (e);
+	}
+
+	void Callbacks::buddyChangedStatus (MSN::NotificationServerConnection *conn, MSN::Passport buddy,
+			std::string friendlyname, MSN::BuddyStatus state, unsigned int clientID, std::string msnobject)
+	{
+
+	}
+
+	void Callbacks::buddyOffline (MSN::NotificationServerConnection *conn, MSN::Passport buddy)
+	{
+
+	}
+
+	void Callbacks::log (int writing, const char *buf)
+	{
+		qDebug () << "[MSN]" << (writing ? "->" : "<-") << buf;
+	}
+
+	void Callbacks::gotFriendlyName (MSN::NotificationServerConnection *conn, std::string friendlyname)
+	{
+	}
+
+	void Callbacks::gotBuddyListInfo (MSN::NotificationServerConnection *conn, MSN::ListSyncInfo *data)
+	{
+
+	}
+
+	void Callbacks::buddyChangedPersonalInfo (MSN::NotificationServerConnection *conn, MSN::Passport fromPassport, MSN::personalInfo pInfo)
+	{
+
+	}
+
+	void Callbacks::gotLatestListSerial (MSN::NotificationServerConnection *conn, std::string lastChange)
+	{
+
+	}
+
+	void Callbacks::gotGTC (MSN::NotificationServerConnection *conn, char c)
+	{
+
+	}
+
+	void Callbacks::gotBLP (MSN::NotificationServerConnection *conn, char c)
+	{
+
+	}
+
+	void Callbacks::addedListEntry (MSN::NotificationServerConnection *conn, MSN::ContactList list, MSN::Passport buddy, std::string friendlyname)
+	{
+
+	}
+
+	void Callbacks::removedListEntry (MSN::NotificationServerConnection *conn, MSN::ContactList list, MSN::Passport buddy)
+	{
+
+	}
+
+	void Callbacks::addedGroup (MSN::NotificationServerConnection *conn, bool added, std::string groupName, std::string groupId)
+	{
+
+	}
+
+	void Callbacks::removedGroup (MSN::NotificationServerConnection *conn, bool removed, std::string groupId)
+	{
+
+	}
+
+	void Callbacks::renamedGroup (MSN::NotificationServerConnection *conn, bool renamed, std::string newGroupName, std::string groupId)
+	{
+
 	}
 
 	void Callbacks::handleSocketActivated (int socket)

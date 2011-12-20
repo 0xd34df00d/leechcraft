@@ -46,11 +46,29 @@ namespace Zheet
 
 		MSN::NotificationServerConnection *Conn_;
 	public:
+		Callbacks (QObject* = 0);
+
 		void SetNotificationServerConnection (MSN::NotificationServerConnection*);
 
 		void registerSocket (void *sock, int read, int write, bool isSSL);
 		void unregisterSocket (void *sock);
 		void closeSocket (void *sock);
+		void showError (MSN::Connection *conn, std::string msg);
+		void buddyChangedStatus (MSN::NotificationServerConnection *conn, MSN::Passport buddy,
+				std::string friendlyname, MSN::BuddyStatus state, unsigned int clientID, std::string msnobject);
+		void buddyOffline (MSN::NotificationServerConnection *conn, MSN::Passport buddy);
+		void log (int writing, const char *buf);
+		void gotFriendlyName (MSN::NotificationServerConnection *conn, std::string friendlyname);
+		void gotBuddyListInfo (MSN::NotificationServerConnection *conn, MSN::ListSyncInfo *data);
+		void buddyChangedPersonalInfo (MSN::NotificationServerConnection *conn, MSN::Passport fromPassport, MSN::personalInfo pInfo);
+		void gotLatestListSerial (MSN::NotificationServerConnection *conn, std::string lastChange);
+		void gotGTC (MSN::NotificationServerConnection *conn, char c);
+		void gotBLP (MSN::NotificationServerConnection *conn, char c);
+		void addedListEntry (MSN::NotificationServerConnection *conn, MSN::ContactList list, MSN::Passport buddy, std::string friendlyname);
+		void removedListEntry (MSN::NotificationServerConnection *conn, MSN::ContactList list, MSN::Passport buddy);
+		void addedGroup (MSN::NotificationServerConnection *conn, bool added, std::string groupName, std::string groupId);
+		void removedGroup (MSN::NotificationServerConnection *conn, bool removed, std::string groupId);
+		void renamedGroup (MSN::NotificationServerConnection *conn, bool renamed, std::string newGroupName, std::string groupId);
 		void* connectToServer (std::string server, int port, bool *connected, bool isSSL = false);
 		int getSocketFileDescriptor (void *sock);
 		size_t getDataFromSocket (void *sock, char *data, size_t size);

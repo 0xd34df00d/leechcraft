@@ -19,6 +19,7 @@ SET (ZHEET_SRCS
 	zheet.cpp
 	core.cpp
 	msnprotocol.cpp
+	msnaccount.cpp
 	callbacks.cpp
 	)
 
@@ -26,6 +27,7 @@ SET (ZHEET_HEADERS
 	zheet.h
 	core.h
 	msnprotocol.h
+	msnaccount.h
 	callbacks.h
 	)
 

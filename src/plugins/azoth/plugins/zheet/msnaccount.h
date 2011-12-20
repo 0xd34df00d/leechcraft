@@ -16,35 +16,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ZHEET_CORE_H
-#define PLUGINS_AZOTH_PLUGINS_ZHEET_CORE_H
+#ifndef PLUGINS_AZOTH_PLUGINS_ZHEET_MSNACCOUNT_H
+#define PLUGINS_AZOTH_PLUGINS_ZHEET_MSNACCOUNT_H
 #include <QObject>
+#include <interfaces/iaccount.h>
+
+namespace MSN
+{
+	class NotificationServerConnection;
+}
 
 namespace LeechCraft
 {
-struct Entity;
-
 namespace Azoth
 {
 namespace Zheet
 {
 	class MSNProtocol;
+	class Callbacks;
 
-	class Core : public QObject
+	class MSNAccount : public QObject
+					 , public IAccount
 	{
-		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Azoth::IAccount);
 
-		MSNProtocol *Protocol_;
+		MSNProtocol *Proto_;
 
-		Core ();
+		Callbacks *CB_;
+		MSN::NotificationServerConnection *Conn_;
 	public:
-		static Core& Instance ();
-
-		void SendEntity (const Entity&);
-
-		MSNProtocol* GetProtocol () const;
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
+		MSNAccount (MSNProtocol* = 0);
 	};
 }
 }

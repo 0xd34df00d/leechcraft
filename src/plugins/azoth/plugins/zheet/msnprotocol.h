@@ -31,6 +31,7 @@ namespace Zheet
 					  , public IProtocol
 	{
 		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Azoth::IProtocol);
 	public:
 		MSNProtocol (QObject* = 0);
 

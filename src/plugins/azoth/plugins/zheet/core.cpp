@@ -35,6 +35,16 @@ namespace Zheet
 		static Core c;
 		return c;
 	}
+
+	void Core::SendEntity (const Entity& e)
+	{
+		emit gotEntity (e);
+	}
+
+	MSNProtocol* Core::GetProtocol () const
+	{
+		return Protocol_;
+	}
 }
 }
 }
