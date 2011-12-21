@@ -71,7 +71,12 @@ namespace Zheet
 	, Port_ (1863)
 	, CB_ (new Callbacks (this))
 	, Conn_ (0)
+	, Connecting_ (false)
 	{
+		connect (CB_,
+				SIGNAL (finishedConnecting ()),
+				this,
+				SLOT (handleConnected ()));
 	}
 
 	void MSNAccount::Init ()
@@ -209,7 +214,11 @@ namespace Zheet
 			Conn_->disconnect ();
 		else if (!Conn_->isConnected ())
 		{
-			Conn_->connect (ZheetUtil::ToStd (Server_), Port_);
+			if (!Connecting_)
+			{
+				Conn_->connect (ZheetUtil::ToStd (Server_), Port_);
+				Connecting_ = true;
+			}
 			PendingStatus_ = status;
 		}
 		else
@@ -255,6 +264,12 @@ namespace Zheet
 	QObject* MSNAccount::GetTransferManager () const
 	{
 		return 0;
+	}
+
+	void MSNAccount::handleConnected ()
+	{
+		Connecting_ = false;
+		ChangeState (PendingStatus_);
 	}
 }
 }

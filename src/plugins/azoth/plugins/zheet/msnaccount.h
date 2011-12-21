@@ -55,6 +55,7 @@ namespace Zheet
 		MSN::NotificationServerConnection *Conn_;
 
 		EntryStatus PendingStatus_;
+		bool Connecting_;
 	public:
 		MSNAccount (const QString&, MSNProtocol* = 0);
 		void Init ();
@@ -84,6 +85,8 @@ namespace Zheet
 		void RequestAuth (const QString&, const QString&, const QString&, const QStringList&);
 		void RemoveEntry (QObject*);
 		QObject* GetTransferManager () const;
+	private slots:
+		void handleConnected ();
 	signals:
 		void gotCLItems (const QList<QObject*>&);
 		void removedCLItems (const QList<QObject*>&);

@@ -130,6 +130,8 @@ namespace Zheet
 		void handleSocketRead ();
 		void handleSocketWrite ();
 		void handleSocketConnected ();
+	signals:
+		void finishedConnecting ();
 	};
 }
 }

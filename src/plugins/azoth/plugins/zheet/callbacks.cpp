@@ -113,6 +113,8 @@ namespace Zheet
 					{ allContacts [pair.first] = pair.second->lists & (MSN::LST_AB | MSN::LST_AL | MSN::LST_BL); });
 
 		conn->completeConnection (allContacts, data);
+
+		emit finishedConnecting ();
 	}
 
 	void Callbacks::buddyChangedPersonalInfo (MSN::NotificationServerConnection *conn, MSN::Passport fromPassport, MSN::personalInfo pInfo)
@@ -302,7 +304,10 @@ namespace Zheet
 
 	void Callbacks::gotNewConnection (MSN::Connection *conn)
 	{
-
+		auto nsc = dynamic_cast<MSN::NotificationServerConnection*> (conn);
+		qDebug () << Q_FUNC_INFO << nsc;
+		if (nsc)
+			nsc->synchronizeContactList ();
 	}
 
 	void Callbacks::gotOIMList (MSN::NotificationServerConnection *conn, std::vector<MSN::eachOIM> OIMs)
@@ -424,18 +429,30 @@ namespace Zheet
 
 	void Callbacks::handleSocketRead ()
 	{
-		Conn_->dataArrivedOnSocket ();
+		auto c = Conn_->connectionWithSocket (sender ());
+		if (!c)
+			return;
+
+		c->dataArrivedOnSocket ();
 	}
 
 	void Callbacks::handleSocketWrite ()
 	{
-		Conn_->socketIsWritable ();
+		auto c = Conn_->connectionWithSocket (sender ());
+		if (!c)
+			return;
+
+		c->socketIsWritable ();
 	}
 
 	void Callbacks::handleSocketConnected ()
 	{
 		qDebug () << Q_FUNC_INFO << qobject_cast<QAbstractSocket*> (sender ())->socketDescriptor ();
-		Conn_->socketConnectionCompleted ();
+		auto c = Conn_->connectionWithSocket (sender ());
+		if (!c)
+			return;
+
+		c->socketConnectionCompleted ();
 	}
 }
 }
