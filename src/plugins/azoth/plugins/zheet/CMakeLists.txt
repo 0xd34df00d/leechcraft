@@ -21,17 +21,18 @@ SET (ZHEET_SRCS
 	msnprotocol.cpp
 	msnaccount.cpp
 	callbacks.cpp
+	msnaccountconfigwidget.cpp
 	)
-
 SET (ZHEET_HEADERS
 	zheet.h
 	core.h
 	msnprotocol.h
 	msnaccount.h
 	callbacks.h
+	msnaccountconfigwidget.h
 	)
-
 SET (ZHEET_FORMS
+	msnaccountconfigwidget.ui
 	)
 #SET (ZHEET_RESOURCES azothzheetresources.qrc)
 #CreateTrVars ("azoth_zheet" "de;en;fr;it;ru_RU;uk_UA" ZHEET_TRANSLATIONS ZHEET_COMPILED_TRANSLATIONS)
@@ -39,7 +40,7 @@ SET (ZHEET_FORMS
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (ZHEET_MOC_SRCS ${ZHEET_HEADERS})
 ENDIF (NOT LC_NO_MOC)
-#QT4_WRAP_UI (ZHEET_UIS_H ${ZHEET_FORMS})
+QT4_WRAP_UI (ZHEET_UIS_H ${ZHEET_FORMS})
 #QT4_ADD_RESOURCES (ZHEET_RCCS ${ZHEET_RESOURCES})
 
 #ADD_CUSTOM_COMMAND (OUTPUT
