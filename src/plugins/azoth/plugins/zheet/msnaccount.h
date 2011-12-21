@@ -35,10 +35,12 @@ namespace Zheet
 {
 	class MSNProtocol;
 	class Callbacks;
+	class MSNAccountConfigWidget;
 
 	class MSNAccount : public QObject
 					 , public IAccount
 	{
+		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IAccount);
 
 		MSNProtocol *Proto_;
@@ -57,6 +59,8 @@ namespace Zheet
 
 		QByteArray Serialize () const;
 		static MSNAccount* Deserialize (const QByteArray&, MSNProtocol*);
+
+		void FillConfig (MSNAccountConfigWidget*);
 
 		// IAccount
 		QObject* GetObject ();

@@ -18,9 +18,12 @@
 
 #include "msnaccount.h"
 #include <msn/notificationserver.h>
+#include <util/util.h>
+#include <interfaces/iproxyobject.h>
 #include "msnprotocol.h"
 #include "callbacks.h"
-#include <util/util.h>
+#include "core.h"
+#include "msnaccountconfigwidget.h"
 
 namespace LeechCraft
 {
@@ -54,7 +57,7 @@ namespace Zheet
 
 	void MSNAccount::Init ()
 	{
-		const QString& pass = QString ();
+		const QString& pass = Core::Instance ().GetPluginProxy ()->GetAccountPassword (this);
 		Conn_ = new MSN::NotificationServerConnection (Passport_,
 				pass.toUtf8 ().constData (), *CB_);
 	}
@@ -103,6 +106,15 @@ namespace Zheet
 		result->Init ();
 
 		return result;
+	}
+
+	void MSNAccount::FillConfig (MSNAccountConfigWidget *w)
+	{
+		Passport_ = ZheetUtil::ToStd (w->GetID ());
+
+		const QString& pass = w->GetPassword ();
+		if (!pass.isEmpty ())
+			Core::Instance ().GetPluginProxy ()->SetPassword (pass, this);
 	}
 
 	QObject* MSNAccount::GetObject ()
@@ -163,7 +175,7 @@ namespace Zheet
 		return EntryStatus ();
 	}
 
-	void MSNAccount::ChangeState (const EntryStatus&)
+	void MSNAccount::ChangeState (const EntryStatus& status)
 	{
 	}
 

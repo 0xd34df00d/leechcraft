@@ -18,6 +18,9 @@
 
 #include "msnprotocol.h"
 #include <QIcon>
+#include <QtDebug>
+#include "msnaccountconfigwidget.h"
+#include "msnaccount.h"
 
 namespace LeechCraft
 {
@@ -67,12 +70,29 @@ namespace Zheet
 
 	QList<QWidget*> MSNProtocol::GetAccountRegistrationWidgets (IProtocol::AccountAddOptions)
 	{
-		return QList<QWidget*> ();
+		return QList<QWidget*> () << new MSNAccountConfigWidget ();
 	}
 
-	void MSNProtocol::RegisterAccount (const QString&, const QList<QWidget*>&)
+	void MSNProtocol::RegisterAccount (const QString& name, const QList<QWidget*>& widgets)
 	{
+		auto w = qobject_cast<MSNAccountConfigWidget*> (widgets.value (0));
+		if (!w)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "wrong first widget"
+					<< widgets;
+			return;
+		}
 
+		MSNAccount *acc = new MSNAccount (name, this);
+		acc->FillConfig (w);
+		acc->Init ();
+
+		Accounts_ << acc;
+
+		emit accountAdded (acc);
+
+		saveAccounts ();
 	}
 
 	QWidget* MSNProtocol::GetMUCJoinWidget ()
@@ -81,6 +101,10 @@ namespace Zheet
 	}
 
 	void MSNProtocol::RemoveAccount (QObject*)
+	{
+	}
+
+	void MSNProtocol::saveAccounts ()
 	{
 	}
 }

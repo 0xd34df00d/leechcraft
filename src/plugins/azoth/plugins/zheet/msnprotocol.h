@@ -27,11 +27,15 @@ namespace Azoth
 {
 namespace Zheet
 {
+	class MSNAccount;
+
 	class MSNProtocol : public QObject
 					  , public IProtocol
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IProtocol);
+
+		QList<MSNAccount*> Accounts_;
 	public:
 		MSNProtocol (QObject* = 0);
 
@@ -46,6 +50,8 @@ namespace Zheet
 		void RegisterAccount (const QString&, const QList<QWidget*>&);
 		QWidget* GetMUCJoinWidget ();
 		void RemoveAccount (QObject*);
+	private slots:
+		void saveAccounts ();
 	signals:
 		void accountAdded (QObject*);
 		void accountRemoved (QObject*);
