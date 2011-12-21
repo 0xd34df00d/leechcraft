@@ -26,6 +26,8 @@ struct Entity;
 
 namespace Azoth
 {
+class IProxyObject;
+
 namespace Zheet
 {
 	class MSNProtocol;
@@ -35,14 +37,18 @@ namespace Zheet
 		Q_OBJECT
 
 		MSNProtocol *Protocol_;
+		IProxyObject *ProxyObject_;
 
 		Core ();
 	public:
 		static Core& Instance ();
 
-		void SendEntity (const Entity&);
+		void SetPluginProxy (QObject*);
+		IProxyObject* GetPluginProxy () const;
 
 		MSNProtocol* GetProtocol () const;
+
+		void SendEntity (const Entity&);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 	};

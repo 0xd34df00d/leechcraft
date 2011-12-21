@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "core.h"
+#include <interfaces/iproxyobject.h>
 #include "msnprotocol.h"
 
 namespace LeechCraft
@@ -27,6 +28,7 @@ namespace Zheet
 {
 	Core::Core ()
 	: Protocol_ (new MSNProtocol)
+	, ProxyObject_ (0)
 	{
 	}
 
@@ -36,14 +38,24 @@ namespace Zheet
 		return c;
 	}
 
-	void Core::SendEntity (const Entity& e)
+	void Core::SetPluginProxy (QObject *obj)
 	{
-		emit gotEntity (e);
+		ProxyObject_ = qobject_cast<IProxyObject*> (obj);
+	}
+
+	IProxyObject* Core::GetPluginProxy() const
+	{
+		return ProxyObject_;
 	}
 
 	MSNProtocol* Core::GetProtocol () const
 	{
 		return Protocol_;
+	}
+
+	void Core::SendEntity (const Entity& e)
+	{
+		emit gotEntity (e);
 	}
 }
 }

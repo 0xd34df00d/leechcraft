@@ -85,6 +85,7 @@ namespace Zheet
 
 	void Plugin::initPlugin (QObject *proxy)
 	{
+		Core::Instance ().SetPluginProxy (proxy);
 	}
 }
 }
