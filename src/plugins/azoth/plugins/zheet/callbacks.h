@@ -18,17 +18,13 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_ZHEET_CALLBACKS_H
 #define PLUGINS_AZOTH_PLUGINS_ZHEET_CALLBACKS_H
-#include <memory>
 #include <QObject>
 #include <QHash>
 #include <QSet>
 #include <QMap>
-#include <QSocketNotifier>
 #include <msn/connection.h>
 #include <msn/notificationserver.h>
 #include <msn/externals.h>
-
-typedef std::shared_ptr<QSocketNotifier> QSocketNotifier_ptr;
 
 class QTcpSocket;
 
@@ -41,7 +37,8 @@ namespace Zheet
 	class Callbacks : public QObject
 					, public MSN::Callbacks
 	{
-		QHash<void*, QMap<QSocketNotifier::Type, QSocketNotifier_ptr>> Notifiers_;
+		Q_OBJECT
+
 		QHash<void*, QTcpSocket*> Sockets_;
 
 		MSN::NotificationServerConnection *Conn_;
@@ -130,7 +127,9 @@ namespace Zheet
 
 		void gotInboxUrl (MSN::NotificationServerConnection*, MSN::hotmailInfo);
 	private slots:
-		void handleSocketActivated (int);
+		void handleSocketRead ();
+		void handleSocketWrite ();
+		void handleSocketConnected ();
 	};
 }
 }

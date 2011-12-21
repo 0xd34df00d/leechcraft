@@ -42,6 +42,25 @@ namespace Zheet
 		{
 			return QString::fromUtf8 (str.c_str ());
 		}
+
+		MSN::BuddyStatus ToMSNState (State st)
+		{
+			switch (st)
+			{
+			case SOnline:
+			case SChat:
+				return MSN::STATUS_AVAILABLE;
+			case SAway:
+				return MSN::STATUS_AWAY;
+			case SXA:
+				return MSN::STATUS_IDLE;
+			case SDND:
+				return MSN::STATUS_BUSY;
+			case SInvisible:
+			default:
+				return MSN::STATUS_INVISIBLE;
+			}
+		}
 	}
 
 	MSNAccount::MSNAccount (const QString& name, MSNProtocol *parent)
@@ -60,6 +79,7 @@ namespace Zheet
 		const QString& pass = Core::Instance ().GetPluginProxy ()->GetAccountPassword (this);
 		Conn_ = new MSN::NotificationServerConnection (Passport_,
 				pass.toUtf8 ().constData (), *CB_);
+		CB_->SetNotificationServerConnection (Conn_);
 	}
 
 	QByteArray MSNAccount::Serialize () const
@@ -178,6 +198,38 @@ namespace Zheet
 
 	void MSNAccount::ChangeState (const EntryStatus& status)
 	{
+		if (!Conn_)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "null Conn_";
+			return;
+		}
+
+		if (status.State_ == SOffline)
+			Conn_->disconnect ();
+		else if (!Conn_->isConnected ())
+		{
+			Conn_->connect (ZheetUtil::ToStd (Server_), Port_);
+			PendingStatus_ = status;
+		}
+		else
+		{
+			uint cid = 0;
+			cid += MSN::MSNC1;
+			cid += MSN::MSNC2;
+			cid += MSN::MSNC3;
+			cid += MSN::MSNC4;
+			cid += MSN::MSNC5;
+			cid += MSN::MSNC6;
+			cid += MSN::MSNC7;
+			cid += MSN::SupportMultiPacketMessaging;
+
+			Conn_->setState (ZheetUtil::ToMSNState (status.State_), cid);
+
+			MSN::personalInfo info;
+			info.PSM = ZheetUtil::ToStd (status.StatusString_);
+			Conn_->setPersonalStatus (info);
+		}
 	}
 
 	void MSNAccount::Synchronize ()

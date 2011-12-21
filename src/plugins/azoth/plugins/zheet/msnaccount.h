@@ -53,6 +53,8 @@ namespace Zheet
 
 		Callbacks *CB_;
 		MSN::NotificationServerConnection *Conn_;
+
+		EntryStatus PendingStatus_;
 	public:
 		MSNAccount (const QString&, MSNProtocol* = 0);
 		void Init ();

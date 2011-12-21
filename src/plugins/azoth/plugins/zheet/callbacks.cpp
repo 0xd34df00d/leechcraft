@@ -38,37 +38,31 @@ namespace Zheet
 		Conn_ = conn;
 	}
 
-	namespace
-	{
-		int Sock2Num (void *sock)
-		{
-			return reinterpret_cast<long> (sock);
-		}
-	}
-
 	void Callbacks::registerSocket (void *sock, int read, int write, bool)
 	{
-		int num = Sock2Num (sock);
-
-		auto create = [&] (QSocketNotifier::Type t)
-			{
-				auto s = new QSocketNotifier (num, t);
-				Notifiers_ [sock] [t].reset (s);
-				connect (s,
-						SIGNAL (activated (int)),
-						this,
-						SLOT (handleSocketActivated (int)));
-			};
-
+		auto sockObj = Sockets_ [sock];
 		if (read)
-			create (QSocketNotifier::Read);
+			connect (sockObj,
+					SIGNAL (readyRead ()),
+					this,
+					SLOT (handleSocketRead ()));
 		if (write)
-			create (QSocketNotifier::Write);
+			connect (sockObj,
+					SIGNAL (bytesWritten (qint64)),
+					this,
+					SLOT (handleSocketWrite ()));
 	}
 
 	void Callbacks::unregisterSocket (void *sock)
 	{
-		Notifiers_.remove (sock);
+		disconnect (Sockets_ [sock],
+				0,
+				this,
+				SLOT (handleSocketRead ()));
+		disconnect (Sockets_ [sock],
+				0,
+				this,
+				SLOT (handleSocketWrite ()));
 	}
 
 	void Callbacks::closeSocket (void *sock)
@@ -110,7 +104,15 @@ namespace Zheet
 
 	void Callbacks::gotBuddyListInfo (MSN::NotificationServerConnection *conn, MSN::ListSyncInfo *data)
 	{
+		qDebug () << Q_FUNC_INFO;
 
+		std::map<std::string, int> allContacts;
+
+		std::for_each (data->contactList.begin (), data->contactList.end (),
+				[&allContacts] (const std::pair<std::string, MSN::Buddy*>& pair)
+					{ allContacts [pair.first] = pair.second->lists & (MSN::LST_AB | MSN::LST_AL | MSN::LST_BL); });
+
+		conn->completeConnection (allContacts, data);
 	}
 
 	void Callbacks::buddyChangedPersonalInfo (MSN::NotificationServerConnection *conn, MSN::Passport fromPassport, MSN::personalInfo pInfo)
@@ -345,6 +347,8 @@ namespace Zheet
 
 	void* Callbacks::connectToServer (std::string server, int port, bool *connected, bool isSSL)
 	{
+		const QString& servStr = QString::fromUtf8 (server.c_str ());
+		qDebug () << Q_FUNC_INFO << servStr << port << isSSL;
 		QTcpSocket *sock = 0;
 		if (isSSL)
 		{
@@ -353,20 +357,24 @@ namespace Zheet
 					SIGNAL (sslErrors (QList<QSslError>)),
 					ssl,
 					SLOT (ignoreSslErrors ()));
-			ssl->connectToHostEncrypted (QString::fromUtf8 (server.c_str ()), port);
+			ssl->connectToHostEncrypted (servStr, port);
 			sock = ssl;
 		}
 		else
 		{
 			sock = new QTcpSocket (this);
-			sock->connectToHost (QString::fromUtf8 (server.c_str ()), port);
+			sock->connectToHost (servStr, port);
 		}
 
-		*connected = true;
+		connect (sock,
+				SIGNAL (connected ()),
+				this,
+				SLOT (handleSocketConnected ()));
 
-		void *res = reinterpret_cast<void*> (sock->socketDescriptor ());
-		Sockets_ [res] = sock;
-		return res;
+		*connected = false;
+
+		Sockets_ [sock] = sock;
+		return sock;
 	}
 
 	void Callbacks::askFileTransfer (MSN::SwitchboardServerConnection *conn, MSN::fileTransferInvite ft)
@@ -394,7 +402,7 @@ namespace Zheet
 
 	int Callbacks::getSocketFileDescriptor (void *sock)
 	{
-		return Sock2Num (sock);
+		return Sockets_ [sock]->socketDescriptor ();
 	}
 
 	size_t Callbacks::getDataFromSocket (void *sock, char *data, size_t size)
@@ -404,7 +412,9 @@ namespace Zheet
 
 	size_t Callbacks::writeDataToSocket (void *sock, char *data, size_t size)
 	{
-		return Sockets_ [sock]->write (data, size);
+		auto res = Sockets_ [sock]->write (data, size);
+		Sockets_ [sock]->flush ();
+		return res;
 	}
 
 	void Callbacks::gotInboxUrl (MSN::NotificationServerConnection*, MSN::hotmailInfo)
@@ -412,23 +422,20 @@ namespace Zheet
 		// TODO
 	}
 
-	void Callbacks::handleSocketActivated (int socket)
+	void Callbacks::handleSocketRead ()
 	{
-		if (!Conn_)
-			return;
+		Conn_->dataArrivedOnSocket ();
+	}
 
-		auto notifier = qobject_cast<QSocketNotifier*> (sender ());
-		if (!notifier)
-			return;
+	void Callbacks::handleSocketWrite ()
+	{
+		Conn_->socketIsWritable ();
+	}
 
-		auto c = Conn_->connectionWithSocket (reinterpret_cast<void*> (socket));
-		if (!c)
-			return;
-
-		if (notifier->type () == QSocketNotifier::Read)
-			c->dataArrivedOnSocket ();
-		else if (notifier->type () == QSocketNotifier::Write)
-			c->socketIsWritable ();
+	void Callbacks::handleSocketConnected ()
+	{
+		qDebug () << Q_FUNC_INFO << qobject_cast<QAbstractSocket*> (sender ())->socketDescriptor ();
+		Conn_->socketConnectionCompleted ();
 	}
 }
 }
