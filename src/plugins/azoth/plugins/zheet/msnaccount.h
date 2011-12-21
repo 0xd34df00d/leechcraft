@@ -20,6 +20,7 @@
 #define PLUGINS_AZOTH_PLUGINS_ZHEET_MSNACCOUNT_H
 #include <QObject>
 #include <interfaces/iaccount.h>
+#include <msn/passport.h>
 
 namespace MSN
 {
@@ -42,10 +43,53 @@ namespace Zheet
 
 		MSNProtocol *Proto_;
 
+		QString Name_;
+
+		MSN::Passport Passport_;
+		QString Server_;
+		int Port_;
+
 		Callbacks *CB_;
 		MSN::NotificationServerConnection *Conn_;
 	public:
-		MSNAccount (MSNProtocol* = 0);
+		MSNAccount (const QString&, MSNProtocol* = 0);
+		void Init ();
+
+		QByteArray Serialize () const;
+		static MSNAccount* Deserialize (const QByteArray&, MSNProtocol*);
+
+		// IAccount
+		QObject* GetObject ();
+		QObject* GetParentProtocol () const;
+		AccountFeatures GetAccountFeatures () const;
+		QList<QObject*> GetCLEntries ();
+		QString GetAccountName () const;
+		QString GetOurNick () const;
+		void RenameAccount (const QString& name);
+		QByteArray GetAccountID () const;
+		QList<QAction*> GetActions () const;
+		void QueryInfo (const QString&);
+		void OpenConfigurationDialog ();
+		EntryStatus GetState () const;
+		void ChangeState (const EntryStatus&);
+		void Synchronize ();
+		void Authorize (QObject*);
+		void DenyAuth (QObject*);
+		void RequestAuth (const QString&, const QString&, const QString&, const QStringList&);
+		void RemoveEntry (QObject*);
+		QObject* GetTransferManager () const;
+	signals:
+		void gotCLItems (const QList<QObject*>&);
+		void removedCLItems (const QList<QObject*>&);
+		void authorizationRequested (QObject*, const QString&);
+		void itemSubscribed (QObject*, const QString&);
+		void itemUnsubscribed (QObject*, const QString&);
+		void itemUnsubscribed (const QString&, const QString&);
+		void itemCancelledSubscription (QObject*, const QString&);
+		void itemGrantedSubscription (QObject*, const QString&);
+		void statusChanged (const EntryStatus&);
+		void mucInvitationReceived (const QVariantMap&,
+				const QString&, const QString&);
 	};
 }
 }
