@@ -94,6 +94,8 @@ namespace Zheet
 		void statusChanged (const EntryStatus&);
 		void mucInvitationReceived (const QVariantMap&,
 				const QString&, const QString&);
+
+		void accountSettingsChanged ();
 	};
 }
 }

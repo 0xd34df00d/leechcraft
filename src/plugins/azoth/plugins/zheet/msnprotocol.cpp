@@ -18,6 +18,7 @@
 
 #include "msnprotocol.h"
 #include <QIcon>
+#include <QSettings>
 #include <QtDebug>
 #include "msnaccountconfigwidget.h"
 #include "msnaccount.h"
@@ -28,9 +29,14 @@ namespace Azoth
 {
 namespace Zheet
 {
-	MSNProtocol::MSNProtocol (QObject*)
-	: QObject ()
+	MSNProtocol::MSNProtocol (QObject *parent)
+	: QObject (parent)
 	{
+	}
+
+	void MSNProtocol::Init ()
+	{
+		RestoreAccounts ();
 	}
 
 	QObject* MSNProtocol::GetObject ()
@@ -104,8 +110,51 @@ namespace Zheet
 	{
 	}
 
+	void MSNProtocol::RestoreAccounts ()
+	{
+		QSettings settings (QSettings::IniFormat, QSettings::UserScope,
+				QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth_Zheet_Accounts");
+		int size = settings.beginReadArray ("Accounts");
+		for (int i = 0; i < size; ++i)
+		{
+			settings.setArrayIndex (i);
+			const QByteArray& data = settings.value ("SerializedData").toByteArray ();
+			MSNAccount *acc = MSNAccount::Deserialize (data, this);
+			if (!acc)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unserializable acount"
+						<< i;
+				continue;
+			}
+
+			connect (acc,
+					SIGNAL (accountSettingsChanged ()),
+					this,
+					SLOT (saveAccounts ()));
+
+			Accounts_ << acc;
+
+			emit accountAdded (acc);
+		}
+		settings.endArray ();
+	}
+
 	void MSNProtocol::saveAccounts ()
 	{
+		QSettings settings (QSettings::IniFormat, QSettings::UserScope,
+				QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth_Zheet_Accounts");
+		settings.beginWriteArray ("Accounts");
+		for (int i = 0, size = Accounts_.size ();
+				i < size; ++i)
+		{
+			settings.setArrayIndex (i);
+			settings.setValue ("SerializedData", Accounts_.at (i)->Serialize ());
+		}
+		settings.endArray ();
+		settings.sync ();
 	}
 }
 }

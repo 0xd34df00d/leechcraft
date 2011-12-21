@@ -39,6 +39,8 @@ namespace Zheet
 	public:
 		MSNProtocol (QObject* = 0);
 
+		void Init ();
+
 		QObject* GetObject ();
 		ProtocolFeatures GetFeatures () const;
 		QList<QObject*> GetRegisteredAccounts ();
@@ -50,6 +52,8 @@ namespace Zheet
 		void RegisterAccount (const QString&, const QList<QWidget*>&);
 		QWidget* GetMUCJoinWidget ();
 		void RemoveAccount (QObject*);
+	private:
+		void RestoreAccounts ();
 	private slots:
 		void saveAccounts ();
 	signals:

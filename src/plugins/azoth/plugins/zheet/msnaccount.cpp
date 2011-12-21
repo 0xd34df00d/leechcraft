@@ -70,6 +70,7 @@ namespace Zheet
 		{
 			QDataStream ostr (&result, QIODevice::WriteOnly);
 			ostr << version
+				<< Name_
 				<< ZheetUtil::FromStd (Passport_)
 				<< Server_
 				<< Port_;

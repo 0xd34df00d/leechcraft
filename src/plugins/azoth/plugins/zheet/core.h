@@ -42,6 +42,7 @@ namespace Zheet
 		Core ();
 	public:
 		static Core& Instance ();
+		void SecondInit ();
 
 		void SetPluginProxy (QObject*);
 		IProxyObject* GetPluginProxy () const;

@@ -30,16 +30,16 @@ namespace Zheet
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Core::Instance ().GetProtocol ()->setParent (this);
-
 		connect (&Core::Instance (),
 				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,
 				SIGNAL (gotEntity (LeechCraft::Entity)));
+		Core::Instance ().GetProtocol ()->setParent (this);
 	}
 
 	void Plugin::SecondInit ()
 	{
+		Core::Instance ().SecondInit ();
 	}
 
 	void Plugin::Release ()

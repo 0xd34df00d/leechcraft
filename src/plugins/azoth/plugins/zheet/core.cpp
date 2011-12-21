@@ -38,6 +38,11 @@ namespace Zheet
 		return c;
 	}
 
+	void Core::SecondInit ()
+	{
+		Protocol_->Init ();
+	}
+
 	void Core::SetPluginProxy (QObject *obj)
 	{
 		ProxyObject_ = qobject_cast<IProxyObject*> (obj);
