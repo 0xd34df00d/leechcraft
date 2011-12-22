@@ -84,8 +84,7 @@ namespace LeechCraft
 
 		boost::program_options::options_description desc;
 		boost::program_options::command_line_parser parser (strings);
-		auto map = qobject_cast<Application*> (qApp)->Parse (parser, &desc);
-		DoLine (map);
+		DoLine (qobject_cast<Application*> (qApp)->Parse (parser, &desc));
 	}
 
 	void LocalSocketHandler::pullCommandLine ()
