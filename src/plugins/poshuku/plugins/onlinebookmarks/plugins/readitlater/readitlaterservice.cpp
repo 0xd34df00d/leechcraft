@@ -110,13 +110,16 @@ namespace ReadItLater
 		if (!account)
 		{
 			qWarning () << Q_FUNC_INFO
-			<< "isn't an IAccount object"
-			<< accObj;
+					<< "isn't an IAccount object"
+					<< accObj;
 			return;
 		}
 
 		QByteArray uploadBookmarks = ReadItLaterApi_->GetUploadPayload (account->GetLogin(),
 				account->GetPassword (), bookmarks);
+
+		if (uploadBookmarks.isEmpty ())
+			return;
 
 		Request req;
 		req.Type_ = OTUpload;
