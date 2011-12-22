@@ -77,7 +77,10 @@ namespace Zheet
 
 	QString MSNBuddyEntry::GetEntryName () const
 	{
-		return ZheetUtil::FromStd (Buddy_.friendlyName);
+		QString res = ZheetUtil::FromStd (Buddy_.friendlyName);
+		if (res.isEmpty ())
+			res = GetHumanReadableID ();
+		return res;
 	}
 
 	void MSNBuddyEntry::SetEntryName (const QString&)
