@@ -23,6 +23,7 @@ SET (ZHEET_SRCS
 	callbacks.cpp
 	zheetutil.cpp
 	msnaccountconfigwidget.cpp
+	msnbuddyentry.cpp
 	)
 SET (ZHEET_HEADERS
 	zheet.h
@@ -32,6 +33,7 @@ SET (ZHEET_HEADERS
 	callbacks.h
 	zheetutil.h
 	msnaccountconfigwidget.h
+	msnbuddyentry.h
 	)
 SET (ZHEET_FORMS
 	msnaccountconfigwidget.ui
