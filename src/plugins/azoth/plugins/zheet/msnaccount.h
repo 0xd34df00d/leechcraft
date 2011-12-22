@@ -48,7 +48,6 @@ namespace Zheet
 		MSNProtocol *Proto_;
 
 		QString Name_;
-
 		MSN::Passport Passport_;
 		QString Server_;
 		int Port_;
@@ -58,8 +57,9 @@ namespace Zheet
 
 		EntryStatus PendingStatus_;
 		bool Connecting_;
+		EntryStatus CurrentStatus_;
 
-		QList<MSNBuddyEntry*> Entries_;
+		QHash<QString, MSNBuddyEntry*> Entries_;
 	public:
 		MSNAccount (const QString&, MSNProtocol* = 0);
 		void Init ();
@@ -93,6 +93,7 @@ namespace Zheet
 		QObject* GetTransferManager () const;
 	private slots:
 		void handleConnected ();
+		void handleWeChangedState (State);
 		void handleGotBuddies (const QList<MSN::Buddy*>&);
 	signals:
 		void gotCLItems (const QList<QObject*>&);

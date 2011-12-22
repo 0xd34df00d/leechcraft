@@ -51,7 +51,10 @@ namespace Zheet
 
 	QList<QObject*> MSNProtocol::GetRegisteredAccounts ()
 	{
-		return QList<QObject*> ();
+		QList<QObject*> result;
+		Q_FOREACH (auto acc, Accounts_)
+			result << acc;
+		return result;
 	}
 
 	QObject* MSNProtocol::GetParentProtocolPlugin () const

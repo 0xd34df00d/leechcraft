@@ -51,6 +51,10 @@ namespace Zheet
 				SIGNAL (gotBuddies (QList<MSN::Buddy*>)),
 				this,
 				SLOT (handleGotBuddies (QList<MSN::Buddy*>)));
+		connect (CB_,
+				SIGNAL (weChangedState (State)),
+				this,
+				SLOT (handleWeChangedState (State)));
 	}
 
 	void MSNAccount::Init ()
@@ -177,7 +181,7 @@ namespace Zheet
 
 	EntryStatus MSNAccount::GetState () const
 	{
-		return EntryStatus ();
+		return CurrentStatus_;
 	}
 
 	void MSNAccount::ChangeState (const EntryStatus& status)
@@ -232,8 +236,9 @@ namespace Zheet
 	{
 	}
 
-	void MSNAccount::RequestAuth (const QString&, const QString&, const QString&, const QStringList&)
+	void MSNAccount::RequestAuth (const QString& entry, const QString&, const QString&, const QStringList&)
 	{
+		Conn_->addToList (MSN::LST_AL, ZheetUtil::ToStd (entry));
 	}
 
 	void MSNAccount::RemoveEntry (QObject*)
@@ -251,6 +256,12 @@ namespace Zheet
 		ChangeState (PendingStatus_);
 	}
 
+	void MSNAccount::handleWeChangedState (State st)
+	{
+		CurrentStatus_.State_ = st;
+		emit statusChanged (CurrentStatus_);
+	}
+
 	void MSNAccount::handleGotBuddies (const QList<MSN::Buddy*>& buddies)
 	{
 		qDebug () << Q_FUNC_INFO;
@@ -258,9 +269,13 @@ namespace Zheet
 
 		Q_FOREACH (const MSN::Buddy *buddy, buddies)
 		{
+			if (Entries_.contains (ZheetUtil::FromStd (buddy->userName)))
+				continue;
+
 			auto entry = new MSNBuddyEntry (*buddy, this);
+
 			result << entry;
-			Entries_ << entry;
+			Entries_ [entry->GetEntryID ()] = entry;
 
 			qDebug () << "buddy" << entry->GetEntryID () << entry->GetEntryName ();
 		}

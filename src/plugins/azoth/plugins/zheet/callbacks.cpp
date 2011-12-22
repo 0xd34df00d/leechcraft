@@ -22,6 +22,7 @@
 #include <util/util.h>
 #include "core.h"
 #include "msnaccount.h"
+#include "zheetutil.h"
 
 namespace LeechCraft
 {
@@ -105,14 +106,15 @@ namespace Zheet
 		Core::Instance ().SendEntity (e);
 	}
 
-	void Callbacks::buddyChangedStatus (MSN::NotificationServerConnection *conn, MSN::Passport buddy,
-			std::string friendlyname, MSN::BuddyStatus state, unsigned int clientID, std::string msnobject)
+	void Callbacks::buddyChangedStatus (MSN::NotificationServerConnection*, MSN::Passport buddy,
+			std::string friendlyname, MSN::BuddyStatus state, unsigned int, std::string msnobject)
 	{
-
+		qDebug () << Q_FUNC_INFO << buddy.c_str () << state << msnobject.c_str ();
 	}
 
 	void Callbacks::buddyOffline (MSN::NotificationServerConnection *conn, MSN::Passport buddy)
 	{
+		qDebug () << Q_FUNC_INFO << buddy.c_str ();
 	}
 
 	void Callbacks::log (int writing, const char *buf)
@@ -176,9 +178,15 @@ namespace Zheet
 
 	}
 
-	void Callbacks::addedListEntry (MSN::NotificationServerConnection *conn, MSN::ContactList list, MSN::Passport buddy, std::string friendlyname)
+	void Callbacks::addedListEntry (MSN::NotificationServerConnection *conn, MSN::ContactList list, MSN::Passport pass, std::string friendlyname)
 	{
+		qDebug () << Q_FUNC_INFO << pass.c_str () << friendlyname.c_str ();
 
+		MSN::Buddy buddy (pass, friendlyname);
+
+		QList<MSN::Buddy*> res;
+		res << &buddy;
+		emit gotBuddies (res);
 	}
 
 	void Callbacks::removedListEntry (MSN::NotificationServerConnection *conn, MSN::ContactList list, MSN::Passport buddy)
@@ -385,7 +393,7 @@ namespace Zheet
 
 	void Callbacks::changedStatus (MSN::NotificationServerConnection *conn, MSN::BuddyStatus state)
 	{
-
+		emit weChangedState (ZheetUtil::FromMSNState (state));
 	}
 
 	void* Callbacks::connectToServer (std::string server, int port, bool *connected, bool isSSL)

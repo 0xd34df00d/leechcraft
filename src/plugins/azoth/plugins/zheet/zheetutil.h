@@ -33,7 +33,9 @@ namespace ZheetUtil
 {
 	std::string ToStd (const QString&);
 	QString FromStd (const std::string& str);
+
 	MSN::BuddyStatus ToMSNState (State st);
+	State FromMSNState (MSN::BuddyStatus);
 }
 }
 }

@@ -26,6 +26,7 @@
 #include <msn/connection.h>
 #include <msn/notificationserver.h>
 #include <msn/externals.h>
+#include <interfaces/azothcommon.h>
 
 class QTcpSocket;
 
@@ -140,6 +141,7 @@ namespace Zheet
 		void finishedConnecting ();
 		void gotGroups (const QList<MSN::Group>&);
 		void gotBuddies (const QList<MSN::Buddy*>&);
+		void weChangedState (State);
 	};
 }
 }

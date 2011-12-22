@@ -54,6 +54,28 @@ namespace ZheetUtil
 			return MSN::STATUS_INVISIBLE;
 		}
 	}
+
+	State FromMSNState (MSN::BuddyStatus status)
+	{
+		switch (status)
+		{
+		case MSN::STATUS_AVAILABLE:
+			return SOnline;
+		case MSN::STATUS_BUSY:
+		case MSN::STATUS_ONTHEPHONE:
+			return SDND;
+		case MSN::STATUS_IDLE:
+			return SXA;
+		case MSN::STATUS_AWAY:
+		case MSN::STATUS_BERIGHTBACK:
+		case MSN::STATUS_OUTTOLUNCH:
+			return SAway;
+		case MSN::STATUS_INVISIBLE:
+			return SInvisible;
+		default:
+			return SOffline;
+		}
+	}
 }
 }
 }
