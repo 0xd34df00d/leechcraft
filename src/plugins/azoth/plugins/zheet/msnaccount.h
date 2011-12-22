@@ -25,6 +25,7 @@
 namespace MSN
 {
 	class NotificationServerConnection;
+	class Buddy;
 }
 
 namespace LeechCraft
@@ -36,6 +37,7 @@ namespace Zheet
 	class MSNProtocol;
 	class Callbacks;
 	class MSNAccountConfigWidget;
+	class MSNBuddyEntry;
 
 	class MSNAccount : public QObject
 					 , public IAccount
@@ -56,6 +58,8 @@ namespace Zheet
 
 		EntryStatus PendingStatus_;
 		bool Connecting_;
+
+		QList<MSNBuddyEntry*> Entries_;
 	public:
 		MSNAccount (const QString&, MSNProtocol* = 0);
 		void Init ();
@@ -64,6 +68,8 @@ namespace Zheet
 		static MSNAccount* Deserialize (const QByteArray&, MSNProtocol*);
 
 		void FillConfig (MSNAccountConfigWidget*);
+
+		MSN::NotificationServerConnection* GetNSConnection ();
 
 		// IAccount
 		QObject* GetObject ();
@@ -87,6 +93,7 @@ namespace Zheet
 		QObject* GetTransferManager () const;
 	private slots:
 		void handleConnected ();
+		void handleGotBuddies (const QList<MSN::Buddy*>&);
 	signals:
 		void gotCLItems (const QList<QObject*>&);
 		void removedCLItems (const QList<QObject*>&);

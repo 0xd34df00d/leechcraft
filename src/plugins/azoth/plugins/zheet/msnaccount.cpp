@@ -25,6 +25,7 @@
 #include "core.h"
 #include "msnaccountconfigwidget.h"
 #include "zheetutil.h"
+#include "msnbuddyentry.h"
 
 namespace LeechCraft
 {
@@ -46,6 +47,10 @@ namespace Zheet
 				SIGNAL (finishedConnecting ()),
 				this,
 				SLOT (handleConnected ()));
+		connect (CB_,
+				SIGNAL (gotBuddies (QList<MSN::Buddy*>)),
+				this,
+				SLOT (handleGotBuddies (QList<MSN::Buddy*>)));
 	}
 
 	void MSNAccount::Init ()
@@ -110,6 +115,11 @@ namespace Zheet
 		const QString& pass = w->GetPassword ();
 		if (!pass.isEmpty ())
 			Core::Instance ().GetPluginProxy ()->SetPassword (pass, this);
+	}
+
+	MSN::NotificationServerConnection* MSNAccount::GetNSConnection ()
+	{
+		return Conn_;
 	}
 
 	QObject* MSNAccount::GetObject ()
@@ -239,6 +249,23 @@ namespace Zheet
 	{
 		Connecting_ = false;
 		ChangeState (PendingStatus_);
+	}
+
+	void MSNAccount::handleGotBuddies (const QList<MSN::Buddy*>& buddies)
+	{
+		qDebug () << Q_FUNC_INFO;
+		QList<QObject*> result;
+
+		Q_FOREACH (const MSN::Buddy *buddy, buddies)
+		{
+			auto entry = new MSNBuddyEntry (*buddy, this);
+			result << entry;
+			Entries_ << entry;
+
+			qDebug () << "buddy" << entry->GetEntryID () << entry->GetEntryName ();
+		}
+
+		emit gotCLItems (result);
 	}
 }
 }
