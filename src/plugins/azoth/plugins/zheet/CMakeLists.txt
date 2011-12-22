@@ -24,6 +24,8 @@ SET (ZHEET_SRCS
 	zheetutil.cpp
 	msnaccountconfigwidget.cpp
 	msnbuddyentry.cpp
+	msnmessage.cpp
+	sbmanager.cpp
 	)
 SET (ZHEET_HEADERS
 	zheet.h
@@ -34,6 +36,8 @@ SET (ZHEET_HEADERS
 	zheetutil.h
 	msnaccountconfigwidget.h
 	msnbuddyentry.h
+	msnmessage.h
+	sbmanager.h
 	)
 SET (ZHEET_FORMS
 	msnaccountconfigwidget.ui
