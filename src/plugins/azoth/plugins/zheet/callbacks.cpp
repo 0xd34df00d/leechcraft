@@ -305,7 +305,6 @@ namespace Zheet
 	void Callbacks::gotNewConnection (MSN::Connection *conn)
 	{
 		auto nsc = dynamic_cast<MSN::NotificationServerConnection*> (conn);
-		qDebug () << Q_FUNC_INFO << nsc;
 		if (nsc)
 			nsc->synchronizeContactList ();
 	}
@@ -447,7 +446,6 @@ namespace Zheet
 
 	void Callbacks::handleSocketConnected ()
 	{
-		qDebug () << Q_FUNC_INFO << qobject_cast<QAbstractSocket*> (sender ())->socketDescriptor ();
 		auto c = Conn_->connectionWithSocket (sender ());
 		if (!c)
 			return;
