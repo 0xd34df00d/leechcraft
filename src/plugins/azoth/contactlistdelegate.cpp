@@ -105,7 +105,9 @@ namespace Azoth
 		case Core::CLETAccount:
 			size.setHeight (size.height () * 1.5);
 			break;
-		default:
+		case Core::CLETCategory:
+			const int textHeight = option.fontMetrics.height ();
+			size.setHeight (qMax (textHeight + CPadding * 2, size.height ()));
 			break;
 		}
 
