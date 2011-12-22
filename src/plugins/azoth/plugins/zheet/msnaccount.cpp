@@ -24,6 +24,7 @@
 #include "callbacks.h"
 #include "core.h"
 #include "msnaccountconfigwidget.h"
+#include "zheetutil.h"
 
 namespace LeechCraft
 {
@@ -31,38 +32,6 @@ namespace Azoth
 {
 namespace Zheet
 {
-	namespace ZheetUtil
-	{
-		std::string ToStd (const QString& str)
-		{
-			return str.toUtf8 ().constData ();
-		}
-
-		QString FromStd (const std::string& str)
-		{
-			return QString::fromUtf8 (str.c_str ());
-		}
-
-		MSN::BuddyStatus ToMSNState (State st)
-		{
-			switch (st)
-			{
-			case SOnline:
-			case SChat:
-				return MSN::STATUS_AVAILABLE;
-			case SAway:
-				return MSN::STATUS_AWAY;
-			case SXA:
-				return MSN::STATUS_IDLE;
-			case SDND:
-				return MSN::STATUS_BUSY;
-			case SInvisible:
-			default:
-				return MSN::STATUS_INVISIBLE;
-			}
-		}
-	}
-
 	MSNAccount::MSNAccount (const QString& name, MSNProtocol *parent)
 	: QObject (parent)
 	, Proto_ (parent)
