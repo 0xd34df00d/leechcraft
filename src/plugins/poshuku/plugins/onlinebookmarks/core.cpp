@@ -335,16 +335,24 @@ namespace OnlineBookmarks
 	void Core::uploadBookmarks ()
 	{
 		QVariantList result = GetAllBookmarks ();
+		IAccount *account = 0;
+
+		Q_FOREACH (QObject *accObj, ActiveAccounts_)
+		{
+			account = qobject_cast<IAccount*> (accObj);
+			if (!account)
+				continue;
+			account->SetLastUploadDateTime (QDateTime::currentDateTime ());
+		}
+
 		if (result.isEmpty ())
 			return;
 
 		const int type = XmlSettingsManager::Instance ()->Property ("UploadType", 0).toInt ();
-		IAccount *account = 0;
 		IBookmarksService *ibs = 0;
 		switch (type)
 		{
 		case 0:
-			qWarning () << FALSE << ActiveAccounts_.count ();
 			Q_FOREACH (QObject *accObj, ActiveAccounts_)
 			{
 				account = qobject_cast<IAccount*> (accObj);
@@ -389,7 +397,6 @@ namespace OnlineBookmarks
 
 	void Core::downloadBookmarks ()
 	{
-		qWarning () << TRUE << ActiveAccounts_.count ();
 		Q_FOREACH (QObject *accObj, ActiveAccounts_)
 		{
 			IAccount *account = qobject_cast<IAccount*> (accObj);
@@ -416,7 +423,6 @@ namespace OnlineBookmarks
 				Property ("LastDownloadCheck", 0).toInt ();
 
 		long diff = lastCheckTimeInSec + downloadPeriod - QDateTime::currentDateTime ().toTime_t ();
-		qWarning () << QDateTime::currentDateTime () << "DOWNLOAD" << diff;
 		if (diff > 0)
 			DownloadTimer_->start (diff * 1000);
 		else
@@ -436,7 +442,6 @@ namespace OnlineBookmarks
 				Property ("LastUploadCheck", 0).toInt ();
 
 		long diff = lastCheckTimeInSec + uploadPeriod - QDateTime::currentDateTime ().toTime_t ();
-		qWarning () << QDateTime::currentDateTime () << "UPLOAD" << diff;
 		if (diff > 0)
 			UploadTimer_->start (diff * 1000);
 		else
@@ -444,7 +449,7 @@ namespace OnlineBookmarks
 			uploadBookmarks ();
 			XmlSettingsManager::Instance ()->setProperty ("LastUploadCheck",
 					QDateTime::currentDateTime ().toTime_t ());
-			DownloadTimer_->start (uploadPeriod * 1000);
+			UploadTimer_->start (uploadPeriod * 1000);
 		}
 	}
 
