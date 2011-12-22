@@ -37,6 +37,7 @@ namespace Azoth
 namespace Zheet
 {
 	class MSNAccount;
+	class MSNBuddyEntry;
 
 	class Callbacks : public QObject
 					, public MSN::Callbacks
@@ -141,7 +142,13 @@ namespace Zheet
 		void finishedConnecting ();
 		void gotGroups (const QList<MSN::Group>&);
 		void gotBuddies (const QList<MSN::Buddy*>&);
+
 		void weChangedState (State);
+		void buddyChangedStatus (const QString&, State);
+
+		void gotMessage (const QString&, MSN::Message*);
+		void gotSB (MSN::SwitchboardServerConnection*, const MSNBuddyEntry*);
+		void buddyJoinedSB (MSN::SwitchboardServerConnection*, const MSNBuddyEntry*);
 	};
 }
 }

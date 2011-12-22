@@ -34,6 +34,7 @@ namespace Azoth
 namespace Zheet
 {
 	class MSNAccount;
+	class MSNMessage;
 
 	class MSNBuddyEntry : public QObject
 						, public ICLEntry
@@ -45,8 +46,15 @@ namespace Zheet
 
 		MSN::Buddy Buddy_;
 		QList<MSN::Group> Groups_;
+
+		QList<MSNMessage*> AllMessages_;
+
+		EntryStatus Status_;
 	public:
 		MSNBuddyEntry (const MSN::Buddy&, MSNAccount*);
+
+		void HandleMessage (MSNMessage*);
+		void UpdateState (State);
 
 		// ICLEntry
 		QObject* GetObject ();
@@ -56,6 +64,7 @@ namespace Zheet
 		QString GetEntryName () const;
 		void SetEntryName (const QString& name);
 		QString GetEntryID () const;
+		QString GetHumanReadableID () const;
 		QStringList Groups () const;
 		void SetGroups (const QStringList& groups);
 		QStringList Variants () const;

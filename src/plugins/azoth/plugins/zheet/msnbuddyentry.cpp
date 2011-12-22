@@ -20,7 +20,9 @@
 #include <QImage>
 #include <msn/notificationserver.h>
 #include <interfaces/iproxyobject.h>
+#include <interfaces/azothutil.h>
 #include "msnaccount.h"
+#include "msnmessage.h"
 #include "zheetutil.h"
 #include "core.h"
 
@@ -37,6 +39,18 @@ namespace Zheet
 	{
 		Q_FOREACH (auto grp, buddy.groups)
 			Groups_ << *grp;
+	}
+
+	void MSNBuddyEntry::HandleMessage (MSNMessage *msg)
+	{
+		AllMessages_ << msg;
+		emit gotMessage (msg);
+	}
+
+	void MSNBuddyEntry::UpdateState (State st)
+	{
+		Status_.State_ = st;
+		emit statusChanged (Status_, QString ());
 	}
 
 	QObject* MSNBuddyEntry::GetObject ()
@@ -72,7 +86,12 @@ namespace Zheet
 
 	QString MSNBuddyEntry::GetEntryID () const
 	{
-		return Account_->GetAccountID () + "_" + ZheetUtil::FromStd (Buddy_.userName);
+		return Account_->GetAccountID () + "_" + GetHumanReadableID ();
+	}
+
+	QString MSNBuddyEntry::GetHumanReadableID () const
+	{
+		return ZheetUtil::FromStd (Buddy_.userName);
 	}
 
 	QStringList MSNBuddyEntry::Groups () const
@@ -94,21 +113,26 @@ namespace Zheet
 
 	QObject* MSNBuddyEntry::CreateMessage (IMessage::MessageType type, const QString&, const QString& body)
 	{
-		return 0;
+		MSNMessage *msg = new MSNMessage (IMessage::DOut, type, this);
+		msg->SetBody (body);
+		return msg;
 	}
 
 	QList<QObject*> MSNBuddyEntry::GetAllMessages () const
 	{
-		return QList<QObject*> ();
+		QList<QObject*> result;
+		Q_FOREACH (auto msg, AllMessages_)
+			result << msg;
+		return result;
 	}
 
 	void MSNBuddyEntry::PurgeMessages (const QDateTime& before)
 	{
+		Azoth::Util::StandardPurgeMessages (AllMessages_, before);
 	}
 
 	void MSNBuddyEntry::SetChatPartState (ChatPartState, const QString&)
 	{
-
 	}
 
 	EntryStatus MSNBuddyEntry::GetStatus (const QString&) const

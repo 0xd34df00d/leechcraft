@@ -23,6 +23,7 @@
 #include "core.h"
 #include "msnaccount.h"
 #include "zheetutil.h"
+#include "msnbuddyentry.h"
 
 namespace LeechCraft
 {
@@ -110,6 +111,8 @@ namespace Zheet
 			std::string friendlyname, MSN::BuddyStatus state, unsigned int, std::string msnobject)
 	{
 		qDebug () << Q_FUNC_INFO << buddy.c_str () << state << msnobject.c_str ();
+
+		emit buddyChangedStatus (ZheetUtil::FromStd (buddy), ZheetUtil::FromMSNState (state));
 	}
 
 	void Callbacks::buddyOffline (MSN::NotificationServerConnection *conn, MSN::Passport buddy)
@@ -241,12 +244,16 @@ namespace Zheet
 
 	void Callbacks::gotSwitchboard (MSN::SwitchboardServerConnection *conn, const void *tag)
 	{
+		if (!tag)
+			return;
 
+		emit gotSB (conn, static_cast<const MSNBuddyEntry*> (tag));
 	}
 
 	void Callbacks::buddyJoinedConversation (MSN::SwitchboardServerConnection *conn, MSN::Passport buddy, std::string friendlyname, int is_initial)
 	{
-
+		if (conn->auth.tag)
+			emit buddyJoinedSB (conn, static_cast<const MSNBuddyEntry*> (conn->auth.tag));
 	}
 
 	void Callbacks::buddyLeftConversation (MSN::SwitchboardServerConnection *conn, MSN::Passport buddy)
@@ -256,7 +263,7 @@ namespace Zheet
 
 	void Callbacks::gotInstantMessage (MSN::SwitchboardServerConnection *conn, MSN::Passport buddy, std::string friendlyname, MSN::Message *msg)
 	{
-
+		emit gotMessage (ZheetUtil::FromStd (buddy), msg);
 	}
 
 	void Callbacks::gotMessageSentACK (MSN::SwitchboardServerConnection *conn, int trID)

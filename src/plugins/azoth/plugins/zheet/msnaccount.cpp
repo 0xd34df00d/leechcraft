@@ -26,6 +26,8 @@
 #include "msnaccountconfigwidget.h"
 #include "zheetutil.h"
 #include "msnbuddyentry.h"
+#include "msnmessage.h"
+#include "sbmanager.h"
 
 namespace LeechCraft
 {
@@ -41,6 +43,7 @@ namespace Zheet
 	, Port_ (1863)
 	, CB_ (new Callbacks (this))
 	, Conn_ (0)
+	, SB_ (new SBManager (CB_, this))
 	, Connecting_ (false)
 	{
 		connect (CB_,
@@ -55,6 +58,14 @@ namespace Zheet
 				SIGNAL (weChangedState (State)),
 				this,
 				SLOT (handleWeChangedState (State)));
+		connect (CB_,
+				SIGNAL (gotMessage (QString, MSN::Message*)),
+				this,
+				SLOT (handleGotMessage (QString, MSN::Message*)));
+		connect (CB_,
+				SIGNAL (buddyChangedStatus (QString, State)),
+				this,
+				SLOT (handleBuddyChangedStatus (QString, State)));
 	}
 
 	void MSNAccount::Init ()
@@ -121,9 +132,14 @@ namespace Zheet
 			Core::Instance ().GetPluginProxy ()->SetPassword (pass, this);
 	}
 
-	MSN::NotificationServerConnection* MSNAccount::GetNSConnection ()
+	MSN::NotificationServerConnection* MSNAccount::GetNSConnection () const
 	{
 		return Conn_;
+	}
+
+	SBManager* MSNAccount::GetSBManager () const
+	{
+		return SB_;
 	}
 
 	QObject* MSNAccount::GetObject ()
@@ -143,7 +159,10 @@ namespace Zheet
 
 	QList<QObject*> MSNAccount::GetCLEntries ()
 	{
-		return QList<QObject*> ();
+		QList<QObject*> result;
+		Q_FOREACH (auto obj, Entries_.values ())
+			result << obj;
+		return result;
 	}
 
 	QString MSNAccount::GetAccountName () const
@@ -239,6 +258,7 @@ namespace Zheet
 	void MSNAccount::RequestAuth (const QString& entry, const QString&, const QString&, const QStringList&)
 	{
 		Conn_->addToList (MSN::LST_AL, ZheetUtil::ToStd (entry));
+		Conn_->addToList (MSN::LST_AB, ZheetUtil::ToStd (entry));
 	}
 
 	void MSNAccount::RemoveEntry (QObject*)
@@ -262,6 +282,19 @@ namespace Zheet
 		emit statusChanged (CurrentStatus_);
 	}
 
+	void MSNAccount::handleBuddyChangedStatus (const QString& buddy, State st)
+	{
+		if (!Entries_.contains (buddy))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown buddy"
+					<< buddy;
+			return;
+		}
+
+		Entries_ [buddy]->UpdateState (st);
+	}
+
 	void MSNAccount::handleGotBuddies (const QList<MSN::Buddy*>& buddies)
 	{
 		qDebug () << Q_FUNC_INFO;
@@ -269,18 +302,34 @@ namespace Zheet
 
 		Q_FOREACH (const MSN::Buddy *buddy, buddies)
 		{
-			if (Entries_.contains (ZheetUtil::FromStd (buddy->userName)))
+			const auto& id = ZheetUtil::FromStd (buddy->userName);
+			if (Entries_.contains (id))
 				continue;
 
 			auto entry = new MSNBuddyEntry (*buddy, this);
 
 			result << entry;
-			Entries_ [entry->GetEntryID ()] = entry;
+			Entries_ [id] = entry;
 
 			qDebug () << "buddy" << entry->GetEntryID () << entry->GetEntryName ();
 		}
 
 		emit gotCLItems (result);
+	}
+
+	void MSNAccount::handleGotMessage (const QString& from, MSN::Message *msnMsg)
+	{
+		if (!Entries_.contains (from))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "got a message from unknown buddy"
+					<< from;
+			return;
+		}
+
+		auto entry = Entries_ [from];
+		MSNMessage *msg = new MSNMessage (msnMsg, entry);
+		entry->HandleMessage (msg);
 	}
 }
 }
