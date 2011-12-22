@@ -752,19 +752,7 @@ namespace Xoox
 	{
 		IProxyObject *proxy =
 			qobject_cast<IProxyObject*> (ParentProtocol_->GetProxyObject ());
-		if (!authfailure)
-		{
-			const QString& result = proxy->GetPassword (this);
-			if (!result.isNull ())
-				return result;
-		}
-
-		QString result = QInputDialog::getText (0,
-				"LeechCraft",
-				tr ("Enter password for %1:").arg (JID_), QLineEdit::Password);
-		if (!result.isNull ())
-			proxy->SetPassword (result, this);
-		return result;
+		return proxy->GetAccountPassword (this, !authfailure);
 	}
 
 	void GlooxAccount::RegenAccountIcon ()
