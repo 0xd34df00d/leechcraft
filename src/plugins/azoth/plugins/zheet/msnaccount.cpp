@@ -255,10 +255,11 @@ namespace Zheet
 	{
 	}
 
-	void MSNAccount::RequestAuth (const QString& entry, const QString&, const QString&, const QStringList&)
+	void MSNAccount::RequestAuth (const QString& entry, const QString&, const QString& name, const QStringList&)
 	{
-		Conn_->addToList (MSN::LST_AL, ZheetUtil::ToStd (entry));
-		Conn_->addToList (MSN::LST_AB, ZheetUtil::ToStd (entry));
+		const auto& id = ZheetUtil::ToStd (entry);
+		Conn_->addToAddressBook (id, ZheetUtil::ToStd (name));
+		Conn_->addToList (MSN::LST_AL, id);
 	}
 
 	void MSNAccount::RemoveEntry (QObject*)
