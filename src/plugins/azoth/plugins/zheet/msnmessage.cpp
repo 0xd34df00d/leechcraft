@@ -18,10 +18,11 @@
 
 #include "msnmessage.h"
 #include <msn/message.h>
+#include <msn/notificationserver.h>
 #include "msnbuddyentry.h"
 #include "msnaccount.h"
 #include "zheetutil.h"
-#include <msn/notificationserver.h>
+#include "sbmanager.h"
 
 namespace LeechCraft
 {
@@ -59,6 +60,7 @@ namespace Zheet
 		Entry_->HandleMessage (this);
 
 		auto acc = qobject_cast<MSNAccount*> (Entry_->GetParentAccount ());
+		acc->GetSBManager ()->SendMessage (this, Entry_);
 	}
 
 	void MSNMessage::Store ()
