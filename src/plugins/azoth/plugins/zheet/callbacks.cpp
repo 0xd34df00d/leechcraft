@@ -21,6 +21,7 @@
 #include <QTcpServer>
 #include <util/util.h>
 #include "core.h"
+#include "msnaccount.h"
 
 namespace LeechCraft
 {
@@ -28,14 +29,36 @@ namespace Azoth
 {
 namespace Zheet
 {
-	Callbacks::Callbacks (QObject *parent)
+	Callbacks::Callbacks (MSNAccount *parent)
 	: QObject (parent)
+	, Account_ (parent)
 	{
 	}
 
 	void Callbacks::SetNotificationServerConnection (MSN::NotificationServerConnection *conn)
 	{
 		Conn_ = conn;
+
+		if (LogFile_.isOpen ())
+			LogFile_.close ();
+
+		try
+		{
+			const auto& dir = Util::CreateIfNotExists ("azoth/zheet/");
+			LogFile_.setFileName (dir.filePath (Account_->GetAccountID ()));
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to create logdir:"
+					<< e.what ();
+			return;
+		}
+
+		LogFile_.open (QIODevice::WriteOnly | QIODevice::Append);
+		LogFile_.write (QDateTime::currentDateTime ().toString (Qt::ISODate).toUtf8 ());
+		LogFile_.write (": reopened log file\n");
+		LogFile_.flush ();
 	}
 
 	void Callbacks::registerSocket (void *sock, int read, int write, bool)
@@ -90,12 +113,14 @@ namespace Zheet
 
 	void Callbacks::buddyOffline (MSN::NotificationServerConnection *conn, MSN::Passport buddy)
 	{
-
 	}
 
 	void Callbacks::log (int writing, const char *buf)
 	{
-		qDebug () << "[MSN]" << (writing ? "->" : "<-") << buf;
+		LogFile_.write (QDateTime::currentDateTime ().toString (Qt::ISODate).toUtf8 () + ": ");
+		LogFile_.write ((writing ? "OUT " : "IN ") + QByteArray (buf));
+		LogFile_.write ("\n");
+		LogFile_.flush ();
 	}
 
 	void Callbacks::gotFriendlyName (MSN::NotificationServerConnection *conn, std::string friendlyname)
@@ -106,11 +131,25 @@ namespace Zheet
 	{
 		qDebug () << Q_FUNC_INFO;
 
-		std::map<std::string, int> allContacts;
+		QList<MSN::Group> groups;
+		std::for_each (data->groups.begin (), data->groups.end (),
+				[&groups] (decltype (*data->groups.cbegin ()) pair)
+					{ groups << pair.second; });
 
-		std::for_each (data->contactList.begin (), data->contactList.end (),
-				[&allContacts] (const std::pair<std::string, MSN::Buddy*>& pair)
-					{ allContacts [pair.first] = pair.second->lists & (MSN::LST_AB | MSN::LST_AL | MSN::LST_BL); });
+		const auto& cl = data->contactList;
+
+		QList<MSN::Buddy*> buddies;
+
+		std::map<std::string, int> allContacts;
+		std::for_each (cl.begin (), cl.end (),
+				[&allContacts, &buddies] (decltype (*cl.cbegin ()) pair)
+					{
+						allContacts [pair.first] = pair.second->lists & (MSN::LST_AB | MSN::LST_AL | MSN::LST_BL);
+						buddies << pair.second;
+					});
+
+		emit gotGroups (groups);
+		emit gotBuddies (buddies);
 
 		conn->completeConnection (allContacts, data);
 

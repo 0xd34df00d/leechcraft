@@ -22,6 +22,7 @@
 #include <QHash>
 #include <QSet>
 #include <QMap>
+#include <QFile>
 #include <msn/connection.h>
 #include <msn/notificationserver.h>
 #include <msn/externals.h>
@@ -34,16 +35,21 @@ namespace Azoth
 {
 namespace Zheet
 {
+	class MSNAccount;
+
 	class Callbacks : public QObject
 					, public MSN::Callbacks
 	{
 		Q_OBJECT
 
+		MSNAccount *Account_;
+
 		QHash<void*, QTcpSocket*> Sockets_;
 
 		MSN::NotificationServerConnection *Conn_;
+		QFile LogFile_;
 	public:
-		Callbacks (QObject* = 0);
+		Callbacks (MSNAccount*);
 
 		void SetNotificationServerConnection (MSN::NotificationServerConnection*);
 
@@ -132,6 +138,8 @@ namespace Zheet
 		void handleSocketConnected ();
 	signals:
 		void finishedConnecting ();
+		void gotGroups (const QList<MSN::Group>&);
+		void gotBuddies (const QList<MSN::Buddy*>&);
 	};
 }
 }
