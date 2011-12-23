@@ -78,7 +78,8 @@ namespace Zheet
 		if (Group2ID_.contains (name))
 		{
 			const auto& id = Group2ID_ [name];
-			conn->addToGroup (ZheetUtil::ToStd (id), ZheetUtil::ToStd (entry));
+			const auto& cid = Account_->GetBuddy (entry)->GetContactID ();
+			conn->addToGroup (ZheetUtil::ToStd (id), ZheetUtil::ToStd (cid));
 		}
 		else
 		{
@@ -99,7 +100,7 @@ namespace Zheet
 		}
 
 		const auto& id = ZheetUtil::ToStd (Group2ID_ [name]);
-		const auto& entryId = ZheetUtil::ToStd (entry);
+		const auto& entryId = ZheetUtil::ToStd (Account_->GetBuddy (entry)->GetContactID ());
 		Account_->GetNSConnection ()->removeFromGroup (id, entryId);
 	}
 
@@ -132,12 +133,12 @@ namespace Zheet
 
 	void GroupManager::handleBuddyAdded (const QString& id, const QString& groupId)
 	{
-		Account_->GetBuddy (id)->AddGroup (ID2Group_ [groupId]);
+		Account_->GetBuddyByCID (id)->AddGroup (ID2Group_ [groupId]);
 	}
 
 	void GroupManager::handleBuddyRemoved (const QString& id, const QString& groupId)
 	{
-		Account_->GetBuddy (id)->RemoveGroup (ID2Group_ [groupId]);
+		Account_->GetBuddyByCID (id)->RemoveGroup (ID2Group_ [groupId]);
 	}
 }
 }
