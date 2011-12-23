@@ -418,7 +418,7 @@ namespace OnlineBookmarks
 	void Core::checkDownloadPeriod ()
 	{
 		long downloadPeriod = XmlSettingsManager::Instance ()->
-				property ("DownloadPeriod").toInt () * 3600;
+				property ("DownloadPeriod").toInt () * 900;
 		long lastCheckTimeInSec = XmlSettingsManager::Instance ()->
 				Property ("LastDownloadCheck", 0).toInt ();
 
@@ -437,7 +437,7 @@ namespace OnlineBookmarks
 	void Core::checkUploadPeriod ()
 	{
 		long uploadPeriod = XmlSettingsManager::Instance ()->
-				property ("UploadPeriod").toInt () * 3600;
+				property ("UploadPeriod").toInt () * 900;
 		long lastCheckTimeInSec = XmlSettingsManager::Instance ()->
 				Property ("LastUploadCheck", 0).toInt ();
 
