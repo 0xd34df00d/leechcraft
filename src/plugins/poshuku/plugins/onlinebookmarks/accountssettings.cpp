@@ -139,6 +139,8 @@ namespace OnlineBookmarks
 			service->saveAccounts ();
 
 		Core::Instance ().SetActiveAccounts (accounts);
+		Core::Instance ().checkDownloadPeriod ();
+		Core::Instance ().checkUploadPeriod ();
 	}
 
 	void AccountsSettings::resizeColumns ()
@@ -293,6 +295,15 @@ namespace OnlineBookmarks
 			item->setEditable (false);
 			item->setCheckable (true);
 			item->setCheckState (account->IsSyncing () ? Qt::Checked : Qt::Unchecked);
+
+			if (account->IsSyncing ())
+			{
+				Core::Instance ().AddActiveAccount (accObj);
+				IBookmarksService *ibs = qobject_cast<IBookmarksService*> (account->GetParentService ());
+				ibs->DownloadBookmarks (account->GetObject (), account->GetLastDownloadDateTime ());
+				ibs->UploadBookmarks (account->GetObject (), Core::Instance ().GetAllBookmarks ());
+			}
+
 			Item2Account_ [item] = account;
 
 			QStandardItem *uploaditem = new QStandardItem (account->GetLastUploadDateTime ()
