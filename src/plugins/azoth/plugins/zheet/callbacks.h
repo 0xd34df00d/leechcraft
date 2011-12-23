@@ -123,11 +123,11 @@ namespace Zheet
 
 		void* connectToServer (std::string server, int port, bool *connected, bool isSSL = false);
 
-		virtual void askFileTransfer (MSN::SwitchboardServerConnection* conn, MSN::fileTransferInvite ft);
+		void askFileTransfer (MSN::SwitchboardServerConnection* conn, MSN::fileTransferInvite ft);
 
-		virtual int listenOnPort (int port);
-		virtual std::string getOurIP();
-		virtual std::string getSecureHTTPProxy();
+		int listenOnPort (int port);
+		std::string getOurIP();
+		std::string getSecureHTTPProxy();
 
 		int getSocketFileDescriptor (void *sock);
 		size_t getDataFromSocket (void *sock, char *data, size_t size);
