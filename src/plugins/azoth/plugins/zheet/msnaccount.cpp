@@ -154,6 +154,11 @@ namespace Zheet
 		return Entries_ [id];
 	}
 
+	MSNBuddyEntry* MSNAccount::GetBuddyByCID (const QString& cid) const
+	{
+		return CID2Entry_ [cid];
+	}
+
 	QObject* MSNAccount::GetObject ()
 	{
 		return this;
@@ -271,11 +276,22 @@ namespace Zheet
 	{
 		const auto& id = ZheetUtil::ToStd (entry);
 		Conn_->addToAddressBook (id, ZheetUtil::ToStd (name));
-		Conn_->addToList (MSN::LST_AL, id);
 	}
 
-	void MSNAccount::RemoveEntry (QObject*)
+	void MSNAccount::RemoveEntry (QObject *entryObj)
 	{
+		auto entry = qobject_cast<MSNBuddyEntry*> (entryObj);
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "invalid entry"
+					<< entryObj;
+			return;
+		}
+
+		const auto& id = ZheetUtil::ToStd (entry->GetContactID ());
+		const auto& pass = ZheetUtil::ToStd (entry->GetHumanReadableID ());
+		Conn_->delFromAddressBook (id, pass);
 	}
 
 	QObject* MSNAccount::GetTransferManager () const
@@ -323,6 +339,7 @@ namespace Zheet
 
 			result << entry;
 			Entries_ [id] = entry;
+			CID2Entry_ [entry->GetContactID ()] = entry;
 
 			qDebug () << "buddy" << entry->GetEntryID () << entry->GetEntryName ();
 		}

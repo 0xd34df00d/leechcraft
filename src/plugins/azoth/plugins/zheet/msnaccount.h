@@ -65,6 +65,7 @@ namespace Zheet
 		EntryStatus CurrentStatus_;
 
 		QHash<QString, MSNBuddyEntry*> Entries_;
+		QHash<QString, MSNBuddyEntry*> CID2Entry_;
 	public:
 		MSNAccount (const QString&, MSNProtocol* = 0);
 		void Init ();
@@ -79,6 +80,7 @@ namespace Zheet
 		GroupManager* GetGroupManager () const;
 
 		MSNBuddyEntry* GetBuddy (const QString&) const;
+		MSNBuddyEntry* GetBuddyByCID (const QString&) const;
 
 		// IAccount
 		QObject* GetObject ();
