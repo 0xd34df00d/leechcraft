@@ -187,7 +187,7 @@ namespace Zheet
 	void Callbacks::addedListEntry (MSN::NotificationServerConnection *conn,
 			MSN::ContactList list, MSN::Passport pass, std::string friendlyname)
 	{
-		qDebug () << Q_FUNC_INFO << pass.c_str () << friendlyname.c_str ();
+		qDebug () << Q_FUNC_INFO << pass.c_str () << friendlyname.c_str () << list;
 
 		MSN::Buddy buddy (pass, friendlyname);
 
@@ -222,25 +222,29 @@ namespace Zheet
 	void Callbacks::addedContactToGroup (MSN::NotificationServerConnection *conn,
 			bool added, std::string groupId, std::string contactId)
 	{
-		emit buddyAddedToGroup (ZheetUtil::FromStd (contactId), ZheetUtil::FromStd (groupId));
+		qDebug () << Q_FUNC_INFO << added;
+		if (added)
+			emit buddyAddedToGroup (ZheetUtil::FromStd (contactId), ZheetUtil::FromStd (groupId));
 	}
 
 	void Callbacks::removedContactFromGroup (MSN::NotificationServerConnection *conn,
 			bool removed, std::string groupId, std::string contactId)
 	{
-		emit buddyRemovedFromGroup (ZheetUtil::FromStd (contactId), ZheetUtil::FromStd (groupId));
+		qDebug () << Q_FUNC_INFO << removed;
+		if (removed)
+			emit buddyRemovedFromGroup (ZheetUtil::FromStd (contactId), ZheetUtil::FromStd (groupId));
 	}
 
 	void Callbacks::addedContactToAddressBook (MSN::NotificationServerConnection *conn,
 			bool added, std::string passport, std::string displayName, std::string guid)
 	{
-
+		qDebug () << Q_FUNC_INFO << added << passport.c_str () << displayName.c_str () << guid.c_str ();
 	}
 
 	void Callbacks::removedContactFromAddressBook (MSN::NotificationServerConnection *conn,
 			bool removed, std::string contactId, std::string passport)
 	{
-
+		qDebug () << Q_FUNC_INFO << removed << ZheetUtil::FromStd (contactId) << ZheetUtil::FromStd (passport);
 	}
 
 	void Callbacks::enabledContactOnAddressBook (MSN::NotificationServerConnection *conn,

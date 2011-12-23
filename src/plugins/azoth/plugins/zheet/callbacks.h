@@ -145,8 +145,8 @@ namespace Zheet
 		void removedGroup (const QString&);
 		void renamedGroup (const QString& id, const QString& newName);
 
-		void buddyAddedToGroup (const QString& id, const QString& group);
-		void buddyRemovedFromGroup (const QString& id, const QString& group);
+		void buddyAddedToGroup (const QString& cid, const QString& group);
+		void buddyRemovedFromGroup (const QString& cid, const QString& group);
 
 		void weChangedState (State);
 		void buddyChangedStatus (const QString&, State);
