@@ -19,6 +19,7 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_ZHEET_MSNBUDDYENTRY_H
 #define PLUGINS_AZOTH_PLUGINS_ZHEET_MSNBUDDYENTRY_H
 #include <QObject>
+#include <QStringList>
 #include <msn/buddy.h>
 #include <interfaces/iclentry.h>
 
@@ -45,7 +46,7 @@ namespace Zheet
 		MSNAccount *Account_;
 
 		MSN::Buddy Buddy_;
-		QList<MSN::Group> Groups_;
+		QStringList Groups_;
 
 		QList<MSNMessage*> AllMessages_;
 
@@ -55,6 +56,9 @@ namespace Zheet
 
 		void HandleMessage (MSNMessage*);
 		void UpdateState (State);
+
+		void AddGroup (const QString&);
+		void RemoveGroup (const QString&);
 
 		// ICLEntry
 		QObject* GetObject ();

@@ -28,6 +28,7 @@
 #include "msnbuddyentry.h"
 #include "msnmessage.h"
 #include "sbmanager.h"
+#include "groupmanager.h"
 
 namespace LeechCraft
 {
@@ -44,6 +45,7 @@ namespace Zheet
 	, CB_ (new Callbacks (this))
 	, Conn_ (0)
 	, SB_ (new SBManager (CB_, this))
+	, GroupManager_ (new GroupManager (CB_, this))
 	, Connecting_ (false)
 	{
 		connect (CB_,
@@ -140,6 +142,16 @@ namespace Zheet
 	SBManager* MSNAccount::GetSBManager () const
 	{
 		return SB_;
+	}
+
+	GroupManager* MSNAccount::GetGroupManager () const
+	{
+		return GroupManager_;
+	}
+
+	MSNBuddyEntry* MSNAccount::GetBuddy (const QString& id) const
+	{
+		return Entries_ [id];
 	}
 
 	QObject* MSNAccount::GetObject ()

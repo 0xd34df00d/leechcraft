@@ -140,15 +140,23 @@ namespace Zheet
 		void handleSocketConnected ();
 	signals:
 		void finishedConnecting ();
-		void gotGroups (const QList<MSN::Group>&);
 		void gotBuddies (const QList<MSN::Buddy*>&);
+		void gotGroups (const QList<MSN::Group>&);
+		void removedGroup (const QString&);
+		void renamedGroup (const QString& id, const QString& newName);
+
+		void buddyAddedToGroup (const QString& id, const QString& group);
+		void buddyRemovedFromGroup (const QString& id, const QString& group);
 
 		void weChangedState (State);
 		void buddyChangedStatus (const QString&, State);
+		void buddyChangedStatusText (const QString&, const QString&);
+		void buddyUpdatedName (const QString&, const QString&);
 
 		void gotMessage (const QString&, MSN::Message*);
 		void gotSB (MSN::SwitchboardServerConnection*, const MSNBuddyEntry*);
 		void buddyJoinedSB (MSN::SwitchboardServerConnection*, const MSNBuddyEntry*);
+		void buddyLeftSB (MSN::SwitchboardServerConnection*, const MSNBuddyEntry*);
 	};
 }
 }

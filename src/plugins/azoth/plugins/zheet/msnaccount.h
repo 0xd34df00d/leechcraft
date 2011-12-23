@@ -40,6 +40,7 @@ namespace Zheet
 	class MSNAccountConfigWidget;
 	class MSNBuddyEntry;
 	class SBManager;
+	class GroupManager;
 
 	class MSNAccount : public QObject
 					 , public IAccount
@@ -57,6 +58,7 @@ namespace Zheet
 		Callbacks *CB_;
 		MSN::NotificationServerConnection *Conn_;
 		SBManager *SB_;
+		GroupManager *GroupManager_;
 
 		EntryStatus PendingStatus_;
 		bool Connecting_;
@@ -74,6 +76,9 @@ namespace Zheet
 
 		MSN::NotificationServerConnection* GetNSConnection () const;
 		SBManager* GetSBManager () const;
+		GroupManager* GetGroupManager () const;
+
+		MSNBuddyEntry* GetBuddy (const QString&) const;
 
 		// IAccount
 		QObject* GetObject ();

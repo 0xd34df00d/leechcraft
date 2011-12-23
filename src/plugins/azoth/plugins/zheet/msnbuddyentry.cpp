@@ -25,6 +25,7 @@
 #include "msnmessage.h"
 #include "zheetutil.h"
 #include "core.h"
+#include "groupmanager.h"
 
 namespace LeechCraft
 {
@@ -38,7 +39,7 @@ namespace Zheet
 	, Buddy_ (buddy)
 	{
 		Q_FOREACH (auto grp, buddy.groups)
-			Groups_ << *grp;
+			Groups_ << ZheetUtil::FromStd (grp->name);
 	}
 
 	void MSNBuddyEntry::HandleMessage (MSNMessage *msg)
@@ -51,6 +52,21 @@ namespace Zheet
 	{
 		Status_.State_ = st;
 		emit statusChanged (Status_, QString ());
+	}
+
+	void MSNBuddyEntry::AddGroup (const QString& group)
+	{
+		if (Groups_.contains (group))
+			return;
+
+		Groups_ << group;
+		emit groupsChanged (Groups_);
+	}
+
+	void MSNBuddyEntry::RemoveGroup (const QString& group)
+	{
+		if (Groups_.removeOne (group))
+			emit groupsChanged (Groups_);
 	}
 
 	QObject* MSNBuddyEntry::GetObject ()
@@ -99,14 +115,12 @@ namespace Zheet
 
 	QStringList MSNBuddyEntry::Groups () const
 	{
-		QStringList result;
-		Q_FOREACH (MSN::Group grp, Groups_)
-			result << ZheetUtil::FromStd (grp.name);
-		return result;
+		return Groups_;
 	}
 
 	void MSNBuddyEntry::SetGroups (const QStringList& groups)
 	{
+		Account_->GetGroupManager ()->SetGroups (this, groups, Groups ());
 	}
 
 	QStringList MSNBuddyEntry::Variants () const

@@ -26,6 +26,7 @@ SET (ZHEET_SRCS
 	msnbuddyentry.cpp
 	msnmessage.cpp
 	sbmanager.cpp
+	groupmanager.cpp
 	)
 SET (ZHEET_HEADERS
 	zheet.h
@@ -38,6 +39,7 @@ SET (ZHEET_HEADERS
 	msnbuddyentry.h
 	msnmessage.h
 	sbmanager.h
+	groupmanager.h
 	)
 SET (ZHEET_FORMS
 	msnaccountconfigwidget.ui
