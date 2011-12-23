@@ -120,6 +120,8 @@ namespace Zheet
 	void Callbacks::buddyOffline (MSN::NotificationServerConnection *conn, MSN::Passport buddy)
 	{
 		qDebug () << Q_FUNC_INFO << buddy.c_str ();
+
+		emit buddyChangedStatus (ZheetUtil::FromStd (buddy), SOffline);
 	}
 
 	void Callbacks::log (int writing, const char *buf)
