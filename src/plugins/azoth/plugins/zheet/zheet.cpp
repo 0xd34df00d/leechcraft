@@ -53,7 +53,7 @@ namespace Zheet
 
 	QString Plugin::GetName () const
 	{
-		return "Zheet";
+		return "Azoth Zheet";
 	}
 
 	QString Plugin::GetInfo () const
