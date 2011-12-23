@@ -63,7 +63,6 @@ namespace Zheet
 		const auto& newSet = newGroupsLst.toSet ();
 		const auto& oldSet = oldGroupsLst.toSet ();
 
-
 		Q_FOREACH (const QString& grp, newSet - oldSet)
 			AddGroup (entry->GetHumanReadableID (), grp);
 
@@ -73,6 +72,7 @@ namespace Zheet
 
 	void GroupManager::AddGroup (const QString& entry, const QString& name)
 	{
+		qDebug () << Q_FUNC_INFO << entry << name << Group2ID_;
 		auto conn = Account_->GetNSConnection ();
 
 		if (Group2ID_.contains (name))
@@ -81,11 +81,15 @@ namespace Zheet
 			conn->addToGroup (ZheetUtil::ToStd (id), ZheetUtil::ToStd (entry));
 		}
 		else
+		{
 			conn->addGroup (ZheetUtil::ToStd (name));
+			PendingAdditions_ [name] << entry;
+		}
 	}
 
 	void GroupManager::RemoveGroup (const QString& entry, const QString& name)
 	{
+		qDebug () << Q_FUNC_INFO << entry << name << Group2ID_;
 		if (!Group2ID_.contains (name))
 		{
 			qWarning () << Q_FUNC_INFO
@@ -107,6 +111,9 @@ namespace Zheet
 			const auto& id = ZheetUtil::FromStd (g.groupID);
 			Group2ID_ [name] = id;
 			ID2Group_ [id] = name;
+
+			Q_FOREACH (const QString& id, PendingAdditions_.take (name))
+				AddGroup (id, name);
 		}
 	}
 

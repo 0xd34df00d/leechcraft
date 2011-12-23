@@ -41,6 +41,8 @@ namespace Zheet
 
 		QHash<QString, QString> Group2ID_;
 		QHash<QString, QString> ID2Group_;
+
+		QHash<QString, QStringList> PendingAdditions_;
 	public:
 		GroupManager (Callbacks*, MSNAccount*);
 
