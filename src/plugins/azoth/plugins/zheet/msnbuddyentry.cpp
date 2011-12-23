@@ -37,9 +37,14 @@ namespace Zheet
 	: QObject (acc)
 	, Account_ (acc)
 	, Buddy_ (buddy)
+	, ContactID_ (ZheetUtil::FromStd (buddy.properties.at ("contactId")))
 	{
 		Q_FOREACH (auto grp, buddy.groups)
 			Groups_ << ZheetUtil::FromStd (grp->name);
+
+		qDebug () << Q_FUNC_INFO << Groups_;
+		std::for_each (buddy.properties.cbegin (), buddy.properties.cend (),
+				[] (decltype (*buddy.properties.cbegin ()) item) { qDebug () << item.first.c_str () << ": " << item.second.c_str (); });
 	}
 
 	void MSNBuddyEntry::HandleMessage (MSNMessage *msg)
@@ -71,6 +76,11 @@ namespace Zheet
 	{
 		if (Groups_.removeOne (group))
 			emit groupsChanged (Groups_);
+	}
+
+	QString MSNBuddyEntry::GetContactID () const
+	{
+		return ContactID_;
 	}
 
 	QObject* MSNBuddyEntry::GetObject ()

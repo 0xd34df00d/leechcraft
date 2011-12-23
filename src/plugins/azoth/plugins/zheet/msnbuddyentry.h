@@ -47,6 +47,7 @@ namespace Zheet
 
 		MSN::Buddy Buddy_;
 		QStringList Groups_;
+		QString ContactID_;
 
 		QList<MSNMessage*> AllMessages_;
 
@@ -59,6 +60,8 @@ namespace Zheet
 
 		void AddGroup (const QString&);
 		void RemoveGroup (const QString&);
+
+		QString GetContactID () const;
 
 		// ICLEntry
 		QObject* GetObject ();
