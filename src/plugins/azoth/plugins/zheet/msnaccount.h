@@ -19,6 +19,7 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_ZHEET_MSNACCOUNT_H
 #define PLUGINS_AZOTH_PLUGINS_ZHEET_MSNACCOUNT_H
 #include <QObject>
+#include <QSet>
 #include <interfaces/iaccount.h>
 #include <msn/passport.h>
 
@@ -66,6 +67,8 @@ namespace Zheet
 
 		QHash<QString, MSNBuddyEntry*> Entries_;
 		QHash<QString, MSNBuddyEntry*> CID2Entry_;
+
+		QSet<QString> BL_;
 	public:
 		MSNAccount (const QString&, MSNProtocol* = 0);
 		void Init ();
@@ -107,6 +110,7 @@ namespace Zheet
 		void handleWeChangedState (State);
 		void handleBuddyChangedStatus (const QString&, State);
 		void handleGotBuddies (const QList<MSN::Buddy*>&);
+		void handleRemovedBuddy (const QString&, const QString&);
 		void handleGotMessage (const QString&, MSN::Message*);
 	signals:
 		void gotCLItems (const QList<QObject*>&);

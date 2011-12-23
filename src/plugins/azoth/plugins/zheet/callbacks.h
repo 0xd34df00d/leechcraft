@@ -141,6 +141,7 @@ namespace Zheet
 	signals:
 		void finishedConnecting ();
 		void gotBuddies (const QList<MSN::Buddy*>&);
+		void removedBuddy (const QString& cid, const QString& pass);
 		void gotGroups (const QList<MSN::Group>&);
 		void removedGroup (const QString&);
 		void renamedGroup (const QString& id, const QString& newName);

@@ -245,6 +245,8 @@ namespace Zheet
 			bool removed, std::string contactId, std::string passport)
 	{
 		qDebug () << Q_FUNC_INFO << removed << ZheetUtil::FromStd (contactId) << ZheetUtil::FromStd (passport);
+		if (removed)
+			emit removedBuddy (ZheetUtil::FromStd (contactId), ZheetUtil::FromStd (passport));
 	}
 
 	void Callbacks::enabledContactOnAddressBook (MSN::NotificationServerConnection *conn,

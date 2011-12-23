@@ -37,7 +37,6 @@ namespace Zheet
 	: QObject (acc)
 	, Account_ (acc)
 	, Buddy_ (buddy)
-	, ContactID_ (ZheetUtil::FromStd (buddy.properties.at ("contactId")))
 	{
 		Q_FOREACH (auto grp, buddy.groups)
 			Groups_ << ZheetUtil::FromStd (grp->name);
@@ -45,6 +44,19 @@ namespace Zheet
 		qDebug () << Q_FUNC_INFO << Groups_;
 		std::for_each (buddy.properties.cbegin (), buddy.properties.cend (),
 				[] (decltype (*buddy.properties.cbegin ()) item) { qDebug () << item.first.c_str () << ": " << item.second.c_str (); });
+
+		try
+		{
+			ContactID_ = ZheetUtil::FromStd (buddy.properties.at ("contactId"));
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to get contact ID for"
+					<< GetHumanReadableID ()
+					<< e.what ();
+			throw;
+		}
 	}
 
 	void MSNBuddyEntry::HandleMessage (MSNMessage *msg)

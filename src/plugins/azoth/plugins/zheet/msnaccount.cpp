@@ -57,6 +57,10 @@ namespace Zheet
 				this,
 				SLOT (handleGotBuddies (QList<MSN::Buddy*>)));
 		connect (CB_,
+				SIGNAL (removedBuddy (QString, QString)),
+				this,
+				SLOT (handleRemovedBuddy (QString, QString)));
+		connect (CB_,
 				SIGNAL (weChangedState (State)),
 				this,
 				SLOT (handleWeChangedState (State)));
@@ -335,7 +339,30 @@ namespace Zheet
 			if (Entries_.contains (id))
 				continue;
 
-			auto entry = new MSNBuddyEntry (*buddy, this);
+			if (buddy->lists & MSN::LST_BL)
+			{
+				BL_ << ZheetUtil::FromStd (buddy->userName);
+				continue;
+			}
+
+			if (buddy->lists & MSN::LST_PL)
+			{
+				qDebug () << Q_FUNC_INFO
+						<< "not handling buddies on pending list [yet]";
+				continue;
+			}
+
+			MSNBuddyEntry *entry = 0;
+			try
+			{
+				entry = new MSNBuddyEntry (*buddy, this);
+			}
+			catch (const std::exception&)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "failed to create buddy";
+				continue;
+			}
 
 			result << entry;
 			Entries_ [id] = entry;
@@ -345,6 +372,24 @@ namespace Zheet
 		}
 
 		emit gotCLItems (result);
+	}
+
+	void MSNAccount::handleRemovedBuddy (const QString& cid, const QString& pass)
+	{
+		Entries_.remove (pass);
+		auto buddy = CID2Entry_.take (cid);
+		if (!buddy)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown buddy"
+					<< cid
+					<< pass;
+			return;
+		}
+
+		emit removedCLItems (QList<QObject*> () << buddy);
+
+		buddy->deleteLater ();
 	}
 
 	void MSNAccount::handleGotMessage (const QString& from, MSN::Message *msnMsg)
