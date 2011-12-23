@@ -21,27 +21,33 @@
 			<item type="combobox" property="DownloadPeriod">
 				<label value="Send bookmarks to selected services every"/>
 				<option name="1" >
+					<label value="15 minutes" />
+				</option>
+				<option name="2" >
+					<label value="30 minutes" />
+				</option>
+				<option name="4" >
 					<label value="hour" />
 				</option>
-				<option name="2">
+				<option name="8">
 					<label value="2 hours" />
 				</option>
-				<option name="4">
+				<option name="16">
 					<label value="4 hours" />
 				</option>
-				<option name="8" default="true">
+				<option name="32" default="true">
 					<label value="8 hours" />
 				</option>
-				<option name="12">
+				<option name="48">
 					<label value="12 hours" />
 				</option>
-				<option name="24">
+				<option name="96">
 					<label value="day" />
 				</option>
-				<option name="168">
+				<option name="672">
 					<label value="week" />
 				</option>
-				<option name="720">
+				<option name="2880">
 					<label value="month" />
 				</option>
 			</item>
@@ -51,27 +57,33 @@
 			<item type="combobox" property="UploadPeriod" >
 				<label value="Send bookmarks to selected services every"/>
 				<option name="1" >
+					<label value="15 minutes" />
+				</option>
+				<option name="2" >
+					<label value="30 minutes" />
+				</option>
+				<option name="4" >
 					<label value="hour" />
 				</option>
-				<option name="2">
+				<option name="8">
 					<label value="2 hours" />
 				</option>
-				<option name="4">
+				<option name="16">
 					<label value="4 hours" />
 				</option>
-				<option name="8" default="true">
+				<option name="32" default="true">
 					<label value="8 hours" />
 				</option>
-				<option name="12">
+				<option name="48">
 					<label value="12 hours" />
 				</option>
-				<option name="24">
+				<option name="96">
 					<label value="day" />
 				</option>
-				<option name="168">
+				<option name="672">
 					<label value="week" />
 				</option>
-				<option name="720">
+				<option name="2880">
 					<label value="month" />
 				</option>
 			</item>
