@@ -50,7 +50,11 @@ namespace Zheet
 
 	void MSNBuddyEntry::UpdateState (State st)
 	{
+		const auto& oldVars = Variants ();
 		Status_.State_ = st;
+
+		if (oldVars != Variants ())
+			emit availableVariantsChanged (Variants ());
 		emit statusChanged (Status_, QString ());
 	}
 
@@ -125,7 +129,9 @@ namespace Zheet
 
 	QStringList MSNBuddyEntry::Variants () const
 	{
-		return QStringList (QString ());
+		return Status_.State_ == SOffline ?
+				QStringList () :
+				QStringList (QString ());
 	}
 
 	QObject* MSNBuddyEntry::CreateMessage (IMessage::MessageType type, const QString&, const QString& body)
@@ -154,7 +160,7 @@ namespace Zheet
 
 	EntryStatus MSNBuddyEntry::GetStatus (const QString&) const
 	{
-		return EntryStatus ();
+		return Status_;
 	}
 
 	QImage MSNBuddyEntry::GetAvatar () const
