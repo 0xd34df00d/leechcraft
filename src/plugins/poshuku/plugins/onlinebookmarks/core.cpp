@@ -335,11 +335,20 @@ namespace OnlineBookmarks
 	void Core::uploadBookmarks ()
 	{
 		QVariantList result = GetAllBookmarks ();
+		IAccount *account = 0;
+
+		Q_FOREACH (QObject *accObj, ActiveAccounts_)
+		{
+			account = qobject_cast<IAccount*> (accObj);
+			if (!account)
+				continue;
+			account->SetLastUploadDateTime (QDateTime::currentDateTime ());
+		}
+
 		if (result.isEmpty ())
 			return;
 
 		const int type = XmlSettingsManager::Instance ()->Property ("UploadType", 0).toInt ();
-		IAccount *account = 0;
 		IBookmarksService *ibs = 0;
 		switch (type)
 		{
@@ -408,39 +417,39 @@ namespace OnlineBookmarks
 
 	void Core::checkDownloadPeriod ()
 	{
-		uint downloadPeriod = XmlSettingsManager::Instance ()->
-				property ("DownloadPeriod").toInt () * 3600;
-		uint lastCheckTimeInSec = XmlSettingsManager::Instance ()->
+		long downloadPeriod = XmlSettingsManager::Instance ()->
+				property ("DownloadPeriod").toInt () * 900;
+		long lastCheckTimeInSec = XmlSettingsManager::Instance ()->
 				Property ("LastDownloadCheck", 0).toInt ();
 
-		uint diff = lastCheckTimeInSec + downloadPeriod - QDateTime::currentDateTime ().toTime_t ();
+		long diff = lastCheckTimeInSec + downloadPeriod - QDateTime::currentDateTime ().toTime_t ();
 		if (diff > 0)
-			DownloadTimer_->start (diff);
+			DownloadTimer_->start (diff * 1000);
 		else
 		{
 			downloadBookmarks ();
 			XmlSettingsManager::Instance ()->setProperty ("LastDownloadCheck",
 					QDateTime::currentDateTime ().toTime_t ());
-			DownloadTimer_->start (downloadPeriod);
+			DownloadTimer_->start (downloadPeriod * 1000);
 		}
 	}
 
 	void Core::checkUploadPeriod ()
 	{
-		uint uploadPeriod = XmlSettingsManager::Instance ()->
-				property ("UploadPeriod").toInt () * 3600;
-		uint lastCheckTimeInSec = XmlSettingsManager::Instance ()->
+		long uploadPeriod = XmlSettingsManager::Instance ()->
+				property ("UploadPeriod").toInt () * 900;
+		long lastCheckTimeInSec = XmlSettingsManager::Instance ()->
 				Property ("LastUploadCheck", 0).toInt ();
 
-		uint diff = lastCheckTimeInSec + uploadPeriod - QDateTime::currentDateTime ().toTime_t ();
+		long diff = lastCheckTimeInSec + uploadPeriod - QDateTime::currentDateTime ().toTime_t ();
 		if (diff > 0)
-			UploadTimer_->start (diff);
+			UploadTimer_->start (diff * 1000);
 		else
 		{
 			uploadBookmarks ();
 			XmlSettingsManager::Instance ()->setProperty ("LastUploadCheck",
 					QDateTime::currentDateTime ().toTime_t ());
-			DownloadTimer_->start (uploadPeriod);
+			UploadTimer_->start (uploadPeriod * 1000);
 		}
 	}
 
