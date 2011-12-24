@@ -20,6 +20,7 @@
 #define PLUGINS_AZOTH_PLUGINS_ZHEET_SBMANAGER_H
 #include <QObject>
 #include <QHash>
+#include <QSet>
 
 namespace MSN
 {
@@ -46,10 +47,12 @@ namespace Zheet
 
 		QHash<const MSNBuddyEntry*, QList<MSNMessage*>> PendingMessages_;
 		QHash<const MSNBuddyEntry*, MSN::SwitchboardServerConnection*> Switchboards_;
+		QSet<const MSNBuddyEntry*> PendingNudges_;
 	public:
 		SBManager (Callbacks*, MSNAccount*);
 
 		void SendMessage (MSNMessage*, const MSNBuddyEntry*);
+		void SendNudge (const QString&, const MSNBuddyEntry*);
 	private slots:
 		void handleGotSB (MSN::SwitchboardServerConnection*, const MSNBuddyEntry*);
 		void handleBuddyJoined (MSN::SwitchboardServerConnection*, const MSNBuddyEntry*);

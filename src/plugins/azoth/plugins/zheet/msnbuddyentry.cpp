@@ -26,6 +26,7 @@
 #include "zheetutil.h"
 #include "core.h"
 #include "groupmanager.h"
+#include "sbmanager.h"
 
 namespace LeechCraft
 {
@@ -211,6 +212,16 @@ namespace Zheet
 
 	void MSNBuddyEntry::MarkMsgsRead ()
 	{
+	}
+
+	IAdvancedCLEntry::AdvancedFeatures MSNBuddyEntry::GetAdvancedFeatures () const
+	{
+		return AFSupportsAttention;
+	}
+
+	void MSNBuddyEntry::DrawAttention (const QString& text, const QString&)
+	{
+		Account_->GetSBManager ()->SendNudge (text, this);
 	}
 }
 }

@@ -56,6 +56,18 @@ namespace Zheet
 		Account_->GetNSConnection ()->requestSwitchboardConnection (entry);
 	}
 
+	void SBManager::SendNudge (const QString&, const MSNBuddyEntry *entry)
+	{
+		if (Switchboards_.contains (entry))
+		{
+			Switchboards_ [entry]->sendNudge ();
+			return;
+		}
+
+		PendingNudges_ << entry;
+		Account_->GetNSConnection ()->requestSwitchboardConnection (entry);
+	}
+
 	void SBManager::handleGotSB (MSN::SwitchboardServerConnection *conn, const MSNBuddyEntry *entry)
 	{
 		conn->inviteUser (ZheetUtil::ToStd (entry->GetHumanReadableID ()));
@@ -67,6 +79,9 @@ namespace Zheet
 
 		Q_FOREACH (MSNMessage *msg, PendingMessages_.take (entry))
 			SendMessage (msg, entry);
+
+		if (PendingNudges_.remove (entry))
+			SendNudge (QString (), entry);
 	}
 }
 }

@@ -22,6 +22,7 @@
 #include <QStringList>
 #include <msn/buddy.h>
 #include <interfaces/iclentry.h>
+#include <interfaces/iadvancedclentry.h>
 
 namespace MSN
 {
@@ -39,9 +40,10 @@ namespace Zheet
 
 	class MSNBuddyEntry : public QObject
 						, public ICLEntry
+						, public IAdvancedCLEntry
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ICLEntry);
+		Q_INTERFACES (LeechCraft::Azoth::ICLEntry LeechCraft::Azoth::IAdvancedCLEntry);
 
 		MSNAccount *Account_;
 
@@ -86,6 +88,10 @@ namespace Zheet
 		QList<QAction*> GetActions () const;
 		QMap<QString, QVariant> GetClientInfo (const QString&) const;
 		void MarkMsgsRead ();
+
+		// IAdvancedCLEntry
+		AdvancedFeatures GetAdvancedFeatures () const;
+		void DrawAttention (const QString&, const QString&);
 	signals:
 		void gotMessage (QObject*);
 		void statusChanged (const EntryStatus&, const QString&);
@@ -97,6 +103,12 @@ namespace Zheet
 		void chatPartStateChanged (const ChatPartState&, const QString&);
 		void permsChanged ();
 		void entryGenerallyChanged ();
+
+		void attentionDrawn (const QString&, const QString&);
+		void moodChanged (const QString&);
+		void activityChanged (const QString&);
+		void tuneChanged (const QString&);
+		void locationChanged (const QString&);
 	};
 }
 }
