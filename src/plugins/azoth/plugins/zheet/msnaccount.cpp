@@ -326,6 +326,16 @@ namespace Zheet
 		return 0;
 	}
 
+	QObject* MSNAccount::GetSelfContact () const
+	{
+		return 0;
+	}
+
+	QIcon MSNAccount::GetAccountIcon () const
+	{
+		return Proto_->GetProtocolIcon ();
+	}
+
 	void MSNAccount::handleConnected ()
 	{
 		Connecting_ = false;

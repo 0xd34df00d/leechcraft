@@ -20,9 +20,10 @@
 #define PLUGINS_AZOTH_PLUGINS_ZHEET_MSNACCOUNT_H
 #include <QObject>
 #include <QSet>
-#include <interfaces/iaccount.h>
 #include <msn/passport.h>
 #include <msn/util.h>
+#include <interfaces/iaccount.h>
+#include <interfaces/iextselfinfoaccount.h>
 
 namespace MSN
 {
@@ -46,9 +47,10 @@ namespace Zheet
 
 	class MSNAccount : public QObject
 					 , public IAccount
+					 , public IExtSelfInfoAccount
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IAccount);
+		Q_INTERFACES (LeechCraft::Azoth::IAccount LeechCraft::Azoth::IExtSelfInfoAccount);
 
 		MSNProtocol *Proto_;
 
@@ -111,6 +113,10 @@ namespace Zheet
 		void RequestAuth (const QString&, const QString&, const QString&, const QStringList&);
 		void RemoveEntry (QObject*);
 		QObject* GetTransferManager () const;
+
+		// IExtSelfInfoAccount
+		QObject* GetSelfContact () const;
+		QIcon GetAccountIcon () const;
 	private slots:
 		void handleConnected ();
 		void handleWeChangedState (State);
