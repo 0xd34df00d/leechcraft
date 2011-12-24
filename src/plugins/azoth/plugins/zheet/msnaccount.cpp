@@ -29,6 +29,7 @@
 #include "msnmessage.h"
 #include "sbmanager.h"
 #include "groupmanager.h"
+#include "manageblacklistdialog.h"
 
 namespace LeechCraft
 {
@@ -47,6 +48,7 @@ namespace Zheet
 	, SB_ (new SBManager (CB_, this))
 	, GroupManager_ (new GroupManager (CB_, this))
 	, Connecting_ (false)
+	, ActionManageBL_ (new QAction (tr ("Manage blacklist..."), this))
 	{
 		connect (CB_,
 				SIGNAL (finishedConnecting ()),
@@ -61,6 +63,10 @@ namespace Zheet
 				this,
 				SLOT (handleRemovedBuddy (QString, QString)));
 		connect (CB_,
+				SIGNAL (removedBuddy (MSN::ContactList, QString)),
+				this,
+				SLOT (handleRemovedBuddy (MSN::ContactList, QString)));
+		connect (CB_,
 				SIGNAL (weChangedState (State)),
 				this,
 				SLOT (handleWeChangedState (State)));
@@ -72,6 +78,11 @@ namespace Zheet
 				SIGNAL (buddyChangedStatus (QString, State)),
 				this,
 				SLOT (handleBuddyChangedStatus (QString, State)));
+
+		connect (ActionManageBL_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleManageBL ()));
 	}
 
 	void MSNAccount::Init ()
@@ -163,6 +174,16 @@ namespace Zheet
 		return CID2Entry_ [cid];
 	}
 
+	QSet<QString> MSNAccount::GetBL () const
+	{
+		return BL_;
+	}
+
+	void MSNAccount::RemoveFromBL (const QString& pass)
+	{
+		Conn_->removeFromList (MSN::LST_BL, ZheetUtil::ToStd (pass));
+	}
+
 	QObject* MSNAccount::GetObject ()
 	{
 		return this;
@@ -208,7 +229,9 @@ namespace Zheet
 
 	QList<QAction*> MSNAccount::GetActions () const
 	{
-		return QList<QAction*> ();
+		QList<QAction*> result;
+		result << ActionManageBL_;
+		return result;
 	}
 
 	void MSNAccount::QueryInfo (const QString&)
@@ -392,6 +415,12 @@ namespace Zheet
 		buddy->deleteLater ();
 	}
 
+	void MSNAccount::handleRemovedBuddy (MSN::ContactList list, const QString& pass)
+	{
+		if (list == MSN::LST_BL)
+			BL_.remove (pass);
+	}
+
 	void MSNAccount::handleGotMessage (const QString& from, MSN::Message *msnMsg)
 	{
 		if (!Entries_.contains (from))
@@ -405,6 +434,13 @@ namespace Zheet
 		auto entry = Entries_ [from];
 		MSNMessage *msg = new MSNMessage (msnMsg, entry);
 		entry->HandleMessage (msg);
+	}
+
+	void MSNAccount::handleManageBL ()
+	{
+		auto dia = new ManageBlackListDialog (this);
+		dia->setAttribute (Qt::WA_DeleteOnClose, true);
+		dia->show ();
 	}
 }
 }

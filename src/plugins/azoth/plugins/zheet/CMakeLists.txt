@@ -27,6 +27,7 @@ SET (ZHEET_SRCS
 	msnmessage.cpp
 	sbmanager.cpp
 	groupmanager.cpp
+	manageblacklistdialog.cpp
 	)
 SET (ZHEET_HEADERS
 	zheet.h
@@ -40,9 +41,11 @@ SET (ZHEET_HEADERS
 	msnmessage.h
 	sbmanager.h
 	groupmanager.h
+	manageblacklistdialog.h
 	)
 SET (ZHEET_FORMS
 	msnaccountconfigwidget.ui
+	manageblacklistdialog.ui
 	)
 #SET (ZHEET_RESOURCES azothzheetresources.qrc)
 #CreateTrVars ("azoth_zheet" "de;en;fr;it;ru_RU;uk_UA" ZHEET_TRANSLATIONS ZHEET_COMPILED_TRANSLATIONS)

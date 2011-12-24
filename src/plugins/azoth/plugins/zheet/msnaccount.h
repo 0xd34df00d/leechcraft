@@ -22,6 +22,7 @@
 #include <QSet>
 #include <interfaces/iaccount.h>
 #include <msn/passport.h>
+#include <msn/util.h>
 
 namespace MSN
 {
@@ -69,6 +70,8 @@ namespace Zheet
 		QHash<QString, MSNBuddyEntry*> CID2Entry_;
 
 		QSet<QString> BL_;
+
+		QAction *ActionManageBL_;
 	public:
 		MSNAccount (const QString&, MSNProtocol* = 0);
 		void Init ();
@@ -84,6 +87,9 @@ namespace Zheet
 
 		MSNBuddyEntry* GetBuddy (const QString&) const;
 		MSNBuddyEntry* GetBuddyByCID (const QString&) const;
+
+		QSet<QString> GetBL () const;
+		void RemoveFromBL (const QString&);
 
 		// IAccount
 		QObject* GetObject ();
@@ -111,7 +117,10 @@ namespace Zheet
 		void handleBuddyChangedStatus (const QString&, State);
 		void handleGotBuddies (const QList<MSN::Buddy*>&);
 		void handleRemovedBuddy (const QString&, const QString&);
+		void handleRemovedBuddy (MSN::ContactList, const QString&);
 		void handleGotMessage (const QString&, MSN::Message*);
+
+		void handleManageBL ();
 	signals:
 		void gotCLItems (const QList<QObject*>&);
 		void removedCLItems (const QList<QObject*>&);
