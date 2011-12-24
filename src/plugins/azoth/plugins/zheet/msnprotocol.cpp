@@ -69,7 +69,7 @@ namespace Zheet
 
 	QIcon MSNProtocol::GetProtocolIcon () const
 	{
-		return QIcon ();
+		return QIcon (":/plugins/azoth/plugins/zheet/resources/images/wlm.png");
 	}
 
 	QByteArray MSNProtocol::GetProtocolID () const

@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="/plugins/azoth/plugins/zheet">
+    <file>resources/images/wlm.png</file>
+  </qresource>
+</RCC>
