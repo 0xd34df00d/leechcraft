@@ -66,6 +66,11 @@ namespace Zheet
 		emit gotMessage (msg);
 	}
 
+	void MSNBuddyEntry::HandleNudge ()
+	{
+		emit attentionDrawn (QString (), QString ());
+	}
+
 	void MSNBuddyEntry::UpdateState (State st)
 	{
 		const auto& oldVars = Variants ();

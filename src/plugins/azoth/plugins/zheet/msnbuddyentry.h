@@ -58,6 +58,7 @@ namespace Zheet
 		MSNBuddyEntry (const MSN::Buddy&, MSNAccount*);
 
 		void HandleMessage (MSNMessage*);
+		void HandleNudge ();
 		void UpdateState (State);
 
 		void AddGroup (const QString&);

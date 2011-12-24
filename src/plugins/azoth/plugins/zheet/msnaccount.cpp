@@ -78,6 +78,10 @@ namespace Zheet
 				SIGNAL (buddyChangedStatus (QString, State)),
 				this,
 				SLOT (handleBuddyChangedStatus (QString, State)));
+		connect (CB_,
+				SIGNAL (gotNudge (QString)),
+				this,
+				SLOT (handleGotNudge (QString)));
 
 		connect (ActionManageBL_,
 				SIGNAL (triggered ()),
@@ -444,6 +448,19 @@ namespace Zheet
 		auto entry = Entries_ [from];
 		MSNMessage *msg = new MSNMessage (msnMsg, entry);
 		entry->HandleMessage (msg);
+	}
+
+	void MSNAccount::handleGotNudge (const QString& from)
+	{
+		if (!Entries_.contains (from))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "got a nudge from unknown buddy"
+					<< from;
+			return;
+		}
+
+		Entries_ [from]->HandleNudge ();
 	}
 
 	void MSNAccount::handleManageBL ()

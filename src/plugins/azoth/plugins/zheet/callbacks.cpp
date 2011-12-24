@@ -304,7 +304,7 @@ namespace Zheet
 
 	void Callbacks::gotNudge (MSN::SwitchboardServerConnection *conn, MSN::Passport username)
 	{
-
+		emit gotNudge (ZheetUtil::FromStd (username));
 	}
 
 	void Callbacks::gotVoiceClipNotification (MSN::SwitchboardServerConnection *conn, MSN::Passport username, std::string msnobject)

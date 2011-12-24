@@ -125,6 +125,7 @@ namespace Zheet
 		void handleRemovedBuddy (const QString&, const QString&);
 		void handleRemovedBuddy (MSN::ContactList, const QString&);
 		void handleGotMessage (const QString&, MSN::Message*);
+		void handleGotNudge (const QString&);
 
 		void handleManageBL ();
 	signals:
