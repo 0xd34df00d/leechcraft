@@ -199,6 +199,7 @@ namespace Zheet
 	void Callbacks::removedListEntry (MSN::NotificationServerConnection *conn,
 			MSN::ContactList list, MSN::Passport buddy)
 	{
+		emit removedBuddy (list, ZheetUtil::FromStd (buddy));
 	}
 
 	void Callbacks::addedGroup (MSN::NotificationServerConnection *conn,
