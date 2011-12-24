@@ -28,8 +28,8 @@ namespace Zheet
 {
 	ManageBlackListDialog::ManageBlackListDialog (MSNAccount *acc, QWidget *parent)
 	: QDialog (parent)
-	, Account_ (acc)
 	, Model_ (new QStandardItemModel (this))
+	, Account_ (acc)
 	{
 		Ui_.setupUi (this);
 
