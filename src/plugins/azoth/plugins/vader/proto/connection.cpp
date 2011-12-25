@@ -169,6 +169,8 @@ namespace Proto
 	{
 		PingTimer_->stop ();
 		Socket_->disconnectFromHost ();
+
+		PE_.Clear ();
 	}
 
 	QByteArray Connection::Read ()

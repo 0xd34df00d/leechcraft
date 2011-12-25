@@ -63,6 +63,11 @@ namespace Proto
 		return { h, data };
 	}
 
+	void PacketExtractor::Clear ()
+	{
+		Buffer_.clear ();
+	}
+
 	PacketExtractor& PacketExtractor::operator+= (const QByteArray& ba)
 	{
 		Buffer_ += ba;

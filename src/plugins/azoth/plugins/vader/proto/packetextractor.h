@@ -38,6 +38,8 @@ namespace Proto
 		bool MayGetPacket () const;
 		HalfPacket GetPacket ();
 
+		void Clear ();
+
 		PacketExtractor& operator+= (const QByteArray&);
 	};
 }
