@@ -24,6 +24,8 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+class IProxyObject;
+
 namespace Vader
 {
 	class MRIMProtocol;
@@ -33,10 +35,14 @@ namespace Vader
 		Q_OBJECT
 
 		MRIMProtocol *Proto_;
+		IProxyObject *Proxy_;
 
 		Core ();
 	public:
 		static Core& Instance ();
+
+		void SetProxy (QObject*);
+		IProxyObject* GetProxy () const;
 
 		MRIMProtocol* GetProtocol () const;
 	};

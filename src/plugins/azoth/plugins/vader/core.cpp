@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "core.h"
+#include <interfaces/iproxyobject.h>
 #include "mrimprotocol.h"
 
 namespace LeechCraft
@@ -27,6 +28,7 @@ namespace Vader
 {
 	Core::Core ()
 	: Proto_ (new MRIMProtocol ())
+	, Proxy_ (0)
 	{
 	}
 
@@ -34,6 +36,16 @@ namespace Vader
 	{
 		static Core c;
 		return c;
+	}
+
+	void Core::SetProxy (QObject *proxy)
+	{
+		Proxy_ = qobject_cast<IProxyObject*> (proxy);
+	}
+
+	IProxyObject* Core::GetProxy() const
+	{
+		return Proxy_;
 	}
 
 	MRIMProtocol* Core::GetProtocol () const

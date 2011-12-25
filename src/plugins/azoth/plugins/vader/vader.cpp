@@ -52,7 +52,7 @@ namespace Vader
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("Support for the MRIM (Mail.ru) protocol.");
+		return tr ("Support for the Mail.ru Agent protocol.");
 	}
 
 	QIcon Plugin::GetIcon () const
@@ -74,11 +74,12 @@ namespace Vader
 
 	QList<QObject*> Plugin::GetProtocols () const
 	{
-		return QList<QObject*> ();
+		return QList<QObject*> () << Core::Instance ().GetProtocol ();
 	}
 
 	void Plugin::initPlugin (QObject *proxy)
 	{
+		Core::Instance ().SetProxy (proxy);
 	}
 }
 }
