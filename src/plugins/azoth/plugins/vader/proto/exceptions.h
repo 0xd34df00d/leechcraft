@@ -16,9 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "packetextractor.h"
-#include "exceptions.h"
-#include "headers.h"
+#ifndef PLUGINS_AZOTH_PLUGINS_VADER_PROTO_EXCEPTIONS_H
+#define PLUGINS_AZOTH_PLUGINS_VADER_PROTO_EXCEPTIONS_H
+#include <stdexcept>
 
 namespace LeechCraft
 {
@@ -28,39 +28,20 @@ namespace Vader
 {
 namespace Proto
 {
-	bool PacketExtractor::MayGetPacket () const
+	class InvalidPacket : public std::runtime_error
 	{
-		try
-		{
-			QByteArray tmp (Buffer_);
-			Header h (tmp);
-			if (h.DataLength_ > tmp.size ())
-				return false;
-		}
-		catch (const TooShortBA&)
-		{
-			return false;
-		}
+	public:
+		explicit InvalidPacket (const std::string&);
+	};
 
-		return true;
-	}
-
-	HalfPacket PacketExtractor::GetPacket ()
+	class TooShortBA : public std::runtime_error
 	{
-		Header h (Buffer_);
-		const QByteArray& data = Buffer_.left (h.DataLength_);
-		if (h.DataLength_)
-			Buffer_ = Buffer_.mid (h.DataLength_);
-		return { h, data };
-	}
+	public:
+		explicit TooShortBA (const std::string&);
+	};
+}
+}
+}
+}
 
-	PacketExtractor& PacketExtractor::operator+= (const QByteArray& ba)
-	{
-		Buffer_ += ba;
-
-		return *this;
-	}
-}
-}
-}
-}
+#endif

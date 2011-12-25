@@ -19,6 +19,7 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_VADER_PROTO_PACKETEXTRACTOR_H
 #define PLUGINS_AZOTH_PLUGINS_VADER_PROTO_PACKETEXTRACTOR_H
 #include <QByteArray>
+#include "halfpacket.h"
 
 namespace LeechCraft
 {
@@ -28,11 +29,14 @@ namespace Vader
 {
 namespace Proto
 {
+	struct HalfPacket;
+
 	class PacketExtractor
 	{
 		QByteArray Buffer_;
 	public:
 		bool MayGetPacket () const;
+		HalfPacket GetPacket ();
 
 		PacketExtractor& operator+= (const QByteArray&);
 	};

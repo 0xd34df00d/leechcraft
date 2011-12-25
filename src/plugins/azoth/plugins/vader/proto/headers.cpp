@@ -17,9 +17,9 @@
  **********************************************************************/
 
 #include "headers.h"
-#include <stdexcept>
 #include <QTextCodec>
 #include <QtEndian>
+#include "exceptions.h"
 
 namespace LeechCraft
 {
@@ -86,7 +86,7 @@ namespace Proto
 		quint32 size = 0;
 		FromMRIM (lps, size);
 		if (size > static_cast<quint32> (lps.size ()))
-			throw std::runtime_error ("Unable to deserialize QString: premature end");
+			throw TooShortBA ("Unable to deserialize QString: premature end");
 
 		const QByteArray& toDecode = lps.left (size);
 		lps = lps.mid (size);
@@ -97,7 +97,7 @@ namespace Proto
 	void FromMRIM (QByteArray& ba, quint32& res)
 	{
 		if (ba.size () < 4)
-			throw std::runtime_error ("Unable to deserialize quint32: premature end");
+			throw TooShortBA ("Unable to deserialize quint32: premature end");
 
 		const QByteArray& toDecode = ba.left (4);
 		ba = ba.mid (4);

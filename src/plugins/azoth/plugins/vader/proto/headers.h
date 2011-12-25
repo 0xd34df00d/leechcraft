@@ -42,6 +42,7 @@ namespace Proto
 
 		Header (QByteArray&);
 		Header (quint32 msgType = 0, quint32 seq = 0);
+
 		QByteArray Serialize () const;
 	};
 
