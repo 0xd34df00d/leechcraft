@@ -163,6 +163,100 @@ namespace Proto
 	void Connection::ContactList (HalfPacket hp)
 	{
 		qDebug () << Q_FUNC_INFO << hp.Data_.size ();
+		quint32 result = 0;
+		FromMRIM (hp.Data_, result);
+
+		switch (result)
+		{
+		case CLResponse::IntErr:
+			qWarning () << Q_FUNC_INFO
+					<< "internal server error";
+			return;
+		case CLResponse::Error:
+			qWarning () << Q_FUNC_INFO
+					<< "error";
+			return;
+		case CLResponse::OK:
+			break;
+		default:
+			qWarning () << Q_FUNC_INFO
+					<< "unknown response code"
+					<< result;
+			return;
+		}
+
+		quint32 groupsNum = 0;
+		QByteArray gMask, cMask;
+		FromMRIM (hp.Data_, groupsNum, gMask, cMask);
+
+		qDebug () << groupsNum << "groups; masks:" << gMask << cMask;
+		gMask = gMask.mid (2);
+		cMask = cMask.mid (6);
+
+		auto skip = [&hp] (const QByteArray& mask)
+		{
+			for (int i = 0; i < mask.size (); ++i)
+				switch (mask [i])
+				{
+				case 'u':
+				{
+					quint32 dummy;
+					FromMRIM (hp.Data_, dummy);
+					break;
+				}
+				case 's':
+				{
+					QByteArray ba;
+					FromMRIM (hp.Data_, ba);
+					break;
+				}
+				}
+		};
+
+		for (quint32 i = 0; i < groupsNum; ++i)
+		{
+			quint32 flags = 0;
+			QByteArray nameBA;
+			FromMRIM (hp.Data_, flags, nameBA);
+			const QString& name = FromMRIM16 (nameBA);
+
+			qDebug () << "got group" << name << flags;
+			try
+			{
+				skip (gMask);
+			}
+			catch (const TooShortBA&)
+			{
+				qDebug () << "got premature end in additional groups part, but that's OK";
+			}
+		}
+
+		while (!hp.Data_.isEmpty ())
+		{
+			try
+			{
+				quint32 flags = 0, group = 0, serverFlags = 0, status = 0;
+				QByteArray emailBA, aliasBA;
+				FromMRIM (hp.Data_, flags, group, emailBA, aliasBA, serverFlags, status);
+				const QString& email = FromMRIM1251 (emailBA);
+				const QString& alias = FromMRIM16 (aliasBA);
+
+				qDebug () << "got buddy" << flags << group << email << alias << serverFlags << status;
+
+				try
+				{
+					skip (cMask);
+				}
+				catch (const TooShortBA&)
+				{
+					qDebug () << "got premature end in additional CL part, but that's OK";
+				}
+			}
+			catch (const TooShortBA&)
+			{
+				break;
+			}
+		}
 	}
 
 	void Connection::Disconnect ()
