@@ -2692,6 +2692,7 @@ namespace Azoth
 		}
 
 		ServiceDiscoveryWidget *w = new ServiceDiscoveryWidget;
+		w->SetAccount (sender ());
 		w->SetSDSession (sess);
 		emit gotSDWidget (w);
 	}

@@ -50,6 +50,7 @@ namespace Azoth
 
 		ServiceDiscoveryWidget (QWidget* = 0);
 
+		void SetAccount (QObject*);
 		void SetSDSession (ISDSession*);
 
 		TabClassInfo GetTabClassInfo () const;

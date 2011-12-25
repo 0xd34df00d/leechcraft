@@ -57,7 +57,7 @@ namespace Azoth
 				this,
 				SLOT (discover ()));
 		connect (AddressLine_,
-				SIGNAL (textChanged (const QString&)),
+				SIGNAL (textEdited (const QString&)),
 				this,
 				SLOT (handleDiscoveryAddressChanged ()));
 		connect (AddressLine_,
@@ -120,6 +120,15 @@ namespace Azoth
 	QToolBar* ServiceDiscoveryWidget::GetToolBar () const
 	{
 		return Toolbar_;
+	}
+
+	void ServiceDiscoveryWidget::SetAccount (QObject *obj)
+	{
+		const int pos = AccountBox_->findData (QVariant::fromValue<QObject*> (obj));
+		if (pos == -1)
+			return;
+
+		AccountBox_->setCurrentIndex (pos);
 	}
 
 	void ServiceDiscoveryWidget::SetSDSession (ISDSession *session)
