@@ -201,6 +201,7 @@ namespace Xoox
 
 		QString GetJID () const;
 		QString GetNick () const;
+		void JoinRoom (const QString&, const QString&);
 		void JoinRoom (const QString&, const QString&, const QString&);
 
 		boost::shared_ptr<ClientConnection> GetClientConnection () const;

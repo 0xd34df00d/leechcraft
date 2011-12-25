@@ -44,6 +44,7 @@ namespace Xoox
 		ID2Action_ ["add-to-roster"] = [this] (const ItemInfo& ii) { AddToRoster (ii); };
 		ID2Action_ ["register"] = [this] (const ItemInfo& ii) { Register (ii); };
 		ID2Action_ ["execute-ad-hoc"] = [this] (const ItemInfo& ii) { ExecuteAdHoc (ii); };
+		ID2Action_ ["join-conference"] = [this] (const ItemInfo& ii) { JoinConference (ii); };
 	}
 
 	namespace
@@ -110,6 +111,12 @@ namespace Xoox
 		QStandardItem *item = Model_->itemFromIndex (sibling);
 		const ItemInfo& info = Item2Info_ [item];
 
+		auto idHasCat = [&info] (const QString& name)
+		{
+			return std::find_if (info.Identities_.begin (), info.Identities_.end (),
+					[&name] (decltype (*info.Identities_.begin ()) id) { return id.category () == name; }) != info.Identities_.end ();
+		};
+
 		if (info.Caps_.contains ("vcard-temp") &&
 				!info.JID_.isEmpty ())
 			result << QPair<QByteArray, QString> ("view-vcard", tr ("View VCard..."));
@@ -131,6 +138,8 @@ namespace Xoox
 			if (found)
 				result << QPair<QByteArray, QString> ("execute-ad-hoc", tr ("Execute..."));
 		}
+		if (idHasCat ("conference"))
+			result << QPair<QByteArray, QString> ("join-conference", tr ("Join..."));
 
 		return result;
 	}
@@ -329,6 +338,15 @@ namespace Xoox
 				SIGNAL (finished (int)),
 				dia,
 				SLOT (deleteLater ()));
+	}
+
+	void SDSession::JoinConference (const SDSession::ItemInfo& info)
+	{
+		const QString& jid = info.JID_;
+		if (jid.isEmpty ())
+			return;
+
+		Account_->JoinRoom (jid, Account_->GetNick ());
 	}
 
 	void SDSession::handleRegistrationForm (const QXmppIq& iq)

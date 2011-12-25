@@ -645,8 +645,7 @@ namespace Xoox
 		return Nick_;
 	}
 
-	void GlooxAccount::JoinRoom (const QString& server,
-			const QString& room, const QString& nick)
+	void GlooxAccount::JoinRoom (const QString& jid, const QString& nick)
 	{
 		if (!ClientConnection_)
 		{
@@ -655,13 +654,18 @@ namespace Xoox
 			return;
 		}
 
-		QString jidStr = QString ("%1@%2")
-				.arg (room, server);
-
-		RoomCLEntry *entry = ClientConnection_->JoinRoom (jidStr, nick);
+		RoomCLEntry *entry = ClientConnection_->JoinRoom (jid, nick);
 		if (!entry)
 			return;
 		emit gotCLItems (QList<QObject*> () << entry);
+	}
+
+	void GlooxAccount::JoinRoom (const QString& server,
+			const QString& room, const QString& nick)
+	{
+		QString jidStr = QString ("%1@%2")
+				.arg (room, server);
+		JoinRoom (jidStr, nick);
 	}
 
 	boost::shared_ptr<ClientConnection> GlooxAccount::GetClientConnection () const

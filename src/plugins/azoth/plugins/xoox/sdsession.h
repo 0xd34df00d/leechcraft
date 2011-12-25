@@ -92,6 +92,7 @@ namespace Xoox
 		void AddToRoster (const ItemInfo&);
 		void Register (const ItemInfo&);
 		void ExecuteAdHoc (const ItemInfo&);
+		void JoinConference (const ItemInfo&);
 	private slots:
 		void handleRegistrationForm (const QXmppIq&);
 	};
