@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "mrimaccount.h"
+#include <QDataStream>
 #include <interfaces/iproxyobject.h>
 #include "proto/connection.h"
 #include "mrimprotocol.h"
@@ -131,6 +132,37 @@ namespace Vader
 	QObject* MRIMAccount::GetTransferManager () const
 	{
 		return 0;
+	}
+
+	QByteArray MRIMAccount::Serialize () const
+	{
+		QByteArray result;
+		QDataStream str (&result, QIODevice::WriteOnly);
+		str << static_cast<quint8> (1)
+			<< Name_
+			<< Login_;
+
+		return result;
+	}
+
+	MRIMAccount* MRIMAccount::Deserialize (const QByteArray& ba, MRIMProtocol *proto)
+	{
+		QDataStream str (ba);
+		quint8 ver = 0;
+		str >> ver;
+		if (ver != 1)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown version"
+					<< ver;
+			return 0;
+		}
+
+		QString name;
+		str >> name;
+		MRIMAccount *result = new MRIMAccount (name, proto);
+		str >> result->Login_;
+		return result;
 	}
 }
 }

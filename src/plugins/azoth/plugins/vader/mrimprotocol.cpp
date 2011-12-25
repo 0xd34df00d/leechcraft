@@ -18,6 +18,7 @@
 
 #include "mrimprotocol.h"
 #include <QIcon>
+#include <QSettings>
 #include <QtDebug>
 #include "mrimaccount.h"
 #include "mrimaccountconfigwidget.h"
@@ -31,6 +32,7 @@ namespace Vader
 	MRIMProtocol::MRIMProtocol (QObject *parent)
 	: QObject (parent)
 	{
+		RestoreAccounts ();
 	}
 
 	QObject* MRIMProtocol::GetObject ()
@@ -45,7 +47,10 @@ namespace Vader
 
 	QList<QObject*> MRIMProtocol::GetRegisteredAccounts ()
 	{
-		return QList<QObject*> ();
+		QList<QObject*> result;
+		Q_FOREACH (auto acc, Accounts_)
+			result << acc;
+		return result;
 	}
 
 	QObject* MRIMProtocol::GetParentProtocolPlugin () const
@@ -89,6 +94,8 @@ namespace Vader
 		Accounts_ << acc;
 
 		emit accountAdded (acc);
+
+		saveAccounts ();
 	}
 
 	QWidget* MRIMProtocol::GetMUCJoinWidget ()
@@ -98,6 +105,53 @@ namespace Vader
 
 	void MRIMProtocol::RemoveAccount (QObject*)
 	{
+	}
+
+	void MRIMProtocol::RestoreAccounts ()
+	{
+		QSettings settings (QSettings::IniFormat, QSettings::UserScope,
+				QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth_Vader_Accounts");
+		int size = settings.beginReadArray ("Accounts");
+		for (int i = 0; i < size; ++i)
+		{
+			settings.setArrayIndex (i);
+			const QByteArray& data = settings.value ("SerializedData").toByteArray ();
+			MRIMAccount *acc = MRIMAccount::Deserialize (data, this);
+			if (!acc)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "undeserializable acount"
+						<< i;
+				continue;
+			}
+
+			connect (acc,
+					SIGNAL (accountSettingsChanged ()),
+					this,
+					SLOT (saveAccounts ()));
+
+			Accounts_ << acc;
+
+			emit accountAdded (acc);
+		}
+		settings.endArray ();
+	}
+
+	void MRIMProtocol::saveAccounts ()
+	{
+		QSettings settings (QSettings::IniFormat, QSettings::UserScope,
+				QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth_Vader_Accounts");
+		settings.beginWriteArray ("Accounts");
+		for (int i = 0, size = Accounts_.size ();
+				i < size; ++i)
+		{
+			settings.setArrayIndex (i);
+			settings.setValue ("SerializedData", Accounts_.at (i)->Serialize ());
+		}
+		settings.endArray ();
+		settings.sync ();
 	}
 }
 }

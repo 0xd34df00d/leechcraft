@@ -73,6 +73,9 @@ namespace Vader
 		void RequestAuth (const QString&, const QString&, const QString&, const QStringList&);
 		void RemoveEntry (QObject*);
 		QObject* GetTransferManager () const;
+
+		QByteArray Serialize () const;
+		static MRIMAccount* Deserialize (const QByteArray&, MRIMProtocol*);
 	signals:
 		void gotCLItems (const QList<QObject*>&);
 		void removedCLItems (const QList<QObject*>&);
@@ -85,6 +88,8 @@ namespace Vader
 		void statusChanged (const EntryStatus&);
 		void mucInvitationReceived (const QVariantMap&,
 				const QString&, const QString&);
+
+		void accountSettingsChanged ();
 	};
 }
 }

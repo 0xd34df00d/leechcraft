@@ -50,6 +50,10 @@ namespace Vader
 		void RegisterAccount (const QString&, const QList<QWidget*>&);
 		QWidget* GetMUCJoinWidget ();
 		void RemoveAccount (QObject*);
+	private:
+		void RestoreAccounts ();
+	private slots:
+		void saveAccounts ();
 	signals:
 		void accountAdded (QObject*);
 		void accountRemoved (QObject*);
