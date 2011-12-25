@@ -67,7 +67,7 @@ namespace Proto
 
 	QByteArray ToMRIM (const QString& string)
 	{
-		return ToMRIM (string.size ()) + QTextCodec::codecForName ("cp-1251")->fromUnicode (string);
+		return ToMRIM (static_cast<quint32> (string.size ())) + QTextCodec::codecForName ("Windows-1251")->fromUnicode (string);
 	}
 
 	QByteArray ToMRIM (quint32 num)
@@ -92,7 +92,7 @@ namespace Proto
 		const QByteArray& toDecode = lps.left (size);
 		lps = lps.mid (size);
 
-		str = QTextCodec::codecForName ("cp-1251")->toUnicode (toDecode.constData (), size);
+		str = QTextCodec::codecForName ("Windows-1251")->toUnicode (toDecode.constData (), size);
 	}
 
 	void FromMRIM (QByteArray& ba, quint32& res)
