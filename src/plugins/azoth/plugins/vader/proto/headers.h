@@ -179,7 +179,7 @@ namespace Proto
 		const quint8 RateLimit = 0x03;
 	}
 
-	namespace CLParams
+	namespace CLResponse
 	{
 		const quint16 OK = 0x0000;
 		const quint16 Error = 0x0001;
