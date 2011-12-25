@@ -175,6 +175,8 @@ namespace Proto
 		qDebug () << string;
 
 		Disconnect ();
+
+		emit authenticationError (FromMRIM1251 (string));
 	}
 
 	void Connection::UserInfo (HalfPacket hp)
@@ -253,12 +255,14 @@ namespace Proto
 				}
 		};
 
+		QStringList groups;
 		for (quint32 i = 0; i < groupsNum; ++i)
 		{
 			quint32 flags = 0;
 			QByteArray nameBA;
 			FromMRIM (hp.Data_, flags, nameBA);
 			const QString& name = FromMRIM16 (nameBA);
+			groups << name;
 
 			qDebug () << "got group" << name << flags;
 			try
@@ -270,7 +274,9 @@ namespace Proto
 				qDebug () << "got premature end in additional groups part, but that's OK";
 			}
 		}
+		emit gotGroups (groups);
 
+		QList<ContactInfo> contacts;
 		while (!hp.Data_.isEmpty ())
 		{
 			try
@@ -282,6 +288,8 @@ namespace Proto
 				const QString& alias = FromMRIM16 (aliasBA);
 
 				qDebug () << "got buddy" << flags << group << email << alias << serverFlags << status;
+
+				contacts << ContactInfo { group, status, email, alias };
 
 				try
 				{
@@ -297,6 +305,7 @@ namespace Proto
 				break;
 			}
 		}
+		emit gotContacts (contacts);
 	}
 
 	void Connection::Disconnect ()

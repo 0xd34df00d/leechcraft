@@ -22,9 +22,11 @@
 #include <QObject>
 #include <QMap>
 #include <QAbstractSocket>
+#include <QStringList>
 #include <interfaces/iclentry.h>
 #include "packetfactory.h"
 #include "packetextractor.h"
+#include "contactinfo.h"
 
 class QTimer;
 class QSslSocket;
@@ -84,6 +86,10 @@ namespace Proto
 		void greet ();
 		void handlePing ();
 		void handleSocketError (QAbstractSocket::SocketError);
+	signals:
+		void authenticationError (const QString&);
+		void gotGroups (const QStringList&);
+		void gotContacts (const QList<ContactInfo>&);
 	};
 }
 }

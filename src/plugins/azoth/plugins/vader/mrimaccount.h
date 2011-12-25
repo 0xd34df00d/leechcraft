@@ -20,6 +20,7 @@
 #define PLUGINS_AZOTH_PLUGINS_VADER_MRIMACCOUNT_H
 #include <QObject>
 #include <interfaces/iaccount.h>
+#include "proto/contactinfo.h"
 
 namespace LeechCraft
 {
@@ -48,6 +49,8 @@ namespace Vader
 		Proto::Connection *Conn_;
 
 		EntryStatus Status_;
+
+		QStringList Groups_;
 	public:
 		MRIMAccount (const QString&, MRIMProtocol*);
 
@@ -76,6 +79,9 @@ namespace Vader
 
 		QByteArray Serialize () const;
 		static MRIMAccount* Deserialize (const QByteArray&, MRIMProtocol*);
+	private slots:
+		void handleGotGroups (const QStringList&);
+		void handleGotContacts (const QList<Proto::ContactInfo>&);
 	signals:
 		void gotCLItems (const QList<QObject*>&);
 		void removedCLItems (const QList<QObject*>&);

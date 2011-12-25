@@ -36,6 +36,14 @@ namespace Vader
 	, Name_ (name)
 	, Conn_ (new Proto::Connection (this))
 	{
+		connect (Conn_,
+				SIGNAL (gotGroups (QStringList)),
+				this,
+				SLOT (handleGotGroups (QStringList)));
+		connect (Conn_,
+				SIGNAL (gotContacts (QList<Proto::ContactInfo>)),
+				this,
+				SLOT (handleGotContacts (QList<Proto::ContactInfo>)));
 	}
 
 	void MRIMAccount::FillConfig (MRIMAccountConfigWidget *w)
@@ -170,6 +178,18 @@ namespace Vader
 		MRIMAccount *result = new MRIMAccount (name, proto);
 		str >> result->Login_;
 		return result;
+	}
+
+	void MRIMAccount::handleGotGroups (const QStringList& groups)
+	{
+		Groups_ = groups;
+	}
+
+	void MRIMAccount::handleGotContacts (const QList<Proto::ContactInfo>& contacts)
+	{
+		Q_FOREACH (const Proto::ContactInfo& contact, contacts)
+		{
+		}
 	}
 }
 }
