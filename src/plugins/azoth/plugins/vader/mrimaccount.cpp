@@ -17,7 +17,11 @@
  **********************************************************************/
 
 #include "mrimaccount.h"
+#include <interfaces/iproxyobject.h>
+#include "proto/connection.h"
 #include "mrimprotocol.h"
+#include "mrimaccountconfigwidget.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -29,7 +33,17 @@ namespace Vader
 	: QObject (proto)
 	, Proto_ (proto)
 	, Name_ (name)
+	, Conn_ (new Proto::Connection (this))
 	{
+	}
+
+	void MRIMAccount::FillConfig (MRIMAccountConfigWidget *w)
+	{
+		Login_ = w->GetLogin ();
+
+		const QString& pass = w->GetPassword ();
+		if (!pass.isEmpty ())
+			Core::Instance ().GetProxy ()->SetPassword (pass, this);
 	}
 
 	QObject* MRIMAccount::GetObject ()
@@ -92,7 +106,6 @@ namespace Vader
 
 	void MRIMAccount::ChangeState (const EntryStatus& status)
 	{
-
 	}
 
 	void MRIMAccount::Synchronize ()

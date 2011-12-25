@@ -18,6 +18,9 @@
 
 #include "mrimprotocol.h"
 #include <QIcon>
+#include <QtDebug>
+#include "mrimaccount.h"
+#include "mrimaccountconfigwidget.h"
 
 namespace LeechCraft
 {
@@ -67,11 +70,25 @@ namespace Vader
 
 	QList<QWidget*> MRIMProtocol::GetAccountRegistrationWidgets (IProtocol::AccountAddOptions)
 	{
-		return QList<QWidget*> ();
+		return QList<QWidget*> () << new MRIMAccountConfigWidget;
 	}
 
-	void MRIMProtocol::RegisterAccount (const QString& name, const QList<QWidget*>&)
+	void MRIMProtocol::RegisterAccount (const QString& name, const QList<QWidget*>& widgets)
 	{
+		auto w = qobject_cast<MRIMAccountConfigWidget*> (widgets.value (0));
+		if (!w)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "first widget is invalid"
+					<< widgets;
+			return;
+		}
+
+		MRIMAccount *acc = new MRIMAccount (name, this);
+		acc->FillConfig (w);
+		Accounts_ << acc;
+
+		emit accountAdded (acc);
 	}
 
 	QWidget* MRIMProtocol::GetMUCJoinWidget ()

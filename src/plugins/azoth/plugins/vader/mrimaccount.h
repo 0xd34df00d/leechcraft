@@ -27,7 +27,13 @@ namespace Azoth
 {
 namespace Vader
 {
+	namespace Proto
+	{
+		class Connection;
+	}
+
 	class MRIMProtocol;
+	class MRIMAccountConfigWidget;
 
 	class MRIMAccount : public QObject
 					  , public IAccount
@@ -37,11 +43,15 @@ namespace Vader
 
 		MRIMProtocol *Proto_;
 		QString Name_;
-
 		QString Login_;
-		QString Password_;
+
+		Proto::Connection *Conn_;
+
+		EntryStatus Status_;
 	public:
 		MRIMAccount (const QString&, MRIMProtocol*);
+
+		void FillConfig (MRIMAccountConfigWidget*);
 
 		// IAccount
 		QObject* GetObject ();

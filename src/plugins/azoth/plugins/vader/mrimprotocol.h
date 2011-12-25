@@ -27,11 +27,15 @@ namespace Azoth
 {
 namespace Vader
 {
+	class MRIMAccount;
+
 	class MRIMProtocol : public QObject
 					   , public IProtocol
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IProtocol);
+
+		QList<MRIMAccount*> Accounts_;
 	public:
 		MRIMProtocol (QObject* = 0);
 
