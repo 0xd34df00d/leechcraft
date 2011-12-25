@@ -13,6 +13,8 @@ INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
 
 SET (VADER_SRCS
 	vader.cpp
+	core.cpp
+	mrimprotocol.cpp
 	proto/headers.cpp
 	proto/connection.cpp
 	proto/packet.cpp
@@ -23,6 +25,8 @@ SET (VADER_SRCS
 	)
 SET (VADER_HEADERS
 	vader.h
+	core.h
+	mrimprotocol.h
 	proto/headers.h
 	proto/connection.h
 	proto/packet.h

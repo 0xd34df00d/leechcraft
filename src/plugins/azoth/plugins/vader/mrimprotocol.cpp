@@ -16,10 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "vader.h"
-#include <QIcon>
-#include "core.h"
 #include "mrimprotocol.h"
+#include <QIcon>
 
 namespace LeechCraft
 {
@@ -27,61 +25,63 @@ namespace Azoth
 {
 namespace Vader
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
-	{
-		Core::Instance ().GetProtocol ()->setParent (this);
-	}
-
-	void Plugin::SecondInit ()
+	MRIMProtocol::MRIMProtocol (QObject *parent)
+	: QObject (parent)
 	{
 	}
 
-	void Plugin::Release ()
-	{
-	}
-
-	QByteArray Plugin::GetUniqueID () const
-	{
-		return "org.LeechCraft.Azoth.Vader";
-	}
-
-	QString Plugin::GetName () const
-	{
-		return "Azoth Vader";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("Support for the MRIM (Mail.ru) protocol.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon (":/plugins/azoth/plugins/vader/resources/images/vader.svg");
-	}
-
-	QSet<QByteArray> Plugin::GetPluginClasses () const
-	{
-		QSet<QByteArray> classes;
-		classes << "org.LeechCraft.Plugins.Azoth.Plugins.IProtocolPlugin";
-		return classes;
-	}
-
-	QObject* Plugin::GetObject ()
+	QObject* MRIMProtocol::GetObject ()
 	{
 		return this;
 	}
 
-	QList<QObject*> Plugin::GetProtocols () const
+	IProtocol::ProtocolFeatures MRIMProtocol::GetFeatures () const
+	{
+		return PFNone;
+	}
+
+	QList<QObject*> MRIMProtocol::GetRegisteredAccounts ()
 	{
 		return QList<QObject*> ();
 	}
 
-	void Plugin::initPlugin (QObject *proxy)
+	QObject* MRIMProtocol::GetParentProtocolPlugin () const
+	{
+		return parent ();
+	}
+
+	QString MRIMProtocol::GetProtocolName () const
+	{
+		return "Mail.ru Agent";
+	}
+
+	QIcon MRIMProtocol::GetProtocolIcon () const
+	{
+		return QIcon ();
+	}
+
+	QByteArray MRIMProtocol::GetProtocolID () const
+	{
+		return "org.LC.MRIM";
+	}
+
+	QList<QWidget*> MRIMProtocol::GetAccountRegistrationWidgets (IProtocol::AccountAddOptions)
+	{
+		return QList<QWidget*> ();
+	}
+
+	void MRIMProtocol::RegisterAccount (const QString& name, const QList<QWidget*>&)
+	{
+	}
+
+	QWidget* MRIMProtocol::GetMUCJoinWidget ()
+	{
+		return 0;
+	}
+
+	void MRIMProtocol::RemoveAccount (QObject*)
 	{
 	}
 }
 }
 }
-
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_vader, LeechCraft::Azoth::Vader::Plugin);

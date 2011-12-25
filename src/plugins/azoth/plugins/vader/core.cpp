@@ -16,8 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "vader.h"
-#include <QIcon>
 #include "core.h"
 #include "mrimprotocol.h"
 
@@ -27,61 +25,21 @@ namespace Azoth
 {
 namespace Vader
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
-	{
-		Core::Instance ().GetProtocol ()->setParent (this);
-	}
-
-	void Plugin::SecondInit ()
+	Core::Core ()
+	: Proto_ (new MRIMProtocol ())
 	{
 	}
 
-	void Plugin::Release ()
+	Core& Core::Instance ()
 	{
+		static Core c;
+		return c;
 	}
 
-	QByteArray Plugin::GetUniqueID () const
+	MRIMProtocol* Core::GetProtocol () const
 	{
-		return "org.LeechCraft.Azoth.Vader";
-	}
-
-	QString Plugin::GetName () const
-	{
-		return "Azoth Vader";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("Support for the MRIM (Mail.ru) protocol.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon (":/plugins/azoth/plugins/vader/resources/images/vader.svg");
-	}
-
-	QSet<QByteArray> Plugin::GetPluginClasses () const
-	{
-		QSet<QByteArray> classes;
-		classes << "org.LeechCraft.Plugins.Azoth.Plugins.IProtocolPlugin";
-		return classes;
-	}
-
-	QObject* Plugin::GetObject ()
-	{
-		return this;
-	}
-
-	QList<QObject*> Plugin::GetProtocols () const
-	{
-		return QList<QObject*> ();
-	}
-
-	void Plugin::initPlugin (QObject *proxy)
-	{
+		return Proto_;
 	}
 }
 }
 }
-
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_vader, LeechCraft::Azoth::Vader::Plugin);
