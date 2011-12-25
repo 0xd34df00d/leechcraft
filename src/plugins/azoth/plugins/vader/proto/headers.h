@@ -201,7 +201,7 @@ namespace Proto
 	void FromMRIM (QByteArray&);
 
 	template<typename T, typename... Args>
-	void FromMRIM (QByteArray& ba, T& u, Args... args)
+	void FromMRIM (QByteArray& ba, T& u, Args&... args)
 	{
 		FromMRIM (ba, u);
 		FromMRIM (ba, args...);
