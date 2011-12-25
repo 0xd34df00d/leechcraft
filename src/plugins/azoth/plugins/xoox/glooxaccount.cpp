@@ -690,6 +690,13 @@ namespace Xoox
 		ClientConnection_->SetBookmarks (set);
 	}
 
+	void GlooxAccount::CreateSDForResource (const QString& resource)
+	{
+		auto sd = new SDSession (this);
+		sd->SetQuery (resource);
+		emit gotSDSession (sd);
+	}
+
 	QByteArray GlooxAccount::Serialize () const
 	{
 		quint16 version = 2;

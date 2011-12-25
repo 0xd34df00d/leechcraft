@@ -53,6 +53,8 @@ namespace Xoox
 		void SetIdentifyingData (const QVariantMap& data);
 	private slots:
 		void checkValidity ();
+		void on_ViewRooms__released ();
+		void on_Server__textChanged (const QString&);
 	signals:
 		void validityChanged (bool);
 	};

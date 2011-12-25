@@ -208,6 +208,8 @@ namespace Xoox
 		QXmppBookmarkSet GetBookmarks () const;
 		void SetBookmarks (const QXmppBookmarkSet&);
 
+		void CreateSDForResource (const QString&);
+
 		QByteArray Serialize () const;
 		static GlooxAccount* Deserialize (const QByteArray&, QObject*);
 
