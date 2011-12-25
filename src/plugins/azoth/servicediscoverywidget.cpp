@@ -45,13 +45,13 @@ namespace Azoth
 	, DiscoveryTimer_ (new QTimer)
 	{
 		Ui_.setupUi (this);
-		
+
 		DiscoveryTimer_->setSingleShot (true);
 		DiscoveryTimer_->setInterval (1500);
-		
+
 		Toolbar_->addWidget (AccountBox_);
 		Toolbar_->addWidget (AddressLine_);
-		
+
 		connect (AccountBox_,
 				SIGNAL (currentIndexChanged (int)),
 				this,
@@ -68,14 +68,14 @@ namespace Azoth
 				SIGNAL (timeout ()),
 				this,
 				SLOT (discover ()));
-		
+
 		Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
 		{
 			IHaveServiceDiscovery *ihsd =
 					qobject_cast<IHaveServiceDiscovery*> (acc->GetObject ());
 			if (!ihsd)
 				continue;
-			
+
 			IProtocol *proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
 			if (!proto)
 			{
@@ -84,13 +84,13 @@ namespace Azoth
 						<< "doesn't implement IProtocol";
 				continue;
 			}
-			
+
 			const QString& protoName = proto->GetProtocolName ();
 			AccountBox_->addItem (acc->GetAccountName () + "(" + protoName + ")",
 					QVariant::fromValue<QObject*> (acc->GetObject ()));
 		}
 	}
-	
+
 	TabClassInfo ServiceDiscoveryWidget::GetTabClassInfo () const
 	{
 		TabClassInfo sdTab =
@@ -105,40 +105,46 @@ namespace Azoth
 		};
 		return sdTab;
 	}
-	
+
 	QObject* ServiceDiscoveryWidget::ParentMultiTabs ()
 	{
 		return S_ParentMultiTabs_;
 	}
-	
+
 	void ServiceDiscoveryWidget::Remove ()
 	{
 		emit removeTab (this);
 		deleteLater ();
 	}
-	
+
 	QToolBar* ServiceDiscoveryWidget::GetToolBar () const
 	{
 		return Toolbar_;
 	}
-	
+
+	void ServiceDiscoveryWidget::SetSDSession (ISDSession *session)
+	{
+		SDSession_.reset (session);
+		Ui_.DiscoveryTree_->setModel (session->GetRepresentationModel ());
+	}
+
 	void ServiceDiscoveryWidget::handleDiscoveryAddressChanged ()
 	{
 		DiscoveryTimer_->stop ();
 		DiscoveryTimer_->start ();
 	}
-	
+
 	void ServiceDiscoveryWidget::on_DiscoveryTree__customContextMenuRequested (const QPoint& point)
 	{
 		const QModelIndex& idx = Ui_.DiscoveryTree_->indexAt (point);
 		if (!idx.isValid ())
 			return;
-		
+
 		const QList<QPair<QByteArray, QString> >& actions =
 				SDSession_->GetActionsFor (idx);
 		if (actions.isEmpty ())
 			return;
-		
+
 		QMenu *menu = new QMenu (tr ("Discovery actions"));
 		// C++0x: move on to 0x's foreach construct.
 		for (QList<QPair<QByteArray, QString> >::const_iterator i = actions.begin (),
@@ -149,18 +155,18 @@ namespace Azoth
 					viewport ()->mapToGlobal (point));
 		if (!result)
 			return;
-		
+
 		const QByteArray& id = result->property ("Azoth/ID").toByteArray ();
 		SDSession_->ExecuteAction (idx, id);
 	}
-	
+
 	void ServiceDiscoveryWidget::discover ()
 	{
 		DiscoveryTimer_->stop ();
 
 		Ui_.DiscoveryTree_->setModel (0);
 		SDSession_.reset ();
-		
+
 		const int index = AccountBox_->currentIndex ();
 		if (index == -1)
 			return;
@@ -168,7 +174,7 @@ namespace Azoth
 		const QString& address = AddressLine_->text ();
 		if (address.isEmpty ())
 			return;
-		
+
 		QObject *accObj = AccountBox_->itemData (index).value<QObject*> ();
 		IHaveServiceDiscovery *ihsd = qobject_cast<IHaveServiceDiscovery*> (accObj);
 		if (!ihsd)
@@ -191,10 +197,9 @@ namespace Azoth
 					<< accObj;
 			return;
 		}
-		
-		SDSession_.reset (session);
+
 		session->SetQuery (address);
-		Ui_.DiscoveryTree_->setModel (session->GetRepresentationModel ());
+		SetSDSession (session);
 	}
 }
 }

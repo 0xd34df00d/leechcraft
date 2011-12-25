@@ -48,6 +48,7 @@
 #include "interfaces/iresourceplugin.h"
 #include "interfaces/iurihandler.h"
 #include "interfaces/irichtextmessage.h"
+#include "interfaces/ihaveservicediscovery.h"
 #include "interfaces/iextselfinfoaccount.h"
 #ifdef ENABLE_CRYPT
 #include "interfaces/isupportpgp.h"
@@ -68,6 +69,7 @@
 #include "acceptriexdialog.h"
 #include "clmodel.h"
 #include "actionsmanager.h"
+#include "servicediscoverywidget.h"
 
 namespace LeechCraft
 {
@@ -1780,6 +1782,12 @@ namespace Azoth
 				this,
 				SLOT (handleAccountStatusChanged (const EntryStatus&)));
 
+		if (qobject_cast<IHaveServiceDiscovery*> (accObject))
+			connect (accObject,
+					SIGNAL (gotSDSession (QObject*)),
+					this,
+					SLOT (handleGotSDSession (QObject*)));
+
 		IProtocol *proto = qobject_cast<IProtocol*> (account->GetParentProtocol ());
 		if (proto)
 		{
@@ -2670,6 +2678,22 @@ namespace Azoth
 				"org.LC.Plugins.Azoth.AttentionDrawnBy/" + entry->GetEntryID ();
 
 		emit gotEntity (e);
+	}
+
+	void Core::handleGotSDSession (QObject *sdObj)
+	{
+		ISDSession *sess = qobject_cast<ISDSession*> (sdObj);
+		if (!sess)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< sdObj
+					<< "is not a ISDSession";
+			return;
+		}
+
+		ServiceDiscoveryWidget *w = new ServiceDiscoveryWidget;
+		w->SetSDSession (sess);
+		emit gotSDWidget (w);
 	}
 
 	void Core::handleFileOffered (QObject *jobObj)

@@ -34,6 +34,7 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+	class ServiceDiscoveryWidget;
 	class MainWidget;
 	class ConsoleWidget;
 
@@ -89,6 +90,7 @@ namespace Azoth
 
 		QList<ANFieldData> GetANFields () const;
 	public slots:
+		void handleSDWidget (ServiceDiscoveryWidget*);
 		void handleTasksTreeSelectionCurrentRowChanged (const QModelIndex&, const QModelIndex&);
 	private slots:
 		void handleMoreThisStuff (const QString&);

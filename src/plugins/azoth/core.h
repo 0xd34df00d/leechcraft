@@ -50,7 +50,6 @@ namespace Util
 }
 namespace Azoth
 {
-
 	struct EntryStatus;
 	class ICLEntry;
 	class IAccount;
@@ -67,6 +66,8 @@ namespace Azoth
 	class ActionsManager;
 
 	class CLModel;
+
+	class ServiceDiscoveryWidget;
 
 	class Core : public QObject
 	{
@@ -517,6 +518,8 @@ namespace Azoth
 		 */
 		void handleClearUnreadMsgCount (QObject *object);
 
+		void handleGotSDSession (QObject*);
+
 		void handleFileOffered (QObject*);
 		void handleJobDeoffered (QObject*);
 
@@ -553,6 +556,8 @@ namespace Azoth
 		 * being removed.
 		 */
 		void accountRemoved (IAccount*);
+
+		void gotSDWidget (ServiceDiscoveryWidget*);
 
 		// Plugin API
 		void hookAddingCLEntryBegin (LeechCraft::IHookProxy_ptr proxy,

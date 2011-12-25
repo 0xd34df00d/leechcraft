@@ -36,9 +36,9 @@ namespace Azoth
 	{
 		Q_OBJECT
 		Q_INTERFACES (ITabWidget)
-		
+
 		static QObject *S_ParentMultiTabs_;
-		
+
 		Ui::ServiceDiscoveryWidget Ui_;
 		QToolBar *Toolbar_;
 		QComboBox *AccountBox_;
@@ -49,7 +49,9 @@ namespace Azoth
 		static void SetParentMultiTabs (QObject*);
 
 		ServiceDiscoveryWidget (QWidget* = 0);
-		
+
+		void SetSDSession (ISDSession*);
+
 		TabClassInfo GetTabClassInfo () const;
 		QObject* ParentMultiTabs ();
 		void Remove ();
