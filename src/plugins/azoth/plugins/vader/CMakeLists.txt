@@ -16,6 +16,7 @@ SET (VADER_SRCS
 	core.cpp
 	mrimprotocol.cpp
 	mrimaccount.cpp
+	mrimaccountconfigwidget.cpp
 	proto/headers.cpp
 	proto/connection.cpp
 	proto/packet.cpp
@@ -29,6 +30,7 @@ SET (VADER_HEADERS
 	core.h
 	mrimprotocol.h
 	mrimaccount.h
+	mrimaccountconfigwidget.h
 	proto/headers.h
 	proto/connection.h
 	proto/packet.h
@@ -37,15 +39,16 @@ SET (VADER_HEADERS
 	proto/exceptions.h
 	proto/halfpacket.h
 	)
-#SET (VADER_FORMS
-#	)
+SET (VADER_FORMS
+	mrimaccountconfigwidget.ui
+	)
 #SET (VADER_RESOURCES azothvaderresources.qrc)
 #CreateTrVars ("azoth_vader" "de;en;fr;it;ru_RU;uk_UA" VADER_TRANSLATIONS VADER_COMPILED_TRANSLATIONS)
 
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (VADER_MOC_SRCS ${VADER_HEADERS})
 ENDIF (NOT LC_NO_MOC)
-#QT4_WRAP_UI (VADER_UIS_H ${VADER_FORMS})
+QT4_WRAP_UI (VADER_UIS_H ${VADER_FORMS})
 #QT4_ADD_RESOURCES (VADER_RCCS ${VADER_RESOURCES})
 
 #ADD_CUSTOM_COMMAND (OUTPUT
