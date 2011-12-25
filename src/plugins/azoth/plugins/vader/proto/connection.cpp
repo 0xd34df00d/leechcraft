@@ -18,6 +18,7 @@
 
 #include "connection.h"
 #include <QSslSocket>
+#include <QTimer>
 #include "packet.h"
 
 namespace LeechCraft
@@ -32,28 +33,31 @@ namespace Proto
 	: QObject (parent)
 	, Port_ (0)
 	, Socket_ (new QSslSocket (this))
+	, PingTimer_ (new QTimer (this))
 	{
 		connect (Socket_,
 				SIGNAL (sslErrors (const QList<QSslError>&)),
 				Socket_,
 				SLOT (ignoreSslErrors ()));
-
 		connect (Socket_,
 				SIGNAL (connected ()),
 				this,
 				SLOT (greet ()));
-
 		connect (Socket_,
 				SIGNAL (readyRead ()),
 				this,
 				SLOT (tryRead ()));
-
 		connect (Socket_,
 				SIGNAL (error (QAbstractSocket::SocketError)),
 				this,
 				SLOT (handleSocketError (QAbstractSocket::SocketError)));
 
-		PacketActors_ [Packets::HelloAck] = [this] (HalfPacket) { Login (); };
+		connect (PingTimer_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (handlePing ()));
+
+		PacketActors_ [Packets::HelloAck] = [this] (HalfPacket hp) { HandleHello (hp); Login (); };
 		PacketActors_ [Packets::LoginAck] = [this] (HalfPacket hp) { CorrectAuth (hp); };
 		PacketActors_ [Packets::LoginRej] = [this] (HalfPacket hp) { IncorrectAuth (hp); };
 	}
@@ -100,6 +104,15 @@ namespace Proto
 		Socket_->connectToHost (Host_, Port_);
 	}
 
+	void Connection::HandleHello (HalfPacket hp)
+	{
+		qDebug () << Q_FUNC_INFO;
+		quint32 timeout;
+		FromMRIM (hp.Data_, timeout);
+
+		PingTimer_->start (timeout * 1000);
+	}
+
 	void Connection::Login ()
 	{
 		Write (PF_.Login (Login_, Pass_, UserState::Online, "LeechCraft Azoth Vader").Packet_);
@@ -116,6 +129,14 @@ namespace Proto
 		QByteArray string;
 		FromMRIM (hp.Data_, string);
 		qDebug () << string;
+
+		Disconnect ();
+	}
+
+	void Connection::Disconnect ()
+	{
+		PingTimer_->stop ();
+		Socket_->disconnectFromHost ();
 	}
 
 	QByteArray Connection::Read ()
@@ -135,6 +156,11 @@ namespace Proto
 	void Connection::greet ()
 	{
 		Write (PF_.Hello ().Packet_);
+	}
+
+	void Connection::handlePing ()
+	{
+		Write (PF_.Ping ().Packet_);
 	}
 
 	void Connection::handleSocketError (QAbstractSocket::SocketError err)

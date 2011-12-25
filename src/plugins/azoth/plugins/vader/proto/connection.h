@@ -25,6 +25,7 @@
 #include "packetfactory.h"
 #include "packetextractor.h"
 
+class QTimer;
 class QSslSocket;
 
 namespace LeechCraft
@@ -46,6 +47,7 @@ namespace Proto
 		QString Pass_;
 
 		QSslSocket *Socket_;
+		QTimer *PingTimer_;
 
 		PacketFactory PF_;
 		PacketExtractor PE_;
@@ -59,15 +61,19 @@ namespace Proto
 
 		void Connect ();
 	private:
+		void HandleHello (HalfPacket);
 		void Login ();
 		void CorrectAuth (HalfPacket);
 		void IncorrectAuth (HalfPacket);
+
+		void Disconnect ();
 
 		QByteArray Read ();
 		void Write (const QByteArray&);
 	private slots:
 		void tryRead ();
 		void greet ();
+		void handlePing ();
 		void handleSocketError (QAbstractSocket::SocketError);
 	};
 }
