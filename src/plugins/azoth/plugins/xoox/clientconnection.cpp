@@ -1294,14 +1294,14 @@ namespace Xoox
 	{
 		const QString& jid = iq.from ();
 		if (AwaitingDiscoInfo_.contains (jid))
-			AwaitingDiscoInfo_ [jid] (iq);
+			AwaitingDiscoInfo_.take (jid) (iq);
 	}
 
 	void ClientConnection::handleDiscoItems (const QXmppDiscoveryIq& iq)
 	{
 		const QString& jid = iq.from ();
 		if (AwaitingDiscoItems_.contains (jid))
-			AwaitingDiscoItems_ [jid] (iq);
+			AwaitingDiscoItems_.take (jid) (iq);
 	}
 
 	void ClientConnection::handleEncryptedMessageReceived (const QString& id,
