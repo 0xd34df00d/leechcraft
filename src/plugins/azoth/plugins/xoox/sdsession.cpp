@@ -81,10 +81,11 @@ namespace Xoox
 
 		items.at (0)->setData (true, DRFetchedMore);
 
+		QPointer<SDSession> ptr (this);
 		Account_->GetClientConnection ()->RequestInfo (query,
-				[this] (const QXmppDiscoveryIq& iq) { HandleInfo (iq); });
+				[ptr] (const QXmppDiscoveryIq& iq) { if (ptr) ptr->HandleInfo (iq); });
 		Account_->GetClientConnection ()->RequestItems (query,
-				[this] (const QXmppDiscoveryIq& iq) { HandleItems (iq); });
+				[ptr] (const QXmppDiscoveryIq& iq) { if (ptr) ptr->HandleItems (iq); });
 	}
 
 	QAbstractItemModel* SDSession::GetRepresentationModel () const
@@ -245,6 +246,7 @@ namespace Xoox
 			return;
 		}
 
+		QPointer<SDSession> ptr (this);
 		Q_FOREACH (const auto& item, iq.items ())
 		{
 			auto items = AppendRow (parentItem,
@@ -254,7 +256,7 @@ namespace Xoox
 			JID2Node2Item_ [item.jid ()] [item.node ()] = items.at (0);
 
 			Account_->GetClientConnection ()->RequestInfo (item.jid (),
-					[this] (const QXmppDiscoveryIq& iq) { HandleInfo (iq); },
+					[ptr] (const QXmppDiscoveryIq& iq) { if (ptr) ptr->HandleInfo (iq); },
 					item.node ());
 		}
 	}
@@ -263,10 +265,11 @@ namespace Xoox
 	{
 		item->setData (true, DRFetchedMore);
 
+		QPointer<SDSession> ptr (this);
 		const QString& jid = item->data (DRJID).toString ();
 		const QString& node = item->data (DRNode).toString ();
 		Account_->GetClientConnection ()->RequestItems (jid,
-				[this] (const QXmppDiscoveryIq& iq) { HandleItems (iq); },
+				[ptr] (const QXmppDiscoveryIq& iq) { if (ptr) ptr->HandleItems (iq); },
 				node);
 	}
 
