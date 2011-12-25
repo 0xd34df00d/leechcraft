@@ -57,9 +57,21 @@ namespace Azoth
 		 *
 		 * @param[in] query The query string.
 		 *
-		 * @sa GetRepresentationModel
+		 * @sa GetRepresentationModel, GetQuery()
 		 */
 		virtual void SetQuery (const QString& query) = 0;
+
+		/** @brief Returns the query of this SD session.
+		 *
+		 * This function should return the query string of this service
+		 * discovery session, or an empty string if no query has been
+		 * set.
+		 *
+		 * @return The query string.
+		 *
+		 * @sa SetQuery()
+		 */
+		virtual QString GetQuery () const = 0;
 
 		/** @brief Returns the model representing discovery results.
 		 *

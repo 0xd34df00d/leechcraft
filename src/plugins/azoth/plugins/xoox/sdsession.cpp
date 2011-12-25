@@ -70,6 +70,8 @@ namespace Xoox
 
 	void SDSession::SetQuery (const QString& query)
 	{
+		Query_ = query;
+
 		Model_->clear ();
 		Model_->setHorizontalHeaderLabels (QStringList (tr ("Name")) << tr ("JID") << tr ("Node"));
 
@@ -86,6 +88,11 @@ namespace Xoox
 				[ptr] (const QXmppDiscoveryIq& iq) { if (ptr) ptr->HandleInfo (iq); });
 		Account_->GetClientConnection ()->RequestItems (query,
 				[ptr] (const QXmppDiscoveryIq& iq) { if (ptr) ptr->HandleItems (iq); });
+	}
+
+	QString SDSession::GetQuery () const
+	{
+		return Query_;
 	}
 
 	QAbstractItemModel* SDSession::GetRepresentationModel () const

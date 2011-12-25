@@ -43,6 +43,8 @@ namespace Xoox
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::ISDSession)
 
+		QString Query_;
+
 		SDModel *Model_;
 		GlooxAccount *Account_;
 		QHash<QString, QHash<QString, QStandardItem*> > JID2Node2Item_;
@@ -76,6 +78,7 @@ namespace Xoox
 		SDSession (GlooxAccount*);
 
 		void SetQuery (const QString&);
+		QString GetQuery () const;
 		QAbstractItemModel* GetRepresentationModel () const;
 		QList<QPair<QByteArray, QString> > GetActionsFor (const QModelIndex&);
 		void ExecuteAction (const QModelIndex&, const QByteArray&);
