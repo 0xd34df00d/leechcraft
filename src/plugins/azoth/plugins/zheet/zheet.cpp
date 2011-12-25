@@ -63,7 +63,7 @@ namespace Zheet
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		return QIcon (":/plugins/azoth/plugins/zheet/resources/images/zheet.svg");
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
