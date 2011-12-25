@@ -241,6 +241,8 @@ namespace Xoox
 		void mucInvitationReceived (const QVariantMap&,
 				const QString&, const QString&);
 
+		void gotSDSession (QObject*);
+
 		void bookmarksChanged ();
 
 		void riexItemsSuggested (QList<LeechCraft::Azoth::RIEXItem> items,
