@@ -93,7 +93,16 @@ namespace Proto
 		{
 			const auto& hp = PE_.GetPacket ();
 
-			PacketActors_.value (hp.Header_.MsgType_, defaultActor) (hp);
+			try
+			{
+				PacketActors_.value (hp.Header_.MsgType_, defaultActor) (hp);
+			}
+			catch (const std::exception& e)
+			{
+				qDebug () << Q_FUNC_INFO
+						<< "error parsing packet:"
+						<< e.what ();
+			}
 
 			if (Socket_->bytesAvailable ())
 				PE_ += Read ();
