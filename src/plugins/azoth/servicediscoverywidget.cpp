@@ -133,6 +133,7 @@ namespace Azoth
 
 	void ServiceDiscoveryWidget::SetSDSession (ISDSession *session)
 	{
+		AddressLine_->setText (session->GetQuery ());
 		SDSession_.reset (session);
 		Ui_.DiscoveryTree_->setModel (session->GetRepresentationModel ());
 	}
