@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "packetextractor.h"
+#include <QtDebug>
 #include "exceptions.h"
 #include "headers.h"
 
@@ -30,17 +31,25 @@ namespace Proto
 {
 	bool PacketExtractor::MayGetPacket () const
 	{
+		qDebug () << Q_FUNC_INFO;
+		if (Buffer_.isEmpty ())
+			return false;
+
 		try
 		{
 			QByteArray tmp (Buffer_);
 			Header h (tmp);
+			qDebug () << h.DataLength_ << tmp.size ();
 			if (h.DataLength_ > tmp.size ())
 				return false;
 		}
 		catch (const TooShortBA&)
 		{
+			qDebug () << "too short bytearray";
 			return false;
 		}
+
+		qDebug () << "may get packet";
 
 		return true;
 	}
@@ -57,7 +66,6 @@ namespace Proto
 	PacketExtractor& PacketExtractor::operator+= (const QByteArray& ba)
 	{
 		Buffer_ += ba;
-
 		return *this;
 	}
 }

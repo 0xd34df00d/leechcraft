@@ -186,8 +186,24 @@ namespace Proto
 		const quint16 IntErr = 0x0002;
 	}
 
+	enum FeatureFlag
+	{
+		RTFMessages = 0x0001,
+		BaseSmiles = 0x0002,
+		AdvancedSmiles = 0x0004,
+		ContactsExch = 0x0008,
+		Wakeup = 0x0010
+	};
+
+	Q_DECLARE_FLAGS (FeatureFlags, FeatureFlag);
+	Q_DECLARE_OPERATORS_FOR_FLAGS (FeatureFlags);
+
+	QByteArray ToMRIM1251 (const QString&);
+	QByteArray ToMRIM16 (const QString&);
 	QByteArray ToMRIM (const QString&);
+	QByteArray ToMRIM (const QByteArray&);
 	QByteArray ToMRIM (quint32);
+	QByteArray ToMRIM (int);
 	QByteArray ToMRIM ();
 
 	template<typename T, typename... Args>
@@ -196,7 +212,9 @@ namespace Proto
 		return ToMRIM (t) + ToMRIM (args...);
 	}
 
-	void FromMRIM (QByteArray&, QString&);
+	QString FromMRIM1251 (const QByteArray&);
+	QString FromMRIM16 (const QByteArray&);
+	void FromMRIM (QByteArray&, QByteArray&);
 	void FromMRIM (QByteArray&, quint32&);
 	void FromMRIM (QByteArray&);
 

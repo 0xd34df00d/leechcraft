@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "packetfactory.h"
+#include <QCryptographicHash>
 #include "headers.h"
 #include "halfpacket.h"
 
@@ -46,7 +47,18 @@ namespace Proto
 	Packet PacketFactory::Login (const QString& login,
 			const QString& pass, quint32 status, const QString& ua)
 	{
-		const QByteArray& data = ToMRIM (login, pass, status, ua);
+		const QByteArray& data = ToMRIM (ToMRIM1251 (login),
+				QCryptographicHash::hash (ToMRIM1251 (pass), QCryptographicHash::Md5),
+				status,
+				QByteArray (),
+				QByteArray (),
+				QByteArray (),
+				static_cast<quint32> (FeatureFlag::BaseSmiles | FeatureFlag::Wakeup),
+				ToMRIM1251 (ua),
+				QByteArray ("ru"),
+				0,
+				0,
+				QByteArray ("vader"));
 		return HalfPacket { Header (Packets::Login2, Seq_++), data };
 	}
 

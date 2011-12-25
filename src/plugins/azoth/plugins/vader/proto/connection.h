@@ -21,6 +21,7 @@
 #include <functional>
 #include <QObject>
 #include <QMap>
+#include <QAbstractSocket>
 #include "packetfactory.h"
 #include "packetextractor.h"
 
@@ -59,11 +60,15 @@ namespace Proto
 		void Connect ();
 	private:
 		void Login ();
+		void CorrectAuth (HalfPacket);
+		void IncorrectAuth (HalfPacket);
+
 		QByteArray Read ();
 		void Write (const QByteArray&);
 	private slots:
 		void tryRead ();
 		void greet ();
+		void handleSocketError (QAbstractSocket::SocketError);
 	};
 }
 }

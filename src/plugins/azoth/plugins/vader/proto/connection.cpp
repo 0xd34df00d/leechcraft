@@ -48,7 +48,14 @@ namespace Proto
 				this,
 				SLOT (tryRead ()));
 
+		connect (Socket_,
+				SIGNAL (error (QAbstractSocket::SocketError)),
+				this,
+				SLOT (handleSocketError (QAbstractSocket::SocketError)));
+
 		PacketActors_ [Packets::HelloAck] = [this] (HalfPacket) { Login (); };
+		PacketActors_ [Packets::LoginAck] = [this] (HalfPacket hp) { CorrectAuth (hp); };
+		PacketActors_ [Packets::LoginRej] = [this] (HalfPacket hp) { IncorrectAuth (hp); };
 	}
 
 	void Connection::SetTarget (const QString& host, int port)
@@ -79,6 +86,9 @@ namespace Proto
 			const auto& hp = PE_.GetPacket ();
 
 			PacketActors_.value (hp.Header_.MsgType_, defaultActor) (hp);
+
+			if (Socket_->bytesAvailable ())
+				PE_ += Read ();
 		}
 	}
 
@@ -95,6 +105,19 @@ namespace Proto
 		Write (PF_.Login (Login_, Pass_, UserState::Online, "LeechCraft Azoth Vader").Packet_);
 	}
 
+	void Connection::CorrectAuth (HalfPacket)
+	{
+		qDebug () << Q_FUNC_INFO;
+	}
+
+	void Connection::IncorrectAuth (HalfPacket hp)
+	{
+		qDebug () << Q_FUNC_INFO;
+		QByteArray string;
+		FromMRIM (hp.Data_, string);
+		qDebug () << string;
+	}
+
 	QByteArray Connection::Read ()
 	{
 		QByteArray res = Socket_->readAll ();
@@ -106,11 +129,17 @@ namespace Proto
 	{
 		qDebug () << "MRIM WRITE" << ba.toBase64 ();
 		Socket_->write (ba);
+		Socket_->flush ();
 	}
 
 	void Connection::greet ()
 	{
 		Write (PF_.Hello ().Packet_);
+	}
+
+	void Connection::handleSocketError (QAbstractSocket::SocketError err)
+	{
+		qWarning () << Q_FUNC_INFO << err << Socket_->errorString ();
 	}
 }
 }

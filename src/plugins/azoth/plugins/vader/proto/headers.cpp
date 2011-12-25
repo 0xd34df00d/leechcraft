@@ -32,7 +32,7 @@ namespace Proto
 {
 	const quint32 HeaderMagic = 0xDEADBEEF;
 	const quint32 ProtoMajor = 1;
-	const quint32 ProtoMinor = 7;
+	const quint32 ProtoMinor = 22;
 	const quint32 ProtoFull = (ProtoMajor << 16) | ProtoMinor;
 
 	Header::Header (QByteArray& outer)
@@ -65,9 +65,24 @@ namespace Proto
 		return ToMRIM (Magic_, Proto_, Seq_, MsgType_, DataLength_, From_, FromPort_) + QByteArray (16, 0);
 	}
 
+	QByteArray ToMRIM1251 (const QString& string)
+	{
+		return QTextCodec::codecForName ("Windows-1251")->fromUnicode (string);
+	}
+
+	QByteArray ToMRIM16 (const QString& string)
+	{
+		return QTextCodec::codecForName ("UTF-16LE")->fromUnicode (string);
+	}
+
 	QByteArray ToMRIM (const QString& string)
 	{
-		return ToMRIM (static_cast<quint32> (string.size ())) + QTextCodec::codecForName ("Windows-1251")->fromUnicode (string);
+		return ToMRIM (ToMRIM1251 (string));
+	}
+
+	QByteArray ToMRIM (const QByteArray& string)
+	{
+		return ToMRIM (static_cast<quint32> (string.size ())) + string;
 	}
 
 	QByteArray ToMRIM (quint32 num)
@@ -77,22 +92,35 @@ namespace Proto
 		return result;
 	}
 
+	QByteArray ToMRIM (int i)
+	{
+		return ToMRIM (static_cast<quint32> (i));
+	}
+
 	QByteArray ToMRIM ()
 	{
 		return QByteArray ();
 	}
 
-	void FromMRIM (QByteArray& lps, QString& str)
+	QString FromMRIM1251 (const QByteArray& ba)
+	{
+		return QTextCodec::codecForName ("Windows-1251")->toUnicode (ba);
+	}
+
+	QString FromMRIM16 (const QByteArray& ba)
+	{
+		return QTextCodec::codecForName ("UTF-16LE")->toUnicode (ba);
+	}
+
+	void FromMRIM (QByteArray& lps, QByteArray& str)
 	{
 		quint32 size = 0;
 		FromMRIM (lps, size);
 		if (size > static_cast<quint32> (lps.size ()))
 			throw TooShortBA ("Unable to deserialize QString: premature end");
 
-		const QByteArray& toDecode = lps.left (size);
+		str = lps.left (size);
 		lps = lps.mid (size);
-
-		str = QTextCodec::codecForName ("Windows-1251")->toUnicode (toDecode.constData (), size);
 	}
 
 	void FromMRIM (QByteArray& ba, quint32& res)
