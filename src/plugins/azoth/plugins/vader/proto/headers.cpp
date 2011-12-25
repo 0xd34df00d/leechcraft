@@ -19,6 +19,7 @@
 #include "headers.h"
 #include <QTextCodec>
 #include <QtEndian>
+#include <QtDebug>
 #include "exceptions.h"
 
 namespace LeechCraft
@@ -40,7 +41,7 @@ namespace Proto
 
 		FromMRIM (ba, Magic_, Proto_, Seq_, MsgType_, DataLength_, From_, FromPort_);
 		if (ba.size () < 16)
-			throw std::runtime_error ("Too short bytearray to deserialize the header");
+			throw TooShortBA ("Too short bytearray to deserialize the header");
 		memcpy (Reserved_, ba.constData (), 16);
 		ba = ba.mid (16);
 
