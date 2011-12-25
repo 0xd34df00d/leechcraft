@@ -45,14 +45,17 @@ namespace Proto
 	}
 
 	Packet PacketFactory::Login (const QString& login,
-			const QString& pass, quint32 status, const QString& ua)
+			const QString& pass,
+			quint32 state,
+			const QString& status,
+			const QString& ua)
 	{
 		const QByteArray& data = ToMRIM (ToMRIM1251 (login),
 				QCryptographicHash::hash (ToMRIM1251 (pass), QCryptographicHash::Md5),
-				status,
+				state,
 				QByteArray (),
 				QByteArray (),
-				QByteArray (),
+				ToMRIM16 (status),
 				static_cast<quint32> (FeatureFlag::BaseSmiles | FeatureFlag::Wakeup),
 				ToMRIM1251 (ua),
 				QByteArray ("ru"),
@@ -60,6 +63,15 @@ namespace Proto
 				0,
 				QByteArray ("vader"));
 		return HalfPacket { Header (Packets::Login2, Seq_++), data };
+	}
+
+	Packet PacketFactory::SetStatus (quint32 state, const QString& status)
+	{
+		const QByteArray& data = ToMRIM (state,
+				QByteArray (),
+				QByteArray (),
+				ToMRIM16 (status));
+		return HalfPacket { Header (Packets::ChangeStatus, Seq_++), data };
 	}
 
 	Packet PacketFactory::Message (MsgFlags flags,

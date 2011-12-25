@@ -32,9 +32,11 @@ namespace Proto
 {
 	Connection::Connection (QObject *parent)
 	: QObject (parent)
-	, Port_ (0)
 	, Socket_ (new QSslSocket (this))
 	, PingTimer_ (new QTimer (this))
+	, Host_ ("94.100.187.24")
+	, Port_ (443)
+	, IsConnected_ (false)
 	{
 		connect (Socket_,
 				SIGNAL (sslErrors (const QList<QSslError>&)),
@@ -109,12 +111,37 @@ namespace Proto
 		}
 	}
 
+	bool Connection::IsConnected () const
+	{
+		return IsConnected_;
+	}
+
 	void Connection::Connect ()
 	{
 		if (Socket_->isOpen ())
 			Socket_->disconnectFromHost ();
 
 		Socket_->connectToHost (Host_, Port_);
+	}
+
+	void Connection::SetState (const EntryStatus& status)
+	{
+		if (IsConnected_ && status.State_ == SOffline)
+		{
+			Disconnect ();
+		}
+		else if (!IsConnected_ && status.State_ != SOffline)
+		{
+			Connect ();
+			PendingStatus_ = status;
+		}
+		else if (status.State_ != SOffline)
+		{
+			const quint32 state = PendingStatus_.State_ == SOnline ?
+				UserState::Online :
+				UserState::Away;
+			Write (PF_.SetStatus (state, status.StatusString_).Packet_);
+		}
 	}
 
 	void Connection::HandleHello (HalfPacket hp)
@@ -128,7 +155,11 @@ namespace Proto
 
 	void Connection::Login ()
 	{
-		Write (PF_.Login (Login_, Pass_, UserState::Online, "LeechCraft Azoth Vader").Packet_);
+		const quint32 state = PendingStatus_.State_ == SOnline ?
+				UserState::Online :
+				UserState::Away;
+		Write (PF_.Login (Login_, Pass_, state,
+					PendingStatus_.StatusString_, "LeechCraft Azoth Vader").Packet_);
 	}
 
 	void Connection::CorrectAuth (HalfPacket)
@@ -274,6 +305,8 @@ namespace Proto
 		Socket_->disconnectFromHost ();
 
 		PE_.Clear ();
+
+		IsConnected_ = false;
 	}
 
 	QByteArray Connection::Read ()
@@ -292,6 +325,7 @@ namespace Proto
 
 	void Connection::greet ()
 	{
+		IsConnected_ = true;
 		Write (PF_.Hello ().Packet_);
 	}
 
@@ -303,6 +337,7 @@ namespace Proto
 	void Connection::handleSocketError (QAbstractSocket::SocketError err)
 	{
 		qWarning () << Q_FUNC_INFO << err << Socket_->errorString ();
+		IsConnected_ = false;
 	}
 }
 }

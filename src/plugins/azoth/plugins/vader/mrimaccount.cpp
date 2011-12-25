@@ -107,6 +107,13 @@ namespace Vader
 
 	void MRIMAccount::ChangeState (const EntryStatus& status)
 	{
+		if (!Conn_->IsConnected ())
+		{
+			const QString& pass = Core::Instance ().GetProxy ()->GetAccountPassword (this);
+			Conn_->SetCredentials (Login_, pass);
+		}
+
+		Conn_->SetState (status);
 	}
 
 	void MRIMAccount::Synchronize ()

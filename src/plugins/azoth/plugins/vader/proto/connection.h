@@ -22,6 +22,7 @@
 #include <QObject>
 #include <QMap>
 #include <QAbstractSocket>
+#include <interfaces/iclentry.h>
 #include "packetfactory.h"
 #include "packetextractor.h"
 
@@ -40,26 +41,32 @@ namespace Proto
 	{
 		Q_OBJECT
 
+		QSslSocket *Socket_;
+		QTimer *PingTimer_;
+
+		PacketFactory PF_;
+		PacketExtractor PE_;
+		QMap<quint16, std::function<void (HalfPacket)>> PacketActors_;
+
 		QString Host_;
 		int Port_;
 
 		QString Login_;
 		QString Pass_;
 
-		QSslSocket *Socket_;
-		QTimer *PingTimer_;
+		bool IsConnected_;
 
-		PacketFactory PF_;
-		PacketExtractor PE_;
-
-		QMap<quint16, std::function<void (HalfPacket)>> PacketActors_;
+		EntryStatus PendingStatus_;
 	public:
 		Connection (QObject* = 0);
 
 		void SetTarget (const QString&, int);
 		void SetCredentials (const QString&, const QString&);
 
+		bool IsConnected () const;
 		void Connect ();
+
+		void SetState (const EntryStatus&);
 	private:
 		void HandleHello (HalfPacket);
 		void Login ();
