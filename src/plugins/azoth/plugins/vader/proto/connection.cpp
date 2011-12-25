@@ -39,7 +39,7 @@ namespace Proto
 				SLOT (ignoreSslErrors ()));
 
 		connect (Socket_,
-				SIGNAL (encrypted ()),
+				SIGNAL (connected ()),
 				this,
 				SLOT (greet ()));
 
@@ -65,7 +65,7 @@ namespace Proto
 
 	void Connection::tryRead ()
 	{
-		PE_ += Socket_->readAll ();
+		PE_ += Read ();
 
 		auto defaultActor = [] (HalfPacket hp)
 		{
@@ -87,17 +87,30 @@ namespace Proto
 		if (Socket_->isOpen ())
 			Socket_->disconnectFromHost ();
 
-		Socket_->connectToHostEncrypted (Host_, Port_);
+		Socket_->connectToHost (Host_, Port_);
 	}
 
 	void Connection::Login ()
 	{
-		Socket_->write (PF_.Login (Login_, Pass_, UserState::Online, "LeechCraft Azoth Vader").Packet_);
+		Write (PF_.Login (Login_, Pass_, UserState::Online, "LeechCraft Azoth Vader").Packet_);
+	}
+
+	QByteArray Connection::Read ()
+	{
+		QByteArray res = Socket_->readAll ();
+		qDebug () << "MRIM READ" << res.toBase64 ();
+		return res;
+	}
+
+	void Connection::Write (const QByteArray& ba)
+	{
+		qDebug () << "MRIM WRITE" << ba.toBase64 ();
+		Socket_->write (ba);
 	}
 
 	void Connection::greet ()
 	{
-		Socket_->write (PF_.Hello ().Packet_);
+		Write (PF_.Hello ().Packet_);
 	}
 }
 }

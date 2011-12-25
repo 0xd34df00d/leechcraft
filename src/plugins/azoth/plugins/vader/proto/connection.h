@@ -59,6 +59,8 @@ namespace Proto
 		void Connect ();
 	private:
 		void Login ();
+		QByteArray Read ();
+		void Write (const QByteArray&);
 	private slots:
 		void tryRead ();
 		void greet ();
