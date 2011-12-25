@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "msnbuddyentry.h"
+#include <algorithm>
 #include <QImage>
 #include <msn/notificationserver.h>
 #include <interfaces/iproxyobject.h>
