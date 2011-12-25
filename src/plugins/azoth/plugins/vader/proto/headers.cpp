@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "headers.h"
+#include <stdexcept>
 #include <QTextCodec>
 #include <QtEndian>
 
@@ -32,6 +33,19 @@ namespace Proto
 	const quint32 ProtoMajor = 1;
 	const quint32 ProtoMinor = 7;
 	const quint32 ProtoFull = (ProtoMajor << 16) | ProtoMinor;
+
+	Header::Header (QByteArray& outer)
+	{
+		QByteArray ba = outer;
+
+		FromMRIM (ba, Magic_, Proto_, Seq_, MsgType_, DataLength_, From_, FromPort_);
+		if (ba.size () < 16)
+			throw std::runtime_error ("Too short bytearray to deserialize the header");
+		memcpy (Reserved_, ba.constData (), 16);
+		ba = ba.mid (16);
+
+		outer = ba;
+	}
 
 	Header::Header (quint32 msgType, quint32 seq)
 	: Magic_ (HeaderMagic)
@@ -67,21 +81,31 @@ namespace Proto
 		return QByteArray ();
 	}
 
-	QString FromLPS (QByteArray lps)
+	void FromMRIM (QByteArray& lps, QString& str)
 	{
-		if (lps.size () < 4)
-			return QString ();
+		quint32 size = 0;
+		FromMRIM (lps, size);
+		if (size > static_cast<quint32> (lps.size ()))
+			throw std::runtime_error ("Unable to deserialize QString: premature end");
 
-		quint32 size = FromUL (lps.left (4));
-		if (size > static_cast<quint32> (lps.size ()) + 4)
-			return QString ();
+		const QByteArray& toDecode = lps.left (size);
+		lps = lps.mid (size);
 
-		return QTextCodec::codecForName ("cp-1251")->toUnicode (lps.mid (4).constData (), size);
+		str = QTextCodec::codecForName ("cp-1251")->toUnicode (toDecode.constData (), size);
 	}
 
-	quint32 FromUL (QByteArray ba)
+	void FromMRIM (QByteArray& ba, quint32& res)
 	{
-		return qFromLittleEndian<quint32> (reinterpret_cast<const uchar*> (ba.constData ()));
+		if (ba.size () < 4)
+			throw std::runtime_error ("Unable to deserialize quint32: premature end");
+
+		const QByteArray& toDecode = ba.left (4);
+		ba = ba.mid (4);
+		res = qFromLittleEndian<quint32> (reinterpret_cast<const uchar*> (toDecode.constData ()));
+	}
+
+	void FromMRIM (QByteArray&)
+	{
 	}
 }
 }

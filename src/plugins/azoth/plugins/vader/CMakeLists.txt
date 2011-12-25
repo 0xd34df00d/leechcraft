@@ -16,12 +16,14 @@ SET (VADER_SRCS
 	proto/headers.cpp
 	proto/connection.cpp
 	proto/packetfactory.cpp
+	proto/packetextractor.cpp
 	)
 SET (VADER_HEADERS
 	vader.h
 	proto/headers.h
 	proto/connection.h
 	proto/packetfactory.h
+	proto/packetextractor.h
 	)
 #SET (VADER_FORMS
 #	)

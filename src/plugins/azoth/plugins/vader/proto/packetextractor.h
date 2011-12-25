@@ -16,13 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_VADER_PROTO_CONNECTION_H
-#define PLUGINS_AZOTH_PLUGINS_VADER_PROTO_CONNECTION_H
-#include <QObject>
-#include "packetfactory.h"
-#include "packetextractor.h"
-
-class QSslSocket;
+#ifndef PLUGINS_AZOTH_PLUGINS_VADER_PROTO_PACKETEXTRACTOR_H
+#define PLUGINS_AZOTH_PLUGINS_VADER_PROTO_PACKETEXTRACTOR_H
+#include <QByteArray>
 
 namespace LeechCraft
 {
@@ -32,30 +28,13 @@ namespace Vader
 {
 namespace Proto
 {
-	class Connection : public QObject
+	class PacketExtractor
 	{
-		Q_OBJECT
-
-		QString Host_;
-		int Port_;
-
-		QString Login_;
-		QString Pass_;
-
-		QSslSocket *Socket_;
-
-		PacketFactory PF_;
-		PacketExtractor PE_;
+		QByteArray Buffer_;
 	public:
-		Connection (QObject* = 0);
+		bool MayGetPacket () const;
 
-		void SetTarget (const QString&, int);
-		void SetCredentials (const QString&, const QString&);
-
-		void Connect ();
-	private slots:
-		void tryRead ();
-		void greet ();
+		PacketExtractor& operator+= (const QByteArray&);
 	};
 }
 }

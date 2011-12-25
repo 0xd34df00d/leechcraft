@@ -40,6 +40,7 @@ namespace Proto
 		quint32 FromPort_;				//< Sender's port
 		unsigned char Reserved_ [16];	//< Reserved
 
+		Header (QByteArray&);
 		Header (quint32 msgType = 0, quint32 seq = 0);
 		QByteArray Serialize () const;
 	};
@@ -194,8 +195,16 @@ namespace Proto
 		return ToMRIM (t) + ToMRIM (args...);
 	}
 
-	QString FromLPS (const QByteArray&);
-	quint32 FromUL (QByteArray);
+	void FromMRIM (QByteArray&, QString&);
+	void FromMRIM (QByteArray&, quint32&);
+	void FromMRIM (QByteArray&);
+
+	template<typename T, typename... Args>
+	void FromMRIM (QByteArray& ba, T& u, Args... args)
+	{
+		FromMRIM (ba, u);
+		FromMRIM (ba, args...);
+	}
 }
 }
 }

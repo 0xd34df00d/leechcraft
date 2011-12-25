@@ -16,9 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "connection.h"
-#include <QSslSocket>
-#include "packet.h"
+#include "packetextractor.h"
+#include "headers.h"
 
 namespace LeechCraft
 {
@@ -28,59 +27,28 @@ namespace Vader
 {
 namespace Proto
 {
-	Connection::Connection (QObject *parent)
-	: QObject (parent)
-	, Port_ (0)
-	, Socket_ (new QSslSocket (this))
+	bool PacketExtractor::MayGetPacket () const
 	{
-		connect (Socket_,
-				SIGNAL (sslErrors (const QList<QSslError>&)),
-				Socket_,
-				SLOT (ignoreSslErrors ()));
-
-		connect (Socket_,
-				SIGNAL (encrypted ()),
-				this,
-				SLOT (greet ()));
-
-		connect (Socket_,
-				SIGNAL (readyRead ()),
-				this,
-				SLOT (tryRead ()));
-	}
-
-	void Connection::SetTarget (const QString& host, int port)
-	{
-		Host_ = host;
-		Port_ = port;
-	}
-
-	void Connection::SetCredentials (const QString& login, const QString& pass)
-	{
-		Login_ = login;
-		Pass_ = pass;
-	}
-
-	void Connection::tryRead ()
-	{
-		PE_ += Socket_->readAll ();
-
-		while (PE_.MayGetPacket ())
+		try
 		{
+			QByteArray tmp (Buffer_);
+			Header h (tmp);
+			if (h.DataLength_ > tmp.size ())
+				return false;
 		}
+		catch (const std::exception&)
+		{
+			return false;
+		}
+
+		return true;
 	}
 
-	void Connection::Connect ()
+	PacketExtractor& PacketExtractor::operator+= (const QByteArray& ba)
 	{
-		if (Socket_->isOpen ())
-			Socket_->disconnectFromHost ();
+		Buffer_ += ba;
 
-		Socket_->connectToHostEncrypted (Host_, Port_);
-	}
-
-	void Connection::greet ()
-	{
-		Socket_->write (PF_.Hello ().Packet_);
+		return *this;
 	}
 }
 }
