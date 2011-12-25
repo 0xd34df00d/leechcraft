@@ -47,6 +47,8 @@ namespace Proto
 				SIGNAL (readyRead ()),
 				this,
 				SLOT (tryRead ()));
+
+		PacketActors_ [Packets::HelloAck] = [this] (HalfPacket) { Login (); };
 	}
 
 	void Connection::SetTarget (const QString& host, int port)
@@ -65,8 +67,18 @@ namespace Proto
 	{
 		PE_ += Socket_->readAll ();
 
+		auto defaultActor = [] (HalfPacket hp)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown packet type"
+					<< hp.Header_.MsgType_;
+		};
+
 		while (PE_.MayGetPacket ())
 		{
+			const auto& hp = PE_.GetPacket ();
+
+			PacketActors_.value (hp.Header_.MsgType_, defaultActor) (hp);
 		}
 	}
 
@@ -76,6 +88,11 @@ namespace Proto
 			Socket_->disconnectFromHost ();
 
 		Socket_->connectToHostEncrypted (Host_, Port_);
+	}
+
+	void Connection::Login ()
+	{
+		Socket_->write (PF_.Login (Login_, Pass_, UserState::Online, "LeechCraft Azoth Vader").Packet_);
 	}
 
 	void Connection::greet ()

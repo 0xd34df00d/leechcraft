@@ -17,6 +17,7 @@ SET (VADER_SRCS
 	proto/connection.cpp
 	proto/packetfactory.cpp
 	proto/packetextractor.cpp
+	proto/exceptions.cpp
 	)
 SET (VADER_HEADERS
 	vader.h
@@ -24,6 +25,7 @@ SET (VADER_HEADERS
 	proto/connection.h
 	proto/packetfactory.h
 	proto/packetextractor.h
+	proto/exceptions.h
 	)
 #SET (VADER_FORMS
 #	)

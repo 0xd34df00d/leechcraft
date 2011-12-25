@@ -18,7 +18,7 @@
 
 #include "packetfactory.h"
 #include "headers.h"
-#include "packet.h"
+#include "halfpacket.h"
 
 namespace LeechCraft
 {
@@ -28,21 +28,6 @@ namespace Vader
 {
 namespace Proto
 {
-	namespace
-	{
-		struct HalfPacket
-		{
-			Header Header_;
-			QByteArray Data_;
-
-			operator Packet ()
-			{
-				Header_.DataLength_ = Data_.size ();
-				return { Header_.Seq_, Header_.Serialize () + Data_ };
-			}
-		};
-	}
-
 	PacketFactory::PacketFactory ()
 	: Seq_ (0)
 	{
