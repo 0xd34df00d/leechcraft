@@ -16,9 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "connection.h"
-#include <QSslSocket>
-#include "packet.h"
+#ifndef PLUGINS_AZOTH_PLUGINS_VADER_PROTO_PACKETFACTORY_H
+#define PLUGINS_AZOTH_PLUGINS_VADER_PROTO_PACKETFACTORY_H
+#include <QByteArray>
+#include "headers.h"
+
+class QString;
 
 namespace LeechCraft
 {
@@ -28,57 +31,24 @@ namespace Vader
 {
 namespace Proto
 {
-	Connection::Connection (QObject *parent)
-	: QObject (parent)
-	, Port_ (0)
-	, Socket_ (new QSslSocket (this))
+	struct Packet;
+
+	class PacketFactory
 	{
-		connect (Socket_,
-				SIGNAL (sslErrors (const QList<QSslError>&)),
-				Socket_,
-				SLOT (ignoreSslErrors ()));
+		quint32 Seq_;
+	public:
+		PacketFactory ();
 
-		connect (Socket_,
-				SIGNAL (encrypted ()),
-				this,
-				SLOT (greet ()));
-
-		connect (Socket_,
-				SIGNAL (readyRead ()),
-				this,
-				SLOT (tryRead ()));
-	}
-
-	void Connection::SetTarget (const QString& host, int port)
-	{
-		Host_ = host;
-		Port_ = port;
-	}
-
-	void Connection::SetCredentials (const QString& login, const QString& pass)
-	{
-		Login_ = login;
-		Pass_ = pass;
-	}
-
-	void Connection::tryRead ()
-	{
-		Buffer_ += Socket_->readAll ();
-	}
-
-	void Connection::Connect ()
-	{
-		if (Socket_->isOpen ())
-			Socket_->disconnectFromHost ();
-
-		Socket_->connectToHostEncrypted (Host_, Port_);
-	}
-
-	void Connection::greet ()
-	{
-		Socket_->write (PF_.Hello ().Packet_);
-	}
+		Packet Hello ();
+		Packet Ping ();
+		Packet Login (const QString& login, const QString& pass, quint32 status, const QString& ua);
+		Packet Message (MsgFlags flags, const QString& to, const QString& msg);
+		Packet MessageAck (const QString& from, quint32 msgId);
+		Packet AddContact (ContactOpFlags flags, quint32 group, const QString& email, const QString& name);
+	};
 }
 }
 }
 }
+
+#endif

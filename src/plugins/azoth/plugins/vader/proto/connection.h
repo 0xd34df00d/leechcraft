@@ -19,6 +19,9 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_VADER_PROTO_CONNECTION_H
 #define PLUGINS_AZOTH_PLUGINS_VADER_PROTO_CONNECTION_H
 #include <QObject>
+#include "packetfactory.h"
+
+class QSslSocket;
 
 namespace LeechCraft
 {
@@ -31,8 +34,28 @@ namespace Proto
 	class Connection : public QObject
 	{
 		Q_OBJECT
+
+		QString Host_;
+		int Port_;
+
+		QString Login_;
+		QString Pass_;
+
+		QSslSocket *Socket_;
+
+		PacketFactory PF_;
+
+		QByteArray Buffer_;
 	public:
 		Connection (QObject* = 0);
+
+		void SetTarget (const QString&, int);
+		void SetCredentials (const QString&, const QString&);
+
+		void Connect ();
+	private slots:
+		void tryRead ();
+		void greet ();
 	};
 }
 }

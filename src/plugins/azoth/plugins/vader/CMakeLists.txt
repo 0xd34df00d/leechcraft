@@ -13,12 +13,15 @@ INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
 
 SET (VADER_SRCS
 	vader.cpp
+	proto/headers.cpp
 	proto/connection.cpp
+	proto/packetfactory.cpp
 	)
 SET (VADER_HEADERS
 	vader.h
 	proto/headers.h
 	proto/connection.h
+	proto/packetfactory.h
 	)
 #SET (VADER_FORMS
 #	)

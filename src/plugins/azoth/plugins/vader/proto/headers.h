@@ -18,7 +18,8 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_VADER_PROTO_HEADERS_H
 #define PLUGINS_AZOTH_PLUGINS_VADER_PROTO_HEADERS_H
-#include <QtGlobal>
+#include <QByteArray>
+#include <QString>
 
 namespace LeechCraft
 {
@@ -30,17 +31,18 @@ namespace Proto
 {
 	struct Header
 	{
-		quint64 Magic_;					//< Magic
-		quint64 Proto_;					//< Protocol version
-		quint64 SeqNum_;				//< Sequence number
-		quint64 MsgType_;				//< Packet type
-		quint64 DataLength_;			//< Data length
-		quint64 From_;					//< Sender's address
-		quint64 FromPort_;				//< Sender's port
-		unsigned char reserved[16];		//< Reserved
-	};
+		quint32 Magic_;					//< Magic
+		quint32 Proto_;					//< Protocol version
+		quint32 Seq_;					//< Sequence number
+		quint32 MsgType_;				//< Packet type
+		quint32 DataLength_;			//< Data length
+		quint32 From_;					//< Sender's address
+		quint32 FromPort_;				//< Sender's port
+		unsigned char Reserved_ [16];	//< Reserved
 
-	const int HeaderMagic = 0xDEADBEEF;
+		Header (quint32 msgType = 0, quint32 seq = 0);
+		QByteArray Serialize () const;
+	};
 
 	namespace Packets
 	{
@@ -75,19 +77,22 @@ namespace Proto
 		const quint16 Login2 = 0x1038;
 	}
 
-	namespace MsgFlags
+	enum MsgFlag
 	{
-		const quint32 Offline = 0x00000001;
-		const quint32 NoRecv = 0x00000004;
-		const quint32 Authorize = 0x00000008;
-		const quint32 System = 0x00000040;
-		const quint32 RTF = 0x00000080;
-		const quint32 Contact = 0x00000200;
-		const quint32 Notify = 0x00000400;
-		const quint32 Multicast = 0x00001000;
+		Offline = 0x00000001,
+		NoRecv = 0x00000004,
+		Authorize = 0x00000008,
+		System = 0x00000040,
+		RTF = 0x00000080,
+		Contact = 0x00000200,
+		Notify = 0x00000400,
+		Multicast = 0x00001000
+	};
 
-		const quint32 UserMask = 0x000036A8;
-	}
+	Q_DECLARE_FLAGS (MsgFlags, MsgFlag);
+	Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Azoth::Vader::Proto::MsgFlags);
+
+	const quint32 MsgUserFlagMask = 0x000036A8;
 
 	namespace MessageStatus
 	{
@@ -113,15 +118,18 @@ namespace Proto
 		const quint16 NoRelogin = 0x0010;
 	}
 
-	namespace ContactOpFlags
+	enum ContactOpFlag
 	{
-		const quint32 Removed = 0x00000001;
-		const quint32 Group = 0x00000002;
-		const quint32 Invisible = 0x00000004;
-		const quint32 Visible = 0x00000008;
-		const quint32 Ignore = 0x00000010;
-		const quint32 Shadow = 0x00000020;
-	}
+		Removed = 0x00000001,
+		Group = 0x00000002,
+		Invisible = 0x00000004,
+		Visible = 0x00000008,
+		Ignore = 0x00000010,
+		Shadow = 0x00000020
+	};
+
+	Q_DECLARE_FLAGS (ContactOpFlags, ContactOpFlag);
+	Q_DECLARE_OPERATORS_FOR_FLAGS (ContactOpFlags);
 
 	namespace ContactAck
 	{
@@ -176,10 +184,19 @@ namespace Proto
 		const quint16 IntErr = 0x0002;
 	}
 
-	struct ConnectionParams
+	QByteArray ToMRIM (const QString&);
+	QByteArray ToMRIM (quint32);
+	QByteArray ToMRIM ();
+
+	template<typename T, typename... Args>
+	QByteArray ToMRIM (T t, Args... args)
 	{
-		quint64 PingPeriod_;
-	};
+		return ToMRIM (t) + ToMRIM (args...);
+	}
+
+	QString FromLPS (const QByteArray&);
+	quint32 FromUL (QByteArray);
+}
 }
 }
 }
