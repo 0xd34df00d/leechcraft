@@ -65,6 +65,8 @@ namespace Proto
 		void Login ();
 		void CorrectAuth (HalfPacket);
 		void IncorrectAuth (HalfPacket);
+		void UserInfo (HalfPacket);
+		void ContactList (HalfPacket);
 
 		void Disconnect ();
 

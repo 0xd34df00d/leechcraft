@@ -20,6 +20,7 @@
 #include <QSslSocket>
 #include <QTimer>
 #include "packet.h"
+#include "exceptions.h"
 
 namespace LeechCraft
 {
@@ -60,6 +61,9 @@ namespace Proto
 		PacketActors_ [Packets::HelloAck] = [this] (HalfPacket hp) { HandleHello (hp); Login (); };
 		PacketActors_ [Packets::LoginAck] = [this] (HalfPacket hp) { CorrectAuth (hp); };
 		PacketActors_ [Packets::LoginRej] = [this] (HalfPacket hp) { IncorrectAuth (hp); };
+
+		PacketActors_ [Packets::UserInfo] = [this] (HalfPacket hp) { UserInfo (hp); };
+		PacketActors_ [Packets::ContactList2] = [this] (HalfPacket hp) { ContactList (hp); };
 	}
 
 	void Connection::SetTarget (const QString& host, int port)
@@ -131,6 +135,34 @@ namespace Proto
 		qDebug () << string;
 
 		Disconnect ();
+	}
+
+	void Connection::UserInfo (HalfPacket hp)
+	{
+		qDebug () << Q_FUNC_INFO << hp.Data_.size ();
+
+		QMap<QString, QString> info;
+		while (!hp.Data_.isEmpty ())
+		{
+			try
+			{
+				QByteArray keyBA, valueBA;
+				FromMRIM (hp.Data_, keyBA, valueBA);
+
+				const QString& key = FromMRIM1251 (keyBA);
+				const QString& val = FromMRIM16 (valueBA);
+				info [key] = val;
+			}
+			catch (const TooShortBA&)
+			{
+				break;
+			}
+		}
+	}
+
+	void Connection::ContactList (HalfPacket hp)
+	{
+		qDebug () << Q_FUNC_INFO << hp.Data_.size ();
 	}
 
 	void Connection::Disconnect ()
