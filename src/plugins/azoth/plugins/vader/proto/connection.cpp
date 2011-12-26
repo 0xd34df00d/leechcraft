@@ -177,7 +177,7 @@ namespace Proto
 
 	void Connection::RequestAuth (const QString& email, const QString& msg)
 	{
-		Write (PF_.Message (MsgFlag::Authorize, email, msg).Packet_);
+		Write (PF_.Message (MsgFlag::Authorize | MsgFlag::NoRecv, email, msg).Packet_);
 	}
 
 	void Connection::HandleHello (HalfPacket hp)

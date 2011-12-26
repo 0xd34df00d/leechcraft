@@ -83,6 +83,8 @@ namespace Vader
 
 		QByteArray Serialize () const;
 		static MRIMAccount* Deserialize (const QByteArray&, MRIMProtocol*);
+	private:
+		MRIMBuddy* GetBuddy (const Proto::ContactInfo&);
 	private slots:
 		void handleGotGroups (const QStringList&);
 		void handleGotContacts (const QList<Proto::ContactInfo>&);

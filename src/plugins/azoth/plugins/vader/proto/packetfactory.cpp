@@ -77,7 +77,7 @@ namespace Proto
 	Packet PacketFactory::Message (MsgFlags flags,
 			const QString& to, const QString& msg)
 	{
-		const QByteArray& data = ToMRIM (static_cast<quint32> (flags), to, ToMRIM16 (msg), " ");
+		const QByteArray& data = ToMRIM (static_cast<quint32> (flags), to, ToMRIM16 (msg), ToMRIM1251 (" "));
 		return HalfPacket { Header (Packets::Msg, Seq_++), data };
 	}
 

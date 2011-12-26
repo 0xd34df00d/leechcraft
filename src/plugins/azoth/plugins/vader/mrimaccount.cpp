@@ -157,6 +157,7 @@ namespace Vader
 
 	void MRIMAccount::Authorize (QObject *obj)
 	{
+		qDebug () << Q_FUNC_INFO << GetAccountName ();
 		MRIMBuddy *buddy = qobject_cast<MRIMBuddy*> (obj);
 		if (!buddy)
 		{
@@ -168,13 +169,19 @@ namespace Vader
 
 		const QString& id = buddy->GetHumanReadableID ();
 		Conn_->Authorize (id);
-		RequestAuth (id, QString (), id, QStringList ());
 
 		buddy->SetAuthorized (true);
+
+		if (!Buddies_.contains (id))
+		{
+			Buddies_ [id] = buddy;
+			Conn_->AddContact (0, id, buddy->GetEntryName ());
+		}
 	}
 
 	void MRIMAccount::DenyAuth (QObject *obj)
 	{
+		qDebug () << Q_FUNC_INFO << GetAccountName ();
 		MRIMBuddy *buddy = qobject_cast<MRIMBuddy*> (obj);
 		if (!buddy)
 		{
@@ -185,16 +192,24 @@ namespace Vader
 		}
 
 		emit removedCLItems (QList<QObject*> () << buddy);
-		Buddies_.take (buddy->GetHumanReadableID ())->deleteLater ();
+		Buddies_.value (buddy->GetHumanReadableID (), buddy)->deleteLater ();
+		Buddies_.remove (buddy->GetHumanReadableID ());
 	}
 
 	void MRIMAccount::RequestAuth (const QString& email,
 			const QString& msg, const QString& name, const QStringList& groups)
 	{
-		const quint32 group = 0;
-		const quint32 seqId = Conn_->AddContact (group, email, name);
-		PendingAdditions_ [seqId] = { -1, group, Proto::UserState::Offline,
-				email, name, QString (), QString (), 0, QString () };
+		qDebug () << Q_FUNC_INFO << GetAccountName () << email;
+		if (!Buddies_.contains (email))
+		{
+			const quint32 group = 0;
+			const quint32 seqId = Conn_->AddContact (group, email, name);
+			PendingAdditions_ [seqId] = { -1, group, Proto::UserState::Offline,
+					email, name, QString (), QString (), 0, QString () };
+			Conn_->Authorize (email);
+		}
+		else
+			Conn_->RequestAuth (email, msg);
 	}
 
 	void MRIMAccount::RemoveEntry (QObject *obj)
@@ -216,10 +231,10 @@ namespace Vader
 			return;
 		}
 
+		Buddies_.take (buddy->GetHumanReadableID ())->deleteLater ();
 		emit removedCLItems (QList<QObject*> () << buddy);
 
 		Conn_->RemoveContact (id, buddy->GetHumanReadableID (), buddy->GetEntryName ());
-		Buddies_.take (buddy->GetHumanReadableID ())->deleteLater ();
 	}
 
 	QObject* MRIMAccount::GetTransferManager () const
@@ -258,6 +273,17 @@ namespace Vader
 		return result;
 	}
 
+	MRIMBuddy* MRIMAccount::GetBuddy (const Proto::ContactInfo& info)
+	{
+		if (Buddies_.contains (info.Email_))
+			return Buddies_ [info.Email_];
+
+		MRIMBuddy *buddy = new MRIMBuddy (info, this);
+		Buddies_ [info.Email_] = buddy;
+		emit gotCLItems (QList<QObject*> () << buddy);
+		return buddy;
+	}
+
 	void MRIMAccount::handleGotGroups (const QStringList& groups)
 	{
 		AllGroups_ = groups;
@@ -268,6 +294,7 @@ namespace Vader
 		QList<QObject*> objs;
 		Q_FOREACH (const Proto::ContactInfo& contact, contacts)
 		{
+			qDebug () << Q_FUNC_INFO << GetAccountName () << contact.Email_ << contact.Alias_ << contact.ContactID_;
 			MRIMBuddy *buddy = new MRIMBuddy (contact, this);
 			buddy->SetGroup (AllGroups_.value (contact.GroupNumber_));
 			objs << buddy;
@@ -279,6 +306,7 @@ namespace Vader
 
 	void MRIMAccount::handleContactAdded (quint32 seq, quint32 id)
 	{
+		qDebug () << Q_FUNC_INFO << GetAccountName () << id;
 		if (!PendingAdditions_.contains (seq))
 		{
 			qWarning () << Q_FUNC_INFO
@@ -295,13 +323,16 @@ namespace Vader
 
 	void MRIMAccount::handleGotAuthRequest (const QString& from, const QString& msg)
 	{
+		qDebug () << Q_FUNC_INFO << GetAccountName () << from;
+		if (Buddies_.contains (from) &&
+				Buddies_ [from]->IsAuthorized ())
+			return;
+
 		Proto::ContactInfo info = {-1, 0, Proto::UserState::Online,
 				from, from, QString (), QString (), 0, QString () };
 
 		MRIMBuddy *buddy = new MRIMBuddy (info, this);
-		Buddies_ [from] = buddy;
 		buddy->SetAuthorized (false);
-
 		emit gotCLItems (QList<QObject*> () << buddy);
 		emit authorizationRequested (buddy, msg);
 	}

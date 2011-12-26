@@ -67,6 +67,11 @@ namespace Vader
 			SetGroup (QString ());
 	}
 
+	bool MRIMBuddy::IsAuthorized () const
+	{
+		return IsAuthorized_;
+	}
+
 	qint64 MRIMBuddy::GetID () const
 	{
 		return Info_.ContactID_;

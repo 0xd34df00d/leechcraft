@@ -51,7 +51,9 @@ namespace Vader
 
 		void HandleMessage (MRIMMessage*);
 		void SetGroup (const QString&);
+
 		void SetAuthorized (bool);
+		bool IsAuthorized () const;
 
 		qint64 GetID () const;
 
