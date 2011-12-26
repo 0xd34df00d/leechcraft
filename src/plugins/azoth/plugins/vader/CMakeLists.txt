@@ -18,6 +18,7 @@ SET (VADER_SRCS
 	mrimaccount.cpp
 	mrimaccountconfigwidget.cpp
 	mrimbuddy.cpp
+	mrimmessage.cpp
 	proto/headers.cpp
 	proto/connection.cpp
 	proto/packet.cpp
@@ -33,6 +34,7 @@ SET (VADER_HEADERS
 	mrimaccount.h
 	mrimaccountconfigwidget.h
 	mrimbuddy.h
+	mrimmessage.h
 	proto/headers.h
 	proto/connection.h
 	proto/packet.h
