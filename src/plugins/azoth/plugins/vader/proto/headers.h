@@ -20,6 +20,7 @@
 #define PLUGINS_AZOTH_PLUGINS_VADER_PROTO_HEADERS_H
 #include <QByteArray>
 #include <QString>
+#include <QTextCodec>
 
 namespace LeechCraft
 {
@@ -212,8 +213,38 @@ namespace Proto
 		return ToMRIM (t) + ToMRIM (args...);
 	}
 
+	struct EncoderProxy
+	{
+		QString Str_;
+
+		EncoderProxy& operator= (const QByteArray& ba)
+		{
+			Str_ = QTextCodec::codecForName (GetCodecName ())->toUnicode (ba);
+			return *this;
+		}
+
+		operator QString () const { return Str_; }
+	protected:
+		virtual QByteArray GetCodecName () = 0;
+	};
+
+	struct Str1251 : EncoderProxy
+	{
+	protected:
+		QByteArray GetCodecName () { return "Windows-1251"; }
+	};
+
+	struct Str16 : EncoderProxy
+	{
+	protected:
+		QByteArray GetCodecName () { return "UTF-16LE"; }
+	};
+
 	QString FromMRIM1251 (const QByteArray&);
 	QString FromMRIM16 (const QByteArray&);
+	void FromMRIM (QByteArray&, EncoderProxy&);
+	inline void FromMRIM (QByteArray& ba, Str1251& str) { FromMRIM (ba, static_cast<EncoderProxy&> (str)); }
+	inline void FromMRIM (QByteArray& ba, Str16& str){ FromMRIM (ba, static_cast<EncoderProxy&> (str)); }
 	void FromMRIM (QByteArray&, QByteArray&);
 	void FromMRIM (QByteArray&, quint32&);
 	void FromMRIM (QByteArray&);

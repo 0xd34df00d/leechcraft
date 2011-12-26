@@ -112,6 +112,14 @@ namespace Proto
 		return QTextCodec::codecForName ("UTF-16LE")->toUnicode (ba);
 	}
 
+	void FromMRIM (QByteArray& lps, EncoderProxy& proxy)
+	{
+		QByteArray ba;
+		FromMRIM (lps, ba);
+
+		proxy = ba;
+	}
+
 	void FromMRIM (QByteArray& lps, QByteArray& str)
 	{
 		quint32 size = 0;
