@@ -707,9 +707,9 @@ namespace LeechCraft
 				std::vector<libtorrent::peer_info> peerInfos;
 				Handles_.at (CurrentTorrent_).Handle_.get_peer_info (peerInfos);
 
-				const auto& localPieces = Handles_.at (CurrentTorrent_).Handle_.status ().pieces;
+				const libtorrent::bitfield& localPieces = Handles_.at (CurrentTorrent_).Handle_.status ().pieces;
 				QList<int> ourMissing;
-				for (auto i = localPieces.begin (), end = localPieces.end (); i != end; ++i)
+				for (libtorrent::bitfield::const_iterator i = localPieces.begin (), end = localPieces.end (); i != end; ++i)
 				{
 					const bool res = *i;
 					if (!res)

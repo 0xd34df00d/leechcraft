@@ -138,7 +138,7 @@ namespace LeechCraft
 				// Update
 				for (size_t i = 0, size = queue.size (); i < size; ++i)
 				{
-					const auto& ppi = queue [i];
+					const libtorrent::partial_piece_info& ppi = queue [i];
 
 					bool found = false;
 					for (int j = 0; j < initSize; ++j)
