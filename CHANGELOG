@@ -5,6 +5,24 @@ Links to the corresponding development digests are also given for the
 relevant blocks of changes, so one could easily lookup 
 
 !!! HEAD
+!!! 0.4.97
+! Announce ( http://leechcraft.org/leechcraft-0.4.97-is-released ):
+* Aggregator: updated the list of feeds.
+* Azoth: fast change status button offline by default.
+* Azoth: added perr.svg to Likey iconset.
+* Azoth: fixed drawing groups heading.
+* Azoth AdiumStyles: detect outgoing messages in MUCs.
+* Azoth ChatHistory: select proper history item.
+* Azoth Xoox: fixed Ad-Hoc commands.
+* Azoth plugins: more plugin icons.
+* BitTorrent: optimized updating pieces model.
+* BitTorrent: optimized calculating interesting pieces.
+* Core: correctly handle arguments from local socket.
+* CSTP: fixed handling redirections for internal tasks.
+* EiskaltDC++: fixed building with Boost-1.48 and later.
+* Poshuku OB: sync fixes.
+* Poshuku OB RIL: fixed uploading empty bookmarks.
+
 !!! 0.4.96
 ! Announce ( http://leechcraft.org/leechcraft-0.4.96-is-released ):
 * Azoth: fixed auth issues.
