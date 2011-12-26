@@ -18,6 +18,8 @@
 
 #include "mrimmessage.h"
 #include "mrimbuddy.h"
+#include "mrimaccount.h"
+#include "proto/connection.h"
 
 namespace LeechCraft
 {
@@ -28,10 +30,16 @@ namespace Vader
 	MRIMMessage::MRIMMessage (Direction dir, MessageType mt, MRIMBuddy *buddy)
 	: QObject (buddy)
 	, Buddy_ (buddy)
+	, A_ (qobject_cast<MRIMAccount*> (Buddy_->GetParentAccount ()))
 	, Dir_ (dir)
 	, MT_ (mt)
 	, DateTime_ (QDateTime::currentDateTime ())
+	, SendID_ (0)
 	{
+		connect (A_->GetConnection (),
+				SIGNAL (messageDelivered (quint32)),
+				this,
+				SLOT (checkMessageDelivery (quint32)));
 	}
 
 	QObject* MRIMMessage::GetObject ()
@@ -41,10 +49,20 @@ namespace Vader
 
 	void MRIMMessage::Send ()
 	{
+		if (Dir_ != Direction::DOut)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to send incoming message";
+			return;
+		}
+
+		SendID_ = A_->GetConnection ()->SendMessage (Buddy_->GetHumanReadableID (), Body_);
+		Buddy_->HandleMessage (this);
 	}
 
 	void MRIMMessage::Store ()
 	{
+		Buddy_->HandleMessage (this);
 	}
 
 	IMessage::Direction MRIMMessage::GetDirection () const
@@ -90,6 +108,12 @@ namespace Vader
 	void MRIMMessage::SetDateTime (const QDateTime& timestamp)
 	{
 		DateTime_ = timestamp;
+	}
+
+	void MRIMMessage::checkMessageDelivery (quint32 id)
+	{
+		if (id != SendID_)
+			return;
 	}
 }
 }

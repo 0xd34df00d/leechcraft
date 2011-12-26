@@ -28,6 +28,7 @@ namespace Azoth
 namespace Vader
 {
 	class MRIMBuddy;
+	class MRIMAccount;
 
 	class MRIMMessage : public QObject
 					  , public IMessage
@@ -35,11 +36,14 @@ namespace Vader
 		Q_OBJECT
 
 		MRIMBuddy *Buddy_;
+		MRIMAccount *A_;
 		Direction Dir_;
 		MessageType MT_;
 
 		QString Body_;
 		QDateTime DateTime_;
+
+		quint32 SendID_;
 	public:
 		MRIMMessage (Direction, MessageType, MRIMBuddy*);
 
@@ -56,6 +60,8 @@ namespace Vader
 		void SetBody (const QString&);
 		QDateTime GetDateTime () const;
 		void SetDateTime (const QDateTime&);
+	private slots:
+		void checkMessageDelivery (quint32);
 	};
 }
 }

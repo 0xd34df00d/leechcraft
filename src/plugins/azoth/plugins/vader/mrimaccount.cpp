@@ -62,6 +62,11 @@ namespace Vader
 			Core::Instance ().GetProxy ()->SetPassword (pass, this);
 	}
 
+	Proto::Connection* MRIMAccount::GetConnection () const
+	{
+		return Conn_;
+	}
+
 	QObject* MRIMAccount::GetObject ()
 	{
 		return this;

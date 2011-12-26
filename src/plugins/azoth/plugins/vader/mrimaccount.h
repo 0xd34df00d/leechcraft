@@ -59,6 +59,7 @@ namespace Vader
 		MRIMAccount (const QString&, MRIMProtocol*);
 
 		void FillConfig (MRIMAccountConfigWidget*);
+		Proto::Connection* GetConnection () const;
 
 		// IAccount
 		QObject* GetObject ();
