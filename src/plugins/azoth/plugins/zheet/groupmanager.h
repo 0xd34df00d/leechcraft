@@ -20,6 +20,7 @@
 #define PLUGINS_AZOTH_PLUGINS_ZHEET_GROUPMANAGER_H
 #include <QObject>
 #include <QHash>
+#include <QStringList>
 #include <msn/buddy.h>
 
 namespace LeechCraft
