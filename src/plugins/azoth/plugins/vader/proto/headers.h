@@ -89,7 +89,9 @@ namespace Proto
 		RTF = 0x00000080,
 		Contact = 0x00000200,
 		Notify = 0x00000400,
-		Multicast = 0x00001000
+		Multicast = 0x00001000,
+		CP1251 = 0x00200000,
+		Multichat = 0x00400000
 	};
 
 	Q_DECLARE_FLAGS (MsgFlags, MsgFlag);

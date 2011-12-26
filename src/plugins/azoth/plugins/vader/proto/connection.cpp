@@ -21,6 +21,7 @@
 #include <QTimer>
 #include "packet.h"
 #include "exceptions.h"
+#include "message.h"
 
 namespace LeechCraft
 {
@@ -66,6 +67,8 @@ namespace Proto
 
 		PacketActors_ [Packets::UserInfo] = [this] (HalfPacket hp) { UserInfo (hp); };
 		PacketActors_ [Packets::ContactList2] = [this] (HalfPacket hp) { ContactList (hp); };
+
+		PacketActors_ [Packets::MsgAck] = [this] (HalfPacket hp) { IncomingMsg (hp); };
 	}
 
 	void Connection::SetTarget (const QString& host, int port)
@@ -311,6 +314,24 @@ namespace Proto
 			}
 		}
 		emit gotContacts (contacts);
+	}
+
+	void Connection::IncomingMsg (HalfPacket hp)
+	{
+		quint32 msgId = 0, flags = 0;
+		Str16 from;
+		FromMRIM (hp.Data_, msgId, flags, from);
+
+		QByteArray textBA;
+		FromMRIM (hp.Data_, textBA);
+		const QString& text = (flags & MsgFlag::CP1251) ?
+				FromMRIM1251 (textBA) :
+				FromMRIM16 (textBA);
+
+		if (!(flags & MsgFlag::NoRecv))
+			Write (PF_.MessageAck (from, msgId).Packet_);
+
+		emit gotMessage ({msgId, flags, from, text});
 	}
 
 	void Connection::Disconnect ()

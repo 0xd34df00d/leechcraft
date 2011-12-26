@@ -39,6 +39,8 @@ namespace Vader
 {
 namespace Proto
 {
+	struct Message;
+
 	class Connection : public QObject
 	{
 		Q_OBJECT
@@ -76,6 +78,7 @@ namespace Proto
 		void IncorrectAuth (HalfPacket);
 		void UserInfo (HalfPacket);
 		void ContactList (HalfPacket);
+		void IncomingMsg (HalfPacket);
 
 		void Disconnect ();
 
@@ -90,6 +93,7 @@ namespace Proto
 		void authenticationError (const QString&);
 		void gotGroups (const QStringList&);
 		void gotContacts (const QList<Proto::ContactInfo>&);
+		void gotMessage (const Proto::Message&);
 	};
 }
 }
