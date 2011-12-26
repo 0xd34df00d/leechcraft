@@ -170,13 +170,13 @@ namespace Proto
 	void Connection::IncorrectAuth (HalfPacket hp)
 	{
 		qDebug () << Q_FUNC_INFO;
-		QByteArray string;
+		Str1251 string;
 		FromMRIM (hp.Data_, string);
 		qDebug () << string;
 
 		Disconnect ();
 
-		emit authenticationError (FromMRIM1251 (string));
+		emit authenticationError (string);
 	}
 
 	void Connection::UserInfo (HalfPacket hp)
@@ -188,12 +188,10 @@ namespace Proto
 		{
 			try
 			{
-				QByteArray keyBA, valueBA;
-				FromMRIM (hp.Data_, keyBA, valueBA);
-
-				const QString& key = FromMRIM1251 (keyBA);
-				const QString& val = FromMRIM16 (valueBA);
-				info [key] = val;
+				Str1251 key;
+				Str16 value;
+				FromMRIM (hp.Data_, key, value);
+				info [key] = value;
 			}
 			catch (const TooShortBA&)
 			{
@@ -232,8 +230,6 @@ namespace Proto
 		FromMRIM (hp.Data_, groupsNum, gMask, cMask);
 
 		qDebug () << groupsNum << "groups; masks:" << gMask << cMask;
-		gMask = gMask.mid (2);
-		cMask = cMask.mid (6);
 
 		auto skip = [&hp] (const QByteArray& mask)
 		{
@@ -255,13 +251,13 @@ namespace Proto
 				}
 		};
 
+		gMask = gMask.mid (2);
 		QStringList groups;
 		for (quint32 i = 0; i < groupsNum; ++i)
 		{
 			quint32 flags = 0;
-			QByteArray nameBA;
-			FromMRIM (hp.Data_, flags, nameBA);
-			const QString& name = FromMRIM16 (nameBA);
+			Str16 name;
+			FromMRIM (hp.Data_, flags, name);
 			groups << name;
 
 			qDebug () << "got group" << name << flags;
@@ -276,20 +272,29 @@ namespace Proto
 		}
 		emit gotGroups (groups);
 
+		cMask = cMask.mid (12);
 		QList<ContactInfo> contacts;
 		while (!hp.Data_.isEmpty ())
 		{
 			try
 			{
-				quint32 flags = 0, group = 0, serverFlags = 0, status = 0;
-				QByteArray emailBA, aliasBA;
-				FromMRIM (hp.Data_, flags, group, emailBA, aliasBA, serverFlags, status);
-				const QString& email = FromMRIM1251 (emailBA);
-				const QString& alias = FromMRIM16 (aliasBA);
+				quint32 flags = 0, group = 0;
+				Str1251 email;
+				Str16 alias;
+				quint32 serverFlags = 0, status = 0;
+				Str1251 phones, statusURI;
+				Str16 statusTitle, statusDesc;
+				quint32 comSupport = 0;
+				Str1251 ua;
 
-				qDebug () << "got buddy" << flags << group << email << alias << serverFlags << status;
+				FromMRIM (hp.Data_, flags, group, email, alias, serverFlags,
+						status, phones, statusURI, statusTitle, statusDesc, comSupport, ua);
 
-				contacts << ContactInfo { group, status, email, alias };
+				qDebug () << "got buddy" << flags << group << email << alias
+						<< serverFlags << status << phones << statusURI
+						<< statusTitle << statusDesc << comSupport << ua;
+
+				contacts << ContactInfo { group, status, email, alias, statusTitle, statusDesc, comSupport, ua };
 
 				try
 				{
