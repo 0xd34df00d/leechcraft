@@ -69,6 +69,7 @@ namespace Proto
 		PacketActors_ [Packets::ContactList2] = [this] (HalfPacket hp) { ContactList (hp); };
 
 		PacketActors_ [Packets::MsgAck] = [this] (HalfPacket hp) { IncomingMsg (hp); };
+		PacketActors_ [Packets::MsgStatus] = [this] (HalfPacket hp) { MsgStatus (hp); };
 	}
 
 	void Connection::SetTarget (const QString& host, int port)
@@ -145,6 +146,13 @@ namespace Proto
 				UserState::Away;
 			Write (PF_.SetStatus (state, status.StatusString_).Packet_);
 		}
+	}
+
+	quint32 Connection::SendMessage (const QString& to, const QString& message)
+	{
+		auto hp = PF_.Message (0, to, message);
+		Write (hp.Packet_);
+		return hp.Seq_;
 	}
 
 	void Connection::HandleHello (HalfPacket hp)
@@ -332,6 +340,16 @@ namespace Proto
 			Write (PF_.MessageAck (from, msgId).Packet_);
 
 		emit gotMessage ({msgId, flags, from, text});
+	}
+
+	void Connection::MsgStatus (HalfPacket hp)
+	{
+		quint32 seq = hp.Header_.Seq_;
+		quint32 status = 0;
+		FromMRIM (hp.Data_, status);
+
+		if (status == MessageStatus::Delivered)
+			emit messageDelivered (seq);
 	}
 
 	void Connection::Disconnect ()

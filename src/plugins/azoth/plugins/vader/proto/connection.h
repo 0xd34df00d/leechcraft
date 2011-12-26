@@ -71,6 +71,7 @@ namespace Proto
 		void Connect ();
 
 		void SetState (const EntryStatus&);
+		quint32 SendMessage (const QString& to, const QString& message);
 	private:
 		void HandleHello (HalfPacket);
 		void Login ();
@@ -79,6 +80,7 @@ namespace Proto
 		void UserInfo (HalfPacket);
 		void ContactList (HalfPacket);
 		void IncomingMsg (HalfPacket);
+		void MsgStatus (HalfPacket);
 
 		void Disconnect ();
 
@@ -94,6 +96,7 @@ namespace Proto
 		void gotGroups (const QStringList&);
 		void gotContacts (const QList<Proto::ContactInfo>&);
 		void gotMessage (const Proto::Message&);
+		void messageDelivered (quint32);
 	};
 }
 }
