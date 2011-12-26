@@ -31,9 +31,16 @@ namespace Proto
 	struct ContactInfo
 	{
 		int GroupNumber_;
-		int StatusID_;
+		quint32 StatusID_;
 		QString Email_;
 		QString Alias_;
+
+		QString StatusTitle_;
+		QString StatusDesc_;
+
+		quint32 Features_;
+
+		QString UA_;
 	};
 }
 }
