@@ -18,7 +18,10 @@
 
 #include "mrimbuddy.h"
 #include <QImage>
+#include "proto/headers.h"
 #include "mrimaccount.h"
+#include "mrimmessage.h"
+#include <interfaces/azothutil.h>
 
 namespace LeechCraft
 {
@@ -31,6 +34,18 @@ namespace Vader
 	, A_ (acc)
 	, Info_ (info)
 	{
+		if (info.StatusID_ == Proto::UserState::Online)
+			Status_.State_ = SOnline;
+		else if (info.StatusID_ == Proto::UserState::Away)
+			Status_.State_ = SAway;
+		else
+			Status_.State_ = SOffline;
+	}
+
+	void MRIMBuddy::HandleMessage (MRIMMessage *msg)
+	{
+		AllMessages_ << msg;
+		emit gotMessage (msg);
 	}
 
 	QObject* MRIMBuddy::GetObject ()
@@ -97,11 +112,15 @@ namespace Vader
 
 	QList<QObject*> MRIMBuddy::GetAllMessages () const
 	{
-		return QList<QObject*> ();
+		QList<QObject*> result;
+		Q_FOREACH (auto m, AllMessages_)
+			result << m;
+		return result;
 	}
 
-	void MRIMBuddy::PurgeMessages (const QDateTime&)
+	void MRIMBuddy::PurgeMessages (const QDateTime& before)
 	{
+		Util::StandardPurgeMessages (AllMessages_, before);
 	}
 
 	void MRIMBuddy::SetChatPartState (ChatPartState , const QString&)

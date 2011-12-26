@@ -31,6 +31,7 @@ namespace Vader
 	namespace Proto
 	{
 		class Connection;
+		struct Message;
 	}
 
 	class MRIMProtocol;
@@ -53,7 +54,7 @@ namespace Vader
 
 		QStringList AllGroups_;
 
-		QList<MRIMBuddy*> Buddies_;
+		QHash<QString, MRIMBuddy*> Buddies_;
 	public:
 		MRIMAccount (const QString&, MRIMProtocol*);
 
@@ -85,6 +86,7 @@ namespace Vader
 	private slots:
 		void handleGotGroups (const QStringList&);
 		void handleGotContacts (const QList<Proto::ContactInfo>&);
+		void handleGotMessage (const Proto::Message&);
 	signals:
 		void gotCLItems (const QList<QObject*>&);
 		void removedCLItems (const QList<QObject*>&);

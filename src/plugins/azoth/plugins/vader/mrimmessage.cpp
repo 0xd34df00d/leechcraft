@@ -30,6 +30,7 @@ namespace Vader
 	, Buddy_ (buddy)
 	, Dir_ (dir)
 	, MT_ (mt)
+	, DateTime_ (QDateTime::currentDateTime ())
 	{
 	}
 

@@ -29,6 +29,7 @@ namespace Azoth
 namespace Vader
 {
 	class MRIMAccount;
+	class MRIMMessage;
 
 	class MRIMBuddy : public QObject
 					, public ICLEntry
@@ -40,8 +41,12 @@ namespace Vader
 		Proto::ContactInfo Info_;
 
 		EntryStatus Status_;
+
+		QList<MRIMMessage*> AllMessages_;
 	public:
 		MRIMBuddy (const Proto::ContactInfo&, MRIMAccount*);
+
+		void HandleMessage (MRIMMessage*);
 
 		// ICLEntry
 		QObject* GetObject ();

@@ -20,9 +20,11 @@
 #include <QDataStream>
 #include <interfaces/iproxyobject.h>
 #include "proto/connection.h"
+#include "proto/message.h"
 #include "mrimprotocol.h"
 #include "mrimaccountconfigwidget.h"
 #include "mrimbuddy.h"
+#include "mrimmessage.h"
 #include "core.h"
 
 namespace LeechCraft
@@ -45,6 +47,10 @@ namespace Vader
 				SIGNAL (gotContacts (QList<Proto::ContactInfo>)),
 				this,
 				SLOT (handleGotContacts (QList<Proto::ContactInfo>)));
+		connect (Conn_,
+				SIGNAL (gotMessage (Proto::Message)),
+				this,
+				SLOT (handleGotMessage (Proto::Message)));
 	}
 
 	void MRIMAccount::FillConfig (MRIMAccountConfigWidget *w)
@@ -74,7 +80,7 @@ namespace Vader
 	QList<QObject*> MRIMAccount::GetCLEntries ()
 	{
 		QList<QObject*> result;
-		Q_FOREACH (auto b, Buddies_)
+		Q_FOREACH (auto b, Buddies_.values ())
 			result << b;
 		return result;
 	}
@@ -196,10 +202,25 @@ namespace Vader
 		{
 			MRIMBuddy *buddy = new MRIMBuddy (contact, this);
 			objs << buddy;
-			Buddies_ << buddy;
+			Buddies_ [contact.Email_] = buddy;
 		}
 
 		emit gotCLItems (objs);
+	}
+
+	void MRIMAccount::handleGotMessage (const Proto::Message& msg)
+	{
+		auto buddy = Buddies_ [msg.From_];
+		if (!buddy)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "incoming message from unknown buddy"
+					<< msg.From_;
+			return;
+		}
+
+		MRIMMessage *obj = new MRIMMessage (IMessage::DIn, IMessage::MTChatMessage, buddy);
+		buddy->HandleMessage (obj);
 	}
 }
 }
