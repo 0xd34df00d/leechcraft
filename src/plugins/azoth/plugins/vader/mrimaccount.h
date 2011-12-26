@@ -35,6 +35,7 @@ namespace Vader
 
 	class MRIMProtocol;
 	class MRIMAccountConfigWidget;
+	class MRIMBuddy;
 
 	class MRIMAccount : public QObject
 					  , public IAccount
@@ -50,7 +51,9 @@ namespace Vader
 
 		EntryStatus Status_;
 
-		QStringList Groups_;
+		QStringList AllGroups_;
+
+		QList<MRIMBuddy*> Buddies_;
 	public:
 		MRIMAccount (const QString&, MRIMProtocol*);
 

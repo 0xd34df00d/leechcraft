@@ -89,7 +89,7 @@ namespace Proto
 	signals:
 		void authenticationError (const QString&);
 		void gotGroups (const QStringList&);
-		void gotContacts (const QList<ContactInfo>&);
+		void gotContacts (const QList<Proto::ContactInfo>&);
 	};
 }
 }

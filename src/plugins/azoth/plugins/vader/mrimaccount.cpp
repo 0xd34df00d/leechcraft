@@ -22,6 +22,7 @@
 #include "proto/connection.h"
 #include "mrimprotocol.h"
 #include "mrimaccountconfigwidget.h"
+#include "mrimbuddy.h"
 #include "core.h"
 
 namespace LeechCraft
@@ -72,7 +73,10 @@ namespace Vader
 
 	QList<QObject*> MRIMAccount::GetCLEntries ()
 	{
-		return QList<QObject*> ();
+		QList<QObject*> result;
+		Q_FOREACH (auto b, Buddies_)
+			result << b;
+		return result;
 	}
 
 	QString MRIMAccount::GetAccountName () const
@@ -182,14 +186,20 @@ namespace Vader
 
 	void MRIMAccount::handleGotGroups (const QStringList& groups)
 	{
-		Groups_ = groups;
+		AllGroups_ = groups;
 	}
 
 	void MRIMAccount::handleGotContacts (const QList<Proto::ContactInfo>& contacts)
 	{
+		QList<QObject*> objs;
 		Q_FOREACH (const Proto::ContactInfo& contact, contacts)
 		{
+			MRIMBuddy *buddy = new MRIMBuddy (contact, this);
+			objs << buddy;
+			Buddies_ << buddy;
 		}
+
+		emit gotCLItems (objs);
 	}
 }
 }
