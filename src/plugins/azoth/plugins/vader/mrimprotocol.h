@@ -39,6 +39,8 @@ namespace Vader
 	public:
 		MRIMProtocol (QObject* = 0);
 
+		void Init ();
+
 		QObject* GetObject ();
 		ProtocolFeatures GetFeatures () const;
 		QList<QObject*> GetRegisteredAccounts ();

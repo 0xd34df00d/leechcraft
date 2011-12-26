@@ -32,6 +32,10 @@ namespace Vader
 	MRIMProtocol::MRIMProtocol (QObject *parent)
 	: QObject (parent)
 	{
+	}
+
+	void MRIMProtocol::Init ()
+	{
 		RestoreAccounts ();
 	}
 

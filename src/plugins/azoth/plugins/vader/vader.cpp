@@ -34,6 +34,7 @@ namespace Vader
 
 	void Plugin::SecondInit ()
 	{
+		Core::Instance ().GetProtocol ()->Init ();
 	}
 
 	void Plugin::Release ()
