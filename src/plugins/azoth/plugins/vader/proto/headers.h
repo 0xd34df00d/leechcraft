@@ -90,6 +90,7 @@ namespace Proto
 		Contact = 0x00000200,
 		Notify = 0x00000400,
 		Multicast = 0x00001000,
+		Alarm = 0x00004000,
 		CP1251 = 0x00200000,
 		Multichat = 0x00400000
 	};

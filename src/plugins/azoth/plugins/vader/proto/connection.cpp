@@ -70,6 +70,8 @@ namespace Proto
 
 		PacketActors_ [Packets::MsgAck] = [this] (HalfPacket hp) { IncomingMsg (hp); };
 		PacketActors_ [Packets::MsgStatus] = [this] (HalfPacket hp) { MsgStatus (hp); };
+
+		PacketActors_ [Packets::AuthorizeAck] = [this] (HalfPacket hp) { AuthAck (hp); };
 	}
 
 	void Connection::SetTarget (const QString& host, int port)
@@ -153,6 +155,23 @@ namespace Proto
 		auto hp = PF_.Message (0, to, message);
 		Write (hp.Packet_);
 		return hp.Seq_;
+	}
+
+	void Connection::Authorize (const QString& email)
+	{
+		Write (PF_.Authorize (email).Packet_);
+	}
+
+	quint32 Connection::AddContact (quint32 group, const QString& email, const QString& name)
+	{
+		const auto& p = PF_.AddContact (0, group, email, name);
+		Write (p.Packet_);
+		return p.Seq_;
+	}
+
+	void Connection::RequestAuth (const QString& email, const QString& msg)
+	{
+		Write (PF_.Message (MsgFlag::Authorize, email, msg).Packet_);
 	}
 
 	void Connection::HandleHello (HalfPacket hp)
@@ -339,7 +358,18 @@ namespace Proto
 		if (!(flags & MsgFlag::NoRecv))
 			Write (PF_.MessageAck (from, msgId).Packet_);
 
-		emit gotMessage ({msgId, flags, from, text});
+		if (flags & MsgFlag::Authorize)
+			emit gotAuthRequest (from, text);
+		else if (flags & MsgFlag::Notify)
+		{
+		}
+		else if (flags & MsgFlag::Alarm)
+			emit gotAttentionRequest (from, text);
+		else if (flags & MsgFlag::Multichat)
+		{
+		}
+		else
+			emit gotMessage ({msgId, flags, from, text});
 	}
 
 	void Connection::MsgStatus (HalfPacket hp)
@@ -350,6 +380,14 @@ namespace Proto
 
 		if (status == MessageStatus::Delivered)
 			emit messageDelivered (seq);
+	}
+
+	void Connection::AuthAck (HalfPacket hp)
+	{
+		Str1251 from;
+		FromMRIM (hp.Data_, from);
+
+		emit gotAuthAck (from);
 	}
 
 	void Connection::Disconnect ()

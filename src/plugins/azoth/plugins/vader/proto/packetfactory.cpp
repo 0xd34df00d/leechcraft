@@ -77,7 +77,7 @@ namespace Proto
 	Packet PacketFactory::Message (MsgFlags flags,
 			const QString& to, const QString& msg)
 	{
-		const QByteArray& data = ToMRIM (static_cast<quint32> (flags), to, msg, " ");
+		const QByteArray& data = ToMRIM (static_cast<quint32> (flags), to, ToMRIM16 (msg), " ");
 		return HalfPacket { Header (Packets::Msg, Seq_++), data };
 	}
 
@@ -90,8 +90,15 @@ namespace Proto
 	Packet PacketFactory::AddContact (ContactOpFlags flags,
 			quint32 group, const QString& email, const QString& name)
 	{
-		const QByteArray& data = ToMRIM (static_cast<quint32> (flags), group, email, name);
+		const QByteArray& data = ToMRIM (static_cast<quint32> (flags),
+				group, email, ToMRIM16 (name), QString (" "), QString (" "), 0);
 		return HalfPacket { Header (Packets::Contact, Seq_++), data };
+	}
+
+	Packet PacketFactory::Authorize (const QString& email)
+	{
+		const QByteArray& data = ToMRIM (email);
+		return HalfPacket { Header (Packets::Authorize), data };
 	}
 }
 }

@@ -72,6 +72,9 @@ namespace Proto
 
 		void SetState (const EntryStatus&);
 		quint32 SendMessage (const QString& to, const QString& message);
+		void Authorize (const QString& email);
+		quint32 AddContact (quint32 group, const QString& email, const QString& name);
+		void RequestAuth (const QString& email, const QString& msg);
 	private:
 		void HandleHello (HalfPacket);
 		void Login ();
@@ -81,6 +84,7 @@ namespace Proto
 		void ContactList (HalfPacket);
 		void IncomingMsg (HalfPacket);
 		void MsgStatus (HalfPacket);
+		void AuthAck (HalfPacket);
 
 		void Disconnect ();
 
@@ -96,6 +100,9 @@ namespace Proto
 		void gotGroups (const QStringList&);
 		void gotContacts (const QList<Proto::ContactInfo>&);
 		void gotMessage (const Proto::Message&);
+		void gotAuthRequest (const QString& from, const QString& msg);
+		void gotAuthAck (const QString& from);
+		void gotAttentionRequest (const QString& from, const QString& msg);
 		void messageDelivered (quint32);
 	};
 }
