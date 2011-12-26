@@ -30,6 +30,8 @@ namespace Proto
 {
 	struct ContactInfo
 	{
+		qint64 ContactID_;
+
 		int GroupNumber_;
 		quint32 StatusID_;
 		QString Email_;

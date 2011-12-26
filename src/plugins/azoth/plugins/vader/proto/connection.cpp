@@ -72,6 +72,7 @@ namespace Proto
 		PacketActors_ [Packets::MsgStatus] = [this] (HalfPacket hp) { MsgStatus (hp); };
 
 		PacketActors_ [Packets::AuthorizeAck] = [this] (HalfPacket hp) { AuthAck (hp); };
+		PacketActors_ [Packets::ContactAck] = [this] (HalfPacket hp) { ContactAdded (hp); };
 	}
 
 	void Connection::SetTarget (const QString& host, int port)
@@ -169,6 +170,11 @@ namespace Proto
 		return p.Seq_;
 	}
 
+	void Connection::RemoveContact (quint32 id, const QString& email, const QString& name)
+	{
+		Write (PF_.RemoveContact (id, email, name).Packet_);
+	}
+
 	void Connection::RequestAuth (const QString& email, const QString& msg)
 	{
 		Write (PF_.Message (MsgFlag::Authorize, email, msg).Packet_);
@@ -195,6 +201,7 @@ namespace Proto
 	void Connection::CorrectAuth (HalfPacket)
 	{
 		qDebug () << Q_FUNC_INFO;
+		emit statusChanged (PendingStatus_);
 	}
 
 	void Connection::IncorrectAuth (HalfPacket hp)
@@ -304,6 +311,7 @@ namespace Proto
 
 		cMask = cMask.mid (12);
 		QList<ContactInfo> contacts;
+		quint32 contactId = 20;
 		while (!hp.Data_.isEmpty ())
 		{
 			try
@@ -324,7 +332,7 @@ namespace Proto
 						<< serverFlags << status << phones << statusURI
 						<< statusTitle << statusDesc << comSupport << ua;
 
-				contacts << ContactInfo { group, status, email, alias, statusTitle, statusDesc, comSupport, ua };
+				contacts << ContactInfo { contactId++, group, status, email, alias, statusTitle, statusDesc, comSupport, ua };
 
 				try
 				{
@@ -346,7 +354,7 @@ namespace Proto
 	void Connection::IncomingMsg (HalfPacket hp)
 	{
 		quint32 msgId = 0, flags = 0;
-		Str16 from;
+		Str1251 from;
 		FromMRIM (hp.Data_, msgId, flags, from);
 
 		QByteArray textBA;
@@ -388,6 +396,17 @@ namespace Proto
 		FromMRIM (hp.Data_, from);
 
 		emit gotAuthAck (from);
+	}
+
+	void Connection::ContactAdded (HalfPacket hp)
+	{
+		quint32 status = 0, contactId = 0;
+		FromMRIM (hp.Data_, status, contactId);
+
+		qDebug () << Q_FUNC_INFO << hp.Header_.Seq_ << status << contactId;
+
+		if (status == Proto::ContactAck::Success)
+			emit contactAdded (hp.Header_.Seq_, contactId);
 	}
 
 	void Connection::Disconnect ()

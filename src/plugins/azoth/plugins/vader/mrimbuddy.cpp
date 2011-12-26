@@ -33,6 +33,7 @@ namespace Vader
 	: QObject (acc)
 	, A_ (acc)
 	, Info_ (info)
+	, IsAuthorized_ (true)
 	{
 		if (info.StatusID_ == Proto::UserState::Online)
 			Status_.State_ = SOnline;
@@ -46,6 +47,29 @@ namespace Vader
 	{
 		AllMessages_ << msg;
 		emit gotMessage (msg);
+	}
+
+	void MRIMBuddy::SetGroup (const QString& group)
+	{
+		Group_ = group;
+		emit groupsChanged (Groups ());
+	}
+
+	void MRIMBuddy::SetAuthorized (bool auth)
+	{
+		if (auth == IsAuthorized_)
+			return;
+
+		IsAuthorized_ = auth;
+		if (!IsAuthorized_)
+			SetGroup (tr ("Unauthorized"));
+		else
+			SetGroup (QString ());
+	}
+
+	qint64 MRIMBuddy::GetID () const
+	{
+		return Info_.ContactID_;
 	}
 
 	QObject* MRIMBuddy::GetObject ()
@@ -91,14 +115,17 @@ namespace Vader
 
 	QStringList MRIMBuddy::Groups () const
 	{
-		return QStringList ();
+		QStringList result;
+		if (!Group_.isEmpty ())
+			result << Group_;
+		return result;
 	}
 
 	void MRIMBuddy::SetGroups (const QStringList&)
 	{
 	}
 
-	QStringList MRIMBuddy::Variants() const
+	QStringList MRIMBuddy::Variants () const
 	{
 		return Status_.State_ != SOffline ?
 				QStringList (QString ()) :

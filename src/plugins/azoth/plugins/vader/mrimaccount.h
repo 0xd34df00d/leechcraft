@@ -51,10 +51,9 @@ namespace Vader
 		Proto::Connection *Conn_;
 
 		EntryStatus Status_;
-
 		QStringList AllGroups_;
-
 		QHash<QString, MRIMBuddy*> Buddies_;
+		QHash<quint32, Proto::ContactInfo> PendingAdditions_;
 	public:
 		MRIMAccount (const QString&, MRIMProtocol*);
 
@@ -87,7 +86,10 @@ namespace Vader
 	private slots:
 		void handleGotGroups (const QStringList&);
 		void handleGotContacts (const QList<Proto::ContactInfo>&);
+		void handleContactAdded (quint32, quint32);
+		void handleGotAuthRequest (const QString&, const QString&);
 		void handleGotMessage (const Proto::Message&);
+		void handleOurStatusChanged (const EntryStatus&);
 	signals:
 		void gotCLItems (const QList<QObject*>&);
 		void removedCLItems (const QList<QObject*>&);

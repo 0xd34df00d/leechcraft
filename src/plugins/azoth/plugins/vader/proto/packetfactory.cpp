@@ -95,6 +95,17 @@ namespace Proto
 		return HalfPacket { Header (Packets::Contact, Seq_++), data };
 	}
 
+	Packet PacketFactory::RemoveContact (quint32 id, const QString& email, const QString& name)
+	{
+		const QByteArray& data = ToMRIM (id,
+				static_cast<quint32> (ContactOpFlag::Removed),
+				0,
+				email,
+				name,
+				QString (" "));
+		return HalfPacket { Header (Packets::ModifyContact, Seq_++), data };
+	}
+
 	Packet PacketFactory::Authorize (const QString& email)
 	{
 		const QByteArray& data = ToMRIM (email);

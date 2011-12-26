@@ -39,14 +39,21 @@ namespace Vader
 
 		MRIMAccount *A_;
 		Proto::ContactInfo Info_;
+		QString Group_;
 
 		EntryStatus Status_;
 
 		QList<MRIMMessage*> AllMessages_;
+
+		bool IsAuthorized_;
 	public:
 		MRIMBuddy (const Proto::ContactInfo&, MRIMAccount*);
 
 		void HandleMessage (MRIMMessage*);
+		void SetGroup (const QString&);
+		void SetAuthorized (bool);
+
+		qint64 GetID () const;
 
 		// ICLEntry
 		QObject* GetObject ();

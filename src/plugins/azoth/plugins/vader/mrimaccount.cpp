@@ -48,9 +48,21 @@ namespace Vader
 				this,
 				SLOT (handleGotContacts (QList<Proto::ContactInfo>)));
 		connect (Conn_,
+				SIGNAL (gotAuthRequest (QString,QString)),
+				this,
+				SLOT (handleGotAuthRequest (QString, QString)));
+		connect (Conn_,
 				SIGNAL (gotMessage (Proto::Message)),
 				this,
 				SLOT (handleGotMessage (Proto::Message)));
+		connect (Conn_,
+				SIGNAL (statusChanged (EntryStatus)),
+				this,
+				SLOT (handleOurStatusChanged (EntryStatus)));
+		connect (Conn_,
+				SIGNAL (contactAdded (quint32,quint32)),
+				this,
+				SLOT (handleContactAdded (quint32, quint32)));
 	}
 
 	void MRIMAccount::FillConfig (MRIMAccountConfigWidget *w)
@@ -125,7 +137,7 @@ namespace Vader
 
 	EntryStatus MRIMAccount::GetState () const
 	{
-		return EntryStatus ();
+		return Status_;
 	}
 
 	void MRIMAccount::ChangeState (const EntryStatus& status)
@@ -143,20 +155,71 @@ namespace Vader
 	{
 	}
 
-	void MRIMAccount::Authorize (QObject*)
+	void MRIMAccount::Authorize (QObject *obj)
 	{
+		MRIMBuddy *buddy = qobject_cast<MRIMBuddy*> (obj);
+		if (!buddy)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "wrong object"
+					<< obj;
+			return;
+		}
+
+		const QString& id = buddy->GetHumanReadableID ();
+		Conn_->Authorize (id);
+		RequestAuth (id, QString (), id, QStringList ());
+
+		buddy->SetAuthorized (true);
 	}
 
-	void MRIMAccount::DenyAuth (QObject*)
+	void MRIMAccount::DenyAuth (QObject *obj)
 	{
+		MRIMBuddy *buddy = qobject_cast<MRIMBuddy*> (obj);
+		if (!buddy)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "wrong object"
+					<< obj;
+			return;
+		}
+
+		emit removedCLItems (QList<QObject*> () << buddy);
+		Buddies_.take (buddy->GetHumanReadableID ())->deleteLater ();
 	}
 
-	void MRIMAccount::RequestAuth (const QString& , const QString& , const QString& , const QStringList&)
+	void MRIMAccount::RequestAuth (const QString& email,
+			const QString& msg, const QString& name, const QStringList& groups)
 	{
+		const quint32 group = 0;
+		const quint32 seqId = Conn_->AddContact (group, email, name);
+		PendingAdditions_ [seqId] = { -1, group, Proto::UserState::Offline,
+				email, name, QString (), QString (), 0, QString () };
 	}
 
-	void MRIMAccount::RemoveEntry (QObject*)
+	void MRIMAccount::RemoveEntry (QObject *obj)
 	{
+		MRIMBuddy *buddy = qobject_cast<MRIMBuddy*> (obj);
+		if (!buddy)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "wrong object"
+					<< obj;
+			return;
+		}
+
+		const qint64 id = buddy->GetID ();
+		if (id < 0)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot remove buddy with negative ID";
+			return;
+		}
+
+		emit removedCLItems (QList<QObject*> () << buddy);
+
+		Conn_->RemoveContact (id, buddy->GetHumanReadableID (), buddy->GetEntryName ());
+		Buddies_.take (buddy->GetHumanReadableID ())->deleteLater ();
 	}
 
 	QObject* MRIMAccount::GetTransferManager () const
@@ -206,11 +269,41 @@ namespace Vader
 		Q_FOREACH (const Proto::ContactInfo& contact, contacts)
 		{
 			MRIMBuddy *buddy = new MRIMBuddy (contact, this);
+			buddy->SetGroup (AllGroups_.value (contact.GroupNumber_));
 			objs << buddy;
 			Buddies_ [contact.Email_] = buddy;
 		}
 
 		emit gotCLItems (objs);
+	}
+
+	void MRIMAccount::handleContactAdded (quint32 seq, quint32 id)
+	{
+		if (!PendingAdditions_.contains (seq))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown seq number"
+					<< seq;
+			return;
+		}
+
+		Proto::ContactInfo info = PendingAdditions_.take (seq);
+		info.ContactID_ = id;
+
+		handleGotContacts (QList<Proto::ContactInfo> () << info);
+	}
+
+	void MRIMAccount::handleGotAuthRequest (const QString& from, const QString& msg)
+	{
+		Proto::ContactInfo info = {-1, 0, Proto::UserState::Online,
+				from, from, QString (), QString (), 0, QString () };
+
+		MRIMBuddy *buddy = new MRIMBuddy (info, this);
+		Buddies_ [from] = buddy;
+		buddy->SetAuthorized (false);
+
+		emit gotCLItems (QList<QObject*> () << buddy);
+		emit authorizationRequested (buddy, msg);
 	}
 
 	void MRIMAccount::handleGotMessage (const Proto::Message& msg)
@@ -225,7 +318,14 @@ namespace Vader
 		}
 
 		MRIMMessage *obj = new MRIMMessage (IMessage::DIn, IMessage::MTChatMessage, buddy);
+		obj->SetBody (msg.Text_);
 		buddy->HandleMessage (obj);
+	}
+
+	void MRIMAccount::handleOurStatusChanged (const EntryStatus& status)
+	{
+		Status_ = status;
+		emit statusChanged (status);
 	}
 }
 }

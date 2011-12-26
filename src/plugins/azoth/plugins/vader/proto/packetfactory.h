@@ -48,6 +48,8 @@ namespace Proto
 		Packet MessageAck (const QString& from, quint32 msgId);
 		Packet AddContact (ContactOpFlags flags, quint32 group,
 				const QString& email, const QString& name);
+		Packet RemoveContact (quint32 id,
+				const QString& email, const QString& name);
 		Packet Authorize (const QString&);
 	};
 }
