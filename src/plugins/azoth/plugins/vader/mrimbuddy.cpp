@@ -137,9 +137,12 @@ namespace Vader
 				QStringList ();
 	}
 
-	QObject* MRIMBuddy::CreateMessage (IMessage::MessageType , const QString& , const QString&)
+	QObject* MRIMBuddy::CreateMessage (IMessage::MessageType type,
+			const QString&, const QString& body)
 	{
-		return 0;
+		MRIMMessage *msg = new MRIMMessage (IMessage::DOut, IMessage::MTChatMessage, this);
+		msg->SetBody (body);
+		return msg;
 	}
 
 	QList<QObject*> MRIMBuddy::GetAllMessages () const
