@@ -169,7 +169,8 @@ namespace Acetamide
 		ChannelCLEntry_->HandleMessage (message);
 	}
 
-	void ChannelHandler::SetChannelUser (const QString& nick)
+	void ChannelHandler::SetChannelUser (const QString& nick,
+			const QString& user, const QString& host)
 	{
 		QString nickName = nick;
 		bool hasRole = false;
@@ -188,6 +189,9 @@ namespace Acetamide
 		}
 
 		ChannelParticipantEntry* entry = GetParticipantEntry (nickName);
+		entry->SetUserName (user);
+		entry->SetHostName (user);
+
 		ChannelRole role;
 		if (hasRole)
 			switch (roleSign.toAscii ())

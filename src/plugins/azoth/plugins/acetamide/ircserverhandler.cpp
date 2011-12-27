@@ -201,15 +201,14 @@ namespace Acetamide
 	}
 
 	void IrcServerHandler::JoinParticipant (const QString& nick,
-			const QString& msg)
+			const QString& msg, const QString& user, const QString& host)
 	{
-		QString id = (msg + '@' + ServerOptions_.ServerName_).toLower ();
-		ChannelsManager_->AddParticipant (id, nick);
+		ChannelsManager_->AddParticipant (msg.toLower (), nick, user, host);
 	}
 
 	void IrcServerHandler::CloseChannel (const QString& channel)
 	{
-		ChannelsManager_->CloseChannel ((channel + "@" + ServerOptions_.ServerName_).toLower ());
+		ChannelsManager_->CloseChannel (channel.toLower ());
 	}
 
 	void IrcServerHandler::LeaveParticipant (const QString& nick,
@@ -274,6 +273,7 @@ namespace Acetamide
 				.GetNickServIdentifyWithMainParams (ServerOptions_.ServerName_,
 						GetNickName (),
 						nick);
+
 		if (list.isEmpty ())
 			return;
 
@@ -740,13 +740,11 @@ namespace Acetamide
 		if (!IrcParser_->ParseMessage (msg))
 			return;
 
-		const QString cmd = IrcParser_->GetIrcMessageOptions ().Command_.toLower ();
-		if (ErrorHandler_->IsError (cmd.toInt ()))
+		const IrcMessageOptions& opts = IrcParser_->GetIrcMessageOptions ();
+		if (ErrorHandler_->IsError (opts.Command_.toInt ()))
 		{
-			ErrorHandler_->HandleError (cmd.toInt (),
-					IrcParser_->GetIrcMessageOptions ().Parameters_,
-					IrcParser_->GetIrcMessageOptions ().Message_);
-			if (cmd == "433")
+			ErrorHandler_->HandleError (opts);
+			if (opts.Command_ == "433")
 			{
 				if (OldNickName_.isEmpty ())
 					OldNickName_ = NickName_;
@@ -756,16 +754,7 @@ namespace Acetamide
 			}
 		}
 		else
-		{
-			//TODO
-// 			QString nick = IrcParser_->GetIrcMessageOptions ().Nick_ + "!" +
-// 			IrcParser_->GetIrcMessageOptions ().UserName_ + "@" +
-// 			IrcParser_->GetIrcMessageOptions ().Host_;
-			ServerResponceManager_->DoAction (cmd,
-					IrcParser_->GetIrcMessageOptions ().Nick_,
-					IrcParser_->GetIrcMessageOptions ().Parameters_,
-					IrcParser_->GetIrcMessageOptions ().Message_);
-		}
+			ServerResponceManager_->DoAction (opts);
 	}
 
 	ServerParticipantEntry_ptr IrcServerHandler::CreateParticipantEntry (const QString& nick)

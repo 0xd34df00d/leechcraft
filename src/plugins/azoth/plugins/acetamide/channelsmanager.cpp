@@ -152,11 +152,12 @@ namespace Acetamide
 			ISH_->DisconnectFromServer ();
 	}
 
-	void ChannelsManager::AddParticipant (const QString& channel, const QString& nick)
+	void ChannelsManager::AddParticipant (const QString& channel, const QString& nick,
+			const QString& user, const QString& host)
 	{
 		const QString& chnnl = channel.toLower ();
 		if (ChannelHandlers_.contains (chnnl))
-			ChannelHandlers_ [chnnl]->SetChannelUser (nick);
+			ChannelHandlers_ [chnnl]->SetChannelUser (nick, user, host);
 	}
 
 	void ChannelsManager::LeaveParticipant (const QString& channel,

@@ -100,7 +100,8 @@ namespace Acetamide
 
 		void JoinChannel (const ChannelOptions& options);
 		bool JoinedChannel (const ChannelOptions& options);
-		void JoinParticipant (const QString& nick, const QString& msg);
+		void JoinParticipant (const QString& nick, const QString& msg,
+				const QString& user = QString (), const QString& host = QString ());
 
 		void CloseChannel (const QString& channel);
 		void LeaveParticipant (const QString& nick,

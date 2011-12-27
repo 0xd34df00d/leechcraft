@@ -80,7 +80,8 @@ namespace Acetamide
 		void CloseAllChannels ();
 		void UnregisterChannel (ChannelHandler* ich);
 
-		void AddParticipant (const QString& channel, const QString& nick);
+		void AddParticipant (const QString& channel, const QString& nick,
+				const QString& user = QString (), const QString& host = QString ());
 
 		void LeaveParticipant (const QString& channel,
 				const QString& nick, const QString& msg);

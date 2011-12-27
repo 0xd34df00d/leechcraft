@@ -80,8 +80,9 @@ namespace Acetamide
 				IMessage::MessageSubType);
 
 		void SendPublicMessage (const QString&);
-		void HandleIncomingMessage (const QString&, const QString&);
-		void SetChannelUser (const QString&);
+		void HandleIncomingMessage (const QString& nick, const QString& msg);
+		void SetChannelUser (const QString& nick,
+				const QString& user = QString (), const QString& host = QString ());
 
 		void MakeJoinMessage (const QString&);
 		void MakeLeaveMessage (const QString&, const QString&);
