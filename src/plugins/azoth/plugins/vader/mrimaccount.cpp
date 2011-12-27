@@ -48,6 +48,10 @@ namespace Vader
 				this,
 				SLOT (handleGotContacts (QList<Proto::ContactInfo>)));
 		connect (Conn_,
+				SIGNAL (userStatusChanged (Proto::ContactInfo)),
+				this,
+				SLOT (handleUserStatusChanged (Proto::ContactInfo)));
+		connect (Conn_,
 				SIGNAL (gotAuthRequest (QString,QString)),
 				this,
 				SLOT (handleGotAuthRequest (QString, QString)));
@@ -302,6 +306,29 @@ namespace Vader
 		}
 
 		emit gotCLItems (objs);
+	}
+
+	void MRIMAccount::handleUserStatusChanged (const Proto::ContactInfo& status)
+	{
+		MRIMBuddy *buddy = Buddies_ [status.Email_];
+		if (!buddy)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< GetAccountName ()
+					<< "unknown buddy"
+					<< status.Email_;
+			return;
+		}
+
+		qDebug () << Q_FUNC_INFO << GetAccountName () << status.Email_;
+
+		auto info = buddy->GetInfo ();
+		info.Features_ = status.Features_;
+		info.StatusDesc_ = status.StatusDesc_;
+		info.StatusID_ = status.StatusID_;
+		info.StatusTitle_ = status.StatusTitle_;
+		info.UA_ = status.UA_;
+		buddy->UpdateInfo (info);
 	}
 
 	void MRIMAccount::handleContactAdded (quint32 seq, quint32 id)

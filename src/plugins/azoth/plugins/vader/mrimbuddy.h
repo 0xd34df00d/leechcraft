@@ -55,6 +55,9 @@ namespace Vader
 		void SetAuthorized (bool);
 		bool IsAuthorized () const;
 
+		Proto::ContactInfo GetInfo () const;
+		void UpdateInfo (const Proto::ContactInfo&);
+
 		qint64 GetID () const;
 
 		// ICLEntry

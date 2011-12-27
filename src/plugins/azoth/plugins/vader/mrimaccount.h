@@ -88,6 +88,7 @@ namespace Vader
 	private slots:
 		void handleGotGroups (const QStringList&);
 		void handleGotContacts (const QList<Proto::ContactInfo>&);
+		void handleUserStatusChanged (const Proto::ContactInfo&);
 		void handleContactAdded (quint32, quint32);
 		void handleGotAuthRequest (const QString&, const QString&);
 		void handleGotMessage (const Proto::Message&);

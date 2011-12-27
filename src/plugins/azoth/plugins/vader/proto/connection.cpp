@@ -66,6 +66,7 @@ namespace Proto
 		PacketActors_ [Packets::LoginRej] = [this] (HalfPacket hp) { IncorrectAuth (hp); };
 
 		PacketActors_ [Packets::UserInfo] = [this] (HalfPacket hp) { UserInfo (hp); };
+		PacketActors_ [Packets::UserStatus] = [this] (HalfPacket hp) { UserStatus (hp); };
 		PacketActors_ [Packets::ContactList2] = [this] (HalfPacket hp) { ContactList (hp); };
 
 		PacketActors_ [Packets::MsgAck] = [this] (HalfPacket hp) { IncomingMsg (hp); };
@@ -237,6 +238,23 @@ namespace Proto
 		}
 	}
 
+	void Connection::UserStatus (HalfPacket hp)
+	{
+		quint32 statusId = 0;
+		Str1251 uri;
+		Str16 title, desc;
+		Str1251 email;
+		quint32 features = 0;
+		Str1251 ua;
+
+		FromMRIM (hp.Data_, statusId, uri, title, desc, email, features, ua);
+
+		qDebug () << Q_FUNC_INFO << statusId << email << uri << title << desc << ua;
+
+		emit userStatusChanged ({-1, 0, statusId, email,
+				QString (), title, desc, features, ua});
+	}
+
 	void Connection::ContactList (HalfPacket hp)
 	{
 		qDebug () << Q_FUNC_INFO << hp.Data_.size ();
@@ -363,6 +381,8 @@ namespace Proto
 				FromMRIM1251 (textBA) :
 				FromMRIM16 (textBA);
 
+		qDebug () << Q_FUNC_INFO << from << text << (flags & MsgFlag::NoRecv);
+
 		if (!(flags & MsgFlag::NoRecv))
 			Write (PF_.MessageAck (from, msgId).Packet_);
 
@@ -447,6 +467,7 @@ namespace Proto
 	void Connection::handleSocketError (QAbstractSocket::SocketError err)
 	{
 		qWarning () << Q_FUNC_INFO << err << Socket_->errorString ();
+		qWarning () << "was connected with" << Host_ << Port_ << "as" << Login_;
 		IsConnected_ = false;
 	}
 }

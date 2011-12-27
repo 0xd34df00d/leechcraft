@@ -17,11 +17,13 @@
  **********************************************************************/
 
 #include "mrimbuddy.h"
+#include <functional>
 #include <QImage>
+#include <interfaces/azothutil.h>
 #include "proto/headers.h"
 #include "mrimaccount.h"
 #include "mrimmessage.h"
-#include <interfaces/azothutil.h>
+#include "vaderutil.h"
 
 namespace LeechCraft
 {
@@ -35,12 +37,7 @@ namespace Vader
 	, Info_ (info)
 	, IsAuthorized_ (true)
 	{
-		if (info.StatusID_ == Proto::UserState::Online)
-			Status_.State_ = SOnline;
-		else if (info.StatusID_ == Proto::UserState::Away)
-			Status_.State_ = SAway;
-		else
-			Status_.State_ = SOffline;
+		Status_.State_ = VaderUtil::StatusID2State (info.StatusID_);
 	}
 
 	void MRIMBuddy::HandleMessage (MRIMMessage *msg)
@@ -70,6 +67,65 @@ namespace Vader
 	bool MRIMBuddy::IsAuthorized () const
 	{
 		return IsAuthorized_;
+	}
+
+	Proto::ContactInfo MRIMBuddy::GetInfo () const
+	{
+		return Info_;
+	}
+
+	namespace
+	{
+		template<typename T, typename V>
+		void CmpXchg (Proto::ContactInfo& info, Proto::ContactInfo newInfo,
+				T g, V n)
+		{
+			if (g (info) != g (newInfo))
+			{
+				g (info) = g (newInfo);
+				n (g (info));
+			}
+		}
+
+		template<typename T, typename U>
+		std::function<T& (Proto::ContactInfo&)> GetMem (U g)
+		{
+			return g;
+		}
+	}
+
+	void MRIMBuddy::UpdateInfo (const Proto::ContactInfo& info)
+	{
+		CmpXchg (Info_, info,
+				GetMem<QString> (&Proto::ContactInfo::Alias_),
+				[this] (QString name) { emit nameChanged (name); });
+		CmpXchg (Info_, info,
+				GetMem<QString> (&Proto::ContactInfo::UA_),
+				[this] (QString) { emit entryGenerallyChanged (); });
+
+		bool stChanged = false;
+		const int oldVars = Variants ().size ();
+		CmpXchg (Info_, info,
+				GetMem<quint32> (&Proto::ContactInfo::StatusID_),
+				[&stChanged] (quint32) { stChanged = true; });
+		CmpXchg (Info_, info,
+				GetMem<QString> (&Proto::ContactInfo::StatusTitle_),
+				[&stChanged] (QString) { stChanged = true; });
+		CmpXchg (Info_, info,
+				GetMem<QString> (&Proto::ContactInfo::StatusDesc_),
+				[&stChanged] (QString) { stChanged = true; });
+
+		if (stChanged)
+		{
+			Status_.State_ = VaderUtil::StatusID2State (Info_.StatusID_);
+			Status_.StatusString_ = Info_.StatusTitle_;
+
+			if (oldVars != Variants ().size ())
+				emit availableVariantsChanged (Variants ());
+			emit statusChanged (GetStatus (QString ()), QString ());
+		}
+
+		Info_.GroupNumber_ = info.GroupNumber_;
 	}
 
 	qint64 MRIMBuddy::GetID () const

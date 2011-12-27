@@ -82,6 +82,7 @@ namespace Proto
 		void CorrectAuth (HalfPacket);
 		void IncorrectAuth (HalfPacket);
 		void UserInfo (HalfPacket);
+		void UserStatus (HalfPacket);
 		void ContactList (HalfPacket);
 		void IncomingMsg (HalfPacket);
 		void MsgStatus (HalfPacket);
@@ -108,6 +109,7 @@ namespace Proto
 		void messageDelivered (quint32);
 		void statusChanged (EntryStatus);
 		void contactAdded (quint32 seq, quint32 cid);
+		void userStatusChanged (const Proto::ContactInfo&);
 	};
 }
 }
