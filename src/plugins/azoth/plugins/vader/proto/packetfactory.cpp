@@ -84,7 +84,7 @@ namespace Proto
 	Packet PacketFactory::MessageAck (const QString& from, quint32 msgId)
 	{
 		const QByteArray& data = ToMRIM (from, msgId);
-		return HalfPacket { Header (Packets::MsgAck, Seq_++), data };
+		return HalfPacket { Header (Packets::MsgRecv, Seq_++), data };
 	}
 
 	Packet PacketFactory::AddContact (ContactOpFlags flags,
