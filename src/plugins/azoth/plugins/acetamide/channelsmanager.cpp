@@ -297,6 +297,8 @@ namespace Acetamide
 					IMessage::MTServiceMessage,
 					IMessage::MSTOther);
 
+			if (CmdQueue_.isEmpty ())
+				continue;
 			const CommandMessage& msg = CmdQueue_.head ();
 			if (msg.Cmd_ == "ctcp")
 				CmdQueue_.dequeue ();
@@ -501,6 +503,11 @@ namespace Acetamide
 	{
 		AddCommand2Queue (channel, "who", ISH_->IsCmdHasLongAnswer ("who"));
 		ISH_->RequestWho (channel, nick);
+	}
+
+	void ChannelsManager::CTCPRequest (const QStringList& cmd)
+	{
+		ISH_->CTCPRequst (cmd);
 	}
 
 	QMap<QString, QString> ChannelsManager::GetISupport () const

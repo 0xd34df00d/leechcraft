@@ -41,18 +41,37 @@ namespace Acetamide
 				"/WHOIS " + Nick_,
 				this,
 				SLOT (handleWhoIs ()));
-
 		infoMenu->addAction (icon,
 				"/WHOWAS " + Nick_,
 				this,
 				SLOT (handleWhoWas ()));
-
 		infoMenu->addAction (icon,
 				"/WHO " + Nick_,
 				this,
 				SLOT (handleWho ()));
 
-		Actions_.insert (0, infoMenu->menuAction ());
+		QMenu *ctcpMenu = new QMenu (tr ("CTCP"));
+		QAction * ping = ctcpMenu->addAction ("PING");
+		ping->setProperty ("ctcp_type", "ping");
+		QAction *finger = ctcpMenu->addAction ("FINGER");
+		finger->setProperty ("ctcp_type", "finger");
+		QAction *version = ctcpMenu->addAction ("VERSION");
+		version->setProperty ("ctcp_type", "version");
+		QAction *userinfo = ctcpMenu->addAction ("USERINFO");
+		userinfo->setProperty ("ctcp_type", "userinfo");
+		QAction *clientinfo = ctcpMenu->addAction ("CLIENTINFO");
+		clientinfo->setProperty ("ctcp_type", "clientinfo");
+		QAction *source = ctcpMenu->addAction ("SOURCE");
+		source->setProperty ("ctcp_type", "source");
+		QAction *time = ctcpMenu->addAction ("TIME");
+		time->setProperty ("ctcp_type", "time");
+
+		connect (ctcpMenu,
+				SIGNAL (triggered (QAction*)),
+				this,
+				SLOT (handleCTCPAction (QAction*)));
+
+		Actions_.append (ctcpMenu->menuAction ());
 	}
 
 	QObject* ChannelParticipantEntry::GetParentCLEntry () const
@@ -88,12 +107,12 @@ namespace Acetamide
 				ICH_->GetChannelID (),
 				Nick_,
 				Account_->GetClientConnection ().get ());
-		
+
 		message->SetBody (body);
 		message->SetDateTime (QDateTime::currentDateTime ());
-		
+
 		AllMessages_ << message;
-		
+
 		return message;
 	}
 
@@ -127,16 +146,22 @@ namespace Acetamide
 	{
 		ICH_->handleWhoIs (Nick_);
 	}
-	
+
 	void ChannelParticipantEntry::handleWhoWas ()
 	{
 		ICH_->handleWhoWas (Nick_);
 	}
-	
+
 	void ChannelParticipantEntry::handleWho ()
 	{
 		ICH_->handleWho (Nick_);
 	}
+
+	void ChannelParticipantEntry::handleCTCPAction (QAction* action)
+	{
+		ICH_->handleCTCPRequest (QStringList () << Nick_ << action->property ("ctcp_type").toString ());
+	}
+
 }
 }
 }

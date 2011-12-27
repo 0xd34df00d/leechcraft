@@ -64,6 +64,7 @@ namespace Acetamide
 		void handleWhoIs ();
 		void handleWhoWas ();
 		void handleWho ();
+		void handleCTCPAction (QAction *action);
 	};
 }
 }

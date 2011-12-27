@@ -136,9 +136,10 @@ namespace Acetamide
 		ChannelParticipantEntry* CreateParticipantEntry (const QString&);
 		void RemoveThis ();
 	public slots:
-		void handleWhoIs (const QString&);
-		void handleWhoWas (const QString&);
-		void handleWho (const QString&);
+		void handleWhoIs (const QString& nick);
+		void handleWhoWas (const QString& nick);
+		void handleWho (const QString& nick);
+		void handleCTCPRequest (const QStringList& cmd);
 	signals:
 		void updateChanModes (const ChannelModes&);
 	};

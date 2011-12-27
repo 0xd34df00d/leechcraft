@@ -137,6 +137,8 @@ namespace Acetamide
 		void RequestWhoWas (const QString& channel, const QString& nick);
 		void RequestWho (const QString& channel, const QString& nick);
 
+		void CTCPRequest (const QStringList& cmd);
+
 		QMap<QString, QString> GetISupport () const;
 	private:
 		void AddCommand2Queue (const QString& channel, const QString& cmd, bool IsLongAnswer);

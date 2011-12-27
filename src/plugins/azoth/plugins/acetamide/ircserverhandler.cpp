@@ -478,6 +478,11 @@ namespace Acetamide
 		ChannelsManager_->CTCPRequestResult (msg);
 	}
 
+	void IrcServerHandler::CTCPRequst (const QStringList& cmd)
+	{
+		IrcParser_->CTCPRequest (cmd);
+	}
+
 	void IrcServerHandler::GotNames (const QString& channel,
 			const QStringList& participants)
 	{

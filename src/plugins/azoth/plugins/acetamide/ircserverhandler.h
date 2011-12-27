@@ -139,21 +139,27 @@ namespace Acetamide
 		void GotInvitation (const QString&, const QString&);
 		void ShowAnswer (const QString& cmd,
                 const QString& answer, bool isEndOf = false);
+
 		void CTCPReply (const QString&, const QString&, const QString&);
 		void CTCPRequestResult (const QString&);
+		void CTCPRequst (const QStringList& cmd);
+
 		void GotNames (const QString&, const QStringList&);
 		void GotEndOfNames (const QString&);
+
 		void ShowUserHost (const QString&, const QString&);
 		void ShowIsUserOnServer (const QString&);
+
 		void ShowWhoIsReply (const QString&, bool isEndOf = false);
-        void ShowWhoWasReply (const QString&, bool isEndOf = false);
-        void ShowWhoReply (const QString&, bool isEndOf = false);
-        void ShowLinksReply (const QString&, bool isEndOf = false);
-        void ShowInfoReply (const QString&, bool isEndOf = false);
-        void ShowMotdReply (const QString&, bool isEndOf = false);
-        void ShowUsersReply (const QString&, bool isEndOf = false);
-        void ShowTraceReply (const QString&, bool isEndOf = false);
-        void ShowStatsReply (const QString&, bool isEndOf = false);
+		void ShowWhoWasReply (const QString&, bool isEndOf = false);
+		void ShowWhoReply (const QString&, bool isEndOf = false);
+		void ShowLinksReply (const QString&, bool isEndOf = false);
+		void ShowInfoReply (const QString&, bool isEndOf = false);
+		void ShowMotdReply (const QString&, bool isEndOf = false);
+		void ShowUsersReply (const QString&, bool isEndOf = false);
+		void ShowTraceReply (const QString&, bool isEndOf = false);
+		void ShowStatsReply (const QString&, bool isEndOf = false);
+
 		void ShowBanList (const QString&,
 				const QString&, const QString&, const QDateTime&);
 		void ShowBanListEnd (const QString&);
@@ -170,12 +176,17 @@ namespace Acetamide
 		QString ParseMessageForCommand (const QString&, const QString&);
 		void LeaveChannel (const QString& channel, const QString& msg);
 		void ClosePrivateChat (const QString&);
+
 		void ConnectToServer ();
 		void DisconnectFromServer ();
+
 		void SendCommand (const QString&);
+
 		ServerParticipantEntry_ptr GetParticipantEntry (const QString&);
 		void RemoveParticipantEntry (const QString&);
+
 		void SetConsoleEnabled (bool);
+
 		void ReadReply (const QByteArray&);
 		void JoinFromQueue ();
 
