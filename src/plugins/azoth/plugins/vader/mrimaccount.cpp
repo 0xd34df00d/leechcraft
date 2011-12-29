@@ -52,9 +52,13 @@ namespace Vader
 				this,
 				SLOT (handleUserStatusChanged (Proto::ContactInfo)));
 		connect (Conn_,
-				SIGNAL (gotAuthRequest (QString,QString)),
+				SIGNAL (gotAuthRequest (QString, QString)),
 				this,
 				SLOT (handleGotAuthRequest (QString, QString)));
+		connect (Conn_,
+				SIGNAL (gotAuthAck (QString)),
+				this,
+				SLOT (handleGotAuthAck (QString)));
 		connect (Conn_,
 				SIGNAL (gotMessage (Proto::Message)),
 				this,
@@ -64,7 +68,7 @@ namespace Vader
 				this,
 				SLOT (handleOurStatusChanged (EntryStatus)));
 		connect (Conn_,
-				SIGNAL (contactAdded (quint32,quint32)),
+				SIGNAL (contactAdded (quint32, quint32)),
 				this,
 				SLOT (handleContactAdded (quint32, quint32)));
 	}
@@ -180,6 +184,7 @@ namespace Vader
 		{
 			Buddies_ [id] = buddy;
 			Conn_->AddContact (0, id, buddy->GetEntryName ());
+			Conn_->RequestAuth (id, QString ());
 		}
 	}
 
@@ -362,6 +367,20 @@ namespace Vader
 		buddy->SetAuthorized (false);
 		emit gotCLItems (QList<QObject*> () << buddy);
 		emit authorizationRequested (buddy, msg);
+	}
+
+	void MRIMAccount::handleGotAuthAck (const QString& from)
+	{
+		qDebug () << Q_FUNC_INFO << GetAccountName () << from;
+		if (!Buddies_.contains (from))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown buddy"
+					<< from;
+			return;
+		}
+
+		emit itemGrantedSubscription (Buddies_ [from], QString ());
 	}
 
 	void MRIMAccount::handleGotMessage (const Proto::Message& msg)

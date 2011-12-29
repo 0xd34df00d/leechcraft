@@ -91,6 +91,7 @@ namespace Vader
 		void handleUserStatusChanged (const Proto::ContactInfo&);
 		void handleContactAdded (quint32, quint32);
 		void handleGotAuthRequest (const QString&, const QString&);
+		void handleGotAuthAck (const QString&);
 		void handleGotMessage (const Proto::Message&);
 		void handleOurStatusChanged (const EntryStatus&);
 	signals:
