@@ -134,6 +134,7 @@ namespace Zheet
 
 	void Callbacks::gotFriendlyName (MSN::NotificationServerConnection *conn, std::string friendlyname)
 	{
+		emit gotOurFriendlyName (ZheetUtil::FromStd (friendlyname));
 	}
 
 	void Callbacks::gotBuddyListInfo (MSN::NotificationServerConnection *conn, MSN::ListSyncInfo *data)

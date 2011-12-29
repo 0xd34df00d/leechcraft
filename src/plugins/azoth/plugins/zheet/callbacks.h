@@ -146,6 +146,7 @@ namespace Zheet
 		void gotGroups (const QList<MSN::Group>&);
 		void removedGroup (const QString&);
 		void renamedGroup (const QString& id, const QString& newName);
+		void gotOurFriendlyName (const QString&);
 
 		void buddyAddedToGroup (const QString& cid, const QString& group);
 		void buddyRemovedFromGroup (const QString& cid, const QString& group);

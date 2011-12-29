@@ -73,6 +73,8 @@ namespace Zheet
 
 		QSet<QString> BL_;
 
+		QString OurFriendlyName_;
+
 		QAction *ActionManageBL_;
 	public:
 		MSNAccount (const QString&, MSNProtocol* = 0);
@@ -120,6 +122,7 @@ namespace Zheet
 	private slots:
 		void handleConnected ();
 		void handleWeChangedState (State);
+		void handleGotOurFriendlyName (const QString&);
 		void handleBuddyChangedStatus (const QString&, State);
 		void handleGotBuddies (const QList<MSN::Buddy*>&);
 		void handleRemovedBuddy (const QString&, const QString&);

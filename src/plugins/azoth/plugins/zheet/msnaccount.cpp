@@ -82,6 +82,10 @@ namespace Zheet
 				SIGNAL (gotNudge (QString)),
 				this,
 				SLOT (handleGotNudge (QString)));
+		connect (CB_,
+				SIGNAL (gotOurFriendlyName (QString)),
+				this,
+				SLOT (handleGotOurFriendlyName (QString)));
 
 		connect (ActionManageBL_,
 				SIGNAL (triggered ()),
@@ -99,7 +103,7 @@ namespace Zheet
 
 	QByteArray MSNAccount::Serialize () const
 	{
-		quint16 version = 1;
+		quint16 version = 2;
 
 		QByteArray result;
 		{
@@ -108,7 +112,8 @@ namespace Zheet
 				<< Name_
 				<< ZheetUtil::FromStd (Passport_)
 				<< Server_
-				<< Port_;
+				<< Port_
+				<< OurFriendlyName_;
 		}
 
 		return result;
@@ -121,7 +126,7 @@ namespace Zheet
 		QDataStream in (data);
 		in >> version;
 
-		if (version != 1)
+		if (version < 1 || version > 2)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unknown version"
@@ -139,6 +144,8 @@ namespace Zheet
 			>> result->Server_
 			>> result->Port_;
 		result->Passport_ = ZheetUtil::ToStd (passport);
+		if (version >= 2)
+			in >> result->OurFriendlyName_;
 		result->Init ();
 
 		return result;
@@ -218,7 +225,9 @@ namespace Zheet
 
 	QString MSNAccount::GetOurNick () const
 	{
-		return ZheetUtil::FromStd (Passport_);
+		return OurFriendlyName_.isEmpty () ?
+				ZheetUtil::FromStd (Passport_) :
+				OurFriendlyName_;
 	}
 
 	void MSNAccount::RenameAccount (const QString& name)
@@ -350,6 +359,15 @@ namespace Zheet
 	{
 		CurrentStatus_.State_ = st;
 		emit statusChanged (CurrentStatus_);
+	}
+
+	void MSNAccount::handleGotOurFriendlyName (const QString& name)
+	{
+		if (OurFriendlyName_ == name)
+			return;
+
+		OurFriendlyName_ = name;
+		emit accountSettingsChanged ();
 	}
 
 	void MSNAccount::handleBuddyChangedStatus (const QString& buddy, State st)
