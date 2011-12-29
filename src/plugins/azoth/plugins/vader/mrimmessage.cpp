@@ -35,11 +35,21 @@ namespace Vader
 	, MT_ (mt)
 	, DateTime_ (QDateTime::currentDateTime ())
 	, SendID_ (0)
+	, IsDelivered_ (dir == DIn)
 	{
 		connect (A_->GetConnection (),
 				SIGNAL (messageDelivered (quint32)),
 				this,
 				SLOT (checkMessageDelivery (quint32)));
+	}
+
+	void MRIMMessage::SetDelivered ()
+	{
+		if (IsDelivered_)
+			return;
+
+		IsDelivered_ = true;
+		emit messageDelivered ();
 	}
 
 	QObject* MRIMMessage::GetObject ()
@@ -110,10 +120,21 @@ namespace Vader
 		DateTime_ = timestamp;
 	}
 
+	bool MRIMMessage::IsDelivered () const
+	{
+		return IsDelivered_;
+	}
+
 	void MRIMMessage::checkMessageDelivery (quint32 id)
 	{
 		if (id != SendID_)
 			return;
+
+		SetDelivered ();
+		disconnect (A_->GetConnection (),
+				SIGNAL (messageDelivered (quint32)),
+				this,
+				SLOT (checkMessageDelivery (quint32)));
 	}
 }
 }

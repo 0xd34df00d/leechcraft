@@ -20,6 +20,7 @@
 #define PLUGINS_AZOTH_PLUGINS_VADER_MRIMMESSAGE_H
 #include <QObject>
 #include <interfaces/imessage.h>
+#include <interfaces/iadvancedmessage.h>
 
 namespace LeechCraft
 {
@@ -32,9 +33,11 @@ namespace Vader
 
 	class MRIMMessage : public QObject
 					  , public IMessage
+					  , public IAdvancedMessage
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMessage);
+		Q_INTERFACES (LeechCraft::Azoth::IMessage
+				LeechCraft::Azoth::IAdvancedMessage);
 
 		MRIMBuddy *Buddy_;
 		MRIMAccount *A_;
@@ -45,8 +48,12 @@ namespace Vader
 		QDateTime DateTime_;
 
 		quint32 SendID_;
+
+		bool IsDelivered_;
 	public:
 		MRIMMessage (Direction, MessageType, MRIMBuddy*);
+
+		void SetDelivered ();
 
 		// ICLEntry
 		QObject* GetObject ();
@@ -61,8 +68,13 @@ namespace Vader
 		void SetBody (const QString&);
 		QDateTime GetDateTime () const;
 		void SetDateTime (const QDateTime&);
+
+		// IAdvancedMessage
+		bool IsDelivered () const;
 	private slots:
 		void checkMessageDelivery (quint32);
+	signals:
+		void messageDelivered ();
 	};
 }
 }
