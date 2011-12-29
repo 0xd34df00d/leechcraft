@@ -130,6 +130,9 @@ namespace Zheet
 		void handleGotMessage (const QString&, MSN::Message*);
 		void handleGotNudge (const QString&);
 
+		void handleInitialEmailNotification (int, int);
+		void handleNewEmailNotification (const QString&, const QString&);
+
 		void handleManageBL ();
 	signals:
 		void gotCLItems (const QList<QObject*>&);

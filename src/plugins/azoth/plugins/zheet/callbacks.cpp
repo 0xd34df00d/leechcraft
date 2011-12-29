@@ -293,14 +293,13 @@ namespace Zheet
 
 	}
 
-	void Callbacks::gotEmoticonNotification (MSN::SwitchboardServerConnection *conn, MSN::Passport buddy, std::string alias, std::string msnobject)
+	void Callbacks::gotEmoticonNotification (MSN::SwitchboardServerConnection *conn, MSN::Passport buddy, std::string alias, std::string)
 	{
 
 	}
 
-	void Callbacks::failedSendingMessage (MSN::Connection *conn)
+	void Callbacks::failedSendingMessage (MSN::Connection*)
 	{
-
 	}
 
 	void Callbacks::gotNudge (MSN::SwitchboardServerConnection *conn, MSN::Passport username)
@@ -308,19 +307,16 @@ namespace Zheet
 		emit gotNudge (ZheetUtil::FromStd (username));
 	}
 
-	void Callbacks::gotVoiceClipNotification (MSN::SwitchboardServerConnection *conn, MSN::Passport username, std::string msnobject)
+	void Callbacks::gotVoiceClipNotification (MSN::SwitchboardServerConnection *conn, MSN::Passport, std::string)
 	{
-
 	}
 
-	void Callbacks::gotWinkNotification (MSN::SwitchboardServerConnection *conn, MSN::Passport username, std::string msnobject)
+	void Callbacks::gotWinkNotification (MSN::SwitchboardServerConnection *conn, MSN::Passport, std::string)
 	{
-
 	}
 
 	void Callbacks::gotInk (MSN::SwitchboardServerConnection *conn, MSN::Passport username, std::string image)
 	{
-
 	}
 
 	void Callbacks::gotActionMessage (MSN::SwitchboardServerConnection *conn, MSN::Passport username, std::string message)
@@ -330,52 +326,44 @@ namespace Zheet
 
 	void Callbacks::buddyTyping (MSN::SwitchboardServerConnection *conn, MSN::Passport buddy, std::string friendlyname)
 	{
-
 	}
 
 	void Callbacks::gotInitialEmailNotification (MSN::NotificationServerConnection *conn, int msgs_inbox, int unread_inbox, int msgs_folders, int unread_folders)
 	{
-
+		emit initialEmailNotification (msgs_inbox, unread_inbox);
 	}
 
 	void Callbacks::gotNewEmailNotification (MSN::NotificationServerConnection *conn, std::string from, std::string subject)
 	{
-
+		emit newEmailNotification (ZheetUtil::FromStd (from), ZheetUtil::FromStd (subject));
 	}
 
 	void Callbacks::fileTransferProgress (MSN::SwitchboardServerConnection *conn, unsigned int sessionID, long long unsigned int transferred, long long unsigned int total)
 	{
-
 	}
 
 	void Callbacks::fileTransferFailed (MSN::SwitchboardServerConnection *conn, unsigned int sessionID, MSN::fileTransferError error)
 	{
-
 	}
 
 	void Callbacks::fileTransferSucceeded (MSN::SwitchboardServerConnection *conn, unsigned int sessionID)
 	{
-
 	}
 
 	void Callbacks::fileTransferInviteResponse (MSN::SwitchboardServerConnection *conn, unsigned int sessionID, bool response)
 	{
-
 	}
 
 	void Callbacks::gotVoiceClipFile (MSN::SwitchboardServerConnection *conn, unsigned int sessionID, std::string file)
 	{
-
 	}
 
 	void Callbacks::gotEmoticonFile (MSN::SwitchboardServerConnection *conn, unsigned int sessionID, std::string alias, std::string file)
 	{
-
 	}
 
 	void Callbacks::gotWinkFile (MSN::SwitchboardServerConnection *conn, unsigned int sessionID, std::string file)
 	{
-
 	}
 
 	void Callbacks::gotNewConnection (MSN::Connection *conn)
@@ -387,22 +375,18 @@ namespace Zheet
 
 	void Callbacks::gotOIMList (MSN::NotificationServerConnection *conn, std::vector<MSN::eachOIM> OIMs)
 	{
-
 	}
 
 	void Callbacks::gotOIM (MSN::NotificationServerConnection *conn, bool success, std::string id, std::string message)
 	{
-
 	}
 
 	void Callbacks::gotOIMSendConfirmation (MSN::NotificationServerConnection *conn, bool success, int id)
 	{
-
 	}
 
 	void Callbacks::gotOIMDeleteConfirmation (MSN::NotificationServerConnection *conn, bool success, std::string id)
 	{
-
 	}
 
 	void Callbacks::gotContactDisplayPicture (MSN::SwitchboardServerConnection *conn, MSN::Passport passport, std::string filename)
@@ -410,14 +394,12 @@ namespace Zheet
 
 	}
 
-	void Callbacks::connectionReady (MSN::Connection *conn)
+	void Callbacks::connectionReady (MSN::Connection*)
 	{
-
 	}
 
-	void Callbacks::closingConnection (MSN::Connection *conn)
+	void Callbacks::closingConnection (MSN::Connection*)
 	{
-
 	}
 
 	void Callbacks::changedStatus (MSN::NotificationServerConnection *conn, MSN::BuddyStatus state)

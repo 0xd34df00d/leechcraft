@@ -86,6 +86,14 @@ namespace Zheet
 				SIGNAL (gotOurFriendlyName (QString)),
 				this,
 				SLOT (handleGotOurFriendlyName (QString)));
+		connect (CB_,
+				SIGNAL (initialEmailNotification (int, int)),
+				this,
+				SLOT (handleInitialEmailNotification (int, int)));
+		connect (CB_,
+				SIGNAL (newEmailNotification (QString, QString)),
+				this,
+				SLOT (handleNewEmailNotification (QString, QString)));
 
 		connect (ActionManageBL_,
 				SIGNAL (triggered ()),
@@ -479,6 +487,27 @@ namespace Zheet
 		}
 
 		Entries_ [from]->HandleNudge ();
+	}
+
+	void MSNAccount::handleInitialEmailNotification (int total, int unread)
+	{
+		const Entity& e = Util::MakeNotification ("Mailbox status",
+				tr ("You have %1 unread messages (out of %2) in your %3 inbox.")
+					.arg (unread)
+					.arg (total)
+					.arg (ZheetUtil::FromStd (Passport_)),
+				PInfo_);
+		Core::Instance ().SendEntity (e);
+	}
+
+	void MSNAccount::handleNewEmailNotification (const QString& from, const QString& subj)
+	{
+		const Entity& e = Util::MakeNotification ("Mailbox status",
+				tr ("You've got a message from %1: %2.")
+					.arg (from)
+					.arg (subj),
+				PInfo_);
+		Core::Instance ().SendEntity (e);
 	}
 
 	void MSNAccount::handleManageBL ()

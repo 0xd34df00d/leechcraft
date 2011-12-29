@@ -162,6 +162,9 @@ namespace Zheet
 		void gotSB (MSN::SwitchboardServerConnection*, const MSNBuddyEntry*);
 		void buddyJoinedSB (MSN::SwitchboardServerConnection*, const MSNBuddyEntry*);
 		void buddyLeftSB (MSN::SwitchboardServerConnection*, const MSNBuddyEntry*);
+
+		void initialEmailNotification (int total, int unread);
+		void newEmailNotification (const QString& from, const QString& subj);
 	};
 }
 }
