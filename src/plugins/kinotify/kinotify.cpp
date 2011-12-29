@@ -104,9 +104,7 @@ namespace LeechCraft
 				int timeout = Proxy_->GetSettingsManager ()->
 						property ("FinishedDownloadMessageTimeout").toInt () * 1000;
 
- 				KinotifyWidget *notificationWidget =
-						new KinotifyWidget (timeout, Proxy_->GetMainWindow ());
-				notificationWidget->setWindowModality (Qt::NonModal);
+ 				KinotifyWidget *notificationWidget = new KinotifyWidget (timeout);
 				notificationWidget->SetThemeLoader (ThemeLoader_);
 				notificationWidget->SetEntity (e);
 
