@@ -1582,7 +1582,7 @@ namespace Aggregator
 		try
 		{
 			Item_ptr item = GetItem (itemId);
-			*cid = item->ChannelID_;
+			cid = item->ChannelID_;
 		}
 		catch (const ItemNotFoundError&)
 		{
