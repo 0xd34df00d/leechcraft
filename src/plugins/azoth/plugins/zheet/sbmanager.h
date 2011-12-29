@@ -56,6 +56,7 @@ namespace Zheet
 	private slots:
 		void handleGotSB (MSN::SwitchboardServerConnection*, const MSNBuddyEntry*);
 		void handleBuddyJoined (MSN::SwitchboardServerConnection*, const MSNBuddyEntry*);
+		void handleBuddyLeft (MSN::SwitchboardServerConnection*, const MSNBuddyEntry*);
 	};
 }
 }

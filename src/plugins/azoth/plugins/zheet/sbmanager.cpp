@@ -41,7 +41,11 @@ namespace Zheet
 		connect (CB_,
 				SIGNAL (buddyJoinedSB (MSN::SwitchboardServerConnection*, const MSNBuddyEntry*)),
 				this,
-				SLOT (handleBuddyJoined(MSN::SwitchboardServerConnection*, const MSNBuddyEntry*)));
+				SLOT (handleBuddyJoined (MSN::SwitchboardServerConnection*, const MSNBuddyEntry*)));
+		connect (CB_,
+				SIGNAL (buddyLeftSB (MSN::SwitchboardServerConnection*,const MSNBuddyEntry*)),
+				this,
+				SLOT (handleBuddyLOeft (MSN::SwitchboardServerConnection*, const MSNBuddyEntry*)));
 	}
 
 	void SBManager::SendMessage (MSNMessage *msg, const MSNBuddyEntry *entry)
@@ -82,6 +86,11 @@ namespace Zheet
 
 		if (PendingNudges_.remove (entry))
 			SendNudge (QString (), entry);
+	}
+
+	void SBManager::handleBuddyLeft (MSN::SwitchboardServerConnection *conn, const MSNBuddyEntry *entry)
+	{
+		Switchboards_.remove (entry);
 	}
 }
 }
