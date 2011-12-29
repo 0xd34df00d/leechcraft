@@ -64,6 +64,7 @@ namespace Proto
 		PacketActors_ [Packets::HelloAck] = [this] (HalfPacket hp) { HandleHello (hp); Login (); };
 		PacketActors_ [Packets::LoginAck] = [this] (HalfPacket hp) { CorrectAuth (hp); };
 		PacketActors_ [Packets::LoginRej] = [this] (HalfPacket hp) { IncorrectAuth (hp); };
+		PacketActors_ [Packets::ConnParams] = [this] (HalfPacket hp) { ConnParams (hp); };
 
 		PacketActors_ [Packets::UserInfo] = [this] (HalfPacket hp) { UserInfo (hp); };
 		PacketActors_ [Packets::UserStatus] = [this] (HalfPacket hp) { UserStatus (hp); };
@@ -215,6 +216,16 @@ namespace Proto
 		Disconnect ();
 
 		emit authenticationError (string);
+	}
+
+	void Connection::ConnParams (HalfPacket hp)
+	{
+		qDebug () << Q_FUNC_INFO;
+		quint32 timeout;
+		FromMRIM (hp.Data_, timeout);
+
+		PingTimer_->stop ();
+		PingTimer_->start (timeout * 1000);
 	}
 
 	void Connection::UserInfo (HalfPacket hp)
