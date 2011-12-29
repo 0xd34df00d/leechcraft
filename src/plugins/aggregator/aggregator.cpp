@@ -92,6 +92,8 @@ namespace Aggregator
 		QModelIndex SelectedRepr_;
 
 		TabClassInfo TabInfo_;
+
+		bool InitFailed_;
 	};
 
 	Aggregator::~Aggregator ()
@@ -103,6 +105,7 @@ namespace Aggregator
 		setProperty ("IsUnremoveable", true);
 
 		Impl_ = new Aggregator_Impl;
+		Impl_->InitFailed_ = false;
 		Util::InstallTranslator ("aggregator");
 
 		Impl_->TabInfo_.TabClass_ = "Aggregator";
@@ -150,7 +153,6 @@ namespace Aggregator
 		Impl_->XmlSettingsDialog_->SetCustomWidget ("BackendSelector",
 				new LeechCraft::Util::BackendSelector (XmlSettingsManager::Instance ()));
 
-		bool initFailed = false;
 		if (!Core::Instance ().DoDelayedInit ())
 		{
 			setEnabled (false);
@@ -162,7 +164,7 @@ namespace Aggregator
 			Impl_->AppWideActions_.ActionImportBinary_->setEnabled (false);
 			Impl_->AppWideActions_.ActionExportBinary_->setEnabled (false);
 			Impl_->AppWideActions_.ActionExportFB2_->setEnabled (false);
-			initFailed = true;
+			Impl_->InitFailed_ = true;
 			qWarning () << Q_FUNC_INFO
 				<< "core initialization failed";
 		}
@@ -171,7 +173,7 @@ namespace Aggregator
 		Impl_->Ui_.ItemsWidget_->SetAppWideActions (Impl_->AppWideActions_);
 		Impl_->Ui_.ItemsWidget_->SetChannelActions (Impl_->ChannelActions_);
 
-		if (initFailed)
+		if (Impl_->InitFailed_)
 		{
 			QMessageBox::critical (this,
 					"LeechCraft",
@@ -290,6 +292,9 @@ namespace Aggregator
 	void Aggregator::SecondInit ()
 	{
 		LoadColumnWidth (Impl_->Ui_.Feeds_, "feeds");
+
+		if (Impl_->InitFailed_)
+			return;
 
 		Impl_->Ui_.ItemsWidget_->ConstructBrowser ();
 		Impl_->Ui_.ItemsWidget_->LoadUIState ();
