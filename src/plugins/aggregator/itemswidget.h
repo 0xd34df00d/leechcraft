@@ -108,6 +108,7 @@ namespace Aggregator
 		void on_ActionMarkItemAsUnread__triggered ();
 		void on_ActionMarkItemAsRead__triggered ();
 		void on_ActionMarkItemAsImportant__triggered ();
+		void on_ActionDeleteItem__triggered ();
 		void on_CaseSensitiveSearch__stateChanged (int);
 		void on_ActionItemCommentsSubscribe__triggered ();
 		void on_ActionItemLinkOpen__triggered ();

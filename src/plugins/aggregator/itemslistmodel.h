@@ -20,6 +20,7 @@
 #define PLUGINS_AGGREGATOR_ITEMSLISTMODEL_H
 #include <QAbstractItemModel>
 #include <QStringList>
+#include <QSet>
 #include <QPair>
 #include "item.h"
 
@@ -50,6 +51,7 @@ namespace Aggregator
 		QStringList GetCategories (int) const;
 		void Reset (const IDType_t&);
 		void Reset (const QList<IDType_t>&);
+		void RemoveItems (QSet<IDType_t>);
 		void ItemDataUpdated (Item_ptr);
 
 		int columnCount (const QModelIndex& = QModelIndex ()) const;

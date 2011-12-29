@@ -121,6 +121,40 @@ namespace Aggregator
 		reset ();
 	}
 
+	void ItemsListModel::RemoveItems (QSet<IDType_t> ids)
+	{
+		if (ids.isEmpty ())
+			return;
+
+		const bool shouldReset = ids.size () > 10;
+
+		for (auto i = CurrentItems_.begin ();
+				i != CurrentItems_.end () && !ids.isEmpty (); )
+		{
+			if (!ids.contains (i->ItemID_))
+			{
+				++i;
+				continue;
+			}
+
+			ids.remove (i->ItemID_);
+			if (!shouldReset)
+			{
+				const size_t dist = std::distance (CurrentItems_.begin (), i);
+				beginRemoveRows (QModelIndex (), dist, dist);
+			}
+			i = CurrentItems_.erase (i);
+			if (!shouldReset)
+			{
+				endRemoveRows ();
+				qApp->processEvents (QEventLoop::ExcludeUserInputEvents);
+			}
+		}
+
+		if (shouldReset)
+			reset ();
+	}
+
 	namespace
 	{
 		struct FindEarlierDate
