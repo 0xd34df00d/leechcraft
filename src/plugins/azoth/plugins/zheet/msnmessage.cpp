@@ -37,6 +37,8 @@ namespace Zheet
 	, MT_ (type)
 	, MST_ (MSTOther)
 	, DateTime_ (QDateTime::currentDateTime ())
+	, IsDelivered_ (dir == DIn)
+	, MsgID_ (-1)
 	{
 	}
 
@@ -47,7 +49,27 @@ namespace Zheet
 	, MT_ (MTChatMessage)
 	, Body_ (ZheetUtil::FromStd (msg->getBody ()))
 	, DateTime_ (QDateTime::currentDateTime ())
+	, IsDelivered_ (true)
 	{
+	}
+
+	int MSNMessage::GetID () const
+	{
+		return MsgID_;
+	}
+
+	void MSNMessage::SetID (int id)
+	{
+		MsgID_ = id;
+	}
+
+	void MSNMessage::SetDelivered ()
+	{
+		if (IsDelivered_)
+			return;
+
+		IsDelivered_ = true;
+		emit messageDelivered ();
 	}
 
 	QObject* MSNMessage::GetObject ()
@@ -110,6 +132,11 @@ namespace Zheet
 	void MSNMessage::SetDateTime (const QDateTime& timestamp)
 	{
 		DateTime_ = timestamp;
+	}
+
+	bool MSNMessage::IsDelivered () const
+	{
+		return IsDelivered_;
 	}
 }
 }

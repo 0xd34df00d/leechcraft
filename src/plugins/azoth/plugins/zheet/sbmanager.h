@@ -48,6 +48,8 @@ namespace Zheet
 		QHash<const MSNBuddyEntry*, QList<MSNMessage*>> PendingMessages_;
 		QHash<const MSNBuddyEntry*, MSN::SwitchboardServerConnection*> Switchboards_;
 		QSet<const MSNBuddyEntry*> PendingNudges_;
+
+		QHash<int, MSNMessage*> PendingDelivery_;
 	public:
 		SBManager (Callbacks*, MSNAccount*);
 
@@ -57,6 +59,7 @@ namespace Zheet
 		void handleGotSB (MSN::SwitchboardServerConnection*, const MSNBuddyEntry*);
 		void handleBuddyJoined (MSN::SwitchboardServerConnection*, const MSNBuddyEntry*);
 		void handleBuddyLeft (MSN::SwitchboardServerConnection*, const MSNBuddyEntry*);
+		void handleMessageDelivered (int);
 	};
 }
 }

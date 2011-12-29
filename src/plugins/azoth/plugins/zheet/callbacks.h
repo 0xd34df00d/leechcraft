@@ -158,6 +158,7 @@ namespace Zheet
 
 		void gotMessage (const QString&, MSN::Message*);
 		void gotNudge (const QString&);
+		void messageDelivered (int);
 
 		void gotSB (MSN::SwitchboardServerConnection*, const MSNBuddyEntry*);
 		void buddyJoinedSB (MSN::SwitchboardServerConnection*, const MSNBuddyEntry*);

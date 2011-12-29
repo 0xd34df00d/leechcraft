@@ -290,7 +290,7 @@ namespace Zheet
 
 	void Callbacks::gotMessageSentACK (MSN::SwitchboardServerConnection *conn, int trID)
 	{
-
+		emit messageDelivered (trID);
 	}
 
 	void Callbacks::gotEmoticonNotification (MSN::SwitchboardServerConnection *conn, MSN::Passport buddy, std::string alias, std::string)

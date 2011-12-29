@@ -20,6 +20,7 @@
 #define PLUGINS_AZOTH_PLUGINS_ZHEET_MSNMESSAGE_H
 #include <QObject>
 #include <interfaces/imessage.h>
+#include <interfaces/iadvancedmessage.h>
 
 namespace MSN
 {
@@ -36,9 +37,10 @@ namespace Zheet
 
 	class MSNMessage : public QObject
 					 , public IMessage
+					 , public IAdvancedMessage
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMessage);
+		Q_INTERFACES (LeechCraft::Azoth::IMessage LeechCraft::Azoth::IAdvancedMessage);
 
 		MSNBuddyEntry *Entry_;
 
@@ -47,9 +49,17 @@ namespace Zheet
 		MessageSubType MST_;
 		QString Body_;
 		QDateTime DateTime_;
+
+		bool IsDelivered_;
+
+		int MsgID_;
 	public:
 		MSNMessage (Direction, MessageType, MSNBuddyEntry*);
 		MSNMessage (MSN::Message*, MSNBuddyEntry*);
+
+		int GetID () const;
+		void SetID (int);
+		void SetDelivered ();
 
 		QObject* GetObject ();
 		void Send ();
@@ -63,6 +73,10 @@ namespace Zheet
 		void SetBody (const QString& body);
 		QDateTime GetDateTime () const;
 		void SetDateTime (const QDateTime& timestamp);
+
+		bool IsDelivered () const;
+	signals:
+		void messageDelivered ();
 	};
 }
 }

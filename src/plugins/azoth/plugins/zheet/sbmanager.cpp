@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "sbmanager.h"
+#include <QtDebug>
 #include "msnaccount.h"
 #include "msnmessage.h"
 #include "msnbuddyentry.h"
@@ -46,13 +47,20 @@ namespace Zheet
 				SIGNAL (buddyLeftSB (MSN::SwitchboardServerConnection*,const MSNBuddyEntry*)),
 				this,
 				SLOT (handleBuddyLeft (MSN::SwitchboardServerConnection*, const MSNBuddyEntry*)));
+		connect (CB_,
+				SIGNAL (messageDelivered (int)),
+				this,
+				SLOT (handleMessageDelivered (int)));
 	}
 
 	void SBManager::SendMessage (MSNMessage *msg, const MSNBuddyEntry *entry)
 	{
 		if (Switchboards_.contains (entry))
 		{
-			Switchboards_ [entry]->sendMessage (ZheetUtil::ToStd (msg->GetBody ()));
+			const int id = Switchboards_ [entry]->
+					sendMessage (ZheetUtil::ToStd (msg->GetBody ()));
+			msg->SetID (id);
+			PendingDelivery_ [id] = msg;
 			return;
 		}
 
@@ -91,6 +99,20 @@ namespace Zheet
 	void SBManager::handleBuddyLeft (MSN::SwitchboardServerConnection *conn, const MSNBuddyEntry *entry)
 	{
 		Switchboards_.remove (entry);
+	}
+
+	void SBManager::handleMessageDelivered (int id)
+	{
+		if (!PendingDelivery_.contains (id))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown message ID"
+					<< id
+					<< PendingDelivery_;
+			return;
+		}
+
+		PendingDelivery_.take (id)->SetDelivered ();
 	}
 }
 }
