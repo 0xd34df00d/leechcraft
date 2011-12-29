@@ -45,7 +45,7 @@ namespace Zheet
 		connect (CB_,
 				SIGNAL (buddyLeftSB (MSN::SwitchboardServerConnection*,const MSNBuddyEntry*)),
 				this,
-				SLOT (handleBuddyLOeft (MSN::SwitchboardServerConnection*, const MSNBuddyEntry*)));
+				SLOT (handleBuddyLeft (MSN::SwitchboardServerConnection*, const MSNBuddyEntry*)));
 	}
 
 	void SBManager::SendMessage (MSNMessage *msg, const MSNBuddyEntry *entry)
