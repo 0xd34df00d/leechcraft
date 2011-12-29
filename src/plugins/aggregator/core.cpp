@@ -1446,30 +1446,12 @@ namespace Aggregator
 
 	namespace
 	{
-		struct ChannelFinder
-		{
-			const Channel_ptr& Channel_;
-
-			ChannelFinder (const Channel_ptr& channel)
-			: Channel_ (channel)
-			{
-			}
-
-			bool operator() (const Channel_ptr& obj)
-			{
-				return *Channel_ == *obj;
-			}
-		};
-	};
-
-	namespace
-	{
 		void FixDate (Item_ptr& item)
 		{
 			if (!item->PubDate_.isValid ())
 				item->PubDate_ = QDateTime::currentDateTime ();
 		}
-	};
+	}
 
 	namespace
 	{

@@ -155,31 +155,13 @@ namespace Aggregator
 			reset ();
 	}
 
-	namespace
-	{
-		struct FindEarlierDate
-		{
-			QDateTime Pattern_;
-
-			FindEarlierDate (const QDateTime& pattern)
-			: Pattern_ (pattern)
-			{
-			}
-
-			bool operator() (const ItemShort& is)
-			{
-				return Pattern_ > is.PubDate_;
-			}
-		};
-	};
-
 	void ItemsListModel::ItemDataUpdated (Item_ptr item)
 	{
 		ItemShort is = item->ToShort ();
 
-		items_shorts_t::iterator pos = CurrentItems_.end ();
+		auto pos = CurrentItems_.end ();
 
-		for (items_shorts_t::iterator i = CurrentItems_.begin (),
+		for (auto i = CurrentItems_.begin (),
 				end = CurrentItems_.end (); i != end; ++i)
 			if (is.Title_ == i->Title_ &&
 					is.URL_ == i->URL_)
@@ -191,9 +173,8 @@ namespace Aggregator
 		// Item is new
 		if (pos == CurrentItems_.end ())
 		{
-			items_shorts_t::iterator insertPos =
-				std::find_if (CurrentItems_.begin (), CurrentItems_.end (),
-						FindEarlierDate (item->PubDate_));
+			auto insertPos = std::find_if (CurrentItems_.begin (), CurrentItems_.end (),
+						[item] (const ItemShort& is) { return item->PubDate_ > is.PubDate_; });
 
 			int shift = std::distance (CurrentItems_.begin (), insertPos);
 
