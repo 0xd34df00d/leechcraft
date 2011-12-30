@@ -94,6 +94,7 @@ namespace Vader
 		void handleGotAuthRequest (const QString&, const QString&);
 		void handleGotAuthAck (const QString&);
 		void handleGotMessage (const Proto::Message&);
+		void handleGotAttentionRequest (const QString&, const QString&);
 		void handleOurStatusChanged (const EntryStatus&);
 	signals:
 		void gotCLItems (const QList<QObject*>&);

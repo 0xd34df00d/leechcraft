@@ -62,6 +62,10 @@ namespace Vader
 				this,
 				SLOT (handleGotMessage (Proto::Message)));
 		connect (Conn_,
+				SIGNAL (gotAttentionRequest (QString, QString)),
+				this,
+				SLOT (handleGotAttentionRequest (QString, QString)));
+		connect (Conn_,
 				SIGNAL (statusChanged (EntryStatus)),
 				this,
 				SLOT (handleOurStatusChanged (EntryStatus)));
@@ -390,6 +394,20 @@ namespace Vader
 		MRIMMessage *obj = new MRIMMessage (IMessage::DIn, IMessage::MTChatMessage, buddy);
 		obj->SetBody (msg.Text_);
 		buddy->HandleMessage (obj);
+	}
+
+	void MRIMAccount::handleGotAttentionRequest (const QString& from, const QString& msg)
+	{
+		auto buddy = Buddies_ [from];
+		if (!buddy)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "from unknown buddy"
+					<< from;
+			return;
+		}
+
+		buddy->HandleAttention (msg);
 	}
 
 	void MRIMAccount::handleOurStatusChanged (const EntryStatus& status)
