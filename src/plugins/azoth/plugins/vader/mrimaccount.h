@@ -55,6 +55,8 @@ namespace Vader
 		EntryStatus Status_;
 		QHash<QString, MRIMBuddy*> Buddies_;
 		QHash<quint32, Proto::ContactInfo> PendingAdditions_;
+		
+		QList<QAction*> Actions_;
 	public:
 		MRIMAccount (const QString&, MRIMProtocol*);
 
@@ -96,6 +98,9 @@ namespace Vader
 		void handleGotMessage (const Proto::Message&);
 		void handleGotAttentionRequest (const QString&, const QString&);
 		void handleOurStatusChanged (const EntryStatus&);
+		void handleGotPOPKey (const QString&);
+		
+		void handleOpenMailbox ();
 	signals:
 		void gotCLItems (const QList<QObject*>&);
 		void removedCLItems (const QList<QObject*>&);

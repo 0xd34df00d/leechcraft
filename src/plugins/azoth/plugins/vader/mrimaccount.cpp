@@ -18,6 +18,8 @@
 
 #include "mrimaccount.h"
 #include <QDataStream>
+#include <QUrl>
+#include <util/util.h>
 #include <interfaces/iproxyobject.h>
 #include "proto/connection.h"
 #include "proto/message.h"
@@ -73,6 +75,17 @@ namespace Vader
 				SIGNAL (contactAdded (quint32, quint32)),
 				this,
 				SLOT (handleContactAdded (quint32, quint32)));
+		connect (Conn_,
+				SIGNAL (gotPOPKey (QString)),
+				this,
+				SLOT (handleGotPOPKey (QString)));
+		
+		QAction *mb = new QAction (tr ("Open mailbox..."), this);
+		connect (mb,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleOpenMailbox ()));		
+		Actions_ << mb;
 	}
 
 	void MRIMAccount::FillConfig (MRIMAccountConfigWidget *w)
@@ -139,7 +152,7 @@ namespace Vader
 
 	QList<QAction*> MRIMAccount::GetActions () const
 	{
-		return QList<QAction*> ();
+		return Actions_;
 	}
 
 	void MRIMAccount::QueryInfo (const QString&)
@@ -414,6 +427,23 @@ namespace Vader
 	{
 		Status_ = status;
 		emit statusChanged (status);
+	}
+	
+	void MRIMAccount::handleGotPOPKey (const QString& key)
+	{
+		qDebug () << Q_FUNC_INFO << key;
+		const QString& str = QString ("http://win.mail.ru/cgi-bin/auth?Login=%1&agent=%2")
+				.arg (Login_)
+				.arg (key);
+		const Entity& e = Util::MakeEntity (QUrl (str),
+				QString (),
+				static_cast<LeechCraft::TaskParameters> (OnlyHandle | FromUserInitiated));
+		Core::Instance ().SendEntity (e);
+	}
+	
+	void MRIMAccount::handleOpenMailbox ()
+	{
+		Conn_->RequestPOPKey ();
 	}
 }
 }
