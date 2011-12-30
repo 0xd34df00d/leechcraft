@@ -272,6 +272,7 @@ namespace Vader
 
 	void MRIMBuddy::DrawAttention (const QString& text, const QString&)
 	{
+		A_->GetConnection ()->SendAttention (GetHumanReadableID (), text);
 	}
 }
 }

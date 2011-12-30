@@ -161,6 +161,11 @@ namespace Proto
 		Write (hp.Packet_);
 		return hp.Seq_;
 	}
+	
+	void Connection::SendAttention (const QString& to, const QString& message)
+	{
+		Write (PF_.Message (MsgFlag::Alarm, to, message).Packet_);
+	}
 
 	void Connection::Authorize (const QString& email)
 	{
