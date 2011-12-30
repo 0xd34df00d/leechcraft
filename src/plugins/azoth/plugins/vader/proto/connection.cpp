@@ -172,6 +172,14 @@ namespace Proto
 		return p.Seq_;
 	}
 
+	void Connection::SetContactGroup (quint32 contactId,
+			quint32 groupId, const QString& email, const QString& name)
+	{
+		const auto& p = PF_.ModifyContact (contactId,
+				ContactOpFlag::None, groupId, email, name);
+		Write (p.Packet_);
+	}
+
 	void Connection::RemoveContact (quint32 id, const QString& email, const QString& name)
 	{
 		Write (PF_.RemoveContact (id, email, name).Packet_);
@@ -180,6 +188,13 @@ namespace Proto
 	void Connection::RequestAuth (const QString& email, const QString& msg)
 	{
 		Write (PF_.Message (MsgFlag::Authorize | MsgFlag::NoRecv, email, msg).Packet_);
+	}
+
+	quint32 Connection::AddGroup (const QString& group, int groupNum)
+	{
+		const auto& p = PF_.AddGroup (group, groupNum);
+		Write (p.Packet_);
+		return p.Seq_;
 	}
 
 	void Connection::HandleHello (HalfPacket hp)
@@ -438,6 +453,8 @@ namespace Proto
 
 		if (status == Proto::ContactAck::Success)
 			emit contactAdded (hp.Header_.Seq_, contactId);
+		else
+			emit contactAdditionError (hp.Header_.Seq_, status);
 	}
 
 	void Connection::Disconnect ()

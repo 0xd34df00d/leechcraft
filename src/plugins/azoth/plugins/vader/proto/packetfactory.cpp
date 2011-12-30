@@ -87,12 +87,27 @@ namespace Proto
 		return HalfPacket { Header (Packets::MsgRecv, Seq_++), data };
 	}
 
+	Packet PacketFactory::AddGroup (const QString& name, int numGroups)
+	{
+		const QByteArray& data = ToMRIM (static_cast<quint32> (ContactOpFlag::Group | (numGroups << 24)),
+				0, QString (), name, QString (), 0, 0);
+		return HalfPacket { Header (Packets::Contact, Seq_++), data };
+	}
+
 	Packet PacketFactory::AddContact (ContactOpFlags flags,
 			quint32 group, const QString& email, const QString& name)
 	{
 		const QByteArray& data = ToMRIM (static_cast<quint32> (flags),
 				group, email, ToMRIM16 (name), QString (" "), QString (" "), 0);
 		return HalfPacket { Header (Packets::Contact, Seq_++), data };
+	}
+
+	Packet PacketFactory::ModifyContact (quint32 cid, ContactOpFlags flags,
+			quint32 group, const QString& email, const QString& name)
+	{
+		const QByteArray& data = ToMRIM (cid, static_cast<quint32> (flags),
+				group, email, name, QString (" "));
+		return HalfPacket { Header (Packets::ModifyContact, Seq_++), data };
 	}
 
 	Packet PacketFactory::RemoveContact (quint32 id, const QString& email, const QString& name)

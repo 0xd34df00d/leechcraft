@@ -46,8 +46,11 @@ namespace Proto
 		Packet SetStatus (quint32 state, const QString& status);
 		Packet Message (MsgFlags flags, const QString& to, const QString& msg);
 		Packet MessageAck (const QString& from, quint32 msgId);
+		Packet AddGroup (const QString& name, int numGroups);
 		Packet AddContact (ContactOpFlags flags, quint32 group,
 				const QString& email, const QString& name);
+		Packet ModifyContact (quint32 cid, ContactOpFlags flags,
+				quint32 group, const QString& email, const QString& name);
 		Packet RemoveContact (quint32 id,
 				const QString& email, const QString& name);
 		Packet Authorize (const QString&);

@@ -74,8 +74,11 @@ namespace Proto
 		quint32 SendMessage (const QString& to, const QString& message);
 		void Authorize (const QString& email);
 		quint32 AddContact (quint32 group, const QString& email, const QString& name);
+		void SetContactGroup (quint32 contactId, quint32 groupId,
+				const QString& email, const QString& name);
 		void RemoveContact (quint32 id, const QString& email, const QString& name);
 		void RequestAuth (const QString& email, const QString& msg);
+		quint32 AddGroup (const QString& group, int groupNum);
 	private:
 		void HandleHello (HalfPacket);
 		void Login ();
@@ -110,6 +113,7 @@ namespace Proto
 		void messageDelivered (quint32);
 		void statusChanged (EntryStatus);
 		void contactAdded (quint32 seq, quint32 cid);
+		void contactAdditionError (quint32 seq, quint32 status);
 		void userStatusChanged (const Proto::ContactInfo&);
 	};
 }
