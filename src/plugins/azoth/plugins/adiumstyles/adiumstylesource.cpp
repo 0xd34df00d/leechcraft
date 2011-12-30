@@ -204,15 +204,16 @@ namespace AdiumStyles
 		}
 
 		const bool in = GetMsgDirection (msg) == IMessage::DIn;
-		const QString& prefix = pack + "/Contents/Resources/" +
-				(in ? "Incoming" : "Outgoing") +
-				'/';
 
 		QObject *kindaSender = in ? msg->OtherPart () : reinterpret_cast<QObject*> (42);
 		const bool isNextMsg = Frame2LastContact_.contains (frame) &&
 				kindaSender == Frame2LastContact_ [frame];
 		const bool isSlashMe = msg->GetBody ()
 				.trimmed ().startsWith ("/me ");
+		const QString& prefix = pack + "/Contents/Resources/" +
+				(in || isSlashMe ? "Incoming" : "Outgoing") +
+				'/';
+
 		QString filename;
 		if ((msg->GetMessageType () == IMessage::MTChatMessage ||
 					msg->GetMessageType () == IMessage::MTMUCMessage) &&
