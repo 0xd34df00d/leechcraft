@@ -71,11 +71,25 @@ namespace Proto
 		QByteArray GetCodecName () { return "UTF-16LE"; }
 	};
 
+	class UIDL
+	{
+		QByteArray ID_;
+	public:
+		UIDL ();
+		UIDL (const UIDL&);
+		explicit UIDL (const QByteArray&);
+
+		UIDL& operator= (const QByteArray&);
+
+		operator QByteArray () const;
+	};
+
 	QString FromMRIM1251 (const QByteArray&);
 	QString FromMRIM16 (const QByteArray&);
 	void FromMRIM (QByteArray&, EncoderProxy&);
 	inline void FromMRIM (QByteArray& ba, Str1251& str) { FromMRIM (ba, static_cast<EncoderProxy&> (str)); }
 	inline void FromMRIM (QByteArray& ba, Str16& str){ FromMRIM (ba, static_cast<EncoderProxy&> (str)); }
+	void FromMRIM (QByteArray&, UIDL&);
 	void FromMRIM (QByteArray&, QByteArray&);
 	void FromMRIM (QByteArray&, quint32&);
 	void FromMRIM (QByteArray&);

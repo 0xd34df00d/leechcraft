@@ -66,6 +66,31 @@ namespace Proto
 		return QByteArray ();
 	}
 
+	UIDL::UIDL ()
+	{
+	}
+
+	UIDL::UIDL (const UIDL& uidl)
+	: ID_ (uidl.ID_)
+	{
+	}
+
+	UIDL::UIDL (const QByteArray& id)
+	: ID_ (id)
+	{
+	}
+
+	UIDL& UIDL::operator= (const QByteArray& id)
+	{
+		ID_ = id;
+		return *this;
+	}
+
+	UIDL::operator QByteArray () const
+	{
+		return ID_;
+	}
+
 	QString FromMRIM1251 (const QByteArray& ba)
 	{
 		return QTextCodec::codecForName ("Windows-1251")->toUnicode (ba);
@@ -82,6 +107,15 @@ namespace Proto
 		FromMRIM (lps, ba);
 
 		proxy = ba;
+	}
+
+	void FromMRIM (QByteArray& lps, UIDL& id)
+	{
+		if (lps.size () < 8)
+			throw TooShortBA ("Unable to deserialize UIDL: premature end");
+
+		id = lps.left (8);
+		lps = lps.mid (8);
 	}
 
 	void FromMRIM (QByteArray& lps, QByteArray& str)
