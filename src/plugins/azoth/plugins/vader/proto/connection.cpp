@@ -77,6 +77,8 @@ namespace Proto
 
 		PacketActors_ [Packets::AuthorizeAck] = [this] (HalfPacket hp) { AuthAck (hp); };
 		PacketActors_ [Packets::ContactAck] = [this] (HalfPacket hp) { ContactAdded (hp); };
+		
+		PacketActors_ [Packets::MPOPSession] = [this] (HalfPacket hp) { MPOPKey (hp); };
 	}
 
 	void Connection::SetTarget (const QString& host, int port)
@@ -202,6 +204,11 @@ namespace Proto
 		const auto& p = PF_.AddGroup (group, groupNum);
 		Write (p.Packet_);
 		return p.Seq_;
+	}
+	
+	void Connection::RequestPOPKey ()
+	{
+		Write (PF_.RequestKey ().Packet_);
 	}
 
 	void Connection::HandleHello (HalfPacket hp)
@@ -470,6 +477,16 @@ namespace Proto
 			emit contactAdded (hp.Header_.Seq_, contactId);
 		else
 			emit contactAdditionError (hp.Header_.Seq_, status);
+	}
+
+	void Connection::MPOPKey (HalfPacket hp)
+	{
+		quint32 status = 0;
+		Str1251 key;
+		FromMRIM (hp.Data_, status, key);
+		
+		if (status == MPOPSession::Success)
+			emit gotPOPKey (key);
 	}
 
 	void Connection::Disconnect ()

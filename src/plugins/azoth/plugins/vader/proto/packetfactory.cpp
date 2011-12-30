@@ -127,6 +127,11 @@ namespace Proto
 		const QByteArray& data = ToMRIM (email);
 		return HalfPacket { Header (Packets::Authorize), data };
 	}
+	
+	Packet PacketFactory::RequestKey ()
+	{
+		return HalfPacket { Header (Packets::GetMPOPSession), QByteArray () };
+	}
 }
 }
 }

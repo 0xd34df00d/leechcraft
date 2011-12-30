@@ -80,6 +80,7 @@ namespace Proto
 		void RemoveContact (quint32 id, const QString& email, const QString& name);
 		void RequestAuth (const QString& email, const QString& msg);
 		quint32 AddGroup (const QString& group, int groupNum);
+		void RequestPOPKey ();
 	private:
 		void HandleHello (HalfPacket);
 		void Login ();
@@ -94,6 +95,7 @@ namespace Proto
 		void OfflineMsg (HalfPacket);
 		void AuthAck (HalfPacket);
 		void ContactAdded (HalfPacket);
+		void MPOPKey (HalfPacket);
 
 		void Disconnect ();
 
@@ -117,6 +119,7 @@ namespace Proto
 		void contactAdded (quint32 seq, quint32 cid);
 		void contactAdditionError (quint32 seq, quint32 status);
 		void userStatusChanged (const Proto::ContactInfo&);
+		void gotPOPKey (const QString&);
 	};
 }
 }

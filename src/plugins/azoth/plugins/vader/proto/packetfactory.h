@@ -54,6 +54,7 @@ namespace Proto
 		Packet RemoveContact (quint32 id,
 				const QString& email, const QString& name);
 		Packet Authorize (const QString&);
+		Packet RequestKey ();
 	};
 }
 }
