@@ -40,7 +40,7 @@ namespace Proto
 			QByteArray tmp (Buffer_);
 			Header h (tmp);
 			qDebug () << h.DataLength_ << tmp.size ();
-			if (h.DataLength_ > tmp.size ())
+			if (h.DataLength_ > static_cast<quint32> (tmp.size ()))
 				return false;
 		}
 		catch (const TooShortBA&)
