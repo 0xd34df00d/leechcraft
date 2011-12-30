@@ -19,6 +19,7 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_VADER_CORE_H
 #define PLUGINS_AZOTH_PLUGINS_VADER_CORE_H
 #include <QObject>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
@@ -38,6 +39,7 @@ namespace Vader
 
 		MRIMProtocol *Proto_;
 		IProxyObject *Proxy_;
+		ICoreProxy_ptr CoreProxy_;
 
 		Core ();
 	public:
@@ -45,6 +47,9 @@ namespace Vader
 
 		void SetProxy (QObject*);
 		IProxyObject* GetProxy () const;
+		
+		void SetCoreProxy (ICoreProxy_ptr);
+		ICoreProxy_ptr GetCoreProxy () const;
 
 		MRIMProtocol* GetProtocol () const;
 		

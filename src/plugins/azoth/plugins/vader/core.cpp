@@ -47,6 +47,16 @@ namespace Vader
 	{
 		return Proxy_;
 	}
+	
+	void Core::SetCoreProxy (ICoreProxy_ptr proxy)
+	{
+		CoreProxy_ = proxy;
+	}
+
+	ICoreProxy_ptr Core::GetCoreProxy () const
+	{
+		return CoreProxy_;
+	}
 
 	MRIMProtocol* Core::GetProtocol () const
 	{

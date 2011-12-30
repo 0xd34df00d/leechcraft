@@ -29,6 +29,7 @@ namespace Vader
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Core::Instance ().SetCoreProxy (proxy);
 		Core::Instance ().GetProtocol ()->setParent (this);
 		connect (&Core::Instance (),
 				SIGNAL (gotEntity (LeechCraft::Entity)),
