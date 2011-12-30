@@ -24,6 +24,7 @@
 #include "mrimaccount.h"
 #include "mrimmessage.h"
 #include "vaderutil.h"
+#include "groupmanager.h"
 
 namespace LeechCraft
 {
@@ -145,7 +146,7 @@ namespace Vader
 
 	ICLEntry::Features MRIMBuddy::GetEntryFeatures () const
 	{
-		return FPermanentEntry;
+		return FPermanentEntry | FSupportsGrouping;
 	}
 
 	ICLEntry::EntryType MRIMBuddy::GetEntryType () const
@@ -182,8 +183,9 @@ namespace Vader
 		return result;
 	}
 
-	void MRIMBuddy::SetGroups (const QStringList&)
+	void MRIMBuddy::SetGroups (const QStringList& list)
 	{
+		A_->GetGroupManager ()->SetBuddyGroups (this, list);
 	}
 
 	QStringList MRIMBuddy::Variants () const

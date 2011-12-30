@@ -37,6 +37,7 @@ namespace Vader
 	class MRIMProtocol;
 	class MRIMAccountConfigWidget;
 	class MRIMBuddy;
+	class GroupManager;
 
 	class MRIMAccount : public QObject
 					  , public IAccount
@@ -49,9 +50,9 @@ namespace Vader
 		QString Login_;
 
 		Proto::Connection *Conn_;
+		GroupManager *GM_;
 
 		EntryStatus Status_;
-		QStringList AllGroups_;
 		QHash<QString, MRIMBuddy*> Buddies_;
 		QHash<quint32, Proto::ContactInfo> PendingAdditions_;
 	public:
@@ -59,6 +60,7 @@ namespace Vader
 
 		void FillConfig (MRIMAccountConfigWidget*);
 		Proto::Connection* GetConnection () const;
+		GroupManager* GetGroupManager () const;
 
 		// IAccount
 		QObject* GetObject ();
@@ -86,7 +88,6 @@ namespace Vader
 	private:
 		MRIMBuddy* GetBuddy (const Proto::ContactInfo&);
 	private slots:
-		void handleGotGroups (const QStringList&);
 		void handleGotContacts (const QList<Proto::ContactInfo>&);
 		void handleUserStatusChanged (const Proto::ContactInfo&);
 		void handleContactAdded (quint32, quint32);

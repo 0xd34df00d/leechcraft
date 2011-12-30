@@ -26,6 +26,7 @@
 #include "mrimbuddy.h"
 #include "mrimmessage.h"
 #include "core.h"
+#include "groupmanager.h"
 
 namespace LeechCraft
 {
@@ -38,11 +39,8 @@ namespace Vader
 	, Proto_ (proto)
 	, Name_ (name)
 	, Conn_ (new Proto::Connection (this))
+	, GM_ (new GroupManager (this))
 	{
-		connect (Conn_,
-				SIGNAL (gotGroups (QStringList)),
-				this,
-				SLOT (handleGotGroups (QStringList)));
 		connect (Conn_,
 				SIGNAL (gotContacts (QList<Proto::ContactInfo>)),
 				this,
@@ -85,6 +83,11 @@ namespace Vader
 	Proto::Connection* MRIMAccount::GetConnection () const
 	{
 		return Conn_;
+	}
+
+	GroupManager* MRIMAccount::GetGroupManager () const
+	{
+		return GM_;
 	}
 
 	QObject* MRIMAccount::GetObject ()
@@ -293,11 +296,6 @@ namespace Vader
 		return buddy;
 	}
 
-	void MRIMAccount::handleGotGroups (const QStringList& groups)
-	{
-		AllGroups_ = groups;
-	}
-
 	void MRIMAccount::handleGotContacts (const QList<Proto::ContactInfo>& contacts)
 	{
 		QList<QObject*> objs;
@@ -305,7 +303,7 @@ namespace Vader
 		{
 			qDebug () << Q_FUNC_INFO << GetAccountName () << contact.Email_ << contact.Alias_ << contact.ContactID_;
 			MRIMBuddy *buddy = new MRIMBuddy (contact, this);
-			buddy->SetGroup (AllGroups_.value (contact.GroupNumber_));
+			buddy->SetGroup (GM_->GetGroup (contact.GroupNumber_));
 			objs << buddy;
 			Buddies_ [contact.Email_] = buddy;
 		}
@@ -340,12 +338,7 @@ namespace Vader
 	{
 		qDebug () << Q_FUNC_INFO << GetAccountName () << id;
 		if (!PendingAdditions_.contains (seq))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown seq number"
-					<< seq;
 			return;
-		}
 
 		Proto::ContactInfo info = PendingAdditions_.take (seq);
 		info.ContactID_ = id;

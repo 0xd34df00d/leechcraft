@@ -20,6 +20,7 @@ SET (VADER_SRCS
 	mrimbuddy.cpp
 	mrimmessage.cpp
 	vaderutil.cpp
+	groupmanager.cpp
 	proto/headers.cpp
 	proto/connection.cpp
 	proto/packet.cpp
@@ -37,6 +38,7 @@ SET (VADER_HEADERS
 	mrimbuddy.h
 	mrimmessage.h
 	vaderutil.h
+	groupmanager.h
 	proto/headers.h
 	proto/connection.h
 	proto/packet.h
