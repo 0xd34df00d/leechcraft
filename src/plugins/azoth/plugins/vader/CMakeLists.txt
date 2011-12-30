@@ -22,6 +22,7 @@ SET (VADER_SRCS
 	vaderutil.cpp
 	groupmanager.cpp
 	proto/headers.cpp
+	proto/conversions.cpp
 	proto/connection.cpp
 	proto/packet.cpp
 	proto/packetfactory.cpp
@@ -40,6 +41,7 @@ SET (VADER_HEADERS
 	vaderutil.h
 	groupmanager.h
 	proto/headers.h
+	proto/conversions.h
 	proto/connection.h
 	proto/packet.h
 	proto/packetfactory.h

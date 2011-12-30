@@ -90,6 +90,7 @@ namespace Proto
 		void ContactList (HalfPacket);
 		void IncomingMsg (HalfPacket);
 		void MsgStatus (HalfPacket);
+		void OfflineMsg (HalfPacket);
 		void AuthAck (HalfPacket);
 		void ContactAdded (HalfPacket);
 

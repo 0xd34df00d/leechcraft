@@ -19,6 +19,7 @@
 #include "packetfactory.h"
 #include <QCryptographicHash>
 #include "headers.h"
+#include "conversions.h"
 #include "halfpacket.h"
 
 namespace LeechCraft

@@ -19,6 +19,7 @@
 #include "connection.h"
 #include <QSslSocket>
 #include <QTimer>
+#include "conversions.h"
 #include "packet.h"
 #include "exceptions.h"
 #include "message.h"
@@ -72,6 +73,7 @@ namespace Proto
 
 		PacketActors_ [Packets::MsgAck] = [this] (HalfPacket hp) { IncomingMsg (hp); };
 		PacketActors_ [Packets::MsgStatus] = [this] (HalfPacket hp) { MsgStatus (hp); };
+		PacketActors_ [Packets::OfflineMsgAck] = [this] (HalfPacket hp) { OfflineMsg (hp); };
 
 		PacketActors_ [Packets::AuthorizeAck] = [this] (HalfPacket hp) { AuthAck (hp); };
 		PacketActors_ [Packets::ContactAck] = [this] (HalfPacket hp) { ContactAdded (hp); };
@@ -434,6 +436,11 @@ namespace Proto
 
 		if (status == MessageStatus::Delivered)
 			emit messageDelivered (seq);
+	}
+
+	void Connection::OfflineMsg (HalfPacket hp)
+	{
+
 	}
 
 	void Connection::AuthAck (HalfPacket hp)
