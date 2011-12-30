@@ -25,6 +25,7 @@
 #include "mrimmessage.h"
 #include "vaderutil.h"
 #include "groupmanager.h"
+#include "proto/connection.h"
 
 namespace LeechCraft
 {
@@ -49,6 +50,7 @@ namespace Vader
 
 	void MRIMBuddy::SetGroup (const QString& group)
 	{
+		Info_.GroupNumber_ = A_->GetGroupManager ()->GetGroupNumber (group);
 		Group_ = group;
 		emit groupsChanged (Groups ());
 	}
@@ -146,7 +148,7 @@ namespace Vader
 
 	ICLEntry::Features MRIMBuddy::GetEntryFeatures () const
 	{
-		return FPermanentEntry | FSupportsGrouping;
+		return FPermanentEntry | FSupportsGrouping | FSupportsRenames;
 	}
 
 	ICLEntry::EntryType MRIMBuddy::GetEntryType () const
@@ -161,8 +163,13 @@ namespace Vader
 				Info_.Alias_;
 	}
 
-	void MRIMBuddy::SetEntryName (const QString&)
+	void MRIMBuddy::SetEntryName (const QString& name)
 	{
+		Info_.Alias_ = name;
+
+		A_->GetConnection ()->ModifyContact (GetID (),
+				Info_.GroupNumber_, Info_.Email_, name);
+		emit nameChanged (name);
 	}
 
 	QString MRIMBuddy::GetEntryID () const

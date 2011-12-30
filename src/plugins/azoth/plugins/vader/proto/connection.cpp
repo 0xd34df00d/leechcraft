@@ -174,7 +174,7 @@ namespace Proto
 		return p.Seq_;
 	}
 
-	void Connection::SetContactGroup (quint32 contactId,
+	void Connection::ModifyContact (quint32 contactId,
 			quint32 groupId, const QString& email, const QString& name)
 	{
 		const auto& p = PF_.ModifyContact (contactId,

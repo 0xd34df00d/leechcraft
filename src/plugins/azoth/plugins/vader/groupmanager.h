@@ -51,6 +51,7 @@ namespace Vader
 		GroupManager (MRIMAccount *parent);
 
 		QString GetGroup (int) const;
+		int GetGroupNumber (const QString&) const;
 		void SetBuddyGroups (MRIMBuddy*, const QStringList&);
 	private slots:
 		void handleGotGroups (const QStringList&);

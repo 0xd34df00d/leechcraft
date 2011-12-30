@@ -74,7 +74,7 @@ namespace Proto
 		quint32 SendMessage (const QString& to, const QString& message);
 		void Authorize (const QString& email);
 		quint32 AddContact (quint32 group, const QString& email, const QString& name);
-		void SetContactGroup (quint32 contactId, quint32 groupId,
+		void ModifyContact (quint32 contactId, quint32 groupId,
 				const QString& email, const QString& name);
 		void RemoveContact (quint32 id, const QString& email, const QString& name);
 		void RequestAuth (const QString& email, const QString& msg);

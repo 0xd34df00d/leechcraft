@@ -47,6 +47,11 @@ namespace Vader
 		return ID2Group_.value (num);
 	}
 
+	int GroupManager::GetGroupNumber (const QString& group) const
+	{
+		return Group2ID_.value (group, 0);
+	}
+
 	void GroupManager::SetBuddyGroups (MRIMBuddy *buddy, const QStringList& groups)
 	{
 		if (groups.isEmpty () || Group2ID_.contains (groups.at (0)))
@@ -54,7 +59,7 @@ namespace Vader
 			const quint32 gid = groups.isEmpty () ?
 					0 :
 					Group2ID_ [groups.at (0)];
-			Conn_->SetContactGroup (buddy->GetID (), gid,
+			Conn_->ModifyContact (buddy->GetID (), gid,
 					buddy->GetHumanReadableID (), buddy->GetEntryName ());
 			buddy->SetGroup (groups.value (0));
 			return;
