@@ -48,6 +48,11 @@ namespace Vader
 		emit gotMessage (msg);
 	}
 
+	void MRIMBuddy::HandleAttention (const QString& msg)
+	{
+		emit attentionDrawn (msg, QString ());
+	}
+
 	void MRIMBuddy::SetGroup (const QString& group)
 	{
 		Info_.GroupNumber_ = A_->GetGroupManager ()->GetGroupNumber (group);
@@ -257,6 +262,15 @@ namespace Vader
 	}
 
 	void MRIMBuddy::MarkMsgsRead ()
+	{
+	}
+
+	IAdvancedCLEntry::AdvancedFeatures MRIMBuddy::GetAdvancedFeatures () const
+	{
+		return AFSupportsAttention;
+	}
+
+	void MRIMBuddy::DrawAttention (const QString& text, const QString&)
 	{
 	}
 }

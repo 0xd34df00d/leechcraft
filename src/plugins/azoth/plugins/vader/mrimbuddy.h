@@ -20,6 +20,7 @@
 #define PLUGINS_AZOTH_PLUGINS_VADER_MRIMBUDDY_H
 #include <QObject>
 #include <interfaces/iclentry.h>
+#include <interfaces/iadvancedclentry.h>
 #include "proto/contactinfo.h"
 
 namespace LeechCraft
@@ -33,9 +34,11 @@ namespace Vader
 
 	class MRIMBuddy : public QObject
 					, public ICLEntry
+					, public IAdvancedCLEntry
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ICLEntry);
+		Q_INTERFACES (LeechCraft::Azoth::ICLEntry
+				LeechCraft::Azoth::IAdvancedCLEntry);
 
 		MRIMAccount *A_;
 		Proto::ContactInfo Info_;
@@ -50,6 +53,7 @@ namespace Vader
 		MRIMBuddy (const Proto::ContactInfo&, MRIMAccount*);
 
 		void HandleMessage (MRIMMessage*);
+		void HandleAttention (const QString&);
 		void SetGroup (const QString&);
 
 		void SetAuthorized (bool);
@@ -83,6 +87,10 @@ namespace Vader
 		QList<QAction*> GetActions () const;
 		QMap<QString, QVariant> GetClientInfo (const QString&) const;
 		void MarkMsgsRead ();
+
+		// IAdvancedCLEntry
+		AdvancedFeatures GetAdvancedFeatures () const;
+		void DrawAttention (const QString&, const QString&);
 	signals:
 		void gotMessage (QObject*);
 		void statusChanged (const EntryStatus&, const QString&);
@@ -94,6 +102,12 @@ namespace Vader
 		void chatPartStateChanged (const ChatPartState&, const QString&);
 		void permsChanged ();
 		void entryGenerallyChanged ();
+
+		void attentionDrawn (const QString&, const QString&);
+		void moodChanged (const QString&);
+		void activityChanged (const QString&);
+		void tuneChanged (const QString&);
+		void locationChanged (const QString&);
 	};
 }
 }
