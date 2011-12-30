@@ -86,6 +86,10 @@ namespace Vader
 				this,
 				SLOT (handleOpenMailbox ()));		
 		Actions_ << mb;
+		
+		const QString& ua = "LeechCraft Azoth " + Core::Instance ()
+				.GetCoreProxy ()->GetVersion ();
+		Conn_->SetUA (ua);
 	}
 
 	void MRIMAccount::FillConfig (MRIMAccountConfigWidget *w)

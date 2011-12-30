@@ -57,6 +57,7 @@ namespace Proto
 
 		QString Login_;
 		QString Pass_;
+		QString UA_;
 
 		bool IsConnected_;
 
@@ -66,6 +67,7 @@ namespace Proto
 
 		void SetTarget (const QString&, int);
 		void SetCredentials (const QString&, const QString&);
+		void SetUA (const QString&);
 
 		bool IsConnected () const;
 		void Connect ();

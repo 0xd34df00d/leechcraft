@@ -93,6 +93,11 @@ namespace Proto
 		Login_ = login;
 		Pass_ = pass;
 	}
+	
+	void Connection::SetUA (const QString& ua)
+	{
+		UA_ = ua;
+	}
 
 	void Connection::tryRead ()
 	{
@@ -227,7 +232,8 @@ namespace Proto
 				UserState::Online :
 				UserState::Away;
 		Write (PF_.Login (Login_, Pass_, state,
-					PendingStatus_.StatusString_, "LeechCraft Azoth Vader").Packet_);
+					PendingStatus_.StatusString_,
+					UA_).Packet_);
 	}
 
 	void Connection::CorrectAuth (HalfPacket)
