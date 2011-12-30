@@ -52,6 +52,11 @@ namespace Vader
 	{
 		return Proto_;
 	}
+	
+	void Core::SendEntity (const Entity& e)
+	{
+		emit gotEntity (e);
+	}
 }
 }
 }

@@ -22,6 +22,8 @@
 
 namespace LeechCraft
 {
+struct Entity;
+
 namespace Azoth
 {
 class IProxyObject;
@@ -45,6 +47,10 @@ namespace Vader
 		IProxyObject* GetProxy () const;
 
 		MRIMProtocol* GetProtocol () const;
+		
+		void SendEntity (const LeechCraft::Entity&);
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }
