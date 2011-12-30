@@ -74,6 +74,7 @@ namespace Proto
 		PacketActors_ [Packets::MsgAck] = [this] (HalfPacket hp) { IncomingMsg (hp); };
 		PacketActors_ [Packets::MsgStatus] = [this] (HalfPacket hp) { MsgStatus (hp); };
 		PacketActors_ [Packets::OfflineMsgAck] = [this] (HalfPacket hp) { OfflineMsg (hp); };
+		PacketActors_ [Packets::MicroblogRecv] = [this] (HalfPacket hp) { MicroblogRecv (hp); };
 
 		PacketActors_ [Packets::AuthorizeAck] = [this] (HalfPacket hp) { AuthAck (hp); };
 		PacketActors_ [Packets::ContactAck] = [this] (HalfPacket hp) { ContactAdded (hp); };
@@ -456,6 +457,19 @@ namespace Proto
 		Str1251 message;
 		FromMRIM (hp.Data_, id, message);
 		// TODO
+	}
+	
+	void Connection::MicroblogRecv (HalfPacket hp)
+	{
+		quint32 flags = 0, dummy = 0;
+		Str1251 email;
+		Str16 text;
+		FromMRIM (hp.Data_, flags, email, dummy, dummy, dummy, text);
+		
+		if (flags & BlogStatus::Music)
+			emit gotUserTune (email, text);
+		else
+			qDebug () << Q_FUNC_INFO << email << flags << text;
 	}
 
 	void Connection::AuthAck (HalfPacket hp)

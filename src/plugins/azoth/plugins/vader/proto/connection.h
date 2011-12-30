@@ -93,6 +93,7 @@ namespace Proto
 		void IncomingMsg (HalfPacket);
 		void MsgStatus (HalfPacket);
 		void OfflineMsg (HalfPacket);
+		void MicroblogRecv (HalfPacket);
 		void AuthAck (HalfPacket);
 		void ContactAdded (HalfPacket);
 		void MPOPKey (HalfPacket);
@@ -119,6 +120,7 @@ namespace Proto
 		void contactAdded (quint32 seq, quint32 cid);
 		void contactAdditionError (quint32 seq, quint32 status);
 		void userStatusChanged (const Proto::ContactInfo&);
+		void gotUserTune (const QString& from, const QString& tune);
 		void gotPOPKey (const QString&);
 	};
 }

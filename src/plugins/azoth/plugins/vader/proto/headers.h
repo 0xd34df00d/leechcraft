@@ -76,6 +76,7 @@ namespace Proto
 		const quint16 MailboxStatus = 0x1033;
 		const quint16 ContactList2 = 0x1037;
 		const quint16 Login2 = 0x1038;
+		const quint16 MicroblogRecv = 0x1063;
 	}
 
 	enum MsgFlag
@@ -196,6 +197,14 @@ namespace Proto
 		AdvancedSmiles = 0x0004,
 		ContactsExch = 0x0008,
 		Wakeup = 0x0010
+	};
+	
+	enum BlogStatus
+	{
+		UpdateBlog = 0x01,
+		Music = 0x02,
+		BlogReply = 0x04,
+		BlogNotify = 0x10
 	};
 
 	Q_DECLARE_FLAGS (FeatureFlags, FeatureFlag);
