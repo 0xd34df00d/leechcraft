@@ -126,6 +126,7 @@ namespace Proto
 
 	enum ContactOpFlag
 	{
+		None = 0x00000000,
 		Removed = 0x00000001,
 		Group = 0x00000002,
 		Invisible = 0x00000004,
