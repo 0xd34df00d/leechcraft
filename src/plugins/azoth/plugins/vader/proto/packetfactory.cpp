@@ -90,7 +90,7 @@ namespace Proto
 	Packet PacketFactory::AddGroup (const QString& name, int numGroups)
 	{
 		const QByteArray& data = ToMRIM (static_cast<quint32> (ContactOpFlag::Group | (numGroups << 24)),
-				0, QString (), name, QString (), 0, 0);
+				0, QString (), ToMRIM16 (name), QString (), 0, 0);
 		return HalfPacket { Header (Packets::Contact, Seq_++), data };
 	}
 
@@ -106,7 +106,7 @@ namespace Proto
 			quint32 group, const QString& email, const QString& name)
 	{
 		const QByteArray& data = ToMRIM (cid, static_cast<quint32> (flags),
-				group, email, name, QString (" "));
+				group, email, ToMRIM16 (name), QString (" "));
 		return HalfPacket { Header (Packets::ModifyContact, Seq_++), data };
 	}
 
