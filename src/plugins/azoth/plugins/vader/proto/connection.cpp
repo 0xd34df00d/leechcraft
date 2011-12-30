@@ -440,7 +440,10 @@ namespace Proto
 
 	void Connection::OfflineMsg (HalfPacket hp)
 	{
-
+		UIDL id;
+		Str1251 message;
+		FromMRIM (hp.Data_, id, message);
+		// TODO
 	}
 
 	void Connection::AuthAck (HalfPacket hp)
