@@ -143,8 +143,9 @@ namespace AdiumStyles
 		}
 
 		QString result;
-		result = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">";
-		result += "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" /><style type=\"text/css\">";
+		result = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
+		result += "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">";
+		result += "<html xmlns=\"http://www.w3.org/1999/xhtml\"><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" /><style type=\"text/css\">";
 		result += cssStr + varCssStr;
 		result += "</style><title></title></head><body>";
 		result += QString::fromUtf8 (header->readAll ());
@@ -234,6 +235,8 @@ namespace AdiumStyles
 		else if (!isNextMsg)
 			Frame2LastContact_ [frame] = kindaSender;
 
+		qDebug () << filename << msg->GetBody ();
+
 		Util::QIODevice_ptr content = StylesLoader_->
 				Load (QStringList (prefix + filename));
 		if (!content && filename == "Action.html")
@@ -270,6 +273,7 @@ namespace AdiumStyles
 
 		const QString& templ = QString::fromUtf8 (content->readAll ());
 		const QString& body = ParseTemplate (templ, prefix, frame, msgObj, info);
+		qDebug () << templ << body;
 		if (isNextMsg)
 			chat.setOuterXml (body);
 		else
@@ -281,7 +285,7 @@ namespace AdiumStyles
 			chat.appendInside (body);
 		}
 
-		if (templ.contains ("%stateElementId%"))
+		if (false && templ.contains ("%stateElementId%"))
 		{
 			IAdvancedMessage *advMsg = qobject_cast<IAdvancedMessage*> (msgObj);
 			QString fname;
