@@ -76,6 +76,10 @@ namespace Vader
 				this,
 				SLOT (handleContactAdded (quint32, quint32)));
 		connect (Conn_,
+				SIGNAL (gotUserTune (QString, QString)),
+				this,
+				SLOT (handleGotUserTune (QString, QString)));
+		connect (Conn_,
 				SIGNAL (gotPOPKey (QString)),
 				this,
 				SLOT (handleGotPOPKey (QString)));
@@ -322,7 +326,7 @@ namespace Vader
 		QList<QObject*> objs;
 		Q_FOREACH (const Proto::ContactInfo& contact, contacts)
 		{
-			qDebug () << Q_FUNC_INFO << GetAccountName () << contact.Email_ << contact.Alias_ << contact.ContactID_;
+			qDebug () << Q_FUNC_INFO << GetAccountName () << contact.Email_ << contact.Alias_ << contact.ContactID_ << contact.UA_ << contact.Features_;
 			MRIMBuddy *buddy = new MRIMBuddy (contact, this);
 			buddy->SetGroup (GM_->GetGroup (contact.GroupNumber_));
 			objs << buddy;
@@ -431,6 +435,20 @@ namespace Vader
 	{
 		Status_ = status;
 		emit statusChanged (status);
+	}
+	
+	void MRIMAccount::handleGotUserTune (const QString& from, const QString& tune)
+	{
+		auto buddy = Buddies_ [from];
+		if (!buddy)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "from unknown buddy"
+					<< from;
+			return;
+		}
+		
+		buddy->HandleTune (tune);
 	}
 	
 	void MRIMAccount::handleGotPOPKey (const QString& key)

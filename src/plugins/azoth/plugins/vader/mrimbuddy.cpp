@@ -52,6 +52,14 @@ namespace Vader
 	{
 		emit attentionDrawn (msg, QString ());
 	}
+	
+	void MRIMBuddy::HandleTune (const QString& tune)
+	{
+		QVariantMap tuneMap;
+		tuneMap ["artist"] = tune;
+		ClientInfo_ ["user_tune"] = tuneMap;
+		emit tuneChanged (QString ());
+	}
 
 	void MRIMBuddy::SetGroup (const QString& group)
 	{
@@ -258,7 +266,7 @@ namespace Vader
 
 	QMap<QString, QVariant> MRIMBuddy::GetClientInfo (const QString&) const
 	{
-		return QMap<QString, QVariant> ();
+		return ClientInfo_;
 	}
 
 	void MRIMBuddy::MarkMsgsRead ()

@@ -98,6 +98,7 @@ namespace Vader
 		void handleGotMessage (const Proto::Message&);
 		void handleGotAttentionRequest (const QString&, const QString&);
 		void handleOurStatusChanged (const EntryStatus&);
+		void handleGotUserTune (const QString&, const QString&);
 		void handleGotPOPKey (const QString&);
 		
 		void handleOpenMailbox ();

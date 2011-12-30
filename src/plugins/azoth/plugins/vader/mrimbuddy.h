@@ -49,11 +49,14 @@ namespace Vader
 		QList<MRIMMessage*> AllMessages_;
 
 		bool IsAuthorized_;
+		
+		QVariantMap ClientInfo_; 
 	public:
 		MRIMBuddy (const Proto::ContactInfo&, MRIMAccount*);
 
 		void HandleMessage (MRIMMessage*);
 		void HandleAttention (const QString&);
+		void HandleTune (const QString&);
 		void SetGroup (const QString&);
 
 		void SetAuthorized (bool);
