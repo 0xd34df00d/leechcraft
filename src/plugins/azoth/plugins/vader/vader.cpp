@@ -18,8 +18,13 @@
 
 #include "vader.h"
 #include <QIcon>
+#include <QAction>
+#include <QUrl>
+#include <util/util.h>
 #include "core.h"
 #include "mrimprotocol.h"
+#include "mrimbuddy.h"
+#include "vaderutil.h"
 
 namespace LeechCraft
 {
@@ -86,6 +91,46 @@ namespace Vader
 	void Plugin::initPlugin (QObject *proxy)
 	{
 		Core::Instance ().SetProxy (proxy);
+	}
+	
+	void Plugin::hookEntryActionAreasRequested (LeechCraft::IHookProxy_ptr proxy,
+			QObject *action,
+			QObject *entry)
+	{
+	}
+
+	void Plugin::hookEntryActionsRequested (LeechCraft::IHookProxy_ptr proxy,
+			QObject *entry)
+	{
+		if (!qobject_cast<MRIMBuddy*> (entry))
+			return;
+		
+		if (!EntryServices_.contains (entry))
+		{
+			auto list = VaderUtil::GetBuddyServices (this,
+					SLOT (entryServiceRequested ()));
+			Q_FOREACH (QAction *act, list)
+				act->setProperty ("Azoth/Vader/Entry", QVariant::fromValue<QObject*> (entry));
+			EntryServices_ [entry] = list;
+		}
+		
+		QList<QVariant> list = proxy->GetReturnValue ().toList ();
+		Q_FOREACH (QAction *act, EntryServices_ [entry])
+			list += QVariant::fromValue<QObject*> (act);
+		proxy->SetReturnValue (list);
+	}
+	
+	void Plugin::entryServiceRequested ()
+	{
+		const QString& url = sender ()->property ("URL").toString ();
+		QObject *buddyObj = sender ()->property ("Azoth/Vader/Entry").value<QObject*> ();
+		MRIMBuddy *buddy = qobject_cast<MRIMBuddy*> (buddyObj);
+		const QString& subst = VaderUtil::SubstituteNameDomain (url,
+				buddy->GetHumanReadableID ());
+		const Entity& e = Util::MakeEntity (QUrl (subst),
+				QString (),
+				static_cast<LeechCraft::TaskParameters> (OnlyHandle | FromUserInitiated));
+		emit gotEntity (e);
 	}
 }
 }

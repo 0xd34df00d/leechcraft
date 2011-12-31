@@ -21,6 +21,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/iprotocolplugin.h>
+#include <interfaces/core/ihookproxy.h>
 
 namespace LeechCraft
 {
@@ -35,6 +36,8 @@ namespace Vader
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IProtocolPlugin);
+		
+		QMap<QObject*, QList<QAction*>> EntryServices_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -50,6 +53,13 @@ namespace Vader
 		QList<QObject*> GetProtocols () const;
 	public slots:
 		void initPlugin (QObject*);
+		
+		void hookEntryActionAreasRequested (LeechCraft::IHookProxy_ptr proxy,
+				QObject *action,
+				QObject *entry);
+		void hookEntryActionsRequested (LeechCraft::IHookProxy_ptr proxy,
+				QObject *entry);
+		void entryServiceRequested ();
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void gotNewProtocols (const QList<QObject*>&);
