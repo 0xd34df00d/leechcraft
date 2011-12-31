@@ -174,6 +174,11 @@ namespace Proto
 	{
 		Write (PF_.Message (MsgFlag::Alarm, to, message).Packet_);
 	}
+	
+	void Connection::PublishTune (const QString& tune)
+	{
+		Write (PF_.Microblog (BlogStatus::Music, tune).Packet_);
+	}
 
 	void Connection::Authorize (const QString& email)
 	{

@@ -75,6 +75,7 @@ namespace Proto
 		void SetState (const EntryStatus&);
 		quint32 SendMessage (const QString& to, const QString& message);
 		void SendAttention (const QString& to, const QString& message);
+		void PublishTune (const QString& tune);
 		void Authorize (const QString& email);
 		quint32 AddContact (quint32 group, const QString& email, const QString& name);
 		void ModifyContact (quint32 contactId, quint32 groupId,
