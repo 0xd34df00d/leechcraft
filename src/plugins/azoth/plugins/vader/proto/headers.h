@@ -77,6 +77,7 @@ namespace Proto
 		const quint16 ContactList2 = 0x1037;
 		const quint16 Login2 = 0x1038;
 		const quint16 MicroblogRecv = 0x1063;
+		const quint16 MicroblogPost = 0x1064;
 	}
 
 	enum MsgFlag

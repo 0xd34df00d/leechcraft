@@ -87,6 +87,12 @@ namespace Proto
 		const QByteArray& data = ToMRIM (from, msgId);
 		return HalfPacket { Header (Packets::MsgRecv, Seq_++), data };
 	}
+	
+	Packet PacketFactory::Microblog (BlogStatus st, const QString& text)
+	{
+		const QByteArray& data = ToMRIM (static_cast<quint32> (st), text);
+		return HalfPacket { Header (Packets::MicroblogPost, Seq_++), data };
+	}
 
 	Packet PacketFactory::AddGroup (const QString& name, int numGroups)
 	{
