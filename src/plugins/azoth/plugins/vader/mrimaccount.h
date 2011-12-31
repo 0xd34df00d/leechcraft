@@ -20,6 +20,7 @@
 #define PLUGINS_AZOTH_PLUGINS_VADER_MRIMACCOUNT_H
 #include <QObject>
 #include <interfaces/iaccount.h>
+#include <interfaces/isupporttune.h>
 #include "proto/contactinfo.h"
 
 namespace LeechCraft
@@ -41,9 +42,11 @@ namespace Vader
 
 	class MRIMAccount : public QObject
 					  , public IAccount
+					  , public ISupportTune
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IAccount);
+		Q_INTERFACES (LeechCraft::Azoth::IAccount
+				LeechCraft::Azoth::ISupportTune);
 
 		MRIMProtocol *Proto_;
 		QString Name_;
@@ -84,6 +87,9 @@ namespace Vader
 		void RequestAuth (const QString&, const QString&, const QString&, const QStringList&);
 		void RemoveEntry (QObject*);
 		QObject* GetTransferManager () const;
+		
+		// ISupportTune
+		void PublishTune (const QMap<QString, QVariant>&);
 
 		QByteArray Serialize () const;
 		static MRIMAccount* Deserialize (const QByteArray&, MRIMProtocol*);

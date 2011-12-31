@@ -278,6 +278,25 @@ namespace Vader
 	{
 		return 0;
 	}
+	
+	void MRIMAccount::PublishTune (const QMap<QString, QVariant>& data)
+	{
+		QString string;
+		auto sa = [&string, &data] (const QString& name, const QString& sep)
+			{
+				if (!data [name].toString ().isEmpty ())
+				{
+					string += sep;
+					string += data [name].toString ();
+				}
+			};
+		string += data ["artist"].toString ();
+		sa ("title", QString::fromUtf8 (" — "));
+		sa ("source", " " + tr ("from") + " ");
+		sa ("length", ", ");
+		
+		Conn_->PublishTune (string);
+	}
 
 	QByteArray MRIMAccount::Serialize () const
 	{
