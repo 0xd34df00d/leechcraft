@@ -29,6 +29,7 @@
 #include "mrimmessage.h"
 #include "core.h"
 #include "groupmanager.h"
+#include "vaderutil.h"
 
 namespace LeechCraft
 {
@@ -90,6 +91,7 @@ namespace Vader
 				this,
 				SLOT (handleOpenMailbox ()));		
 		Actions_ << mb;
+		Actions_ << VaderUtil::GetBuddyServices (this, SLOT (handleServices ()));
 		
 		const QString& ua = "LeechCraft Azoth " + Core::Instance ()
 				.GetCoreProxy ()->GetVersion ();
@@ -485,6 +487,17 @@ namespace Vader
 	void MRIMAccount::handleOpenMailbox ()
 	{
 		Conn_->RequestPOPKey ();
+	}
+	
+	void MRIMAccount::handleServices ()
+	{
+		const QString& url = sender ()->property ("URL").toString ();
+		const QString& subst = VaderUtil::SubstituteNameDomain (url, Login_);
+		qDebug () << Q_FUNC_INFO << subst << url << Login_;
+		const Entity& e = Util::MakeEntity (QUrl (subst),
+				QString (),
+				static_cast<LeechCraft::TaskParameters> (OnlyHandle | FromUserInitiated));
+		Core::Instance ().SendEntity (e);
 	}
 }
 }

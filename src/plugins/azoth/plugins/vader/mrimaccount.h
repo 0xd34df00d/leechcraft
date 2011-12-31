@@ -108,6 +108,7 @@ namespace Vader
 		void handleGotPOPKey (const QString&);
 		
 		void handleOpenMailbox ();
+		void handleServices ();
 	signals:
 		void gotCLItems (const QList<QObject*>&);
 		void removedCLItems (const QList<QObject*>&);

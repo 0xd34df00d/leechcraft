@@ -28,7 +28,9 @@ namespace Vader
 {
 namespace VaderUtil
 {
-	State StatusID2State (quint32);
+	State StatusID2State (quint32);	
+	QList<QAction*> GetBuddyServices (QObject *receiver, const char *slot);
+	QString SubstituteNameDomain (const QString& string, const QString& fullEmail);
 }
 }
 }
