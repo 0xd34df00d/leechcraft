@@ -16,12 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ZHEET_SBMANAGER_H
-#define PLUGINS_AZOTH_PLUGINS_ZHEET_SBMANAGER_H
+#ifndef PLUGINS_AZOTH_PLUGINS_ZHEET_TRANSFERJOB_H
+#define PLUGINS_AZOTH_PLUGINS_ZHEET_TRANSFERJOB_H
 #include <QObject>
-#include <QHash>
-#include <QSet>
 #include <msn/util.h>
+#include <interfaces/itransfermanager.h>
 
 namespace MSN
 {
@@ -35,34 +34,49 @@ namespace Azoth
 namespace Zheet
 {
 	class MSNAccount;
-	class MSNMessage;
 	class MSNBuddyEntry;
 	class Callbacks;
 
-	class SBManager : public QObject
+	class TransferJob : public QObject
+					  , public ITransferJob
 	{
 		Q_OBJECT
-
-		MSNAccount *Account_;
+		Q_INTERFACES (LeechCraft::Azoth::ITransferJob);
+		
+		uint ID_;
+		MSNAccount *A_;
 		Callbacks *CB_;
-
-		QHash<const MSNBuddyEntry*, QList<MSNMessage*>> PendingMessages_;
-		QHash<const MSNBuddyEntry*, QList<MSN::fileTransferInvite>> PendingTransfers_;
-		QSet<const MSNBuddyEntry*> PendingNudges_;
-		QHash<const MSNBuddyEntry*, MSN::SwitchboardServerConnection*> Switchboards_;
-
-		QHash<int, MSNMessage*> PendingDelivery_;
+		MSNBuddyEntry *Buddy_;
+		
+		TransferDirection Dir_;
+		QString Filename_;
+		quint64 Done_;
+		quint64 Total_;
+		
+		TransferState State_;
 	public:
-		SBManager (Callbacks*, MSNAccount*);
+		TransferJob (const MSN::fileTransferInvite&,
+				Callbacks*, MSNAccount*);
+		TransferJob (uint, const QString&,
+				MSNBuddyEntry*, Callbacks*, MSNAccount*);
 
-		void SendMessage (MSNMessage*, const MSNBuddyEntry*);
-		void SendNudge (const QString&, const MSNBuddyEntry*);
-		void SendFile (const QString&, uint, const MSNBuddyEntry*);
+		QString GetSourceID () const;
+		QString GetName () const;
+		qint64 GetSize () const;
+		TransferDirection GetDirection () const;
+		void Accept (const QString&);
+		void Abort ();
+	private:
+		MSN::SwitchboardServerConnection* GetSB () const;
 	private slots:
-		void handleGotSB (MSN::SwitchboardServerConnection*, const MSNBuddyEntry*);
-		void handleBuddyJoined (MSN::SwitchboardServerConnection*, const MSNBuddyEntry*);
-		void handleBuddyLeft (MSN::SwitchboardServerConnection*, const MSNBuddyEntry*);
-		void handleMessageDelivered (int);
+		void handleProgress (uint, quint64, quint64);
+		void handleFailed (uint);
+		void handleFinished (uint);
+		void handleGotResponse (uint, bool);
+	signals:
+		void transferProgress (qint64 done, qint64 total);
+		void errorAppeared (TransferError error, const QString& msg);
+		void stateChanged (TransferState state);
 	};
 }
 }

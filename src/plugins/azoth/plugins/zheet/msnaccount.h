@@ -44,6 +44,7 @@ namespace Zheet
 	class MSNBuddyEntry;
 	class SBManager;
 	class GroupManager;
+	class TransferManager;
 
 	class MSNAccount : public QObject
 					 , public IAccount
@@ -63,6 +64,7 @@ namespace Zheet
 		MSN::NotificationServerConnection *Conn_;
 		SBManager *SB_;
 		GroupManager *GroupManager_;
+		TransferManager *TM_;
 
 		EntryStatus PendingStatus_;
 		bool Connecting_;

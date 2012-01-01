@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "sbmanager.h"
+#include <QFileInfo>
 #include <QtDebug>
 #include "msnaccount.h"
 #include "msnmessage.h"
@@ -79,6 +80,26 @@ namespace Zheet
 		PendingNudges_ << entry;
 		Account_->GetNSConnection ()->requestSwitchboardConnection (entry);
 	}
+	
+	void SBManager::SendFile (const QString& file, uint id, const MSNBuddyEntry *entry)
+	{
+		const QFileInfo info (file);
+		MSN::fileTransferInvite ft = { 1,
+				id,
+				ZheetUtil::ToStd (entry->GetHumanReadableID ()),
+				ZheetUtil::ToStd (file),
+				ZheetUtil::ToStd (info.fileName ()),
+				std::string (),
+				info.size () };
+		if (Switchboards_.contains (entry))
+		{
+			Switchboards_ [entry]->sendFile (ft);
+			return;
+		}
+
+		PendingTransfers_ [entry] << ft;
+		Account_->GetNSConnection ()->requestSwitchboardConnection (entry);
+	}
 
 	void SBManager::handleGotSB (MSN::SwitchboardServerConnection *conn, const MSNBuddyEntry *entry)
 	{
@@ -91,6 +112,9 @@ namespace Zheet
 
 		Q_FOREACH (MSNMessage *msg, PendingMessages_.take (entry))
 			SendMessage (msg, entry);
+			
+		Q_FOREACH (auto ft, PendingTransfers_.take (entry))
+			conn->sendFile (ft);
 
 		if (PendingNudges_.remove (entry))
 			SendNudge (QString (), entry);

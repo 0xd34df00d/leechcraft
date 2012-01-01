@@ -30,6 +30,7 @@
 #include "sbmanager.h"
 #include "groupmanager.h"
 #include "manageblacklistdialog.h"
+#include "transfermanager.h"
 
 namespace LeechCraft
 {
@@ -47,6 +48,7 @@ namespace Zheet
 	, Conn_ (0)
 	, SB_ (new SBManager (CB_, this))
 	, GroupManager_ (new GroupManager (CB_, this))
+	, TM_ (new TransferManager (CB_, this))
 	, Connecting_ (false)
 	, ActionManageBL_ (new QAction (tr ("Manage blacklist..."), this))
 	{
@@ -344,7 +346,7 @@ namespace Zheet
 
 	QObject* MSNAccount::GetTransferManager () const
 	{
-		return 0;
+		return TM_;
 	}
 
 	QObject* MSNAccount::GetSelfContact () const

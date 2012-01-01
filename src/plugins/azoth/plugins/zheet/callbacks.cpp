@@ -338,20 +338,28 @@ namespace Zheet
 		emit newEmailNotification (ZheetUtil::FromStd (from), ZheetUtil::FromStd (subject));
 	}
 
-	void Callbacks::fileTransferProgress (MSN::SwitchboardServerConnection *conn, unsigned int sessionID, long long unsigned int transferred, long long unsigned int total)
+	void Callbacks::fileTransferProgress (MSN::SwitchboardServerConnection *conn,
+			unsigned int sessionID, long long unsigned int transferred, long long unsigned int total)
 	{
+		emit fileTransferProgress (sessionID, transferred, total);
 	}
 
-	void Callbacks::fileTransferFailed (MSN::SwitchboardServerConnection *conn, unsigned int sessionID, MSN::fileTransferError error)
+	void Callbacks::fileTransferFailed (MSN::SwitchboardServerConnection *conn,
+			unsigned int sessionID, MSN::fileTransferError error)
 	{
+		emit fileTransferFailed (sessionID);
 	}
 
-	void Callbacks::fileTransferSucceeded (MSN::SwitchboardServerConnection *conn, unsigned int sessionID)
+	void Callbacks::fileTransferSucceeded (MSN::SwitchboardServerConnection *conn,
+			unsigned int sessionID)
 	{
+		emit fileTransferFinished (sessionID);
 	}
 
-	void Callbacks::fileTransferInviteResponse (MSN::SwitchboardServerConnection *conn, unsigned int sessionID, bool response)
+	void Callbacks::fileTransferInviteResponse (MSN::SwitchboardServerConnection *conn,
+			unsigned int sessionID, bool response)
 	{
+		emit fileTransferGotResponse (sessionID, response);
 	}
 
 	void Callbacks::gotVoiceClipFile (MSN::SwitchboardServerConnection *conn, unsigned int sessionID, std::string file)
@@ -441,7 +449,7 @@ namespace Zheet
 
 	void Callbacks::askFileTransfer (MSN::SwitchboardServerConnection *conn, MSN::fileTransferInvite ft)
 	{
-
+		emit fileTransferSuggested (ft);
 	}
 
 	int Callbacks::listenOnPort (int port)

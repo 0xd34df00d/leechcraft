@@ -28,6 +28,8 @@ SET (ZHEET_SRCS
 	sbmanager.cpp
 	groupmanager.cpp
 	manageblacklistdialog.cpp
+	transfermanager.cpp
+	transferjob.cpp
 	)
 SET (ZHEET_HEADERS
 	zheet.h
@@ -42,6 +44,8 @@ SET (ZHEET_HEADERS
 	sbmanager.h
 	groupmanager.h
 	manageblacklistdialog.h
+	transfermanager.h
+	transferjob.h
 	)
 SET (ZHEET_FORMS
 	msnaccountconfigwidget.ui

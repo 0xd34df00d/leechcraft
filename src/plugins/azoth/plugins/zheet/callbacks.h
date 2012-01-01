@@ -166,6 +166,12 @@ namespace Zheet
 
 		void initialEmailNotification (int total, int unread);
 		void newEmailNotification (const QString& from, const QString& subj);
+		
+		void fileTransferProgress (uint sess, quint64 done, quint64 total);
+		void fileTransferFailed (uint sess);
+		void fileTransferFinished (uint sess);
+		void fileTransferGotResponse (uint sess, bool resp);
+		void fileTransferSuggested (MSN::fileTransferInvite);
 	};
 }
 }
