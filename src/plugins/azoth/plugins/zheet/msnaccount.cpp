@@ -492,8 +492,7 @@ namespace Zheet
 	void MSNAccount::handleInitialEmailNotification (int total, int unread)
 	{
 		const Entity& e = Util::MakeNotification ("Mailbox status",
-				tr ("You have %1 unread messages (out of %2) in your %3 inbox.")
-					.arg (unread)
+				tr ("You have %n unread messages (out of %1) in your %2 inbox.", 0, unread)
 					.arg (total)
 					.arg (ZheetUtil::FromStd (Passport_)),
 				PInfo_);

@@ -16,13 +16,17 @@
         <source>Manage blacklist...</source>
         <translation>Manage blacklist...</translation>
     </message>
-    <message>
+    <message numerus="yes">
         <location filename="msnaccount.cpp" line="495"/>
-        <source>You have %1 unread messages (out of %2) in your %3 inbox.</source>
-        <translation>You have %1 unread messages (out of %2) in your %3 inbox.</translation>
+        <source>You have %n unread messages (out of %1) in your %2 inbox.</source>
+        <oldsource>You have %1 unread messages (out of %2) in your %3 inbox.</oldsource>
+        <translation>
+            <numerusform>You have %n unread message (out of %1) in your %2 inbox.</numerusform>
+            <numerusform>You have %n unread messages (out of %1) in your %2 inbox.</numerusform>
+        </translation>
     </message>
     <message>
-        <location filename="msnaccount.cpp" line="506"/>
+        <location filename="msnaccount.cpp" line="505"/>
         <source>You&apos;ve got a message from %1: %2.</source>
         <translation>You&apos;ve got a message from %1: %2.</translation>
     </message>
@@ -30,7 +34,7 @@
 <context>
     <name>LeechCraft::Azoth::Zheet::Plugin</name>
     <message>
-        <location filename="zheet.cpp" line="61"/>
+        <location filename="zheet.cpp" line="62"/>
         <source>Support for the MSN protocol.</source>
         <translation>Support for the MSN protocol.</translation>
     </message>
