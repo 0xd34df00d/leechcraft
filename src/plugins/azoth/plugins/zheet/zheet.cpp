@@ -30,6 +30,7 @@ namespace Zheet
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("azoth_zheet");
 		connect (&Core::Instance (),
 				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,
