@@ -77,6 +77,31 @@ namespace AdiumStyles
 
 		return QUrl::fromLocalFile (path);
 	}
+	
+	namespace
+	{
+		void FixSelfClosing (QString& str)
+		{
+			QRegExp rx ("<div([^>]*)/>");
+			rx.setMinimal (true);
+			str.replace (rx, "<div\\1></div>");
+			
+			qDebug () << Q_FUNC_INFO << "after replacing" << str;
+			/*
+			int pos = 0;
+			while ((pos = rx.indexIn (str, pos)) != -1)
+			{
+				if (rx.cap (1).contains ('>'))
+				{
+					pos += rx.cap (0).length ();
+					continue;
+				}
+				
+				str.replace (pos + rx.cap (0).length () - 2, 2, "></div>");
+			}
+			*/
+		}
+	}
 
 	QString AdiumStyleSource::GetHTMLTemplate (const QString& srcPack,
 			QObject *entryObj, QWebFrame *frame) const
@@ -145,7 +170,7 @@ namespace AdiumStyles
 		QString result;
 		result = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
 		result += "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">";
-		result += "<html xmlns=\"http://www.w3.org/1999/xhtml\"><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" /><style type=\"text/css\">";
+		result += "<html xmlns=\"http://www.w3.org/1999/xhtml\"><head><style type=\"text/css\">";
 		result += cssStr + varCssStr;
 		result += "</style><title></title></head><body>";
 		result += QString::fromUtf8 (header->readAll ());
@@ -167,6 +192,8 @@ namespace AdiumStyles
 		if (result.contains ("%incomingIconPath%"))
 			result.replace ("%incomingIconPath%",
 					Util::GetAsBase64Src (entry->GetAvatar ()));
+			
+		FixSelfClosing (result);
 
 		return result;
 	}
@@ -271,9 +298,9 @@ namespace AdiumStyles
 			return false;
 		}
 
-		const QString& templ = QString::fromUtf8 (content->readAll ());
+		QString templ = QString::fromUtf8 (content->readAll ());
+		FixSelfClosing (templ);
 		const QString& body = ParseTemplate (templ, prefix, frame, msgObj, info);
-		qDebug () << templ << body;
 		if (isNextMsg)
 			chat.setOuterXml (body);
 		else
@@ -285,7 +312,7 @@ namespace AdiumStyles
 			chat.appendInside (body);
 		}
 
-		if (false && templ.contains ("%stateElementId%"))
+		if (templ.contains ("%stateElementId%"))
 		{
 			IAdvancedMessage *advMsg = qobject_cast<IAdvancedMessage*> (msgObj);
 			QString fname;
