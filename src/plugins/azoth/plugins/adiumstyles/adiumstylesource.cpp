@@ -83,21 +83,6 @@ namespace AdiumStyles
 			QRegExp rx ("<div([^>]*)/>");
 			rx.setMinimal (true);
 			str.replace (rx, "<div\\1></div>");
-			
-			qDebug () << Q_FUNC_INFO << "after replacing" << str;
-			/*
-			int pos = 0;
-			while ((pos = rx.indexIn (str, pos)) != -1)
-			{
-				if (rx.cap (1).contains ('>'))
-				{
-					pos += rx.cap (0).length ();
-					continue;
-				}
-				
-				str.replace (pos + rx.cap (0).length () - 2, 2, "></div>");
-			}
-			*/
 		}
 	}
 
