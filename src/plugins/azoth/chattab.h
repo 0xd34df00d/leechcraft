@@ -50,7 +50,6 @@ namespace Azoth
 		Ui::ChatTab Ui_;
 		QToolBar *TabToolbar_;
 		QAction *ToggleRichText_;
-		QAction *SendFile_;
 		QAction *Call_;
 #ifdef ENABLE_CRYPT
 		QAction *EnableEncryption_;
@@ -108,6 +107,7 @@ namespace Azoth
 		void HandleMUCParticipantsChanged ();
 
 		QObject* GetCLEntry () const;
+		QString GetSelectedVariant () const;
 	public slots:
 		void prepareMessageText (const QString&);
 		void appendMessageText (const QString&);
@@ -124,7 +124,6 @@ namespace Azoth
 		void handleClearChat ();
 		void handleRichTextToggled ();
 		void handleQuoteSelection ();
-		void handleSendFile ();
 #ifdef ENABLE_MEDIACALLS
 		void handleCallRequested ();
 		void handleCall (QObject*);

@@ -68,6 +68,7 @@ namespace Azoth
 	private slots:
 		void handleActionOpenChatTriggered ();
 		void handleActionDrawAttention ();
+		void handleActionSendFile ();
 		void handleActionRenameTriggered ();
 		void handleActionChangeGroupsTriggered ();
 		void handleActionRemoveTriggered ();

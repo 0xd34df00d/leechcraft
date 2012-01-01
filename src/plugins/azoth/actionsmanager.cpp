@@ -23,6 +23,7 @@
 #include <QMessageBox>
 #include <QSettings>
 #include <QClipboard>
+#include <QFileDialog>
 #include <util/util.h>
 #include <util/defaulthookproxy.h>
 #include <interfaces/core/icoreproxy.h>
@@ -32,6 +33,7 @@
 #include "interfaces/imucentry.h"
 #include "interfaces/iauthable.h"
 #include "interfaces/iaccount.h"
+#include "interfaces/itransfermanager.h"
 
 #ifdef ENABLE_CRYPT
 #include "interfaces/isupportpgp.h"
@@ -47,6 +49,7 @@
 #include "shareriexdialog.h"
 #include "mucinvitedialog.h"
 #include "addcontactdialog.h"
+#include "transferjobmanager.h"
 
 namespace LeechCraft
 {
@@ -70,6 +73,7 @@ namespace Azoth
 		QList<QAction*> result;
 		result << id2action.value ("openchat");
 		result << id2action.value ("drawattention");
+		result << id2action.value ("sendfile");
 		result << id2action.value ("sep_afterinitiate");
 		result << id2action.value ("rename");
 		result << id2action.value ("changegroups");
@@ -189,6 +193,9 @@ namespace Azoth
 	{
 		if (!entry)
 			return;
+		
+		QObject *accObj = entry->GetParentAccount ();
+		IAccount *acc = qobject_cast<IAccount*> (accObj);
 
 		IAdvancedCLEntry *advEntry = qobject_cast<IAdvancedCLEntry*> (entry->GetObject ());
 
@@ -221,6 +228,19 @@ namespace Azoth
 			drawAtt->setProperty ("ActionIcon", "draw_attention");
 			Entry2Actions_ [entry] ["drawattention"] = drawAtt;
 			Action2Areas_ [drawAtt] << CLEAAContactListCtxtMenu;
+		}
+		
+		if (qobject_cast<ITransferManager*> (acc->GetTransferManager ()))
+		{
+			QAction *sendFile = new QAction (tr ("Send file..."), entry->GetObject ());
+			connect (sendFile,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (handleActionSendFile ()));
+			sendFile->setProperty ("ActionIcon", "sendfile");
+			Entry2Actions_ [entry] ["sendfile"] = sendFile;
+			Action2Areas_ [sendFile] << CLEAAContactListCtxtMenu
+					<< CLEAAToolbar;
 		}
 
 		QAction *rename = new QAction (tr ("Rename"), entry->GetObject ());
@@ -601,6 +621,31 @@ namespace Azoth
 
 		Q_FOREACH (const QString& var, varsToDraw)
 			advEntry->DrawAttention (text, var);
+	}
+	
+	void ActionsManager::handleActionSendFile ()
+	{
+		ICLEntry *entry = sender ()->
+				property ("Azoth/Entry").value<ICLEntry*> ();
+		auto acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
+		auto xferMgr = qobject_cast<ITransferManager*> (acc->GetTransferManager ());
+		if (!xferMgr)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "null Xfer manager for"
+					<< entry->GetObject ();
+			return;
+		}
+		
+		const QString& filename = QFileDialog::getOpenFileName (0,
+				tr ("Select file to send"));
+		if (filename.isEmpty ())
+			return;
+
+		QObject *job = xferMgr->SendFile (entry->GetEntryID (),
+				Core::Instance ().GetChatTabsManager ()->GetActiveVariant (entry),
+				filename);
+		Core::Instance ().GetTransferJobManager ()->HandleJob (job);
 	}
 
 	void ActionsManager::handleActionRenameTriggered ()

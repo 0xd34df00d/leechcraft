@@ -103,7 +103,6 @@ namespace Azoth
 	: QWidget (parent)
 	, TabToolbar_ (new QToolBar (tr ("Azoth chat window"), this))
 	, ToggleRichText_ (0)
-	, SendFile_ (0)
 	, Call_ (0)
 #ifdef ENABLE_CRYPT
 	, EnableEncryption_ (0)
@@ -117,7 +116,6 @@ namespace Azoth
 	, IsMUC_ (false)
 	, PreviousTextHeight_ (0)
 	, MsgFormatter_ (0)
-	, XferManager_ (0)
 	, TypeTimer_ (new QTimer (this))
 	, PreviousState_ (CPSNone)
 	{
@@ -322,6 +320,11 @@ namespace Azoth
 	{
 		return GetEntry<QObject> ();
 	}
+	
+	QString ChatTab::GetSelectedVariant () const
+	{
+		return Ui_.VariantBox_->currentText ();
+	}
 
 	void ChatTab::messageSend ()
 	{
@@ -431,25 +434,6 @@ namespace Azoth
 			return;
 
 		me->SetMUCSubject (Ui_.SubjEdit_->toPlainText ());
-	}
-
-	void ChatTab::handleSendFile ()
-	{
-		if (!XferManager_)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "called with null XferManager_";
-			return;
-		}
-
-		const QString& filename = QFileDialog::getOpenFileName (this,
-				tr ("Select file to send"));
-		if (filename.isEmpty ())
-			return;
-
-		QObject *job = XferManager_->SendFile (EntryID_,
-				Ui_.VariantBox_->currentText (), filename);
-		Core::Instance ().GetTransferJobManager ()->HandleJob (job);
 	}
 
 #ifdef ENABLE_MEDIACALLS
@@ -1123,19 +1107,8 @@ namespace Azoth
 		ICLEntry *e = GetEntry<ICLEntry> ();
 		QObject *accObj = e->GetParentAccount ();
 		IAccount *acc = qobject_cast<IAccount*> (accObj);
-		XferManager_ = qobject_cast<ITransferManager*> (acc->GetTransferManager ());
-		if (XferManager_ &&
-			!IsMUC_ &&
-			acc->GetAccountFeatures () & IAccount::FMUCsSupportFileTransfers)
+		if (qobject_cast<ITransferManager*> (acc->GetTransferManager ()))
 		{
-			SendFile_ = new QAction (tr ("Send file..."), this);
-			SendFile_->setProperty ("ActionIcon", "sendfile");
-			connect (SendFile_,
-					SIGNAL (triggered ()),
-					this,
-					SLOT (handleSendFile ()));
-			TabToolbar_->addAction (SendFile_);
-
 			connect (acc->GetTransferManager (),
 					SIGNAL (fileOffered (QObject*)),
 					this,
