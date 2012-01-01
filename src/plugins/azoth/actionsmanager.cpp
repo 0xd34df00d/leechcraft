@@ -227,7 +227,8 @@ namespace Azoth
 					SLOT (handleActionDrawAttention ()));
 			drawAtt->setProperty ("ActionIcon", "bell");
 			Entry2Actions_ [entry] ["drawattention"] = drawAtt;
-			Action2Areas_ [drawAtt] << CLEAAContactListCtxtMenu;
+			Action2Areas_ [drawAtt] << CLEAAContactListCtxtMenu
+					<< CLEAAToolbar;
 		}
 		
 		if (qobject_cast<ITransferManager*> (acc->GetTransferManager ()))
