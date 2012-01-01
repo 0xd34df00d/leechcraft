@@ -34,6 +34,7 @@ namespace Vader
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+        Util::InstallTranslator ("azoth_vader");
 		Core::Instance ().SetCoreProxy (proxy);
 		Core::Instance ().GetProtocol ()->setParent (this);
 		connect (&Core::Instance (),
