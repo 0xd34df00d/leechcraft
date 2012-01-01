@@ -218,7 +218,7 @@ namespace Azoth
 					SIGNAL (triggered ()),
 					this,
 					SLOT (handleActionDrawAttention ()));
-			drawAtt->setProperty ("ActionIcon", "draw_attention");
+			drawAtt->setProperty ("ActionIcon", "bell");
 			Entry2Actions_ [entry] ["drawattention"] = drawAtt;
 			Action2Areas_ [drawAtt] << CLEAAContactListCtxtMenu;
 		}
