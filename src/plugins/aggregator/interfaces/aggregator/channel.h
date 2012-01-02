@@ -86,5 +86,6 @@ namespace Aggregator
 }
 
 Q_DECLARE_METATYPE (LeechCraft::Aggregator::Channel_ptr);
+Q_DECLARE_METATYPE (LeechCraft::Aggregator::channels_container_t);
 
 #endif
