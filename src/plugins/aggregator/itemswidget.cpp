@@ -178,7 +178,7 @@ namespace Aggregator
 
 		currentItemChanged ();
 
-		connect (Core::Instance ().GetStorageBackend (),
+		connect (&Core::Instance (),
 				SIGNAL (itemDataUpdated (Item_ptr, Channel_ptr)),
 				this,
 				SLOT (handleItemDataUpdated (Item_ptr, Channel_ptr)),

@@ -226,6 +226,7 @@ namespace Aggregator
 
 		void handleDBUpThreadStarted ();
 		void handleDBUpChannelDataUpdated (IDType_t, IDType_t);
+		void handleDBUpGotNewChannel (const ChannelShort&);
 	private:
 		void UpdateUnreadItemsNumber () const;
 		void FetchPixmap (const Channel_ptr&);
@@ -245,6 +246,7 @@ namespace Aggregator
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 		void gotEntity (const LeechCraft::Entity&);
 		void channelRemoved (IDType_t);
+		void itemDataUpdated (Item_ptr, Channel_ptr);
 
 		// Plugin API
 		void hookGotNewItems (LeechCraft::IHookProxy_ptr proxy,

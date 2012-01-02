@@ -79,6 +79,7 @@ SET (SRCS
 	syncdeltagenerator.cpp
 	dbupdatethread.cpp
 	dbupdatethreadworker.cpp
+	tovarmaps.cpp
 	)
 SET (HEADERS
     aggregator.h
@@ -128,6 +129,7 @@ SET (HEADERS
 	syncdeltagenerator.h
 	dbupdatethread.h
 	dbupdatethreadworker.h
+	tovarmaps.h
 	)
 SET (FORMS
     mainwidget.ui

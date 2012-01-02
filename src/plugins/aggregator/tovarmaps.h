@@ -16,44 +16,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_DBUPDATETHREADWORKER_H
-#define PLUGINS_AGGREGATOR_DBUPDATETHREADWORKER_H
-#include <boost/shared_ptr.hpp>
-#include <QObject>
-#include <QVariantList>
-#include <interfaces/core/ihookproxy.h>
-#include "common.h"
+#ifndef PLUGINS_AGGREGATOR_TOVARMAPS_H
+#define PLUGINS_AGGREGATOR_TOVARMAPS_H
+#include <QVariantMap>
 #include "channel.h"
 
 namespace LeechCraft
 {
-struct Entity;
-
 namespace Aggregator
 {
-	class StorageBackend;
-
-	class DBUpdateThreadWorker : public QObject
-	{
-		Q_OBJECT
-
-		boost::shared_ptr<StorageBackend> SB_;
-	public:
-		DBUpdateThreadWorker (QObject* = 0);
-	public slots:
-		void toggleChannelUnread (IDType_t channel, bool state);
-		void updateFeed (channels_container_t channels, QString url);
-	private slots:
-		void handleChannelDataUpdated (Channel_ptr);
-	signals:
-		void channelDataUpdated (IDType_t channelId, IDType_t feedId);
-		void gotNewChannel (const ChannelShort&);
-		void gotEntity (const LeechCraft::Entity&);
-		void itemDataUpdated (Item_ptr, Channel_ptr);
-
-		void hookGotNewItems (LeechCraft::IHookProxy_ptr proxy,
-				QVariantList items);
-	};
+	QVariantMap GetItemMapChannelPart (const Channel_ptr channel);
+	QVariantMap GetItemMapItemPart (const Item_ptr item);
+	QVariantList GetItems (const Channel_ptr channel);
 }
 }
 
