@@ -36,7 +36,11 @@
 				</item>
 				<item type="combobox" property="PredefinedUserAgent">
 					<label lang="en" value="Predefined user agent:" />
-					<option default="true" name="Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.1) Firefox/3.0.1">
+					<option default="true" name="%leechcraft%">
+						<label lang="en" value="LeechCraft" />
+						<binary type="image" place="rcc">:/resources/images/leechcraft.svg</binary>
+					</option>
+					<option name="Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.1) Firefox/3.0.1">
 						<label lang="en" value="Firefox 3.0.1 on Linux i686" />
 						<binary type="image" place="rcc">:/plugins/cstp/resources/images/clients/firefox.png</binary>
 					</option>
