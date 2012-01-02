@@ -172,14 +172,18 @@ namespace Acetamide
 
 	void ChannelHandler::MakeJoinMessage (const QString& nick)
 	{
-		QString msg  = tr ("%1 joined the channel").arg (nick);
+		QString msg = tr ("%1 joined the channel").arg (nick);
+
+		ServerParticipantEntry_ptr entry =
+				ISH_->GetParticipantEntry (nick);
 
 		ChannelPublicMessage *message =
 				new ChannelPublicMessage (msg,
 					IMessage::DIn,
 					ChannelCLEntry_,
 					IMessage::MTStatusMessage,
-					IMessage::MSTParticipantJoin);
+					IMessage::MSTParticipantJoin,
+					entry);
 		ChannelCLEntry_->HandleMessage (message);
 	}
 
@@ -191,13 +195,17 @@ namespace Acetamide
 			mess = tr ("%1 has left the channel (%2)").arg (nick, msg);
 		else
 			mess = tr ("%1 has left the channel").arg (nick);
+		
+		ServerParticipantEntry_ptr entry =
+				ISH_->GetParticipantEntry (nick);
 
 		ChannelPublicMessage *message =
 				new ChannelPublicMessage (mess,
 					IMessage::DIn,
 					ChannelCLEntry_,
 					IMessage::MTStatusMessage,
-					IMessage::MSTParticipantLeave);
+					IMessage::MSTParticipantLeave,
+					entry);
 
 		ChannelCLEntry_->HandleMessage (message);
 	}
@@ -223,7 +231,7 @@ namespace Acetamide
 		ChannelPublicMessage *message = new ChannelPublicMessage (mess,
 				IMessage::DIn,
 				ChannelCLEntry_,
-				IMessage::MTStatusMessage,
+				IMessage::MTEventMessage,
 				IMessage::MSTKickNotification);
 		ChannelCLEntry_->HandleMessage (message);
 	}
@@ -280,8 +288,9 @@ namespace Acetamide
 	void ChannelHandler::LeaveParticipant (const QString& nick, 
 			const QString& msg)
 	{
-		if (RemoveUserFromChannel (nick))
+		if (ISH_->GetParticipantEntry (nick))
 			MakeLeaveMessage (nick, msg);
+		RemoveUserFromChannel (nick);
 	}
 
 	void ChannelHandler::KickParticipant (const QString& nick, 
