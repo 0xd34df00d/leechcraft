@@ -743,7 +743,7 @@ namespace Aggregator
 
 	void Aggregator::on_ActionMarkChannelAsUnread__triggered ()
 	{
-		Perform ([] (const QModelIndex& mi) { Core::Instance ().MarkChannelAsRead (mi); });
+		Perform ([] (const QModelIndex& mi) { Core::Instance ().MarkChannelAsUnread (mi); });
 	}
 
 	void Aggregator::on_ActionChannelSettings__triggered ()
