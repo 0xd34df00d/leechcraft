@@ -53,6 +53,8 @@
 #include "addfeed.h"
 #include "itemswidget.h"
 #include "pluginmanager.h"
+#include "dbupdatethread.h"
+#include "dbupdatethreadworker.h"
 
 namespace LeechCraft
 {
@@ -65,7 +67,9 @@ namespace Aggregator
 	, ChannelsFilterModel_ (0)
 	, Initialized_ (false)
 	, PluginManager_ (new PluginManager)
+	, DBUpThread_ (new DBUpdateThread (this))
 	{
+		qRegisterMetaType<IDType_t> ("IDType_t");
 		qRegisterMetaType<QItemSelection> ("QItemSelection");
 		qRegisterMetaType<Item_ptr> ("Item_ptr");
 		qRegisterMetaType<Channel_ptr> ("Channel_ptr");
@@ -254,22 +258,11 @@ namespace Aggregator
 			return false;
 		}
 
-		StorageBackend::Type type;
-		QString strType = XmlSettingsManager::Instance ()->
-			property ("StorageType").toString ();
-		if (strType == "SQLite")
-			type = StorageBackend::SBSQLite;
-		else if (strType == "PostgreSQL")
-			type = StorageBackend::SBPostgres;
-		else if (strType == "MySQL")
-			type = StorageBackend::SBMysql;
-		else
-			throw std::runtime_error (qPrintable (QString ("Unknown storage type %1")
-						.arg (strType)));
-
+		const QString& strType = XmlSettingsManager::Instance ()->
+				property ("StorageType").toString ();
 		try
 		{
-			StorageBackend_ = StorageBackend::Create (type);
+			StorageBackend_ = StorageBackend::Create (strType);
 		}
 		catch (const std::runtime_error& s)
 		{
@@ -325,6 +318,13 @@ namespace Aggregator
 			tablesOK = false;
 
 		StorageBackend_->Prepare ();
+
+		connect (DBUpThread_,
+				SIGNAL (started ()),
+				this,
+				SLOT (handleDBUpThreadStarted ()),
+				Qt::QueuedConnection);
+		DBUpThread_->start (QThread::LowestPriority);
 
 		connect (StorageBackend_.get (),
 				SIGNAL (channelDataUpdated (Channel_ptr)),
@@ -1362,6 +1362,30 @@ namespace Aggregator
 		Updates_ [id] = QDateTime::currentDateTime ();
 	}
 
+	void Core::handleDBUpThreadStarted ()
+	{
+		connect (DBUpThread_->GetWorker (),
+				SIGNAL (channelDataUpdated (IDType_t, IDType_t)),
+				this,
+				SLOT (handleDBUpChannelDataUpdated (IDType_t, IDType_t)),
+				Qt::QueuedConnection);
+	}
+
+	void Core::handleDBUpChannelDataUpdated (IDType_t id, IDType_t feedId)
+	{
+		try
+		{
+			auto ch = StorageBackend_->GetChannel (id, feedId);
+			handleChannelDataUpdated (ch);
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "got"
+					<< e.what ();
+		}
+	}
+
 	void Core::UpdateUnreadItemsNumber () const
 	{
 		emit unreadNumberChanged (ChannelsModel_->GetUnreadItemsNumber ());
@@ -1744,8 +1768,10 @@ namespace Aggregator
 		try
 		{
 			ChannelShort cs = ChannelsModel_->GetChannelForIndex (i);
-
-			StorageBackend_->ToggleChannelUnread (cs.ChannelID_, state);
+			QMetaObject::invokeMethod (DBUpThread_->GetWorker (),
+					"toggleChannelUnread",
+					Q_ARG (IDType_t, cs.ChannelID_),
+					Q_ARG (bool, state));
 		}
 		catch (const std::exception& e)
 		{

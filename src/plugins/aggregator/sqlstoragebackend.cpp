@@ -23,6 +23,7 @@
 #include <QDebug>
 #include <QBuffer>
 #include <QSqlError>
+#include <QThread>
 #include <QVariant>
 #include <QSqlRecord>
 #include <util/dblock.h>
@@ -36,7 +37,7 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
-	SQLStorageBackend::SQLStorageBackend (StorageBackend::Type t)
+	SQLStorageBackend::SQLStorageBackend (StorageBackend::Type t, const QString& id)
 	: Type_ (t)
 	{
 		QString strType;
@@ -52,7 +53,7 @@ namespace Aggregator
 				break;
 		}
 
-		DB_ = QSqlDatabase::addDatabase (strType, "AggregatorConnection");
+		DB_ = QSqlDatabase::addDatabase (strType, "AggregatorConnection" + id);
 
 		switch (Type_)
 		{

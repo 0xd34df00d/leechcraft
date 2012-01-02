@@ -16,36 +16,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_COMMON_H
-#define PLUGINS_AGGREGATOR_COMMON_H
-#include <QList>
-#include <QMetaType>
+#include "dbupdatethread.h"
+#include "dbupdatethreadworker.h"
 
 namespace LeechCraft
 {
 namespace Aggregator
 {
-	typedef quint64 IDType_t;
-	typedef QList<IDType_t> ids_t;
-
-	enum PoolType
+	DBUpdateThread::DBUpdateThread (QObject *parent)
+	: QThread (parent)
+	, W_ (0)
 	{
-		PTFeed,
-		PTChannel,
-		PTItem,
-		PTFeedSettings,
-		PTEnclosure,
-		PTMRSSEntry,
-		PTMRSSThumbnail,
-		PTMRSSCredit,
-		PTMRSSComment,
-		PTMRSSPeerLink,
-		PTMRSSScene,
-		PTMAX
-	};
+	}
+
+	DBUpdateThreadWorker* DBUpdateThread::GetWorker () const
+	{
+		return W_;
+	}
+
+	void DBUpdateThread::run ()
+	{
+		W_ = new DBUpdateThreadWorker ();
+
+		QThread::run ();
+
+		delete W_;
+	}
 }
 }
-
-Q_DECLARE_METATYPE (LeechCraft::Aggregator::IDType_t);
-
-#endif

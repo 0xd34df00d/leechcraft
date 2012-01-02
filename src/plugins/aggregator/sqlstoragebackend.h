@@ -534,7 +534,7 @@ namespace Aggregator
 							 */
 							GetItemsForTag_;
 	public:
-		SQLStorageBackend (Type);
+		SQLStorageBackend (Type, const QString&);
 		virtual ~SQLStorageBackend ();
 
 		virtual void Prepare ();

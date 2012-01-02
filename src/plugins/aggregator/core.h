@@ -48,6 +48,7 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
+	class DBUpdateThread;
 	class ChannelsModel;
 	class JobHolderRepresentation;
 	class ChannelsFilterModel;
@@ -115,6 +116,8 @@ namespace Aggregator
 		QList<IDType_t> UpdatesQueue_;
 
 		PluginManager *PluginManager_;
+
+		DBUpdateThread *DBUpThread_;
 
 		Core ();
 	private:
@@ -220,6 +223,9 @@ namespace Aggregator
 		void handleChannelDataUpdated (Channel_ptr);
 		void handleCustomUpdates ();
 		void rotateUpdatesQueue ();
+
+		void handleDBUpThreadStarted ();
+		void handleDBUpChannelDataUpdated (IDType_t, IDType_t);
 	private:
 		void UpdateUnreadItemsNumber () const;
 		void FetchPixmap (const Channel_ptr&);

@@ -34,10 +34,10 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
-	SQLStorageBackendMysql::SQLStorageBackendMysql (StorageBackend::Type t)
+	SQLStorageBackendMysql::SQLStorageBackendMysql (StorageBackend::Type t, const QString& id)
 	: Type_ (t)
 	{
-		DB_ = QSqlDatabase::addDatabase ("QMYSQL", "AggregatorConnection");
+		DB_ = QSqlDatabase::addDatabase ("QMYSQL", "AggregatorConnection" + id);
 		DB_.setDatabaseName (XmlSettingsManager::Instance ()->
 				property ("MysqlDBName").toString ());
 		DB_.setHostName (XmlSettingsManager::Instance ()->

@@ -511,7 +511,7 @@ namespace Aggregator
 							*/
 							RemoveMediaRSSScenes_;
 	public:
-		SQLStorageBackendMysql (Type);
+		SQLStorageBackendMysql (Type, const QString&);
 		virtual ~SQLStorageBackendMysql ();
 
 		virtual void Prepare ();

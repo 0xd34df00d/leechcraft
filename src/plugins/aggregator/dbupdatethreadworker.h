@@ -16,36 +16,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_COMMON_H
-#define PLUGINS_AGGREGATOR_COMMON_H
-#include <QList>
-#include <QMetaType>
+#ifndef PLUGINS_AGGREGATOR_DBUPDATETHREADWORKER_H
+#define PLUGINS_AGGREGATOR_DBUPDATETHREADWORKER_H
+#include <boost/shared_ptr.hpp>
+#include <QObject>
+#include "common.h"
+#include "channel.h"
 
 namespace LeechCraft
 {
 namespace Aggregator
 {
-	typedef quint64 IDType_t;
-	typedef QList<IDType_t> ids_t;
+	class StorageBackend;
 
-	enum PoolType
+	class DBUpdateThreadWorker : public QObject
 	{
-		PTFeed,
-		PTChannel,
-		PTItem,
-		PTFeedSettings,
-		PTEnclosure,
-		PTMRSSEntry,
-		PTMRSSThumbnail,
-		PTMRSSCredit,
-		PTMRSSComment,
-		PTMRSSPeerLink,
-		PTMRSSScene,
-		PTMAX
+		Q_OBJECT
+
+		boost::shared_ptr<StorageBackend> SB_;
+	public:
+		DBUpdateThreadWorker (QObject* = 0);
+	public slots:
+		void toggleChannelUnread (IDType_t channel, bool state);
+	private slots:
+		void handleChannelDataUpdated (Channel_ptr);
+	signals:
+		void channelDataUpdated (IDType_t channelId, IDType_t feedId);
 	};
 }
 }
-
-Q_DECLARE_METATYPE (LeechCraft::Aggregator::IDType_t);
 
 #endif
