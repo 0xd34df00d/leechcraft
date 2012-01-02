@@ -232,7 +232,9 @@ namespace Acetamide
 					IMessage::DIn,
 					ChannelCLEntry_,
 					IMessage::MTStatusMessage,
-					IMessage::MSTParticipantJoin);
+					IMessage::MSTParticipantJoin,
+					Nick2Entry_ [nick]);
+
 		ChannelCLEntry_->HandleMessage (message);
 	}
 
@@ -250,7 +252,8 @@ namespace Acetamide
 					IMessage::DIn,
 					ChannelCLEntry_,
 					IMessage::MTStatusMessage,
-					IMessage::MSTParticipantLeave);
+					IMessage::MSTParticipantLeave,
+					Nick2Entry_ [nick]);
 
 		ChannelCLEntry_->HandleMessage (message);
 	}
@@ -278,7 +281,7 @@ namespace Acetamide
 		ChannelPublicMessage *message = new ChannelPublicMessage (mess,
 				IMessage::DIn,
 				ChannelCLEntry_,
-				IMessage::MTStatusMessage,
+				IMessage::MTEventMessage,
 				IMessage::MSTKickNotification);
 		ChannelCLEntry_->HandleMessage (message);
 	}
@@ -344,8 +347,10 @@ namespace Acetamide
 	void ChannelHandler::KickParticipant (const QString& nick,
 			const QString& target, const QString& msg)
 	{
-		if (RemoveUserFromChannel (target))
+		if (Nick2Entry_.contains (target))
 			MakeKickMessage (target, msg, nick);
+
+		RemoveUserFromChannel (target);
 	}
 
 	void ChannelHandler::SetRole (ChannelParticipantEntry *entry,
