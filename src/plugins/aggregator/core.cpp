@@ -18,7 +18,6 @@
 
 #include <stdexcept>
 #include <numeric>
-#include <boost/foreach.hpp>
 #include <QtDebug>
 #include <QImage>
 #include <QDir>
