@@ -320,7 +320,7 @@ namespace Azoth
 	{
 		return GetEntry<QObject> ();
 	}
-	
+
 	QString ChatTab::GetSelectedVariant () const
 	{
 		return Ui_.VariantBox_->currentText ();
@@ -836,40 +836,6 @@ namespace Azoth
 		Ui_.MsgEdit_->moveCursor (QTextCursor::End);
 	}
 
-	void ChatTab::handleAddToBookmarks ()
-	{
-		BookmarksManagerDialog *dia = new BookmarksManagerDialog (this);
-		dia->SuggestSaving (GetEntry<QObject> ());
-		dia->setAttribute (Qt::WA_DeleteOnClose, true);
-		dia->show ();
-	}
-
-	void ChatTab::handleConfigureMUC ()
-	{
-		IConfigurableMUC *confMUC = GetEntry<IConfigurableMUC> ();
-		if (!confMUC)
-			return;
-
-		QWidget *w = confMUC->GetConfigurationWidget ();
-		if (!w)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "empty conf widget"
-					<< GetEntry<QObject> ();
-			return;
-		}
-
-		SimpleDialog *dia = new SimpleDialog ();
-		dia->setWindowTitle (tr ("Room configuration"));
-		dia->SetWidget (w);
-		connect (dia,
-				SIGNAL (accepted ()),
-				dia,
-				SLOT (deleteLater ()),
-				Qt::QueuedConnection);
-		dia->show ();
-	}
-
 	void ChatTab::typeTimeout ()
 	{
 		SetChatPartState (CPSPaused);
@@ -1078,27 +1044,6 @@ namespace Azoth
 	void ChatTab::HandleMUC ()
 	{
 		TabIcon_ = QIcon (":/plugins/azoth/resources/images/azoth.svg");
-
-		QAction *bookmarks = new QAction (tr ("Add to bookmarks..."), this);
-		bookmarks->setProperty ("ActionIcon", "favorites");
-		connect (bookmarks,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleAddToBookmarks ()));
-		TabToolbar_->addAction (bookmarks);
-
-		IConfigurableMUC *confmuc = GetEntry<IConfigurableMUC> ();
-		if (confmuc)
-		{
-			QAction *configureMUC = new QAction (tr ("Configure MUC..."), this);
-			configureMUC->setProperty ("ActionIcon", "preferences");
-			connect (configureMUC,
-					SIGNAL (triggered ()),
-					this,
-					SLOT (handleConfigureMUC ()));
-			TabToolbar_->addAction (configureMUC);
-		}
-
 		Ui_.AvatarLabel_->hide ();
 	}
 

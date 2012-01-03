@@ -143,8 +143,6 @@ namespace Azoth
 		void handleViewLinkClicked (const QUrl&);
 		void handleHistoryUp ();
 		void handleHistoryDown ();
-		void handleAddToBookmarks ();
-		void handleConfigureMUC ();
 		void typeTimeout ();
 
 		void handleGotLastMessages (QObject*, const QList<QObject*>&);

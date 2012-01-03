@@ -34,6 +34,7 @@
 #include "interfaces/iauthable.h"
 #include "interfaces/iaccount.h"
 #include "interfaces/itransfermanager.h"
+#include "interfaces/iconfigurablemuc.h"
 
 #ifdef ENABLE_CRYPT
 #include "interfaces/isupportpgp.h"
@@ -50,6 +51,8 @@
 #include "mucinvitedialog.h"
 #include "addcontactdialog.h"
 #include "transferjobmanager.h"
+#include "bookmarksmanagerdialog.h"
+#include "simpledialog.h"
 
 namespace LeechCraft
 {
@@ -93,6 +96,8 @@ namespace Azoth
 		result << id2action.value ("vcard");
 		result << id2action.value ("invite");
 		result << id2action.value ("leave");
+		result << id2action.value ("addtobm");
+		result << id2action.value ("configuremuc");
 		result << id2action.value ("authorize");
 		result << id2action.value ("denyauth");
 		result << entry->GetActions ();
@@ -193,7 +198,7 @@ namespace Azoth
 	{
 		if (!entry)
 			return;
-		
+
 		QObject *accObj = entry->GetParentAccount ();
 		IAccount *acc = qobject_cast<IAccount*> (accObj);
 
@@ -230,7 +235,7 @@ namespace Azoth
 			Action2Areas_ [drawAtt] << CLEAAContactListCtxtMenu
 					<< CLEAAToolbar;
 		}
-		
+
 		if (qobject_cast<ITransferManager*> (acc->GetTransferManager ()))
 		{
 			QAction *sendFile = new QAction (tr ("Send file..."), entry->GetObject ());
@@ -429,6 +434,29 @@ namespace Azoth
 			Entry2Actions_ [entry] ["leave"] = leave;
 			Action2Areas_ [leave] << CLEAAContactListCtxtMenu
 					<< CLEAATabCtxtMenu;
+
+			QAction *bookmarks = new QAction (tr ("Add to bookmarks"), entry->GetObject ());
+			bookmarks->setProperty ("ActionIcon", "favorites");
+			connect (bookmarks,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (handleActionAddToBookmarks ()));
+			Entry2Actions_ [entry] ["addtobm"] = bookmarks;
+			Action2Areas_ [bookmarks] << CLEAAContactListCtxtMenu
+					<< CLEAAToolbar;
+
+			if (qobject_cast<IConfigurableMUC*> (entry->GetObject ()))
+			{
+				QAction *configureMUC = new QAction (tr ("Configure MUC..."), this);
+				configureMUC->setProperty ("ActionIcon", "preferences");
+				connect (configureMUC,
+						SIGNAL (triggered ()),
+						this,
+						SLOT (handleActionConfigureMUC ()));
+				Entry2Actions_ [entry] ["configuremuc"] = configureMUC;
+				Action2Areas_ [configureMUC] << CLEAAContactListCtxtMenu
+						<< CLEAAToolbar;
+			}
 		}
 		else if (entry->GetEntryType () == ICLEntry::ETUnauthEntry)
 		{
@@ -623,7 +651,7 @@ namespace Azoth
 		Q_FOREACH (const QString& var, varsToDraw)
 			advEntry->DrawAttention (text, var);
 	}
-	
+
 	void ActionsManager::handleActionSendFile ()
 	{
 		ICLEntry *entry = sender ()->
@@ -637,7 +665,7 @@ namespace Azoth
 					<< entry->GetObject ();
 			return;
 		}
-		
+
 		const QString& filename = QFileDialog::getOpenFileName (0,
 				tr ("Select file to send"));
 		if (filename.isEmpty ())
@@ -929,6 +957,44 @@ namespace Azoth
 		}
 
 		mucEntry->Leave ();
+	}
+
+	void ActionsManager::handleActionAddToBookmarks ()
+	{
+		ICLEntry *entry = sender ()->property ("Azoth/Entry").value<ICLEntry*> ();
+
+		BookmarksManagerDialog *dia = new BookmarksManagerDialog ();
+		dia->SuggestSaving (entry->GetObject ());
+		dia->setAttribute (Qt::WA_DeleteOnClose, true);
+		dia->show ();
+	}
+
+	void ActionsManager::handleActionConfigureMUC ()
+	{
+		ICLEntry *entry = sender ()->property ("Azoth/Entry").value<ICLEntry*> ();
+		QObject *entryObj = entry->GetObject ();
+		IConfigurableMUC *confMUC = qobject_cast<IConfigurableMUC*> (entryObj);
+		if (!confMUC)
+			return;
+
+		QWidget *w = confMUC->GetConfigurationWidget ();
+		if (!w)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "empty conf widget"
+					<< entryObj;
+			return;
+		}
+
+		SimpleDialog *dia = new SimpleDialog ();
+		dia->setWindowTitle (tr ("Room configuration"));
+		dia->SetWidget (w);
+		connect (dia,
+				SIGNAL (accepted ()),
+				dia,
+				SLOT (deleteLater ()),
+				Qt::QueuedConnection);
+		dia->show ();
 	}
 
 	void ActionsManager::handleActionAuthorizeTriggered ()

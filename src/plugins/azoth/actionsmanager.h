@@ -83,6 +83,8 @@ namespace Azoth
 		void handleActionVCardTriggered ();
 		void handleActionInviteTriggered ();
 		void handleActionLeaveTriggered ();
+		void handleActionAddToBookmarks ();
+		void handleActionConfigureMUC ();
 		void handleActionAuthorizeTriggered ();
 		void handleActionDenyAuthTriggered ();
 		void handleActionAddContactFromMUC ();
