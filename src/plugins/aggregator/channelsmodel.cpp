@@ -89,7 +89,7 @@ namespace Aggregator
 		else if (role == Qt::DecorationRole &&
 				index.column () == 0)
 		{
-			QIcon result = Channels_.at (row).Favicon_;
+			QIcon result = QPixmap::fromImage (Channels_.at (row).Favicon_);
 			if (result.isNull ())
 				result = QIcon (":/resources/images/rss.png");
 			return result;

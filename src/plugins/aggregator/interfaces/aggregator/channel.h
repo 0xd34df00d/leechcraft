@@ -22,7 +22,7 @@
 #include <QList>
 #include <QDateTime>
 #include <QStringList>
-#include <QPixmap>
+#include <QImage>
 #include <boost/shared_ptr.hpp>
 #include <vector>
 #include "item.h"
@@ -41,7 +41,7 @@ namespace Aggregator
 		QString Link_;
 		QStringList Tags_;
 		QDateTime LastBuild_;
-		QPixmap Favicon_;
+		QImage Favicon_;
 		int Unread_;
 	};
 
@@ -57,8 +57,8 @@ namespace Aggregator
 		QString Language_;
 		QString Author_;
 		QString PixmapURL_;
-		QPixmap Pixmap_;
-		QPixmap Favicon_;
+		QImage Pixmap_;
+		QImage Favicon_;
 		items_container_t Items_;
 
 		Channel (const IDType_t& feedId);

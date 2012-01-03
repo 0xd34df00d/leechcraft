@@ -583,8 +583,8 @@ namespace Aggregator
 		QString GetBoolType () const;
 		QString GetBlobType () const;
 		bool InitializeTables ();
-		QByteArray SerializePixmap (const QPixmap&) const;
-		QPixmap UnserializePixmap (const QByteArray&) const;
+		QByteArray SerializePixmap (const QImage&) const;
+		QImage UnserializePixmap (const QByteArray&) const;
 		bool RollItemsStorage (int);
 
 		void RemoveTables ();

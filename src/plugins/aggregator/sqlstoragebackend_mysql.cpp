@@ -1219,7 +1219,7 @@ namespace Aggregator
 		return true;
 	}
 
-	QByteArray SQLStorageBackendMysql::SerializePixmap (const QPixmap& pixmap) const
+	QByteArray SQLStorageBackendMysql::SerializePixmap (const QImage& pixmap) const
 	{
 		QByteArray bytes;
 		if (!pixmap.isNull ())
@@ -1231,9 +1231,9 @@ namespace Aggregator
 		return bytes;
 	}
 
-	QPixmap SQLStorageBackendMysql::UnserializePixmap (const QByteArray& bytes) const
+	QImage SQLStorageBackendMysql::UnserializePixmap (const QByteArray& bytes) const
 	{
-		QPixmap result;
+		QImage result;
 		if (bytes.size ())
 			result.loadFromData (bytes, "PNG");
 		return result;

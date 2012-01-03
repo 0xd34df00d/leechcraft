@@ -630,7 +630,7 @@ namespace Aggregator
 			ChannelShort channel = ChannelsModel_->GetChannelForIndex (i);
 			Channel_ptr rc = StorageBackend_->
 					GetChannel (channel.ChannelID_, channel.FeedID_);
-			return rc->Pixmap_;
+			return QPixmap::fromImage (rc->Pixmap_);
 		}
 		catch (const std::exception& e)
 		{
@@ -1473,13 +1473,11 @@ namespace Aggregator
 			switch (data.Type_)
 			{
 				case ExternalData::TImage:
-					data.RelatedChannel_->Pixmap_ =
-						QPixmap::fromImage (QImage (file.fileName ()));
+					data.RelatedChannel_->Pixmap_ = QImage (file.fileName ());
 					break;
 				case ExternalData::TIcon:
 					data.RelatedChannel_->Favicon_ =
-						QPixmap::fromImage (QImage (file.fileName ()))
-						.scaled (16, 16);;
+							QImage (file.fileName ()).scaled (16, 16);
 					break;
 			}
 			try
