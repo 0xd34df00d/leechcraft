@@ -37,6 +37,7 @@ namespace Acetamide
 		QString Nick_;
 		QString UserName_;
 		QString HostName_;
+		QString ServerID_;
 	public:
 		IrcParticipantEntry (const QString&, IrcAccount* = 0);
 
@@ -57,6 +58,8 @@ namespace Acetamide
 
 		QString GetHostName () const;
 		void SetHostName (const QString&);
+
+		QString GetServerID () const;
 	};
 }
 }

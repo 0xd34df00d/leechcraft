@@ -43,6 +43,8 @@ namespace Acetamide
 				SLOT (closePrivateChat (bool)));
 
 		Actions_ << closeChat;
+
+		ServerID_ = ish->GetServerID ();
 	}
 
 	QObject* ServerParticipantEntry::GetParentCLEntry () const
@@ -53,12 +55,12 @@ namespace Acetamide
 	QString ServerParticipantEntry::GetEntryID () const
 	{
 		return Account_->GetAccountName () + "/" +
-				ISH_->GetServerID_ () + "_" + Nick_;
+				ISH_->GetServerID () + "_" + Nick_;
 	}
 
 	QString ServerParticipantEntry::GetHumanReadableID () const
 	{
-		return Nick_ + "_" + ISH_->GetServerID_ ();
+		return Nick_ + "_" + ISH_->GetServerID ();
 	}
 
 	QStringList ServerParticipantEntry::Groups () const
@@ -75,7 +77,7 @@ namespace Acetamide
 	{
  		IrcMessage *message = new IrcMessage (IMessage::MTChatMessage,
 				IMessage::DOut,
-				ISH_->GetServerID_ (),
+				ISH_->GetServerID (),
 				Nick_,
 				Account_->GetClientConnection ().get ());
 
@@ -90,7 +92,7 @@ namespace Acetamide
 	void ServerParticipantEntry::closePrivateChat (bool)
 	{
 		Account_->GetClientConnection ()->
-				ClosePrivateChat (ISH_->GetServerID_ (), Nick_);
+				ClosePrivateChat (ISH_->GetServerID (), Nick_);
 	}
 
 };

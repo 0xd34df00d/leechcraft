@@ -72,6 +72,8 @@ namespace Acetamide
 				SLOT (handleCTCPAction (QAction*)));
 
 		Actions_.append (ctcpMenu->menuAction ());
+
+		ServerID_ = ICH_->GetParentID ();
 	}
 
 	QObject* ChannelParticipantEntry::GetParentCLEntry () const

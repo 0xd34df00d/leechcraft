@@ -46,7 +46,7 @@ namespace Acetamide
 	{
 		return ETPrivateChat;
 	}
-	
+
 	QString IrcParticipantEntry::GetEntryName () const
 	{
 		return Nick_;
@@ -94,6 +94,12 @@ namespace Acetamide
 	{
 		HostName_ = host;
 	}
+
+	QString IrcParticipantEntry::GetServerID () const
+	{
+		return ServerID_;
+	}
+
 }
 }
 }
