@@ -32,19 +32,20 @@ namespace LeechCraft
 		namespace Acetamide
 		{
 
+			class IrcParticipantEntry;
 			class IrcServerHandler;
 
 			class IrcMessageManager : public QObject
 			{
 				Q_OBJECT
 
-				QHash<ICLEntry*, QObjectList> Entry2AllMessages_;
+				QHash<IrcParticipantEntry*, QObjectList> Entry2AllMessages_;
 				IrcServerHandler *ISH_;
 			public:
 				IrcMessageManager (IrcServerHandler *server);
 
-				void AddMessage (ICLEntry *entry, QObject *message);
-				QObjectList GetAllMessages (ICLEntry *entry);
+				void AddMessage (IrcParticipantEntry *entry, QObject *message);
+				QObjectList GetAllMessages (IrcParticipantEntry *entry);
 			};
 		}
 	}

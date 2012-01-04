@@ -31,9 +31,11 @@ namespace Azoth
 {
 namespace Acetamide
 {
+
 	class IrcProtocol;
 	class IrcAccount;
 	class NickServIdentifyWidget;
+	class IrcMessageManager;
 
 	class Core : public QObject
 	{
@@ -45,6 +47,9 @@ namespace Acetamide
 		QStandardItemModel* Model_;
 		NickServIdentifyWidget* NickServIdentifyWidget_;
 		QList<NickServIdentify> NickServIdentifyList_;
+
+		QHash<QString, IrcMessageManager*> ServerID2MessageManager_;
+
 		Core ();
 	public:
 		static Core& Instance ();
@@ -69,6 +74,9 @@ namespace Acetamide
 		QList<NickServIdentify> GetNickServIdentifyWithServ (const QString&) const;
 		QList<NickServIdentify> GetNickServIdentifyWithMainParams (const QString&,
 				const QString&, const QString&) const;
+
+		void AddMessageManager (const QString& serverID, IrcMessageManager *manager);
+		IrcMessageManager* GetMessageManager (const QString& serverID) const;
 	private slots:
 		void handleItemsAdded (const QList<QObject*>&);
 	signals:

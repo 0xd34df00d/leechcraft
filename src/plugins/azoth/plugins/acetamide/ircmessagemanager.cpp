@@ -18,45 +18,44 @@
 
 #include "ircmessagemanager.h"
 #include "ircserverhandler.h"
-#include "interfaces/iclentry.h"
+#include "ircparticipantentry.h"
 
 namespace LeechCraft
 {
-	namespace Azoth
+namespace Azoth
+{
+namespace Acetamide
+{
+	IrcMessageManager::IrcMessageManager (IrcServerHandler *server)
+		: QObject (server)
+		, ISH_ (server)
 	{
-		namespace Acetamide
+	}
+
+	void IrcMessageManager::AddMessage (IrcParticipantEntry *entry, QObject *message)
+	{
+		if (entry->GetEntryType () & ICLEntry::ETPrivateChat)
+			Entry2AllMessages_ [entry] << message;
+		else
+			qWarning () << Q_FUNC_INFO
+					<< entry
+					<< "is not a PrivateChat entry";
+	}
+
+	QObjectList IrcMessageManager::GetAllMessages (IrcParticipantEntry *entry)
+	{
+		if (entry->GetEntryType () & ICLEntry::ETPrivateChat)
+			return Entry2AllMessages_ [entry];
+		else
 		{
-			IrcMessageManager::IrcMessageManager (IrcServerHandler *server)
-				: QObject (server)
-				, ISH_ (server)
-			{
-			}
+			qWarning () << Q_FUNC_INFO
+					<< entry
+					<< "is not a PrivateChat entry";
 
-			void IrcMessageManager::AddMessage (ICLEntry* entry, QObject* message)
-			{
-				if (entry->GetEntryType () & ICLEntry::ETPrivateChat)
-					Entry2AllMessages_ [entry] << message;
-				else
-					qWarning () << Q_FUNC_INFO
-					            << entry
-					            << "is not a PrivateChat entry";
-			}
-
-			QObjectList IrcMessageManager::GetAllMessages (ICLEntry* entry)
-			{
-				if (entry->GetEntryType () & ICLEntry::ETPrivateChat)
-					return Entry2AllMessages_ [entry];
-				else
-				{
-					qWarning () << Q_FUNC_INFO
-					            << entry
-					            << "is not a PrivateChat entry";
-
-					return QObjectList ();
-				}
-			}
-
-
+			return QObjectList ();
 		}
 	}
+
+}
+}
 }

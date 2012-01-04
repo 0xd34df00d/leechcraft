@@ -157,6 +157,18 @@ namespace Acetamide
 		return list;
 	}
 
+	void Core::AddMessageManager (const QString& serverID, IrcMessageManager *manager)
+	{
+		ServerID2MessageManager_ [serverID] = manager;
+	}
+
+	IrcMessageManager* Core::GetMessageManager (const QString& serverID) const
+	{
+		return  ServerID2MessageManager_.contains (serverID) ?
+				ServerID2MessageManager_ [serverID] :
+				0;
+	}
+
 }
 }
 }
