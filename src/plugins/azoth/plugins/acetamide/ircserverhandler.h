@@ -81,7 +81,7 @@ namespace Acetamide
 		IrcParser* GetParser () const;
 		ChannelsManager* GetChannelManager () const;
 		QString GetNickName () const;
-		QString GetServerID_ () const;
+		QString GetServerID () const;
 		ServerOptions GetServerOptions () const;
 		QObjectList GetCLEntries () const;
 

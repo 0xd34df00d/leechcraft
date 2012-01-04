@@ -47,7 +47,7 @@ namespace Acetamide
 
 	QString ChannelsManager::GetServerID () const
 	{
-		return ISH_->GetServerID_ ();
+		return ISH_->GetServerID ();
 	}
 
 	ServerOptions ChannelsManager::GetServerOptions () const

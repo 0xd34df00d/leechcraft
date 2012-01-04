@@ -107,7 +107,7 @@ namespace Acetamide
 		return NickName_;
 	}
 
-	QString IrcServerHandler::GetServerID_ () const
+	QString IrcServerHandler::GetServerID () const
 	{
 		return ServerID_;
 	}
