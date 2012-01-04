@@ -59,6 +59,11 @@ namespace Acetamide
 		return CM_;
 	}
 
+	QString ChannelHandler::GetParentID () const
+	{
+		return CM_->GetServerID ();
+	}
+
 	ChannelOptions ChannelHandler::GetChannelOptions () const
 	{
 		return ChannelOptions_;

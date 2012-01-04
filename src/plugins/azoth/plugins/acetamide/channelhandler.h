@@ -60,6 +60,8 @@ namespace Acetamide
 
 		ChannelsManager* GetChannelsManager () const;
 
+		QString GetParentID () const;
+
 		ChannelOptions GetChannelOptions () const;
 		QList<QObject*> GetParticipants () const;
 
