@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_NETSTOREMANAGER_PLUGINS_ACCOUNT_H
-#define PLUGINS_NETSTOREMANAGER_PLUGINS_ACCOUNT_H
+#ifndef PLUGINS_NETSTOREMANAGER_PLUGINS_YANDEXDISK_ACCOUNT_H
+#define PLUGINS_NETSTOREMANAGER_PLUGINS_YANDEXDISK_ACCOUNT_H
 #include <memory>
 #include <QObject>
 #include <interfaces/netstoremanager/istorageaccount.h>

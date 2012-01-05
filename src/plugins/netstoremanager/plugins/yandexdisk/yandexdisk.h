@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_NETSTOREMANAGER_PLUGINS_YANDEXDISK_H
-#define PLUGINS_NETSTOREMANAGER_PLUGINS_YANDEXDISK_H
+#ifndef PLUGINS_NETSTOREMANAGER_PLUGINS_YANDEXDISK_YANDEXDISK_H
+#define PLUGINS_NETSTOREMANAGER_PLUGINS_YANDEXDISK_YANDEXDISK_H
 #include <memory>
 #include <QObject>
 #include <interfaces/iinfo.h>
