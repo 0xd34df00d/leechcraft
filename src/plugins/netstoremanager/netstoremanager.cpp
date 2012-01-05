@@ -18,6 +18,7 @@
 
 #include "netstoremanager.h"
 #include <QIcon>
+#include "managertab.h"
 
 namespace LeechCraft
 {
@@ -25,6 +26,15 @@ namespace NetStoreManager
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		ManagerTC_ =
+		{
+			GetUniqueID () + ".manager",
+			"NetStoreManager",
+			GetInfo (),
+			GetIcon (),
+			45,
+			TFOpenableByRequest
+		};
 	}
 
 	void Plugin::SecondInit ()
@@ -53,6 +63,29 @@ namespace NetStoreManager
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon ();
+	}
+
+	TabClasses_t Plugin::GetTabClasses () const
+	{
+		return TabClasses_t () << ManagerTC_;
+	}
+
+	void Plugin::TabOpenRequested (const QByteArray& id)
+	{
+		if (id == ManagerTC_.TabClass_)
+		{
+			ManagerTab *tab = new ManagerTab (ManagerTC_, this);
+			emit addNewTab (tr ("Net storage"), tab);
+			emit changeTabIcon (tab, GetIcon ());
+			connect (tab,
+					SIGNAL (removeTab (QWidget*)),
+					this,
+					SIGNAL (removeTab (QWidget*)));
+		}
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "unknown ID"
+					<< id;
 	}
 }
 }
