@@ -117,6 +117,7 @@ OPTION (ENABLE_GMAILNOTIFIER "Build GMail Notifier which notifies about new mail
 OPTION (ENABLE_KNOWHOW "Build KnowHow for displaying tips of the day" OFF)
 OPTION (ENABLE_LACKMAN "Build LackMan, the package manager for LeechCraft" OFF)
 OPTION (ENABLE_LIZNOO "Build Liznoo, our nice power manager" OFF)
+OPTION (ENABLE_NETSTOREMANAGER "Build NetStoreManager for managing network data storages like Yandex.Disk" OFF)
 OPTION (ENABLE_POPISHU "Build Popishu, a simple QScintilla-based text editor" OFF)
 OPTION (ENABLE_QROSP "Build Qrosp, the scripting support plugin" OFF)
 OPTION (ENABLE_SECMAN "Build SecMan, security & personal data manager" OFF)
@@ -334,6 +335,10 @@ ENDIF (ENABLE_SIDEBAR)
 IF (ENABLE_LIZNOO)
 	ADD_SUBDIRECTORY (plugins/liznoo)
 ENDIF (ENABLE_LIZNOO)
+
+IF (ENABLE_NETSTOREMANAGER)
+	ADD_SUBDIRECTORY (plugins/netstoremanager)
+ENDIF (ENABLE_NETSTOREMANAGER)
 
 IF (ENABLE_TABSESSMANAGER)
 	ADD_SUBDIRECTORY (plugins/tabsessmanager)
