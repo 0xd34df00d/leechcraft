@@ -34,6 +34,8 @@ namespace NetStoreManager
 
 	void AccountsManager::AddPlugin (IStoragePlugin *plug)
 	{
+		Plugins_ << plug;
+
 		Q_FOREACH (QObject *acc, plug->GetAccounts ())
 			handleAccountAdded (acc);
 
@@ -45,6 +47,11 @@ namespace NetStoreManager
 				SIGNAL (accountRemoved (QObject*)),
 				this,
 				SLOT (handleAccountRemoved (QObject*)));
+	}
+
+	QList<IStoragePlugin*> AccountsManager::GetPlugins () const
+	{
+		return Plugins_;
 	}
 
 	QAbstractItemModel* AccountsManager::GetModel () const

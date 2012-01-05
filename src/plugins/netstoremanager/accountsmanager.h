@@ -34,15 +34,17 @@ namespace NetStoreManager
 		Q_OBJECT
 
 		QStandardItemModel *Model_;
-
 		enum Roles
 		{
 			AccountObj = Qt::UserRole + 1
 		};
+
+		QList<IStoragePlugin*> Plugins_;
 	public:
 		AccountsManager (QObject* = 0);
 
 		void AddPlugin (IStoragePlugin*);
+		QList<IStoragePlugin*> GetPlugins () const;
 		QAbstractItemModel* GetModel () const;
 	private slots:
 		void handleAccountAdded (QObject*);
