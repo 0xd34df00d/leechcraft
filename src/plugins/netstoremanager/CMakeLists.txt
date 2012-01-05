@@ -11,18 +11,25 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	netstoremanager.cpp
+	managertab.cpp
 	)
 SET (HEADERS
 	netstoremanager.h
+	managertab.h
+	)
+SET (FORMS
+	managertab.ui
 	)
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 ENDIF (NOT LC_NO_MOC)
+QT4_WRAP_UI (UIS_H ${FORMS})
 
 ADD_LIBRARY (leechcraft_netstoremanager SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
+	${UIS_H}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_netstoremanager
 	${QT_LIBRARIES}
