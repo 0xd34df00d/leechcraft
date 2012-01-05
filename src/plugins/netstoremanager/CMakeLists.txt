@@ -13,10 +13,12 @@ INCLUDE_DIRECTORIES (
 SET (SRCS
 	netstoremanager.cpp
 	managertab.cpp
+	xmlsettingsmanager.cpp
 	)
 SET (HEADERS
 	netstoremanager.h
 	managertab.h
+	xmlsettingsmanager.h
 	)
 SET (FORMS
 	managertab.ui
@@ -37,6 +39,7 @@ TARGET_LINK_LIBRARIES (leechcraft_netstoremanager
 	${LEECHCRAFT_LIBRARIES}
 	)
 INSTALL (TARGETS leechcraft_netstoremanager DESTINATION ${LC_PLUGINS_DEST})
+INSTALL (FILES netstoremanagersettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
 OPTION (ENABLE_YANDEXDISK "Build support for Yandex.Disk" ON)
 
