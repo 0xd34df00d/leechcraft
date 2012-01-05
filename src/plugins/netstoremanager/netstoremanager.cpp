@@ -18,7 +18,12 @@
 
 #include "netstoremanager.h"
 #include <QIcon>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include "interfaces/netstoremanager/istorageplugin.h"
 #include "managertab.h"
+#include "xmlsettingsmanager.h"
+#include "accountsmanager.h"
+#include "accountslistwidget.h"
 
 namespace LeechCraft
 {
@@ -35,6 +40,12 @@ namespace NetStoreManager
 			45,
 			TFOpenableByRequest
 		};
+
+		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "netstoremanagersettings.xml");
+
+		AccountsManager_ = new AccountsManager (this);
+		XSD_->SetCustomWidget ("AccountsWidget", new AccountsListWidget (AccountsManager_));
 	}
 
 	void Plugin::SecondInit ()
@@ -95,8 +106,17 @@ namespace NetStoreManager
 		return classes;
 	}
 
-	void Plugin::AddPlugin (QObject*)
+	void Plugin::AddPlugin (QObject *pluginObj)
 	{
+		qDebug () << Q_FUNC_INFO << pluginObj;
+		IStoragePlugin *plugin = qobject_cast<IStoragePlugin*> (pluginObj);
+		if (plugin)
+			AccountsManager_->AddPlugin (plugin);
+	}
+
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XSD_;
 	}
 }
 }

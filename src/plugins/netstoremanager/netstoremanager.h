@@ -22,20 +22,27 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ipluginready.h>
+#include <interfaces/ihavesettings.h>
 
 namespace LeechCraft
 {
 namespace NetStoreManager
 {
+	class AccountsManager;
+
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IHaveTabs
 				 , public IPluginReady
+				 , public IHaveSettings
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs IPluginReady)
+		Q_INTERFACES (IInfo IHaveTabs IPluginReady IHaveSettings)
 
 		TabClassInfo ManagerTC_;
+		Util::XmlSettingsDialog_ptr XSD_;
+
+		AccountsManager *AccountsManager_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -50,6 +57,8 @@ namespace NetStoreManager
 
 		QSet<QByteArray> GetExpectedPluginClasses () const;
 		void AddPlugin (QObject*);
+
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);
