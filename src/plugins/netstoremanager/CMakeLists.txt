@@ -16,6 +16,7 @@ SET (SRCS
 	xmlsettingsmanager.cpp
 	accountsmanager.cpp
 	accountslistwidget.cpp
+	addaccountdialog.cpp
 	)
 SET (HEADERS
 	netstoremanager.h
@@ -23,10 +24,12 @@ SET (HEADERS
 	xmlsettingsmanager.h
 	accountsmanager.h
 	accountslistwidget.h
+	addaccountdialog.h
 	)
 SET (FORMS
 	managertab.ui
 	accountslistwidget.ui
+	addaccountdialog.ui
 	)
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
