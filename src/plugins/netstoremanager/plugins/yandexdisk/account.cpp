@@ -36,6 +36,11 @@ namespace YandexDisk
 		return Name_;
 	}
 
+	QObject* Account::GetParentPlugin () const
+	{
+		return Plugin_;
+	}
+
 	AccountFeatures Account::GetAccountFeatures () const
 	{
 		return AccountFeature::FileListings | AccountFeature::ProlongateFiles;

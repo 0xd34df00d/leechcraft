@@ -39,6 +39,8 @@ namespace NetStoreManager
 	public:
 		virtual ~IStorageAccount () {}
 
+		virtual QObject* GetParentPlugin () const = 0;
+
 		virtual QString GetAccountName () const = 0;
 		virtual AccountFeatures GetAccountFeatures () const = 0;
 

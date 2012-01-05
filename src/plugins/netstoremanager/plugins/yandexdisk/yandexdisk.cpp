@@ -64,13 +64,19 @@ namespace YandexDisk
 		return classes;
 	}
 
+	QObject* Plugin::GetObject ()
+	{
+		return this;
+	}
+
 	QString Plugin::GetStorageName () const
 	{
 		return tr ("Yandex.Disk");
 	}
 
-	QObjectList Plugin::GetAccounts () const
+	QIcon Plugin::GetStorageIcon () const
 	{
+		return QIcon ();
 	}
 
 	void Plugin::RegisterAccount (const QString& accName)

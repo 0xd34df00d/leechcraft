@@ -21,6 +21,8 @@
 #include <QString>
 #include <QtPlugin>
 
+class QIcon;
+
 namespace LeechCraft
 {
 namespace NetStoreManager
@@ -30,7 +32,10 @@ namespace NetStoreManager
 	public:
 		virtual ~IStoragePlugin () {}
 
+		virtual QObject* GetObject () = 0;
+
 		virtual QString GetStorageName () const = 0;
+		virtual QIcon GetStorageIcon () const = 0;
 
 		virtual void RegisterAccount (const QString&) = 0;
 		virtual QObjectList GetAccounts () const = 0;
