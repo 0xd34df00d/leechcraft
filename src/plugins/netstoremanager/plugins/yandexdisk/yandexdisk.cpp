@@ -69,6 +69,14 @@ namespace YandexDisk
 		return tr ("Yandex.Disk");
 	}
 
+	QObjectList Plugin::GetAccounts () const
+	{
+	}
+
+	void Plugin::RegisterAccount (const QString& accName)
+	{
+	}
+
 	void Plugin::initPlugin (QObject *proxy)
 	{
 	}

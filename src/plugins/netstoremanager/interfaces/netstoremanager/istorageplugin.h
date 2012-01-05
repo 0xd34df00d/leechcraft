@@ -31,6 +31,12 @@ namespace NetStoreManager
 		virtual ~IStoragePlugin () {}
 
 		virtual QString GetStorageName () const = 0;
+
+		virtual void RegisterAccount (const QString&) = 0;
+		virtual QObjectList GetAccounts () const = 0;
+	protected:
+		virtual void accountAdded (QObject*) = 0;
+		virtual void accountRemoved (QObject*) = 0;
 	};
 }
 }

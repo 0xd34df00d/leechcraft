@@ -50,8 +50,13 @@ namespace YandexDisk
 		QSet<QByteArray> GetPluginClasses () const;
 
 		QString GetStorageName () const;
+		void RegisterAccount (const QString&);
+		QObjectList GetAccounts () const;
 	public slots:
 		void initPlugin (QObject*);
+	signals:
+		void accountAdded (QObject*);
+		void accountRemoved (QObject*);
 	};
 }
 }
