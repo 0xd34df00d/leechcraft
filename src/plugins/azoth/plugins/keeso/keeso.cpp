@@ -51,7 +51,7 @@ namespace Keeso
 	{
 		return tr ("Allows one to WrItE lIkE tHiS easily.");
 	}
-	
+
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon (":/plugins/azoth/plugins/keeso/resources/images/keeso.svg");
@@ -63,14 +63,14 @@ namespace Keeso
 		result << "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin";
 		return result;
 	}
-	
+
 	void Plugin::hookMessageWillCreated (IHookProxy_ptr proxy,
 			QObject*, QObject*, int, QString)
 	{
 		QString text = proxy->GetValue ("text").toString ();
 		if (!text.startsWith ("/keeso "))
 			return;
-		
+
 		text = text.mid (QString ("/keeso ").length ()).trimmed ();
 		bool isUpper = qrand () % 2;
 		for (int i = 0, length = text.length (); i < length; ++i)
@@ -80,11 +80,11 @@ namespace Keeso
 			const QChar& l = c.toLower ();
 			if (u == l)
 				continue;
-			
+
 			text [i] = isUpper ? u : l;
-			isUpper = !isUpper;			
+			isUpper = qrand () % 4 ? !isUpper : isUpper;
 		}
-		
+
 		proxy->SetValue ("text", text);
 	}
 }
