@@ -19,6 +19,7 @@
 #ifndef PLUGINS_NETSTOREMANAGER_INTERFACES_NETSTOREMANAGER_ISTORAGEPLUGIN_H
 #define PLUGINS_NETSTOREMANAGER_INTERFACES_NETSTOREMANAGER_ISTORAGEPLUGIN_H
 #include <QString>
+#include <QMetaType>
 #include <QtPlugin>
 
 class QIcon;
@@ -48,5 +49,6 @@ namespace NetStoreManager
 
 Q_DECLARE_INTERFACE (LeechCraft::NetStoreManager::IStoragePlugin,
 		"org.Deviant.LeechCraft.NetStoreManager.IStoragePlugin/1.0");
+Q_DECLARE_METATYPE (LeechCraft::NetStoreManager::IStoragePlugin*);
 
 #endif
