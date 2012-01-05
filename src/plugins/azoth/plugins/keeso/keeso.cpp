@@ -72,7 +72,7 @@ namespace Keeso
 			return;
 		
 		text = text.mid (QString ("/keeso ").length ()).trimmed ();
-		bool isUpper = false;
+		bool isUpper = qrand () % 2;
 		for (int i = 0, length = text.length (); i < length; ++i)
 		{
 			QChar c = text.at (i);
