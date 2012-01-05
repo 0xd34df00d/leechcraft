@@ -18,6 +18,7 @@
 
 #ifndef PLUGINS_NETSTOREMANAGER_PLUGINS_YANDEXDISK_H
 #define PLUGINS_NETSTOREMANAGER_PLUGINS_YANDEXDISK_H
+#include <memory>
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
@@ -29,6 +30,9 @@ namespace NetStoreManager
 {
 namespace YandexDisk
 {
+	class Account;
+	typedef std::shared_ptr<Account> Account_ptr;
+
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
@@ -38,6 +42,8 @@ namespace YandexDisk
 		Q_INTERFACES (IInfo
 				IPlugin2
 				LeechCraft::NetStoreManager::IStoragePlugin);
+
+		QList<Account_ptr> Accounts_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -54,6 +60,9 @@ namespace YandexDisk
 		QIcon GetStorageIcon () const;
 		void RegisterAccount (const QString&);
 		QObjectList GetAccounts () const;
+	private:
+		void ReadAccounts ();
+		void WriteAccounts () const;
 	public slots:
 		void initPlugin (QObject*);
 	signals:

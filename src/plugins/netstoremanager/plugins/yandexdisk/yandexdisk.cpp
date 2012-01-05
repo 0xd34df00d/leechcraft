@@ -18,6 +18,9 @@
 
 #include "yandexdisk.h"
 #include <QIcon>
+#include <QSettings>
+#include <QCoreApplication>
+#include "account.h"
 
 namespace LeechCraft
 {
@@ -31,6 +34,7 @@ namespace YandexDisk
 
 	void Plugin::SecondInit ()
 	{
+		ReadAccounts ();
 	}
 
 	void Plugin::Release ()
@@ -81,6 +85,54 @@ namespace YandexDisk
 
 	void Plugin::RegisterAccount (const QString& accName)
 	{
+		Account_ptr acc (new Account (this));
+		acc->SetAccountName (accName);
+
+		if (!acc->ExecConfigDialog ())
+			return;
+
+		Accounts_ << acc;
+		WriteAccounts ();
+		emit accountAdded (acc.get ());
+	}
+
+	QObjectList Plugin::GetAccounts () const
+	{
+		QObjectList result;
+		Q_FOREACH (Account_ptr acc, Accounts_)
+			result << acc.get ();
+		return result;
+	}
+
+	void Plugin::ReadAccounts ()
+	{
+		QSettings settings (QSettings::IniFormat, QSettings::UserScope,
+				QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_NSM_YD_Accounts");
+		int size = settings.beginReadArray ("Accounts");
+		for (int i = 0; i < size; ++i)
+		{
+				settings.setArrayIndex (i);
+				const QByteArray& data = settings.value ("SerializedData").toByteArray ();
+				Account_ptr acc = Account::Deserialize (data, this);
+				Accounts_ << acc;
+				emit accountAdded (acc.get ());
+		}
+		settings.endArray ();
+	}
+
+	void Plugin::WriteAccounts () const
+	{
+		QSettings settings (QSettings::IniFormat, QSettings::UserScope,
+				QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_NSM_YD_Accounts");
+		settings.beginWriteArray ("Accounts");
+		for (int i = 0; i < Accounts_.size (); ++i)
+		{
+			settings.setArrayIndex (i);
+			settings.setValue ("SerializedData", Accounts_.at (i)->Serialize ());
+		}
+		settings.endArray ();
 	}
 
 	void Plugin::initPlugin (QObject *proxy)

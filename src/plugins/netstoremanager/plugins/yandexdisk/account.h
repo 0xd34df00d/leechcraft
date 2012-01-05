@@ -18,6 +18,7 @@
 
 #ifndef PLUGINS_NETSTOREMANAGER_PLUGINS_ACCOUNT_H
 #define PLUGINS_NETSTOREMANAGER_PLUGINS_ACCOUNT_H
+#include <memory>
 #include <QObject>
 #include <interfaces/netstoremanager/istorageaccount.h>
 
@@ -29,6 +30,9 @@ namespace YandexDisk
 {
 	class Plugin;
 
+	class Account;
+	typedef std::shared_ptr<Account> Account_ptr;
+
 	class Account : public QObject
 				  , public IStorageAccount
 	{
@@ -37,13 +41,20 @@ namespace YandexDisk
 
 		Plugin *Plugin_;
 		QString Name_;
+
+		QString Login_;
 	public:
 		Account (Plugin*);
 
+		QByteArray Serialize () const;
+		static Account_ptr Deserialize (const QByteArray&, Plugin*);
+
+		bool ExecConfigDialog ();
+
+		void SetAccountName (const QString&);
 		QString GetAccountName () const;
 		QObject* GetParentPlugin () const;
 		AccountFeatures GetAccountFeatures () const;
-
 		void Upload (const QString&) const;
 	};
 }
