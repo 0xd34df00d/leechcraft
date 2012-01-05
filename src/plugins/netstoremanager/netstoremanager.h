@@ -21,6 +21,7 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/ipluginready.h>
 
 namespace LeechCraft
 {
@@ -29,9 +30,10 @@ namespace NetStoreManager
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IHaveTabs
+				 , public IPluginReady
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs)
+		Q_INTERFACES (IInfo IHaveTabs IPluginReady)
 
 		TabClassInfo ManagerTC_;
 	public:
@@ -45,6 +47,9 @@ namespace NetStoreManager
 
 		TabClasses_t GetTabClasses () const;
 		void TabOpenRequested (const QByteArray&);
+
+		QSet<QByteArray> GetExpectedPluginClasses () const;
+		void AddPlugin (QObject*);
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);

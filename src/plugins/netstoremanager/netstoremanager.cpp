@@ -87,8 +87,18 @@ namespace NetStoreManager
 					<< "unknown ID"
 					<< id;
 	}
+
+	QSet<QByteArray> Plugin::GetExpectedPluginClasses () const
+	{
+		QSet<QByteArray> classes;
+		classes << "org.LeechCraft.Plugins.NetStoreManager.Plugins.IStoragePlugin";
+		return classes;
+	}
+
+	void Plugin::AddPlugin (QObject*)
+	{
+	}
 }
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_netstoremanager, LeechCraft::NetStoreManager::Plugin);
-
