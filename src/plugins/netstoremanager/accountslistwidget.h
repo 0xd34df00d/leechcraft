@@ -32,6 +32,7 @@ namespace NetStoreManager
 		Q_OBJECT
 
 		Ui::AccountsListWidget Ui_;
+		AccountsManager *Manager_;
 	public:
 		AccountsListWidget (AccountsManager*, QWidget* = 0);
 	private slots:

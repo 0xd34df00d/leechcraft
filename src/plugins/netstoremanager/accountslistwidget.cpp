@@ -17,7 +17,9 @@
  **********************************************************************/
 
 #include "accountslistwidget.h"
+#include "addaccountdialog.h"
 #include "accountsmanager.h"
+#include "interfaces/netstoremanager/istorageplugin.h"
 
 namespace LeechCraft
 {
@@ -25,6 +27,7 @@ namespace NetStoreManager
 {
 	AccountsListWidget::AccountsListWidget (AccountsManager *manager, QWidget *parent)
 	: QWidget (parent)
+	, Manager_ (manager)
 	{
 		Ui_.setupUi (this);
 
@@ -33,6 +36,18 @@ namespace NetStoreManager
 
 	void AccountsListWidget::on_Add__released ()
 	{
+		const auto& plugins = Manager_->GetPlugins ();
+
+		AddAccountDialog dia (plugins, this);
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		auto plug = dia.GetStoragePlugin ();
+		const QString& name = dia.GetAccountName ();
+		if (!plug || name.isEmpty ())
+			return;
+
+		plug->RegisterAccount (name);
 	}
 
 	void AccountsListWidget::on_Remove__released ()
