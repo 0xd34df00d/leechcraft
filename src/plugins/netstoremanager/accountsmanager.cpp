@@ -30,6 +30,7 @@ namespace NetStoreManager
 	: QObject (parent)
 	, Model_ (new QStandardItemModel (this))
 	{
+		Model_->setHorizontalHeaderLabels (QStringList (tr ("Account")) << tr ("Storage"));
 	}
 
 	void AccountsManager::AddPlugin (IStoragePlugin *plug)
