@@ -28,6 +28,7 @@
 #include <QFile>
 #include "account.h"
 #include "authmanager.h"
+#include <QBuffer>
 
 namespace LeechCraft
 {
@@ -45,28 +46,34 @@ namespace YandexDisk
 		qint64 Pos_;
 		qint64 TotalSize_;
 
-		QByteArray Preamble_;
-		QFile *File_;
-		QByteArray End_;
+		QBuffer Preamble_;
+		QFile File_;
+		QBuffer End_;
+
+		QByteArray Boundary_;
 	public:
 		OutDev (const QString& path, QObject *parent = 0)
 		: QIODevice (parent)
 		, Path_ (path)
 		, Pos_ (0)
 		, TotalSize_ (0)
-		, File_ (new QFile (path, this))
+		, File_ (path)
+		, Boundary_ ("AaB03x")
 		{
-			const QByteArray boundary = "AaB03x";
-
-			Preamble_ += "--" + boundary + "\r\n";
-			Preamble_ += "Content-Disposition: form-data; name=\"file\"; filename=\"" +
+			Preamble_.buffer () += "--" + Boundary_ + "\r\n";
+			Preamble_.buffer () += "Content-Disposition: form-data; name=\"file\"; filename=\"" +
 					QFileInfo (path).fileName ().toUtf8 () + "\"\r\n";
-			Preamble_ += "Content-Transfer-Encoding: binary\r\n";
-			Preamble_ += "\r\n";
+			Preamble_.buffer () += "Content-Transfer-Encoding: binary\r\n";
+			Preamble_.buffer () += "\r\n";
 
-			End_ = "\r\n--" + boundary + "--\r\n";
+			End_.buffer () = "\r\n--" + Boundary_ + "--\r\n";
 
-			TotalSize_ = Preamble_.size () + File_->size () + End_.size ();
+			TotalSize_ = Preamble_.size () + File_.size () + End_.size ();
+		}
+
+		QByteArray GetBoundary () const
+		{
+			return Boundary_;
 		}
 
 		qint64 size () const
@@ -91,9 +98,9 @@ namespace YandexDisk
 				return false;
 			}
 
-			if (!File_->open (mode))
+			if (!File_.open (mode))
 			{
-				setErrorString ("File error: " + File_->errorString ());
+				setErrorString ("File error: " + File_.errorString ());
 				return false;
 			}
 
@@ -102,12 +109,28 @@ namespace YandexDisk
 	protected:
 		qint64 readData (char *data, qint64 maxlen)
 		{
-			// TODO
+			if (maxlen <= 0)
+				return maxlen;
+
+			auto& dev = GetDevice (Pos_);
+			qint64 read = dev.read (data, maxlen);
+			Pos_ += read;
+			return read + readData (data + read, maxlen - read);
 		}
 
 		qint64 writeData (const char*, qint64)
 		{
 			return -1;
+		}
+	private:
+		QIODevice& GetDevice (qint64 pos)
+		{
+			if (pos > Preamble_.size () + File_.size ())
+				return End_;
+			else if (pos > Preamble_.size ())
+				return File_;
+			else
+				return Preamble_;
 		}
 	};
 
@@ -138,10 +161,7 @@ namespace YandexDisk
 	{
 		Mgr_->cookieJar ()->setCookiesFromUrl (cookies, UpURL);
 
-		QNetworkRequest rq (QUrl ("http://narod.yandex.ru/disk/getstorage/"));
-		rq.setRawHeader ("Cache-Control", "no-cache");
-		rq.setRawHeader ("Accept", "*/*");
-		auto reply = Mgr_->get (rq);
+		auto reply = Mgr_->get (MakeRequest (QUrl ("http://narod.yandex.ru/disk/getstorage/")));
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -169,12 +189,95 @@ namespace YandexDisk
 		{
 			emit gotError (tr ("Error parsing server reply."));
 			emit finished ();
+			return;
 		}
 
 		emit statusChanged (tr ("Uploading file..."));
 		QUrl upUrl (rx.cap (1) + "?tid=" + rx.cap (2));
 
-		OutDev *dev = new OutDev (Path_);
+		OutDev *dev = new OutDev (Path_, this);
+		if (!dev->open (QIODevice::ReadOnly))
+		{
+			emit gotError (tr ("Error opening file."));
+			emit finished ();
+			return;
+		}
+
+		auto rq = MakeRequest (upUrl);
+		rq.setHeader (QNetworkRequest::ContentTypeHeader,
+				"multipart/form-data, boundary=" + dev->GetBoundary ());
+		rq.setHeader (QNetworkRequest::ContentLengthHeader,
+				dev->size ());
+
+		QNetworkReply *rep = Mgr_->post (rq, dev);
+		dev->setParent (rep);
+		connect (rep,
+				SIGNAL (uploadProgress(qint64, qint64)),
+				this,
+				SLOT (handleUploadProgress (qint64, qint64)));
+		connect (rep,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleUploadFinished ()));
+	}
+
+	void UploadManager::handleUploadProgress (qint64 done, qint64 total)
+	{
+	}
+
+	void UploadManager::handleUploadFinished ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		reply->deleteLater ();
+
+		if (reply->error () != QNetworkReply::NoError)
+		{
+			emit gotError (tr ("Error uploading file: %1.")
+					.arg (reply->errorString ()));
+			emit finished ();
+			return;
+		}
+
+		emit statusChanged (tr ("Verifying..."));
+		connect (Mgr_->get (MakeRequest (QUrl ("http://narod.yandex.ru/disk/last/"))),
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleVerReqFinished ()));
+	}
+
+	void UploadManager::handleVerReqFinished ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		reply->deleteLater ();
+
+		if (reply->error () != QNetworkReply::NoError)
+		{
+			emit gotError (tr ("Error verifying upload: %1.")
+					.arg (reply->errorString ()));
+			emit finished ();
+			return;
+		}
+
+		const QString& page = reply->readAll ();
+		QRegExp rx ("<span class='b-fname'><a href=\"(http://narod.ru/disk/\\S+html)\">[^<]+</a></span><br/>");
+		if (rx.indexIn(page) == -1)
+		{
+			emit gotError (tr ("Error verifying uploaded file."));
+			emit finished ();
+			return;
+		}
+
+		emit statusChanged (tr ("Uploaded successfully"));
+		emit gotUploadURL (QUrl (rx.cap (1)));
+		emit finished ();
+	}
+
+	QNetworkRequest UploadManager::MakeRequest (const QUrl& url) const
+	{
+		QNetworkRequest rq (url);
+		rq.setRawHeader ("Cache-Control", "no-cache");
+		rq.setRawHeader ("Accept", "*/*");
+		return rq;
 	}
 }
 }

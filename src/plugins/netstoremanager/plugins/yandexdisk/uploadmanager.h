@@ -21,6 +21,7 @@
 #include <QObject>
 #include <QNetworkCookie>
 
+class QNetworkRequest;
 class QNetworkAccessManager;
 
 namespace LeechCraft
@@ -44,10 +45,16 @@ namespace YandexDisk
 	private slots:
 		void handleGotCookies (const QList<QNetworkCookie>&);
 		void handleGotStorage ();
+		void handleUploadProgress (qint64, qint64);
+		void handleUploadFinished ();
+		void handleVerReqFinished ();
+	private:
+		QNetworkRequest MakeRequest (const QUrl& = QUrl ()) const;
 	signals:
 		void finished ();
 		void gotError (const QString&);
 		void statusChanged (const QString&);
+		void gotUploadURL (const QUrl&);
 	};
 }
 }
