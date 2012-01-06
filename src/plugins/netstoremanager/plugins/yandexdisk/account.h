@@ -29,6 +29,7 @@ namespace NetStoreManager
 namespace YandexDisk
 {
 	class Plugin;
+	class AuthManager;
 
 	class Account;
 	typedef std::shared_ptr<Account> Account_ptr;
@@ -43,11 +44,17 @@ namespace YandexDisk
 		QString Name_;
 
 		QString Login_;
+
+		AuthManager *AM_;
 	public:
 		Account (Plugin*);
 
 		QByteArray Serialize () const;
 		static Account_ptr Deserialize (const QByteArray&, Plugin*);
+
+		AuthManager* GetAuthManager () const;
+		QString GetLogin () const;
+		QString GetPassword ();
 
 		bool ExecConfigDialog ();
 
@@ -55,7 +62,7 @@ namespace YandexDisk
 		QString GetAccountName () const;
 		QObject* GetParentPlugin () const;
 		AccountFeatures GetAccountFeatures () const;
-		void Upload (const QString&) const;
+		void Upload (const QString&);
 	};
 }
 }

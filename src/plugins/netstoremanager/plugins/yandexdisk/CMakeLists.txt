@@ -11,10 +11,14 @@ INCLUDE_DIRECTORIES (${NETSTOREMANAGER_INCLUDE_DIR}
 SET (YANDEXDISK_SRCS
 	yandexdisk.cpp
 	account.cpp
+	uploadmanager.cpp
+	authmanager.cpp
 	)
 SET (YANDEXDISK_HEADERS
 	yandexdisk.h
 	account.h
+	uploadmanager.h
+	authmanager.h
 	)
 SET (YANDEXDISK_FORMS
 	)

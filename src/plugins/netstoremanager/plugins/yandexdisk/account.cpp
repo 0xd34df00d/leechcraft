@@ -19,6 +19,8 @@
 #include "account.h"
 #include <QInputDialog>
 #include "yandexdisk.h"
+#include "uploadmanager.h"
+#include "authmanager.h"
 
 namespace LeechCraft
 {
@@ -29,6 +31,7 @@ namespace YandexDisk
 	Account::Account (Plugin *plugin)
 	: QObject (plugin)
 	, Plugin_ (plugin)
+	, AM_ (new AuthManager (this))
 	{
 	}
 
@@ -60,6 +63,21 @@ namespace YandexDisk
 		str >> acc->Name_
 			>> acc->Login_;
 		return acc;
+	}
+
+	AuthManager* Account::GetAuthManager () const
+	{
+		return AM_;
+	}
+
+	QString Account::GetLogin () const
+	{
+		return Login_;
+	}
+
+	QString Account::GetPassword ()
+	{
+		return QString ();	// TODO
 	}
 
 	bool Account::ExecConfigDialog ()
@@ -96,8 +114,9 @@ namespace YandexDisk
 		return AccountFeature::FileListings | AccountFeature::ProlongateFiles;
 	}
 
-	void Account::Upload (const QString& path) const
+	void Account::Upload (const QString& path)
 	{
+		new UploadManager (path, this);
 	}
 }
 }

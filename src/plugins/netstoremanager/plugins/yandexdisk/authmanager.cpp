@@ -16,42 +16,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_NETSTOREMANAGER_INTERFACES_NETSTOREMANAGER_ISTORAGEACCOUNT_H
-#define PLUGINS_NETSTOREMANAGER_INTERFACES_NETSTOREMANAGER_ISTORAGEACCOUNT_H
-#include <QString>
-#include <QtPlugin>
+#include "authmanager.h"
+#include "account.h"
 
 namespace LeechCraft
 {
 namespace NetStoreManager
 {
-	enum AccountFeature
+namespace YandexDisk
+{
+	AuthManager::AuthManager (Account *acc)
+	: QObject (acc)
+	, A_ (acc)
 	{
-		None = 0x00,
-		FileListings = 0x01,
-		ProlongateFiles = 0x02
-	};
+	}
 
-	Q_DECLARE_FLAGS (AccountFeatures, AccountFeature);
-
-	class IStorageAccount
+	void AuthManager::GetCookiesFor (const QString& login,
+			const QString& password)
 	{
-	public:
-		virtual ~IStorageAccount () {}
-
-		virtual QObject* GetParentPlugin () const = 0;
-
-		virtual QString GetAccountName () const = 0;
-		virtual AccountFeatures GetAccountFeatures () const = 0;
-
-		virtual void Upload (const QString& filepath) = 0;
-	};
+	}
 }
 }
-
-Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::NetStoreManager::AccountFeatures);
-
-Q_DECLARE_INTERFACE (LeechCraft::NetStoreManager::IStorageAccount,
-		"org.Deviant.LeechCraft.NetStoreManager.IStorageAccount/1.0");
-
-#endif
+}
