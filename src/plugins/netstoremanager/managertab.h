@@ -26,6 +26,7 @@ namespace LeechCraft
 {
 namespace NetStoreManager
 {
+	class IStorageAccount;
 	class AccountsManager;
 
 	class ManagerTab : public QWidget
@@ -51,6 +52,8 @@ namespace NetStoreManager
 		void on_Upload__released ();
 	signals:
 		void removeTab (QWidget*);
+
+		void uploadRequested (IStorageAccount*, const QString&);
 	};
 }
 }

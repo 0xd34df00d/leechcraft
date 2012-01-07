@@ -29,6 +29,7 @@ namespace LeechCraft
 namespace NetStoreManager
 {
 	class AccountsManager;
+	class UpManager;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -43,6 +44,7 @@ namespace NetStoreManager
 		Util::XmlSettingsDialog_ptr XSD_;
 
 		AccountsManager *AccountsManager_;
+		UpManager *UpManager_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -66,6 +68,8 @@ namespace NetStoreManager
 		void changeTabIcon (QWidget*, const QIcon&);
 		void statusBarChanged (QWidget*, const QString&);
 		void raiseTab (QWidget*);
+
+		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }

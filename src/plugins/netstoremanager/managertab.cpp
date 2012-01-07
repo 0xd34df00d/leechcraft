@@ -82,7 +82,7 @@ namespace NetStoreManager
 
 		IStorageAccount *acc = Ui_.AccountsBox_->
 				itemData (accIdx).value<IStorageAccount*> ();
-		acc->Upload (filename);
+		emit uploadRequested (acc, filename);
 	}
 }
 }

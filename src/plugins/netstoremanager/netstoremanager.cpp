@@ -24,6 +24,7 @@
 #include "xmlsettingsmanager.h"
 #include "accountsmanager.h"
 #include "accountslistwidget.h"
+#include "upmanager.h"
 
 namespace LeechCraft
 {
@@ -46,6 +47,13 @@ namespace NetStoreManager
 
 		AccountsManager_ = new AccountsManager (this);
 		XSD_->SetCustomWidget ("AccountsWidget", new AccountsListWidget (AccountsManager_));
+
+		UpManager_ = new UpManager (this);
+
+		connect (UpManager_,
+				SIGNAL (gotEntity (LeechCraft::Entity)),
+				this,
+				SIGNAL (gotEntity (LeechCraft::Entity)));
 	}
 
 	void Plugin::SecondInit ()
@@ -93,6 +101,10 @@ namespace NetStoreManager
 					SIGNAL (removeTab (QWidget*)),
 					this,
 					SIGNAL (removeTab (QWidget*)));
+			connect (tab,
+					SIGNAL (uploadRequested (IStorageAccount*, QString)),
+					UpManager_,
+					SLOT (handleUploadRequest (IStorageAccount*, QString)));
 		}
 		else
 			qWarning () << Q_FUNC_INFO
