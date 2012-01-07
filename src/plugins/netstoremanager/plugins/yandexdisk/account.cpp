@@ -133,6 +133,7 @@ namespace YandexDisk
 		QNetworkRequest rq (url);
 		rq.setRawHeader ("Cache-Control", "no-cache");
 		rq.setRawHeader ("Accept", "*/*");
+		rq.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 		return rq;
 	}
 }
