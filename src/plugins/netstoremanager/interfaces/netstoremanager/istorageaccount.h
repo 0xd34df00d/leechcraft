@@ -19,6 +19,7 @@
 #ifndef PLUGINS_NETSTOREMANAGER_INTERFACES_NETSTOREMANAGER_ISTORAGEACCOUNT_H
 #define PLUGINS_NETSTOREMANAGER_INTERFACES_NETSTOREMANAGER_ISTORAGEACCOUNT_H
 #include <QString>
+#include <QMetaType>
 #include <QtPlugin>
 
 namespace LeechCraft
@@ -53,5 +54,6 @@ Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::NetStoreManager::AccountFeatures);
 
 Q_DECLARE_INTERFACE (LeechCraft::NetStoreManager::IStorageAccount,
 		"org.Deviant.LeechCraft.NetStoreManager.IStorageAccount/1.0");
+Q_DECLARE_METATYPE (LeechCraft::NetStoreManager::IStorageAccount*);
 
 #endif
