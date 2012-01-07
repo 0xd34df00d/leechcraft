@@ -27,6 +27,7 @@
 #include <QRegExp>
 #include <QBuffer>
 #include <QFile>
+#include <QtDebug>
 #include "account.h"
 #include "authmanager.h"
 #include "urls.h"
@@ -102,6 +103,9 @@ namespace YandexDisk
 				return false;
 			}
 
+			Preamble_.open (mode);
+			End_.open (mode);
+
 			return QIODevice::open (mode);
 		}
 	protected:
@@ -112,6 +116,21 @@ namespace YandexDisk
 
 			auto& dev = GetDevice (Pos_);
 			qint64 read = dev.read (data, maxlen);
+			if (read == -1)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "error reading device"
+						<< &dev
+						<< Pos_
+						<< maxlen
+						<< Preamble_.size ()
+						<< File_.size ()
+						<< End_.size ();
+				return -1;
+			}
+			else if (!read)
+				return 0;
+
 			Pos_ += read;
 			return read + readData (data + read, maxlen - read);
 		}
@@ -123,9 +142,9 @@ namespace YandexDisk
 	private:
 		QIODevice& GetDevice (qint64 pos)
 		{
-			if (pos > Preamble_.size () + File_.size ())
+			if (pos >= Preamble_.size () + File_.size ())
 				return End_;
-			else if (pos > Preamble_.size ())
+			else if (pos >= Preamble_.size ())
 				return File_;
 			else
 				return Preamble_;
