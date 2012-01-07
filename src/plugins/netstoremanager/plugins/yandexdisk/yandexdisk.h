@@ -66,6 +66,7 @@ namespace YandexDisk
 	public slots:
 		void initPlugin (QObject*);
 	signals:
+		void gotEntity (const LeechCraft::Entity&);
 		void accountAdded (QObject*);
 		void accountRemoved (QObject*);
 	};

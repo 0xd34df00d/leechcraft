@@ -22,6 +22,7 @@
 #include "yandexdisk.h"
 #include "uploadmanager.h"
 #include "authmanager.h"
+#include <util/passutils.h>
 
 namespace LeechCraft
 {
@@ -78,7 +79,14 @@ namespace YandexDisk
 
 	QString Account::GetPassword ()
 	{
-		return QString ();	// TODO
+		if (Login_.isEmpty ())
+			return QString ();
+
+		return Util::GetPassword ("org.LeechCraft.NetStoreManager.YandexDisk/" + Login_,
+				tr ("Enter password for Yandex.Disk account %1 with login %2:")
+					.arg (Name_)
+					.arg (Login_),
+				Plugin_);
 	}
 
 	bool Account::ExecConfigDialog ()
