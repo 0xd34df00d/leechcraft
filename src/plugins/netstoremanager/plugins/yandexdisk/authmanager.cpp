@@ -42,6 +42,7 @@ namespace YandexDisk
 
 	void AuthManager::GetCookiesFor (const QString& login, const QString& pass)
 	{
+		qDebug () << Q_FUNC_INFO << login;
 		RecurCount_ = 0;
 		CurLogin_ = login;
 		CurPass_ = pass;
@@ -59,6 +60,8 @@ namespace YandexDisk
 	void AuthManager::GetCookiesForImpl (const QString& login,
 			const QString& pass, const QString& captcha)
 	{
+		qDebug () << Q_FUNC_INFO << login << captcha << RecurCount_;
+
 		auto pair = qMakePair (login, pass);
 		if (Cookies_.contains (pair))
 		{
@@ -88,6 +91,8 @@ namespace YandexDisk
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
 		reply->deleteLater ();
 		PendingReplies_.remove (reply);
+
+		qDebug () << Q_FUNC_INFO << reply->url () << reply->rawHeaderList ();
 
 		const QString& cookHdr = reply->rawHeader ("Set-Cookie");
 		if (cookHdr.isEmpty ())
