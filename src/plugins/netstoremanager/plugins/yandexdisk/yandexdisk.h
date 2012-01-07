@@ -67,6 +67,7 @@ namespace YandexDisk
 		void initPlugin (QObject*);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
+		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 		void accountAdded (QObject*);
 		void accountRemoved (QObject*);
 	};
