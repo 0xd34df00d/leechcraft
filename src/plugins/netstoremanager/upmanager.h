@@ -30,6 +30,7 @@ struct Entity;
 namespace NetStoreManager
 {
 	class IStorageAccount;
+	class IStoragePlugin;
 
 	class UpManager : public QObject
 	{
@@ -38,10 +39,14 @@ namespace NetStoreManager
 		QHash<IStorageAccount*, QStringList> Uploads_;
 	public:
 		UpManager (QObject* = 0);
+	private:
+		void RemovePending (const QString&);
+		IStoragePlugin* GetSenderPlugin ();
 	public slots:
 		void handleUploadRequest (IStorageAccount*, const QString&);
 	private slots:
 		void handleGotURL (const QUrl&, const QString&);
+		void handleError (const QString&, const QString&);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 	};

@@ -33,6 +33,18 @@ namespace NetStoreManager
 	{
 	}
 
+	void UpManager::RemovePending (const QString& path)
+	{
+		IStorageAccount *acc = qobject_cast<IStorageAccount*> (sender ());
+		Uploads_ [acc].removeAll (path);
+	}
+
+	IStoragePlugin* UpManager::GetSenderPlugin ()
+	{
+		IStorageAccount *acc = qobject_cast<IStorageAccount*> (sender ());
+		return qobject_cast<IStoragePlugin*> (acc->GetParentPlugin ());
+	}
+
 	void UpManager::handleUploadRequest (IStorageAccount *acc, const QString& path)
 	{
 		if (!Uploads_.contains (acc))
@@ -42,6 +54,10 @@ namespace NetStoreManager
 					SIGNAL (gotURL (QUrl, QString)),
 					this,
 					SLOT (handleGotURL (QUrl, QString)));
+			connect (accObj,
+					SIGNAL (upError (QString, QString)),
+					this,
+					SLOT (handleError (QString, QString)));
 		}
 		else if (Uploads_ [acc].contains (path))
 		{
@@ -63,17 +79,28 @@ namespace NetStoreManager
 		qApp->clipboard ()->setText (urlStr, QClipboard::Clipboard);
 		qApp->clipboard ()->setText (urlStr, QClipboard::Selection);
 
-		IStorageAccount *acc = qobject_cast<IStorageAccount*> (sender ());
-		Uploads_ [acc].removeAll (path);
+		RemovePending (path);
 
-		auto *plugin = qobject_cast<IStoragePlugin*> (acc->GetParentPlugin ());
-
-		const Entity& e = Util::MakeNotification ("NetStoreManager",
-				tr ("%1 is successfully uploaded to %2, URL is pasted into clipboard.")
-					.arg (QFileInfo (path).fileName ())
-					.arg (plugin->GetStorageName ()),
+		auto plugin = GetSenderPlugin ();
+		const Entity& e = Util::MakeNotification (plugin->GetStorageName (),
+				tr ("%1 is successfully uploaded, URL is pasted into clipboard.")
+					.arg (QFileInfo (path).fileName ()),
 				PInfo_);
 		emit gotEntity (e);
+	}
+
+	void UpManager::handleError (const QString& str, const QString& path)
+	{
+		qWarning () << Q_FUNC_INFO << str << path;
+
+		RemovePending (path);
+
+		auto plugin = GetSenderPlugin ();
+		const Entity& e = Util::MakeNotification (plugin->GetStorageName (),
+				tr ("Failed to upload %1: %2.")
+					.arg (path)
+					.arg (str),
+				PWarning_);
 	}
 }
 }
