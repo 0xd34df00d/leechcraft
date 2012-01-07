@@ -19,8 +19,6 @@
 #include "account.h"
 #include <QInputDialog>
 #include <QNetworkRequest>
-#include <QClipboard>
-#include <QApplication>
 #include <QtDebug>
 #include <util/passutils.h>
 #include <util/util.h>
@@ -120,6 +118,11 @@ namespace YandexDisk
 	QObject* Account::GetParentPlugin () const
 	{
 		return Plugin_;
+	}
+
+	QObject* Account::GetObject ()
+	{
+		return this;
 	}
 
 	AccountFeatures Account::GetAccountFeatures () const
