@@ -25,10 +25,11 @@
 #include <QNetworkReply>
 #include <QFileInfo>
 #include <QRegExp>
+#include <QBuffer>
 #include <QFile>
 #include "account.h"
 #include "authmanager.h"
-#include <QBuffer>
+#include "urls.h"
 
 namespace LeechCraft
 {
@@ -36,9 +37,6 @@ namespace NetStoreManager
 {
 namespace YandexDisk
 {
-	const QUrl UpURL = QUrl ("http://narod.yandex.ru");
-	const QUrl AuthURL = QUrl ("http://passport.yandex.ru/passport?mode=auth");
-
 	class OutDev : public QIODevice
 	{
 		QString Path_;
@@ -161,7 +159,7 @@ namespace YandexDisk
 	{
 		Mgr_->cookieJar ()->setCookiesFromUrl (cookies, UpURL);
 
-		auto reply = Mgr_->get (MakeRequest (QUrl ("http://narod.yandex.ru/disk/getstorage/")));
+		auto reply = Mgr_->get (A_->MakeRequest (QUrl ("http://narod.yandex.ru/disk/getstorage/")));
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -203,7 +201,7 @@ namespace YandexDisk
 			return;
 		}
 
-		auto rq = MakeRequest (upUrl);
+		auto rq = A_->MakeRequest (upUrl);
 		rq.setHeader (QNetworkRequest::ContentTypeHeader,
 				"multipart/form-data, boundary=" + dev->GetBoundary ());
 		rq.setHeader (QNetworkRequest::ContentLengthHeader,
@@ -239,7 +237,7 @@ namespace YandexDisk
 		}
 
 		emit statusChanged (tr ("Verifying..."));
-		connect (Mgr_->get (MakeRequest (QUrl ("http://narod.yandex.ru/disk/last/"))),
+		connect (Mgr_->get (A_->MakeRequest (QUrl ("http://narod.yandex.ru/disk/last/"))),
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleVerReqFinished ()));
@@ -270,14 +268,6 @@ namespace YandexDisk
 		emit statusChanged (tr ("Uploaded successfully"));
 		emit gotUploadURL (QUrl (rx.cap (1)));
 		emit finished ();
-	}
-
-	QNetworkRequest UploadManager::MakeRequest (const QUrl& url) const
-	{
-		QNetworkRequest rq (url);
-		rq.setRawHeader ("Cache-Control", "no-cache");
-		rq.setRawHeader ("Accept", "*/*");
-		return rq;
 	}
 }
 }

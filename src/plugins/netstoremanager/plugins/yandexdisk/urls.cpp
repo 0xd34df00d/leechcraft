@@ -16,13 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_NETSTOREMANAGER_PLUGINS_YANDEXDISK_UPLOADMANAGER_H
-#define PLUGINS_NETSTOREMANAGER_PLUGINS_YANDEXDISK_UPLOADMANAGER_H
-#include <QObject>
-#include <QNetworkCookie>
-
-class QNetworkRequest;
-class QNetworkAccessManager;
+#include "urls.h"
 
 namespace LeechCraft
 {
@@ -30,32 +24,8 @@ namespace NetStoreManager
 {
 namespace YandexDisk
 {
-	class Account;
-
-	class UploadManager : public QObject
-	{
-		Q_OBJECT
-
-		Account *A_;
-		QNetworkAccessManager *Mgr_;
-
-		QString Path_;
-	public:
-		UploadManager (const QString&, Account*);
-	private slots:
-		void handleGotCookies (const QList<QNetworkCookie>&);
-		void handleGotStorage ();
-		void handleUploadProgress (qint64, qint64);
-		void handleUploadFinished ();
-		void handleVerReqFinished ();
-	signals:
-		void finished ();
-		void gotError (const QString&);
-		void statusChanged (const QString&);
-		void gotUploadURL (const QUrl&);
-	};
+	const QUrl UpURL = QUrl ("http://narod.yandex.ru");
+	const QUrl AuthURL = QUrl ("http://passport.yandex.ru/passport?mode=auth");
 }
 }
 }
-
-#endif

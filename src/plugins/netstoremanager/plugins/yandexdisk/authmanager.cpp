@@ -17,7 +17,13 @@
  **********************************************************************/
 
 #include "authmanager.h"
+#include <algorithm>
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QRegExp>
 #include "account.h"
+#include "urls.h"
 
 namespace LeechCraft
 {
@@ -28,12 +34,92 @@ namespace YandexDisk
 	AuthManager::AuthManager (Account *acc)
 	: QObject (acc)
 	, A_ (acc)
+	, Mgr_ (new QNetworkAccessManager (this))
+	, RecurCount_ (0)
 	{
 	}
 
-	void AuthManager::GetCookiesFor (const QString& login,
-			const QString& password)
+	void AuthManager::GetCookiesFor (const QString& login, const QString& pass, const QString& captcha)
 	{
+		RecurCount_ = 0;
+		CurLogin_ = login;
+		CurPass_ = pass;
+		GetCookiesForImpl (login, pass, captcha);
+	}
+
+	void AuthManager::GetCookiesForImpl (const QString& login,
+			const QString& pass, const QString& captcha)
+	{
+		auto pair = qMakePair (login, pass);
+		if (Cookies_.contains (pair))
+		{
+			emit gotCookies (Cookies_ [pair]);
+			return;
+		}
+
+		Q_FOREACH (QNetworkReply *reply, PendingReplies_)
+		{
+			reply->abort ();
+			delete reply;
+		}
+		PendingReplies_.clear ();
+
+		QByteArray post = "login=" + login.toUtf8 () + "&passwd=" + pass.toUtf8 ();
+		post += "&twoweeks=yes";
+
+		auto reply = Mgr_->post (A_->MakeRequest (AuthURL), post);
+		connect (reply,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleFinished ()));
+		PendingReplies_ << reply;
+	}
+
+	void AuthManager::handleFinished ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		reply->deleteLater ();
+		PendingReplies_.remove (reply);
+
+		const QString& cookHdr = reply->rawHeader ("Set-Cookie");
+		if (cookHdr.isEmpty ())
+		{
+			emit gotError (tr ("Unexpected server reply."));
+			return;
+		}
+
+		const auto& cookies = Mgr_->cookieJar ()->cookiesForUrl (UpURL);
+		auto pos = std::find_if (cookies.begin (), cookies.end (),
+				[] (decltype (cookies.front ()) c)
+					{ return c.name () == "yandex_login" && !c.value ().isEmpty (); });
+		if (pos != cookies.end ())
+		{
+			Cookies_ [qMakePair (CurLogin_, CurPass_)] = cookies;
+			emit gotCookies (cookies);
+			return;
+		}
+
+		QRegExp rx ("<input type=\"?submit\"?[^>]+name=\"no\"");
+		const QString& page = reply->readAll ();
+		if (rx.indexIn (page) > 0)
+		{
+			rx.setPattern ("<input type=\"hidden\" name=\"idkey\" value=\"(\\S+)\"[^>]*>");
+			if (rx.indexIn (page) > 0)
+			{
+				const QByteArray& post = "idkey=" + rx.cap (1).toAscii () + "&filled=yes";
+				auto newRep = Mgr_->post (A_->MakeRequest (AuthURL), post);
+				connect (newRep,
+						SIGNAL (finished ()),
+						this,
+						SLOT (handleFinished ()));
+			}
+			else
+			{
+				rx.setPattern ("<input type=\"hidden\" name=\"idkey\" value=\"(\\S+)\" />");
+				if (RecurCount_++ < 3 && rx.indexIn (page) > 0)
+					GetCookiesForImpl (CurLogin_, CurPass_, rx.cap (1));
+			}
+		}
 	}
 }
 }

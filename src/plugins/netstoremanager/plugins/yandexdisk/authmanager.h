@@ -19,9 +19,11 @@
 #ifndef PLUGINS_NETSTOREMANAGER_PLUGINS_YANDEXDISK_AUTHMANAGER_H
 #define PLUGINS_NETSTOREMANAGER_PLUGINS_YANDEXDISK_AUTHMANAGER_H
 #include <QObject>
+#include <QSet>
 #include <QNetworkCookie>
 
 class QNetworkAccessManager;
+class QNetworkReply;
 
 namespace LeechCraft
 {
@@ -36,12 +38,26 @@ namespace YandexDisk
 		Q_OBJECT
 
 		Account *A_;
+		QNetworkAccessManager *Mgr_;
+		QHash<QPair<QString, QString>, QList<QNetworkCookie>> Cookies_;
+		QSet<QNetworkReply*> PendingReplies_;
+		int RecurCount_;
+
+		QString CurLogin_;
+		QString CurPass_;
 	public:
 		AuthManager (Account*);
 
-		void GetCookiesFor (const QString&, const QString&);
+		void GetCookiesFor (const QString& login, const QString& pass,
+				const QString& captcha = QString ());
+	private:
+		void GetCookiesForImpl (const QString& login, const QString& pass,
+				const QString& captcha);
+	private slots:
+		void handleFinished ();
 	signals:
 		void gotCookies (const QList<QNetworkCookie>&);
+		void gotError (const QString&);
 	};
 }
 }

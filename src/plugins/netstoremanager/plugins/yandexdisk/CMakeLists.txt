@@ -13,12 +13,14 @@ SET (YANDEXDISK_SRCS
 	account.cpp
 	uploadmanager.cpp
 	authmanager.cpp
+	urls.cpp
 	)
 SET (YANDEXDISK_HEADERS
 	yandexdisk.h
 	account.h
 	uploadmanager.h
 	authmanager.h
+	urls.h
 	)
 SET (YANDEXDISK_FORMS
 	)

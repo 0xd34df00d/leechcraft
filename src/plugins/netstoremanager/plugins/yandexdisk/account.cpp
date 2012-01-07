@@ -18,6 +18,7 @@
 
 #include "account.h"
 #include <QInputDialog>
+#include <QNetworkRequest>
 #include "yandexdisk.h"
 #include "uploadmanager.h"
 #include "authmanager.h"
@@ -117,6 +118,14 @@ namespace YandexDisk
 	void Account::Upload (const QString& path)
 	{
 		new UploadManager (path, this);
+	}
+
+	QNetworkRequest Account::MakeRequest (const QUrl& url) const
+	{
+		QNetworkRequest rq (url);
+		rq.setRawHeader ("Cache-Control", "no-cache");
+		rq.setRawHeader ("Accept", "*/*");
+		return rq;
 	}
 }
 }

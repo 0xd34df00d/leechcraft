@@ -20,7 +20,10 @@
 #define PLUGINS_NETSTOREMANAGER_PLUGINS_YANDEXDISK_ACCOUNT_H
 #include <memory>
 #include <QObject>
+#include <QUrl>
 #include <interfaces/netstoremanager/istorageaccount.h>
+
+class QNetworkRequest;
 
 namespace LeechCraft
 {
@@ -63,6 +66,8 @@ namespace YandexDisk
 		QObject* GetParentPlugin () const;
 		AccountFeatures GetAccountFeatures () const;
 		void Upload (const QString&);
+
+		QNetworkRequest MakeRequest (const QUrl& = QUrl ()) const;
 	};
 }
 }
