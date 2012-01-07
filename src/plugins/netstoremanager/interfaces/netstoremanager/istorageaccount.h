@@ -19,6 +19,7 @@
 #ifndef PLUGINS_NETSTOREMANAGER_INTERFACES_NETSTOREMANAGER_ISTORAGEACCOUNT_H
 #define PLUGINS_NETSTOREMANAGER_INTERFACES_NETSTOREMANAGER_ISTORAGEACCOUNT_H
 #include <QString>
+#include <QUrl>
 #include <QMetaType>
 #include <QtPlugin>
 
@@ -46,6 +47,10 @@ namespace NetStoreManager
 		virtual AccountFeatures GetAccountFeatures () const = 0;
 
 		virtual void Upload (const QString& filepath) = 0;
+	protected:
+		virtual void upStatusChanged (const QString& status, const QString& filepath) = 0;
+		virtual void upError (const QString& error, const QString& filepath) = 0;
+		virtual void gotURL (const QUrl& url, const QString& filepath) = 0;
 	};
 }
 }

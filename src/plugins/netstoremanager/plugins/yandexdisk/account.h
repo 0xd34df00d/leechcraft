@@ -68,9 +68,10 @@ namespace YandexDisk
 		void Upload (const QString&);
 
 		QNetworkRequest MakeRequest (const QUrl& = QUrl ()) const;
-	private slots:
-		void handleUpStatusChanged (const QString&);
-		void handleUpGotError (const QString&);
+	signals:
+		void upStatusChanged (const QString&, const QString&);
+		void upError (const QString&, const QString&);
+		void gotURL (const QUrl&, const QString&);
 	};
 }
 }

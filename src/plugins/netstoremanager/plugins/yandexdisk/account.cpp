@@ -19,8 +19,11 @@
 #include "account.h"
 #include <QInputDialog>
 #include <QNetworkRequest>
+#include <QClipboard>
+#include <QApplication>
 #include <QtDebug>
 #include <util/passutils.h>
+#include <util/util.h>
 #include "yandexdisk.h"
 #include "uploadmanager.h"
 #include "authmanager.h"
@@ -128,13 +131,17 @@ namespace YandexDisk
 	{
 		auto mgr = new UploadManager (path, this);
 		connect (mgr,
-				SIGNAL (statusChanged (QString)),
+				SIGNAL (statusChanged (QString, QString)),
 				this,
-				SLOT (handleUpStatusChanged (QString)));
+				SIGNAL (upStatusChanged (QString, QString)));
 		connect (mgr,
-				SIGNAL (gotError (QString)),
+				SIGNAL (gotError (QString, QString)),
 				this,
-				SLOT (handleUpGotError (QString)));
+				SIGNAL (upError (QString, QString)));
+		connect (mgr,
+				SIGNAL (gotUploadURL (QUrl, QString)),
+				this,
+				SIGNAL (gotURL (QUrl, QString)));
 	}
 
 	QNetworkRequest Account::MakeRequest (const QUrl& url) const
@@ -144,16 +151,6 @@ namespace YandexDisk
 		rq.setRawHeader ("Accept", "*/*");
 		rq.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 		return rq;
-	}
-
-	void Account::handleUpStatusChanged (const QString& status)
-	{
-		qDebug () << Q_FUNC_INFO << status;
-	}
-
-	void Account::handleUpGotError (const QString& error)
-	{
-		qWarning () << Q_FUNC_INFO << error;
 	}
 }
 }

@@ -50,9 +50,9 @@ namespace YandexDisk
 		void handleVerReqFinished ();
 	signals:
 		void finished ();
-		void gotError (const QString&);
-		void statusChanged (const QString&);
-		void gotUploadURL (const QUrl&);
+		void gotError (const QString&, const QString&);
+		void statusChanged (const QString&, const QString&);
+		void gotUploadURL (const QUrl&, const QString&);
 	};
 }
 }

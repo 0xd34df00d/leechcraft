@@ -171,7 +171,7 @@ namespace YandexDisk
 
 		am->GetCookiesFor (acc->GetLogin (), acc->GetPassword ());
 
-		emit statusChanged (tr ("Authenticating..."));
+		emit statusChanged (tr ("Authenticating..."), Path_);
 	}
 
 	void UploadManager::handleGotCookies (const QList<QNetworkCookie>& cookies)
@@ -184,7 +184,7 @@ namespace YandexDisk
 				this,
 				SLOT (handleGotStorage ()));
 
-		emit statusChanged (tr ("Getting storage..."));
+		emit statusChanged (tr ("Getting storage..."), Path_);
 	}
 
 	void UploadManager::handleGotStorage ()
@@ -195,7 +195,8 @@ namespace YandexDisk
 		if (reply->error () != QNetworkReply::NoError)
 		{
 			emit gotError (tr ("Network error while getting storage: %1.")
-						.arg (reply->errorString ()));
+						.arg (reply->errorString ()),
+					Path_);
 			emit finished ();
 			return;
 		}
@@ -204,18 +205,18 @@ namespace YandexDisk
 		QRegExp rx ("\"url\":\"(\\S+)\".+\"hash\":\"(\\S+)\".+\"purl\":\"(\\S+)\"");
 		if (rx.indexIn(page) < 0)
 		{
-			emit gotError (tr ("Error parsing server reply."));
+			emit gotError (tr ("Error parsing server reply."), Path_);
 			emit finished ();
 			return;
 		}
 
-		emit statusChanged (tr ("Uploading file..."));
+		emit statusChanged (tr ("Uploading file..."), Path_);
 		QUrl upUrl (rx.cap (1) + "?tid=" + rx.cap (2));
 
 		OutDev *dev = new OutDev (Path_, this);
 		if (!dev->open (QIODevice::ReadOnly))
 		{
-			emit gotError (tr ("Error opening file."));
+			emit gotError (tr ("Error opening file."), Path_);
 			emit finished ();
 			return;
 		}
@@ -250,12 +251,13 @@ namespace YandexDisk
 		if (reply->error () != QNetworkReply::NoError)
 		{
 			emit gotError (tr ("Error uploading file: %1.")
-					.arg (reply->errorString ()));
+						.arg (reply->errorString ()),
+					Path_);
 			emit finished ();
 			return;
 		}
 
-		emit statusChanged (tr ("Verifying..."));
+		emit statusChanged (tr ("Verifying..."), Path_);
 		connect (Mgr_->get (A_->MakeRequest (QUrl ("http://narod.yandex.ru/disk/last/"))),
 				SIGNAL (finished ()),
 				this,
@@ -270,7 +272,8 @@ namespace YandexDisk
 		if (reply->error () != QNetworkReply::NoError)
 		{
 			emit gotError (tr ("Error verifying upload: %1.")
-					.arg (reply->errorString ()));
+						.arg (reply->errorString ()),
+					Path_);
 			emit finished ();
 			return;
 		}
@@ -279,13 +282,13 @@ namespace YandexDisk
 		QRegExp rx ("<span class='b-fname'><a href=\"(http://narod.ru/disk/\\S+html)\">[^<]+</a></span><br/>");
 		if (rx.indexIn(page) == -1)
 		{
-			emit gotError (tr ("Error verifying uploaded file."));
+			emit gotError (tr ("Error verifying uploaded file."), Path_);
 			emit finished ();
 			return;
 		}
 
-		emit statusChanged (tr ("Uploaded successfully"));
-		emit gotUploadURL (QUrl (rx.cap (1)));
+		emit statusChanged (tr ("Uploaded successfully"), Path_);
+		emit gotUploadURL (QUrl (rx.cap (1)), Path_);
 		emit finished ();
 	}
 }
