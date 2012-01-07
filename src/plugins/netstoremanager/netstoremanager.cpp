@@ -88,6 +88,7 @@ namespace NetStoreManager
 			ManagerTab *tab = new ManagerTab (ManagerTC_, AccountsManager_, this);
 			emit addNewTab (tr ("Net storage"), tab);
 			emit changeTabIcon (tab, GetIcon ());
+			emit raiseTab (tab);
 			connect (tab,
 					SIGNAL (removeTab (QWidget*)),
 					this,
