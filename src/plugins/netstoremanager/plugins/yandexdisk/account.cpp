@@ -19,10 +19,11 @@
 #include "account.h"
 #include <QInputDialog>
 #include <QNetworkRequest>
+#include <QtDebug>
+#include <util/passutils.h>
 #include "yandexdisk.h"
 #include "uploadmanager.h"
 #include "authmanager.h"
-#include <util/passutils.h>
 
 namespace LeechCraft
 {
@@ -125,7 +126,15 @@ namespace YandexDisk
 
 	void Account::Upload (const QString& path)
 	{
-		new UploadManager (path, this);
+		auto mgr = new UploadManager (path, this);
+		connect (mgr,
+				SIGNAL (statusChanged (QString)),
+				this,
+				SLOT (handleUpStatusChanged (QString)));
+		connect (mgr,
+				SIGNAL (gotError (QString)),
+				this,
+				SLOT (handleUpGotError (QString)));
 	}
 
 	QNetworkRequest Account::MakeRequest (const QUrl& url) const
@@ -135,6 +144,16 @@ namespace YandexDisk
 		rq.setRawHeader ("Accept", "*/*");
 		rq.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 		return rq;
+	}
+
+	void Account::handleUpStatusChanged (const QString& status)
+	{
+		qDebug () << Q_FUNC_INFO << status;
+	}
+
+	void Account::handleUpGotError (const QString& error)
+	{
+		qWarning () << Q_FUNC_INFO << error;
 	}
 }
 }
