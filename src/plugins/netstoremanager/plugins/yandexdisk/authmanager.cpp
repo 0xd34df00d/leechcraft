@@ -22,6 +22,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QRegExp>
+#include <QtDebug>
 #include "account.h"
 #include "urls.h"
 
@@ -39,12 +40,20 @@ namespace YandexDisk
 	{
 	}
 
-	void AuthManager::GetCookiesFor (const QString& login, const QString& pass, const QString& captcha)
+	void AuthManager::GetCookiesFor (const QString& login, const QString& pass)
 	{
 		RecurCount_ = 0;
 		CurLogin_ = login;
 		CurPass_ = pass;
-		GetCookiesForImpl (login, pass, captcha);
+
+		Q_FOREACH (QNetworkReply *reply, PendingReplies_)
+		{
+			reply->abort ();
+			delete reply;
+		}
+		PendingReplies_.clear ();
+
+		GetCookiesForImpl (login, pass, QString ());
 	}
 
 	void AuthManager::GetCookiesForImpl (const QString& login,
@@ -57,12 +66,11 @@ namespace YandexDisk
 			return;
 		}
 
-		Q_FOREACH (QNetworkReply *reply, PendingReplies_)
+		if (!captcha.isEmpty ())
 		{
-			reply->abort ();
-			delete reply;
+			qWarning () << Q_FUNC_INFO
+					<< "captcha support isn't implemented yet";
 		}
-		PendingReplies_.clear ();
 
 		QByteArray post = "login=" + login.toUtf8 () + "&passwd=" + pass.toUtf8 ();
 		post += "&twoweeks=yes";
