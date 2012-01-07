@@ -55,6 +55,17 @@ namespace NetStoreManager
 		return Plugins_;
 	}
 
+	QList<IStorageAccount*> AccountsManager::GetAccounts () const
+	{
+		QList<IStorageAccount*> accounts;
+		for (int i = 0; i < Model_->rowCount (); ++i)
+		{
+			auto data = Model_->item (i)->data (Roles::AccountObj);
+			accounts << qobject_cast<IStorageAccount*> (data.value<QObject*> ());
+		}
+		return accounts;
+	}
+
 	QAbstractItemModel* AccountsManager::GetModel () const
 	{
 		return Model_;
@@ -79,7 +90,7 @@ namespace NetStoreManager
 		row << new QStandardItem (plugin->GetStorageName ());
 		Model_->appendRow (row);
 
-		row.first ()->setData (QVariant::fromValue<QObject*> (obj), AccountObj);
+		row.first ()->setData (QVariant::fromValue<QObject*> (obj), Roles::AccountObj);
 	}
 
 	void AccountsManager::handleAccountRemoved (QObject *obj)

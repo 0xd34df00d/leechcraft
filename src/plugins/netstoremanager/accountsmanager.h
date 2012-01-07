@@ -28,6 +28,7 @@ namespace LeechCraft
 namespace NetStoreManager
 {
 	class IStoragePlugin;
+	class IStorageAccount;
 
 	class AccountsManager : public QObject
 	{
@@ -45,6 +46,7 @@ namespace NetStoreManager
 
 		void AddPlugin (IStoragePlugin*);
 		QList<IStoragePlugin*> GetPlugins () const;
+		QList<IStorageAccount*> GetAccounts () const;
 		QAbstractItemModel* GetModel () const;
 	private slots:
 		void handleAccountAdded (QObject*);
