@@ -85,7 +85,7 @@ namespace NetStoreManager
 	{
 		if (id == ManagerTC_.TabClass_)
 		{
-			ManagerTab *tab = new ManagerTab (ManagerTC_, this);
+			ManagerTab *tab = new ManagerTab (ManagerTC_, AccountsManager_, this);
 			emit addNewTab (tr ("Net storage"), tab);
 			emit changeTabIcon (tab, GetIcon ());
 			connect (tab,

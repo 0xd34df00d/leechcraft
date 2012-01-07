@@ -17,16 +17,30 @@
  **********************************************************************/
 
 #include "managertab.h"
+#include <QMessageBox>
+#include <QFileDialog>
+#include "interfaces/netstoremanager/istorageaccount.h"
+#include "interfaces/netstoremanager/istorageplugin.h"
+#include "accountsmanager.h"
 
 namespace LeechCraft
 {
 namespace NetStoreManager
 {
-	ManagerTab::ManagerTab (const TabClassInfo& tc, QObject *obj)
+	ManagerTab::ManagerTab (const TabClassInfo& tc, AccountsManager *am, QObject *obj)
 	: Parent_ (obj)
 	, Info_ (tc)
+	, AM_ (am)
 	{
 		Ui_.setupUi (this);
+
+		Q_FOREACH (auto acc, AM_->GetAccounts ())
+		{
+			auto stP = qobject_cast<IStoragePlugin*> (acc->GetParentPlugin ());
+			Ui_.AccountsBox_->addItem (stP->GetStorageIcon (),
+					acc->GetAccountName (),
+					QVariant::fromValue<IStorageAccount*> (acc));
+		}
 	}
 
 	TabClassInfo ManagerTab::GetTabClassInfo () const
@@ -47,6 +61,28 @@ namespace NetStoreManager
 	QToolBar* ManagerTab::GetToolBar () const
 	{
 		return 0;
+	}
+
+	void ManagerTab::on_Upload__released ()
+	{
+		const int accIdx = Ui_.AccountsBox_->currentIndex ();
+		if (accIdx < 0)
+		{
+			QMessageBox::critical (this,
+					tr ("Error"),
+					tr ("You first need to add an account."));
+			return;
+		}
+
+		const QString& filename = QFileDialog::getOpenFileName (this,
+				tr ("Select file for upload"),
+				QDir::homePath ());
+		if (filename.isEmpty ())
+			return;
+
+		IStorageAccount *acc = Ui_.AccountsBox_->
+				itemData (accIdx).value<IStorageAccount*> ();
+		acc->Upload (filename);
 	}
 }
 }

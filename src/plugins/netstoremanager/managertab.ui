@@ -20,6 +20,9 @@
    <item>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
+      <widget class="QComboBox" name="AccountsBox_"/>
+     </item>
+     <item>
       <widget class="QPushButton" name="Upload_">
        <property name="text">
         <string>Upload...</string>

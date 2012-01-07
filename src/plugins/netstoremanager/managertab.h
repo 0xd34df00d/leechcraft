@@ -26,6 +26,8 @@ namespace LeechCraft
 {
 namespace NetStoreManager
 {
+	class AccountsManager;
+
 	class ManagerTab : public QWidget
 					 , public ITabWidget
 	{
@@ -36,13 +38,17 @@ namespace NetStoreManager
 
 		QObject *Parent_;
 		TabClassInfo Info_;
+
+		AccountsManager *AM_;
 	public:
-		ManagerTab (const TabClassInfo&, QObject*);
+		ManagerTab (const TabClassInfo&, AccountsManager*, QObject*);
 
 		TabClassInfo GetTabClassInfo () const;
 		QObject* ParentMultiTabs ();
 		void Remove ();
 		QToolBar* GetToolBar () const;
+	private slots:
+		void on_Upload__released ();
 	signals:
 		void removeTab (QWidget*);
 	};
