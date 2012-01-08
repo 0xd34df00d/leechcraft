@@ -22,6 +22,9 @@
 #include <interfaces/ihavetabs.h>
 #include "ui_managertab.h"
 
+class QStandardItemModel;
+class QStandardItem;
+
 namespace LeechCraft
 {
 namespace NetStoreManager
@@ -41,6 +44,7 @@ namespace NetStoreManager
 		TabClassInfo Info_;
 
 		AccountsManager *AM_;
+		QStandardItemModel *Model_;
 	public:
 		ManagerTab (const TabClassInfo&, AccountsManager*, QObject*);
 
@@ -49,6 +53,9 @@ namespace NetStoreManager
 		void Remove ();
 		QToolBar* GetToolBar () const;
 	private slots:
+		void handleGotListing (const QList<QList<QStandardItem*>>&);
+		void on_AccountsBox__activated (int);
+		void on_Update__released ();
 		void on_Upload__released ();
 	signals:
 		void removeTab (QWidget*);

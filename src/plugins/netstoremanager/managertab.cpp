@@ -19,8 +19,10 @@
 #include "managertab.h"
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QStandardItemModel>
 #include "interfaces/netstoremanager/istorageaccount.h"
 #include "interfaces/netstoremanager/istorageplugin.h"
+#include "interfaces/netstoremanager/isupportfilelistings.h"
 #include "accountsmanager.h"
 
 namespace LeechCraft
@@ -31,8 +33,10 @@ namespace NetStoreManager
 	: Parent_ (obj)
 	, Info_ (tc)
 	, AM_ (am)
+	, Model_ (new QStandardItemModel (this))
 	{
 		Ui_.setupUi (this);
+		Ui_.FilesTree_->setModel (Model_);
 
 		Q_FOREACH (auto acc, AM_->GetAccounts ())
 		{
@@ -40,7 +44,17 @@ namespace NetStoreManager
 			Ui_.AccountsBox_->addItem (stP->GetStorageIcon (),
 					acc->GetAccountName (),
 					QVariant::fromValue<IStorageAccount*> (acc));
+
+			if (acc->GetAccountFeatures () & AccountFeature::FileListings)
+			{
+				connect (acc->GetObject (),
+						SIGNAL (gotListing (const QList<QList<QStandardItem*>>&)),
+						this,
+						SLOT (handleGotListing (const QList<QList<QStandardItem*>>&)));
+			}
 		}
+		if (Ui_.AccountsBox_->count ())
+			on_AccountsBox__activated (0);
 	}
 
 	TabClassInfo ManagerTab::GetTabClassInfo () const
@@ -61,6 +75,51 @@ namespace NetStoreManager
 	QToolBar* ManagerTab::GetToolBar () const
 	{
 		return 0;
+	}
+
+	void ManagerTab::handleGotListing (const QList<QList<QStandardItem*>>& items)
+	{
+		const int idx = Ui_.AccountsBox_->currentIndex ();
+		if (idx < 0)
+			return;
+
+		IStorageAccount *acc = Ui_.AccountsBox_->
+				itemData (idx).value<IStorageAccount*> ();
+		if (sender () != acc->GetObject ())
+			return;
+
+		Q_FOREACH (auto row, items)
+			Model_->appendRow (row);
+	}
+
+	void ManagerTab::on_AccountsBox__activated (int index)
+	{
+		if (index < 0)
+			return;
+
+		IStorageAccount *acc = Ui_.AccountsBox_->
+				itemData (index).value<IStorageAccount*> ();
+		const bool hasListings = acc->GetAccountFeatures () & AccountFeature::FileListings;
+		Ui_.Update_->setEnabled (hasListings);
+		if (!hasListings)
+			return;
+
+		on_Update__released ();
+	}
+
+	void ManagerTab::on_Update__released ()
+	{
+		const int idx = Ui_.AccountsBox_->currentIndex ();
+		if (idx < 0)
+			return;
+
+		Model_->clear ();
+
+		IStorageAccount *acc = Ui_.AccountsBox_->
+				itemData (idx).value<IStorageAccount*> ();
+		ISupportFileListings *sfl = qobject_cast<ISupportFileListings*> (acc->GetObject ());
+		sfl->RefreshListing ();
+		Model_->setHorizontalHeaderLabels (sfl->GetListingHeaders ());
 	}
 
 	void ManagerTab::on_Upload__released ()
