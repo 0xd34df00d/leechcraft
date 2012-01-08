@@ -19,12 +19,14 @@
 #include "account.h"
 #include <QInputDialog>
 #include <QNetworkRequest>
+#include <QStandardItem>
 #include <QtDebug>
 #include <util/passutils.h>
 #include <util/util.h>
 #include "yandexdisk.h"
 #include "uploadmanager.h"
 #include "authmanager.h"
+#include "flgetter.h"
 
 namespace LeechCraft
 {
@@ -147,6 +149,25 @@ namespace YandexDisk
 				SIGNAL (gotURL (QUrl, QString)));
 	}
 
+	void Account::RefreshListing ()
+	{
+		auto getter = new FLGetter (this);
+		connect (getter,
+				SIGNAL (gotFiles (QList<FLItem>)),
+				this,
+				SLOT (handleFileList (QList<FLItem>)));
+	}
+
+	QStringList Account::GetListingHeaders () const
+	{
+		QStringList result;
+		result << tr ("File");
+		result << tr ("Size");
+		result << tr ("Valid for");
+		result << tr ("Password");
+		return result;
+	}
+
 	QNetworkRequest Account::MakeRequest (const QUrl& url) const
 	{
 		QNetworkRequest rq (url);
@@ -154,6 +175,25 @@ namespace YandexDisk
 		rq.setRawHeader ("Accept", "*/*");
 		rq.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 		return rq;
+	}
+
+	void Account::handleFileList (const QList<FLItem>& items)
+	{
+		QList<QList<QStandardItem*>> treeItems;
+
+		qDebug () << Q_FUNC_INFO << items.size ();
+		Q_FOREACH (const FLItem& item, items)
+		{
+			qDebug () << item.Name_ << item.Size_ << item.Date_ << item.Icon_;
+			QList<QStandardItem*> row;
+			row << new QStandardItem (item.Name_);
+			row << new QStandardItem (item.Size_);
+			row << new QStandardItem (item.Date_);
+			row << new QStandardItem (item.PassSet_ ? tr ("yes") : tr ("no"));
+			treeItems << row;
+		}
+
+		emit gotListing (treeItems);
 	}
 }
 }

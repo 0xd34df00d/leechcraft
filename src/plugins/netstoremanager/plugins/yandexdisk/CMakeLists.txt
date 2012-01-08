@@ -14,6 +14,8 @@ SET (YANDEXDISK_SRCS
 	uploadmanager.cpp
 	authmanager.cpp
 	urls.cpp
+	flgetter.cpp
+	flitem.cpp
 	)
 SET (YANDEXDISK_HEADERS
 	yandexdisk.h
@@ -21,6 +23,8 @@ SET (YANDEXDISK_HEADERS
 	uploadmanager.h
 	authmanager.h
 	urls.h
+	flgetter.h
+	flitem.h
 	)
 SET (YANDEXDISK_FORMS
 	)

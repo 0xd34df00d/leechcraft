@@ -22,6 +22,8 @@
 #include <QObject>
 #include <QUrl>
 #include <interfaces/netstoremanager/istorageaccount.h>
+#include <interfaces/netstoremanager/isupportfilelistings.h>
+#include "flitem.h"
 
 class QNetworkRequest;
 
@@ -39,9 +41,11 @@ namespace YandexDisk
 
 	class Account : public QObject
 				  , public IStorageAccount
+				  , public ISupportFileListings
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::NetStoreManager::IStorageAccount)
+		Q_INTERFACES (LeechCraft::NetStoreManager::IStorageAccount
+				LeechCraft::NetStoreManager::ISupportFileListings)
 
 		Plugin *Plugin_;
 		QString Name_;
@@ -68,11 +72,18 @@ namespace YandexDisk
 		AccountFeatures GetAccountFeatures () const;
 		void Upload (const QString&);
 
+		void RefreshListing ();
+		QStringList GetListingHeaders () const;
+
 		QNetworkRequest MakeRequest (const QUrl& = QUrl ()) const;
+	private slots:
+		void handleFileList (const QList<FLItem>&);
 	signals:
 		void upStatusChanged (const QString&, const QString&);
 		void upError (const QString&, const QString&);
 		void gotURL (const QUrl&, const QString&);
+
+		void gotListing (const QList<QList<QStandardItem*>>&);
 	};
 }
 }
