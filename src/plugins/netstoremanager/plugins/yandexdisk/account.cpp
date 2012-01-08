@@ -190,6 +190,9 @@ namespace YandexDisk
 			row << new QStandardItem (item.Size_);
 			row << new QStandardItem (item.Date_);
 			row << new QStandardItem (item.PassSet_ ? tr ("yes") : tr ("no"));
+
+			row.first ()->setIcon (item.Icon_);
+
 			treeItems << row;
 		}
 

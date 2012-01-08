@@ -19,6 +19,7 @@
 #ifndef PLUGINS_NETSTOREMANAGER_PLUGINS_YANDEXDISK_FLITEM_H
 #define PLUGINS_NETSTOREMANAGER_PLUGINS_YANDEXDISK_FLITEM_H
 #include <QString>
+#include <QIcon>
 
 namespace LeechCraft
 {
@@ -32,7 +33,7 @@ namespace YandexDisk
 		QString ID_;
 		QString Token_;
 		QString URL_;
-		QString Icon_;
+		QIcon Icon_;
 		QString Size_;
 		QString PassToken_;
 		QString Date_;

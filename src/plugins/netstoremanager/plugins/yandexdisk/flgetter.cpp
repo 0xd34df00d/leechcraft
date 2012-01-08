@@ -23,6 +23,7 @@
 #include "account.h"
 #include "authmanager.h"
 #include "urls.h"
+#include "common.h"
 
 namespace LeechCraft
 {
@@ -103,7 +104,7 @@ namespace YandexDisk
 				rx.cap (2),
 				rx.cap (3),
 				rx.cap (4),
-				rx.cap (1),
+				GetIconForType (rx.cap (1)),
 				QString::fromUtf8 (rx.cap (6).toLatin1 ()).replace ("&nbsp;", " "),
 				rx.cap (7),
 				QString::fromUtf8 (rx.cap (9).toLatin1 ()),
