@@ -52,7 +52,11 @@
     </layout>
    </item>
    <item>
-    <widget class="QTreeView" name="FilesTree_"/>
+    <widget class="QTreeView" name="FilesTree_">
+     <property name="rootIsDecorated">
+      <bool>false</bool>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
