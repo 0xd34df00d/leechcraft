@@ -80,7 +80,7 @@ namespace YandexDisk
 
 	QIcon Plugin::GetStorageIcon () const
 	{
-		return QIcon ();
+		return QIcon (":/plugins/netstoremanager/plugins/yandexdisk/resources/images/yandexnarodlogo.png");
 	}
 
 	void Plugin::RegisterAccount (const QString& accName)
