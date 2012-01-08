@@ -192,6 +192,7 @@ namespace YandexDisk
 			row << new QStandardItem (item.PassSet_ ? tr ("yes") : tr ("no"));
 
 			row.first ()->setIcon (item.Icon_);
+			row.first ()->setData (QUrl (item.URL_), ListingRole::URL);
 
 			treeItems << row;
 		}

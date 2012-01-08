@@ -27,6 +27,11 @@ namespace LeechCraft
 {
 namespace NetStoreManager
 {
+	enum ListingRole
+	{
+		URL = Qt::UserRole + 20
+	};
+
 	class ISupportFileListings
 	{
 	public:
