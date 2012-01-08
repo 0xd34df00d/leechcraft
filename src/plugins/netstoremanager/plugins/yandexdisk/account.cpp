@@ -147,6 +147,10 @@ namespace YandexDisk
 				SIGNAL (gotUploadURL (QUrl, QString)),
 				this,
 				SIGNAL (gotURL (QUrl, QString)));
+		connect (mgr,
+				SIGNAL (uploadProgress (quint64, quint64, QString)),
+				this,
+				SIGNAL (upProgress (quint64, quint64, QString)));
 	}
 
 	void Account::RefreshListing ()

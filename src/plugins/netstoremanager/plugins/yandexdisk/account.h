@@ -80,6 +80,7 @@ namespace YandexDisk
 		void handleFileList (const QList<FLItem>&);
 	signals:
 		void upStatusChanged (const QString&, const QString&);
+		void upProgress (quint64, quint64, const QString&);
 		void upError (const QString&, const QString&);
 		void gotURL (const QUrl&, const QString&);
 

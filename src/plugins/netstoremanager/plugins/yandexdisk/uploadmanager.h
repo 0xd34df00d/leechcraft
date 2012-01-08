@@ -53,6 +53,7 @@ namespace YandexDisk
 		void gotError (const QString&, const QString&);
 		void statusChanged (const QString&, const QString&);
 		void gotUploadURL (const QUrl&, const QString&);
+		void uploadProgress (quint64, quint64, const QString&);
 	};
 }
 }

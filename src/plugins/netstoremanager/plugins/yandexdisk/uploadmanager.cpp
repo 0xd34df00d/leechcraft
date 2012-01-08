@@ -241,6 +241,7 @@ namespace YandexDisk
 
 	void UploadManager::handleUploadProgress (qint64 done, qint64 total)
 	{
+		emit uploadProgress (done, total, Path_);
 	}
 
 	void UploadManager::handleUploadFinished ()
