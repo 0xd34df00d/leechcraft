@@ -53,6 +53,9 @@
    </item>
    <item>
     <widget class="QTreeView" name="FilesTree_">
+     <property name="contextMenuPolicy">
+      <enum>Qt::ActionsContextMenu</enum>
+     </property>
      <property name="rootIsDecorated">
       <bool>false</bool>
      </property>

@@ -54,6 +54,7 @@ namespace NetStoreManager
 		QToolBar* GetToolBar () const;
 	private slots:
 		void handleGotListing (const QList<QList<QStandardItem*>>&);
+		void flCopyURL ();
 		void on_AccountsBox__activated (int);
 		void on_Update__released ();
 		void on_Upload__released ();

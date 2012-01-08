@@ -20,6 +20,8 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QStandardItemModel>
+#include <QApplication>
+#include <QClipboard>
 #include "interfaces/netstoremanager/istorageaccount.h"
 #include "interfaces/netstoremanager/istorageplugin.h"
 #include "interfaces/netstoremanager/isupportfilelistings.h"
@@ -55,6 +57,13 @@ namespace NetStoreManager
 		}
 		if (Ui_.AccountsBox_->count ())
 			on_AccountsBox__activated (0);
+
+		QAction *copyURL = new QAction (tr ("Copy URL..."), this);
+		connect (copyURL,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (flCopyURL ()));
+		Ui_.FilesTree_->addAction (copyURL);
 	}
 
 	TabClassInfo ManagerTab::GetTabClassInfo () const
@@ -106,6 +115,21 @@ namespace NetStoreManager
 			if (size < sizes [idx])
 				hdr->resizeSection (idx, sizes [idx]);
 		}
+	}
+
+	void ManagerTab::flCopyURL ()
+	{
+		auto item = Model_->itemFromIndex (Ui_.FilesTree_->currentIndex ());
+		if (!item)
+			return;
+
+		const QUrl& url = item->data (ListingRole::URL).toUrl ();
+		if (url.isEmpty () || !url.isValid ())
+			return;
+
+		const QString& str = url.toString ();
+		qApp->clipboard ()->setText (str, QClipboard::Clipboard);
+		qApp->clipboard ()->setText (str, QClipboard::Selection);
 	}
 
 	void ManagerTab::on_AccountsBox__activated (int index)
