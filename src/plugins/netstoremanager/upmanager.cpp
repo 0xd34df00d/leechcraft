@@ -101,6 +101,7 @@ namespace NetStoreManager
 					.arg (path)
 					.arg (str),
 				PWarning_);
+		emit gotEntity (e);
 	}
 }
 }
