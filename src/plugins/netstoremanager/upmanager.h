@@ -23,6 +23,10 @@
 #include <QStringList>
 #include <QUrl>
 
+class QStandardItemModel;
+class QStandardItem;
+class QAbstractItemModel;
+
 namespace LeechCraft
 {
 struct Entity;
@@ -37,8 +41,12 @@ namespace NetStoreManager
 		Q_OBJECT
 
 		QHash<IStorageAccount*, QStringList> Uploads_;
+		QStandardItemModel *ReprModel_;
+		QHash<IStorageAccount*, QHash<QString, QList<QStandardItem*>>> ReprItems_;
 	public:
 		UpManager (QObject* = 0);
+
+		QAbstractItemModel* GetRepresentationModel () const;
 	private:
 		void RemovePending (const QString&);
 		IStoragePlugin* GetSenderPlugin ();
@@ -47,6 +55,8 @@ namespace NetStoreManager
 	private slots:
 		void handleGotURL (const QUrl&, const QString&);
 		void handleError (const QString&, const QString&);
+		void handleUpStatusChanged (const QString&, const QString&);
+		void handleUpProgress (quint64, quint64, const QString&);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 	};

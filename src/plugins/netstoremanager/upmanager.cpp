@@ -19,6 +19,7 @@
 #include "upmanager.h"
 #include <QApplication>
 #include <QClipboard>
+#include <QStandardItemModel>
 #include <interfaces/structures.h>
 #include <util/util.h>
 #include "interfaces/netstoremanager/istorageaccount.h"
@@ -30,13 +31,22 @@ namespace NetStoreManager
 {
 	UpManager::UpManager (QObject *parent)
 	: QObject (parent)
+	, ReprModel_ (new QStandardItemModel (this))
 	{
+	}
+
+	QAbstractItemModel* UpManager::GetRepresentationModel () const
+	{
+		return ReprModel_;
 	}
 
 	void UpManager::RemovePending (const QString& path)
 	{
 		IStorageAccount *acc = qobject_cast<IStorageAccount*> (sender ());
 		Uploads_ [acc].removeAll (path);
+
+		auto items = ReprItems_ [acc].take (path);
+		ReprModel_->removeRow (items.first ()->row ());
 	}
 
 	IStoragePlugin* UpManager::GetSenderPlugin ()
@@ -58,6 +68,14 @@ namespace NetStoreManager
 					SIGNAL (upError (QString, QString)),
 					this,
 					SLOT (handleError (QString, QString)));
+			connect (accObj,
+					SIGNAL (upStatusChanged (QString, QString)),
+					this,
+					SLOT (handleUpStatusChanged (QString, QString)));
+			connect (accObj,
+					SIGNAL (upProgress (quint64, quint64, QString)),
+					this,
+					SLOT (handleUpProgress (quint64, quint64, QString)));
 		}
 		else if (Uploads_ [acc].contains (path))
 		{
@@ -71,6 +89,14 @@ namespace NetStoreManager
 		}
 
 		acc->Upload (path);
+
+		QList<QStandardItem*> row;
+		row << new QStandardItem (tr ("Uploading %1 to %2..."));
+		row << new QStandardItem ();
+		row << new QStandardItem (tr ("Initializing..."));
+		ReprModel_->appendRow (row);
+
+		ReprItems_ [acc] [path] = row;
 	}
 
 	void UpManager::handleGotURL (const QUrl& url, const QString& path)
@@ -102,6 +128,20 @@ namespace NetStoreManager
 					.arg (str),
 				PWarning_);
 		emit gotEntity (e);
+	}
+
+	void UpManager::handleUpStatusChanged (const QString& status, const QString& filepath)
+	{
+		IStorageAccount *acc = qobject_cast<IStorageAccount*> (sender ());
+		ReprItems_ [acc] [filepath] [2]->setText (status);
+	}
+
+	void UpManager::handleUpProgress (quint64 done, quint64 total, const QString& filepath)
+	{
+		IStorageAccount *acc = qobject_cast<IStorageAccount*> (sender ());
+		ReprItems_ [acc] [filepath] [1]->setText (tr ("%1 of %2")
+				.arg (Util::MakePrettySize (done))
+				.arg (Util::MakePrettySize (total)));
 	}
 }
 }

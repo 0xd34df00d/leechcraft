@@ -23,6 +23,7 @@
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ipluginready.h>
 #include <interfaces/ihavesettings.h>
+#include <interfaces/ijobholder.h>
 
 namespace LeechCraft
 {
@@ -36,9 +37,10 @@ namespace NetStoreManager
 				 , public IHaveTabs
 				 , public IPluginReady
 				 , public IHaveSettings
+				 , public IJobHolder
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs IPluginReady IHaveSettings)
+		Q_INTERFACES (IInfo IHaveTabs IPluginReady IHaveSettings IJobHolder)
 
 		TabClassInfo ManagerTC_;
 		Util::XmlSettingsDialog_ptr XSD_;
@@ -61,6 +63,8 @@ namespace NetStoreManager
 		void AddPlugin (QObject*);
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+
+		QAbstractItemModel* GetRepresentation () const;
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);

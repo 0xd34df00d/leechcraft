@@ -131,6 +131,11 @@ namespace NetStoreManager
 	{
 		return XSD_;
 	}
+
+	QAbstractItemModel* Plugin::GetRepresentation () const
+	{
+		return UpManager_->GetRepresentationModel ();
+	}
 }
 }
 
