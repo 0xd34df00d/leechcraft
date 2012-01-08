@@ -40,7 +40,7 @@ namespace YandexDisk
 	{
 	}
 
-	void AuthManager::GetCookiesFor (const QString& login, const QString& pass)
+	void AuthManager::GetCookiesFor (const QString& login, const QString& pass, bool clear)
 	{
 		qDebug () << Q_FUNC_INFO << login;
 		RecurCount_ = 0;
@@ -53,6 +53,9 @@ namespace YandexDisk
 			delete reply;
 		}
 		PendingReplies_.clear ();
+
+		if (clear)
+			Cookies_.remove (qMakePair (login, pass));
 
 		GetCookiesForImpl (login, pass, QString ());
 	}

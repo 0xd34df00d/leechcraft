@@ -48,7 +48,7 @@ namespace YandexDisk
 	public:
 		AuthManager (Account*);
 
-		void GetCookiesFor (const QString& login, const QString& pass);
+		void GetCookiesFor (const QString& login, const QString& pass, bool clear = false);
 	private:
 		void GetCookiesForImpl (const QString& login, const QString& pass,
 				const QString& captcha);
