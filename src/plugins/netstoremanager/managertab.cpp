@@ -80,7 +80,7 @@ namespace NetStoreManager
 	void ManagerTab::handleGotListing (const QList<QList<QStandardItem*>>& items)
 	{
 		const int idx = Ui_.AccountsBox_->currentIndex ();
-		if (idx < 0)
+		if (idx < 0 || items.isEmpty ())
 			return;
 
 		IStorageAccount *acc = Ui_.AccountsBox_->
@@ -88,8 +88,24 @@ namespace NetStoreManager
 		if (sender () != acc->GetObject ())
 			return;
 
+		QFontMetrics fm = Ui_.FilesTree_->fontMetrics ();
+
+		QMap<int, int> sizes;
 		Q_FOREACH (auto row, items)
+		{
 			Model_->appendRow (row);
+
+			for (int i = 0; i < row.size (); ++i)
+				sizes [i] = std::max (sizes [i], fm.width (row.at (i)->text ()));
+		}
+
+		Q_FOREACH (auto idx, sizes.keys ())
+		{
+			auto hdr = Ui_.FilesTree_->header ();
+			const int size = hdr->sectionSize (idx);
+			if (size < sizes [idx])
+				hdr->resizeSection (idx, sizes [idx]);
+		}
 	}
 
 	void ManagerTab::on_AccountsBox__activated (int index)
