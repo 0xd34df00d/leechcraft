@@ -16,6 +16,7 @@ SET (YANDEXDISK_SRCS
 	urls.cpp
 	flgetter.cpp
 	flitem.cpp
+	common.cpp
 	)
 SET (YANDEXDISK_HEADERS
 	yandexdisk.h
@@ -25,6 +26,7 @@ SET (YANDEXDISK_HEADERS
 	urls.h
 	flgetter.h
 	flitem.h
+	common.h
 	)
 SET (YANDEXDISK_FORMS
 	)

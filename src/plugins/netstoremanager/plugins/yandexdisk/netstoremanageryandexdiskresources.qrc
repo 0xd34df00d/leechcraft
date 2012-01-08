@@ -1,5 +1,6 @@
 <RCC>
-  <qresource prefix="/plugins/netstoremanager/plugins/yandexdisk">
+  <qresource prefix="/netstoremanager/yandexdisk">
     <file>resources/images/yandexnarodlogo.png</file>
+	<file>resources/images/yandexnarod-icons-files.png</file>
   </qresource>
 </RCC>
