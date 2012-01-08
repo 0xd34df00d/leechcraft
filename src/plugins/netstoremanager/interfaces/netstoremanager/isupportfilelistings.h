@@ -21,6 +21,8 @@
 #include <QStringList>
 #include <QtPlugin>
 
+class QStandardItem;
+
 namespace LeechCraft
 {
 namespace NetStoreManager
@@ -33,7 +35,7 @@ namespace NetStoreManager
 		virtual void RefreshListing () = 0;
 		virtual QStringList GetListingHeaders () const = 0;
 	protected:
-		virtual void gotListing (const QList<QStringList>&) = 0;
+		virtual void gotListing (const QList<QList<QStandardItem*>>&) = 0;
 	};
 }
 }
