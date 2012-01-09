@@ -70,6 +70,10 @@ namespace LeechCraft
 		CorePlugin2Manager* GetCorePluginManager () const;
 	private:
 		void BuildNewTabModel ();
+	private slots:
+#ifdef STRICT_LICENSING
+		void notifyLicensing ();
+#endif
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);
@@ -78,6 +82,8 @@ namespace LeechCraft
 		void changeTooltip (QWidget*, QWidget*);
 		void statusBarChanged (QWidget*, const QString&);
 		void raiseTab (QWidget*);
+
+		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 
