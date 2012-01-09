@@ -87,6 +87,13 @@ ADD_SUBDIRECTORY (iconsets)
 SET (LEECHCRAFT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 SET (LEECHCRAFT_LIBRARIES lcutil xmlsettingsdialog)
 
+# Various options
+OPTION (STRICT_LICENSING "Makes LeechCraft more prepared, for example, to lacking artwork due to licensing restrictions" OFF)
+
+IF (STRICT_LICENSING)
+	ADD_DEFINITIONS (-DSTRICT_LICENSING)
+ENDIF (STRICT_LICENSING)
+
 # Basic & traditional set of options
 OPTION (ENABLE_AGGREGATOR "Build Aggregator, the RSS/Atom feed reader" ON)
 OPTION (ENABLE_ANHERO "Build AnHero, the crash handler" ON)
