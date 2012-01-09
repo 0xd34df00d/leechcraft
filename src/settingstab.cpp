@@ -110,15 +110,15 @@ namespace LeechCraft
 			return origSplit.join (" ");
 		}
 
-		QMap<QObject*, QList<QPair<QString, QString> > > BuildGroups (const QObjectList& settables)
+		QMap<QObject*, QList<QPair<QString, QString>>> BuildGroups (const QObjectList& settables)
 		{
-			QMap<QObject*, QList<QPair<QString, QString> > > result;
+			QMap<QObject*, QList<QPair<QString, QString>>> result;
 			Q_FOREACH (QObject *obj, settables)
 			{
 				IPlugin2 *ip2 = qobject_cast<IPlugin2*> (obj);
-				const QList<QPair<QString, QString> >& firstClass = ip2 ?
+				const auto& firstClass = ip2 ?
 						GetFirstClassPlugins (ip2) :
-						QList<QPair<QString, QString> > ();
+						QList<QPair<QString, QString>> ();
 
 				if (obj == Core::Instance ().GetCoreInstanceObject ())
 					result [obj] << qMakePair (QString ("LeechCraft"), QString ());
@@ -137,15 +137,13 @@ namespace LeechCraft
 		const QObjectList& settables = Core::Instance ()
 				.GetPluginManager ()->GetAllCastableRoots<IHaveSettings*> ();
 
-		const QMap<QObject*, QList<QPair<QString, QString> > >& obj2groups = BuildGroups (settables);
-		QSet<QPair<QString, QString> > allGroups;
-		QList<QPair<QString, QString> > list;
-		Q_FOREACH (list, obj2groups.values ())
-			allGroups += QSet<QPair<QString, QString> >::fromList (list);
+		const auto& obj2groups = BuildGroups (settables);
+		QSet<QPair<QString, QString>> allGroups;
+		Q_FOREACH (auto list, obj2groups.values ())
+			allGroups += QSet<QPair<QString, QString>>::fromList (list);
 
 		QMap<QString, QGroupBox*> group2box;
-		QPair<QString, QString> pair;
-		Q_FOREACH (pair, allGroups)
+		Q_FOREACH (auto pair, allGroups)
 		{
 			QGroupBox *box = new QGroupBox (pair.first);
 			box->setLayout (new Util::FlowLayout);
@@ -171,7 +169,7 @@ namespace LeechCraft
 			const QIcon& icon = ii->GetIcon ().isNull () ?
 					QIcon (":/resources/images/defaultpluginicon.svg") :
 					ii->GetIcon ();
-			Q_FOREACH (pair, obj2groups [obj])
+			Q_FOREACH (auto pair, obj2groups [obj])
 			{
 				QToolButton *butt = new QToolButton;
 				butt->setToolButtonStyle (Qt::ToolButtonTextUnderIcon);
