@@ -17,37 +17,22 @@
  **********************************************************************/
 
 #include "packageprocessor.h"
+#include <stdexcept>
 #include <QFile>
 #include <QDirIterator>
 #include <QFileInfo>
-#include <stdexcept>
 #include <util/util.h>
 #include "core.h"
 #include "externalresourcemanager.h"
 #include "storage.h"
 
-#if QT_VERSION < 0x040700
-uint qHash (const QUrl& url)
-{
-	return qHash (url.toEncoded ());
-}
-#endif
-
 namespace LeechCraft
 {
 namespace LackMan
 {
-	namespace
-	{
-		QDir GetDBDir ()
-		{
-			return Util::CreateIfNotExists ("lackman/filesdb/");
-		}
-	}
-
 	PackageProcessor::PackageProcessor (QObject *parent)
 	: QObject (parent)
-	, DBDir_ (GetDBDir ())
+	, DBDir_ (Util::CreateIfNotExists ("lackman/filesdb/"))
 	{
 	}
 

@@ -268,19 +268,16 @@ namespace LackMan
 		TypeFilter_->SetFilterMode (static_cast<TypeFilterProxyModel::FilterMode> (index));
 	}
 
-	namespace
-	{
-		void AddText (QString& text, const QStringList& urls)
-		{
-			Q_FOREACH (const QString& url, urls)
-				text += "<img src='" + url + "' alt='Image' /><br />";
-		}
-	}
-
 	void Plugin::handlePackageSelected (const QModelIndex& index)
 	{
 		QString text;
-		AddText (text, index.data (PackagesModel::PMRThumbnails).toStringList ());
+		auto AddText = [&text] (const QStringList& urls)
+		{
+			Q_FOREACH (const QString& url, urls)
+				text += "<img src='" + url + "' alt='Image' /><br />";
+		};
+
+		AddText (index.data (PackagesModel::PMRThumbnails).toStringList ());
 
 		QString descr = index.data (PackagesModel::PMRLongDescription).toString ();
 		if (!descr.contains ("<br"))
@@ -289,7 +286,7 @@ namespace LackMan
 
 		const QStringList& screens = index.data (PackagesModel::PMRScreenshots).toStringList ();
 		text += "<hr/>";
-		AddText (text, screens);
+		AddText (screens);
 
 		Ui_.Browser_->SetHtml (text);
 

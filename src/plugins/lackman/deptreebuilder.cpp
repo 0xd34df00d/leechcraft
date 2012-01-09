@@ -98,14 +98,12 @@ namespace LackMan
 				return;
 			}
 
-			std::pair<DepTreeBuilder::OutEdgeIterator_t,
-					DepTreeBuilder::OutEdgeIterator_t> range = boost::out_edges (u, G_);
+			auto range = boost::out_edges (u, G_);
 			switch (G_ [u].Type_)
 			{
 			case DepTreeBuilder::VertexInfo::TAll:
 				G_ [u].IsFulfilled_ = true;
-				for (DepTreeBuilder::OutEdgeIterator_t i = range.first;
-						i < range.second; ++i)
+				for (auto i = range.first; 	i < range.second; ++i)
 					if (!G_ [GetV (i)].IsFulfilled_)
 					{
 						G_ [u].IsFulfilled_ = false;
@@ -114,8 +112,7 @@ namespace LackMan
 				break;
 			case DepTreeBuilder::VertexInfo::TAny:
 				G_ [u].IsFulfilled_ = false;
-				for (DepTreeBuilder::OutEdgeIterator_t i = range.first;
-						i < range.second; ++i)
+				for (auto i = range.first; 	i < range.second; ++i)
 				{
 					if (BackEdges_.contains (*i))
 						continue;
@@ -186,17 +183,14 @@ namespace LackMan
 				* but that's too difficult.
 				*/
 
-			std::pair<DepTreeBuilder::InEdgeIterator_t,
-					DepTreeBuilder::InEdgeIterator_t> range = boost::in_edges (v, *G_);
-			for (DepTreeBuilder::InEdgeIterator_t i = range.first;
+			auto range = boost::in_edges (v, *G_);
+			for (auto i = range.first;
 					i < range.second; ++i)
 			{
 				Vertex u = (*E2V_) [*i].first;
-				std::pair<DepTreeBuilder::OutEdgeIterator_t,
-						DepTreeBuilder::OutEdgeIterator_t> sameLevel = boost::out_edges (u, *G_);
+				auto sameLevel = boost::out_edges (u, *G_);
 
-				for (DepTreeBuilder::OutEdgeIterator_t candIt = sameLevel.first;
-						candIt < sameLevel.second; ++candIt)
+				for (auto candIt = sameLevel.first; candIt < sameLevel.second; ++candIt)
 				{
 					Vertex candidate = (*E2V_) [*candIt].second;
 					if ((*G_) [candidate].IsFulfilled_)
@@ -276,10 +270,8 @@ namespace LackMan
 			return QStringList ();
 
 		QStringList result;
-		std::pair<OutEdgeIterator_t,
-				OutEdgeIterator_t> range =
-						boost::out_edges (*boost::vertices (Graph_).first, Graph_);
-		for (OutEdgeIterator_t i = range.first; i < range.second; ++i)
+		auto range = boost::out_edges (*boost::vertices (Graph_).first, Graph_);
+		for (auto i = range.first; i < range.second; ++i)
 		{
 			Vertex_t vertex = Edge2Vertices_ [*i].second;
 			if (!Graph_ [vertex].IsFulfilled_)
@@ -296,7 +288,7 @@ namespace LackMan
 
 	void DepTreeBuilder::InnerLoop (int packageId)
 	{
-		QList<Dependency> dependencies = Core::Instance ().GetDependencies (packageId);
+		const auto& dependencies = Core::Instance ().GetDependencies (packageId);
 
 		Q_FOREACH (const Dependency& dep, dependencies)
 		{
@@ -318,7 +310,7 @@ namespace LackMan
 			Edge_t edge = boost::add_edge (packageVertex, depVertex, Graph_).first;
 			Edge2Vertices_ [edge] = qMakePair (packageVertex, depVertex);
 
-			QList<ListPackageInfo> suitable = Core::Instance ().GetDependencyFulfillers (dep);
+			const auto& suitable = Core::Instance ().GetDependencyFulfillers (dep);
 
 			Q_FOREACH (const ListPackageInfo& lpi, suitable)
 			{

@@ -323,9 +323,13 @@ namespace LackMan
 		return result;
 	}
 
-	namespace
+	QDir Core::GetPackageDir (int packageId) const
 	{
-		void SafeCD (QDir& dir, const QString& subdir)
+		ListPackageInfo info = Storage_->GetSingleListPackageInfo (packageId);
+		QDir dir = QDir::home ();
+		dir.cd (".leechcraft");
+
+		auto SafeCD = [&dir] (const QString& subdir)
 		{
 			if (!dir.exists (subdir))
 				dir.mkdir (subdir);
@@ -333,30 +337,24 @@ namespace LackMan
 				throw std::runtime_error (QObject::tr ("Unable to cd into %1.")
 						.arg (subdir)
 						.toUtf8 ().constData ());
-		}
-	}
+		};
 
-	QDir Core::GetPackageDir (int packageId) const
-	{
-		ListPackageInfo info = Storage_->GetSingleListPackageInfo (packageId);
-		QDir dir = QDir::home ();
-		dir.cd (".leechcraft");
 		switch (info.Type_)
 		{
 		case PackageInfo::TPlugin:
-			SafeCD (dir, "plugins");
-			SafeCD (dir, "scriptable");
-			SafeCD (dir, info.Language_);
+			SafeCD ("plugins");
+			SafeCD ("scriptable");
+			SafeCD (info.Language_);
 			break;
 		case PackageInfo::TIconset:
-			SafeCD (dir, "icons");
+			SafeCD ("icons");
 			break;
 		case PackageInfo::TTranslation:
-			SafeCD (dir, "translations");
+			SafeCD ("translations");
 			break;
 		case PackageInfo::TData:
 		case PackageInfo::TTheme:
-			SafeCD (dir, "data");
+			SafeCD ("data");
 			break;
 		}
 		return dir;
@@ -717,7 +715,6 @@ namespace LackMan
 					return;
 				}
 			}
-
 
 		Q_FOREACH (QString packageName, PackageName2NewVersions_.keys ())
 		{
