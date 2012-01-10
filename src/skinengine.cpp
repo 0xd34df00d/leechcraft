@@ -66,6 +66,20 @@ QIcon SkinEngine::GetIcon (const QString& actionIcon, const QString& actionIconO
 	if (IconCache_.contains (namePair))
 		return IconCache_ [namePair];
 
+	if (QIcon::hasThemeIcon (actionIcon) &&
+			(actionIconOff.isEmpty () ||
+			 QIcon::hasThemeIcon (actionIconOff)))
+	{
+		QIcon result = QIcon::fromTheme (actionIcon);
+		if (!actionIconOff.isEmpty ())
+		{
+			const QIcon& off = QIcon::fromTheme (actionIconOff);
+			Q_FOREACH (const QSize& size, off.availableSizes ())
+				result.addPixmap (off.pixmap (size, QIcon::Normal, QIcon::On));
+		}
+		return result;
+	}
+
 	QString icon = GetIconName (actionIcon);
 
 	QIcon iconEntity;
