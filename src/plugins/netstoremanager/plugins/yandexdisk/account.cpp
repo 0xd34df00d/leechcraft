@@ -218,6 +218,7 @@ namespace YandexDisk
 
 	void Account::forceRefresh ()
 	{
+		emit gotListing (QList<QList<QStandardItem*>> ());
 		RefreshListing ();
 	}
 
