@@ -152,6 +152,10 @@ namespace YandexDisk
 				SIGNAL (uploadProgress (quint64, quint64, QString)),
 				this,
 				SIGNAL (upProgress (quint64, quint64, QString)));
+		connect (mgr,
+				SIGNAL (finished ()),
+				this,
+				SLOT (forceRefresh ()));
 	}
 
 	ListingOps Account::GetListingOps () const
