@@ -37,6 +37,22 @@ namespace NetStoreManager
 	, AM_ (am)
 	, Model_ (new QStandardItemModel (this))
 	{
+		QAction *copyURL = new QAction (tr ("Copy URL..."), this);
+		connect (copyURL,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (flCopyURL ()));
+		ProlongateFile_ = new QAction (tr ("Prolongate selected"), this);
+		connect (ProlongateFile_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (flProlongate ()));
+		DeleteFile_ = new QAction (tr ("Delete selected"), this);
+		connect (DeleteFile_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (flDelete ()));
+
 		Ui_.setupUi (this);
 		Ui_.FilesTree_->setModel (Model_);
 
@@ -58,12 +74,9 @@ namespace NetStoreManager
 		if (Ui_.AccountsBox_->count ())
 			on_AccountsBox__activated (0);
 
-		QAction *copyURL = new QAction (tr ("Copy URL..."), this);
-		connect (copyURL,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (flCopyURL ()));
 		Ui_.FilesTree_->addAction (copyURL);
+		Ui_.FilesTree_->addAction (ProlongateFile_);
+		Ui_.FilesTree_->addAction (DeleteFile_);
 	}
 
 	TabClassInfo ManagerTab::GetTabClassInfo () const
@@ -117,6 +130,31 @@ namespace NetStoreManager
 		}
 	}
 
+	IStorageAccount* ManagerTab::GetCurrentAccount () const
+	{
+		const int idx = Ui_.AccountsBox_->currentIndex ();
+		if (idx < 0)
+			return 0;
+		return Ui_.AccountsBox_->itemData (idx).value<IStorageAccount*> ();
+	}
+
+	void ManagerTab::CallOnSelection (std::function<void (ISupportFileListings*, const QList<QStringList>&)> func)
+	{
+		IStorageAccount *acc = GetCurrentAccount ();
+		if (!acc)
+			return;
+
+		QList<QStringList> ids;
+		Q_FOREACH (const auto& idx, Ui_.FilesTree_->selectionModel ()->selectedRows ())
+			ids << idx.data (ListingRole::ID).toStringList ();
+
+		if (ids.isEmpty ())
+			return;
+
+		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetObject ());
+		func (sfl, ids);
+	}
+
 	void ManagerTab::flCopyURL ()
 	{
 		auto item = Model_->itemFromIndex (Ui_.FilesTree_->currentIndex ());
@@ -132,31 +170,42 @@ namespace NetStoreManager
 		qApp->clipboard ()->setText (str, QClipboard::Selection);
 	}
 
-	void ManagerTab::on_AccountsBox__activated (int index)
+	void ManagerTab::flProlongate ()
 	{
-		if (index < 0)
+		CallOnSelection ([] (ISupportFileListings *sfl, const QList<QStringList>& ids) { sfl->Prolongate (ids); });
+	}
+
+	void ManagerTab::flDelete ()
+	{
+		CallOnSelection ([] (ISupportFileListings *sfl, const QList<QStringList>& ids) { sfl->Delete (ids); });
+	}
+
+	void ManagerTab::on_AccountsBox__activated (int)
+	{
+		IStorageAccount *acc = GetCurrentAccount ();
+		if (!acc)
 			return;
 
-		IStorageAccount *acc = Ui_.AccountsBox_->
-				itemData (index).value<IStorageAccount*> ();
 		const bool hasListings = acc->GetAccountFeatures () & AccountFeature::FileListings;
 		Ui_.Update_->setEnabled (hasListings);
 		if (!hasListings)
 			return;
 
 		on_Update__released ();
+
+		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetObject ());
+		ProlongateFile_->setEnabled (sfl->GetListingOps () & ListingOp::Prolongate);
+		DeleteFile_->setEnabled (sfl->GetListingOps () & ListingOp::Delete);
 	}
 
 	void ManagerTab::on_Update__released ()
 	{
-		const int idx = Ui_.AccountsBox_->currentIndex ();
-		if (idx < 0)
+		IStorageAccount *acc = GetCurrentAccount ();
+		if (!acc)
 			return;
 
 		Model_->clear ();
 
-		IStorageAccount *acc = Ui_.AccountsBox_->
-				itemData (idx).value<IStorageAccount*> ();
 		ISupportFileListings *sfl = qobject_cast<ISupportFileListings*> (acc->GetObject ());
 		sfl->RefreshListing ();
 		Model_->setHorizontalHeaderLabels (sfl->GetListingHeaders ());

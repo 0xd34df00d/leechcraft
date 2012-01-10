@@ -18,18 +18,21 @@
 
 #ifndef PLUGINS_NETSTOREMANAGER_MANAGERTAB_H
 #define PLUGINS_NETSTOREMANAGER_MANAGERTAB_H
+#include <functional>
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
 #include "ui_managertab.h"
 
 class QStandardItemModel;
 class QStandardItem;
+class QAction;
 
 namespace LeechCraft
 {
 namespace NetStoreManager
 {
 	class IStorageAccount;
+	class ISupportFileListings;
 	class AccountsManager;
 
 	class ManagerTab : public QWidget
@@ -45,6 +48,9 @@ namespace NetStoreManager
 
 		AccountsManager *AM_;
 		QStandardItemModel *Model_;
+
+		QAction *ProlongateFile_;
+		QAction *DeleteFile_;
 	public:
 		ManagerTab (const TabClassInfo&, AccountsManager*, QObject*);
 
@@ -52,9 +58,14 @@ namespace NetStoreManager
 		QObject* ParentMultiTabs ();
 		void Remove ();
 		QToolBar* GetToolBar () const;
+	private:
+		IStorageAccount* GetCurrentAccount () const;
+		void CallOnSelection (std::function<void (ISupportFileListings*, const QList<QStringList>&)>);
 	private slots:
 		void handleGotListing (const QList<QList<QStandardItem*>>&);
 		void flCopyURL ();
+		void flProlongate ();
+		void flDelete ();
 		void on_AccountsBox__activated (int);
 		void on_Update__released ();
 		void on_Upload__released ();
