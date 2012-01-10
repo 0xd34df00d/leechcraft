@@ -90,8 +90,12 @@ namespace NetStoreManager
 
 		acc->Upload (path);
 
+		auto plugin = qobject_cast<IStoragePlugin*> (acc->GetParentPlugin ());
+
 		QList<QStandardItem*> row;
-		row << new QStandardItem (tr ("Uploading %1 to %2..."));
+		row << new QStandardItem (tr ("Uploading %1 to %2...")
+					.arg (QFileInfo (path).fileName ())
+					.arg (plugin->GetStorageName ()));
 		row << new QStandardItem ();
 		row << new QStandardItem (tr ("Initializing..."));
 		ReprModel_->appendRow (row);
