@@ -32,53 +32,18 @@ namespace NetStoreManager
 namespace YandexDisk
 {
 	FLGetter::FLGetter (Account *acc)
-	: QObject (acc)
-	, A_ (acc)
-	, Mgr_ (new QNetworkAccessManager (this))
+	: ActorBase (acc)
 	{
-		connect (this,
-				SIGNAL (finished ()),
-				this,
-				SLOT (deleteLater ()),
-				Qt::QueuedConnection);
-		auto am = acc->GetAuthManager ();
-		connect (am,
-				SIGNAL (gotCookies (QList<QNetworkCookie>)),
-				this,
-				SLOT (handleGotCookies (QList<QNetworkCookie>)));
-
-		am->GetCookiesFor (acc->GetLogin (), acc->GetPassword ());
-
-		emit statusChanged (tr ("Authenticating..."));
 	}
 
-	void FLGetter::handleGotCookies (const QList<QNetworkCookie>& cookies)
+	QNetworkReply* FLGetter::MakeRequest ()
 	{
-		qDebug () << Q_FUNC_INFO;
-		Mgr_->cookieJar ()->setCookiesFromUrl (cookies, UpURL);
-
-		auto reply = Mgr_->get (A_->MakeRequest (QUrl ("http://narod.yandex.ru/disk/all/page1/?sort=cdate%20desc")));
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleGotList ()));
-
-		emit statusChanged (tr ("Getting storage..."));
+		emit statusChanged (tr ("Getting filelist..."));
+		return Mgr_->get (A_->MakeRequest (QUrl ("http://narod.yandex.ru/disk/all/page1/?sort=cdate%20desc")));
 	}
 
-	void FLGetter::handleGotList ()
+	void FLGetter::HandleReply (QNetworkReply *reply)
 	{
-		qDebug () << Q_FUNC_INFO;
-		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
-		if (reply->error () != QNetworkReply::NoError)
-		{
-			emit gotError (tr ("Error fetching file list: %1.")
-					.arg (reply->errorString ()));
-			emit finished ();
-			return;
-		}
-
 		QString page = reply->readAll ();
 		if (page.isEmpty ())
 		{

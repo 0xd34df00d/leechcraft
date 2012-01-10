@@ -20,7 +20,6 @@
 #include <QUrl>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
-#include <QNetworkReply>
 #include <QtDebug>
 #include "account.h"
 #include "authmanager.h"
@@ -33,55 +32,20 @@ namespace NetStoreManager
 namespace YandexDisk
 {
 	SimpleActor::SimpleActor (const QUrl& url, const QByteArray& post, Account *acc)
-	: QObject (acc)
-	, A_ (acc)
-	, Mgr_ (new QNetworkAccessManager (this))
+	: ActorBase (acc)
 	, URL_ (url)
 	, Post_ (post)
 	{
-		connect (this,
-				SIGNAL (finished ()),
-				this,
-				SLOT (deleteLater ()),
-				Qt::QueuedConnection);
-		auto am = acc->GetAuthManager ();
-		connect (am,
-				SIGNAL (gotCookies (QList<QNetworkCookie>)),
-				this,
-				SLOT (handleGotCookies (QList<QNetworkCookie>)));
-
-		am->GetCookiesFor (acc->GetLogin (), acc->GetPassword ());
-
-		emit statusChanged (tr ("Authenticating..."));
 	}
 
-	void SimpleActor::handleGotCookies (const QList<QNetworkCookie>& cookies)
+	QNetworkReply* SimpleActor::MakeRequest ()
 	{
-		qDebug () << Q_FUNC_INFO;
-		Mgr_->cookieJar ()->setCookiesFromUrl (cookies, UpURL);
-
-		auto reply = Mgr_->post (A_->MakeRequest (URL_), Post_);
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleFinished ()));
-
-		emit statusChanged (tr ("Getting storage..."));
+		emit statusChanged (tr ("Requesting action..."));
+		return Mgr_->post (A_->MakeRequest (URL_), Post_);
 	}
 
-	void SimpleActor::handleFinished ()
+	void SimpleActor::HandleReply (QNetworkReply*)
 	{
-		qDebug () << Q_FUNC_INFO;
-		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
-		if (reply->error () != QNetworkReply::NoError)
-		{
-			emit gotError (tr ("Error performing action: %1.")
-					.arg (reply->errorString ()));
-			emit finished ();
-			return;
-		}
-
 		emit finished ();
 	}
 }

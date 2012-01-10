@@ -16,11 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_NETSTOREMANAGER_PLUGINS_YANDEXDISK_FLGETTER_H
-#define PLUGINS_NETSTOREMANAGER_PLUGINS_YANDEXDISK_FLGETTER_H
+#ifndef PLUGINS_NETSTOREMANAGER_PLUGINS_YANDEXDISK_ACTORBASE_H
+#define PLUGINS_NETSTOREMANAGER_PLUGINS_YANDEXDISK_ACTORBASE_H
+#include <QObject>
 #include <QNetworkCookie>
-#include "actorbase.h"
-#include "flitem.h"
+
+class QNetworkAccessManager;
+class QNetworkReply;
 
 namespace LeechCraft
 {
@@ -30,16 +32,25 @@ namespace YandexDisk
 {
 	class Account;
 
-	class FLGetter : public ActorBase
+	class ActorBase : public QObject
 	{
 		Q_OBJECT
-	public:
-		FLGetter (Account*);
 	protected:
-		QNetworkReply* MakeRequest ();
-		void HandleReply (QNetworkReply*);
+		Account *A_;
+		QNetworkAccessManager *Mgr_;
+
+		ActorBase (Account*);
+
+		virtual QNetworkReply* MakeRequest () = 0;
+		virtual void HandleReply (QNetworkReply*) = 0;
+	protected slots:
+		virtual void handleGotCookies (const QList<QNetworkCookie>&);
+		virtual void handleReplyFinished ();
 	signals:
-		void gotFiles (const QList<FLItem>&);
+		void statusChanged (const QString&);
+		void gotError (const QString&);
+
+		void finished ();
 	};
 }
 }

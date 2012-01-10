@@ -18,11 +18,9 @@
 
 #ifndef PLUGINS_NETSTOREMANAGER_PLUGINS_YANDEXDISK_SIMPLEACTOR_H
 #define PLUGINS_NETSTOREMANAGER_PLUGINS_YANDEXDISK_SIMPLEACTOR_H
-#include <QObject>
 #include <QNetworkCookie>
 #include <interfaces/netstoremanager/isupportfilelistings.h>
-
-class QNetworkAccessManager;
+#include "actorbase.h"
 
 namespace LeechCraft
 {
@@ -32,24 +30,15 @@ namespace YandexDisk
 {
 	class Account;
 
-	class SimpleActor : public QObject
+	class SimpleActor : public ActorBase
 	{
-		Q_OBJECT
-
-		Account *A_;
-		QNetworkAccessManager *Mgr_;
-
 		QUrl URL_;
 		QByteArray Post_;
 	public:
 		SimpleActor (const QUrl&, const QByteArray&, Account*);
-	private slots:
-		void handleGotCookies (const QList<QNetworkCookie>&);
-		void handleFinished ();
-	signals:
-		void statusChanged (const QString&);
-		void gotError (const QString&);
-		void finished ();
+	protected:
+		QNetworkReply* MakeRequest ();
+		void HandleReply (QNetworkReply*);
 	};
 }
 }
