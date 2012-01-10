@@ -765,6 +765,9 @@ namespace Snails
 
 	void AccountThreadWorker::timeoutDisconnect ()
 	{
+		if (!CachedStore_)
+			return;
+
 		CachedStore_->disconnect ();
 		CachedStore_ = vmime::ref<vmime::net::store> ();
 	}
