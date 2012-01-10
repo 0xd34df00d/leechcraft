@@ -29,16 +29,32 @@ namespace NetStoreManager
 {
 	enum ListingRole
 	{
-		URL = Qt::UserRole + 20
+		ID = Qt::UserRole + 20,
+		URL
 	};
+
+	enum ListingOp
+	{
+		NoneOp = 0x00,
+		Delete = 0x01,
+		Prolongate = 0x02,
+		ToggleProtected = 0x04
+	};
+
+	Q_DECLARE_FLAGS (ListingOps, ListingOp);
 
 	class ISupportFileListings
 	{
 	public:
 		virtual ~ISupportFileListings () {}
 
+		virtual ListingOps GetListingOps () const = 0;
+
 		virtual void RefreshListing () = 0;
 		virtual QStringList GetListingHeaders () const = 0;
+
+		virtual void Delete (const QList<QStringList>& id) = 0;
+		virtual void Prolongate (const QList<QStringList>& id) = 0;
 	protected:
 		virtual void gotListing (const QList<QList<QStandardItem*>>&) = 0;
 	};
@@ -47,5 +63,6 @@ namespace NetStoreManager
 
 Q_DECLARE_INTERFACE (LeechCraft::NetStoreManager::ISupportFileListings,
 		"org.Deviant.LeechCraft.NetStoreManager.ISupportFileListings/1.0");
+Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::NetStoreManager::ListingOps);
 
 #endif

@@ -27,6 +27,7 @@
 #include "uploadmanager.h"
 #include "authmanager.h"
 #include "flgetter.h"
+#include "simpleactor.h"
 
 namespace LeechCraft
 {
@@ -153,6 +154,11 @@ namespace YandexDisk
 				SIGNAL (upProgress (quint64, quint64, QString)));
 	}
 
+	ListingOps Account::GetListingOps () const
+	{
+		return ListingOp::Delete | ListingOp::Prolongate | ListingOp::ToggleProtected;
+	}
+
 	void Account::RefreshListing ()
 	{
 		auto getter = new FLGetter (this);
@@ -172,6 +178,16 @@ namespace YandexDisk
 		return result;
 	}
 
+	void Account::Delete (const QList<QStringList>& ids)
+	{
+		SimpleAction ("delete", ids);
+	}
+
+	void Account::Prolongate (const QList<QStringList>& ids)
+	{
+		SimpleAction ("prolongate", ids);
+	}
+
 	QNetworkRequest Account::MakeRequest (const QUrl& url) const
 	{
 		QNetworkRequest rq (url);
@@ -179,6 +195,30 @@ namespace YandexDisk
 		rq.setRawHeader ("Accept", "*/*");
 		rq.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 		return rq;
+	}
+
+	void Account::SimpleAction (const QString& act, const QList<QStringList>& ids)
+	{
+		if (ids.isEmpty ())
+			return;
+
+		QByteArray post = "action=" + act.toLatin1 ();
+		Q_FOREACH (const QStringList& id, ids)
+			post += QString ("&fid=%1&token-%1=%2")
+					.arg (id.at (0))
+					.arg (id.at (1))
+					.toUtf8 ();
+
+		auto actor = new SimpleActor (QUrl ("http://narod.yandex.ru/disk/all"), post, this);
+		connect (actor,
+				SIGNAL (finished ()),
+				this,
+				SLOT (forceRefresh ()));
+	}
+
+	void Account::forceRefresh ()
+	{
+		RefreshListing ();
 	}
 
 	void Account::handleFileList (const QList<FLItem>& items)
@@ -197,6 +237,12 @@ namespace YandexDisk
 
 			row.first ()->setIcon (item.Icon_);
 			row.first ()->setData (QUrl (item.URL_), ListingRole::URL);
+
+			QStringList id;
+			id << item.ID_
+				<< item.Token_
+				<< item.PassToken_;
+			row.first ()->setData (id, ListingRole::ID);
 
 			treeItems << row;
 		}

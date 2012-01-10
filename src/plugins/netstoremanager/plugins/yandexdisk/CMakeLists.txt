@@ -17,6 +17,7 @@ SET (YANDEXDISK_SRCS
 	flgetter.cpp
 	flitem.cpp
 	common.cpp
+	simpleactor.cpp
 	)
 SET (YANDEXDISK_HEADERS
 	yandexdisk.h
@@ -27,6 +28,7 @@ SET (YANDEXDISK_HEADERS
 	flgetter.h
 	flitem.h
 	common.h
+	simpleactor.h
 	)
 SET (YANDEXDISK_FORMS
 	)

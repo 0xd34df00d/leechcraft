@@ -72,11 +72,19 @@ namespace YandexDisk
 		AccountFeatures GetAccountFeatures () const;
 		void Upload (const QString&);
 
+		ListingOps GetListingOps () const;
+
 		void RefreshListing ();
 		QStringList GetListingHeaders () const;
 
+		void Delete (const QList<QStringList>&);
+		void Prolongate (const QList<QStringList>&);
+
 		QNetworkRequest MakeRequest (const QUrl& = QUrl ()) const;
+	private:
+		void SimpleAction (const QString&, const QList<QStringList>&);
 	private slots:
+		void forceRefresh ();
 		void handleFileList (const QList<FLItem>&);
 	signals:
 		void upStatusChanged (const QString&, const QString&);
