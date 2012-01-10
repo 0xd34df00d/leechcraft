@@ -61,6 +61,7 @@ namespace NetStoreManager
 	private:
 		IStorageAccount* GetCurrentAccount () const;
 		void CallOnSelection (std::function<void (ISupportFileListings*, const QList<QStringList>&)>);
+		void ClearFilesModel ();
 	private slots:
 		void handleGotListing (const QList<QList<QStandardItem*>>&);
 		void flCopyURL ();

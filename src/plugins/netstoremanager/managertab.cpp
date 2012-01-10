@@ -99,37 +99,6 @@ namespace NetStoreManager
 		return 0;
 	}
 
-	void ManagerTab::handleGotListing (const QList<QList<QStandardItem*>>& items)
-	{
-		const int idx = Ui_.AccountsBox_->currentIndex ();
-		if (idx < 0 || items.isEmpty ())
-			return;
-
-		IStorageAccount *acc = Ui_.AccountsBox_->
-				itemData (idx).value<IStorageAccount*> ();
-		if (sender () != acc->GetObject ())
-			return;
-
-		QFontMetrics fm = Ui_.FilesTree_->fontMetrics ();
-
-		QMap<int, int> sizes;
-		Q_FOREACH (auto row, items)
-		{
-			Model_->appendRow (row);
-
-			for (int i = 0; i < row.size (); ++i)
-				sizes [i] = std::max (sizes [i], fm.width (row.at (i)->text ()));
-		}
-
-		Q_FOREACH (auto idx, sizes.keys ())
-		{
-			auto hdr = Ui_.FilesTree_->header ();
-			const int size = hdr->sectionSize (idx);
-			if (size < sizes [idx])
-				hdr->resizeSection (idx, sizes [idx]);
-		}
-	}
-
 	IStorageAccount* ManagerTab::GetCurrentAccount () const
 	{
 		const int idx = Ui_.AccountsBox_->currentIndex ();
@@ -153,6 +122,50 @@ namespace NetStoreManager
 
 		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetObject ());
 		func (sfl, ids);
+	}
+
+	void ManagerTab::ClearFilesModel ()
+	{
+		Model_->clear ();
+
+		IStorageAccount *acc = GetCurrentAccount ();
+		if (!acc)
+			return;
+
+		auto sfl = qobject_cast<ISupportFileListings*> (acc->GetObject ());
+		Model_->setHorizontalHeaderLabels (sfl->GetListingHeaders ());
+	}
+
+	void ManagerTab::handleGotListing (const QList<QList<QStandardItem*>>& items)
+	{
+		IStorageAccount *acc = GetCurrentAccount ();
+		if (!acc || sender () != acc->GetObject ())
+			return;
+
+		if (items.isEmpty ())
+		{
+			ClearFilesModel ();
+			return;
+		}
+
+		QFontMetrics fm = Ui_.FilesTree_->fontMetrics ();
+
+		QMap<int, int> sizes;
+		Q_FOREACH (auto row, items)
+		{
+			Model_->appendRow (row);
+
+			for (int i = 0; i < row.size (); ++i)
+				sizes [i] = std::max (sizes [i], fm.width (row.at (i)->text ()));
+		}
+
+		Q_FOREACH (auto idx, sizes.keys ())
+		{
+			auto hdr = Ui_.FilesTree_->header ();
+			const int size = hdr->sectionSize (idx);
+			if (size < sizes [idx])
+				hdr->resizeSection (idx, sizes [idx]);
+		}
 	}
 
 	void ManagerTab::flCopyURL ()
