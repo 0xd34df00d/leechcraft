@@ -31,7 +31,7 @@ namespace NetStoreManager
 {
 	UpManager::UpManager (QObject *parent)
 	: QObject (parent)
-	, ReprModel_ (new QStandardItemModel (this))
+	, ReprModel_ (new QStandardItemModel (0, 3, this))
 	{
 	}
 
