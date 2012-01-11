@@ -5,6 +5,21 @@ Links to the corresponding development digests are also given for the
 relevant blocks of changes, so one could easily lookup 
 
 !!! HEAD
+!!! 0.4.98
+! Announce ( http://leechcraft.org/leechcraft-0.4.98-is-released ):
+* Aggregator: fixed incorrect boost.optional usage.
+* Aggregator: fixed segfault on startup due to incorrect DB settings.
+* Azoth: proper icon for Draw Attention action.
+* Azoth: fixed segfault when opening chat with entries that are gone.
+* Azoth: correct context menus on entries with non-latin names.
+* Azoth Acetamide: fixed join/leave/kick messages (fixes segfaults with
+  AdiumStyles).
+* Azoth AS: fixed /me-related bug.
+* Azoth AS: fixed self-closing tags in themes.
+* CSTP: correctly set UA from settings.
+* Kinotify: seemingly fixed parenting-related bugs.
+* Poshuku: fixed text margins in URL edit.
+
 !!! 0.4.97
 ! Announce ( http://leechcraft.org/leechcraft-0.4.97-is-released ):
 * Aggregator: updated the list of feeds.
