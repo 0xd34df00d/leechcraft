@@ -224,7 +224,7 @@ namespace Poshuku
 					(rect ().bottom () + 1 - bmSz.height ()) / 2);
 		}
 
-		const QMargins& margins = textMargins();
+		const QMargins& margins = textMargins ();
 		setTextMargins (margins.left (),
 				margins.top (),
 				realBorder + frameWidth,
