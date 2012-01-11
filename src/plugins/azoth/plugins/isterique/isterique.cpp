@@ -63,7 +63,7 @@ namespace Isterique
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		return QIcon (":/plugins/azoth/plugins/isterique/resources/images/isterique.svg");
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const

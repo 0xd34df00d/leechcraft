@@ -18,6 +18,7 @@
 
 #ifndef PLUGINS_AZOTH_ACTIONSMANAGER_H
 #define PLUGINS_AZOTH_ACTIONSMANAGER_H
+#include <boost/function.hpp>
 #include <QObject>
 #include <QHash>
 #include <QMetaType>
@@ -30,6 +31,7 @@ namespace LeechCraft
 namespace Azoth
 {
 	class ICLEntry;
+	class IAuthable;
 
 	class ActionsManager : public QObject
 	{
@@ -58,6 +60,9 @@ namespace Azoth
 
 		void HandleEntryRemoved (ICLEntry*);
 	private:
+		QString GetReason (const QString& id, const QString& text);
+		void ManipulateAuth (const QString& id, const QString& text,
+				boost::function<void (IAuthable*, const QString&)> func);
 		void CreateActionsForEntry (ICLEntry*);
 		void UpdateActionsForEntry (ICLEntry*);
 	private slots:

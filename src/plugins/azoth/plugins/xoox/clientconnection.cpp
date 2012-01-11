@@ -1014,29 +1014,28 @@ namespace Xoox
 		QString resource;
 		Split (pres.from (), &jid, &resource);
 
-		if (!JID2CLEntry_.contains (jid))
+		if (jid == OurBareJID_)
+		{
+			if (OurJID_ == pres.from ())
+				emit statusChanged (PresenceToStatus (pres));
+
+			if (pres.type () == QXmppPresence::Available)
+			{
+				SelfContact_->SetClientInfo (resource, pres);
+				SelfContact_->UpdatePriority (resource, pres.status ().priority ());
+				SelfContact_->SetStatus (PresenceToStatus (pres), resource);
+			}
+			else
+				SelfContact_->RemoveVariant (resource);
+
+			return;
+		}
+		else if (!JID2CLEntry_.contains (jid))
 		{
 			if (ODSEntries_.contains (jid))
 				ConvertFromODS (jid, Client_->rosterManager ().getRosterEntry (jid));
 			else
-			{
-				if (OurJID_ == pres.from ())
-					emit statusChanged (PresenceToStatus (pres));
-
-				if (jid == OurBareJID_)
-				{
-					if (pres.type () == QXmppPresence::Available)
-					{
-						SelfContact_->SetClientInfo (resource, pres);
-						SelfContact_->UpdatePriority (resource, pres.status ().priority ());
-						SelfContact_->SetStatus (PresenceToStatus (pres), resource);
-					}
-					else
-						SelfContact_->RemoveVariant (resource);
-				}
-
 				return;
-			}
 		}
 
 		JID2CLEntry_ [jid]->SetClientInfo (resource, pres);
@@ -1118,7 +1117,9 @@ namespace Xoox
 		QString resource;
 		Split (from, &bare, &resource);
 
-		if (!JID2CLEntry_.contains (bare))
+		if (bare == OurBareJID_)
+			SelfContact_->HandlePEPEvent (resource, event);
+		else if (!JID2CLEntry_.contains (bare))
 		{
 			if (JID2CLEntry_.isEmpty ())
 				InitialEventQueue_ << qMakePair (from, event->Clone ());
@@ -1127,10 +1128,9 @@ namespace Xoox
 						<< "unknown PEP event source"
 						<< from
 						<< JID2CLEntry_.keys ();
-			return;
 		}
-
-		JID2CLEntry_ [bare]->HandlePEPEvent (resource, event);
+		else
+			JID2CLEntry_ [bare]->HandlePEPEvent (resource, event);
 	}
 
 	void ClientConnection::handlePEPAvatarUpdated (const QString& from, const QImage& image)

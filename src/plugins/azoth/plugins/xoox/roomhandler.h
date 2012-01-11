@@ -67,7 +67,7 @@ namespace Xoox
 		void SetSubject (const QString&);
 		void Join ();
 		void Leave (const QString& msg, bool remove = true);
-		RoomParticipantEntry* GetSelf () const;
+		RoomParticipantEntry* GetSelf ();
 		QString GetOurNick () const;
 		void SetOurNick (const QString&);
 

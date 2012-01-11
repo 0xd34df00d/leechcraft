@@ -951,6 +951,10 @@ namespace Azoth
 				this,
 				SLOT (handleEntryPermsChanged ()));
 		connect (clEntry->GetObject (),
+				SIGNAL (entryGenerallyChanged ()),
+				this,
+				SLOT (handleEntryGenerallyChanged ()));
+		connect (clEntry->GetObject (),
 				SIGNAL (avatarChanged (const QImage&)),
 				this,
 				SLOT (invalidateSmoothAvatarCache ()));
@@ -1446,47 +1450,6 @@ namespace Azoth
 				i < rc; ++i)
 			sum += category->child (i)->data (CLRUnreadMsgCount).toInt ();
 		category->setData (sum, CLRUnreadMsgCount);
-	}
-
-	QString Core::GetReason (const QString&, const QString& text)
-	{
-		return QInputDialog::getText (0,
-					tr ("Enter reason"),
-					text);
-	}
-
-	void Core::ManipulateAuth (const QString& id, const QString& text,
-			boost::function<void (IAuthable*, const QString&)> func)
-	{
-		QAction *action = qobject_cast<QAction*> (sender ());
-		if (!action)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< sender ()
-					<< "is not a QAction";
-			return;
-		}
-
-		ICLEntry *entry = action->
-				property ("Azoth/Entry").value<ICLEntry*> ();
-		IAuthable *authable =
-				qobject_cast<IAuthable*> (entry->GetObject ());
-		if (!authable)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< entry->GetObject ()
-					<< "doesn't implement IAuthable";
-			return;
-		}
-
-		QString reason;
-		if (action->property ("Azoth/WithReason").toBool ())
-		{
-			reason = GetReason (id, text.arg (entry->GetEntryName ()));
-			if (reason.isEmpty ())
-				return;
-		}
-		func (authable, reason);
 	}
 
 	void Core::RemoveCLItem (QStandardItem *item)
@@ -2114,6 +2077,22 @@ namespace Azoth
 			item->setData (name, CLRAffiliation);
 			item->setToolTip (tip);
 		}
+	}
+
+	void Core::handleEntryGenerallyChanged ()
+	{
+		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< sender ()
+					<< "could not be casted to ICLEntry";
+			return;
+		}
+
+		const QString& tip = MakeTooltipString (entry);
+		Q_FOREACH (QStandardItem *item, Entry2Items_ [entry])
+			item->setToolTip (tip);
 	}
 
 	void Core::handleEntryGotMessage (QObject *msgObj)

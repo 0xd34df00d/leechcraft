@@ -18,7 +18,6 @@
 
 #ifndef PLUGINS_AZOTH_CORE_H
 #define PLUGINS_AZOTH_CORE_H
-#include <boost/function.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <QObject>
 #include <QSet>
@@ -298,14 +297,6 @@ namespace Azoth
 		 * the given amount, which may be negative.
 		 */
 		void IncreaseUnreadCount (ICLEntry *entry, int amount = 1);
-
-		/** Calls the given func on the sending entry, asking for reason
-		 * for the action, if it should. The text may contain %1, in
-		 * which case it'd be replaced with the result if
-		 * ICLEntry::GetEntryName().
-		 */
-		void ManipulateAuth (const QString& id, const QString& text,
-				boost::function<void (IAuthable*, const QString&)> func);
 	private:
 		/** Adds the protocol object. The object must implement
 		 * IProtocolPlugin interface.
@@ -369,14 +360,6 @@ namespace Azoth
 		 * items for the chain of parents of the given item.
 		 */
 		void RecalculateUnreadForParents (QStandardItem*);
-
-		/** Asks user for reason for the given action, possibly showing
-		 * the given text. The id may be used to distinguish between
-		 * different reason contexts (like kick/ban and authentication
-		 * request), for example, to keep history of reasons and to
-		 * allow the user to choose one.
-		 */
-		QString GetReason (const QString& id, const QString& text);
 
 		void NotifyWithReason (QObject*, const QString&,
 				const char*, const QString&,
@@ -469,6 +452,8 @@ namespace Azoth
 		 * sender() will be used.
 		 */
 		void handleEntryPermsChanged (ICLEntry *entry = 0);
+
+		void handleEntryGenerallyChanged ();
 
 		/** Handles the message receival from contact list entries.
 		 */

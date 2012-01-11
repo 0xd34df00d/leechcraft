@@ -82,7 +82,7 @@ namespace Azoth
 
 	void ChatTabWebView::HandleNick (QMenu *menu, const QUrl& nickUrl)
 	{
-		const QString& entryId = nickUrl.queryItemValue ("entryId").toUtf8 ();
+		const QString& entryId = QUrl::fromPercentEncoding (nickUrl.queryItemValue ("entryId").toUtf8 ());
 		if (entryId.isEmpty ())
 			return;
 

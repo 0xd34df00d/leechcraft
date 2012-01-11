@@ -5,6 +5,88 @@ Links to the corresponding development digests are also given for the
 relevant blocks of changes, so one could easily lookup 
 
 !!! HEAD
+!!! 0.4.98
+! Announce ( http://leechcraft.org/leechcraft-0.4.98-is-released ):
+* Aggregator: fixed incorrect boost.optional usage.
+* Aggregator: fixed segfault on startup due to incorrect DB settings.
+* Azoth: proper icon for Draw Attention action.
+* Azoth: fixed segfault when opening chat with entries that are gone.
+* Azoth: correct context menus on entries with non-latin names.
+* Azoth Acetamide: fixed join/leave/kick messages (fixes segfaults with
+  AdiumStyles).
+* Azoth AS: fixed /me-related bug.
+* Azoth AS: fixed self-closing tags in themes.
+* CSTP: correctly set UA from settings.
+* Kinotify: seemingly fixed parenting-related bugs.
+* Poshuku: fixed text margins in URL edit.
+
+!!! 0.4.97
+! Announce ( http://leechcraft.org/leechcraft-0.4.97-is-released ):
+* Aggregator: updated the list of feeds.
+* Azoth: fast change status button offline by default.
+* Azoth: added perr.svg to Likey iconset.
+* Azoth: fixed drawing groups heading.
+* Azoth AdiumStyles: detect outgoing messages in MUCs.
+* Azoth ChatHistory: select proper history item.
+* Azoth Xoox: fixed Ad-Hoc commands.
+* Azoth plugins: more plugin icons.
+* BitTorrent: optimized updating pieces model.
+* BitTorrent: optimized calculating interesting pieces.
+* Core: correctly handle arguments from local socket.
+* CSTP: fixed handling redirections for internal tasks.
+* EiskaltDC++: fixed building with Boost-1.48 and later.
+* Poshuku OB: sync fixes.
+* Poshuku OB RIL: fixed uploading empty bookmarks.
+
+!!! 0.4.96
+! Announce ( http://leechcraft.org/leechcraft-0.4.96-is-released ):
+* Azoth: fixed auth issues.
+* Azoth AdiumStyles: fixed /me-messages.
+* Azoth AdiumStyles: support styles using tags other than div for
+  insertion.
+* Azoth Metacontacts: fixed DnD of a contact on itself.
+* Azoth Xoox: members-moderators are now able to kick participants.
+* Azoth Xoox: self PEP events are also handled now.
+* Azoth Xtazy: fixed handling of players started after LC.
+* Poshuku OB: fixed readding accounts once they are deleted.
+* SecMan SecureStorage: fixed build.
+
+!!! 0.4.95
+! Devel digest #19 ( http://leechcraft.org/devel-digest-19 ):
+* Azoth: show top used status on Fast Change Status button.
+* Azoth Xoox: handle xmpp:...?message links.
+* EiskaltDC++: fixed build with CMake 2.8.6 and later.
+* Overall: optimized timers in LeechCraft so that CPU is woken up 4-5
+  times rarely.
+* Poshuku: forcefully disabled NPAPI plugins.
+* Poshuku OB: kludges for Qt 4.8 and later.
+
+! Devel digest #18 ( http://leechcraft.org/devel-digest-18 ):
+* Aggregator: added support for itpc schemes.
+* Aggregator: fixed item view not being updates on some feeds.
+* Azoth: context menu for nicknames in Azoth.
+* Azoth: optionally append a message whenever participant leaves.
+* Azoth: optionally disable sending leave notification.
+* Azoth: configurable post-address text in Azoth.
+* Azoth: "Quote" action in chat view context menu.
+* Azoth: fixed leaking search widgets.
+* Azoth: fixed Clear chat behavior.
+* Azoth Acetamide: added support for SSL connections.
+* Azoth OTRoid: improved interoperability with other plugins.
+* Azoth StandardStyles: added Gajim style.
+* Azoth StandardStyles: fixed pre/post-nick colors.
+* Azoth Xoox: fixed segfault when clearing mood.
+* Core: open URLs externally if they aren't handled internally.
+* Core: fixed toolbar visibility control.
+* Core: use automoc feature of CMake 2.8.6 and later.
+* LackMan: fixed package deinstallation.
+* LackMan: fixed segfault on package installation cancelling.
+* Popishu: added Octave and Matlab lexers.
+* Popishu: line numbers & wrapping are enabled by default.
+* Poshuku FatApe: fixed fetching scripts.
+* Poshuku FatApe: fixed userscripts detection.
+* Poshuku Pogooglue: new plugin for searching selected text in Google.
+
 ! Devel digest #17 ( http://leechcraft.org/devel-digest-17 ):
 * AdvancedNotifications: support toggling audio notifications from QL.
 * Aggregator: support removing individual channels by user.

@@ -75,6 +75,16 @@ namespace AdiumStyles
 
 		return QUrl::fromLocalFile (path);
 	}
+	
+	namespace
+	{
+		void FixSelfClosing (QString& str)
+		{
+			QRegExp rx ("<div([^>]*)/>");
+			rx.setMinimal (true);
+			str.replace (rx, "<div\\1></div>");
+		}
+	}
 
 	QString AdiumStyleSource::GetHTMLTemplate (const QString& srcPack,
 			QObject *entryObj, QWebFrame *frame) const
@@ -139,8 +149,9 @@ namespace AdiumStyles
 		}
 
 		QString result;
-		result = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">";
-		result += "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" /><style type=\"text/css\">";
+		result = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
+		result += "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">";
+		result += "<html xmlns=\"http://www.w3.org/1999/xhtml\"><head><style type=\"text/css\">";
 		result += cssStr + varCssStr;
 		result += "</style><title></title></head><body>";
 		result += QString::fromUtf8 (header->readAll ());
@@ -162,8 +173,25 @@ namespace AdiumStyles
 		if (result.contains ("%incomingIconPath%"))
 			result.replace ("%incomingIconPath%",
 					Util::GetAsBase64Src (entry->GetAvatar ()));
+			
+		FixSelfClosing (result);
 
 		return result;
+	}
+
+	namespace
+	{
+		IMessage::Direction GetMsgDirection (IMessage *msg)
+		{
+			if (msg->GetMessageType () != IMessage::MTMUCMessage)
+				return msg->GetDirection ();
+
+			IMUCEntry *muc = qobject_cast<IMUCEntry*> (msg->ParentCLEntry ());
+			ICLEntry *part = qobject_cast<ICLEntry*> (msg->OtherPart ());
+			return muc->GetNick () == part->GetEntryName () ?
+					IMessage::DOut :
+					IMessage::DIn;
+		}
 	}
 
 	bool AdiumStyleSource::AppendMessage (QWebFrame *frame,
@@ -188,16 +216,17 @@ namespace AdiumStyles
 			return false;
 		}
 
-		const bool in = msg->GetDirection () == IMessage::DIn;
-		const QString& prefix = pack + "/Contents/Resources/" +
-				(in ? "Incoming" : "Outgoing") +
-				'/';
+		const bool in = GetMsgDirection (msg) == IMessage::DIn;
 
 		QObject *kindaSender = in ? msg->OtherPart () : reinterpret_cast<QObject*> (42);
 		const bool isNextMsg = Frame2LastContact_.contains (frame) &&
 				kindaSender == Frame2LastContact_ [frame];
 		const bool isSlashMe = msg->GetBody ()
 				.trimmed ().startsWith ("/me ");
+		const QString& prefix = pack + "/Contents/Resources/" +
+				(in || isSlashMe ? "Incoming" : "Outgoing") +
+				'/';
+
 		QString filename;
 		if ((msg->GetMessageType () == IMessage::MTChatMessage ||
 					msg->GetMessageType () == IMessage::MTMUCMessage) &&
@@ -213,6 +242,8 @@ namespace AdiumStyles
 			Frame2LastContact_.remove (frame);
 		else if (!isNextMsg)
 			Frame2LastContact_ [frame] = kindaSender;
+
+		qDebug () << filename << msg->GetBody ();
 
 		Util::QIODevice_ptr content = StylesLoader_->
 				Load (QStringList (prefix + filename));
@@ -248,7 +279,8 @@ namespace AdiumStyles
 			return false;
 		}
 
-		const QString& templ = QString::fromUtf8 (content->readAll ());
+		QString templ = QString::fromUtf8 (content->readAll ());
+		FixSelfClosing (templ);
 		const QString& body = ParseTemplate (templ, prefix, frame, msgObj, info);
 		if (isNextMsg)
 			chat.setOuterXml (body);

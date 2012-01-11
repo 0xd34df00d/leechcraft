@@ -35,8 +35,8 @@ namespace ReadItLater
 	, Login_ (login)
 	, ParentService_ (parent)
 	, IsSyncing_ (false)
-	, LastUpload_ (QDateTime::currentDateTime ())
-	, LastDownload_ (QDateTime::currentDateTime ())
+	, LastUpload_ (QDateTime::fromString ("01.01.1980", "ddMMyyyy"))
+	, LastDownload_ (QDateTime::fromString ("01.01.1980", "ddMMyyyy"))
 	{
 	}
 

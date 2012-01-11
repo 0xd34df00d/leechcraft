@@ -707,15 +707,23 @@ namespace LeechCraft
 				std::vector<libtorrent::peer_info> peerInfos;
 				Handles_.at (CurrentTorrent_).Handle_.get_peer_info (peerInfos);
 
-				libtorrent::bitfield localPieces = Handles_.at (CurrentTorrent_).Handle_.status ().pieces;
+				const libtorrent::bitfield& localPieces = Handles_.at (CurrentTorrent_).Handle_.status ().pieces;
+				QList<int> ourMissing;
+				for (libtorrent::bitfield::const_iterator i = localPieces.begin (), end = localPieces.end (); i != end; ++i)
+				{
+					const bool res = *i;
+					if (!res)
+						ourMissing << res;
+				}
 
 				for (size_t i = 0; i < peerInfos.size (); ++i)
 				{
 					const libtorrent::peer_info& pi = peerInfos [i];
 
 					int interesting = 0;
-					for (size_t j = 0; j < localPieces.size (); ++j)
-						interesting += (pi.pieces [j] && !localPieces [j]);
+					Q_FOREACH (const int mis, ourMissing)
+						if (pi.pieces [mis])
+							++interesting;
 
 					PeerInfo ppi =
 					{
@@ -1181,7 +1189,7 @@ namespace LeechCraft
 				if (!CheckValidity (CurrentTorrent_))
 					return QString ();
 
-				std::string result = libtorrent::make_magnet_uri (Handles_ [CurrentTorrent_].Handle_);
+				const std::string& result = libtorrent::make_magnet_uri (Handles_ [CurrentTorrent_].Handle_);
 				return QString::fromStdString (result);
 			}
 

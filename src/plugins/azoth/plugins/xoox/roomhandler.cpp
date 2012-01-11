@@ -537,16 +537,9 @@ namespace Xoox
 			RemoveThis ();
 	}
 
-	RoomParticipantEntry* RoomHandler::GetSelf () const
+	RoomParticipantEntry* RoomHandler::GetSelf ()
 	{
-		Q_FOREACH (QObject *partObj, GetParticipants ())
-		{
-			RoomParticipantEntry *part =
-					qobject_cast<RoomParticipantEntry*> (partObj);
-			if (part->GetEntryName () == Room_->nickName ())
-				return part;
-		}
-		return 0;
+		return GetParticipantEntry (Room_->nickName ()).get ();
 	}
 
 	QString RoomHandler::GetOurNick () const
