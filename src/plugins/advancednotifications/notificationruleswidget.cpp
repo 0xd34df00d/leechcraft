@@ -406,6 +406,9 @@ namespace AdvancedNotifications
 
 	void NotificationRulesWidget::handleItemChanged (QStandardItem *item)
 	{
+		if (item->column ())
+			return;
+
 		const int idx = item->row ();
 		const bool newState = item->checkState () == Qt::Checked;
 
