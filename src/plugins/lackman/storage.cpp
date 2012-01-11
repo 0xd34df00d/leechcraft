@@ -759,7 +759,7 @@ namespace LackMan
 		return result;
 	}
 
-	QMap<QString, QList<ListPackageInfo> > Storage::GetListPackageInfos ()
+	QMap<QString, QList<ListPackageInfo>> Storage::GetListPackageInfos ()
 	{
 		if (!QueryGetListPackageInfos_.exec ())
 		{
@@ -767,7 +767,7 @@ namespace LackMan
 			throw std::runtime_error ("Query execution failed");
 		}
 
-		QMap<QString, QList<ListPackageInfo> > result;
+		QMap<QString, QList<ListPackageInfo>> result;
 		while (QueryGetListPackageInfos_.next ())
 		{
 			int packageId = QueryGetListPackageInfos_.value (0).toInt ();
@@ -828,7 +828,7 @@ namespace LackMan
 			throw std::runtime_error ("Query execution failed");
 		}
 
-		QMap<QString, QList<ListPackageInfo> > result;
+		QMap<QString, QList<ListPackageInfo>> result;
 		if (!QueryGetSingleListPackageInfo_.next ())
 		{
 			qWarning () << Q_FUNC_INFO

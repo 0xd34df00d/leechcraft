@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,6 +68,7 @@ namespace Azoth
 	private slots:
 		void handleActionOpenChatTriggered ();
 		void handleActionDrawAttention ();
+		void handleActionSendFile ();
 		void handleActionRenameTriggered ();
 		void handleActionChangeGroupsTriggered ();
 		void handleActionRemoveTriggered ();
@@ -82,6 +83,8 @@ namespace Azoth
 		void handleActionVCardTriggered ();
 		void handleActionInviteTriggered ();
 		void handleActionLeaveTriggered ();
+		void handleActionAddToBookmarks ();
+		void handleActionConfigureMUC ();
 		void handleActionAuthorizeTriggered ();
 		void handleActionDenyAuthTriggered ();
 		void handleActionAddContactFromMUC ();

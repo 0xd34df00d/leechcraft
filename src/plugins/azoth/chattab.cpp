@@ -103,7 +103,6 @@ namespace Azoth
 	: QWidget (parent)
 	, TabToolbar_ (new QToolBar (tr ("Azoth chat window"), this))
 	, ToggleRichText_ (0)
-	, SendFile_ (0)
 	, Call_ (0)
 #ifdef ENABLE_CRYPT
 	, EnableEncryption_ (0)
@@ -117,7 +116,6 @@ namespace Azoth
 	, IsMUC_ (false)
 	, PreviousTextHeight_ (0)
 	, MsgFormatter_ (0)
-	, XferManager_ (0)
 	, TypeTimer_ (new QTimer (this))
 	, PreviousState_ (CPSNone)
 	{
@@ -191,7 +189,8 @@ namespace Azoth
 					tr ("Unable to load style, "
 						"please check you've enabled at least one styles plugin.") +
 					"</h1>";
-		Ui_.View_->setHtml (data,
+		Ui_.View_->setContent (data.toUtf8 (),
+				"text/html", //"application/xhtml+xml" fails to work, though better to use it
 				Core::Instance ().GetSelectedChatTemplateURL (GetEntry<QObject> ()));
 
 		Q_FOREACH (IMessage *msg, HistoryMessages_)
@@ -322,6 +321,11 @@ namespace Azoth
 		return GetEntry<QObject> ();
 	}
 
+	QString ChatTab::GetSelectedVariant () const
+	{
+		return Ui_.VariantBox_->currentText ();
+	}
+
 	void ChatTab::messageSend ()
 	{
 		QString text = Ui_.MsgEdit_->toPlainText ();
@@ -430,25 +434,6 @@ namespace Azoth
 			return;
 
 		me->SetMUCSubject (Ui_.SubjEdit_->toPlainText ());
-	}
-
-	void ChatTab::handleSendFile ()
-	{
-		if (!XferManager_)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "called with null XferManager_";
-			return;
-		}
-
-		const QString& filename = QFileDialog::getOpenFileName (this,
-				tr ("Select file to send"));
-		if (filename.isEmpty ())
-			return;
-
-		QObject *job = XferManager_->SendFile (EntryID_,
-				Ui_.VariantBox_->currentText (), filename);
-		Core::Instance ().GetTransferJobManager ()->HandleJob (job);
 	}
 
 #ifdef ENABLE_MEDIACALLS
@@ -851,40 +836,6 @@ namespace Azoth
 		Ui_.MsgEdit_->moveCursor (QTextCursor::End);
 	}
 
-	void ChatTab::handleAddToBookmarks ()
-	{
-		BookmarksManagerDialog *dia = new BookmarksManagerDialog (this);
-		dia->SuggestSaving (GetEntry<QObject> ());
-		dia->setAttribute (Qt::WA_DeleteOnClose, true);
-		dia->show ();
-	}
-
-	void ChatTab::handleConfigureMUC ()
-	{
-		IConfigurableMUC *confMUC = GetEntry<IConfigurableMUC> ();
-		if (!confMUC)
-			return;
-
-		QWidget *w = confMUC->GetConfigurationWidget ();
-		if (!w)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "empty conf widget"
-					<< GetEntry<QObject> ();
-			return;
-		}
-
-		SimpleDialog *dia = new SimpleDialog ();
-		dia->setWindowTitle (tr ("Room configuration"));
-		dia->SetWidget (w);
-		connect (dia,
-				SIGNAL (accepted ()),
-				dia,
-				SLOT (deleteLater ()),
-				Qt::QueuedConnection);
-		dia->show ();
-	}
-
 	void ChatTab::typeTimeout ()
 	{
 		SetChatPartState (CPSPaused);
@@ -988,7 +939,7 @@ namespace Azoth
 	void ChatTab::BuildBasicActions ()
 	{
 		QAction *clearAction = new QAction (tr ("Clear chat window"), this);
-		clearAction->setProperty ("ActionIcon", "clear");
+		clearAction->setProperty ("ActionIcon", "edit-clear-history");
 		connect (clearAction,
 				SIGNAL (triggered ()),
 				this,
@@ -996,7 +947,7 @@ namespace Azoth
 		TabToolbar_->addAction (clearAction);
 
 		ToggleRichText_ = new QAction (tr ("Enable rich text"), this);
-		ToggleRichText_->setProperty ("ActionIcon", "richtext");
+		ToggleRichText_->setProperty ("ActionIcon", "text-enriched");
 		ToggleRichText_->setCheckable (true);
 		ToggleRichText_->setChecked (XmlSettingsManager::Instance ()
 					.property ("ShowRichTextMessageBody").toBool ());
@@ -1008,7 +959,7 @@ namespace Azoth
 		TabToolbar_->addSeparator ();
 
 		QAction *quoteSelection = new QAction (tr ("Quote selection"), this);
-		quoteSelection->setProperty ("ActionIcon", "quote");
+		quoteSelection->setProperty ("ActionIcon", "mail-reply-sender");
 		quoteSelection->setShortcut (QString ("Ctrl+Q"));
 		connect (quoteSelection,
 				SIGNAL (triggered ()),
@@ -1093,27 +1044,6 @@ namespace Azoth
 	void ChatTab::HandleMUC ()
 	{
 		TabIcon_ = QIcon (":/plugins/azoth/resources/images/azoth.svg");
-
-		QAction *bookmarks = new QAction (tr ("Add to bookmarks..."), this);
-		bookmarks->setProperty ("ActionIcon", "favorites");
-		connect (bookmarks,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleAddToBookmarks ()));
-		TabToolbar_->addAction (bookmarks);
-
-		IConfigurableMUC *confmuc = GetEntry<IConfigurableMUC> ();
-		if (confmuc)
-		{
-			QAction *configureMUC = new QAction (tr ("Configure MUC..."), this);
-			configureMUC->setProperty ("ActionIcon", "preferences");
-			connect (configureMUC,
-					SIGNAL (triggered ()),
-					this,
-					SLOT (handleConfigureMUC ()));
-			TabToolbar_->addAction (configureMUC);
-		}
-
 		Ui_.AvatarLabel_->hide ();
 	}
 
@@ -1122,19 +1052,8 @@ namespace Azoth
 		ICLEntry *e = GetEntry<ICLEntry> ();
 		QObject *accObj = e->GetParentAccount ();
 		IAccount *acc = qobject_cast<IAccount*> (accObj);
-		XferManager_ = qobject_cast<ITransferManager*> (acc->GetTransferManager ());
-		if (XferManager_ &&
-			!IsMUC_ &&
-			acc->GetAccountFeatures () & IAccount::FMUCsSupportFileTransfers)
+		if (qobject_cast<ITransferManager*> (acc->GetTransferManager ()))
 		{
-			SendFile_ = new QAction (tr ("Send file..."), this);
-			SendFile_->setProperty ("ActionIcon", "sendfile");
-			connect (SendFile_,
-					SIGNAL (triggered ()),
-					this,
-					SLOT (handleSendFile ()));
-			TabToolbar_->addAction (SendFile_);
-
 			connect (acc->GetTransferManager (),
 					SIGNAL (fileOffered (QObject*)),
 					this,
@@ -1151,7 +1070,7 @@ namespace Azoth
 				e->GetEntryType () == ICLEntry::ETChat)
 		{
 			Call_ = new QAction (tr ("Call..."), this);
-			Call_->setProperty ("ActionIcon", "call");
+			Call_->setProperty ("ActionIcon", "voicecall");
 			connect (Call_,
 					SIGNAL (triggered ()),
 					this,
@@ -1174,7 +1093,7 @@ namespace Azoth
 		if (qobject_cast<ISupportPGP*> (accObj))
 		{
 			EnableEncryption_ = new QAction (tr ("Enable encryption"), this);
-			EnableEncryption_->setProperty ("ActionIcon", "encryption");
+			EnableEncryption_->setProperty ("ActionIcon", "document-encrypt");
 			EnableEncryption_->setCheckable (true);
 			connect (EnableEncryption_,
 					SIGNAL (triggered ()),
@@ -1255,6 +1174,14 @@ namespace Azoth
 	void ChatTab::RequestLogs ()
 	{
 		ICLEntry *entry = GetEntry<ICLEntry> ();
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "null entry for"
+					<< EntryID_;
+			return;
+		}
+
 		if (entry->GetAllMessages ().size () > 100 ||
 				entry->GetEntryType () != ICLEntry::ETChat)
 			return;
@@ -1320,9 +1247,11 @@ namespace Azoth
 		{
 			if (!XmlSettingsManager::Instance ().property ("ShowEndConversations").toBool ())
 				return;
-			else
+			else if (other)
 				msg->SetBody (tr ("%1 ended the conversation.")
 						.arg (other->GetEntryName ()));
+			else
+				msg->SetBody (tr ("Conversation ended."));
 		}
 
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);

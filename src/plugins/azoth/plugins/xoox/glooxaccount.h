@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -201,12 +201,15 @@ namespace Xoox
 
 		QString GetJID () const;
 		QString GetNick () const;
+		void JoinRoom (const QString&, const QString&);
 		void JoinRoom (const QString&, const QString&, const QString&);
 
 		boost::shared_ptr<ClientConnection> GetClientConnection () const;
 		GlooxCLEntry* CreateFromODS (OfflineDataSource_ptr);
 		QXmppBookmarkSet GetBookmarks () const;
 		void SetBookmarks (const QXmppBookmarkSet&);
+
+		void CreateSDForResource (const QString&);
 
 		QByteArray Serialize () const;
 		static GlooxAccount* Deserialize (const QByteArray&, QObject*);
@@ -240,6 +243,8 @@ namespace Xoox
 		void statusChanged (const EntryStatus&);
 		void mucInvitationReceived (const QVariantMap&,
 				const QString&, const QString&);
+
+		void gotSDSession (QObject*);
 
 		void bookmarksChanged ();
 

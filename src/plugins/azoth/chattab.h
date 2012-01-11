@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,7 +50,6 @@ namespace Azoth
 		Ui::ChatTab Ui_;
 		QToolBar *TabToolbar_;
 		QAction *ToggleRichText_;
-		QAction *SendFile_;
 		QAction *Call_;
 #ifdef ENABLE_CRYPT
 		QAction *EnableEncryption_;
@@ -108,6 +107,7 @@ namespace Azoth
 		void HandleMUCParticipantsChanged ();
 
 		QObject* GetCLEntry () const;
+		QString GetSelectedVariant () const;
 	public slots:
 		void prepareMessageText (const QString&);
 		void appendMessageText (const QString&);
@@ -124,7 +124,6 @@ namespace Azoth
 		void handleClearChat ();
 		void handleRichTextToggled ();
 		void handleQuoteSelection ();
-		void handleSendFile ();
 #ifdef ENABLE_MEDIACALLS
 		void handleCallRequested ();
 		void handleCall (QObject*);
@@ -144,8 +143,6 @@ namespace Azoth
 		void handleViewLinkClicked (const QUrl&);
 		void handleHistoryUp ();
 		void handleHistoryDown ();
-		void handleAddToBookmarks ();
-		void handleConfigureMUC ();
 		void typeTimeout ();
 
 		void handleGotLastMessages (QObject*, const QList<QObject*>&);

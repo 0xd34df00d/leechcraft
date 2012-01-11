@@ -31,35 +31,35 @@ namespace AdiumStyles
 	{
 		Proxy_ = 0;
 	}
-	
+
 	void Plugin::SecondInit ()
 	{
 	}
-	
+
 	void Plugin::Release ()
 	{
 	}
-	
+
 	QByteArray Plugin::GetUniqueID () const
 	{
 		return "org.LeechCraft.Azoth.AdiumStyles";
 	}
-	
+
 	QString Plugin::GetName () const
 	{
 		return "Azoth AdiumStyles";
 	}
-	
+
 	QString Plugin::GetInfo () const
 	{
 		return tr ("Support for Adium chat styles");
 	}
-	
+
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		return QIcon (":/plugins/azoth/plugins/adiumstyles/resources/images/adiumstyles.svg");
 	}
-	
+
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
 		QSet<QByteArray> result;
@@ -67,12 +67,12 @@ namespace AdiumStyles
 		result << "org.LeechCraft.Plugins.Azoth.Plugins.IResourceSourcePlugin";
 		return result;
 	}
-	
+
 	QList<QObject*> Plugin::GetResourceSources () const
 	{
 		return QObjectList () << new AdiumStyleSource (Proxy_);
 	}
-	
+
 	void Plugin::initPlugin (QObject *proxy)
 	{
 		Proxy_ = qobject_cast<IProxyObject*> (proxy);

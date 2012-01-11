@@ -30,7 +30,12 @@ namespace LeechCraft
 {
 namespace Laure
 {
-	const char * const vlc_args[] = {};
+	const char * const vlc_args[] = {
+		 "-I", "dummy"         // Don't use any interface
+         ,"--ignore-config"      // Don't use VLC's config
+         ,"--verbose=-1"
+         ,"--quiet"
+	};
 	
 	namespace
 	{
@@ -154,12 +159,17 @@ namespace Laure
 		return libvlc_media_player_get_length (Player_.get ());
 	}
 	
-	void VLCWrapper::setWindow (uint winId)
+	void VLCWrapper::setWindow (WId winId)
 	{
 		libvlc_media_player_t *m = Player_.get ();
 		int time = libvlc_media_player_get_time (m);
 		libvlc_media_player_stop (m);
+#ifdef Q_WS_WIN
+		libvlc_media_player_set_hwnd(m, winId);
+#endif
+#ifdef Q_WS_X11
 		libvlc_media_player_set_xwindow (m, winId);
+#endif
 		libvlc_media_player_play (m);
 		libvlc_media_player_set_time (m, time);
 	}

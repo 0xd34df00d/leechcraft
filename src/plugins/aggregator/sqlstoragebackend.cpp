@@ -23,6 +23,7 @@
 #include <QDebug>
 #include <QBuffer>
 #include <QSqlError>
+#include <QThread>
 #include <QVariant>
 #include <QSqlRecord>
 #include <util/dblock.h>
@@ -36,7 +37,7 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
-	SQLStorageBackend::SQLStorageBackend (StorageBackend::Type t)
+	SQLStorageBackend::SQLStorageBackend (StorageBackend::Type t, const QString& id)
 	: Type_ (t)
 	{
 		QString strType;
@@ -52,7 +53,7 @@ namespace Aggregator
 				break;
 		}
 
-		DB_ = QSqlDatabase::addDatabase (strType, "AggregatorConnection");
+		DB_ = QSqlDatabase::addDatabase (strType, "AggregatorConnection" + id);
 
 		switch (Type_)
 		{
@@ -1582,7 +1583,7 @@ namespace Aggregator
 		try
 		{
 			Item_ptr item = GetItem (itemId);
-			*cid = item->ChannelID_;
+			cid = item->ChannelID_;
 		}
 		catch (const ItemNotFoundError&)
 		{
@@ -2208,7 +2209,7 @@ namespace Aggregator
 		return true;
 	}
 
-	QByteArray SQLStorageBackend::SerializePixmap (const QPixmap& pixmap) const
+	QByteArray SQLStorageBackend::SerializePixmap (const QImage& pixmap) const
 	{
 		QByteArray bytes;
 		if (!pixmap.isNull ())
@@ -2220,9 +2221,9 @@ namespace Aggregator
 		return bytes;
 	}
 
-	QPixmap SQLStorageBackend::UnserializePixmap (const QByteArray& bytes) const
+	QImage SQLStorageBackend::UnserializePixmap (const QByteArray& bytes) const
 	{
-		QPixmap result;
+		QImage result;
 		if (bytes.size ())
 			result.loadFromData (bytes, "PNG");
 		return result;

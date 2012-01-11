@@ -18,7 +18,6 @@
 
 #include <stdexcept>
 #include <numeric>
-#include <boost/foreach.hpp>
 #include <QtDebug>
 #include <QImage>
 #include <QDir>
@@ -54,6 +53,9 @@
 #include "addfeed.h"
 #include "itemswidget.h"
 #include "pluginmanager.h"
+#include "dbupdatethread.h"
+#include "dbupdatethreadworker.h"
+#include "tovarmaps.h"
 
 namespace LeechCraft
 {
@@ -66,10 +68,13 @@ namespace Aggregator
 	, ChannelsFilterModel_ (0)
 	, Initialized_ (false)
 	, PluginManager_ (new PluginManager)
+	, DBUpThread_ (new DBUpdateThread (this))
 	{
+		qRegisterMetaType<IDType_t> ("IDType_t");
 		qRegisterMetaType<QItemSelection> ("QItemSelection");
 		qRegisterMetaType<Item_ptr> ("Item_ptr");
 		qRegisterMetaType<Channel_ptr> ("Channel_ptr");
+		qRegisterMetaType<channels_container_t> ("channels_container_t");
 		qRegisterMetaTypeStreamOperators<Feed> ("LeechCraft::Plugins::Aggregator::Feed");
 
 		PluginManager_->RegisterHookable (this);
@@ -255,22 +260,11 @@ namespace Aggregator
 			return false;
 		}
 
-		StorageBackend::Type type;
-		QString strType = XmlSettingsManager::Instance ()->
-			property ("StorageType").toString ();
-		if (strType == "SQLite")
-			type = StorageBackend::SBSQLite;
-		else if (strType == "PostgreSQL")
-			type = StorageBackend::SBPostgres;
-		else if (strType == "MySQL")
-			type = StorageBackend::SBMysql;
-		else
-			throw std::runtime_error (qPrintable (QString ("Unknown storage type %1")
-						.arg (strType)));
-
+		const QString& strType = XmlSettingsManager::Instance ()->
+				property ("StorageType").toString ();
 		try
 		{
-			StorageBackend_ = StorageBackend::Create (type);
+			StorageBackend_ = StorageBackend::Create (strType);
 		}
 		catch (const std::runtime_error& s)
 		{
@@ -327,11 +321,22 @@ namespace Aggregator
 
 		StorageBackend_->Prepare ();
 
+		connect (DBUpThread_,
+				SIGNAL (started ()),
+				this,
+				SLOT (handleDBUpThreadStarted ()),
+				Qt::QueuedConnection);
+		DBUpThread_->start (QThread::LowestPriority);
+
 		connect (StorageBackend_.get (),
 				SIGNAL (channelDataUpdated (Channel_ptr)),
 				this,
 				SLOT (handleChannelDataUpdated (Channel_ptr)),
 				Qt::QueuedConnection);
+		connect (StorageBackend_.get (),
+				SIGNAL (itemDataUpdated (Item_ptr, Channel_ptr)),
+				this,
+				SIGNAL (itemDataUpdated (Item_ptr, Channel_ptr)));
 
 		ParserFactory::Instance ().Register (&RSS20Parser::Instance ());
 		ParserFactory::Instance ().Register (&Atom10Parser::Instance ());
@@ -625,7 +630,7 @@ namespace Aggregator
 			ChannelShort channel = ChannelsModel_->GetChannelForIndex (i);
 			Channel_ptr rc = StorageBackend_->
 					GetChannel (channel.ChannelID_, channel.FeedID_);
-			return rc->Pixmap_;
+			return QPixmap::fromImage (rc->Pixmap_);
 		}
 		catch (const std::exception& e)
 		{
@@ -1363,6 +1368,54 @@ namespace Aggregator
 		Updates_ [id] = QDateTime::currentDateTime ();
 	}
 
+	void Core::handleDBUpThreadStarted ()
+	{
+		connect (DBUpThread_->GetWorker (),
+				SIGNAL (channelDataUpdated (IDType_t, IDType_t)),
+				this,
+				SLOT (handleDBUpChannelDataUpdated (IDType_t, IDType_t)),
+				Qt::QueuedConnection);
+		connect (DBUpThread_->GetWorker (),
+				SIGNAL (gotNewChannel (ChannelShort)),
+				this,
+				SLOT (handleDBUpGotNewChannel (ChannelShort)),
+				Qt::QueuedConnection);
+		connect (DBUpThread_->GetWorker (),
+				SIGNAL (gotEntity (LeechCraft::Entity)),
+				this,
+				SIGNAL (gotEntity (LeechCraft::Entity)),
+				Qt::QueuedConnection);
+		connect (DBUpThread_->GetWorker (),
+				SIGNAL (itemDataUpdated (Item_ptr, Channel_ptr)),
+				this,
+				SIGNAL (itemDataUpdated (Item_ptr, Channel_ptr)),
+				Qt::QueuedConnection);
+		connect (DBUpThread_->GetWorker (),
+				SIGNAL (hookGotNewItems (LeechCraft::IHookProxy_ptr, QVariantList)),
+				this,
+				SIGNAL (hookGotNewItems (LeechCraft::IHookProxy_ptr, QVariantList)));
+	}
+
+	void Core::handleDBUpChannelDataUpdated (IDType_t id, IDType_t feedId)
+	{
+		try
+		{
+			auto ch = StorageBackend_->GetChannel (id, feedId);
+			handleChannelDataUpdated (ch);
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "got"
+					<< e.what ();
+		}
+	}
+
+	void Core::handleDBUpGotNewChannel (const ChannelShort& chSh)
+	{
+		ChannelsModel_->AddChannel (chSh);
+	}
+
 	void Core::UpdateUnreadItemsNumber () const
 	{
 		emit unreadNumberChanged (ChannelsModel_->GetUnreadItemsNumber ());
@@ -1420,13 +1473,11 @@ namespace Aggregator
 			switch (data.Type_)
 			{
 				case ExternalData::TImage:
-					data.RelatedChannel_->Pixmap_ =
-						QPixmap::fromImage (QImage (file.fileName ()));
+					data.RelatedChannel_->Pixmap_ = QImage (file.fileName ());
 					break;
 				case ExternalData::TIcon:
 					data.RelatedChannel_->Favicon_ =
-						QPixmap::fromImage (QImage (file.fileName ()))
-						.scaled (16, 16);;
+							QImage (file.fileName ()).scaled (16, 16);
 					break;
 			}
 			try
@@ -1444,69 +1495,6 @@ namespace Aggregator
 		}
 	}
 
-	namespace
-	{
-		struct ChannelFinder
-		{
-			const Channel_ptr& Channel_;
-
-			ChannelFinder (const Channel_ptr& channel)
-			: Channel_ (channel)
-			{
-			}
-
-			bool operator() (const Channel_ptr& obj)
-			{
-				return *Channel_ == *obj;
-			}
-		};
-	};
-
-	namespace
-	{
-		void FixDate (Item_ptr& item)
-		{
-			if (!item->PubDate_.isValid ())
-				item->PubDate_ = QDateTime::currentDateTime ();
-		}
-	};
-
-	namespace
-	{
-		QVariantMap GetItemMapChannelPart (const Channel_ptr channel)
-		{
-			QVariantMap result;
-			result ["ChannelID"] = channel->ChannelID_;
-			result ["ChannelTitle"] = channel->Title_;
-			result ["ChannelLink"] = channel->Link_;
-			result ["ChannelTags"] = channel->Tags_;
-			return result;
-		}
-
-		QVariantMap GetItemMapItemPart (const Item_ptr item)
-		{
-			QVariantMap result;
-			result ["ItemID"] = item->ItemID_;
-			result ["ItemTitle"] = item->Title_;
-			result ["ItemLink"] = item->Link_;
-			result ["ItemDescription"] = item->Description_;
-			result ["ItemCategories"] = item->Categories_;
-			result ["ItemPubdate"] = item->PubDate_;
-			result ["ItemCommentsLink"] = item->CommentsLink_;
-			result ["ItemCommentsPageLink"] = item->CommentsPageLink_;
-			return result;
-		}
-
-		QVariantList GetItems (const Channel_ptr channel)
-		{
-			QVariantList result;
-			const QVariantMap& channelPart = GetItemMapChannelPart (channel);
-			Q_FOREACH (const Item_ptr item, channel->Items_)
-				result << GetItemMapItemPart (item).unite (channelPart);
-			return result;
-		}
-	}
-
 	void Core::HandleFeedAdded (const channels_container_t& channels,
 			const Core::PendingJob& pj)
 	{
@@ -1514,7 +1502,7 @@ namespace Aggregator
 		{
 			Channel_ptr channel = channels [i];
 			std::for_each (channel->Items_.begin (), channel->Items_.end (),
-					[] (Item_ptr item) { FixDate (item); });
+					[] (Item_ptr item) { item->FixDate (); });
 
 			channel->Tags_ = pj.Tags_;
 			ChannelsModel_->AddChannel (channel->ToShort ());
@@ -1559,203 +1547,10 @@ namespace Aggregator
 	void Core::HandleFeedUpdated (const channels_container_t& channels,
 			const Core::PendingJob& pj)
 	{
-		const QString& url = pj.URL_;
-		IDType_t feedId = StorageBackend_->FindFeed (url);
-		if (feedId == static_cast<IDType_t> (-1))
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "skipping"
-				<< url
-				<< "cause seems like it's not in storage yet";
-			return;
-		}
-
-		const int defaultDays = XmlSettingsManager::Instance ()->
-			property ("ItemsMaxAge").toInt ();
-		const unsigned defaultIpc = XmlSettingsManager::Instance ()->
-			property ("ItemsPerChannel").value<unsigned> ();
-		bool downloadEnclosures = false;
-
-		int days = defaultDays;
-		unsigned ipc = defaultIpc;
-		try
-		{
-			Feed::FeedSettings settings = StorageBackend_->
-					GetFeedSettings (feedId);
-			if (settings.ItemAge_)
-				days = settings.ItemAge_;
-			if (settings.NumItems_)
-				ipc = settings.NumItems_;
-			downloadEnclosures = settings.AutoDownloadEnclosures_;
-		}
-		catch (const StorageBackend::FeedSettingsNotFoundError&)
-		{
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to get feed settings for"
-					<< feedId
-					<< url
-					<< e.what ();
-		}
-
-		QDateTime current = QDateTime::currentDateTime ();
-		Q_FOREACH (Channel_ptr channel, channels)
-		{
-			Channel_ptr ourChannel;
-			try
-			{
-				IDType_t ourChannelID = StorageBackend_->FindChannel (channel->Title_,
-						channel->Link_, feedId);
-				ourChannel = StorageBackend_->GetChannel (ourChannelID, feedId);
-			}
-			catch (const StorageBackend::ChannelNotFoundError&)
-			{
-				size_t truncateAt = (channel->Items_.size () <= ipc) ?
-					channel->Items_.size () : ipc;
-				for (size_t j = 0; j < channel->Items_.size (); j++)
-					if (channel->Items_ [j]->PubDate_.daysTo (current) > days)
-					{
-						truncateAt = std::min (j, truncateAt);
-						break;
-					}
-				channel->Items_.resize (truncateAt);
-
-				ChannelsModel_->AddChannel (channel->ToShort ());
-				StorageBackend_->AddChannel (channel);
-				QString str = tr ("Added channel \"%1\" (%n item(s))",
-						"", channel->Items_.size ())
-					.arg (channel->Title_);
-				emit gotEntity (Util::MakeNotification ("Aggregator", str, PInfo_));
-				continue;
-			}
-
-			const QVariantMap& channelPart = GetItemMapChannelPart (ourChannel);
-
-			int newItems = 0;
-			int updatedItems = 0;
-
-			GetPool (PTChannel).FreeID (channel->ChannelID_);
-
-			Q_FOREACH (Item_ptr item, channel->Items_)
-			{
-				Item_ptr ourItem;
-				try
-				{
-					IDType_t ourItemID = StorageBackend_->
-							FindItem (item->Title_, item->Link_,
-									ourChannel->ChannelID_);
-					ourItem = StorageBackend_->GetItem (ourItemID);
-				}
-				catch (const StorageBackend::ItemNotFoundError&)
-				{
-					if (item->PubDate_.isValid ())
-					{
-						if (item->PubDate_.daysTo (current) >= days)
-							continue;
-					}
-					else
-						FixDate (item);
-
-					item->ChannelID_ = ourChannel->ChannelID_;
-					StorageBackend_->AddItem (item);
-
-					RegexpMatcherManager::Instance ().HandleItem (item);
-
-					QVariantList itemData;
-					itemData << GetItemMapItemPart (item).unite (channelPart);
-					emit hookGotNewItems (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy),
-							itemData);
-
-					if (downloadEnclosures)
-						Q_FOREACH (Enclosure e, item->Enclosures_)
-						{
-							Entity de = Util::MakeEntity (QUrl (e.URL_),
-									XmlSettingsManager::Instance ()->
-										property ("EnclosuresDownloadPath").toString (),
-									0,
-									e.Type_);
-							de.Additional_ [" Tags"] = channel->Tags_;
-							emit gotEntity (de);
-						}
-					++newItems;
-					continue;
-				}
-
-				if (!IsModified (ourItem, item))
-					continue;
-
-				ourItem->Description_ = item->Description_;
-				ourItem->Categories_ = item->Categories_;
-				ourItem->NumComments_ = item->NumComments_;
-				ourItem->CommentsLink_ = item->CommentsLink_;
-				ourItem->CommentsPageLink_ = item->CommentsPageLink_;
-				ourItem->Latitude_ = item->Latitude_;
-				ourItem->Longitude_ = item->Longitude_;
-
-				Q_FOREACH (Enclosure enc, item->Enclosures_)
-				{
-					if (ourItem->Enclosures_.contains (enc))
-						GetPool (PTEnclosure).FreeID (enc.EnclosureID_);
-					else
-					{
-						enc.ItemID_ = ourItem->ItemID_;
-						ourItem->Enclosures_ << enc;
-					}
-				}
-
-				Q_FOREACH (MRSSEntry entry, item->MRSSEntries_)
-				{
-					if (ourItem->MRSSEntries_.contains (entry))
-					{
-						GetPool (PTMRSSEntry).FreeID (entry.MRSSEntryID_);
-
-						Q_FOREACH (MRSSComment comment, entry.Comments_)
-							GetPool (PTMRSSComment).FreeID (comment.MRSSCommentID_);
-						Q_FOREACH (MRSSCredit credit, entry.Credits_)
-							GetPool (PTMRSSCredit).FreeID (credit.MRSSCreditID_);
-						Q_FOREACH (MRSSPeerLink peerLink, entry.PeerLinks_)
-							GetPool (PTMRSSPeerLink).FreeID (peerLink.MRSSPeerLinkID_);
-						Q_FOREACH (MRSSThumbnail thumb, entry.Thumbnails_)
-							GetPool (PTMRSSThumbnail).FreeID (thumb.MRSSThumbnailID_);
-						Q_FOREACH (MRSSScene scene, entry.Scenes_)
-							GetPool (PTMRSSScene).FreeID (scene.MRSSSceneID_);
-					}
-					else
-					{
-						entry.ItemID_ = ourItem->ItemID_;
-						ourItem->MRSSEntries_ << entry;
-					}
-				}
-
-				GetPool (PTItem).FreeID (item->ItemID_);
-
-				StorageBackend_->UpdateItem (ourItem);
-				++updatedItems;
-			}
-
-			QString method = XmlSettingsManager::Instance ()->
-					property ("NotificationsFeedUpdateBehavior").toString ();
-			bool shouldShow = true;
-			if (method == "ShowNo")
-				shouldShow = false;
-			else if (method == "ShowNew")
-				shouldShow = newItems;
-			else if (method == "ShowAll")
-				shouldShow = newItems + updatedItems;
-
-			if (shouldShow)
-			{
-				QString str = tr ("Updated channel \"%1\" (%2, %3)").arg (channel->Title_)
-					.arg (tr ("%n new item(s)", "Channel update", newItems))
-					.arg (tr ("%n updated item(s)", "Channel update", updatedItems));
-				emit gotEntity (Util::MakeNotification ("Aggregator", str, PInfo_));
-			}
-
-			StorageBackend_->TrimChannel (ourChannel->ChannelID_,
-					days, ipc);
-		}
+		QMetaObject::invokeMethod (DBUpThread_->GetWorker (),
+				"updateFeed",
+				Q_ARG (channels_container_t, channels),
+				Q_ARG (QString, pj.URL_));
 	}
 
 	void Core::MarkChannel (const QModelIndex& i, bool state)
@@ -1763,8 +1558,11 @@ namespace Aggregator
 		try
 		{
 			ChannelShort cs = ChannelsModel_->GetChannelForIndex (i);
-
-			StorageBackend_->ToggleChannelUnread (cs.ChannelID_, state);
+			QMetaObject::invokeMethod (DBUpThread_->GetWorker (),
+					"toggleChannelUnread",
+					Qt::QueuedConnection,
+					Q_ARG (IDType_t, cs.ChannelID_),
+					Q_ARG (bool, state));
 		}
 		catch (const std::exception& e)
 		{

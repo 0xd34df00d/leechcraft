@@ -12,6 +12,9 @@ IF (MSVC)
 	SET (CMAKE_CXX_FLAGS "/EHa /W3")
 	SET (CMAKE_CXX_FLAGS_RELEASE "/Ob2 /O2 /Ot /Oi /Oy /GT /GL /MD /D NDEBUG")
 	SET (CMAKE_CXX_FLAGS_DEBUG "/Zi /Od /GT /MDd")
+	
+	SET (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
+	INCLUDE (LibHelperWin32Macros)
 ENDIF (MSVC)
 IF (UNIX)
 	SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fno-strict-aliasing -std=c++0x")
@@ -82,10 +85,16 @@ ENDIF (NOT CMAKE_VERSION VERSION_LESS 2.8.6)
 
 ADD_SUBDIRECTORY (util)
 ADD_SUBDIRECTORY (xmlsettingsdialog)
-ADD_SUBDIRECTORY (iconsets)
 
 SET (LEECHCRAFT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 SET (LEECHCRAFT_LIBRARIES lcutil xmlsettingsdialog)
+
+# Various options
+OPTION (STRICT_LICENSING "Makes LeechCraft more prepared, for example, to lacking artwork due to licensing restrictions" OFF)
+
+IF (STRICT_LICENSING)
+	ADD_DEFINITIONS (-DSTRICT_LICENSING)
+ENDIF (STRICT_LICENSING)
 
 # Basic & traditional set of options
 OPTION (ENABLE_AGGREGATOR "Build Aggregator, the RSS/Atom feed reader" ON)
@@ -117,6 +126,7 @@ OPTION (ENABLE_GMAILNOTIFIER "Build GMail Notifier which notifies about new mail
 OPTION (ENABLE_KNOWHOW "Build KnowHow for displaying tips of the day" OFF)
 OPTION (ENABLE_LACKMAN "Build LackMan, the package manager for LeechCraft" OFF)
 OPTION (ENABLE_LIZNOO "Build Liznoo, our nice power manager" OFF)
+OPTION (ENABLE_NETSTOREMANAGER "Build NetStoreManager for managing network data storages like Yandex.Disk" OFF)
 OPTION (ENABLE_POPISHU "Build Popishu, a simple QScintilla-based text editor" OFF)
 OPTION (ENABLE_QROSP "Build Qrosp, the scripting support plugin" OFF)
 OPTION (ENABLE_SECMAN "Build SecMan, security & personal data manager" OFF)
@@ -334,6 +344,10 @@ ENDIF (ENABLE_SIDEBAR)
 IF (ENABLE_LIZNOO)
 	ADD_SUBDIRECTORY (plugins/liznoo)
 ENDIF (ENABLE_LIZNOO)
+
+IF (ENABLE_NETSTOREMANAGER)
+	ADD_SUBDIRECTORY (plugins/netstoremanager)
+ENDIF (ENABLE_NETSTOREMANAGER)
 
 IF (ENABLE_TABSESSMANAGER)
 	ADD_SUBDIRECTORY (plugins/tabsessmanager)

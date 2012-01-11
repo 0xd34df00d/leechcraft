@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 #include <vmime/net/session.hpp>
 #include <vmime/net/message.hpp>
 #include <vmime/net/folder.hpp>
+#include <vmime/net/store.hpp>
 #include <interfaces/structures.h>
 #include "progresslistener.h"
 #include "message.h"
@@ -39,6 +40,8 @@ namespace Snails
 
 		Account *A_;
 		vmime::ref<vmime::net::session> Session_;
+		vmime::ref<vmime::net::store> CachedStore_;
+		QTimer *DisconnectTimer_;
 	public:
 		AccountThreadWorker (Account*);
 	private:
@@ -56,6 +59,7 @@ namespace Snails
 		void fetchWholeMessage (Message_ptr);
 		void fetchAttachment (Message_ptr, const QString&, const QString&);
 		void sendMessage (Message_ptr);
+		void timeoutDisconnect ();
 	signals:
 		void error (const QString&);
 		void gotEntity (const LeechCraft::Entity&);

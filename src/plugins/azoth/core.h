@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,7 +50,6 @@ namespace Util
 }
 namespace Azoth
 {
-
 	struct EntryStatus;
 	class ICLEntry;
 	class IAccount;
@@ -67,6 +66,8 @@ namespace Azoth
 	class ActionsManager;
 
 	class CLModel;
+
+	class ServiceDiscoveryWidget;
 
 	class Core : public QObject
 	{
@@ -392,6 +393,8 @@ namespace Azoth
 		 */
 		void handleMucJoinRequested ();
 	private slots:
+		void handleNewProtocols (const QList<QObject*>&);
+
 		/** Handles a new account. This account may be both a new one
 		 * (added as a result of user's actions) and already existing
 		 * one (in case it was just read from settings, for example).
@@ -515,6 +518,8 @@ namespace Azoth
 		 */
 		void handleClearUnreadMsgCount (QObject *object);
 
+		void handleGotSDSession (QObject*);
+
 		void handleFileOffered (QObject*);
 		void handleJobDeoffered (QObject*);
 
@@ -551,6 +556,8 @@ namespace Azoth
 		 * being removed.
 		 */
 		void accountRemoved (IAccount*);
+
+		void gotSDWidget (ServiceDiscoveryWidget*);
 
 		// Plugin API
 		void hookAddingCLEntryBegin (LeechCraft::IHookProxy_ptr proxy,

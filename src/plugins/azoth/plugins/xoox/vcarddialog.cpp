@@ -70,8 +70,6 @@ namespace Xoox
 
 		Ui_.EditBirthday_->setVisible (false);
 
-		GlooxAccount *acc = qobject_cast<GlooxAccount*> (entry->GetParentAccount ());
-
 		InitConnections (entry);
 		rebuildClientInfo ();
 	}

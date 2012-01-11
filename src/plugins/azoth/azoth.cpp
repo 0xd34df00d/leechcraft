@@ -128,6 +128,10 @@ namespace Azoth
 				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)),
 				this,
 				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)));
+		connect (&Core::Instance (),
+				SIGNAL (gotSDWidget (ServiceDiscoveryWidget*)),
+				this,
+				SLOT (handleSDWidget (ServiceDiscoveryWidget*)));
 
 		connect (Core::Instance ().GetChatTabsManager (),
 				SIGNAL (addNewTab (const QString&, QWidget*)),
@@ -312,14 +316,7 @@ namespace Azoth
 		if (tabClass == "MUCTab")
 			Core::Instance ().handleMucJoinRequested ();
 		else if (tabClass == "SD")
-		{
-			ServiceDiscoveryWidget *sd = new ServiceDiscoveryWidget;
-			connect (sd,
-					SIGNAL (removeTab (QWidget*)),
-					this,
-					SIGNAL (removeTab (QWidget*)));
-			emit addNewTab (tr ("Service discovery"), sd);
-		}
+			handleSDWidget (new ServiceDiscoveryWidget);
 		else if (tabClass == "Search")
 		{
 			SearchWidget *search = new SearchWidget;
@@ -335,6 +332,16 @@ namespace Azoth
 	QList<ANFieldData> Plugin::GetANFields () const
 	{
 		return Core::Instance ().GetANFields ();
+	}
+
+	void Plugin::handleSDWidget (ServiceDiscoveryWidget *sd)
+	{
+		connect (sd,
+				SIGNAL (removeTab (QWidget*)),
+				this,
+				SIGNAL (removeTab (QWidget*)));
+		emit addNewTab (tr ("Service discovery"), sd);
+		emit raiseTab (sd);
 	}
 
 	void Plugin::handleTasksTreeSelectionCurrentRowChanged (const QModelIndex& index, const QModelIndex&)

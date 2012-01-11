@@ -210,14 +210,14 @@ namespace LeechCraft
 						SIGNAL (triggered ()),
 						&Core::Instance (),
 						SLOT (removeTriggered ()));
-				remove->setProperty ("ActionIcon", "cstp_remove");
+				remove->setProperty ("ActionIcon", "list-remove");
 
 				QAction *removeAll = Toolbar_->addAction (tr ("Remove all"));
 				connect (removeAll,
 						SIGNAL (triggered ()),
 						&Core::Instance (),
 						SLOT (removeAllTriggered ()));
-				removeAll->setProperty ("ActionIcon", "cstp_removeall");
+				removeAll->setProperty ("ActionIcon", "edit-clear-list");
 
 				Toolbar_->addSeparator ();
 
@@ -226,23 +226,23 @@ namespace LeechCraft
 						SIGNAL (triggered ()),
 						&Core::Instance (),
 						SLOT (startTriggered ()));
-				start->setProperty ("ActionIcon", "cstp_start");
+				start->setProperty ("ActionIcon", "media-playback-start");
 
 				QAction *stop = Toolbar_->addAction (tr ("Stop"));
 				connect (stop,
 						SIGNAL (triggered ()),
 						&Core::Instance (),
 						SLOT (stopTriggered ()));
-				stop->setProperty ("ActionIcon", "cstp_stop");
+				stop->setProperty ("ActionIcon", "media-playback-stop");
 
-				QAction *startAll = Toolbar_->addAction (tr ("Start all"));
+				QAction *startAll = Toolbar_->addAction (tr ("media-seek-forward"));
 				connect (startAll,
 						SIGNAL (triggered ()),
 						&Core::Instance (),
 						SLOT (startAllTriggered ()));
 				startAll->setProperty ("ActionIcon", "cstp_startall");
 
-				QAction *stopAll = Toolbar_->addAction (tr ("Stop all"));
+				QAction *stopAll = Toolbar_->addAction (tr ("media-record"));
 				connect (stopAll,
 						SIGNAL (triggered ()),
 						&Core::Instance (),

@@ -35,8 +35,7 @@ namespace LeechCraft
 				Translator_.reset (Util::InstallTranslator ("newlife"));
 
 				ImporterAction_.reset (new QAction (tr ("Import settings..."), 0));
-				ImporterAction_->setProperty ("ActionIcon",
-						"newlife_importsettings");
+				ImporterAction_->setProperty ("ActionIcon", "document-import");
 				connect (ImporterAction_.get (),
 						SIGNAL (triggered ()),
 						this,

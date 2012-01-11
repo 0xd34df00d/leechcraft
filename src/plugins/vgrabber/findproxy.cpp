@@ -39,14 +39,14 @@ namespace LeechCraft
 			, CategoriesSelector_ (cs)
 			{
 				ActionDownload_ = Toolbar_->addAction (tr ("Download"));
-				ActionDownload_->setProperty ("ActionIcon", "vgrabber_download");
+				ActionDownload_->setProperty ("ActionIcon", "download");
 				connect (ActionDownload_,
 						SIGNAL (triggered ()),
 						this,
 						SLOT (handleDownload ()));
 
 				ActionHandle_ =  Toolbar_->addAction (tr ("Handle"));
-				ActionHandle_->setProperty ("ActionIcon", "vgrabber_handle");
+				ActionHandle_->setProperty ("ActionIcon", "media-playback-start");
 				connect (ActionHandle_,
 						SIGNAL (triggered ()),
 						this,
@@ -54,7 +54,7 @@ namespace LeechCraft
 
 				ActionCopyToClipboard_ = new QAction (tr ("Copy URL to clipboard"),
 						this);
-				ActionCopyToClipboard_->setProperty ("ActionIcon", "copytoclipboard");
+				ActionCopyToClipboard_->setProperty ("ActionIcon", "edit-copy");
 				connect (ActionCopyToClipboard_,
 						SIGNAL (triggered ()),
 						this,

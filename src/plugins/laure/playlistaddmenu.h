@@ -1,7 +1,7 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
  * Copyright (C) 2011  Minh Ngo
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,10 @@
 #include <QMenu>
 #include <QFileInfoList>
 #include <boost/shared_ptr.hpp>
-#include <magic.h>
+
+#ifdef HAVE_MAGIC
+	#include <magic.h>
+#endif
 
 namespace LeechCraft
 {

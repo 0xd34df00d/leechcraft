@@ -64,7 +64,7 @@ namespace Snails
 				SLOT (handleMailSelected (QModelIndex)));
 
 		QAction *fetch = new QAction (tr ("Fetch new mail"), this);
-		fetch->setProperty ("ActionIcon", "fetchall");
+		fetch->setProperty ("ActionIcon", "mail-receive");
 		TabToolbar_->addAction (fetch);
 		connect (fetch,
 				SIGNAL (triggered ()),
@@ -96,12 +96,14 @@ namespace Snails
 	void MailTab::FillMsgToolbar ()
 	{
 		MsgReply_ = new QAction (tr ("Reply..."), this);
+		MsgReply_->setProperty ("ActionIcon", "mail-reply-sender");
 		connect (MsgReply_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleReply ()));
 
 		MsgAttachments_ = new QMenu (tr ("Attachments"));
+		MsgAttachments_->setIcon (Core::Instance ().GetProxy ()->GetIcon ("mail-attachment"));
 
 		MsgToolbar_->addAction (MsgReply_);
 		MsgToolbar_->addAction (MsgAttachments_->menuAction ());

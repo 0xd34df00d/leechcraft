@@ -980,7 +980,7 @@ namespace LeechCraft
 				OpenTorrent_.reset (new QAction (tr ("Open torrent..."),
 							Toolbar_.get ()));
 				OpenTorrent_->setShortcut (Qt::Key_Insert);
-				OpenTorrent_->setProperty ("ActionIcon", "torrent_addjob");
+				OpenTorrent_->setProperty ("ActionIcon", "document-open");
 				connect (OpenTorrent_.get (),
 						SIGNAL (triggered ()),
 						this,
@@ -988,7 +988,7 @@ namespace LeechCraft
 
 				CreateTorrent_.reset (new QAction (tr ("Create torrent..."),
 							Toolbar_.get ()));
-				CreateTorrent_->setProperty ("ActionIcon", "torrent_create");
+				CreateTorrent_->setProperty ("ActionIcon", "document-new");
 				connect (CreateTorrent_.get (),
 						SIGNAL (triggered ()),
 						this,
@@ -996,7 +996,7 @@ namespace LeechCraft
 
 				OpenMultipleTorrents_.reset (new QAction (tr ("Open multiple torrents..."),
 						Toolbar_.get ()));
-				OpenMultipleTorrents_->setProperty ("ActionIcon", "torrent_addmulti");
+				OpenMultipleTorrents_->setProperty ("ActionIcon", "document-open-folder");
 				connect (OpenMultipleTorrents_.get (),
 						SIGNAL (triggered ()),
 						this,
@@ -1004,7 +1004,7 @@ namespace LeechCraft
 
 				IPFilter_.reset (new QAction (tr ("IP filter..."),
 							Toolbar_.get ()));
-				IPFilter_->setProperty ("ActionIcon", "torrent_ipfilter");
+				IPFilter_->setProperty ("ActionIcon", "view-filter");
 				connect (IPFilter_.get (),
 						SIGNAL (triggered ()),
 						this,
@@ -1013,7 +1013,7 @@ namespace LeechCraft
 				RemoveTorrent_.reset (new QAction (tr ("Remove"),
 							Toolbar_.get ()));
 				RemoveTorrent_->setShortcut (tr ("Del"));
-				RemoveTorrent_->setProperty ("ActionIcon", "torrent_deletejob");
+				RemoveTorrent_->setProperty ("ActionIcon", "list-remove");
 				connect (RemoveTorrent_.get (),
 						SIGNAL (triggered ()),
 						this,
@@ -1022,7 +1022,7 @@ namespace LeechCraft
 				Resume_.reset (new QAction (tr ("Resume"),
 							Toolbar_.get ()));
 				Resume_->setShortcut (tr ("R"));
-				Resume_->setProperty ("ActionIcon", "torrent_startjob");
+				Resume_->setProperty ("ActionIcon", "media-playback-start");
 				connect (Resume_.get (),
 						SIGNAL (triggered ()),
 						this,
@@ -1031,7 +1031,7 @@ namespace LeechCraft
 				Stop_.reset (new QAction (tr ("Pause"),
 							Toolbar_.get ()));
 				Stop_->setShortcut (tr ("S"));
-				Stop_->setProperty ("ActionIcon", "torrent_stopjob");
+				Stop_->setProperty ("ActionIcon", "media-playback-pause");
 				connect (Stop_.get (),
 						SIGNAL (triggered ()),
 						this,
@@ -1040,7 +1040,7 @@ namespace LeechCraft
 				MoveUp_.reset (new QAction (tr ("Move up"),
 							Toolbar_.get ()));
 				MoveUp_->setShortcut (Qt::CTRL + Qt::Key_Up);
-				MoveUp_->setProperty ("ActionIcon", "torrent_moveup");
+				MoveUp_->setProperty ("ActionIcon", "go-up");
 				connect (MoveUp_.get (),
 						SIGNAL (triggered ()),
 						this,
@@ -1049,7 +1049,7 @@ namespace LeechCraft
 				MoveDown_.reset (new QAction (tr ("Move down"),
 							Toolbar_.get ()));
 				MoveDown_->setShortcut (Qt::CTRL + Qt::Key_Down);
-				MoveDown_->setProperty ("ActionIcon", "torrent_movedown");
+				MoveDown_->setProperty ("ActionIcon", "go-down");
 				connect (MoveDown_.get (),
 						SIGNAL (triggered ()),
 						this,
@@ -1058,7 +1058,7 @@ namespace LeechCraft
 				MoveToTop_.reset (new QAction (tr ("Move to top"),
 							Toolbar_.get ()));
 				MoveToTop_->setShortcut (Qt::CTRL + Qt::SHIFT + Qt::Key_Up);
-				MoveToTop_->setProperty ("ActionIcon", "torrent_movetop");
+				MoveToTop_->setProperty ("ActionIcon", "go-top");
 				connect (MoveToTop_.get (),
 						SIGNAL (triggered ()),
 						this,
@@ -1067,7 +1067,7 @@ namespace LeechCraft
 				MoveToBottom_.reset (new QAction (tr ("Move to bottom"),
 							Toolbar_.get ()));
 				MoveToBottom_->setShortcut (Qt::CTRL + Qt::SHIFT + Qt::Key_Down);
-				MoveToBottom_->setProperty ("ActionIcon", "torrent_movebottom");
+				MoveToBottom_->setProperty ("ActionIcon", "go-bottom");
 				connect (MoveToBottom_.get (),
 						SIGNAL (triggered ()),
 						this,
@@ -1076,7 +1076,7 @@ namespace LeechCraft
 				ForceReannounce_.reset (new QAction (tr ("Reannounce"),
 							Toolbar_.get ()));
 				ForceReannounce_->setShortcut (tr ("F"));
-				ForceReannounce_->setProperty ("ActionIcon", "torrent_forcereannounce");
+				ForceReannounce_->setProperty ("ActionIcon", "network-wireless");
 				connect (ForceReannounce_.get (),
 						SIGNAL (triggered ()),
 						this,
@@ -1084,7 +1084,7 @@ namespace LeechCraft
 
 				ForceRecheck_.reset (new QAction (tr ("Recheck"),
 						Toolbar_.get ()));
-				ForceRecheck_->setProperty ("ActionIcon", "torrent_forcerecheck");
+				ForceRecheck_->setProperty ("ActionIcon", "tools-check-spelling");
 				connect (ForceRecheck_.get (),
 						SIGNAL (triggered ()),
 						this,
@@ -1093,7 +1093,7 @@ namespace LeechCraft
 				MoveFiles_.reset (new QAction (tr ("Move files..."),
 							Toolbar_.get ()));
 				MoveFiles_->setShortcut (tr ("M"));
-				MoveFiles_->setProperty ("ActionIcon", "torrent_movefiles");
+				MoveFiles_->setProperty ("ActionIcon", "transform-move");
 				connect (MoveFiles_.get (),
 						SIGNAL (triggered ()),
 						this,
@@ -1102,7 +1102,7 @@ namespace LeechCraft
 				ChangeTrackers_.reset (new QAction (tr ("Change trackers..."),
 							Toolbar_.get ()));
 				ChangeTrackers_->setShortcut (tr ("C"));
-				ChangeTrackers_->setProperty ("ActionIcon", "torrent_changetrackers");
+				ChangeTrackers_->setProperty ("ActionIcon", "view-media-playlist");
 				connect (ChangeTrackers_.get (),
 						SIGNAL (triggered ()),
 						this,
@@ -1110,7 +1110,7 @@ namespace LeechCraft
 
 				MakeMagnetLink_.reset (new QAction (tr ("Make magnet link..."),
 							Toolbar_.get ()));
-				MakeMagnetLink_->setProperty ("ActionIcon", "torrent_insertmagnetlink");
+				MakeMagnetLink_->setProperty ("ActionIcon", "insert-link");
 				connect (MakeMagnetLink_.get (),
 						SIGNAL (triggered ()),
 						this,
@@ -1122,7 +1122,7 @@ namespace LeechCraft
 						SIGNAL (triggered ()),
 						this,
 						SLOT (on_Import__triggered ()));
-				Import_->setProperty ("ActionIcon", "torrent_import");
+				Import_->setProperty ("ActionIcon", "document-import");
 
 				Export_.reset (new QAction (tr ("Export..."),
 							Toolbar_.get ()));
@@ -1130,7 +1130,7 @@ namespace LeechCraft
 						SIGNAL (triggered ()),
 						this,
 						SLOT (on_Export__triggered ()));
-				Export_->setProperty ("ActionIcon", "torrent_export");
+				Export_->setProperty ("ActionIcon", "document-export");
 
 				Toolbar_->addAction (OpenTorrent_.get ());
 				Toolbar_->addAction (RemoveTorrent_.get ());

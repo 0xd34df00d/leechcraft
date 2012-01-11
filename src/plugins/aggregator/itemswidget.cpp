@@ -35,6 +35,7 @@
 #include "itemslistmodel.h"
 #include "channelsmodel.h"
 #include "uistatepersist.h"
+#include <qmessagebox.h>
 
 namespace LeechCraft
 {
@@ -53,6 +54,7 @@ namespace Aggregator
 		QAction *ActionMarkItemAsUnread_;
 		QAction *ActionMarkItemAsRead_;
 		QAction *ActionMarkItemAsImportant_;
+		QAction *ActionDeleteItem_;
 		QAction *ActionItemCommentsSubscribe_;
 		QAction *ActionItemLinkOpen_;
 
@@ -119,6 +121,8 @@ namespace Aggregator
 		Impl_->Ui_.Items_->addAction (Util::CreateSeparator (this));
 		Impl_->Ui_.Items_->addAction (Impl_->ActionMarkItemAsImportant_);
 		Impl_->Ui_.Items_->addAction (Util::CreateSeparator (this));
+		Impl_->Ui_.Items_->addAction (Impl_->ActionDeleteItem_);
+		Impl_->Ui_.Items_->addAction (Util::CreateSeparator (this));
 		Impl_->Ui_.Items_->addAction (Impl_->ActionItemCommentsSubscribe_);
 		Impl_->Ui_.Items_->addAction (Impl_->ActionItemLinkOpen_);
 		Impl_->Ui_.Items_->setContextMenuPolicy (Qt::ActionsContextMenu);
@@ -174,7 +178,7 @@ namespace Aggregator
 
 		currentItemChanged ();
 
-		connect (Core::Instance ().GetStorageBackend (),
+		connect (&Core::Instance (),
 				SIGNAL (itemDataUpdated (Item_ptr, Channel_ptr)),
 				this,
 				SLOT (handleItemDataUpdated (Item_ptr, Channel_ptr)),
@@ -516,7 +520,7 @@ namespace Aggregator
 				this);
 		Impl_->ActionHideReadItems_->setObjectName ("ActionHideReadItems_");
 		Impl_->ActionHideReadItems_->setCheckable (true);
-		Impl_->ActionHideReadItems_->setProperty ("ActionIcon", "aggregator_rssshow");
+		Impl_->ActionHideReadItems_->setProperty ("ActionIcon", "mail-mark-unread");
 		Impl_->ActionHideReadItems_->setChecked (XmlSettingsManager::Instance ()->
 				Property ("HideReadItems", false).toBool ());
 
@@ -524,7 +528,7 @@ namespace Aggregator
 				this);
 		Impl_->ActionShowAsTape_->setObjectName ("ActionShowAsTape_");
 		Impl_->ActionShowAsTape_->setCheckable (true);
-		Impl_->ActionShowAsTape_->setProperty ("ActionIcon", "aggregator_tapemode_on");
+		Impl_->ActionShowAsTape_->setProperty ("ActionIcon", "format-list-unordered");
 		Impl_->ActionShowAsTape_->setChecked (XmlSettingsManager::Instance ()->
 				Property ("ShowAsTape", false).toBool ());
 
@@ -538,8 +542,12 @@ namespace Aggregator
 
 		Impl_->ActionMarkItemAsImportant_ = new QAction (tr ("Important"), this);
 		Impl_->ActionMarkItemAsImportant_->setObjectName ("ActionMarkItemAsImportant_");
-		Impl_->ActionMarkItemAsImportant_->setProperty ("ActionIcon", "favorites");
+		Impl_->ActionMarkItemAsImportant_->setProperty ("ActionIcon", "rating");
 		Impl_->ActionMarkItemAsImportant_->setCheckable (true);
+
+		Impl_->ActionDeleteItem_ = new QAction (tr ("Delete"), this);
+		Impl_->ActionDeleteItem_->setObjectName ("ActionDeleteItem_");
+		Impl_->ActionDeleteItem_->setProperty ("ActionName", "remove");
 
 		Impl_->ActionItemCommentsSubscribe_ = new QAction (tr ("Subscribe to comments"),
 				this);
@@ -1116,6 +1124,37 @@ namespace Aggregator
 			else if (!mark && tags.removeAll (impId))
 				sb->SetItemTags (item, tags);
 		}
+	}
+
+	void ItemsWidget::on_ActionDeleteItem__triggered ()
+	{
+		QSet<IDType_t> ids;
+		Q_FOREACH (const QModelIndex& idx, GetSelected ())
+		{
+			const QModelIndex& mapped = Impl_->ItemLists_->mapToSource (idx);
+			const ItemsListModel *model =
+					static_cast<ItemsListModel*> (Impl_->ItemLists_->
+							GetModelForRow (idx.row ())->data ());
+			ids << model->GetItem (mapped).ItemID_;
+		}
+
+		if (ids.isEmpty ())
+			return;
+
+		if (QMessageBox::warning (this,
+					"LeechCraft",
+					tr ("Are you sure you want to remove %n items?", 0, ids.size ()),
+					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+			return;
+
+		const auto& models = Impl_->ItemLists_->GetAllModels ();
+		std::for_each (models.begin (), models.end (),
+				[&ids] (QAbstractItemModel *model)
+					{ qobject_cast<ItemsListModel*> (model)->RemoveItems (ids); });
+
+		StorageBackend *sb = Core::Instance ().GetStorageBackend ();
+		Q_FOREACH (IDType_t id, ids)
+			sb->RemoveItem (id);
 	}
 
 	void ItemsWidget::on_CaseSensitiveSearch__stateChanged (int state)

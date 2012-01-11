@@ -105,7 +105,7 @@ namespace Juick
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		return QIcon (":/plugins/azoth/plugins/juick/resources/images/juick.svg");
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const

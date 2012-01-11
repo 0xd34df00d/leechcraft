@@ -113,19 +113,19 @@ namespace Poshuku
 
 		ImportXbel_ = new QAction (tr ("Import XBEL..."),
 				this);
-		ImportXbel_->setProperty ("ActionIcon", "poshuku_importxbel");
+		ImportXbel_->setProperty ("ActionIcon", "document-import");
 
 		ExportXbel_ = new QAction (tr ("Export XBEL..."),
 				this);
-		ExportXbel_->setProperty ("ActionIcon", "poshuku_exportxbel");
+		ExportXbel_->setProperty ("ActionIcon", "document-export");
 
 		CheckFavorites_ = new QAction (tr ("Check favorites..."),
 				this);
-		CheckFavorites_->setProperty ("ActionIcon", "poshuku_checkfavorites");
+		CheckFavorites_->setProperty ("ActionIcon", "checkbox");
 
 		ReloadAll_ = new QAction (tr ("Reload all pages"),
 				this);
-		ReloadAll_->setProperty ("ActionIcon", "poshuku_reloadall");
+		ReloadAll_->setProperty ("ActionIcon", "system-software-update");
 
 
 		try
@@ -173,8 +173,7 @@ namespace Poshuku
 		CheckFavorites_->setShortcuts (proxy->GetShortcuts (this, "EACheckFavorites_"));
 		ReloadAll_->setShortcuts (proxy->GetShortcuts (this, "EAReloadAll_"));
 
-		ToolMenu_ = new QMenu ("Poshuku",
-				Core::Instance ().GetProxy ()->GetMainWindow ());
+		ToolMenu_ = new QMenu ("Poshuku");
 		ToolMenu_->setIcon (GetIcon ());
 		ToolMenu_->addAction (ImportXbel_);
 		ToolMenu_->addAction (ExportXbel_);

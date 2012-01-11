@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+	class ServiceDiscoveryWidget;
 	class MainWidget;
 	class ConsoleWidget;
 
@@ -89,6 +90,7 @@ namespace Azoth
 
 		QList<ANFieldData> GetANFields () const;
 	public slots:
+		void handleSDWidget (ServiceDiscoveryWidget*);
 		void handleTasksTreeSelectionCurrentRowChanged (const QModelIndex&, const QModelIndex&);
 	private slots:
 		void handleMoreThisStuff (const QString&);

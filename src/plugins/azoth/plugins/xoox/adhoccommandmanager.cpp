@@ -141,7 +141,7 @@ namespace Xoox
 		else if (command.attribute ("status") == "executing")
 			result.SetActions (QStringList ("execute"));
 
-		if (command.firstChildElement ("x").attribute ("xmlns") == "jabber:x:data")
+		if (command.firstChildElement ("x").namespaceURI () == "jabber:x:data")
 		{
 			QXmppDataForm form;
 

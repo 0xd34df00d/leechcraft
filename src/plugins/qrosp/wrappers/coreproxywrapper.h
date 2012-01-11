@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,7 +47,6 @@ namespace Qrosp
 		QObject* GetShortcutProxy () const;
 		QModelIndex MapToSource (const QModelIndex&) const;
 		//LeechCraft::Util::BaseSettingsManager* GetSettingsManager () const;
-		QMap<int, QString> GetIconPath (const QString& name) const;
 		QIcon GetIcon (const QString& on, const QString& off = QString ()) const;
 		QMainWindow* GetMainWindow () const;
 		ICoreTabWidget* GetTabWidget () const;

@@ -24,7 +24,6 @@
 #include <util/util.h>
 #include <util/dblock.h>
 #include <interfaces/iclentry.h>
-#include <boost/graph/graph_concepts.hpp>
 #include <interfaces/iaccount.h>
 
 namespace LeechCraft

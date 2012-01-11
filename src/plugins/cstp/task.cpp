@@ -29,6 +29,7 @@
 #include <QTimer>
 #include <QtDebug>
 #include <util/util.h>
+#include <interfaces/core/icoreproxy.h>
 #include "hook.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -87,6 +88,9 @@ namespace LeechCraft
 					if (ua.isEmpty ())
 						ua = XmlSettingsManager::Instance ()
 							.property ("PredefinedUserAgent").toString ();
+
+					if (ua == "%leechcraft%")
+						ua = "LeechCraft.CSTP/" + Core::Instance ().GetCoreProxy ()->GetVersion ();
 
 					QNetworkRequest req (URL_);
 					req.setRawHeader ("Range", QString ("bytes=%1-").arg (tof->size ()).toLatin1 ());
@@ -300,6 +304,11 @@ namespace LeechCraft
 				{
 					RedirectHistory_ << newUrl;
 
+					disconnect (Reply_.get (),
+							0,
+							this,
+							0);
+
 					QMetaObject::invokeMethod (this,
 							"redirectedConstruction",
 							Qt::QueuedConnection,
@@ -382,7 +391,6 @@ namespace LeechCraft
 				if (To_ && FileSizeAtStart_ >= 0)
 				{
 					To_->close ();
-					To_->size ();
 					To_->resize (FileSizeAtStart_);
 					To_->open (QIODevice::ReadWrite);
 				}

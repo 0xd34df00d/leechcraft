@@ -1,7 +1,7 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
  * Copyright (C) 2011  Minh Ngo
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -134,7 +134,7 @@ namespace Laure
 		 * 
 		 * @param[in] winId Window identifier.
 		 */
-		void setWindow (uint winId);
+		void setWindow (WId winId);
 		
 		/** @brief Removes the media item in the pos row.
 		 * 

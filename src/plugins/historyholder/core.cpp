@@ -87,7 +87,7 @@ LeechCraft::Plugins::HistoryHolder::Core::Core ()
 	Remove_ = ToolBar_->addAction (tr ("Remove"),
 			this,
 			SLOT (remove ()));
-	Remove_->setProperty ("ActionIcon", "remove");
+	Remove_->setProperty ("ActionIcon", "list-remove");
 }
 
 Core& Core::Instance ()

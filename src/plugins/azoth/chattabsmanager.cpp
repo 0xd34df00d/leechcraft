@@ -200,6 +200,15 @@ namespace Azoth
 		}
 		entry->MarkMsgsRead ();
 	}
+	
+	QString ChatTabsManager::GetActiveVariant (ICLEntry *entry) const
+	{
+		ChatTab_ptr tab = Entry2Tab_ [entry->GetEntryID ()];
+		if (!tab)
+			return QString ();
+		
+		return tab->GetSelectedVariant ();
+	}
 
 	bool ChatTabsManager::eventFilter (QObject* obj, QEvent *event)
 	{

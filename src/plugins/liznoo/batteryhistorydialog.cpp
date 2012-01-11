@@ -57,7 +57,7 @@ namespace Liznoo
 		Energy_->setRenderHint (QwtPlotItem::RenderAntialiased);
 		Energy_->setYAxis (QwtPlot::yRight);
 		Energy_->attach (Ui_.PercentPlot_);
-		
+
 		QwtLegend *legend = new QwtLegend;
 		legend->setItemMode (QwtLegend::ClickableItem);
 		Ui_.PercentPlot_->insertLegend (legend, QwtPlot::BottomLegend);
@@ -68,14 +68,15 @@ namespace Liznoo
 		QVector<double> xdata (hist.size ());
 		QVector<double> percents (hist.size ());
 		QVector<double> energy (hist.size ());
-		
+
 		int i = 0;
 		std::for_each (hist.begin (), hist.end (),
 				[&xdata, &percents, &energy, &i] (const BatteryHistory& bh)
 				{
 					percents [i] = bh.Percentage_;
 					energy [i] = bh.EnergyRate_;
-					xdata [i] = i++;
+					xdata [i] = i;
+					++i;
 				});
 		Percent_->setSamples (xdata, percents);
 		Energy_->setSamples (xdata, energy);

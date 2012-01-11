@@ -531,7 +531,7 @@ namespace LeechCraft
 
 	void SeparateTabWidget::AddTabButtonInit ()
 	{
-		DefaultTabAction_->setProperty ("ActionIcon", "addjob");
+		DefaultTabAction_->setProperty ("ActionIcon", "list-add");
 		AddTabButton_->setPopupMode (QToolButton::MenuButtonPopup);
 		AddTabButton_->setToolButtonStyle (Qt::ToolButtonIconOnly);
 		AddTabButton_->setArrowType (Qt::NoArrow);

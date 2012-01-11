@@ -606,6 +606,12 @@ namespace LeechCraft
 				}
 				else
 				{
+					qWarning () << Q_FUNC_INFO
+							<< "erroneous 'done' for"
+							<< id
+							<< filename
+							<< url
+							<< errorStr;
 					taskdscr->ErrorFlag_ = true;
 					if (notifyUser)
 						emit error (errorStr);

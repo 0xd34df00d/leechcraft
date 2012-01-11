@@ -121,16 +121,16 @@ namespace OnlineBookmarks
 		QMenu *menuBookmarksSyn = menu->addMenu (tr ("Sync bookmarks"));
 
 		QAction *sync = menuBookmarksSyn->addAction (tr ("Sync"));
-		sync->setProperty ("ActionIcon", "poshuku_onlinebookmarks_sync");
+		sync->setProperty ("ActionIcon", "folder-sync");
 
 		QAction *uploadOnly = menuBookmarksSyn->addAction (tr ("Upload only"));
-		uploadOnly->setProperty ("ActionIcon", "poshuku_onlinebookmarks_upload");
+		uploadOnly->setProperty ("ActionIcon", "svn-commit");
 
 		QAction *downloadOnly = menuBookmarksSyn->addAction (tr ("Download only"));
-		downloadOnly->setProperty ("ActionIcon", "poshuku_onlinebookmarks_download");
+		downloadOnly->setProperty ("ActionIcon", "svn-update");
 
 		QAction *downloadAll = menuBookmarksSyn->addAction (tr ("Download all"));
-		downloadAll->setProperty ("ActionIcon", "poshuku_onlinebookmarks_downloadall");
+		downloadAll->setProperty ("ActionIcon", "download");
 
 		connect (sync,
 				SIGNAL (triggered ()),

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 #define PLUGINS_AGGREGATOR_ITEMSLISTMODEL_H
 #include <QAbstractItemModel>
 #include <QStringList>
+#include <QSet>
 #include <QPair>
 #include "item.h"
 
@@ -50,6 +51,7 @@ namespace Aggregator
 		QStringList GetCategories (int) const;
 		void Reset (const IDType_t&);
 		void Reset (const QList<IDType_t>&);
+		void RemoveItems (QSet<IDType_t>);
 		void ItemDataUpdated (Item_ptr);
 
 		int columnCount (const QModelIndex& = QModelIndex ()) const;

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -354,6 +354,12 @@ namespace Aggregator
 			* @return The simplified (short) representation.
 			*/
 		ItemShort ToShort () const;
+
+		/** @brief Fixes the date of the item.
+		 *
+		 * Sets the pubdate to current date if the pubdate is invalid.
+		 */
+		void FixDate ();
 	};
 
 	typedef boost::shared_ptr<Item> Item_ptr;

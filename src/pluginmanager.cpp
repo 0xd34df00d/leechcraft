@@ -439,21 +439,12 @@ namespace LeechCraft
 		return qobject_cast<IInfo*> (Plugins_ [pos])->GetInfo ();
 	}
 
-	namespace
-	{
-		struct PlugComparator
-		{
-			bool operator() (QObject *p1, QObject *p2)
-			{
-				return qobject_cast<IInfo*> (p1)->GetName () < qobject_cast<IInfo*> (p2)->GetName ();
-			}
-		};
-	}
-
 	QObjectList PluginManager::GetAllPlugins () const
 	{
 		QObjectList result = PluginTreeBuilder_->GetResult ();
-		std::sort (result.begin (), result.end (), PlugComparator ());
+		std::sort (result.begin (), result.end (),
+				[] (QObject *p1, QObject *p2)
+					{ return qobject_cast<IInfo*> (p1)->GetName () < qobject_cast<IInfo*> (p2)->GetName (); });
 		return result;
 	}
 

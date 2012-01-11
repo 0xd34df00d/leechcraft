@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -73,7 +73,7 @@ namespace Azoth
 		 * uses secure storage plugins to store passwords, and if no
 		 * such plugins are installed, no passwords are stored.
 		 *
-		 * @sa SetPassword(), IAccount
+		 * @sa GetAccountPassword(), SetPassword(), IAccount
 		 */
 		virtual QString GetPassword (QObject *account) = 0;
 
@@ -96,6 +96,39 @@ namespace Azoth
 		 * @sa GetPassword(), IAccount
 		 */
 		virtual void SetPassword (const QString& password, QObject *account) = 0;
+
+		/** @brief Retrieves password for the given account, asking user
+		 * if needed.
+		 *
+		 * Returns password for the given account. If no password is
+		 * stored, this function asks user to enter one and tries to
+		 * store it after that. If the user refuses to enter a password,
+		 * a null string would be returned.
+		 *
+		 * If there was no password and user entered a non-null string,
+		 * this function would call SetPassword() by itself, so there is
+		 * no need to call SetPassword() explicitly.
+		 *
+		 * This function may also ignore the already stored password if
+		 * useStored is set to false. This is useful, for example, when
+		 * a password previously returned by this function turned out to
+		 * be wrong.
+		 *
+		 * The account object should implement the IAccount interface.
+		 * Accounts are distinguished by their IDs.
+		 *
+		 * @param[in] account The account for which to retrieve the
+		 * password. The object should implement IAccount.
+		 * @param[in] useStored Whether returning already stored
+		 * password is OK.
+		 * @return The stored password, or user-entered password if
+		 * there is no stored password or useStored is false, or null
+		 * string if there is no stored password and user refused to
+		 * enter one.
+		 *
+		 * @sa GetPassword()
+		 */
+		virtual QString GetAccountPassword (QObject *account, bool useStored = true) = 0;
 
 		/** @brief Returns the name of the OS Azoth runs under.
 		 *

@@ -143,50 +143,50 @@ namespace Poshuku
 
 		Cut_ = WebView_->pageAction (QWebPage::Cut);
 		Cut_->setShortcutContext (Qt::WindowShortcut);
-		Cut_->setProperty ("ActionIcon", "poshuku_cut");
+		Cut_->setProperty ("ActionIcon", "edit-cut");
 		Copy_ = WebView_->pageAction (QWebPage::Copy);
 		Copy_->setShortcutContext (Qt::WindowShortcut);
-		Copy_->setProperty ("ActionIcon", "poshuku_copy");
+		Copy_->setProperty ("ActionIcon", "edit-copy");
 		Paste_ = WebView_->pageAction (QWebPage::Paste);
-		Paste_->setProperty ("ActionIcon", "poshuku_paste");
+		Paste_->setProperty ("ActionIcon", "edit-paste");
 
 		ToolBar_ = new QToolBar (this);
 		ToolBar_->setWindowTitle ("Poshuku");
 
 		Back_ = WebView_->pageAction (QWebPage::Back);
 		Back_->setParent (this);
-		Back_->setProperty ("ActionIcon", "poshuku_back");
+		Back_->setProperty ("ActionIcon", "go-previous");
 
 		Forward_ = WebView_->pageAction (QWebPage::Forward);
 		Forward_->setParent (this);
-		Forward_->setProperty ("ActionIcon", "poshuku_forward");
+		Forward_->setProperty ("ActionIcon", "go-next");
 
 		Reload_ = WebView_->pageAction (QWebPage::Reload);
-		Reload_->setProperty ("ActionIcon", "poshuku_reload");
+		Reload_->setProperty ("ActionIcon", "view-refresh");
 		Reload_->setIcon (Core::Instance ()
-				.GetProxy ()->GetIcon ("poshuku_reload"));
+				.GetProxy ()->GetIcon ("view-refresh"));
 
 		Stop_ = WebView_->pageAction (QWebPage::Stop);
-		Stop_->setProperty ("ActionIcon", "poshuku_stop");
+		Stop_->setProperty ("ActionIcon", "process-stop");
 		Stop_->setIcon (Core::Instance ()
-				.GetProxy ()->GetIcon ("poshuku_stop"));
+				.GetProxy ()->GetIcon ("process-stop"));
 
 		ReloadStop_ = new QAction (this);
 		handleLoadProgress (0);
 
 		ReloadPeriodically_ = new QAction (tr ("Reload periodically"), this);
 		ReloadPeriodically_->setCheckable (true);
-		ReloadPeriodically_->setProperty ("ActionIcon", "poshuku_reloadperiodically");
+		ReloadPeriodically_->setProperty ("ActionIcon", "view-refresh-periodically");
 
 		NotifyWhenFinished_ = new QAction (tr ("Notify when finished loading"), this);
 		NotifyWhenFinished_->setCheckable (true);
-		NotifyWhenFinished_->setProperty ("ActionIcon", "poshuku_notifywhenfinished");
+		NotifyWhenFinished_->setProperty ("ActionIcon", "preferences-desktop-notification");
 		NotifyWhenFinished_->setChecked (XmlSettingsManager::Instance ()->
 				property ("NotifyFinishedByDefault").toBool ());
 
 
 		Add2Favorites_ = new QAction (tr ("Bookmark..."), this);
-		Add2Favorites_->setProperty ("ActionIcon", "poshuku_addbookmark");
+		Add2Favorites_->setProperty ("ActionIcon", "bookmark-new");
 		Add2Favorites_->setEnabled (false);
 
 		IAddressBar *iab = qobject_cast<IAddressBar*> (GetURLEdit ());
@@ -215,57 +215,58 @@ namespace Poshuku
 
 		Find_ = new QAction (tr ("Find..."),
 				this);
-		Find_->setProperty ("ActionIcon", "poshuku_find");
+		Find_->setProperty ("ActionIcon", "edit-find");
 		Find_->setEnabled (false);
 
 		Print_ = new QAction (tr ("Print..."),
 				this);
-		Print_->setProperty ("ActionIcon", "poshuku_print");
+		Print_->setProperty ("ActionIcon", "document-print");
 		Print_->setEnabled (false);
 
 		PrintPreview_ = new QAction (tr ("Print with preview..."),
 				this);
-		PrintPreview_->setProperty ("ActionIcon", "poshuku_printpreview");
+		PrintPreview_->setProperty ("ActionIcon", "document-print-preview");
 		PrintPreview_->setEnabled (false);
 
 		ScreenSave_ = new QAction (tr ("Take page's screenshot..."),
 				this);
-		ScreenSave_->setProperty ("ActionIcon", "poshuku_takescreenshot");
+		ScreenSave_->setProperty ("ActionIcon", "camera-photo");
 		ScreenSave_->setEnabled (false);
 
 		ViewSources_ = new QAction (tr ("View sources..."),
 				this);
-		ViewSources_->setProperty ("ActionIcon", "poshuku_viewsources");
+		ViewSources_->setProperty ("ActionIcon", "applications-development-web");
 		ViewSources_->setEnabled (false);
 
 		SavePage_ = new QAction (tr ("Save page..."),
 				this);
-		SavePage_->setProperty ("ActionIcon", "fetchall");
+		SavePage_->setProperty ("ActionIcon", "download");
 		SavePage_->setEnabled (false);
-		SavePage_->setShortcut (QKeySequence (tr ("Ctrl+s")));
+		SavePage_->setShortcut (QKeySequence (tr ("Ctrl+S")));
 
 		ZoomIn_ = new QAction (tr ("Zoom in"),
 				this);
-		ZoomIn_->setProperty ("ActionIcon", "poshuku_zoomin");
+		ZoomIn_->setProperty ("ActionIcon", "zoom-in");
 
 		ZoomOut_ = new QAction (tr ("Zoom out"),
 				this);
-		ZoomOut_->setProperty ("ActionIcon", "poshuku_zoomout");
+		ZoomOut_->setProperty ("ActionIcon", "zoom-out");
 
 		ZoomReset_ = new QAction (tr ("Reset zoom"),
 				this);
-		ZoomReset_->setProperty ("ActionIcon", "poshuku_zoomreset");
+		ZoomReset_->setProperty ("ActionIcon", "zoom-original");
 
 		HistoryAction_ = new QAction (tr ("Open history"),
 				this);
 		HistoryAction_->setCheckable (true);
-		HistoryAction_->setShortcut (QKeySequence (tr ("Ctrl+h")));
+		HistoryAction_->setShortcut (QKeySequence (tr ("Ctrl+H")));
+		HistoryAction_->setProperty ("ActionIcon", "view-history");
 
 		BookmarksAction_ = new QAction (tr ("Open bookmarks"),
 				this);
 		BookmarksAction_->setCheckable (true);
-		BookmarksAction_->setShortcut (QKeySequence (tr ("Ctrl+b")));
-
+		BookmarksAction_->setShortcut (QKeySequence (tr ("Ctrl+B")));
+		BookmarksAction_->setProperty ("ActionIcon", "bookmarks-organize");
 
 		ToolBar_->addAction (Back_);
 		ToolBar_->addAction (Forward_);
@@ -327,12 +328,10 @@ namespace Poshuku
 
 		ExternalLinks_ = new QMenu (this);
 		ExternalLinks_->menuAction ()->setText (tr ("External links"));
-		ExternalLinks_->menuAction ()->
-			setProperty ("ActionIcon", "poshuku_externalentities");
 
 		ExternalLinksAction_ = new QAction (this);
 		ExternalLinksAction_->setText ("External links");
-		ExternalLinksAction_->setProperty ("ActionIcon", "poshuku_rss");
+		ExternalLinksAction_->setProperty ("ActionIcon", "application-rss+xml");
 
 		QWidgetAction *addressBar = new QWidgetAction (this);
 		addressBar->setDefaultWidget (Ui_.URLFrame_);
@@ -1420,18 +1419,18 @@ namespace Poshuku
 
 		QAction *o = 0;
 		QAction *n = 0;
-		QString actionIcon = "poshuku_";
+		QString actionIcon;
 		if (p < 100 && p > 0)
 		{
 			o = Reload_;
 			n = Stop_;
-			actionIcon += "stop";
+			actionIcon = "process-stop";
 		}
 		else
 		{
 			o = Stop_;
 			n = Reload_;
-			actionIcon += "reload";
+			actionIcon = "view-refresh";
 		}
 		disconnect (ReloadStop_,
 				SIGNAL (triggered ()),
@@ -1657,7 +1656,7 @@ namespace Poshuku
 
 		if (Core::Instance ().IsUrlInFavourites (url))
 		{
-			Add2Favorites_->setProperty ("ActionIcon", "poshuku_removebookmark");
+			Add2Favorites_->setProperty ("ActionIcon", "list-remove");
 			Add2Favorites_->setText (tr ("Remove bookmark"));
 			Add2Favorites_->setToolTip (tr ("Remove bookmark"));
 
@@ -1670,12 +1669,12 @@ namespace Poshuku
 			{
 				QToolButton *btn = iab->GetButtonFromAction (Add2Favorites_);
 				if (btn)
-					btn->setIcon (Core::Instance ().GetProxy ()->GetIcon ("poshuku_removebookmark"));
+					btn->setIcon (Core::Instance ().GetProxy ()->GetIcon ("list-remove"));
 			}
 		}
 		else
 		{
-			Add2Favorites_->setProperty ("ActionIcon", "poshuku_addbookmark");
+			Add2Favorites_->setProperty ("ActionIcon", "bookmark-new");
 			Add2Favorites_->setText (tr ("Add bookmark"));
 			Add2Favorites_->setToolTip (tr ("Add bookmark"));
 
@@ -1688,7 +1687,7 @@ namespace Poshuku
 			{
 				QToolButton *btn = iab->GetButtonFromAction (Add2Favorites_);
 				if (btn)
-					btn->setIcon (Core::Instance ().GetProxy ()->GetIcon ("poshuku_addbookmark"));
+					btn->setIcon (Core::Instance ().GetProxy ()->GetIcon ("bookmark-new"));
 			}
 		}
 	}

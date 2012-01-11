@@ -104,9 +104,7 @@ namespace LeechCraft
 				int timeout = Proxy_->GetSettingsManager ()->
 						property ("FinishedDownloadMessageTimeout").toInt () * 1000;
 
- 				KinotifyWidget *notificationWidget =
-						new KinotifyWidget (timeout, Proxy_->GetMainWindow ());
-				notificationWidget->setWindowModality (Qt::NonModal);
+ 				KinotifyWidget *notificationWidget = new KinotifyWidget (timeout);
 				notificationWidget->SetThemeLoader (ThemeLoader_);
 				notificationWidget->SetEntity (e);
 
@@ -133,31 +131,26 @@ namespace LeechCraft
 						this,
 						SIGNAL (gotEntity (const LeechCraft::Entity&)));
 
-				QString mi = "information";
+				QString mi = "dialog-information";
 				switch (prio)
 				{
 					case PWarning_:
-						mi = "warning";
+						mi = "dialog-warning";
 						break;
 					case PCritical_:
-						mi = "error";
+						mi = "dialog-error";
 					default:
 						break;
 				}
 
-				QString path;
-				QMap<int, QString> sizes = Proxy_->GetIconPath (mi);
-				if (sizes.size ())
-				{
-					int size = 0;
-					if (!sizes.contains (size))
-						size = sizes.keys ().last ();
-					path = sizes [size];
-				}
+				const QIcon& icon = Proxy_->GetIcon (mi);
+				const QPixmap& px = icon.pixmap (QSize (128, 128));
+				notificationWidget->SetContent (header, text, QString ());
 
-				notificationWidget->SetContent (header, text, path);
 				if (e.Additional_ ["NotificationPixmap"].isValid ())
 					notificationWidget->OverrideImage (e.Additional_ ["NotificationPixmap"].value<QPixmap> ());
+				else
+					notificationWidget->OverrideImage (px);
 
 				if (!ActiveNotifications_.size ())
 					notificationWidget->PrepareNotification ();

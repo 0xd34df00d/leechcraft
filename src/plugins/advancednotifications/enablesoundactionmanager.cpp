@@ -29,7 +29,7 @@ namespace AdvancedNotifications
 	, EnableAction_ (new QAction (tr ("Enable sound notifications"), this))
 	{
 		EnableAction_->setCheckable (true);
-		EnableAction_->setProperty ("ActionIcon", "bell");
+		EnableAction_->setProperty ("ActionIcon", "preferences-desktop-sound");
 
 		connect (EnableAction_,
 				SIGNAL (toggled (bool)),

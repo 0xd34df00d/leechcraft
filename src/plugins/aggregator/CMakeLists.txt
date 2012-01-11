@@ -77,6 +77,9 @@ SET (SRCS
 	pluginmanager.cpp
 	proxyobject.cpp
 	syncdeltagenerator.cpp
+	dbupdatethread.cpp
+	dbupdatethreadworker.cpp
+	tovarmaps.cpp
 	)
 SET (HEADERS
     aggregator.h
@@ -124,6 +127,9 @@ SET (HEADERS
 	pluginmanager.h
 	proxyobject.h
 	syncdeltagenerator.h
+	dbupdatethread.h
+	dbupdatethreadworker.h
+	tovarmaps.h
 	)
 SET (FORMS
     mainwidget.ui

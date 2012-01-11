@@ -335,7 +335,7 @@ namespace LeechCraft
 			void KinotifyWidget::SetWidgetPlace ()
 			{
 				const QRect& geometry = QApplication::desktop ()->
-						availableGeometry (parentWidget ());
+						availableGeometry (QCursor::pos ());
 				const QSize& desktopSize = geometry.size ();
 
 				QPoint point (desktopSize.width () - DefaultSize_.width () - 5,

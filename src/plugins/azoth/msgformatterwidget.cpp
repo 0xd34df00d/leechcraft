@@ -59,44 +59,44 @@ namespace Azoth
 				this,
 				SLOT (handleBold ()));
 		FormatBold_->setCheckable (true);
-		FormatBold_->setProperty ("ActionIcon", "format_text_bold");
+		FormatBold_->setProperty ("ActionIcon", "format-text-bold");
 
 		FormatItalic_ = toolbar->addAction (tr ("Italic"),
 				this,
 				SLOT (handleItalic ()));
 		FormatItalic_->setCheckable (true);
-		FormatItalic_->setProperty ("ActionIcon", "format_text_italic");
+		FormatItalic_->setProperty ("ActionIcon", "format-text-italic");
 
 		FormatUnderline_ = toolbar->addAction (tr ("Underline"),
 				this,
 				SLOT (handleUnderline ()));
 		FormatUnderline_->setCheckable (true);
-		FormatUnderline_->setProperty ("ActionIcon", "format_text_underline");
+		FormatUnderline_->setProperty ("ActionIcon", "format-text-underline");
 
 		FormatStrikeThrough_ = toolbar->addAction (tr ("Strike through"),
 				this,
 				SLOT (handleStrikeThrough ()));
 		FormatStrikeThrough_->setCheckable (true);
-		FormatStrikeThrough_->setProperty ("ActionIcon", "format_text_strikethrough");
+		FormatStrikeThrough_->setProperty ("ActionIcon", "format-text-strikethrough");
 
 		toolbar->addSeparator ();
 
 		FormatColor_ = toolbar->addAction (tr ("Text color"),
 				this,
 				SLOT (handleTextColor ()));
-		FormatColor_->setProperty ("ActionIcon", "format_text_color");
+		FormatColor_->setProperty ("ActionIcon", "format-text-color");
 
 		FormatFont_ = toolbar->addAction (tr ("Font"),
 				this,
 				SLOT (handleFont ()));
-		FormatFont_->setProperty ("ActionIcon", "format_text_font");
+		FormatFont_->setProperty ("ActionIcon", "preferences-desktop-font");
 
 		toolbar->addSeparator ();
 
 		FormatAlignLeft_ = toolbar->addAction (tr ("Align left"),
 				this,
 				SLOT (handleParaAlignment ()));
-		FormatAlignLeft_->setProperty ("ActionIcon", "format_text_alignleft");
+		FormatAlignLeft_->setProperty ("ActionIcon", "format-justify-left");
 		FormatAlignLeft_->setProperty ("Alignment", static_cast<int> (Qt::AlignLeft));
 		FormatAlignLeft_->setCheckable (true);
 		FormatAlignLeft_->setChecked (true);
@@ -104,21 +104,21 @@ namespace Azoth
 		FormatAlignCenter_ = toolbar->addAction (tr ("Align center"),
 				this,
 				SLOT (handleParaAlignment ()));
-		FormatAlignCenter_->setProperty ("ActionIcon", "format_text_aligncenter");
+		FormatAlignCenter_->setProperty ("ActionIcon", "format-justify-center");
 		FormatAlignCenter_->setProperty ("Alignment", static_cast<int> (Qt::AlignCenter));
 		FormatAlignCenter_->setCheckable (true);
 
 		FormatAlignRight_ = toolbar->addAction (tr ("Align right"),
 				this,
 				SLOT (handleParaAlignment ()));
-		FormatAlignRight_->setProperty ("ActionIcon", "format_text_alignright");
+		FormatAlignRight_->setProperty ("ActionIcon", "format-justify-right");
 		FormatAlignRight_->setProperty ("Alignment", static_cast<int> (Qt::AlignRight));
 		FormatAlignRight_->setCheckable (true);
 
 		FormatAlignJustify_ = toolbar->addAction (tr ("Align justify"),
 				this,
 				SLOT (handleParaAlignment ()));
-		FormatAlignJustify_->setProperty ("ActionIcon", "format_text_alignjustify");
+		FormatAlignJustify_->setProperty ("ActionIcon", "format-justify-fill");
 		FormatAlignJustify_->setProperty ("Alignment", static_cast<int> (Qt::AlignJustify));
 		FormatAlignJustify_->setCheckable (true);
 
@@ -142,7 +142,7 @@ namespace Azoth
 		AddEmoticon_ = toolbar->addAction (tr ("Emoticons..."),
 				this,
 				SLOT (handleAddEmoticon ()));
-		AddEmoticon_->setProperty ("ActionIcon", "emoticons");
+		AddEmoticon_->setProperty ("ActionIcon", "face-smile");
 
 		XmlSettingsManager::Instance ().RegisterObject ("SmileIcons",
 				this, "handleEmoPackChanged");

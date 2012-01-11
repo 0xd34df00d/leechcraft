@@ -123,7 +123,7 @@ namespace LeechCraft
 		authors << ContributorInfo ("Georg Rudoy", "0xd34df00d",
 				"d34df00d@jabber.ru", "0xd34df00d@gmail.com",
 				QStringList (tr ("Lead developer and original author.")),
-				QList<int> () << 2006 << 2007 << 2008 << 2009 << 2010 << 2011);
+				QList<int> () << 2006 << 2007 << 2008 << 2009 << 2010 << 2011 << 2012);
 		authors << ContributorInfo ("Oleg Linkin", "magog",
 				"magog@gentoo.ru", "MaledictusDeMagog@gmail.com",
 				QStringList (tr ("Firefox importer in New Life."))
@@ -131,7 +131,7 @@ namespace LeechCraft
 					<< tr ("Azoth Acetamide: IRC support for Azoth.")
 					<< tr ("Chrome-style tabs.")
 					<< tr ("Various patches."),
-				QList<int> () << 2010 << 2011);
+				QList<int> () << 2010 << 2011 << 2012);
 
 		QList<ContributorInfo> contribs;
 		contribs << ContributorInfo (QString (), "Akon32",

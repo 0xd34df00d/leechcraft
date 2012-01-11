@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,6 +43,8 @@ namespace Xoox
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::ISDSession)
 
+		QString Query_;
+
 		SDModel *Model_;
 		GlooxAccount *Account_;
 		QHash<QString, QHash<QString, QStandardItem*> > JID2Node2Item_;
@@ -76,6 +78,7 @@ namespace Xoox
 		SDSession (GlooxAccount*);
 
 		void SetQuery (const QString&);
+		QString GetQuery () const;
 		QAbstractItemModel* GetRepresentationModel () const;
 		QList<QPair<QByteArray, QString> > GetActionsFor (const QModelIndex&);
 		void ExecuteAction (const QModelIndex&, const QByteArray&);
@@ -89,6 +92,7 @@ namespace Xoox
 		void AddToRoster (const ItemInfo&);
 		void Register (const ItemInfo&);
 		void ExecuteAdHoc (const ItemInfo&);
+		void JoinConference (const ItemInfo&);
 	private slots:
 		void handleRegistrationForm (const QXmppIq&);
 	};

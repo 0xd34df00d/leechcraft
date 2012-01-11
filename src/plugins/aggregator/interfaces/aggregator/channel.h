@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@
 #include <QList>
 #include <QDateTime>
 #include <QStringList>
-#include <QPixmap>
+#include <QImage>
 #include <boost/shared_ptr.hpp>
 #include <vector>
 #include "item.h"
@@ -41,7 +41,7 @@ namespace Aggregator
 		QString Link_;
 		QStringList Tags_;
 		QDateTime LastBuild_;
-		QPixmap Favicon_;
+		QImage Favicon_;
 		int Unread_;
 	};
 
@@ -57,8 +57,8 @@ namespace Aggregator
 		QString Language_;
 		QString Author_;
 		QString PixmapURL_;
-		QPixmap Pixmap_;
-		QPixmap Favicon_;
+		QImage Pixmap_;
+		QImage Favicon_;
 		items_container_t Items_;
 
 		Channel (const IDType_t& feedId);
@@ -86,5 +86,6 @@ namespace Aggregator
 }
 
 Q_DECLARE_METATYPE (LeechCraft::Aggregator::Channel_ptr);
+Q_DECLARE_METATYPE (LeechCraft::Aggregator::channels_container_t);
 
 #endif

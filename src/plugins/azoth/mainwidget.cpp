@@ -139,7 +139,7 @@ namespace Azoth
 
 		Ui_.FastStatusButton_->setMenu (CreateStatusChangeMenu (SLOT (fastStateChangeRequested ())));
 		Ui_.FastStatusButton_->setDefaultAction (new QAction (tr ("Set status"), this));
-		updateFastStatusButton (SOnline);
+		updateFastStatusButton (SOffline);
 		connect (Ui_.FastStatusButton_->defaultAction (),
 				SIGNAL (triggered ()),
 				this,
@@ -243,7 +243,7 @@ namespace Azoth
 		MainMenu_->addSeparator ();
 
 		QAction *showOffline = MainMenu_->addAction (tr ("Show offline contacts"));
-		showOffline->setProperty ("ActionIcon", "azoth_showoffline");
+		showOffline->setProperty ("ActionIcon", "view-user-offline-kopete");
 		showOffline->setCheckable (true);
 		bool show = XmlSettingsManager::Instance ()
 				.Property ("ShowOfflineContacts", true).toBool ();

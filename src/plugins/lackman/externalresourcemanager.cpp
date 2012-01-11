@@ -31,16 +31,11 @@ namespace LackMan
 		{
 			return QString (url.toEncoded ().toBase64 ().replace ('/', '_'));
 		}
-
-		QDir GetDir ()
-		{
-			return Util::CreateIfNotExists ("lackman/resources/");
-		}
 	}
 
 	ExternalResourceManager::ExternalResourceManager (QObject *parent)
 	: QObject (parent)
-	, ResourcesDir_ (GetDir ())
+	, ResourcesDir_ (Util::CreateIfNotExists ("lackman/resources/"))
 	{
 	}
 

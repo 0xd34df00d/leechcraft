@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "proxyobject.h"
+#include <QInputDialog>
 #include <QtDebug>
 #include <util/util.h>
 #include <util/sysinfo.h>
@@ -106,6 +107,26 @@ namespace Azoth
 		e.Additional_ ["Overwrite"] = true;
 
 		Core::Instance ().SendEntity (e);
+	}
+
+	QString ProxyObject::GetAccountPassword (QObject *accObj, bool useStored)
+	{
+		if (useStored)
+		{
+			const QString& result = GetPassword (accObj);
+			if (!result.isNull ())
+				return result;
+		}
+
+		IAccount *acc = qobject_cast<IAccount*> (accObj);
+
+		QString result = QInputDialog::getText (0,
+				"LeechCraft",
+				tr ("Enter password for %1:").arg (acc->GetAccountName ()),
+				QLineEdit::Password);
+		if (!result.isNull ())
+			SetPassword (result, accObj);
+		return result;
 	}
 
 	QString ProxyObject::GetOSName ()

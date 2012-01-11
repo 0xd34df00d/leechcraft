@@ -169,13 +169,13 @@ namespace LackMan
 		RootItemForAction_.clear ();
 
 		RootItemForAction_ [AInstall] =
-				new QStandardItem (Core::Instance ().GetProxy ()->GetIcon ("addjob"),
+				new QStandardItem (Core::Instance ().GetProxy ()->GetIcon ("list-add"),
 						tr ("To be installed"));
 		RootItemForAction_ [ARemove] =
-				new QStandardItem (Core::Instance ().GetProxy ()->GetIcon ("remove"),
+				new QStandardItem (Core::Instance ().GetProxy ()->GetIcon ("list-remove"),
 						tr ("To be removed"));
 		RootItemForAction_ [AUpdate] =
-				new QStandardItem (Core::Instance ().GetProxy ()->GetIcon ("update"),
+				new QStandardItem (Core::Instance ().GetProxy ()->GetIcon ("system-software-update"),
 						tr ("To be updated"));
 
 		for (int i = AInstall; i < AMAX; ++i)

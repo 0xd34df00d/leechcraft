@@ -48,6 +48,7 @@
 #include "interfaces/iresourceplugin.h"
 #include "interfaces/iurihandler.h"
 #include "interfaces/irichtextmessage.h"
+#include "interfaces/ihaveservicediscovery.h"
 #include "interfaces/iextselfinfoaccount.h"
 #ifdef ENABLE_CRYPT
 #include "interfaces/isupportpgp.h"
@@ -68,6 +69,7 @@
 #include "acceptriexdialog.h"
 #include "clmodel.h"
 #include "actionsmanager.h"
+#include "servicediscoverywidget.h"
 
 namespace LeechCraft
 {
@@ -587,24 +589,12 @@ namespace Azoth
 		{
 			ProtocolPlugins_ << plugin;
 
-			QIcon icon = qobject_cast<IInfo*> (plugin)->GetIcon ();
-			Q_FOREACH (QObject *protoObj, ipp->GetProtocols ())
-			{
-				IProtocol *proto = qobject_cast<IProtocol*> (protoObj);
+			handleNewProtocols (ipp->GetProtocols ());
 
-				Q_FOREACH (QObject *accObj,
-						proto->GetRegisteredAccounts ())
-					addAccount (accObj);
-
-				connect (proto->GetObject (),
-						SIGNAL (accountAdded (QObject*)),
-						this,
-						SLOT (addAccount (QObject*)));
-				connect (proto->GetObject (),
-						SIGNAL (accountRemoved (QObject*)),
-						this,
-						SLOT (handleAccountRemoved (QObject*)));
-			}
+			connect (plugin,
+					SIGNAL (gotNewProtocols (QList<QObject*>)),
+					this,
+					SLOT (handleNewProtocols (QList<QObject*>)));
 		}
 	}
 
@@ -1681,6 +1671,27 @@ namespace Azoth
 		dia->show ();
 	}
 
+	void Core::handleNewProtocols (const QList<QObject*>& protocols)
+	{
+		Q_FOREACH (QObject *protoObj, protocols)
+		{
+			IProtocol *proto = qobject_cast<IProtocol*> (protoObj);
+
+			Q_FOREACH (QObject *accObj,
+					proto->GetRegisteredAccounts ())
+				addAccount (accObj);
+
+			connect (proto->GetObject (),
+					SIGNAL (accountAdded (QObject*)),
+					this,
+					SLOT (addAccount (QObject*)));
+			connect (proto->GetObject (),
+					SIGNAL (accountRemoved (QObject*)),
+					this,
+					SLOT (handleAccountRemoved (QObject*)));
+		}
+	}
+
 	void Core::addAccount (QObject *accObject)
 	{
 		IAccount *account =
@@ -1770,6 +1781,12 @@ namespace Azoth
 				SIGNAL (statusChanged (const EntryStatus&)),
 				this,
 				SLOT (handleAccountStatusChanged (const EntryStatus&)));
+
+		if (qobject_cast<IHaveServiceDiscovery*> (accObject))
+			connect (accObject,
+					SIGNAL (gotSDSession (QObject*)),
+					this,
+					SLOT (handleGotSDSession (QObject*)));
 
 		IProtocol *proto = qobject_cast<IProtocol*> (account->GetParentProtocol ());
 		if (proto)
@@ -2210,14 +2227,16 @@ namespace Azoth
 		if (msgString.isEmpty ())
 			e.Mime_ += "+advanced";
 
-		QStandardItem *someItem = Entry2Items_ [msg->GetMessageType () == IMessage::MTMUCMessage ?
-						parentCL : other].value (0);
+		ICLEntry *entry = msg->GetMessageType () == IMessage::MTMUCMessage ?
+				parentCL :
+				other;
+		BuildNotification (e, entry);
+		QStandardItem *someItem = Entry2Items_ [entry].value (0);
 		const int count = someItem ?
 				someItem->data (CLRUnreadMsgCount).toInt () :
 				0;
 		if (msg->GetMessageType () == IMessage::MTMUCMessage)
 		{
-			BuildNotification (e, parentCL);
 			e.Additional_ ["org.LC.AdvNotifications.EventType"] = isHighlightMsg ?
 					"org.LC.AdvNotifications.IM.MUCHighlightMessage" :
 					"org.LC.AdvNotifications.IM.MUCMessage";
@@ -2234,7 +2253,6 @@ namespace Azoth
 		}
 		else
 		{
-			BuildNotification (e, other);
 			e.Additional_ ["org.LC.AdvNotifications.EventType"] =
 					"org.LC.AdvNotifications.IM.IncomingMessage";
 			e.Additional_ ["org.LC.AdvNotifications.FullText"] =
@@ -2661,6 +2679,23 @@ namespace Azoth
 				"org.LC.Plugins.Azoth.AttentionDrawnBy/" + entry->GetEntryID ();
 
 		emit gotEntity (e);
+	}
+
+	void Core::handleGotSDSession (QObject *sdObj)
+	{
+		ISDSession *sess = qobject_cast<ISDSession*> (sdObj);
+		if (!sess)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< sdObj
+					<< "is not a ISDSession";
+			return;
+		}
+
+		ServiceDiscoveryWidget *w = new ServiceDiscoveryWidget;
+		w->SetAccount (sender ());
+		w->SetSDSession (sess);
+		emit gotSDWidget (w);
 	}
 
 	void Core::handleFileOffered (QObject *jobObj)

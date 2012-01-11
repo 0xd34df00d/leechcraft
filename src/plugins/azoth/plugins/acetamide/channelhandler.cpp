@@ -218,7 +218,7 @@ namespace Acetamide
 					break;
 				default:
 					role = ChannelRole::Participant;
-			}
+ 			}
 		else
 			role = ChannelRole::Participant;
 
@@ -258,8 +258,6 @@ namespace Acetamide
 					ChannelCLEntry_,
 					IMessage::MTStatusMessage,
 					IMessage::MSTParticipantLeave,
-					Nick2Entry_ [nick]);
-
 		ChannelCLEntry_->HandleMessage (message);
 	}
 
@@ -345,8 +343,9 @@ namespace Acetamide
 	void ChannelHandler::LeaveParticipant (const QString& nick,
 			const QString& msg)
 	{
-		if (RemoveUserFromChannel (nick))
+		if (ISH_->GetParticipantEntry (nick))
 			MakeLeaveMessage (nick, msg);
+		RemoveUserFromChannel (nick);
 	}
 
 	void ChannelHandler::KickParticipant (const QString& nick,

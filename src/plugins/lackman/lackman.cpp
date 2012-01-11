@@ -268,19 +268,16 @@ namespace LackMan
 		TypeFilter_->SetFilterMode (static_cast<TypeFilterProxyModel::FilterMode> (index));
 	}
 
-	namespace
-	{
-		void AddText (QString& text, const QStringList& urls)
-		{
-			Q_FOREACH (const QString& url, urls)
-				text += "<img src='" + url + "' alt='Image' /><br />";
-		}
-	}
-
 	void Plugin::handlePackageSelected (const QModelIndex& index)
 	{
 		QString text;
-		AddText (text, index.data (PackagesModel::PMRThumbnails).toStringList ());
+		auto AddText = [&text] (const QStringList& urls)
+		{
+			Q_FOREACH (const QString& url, urls)
+				text += "<img src='" + url + "' alt='Image' /><br />";
+		};
+
+		AddText (index.data (PackagesModel::PMRThumbnails).toStringList ());
 
 		QString descr = index.data (PackagesModel::PMRLongDescription).toString ();
 		if (!descr.contains ("<br"))
@@ -289,7 +286,7 @@ namespace LackMan
 
 		const QStringList& screens = index.data (PackagesModel::PMRScreenshots).toStringList ();
 		text += "<hr/>";
-		AddText (text, screens);
+		AddText (screens);
 
 		Ui_.Browser_->SetHtml (text);
 
@@ -337,28 +334,28 @@ namespace LackMan
 	void Plugin::BuildActions ()
 	{
 		UpdateAll_ = new QAction (tr ("Update all repos"), this);
-		UpdateAll_->setProperty ("ActionIcon", "refresh");
+		UpdateAll_->setProperty ("ActionIcon", "view-refresh");
 		connect (UpdateAll_,
 				SIGNAL (triggered ()),
 				&Core::Instance (),
 				SLOT (updateAllRequested ()));
 
 		UpgradeAll_ = new QAction (tr ("Upgrade all packages"), this);
-		UpgradeAll_->setProperty ("ActionIcon", "fetchall");
+		UpgradeAll_->setProperty ("ActionIcon", "system-software-update");
 		connect (UpgradeAll_,
 				SIGNAL (triggered ()),
 				&Core::Instance (),
 				SLOT (upgradeAllRequested ()));
 
 		Apply_ = new QAction (tr ("Apply"), this);
-		Apply_->setProperty ("ActionIcon", "apply");
+		Apply_->setProperty ("ActionIcon", "dialog-ok");
 		connect (Apply_,
 				SIGNAL (triggered ()),
 				&Core::Instance (),
 				SLOT (acceptPending ()));
 
 		Cancel_ = new QAction (tr ("Cancel"), this);
-		Cancel_->setProperty ("ActionIcon", "cancel");
+		Cancel_->setProperty ("ActionIcon", "dialog-cancel");
 		connect (Cancel_,
 				SIGNAL (triggered ()),
 				&Core::Instance (),

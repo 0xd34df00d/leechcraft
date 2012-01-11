@@ -219,6 +219,12 @@ namespace Aggregator
 		return is;
 	}
 
+	void Item::FixDate ()
+	{
+		if (!PubDate_.isValid ())
+			PubDate_ = QDateTime::currentDateTime ();
+	}
+
 	ItemComparator::ItemComparator (const Item_ptr& item)
 	: Item_ (item)
 	{

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -90,22 +90,6 @@ public:
 	 * would look like "PluginsStorage/PluginName/YourProperty".
 	 */
 	virtual LeechCraft::Util::BaseSettingsManager* GetSettingsManager () const = 0;
-
-	/** @brief Returns the current theme's icon paths for the given name.
-	 * Similar to the mapping files.
-	 *
-	 * There can be different files for different icon sizes. Scalable
-	 * icons are considered to have a special value for size: 0.
-	 * The return value is the mapping from icon size (only one
-	 * dimension since icons are rectangluar) to the path to the graphic
-	 * file.
-	 *
-	 * @param[in] name The name of the icon to search for.
-	 * @return Size -> path mapping.
-	 *
-	 * @sa GetIcon
-	 */
-	virtual QMap<int, QString> GetIconPath (const QString& name) const = 0;
 
 	/** Returns the current theme's icon for the given on and off
 	 * states. Similar to the mapping files.

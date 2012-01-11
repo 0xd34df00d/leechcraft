@@ -268,19 +268,19 @@ namespace LackMan
 		switch (packageInfo.Type_)
 		{
 		case PackageInfo::TPlugin:
-			result = Proxy_->GetIcon ("lackman_plugin");
+			result = Proxy_->GetIcon ("preferences-plugin");
 			break;
 		case PackageInfo::TIconset:
-			result = Proxy_->GetIcon ("lackman_iconset");
+			result = Proxy_->GetIcon ("preferences-desktop-icons");
 			break;
 		case PackageInfo::TTranslation:
-			result = Proxy_->GetIcon ("lackman_translation");
+			result = Proxy_->GetIcon ("preferences-desktop-locale");
 			break;
 		case PackageInfo::TData:
-			result = Proxy_->GetIcon ("lackman_data");
+			result = Proxy_->GetIcon ("package-x-generic");
 			break;
 		case PackageInfo::TTheme:
-			result = Proxy_->GetIcon ("lackman_theme");
+			result = Proxy_->GetIcon ("preferences-desktop-theme");
 			break;
 		}
 		return result;
@@ -323,40 +323,36 @@ namespace LackMan
 		return result;
 	}
 
-	namespace
-	{
-		void SafeCD (QDir& dir, const QString& subdir)
-		{
-			if (!dir.exists (subdir))
-				dir.mkdir (subdir);
-			if (!dir.cd (subdir))
-				throw std::runtime_error (QObject::tr ("Unable to cd into %1.")
-						.arg (subdir)
-						.toUtf8 ().constData ());
-		}
-	}
-
 	QDir Core::GetPackageDir (int packageId) const
 	{
 		ListPackageInfo info = Storage_->GetSingleListPackageInfo (packageId);
 		QDir dir = QDir::home ();
 		dir.cd (".leechcraft");
+
+		auto SafeCD = [&dir] (const QString& subdir)
+		{
+			if (!dir.exists (subdir))
+				dir.mkdir (subdir);
+			if (!dir.cd (subdir))
+				throw std::runtime_error (std::string ("Unable to cd into ") + subdir.toUtf8 ().constData ());
+		};
+
 		switch (info.Type_)
 		{
 		case PackageInfo::TPlugin:
-			SafeCD (dir, "plugins");
-			SafeCD (dir, "scriptable");
-			SafeCD (dir, info.Language_);
+			SafeCD ("plugins");
+			SafeCD ("scriptable");
+			SafeCD (info.Language_);
 			break;
 		case PackageInfo::TIconset:
-			SafeCD (dir, "icons");
+			SafeCD ("icons");
 			break;
 		case PackageInfo::TTranslation:
-			SafeCD (dir, "translations");
+			SafeCD ("translations");
 			break;
 		case PackageInfo::TData:
 		case PackageInfo::TTheme:
-			SafeCD (dir, "data");
+			SafeCD ("data");
 			break;
 		}
 		return dir;
@@ -717,7 +713,6 @@ namespace LackMan
 					return;
 				}
 			}
-
 
 		Q_FOREACH (QString packageName, PackageName2NewVersions_.keys ())
 		{

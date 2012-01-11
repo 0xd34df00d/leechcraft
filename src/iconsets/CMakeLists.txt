@@ -1,2 +1,0 @@
-ADD_SUBDIRECTORY (oxygen)
-ADD_SUBDIRECTORY (tango)

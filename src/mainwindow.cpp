@@ -322,17 +322,15 @@ void LeechCraft::MainWindow::InitializeInterface ()
 	MenuView_->addAction (Ui_.ActionFullscreenMode_);
 	MenuTools_ = new QMenu (tr ("Tools"), this);
 
-	Ui_.ActionAddTask_->setProperty ("ActionIcon", "addjob");
-	Ui_.ActionCloseTab_->setProperty ("ActionIcon", "closetab");
-	Ui_.ActionSettings_->setProperty ("ActionIcon", "settings");
-	Ui_.ActionAboutLeechCraft_->setProperty ("ActionIcon", "about");
+	Ui_.ActionAddTask_->setProperty ("ActionIcon", "list-add");
+	Ui_.ActionCloseTab_->setProperty ("ActionIcon", "tab-close");
+	Ui_.ActionSettings_->setProperty ("ActionIcon", "preferences-system");
+	Ui_.ActionAboutLeechCraft_->setProperty ("ActionIcon", "help-about");
 	Ui_.ActionAboutQt_->setIcon (qApp->style ()->
 			standardIcon (QStyle::SP_MessageBoxQuestion).pixmap (32, 32));
-	Ui_.ActionQuit_->setProperty ("ActionIcon", "exit");
-	Ui_.ActionLogger_->setProperty ("ActionIcon", "logger");
-	Ui_.ActionFullscreenMode_->setProperty ("ActionIcon", "fullscreen");
+	Ui_.ActionQuit_->setProperty ("ActionIcon", "application-exit");
+	Ui_.ActionFullscreenMode_->setProperty ("ActionIcon", "view-fullscreen");
 	Ui_.ActionFullscreenMode_->setParent (this);
-	Ui_.ActionShowStatusBar_->setProperty ("ActionIcon", "showstatusbar");
 
 	Ui_.MainTabWidget_->AddAction2TabBar (Ui_.ActionCloseTab_);
 	connect (Ui_.MainTabWidget_,
