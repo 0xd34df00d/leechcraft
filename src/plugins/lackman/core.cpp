@@ -334,9 +334,7 @@ namespace LackMan
 			if (!dir.exists (subdir))
 				dir.mkdir (subdir);
 			if (!dir.cd (subdir))
-				throw std::runtime_error (QObject::tr ("Unable to cd into %1.")
-						.arg (subdir)
-						.toUtf8 ().constData ());
+				throw std::runtime_error (std::string ("Unable to cd into ") + subdir.toUtf8 ().constData ());
 		};
 
 		switch (info.Type_)
