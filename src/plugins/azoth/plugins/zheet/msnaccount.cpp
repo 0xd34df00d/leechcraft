@@ -280,7 +280,11 @@ namespace Zheet
 		}
 
 		if (status.State_ == SOffline)
+		{
 			Conn_->disconnect ();
+			PendingStatus_ = status;
+			emit statusChanged (status);
+		}
 		else if (!Conn_->isConnected ())
 		{
 			if (!Connecting_)
