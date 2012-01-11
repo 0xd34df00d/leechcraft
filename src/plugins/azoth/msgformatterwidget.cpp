@@ -142,7 +142,7 @@ namespace Azoth
 		AddEmoticon_ = toolbar->addAction (tr ("Emoticons..."),
 				this,
 				SLOT (handleAddEmoticon ()));
-		AddEmoticon_->setProperty ("ActionIcon", "emoticons");
+		AddEmoticon_->setProperty ("ActionIcon", "face-smile");
 
 		XmlSettingsManager::Instance ().RegisterObject ("SmileIcons",
 				this, "handleEmoPackChanged");
