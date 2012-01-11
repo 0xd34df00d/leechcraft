@@ -564,7 +564,8 @@ namespace Poshuku
 
 		QBuffer ib;
 		ib.open (QIODevice::ReadWrite);
-		QPixmap px = Core::Instance ().GetProxy ()->GetIcon ("error").pixmap (32, 32);
+		QPixmap px = Core::Instance ().GetProxy ()->
+				GetIcon ("dialog-error").pixmap (32, 32);
 		px.save (&ib, "PNG");
 
 		data.replace ("{img}",

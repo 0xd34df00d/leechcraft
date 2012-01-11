@@ -939,7 +939,7 @@ namespace Azoth
 	void ChatTab::BuildBasicActions ()
 	{
 		QAction *clearAction = new QAction (tr ("Clear chat window"), this);
-		clearAction->setProperty ("ActionIcon", "clear");
+		clearAction->setProperty ("ActionIcon", "edit-clear-history");
 		connect (clearAction,
 				SIGNAL (triggered ()),
 				this,
@@ -947,7 +947,7 @@ namespace Azoth
 		TabToolbar_->addAction (clearAction);
 
 		ToggleRichText_ = new QAction (tr ("Enable rich text"), this);
-		ToggleRichText_->setProperty ("ActionIcon", "richtext");
+		ToggleRichText_->setProperty ("ActionIcon", "text-enriched");
 		ToggleRichText_->setCheckable (true);
 		ToggleRichText_->setChecked (XmlSettingsManager::Instance ()
 					.property ("ShowRichTextMessageBody").toBool ());
@@ -959,7 +959,7 @@ namespace Azoth
 		TabToolbar_->addSeparator ();
 
 		QAction *quoteSelection = new QAction (tr ("Quote selection"), this);
-		quoteSelection->setProperty ("ActionIcon", "quote");
+		quoteSelection->setProperty ("ActionIcon", "mail-reply-sender");
 		quoteSelection->setShortcut (QString ("Ctrl+Q"));
 		connect (quoteSelection,
 				SIGNAL (triggered ()),
@@ -1070,7 +1070,7 @@ namespace Azoth
 				e->GetEntryType () == ICLEntry::ETChat)
 		{
 			Call_ = new QAction (tr ("Call..."), this);
-			Call_->setProperty ("ActionIcon", "call");
+			Call_->setProperty ("ActionIcon", "voicecall");
 			connect (Call_,
 					SIGNAL (triggered ()),
 					this,
@@ -1093,7 +1093,7 @@ namespace Azoth
 		if (qobject_cast<ISupportPGP*> (accObj))
 		{
 			EnableEncryption_ = new QAction (tr ("Enable encryption"), this);
-			EnableEncryption_->setProperty ("ActionIcon", "encryption");
+			EnableEncryption_->setProperty ("ActionIcon", "document-encrypt");
 			EnableEncryption_->setCheckable (true);
 			connect (EnableEncryption_,
 					SIGNAL (triggered ()),

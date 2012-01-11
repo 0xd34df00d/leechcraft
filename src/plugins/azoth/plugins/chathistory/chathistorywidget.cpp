@@ -88,16 +88,16 @@ namespace ChatHistory
 		Toolbar_->addAction (tr ("Previous"),
 				this,
 				SLOT (previousHistory ()))->
-					setProperty ("ActionIcon", "back");
+					setProperty ("ActionIcon", "go-previous");
 		Toolbar_->addAction (tr ("Next"),
 				this,
 				SLOT (nextHistory ()))->
-					setProperty ("ActionIcon", "forward");
+					setProperty ("ActionIcon", "go-next");
 		Toolbar_->addSeparator ();
 		Toolbar_->addAction (tr ("Clear"),
 				this,
 				SLOT (clearHistory ()))->
-					setProperty ("ActionIcon", "remove");
+					setProperty ("ActionIcon", "list-remove");
 
 		Core::Instance ()->GetOurAccounts ();
 	}

@@ -268,19 +268,19 @@ namespace LackMan
 		switch (packageInfo.Type_)
 		{
 		case PackageInfo::TPlugin:
-			result = Proxy_->GetIcon ("lackman_plugin");
+			result = Proxy_->GetIcon ("preferences-plugin");
 			break;
 		case PackageInfo::TIconset:
-			result = Proxy_->GetIcon ("lackman_iconset");
+			result = Proxy_->GetIcon ("preferences-desktop-icons");
 			break;
 		case PackageInfo::TTranslation:
-			result = Proxy_->GetIcon ("lackman_translation");
+			result = Proxy_->GetIcon ("preferences-desktop-locale");
 			break;
 		case PackageInfo::TData:
-			result = Proxy_->GetIcon ("lackman_data");
+			result = Proxy_->GetIcon ("package-x-generic");
 			break;
 		case PackageInfo::TTheme:
-			result = Proxy_->GetIcon ("lackman_theme");
+			result = Proxy_->GetIcon ("preferences-desktop-theme");
 			break;
 		}
 		return result;

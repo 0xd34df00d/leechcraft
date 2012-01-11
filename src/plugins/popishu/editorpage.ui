@@ -83,7 +83,7 @@
     <string>Ctrl+N</string>
    </property>
    <property name="ActionIcon" stdset="0">
-    <string notr="true">documentnew</string>
+    <string notr="true">document-new</string>
    </property>
   </action>
   <action name="ActionOpen_">
@@ -94,7 +94,7 @@
     <string>Ctrl+O</string>
    </property>
    <property name="ActionIcon" stdset="0">
-    <string notr="true">documentopen</string>
+    <string notr="true">document-open</string>
    </property>
   </action>
   <action name="ActionSave_">
@@ -105,7 +105,7 @@
     <string>Ctrl+S</string>
    </property>
    <property name="ActionIcon" stdset="0">
-    <string notr="true">documentsave</string>
+    <string notr="true">document-save</string>
    </property>
   </action>
   <action name="ActionSaveAs_">
@@ -116,7 +116,7 @@
     <string>Ctrl+Shift+S</string>
    </property>
    <property name="ActionIcon" stdset="0">
-    <string notr="true">documentsaveas</string>
+    <string notr="true">document-save-as</string>
    </property>
   </action>
   <action name="ActionShowEOL_">
@@ -231,6 +231,9 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+R</string>
+   </property>
+   <property name="ActionIcon" stdset="0">
+    <string notr="true">edit-find-replace</string>
    </property>
   </action>
  </widget>

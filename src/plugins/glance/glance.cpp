@@ -43,7 +43,7 @@ namespace Glance
 		ActionGlance_->setToolTip ("Show the quick overview of tabs");
 		ActionGlance_->setShortcut (QKeySequence ("Ctrl+G"));
 		ActionGlance_->setShortcutContext (Qt::ApplicationShortcut);
-		ActionGlance_->setIcon (proxy->GetIcon ("glance"));
+		ActionGlance_->setProperty ("ActionIcon", "view-list-icons");
 
 		connect (ActionGlance_,
 				SIGNAL (triggered ()),

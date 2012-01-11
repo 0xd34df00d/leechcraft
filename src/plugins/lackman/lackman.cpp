@@ -334,28 +334,28 @@ namespace LackMan
 	void Plugin::BuildActions ()
 	{
 		UpdateAll_ = new QAction (tr ("Update all repos"), this);
-		UpdateAll_->setProperty ("ActionIcon", "refresh");
+		UpdateAll_->setProperty ("ActionIcon", "view-refresh");
 		connect (UpdateAll_,
 				SIGNAL (triggered ()),
 				&Core::Instance (),
 				SLOT (updateAllRequested ()));
 
 		UpgradeAll_ = new QAction (tr ("Upgrade all packages"), this);
-		UpgradeAll_->setProperty ("ActionIcon", "fetchall");
+		UpgradeAll_->setProperty ("ActionIcon", "system-software-update");
 		connect (UpgradeAll_,
 				SIGNAL (triggered ()),
 				&Core::Instance (),
 				SLOT (upgradeAllRequested ()));
 
 		Apply_ = new QAction (tr ("Apply"), this);
-		Apply_->setProperty ("ActionIcon", "apply");
+		Apply_->setProperty ("ActionIcon", "dialog-ok");
 		connect (Apply_,
 				SIGNAL (triggered ()),
 				&Core::Instance (),
 				SLOT (acceptPending ()));
 
 		Cancel_ = new QAction (tr ("Cancel"), this);
-		Cancel_->setProperty ("ActionIcon", "cancel");
+		Cancel_->setProperty ("ActionIcon", "dialog-cancel");
 		connect (Cancel_,
 				SIGNAL (triggered ()),
 				&Core::Instance (),
