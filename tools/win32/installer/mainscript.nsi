@@ -45,7 +45,7 @@ SectionGroup "Core"
 		File lcutil.dll
 		File xmlsettingsdialog.dll
 		File leechcraft.exe
-		File boost_program_options-vc100-mt-1_47.dll
+		File boost_program_options-vc100-mt-1_48.dll
 		File /r icons
 		File /r leechcraft
 		File /r oxygen
@@ -130,15 +130,19 @@ SectionGroup "Plugins"
 
         SetOutPath $INSTDIR\share\azoth
         File /r share\azoth\*
+		
+		SetOutPath $INSTDIR\myspell
+		File myspell\*
+		
         SectionIn 1
     SectionEnd
 	Section "BitTorrent" TORRENTPLUGIN
 		SetOutPath $INSTDIR
 		File torrent.dll
-		File boost_date_time-vc100-mt-1_47.dll
-		File boost_filesystem-vc100-mt-1_47.dll
-		File boost_system-vc100-mt-1_47.dll
-		File boost_thread-vc100-mt-1_47.dll
+		File boost_date_time-vc100-mt-1_48.dll
+		File boost_filesystem-vc100-mt-1_48.dll
+		File boost_system-vc100-mt-1_48.dll
+		File boost_thread-vc100-mt-1_48.dll
 		SetOutPath $INSTDIR\settings
 		File settings\torrentsettings.xml
 		SetOutPath $INSTDIR\plugins\bin
@@ -421,6 +425,7 @@ LangString DESC_GMAILNOTIFIERPLUGIN ${LANG_ENGLISH} "Notifies about new mail in 
 LangString DESC_POSHUKUFATAPEPLUGIN ${LANG_ENGLISH} "Adds support for GreaseMonkey userscripts."
 LangString DESC_POSHUKUONLINEBOOKMARKSPLUGIN ${LANG_ENGLISH} "Allows one to synchronize bookmarks with services like Read It Later."
 LangString DESC_TABSLISTPLUGIN ${LANG_ENGLISH} "Shows the list of currently opened tabs and allows one to quickly navigate between them."
+LangString DESC_AZOTHPLUGIN ${LANG_ENGLISH} "Full-featured Jabber client based on patched QXMPP library"
 
 LangString DESC_MAINFILES ${LANG_RUSSIAN} "Ядро LeechCraft."
 LangString DESC_QT ${LANG_RUSSIAN} "Библиотеки Qt."
@@ -455,7 +460,8 @@ LangString DESC_GLANCEPLUGIN ${LANG_RUSSIAN} "Обеспечивает переключение между вк
 LangString DESC_GMAILNOTIFIERPLUGIN ${LANG_RUSSIAN} "Уведомляет о новой почте в вашей учетной записи GMail."
 LangString DESC_POSHUKUFATAPEPLUGIN ${LANG_RUSSIAN} "Добавляет поддержку пользовательских скриптов GreaseMonkey."
 LangString DESC_POSHUKUONLINEBOOKMARKSPLUGIN ${LANG_RUSSIAN} "Позволяет синхронизировать закладки с сервисами типа Read It Later."
-LangString DESC_TABSLISTPLUGIN ${LANG_ENGLISH} "Показывает список открытых вкладок и позволяет легко перемещаться между ними."
+LangString DESC_TABSLISTPLUGIN ${LANG_RUSSIAN} "Показывает список открытых вкладок и позволяет легко перемещаться между ними."
+LangString DESC_AZOTHPLUGIN ${LANG_RUSSIAN} "Полнофункциональный Jabber клиент"
 
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
 	!insertmacro MUI_DESCRIPTION_TEXT ${MAINFILES} $(DESC_MAINFILES)
@@ -463,6 +469,7 @@ LangString DESC_TABSLISTPLUGIN ${LANG_ENGLISH} "Показывает список открытых вклад
 	!insertmacro MUI_DESCRIPTION_TEXT ${MSVC} $(DESC_MSVC)
 	!insertmacro MUI_DESCRIPTION_TEXT ${OPENSSL} $(DESC_OPENSSL)
 	!insertmacro MUI_DESCRIPTION_TEXT ${HTTPPLUGIN} $(DESC_HTTPPLUGIN)
+	!insertmacro MUI_DESCRIPTION_TEXT ${AZOTHPLUGIN} $(DESC_AZOTHPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${AGGREGATORPLUGIN} $(DESC_AGGREGATORPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${TORRENTPLUGIN} $(DESC_TORRENTPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${LMPPLUGIN} $(DESC_LMPPLUGIN)
@@ -486,12 +493,12 @@ LangString DESC_TABSLISTPLUGIN ${LANG_ENGLISH} "Показывает список открытых вклад
 	!insertmacro MUI_DESCRIPTION_TEXT ${LACKMANPLUGIN} $(DESC_LACKMANPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${SECMANPLUGIN} $(DESC_SECMANPLUGIN)
 	!insertmacro MUI_DESCRIPTION_TEXT ${SHELLOPENPLUGIN} $(DESC_SHELLOPENPLUGIN)
-	!insertmacro MUI_DESCRIPTION_TEXT ${ANPLUGIN} ${DESC_ANPLUGIN}
-	!insertmacro MUI_DESCRIPTION_TEXT ${GLANCEPLUGIN} ${DESC_GLANCEPLUGIN}
-	!insertmacro MUI_DESCRIPTION_TEXT ${GMAILNOTIFIERPLUGIN} ${DESC_GMAILNOTIFIERPLUGIN}
-	!insertmacro MUI_DESCRIPTION_TEXT ${POSHUKUFATAPEPLUGIN} ${DESC_POSHUKUFATAPEPLUGIN}
-	!insertmacro MUI_DESCRIPTION_TEXT ${POSHUKUONLINEBOOKMARKSPLUGIN} ${DESC_POSHUKUONLINEBOOKMARKSPLUGIN}
-	!insertmacro MUI_DESCRIPTION_TEXT ${TABSLISTPLUGIN} ${DESC_TABSLISTPLUGIN}
+	!insertmacro MUI_DESCRIPTION_TEXT ${ANPLUGIN} $(DESC_ANPLUGIN)
+	!insertmacro MUI_DESCRIPTION_TEXT ${GLANCEPLUGIN} $(DESC_GLANCEPLUGIN)
+	!insertmacro MUI_DESCRIPTION_TEXT ${GMAILNOTIFIERPLUGIN} $(DESC_GMAILNOTIFIERPLUGIN)
+	!insertmacro MUI_DESCRIPTION_TEXT ${POSHUKUFATAPEPLUGIN} $(DESC_POSHUKUFATAPEPLUGIN)
+	!insertmacro MUI_DESCRIPTION_TEXT ${POSHUKUONLINEBOOKMARKSPLUGIN} $(DESC_POSHUKUONLINEBOOKMARKSPLUGIN)
+	!insertmacro MUI_DESCRIPTION_TEXT ${TABSLISTPLUGIN} $(DESC_TABSLISTPLUGIN)
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 Function .onInit

@@ -52,8 +52,7 @@ ADD_LIBRARY (leechcraft_poshuku_onlinebookmarks_readitlater SHARED
 TARGET_LINK_LIBRARIES (leechcraft_poshuku_onlinebookmarks_readitlater
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
-	qjson
-# 	${QJSON_LIBRARIES}
+	${QJSON_LIBRARIES}
 	)
 
 INSTALL (TARGETS leechcraft_poshuku_onlinebookmarks_readitlater DESTINATION ${LC_PLUGINS_DEST})

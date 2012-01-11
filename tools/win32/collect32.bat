@@ -78,6 +78,10 @@ copy %LIBTORRENT_BIN_DIR%\torrent.dll %TARGET_DIR%
 rem - qjson -
 copy %QJSON_BIN_DIR%\qjson.dll %TARGET_DIR%
 
+rem - VLC -
+copy %VLC_DIR%\libvlc.dll %TARGET_DIR%
+copy %VLC_DIR%\libvlccore.dll %TARGET_DIR%
+
 rem === LEECHCRAFT FILES ===
 
 rem - Main files -
@@ -117,4 +121,8 @@ copy %LEECHCRAFT_ROOT_DIR%\tools\win32\installer\qt.conf %TARGET_DIR%
 rem === COMPILE QT TRANSLATIONS ===
 for %%f in (%QT_BIN_DIR%\..\translations\qt_*.ts) do %QT_BIN_DIR%\lrelease %%f
 copy %QT_BIN_DIR%\..\translations\qt_*.qm %TARGET_DIR%\translations
+
+rem == Copy install script to Leechcraft
+XCOPY installer\* %TARGET_DIR% /Y
+
 pause
