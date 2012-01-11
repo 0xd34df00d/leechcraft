@@ -47,7 +47,6 @@ namespace Qrosp
 		QObject* GetShortcutProxy () const;
 		QModelIndex MapToSource (const QModelIndex&) const;
 		//LeechCraft::Util::BaseSettingsManager* GetSettingsManager () const;
-		QMap<int, QString> GetIconPath (const QString& name) const;
 		QIcon GetIcon (const QString& on, const QString& off = QString ()) const;
 		QMainWindow* GetMainWindow () const;
 		ICoreTabWidget* GetTabWidget () const;
