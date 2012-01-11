@@ -42,7 +42,7 @@ namespace Poshuku
 		setCompleter (completer);
 
 		ClearButton_ = new QToolButton (this);
-		ClearButton_->setIcon (Core::Instance ().GetProxy ()->GetIcon ("clearall"));
+		ClearButton_->setIcon (Core::Instance ().GetProxy ()->GetIcon ("edit-clear-locationbar-ltr"));
 		ClearButton_->setCursor (Qt::PointingHandCursor);
 		ClearButton_->setStyleSheet ("QToolButton { border: none; padding: 0px; }");
 		ClearButton_->hide ();

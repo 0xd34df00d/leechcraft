@@ -62,7 +62,7 @@ namespace AdvancedNotifications
 						break;
 				}
 
-				pixmap = proxy->GetIcon (mi).pixmap (QSize (64, 64));
+				pixmap = proxy->GetIcon ("dialog-" + mi).pixmap (QSize (64, 64));
 			}
 			return pixmap;
 		}

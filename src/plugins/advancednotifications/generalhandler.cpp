@@ -40,7 +40,7 @@ namespace AdvancedNotifications
 		Q_FOREACH (ConcreteHandlerBase_ptr handler, Handlers_)
 			handler->SetGeneralHandler (this);
 
-		Cat2IconName_ ["org.LC.AdvNotifications.IM"] = "message";
+		Cat2IconName_ ["org.LC.AdvNotifications.IM"] = "mail-unread-new";
 	}
 
 	void GeneralHandler::Handle (const Entity& e)
@@ -74,7 +74,7 @@ namespace AdvancedNotifications
 
 	QIcon GeneralHandler::GetIconForCategory (const QString& cat) const
 	{
-		const QString& name = "notificationcategory_" + Cat2IconName_.value (cat, "general");
+		const QString& name = Cat2IconName_.value (cat, "general");
 		return Proxy_->GetIcon (name);
 	}
 }

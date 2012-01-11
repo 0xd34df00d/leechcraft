@@ -233,12 +233,12 @@ namespace LackMan
 		if (installed)
 		{
 			label = tr ("Remove");
-			iconName = "remove";
+			iconName = "list-remove";
 		}
 		else
 		{
 			label = tr ("Install");
-			iconName = "addjob";
+			iconName = "list-add";
 		}
 
 		QAction *action = button->defaultAction ();
@@ -258,7 +258,7 @@ namespace LackMan
 		if (!Row2Update_.contains (row))
 		{
 			QAction *action = new QAction (Core::Instance ()
-						.GetProxy ()->GetIcon ("update"),
+						.GetProxy ()->GetIcon ("system-software-update"),
 					tr ("Update"),
 					Viewport_);
 			action->setCheckable (true);
