@@ -225,7 +225,7 @@ namespace LeechCraft
 			CoreProxy proxy;
 			QStyleOptionTabV2 option;
 			initStyleOption (&option, count () - 1);
-			QIcon icon = proxy.GetIcon ("addjob");
+			QIcon icon = proxy.GetIcon ("list-add");
 			painter.drawItemPixmap (option.rect, Qt::AlignCenter, 
 					icon.pixmap (QSize (15, 15)));
 		}

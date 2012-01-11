@@ -42,19 +42,19 @@ namespace LeechCraft
 		Ui_.ListContents_->setLayout (new QVBoxLayout);
 		Ui_.DialogContents_->setLayout (new QVBoxLayout);
 
-		ActionBack_->setProperty ("ActionIcon", "back");
+		ActionBack_->setProperty ("ActionIcon", "go-previous");
 		connect (ActionBack_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleBackRequested ()));
 
-		ActionApply_->setProperty ("ActionIcon", "apply");
+		ActionApply_->setProperty ("ActionIcon", "dialog-ok");
 		connect (ActionApply_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleApply ()));
 
-		ActionCancel_->setProperty ("ActionIcon", "cancel");
+		ActionCancel_->setProperty ("ActionIcon", "dialog-cancel");
 		connect (ActionCancel_,
 				SIGNAL (triggered ()),
 				this,

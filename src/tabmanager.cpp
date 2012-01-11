@@ -73,7 +73,7 @@ TabManager::TabManager (SeparateTabWidget *tabWidget,
 			SIGNAL (triggered ()),
 			this,
 			SLOT (handleCloseAllButCurrent ()));
-	closeAllButCurrent->setProperty ("ActionIcon", "closeallbutcurrent");
+	closeAllButCurrent->setProperty ("ActionIcon", "tab-close-other");
 	TabWidget_->AddAction2TabBar (closeAllButCurrent);
 }
 

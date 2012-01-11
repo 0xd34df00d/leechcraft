@@ -80,6 +80,8 @@ QIcon SkinEngine::GetIcon (const QString& actionIcon, const QString& actionIconO
 		return result;
 	}
 
+	qWarning () << Q_FUNC_INFO << "old-style naming scheme for" << actionIcon << actionIconOff << QIcon::themeName () << QIcon::themeSearchPaths ();
+
 	QString icon = GetIconName (actionIcon);
 
 	QIcon iconEntity;
