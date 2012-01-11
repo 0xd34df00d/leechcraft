@@ -2227,14 +2227,16 @@ namespace Azoth
 		if (msgString.isEmpty ())
 			e.Mime_ += "+advanced";
 
-		QStandardItem *someItem = Entry2Items_ [msg->GetMessageType () == IMessage::MTMUCMessage ?
-						parentCL : other].value (0);
+		ICLEntry *entry = msg->GetMessageType () == IMessage::MTMUCMessage ?
+				parentCL :
+				other;
+		BuildNotification (e, entry);
+		QStandardItem *someItem = Entry2Items_ [entry].value (0);
 		const int count = someItem ?
 				someItem->data (CLRUnreadMsgCount).toInt () :
 				0;
 		if (msg->GetMessageType () == IMessage::MTMUCMessage)
 		{
-			BuildNotification (e, parentCL);
 			e.Additional_ ["org.LC.AdvNotifications.EventType"] = isHighlightMsg ?
 					"org.LC.AdvNotifications.IM.MUCHighlightMessage" :
 					"org.LC.AdvNotifications.IM.MUCMessage";
@@ -2251,7 +2253,6 @@ namespace Azoth
 		}
 		else
 		{
-			BuildNotification (e, other);
 			e.Additional_ ["org.LC.AdvNotifications.EventType"] =
 					"org.LC.AdvNotifications.IM.IncomingMessage";
 			e.Additional_ ["org.LC.AdvNotifications.FullText"] =

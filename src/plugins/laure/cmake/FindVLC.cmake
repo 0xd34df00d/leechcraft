@@ -11,6 +11,7 @@
 #  BSD license.
 #  For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 #
+#  Added introspection for WIN32 (c) 2011 DZhon (TheDZhon@gmail.com)
 
 if (VLC_LIBRARIES AND VLC_INCLUDE_DIRS)
 	# in cache already
@@ -25,17 +26,27 @@ else (VLC_LIBRARIES AND VLC_INCLUDE_DIRS)
 		/usr/local/include
 		/opt/local/include
 		/sw/include
+		${VLC_DIR}/sdk/include
 	)
 
-	find_library (VLC_LIBRARY
-		NAMES
-		vlc
-		PATHS
-		/usr/lib
-		/usr/local/lib
-		/opt/local/lib
-		/sw/lib
-	)
+	IF (NOT MSVC)
+		FIND_PATH (VLC_LIBRARY
+			NAMES
+			vlc
+			PATHS
+			/usr/lib
+			/usr/local/lib
+			/opt/local/lib
+			/sw/lib
+		)
+	ELSE (NOT MSVC)
+		FIND_LIBRARY (VLC_LIBRARY
+			NAMES
+			libvlc.lib
+			PATHS
+			${VLC_DIR}
+		)
+	ENDIF (NOT MSVC)
 
 	set (VLC_INCLUDE_DIRS
 		${VLC_INCLUDE_DIR}

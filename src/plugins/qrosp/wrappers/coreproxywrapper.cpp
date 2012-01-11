@@ -45,11 +45,6 @@ namespace Qrosp
 		return Proxy_->MapToSource (index);
 	}
 
-	QMap<int, QString> CoreProxyWrapper::GetIconPath (const QString& name) const
-	{
-		return Proxy_->GetIconPath (name);
-	}
-
 	QIcon CoreProxyWrapper::GetIcon (const QString& on, const QString& off) const
 	{
 		return Proxy_->GetIcon (on, off);
