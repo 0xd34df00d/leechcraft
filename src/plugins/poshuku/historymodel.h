@@ -52,7 +52,6 @@ namespace Poshuku
 
 		QTimer *GarbageTimer_;
 		Util::TreeItem *RootItem_;
-		QAction *FolderIconProxy_;
 		history_items_t Items_;
 	public:
 		enum Columns
