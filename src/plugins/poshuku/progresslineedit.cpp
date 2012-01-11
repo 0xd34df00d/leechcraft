@@ -211,14 +211,24 @@ namespace Poshuku
 	{
 		const int frameWidth = style ()->pixelMetric (QStyle::PM_DefaultFrameWidth);
 		int rightBorder = 0;
+		int realBorder = 0;
 		for (int i = VisibleButtons_.count () - 1; i >= 0; --i)
 		{
 			QToolButton *btn = VisibleButtons_ [i];
 			const QSize& bmSz = btn->sizeHint ();
 			rightBorder += bmSz.width ();
+			if (i > 0)
+				realBorder += bmSz.width ();
+
 			btn->move (rect ().right () - frameWidth - rightBorder,
-					   (rect ().bottom () + 1 - bmSz.height ()) / 2);
+					(rect ().bottom () + 1 - bmSz.height ()) / 2);
 		}
+
+		const QMargins& margins = textMargins();
+		setTextMargins (margins.left (),
+				margins.top (),
+				realBorder + frameWidth,
+				margins.bottom ());
 	}
 
 	void ProgressLineEdit::handleTriggeredButton (QAction *action)
