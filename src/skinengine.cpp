@@ -253,6 +253,7 @@ void SkinEngine::FindIcons ()
 
 	if (iconSet != OldIconSet_)
 	{
+		QIcon::setThemeName (iconSet);
 		IconName2Path_.clear ();
 		IconName2FileName_.clear ();
 		IconDirs_.clear ();
