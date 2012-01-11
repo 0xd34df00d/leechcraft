@@ -199,53 +199,17 @@ void SkinEngine::FindIconSets ()
 {
 	IconSets_.clear ();
 
-	/** Platform-specific aths for *.mapping files are as follows:
-	 *
-	 * Unix:
-	 * /usr/share/leechcraft/icons
-	 * /usr/local/share/leechcraft/icons
-	 *
-	 * Mac OS X:
-	 * %APP_DIR%/../Resources/icons
-	 *
-	 * Win32:
-	 * %APP_DIR%/icons
-	 */
-#if defined (Q_WS_MAC)
-	QDir dir (QApplication::applicationDirPath () + "/../Resources/icons");
-	IconSets_ << dir.entryList (QStringList ("*.mapping"));
-#elif defined (Q_WS_X11)
-	#if defined (INSTALL_PREFIX)
-	QDir dir = QDir (INSTALL_PREFIX "/share/leechcraft/icons");
-	IconSets_ << dir.entryList (QStringList ("*.mapping"));
-	#else
-	QDir dir = QDir ("/usr/share/leechcraft/icons");
-	IconSets_ << dir.entryList (QStringList ("*.mapping"));
-	dir = QDir ("/usr/local/share/leechcraft/icons");
-	IconSets_ << dir.entryList (QStringList ("*.mapping"));
-	#endif
-#elif defined (Q_WS_WIN)
-	QDir dir = QDir::current ();
-	if (dir.cd (QCoreApplication::applicationDirPath () + "/icons"))
-		IconSets_ << dir.entryList (QStringList ("*.mapping"));
-#endif
-
-	dir = QDir::home ();
-	if (dir.cd (".icons"))
-		IconSets_ << dir.entryList (QStringList ("*.mapping"));
-	dir = QDir::home ();
-	if (dir.cd (".leechcraft") && dir.cd ("icons"))
-		IconSets_ << dir.entryList (QStringList ("*.mapping"));
-
-	for (QStringList::iterator i = IconSets_.begin (),
-			end = IconSets_.end (); i != end; ++i)
-		*i = i->left (i->size () - 8);
-
-#ifndef Q_NO_DEBUG
-	qDebug () << Q_FUNC_INFO
-		<< "found"
-		<< IconSets_;
-#endif
+	Q_FOREACH (const QString& str, QIcon::themeSearchPaths ())
+	{
+		QDir dir (str);
+		Q_FOREACH (const QString& subdirName, dir.entryList (QDir::Dirs))
+		{
+			QDir subdir (dir);
+			subdir.cd (subdirName);
+			if (subdir.exists ("index.theme"))
+				IconSets_ << subdirName;
+		}
+	}
 }
 
 void SkinEngine::FindIcons ()
