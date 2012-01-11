@@ -5,7 +5,7 @@ rem == (c) Eugene Mamin <thedzhon@gmail.com>
 
 rem == Build variables ==
 
-call "C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\vcvars32.bat" x86
+call "C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\vcvars32.bat" x86
 
 set QTDIR=C:\Qt\4.8.0
 
@@ -31,7 +31,7 @@ set BOOST_VERSION="1_48"
 set LIBTORRENT_BIN_DIR="%TORRENT_DIR%\bin\msvc-10.0\Release\boost-link-shared\boost-source\threading-multi"
 set OPENSSL_BIN_DIR="C:\DEVLIBS\OpenSSL-Win32"
 set QT_BIN_DIR="%QTDIR%\bin"
-set QJSON_BIN_DIR="%QJSON_DIR%\build\lib\Release\"
+set QJSON_BIN_DIR="%QJSON_DIR%\build\lib\MinSizeRel\"
 
 set LEECHCRAFT_ROOT_DIR="..\.."
 set LEECHCRAFT_BUILD_DIR="build32"

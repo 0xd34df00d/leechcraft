@@ -121,4 +121,8 @@ copy %LEECHCRAFT_ROOT_DIR%\tools\win32\installer\qt.conf %TARGET_DIR%
 rem === COMPILE QT TRANSLATIONS ===
 for %%f in (%QT_BIN_DIR%\..\translations\qt_*.ts) do %QT_BIN_DIR%\lrelease %%f
 copy %QT_BIN_DIR%\..\translations\qt_*.qm %TARGET_DIR%\translations
+
+rem == Copy install script to Leechcraft
+XCOPY installer\* %TARGET_DIR% /Y
+
 pause
