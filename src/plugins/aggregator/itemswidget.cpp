@@ -520,7 +520,7 @@ namespace Aggregator
 				this);
 		Impl_->ActionHideReadItems_->setObjectName ("ActionHideReadItems_");
 		Impl_->ActionHideReadItems_->setCheckable (true);
-		Impl_->ActionHideReadItems_->setProperty ("ActionIcon", "aggregator_rssshow");
+		Impl_->ActionHideReadItems_->setProperty ("ActionIcon", "mail-mark-unread");
 		Impl_->ActionHideReadItems_->setChecked (XmlSettingsManager::Instance ()->
 				Property ("HideReadItems", false).toBool ());
 
@@ -528,7 +528,7 @@ namespace Aggregator
 				this);
 		Impl_->ActionShowAsTape_->setObjectName ("ActionShowAsTape_");
 		Impl_->ActionShowAsTape_->setCheckable (true);
-		Impl_->ActionShowAsTape_->setProperty ("ActionIcon", "aggregator_tapemode_on");
+		Impl_->ActionShowAsTape_->setProperty ("ActionIcon", "format-list-unordered");
 		Impl_->ActionShowAsTape_->setChecked (XmlSettingsManager::Instance ()->
 				Property ("ShowAsTape", false).toBool ());
 
@@ -542,7 +542,7 @@ namespace Aggregator
 
 		Impl_->ActionMarkItemAsImportant_ = new QAction (tr ("Important"), this);
 		Impl_->ActionMarkItemAsImportant_->setObjectName ("ActionMarkItemAsImportant_");
-		Impl_->ActionMarkItemAsImportant_->setProperty ("ActionIcon", "favorites");
+		Impl_->ActionMarkItemAsImportant_->setProperty ("ActionIcon", "rating");
 		Impl_->ActionMarkItemAsImportant_->setCheckable (true);
 
 		Impl_->ActionDeleteItem_ = new QAction (tr ("Delete"), this);
