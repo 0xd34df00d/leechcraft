@@ -213,7 +213,7 @@ namespace Azoth
 			}
 
 		QAction *openChat = new QAction (tr ("Open chat"), entry->GetObject ());
-		openChat->setProperty ("ActionIcon", "azoth_openchat");
+		openChat->setProperty ("ActionIcon", "view-conversation-balloon");
 		connect (openChat,
 				SIGNAL (triggered ()),
 				this,
@@ -230,7 +230,7 @@ namespace Azoth
 					SIGNAL (triggered ()),
 					this,
 					SLOT (handleActionDrawAttention ()));
-			drawAtt->setProperty ("ActionIcon", "bell");
+			drawAtt->setProperty ("ActionIcon", "task-attention");
 			Entry2Actions_ [entry] ["drawattention"] = drawAtt;
 			Action2Areas_ [drawAtt] << CLEAAContactListCtxtMenu
 					<< CLEAAToolbar;
@@ -243,7 +243,7 @@ namespace Azoth
 					SIGNAL (triggered ()),
 					this,
 					SLOT (handleActionSendFile ()));
-			sendFile->setProperty ("ActionIcon", "sendfile");
+			sendFile->setProperty ("ActionIcon", "mail-attachment");
 			Entry2Actions_ [entry] ["sendfile"] = sendFile;
 			Action2Areas_ [sendFile] << CLEAAContactListCtxtMenu
 					<< CLEAAToolbar;
@@ -254,7 +254,7 @@ namespace Azoth
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleActionRenameTriggered ()));
-		rename->setProperty ("ActionIcon", "azoth_rename");
+		rename->setProperty ("ActionIcon", "edit-rename");
 		Entry2Actions_ [entry] ["rename"] = rename;
 		Action2Areas_ [rename] << CLEAAContactListCtxtMenu;
 
@@ -265,7 +265,7 @@ namespace Azoth
 					SIGNAL (triggered ()),
 					this,
 					SLOT (handleActionChangeGroupsTriggered ()));
-			changeGroups->setProperty ("ActionIcon", "azoth_changegroups");
+			changeGroups->setProperty ("ActionIcon", "user-group-properties");
 			Entry2Actions_ [entry] ["changegroups"] = changeGroups;
 			Action2Areas_ [changeGroups] << CLEAAContactListCtxtMenu;
 		}
@@ -273,48 +273,39 @@ namespace Azoth
 		if (entry->GetEntryFeatures () & ICLEntry::FSupportsAuth)
 		{
 			QMenu *authMenu = new QMenu (tr ("Authorization"));
-			authMenu->menuAction ()->setProperty ("ActionIcon", "azoth_menu_authorization");
 			Entry2Actions_ [entry] ["authorization"] = authMenu->menuAction ();
 			Action2Areas_ [authMenu->menuAction ()] << CLEAAContactListCtxtMenu;
 
 			QAction *grantAuth = authMenu->addAction (tr ("Grant"),
 					this, SLOT (handleActionGrantAuthTriggered ()));
-			grantAuth->setProperty ("ActionIcon", "azoth_auth_grant");
 			grantAuth->setProperty ("Azoth/WithReason", false);
 
 			QAction *grantAuthReason = authMenu->addAction (tr ("Grant with reason..."),
 					this, SLOT (handleActionGrantAuthTriggered ()));
-			grantAuthReason->setProperty ("ActionIcon", "azoth_auth_grant");
 			grantAuthReason->setProperty ("Azoth/WithReason", true);
 
 			QAction *revokeAuth = authMenu->addAction (tr ("Revoke"),
 					this, SLOT (handleActionRevokeAuthTriggered ()));
-			revokeAuth->setProperty ("ActionIcon", "azoth_auth_revoke");
 			revokeAuth->setProperty ("Azoth/WithReason", false);
 
 			QAction *revokeAuthReason = authMenu->addAction (tr ("Revoke with reason..."),
 					this, SLOT (handleActionRevokeAuthTriggered ()));
-			revokeAuthReason->setProperty ("ActionIcon", "azoth_auth_revoke_reason");
 			revokeAuthReason->setProperty ("Azoth/WithReason", true);
 
 			QAction *unsubscribe = authMenu->addAction (tr ("Unsubscribe"),
 					this, SLOT (handleActionUnsubscribeTriggered ()));
-			unsubscribe->setProperty ("ActionIcon", "azoth_auth_unsubscribe");
 			unsubscribe->setProperty ("Azoth/WithReason", false);
 
 			QAction *unsubscribeReason = authMenu->addAction (tr ("Unsubscribe with reason..."),
 					this, SLOT (handleActionUnsubscribeTriggered ()));
-			unsubscribeReason->setProperty ("ActionIcon", "azoth_auth_unsubscribe");
 			unsubscribeReason->setProperty ("Azoth/WithReason", true);
 
 			QAction *rerequest = authMenu->addAction (tr ("Rerequest authentication"),
 					this, SLOT (handleActionRerequestTriggered ()));
-			rerequest->setProperty ("ActionIcon", "azoth_auth_rerequest");
 			rerequest->setProperty ("Azoth/WithReason", false);
 
 			QAction *rerequestReason = authMenu->addAction (tr ("Rerequest authentication with reason..."),
 					this, SLOT (handleActionRerequestTriggered ()));
-			rerequestReason->setProperty ("ActionIcon", "azoth_auth_rerequest");
 			rerequestReason->setProperty ("Azoth/WithReason", true);
 		}
 
@@ -326,7 +317,7 @@ namespace Azoth
 					SIGNAL (triggered ()),
 					this,
 					SLOT (handleActionManagePGPTriggered ()));
-			manageGPG->setProperty ("ActionIcon", "encryption");
+			manageGPG->setProperty ("ActionIcon", "document-encrypt");
 			Entry2Actions_ [entry] ["managepgp"] = manageGPG;
 			Action2Areas_ [manageGPG] << CLEAAContactListCtxtMenu;
 		}
@@ -350,7 +341,7 @@ namespace Azoth
 					SIGNAL (triggered ()),
 					this,
 					SLOT (handleActionVCardTriggered ()));
-			vcard->setProperty ("ActionIcon", "personalinfo");
+			vcard->setProperty ("ActionIcon", "text-x-vcard");
 			Entry2Actions_ [entry] ["vcard"] = vcard;
 			Action2Areas_ [vcard] << CLEAAContactListCtxtMenu
 					<< CLEAATabCtxtMenu
@@ -389,7 +380,7 @@ namespace Azoth
 			}
 
 			QAction *addContact = new QAction (tr ("Add to contact list..."), entry->GetObject ());
-			addContact->setProperty ("ActionIcon", "add");
+			addContact->setProperty ("ActionIcon", "list-add");
 			connect (addContact,
 					SIGNAL (triggered ()),
 					this,
@@ -400,7 +391,7 @@ namespace Azoth
 					<< CLEAAChatCtxtMenu;
 
 			QAction *copyId = new QAction (tr ("Copy ID"), entry->GetObject ());
-			copyId->setProperty ("ActionIcon", "copy");
+			copyId->setProperty ("ActionIcon", "edit-copy");
 			connect (copyId,
 					SIGNAL (triggered ()),
 					this,
@@ -426,7 +417,7 @@ namespace Azoth
 					<< CLEAATabCtxtMenu;
 
 			QAction *leave = new QAction (tr ("Leave"), entry->GetObject ());
-			leave->setProperty ("ActionIcon", "azoth_leave");
+			leave->setProperty ("ActionIcon", "irc-close-channel");
 			connect (leave,
 					SIGNAL (triggered ()),
 					this,
@@ -436,7 +427,7 @@ namespace Azoth
 					<< CLEAATabCtxtMenu;
 
 			QAction *bookmarks = new QAction (tr ("Add to bookmarks"), entry->GetObject ());
-			bookmarks->setProperty ("ActionIcon", "favorites");
+			bookmarks->setProperty ("ActionIcon", "bookmark-new");
 			connect (bookmarks,
 					SIGNAL (triggered ()),
 					this,
@@ -448,7 +439,7 @@ namespace Azoth
 			if (qobject_cast<IConfigurableMUC*> (entry->GetObject ()))
 			{
 				QAction *configureMUC = new QAction (tr ("Configure MUC..."), this);
-				configureMUC->setProperty ("ActionIcon", "preferences");
+				configureMUC->setProperty ("ActionIcon", "configure");
 				connect (configureMUC,
 						SIGNAL (triggered ()),
 						this,
@@ -461,7 +452,6 @@ namespace Azoth
 		else if (entry->GetEntryType () == ICLEntry::ETUnauthEntry)
 		{
 			QAction *authorize = new QAction (tr ("Authorize"), entry->GetObject ());
-			authorize->setProperty ("ActionIcon", "azoth_authorize");
 			connect (authorize,
 					SIGNAL (triggered ()),
 					this,
@@ -470,7 +460,6 @@ namespace Azoth
 			Action2Areas_ [authorize] << CLEAAContactListCtxtMenu;
 
 			QAction *denyAuth = new QAction (tr ("Deny authorization"), entry->GetObject ());
-			denyAuth->setProperty ("ActionIcon", "azoth_denyauth");
 			connect (denyAuth,
 						SIGNAL (triggered ()),
 						this,
@@ -481,7 +470,7 @@ namespace Azoth
 		else if (entry->GetEntryType () == ICLEntry::ETChat)
 		{
 			QAction *remove = new QAction (tr ("Remove"), entry->GetObject ());
-			remove->setProperty ("ActionIcon", "remove");
+			remove->setProperty ("ActionIcon", "list-remove");
 			connect (remove,
 					SIGNAL (triggered ()),
 					this,

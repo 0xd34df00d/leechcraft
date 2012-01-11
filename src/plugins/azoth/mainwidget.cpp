@@ -243,7 +243,7 @@ namespace Azoth
 		MainMenu_->addSeparator ();
 
 		QAction *showOffline = MainMenu_->addAction (tr ("Show offline contacts"));
-		showOffline->setProperty ("ActionIcon", "azoth_showoffline");
+		showOffline->setProperty ("ActionIcon", "view-user-offline-kopete");
 		showOffline->setCheckable (true);
 		bool show = XmlSettingsManager::Instance ()
 				.Property ("ShowOfflineContacts", true).toBool ();

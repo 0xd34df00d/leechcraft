@@ -47,7 +47,7 @@ namespace Snails
 		Ui_.setupUi (this);
 
 		QAction *send = new QAction (tr ("Send"), this);
-		send->setProperty ("ActionIcon", "msgsend");
+		send->setProperty ("ActionIcon", "mail-send");
 		connect (send,
 				SIGNAL (triggered ()),
 				this,
@@ -55,7 +55,7 @@ namespace Snails
 		Toolbar_->addAction (send);
 
 		AccountsMenu_ = new QMenu (tr ("Accounts"));
-		AccountsMenu_->menuAction ()->setProperty ("ActionIcon", "accounts");
+		AccountsMenu_->menuAction ()->setProperty ("ActionIcon", "system-users");
 		QActionGroup *accsGroup = new QActionGroup (this);
 		Q_FOREACH (Account_ptr account, Core::Instance ().GetAccounts ())
 		{

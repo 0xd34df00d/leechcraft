@@ -41,7 +41,7 @@ namespace TabsList
 
 		ShowList_ = new QAction (tr ("List of tabs"),
 				Proxy_->GetMainWindow ());
-		ShowList_->setProperty ("ActionIcon", "itemlist");
+		ShowList_->setProperty ("ActionIcon", "view-list-details");
 		ShowList_->setShortcut (QString ("Ctrl+Shift+L"));
 		connect (ShowList_,
 				SIGNAL (triggered ()),

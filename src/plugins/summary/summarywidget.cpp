@@ -48,7 +48,7 @@ namespace LeechCraft
 			, SearchWidget_ (new SearchWidget)
 			{
 				ActionSearch_ = SearchWidget_->toggleViewAction ();
-				ActionSearch_->setProperty ("ActionIcon", "find");
+				ActionSearch_->setProperty ("ActionIcon", "edit-find");
 				ActionSearch_->setShortcut (tr ("Ctrl+F"));
 				Toolbar_->setWindowTitle ("Summary");
 				connect (Toolbar_,

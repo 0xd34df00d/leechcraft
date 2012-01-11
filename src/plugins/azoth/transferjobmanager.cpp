@@ -42,7 +42,7 @@ namespace Azoth
 	, ReprBar_ (new QToolBar)
 	{
 		QAction *abort = new QAction (tr ("Abort"), this);
-		abort->setProperty ("ActionIcon", "cancel");
+		abort->setProperty ("ActionIcon", "process-stop");
 		connect (abort,
 				SIGNAL (triggered ()),
 				this,
