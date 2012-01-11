@@ -106,11 +106,11 @@ namespace Laure
 				tr ("Choose playlist"), QDir::homePath (), "*.m3u");
 		if (fileName.isEmpty ())
 			return;
-		
+#ifdef HAVE_MAGIC
 		const QString& mime = QString (magic_file (Magic_.get (), fileName.toAscii ()));
 		if (!mime.contains ("text"))
 			return;
-		
+#endif
 		if (!QFileInfo (fileName).suffix ().compare ("m3u", Qt::CaseInsensitive))
 			LoadM3U (fileName);
 	}
