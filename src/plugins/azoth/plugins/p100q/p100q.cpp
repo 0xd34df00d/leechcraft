@@ -20,7 +20,9 @@
 #include "p100q.h"
 #include <QIcon>
 #include <QString>
+#include <QShortcut>
 #include <QTranslator>
+#include <QTextEdit>
 #include <util/util.h>
 #include <interfaces/imessage.h>
 #include <interfaces/iclentry.h>
@@ -33,6 +35,7 @@ namespace Azoth
 namespace p100q
 {
 	const int PstoCommentPos = 6;
+
 	void Plugin::Init (ICoreProxy_ptr)
 	{
 		Translator_.reset (Util::InstallTranslator ("azoth_p100q"));
@@ -55,7 +58,6 @@ namespace p100q
 	{
 		return XmlSettingsDialog_;
 	}
-
 
 	void Plugin::SecondInit ()
 	{
@@ -181,8 +183,39 @@ namespace p100q
 		return body;
 	}
 
+	void Plugin::hookChatTabCreated (IHookProxy_ptr proxy,
+			QObject *chatTab, QObject *entry, QWebView*)
+	{
+		if (!XmlSettingsManager::Instance ()
+				.property ("BindLastID").toBool ())
+			return;
+
+		ICLEntry *other = qobject_cast<ICLEntry*> (entry);
+		if (!other ||
+				!other->GetEntryID ().contains ("psto@psto.net"))
+			return;
+
+		QTextEdit *edit;
+		QMetaObject::invokeMethod (chatTab,
+				"getMsgEdit",
+				Q_RETURN_ARG (QTextEdit*, edit));
+		connect (chatTab,
+				SIGNAL (destroyed ()),
+				this,
+				SLOT (handleChatDestroyed ()));
+
+		QShortcut *sh = new QShortcut (QString ("Ctrl+L"), edit);
+		sh->setProperty ("Azoth/p100q/Tab", QVariant::fromValue<QObject*> (chatTab));
+		connect (sh,
+				SIGNAL (activated ()),
+				this,
+				SLOT (handleShortcutActivated ()));
+
+		Entry2Tab_ [entry] = chatTab;
+	}
+
 	void Plugin::hookFormatBodyEnd (IHookProxy_ptr proxy,
-			QObject*, QObject *msgObj)
+			QObject *msgObj)
 	{
 		IMessage *msg = qobject_cast<IMessage*> (msgObj);
 		if (msg->GetDirection () != IMessage::DIn ||
@@ -202,7 +235,35 @@ namespace p100q
 		if (!other->GetEntryID ().contains ("psto@psto.net"))
 			return;
 
-		proxy->SetValue ("body", FormatBody (proxy->GetValue ("body").toString ()));
+		const QString& prevBody = proxy->GetValue ("body").toString ();
+		proxy->SetValue ("body", FormatBody (prevBody));
+
+		if (!XmlSettingsManager::Instance ()
+				.property ("BindLastID").toBool ())
+			return;
+
+		const int pPos = PostRX_.lastIndexIn (prevBody);
+		const int aPos = PostByUserRX_.lastIndexIn (prevBody);
+		QRegExp& rx = aPos > pPos ? PostByUserRX_ : PostRX_;
+
+		QObject *tab = Entry2Tab_ [msg->OtherPart ()];
+		if (!rx.cap (1).isEmpty ())
+			LastPostInTab_ [tab] = rx.cap (1);
+	}
+
+	void Plugin::handleShortcutActivated ()
+	{
+		QObject *chat = sender ()->property ("Azoth/p100q/Tab").value<QObject*> ();
+
+		QMetaObject::invokeMethod (chat,
+				"prepareMessageText",
+				Q_ARG (QString, "#" + LastPostInTab_ [chat] + " "));
+	}
+
+	void Plugin::handleChatDestroyed ()
+	{
+		LastPostInTab_.remove (sender ());
+		Entry2Tab_.remove (Entry2Tab_.key (sender ()));
 	}
 }
 }
