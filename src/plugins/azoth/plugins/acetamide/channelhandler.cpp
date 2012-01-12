@@ -258,6 +258,7 @@ namespace Acetamide
 					ChannelCLEntry_,
 					IMessage::MTStatusMessage,
 					IMessage::MSTParticipantLeave,
+					Nick2Entry_ [nick]);
 		ChannelCLEntry_->HandleMessage (message);
 	}
 
@@ -343,7 +344,7 @@ namespace Acetamide
 	void ChannelHandler::LeaveParticipant (const QString& nick,
 			const QString& msg)
 	{
-		if (ISH_->GetParticipantEntry (nick))
+		if (Nick2Entry_.contains (nick))
 			MakeLeaveMessage (nick, msg);
 		RemoveUserFromChannel (nick);
 	}
