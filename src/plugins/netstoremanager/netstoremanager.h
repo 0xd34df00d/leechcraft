@@ -19,6 +19,7 @@
 #ifndef PLUGINS_NETSTOREMANAGER_NETSTOREMANAGER_H
 #define PLUGINS_NETSTOREMANAGER_NETSTOREMANAGER_H
 #include <QObject>
+#include <QModelIndex>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ipluginready.h>
