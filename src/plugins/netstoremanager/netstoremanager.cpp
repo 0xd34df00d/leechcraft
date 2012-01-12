@@ -76,7 +76,7 @@ namespace NetStoreManager
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("Allows one to manages his network storages like Yandex.Disk.");
+		return tr ("Allows one to manage his network storages like Yandex.Disk.");
 	}
 
 	QIcon Plugin::GetIcon () const
