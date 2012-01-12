@@ -19,6 +19,8 @@
 
 #include "lastfmsubmitter.h"
 #include <QCryptographicHash>
+#include <QByteArray>
+#include <QNetworkAccessManager>
 #include <lastfm/Track>
 #include <lastfm.h>
 
@@ -26,6 +28,8 @@ namespace LeechCraft
 {
 namespace Lastfmscrobble
 {
+	const QString ScrobblingSite_ = "http://ws.audioscrobbler.com/2.0/";
+	
 	namespace
 	{
 		QString AuthToken (const QString& username, const QString& password)
@@ -49,7 +53,7 @@ namespace Lastfmscrobble
 			return QCryptographicHash::hash (str.toAscii (),
 					QCryptographicHash::Md5).toHex ();
 		}
-	};
+	}
 
 	bool LastFMSubmitter::IsConnected () const
 	{
@@ -65,8 +69,6 @@ namespace Lastfmscrobble
 	{
 		lastfm::ws::Username = username;
 	}
-	
-	const QString ScrobblingSite_ = "http://ws.audioscrobbler.com/2.0/";
 
 	LastFMSubmitter::LastFMSubmitter (QObject *parent)
 	: QObject (parent)
@@ -101,6 +103,10 @@ namespace Lastfmscrobble
 	void LastFMSubmitter::getSessionKey ()
 	{
 		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+		
+		if (reply == NULL)
+			return;
+		
 		QDomDocument doc;
 		doc.setContent (QString::fromUtf8 (reply->readAll ()));
 		reply->deleteLater ();

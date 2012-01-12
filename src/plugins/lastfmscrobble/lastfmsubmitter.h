@@ -22,13 +22,13 @@
 #include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <QString>
- #include <QtCore/QByteArray>
-#include <QNetworkAccessManager>
 
 namespace lastfm
 {
 	class Audioscrobbler;
 };
+
+class QNetworkAccessManager;
 
 namespace LeechCraft
 {

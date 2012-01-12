@@ -128,7 +128,8 @@ OPTION (ENABLE_SYNCER "Build Syncer, the synchronization plugin for LeechCraft" 
 OPTION (ENABLE_TABSESSMANAGER "Build Tab Session Manager" OFF)
 OPTION (ENABLE_TABSLIST "Quick overview of tabs" OFF)
 OPTION (ENABLE_VFSCORE "Build VFS core" OFF)
-OPTION (ENABLE_LASTFMSCROBBLER "Build Last.fm scrobble" OFF)
+OPTION (ENABLE_LASTFMSCROBBLER "Build Last.fm scrobbler" OFF)
+
 # Defunct
 OPTION (ENABLE_FTP "Build LCFTP, the FTP client" ON)
 OPTION (ENABLE_JUFFED "Build JuffEd, the advanced text editor" OFF)

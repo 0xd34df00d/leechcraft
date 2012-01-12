@@ -45,6 +45,7 @@ namespace Lastfmscrobble
 
 		XmlSettingsManager::Instance ().RegisterObject (propNames,
 				this, "handleSubmitterInit");
+		handleSubmitterInit ();
 	}
 	
 	void Plugin::SecondInit ()
@@ -58,12 +59,12 @@ namespace Lastfmscrobble
 	
 	QString Plugin::GetName () const
 	{
-		return "Lastfmscrobble";
+		return "Last.FM Scrobbler";
 	}
 	
 	QString Plugin::GetInfo () const
 	{
-		return tr ("Last.fm Scrobbler");
+		return tr ("Submits information about tracks you've listened to Last.FM.");
 	}
 	
 	void Plugin::Release ()
@@ -84,23 +85,19 @@ namespace Lastfmscrobble
 	
 	void Plugin::Handle (Entity entity)
 	{
-		if (entity.Entity_.toString () == "SUBMIT")
-		{
-			LFSubmitter_->submit();
-			return;
-		}
+		LFSubmitter_->submit ();
 		
 		MediaMeta meta;
 		
-		meta.Album_ =  entity.Additional_["Album"].toString ();
-		meta.Artist_ = entity.Additional_["Artist"].toString ();
-		meta.Date_ = entity.Additional_["Date"].toString ();
-		meta.Genre_ = entity.Additional_["Genre"].toString ();
-		meta.Length_ = entity.Additional_["Length"].toInt ();
-		meta.Title_ = entity.Additional_["Title"].toString ();
-		meta.TrackNumber_ = entity.Additional_["TrackNumber"].toInt ();
+		meta.Album_ =  entity.Additional_ ["Album"].toString ();
+		meta.Artist_ = entity.Additional_ ["Artist"].toString ();
+		meta.Date_ = entity.Additional_ ["Date"].toString ();
+		meta.Genre_ = entity.Additional_ ["Genre"].toString ();
+		meta.Length_ = entity.Additional_ ["Length"].toInt ();
+		meta.Title_ = entity.Additional_ ["Title"].toString ();
+		meta.TrackNumber_ = entity.Additional_ ["TrackNumber"].toInt ();
 		
-		LFSubmitter_->sendTrack(meta);
+		LFSubmitter_->sendTrack (meta);
 	}
 		
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
