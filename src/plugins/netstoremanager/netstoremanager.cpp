@@ -19,6 +19,7 @@
 #include "netstoremanager.h"
 #include <QIcon>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <util/util.h>
 #include "interfaces/netstoremanager/istorageplugin.h"
 #include "managertab.h"
 #include "xmlsettingsmanager.h"
@@ -32,6 +33,8 @@ namespace NetStoreManager
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("netstoremanager");
+
 		ManagerTC_ =
 		{
 			GetUniqueID () + ".manager",
