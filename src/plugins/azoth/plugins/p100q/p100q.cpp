@@ -242,13 +242,22 @@ namespace p100q
 				.property ("BindLastID").toBool ())
 			return;
 
-		const int pPos = PostRX_.lastIndexIn (prevBody);
 		const int aPos = PostByUserRX_.lastIndexIn (prevBody);
-		QRegExp& rx = aPos > pPos ? PostByUserRX_ : PostRX_;
+		const int pPos = PostRX_.lastIndexIn (prevBody);
+		const int cPos = CommentRX_.lastIndexIn (prevBody);
+		QRegExp rx;
+		if (aPos > pPos && aPos > cPos)
+			rx = PostByUserRX_;
+		else if (pPos > cPos && pPos > aPos)
+			rx = PostRX_;
+		else
+			rx = CommentRX_;
 
 		QObject *tab = Entry2Tab_ [msg->OtherPart ()];
-		if (!rx.cap (1).isEmpty ())
+		if (rx.capturedTexts ().size () == 2)
 			LastPostInTab_ [tab] = rx.cap (1);
+		else if (rx.capturedTexts ().size () == 3)
+			LastPostInTab_ [tab] = rx.cap (1) + '/' + rx.cap (2);
 	}
 
 	void Plugin::handleShortcutActivated ()
