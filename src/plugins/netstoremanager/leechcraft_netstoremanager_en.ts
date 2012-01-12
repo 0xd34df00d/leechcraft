@@ -83,7 +83,7 @@
     <message>
         <location filename="netstoremanager.cpp" line="82"/>
         <source>Allows one to manage his network storages like Yandex.Disk.</source>
-        <translation type="unfinished"></translation>
+        <translation>Allows one to manage his network storages like Yandex.Disk.</translation>
     </message>
     <message>
         <location filename="netstoremanager.cpp" line="100"/>
@@ -135,6 +135,19 @@
         <location filename="managertab.ui" line="35"/>
         <source>Update filelist</source>
         <translation>Update filelist</translation>
+    </message>
+</context>
+<context>
+    <name>netstoremanagersettings</name>
+    <message>
+        <location filename="dummy.cpp" line="2"/>
+        <source>Accounts</source>
+        <translation>Accounts</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="3"/>
+        <source>Upload</source>
+        <translation>Upload</translation>
     </message>
 </context>
 </TS>

@@ -137,4 +137,17 @@
         <translation>Обновить список файлов</translation>
     </message>
 </context>
+<context>
+    <name>netstoremanagersettings</name>
+    <message>
+        <location filename="dummy.cpp" line="2"/>
+        <source>Accounts</source>
+        <translation>Учётные записи</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="3"/>
+        <source>Upload</source>
+        <translation>Загрузка</translation>
+    </message>
+</context>
 </TS>
