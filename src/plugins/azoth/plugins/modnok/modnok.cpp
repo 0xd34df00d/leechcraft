@@ -209,7 +209,7 @@ namespace Modnok
 	}
 
 	void Plugin::hookFormatBodyEnd (IHookProxy_ptr proxy,
-			QObject*, QObject *message)
+			QObject *message)
 	{
 		if (ConvScriptPath_.isEmpty ())
 			return;

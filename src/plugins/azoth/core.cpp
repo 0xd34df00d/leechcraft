@@ -802,7 +802,7 @@ namespace Azoth
 
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 		proxy->SetValue ("body", body);
-		emit hookFormatBodyBegin (proxy, this, msgObj);
+		emit hookFormatBodyBegin (proxy, msgObj);
 		if (!proxy->IsCancelled ())
 		{
 			proxy->FillValue ("body", body);
@@ -835,7 +835,7 @@ namespace Azoth
 
 			proxy.reset (new Util::DefaultHookProxy);
 			proxy->SetValue ("body", body);
-			emit hookFormatBodyEnd (proxy, this, msgObj);
+			emit hookFormatBodyEnd (proxy, msgObj);
 			proxy->FillValue ("body", body);
 		}
 
