@@ -25,9 +25,7 @@ namespace LeechCraft
 {
 namespace Lastfmscrobble
 {
-	using namespace Util;
-	
-	class XmlSettingsManager : public BaseSettingsManager
+	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
 		Q_OBJECT
 

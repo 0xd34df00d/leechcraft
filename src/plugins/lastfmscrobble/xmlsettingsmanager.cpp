@@ -26,7 +26,7 @@ namespace Lastfmscrobble
 {
 	XmlSettingsManager::XmlSettingsManager ()
 	{
-		BaseSettingsManager::Init ();
+		Util::BaseSettingsManager::Init ();
 	}
 
 	XmlSettingsManager& XmlSettingsManager::Instance ()

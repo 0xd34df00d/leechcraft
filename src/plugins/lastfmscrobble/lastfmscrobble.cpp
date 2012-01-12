@@ -21,8 +21,8 @@
 #include <QIcon>
 #include <QByteArray>
 #include <interfaces/core/icoreproxy.h>
-#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/entitytesthandleresult.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "lastfmsubmitter.h"
 #include "xmlsettingsmanager.h"
 
@@ -36,6 +36,7 @@ namespace Lastfmscrobble
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"lastfmscrobblesettings.xml");
+		
 		LFSubmitter_ = new LastFMSubmitter (this);
 		
 		QList<QByteArray> propNames;

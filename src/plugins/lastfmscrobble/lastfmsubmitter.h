@@ -22,6 +22,7 @@
 #include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <QString>
+ #include <QtCore/QByteArray>
 #include <QNetworkAccessManager>
 
 namespace lastfm
@@ -61,6 +62,7 @@ namespace Lastfmscrobble
 	signals:
 		void status (int code);
 	};
+}
 }
 
 #endif // PLUGINS_LASTFMSCROBBLE_LASTFMSUBMITTER_H

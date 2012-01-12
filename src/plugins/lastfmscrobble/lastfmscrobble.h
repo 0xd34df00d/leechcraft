@@ -19,10 +19,10 @@
 
 #ifndef PLUGINS_LASTFMSCROBBLE_LASTFMSCROBBLE_H
 #define PLUGINS_LASTFMSCROBBLE_LASTFMSCROBBLE_H
+ #include <QtCore/QByteArray>
 #include <interfaces/iinfo.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/ihavesettings.h>
-#include <xmlsettingsdialog/xmlsettingsdialog.h>
 
 namespace LeechCraft
 {
@@ -66,4 +66,4 @@ namespace Lastfmscrobble
 }
 }
 
-#endif
+#endif // PLUGINS_LASTFMSCROBBLE_LASTFMSCROBBLE_H
