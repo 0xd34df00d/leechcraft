@@ -30,12 +30,19 @@ namespace Proto
 	TypingManager::TypingManager (QObject *parent)
 	: QObject (parent)
 	, ExpTimer_ (new QTimer (this))
+	, OutTimer_ (new QTimer (this))
 	{
 		ExpTimer_->setInterval (5000);
 		connect (ExpTimer_,
 				SIGNAL (timeout ()),
 				this,
 				SLOT (checkExpires ()));
+
+		OutTimer_->setInterval (8000);
+		connect (OutTimer_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (sendOut ()));
 	}
 
 	void TypingManager::GotNotification (const QString& from)
@@ -47,6 +54,24 @@ namespace Proto
 			ExpTimer_->start ();
 
 		LastNotDates_ [from] = QDateTime::currentDateTime ();
+	}
+
+	void TypingManager::SetTyping (const QString& to, bool isTyping)
+	{
+		if (!isTyping)
+		{
+			TypingTo_.remove (to);
+			if (TypingTo_.isEmpty ())
+				OutTimer_->stop ();
+		}
+		else
+		{
+			if (TypingTo_.isEmpty ())
+				OutTimer_->start ();
+
+			TypingTo_ << to;
+			emit needNotify (to);
+		}
 	}
 
 	void TypingManager::checkExpires ()
@@ -63,6 +88,12 @@ namespace Proto
 
 		if (LastNotDates_.isEmpty ())
 			ExpTimer_->stop ();
+	}
+
+	void TypingManager::sendOut ()
+	{
+		Q_FOREACH (const QString& to, TypingTo_)
+			emit needNotify (to);
 	}
 }
 }

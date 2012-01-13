@@ -20,6 +20,7 @@
 #define PLUGINS_AZOTH_PLUGINS_VADER_PROTO_TYPINGMANAGER_H
 #include <QObject>
 #include <QMap>
+#include <QSet>
 #include <QDateTime>
 
 class QTimer;
@@ -38,15 +39,23 @@ namespace Proto
 
 		QMap<QString, QDateTime> LastNotDates_;
 		QTimer *ExpTimer_;
+
+		QSet<QString> TypingTo_;
+		QTimer *OutTimer_;
 	public:
 		TypingManager (QObject* = 0);
 
 		void GotNotification (const QString&);
+
+		void SetTyping (const QString&, bool);
 	private slots:
 		void checkExpires ();
+		void sendOut ();
 	signals:
 		void startedTyping (const QString&);
 		void stoppedTyping (const QString&);
+
+		void needNotify (const QString&);
 	};
 }
 }

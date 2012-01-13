@@ -81,6 +81,10 @@ namespace Proto
 				SIGNAL (stoppedTyping (QString)),
 				this,
 				SIGNAL (userStoppedTyping (QString)));
+		connect (TM_,
+				SIGNAL (needNotify (QString)),
+				this,
+				SLOT (handleOutTypingNotify (QString)));
 
 		PacketActors_ [Packets::HelloAck] = [this] (HalfPacket hp) { HandleHello (hp); Login (); };
 		PacketActors_ [Packets::LoginAck] = [this] (HalfPacket hp) { CorrectAuth (hp); };
@@ -208,6 +212,11 @@ namespace Proto
 	void Connection::SendAttention (const QString& to, const QString& message)
 	{
 		Write (PF_.Message (MsgFlag::Alarm, to, message).Packet_);
+	}
+
+	void Connection::SetTypingState (const QString& to, bool isTyping)
+	{
+		TM_->SetTyping (to, isTyping);
 	}
 
 	void Connection::PublishTune (const QString& tune)
@@ -677,6 +686,11 @@ namespace Proto
 	void Connection::handlePing ()
 	{
 		Write (PF_.Ping ().Packet_);
+	}
+
+	void Connection::handleOutTypingNotify (const QString& to)
+	{
+		Write (PF_.Message (MsgFlag::Notify, to, " ").Packet_);
 	}
 
 	void Connection::handleSocketError (QAbstractSocket::SocketError err)
