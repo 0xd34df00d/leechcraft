@@ -133,6 +133,11 @@ namespace Vader
 		return GM_;
 	}
 
+	void MRIMAccount::SetTypingState (const QString& to, ChatPartState state)
+	{
+		Conn_->SetTypingState (to, state == CPSComposing);
+	}
+
 	QObject* MRIMAccount::GetObject ()
 	{
 		return this;

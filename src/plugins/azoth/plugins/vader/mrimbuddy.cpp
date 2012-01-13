@@ -241,8 +241,9 @@ namespace Vader
 		Util::StandardPurgeMessages (AllMessages_, before);
 	}
 
-	void MRIMBuddy::SetChatPartState (ChatPartState , const QString&)
+	void MRIMBuddy::SetChatPartState (ChatPartState state, const QString&)
 	{
+		A_->SetTypingState (GetHumanReadableID (), state);
 	}
 
 	EntryStatus MRIMBuddy::GetStatus (const QString&) const

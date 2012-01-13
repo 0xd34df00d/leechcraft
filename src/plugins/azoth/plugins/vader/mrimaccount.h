@@ -66,6 +66,7 @@ namespace Vader
 		void FillConfig (MRIMAccountConfigWidget*);
 		Proto::Connection* GetConnection () const;
 		GroupManager* GetGroupManager () const;
+		void SetTypingState (const QString&, ChatPartState);
 
 		// IAccount
 		QObject* GetObject ();
