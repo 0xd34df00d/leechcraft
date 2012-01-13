@@ -19,6 +19,7 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_VADER_PROTO_MESSAGE_H
 #define PLUGINS_AZOTH_PLUGINS_VADER_PROTO_MESSAGE_H
 #include <QString>
+#include <QDateTime>
 
 namespace LeechCraft
 {
@@ -34,6 +35,7 @@ namespace Proto
 		quint32 Flags_;
 		QString From_;
 		QString Text_;
+		QDateTime DT_;
 	};
 }
 }
