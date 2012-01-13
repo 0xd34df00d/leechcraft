@@ -23,6 +23,7 @@
 #include "packet.h"
 #include "exceptions.h"
 #include "message.h"
+#include "typingmanager.h"
 
 namespace LeechCraft
 {
@@ -36,6 +37,7 @@ namespace Proto
 	: QObject (parent)
 	, Socket_ (new QSslSocket (this))
 	, PingTimer_ (new QTimer (this))
+	, TM_ (new TypingManager (this))
 	, Host_ ("94.100.187.24")
 	, Port_ (443)
 	, IsConnected_ (false)
@@ -70,6 +72,15 @@ namespace Proto
 				SIGNAL (error ()),
 				this,
 				SLOT (connectToStored ()));
+
+		connect (TM_,
+				SIGNAL (startedTyping (QString)),
+				this,
+				SIGNAL (userStartedTyping (QString)));
+		connect (TM_,
+				SIGNAL (stoppedTyping (QString)),
+				this,
+				SIGNAL (userStoppedTyping (QString)));
 
 		PacketActors_ [Packets::HelloAck] = [this] (HalfPacket hp) { HandleHello (hp); Login (); };
 		PacketActors_ [Packets::LoginAck] = [this] (HalfPacket hp) { CorrectAuth (hp); };
@@ -465,8 +476,7 @@ namespace Proto
 		if (flags & MsgFlag::Authorize)
 			emit gotAuthRequest (from, text);
 		else if (flags & MsgFlag::Notify)
-		{
-		}
+			TM_->GotNotification (from);
 		else if (flags & MsgFlag::Alarm)
 			emit gotAttentionRequest (from, text);
 		else if (flags & MsgFlag::Multichat)

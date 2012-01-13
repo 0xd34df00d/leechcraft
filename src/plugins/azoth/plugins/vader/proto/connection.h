@@ -41,6 +41,7 @@ namespace Vader
 namespace Proto
 {
 	struct Message;
+	class TypingManager;
 
 	class Connection : public QObject
 	{
@@ -50,6 +51,7 @@ namespace Proto
 
 		QSslSocket *Socket_;
 		QTimer *PingTimer_;
+		TypingManager *TM_;
 
 		PacketFactory PF_;
 		PacketExtractor PE_;
@@ -136,6 +138,9 @@ namespace Proto
 		void contactAdditionError (quint32 seq, quint32 status);
 		void userStatusChanged (const Proto::ContactInfo&);
 		void gotUserTune (const QString& from, const QString& tune);
+
+		void userStartedTyping (const QString&);
+		void userStoppedTyping (const QString&);
 
 		void gotNewMail (const QString& from, const QString& subj);
 		void gotPOPKey (const QString&);

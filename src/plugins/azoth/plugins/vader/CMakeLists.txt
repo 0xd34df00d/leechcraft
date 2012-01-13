@@ -30,6 +30,7 @@ SET (VADER_SRCS
 	proto/exceptions.cpp
 	proto/halfpacket.cpp
 	proto/balancer.cpp
+	proto/typingmanager.cpp
 	)
 SET (VADER_HEADERS
 	vader.h
@@ -50,6 +51,7 @@ SET (VADER_HEADERS
 	proto/exceptions.h
 	proto/halfpacket.h
 	proto/balancer.h
+	proto/typingmanager.h
 	)
 SET (VADER_FORMS
 	mrimaccountconfigwidget.ui
