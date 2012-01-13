@@ -115,6 +115,7 @@ namespace Proto
 		void gotGroups (const QStringList&);
 		void gotContacts (const QList<Proto::ContactInfo>&);
 		void gotMessage (const Proto::Message&);
+		void gotOfflineMessage (const Proto::Message&);
 		void gotAuthRequest (const QString& from, const QString& msg);
 		void gotAuthAck (const QString& from);
 		void gotAttentionRequest (const QString& from, const QString& msg);
