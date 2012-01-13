@@ -35,6 +35,11 @@ namespace Proto
 	: runtime_error (err)
 	{
 	}
+
+	MsgParseError::MsgParseError (const std::string& err)
+	: runtime_error (err)
+	{
+	}
 }
 }
 }
