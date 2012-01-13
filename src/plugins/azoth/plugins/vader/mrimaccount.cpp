@@ -85,6 +85,10 @@ namespace Vader
 				this,
 				SLOT (handleGotUserTune (QString, QString)));
 		connect (Conn_,
+				SIGNAL (gotNewMail (QString, QString)),
+				this,
+				SLOT (handleGotNewMail (QString, QString)));
+		connect (Conn_,
 				SIGNAL (gotPOPKey (QString)),
 				this,
 				SLOT (handleGotPOPKey (QString)));
@@ -475,6 +479,16 @@ namespace Vader
 		}
 
 		buddy->HandleTune (tune);
+	}
+
+	void MRIMAccount::handleGotNewMail (const QString& from, const QString& subj)
+	{
+		const Entity& e = Util::MakeNotification (Login_,
+				tr ("New mail from %1: %2.")
+					.arg (from)
+					.arg (subj),
+				PInfo_);
+		Core::Instance ().SendEntity (e);
 	}
 
 	void MRIMAccount::handleGotPOPKey (const QString& key)
