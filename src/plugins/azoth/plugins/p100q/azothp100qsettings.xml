@@ -10,6 +10,9 @@
 			<item type="checkbox" property="ShowAvatars" state="on">
 				<label value="Show avatars" />
 			</item>
+			<item type="checkbox" property="BindLastID" default="true">
+				<label value="Bind Ctrl+L hotkey to insert last post ID" />
+			</item>
 		</groupbox>
 	</page>
 </settings>

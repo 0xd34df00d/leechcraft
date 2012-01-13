@@ -26,6 +26,7 @@
 #include <QByteArray>
 #include <QToolBar>
 #include <QtDebug>
+#include <util/idpool.h>
 
 class QMenu;
 class QNetworkReply;
@@ -144,6 +145,8 @@ namespace LeechCraft
 	 */
 	struct Entity
 	{
+		qint64 ID_;
+
 		/** @brief The entity that this object represents.
 		 *
 		 * In the context of entity delegation it represents the entity
@@ -212,6 +215,12 @@ namespace LeechCraft
 		 *   QStringList with IDs of tags of the entity.
 		 */
 		QMap<QString, QVariant> Additional_;
+
+		Entity ()
+		: ID_ (IDPool_.GetID ())
+		{}
+	protected:
+		UTIL_API static Util::IDPool<qint64> IDPool_;
 	};
 
 	/** This enumeration describes the additional roles that may be

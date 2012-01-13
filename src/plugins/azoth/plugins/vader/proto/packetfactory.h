@@ -20,6 +20,7 @@
 #define PLUGINS_AZOTH_PLUGINS_VADER_PROTO_PACKETFACTORY_H
 #include <QByteArray>
 #include "headers.h"
+#include "conversions.h"
 
 class QString;
 
@@ -46,6 +47,7 @@ namespace Proto
 		Packet SetStatus (quint32 state, const QString& status);
 		Packet Message (MsgFlags flags, const QString& to, const QString& msg);
 		Packet MessageAck (const QString& from, quint32 msgId);
+		Packet OfflineMessageAck (const UIDL& id);
 		Packet Microblog (BlogStatus st, const QString& text);
 		Packet AddGroup (const QString& name, int numGroups);
 		Packet AddContact (ContactOpFlags flags, quint32 group,

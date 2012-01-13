@@ -62,7 +62,6 @@ namespace Juick
 		bool IsBehind (const QString& text, int index, const QString& pattern) const;
 	public slots:
 		void hookFormatBodyEnd (LeechCraft::IHookProxy_ptr proxy,
-				QObject *chatTab,
 				QObject *message);
 		void hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab,

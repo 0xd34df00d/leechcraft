@@ -65,6 +65,10 @@ namespace Vader
 				this,
 				SLOT (handleGotMessage (Proto::Message)));
 		connect (Conn_,
+				SIGNAL (gotOfflineMessage (Proto::Message)),
+				this,
+				SLOT (handleGotMessage (Proto::Message)));
+		connect (Conn_,
 				SIGNAL (gotAttentionRequest (QString, QString)),
 				this,
 				SLOT (handleGotAttentionRequest (QString, QString)));
@@ -81,18 +85,30 @@ namespace Vader
 				this,
 				SLOT (handleGotUserTune (QString, QString)));
 		connect (Conn_,
+				SIGNAL (userStartedTyping (QString)),
+				this,
+				SLOT (handleUserStartedTyping (QString)));
+		connect (Conn_,
+				SIGNAL (userStoppedTyping (QString)),
+				this,
+				SLOT (handleUserStoppedTyping (QString)));
+		connect (Conn_,
+				SIGNAL (gotNewMail (QString, QString)),
+				this,
+				SLOT (handleGotNewMail (QString, QString)));
+		connect (Conn_,
 				SIGNAL (gotPOPKey (QString)),
 				this,
 				SLOT (handleGotPOPKey (QString)));
-		
+
 		QAction *mb = new QAction (tr ("Open mailbox..."), this);
 		connect (mb,
 				SIGNAL (triggered ()),
 				this,
-				SLOT (handleOpenMailbox ()));		
+				SLOT (handleOpenMailbox ()));
 		Actions_ << mb;
 		Actions_ << VaderUtil::GetBuddyServices (this, SLOT (handleServices ()));
-		
+
 		const QString& ua = "LeechCraft Azoth " + Core::Instance ()
 				.GetCoreProxy ()->GetVersion ();
 		Conn_->SetUA (ua);
@@ -115,6 +131,11 @@ namespace Vader
 	GroupManager* MRIMAccount::GetGroupManager () const
 	{
 		return GM_;
+	}
+
+	void MRIMAccount::SetTypingState (const QString& to, ChatPartState state)
+	{
+		Conn_->SetTypingState (to, state == CPSComposing);
 	}
 
 	QObject* MRIMAccount::GetObject ()
@@ -280,7 +301,7 @@ namespace Vader
 	{
 		return 0;
 	}
-	
+
 	void MRIMAccount::PublishTune (const QMap<QString, QVariant>& data)
 	{
 		QString string;
@@ -296,7 +317,7 @@ namespace Vader
 		sa ("title", QString::fromUtf8 (" — "));
 		sa ("source", " " + tr ("from") + " ");
 		sa ("length", ", ");
-		
+
 		Conn_->PublishTune (string);
 	}
 
@@ -435,6 +456,7 @@ namespace Vader
 
 		MRIMMessage *obj = new MRIMMessage (IMessage::DIn, IMessage::MTChatMessage, buddy);
 		obj->SetBody (msg.Text_);
+		obj->SetDateTime (msg.DT_);
 		buddy->HandleMessage (obj);
 	}
 
@@ -457,7 +479,7 @@ namespace Vader
 		Status_ = status;
 		emit statusChanged (status);
 	}
-	
+
 	void MRIMAccount::handleGotUserTune (const QString& from, const QString& tune)
 	{
 		auto buddy = Buddies_ [from];
@@ -468,10 +490,48 @@ namespace Vader
 					<< from;
 			return;
 		}
-		
+
 		buddy->HandleTune (tune);
 	}
-	
+
+	void MRIMAccount::handleUserStartedTyping (const QString& from)
+	{
+		auto buddy = Buddies_ [from];
+		if (!buddy)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "from unknown buddy"
+					<< from;
+			return;
+		}
+
+		buddy->HandleCPS (CPSComposing);
+	}
+
+	void MRIMAccount::handleUserStoppedTyping (const QString& from)
+	{
+		auto buddy = Buddies_ [from];
+		if (!buddy)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "from unknown buddy"
+					<< from;
+			return;
+		}
+
+		buddy->HandleCPS (CPSPaused);
+	}
+
+	void MRIMAccount::handleGotNewMail (const QString& from, const QString& subj)
+	{
+		const Entity& e = Util::MakeNotification (Login_,
+				tr ("New mail from %1: %2.")
+					.arg (from)
+					.arg (subj),
+				PInfo_);
+		Core::Instance ().SendEntity (e);
+	}
+
 	void MRIMAccount::handleGotPOPKey (const QString& key)
 	{
 		qDebug () << Q_FUNC_INFO << key;
@@ -483,12 +543,12 @@ namespace Vader
 				static_cast<LeechCraft::TaskParameters> (OnlyHandle | FromUserInitiated));
 		Core::Instance ().SendEntity (e);
 	}
-	
+
 	void MRIMAccount::handleOpenMailbox ()
 	{
 		Conn_->RequestPOPKey ();
 	}
-	
+
 	void MRIMAccount::handleServices ()
 	{
 		const QString& url = sender ()->property ("URL").toString ();

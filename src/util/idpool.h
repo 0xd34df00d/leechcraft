@@ -18,6 +18,7 @@
 
 #ifndef UTIL_IDPOOL_H
 #define UTIL_IDPOOL_H
+#include "utilconfig.h"
 #include <QByteArray>
 #include <QSet>
 #include <QDataStream>

@@ -147,10 +147,8 @@ namespace LeechCraft
 				const QPixmap& px = icon.pixmap (QSize (128, 128));
 				notificationWidget->SetContent (header, text, QString ());
 
-				if (e.Additional_ ["NotificationPixmap"].isValid ())
-					notificationWidget->OverrideImage (e.Additional_ ["NotificationPixmap"].value<QPixmap> ());
-				else
-					notificationWidget->OverrideImage (px);
+				const QPixmap& notif = e.Additional_ ["NotificationPixmap"].value<QPixmap> ();
+				notificationWidget->OverrideImage (notif.isNull () ? px : notif);
 
 				if (!ActiveNotifications_.size ())
 					notificationWidget->PrepareNotification ();

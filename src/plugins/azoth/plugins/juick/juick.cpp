@@ -180,7 +180,7 @@ namespace Juick
 	}
 
 	void Plugin::hookFormatBodyEnd (IHookProxy_ptr proxy,
-			QObject*, QObject *msgObj)
+			QObject *msgObj)
 	{
 		if(ShouldHandle (msgObj, IMessage::DIn, IMessage::MTChatMessage))
 			proxy->SetValue ("body", FormatBody (proxy->GetValue ("body").toString ()));

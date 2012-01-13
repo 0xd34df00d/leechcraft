@@ -36,6 +36,8 @@
 Q_DECLARE_METATYPE (QList<QModelIndex>);
 Q_DECLARE_METATYPE (QVariantList*);
 
+UTIL_API LeechCraft::Util::IDPool<qint64> LeechCraft::Entity::IDPool_;
+
 QString LeechCraft::Util::GetAsBase64Src (const QImage& pix)
 {
 	QBuffer buf;
