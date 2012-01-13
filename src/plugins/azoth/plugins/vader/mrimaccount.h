@@ -99,12 +99,17 @@ namespace Vader
 		void handleGotContacts (const QList<Proto::ContactInfo>&);
 		void handleUserStatusChanged (const Proto::ContactInfo&);
 		void handleContactAdded (quint32, quint32);
+
 		void handleGotAuthRequest (const QString&, const QString&);
 		void handleGotAuthAck (const QString&);
+
 		void handleGotMessage (const Proto::Message&);
 		void handleGotAttentionRequest (const QString&, const QString&);
 		void handleOurStatusChanged (const EntryStatus&);
 		void handleGotUserTune (const QString&, const QString&);
+		void handleUserStartedTyping (const QString&);
+		void handleUserStoppedTyping (const QString&);
+
 		void handleGotNewMail (const QString&, const QString&);
 		void handleGotPOPKey (const QString&);
 

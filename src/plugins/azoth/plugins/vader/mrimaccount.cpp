@@ -85,6 +85,14 @@ namespace Vader
 				this,
 				SLOT (handleGotUserTune (QString, QString)));
 		connect (Conn_,
+				SIGNAL (userStartedTyping (QString)),
+				this,
+				SLOT (handleUserStartedTyping (QString)));
+		connect (Conn_,
+				SIGNAL (userStoppedTyping (QString)),
+				this,
+				SLOT (handleUserStoppedTyping (QString)));
+		connect (Conn_,
 				SIGNAL (gotNewMail (QString, QString)),
 				this,
 				SLOT (handleGotNewMail (QString, QString)));
@@ -479,6 +487,34 @@ namespace Vader
 		}
 
 		buddy->HandleTune (tune);
+	}
+
+	void MRIMAccount::handleUserStartedTyping (const QString& from)
+	{
+		auto buddy = Buddies_ [from];
+		if (!buddy)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "from unknown buddy"
+					<< from;
+			return;
+		}
+
+		buddy->HandleCPS (CPSComposing);
+	}
+
+	void MRIMAccount::handleUserStoppedTyping (const QString& from)
+	{
+		auto buddy = Buddies_ [from];
+		if (!buddy)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "from unknown buddy"
+					<< from;
+			return;
+		}
+
+		buddy->HandleCPS (CPSPaused);
 	}
 
 	void MRIMAccount::handleGotNewMail (const QString& from, const QString& subj)
