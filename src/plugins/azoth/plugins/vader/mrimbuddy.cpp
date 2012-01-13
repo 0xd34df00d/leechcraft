@@ -52,13 +52,18 @@ namespace Vader
 	{
 		emit attentionDrawn (msg, QString ());
 	}
-	
+
 	void MRIMBuddy::HandleTune (const QString& tune)
 	{
 		QVariantMap tuneMap;
 		tuneMap ["artist"] = tune;
 		ClientInfo_ ["user_tune"] = tuneMap;
 		emit tuneChanged (QString ());
+	}
+
+	void MRIMBuddy::HandleCPS (ChatPartState cps)
+	{
+		emit chatPartStateChanged (cps, QString ());
 	}
 
 	void MRIMBuddy::SetGroup (const QString& group)
@@ -236,8 +241,9 @@ namespace Vader
 		Util::StandardPurgeMessages (AllMessages_, before);
 	}
 
-	void MRIMBuddy::SetChatPartState (ChatPartState , const QString&)
+	void MRIMBuddy::SetChatPartState (ChatPartState state, const QString&)
 	{
+		A_->SetTypingState (GetHumanReadableID (), state);
 	}
 
 	EntryStatus MRIMBuddy::GetStatus (const QString&) const

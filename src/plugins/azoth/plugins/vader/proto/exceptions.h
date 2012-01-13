@@ -39,6 +39,12 @@ namespace Proto
 	public:
 		explicit TooShortBA (const std::string&);
 	};
+
+	class MsgParseError : public std::runtime_error
+	{
+	public:
+		explicit MsgParseError (const std::string&);
+	};
 }
 }
 }

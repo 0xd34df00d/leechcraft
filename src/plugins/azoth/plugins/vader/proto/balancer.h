@@ -16,10 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_VADER_PROTO_MESSAGE_H
-#define PLUGINS_AZOTH_PLUGINS_VADER_PROTO_MESSAGE_H
-#include <QString>
-#include <QDateTime>
+#ifndef PLUGINS_AZOTH_PLUGINS_VADER_PROTO_BALANCER_H
+#define PLUGINS_AZOTH_PLUGINS_VADER_PROTO_BALANCER_H
+#include <QObject>
+#include <QAbstractSocket>
 
 namespace LeechCraft
 {
@@ -29,13 +29,19 @@ namespace Vader
 {
 namespace Proto
 {
-	struct Message
+	class Balancer : public QObject
 	{
-		quint32 ID_;
-		quint32 Flags_;
-		QString From_;
-		QString Text_;
-		QDateTime DT_;
+		Q_OBJECT
+	public:
+		Balancer (QObject* = 0);
+
+		void GetServer ();
+	private slots:
+		void handleRead ();
+		void handleSocketError (QAbstractSocket::SocketError);
+	signals:
+		void gotServer (const QString&, int);
+		void error ();
 	};
 }
 }

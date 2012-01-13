@@ -168,10 +168,8 @@ namespace Azoth
 				QString nick,
 				QObject *message);
 		void hookFormatBodyBegin (LeechCraft::IHookProxy_ptr proxy,
-				QObject *chatTab,
 				QObject *message);
 		void hookFormatBodyEnd (LeechCraft::IHookProxy_ptr proxy,
-				QObject *chatTab,
 				QObject *message);
 		void hookIsHighlightMessage (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message);

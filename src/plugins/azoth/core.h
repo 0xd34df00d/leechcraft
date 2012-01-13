@@ -576,10 +576,8 @@ namespace Azoth
 				QString nick,
 				QObject *message);
 		void hookFormatBodyBegin (LeechCraft::IHookProxy_ptr proxy,
-				QObject *chatTab,
 				QObject *message);
 		void hookFormatBodyEnd (LeechCraft::IHookProxy_ptr proxy,
-				QObject *chatTab,
 				QObject *message);
 		void hookGonnaHandleSmiles (LeechCraft::IHookProxy_ptr proxy,
 				QString body,

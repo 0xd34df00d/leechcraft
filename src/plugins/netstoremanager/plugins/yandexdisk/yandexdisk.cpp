@@ -20,6 +20,7 @@
 #include <QIcon>
 #include <QSettings>
 #include <QCoreApplication>
+#include <util/util.h>
 #include "account.h"
 
 namespace LeechCraft
@@ -30,6 +31,7 @@ namespace YandexDisk
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("netstoremanager_yandexdisk");
 	}
 
 	void Plugin::SecondInit ()

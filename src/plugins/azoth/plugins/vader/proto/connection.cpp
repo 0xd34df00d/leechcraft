@@ -23,6 +23,7 @@
 #include "packet.h"
 #include "exceptions.h"
 #include "message.h"
+#include "typingmanager.h"
 
 namespace LeechCraft
 {
@@ -36,6 +37,7 @@ namespace Proto
 	: QObject (parent)
 	, Socket_ (new QSslSocket (this))
 	, PingTimer_ (new QTimer (this))
+	, TM_ (new TypingManager (this))
 	, Host_ ("94.100.187.24")
 	, Port_ (443)
 	, IsConnected_ (false)
@@ -62,6 +64,28 @@ namespace Proto
 				this,
 				SLOT (handlePing ()));
 
+		connect (&Balancer_,
+				SIGNAL (gotServer (QString, int)),
+				this,
+				SLOT (handleGotServer (QString, int)));
+		connect (&Balancer_,
+				SIGNAL (error ()),
+				this,
+				SLOT (connectToStored ()));
+
+		connect (TM_,
+				SIGNAL (startedTyping (QString)),
+				this,
+				SIGNAL (userStartedTyping (QString)));
+		connect (TM_,
+				SIGNAL (stoppedTyping (QString)),
+				this,
+				SIGNAL (userStoppedTyping (QString)));
+		connect (TM_,
+				SIGNAL (needNotify (QString)),
+				this,
+				SLOT (handleOutTypingNotify (QString)));
+
 		PacketActors_ [Packets::HelloAck] = [this] (HalfPacket hp) { HandleHello (hp); Login (); };
 		PacketActors_ [Packets::LoginAck] = [this] (HalfPacket hp) { CorrectAuth (hp); };
 		PacketActors_ [Packets::LoginRej] = [this] (HalfPacket hp) { IncorrectAuth (hp); };
@@ -78,7 +102,8 @@ namespace Proto
 
 		PacketActors_ [Packets::AuthorizeAck] = [this] (HalfPacket hp) { AuthAck (hp); };
 		PacketActors_ [Packets::ContactAck] = [this] (HalfPacket hp) { ContactAdded (hp); };
-		
+
+		PacketActors_ [Packets::NewMail] = [this] (HalfPacket hp) { NewMail (hp); };
 		PacketActors_ [Packets::MPOPSession] = [this] (HalfPacket hp) { MPOPKey (hp); };
 	}
 
@@ -93,10 +118,24 @@ namespace Proto
 		Login_ = login;
 		Pass_ = pass;
 	}
-	
+
 	void Connection::SetUA (const QString& ua)
 	{
 		UA_ = ua;
+	}
+
+	void Connection::handleGotServer (const QString& server, int port)
+	{
+		qDebug () << Q_FUNC_INFO << server << port;
+		Host_ = server;
+		Port_ = port;
+
+		connectToStored ();
+	}
+
+	void Connection::connectToStored ()
+	{
+		Socket_->connectToHost (Host_, Port_);
 	}
 
 	void Connection::tryRead ()
@@ -140,7 +179,7 @@ namespace Proto
 		if (Socket_->isOpen ())
 			Socket_->disconnectFromHost ();
 
-		Socket_->connectToHost (Host_, Port_);
+		Balancer_.GetServer ();
 	}
 
 	void Connection::SetState (const EntryStatus& status)
@@ -169,12 +208,17 @@ namespace Proto
 		Write (hp.Packet_);
 		return hp.Seq_;
 	}
-	
+
 	void Connection::SendAttention (const QString& to, const QString& message)
 	{
 		Write (PF_.Message (MsgFlag::Alarm, to, message).Packet_);
 	}
-	
+
+	void Connection::SetTypingState (const QString& to, bool isTyping)
+	{
+		TM_->SetTyping (to, isTyping);
+	}
+
 	void Connection::PublishTune (const QString& tune)
 	{
 		Write (PF_.Microblog (BlogStatus::Music, tune).Packet_);
@@ -216,7 +260,7 @@ namespace Proto
 		Write (p.Packet_);
 		return p.Seq_;
 	}
-	
+
 	void Connection::RequestPOPKey ()
 	{
 		Write (PF_.RequestKey ().Packet_);
@@ -441,15 +485,14 @@ namespace Proto
 		if (flags & MsgFlag::Authorize)
 			emit gotAuthRequest (from, text);
 		else if (flags & MsgFlag::Notify)
-		{
-		}
+			TM_->GotNotification (from);
 		else if (flags & MsgFlag::Alarm)
 			emit gotAttentionRequest (from, text);
 		else if (flags & MsgFlag::Multichat)
 		{
 		}
 		else
-			emit gotMessage ({msgId, flags, from, text});
+			emit gotMessage ({msgId, flags, from, text, QDateTime::currentDateTime ()});
 	}
 
 	void Connection::MsgStatus (HalfPacket hp)
@@ -462,21 +505,102 @@ namespace Proto
 			emit messageDelivered (seq);
 	}
 
+	namespace
+	{
+		void EnparseMessage (const QString& msgStr,
+				QMap<QString, QString>& headers, QString& text)
+		{
+			QStringList split = msgStr.split (QRegExp ("(?:\r\n){2,2}"));
+			if (split.size () < 2)
+				throw MsgParseError ("Incorrect message format " + msgStr.toStdString ());
+
+			const QString& hdr = split.takeFirst ();
+			Q_FOREACH (const QString& field, hdr.split ("\n"))
+			{
+				const int idx = field.indexOf (":");
+				if (idx < 0)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "failed to parse field"
+							<< field;
+					continue;
+				}
+
+				headers [field.left (idx).trimmed ()] = field.mid (idx + 1).trimmed ();
+			}
+
+			text = split.join ("\r\n\r\n");
+			if (headers.contains ("Boundary"))
+			{
+				const QString& boundary = headers ["Boundary"];
+				const int idx = text.indexOf (boundary);
+				if (idx > 0)
+					text = text.split (boundary, QString::SkipEmptyParts).first ();
+			}
+		}
+
+		QString MakeReadableText (const QMap<QString, QString>& headers, const QString& text)
+		{
+			const QByteArray& arr = headers ["Content-Transfer-Encoding"] == "base64" ?
+					QByteArray::fromBase64 (text.toUtf8 ()) :
+					text.toUtf8 ();
+
+			const QString& cType = headers ["Content-Type"];
+			const QString& sep = "charset=";
+			const int idx = cType.indexOf (sep);
+			if (idx < 0)
+				throw MsgParseError ("Failed to detect charset: " + cType.toStdString ());
+
+			const QString& encoding = cType.mid (idx + sep.length ());
+			QTextCodec *codec = QTextCodec::codecForName (encoding.toLatin1 ());
+			if (!codec)
+				throw MsgParseError ("No codec for encoding " + encoding.toStdString ());
+
+			return codec->toUnicode (arr);
+		}
+	}
+
 	void Connection::OfflineMsg (HalfPacket hp)
 	{
 		UIDL id;
 		Str1251 message;
 		FromMRIM (hp.Data_, id, message);
-		// TODO
+
+		qDebug () << "got offline message";
+
+		QMap<QString, QString> headers;
+		QString rawText;
+		EnparseMessage (message, headers, rawText);
+		const QString& text = MakeReadableText (headers, rawText);
+
+		QString date = headers ["Date"];
+		if (date.right (6).startsWith (" +") || date.right (6).startsWith (" -"))
+			date = date.left (date.size () - 6);
+
+		QDateTime dt = QDateTime::fromString (date, "ddd, dd MMM yyyy HH:mm:ss");
+		if (dt.isNull ())
+			throw MsgParseError ("Failed to parse date/time: " + headers ["Date"].toStdString ());
+
+		Message msg =
+		{
+			hp.Header_.Seq_,
+			headers ["X-MRIM-Flags"].toInt (0, 16),
+			headers ["From"],
+			text,
+			dt
+		};
+		emit gotOfflineMessage (msg);
+
+		Write (PF_.OfflineMessageAck (id).Packet_);
 	}
-	
+
 	void Connection::MicroblogRecv (HalfPacket hp)
 	{
 		quint32 flags = 0, dummy = 0;
 		Str1251 email;
 		Str16 text;
 		FromMRIM (hp.Data_, flags, email, dummy, dummy, dummy, text);
-		
+
 		if (flags & BlogStatus::Music)
 			emit gotUserTune (email, text);
 		else
@@ -504,12 +628,27 @@ namespace Proto
 			emit contactAdditionError (hp.Header_.Seq_, status);
 	}
 
+	void Connection::NewMail (HalfPacket hp)
+	{
+		quint32 count = 0;
+		FromMRIM (hp.Data_, count);
+		if (!count)
+			return;
+
+		Str1251 from;
+		Str1251 subj;
+		FromMRIM (hp.Data_, from, subj);
+		qDebug () << from << subj;
+
+		emit gotNewMail (from, subj);
+	}
+
 	void Connection::MPOPKey (HalfPacket hp)
 	{
 		quint32 status = 0;
 		Str1251 key;
 		FromMRIM (hp.Data_, status, key);
-		
+
 		if (status == MPOPSession::Success)
 			emit gotPOPKey (key);
 	}
@@ -547,6 +686,11 @@ namespace Proto
 	void Connection::handlePing ()
 	{
 		Write (PF_.Ping ().Packet_);
+	}
+
+	void Connection::handleOutTypingNotify (const QString& to)
+	{
+		Write (PF_.Message (MsgFlag::Notify, to, " ").Packet_);
 	}
 
 	void Connection::handleSocketError (QAbstractSocket::SocketError err)

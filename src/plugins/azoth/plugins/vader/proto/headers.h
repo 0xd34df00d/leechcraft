@@ -41,7 +41,6 @@ namespace Proto
 
 		Header (QByteArray&);
 		Header (quint32 msgType = 0, quint32 seq = 0);
-
 		QByteArray Serialize () const;
 	};
 
@@ -76,6 +75,7 @@ namespace Proto
 		const quint16 MailboxStatus = 0x1033;
 		const quint16 ContactList2 = 0x1037;
 		const quint16 Login2 = 0x1038;
+		const quint16 NewMail = 0x1048;
 		const quint16 MicroblogRecv = 0x1063;
 		const quint16 MicroblogPost = 0x1064;
 	}
@@ -199,7 +199,7 @@ namespace Proto
 		ContactsExch = 0x0008,
 		Wakeup = 0x0010
 	};
-	
+
 	enum BlogStatus
 	{
 		UpdateBlog = 0x01,

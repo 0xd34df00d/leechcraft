@@ -16,10 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_VADER_PROTO_MESSAGE_H
-#define PLUGINS_AZOTH_PLUGINS_VADER_PROTO_MESSAGE_H
-#include <QString>
+#ifndef PLUGINS_AZOTH_PLUGINS_VADER_PROTO_TYPINGMANAGER_H
+#define PLUGINS_AZOTH_PLUGINS_VADER_PROTO_TYPINGMANAGER_H
+#include <QObject>
+#include <QMap>
+#include <QSet>
 #include <QDateTime>
+
+class QTimer;
 
 namespace LeechCraft
 {
@@ -29,13 +33,29 @@ namespace Vader
 {
 namespace Proto
 {
-	struct Message
+	class TypingManager : public QObject
 	{
-		quint32 ID_;
-		quint32 Flags_;
-		QString From_;
-		QString Text_;
-		QDateTime DT_;
+		Q_OBJECT
+
+		QMap<QString, QDateTime> LastNotDates_;
+		QTimer *ExpTimer_;
+
+		QSet<QString> TypingTo_;
+		QTimer *OutTimer_;
+	public:
+		TypingManager (QObject* = 0);
+
+		void GotNotification (const QString&);
+
+		void SetTyping (const QString&, bool);
+	private slots:
+		void checkExpires ();
+		void sendOut ();
+	signals:
+		void startedTyping (const QString&);
+		void stoppedTyping (const QString&);
+
+		void needNotify (const QString&);
 	};
 }
 }

@@ -43,16 +43,16 @@ namespace Rosenthal
 		SettingsDialog_.reset (new Util::XmlSettingsDialog);
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"azothrosenthalsettings.xml");
-		
+
 		XmlSettingsManager::Instance ().RegisterObject ("CustomLocales",
 				this, "handleCustomLocalesChanged");
-		
+
 		ReinitHunspell ();
 	}
 
 	void Plugin::SecondInit ()
 	{
-	}	
+	}
 
 	QByteArray Plugin::GetUniqueID () const
 	{
@@ -85,12 +85,12 @@ namespace Rosenthal
 		result << "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin";
 		return result;
 	}
-	
+
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
 	{
 		return SettingsDialog_;
 	}
-	
+
 	bool Plugin::eventFilter (QObject *obj, QEvent *event)
 	{
 		QPoint eventPos;
@@ -106,19 +106,19 @@ namespace Rosenthal
 		}
 		else
 			return QObject::eventFilter (obj, event);
-		
+
 		QTextEdit *edit = qobject_cast<QTextEdit*> (obj);
 		const QPoint& curPos = edit->mapToGlobal (eventPos);
 
-		QTextCursor cur = edit->cursorForPosition (curPos);
+		QTextCursor cur = edit->cursorForPosition (eventPos);
 		QString word = cur.block ().text ();
 		const int pos = cur.columnNumber ();
 		const int end = word.indexOf (QRegExp("\\W+"), pos);
 		const int begin = word.lastIndexOf (QRegExp("\\W+"), pos);
 		word = word.mid (begin + 1, end - begin - 1);
-		
+
 		QMenu *menu = edit->createStandardContextMenu (curPos);
-		
+
 		const QStringList& words = GetPropositions (word);
 		if (!words.isEmpty ())
 		{
@@ -137,16 +137,16 @@ namespace Rosenthal
 		}
 
 		menu->exec (curPos);
-		
+
 		return true;
 	}
-	
+
 	void Plugin::ReinitHunspell ()
 	{
 		const QString& userSetting = XmlSettingsManager::Instance ()
 				.property ("CustomLocales").toString ();
 		const QStringList& userLocales = userSetting.split (' ', QString::SkipEmptyParts);
-		
+
 		const QString& locale = userLocales.value (0, Util::GetLocaleName ());
 #ifdef Q_WS_X11
 		QString base;
@@ -167,10 +167,10 @@ namespace Rosenthal
 #endif
 		QByteArray baBase = (base + locale).toLatin1 ();
 		Hunspell_.reset (new Hunspell (baBase + ".aff", baBase + ".dic"));
-		
+
 		if (!locale.startsWith ("en_"))
 			Hunspell_->add_dic ((base + "en_GB.dic").toLatin1 ());
-		
+
 		if (userLocales.size () > 1)
 			Q_FOREACH (const QString& loc, userLocales)
 			{
@@ -180,23 +180,23 @@ namespace Rosenthal
 
 				Hunspell_->add_dic ((base + loc + ".dic").toLatin1 ());
 			}
-			
+
 		Q_FOREACH (Highlighter *hl, Highlighters_)
 			hl->UpdateHunspell (Hunspell_);
 	}
-	
+
 	QStringList Plugin::GetPropositions (const QString& word)
-	{		
+	{
 		QTextCodec *codec = QTextCodec::codecForName (Hunspell_->get_dic_encoding ());
 		const QByteArray& encoded = codec->fromUnicode (word);
 		if (Hunspell_->spell (encoded.data ()))
 			return QStringList ();
-		
+
 		char **wlist = 0;
 		const int ns = Hunspell_->suggest (&wlist, encoded.data ());
 		if (!ns)
 			return QStringList ();
-		
+
 		QStringList result;
 		for (int i = 0; i < std::min (ns, 10); ++i)
 			result << codec->toUnicode (wlist [i]);
@@ -205,7 +205,7 @@ namespace Rosenthal
 		return result;
 	}
 
-	void Plugin::hookChatTabCreated (LeechCraft::IHookProxy_ptr, 
+	void Plugin::hookChatTabCreated (LeechCraft::IHookProxy_ptr,
 			QObject *chatTab, QObject*, QWebView*)
 	{
 		QTextEdit *edit;
@@ -222,25 +222,25 @@ namespace Rosenthal
 
 		edit->installEventFilter (this);
 	}
-	
+
 	void Plugin::handleCorrectionTriggered ()
 	{
 		QAction *action = qobject_cast<QAction*> (sender ());
 		if (!action)
 			return;
-		
+
 		QTextEdit *edit = qobject_cast<QTextEdit*> (action->property ("TextEdit").value<QObject*> ());
 		QTextCursor cur = edit->textCursor ();
 		cur.select (QTextCursor::WordUnderCursor);
 		cur.deleteChar ();
 		cur.insertText (action->text ());
 	}
-	
+
 	void Plugin::handleHighlighterDestroyed ()
 	{
 		Highlighters_.removeAll (static_cast<Highlighter*> (sender ()));
 	}
-	
+
 	void Plugin::handleCustomLocalesChanged ()
 	{
 		ReinitHunspell ();
