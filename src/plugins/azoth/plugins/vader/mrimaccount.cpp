@@ -65,6 +65,10 @@ namespace Vader
 				this,
 				SLOT (handleGotMessage (Proto::Message)));
 		connect (Conn_,
+				SIGNAL (gotOfflineMessage (Proto::Message)),
+				this,
+				SLOT (handleGotMessage (Proto::Message)));
+		connect (Conn_,
 				SIGNAL (gotAttentionRequest (QString, QString)),
 				this,
 				SLOT (handleGotAttentionRequest (QString, QString)));
@@ -84,15 +88,15 @@ namespace Vader
 				SIGNAL (gotPOPKey (QString)),
 				this,
 				SLOT (handleGotPOPKey (QString)));
-		
+
 		QAction *mb = new QAction (tr ("Open mailbox..."), this);
 		connect (mb,
 				SIGNAL (triggered ()),
 				this,
-				SLOT (handleOpenMailbox ()));		
+				SLOT (handleOpenMailbox ()));
 		Actions_ << mb;
 		Actions_ << VaderUtil::GetBuddyServices (this, SLOT (handleServices ()));
-		
+
 		const QString& ua = "LeechCraft Azoth " + Core::Instance ()
 				.GetCoreProxy ()->GetVersion ();
 		Conn_->SetUA (ua);
@@ -280,7 +284,7 @@ namespace Vader
 	{
 		return 0;
 	}
-	
+
 	void MRIMAccount::PublishTune (const QMap<QString, QVariant>& data)
 	{
 		QString string;
@@ -296,7 +300,7 @@ namespace Vader
 		sa ("title", QString::fromUtf8 (" — "));
 		sa ("source", " " + tr ("from") + " ");
 		sa ("length", ", ");
-		
+
 		Conn_->PublishTune (string);
 	}
 
@@ -435,6 +439,7 @@ namespace Vader
 
 		MRIMMessage *obj = new MRIMMessage (IMessage::DIn, IMessage::MTChatMessage, buddy);
 		obj->SetBody (msg.Text_);
+		obj->SetDateTime (msg.DT_);
 		buddy->HandleMessage (obj);
 	}
 
@@ -457,7 +462,7 @@ namespace Vader
 		Status_ = status;
 		emit statusChanged (status);
 	}
-	
+
 	void MRIMAccount::handleGotUserTune (const QString& from, const QString& tune)
 	{
 		auto buddy = Buddies_ [from];
@@ -468,10 +473,10 @@ namespace Vader
 					<< from;
 			return;
 		}
-		
+
 		buddy->HandleTune (tune);
 	}
-	
+
 	void MRIMAccount::handleGotPOPKey (const QString& key)
 	{
 		qDebug () << Q_FUNC_INFO << key;
@@ -483,12 +488,12 @@ namespace Vader
 				static_cast<LeechCraft::TaskParameters> (OnlyHandle | FromUserInitiated));
 		Core::Instance ().SendEntity (e);
 	}
-	
+
 	void MRIMAccount::handleOpenMailbox ()
 	{
 		Conn_->RequestPOPKey ();
 	}
-	
+
 	void MRIMAccount::handleServices ()
 	{
 		const QString& url = sender ()->property ("URL").toString ();
