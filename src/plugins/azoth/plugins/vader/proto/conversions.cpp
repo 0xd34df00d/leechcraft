@@ -49,6 +49,11 @@ namespace Proto
 		return ToMRIM (static_cast<quint32> (string.size ())) + string;
 	}
 
+	QByteArray ToMRIM (const UIDL& id)
+	{
+		return id;
+	}
+
 	QByteArray ToMRIM (quint32 num)
 	{
 		QByteArray result (4, 0);
