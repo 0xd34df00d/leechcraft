@@ -88,6 +88,7 @@ namespace Proto
 		PacketActors_ [Packets::AuthorizeAck] = [this] (HalfPacket hp) { AuthAck (hp); };
 		PacketActors_ [Packets::ContactAck] = [this] (HalfPacket hp) { ContactAdded (hp); };
 
+		PacketActors_ [Packets::NewMail] = [this] (HalfPacket hp) { NewMail (hp); };
 		PacketActors_ [Packets::MPOPSession] = [this] (HalfPacket hp) { MPOPKey (hp); };
 	}
 
@@ -606,6 +607,21 @@ namespace Proto
 			emit contactAdded (hp.Header_.Seq_, contactId);
 		else
 			emit contactAdditionError (hp.Header_.Seq_, status);
+	}
+
+	void Connection::NewMail (HalfPacket hp)
+	{
+		quint32 count = 0;
+		FromMRIM (hp.Data_, count);
+		if (!count)
+			return;
+
+		Str1251 from;
+		Str1251 subj;
+		FromMRIM (hp.Data_, from, subj);
+		qDebug () << from << subj;
+
+		emit gotNewMail (from, subj);
 	}
 
 	void Connection::MPOPKey (HalfPacket hp)
