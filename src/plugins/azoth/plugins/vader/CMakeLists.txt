@@ -29,6 +29,7 @@ SET (VADER_SRCS
 	proto/packetextractor.cpp
 	proto/exceptions.cpp
 	proto/halfpacket.cpp
+	proto/balancer.cpp
 	)
 SET (VADER_HEADERS
 	vader.h
@@ -48,6 +49,7 @@ SET (VADER_HEADERS
 	proto/packetextractor.h
 	proto/exceptions.h
 	proto/halfpacket.h
+	proto/balancer.h
 	)
 SET (VADER_FORMS
 	mrimaccountconfigwidget.ui

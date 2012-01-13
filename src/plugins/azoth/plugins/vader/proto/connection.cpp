@@ -62,6 +62,15 @@ namespace Proto
 				this,
 				SLOT (handlePing ()));
 
+		connect (&Balancer_,
+				SIGNAL (gotServer (QString, int)),
+				this,
+				SLOT (handleGotServer (QString, int)));
+		connect (&Balancer_,
+				SIGNAL (error ()),
+				this,
+				SLOT (connectToStored ()));
+
 		PacketActors_ [Packets::HelloAck] = [this] (HalfPacket hp) { HandleHello (hp); Login (); };
 		PacketActors_ [Packets::LoginAck] = [this] (HalfPacket hp) { CorrectAuth (hp); };
 		PacketActors_ [Packets::LoginRej] = [this] (HalfPacket hp) { IncorrectAuth (hp); };
@@ -97,6 +106,20 @@ namespace Proto
 	void Connection::SetUA (const QString& ua)
 	{
 		UA_ = ua;
+	}
+
+	void Connection::handleGotServer (const QString& server, int port)
+	{
+		qDebug () << Q_FUNC_INFO << server << port;
+		Host_ = server;
+		Port_ = port;
+
+		connectToStored ();
+	}
+
+	void Connection::connectToStored ()
+	{
+		Socket_->connectToHost (Host_, Port_);
 	}
 
 	void Connection::tryRead ()
@@ -140,7 +163,7 @@ namespace Proto
 		if (Socket_->isOpen ())
 			Socket_->disconnectFromHost ();
 
-		Socket_->connectToHost (Host_, Port_);
+		Balancer_.GetServer ();
 	}
 
 	void Connection::SetState (const EntryStatus& status)

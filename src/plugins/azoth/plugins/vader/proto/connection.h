@@ -27,6 +27,7 @@
 #include "packetfactory.h"
 #include "packetextractor.h"
 #include "contactinfo.h"
+#include "balancer.h"
 
 class QTimer;
 class QSslSocket;
@@ -44,6 +45,8 @@ namespace Proto
 	class Connection : public QObject
 	{
 		Q_OBJECT
+
+		Balancer Balancer_;
 
 		QSslSocket *Socket_;
 		QTimer *PingTimer_;
@@ -106,6 +109,8 @@ namespace Proto
 		QByteArray Read ();
 		void Write (const QByteArray&);
 	private slots:
+		void handleGotServer (const QString&, int);
+		void connectToStored ();
 		void tryRead ();
 		void greet ();
 		void handlePing ();
