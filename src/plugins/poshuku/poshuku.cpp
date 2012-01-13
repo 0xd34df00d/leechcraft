@@ -498,7 +498,7 @@ namespace Poshuku
 		QWebSettings::globalSettings ()->setAttribute (QWebSettings::JavaEnabled,
 				XmlSettingsManager::Instance ()->property ("AllowJava").toBool ());
 		QWebSettings::globalSettings ()->setAttribute (QWebSettings::PluginsEnabled,
-				false /*XmlSettingsManager::Instance ()->property ("AllowPlugins").toBool ()*/);
+				XmlSettingsManager::Instance ()->property ("AllowPlugins").toBool ());
 		QWebSettings::globalSettings ()->setAttribute (QWebSettings::JavascriptCanOpenWindows,
 				XmlSettingsManager::Instance ()->property ("JavascriptCanOpenWindows").toBool ());
 		QWebSettings::globalSettings ()->setAttribute (QWebSettings::JavascriptCanAccessClipboard,
