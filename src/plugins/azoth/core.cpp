@@ -1467,8 +1467,11 @@ namespace Azoth
 			Q_FOREACH (IAccount *acc, accs)
 			{
 				const auto& state = acc->GetState ();
-				if (state.State_ != SOffline)
-					SavedStatus_ [acc] = state;
+				if (state.State_ == SOffline)
+					continue;
+
+				SavedStatus_ [acc] = state;
+				acc->ChangeState ({SOffline, tr ("Client went to sleep")});
 			}
 		else if (e.Entity_ == "WokeUp")
 		{
