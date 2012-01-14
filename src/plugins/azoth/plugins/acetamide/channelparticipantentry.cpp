@@ -23,6 +23,7 @@
 #include "ircmessage.h"
 #include "ircaccount.h"
 #include <interfaces/core/icoreproxy.h>
+#include "channelsmanager.h"
 
 namespace LeechCraft
 {
@@ -84,7 +85,7 @@ namespace Acetamide
 	QString ChannelParticipantEntry::GetEntryID () const
 	{
 		return Account_->GetAccountName () + "/" +
-				ICH_->GetChannelID () + "_" + Nick_;
+				ICH_->GetChannelsManager ()->GetServerID () + "_" + Nick_;
 	}
 
 	QString ChannelParticipantEntry::GetHumanReadableID () const
@@ -106,14 +107,12 @@ namespace Acetamide
 	{
 		IrcMessage *message = new IrcMessage (IMessage::MTChatMessage,
 				IMessage::DOut,
-				ICH_->GetChannelID (),
+				ICH_->GetChannelsManager ()->GetServerID (),
 				Nick_,
 				Account_->GetClientConnection ().get ());
 
 		message->SetBody (body);
 		message->SetDateTime (QDateTime::currentDateTime ());
-
-		AllMessages_ << message;
 
 		return message;
 	}
