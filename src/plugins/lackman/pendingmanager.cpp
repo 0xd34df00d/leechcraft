@@ -41,7 +41,7 @@ namespace LackMan
 	void PendingManager::Reset ()
 	{
 		ReinitRootItems ();
-		for (int i = AInstall; i < AMAX; ++i)
+		for (int i = Action::Install; i < Action::MAX; ++i)
 			ScheduledForAction_ [static_cast<Action> (i)].clear ();
 		Deps_.clear ();
 		ID2ModelRow_.clear ();
@@ -50,52 +50,52 @@ namespace LackMan
 	void PendingManager::ToggleInstallRemove (int id, bool enable, bool installed)
 	{
 		if (enable)
-			EnablePackageInto (id, installed ? ARemove : AInstall);
+			EnablePackageInto (id, installed ? Action::Remove : Action::Install);
 		else
-			DisablePackageFrom (id, installed ? ARemove : AInstall);
+			DisablePackageFrom (id, installed ? Action::Remove : Action::Install);
 	}
 
 	void PendingManager::ToggleUpdate (int id, bool enable)
 	{
-		if (ScheduledForAction_ [AUpdate].contains (id))
+		if (ScheduledForAction_ [Action::Update].contains (id))
 			return;
 
 		if (enable)
-			EnablePackageInto (id, AUpdate);
+			EnablePackageInto (id, Action::Update);
 		else
-			DisablePackageFrom (id, AUpdate);
+			DisablePackageFrom (id, Action::Update);
 
 		emit packageUpdateToggled (id, enable);
 	}
 
 	QSet<int> PendingManager::GetPendingInstall () const
 	{
-		return ScheduledForAction_ [AInstall];
+		return ScheduledForAction_ [Action::Install];
 	}
 
 	QSet<int> PendingManager::GetPendingRemove () const
 	{
-		return ScheduledForAction_ [ARemove];
+		return ScheduledForAction_ [Action::Remove];
 	}
 
 	QSet<int> PendingManager::GetPendingUpdate () const
 	{
-		return ScheduledForAction_ [AUpdate];
+		return ScheduledForAction_ [Action::Update];
 	}
 
 	void PendingManager::SuccessfullyInstalled (int packageId)
 	{
-		DisablePackageFrom (packageId, AInstall);
+		DisablePackageFrom (packageId, Action::Install);
 	}
 
 	void PendingManager::SuccessfullyRemoved (int packageId)
 	{
-		DisablePackageFrom (packageId, ARemove);
+		DisablePackageFrom (packageId, Action::Remove);
 	}
 
 	void PendingManager::SuccessfullyUpdated (int packageId)
 	{
-		DisablePackageFrom (packageId, AUpdate);
+		DisablePackageFrom (packageId, Action::Update);
 	}
 
 	void PendingManager::EnablePackageInto (int id, PendingManager::Action action)
@@ -115,7 +115,7 @@ namespace LackMan
 					.toUtf8 ().constData ());
 		}
 
-		QList<int> deps = builder.GetPackagesToInstall ();
+		const auto& deps = builder.GetPackagesToInstall ();
 		Deps_ [id] = deps;
 
 		ScheduledForAction_ [action] << id;
@@ -137,7 +137,7 @@ namespace LackMan
 		ID2ModelRow_ [id] = packageItem;
 		RootItemForAction_ [action]->appendRow (packageItem);
 
-		if (action != ARemove)
+		if (action != Action::Remove)
 			NotifyFetchListUpdate ();
 	}
 
@@ -159,7 +159,7 @@ namespace LackMan
 		item->parent ()->takeRow (item->row ());
 		delete item;
 
-		if (action != ARemove)
+		if (action != Action::Remove)
 			NotifyFetchListUpdate ();
 	}
 
@@ -168,17 +168,17 @@ namespace LackMan
 		PendingModel_->clear ();
 		RootItemForAction_.clear ();
 
-		RootItemForAction_ [AInstall] =
+		RootItemForAction_ [Action::Install] =
 				new QStandardItem (Core::Instance ().GetProxy ()->GetIcon ("list-add"),
 						tr ("To be installed"));
-		RootItemForAction_ [ARemove] =
+		RootItemForAction_ [Action::Remove] =
 				new QStandardItem (Core::Instance ().GetProxy ()->GetIcon ("list-remove"),
 						tr ("To be removed"));
-		RootItemForAction_ [AUpdate] =
+		RootItemForAction_ [Action::Update] =
 				new QStandardItem (Core::Instance ().GetProxy ()->GetIcon ("system-software-update"),
 						tr ("To be updated"));
 
-		for (int i = AInstall; i < AMAX; ++i)
+		for (int i = Action::Install; i < Action::MAX; ++i)
 		{
 			QStandardItem *item = RootItemForAction_ [static_cast<Action> (i)];
 			item->setEditable (false);
@@ -188,7 +188,8 @@ namespace LackMan
 
 	void PendingManager::NotifyFetchListUpdate ()
 	{
-		QList<int> ids = (ScheduledForAction_ [AInstall] + ScheduledForAction_ [AUpdate]).toList ();
+		auto ids = (ScheduledForAction_ [Action::Install] +
+					ScheduledForAction_ [Action::Update]).toList ();
 		Q_FOREACH (const int id, ids)
 			ids << Deps_ [id];
 		emit fetchListUpdated (ids);
