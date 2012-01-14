@@ -309,14 +309,8 @@ namespace LackMan
 		}
 		else
 		{
-			bool isInstalled = index.data (PackagesModel::PMRInstalled).toBool ();
-			bool isUpgradable = index.data (PackagesModel::PMRUpgradable).toBool ();
-
-			if (isInstalled != WasInstalled_ [index])
-				GetInstallRemove (index);
-
-			if (isUpgradable != WasUpgradable_ [index])
-				GetUpdate (index);
+			GetInstallRemove (index);
+			GetUpdate (index);
 		}
 
 		return Row2Layout_ [index.row ()];
