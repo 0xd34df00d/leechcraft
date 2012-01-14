@@ -19,25 +19,21 @@
 #include "pluginmanagerdialog.h"
 #include "core.h"
 
-using namespace LeechCraft;
-
-LeechCraft::PluginManagerDialog::PluginManagerDialog (QWidget *parent)
-: QWidget (parent)
+namespace LeechCraft
 {
-	Ui_.setupUi (this);
-	Ui_.PluginsTree_->setWordWrap (true);
-	Ui_.PluginsTree_->setModel (Core::Instance ().GetPluginsModel ());
-}
+	PluginManagerDialog::PluginManagerDialog (QWidget *parent)
+	: QWidget (parent)
+	{
+		Ui_.setupUi (this);
+		Ui_.PluginsTree_->setWordWrap (true);
+		Ui_.PluginsTree_->setModel (Core::Instance ().GetPluginsModel ());
+	}
 
-LeechCraft::PluginManagerDialog::~PluginManagerDialog ()
-{
-}
+	void PluginManagerDialog::accept ()
+	{
+	}
 
-void LeechCraft::PluginManagerDialog::accept ()
-{
+	void PluginManagerDialog::reject ()
+	{
+	}
 }
-
-void LeechCraft::PluginManagerDialog::reject ()
-{
-}
-

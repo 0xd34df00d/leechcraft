@@ -30,12 +30,10 @@ namespace LeechCraft
 		Ui::PluginManagerDialog Ui_;
 	public:
 		PluginManagerDialog (QWidget* = 0);
-		virtual ~PluginManagerDialog ();
 	public slots:
 		virtual void accept ();
 		virtual void reject ();
 	};
-};
+}
 
 #endif
-
