@@ -85,8 +85,6 @@ namespace Acetamide
 		ServerOptions GetServerOptions () const;
 		QObjectList GetCLEntries () const;
 
-		QStringList GetPrivateChats () const;
-
 		ChannelHandler* GetChannelHandler (const QString& channel);
 		QList<ChannelHandler*> GetChannelHandlers () const;
 
@@ -175,7 +173,6 @@ namespace Acetamide
 		void SendMessage2Server (const QStringList&);
 		QString ParseMessageForCommand (const QString&, const QString&);
 		void LeaveChannel (const QString& channel, const QString& msg);
-		void ClosePrivateChat (const QString&);
 
 		void ConnectToServer ();
 		void DisconnectFromServer ();
@@ -202,6 +199,8 @@ namespace Acetamide
 		void RequestWho (const QString&, const QString&);
 		void RequestWhoIs (const QString&, const QString&);
 		void RequestWhoWas (const QString&, const QString&);
+
+		QObject* GetExistsParticipant (const QString& nickname) const;
 	private:
 		void SendToConsole (IMessage::Direction, const QString&);
 		void NickCmdError ();

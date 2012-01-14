@@ -129,14 +129,6 @@ namespace Acetamide
 		return result;
 	}
 
-	QStringList IrcServerHandler::GetPrivateChats () const
-	{
-		QStringList result;
-		Q_FOREACH (ServerParticipantEntry_ptr spe, Nick2Entry_.values ())
-			result << spe->GetEntryName ();
-		return result;
-	}
-
 	ChannelHandler* IrcServerHandler::GetChannelHandler (const QString& channel)
 	{
 		return ChannelsManager_->GetChannelHandler (channel);
@@ -250,10 +242,7 @@ namespace Acetamide
 			ChannelsManager_->ReceivePublicMessage (target, nick, msg);
 		else
 		{
-			ServerParticipantEntry_ptr entry = GetParticipantEntry (nick);
-			if (!entry)
-				return;
-
+			//TODO Work only for exists entries
 			IrcMessage *message = new IrcMessage (IMessage::MTChatMessage,
 					IMessage::DIn,
 					ServerID_,
@@ -261,8 +250,15 @@ namespace Acetamide
 					Account_->GetClientConnection ().get ());
 			message->SetBody (msg);
 			message->SetDateTime (QDateTime::currentDateTime ());
-			entry->SetStatus (EntryStatus (SOnline, QString ()));
-			entry->HandleMessage (message);
+
+			Q_FOREACH (QObject *entryObj, ChannelsManager_->GetParticipantsByNick (nick))
+			{
+				EntryBase *entry = qobject_cast<EntryBase*> (entryObj);
+				if (!entry)
+					continue;
+
+				entry->HandleMessage (message);
+			}
 		}
 	}
 
@@ -611,8 +607,14 @@ namespace Acetamide
 					<< msg->GetOtherVariant ()
 					<< str);
 
-		ServerParticipantEntry_ptr entry = GetParticipantEntry (msg->GetOtherVariant ());
-		entry->HandleMessage (msg);
+		Q_FOREACH (QObject *entryObj, ChannelsManager_->GetParticipantsByNick (msg->GetOtherVariant ()))
+		{
+			EntryBase *entry = qobject_cast<EntryBase*> (entryObj);
+			if (!entry)
+				continue;
+
+			entry->HandleMessage (msg);
+		}
 	}
 
 	void IrcServerHandler::SendMessage2Server (const QStringList& list)
@@ -643,20 +645,6 @@ namespace Acetamide
 			const QString& msg)
 	{
 		IrcParser_->PartCommand (QStringList () << channel << msg);
-	}
-
-	void IrcServerHandler::ClosePrivateChat (const QString& nick)
-	{
-		if (Nick2Entry_.contains (nick))
-		{
-			Account_->handleEntryRemoved (Nick2Entry_ [nick].get ());
-			RemoveParticipantEntry (nick);
-			if (!Nick2Entry_.count () &&
-					!ChannelsManager_->Count () &&
-					XmlSettingsManager::Instance ()
-							.property ("AutoDisconnectFromServer").toBool ())
-				DisconnectFromServer ();
-		}
 	}
 
 	void IrcServerHandler::ConnectToServer ()
@@ -833,6 +821,14 @@ namespace Acetamide
 	void IrcServerHandler::RequestWho (const QString& id, const QString& nick)
 	{
 		IrcParser_->WhoCommand (QStringList () << nick);
+	}
+
+	QObject* IrcServerHandler::GetExistsParticipant (const QString& nickname) const
+	{
+		if (Nick2Entry_.contains (nickname))
+			return Nick2Entry_ [nickname].get ();
+		else
+			return 0;
 	}
 
 	void IrcServerHandler::connectionEstablished ()
