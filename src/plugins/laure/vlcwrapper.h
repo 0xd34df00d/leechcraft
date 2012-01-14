@@ -17,8 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LAURE_CORE_H
-#define PLUGINS_LAURE_CORE_H
+#ifndef PLUGINS_LAURE_VLCWRAPPER_H
+#define PLUGINS_LAURE_VLCWRAPPER_H
 
 #include <boost/shared_ptr.hpp>
 #include <QObject>
@@ -253,4 +253,4 @@ namespace Laure
 	};
 }
 }
-#endif // PLUGINS_LAURE_CORE_H
+#endif // PLUGINS_LAURE_VLCWRAPPER_H
