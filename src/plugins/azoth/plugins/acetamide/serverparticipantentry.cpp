@@ -79,6 +79,11 @@ namespace Acetamide
 		return message;
 	}
 
+	void ServerParticipantEntry::SetMessageHistory (QObjectList messages)
+	{
+		AllMessages_ << messages;
+	}
+
 };
 };
 };

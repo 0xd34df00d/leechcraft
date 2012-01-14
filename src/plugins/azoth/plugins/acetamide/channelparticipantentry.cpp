@@ -85,7 +85,7 @@ namespace Acetamide
 	QString ChannelParticipantEntry::GetEntryID () const
 	{
 		return Account_->GetAccountName () + "/" +
-				ICH_->GetChannelsManager ()->GetServerID () + "_" + Nick_;
+				ServerID_ + "_" + Nick_;
 	}
 
 	QString ChannelParticipantEntry::GetHumanReadableID () const
@@ -107,7 +107,7 @@ namespace Acetamide
 	{
 		IrcMessage *message = new IrcMessage (IMessage::MTChatMessage,
 				IMessage::DOut,
-				ICH_->GetChannelsManager ()->GetServerID (),
+				ServerID_,
 				Nick_,
 				Account_->GetClientConnection ().get ());
 

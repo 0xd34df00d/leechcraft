@@ -70,7 +70,7 @@ namespace Acetamide
 		QString LastSendId_;
 		ServerOptions ServerOptions_;
 		std::unique_ptr<InviteChannelsDialog> InviteChannelsDialog_;
-		QHash<QString, ServerParticipantEntry_ptr> Nick2Entry_;
+		QHash<QString, ServerParticipantEntry*> Nick2Entry_;
 		QMap<QString, QString> ISupport_;
 	public:
 		IrcServerHandler (const ServerOptions&,
@@ -179,7 +179,7 @@ namespace Acetamide
 
 		void SendCommand (const QString&);
 
-		ServerParticipantEntry_ptr GetParticipantEntry (const QString&);
+		ServerParticipantEntry* GetParticipantEntry (const QString&);
 		void RemoveParticipantEntry (const QString&);
 
 		void SetConsoleEnabled (bool);
@@ -200,11 +200,13 @@ namespace Acetamide
 		void RequestWhoIs (const QString&, const QString&);
 		void RequestWhoWas (const QString&, const QString&);
 
-		QObject* GetExistsParticipant (const QString& nickname) const;
+		void ClosePrivateChat (const QString& nick);
+
+		void CreateServerParticipantEntry (QString nick);
 	private:
 		void SendToConsole (IMessage::Direction, const QString&);
 		void NickCmdError ();
-		ServerParticipantEntry_ptr CreateParticipantEntry (const QString&);
+		ServerParticipantEntry* CreateParticipantEntry (const QString&);
 	private slots:
 		void connectionEstablished ();
 		void connectionClosed ();

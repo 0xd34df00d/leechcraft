@@ -196,6 +196,12 @@ namespace Acetamide
 		}
 	}
 
+	void ClientConnection::ClosePrivateChat (const QString& serverID, QString nick)
+	{
+		if (ServerHandlers_.contains (serverID))
+			ServerHandlers_ [serverID]->ClosePrivateChat (nick);
+	}
+
 	void ClientConnection::serverConnected (const QString& serverId)
 	{
 		if (Account_->GetState ().State_ == SOffline)

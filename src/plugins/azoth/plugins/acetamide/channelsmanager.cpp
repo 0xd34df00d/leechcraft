@@ -144,7 +144,7 @@ namespace Acetamide
 	void ChannelsManager::UnregisterChannel (ChannelHandler *ich)
 	{
 		ChannelHandlers_.remove (ich->GetChannelOptions ().ChannelName_);
-//TODO Private chats
+
 		if (!ChannelHandlers_.count () &&
 				XmlSettingsManager::Instance ()
 						.property ("AutoDisconnectFromServer").toBool ())
@@ -521,6 +521,23 @@ namespace Acetamide
 	QMap<QString, QString> ChannelsManager::GetISupport () const
 	{
 		return ISH_->GetISupport ();
+	}
+
+	void ChannelsManager::SetPrivateChat (const QString& nick)
+	{
+		Q_FOREACH (QObject *entryObj, GetParticipantsByNick (nick))
+		{
+			IrcParticipantEntry *entry = qobject_cast<IrcParticipantEntry*> (entryObj);
+			if (!entry)
+				continue;
+
+			entry->SetPrivateChat (true);
+		}
+	}
+
+	void ChannelsManager::CreateServerParticipantEntry (QString nick)
+	{
+		ISH_->CreateServerParticipantEntry (nick);
 	}
 
 	void ChannelsManager::AddCommand2Queue (const QString& channel,

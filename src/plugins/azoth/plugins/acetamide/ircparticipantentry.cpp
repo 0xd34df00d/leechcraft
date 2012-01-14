@@ -17,8 +17,10 @@
  **********************************************************************/
 
 #include "ircparticipantentry.h"
+#include <QAction>
 #include "ircmessage.h"
 #include "ircaccount.h"
+#include "clientconnection.h"
 
 namespace LeechCraft
 {
@@ -29,7 +31,16 @@ namespace Acetamide
 	IrcParticipantEntry::IrcParticipantEntry (const QString& nick, IrcAccount *account)
 	: EntryBase (account)
 	, Nick_ (nick)
+	, IsPrivateChat_ (false)
 	{
+		QAction *closePrivate = new QAction ("Close chat", this);
+
+		connect (closePrivate,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleClosePrivate ()));
+
+		Actions_ << closePrivate;
 	}
 
 	QObject* IrcParticipantEntry::GetParentAccount () const
@@ -98,6 +109,22 @@ namespace Acetamide
 	QString IrcParticipantEntry::GetServerID () const
 	{
 		return ServerID_;
+	}
+
+	bool IrcParticipantEntry::IsPrivateChat () const
+	{
+		return IsPrivateChat_;
+	}
+
+	void IrcParticipantEntry::SetPrivateChat (bool isPrivate)
+	{
+		IsPrivateChat_ = isPrivate;
+	}
+
+	void IrcParticipantEntry::handleClosePrivate ()
+	{
+		IsPrivateChat_ = false;
+		Account_->GetClientConnection ()->ClosePrivateChat (ServerID_, Nick_);
 	}
 
 }

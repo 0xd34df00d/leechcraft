@@ -54,6 +54,8 @@ namespace Acetamide
 
 		QObject* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);
+
+		void SetMessageHistory (QObjectList messages);
 	private slots:
 	};
 

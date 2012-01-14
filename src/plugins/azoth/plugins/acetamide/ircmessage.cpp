@@ -22,6 +22,7 @@
 #include "clientconnection.h"
 #include "core.h"
 #include "ircserverhandler.h"
+#include "channelsmanager.h"
 
 namespace LeechCraft
 {
@@ -79,6 +80,7 @@ namespace Acetamide
 		case MTChatMessage:
 		case MTMUCMessage:
 			Connection_->GetIrcServerHandler (ID_)->SendPrivateMessage (this);
+			Connection_->GetIrcServerHandler (ID_)->GetChannelManager ()->SetPrivateChat (GetOtherVariant ());
 			return;
 		case MTStatusMessage:
 		case MTEventMessage:
@@ -92,7 +94,7 @@ namespace Acetamide
 
 	void IrcMessage::Store ()
 	{
-		ServerParticipantEntry_ptr entry =
+		ServerParticipantEntry *entry =
 				Connection_->GetIrcServerHandler (ID_)->
 						GetParticipantEntry (GetOtherVariant ());
 		entry->HandleMessage (this);

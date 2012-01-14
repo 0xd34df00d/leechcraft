@@ -433,7 +433,16 @@ namespace Acetamide
 	void ChannelHandler::RemoveThis ()
 	{
 		Q_FOREACH (ChannelParticipantEntry *entry, Nick2Entry_.values ())
+		{
+			const bool isPrivate = entry->IsPrivateChat ();
+			const QString nick = entry->GetEntryName ();
+
 			CM_->GetAccount ()->handleEntryRemoved (entry);
+
+			if (CM_->GetParticipantsByNick (nick).count () == 1
+					&& isPrivate)
+				CM_->CreateServerParticipantEntry (nick);
+		}
 		Nick2Entry_.clear ();
 
 		CM_->GetAccount ()->handleEntryRemoved (ChannelCLEntry_);

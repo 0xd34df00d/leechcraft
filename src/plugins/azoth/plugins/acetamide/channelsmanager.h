@@ -142,6 +142,10 @@ namespace Acetamide
 		void CTCPRequest (const QStringList& cmd);
 
 		QMap<QString, QString> GetISupport () const;
+
+		void SetPrivateChat (const QString& nick);
+
+		void CreateServerParticipantEntry (QString nick);
 	private:
 		void AddCommand2Queue (const QString& channel, const QString& cmd, bool IsLongAnswer);
 	};

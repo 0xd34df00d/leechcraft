@@ -32,12 +32,13 @@ namespace Acetamide
 
 	class IrcParticipantEntry : public EntryBase
 	{
-
+		Q_OBJECT
 	protected:
 		QString Nick_;
 		QString UserName_;
 		QString HostName_;
 		QString ServerID_;
+		bool IsPrivateChat_;
 	public:
 		IrcParticipantEntry (const QString&, IrcAccount* = 0);
 
@@ -60,6 +61,11 @@ namespace Acetamide
 		void SetHostName (const QString&);
 
 		QString GetServerID () const;
+
+		bool IsPrivateChat () const;
+		void SetPrivateChat (bool isPrivate);
+	private slots:
+		void handleClosePrivate ();
 	};
 }
 }
