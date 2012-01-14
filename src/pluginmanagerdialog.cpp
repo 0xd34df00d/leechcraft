@@ -23,6 +23,8 @@
 #include "interfaces/iinfo.h"
 #include "core.h"
 #include "skinengine.h"
+#include "coreinstanceobject.h"
+#include "settingstab.h"
 
 namespace LeechCraft
 {
@@ -50,6 +52,11 @@ namespace LeechCraft
 			button->setIcon (SkinEngine::Instance ().GetIcon ("configure", QString ()));
 			button->setToolTip (tr ("Configure..."));
 			button->setMaximumWidth (48);
+			button->setProperty ("SettableObject", QVariant::fromValue<QObject*> (obj));
+			connect (button,
+					SIGNAL (released ()),
+					Core::Instance ().GetCoreInstanceObject ()->GetSettingsTab (),
+					SLOT (handleSettingsCalled ()));
 			return button;
 		}
 
@@ -109,7 +116,6 @@ namespace LeechCraft
 
 	void PluginManagerDialog::readjustColumns ()
 	{
-		qDebug () << Q_FUNC_INFO << Ui_.PluginsTree_->viewport ()->width () << Ui_.PluginsTree_->columnWidth (0);
 		Ui_.PluginsTree_->setColumnWidth (1,
 				Ui_.PluginsTree_->viewport ()->width () - 48 - Ui_.PluginsTree_->columnWidth (0));
 		Ui_.PluginsTree_->setColumnWidth (2, 48);
