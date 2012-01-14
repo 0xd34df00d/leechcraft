@@ -45,22 +45,6 @@ namespace Acetamide
 		ProxyObject_ = qobject_cast<IProxyObject*> (proxyObj);
 	}
 
-	QObject* ClientConnection::GetCLEntry (const QString& id,
-			const QString& nickname) const
-	{
-		if (ServerHandlers_.contains (id) && nickname.isEmpty ())
-			return ServerHandlers_ [id]->GetCLEntry ();
-		else if (!nickname.isEmpty ())
-			return ServerHandlers_ [id]->GetParticipantEntry (nickname)
-					.get ();
-		else
-			Q_FOREACH (IrcServerHandler *ish, ServerHandlers_.values ())
-				if (ish->IsChannelExists (id))
-					return ish->GetChannelHandler (id)->GetCLEntry ();
-
-		return NULL;
-	}
-
 	void ClientConnection::Sinchronize ()
 	{
 	}
@@ -175,15 +159,9 @@ namespace Acetamide
 		return bookmarks;
 	}
 
-	IrcServerHandler* ClientConnection::GetIrcServerHandler (const QString& id)
+	IrcServerHandler* ClientConnection::GetIrcServerHandler (const QString& id) const
 	{
 		return ServerHandlers_ [id];
-	}
-
-	void ClientConnection::ClosePrivateChat (QString serverId,
-			const QString& nick)
-	{
-		ServerHandlers_ [serverId]->ClosePrivateChat (nick);
 	}
 
 	void ClientConnection::DisconnectFromAll ()
