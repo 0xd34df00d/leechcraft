@@ -46,11 +46,11 @@ namespace Acetamide
 
 		QObject* GetParentCLEntry () const;
 
-		QString GetEntryID() const;
+		QString GetEntryID () const;
 		QString GetHumanReadableID () const;
 
 		void SetGroups (const QStringList&);
-		QStringList Groups() const;
+		QStringList Groups () const;
 
 		QObject* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);

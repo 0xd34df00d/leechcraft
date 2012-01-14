@@ -86,7 +86,7 @@ namespace Acetamide
 
 	void IrcParser::JoinCommand (const QStringList& cmd)
 	{
-		QString joinCmd = QString ("JOIN " + cmd.join(" ") + "\r\n");
+		QString joinCmd = QString ("JOIN " + cmd.join (" ") + "\r\n");
 		ISH_->SendCommand (joinCmd);
 	}
 

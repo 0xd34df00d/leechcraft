@@ -286,7 +286,7 @@ namespace Acetamide
 				.arg (ICH_->GetChannelsManager ()->GetServerOptions ().ServerPort_);
 		result ["AccountID"] = ICH_->GetChannelsManager ()->
 				GetAccount ()->GetAccountID ();
-		result ["Nickname"] = GetNick();
+		result ["Nickname"] = GetNick ();
 		result ["Channel"] = ICH_->GetChannelOptions ().ChannelName_;
 		result ["Server"] = ICH_->GetChannelOptions ().ServerName_;
 		result ["Port"] = ICH_->GetChannelsManager ()->GetServerOptions ().ServerPort_;

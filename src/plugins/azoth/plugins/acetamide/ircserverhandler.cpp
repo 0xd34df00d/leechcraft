@@ -357,7 +357,7 @@ namespace Acetamide
 		IrcParser_->ChanModeCommand (QStringList () << channel << "-I" << mask);
 	}
 
-	void IrcServerHandler::SetNewChannelModes(const QString& channel, const ChannelModes& modes)
+	void IrcServerHandler::SetNewChannelModes (const QString& channel, const ChannelModes& modes)
 	{
 		if (!ChannelsManager_->IsChannelExists (channel.toLower ()))
 			return;
@@ -391,7 +391,7 @@ namespace Acetamide
 
 		if (modes.UserLimit_.first)
 			IrcParser_->ChanModeCommand (QStringList () << channel
-					<< "+l" << QString::number(modes.UserLimit_.second));
+					<< "+l" << QString::number (modes.UserLimit_.second));
 		else
 			IrcParser_->ChanModeCommand (QStringList () << channel << "-l");
 	}
@@ -792,7 +792,7 @@ namespace Acetamide
 		if (mode.isEmpty ())
 			return;
 
-		const QString& chnnl = channel.toLower();
+		const QString& chnnl = channel.toLower ();
 		if (!ChannelsManager_->IsChannelExists (chnnl))
 			return;
 

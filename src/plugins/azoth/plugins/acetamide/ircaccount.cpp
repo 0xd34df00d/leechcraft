@@ -217,7 +217,7 @@ namespace Acetamide
 		if (server.ServerEncoding_.isEmpty ())
 			server.ServerEncoding_ = DefaultEncoding_;
 		if (server.ServerNickName_.isEmpty ())
-			server.ServerNickName_ = NickNames_.isEmpty() ? GetOurNick ()
+			server.ServerNickName_ = NickNames_.isEmpty () ? GetOurNick ()
 					: NickNames_.at (0);
 
 		if (channel.ServerName_.isEmpty ())
@@ -238,7 +238,7 @@ namespace Acetamide
 			ClientConnection_->JoinChannel (server, channel);
 	}
 
-	void IrcAccount::SetBookmarks(const QList<IrcBookmark>& bookmarks)
+	void IrcAccount::SetBookmarks (const QList<IrcBookmark>& bookmarks)
 	{
 		if (!ClientConnection_)
 			return;

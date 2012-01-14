@@ -123,10 +123,10 @@ namespace Acetamide
 				IMessage::MTStatusMessage,
 				IMessage::MSTParticipantNickChange);
 
-		CM_->GetAccount()->handleEntryRemoved (Nick2Entry_ [oldNick]);
+		CM_->GetAccount ()->handleEntryRemoved (Nick2Entry_ [oldNick]);
 		ChannelParticipantEntry* entry = Nick2Entry_.take (oldNick);
 		entry->SetEntryName (newNick);
-		CM_->GetAccount()->handleGotRosterItems (QList<QObject*> () << entry);
+		CM_->GetAccount ()->handleGotRosterItems (QList<QObject*> () << entry);
 		Nick2Entry_ [newNick] = entry;
 	}
 
@@ -661,7 +661,7 @@ namespace Acetamide
 		emit updateChanModes (ChannelMode_);
 	}
 
-	void ChannelHandler::SetNewChannelModes(const ChannelModes& modes)
+	void ChannelHandler::SetNewChannelModes (const ChannelModes& modes)
 	{
 		CM_->SetNewChannelModes (ChannelOptions_.ChannelName_, modes);
 	}

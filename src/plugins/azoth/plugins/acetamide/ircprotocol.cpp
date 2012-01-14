@@ -245,7 +245,7 @@ namespace Acetamide
 						tr ("Password:"),
 						QLineEdit::Password);
 			//TODO nickServ for urls
-			acc->JoinServer(so, cho);
+			acc->JoinServer (so, cho);
 		}
 	}
 

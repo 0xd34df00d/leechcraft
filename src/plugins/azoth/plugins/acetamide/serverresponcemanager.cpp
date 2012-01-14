@@ -413,7 +413,7 @@ namespace Acetamide
 
 	void ServerResponceManager::GotCTCPRequestResult (const IrcMessageOptions& opts)
 	{
-		if (QString::fromUtf8 (opts.Parameters_.first ().c_str ()) != ISH_->GetNickName())
+		if (QString::fromUtf8 (opts.Parameters_.first ().c_str ()) != ISH_->GetNickName ())
 			return;
 
 		if (opts.Message_.isEmpty ())
@@ -582,7 +582,7 @@ namespace Acetamide
 	{
 		QString string;
 		Q_FOREACH (std::string str, opts.Parameters_)
-			string.append(QString::fromUtf8 (str.c_str ()) + " ");
+			string.append (QString::fromUtf8 (str.c_str ()) + " ");
 		ISH_->ShowAnswer ("version", string + opts.Message_);
 	}
 
@@ -591,7 +591,7 @@ namespace Acetamide
 		QString str;
 		for (int i = 0; i < opts.Parameters_.count (); ++i)
 			if (i)
-				str.append(QString::fromUtf8 (opts.Parameters_ [i].c_str ()) + " ");
+				str.append (QString::fromUtf8 (opts.Parameters_ [i].c_str ()) + " ");
 		ISH_->ShowLinksReply (str + opts.Message_);
 	}
 

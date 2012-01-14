@@ -130,13 +130,13 @@ namespace Acetamide
 
 			res << QVariant::fromValue (result);
 		}
-		XmlSettingsManager::Instance().setProperty ("Bookmarks",
+		XmlSettingsManager::Instance ().setProperty ("Bookmarks",
 				QVariant::fromValue (res));
 	}
 
 	QList<IrcBookmark> ClientConnection::GetBookmarks () const
 	{
-		QList<QVariant> list = XmlSettingsManager::Instance().Property ("Bookmarks",
+		QList<QVariant> list = XmlSettingsManager::Instance ().Property ("Bookmarks",
 				QList<QVariant> ()).toList ();
 
 		QList<IrcBookmark> bookmarks;
