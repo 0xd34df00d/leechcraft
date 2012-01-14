@@ -40,19 +40,16 @@ namespace LeechCraft
 				const QStyleOptionViewItem& option,
 				const QModelIndex& index) const
 		{
-			if (index.column () != 2)
-				return QStyledItemDelegate::createEditor (parent, option, index);
-
-			QObject *obj = index.data (PluginManager::Roles::PluginObject).value<QObject*> ();
-			IHaveSettings *ihs = qobject_cast<IHaveSettings*> (obj);
-			if (!ihs)
+			if (index.column () != 2 ||
+					!(index.flags () & Qt::ItemIsEditable))
 				return QStyledItemDelegate::createEditor (parent, option, index);
 
 			QPushButton *button = new QPushButton (parent);
 			button->setIcon (SkinEngine::Instance ().GetIcon ("configure", QString ()));
 			button->setToolTip (tr ("Configure..."));
 			button->setMaximumWidth (48);
-			button->setProperty ("SettableObject", QVariant::fromValue<QObject*> (obj));
+			button->setProperty ("SettableObject",
+					index.data (PluginManager::Roles::PluginObject));
 			connect (button,
 					SIGNAL (released ()),
 					Core::Instance ().GetCoreInstanceObject ()->GetSettingsTab (),
@@ -109,7 +106,11 @@ namespace LeechCraft
 		Ui_.PluginsTree_->setItemDelegateForColumn (2, new PrefDelegate (this));
 
 		for (int i = 0, rc = model->rowCount (); i < rc; ++i)
-			Ui_.PluginsTree_->openPersistentEditor (model->index (i, 2));
+		{
+			const auto& idx = model->index (i, 2);
+			if (idx.flags () & Qt::ItemIsEditable)
+				Ui_.PluginsTree_->openPersistentEditor (idx);
+		}
 
 		Ui_.PluginsTree_->installEventFilter (new SizeFilter (this));
 	}

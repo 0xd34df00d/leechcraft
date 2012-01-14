@@ -172,8 +172,7 @@ namespace LeechCraft
 		else if (index.column () == 2)
 		{
 			const int row = index.row ();
-			if (AvailablePlugins_ [row] &&
-					AvailablePlugins_ [row]->isLoaded () &&
+			if (AvailablePlugins_ [row]->isLoaded () &&
 					qobject_cast<IHaveSettings*> (AvailablePlugins_ [row]->instance ()))
 				result |= Qt::ItemIsEditable;
 		}
