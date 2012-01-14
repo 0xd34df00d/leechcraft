@@ -17,16 +17,102 @@
  **********************************************************************/
 
 #include "pluginmanagerdialog.h"
+#include <QStyledItemDelegate>
+#include <QPushButton>
+#include "interfaces/ihavesettings.h"
+#include "interfaces/iinfo.h"
 #include "core.h"
+#include "skinengine.h"
 
 namespace LeechCraft
 {
+	class PrefDelegate : public QStyledItemDelegate
+	{
+	public:
+		PrefDelegate (QObject* parent = 0)
+		: QStyledItemDelegate (parent)
+		{
+		}
+
+		virtual QWidget* createEditor (QWidget *parent,
+				const QStyleOptionViewItem& option,
+				const QModelIndex& index) const
+		{
+			if (index.column () != 2)
+				return QStyledItemDelegate::createEditor (parent, option, index);
+
+			QObject *obj = index.data (PluginManager::Roles::PluginObject).value<QObject*> ();
+			IHaveSettings *ihs = qobject_cast<IHaveSettings*> (obj);
+			if (!ihs)
+				return QStyledItemDelegate::createEditor (parent, option, index);
+
+			QPushButton *button = new QPushButton (parent);
+			button->setIcon (SkinEngine::Instance ().GetIcon ("configure", QString ()));
+			button->setToolTip (tr ("Configure..."));
+			button->setMaximumWidth (48);
+			return button;
+		}
+
+		void updateEditorGeometry (QWidget *editor,
+				const QStyleOptionViewItem& option,
+				const QModelIndex&) const
+		{
+			editor->setGeometry (option.rect);
+		}
+
+		QSize sizeHint (const QStyleOptionViewItem& option, const QModelIndex& index) const
+		{
+			return index.column () == 2 ?
+					QSize (32, 32) :
+					QStyledItemDelegate::sizeHint (option, index);
+		}
+	};
+
+	namespace
+	{
+		class SizeFilter : public QObject
+		{
+			PluginManagerDialog *PMD_;
+		public:
+			SizeFilter (PluginManagerDialog *pmd)
+			: QObject (pmd)
+			, PMD_ (pmd)
+			{
+			}
+
+			bool eventFilter (QObject *obj, QEvent *e)
+			{
+				if (e->type () == QEvent::Show ||
+						e->type () == QEvent::Resize)
+					PMD_->readjustColumns ();
+
+				return QObject::eventFilter (obj, e);
+			}
+		};
+	}
+
 	PluginManagerDialog::PluginManagerDialog (QWidget *parent)
 	: QWidget (parent)
 	{
 		Ui_.setupUi (this);
 		Ui_.PluginsTree_->setWordWrap (true);
-		Ui_.PluginsTree_->setModel (Core::Instance ().GetPluginsModel ());
+
+		auto model = Core::Instance ().GetPluginsModel ();
+		Ui_.PluginsTree_->setModel (model);
+		Ui_.PluginsTree_->setItemDelegateForColumn (2, new PrefDelegate (this));
+
+		for (int i = 0, rc = model->rowCount (); i < rc; ++i)
+			Ui_.PluginsTree_->openPersistentEditor (model->index (i, 2));
+
+		Ui_.PluginsTree_->installEventFilter (new SizeFilter (this));
+	}
+
+	void PluginManagerDialog::readjustColumns ()
+	{
+		qDebug () << Q_FUNC_INFO << Ui_.PluginsTree_->viewport ()->width () << Ui_.PluginsTree_->columnWidth (0);
+		Ui_.PluginsTree_->setColumnWidth (1,
+				Ui_.PluginsTree_->viewport ()->width () - 48 - Ui_.PluginsTree_->columnWidth (0));
+		Ui_.PluginsTree_->setColumnWidth (2, 48);
 	}
 
 	void PluginManagerDialog::accept ()

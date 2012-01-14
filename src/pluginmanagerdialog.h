@@ -31,8 +31,10 @@ namespace LeechCraft
 	public:
 		PluginManagerDialog (QWidget* = 0);
 	public slots:
-		virtual void accept ();
-		virtual void reject ();
+		void readjustColumns ();
+
+		void accept ();
+		void reject ();
 	};
 }
 

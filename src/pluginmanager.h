@@ -60,18 +60,22 @@ namespace LeechCraft
 
 		boost::shared_ptr<PluginTreeBuilder> PluginTreeBuilder_;
 	public:
+		enum Roles
+		{
+			PluginObject = Qt::UserRole + 100
+		};
+
 		typedef PluginsContainer_t::size_type Size_t;
 		PluginManager (const QStringList& pluginPaths, QObject *parent = 0);
-		virtual ~PluginManager ();
 
-		virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
-		virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
-		virtual Qt::ItemFlags flags (const QModelIndex&) const;
-		virtual QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const;
-		virtual QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const;
-		virtual QModelIndex parent (const QModelIndex&) const;
-		virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
-		virtual bool setData (const QModelIndex&, const QVariant&, int);
+		int columnCount (const QModelIndex& = QModelIndex ()) const;
+		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
+		Qt::ItemFlags flags (const QModelIndex&) const;
+		QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const;
+		QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const;
+		QModelIndex parent (const QModelIndex&) const;
+		int rowCount (const QModelIndex& = QModelIndex ()) const;
+		bool setData (const QModelIndex&, const QVariant&, int);
 
 		Size_t GetSize () const;
 		void Init ();

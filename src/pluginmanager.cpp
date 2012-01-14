@@ -64,13 +64,9 @@ namespace LeechCraft
 		}
 	}
 
-	PluginManager::~PluginManager ()
-	{
-	}
-
 	int PluginManager::columnCount (const QModelIndex&) const
 	{
-		return Headers_.size ();
+		return Headers_.size () + 1;
 	}
 
 	QVariant PluginManager::data (const QModelIndex& index, int role) const
@@ -78,6 +74,15 @@ namespace LeechCraft
 		if (!index.isValid () ||
 				index.row () >= GetSize ())
 			return QVariant ();
+
+		if (role == Roles::PluginObject)
+		{
+			auto loader = AvailablePlugins_ [index.row ()];
+			if (!loader || !loader->isLoaded ())
+				return QVariant ();
+
+			return QVariant::fromValue<QObject*> (loader->instance ());
+		}
 
 		switch (index.column ())
 		{
@@ -149,6 +154,11 @@ namespace LeechCraft
 							QPalette::WindowText);
 				else
 					return QVariant ();
+			case 2:
+				if (role == Qt::SizeHintRole)
+					return QSize (32, 32);
+				else
+					return QVariant ();
 			default:
 				return QVariant ();
 		}
@@ -159,6 +169,14 @@ namespace LeechCraft
 		Qt::ItemFlags result = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 		if (index.column () == 0)
 			result |= Qt::ItemIsUserCheckable;
+		else if (index.column () == 2)
+		{
+			const int row = index.row ();
+			if (AvailablePlugins_ [row] &&
+					AvailablePlugins_ [row]->isLoaded () &&
+					qobject_cast<IHaveSettings*> (AvailablePlugins_ [row]->instance ()))
+				result |= Qt::ItemIsEditable;
+		}
 		return result;
 	}
 
@@ -168,7 +186,7 @@ namespace LeechCraft
 				orient != Qt::Horizontal)
 			return QVariant ();
 
-		return Headers_.at (column);
+		return Headers_.value (column, QString (""));
 	}
 
 	QModelIndex PluginManager::index (int row, int column, const QModelIndex&) const
