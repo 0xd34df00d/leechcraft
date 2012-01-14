@@ -217,6 +217,11 @@ namespace LeechCraft
 		return CorePlugin2Manager_;
 	}
 
+	SettingsTab* CoreInstanceObject::GetSettingsTab () const
+	{
+		return SettingsTab_;
+	}
+
 	void CoreInstanceObject::BuildNewTabModel ()
 	{
 		QStandardItemModel *newTabsModel = new QStandardItemModel (this);

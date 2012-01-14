@@ -29,7 +29,8 @@
 #include <util/resourceloader.h>
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/ianemitter.h>
-#include "interfaces/iinfo.h"
+#include <interfaces/iinfo.h>
+#include "interfaces/iclentry.h"
 #include "interfaces/azothcommon.h"
 #include "interfaces/imucentry.h"
 #include "interfaces/iprotocol.h"
@@ -50,7 +51,6 @@ namespace Util
 }
 namespace Azoth
 {
-	struct EntryStatus;
 	class ICLEntry;
 	class IAccount;
 	class IMessage;
@@ -99,6 +99,8 @@ namespace Azoth
 
 		QHash<IAccount*, QDateTime> LastAccountStatusChange_;
 
+		QHash<IAccount*, EntryStatus> SavedStatus_;
+
 		typedef QHash<ICLEntry*, QList<QStandardItem*> > Entry2Items_t;
 		Entry2Items_t Entry2Items_;
 
@@ -127,9 +129,9 @@ namespace Azoth
 			RLTMoodIconLoader
 		};
 	private:
-		QMap<ResourceLoaderType, boost::shared_ptr<Util::ResourceLoader> > ResourceLoaders_;
-		boost::shared_ptr<SourceTrackingModel<IEmoticonResourceSource> > SmilesOptionsModel_;
-		boost::shared_ptr<SourceTrackingModel<IChatStyleResourceSource> > ChatStylesOptionsModel_;
+		QMap<ResourceLoaderType, boost::shared_ptr<Util::ResourceLoader>> ResourceLoaders_;
+		boost::shared_ptr<SourceTrackingModel<IEmoticonResourceSource>> SmilesOptionsModel_;
+		boost::shared_ptr<SourceTrackingModel<IChatStyleResourceSource>> ChatStylesOptionsModel_;
 
 		boost::shared_ptr<PluginManager> PluginManager_;
 		boost::shared_ptr<ProxyObject> PluginProxyObject_;
@@ -366,6 +368,8 @@ namespace Azoth
 		void NotifyWithReason (QObject*, const QString&,
 				const char*, const QString&,
 				const QString&, const QString&);
+
+		void HandlePowerNotification (Entity);
 
 		/** Removes one item representing the given CL entry.
 		 */

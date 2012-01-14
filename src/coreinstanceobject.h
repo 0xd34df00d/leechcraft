@@ -68,6 +68,8 @@ namespace LeechCraft
 		void AddPlugin (QObject*);
 
 		CorePlugin2Manager* GetCorePluginManager () const;
+
+		SettingsTab* GetSettingsTab () const;
 	private:
 		void BuildNewTabModel ();
 	private slots:

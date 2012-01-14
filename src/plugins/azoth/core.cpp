@@ -115,6 +115,28 @@ namespace Azoth
 		}
 	}
 
+	QList<IAccount*> GetAccountsPred (const QObjectList& protocols,
+			std::function<bool (IProtocol*)> protoPred = [] (IProtocol*) { return true; })
+	{
+		QList<IAccount*> accounts;
+		Q_FOREACH (QObject *protoPlugin, protocols)
+		{
+			QObjectList protocols =
+					qobject_cast<IProtocolPlugin*> (protoPlugin)->GetProtocols ();
+			Q_FOREACH (QObject *protoObj, protocols)
+			{
+				IProtocol *proto = qobject_cast<IProtocol*> (protoObj);
+				if (!protoPred (proto))
+					continue;
+
+				QObjectList accountObjs = proto->GetRegisteredAccounts ();
+				Q_FOREACH (QObject *accountObj, accountObjs)
+					accounts << qobject_cast<IAccount*> (accountObj);
+			}
+		}
+		return accounts;
+	}
+
 	Core::Core ()
 	: LinkRegexp_ ("((?:(?:\\w+://)|(?:xmpp:|mailto:|www\\.|magnet:|irc:))\\S+)",
 			Qt::CaseInsensitive, QRegExp::RegExp2)
@@ -305,6 +327,9 @@ namespace Azoth
 
 	bool Core::CouldHandle (const Entity& e) const
 	{
+		if (e.Mime_ == "x-leechcraft/power-state-changed")
+			return true;
+
 		if (!e.Entity_.canConvert<QUrl> ())
 			return false;
 
@@ -339,6 +364,12 @@ namespace Azoth
 
 	void Core::Handle (Entity e)
 	{
+		if (e.Mime_ == "x-leechcraft/power-state-changed")
+		{
+			HandlePowerNotification (e);
+			return;
+		}
+
 		const QUrl& url = e.Entity_.toUrl ();
 		if (!url.isValid ())
 			return;
@@ -418,31 +449,7 @@ namespace Azoth
 
 	QList<IAccount*> Core::GetAccounts () const
 	{
-		QList<IAccount*> result;
-		Q_FOREACH (QObject *protoObj, ProtocolPlugins_)
-		{
-			IProtocolPlugin *protoPlug =
-					qobject_cast<IProtocolPlugin*> (protoObj);
-			Q_FOREACH (QObject *protoObj, protoPlug->GetProtocols ())
-			{
-				IProtocol *proto = qobject_cast<IProtocol*> (protoObj);
-				Q_FOREACH (QObject *accObj, proto->GetRegisteredAccounts ())
-				{
-					IAccount *acc = qobject_cast<IAccount*> (accObj);
-					if (!acc)
-					{
-						qWarning () << Q_FUNC_INFO
-								<< "account object from protocol"
-								<< proto->GetProtocolID ()
-								<< "doesn't implement IAccount"
-								<< accObj;
-						continue;
-					}
-					result << acc;
-				}
-			}
-		}
-		return result;
+		return GetAccountsPred (ProtocolPlugins_);
 	}
 
 	QList<IProtocol*> Core::GetProtocols () const
@@ -1452,6 +1459,30 @@ namespace Azoth
 		category->setData (sum, CLRUnreadMsgCount);
 	}
 
+	void Core::HandlePowerNotification (Entity e)
+	{
+		auto accs = GetAccountsPred (ProtocolPlugins_);
+
+		qDebug () << Q_FUNC_INFO << e.Entity_;
+
+		if (e.Entity_ == "Sleeping")
+			Q_FOREACH (IAccount *acc, accs)
+			{
+				const auto& state = acc->GetState ();
+				if (state.State_ == SOffline)
+					continue;
+
+				SavedStatus_ [acc] = state;
+				acc->ChangeState ({SOffline, tr ("Client went to sleep")});
+			}
+		else if (e.Entity_ == "WokeUp")
+		{
+			Q_FOREACH (IAccount *acc, SavedStatus_.keys ())
+				acc->ChangeState (SavedStatus_ [acc]);
+			SavedStatus_.clear ();
+		}
+	}
+
 	void Core::RemoveCLItem (QStandardItem *item)
 	{
 		QObject *entryObj = item->data (CLREntryObject).value<QObject*> ();
@@ -1650,22 +1681,8 @@ namespace Azoth
 
 	void Core::handleMucJoinRequested ()
 	{
-		QList<IAccount*> accounts;
-		Q_FOREACH (QObject *protoPlugin, ProtocolPlugins_)
-		{
-			QObjectList protocols =
-					qobject_cast<IProtocolPlugin*> (protoPlugin)->GetProtocols ();
-			Q_FOREACH (QObject *protoObj, protocols)
-			{
-				IProtocol *proto = qobject_cast<IProtocol*> (protoObj);
-				if (!(proto->GetFeatures () & IProtocol::PFMUCsJoinable))
-					continue;
-
-				QObjectList accountObjs = proto->GetRegisteredAccounts ();
-				Q_FOREACH (QObject *accountObj, accountObjs)
-					accounts << qobject_cast<IAccount*> (accountObj);
-			}
-		}
+		auto accounts = GetAccountsPred (ProtocolPlugins_,
+				[] (IProtocol *proto) { return proto->GetFeatures () & IProtocol::PFMUCsJoinable; });
 
 		JoinConferenceDialog *dia = new JoinConferenceDialog (accounts, Proxy_->GetMainWindow ());
 		dia->show ();

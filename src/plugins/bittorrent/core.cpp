@@ -833,9 +833,6 @@ namespace LeechCraft
 				bool autoManaged = !(params & NoAutostart);
 				try
 				{
-					boost::intrusive_ptr<libtorrent::torrent_info> tinfo (
-							new libtorrent::torrent_info (GetTorrentInfo (filename))
-							);
 					libtorrent::add_torrent_params atp;
 					atp.ti = new libtorrent::torrent_info (GetTorrentInfo (filename));
 					atp.auto_managed = autoManaged;

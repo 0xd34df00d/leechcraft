@@ -224,6 +224,10 @@ namespace Liznoo
 				SIGNAL (batteryInfoUpdated (Liznoo::BatteryInfo)),
 				this,
 				SLOT (handleBatteryInfo (Liznoo::BatteryInfo)));
+		connect (Thread_->GetConnector (),
+				SIGNAL (gotEntity (LeechCraft::Entity)),
+				this,
+				SIGNAL (gotEntity (LeechCraft::Entity)));
 
 		QTimer *timer = new QTimer (this);
 		connect (timer,

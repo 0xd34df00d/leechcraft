@@ -29,23 +29,25 @@ namespace LeechCraft
 	{
 		Q_OBJECT
 		Q_INTERFACES (ITabWidget)
-		
+
 		Ui::SettingsTab Ui_;
 		QToolBar *Toolbar_;
 		QAction *ActionBack_;
 		QAction *ActionApply_;
 		QAction *ActionCancel_;
-		
+
 		QObject *CurrentIHS_;
 	public:
 		SettingsTab (QWidget* = 0);
-		
+
 		void Initialize ();
-		
+
 		TabClassInfo GetTabClassInfo () const;
 		QObject* ParentMultiTabs ();
 		void Remove ();
 		QToolBar* GetToolBar () const;
+	public slots:
+		void showSettingsFor (QObject*);
 	private slots:
 		void handleSettingsCalled ();
 		void handleBackRequested ();

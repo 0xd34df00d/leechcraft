@@ -61,6 +61,7 @@ namespace Liznoo
 		void handleBatteryDialogDestroyed ();
 		void handleThreadStarted ();
 	signals:
+		void gotEntity (const LeechCraft::Entity&);
 		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 	};
 }
