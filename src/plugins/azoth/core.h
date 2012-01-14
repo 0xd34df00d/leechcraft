@@ -29,7 +29,8 @@
 #include <util/resourceloader.h>
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/ianemitter.h>
-#include "interfaces/iinfo.h"
+#include <interfaces/iinfo.h>
+#include "interfaces/iclentry.h"
 #include "interfaces/azothcommon.h"
 #include "interfaces/imucentry.h"
 #include "interfaces/iprotocol.h"
@@ -50,7 +51,6 @@ namespace Util
 }
 namespace Azoth
 {
-	struct EntryStatus;
 	class ICLEntry;
 	class IAccount;
 	class IMessage;
