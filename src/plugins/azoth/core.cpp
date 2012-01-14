@@ -1463,6 +1463,8 @@ namespace Azoth
 	{
 		auto accs = GetAccountsPred (ProtocolPlugins_);
 
+		qDebug () << Q_FUNC_INFO << e.Entity_;
+
 		if (e.Entity_ == "Sleeping")
 			Q_FOREACH (IAccount *acc, accs)
 			{
