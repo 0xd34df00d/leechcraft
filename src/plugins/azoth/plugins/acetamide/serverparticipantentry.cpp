@@ -36,14 +36,6 @@ namespace Acetamide
 	: IrcParticipantEntry (nick, acc)
 	, ISH_ (ish)
 	{
-		QAction *closeChat = new QAction (tr ("Quit chat"), this);
-		connect (closeChat,
-				SIGNAL (triggered (bool)),
-				this,
-				SLOT (closePrivateChat (bool)));
-
-		Actions_ << closeChat;
-
 		ServerID_ = ish->GetServerID ();
 	}
 
@@ -84,15 +76,7 @@ namespace Acetamide
 		message->SetBody (body);
 		message->SetDateTime (QDateTime::currentDateTime ());
 
-		AllMessages_ << message;
-
 		return message;
-	}
-
-	void ServerParticipantEntry::closePrivateChat (bool)
-	{
-		Account_->GetClientConnection ()->
-				ClosePrivateChat (ISH_->GetServerID (), Nick_);
 	}
 
 };

@@ -55,7 +55,6 @@ namespace Acetamide
 		QObject* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);
 	private slots:
-		void closePrivateChat (bool);
 	};
 
 	typedef boost::shared_ptr<ServerParticipantEntry> ServerParticipantEntry_ptr;
