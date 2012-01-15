@@ -19,9 +19,10 @@
 #include "importwizard.h"
 #include <QtDebug>
 #include "importers/akregator/akregatorimporter.h"
-#include "importers/liferea/lifereaimporter.h"
-#include "importers/ktorrent/ktorrentimporter.h"
 #include "importers/firefox/firefoximporter.h"
+#include "importers/ktorrent/ktorrentimporter.h"
+#include "importers/liferea/lifereaimporter.h"
+#include "importers/psiplus/psiplusimporter.h"
 
 namespace LeechCraft
 {
@@ -33,9 +34,10 @@ namespace NewLife
 		Ui_.setupUi (this);
 
 		Importers_ << new Importers::AkregatorImporter (this);
-		Importers_ << new Importers::LifereaImporter (this);
-		Importers_ << new Importers::KTorrentImporter (this);
 		Importers_ << new Importers::FirefoxImporter (this);
+		Importers_ << new Importers::KTorrentImporter (this);
+		Importers_ << new Importers::LifereaImporter (this);
+		Importers_ << new Importers::PsiPlusImporter (this);
 
 		connect (this,
 				SIGNAL (accepted ()),
