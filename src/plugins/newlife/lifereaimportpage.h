@@ -23,36 +23,32 @@
 
 namespace LeechCraft
 {
-	struct Entity;
+struct Entity;
 
-	namespace Plugins
+namespace NewLife
+{
+	class LifereaImportPage : public QWizardPage
 	{
-		namespace NewLife
-		{
-			class LifereaImportPage : public QWizardPage
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				Ui::FeedsSettingsImportPage Ui_;
-			public:
-				LifereaImportPage (QWidget* = 0);
+		Ui::FeedsSettingsImportPage Ui_;
+	public:
+		LifereaImportPage (QWidget* = 0);
 
-				bool CheckValidity (const QString&) const;
-				virtual bool isComplete () const;
-				virtual int nextId () const;
-				virtual void initializePage ();
-			private slots:
-				void on_Browse__released ();
-				void on_FileLocation__textEdited (const QString&);
-				void handleAccepted ();
-			private:
-				QString GetSuggestion () const;
-			signals:
-				void gotEntity (const LeechCraft::Entity&);
-			};
-		};
+		bool CheckValidity (const QString&) const;
+		virtual bool isComplete () const;
+		virtual int nextId () const;
+		virtual void initializePage ();
+	private slots:
+		void on_Browse__released ();
+		void on_FileLocation__textEdited (const QString&);
+		void handleAccepted ();
+	private:
+		QString GetSuggestion () const;
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
 	};
-};
+}
+}
 
 #endif
-

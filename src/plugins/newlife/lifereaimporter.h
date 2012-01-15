@@ -22,25 +22,22 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace NewLife
+{
+	class LifereaImportPage;
+
+	class LifereaImporter : public AbstractImporter
 	{
-		namespace NewLife
-		{
-			class LifereaImportPage;
+		Q_OBJECT
 
-			class LifereaImporter : public AbstractImporter
-			{
-				Q_OBJECT
+		LifereaImportPage *ImportPage_;
+	public:
+		LifereaImporter (QWidget* = 0);
 
-				LifereaImportPage *ImportPage_;
-			public:
-				LifereaImporter (QWidget* = 0);
-				virtual QStringList GetNames () const;
-				virtual QList<QWizardPage*> GetWizardPages () const;
-			};
-		};
+		QStringList GetNames () const;
+		QList<QWizardPage*> GetWizardPages () const;
 	};
-};
+}
+}
 
 #endif
-

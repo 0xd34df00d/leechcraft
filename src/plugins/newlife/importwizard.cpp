@@ -25,55 +25,51 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace NewLife
+{
+	ImportWizard::ImportWizard (QWidget *parent)
+	: QWizard (parent)
 	{
-		namespace NewLife
-		{
-			ImportWizard::ImportWizard (QWidget *parent)
-			: QWizard (parent)
-			{
-				Ui_.setupUi (this);
+		Ui_.setupUi (this);
 
-				Importers_ << new AkregatorImporter (this);
-				Importers_ << new LifereaImporter (this);
-				Importers_ << new KTorrentImporter (this);
-				Importers_ << new FirefoxImporter (this);
+		Importers_ << new AkregatorImporter (this);
+		Importers_ << new LifereaImporter (this);
+		Importers_ << new KTorrentImporter (this);
+		Importers_ << new FirefoxImporter (this);
 
-				connect (this,
-						SIGNAL (accepted ()),
-						this,
-						SLOT (handleAccepted ()),
-						Qt::QueuedConnection);
-				connect (this,
-						SIGNAL (accepted ()),
-						this,
-						SLOT (handleRejected ()),
-						Qt::QueuedConnection);
+		connect (this,
+				SIGNAL (accepted ()),
+				this,
+				SLOT (handleAccepted ()),
+				Qt::QueuedConnection);
+		connect (this,
+				SIGNAL (accepted ()),
+				this,
+				SLOT (handleRejected ()),
+				Qt::QueuedConnection);
 
-				SetupImporters ();
-			}
+		SetupImporters ();
+	}
 
-			QString ImportWizard::GetSelectedName () const
-			{
-				return Ui_.FirstPage_->GetSelectedName ();
-			}
+	QString ImportWizard::GetSelectedName () const
+	{
+		return Ui_.FirstPage_->GetSelectedName ();
+	}
 
-			void ImportWizard::handleAccepted ()
-			{
-				deleteLater ();
-			}
+	void ImportWizard::handleAccepted ()
+	{
+		deleteLater ();
+	}
 
-			void ImportWizard::handleRejected ()
-			{
-				deleteLater ();
-			}
+	void ImportWizard::handleRejected ()
+	{
+		deleteLater ();
+	}
 
-			void ImportWizard::SetupImporters ()
-			{
-				Q_FOREACH (AbstractImporter *ai, Importers_)
-					Ui_.FirstPage_->SetupImporter (ai);
-			}
-		};
-	};
-};
-
+	void ImportWizard::SetupImporters ()
+	{
+		Q_FOREACH (AbstractImporter *ai, Importers_)
+			Ui_.FirstPage_->SetupImporter (ai);
+	}
+}
+}

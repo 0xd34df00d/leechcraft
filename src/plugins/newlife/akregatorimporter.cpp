@@ -21,28 +21,24 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace NewLife
+{
+	AkregatorImporter::AkregatorImporter (QWidget *parent)
+	: AbstractImporter (parent)
 	{
-		namespace NewLife
-		{
-			AkregatorImporter::AkregatorImporter (QWidget *parent)
-			: AbstractImporter (parent)
-			{
-				ImportPage_ = new AkregatorImportPage ();
-			}
+		ImportPage_ = new AkregatorImportPage ();
+	}
 
-			QStringList AkregatorImporter::GetNames () const
-			{
-				return QStringList ("Akregator");
-			}
+	QStringList AkregatorImporter::GetNames () const
+	{
+		return QStringList ("Akregator");
+	}
 
-			QList<QWizardPage*> AkregatorImporter::GetWizardPages () const
-			{
-				QList<QWizardPage*> result;
-				result << ImportPage_;
-				return result;
-			}
-		};
-	};
-};
-
+	QList<QWizardPage*> AkregatorImporter::GetWizardPages () const
+	{
+		QList<QWizardPage*> result;
+		result << ImportPage_;
+		return result;
+	}
+}
+}

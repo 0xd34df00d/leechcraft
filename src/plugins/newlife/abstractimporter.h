@@ -24,26 +24,22 @@ class QWizardPage;
 
 namespace LeechCraft
 {
-	struct Entity;
+struct Entity;
 
-	namespace Plugins
+namespace NewLife
+{
+	class AbstractImporter : public QObject
 	{
-		namespace NewLife
-		{
-			class AbstractImporter : public QObject
-			{
-				Q_OBJECT
-			public:
-				AbstractImporter (QObject* = 0);
+		Q_OBJECT
+	public:
+		AbstractImporter (QObject* = 0);
 
-				virtual QStringList GetNames () const = 0;
-				virtual QList<QWizardPage*> GetWizardPages () const = 0;
-			signals:
-				void gotEntity (const LeechCraft::Entity&);
-			};
-		};
+		virtual QStringList GetNames () const = 0;
+		virtual QList<QWizardPage*> GetWizardPages () const = 0;
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
 	};
-};
+}
+}
 
 #endif
-

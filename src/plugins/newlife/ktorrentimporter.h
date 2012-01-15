@@ -22,25 +22,21 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace NewLife
+{
+	class KTorrentImportPage;
+
+	class KTorrentImporter : public AbstractImporter
 	{
-		namespace NewLife
-		{
-			class KTorrentImportPage;
+		Q_OBJECT
 
-			class KTorrentImporter : public AbstractImporter
-			{
-				Q_OBJECT
-
-				KTorrentImportPage *ImportPage_;
-			public:
-				KTorrentImporter (QWidget* = 0);
-				virtual QStringList GetNames () const;
-				virtual QList<QWizardPage*> GetWizardPages () const;
-			};
-		};
+		KTorrentImportPage *ImportPage_;
+	public:
+		KTorrentImporter (QWidget* = 0);
+		virtual QStringList GetNames () const;
+		virtual QList<QWizardPage*> GetWizardPages () const;
 	};
-};
+}
+}
 
 #endif
-

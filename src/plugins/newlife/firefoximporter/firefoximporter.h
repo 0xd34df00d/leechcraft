@@ -21,29 +21,24 @@
 #include "abstractimporter.h"
 #include "firefoxprofileselectpage.h"
 
-
 namespace LeechCraft
 {
-	namespace Plugins
+namespace NewLife
+{
+	class FirefoxImportPage;
+
+	class FirefoxImporter : public AbstractImporter
 	{
-		namespace NewLife
-		{
-			class FirefoxImportPage;
+		Q_OBJECT
 
-			class FirefoxImporter : public AbstractImporter
-			{
-				Q_OBJECT
-
-				FirefoxImportPage *ImportPage_;
-				FirefoxProfileSelectPage *ProfileSelectPage_;
-			public:
-				FirefoxImporter (QWidget* = 0);
-				virtual QStringList GetNames () const;
-				virtual QList<QWizardPage*> GetWizardPages () const;
-			};
-		};
+		FirefoxImportPage *ImportPage_;
+		FirefoxProfileSelectPage *ProfileSelectPage_;
+	public:
+		FirefoxImporter (QWidget* = 0);
+		virtual QStringList GetNames () const;
+		virtual QList<QWizardPage*> GetWizardPages () const;
 	};
-};
+}
+}
 
 #endif
-

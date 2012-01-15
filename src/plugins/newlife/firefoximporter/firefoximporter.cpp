@@ -22,30 +22,26 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace NewLife
+{
+	FirefoxImporter::FirefoxImporter (QWidget *parent)
+	: AbstractImporter (parent)
 	{
-		namespace NewLife
-		{
-			FirefoxImporter::FirefoxImporter (QWidget *parent)
-			: AbstractImporter (parent)
-			{				
-				ImportPage_ = new FirefoxImportPage ();
-				ProfileSelectPage_ = new FirefoxProfileSelectPage (); 
-			}
+		ImportPage_ = new FirefoxImportPage ();
+		ProfileSelectPage_ = new FirefoxProfileSelectPage ();
+	}
 
-			QStringList FirefoxImporter::GetNames () const
-			{
-				return QStringList ("Firefox");
-			}
+	QStringList FirefoxImporter::GetNames () const
+	{
+		return QStringList ("Firefox");
+	}
 
-			QList<QWizardPage*> FirefoxImporter::GetWizardPages () const
-			{
-				QList<QWizardPage*> result;
-				result << ImportPage_;
-				result << ProfileSelectPage_;
-				return result;
-			}
-		};
-	};
-};
-
+	QList<QWizardPage*> FirefoxImporter::GetWizardPages () const
+	{
+		QList<QWizardPage*> result;
+		result << ImportPage_;
+		result << ProfileSelectPage_;
+		return result;
+	}
+}
+}

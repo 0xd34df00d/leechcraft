@@ -23,32 +23,27 @@
 
 namespace LeechCraft
 {
-	struct Entity;
+struct Entity;
 
-	namespace Plugins
+namespace NewLife
+{
+	class FirefoxImportPage : public QWizardPage
 	{
-		namespace NewLife
-		{
-			class FirefoxImportPage : public QWizardPage
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				Ui::FeedsSettingsImportPage Ui_;				
-			public:
-				FirefoxImportPage (QWidget* = 0);
-				~FirefoxImportPage ();
+		Ui::FeedsSettingsImportPage Ui_;
+	public:
+		FirefoxImportPage (QWidget* = 0);
 
-				bool CheckValidity (const QString&) const;
-				virtual bool isComplete () const;
-				virtual void initializePage ();
-			private slots:
-				void on_Browse__released ();
-				void on_FileLocation__textEdited (const QString&);
-				void handleAccepted (int);
-			};
-		};
+		bool CheckValidity (const QString&) const;
+		virtual bool isComplete () const;
+		virtual void initializePage ();
+	private slots:
+		void on_Browse__released ();
+		void on_FileLocation__textEdited (const QString&);
+		void handleAccepted (int);
 	};
-};
+}
+}
 
 #endif
-

@@ -20,92 +20,83 @@
 #include <QDir>
 #include <QFileDialog>
 #include <QMessageBox>
-
 #include <QtDebug>
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace NewLife
+{
+	FirefoxImportPage::FirefoxImportPage (QWidget *parent)
+	: QWizardPage (parent)
 	{
-		namespace NewLife
-		{
-			FirefoxImportPage::FirefoxImportPage (QWidget *parent)
-			: QWizardPage (parent)
-			{
-				Ui_.setupUi (this);
+		Ui_.setupUi (this);
 
-				Ui_.ImportSettings_->setText (Ui_.ImportSettings_->text ().arg ("Firefox"));
+		Ui_.ImportSettings_->setText (Ui_.ImportSettings_->text ().arg ("Firefox"));
 
-				setTitle (tr ("Firefox's data import"));
-				setSubTitle (tr ("Select Firefox's INI file"));
-				registerField ("ProfileFile", Ui_.FileLocation_);
-			}
+		setTitle (tr ("Firefox's data import"));
+		setSubTitle (tr ("Select Firefox's INI file"));
+		registerField ("ProfileFile", Ui_.FileLocation_);
+	}
 
-			FirefoxImportPage::~FirefoxImportPage ()
-			{
+	bool FirefoxImportPage::CheckValidity (const QString& filename) const
+	{
+		QFile file (filename);
+		if (!file.exists () ||
+				!file.open (QIODevice::ReadOnly))
+			return false;
+		return true;
+	}
 
-			}
+	bool FirefoxImportPage::isComplete () const
+	{
+		return CheckValidity (Ui_.FileLocation_->text ());
+	}
 
-			bool FirefoxImportPage::CheckValidity (const QString& filename) const
-			{
-				QFile file (filename);
-				if (!file.exists () ||
-						!file.open (QIODevice::ReadOnly))
-					return false;
-				return true;
-			}
-
-			bool FirefoxImportPage::isComplete () const
-			{
-				return CheckValidity (Ui_.FileLocation_->text ());
-			}
-
-			void FirefoxImportPage::initializePage ()
-			{
-				connect (wizard (),
-						SIGNAL (currentIdChanged (int)),
-						this,
-						SLOT (handleAccepted (int)));
+	void FirefoxImportPage::initializePage ()
+	{
+		connect (wizard (),
+				SIGNAL (currentIdChanged (int)),
+				this,
+				SLOT (handleAccepted (int)));
 #ifdef Q_WS_WIN
-				QString defaultFile = QDir::homePath () + "/Application Data/Mozilla/Firefox/profiles.ini";
+		QString defaultFile = QDir::homePath () + "/Application Data/Mozilla/Firefox/profiles.ini";
 #elif defined Q_WS_MAC
 #warning Please check location of stuff on Mac OS X
-				QString defaultFile = QDir::homePath () + "/.mozilla/firefox/profiles.ini";
+		QString defaultFile = QDir::homePath () + "/.mozilla/firefox/profiles.ini";
 #else
-				QString defaultFile = QDir::homePath () + "/.mozilla/firefox/profiles.ini";
+		QString defaultFile = QDir::homePath () + "/.mozilla/firefox/profiles.ini";
 #endif
-				if (CheckValidity (defaultFile))
-					Ui_.FileLocation_->setText (defaultFile);
-			}
+		if (CheckValidity (defaultFile))
+			Ui_.FileLocation_->setText (defaultFile);
+	}
 
-			void FirefoxImportPage::on_Browse__released ()
-			{
-				QString filename = QFileDialog::getOpenFileName (this,
-						tr ("Select Firefox's INI file"),
-						QDir::homePath () + "/.mozilla/",
-						tr ("INI files (*.ini);;All files (*.*)"));
-				if (filename.isEmpty ())
-					return;
+	void FirefoxImportPage::on_Browse__released ()
+	{
+		QString filename = QFileDialog::getOpenFileName (this,
+				tr ("Select Firefox's INI file"),
+				QDir::homePath () + "/.mozilla/",
+				tr ("INI files (*.ini);;All files (*.*)"));
+		if (filename.isEmpty ())
+			return;
 
-				if (!CheckValidity (filename))
-					QMessageBox::critical (this,
-							"LeechCraft",
-							tr ("The file you've selected is not a valid INI file."));
-				else
-					Ui_.FileLocation_->setText (filename);
+		if (!CheckValidity (filename))
+			QMessageBox::critical (this,
+					"LeechCraft",
+					tr ("The file you've selected is not a valid INI file."));
+		else
+			Ui_.FileLocation_->setText (filename);
 
-				emit completeChanged ();
-			}
+		emit completeChanged ();
+	}
 
-			void FirefoxImportPage::on_FileLocation__textEdited (const QString&)
-			{
-				emit completeChanged ();
-			}
+	void FirefoxImportPage::on_FileLocation__textEdited (const QString&)
+	{
+		emit completeChanged ();
+	}
 
-			void FirefoxImportPage::handleAccepted (int index)
-			{
-				setField ("ProfileFile", Ui_.FileLocation_->text ());
-			}
-		};
-	};
-};
+	void FirefoxImportPage::handleAccepted (int index)
+	{
+		setField ("ProfileFile", Ui_.FileLocation_->text ());
+	}
+}
+}

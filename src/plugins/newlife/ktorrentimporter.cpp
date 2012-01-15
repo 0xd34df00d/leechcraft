@@ -21,29 +21,24 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace NewLife
+{
+	KTorrentImporter::KTorrentImporter (QWidget *parent)
+	: AbstractImporter (parent)
 	{
-		namespace NewLife
-		{
-			KTorrentImporter::KTorrentImporter (QWidget *parent)
-			: AbstractImporter (parent)
-			{
-				ImportPage_ = new KTorrentImportPage ();
-			}
+		ImportPage_ = new KTorrentImportPage ();
+	}
 
-			QStringList KTorrentImporter::GetNames () const
-			{
-				return QStringList ("KTorrent");
-			}
+	QStringList KTorrentImporter::GetNames () const
+	{
+		return QStringList ("KTorrent");
+	}
 
-			QList<QWizardPage*> KTorrentImporter::GetWizardPages () const
-			{
-				QList<QWizardPage*> result;
-				result << ImportPage_;
-				return result;
-			}
-		};
-	};
-};
-
- 
+	QList<QWizardPage*> KTorrentImporter::GetWizardPages () const
+	{
+		QList<QWizardPage*> result;
+		result << ImportPage_;
+		return result;
+	}
+}
+}

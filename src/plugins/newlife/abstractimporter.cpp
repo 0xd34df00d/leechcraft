@@ -20,15 +20,11 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace NewLife
+{
+	AbstractImporter::AbstractImporter (QObject *parent)
+	: QObject (parent)
 	{
-		namespace NewLife
-		{
-			AbstractImporter::AbstractImporter (QObject *parent)
-			: QObject (parent)
-			{
-			}
-		};
-	};
-};
-
+	}
+}
+}

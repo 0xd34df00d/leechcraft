@@ -28,43 +28,38 @@ class QTranslator;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace NewLife
+{
+	class Plugin : public QObject
+					, public IInfo
+					, public IActionsExporter
 	{
-		namespace NewLife
-		{
-			class Plugin : public QObject
-						 , public IInfo
-						 , public IActionsExporter
-			{
-				Q_OBJECT
-				Q_INTERFACES (IInfo IActionsExporter)
+		Q_OBJECT
+		Q_INTERFACES (IInfo IActionsExporter)
 
-				boost::shared_ptr<QTranslator> Translator_;
-				boost::shared_ptr<QAction> ImporterAction_;
-			public:
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
-				void Release ();
-				QByteArray GetUniqueID () const;
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-				QStringList Provides () const;
-				QStringList Needs () const;
-				QStringList Uses () const;
-				void SetProvider (QObject*, const QString&);
+		boost::shared_ptr<QAction> ImporterAction_;
+	public:
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		void Release ();
+		QByteArray GetUniqueID () const;
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
+		QStringList Provides () const;
+		QStringList Needs () const;
+		QStringList Uses () const;
+		void SetProvider (QObject*, const QString&);
 
-				QList<QAction*> GetActions (ActionsEmbedPlace) const;
-			private slots:
-				void runWizard ();
-			signals:
-				void gotEntity (const LeechCraft::Entity&);
+		QList<QAction*> GetActions (ActionsEmbedPlace) const;
+	private slots:
+		void runWizard ();
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
 
-				void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
-			};
-		};
+		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 	};
-};
+}
+}
 
 #endif
-

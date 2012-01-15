@@ -24,30 +24,26 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace NewLife
+{
+	class AbstractImporter;
+
+	class FirstPage : public QWizardPage
 	{
-		namespace NewLife
-		{
-			class AbstractImporter;
+		Q_OBJECT
 
-			class FirstPage : public QWizardPage
-			{
-				Q_OBJECT
+		Ui::FirstPage Ui_;
+		QMap<const AbstractImporter*, int> StartPages_;
+	public:
+		FirstPage (QWidget* = 0);
 
-				Ui::FirstPage Ui_;
-				QMap<const AbstractImporter*, int> StartPages_;
-			public:
-				FirstPage (QWidget* = 0);
+		virtual int nextId () const;
 
-				virtual int nextId () const;
-
-				void SetupImporter (const AbstractImporter*);
-				AbstractImporter* GetImporter () const;
-				QString GetSelectedName () const;
-			};
-		};
+		void SetupImporter (const AbstractImporter*);
+		AbstractImporter* GetImporter () const;
+		QString GetSelectedName () const;
 	};
-};
+}
+}
 
 #endif
-

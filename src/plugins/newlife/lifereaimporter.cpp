@@ -21,28 +21,24 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace NewLife
+{
+	LifereaImporter::LifereaImporter (QWidget *parent)
+	: AbstractImporter (parent)
 	{
-		namespace NewLife
-		{
-			LifereaImporter::LifereaImporter (QWidget *parent)
-			: AbstractImporter (parent)
-			{
-				ImportPage_ = new LifereaImportPage ();
-			}
+		ImportPage_ = new LifereaImportPage ();
+	}
 
-			QStringList LifereaImporter::GetNames () const
-			{
-				return QStringList ("Liferea");
-			}
+	QStringList LifereaImporter::GetNames () const
+	{
+		return QStringList ("Liferea");
+	}
 
-			QList<QWizardPage*> LifereaImporter::GetWizardPages () const
-			{
-				QList<QWizardPage*> result;
-				result << ImportPage_;
-				return result;
-			}
-		};
-	};
-};
-
+	QList<QWizardPage*> LifereaImporter::GetWizardPages () const
+	{
+		QList<QWizardPage*> result;
+		result << ImportPage_;
+		return result;
+	}
+}
+}
