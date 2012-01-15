@@ -35,11 +35,11 @@ namespace NewLife
 		return StartPages_ [GetImporter ()];
 	}
 
-	void FirstPage::SetupImporter (const AbstractImporter *ai)
+	void FirstPage::SetupImporter (AbstractImporter *ai)
 	{
 		Q_FOREACH (QString name, ai->GetNames ())
 			Ui_.SourceApplication_->addItem (name,
-					QVariant::fromValue<QObject*> (const_cast<AbstractImporter*> (ai)));
+					QVariant::fromValue<QObject*> (ai));
 
 		QList<QWizardPage*> pages = ai->GetWizardPages ();
 		if (pages.size ())

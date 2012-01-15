@@ -39,7 +39,7 @@ namespace NewLife
 
 		virtual int nextId () const;
 
-		void SetupImporter (const AbstractImporter*);
+		void SetupImporter (AbstractImporter*);
 		AbstractImporter* GetImporter () const;
 		QString GetSelectedName () const;
 	};
