@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,29 +16,40 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "lifereaimporter.h"
-#include "lifereaimportpage.h"
+#pragma once
+
+#include <QWizardPage>
+#include "ui_feedssettingsimportpage.h"
 
 namespace LeechCraft
 {
+struct Entity;
+
 namespace NewLife
 {
-	LifereaImporter::LifereaImporter (QWidget *parent)
-	: AbstractImporter (parent)
+namespace Importers
+{
+	class LifereaImportPage : public QWizardPage
 	{
-		ImportPage_ = new LifereaImportPage ();
-	}
+		Q_OBJECT
 
-	QStringList LifereaImporter::GetNames () const
-	{
-		return QStringList ("Liferea");
-	}
+		Ui::FeedsSettingsImportPage Ui_;
+	public:
+		LifereaImportPage (QWidget* = 0);
 
-	QList<QWizardPage*> LifereaImporter::GetWizardPages () const
-	{
-		QList<QWizardPage*> result;
-		result << ImportPage_;
-		return result;
-	}
+		bool CheckValidity (const QString&) const;
+		virtual bool isComplete () const;
+		virtual int nextId () const;
+		virtual void initializePage ();
+	private slots:
+		void on_Browse__released ();
+		void on_FileLocation__textEdited (const QString&);
+		void handleAccepted ();
+	private:
+		QString GetSuggestion () const;
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
+	};
+}
 }
 }

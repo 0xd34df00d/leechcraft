@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_NEWLIFE_ABSTRACTIMPORTER_H
-#define PLUGINS_NEWLIFE_ABSTRACTIMPORTER_H
+#pragma once
+
 #include <QObject>
 
 class QWizardPage;
@@ -41,5 +41,3 @@ namespace NewLife
 	};
 }
 }
-
-#endif

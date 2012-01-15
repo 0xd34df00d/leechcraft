@@ -30,6 +30,8 @@ namespace LeechCraft
 {
 namespace NewLife
 {
+namespace Importers
+{
 	KTorrentImportPage::KTorrentImportPage (QWidget *parent)
 	: QWizardPage (parent)
 	{
@@ -186,5 +188,6 @@ namespace NewLife
 		}
 		emit gotEntity (e);
 	}
+}
 }
 }

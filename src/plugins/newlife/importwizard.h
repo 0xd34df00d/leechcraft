@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_NEWLIFE_IMPORTWIZARD_H
-#define PLUGINS_NEWLIFE_IMPORTWIZARD_H
+#pragma once
+
 #include <QWizard>
 #include "ui_importwizard.h"
 
@@ -52,5 +52,3 @@ namespace NewLife
 	};
 }
 }
-
-#endif

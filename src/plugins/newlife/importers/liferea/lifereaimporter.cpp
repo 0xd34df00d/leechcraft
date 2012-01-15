@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,27 +16,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_NEWLIFE_AKREGATORIMPORTER_H
-#define PLUGINS_NEWLIFE_AKREGATORIMPORTER_H
-#include "abstractimporter.h"
+#include "lifereaimporter.h"
+#include "lifereaimportpage.h"
 
 namespace LeechCraft
 {
 namespace NewLife
 {
-	class AkregatorImportPage;
-
-	class AkregatorImporter : public AbstractImporter
+namespace Importers
+{
+	LifereaImporter::LifereaImporter (QWidget *parent)
+	: AbstractImporter (parent)
 	{
-		Q_OBJECT
+		ImportPage_ = new LifereaImportPage ();
+	}
 
-		AkregatorImportPage *ImportPage_;
-	public:
-		AkregatorImporter (QWidget* = 0);
-		virtual QStringList GetNames () const;
-		virtual QList<QWizardPage*> GetWizardPages () const;
-	};
+	QStringList LifereaImporter::GetNames () const
+	{
+		return QStringList ("Liferea");
+	}
+
+	QList<QWizardPage*> LifereaImporter::GetWizardPages () const
+	{
+		QList<QWizardPage*> result;
+		result << ImportPage_;
+		return result;
+	}
 }
 }
-
-#endif
+}

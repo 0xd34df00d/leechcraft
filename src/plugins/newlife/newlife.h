@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_NEWLIFE_NEWLIFE_H
-#define PLUGINS_NEWLIFE_NEWLIFE_H
+#pragma once
+
 #include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <QStringList>
@@ -61,5 +61,3 @@ namespace NewLife
 	};
 }
 }
-
-#endif

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2011  Oleg Linkin
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,34 +16,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_NEWLIFE_FIREFOXIMPORTPAGE_H
-#define PLUGINS_NEWLIFE_FIREFOXIMPORTPAGE_H
-#include <QWizardPage>
-#include "ui_feedssettingsimportpage.h"
+#pragma once
+
+#include "abstractimporter.h"
 
 namespace LeechCraft
 {
-struct Entity;
-
 namespace NewLife
 {
-	class FirefoxImportPage : public QWizardPage
+namespace Importers
+{
+	class KTorrentImportPage;
+
+	class KTorrentImporter : public AbstractImporter
 	{
 		Q_OBJECT
 
-		Ui::FeedsSettingsImportPage Ui_;
+		KTorrentImportPage *ImportPage_;
 	public:
-		FirefoxImportPage (QWidget* = 0);
-
-		bool CheckValidity (const QString&) const;
-		virtual bool isComplete () const;
-		virtual void initializePage ();
-	private slots:
-		void on_Browse__released ();
-		void on_FileLocation__textEdited (const QString&);
-		void handleAccepted (int);
+		KTorrentImporter (QWidget* = 0);
+		virtual QStringList GetNames () const;
+		virtual QList<QWizardPage*> GetWizardPages () const;
 	};
 }
 }
-
-#endif
+}

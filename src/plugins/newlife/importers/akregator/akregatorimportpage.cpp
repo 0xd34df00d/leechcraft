@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "lifereaimportpage.h"
+#include "akregatorimportpage.h"
 #include <QDomDocument>
 #include <QDir>
 #include <QFileDialog>
@@ -29,22 +29,20 @@ namespace LeechCraft
 {
 namespace NewLife
 {
-	LifereaImportPage::LifereaImportPage (QWidget *parent)
+namespace Importers
+{
+	AkregatorImportPage::AkregatorImportPage (QWidget *parent)
 	: QWizardPage (parent)
 	{
 		Ui_.setupUi (this);
-		Ui_.ImportSettings_->setText (Ui_.ImportSettings_->text ().arg ("Liferea"));
+		Ui_.ImportSettings_->setText (Ui_.ImportSettings_->text ().arg ("Akregator"));
 
-		setTitle (tr ("Liferea's feeds import"));
-		setSubTitle (tr ("Select Liferea's base location and options"));
+		setTitle (tr ("Akregator's feeds import"));
+		setSubTitle (tr ("Select Akregator's feeds file and options"));
 	}
 
-	bool LifereaImportPage::CheckValidity (const QString& directory) const
+	bool AkregatorImportPage::CheckValidity (const QString& filename) const
 	{
-		if (!QFile::exists (directory + "/liferea.db"))
-			return false;
-
-		QString filename = directory + "/feedlist.opml";
 		QFile file (filename);
 		if (!file.exists () ||
 				!file.open (QIODevice::ReadOnly))
@@ -72,17 +70,17 @@ namespace NewLife
 		return true;
 	}
 
-	bool LifereaImportPage::isComplete () const
+	bool AkregatorImportPage::isComplete () const
 	{
 		return CheckValidity (Ui_.FileLocation_->text ());
 	}
 
-	int LifereaImportPage::nextId () const
+	int AkregatorImportPage::nextId () const
 	{
 		return -1;
 	}
 
-	void LifereaImportPage::initializePage ()
+	void AkregatorImportPage::initializePage ()
 	{
 		connect (wizard (),
 				SIGNAL (accepted ()),
@@ -94,48 +92,46 @@ namespace NewLife
 				wizard (),
 				SIGNAL (gotEntity (const LeechCraft::Entity&)));
 
-		QString defaultFile = GetSuggestion ();
-
+		QString defaultFile = QDir::homePath () + "/.kde/share/apps/akregator/data/feeds.opml";
 		if (CheckValidity (defaultFile))
 			Ui_.FileLocation_->setText (defaultFile);
 	}
 
-	void LifereaImportPage::on_Browse__released ()
+	void AkregatorImportPage::on_Browse__released ()
 	{
-		QString filename = QFileDialog::getExistingDirectory (this,
-				tr ("Select Liferea's directory"),
-				GetSuggestion ());
-
+		QString filename = QFileDialog::getOpenFileName (this,
+				tr ("Select Akregator's OPML file"),
+				QDir::homePath () + "/.kde/share/apps/akregator/data",
+				tr ("OPML files (*.opml *.xml);;All files (*.*)"));
 		if (filename.isEmpty ())
 			return;
 
 		if (!CheckValidity (filename))
 			QMessageBox::critical (this,
 					"LeechCraft",
-					tr ("The directory you've selected is not Liferea's directory."));
+					tr ("The file you've selected is not a valid OPML file."));
 		else
 			Ui_.FileLocation_->setText (filename);
 
 		emit completeChanged ();
 	}
 
-	void LifereaImportPage::on_FileLocation__textEdited (const QString&)
+	void AkregatorImportPage::on_FileLocation__textEdited (const QString&)
 	{
 		emit completeChanged ();
 	}
 
-	void LifereaImportPage::handleAccepted ()
+	void AkregatorImportPage::handleAccepted ()
 	{
 		QString filename = Ui_.FileLocation_->text ();
 		if (!CheckValidity (filename))
 			return;
 
-		Entity e = Util::MakeEntity (QUrl::fromLocalFile (filename + "/feedlist.opml"),
+		Entity e = Util::MakeEntity (QUrl::fromLocalFile (filename),
 				QString (),
 				FromUserInitiated,
 				"text/x-opml");
 
-		/*
 		if (Ui_.ImportSettings_->checkState () == Qt::Checked)
 		{
 			QSettings settings (QDir::homePath () + "/.kde/share/config/akregatorrc",
@@ -163,23 +159,8 @@ namespace NewLife
 						"LeechCraft",
 						tr ("Could not access or parse Akregator settings."));
 		}
-		*/
-
 		emit gotEntity (e);
 	}
-
-	QString LifereaImportPage::GetSuggestion () const
-	{
-		QDir home = QDir::home ();
-		QStringList entries = home.entryList (QStringList (".liferea_*"),
-				QDir::Dirs | QDir::Hidden,
-				QDir::Name);
-
-		QString defaultFile;
-		if (entries.size ())
-			defaultFile = QDir::homePath () + "/" + entries.last ();
-
-		return defaultFile;
-	}
+}
 }
 }

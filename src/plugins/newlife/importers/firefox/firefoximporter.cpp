@@ -16,29 +16,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_NEWLIFE_FIREFOXIMPORTER_H
-#define PLUGINS_NEWLIFE_FIREFOXIMPORTER_H
-#include "abstractimporter.h"
+#include "firefoximporter.h"
+#include "firefoximportpage.h"
 #include "firefoxprofileselectpage.h"
 
 namespace LeechCraft
 {
 namespace NewLife
 {
-	class FirefoxImportPage;
-
-	class FirefoxImporter : public AbstractImporter
+namespace Importers
+{
+	FirefoxImporter::FirefoxImporter (QWidget *parent)
+	: AbstractImporter (parent)
 	{
-		Q_OBJECT
+		ImportPage_ = new FirefoxImportPage ();
+		ProfileSelectPage_ = new FirefoxProfileSelectPage ();
+	}
 
-		FirefoxImportPage *ImportPage_;
-		FirefoxProfileSelectPage *ProfileSelectPage_;
-	public:
-		FirefoxImporter (QWidget* = 0);
-		virtual QStringList GetNames () const;
-		virtual QList<QWizardPage*> GetWizardPages () const;
-	};
+	QStringList FirefoxImporter::GetNames () const
+	{
+		return QStringList ("Firefox");
+	}
+
+	QList<QWizardPage*> FirefoxImporter::GetWizardPages () const
+	{
+		QList<QWizardPage*> result;
+		result << ImportPage_;
+		result << ProfileSelectPage_;
+		return result;
+	}
 }
 }
-
-#endif
+}

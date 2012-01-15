@@ -26,6 +26,8 @@ namespace LeechCraft
 {
 namespace NewLife
 {
+namespace Importers
+{
 	FirefoxImportPage::FirefoxImportPage (QWidget *parent)
 	: QWizardPage (parent)
 	{
@@ -98,5 +100,6 @@ namespace NewLife
 	{
 		setField ("ProfileFile", Ui_.FileLocation_->text ());
 	}
+}
 }
 }

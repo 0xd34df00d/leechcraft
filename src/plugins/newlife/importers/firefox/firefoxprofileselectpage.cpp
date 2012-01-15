@@ -34,6 +34,8 @@ namespace LeechCraft
 {
 namespace NewLife
 {
+namespace Importers
+{
 	FirefoxProfileSelectPage::FirefoxProfileSelectPage (QWidget *parent)
 	: QWizardPage (parent)
 	{
@@ -400,5 +402,6 @@ namespace NewLife
 		QFileInfo ffStarted (GetProfileDirectory (Ui_.ProfileList_->currentText ()) + "/lock");
 		return ffStarted.isSymLink ();
 	}
+}
 }
 }

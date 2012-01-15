@@ -16,29 +16,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "ktorrentimporter.h"
-#include "ktorrentimportpage.h"
+#include "akregatorimporter.h"
+#include "akregatorimportpage.h"
 
 namespace LeechCraft
 {
 namespace NewLife
 {
-	KTorrentImporter::KTorrentImporter (QWidget *parent)
+namespace Importers
+{
+	AkregatorImporter::AkregatorImporter (QWidget *parent)
 	: AbstractImporter (parent)
 	{
-		ImportPage_ = new KTorrentImportPage ();
+		ImportPage_ = new AkregatorImportPage ();
 	}
 
-	QStringList KTorrentImporter::GetNames () const
+	QStringList AkregatorImporter::GetNames () const
 	{
-		return QStringList ("KTorrent");
+		return QStringList ("Akregator");
 	}
 
-	QList<QWizardPage*> KTorrentImporter::GetWizardPages () const
+	QList<QWizardPage*> AkregatorImporter::GetWizardPages () const
 	{
 		QList<QWizardPage*> result;
 		result << ImportPage_;
 		return result;
 	}
+}
 }
 }

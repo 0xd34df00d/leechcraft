@@ -29,38 +29,38 @@ INCLUDE_DIRECTORIES (
 SET (SRCS
 	newlife.cpp
 	importwizard.cpp
-	akregatorimporter.cpp
-	akregatorimportpage.cpp
 	firstpage.cpp
-	lifereaimportpage.cpp
-	lifereaimporter.cpp
-	ktorrentimportpage.cpp
-	ktorrentimporter.cpp
 	abstractimporter.cpp
-	firefoximporter/firefoximportpage.cpp
-	firefoximporter/firefoximporter.cpp
-	firefoximporter/firefoxprofileselectpage.cpp
+	importers/akregator/akregatorimporter.cpp
+	importers/akregator/akregatorimportpage.cpp
+	importers/liferea/lifereaimportpage.cpp
+	importers/liferea/lifereaimporter.cpp
+	importers/ktorrent/ktorrentimportpage.cpp
+	importers/ktorrent/ktorrentimporter.cpp
+	importers/firefox/firefoximportpage.cpp
+	importers/firefox/firefoximporter.cpp
+	importers/firefox/firefoxprofileselectpage.cpp
 	)
 SET (HEADERS
 	newlife.h
 	importwizard.h
-	akregatorimporter.h
-	akregatorimportpage.h
 	firstpage.h
-	lifereaimportpage.h
-	lifereaimporter.h
-	ktorrentimportpage.h
-	ktorrentimporter.h
 	abstractimporter.h
-	firefoximporter/firefoximportpage.h
-	firefoximporter/firefoximporter.h
-	firefoximporter/firefoxprofileselectpage.h
+	importers/akregator/akregatorimporter.h
+	importers/akregator/akregatorimportpage.h
+	importers/liferea/lifereaimportpage.h
+	importers/liferea/lifereaimporter.h
+	importers/ktorrent/ktorrentimportpage.h
+	importers/ktorrent/ktorrentimporter.h
+	importers/firefox/firefoximportpage.h
+	importers/firefox/firefoximporter.h
+	importers/firefox/firefoxprofileselectpage.h
 	)
 SET (FORMS
 	importwizard.ui
 	feedssettingsimportpage.ui
 	firstpage.ui
-	firefoximporter/firefoxprofileselectpage.ui
+	importers/firefox/firefoxprofileselectpage.ui
 	)
 SET (RESOURCES newliferesources.qrc)
 CreateTrVars ("newlife" "ar;be;de;en;fr;it;pl;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)

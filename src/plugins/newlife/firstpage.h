@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_NEWLIFE_FIRSTPAGE_H
-#define PLUGINS_NEWLIFE_FIRSTPAGE_H
+#pragma once
+
 #include <QWizardPage>
 #include <QMap>
 #include "ui_firstpage.h"
@@ -45,5 +45,3 @@ namespace NewLife
 	};
 }
 }
-
-#endif

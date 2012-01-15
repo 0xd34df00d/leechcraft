@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,29 +16,40 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "akregatorimporter.h"
-#include "akregatorimportpage.h"
+#pragma once
+
+#include <QWizardPage>
+#include <QMap>
+#include "ui_feedssettingsimportpage.h"
 
 namespace LeechCraft
 {
+struct Entity;
+
 namespace NewLife
 {
-	AkregatorImporter::AkregatorImporter (QWidget *parent)
-	: AbstractImporter (parent)
+namespace Importers
+{
+	class KTorrentImportPage : public QWizardPage
 	{
-		ImportPage_ = new AkregatorImportPage ();
-	}
+		Q_OBJECT
 
-	QStringList AkregatorImporter::GetNames () const
-	{
-		return QStringList ("Akregator");
-	}
+		Ui::FeedsSettingsImportPage Ui_;
+	public:
+		KTorrentImportPage (QWidget* = 0);
 
-	QList<QWizardPage*> AkregatorImporter::GetWizardPages () const
-	{
-		QList<QWizardPage*> result;
-		result << ImportPage_;
-		return result;
-	}
+		bool CheckValidity (const QString&) const;
+		virtual bool isComplete () const;
+		virtual int nextId () const;
+		virtual void initializePage ();
+	private:
+		bool GetTorrentSettings (const QString&, QMap<QString, QVariant>&) const;
+	private slots:
+		void on_Browse__released ();
+		void handleAccepted ();
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
+	};
+}
 }
 }

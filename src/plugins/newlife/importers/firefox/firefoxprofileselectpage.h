@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2010-2011  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,10 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_NEWLIFE_AKREGATORIMPORTPAGE_H
-#define PLUGINS_NEWLIFE_AKREGATORIMPORTPAGE_H
+#pragma once
+
+#include "ui_firefoxprofileselectpage.h"
+#include <memory>
 #include <QWizardPage>
-#include "ui_feedssettingsimportpage.h"
+
+class QSqlDatabase;
+class QSqlQuery;
 
 namespace LeechCraft
 {
@@ -27,26 +31,33 @@ struct Entity;
 
 namespace NewLife
 {
-	class AkregatorImportPage : public QWizardPage
+namespace Importers
+{
+	class FirefoxProfileSelectPage : public QWizardPage
 	{
 		Q_OBJECT
 
-		Ui::FeedsSettingsImportPage Ui_;
-	public:
-		AkregatorImportPage (QWidget* = 0);
+			Ui::FirefoxProfileSelectPage Ui_;
+			std::shared_ptr<QSqlDatabase> DB_;
+		public:
+			FirefoxProfileSelectPage (QWidget* = 0);
+			virtual ~FirefoxProfileSelectPage ();
 
-		bool CheckValidity (const QString&) const;
-		virtual bool isComplete () const;
-		virtual int nextId () const;
-		virtual void initializePage ();
-	private slots:
-		void on_Browse__released ();
-		void on_FileLocation__textEdited (const QString&);
-		void handleAccepted ();
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
+			virtual int nextId () const;
+			virtual void initializePage ();
+			QString GetProfileDirectory (const QString&) const;
+			void GetProfileList (const QString&);
+			QList<QVariant> GetHistory ();
+			QList<QVariant> GetBookmarks ();
+			QString GetImportOpmlFile ();
+			QSqlQuery GetQuery (const QString&);
+			bool IsFirefoxRunning ();
+		private slots:
+			void checkImportDataAvailable (int);
+			void handleAccepted ();
+		signals:
+			void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }
-
-#endif
+}
