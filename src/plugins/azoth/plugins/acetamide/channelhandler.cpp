@@ -72,7 +72,7 @@ namespace Acetamide
 	QList<QObject*> ChannelHandler::GetParticipants () const
 	{
 		QList<QObject*> result;
-		Q_FOREACH (ChannelParticipantEntry* cpe, Nick2Entry_.values ())
+		Q_FOREACH (ChannelParticipantEntry *cpe, Nick2Entry_.values ())
 			result << cpe;
 		return result;
 	}
@@ -124,7 +124,7 @@ namespace Acetamide
 				IMessage::MSTParticipantNickChange);
 
 		CM_->GetAccount ()->handleEntryRemoved (Nick2Entry_ [oldNick]);
-		ChannelParticipantEntry* entry = Nick2Entry_.take (oldNick);
+		ChannelParticipantEntry *entry = Nick2Entry_.take (oldNick);
 		entry->SetEntryName (newNick);
 		CM_->GetAccount ()->handleGotRosterItems (QList<QObject*> () << entry);
 		Nick2Entry_ [newNick] = entry;
@@ -162,7 +162,7 @@ namespace Acetamide
 	void ChannelHandler::HandleIncomingMessage (const QString& nick,
 			const QString& msg)
 	{
-		ChannelParticipantEntry* entry = GetParticipantEntry (nick);
+		ChannelParticipantEntry *entry = GetParticipantEntry (nick);
 
 		ChannelPublicMessage *message =
 				new ChannelPublicMessage (msg,

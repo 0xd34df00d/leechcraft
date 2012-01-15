@@ -60,8 +60,8 @@ namespace Acetamide
 	};
 
 	typedef boost::shared_ptr<ServerParticipantEntry> ServerParticipantEntry_ptr;
-};
-};
-};
+}
+}
+}
 
 #endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SERVERPARTICIPANTENTRY_H

@@ -149,7 +149,6 @@ namespace Acetamide
 	private:
 		void AddCommand2Queue (const QString& channel, const QString& cmd, bool IsLongAnswer);
 	};
-
 }
 }
 }

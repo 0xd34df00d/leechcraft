@@ -24,31 +24,31 @@
 
 namespace LeechCraft
 {
-	namespace Azoth
+namespace Azoth
+{
+
+class ICLEntry;
+
+namespace Acetamide
+{
+
+	class IrcParticipantEntry;
+	class IrcServerHandler;
+
+	class IrcMessageManager : public QObject
 	{
+		Q_OBJECT
 
-		class ICLEntry;
+		QHash<IrcParticipantEntry*, QObjectList> Entry2AllMessages_;
+		IrcServerHandler *ISH_;
+	public:
+		IrcMessageManager (IrcServerHandler *server);
 
-		namespace Acetamide
-		{
-
-			class IrcParticipantEntry;
-			class IrcServerHandler;
-
-			class IrcMessageManager : public QObject
-			{
-				Q_OBJECT
-
-				QHash<IrcParticipantEntry*, QObjectList> Entry2AllMessages_;
-				IrcServerHandler *ISH_;
-			public:
-				IrcMessageManager (IrcServerHandler *server);
-
-				void AddMessage (IrcParticipantEntry *entry, QObject *message);
-				QObjectList GetAllMessages (IrcParticipantEntry *entry);
-			};
-		}
-	}
+		void AddMessage (IrcParticipantEntry *entry, QObject *message);
+		QObjectList GetAllMessages (IrcParticipantEntry *entry);
+	};
+}
+}
 }
 
 #endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCMESSAGEMANAGER_H

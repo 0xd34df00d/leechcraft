@@ -382,9 +382,7 @@ namespace Acetamide
 	void ChannelsManager::ParseChanMode (const QString& channel,
 			const QString& mode, const QString& value)
 	{
-		bool action = false;
-		if (mode [0] == '+')
-			action = true;
+		bool action = mode [0] == '+';
 
 		for (int i = 1; i < mode.length (); ++i)
 		{
@@ -396,7 +394,6 @@ namespace Acetamide
 					{
 						ChannelParticipantEntry *entry =
 								ChannelHandlers_ [channel]->GetParticipantEntry (value);
-						QString msg;
 						if (action)
 							entry->SetRole (ChannelRole::Operator);
 						else
@@ -412,7 +409,6 @@ namespace Acetamide
 					{
 						ChannelParticipantEntry *entry =
 								ChannelHandlers_ [channel]->GetParticipantEntry (value);
-						QString msg;
 						if (action)
 							entry->SetRole (ChannelRole::Voiced);
 						else

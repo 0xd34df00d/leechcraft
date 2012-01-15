@@ -77,6 +77,7 @@ namespace Acetamide
 						<< message;
 				continue;
 			}
+
 			msg->SetOtherVariant (name);
 		}
 	}

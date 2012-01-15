@@ -338,7 +338,7 @@ namespace Acetamide
 		if (!participant)
 			participant = ICH_->GetSelf ();
 
-		QMap<QByteArray, QList<QByteArray> >  result;
+		QMap<QByteArray, QList<QByteArray>>  result;
 		ChannelParticipantEntry *entry = qobject_cast<ChannelParticipantEntry*> (participant);
 		if (!entry)
 		{

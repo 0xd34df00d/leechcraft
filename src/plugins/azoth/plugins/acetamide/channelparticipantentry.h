@@ -42,7 +42,7 @@ namespace Acetamide
 		QList<ChannelRole> Roles_;
 	public:
 		ChannelParticipantEntry (const QString&,
-				ChannelHandler*, IrcAccount*  = 0);
+				ChannelHandler*, IrcAccount* = 0);
 
 		QObject* GetParentCLEntry () const;
 

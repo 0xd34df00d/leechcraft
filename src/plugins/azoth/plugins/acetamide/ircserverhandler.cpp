@@ -845,7 +845,7 @@ namespace Acetamide
 					continue;
 
 				entry->SetPrivateChat (false);
-		}
+			}
 	}
 
 	void IrcServerHandler::CreateServerParticipantEntry (QString nick)

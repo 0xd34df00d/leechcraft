@@ -242,9 +242,9 @@ namespace Acetamide
 			return;
 		}
 
-		QString channel = opts.Message_;
-		if (channel.isEmpty ())
-			channel = QString::fromUtf8 (opts.Parameters_.last ().c_str ());
+		const QString& channel = channel.isEmpty () ?
+				QString::fromUtf8 (opts.Parameters_.last ().c_str ()) :
+				opts.Message_;
 
 		ISH_->JoinParticipant (opts.Nick_, channel, opts.Host_, opts.UserName_);
 	}
@@ -254,7 +254,7 @@ namespace Acetamide
 		if (opts.Parameters_.isEmpty ())
 			return;
 
-        const QString channel = QString::fromUtf8 (opts.Parameters_.first ().c_str ());
+        const QString channel (QString::fromUtf8 (opts.Parameters_.first ().c_str ()));
 		if (opts.Nick_ == ISH_->GetNickName ())
 		{
 			ISH_->CloseChannel (channel);
@@ -277,7 +277,7 @@ namespace Acetamide
         if (opts.Parameters_.isEmpty ())
 			return;
 
-        const QString target = QString::fromUtf8 (opts.Parameters_.first ().c_str ());
+        const QString target (QString::fromUtf8 (opts.Parameters_.first ().c_str ()));
 		ISH_->IncomingMessage (opts.Nick_, target, opts.Message_);
 	}
 
@@ -298,7 +298,7 @@ namespace Acetamide
 
 	void ServerResponceManager::GotTopic (const IrcMessageOptions& opts)
 	{
-        QString channel = QString::fromUtf8 (opts.Parameters_.last ().c_str ());
+        QString channel (QString::fromUtf8 (opts.Parameters_.last ().c_str ()));
 		ISH_->GotTopic (channel, opts.Message_);
 	}
 
@@ -307,8 +307,8 @@ namespace Acetamide
 		if (opts.Parameters_.isEmpty ())
 			return;
 
-		const QString channel = QString::fromUtf8 (opts.Parameters_.first ().c_str ());
-		const QString target = QString::fromUtf8 (opts.Parameters_.last ().c_str ());
+		const QString channel (QString::fromUtf8 (opts.Parameters_.first ().c_str ()));
+		const QString target (QString::fromUtf8 (opts.Parameters_.last ().c_str ()));
 		if (opts.Nick_ == target)
 			return;
 
@@ -435,7 +435,7 @@ namespace Acetamide
 			return;
 
 		const QString channel = QString::fromUtf8 (opts.Parameters_.last ().c_str ());
-		QStringList participants = opts.Message_.split (' ');
+		const QStringList& participants = opts.Message_.split (' ');
 		ISH_->GotNames (channel, participants);
 	}
 
@@ -483,7 +483,7 @@ namespace Acetamide
 		if (opts.Parameters_.count () < 4)
 			return;
 
-		const QString message = QString::fromUtf8 (opts.Parameters_.at (1).c_str ()) +
+		const QString& message = QString::fromUtf8 (opts.Parameters_.at (1).c_str ()) +
 				" - " + QString::fromUtf8 (opts.Parameters_.at (2).c_str ()) + "@"
 				+ QString::fromUtf8 (opts.Parameters_.at (3).c_str ()) +
 				" (" + opts.Message_ + ")";
@@ -495,7 +495,7 @@ namespace Acetamide
 		if (opts.Parameters_.count () < 3)
 			return;
 
-		QString message = QString::fromUtf8 (opts.Parameters_.at (1).c_str ()) +
+		const QString& message = QString::fromUtf8 (opts.Parameters_.at (1).c_str ()) +
 				tr (" connected via ") +
 		QString::fromUtf8 (opts.Parameters_.at (2).c_str ()) +
 				" (" + opts.Message_ + ")";
@@ -516,7 +516,7 @@ namespace Acetamide
 		if (opts.Parameters_.count () < 2)
 			return;
 
-		QString message = QString::fromUtf8 (opts.Parameters_.at (0).c_str ()) +
+		const QString& message = QString::fromUtf8 (opts.Parameters_.at (0).c_str ()) +
 				" " + QString::fromUtf8 (opts.Parameters_.at (1).c_str ()) +
 				" " + opts.Message_;
 		ISH_->ShowWhoIsReply (message);
