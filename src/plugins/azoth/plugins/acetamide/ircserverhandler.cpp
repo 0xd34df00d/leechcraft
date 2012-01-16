@@ -251,7 +251,7 @@ namespace Acetamide
 			message->SetBody (msg);
 			message->SetDateTime (QDateTime::currentDateTime ());
 
-			Q_FOREACH (QObject *entryObj, ChannelsManager_->GetParticipantsByNick (nick))
+			Q_FOREACH (QObject *entryObj, ChannelsManager_->GetParticipantsByNick (nick).values ())
 			{
 				EntryBase *entry = qobject_cast<EntryBase*> (entryObj);
 				if (!entry)
@@ -610,7 +610,8 @@ namespace Acetamide
 					<< msg->GetOtherVariant ()
 					<< str);
 
-		Q_FOREACH (QObject *entryObj, ChannelsManager_->GetParticipantsByNick (msg->GetOtherVariant ()))
+		Q_FOREACH (QObject *entryObj, ChannelsManager_->
+				GetParticipantsByNick (msg->GetOtherVariant ()).values ())
 		{
 			EntryBase *entry = qobject_cast<EntryBase*> (entryObj);
 			if (!entry)
@@ -836,7 +837,7 @@ namespace Acetamide
 		if (Nick2Entry_.contains (nick))
 			Account_->handleEntryRemoved (Nick2Entry_ [nick].get ());
 		else
-			Q_FOREACH (QObject *entryObj, ChannelsManager_->GetParticipantsByNick (nick))
+			Q_FOREACH (QObject *entryObj, ChannelsManager_->GetParticipantsByNick (nick).values ())
 			{
 				IrcParticipantEntry *entry = qobject_cast<IrcParticipantEntry*> (entryObj);
 				if (!entry)

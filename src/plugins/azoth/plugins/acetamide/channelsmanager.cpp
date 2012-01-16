@@ -151,12 +151,12 @@ namespace Acetamide
 			ISH_->DisconnectFromServer ();
 	}
 
-	QObjectList ChannelsManager::GetParticipantsByNick (const QString& nick) const
+	QHash<QString, QObject*> ChannelsManager::GetParticipantsByNick (const QString& nick) const
 	{
-		QObjectList result;
+		QHash<QString, QObject*> result;
 		Q_FOREACH (ChannelHandler *ich, ChannelHandlers_.values ())
 			if (ich->IsUserExists (nick))
-				result << ich->GetParticipantEntry (nick).get ();
+				result [ich->GetChannelOptions ().ChannelName_] = ich->GetParticipantEntry (nick).get ();
 		return result;
 	}
 
@@ -525,7 +525,7 @@ namespace Acetamide
 
 	void ChannelsManager::SetPrivateChat (const QString& nick)
 	{
-		Q_FOREACH (QObject *entryObj, GetParticipantsByNick (nick))
+		Q_FOREACH (QObject *entryObj, GetParticipantsByNick (nick).values ())
 		{
 			IrcParticipantEntry *entry = qobject_cast<IrcParticipantEntry*> (entryObj);
 			if (!entry)
