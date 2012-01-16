@@ -32,8 +32,8 @@ namespace Acetamide
 {
 	ChannelHandler::ChannelHandler (const ChannelOptions& channel,
 			ChannelsManager *cm)
-	: ChannelID_ (channel.ChannelName_ + "@" + channel.ServerName_)
-	, CM_ (cm)
+	: CM_ (cm)
+	, ChannelID_ (channel.ChannelName_ + "@" + channel.ServerName_)
 	, ChannelOptions_ (channel)
 	, IsRosterReceived_ (false)
 	{
@@ -195,7 +195,7 @@ namespace Acetamide
 
 		ChannelParticipantEntry_ptr entry (GetParticipantEntry (nickName));
 		entry->SetUserName (user);
-		entry->SetHostName (user);
+		entry->SetHostName (host);
 
 		ChannelRole role;
 		if (hasRole)
@@ -362,7 +362,7 @@ namespace Acetamide
 	}
 
 	void ChannelHandler::SetRole (ChannelParticipantEntry *entry,
-			const ChannelRole& role, const QString& reason)
+			const ChannelRole& role, const QString&)
 	{
 		QString mode;
 
