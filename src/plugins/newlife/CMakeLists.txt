@@ -31,6 +31,7 @@ SET (SRCS
 	importwizard.cpp
 	firstpage.cpp
 	abstractimporter.cpp
+	imhistimporterbase.cpp
 	importers/akregator/akregatorimporter.cpp
 	importers/akregator/akregatorimportpage.cpp
 	importers/liferea/lifereaimportpage.cpp
@@ -48,6 +49,7 @@ SET (HEADERS
 	importwizard.h
 	firstpage.h
 	abstractimporter.h
+	imhistimporterbase.h
 	importers/akregator/akregatorimporter.h
 	importers/akregator/akregatorimportpage.h
 	importers/liferea/lifereaimportpage.h
