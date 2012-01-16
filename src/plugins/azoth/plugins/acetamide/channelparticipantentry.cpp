@@ -102,7 +102,7 @@ namespace Acetamide
 	{
 	}
 
-	QObject* ChannelParticipantEntry::CreateMessage (IMessage::MessageType type,
+	QObject* ChannelParticipantEntry::CreateMessage (IMessage::MessageType,
 			const QString&, const QString& body)
 	{
 		IrcMessage *message = new IrcMessage (IMessage::MTChatMessage,
