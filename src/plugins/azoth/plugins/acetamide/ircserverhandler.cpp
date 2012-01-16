@@ -816,19 +816,19 @@ namespace Acetamide
 		return ISupport_;
 	}
 
-	void IrcServerHandler::RequestWhoIs (const QString& id, const QString& nick)
+	void IrcServerHandler::RequestWhoIs (const QString& nick)
 	{
-		IrcParser_->WhoisCommand (QStringList () << nick);
+		IrcParser_->WhoisCommand (QStringList (nick));
 	}
 
-	void IrcServerHandler::RequestWhoWas (const QString& id, const QString& nick)
+	void IrcServerHandler::RequestWhoWas (const QString& nick)
 	{
-		IrcParser_->WhowasCommand (QStringList () << nick);
+		IrcParser_->WhowasCommand (QStringList (nick));
 	}
 
-	void IrcServerHandler::RequestWho (const QString& id, const QString& nick)
+	void IrcServerHandler::RequestWho (const QString& nick)
 	{
-		IrcParser_->WhoCommand (QStringList () << nick);
+		IrcParser_->WhoCommand (QStringList (nick));
 	}
 
 	void IrcServerHandler::ClosePrivateChat (const QString& nick)

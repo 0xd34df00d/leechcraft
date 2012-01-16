@@ -146,7 +146,7 @@ namespace Acetamide
 
 		void CreateServerParticipantEntry (QString nick);
 	private:
-		void AddCommand2Queue (const QString& channel, const QString& cmd, bool IsLongAnswer);
+		void AddCommand2Queue (const QString& channel, const QString& cmd);
 	};
 }
 }

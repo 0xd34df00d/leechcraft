@@ -233,7 +233,7 @@ namespace Acetamide
 			const QString& cmd = ISH_->ParseMessageForCommand (msg, chnnl);
 			if (ChannelHandlers_.contains (chnnl))
 			{
-				AddCommand2Queue (chnnl, cmd, ISH_->IsCmdHasLongAnswer (cmd));
+				AddCommand2Queue (chnnl, cmd);
 				ChannelHandlers_ [chnnl]->HandleServiceMessage (msg,
 						IMessage::MTEventMessage,
 						IMessage::MSTOther);
@@ -497,20 +497,20 @@ namespace Acetamide
 
 	void ChannelsManager::RequestWhoIs (const QString& channel, const QString& nick)
 	{
-		AddCommand2Queue (channel, "whois", ISH_->IsCmdHasLongAnswer ("whois"));
-		ISH_->RequestWhoIs (channel, nick);
+		AddCommand2Queue (channel, "whois");
+		ISH_->RequestWhoIs (nick);
 	}
 
 	void ChannelsManager::RequestWhoWas (const QString& channel, const QString& nick)
 	{
-		AddCommand2Queue (channel, "whowas", ISH_->IsCmdHasLongAnswer ("whowas"));
-		ISH_->RequestWhoWas (channel, nick);
+		AddCommand2Queue (channel, "whowas");
+		ISH_->RequestWhoWas (nick);
 	}
 
 	void ChannelsManager::RequestWho (const QString& channel, const QString& nick)
 	{
-		AddCommand2Queue (channel, "who", ISH_->IsCmdHasLongAnswer ("who"));
-		ISH_->RequestWho (channel, nick);
+		AddCommand2Queue (channel, "who");
+		ISH_->RequestWho (nick);
 	}
 
 	void ChannelsManager::CTCPRequest (const QStringList& cmd)
@@ -540,8 +540,7 @@ namespace Acetamide
 		ISH_->CreateServerParticipantEntry (nick);
 	}
 
-	void ChannelsManager::AddCommand2Queue (const QString& channel,
-			const QString& cmd, bool IsLongAnswer)
+	void ChannelsManager::AddCommand2Queue (const QString& channel, const QString& cmd)
 	{
 		CommandMessage msg;
 		msg.Channel_ = channel.toLower ();

@@ -195,9 +195,9 @@ namespace Acetamide
 		void ParserISupport (const QString&);
 		QMap<QString, QString> GetISupport () const;
 
-		void RequestWho (const QString&, const QString&);
-		void RequestWhoIs (const QString&, const QString&);
-		void RequestWhoWas (const QString&, const QString&);
+		void RequestWho (const QString&);
+		void RequestWhoIs (const QString&);
+		void RequestWhoWas (const QString&);
 
 		void ClosePrivateChat (const QString& nick);
 
