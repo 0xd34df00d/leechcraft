@@ -130,7 +130,7 @@ namespace Acetamide
 		return NickNames_;
 	}
 
-	boost::shared_ptr<ClientConnection> IrcAccount::GetClientConnection () const
+	std::shared_ptr<ClientConnection> IrcAccount::GetClientConnection () const
 	{
 		return ClientConnection_;
 	}

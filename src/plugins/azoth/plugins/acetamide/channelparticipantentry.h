@@ -19,6 +19,7 @@
 #ifndef LEECHCRAFT_AZOTH_PLUGINS_ACETAMIDE_CHANNELPARTICIPANTENTRY_H
 #define LEECHCRAFT_AZOTH_PLUGINS_ACETAMIDE_CHANNELPARTICIPANTENTRY_H
 
+#include <memory>
 #include "ircparticipantentry.h"
 #include "localtypes.h"
 
@@ -63,6 +64,8 @@ namespace Acetamide
 		void handleWho ();
 		void handleCTCPAction (QAction *action);
 	};
+
+	typedef std::shared_ptr<ChannelParticipantEntry> ChannelParticipantEntry_ptr;
 }
 }
 }

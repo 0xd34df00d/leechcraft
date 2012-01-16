@@ -19,7 +19,7 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SERVERPARTICIPANTENTRY_H
 #define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SERVERPARTICIPANTENTRY_H
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QObject>
 #include <QStringList>
 #include "ircparticipantentry.h"
@@ -59,7 +59,7 @@ namespace Acetamide
 	private slots:
 	};
 
-	typedef boost::shared_ptr<ServerParticipantEntry> ServerParticipantEntry_ptr;
+	typedef std::shared_ptr<ServerParticipantEntry> ServerParticipantEntry_ptr;
 }
 }
 }

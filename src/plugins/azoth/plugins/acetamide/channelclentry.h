@@ -19,7 +19,6 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_CHANNELCLENTRY_H
 #define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_CHANNELCLENTRY_H
 
-#include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <interfaces/iclentry.h>
 #include <interfaces/imucentry.h>

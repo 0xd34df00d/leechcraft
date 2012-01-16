@@ -9,7 +9,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHsANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
@@ -44,7 +44,7 @@ namespace Acetamide
 			Socket_ptr->connectToHost (host, port);
 		else
 		{
-			boost::shared_ptr<QSslSocket> s = boost::dynamic_pointer_cast<QSslSocket> (Socket_ptr);
+			std::shared_ptr<QSslSocket> s = std::dynamic_pointer_cast<QSslSocket> (Socket_ptr);
 			s->connectToHostEncrypted (host, port);
 		}
 	}

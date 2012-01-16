@@ -72,26 +72,26 @@ namespace Acetamide
 	QList<QObject*> ChannelHandler::GetParticipants () const
 	{
 		QList<QObject*> result;
-		Q_FOREACH (ChannelParticipantEntry *cpe, Nick2Entry_.values ())
-			result << cpe;
+		Q_FOREACH (ChannelParticipantEntry_ptr cpe, Nick2Entry_.values ())
+			result << cpe.get ();
 		return result;
 	}
 
-	ChannelParticipantEntry* ChannelHandler::GetSelf ()
+	ChannelParticipantEntry_ptr ChannelHandler::GetSelf ()
 	{
-		Q_FOREACH (ChannelParticipantEntry *cpe, Nick2Entry_.values ())
+		Q_FOREACH (ChannelParticipantEntry_ptr cpe, Nick2Entry_.values ())
 			if (cpe->GetEntryName () == CM_->GetOurNick ())
 				return cpe;
 
-		return 0;
+		return  ChannelParticipantEntry_ptr ();
 	}
 
-	ChannelParticipantEntry* ChannelHandler::GetParticipantEntry (const QString& nick)
+	ChannelParticipantEntry_ptr ChannelHandler::GetParticipantEntry (const QString& nick)
 	{
 		if (Nick2Entry_.contains (nick))
 			return Nick2Entry_ [nick];
 
-		ChannelParticipantEntry *entry (CreateParticipantEntry (nick));
+		ChannelParticipantEntry_ptr entry (CreateParticipantEntry (nick));
 		Nick2Entry_ [nick] = entry;
 		return entry;
 	}
@@ -123,10 +123,10 @@ namespace Acetamide
 				IMessage::MTStatusMessage,
 				IMessage::MSTParticipantNickChange);
 
-		CM_->GetAccount ()->handleEntryRemoved (Nick2Entry_ [oldNick]);
-		ChannelParticipantEntry *entry = Nick2Entry_.take (oldNick);
+		CM_->GetAccount ()->handleEntryRemoved (Nick2Entry_ [oldNick].get ());
+		ChannelParticipantEntry_ptr entry = Nick2Entry_.take (oldNick);
 		entry->SetEntryName (newNick);
-		CM_->GetAccount ()->handleGotRosterItems (QList<QObject*> () << entry);
+		CM_->GetAccount ()->handleGotRosterItems (QObjectList () << entry.get ());
 		Nick2Entry_ [newNick] = entry;
 	}
 
@@ -153,7 +153,7 @@ namespace Acetamide
 
 	void ChannelHandler::SendPublicMessage (const QString& msg)
 	{
-		if (GetSelf () == 0)
+		if (GetSelf () == ChannelParticipantEntry_ptr ())
 			return;
 
 		CM_->SendPublicMessage (ChannelOptions_.ChannelName_, msg);
@@ -162,7 +162,7 @@ namespace Acetamide
 	void ChannelHandler::HandleIncomingMessage (const QString& nick,
 			const QString& msg)
 	{
-		ChannelParticipantEntry *entry = GetParticipantEntry (nick);
+		ChannelParticipantEntry_ptr entry = GetParticipantEntry (nick);
 
 		ChannelPublicMessage *message =
 				new ChannelPublicMessage (msg,
@@ -193,7 +193,7 @@ namespace Acetamide
 			}
 		}
 
-		ChannelParticipantEntry *entry = GetParticipantEntry (nickName);
+		ChannelParticipantEntry_ptr entry (GetParticipantEntry (nickName));
 		entry->SetUserName (user);
 		entry->SetHostName (user);
 
@@ -435,12 +435,12 @@ namespace Acetamide
 
 	void ChannelHandler::RemoveThis ()
 	{
-		Q_FOREACH (ChannelParticipantEntry *entry, Nick2Entry_.values ())
+		Q_FOREACH (ChannelParticipantEntry_ptr entry, Nick2Entry_.values ())
 		{
 			const bool isPrivate = entry->IsPrivateChat ();
 			const QString nick = entry->GetEntryName ();
 
-			CM_->GetAccount ()->handleEntryRemoved (entry);
+			CM_->GetAccount ()->handleEntryRemoved (entry.get ());
 
 			if (CM_->GetParticipantsByNick (nick).count () == 1
 					&& isPrivate)
@@ -674,18 +674,18 @@ namespace Acetamide
 		if (!Nick2Entry_.contains (nick))
 			return false;
 
-		ChannelParticipantEntry *entry = Nick2Entry_ [nick];
+		ChannelParticipantEntry_ptr entry = Nick2Entry_ [nick];
 		Nick2Entry_.remove (nick);
-		CM_->GetAccount ()->handleEntryRemoved (entry);
+		CM_->GetAccount ()->handleEntryRemoved (entry.get ());
 
 		return true;
 	}
 
-	ChannelParticipantEntry* ChannelHandler::CreateParticipantEntry (const QString& nick)
+	ChannelParticipantEntry_ptr ChannelHandler::CreateParticipantEntry (const QString& nick)
 	{
-		ChannelParticipantEntry *entry (new ChannelParticipantEntry (nick,
+		ChannelParticipantEntry_ptr entry (new ChannelParticipantEntry (nick,
 				this, CM_->GetAccount ()));
-		CM_->GetAccount ()->handleGotRosterItems (QList<QObject*> () << entry);
+		CM_->GetAccount ()->handleGotRosterItems (QObjectList () << entry.get ());
 		return entry;
 	}
 

@@ -50,7 +50,7 @@ namespace Acetamide
 
 		bool IsRosterReceived_;
 
-		QHash<QString, ChannelParticipantEntry*> Nick2Entry_;
+		QHash<QString, ChannelParticipantEntry_ptr> Nick2Entry_;
 
 		ChannelModes ChannelMode_;
 	public:
@@ -65,8 +65,8 @@ namespace Acetamide
 		ChannelOptions GetChannelOptions () const;
 		QList<QObject*> GetParticipants () const;
 
-		ChannelParticipantEntry* GetSelf ();
-		ChannelParticipantEntry* GetParticipantEntry (const QString&);
+		ChannelParticipantEntry_ptr GetSelf ();
+		ChannelParticipantEntry_ptr GetParticipantEntry (const QString&);
 
 		bool IsUserExists (const QString&) const;
 
@@ -135,7 +135,7 @@ namespace Acetamide
 		void SetNewChannelModes (const ChannelModes&);
 	private:
 		bool RemoveUserFromChannel (const QString&);
-		ChannelParticipantEntry* CreateParticipantEntry (const QString&);
+		ChannelParticipantEntry_ptr CreateParticipantEntry (const QString&);
 		void RemoveThis ();
 	public slots:
 		void handleWhoIs (const QString& nick);

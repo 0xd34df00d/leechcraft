@@ -334,7 +334,7 @@ namespace Acetamide
 	QMap<QByteArray, QList<QByteArray>>  ChannelCLEntry::GetPerms (QObject *participant) const
 	{
 		if (!participant)
-			participant = ICH_->GetSelf ();
+			participant = ICH_->GetSelf ().get ();
 
 		QMap<QByteArray, QList<QByteArray>>  result;
 		ChannelParticipantEntry *entry = qobject_cast<ChannelParticipantEntry*> (participant);

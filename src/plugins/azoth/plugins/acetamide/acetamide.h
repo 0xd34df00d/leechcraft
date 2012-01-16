@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_ACETAMIDE_H
 #define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_ACETAMIDE_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QTranslator>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavesettings.h>
@@ -42,7 +42,7 @@ namespace Acetamide
 				LeechCraft::Azoth::IProtocolPlugin);
 
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
-		boost::shared_ptr<QTranslator> Translator_;
+		std::shared_ptr<QTranslator> Translator_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

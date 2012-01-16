@@ -156,7 +156,7 @@ namespace Acetamide
 		QObjectList result;
 		Q_FOREACH (ChannelHandler *ich, ChannelHandlers_.values ())
 			if (ich->IsUserExists (nick))
-				result << ich->GetParticipantEntry (nick);
+				result << ich->GetParticipantEntry (nick).get ();
 		return result;
 	}
 
@@ -390,7 +390,7 @@ namespace Acetamide
 					if (!value.isEmpty () &&
 							ChannelHandlers_ [channel]->IsUserExists (value))
 					{
-						ChannelParticipantEntry *entry =
+						ChannelParticipantEntry_ptr entry =
 								ChannelHandlers_ [channel]->GetParticipantEntry (value);
 						if (action)
 							entry->SetRole (ChannelRole::Operator);
@@ -405,7 +405,7 @@ namespace Acetamide
 					if (!value.isEmpty () &&
 							ChannelHandlers_ [channel]->IsUserExists (value))
 					{
-						ChannelParticipantEntry *entry =
+						ChannelParticipantEntry_ptr entry =
 								ChannelHandlers_ [channel]->GetParticipantEntry (value);
 						if (action)
 							entry->SetRole (ChannelRole::Voiced);
@@ -434,7 +434,7 @@ namespace Acetamide
 						if (!value.isEmpty () &&
 								ChannelHandlers_ [channel]->IsUserExists (value))
 						{
-							ChannelParticipantEntry *entry =
+							ChannelParticipantEntry_ptr entry =
 									ChannelHandlers_ [channel]->GetParticipantEntry (value);
 							if (action)
 								entry->SetRole (ChannelRole::Owner);

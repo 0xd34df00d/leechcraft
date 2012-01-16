@@ -94,7 +94,7 @@ namespace Acetamide
 
 	void IrcMessage::Store ()
 	{
-		ServerParticipantEntry *entry =
+		ServerParticipantEntry_ptr entry =
 				Connection_->GetIrcServerHandler (ID_)->
 						GetParticipantEntry (GetOtherVariant ());
 		entry->HandleMessage (this);

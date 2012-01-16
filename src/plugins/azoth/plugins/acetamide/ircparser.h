@@ -19,7 +19,6 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCPARSER_H
 #define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCPARSER_H
 
-#include <boost/shared_ptr.hpp>
 #include <QObject>
 #include "core.h"
 #include "localtypes.h"

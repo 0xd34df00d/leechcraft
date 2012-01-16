@@ -45,7 +45,7 @@ namespace Acetamide
 			ChannelCLEntry *entry,
 			IMessage::MessageType type,
 			IMessage::MessageSubType subType,
-			ChannelParticipantEntry *part)
+			ChannelParticipantEntry_ptr part)
 	: QObject (0)
 	, ParentEntry_ (entry)
 	, ParticipantEntry_ (part)
@@ -109,7 +109,7 @@ namespace Acetamide
 		switch (Direction_)
 		{
 		case DIn:
-			return ParticipantEntry_;
+			return ParticipantEntry_.get ();
 		case DOut:
 			return ParentEntry_;
 		}

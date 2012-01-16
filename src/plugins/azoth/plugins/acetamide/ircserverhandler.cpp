@@ -123,8 +123,8 @@ namespace Acetamide
 
 		result << ChannelsManager_->GetCLEntries ();
 
-		Q_FOREACH (ServerParticipantEntry *spe, Nick2Entry_.values ())
-			result << spe;
+		Q_FOREACH (ServerParticipantEntry_ptr spe, Nick2Entry_.values ())
+			result << spe.get ();
 
 		return result;
 	}
@@ -297,10 +297,10 @@ namespace Acetamide
 		if (!Nick2Entry_.contains (nick))
 			return;
 
-		Account_->handleEntryRemoved (Nick2Entry_ [nick]);
-		ServerParticipantEntry *entry = Nick2Entry_.take (nick);
+		Account_->handleEntryRemoved (Nick2Entry_ [nick].get ());
+		ServerParticipantEntry_ptr entry = Nick2Entry_.take (nick);
 		entry->SetEntryName (msg);
-		Account_->handleGotRosterItems (QList<QObject*> () << entry);
+		Account_->handleGotRosterItems (QObjectList () << entry.get ());
 		Nick2Entry_ [msg] = entry;
 
 		if (nick == NickName_)
@@ -668,8 +668,8 @@ namespace Acetamide
 	{
 		ChannelsManager_->CloseAllChannels ();
 
-		Q_FOREACH (ServerParticipantEntry *entry, Nick2Entry_.values ())
-			Account_->handleEntryRemoved (entry);
+		Q_FOREACH (ServerParticipantEntry_ptr entry, Nick2Entry_.values ())
+			Account_->handleEntryRemoved (entry.get ());
 
 		if (ServerConnectionState_ != NotConnected)
 			Socket_->DisconnectFromHost ();
@@ -717,12 +717,12 @@ namespace Acetamide
 		IrcParser_->NickCommand (QStringList () << NickName_);
 	}
 
-	ServerParticipantEntry* IrcServerHandler::GetParticipantEntry (const QString& nick)
+	ServerParticipantEntry_ptr IrcServerHandler::GetParticipantEntry (const QString& nick)
 	{
 		if (Nick2Entry_.contains (nick))
 			return Nick2Entry_ [nick];
 
-		ServerParticipantEntry *entry (CreateParticipantEntry (nick));
+		ServerParticipantEntry_ptr entry (CreateParticipantEntry (nick));
 		Nick2Entry_ [nick] = entry;
 		return entry;
 	}
@@ -760,10 +760,10 @@ namespace Acetamide
 			ServerResponceManager_->DoAction (opts);
 	}
 
-	ServerParticipantEntry* IrcServerHandler::CreateParticipantEntry (const QString& nick)
+	ServerParticipantEntry_ptr IrcServerHandler::CreateParticipantEntry (const QString& nick)
 	{
-		ServerParticipantEntry *entry = new ServerParticipantEntry (nick, this, Account_);
-		Account_->handleGotRosterItems (QList<QObject*> () << entry);
+		ServerParticipantEntry_ptr entry (new ServerParticipantEntry (nick, this, Account_));
+		Account_->handleGotRosterItems (QObjectList () << entry.get ());
 		return entry;
 	}
 
@@ -836,7 +836,7 @@ namespace Acetamide
 	void IrcServerHandler::ClosePrivateChat (const QString& nick)
 	{
 		if (Nick2Entry_.contains (nick))
-			Account_->handleEntryRemoved (Nick2Entry_ [nick]);
+			Account_->handleEntryRemoved (Nick2Entry_ [nick].get ());
 		else
 			Q_FOREACH (QObject *entryObj, ChannelsManager_->GetParticipantsByNick (nick))
 			{
@@ -850,7 +850,7 @@ namespace Acetamide
 
 	void IrcServerHandler::CreateServerParticipantEntry (QString nick)
 	{
-		ServerParticipantEntry *entry = GetParticipantEntry (nick);
+		ServerParticipantEntry_ptr entry (GetParticipantEntry (nick));
 		entry->SetStatus (EntryStatus (SOnline, ""));
 	}
 

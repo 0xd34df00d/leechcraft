@@ -19,7 +19,7 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCSERVERSOCKET_H
 #define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCSERVERSOCKET_H
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QObject>
 
 class QTcpSocket;
@@ -44,7 +44,7 @@ namespace Acetamide
 
 		bool SSL_;
 
-		boost::shared_ptr<QTcpSocket> Socket_ptr;
+		std::shared_ptr<QTcpSocket> Socket_ptr;
 	public:
 		IrcServerSocket (IrcServerHandler*);
 		void ConnectToHost (const QString&, int);
