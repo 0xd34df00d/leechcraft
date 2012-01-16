@@ -21,6 +21,7 @@
 #include <QStandardItemModel>
 #include <QDomDocument>
 #include <QtDebug>
+#include <util/util.h>
 
 namespace LeechCraft
 {
@@ -149,11 +150,12 @@ namespace Importers
 
 		QMap<QString, QVariant> accountData;
 		accountData ["ParentProfile"] = item->text ();
+		accountData ["Protocol"] = "xmpp";
 		accountData ["Name"] = tfd ("name");
+		accountData ["Enabled"] = bfd ("enabled");
 		accountData ["Jid"] = tfd ("jid");
 		accountData ["Port"] = ifd ("port");
 		accountData ["Host"] = bfd ("use-host") ? tfd ("host") : QString ();
-		accountData ["Enabled"] = bfd ("enabled");
 
 		qDebug () << accountData;
 
@@ -169,10 +171,37 @@ namespace Importers
 		item->appendRow (row);
 	}
 
+	void PsiPlusImportPage::SendImportAcc (QStandardItem *accItem)
+	{
+		Entity e = Util::MakeEntity (QVariant (),
+				QString (),
+				FromUserInitiated | OnlyHandle,
+				"x-leechcraft/im-account-import");
+
+		QVariantMap data = accItem->data (Roles::AccountData).toMap ();
+		data.remove ("Contacts");
+		e.Additional_ ["AccountData"] = data;
+
+		emit gotEntity (e);
+	}
+
+	void PsiPlusImportPage::SendImportHist (QStandardItem *accItem)
+	{
+	}
+
 	void PsiPlusImportPage::handleAccepted ()
 	{
 		for (int i = 0; i < AccountsModel_->rowCount (); ++i)
 		{
+			QStandardItem *profItem = AccountsModel_->item (i);
+			for (int j = 0; j < profItem->rowCount (); ++j)
+			{
+				QStandardItem *accItem = profItem->child (j);
+				if (profItem->child (j, Column::ImportAcc)->checkState () == Qt::Checked)
+					SendImportAcc (accItem);
+				if (profItem->child (j, Column::ImportHist)->checkState () == Qt::Checked)
+					SendImportHist (accItem);
+			}
 		}
 	}
 }

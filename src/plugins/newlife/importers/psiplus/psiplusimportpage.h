@@ -63,6 +63,9 @@ namespace Importers
 		void FindAccounts ();
 		void ScanProfile (const QString&, const QString&);
 		void ScanAccount (QStandardItem*, const QDomElement&);
+
+		void SendImportAcc (QStandardItem*);
+		void SendImportHist (QStandardItem*);
 	private slots:
 		void handleAccepted ();
 	signals:
