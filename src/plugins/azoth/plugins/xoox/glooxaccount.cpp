@@ -642,7 +642,7 @@ namespace Xoox
 
 	QString GlooxAccount::GetNick () const
 	{
-		return Nick_;
+		return Nick_.isEmpty () ? JID_ : Nick_;
 	}
 
 	void GlooxAccount::JoinRoom (const QString& jid, const QString& nick)
