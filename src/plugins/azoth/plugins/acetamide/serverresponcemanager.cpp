@@ -228,27 +228,20 @@ namespace Acetamide
 
 	void ServerResponceManager::GotJoin (const IrcMessageOptions& opts)
 	{
+		const QString& channel = opts.Message_.isEmpty () ?
+				QString::fromUtf8 (opts.Parameters_.last ().c_str ()) :
+				opts.Message_;
+
 		if (opts.Nick_ == ISH_->GetNickName ())
 		{
-			QString channel;
-			if (!opts.Parameters_.isEmpty ())
-				channel = QString::fromUtf8 (opts.Parameters_.first ().c_str ());
-			else if (!opts.Message_.isEmpty ())
-				channel = opts.Message_;
-
 			ChannelOptions co;
 			co.ChannelName_ = channel;
 			co.ServerName_ = ISH_->GetServerOptions ().ServerName_.toLower ();
 			co.ChannelPassword_ = QString ();
 			ISH_->JoinedChannel (co);
-			return;
 		}
-
-		const QString& channel = channel.isEmpty () ?
-				QString::fromUtf8 (opts.Parameters_.last ().c_str ()) :
-				opts.Message_;
-
-		ISH_->JoinParticipant (opts.Nick_, channel, opts.Host_, opts.UserName_);
+		else
+			ISH_->JoinParticipant (opts.Nick_, channel, opts.Host_, opts.UserName_);
 	}
 
 	void ServerResponceManager::GotPart (const IrcMessageOptions& opts)
