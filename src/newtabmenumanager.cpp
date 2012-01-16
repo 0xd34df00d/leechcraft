@@ -131,6 +131,7 @@ namespace LeechCraft
 					NewTabMenu_);
 		else
 			AdditionalTabMenu_->addMenu (NewTabMenu_);
+
 		return AdditionalTabMenu_;
 	}
 
