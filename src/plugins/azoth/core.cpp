@@ -39,6 +39,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include "interfaces/iprotocolplugin.h"
 #include "interfaces/iprotocol.h"
+#include "interfaces/isupportimport.h"
 #include "interfaces/iaccount.h"
 #include "interfaces/iclentry.h"
 #include "interfaces/iadvancedclentry.h"
@@ -327,7 +328,8 @@ namespace Azoth
 
 	bool Core::CouldHandle (const Entity& e) const
 	{
-		if (e.Mime_ == "x-leechcraft/power-state-changed")
+		if (e.Mime_ == "x-leechcraft/power-state-changed" ||
+				e.Mime_ == "x-leechcraft/im-account-import")
 			return true;
 
 		if (!e.Entity_.canConvert<QUrl> ())
@@ -367,6 +369,11 @@ namespace Azoth
 		if (e.Mime_ == "x-leechcraft/power-state-changed")
 		{
 			HandlePowerNotification (e);
+			return;
+		}
+		else if (e.Mime_ == "x-leechcraft/im-account-import")
+		{
+			HandleAccountImport (e);
 			return;
 		}
 
@@ -1457,6 +1464,29 @@ namespace Azoth
 				i < rc; ++i)
 			sum += category->child (i)->data (CLRUnreadMsgCount).toInt ();
 		category->setData (sum, CLRUnreadMsgCount);
+	}
+
+	void Core::HandleAccountImport (Entity e)
+	{
+		const QVariantMap& map = e.Additional_ ["AccountData"].toMap ();
+		const QString& protoId = map ["Protocol"].toString ();
+		if (protoId.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "empty protocol id"
+					<< map;
+			return;
+		}
+
+		Q_FOREACH (IProtocol *proto, GetProtocols ())
+		{
+			ISupportImport *isi = qobject_cast<ISupportImport*> (proto->GetObject ());
+			if (!isi || isi->GetImportProtocolID () != protoId)
+				continue;
+
+			isi->ImportAccount (map);
+			break;
+		}
 	}
 
 	void Core::HandlePowerNotification (Entity e)
