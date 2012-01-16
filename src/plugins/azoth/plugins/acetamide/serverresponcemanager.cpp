@@ -37,12 +37,14 @@ namespace Acetamide
 
 	void ServerResponceManager::DoAction (const IrcMessageOptions& opts)
 	{
-		if (opts.Command_ == "privopts.Message_" && IsCTCPMessage (opts.Message_))
+		if (opts.Command_ == "privmsg" && IsCTCPMessage (opts.Message_))
 			Command2Action_ ["ctcp_rpl"] (opts);
 		else if (opts.Command_ == "notice" && IsCTCPMessage (opts.Message_))
 			Command2Action_ ["ctcp_rqst"] (opts);
 		else if (Command2Action_.contains (opts.Command_))
 			Command2Action_ [opts.Command_] (opts);
+		else
+			ISH_->ShowAnswer ("UNKNOWN CMD " + opts.Command_, opts.Message_);
 	}
 
 	void ServerResponceManager::Init ()
