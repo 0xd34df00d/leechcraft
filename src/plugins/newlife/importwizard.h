@@ -36,12 +36,15 @@ namespace NewLife
 
 		friend class FirstPage;
 
+		QObject *Plugin_;
+
 		Ui::ImportWizard Ui_;
 		QList<AbstractImporter*> Importers_;
 	public:
-		ImportWizard (QWidget* = 0);
+		ImportWizard (QObject*, QWidget* = 0);
 
 		QString GetSelectedName () const;
+		QObject* GetPlugin () const;
 	private slots:
 		void handleAccepted ();
 		void handleRejected ();

@@ -28,8 +28,9 @@ namespace LeechCraft
 {
 namespace NewLife
 {
-	ImportWizard::ImportWizard (QWidget *parent)
+	ImportWizard::ImportWizard (QObject *plugin, QWidget *parent)
 	: QWizard (parent)
+	, Plugin_ (plugin)
 	{
 		Ui_.setupUi (this);
 
@@ -56,6 +57,11 @@ namespace NewLife
 	QString ImportWizard::GetSelectedName () const
 	{
 		return Ui_.FirstPage_->GetSelectedName ();
+	}
+
+	QObject* ImportWizard::GetPlugin () const
+	{
+		return Plugin_;
 	}
 
 	void ImportWizard::handleAccepted ()

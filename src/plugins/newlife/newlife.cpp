@@ -100,7 +100,7 @@ namespace NewLife
 
 	void Plugin::runWizard ()
 	{
-		ImportWizard *wiz = new ImportWizard ();
+		ImportWizard *wiz = new ImportWizard (this);
 		connect (wiz,
 				SIGNAL (gotEntity (const LeechCraft::Entity&)),
 				this,
