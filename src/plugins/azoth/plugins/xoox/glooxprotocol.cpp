@@ -291,22 +291,6 @@ namespace Xoox
 					<< queryItems;
 	}
 
-	void GlooxProtocol::saveAccounts () const
-	{
-		QSettings settings (QSettings::IniFormat, QSettings::UserScope,
-				QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Azoth_Xoox_Accounts");
-		settings.beginWriteArray ("Accounts");
-		for (int i = 0, size = Accounts_.size ();
-				i < size; ++i)
-		{
-			settings.setArrayIndex (i);
-			settings.setValue ("SerializedData", Accounts_.at (i)->Serialize ());
-		}
-		settings.endArray ();
-		settings.sync ();
-	}
-
 	void GlooxProtocol::RestoreAccounts ()
 	{
 		QSettings settings (QSettings::IniFormat, QSettings::UserScope,
@@ -336,6 +320,23 @@ namespace Xoox
 			emit accountAdded (acc);
 		}
 		settings.endArray ();
+	}
+
+
+	void GlooxProtocol::saveAccounts () const
+	{
+		QSettings settings (QSettings::IniFormat, QSettings::UserScope,
+				QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth_Xoox_Accounts");
+		settings.beginWriteArray ("Accounts");
+		for (int i = 0, size = Accounts_.size ();
+				i < size; ++i)
+		{
+			settings.setArrayIndex (i);
+			settings.setValue ("SerializedData", Accounts_.at (i)->Serialize ());
+		}
+		settings.endArray ();
+		settings.sync ();
 	}
 }
 }
