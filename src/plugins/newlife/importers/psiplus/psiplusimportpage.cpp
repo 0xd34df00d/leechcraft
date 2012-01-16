@@ -20,8 +20,11 @@
 #include <QDir>
 #include <QStandardItemModel>
 #include <QDomDocument>
+#include <QDateTime>
 #include <QtDebug>
 #include <util/util.h>
+#include "importwizard.h"
+#include "imhistimporterbase.h"
 
 namespace LeechCraft
 {
@@ -125,6 +128,7 @@ namespace Importers
 		}
 
 		QStandardItem *item = new QStandardItem (profileName);
+		item->setEditable (false);
 		AccountsModel_->appendRow (item);
 
 		const auto& accs = doc.documentElement ().firstChildElement ("accounts");
@@ -148,6 +152,18 @@ namespace Importers
 		auto bfd = [&account, &tfd] (const QString& field)
 			{ return tfd (field) == "true"; };
 
+		QStringList jids;
+
+		const auto& rosterCache = account.firstChildElement ("roster-cache");
+		auto rosterItem = rosterCache.firstChildElement ();
+		while (!rosterItem.isNull ())
+		{
+			const QString& jid = rosterItem.firstChildElement ("jid").text ();
+			if (!jid.isEmpty ())
+				jids << jid;
+			rosterItem = rosterItem.nextSiblingElement ();
+		}
+
 		QMap<QString, QVariant> accountData;
 		accountData ["ParentProfile"] = item->text ();
 		accountData ["Protocol"] = "xmpp";
@@ -156,8 +172,7 @@ namespace Importers
 		accountData ["Jid"] = tfd ("jid");
 		accountData ["Port"] = ifd ("port");
 		accountData ["Host"] = bfd ("use-host") ? tfd ("host") : QString ();
-
-		qDebug () << accountData;
+		accountData ["Contacts"] = jids;
 
 		QList<QStandardItem*> row;
 		row << new QStandardItem (accountData ["Name"].toString ());
@@ -166,7 +181,11 @@ namespace Importers
 		row << new QStandardItem ();
 		row.first ()->setData (accountData, Roles::AccountData);
 		row [Column::ImportAcc]->setCheckState (Qt::Checked);
+		row [Column::ImportAcc]->setCheckable (true);
 		row [Column::ImportHist]->setCheckState (Qt::Checked);
+		row [Column::ImportHist]->setCheckable (true);
+		Q_FOREACH (auto item, row)
+			item->setEditable (false);
 
 		item->appendRow (row);
 	}
@@ -185,8 +204,160 @@ namespace Importers
 		emit gotEntity (e);
 	}
 
+	namespace
+	{
+		class HistImporter : public IMHistImporterBase
+		{
+			QString Profile_;
+			QString AccName_;
+			QString AccID_;
+			QStringList JIDs_;
+			QString CurrentJID_;
+
+			QFile CurrentFile_;
+		public:
+			HistImporter (const QString& profile,
+					const QString& accName, const QString& accId,
+					const QStringList& jids, QObject *parent = 0)
+			: IMHistImporterBase (parent)
+			, Profile_ (profile)
+			, AccName_ (accName)
+			, AccID_ (accId)
+			, JIDs_ (jids)
+			{
+			}
+		protected:
+			Entity GetEntityChunk ()
+			{
+				Entity e;
+				if (JIDs_.isEmpty ())
+					return e;
+
+				const int lim = 1000;
+
+				int counter = 0;
+				QVariantList list;
+
+				if (!OpenNextFile ())
+					return e;
+
+				while (CurrentFile_.isOpen ())
+				{
+					while (true)
+					{
+						if (CurrentFile_.atEnd ())
+						{
+							CurrentFile_.close ();
+							break;
+						}
+
+						try
+						{
+							const auto& var = ParseLine (QString::fromUtf8 (CurrentFile_.readLine ()));
+							if (!var.isNull ())
+							{
+								list << var;
+								if (++counter > lim)
+									break;
+							}
+						}
+						catch (const std::exception& e)
+						{
+							qWarning () << Q_FUNC_INFO
+									<< "error parsing line"
+									<< e.what ();
+						}
+					}
+
+					if (counter > lim)
+						break;
+
+					if (!CurrentFile_.isOpen () || CurrentFile_.atEnd ())
+					{
+						CurrentFile_.close ();
+
+						if (!OpenNextFile ())
+							break;
+					}
+				}
+
+				if (counter)
+				{
+					e.Additional_ ["History"] = list;
+					e.Mime_ = "x-leechcraft/im-history-import";
+					e.Additional_ ["AccountName"] = AccName_;
+					e.Additional_ ["AccountID"] = AccID_;
+				}
+
+				return e;
+			}
+		private:
+			bool OpenNextFile ()
+			{
+				while (!CurrentFile_.isOpen ())
+				{
+					if (JIDs_.isEmpty ())
+						return false;
+
+					CurrentJID_ = JIDs_.takeFirst ();
+					CurrentFile_.setFileName (GetFileName (CurrentJID_));
+					if (!CurrentFile_.exists ())
+						continue;
+
+					if (!CurrentFile_.open (QIODevice::ReadOnly))
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "cannot open"
+								<< CurrentFile_.fileName ()
+								<< CurrentFile_.errorString ();
+						continue;
+					}
+
+					if (JIDs_.isEmpty ())
+						return false;
+				}
+
+				return true;
+			}
+
+			QString GetFileName (QString jid)
+			{
+				return QString ("%1/.local/share/Psi+/profiles/%2/history/%3.history")
+						.arg (QDir::homePath ())
+						.arg (Profile_)
+						.arg (jid.replace ('@', "_at_"));
+			}
+
+			QVariant ParseLine (const QString& line)
+			{
+				QStringList list = line.split ('|', QString::SkipEmptyParts);
+				if (list.size () < 5 || list [1] != "1")
+					return QVariant ();
+
+				QVariantMap result;
+				result ["ContactID"] = CurrentJID_;
+				result ["Date"] = QDateTime::fromString (list.at (0), Qt::ISODate);
+				result ["Direction"] = list.at (2) == "to" ? "out" : "in";
+
+				list.erase (list.begin (), list.begin () + 4);
+				result ["Text"] = list.join ("|").trimmed ();
+				return result;
+			}
+		};
+	}
+
 	void PsiPlusImportPage::SendImportHist (QStandardItem *accItem)
 	{
+		QVariantMap data = accItem->data (Roles::AccountData).toMap ();
+
+		HistImporter *hi = new HistImporter (data ["ParentProfile"].toString (),
+				data ["Name"].toString (),
+				data ["Jid"].toString (),
+				data ["Contacts"].toStringList ());
+		connect (hi,
+				SIGNAL (gotEntity (LeechCraft::Entity)),
+				qobject_cast<ImportWizard*> (wizard ())->GetPlugin (),
+				SIGNAL (gotEntity (LeechCraft::Entity)));
 	}
 
 	void PsiPlusImportPage::handleAccepted ()
