@@ -35,6 +35,8 @@ SET (SRCS
 	dbusthread.cpp
 	batteryhistory.cpp
 	batteryhistorydialog.cpp
+	platformlayer.cpp
+	platformupower.cpp
 	)
 SET (HEADERS
 	liznoo.h
@@ -43,6 +45,8 @@ SET (HEADERS
 	dbusthread.h
 	batteryhistory.h
 	batteryhistorydialog.h
+	platformlayer.h
+	platformupower.h
 	)
 SET (FORMS
 	batteryhistorydialog.ui

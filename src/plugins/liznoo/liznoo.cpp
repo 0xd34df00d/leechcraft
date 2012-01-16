@@ -23,9 +23,13 @@
 #include <QTimer>
 #include <interfaces/core/icoreproxy.h>
 #include <util/util.h>
-#include "dbusconnector.h"
-#include "dbusthread.h"
 #include "batteryhistorydialog.h"
+
+#ifdef Q_WS_X11
+#include "platformupower.h"
+#else
+#pragma message ("Unsupported system")
+#endif
 
 namespace LeechCraft
 {
@@ -38,12 +42,16 @@ namespace Liznoo
 		Proxy_ = proxy;
 		qRegisterMetaType<BatteryInfo> ("Liznoo::BatteryInfo");
 
-		Thread_ = new DBusThread;
-		connect (Thread_,
-				SIGNAL(started ()),
+#ifdef Q_WS_X11
+		PL_ = new PlatformUPower (this);
+#else
+		PL_ = 0;
+#endif
+
+		connect (PL_,
+				SIGNAL (started ()),
 				this,
-				SLOT (handleThreadStarted ()));
-		Thread_->start (QThread::LowestPriority);
+				SLOT (handlePlatformStarted ()));
 	}
 
 	void Plugin::SecondInit ()
@@ -57,8 +65,8 @@ namespace Liznoo
 
 	void Plugin::Release ()
 	{
-		if (!Thread_->wait (1000))
-			Thread_->terminate ();
+		if (PL_)
+			PL_->Stop ();
 	}
 
 	QString Plugin::GetName () const
@@ -218,13 +226,13 @@ namespace Liznoo
 		Battery2Dialog_.remove (Battery2Dialog_.key (dia));
 	}
 
-	void Plugin::handleThreadStarted ()
+	void Plugin::handlePlatformStarted ()
 	{
-		connect (Thread_->GetConnector (),
+		connect (PL_,
 				SIGNAL (batteryInfoUpdated (Liznoo::BatteryInfo)),
 				this,
 				SLOT (handleBatteryInfo (Liznoo::BatteryInfo)));
-		connect (Thread_->GetConnector (),
+		connect (PL_,
 				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,
 				SIGNAL (gotEntity (LeechCraft::Entity)));
