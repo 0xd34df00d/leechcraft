@@ -22,6 +22,7 @@
 #include <QSettings>
 #include <QCoreApplication>
 #include <QtDebug>
+#include <util/util.h>
 #include <interfaces/iprotocolplugin.h>
 #include <interfaces/iproxyobject.h>
 #include "glooxaccount.h"
@@ -291,6 +292,58 @@ namespace Xoox
 					<< queryItems;
 	}
 
+	QString GlooxProtocol::GetImportProtocolID () const
+	{
+		return "xmpp";
+	}
+
+	bool GlooxProtocol::ImportAccount (const QVariantMap& info)
+	{
+		const QString& name = info ["Name"].toString ();
+
+		if (name.isEmpty () ||
+				info ["Jid"].toString ().isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "malformed import info"
+					<< info;
+			Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
+						tr ("Unable to import account: malformed import data."),
+						PCritical_));
+			return false;
+		}
+
+		Q_FOREACH (GlooxAccount *acc, Accounts_)
+			if (acc->GetAccountName () == name)
+			{
+				Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
+							tr ("Account %1 already exists, cannot import another one."),
+							PCritical_));
+				return false;
+			}
+
+		// Maybe a kludge, dunno. Don't beat me hard :(
+		GlooxAccountConfigurationWidget w;
+		w.SetJID (info ["Jid"].toString ());
+		w.SetHost (info ["Host"].toString ());
+		w.SetPort (info ["Port"].toInt ());
+		w.SetNick (info ["Nick"].toString ());
+
+		GlooxAccount *account = new GlooxAccount (name, this);
+		account->FillSettings (&w);
+
+		Accounts_ << account;
+		account->Init ();
+		saveAccounts ();
+		emit accountAdded (account);
+
+		return true;
+	}
+
+	void GlooxProtocol::ImportHistory (const QList<QVariantMap>& messages)
+	{
+	}
+
 	void GlooxProtocol::RestoreAccounts ()
 	{
 		QSettings settings (QSettings::IniFormat, QSettings::UserScope,
@@ -321,7 +374,6 @@ namespace Xoox
 		}
 		settings.endArray ();
 	}
-
 
 	void GlooxProtocol::saveAccounts () const
 	{
