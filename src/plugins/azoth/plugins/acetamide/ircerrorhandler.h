@@ -40,7 +40,7 @@ namespace Acetamide
 		IrcServerHandler *ISH_;
 		QVector<int> ErrorKeys_;
 	public:
-		IrcErrorHandler (IrcServerHandler* ish);
+		IrcErrorHandler (IrcServerHandler *ish);
 		void HandleError (const IrcMessageOptions& opts);
 		bool IsError (int code);
 	private:

@@ -19,7 +19,6 @@
 #ifndef LEECHCRAFT_AZOTH_PLUGINS_ACETAMIDE_CHANNELPARTICIPANTENTRY_H
 #define LEECHCRAFT_AZOTH_PLUGINS_ACETAMIDE_CHANNELPARTICIPANTENTRY_H
 
-#include <boost/shared_ptr.hpp>
 #include "ircparticipantentry.h"
 #include "localtypes.h"
 
@@ -29,13 +28,11 @@ namespace Azoth
 {
 namespace Acetamide
 {
-
 	class IrcAccount;
 	class ChannelHandler;
 
 	class ChannelParticipantEntry : public IrcParticipantEntry
 	{
-
 		Q_OBJECT
 
 		ChannelHandler *ICH_;

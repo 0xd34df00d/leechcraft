@@ -84,7 +84,7 @@ namespace Acetamide
 		return ChannelHandlers_.values ();
 	}
 
-	bool ChannelsManager::IsChannelExists (const QString& channel)
+	bool ChannelsManager::IsChannelExists (const QString& channel) const
 	{
 		return ChannelHandlers_.contains (channel.toLower ());
 	}
@@ -228,9 +228,7 @@ namespace Acetamide
 		if (msg.startsWith ('/'))
 		{
 			const QString& cmd = ISH_->ParseMessageForCommand (msg, chnnl);
-			if (ChannelHandlers_.contains (chnnl)// TODO &&
-					// add settings for this
-			)
+			if (ChannelHandlers_.contains (chnnl))
 			{
 				AddCommand2Queue (chnnl, cmd, ISH_->IsCmdHasLongAnswer (cmd));
 				ChannelHandlers_ [chnnl]->HandleServiceMessage (msg,
@@ -467,13 +465,16 @@ namespace Acetamide
 					ChannelHandlers_ [channel]->SetChannelKey (action, value);
 					break;
 				case 'b':
-					ISH_->ShowAnswer ("mode", value + tr (" added to your ban list."));
+					ISH_->ShowAnswer ("mode", tr ("%1 added to your ban list.")
+							.arg (value));
 					break;
 				case 'e':
-					ISH_->ShowAnswer ("mode", value + tr (" added to your except list."));
+					ISH_->ShowAnswer ("mode", tr ("%1 added to your except list.")
+							.arg (value));
 					break;
 				case 'I':
-					ISH_->ShowAnswer ("mode", value + tr (" added to your invite list."));
+					ISH_->ShowAnswer ("mode", tr ("%1 added to your invite list.")
+							.arg (value));
 					break;
 			}
 		}

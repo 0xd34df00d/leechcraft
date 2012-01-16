@@ -91,7 +91,7 @@ namespace Acetamide
 		if (Nick2Entry_.contains (nick))
 			return Nick2Entry_ [nick];
 
-		ChannelParticipantEntry* entry (CreateParticipantEntry (nick));
+		ChannelParticipantEntry *entry (CreateParticipantEntry (nick));
 		Nick2Entry_ [nick] = entry;
 		return entry;
 	}
@@ -183,7 +183,7 @@ namespace Acetamide
 
 		if (CM_->GetISupport ().contains ("PREFIX"))
 		{
-			QStringList prefixList = CM_->GetISupport () ["PREFIX"].split (')');
+			const QStringList& prefixList = CM_->GetISupport () ["PREFIX"].split (')');
 			int id = prefixList.at (1).indexOf (nick [0]);
 			if (id != -1)
 			{
@@ -193,7 +193,7 @@ namespace Acetamide
 			}
 		}
 
-		ChannelParticipantEntry* entry = GetParticipantEntry (nickName);
+		ChannelParticipantEntry *entry = GetParticipantEntry (nickName);
 		entry->SetUserName (user);
 		entry->SetHostName (user);
 
@@ -229,7 +229,8 @@ namespace Acetamide
 
 	void ChannelHandler::MakeJoinMessage (const QString& nick)
 	{
-		QString msg  = tr ("%1 joined the channel as %2").arg (nick)
+		QString msg  = tr ("%1 joined the channel as %2")
+				.arg (nick)
 				.arg (ChannelCLEntry_->Role2String (Nick2Entry_ [nick]->HighestRole ()));
 
 		ChannelPublicMessage *message =
@@ -276,10 +277,10 @@ namespace Acetamide
 			mess = tr ("You have been kicked by %1 %2")
 					.arg (who, reason);
 		else if (who == ourNick)
-			mess = tr ("You kicked %1 %2")
+			mess = tr ("You kicked %1: %2")
 					.arg (nick, reason);
 		else
-			mess = tr ("%1 has been kicked by %2 %3")
+			mess = tr ("%1 has been kicked by %2: %3")
 					.arg (nick, who, reason);
 
 		ChannelPublicMessage *message = new ChannelPublicMessage (mess,
@@ -296,9 +297,11 @@ namespace Acetamide
 		const QString& roleStr = ChannelCLEntry_->Role2String (role);
 		QString msg;
 		if (isSet)
-			msg = tr ("%1 is now %2").arg (nick, roleStr);
+			msg = tr ("%1 is now %2")
+					.arg (nick, roleStr);
 		else
-			msg = tr ("%1 is now not %2").arg (nick, roleStr);
+			msg = tr ("%1 is not %2 anymore")
+					.arg (nick, roleStr);
 
 		ChannelPublicMessage *message = new ChannelPublicMessage (msg,
 				IMessage::DIn,
@@ -671,7 +674,7 @@ namespace Acetamide
 		if (!Nick2Entry_.contains (nick))
 			return false;
 
-		ChannelParticipantEntry* entry = Nick2Entry_ [nick];
+		ChannelParticipantEntry *entry = Nick2Entry_ [nick];
 		Nick2Entry_.remove (nick);
 		CM_->GetAccount ()->handleEntryRemoved (entry);
 
@@ -680,7 +683,7 @@ namespace Acetamide
 
 	ChannelParticipantEntry* ChannelHandler::CreateParticipantEntry (const QString& nick)
 	{
-		ChannelParticipantEntry* entry (new ChannelParticipantEntry (nick,
+		ChannelParticipantEntry *entry (new ChannelParticipantEntry (nick,
 				this, CM_->GetAccount ()));
 		CM_->GetAccount ()->handleGotRosterItems (QList<QObject*> () << entry);
 		return entry;

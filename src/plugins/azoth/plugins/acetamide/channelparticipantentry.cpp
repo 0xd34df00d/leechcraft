@@ -18,11 +18,11 @@
 
 #include "channelparticipantentry.h"
 #include <QMenu>
+#include <interfaces/core/icoreproxy.h>
 #include "channelhandler.h"
 #include "channelclentry.h"
 #include "ircmessage.h"
 #include "ircaccount.h"
-#include <interfaces/core/icoreproxy.h>
 #include "channelsmanager.h"
 
 namespace LeechCraft
@@ -52,7 +52,7 @@ namespace Acetamide
 				SLOT (handleWho ()));
 
 		QMenu *ctcpMenu = new QMenu (tr ("CTCP"));
-		QAction * ping = ctcpMenu->addAction ("PING");
+		QAction *ping = ctcpMenu->addAction ("PING");
 		ping->setProperty ("ctcp_type", "ping");
 		QAction *finger = ctcpMenu->addAction ("FINGER");
 		finger->setProperty ("ctcp_type", "finger");
@@ -95,7 +95,7 @@ namespace Acetamide
 
 	QStringList ChannelParticipantEntry::Groups () const
 	{
-		return QStringList () << ICH_->GetChannelID ();
+		return QStringList (ICH_->GetChannelID ());
 	}
 
 	void ChannelParticipantEntry::SetGroups (const QStringList&)

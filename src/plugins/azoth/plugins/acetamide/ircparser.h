@@ -45,7 +45,7 @@ namespace Acetamide
 	public:
 		IrcParser (IrcServerHandler*);
 
-		bool IsCmdHasLongAnswer (const QString& cmd);
+		bool CmdHasLongAnswer (const QString& cmd);
 
 		void AuthCommand ();
 		void UserCommand ();

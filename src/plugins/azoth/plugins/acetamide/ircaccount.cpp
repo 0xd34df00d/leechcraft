@@ -217,8 +217,7 @@ namespace Acetamide
 		if (server.ServerEncoding_.isEmpty ())
 			server.ServerEncoding_ = DefaultEncoding_;
 		if (server.ServerNickName_.isEmpty ())
-			server.ServerNickName_ = NickNames_.isEmpty () ? GetOurNick ()
-					: NickNames_.at (0);
+			server.ServerNickName_ = NickNames_.value (0, GetOurNick ());
 
 		if (channel.ServerName_.isEmpty ())
 			channel.ServerName_ = server.ServerName_;

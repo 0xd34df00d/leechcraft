@@ -32,7 +32,6 @@ namespace Azoth
 {
 namespace Acetamide
 {
-
 	class IrcServerHandler;
 	class ChannelHandler;
 	class IrcAccount;
@@ -65,7 +64,7 @@ namespace Acetamide
 		ChannelHandler* GetChannelHandler (const QString& channel);
 		QList<ChannelHandler*> GetChannels () const;
 
-		bool IsChannelExists (const QString& channel);
+		bool IsChannelExists (const QString& channel) const;
 
 		int Count () const;
 

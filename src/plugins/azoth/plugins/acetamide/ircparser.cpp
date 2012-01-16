@@ -50,7 +50,7 @@ namespace Acetamide
 				<< "trace";
 	}
 
-	bool IrcParser::IsCmdHasLongAnswer (const QString& cmd)
+	bool IrcParser::CmdHasLongAnswer (const QString& cmd)
 	{
 		return LongAnswerCommands_.contains (cmd.toLower ());
 	}

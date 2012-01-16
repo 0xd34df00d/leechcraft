@@ -309,7 +309,7 @@ namespace Acetamide
 
 	bool IrcServerHandler::IsCmdHasLongAnswer (const QString& cmd)
 	{
-		return IrcParser_->IsCmdHasLongAnswer (cmd);
+		return IrcParser_->CmdHasLongAnswer (cmd);
 	}
 
 	void IrcServerHandler::GetBanList (const QString& channel)

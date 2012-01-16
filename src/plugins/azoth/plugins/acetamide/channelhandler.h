@@ -54,7 +54,7 @@ namespace Acetamide
 
 		ChannelModes ChannelMode_;
 	public:
-		ChannelHandler (const ChannelOptions& options, ChannelsManager* manager);
+		ChannelHandler (const ChannelOptions& options, ChannelsManager *manager);
 		QString GetChannelID () const;
 		ChannelCLEntry* GetCLEntry () const;
 
