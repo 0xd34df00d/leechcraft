@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LIZNOO_LIZNOO_H
-#define PLUGINS_LIZNOO_LIZNOO_H
+#pragma once
+
 #include <QObject>
 #include <QLinkedList>
 #include <interfaces/iinfo.h>
@@ -67,4 +67,3 @@ namespace Liznoo
 }
 }
 
-#endif

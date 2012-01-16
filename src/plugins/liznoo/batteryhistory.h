@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LIZNOO_BATTERYHISTORY_H
-#define PLUGINS_LIZNOO_BATTERYHISTORY_H
+#pragma once
+
 #include <QString>
 
 namespace LeechCraft
@@ -39,4 +39,3 @@ namespace Liznoo
 }
 }
 
-#endif

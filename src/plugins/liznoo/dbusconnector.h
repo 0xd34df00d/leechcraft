@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LIZNOO_DBUSCONNECTOR_H
-#define PLUGINS_LIZNOO_DBUSCONNECTOR_H
+#pragma once
+
 #include <QObject>
 #include <QDBusConnection>
 #include <interfaces/structures.h>
@@ -46,4 +46,3 @@ namespace Liznoo
 }
 }
 
-#endif
