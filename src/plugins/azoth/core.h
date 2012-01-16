@@ -370,6 +370,7 @@ namespace Azoth
 				const QString&, const QString&);
 
 		void HandleAccountImport (Entity);
+		void HandleHistoryImport (Entity);
 		void HandlePowerNotification (Entity);
 
 		/** Removes one item representing the given CL entry.

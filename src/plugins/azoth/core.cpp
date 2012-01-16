@@ -376,6 +376,11 @@ namespace Azoth
 			HandleAccountImport (e);
 			return;
 		}
+		else if (e.Mime_ == "x-leechcraft/im-history-import")
+		{
+			HandleHistoryImport (e);
+			return;
+		}
 
 		const QUrl& url = e.Entity_.toUrl ();
 		if (!url.isValid ())
@@ -1486,6 +1491,15 @@ namespace Azoth
 
 			isi->ImportAccount (map);
 			break;
+		}
+	}
+
+	void Core::HandleHistoryImport (Entity e)
+	{
+		auto accs = GetAccountsPred (ProtocolPlugins_);
+
+		Q_FOREACH (IAccount *acc, accs)
+		{
 		}
 	}
 
