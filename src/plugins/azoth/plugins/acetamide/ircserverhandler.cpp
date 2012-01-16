@@ -687,10 +687,8 @@ namespace Acetamide
 		if (!IsConsoleEnabled_)
 			return;
 
-		if (dir == IMessage::DIn)
-			emit sendMessageToConsole (dir, message);
-		else
-			emit sendMessageToConsole (dir, message);
+		QTextCodec *codec = QTextCodec::codecForName (ServerOptions_.ServerEncoding_.toUtf8 ());
+		emit sendMessageToConsole (dir, codec->toUnicode (message.toAscii ()));
 	}
 
 	void IrcServerHandler::NickCmdError ()
