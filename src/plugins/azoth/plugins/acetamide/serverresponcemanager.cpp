@@ -667,7 +667,7 @@ namespace Acetamide
 		ISH_->ShowUsersReply (opts.Message_);
 	}
 
-	void ServerResponceManager::GotEndOfUsers (const IrcMessageOptions& opts)
+	void ServerResponceManager::GotEndOfUsers (const IrcMessageOptions&)
 	{
 		ISH_->ShowUsersReply (tr ("End of USERS"), true);
 	}
