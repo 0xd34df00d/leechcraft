@@ -17,6 +17,7 @@ set SPEEX_DIR=C:\DEVLIBS\speex-1.2rc1
 rem Go to http://wiki.videolan.org/GenerateLibFromDll first!
 rem Generate libs into this folder
 set VLC_DIR=C:\DEVLIBS\vlc-1.1.11-win32\vlc-1.1.11
+set QWT_DIR=C:\DEVLIBS\qwt-6.0.1
 
 set BUILD_RELEASE_AND_DEBUG=1
 
