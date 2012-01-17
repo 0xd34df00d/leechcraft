@@ -99,7 +99,7 @@ IF( QT4_FOUND )
 					PATHS ${QWT_DIR}/lib)
 				win32_tune_libs_names (QWT6)
 				
-				SET (Qwt6_Qt4_LIBRARY QWT6_LIBRARIES)			
+				SET (Qwt6_Qt4_LIBRARY ${QWT6_LIBRARIES})			
 
 				IF (QWT6_LIBRARIES)
 					SET( Qwt6_Qt4_FOUND TRUE )
