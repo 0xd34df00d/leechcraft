@@ -16,46 +16,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_STANDARDSTYLES_STANDARDSTYLES_H
-#define PLUGINS_AZOTH_PLUGINS_STANDARDSTYLES_STANDARDSTYLES_H
+#ifndef PLUGINS_AZOTH_IMPORTMANAGER_H
+#define PLUGINS_AZOTH_IMPORTMANAGER_H
 #include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-#include <interfaces/iresourceplugin.h>
+#include <interfaces/structures.h>
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-class IProxyObject;
-namespace StandardStyles
-{
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IPlugin2
-				 , public IResourcePlugin
+	class IAccount;
+
+	class ImportManager : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IResourcePlugin);
 
-		IProxyObject *Proxy_;
-		QObjectList ResourceSources_;
+		QMap<QString, IAccount*> AccID2OurID_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		ImportManager (QObject* = 0);
 
-		QSet<QByteArray> GetPluginClasses () const;
-
-		QList<QObject*> GetResourceSources () const;
-	public slots:
-		void initPlugin (QObject*);
+		void HandleAccountImport (Entity);
+		void HandleHistoryImport (Entity);
+	private:
+		IAccount* GetAccountID (Entity);
 	};
-}
 }
 }
 

@@ -34,7 +34,7 @@ namespace Azoth
 
 		virtual bool ImportAccount (const QVariantMap&) = 0;
 
-		virtual void ImportHistory (const QList<QVariantMap>&) = 0;
+		virtual QString GetEntryID (const QString& hrID, QObject *account) = 0;
 	};
 }
 }

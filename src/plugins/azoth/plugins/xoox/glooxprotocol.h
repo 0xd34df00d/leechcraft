@@ -72,7 +72,7 @@ namespace Xoox
 
 		QString GetImportProtocolID () const;
 		bool ImportAccount (const QVariantMap&);
-		void ImportHistory (const QList<QVariantMap>&);
+		QString GetEntryID (const QString&, QObject*);
 	private:
 		void RestoreAccounts ();
 	private slots:

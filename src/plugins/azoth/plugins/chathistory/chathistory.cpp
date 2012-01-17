@@ -155,6 +155,11 @@ namespace ChatHistory
 		RequestedLogs_ [accId] [entryId] = entryObj;
 	}
 
+	void Plugin::AddRawMessage (const QVariantMap& map)
+	{
+		Core::Instance ()->Process (map);
+	}
+
 	void Plugin::initPlugin (QObject *proxy)
 	{
 		Core::Instance ()->SetPluginProxy (proxy);

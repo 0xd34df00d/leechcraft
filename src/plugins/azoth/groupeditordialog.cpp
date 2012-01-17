@@ -38,7 +38,7 @@ namespace Azoth
 		Ui_.GroupsSelector_->SetPossibleSelections (allGroups);
 		Ui_.GroupsSelector_->SetSelections (initial);
 
-		Util::TagsCompleter *tc = new Util::TagsCompleter (Ui_.CategoriesLineEdit_);
+		Util::TagsCompleter *tc = new Util::TagsCompleter (Ui_.CategoriesLineEdit_, this);
 		tc->OverrideModel (new QStringListModel (allGroups, this));
 
 		const QString& text = Core::Instance ()

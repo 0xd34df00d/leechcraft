@@ -81,6 +81,7 @@ namespace ChatHistory
 		// IHistoryPlugin
 		bool IsHistoryEnabledFor (QObject*) const;
 		void RequestLastMessages (QObject*, int);
+		void AddRawMessage (const QVariantMap&);
 	public slots:
 		void initPlugin (QObject*);
 

@@ -340,8 +340,18 @@ namespace Xoox
 		return true;
 	}
 
-	void GlooxProtocol::ImportHistory (const QList<QVariantMap>& messages)
+	QString GlooxProtocol::GetEntryID (const QString& hrID, QObject *accObj)
 	{
+		GlooxAccount *acc = qobject_cast<GlooxAccount*> (accObj);
+		if (!acc)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "passed object is not a GlooxAccount"
+					<< accObj;
+			return QString ();
+		}
+
+		return acc->GetAccountID () + '_' + hrID;
 	}
 
 	void GlooxProtocol::RestoreAccounts ()

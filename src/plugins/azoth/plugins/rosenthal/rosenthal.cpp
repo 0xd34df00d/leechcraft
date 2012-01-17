@@ -152,7 +152,8 @@ namespace Rosenthal
 		QString base;
 
 		QStringList candidates;
-		candidates << "/usr/local/share/myspell/"
+		candidates << Util::CreateIfNotExists ("/data/dicts/myspell/").absolutePath ()
+				<< "/usr/local/share/myspell/"
 				<< "/usr/share/myspell/"
 				<< "/usr/local/share/myspell/dicts/"
 				<< "/usr/share/myspell/dicts/"

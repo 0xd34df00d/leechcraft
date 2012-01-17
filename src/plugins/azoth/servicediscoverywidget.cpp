@@ -42,7 +42,7 @@ namespace Azoth
 	, Toolbar_ (new QToolBar)
 	, AccountBox_ (new QComboBox)
 	, AddressLine_ (new QLineEdit)
-	, DiscoveryTimer_ (new QTimer)
+	, DiscoveryTimer_ (new QTimer (this))
 	{
 		Ui_.setupUi (this);
 
@@ -71,12 +71,11 @@ namespace Azoth
 
 		Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
 		{
-			IHaveServiceDiscovery *ihsd =
-					qobject_cast<IHaveServiceDiscovery*> (acc->GetObject ());
+			auto ihsd = qobject_cast<IHaveServiceDiscovery*> (acc->GetObject ());
 			if (!ihsd)
 				continue;
 
-			IProtocol *proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
+			auto proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
 			if (!proto)
 			{
 				qWarning () << Q_FUNC_INFO
@@ -150,19 +149,18 @@ namespace Azoth
 		if (!idx.isValid ())
 			return;
 
-		const QList<QPair<QByteArray, QString> >& actions =
+		const QList<QPair<QByteArray, QString>>& actions =
 				SDSession_->GetActionsFor (idx);
 		if (actions.isEmpty ())
 			return;
 
 		QMenu *menu = new QMenu (tr ("Discovery actions"));
-		// C++0x: move on to 0x's foreach construct.
-		for (QList<QPair<QByteArray, QString> >::const_iterator i = actions.begin (),
-					end = actions.end (); i != end; ++i)
+		for (auto i = actions.begin (), end = actions.end (); i != end; ++i)
 			 menu->addAction (i->second)->setProperty ("Azoth/ID", i->first);
 
 		QAction *result = menu->exec (Ui_.DiscoveryTree_->
 					viewport ()->mapToGlobal (point));
+		menu->deleteLater ();
 		if (!result)
 			return;
 

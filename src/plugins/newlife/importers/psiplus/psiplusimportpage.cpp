@@ -287,6 +287,7 @@ namespace Importers
 					e.Mime_ = "x-leechcraft/im-history-import";
 					e.Additional_ ["AccountName"] = AccName_;
 					e.Additional_ ["AccountID"] = AccID_;
+					e.Parameters_ = OnlyHandle | FromUserInitiated;
 				}
 
 				return e;
@@ -335,12 +336,12 @@ namespace Importers
 					return QVariant ();
 
 				QVariantMap result;
-				result ["ContactID"] = CurrentJID_;
-				result ["Date"] = QDateTime::fromString (list.at (0), Qt::ISODate);
+				result ["EntryID"] = CurrentJID_;
+				result ["DateTime"] = QDateTime::fromString (list.at (0), Qt::ISODate);
 				result ["Direction"] = list.at (2) == "to" ? "out" : "in";
 
 				list.erase (list.begin (), list.begin () + 4);
-				result ["Text"] = list.join ("|").trimmed ();
+				result ["Body"] = list.join ("|").trimmed ();
 				return result;
 			}
 		};

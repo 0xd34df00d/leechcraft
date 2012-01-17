@@ -37,7 +37,7 @@ namespace Azoth
 	{
 		Q_OBJECT
 
-		typedef QHash<const ICLEntry*, QHash<QByteArray, QAction*> > Entry2Actions_t;
+		typedef QHash<const ICLEntry*, QHash<QByteArray, QAction*>> Entry2Actions_t;
 		Entry2Actions_t Entry2Actions_;
 	public:
 		enum CLEntryActionArea
@@ -50,7 +50,7 @@ namespace Azoth
 			CLEAAMAX
 		};
 	private:
-		typedef QHash<const QAction*, QList<CLEntryActionArea> > Action2Areas_t;
+		typedef QHash<const QAction*, QList<CLEntryActionArea>> Action2Areas_t;
 		Action2Areas_t Action2Areas_;
 	public:
 		ActionsManager (QObject* = 0);
@@ -93,6 +93,8 @@ namespace Azoth
 	signals:
 		void hookEntryActionAreasRequested (LeechCraft::IHookProxy_ptr proxy,
 				QObject *action,
+				QObject *entry);
+		void hookEntryActionsRemoved (LeechCraft::IHookProxy_ptr proxy,
 				QObject *entry);
 		void hookEntryActionsRequested (LeechCraft::IHookProxy_ptr proxy,
 				QObject *entry);
