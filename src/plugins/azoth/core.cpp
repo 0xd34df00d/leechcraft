@@ -39,7 +39,6 @@
 #include <interfaces/core/icoreproxy.h>
 #include "interfaces/iprotocolplugin.h"
 #include "interfaces/iprotocol.h"
-#include "interfaces/isupportimport.h"
 #include "interfaces/iaccount.h"
 #include "interfaces/iclentry.h"
 #include "interfaces/iadvancedclentry.h"
@@ -71,6 +70,7 @@
 #include "clmodel.h"
 #include "actionsmanager.h"
 #include "servicediscoverywidget.h"
+#include "importmanager.h"
 
 namespace LeechCraft
 {
@@ -160,6 +160,7 @@ namespace Azoth
 	, XferJobManager_ (new TransferJobManager)
 	, CallManager_ (new CallManager)
 	, EventsNotifier_ (new EventsNotifier)
+	, ImportManager_ (new ImportManager)
 	{
 		FillANFields ();
 
@@ -329,7 +330,8 @@ namespace Azoth
 	bool Core::CouldHandle (const Entity& e) const
 	{
 		if (e.Mime_ == "x-leechcraft/power-state-changed" ||
-				e.Mime_ == "x-leechcraft/im-account-import")
+				e.Mime_ == "x-leechcraft/im-account-import" ||
+				e.Mime_ == "x-leechcraft/im-history-import")
 			return true;
 
 		if (!e.Entity_.canConvert<QUrl> ())
@@ -373,12 +375,12 @@ namespace Azoth
 		}
 		else if (e.Mime_ == "x-leechcraft/im-account-import")
 		{
-			HandleAccountImport (e);
+			ImportManager_->HandleAccountImport (e);
 			return;
 		}
 		else if (e.Mime_ == "x-leechcraft/im-history-import")
 		{
-			HandleHistoryImport (e);
+			ImportManager_->HandleHistoryImport (e);
 			return;
 		}
 
@@ -459,9 +461,9 @@ namespace Azoth
 		return ChatTabsManager_;
 	}
 
-	QList<IAccount*> Core::GetAccounts () const
+	QList<IAccount*> Core::GetAccounts (std::function<bool (IProtocol*)> protoPred) const
 	{
-		return GetAccountsPred (ProtocolPlugins_);
+		return GetAccountsPred (ProtocolPlugins_, protoPred);
 	}
 
 	QList<IProtocol*> Core::GetProtocols () const
@@ -1469,38 +1471,6 @@ namespace Azoth
 				i < rc; ++i)
 			sum += category->child (i)->data (CLRUnreadMsgCount).toInt ();
 		category->setData (sum, CLRUnreadMsgCount);
-	}
-
-	void Core::HandleAccountImport (Entity e)
-	{
-		const QVariantMap& map = e.Additional_ ["AccountData"].toMap ();
-		const QString& protoId = map ["Protocol"].toString ();
-		if (protoId.isEmpty ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "empty protocol id"
-					<< map;
-			return;
-		}
-
-		Q_FOREACH (IProtocol *proto, GetProtocols ())
-		{
-			ISupportImport *isi = qobject_cast<ISupportImport*> (proto->GetObject ());
-			if (!isi || isi->GetImportProtocolID () != protoId)
-				continue;
-
-			isi->ImportAccount (map);
-			break;
-		}
-	}
-
-	void Core::HandleHistoryImport (Entity e)
-	{
-		auto accs = GetAccountsPred (ProtocolPlugins_);
-
-		Q_FOREACH (IAccount *acc, accs)
-		{
-		}
 	}
 
 	void Core::HandlePowerNotification (Entity e)

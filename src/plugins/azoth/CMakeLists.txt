@@ -104,6 +104,7 @@ SET (SRCS
 	mucinvitedialog.cpp
 	groupsenddialog.cpp
 	actionsmanager.cpp
+	importmanager.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -147,6 +148,7 @@ SET (HEADERS
 	mucinvitedialog.h
 	groupsenddialog.h
 	actionsmanager.h
+	importmanager.h
 	animatediconmanager.h
 	sourcetrackingmodel.h
 	interfaces/iprotocolplugin.h
