@@ -36,6 +36,8 @@ namespace NativeEmoticons
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IResourcePlugin);
+
+		QObjectList ResourceSources_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -44,7 +46,7 @@ namespace NativeEmoticons
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
-		
+
 		QSet<QByteArray> GetPluginClasses () const;
 
 		QList<QObject*> GetResourceSources () const;

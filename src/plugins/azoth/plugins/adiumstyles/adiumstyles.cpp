@@ -70,12 +70,13 @@ namespace AdiumStyles
 
 	QList<QObject*> Plugin::GetResourceSources () const
 	{
-		return QObjectList () << new AdiumStyleSource (Proxy_);
+		return ResourceSources_;
 	}
 
 	void Plugin::initPlugin (QObject *proxy)
 	{
 		Proxy_ = qobject_cast<IProxyObject*> (proxy);
+		ResourceSources_ << new AdiumStyleSource (Proxy_);
 	}
 }
 }

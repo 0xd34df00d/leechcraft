@@ -30,6 +30,9 @@ namespace NativeEmoticons
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		ResourceSources_ << new NativeEmoticonsSource ()
+				<< new KopeteEmoticonsSource ()
+				<< new PsiPlusEmoticonsSource ();
 	}
 
 	void Plugin::SecondInit ()
@@ -70,11 +73,7 @@ namespace NativeEmoticons
 
 	QList<QObject*> Plugin::GetResourceSources () const
 	{
-		QObjectList result;
-		result << new NativeEmoticonsSource ();
-		result << new KopeteEmoticonsSource ();
-		result << new PsiPlusEmoticonsSource ();
-		return result;
+		return ResourceSources_;
 	}
 }
 }
