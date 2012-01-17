@@ -145,6 +145,10 @@ namespace Azoth
 				SLOT (handleAddEmoticon ()));
 		AddEmoticon_->setProperty ("ActionIcon", "emoticons");
 
+		Q_FOREACH (QAction *act, toolbar->actions ())
+			if (!act->isSeparator ())
+				act->setParent (this);
+
 		XmlSettingsManager::Instance ().RegisterObject ("SmileIcons",
 				this, "handleEmoPackChanged");
 		handleEmoPackChanged ();
