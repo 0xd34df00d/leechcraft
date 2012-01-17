@@ -74,6 +74,7 @@ namespace Xoox
 		bool HasUnreadMsgs_;
 	public:
 		EntryBase (GlooxAccount* = 0);
+		virtual ~EntryBase ();
 
 		// ICLEntry
 		QObject* GetObject ();
