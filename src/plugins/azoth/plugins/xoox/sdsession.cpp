@@ -277,6 +277,7 @@ namespace Xoox
 
 		VCardDialog *dia = new VCardDialog;
 		dia->show ();
+		dia->setAttribute (Qt::WA_DeleteOnClose, true);
 		Account_->GetClientConnection ()->FetchVCard (jid, dia);
 	}
 
