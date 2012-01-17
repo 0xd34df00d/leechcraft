@@ -74,9 +74,7 @@ namespace Acetamide
 
 	ChannelHandler* ChannelsManager::GetChannelHandler (const QString& channel)
 	{
-		return ChannelHandlers_.contains (channel.toLower ()) ?
-				ChannelHandlers_ [channel.toLower ()] :
-				0;
+		return ChannelHandlers_.value (channel.toLower ());
 	}
 
 	QList<ChannelHandler*> ChannelsManager::GetChannels () const
@@ -230,10 +228,9 @@ namespace Acetamide
 		const QString& chnnl = channel.toLower ();
 		if (msg.startsWith ('/'))
 		{
-			const QString& cmd = ISH_->ParseMessageForCommand (msg, chnnl);
 			if (ChannelHandlers_.contains (chnnl))
 			{
-				AddCommand2Queue (chnnl, cmd);
+				AddCommand2Queue (chnnl, ISH_->ParseMessageForCommand (msg, chnnl));
 				ChannelHandlers_ [chnnl]->HandleServiceMessage (msg,
 						IMessage::MTEventMessage,
 						IMessage::MSTOther);
@@ -287,11 +284,9 @@ namespace Acetamide
 	void ChannelsManager::CTCPReply (const QString& msg)
 	{
 		Q_FOREACH (ChannelHandler *ich, ChannelHandlers_.values ())
-		{
 			ich->HandleServiceMessage (msg,
 					IMessage::MTServiceMessage,
 					IMessage::MSTOther);
-		}
 
 		const CommandMessage& cmdMsg = CmdQueue_.head ();
 		if (cmdMsg.Cmd_ == "ctcp")

@@ -153,7 +153,7 @@ namespace Acetamide
 		return msg;
 	}
 
-	bool IrcServerHandler::IsChannelExists (const QString& channel)
+	bool IrcServerHandler::IsChannelExists (const QString& channel) const
 	{
 		return ChannelsManager_->IsChannelExists (channel);
 	}
@@ -496,12 +496,12 @@ namespace Acetamide
 	void IrcServerHandler::ShowUserHost (const QString& nick,
 			const QString& host)
 	{
-		ShowAnswer ("userhost", nick + tr (" is a ") + host);
+		ShowAnswer ("userhost", tr ("%1 is a %2").arg (nick, host));
 	}
 
 	void IrcServerHandler::ShowIsUserOnServer (const QString& nick)
 	{
-		ShowAnswer ("ison", nick + tr (" is on server"));
+		ShowAnswer ("ison", tr ("%1 is on server").arg (nick));
 	}
 
 	void IrcServerHandler::ShowWhoIsReply (const QString& msg, bool isEndOf)
@@ -639,9 +639,9 @@ namespace Acetamide
 	}
 
 	QString IrcServerHandler::ParseMessageForCommand (const QString& msg,
-			const QString& channel)
+			const QString& channel) const
 	{
-		QString cmd = CmdManager_->VerifyMessage (msg, channel);
+		const QString& cmd = CmdManager_->VerifyMessage (msg, channel);
 		if (cmd.isEmpty ())
 			IrcParser_->RawCommand (msg.mid (1).split (' '));
 

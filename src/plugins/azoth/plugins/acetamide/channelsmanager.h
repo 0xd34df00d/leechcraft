@@ -77,7 +77,7 @@ namespace Acetamide
 		void LeaveChannel (const QString& channel, const QString& msg);
 		void CloseChannel (const QString& channel);
 		void CloseAllChannels ();
-		void UnregisterChannel (ChannelHandler* ich);
+		void UnregisterChannel (ChannelHandler *ich);
 
 		QHash<QString, QObject*> GetParticipantsByNick (const QString& nick) const;
 

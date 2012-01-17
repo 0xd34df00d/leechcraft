@@ -90,7 +90,7 @@ namespace Acetamide
 		IrcMessage* CreateMessage (IMessage::MessageType type,
 				const QString& variant, const QString& body);
 
-		bool IsChannelExists (const QString& channel);
+		bool IsChannelExists (const QString& channel) const;
 
 		void SetNickName (const QString& nick);
 		void Add2ChannelsQueue (const ChannelOptions& options);
@@ -170,7 +170,7 @@ namespace Acetamide
 		void SendPublicMessage (const QString& msg, const QString& channel);
 		void SendPrivateMessage (IrcMessage*);
 		void SendMessage2Server (const QStringList&);
-		QString ParseMessageForCommand (const QString&, const QString&);
+		QString ParseMessageForCommand (const QString&, const QString&) const;
 		void LeaveChannel (const QString& channel, const QString& msg);
 
 		void ConnectToServer ();

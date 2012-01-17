@@ -83,7 +83,7 @@ namespace Acetamide
 			if (cpe->GetEntryName () == CM_->GetOurNick ())
 				return cpe;
 
-		return  ChannelParticipantEntry_ptr ();
+		return ChannelParticipantEntry_ptr ();
 	}
 
 	ChannelParticipantEntry_ptr ChannelHandler::GetParticipantEntry (const QString& nick)
@@ -184,7 +184,7 @@ namespace Acetamide
 		if (CM_->GetISupport ().contains ("PREFIX"))
 		{
 			const QStringList& prefixList = CM_->GetISupport () ["PREFIX"].split (')');
-			int id = prefixList.at (1).indexOf (nick [0]);
+			int id = prefixList.value (1).indexOf (nick [0]);
 			if (id != -1)
 			{
 				hasRole = true;
@@ -295,13 +295,9 @@ namespace Acetamide
 			ChannelRole role, bool isSet)
 	{
 		const QString& roleStr = ChannelCLEntry_->Role2String (role);
-		QString msg;
-		if (isSet)
-			msg = tr ("%1 is now %2")
-					.arg (nick, roleStr);
-		else
-			msg = tr ("%1 is not %2 anymore")
-					.arg (nick, roleStr);
+		QString msg = isSet ?
+				tr ("%1 is now %2").arg (nick, roleStr) :
+				tr ("%1 is not %2 anymore").arg (nick, roleStr);
 
 		ChannelPublicMessage *message = new ChannelPublicMessage (msg,
 				IMessage::DIn,

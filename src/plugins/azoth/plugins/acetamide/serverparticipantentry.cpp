@@ -57,7 +57,7 @@ namespace Acetamide
 
 	QStringList ServerParticipantEntry::Groups () const
 	{
-		return QStringList () << tr ("Private chats");
+		return QStringList (tr ("Private chats");
 	}
 
 	void ServerParticipantEntry::SetGroups (const QStringList&)

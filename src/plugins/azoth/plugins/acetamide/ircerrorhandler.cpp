@@ -53,7 +53,7 @@ namespace Acetamide
 				paramsMessage += QString::fromUtf8 (str.c_str ()) + " ";
 
 		Entity e = Util::MakeNotification ("Azoth",
-				(paramsMessage.isEmpty ()) ? msg : (paramsMessage + ": " + msg),
+				paramsMessage.isEmpty () ? msg : (paramsMessage + ": " + msg),
 				PWarning_);
 		Core::Instance ().SendEntity (e);
 	}
