@@ -28,10 +28,6 @@
 #ifndef PLATFORMWINAPI_H__
 #define PLATFORMWINAPI_H__
 
-#if !defined(_WIN32)
-#error You can't use this file in non-windows environment!
-#endif
-
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
 	#pragma once
 #endif
@@ -65,8 +61,11 @@ namespace Liznoo
 		std::unique_ptr<FakeQWidgetWinAPI> FakeWidget_;
 	public:
 		PlatformWinAPI (QObject* = 0);
-
 		virtual void Stop ();
+	private slots:
+		void handleSchemeChanged(QString schemeName);
+		void handlePowerSourceChanged(QString powerSource);
+		void handleBatteryStateChanged(int newPercentage);
 	};
 } // namespace Liznoo
 } // namespace Leechcraft

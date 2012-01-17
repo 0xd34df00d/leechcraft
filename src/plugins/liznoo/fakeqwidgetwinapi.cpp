@@ -37,7 +37,7 @@ namespace Liznoo
 
 	}
 
-	void FakeQWidgetWinAPI::handleSchemeChange(PPOWERBROADCAST_SETTING setting )
+	void FakeQWidgetWinAPI::prepareSchemeChange(PPOWERBROADCAST_SETTING setting )
 	{
 		GUID newScheme = *(GUID*)(DWORD_PTR)setting->Data;
 
@@ -58,7 +58,7 @@ namespace Liznoo
 		emit schemeChanged(scheme);
 	}
 
-	void FakeQWidgetWinAPI::handlePowerSourceChange(PPOWERBROADCAST_SETTING setting )
+	void FakeQWidgetWinAPI::preparePowerSourceChange(PPOWERBROADCAST_SETTING setting )
 	{
 		int nPowerSrc = *(int*)(DWORD_PTR) setting->Data;
 		QString powerSource = (0 != nPowerSrc) ? tr("Battery") : tr("AC");
@@ -66,7 +66,7 @@ namespace Liznoo
 		emit powerSourceChanged(powerSource);
 	}
 
-	void FakeQWidgetWinAPI::handleBatteryStateChange(PPOWERBROADCAST_SETTING setting )
+	void FakeQWidgetWinAPI::prepareBatteryStateChange(PPOWERBROADCAST_SETTING setting )
 	{
 		int nPercentLeft = *(int*)(DWORD_PTR) setting->Data;
 
@@ -85,17 +85,17 @@ namespace Liznoo
 			if (sizeof(GUID) == rcvd_setting->DataLength &&
 				rcvd_setting->PowerSetting == GUID_POWERSCHEME_PERSONALITY )
 			{
-				handleSchemeChange(rcvd_setting);
+				prepareSchemeChange(rcvd_setting);
 			} 
 			else if (sizeof(int) == rcvd_setting->DataLength &&
 				rcvd_setting->PowerSetting == GUID_ACDC_POWER_SOURCE)
 			{
-				handlePowerSourceChange(rcvd_setting);
+				preparePowerSourceChange(rcvd_setting);
 			} 
 			else if (sizeof(int) == rcvd_setting->DataLength &&
 				rcvd_setting->PowerSetting == GUID_BATTERY_PERCENTAGE_REMAINING )
 			{
-				handleBatteryStateChange(rcvd_setting);
+				prepareBatteryStateChange(rcvd_setting);
 			}
 		}
 		return QWidget::winEvent(message, result);

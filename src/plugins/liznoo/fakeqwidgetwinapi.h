@@ -28,10 +28,6 @@
 #ifndef FAKEQWIDGETWINAPI_H__
 #define FAKEQWIDGETWINAPI_H__
 
-#if !defined(_WIN32)
-#error You can't use this file in non-windows environment!
-#endif
-
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
 #pragma once
 #endif
@@ -54,9 +50,9 @@ namespace Liznoo
 		void powerSourceChanged(QString powerSource);
 		void batteryStateChanged(int newPercentage);
 	protected:
-		virtual void handleSchemeChange(PPOWERBROADCAST_SETTING setting);
-		virtual void handlePowerSourceChange(PPOWERBROADCAST_SETTING setting);
-		virtual void handleBatteryStateChange(PPOWERBROADCAST_SETTING setting);
+		virtual void prepareSchemeChange(PPOWERBROADCAST_SETTING setting);
+		virtual void preparePowerSourceChange(PPOWERBROADCAST_SETTING setting);
+		virtual void prepareBatteryStateChange(PPOWERBROADCAST_SETTING setting);
 
 		virtual bool winEvent (MSG * message, long * result);
 	};
