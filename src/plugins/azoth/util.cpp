@@ -53,6 +53,7 @@ namespace Azoth
 	void InitiateAccountAddition(QWidget *parent)
 	{
 		QWizard *wizard = new QWizard (parent);
+		wizard->setAttribute (Qt::WA_DeleteOnClose);
 		wizard->setWindowTitle (QObject::tr ("Add account"));
 		wizard->addPage (new AddAccountWizardFirstPage (wizard));
 
