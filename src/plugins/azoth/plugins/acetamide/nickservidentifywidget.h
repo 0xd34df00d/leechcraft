@@ -36,11 +36,11 @@ namespace Acetamide
 
 		enum Column
 		{
-			CServerName,
-			CNick,
-			CNickServ,
-			CAuthString,
-			CAuthMessage
+			ServerName,
+			Nick,
+			NickServ,
+			AuthString,
+			AuthMessage
 		};
 
 		Ui::NickServIdentifyWidget Ui_;
