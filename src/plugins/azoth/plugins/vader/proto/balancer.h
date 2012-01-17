@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2011  Oleg Linkin
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,34 +16,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_NEWLIFE_FIREFOXIMPORTER_H
-#define PLUGINS_NEWLIFE_FIREFOXIMPORTER_H
-#include "abstractimporter.h"
-#include "firefoxprofileselectpage.h"
-
+#ifndef PLUGINS_AZOTH_PLUGINS_VADER_PROTO_BALANCER_H
+#define PLUGINS_AZOTH_PLUGINS_VADER_PROTO_BALANCER_H
+#include <QObject>
+#include <QAbstractSocket>
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Azoth
+{
+namespace Vader
+{
+namespace Proto
+{
+	class Balancer : public QObject
 	{
-		namespace NewLife
-		{
-			class FirefoxImportPage;
+		Q_OBJECT
+	public:
+		Balancer (QObject* = 0);
 
-			class FirefoxImporter : public AbstractImporter
-			{
-				Q_OBJECT
-
-				FirefoxImportPage *ImportPage_;
-				FirefoxProfileSelectPage *ProfileSelectPage_;
-			public:
-				FirefoxImporter (QWidget* = 0);
-				virtual QStringList GetNames () const;
-				virtual QList<QWizardPage*> GetWizardPages () const;
-			};
-		};
+		void GetServer ();
+	private slots:
+		void handleRead ();
+		void handleSocketError (QAbstractSocket::SocketError);
+	signals:
+		void gotServer (const QString&, int);
+		void error ();
 	};
-};
+}
+}
+}
+}
 
 #endif
-

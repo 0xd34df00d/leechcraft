@@ -16,31 +16,50 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_NEWLIFE_KTORRENTIMPORTER_H
-#define PLUGINS_NEWLIFE_KTORRENTIMPORTER_H
-#include "abstractimporter.h"
+#ifndef PLUGINS_AZOTH_PLUGINS_VADER_PROTO_TYPINGMANAGER_H
+#define PLUGINS_AZOTH_PLUGINS_VADER_PROTO_TYPINGMANAGER_H
+#include <QObject>
+#include <QMap>
+#include <QSet>
+#include <QDateTime>
+
+class QTimer;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Azoth
+{
+namespace Vader
+{
+namespace Proto
+{
+	class TypingManager : public QObject
 	{
-		namespace NewLife
-		{
-			class KTorrentImportPage;
+		Q_OBJECT
 
-			class KTorrentImporter : public AbstractImporter
-			{
-				Q_OBJECT
+		QMap<QString, QDateTime> LastNotDates_;
+		QTimer *ExpTimer_;
 
-				KTorrentImportPage *ImportPage_;
-			public:
-				KTorrentImporter (QWidget* = 0);
-				virtual QStringList GetNames () const;
-				virtual QList<QWizardPage*> GetWizardPages () const;
-			};
-		};
+		QSet<QString> TypingTo_;
+		QTimer *OutTimer_;
+	public:
+		TypingManager (QObject* = 0);
+
+		void GotNotification (const QString&);
+
+		void SetTyping (const QString&, bool);
+	private slots:
+		void checkExpires ();
+		void sendOut ();
+	signals:
+		void startedTyping (const QString&);
+		void stoppedTyping (const QString&);
+
+		void needNotify (const QString&);
 	};
-};
+}
+}
+}
+}
 
 #endif
-

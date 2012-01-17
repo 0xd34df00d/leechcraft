@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,33 +16,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "lifereaimporter.h"
-#include "lifereaimportpage.h"
+#include "psiplusimporter.h"
+#include <QStringList>
+#include "psiplusimportpage.h"
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace NewLife
+{
+namespace Importers
+{
+	PsiPlusImporter::PsiPlusImporter (QWidget *parent)
+	: AbstractImporter (parent)
+	, Page_ (new PsiPlusImportPage ())
 	{
-		namespace NewLife
-		{
-			LifereaImporter::LifereaImporter (QWidget *parent)
-			: AbstractImporter (parent)
-			{
-				ImportPage_ = new LifereaImportPage ();
-			}
+	}
 
-			QStringList LifereaImporter::GetNames () const
-			{
-				return QStringList ("Liferea");
-			}
+	QStringList PsiPlusImporter::GetNames () const
+	{
+		return QStringList ("Psi+");
+	}
 
-			QList<QWizardPage*> LifereaImporter::GetWizardPages () const
-			{
-				QList<QWizardPage*> result;
-				result << ImportPage_;
-				return result;
-			}
-		};
-	};
-};
-
+	QList<QWizardPage*> PsiPlusImporter::GetWizardPages () const
+	{
+		QList<QWizardPage*> result;
+		result << Page_;
+		return result;
+	}
+}
+}
+}

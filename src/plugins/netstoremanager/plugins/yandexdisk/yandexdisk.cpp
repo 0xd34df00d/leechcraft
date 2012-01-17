@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 #include <QIcon>
 #include <QSettings>
 #include <QCoreApplication>
+#include <util/util.h>
 #include "account.h"
 
 namespace LeechCraft
@@ -30,6 +31,7 @@ namespace YandexDisk
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("netstoremanager_yandexdisk");
 	}
 
 	void Plugin::SecondInit ()

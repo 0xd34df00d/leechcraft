@@ -59,6 +59,9 @@ namespace p100q
 		QRegExp PstoCommentRX_;
 
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
+
+		QMap<QObject*, QObject*> Entry2Tab_;
+		QMap<QObject*, QString> LastPostInTab_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -75,13 +78,18 @@ namespace p100q
 		QSet<QByteArray> GetPluginClasses () const;
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-
 	private:
 		QString FormatBody (QString);
 	public slots:
-		void hookFormatBodyEnd (LeechCraft::IHookProxy_ptr proxy,
+		void hookChatTabCreated (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab,
+				QObject *entry,
+				QWebView *webView);
+		void hookFormatBodyEnd (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message);
+	private slots:
+		void handleShortcutActivated ();
+		void handleChatDestroyed ();
 	};
 }
 }

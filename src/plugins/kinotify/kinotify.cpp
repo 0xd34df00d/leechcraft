@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -147,10 +147,8 @@ namespace LeechCraft
 				const QPixmap& px = icon.pixmap (QSize (128, 128));
 				notificationWidget->SetContent (header, text, QString ());
 
-				if (e.Additional_ ["NotificationPixmap"].isValid ())
-					notificationWidget->OverrideImage (e.Additional_ ["NotificationPixmap"].value<QPixmap> ());
-				else
-					notificationWidget->OverrideImage (px);
+				const QPixmap& notif = e.Additional_ ["NotificationPixmap"].value<QPixmap> ();
+				notificationWidget->OverrideImage (notif.isNull () ? px : notif);
 
 				if (!ActiveNotifications_.size ())
 					notificationWidget->PrepareNotification ();

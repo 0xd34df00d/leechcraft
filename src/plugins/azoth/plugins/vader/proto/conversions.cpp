@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,6 +47,11 @@ namespace Proto
 	QByteArray ToMRIM (const QByteArray& string)
 	{
 		return ToMRIM (static_cast<quint32> (string.size ())) + string;
+	}
+
+	QByteArray ToMRIM (const UIDL& id)
+	{
+		return id;
 	}
 
 	QByteArray ToMRIM (quint32 num)

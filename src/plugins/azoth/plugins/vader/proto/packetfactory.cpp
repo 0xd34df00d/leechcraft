@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -87,7 +87,13 @@ namespace Proto
 		const QByteArray& data = ToMRIM (from, msgId);
 		return HalfPacket { Header (Packets::MsgRecv, Seq_++), data };
 	}
-	
+
+	Packet PacketFactory::OfflineMessageAck (const UIDL& id)
+	{
+		const QByteArray& data = ToMRIM (id);
+		return HalfPacket { Header (Packets::DeleteOfflineMsg, Seq_++), data };
+	}
+
 	Packet PacketFactory::Microblog (BlogStatus st, const QString& text)
 	{
 		const QByteArray& data = ToMRIM (static_cast<quint32> (st), text);
@@ -133,7 +139,7 @@ namespace Proto
 		const QByteArray& data = ToMRIM (email);
 		return HalfPacket { Header (Packets::Authorize), data };
 	}
-	
+
 	Packet PacketFactory::RequestKey ()
 	{
 		return HalfPacket { Header (Packets::GetMPOPSession), QByteArray () };

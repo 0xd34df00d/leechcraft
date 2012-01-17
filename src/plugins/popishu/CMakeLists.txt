@@ -49,7 +49,7 @@ SET (FORMS
 	editorpage.ui
 	replacedialog.ui
 	)
-CreateTrVars ("popishu" "de;en;fr;it;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
+CreateTrVars ("popishu" "de;en;es;fr;it;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
 
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})

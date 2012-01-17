@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2011  Oleg Linkin
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,36 +16,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "firefoximporter.h"
-#include "firefoximportpage.h"
-#include "firefoxprofileselectpage.h"
+#pragma once
+
+#include "abstractimporter.h"
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace NewLife
+{
+namespace Importers
+{
+	class AkregatorImportPage;
+
+	class AkregatorImporter : public AbstractImporter
 	{
-		namespace NewLife
-		{
-			FirefoxImporter::FirefoxImporter (QWidget *parent)
-			: AbstractImporter (parent)
-			{				
-				ImportPage_ = new FirefoxImportPage ();
-				ProfileSelectPage_ = new FirefoxProfileSelectPage (); 
-			}
+		Q_OBJECT
 
-			QStringList FirefoxImporter::GetNames () const
-			{
-				return QStringList ("Firefox");
-			}
-
-			QList<QWizardPage*> FirefoxImporter::GetWizardPages () const
-			{
-				QList<QWizardPage*> result;
-				result << ImportPage_;
-				result << ProfileSelectPage_;
-				return result;
-			}
-		};
+		AkregatorImportPage *ImportPage_;
+	public:
+		AkregatorImporter (QWidget* = 0);
+		virtual QStringList GetNames () const;
+		virtual QList<QWizardPage*> GetWizardPages () const;
 	};
-};
-
+}
+}
+}

@@ -16,51 +16,48 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
+#pragma once
 
-#ifndef PLUGINS_NEWLIFE_FIREFOXPROFILESELECTPAGE_H
-#define PLUGINS_NEWLIFE_FIREFOXPROFILESELECTPAGE_H
 #include "ui_firefoxprofileselectpage.h"
 #include <memory>
 #include <QWizardPage>
-
 
 class QSqlDatabase;
 class QSqlQuery;
 
 namespace LeechCraft
 {
-	struct Entity;
+struct Entity;
 
-	namespace Plugins
+namespace NewLife
+{
+namespace Importers
+{
+	class FirefoxProfileSelectPage : public QWizardPage
 	{
-		namespace NewLife
-		{
-			class FirefoxProfileSelectPage : public QWizardPage
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-					Ui::FirefoxProfileSelectPage Ui_;
-					std::shared_ptr<QSqlDatabase> DB_;
-				public:
-					FirefoxProfileSelectPage (QWidget* = 0);
-					virtual ~FirefoxProfileSelectPage ();
+			Ui::FirefoxProfileSelectPage Ui_;
+			std::shared_ptr<QSqlDatabase> DB_;
+		public:
+			FirefoxProfileSelectPage (QWidget* = 0);
+			virtual ~FirefoxProfileSelectPage ();
 
-					virtual int nextId () const;
-					virtual void initializePage ();
-					QString GetProfileDirectory (const QString&) const;
-					void GetProfileList (const QString&);
-					QList<QVariant> GetHistory ();
-					QList<QVariant> GetBookmarks ();
-					QString GetImportOpmlFile ();
-					QSqlQuery GetQuery (const QString&);
-					bool IsFirefoxRunning ();
-				private slots:
-					void checkImportDataAvailable (int);
-					void handleAccepted ();
-				signals:
-					void gotEntity (const LeechCraft::Entity&);
-			};
-		};
+			virtual int nextId () const;
+			virtual void initializePage ();
+			QString GetProfileDirectory (const QString&) const;
+			void GetProfileList (const QString&);
+			QList<QVariant> GetHistory ();
+			QList<QVariant> GetBookmarks ();
+			QString GetImportOpmlFile ();
+			QSqlQuery GetQuery (const QString&);
+			bool IsFirefoxRunning ();
+		private slots:
+			void checkImportDataAvailable (int);
+			void handleAccepted ();
+		signals:
+			void gotEntity (const LeechCraft::Entity&);
 	};
-};
-#endif // PLUGINS_NEWLIFE_FIREFOXPROFILESELECTPAGE_H
+}
+}
+}

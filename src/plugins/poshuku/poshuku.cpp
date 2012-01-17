@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -507,7 +507,7 @@ namespace Poshuku
 		QWebSettings::globalSettings ()->setAttribute (QWebSettings::JavaEnabled,
 				XmlSettingsManager::Instance ()->property ("AllowJava").toBool ());
 		QWebSettings::globalSettings ()->setAttribute (QWebSettings::PluginsEnabled,
-				false /*XmlSettingsManager::Instance ()->property ("AllowPlugins").toBool ()*/);
+				XmlSettingsManager::Instance ()->property ("AllowPlugins").toBool ());
 		QWebSettings::globalSettings ()->setAttribute (QWebSettings::JavascriptCanOpenWindows,
 				XmlSettingsManager::Instance ()->property ("JavascriptCanOpenWindows").toBool ());
 		QWebSettings::globalSettings ()->setAttribute (QWebSettings::JavascriptCanAccessClipboard,

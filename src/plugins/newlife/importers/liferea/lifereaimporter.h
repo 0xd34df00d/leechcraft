@@ -16,41 +16,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_NEWLIFE_AKREGATORIMPORTPAGE_H
-#define PLUGINS_NEWLIFE_AKREGATORIMPORTPAGE_H
-#include <QWizardPage>
-#include "ui_feedssettingsimportpage.h"
+#pragma once
+
+#include "abstractimporter.h"
 
 namespace LeechCraft
 {
-	struct Entity;
+namespace NewLife
+{
+namespace Importers
+{
+	class LifereaImportPage;
 
-	namespace Plugins
+	class LifereaImporter : public AbstractImporter
 	{
-		namespace NewLife
-		{
-			class AkregatorImportPage : public QWizardPage
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				Ui::FeedsSettingsImportPage Ui_;
-			public:
-				AkregatorImportPage (QWidget* = 0);
+		LifereaImportPage *ImportPage_;
+	public:
+		LifereaImporter (QWidget* = 0);
 
-				bool CheckValidity (const QString&) const;
-				virtual bool isComplete () const;
-				virtual int nextId () const;
-				virtual void initializePage ();
-			private slots:
-				void on_Browse__released ();
-				void on_FileLocation__textEdited (const QString&);
-				void handleAccepted ();
-			signals:
-				void gotEntity (const LeechCraft::Entity&);
-			};
-		};
+		QStringList GetNames () const;
+		QList<QWizardPage*> GetWizardPages () const;
 	};
-};
-
-#endif
-
+}
+}
+}

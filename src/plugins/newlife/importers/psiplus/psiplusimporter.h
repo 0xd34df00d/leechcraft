@@ -16,44 +16,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_NEWLIFE_KTORRENTIMPORTPAGE_H
-#define PLUGINS_NEWLIFE_KTORRENTIMPORTPAGE_H
+#pragma once
 
-#include <QWizardPage>
-#include <QMap>
-#include "ui_feedssettingsimportpage.h"
+#include "abstractimporter.h"
 
 namespace LeechCraft
 {
-	struct Entity;
+namespace NewLife
+{
+namespace Importers
+{
+	class PsiPlusImportPage;
 
-	namespace Plugins
+	class PsiPlusImporter : public AbstractImporter
 	{
-		namespace NewLife
-		{
-			class KTorrentImportPage : public QWizardPage
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				Ui::FeedsSettingsImportPage Ui_;
-			public:
-				KTorrentImportPage (QWidget* = 0);
+		PsiPlusImportPage *Page_;
+	public:
+		PsiPlusImporter (QWidget* = 0);
 
-				bool CheckValidity (const QString&) const;
-				virtual bool isComplete () const;
-				virtual int nextId () const;
-				virtual void initializePage ();
-			private:
-				bool GetTorrentSettings (const QString&, QMap<QString, QVariant>&) const;
-			private slots:
-				void on_Browse__released ();
-				void handleAccepted ();
-			signals:
-				void gotEntity (const LeechCraft::Entity&);
-			};
-		};
+		QStringList GetNames () const;
+		QList<QWizardPage*> GetWizardPages () const;
 	};
-};
-
-#endif
-
+}
+}
+}

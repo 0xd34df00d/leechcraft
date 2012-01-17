@@ -16,31 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_NEWLIFE_AKREGATORIMPORTER_H
-#define PLUGINS_NEWLIFE_AKREGATORIMPORTER_H
-#include "abstractimporter.h"
+#include "platformlayer.h"
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Liznoo
+{
+	PlatformLayer::PlatformLayer (QObject *parent)
+	: QObject (parent)
 	{
-		namespace NewLife
-		{
-			class AkregatorImportPage;
-
-			class AkregatorImporter : public AbstractImporter
-			{
-				Q_OBJECT
-
-				AkregatorImportPage *ImportPage_;
-			public:
-				AkregatorImporter (QWidget* = 0);
-				virtual QStringList GetNames () const;
-				virtual QList<QWizardPage*> GetWizardPages () const;
-			};
-		};
-	};
-};
-
-#endif
-
+	}
+}
+}

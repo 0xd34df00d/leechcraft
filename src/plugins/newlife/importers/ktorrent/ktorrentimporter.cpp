@@ -16,31 +16,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_NEWLIFE_LIFEREAIMPORTER_H
-#define PLUGINS_NEWLIFE_LIFEREAIMPORTER_H
-#include "abstractimporter.h"
+#include "ktorrentimporter.h"
+#include "ktorrentimportpage.h"
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace NewLife
+{
+namespace Importers
+{
+	KTorrentImporter::KTorrentImporter (QWidget *parent)
+	: AbstractImporter (parent)
 	{
-		namespace NewLife
-		{
-			class LifereaImportPage;
+		ImportPage_ = new KTorrentImportPage ();
+	}
 
-			class LifereaImporter : public AbstractImporter
-			{
-				Q_OBJECT
+	QStringList KTorrentImporter::GetNames () const
+	{
+		return QStringList ("KTorrent");
+	}
 
-				LifereaImportPage *ImportPage_;
-			public:
-				LifereaImporter (QWidget* = 0);
-				virtual QStringList GetNames () const;
-				virtual QList<QWizardPage*> GetWizardPages () const;
-			};
-		};
-	};
-};
-
-#endif
-
+	QList<QWizardPage*> KTorrentImporter::GetWizardPages () const
+	{
+		QList<QWizardPage*> result;
+		result << ImportPage_;
+		return result;
+	}
+}
+}
+}

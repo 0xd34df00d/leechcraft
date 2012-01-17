@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -833,9 +833,6 @@ namespace LeechCraft
 				bool autoManaged = !(params & NoAutostart);
 				try
 				{
-					boost::intrusive_ptr<libtorrent::torrent_info> tinfo (
-							new libtorrent::torrent_info (GetTorrentInfo (filename))
-							);
 					libtorrent::add_torrent_params atp;
 					atp.ti = new libtorrent::torrent_info (GetTorrentInfo (filename));
 					atp.auto_managed = autoManaged;

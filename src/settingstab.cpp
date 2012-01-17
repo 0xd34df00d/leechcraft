@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -223,17 +223,8 @@ namespace LeechCraft
 		return Toolbar_;
 	}
 
-	void SettingsTab::handleSettingsCalled ()
+	void SettingsTab::showSettingsFor (QObject *obj)
 	{
-		QObject *obj = sender ()->property ("SettableObject").value<QObject*> ();
-		if (!obj)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "empty object"
-					<< sender ();
-			return;
-		}
-
 		CurrentIHS_ = obj;
 
 		IInfo *ii = qobject_cast<IInfo*> (obj);
@@ -255,6 +246,21 @@ namespace LeechCraft
 		Toolbar_->addSeparator ();
 		Toolbar_->addAction (ActionApply_);
 		Toolbar_->addAction (ActionCancel_);
+	}
+
+	void SettingsTab::handleSettingsCalled ()
+	{
+		QObject *obj = sender ()->property ("SettableObject").value<QObject*> ();
+		if (!obj)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "empty object"
+					<< sender ();
+			return;
+		}
+
+		handleBackRequested ();
+		showSettingsFor (obj);
 	}
 
 	void SettingsTab::handleBackRequested ()

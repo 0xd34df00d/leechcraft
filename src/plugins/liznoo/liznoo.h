@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LIZNOO_LIZNOO_H
-#define PLUGINS_LIZNOO_LIZNOO_H
+#pragma once
+
 #include <QObject>
 #include <QLinkedList>
 #include <interfaces/iinfo.h>
@@ -28,8 +28,8 @@ namespace LeechCraft
 {
 namespace Liznoo
 {
-	class DBusThread;
 	class BatteryHistoryDialog;
+	class PlatformLayer;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -39,7 +39,7 @@ namespace Liznoo
 		Q_INTERFACES (IInfo IActionsExporter)
 
 		ICoreProxy_ptr Proxy_;
-		DBusThread *Thread_;
+		PlatformLayer *PL_;
 		QMap<QString, QAction*> Battery2Action_;
 		QMap<QString, BatteryInfo> Battery2LastInfo_;
 		QMap<QString, BatteryHistoryDialog*> Battery2Dialog_;
@@ -59,11 +59,11 @@ namespace Liznoo
 		void handleUpdateHistory ();
 		void handleHistoryTriggered ();
 		void handleBatteryDialogDestroyed ();
-		void handleThreadStarted ();
+		void handlePlatformStarted ();
 	signals:
+		void gotEntity (const LeechCraft::Entity&);
 		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 	};
 }
 }
 
-#endif

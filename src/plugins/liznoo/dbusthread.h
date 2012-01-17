@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LIZNOO_DBUSTHREAD_H
-#define PLUGINS_LIZNOO_DBUSTHREAD_H
+#pragma once
+
 #include <QThread>
 
 namespace LeechCraft
@@ -41,4 +41,3 @@ namespace Liznoo
 }
 }
 
-#endif

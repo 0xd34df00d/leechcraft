@@ -30,10 +30,24 @@ namespace Vader
 {
 namespace Proto
 {
+	class UIDL
+	{
+		QByteArray ID_;
+	public:
+		UIDL ();
+		UIDL (const UIDL&);
+		explicit UIDL (const QByteArray&);
+
+		UIDL& operator= (const QByteArray&);
+
+		operator QByteArray () const;
+	};
+
 	QByteArray ToMRIM1251 (const QString&);
 	QByteArray ToMRIM16 (const QString&);
 	QByteArray ToMRIM (const QString&);
 	QByteArray ToMRIM (const QByteArray&);
+	QByteArray ToMRIM (const UIDL&);
 	QByteArray ToMRIM (quint32);
 	QByteArray ToMRIM (int);
 	QByteArray ToMRIM ();
@@ -69,19 +83,6 @@ namespace Proto
 	{
 	protected:
 		QByteArray GetCodecName () { return "UTF-16LE"; }
-	};
-
-	class UIDL
-	{
-		QByteArray ID_;
-	public:
-		UIDL ();
-		UIDL (const UIDL&);
-		explicit UIDL (const QByteArray&);
-
-		UIDL& operator= (const QByteArray&);
-
-		operator QByteArray () const;
 	};
 
 	QString FromMRIM1251 (const QByteArray&);

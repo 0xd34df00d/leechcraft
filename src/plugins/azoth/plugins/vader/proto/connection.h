@@ -27,6 +27,7 @@
 #include "packetfactory.h"
 #include "packetextractor.h"
 #include "contactinfo.h"
+#include "balancer.h"
 
 class QTimer;
 class QSslSocket;
@@ -40,13 +41,17 @@ namespace Vader
 namespace Proto
 {
 	struct Message;
+	class TypingManager;
 
 	class Connection : public QObject
 	{
 		Q_OBJECT
 
+		Balancer Balancer_;
+
 		QSslSocket *Socket_;
 		QTimer *PingTimer_;
+		TypingManager *TM_;
 
 		PacketFactory PF_;
 		PacketExtractor PE_;
@@ -75,6 +80,7 @@ namespace Proto
 		void SetState (const EntryStatus&);
 		quint32 SendMessage (const QString& to, const QString& message);
 		void SendAttention (const QString& to, const QString& message);
+		void SetTypingState (const QString& to, bool isTyping);
 		void PublishTune (const QString& tune);
 		void Authorize (const QString& email);
 		quint32 AddContact (quint32 group, const QString& email, const QString& name);
@@ -99,6 +105,7 @@ namespace Proto
 		void MicroblogRecv (HalfPacket);
 		void AuthAck (HalfPacket);
 		void ContactAdded (HalfPacket);
+		void NewMail (HalfPacket);
 		void MPOPKey (HalfPacket);
 
 		void Disconnect ();
@@ -106,24 +113,38 @@ namespace Proto
 		QByteArray Read ();
 		void Write (const QByteArray&);
 	private slots:
+		void handleGotServer (const QString&, int);
+		void connectToStored ();
 		void tryRead ();
 		void greet ();
 		void handlePing ();
+		void handleOutTypingNotify (const QString&);
 		void handleSocketError (QAbstractSocket::SocketError);
 	signals:
 		void authenticationError (const QString&);
+
 		void gotGroups (const QStringList&);
 		void gotContacts (const QList<Proto::ContactInfo>&);
+
 		void gotMessage (const Proto::Message&);
+		void gotOfflineMessage (const Proto::Message&);
+
 		void gotAuthRequest (const QString& from, const QString& msg);
 		void gotAuthAck (const QString& from);
+
 		void gotAttentionRequest (const QString& from, const QString& msg);
 		void messageDelivered (quint32);
+
 		void statusChanged (EntryStatus);
 		void contactAdded (quint32 seq, quint32 cid);
 		void contactAdditionError (quint32 seq, quint32 status);
 		void userStatusChanged (const Proto::ContactInfo&);
 		void gotUserTune (const QString& from, const QString& tune);
+
+		void userStartedTyping (const QString&);
+		void userStoppedTyping (const QString&);
+
+		void gotNewMail (const QString& from, const QString& subj);
 		void gotPOPKey (const QString&);
 	};
 }
