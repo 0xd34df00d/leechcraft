@@ -718,11 +718,11 @@ namespace Azoth
 		const QStringList& groups = entry->Groups ();
 		const QStringList& allGroups = Core::Instance ().GetChatGroups ();
 
-		GroupEditorDialog *dia = new GroupEditorDialog (groups, allGroups);
-		if (dia->exec () != QDialog::Accepted)
+		GroupEditorDialog dia (groups, allGroups);
+		if (dia.exec () != QDialog::Accepted)
 			return;
 
-		entry->SetGroups (dia->GetGroups ());
+		entry->SetGroups (dia.GetGroups ());
 	}
 
 	void ActionsManager::handleActionRemoveTriggered ()
