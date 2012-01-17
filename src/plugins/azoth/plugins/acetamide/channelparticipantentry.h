@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2011 Oleg Linkin
+ * Copyright (C) 2010-2011  Oleg Linkin
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,12 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SERVERPARTICIPANTENTRY_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SERVERPARTICIPANTENTRY_H
+#ifndef LEECHCRAFT_AZOTH_PLUGINS_ACETAMIDE_CHANNELPARTICIPANTENTRY_H
+#define LEECHCRAFT_AZOTH_PLUGINS_ACETAMIDE_CHANNELPARTICIPANTENTRY_H
 
 #include <memory>
-#include <QObject>
-#include <QStringList>
 #include "ircparticipantentry.h"
 #include "localtypes.h"
 
@@ -31,37 +29,45 @@ namespace Azoth
 {
 namespace Acetamide
 {
-
 	class IrcAccount;
-	class IrcServerHandler;
+	class ChannelHandler;
 
-	class ServerParticipantEntry : public IrcParticipantEntry
+	class ChannelParticipantEntry : public IrcParticipantEntry
 	{
 		Q_OBJECT
 
-		IrcServerHandler *ISH_;
+		ChannelHandler *ICH_;
+		QList<ChannelRole> Roles_;
 	public:
-		ServerParticipantEntry (const QString&,
-				IrcServerHandler*, IrcAccount*);
+		ChannelParticipantEntry (const QString&,
+				ChannelHandler*, IrcAccount* = 0);
 
 		QObject* GetParentCLEntry () const;
 
 		QString GetEntryID () const;
 		QString GetHumanReadableID () const;
 
-		QStringList Groups () const;
 		void SetGroups (const QStringList&);
+		QStringList Groups () const;
 
 		QObject* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);
 
-		void SetMessageHistory (QObjectList messages);
+		QList<ChannelRole> Roles () const;
+		ChannelRole HighestRole ();
+
+		void SetRole (const ChannelRole&);
+		void RemoveRole (const ChannelRole&);
 	private slots:
+		void handleWhoIs ();
+		void handleWhoWas ();
+		void handleWho ();
+		void handleCTCPAction (QAction *action);
 	};
 
-	typedef std::shared_ptr<ServerParticipantEntry> ServerParticipantEntry_ptr;
+	typedef std::shared_ptr<ChannelParticipantEntry> ChannelParticipantEntry_ptr;
 }
 }
 }
 
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SERVERPARTICIPANTENTRY_H
+#endif // LEECHCRAFT_AZOTH_ACETAMIDE_CHANNELPARTICIPANTENTRY_H

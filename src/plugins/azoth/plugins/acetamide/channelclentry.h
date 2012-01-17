@@ -19,7 +19,6 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_CHANNELCLENTRY_H
 #define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_CHANNELCLENTRY_H
 
-#include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <interfaces/iclentry.h>
 #include <interfaces/imucentry.h>
@@ -36,7 +35,7 @@ namespace Acetamide
 
 	class ChannelHandler;
 	class ChannelPublicMessage;
-	class ServerParticipantEntry;
+	class ChannelParticipantEntry;
 
 	class ChannelCLEntry : public QObject
 						 , public ICLEntry
@@ -54,6 +53,12 @@ namespace Acetamide
 		ChannelHandler *ICH_;
 		QList<QObject*> AllMessages_;
 		bool IsWidgetRequest_;
+
+		QMap<QByteArray, QList<QByteArray>> Perms_;
+		QMap<ChannelRole, QByteArray> Role2Str_;
+		QMap<ChannelRole, QByteArray> Aff2Str_;
+		QMap<ChannelManagment, QByteArray> Managment2Str_;
+		QMap<QByteArray, QString> Translations_;
 	public:
 		ChannelCLEntry (ChannelHandler*);
 		ChannelHandler* GetChannelHandler () const;
@@ -104,10 +109,10 @@ namespace Acetamide
 
 		// IMUCPerms
 		QByteArray GetAffName (QObject*) const;
-		QMap<QByteArray, QList<QByteArray> > GetPerms (QObject*) const;
+		QMap<QByteArray, QList<QByteArray>> GetPerms (QObject*) const;
 		void SetPerm (QObject*, const QByteArray&, const QByteArray&,
 					  const QString&);
-		QMap<QByteArray, QList<QByteArray> > GetPossiblePerms () const;
+		QMap<QByteArray, QList<QByteArray>> GetPossiblePerms () const;
 		QString GetUserString (const QByteArray&) const;
 		bool IsLessByPerm (QObject*, QObject*) const;
 		bool MayChangePerm (QObject*, const QByteArray&,
@@ -137,6 +142,7 @@ namespace Acetamide
 		void AddInviteListItem (QString);
 		void RemoveInviteListItem (QString);
 		void SetNewChannelModes (const ChannelModes&);
+		QString Role2String (const ChannelRole&) const;
 	signals:
 		void gotNewParticipants (const QList<QObject*>&);
 		void mucSubjectChanged (const QString&);

@@ -34,6 +34,15 @@ namespace Acetamide
 	{
 		Q_OBJECT
 
+		enum Column
+		{
+			ServerName,
+			Nick,
+			NickServ,
+			AuthString,
+			AuthMessage
+		};
+
 		Ui::NickServIdentifyWidget Ui_;
 		QStandardItemModel* Model_;
 	public:

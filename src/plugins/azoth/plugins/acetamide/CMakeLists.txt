@@ -9,13 +9,15 @@ INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}/azoth
 	)
 
-SET (ACETAMIDE_SRCS
+SET (ACETAMIDE_SRCS 
 	acetamide.cpp
 	bookmarkeditwidget.cpp
 	channelclentry.cpp
 	channelconfigwidget.cpp
 	channelhandler.cpp
+	channelparticipantentry.cpp
 	channelpublicmessage.cpp
+	channelsmanager.cpp
 	clientconnection.cpp
 	core.cpp
 	entrybase.cpp
@@ -26,6 +28,7 @@ SET (ACETAMIDE_SRCS
 	ircjoingroupchat.cpp
 	ircmessage.cpp
 	ircparser.cpp
+	ircparticipantentry.cpp
 	ircprotocol.cpp
 	ircserversocket.cpp
 	ircserverclentry.cpp
@@ -50,7 +53,9 @@ SET (ACETAMIDE_HEADERS
 	channelclentry.h
 	channelconfigwidget.h
 	channelhandler.h
+	channelparticipantentry.h
 	channelpublicmessage.h
+	channelsmanager.h
 	clientconnection.h
 	core.h
 	entrybase.h
@@ -61,6 +66,7 @@ SET (ACETAMIDE_HEADERS
 	ircjoingroupchat.h
 	ircmessage.h
 	ircparser.h
+	ircparticipantentry.h
 	ircprotocol.h
 	ircserversocket.h
 	ircserverclentry.h

@@ -66,12 +66,12 @@ namespace Acetamide
 
 	QString IrcServerCLEntry::GetEntryID () const
 	{
-		return Account_->GetAccountID () + "_" + ISH_->GetServerID_ ();
+		return Account_->GetAccountID () + "_" + ISH_->GetServerID ();
 	}
 
 	QString IrcServerCLEntry::GetEntryName () const
 	{
-		return ISH_->GetServerID_ ();
+		return ISH_->GetServerID ();
 	}
 
 	void IrcServerCLEntry::SetEntryName (const QString&)
@@ -129,7 +129,7 @@ namespace Acetamide
 
 	void IrcServerCLEntry::Leave (const QString&)
 	{
-		Account_->GetClientConnection ()->CloseServer (ISH_->GetServerID_ ());
+		ISH_->QuitServer ();
 	}
 
 	QString IrcServerCLEntry::GetNick () const

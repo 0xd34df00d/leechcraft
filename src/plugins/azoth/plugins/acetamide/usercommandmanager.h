@@ -42,7 +42,7 @@ namespace Acetamide
 		QHash<QString, boost::function<void (const QStringList&)> > Command2Action_;
 	public:
 		UserCommandManager (IrcServerHandler*);
-		bool VerifyMessage (const QString&, const QString&);
+		QString VerifyMessage (const QString&, const QString&);
 	private:
 		void Init ();
 	};
