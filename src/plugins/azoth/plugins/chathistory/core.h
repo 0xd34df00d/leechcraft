@@ -22,6 +22,7 @@
 #include <boost/weak_ptr.hpp>
 #include <QObject>
 #include <QSet>
+#include <QVariantMap>
 #include <interfaces/ihavetabs.h>
 
 namespace LeechCraft
@@ -71,6 +72,7 @@ namespace ChatHistory
 		void SetLoggingEnabled (QObject*, bool);
 
 		void Process (QObject*);
+		void Process (QVariantMap);
 		void GetOurAccounts ();
 		void GetUsersForAccount (const QString&);
 		void GetChatLogs (const QString& accountId, const QString& entryId,
