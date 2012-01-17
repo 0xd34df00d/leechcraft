@@ -33,6 +33,7 @@ namespace Azoth
 	: QDialog (parent)
 	{
 		Ui_.setupUi (this);
+		setAttribute (Qt::WA_DeleteOnClose, true);
 
 		Q_FOREACH (IAccount *acc, accounts)
 		{
