@@ -92,13 +92,22 @@ namespace Liznoo
 
 	void PlatformWinAPI::handleBatteryStateChanged( int newPercentage )
 	{
+		//TODO(DZhon): Rewrite using Win32_Battery WMI Class.
+
 		qDebug() << tr("New battery state detected") << ": [" << newPercentage << "]";
 
-		BatteryInfo info;
+		SYSTEM_POWER_STATUS powerStatus;
+		BOOL retCode = GetSystemPowerStatus(&powerStatus);
+
+		Q_ASSERT(retCode);
+
+		BatteryInfo info;		
+		qMemSet(&info, 0, sizeof(info));
+
+		info.TimeToEmpty_ = powerStatus.BatteryLifeTime;
 		info.Percentage_ = newPercentage;
 
 		emit batteryInfoUpdated(info);
 	}
-
 } // namespace Liznoo
 } // namespace LeechCraft
