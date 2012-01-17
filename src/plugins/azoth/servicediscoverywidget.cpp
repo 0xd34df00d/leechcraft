@@ -42,7 +42,7 @@ namespace Azoth
 	, Toolbar_ (new QToolBar)
 	, AccountBox_ (new QComboBox)
 	, AddressLine_ (new QLineEdit)
-	, DiscoveryTimer_ (new QTimer)
+	, DiscoveryTimer_ (new QTimer (this))
 	{
 		Ui_.setupUi (this);
 		
@@ -147,6 +147,7 @@ namespace Azoth
 
 		QAction *result = menu->exec (Ui_.DiscoveryTree_->
 					viewport ()->mapToGlobal (point));
+		menu->deleteLater ();
 		if (!result)
 			return;
 		
