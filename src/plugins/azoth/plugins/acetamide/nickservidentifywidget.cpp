@@ -91,11 +91,11 @@ namespace Acetamide
 		for (int i = 0; i < Model_->rowCount (); ++i)
 		{
 			QStringList record;
-			record << Model_->item (i, CServerName)->text ()
-					<< Model_->item (i, CNick)->text ()
-					<< Model_->item (i, CNickServ)->text ()
-					<< Model_->item (i, CAuthString)->text ()
-					<< Model_->item (i, CAuthMessage)->text ();
+			record << Model_->item (i, Column::ServerName)->text ()
+					<< Model_->item (i, Column::Nick)->text ()
+					<< Model_->item (i, Column::NickServ)->text ()
+					<< Model_->item (i, Column::AuthString)->text ()
+					<< Model_->item (i, Column::AuthMessage)->text ();
 			list << record;
 		}
 
@@ -142,20 +142,20 @@ namespace Acetamide
 			return;
 
 		std::unique_ptr<NewNickServIdentifyDialog> nns (new NewNickServIdentifyDialog (0));
-		nns->SetServer (Model_->item (index.row (), CServerName)->text ());
-		nns->SetNickName (Model_->item (index.row (), CNick)->text ());
-		nns->SetNickServNickName (Model_->item (index.row (), CNickServ)->text ());
-		nns->SetAuthString (Model_->item (index.row (), CAuthString)->text ());
-		nns->SetAuthMessage (Model_->item (index.row (), CAuthMessage)->text ());
+		nns->SetServer (Model_->item (index.row (), Column::ServerName)->text ());
+		nns->SetNickName (Model_->item (index.row (), Column::Nick)->text ());
+		nns->SetNickServNickName (Model_->item (index.row (), Column::NickServ)->text ());
+		nns->SetAuthString (Model_->item (index.row (), Column::AuthString)->text ());
+		nns->SetAuthMessage (Model_->item (index.row (), Column::AuthMessage)->text ());
 
 		if (nns->exec () == QDialog::Rejected)
 			return;
 
-		Model_->item (index.row (), CServerName)->setText (nns->GetServer ());
-		Model_->item (index.row (), CNick)->setText (nns->GetNickName ());
-		Model_->item (index.row (), CNickServ)->setText (nns->GetNickServNickName ());
-		Model_->item (index.row (), CAuthString)->setText (nns->GetAuthString ());
-		Model_->item (index.row (), CAuthMessage)->setText (nns->GetAuthMessage ());
+		Model_->item (index.row (), Column::ServerName)->setText (nns->GetServer ());
+		Model_->item (index.row (), Column::Nick)->setText (nns->GetNickName ());
+		Model_->item (index.row (), Column::NickServ)->setText (nns->GetNickServNickName ());
+		Model_->item (index.row (), Column::AuthString)->setText (nns->GetAuthString ());
+		Model_->item (index.row (), Column::AuthMessage)->setText (nns->GetAuthMessage ());
 	}
 
 	void NickServIdentifyWidget::on_Delete__clicked ()
