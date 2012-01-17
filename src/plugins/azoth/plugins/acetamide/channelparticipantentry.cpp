@@ -37,17 +37,13 @@ namespace Acetamide
 	, ICH_ (ich)
 	{
 		QMenu *infoMenu = new QMenu (tr ("Information"));
-		const QIcon& icon = Core::Instance ().GetProxy ()->GetIcon ("azoth_acetamide_who_user");
-		infoMenu->addAction (icon,
-				"/WHOIS " + Nick_,
+		infoMenu->addAction ("/WHOIS " + Nick_,
 				this,
 				SLOT (handleWhoIs ()));
-		infoMenu->addAction (icon,
-				"/WHOWAS " + Nick_,
+		infoMenu->addAction ("/WHOWAS " + Nick_,
 				this,
 				SLOT (handleWhoWas ()));
-		infoMenu->addAction (icon,
-				"/WHO " + Nick_,
+		infoMenu->addAction ("/WHO " + Nick_,
 				this,
 				SLOT (handleWho ()));
 
