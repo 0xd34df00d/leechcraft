@@ -141,7 +141,10 @@ namespace Azoth
 	{
 		QHash<QByteArray, QAction*> actions = Entry2Actions_.take (entry);
 		Q_FOREACH (QAction *action, actions.values ())
+		{
 			Action2Areas_.remove (action);
+			delete action;
+		}
 	}
 
 	QString ActionsManager::GetReason (const QString&, const QString& text)
