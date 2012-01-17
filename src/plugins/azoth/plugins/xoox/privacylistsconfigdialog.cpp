@@ -32,7 +32,7 @@ namespace Xoox
 	PrivacyListsConfigDialog::PrivacyListsConfigDialog (PrivacyListsManager *mgr, QWidget *parent)
 	: QDialog (parent)
 	, Manager_ (mgr)
-	, Model_ (new QStandardItemModel)
+	, Model_ (new QStandardItemModel (this))
 	{
 		Ui_.setupUi (this);
 		Ui_.RulesTree_->setModel (Model_);
