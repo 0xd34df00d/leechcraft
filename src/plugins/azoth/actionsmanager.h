@@ -94,6 +94,8 @@ namespace Azoth
 		void hookEntryActionAreasRequested (LeechCraft::IHookProxy_ptr proxy,
 				QObject *action,
 				QObject *entry);
+		void hookEntryActionsRemoved (LeechCraft::IHookProxy_ptr proxy,
+				QObject *entry);
 		void hookEntryActionsRequested (LeechCraft::IHookProxy_ptr proxy,
 				QObject *entry);
 	};

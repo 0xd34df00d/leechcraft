@@ -92,6 +92,9 @@ namespace Azoth
 				QObject *action,
 				QObject *entry);
 
+		void hookEntryActionsRemoved (LeechCraft::IHookProxy_ptr proxy,
+				QObject *entry);
+
 		/** @brief Hook for adding actions for contact list entries.
 		 *
 		 * This hook is called for adding new CL entry-related actions

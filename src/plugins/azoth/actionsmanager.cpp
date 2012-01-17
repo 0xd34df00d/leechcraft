@@ -154,6 +154,9 @@ namespace Azoth
 			Action2Areas_.remove (action);
 			delete action;
 		}
+
+		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		emit hookEntryActionsRemoved (proxy, entry->GetObject ());
 	}
 
 	QString ActionsManager::GetReason (const QString&, const QString& text)
