@@ -19,14 +19,14 @@
 
 #ifndef PLUGINS_LASTFMSCROBBLE_LASTFMSUBMITTER_H
 #define PLUGINS_LASTFMSCROBBLE_LASTFMSUBMITTER_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QObject>
 #include <QString>
 
 namespace lastfm
 {
 	class Audioscrobbler;
-};
+}
 
 class QNetworkAccessManager;
 
@@ -45,7 +45,7 @@ namespace Lastfmscrobble
 	{
 		Q_OBJECT
 		
-		boost::shared_ptr<lastfm::Audioscrobbler> Scrobbler_;
+		std::shared_ptr<lastfm::Audioscrobbler> Scrobbler_;
 		QString Password_;
 	public:
 		LastFMSubmitter (QObject *parent = 0);

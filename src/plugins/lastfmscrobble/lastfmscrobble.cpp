@@ -23,6 +23,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/entitytesthandleresult.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <util/passutils.h>
 #include "lastfmsubmitter.h"
 #include "xmlsettingsmanager.h"
 
@@ -107,11 +108,20 @@ namespace Lastfmscrobble
 	
 	void Plugin::handleSubmitterInit ()
 	{
-		LFSubmitter_->SetUsername (XmlSettingsManager::Instance ()
-				.property ("lastfm.login").toString ());
-		LFSubmitter_->SetPassword (XmlSettingsManager::Instance ()
-				.property ("lastfm.password").toString ());
-
+		const QString& login = XmlSettingsManager::Instance ()
+				.property ("lastfm.login").toString ();
+		LFSubmitter_->SetUsername (login);
+		
+		QString password;
+		if (login.isEmpty ())
+		{
+			password = Util::GetPassword ("org.LeechCraft.Lastfmscrobble/" + login,
+					tr ("Enter password for Last.fm account with login %1:")
+						.arg (login),
+					this);
+		}
+		
+		LFSubmitter_->SetPassword (password);
 		LFSubmitter_->Init (Proxy_->GetNetworkAccessManager ());
 	}
 }
