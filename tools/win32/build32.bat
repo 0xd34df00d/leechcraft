@@ -33,6 +33,7 @@ cmake ../../../src  ^
 	-DENABLE_KNOWHOW=True ^
 	-DENABLE_LAURE=True ^
 	-DENABLE_LIZNOO=True ^
+	-DENABLE_SIDEBAR=True ^
 	-DENABLE_LASTFM=False ^
 	-DRBTorrent_DIR=%TORRENT_DIR% ^
 	-DQXMPP_LOCAL=%QXMPP_LOCAL% ^

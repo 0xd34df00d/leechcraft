@@ -65,7 +65,7 @@ namespace Liznoo
 		connect (FakeWidget_.get(), SIGNAL(schemeChanged(QString)), 
 			this, SLOT(handleSchemeChanged(QString)));
 		connect (FakeWidget_.get(), SIGNAL(powerSourceChanged(QString)), 
-			this, SLOT(handleSchemeChanged(QString)));
+			this, SLOT(handlePowerSourceChanged(QString)));
 		connect (FakeWidget_.get(), SIGNAL(batteryStateChanged(int)), 
 			this, SLOT(handleSchemeChanged(QString)));
 
