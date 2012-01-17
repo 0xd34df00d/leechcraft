@@ -126,7 +126,7 @@ namespace Azoth
 		Ui_.SubjBox_->setVisible (false);
 		Ui_.SubjChange_->setEnabled (false);
 
-		Ui_.EventsButton_->setMenu (new QMenu (tr ("Events")));
+		Ui_.EventsButton_->setMenu (new QMenu (tr ("Events"), this));
 		Ui_.EventsButton_->hide ();
 
 		BuildBasicActions ();
@@ -1162,7 +1162,7 @@ namespace Azoth
 
 		const int pos = Ui_.MainLayout_->indexOf (Ui_.View_) + 1;
 
-		MsgFormatter_ = new MsgFormatterWidget (Ui_.MsgEdit_);
+		MsgFormatter_ = new MsgFormatterWidget (Ui_.MsgEdit_, Ui_.MsgEdit_);
 		Ui_.MainLayout_->insertWidget (pos, MsgFormatter_);
 		connect (ToggleRichText_,
 				SIGNAL (toggled (bool)),
