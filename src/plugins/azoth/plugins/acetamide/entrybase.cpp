@@ -91,6 +91,7 @@ namespace Acetamide
 
 	void EntryBase::HandleMessage (IrcMessage *msg)
 	{
+		msg->SetOtherPart (this);
 		IrcProtocol *proto = qobject_cast<IrcProtocol*> (Account_->
 				GetParentProtocol ());
 		IProxyObject *proxy =

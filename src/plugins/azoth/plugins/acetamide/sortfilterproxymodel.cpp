@@ -39,7 +39,7 @@ namespace Acetamide
 			QModelIndex index2 = sourceModel ()->
 					index (sourceRow, 3, sourceParent);
 
-			return (sourceModel ()->data (index0).toString().contains (filterRegExp ())
+			return (sourceModel ()->data (index0).toString ().contains (filterRegExp ())
 					|| sourceModel ()->data (index1).toString ().contains (filterRegExp ())
 				|| sourceModel ()->data (index2).toString ().contains (filterRegExp ()));
 	}

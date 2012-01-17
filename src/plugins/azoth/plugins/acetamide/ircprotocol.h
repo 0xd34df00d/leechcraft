@@ -64,8 +64,8 @@ namespace Acetamide
 		QWidget* GetMUCJoinWidget ();
 		void RemoveAccount (QObject*);
 
-		void HandleURI(const QUrl&, QObject*);
-		bool SupportsURI(const QUrl&) const;
+		void HandleURI (const QUrl&, QObject*);
+		bool SupportsURI (const QUrl&) const;
 	private:
 		void RestoreAccounts ();
 	private slots:
