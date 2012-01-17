@@ -67,6 +67,11 @@ namespace Xoox
 				SIGNAL (geolocationInfoChanged (const QString&, QObject*)));
 	}
 
+	EntryBase::~EntryBase ()
+	{
+		qDeleteAll (AllMessages_);
+	}
+
 	QObject* EntryBase::GetObject ()
 	{
 		return this;
