@@ -44,7 +44,7 @@ namespace Acetamide
 			Socket_ptr->connectToHost (host, port);
 		else
 		{
-			boost::shared_ptr<QSslSocket> s = boost::dynamic_pointer_cast<QSslSocket> (Socket_ptr);
+			std::shared_ptr<QSslSocket> s = std::dynamic_pointer_cast<QSslSocket> (Socket_ptr);
 			s->connectToHostEncrypted (host, port);
 		}
 	}

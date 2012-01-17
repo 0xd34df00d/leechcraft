@@ -51,7 +51,7 @@ namespace Acetamide
 		rule<> nick = lexeme_d [nickname];
 		rule<> value = *(alnum_p | punct_p);
 		rule<> parameter = *alnum_p;
-		rule<> token = !(ch_p('-') [assign_a (val, "false")])
+		rule<> token = !(ch_p ('-') [assign_a (val, "false")])
 				>> parameter[assign_a (param)]
 				>> !(ch_p ('=') >> value [assign_a (val)]);
 		rule<> isuppport = nick >>
@@ -59,7 +59,7 @@ namespace Acetamide
 				*(eps_p[assign_a (val, "true")]
 						>> token[insert_at_a (stringParams, param, val)]
 						>> ch_p (' ')) >>
-				str_p(":are supported by this server");
+				str_p (":are supported by this server");
 
 		bool res = parse (reply.toUtf8 ().constData (), isuppport).full;
 		if (!res)

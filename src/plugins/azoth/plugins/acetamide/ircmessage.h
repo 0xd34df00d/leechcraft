@@ -50,6 +50,8 @@ namespace Acetamide
 		QString NickName_;
 		Message Message_;
 		ClientConnection *Connection_;
+
+		QObject *OtherPart_;
 	public:
 		IrcMessage (IMessage::MessageType type,
 				IMessage::Direction direction,
@@ -67,6 +69,7 @@ namespace Acetamide
 		MessageSubType GetMessageSubType () const;
 		void SetMessageSubType (IMessage::MessageSubType);
 		QObject* OtherPart () const;
+		void SetOtherPart (QObject *entry);
 		QString GetID () const;
 		QString GetOtherVariant () const;
 		void SetOtherVariant (const QString&);

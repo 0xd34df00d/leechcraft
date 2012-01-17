@@ -63,7 +63,6 @@ namespace Acetamide
 		if (!ParentEntry_)
 			return;
 
-		ParentEntry_->GetIrcServerHandler ()->SetLastSendID (QString ());
 		ParentEntry_->GetIrcServerHandler ()->
 				SendMessage2Server (Message_.split (' '));
 	}

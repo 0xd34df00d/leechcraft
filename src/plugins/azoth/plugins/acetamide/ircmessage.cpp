@@ -22,6 +22,7 @@
 #include "clientconnection.h"
 #include "core.h"
 #include "ircserverhandler.h"
+#include "channelsmanager.h"
 
 namespace LeechCraft
 {
@@ -40,6 +41,7 @@ namespace Acetamide
 	, ID_ (id)
 	, NickName_ (nickname)
 	, Connection_ (conn)
+	, OtherPart_ (0)
 	{
 		Message_.Stamp_ = QDateTime::currentDateTime ();
 		Message_.Nickname_ = NickName_;
@@ -53,6 +55,7 @@ namespace Acetamide
 	, ID_ (id)
 	, Message_ (msg)
 	, Connection_ (conn)
+	, OtherPart_ (0)
 	{
 		if (!Message_.Stamp_.isValid ())
 			Message_.Stamp_ = QDateTime::currentDateTime ();
@@ -76,8 +79,8 @@ namespace Acetamide
 		{
 		case MTChatMessage:
 		case MTMUCMessage:
-				Connection_->GetIrcServerHandler (ID_)->
-						SendPrivateMessage (this);
+			Connection_->GetIrcServerHandler (ID_)->SendPrivateMessage (this);
+			Connection_->GetIrcServerHandler (ID_)->GetChannelManager ()->SetPrivateChat (GetOtherVariant ());
 			return;
 		case MTStatusMessage:
 		case MTEventMessage:
@@ -119,7 +122,12 @@ namespace Acetamide
 
 	QObject* IrcMessage::OtherPart () const
 	{
-		return Connection_->GetCLEntry (ID_, Message_.Nickname_);
+		return OtherPart_;
+	}
+
+	void IrcMessage::SetOtherPart (QObject *entry)
+	{
+		OtherPart_ = entry;
 	}
 
 	QString IrcMessage::GetID () const
