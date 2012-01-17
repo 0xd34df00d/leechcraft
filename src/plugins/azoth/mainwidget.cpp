@@ -55,7 +55,7 @@ namespace Azoth
 {
 	MainWidget::MainWidget (QWidget *parent)
 	: QWidget (parent)
-	, MainMenu_ (new QMenu (tr ("Azoth menu")))
+	, MainMenu_ (new QMenu (tr ("Azoth menu"), this))
 	, MenuButton_ (new QToolButton (this))
 	, ProxyModel_ (new SortFilterProxyModel ())
 	{
@@ -257,7 +257,7 @@ namespace Azoth
 
 	QMenu* MainWidget::CreateStatusChangeMenu (const char *slot, bool withCustom)
 	{
-		QMenu *result = new QMenu (tr ("Change status"));
+		QMenu *result = new QMenu (tr ("Change status"), this);
 		result->addAction (Core::Instance ().GetIconForState (SOnline),
 				tr ("Online"), this, slot)->
 					setProperty ("Azoth/TargetState",
@@ -407,7 +407,7 @@ namespace Azoth
 				QVariantList bms = supBms->GetBookmarkedMUCs ();
 				if (!bms.isEmpty ())
 				{
-					QMenu *bmsMenu = new QMenu (tr ("Join bookmarked conference"));
+					QMenu *bmsMenu = new QMenu (tr ("Join bookmarked conference"), menu);
 					actions << bmsMenu->menuAction ();
 
 					Q_FOREACH (const QObject *mucObj,
@@ -508,6 +508,7 @@ namespace Azoth
 
 		menu->addActions (actions);
 		menu->exec (Ui_.CLTree_->mapToGlobal (pos));
+		menu->deleteLater ();
 	}
 
 	void MainWidget::handleChangeStatusRequested ()
@@ -544,11 +545,11 @@ namespace Azoth
 		}
 		else
 		{
-			SetStatusDialog *ssd = new SetStatusDialog (this);
-			if (ssd->exec () != QDialog::Accepted)
+			SetStatusDialog ssd (this);
+			if (ssd.exec () != QDialog::Accepted)
 				return;
 
-			status = EntryStatus (ssd->GetState (), ssd->GetStatusText ());
+			status = EntryStatus (ssd.GetState (), ssd.GetStatusText ());
 		}
 
 		if (acc)
