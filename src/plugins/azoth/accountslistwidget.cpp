@@ -36,7 +36,7 @@ namespace Azoth
 {
 	AccountsListWidget::AccountsListWidget (QWidget* parent)
 	: QWidget (parent)
-	, AccModel_ (new QStandardItemModel ())
+	, AccModel_ (new QStandardItemModel (this))
 	{
 		Ui_.setupUi (this);
 
