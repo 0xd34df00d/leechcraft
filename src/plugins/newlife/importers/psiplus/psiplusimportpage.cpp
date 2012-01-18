@@ -342,6 +342,7 @@ namespace Importers
 
 				list.erase (list.begin (), list.begin () + 4);
 				result ["Body"] = list.join ("|").trimmed ();
+				result ["MessageType"] = "chat";
 				return result;
 			}
 		};

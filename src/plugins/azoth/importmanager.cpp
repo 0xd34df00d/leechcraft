@@ -73,7 +73,7 @@ namespace Azoth
 		if (!acc)
 			return;
 
-		ISupportImport *isi = qobject_cast<ISupportImport*> (acc->GetObject ());
+		ISupportImport *isi = qobject_cast<ISupportImport*> (acc->GetParentProtocol ());
 
 		QHash<QString, QString> entryIDcache;
 
@@ -93,14 +93,20 @@ namespace Azoth
 				histMap ["EntryID"] = realID;
 			}
 
+			if (histMap ["VisibleName"].toString ().isEmpty ())
+				histMap ["VisibleName"] = origID;
+
 			histMap ["AccountID"] = acc->GetAccountID ();
 
+			if (histMap ["MessageType"] == "chat")
+				histMap ["MessageType"] = static_cast<int> (IMessage::MTChatMessage);
+			else if (histMap ["MessageType"] == "muc")
+				histMap ["MessageType"] = static_cast<int> (IMessage::MTMUCMessage);
+			else if (histMap ["MessageType"] == "event")
+				histMap ["MessageType"] = static_cast<int> (IMessage::MTEventMessage);
+
 			Q_FOREACH (IHistoryPlugin *plugin, histories)
-			{
-				qDebug () << "gonna add"
-						<< histMap;
-				//plugin->AddRawMessage (histMap);
-			}
+				plugin->AddRawMessage (histMap);
 		}
 	}
 

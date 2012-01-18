@@ -26,5 +26,15 @@ namespace NewLife
 	: QObject (parent)
 	{
 	}
+
+	QList<QIcon> AbstractImporter::GetIcons () const
+	{
+		const QIcon icon (":/resources/images/newlife.svg");
+
+		QList<QIcon> result;
+		for (int i = 0, size = GetNames ().size (); i < size; ++i)
+			result << icon;
+		return result;
+	}
 }
 }

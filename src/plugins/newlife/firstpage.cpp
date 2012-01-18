@@ -37,8 +37,11 @@ namespace NewLife
 
 	void FirstPage::SetupImporter (AbstractImporter *ai)
 	{
-		Q_FOREACH (QString name, ai->GetNames ())
-			Ui_.SourceApplication_->addItem (name,
+		const auto& names = ai->GetNames ();
+		const auto& icons = ai->GetIcons ();
+		for (int i = 0; i < std::min (names.size (), icons.size ()); ++i)
+			Ui_.SourceApplication_->addItem (icons.at (i),
+					names.at (i),
 					QVariant::fromValue<QObject*> (ai));
 
 		QList<QWizardPage*> pages = ai->GetWizardPages ();

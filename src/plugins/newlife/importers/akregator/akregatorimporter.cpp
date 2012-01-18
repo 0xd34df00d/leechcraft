@@ -36,6 +36,11 @@ namespace Importers
 		return QStringList ("Akregator");
 	}
 
+	QList<QIcon> AkregatorImporter::GetIcons () const
+	{
+		return QList<QIcon> () << QIcon (":/resources/images/apps/akregator.svg");
+	}
+
 	QList<QWizardPage*> AkregatorImporter::GetWizardPages () const
 	{
 		QList<QWizardPage*> result;

@@ -187,8 +187,6 @@ namespace ChatHistory
 	void Core::Process (QVariantMap data)
 	{
 		data ["Direction"] = data ["Direction"].toString ().toUpper ();
-		qDebug () << Q_FUNC_INFO
-				<< data;
 
 		QMetaObject::invokeMethod (StorageThread_->GetStorage (),
 				"addMessage",
