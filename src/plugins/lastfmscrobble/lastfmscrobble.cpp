@@ -113,7 +113,7 @@ namespace Lastfmscrobble
 		LFSubmitter_->SetUsername (login);
 		
 		QString password;
-		if (login.isEmpty ())
+		if (!login.isEmpty ())
 		{
 			password = Util::GetPassword ("org.LeechCraft.Lastfmscrobble/" + login,
 					tr ("Enter password for Last.fm account with login %1:")
