@@ -1,29 +1,21 @@
-//------------------------------------------------------------------------------------------------------------------------------------------
-//    Copyright (c) 2011, Eugene Mamin <TheDZhon@gmail.com>
-//    All rights reserved.
-//
-//    Redistribution and use in source and binary forms, with or without
-//    modification, are permitted provided that the following conditions are met:
-//        * Redistributions of source code must retain the above copyright
-//        notice, this list of conditions and the following disclaimer.
-//        * Redistributions in binary form must reproduce the above copyright
-//        notice, this list of conditions and the following disclaimer in the
-//        documentation and/or other materials provided with the distribution.
-//        * Neither the name of the Prefix Increment nor the
-//        names of its contributors may be used to endorse or promote products
-//        derived from this software without specific prior written permission.
-//
-//    THIS SOFTWARE IS PROVIDED BY Eugene Mamin <TheDZhon@gmail.com> ''AS IS'' AND ANY
-//    EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-//    WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-//    DISCLAIMED. IN NO EVENT SHALL Eugene Mamin <TheDZhon@gmail.com> BE LIABLE FOR ANY
-//    DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-//    (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-//    LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-//    ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-//    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-//    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//-----------------------------------------------------------------------------------------------------------------------------------------
+/**********************************************************************
+ * LeechCraft - modular cross-platform feature rich internet client.
+ * Copyright (C) 2012       Eugene Mamin
+ * Copyright (C) 2006-2012  Georg Rudoy
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ **********************************************************************/
 
 #include "fakeqwidgetwinapi.h"
 
@@ -31,74 +23,78 @@ namespace LeechCraft
 {
 namespace Liznoo
 {
-	FakeQWidgetWinAPI::FakeQWidgetWinAPI (QWidget * parent)
-	: QWidget(parent)
+	FakeQWidgetWinAPI::FakeQWidgetWinAPI (QWidget *parent)
+	: QWidget (parent)
 	{
 
 	}
 
-	void FakeQWidgetWinAPI::prepareSchemeChange(PPOWERBROADCAST_SETTING setting )
+	void FakeQWidgetWinAPI::prepareSchemeChange (PPOWERBROADCAST_SETTING setting)
 	{
-		GUID newScheme = *(GUID*)(DWORD_PTR)setting->Data;
+		GUID newScheme = *reinterpret_cast<GUID*> (
+			reinterpret_cast<DWORD_PTR>(setting->Data));
 
 		QString scheme;
-		if ( GUID_MAX_POWER_SAVINGS == newScheme )
+		if (GUID_MAX_POWER_SAVINGS == newScheme)
 		{
-			scheme = tr("Power saver");
+			scheme = tr ("Power saver");
 		}
-		else if ( GUID_MIN_POWER_SAVINGS == newScheme )
+		else if (GUID_MIN_POWER_SAVINGS == newScheme)
 		{
-			scheme = tr("High performance");
+			scheme = tr ("High performance");
 		}
 		else 
 		{
-			scheme = tr("Balanced");
+			scheme = tr ("Balanced");
 		}
 
-		emit schemeChanged(scheme);
+		emit schemeChanged (scheme);
 	}
 
-	void FakeQWidgetWinAPI::preparePowerSourceChange(PPOWERBROADCAST_SETTING setting )
+	void FakeQWidgetWinAPI::preparePowerSourceChange (PPOWERBROADCAST_SETTING setting)
 	{
-		int nPowerSrc = *(int*)(DWORD_PTR) setting->Data;
-		QString powerSource = (0 != nPowerSrc) ? tr("Battery") : tr("AC");
+		int nPowerSrc = *reinterpret_cast<int*> (
+			reinterpret_cast<DWORD_PTR> (setting->Data));
 
-		emit powerSourceChanged(powerSource);
+		QString powerSource = nPowerSrc ? tr("Battery") : tr("AC");
+
+		emit powerSourceChanged (powerSource);
 	}
 
-	void FakeQWidgetWinAPI::prepareBatteryStateChange(PPOWERBROADCAST_SETTING setting )
+	void FakeQWidgetWinAPI::prepareBatteryStateChange (PPOWERBROADCAST_SETTING setting)
 	{
-		int nPercentLeft = *(int*)(DWORD_PTR) setting->Data;
+		int nPercentLeft = *reinterpret_cast<int*>(
+			reinterpret_cast<DWORD_PTR> (setting->Data));
 
-		emit batteryStateChanged(nPercentLeft);
+		emit batteryStateChanged (nPercentLeft);
 	}
 
-	bool FakeQWidgetWinAPI::winEvent( MSG * message, long * result )
+	bool FakeQWidgetWinAPI::winEvent (MSG * message, long * result)
 	{
 		if(message->message == WM_POWERBROADCAST)
 		{	
 			Q_ASSERT(message->wParam == PBT_POWERSETTINGCHANGE);
 
 			PPOWERBROADCAST_SETTING rcvd_setting = 
-				reinterpret_cast<PPOWERBROADCAST_SETTING>(message->lParam);
+				reinterpret_cast<PPOWERBROADCAST_SETTING> (message->lParam);
 
 			if (sizeof(GUID) == rcvd_setting->DataLength &&
-				rcvd_setting->PowerSetting == GUID_POWERSCHEME_PERSONALITY )
+				rcvd_setting->PowerSetting == GUID_POWERSCHEME_PERSONALITY)
 			{
-				prepareSchemeChange(rcvd_setting);
+				prepareSchemeChange (rcvd_setting);
 			} 
 			else if (sizeof(int) == rcvd_setting->DataLength &&
 				rcvd_setting->PowerSetting == GUID_ACDC_POWER_SOURCE)
 			{
-				preparePowerSourceChange(rcvd_setting);
+				preparePowerSourceChange (rcvd_setting);
 			} 
 			else if (sizeof(int) == rcvd_setting->DataLength &&
-				rcvd_setting->PowerSetting == GUID_BATTERY_PERCENTAGE_REMAINING )
+				rcvd_setting->PowerSetting == GUID_BATTERY_PERCENTAGE_REMAINING)
 			{
-				prepareBatteryStateChange(rcvd_setting);
+				prepareBatteryStateChange (rcvd_setting);
 			}
 		}
-		return QWidget::winEvent(message, result);
+		return QWidget::winEvent (message, result);
 	}	
 } // namespace Liznoo
 } // namespace Leechcraft
