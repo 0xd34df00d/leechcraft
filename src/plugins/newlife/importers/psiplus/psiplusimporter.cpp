@@ -37,6 +37,11 @@ namespace Importers
 		return QStringList ("Psi+");
 	}
 
+	QList<QIcon> PsiPlusImporter::GetIcons () const
+	{
+		return QList<QIcon> () << QIcon (":/resources/images/apps/psiplus.png");
+	}
+
 	QList<QWizardPage*> PsiPlusImporter::GetWizardPages () const
 	{
 		QList<QWizardPage*> result;

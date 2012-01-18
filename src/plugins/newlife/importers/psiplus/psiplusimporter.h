@@ -37,6 +37,7 @@ namespace Importers
 		PsiPlusImporter (QWidget* = 0);
 
 		QStringList GetNames () const;
+		QList<QIcon> GetIcons () const;
 		QList<QWizardPage*> GetWizardPages () const;
 	};
 }

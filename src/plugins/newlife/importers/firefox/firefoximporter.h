@@ -37,8 +37,10 @@ namespace Importers
 		FirefoxProfileSelectPage *ProfileSelectPage_;
 	public:
 		FirefoxImporter (QWidget* = 0);
-		virtual QStringList GetNames () const;
-		virtual QList<QWizardPage*> GetWizardPages () const;
+
+		QStringList GetNames () const;
+		QList<QIcon> GetIcons () const;
+		QList<QWizardPage*> GetWizardPages () const;
 	};
 }
 }
