@@ -154,7 +154,8 @@ namespace Azoth
 			CLREntryCategory,
 			CLRUnreadMsgCount,
 			CLRRole,
-			CLRAffiliation
+			CLRAffiliation,
+			CLRNumOnline
 		};
 
 		enum CLEntryType
@@ -368,6 +369,8 @@ namespace Azoth
 		 * items for the chain of parents of the given item.
 		 */
 		void RecalculateUnreadForParents (QStandardItem*);
+
+		void RecalculateOnlineForCat (QStandardItem*);
 
 		void NotifyWithReason (QObject*, const QString&,
 				const char*, const QString&,
