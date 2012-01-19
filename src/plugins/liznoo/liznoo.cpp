@@ -25,10 +25,12 @@
 #include <util/util.h>
 #include "batteryhistorydialog.h"
 
-#ifdef Q_WS_X11
-#include "platformupower.h"
+#if defined(Q_WS_X11)
+	#include "platformupower.h"
+#elif defined(Q_WS_WIN)
+	#include "platformwinapi.h"
 #else
-#pragma message ("Unsupported system")
+	#pragma message ("Unsupported system")
 #endif
 
 namespace LeechCraft
@@ -42,8 +44,10 @@ namespace Liznoo
 		Proxy_ = proxy;
 		qRegisterMetaType<BatteryInfo> ("Liznoo::BatteryInfo");
 
-#ifdef Q_WS_X11
+#if defined(Q_WS_X11)
 		PL_ = new PlatformUPower (this);
+#elif defined(Q_WS_WIN)
+		PL_ = new PlatformWinAPI (this);
 #else
 		PL_ = 0;
 #endif
@@ -76,7 +80,7 @@ namespace Liznoo
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("UPower-based power manager.");
+		return tr ("UPower/WinAPI-based power manager.");
 	}
 
 	QIcon Plugin::GetIcon () const

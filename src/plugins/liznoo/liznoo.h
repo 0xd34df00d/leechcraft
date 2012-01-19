@@ -23,6 +23,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/iactionsexporter.h>
 #include "batteryhistory.h"
+#include "batteryinfo.h"
 
 namespace LeechCraft
 {

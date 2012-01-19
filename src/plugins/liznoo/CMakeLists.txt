@@ -18,9 +18,9 @@ ENDIF (NOT QT_USE_FILE)
 SET (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 FIND_PACKAGE (Qwt6)
 
-SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-
-SET (QT_USE_QTDBUS TRUE)
+IF (NOT WIN32)
+	SET (QT_USE_QTDBUS TRUE)
+ENDIF (NOT WIN32)
 INCLUDE (${QT_USE_FILE})
 INCLUDE_DIRECTORIES (
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -30,24 +30,46 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	liznoo.cpp
-	dbusconnector.cpp
 	batteryinfo.cpp
-	dbusthread.cpp
 	batteryhistory.cpp
 	batteryhistorydialog.cpp
 	platformlayer.cpp
-	platformupower.cpp
 	)
 SET (HEADERS
 	liznoo.h
-	dbusconnector.h
 	batteryinfo.h
-	dbusthread.h
 	batteryhistory.h
 	batteryhistorydialog.h
 	platformlayer.h
-	platformupower.h
 	)
+# Default implementation using UPower
+IF (NOT WIN32)
+	SET (SRCS 
+		${SRCS}
+		platformupower.cpp
+		dbusthread.cpp
+		dbusconnector.cpp
+		)
+	SET (HEADERS
+		${HEADERS}
+		platformupower.h
+		dbusthread.h
+		dbusconnector.h
+		)
+# Windows implementation using WinAPI
+ELSE (NOT WIN32)
+	SET (SRCS
+		${SRCS}
+		platformwinapi.cpp
+		fakeqwidgetwinapi.cpp
+		)
+	SET (HEADERS
+		${HEADERS}
+		platformwinapi.h
+		fakeqwidgetwinapi.h
+		)
+ENDIF (NOT WIN32)
+
 SET (FORMS
 	batteryhistorydialog.ui
 	)
