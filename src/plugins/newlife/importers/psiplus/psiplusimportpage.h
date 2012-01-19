@@ -19,6 +19,8 @@
 #pragma once
 
 #include "common/imimportpage.h"
+#include <memory>
+#include "common/xmlimaccount.h"
 
 class QStandardItemModel;
 class QStandardItem;
@@ -33,14 +35,13 @@ namespace Importers
 	class PsiPlusImportPage : public Common::IMImportPage
 	{
 		Q_OBJECT
+
+		std::unique_ptr<Common::XMLIMAccount> XIA_;
 	public:
 		PsiPlusImportPage (QWidget* = 0);
 	protected:
 		void FindAccounts ();
 	private:
-		void ScanProfile (const QString&, const QString&);
-		void ScanAccount (QStandardItem*, const QDomElement&);
-
 		void SendImportAcc (QStandardItem*);
 		void SendImportHist (QStandardItem*);
 	protected slots:
