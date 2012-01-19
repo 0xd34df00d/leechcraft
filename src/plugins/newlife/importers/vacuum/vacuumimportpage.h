@@ -19,6 +19,7 @@
 #pragma once
 
 #include "common/imimportpage.h"
+#include "common/xmlimaccount.h"
 
 class QStandardItemModel;
 
@@ -31,10 +32,14 @@ namespace Importers
 	class VacuumImportPage : public Common::IMImportPage
 	{
 		Q_OBJECT
+
+		std::unique_ptr<Common::XMLIMAccount> XIA_;
 	public:
 		VacuumImportPage (QWidget* = 0);
 	protected:
 		void FindAccounts ();
+	private:
+		void ScanProfile (const QString&, const QString&);
 	protected slots:
 		void handleAccepted ();
 	};

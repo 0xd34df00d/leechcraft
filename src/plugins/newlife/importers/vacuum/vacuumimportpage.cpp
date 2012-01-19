@@ -18,6 +18,8 @@
 
 #include "vacuumimportpage.h"
 #include <QStandardItemModel>
+#include <QDomDocument>
+#include <QDir>
 
 namespace LeechCraft
 {
@@ -28,10 +30,42 @@ namespace Importers
 	VacuumImportPage::VacuumImportPage (QWidget *parent)
 	: Common::IMImportPage (parent)
 	{
+		auto tfd = [] (const QDomElement& account, const QString& field)
+			{ return account.firstChildElement (field).text (); };
+
+		auto adapter = Common::XMLIMAccount::ConfigAdapter
+		{
+			AccountsModel_,
+			QStringList (".vacuum") << "profiles",
+			"options.xml",
+			[] (const QDomElement&) { return "xmpp"; },
+			[tfd] (const QDomElement& acc) { return tfd (acc, "name"); },
+			[tfd] (const QDomElement& acc) { return tfd (acc, "active") == "true"; },
+			[tfd] (const QDomElement& acc)
+			{
+				const auto& sjid = tfd (acc, "streamJid");
+				const int pos = sjid.indexOf ('/');
+				return pos < 0 ? sjid : sjid.left (pos);
+			},
+			[tfd] (const QDomElement& acc, QVariantMap& accountData)
+			{
+				const QDomElement& conn = acc.firstChildElement ("connection");
+
+				const int port = tfd (conn, "port").toInt ();
+				accountData ["Port"] = port ? port : 5222;
+
+				const QString& host = tfd (conn, "host");
+				if (!host.isEmpty ())
+					accountData ["Host"] = host;
+			}
+		};
+		XIA_.reset (new Common::XMLIMAccount (adapter));
 	}
 
 	void VacuumImportPage::FindAccounts ()
 	{
+		XIA_->FindAccounts ();
+		Ui_.AccountsTree_->expandAll ();
 	}
 
 	void VacuumImportPage::handleAccepted ()
