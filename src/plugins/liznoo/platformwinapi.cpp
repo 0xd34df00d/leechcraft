@@ -18,21 +18,20 @@
  **********************************************************************/
 
 #include <QtGlobal>
+#include <QTimer>
 #include "fakeqwidgetwinapi.h"
 #include "platformwinapi.h"
 
-namespace {
-	auto aHPowerNotifyDeleter = [] (HPOWERNOTIFY *ptr) 
+namespace 
+{
+auto aHPowerNotifyDeleter = [] (HPOWERNOTIFY *ptr) 
+{
+	if (ptr && *ptr) 
 	{
-		if(ptr) 
-		{
-			if(*ptr) 
-			{ 
-				UnregisterPowerSettingNotification(*ptr); 
-				delete ptr;
-			}
-		}
-	};
+		UnregisterPowerSettingNotification (*ptr); 
+		delete ptr;
+	}
+};
 }
 
 namespace LeechCraft
@@ -50,32 +49,37 @@ namespace Liznoo
 
 		HWND h_wnd = FakeWidget_->winId ();
 
-		*HPowerSchemeNotify_ = RegisterPowerSettingNotification (
-				h_wnd, &GUID_POWERSCHEME_PERSONALITY,
-				DEVICE_NOTIFY_WINDOW_HANDLE);
+		*HPowerSchemeNotify_ = RegisterPowerSettingNotification (h_wnd, 
+			&GUID_POWERSCHEME_PERSONALITY, DEVICE_NOTIFY_WINDOW_HANDLE);
 
 		Q_ASSERT (*HPowerSchemeNotify_);
 
-		*HPowerSourceNotify_ = RegisterPowerSettingNotification (
-			h_wnd, &GUID_ACDC_POWER_SOURCE,
-			DEVICE_NOTIFY_WINDOW_HANDLE);
+		*HPowerSourceNotify_ = RegisterPowerSettingNotification (h_wnd, 
+			&GUID_ACDC_POWER_SOURCE, DEVICE_NOTIFY_WINDOW_HANDLE);
 
 		Q_ASSERT (*HPowerSourceNotify_);
 
-		*HBatteryPowerNotify_ = RegisterPowerSettingNotification(
-			h_wnd, &GUID_BATTERY_PERCENTAGE_REMAINING,
-			DEVICE_NOTIFY_WINDOW_HANDLE );		
+		*HBatteryPowerNotify_ = RegisterPowerSettingNotification (h_wnd, 
+			&GUID_BATTERY_PERCENTAGE_REMAINING,	DEVICE_NOTIFY_WINDOW_HANDLE);		
 
 		Q_ASSERT (*HBatteryPowerNotify_);
 
-		connect (FakeWidget_.get (), SIGNAL (schemeChanged (QString)), 
-			this, SLOT (handleSchemeChanged (QString)));
-		connect (FakeWidget_.get (), SIGNAL (powerSourceChanged (QString)), 
-			this, SLOT (handlePowerSourceChanged (QString)));
-		connect (FakeWidget_.get (), SIGNAL (batteryStateChanged (int)), 
-			this, SLOT (handleSchemeChanged (QString)));
+		connect (FakeWidget_.get (), 
+				SIGNAL (schemeChanged (QString)), 
+				this, 
+				SLOT (handleSchemeChanged (QString)));
+		connect (FakeWidget_.get (), 
+				SIGNAL (powerSourceChanged (QString)), 
+				this, 
+				SLOT (handlePowerSourceChanged (QString)));
+		connect (FakeWidget_.get (), 
+				SIGNAL (batteryStateChanged (int)), 
+				this, 
+				SLOT (handleSchemeChanged (QString)));
 
-		emit started ();
+		QTimer::singleShot (0, 
+				this, 
+				SIGNAL (started ()));
 	}
 
 	void PlatformWinAPI::Stop ()
@@ -108,7 +112,6 @@ namespace Liznoo
 		Q_ASSERT (retCode);
 
 		BatteryInfo info;		
-		qMemSet (&info, 0, sizeof(info));
 
 		info.TimeToEmpty_ = powerStatus.BatteryLifeTime;
 		info.Percentage_ = newPercentage;

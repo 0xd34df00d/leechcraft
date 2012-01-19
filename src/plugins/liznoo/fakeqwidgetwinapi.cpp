@@ -31,68 +31,56 @@ namespace Liznoo
 
 	void FakeQWidgetWinAPI::prepareSchemeChange (PPOWERBROADCAST_SETTING setting)
 	{
-		GUID newScheme = *reinterpret_cast<GUID*> (
-			reinterpret_cast<DWORD_PTR>(setting->Data));
+		const GUID newScheme = 
+			*reinterpret_cast<GUID*> (reinterpret_cast<DWORD_PTR> (setting->Data));
 
 		QString scheme;
 		if (GUID_MAX_POWER_SAVINGS == newScheme)
-		{
 			scheme = tr ("Power saver");
-		}
 		else if (GUID_MIN_POWER_SAVINGS == newScheme)
-		{
 			scheme = tr ("High performance");
-		}
 		else 
-		{
 			scheme = tr ("Balanced");
-		}
 
 		emit schemeChanged (scheme);
 	}
 
 	void FakeQWidgetWinAPI::preparePowerSourceChange (PPOWERBROADCAST_SETTING setting)
 	{
-		int nPowerSrc = *reinterpret_cast<int*> (
+		const int nPowerSrc = *reinterpret_cast<int*> (
 			reinterpret_cast<DWORD_PTR> (setting->Data));
 
-		QString powerSource = nPowerSrc ? tr("Battery") : tr("AC");
+		const QString& powerSource = nPowerSrc ? tr ("Battery") : tr ("AC");
 
 		emit powerSourceChanged (powerSource);
 	}
 
 	void FakeQWidgetWinAPI::prepareBatteryStateChange (PPOWERBROADCAST_SETTING setting)
 	{
-		int nPercentLeft = *reinterpret_cast<int*>(
+		const int nPercentLeft = *reinterpret_cast<int*>(
 			reinterpret_cast<DWORD_PTR> (setting->Data));
 
 		emit batteryStateChanged (nPercentLeft);
 	}
 
-	bool FakeQWidgetWinAPI::winEvent (MSG * message, long * result)
+	bool FakeQWidgetWinAPI::winEvent (MSG *message, long *result)
 	{
 		if(message->message == WM_POWERBROADCAST)
 		{	
-			Q_ASSERT(message->wParam == PBT_POWERSETTINGCHANGE);
+			Q_ASSERT (message->wParam == PBT_POWERSETTINGCHANGE);
 
-			PPOWERBROADCAST_SETTING rcvd_setting = 
+			const PPOWERBROADCAST_SETTING rcvd_setting = 
 				reinterpret_cast<PPOWERBROADCAST_SETTING> (message->lParam);
 
-			if (sizeof(GUID) == rcvd_setting->DataLength &&
+			if (sizeof (GUID) == rcvd_setting->DataLength &&
 				rcvd_setting->PowerSetting == GUID_POWERSCHEME_PERSONALITY)
-			{
 				prepareSchemeChange (rcvd_setting);
-			} 
-			else if (sizeof(int) == rcvd_setting->DataLength &&
+			else if (sizeof (int) == rcvd_setting->DataLength &&
 				rcvd_setting->PowerSetting == GUID_ACDC_POWER_SOURCE)
-			{
 				preparePowerSourceChange (rcvd_setting);
-			} 
-			else if (sizeof(int) == rcvd_setting->DataLength &&
+			else if (sizeof (int) == rcvd_setting->DataLength &&
 				rcvd_setting->PowerSetting == GUID_BATTERY_PERCENTAGE_REMAINING)
-			{
 				prepareBatteryStateChange (rcvd_setting);
-			}
 		}
 		return QWidget::winEvent (message, result);
 	}	

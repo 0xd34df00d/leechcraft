@@ -37,7 +37,7 @@ namespace Liznoo
 		virtual void preparePowerSourceChange (PPOWERBROADCAST_SETTING setting);
 		virtual void prepareBatteryStateChange (PPOWERBROADCAST_SETTING setting);
 
-		virtual bool winEvent (MSG * message, long * result);
+		virtual bool winEvent (MSG *message, long *result);
 	signals:
 		void schemeChanged (QString schemeName);
 		void powerSourceChanged (QString powerSource);
