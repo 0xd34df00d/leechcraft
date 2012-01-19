@@ -26,44 +26,16 @@ namespace NewLife
 namespace Importers
 {
 	VacuumImportPage::VacuumImportPage (QWidget *parent)
-	: QWizardPage (parent)
-	, AccountsModel_ (new QStandardItemModel (this))
+	: Common::IMImportPage (parent)
 	{
-		Ui_.setupUi (this);
 	}
 
-	bool VacuumImportPage::isComplete () const
+	void VacuumImportPage::FindAccounts ()
 	{
-		return true;
 	}
 
-	int VacuumImportPage::nextId () const
+	void VacuumImportPage::handleAccepted ()
 	{
-		return -1;
-	}
-
-	void VacuumImportPage::initializePage ()
-	{
-		connect (wizard (),
-				SIGNAL (accepted ()),
-				this,
-				SLOT (handleAccepted ()),
-				Qt::UniqueConnection);
-		connect (this,
-				SIGNAL (gotEntity (LeechCraft::Entity)),
-				wizard (),
-				SIGNAL (gotEntity (LeechCraft::Entity)));
-
-		AccountsModel_->clear ();
-
-		QStringList labels;
-		labels << tr ("Account name")
-				<< tr ("JID")
-				<< tr ("Import account settings")
-				<< tr ("Import history");
-		AccountsModel_->setHorizontalHeaderLabels (labels);
-
-		//FindAccounts ();
 	}
 }
 }

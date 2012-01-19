@@ -18,8 +18,7 @@
 
 #pragma once
 
-#include <QWizardPage>
-#include "ui_psiplusimportpage.h"
+#include "common/imimportpage.h"
 
 class QStandardItemModel;
 class QStandardItem;
@@ -27,49 +26,25 @@ class QDomElement;
 
 namespace LeechCraft
 {
-struct Entity;
-
 namespace NewLife
 {
 namespace Importers
 {
-	class PsiPlusImportPage : public QWizardPage
+	class PsiPlusImportPage : public Common::IMImportPage
 	{
 		Q_OBJECT
-
-		Ui::PsiPlusImportPage Ui_;
-
-		QStandardItemModel *AccountsModel_;
-
-		enum Roles
-		{
-			AccountData = Qt::UserRole + 1
-		};
-
-		enum Column
-		{
-			AccountName,
-			JID,
-			ImportAcc,
-			ImportHist
-		};
 	public:
 		PsiPlusImportPage (QWidget* = 0);
-
-		bool isComplete () const;
-		int nextId () const;
-		void initializePage ();
-	private:
+	protected:
 		void FindAccounts ();
+	private:
 		void ScanProfile (const QString&, const QString&);
 		void ScanAccount (QStandardItem*, const QDomElement&);
 
 		void SendImportAcc (QStandardItem*);
 		void SendImportHist (QStandardItem*);
-	private slots:
+	protected slots:
 		void handleAccepted ();
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }

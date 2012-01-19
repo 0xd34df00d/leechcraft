@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include "abstractimporter.h"
+#include "common/imimporter.h"
 
 namespace LeechCraft
 {
@@ -28,17 +28,10 @@ namespace Importers
 {
 	class VacuumImportPage;
 
-	class VacuumImporter : public AbstractImporter
+	class VacuumImporter : public Common::IMImporter
 	{
-		Q_OBJECT
-
-		VacuumImportPage *Page_;
 	public:
 		VacuumImporter (QObject* = 0);
-
-		QStringList GetNames () const;
-		QList<QIcon> GetIcons () const;
-		QList<QWizardPage*> GetWizardPages () const;
 	};
 }
 }

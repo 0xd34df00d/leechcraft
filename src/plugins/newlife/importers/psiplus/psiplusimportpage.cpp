@@ -33,45 +33,8 @@ namespace NewLife
 namespace Importers
 {
 	PsiPlusImportPage::PsiPlusImportPage (QWidget *parent)
-	: QWizardPage (parent)
-	, AccountsModel_ (new QStandardItemModel (this))
+	: Common::IMImportPage (parent)
 	{
-		Ui_.setupUi (this);
-		Ui_.AccountsTree_->setModel (AccountsModel_);
-	}
-
-	bool PsiPlusImportPage::isComplete () const
-	{
-		return true;
-	}
-
-	int PsiPlusImportPage::nextId () const
-	{
-		return -1;
-	}
-
-	void PsiPlusImportPage::initializePage ()
-	{
-		connect (wizard (),
-				SIGNAL (accepted ()),
-				this,
-				SLOT (handleAccepted ()),
-				Qt::UniqueConnection);
-		connect (this,
-				SIGNAL (gotEntity (LeechCraft::Entity)),
-				wizard (),
-				SIGNAL (gotEntity (LeechCraft::Entity)));
-
-		AccountsModel_->clear ();
-
-		QStringList labels;
-		labels << tr ("Account name")
-				<< tr ("JID")
-				<< tr ("Import account settings")
-				<< tr ("Import history");
-		AccountsModel_->setHorizontalHeaderLabels (labels);
-
-		FindAccounts ();
 	}
 
 	void PsiPlusImportPage::FindAccounts ()

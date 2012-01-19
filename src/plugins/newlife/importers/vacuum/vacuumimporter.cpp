@@ -26,26 +26,9 @@ namespace NewLife
 namespace Importers
 {
 	VacuumImporter::VacuumImporter (QObject *obj)
-	: AbstractImporter (obj)
-	, Page_ (new VacuumImportPage)
+	: Common::IMImporter ("Vacuum IM",
+			QIcon (":/resources/images/apps/vacuum.png"), new VacuumImportPage, obj)
 	{
-	}
-
-	QStringList VacuumImporter::GetNames () const
-	{
-		return QStringList ("Vacuum IM");
-	}
-
-	QList<QIcon> VacuumImporter::GetIcons () const
-	{
-		return QList<QIcon> () << QIcon (":/resources/images/apps/vacuum.png");
-	}
-
-	QList<QWizardPage*> VacuumImporter::GetWizardPages() const
-	{
-		QList<QWizardPage*> result;
-		result << Page_;
-		return result;
 	}
 }
 }

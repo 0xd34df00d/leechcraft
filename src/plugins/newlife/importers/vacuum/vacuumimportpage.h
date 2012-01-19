@@ -18,45 +18,25 @@
 
 #pragma once
 
-#include <QWizardPage>
-#include "ui_vacuumimportpage.h"
+#include "common/imimportpage.h"
 
 class QStandardItemModel;
 
 namespace LeechCraft
 {
-struct Entity;
-
 namespace NewLife
 {
 namespace Importers
 {
-	class VacuumImportPage : public QWizardPage
+	class VacuumImportPage : public Common::IMImportPage
 	{
 		Q_OBJECT
-
-		Ui::VacuumImportPage Ui_;
-
-		QStandardItemModel *AccountsModel_;
-
-		enum Roles
-		{
-			AccountData = Qt::UserRole + 1
-		};
-
-		enum Column
-		{
-			AccountName,
-			JID,
-			ImportAcc,
-			ImportHist
-		};
 	public:
 		VacuumImportPage (QWidget* = 0);
-
-		bool isComplete () const;
-		int nextId () const;
-		void initializePage ();
+	protected:
+		void FindAccounts ();
+	protected slots:
+		void handleAccepted ();
 	};
 }
 }

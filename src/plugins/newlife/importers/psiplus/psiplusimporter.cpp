@@ -17,7 +17,6 @@
  **********************************************************************/
 
 #include "psiplusimporter.h"
-#include <QStringList>
 #include "psiplusimportpage.h"
 
 namespace LeechCraft
@@ -27,26 +26,8 @@ namespace NewLife
 namespace Importers
 {
 	PsiPlusImporter::PsiPlusImporter (QWidget *parent)
-	: AbstractImporter (parent)
-	, Page_ (new PsiPlusImportPage ())
+	: Common::IMImporter ("Psi+", QIcon (":/resources/images/apps/psiplus.png"), new PsiPlusImportPage, parent)
 	{
-	}
-
-	QStringList PsiPlusImporter::GetNames () const
-	{
-		return QStringList ("Psi+");
-	}
-
-	QList<QIcon> PsiPlusImporter::GetIcons () const
-	{
-		return QList<QIcon> () << QIcon (":/resources/images/apps/psiplus.png");
-	}
-
-	QList<QWizardPage*> PsiPlusImporter::GetWizardPages () const
-	{
-		QList<QWizardPage*> result;
-		result << Page_;
-		return result;
 	}
 }
 }

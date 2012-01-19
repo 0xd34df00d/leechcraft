@@ -76,8 +76,6 @@ SET (FORMS
 	firstpage.ui
 	common/imimportpage.ui
 	importers/firefox/firefoxprofileselectpage.ui
-	importers/psiplus/psiplusimportpage.ui
-	importers/vacuum/vacuumimportpage.ui
 	)
 SET (RESOURCES newliferesources.qrc)
 CreateTrVars ("newlife" "ar;be;de;en;fr;it;pl;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
