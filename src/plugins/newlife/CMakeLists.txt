@@ -34,6 +34,7 @@ SET (SRCS
 	imhistimporterbase.cpp
 	common/imimporter.cpp
 	common/imimportpage.cpp
+	common/xmlimaccount.cpp
 	importers/akregator/akregatorimporter.cpp
 	importers/akregator/akregatorimportpage.cpp
 	importers/liferea/lifereaimportpage.cpp
@@ -56,6 +57,7 @@ SET (HEADERS
 	imhistimporterbase.h
 	common/imimporter.h
 	common/imimportpage.h
+	common/xmlimaccount.h
 	importers/akregator/akregatorimporter.h
 	importers/akregator/akregatorimportpage.h
 	importers/liferea/lifereaimportpage.h

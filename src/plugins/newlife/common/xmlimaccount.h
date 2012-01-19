@@ -18,11 +18,13 @@
 
 #pragma once
 
-#include <QWizardPage>
-#include <interfaces/structures.h>
-#include "ui_imimportpage.h"
+#include <functional>
+#include <QStringList>
+#include <QVariantMap>
 
+class QDomElement;
 class QStandardItemModel;
+class QStandardItem;
 
 namespace LeechCraft
 {
@@ -30,38 +32,29 @@ namespace NewLife
 {
 namespace Common
 {
-	class IMImportPage : public QWizardPage
+	class XMLIMAccount
 	{
-		Q_OBJECT
-	protected:
-		Ui::IMImportPage Ui_;
-
-		QStandardItemModel *AccountsModel_;
 	public:
-		enum Roles
+		struct ConfigAdapter
 		{
-			AccountData = Qt::UserRole + 1
+			QStandardItemModel *Model_;
+			QStringList ProfilesPath_;
+			QString AccountsFileName_;
+
+			std::function<QString (const QDomElement&)> Protocol_;
+			std::function<QString (const QDomElement&)> Name_;
+			std::function<bool (const QDomElement&)> IsEnabled_;
+			std::function<QString (const QDomElement&)> JID_;
+			std::function<void (const QDomElement&, QVariantMap&)> Additional_;
 		};
-
-		enum Column
-		{
-			AccountName,
-			JID,
-			ImportAcc,
-			ImportHist
-		};
-
-		IMImportPage (QWidget* = 0);
-
-		bool isComplete () const;
-		int nextId () const;
-		void initializePage ();
-	protected:
-		virtual void FindAccounts () = 0;
-	protected slots:
-		virtual void handleAccepted () = 0;
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
+	private:
+		ConfigAdapter C_;
+	public:
+		XMLIMAccount (const ConfigAdapter&);
+		void FindAccounts ();
+	private:
+		void ScanProfile (const QString& path, const QString& profileName);
+		void ScanAccount (QStandardItem*, const QDomElement&);
 	};
 }
 }
