@@ -47,8 +47,8 @@ namespace Liznoo
 
 	void FakeQWidgetWinAPI::preparePowerSourceChange (PPOWERBROADCAST_SETTING setting)
 	{
-		const int nPowerSrc = *reinterpret_cast<int*> (
-			reinterpret_cast<DWORD_PTR> (setting->Data));
+		const int nPowerSrc = 
+			*reinterpret_cast<int*> (reinterpret_cast<DWORD_PTR> (setting->Data));
 
 		const QString& powerSource = nPowerSrc ? tr ("Battery") : tr ("AC");
 
@@ -57,8 +57,8 @@ namespace Liznoo
 
 	void FakeQWidgetWinAPI::prepareBatteryStateChange (PPOWERBROADCAST_SETTING setting)
 	{
-		const int nPercentLeft = *reinterpret_cast<int*>(
-			reinterpret_cast<DWORD_PTR> (setting->Data));
+		const int nPercentLeft = 
+			*reinterpret_cast<int*> (reinterpret_cast<DWORD_PTR> (setting->Data));
 
 		emit batteryStateChanged (nPercentLeft);
 	}
