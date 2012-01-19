@@ -82,17 +82,9 @@ namespace Azoth
 				SLOT (handleEntryMadeCurrent (QObject*)),
 				Qt::QueuedConnection);
 
-#ifdef Q_WS_WIN32
-		connect (Ui_.CLTree_,
-				SIGNAL (clicked (const QModelIndex&)),
-				this,
-				SLOT (on_CLTree__activated (const QModelIndex&)));
-#endif
-
-		connect (Ui_.CLTree_,
-				SIGNAL (activated (const QModelIndex&)),
-				this,
-				SLOT (clearFilter ()));
+		XmlSettingsManager::Instance ().RegisterObject ("EntryActivationType",
+				this, "handleEntryActivationType");
+		handleEntryActivationType ();
 
 		connect (Ui_.FilterLine_,
 				SIGNAL (textChanged (const QString&)),
@@ -330,7 +322,7 @@ namespace Azoth
 				QVariant::fromValue<State> (state));
 	}
 
-	void MainWidget::on_CLTree__activated (const QModelIndex& index)
+	void MainWidget::treeActivated (const QModelIndex& index)
 	{
 		if (index.data (Core::CLREntryType).value<Core::CLEntryType> () != Core::CLETContact)
 			return;
@@ -576,6 +568,38 @@ namespace Azoth
 		EntryStatus status (state, text);
 		Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
 			acc->ChangeState (status);
+	}
+
+	void MainWidget::handleEntryActivationType ()
+	{
+		disconnect (Ui_.CLTree_,
+				0,
+				this,
+				SLOT (treeActivated (const QModelIndex&)));
+		disconnect (Ui_.CLTree_,
+				0,
+				this,
+				SLOT (clearFilter ()));
+
+		const char *signal = 0;
+		const QString& actType = XmlSettingsManager::Instance ()
+				.property ("EntryActivationType").toString ();
+
+		if (actType == "click")
+			signal = SIGNAL (clicked (const QModelIndex&));
+		else if (actType == "dclick")
+			signal = SIGNAL (doubleClicked (const QModelIndex&));
+		else
+			signal = SIGNAL (activated (const QModelIndex&));
+
+		connect (Ui_.CLTree_,
+				signal,
+				this,
+				SLOT (treeActivated (const QModelIndex&)));
+		connect (Ui_.CLTree_,
+				signal,
+				this,
+				SLOT (clearFilter ()));
 	}
 
 	void MainWidget::handleCatRenameTriggered ()
