@@ -32,6 +32,8 @@ SET (SRCS
 	firstpage.cpp
 	abstractimporter.cpp
 	imhistimporterbase.cpp
+	common/imimporter.cpp
+	common/imimportpage.cpp
 	importers/akregator/akregatorimporter.cpp
 	importers/akregator/akregatorimportpage.cpp
 	importers/liferea/lifereaimportpage.cpp
@@ -52,6 +54,8 @@ SET (HEADERS
 	firstpage.h
 	abstractimporter.h
 	imhistimporterbase.h
+	common/imimporter.h
+	common/imimportpage.h
 	importers/akregator/akregatorimporter.h
 	importers/akregator/akregatorimportpage.h
 	importers/liferea/lifereaimportpage.h
@@ -70,6 +74,7 @@ SET (FORMS
 	importwizard.ui
 	feedssettingsimportpage.ui
 	firstpage.ui
+	common/imimportpage.ui
 	importers/firefox/firefoxprofileselectpage.ui
 	importers/psiplus/psiplusimportpage.ui
 	importers/vacuum/vacuumimportpage.ui
