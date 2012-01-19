@@ -43,6 +43,8 @@ SET (SRCS
 	importers/firefox/firefoxprofileselectpage.cpp
 	importers/psiplus/psiplusimporter.cpp
 	importers/psiplus/psiplusimportpage.cpp
+	importers/vacuum/vacuumimporter.cpp
+	importers/vacuum/vacuumimportpage.cpp
 	)
 SET (HEADERS
 	newlife.h
@@ -61,6 +63,8 @@ SET (HEADERS
 	importers/firefox/firefoxprofileselectpage.h
 	importers/psiplus/psiplusimporter.h
 	importers/psiplus/psiplusimportpage.h
+	importers/vacuum/vacuumimporter.h
+	importers/vacuum/vacuumimportpage.h
 	)
 SET (FORMS
 	importwizard.ui
@@ -68,6 +72,7 @@ SET (FORMS
 	firstpage.ui
 	importers/firefox/firefoxprofileselectpage.ui
 	importers/psiplus/psiplusimportpage.ui
+	importers/vacuum/vacuumimportpage.ui
 	)
 SET (RESOURCES newliferesources.qrc)
 CreateTrVars ("newlife" "ar;be;de;en;fr;it;pl;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)

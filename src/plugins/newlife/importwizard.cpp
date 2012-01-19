@@ -23,6 +23,7 @@
 #include "importers/ktorrent/ktorrentimporter.h"
 #include "importers/liferea/lifereaimporter.h"
 #include "importers/psiplus/psiplusimporter.h"
+#include "importers/vacuum/vacuumimporter.h"
 
 namespace LeechCraft
 {
@@ -39,6 +40,7 @@ namespace NewLife
 		Importers_ << new Importers::KTorrentImporter (this);
 		Importers_ << new Importers::LifereaImporter (this);
 		Importers_ << new Importers::PsiPlusImporter (this);
+		Importers_ << new Importers::VacuumImporter (this);
 
 		connect (this,
 				SIGNAL (accepted ()),
