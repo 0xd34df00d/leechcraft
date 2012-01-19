@@ -133,7 +133,10 @@ namespace Rosenthal
 						SLOT (handleCorrectionTriggered ()));
 				act->setProperty ("TextEdit", QVariant::fromValue<QObject*> (edit));
 			}
-			menu->insertActions (menu->actions ().first (), acts);
+
+			QAction *before = menu->actions ().first ();
+			menu->insertActions (before, acts);
+			menu->insertSeparator (before);
 		}
 
 		menu->exec (curPos);
