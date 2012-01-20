@@ -181,6 +181,8 @@ namespace Azoth
 	ChatTab::~ChatTab ()
 	{
 		SetChatPartState (CPSGone);
+
+		qDeleteAll (HistoryMessages_);
 	}
 
 	void ChatTab::PrepareTheme ()
