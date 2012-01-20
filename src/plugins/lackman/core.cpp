@@ -503,7 +503,7 @@ namespace LackMan
 
 	QString Core::NormalizePackageName (const QString& packageName) const
 	{
-		QString normalized = packageName.toLower ().simplified ();
+		QString normalized = packageName.simplified ();
 		normalized.remove (' ');
 		normalized.remove ('\t');
 		return normalized;
