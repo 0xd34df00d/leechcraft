@@ -59,7 +59,7 @@ namespace Acetamide
 				this, _1);
 		Command2Action_ ["notice"] = boost::bind (&ServerResponceManager::GotNoticeMsg,
 				this, _1);
-		Command2Action_ ["msg"] = boost::bind (&ServerResponceManager::GotNick,
+		Command2Action_ ["nick"] = boost::bind (&ServerResponceManager::GotNick,
 				this, _1);
 		Command2Action_ ["ping"] = boost::bind (&ServerResponceManager::GotPing,
 				this, _1);
