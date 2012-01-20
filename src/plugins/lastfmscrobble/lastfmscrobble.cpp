@@ -42,7 +42,6 @@ namespace Lastfmscrobble
 		
 		QList<QByteArray> propNames;
 		propNames << "lastfm.login";
-		propNames << "lastfm.password";
 
 		XmlSettingsManager::Instance ().RegisterObject (propNames,
 				this, "handleSubmitterInit");
@@ -119,6 +118,7 @@ namespace Lastfmscrobble
 					tr ("Enter password for Last.fm account with login %1:")
 						.arg (login),
 					this);
+			return;
 		}
 		
 		LFSubmitter_->SetPassword (password);
