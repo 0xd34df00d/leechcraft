@@ -130,7 +130,20 @@ namespace LackMan
 
 		while (QueryGetInstalledPackages_.next ())
 		{
-			PackageShortInfo psi = GetPackage (QueryGetInstalledPackages_.value (0).toInt ());
+			PackageShortInfo psi;
+			try
+			{
+				psi = GetPackage (QueryGetInstalledPackages_.value (0).toInt ());
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to get installed package info"
+						<< QueryGetInstalledPackages_.value (0).toInt ()
+						<< e.what ();
+				continue;
+			}
+
 			Dependency dep =
 			{
 				Dependency::TProvides,
