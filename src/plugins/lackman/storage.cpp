@@ -479,12 +479,23 @@ namespace LackMan
 			throw std::runtime_error (qPrintable (str));
 		}
 
+		const auto& version = QueryGetPackage_.value (1).toString ();
 		PackageShortInfo info =
 		{
 			QueryGetPackage_.value (0).toString (),
-			QStringList (QueryGetPackage_.value (1).toString ())
+			QStringList (version),
 		};
 		QueryGetPackage_.finish ();
+
+		QueryGetPackageArchiver_.bindValue (":package_id", packageId);
+		if (!QueryGetPackageArchiver_.exec ())
+		{
+			Util::DBLock::DumpError (QueryGetPackageArchiver_);
+			throw std::runtime_error ("archiver query execution failed");
+		}
+		info.VersionArchivers_ [version] = QueryGetPackageArchiver_.next () ?
+				QueryGetPackageArchiver_.value (0).toString () :
+				"gz";
 
 		return info;
 	}
@@ -566,6 +577,13 @@ namespace LackMan
 			throw std::runtime_error ("Query execution failed");
 		}
 
+		QueryRemovePackageArchiver_.bindValue (":package_id", packageId);
+		if (!QueryRemovePackageArchiver_.exec ())
+		{
+			Util::DBLock::DumpError (QueryRemovePackageArchiver_);
+			throw std::runtime_error ("Query execution failed");
+		}
+
 		lock.Good ();
 	}
 
@@ -607,9 +625,19 @@ namespace LackMan
 				Util::DBLock::DumpError (QueryAddPackageSize_);
 				throw std::runtime_error ("Query execution failed");
 			}
+
+			QueryAddPackageArchiver_.bindValue (":package_id", packageId);
+			QueryAddPackageArchiver_.bindValue (":archiver",
+					pInfo.VersionArchivers_.value (version, "gz"));
+			if (!QueryAddPackageArchiver_.exec ())
+			{
+				Util::DBLock::DumpError (QueryAddPackageArchiver_);
+				throw std::runtime_error ("Query execution failed");
+			}
 		}
 		QueryAddPackage_.finish ();
 		QueryAddPackageSize_.finish ();
+		QueryAddPackageArchiver_.finish ();
 
 		QueryClearPackageInfos_.bindValue (":name", pInfo.Name_);
 		if (!QueryClearPackageInfos_.exec ())
@@ -1063,6 +1091,7 @@ namespace LackMan
 		QStringList names;
 		names << "packages"
 				<< "packagesizes"
+				<< "packagearchivers"
 				<< "deps"
 				<< "infos"
 				<< "locations"
@@ -1140,6 +1169,16 @@ namespace LackMan
 
 		QueryRemovePackageSize_ = QSqlQuery (DB_);
 		QueryRemovePackageSize_.prepare ("DELETE from packagesizes WHERE package_id = :package_id;");
+
+		QueryAddPackageArchiver_ = QSqlQuery (DB_);
+		QueryAddPackageArchiver_.prepare ("INSERT INTO packagearchivers (package_id, archiver) "
+				"VALUES (:package_id, :size);");
+
+		QueryGetPackageArchiver_ = QSqlQuery (DB_);
+		QueryGetPackageArchiver_.prepare ("SELECT archiver FROM packagearchivers WHERE package_id = :package_id;");
+
+		QueryRemovePackageArchiver_ = QSqlQuery (DB_);
+		QueryRemovePackageArchiver_.prepare ("DELETE FROM packagearchivers WHERE package_id = :package_id;");
 
 		QueryHasLocation_ = QSqlQuery (DB_);
 		QueryHasLocation_.prepare ("SELECT COUNT (package_id) "

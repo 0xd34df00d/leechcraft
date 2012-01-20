@@ -336,7 +336,7 @@ namespace LackMan
 
 		args << path;
 #else
-		args << "xzf";
+		args << "xf";
 		args << path;
 		args << "-C";
 		args << dirname;

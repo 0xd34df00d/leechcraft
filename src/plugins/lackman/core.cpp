@@ -310,11 +310,13 @@ namespace LackMan
 			return result;
 		}
 
-		QString pathAddition = QString ("dists/%1/all/");
-		QString normalized = NormalizePackageName (info.Name_);
-		pathAddition += QString ("%1/%1-%2.tar.gz")
+		auto pathAddition = QString ("dists/%1/all/");
+		const auto& normalized = NormalizePackageName (info.Name_);
+		const auto& version = info.Versions_.at (0);
+		pathAddition += QString ("%1/%1-%2.tar.%3")
 				.arg (normalized)
-				.arg (info.Versions_.at (0));
+				.arg (version)
+				.arg (info.VersionArchivers_.value (version, "gz"));
 
 		Q_FOREACH (int repoId, repo2cmpt.keys ())
 		{
