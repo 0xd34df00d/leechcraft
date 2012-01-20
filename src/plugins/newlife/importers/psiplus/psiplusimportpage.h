@@ -41,11 +41,8 @@ namespace Importers
 		PsiPlusImportPage (QWidget* = 0);
 	protected:
 		void FindAccounts ();
-	private:
 		void SendImportAcc (QStandardItem*);
 		void SendImportHist (QStandardItem*);
-	protected slots:
-		void handleAccepted ();
 	};
 }
 }

@@ -73,6 +73,7 @@ namespace Importers
 	void PsiPlusImportPage::FindAccounts ()
 	{
 		XIA_->FindAccounts ();
+		Ui_.AccountsTree_->expandAll ();
 	}
 
 	void PsiPlusImportPage::SendImportAcc (QStandardItem *accItem)
@@ -245,22 +246,6 @@ namespace Importers
 				SIGNAL (gotEntity (LeechCraft::Entity)),
 				qobject_cast<ImportWizard*> (wizard ())->GetPlugin (),
 				SIGNAL (gotEntity (LeechCraft::Entity)));
-	}
-
-	void PsiPlusImportPage::handleAccepted ()
-	{
-		for (int i = 0; i < AccountsModel_->rowCount (); ++i)
-		{
-			QStandardItem *profItem = AccountsModel_->item (i);
-			for (int j = 0; j < profItem->rowCount (); ++j)
-			{
-				QStandardItem *accItem = profItem->child (j);
-				if (profItem->child (j, Column::ImportAcc)->checkState () == Qt::Checked)
-					SendImportAcc (accItem);
-				if (profItem->child (j, Column::ImportHist)->checkState () == Qt::Checked)
-					SendImportHist (accItem);
-			}
-		}
 	}
 }
 }

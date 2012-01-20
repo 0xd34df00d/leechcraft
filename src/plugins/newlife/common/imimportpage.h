@@ -23,6 +23,7 @@
 #include "ui_imimportpage.h"
 
 class QStandardItemModel;
+class QStandardItem;
 
 namespace LeechCraft
 {
@@ -58,8 +59,10 @@ namespace Common
 		void initializePage ();
 	protected:
 		virtual void FindAccounts () = 0;
+		virtual void SendImportAcc (QStandardItem*) = 0;
+		virtual void SendImportHist (QStandardItem*) = 0;
 	protected slots:
-		virtual void handleAccepted () = 0;
+		virtual void handleAccepted ();
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 	};
