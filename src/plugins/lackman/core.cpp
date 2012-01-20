@@ -295,9 +295,21 @@ namespace LackMan
 	{
 		QList<QUrl> result;
 
-		QMap<int, QList<QString> > repo2cmpt = Storage_->GetPackageLocations (packageId);
+		const auto& repo2cmpt = Storage_->GetPackageLocations (packageId);
 
-		PackageShortInfo info = Storage_->GetPackage (packageId);
+		PackageShortInfo info;
+		try
+		{
+			info = Storage_->GetPackage (packageId);
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "error getting package"
+					<< packageId;
+			return result;
+		}
+
 		QString pathAddition = QString ("dists/%1/all/");
 		QString normalized = NormalizePackageName (info.Name_);
 		pathAddition += QString ("%1/%1-%2.tar.gz")

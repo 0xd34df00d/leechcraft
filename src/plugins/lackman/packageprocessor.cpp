@@ -374,7 +374,7 @@ namespace LackMan
 
 	QUrl PackageProcessor::GetURLFor (int packageId) const
 	{
-		QList<QUrl> urls = Core::Instance ().GetPackageURLs (packageId);
+		const auto& urls = Core::Instance ().GetPackageURLs (packageId);
 		if (!urls.size ())
 			throw std::runtime_error (tr ("No URLs for package %1.")
 					.arg (packageId).toUtf8 ().constData ());
