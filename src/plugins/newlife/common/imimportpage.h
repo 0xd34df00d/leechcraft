@@ -18,28 +18,54 @@
 
 #pragma once
 
-#include <QObject>
-#include <QIcon>
+#include <QWizardPage>
+#include <interfaces/structures.h>
+#include "ui_imimportpage.h"
 
-class QWizardPage;
+class QStandardItemModel;
+class QStandardItem;
 
 namespace LeechCraft
 {
-struct Entity;
-
 namespace NewLife
 {
-	class AbstractImporter : public QObject
+namespace Common
+{
+	class IMImportPage : public QWizardPage
 	{
 		Q_OBJECT
-	public:
-		AbstractImporter (QObject* = 0);
+	protected:
+		Ui::IMImportPage Ui_;
 
-		virtual QList<QIcon> GetIcons () const;
-		virtual QStringList GetNames () const = 0;
-		virtual QList<QWizardPage*> GetWizardPages () const = 0;
+		QStandardItemModel *AccountsModel_;
+	public:
+		enum Roles
+		{
+			AccountData = Qt::UserRole + 1
+		};
+
+		enum Column
+		{
+			AccountName,
+			JID,
+			ImportAcc,
+			ImportHist
+		};
+
+		IMImportPage (QWidget* = 0);
+
+		bool isComplete () const;
+		int nextId () const;
+		void initializePage ();
+	protected:
+		virtual void FindAccounts () = 0;
+		virtual void SendImportAcc (QStandardItem*) = 0;
+		virtual void SendImportHist (QStandardItem*) = 0;
+	protected slots:
+		virtual void handleAccepted ();
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 	};
+}
 }
 }

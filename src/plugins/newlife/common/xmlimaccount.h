@@ -18,28 +18,44 @@
 
 #pragma once
 
-#include <QObject>
-#include <QIcon>
+#include <functional>
+#include <QStringList>
+#include <QVariantMap>
 
-class QWizardPage;
+class QDomElement;
+class QStandardItemModel;
+class QStandardItem;
 
 namespace LeechCraft
 {
-struct Entity;
-
 namespace NewLife
 {
-	class AbstractImporter : public QObject
+namespace Common
+{
+	class XMLIMAccount
 	{
-		Q_OBJECT
 	public:
-		AbstractImporter (QObject* = 0);
+		struct ConfigAdapter
+		{
+			QStandardItemModel *Model_;
+			QStringList ProfilesPath_;
+			QString AccountsFileName_;
 
-		virtual QList<QIcon> GetIcons () const;
-		virtual QStringList GetNames () const = 0;
-		virtual QList<QWizardPage*> GetWizardPages () const = 0;
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
+			std::function<QString (const QDomElement&)> Protocol_;
+			std::function<QString (const QDomElement&)> Name_;
+			std::function<bool (const QDomElement&)> IsEnabled_;
+			std::function<QString (const QDomElement&)> JID_;
+			std::function<void (const QDomElement&, QVariantMap&)> Additional_;
+		};
+	private:
+		ConfigAdapter C_;
+	public:
+		XMLIMAccount (const ConfigAdapter&);
+		void FindAccounts ();
+	private:
+		void ScanProfile (const QString& path, const QString& profileName);
+		void ScanAccount (QStandardItem*, const QDomElement&);
 	};
+}
 }
 }

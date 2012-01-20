@@ -1300,6 +1300,8 @@ namespace Azoth
 		{
 			item->setToolTip (tip);
 			ItemIconManager_->SetIcon (item, icon.get ());
+
+			RecalculateOnlineForCat (item->parent ());
 		}
 
 		const QString& id = entry->GetEntryID ();
@@ -1471,6 +1473,19 @@ namespace Azoth
 				i < rc; ++i)
 			sum += category->child (i)->data (CLRUnreadMsgCount).toInt ();
 		category->setData (sum, CLRUnreadMsgCount);
+	}
+
+	void Core::RecalculateOnlineForCat (QStandardItem *catItem)
+	{
+		int result = 0;
+		for (int i = 0; i < catItem->rowCount (); ++i)
+		{
+			auto entryObj = catItem->child (i)->
+					data (CLREntryObject).value<QObject*> ();
+			result += qobject_cast<ICLEntry*> (entryObj)->GetStatus ().State_ != SOffline;
+		}
+
+		catItem->setData (result, CLRNumOnline);
 	}
 
 	void Core::HandlePowerNotification (Entity e)

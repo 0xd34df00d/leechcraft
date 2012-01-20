@@ -35,7 +35,9 @@ namespace Importers
 		AkregatorImportPage *ImportPage_;
 	public:
 		AkregatorImporter (QWidget* = 0);
+
 		virtual QStringList GetNames () const;
+		virtual QList<QIcon> GetIcons () const;
 		virtual QList<QWizardPage*> GetWizardPages () const;
 	};
 }

@@ -18,28 +18,21 @@
 
 #pragma once
 
-#include <QObject>
-#include <QIcon>
-
-class QWizardPage;
+#include "common/imimporter.h"
 
 namespace LeechCraft
 {
-struct Entity;
-
 namespace NewLife
 {
-	class AbstractImporter : public QObject
-	{
-		Q_OBJECT
-	public:
-		AbstractImporter (QObject* = 0);
+namespace Importers
+{
+	class VacuumImportPage;
 
-		virtual QList<QIcon> GetIcons () const;
-		virtual QStringList GetNames () const = 0;
-		virtual QList<QWizardPage*> GetWizardPages () const = 0;
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
+	class VacuumImporter : public Common::IMImporter
+	{
+	public:
+		VacuumImporter (QObject* = 0);
 	};
+}
 }
 }

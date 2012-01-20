@@ -18,28 +18,29 @@
 
 #pragma once
 
-#include <QObject>
-#include <QIcon>
+#include "common/imimportpage.h"
+#include "common/xmlimaccount.h"
 
-class QWizardPage;
+class QStandardItemModel;
 
 namespace LeechCraft
 {
-struct Entity;
-
 namespace NewLife
 {
-	class AbstractImporter : public QObject
+namespace Importers
+{
+	class VacuumImportPage : public Common::IMImportPage
 	{
 		Q_OBJECT
-	public:
-		AbstractImporter (QObject* = 0);
 
-		virtual QList<QIcon> GetIcons () const;
-		virtual QStringList GetNames () const = 0;
-		virtual QList<QWizardPage*> GetWizardPages () const = 0;
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
+		std::unique_ptr<Common::XMLIMAccount> XIA_;
+	public:
+		VacuumImportPage (QWidget* = 0);
+	protected:
+		void FindAccounts ();
+		void SendImportAcc (QStandardItem*);
+		void SendImportHist (QStandardItem*);
 	};
+}
 }
 }

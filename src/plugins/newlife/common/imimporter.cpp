@@ -16,30 +16,40 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <QIcon>
-
-class QWizardPage;
+#include "imimporter.h"
+#include "imimportpage.h"
 
 namespace LeechCraft
 {
-struct Entity;
-
 namespace NewLife
 {
-	class AbstractImporter : public QObject
+namespace Common
+{
+	IMImporter::IMImporter (const QString& name,
+			const QIcon& icon, IMImportPage *page, QObject *parent)
+	: AbstractImporter (parent)
+	, Name_ (name)
+	, Icon_ (icon)
+	, Page_ (page)
 	{
-		Q_OBJECT
-	public:
-		AbstractImporter (QObject* = 0);
+	}
 
-		virtual QList<QIcon> GetIcons () const;
-		virtual QStringList GetNames () const = 0;
-		virtual QList<QWizardPage*> GetWizardPages () const = 0;
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
-	};
+	QStringList IMImporter::GetNames () const
+	{
+		return QStringList (Name_);
+	}
+
+	QList<QIcon> IMImporter::GetIcons () const
+	{
+		return QList<QIcon> () << Icon_;
+	}
+
+	QList<QWizardPage*> IMImporter::GetWizardPages () const
+	{
+		QList<QWizardPage*> result;
+		result << Page_;
+		return result;
+	}
+}
 }
 }

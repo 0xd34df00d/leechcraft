@@ -1,5 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
+ * Copyright (C) 2012       Eugene Mamin
  * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,28 +19,32 @@
 
 #pragma once
 
-#include <QObject>
-#include <QIcon>
+#include <memory>
+#include <functional>
+#include <windows.h>
+#include "platformlayer.h"
 
-class QWizardPage;
-
-namespace LeechCraft
+namespace LeechCraft 
 {
-struct Entity;
-
-namespace NewLife
+namespace Liznoo
 {
-	class AbstractImporter : public QObject
+	class FakeQWidgetWinAPI;
+	class PlatformWinAPI : public PlatformLayer
 	{
 		Q_OBJECT
-	public:
-		AbstractImporter (QObject* = 0);
 
-		virtual QList<QIcon> GetIcons () const;
-		virtual QStringList GetNames () const = 0;
-		virtual QList<QWizardPage*> GetWizardPages () const = 0;
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
+		typedef std::function<void (HPOWERNOTIFY*)> HPowerNotifyDeleter;
+		std::unique_ptr<HPOWERNOTIFY, HPowerNotifyDeleter> HPowerSchemeNotify_;
+		std::unique_ptr<HPOWERNOTIFY, HPowerNotifyDeleter> HPowerSourceNotify_;
+		std::unique_ptr<HPOWERNOTIFY, HPowerNotifyDeleter> HBatteryPowerNotify_;
+		std::unique_ptr<FakeQWidgetWinAPI> FakeWidget_;
+	public:
+		PlatformWinAPI (QObject* = 0);
+		virtual void Stop ();
+	private slots:
+		void handleSchemeChanged(QString schemeName);
+		void handlePowerSourceChanged(QString powerSource);
+		void handleBatteryStateChanged(int newPercentage);
 	};
-}
-}
+} // namespace Liznoo
+} // namespace Leechcraft

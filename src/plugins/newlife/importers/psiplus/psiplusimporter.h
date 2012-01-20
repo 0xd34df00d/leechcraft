@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include "abstractimporter.h"
+#include "common/imimporter.h"
 
 namespace LeechCraft
 {
@@ -28,16 +28,11 @@ namespace Importers
 {
 	class PsiPlusImportPage;
 
-	class PsiPlusImporter : public AbstractImporter
+	class PsiPlusImporter : public Common::IMImporter
 	{
 		Q_OBJECT
-
-		PsiPlusImportPage *Page_;
 	public:
 		PsiPlusImporter (QWidget* = 0);
-
-		QStringList GetNames () const;
-		QList<QWizardPage*> GetWizardPages () const;
 	};
 }
 }

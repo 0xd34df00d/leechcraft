@@ -69,12 +69,13 @@ namespace Azoth
 		IAccount* GetAccountFromSender (const char*);
 	private slots:
 		void updateFastStatusButton (LeechCraft::Azoth::State);
-		void on_CLTree__activated (const QModelIndex&);
+		void treeActivated (const QModelIndex&);
 		void on_CLTree__customContextMenuRequested (const QPoint&);
 		void handleChangeStatusRequested ();
 		void fastStateChangeRequested ();
 		void applyFastStatus ();
 
+		void handleEntryActivationType ();
 		void handleCatRenameTriggered ();
 		void handleSendGroupMsgTriggered ();
 		void joinAccountConference ();

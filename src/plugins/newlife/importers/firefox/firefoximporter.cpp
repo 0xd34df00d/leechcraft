@@ -38,6 +38,11 @@ namespace Importers
 		return QStringList ("Firefox");
 	}
 
+	QList<QIcon> FirefoxImporter::GetIcons () const
+	{
+		return QList<QIcon> () << QIcon (":/resources/images/apps/firefox.svg");
+	}
+
 	QList<QWizardPage*> FirefoxImporter::GetWizardPages () const
 	{
 		QList<QWizardPage*> result;

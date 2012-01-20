@@ -1,5 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
+ * Copyright (C) 2012       Eugene Mamin
  * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,28 +19,30 @@
 
 #pragma once
 
-#include <QObject>
-#include <QIcon>
+#include <QWidget>
+#include <QString>
+#include <windows.h>
 
-class QWizardPage;
-
-namespace LeechCraft
+namespace LeechCraft 
 {
-struct Entity;
-
-namespace NewLife
+namespace Liznoo
 {
-	class AbstractImporter : public QObject
+	class FakeQWidgetWinAPI : public QWidget
 	{
 		Q_OBJECT
 	public:
-		AbstractImporter (QObject* = 0);
+		FakeQWidgetWinAPI (QWidget *parent = NULL);
+	protected:
+		virtual void prepareSchemeChange (PPOWERBROADCAST_SETTING setting);
+		virtual void preparePowerSourceChange (PPOWERBROADCAST_SETTING setting);
+		virtual void prepareBatteryStateChange (PPOWERBROADCAST_SETTING setting);
 
-		virtual QList<QIcon> GetIcons () const;
-		virtual QStringList GetNames () const = 0;
-		virtual QList<QWizardPage*> GetWizardPages () const = 0;
+		virtual bool winEvent (MSG *message, long *result);
 	signals:
-		void gotEntity (const LeechCraft::Entity&);
+		void schemeChanged (QString schemeName);
+		void powerSourceChanged (QString powerSource);
+		void batteryStateChanged (int newPercentage);
 	};
-}
-}
+} // namespace Liznoo
+} // namespace Leechcraft
+

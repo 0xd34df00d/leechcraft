@@ -32,6 +32,9 @@ SET (SRCS
 	firstpage.cpp
 	abstractimporter.cpp
 	imhistimporterbase.cpp
+	common/imimporter.cpp
+	common/imimportpage.cpp
+	common/xmlimaccount.cpp
 	importers/akregator/akregatorimporter.cpp
 	importers/akregator/akregatorimportpage.cpp
 	importers/liferea/lifereaimportpage.cpp
@@ -43,6 +46,8 @@ SET (SRCS
 	importers/firefox/firefoxprofileselectpage.cpp
 	importers/psiplus/psiplusimporter.cpp
 	importers/psiplus/psiplusimportpage.cpp
+	importers/vacuum/vacuumimporter.cpp
+	importers/vacuum/vacuumimportpage.cpp
 	)
 SET (HEADERS
 	newlife.h
@@ -50,6 +55,9 @@ SET (HEADERS
 	firstpage.h
 	abstractimporter.h
 	imhistimporterbase.h
+	common/imimporter.h
+	common/imimportpage.h
+	common/xmlimaccount.h
 	importers/akregator/akregatorimporter.h
 	importers/akregator/akregatorimportpage.h
 	importers/liferea/lifereaimportpage.h
@@ -61,13 +69,15 @@ SET (HEADERS
 	importers/firefox/firefoxprofileselectpage.h
 	importers/psiplus/psiplusimporter.h
 	importers/psiplus/psiplusimportpage.h
+	importers/vacuum/vacuumimporter.h
+	importers/vacuum/vacuumimportpage.h
 	)
 SET (FORMS
 	importwizard.ui
 	feedssettingsimportpage.ui
 	firstpage.ui
+	common/imimportpage.ui
 	importers/firefox/firefoxprofileselectpage.ui
-	importers/psiplus/psiplusimportpage.ui
 	)
 SET (RESOURCES newliferesources.qrc)
 CreateTrVars ("newlife" "ar;be;de;en;fr;it;pl;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
