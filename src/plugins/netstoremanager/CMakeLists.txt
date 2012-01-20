@@ -33,10 +33,12 @@ SET (FORMS
 	accountslistwidget.ui
 	addaccountdialog.ui
 	)
+SET (RESOURCES netstoremanagerresources.qrc)
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 ENDIF (NOT LC_NO_MOC)
 QT4_WRAP_UI (UIS_H ${FORMS})
+QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 CreateTrVars ("netstoremanager" "en;ru_RU" TRANSLATIONS COMPILED_TRANSLATIONS)
 
 ADD_CUSTOM_COMMAND (OUTPUT
@@ -50,6 +52,7 @@ ADD_LIBRARY (leechcraft_netstoremanager SHARED
 	${SRCS}
 	${MOC_SRCS}
 	${UIS_H}
+	${RCCS}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_netstoremanager
 	${QT_LIBRARIES}
