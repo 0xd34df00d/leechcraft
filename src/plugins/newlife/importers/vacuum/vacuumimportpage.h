@@ -38,10 +38,8 @@ namespace Importers
 		VacuumImportPage (QWidget* = 0);
 	protected:
 		void FindAccounts ();
-	private:
-		void ScanProfile (const QString&, const QString&);
-	protected slots:
-		void handleAccepted ();
+		void SendImportAcc (QStandardItem*);
+		void SendImportHist (QStandardItem*);
 	};
 }
 }
