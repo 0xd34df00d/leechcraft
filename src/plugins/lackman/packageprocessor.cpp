@@ -315,6 +315,23 @@ namespace LackMan
 		QString path = Core::Instance ()
 				.GetExtResourceManager ()->GetResourcePath (url);
 
+		PackageShortInfo info;
+		try
+		{
+			info = Core::Instance ().GetStorage ()->GetPackage (packageId);
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to get package info for"
+					<< packageId
+					<< e.what ();
+			return;
+		}
+
+		const QString& archiver = info.VersionArchivers_
+				.value (info.Versions_.value (0), "gz");
+
 		QProcess *unarch = new QProcess (this);
 		connect (unarch,
 				SIGNAL (finished (int, QProcess::ExitStatus)),
@@ -336,7 +353,9 @@ namespace LackMan
 
 		args << path;
 #else
-		args << "xf";
+		if (archiver == "lzma")
+			args << "--lzma";
+		args << "-xf";
 		args << path;
 		args << "-C";
 		args << dirname;
