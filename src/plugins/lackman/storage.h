@@ -54,6 +54,9 @@ namespace LackMan
 		QSqlQuery QueryAddPackageSize_;
 		QSqlQuery QueryGetPackageSize_;
 		QSqlQuery QueryRemovePackageSize_;
+		QSqlQuery QueryAddPackageArchiver_;
+		QSqlQuery QueryGetPackageArchiver_;
+		QSqlQuery QueryRemovePackageArchiver_;
 		QSqlQuery QueryHasLocation_;
 		QSqlQuery QueryAddLocation_;
 		QSqlQuery QueryRemovePackageFromLocations_;

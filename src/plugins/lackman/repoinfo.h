@@ -69,6 +69,7 @@ namespace LackMan
 	{
 		QString Name_;
 		QStringList Versions_;
+		QMap<QString, QString> VersionArchivers_;
 	};
 
 	typedef QList<PackageShortInfo> PackageShortInfoList;

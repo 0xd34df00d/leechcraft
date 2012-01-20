@@ -222,6 +222,10 @@ namespace LackMan
 				if (ok)
 					packageInfo.PackageSizes_ [verNode.text ()] = size;
 			}
+
+			packageInfo.VersionArchivers_ [verNode.text ()] =
+					verNode.attribute ("archiver", "gz");
+
 			verNode = verNode.nextSiblingElement ("version");
 		}
 
