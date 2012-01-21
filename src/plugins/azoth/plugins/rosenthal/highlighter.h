@@ -34,13 +34,13 @@ namespace Rosenthal
 	class Highlighter : public QSyntaxHighlighter
 	{
 		Q_OBJECT
-		
+
 		boost::shared_ptr<Hunspell> Hunspell_;
 		QTextCharFormat SpellCheckFormat_;
 		QTextCodec *Codec_;
 	public:
 		Highlighter (boost::shared_ptr<Hunspell>, QTextDocument*);
-		
+
 		void UpdateHunspell (boost::shared_ptr<Hunspell>);
 	protected:
 		void highlightBlock (const QString&);

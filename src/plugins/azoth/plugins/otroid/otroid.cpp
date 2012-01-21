@@ -230,6 +230,12 @@ namespace OTRoid
 		proxy->SetReturnValue (proxy->GetReturnValue ().toStringList () + ours);
 	}
 
+	void Plugin::hookEntryActionsRemoved (IHookProxy_ptr,
+			QObject *entry)
+	{
+		delete Entry2Action_.take (entry);
+	}
+
 	void Plugin::hookEntryActionsRequested (IHookProxy_ptr proxy, QObject *entry)
 	{
 		if (qobject_cast<ICLEntry*> (entry)->GetEntryType () == ICLEntry::ETMUC)
@@ -336,11 +342,6 @@ namespace OTRoid
 		otrl_message_free (newMsg);
 	}
 
-	void Plugin::handleEntryDestroyed ()
-	{
-		delete Entry2Action_ [sender ()];
-	}
-
 	const char* Plugin::GetOTRFilename (const QString& fname) const
 	{
 		return OtrDir_.absoluteFilePath (fname).toUtf8 ().constData ();
@@ -348,11 +349,6 @@ namespace OTRoid
 
 	void Plugin::CreateActions (QObject *entry)
 	{
-		connect (entry,
-				SIGNAL (destroyed (QObject*)),
-				this,
-				SLOT (handleEntryDestroyed ()));
-
 		QAction *otr = new QAction (tr ("Enable OTR"), this);
 		otr->setCheckable (true);
 		otr->setIcon (GetIcon ());
