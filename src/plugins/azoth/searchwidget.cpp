@@ -133,6 +133,8 @@ namespace Azoth
 
 		sess->RestartSearch (Ui_.Server_->text ());
 
+		if (Ui_.ResultsTree_->selectionModel ())
+			Ui_.ResultsTree_->selectionModel ()->deleteLater ();
 		Ui_.ResultsTree_->setModel (sess->GetRepresentationModel ());
 	}
 
