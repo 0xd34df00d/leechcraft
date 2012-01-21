@@ -470,9 +470,11 @@ namespace LeechCraft
 				if (selection)
 					selection->setCurrentIndex (QModelIndex (), QItemSelectionModel::Clear);
 
-				Query2 query = GetQuery2 ();
+				const Query2& query = GetQuery2 ();
 				QAbstractItemModel *old = Ui_.PluginsTasksTree_->model ();
 				Util::MergeModel *tasksModel = Core::Instance ().GetTasksModel (query);
+				if (Ui_.PluginsTasksTree_->selectionModel ())
+					Ui_.PluginsTasksTree_->selectionModel ()->deleteLater ();
 				Ui_.PluginsTasksTree_->setModel (tasksModel);
 				delete old;
 

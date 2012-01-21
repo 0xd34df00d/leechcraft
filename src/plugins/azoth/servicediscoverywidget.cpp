@@ -121,7 +121,7 @@ namespace Azoth
 	{
 		return Toolbar_;
 	}
-	
+
 	void ServiceDiscoveryWidget::handleDiscoveryAddressChanged ()
 	{
 		DiscoveryTimer_->stop ();
@@ -159,6 +159,8 @@ namespace Azoth
 	{
 		DiscoveryTimer_->stop ();
 
+		if (Ui_.DiscoveryTree_->selectionModel ())
+			Ui_.DiscoveryTree_->selectionModel ()->deleteLater ();
 		Ui_.DiscoveryTree_->setModel (0);
 		SDSession_.reset ();
 		
