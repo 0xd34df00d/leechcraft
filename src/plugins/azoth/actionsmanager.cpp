@@ -148,7 +148,7 @@ namespace Azoth
 
 	void ActionsManager::HandleEntryRemoved (ICLEntry *entry)
 	{
-		QHash<QByteArray, QAction*> actions = Entry2Actions_.take (entry);
+		auto actions = Entry2Actions_.take (entry);
 		Q_FOREACH (QAction *action, actions.values ())
 		{
 			Action2Areas_.remove (action);
