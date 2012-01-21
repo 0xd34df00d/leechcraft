@@ -177,7 +177,6 @@ namespace Poshuku
 
 		FavoritesChecker_ = new FavoritesChecker (this);
 
-		QTimer::singleShot (200, this, SLOT (postConstruct ()));
 		Initialized_ = true;
 	}
 
