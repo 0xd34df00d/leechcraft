@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_POSHUKU_PLUGINS_FATAPE_USERSCRIPTSMANAGER_H
 #define PLUGINS_POSHUKU_PLUGINS_FATAPE_USERSCRIPTSMANAGER_H
-#include <QStandardItemModel> 
+#include <QStandardItemModel>
 #include <QList>
 #include <QWidget>
 #include "ui_userscriptsmanagerwidget.h"
@@ -47,7 +47,7 @@ namespace FatApe
 		void on_Edit__released ();
 		void on_Disable__released ();
 		void on_Remove__released ();
-		void on_Items__currentChanged (const QModelIndex& current, const QModelIndex& previous);
+		void currentItemChanged (const QModelIndex& current, const QModelIndex& previous);
 	};
 }
 }
