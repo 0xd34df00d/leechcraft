@@ -70,6 +70,9 @@ namespace Xoox
 	EntryBase::~EntryBase ()
 	{
 		qDeleteAll (AllMessages_);
+		qDeleteAll (Actions_);
+		delete Commands_;
+		delete VCardDialog_;
 	}
 
 	QObject* EntryBase::GetObject ()

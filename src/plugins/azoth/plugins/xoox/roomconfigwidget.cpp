@@ -40,7 +40,7 @@ namespace Xoox
 	, Room_ (room)
 	, JID_ (room->GetRoomHandler ()->GetRoomJID ())
 	, RoomHandler_ (0)
-	, PermsModel_ (new QStandardItemModel)
+	, PermsModel_ (new QStandardItemModel (this))
 	, Aff2Cat_ (InitModel ())
 	{
 		Ui_.setupUi (this);
