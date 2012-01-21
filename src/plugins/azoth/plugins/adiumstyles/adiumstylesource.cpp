@@ -173,11 +173,7 @@ namespace AdiumStyles
 			return result;
 		}
 
-		result.replace ("%chatName%", entry->GetEntryName ());
-		if (result.contains ("%incomingIconPath%"))
-			result.replace ("%incomingIconPath%",
-					Util::GetAsBase64Src (entry->GetAvatar ()));
-
+		ParseGlobalTemplate (result, entry);
 		FixSelfClosing (result);
 
 		return result;
@@ -290,7 +286,7 @@ namespace AdiumStyles
 
 		QString templ = QString::fromUtf8 (content->readAll ());
 		FixSelfClosing (templ);
-		const QString& body = ParseTemplate (templ, prefix, frame, msgObj, info);
+		const QString& body = ParseMsgTemplate (templ, prefix, frame, msgObj, info);
 		if (isNextMsg)
 			chat.setOuterXml (body);
 		else
@@ -338,7 +334,49 @@ namespace AdiumStyles
 	{
 	}
 
-	QString AdiumStyleSource::ParseTemplate (QString templ, const QString& base,
+	void AdiumStyleSource::ParseGlobalTemplate (QString& result, ICLEntry *entry) const
+	{
+		auto acc = qobject_cast<IAccount*> (entry->GetParentAccount ());
+		auto extSelf = qobject_cast<IExtSelfInfoAccount*> (entry->GetParentAccount ());
+
+		ICLEntry *selfEntry = extSelf ?
+				qobject_cast<ICLEntry*> (extSelf->GetSelfContact ()) :
+				0;
+
+		result.replace ("%chatName%", entry->GetEntryName ());
+		result.replace ("%sourceName%", acc->GetOurNick ());
+		result.replace ("%destinationName%", entry->GetHumanReadableID ());
+		result.replace ("%destinationDisplayName%", entry->GetEntryName ());
+
+		const QString& defAvatarName = Proxy_->GetSettingsManager ()->
+				property ("SystemIcons").toString () + "/default_avatar";
+		auto sysLdr = Proxy_->GetResourceLoader (IProxyObject::PRLSystemIcons);
+		const QImage& defAvatar = sysLdr->LoadPixmap (defAvatarName).toImage ();
+
+		auto safeIconReplace = [&result] (const QString& pattern,
+				QImage px, const QImage& def = QImage ())
+		{
+			if (result.contains (pattern))
+				result.replace (pattern, Util::GetAsBase64Src (px.isNull () ? def : px));
+		};
+		safeIconReplace ("%incomingIconPath%",
+				entry->GetAvatar (), defAvatar);
+		safeIconReplace ("%outgoingIconPath%",
+				selfEntry ? selfEntry->GetAvatar () : defAvatar, defAvatar);
+
+		result.replace ("%timeOpened%",
+				QDateTime::currentDateTime ().toString (Qt::SystemLocaleLongDate));
+
+		QRegExp openedRx ("%timeOpened\\{(.*?)\\}%");
+		int pos = 0;
+		while ((pos = openedRx.indexIn (result, pos)) != -1)
+			result.replace (pos, openedRx.matchedLength (),
+					QDateTime::currentDateTime ().toString (openedRx.cap (1)));
+
+		result.replace ("%dateOpened%", QDate::currentDate ().toString (Qt::SystemLocaleLongDate));
+	}
+
+	QString AdiumStyleSource::ParseMsgTemplate (QString templ, const QString& base,
 			QWebFrame*, QObject *msgObj, const ChatMsgAppendInfo& info)
 	{
 		const bool isHighlightMsg = info.IsHighlightMsg_;

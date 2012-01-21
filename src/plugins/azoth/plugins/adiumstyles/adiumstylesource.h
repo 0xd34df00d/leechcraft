@@ -35,6 +35,7 @@ namespace Util
 namespace Azoth
 {
 class IMessage;
+class ICLEntry;
 class IProxyObject;
 
 namespace AdiumStyles
@@ -68,7 +69,8 @@ namespace AdiumStyles
 		bool AppendMessage (QWebFrame*, QObject*, const ChatMsgAppendInfo&);
 		void FrameFocused (QWebFrame*);
 	private:
-		QString ParseTemplate (QString templ, const QString& path,
+		void ParseGlobalTemplate (QString& templ, ICLEntry*) const;
+		QString ParseMsgTemplate (QString templ, const QString& path,
 				QWebFrame*, QObject*, const ChatMsgAppendInfo&);
 		QList<QColor> CreateColors (const QString&);
 		QString GetMessageID (QObject*);
