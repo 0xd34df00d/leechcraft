@@ -157,7 +157,7 @@ namespace AdiumStyles
 		result += "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">";
 		result += "<html xmlns=\"http://www.w3.org/1999/xhtml\"><head><style type=\"text/css\">";
 		result += cssStr + varCssStr;
-		result += "</style><title></title></head><body>";
+		result += "</style><title></title></head><body onload=\"initStyle();\">";
 		result += QString::fromUtf8 (header->readAll ());
 		result += "<div id=\"Chat\"><div id=\"insert\"></div></div>";
 		if (footer)
@@ -348,10 +348,7 @@ namespace AdiumStyles
 		result.replace ("%destinationName%", entry->GetHumanReadableID ());
 		result.replace ("%destinationDisplayName%", entry->GetEntryName ());
 
-		const QString& defAvatarName = Proxy_->GetSettingsManager ()->
-				property ("SystemIcons").toString () + "/default_avatar";
-		auto sysLdr = Proxy_->GetResourceLoader (IProxyObject::PRLSystemIcons);
-		const QImage& defAvatar = sysLdr->LoadPixmap (defAvatarName).toImage ();
+		const QImage& defAvatar = GetDefaultAvatar ();
 
 		auto safeIconReplace = [&result] (const QString& pattern,
 				QImage px, const QImage& def = QImage ())
@@ -462,6 +459,8 @@ namespace AdiumStyles
 		if (image.isNull ())
 			image = QImage (StylesLoader_->GetPath (QStringList (base + "buddy_icon.png")));
 		if (image.isNull ())
+			image = GetDefaultAvatar ();
+		if (image.isNull ())
 			qWarning () << Q_FUNC_INFO
 					<< "image is still null, though tried"
 					<< base + "buddy_icon.png";
@@ -566,6 +565,14 @@ namespace AdiumStyles
 	QString AdiumStyleSource::GetMessageID (QObject *msgObj)
 	{
 		return QString::number (reinterpret_cast<long int> (msgObj));
+	}
+
+	QImage AdiumStyleSource::GetDefaultAvatar () const
+	{
+		const QString& defAvatarName = Proxy_->GetSettingsManager ()->
+				property ("SystemIcons").toString () + "/default_avatar";
+		auto sysLdr = Proxy_->GetResourceLoader (IProxyObject::PRLSystemIcons);
+		return sysLdr->LoadPixmap (defAvatarName).toImage ();
 	}
 
 	void AdiumStyleSource::handleMessageDelivered ()

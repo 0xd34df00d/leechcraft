@@ -74,6 +74,7 @@ namespace AdiumStyles
 				QWebFrame*, QObject*, const ChatMsgAppendInfo&);
 		QList<QColor> CreateColors (const QString&);
 		QString GetMessageID (QObject*);
+		QImage GetDefaultAvatar () const;
 	private slots:
 		void handleMessageDelivered ();
 		void handleMessageDestroyed ();
