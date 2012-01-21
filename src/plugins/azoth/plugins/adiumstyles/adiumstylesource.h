@@ -74,6 +74,7 @@ namespace AdiumStyles
 		QString GetMessageID (QObject*);
 	private slots:
 		void handleMessageDelivered ();
+		void handleMessageDestroyed ();
 		void handleFrameDestroyed ();
 	};
 }

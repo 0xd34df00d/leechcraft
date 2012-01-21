@@ -137,6 +137,12 @@ namespace StandardStyles
 				Qt::escape (other->GetEntryName ()) :
 				QString ();
 
+		connect (msgObj,
+				SIGNAL (destroyed ()),
+				this,
+				SLOT (handleMessageDestroyed ()),
+				Qt::UniqueConnection);
+
 		IAdvancedMessage *advMsg = qobject_cast<IAdvancedMessage*> (msgObj);
 		if (msg->GetDirection () == IMessage::DOut &&
 				advMsg &&
@@ -342,8 +348,14 @@ namespace StandardStyles
 				SLOT (handleMessageDelivered ()));
 	}
 
+	void StandardStyleSource::handleMessageDestroyed ()
+	{
+		Msg2Frame_.remove (sender ());
+	}
+
 	void StandardStyleSource::handleFrameDestroyed ()
 	{
+		HasBeenAppended_.remove (static_cast<QWebFrame*> (sender ()));
 		const QObject *snd = sender ();
 		for (QHash<QObject*, QWebFrame*>::iterator i = Msg2Frame_.begin ();
 				i != Msg2Frame_.end (); )

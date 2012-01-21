@@ -77,7 +77,7 @@ namespace AdiumStyles
 
 		return QUrl::fromLocalFile (path);
 	}
-	
+
 	namespace
 	{
 		void FixSelfClosing (QString& str)
@@ -177,7 +177,7 @@ namespace AdiumStyles
 		if (result.contains ("%incomingIconPath%"))
 			result.replace ("%incomingIconPath%",
 					Util::GetAsBase64Src (entry->GetAvatar ()));
-			
+
 		FixSelfClosing (result);
 
 		return result;
@@ -219,6 +219,11 @@ namespace AdiumStyles
 					<< msg->OtherPart ();
 			return false;
 		}
+
+		connect (msgObj,
+				SIGNAL (destroyed ()),
+				this,
+				SLOT (handleMessageDestroyed ()));
 
 		const bool in = GetMsgDirection (msg) == IMessage::DIn;
 
@@ -558,6 +563,11 @@ namespace AdiumStyles
 				SIGNAL (messageDelivered ()),
 				this,
 				SLOT (handleMessageDelivered ()));
+	}
+
+	void AdiumStyleSource::handleMessageDestroyed ()
+	{
+		Msg2Frame_.remove (sender ());
 	}
 
 	void AdiumStyleSource::handleFrameDestroyed ()
