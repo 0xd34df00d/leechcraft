@@ -78,7 +78,7 @@ namespace Xoox
 	{
 		return Account_->GetAccountID () + '_' + ID_;
 	}
-	
+
 	QString RoomParticipantEntry::GetHumanReadableID () const
 	{
 		return ID_;
@@ -110,7 +110,7 @@ namespace Xoox
 	{
 		return RoomHandler_->GetRoomJID () + "/" + Nick_;
 	}
-	
+
 	QString RoomParticipantEntry::GetRealJID () const
 	{
 		return RoomHandler_->GetRoom ()->
