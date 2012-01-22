@@ -130,7 +130,6 @@ namespace Azoth
 		Ui_.EventsButton_->hide ();
 
 		BuildBasicActions ();
-		RequestLogs ();
 
 		Core::Instance ().RegisterHookable (this);
 
@@ -157,6 +156,7 @@ namespace Azoth
 				SLOT (typeTimeout ()));
 
 		PrepareTheme ();
+		RequestLogs ();
 		InitEntry ();
 		CheckMUC ();
 		InitExtraActions ();
@@ -194,37 +194,6 @@ namespace Azoth
 		Ui_.View_->setContent (data.toUtf8 (),
 				"text/html", //"application/xhtml+xml" fails to work, though better to use it
 				Core::Instance ().GetSelectedChatTemplateURL (GetEntry<QObject> ()));
-
-		Q_FOREACH (IMessage *msg, HistoryMessages_)
-			AppendMessage (msg);
-
-		ICLEntry *e = GetEntry<ICLEntry> ();
-		Q_FOREACH (QObject *msgObj, e->GetAllMessages ())
-		{
-			IMessage *msg = qobject_cast<IMessage*> (msgObj);
-			if (!msg)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "unable to cast message to IMessage"
-						<< msgObj;
-				continue;
-			}
-			AppendMessage (msg);
-		}
-
-		QFile scrollerJS (":/plugins/azoth/resources/scripts/scrollers.js");
-		if (!scrollerJS.open (QIODevice::ReadOnly))
-			qWarning () << Q_FUNC_INFO
-					<< "unable to open script file"
-					<< scrollerJS.errorString ();
-		else
-		{
-			Ui_.View_->page ()->mainFrame ()->evaluateJavaScript (scrollerJS.readAll ());
-			Ui_.View_->page ()->mainFrame ()->evaluateJavaScript ("InstallEventListeners(); ScrollToBottom();");
-		}
-
-		emit hookThemeReloaded (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy),
-				this, Ui_.View_, GetEntry<QObject> ());
 	}
 
 	void ChatTab::HasBeenAdded ()
@@ -436,6 +405,40 @@ namespace Azoth
 			return;
 
 		me->SetMUCSubject (Ui_.SubjEdit_->toPlainText ());
+	}
+
+	void ChatTab::on_View__loadFinished (bool ok)
+	{
+		Q_FOREACH (IMessage *msg, HistoryMessages_)
+			AppendMessage (msg);
+
+		ICLEntry *e = GetEntry<ICLEntry> ();
+		Q_FOREACH (QObject *msgObj, e->GetAllMessages ())
+		{
+			IMessage *msg = qobject_cast<IMessage*> (msgObj);
+			if (!msg)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to cast message to IMessage"
+						<< msgObj;
+				continue;
+			}
+			AppendMessage (msg);
+		}
+
+		QFile scrollerJS (":/plugins/azoth/resources/scripts/scrollers.js");
+		if (!scrollerJS.open (QIODevice::ReadOnly))
+			qWarning () << Q_FUNC_INFO
+					<< "unable to open script file"
+					<< scrollerJS.errorString ();
+		else
+		{
+			Ui_.View_->page ()->mainFrame ()->evaluateJavaScript (scrollerJS.readAll ());
+			Ui_.View_->page ()->mainFrame ()->evaluateJavaScript ("InstallEventListeners(); ScrollToBottom();");
+		}
+
+		emit hookThemeReloaded (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy),
+				this, Ui_.View_, GetEntry<QObject> ());
 	}
 
 #ifdef ENABLE_MEDIACALLS
