@@ -69,6 +69,7 @@ namespace AdiumStyles
 		bool AppendMessage (QWebFrame*, QObject*, const ChatMsgAppendInfo&);
 		void FrameFocused (QWebFrame*);
 	private:
+		void PercentTemplate (QString&, const QMap<QString, QString>&) const;
 		void ParseGlobalTemplate (QString& templ, ICLEntry*) const;
 		QString ParseMsgTemplate (QString templ, const QString& path,
 				QWebFrame*, QObject*, const ChatMsgAppendInfo&);

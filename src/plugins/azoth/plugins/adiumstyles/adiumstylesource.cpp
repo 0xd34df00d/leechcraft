@@ -75,7 +75,7 @@ namespace AdiumStyles
 			return QUrl ();
 		}
 
-		return QUrl::fromLocalFile (path);
+		return QUrl::fromLocalFile (QFileInfo (path).absolutePath () + '/');
 	}
 
 	namespace
@@ -94,13 +94,22 @@ namespace AdiumStyles
 		if (srcPack != LastPack_)
 		{
 			Coloring2Colors_.clear ();
+			Frame2LastContact_.clear ();
 			LastPack_ = srcPack;
 
 			StylesLoader_->FlushCache ();
 		}
 
+		connect (frame,
+				SIGNAL (destroyed ()),
+				this,
+				SLOT (handleFrameDestroyed ()),
+				Qt::UniqueConnection);
+
 		const QString& pack = PackProxyModel_->GetOrigName (srcPack);
 		const QString& varCss = PackProxyModel_->GetVariant (srcPack);
+
+		Frame2Pack_ [frame] = pack;
 
 		Frame2LastContact_.remove (frame);
 
@@ -112,6 +121,8 @@ namespace AdiumStyles
 				Load (QStringList (prefix + "Footer.html"));
 		Util::QIODevice_ptr css = StylesLoader_->
 				Load (QStringList (prefix + "main.css"));
+		Util::QIODevice_ptr tmpl = StylesLoader_->
+				Load (QStringList (prefix + "Template.html"));
 
 		if (!header)
 		{
@@ -134,35 +145,31 @@ namespace AdiumStyles
 			return QString ();
 		}
 
-		Frame2Pack_ [frame] = pack;
-
-		QString cssStr = css ?
-				QString::fromUtf8 (css->readAll ()) :
-				QString ();
-
+		const QUrl& baseUrl = GetBaseURL (srcPack);
 		QString varCssStr;
 		if (!varCss.isEmpty ())
-		{
-			Util::QIODevice_ptr varCssDev = StylesLoader_->
-					Load (QStringList (prefix + "Variants/" + varCss + ".css"));
-			if (varCssDev && varCssDev->open (QIODevice::ReadOnly))
-			{
-				varCssStr = QString::fromUtf8 (varCssDev->readAll ());
-				varCssStr.remove ("../");
-			}
-		}
+			varCssStr = "Variants/" + varCss + ".css";
+		else
+			varCssStr = "main.css";
 
 		QString result;
-		result = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
-		result += "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">";
-		result += "<html xmlns=\"http://www.w3.org/1999/xhtml\"><head><style type=\"text/css\">";
-		result += cssStr + varCssStr;
-		result += "</style><title></title></head><body onload=\"initStyle();\">";
-		result += QString::fromUtf8 (header->readAll ());
-		result += "<div id=\"Chat\"><div id=\"insert\"></div></div>";
-		if (footer)
-			result += QString::fromUtf8 (footer->readAll ());
-		result += "</body></html>";
+		if (tmpl && tmpl->open (QIODevice::ReadOnly))
+			result = QString::fromUtf8 (tmpl->readAll ());
+		else
+		{
+			QFile file (":/plugins/azoth/plugins/adiumstyles/resources/html/Template.html");
+			file.open (QIODevice::ReadOnly);
+			result = QString::fromUtf8 (file.readAll ());
+		}
+
+		QMap<QString, QString> map;
+		map ["Path"] = baseUrl.toString ();
+		map ["CSS"] = "@import url( \"main.css\" );";
+		if (!varCssStr.isEmpty ())
+			map ["VariantCSS"] = baseUrl.resolved (QUrl (varCssStr)).toString ();
+		map ["Header"] = header->readAll ();
+		map ["Footer"] = footer ? footer->readAll () : QString ();
+		PercentTemplate (result, map);
 
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 		if (!entry)
@@ -224,10 +231,15 @@ namespace AdiumStyles
 		const bool in = GetMsgDirection (msg) == IMessage::DIn;
 
 		QObject *kindaSender = in ? msg->OtherPart () : reinterpret_cast<QObject*> (42);
-		const bool isNextMsg = Frame2LastContact_.contains (frame) &&
-				kindaSender == Frame2LastContact_ [frame];
+
 		const bool isSlashMe = msg->GetBody ()
 				.trimmed ().startsWith ("/me ");
+		const bool alwaysNotNext = isSlashMe ||
+				!(msg->GetMessageType () == IMessage::MTChatMessage || msg->GetMessageType () == IMessage::MTMUCMessage);
+		const bool isNextMsg = !alwaysNotNext &&
+				Frame2LastContact_.contains (frame) &&
+				kindaSender == Frame2LastContact_ [frame];
+
 		const QString& prefix = pack + "/Contents/Resources/" +
 				(in || isSlashMe ? "Incoming" : "Outgoing") +
 				'/';
@@ -245,10 +257,10 @@ namespace AdiumStyles
 		if (msg->GetMessageType () != IMessage::MTMUCMessage &&
 				msg->GetMessageType () != IMessage::MTChatMessage)
 			Frame2LastContact_.remove (frame);
-		else if (!isNextMsg)
+		else if (!isNextMsg && !alwaysNotNext)
 			Frame2LastContact_ [frame] = kindaSender;
-
-		qDebug () << filename << msg->GetBody ();
+		else if (alwaysNotNext)
+			Frame2LastContact_.remove (frame);
 
 		Util::QIODevice_ptr content = StylesLoader_->
 				Load (QStringList (prefix + filename));
@@ -274,29 +286,38 @@ namespace AdiumStyles
 			return false;
 		}
 
-		const QString& newSelector = QString ("div[id=\"Chat\"]");
-		const QString& nextSelector = QString ("*[id=\"insert\"]");
-		QWebElement chat = frame->findFirstElement (isNextMsg ? nextSelector : newSelector);
-		if (chat.isNull ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "no div for insertion could be found";
-			return false;
-		}
-
 		QString templ = QString::fromUtf8 (content->readAll ());
 		FixSelfClosing (templ);
-		const QString& body = ParseMsgTemplate (templ, prefix, frame, msgObj, info);
-		if (isNextMsg)
-			chat.setOuterXml (body);
-		else
+		QString bodyS = ParseMsgTemplate (templ, prefix, frame, msgObj, info);
+		QString body;
+		body.reserve (bodyS.size () * 1.2);
+		for (int i = 0, size = bodyS.size (); i < size; ++i)
 		{
-			QWebElement next = frame->findFirstElement (nextSelector);
-			if (!next.isNull ())
-				next.removeFromDocument ();
-
-			chat.appendInside (body);
+			switch (bodyS.at (i).unicode ())
+			{
+			case L'\"':
+				body += "\\\"";
+				break;
+			case L'\n':
+				body += "\\n";
+				break;
+			case L'\t':
+				body += "\\t";
+				break;
+			case L'\\':
+				body += "\\\\";
+				break;
+			case L'\r':
+				body += "\\r";
+				break;
+			default:
+				body += bodyS.at (i);
+				break;
+			}
 		}
+
+		const QString& command = isNextMsg ? "appendNextMessage(\"%1\");" : "appendMessage(\"%1\");";
+		frame->evaluateJavaScript (command.arg (body));
 
 		if (templ.contains ("%stateElementId%"))
 		{
@@ -332,6 +353,28 @@ namespace AdiumStyles
 
 	void AdiumStyleSource::FrameFocused (QWebFrame*)
 	{
+	}
+
+	void AdiumStyleSource::PercentTemplate (QString& result, const QMap<QString, QString>& map) const
+	{
+		QRegExp rx ("(?:%@){1}");
+		const int count = result.count (rx);
+
+		QStringList rpls (map ["Path"]);
+		if (count == 5)
+			rpls << map ["CSS"];
+		rpls << map ["VariantCSS"]
+			<< map ["Header"]
+			<< map ["Footer"];
+
+		int i = 0;
+		int pos = 0;
+		while ((pos = rx.indexIn (result, pos)) != -1 && i < rpls.size ())
+		{
+			result.replace (pos, 2, rpls [i]);
+			pos += rpls [i].length ();
+			i++;
+		}
 	}
 
 	void AdiumStyleSource::ParseGlobalTemplate (QString& result, ICLEntry *entry) const
