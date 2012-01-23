@@ -150,17 +150,22 @@ namespace LeechCraft
 		contribs << ContributorInfo ("Alia Eolova", "alieola",
 				"alieola@jabber.ru", "aeors-team@yandex.ru",
 				QStringList (tr ("Spanish translations.")),
-				QList<int> () << 2011);
+				QList<int> () << 2011 << 2012);
 		contribs << ContributorInfo ("Azer Abdullaev", "Like-all",
 				QString (), "lik3a11@gmail.com",
-				QStringList (tr ("Artwork designer.")),
-				QList<int> () << 2011);
+				QStringList (tr ("Artwork.")),
+				QList<int> () << 2011 << 2012);
 		contribs << ContributorInfo ("Elena Belova", "Zereal",
 				"elena.zereal@neko.im", "zereal25@gmail.com",
 				QStringList (tr ("French translations."))
 					<< tr ("Italian translations.")
 					<< tr ("Public relations."),
 				QList<int> () << 2011);
+		contribs << ContributorInfo ("Eugene Mamin", "DZhon",
+				"dzhon_over@jabber.ru", "TheDZhon@gmail.com",
+				QStringList (tr ("Microsoft Windows backend for Liznoo plugin."))
+					<< tr ("Microsoft Windows builds."),
+				QList<int> () << 2011 << 2012);
 		contribs << ContributorInfo (QString (), "ForNeVeR",
 				"revenrof@jabber.ru", QString (),
 				QStringList ("Maintainer for the Microsoft Windows."),
@@ -168,9 +173,11 @@ namespace LeechCraft
 		contribs << ContributorInfo (QString (), "Ignotus",
 				"nlminhtl@gmail.com", QString (),
 				QStringList ("Improvements in Psto.net plugin for Azoth.")
+					<< tr ("Laure plugin.")
+					<< tr ("Last.FM Scrobbler plugin.")
 					<< tr ("openSUSE package maintainer")
 					<< tr ("Fedora package maintainer"),
-				QList<int> () << 2011);
+				QList<int> () << 2011 << 2012);
 		contribs << ContributorInfo (QString (), "lk4d4",
 				QString (), "lk4d4@yander.ru",
 				QStringList ("Initial ebuilds for Gentoo Linux."),
