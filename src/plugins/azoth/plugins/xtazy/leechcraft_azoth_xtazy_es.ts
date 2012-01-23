@@ -4,7 +4,7 @@
     <message>
         <location filename="xtazy.cpp" line="81"/>
         <source>Publishes current tune.</source>
-        <translation type="unfinished"/>
+        <translation>Publica melodía actual.</translation>
     </message>
 </context>
 <context>
@@ -17,22 +17,22 @@
     <message>
         <location filename="dummy.cpp" line="3"/>
         <source>Tune fetching</source>
-        <translation type="unfinished"/>
+        <translation>Obtención de melodía</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="4"/>
         <source>Fetch from MPRIS-compatible players</source>
-        <translation type="unfinished"/>
+        <translation>Obtener de reproductores compatibles con MPRIS</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="5"/>
         <source>Fetch from file</source>
-        <translation type="unfinished"/>
+        <translation>Obtener del archivo</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="6"/>
         <source>File source:</source>
-        <translation type="unfinished"/>
+        <translation>Archivo fuente:</translation>
     </message>
 </context>
 </TS>

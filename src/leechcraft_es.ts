@@ -10,7 +10,7 @@
     <message utf8="true">
         <location filename="aboutdialog.ui" line="76"/>
         <source>LeechCraft — a crossplatform modular internet-client, featuring plugins for a web browser, news feed reader, BitTorrent, FTP and lots of others.</source>
-        <translation>LeechCraft -- un modular multiplataforma internet-cliente, con plugins de un navegador web, lector de feeds de noticias, BitTorrent, FTP y muchos otros.</translation>
+        <translation>LeechCraft es un cliente multiplataforma modular de internet, con tantos complementos como navegador web, lector de feeds de noticias, BitTorrent, FTP y muchos otros.</translation>
     </message>
     <message>
         <location filename="aboutdialog.ui" line="110"/>
@@ -96,7 +96,7 @@
     <message>
         <location filename="util/backendselector.ui" line="90"/>
         <source>Temp store:</source>
-        <translation>Temp almacenamiento:</translation>
+        <translation>Almacenamiento temporario:</translation>
     </message>
     <message>
         <location filename="util/backendselector.ui" line="111"/>
@@ -412,7 +412,7 @@
     <message>
         <location filename="aboutdialog.cpp" line="171"/>
         <source>openSUSE package maintainer</source>
-        <translation>openSUSE mantenedor del paquete</translation>
+        <translation>Mantenedor del paquete de openSUSE</translation>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="172"/>
@@ -494,7 +494,7 @@
     <message>
         <location filename="core.cpp" line="466"/>
         <source>Do you really want to clear cookies?</source>
-        <translation>¿Realmente quiere borrarcookies?</translation>
+        <translation>¿Realmente quiere borrar cookies?</translation>
     </message>
     <message>
         <location filename="core.cpp" line="700"/>
@@ -578,7 +578,7 @@
     <message>
         <location filename="xmlsettingsdialog/fontpicker.cpp" line="36"/>
         <source>Choose...</source>
-        <translation>Elegir...</translation>
+        <translation>Seleccionar...</translation>
     </message>
     <message>
         <location filename="xmlsettingsdialog/fontpicker.cpp" line="54"/>
@@ -860,7 +860,7 @@
     <message>
         <location filename="settingstab.cpp" line="205"/>
         <source>LeechCraft-wide settings dashboard</source>
-        <translation>LeechCraft-tablero de configuración avanzada</translation>
+        <translation>Seleccionar...</translation>
     </message>
     <message>
         <location filename="settingstab.cpp" line="242"/>

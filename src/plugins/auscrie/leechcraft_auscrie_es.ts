@@ -75,7 +75,7 @@
     <message>
         <location filename="shooterdialog.ui" line="54"/>
         <source>Timeout:</source>
-        <translation type="unfinished"/>
+        <translation>Tiempo de espera</translation>
     </message>
     <message>
         <location filename="shooterdialog.ui" line="61"/>
