@@ -39,6 +39,11 @@ namespace LeechCraft
 		Core::Instance ().GetReallyMainWindow ()->ToggleViewActionVisiblity (w, visible);
 	}
 
+	void MWProxy::SetViewActionShortcut (QDockWidget *w, const QKeySequence& seq)
+	{
+		w->toggleViewAction ()->setShortcut (seq);
+	}
+
 	void MWProxy::AddToolbar (QToolBar *bar, Qt::ToolBarArea area)
 	{
 		bar->setParent (Core::Instance ().GetReallyMainWindow ());
