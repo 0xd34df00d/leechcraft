@@ -109,8 +109,14 @@ namespace Zheet
 		return 0;
 	}
 
-	void MSNProtocol::RemoveAccount (QObject*)
+	void MSNProtocol::RemoveAccount (QObject *acc)
 	{
+		if (Accounts_.removeAll (static_cast<MSNAccount*> (acc)))
+		{
+			emit accountRemoved (acc);
+			saveAccounts ();
+			acc->deleteLater ();
+		}
 	}
 
 	void MSNProtocol::RestoreAccounts ()
