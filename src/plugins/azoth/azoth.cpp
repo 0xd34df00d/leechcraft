@@ -119,7 +119,7 @@ namespace Azoth
 		dw->setWidget (MW_);
 		dw->setWindowTitle ("Azoth");
 		proxy->GetMWProxy ()->AddDockWidget (Qt::RightDockWidgetArea, dw);
-		proxy->GetMWProxy ()->SetViewActionShortcut (dw, QString ("Ctrl+Shift+S,A"));
+		proxy->GetMWProxy ()->SetViewActionShortcut (dw, QString ("Ctrl+J,A"));
 
 		connect (&Core::Instance (),
 				SIGNAL (gotEntity (const LeechCraft::Entity&)),
