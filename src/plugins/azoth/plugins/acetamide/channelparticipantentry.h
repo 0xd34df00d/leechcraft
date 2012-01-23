@@ -56,8 +56,9 @@ namespace Acetamide
 		QList<ChannelRole> Roles () const;
 		ChannelRole HighestRole ();
 
-		void SetRole (const ChannelRole&);
-		void RemoveRole (const ChannelRole&);
+		void SetRole (const ChannelRole& role);
+		void SetRoles (const QList<ChannelRole>& roles);
+		void RemoveRole (const ChannelRole& role);
 	private slots:
 		void handleWhoIs ();
 		void handleWhoWas ();

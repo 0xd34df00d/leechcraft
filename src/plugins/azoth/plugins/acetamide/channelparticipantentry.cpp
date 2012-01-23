@@ -133,6 +133,11 @@ namespace Acetamide
 			Roles_ << role;
 	}
 
+	void ChannelParticipantEntry::SetRoles (const QList<ChannelRole>& roles)
+	{
+		Roles_ = roles;
+	}
+
 	void ChannelParticipantEntry::RemoveRole (const ChannelRole& role)
 	{
 		if (Roles_.contains (role))

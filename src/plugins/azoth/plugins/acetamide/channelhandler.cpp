@@ -124,9 +124,13 @@ namespace Acetamide
 				IMessage::MSTParticipantNickChange);
 
 		CM_->GetAccount ()->handleEntryRemoved (Nick2Entry_ [oldNick].get ());
+		QList<ChannelRole> roles = Nick2Entry_ [oldNick]->Roles ();
 		ChannelParticipantEntry_ptr entry = Nick2Entry_.take (oldNick);
 		entry->SetEntryName (newNick);
+		entry->SetRoles (roles);
 		CM_->GetAccount ()->handleGotRosterItems (QObjectList () << entry.get ());
+
+
 		Nick2Entry_ [newNick] = entry;
 	}
 
