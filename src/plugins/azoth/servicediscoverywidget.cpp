@@ -134,6 +134,8 @@ namespace Azoth
 	{
 		AddressLine_->setText (session->GetQuery ());
 		SDSession_.reset (session);
+		if (Ui_.DiscoveryTree_->selectionModel ())
+			Ui_.DiscoveryTree_->selectionModel ()->deleteLater ();
 		Ui_.DiscoveryTree_->setModel (session->GetRepresentationModel ());
 	}
 
@@ -172,6 +174,8 @@ namespace Azoth
 	{
 		DiscoveryTimer_->stop ();
 
+		if (Ui_.DiscoveryTree_->selectionModel ())
+			Ui_.DiscoveryTree_->selectionModel ()->deleteLater ();
 		Ui_.DiscoveryTree_->setModel (0);
 		SDSession_.reset ();
 

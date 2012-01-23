@@ -32,15 +32,15 @@ namespace Rosenthal
 	{
 		SpellCheckFormat_.setUnderlineColor (QColor (Qt::red));
 		SpellCheckFormat_.setUnderlineStyle (QTextCharFormat::SpellCheckUnderline);
-		
+
 		Codec_ = QTextCodec::codecForName (Hunspell_->get_dic_encoding ());
 	}
-	
+
 	void Highlighter::UpdateHunspell (boost::shared_ptr<Hunspell> hunspell)
 	{
 		Hunspell_ = hunspell;
 	}
-	
+
 	void Highlighter::highlightBlock (const QString& text)
 	{
 		QRegExp sr ("\\W+");
@@ -52,7 +52,7 @@ namespace Rosenthal
 			if (str.size () <= 1 ||
 					CheckWord (str))
 				continue;
-			
+
 			const int pos = text.indexOf (str, prevStopPos);
 			if (pos >= 0)
 			{
@@ -61,7 +61,7 @@ namespace Rosenthal
 			}
 		}
 	}
-	
+
 	bool Highlighter::CheckWord (const QString& word)
 	{
 		const QByteArray& encoded = Codec_->fromUnicode (word);

@@ -68,6 +68,7 @@ namespace StandardStyles
 		QString GetStatusImage (const QString&);
 	private slots:
 		void handleMessageDelivered ();
+		void handleMessageDestroyed ();
 		void handleFrameDestroyed ();
 	};
 }

@@ -121,6 +121,7 @@ namespace Azoth
 		void on_MsgEdit__textChanged ();
 		void on_SubjectButton__toggled (bool);
 		void on_SubjChange__released ();
+		void on_View__loadFinished (bool);
 		void handleClearChat ();
 		void handleRichTextToggled ();
 		void handleQuoteSelection ();

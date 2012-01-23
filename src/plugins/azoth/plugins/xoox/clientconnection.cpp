@@ -809,7 +809,7 @@ namespace Xoox
 
 	void ClientConnection::handlePendingForm (QXmppDataForm *formObj, const QString& from)
 	{
-		std::auto_ptr<QXmppDataForm> form (formObj);
+		std::unique_ptr<QXmppDataForm> form (formObj);
 		FormBuilder fb (from, BobManager_);
 
 		QDialog dia;

@@ -84,7 +84,7 @@ namespace NetStoreManager
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		return QIcon (":/netstoremanager/resources/images/netstoremanager.svg");
 	}
 
 	TabClasses_t Plugin::GetTabClasses () const

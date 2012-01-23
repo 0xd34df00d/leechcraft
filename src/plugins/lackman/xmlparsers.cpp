@@ -101,11 +101,15 @@ namespace LackMan
 		while (!package.isNull ())
 		{
 			QStringList versionsList;
+			QMap<QString, QString> archivers;
+
 			QDomElement versions = package.firstChildElement ("versions");
 			QDomElement version = versions.firstChildElement ("version");
 			while (!version.isNull ())
 			{
-				versionsList << version.text ();
+				const QString& txt = version.text ();
+				versionsList << txt;
+				archivers [txt] = version.attribute ("archiver", "gz");
 
 				version = version.nextSiblingElement ("version");
 			}
@@ -113,7 +117,8 @@ namespace LackMan
 			PackageShortInfo psi =
 			{
 				package.firstChildElement ("name").text (),
-				versionsList
+				versionsList,
+				archivers
 			};
 			infos << psi;
 
@@ -223,6 +228,10 @@ namespace LackMan
 				if (ok)
 					packageInfo.PackageSizes_ [verNode.text ()] = size;
 			}
+
+			packageInfo.VersionArchivers_ [verNode.text ()] =
+					verNode.attribute ("archiver", "gz");
+
 			verNode = verNode.nextSiblingElement ("version");
 		}
 

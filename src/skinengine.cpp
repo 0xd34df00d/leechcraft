@@ -75,7 +75,7 @@ QIcon SkinEngine::GetIcon (const QString& actionIcon, const QString& actionIconO
 		return result;
 	}
 
-	qWarning () << Q_FUNC_INFO << "old-style naming scheme for" << actionIcon << actionIconOff << QIcon::themeName () << QIcon::themeSearchPaths ();
+	qDebug () << Q_FUNC_INFO << "no icon for" << actionIcon << actionIconOff << QIcon::themeName () << QIcon::themeSearchPaths ();
 
 	return QIcon ();
 }

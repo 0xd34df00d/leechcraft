@@ -1985,6 +1985,7 @@ namespace Azoth
 
 			ID2Entry_.remove (entry->GetEntryID ());
 
+			EntryClientIconCache_.remove (entry);
 			Entry2SmoothAvatarCache_.remove (entry);
 			invalidateClientsIconCache (clitem);
 		}
