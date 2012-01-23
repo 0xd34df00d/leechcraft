@@ -9,7 +9,7 @@
     <message>
         <location filename="editorpage.ui" line="45"/>
         <source>Inject</source>
-        <translation type="unfinished"/>
+        <translation>Inyectar</translation>
     </message>
     <message>
         <location filename="editorpage.ui" line="52"/>
@@ -59,12 +59,12 @@
     <message>
         <location filename="editorpage.ui" line="127"/>
         <source>Show end of lines</source>
-        <translation type="unfinished"/>
+        <translation>Mostrar finales de las líneas</translation>
     </message>
     <message>
         <location filename="editorpage.ui" line="138"/>
         <source>Show caret line</source>
-        <translation type="unfinished"/>
+        <translation>Mostrar cursor de línea</translation>
     </message>
     <message>
         <location filename="editorpage.ui" line="149"/>
@@ -75,7 +75,7 @@
         <location filename="editorpage.ui" line="157"/>
         <location filename="editorpage.ui" line="160"/>
         <source>Always visible</source>
-        <translation type="unfinished"/>
+        <translation>Siempre a la vista</translation>
     </message>
     <message>
         <location filename="editorpage.ui" line="168"/>
@@ -90,7 +90,7 @@
     <message>
         <location filename="editorpage.ui" line="184"/>
         <source>Show line numbers</source>
-        <translation type="unfinished"/>
+        <translation>Mostrar número de líneas</translation>
     </message>
     <message>
         <location filename="editorpage.ui" line="195"/>
@@ -155,7 +155,7 @@
         <location filename="editorpage.cpp" line="220"/>
         <location filename="editorpage.cpp" line="292"/>
         <source>Untitled</source>
-        <translation type="unfinished"/>
+        <translation>Sin título</translation>
     </message>
     <message>
         <location filename="editorpage.cpp" line="225"/>
@@ -165,12 +165,12 @@
     <message>
         <location filename="editorpage.cpp" line="298"/>
         <source>Select file to open</source>
-        <translation type="unfinished"/>
+        <translation>Seleccionar archivo para abrir</translation>
     </message>
     <message>
         <location filename="editorpage.cpp" line="609"/>
         <source>File not found</source>
-        <translation type="unfinished"/>
+        <translation>Archivo no se encuentra</translation>
     </message>
     <message>
         <location filename="editorpage.cpp" line="610"/>
@@ -190,7 +190,7 @@
     <message>
         <location filename="editorpage.cpp" line="117"/>
         <source>Recent files</source>
-        <translation type="unfinished"/>
+        <translation>Archivos recientes</translation>
     </message>
     <message>
         <location filename="editorpage.cpp" line="474"/>
@@ -201,7 +201,7 @@
     <message>
         <location filename="editorpage.cpp" line="628"/>
         <source>Select file to save</source>
-        <translation type="unfinished"/>
+        <translation>Seleccionar archivo para guardar</translation>
     </message>
     <message>
         <location filename="editorpage.cpp" line="641"/>
@@ -222,7 +222,7 @@
     <message>
         <location filename="replacedialog.ui" line="14"/>
         <source>Replace</source>
-        <translation type="unfinished"/>
+        <translation>Reemplazar</translation>
     </message>
     <message>
         <location filename="replacedialog.ui" line="25"/>
@@ -232,7 +232,7 @@
     <message>
         <location filename="replacedialog.ui" line="35"/>
         <source>Replace with:</source>
-        <translation type="unfinished"/>
+        <translation>Reemplazar con:</translation>
     </message>
     <message>
         <location filename="replacedialog.ui" line="47"/>

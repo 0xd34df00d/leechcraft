@@ -47,12 +47,12 @@
     <message>
         <location filename="chathistory.cpp" line="40"/>
         <source>IM history</source>
-        <translation type="unfinished"/>
+        <translation>Historia de MI</translation>
     </message>
     <message>
         <location filename="chathistory.cpp" line="68"/>
         <source>Stores message history in Azoth.</source>
-        <translation type="unfinished"/>
+        <translation>Guarda la historia de mensajes en Azoth.</translation>
     </message>
     <message>
         <location filename="chathistory.cpp" line="122"/>
@@ -62,7 +62,7 @@
     <message>
         <location filename="chathistory.cpp" line="140"/>
         <source>Logging enabled</source>
-        <translation type="unfinished"/>
+        <translation>Guarda de registros de charla esta activada</translation>
     </message>
     <message>
         <location filename="chathistory.cpp" line="197"/>

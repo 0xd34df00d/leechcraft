@@ -11,17 +11,17 @@
     <message>
         <location filename="gmailchecker.cpp" line="84"/>
         <source>Username or password not set</source>
-        <translation type="unfinished"/>
+        <translation>Nombre de usuario o contraseña no establecido</translation>
     </message>
     <message>
         <location filename="gmailchecker.cpp" line="114"/>
         <source>Cannot parse XML data</source>
-        <translation type="unfinished"/>
+        <translation>No se puede analizar los datos XML</translation>
     </message>
     <message>
         <location filename="gmailchecker.cpp" line="133"/>
         <source>No subject</source>
-        <translation type="unfinished"/>
+        <translation>Sin asunto</translation>
     </message>
     <message>
         <location filename="gmailchecker.cpp" line="136"/>
@@ -51,7 +51,7 @@
     <message>
         <location filename="gmailchecker.cpp" line="168"/>
         <source>Connection timeout</source>
-        <translation type="unfinished"/>
+        <translation>Tiempo de espera de conexión</translation>
     </message>
 </context>
 <context>
@@ -59,7 +59,7 @@
     <message>
         <location filename="gmailnotifier.cpp" line="97"/>
         <source>Google mail notification plugin</source>
-        <translation type="unfinished"/>
+        <translation>Complemento de notificacion de Google Mail</translation>
     </message>
 </context>
 <context>
@@ -72,7 +72,7 @@
     <message>
         <location filename="dummy.cpp" line="3"/>
         <source>Login settings</source>
-        <translation type="unfinished"/>
+        <translation>Ajustes de inicio de sesión</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="4"/>
@@ -87,12 +87,12 @@
     <message>
         <location filename="dummy.cpp" line="6"/>
         <source>Update settings</source>
-        <translation type="unfinished"/>
+        <translation>Ajustes de actualización</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="7"/>
         <source>Enable checking</source>
-        <translation type="unfinished"/>
+        <translation>Activar la verificación</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="8"/>

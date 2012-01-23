@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="es">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="es" version="2.0">
 <context>
     <name>AddToFavoritesDialog</name>
     <message>
@@ -130,7 +128,7 @@
     <message>
         <location filename="editbookmarkdialog.ui" line="14"/>
         <source>Edit bookmark</source>
-        <translation></translation>
+        <translation>Editar el marcador</translation>
     </message>
     <message>
         <location filename="editbookmarkdialog.ui" line="23"/>
@@ -311,7 +309,7 @@
     <message>
         <location filename="browserwidget.cpp" line="256"/>
         <source>Open history</source>
-        <translation></translation>
+        <translation>Abrir la historia</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="259"/>
@@ -447,13 +445,13 @@
         <location filename="browserwidget.cpp" line="1619"/>
         <location filename="browserwidget.cpp" line="1620"/>
         <source>Remove bookmark</source>
-        <translation type="unfinished"></translation>
+        <translation>Remover el marcador</translation>
     </message>
     <message>
         <location filename="browserwidget.cpp" line="1637"/>
         <location filename="browserwidget.cpp" line="1638"/>
         <source>Add bookmark</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir marcador</translation>
     </message>
 </context>
 <context>
@@ -513,8 +511,7 @@
     <message>
         <location filename="customwebpage.cpp" line="141"/>
         <source>&lt;a href=&quot;http://downforeveryoneorjustme.com/{host}&quot; target=&quot;_blank&quot;&gt;check&lt;/a&gt; if the site &lt;strong&gt;{host}&lt;/strong&gt; is down for you only;</source>
-        <comment>{host} would be substituded with site&apos;s host name.</comment>
-        <translatorcomment>{host} would be substituted with site&apos;s host name.</translatorcomment>
+        <comment>{host} would be substituded with site's host name.</comment>
         <translation>&lt;a href=&quot;http://downforeveryoneorjustme.com/{host}&quot; target=&quot;_blank&quot;&gt;check&lt;/a&gt; if the site &lt;strong&gt;{host}&lt;/strong&gt; is down for you only;</translation>
     </message>
     <message>
@@ -591,7 +588,7 @@
     <message>
         <location filename="customwebpage.cpp" line="323"/>
         <source>Unable to send the request to %1. Please try submitting it again.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede enviar la solicitud a %1. Por favor, intente enviarlo de nuevo.</translation>
     </message>
     <message>
         <location filename="customwebpage.cpp" line="534"/>
@@ -680,12 +677,12 @@
     <message>
         <location filename="customwebview.cpp" line="333"/>
         <source>Save pixmap...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="customwebview.cpp" line="335"/>
         <source>Saves the rendered pixmap without redownloading.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="customwebview.cpp" line="339"/>
@@ -761,17 +758,17 @@
     <message>
         <location filename="customwebview.cpp" line="611"/>
         <source>Save pixmap</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="customwebview.cpp" line="613"/>
         <source>PNG image (*.png);;JPG image (*.jpg);;All files (*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="customwebview.cpp" line="631"/>
         <source>Unable to save the image. Unable to open file for writing: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1000,10 +997,7 @@
     <message numerus="yes">
         <location filename="historymodel.cpp" line="90"/>
         <source>Last %n month(s)</source>
-        <translation>
-            <numerusform>Mes %n pasado</numerusform>
-            <numerusform>Últimos %n meses</numerusform>
-        </translation>
+        <translation><numerusform>Mes %n pasado</numerusform><numerusform>Últimos %n meses</numerusform></translation>
     </message>
     <message>
         <location filename="xbelparser.cpp" line="36"/>
@@ -1181,7 +1175,7 @@
     <message>
         <location filename="dummy.cpp" line="14"/>
         <source>Add bookmark in one click</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="15"/>
@@ -1202,22 +1196,22 @@
     <message>
         <location filename="dummy.cpp" line="19"/>
         <source>Enable XSS auditing</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="20"/>
         <source>Specifies whether requests should be monitored for cross-site scripting attempts. Suspicious attempts would be blocked. This feature may have a slight negative impact on performance.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="21"/>
         <source>Enable hyperlink auditing</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="22"/>
         <source>Enable sending hyperlink auditing pings.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="23"/>
@@ -1292,12 +1286,12 @@
     <message>
         <location filename="dummy.cpp" line="37"/>
         <source>In-memory</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="38"/>
         <source>Prefetch DNS entries</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="39"/>
@@ -1307,29 +1301,29 @@
     <message>
         <location filename="dummy.cpp" line="40"/>
         <source>Minimum dead capacity:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="41"/>
         <location filename="dummy.cpp" line="43"/>
         <location filename="dummy.cpp" line="45"/>
         <source> MB</source>
-        <translation type="unfinished"></translation>
+        <translation>MB</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="42"/>
         <source>Maximum dead capacity:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="44"/>
         <source>Total capacity:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="46"/>
         <source>Clear in-memory caches</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="47"/>
@@ -1380,7 +1374,7 @@
     <message>
         <location filename="dummy.cpp" line="57"/>
         <source>Enable WebGL</source>
-        <translation type="unfinished"></translation>
+        <translation>Activar WebGL</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="58"/>
@@ -1462,12 +1456,12 @@
     <message>
         <location filename="dummy.cpp" line="75"/>
         <source>Smooth pixmap transform</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="dummy.cpp" line="76"/>
         <source>High-quality antialiasing</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 </TS>
