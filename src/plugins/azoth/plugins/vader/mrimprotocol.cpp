@@ -107,8 +107,13 @@ namespace Vader
 		return 0;
 	}
 
-	void MRIMProtocol::RemoveAccount (QObject*)
+	void MRIMProtocol::RemoveAccount (QObject *acc)
 	{
+		if (Accounts_.removeAll (static_cast<MRIMAccount*> (acc)))
+		{
+			emit accountRemoved (acc);
+			saveAccounts ();
+		}
 	}
 
 	void MRIMProtocol::RestoreAccounts ()
