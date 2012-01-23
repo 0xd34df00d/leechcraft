@@ -198,7 +198,8 @@ namespace Acetamide
 	void ChannelsManager::ChangeNickname (const QString& oldNick, const QString& newNick)
 	{
 		Q_FOREACH (ChannelHandler *ich, ChannelHandlers_.values ())
-			ich->ChangeNickname (oldNick, newNick);
+			if (ich->IsUserExists (oldNick))
+				ich->ChangeNickname (oldNick, newNick);
 	}
 
 	void ChannelsManager::GotNames (const QString& channel, const QStringList& participants)
