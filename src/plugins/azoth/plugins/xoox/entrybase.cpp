@@ -94,18 +94,8 @@ namespace Xoox
 	{
 		bool CheckPartFeature (EntryBase *base, const QString& variant)
 		{
-			if (variant.isEmpty ())
-				return true;
-
-			const QByteArray& ver = base->GetVariantVerString (variant);
-			if (ver.isEmpty ())
-				return true;
-
-			const QStringList& feats = Core::Instance ().GetCapsDatabase ()->Get (ver);
-			if (feats.isEmpty ())
-				return true;
-
-			return feats.contains ("http://jabber.org/protocol/chatstates");
+			return XooxUtil::CheckUserFeature (base,
+					variant, "http://jabber.org/protocol/chatstates");
 		}
 	}
 

@@ -31,6 +31,8 @@ namespace Azoth
 {
 namespace Xoox
 {
+class EntryBase;
+
 namespace XooxUtil
 {
 	QString RoleToString (const QXmppMucItem::Role&);
@@ -43,6 +45,9 @@ namespace XooxUtil
 	QXmppElement Form2XmppElem (const QXmppDataForm&);
 
 	bool RunFormDialog (QWidget*);
+
+	bool CheckUserFeature (EntryBase *entry,
+			const QString& variant, const QString& feature);
 }
 }
 }

@@ -180,20 +180,6 @@ namespace Metacontacts
 		return ActWithVariant<QObject*, ICLEntry*> (f, variant);
 	}
 
-	namespace
-	{
-		struct DateSorter
-		{
-			bool operator() (QObject *lObj, QObject *rObj) const
-			{
-				IMessage *left = qobject_cast<IMessage*> (lObj);
-				IMessage *right = qobject_cast<IMessage*> (rObj);
-
-				return left->GetDateTime () < right->GetDateTime ();
-			}
-		};
-	}
-
 	QList<QObject*> MetaEntry::GetAllMessages () const
 	{
 		return Messages_;
@@ -421,7 +407,14 @@ namespace Metacontacts
 
 		Messages_ << message;
 		if (shouldSort)
-			std::stable_sort (Messages_.begin (), Messages_.end (), DateSorter ());
+			std::stable_sort (Messages_.begin (), Messages_.end (),
+					[] (QObject *lObj, QObject *rObj)
+					{
+						IMessage *left = qobject_cast<IMessage*> (lObj);
+						IMessage *right = qobject_cast<IMessage*> (rObj);
+
+						return left->GetDateTime () < right->GetDateTime ();
+					});
 
 		emit gotMessage (message);
 	}

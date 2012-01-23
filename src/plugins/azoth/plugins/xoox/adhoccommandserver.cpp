@@ -123,18 +123,15 @@ namespace Xoox
 		return true;
 	}
 
-	namespace
-	{
-		QString GenSessID (const QString& base)
-		{
-			return base + ":" + QDateTime::currentDateTime ().toString (Qt::ISODate);
-		}
-	}
-
 	void AdHocCommandServer::Send (const QXmppDataForm& form,
 			const QDomElement& sourceElem, const QString& node)
 	{
-		const QString& sessionId = GenSessID (sourceElem.attribute ("id"));
+		auto genSessID = [] (const QString& base)
+		{
+			return base + ":" + QDateTime::currentDateTime ().toString (Qt::ISODate);
+		};
+
+		const QString& sessionId = genSessID (sourceElem.attribute ("id"));
 		PendingSessions_ [node] << sessionId;
 
 		QXmppElement elem;

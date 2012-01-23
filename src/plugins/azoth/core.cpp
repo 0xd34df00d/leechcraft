@@ -699,20 +699,17 @@ namespace Azoth
 		src->FrameFocused (frame);
 	}
 
-	namespace
+	QList<QColor> Core::GenerateColors (const QString& coloring) const
 	{
-		qreal Fix (qreal h)
+		auto fix = [] (qreal h)
 		{
 			while (h < 0)
 				h += 1;
 			while (h >= 1)
 				h -= 1;
 			return h;
-		}
-	}
+		};
 
-	QList<QColor> Core::GenerateColors (const QString& coloring) const
-	{
 		QList<QColor> result;
 		if (coloring == "hash" ||
 				coloring.isEmpty ())
@@ -730,13 +727,13 @@ namespace Azoth
 			QColor color;
 			for (qreal d = lower; d <= higher; d += delta)
 			{
-				color.setHsvF (Fix (h + d), 1, 0.6, alpha);
+				color.setHsvF (fix (h + d), 1, 0.6, alpha);
 				result << color;
-				color.setHsvF (Fix (h - d), 1, 0.6, alpha);
+				color.setHsvF (fix (h - d), 1, 0.6, alpha);
 				result << color;
-				color.setHsvF (Fix (h + d), 1, 0.9, alpha);
+				color.setHsvF (fix (h + d), 1, 0.9, alpha);
 				result << color;
-				color.setHsvF (Fix (h - d), 1, 0.9, alpha);
+				color.setHsvF (fix (h - d), 1, 0.9, alpha);
 				result << color;
 			}
 		}
@@ -929,7 +926,7 @@ namespace Azoth
 				groups << Core::tr ("Contacts");
 			return groups;
 		}
-	};
+	}
 
 	void Core::AddCLEntry (ICLEntry *clEntry,
 			QStandardItem *accItem)
@@ -1102,10 +1099,7 @@ namespace Azoth
 				result += " (" + statusString + ")";
 			return result;
 		}
-	}
 
-	namespace
-	{
 		void FormatMood (QString& tip, const QMap<QString, QVariant>& moodInfo)
 		{
 			tip += "<br />" + Core::tr ("Mood:") + ' ';

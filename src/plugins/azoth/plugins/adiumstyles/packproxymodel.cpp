@@ -74,7 +74,7 @@ namespace AdiumStyles
 	{
 		void DeSuf (QString& ourName, QString& suffix)
 		{
-			QStringList suffixes = QStringList (".AdiumMessageStyle");
+			QStringList suffixes (".AdiumMessageStyle");
 
 			Q_FOREACH (const QString& suf, suffixes)
 				if (ourName.endsWith (suf))

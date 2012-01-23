@@ -25,6 +25,9 @@
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QVBoxLayout>
+#include "entrybase.h"
+#include "core.h"
+#include "capsdatabase.h"
 
 namespace LeechCraft
 {
@@ -209,6 +212,22 @@ namespace XooxUtil
 		const bool result = dialog->exec () == QDialog::Accepted;
 		dialog->deleteLater ();
 		return result;
+	}
+
+	bool CheckUserFeature (EntryBase *base, const QString& variant, const QString& feature)
+	{
+		if (variant.isEmpty ())
+			return true;
+
+		const QByteArray& ver = base->GetVariantVerString (variant);
+		if (ver.isEmpty ())
+			return true;
+
+		const QStringList& feats = Core::Instance ().GetCapsDatabase ()->Get (ver);
+		if (feats.isEmpty ())
+			return true;
+
+		return feats.contains (feature);
 	}
 }
 }
