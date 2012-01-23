@@ -871,12 +871,12 @@ namespace Azoth
 			if (std::find_if (rMsgs.begin (), rMsgs.end (),
 					[msg] (QObject *msgObj)
 					{
-						IMessage *msg = qobject_cast<IMessage*> (msgObj);
-						if (!msg)
+						IMessage *tMsg = qobject_cast<IMessage*> (msgObj);
+						if (!tMsg)
 							return false;
-						return msg->GetDirection () == msg->GetDirection () &&
-								msg->GetBody () == msg->GetBody () &&
-								std::abs (msg->GetDateTime ().secsTo (msg->GetDateTime ())) < 5;
+						return tMsg->GetDirection () == msg->GetDirection () &&
+								tMsg->GetBody () == msg->GetBody () &&
+								std::abs (tMsg->GetDateTime ().secsTo (msg->GetDateTime ())) < 5;
 					}) != rMsgs.end ())
 				continue;
 
