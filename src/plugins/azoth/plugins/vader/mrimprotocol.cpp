@@ -113,6 +113,7 @@ namespace Vader
 		{
 			emit accountRemoved (acc);
 			saveAccounts ();
+			acc->deleteLater ();
 		}
 	}
 
