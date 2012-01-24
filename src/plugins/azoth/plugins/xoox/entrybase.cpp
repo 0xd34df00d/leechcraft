@@ -214,7 +214,7 @@ namespace Xoox
 		msg.setBody (text);
 		msg.setTo (to);
 		msg.setType (QXmppMessage::Headline);
-		msg.setAttention (true);
+		msg.setAttentionRequested (true);
 		Account_->GetClientConnection ()->GetClient ()->sendPacket (msg);
 	}
 

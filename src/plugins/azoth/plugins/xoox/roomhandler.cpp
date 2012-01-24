@@ -414,7 +414,7 @@ namespace Xoox
 		RoomParticipantEntry_ptr entry = GetParticipantEntry (nick, false);
 		if (msg.type () == QXmppMessage::Chat && !nick.isEmpty ())
 		{
-			if (msg.isAttention ())
+			if (msg.isAttentionRequested ())
 				entry->HandleAttentionMessage (msg);
 
 			if (msg.state ())

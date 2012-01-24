@@ -1099,7 +1099,7 @@ namespace Xoox
 				entry->HandleMessage (gm);
 			}
 
-			if (msg.isAttention ())
+			if (msg.isAttentionRequested ())
 				entry->HandleAttentionMessage (msg);
 		}
 	}
