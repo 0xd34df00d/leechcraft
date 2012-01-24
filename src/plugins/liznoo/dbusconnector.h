@@ -22,6 +22,7 @@
 #include <QDBusConnection>
 #include <interfaces/structures.h>
 #include "batteryinfo.h"
+#include "platformlayer.h"
 
 namespace LeechCraft
 {
@@ -34,6 +35,8 @@ namespace Liznoo
 		QDBusConnection SB_;
 	public:
 		DBusConnector (QObject* = 0);
+	public slots:
+		void changeState (Liznoo::PlatformLayer::PowerState);
 	private slots:
 		void handleGonnaSleep ();
 		void handleWokeUp ();

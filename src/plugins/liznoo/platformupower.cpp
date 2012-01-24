@@ -27,6 +27,8 @@ namespace Liznoo
 	PlatformUPower::PlatformUPower (QObject *parent)
 	: PlatformLayer (parent)
 	{
+		qRegisterMetaType<PlatformLayer::PowerState> ("Liznoo::PlatformLayer::PowerState");
+
 		Thread_ = new DBusThread;
 		connect (Thread_,
 				SIGNAL(started ()),
@@ -39,6 +41,14 @@ namespace Liznoo
 	{
 		if (!Thread_->wait (1000))
 			Thread_->terminate ();
+	}
+
+	void PlatformUPower::ChangeState (PowerState state)
+	{
+		QMetaObject::invokeMethod (Thread_->GetConnector (),
+				"changeState",
+				Qt::QueuedConnection,
+				Q_ARG (Liznoo::PlatformLayer::PowerState, state));
 	}
 
 	void PlatformUPower::handleThreadStarted ()

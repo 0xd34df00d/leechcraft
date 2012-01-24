@@ -62,6 +62,27 @@ namespace Liznoo
 				SLOT (enumerateDevices ()));
 	}
 
+	void DBusConnector::changeState (PlatformLayer::PowerState state)
+	{
+		QDBusInterface face ("org.freedesktop.UPower",
+				"/org/freedesktop/UPower",
+				"org.freedesktop.UPower",
+				SB_);
+
+		auto st2meth = [] (PlatformLayer::PowerState state)
+		{
+			switch (state)
+			{
+			case PlatformLayer::PowerState::Suspend:
+				return "Suspend";
+			case PlatformLayer::PowerState::Hibernate:
+				return "Hibernate";
+			}
+		};
+
+		face.call (QDBus::NoBlock, st2meth (state));
+	}
+
 	void DBusConnector::handleGonnaSleep ()
 	{
 		Entity e = Util::MakeEntity ("Sleeping",
