@@ -107,6 +107,7 @@ namespace Azoth
 		MW_ = new MainWidget ();
 		dw->setWidget (MW_);
 		dw->setWindowTitle ("Azoth");
+		dw->toggleViewAction ()->setShortcut (QString ("Ctrl+J,A"));
 		proxy->GetMWProxy ()->AddDockWidget (Qt::RightDockWidgetArea, dw);
 
 		connect (&Core::Instance (),
