@@ -45,6 +45,9 @@ namespace Liznoo
 		QMap<QString, BatteryInfo> Battery2LastInfo_;
 		QMap<QString, BatteryHistoryDialog*> Battery2Dialog_;
 		QMap<QString, QLinkedList<BatteryHistory>> Battery2History_;
+
+		QAction *Suspend_;
+		QAction *Hibernate_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -55,12 +58,16 @@ namespace Liznoo
 		QIcon GetIcon () const;
 
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
+		QMap<QString, QList<QAction*>> GetMenuActions () const;
 	private slots:
 		void handleBatteryInfo (Liznoo::BatteryInfo);
 		void handleUpdateHistory ();
 		void handleHistoryTriggered ();
 		void handleBatteryDialogDestroyed ();
 		void handlePlatformStarted ();
+
+		void handleSuspendRequested ();
+		void handleHibernateRequested ();
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);

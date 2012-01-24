@@ -56,6 +56,20 @@ namespace Liznoo
 				SIGNAL (started ()),
 				this,
 				SLOT (handlePlatformStarted ()));
+
+		Suspend_ = new QAction (tr ("Suspend"), this);
+		connect (Suspend_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleSuspendRequested ()));
+		Suspend_->setProperty ("ActionIcon", "system-suspend");
+
+		Hibernate_ = new QAction (tr ("Hibernate"), this);
+		connect (Hibernate_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleHibernateRequested ()));
+		Hibernate_->setProperty ("ActionIcon", "system-suspend-hibernate");
 	}
 
 	void Plugin::SecondInit ()
@@ -91,6 +105,14 @@ namespace Liznoo
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace place) const
 	{
 		QList<QAction*> result;
+		return result;
+	}
+
+	QMap<QString, QList<QAction*>> Plugin::GetMenuActions () const
+	{
+		QMap<QString, QList<QAction*>> result;
+		result ["System"] << Suspend_;
+		result ["System"] << Hibernate_;
 		return result;
 	}
 
@@ -247,6 +269,16 @@ namespace Liznoo
 				this,
 				SLOT (handleUpdateHistory ()));
 		timer->start (3000);
+	}
+
+	void Plugin::handleSuspendRequested ()
+	{
+		PL_->ChangeState (PlatformLayer::PowerState::Suspend);
+	}
+
+	void Plugin::handleHibernateRequested ()
+	{
+		PL_->ChangeState (PlatformLayer::PowerState::Hibernate);
 	}
 }
 }
