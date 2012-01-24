@@ -26,5 +26,11 @@ namespace Liznoo
 	: QObject (parent)
 	{
 	}
+
+	void PlatformLayer::ChangeState (PlatformLayer::PowerState)
+	{
+		qWarning () << Q_FUNC_INFO
+				<< "not supported";
+	}
 }
 }

@@ -33,6 +33,13 @@ namespace Liznoo
 		PlatformLayer (QObject* = 0);
 
 		virtual void Stop () = 0;
+
+		enum class PowerState
+		{
+			Suspend,
+			Hibernate
+		};
+		virtual void ChangeState (PowerState);
 	signals:
 		void started ();
 		void gotEntity (const LeechCraft::Entity&);
@@ -40,3 +47,5 @@ namespace Liznoo
 	};
 }
 }
+
+Q_DECLARE_METATYPE (LeechCraft::Liznoo::PlatformLayer::PowerState);
