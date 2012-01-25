@@ -151,9 +151,13 @@ namespace Liznoo
 	{
 		if (!Battery2Action_.contains (info.ID_))
 		{
-			QAction *act = new QAction (QString (), this);
+			QAction *act = new QAction (tr ("Battery status"), this);
 			act->setProperty ("WatchActionIconChange", true);
 			act->setProperty ("Liznoo/BatteryID", info.ID_);
+
+			act->setProperty ("Action/Class", GetUniqueID () + "/BatteryAction");
+			act->setProperty ("Action/ID", GetUniqueID () + "/" + info.ID_);
+
 			emit gotActions (QList<QAction*> () << act, AEPLCTray);
 			Battery2Action_ [info.ID_] = act;
 
