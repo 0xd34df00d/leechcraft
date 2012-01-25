@@ -220,7 +220,7 @@ void LeechCraft::MainWindow::ToggleViewActionVisiblity (QDockWidget *widget, boo
 		MenuView_->insertAction (MenuView_->actions ().first (), act);
 }
 
-void LeechCraft::MainWindow::AddMenus (const QMap<QString, QList<QAction*> >& menus)
+void LeechCraft::MainWindow::AddMenus (const QMap<QString, QList<QAction*>>& menus)
 {
 	Q_FOREACH (const QString& menuName, menus.keys ())
 	{
@@ -246,10 +246,12 @@ void LeechCraft::MainWindow::AddMenus (const QMap<QString, QList<QAction*> >& me
 					menus [menuName]);
 		else
 		{
-			QMenu *menu = new QMenu (menuName);
+			QMenu *menu = new QMenu (menuName, Ui_.ActionMenu_->menu ());
 			menu->addActions (menus [menuName]);
 			Ui_.ActionMenu_->menu ()->insertMenu (MenuTools_->menuAction (), menu);
 		}
+
+		SkinEngine::Instance ().UpdateIconSet (menus [menuName]);
 	}
 }
 
@@ -776,11 +778,12 @@ void LeechCraft::MainWindow::FillTray ()
 	menu->addMenu (MenuTools_);
 	iconMenu->addSeparator ();
 
-	QList<IActionsExporter*> trayMenus = Core::Instance ()
-			.GetPluginManager ()->GetAllCastableTo<IActionsExporter*> ();
+	const auto& trayMenus = Core::Instance ().GetPluginManager ()->
+			GetAllCastableTo<IActionsExporter*> ();
 	Q_FOREACH (IActionsExporter *o, trayMenus)
 	{
-		QList<QAction*> actions = o->GetActions (AEPTrayMenu);
+		const auto& actions = o->GetActions (AEPTrayMenu);
+		SkinEngine::Instance ().UpdateIconSet (actions);
 		iconMenu->addActions (actions);
 		if (actions.size ())
 			iconMenu->addSeparator ();
@@ -804,10 +807,12 @@ void LeechCraft::MainWindow::FillToolMenu ()
 			Core::Instance ().GetPluginManager ()->
 				GetAllCastableTo<IActionsExporter*> ())
 	{
-		QList<QAction*> acts = e->GetActions (AEPToolsMenu);
+		const auto& acts = e->GetActions (AEPToolsMenu);
+		SkinEngine::Instance ().UpdateIconSet (acts);
 
 		Q_FOREACH (QAction *action, acts)
 			MenuTools_->insertAction (Ui_.ActionLogger_, action);
+
 		if (acts.size ())
 			MenuTools_->insertSeparator (Ui_.ActionLogger_);
 	}
