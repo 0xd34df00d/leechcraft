@@ -29,6 +29,7 @@
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/ihavetabs.h>
 #include "sbwidget.h"
+#include "newtabactionmanager.h"
 
 namespace LeechCraft
 {
@@ -41,6 +42,7 @@ namespace Sidebar
 		Proxy_ = proxy;
 
 		Bar_ = new SBWidget;
+		Mgr_ = new NewTabActionManager (Bar_, this);
 
 		Proxy_->GetMWProxy ()->AddSideWidget (Bar_);
 		Proxy_->GetMainWindow ()->statusBar ()->hide ();
@@ -85,26 +87,7 @@ namespace Sidebar
 			IHaveTabs *iht = qobject_cast<IHaveTabs*> (ihtObj);
 
 			Q_FOREACH (const TabClassInfo& tc, iht->GetTabClasses ())
-			{
-				if (!(tc.Features_ & TabFeature::TFOpenableByRequest) ||
-						(tc.Features_ & TabFeature::TFSingle))
-					continue;
-
-				if (tc.Icon_.isNull ())
-					continue;
-
-				QAction *act = new QAction (tc.Icon_,
-						tc.VisibleName_, this);
-				act->setProperty ("Sidebar/Object",
-						QVariant::fromValue<QObject*> (ihtObj));
-				act->setProperty ("Sidebar/TabClass", tc.TabClass_);
-				connect (act,
-						SIGNAL (triggered (bool)),
-						this,
-						SLOT (openNewTab ()));
-
-				Bar_->AddTabOpenAction (act);
-			}
+				Mgr_->AddTabClassOpener (tc, ihtObj);
 		}
 
 		const auto& hasActions = Proxy_->GetPluginsManager ()->
@@ -279,17 +262,6 @@ namespace Sidebar
 					property ("Sidebar/Widget").value<QObject*> ());
 
 		Proxy_->GetTabWidget ()->setCurrentWidget (tw);
-	}
-
-	void Plugin::openNewTab ()
-	{
-		QObject *pluginObj = sender ()->
-				property ("Sidebar/Object").value<QObject*> ();
-		const QByteArray& tc = sender ()->
-				property ("Sidebar/TabClass").toByteArray ();
-
-		IHaveTabs *iht = qobject_cast<IHaveTabs*> (pluginObj);
-		iht->TabOpenRequested (tc);
 	}
 }
 }

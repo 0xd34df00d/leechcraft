@@ -30,6 +30,7 @@ namespace LeechCraft
 namespace Sidebar
 {
 	class SBWidget;
+	class NewTabActionManager;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -41,6 +42,7 @@ namespace Sidebar
 		ICoreProxy_ptr Proxy_;
 
 		SBWidget *Bar_;
+		NewTabActionManager *Mgr_;
 
 		QMap<QWidget*, QAction*> TabActions_;
 
@@ -71,9 +73,6 @@ namespace Sidebar
 		void handleChangeTabIcon (QWidget*, const QIcon&);
 		void handleRemoveTab (QWidget*);
 		void handleSelectTab ();
-		void openNewTab ();
 	};
 }
 }
-
-#endif

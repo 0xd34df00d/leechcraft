@@ -24,10 +24,12 @@ INCLUDE_DIRECTORIES (
 SET (SRCS
 	sidebar.cpp
 	sbwidget.cpp
+	newtabactionmanager.cpp
 	)
 SET (HEADERS
 	sidebar.h
 	sbwidget.h
+	newtabactionmanager.h
 	)
 SET (FORMS
 	sbwidget.ui
