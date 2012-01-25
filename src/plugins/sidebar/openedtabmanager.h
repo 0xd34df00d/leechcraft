@@ -19,46 +19,40 @@
 #pragma once
 
 #include <QObject>
+#include <QMap>
 #include <QIcon>
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-#include <interfaces/iactionsexporter.h>
-#include <interfaces/core/ihookproxy.h>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
 namespace Sidebar
 {
 	class SBWidget;
-	class NewTabActionManager;
-	class QLActionManager;
-	class OpenedTabManager;
 
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IPlugin2
+	class OpenedTabManager : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2)
 
 		ICoreProxy_ptr Proxy_;
-
 		SBWidget *Bar_;
-		NewTabActionManager *NewTabMgr_;
-		QLActionManager *QLMgr_;
-		OpenedTabManager *OTMgr_;
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
 
-		QSet<QByteArray> GetPluginClasses () const;
-	public slots:
-		void hookGonnaFillQuickLaunch (LeechCraft::IHookProxy_ptr);
+		QMap<QWidget*, QAction*> TabActions_;
+		bool ActionUpdateScheduled_;
+		QMap<QAction*, QString> ActionTextUpdates_;
+		QMap<QAction*, QIcon> ActionIconUpdates_;
+	public:
+		OpenedTabManager (SBWidget*, ICoreProxy_ptr, QObject* = 0);
+
+		void ManagePlugin (QObject*);
+	private:
+		void ScheduleUpdate ();
+	private slots:
+		void handleNewTab (const QString&, QWidget*);
+		void handleChangeTabName (QWidget*, const QString&);
+		void handleChangeTabIcon (QWidget*, const QIcon&);
+		void handleRemoveTab (QWidget*);
+		void handleUpdates ();
+		void handleSelectTab ();
 	};
 }
 }

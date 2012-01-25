@@ -21,16 +21,15 @@
 #include <QAction>
 #include <QMainWindow>
 #include <QStatusBar>
-#include <QTimer>
 #include <interfaces/imwproxy.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
-#include <interfaces/core/icoretabwidget.h>
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/ihavetabs.h>
 #include "sbwidget.h"
 #include "newtabactionmanager.h"
 #include "qlactionmanager.h"
+#include "openedtabmanager.h"
 
 namespace LeechCraft
 {
@@ -38,13 +37,12 @@ namespace Sidebar
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		ActionUpdateScheduled_ = false;
-
 		Proxy_ = proxy;
 
 		Bar_ = new SBWidget;
 		NewTabMgr_ = new NewTabActionManager (Bar_, this);
 		QLMgr_ = new QLActionManager (Bar_, Proxy_, this);
+		OTMgr_ = new OpenedTabManager (Bar_, Proxy_, this);
 
 		Proxy_->GetMWProxy ()->AddSideWidget (Bar_);
 		Proxy_->GetMainWindow ()->statusBar ()->hide ();
@@ -52,24 +50,7 @@ namespace Sidebar
 		const auto& hasTabs = Proxy_->GetPluginsManager ()->
 				GetAllCastableRoots<IHaveTabs*> ();
 		Q_FOREACH (QObject *ihtObj, hasTabs)
-		{
-			connect (ihtObj,
-					SIGNAL (addNewTab (const QString&, QWidget*)),
-					this,
-					SLOT (handleNewTab (const QString&, QWidget*)));
-			connect (ihtObj,
-					SIGNAL (removeTab (QWidget*)),
-					this,
-					SLOT (handleRemoveTab (QWidget*)));
-			connect (ihtObj,
-					SIGNAL (changeTabName (QWidget*, const QString&)),
-					this,
-					SLOT (handleChangeTabName (QWidget*, const QString&)));
-			connect (ihtObj,
-					SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
-					this,
-					SLOT (handleChangeTabIcon (QWidget*, const QIcon&)));
-		}
+			OTMgr_->ManagePlugin (ihtObj);
 
 		const auto& hasActions = Proxy_->GetPluginsManager ()->
 				GetAllCastableRoots<IActionsExporter*> ();
@@ -133,17 +114,6 @@ namespace Sidebar
 		return result;
 	}
 
-	void Plugin::ScheduleUpdate ()
-	{
-		if (ActionUpdateScheduled_)
-			return;
-
-		ActionUpdateScheduled_ = true;
-		QTimer::singleShot (700,
-				this,
-				SLOT (handleUpdates ()));
-	}
-
 	void Plugin::hookGonnaFillQuickLaunch (IHookProxy_ptr proxy)
 	{
 		proxy->CancelDefault ();
@@ -159,85 +129,6 @@ namespace Sidebar
 
 			QLMgr_->AddToQuickLaunch (actions);
 		}
-	}
-
-	namespace
-	{
-		QIcon GetDefIcon ()
-		{
-			return QIcon (":/resources/images/defaultpluginicon.svg");
-		}
-	}
-
-	void Plugin::handleUpdates ()
-	{
-		ActionUpdateScheduled_ = false;
-
-		Q_FOREACH (QAction *act, ActionTextUpdates_.keys ())
-			act->setText (ActionTextUpdates_ [act]);
-
-		Q_FOREACH (QAction *act, ActionIconUpdates_.keys ())
-		{
-			const QIcon& icon = ActionIconUpdates_ [act];
-			QIcon toSet = GetDefIcon ();
-			if (!icon.isNull ())
-				toSet = QIcon (icon.pixmap (48, 48).scaled (48, 48,
-							Qt::KeepAspectRatio, Qt::SmoothTransformation));
-
-			act->setIcon (toSet);
-		}
-	}
-
-	void Plugin::handleNewTab (const QString& name, QWidget *w)
-	{
-		if (TabActions_.contains (w))
-			return;
-
-		QAction *act = new QAction (GetDefIcon (), name, this);
-		act->setProperty ("Sidebar/Widget", QVariant::fromValue<QObject*> (w));
-		TabActions_ [w] = act;
-
-		Bar_->AddCurTabAction (act, w);
-
-		connect (act,
-				SIGNAL (triggered (bool)),
-				this,
-				SLOT (handleSelectTab ()));
-	}
-
-	void Plugin::handleChangeTabName (QWidget *w, const QString& name)
-	{
-		if (!TabActions_.contains (w))
-			return;
-
-		ActionTextUpdates_ [TabActions_ [w]] = name;
-		ScheduleUpdate ();
-	}
-
-	void Plugin::handleChangeTabIcon (QWidget *w, const QIcon& icon)
-	{
-		if (!TabActions_.contains (w))
-			return;
-
-		ActionIconUpdates_ [TabActions_ [w]] = icon;
-		ScheduleUpdate ();
-	}
-
-	void Plugin::handleRemoveTab (QWidget *w)
-	{
-		QAction *act = TabActions_.take (w);
-		Bar_->RemoveCurTabAction (act, w);
-		ActionIconUpdates_.remove (act);
-		ActionTextUpdates_.remove (act);
-		delete act;
-	}
-
-	void Plugin::handleSelectTab ()
-	{
-		QWidget *tw = qobject_cast<QWidget*> (sender ()->
-					property ("Sidebar/Widget").value<QObject*> ());
-
-		Proxy_->GetTabWidget ()->setCurrentWidget (tw);
 	}
 }
 }
