@@ -25,11 +25,13 @@ SET (SRCS
 	sidebar.cpp
 	sbwidget.cpp
 	newtabactionmanager.cpp
+	qlactionmanager.cpp
 	)
 SET (HEADERS
 	sidebar.h
 	sbwidget.h
 	newtabactionmanager.h
+	qlactionmanager.h
 	)
 SET (FORMS
 	sbwidget.ui

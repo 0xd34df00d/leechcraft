@@ -19,7 +19,8 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/ihavetabs.h>
+#include <interfaces/iactionsexporter.h>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
@@ -27,17 +28,19 @@ namespace Sidebar
 {
 	class SBWidget;
 
-	class NewTabActionManager : public QObject
+	class QLActionManager : public QObject
 	{
 		Q_OBJECT
 
+		ICoreProxy_ptr Proxy_;
 		SBWidget *Bar_;
 	public:
-		NewTabActionManager (SBWidget*, QObject* = 0);
+		QLActionManager (SBWidget*, ICoreProxy_ptr, QObject* = 0);
 
-		void AddTabClassOpener (const TabClassInfo&, QObject*);
-	private slots:
-		void openNewTab ();
+		void AddToQuickLaunch (const QList<QAction*>&);
+		void AddToLCTray (const QList<QAction*>&);
+	public slots:
+		void handleGotActions (const QList<QAction*>&, LeechCraft::ActionsEmbedPlace);
 	};
 }
 }

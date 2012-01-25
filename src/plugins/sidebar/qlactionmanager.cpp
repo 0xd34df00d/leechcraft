@@ -16,28 +16,45 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <interfaces/ihavetabs.h>
+#include "qlactionmanager.h"
+#include "sbwidget.h"
 
 namespace LeechCraft
 {
 namespace Sidebar
 {
-	class SBWidget;
-
-	class NewTabActionManager : public QObject
+	QLActionManager::QLActionManager (SBWidget *w,
+			ICoreProxy_ptr proxy, QObject *parent)
+	: QObject (parent)
+	, Proxy_ (proxy)
+	, Bar_ (w)
 	{
-		Q_OBJECT
+	}
 
-		SBWidget *Bar_;
-	public:
-		NewTabActionManager (SBWidget*, QObject* = 0);
+	void QLActionManager::AddToQuickLaunch (const QList<QAction*>& actions)
+	{
+		Q_FOREACH (QAction *action, actions)
+		{
+			Proxy_->RegisterSkinnable (action);
+			Bar_->AddQLAction (action);
+		}
+	}
 
-		void AddTabClassOpener (const TabClassInfo&, QObject*);
-	private slots:
-		void openNewTab ();
-	};
+	void QLActionManager::AddToLCTray (const QList<QAction*>& actions)
+	{
+		Q_FOREACH (QAction *action, actions)
+		{
+			Proxy_->RegisterSkinnable (action);
+			Bar_->AddTrayAction (action);
+		}
+	}
+
+	void QLActionManager::handleGotActions (const QList<QAction*>& actions, ActionsEmbedPlace aep)
+	{
+		if (aep == AEPQuickLaunch)
+			AddToQuickLaunch (actions);
+		else if (aep == AEPLCTray)
+			AddToLCTray (actions);
+	}
 }
 }

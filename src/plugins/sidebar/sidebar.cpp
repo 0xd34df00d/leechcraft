@@ -30,6 +30,7 @@
 #include <interfaces/ihavetabs.h>
 #include "sbwidget.h"
 #include "newtabactionmanager.h"
+#include "qlactionmanager.h"
 
 namespace LeechCraft
 {
@@ -42,7 +43,8 @@ namespace Sidebar
 		Proxy_ = proxy;
 
 		Bar_ = new SBWidget;
-		Mgr_ = new NewTabActionManager (Bar_, this);
+		NewTabMgr_ = new NewTabActionManager (Bar_, this);
+		QLMgr_ = new QLActionManager (Bar_, Proxy_, this);
 
 		Proxy_->GetMWProxy ()->AddSideWidget (Bar_);
 		Proxy_->GetMainWindow ()->statusBar ()->hide ();
@@ -74,7 +76,7 @@ namespace Sidebar
 		Q_FOREACH (QObject *actObj, hasActions)
 			connect (actObj,
 					SIGNAL (gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)),
-					this,
+					QLMgr_,
 					SLOT (handleGotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)));
 	}
 
@@ -87,7 +89,7 @@ namespace Sidebar
 			IHaveTabs *iht = qobject_cast<IHaveTabs*> (ihtObj);
 
 			Q_FOREACH (const TabClassInfo& tc, iht->GetTabClasses ())
-				Mgr_->AddTabClassOpener (tc, ihtObj);
+				NewTabMgr_->AddTabClassOpener (tc, ihtObj);
 		}
 
 		const auto& hasActions = Proxy_->GetPluginsManager ()->
@@ -96,7 +98,7 @@ namespace Sidebar
 		{
 			const auto& acts = exp->GetActions (AEPLCTray);
 			if (!acts.isEmpty ())
-				AddToLCTray (acts);
+				QLMgr_->AddToLCTray (acts);
 		}
 	}
 
@@ -142,24 +144,6 @@ namespace Sidebar
 				SLOT (handleUpdates ()));
 	}
 
-	void Plugin::AddToQuickLaunch (const QList<QAction*>& actions)
-	{
-		Q_FOREACH (QAction *action, actions)
-		{
-			Proxy_->RegisterSkinnable (action);
-			Bar_->AddQLAction (action);
-		}
-	}
-
-	void Plugin::AddToLCTray (const QList<QAction*>& actions)
-	{
-		Q_FOREACH (QAction *action, actions)
-		{
-			Proxy_->RegisterSkinnable (action);
-			Bar_->AddTrayAction (action);
-		}
-	}
-
 	void Plugin::hookGonnaFillQuickLaunch (IHookProxy_ptr proxy)
 	{
 		proxy->CancelDefault ();
@@ -169,11 +153,11 @@ namespace Sidebar
 
 		Q_FOREACH (IActionsExporter *exp, exporters)
 		{
-			QList<QAction*> actions = exp->GetActions (AEPQuickLaunch);
+			const auto& actions = exp->GetActions (AEPQuickLaunch);
 			if (actions.isEmpty ())
 				continue;
 
-			AddToQuickLaunch (actions);
+			QLMgr_->AddToQuickLaunch (actions);
 		}
 	}
 
@@ -202,14 +186,6 @@ namespace Sidebar
 
 			act->setIcon (toSet);
 		}
-	}
-
-	void Plugin::handleGotActions (QList<QAction*> actions, ActionsEmbedPlace aep)
-	{
-		if (aep == AEPQuickLaunch)
-			AddToQuickLaunch (actions);
-		else if (aep == AEPLCTray)
-			AddToLCTray (actions);
 	}
 
 	void Plugin::handleNewTab (const QString& name, QWidget *w)

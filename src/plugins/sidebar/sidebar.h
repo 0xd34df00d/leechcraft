@@ -31,6 +31,7 @@ namespace Sidebar
 {
 	class SBWidget;
 	class NewTabActionManager;
+	class QLActionManager;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -42,7 +43,8 @@ namespace Sidebar
 		ICoreProxy_ptr Proxy_;
 
 		SBWidget *Bar_;
-		NewTabActionManager *Mgr_;
+		NewTabActionManager *NewTabMgr_;
+		QLActionManager *QLMgr_;
 
 		QMap<QWidget*, QAction*> TabActions_;
 
@@ -61,13 +63,10 @@ namespace Sidebar
 		QSet<QByteArray> GetPluginClasses () const;
 	private:
 		void ScheduleUpdate ();
-		void AddToQuickLaunch (const QList<QAction*>&);
-		void AddToLCTray (const QList<QAction*>&);
 	public slots:
 		void hookGonnaFillQuickLaunch (LeechCraft::IHookProxy_ptr);
 	private slots:
 		void handleUpdates ();
-		void handleGotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 		void handleNewTab (const QString&, QWidget*);
 		void handleChangeTabName (QWidget*, const QString&);
 		void handleChangeTabIcon (QWidget*, const QIcon&);
