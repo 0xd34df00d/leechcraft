@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SIDEBAR_SIDEBAR_H
-#define PLUGINS_SIDEBAR_SIDEBAR_H
+#pragma once
+
 #include <QObject>
 #include <QIcon>
 #include <interfaces/iinfo.h>
