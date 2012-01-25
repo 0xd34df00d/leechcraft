@@ -6,7 +6,7 @@
     <message>
         <location filename="batteryhistorydialog.ui" line="14"/>
         <source>Battery history</source>
-        <translation type="unfinished"></translation>
+        <translation>История батареи</translation>
     </message>
 </context>
 <context>
@@ -14,22 +14,22 @@
     <message>
         <location filename="batteryhistorydialog.cpp" line="31"/>
         <source>Percentage</source>
-        <translation type="unfinished"></translation>
+        <translation>Процент заряда</translation>
     </message>
     <message>
         <location filename="batteryhistorydialog.cpp" line="32"/>
         <source>Energy rate</source>
-        <translation type="unfinished"></translation>
+        <translation>Мощность</translation>
     </message>
     <message>
         <location filename="batteryhistorydialog.cpp" line="41"/>
         <source>Percent</source>
-        <translation type="unfinished"></translation>
+        <translation>Проценты</translation>
     </message>
     <message>
         <location filename="batteryhistorydialog.cpp" line="42"/>
         <source>Energy rate, W</source>
-        <translation type="unfinished"></translation>
+        <translation>Мощность заряда/разряда, Вт</translation>
     </message>
 </context>
 <context>
@@ -37,27 +37,27 @@
     <message>
         <location filename="fakeqwidgetwinapi.cpp" line="39"/>
         <source>Power saver</source>
-        <translation type="unfinished"></translation>
+        <translation>Энергосбережение</translation>
     </message>
     <message>
         <location filename="fakeqwidgetwinapi.cpp" line="41"/>
         <source>High performance</source>
-        <translation type="unfinished"></translation>
+        <translation>Высокая производительность</translation>
     </message>
     <message>
         <location filename="fakeqwidgetwinapi.cpp" line="43"/>
         <source>Balanced</source>
-        <translation type="unfinished"></translation>
+        <translation>Сбалансировано</translation>
     </message>
     <message>
         <location filename="fakeqwidgetwinapi.cpp" line="53"/>
         <source>Battery</source>
-        <translation type="unfinished"></translation>
+        <translation>Батарея</translation>
     </message>
     <message>
         <location filename="fakeqwidgetwinapi.cpp" line="53"/>
         <source>AC</source>
-        <translation type="unfinished"></translation>
+        <translation>AC</translation>
     </message>
 </context>
 <context>
@@ -83,52 +83,52 @@
     <message>
         <location filename="liznoo.cpp" line="60"/>
         <source>Suspend</source>
-        <translation type="unfinished"></translation>
+        <translation>Ждущий режим</translation>
     </message>
     <message>
         <location filename="liznoo.cpp" line="67"/>
         <source>Hibernate</source>
-        <translation type="unfinished"></translation>
+        <translation>Спящий режим</translation>
     </message>
     <message>
         <location filename="liznoo.cpp" line="97"/>
         <source>UPower/WinAPI-based power manager.</source>
-        <translation type="unfinished"></translation>
+        <translation>Управление энергией, основанное на UPower/WinAPI.</translation>
     </message>
     <message>
         <location filename="liznoo.cpp" line="173"/>
         <source>(charging)</source>
-        <translation type="unfinished"></translation>
+        <translation>(заряжается)</translation>
     </message>
     <message>
         <location filename="liznoo.cpp" line="175"/>
         <source>(discharging)</source>
-        <translation type="unfinished"></translation>
+        <translation>(разряжается)</translation>
     </message>
     <message>
         <location filename="liznoo.cpp" line="179"/>
         <source>Battery</source>
-        <translation type="unfinished"></translation>
+        <translation>Батарея</translation>
     </message>
     <message>
         <location filename="liznoo.cpp" line="190"/>
         <source>Battery technology: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Технология: %1</translation>
     </message>
     <message>
         <location filename="liznoo.cpp" line="195"/>
         <source>Energy rate: %1 W</source>
-        <translation type="unfinished"></translation>
+        <translation>Мощность: %1 W</translation>
     </message>
     <message>
         <location filename="liznoo.cpp" line="201"/>
         <source>Remaining energy: %1 Wh</source>
-        <translation type="unfinished"></translation>
+        <translation>Осталось энергии: %1 Вт·ч</translation>
     </message>
     <message>
         <location filename="liznoo.cpp" line="207"/>
         <source>Full energy capacity: %1 Wh</source>
-        <translation type="unfinished"></translation>
+        <translation>Полная емкость: %1 Вт·ч</translation>
     </message>
 </context>
 </TS>
