@@ -44,6 +44,8 @@ namespace Liznoo
 		Proxy_ = proxy;
 		qRegisterMetaType<BatteryInfo> ("Liznoo::BatteryInfo");
 
+		Util::InstallTranslator ("liznoo");
+
 #if defined(Q_WS_X11)
 		PL_ = new PlatformUPower (this);
 #elif defined(Q_WS_WIN)
