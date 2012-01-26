@@ -31,12 +31,12 @@ namespace Sidebar
 	SBWidget::SBWidget (QWidget *parent)
 	: QWidget (parent)
 	, TrayLay_ (new Util::FlowLayout (1, 0, 1))
-	, IconSize_ (QSize (48, 48))
+	, IconSize_ (QSize (30, 30))
 	{
 		Ui_.setupUi (this);
 		static_cast<QVBoxLayout*> (layout ())->addLayout (TrayLay_);
 
-		setMaximumWidth (50);
+		setMaximumWidth (IconSize_.width () + 2);
 	}
 
 	void SBWidget::AddTabOpenAction (QAction *act)
