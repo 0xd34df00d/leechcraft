@@ -187,6 +187,11 @@ SeparateTabWidget* LeechCraft::MainWindow::GetTabWidget () const
 	return Ui_.MainTabWidget_;
 }
 
+QSplitter* LeechCraft::MainWindow::GetMainSplitter () const
+{
+	return Ui_.MainSplitter_;
+}
+
 IShortcutProxy* LeechCraft::MainWindow::GetShortcutProxy () const
 {
 	return ShortcutManager_;

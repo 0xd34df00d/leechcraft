@@ -25,14 +25,19 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
-    <property name="spacing">
-     <number>1</number>
-    </property>
     <property name="margin">
      <number>0</number>
     </property>
     <item>
-     <widget class="LeechCraft::SeparateTabWidget" name="MainTabWidget_" native="true"/>
+     <widget class="QSplitter" name="MainSplitter_">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="handleWidth">
+       <number>1</number>
+      </property>
+      <widget class="LeechCraft::SeparateTabWidget" name="MainTabWidget_" native="true"/>
+     </widget>
     </item>
    </layout>
   </widget>
