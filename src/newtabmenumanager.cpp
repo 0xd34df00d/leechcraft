@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ namespace LeechCraft
 		IHaveTabs *imt = qobject_cast<IHaveTabs*> (obj);
 		if (!imt || RegisteredMultiTabs_.contains (obj))
 			return;
-		
+
 		IInfo *ii = qobject_cast<IInfo*> (obj);
 
 		Q_FOREACH (const TabClassInfo& info, imt->GetTabClasses ())
@@ -58,9 +58,9 @@ namespace LeechCraft
 					static_cast<bool> (info.Features_ & TFSingle));
 			newAct->setStatusTip (info.Description_);
 			newAct->setToolTip (info.Description_);
-			
+
 			InsertAction (newAct);
-			
+
 			if (info.Features_ & TFSingle ||
 					info.Features_ & TFByDefault)
 			{
@@ -99,7 +99,7 @@ namespace LeechCraft
 			AdditionalTabMenu_->addActions (list);
 		}
 	}
-	
+
 	void NewTabMenuManager::SingleRemoved (ITabWidget *itw)
 	{
 		const QByteArray& tabClass = itw->GetTabClassInfo ().TabClass_;
@@ -113,9 +113,9 @@ namespace LeechCraft
 					<< itw->ParentMultiTabs ();
 			return;
 		}
-		
+
 		ToggleHide (itw->ParentMultiTabs (), tabClass, true);
-		
+
 		InsertAction (act);
 	}
 
@@ -126,8 +126,12 @@ namespace LeechCraft
 
 	QMenu* NewTabMenuManager::GetAdditionalMenu ()
 	{
-		AdditionalTabMenu_->insertMenu (AdditionalTabMenu_->actions ().first (),
-				NewTabMenu_);
+		if (!AdditionalTabMenu_->actions ().isEmpty ())
+			AdditionalTabMenu_->insertMenu (AdditionalTabMenu_->actions ().first (),
+					NewTabMenu_);
+		else
+			AdditionalTabMenu_->addMenu (NewTabMenu_);
+
 		return AdditionalTabMenu_;
 	}
 
@@ -146,7 +150,7 @@ namespace LeechCraft
 		}
 		return name;
 	}
-	
+
 	void NewTabMenuManager::ToggleHide (QObject *obj,
 			const QByteArray& tabClass, bool hide)
 	{
@@ -162,7 +166,7 @@ namespace LeechCraft
 		const QByteArray& id = ii->GetUniqueID () + '|' + tabClass;
 		XmlSettingsManager::Instance ()->setProperty ("Hide" + id, hide);
 	}
-	
+
 	void NewTabMenuManager::OpenTab (QAction *action)
 	{
 		QObject *pObj = action->property ("PluginObj").value<QObject*> ();
@@ -184,7 +188,7 @@ namespace LeechCraft
 			ToggleHide (pObj, tabClass, false);
 		}
 	}
-	
+
 	void NewTabMenuManager::InsertAction (QAction *act)
 	{
 		bool inserted = false;

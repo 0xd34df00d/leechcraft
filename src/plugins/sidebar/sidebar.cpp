@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,14 +21,15 @@
 #include <QAction>
 #include <QMainWindow>
 #include <QStatusBar>
-#include <QTimer>
 #include <interfaces/imwproxy.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
-#include <interfaces/core/icoretabwidget.h>
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/ihavetabs.h>
 #include "sbwidget.h"
+#include "newtabactionmanager.h"
+#include "qlactionmanager.h"
+#include "openedtabmanager.h"
 
 namespace LeechCraft
 {
@@ -36,11 +37,12 @@ namespace Sidebar
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		ActionUpdateScheduled_ = false;
-
 		Proxy_ = proxy;
 
 		Bar_ = new SBWidget;
+		NewTabMgr_ = new NewTabActionManager (Bar_, this);
+		QLMgr_ = new QLActionManager (Bar_, Proxy_, this);
+		OTMgr_ = new OpenedTabManager (Bar_, Proxy_, this);
 
 		Proxy_->GetMWProxy ()->AddSideWidget (Bar_);
 		Proxy_->GetMainWindow ()->statusBar ()->hide ();
@@ -48,31 +50,14 @@ namespace Sidebar
 		const auto& hasTabs = Proxy_->GetPluginsManager ()->
 				GetAllCastableRoots<IHaveTabs*> ();
 		Q_FOREACH (QObject *ihtObj, hasTabs)
-		{
-			connect (ihtObj,
-					SIGNAL (addNewTab (const QString&, QWidget*)),
-					this,
-					SLOT (handleNewTab (const QString&, QWidget*)));
-			connect (ihtObj,
-					SIGNAL (removeTab (QWidget*)),
-					this,
-					SLOT (handleRemoveTab (QWidget*)));
-			connect (ihtObj,
-					SIGNAL (changeTabName (QWidget*, const QString&)),
-					this,
-					SLOT (handleChangeTabName (QWidget*, const QString&)));
-			connect (ihtObj,
-					SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
-					this,
-					SLOT (handleChangeTabIcon (QWidget*, const QIcon&)));
-		}
+			OTMgr_->ManagePlugin (ihtObj);
 
 		const auto& hasActions = Proxy_->GetPluginsManager ()->
 				GetAllCastableRoots<IActionsExporter*> ();
 		Q_FOREACH (QObject *actObj, hasActions)
 			connect (actObj,
 					SIGNAL (gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)),
-					this,
+					QLMgr_,
 					SLOT (handleGotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)));
 	}
 
@@ -85,26 +70,7 @@ namespace Sidebar
 			IHaveTabs *iht = qobject_cast<IHaveTabs*> (ihtObj);
 
 			Q_FOREACH (const TabClassInfo& tc, iht->GetTabClasses ())
-			{
-				if (!(tc.Features_ & TabFeature::TFOpenableByRequest) ||
-						(tc.Features_ & TabFeature::TFSingle))
-					continue;
-
-				if (tc.Icon_.isNull ())
-					continue;
-
-				QAction *act = new QAction (tc.Icon_,
-						tc.VisibleName_, this);
-				act->setProperty ("Sidebar/Object",
-						QVariant::fromValue<QObject*> (ihtObj));
-				act->setProperty ("Sidebar/TabClass", tc.TabClass_);
-				connect (act,
-						SIGNAL (triggered (bool)),
-						this,
-						SLOT (openNewTab ()));
-
-				Bar_->AddTabOpenAction (act);
-			}
+				NewTabMgr_->AddTabClassOpener (tc, ihtObj);
 		}
 
 		const auto& hasActions = Proxy_->GetPluginsManager ()->
@@ -113,7 +79,7 @@ namespace Sidebar
 		{
 			const auto& acts = exp->GetActions (AEPLCTray);
 			if (!acts.isEmpty ())
-				AddToLCTray (acts);
+				QLMgr_->AddToLCTray (acts);
 		}
 	}
 
@@ -148,35 +114,6 @@ namespace Sidebar
 		return result;
 	}
 
-	void Plugin::ScheduleUpdate ()
-	{
-		if (ActionUpdateScheduled_)
-			return;
-
-		ActionUpdateScheduled_ = true;
-		QTimer::singleShot (700,
-				this,
-				SLOT (handleUpdates ()));
-	}
-
-	void Plugin::AddToQuickLaunch (const QList<QAction*>& actions)
-	{
-		Q_FOREACH (QAction *action, actions)
-		{
-			Proxy_->RegisterSkinnable (action);
-			Bar_->AddQLAction (action);
-		}
-	}
-
-	void Plugin::AddToLCTray (const QList<QAction*>& actions)
-	{
-		Q_FOREACH (QAction *action, actions)
-		{
-			Proxy_->RegisterSkinnable (action);
-			Bar_->AddTrayAction (action);
-		}
-	}
-
 	void Plugin::hookGonnaFillQuickLaunch (IHookProxy_ptr proxy)
 	{
 		proxy->CancelDefault ();
@@ -186,110 +123,12 @@ namespace Sidebar
 
 		Q_FOREACH (IActionsExporter *exp, exporters)
 		{
-			QList<QAction*> actions = exp->GetActions (AEPQuickLaunch);
+			const auto& actions = exp->GetActions (AEPQuickLaunch);
 			if (actions.isEmpty ())
 				continue;
 
-			AddToQuickLaunch (actions);
+			QLMgr_->AddToQuickLaunch (actions);
 		}
-	}
-
-	namespace
-	{
-		QIcon GetDefIcon ()
-		{
-			return QIcon (":/resources/images/defaultpluginicon.svg");
-		}
-	}
-
-	void Plugin::handleUpdates ()
-	{
-		ActionUpdateScheduled_ = false;
-
-		Q_FOREACH (QAction *act, ActionTextUpdates_.keys ())
-			act->setText (ActionTextUpdates_ [act]);
-
-		Q_FOREACH (QAction *act, ActionIconUpdates_.keys ())
-		{
-			const QIcon& icon = ActionIconUpdates_ [act];
-			QIcon toSet = GetDefIcon ();
-			if (!icon.isNull ())
-				toSet = QIcon (icon.pixmap (48, 48).scaled (48, 48,
-							Qt::KeepAspectRatio, Qt::SmoothTransformation));
-
-			act->setIcon (toSet);
-		}
-	}
-
-	void Plugin::handleGotActions (QList<QAction*> actions, ActionsEmbedPlace aep)
-	{
-		if (aep == AEPQuickLaunch)
-			AddToQuickLaunch (actions);
-		else if (aep == AEPLCTray)
-			AddToLCTray (actions);
-	}
-
-	void Plugin::handleNewTab (const QString& name, QWidget *w)
-	{
-		if (TabActions_.contains (w))
-			return;
-
-		QAction *act = new QAction (GetDefIcon (), name, this);
-		act->setProperty ("Sidebar/Widget", QVariant::fromValue<QObject*> (w));
-		TabActions_ [w] = act;
-
-		Bar_->AddCurTabAction (act, w);
-
-		connect (act,
-				SIGNAL (triggered (bool)),
-				this,
-				SLOT (handleSelectTab ()));
-	}
-
-	void Plugin::handleChangeTabName (QWidget *w, const QString& name)
-	{
-		if (!TabActions_.contains (w))
-			return;
-
-		ActionTextUpdates_ [TabActions_ [w]] = name;
-		ScheduleUpdate ();
-	}
-
-	void Plugin::handleChangeTabIcon (QWidget *w, const QIcon& icon)
-	{
-		if (!TabActions_.contains (w))
-			return;
-
-		ActionIconUpdates_ [TabActions_ [w]] = icon;
-		ScheduleUpdate ();
-	}
-
-	void Plugin::handleRemoveTab (QWidget *w)
-	{
-		QAction *act = TabActions_.take (w);
-		Bar_->RemoveCurTabAction (act, w);
-		ActionIconUpdates_.remove (act);
-		ActionTextUpdates_.remove (act);
-		delete act;
-	}
-
-	void Plugin::handleSelectTab ()
-	{
-		QWidget *tw = qobject_cast<QWidget*> (sender ()->
-					property ("Sidebar/Widget").value<QObject*> ());
-
-		Proxy_->GetTabWidget ()->setCurrentWidget (tw);
-	}
-
-	void Plugin::openNewTab ()
-	{
-		QObject *pluginObj = sender ()->
-				property ("Sidebar/Object").value<QObject*> ();
-		const QByteArray& tc = sender ()->
-				property ("Sidebar/TabClass").toByteArray ();
-
-		IHaveTabs *iht = qobject_cast<IHaveTabs*> (pluginObj);
-		iht->TabOpenRequested (tc);
 	}
 }
 }

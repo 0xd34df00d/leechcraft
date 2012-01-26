@@ -33,6 +33,7 @@ namespace LeechCraft
 
 		void AddDockWidget (Qt::DockWidgetArea, QDockWidget*);
 		void ToggleViewActionVisiblity (QDockWidget*, bool);
+		void SetViewActionShortcut (QDockWidget*, const QKeySequence&);
 		void AddToolbar (QToolBar*, Qt::ToolBarArea);
 		void AddSideWidget (QWidget*, WidgetArea);
 	};

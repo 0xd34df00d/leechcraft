@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -470,9 +470,11 @@ namespace LeechCraft
 				if (selection)
 					selection->setCurrentIndex (QModelIndex (), QItemSelectionModel::Clear);
 
-				Query2 query = GetQuery2 ();
+				const Query2& query = GetQuery2 ();
 				QAbstractItemModel *old = Ui_.PluginsTasksTree_->model ();
 				Util::MergeModel *tasksModel = Core::Instance ().GetTasksModel (query);
+				if (Ui_.PluginsTasksTree_->selectionModel ())
+					Ui_.PluginsTasksTree_->selectionModel ()->deleteLater ();
 				Ui_.PluginsTasksTree_->setModel (tasksModel);
 				delete old;
 

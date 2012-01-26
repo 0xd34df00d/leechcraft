@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,93 +26,88 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace NewLife
+{
+	void Plugin::Init (ICoreProxy_ptr)
 	{
-		namespace NewLife
-		{
-			void Plugin::Init (ICoreProxy_ptr)
-			{
-				Translator_.reset (Util::InstallTranslator ("newlife"));
+		Util::InstallTranslator ("newlife");
 
-				ImporterAction_.reset (new QAction (tr ("Import settings..."), 0));
-				ImporterAction_->setProperty ("ActionIcon", "document-import");
-				connect (ImporterAction_.get (),
-						SIGNAL (triggered ()),
-						this,
-						SLOT (runWizard ()));
-			}
+		ImporterAction_.reset (new QAction (tr ("Import settings..."), 0));
+		ImporterAction_->setProperty ("ActionIcon", "document-import");
+		connect (ImporterAction_.get (),
+				SIGNAL (triggered ()),
+				this,
+				SLOT (runWizard ()));
+	}
 
-			void Plugin::SecondInit ()
-			{
-			}
+	void Plugin::SecondInit ()
+	{
+	}
 
-			void Plugin::Release ()
-			{
-				Translator_.reset ();
-				ImporterAction_.reset ();
-			}
+	void Plugin::Release ()
+	{
+		ImporterAction_.reset ();
+	}
 
-			QByteArray Plugin::GetUniqueID () const
-			{
-				return "org.LeechCraft.NewLife";
-			}
+	QByteArray Plugin::GetUniqueID () const
+	{
+		return "org.LeechCraft.NewLife";
+	}
 
-			QString Plugin::GetName () const
-			{
-				return "New Life";
-			}
+	QString Plugin::GetName () const
+	{
+		return "New Life";
+	}
 
-			QString Plugin::GetInfo () const
-			{
-				return tr ("The settings importer.");
-			}
+	QString Plugin::GetInfo () const
+	{
+		return tr ("The settings importer.");
+	}
 
-			QIcon Plugin::GetIcon () const
-			{
-				return QIcon (":/resources/images/newlife.svg");
-			}
+	QIcon Plugin::GetIcon () const
+	{
+		return QIcon (":/resources/images/newlife.svg");
+	}
 
-			QStringList Plugin::Provides () const
-			{
-				return QStringList ();
-			}
+	QStringList Plugin::Provides () const
+	{
+		return QStringList ();
+	}
 
-			QStringList Plugin::Needs () const
-			{
-				return QStringList ();
-			}
+	QStringList Plugin::Needs () const
+	{
+		return QStringList ();
+	}
 
-			QStringList Plugin::Uses () const
-			{
-				return QStringList ();
-			}
+	QStringList Plugin::Uses () const
+	{
+		return QStringList ();
+	}
 
-			void Plugin::SetProvider (QObject*, const QString&)
-			{
-			}
+	void Plugin::SetProvider (QObject*, const QString&)
+	{
+	}
 
-			QList<QAction*> Plugin::GetActions (ActionsEmbedPlace place) const
-			{
-				QList<QAction*> result;
+	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace place) const
+	{
+		QList<QAction*> result;
 
-				if (place == AEPToolsMenu)
-					result << ImporterAction_.get ();
+		if (place == AEPToolsMenu)
+			result << ImporterAction_.get ();
 
-				return result;
-			}
+		return result;
+	}
 
-			void Plugin::runWizard ()
-			{
-				ImportWizard *wiz = new ImportWizard ();
-				connect (wiz,
-						SIGNAL (gotEntity (const LeechCraft::Entity&)),
-						this,
-						SIGNAL (gotEntity (const LeechCraft::Entity&)));
-				wiz->show ();
-			}
-		};
-	};
-};
+	void Plugin::runWizard ()
+	{
+		ImportWizard *wiz = new ImportWizard (this);
+		connect (wiz,
+				SIGNAL (gotEntity (const LeechCraft::Entity&)),
+				this,
+				SIGNAL (gotEntity (const LeechCraft::Entity&)));
+		wiz->show ();
+	}
+}
+}
 
-Q_EXPORT_PLUGIN2 (leechcraft_newlife, LeechCraft::Plugins::NewLife::Plugin);
-
+Q_EXPORT_PLUGIN2 (leechcraft_newlife, LeechCraft::NewLife::Plugin);

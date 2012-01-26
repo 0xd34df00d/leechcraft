@@ -21,6 +21,7 @@
 #include <QObject>
 #include <interfaces/iprotocol.h>
 #include <interfaces/iurihandler.h>
+#include <interfaces/isupportimport.h>
 
 namespace LeechCraft
 {
@@ -35,9 +36,12 @@ namespace Xoox
 	class GlooxProtocol : public QObject
 						, public IProtocol
 						, public IURIHandler
+						, public ISupportImport
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IProtocol LeechCraft::Azoth::IURIHandler);
+		Q_INTERFACES (LeechCraft::Azoth::IProtocol
+				LeechCraft::Azoth::IURIHandler
+				LeechCraft::Azoth::ISupportImport);
 
 		QObject *ParentProtocolPlugin_;
 		QList<GlooxAccount*> Accounts_;
@@ -65,6 +69,10 @@ namespace Xoox
 
 		bool SupportsURI (const QUrl&) const;
 		void HandleURI (const QUrl&, QObject*);
+
+		QString GetImportProtocolID () const;
+		bool ImportAccount (const QVariantMap&);
+		QString GetEntryID (const QString&, QObject*);
 	private:
 		void RestoreAccounts ();
 	private slots:

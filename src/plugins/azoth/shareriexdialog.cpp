@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -90,9 +90,9 @@ namespace Azoth
 
 	namespace
 	{
-		QMap<QString, QList<ICLEntry*> > GetEntries (IAccount *acc)
+		QMap<QString, QList<ICLEntry*>> GetEntries (IAccount *acc)
 		{
-			QMap<QString, QList<ICLEntry*> > result;
+			QMap<QString, QList<ICLEntry*>> result;
 
 			Q_FOREACH (QObject *entryObj, acc->GetCLEntries ())
 			{
@@ -123,7 +123,7 @@ namespace Azoth
 
 		IAccount *acc = qobject_cast<IAccount*> (Entry_->GetParentAccount ());
 
-		QMap<QString, QList<ICLEntry*> > entries = GetEntries (acc);
+		auto entries = GetEntries (acc);
 		if (Ui_.AllAccountsBox_->checkState () == Qt::Checked)
 		{
 			IProtocol *proto = qobject_cast<IProtocol*> (acc->GetParentProtocol ());
@@ -133,7 +133,7 @@ namespace Azoth
 				if (!otherAcc || otherAcc == acc)
 					continue;
 
-				const QMap<QString, QList<ICLEntry*> > others = GetEntries (otherAcc);
+				auto others = GetEntries (otherAcc);
 				Q_FOREACH (const QString& key, others.keys ())
 					entries [key] << others [key];
 			}

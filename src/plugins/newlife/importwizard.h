@@ -16,45 +16,42 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_NEWLIFE_IMPORTWIZARD_H
-#define PLUGINS_NEWLIFE_IMPORTWIZARD_H
+#pragma once
+
 #include <QWizard>
 #include "ui_importwizard.h"
 
 namespace LeechCraft
 {
-	struct Entity;
+struct Entity;
 
-	namespace Plugins
+namespace NewLife
+{
+	class AbstractImporter;
+	class FirstPage;
+
+	class ImportWizard : public QWizard
 	{
-		namespace NewLife
-		{
-			class AbstractImporter;
-			class FirstPage;
+		Q_OBJECT
 
-			class ImportWizard : public QWizard
-			{
-				Q_OBJECT
+		friend class FirstPage;
 
-				friend class FirstPage;
+		QObject *Plugin_;
 
-				Ui::ImportWizard Ui_;
-				QList<AbstractImporter*> Importers_;
-			public:
-				ImportWizard (QWidget* = 0);
+		Ui::ImportWizard Ui_;
+		QList<AbstractImporter*> Importers_;
+	public:
+		ImportWizard (QObject*, QWidget* = 0);
 
-				QString GetSelectedName () const;
-			private slots:
-				void handleAccepted ();
-				void handleRejected ();
-			private:
-				void SetupImporters ();
-			signals:
-				void gotEntity (const LeechCraft::Entity&);
-			};
-		};
+		QString GetSelectedName () const;
+		QObject* GetPlugin () const;
+	private slots:
+		void handleAccepted ();
+		void handleRejected ();
+	private:
+		void SetupImporters ();
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
 	};
-};
-
-#endif
-
+}
+}

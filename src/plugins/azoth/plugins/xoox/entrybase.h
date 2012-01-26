@@ -70,13 +70,14 @@ namespace Xoox
 		QXmppVCardIq VCardIq_;
 		QPointer<VCardDialog> VCardDialog_;
 
-		QMap<QString, QMap<QString, QVariant> > Variant2ClientInfo_;
+		QMap<QString, QMap<QString, QVariant>> Variant2ClientInfo_;
 		QMap<QString, QByteArray> Variant2VerString_;
 		QMap<QString, QXmppVersionIq> Variant2Version_;
 
 		bool HasUnreadMsgs_;
 	public:
 		EntryBase (GlooxAccount* = 0);
+		virtual ~EntryBase ();
 
 		// ICLEntry
 		QObject* GetObject ();

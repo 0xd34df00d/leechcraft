@@ -18,6 +18,7 @@
 
 #ifndef PLUGINS_AZOTH_CORE_H
 #define PLUGINS_AZOTH_CORE_H
+#include <functional>
 #include <boost/scoped_ptr.hpp>
 #include <QObject>
 #include <QSet>
@@ -64,6 +65,7 @@ namespace Azoth
 	class CallManager;
 	class EventsNotifier;
 	class ActionsManager;
+	class ImportManager;
 
 	class CLModel;
 
@@ -140,6 +142,8 @@ namespace Azoth
 		boost::shared_ptr<CallManager> CallManager_;
 		boost::shared_ptr<EventsNotifier> EventsNotifier_;
 
+		boost::shared_ptr<ImportManager> ImportManager_;
+
 		Core ();
 	public:
 		enum CLRoles
@@ -150,7 +154,8 @@ namespace Azoth
 			CLREntryCategory,
 			CLRUnreadMsgCount,
 			CLRRole,
-			CLRAffiliation
+			CLRAffiliation,
+			CLRNumOnline
 		};
 
 		enum CLEntryType
@@ -190,7 +195,7 @@ namespace Azoth
 
 		QAbstractItemModel* GetCLModel () const;
 		ChatTabsManager* GetChatTabsManager () const;
-		QList<IAccount*> GetAccounts () const;
+		QList<IAccount*> GetAccounts (std::function<bool (IProtocol*)> = [] (IProtocol*) { return true; }) const;
 		QList<IProtocol*> GetProtocols () const;
 
 #ifdef ENABLE_CRYPT
@@ -364,6 +369,8 @@ namespace Azoth
 		 * items for the chain of parents of the given item.
 		 */
 		void RecalculateUnreadForParents (QStandardItem*);
+
+		void RecalculateOnlineForCat (QStandardItem*);
 
 		void NotifyWithReason (QObject*, const QString&,
 				const char*, const QString&,

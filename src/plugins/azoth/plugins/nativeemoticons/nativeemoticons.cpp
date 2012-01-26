@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,9 @@ namespace NativeEmoticons
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		ResourceSources_ << new NativeEmoticonsSource ()
+				<< new KopeteEmoticonsSource ()
+				<< new PsiPlusEmoticonsSource ();
 	}
 
 	void Plugin::SecondInit ()
@@ -70,11 +73,7 @@ namespace NativeEmoticons
 
 	QList<QObject*> Plugin::GetResourceSources () const
 	{
-		QObjectList result;
-		result << new NativeEmoticonsSource ();
-		result << new KopeteEmoticonsSource ();
-		result << new PsiPlusEmoticonsSource ();
-		return result;
+		return ResourceSources_;
 	}
 }
 }

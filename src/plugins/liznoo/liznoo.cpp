@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,9 +23,15 @@
 #include <QTimer>
 #include <interfaces/core/icoreproxy.h>
 #include <util/util.h>
-#include "dbusconnector.h"
-#include "dbusthread.h"
 #include "batteryhistorydialog.h"
+
+#if defined(Q_WS_X11)
+	#include "platformupower.h"
+#elif defined(Q_WS_WIN)
+	#include "platformwinapi.h"
+#else
+	#pragma message ("Unsupported system")
+#endif
 
 namespace LeechCraft
 {
@@ -38,12 +44,34 @@ namespace Liznoo
 		Proxy_ = proxy;
 		qRegisterMetaType<BatteryInfo> ("Liznoo::BatteryInfo");
 
-		Thread_ = new DBusThread;
-		connect (Thread_,
-				SIGNAL(started ()),
+		Util::InstallTranslator ("liznoo");
+
+#if defined(Q_WS_X11)
+		PL_ = new PlatformUPower (this);
+#elif defined(Q_WS_WIN)
+		PL_ = new PlatformWinAPI (this);
+#else
+		PL_ = 0;
+#endif
+
+		connect (PL_,
+				SIGNAL (started ()),
 				this,
-				SLOT (handleThreadStarted ()));
-		Thread_->start (QThread::LowestPriority);
+				SLOT (handlePlatformStarted ()));
+
+		Suspend_ = new QAction (tr ("Suspend"), this);
+		connect (Suspend_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleSuspendRequested ()));
+		Suspend_->setProperty ("ActionIcon", "system-suspend");
+
+		Hibernate_ = new QAction (tr ("Hibernate"), this);
+		connect (Hibernate_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleHibernateRequested ()));
+		Hibernate_->setProperty ("ActionIcon", "system-suspend-hibernate");
 	}
 
 	void Plugin::SecondInit ()
@@ -57,8 +85,8 @@ namespace Liznoo
 
 	void Plugin::Release ()
 	{
-		if (!Thread_->wait (1000))
-			Thread_->terminate ();
+		if (PL_)
+			PL_->Stop ();
 	}
 
 	QString Plugin::GetName () const
@@ -68,7 +96,7 @@ namespace Liznoo
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("UPower-based power manager.");
+		return tr ("UPower/WinAPI-based power manager.");
 	}
 
 	QIcon Plugin::GetIcon () const
@@ -79,6 +107,14 @@ namespace Liznoo
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace place) const
 	{
 		QList<QAction*> result;
+		return result;
+	}
+
+	QMap<QString, QList<QAction*>> Plugin::GetMenuActions () const
+	{
+		QMap<QString, QList<QAction*>> result;
+		result ["System"] << Suspend_;
+		result ["System"] << Hibernate_;
 		return result;
 	}
 
@@ -115,9 +151,13 @@ namespace Liznoo
 	{
 		if (!Battery2Action_.contains (info.ID_))
 		{
-			QAction *act = new QAction (QString (), this);
+			QAction *act = new QAction (tr ("Battery status"), this);
 			act->setProperty ("WatchActionIconChange", true);
 			act->setProperty ("Liznoo/BatteryID", info.ID_);
+
+			act->setProperty ("Action/Class", GetUniqueID () + "/BatteryAction");
+			act->setProperty ("Action/ID", GetUniqueID () + "/" + info.ID_);
+
 			emit gotActions (QList<QAction*> () << act, AEPLCTray);
 			Battery2Action_ [info.ID_] = act;
 
@@ -218,13 +258,13 @@ namespace Liznoo
 		Battery2Dialog_.remove (Battery2Dialog_.key (dia));
 	}
 
-	void Plugin::handleThreadStarted ()
+	void Plugin::handlePlatformStarted ()
 	{
-		connect (Thread_->GetConnector (),
+		connect (PL_,
 				SIGNAL (batteryInfoUpdated (Liznoo::BatteryInfo)),
 				this,
 				SLOT (handleBatteryInfo (Liznoo::BatteryInfo)));
-		connect (Thread_->GetConnector (),
+		connect (PL_,
 				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,
 				SIGNAL (gotEntity (LeechCraft::Entity)));
@@ -235,6 +275,16 @@ namespace Liznoo
 				this,
 				SLOT (handleUpdateHistory ()));
 		timer->start (3000);
+	}
+
+	void Plugin::handleSuspendRequested ()
+	{
+		PL_->ChangeState (PlatformLayer::PowerState::Suspend);
+	}
+
+	void Plugin::handleHibernateRequested ()
+	{
+		PL_->ChangeState (PlatformLayer::PowerState::Hibernate);
 	}
 }
 }

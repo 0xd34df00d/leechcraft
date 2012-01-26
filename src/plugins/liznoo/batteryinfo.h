@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LIZNOO_BATTERYINFO_H
-#define PLUGINS_LIZNOO_BATTERYINFO_H
+#pragma once
+
 #include <QString>
 #include <QMetaType>
 
@@ -48,4 +48,3 @@ namespace Liznoo
 
 Q_DECLARE_METATYPE (LeechCraft::Liznoo::BatteryInfo);
 
-#endif

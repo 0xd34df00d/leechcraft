@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SIDEBAR_SBWIDGET_H
-#define PLUGINS_SIDEBAR_SBWIDGET_H
+#pragma once
+
 #include <QWidget>
 #include "ui_sbwidget.h"
 
@@ -67,5 +67,3 @@ namespace Sidebar
 	};
 }
 }
-
-#endif

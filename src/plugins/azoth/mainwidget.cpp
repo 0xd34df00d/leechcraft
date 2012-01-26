@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,7 +55,7 @@ namespace Azoth
 {
 	MainWidget::MainWidget (QWidget *parent)
 	: QWidget (parent)
-	, MainMenu_ (new QMenu (tr ("Azoth menu")))
+	, MainMenu_ (new QMenu (tr ("Azoth menu"), this))
 	, MenuButton_ (new QToolButton (this))
 	, ProxyModel_ (new SortFilterProxyModel ())
 	{
@@ -82,17 +82,9 @@ namespace Azoth
 				SLOT (handleEntryMadeCurrent (QObject*)),
 				Qt::QueuedConnection);
 
-#ifdef Q_WS_WIN32
-		connect (Ui_.CLTree_,
-				SIGNAL (clicked (const QModelIndex&)),
-				this,
-				SLOT (on_CLTree__activated (const QModelIndex&)));
-#endif
-
-		connect (Ui_.CLTree_,
-				SIGNAL (activated (const QModelIndex&)),
-				this,
-				SLOT (clearFilter ()));
+		XmlSettingsManager::Instance ().RegisterObject ("EntryActivationType",
+				this, "handleEntryActivationType");
+		handleEntryActivationType ();
 
 		connect (Ui_.FilterLine_,
 				SIGNAL (textChanged (const QString&)),
@@ -257,7 +249,7 @@ namespace Azoth
 
 	QMenu* MainWidget::CreateStatusChangeMenu (const char *slot, bool withCustom)
 	{
-		QMenu *result = new QMenu (tr ("Change status"));
+		QMenu *result = new QMenu (tr ("Change status"), this);
 		result->addAction (Core::Instance ().GetIconForState (SOnline),
 				tr ("Online"), this, slot)->
 					setProperty ("Azoth/TargetState",
@@ -330,7 +322,7 @@ namespace Azoth
 				QVariant::fromValue<State> (state));
 	}
 
-	void MainWidget::on_CLTree__activated (const QModelIndex& index)
+	void MainWidget::treeActivated (const QModelIndex& index)
 	{
 		if (index.data (Core::CLREntryType).value<Core::CLEntryType> () != Core::CLETContact)
 			return;
@@ -407,7 +399,7 @@ namespace Azoth
 				QVariantList bms = supBms->GetBookmarkedMUCs ();
 				if (!bms.isEmpty ())
 				{
-					QMenu *bmsMenu = new QMenu (tr ("Join bookmarked conference"));
+					QMenu *bmsMenu = new QMenu (tr ("Join bookmarked conference"), menu);
 					actions << bmsMenu->menuAction ();
 
 					Q_FOREACH (const QObject *mucObj,
@@ -508,6 +500,7 @@ namespace Azoth
 
 		menu->addActions (actions);
 		menu->exec (Ui_.CLTree_->mapToGlobal (pos));
+		menu->deleteLater ();
 	}
 
 	void MainWidget::handleChangeStatusRequested ()
@@ -544,11 +537,11 @@ namespace Azoth
 		}
 		else
 		{
-			SetStatusDialog *ssd = new SetStatusDialog (this);
-			if (ssd->exec () != QDialog::Accepted)
+			SetStatusDialog ssd (this);
+			if (ssd.exec () != QDialog::Accepted)
 				return;
 
-			status = EntryStatus (ssd->GetState (), ssd->GetStatusText ());
+			status = EntryStatus (ssd.GetState (), ssd.GetStatusText ());
 		}
 
 		if (acc)
@@ -575,6 +568,38 @@ namespace Azoth
 		EntryStatus status (state, text);
 		Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
 			acc->ChangeState (status);
+	}
+
+	void MainWidget::handleEntryActivationType ()
+	{
+		disconnect (Ui_.CLTree_,
+				0,
+				this,
+				SLOT (treeActivated (const QModelIndex&)));
+		disconnect (Ui_.CLTree_,
+				0,
+				this,
+				SLOT (clearFilter ()));
+
+		const char *signal = 0;
+		const QString& actType = XmlSettingsManager::Instance ()
+				.property ("EntryActivationType").toString ();
+
+		if (actType == "click")
+			signal = SIGNAL (clicked (const QModelIndex&));
+		else if (actType == "dclick")
+			signal = SIGNAL (doubleClicked (const QModelIndex&));
+		else
+			signal = SIGNAL (activated (const QModelIndex&));
+
+		connect (Ui_.CLTree_,
+				signal,
+				this,
+				SLOT (treeActivated (const QModelIndex&)));
+		connect (Ui_.CLTree_,
+				signal,
+				this,
+				SLOT (clearFilter ()));
 	}
 
 	void MainWidget::handleCatRenameTriggered ()

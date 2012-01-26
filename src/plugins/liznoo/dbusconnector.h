@@ -16,12 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LIZNOO_DBUSCONNECTOR_H
-#define PLUGINS_LIZNOO_DBUSCONNECTOR_H
+#pragma once
+
 #include <QObject>
 #include <QDBusConnection>
 #include <interfaces/structures.h>
 #include "batteryinfo.h"
+#include "platformlayer.h"
 
 namespace LeechCraft
 {
@@ -34,6 +35,8 @@ namespace Liznoo
 		QDBusConnection SB_;
 	public:
 		DBusConnector (QObject* = 0);
+	public slots:
+		void changeState (Liznoo::PlatformLayer::PowerState);
 	private slots:
 		void handleGonnaSleep ();
 		void handleWokeUp ();
@@ -46,4 +49,3 @@ namespace Liznoo
 }
 }
 
-#endif

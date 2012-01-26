@@ -87,6 +87,8 @@ namespace OTRoid
 		void hookEntryActionAreasRequested (LeechCraft::IHookProxy_ptr proxy,
 				QObject *action,
 				QObject *entry);
+		void hookEntryActionsRemoved (LeechCraft::IHookProxy_ptr proxy,
+				QObject *entry);
 		void hookEntryActionsRequested (LeechCraft::IHookProxy_ptr proxy,
 				QObject *entry);
 		void hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
@@ -94,8 +96,6 @@ namespace OTRoid
 		void hookMessageCreated (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QObject *message);
-	private slots:
-		void handleEntryDestroyed ();
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 	};

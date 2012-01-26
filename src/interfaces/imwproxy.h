@@ -23,6 +23,7 @@
 class QDockWidget;
 class QToolBar;
 class QWidget;
+class QKeySequence;
 
 /** @brief This interface is used for manipulating the main window.
  *
@@ -67,6 +68,15 @@ public:
 	 * visible.
 	 */
 	virtual void ToggleViewActionVisiblity (QDockWidget *widget, bool visible) = 0;
+
+	/** @brief Sets the visibility action shortcut of the given widget.
+	 *
+	 * @param[in] widget The widget for which the visibility action
+	 * shortcut.
+	 * @param[in] sequence The widget's visibility action shortcut
+	 * sequence.
+	 */
+	virtual void SetViewActionShortcut (QDockWidget *widget, const QKeySequence& seq) = 0;
 
 	/** @brief Adds the given toolbar at the given area.
 	 *

@@ -1,26 +1,13 @@
-IF (NOT QT_USE_FILE)
-	CMAKE_MINIMUM_REQUIRED (VERSION 2.6)
-	IF (COMMAND cmake_policy)
-		cmake_policy (SET CMP0003 NEW)
-	ENDIF (COMMAND cmake_policy)
-
-	PROJECT (leechcraft_liznoo)
-
-	IF (NOT CMAKE_MODULE_PATH)
-		SET (CMAKE_MODULE_PATH "/usr/local/share/leechcraft/cmake;/usr/share/leechcraft/cmake")
-	ENDIF (NOT CMAKE_MODULE_PATH)
-
-	FIND_PACKAGE (Boost REQUIRED)
-	FIND_PACKAGE (Qt4 REQUIRED)
-	FIND_PACKAGE (LeechCraft REQUIRED)
-ENDIF (NOT QT_USE_FILE)
+CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
+PROJECT (leechcraft_liznoo)
+INCLUDE (InitLCPlugin OPTIONAL)
 
 SET (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 FIND_PACKAGE (Qwt6)
 
-SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-
-SET (QT_USE_QTDBUS TRUE)
+IF (NOT WIN32)
+	SET (QT_USE_QTDBUS TRUE)
+ENDIF (NOT WIN32)
 INCLUDE (${QT_USE_FILE})
 INCLUDE_DIRECTORIES (
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -30,28 +17,62 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	liznoo.cpp
-	dbusconnector.cpp
 	batteryinfo.cpp
-	dbusthread.cpp
 	batteryhistory.cpp
 	batteryhistorydialog.cpp
+	platformlayer.cpp
 	)
 SET (HEADERS
 	liznoo.h
-	dbusconnector.h
 	batteryinfo.h
-	dbusthread.h
 	batteryhistory.h
 	batteryhistorydialog.h
+	platformlayer.h
 	)
+# Default implementation using UPower
+IF (NOT WIN32)
+	SET (SRCS
+		${SRCS}
+		platformupower.cpp
+		dbusthread.cpp
+		dbusconnector.cpp
+		)
+	SET (HEADERS
+		${HEADERS}
+		platformupower.h
+		dbusthread.h
+		dbusconnector.h
+		)
+# Windows implementation using WinAPI
+ELSE (NOT WIN32)
+	SET (SRCS
+		${SRCS}
+		platformwinapi.cpp
+		fakeqwidgetwinapi.cpp
+		)
+	SET (HEADERS
+		${HEADERS}
+		platformwinapi.h
+		fakeqwidgetwinapi.h
+		)
+ENDIF (NOT WIN32)
+
 SET (FORMS
 	batteryhistorydialog.ui
 	)
+
+CreateTrVars ("liznoo" "en;ru_RU" TRANSLATIONS COMPILED_TRANSLATIONS)
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 ENDIF (NOT LC_NO_MOC)
 QT4_WRAP_UI (UIS_H ${FORMS})
 
+ADD_CUSTOM_COMMAND (OUTPUT
+	${COMPILED_TRANSLATIONS}
+	COMMAND "${QT_LRELEASE_EXECUTABLE}" ${TRANSLATIONS}
+	DEPENDS ${TRANSLATIONS}
+	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+	)
 ADD_LIBRARY (leechcraft_liznoo SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
@@ -64,3 +85,4 @@ TARGET_LINK_LIBRARIES (leechcraft_liznoo
 	${Qwt6_Qt4_LIBRARY}
 	)
 INSTALL (TARGETS leechcraft_liznoo DESTINATION ${LC_PLUGINS_DEST})
+INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})

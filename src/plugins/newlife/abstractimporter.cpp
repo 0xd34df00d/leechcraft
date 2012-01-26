@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,15 +20,21 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace NewLife
+{
+	AbstractImporter::AbstractImporter (QObject *parent)
+	: QObject (parent)
 	{
-		namespace NewLife
-		{
-			AbstractImporter::AbstractImporter (QObject *parent)
-			: QObject (parent)
-			{
-			}
-		};
-	};
-};
+	}
 
+	QList<QIcon> AbstractImporter::GetIcons () const
+	{
+		const QIcon icon (":/resources/images/newlife.svg");
+
+		QList<QIcon> result;
+		for (int i = 0, size = GetNames ().size (); i < size; ++i)
+			result << icon;
+		return result;
+	}
+}
+}

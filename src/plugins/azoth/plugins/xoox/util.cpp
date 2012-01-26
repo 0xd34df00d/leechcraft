@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,9 @@
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QVBoxLayout>
+#include "entrybase.h"
+#include "core.h"
+#include "capsdatabase.h"
 
 namespace LeechCraft
 {
@@ -209,6 +212,22 @@ namespace XooxUtil
 		const bool result = dialog->exec () == QDialog::Accepted;
 		dialog->deleteLater ();
 		return result;
+	}
+
+	bool CheckUserFeature (EntryBase *base, const QString& variant, const QString& feature)
+	{
+		if (variant.isEmpty ())
+			return true;
+
+		const QByteArray& ver = base->GetVariantVerString (variant);
+		if (ver.isEmpty ())
+			return true;
+
+		const QStringList& feats = Core::Instance ().GetCapsDatabase ()->Get (ver);
+		if (feats.isEmpty ())
+			return true;
+
+		return feats.contains (feature);
 	}
 }
 }

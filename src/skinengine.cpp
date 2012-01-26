@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,7 +75,7 @@ QIcon SkinEngine::GetIcon (const QString& actionIcon, const QString& actionIconO
 		return result;
 	}
 
-	qWarning () << Q_FUNC_INFO << "old-style naming scheme for" << actionIcon << actionIconOff << QIcon::themeName () << QIcon::themeSearchPaths ();
+	qDebug () << Q_FUNC_INFO << "no icon for" << actionIcon << actionIconOff << QIcon::themeName () << QIcon::themeSearchPaths ();
 
 	return QIcon ();
 }

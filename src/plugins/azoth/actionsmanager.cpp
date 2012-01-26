@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -148,9 +148,15 @@ namespace Azoth
 
 	void ActionsManager::HandleEntryRemoved (ICLEntry *entry)
 	{
-		QHash<QByteArray, QAction*> actions = Entry2Actions_.take (entry);
+		auto actions = Entry2Actions_.take (entry);
 		Q_FOREACH (QAction *action, actions.values ())
+		{
 			Action2Areas_.remove (action);
+			delete action;
+		}
+
+		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		emit hookEntryActionsRemoved (proxy, entry->GetObject ());
 	}
 
 	QString ActionsManager::GetReason (const QString&, const QString& text)
@@ -712,11 +718,11 @@ namespace Azoth
 		const QStringList& groups = entry->Groups ();
 		const QStringList& allGroups = Core::Instance ().GetChatGroups ();
 
-		GroupEditorDialog *dia = new GroupEditorDialog (groups, allGroups);
-		if (dia->exec () != QDialog::Accepted)
+		GroupEditorDialog dia (groups, allGroups);
+		if (dia.exec () != QDialog::Accepted)
 			return;
 
-		entry->SetGroups (dia->GetGroups ());
+		entry->SetGroups (dia.GetGroups ());
 	}
 
 	void ActionsManager::handleActionRemoveTriggered ()

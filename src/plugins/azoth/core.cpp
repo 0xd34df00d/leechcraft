@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,6 +70,7 @@
 #include "clmodel.h"
 #include "actionsmanager.h"
 #include "servicediscoverywidget.h"
+#include "importmanager.h"
 
 namespace LeechCraft
 {
@@ -159,6 +160,7 @@ namespace Azoth
 	, XferJobManager_ (new TransferJobManager)
 	, CallManager_ (new CallManager)
 	, EventsNotifier_ (new EventsNotifier)
+	, ImportManager_ (new ImportManager)
 	{
 		FillANFields ();
 
@@ -327,7 +329,9 @@ namespace Azoth
 
 	bool Core::CouldHandle (const Entity& e) const
 	{
-		if (e.Mime_ == "x-leechcraft/power-state-changed")
+		if (e.Mime_ == "x-leechcraft/power-state-changed" ||
+				e.Mime_ == "x-leechcraft/im-account-import" ||
+				e.Mime_ == "x-leechcraft/im-history-import")
 			return true;
 
 		if (!e.Entity_.canConvert<QUrl> ())
@@ -367,6 +371,16 @@ namespace Azoth
 		if (e.Mime_ == "x-leechcraft/power-state-changed")
 		{
 			HandlePowerNotification (e);
+			return;
+		}
+		else if (e.Mime_ == "x-leechcraft/im-account-import")
+		{
+			ImportManager_->HandleAccountImport (e);
+			return;
+		}
+		else if (e.Mime_ == "x-leechcraft/im-history-import")
+		{
+			ImportManager_->HandleHistoryImport (e);
 			return;
 		}
 
@@ -447,9 +461,9 @@ namespace Azoth
 		return ChatTabsManager_;
 	}
 
-	QList<IAccount*> Core::GetAccounts () const
+	QList<IAccount*> Core::GetAccounts (std::function<bool (IProtocol*)> protoPred) const
 	{
-		return GetAccountsPred (ProtocolPlugins_);
+		return GetAccountsPred (ProtocolPlugins_, protoPred);
 	}
 
 	QList<IProtocol*> Core::GetProtocols () const
@@ -685,20 +699,17 @@ namespace Azoth
 		src->FrameFocused (frame);
 	}
 
-	namespace
+	QList<QColor> Core::GenerateColors (const QString& coloring) const
 	{
-		qreal Fix (qreal h)
+		auto fix = [] (qreal h)
 		{
 			while (h < 0)
 				h += 1;
 			while (h >= 1)
 				h -= 1;
 			return h;
-		}
-	}
+		};
 
-	QList<QColor> Core::GenerateColors (const QString& coloring) const
-	{
 		QList<QColor> result;
 		if (coloring == "hash" ||
 				coloring.isEmpty ())
@@ -716,13 +727,13 @@ namespace Azoth
 			QColor color;
 			for (qreal d = lower; d <= higher; d += delta)
 			{
-				color.setHsvF (Fix (h + d), 1, 0.6, alpha);
+				color.setHsvF (fix (h + d), 1, 0.6, alpha);
 				result << color;
-				color.setHsvF (Fix (h - d), 1, 0.6, alpha);
+				color.setHsvF (fix (h - d), 1, 0.6, alpha);
 				result << color;
-				color.setHsvF (Fix (h + d), 1, 0.9, alpha);
+				color.setHsvF (fix (h + d), 1, 0.9, alpha);
 				result << color;
-				color.setHsvF (Fix (h - d), 1, 0.9, alpha);
+				color.setHsvF (fix (h - d), 1, 0.9, alpha);
 				result << color;
 			}
 		}
@@ -915,7 +926,7 @@ namespace Azoth
 				groups << Core::tr ("Contacts");
 			return groups;
 		}
-	};
+	}
 
 	void Core::AddCLEntry (ICLEntry *clEntry,
 			QStandardItem *accItem)
@@ -1088,10 +1099,7 @@ namespace Azoth
 				result += " (" + statusString + ")";
 			return result;
 		}
-	}
 
-	namespace
-	{
 		void FormatMood (QString& tip, const QMap<QString, QVariant>& moodInfo)
 		{
 			tip += "<br />" + Core::tr ("Mood:") + ' ';
@@ -1286,6 +1294,8 @@ namespace Azoth
 		{
 			item->setToolTip (tip);
 			ItemIconManager_->SetIcon (item, icon.get ());
+
+			RecalculateOnlineForCat (item->parent ());
 		}
 
 		const QString& id = entry->GetEntryID ();
@@ -1457,6 +1467,19 @@ namespace Azoth
 				i < rc; ++i)
 			sum += category->child (i)->data (CLRUnreadMsgCount).toInt ();
 		category->setData (sum, CLRUnreadMsgCount);
+	}
+
+	void Core::RecalculateOnlineForCat (QStandardItem *catItem)
+	{
+		int result = 0;
+		for (int i = 0; i < catItem->rowCount (); ++i)
+		{
+			auto entryObj = catItem->child (i)->
+					data (CLREntryObject).value<QObject*> ();
+			result += qobject_cast<ICLEntry*> (entryObj)->GetStatus ().State_ != SOffline;
+		}
+
+		catItem->setData (result, CLRNumOnline);
 	}
 
 	void Core::HandlePowerNotification (Entity e)
@@ -1956,6 +1979,7 @@ namespace Azoth
 
 			ID2Entry_.remove (entry->GetEntryID ());
 
+			EntryClientIconCache_.remove (entry);
 			Entry2SmoothAvatarCache_.remove (entry);
 			invalidateClientsIconCache (clitem);
 		}

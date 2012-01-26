@@ -37,8 +37,9 @@ namespace StandardStyles
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IResourcePlugin);
-		
+
 		IProxyObject *Proxy_;
+		QObjectList ResourceSources_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -47,7 +48,7 @@ namespace StandardStyles
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
-		
+
 		QSet<QByteArray> GetPluginClasses () const;
 
 		QList<QObject*> GetResourceSources () const;

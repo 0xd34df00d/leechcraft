@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -178,20 +178,6 @@ namespace Metacontacts
 		auto f = [type, body] (ICLEntry *e, const QString& v)
 				{ return e->CreateMessage (type, v, body); };
 		return ActWithVariant<QObject*, ICLEntry*> (f, variant);
-	}
-
-	namespace
-	{
-		struct DateSorter
-		{
-			bool operator() (QObject *lObj, QObject *rObj) const
-			{
-				IMessage *left = qobject_cast<IMessage*> (lObj);
-				IMessage *right = qobject_cast<IMessage*> (rObj);
-
-				return left->GetDateTime () < right->GetDateTime ();
-			}
-		};
 	}
 
 	QList<QObject*> MetaEntry::GetAllMessages () const
@@ -421,7 +407,14 @@ namespace Metacontacts
 
 		Messages_ << message;
 		if (shouldSort)
-			std::stable_sort (Messages_.begin (), Messages_.end (), DateSorter ());
+			std::stable_sort (Messages_.begin (), Messages_.end (),
+					[] (QObject *lObj, QObject *rObj)
+					{
+						IMessage *left = qobject_cast<IMessage*> (lObj);
+						IMessage *right = qobject_cast<IMessage*> (rObj);
+
+						return left->GetDateTime () < right->GetDateTime ();
+					});
 
 		emit gotMessage (message);
 	}

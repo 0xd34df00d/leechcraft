@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SIDEBAR_SIDEBAR_H
-#define PLUGINS_SIDEBAR_SIDEBAR_H
+#pragma once
+
 #include <QObject>
 #include <QIcon>
 #include <interfaces/iinfo.h>
@@ -30,6 +30,9 @@ namespace LeechCraft
 namespace Sidebar
 {
 	class SBWidget;
+	class NewTabActionManager;
+	class QLActionManager;
+	class OpenedTabManager;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -41,12 +44,9 @@ namespace Sidebar
 		ICoreProxy_ptr Proxy_;
 
 		SBWidget *Bar_;
-
-		QMap<QWidget*, QAction*> TabActions_;
-
-		bool ActionUpdateScheduled_;
-		QMap<QAction*, QString> ActionTextUpdates_;
-		QMap<QAction*, QIcon> ActionIconUpdates_;
+		NewTabActionManager *NewTabMgr_;
+		QLActionManager *QLMgr_;
+		OpenedTabManager *OTMgr_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -57,23 +57,8 @@ namespace Sidebar
 		QIcon GetIcon () const;
 
 		QSet<QByteArray> GetPluginClasses () const;
-	private:
-		void ScheduleUpdate ();
-		void AddToQuickLaunch (const QList<QAction*>&);
-		void AddToLCTray (const QList<QAction*>&);
 	public slots:
 		void hookGonnaFillQuickLaunch (LeechCraft::IHookProxy_ptr);
-	private slots:
-		void handleUpdates ();
-		void handleGotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
-		void handleNewTab (const QString&, QWidget*);
-		void handleChangeTabName (QWidget*, const QString&);
-		void handleChangeTabIcon (QWidget*, const QIcon&);
-		void handleRemoveTab (QWidget*);
-		void handleSelectTab ();
-		void openNewTab ();
 	};
 }
 }
-
-#endif

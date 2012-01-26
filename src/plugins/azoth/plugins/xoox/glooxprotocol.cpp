@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 #include <QSettings>
 #include <QCoreApplication>
 #include <QtDebug>
+#include <util/util.h>
 #include <interfaces/iprotocolplugin.h>
 #include <interfaces/iproxyobject.h>
 #include "glooxaccount.h"
@@ -291,20 +292,66 @@ namespace Xoox
 					<< queryItems;
 	}
 
-	void GlooxProtocol::saveAccounts () const
+	QString GlooxProtocol::GetImportProtocolID () const
 	{
-		QSettings settings (QSettings::IniFormat, QSettings::UserScope,
-				QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Azoth_Xoox_Accounts");
-		settings.beginWriteArray ("Accounts");
-		for (int i = 0, size = Accounts_.size ();
-				i < size; ++i)
+		return "xmpp";
+	}
+
+	bool GlooxProtocol::ImportAccount (const QVariantMap& info)
+	{
+		const QString& name = info ["Name"].toString ();
+
+		if (name.isEmpty () ||
+				info ["Jid"].toString ().isEmpty ())
 		{
-			settings.setArrayIndex (i);
-			settings.setValue ("SerializedData", Accounts_.at (i)->Serialize ());
+			qWarning () << Q_FUNC_INFO
+					<< "malformed import info"
+					<< info;
+			Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
+						tr ("Unable to import account: malformed import data."),
+						PCritical_));
+			return false;
 		}
-		settings.endArray ();
-		settings.sync ();
+
+		Q_FOREACH (GlooxAccount *acc, Accounts_)
+			if (acc->GetAccountName () == name)
+			{
+				Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
+							tr ("Account %1 already exists, cannot import another one."),
+							PCritical_));
+				return false;
+			}
+
+		// Maybe a kludge, dunno. Don't beat me hard :(
+		GlooxAccountConfigurationWidget w;
+		w.SetJID (info ["Jid"].toString ());
+		w.SetHost (info ["Host"].toString ());
+		w.SetPort (info ["Port"].toInt ());
+		w.SetNick (info ["Nick"].toString ());
+
+		GlooxAccount *account = new GlooxAccount (name, this);
+		account->FillSettings (&w);
+
+		Accounts_ << account;
+		account->Init ();
+		saveAccounts ();
+		emit accountAdded (account);
+
+		return true;
+	}
+
+	QString GlooxProtocol::GetEntryID (const QString& hrID, QObject *accObj)
+	{
+		GlooxAccount *acc = qobject_cast<GlooxAccount*> (accObj);
+		if (!acc)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "passed object is not a GlooxAccount"
+					<< accObj;
+			return QString ();
+		}
+
+		return acc->GetAccountID () + '_' + hrID;
 	}
 
 	void GlooxProtocol::RestoreAccounts ()
@@ -336,6 +383,22 @@ namespace Xoox
 			emit accountAdded (acc);
 		}
 		settings.endArray ();
+	}
+
+	void GlooxProtocol::saveAccounts () const
+	{
+		QSettings settings (QSettings::IniFormat, QSettings::UserScope,
+				QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth_Xoox_Accounts");
+		settings.beginWriteArray ("Accounts");
+		for (int i = 0, size = Accounts_.size ();
+				i < size; ++i)
+		{
+			settings.setArrayIndex (i);
+			settings.setValue ("SerializedData", Accounts_.at (i)->Serialize ());
+		}
+		settings.endArray ();
+		settings.sync ();
 	}
 }
 }

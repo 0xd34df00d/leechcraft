@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -74,7 +74,7 @@ namespace AdiumStyles
 	{
 		void DeSuf (QString& ourName, QString& suffix)
 		{
-			QStringList suffixes = QStringList (".AdiumMessageStyle");
+			QStringList suffixes (".AdiumMessageStyle");
 
 			Q_FOREACH (const QString& suf, suffixes)
 				if (ourName.endsWith (suf))

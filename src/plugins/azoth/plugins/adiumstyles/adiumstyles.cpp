@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,12 +70,13 @@ namespace AdiumStyles
 
 	QList<QObject*> Plugin::GetResourceSources () const
 	{
-		return QObjectList () << new AdiumStyleSource (Proxy_);
+		return ResourceSources_;
 	}
 
 	void Plugin::initPlugin (QObject *proxy)
 	{
 		Proxy_ = qobject_cast<IProxyObject*> (proxy);
+		ResourceSources_ << new AdiumStyleSource (Proxy_);
 	}
 }
 }

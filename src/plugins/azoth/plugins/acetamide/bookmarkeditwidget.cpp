@@ -34,8 +34,8 @@ namespace Acetamide
 			Ui_.Encoding_->addItem (QString::fromUtf8 (codec));
 		Ui_.Encoding_->model ()->sort (0);
 	}
-	
-	QVariantMap BookmarkEditWidget::GetIdentifyingData() const
+
+	QVariantMap BookmarkEditWidget::GetIdentifyingData () const
 	{
 		QVariantMap result;
 		result ["HumanReadableName"] = QString ("%1@%2 (%3)")
@@ -54,7 +54,7 @@ namespace Acetamide
 
 		return result;
 	}
-	
+
 	void BookmarkEditWidget::SetIdentifyingData (const QVariantMap& map)
 	{
 		Ui_.HumanReadable_->setText (map.value ("HumanReadableName").toString ());

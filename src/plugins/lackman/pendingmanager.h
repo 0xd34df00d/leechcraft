@@ -38,15 +38,15 @@ namespace LackMan
 
 		enum Action
 		{
-			AInstall,
-			ARemove,
-			AUpdate,
-			AMAX
+			Install,
+			Remove,
+			Update,
+			MAX
 		};
-		QMap<Action, QSet<int> > ScheduledForAction_;
+		QMap<Action, QSet<int>> ScheduledForAction_;
 		QMap<Action, QStandardItem*> RootItemForAction_;
 
-		QMap<int, QList<int> > Deps_;
+		QMap<int, QList<int>> Deps_;
 		QMap<int, QStandardItem*> ID2ModelRow_;
 	public:
 		PendingManager (QObject* = 0);

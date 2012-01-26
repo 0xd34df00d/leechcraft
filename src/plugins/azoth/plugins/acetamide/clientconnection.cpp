@@ -45,22 +45,6 @@ namespace Acetamide
 		ProxyObject_ = qobject_cast<IProxyObject*> (proxyObj);
 	}
 
-	QObject* ClientConnection::GetCLEntry (const QString& id,
-			const QString& nickname) const
-	{
-		if (ServerHandlers_.contains (id) && nickname.isEmpty ())
-			return ServerHandlers_ [id]->GetCLEntry ();
-		else if (!nickname.isEmpty ())
-			return ServerHandlers_ [id]->GetParticipantEntry (nickname)
-					.get ();
-		else
-			Q_FOREACH (IrcServerHandler *ish, ServerHandlers_.values ())
-				if (ish->IsChannelExists (id))
-					return ish->GetChannelHandler (id)->GetCLEntry ();
-
-		return NULL;
-	}
-
 	void ClientConnection::Sinchronize ()
 	{
 	}
@@ -86,7 +70,7 @@ namespace Acetamide
 				QString::number (server.ServerPort_);
 
 		IrcServerHandler *ish = new IrcServerHandler (server, Account_);
-		
+
 		ish->SetConsoleEnabled (IsConsoleEnabled_);
 		if (IsConsoleEnabled_)
 			connect (ish,
@@ -100,7 +84,7 @@ namespace Acetamide
 					this,
 					SLOT (handleLog (IMessage::Direction, const QString&)));
 		ServerHandlers_ [serverId] = ish;
-		
+
 		ish->ConnectToServer ();
 	}
 
@@ -146,13 +130,13 @@ namespace Acetamide
 
 			res << QVariant::fromValue (result);
 		}
-		XmlSettingsManager::Instance().setProperty ("Bookmarks",
+		XmlSettingsManager::Instance ().setProperty ("Bookmarks",
 				QVariant::fromValue (res));
 	}
 
 	QList<IrcBookmark> ClientConnection::GetBookmarks () const
 	{
-		QList<QVariant> list = XmlSettingsManager::Instance().Property ("Bookmarks",
+		QList<QVariant> list = XmlSettingsManager::Instance ().Property ("Bookmarks",
 				QList<QVariant> ()).toList ();
 
 		QList<IrcBookmark> bookmarks;
@@ -175,21 +159,9 @@ namespace Acetamide
 		return bookmarks;
 	}
 
-	IrcServerHandler* ClientConnection::GetIrcServerHandler (const QString& id)
+	IrcServerHandler* ClientConnection::GetIrcServerHandler (const QString& id) const
 	{
 		return ServerHandlers_ [id];
-	}
-
-	void ClientConnection::ClosePrivateChat (QString serverId,
-			const QString& nick)
-	{
-		ServerHandlers_ [serverId]->ClosePrivateChat (nick);
-	}
-
-	void ClientConnection::CloseServer (const QString& serverId)
-	{
-		if (ServerHandlers_.contains (serverId))
-			ServerHandlers_ [serverId]->DisconnectFromServer ();
 	}
 
 	void ClientConnection::DisconnectFromAll ()
@@ -222,6 +194,12 @@ namespace Acetamide
 						this,
 						SLOT (handleLog (IMessage::Direction, const QString&)));
 		}
+	}
+
+	void ClientConnection::ClosePrivateChat (const QString& serverID, QString nick)
+	{
+		if (ServerHandlers_.contains (serverID))
+			ServerHandlers_ [serverID]->ClosePrivateChat (nick);
 	}
 
 	void ClientConnection::serverConnected (const QString& serverId)

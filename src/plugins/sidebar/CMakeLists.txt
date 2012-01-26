@@ -15,8 +15,6 @@ IF (NOT QT_USE_FILE)
 	FIND_PACKAGE (LeechCraft REQUIRED)
 ENDIF (NOT QT_USE_FILE)
 
-SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-
 INCLUDE (${QT_USE_FILE})
 INCLUDE_DIRECTORIES (
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -26,10 +24,16 @@ INCLUDE_DIRECTORIES (
 SET (SRCS
 	sidebar.cpp
 	sbwidget.cpp
+	newtabactionmanager.cpp
+	qlactionmanager.cpp
+	openedtabmanager.cpp
 	)
 SET (HEADERS
 	sidebar.h
 	sbwidget.h
+	newtabactionmanager.h
+	qlactionmanager.h
+	openedtabmanager.h
 	)
 SET (FORMS
 	sbwidget.ui

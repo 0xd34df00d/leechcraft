@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -136,6 +136,12 @@ namespace StandardStyles
 		QString entryName = other ?
 				Qt::escape (other->GetEntryName ()) :
 				QString ();
+
+		connect (msgObj,
+				SIGNAL (destroyed ()),
+				this,
+				SLOT (handleMessageDestroyed ()),
+				Qt::UniqueConnection);
 
 		IAdvancedMessage *advMsg = qobject_cast<IAdvancedMessage*> (msgObj);
 		if (msg->GetDirection () == IMessage::DOut &&
@@ -342,8 +348,14 @@ namespace StandardStyles
 				SLOT (handleMessageDelivered ()));
 	}
 
+	void StandardStyleSource::handleMessageDestroyed ()
+	{
+		Msg2Frame_.remove (sender ());
+	}
+
 	void StandardStyleSource::handleFrameDestroyed ()
 	{
+		HasBeenAppended_.remove (static_cast<QWebFrame*> (sender ()));
 		const QObject *snd = sender ();
 		for (QHash<QObject*, QWebFrame*>::iterator i = Msg2Frame_.begin ();
 				i != Msg2Frame_.end (); )

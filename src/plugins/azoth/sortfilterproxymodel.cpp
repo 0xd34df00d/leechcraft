@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -145,6 +145,9 @@ namespace Azoth
 						idx.data ().toString ().contains (filterRegExp ()) :
 						true;
 
+			if (idx.data (Core::CLRUnreadMsgCount).toInt ())
+				return true;
+
 			if (GetType (idx) == Core::CLETContact)
 			{
 				ICLEntry *entry = GetEntry (idx);
@@ -157,6 +160,15 @@ namespace Azoth
 
 				if (HideMUCParts_ &&
 						entry->GetEntryType () == ICLEntry::ETPrivateChat)
+					return false;
+			}
+			else if (GetType (idx) == Core::CLETCategory)
+			{
+				if (!sourceModel ()->rowCount (idx))
+					return false;
+
+				if (!ShowOffline_ &&
+						!idx.data (Core::CLRNumOnline).toInt ())
 					return false;
 			}
 		}

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,7 +38,7 @@ namespace Azoth
 		Ui_.GroupsSelector_->SetPossibleSelections (allGroups);
 		Ui_.GroupsSelector_->SetSelections (initial);
 
-		Util::TagsCompleter *tc = new Util::TagsCompleter (Ui_.CategoriesLineEdit_);
+		Util::TagsCompleter *tc = new Util::TagsCompleter (Ui_.CategoriesLineEdit_, this);
 		tc->OverrideModel (new QStringListModel (allGroups, this));
 
 		const QString& text = Core::Instance ()

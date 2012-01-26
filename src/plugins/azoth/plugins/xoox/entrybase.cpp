@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,6 +67,14 @@ namespace Xoox
 				SIGNAL (geolocationInfoChanged (const QString&, QObject*)));
 	}
 
+	EntryBase::~EntryBase ()
+	{
+		qDeleteAll (AllMessages_);
+		qDeleteAll (Actions_);
+		delete Commands_;
+		delete VCardDialog_;
+	}
+
 	QObject* EntryBase::GetObject ()
 	{
 		return this;
@@ -86,18 +94,8 @@ namespace Xoox
 	{
 		bool CheckPartFeature (EntryBase *base, const QString& variant)
 		{
-			if (variant.isEmpty ())
-				return true;
-
-			const QByteArray& ver = base->GetVariantVerString (variant);
-			if (ver.isEmpty ())
-				return true;
-
-			const QStringList& feats = Core::Instance ().GetCapsDatabase ()->Get (ver);
-			if (feats.isEmpty ())
-				return true;
-
-			return feats.contains ("http://jabber.org/protocol/chatstates");
+			return XooxUtil::CheckUserFeature (base,
+					variant, "http://jabber.org/protocol/chatstates");
 		}
 	}
 
@@ -216,7 +214,7 @@ namespace Xoox
 		msg.setBody (text);
 		msg.setTo (to);
 		msg.setType (QXmppMessage::Headline);
-		msg.setAttention (true);
+		msg.setAttentionRequested (true);
 		Account_->GetClientConnection ()->GetClient ()->sendPacket (msg);
 	}
 

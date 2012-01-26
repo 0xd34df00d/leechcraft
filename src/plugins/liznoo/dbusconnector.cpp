@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,6 +60,27 @@ namespace Liznoo
 		QTimer::singleShot (1000,
 				this,
 				SLOT (enumerateDevices ()));
+	}
+
+	void DBusConnector::changeState (PlatformLayer::PowerState state)
+	{
+		QDBusInterface face ("org.freedesktop.UPower",
+				"/org/freedesktop/UPower",
+				"org.freedesktop.UPower",
+				SB_);
+
+		auto st2meth = [] (PlatformLayer::PowerState state)
+		{
+			switch (state)
+			{
+			case PlatformLayer::PowerState::Suspend:
+				return "Suspend";
+			case PlatformLayer::PowerState::Hibernate:
+				return "Hibernate";
+			}
+		};
+
+		face.call (QDBus::NoBlock, st2meth (state));
 	}
 
 	void DBusConnector::handleGonnaSleep ()

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -126,11 +126,10 @@ namespace Azoth
 		Ui_.SubjBox_->setVisible (false);
 		Ui_.SubjChange_->setEnabled (false);
 
-		Ui_.EventsButton_->setMenu (new QMenu (tr ("Events")));
+		Ui_.EventsButton_->setMenu (new QMenu (tr ("Events"), this));
 		Ui_.EventsButton_->hide ();
 
 		BuildBasicActions ();
-		RequestLogs ();
 
 		Core::Instance ().RegisterHookable (this);
 
@@ -157,6 +156,7 @@ namespace Azoth
 				SLOT (typeTimeout ()));
 
 		PrepareTheme ();
+		RequestLogs ();
 		InitEntry ();
 		CheckMUC ();
 		InitExtraActions ();
@@ -178,6 +178,8 @@ namespace Azoth
 	ChatTab::~ChatTab ()
 	{
 		SetChatPartState (CPSGone);
+
+		qDeleteAll (HistoryMessages_);
 	}
 
 	void ChatTab::PrepareTheme ()
@@ -192,37 +194,6 @@ namespace Azoth
 		Ui_.View_->setContent (data.toUtf8 (),
 				"text/html", //"application/xhtml+xml" fails to work, though better to use it
 				Core::Instance ().GetSelectedChatTemplateURL (GetEntry<QObject> ()));
-
-		Q_FOREACH (IMessage *msg, HistoryMessages_)
-			AppendMessage (msg);
-
-		ICLEntry *e = GetEntry<ICLEntry> ();
-		Q_FOREACH (QObject *msgObj, e->GetAllMessages ())
-		{
-			IMessage *msg = qobject_cast<IMessage*> (msgObj);
-			if (!msg)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "unable to cast message to IMessage"
-						<< msgObj;
-				continue;
-			}
-			AppendMessage (msg);
-		}
-
-		QFile scrollerJS (":/plugins/azoth/resources/scripts/scrollers.js");
-		if (!scrollerJS.open (QIODevice::ReadOnly))
-			qWarning () << Q_FUNC_INFO
-					<< "unable to open script file"
-					<< scrollerJS.errorString ();
-		else
-		{
-			Ui_.View_->page ()->mainFrame ()->evaluateJavaScript (scrollerJS.readAll ());
-			Ui_.View_->page ()->mainFrame ()->evaluateJavaScript ("InstallEventListeners(); ScrollToBottom();");
-		}
-
-		emit hookThemeReloaded (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy),
-				this, Ui_.View_, GetEntry<QObject> ());
 	}
 
 	void ChatTab::HasBeenAdded ()
@@ -434,6 +405,40 @@ namespace Azoth
 			return;
 
 		me->SetMUCSubject (Ui_.SubjEdit_->toPlainText ());
+	}
+
+	void ChatTab::on_View__loadFinished (bool ok)
+	{
+		Q_FOREACH (IMessage *msg, HistoryMessages_)
+			AppendMessage (msg);
+
+		ICLEntry *e = GetEntry<ICLEntry> ();
+		Q_FOREACH (QObject *msgObj, e->GetAllMessages ())
+		{
+			IMessage *msg = qobject_cast<IMessage*> (msgObj);
+			if (!msg)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to cast message to IMessage"
+						<< msgObj;
+				continue;
+			}
+			AppendMessage (msg);
+		}
+
+		QFile scrollerJS (":/plugins/azoth/resources/scripts/scrollers.js");
+		if (!scrollerJS.open (QIODevice::ReadOnly))
+			qWarning () << Q_FUNC_INFO
+					<< "unable to open script file"
+					<< scrollerJS.errorString ();
+		else
+		{
+			Ui_.View_->page ()->mainFrame ()->evaluateJavaScript (scrollerJS.readAll ());
+			Ui_.View_->page ()->mainFrame ()->evaluateJavaScript ("InstallEventListeners(); ScrollToBottom();");
+		}
+
+		emit hookThemeReloaded (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy),
+				this, Ui_.View_, GetEntry<QObject> ());
 	}
 
 #ifdef ENABLE_MEDIACALLS
@@ -841,35 +846,6 @@ namespace Azoth
 		SetChatPartState (CPSPaused);
 	}
 
-	namespace
-	{
-		struct PredSimilarMessage
-		{
-			IMessage *To_;
-
-			PredSimilarMessage (IMessage *to)
-			: To_ (to)
-			{
-			}
-
-			bool operator() (QObject *msgObj)
-			{
-				IMessage *msg = qobject_cast<IMessage*> (msgObj);
-				if (!msg)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< msgObj
-							<< "doesn't implement IMessage";
-					return false;
-				}
-
-				return msg->GetDirection () == To_->GetDirection () &&
-						msg->GetBody () == To_->GetBody () &&
-						std::abs (msg->GetDateTime ().secsTo (To_->GetDateTime ())) < 5;
-			}
-		};
-	}
-
 	void ChatTab::handleGotLastMessages (QObject *entryObj, const QList<QObject*>& messages)
 	{
 		if (entryObj != GetEntry<QObject> ())
@@ -893,7 +869,15 @@ namespace Azoth
 			const QDateTime& dt = msg->GetDateTime ();
 
 			if (std::find_if (rMsgs.begin (), rMsgs.end (),
-						PredSimilarMessage (msg)) != rMsgs.end ())
+					[msg] (QObject *msgObj)
+					{
+						IMessage *tMsg = qobject_cast<IMessage*> (msgObj);
+						if (!tMsg)
+							return false;
+						return tMsg->GetDirection () == msg->GetDirection () &&
+								tMsg->GetBody () == msg->GetBody () &&
+								std::abs (tMsg->GetDateTime ().secsTo (msg->GetDateTime ())) < 5;
+					}) != rMsgs.end ())
 				continue;
 
 			if (HistoryMessages_.isEmpty () ||
@@ -1162,7 +1146,7 @@ namespace Azoth
 
 		const int pos = Ui_.MainLayout_->indexOf (Ui_.View_) + 1;
 
-		MsgFormatter_ = new MsgFormatterWidget (Ui_.MsgEdit_);
+		MsgFormatter_ = new MsgFormatterWidget (Ui_.MsgEdit_, Ui_.MsgEdit_);
 		Ui_.MainLayout_->insertWidget (pos, MsgFormatter_);
 		connect (ToggleRichText_,
 				SIGNAL (toggled (bool)),

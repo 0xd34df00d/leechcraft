@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -123,18 +123,15 @@ namespace Xoox
 		return true;
 	}
 
-	namespace
-	{
-		QString GenSessID (const QString& base)
-		{
-			return base + ":" + QDateTime::currentDateTime ().toString (Qt::ISODate);
-		}
-	}
-
 	void AdHocCommandServer::Send (const QXmppDataForm& form,
 			const QDomElement& sourceElem, const QString& node)
 	{
-		const QString& sessionId = GenSessID (sourceElem.attribute ("id"));
+		auto genSessID = [] (const QString& base)
+		{
+			return base + ":" + QDateTime::currentDateTime ().toString (Qt::ISODate);
+		};
+
+		const QString& sessionId = genSessID (sourceElem.attribute ("id"));
 		PendingSessions_ [node] << sessionId;
 
 		QXmppElement elem;

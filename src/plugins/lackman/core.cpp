@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -295,14 +295,28 @@ namespace LackMan
 	{
 		QList<QUrl> result;
 
-		QMap<int, QList<QString> > repo2cmpt = Storage_->GetPackageLocations (packageId);
+		const auto& repo2cmpt = Storage_->GetPackageLocations (packageId);
 
-		PackageShortInfo info = Storage_->GetPackage (packageId);
-		QString pathAddition = QString ("dists/%1/all/");
-		QString normalized = NormalizePackageName (info.Name_);
-		pathAddition += QString ("%1/%1-%2.tar.gz")
+		PackageShortInfo info;
+		try
+		{
+			info = Storage_->GetPackage (packageId);
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "error getting package"
+					<< packageId;
+			return result;
+		}
+
+		auto pathAddition = QString ("dists/%1/all/");
+		const auto& normalized = NormalizePackageName (info.Name_);
+		const auto& version = info.Versions_.at (0);
+		pathAddition += QString ("%1/%1-%2.tar.%3")
 				.arg (normalized)
-				.arg (info.Versions_.at (0));
+				.arg (version)
+				.arg (info.VersionArchivers_.value (version, "gz"));
 
 		Q_FOREACH (int repoId, repo2cmpt.keys ())
 		{
@@ -503,7 +517,7 @@ namespace LackMan
 
 	QString Core::NormalizePackageName (const QString& packageName) const
 	{
-		QString normalized = packageName.toLower ().simplified ();
+		QString normalized = packageName.simplified ();
 		normalized.remove (' ');
 		normalized.remove ('\t');
 		return normalized;

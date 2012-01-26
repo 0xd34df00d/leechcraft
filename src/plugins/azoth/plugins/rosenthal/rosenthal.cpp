@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -133,7 +133,10 @@ namespace Rosenthal
 						SLOT (handleCorrectionTriggered ()));
 				act->setProperty ("TextEdit", QVariant::fromValue<QObject*> (edit));
 			}
-			menu->insertActions (menu->actions ().first (), acts);
+
+			QAction *before = menu->actions ().first ();
+			menu->insertActions (before, acts);
+			menu->insertSeparator (before);
 		}
 
 		menu->exec (curPos);
@@ -148,23 +151,23 @@ namespace Rosenthal
 		const QStringList& userLocales = userSetting.split (' ', QString::SkipEmptyParts);
 
 		const QString& locale = userLocales.value (0, Util::GetLocaleName ());
-#ifdef Q_WS_X11
-		QString base;
 
-		QStringList candidates;
+		QString base;
+		QStringList candidates (Util::CreateIfNotExists ("data/dicts/myspell/").absolutePath ());
+#ifdef Q_WS_X11
 		candidates << "/usr/local/share/myspell/"
 				<< "/usr/share/myspell/"
 				<< "/usr/local/share/myspell/dicts/"
 				<< "/usr/share/myspell/dicts/"
 				<< "/usr/local/share/hunspell/"
 				<< "/usr/share/hunspell/";
-
+#elif defined(Q_WS_WIN32)
+		candidates << qApp->applicationDirPath () + "/myspell/";
+#endif
 		Q_FOREACH (base, candidates)
 			if (QFile::exists (base + locale + ".aff"))
 				break;
-#elif defined(Q_WS_WIN32)
-		QString base = qApp->applicationDirPath () + "/myspell/";
-#endif
+
 		QByteArray baBase = (base + locale).toLatin1 ();
 		Hunspell_.reset (new Hunspell (baBase + ".aff", baBase + ".dic"));
 

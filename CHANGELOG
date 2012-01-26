@@ -5,6 +5,22 @@ Links to the corresponding development digests are also given for the
 relevant blocks of changes, so one could easily lookup 
 
 !!! HEAD
+!!! 0.4.99
+! Announce ( http://leechcraft.org/leechcraft-0.4.99-is-released ):
+* Azoth: entry info is copyable now.
+* Azoth: fixed quite a lot of memory leaks.
+* Azoth: shortcut for showing/hiding side widget with roster.
+* Azoth ChatHistory: added plugin icon.
+* Azoth Rosenthal: fixed suggestions display.
+* Azoth Xoox: fixed cases where nick was empty.
+* Core: fixed cases where no tab plugins are present.
+* Kinotify: word-wrap: break-word for themes.
+* LackMan: always update actions metadata.
+* LackMan: backported changes for repository format from master branch.
+* LackMan: backported support for xz/lzma archives from master branch.
+* Poshuku: Adobe Flash is working again.
+* Other: fixed Windows build.
+
 !!! 0.4.98
 ! Announce ( http://leechcraft.org/leechcraft-0.4.98-is-released ):
 * Aggregator: fixed incorrect boost.optional usage.

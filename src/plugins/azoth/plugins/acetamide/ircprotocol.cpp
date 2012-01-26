@@ -49,6 +49,8 @@ namespace Acetamide
 
 	IrcProtocol::~IrcProtocol ()
 	{
+		Q_FOREACH (QObject *acc, GetRegisteredAccounts ())
+			emit accountRemoved (acc);
 	}
 
 	void IrcProtocol::Prepare ()
@@ -243,7 +245,7 @@ namespace Acetamide
 						tr ("Password:"),
 						QLineEdit::Password);
 			//TODO nickServ for urls
-			acc->JoinServer(so, cho);
+			acc->JoinServer (so, cho);
 		}
 	}
 

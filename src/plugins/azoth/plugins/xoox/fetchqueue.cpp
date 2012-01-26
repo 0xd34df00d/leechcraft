@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@ namespace Xoox
 	FetchQueue::FetchQueue (boost::function<void (const QString&)> func,
 			int timeout, int perShot, QObject *parent)
 	: QObject (parent)
-	, FetchTimer_ (new QTimer)
+	, FetchTimer_ (new QTimer (this))
 	, FetchFunction_ (func)
 	, PerShot_ (perShot)
 	{
@@ -39,12 +39,12 @@ namespace Xoox
 				this,
 				SLOT (handleFetch ()));
 	}
-	
+
 	void FetchQueue::Schedule (const QString& string, FetchQueue::Priority prio)
 	{
 		if (Queue_.contains (string))
 			return;
-		
+
 		switch (prio)
 		{
 		case PHigh:
@@ -63,7 +63,7 @@ namespace Xoox
 			FetchTimer_->start ();
 		}
 	}
-	
+
 	void FetchQueue::handleFetch ()
 	{
 		int num = std::min (PerShot_, Queue_.size ());
