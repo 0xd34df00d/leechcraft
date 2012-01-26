@@ -185,8 +185,6 @@ namespace Poshuku
 		catch (const std::exception& e)
 		{
 			qWarning () << Q_FUNC_INFO << e.what ();
-			emit error (tr ("Failed to add<br />%1<br />to Favorites, seems "
-						"like such title is already used.").arg (title));
 			return false;
 		}
 
