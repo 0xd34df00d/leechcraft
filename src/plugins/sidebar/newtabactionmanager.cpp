@@ -41,6 +41,9 @@ namespace Sidebar
 
 		QAction *act = new QAction (tc.Icon_,
 				tc.VisibleName_, this);
+		act->setToolTip (QString ("%1 (%2)")
+				.arg (tc.VisibleName_)
+				.arg (tc.Description_));
 		act->setProperty ("Sidebar/Object",
 				QVariant::fromValue<QObject*> (obj));
 		act->setProperty ("Sidebar/TabClass", tc.TabClass_);
