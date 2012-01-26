@@ -39,11 +39,8 @@ namespace Lastfmscrobble
 				"lastfmscrobblesettings.xml");
 		
 		LFSubmitter_ = new LastFMSubmitter (this);
-		
-		QList<QByteArray> propNames;
-		propNames << "lastfm.login";
 
-		XmlSettingsManager::Instance ().RegisterObject (propNames,
+		XmlSettingsManager::Instance ().RegisterObject ("lastfm.login",
 				this, "handleSubmitterInit");
 		handleSubmitterInit ();
 	}
@@ -87,15 +84,7 @@ namespace Lastfmscrobble
 	{
 		LFSubmitter_->submit ();
 		
-		MediaMeta meta;
-		
-		meta.Album_ =  entity.Additional_ ["Album"].toString ();
-		meta.Artist_ = entity.Additional_ ["Artist"].toString ();
-		meta.Date_ = entity.Additional_ ["Date"].toString ();
-		meta.Genre_ = entity.Additional_ ["Genre"].toString ();
-		meta.Length_ = entity.Additional_ ["Length"].toInt ();
-		meta.Title_ = entity.Additional_ ["Title"].toString ();
-		meta.TrackNumber_ = entity.Additional_ ["TrackNumber"].toInt ();
+		MediaMeta meta (entity.Additional_);
 		
 		LFSubmitter_->sendTrack (meta);
 	}

@@ -30,6 +30,18 @@ namespace Lastfmscrobble
 {
 	const QString ScrobblingSite_ = "http://ws.audioscrobbler.com/2.0/";
 	
+	MediaMeta::MediaMeta (const QMap<QString, QVariant>& tagMap)
+	: Album_ (tagMap ["Album"].toString ())
+	, Artist_ (tagMap ["Artist"].toString ())
+	, Date_ (tagMap ["Date"].toString ())
+	, Genre_ (tagMap ["Genre"].toString ())
+	, Length_ (tagMap ["Length"].toInt ())
+	, Title_ (tagMap ["Title"].toString ())
+	, TrackNumber_ (tagMap ["TrackNumber"].toInt ())
+	{
+		
+	}
+	
 	namespace
 	{
 		QString AuthToken (const QString& username, const QString& password)
@@ -104,7 +116,7 @@ namespace Lastfmscrobble
 	{
 		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
 		
-		if (reply == NULL)
+		if (!reply)
 			return;
 		
 		QDomDocument doc;

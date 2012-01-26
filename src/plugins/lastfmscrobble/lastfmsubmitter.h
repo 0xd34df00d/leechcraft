@@ -22,6 +22,8 @@
 #include <memory>
 #include <QObject>
 #include <QString>
+#include <QVariant>
+#include <QMap>
 
 namespace lastfm
 {
@@ -36,6 +38,7 @@ namespace Lastfmscrobble
 {
 	struct MediaMeta
 	{
+		explicit MediaMeta (const QMap<QString, QVariant>& tagMap);
 		QString Artist_, Album_, Title_, Genre_, Date_;
 		int TrackNumber_;
 		int Length_;
