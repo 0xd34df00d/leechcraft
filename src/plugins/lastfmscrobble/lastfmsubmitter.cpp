@@ -69,7 +69,7 @@ namespace Lastfmscrobble
 
 	bool LastFMSubmitter::IsConnected () const
 	{
-		return Scrobbler_ != NULL;
+		return static_cast<bool> (Scrobbler_);
 	}
 	
 	void LastFMSubmitter::SetPassword (const QString& password)
