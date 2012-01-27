@@ -38,6 +38,7 @@
 #include <util/tagscompleter.h>
 #include <util/backendselector.h>
 #include <util/flattofoldersproxymodel.h>
+#include <util/shortcuts/shortcutmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "ui_mainwidget.h"
 #include "itemsfiltermodel.h"
@@ -75,7 +76,7 @@ namespace Aggregator
 		AppWideActions AppWideActions_;
 		ChannelActions ChannelActions_;
 
-		QMap<QString, QPair<QAction*, ActionInfo> > ID2ActionTuple_;
+		Util::ShortcutManager *ShortcutMgr_;
 
 		QMenu *ToolMenu_;
 
@@ -110,6 +111,7 @@ namespace Aggregator
 		Impl_->TabInfo_.Icon_ = GetIcon ();
 		Impl_->TabInfo_.Priority_ = 0;
 		Impl_->TabInfo_.Features_ = TabFeatures (TFSingle | TFOpenableByRequest);
+		Impl_->ShortcutMgr_ = new Util::ShortcutManager (proxy, this);
 
 		Impl_->ChannelActions_.SetupActionsStruct (this);
 		Impl_->AppWideActions_.SetupActionsStruct (this);
@@ -424,21 +426,12 @@ namespace Aggregator
 	void Aggregator::SetShortcut (const QString& name,
 			const QKeySequences_t& shortcuts)
 	{
-		if (!Impl_->ID2ActionTuple_.contains (name))
-			return;
-
-		Impl_->ID2ActionTuple_ [name].first->
-				setShortcuts (shortcuts);
+		Impl_->ShortcutMgr_->SetShortcut (name, shortcuts);
 	}
 
 	QMap<QString, ActionInfo> Aggregator::GetActionInfo () const
 	{
-		QMap<QString, ActionInfo> result;
-
-		Q_FOREACH (const QString& key, Impl_->ID2ActionTuple_.keys ())
-			result [key] = Impl_->ID2ActionTuple_ [key].second;
-
-		return result;
+		return Impl_->ShortcutMgr_->GetActionInfo ();
 	}
 
 	QList<QWizardPage*> Aggregator::GetWizardPages () const
@@ -621,46 +614,22 @@ namespace Aggregator
 		return result;
 	}
 
-	namespace
-	{
-		QPair<QAction*, ActionInfo> MakeInfoPair (QAction *act)
-		{
-			ActionInfo info = ActionInfo (act->text (),
-					act->shortcuts (),
-					act->icon ());
-			return qMakePair (act, info);
-		}
-	}
-
 	void Aggregator::BuildID2ActionTupleMap ()
 	{
-		Impl_->ID2ActionTuple_ ["ActionAddFeed_"] =
-				MakeInfoPair (Impl_->AppWideActions_.ActionAddFeed_);
-		Impl_->ID2ActionTuple_ ["ActionUpdateFeeds_"] =
-				MakeInfoPair (Impl_->AppWideActions_.ActionUpdateFeeds_);
-		Impl_->ID2ActionTuple_ ["ActionRegexpMatcher_"] =
-				MakeInfoPair (Impl_->AppWideActions_.ActionRegexpMatcher_);
-		Impl_->ID2ActionTuple_ ["ActionImportOPML_"] =
-				MakeInfoPair (Impl_->AppWideActions_.ActionImportOPML_);
-		Impl_->ID2ActionTuple_ ["ActionExportOPML_"] =
-				MakeInfoPair (Impl_->AppWideActions_.ActionExportOPML_);
-		Impl_->ID2ActionTuple_ ["ActionImportBinary_"] =
-				MakeInfoPair (Impl_->AppWideActions_.ActionImportBinary_);
-		Impl_->ID2ActionTuple_ ["ActionExportBinary_"] =
-				MakeInfoPair (Impl_->AppWideActions_.ActionExportBinary_);
-		Impl_->ID2ActionTuple_ ["ActionExportFB2_"] =
-				MakeInfoPair (Impl_->AppWideActions_.ActionExportFB2_);
-
-		Impl_->ID2ActionTuple_ ["ActionRemoveFeed_"] =
-				MakeInfoPair (Impl_->ChannelActions_.ActionRemoveFeed_);
-		Impl_->ID2ActionTuple_ ["ActionUpdateSelectedFeed_"] =
-				MakeInfoPair (Impl_->ChannelActions_.ActionUpdateSelectedFeed_);
-		Impl_->ID2ActionTuple_ ["ActionMarkChannelAsRead_"] =
-				MakeInfoPair (Impl_->ChannelActions_.ActionMarkChannelAsRead_);
-		Impl_->ID2ActionTuple_ ["ActionMarkChannelAsUnread_"] =
-				MakeInfoPair (Impl_->ChannelActions_.ActionMarkChannelAsUnread_);
-		Impl_->ID2ActionTuple_ ["ActionChannelSettings_"] =
-				MakeInfoPair (Impl_->ChannelActions_.ActionChannelSettings_);
+		typedef Util::ShortcutManager::IDPair_t ID_t;
+		*Impl_->ShortcutMgr_ << ID_t ("ActionAddFeed", Impl_->AppWideActions_.ActionAddFeed_)
+				<< ID_t ("ActionUpdateFeeds_", Impl_->AppWideActions_.ActionUpdateFeeds_)
+				<< ID_t ("ActionRegexpMatcher_", Impl_->AppWideActions_.ActionRegexpMatcher_)
+				<< ID_t ("ActionImportOPML_", Impl_->AppWideActions_.ActionImportOPML_)
+				<< ID_t ("ActionExportOPML_", Impl_->AppWideActions_.ActionExportOPML_)
+				<< ID_t ("ActionImportBinary_", Impl_->AppWideActions_.ActionImportBinary_)
+				<< ID_t ("ActionExportBinary_", Impl_->AppWideActions_.ActionExportBinary_)
+				<< ID_t ("ActionExportFB2_", Impl_->AppWideActions_.ActionExportFB2_)
+				<< ID_t ("ActionRemoveFeed_", Impl_->ChannelActions_.ActionRemoveFeed_)
+				<< ID_t ("ActionUpdateSelectedFeed_", Impl_->ChannelActions_.ActionUpdateSelectedFeed_)
+				<< ID_t ("ActionMarkChannelAsRead_", Impl_->ChannelActions_.ActionMarkChannelAsRead_)
+				<< ID_t ("ActionMarkChannelAsUnread_", Impl_->ChannelActions_.ActionMarkChannelAsUnread_)
+				<< ID_t ("ActionChannelSettings_", Impl_->ChannelActions_.ActionChannelSettings_);
 	}
 
 	void Aggregator::on_ActionAddFeed__triggered ()
