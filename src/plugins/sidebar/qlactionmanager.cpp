@@ -17,7 +17,9 @@
  **********************************************************************/
 
 #include "qlactionmanager.h"
+#include <QtDebug>
 #include "sbwidget.h"
+#include "showconfigdialog.h"
 
 namespace LeechCraft
 {
@@ -28,25 +30,49 @@ namespace Sidebar
 	: QObject (parent)
 	, Proxy_ (proxy)
 	, Bar_ (w)
+	, CfgDialog_ (new ShowConfigDialog ("QL"))
 	{
+		connect (CfgDialog_.get (),
+				SIGNAL (showActions (QList<QAction*>)),
+				this,
+				SLOT (handleShowActions (QList<QAction*>)));
+		connect (CfgDialog_.get (),
+				SIGNAL (hideActions (QList<QAction*>)),
+				this,
+				SLOT (handleHideActions (QList<QAction*>)));
+
+		QAction *cfgAction = new QAction (tr ("Configure tray actions..."), this);
+		connect (cfgAction,
+				SIGNAL (triggered ()),
+				CfgDialog_.get (),
+				SLOT (show ()));
+		w->addAction (cfgAction);
 	}
 
 	void QLActionManager::AddToQuickLaunch (const QList<QAction*>& actions)
 	{
-		Q_FOREACH (QAction *action, actions)
-		{
-			Proxy_->RegisterSkinnable (action);
-			Bar_->AddQLAction (action);
-		}
+		AddLabeled (actions, "QL");
 	}
 
 	void QLActionManager::AddToLCTray (const QList<QAction*>& actions)
 	{
+		AddLabeled (actions, "LCTray");
+	}
+
+	void QLActionManager::AddLabeled (const QList<QAction*>& actions, const QString& label)
+	{
+		QList<QAction*> actions2add;
 		Q_FOREACH (QAction *action, actions)
 		{
+			action->setProperty ("Sidebar/Type", label);
 			Proxy_->RegisterSkinnable (action);
-			Bar_->AddTrayAction (action);
+
+			const QString& id = action->property ("Action/ID").toString ();
+			if (id.isEmpty () || CfgDialog_->CheckAction (id, action))
+				actions2add << action;
 		}
+
+		handleShowActions (actions2add);
 	}
 
 	void QLActionManager::handleGotActions (const QList<QAction*>& actions, ActionsEmbedPlace aep)
@@ -55,6 +81,28 @@ namespace Sidebar
 			AddToQuickLaunch (actions);
 		else if (aep == AEPLCTray)
 			AddToLCTray (actions);
+	}
+
+	void QLActionManager::handleHideActions (const QList<QAction*>& acts)
+	{
+		Q_FOREACH (QAction *act, acts)
+		{
+			if (act->property ("Sidebar/Type") == "QL")
+				Bar_->RemoveQLAction (act);
+			else
+				Bar_->RemoveTrayAction (act);
+		}
+	}
+
+	void QLActionManager::handleShowActions (const QList<QAction*>& acts)
+	{
+		Q_FOREACH (QAction *act, acts)
+		{
+			if (act->property ("Sidebar/Type") == "QL")
+				Bar_->AddQLAction (act);
+			else
+				Bar_->AddTrayAction (act);
+		}
 	}
 }
 }
