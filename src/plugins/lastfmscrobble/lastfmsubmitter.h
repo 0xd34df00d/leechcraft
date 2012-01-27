@@ -17,8 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LASTFMSCROBBLE_LASTFMSUBMITTER_H
-#define PLUGINS_LASTFMSCROBBLE_LASTFMSUBMITTER_H
+#pragma once
+
 #include <memory>
 #include <QObject>
 #include <QString>
@@ -43,16 +43,16 @@ namespace Lastfmscrobble
 		int TrackNumber_;
 		int Length_;
 	};
-	
+
 	class LastFMSubmitter : public QObject
 	{
 		Q_OBJECT
-		
+
 		std::shared_ptr<lastfm::Audioscrobbler> Scrobbler_;
 		QString Password_;
 	public:
 		LastFMSubmitter (QObject *parent = 0);
-		
+
 		void Init (QNetworkAccessManager *manager);
 		void SetUsername (const QString& username);
 		void SetPassword (const QString& password);
@@ -67,5 +67,3 @@ namespace Lastfmscrobble
 	};
 }
 }
-
-#endif // PLUGINS_LASTFMSCROBBLE_LASTFMSUBMITTER_H

@@ -17,8 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LASTFMSCROBBLE_LASTFMSCROBBLE_H
-#define PLUGINS_LASTFMSCROBBLE_LASTFMSCROBBLE_H
+#pragma once
+
 #include <interfaces/iinfo.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/ihavesettings.h>
@@ -28,7 +28,7 @@ namespace LeechCraft
 namespace Lastfmscrobble
 {
 	class LastFMSubmitter;
-	
+
 	class Plugin : public QObject
 				, public IInfo
 				, public IEntityHandler
@@ -38,7 +38,7 @@ namespace Lastfmscrobble
 		Q_INTERFACES (IInfo
 				IEntityHandler
 				IHaveSettings)
-		
+
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 		LastFMSubmitter *LFSubmitter_;
 		ICoreProxy_ptr Proxy_;
@@ -50,10 +50,10 @@ namespace Lastfmscrobble
 		QString GetInfo () const;
 		void Release ();
 		QIcon GetIcon () const;
-		
+
 		EntityTestHandleResult CouldHandle (const Entity& entity) const;
 		void Handle (Entity entity);
-		
+
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	private slots:
 		void handleSubmitterInit ();
@@ -63,5 +63,3 @@ namespace Lastfmscrobble
 	};
 }
 }
-
-#endif // PLUGINS_LASTFMSCROBBLE_LASTFMSCROBBLE_H

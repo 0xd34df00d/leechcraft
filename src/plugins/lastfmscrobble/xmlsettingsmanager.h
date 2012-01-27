@@ -17,8 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LASTFMSCROBBLE_XMLSETTINGSMANAGER_H
-#define PLUGINS_LASTFMSCROBBLE_XMLSETTINGSMANAGER_H
+#pragma once
+
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
@@ -38,5 +38,3 @@ namespace Lastfmscrobble
 	};
 }
 }
-
-#endif // PLUGINS_LASTFMSCROBBLE_XMLSETTINGSMANAGER_H
