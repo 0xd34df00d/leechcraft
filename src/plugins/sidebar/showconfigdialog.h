@@ -21,6 +21,8 @@
 #include <QDialog>
 #include "ui_showconfigdialog.h"
 
+class QStandardItemModel;
+
 namespace LeechCraft
 {
 namespace Sidebar
@@ -32,10 +34,18 @@ namespace Sidebar
 		Ui::ShowConfigDialog Ui_;
 
 		const QString Context_;
+		QStandardItemModel *Model_;
+
+		QHash<QString, QList<QAction*>> HiddenActions_;
+
+		enum Roles
+		{
+			ActionID = Qt::UserRole + 1
+		};
 	public:
 		ShowConfigDialog (const QString& context, QWidget* = 0);
 
-		bool CheckAction (const QString&, const QAction*);
+		bool CheckAction (const QString&, QAction*);
 	};
 }
 }

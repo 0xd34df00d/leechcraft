@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "showconfigdialog.h"
+#include <QStandardItemModel>
 
 namespace LeechCraft
 {
@@ -25,12 +26,32 @@ namespace Sidebar
 	ShowConfigDialog::ShowConfigDialog (const QString& context, QWidget *parent)
 	: QDialog (parent)
 	, Context_ (context)
+	, Model_ (new QStandardItemModel (this))
 	{
 		Ui_.setupUi (this);
+		Ui_.ActionsView_->setModel (Model_);
 	}
 
-	bool ShowConfigDialog::CheckAction (const QString& id, const QAction *act)
+	bool ShowConfigDialog::CheckAction (const QString& id, QAction *act)
 	{
+		for (int i = 0, size = Model_->rowCount (); i < size; ++i)
+		{
+			auto item = Model_->item (i);
+			if (item->data (Roles::ActionID).toString () == id)
+			{
+				const bool result = item->checkState () == Qt::Checked;
+				if (!result)
+					HiddenActions_ [id] << act;
+				return result;
+			}
+		}
+
+		QStandardItem *item = new QStandardItem (act->icon (), act->text ());
+		item->setToolTip (act->toolTip ());
+		item->setCheckState (Qt::Checked);
+		item->setData (id, Roles::ActionID);
+		Model_->appendRow (item);
+
 		return true;
 	}
 }
