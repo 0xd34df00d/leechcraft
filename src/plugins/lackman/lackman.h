@@ -27,6 +27,7 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/ientityhandler.h>
+#include <interfaces/ihaveshortcuts.h>
 #include "ui_lackman.h"
 
 class QSortFilterProxyModel;
@@ -34,6 +35,10 @@ class QStringListModel;
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class ShortcutManager;
+}
 namespace LackMan
 {
 	class TypeFilterProxyModel;
@@ -46,9 +51,10 @@ namespace LackMan
 				 , public IHaveSettings
 				 , public IActionsExporter
 				 , public IEntityHandler
+				 , public IHaveShortcuts
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs ITabWidget IHaveSettings IActionsExporter IEntityHandler)
+		Q_INTERFACES (IInfo IHaveTabs ITabWidget IHaveSettings IActionsExporter IEntityHandler IHaveShortcuts)
 
 		Ui::LackMan Ui_;
 		std::auto_ptr<QTranslator> Translator_;
@@ -56,6 +62,7 @@ namespace LackMan
 		TypeFilterProxyModel *TypeFilter_;
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
 		QStringListModel *TagsModel_;
+		Util::ShortcutManager *ShortcutMgr_;
 
 		QAction *UpdateAll_;
 		QAction *UpgradeAll_;
@@ -87,6 +94,9 @@ namespace LackMan
 
 		EntityTestHandleResult CouldHandle (const Entity&) const;
 		void Handle (Entity);
+
+		void SetShortcut (const QString&, const QKeySequences_t&);
+		QMap<QString, ActionInfo> GetActionInfo () const;
 	private slots:
 		void handleTagsUpdated (const QStringList&);
 		void on_PackageStatus__currentIndexChanged (int);
