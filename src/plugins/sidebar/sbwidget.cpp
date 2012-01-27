@@ -44,6 +44,11 @@ namespace Sidebar
 		AddTabButton (act, Ui_.PluginButtonsLay_);
 	}
 
+	void SBWidget::RemoveTabOpenAction (QAction *act)
+	{
+		RemoveTabButton (act, Ui_.PluginButtonsLay_);
+	}
+
 	void SBWidget::AddQLAction (QAction *act)
 	{
 		AddTabButton (act, Ui_.QLLay_);
@@ -100,6 +105,20 @@ namespace Sidebar
 		lay->addWidget (tb);
 
 		return tb;
+	}
+
+	void SBWidget::RemoveTabButton (QAction *act, QLayout *lay)
+	{
+		for (int i = 0; i < lay->count (); ++i)
+		{
+			auto tb = qobject_cast<QToolButton*> (lay->itemAt (i)->widget ());
+			if (tb && tb->defaultAction () == act)
+			{
+				tb->deleteLater ();
+				lay->removeWidget (tb);
+				break;
+			}
+		}
 	}
 
 	void SBWidget::FoldTabClass (const TabClassInfo& tc, QAction *newAct)

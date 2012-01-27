@@ -52,6 +52,8 @@ namespace Sidebar
 		SBWidget (QWidget* = 0);
 
 		void AddTabOpenAction (QAction*);
+		void RemoveTabOpenAction (QAction*);
+
 		void AddQLAction (QAction*);
 
 		void AddCurTabAction (QAction*, QWidget*);
@@ -60,6 +62,7 @@ namespace Sidebar
 		void AddTrayAction (QAction*);
 	private:
 		QToolButton* AddTabButton (QAction*, QLayout*);
+		void RemoveTabButton (QAction*, QLayout*);
 		void FoldTabClass (const TabClassInfo&, QAction*);
 		void AddToFolder (const QByteArray&, QAction*);
 		void UnfoldTabClass (const TabClassInfo&);
