@@ -27,6 +27,7 @@ SET (SRCS
 	newtabactionmanager.cpp
 	qlactionmanager.cpp
 	openedtabmanager.cpp
+	showconfigdialog.cpp
 	)
 SET (HEADERS
 	sidebar.h
@@ -34,9 +35,11 @@ SET (HEADERS
 	newtabactionmanager.h
 	qlactionmanager.h
 	openedtabmanager.h
+	showconfigdialog.h
 	)
 SET (FORMS
 	sbwidget.ui
+	showconfigdialog.ui
 	)
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
