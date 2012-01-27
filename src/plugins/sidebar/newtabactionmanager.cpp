@@ -20,6 +20,7 @@
 #include <QAction>
 #include <QVariant>
 #include "sbwidget.h"
+#include "showconfigdialog.h"
 
 namespace LeechCraft
 {
@@ -28,7 +29,23 @@ namespace Sidebar
 	NewTabActionManager::NewTabActionManager (SBWidget *w, QObject *parent)
 	: QObject (parent)
 	, Bar_ (w)
+	, CfgDialog_ (new ShowConfigDialog ("NewTabActions"))
 	{
+		connect (CfgDialog_,
+				SIGNAL (showActions (QList<QAction*>)),
+				this,
+				SLOT (handleShowActions (QList<QAction*>)));
+		connect (CfgDialog_,
+				SIGNAL (hideActions (QList<QAction*>)),
+				this,
+				SLOT (handleHideActions (QList<QAction*>)));
+
+		QAction *cfgAction = new QAction (tr ("Configure new tab openers..."), this);
+		connect (cfgAction,
+				SIGNAL (triggered ()),
+				CfgDialog_,
+				SLOT (show ()));
+		w->addAction (cfgAction);
 	}
 
 	void NewTabActionManager::AddTabClassOpener (const TabClassInfo& tc, QObject *obj)
@@ -52,7 +69,8 @@ namespace Sidebar
 				this,
 				SLOT (openNewTab ()));
 
-		Bar_->AddTabOpenAction (act);
+		if (CfgDialog_->CheckAction (tc.TabClass_, act))
+			Bar_->AddTabOpenAction (act);
 	}
 
 	void NewTabActionManager::openNewTab ()
@@ -64,6 +82,18 @@ namespace Sidebar
 
 		IHaveTabs *iht = qobject_cast<IHaveTabs*> (pluginObj);
 		iht->TabOpenRequested (tc);
+	}
+
+	void NewTabActionManager::handleShowActions (const QList<QAction*>& acts)
+	{
+		Q_FOREACH (QAction *act, acts)
+			Bar_->AddTabOpenAction (act);
+	}
+
+	void NewTabActionManager::handleHideActions (const QList<QAction*>& acts)
+	{
+		Q_FOREACH (QAction *act, acts)
+			Bar_->RemoveTabOpenAction (act);
 	}
 }
 }
