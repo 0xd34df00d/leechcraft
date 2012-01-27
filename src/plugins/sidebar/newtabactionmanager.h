@@ -18,6 +18,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
 #include <interfaces/ihavetabs.h>
 
@@ -33,7 +34,7 @@ namespace Sidebar
 		Q_OBJECT
 
 		SBWidget *Bar_;
-		ShowConfigDialog *CfgDialog_;
+		std::shared_ptr<ShowConfigDialog> CfgDialog_;
 	public:
 		NewTabActionManager (SBWidget*, QObject* = 0);
 

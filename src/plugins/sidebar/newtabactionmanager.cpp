@@ -43,7 +43,7 @@ namespace Sidebar
 		QAction *cfgAction = new QAction (tr ("Configure new tab openers..."), this);
 		connect (cfgAction,
 				SIGNAL (triggered ()),
-				CfgDialog_,
+				CfgDialog_.get (),
 				SLOT (show ()));
 		w->addAction (cfgAction);
 	}
