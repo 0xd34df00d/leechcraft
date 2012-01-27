@@ -31,11 +31,11 @@ namespace Sidebar
 	, Bar_ (w)
 	, CfgDialog_ (new ShowConfigDialog ("NewTabActions"))
 	{
-		connect (CfgDialog_,
+		connect (CfgDialog_.get (),
 				SIGNAL (showActions (QList<QAction*>)),
 				this,
 				SLOT (handleShowActions (QList<QAction*>)));
-		connect (CfgDialog_,
+		connect (CfgDialog_.get (),
 				SIGNAL (hideActions (QList<QAction*>)),
 				this,
 				SLOT (handleHideActions (QList<QAction*>)));
