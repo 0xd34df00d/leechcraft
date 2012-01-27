@@ -36,7 +36,7 @@ namespace Util
 		ContextObj_ = obj;
 	}
 
-	void ShortcutManager::RegisterAction (const QString& id, QAction *act)
+	void ShortcutManager::RegisterAction (const QString& id, QAction *act, bool update)
 	{
 		Actions_ [id] << act;
 		connect (act,
@@ -49,6 +49,10 @@ namespace Util
 				act->icon ();
 		RegisterActionInfo (id,
 				{ act->text (), act->shortcuts (), icon });
+
+		if (update)
+			SetShortcut (id,
+					CoreProxy_->GetShortcutProxy ()->GetShortcuts (ContextObj_, id));
 	}
 
 	void ShortcutManager::RegisterActionInfo (const QString& id, const ActionInfo& info)

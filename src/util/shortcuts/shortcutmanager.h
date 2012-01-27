@@ -45,7 +45,7 @@ namespace Util
 		UTIL_API ShortcutManager (ICoreProxy_ptr, QObject* = 0);
 
 		UTIL_API void SetObject (QObject*);
-		UTIL_API void RegisterAction (const QString& id, QAction *act);
+		UTIL_API void RegisterAction (const QString& id, QAction *act, bool update = false);
 		UTIL_API void RegisterActionInfo (const QString& id, const ActionInfo&);
 		UTIL_API void SetShortcut (const QString& id, const QKeySequences_t&);
 		UTIL_API QMap<QString, ActionInfo> GetActionInfo () const;
