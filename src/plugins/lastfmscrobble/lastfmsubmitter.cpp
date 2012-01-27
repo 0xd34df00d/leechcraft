@@ -31,15 +31,14 @@ namespace Lastfmscrobble
 	const QString ScrobblingSite_ = "http://ws.audioscrobbler.com/2.0/";
 	
 	MediaMeta::MediaMeta (const QMap<QString, QVariant>& tagMap)
-	: Album_ (tagMap ["Album"].toString ())
-	, Artist_ (tagMap ["Artist"].toString ())
-	, Date_ (tagMap ["Date"].toString ())
-	, Genre_ (tagMap ["Genre"].toString ())
-	, Length_ (tagMap ["Length"].toInt ())
+	: Artist_ (tagMap ["Artist"].toString ())
+	, Album_ (tagMap ["Album"].toString ())
 	, Title_ (tagMap ["Title"].toString ())
+	, Genre_ (tagMap ["Genre"].toString ())
+	, Date_ (tagMap ["Date"].toString ())
 	, TrackNumber_ (tagMap ["TrackNumber"].toInt ())
+	, Length_ (tagMap ["Length"].toInt ())
 	{
-		
 	}
 	
 	namespace
