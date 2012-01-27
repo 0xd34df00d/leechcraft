@@ -36,6 +36,7 @@ SET (SRCS
 	syncdeltamanager.cpp
 	sysinfo.cpp
 	passutils.cpp
+	shortcuts/shortcutmanager.cpp
 	)
 SET (HEADERS
 	tagscompleter.h
@@ -66,6 +67,7 @@ SET (HEADERS
 	syncdeltamanager.h
 	sysinfo.h
 	passutils.h
+	shortcuts/shortcutmanager.h
 	idpool.h
 	)
 SET (FORMS
