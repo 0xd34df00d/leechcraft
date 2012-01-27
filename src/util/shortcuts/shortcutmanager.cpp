@@ -67,6 +67,12 @@ namespace Util
 		return ActionInfo_;
 	}
 
+	ShortcutManager& ShortcutManager::operator<< (const QPair<QString, QAction*>& pair)
+	{
+		RegisterAction (pair.first, pair.second);
+		return *this;
+	}
+
 	void ShortcutManager::handleActionDestroyed ()
 	{
 		QAction *act = static_cast<QAction*> (sender ());

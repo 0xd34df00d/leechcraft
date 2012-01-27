@@ -49,6 +49,9 @@ namespace Util
 		UTIL_API void RegisterActionInfo (const QString& id, const ActionInfo&);
 		UTIL_API void SetShortcut (const QString& id, const QKeySequences_t&);
 		UTIL_API QMap<QString, ActionInfo> GetActionInfo () const;
+
+		typedef QPair<QString, QAction*> IDPair_t;
+		UTIL_API ShortcutManager& operator<< (const QPair<QString, QAction*>&);
 	private slots:
 		void handleActionDestroyed ();
 	};
