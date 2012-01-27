@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="Lastfmscrobble" />
+		<groupbox>
+			<label value="Last.FM" />
+			<item type="lineedit" property="lastfm.login">
+				<label value="Login:" />
+			</item>
+		</groupbox>
+	</page>
+</settings>
