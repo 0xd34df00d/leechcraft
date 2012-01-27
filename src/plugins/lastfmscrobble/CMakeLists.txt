@@ -23,20 +23,21 @@ SET (SRCS
 	xmlsettingsmanager.cpp
 	lastfmscrobble.cpp
 	)
-
 SET (HEADERS
 	lastfmsubmitter.h
 	xmlsettingsmanager.h
 	lastfmscrobble.h
 	)
-
+SET (RESOURCES lastfmscrobbleresources.qrc)
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 ENDIF (NOT LC_NO_MOC)
+QT4_ADD_RESOURCES (RCCS ${RESOURCES})
 
 ADD_LIBRARY (leechcraft_lastfmscrobble SHARED
 	${SRCS}
 	${MOC_SRCS}
+	${RCCS}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_lastfmscrobble
 	${QT_LIBRARIES}
