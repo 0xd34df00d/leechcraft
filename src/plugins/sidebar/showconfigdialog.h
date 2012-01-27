@@ -36,7 +36,9 @@ namespace Sidebar
 		const QString Context_;
 		QStandardItemModel *Model_;
 
-		QHash<QString, QList<QAction*>> HiddenActions_;
+		typedef QHash<QString, QList<QAction*>> ID2Actions_t;
+		ID2Actions_t HiddenActions_;
+		ID2Actions_t AllActions_;
 
 		enum Roles
 		{
@@ -46,6 +48,13 @@ namespace Sidebar
 		ShowConfigDialog (const QString& context, QWidget* = 0);
 
 		bool CheckAction (const QString&, QAction*);
+	private slots:
+		void saveSettings ();
+		void reloadSettings ();
+		void handleActionDestroyed ();
+	signals:
+		void showActions (const QList<QAction*>&);
+		void hideActions (const QList<QAction*>&);
 	};
 }
 }
