@@ -53,8 +53,10 @@ namespace Sidebar
 
 		void AddTabOpenAction (QAction*);
 		void AddQLAction (QAction*);
+
 		void AddCurTabAction (QAction*, QWidget*);
 		void RemoveCurTabAction (QAction*, QWidget*);
+
 		void AddTrayAction (QAction*);
 	private:
 		QToolButton* AddTabButton (QAction*, QLayout*);
