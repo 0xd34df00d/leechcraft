@@ -36,71 +36,67 @@ namespace boost
 	namespace logic
 	{
 		class tribool;
-	};
-};
+	}
+}
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace CSTP
+{
+	class Core;
+
+	class CSTP : public QObject
+				, public IInfo
+				, public IDownload
+				, public IJobHolder
+				, public IHaveSettings
 	{
-		namespace CSTP
-		{
-			class Core;
+		Q_OBJECT
+		Q_INTERFACES (IInfo IDownload IJobHolder IHaveSettings)
 
-			class CSTP : public QObject
-					   , public IInfo
-					   , public IDownload
-					   , public IJobHolder
-					   , public IHaveSettings
-			{
-				Q_OBJECT
-				Q_INTERFACES (IInfo IDownload IJobHolder IHaveSettings)
+		QMenu *Plugins_;
+		std::auto_ptr<QTranslator> Translator_;
+		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
+		std::auto_ptr<QToolBar> Toolbar_;
+	public:
+		virtual ~CSTP ();
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		void Release ();
+		QByteArray GetUniqueID () const;
+		QString GetName () const;
+		QString GetInfo () const;
+		QStringList Provides () const;
+		QStringList Needs () const;
+		QStringList Uses () const;
+		void SetProvider (QObject*, const QString&);
+		QIcon GetIcon () const;
 
-				QMenu *Plugins_;
-				std::auto_ptr<QTranslator> Translator_;
-				Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
-				std::auto_ptr<QToolBar> Toolbar_;
-			public:
-				virtual ~CSTP ();
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
-				void Release ();
-				QByteArray GetUniqueID () const;
-				QString GetName () const;
-				QString GetInfo () const;
-				QStringList Provides () const;
-				QStringList Needs () const;
-				QStringList Uses () const;
-				void SetProvider (QObject*, const QString&);
-				QIcon GetIcon () const;
+		qint64 GetDownloadSpeed () const;
+		qint64 GetUploadSpeed () const;
+		void StartAll ();
+		void StopAll ();
+		EntityTestHandleResult CouldDownload (const LeechCraft::Entity&) const;
+		int AddJob (LeechCraft::Entity);
+		void KillTask (int);
 
-				qint64 GetDownloadSpeed () const;
-				qint64 GetUploadSpeed () const;
-				void StartAll ();
-				void StopAll ();
-				EntityTestHandleResult CouldDownload (const LeechCraft::Entity&) const;
-				int AddJob (LeechCraft::Entity);
-				void KillTask (int);
+		QAbstractItemModel* GetRepresentation () const;
 
-				QAbstractItemModel* GetRepresentation () const;
-
-				Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-			private:
-				template<typename T> void ApplyCore2Selection (void (Core::*) (const QModelIndex&), T);
-				void SetupToolbar ();
-			private slots:
-				void handleTasksTreeSelectionCurrentRowChanged (const QModelIndex&, const QModelIndex&);
-				void handleFileExists (boost::logic::tribool*);
-				void handleError (const QString&);
-			signals:
-				void jobFinished (int);
-				void jobRemoved (int);
-				void jobError (int, IDownload::Error);
-				void gotEntity (const LeechCraft::Entity&);
-			};
-		};
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+	private:
+		template<typename T> void ApplyCore2Selection (void (Core::*) (const QModelIndex&), T);
+		void SetupToolbar ();
+	private slots:
+		void handleTasksTreeSelectionCurrentRowChanged (const QModelIndex&, const QModelIndex&);
+		void handleFileExists (boost::logic::tribool*);
+		void handleError (const QString&);
+	signals:
+		void jobFinished (int);
+		void jobRemoved (int);
+		void jobError (int, IDownload::Error);
+		void gotEntity (const LeechCraft::Entity&);
 	};
-};
+}
+}
 
 #endif
-

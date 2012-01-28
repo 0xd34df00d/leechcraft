@@ -21,33 +21,28 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace CSTP
+{
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		namespace CSTP
-		{
-			XmlSettingsManager::XmlSettingsManager ()
-			{
-				LeechCraft::Util::BaseSettingsManager::Init ();
-			}
-			
-			XmlSettingsManager& XmlSettingsManager::Instance ()
-			{
-				static XmlSettingsManager xsm;
-				return xsm;
-			}
-			
-			QSettings* XmlSettingsManager::BeginSettings () const
-			{
-				QSettings *settings = new QSettings (QCoreApplication::organizationName (),
-						QCoreApplication::applicationName () + "_CSTP");
-				return settings;
-			}
-			
-			void XmlSettingsManager::EndSettings (QSettings*) const
-			{
-			}
-			
-		};
-	};
-};
+		LeechCraft::Util::BaseSettingsManager::Init ();
+	}
 
+	XmlSettingsManager& XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager xsm;
+		return xsm;
+	}
+
+	QSettings* XmlSettingsManager::BeginSettings () const
+	{
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_CSTP");
+		return settings;
+	}
+
+	void XmlSettingsManager::EndSettings (QSettings*) const
+	{
+	}
+}
+}
