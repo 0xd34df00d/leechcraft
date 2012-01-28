@@ -53,19 +53,10 @@ namespace CSTP
 	class HistoryModel;
 	class MorphFile;
 
-	namespace _Local
-	{
-		struct ObjectFinder;
-		struct SpeedAccumulator;
-	};
-
 	class Core : public QAbstractItemModel
 	{
 		Q_OBJECT
 		QStringList Headers_;
-
-		friend struct _Local::ObjectFinder;
-		friend struct _Local::SpeedAccumulator;
 
 		struct TaskDescr
 		{

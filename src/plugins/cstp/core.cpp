@@ -326,23 +326,11 @@ namespace CSTP
 		return TaskAt (pos).Task_->IsRunning ();
 	}
 
-	namespace _Local
-	{
-		struct SpeedAccumulator
-		{
-			qint64 operator() (qint64 result, const Core::TaskDescr& td)
-			{
-				result += td.Task_->GetSpeed ();
-				return result;
-			}
-		};
-	};
-
 	qint64 Core::GetTotalDownloadSpeed () const
 	{
-		qint64 result = 0;
-		return std::accumulate (ActiveTasks_.begin (), ActiveTasks_.end (),
-				result, _Local::SpeedAccumulator ());
+		return std::accumulate (ActiveTasks_.begin (), ActiveTasks_.end (), 0,
+				[] (qint64 acc, const Core::TaskDescr& td)
+					{ return acc + td.Task_->GetSpeed (); });
 	}
 
 	EntityTestHandleResult Core::CouldDownload (const LeechCraft::Entity& e)
@@ -724,45 +712,16 @@ namespace CSTP
 		QTimer::singleShot (100, this, SLOT (writeSettings ()));
 	}
 
-	struct _Local::ObjectFinder
-	{
-		QObject *Pred_;
-
-		enum Type
-		{
-			TObject
-		};
-
-		Type Type_;
-
-		ObjectFinder (QObject* task)
-		: Pred_ (task)
-		, Type_ (TObject)
-		{
-		}
-
-		bool operator() (const Core::TaskDescr& td)
-		{
-			switch (Type_)
-			{
-				case TObject:
-					return Pred_ == td.Task_.get ();
-				default:
-					return false;
-			}
-		}
-	};
-
 	Core::tasks_t::const_iterator Core::FindTask (QObject *task) const
 	{
 		return std::find_if (ActiveTasks_.begin (), ActiveTasks_.end (),
-				_Local::ObjectFinder (task));
+				[task] (const Core::TaskDescr& td) { return task == td.Task_.get (); });
 	}
 
 	Core::tasks_t::iterator Core::FindTask (QObject *task)
 	{
 		return std::find_if (ActiveTasks_.begin (), ActiveTasks_.end (),
-				_Local::ObjectFinder (task));
+				[task] (const Core::TaskDescr& td) { return task == td.Task_.get (); });
 	}
 
 	void Core::Remove (tasks_t::iterator it)
