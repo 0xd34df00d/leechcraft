@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,8 @@
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 
-class QWebView;
+class QGraphicsWebView;
+class QGraphicsSceneContextMenuEvent;
 
 namespace LeechCraft
 {
@@ -88,7 +89,8 @@ namespace CleanWeb
 		void hookWebPluginFactoryReload (LeechCraft::IHookProxy_ptr,
 				QList<IWebPlugin*>&);
 		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr,
-				QWebView*, QContextMenuEvent*,
+				QGraphicsWebView*,
+				QGraphicsSceneContextMenuEvent*,
 				const QWebHitTestResult&, QMenu*,
 				WebViewCtxMenuStage);
 	signals:

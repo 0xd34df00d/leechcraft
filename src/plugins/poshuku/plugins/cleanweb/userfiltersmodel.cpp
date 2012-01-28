@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@
 #include <QString>
 #include <QRegExp>
 #include <QAction>
-#include <qwebview.h>
+#include <qgraphicswebview.h>
 #include <qwebframe.h>
 #include <qwebelement.h>
 #include <QtDebug>
@@ -268,7 +268,7 @@ namespace CleanWeb
 		}
 
 		QUrl blockUrl = blocker->property ("CleanWeb/URL").value<QUrl> ();
-		QWebView *view = qobject_cast<QWebView*> (blocker->
+		QGraphicsWebView *view = qobject_cast<QGraphicsWebView*> (blocker->
 					property ("CleanWeb/View").value<QObject*> ());
 		if (InitiateAdd (blockUrl.toString ()) && view)
 		{

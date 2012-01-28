@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@ namespace Xoox
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IProtocolPlugin)
-		
+
 		boost::shared_ptr<QTranslator> Translator_;
 	public:
 		void Init (ICoreProxy_ptr);
@@ -62,6 +62,8 @@ namespace Xoox
 		void initPlugin (QObject*);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
+
+		void gotNewProtocols (const QList<QObject*>&);
 	};
 }
 }

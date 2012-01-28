@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -99,6 +99,14 @@ namespace Xoox
 		client->sendPacket (msg);
 	}
 
+	void RoomPublicMessage::Store ()
+	{
+		if (!ParentEntry_)
+			return;
+
+		ParentEntry_->HandleMessage (this);
+	}
+
 	IMessage::Direction RoomPublicMessage::GetDirection () const
 	{
 		return Direction_;
@@ -154,12 +162,12 @@ namespace Xoox
 	{
 		Datetime_ = dt;
 	}
-	
+
 	QString RoomPublicMessage::GetRichBody () const
 	{
 		return XHTML_;
 	}
-	
+
 	void RoomPublicMessage::SetRichBody (const QString& xhtml)
 	{
 		XHTML_ = xhtml;

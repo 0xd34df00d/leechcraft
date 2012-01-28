@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_XOOX_ROOMCONFIGWIDGET_H
 #define PLUGINS_AZOTH_PLUGINS_XOOX_ROOMCONFIGWIDGET_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QWidget>
 #include <QXmppDataForm.h>
 #include <QXmppMucIq.h>
@@ -44,15 +44,15 @@ namespace Xoox
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IMUCConfigWidget)
-		
+
 		Ui::RoomConfigWidget Ui_;
-		
+
 		QWidget *FormWidget_;
-		boost::shared_ptr<FormBuilder> FB_;
+		std::shared_ptr<FormBuilder> FB_;
 		RoomCLEntry *Room_;
 		QString JID_;
 		QXmppMucRoom *RoomHandler_;
-		
+
 		QStandardItemModel *PermsModel_;
 		QMap<QXmppMucItem::Affiliation, QStandardItem*> Aff2Cat_;
 	public:

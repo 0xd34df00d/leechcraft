@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -105,31 +105,63 @@ namespace Aggregator
 		reset ();
 	}
 
-	namespace
+	void ItemsListModel::Reset (const QList<IDType_t>& items)
 	{
-		struct FindEarlierDate
+		CurrentChannel_ = -1;
+		CurrentRow_ = -1;
+		CurrentItems_.clear ();
+
+		StorageBackend *sb = Core::Instance ().GetStorageBackend ();
+		Q_FOREACH (const IDType_t& itemId, items)
+			CurrentItems_.push_back (sb->GetItem (itemId)->ToShort ());
+
+		if (CurrentItems_.size ())
+			MayBeRichText_ = Qt::mightBeRichText (CurrentItems_.at (0).Title_);
+
+		reset ();
+	}
+
+	void ItemsListModel::RemoveItems (QSet<IDType_t> ids)
+	{
+		if (ids.isEmpty ())
+			return;
+
+		const bool shouldReset = ids.size () > 10;
+
+		for (auto i = CurrentItems_.begin ();
+				i != CurrentItems_.end () && !ids.isEmpty (); )
 		{
-			QDateTime Pattern_;
-
-			FindEarlierDate (const QDateTime& pattern)
-			: Pattern_ (pattern)
+			if (!ids.contains (i->ItemID_))
 			{
+				++i;
+				continue;
 			}
 
-			bool operator() (const ItemShort& is)
+			ids.remove (i->ItemID_);
+			if (!shouldReset)
 			{
-				return Pattern_ > is.PubDate_;
+				const size_t dist = std::distance (CurrentItems_.begin (), i);
+				beginRemoveRows (QModelIndex (), dist, dist);
 			}
-		};
-	};
+			i = CurrentItems_.erase (i);
+			if (!shouldReset)
+			{
+				endRemoveRows ();
+				qApp->processEvents (QEventLoop::ExcludeUserInputEvents);
+			}
+		}
+
+		if (shouldReset)
+			reset ();
+	}
 
 	void ItemsListModel::ItemDataUpdated (Item_ptr item)
 	{
 		ItemShort is = item->ToShort ();
 
-		items_shorts_t::iterator pos = CurrentItems_.end ();
+		auto pos = CurrentItems_.end ();
 
-		for (items_shorts_t::iterator i = CurrentItems_.begin (),
+		for (auto i = CurrentItems_.begin (),
 				end = CurrentItems_.end (); i != end; ++i)
 			if (is.Title_ == i->Title_ &&
 					is.URL_ == i->URL_)
@@ -141,9 +173,8 @@ namespace Aggregator
 		// Item is new
 		if (pos == CurrentItems_.end ())
 		{
-			items_shorts_t::iterator insertPos =
-				std::find_if (CurrentItems_.begin (), CurrentItems_.end (),
-						FindEarlierDate (item->PubDate_));
+			auto insertPos = std::find_if (CurrentItems_.begin (), CurrentItems_.end (),
+						[item] (const ItemShort& is) { return item->PubDate_ > is.PubDate_; });
 
 			int shift = std::distance (CurrentItems_.begin (), insertPos);
 

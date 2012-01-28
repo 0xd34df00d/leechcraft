@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,6 @@
 
 #include <stdexcept>
 #include <algorithm>
-#include <boost/bind.hpp>
 #include <QApplication>
 #include <QDir>
 #include <QStringList>
@@ -65,13 +64,9 @@ namespace LeechCraft
 		}
 	}
 
-	PluginManager::~PluginManager ()
-	{
-	}
-
 	int PluginManager::columnCount (const QModelIndex&) const
 	{
-		return Headers_.size ();
+		return Headers_.size () + 1;
 	}
 
 	QVariant PluginManager::data (const QModelIndex& index, int role) const
@@ -79,6 +74,15 @@ namespace LeechCraft
 		if (!index.isValid () ||
 				index.row () >= GetSize ())
 			return QVariant ();
+
+		if (role == Roles::PluginObject)
+		{
+			auto loader = AvailablePlugins_ [index.row ()];
+			if (!loader || !loader->isLoaded ())
+				return QVariant ();
+
+			return QVariant::fromValue<QObject*> (loader->instance ());
+		}
 
 		switch (index.column ())
 		{
@@ -150,6 +154,11 @@ namespace LeechCraft
 							QPalette::WindowText);
 				else
 					return QVariant ();
+			case 2:
+				if (role == Qt::SizeHintRole)
+					return QSize (32, 32);
+				else
+					return QVariant ();
 			default:
 				return QVariant ();
 		}
@@ -160,6 +169,13 @@ namespace LeechCraft
 		Qt::ItemFlags result = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 		if (index.column () == 0)
 			result |= Qt::ItemIsUserCheckable;
+		else if (index.column () == 2)
+		{
+			const int row = index.row ();
+			if (AvailablePlugins_ [row]->isLoaded () &&
+					qobject_cast<IHaveSettings*> (AvailablePlugins_ [row]->instance ()))
+				result |= Qt::ItemIsEditable;
+		}
 		return result;
 	}
 
@@ -169,7 +185,7 @@ namespace LeechCraft
 				orient != Qt::Horizontal)
 			return QVariant ();
 
-		return Headers_.at (column);
+		return Headers_.value (column, QString (""));
 	}
 
 	QModelIndex PluginManager::index (int row, int column, const QModelIndex&) const
@@ -197,10 +213,70 @@ namespace LeechCraft
 				role != Qt::CheckStateRole)
 			return false;
 
+		QPluginLoader_ptr loader = AvailablePlugins_.at (index.row ());
+
+		if (!data.toBool () &&
+				PluginContainers_.contains (loader))
+		{
+			PluginTreeBuilder builder;
+			builder.AddObjects (Plugins_);
+			builder.Calculate ();
+
+			QSet<QObject*> oldSet = QSet<QObject*>::fromList (builder.GetResult ());
+
+			builder.RemoveObject (loader->instance ());
+			builder.Calculate ();
+
+			const QSet<QObject*>& newSet = QSet<QObject*>::fromList (builder.GetResult ());
+			oldSet.subtract (newSet);
+
+			oldSet.remove (loader->instance ());
+
+			if (!oldSet.isEmpty ())
+			{
+				QStringList pluginNames;
+				Q_FOREACH (QObject *obj, oldSet)
+				{
+					IInfo *ii = qobject_cast<IInfo*> (obj);
+					pluginNames << (ii->GetName () + " (" + ii->GetInfo () + ")");
+				}
+
+				if (QMessageBox::question (0,
+						"LeechCraft",
+						tr ("The following plugins would also be disabled as the result:") +
+							"<ul><li>" + pluginNames.join ("</li><li>") + "</li></ul>" +
+							tr ("Are you sure you want to disable this one?"),
+						QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+					return false;
+
+				QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "-pg");
+				settings.beginGroup ("Plugins");
+
+				Q_FOREACH (QObject *obj, oldSet)
+				{
+					if (!Obj2Loader_.contains (obj))
+						continue;
+
+					QPluginLoader_ptr dl = Obj2Loader_ [obj];
+
+					settings.beginGroup (dl->fileName ());
+					settings.setValue ("AllowLoad", false);
+					settings.endGroup ();
+
+					const int row = AvailablePlugins_.indexOf (dl);
+					const QModelIndex& dIdx = createIndex (row, 0);
+					emit dataChanged (dIdx, dIdx);
+				}
+
+				settings.endGroup ();
+			}
+		}
+
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "-pg");
 		settings.beginGroup ("Plugins");
-		settings.beginGroup (AvailablePlugins_.at (index.row ())->fileName ());
+		settings.beginGroup (loader->fileName ());
 		settings.setValue ("AllowLoad", data.toBool ());
 		settings.endGroup ();
 		settings.endGroup ();
@@ -220,8 +296,8 @@ namespace LeechCraft
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "-pg");
 		settings.beginGroup ("Plugins");
-		boost::shared_ptr<void> groupGuard (static_cast<void*> (0),
-				boost::bind (&QSettings::endGroup, &settings));
+		std::shared_ptr<void> groupGuard (static_cast<void*> (0),
+				[&settings] (void*) { settings.endGroup (); });
 
 		Q_FOREACH (QObject *obj, ordered)
 		{
@@ -231,7 +307,7 @@ namespace LeechCraft
 				qDebug () << "Initializing" << ii->GetName ();
 				emit loadProgress (tr ("Initializing %1: stage one...").arg (ii->GetName ()));
 				ii->Init (ICoreProxy_ptr (new CoreProxy ()));
-				
+
 				const QString& path = GetPluginLibraryPath (obj);
 				if (path.isEmpty ())
 					continue;
@@ -273,6 +349,13 @@ namespace LeechCraft
 					<< object;
 			Obj2Loader_ [object]->unload ();
 			Obj2Loader_.remove (object);
+
+			Q_FOREACH (QPluginLoader_ptr loader, PluginContainers_)
+				if (loader->instance () == object)
+				{
+					PluginContainers_.removeAll (loader);
+					break;
+				}
 		}
 	}
 
@@ -280,7 +363,7 @@ namespace LeechCraft
 	{
 		CheckPlugins ();
 		FillInstances ();
-		
+
 		Plugins_.prepend (Core::Instance ().GetCoreInstanceObject ());
 
 		PluginTreeBuilder_->AddObjects (Plugins_);
@@ -373,21 +456,12 @@ namespace LeechCraft
 		return qobject_cast<IInfo*> (Plugins_ [pos])->GetInfo ();
 	}
 
-	namespace
-	{
-		struct PlugComparator
-		{
-			bool operator() (QObject *p1, QObject *p2)
-			{
-				return qobject_cast<IInfo*> (p1)->GetName () < qobject_cast<IInfo*> (p2)->GetName ();
-			}
-		};
-	}
-
 	QObjectList PluginManager::GetAllPlugins () const
 	{
 		QObjectList result = PluginTreeBuilder_->GetResult ();
-		std::sort (result.begin (), result.end (), PlugComparator ());
+		std::sort (result.begin (), result.end (),
+				[] (QObject *p1, QObject *p2)
+					{ return qobject_cast<IInfo*> (p1)->GetName () < qobject_cast<IInfo*> (p2)->GetName (); });
 		return result;
 	}
 
@@ -510,7 +584,7 @@ namespace LeechCraft
 				.arg (libdir));
 		ScanDir (QString ("/usr/%1/leechcraft/plugins")
 				.arg (libdir));
-	#endif	
+	#endif
 #endif
 	}
 
@@ -547,7 +621,7 @@ namespace LeechCraft
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "-pg");
 		settings.beginGroup ("Plugins");
-		
+
 		QHash<QByteArray, QString> id2source;
 
 		for (int i = 0; i < PluginContainers_.size (); ++i)
@@ -622,7 +696,7 @@ namespace LeechCraft
 				PluginContainers_.removeAt (i--);
 				continue;
 			}
-			
+
 			try
 			{
 				const QByteArray& id = info->GetUniqueID ();

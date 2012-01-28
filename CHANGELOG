@@ -4,6 +4,238 @@ the rest.
 Links to the corresponding development digests are also given for the
 relevant blocks of changes, so one could easily lookup 
 
+!!! HEAD
+!!! 0.4.99
+! Announce ( http://leechcraft.org/leechcraft-0.4.99-is-released ):
+* Azoth: entry info is copyable now.
+* Azoth: fixed quite a lot of memory leaks.
+* Azoth: shortcut for showing/hiding side widget with roster.
+* Azoth ChatHistory: added plugin icon.
+* Azoth Rosenthal: fixed suggestions display.
+* Azoth Xoox: fixed cases where nick was empty.
+* Core: fixed cases where no tab plugins are present.
+* Kinotify: word-wrap: break-word for themes.
+* LackMan: always update actions metadata.
+* LackMan: backported changes for repository format from master branch.
+* LackMan: backported support for xz/lzma archives from master branch.
+* Poshuku: Adobe Flash is working again.
+* Other: fixed Windows build.
+
+!!! 0.4.98
+! Announce ( http://leechcraft.org/leechcraft-0.4.98-is-released ):
+* Aggregator: fixed incorrect boost.optional usage.
+* Aggregator: fixed segfault on startup due to incorrect DB settings.
+* Azoth: proper icon for Draw Attention action.
+* Azoth: fixed segfault when opening chat with entries that are gone.
+* Azoth: correct context menus on entries with non-latin names.
+* Azoth Acetamide: fixed join/leave/kick messages (fixes segfaults with
+  AdiumStyles).
+* Azoth AS: fixed /me-related bug.
+* Azoth AS: fixed self-closing tags in themes.
+* CSTP: correctly set UA from settings.
+* Kinotify: seemingly fixed parenting-related bugs.
+* Poshuku: fixed text margins in URL edit.
+
+!!! 0.4.97
+! Announce ( http://leechcraft.org/leechcraft-0.4.97-is-released ):
+* Aggregator: updated the list of feeds.
+* Azoth: fast change status button offline by default.
+* Azoth: added perr.svg to Likey iconset.
+* Azoth: fixed drawing groups heading.
+* Azoth AdiumStyles: detect outgoing messages in MUCs.
+* Azoth ChatHistory: select proper history item.
+* Azoth Xoox: fixed Ad-Hoc commands.
+* Azoth plugins: more plugin icons.
+* BitTorrent: optimized updating pieces model.
+* BitTorrent: optimized calculating interesting pieces.
+* Core: correctly handle arguments from local socket.
+* CSTP: fixed handling redirections for internal tasks.
+* EiskaltDC++: fixed building with Boost-1.48 and later.
+* Poshuku OB: sync fixes.
+* Poshuku OB RIL: fixed uploading empty bookmarks.
+
+!!! 0.4.96
+! Announce ( http://leechcraft.org/leechcraft-0.4.96-is-released ):
+* Azoth: fixed auth issues.
+* Azoth AdiumStyles: fixed /me-messages.
+* Azoth AdiumStyles: support styles using tags other than div for
+  insertion.
+* Azoth Metacontacts: fixed DnD of a contact on itself.
+* Azoth Xoox: members-moderators are now able to kick participants.
+* Azoth Xoox: self PEP events are also handled now.
+* Azoth Xtazy: fixed handling of players started after LC.
+* Poshuku OB: fixed readding accounts once they are deleted.
+* SecMan SecureStorage: fixed build.
+
+!!! 0.4.95
+! Devel digest #19 ( http://leechcraft.org/devel-digest-19 ):
+* Azoth: show top used status on Fast Change Status button.
+* Azoth Xoox: handle xmpp:...?message links.
+* EiskaltDC++: fixed build with CMake 2.8.6 and later.
+* Overall: optimized timers in LeechCraft so that CPU is woken up 4-5
+  times rarely.
+* Poshuku: forcefully disabled NPAPI plugins.
+* Poshuku OB: kludges for Qt 4.8 and later.
+
+! Devel digest #18 ( http://leechcraft.org/devel-digest-18 ):
+* Aggregator: added support for itpc schemes.
+* Aggregator: fixed item view not being updates on some feeds.
+* Azoth: context menu for nicknames in Azoth.
+* Azoth: optionally append a message whenever participant leaves.
+* Azoth: optionally disable sending leave notification.
+* Azoth: configurable post-address text in Azoth.
+* Azoth: "Quote" action in chat view context menu.
+* Azoth: fixed leaking search widgets.
+* Azoth: fixed Clear chat behavior.
+* Azoth Acetamide: added support for SSL connections.
+* Azoth OTRoid: improved interoperability with other plugins.
+* Azoth StandardStyles: added Gajim style.
+* Azoth StandardStyles: fixed pre/post-nick colors.
+* Azoth Xoox: fixed segfault when clearing mood.
+* Core: open URLs externally if they aren't handled internally.
+* Core: fixed toolbar visibility control.
+* Core: use automoc feature of CMake 2.8.6 and later.
+* LackMan: fixed package deinstallation.
+* LackMan: fixed segfault on package installation cancelling.
+* Popishu: added Octave and Matlab lexers.
+* Popishu: line numbers & wrapping are enabled by default.
+* Poshuku FatApe: fixed fetching scripts.
+* Poshuku FatApe: fixed userscripts detection.
+* Poshuku Pogooglue: new plugin for searching selected text in Google.
+
+! Devel digest #17 ( http://leechcraft.org/devel-digest-17 ):
+* AdvancedNotifications: support toggling audio notifications from QL.
+* Aggregator: support removing individual channels by user.
+* Azoth: added "Group send" feature.
+* Azoth: option to disable displaying join/leave events.
+* Azoth: "More this stuff" buttons.
+* Azoth: fixed rare emoticons mishandling in Azoth.
+* Azoth: hide "Inspect" action if developer extras are disabled.
+* Azoth p100q: fixed displaying images from original post in replies.
+* Core: "More this stuff" architecture.
+* Core: somewhat fixed layouts in settings tabs.
+* LackMan: more space for descriptions.
+* LackMan: periodical updates featuer.
+* Poshuku: display links on hover in a nice box instead of status bar.
+* Poshuku: fixed viewport size issues.
+
+! Devel digest #16 ( http://leechcraft.org/devel-digest-16 ):
+* Azoth: allow one to change bookmarks right from the CL context menu.
+* Azoth: allow one to join bookmarked MUCs from the CL context menu.
+* Azoth: added an option to hide MUC participants from whole CL.
+* Azoth: don't remove MUC participants that left the MUC but have an
+  unread message.
+* Azoth: fixed for bookmark manager.
+* Azoth AdiumStyles: more fixes.
+* Azoth Isterique: added new plugin for decapsifying incoming msgs.
+* Azoth p100q: fixed '/', line breaks and post IDs.
+* Core: uncheck dependent plugins when disabling root plugin.
+* Poshuku: support saving pixmaps without redownloading.
+
+! Devel digest #15 ( http://leechcraft.org/devel-digest-15 ):
+* AdvancedNotifications: support enabling/disabling rules.
+* AdvancedNotifications: support single shot rules.
+* Azoth: support inviting to MUCs.
+* Azoth: support dragging contacts between groups.
+* Azoth: support sending files to contacts by dropping files on them.
+* Azoth: allow one to disable displaying contact statuses.
+* Azoth: fixed avatar display.
+* Azoth AdiumStyles: support variants for all styles.
+* Azoth AdiumStyles: fixed themes loading external resources from disk.
+* Azoth Metacontacts: support creating metacontacts by D&D.
+* Core: tooltips for settings items.
+* Core: Diagnostic info tab.
+* KnowHow: added plugin for displaying tips of the day.
+* LackMan: fixed on Windows.
+* Overall: more agressive caching of resources.
+* Poshuku: expose support for WebGL.
+* Poshuku: migrate to QGraphicsView-based web view.
+
+! Devel digest #14 ( http://leechcraft.org/devel-digest-14 ):
+* Aggregator: queueing of feeds updates instead of bunch update.
+* Azoth: directed chat state participation events.
+* Azoth: lots of small fixes.
+* Azoth: now one can set password in account configuration dialog.
+* Azoth OTRoid: implemented support for OTR in Azoth.
+* Azoth Xoox: properly create Last Activity stanza.
+* Azoth Xoox: resepect lack for XEP-0085 in other clients.
+* Poshuku OB: almost reworked from scratch.
+
+! Devel digest #13 ( http://leechcraft.org/devel-digest-13 ): 
+* Aggregator: stubs for sync support.
+* Azoth: support for protocols that support searching.
+* Azoth: show buddy avatar in chat tabs.
+* Azoth Autoidler: change status to XA instead of DND.
+* Azoth p100q: allow one to disable avatars.
+* Azoth p100q: hints for buttons.
+* Azoth Xoox: XEP-0055 (Jabber Search).
+* Azoth Xoox: experimental blind-written XEP-0084: User Avatar.
+* Azoth Xoox: kludges for incorrect registration forms from various
+  servers like ejabberd.
+* Azoth Xoox: lots of various small fixes.
+* BitTorrent: fixed torrents not being added correctly sometimes.
+
+!!! 0.4.90
+! Devel digest #12 ( http://leechcraft.org/devel-digest-12 ): 
+* Azoth: allow one to create new accounts from the Azoth menu.
+* Azoth: allow one to set different styles for chats and MUCs.
+* Azoth: support for protocols allowing exchanging the contacts.
+* Azoth: lots of bugfixes.
+* Azoth Acetamide: autoidentify.
+* Azoth AdiumStyles: added GoneDark theme to the default themes set.
+* Azoth AdiumStyles: fixed styling engine, more themes are supported now.
+* Azoth Xoox: introduced XEP-0144 (Roster Item Exchange).
+* BitTorrent: fixed Win32 build issues.
+
+! Devel digest #11 ( http://leechcraft.org/devel-digest-11 ): 
+* AdvancedNotifications: allow one to reload default set of rules.
+* AdvancedNotifications: support running external command.
+* Aggregator: support "Important".
+* Aggregator BodyFetch: disable support for things useless for parsing.
+* Aggregator BodyFetch: extended API.
+* Aggregator BodyFetch: huge perf optimization by caching scripts.
+* Aggregator BodyFetch: moved processing back to main thread to avoid
+  some QtWebkit-related threading issues.
+* Azoth: draw own avatar and protocol icon in the CL.
+* Azoth: fixed notifying about each MUC message in AN.
+* Azoth: lots of micro improvements.
+* Azoth: native support for '/leave' command.
+* Azoth: "Quote" action.
+* Azoth: somewhat fixed Ctrl+C in chats.
+* Azoth: somewhat optimized contact list delegate.
+* Azoth Acetamide: autofix channel names by prepending '#' if absent.
+* Azoth Acetamide: lots of different fixes.
+* Azoth Acetamide: support configuring channels, including chanmodes,
+  banlist, except list and invite list.
+* Azoth Acetamide: '/say' command.
+* Azoth p100q: fixed ordering of buttons.
+* Azoth Xoox: fixed handling self vCards.
+* BitTorrent: show free space when adding files.
+* Core: fixed a whole class of bugs arising from usage of already-
+  deleted objects in notifications actions.
+* Core: fixed incorrect dependencies calculation.
+* Overall: initial support for Qt 4.8.
+* Poshuku: correctly handle content resend errors.
+* Poshuku CleanWeb: fixed FlashOnClick.
+* Poshuku CleanWeb: frames with ads are also hidden now.
+* Poshuku CleanWeb: match plain strings as plain strings (speeds up).
+* Poshuku CleanWeb: support "third-party" attribute.
+
+! Devel digest #10 ( http://leechcraft.org/devel-digest-10 ): 
+* Azoth: suggest rejoining a MUC after being kicked.
+* Azoth: support disabling by-status grouping in the CL.
+* Azoth: support for PGP-enabled protocols/conversations.
+* Azoth Acetamide: '/msg' command.
+* Azoth Acetamide: bookmarks and autojoin support.
+* Azoth Metacontacts: added support for metacontacts.
+* Azoth Xoox: allow one to request voice in MUCs.
+* Azoth Xoox: introduced XEP-0027 (OpenPGP).
+* Azoth Xoox: self contact.
+* Azoth Xoox: support data forms in messages.
+* Azoth Xoox: support publishing vCards.
+* TabsList: search by title.
+* TabsList: show tabs numbers.
+
 !!! 0.4.85
 ! Devel digest #9 ( http://leechcraft.org/devel-digest-9 ):
 * Aggregator: more compatibility in fb2 generator.

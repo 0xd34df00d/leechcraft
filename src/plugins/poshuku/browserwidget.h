@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,10 +21,12 @@
 #include <boost/shared_ptr.hpp>
 #include <QWidget>
 #include <QTime>
+#include <qwebpage.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/iwebbrowser.h>
 #include <interfaces/ihaveshortcuts.h>
 #include <interfaces/structures.h>
+#include <interfaces/ihaverecoverabletabs.h>
 #include <interfaces/core/ihookproxy.h>
 #include "interfaces/ibrowserwidget.h"
 #include "ui_browserwidget.h"
@@ -32,6 +34,8 @@
 class QToolBar;
 class QDataStream;
 class QShortcut;
+class QGraphicsWebView;
+class QWebFrame;
 
 namespace LeechCraft
 {
@@ -40,14 +44,16 @@ namespace Poshuku
 	class FindDialog;
 	class PasswordRemember;
 	struct BrowserWidgetSettings;
+	class CustomWebView;
 
 	class BrowserWidget : public QWidget
 						, public IBrowserWidget
 						, public IWebWidget
 						, public ITabWidget
+						, public IRecoverableTab
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Poshuku::IBrowserWidget IWebWidget ITabWidget)
+		Q_INTERFACES (LeechCraft::Poshuku::IBrowserWidget IWebWidget ITabWidget IRecoverableTab)
 
 		Ui::BrowserWidget Ui_;
 
@@ -76,6 +82,7 @@ namespace Poshuku
 		QAction *RecentlyClosedAction_;
 		QAction *HistoryAction_;
 		QAction *BookmarksAction_;
+		QAction *ExternalLinksAction_;
 		QPoint OnLoadPos_;
 		QMenu *ChangeEncoding_;
 		QMenu *RecentlyClosed_;
@@ -87,6 +94,9 @@ namespace Poshuku
 		bool HtmlMode_;
 		bool Own_;
 		QMap<QString, QList<QAction*> > WindowMenus_;
+
+		CustomWebView *WebView_;
+		boost::shared_ptr<QGraphicsTextItem> LinkTextItem_;
 
 		static QObject* S_MultiTabsParent_;
 
@@ -100,9 +110,9 @@ namespace Poshuku
 		void InitShortcuts ();
 
 		void SetUnclosers (const QList<QAction*>&);
+
+		QGraphicsView* GetGraphicsView () const;
 		CustomWebView* GetView () const;
-		// This is the same as above but to satisfy the IBrowserWidget.
-		QWebView* GetWebView () const;
 		QLineEdit* GetURLEdit () const;
 
 		BrowserWidgetSettings GetWidgetSettings () const;
@@ -125,6 +135,11 @@ namespace Poshuku
 		QObject* ParentMultiTabs ();
 		TabClassInfo GetTabClassInfo () const;
 
+		void SetTabRecoverData (const QByteArray&);
+		QByteArray GetTabRecoverData () const;
+		QString GetTabRecoverName () const;
+		QIcon GetTabRecoverIcon () const;
+
 		void SetOnLoadScrollPoint (const QPoint&);
 	private:
 		void PrintImpl (bool, QWebFrame*);
@@ -132,11 +147,13 @@ namespace Poshuku
 		void SetSplitterSizes (int);
 	public slots:
 		void focusLineEdit ();
+		void updateBookmarksState (bool);
 		void handleShortcutHistory ();
 		void handleShortcutBookmarks ();
-		QWebView* getWebView () const;
+		QGraphicsWebView* getWebView () const;
 		QLineEdit* getAddressBar () const;
 		QWidget* getSideBar () const;
+		void checkPageAsFavorite (const QString&);
 	private slots:
 		void handleIconChanged ();
 		void handleStatusBarMessage (const QString&);
@@ -166,6 +183,8 @@ namespace Poshuku
 		void updateLogicalPath ();
 		void showSendersMenu ();
 		void handleUrlChanged (const QString&);
+		void refitWebView ();
+		void handleUrlTextChanged (const QString&);
 	signals:
 		void titleChanged (const QString&);
 		void urlChanged (const QString&);
@@ -177,8 +196,8 @@ namespace Poshuku
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 		void couldHandle (const LeechCraft::Entity&, bool*);
-		void invalidateSettings ();
 		void raiseTab (QWidget*);
+		void tabRecoverDataChanged ();
 
 		// Hook support
 		void hookFindText (LeechCraft::IHookProxy_ptr proxy,
@@ -194,14 +213,14 @@ namespace Poshuku
 				int progress);
 		void hookMoreMenuFillBegin (LeechCraft::IHookProxy_ptr proxy,
 				QMenu *menu,
-				QWebView *webView,
+				QGraphicsWebView *webView,
 				QObject *browserWidget);
 		void hookMoreMenuFillEnd (LeechCraft::IHookProxy_ptr proxy,
 				QMenu *menu,
-				QWebView *webView,
+				QGraphicsWebView *webView,
 				QObject *browserWidget);
 		void hookNotifyLoadFinished (LeechCraft::IHookProxy_ptr proxy,
-				QWebView *view,
+				QGraphicsWebView *view,
 				QObject *browserWidget,
 				bool ok,
 				bool notifyWhenFinished,

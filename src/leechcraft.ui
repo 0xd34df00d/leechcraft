@@ -24,15 +24,20 @@
     <normaloff>:/resources/images/leechcraft.svg</normaloff>:/resources/images/leechcraft.svg</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QGridLayout" name="gridLayout">
+   <layout class="QHBoxLayout" name="horizontalLayout">
     <property name="margin">
-     <number>1</number>
+     <number>0</number>
     </property>
-    <property name="spacing">
-     <number>2</number>
-    </property>
-    <item row="0" column="0">
-     <widget class="LeechCraft::SeparateTabWidget" name="MainTabWidget_" native="true"/>
+    <item>
+     <widget class="QSplitter" name="MainSplitter_">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="handleWidth">
+       <number>1</number>
+      </property>
+      <widget class="LeechCraft::SeparateTabWidget" name="MainTabWidget_" native="true"/>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -64,7 +69,7 @@
     <enum>QAction::QuitRole</enum>
    </property>
    <property name="ActionIcon" stdset="0">
-    <string>exit</string>
+    <string>application-exit</string>
    </property>
   </action>
   <action name="ActionFullscreenMode_">
@@ -130,6 +135,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+T</string>
+   </property>
+  </action>
+  <action name="ActionShowToolBar_">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show toolbar</string>
    </property>
   </action>
  </widget>

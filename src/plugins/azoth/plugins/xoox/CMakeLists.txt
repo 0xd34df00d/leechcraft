@@ -53,7 +53,6 @@ SET (XOOX_SRCS
 	imagemediawidget.cpp
 	privacylistsconfigdialog.cpp
 	privacylistsitemdialog.cpp
-	mediacall.cpp
 	adhoccommandmanager.cpp
 	executecommanddialog.cpp
 	userlocation.cpp
@@ -61,6 +60,12 @@ SET (XOOX_SRCS
 	adhoccommandserver.cpp
 	adhoccommand.cpp
 	lastactivitymanager.cpp
+	riexmanager.cpp
+	jabbersearchsession.cpp
+	jabbersearchmanager.cpp
+	useravatarmanager.cpp
+	useravatardata.cpp
+	useravatarmetadata.cpp
 	)
 SET (XOOX_HEADERS
 	xoox.h
@@ -106,7 +111,6 @@ SET (XOOX_HEADERS
 	imagemediawidget.h
 	privacylistsconfigdialog.h
 	privacylistsitemdialog.h
-	mediacall.h
 	adhoccommandmanager.h
 	executecommanddialog.h
 	userlocation.h
@@ -114,6 +118,12 @@ SET (XOOX_HEADERS
 	adhoccommandserver.h
 	adhoccommand.h
 	lastactivitymanager.h
+	riexmanager.h
+	jabbersearchsession.h
+	jabbersearchmanager.h
+	useravatarmanager.h
+	useravatardata.h
+	useravatarmetadata.h
 	)
 SET (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui
@@ -139,8 +149,17 @@ IF (ENABLE_CRYPT)
 	SET (XOOX_HEADERS ${XOOX_HEADERS} pgpmanager.h)
 ENDIF (ENABLE_CRYPT)
 
-CreateTrVars ("azoth_xoox" "de;en;fr;it;ru_RU;uk_UA" XOOX_TRANSLATIONS XOOX_COMPILED_TRANSLATIONS)
-QT4_WRAP_CPP (XOOX_MOC_SRCS ${XOOX_HEADERS})
+IF (ENABLE_MEDIACALLS)
+	ADD_DEFINITIONS (-DENABLE_MEDIACALLS)
+
+	SET (XOOX_SRCS ${XOOX_SRCS} mediacall.cpp)
+	SET (XOOX_HEADERS ${XOOX_HEADERS} mediacall.h)
+ENDIF (ENABLE_MEDIACALLS)
+
+CreateTrVars ("azoth_xoox" "de;en;es;fr;it;ru_RU;uk_UA" XOOX_TRANSLATIONS XOOX_COMPILED_TRANSLATIONS)
+IF (NOT LC_NO_MOC)
+	QT4_WRAP_CPP (XOOX_MOC_SRCS ${XOOX_HEADERS})
+ENDIF (NOT LC_NO_MOC)
 QT4_WRAP_UI (XOOX_UIS_H ${XOOX_FORMS})
 QT4_ADD_RESOURCES (XOOX_RCCS ${XOOX_RESOURCES})
 

@@ -19,11 +19,12 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCACCOUNT_H
 #define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCACCOUNT_H
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QObject>
 #include <interfaces/iaccount.h>
 #include <interfaces/imessage.h>
 #include <interfaces/ihaveconsole.h>
+#include <interfaces/isupportbookmarks.h>
 #include "core.h"
 #include "localtypes.h"
 
@@ -44,9 +45,12 @@ namespace Acetamide
 	class IrcAccount : public QObject
 						, public IAccount
 						, public IHaveConsole
+						, public ISupportBookmarks
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IAccount LeechCraft::Azoth::IHaveConsole);
+		Q_INTERFACES (LeechCraft::Azoth::IAccount
+				LeechCraft::Azoth::IHaveConsole
+				LeechCraft::Azoth::ISupportBookmarks);
 
 		QString AccountName_;
 		IrcProtocol *ParentProtocol_;
@@ -61,7 +65,7 @@ namespace Acetamide
 		QString DefaultChannel_;
 		State IrcAccountState_;
 
-		boost::shared_ptr<ClientConnection> ClientConnection_;
+		std::shared_ptr<ClientConnection> ClientConnection_;
 		bool IsFirstStart_;
 		QList<IrcBookmark> ActiveChannels_;
 	public:
@@ -80,23 +84,26 @@ namespace Acetamide
 		QString GetRealName () const;
 		QStringList GetNickNames () const;
 
-		boost::shared_ptr<ClientConnection> GetClientConnection () const;
+		std::shared_ptr<ClientConnection> GetClientConnection () const;
 
 		void RenameAccount (const QString&);
 
 		QByteArray GetAccountID () const;
 		void SetAccountID (const QString&);
-		
+
 		QList<QAction*> GetActions () const;
 
 		void OpenConfigurationDialog ();
 		void FillSettings (IrcAccountConfigurationWidget*);
 
-		void JoinServer (ServerOptions, ChannelOptions);
+		void JoinServer (ServerOptions, ChannelOptions, bool = false);
 
 		void SetBookmarks (const QList<IrcBookmark>&);
 		QList<IrcBookmark> GetBookmarks () const;
 
+		QWidget* GetMUCBookmarkEditorWidget ();
+		QVariantList GetBookmarkedMUCs () const;
+		void SetBookmarkedMUCs (const QVariantList&);
 
 		EntryStatus GetState () const;
 		void ChangeState (const EntryStatus&);
@@ -138,9 +145,11 @@ namespace Acetamide
 		void scheduleClientDestruction ();
 
 		void gotConsolePacket (const QByteArray&, int);
+
+		void bookmarksChanged ();
 	};
 
-	typedef boost::shared_ptr<IrcAccount> IrcAccount_ptr;
+	typedef std::shared_ptr<IrcAccount> IrcAccount_ptr;
 };
 };
 };

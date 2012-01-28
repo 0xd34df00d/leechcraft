@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,11 +24,13 @@
 #include <QVariant>
 #include <QXmppMessage.h>
 #include <QXmppVCardIq.h>
+#include <QXmppVersionIq.h>
 #include <interfaces/iclentry.h>
 #include <interfaces/iadvancedclentry.h>
 #include <interfaces/isupportgeolocation.h>
 
 class QXmppPresence;
+class QXmppVersionIq;
 
 namespace LeechCraft
 {
@@ -59,7 +61,7 @@ namespace Xoox
 		QMap<QString, EntryStatus> CurrentStatus_;
 		QList<QAction*> Actions_;
 		mutable QAction *Commands_;
-		
+
 		QMap<QString, GeolocationInfo_t> Location_;
 
 		QImage Avatar_;
@@ -68,10 +70,14 @@ namespace Xoox
 		QXmppVCardIq VCardIq_;
 		QPointer<VCardDialog> VCardDialog_;
 
-		QMap<QString, QMap<QString, QVariant> > Variant2ClientInfo_;
+		QMap<QString, QMap<QString, QVariant>> Variant2ClientInfo_;
 		QMap<QString, QByteArray> Variant2VerString_;
+		QMap<QString, QXmppVersionIq> Variant2Version_;
+
+		bool HasUnreadMsgs_;
 	public:
 		EntryBase (GlooxAccount* = 0);
+		virtual ~EntryBase ();
 
 		// ICLEntry
 		QObject* GetObject ();
@@ -84,7 +90,8 @@ namespace Xoox
 		QString GetRawInfo () const;
 		void ShowInfo ();
 		QMap<QString, QVariant> GetClientInfo (const QString&) const;
-		
+		void MarkMsgsRead ();
+
 		// IAdvancedCLEntry
 		AdvancedFeatures GetAdvancedFeatures () const;
 		void DrawAttention (const QString&, const QString&);
@@ -102,12 +109,16 @@ namespace Xoox
 		void SetVCard (const QXmppVCardIq&);
 		void SetRawInfo (const QString&);
 
+		bool HasUnreadMsgs () const;
+
 		void SetClientInfo (const QString&, const QString&, const QByteArray&);
 		void SetClientInfo (const QString&, const QXmppPresence&);
-		
+		void SetClientVersion (const QString&, const QXmppVersionIq&);
+
 		GeolocationInfo_t GetGeolocationInfo (const QString&) const;
-		
+
 		QByteArray GetVariantVerString (const QString&) const;
+		QXmppVersionIq GetClientVersion (const QString&) const;
 	private:
 		QString FormatRawInfo (const QXmppVCardIq&);
 	private slots:
@@ -123,7 +134,8 @@ namespace Xoox
 		void chatPartStateChanged (const ChatPartState&, const QString&);
 		void permsChanged ();
 		void entryGenerallyChanged ();
-		
+		void messagesAreRead ();
+
 		void attentionDrawn (const QString&, const QString&);
 		void moodChanged (const QString&);
 		void activityChanged (const QString&);

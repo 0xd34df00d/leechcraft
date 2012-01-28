@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 #include <QStandardItemModel>
 #include <QStringListModel>
 #include <QStyleFactory>
+#include <util/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "pluginmanagerdialog.h"
@@ -143,6 +144,12 @@ namespace LeechCraft
 	{
 		BuildNewTabModel ();
 		SettingsTab_->Initialize ();
+
+#ifdef STRICT_LICENSING
+		QTimer::singleShot (10000,
+				this,
+				SLOT (notifyLicensing ()));
+#endif
 	}
 
 	void CoreInstanceObject::Release ()
@@ -210,6 +217,11 @@ namespace LeechCraft
 		return CorePlugin2Manager_;
 	}
 
+	SettingsTab* CoreInstanceObject::GetSettingsTab () const
+	{
+		return SettingsTab_;
+	}
+
 	void CoreInstanceObject::BuildNewTabModel ()
 	{
 		QStandardItemModel *newTabsModel = new QStandardItemModel (this);
@@ -241,4 +253,19 @@ namespace LeechCraft
 		Core::Instance ().GetCoreInstanceObject ()->
 				GetSettingsDialog ()->SetDataSource ("DefaultNewTab", newTabsModel);
 	}
+
+#ifdef STRICT_LICENSING
+	void CoreInstanceObject::notifyLicensing ()
+	{
+		if (XmlSettingsManager::Instance ()->
+				Property ("NotifiedLicensing", false).toBool ())
+			return;
+
+		const QString& str = tr ("Due to licensing issues, some artwork "
+				"may have been removed from this package. Consider "
+				"using the LackMan plugin to install that artwork.");
+		emit gotEntity (Util::MakeNotification ("LeechCraft", str, PWarning_));
+		XmlSettingsManager::Instance ()->setProperty ("NotifiedLicensing", true);
+	}
+#endif
 }

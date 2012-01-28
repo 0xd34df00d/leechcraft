@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,38 +16,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_NEWLIFE_FIRSTPAGE_H
-#define PLUGINS_NEWLIFE_FIRSTPAGE_H
+#pragma once
+
 #include <QWizardPage>
 #include <QMap>
 #include "ui_firstpage.h"
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace NewLife
+{
+	class AbstractImporter;
+
+	class FirstPage : public QWizardPage
 	{
-		namespace NewLife
-		{
-			class AbstractImporter;
+		Q_OBJECT
 
-			class FirstPage : public QWizardPage
-			{
-				Q_OBJECT
+		Ui::FirstPage Ui_;
+		QMap<const AbstractImporter*, int> StartPages_;
+	public:
+		FirstPage (QWidget* = 0);
 
-				Ui::FirstPage Ui_;
-				QMap<const AbstractImporter*, int> StartPages_;
-			public:
-				FirstPage (QWidget* = 0);
+		virtual int nextId () const;
 
-				virtual int nextId () const;
-
-				void SetupImporter (const AbstractImporter*);
-				AbstractImporter* GetImporter () const;
-				QString GetSelectedName () const;
-			};
-		};
+		void SetupImporter (AbstractImporter*);
+		AbstractImporter* GetImporter () const;
+		QString GetSelectedName () const;
 	};
-};
-
-#endif
-
+}
+}

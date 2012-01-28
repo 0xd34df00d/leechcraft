@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,10 +17,17 @@
  **********************************************************************/
 
 #include "util.h"
+#include <memory>
 #include <QObject>
 #include <QHash>
 #include <QDomDocument>
 #include <QDomElement>
+#include <QDialog>
+#include <QDialogButtonBox>
+#include <QVBoxLayout>
+#include "entrybase.h"
+#include "core.h"
+#include "capsdatabase.h"
 
 namespace LeechCraft
 {
@@ -163,7 +170,7 @@ namespace XooxUtil
 		static Node2ClientHR n2ch;
 		return n2ch.Node2ClientHR_.value (node);
 	}
-	
+
 	QDomElement XmppElem2DomElem (const QXmppElement& elem)
 	{
 		QByteArray arr;
@@ -174,7 +181,7 @@ namespace XooxUtil
 		doc.setContent (arr);
 		return doc.documentElement ();
 	}
-	
+
 	QXmppElement Form2XmppElem (const QXmppDataForm& form)
 	{
 		QByteArray formData;
@@ -183,6 +190,44 @@ namespace XooxUtil
 		QDomDocument doc;
 		doc.setContent (formData);
 		return doc.documentElement ();
+	}
+
+	bool RunFormDialog (QWidget *widget)
+	{
+		QDialog *dialog (new QDialog ());
+		dialog->setWindowTitle (widget->windowTitle ());
+		dialog->setLayout (new QVBoxLayout ());
+		dialog->layout ()->addWidget (widget);
+		QDialogButtonBox *box = new QDialogButtonBox (QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+		dialog->layout ()->addWidget (box);
+		QObject::connect (box,
+				SIGNAL (accepted ()),
+				dialog,
+				SLOT (accept ()));
+		QObject::connect (box,
+				SIGNAL (rejected ()),
+				dialog,
+				SLOT (reject ()));
+
+		const bool result = dialog->exec () == QDialog::Accepted;
+		dialog->deleteLater ();
+		return result;
+	}
+
+	bool CheckUserFeature (EntryBase *base, const QString& variant, const QString& feature)
+	{
+		if (variant.isEmpty ())
+			return true;
+
+		const QByteArray& ver = base->GetVariantVerString (variant);
+		if (ver.isEmpty ())
+			return true;
+
+		const QStringList& feats = Core::Instance ().GetCapsDatabase ()->Get (ver);
+		if (feats.isEmpty ())
+			return true;
+
+		return feats.contains (feature);
 	}
 }
 }

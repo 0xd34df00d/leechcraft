@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,6 +61,7 @@ namespace Xoox
 	GlooxMessage::GlooxMessage (const QXmppMessage& message,
 			ClientConnection *conn)
 	: Type_ (MTChatMessage)
+	, SubType_ (MSTOther)
 	, Direction_ (DIn)
 	, Message_ (message)
 	, Connection_ (conn)
@@ -108,6 +109,13 @@ namespace Xoox
 		}
 	}
 
+	void GlooxMessage::Store ()
+	{
+		QMetaObject::invokeMethod (OtherPart (),
+				"gotMessage",
+				Q_ARG (QObject*, this));
+	}
+
 	IMessage::Direction GlooxMessage::GetDirection () const
 	{
 		return Direction_;
@@ -122,7 +130,7 @@ namespace Xoox
 	{
 		return SubType_;
 	}
-	
+
 	void GlooxMessage::SetMessageSubType (IMessage::MessageSubType subType)
 	{
 		SubType_ = subType;
@@ -159,29 +167,29 @@ namespace Xoox
 		if (Direction_ == DIn)
 			Message_.setStamp (dateTime);
 	}
-	
+
 	bool GlooxMessage::IsDelivered () const
 	{
 		return IsDelivered_;
 	}
-	
+
 	QString GlooxMessage::GetRichBody () const
 	{
 		return Message_.getXhtml ();
 	}
-	
+
 	void GlooxMessage::SetRichBody (const QString& html)
 	{
 		Message_.setXhtml (html);
 	}
-	
+
 	void GlooxMessage::SetDelivered (bool delivered)
 	{
 		IsDelivered_ = delivered;
 		if (delivered)
 			emit messageDelivered ();
 	}
-	
+
 	QXmppMessage GlooxMessage::GetMessage () const
 	{
 		return Message_;

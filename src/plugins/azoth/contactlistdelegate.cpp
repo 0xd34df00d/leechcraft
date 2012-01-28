@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,10 +37,10 @@ namespace Azoth
 {
 	const int CContactShift = 20;
 	const int CPadding = 2;
-	const int AvatarPaddingBottom = 2;
 
 	ContactListDelegate::ContactListDelegate (QTreeView* parent)
 	: QStyledItemDelegate (parent)
+	, ContactHeight_ (24)
 	, View_ (parent)
 	{
 		handleShowAvatarsChanged ();
@@ -48,6 +48,8 @@ namespace Azoth
 		handleActivityIconsetChanged ();
 		handleMoodIconsetChanged ();
 		handleSystemIconsetChanged ();
+		handleShowStatusesChanged ();
+		handleContactHeightChanged ();
 
 		XmlSettingsManager::Instance ().RegisterObject ("ShowAvatars",
 				this, "handleShowAvatarsChanged");
@@ -59,6 +61,10 @@ namespace Azoth
 				this, "handleMoodIconsetChanged");
 		XmlSettingsManager::Instance ().RegisterObject ("SystemIcons",
 				this, "handleSystemIconsetChanged");
+		XmlSettingsManager::Instance ().RegisterObject ("ShowStatuses",
+				this, "handleShowStatusesChanged");
+		XmlSettingsManager::Instance ().RegisterObject ("RosterContactHeight",
+				this, "handleContactHeightChanged");
 	}
 
 	void ContactListDelegate::paint (QPainter *painter,
@@ -93,13 +99,15 @@ namespace Azoth
 		switch (index.data (Core::CLREntryType).value<Core::CLEntryType> ())
 		{
 		case Core::CLETContact:
-			if (size.height () < 24)
-				size.setHeight (24);
+			if (size.height () < ContactHeight_)
+				size.setHeight (ContactHeight_);
 			break;
 		case Core::CLETAccount:
 			size.setHeight (size.height () * 1.5);
 			break;
-		default:
+		case Core::CLETCategory:
+			const int textHeight = option.fontMetrics.height ();
+			size.setHeight (qMax (textHeight + CPadding * 2, size.height ()));
 			break;
 		}
 
@@ -111,20 +119,20 @@ namespace Azoth
 	{
 		painter->save ();
 		painter->setRenderHints (QPainter::HighQualityAntialiasing | QPainter::Antialiasing);
-		
+
 		QPainterPath rectPath;
 		rectPath.addRoundedRect (o.rect, 6, 6);
-		
+
 		painter->fillPath (rectPath, o.palette.color (QPalette::Window));
 		painter->setPen (o.palette.color (QPalette::WindowText));
 		painter->drawPath (rectPath);
-		
+
 		painter->restore ();
 
 		o.font.setBold (true);
 
 		QStyledItemDelegate::paint (painter, o, index);
-		
+
 		QObject *accObj = index.data (Core::CLRAccountObject).value<QObject*> ();
 		IAccount *acc = qobject_cast<IAccount*> (accObj);
 		IExtSelfInfoAccount *extAcc = qobject_cast<IExtSelfInfoAccount*> (accObj);
@@ -140,10 +148,10 @@ namespace Azoth
 		const QImage& avatarImg = Core::Instance ().GetAvatar (extAcc ?
 					qobject_cast<ICLEntry*> (extAcc->GetSelfContact ()) :
 					0,
-				iconSize - AvatarPaddingBottom);
-		
+				iconSize);
+
 		QPoint pxDraw = o.rect.topRight () - QPoint (CPadding, 0);
-		
+
 		if (!avatarImg.isNull ())
 		{
 			pxDraw.rx () -= avatarImg.width ();
@@ -152,10 +160,10 @@ namespace Azoth
 					QPixmap::fromImage (avatarImg));
 			pxDraw.rx () -= CPadding;
 		}
-		
+
 		if (!accIcon.isNull ())
 		{
-			const int size = std::min (16, iconSize - AvatarPaddingBottom);
+			const int size = std::min (16, iconSize);
 			const QPixmap& px = accIcon.pixmap (size, size);
 			pxDraw.rx () -= px.width ();
 			const QPoint& delta = QPoint (0, (iconSize - px.height ()) / 2);
@@ -167,21 +175,14 @@ namespace Azoth
 			QStyleOptionViewItemV4 o, const QModelIndex& index) const
 	{
 		const QRect& r = o.rect;
-		
-		if ((o.state & QStyle::State_Selected) ||
-				(o.state & QStyle::State_MouseOver))
-		{
-			QStyle *style = o.widget ?
-					o.widget->style () :
-					QApplication::style ();
 
-			const int oldLeft = o.rect.left ();
-			o.rect.setLeft (0);
-			style->drawPrimitive (QStyle::PE_PanelItemViewItem,
-					&o, painter, o.widget);
-			o.rect.setLeft (oldLeft);
-		}
-		
+		QStyle *style = o.widget ?
+				o.widget->style () :
+				QApplication::style ();
+
+		style->drawPrimitive (QStyle::PE_PanelButtonCommand,
+				&o, painter, o.widget);
+
 		const int unread = index.data (Core::CLRUnreadMsgCount).toInt ();
 		if (unread)
 		{
@@ -204,9 +205,9 @@ namespace Azoth
 
 			o.rect.setLeft (unreadSpace + o.rect.left ());
 		}
-		
+
 		QStyledItemDelegate::paint (painter, o, index);
-		
+
 		o.state &= ~(QStyle::State_Selected | QStyle::State_MouseOver);
 
 		const int textWidth = o.fontMetrics.width (index.data ().value<QString> () + " ");
@@ -225,40 +226,36 @@ namespace Azoth
 		const QString& str = QString (" %1/%2 ")
 				.arg (visibleCount)
 				.arg (model->rowCount (sourceIndex));
-				
+
 		painter->save ();
-		
+
 		painter->setRenderHints (QPainter::HighQualityAntialiasing | QPainter::Antialiasing);
-		
-		QPainterPath bgPath;
-		bgPath.addRoundedRect (r.adjusted (-r.topLeft ().x (), 0, 0, 0), 4, 4);
-		painter->drawPath (bgPath);
-		
+
 		if (rem >= o.fontMetrics.width (str))
 		{
 			if (o.state & QStyle::State_Selected)
 				painter->setPen (o.palette.color (QPalette::HighlightedText));
-			
+
 			QFont font = painter->font ();
 			font.setItalic (true);
 			painter->setFont (font);
 
 			const QRect numRect (r.left () + textWidth - 1, r.top () + CPadding,
 					rem - 1, r.height () - 2 * CPadding);
-			
+
 			const QRect& br = painter->boundingRect (numRect,
 					Qt::AlignVCenter | Qt::AlignRight, str).adjusted (0, 0, 1, 0);
 			QPainterPath rectPath;
 			rectPath.addRoundedRect (br, 4, 4);
-			
+
 			painter->fillPath (rectPath, o.palette.color (QPalette::Background));
-			
+
 			painter->drawText (numRect, Qt::AlignVCenter | Qt::AlignRight, str);
 
 			painter->setPen (o.palette.color (QPalette::WindowText));
 			painter->drawPath (rectPath);
 		}
-		
+
 		painter->restore ();
 	}
 
@@ -283,13 +280,13 @@ namespace Azoth
 		QString name = index.data (Qt::DisplayRole).value<QString> ();
 		const QString status = entry->GetStatus ().StatusString_.replace ('\n', ' ');
 		const QImage& avatarImg = ShowAvatars_ ?
-				Core::Instance ().GetAvatar (entry, iconSize - AvatarPaddingBottom) :
+				Core::Instance ().GetAvatar (entry, iconSize) :
 				QImage ();
 		const int unreadNum = index.data (Core::CLRUnreadMsgCount).toInt ();
 		const QString& unreadStr = unreadNum ?
 				QString (" %1 :: ").arg (unreadNum) :
 				QString ();
-		if (!status.isEmpty ())
+		if (ShowStatuses_ && !status.isEmpty ())
 			name += " (" + status + ")";
 
 		const bool selected = option.state & QStyle::State_Selected;
@@ -364,7 +361,7 @@ namespace Azoth
 			}
 			if (addInfo.contains ("user_tune"))
 				LoadSystemIcon ("/notification_roster_tune", clientIcons);
-			
+
 			ISupportGeolocation *geoloc =
 					qobject_cast<ISupportGeolocation*> (entry->GetParentAccount ());
 			if (geoloc)
@@ -418,8 +415,9 @@ namespace Azoth
 				Qt::AlignVCenter | Qt::AlignLeft,
 				option.fontMetrics.elidedText (name, Qt::ElideRight, textWidth));
 
-		p.drawPixmap (QPoint (CPadding, CPadding),
-				stateIcon.pixmap (iconSize, iconSize));
+		const QPixmap& stateIconPx = stateIcon.pixmap (iconSize, iconSize);
+		p.drawPixmap (QPoint (CPadding, (sHeight - stateIconPx.height ()) / 2),
+				stateIconPx);
 
 		if (!avatarImg.isNull ())
 			p.drawPixmap (QPoint (textShift + textWidth + clientsIconsWidth + CPadding, CPadding),
@@ -429,7 +427,7 @@ namespace Azoth
 
 		Q_FOREACH (const QIcon& icon, clientIcons)
 		{
-			p.drawPixmap (QPoint (currentShift, CPadding),
+			p.drawPixmap (QPoint (currentShift, (sHeight - stateIconPx.height ()) / 2),
 					icon.pixmap (clientIconSize, clientIconSize));
 			currentShift += clientIconSize + CPadding;
 		}
@@ -447,7 +445,7 @@ namespace Azoth
 
 		painter->drawPixmap (option.rect, pixmap);
 	}
-	
+
 	void ContactListDelegate::LoadSystemIcon (const QString& name,
 			QList<QIcon>& clientIcons) const
 	{
@@ -457,7 +455,7 @@ namespace Azoth
 			icon = QIcon (Core::Instance ()
 					.GetResourceLoader (Core::RLTSystemIconLoader)->
 							GetIconPath (iconName));
-			
+
 		if (!icon.isNull ())
 		{
 			clientIcons.prepend (icon);
@@ -476,29 +474,51 @@ namespace Azoth
 		ShowClientIcons_ = XmlSettingsManager::Instance ()
 				.property ("ShowClientIcons").toBool ();
 	}
-	
+
 	void ContactListDelegate::handleActivityIconsetChanged ()
 	{
 		ActivityIconCache_.clear ();
-		
+
 		ActivityIconset_ = XmlSettingsManager::Instance ()
 				.property ("ActivityIcons").toString ();
 	}
-	
+
 	void ContactListDelegate::handleMoodIconsetChanged ()
 	{
 		MoodIconCache_.clear ();
-		
+
 		MoodIconset_ = XmlSettingsManager::Instance ()
 				.property ("MoodIcons").toString ();
 	}
-	
+
 	void ContactListDelegate::handleSystemIconsetChanged ()
 	{
 		SystemIconCache_.clear ();
-		
+
 		SystemIconset_ = XmlSettingsManager::Instance ()
 				.property ("SystemIcons").toString ();
+	}
+
+	void ContactListDelegate::handleShowStatusesChanged ()
+	{
+		ShowStatuses_ = XmlSettingsManager::Instance ()
+				.property ("ShowStatuses").toBool ();
+
+		View_->viewport ()->update ();
+		View_->update ();
+	}
+
+	void ContactListDelegate::handleContactHeightChanged ()
+	{
+		ContactHeight_ = XmlSettingsManager::Instance ()
+				.property ("RosterContactHeight").toInt ();
+		if (ContactHeight_ <= 0)
+			ContactHeight_ = 24;
+
+		View_->setIconSize (QSize (ContactHeight_, ContactHeight_));
+
+		View_->viewport ()->update ();
+		View_->update ();
 	}
 }
 }

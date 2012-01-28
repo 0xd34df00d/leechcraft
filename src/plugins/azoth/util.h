@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 #define PLUGINS_AZOTH_UTIL_H
 
 class QString;
+class QWidget;
 
 namespace LeechCraft
 {
@@ -31,6 +32,11 @@ namespace Azoth
 
 	void BuildNotification (Entity&, ICLEntry*);
 	QString GetActivityIconName (const QString&, const QString&);
+
+	void InitiateAccountAddition (QWidget *parent = 0);
+
+	void AuthorizeEntry (ICLEntry*);
+	void DenyAuthForEntry (ICLEntry*);
 }
 }
 

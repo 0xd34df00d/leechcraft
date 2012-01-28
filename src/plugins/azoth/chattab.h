@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,7 +50,6 @@ namespace Azoth
 		Ui::ChatTab Ui_;
 		QToolBar *TabToolbar_;
 		QAction *ToggleRichText_;
-		QAction *SendFile_;
 		QAction *Call_;
 #ifdef ENABLE_CRYPT
 		QAction *EnableEncryption_;
@@ -108,9 +107,11 @@ namespace Azoth
 		void HandleMUCParticipantsChanged ();
 
 		QObject* GetCLEntry () const;
+		QString GetSelectedVariant () const;
 	public slots:
 		void prepareMessageText (const QString&);
 		void appendMessageText (const QString&);
+		void selectVariant (const QString&);
 		QTextEdit* getMsgEdit ();
 	private slots:
 		void clearAvailableNick ();
@@ -120,12 +121,14 @@ namespace Azoth
 		void on_MsgEdit__textChanged ();
 		void on_SubjectButton__toggled (bool);
 		void on_SubjChange__released ();
+		void on_View__loadFinished (bool);
 		void handleClearChat ();
 		void handleRichTextToggled ();
 		void handleQuoteSelection ();
-		void handleSendFile ();
+#ifdef ENABLE_MEDIACALLS
 		void handleCallRequested ();
 		void handleCall (QObject*);
+#endif
 #ifdef ENABLE_CRYPT
 		void handleEnableEncryption ();
 		void handleEncryptionStateChanged (QObject*, bool);
@@ -135,13 +138,12 @@ namespace Azoth
 		void handleOfferActionTriggered ();
 		void handleEntryMessage (QObject*);
 		void handleVariantsChanged (QStringList);
+		void handleAvatarChanged (const QImage&);
 		void handleStatusChanged (const EntryStatus&, const QString&);
 		void handleChatPartStateChanged (const ChatPartState&, const QString&);
 		void handleViewLinkClicked (const QUrl&);
 		void handleHistoryUp ();
 		void handleHistoryDown ();
-		void handleAddToBookmarks ();
-		void handleConfigureMUC ();
 		void typeTimeout ();
 
 		void handleGotLastMessages (QObject*, const QList<QObject*>&);
@@ -208,8 +210,7 @@ namespace Azoth
 				QObject *chatTab,
 				QObject *entry,
 				int type,
-				QString variant,
-				QString text);
+				QString variant);
 		void hookMessageCreated (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QObject *message);

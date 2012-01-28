@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,19 +37,19 @@ namespace Azoth
 	{
 	public:
 		virtual ~IProxyObject () {}
-		
+
 		enum PublicResourceLoader
 		{
 			PRLClientIcons,
 			PRLStatusIcons,
 			PRLSystemIcons
 		};
-		
+
 		/** @brief Returns the Core's settings manager object.
-		 * 
+		 *
 		 * The returned object's properties could be queried to find out
 		 * the settings and parameters of Core's settings.
-		 * 
+		 *
 		 * @return Core's settings manager object.
 		 */
 		virtual QObject* GetSettingsManager () = 0;
@@ -73,7 +73,7 @@ namespace Azoth
 		 * uses secure storage plugins to store passwords, and if no
 		 * such plugins are installed, no passwords are stored.
 		 *
-		 * @sa SetPassword(), IAccount
+		 * @sa GetAccountPassword(), SetPassword(), IAccount
 		 */
 		virtual QString GetPassword (QObject *account) = 0;
 
@@ -97,14 +97,47 @@ namespace Azoth
 		 */
 		virtual void SetPassword (const QString& password, QObject *account) = 0;
 
+		/** @brief Retrieves password for the given account, asking user
+		 * if needed.
+		 *
+		 * Returns password for the given account. If no password is
+		 * stored, this function asks user to enter one and tries to
+		 * store it after that. If the user refuses to enter a password,
+		 * a null string would be returned.
+		 *
+		 * If there was no password and user entered a non-null string,
+		 * this function would call SetPassword() by itself, so there is
+		 * no need to call SetPassword() explicitly.
+		 *
+		 * This function may also ignore the already stored password if
+		 * useStored is set to false. This is useful, for example, when
+		 * a password previously returned by this function turned out to
+		 * be wrong.
+		 *
+		 * The account object should implement the IAccount interface.
+		 * Accounts are distinguished by their IDs.
+		 *
+		 * @param[in] account The account for which to retrieve the
+		 * password. The object should implement IAccount.
+		 * @param[in] useStored Whether returning already stored
+		 * password is OK.
+		 * @return The stored password, or user-entered password if
+		 * there is no stored password or useStored is false, or null
+		 * string if there is no stored password and user refused to
+		 * enter one.
+		 *
+		 * @sa GetPassword()
+		 */
+		virtual QString GetAccountPassword (QObject *account, bool useStored = true) = 0;
+
 		/** @brief Returns the name of the OS Azoth runs under.
 		 *
 		 * @return The name of the operating system.
 		 */
 		virtual QString GetOSName () = 0;
-		
+
 		/** @brief Queries whether autojoin is allowed.
-		 * 
+		 *
 		 * @return Whether autojoin is allowed.
 		 */
 		virtual bool IsAutojoinAllowed () = 0;
@@ -136,47 +169,52 @@ namespace Azoth
 		 * @sa AuthStatusToString()
 		 */
 		virtual AuthStatus AuthStatusFromString (const QString& str) const = 0;
-		
+
 		/** @brief Returns the account object for the given account ID.
-		 * 
+		 *
 		 * If there is no such account, NULL is returned.
-		 * 
+		 *
 		 * @param[in] accID The unique account ID.
-		 * 
+		 *
 		 * @return Account object implementing IAccount, or NULL if no
 		 * such account exists.
 		 */
 		virtual QObject* GetAccount (const QString& accID) const = 0;
-		
+
 		/** @brief Returns all the accounts registered in Azoth.
-		 * 
+		 *
 		 * @return The list of objects implementing IAccount.
 		 */
 		virtual QList<QObject*> GetAllAccounts () const = 0;
-		
+
 		/** @brief Returns the entry object for the given entry ID.
-		 * 
+		 *
 		 * @param[in] entryID The entry ID.
 		 * @param[in] accID The account ID to which this entry
 		 * belongs.
-		 * 
+		 *
 		 * @return Entry object, or NULL if no such entry exists.
 		 */
 		virtual QObject* GetEntry (const QString& entryID, const QString& accID) const = 0;
-		
+
+		virtual void OpenChat (const QString& entryID,
+				const QString& accID,
+				const QString& message = QString (),
+				const QString& variant = QString ()) const = 0;
+
 		virtual QString GetSelectedChatTemplate (QObject*, QWebFrame*) const = 0;
-		
+
 		virtual QList<QColor> GenerateColors (const QString& scheme) const = 0;
 		virtual QString GetNickColor (const QString& nick, const QList<QColor>& colors) const = 0;
 
 		virtual QString FormatDate (QDateTime, QObject*) const = 0;
 		virtual QString FormatNickname (QString, QObject*, const QString&) const = 0;
 		virtual QString FormatBody (QString, QObject*) const = 0;
-		
+
 		virtual void PreprocessMessage (QObject*) = 0;
-		
+
 		virtual Util::ResourceLoader* GetResourceLoader (PublicResourceLoader loader) const = 0;
-		
+
 		virtual QIcon GetIconForState (State state) const = 0;
 	};
 }

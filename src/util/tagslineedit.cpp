@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -94,6 +94,13 @@ void TagsLineEdit::handleTagsUpdated (const QStringList& tags)
 			SIGNAL (selectionChanged (const QStringList&)),
 			this,
 			SLOT (handleSelectionChanged (const QStringList&)));
+}
+
+void TagsLineEdit::setTags (const QStringList& tags)
+{
+	setText (tags.join ("; "));
+	if (CategorySelector_.get ())
+		CategorySelector_->SetSelections (tags);
 }
 
 void TagsLineEdit::handleSelectionChanged (const QStringList& tags)

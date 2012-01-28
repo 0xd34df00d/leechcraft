@@ -1,6 +1,6 @@
 /**********************************************************************
 1 * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,8 +29,13 @@
 #include <Qsci/qscilexercmake.h>
 #include <Qsci/qscilexercpp.h>
 #include <Qsci/qscilexercss.h>
+#include <Qsci/qscilexerdiff.h>
 #include <Qsci/qscilexerhtml.h>
 #include <Qsci/qscilexerjavascript.h>
+#if QSCINTILLA_VERSION >= 0x020501
+#include <Qsci/qscilexermatlab.h>
+#include <Qsci/qscilexeroctave.h>
+#endif
 #include <Qsci/qscilexerpython.h>
 #include <Qsci/qscilexerruby.h>
 #include <Qsci/qscilexersql.h>
@@ -69,12 +74,18 @@ namespace LeechCraft
 				DEFPAIR (C++, cxx);
 				DEFPAIR (C++, hxx);
 				DEFPAIR (CSS, css);
+				DEFPAIR (Diff, diff);
+				DEFPAIR (Diff, patch);
 				DEFPAIR (HTML, htm);
 				DEFPAIR (HTML, html);
 				DEFPAIR (HTML, xhtml);
 				DEFPAIR (JavaScript, es);
 				DEFPAIR (JavaScript, js);
 				DEFPAIR (JavaScript, qs);
+#if QSCINTILLA_VERSION >= 0x020501
+				DEFPAIR (MatLab, mat);
+				DEFPAIR (Octave, m);
+#endif
 				DEFPAIR (Python, py);
 				DEFPAIR (Ruby, rb);
 				DEFPAIR (SQL, sql);
@@ -96,8 +107,13 @@ namespace LeechCraft
 				DoctypeMenu_->addAction ("CMake")->setCheckable (true);
 				DoctypeMenu_->addAction ("C++")->setCheckable (true);
 				DoctypeMenu_->addAction ("CSS")->setCheckable (true);
+				DoctypeMenu_->addAction ("Diff")->setCheckable (true);
 				DoctypeMenu_->addAction ("HTML")->setCheckable (true);
 				DoctypeMenu_->addAction ("JavaScript")->setCheckable (true);
+#if QSCINTILLA_VERSION >= 0x020501
+				DoctypeMenu_->addAction ("MatLab")->setCheckable (true);
+				DoctypeMenu_->addAction ("Octave")->setCheckable (true);
+#endif
 				DoctypeMenu_->addAction ("Python")->setCheckable (true);
 				DoctypeMenu_->addAction ("Ruby")->setCheckable (true);
 				DoctypeMenu_->addAction ("SQL")->setCheckable (true);
@@ -197,6 +213,9 @@ namespace LeechCraft
 				handleOtherPrefs ();
 
 				ShowConsole (false);
+
+				Ui_.ActionWrapWords_->trigger ();
+				Ui_.ActionShowLineNumbers_->trigger ();
 			}
 
 			EditorPage::~EditorPage ()
@@ -698,10 +717,18 @@ namespace LeechCraft
 					result = new QsciLexerCPP (Ui_.TextEditor_);
 				else if (lang == "CSS")
 					result = new QsciLexerCSS (Ui_.TextEditor_);
+				else if (lang == "Diff")
+					result = new QsciLexerDiff (Ui_.TextEditor_);
 				else if (lang == "HTML")
 					result = new QsciLexerHTML (Ui_.TextEditor_);
 				else if (lang == "JavaScript")
 					result = new QsciLexerJavaScript (Ui_.TextEditor_);
+#if QSCINTILLA_VERSION >= 0x020501
+				else if (lang == "MatLab")
+					result = new QsciLexerMatlab (Ui_.TextEditor_);
+				else if (lang == "Octave")
+					result = new QsciLexerOctave (Ui_.TextEditor_);
+#endif
 				else if (lang == "Python")
 					result = new QsciLexerPython (Ui_.TextEditor_);
 				else if (lang == "Ruby")

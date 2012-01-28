@@ -41,8 +41,9 @@ namespace TabsList
 
 		ShowList_ = new QAction (tr ("List of tabs"),
 				Proxy_->GetMainWindow ());
-		ShowList_->setProperty ("ActionIcon", "itemlist");
+		ShowList_->setProperty ("ActionIcon", "view-list-details");
 		ShowList_->setShortcut (QString ("Ctrl+Shift+L"));
+		ShowList_->setProperty ("Action/ID", GetUniqueID () + "_showlist");
 		connect (ShowList_,
 				SIGNAL (triggered ()),
 				this,
@@ -140,6 +141,9 @@ namespace TabsList
 	void Plugin::handleShowList ()
 	{
 		ICoreTabWidget *tw = Proxy_->GetTabWidget ();
+
+		if (tw->WidgetCount () < 2)
+			return;
 
 		QWidget *widget = new QWidget (Proxy_->GetMainWindow (),
 				Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);

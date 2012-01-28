@@ -26,32 +26,8 @@
 		</tab>
 		<tab>
 			<label lang="en" value="Proxy" />
-			<item type="groupbox" property="TrackerProxyEnabled" checkable="true" state="off">
-				<label lang="en" value="Tracker proxy:" />
-				<item type="lineedit" property="TrackerProxyHost">
-					<label lang="en" value="Host:" />
-				</item>
-				<item type="spinbox" property="TrackerProxyPort" default="3128" minimum="1" maximum="65535" step="1">
-					<label lang="en" value="Port:" />
-				</item>
-				<item type="lineedit" property="TrackerProxyAuth">
-					<label lang="en" value="Login@Password:" />
-				</item>
-				<item type="combobox" property="TrackerProxyType">
-					<label lang="en" value="Proxy type:" />
-					<option name="socks5">
-						<label lang="en" value="SOCKS5" />
-					</option>
-					<option name="socks4">
-						<label lang="en" value="SOCKS4" />
-					</option>
-					<option name="http" default="true">
-						<label lang="en" value="HTTP" />
-					</option>
-				</item>
-			</item>
 			<item type="groupbox" property="PeerProxyEnabled" checkable="true" state="off">
-				<label lang="en" value="Peer proxy:" />
+				<label lang="en" value="Proxy:" />
 				<item type="lineedit" property="PeerProxyHost">
 					<label lang="en" value="Host:" />
 				</item>

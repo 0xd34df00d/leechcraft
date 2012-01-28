@@ -8,59 +8,71 @@
 		<label value="Appearance" />
 		<tab>
 			<label value="Themes" />
-			<item type="combobox" property="StatusIcons" mayHaveDataSource="true">
+			<item type="combobox" property="StatusIcons" mayHaveDataSource="true" moreThisStuff="StatusIcons">
 				<label value="Status icons:" />
-				<option name="oxygen" default="true">
-					<label value="Oxygen" />
+				<option name="Likey" default="true">
+					<label value="Likey" />
 				</option>
 			</item>
-			<item type="combobox" property="SmileIcons" mayHaveDataSource="true">
+			<item type="combobox" property="SmileIcons" mayHaveDataSource="true" moreThisStuff="Smiles">
 				<label value="Smiles:" />
 				<option name="None" default="true">
 					<label value="None" />
 				</option>
 			</item>
-			<item type="combobox" property="ClientIcons" mayHaveDataSource="true">
+			<item type="combobox" property="ClientIcons" mayHaveDataSource="true" moreThisStuff="ClientIcons">
 				<label value="Client icons:" />
 				<option name="default" default="true">
 					<label value="default" />
 				</option>
 			</item>
-			<item type="combobox" property="AffIcons" mayHaveDataSource="true">
+			<item type="combobox" property="AffIcons" mayHaveDataSource="true" moreThisStuff="AffIcons">
 				<label value="Affiliation icons:" />
 				<option name="default" default="true">
 					<label value="default" />
 				</option>
 			</item>
-			<item type="combobox" property="MoodIcons" mayHaveDataSource="true">
+			<item type="combobox" property="MoodIcons" mayHaveDataSource="true" moreThisStuff="MoodIcons">
 				<label value="User mood icons:" />
 				<option name="default" default="true">
 					<label value="default" />
 				</option>
 			</item>
-			<item type="combobox" property="ActivityIcons" mayHaveDataSource="true">
+			<item type="combobox" property="ActivityIcons" mayHaveDataSource="true" moreThisStuff="ActivityIcons">
 				<label value="User activity icons:" />
 				<option name="default" default="true">
 					<label value="default" />
 				</option>
 			</item>
-			<item type="combobox" property="SystemIcons" mayHaveDataSource="true">
+			<item type="combobox" property="SystemIcons" mayHaveDataSource="true" moreThisStuff="SystemIcons">
 				<label value="General icons:" />
 				<option name="default" default="true">
 					<label value="default" />
 				</option>
 			</item>
-			<item type="combobox" property="ChatWindowStyle" mayHaveDataSource="true">
+			<item type="combobox" property="ChatWindowStyle" mayHaveDataSource="true" moreThisStuff="ChatWindowStyles">
 				<label value="Chat window style:" />
 				<option name="Basic" default="true">
 					<label value="Basic" />
 				</option>
+			</item>
+			<item type="groupbox" property="CustomMUCStyle" checkable="true" default="false">
+				<label value="Custom theme for multiuser chats" />
+				<item type="combobox" property="MUCWindowStyle" mayHaveDataSource="true">
+					<label value="MUC window style:" />
+					<option name="Basic" default="true">
+						<label value="Basic" />
+					</option>
+				</item>
 			</item>
 		</tab>
 		<tab>
 			<label value="Contact list" />
 			<item type="checkbox" property="ShowMenuBar" default="true">
 				<label value="Show Azoth menu under the contact list" />
+			</item>
+			<item type="checkbox" property="ShowStatuses" default="true">
+				<label value="Show statuses" />
 			</item>
 			<item type="checkbox" property="ShowAvatars" default="true">
 				<label value="Show avatars" />
@@ -70,9 +82,15 @@
 			</item>
 			<item type="checkbox" property="GroupContacts" default="true">
 				<label value="Group contacts" />
+				<tooltip>If this option is enabled, contacts would be grouped, otherwise, they will all appear in the same group.</tooltip>
 			</item>
 			<item type="checkbox" property="OrderByStatus" default="true">
 				<label value="Group contacts by status" />
+				<tooltip>If this option is enabled, contacts are ordered by status and then by name. Otherwise, they are ordered by name only.</tooltip>
+			</item>
+			<item type="spinbox" property="RosterContactHeight" default="20" minimum="8" maximum="96">
+				<label value="Distance between contacts in roster:" />
+				<suffix value=" px" />
 			</item>
 		</tab>
 		<tab>
@@ -83,8 +101,12 @@
 			<item type="lineedit" property="PostNickText" default=":">
 				<label value="Post-nick text:" />
 			</item>
+			<item type="lineedit" property="PostAddressText" default=":">
+				<label value="Post-address text:" />
+			</item>
 			<item type="checkbox" property="ShowRichTextMessageBody" default="true">
 				<label value="Show rich text message body (if available)" />
+				<tooltip>Whether rich text body of the messages should be used, if available. This is a default value, and the behavior could be changed for each opened chat window.</tooltip>
 			</item>
 			<item type="color" property="HighlightColor" default="#FF0000">
 				<label value="Highlight color:" />
@@ -107,14 +129,32 @@
 			<item type="checkbox" property="AutoMUCMode" default="false">
 				<label value="Automatically switch roster to conference mode when needed" />
 			</item>
+			<item type="checkbox" property="HideMUCPartsInWholeCL" default="false">
+				<label value="Hide MUC participants in Whole CL mode" />
+			</item>
 			<item type="checkbox" property="IsAutojoinAllowed" default="true">
 				<label value="Autojoin allowed" />
 			</item>
 			<item type="checkbox" property="SendChatStates" default="true">
 				<label value="Send chat state events" />
 			</item>
+			<item type="checkbox" property="SendEndConversations" default="true">
+				<label value="Notify remote participant when you've ended conversation" />
+			</item>
 			<item type="checkbox" property="UseAltNick" default="true">
 				<label value="Use alternative nickname" />
+			</item>
+			<item type="combobox" property="EntryActivationType">
+				<label value="Entry activates on:" />
+				<option name="click" default="true">
+					<label value="Single click" />
+				</option>
+				<option name="dclick">
+					<label value="Double click" />
+				</option>
+				<option name="environment">
+					<label value="Let the environment decide" />
+				</option>
 			</item>
 			<item type="combobox" property="SendOnModifier">
 				<label value="Send message on:" />
@@ -191,6 +231,12 @@
 			<item type="checkbox" property="ShowStatusChangesEvents" default="false">
 				<label value="Show status changes" />
 			</item>
+			<item type="checkbox" property="ShowEndConversations" default="true">
+				<label value="Show when participant ends conversation" />
+			</item>
+			<item type="checkbox" property="ShowJoinsLeaves" default="true">
+				<label value="Show joins and leaves in MUCs" />
+			</item>
 		</tab>
 	</page>
 	<page>
@@ -209,7 +255,7 @@
 			<item type="lineedit" property="DefaultStatus4" translatable="true" default="Please leave me alone now">
 				<label value="DND:" />
 			</item>
-			<item type="lineedit" property="DefaultStatus3" translatable="true" default="Extended away is okay">
+			<item type="lineedit" property="DefaultStatus3" translatable="true" default="Not available is okay">
 				<label value="XA:" />
 			</item>
 			<item type="lineedit" property="DefaultStatus0" translatable="true" default="I turned off my machine to get some life">

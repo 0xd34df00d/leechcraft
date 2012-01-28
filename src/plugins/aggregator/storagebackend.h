@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 #define PLUGINS_AGGREGATOR_STORAGEBACKEND_H
 #include <QObject>
 #include <interfaces/core/ihookproxy.h>
+#include <interfaces/core/itagsmanager.h>
 #include "feed.h"
 
 namespace LeechCraft
@@ -51,7 +52,9 @@ namespace Aggregator
 		};
 		StorageBackend (QObject* = 0);
 		virtual ~StorageBackend ();
-		static boost::shared_ptr<StorageBackend> Create (Type);
+
+		static boost::shared_ptr<StorageBackend> Create (const QString&, const QString& = QString ());
+		static boost::shared_ptr<StorageBackend> Create (Type, const QString& = QString ());
 
 		static QString LoadQuery (const QString&, const QString&);
 
@@ -310,6 +313,18 @@ namespace Aggregator
 		 */
 		virtual void RemoveItem (const IDType_t& id) = 0;
 
+		/** @brief Removes an already existing channel.
+		 *
+		 * This function should remove the given channel, leaving other
+		 * channels from the corresponding feed intact.
+		 *
+		 * If the specified channel doesn't exist, this function should
+		 * do nothing.
+		 *
+		 * @param[in] id Channel ID.
+		 */
+		virtual void RemoveChannel (const IDType_t& id) = 0;
+
 		/** @brief Removes an already existing feed.
 		 *
 		 * If the specified feed doesn't exist, this function should do
@@ -364,6 +379,10 @@ namespace Aggregator
 		 */
 		virtual void ToggleChannelUnread (const IDType_t& id,
 				bool state) = 0;
+
+		virtual QList<ITagsManager::tag_id> GetItemTags (const IDType_t& id) = 0;
+		virtual void SetItemTags (const IDType_t& id, const QList<ITagsManager::tag_id>& tags) = 0;
+		virtual QList<IDType_t> GetItemsForTag (const ITagsManager::tag_id& tag) = 0;
 
 		/** @brief Searches for highest id of given type in the database
 		 *

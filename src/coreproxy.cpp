@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,11 +70,6 @@ namespace LeechCraft
 		return Core::Instance ().GetReallyMainWindow ()->GetTabWidget ();
 	}
 
-	QMap<int, QString> CoreProxy::GetIconPath (const QString& icon) const
-	{
-		return SkinEngine::Instance ().GetIconPath (icon);
-	}
-
 	QIcon CoreProxy::GetIcon (const QString& icon, const QString& iconOff) const
 	{
 		return SkinEngine::Instance ().GetIcon (icon, iconOff);
@@ -127,5 +122,15 @@ namespace LeechCraft
 	QObject* CoreProxy::GetSelf ()
 	{
 		return this;
+	}
+
+	void CoreProxy::RegisterSkinnable (QAction *act)
+	{
+		SkinEngine::Instance ().UpdateIconSet (QList<QAction*> () << act);
+	}
+
+	bool CoreProxy::IsShuttingDown ()
+	{
+		return Core::Instance ().IsShuttingDown ();
 	}
 }

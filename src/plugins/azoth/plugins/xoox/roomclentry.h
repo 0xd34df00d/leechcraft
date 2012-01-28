@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,7 +58,7 @@ namespace Xoox
 		QMap<QXmppMucItem::Role, QByteArray> Role2Str_;
 		QMap<QXmppMucItem::Affiliation, QByteArray> Aff2Str_;
 		QMap<QByteArray, QString> Translations_;
-		
+
 		mutable QAction *ActionRequestVoice_;
 	public:
 		RoomCLEntry (RoomHandler*, GlooxAccount*);
@@ -88,6 +88,7 @@ namespace Xoox
 		QString GetRawInfo () const;
 		void ShowInfo ();
 		QMap<QString, QVariant> GetClientInfo (const QString&) const;
+		void MarkMsgsRead ();
 
 		// IMUCEntry
 		MUCFeatures GetMUCFeatures () const;
@@ -101,16 +102,18 @@ namespace Xoox
 		QString GetGroupName () const;
 		QVariantMap GetIdentifyingData () const;
 		QString GetRealID (QObject*) const;
-		
+		void InviteToMUC (const QString&, const QString&);
+
 		// IMUCPerms
 		QMap<QByteArray, QList<QByteArray> > GetPossiblePerms () const;
-		QMap<QByteArray, QByteArray> GetPerms (QObject *object) const;
+		QMap<QByteArray, QList<QByteArray> > GetPerms (QObject *object) const;
 		QByteArray GetAffName (QObject*) const;
 		bool MayChangePerm (QObject*, const QByteArray&, const QByteArray&) const;
 		void SetPerm (QObject*, const QByteArray&, const QByteArray&, const QString&);
 		bool IsLessByPerm (QObject*, QObject*) const;
+		bool IsMultiPerm (const QByteArray&) const;
 		QString GetUserString (const QByteArray&) const;
-		
+
 		// IConfigurableMUC
 		QWidget* GetConfigurationWidget ();
 		void AcceptConfiguration (QWidget*);

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+	class ServiceDiscoveryWidget;
 	class MainWidget;
 	class ConsoleWidget;
 
@@ -77,20 +78,22 @@ namespace Azoth
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
 		QAbstractItemModel* GetRepresentation () const;
-		
+
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
 		QMap<QString, QList<QAction*> > GetMenuActions () const;
-		
+
 		EntityTestHandleResult CouldHandle (const Entity&) const;
 		void Handle (Entity);
-	
+
 		TabClasses_t GetTabClasses () const;
 		void TabOpenRequested (const QByteArray&);
-		
+
 		QList<ANFieldData> GetANFields () const;
 	public slots:
+		void handleSDWidget (ServiceDiscoveryWidget*);
 		void handleTasksTreeSelectionCurrentRowChanged (const QModelIndex&, const QModelIndex&);
 	private slots:
+		void handleMoreThisStuff (const QString&);
 		void handleConsoleWidget (ConsoleWidget*);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
@@ -103,6 +106,8 @@ namespace Azoth
 		void changeTooltip (QWidget*, QWidget*);
 		void statusBarChanged (QWidget*, const QString&);
 		void raiseTab (QWidget*);
+
+		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 	};
 }
 }

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,7 +48,7 @@ namespace ChatHistory
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleHistoryRequested ()));
-		
+
 		connect (Core::Instance ().get (),
 				SIGNAL (gotChatLogs (QString, QString, int, int, QVariant)),
 				this,
@@ -81,7 +81,7 @@ namespace ChatHistory
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		return QIcon (":/azoth/chathistory/resources/images/chathistory.svg");
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
@@ -90,26 +90,26 @@ namespace ChatHistory
 		result << "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin";
 		return result;
 	}
-	
+
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace) const
 	{
 		return QList<QAction*> ();
 	}
-	
+
 	QMap<QString, QList<QAction*> > Plugin::GetMenuActions () const
 	{
 		QMap<QString, QList<QAction*> > result;
 		result ["Azoth"] << ActionHistory_;
 		return result;
 	}
-	
+
 	TabClasses_t Plugin::GetTabClasses () const
 	{
 		TabClasses_t result;
 		result << Core::Instance ()->GetTabClass ();
 		return result;
 	}
-	
+
 	void Plugin::TabOpenRequested (const QByteArray& tabClass)
 	{
 		if (tabClass == "Chathistory")
@@ -119,12 +119,12 @@ namespace ChatHistory
 					<< "unknown tab class"
 					<< tabClass;
 	}
-	
+
 	bool Plugin::IsHistoryEnabledFor (QObject *entry) const
 	{
 		return Core::Instance ()->IsLoggingEnabled (entry);
 	}
-	
+
 	void Plugin::RequestLastMessages (QObject *entryObj, int num)
 	{
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
@@ -135,10 +135,10 @@ namespace ChatHistory
 					<< "doesn't implement ICLEntry";
 			return;
 		}
-		
+
 		if (entry->GetEntryType () != ICLEntry::ETChat)
 			return;
-		
+
 		IAccount *account = qobject_cast<IAccount*> (entry->GetParentAccount ());
 		if (!account)
 		{
@@ -154,39 +154,44 @@ namespace ChatHistory
 
 		RequestedLogs_ [accId] [entryId] = entryObj;
 	}
-	
+
+	void Plugin::AddRawMessage (const QVariantMap& map)
+	{
+		Core::Instance ()->Process (map);
+	}
+
 	void Plugin::initPlugin (QObject *proxy)
 	{
 		Core::Instance ()->SetPluginProxy (proxy);
 	}
-	
+
 	void Plugin::hookEntryActionAreasRequested (IHookProxy_ptr proxy,
 			QObject *action, QObject*)
 	{
 		if (!action->property ("Azoth/ChatHistory/IsGood").toBool ())
 			return;
-		
+
 		QStringList ours;
 		ours << "contactListContextMenu"
 			<< "tabContextMenu";
-		if (action->property ("ActionIcon") == "history")
+		if (action->property ("ActionIcon") == "view-history")
 			ours << "toolbar";
 
 		proxy->SetReturnValue (proxy->GetReturnValue ().toStringList () + ours);
 	}
-	
+
+	void Plugin::hookEntryActionsRemoved (IHookProxy_ptr, QObject *entry)
+	{
+		delete Entry2ActionHistory_.take (entry);
+		delete Entry2ActionEnableHistory_.take (entry);
+	}
+
 	void Plugin::hookEntryActionsRequested (IHookProxy_ptr proxy, QObject *entry)
 	{
 		if (!Entry2ActionHistory_.contains (entry))
 		{
-			connect (entry,
-					SIGNAL (destroyed ()),
-					this,
-					SLOT (handleEntryDestroyed ()),
-					Qt::UniqueConnection);
-
 			QAction *action = new QAction (tr ("History..."), entry);
-			action->setProperty ("ActionIcon", "history");
+			action->setProperty ("ActionIcon", "view-history");
 			action->setProperty ("Azoth/ChatHistory/IsGood", true);
 			action->setProperty ("Azoth/ChatHistory/Entry",
 					QVariant::fromValue<QObject*> (entry));
@@ -198,12 +203,6 @@ namespace ChatHistory
 		}
 		if (!Entry2ActionEnableHistory_.contains (entry))
 		{
-			connect (entry,
-					SIGNAL (destroyed ()),
-					this,
-					SLOT (handleEntryDestroyed ()),
-					Qt::UniqueConnection);
-
 			QAction *action = new QAction (tr ("Logging enabled"), entry);
 			action->setCheckable (true);
 			action->setChecked (Core::Instance ()->IsLoggingEnabled (entry));
@@ -223,9 +222,12 @@ namespace ChatHistory
 		proxy->SetReturnValue (list);
 	}
 
-	void Plugin::hookGotMessage (LeechCraft::IHookProxy_ptr,
+	void Plugin::hookGotMessage2 (LeechCraft::IHookProxy_ptr,
 				QObject *message)
 	{
+		if (message->property ("Azoth/HiddenMessage").toBool () == true)
+			return;
+
 		IMessage *msg = qobject_cast<IMessage*> (message);
 		if (!msg)
 		{
@@ -235,23 +237,24 @@ namespace ChatHistory
 					<< sender ();
 			return;
 		}
+
 		Core::Instance ()->Process (message);
 	}
-	
+
 	void Plugin::handleGotChatLogs (const QString& accId, const QString& entryId,
 			int backPages, int amount, const QVariant& logs)
 	{
 		if (!RequestedLogs_.contains (accId) ||
 				!RequestedLogs_ [accId].contains (entryId))
 			return;
-		
+
 		QObject *entryObj = RequestedLogs_ [accId].take (entryId);
-		
+
 		QList<QObject*> result;
 		Q_FOREACH (const QVariant& messageVar, logs.toList ())
 		{
 			const QVariantMap& msgMap = messageVar.toMap ();
-			
+
 			const IMessage::Direction dir =
 				msgMap ["Direction"].toString () == "IN" ?
 						IMessage::DIn :
@@ -266,7 +269,7 @@ namespace ChatHistory
 
 		emit gotLastMessages (entryObj, result);
 	}
-	
+
 	void Plugin::handleHistoryRequested ()
 	{
 		ChatHistoryWidget *wh = new ChatHistoryWidget;
@@ -276,7 +279,7 @@ namespace ChatHistory
 				SIGNAL (removeTab (QWidget*)));
 		emit addNewTab (tr ("Chat history"), wh);
 	}
-	
+
 	void Plugin::handleEntryHistoryRequested ()
 	{
 		if (!sender ())
@@ -295,7 +298,7 @@ namespace ChatHistory
 					<< sender ();
 			return;
 		}
-		
+
 		ICLEntry *entry = qobject_cast<ICLEntry*> (obj);
 		if (!entry)
 		{
@@ -315,7 +318,7 @@ namespace ChatHistory
 		emit addNewTab (tr ("Chat history"), wh);
 		emit raiseTab (wh);
 	}
-	
+
 	void Plugin::handleEntryEnableHistoryRequested (bool enable)
 	{
 		if (!sender ())
@@ -334,13 +337,8 @@ namespace ChatHistory
 					<< sender ();
 			return;
 		}
-		
+
 		Core::Instance ()->SetLoggingEnabled (obj, enable);
-	}
-	
-	void Plugin::handleEntryDestroyed ()
-	{
-		Entry2ActionHistory_.remove (sender ());
 	}
 }
 }

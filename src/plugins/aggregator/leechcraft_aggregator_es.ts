@@ -114,7 +114,7 @@
     </message>
     <message>
         <source>This string is overridden in the source code</source>
-        <translation type="unfinished"></translation>
+        <translation>Esta cadena se reemplaza en el código fuente</translation>
     </message>
 </context>
 <context>
@@ -133,399 +133,400 @@
     </message>
     <message>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre:</translation>
     </message>
     <message>
         <source>Genres:</source>
-        <translation type="unfinished"></translation>
+        <translation>Generos:</translation>
     </message>
     <message>
         <source>Exported Feeds</source>
-        <translation type="unfinished"></translation>
+        <translation>Fuentes exportadas</translation>
     </message>
     <message>
         <source>Genre</source>
-        <translation type="unfinished"></translation>
+        <translation>Genero</translation>
     </message>
     <message>
         <source>ID</source>
-        <translation type="unfinished"></translation>
+        <translation>ID</translation>
     </message>
     <message>
         <source>Computers</source>
-        <translation type="unfinished"></translation>
+        <translation>Computadores</translation>
     </message>
     <message>
         <source>Internet</source>
-        <translation type="unfinished"></translation>
+        <translation>Internet</translation>
     </message>
     <message>
         <source>Programming</source>
-        <translation type="unfinished"></translation>
+        <translation>Programación</translation>
     </message>
     <message>
         <source>Hardware</source>
-        <translation type="unfinished"></translation>
+        <translation>Hardware</translation>
     </message>
     <message>
         <source>Software</source>
-        <translation type="unfinished"></translation>
+        <translation>Software</translation>
     </message>
     <message>
         <source>Databases</source>
-        <translation type="unfinished"></translation>
+        <translation>Bases de datos</translation>
     </message>
     <message>
         <source>OS</source>
-        <translation type="unfinished"></translation>
+        <translation>OS</translation>
     </message>
     <message>
         <source>Other</source>
-        <translation type="unfinished"></translation>
+        <translation>Otro</translation>
     </message>
     <message>
         <source>Science</source>
-        <translation type="unfinished"></translation>
+        <translation>Ciencia</translation>
     </message>
     <message>
         <source>Math</source>
-        <translation type="unfinished"></translation>
+        <translation>Matemáticas</translation>
     </message>
     <message>
         <source>Physics</source>
-        <translation type="unfinished"></translation>
+        <translation>Física</translation>
     </message>
     <message>
         <source>Chemistry</source>
-        <translation type="unfinished"></translation>
+        <translation>Química</translation>
     </message>
     <message>
         <source>Biology</source>
-        <translation type="unfinished"></translation>
+        <translation>Biología</translation>
     </message>
     <message>
         <source>Technology</source>
-        <translation type="unfinished"></translation>
+        <translation>Tecnología</translation>
     </message>
     <message>
         <source>History</source>
-        <translation type="unfinished"></translation>
+        <translation>Historia</translation>
     </message>
     <message>
         <source>Psychology</source>
-        <translation type="unfinished"></translation>
+        <translation>Psicología</translation>
     </message>
     <message>
         <source>Culture</source>
-        <translation type="unfinished"></translation>
+        <translation>Cultura</translation>
     </message>
     <message>
         <source>Religion</source>
-        <translation type="unfinished"></translation>
+        <translation>Religión</translation>
     </message>
     <message>
         <source>Philosophy</source>
-        <translation type="unfinished"></translation>
+        <translation>Filosofía</translation>
     </message>
     <message>
         <source>Politics</source>
-        <translation type="unfinished"></translation>
+        <translation>Política</translation>
     </message>
     <message>
         <source>Business</source>
-        <translation type="unfinished"></translation>
+        <translation>Negocios</translation>
     </message>
     <message>
         <source>Jurisprudence</source>
-        <translation type="unfinished"></translation>
+        <translation>Jurisprudencia</translation>
     </message>
     <message>
         <source>Linguistic</source>
-        <translation type="unfinished"></translation>
+        <translation>Lingüística</translation>
     </message>
     <message>
         <source>Medicine</source>
-        <translation type="unfinished"></translation>
+        <translation>Medicina</translation>
     </message>
     <message>
         <source>Science Fiction</source>
-        <translation type="unfinished"></translation>
+        <translation>Ciencia ficción</translation>
     </message>
     <message>
         <source>Alternative history</source>
-        <translation type="unfinished"></translation>
+        <translation>Historia alternativa</translation>
     </message>
     <message>
         <source>Action</source>
-        <translation type="unfinished"></translation>
+        <translation>Acción</translation>
     </message>
     <message>
         <source>Epic</source>
-        <translation type="unfinished"></translation>
+        <translation>La épica</translation>
     </message>
     <message>
         <source>Heroic</source>
-        <translation type="unfinished"></translation>
+        <translation>Heroicas</translation>
     </message>
     <message>
         <source>Detective</source>
-        <translation type="unfinished"></translation>
+        <translation>Detective</translation>
     </message>
     <message>
         <source>Cyberpunk</source>
-        <translation type="unfinished"></translation>
+        <translation>Cyberpunk</translation>
     </message>
     <message>
         <source>Space</source>
-        <translation type="unfinished"></translation>
+        <translation>Space</translation>
     </message>
     <message>
         <source>Social</source>
-        <translation type="unfinished"></translation>
+        <translation>Social</translation>
     </message>
     <message>
         <source>Horror</source>
-        <translation type="unfinished"></translation>
+        <translation>Horror</translation>
     </message>
     <message>
         <source>Humor</source>
-        <translation type="unfinished"></translation>
+        <translation>Humor</translation>
     </message>
     <message>
         <source>Fantasy</source>
-        <translation type="unfinished"></translation>
+        <translation>Fantasía</translation>
     </message>
     <message>
         <source>For children</source>
-        <translation type="unfinished"></translation>
+        <translation>Para chicos</translation>
     </message>
     <message>
         <source>Detectives</source>
-        <translation type="unfinished"></translation>
+        <translation>Detectivos</translation>
     </message>
     <message>
         <source>Classic</source>
-        <translation type="unfinished"></translation>
+        <translation>Clásica</translation>
     </message>
     <message>
         <source>Police</source>
-        <translation type="unfinished"></translation>
+        <translation>Policía</translation>
     </message>
     <message>
         <source>Ironic</source>
-        <translation type="unfinished"></translation>
+        <translation>Irónico</translation>
     </message>
     <message>
         <source>Historic</source>
-        <translation type="unfinished"></translation>
+        <translation>Historico</translation>
     </message>
     <message>
         <source>Espionage</source>
-        <translation type="unfinished"></translation>
+        <translation>Espionaje</translation>
     </message>
     <message>
         <source>Criminal</source>
-        <translation type="unfinished"></translation>
+        <translation>Criminal</translation>
     </message>
     <message>
         <source>Political</source>
-        <translation type="unfinished"></translation>
+        <translation>Político</translation>
     </message>
     <message>
         <source>Maniac</source>
-        <translation type="unfinished"></translation>
+        <translation>Maníaco</translation>
     </message>
     <message>
         <source>Hard</source>
-        <translation type="unfinished"></translation>
+        <translation>Duro</translation>
     </message>
     <message>
         <source>Thriller</source>
-        <translation type="unfinished"></translation>
+        <translation>Novela de suspense</translation>
     </message>
     <message>
         <source>Fictional</source>
-        <translation type="unfinished"></translation>
+        <translation>Ficticio</translation>
     </message>
     <message>
         <source>Love</source>
-        <translation type="unfinished"></translation>
+        <translation>Amor</translation>
     </message>
     <message>
         <source>Prose</source>
-        <translation type="unfinished"></translation>
+        <translation>Prosa</translation>
     </message>
     <message>
         <source>Contemporary</source>
-        <translation type="unfinished"></translation>
+        <translation>Contemporario</translation>
     </message>
     <message>
         <source>Counterculture</source>
-        <translation type="unfinished"></translation>
+        <translation>Contracultura</translation>
     </message>
     <message>
         <source>Russian classic</source>
-        <translation type="unfinished"></translation>
+        <translation>Ruso clásico</translation>
     </message>
     <message>
         <source>USSR classic</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Hm. Maybe it would be better wth &quot;de España&quot;?.. :) Let&apos;s see.</translatorcomment>
+        <translation>Clásico de URSS</translation>
     </message>
     <message>
         <source>Short</source>
-        <translation type="unfinished"></translation>
+        <translation>Corto</translation>
     </message>
     <message>
         <source>Erotica</source>
-        <translation type="unfinished"></translation>
+        <translation>Erótica</translation>
     </message>
     <message>
         <source>Adventure</source>
-        <translation type="unfinished"></translation>
+        <translation>Aventura</translation>
     </message>
     <message>
         <source>Western</source>
-        <translation type="unfinished"></translation>
+        <translation>Occidental</translation>
     </message>
     <message>
         <source>Indian</source>
-        <translation type="unfinished"></translation>
+        <translation>Indígena</translation>
     </message>
     <message>
         <source>Maritime</source>
-        <translation type="unfinished"></translation>
+        <translation>Marítimo</translation>
     </message>
     <message>
         <source>Travel &amp; geography</source>
-        <translation type="unfinished"></translation>
+        <translation>Viajes y geografía</translation>
     </message>
     <message>
         <source>Animals</source>
-        <translation type="unfinished"></translation>
+        <translation>Animales</translation>
     </message>
     <message>
         <source>Tales</source>
-        <translation type="unfinished"></translation>
+        <translation>Cuentos</translation>
     </message>
     <message>
         <source>Verses</source>
-        <translation type="unfinished"></translation>
+        <translation>Versos</translation>
     </message>
     <message>
         <source>Science fiction</source>
-        <translation type="unfinished"></translation>
+        <translation>Ciencia ficción</translation>
     </message>
     <message>
         <source>Educational</source>
-        <translation type="unfinished"></translation>
+        <translation>Educativo</translation>
     </message>
     <message>
         <source>Antique</source>
-        <translation type="unfinished"></translation>
+        <translation>Antiquo</translation>
     </message>
     <message>
         <source>European</source>
-        <translation type="unfinished"></translation>
+        <translation>Europeo</translation>
     </message>
     <message>
         <source>Russian</source>
-        <translation type="unfinished"></translation>
+        <translation>Ruso</translation>
     </message>
     <message>
         <source>East</source>
-        <translation type="unfinished"></translation>
+        <translation>East</translation>
     </message>
     <message>
         <source>Myths</source>
-        <translation type="unfinished"></translation>
+        <translation>Mitos</translation>
     </message>
     <message>
         <source>References</source>
-        <translation type="unfinished"></translation>
+        <translation>Referencias</translation>
     </message>
     <message>
         <source>Encyclopedia</source>
-        <translation type="unfinished"></translation>
+        <translation>Encyclopedia</translation>
     </message>
     <message>
         <source>Dictionaries</source>
-        <translation type="unfinished"></translation>
+        <translation>Diccionarios</translation>
     </message>
     <message>
         <source>Guides</source>
-        <translation type="unfinished"></translation>
+        <translation>Guías</translation>
     </message>
     <message>
         <source>Documentary</source>
-        <translation type="unfinished"></translation>
+        <translation>Documental</translation>
     </message>
     <message>
         <source>Biography</source>
-        <translation type="unfinished"></translation>
+        <translation>Biografía</translation>
     </message>
     <message>
         <source>Publicism</source>
-        <translation type="unfinished"></translation>
+        <translation>Publicismo</translation>
     </message>
     <message>
         <source>Criticism</source>
-        <translation type="unfinished"></translation>
+        <translation>Criticismo</translation>
     </message>
     <message>
         <source>Esoterics</source>
-        <translation type="unfinished"></translation>
+        <translation>Esoterismo</translation>
     </message>
     <message>
         <source>Self-improvement</source>
-        <translation type="unfinished"></translation>
+        <translation>Automejora</translation>
     </message>
     <message>
         <source>Anecdotes</source>
-        <translation type="unfinished"></translation>
+        <translation>Anécdotas</translation>
     </message>
     <message>
         <source>Home &amp; Family</source>
-        <translation type="unfinished"></translation>
+        <translation>El hogar y la Familia</translation>
     </message>
     <message>
         <source>Cooking</source>
-        <translation type="unfinished"></translation>
+        <translation>Cocción</translation>
     </message>
     <message>
         <source>Pets</source>
-        <translation type="unfinished"></translation>
+        <translation>Mascotas</translation>
     </message>
     <message>
         <source>Crafts</source>
-        <translation type="unfinished"></translation>
+        <translation>Artesanías</translation>
     </message>
     <message>
         <source>Entertainment</source>
-        <translation type="unfinished"></translation>
+        <translation>Entretenimiento</translation>
     </message>
     <message>
         <source>Health</source>
-        <translation type="unfinished"></translation>
+        <translation>Sanidad</translation>
     </message>
     <message>
         <source>Garden</source>
-        <translation type="unfinished"></translation>
+        <translation>Jardín</translation>
     </message>
     <message>
         <source>DIY</source>
-        <translation type="unfinished"></translation>
+        <translation>DIY</translation>
     </message>
     <message>
         <source>Sports</source>
-        <translation type="unfinished"></translation>
+        <translation>Deportes</translation>
     </message>
     <message>
         <source>Sex</source>
-        <translation type="unfinished"></translation>
+        <translation>Sexo</translation>
     </message>
     <message>
         <source>Output:</source>
-        <translation type="unfinished"></translation>
+        <translation>Salida:</translation>
     </message>
 </context>
 <context>
@@ -796,8 +797,8 @@
     <message numerus="yes">
         <source>in %n channel(s).</source>
         <translation>
-            <numerusform>en %n canal(es).</numerusform>
-            <numerusform></numerusform>
+            <numerusform>en %n canal.</numerusform>
+            <numerusform>en %n canales.</numerusform>
         </translation>
     </message>
 </context>

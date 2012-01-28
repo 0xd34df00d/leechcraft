@@ -2,271 +2,175 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
-    <name>Accounts_</name>
+    <name>AccountsSettings</name>
     <message>
-        <location filename="accounts.ui" line="22"/>
         <source>Bookmarks service</source>
-        <translation>Сервис закладок</translation>
+        <translation type="unfinished">Сервис закладок</translation>
     </message>
     <message>
-        <location filename="accounts.ui" line="76"/>
         <source>Add</source>
-        <translation>Добавить</translation>
+        <translation type="unfinished">Добавить</translation>
     </message>
     <message>
-        <location filename="accounts.ui" line="95"/>
-        <source>Edit</source>
-        <translation>Редактировать</translation>
-    </message>
-    <message>
-        <location filename="accounts.ui" line="111"/>
         <source>Delete</source>
-        <translation>Удалить</translation>
+        <translation type="unfinished">Удалить</translation>
     </message>
     <message>
-        <location filename="accounts.ui" line="152"/>
-        <source>Login</source>
-        <translation>Логин</translation>
-    </message>
-    <message>
-        <location filename="accounts.ui" line="162"/>
-        <source>Password</source>
-        <translation>Пароль</translation>
-    </message>
-    <message>
-        <location filename="accounts.ui" line="179"/>
         <source>Apply</source>
-        <translation>Применить</translation>
-    </message>
-</context>
-<context>
-    <name>BookmarksDialog_</name>
-    <message>
-        <location filename="bookmarksdialog.ui" line="14"/>
-        <source>Send bookmarks to online storage</source>
-        <translation>Отправка закладок в онлайн-хранилища</translation>
+        <translation type="unfinished">Применить</translation>
     </message>
     <message>
-        <location filename="bookmarksdialog.ui" line="20"/>
-        <source>Please check the services you would like to add the bookmark &quot;%1&quot; to, if any.</source>
-        <translation>Проверьте, в какие сервисы вы хотите добавить закладку «%1».</translation>
+        <source>Register</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="bookmarksdialog.ui" line="32"/>
-        <source>URL:</source>
-        <translation>URL:</translation>
+        <source>Select accounts to sync:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="bookmarksdialog.ui" line="46"/>
-        <source>Title:</source>
-        <translation>Название:</translation>
+        <source>Upload</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="bookmarksdialog.ui" line="56"/>
-        <source>Comma-separated tags:</source>
-        <translation>Теги через запятую:</translation>
-    </message>
-</context>
-<context>
-    <name>LeechCraft::Poshuku::OnlineBookmarks::BookmarksDialog</name>
-    <message>
-        <location filename="bookmarksdialog.cpp" line="52"/>
-        <source>Please check the services you would like to add the bookmark %1 to, if any.</source>
-        <translation>Проверьте, в какие сервисы вы хотите добавить закладку «%1».</translation>
-    </message>
-</context>
-<context>
-    <name>LeechCraft::Poshuku::OnlineBookmarks::OnlineBookmarks</name>
-    <message>
-        <location filename="onlinebookmarks.cpp" line="94"/>
-        <source>Sync local bookmarks with your account in online bookmark services like Read It Later</source>
-        <translation>Синхронизация локальных закладок с вашей учётной записью в сервисах онлайн-закладок типа Read It Later</translation>
+        <source>Download</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="onlinebookmarks.cpp" line="136"/>
-        <source>Bookmarks Sync</source>
-        <translation>Синхронизация закладок</translation>
-    </message>
-    <message>
-        <location filename="onlinebookmarks.cpp" line="137"/>
         <source>Sync</source>
-        <translation>Синхронизировать</translation>
+        <translation type="unfinished">Синхронизировать</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Poshuku::OnlineBookmarks::AccountsSettings</name>
+    <message>
+        <source>Account</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="onlinebookmarks.cpp" line="139"/>
+        <source>Last upload date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Last download date</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Poshuku::OnlineBookmarks::Plugin</name>
+    <message>
+        <source>Sync local bookmarks with your account in online bookmark services like Read It Later</source>
+        <translation type="unfinished">Синхронизация локальных закладок с вашей учётной записью в сервисах онлайн-закладок типа Read It Later</translation>
+    </message>
+    <message>
+        <source>Bookmarks Sync</source>
+        <translation type="unfinished">Синхронизация закладок</translation>
+    </message>
+    <message>
+        <source>Sync</source>
+        <translation type="unfinished">Синхронизировать</translation>
+    </message>
+    <message>
         <source>Upload only</source>
-        <translation>Закачать на сервер</translation>
+        <translation type="unfinished">Закачать на сервер</translation>
     </message>
     <message>
-        <location filename="onlinebookmarks.cpp" line="141"/>
         <source>Download only</source>
-        <translation>Скачать с сервера</translation>
+        <translation type="unfinished">Скачать с сервера</translation>
     </message>
     <message>
-        <location filename="onlinebookmarks.cpp" line="143"/>
         <source>Download all</source>
-        <translation>Скачать все</translation>
-    </message>
-</context>
-<context>
-    <name>LeechCraft::Poshuku::OnlineBookmarks::ReadItLaterBookmarksService</name>
-    <message>
-        <location filename="readitlater/readitlaterbookmarksservice.cpp" line="95"/>
-        <location filename="readitlater/readitlaterbookmarksservice.cpp" line="111"/>
-        <source>Invalid password</source>
-        <translation>Неправильный пароль</translation>
-    </message>
-    <message>
-        <location filename="readitlater/readitlaterbookmarksservice.cpp" line="225"/>
-        <source>An error occurred during parsing</source>
-        <translation>Возникла ошибка при разборе</translation>
-    </message>
-</context>
-<context>
-    <name>LeechCraft::Poshuku::OnlineBookmarks::Settings</name>
-    <message>
-        <location filename="settings.cpp" line="265"/>
-        <source>Invalid account data</source>
-        <translation>Неправильные данные учётной записи</translation>
-    </message>
-</context>
-<context>
-    <name>LeechCraft::Poshuku::OnlineBookmarks::SyncBookmarks</name>
-    <message>
-        <location filename="syncbookmarks.cpp" line="139"/>
-        <location filename="syncbookmarks.cpp" line="283"/>
-        <location filename="syncbookmarks.cpp" line="361"/>
-        <source>Unable to open upload configuration file.</source>
-        <translation>Невозможно открыть конфигурационный файл.</translation>
-    </message>
-    <message>
-        <location filename="syncbookmarks.cpp" line="211"/>
-        <source>Error while sending bookmarks</source>
-        <translation>Ошибка при отправке закладок</translation>
-    </message>
-    <message>
-        <location filename="syncbookmarks.cpp" line="231"/>
-        <source>Bookmarks have been sent successfully</source>
-        <translation>Закладки успешно отправлены</translation>
+        <translation type="unfinished">Скачать все</translation>
     </message>
 </context>
 <context>
     <name>poshukuonlinebookmarkssettings</name>
     <message>
-        <location filename="dummy.cpp" line="2"/>
-        <source>OnlineBookmarks</source>
-        <translation>OnlineBookmarks</translation>
+        <source>day</source>
+        <translation>день</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="3"/>
-        <source>Accounts</source>
-        <translation>Учётные записи</translation>
+        <source>week</source>
+        <translation>неделю</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="4"/>
-        <source>Sync options</source>
-        <oldsource>Sync Options</oldsource>
-        <translation>Параметры синхронизации</translation>
+        <source>year</source>
+        <translation>год</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="5"/>
-        <source>Select services</source>
-        <translation>Выберите сервисы</translation>
+        <source>month</source>
+        <translation>месяц</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="6"/>
         <source>Confirm sending bookmarks on addition</source>
         <translation>Подтверждать отправку закладок при добавлении</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="7"/>
-        <source>Ask about services to send bookmarks to</source>
-        <oldsource>Ask user about services witch bookmarks send should be</oldsource>
-        <translation>Спрашивать, на какие сервисы отправлять закладки</translation>
+        <source>Upload options</source>
+        <translation>Параметры отправки</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="8"/>
-        <source>Download options</source>
-        <oldsource>Download option</oldsource>
-        <translation>Параметры скачивания</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="9"/>
-        <location filename="dummy.cpp" line="21"/>
-        <source>Send bookmarks to selected services every</source>
-        <oldsource>Send bookmarks to active services every</oldsource>
-        <translation>Отсылать закладки на активные сервисы каждые</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="10"/>
-        <location filename="dummy.cpp" line="22"/>
-        <source>on action</source>
-        <oldsource>On Action</oldsource>
-        <translation>по запросу</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="11"/>
-        <location filename="dummy.cpp" line="23"/>
-        <source>day</source>
-        <oldsource>Day</oldsource>
-        <translation>день</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="12"/>
-        <location filename="dummy.cpp" line="24"/>
         <source>2 days</source>
         <translation>2 дня</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="13"/>
-        <location filename="dummy.cpp" line="25"/>
+        <source>Download options</source>
+        <translation>Параметры скачивания</translation>
+    </message>
+    <message>
         <source>3 days</source>
         <translation>3 дня</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="14"/>
-        <location filename="dummy.cpp" line="26"/>
         <source>4 days</source>
         <translation>4 дня</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="15"/>
-        <location filename="dummy.cpp" line="27"/>
         <source>5 days</source>
         <translation>5 дней</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="16"/>
-        <location filename="dummy.cpp" line="28"/>
         <source>6 days</source>
         <translation>6 дней</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="17"/>
-        <location filename="dummy.cpp" line="29"/>
-        <source>week</source>
-        <oldsource>Week</oldsource>
-        <translation>неделю</translation>
+        <source>Sync options</source>
+        <translation>Параметры синхронизации</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="18"/>
-        <location filename="dummy.cpp" line="30"/>
-        <source>month</source>
-        <oldsource>Month</oldsource>
-        <translation>месяц</translation>
+        <source>on action</source>
+        <translation>по запросу</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="19"/>
-        <location filename="dummy.cpp" line="31"/>
-        <source>year</source>
-        <oldsource>Year</oldsource>
-        <translation>год</translation>
+        <source>OnlineBookmarks</source>
+        <translation>OnlineBookmarks</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="20"/>
-        <source>Upload options</source>
-        <oldsource>Upload option</oldsource>
-        <translation>Параметры отправки</translation>
+        <source>Accounts</source>
+        <translation>Учётные записи</translation>
+    </message>
+    <message>
+        <source>Ask about services to send bookmarks to</source>
+        <translation>Спрашивать, на какие сервисы отправлять закладки</translation>
+    </message>
+    <message>
+        <source>Send bookmarks to selected services every</source>
+        <translation>Отсылать закладки на активные сервисы каждые</translation>
+    </message>
+    <message>
+        <source>Upload bookmarks type:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>everything with everything</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>only accounts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>only services</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,6 +64,7 @@ namespace LeechCraft
 		boost::shared_ptr<NewTabMenuManager> NewTabMenuManager_;
 		boost::shared_ptr<CoreInstanceObject> CoreInstanceObject_;
 		QList<Entity> QueuedEntities_;
+		bool IsShuttingDown_;
 
 		Core ();
 	public:
@@ -78,6 +79,8 @@ namespace LeechCraft
 		virtual ~Core ();
 		static Core& Instance ();
 		void Release ();
+
+		bool IsShuttingDown () const;
 
 		/** Sets the pointer to the main window.
 		 */

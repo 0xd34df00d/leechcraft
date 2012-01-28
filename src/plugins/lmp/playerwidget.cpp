@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -425,11 +425,6 @@ namespace LMP
 #endif
 				result += tr ("nowhere");
 				break;
-#if PHONON_VERSION >= PHONON_VERSION_CHECK (4, 4, 0)
-			case MediaSource::CaptureDevice:
-				result += tr ("capture device");
-				break;
-#endif
 			case MediaSource::LocalFile:
 				result += source.fileName ();
 				break;

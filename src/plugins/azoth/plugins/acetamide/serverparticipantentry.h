@@ -19,10 +19,10 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SERVERPARTICIPANTENTRY_H
 #define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SERVERPARTICIPANTENTRY_H
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QObject>
 #include <QStringList>
-#include "entrybase.h"
+#include "ircparticipantentry.h"
 #include "localtypes.h"
 
 namespace LeechCraft
@@ -33,51 +33,35 @@ namespace Acetamide
 {
 
 	class IrcAccount;
+	class IrcServerHandler;
 
-	class ServerParticipantEntry : public EntryBase
+	class ServerParticipantEntry : public IrcParticipantEntry
 	{
 		Q_OBJECT
 
-		QString NickName_;
-		QString ServerKey_;
-		QStringList Channels_;
-		bool PrivateChat_;
-
-		IrcAccount *Account_;
-		QHash<QString, QList<ChannelRole> > Channel2Role_;
+		IrcServerHandler *ISH_;
 	public:
 		ServerParticipantEntry (const QString&,
-				const QString&, IrcAccount*);
+				IrcServerHandler*, IrcAccount*);
 
-		QObject* GetParentAccount () const ;
 		QObject* GetParentCLEntry () const;
-		Features GetEntryFeatures () const;
-		EntryType GetEntryType () const;
-		QString GetEntryName () const;
-		void SetEntryName (const QString&);
+
 		QString GetEntryID () const;
 		QString GetHumanReadableID () const;
+
 		QStringList Groups () const;
 		void SetGroups (const QStringList&);
-		QStringList Variants () const;
+
 		QObject* CreateMessage (IMessage::MessageType,
 				const QString&, const QString&);
 
-		QStringList GetChannels () const;
-		void SetPrivateChat (bool);
-		bool IsPrivateChat () const;
-
-		QList<ChannelRole> GetRoles (const QString&) const;
-		void AddRole (const QString&, ChannelRole);
-		void RemoveRole (const QString&, ChannelRole);
-	public slots:
-		void closePrivateChat (bool);
+		void SetMessageHistory (QObjectList messages);
+	private slots:
 	};
 
-	typedef boost::shared_ptr<ServerParticipantEntry>
-			ServerParticipantEntry_ptr;
-};
-};
-};
+	typedef std::shared_ptr<ServerParticipantEntry> ServerParticipantEntry_ptr;
+}
+}
+}
 
 #endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SERVERPARTICIPANTENTRY_H

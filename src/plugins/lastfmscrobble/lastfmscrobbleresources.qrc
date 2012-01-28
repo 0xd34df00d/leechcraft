@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="/" >
+    <file>resources/images/lastfmscrobble.svg</file>
+  </qresource>
+</RCC>

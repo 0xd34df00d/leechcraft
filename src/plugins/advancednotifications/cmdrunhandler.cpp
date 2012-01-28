@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,11 @@ namespace AdvancedNotifications
 		return NMCommand;
 	}
 
-	void CmdRunHandler::Handle (const Entity&, const NotificationRule& rule)
+	void CmdRunHandler::Handle (const Entity& e, const NotificationRule& rule)
 	{
+		if (e.Additional_ ["org.LC.AdvNotifications.EventCategory"].toString () == "org.LC.AdvNotifications.Cancel")
+			return;
+
 		const CmdParams& params = rule.GetCmdParams ();
 		if (params.Cmd_.isEmpty ())
 		{

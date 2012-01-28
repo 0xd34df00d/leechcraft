@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 #ifndef PLUGINS_QROSP_WRAPPERS_PLUGINSMANAGERWRAPPER_H
 #define PLUGINS_QROSP_WRAPPERS_PLUGINSMANAGERWRAPPER_H
 #include <QObject>
-#include <interfaces/iinfo.h>
+#include <interfaces/core/ipluginsmanager.h>
 
 namespace LeechCraft
 {

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,7 +38,7 @@ namespace ChatHistory
 	boost::weak_ptr<Core> Core::InstPtr_;
 
 	Core::Core ()
-	: StorageThread_ (new StorageThread (this))
+	: StorageThread_ (new StorageThread ())
 	, PluginProxy_ (0)
 	{
 		StorageThread_->start (QThread::LowestPriority);
@@ -48,10 +48,11 @@ namespace ChatHistory
 		TabClass_.Description_ = tr ("Chat history viewer for the Azoth IM");
 		TabClass_.Priority_ = 40;
 		TabClass_.Features_ = TFOpenableByRequest;
+		TabClass_.Icon_ = QIcon (":/azoth/chathistory/resources/images/chathistory.svg");
 
 		LoadDisabled ();
 	}
-	
+
 	boost::shared_ptr<Core> Core::Instance ()
 	{
 		if (InstPtr_.expired ())
@@ -62,22 +63,38 @@ namespace ChatHistory
 		}
 		return InstPtr_.lock ();
 	}
-	
+
+	Core::~Core ()
+	{
+		StorageThread_->quit ();
+		StorageThread_->wait (2000);
+
+		if (StorageThread_->isRunning ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "storage thread still running, forcefully terminating...";
+			StorageThread_->terminate ();
+			StorageThread_->wait (5000);
+		}
+		else
+			delete StorageThread_;
+	}
+
 	TabClassInfo Core::GetTabClass () const
 	{
 		return TabClass_;
 	}
-	
+
 	void Core::SetPluginProxy (QObject *proxy)
 	{
 		PluginProxy_ = qobject_cast<IProxyObject*> (proxy);
 	}
-	
+
 	IProxyObject* Core::GetPluginProxy () const
 	{
 		return PluginProxy_;
 	}
-	
+
 	bool Core::IsLoggingEnabled (QObject *entryObj) const
 	{
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
@@ -88,10 +105,10 @@ namespace ChatHistory
 					<< "could not be casted to ICLEntry";
 			return true;
 		}
-		
+
 		return !DisabledIDs_.contains (entry->GetEntryID ());
 	}
-	
+
 	void Core::SetLoggingEnabled (QObject *entryObj, bool enable)
 	{
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
@@ -102,16 +119,16 @@ namespace ChatHistory
 					<< "could not be casted to ICLEntry";
 			return;
 		}
-		
+
 		const QString& id = entry->GetEntryID ();
 		if (enable)
 			DisabledIDs_.remove (id);
 		else
 			DisabledIDs_ << id;
-		
+
 		SaveDisabled ();
 	}
-	
+
 	void Core::Process (QObject *msgObj)
 	{
 		IMessage *msg = qobject_cast<IMessage*> (msgObj);
@@ -123,7 +140,7 @@ namespace ChatHistory
 		if (msg->GetDirection () == IMessage::DOut &&
 				msg->GetMessageType () == IMessage::MTMUCMessage)
 			return;
-		
+
 		ICLEntry *entry = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
 		if (!entry)
 		{
@@ -144,30 +161,47 @@ namespace ChatHistory
 					<< entry->GetParentAccount ();
 			return;
 		}
-		
+
 		QVariantMap data;
 		data ["EntryID"] = entry->GetEntryID ();
-		data ["VisibleName"] = entry->GetEntryName ();
 		data ["AccountID"] = acc->GetAccountID ();
 		data ["DateTime"] = msg->GetDateTime ();
 		data ["Direction"] = msg->GetDirection () == IMessage::DIn ? "IN" : "OUT";
 		data ["Body"] = msg->GetBody ();
 		data ["OtherVariant"] = msg->GetOtherVariant ();
 		data ["MessageType"] = static_cast<int> (msg->GetMessageType ());
-		
+
+		if (entry->GetEntryType () == ICLEntry::ETPrivateChat)
+		{
+			ICLEntry *parent = qobject_cast<ICLEntry*> (entry->GetParentCLEntry ());
+			data ["VisibleName"] = parent->GetEntryName () + "/" + entry->GetEntryName ();
+		}
+		else
+			data ["VisibleName"] = entry->GetEntryName ();
+
 		QMetaObject::invokeMethod (StorageThread_->GetStorage (),
 				"addMessage",
 				Qt::QueuedConnection,
 				Q_ARG (QVariantMap, data));
 	}
-	
+
+	void Core::Process (QVariantMap data)
+	{
+		data ["Direction"] = data ["Direction"].toString ().toUpper ();
+
+		QMetaObject::invokeMethod (StorageThread_->GetStorage (),
+				"addMessage",
+				Qt::QueuedConnection,
+				Q_ARG (QVariantMap, data));
+	}
+
 	void Core::GetOurAccounts ()
 	{
 		QMetaObject::invokeMethod (StorageThread_->GetStorage (),
 				"getOurAccounts",
 				Qt::QueuedConnection);
 	}
-	
+
 	void Core::GetUsersForAccount (const QString& accountID)
 	{
 		QMetaObject::invokeMethod (StorageThread_->GetStorage (),
@@ -175,7 +209,7 @@ namespace ChatHistory
 				Qt::QueuedConnection,
 				Q_ARG (QString, accountID));
 	}
-	
+
 	void Core::GetChatLogs (const QString& accountId,
 			const QString& entryId, int backpages, int amount)
 	{
@@ -187,7 +221,7 @@ namespace ChatHistory
 				Q_ARG (int, backpages),
 				Q_ARG (int, amount));
 	}
-	
+
 	void Core::Search (const QString& accountId, const QString& entryId,
 			const QString& text, int shift)
 	{
@@ -199,7 +233,7 @@ namespace ChatHistory
 				Q_ARG (QString, text),
 				Q_ARG (int, shift));
 	}
-	
+
 	void Core::ClearHistory (const QString& accountId, const QString& entryId)
 	{
 		QMetaObject::invokeMethod (StorageThread_->GetStorage (),
@@ -208,14 +242,14 @@ namespace ChatHistory
 				Q_ARG (QString, accountId),
 				Q_ARG (QString, entryId));
 	}
-	
+
 	void Core::LoadDisabled ()
 	{
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Azoth_ChatHistory");
 		DisabledIDs_ = settings.value ("DisabledIDs").toStringList ().toSet ();
 	}
-	
+
 	void Core::SaveDisabled ()
 	{
 		QSettings settings (QCoreApplication::organizationName (),

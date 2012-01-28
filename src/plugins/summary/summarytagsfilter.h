@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,26 +16,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef SUMMARYTAGSFILTER_H
-#define SUMMARYTAGSFILTER_H
+#pragma once
+
 #include <util/tagsfiltermodel.h>
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Summary
+{
+	class SummaryTagsFilter : public Util::TagsFilterModel
 	{
-		namespace Summary
-		{
-			class SummaryTagsFilter : public Util::TagsFilterModel
-			{
-				Q_OBJECT
-			public:
-				SummaryTagsFilter (QObject* = 0);
-			protected:
-				QStringList GetTagsForIndex (int) const;
-			};
-		}
-	}
+		Q_OBJECT
+	public:
+		SummaryTagsFilter (QObject* = 0);
+	protected:
+		QStringList GetTagsForIndex (int) const;
+	};
 }
-
-#endif
+}

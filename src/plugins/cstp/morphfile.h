@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,33 +22,29 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace CSTP
+{
+	class MorphFile : public QFile
 	{
-		namespace CSTP
-		{
-			class MorphFile : public QFile
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				bool Gunzip_;
-				int Counter_;
-			public:
-				MorphFile (const QString&);
-				MorphFile (QObject*);
-				MorphFile (const QString&, QObject*);
-				virtual ~MorphFile ();
+		bool Gunzip_;
+		int Counter_;
+	public:
+		MorphFile (const QString&);
+		MorphFile (QObject*);
+		MorphFile (const QString&, QObject*);
+		virtual ~MorphFile ();
 
-				void Gunzip (bool);
+		void Gunzip (bool);
 
-				void AddRef ();
-				void Release ();
-			};
-
-			void intrusive_ptr_add_ref (MorphFile*);
-			void intrusive_ptr_release (MorphFile*);
-		};
+		void AddRef ();
+		void Release ();
 	};
-};
+
+	void intrusive_ptr_add_ref (MorphFile*);
+	void intrusive_ptr_release (MorphFile*);
+}
+}
 
 #endif
-

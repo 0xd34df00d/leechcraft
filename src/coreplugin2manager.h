@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ namespace LeechCraft
 	public:
 		CorePlugin2Manager (QObject* = 0);
 	signals:
+		void hookGonnaFillQuickLaunch (LeechCraft::IHookProxy_ptr proxy);
 		void hookNAMCreateRequest (LeechCraft::IHookProxy_ptr proxy,
 					QNetworkAccessManager *manager,
 					QNetworkAccessManager::Operation *op,

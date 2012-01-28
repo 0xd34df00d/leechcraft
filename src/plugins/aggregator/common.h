@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 #ifndef PLUGINS_AGGREGATOR_COMMON_H
 #define PLUGINS_AGGREGATOR_COMMON_H
 #include <QList>
+#include <QMetaType>
 
 namespace LeechCraft
 {
@@ -26,6 +27,7 @@ namespace Aggregator
 {
 	typedef quint64 IDType_t;
 	typedef QList<IDType_t> ids_t;
+
 	enum PoolType
 	{
 		PTFeed,
@@ -43,5 +45,7 @@ namespace Aggregator
 	};
 }
 }
+
+Q_DECLARE_METATYPE (LeechCraft::Aggregator::IDType_t);
 
 #endif

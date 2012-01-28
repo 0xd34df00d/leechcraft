@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="Laure" />
+		<groupbox>
+			<label value="Playlist" />
+			<item type="checkbox" property="Header1" default="true">
+				<label value="Show Artist" />
+			</item>
+			<item type="checkbox" property="Header2" default="true">
+				<label value="Show Title" />
+			</item>
+			<item type="checkbox" property="Header3" default="true">
+				<label value="Show Album" />
+			</item>
+			<item type="checkbox" property="Header4" default="true">
+				<label value="Show Genre" />
+			</item>
+			<item type="checkbox" property="Header5" default="true">
+				<label value="Show Date" />
+			</item>
+		</groupbox>
+		<groupbox>
+			<label value="Last.FM" />
+			<item type="lineedit" property="lastfm.login">
+				<label value="Login:" />
+			</item>
+			<item type="lineedit" property="lastfm.password" password="true">
+				<label value="Password:" />
+			</item>
+		</groupbox>
+	</page>
+</settings>

@@ -34,6 +34,9 @@
 			<item type="checkbox" property="CloseEmptyDelegatedPages" default="on">
 				<label lang="en" value="Automatically close empty pages with delegated content" />
 			</item>
+			<item type="checkbox" property="BookmarkInOneClick" default="off">
+				<label lang="en" value="Add bookmark in one click" />
+			</item>
 			<item type="lineedit" property="ExternalSchemes" default="smb nfs telnet imap pop nntp news">
 				<label lang="en" value="Open these schemes using external applications:" />
 			</item>
@@ -45,6 +48,14 @@
 			<label lang="en" value="Security" />
 			<groupbox>
 				<label lang="en" value="Security" />
+				<item type="checkbox" property="EnableXSSAuditing" default="false">
+					<label value="Enable XSS auditing" />
+					<tooltip>Specifies whether requests should be monitored for cross-site scripting attempts. Suspicious attempts would be blocked. This feature may have a slight negative impact on performance.</tooltip>
+				</item>
+				<item type="checkbox" property="EnableHyperlinkAuditing" default="false">
+					<label value="Enable hyperlink auditing" />
+					<tooltip>Enable sending hyperlink auditing pings.</tooltip>
+				</item>
 				<item type="checkbox" property="OfflineStorageDB" state="on">
 					<label lang="en" value="Offline storage database" />
 				</item>
@@ -136,6 +147,9 @@
 				<item type="checkbox" property="JavascriptCanAccessClipboard" state="on">
 					<label lang="en" value="Javascript programs can access clipboard" />
 				</item>
+				<item type="checkbox" property="EnableWebGL" default="true">
+					<label value="Enable WebGL" />
+				</item>
 				<item type="checkbox" property="DeveloperExtrasEnabled" state="off">
 					<label lang="en" value="Developer extras" />
 				</item>
@@ -171,10 +185,10 @@
 				</item>
 				<item type="spinbox" property="DefaultFontSize" default="14" minimum="5" maximum="40" step="1">
 					<label lang="en" value="Default font size:" />
-				</item>	
+				</item>
 				<item type="spinbox" property="DefaultFixedFontSize" default="14" minimum="5" maximum="40" step="1">
 					<label lang="en" value="Default fixed font size:" />
-				</item>	
+				</item>
 			</groupbox>
 		</tab>
 		<tab>

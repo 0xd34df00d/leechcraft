@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -89,7 +89,7 @@ namespace Aggregator
 		else if (role == Qt::DecorationRole &&
 				index.column () == 0)
 		{
-			QIcon result = Channels_.at (row).Favicon_;
+			QIcon result = QPixmap::fromImage (Channels_.at (row).Favicon_);
 			if (result.isNull ())
 				result = QIcon (":/resources/images/rss.png");
 			return result;

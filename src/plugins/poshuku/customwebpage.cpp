@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,8 +17,6 @@
  **********************************************************************/
 
 #include "customwebpage.h"
-#include <boost/bind.hpp>
-#include <boost/function.hpp>
 #include <QtDebug>
 #include <QFile>
 #include <QBuffer>
@@ -278,14 +276,21 @@ namespace Poshuku
 						static_cast<const ErrorPageExtensionOption*> (eo);
 				ErrorPageExtensionReturn *ret =
 						static_cast<ErrorPageExtensionReturn*> (er);
+
+				qDebug () << Q_FUNC_INFO
+						<< "error extension:"
+						<< error->domain
+						<< error->error
+						<< error->errorString
+						<< error->url;
+
 				switch (error->error)
 				{
 				case 102:			// Delegated entity
 					return false;
 				case 301:			// Unknown protocol (should delegate)
 				{
-					LeechCraft::Entity e =
-						LeechCraft::Util::MakeEntity (error->url,
+					Entity e = Util::MakeEntity (error->url,
 							QString (),
 							LeechCraft::FromUserInitiated);
 					bool ch = false;
@@ -306,7 +311,22 @@ namespace Poshuku
 							error->url, error->errorString, error->domain);
 					ret->baseUrl = error->url;
 					ret->content = data.toUtf8 ();
-					return true;
+					if (error->domain == QWebPage::QtNetwork)
+						switch (error->error)
+						{
+						case QNetworkReply::UnknownNetworkError:
+							return QWebPage::extension (e, eo, er);
+						case QNetworkReply::ContentReSendError:
+							emit gotEntity (Util::MakeNotification ("Poshuku",
+										tr ("Unable to send the request to %1. Please try submitting it again.")
+											.arg (error->url.host ()),
+										PCritical_));
+							return false;
+						default :
+							return true;
+						}
+					else
+						return true;
 				}
 				}
 			}
@@ -376,6 +396,7 @@ namespace Poshuku
 
 	void CustomWebPage::handleLinkClicked (const QUrl& url)
 	{
+		emit loadingURL (url);
 		emit hookLinkClicked (IHookProxy_ptr (new Util::DefaultHookProxy),
 				this, url);
 	}
@@ -482,6 +503,12 @@ namespace Poshuku
 					int statusCode = reply->
 						attribute (QNetworkRequest::HttpStatusCodeAttribute).toInt ();
 
+					qDebug () << Q_FUNC_INFO
+							<< "general unsupported content"
+							<< reply->url ()
+							<< reply->error ()
+							<< reply->errorString ();
+
 					QString data = MakeErrorReplyContents (statusCode,
 							reply->url (), reply->errorString (), QtNetwork);
 
@@ -537,7 +564,8 @@ namespace Poshuku
 
 		QBuffer ib;
 		ib.open (QIODevice::ReadWrite);
-		QPixmap px = Core::Instance ().GetProxy ()->GetIcon ("error").pixmap (32, 32);
+		QPixmap px = Core::Instance ().GetProxy ()->
+				GetIcon ("dialog-error").pixmap (32, 32);
 		px.save (&ib, "PNG");
 
 		data.replace ("{img}",
@@ -857,32 +885,26 @@ namespace Poshuku
 		ElementsData_t::const_iterator FindElement (const ElementData& filled,
 				const ElementsData_t& list, bool strict)
 		{
-			boost::function<bool (const ElementData&)> typeChecker =
-					boost::bind (&ElementData::Type_, _1) == filled.Type_;
-			boost::function<bool (const ElementData&)> urlChecker =
-					boost::bind (&ElementData::PageURL_, _1) == filled.PageURL_;
-			boost::function<bool (const ElementData&)> formIdChecker =
-					boost::bind (&ElementData::FormID_, _1) == filled.FormID_;
+			auto typeChecker = [filled] (const ElementData& ed)
+				{ return ed.Type_ == filled.Type_; };
+			auto urlChecker = [filled] (const ElementData& ed)
+				{ return ed.PageURL_ == filled.PageURL_; };
+			auto formIdChecker = [filled] (const ElementData& ed)
+				{ return ed.FormID_ == filled.FormID_; };
 
-			ElementsData_t::const_iterator pos =
-					std::find_if (list.begin (), list.end (),
-							boost::bind (std::logical_and<bool> (),
-									boost::bind (typeChecker, _1),
-									boost::bind (std::logical_and<bool> (),
-											boost::bind (urlChecker, _1),
-											boost::bind (formIdChecker, _1))));
+			auto pos = std::find_if (list.begin (), list.end (),
+					[typeChecker, urlChecker, formIdChecker] (const ElementData& ed)
+						{ return typeChecker (ed) && urlChecker (ed) && formIdChecker (ed); });
 			if (!strict)
 			{
 				if (pos == list.end ())
 					pos = std::find_if (list.begin (), list.end (),
-							boost::bind (std::logical_and<bool> (),
-									boost::bind (typeChecker, _1),
-									boost::bind (formIdChecker, _1)));
+							[typeChecker, formIdChecker] (const ElementData& ed)
+								{ return typeChecker (ed) && formIdChecker (ed); });
 				if (pos == list.end ())
 					pos = std::find_if (list.begin (), list.end (),
-							boost::bind (std::logical_and<bool> (),
-									boost::bind (typeChecker, _1),
-									boost::bind (urlChecker, _1)));
+							[typeChecker, urlChecker] (const ElementData& ed)
+								{ return typeChecker (ed) && urlChecker (ed); });
 			}
 
 			return pos;

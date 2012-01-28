@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -113,7 +113,7 @@ void LeechCraft::Plugins::NetworkMonitor::RequestModel::handleRequest (QNetworkA
 namespace
 {
 	template<typename T>
-		QMap<QString, QVariant> GetHeaders (const T* object)
+	QMap<QString, QVariant> GetHeaders (const T* object)
 	{
 		QMap<QString, QVariant> result;
 		QList<QByteArray> headers = object->rawHeaderList ();
@@ -124,7 +124,7 @@ namespace
 	}
 
 	template<typename T>
-		void FeedHeaders (T object, HeaderModel* model)
+	void FeedHeaders (T object, HeaderModel* model)
 	{
 		QMap<QString, QVariant> headers = GetHeaders (object);
 		Q_FOREACH (QString header, headers.keys ())
@@ -132,7 +132,7 @@ namespace
 	}
 
 	template<>
-		void FeedHeaders (QMap<QString, QVariant> headers, HeaderModel* model)
+	void FeedHeaders (QMap<QString, QVariant> headers, HeaderModel* model)
 	{
 		Q_FOREACH (QString header, headers.keys ())
 			model->AddHeader (header, headers [header].toString ());
@@ -163,7 +163,12 @@ void RequestModel::handleFinished ()
 				item (i, 0)->setData (0);
 				QNetworkRequest r = reply->request ();
 				item (i, 1)->setData (GetHeaders (&r));
-				item (i, 2)->setData (GetHeaders (reply));
+
+				auto headers = GetHeaders (reply);
+				headers ["[HTTP response]"] = QString ("%1 (%2)")
+						.arg (reply->attribute (QNetworkRequest::HttpStatusCodeAttribute).toInt ())
+						.arg (reply->attribute (QNetworkRequest::HttpReasonPhraseAttribute).toString ());
+				item (i, 2)->setData (headers);
 			}
 			break;
 		}

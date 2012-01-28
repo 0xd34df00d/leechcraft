@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,8 +20,6 @@
 #include <stdexcept>
 #include <list>
 #include <functional>
-#include <boost/bind.hpp>
-#include <boost/function.hpp>
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QtDebug>
@@ -85,6 +83,7 @@ namespace LeechCraft
 	, LocalSocketHandler_ (new LocalSocketHandler)
 	, NewTabMenuManager_ (new NewTabMenuManager)
 	, CoreInstanceObject_ (new CoreInstanceObject)
+	, IsShuttingDown_ (false)
 	{
 		CoreInstanceObject_->GetCorePluginManager ()->RegisterHookable (NetworkAccessManager_.get ());
 
@@ -148,6 +147,7 @@ namespace LeechCraft
 
 	void Core::Release ()
 	{
+		IsShuttingDown_ = true;
 		LocalSocketHandler_.reset ();
 		XmlSettingsManager::Instance ()->setProperty ("FirstStart", "false");
 		ClipboardWatcher_.reset ();
@@ -161,6 +161,11 @@ namespace LeechCraft
 		NetworkAccessManager_.reset ();
 
 		StorageBackend_.reset ();
+	}
+
+	bool Core::IsShuttingDown () const
+	{
+		return IsShuttingDown_;
 	}
 
 	void Core::SetReallyMainWindow (MainWindow *win)
@@ -519,12 +524,7 @@ namespace LeechCraft
 				const QObjectList& plugins = Core::Instance ().GetPluginManager ()->
 					GetAllCastableRoots<IDownload*> ();
 				*pr = *std::find_if (plugins.begin (), plugins.end (),
-						boost::bind (std::equal_to<IDownload*> (),
-							sd,
-							boost::bind<IDownload*> (
-								static_cast<IDownload* (*) (const QObject*)> (qobject_cast<IDownload*>),
-								_1
-								)));
+						[sd] (QObject *d) { return qobject_cast<IDownload*> (d) == sd; });
 			}
 
 			return true;
@@ -647,7 +647,17 @@ namespace LeechCraft
 					dia->Add (qobject_cast<IInfo*> (plugin), qobject_cast<IEntityHandler*> (plugin));
 
 		if (!(numHandlers + numDownloaders))
-			return false;
+		{
+			if (p.Entity_.toUrl ().isValid () &&
+					(p.Parameters_ & FromUserInitiated) &&
+					!(p.Parameters_ & OnlyDownload))
+			{
+				QDesktopServices::openUrl (p.Entity_.toUrl ());
+				return true;
+			}
+			else
+				return false;
+		}
 
 		const bool bcastCandidate = !id && !pr && numHandlers;
 
@@ -747,6 +757,7 @@ namespace LeechCraft
 					.arg (string));
 			return false;
 		}
+
 		return true;
 	}
 

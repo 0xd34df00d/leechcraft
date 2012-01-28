@@ -18,7 +18,6 @@ SET (SRCS
 	mergemodel.cpp
 	dblock.cpp
 	customcookiejar.cpp
-	modeltest.cpp
 	backendselector.cpp
 	structuresops.cpp
 	listmodel.cpp
@@ -34,6 +33,10 @@ SET (SRCS
 	notificationactionhandler.cpp
 	flowlayout.cpp
 	socketerrorstrings.cpp
+	syncdeltamanager.cpp
+	sysinfo.cpp
+	passutils.cpp
+	shortcuts/shortcutmanager.cpp
 	)
 SET (HEADERS
 	tagscompleter.h
@@ -46,7 +49,6 @@ SET (HEADERS
 	mergemodel.h
 	dblock.h
 	customcookiejar.h
-	modeltest.h
 	backendselector.h
 	structuresops.h
 	listmodel.h
@@ -62,6 +64,10 @@ SET (HEADERS
 	notificationactionhandler.h
 	flowlayout.h
 	socketerrorstrings.h
+	syncdeltamanager.h
+	sysinfo.h
+	passutils.h
+	shortcuts/shortcutmanager.h
 	idpool.h
 	)
 SET (FORMS
@@ -74,7 +80,9 @@ ADD_DEFINITIONS(-DQT_PLUGIN)
 ADD_DEFINITIONS(-DQT_NO_DEBUG)
 ADD_DEFINITIONS(-DQT_SHARED)
 ADD_DEFINITIONS(-DQT_GUI_LIB)
-QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
+IF (NOT LC_NO_MOC)
+	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
+ENDIF (NOT LC_NO_MOC)
 ADD_LIBRARY (lcutil SHARED
 	${SRCS}
 	${MOC_SRCS}

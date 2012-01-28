@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@
 #include "clientconnection.h"
 #include "capsmanager.h"
 #include "annotationsmanager.h"
+#include "useravatarmanager.h"
 
 namespace LeechCraft
 {
@@ -46,7 +47,7 @@ namespace Xoox
 
 		Ui_.EditBirthday_->setVisible (false);
 	}
-	
+
 	VCardDialog::VCardDialog (EntryBase *entry, QWidget *parent)
 	: QDialog (parent)
 	{
@@ -68,27 +69,9 @@ namespace Xoox
 		}
 
 		Ui_.EditBirthday_->setVisible (false);
-		
-		GlooxAccount *acc = qobject_cast<GlooxAccount*> (entry->GetParentAccount ());
-		CapsManager *mgr = acc->GetClientConnection ()->GetCapsManager ();
-		
-		QString html;
-		Q_FOREACH (const QString& variant, entry->Variants ())
-		{
-			const QMap<QString, QVariant>& info = entry->GetClientInfo (variant);
-			const QString& client = info ["client_name"].toString ();
-			
-			html += "<strong>" + client + "</strong> (" +
-					QString::number (info ["priority"].toInt ()) + ")<br />";
-					
-			const QStringList& caps =
-					mgr->GetCaps (entry->GetVariantVerString (variant));
-			if (caps.size ())
-				html += "<strong>" + tr ("Capabilities") +
-						"</strong>:<ul><li>" + caps.join ("</li><li>") + "</li></ul>";
-		}
-		
-		Ui_.ClientInfo_->setHtml (html);
+
+		InitConnections (entry);
+		rebuildClientInfo ();
 	}
 
 	void VCardDialog::UpdateInfo (const QXmppVCardIq& vcard)
@@ -97,7 +80,7 @@ namespace Xoox
 
 		setWindowTitle (tr ("VCard for %1")
 					.arg (vcard.nickName ()));
-		
+
 		Ui_.EditJID_->setText (vcard.from ());
 		Ui_.EditRealName_->setText (vcard.fullName ());
 		Ui_.EditNick_->setText (vcard.nickName ());
@@ -120,25 +103,74 @@ namespace Xoox
 		}
 		else
 			Ui_.LabelPhoto_->setText (tr ("No photo"));
-		
+
 		Ui_.OrgName_->setText (vcard.orgName ());
 		Ui_.OrgUnit_->setText (vcard.orgUnit ());
 		Ui_.Title_->setText (vcard.title ());
 		Ui_.Role_->setText (vcard.role ());
 	}
-	
+
+	void VCardDialog::InitConnections (EntryBase *entry)
+	{
+		connect (entry,
+				SIGNAL (statusChanged (const EntryStatus&, const QString&)),
+				this,
+				SLOT (rebuildClientInfo ()));
+		connect (entry,
+				SIGNAL (entryGenerallyChanged ()),
+				this,
+				SLOT (rebuildClientInfo ()));
+	}
+
+	void VCardDialog::rebuildClientInfo ()
+	{
+		if (!Account_)
+			return;
+
+		EntryBase *entry = qobject_cast<EntryBase*> (Account_->GetClientConnection ()->GetCLEntry (JID_));
+		CapsManager *mgr = Account_->GetClientConnection ()->GetCapsManager ();
+
+		QString html;
+		Q_FOREACH (const QString& variant, entry->Variants ())
+		{
+			const auto& info = entry->GetClientInfo (variant);
+			const QString& client = info ["raw_client_name"].toString ();
+
+			html += "<strong>" + client + "</strong> (" +
+					QString::number (info ["priority"].toInt ()) + ")<br />";
+
+			const auto& version = entry->GetClientVersion (variant);
+			auto gapp = [&html] (QString user, QString part)
+			{
+				if (!part.isEmpty ())
+					html += user + ": " + part + "<br />";
+			};
+			gapp (tr ("Name"), version.name ());
+			gapp (tr ("Version"), version.version ());
+			gapp (tr ("OS"), version.os ());
+
+			const QStringList& caps =
+					mgr->GetCaps (entry->GetVariantVerString (variant));
+			if (caps.size ())
+				html += "<strong>" + tr ("Capabilities") +
+						"</strong>:<ul><li>" + caps.join ("</li><li>") + "</li></ul>";
+		}
+
+		Ui_.ClientInfo_->setHtml (html);
+	}
+
 	void VCardDialog::setNote ()
 	{
 		if (!Account_)
 			return;
-		
+
 		Note_.setJid (JID_);
 		Note_.setNote (Ui_.NotesEdit_->toPlainText ());
 		Note_.setMdate (QDateTime::currentDateTime ());
 		Account_->GetClientConnection ()->
 				GetAnnotationsManager ()->SetNote (JID_, Note_);
 	}
-	
+
 	void VCardDialog::publishVCard ()
 	{
 		VCard_.setFullName (Ui_.EditRealName_->text ());
@@ -149,7 +181,7 @@ namespace Xoox
 		VCard_.setOrgUnit (Ui_.OrgUnit_->text ());
 		VCard_.setTitle (Ui_.Title_->text ());
 		VCard_.setRole (Ui_.Role_->text ());
-		
+
 		const QPixmap *px = Ui_.LabelPhoto_->pixmap ();
 		if (px)
 		{
@@ -162,11 +194,14 @@ namespace Xoox
 		else
 			VCard_.setPhoto (QByteArray ());
 
+		Account_->GetClientConnection ()->GetUserAvatarManager ()->
+					PublishAvatar (px ? px->toImage () : QImage ());
+
 		QXmppVCardManager& mgr = Account_->GetClientConnection ()->
 				GetClient ()->vCardManager ();
 		mgr.setClientVCard (VCard_);
 	}
-	
+
 	void VCardDialog::on_PhotoBrowse__released ()
 	{
 		const QString& fname = QFileDialog::getOpenFileName (this,
@@ -175,24 +210,24 @@ namespace Xoox
 				tr ("Images (*.png *.jpg *.gif);;All files (*.*)"));
 		if (fname.isEmpty ())
 			return;
-		
+
 		QPixmap px (fname);
 		if (px.isNull ())
 			return;
-		
+
 		const int size = 150;
 		if (std::max (px.size ().width (), px.size ().height ()) > size)
 			px = px.scaled (size, size,
 					Qt::KeepAspectRatio, Qt::SmoothTransformation);
-		
+
 		Ui_.LabelPhoto_->setPixmap (px);
 	}
-	
+
 	void VCardDialog::on_PhotoClear__released ()
 	{
 		Ui_.LabelPhoto_->clear ();
 	}
-	
+
 	void VCardDialog::EnableEditableMode ()
 	{
 		Ui_.ButtonBox_->setStandardButtons (QDialogButtonBox::Save |
@@ -201,11 +236,11 @@ namespace Xoox
 				SIGNAL (released ()),
 				this,
 				SLOT (publishVCard ()));
-		
+
 		Q_FOREACH (QLineEdit *edit, findChildren<QLineEdit*> ())
 			edit->setReadOnly (false);
 	}
-	
+
 	void VCardDialog::UpdateNote (GlooxAccount *acc, const QString& jid)
 	{
 		if (!acc)
@@ -216,6 +251,11 @@ namespace Xoox
 		Note_ = acc->GetClientConnection ()->
 				GetAnnotationsManager ()->GetNote (jid);
 		Ui_.NotesEdit_->setPlainText (Note_.note ());
+
+		rebuildClientInfo ();
+
+		QObject *entryObj = acc->GetClientConnection ()->GetCLEntry (jid);
+		InitConnections (qobject_cast<EntryBase*> (entryObj));
 	}
 }
 }

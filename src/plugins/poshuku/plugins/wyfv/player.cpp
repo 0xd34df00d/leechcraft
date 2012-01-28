@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 
 #include "player.h"
 #include <QNetworkReply>
-#include <qwebview.h>
+#include <qgraphicswebview.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include "core.h"
@@ -78,10 +78,10 @@ namespace WYFV
 	void Player::handleNavigate (const QUrl& url)
 	{
 		QWidget *parent = parentWidget ();
-		QWebView *view = 0;
+		QGraphicsWebView *view = 0;
 		while (parent)
 		{
-			if ((view = qobject_cast<QWebView*> (parent)))
+			if ((view = qobject_cast<QGraphicsWebView*> (parent)))
 				break;
 			parent = parent->parentWidget ();
 		}

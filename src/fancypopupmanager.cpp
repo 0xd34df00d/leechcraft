@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,14 +33,12 @@ LeechCraft::FancyPopupManager::FancyPopupManager (QSystemTrayIcon *icon,
 		QObject *parent)
 : QObject (parent)
 , TrayIcon_ (icon)
+, Timer_ (new QTimer (this))
 {
-	QTimer *timer = new QTimer (this);
-	connect (timer,
+	connect (Timer_,
 			SIGNAL (timeout ()),
 			this,
 			SLOT (timerTimeout ()));
-
-	timer->start (500);
 
 	connect (TrayIcon_,
 			SIGNAL (messageClicked ()),
@@ -54,6 +52,9 @@ LeechCraft::FancyPopupManager::~FancyPopupManager ()
 
 void LeechCraft::FancyPopupManager::ShowMessage (const LeechCraft::Entity& e)
 {
+	if (Popups_.isEmpty ())
+		Timer_->start (500);
+
 	Popups_.push_back (e);
 	Dates_ [e] = QDateTime::currentDateTime ();
 
@@ -75,12 +76,16 @@ void LeechCraft::FancyPopupManager::timerTimeout ()
 			Dates_.remove (e);
 		}
 	}
+
+	if (Popups_.isEmpty ())
+		Timer_->stop ();
 }
 
 void LeechCraft::FancyPopupManager::handleMessageClicked ()
 {
 	Dates_.clear ();
 	Popups_.clear ();
+	Timer_->stop ();
 }
 
 void LeechCraft::FancyPopupManager::UpdateMessage ()

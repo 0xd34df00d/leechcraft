@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +17,6 @@
  **********************************************************************/
 
 #include "kinotify.h"
-#include <boost/bind.hpp>
 #include <QMainWindow>
 #include <QIcon>
 #include <QTimer>
@@ -41,6 +40,11 @@ namespace LeechCraft
 				ThemeLoader_.reset (new Util::ResourceLoader ("kinotify/themes/notification"));
 				ThemeLoader_->AddLocalPrefix ();
 				ThemeLoader_->AddGlobalPrefix ();
+
+				connect (ThemeLoader_.get (),
+						SIGNAL (watchedDirectoriesChanged ()),
+						this,
+						SLOT (handleWatchedDirsChanged ()));
 
 				SettingsDialog_.reset (new Util::XmlSettingsDialog ());
 				SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
@@ -100,9 +104,7 @@ namespace LeechCraft
 				int timeout = Proxy_->GetSettingsManager ()->
 						property ("FinishedDownloadMessageTimeout").toInt () * 1000;
 
- 				KinotifyWidget *notificationWidget =
-						new KinotifyWidget (timeout, Proxy_->GetMainWindow ());
-				notificationWidget->setWindowModality (Qt::NonModal);
+ 				KinotifyWidget *notificationWidget = new KinotifyWidget (timeout);
 				notificationWidget->SetThemeLoader (ThemeLoader_);
 				notificationWidget->SetEntity (e);
 
@@ -129,31 +131,24 @@ namespace LeechCraft
 						this,
 						SIGNAL (gotEntity (const LeechCraft::Entity&)));
 
-				QString mi = "information";
+				QString mi = "dialog-information";
 				switch (prio)
 				{
 					case PWarning_:
-						mi = "warning";
+						mi = "dialog-warning";
 						break;
 					case PCritical_:
-						mi = "error";
+						mi = "dialog-error";
 					default:
 						break;
 				}
 
-				QString path;
-				QMap<int, QString> sizes = Proxy_->GetIconPath (mi);
-				if (sizes.size ())
-				{
-					int size = 0;
-					if (!sizes.contains (size))
-						size = sizes.keys ().last ();
-					path = sizes [size];
-				}
+				const QIcon& icon = Proxy_->GetIcon (mi);
+				const QPixmap& px = icon.pixmap (QSize (128, 128));
+				notificationWidget->SetContent (header, text, QString ());
 
-				notificationWidget->SetContent (header, text, path);
-				if (e.Additional_ ["NotificationPixmap"].isValid ())
-					notificationWidget->OverrideImage (e.Additional_ ["NotificationPixmap"].value<QPixmap> ());
+				const QPixmap& notif = e.Additional_ ["NotificationPixmap"].value<QPixmap> ();
+				notificationWidget->OverrideImage (notif.isNull () ? px : notif);
 
 				if (!ActiveNotifications_.size ())
 					notificationWidget->PrepareNotification ();
@@ -174,6 +169,11 @@ namespace LeechCraft
 				ActiveNotifications_.removeFirst ();
 				if (ActiveNotifications_.size ())
 					ActiveNotifications_.first ()->PrepareNotification ();
+			}
+
+			void Plugin::handleWatchedDirsChanged ()
+			{
+				KinotifyWidget::ClearThemeCache ();
 			}
 		};
 	};

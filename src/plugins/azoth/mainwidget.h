@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,61 +41,70 @@ namespace Azoth
 		QMenu *MainMenu_;
 		QToolButton *MenuButton_;
 		SortFilterProxyModel *ProxyModel_;
-		
+
 		QHash<IAccount*, ConsoleWidget*> Account2CW_;
 
 		QMenu *MenuChangeStatus_;
 		QMenu *TrayChangeStatus_;
-		
+
 		QAction *AccountJoinConference_;
+		QAction *AccountManageBookmarks_;
 		QAction *AccountAddContact_;
 		QAction *AccountSetActivity_;
 		QAction *AccountSetMood_;
 		QAction *AccountSetLocation_;
 		QAction *AccountConsole_;
-		
+		QAction *AccountModify_;
+
 		QMap<QString, bool> FstLevelExpands_;
 		QMap<QString, QMap<QString, bool> > SndLevelExpands_;
 	public:
 		MainWidget (QWidget* = 0);
-		
+
 		QList<QAction*> GetMenuActions ();
 		QMenu* GetChangeStatusMenu () const;
 	private:
 		void CreateMenu ();
 		QMenu* CreateStatusChangeMenu (const char*, bool withCustom = false);
-		void UpdateFastStatusButton (State);
 		IAccount* GetAccountFromSender (const char*);
 	private slots:
-		void on_CLTree__activated (const QModelIndex&);
+		void updateFastStatusButton (LeechCraft::Azoth::State);
+		void treeActivated (const QModelIndex&);
 		void on_CLTree__customContextMenuRequested (const QPoint&);
 		void handleChangeStatusRequested ();
 		void fastStateChangeRequested ();
 		void applyFastStatus ();
-		
+
+		void handleEntryActivationType ();
 		void handleCatRenameTriggered ();
+		void handleSendGroupMsgTriggered ();
 		void joinAccountConference ();
+		void joinAccountConfFromBM ();
+		void manageAccountBookmarks ();
 		void addAccountContact ();
 		void handleAccountSetActivity ();
 		void handleAccountSetMood ();
 		void handleAccountSetLocation ();
 		void handleAccountConsole ();
+		void handleAccountModify ();
 
 		void handleManageBookmarks ();
+		void handleAddAccountRequested ();
 		void handleAddContactRequested ();
 
 		void handleShowOffline (bool);
 		void clearFilter ();
-		
+
 		void handleEntryMadeCurrent (QObject*);
 		void on_RosterMode__currentIndexChanged (int);
 		void menuBarVisibilityToggled ();
 
 		void handleRowsInserted (const QModelIndex&, int, int);
 		void rebuildTreeExpansions ();
+		void expandIndex (const QPersistentModelIndex&);
 		void on_CLTree__expanded (const QModelIndex&);
 		void on_CLTree__collapsed (const QModelIndex&);
-		
+
 		void consoleRemoved (QWidget*);
 	signals:
 		void gotConsoleWidget (ConsoleWidget*);

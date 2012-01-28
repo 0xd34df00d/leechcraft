@@ -7,21 +7,6 @@
 			<item type="checkbox" property="UseTabScrollButtons" state="on">
 				<label lang="en" value="Use tab scroll buttons" />
 			</item>
-			<item type="combobox" property="IconSize">
-				<label lang="en" value="Icon size" />
-				<option name="0" default="true">
-					<label lang="en" value="System default" />
-				</option>
-				<option name="16">
-					<label lang="en" value="16x16" />
-				</option>
-				<option name="24">
-					<label lang="en" value="24x24" />
-				</option>
-				<option name="32">
-					<label lang="en" value="32x32" />
-				</option>
-			</item>
 			<item type="combobox" property="ToolButtonStyle">
 				<label lang="en" value="Tool button style:" />
 				<option name="iconOnly" default="true">
@@ -85,18 +70,21 @@
 				<item type="checkbox" property="ExitOnClose" default="false">
 					<label lang="en" value="Exit on close" />
 				</item>
+				<item type="checkbox" property="ToolBarVisibilityManipulation" default="false">
+					<label lang="en" value="Manual toolbar visibility control" />
+				</item>
 				<item type="checkbox" property="OpenTabNext" default="false">
 					<label lang="en" value="Open new tab next to current" />
 				</item>
 				<item type="combobox" property="SelectionBehavior">
 					<label lang="en" value="Tab selection behavior: " />
-					<option name="PreviouseActive" default="true">
+					<option name="PreviousActive" default="true">
 						<label lang="en" value="Select the previously selected tab" />
 					</option>
 					<option name="NextIndex">
 						<label lang="en" value="Select the tab to the right of the one being removed" />
 					</option>
-					<option name="PreviouseIndex">
+					<option name="PreviousIndex">
 						<label lang="en" value="Select the tab to the left of the one being removed" />
 					</option>
 				</item>

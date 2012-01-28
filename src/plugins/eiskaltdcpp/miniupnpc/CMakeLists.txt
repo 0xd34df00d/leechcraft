@@ -7,7 +7,7 @@ aux_source_directory(${PROJECT_SOURCE_DIR} miniupnpc_SRCS)
 add_definitions (-DSTATICLIB)
 
 if (WIN32)
-  set (WIN_VERSION 0x501) #я не знаю на что это влияет
+  set (WIN_VERSION 0x0502) #я не знаю на что это влияет
   add_definitions( -DWIN32 -D_WIN32_WINNT=${WIN_VERSION} -D_WIN32_IE=${WIN_VERSION} -DWINVER=${WIN_VERSION} -DWIN32_LEAN_AND_MEAN)
 elseif (APPLE)
   add_definitions (-DMACOSX -D_DARWIN_C_SOURCE)

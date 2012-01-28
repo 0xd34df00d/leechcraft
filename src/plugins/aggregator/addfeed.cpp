@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,7 +41,10 @@ namespace Aggregator
 
 	QString AddFeed::GetURL () const
 	{
-		return URL_->text ().simplified ();
+		QString result = URL_->text ().simplified ();
+		if (result.startsWith ("itpc"))
+			result.replace (0, 4, "http");
+		return result;			
 	}
 
 	QStringList AddFeed::GetTags () const

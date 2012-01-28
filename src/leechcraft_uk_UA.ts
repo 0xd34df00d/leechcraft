@@ -32,6 +32,14 @@
         <source>Third parties</source>
         <translation>Треті сторони</translation>
     </message>
+    <message>
+        <source>Diagnostic info</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add this information to your bug reports, if any:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>AuthenticationDialog</name>
@@ -123,6 +131,21 @@
     </message>
 </context>
 <context>
+    <name>DataViewWidget</name>
+    <message>
+        <source>Add...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Modify...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove</source>
+        <translation type="unfinished">Видалити</translation>
+    </message>
+</context>
+<context>
     <name>HandlerChoiceDialog</name>
     <message>
         <source>Choose entity handler</source>
@@ -198,10 +221,6 @@
         <translation>Вийти</translation>
     </message>
     <message>
-        <source>Main toolbar</source>
-        <translation type="obsolete">Головна панель інструментів</translation>
-    </message>
-    <message>
         <source>New tab</source>
         <translation>Нова вкладка</translation>
     </message>
@@ -242,16 +261,8 @@
         <translation>F10</translation>
     </message>
     <message>
-        <source>Glance...</source>
-        <translation type="obsolete">Погляд...</translation>
-    </message>
-    <message>
-        <source>Show a quick overview of tabs</source>
-        <translation type="obsolete">Попередній перегляд вмісту вкладок</translation>
-    </message>
-    <message>
-        <source>Ctrl+G</source>
-        <translation type="obsolete">Ctrl+G</translation>
+        <source>Show toolbar</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -314,6 +325,38 @@
     </message>
     <message>
         <source>Fedora package maintainer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Chrome-style tabs.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SecMan SecureStorage.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Spanish translations.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Artwork designer.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>French translations.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Italian translations.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Public relations.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Extensive and thorough testing.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -453,6 +496,13 @@
     </message>
 </context>
 <context>
+    <name>LeechCraft::ItemHandlerCombobox</name>
+    <message>
+        <source>More stuff...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::MainWindow</name>
     <message>
         <source>/s</source>
@@ -582,6 +632,14 @@
     </message>
     <message>
         <source>Plugin with ID %1 is already loaded from %2; aborting load from %3.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The following plugins would also be disabled as the result:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure you want to disable this one?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1039,26 +1097,6 @@ If you have read and really understood all these letters, click Cancel button in
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Icon size</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>System default</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>16x16</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>24x24</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>32x32</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Tool button style:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1260,6 +1298,10 @@ If you have read and really understood all these letters, click Cancel button in
     </message>
     <message>
         <source>Select the tab to the left of the one being removed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Manual toolbar visibility control</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

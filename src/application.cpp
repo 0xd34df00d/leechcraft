@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -115,6 +115,7 @@ LeechCraft::Application::Application (int& argc, char **argv)
 	qRegisterMetaType<TagsManager::TagsDictionary_t> ("LeechCraft::TagsManager::TagsDictionary_t");
 	qRegisterMetaType<LeechCraft::Entity> ("LeechCraft::Entity");
 	qRegisterMetaType<LeechCraft::Entity> ("Entity");
+	qRegisterMetaType<LeechCraft::IHookProxy_ptr> ("LeechCraft::IHookProxy_ptr");
 	qRegisterMetaType<LeechCraft::Sync::ChainID_t> ("LeechCraft::Sync::ChainID_t");
 	qRegisterMetaType<LeechCraft::Sync::ChainID_t> ("Sync::ChainID_t");
 	qRegisterMetaType<LeechCraft::Sync::ChainID_t> ("ChainID_t");

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,8 +18,7 @@
 
 #ifndef INTERFACES_CORE_ICOREPROXY_H
 #define INTERFACES_CORE_ICOREPROXY_H
-#include <boost/function.hpp>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QtNetwork/QNetworkAccessManager>
 #include <QTabBar>
 
@@ -92,22 +91,6 @@ public:
 	 */
 	virtual LeechCraft::Util::BaseSettingsManager* GetSettingsManager () const = 0;
 
-	/** @brief Returns the current theme's icon paths for the given name.
-	 * Similar to the mapping files.
-	 *
-	 * There can be different files for different icon sizes. Scalable
-	 * icons are considered to have a special value for size: 0.
-	 * The return value is the mapping from icon size (only one
-	 * dimension since icons are rectangluar) to the path to the graphic
-	 * file.
-	 *
-	 * @param[in] name The name of the icon to search for.
-	 * @return Size -> path mapping.
-	 *
-	 * @sa GetIcon
-	 */
-	virtual QMap<int, QString> GetIconPath (const QString& name) const = 0;
-
 	/** Returns the current theme's icon for the given on and off
 	 * states. Similar to the mapping files.
 	 *
@@ -177,9 +160,20 @@ public:
 	 * Just to avoid nasty reinterpret_casts.
 	 */
 	virtual QObject* GetSelf () = 0;
+
+	/** @brief Registers the given action as having skinnable icons.
+	 *
+	 * Registers the given action so that it automatically gets its icon
+	 * updated whenever the current iconset changes.
+	 *
+	 * @param[in] action The action to register.
+	 */
+	virtual void RegisterSkinnable (QAction *action) = 0;
+
+	virtual bool IsShuttingDown () = 0;
 };
 
-typedef boost::shared_ptr<ICoreProxy> ICoreProxy_ptr;
+typedef std::shared_ptr<ICoreProxy> ICoreProxy_ptr;
 
 Q_DECLARE_INTERFACE (ICoreProxy, "org.Deviant.LeechCraft.ICoreProxy/1.0");
 

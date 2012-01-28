@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,54 +22,47 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Summary
+{
+	OperationalModel::OperationalModel (QObject *parent)
+	: MergeModel (QStringList (tr ("Entity"))
+				<< tr ("Category")
+				<< tr ("Information"), parent)
 	{
-		namespace Summary
+		setProperty ("__LeechCraft_own_core_model", true);
+	}
+
+	void OperationalModel::SetOperation (Operation op)
+	{
+		Op_ = op;
+	}
+
+	bool OperationalModel::AcceptsRow (QAbstractItemModel *model,
+			int row) const
+	{
+		if (Op_ == OpAnd)
 		{
-			OperationalModel::OperationalModel (QObject *parent)
-			: MergeModel (QStringList (tr ("Entity"))
-						<< tr ("Category")
-						<< tr ("Information"), parent)
-			{
-				setProperty ("__LeechCraft_own_core_model", true);
-			}
+			const QByteArray& hash = model->index (row, 0).data (LeechCraft::RoleHash).toByteArray ();
+			size_t sameModels = 0;
 
-			void OperationalModel::SetOperation (Operation op)
+			Q_FOREACH (const QPointer<QAbstractItemModel>& i, Models_)
 			{
-				Op_ = op;
-			}
-
-			bool OperationalModel::AcceptsRow (QAbstractItemModel *model,
-					int row) const
-			{
-				if (Op_ == OpAnd)
-				{
-					QByteArray hash = model->index (row, 0).data (LeechCraft::RoleHash).toByteArray ();
-					size_t sameModels = 0;
-
-					for (models_t::const_iterator i = Models_.begin (),
-							end = Models_.end (); i != end; ++i)
+				if (i == model)
+					continue;
+				bool found = false;
+				for (int j = 0; j < i->rowCount (); ++j)
+					if (i->index (j, 0).data (LeechCraft::RoleHash).toByteArray () == hash)
 					{
-						if (*i == model)
-							continue;
-
-						bool found = false;
-						for (int j = 0; j < (*i)->rowCount (); ++j)
-							if ((*i)->index (j, 0).data (LeechCraft::RoleHash).toByteArray () == hash)
-							{
-								++sameModels;
-								found = true;
-								break;
-							}
-						if (!found)
-							break;
+						++sameModels;
+						found = true;
+						break;
 					}
-					return sameModels == Models_.size () - 1;
-				}
-				else
-					return true;
+				if (!found)
+					break;
 			}
-		};
-	};
-};
-
+			return sameModels == Models_.size () - 1;
+		}
+		return true;
+	}
+}
+}

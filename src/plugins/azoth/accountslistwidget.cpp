@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
 #include "pgpkeyselectiondialog.h"
 #endif
 #include "core.h"
-#include "addaccountwizardfirstpage.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -36,10 +36,10 @@ namespace Azoth
 {
 	AccountsListWidget::AccountsListWidget (QWidget* parent)
 	: QWidget (parent)
-	, AccModel_ (new QStandardItemModel ())
+	, AccModel_ (new QStandardItemModel (this))
 	{
 		Ui_.setupUi (this);
-		
+
 #ifdef ENABLE_CRYPT
 		Ui_.PGP_->setEnabled (true);
 #endif
@@ -72,14 +72,10 @@ namespace Azoth
 
 		Account2Item_ [acc] = item;
 	}
-	
+
 	void AccountsListWidget::on_Add__released ()
 	{
-		QWizard *wizard = new QWizard (this);
-		wizard->setWindowTitle (tr ("Add account"));
-		wizard->addPage (new AddAccountWizardFirstPage (wizard));
-		
-		wizard->show ();
+		InitiateAccountAddition (this);
 	}
 
 	void AccountsListWidget::on_Modify__released ()
@@ -93,7 +89,7 @@ namespace Azoth
 				.data (RAccObj).value<IAccount*> ();
 		acc->OpenConfigurationDialog ();
 	}
-	
+
 	void AccountsListWidget::on_PGP__released ()
 	{
 #ifdef ENABLE_CRYPT
@@ -113,13 +109,13 @@ namespace Azoth
 						.arg (acc->GetAccountName ()));
 			return;
 		}
-		
+
 		const QString& str = tr ("Please select new PGP key for the account %1.")
 				.arg (acc->GetAccountName ());
 		PGPKeySelectionDialog dia (str, PGPKeySelectionDialog::TPrivate, this);
 		if (dia.exec () != QDialog::Accepted)
 			return;
-		
+
 		pgpAcc->SetPrivateKey (dia.GetSelectedKey ());
 		Core::Instance ().AssociatePrivateKey (acc, dia.GetSelectedKey ());
 #endif

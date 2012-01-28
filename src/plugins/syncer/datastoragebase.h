@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,30 +23,27 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Syncer
+{
+	class DataStorageBase : public QObject
 	{
-		namespace Syncer
-		{
-			class DataStorageBase : public QObject
-			{
-				Q_OBJECT
-			public:
-				DataStorageBase (QObject*);
-				virtual ~DataStorageBase ();
-			public slots:
-				virtual void sync (const QByteArray&) = 0;
-			signals:
-				void deltasRequired (Sync::Deltas_t*, const QByteArray&);
-				void gotNewDeltas (const Sync::Deltas_t&, const QByteArray&);
-				void successfullySentDeltas (quint32, const QByteArray&);
+		Q_OBJECT
+	public:
+		DataStorageBase (QObject*);
+		virtual ~DataStorageBase ();
+	public slots:
+		virtual void sync (const QByteArray&) = 0;
+	signals:
+		void deltasRequired (Sync::Deltas_t*, const QByteArray&);
+		void gotNewDeltas (const Sync::Deltas_t&, const QByteArray&);
+		void successfullySentDeltas (quint32, const QByteArray&);
 
-				void loginError (const QByteArray&);
-				void connectionError (const QByteArray&);
-				void finishedSuccessfully (quint32 sent, quint32 received,
-						const QByteArray& chain);
-			};
-		}
-	}
+		void loginError (const QByteArray&);
+		void connectionError (const QByteArray&);
+		void finishedSuccessfully (quint32 sent, quint32 received,
+				const QByteArray& chain);
+	};
+}
 }
 
 #endif

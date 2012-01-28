@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,9 +56,11 @@
 #include <libtorrent/storage.hpp>
 #include <libtorrent/file.hpp>
 #include <libtorrent/magnet_uri.hpp>
+#include <libtorrent/version.hpp>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
+#include <interfaces/ijobholder.h>
 #include <util/tagscompletionmodel.h>
 #include <util/util.h>
 #include "xmlsettingsmanager.h"
@@ -261,13 +263,13 @@ namespace LeechCraft
 						SIGNAL (timeout ()),
 						this,
 						SLOT (checkFinished ()));
-				FinishedTimer_->start (100);
+				FinishedTimer_->start (2000);
 
 				connect (WarningWatchdog_.get (),
 						SIGNAL (timeout ()),
 						this,
 						SLOT (queryLibtorrentForWarnings ()));
-				WarningWatchdog_->start (100);
+				WarningWatchdog_->start (2000);
 
 				connect (ScrapeTimer_.get (),
 						SIGNAL (timeout ()),
@@ -575,6 +577,12 @@ namespace LeechCraft
 						}
 					case RoleTags:
 						return Handles_.at (row).Tags_;
+					case CustomDataRoles::RoleJobHolderRow:
+						return QVariant::fromValue<JobHolderRow> (JobHolderRow::DownloadProgress);
+					case ProcessState::Done:
+						return static_cast<qlonglong> (status.total_wanted_done);
+					case ProcessState::Total:
+						return static_cast<qlonglong> (status.total_wanted);
 					default:
 						return QVariant ();
 				}
@@ -661,14 +669,14 @@ namespace LeechCraft
 				return true;
 			}
 
-			std::auto_ptr<TorrentInfo> Core::GetTorrentStats () const
+			std::unique_ptr<TorrentInfo> Core::GetTorrentStats () const
 			{
 				if (!CheckValidity (CurrentTorrent_))
 					throw std::runtime_error ("Invalid torrent for stats");
 
 				const libtorrent::torrent_handle& handle = Handles_.at (CurrentTorrent_).Handle_;
 
-				std::auto_ptr<TorrentInfo> result (new TorrentInfo);
+				std::unique_ptr<TorrentInfo> result (new TorrentInfo);
 				result->Info_.reset (new libtorrent::torrent_info (handle.get_torrent_info ()));
 				result->Status_ = handle.status ();
 				result->Destination_ = QString::fromUtf8 (handle.save_path ().directory_string ().c_str ());
@@ -706,15 +714,23 @@ namespace LeechCraft
 				std::vector<libtorrent::peer_info> peerInfos;
 				Handles_.at (CurrentTorrent_).Handle_.get_peer_info (peerInfos);
 
-				libtorrent::bitfield localPieces = Handles_.at (CurrentTorrent_).Handle_.status ().pieces;
+				const auto& localPieces = Handles_.at (CurrentTorrent_).Handle_.status ().pieces;
+				QList<int> ourMissing;
+				for (auto i = localPieces.begin (), end = localPieces.end (); i != end; ++i)
+				{
+					const bool res = *i;
+					if (!res)
+						ourMissing << res;
+				}
 
 				for (size_t i = 0; i < peerInfos.size (); ++i)
 				{
 					const libtorrent::peer_info& pi = peerInfos [i];
 
 					int interesting = 0;
-					for (size_t j = 0; j < localPieces.size (); ++j)
-						interesting += (pi.pieces [j] && !localPieces [j]);
+					Q_FOREACH (const int mis, ourMissing)
+						if (pi.pieces [mis])
+							++interesting;
 
 					PeerInfo ppi =
 					{
@@ -824,9 +840,6 @@ namespace LeechCraft
 				bool autoManaged = !(params & NoAutostart);
 				try
 				{
-					boost::intrusive_ptr<libtorrent::torrent_info> tinfo (
-							new libtorrent::torrent_info (GetTorrentInfo (filename))
-							);
 					libtorrent::add_torrent_params atp;
 					atp.ti = new libtorrent::torrent_info (GetTorrentInfo (filename));
 					atp.auto_managed = autoManaged;
@@ -1180,7 +1193,7 @@ namespace LeechCraft
 				if (!CheckValidity (CurrentTorrent_))
 					return QString ();
 
-				std::string result = libtorrent::make_magnet_uri (Handles_ [CurrentTorrent_].Handle_);
+				const std::string& result = libtorrent::make_magnet_uri (Handles_ [CurrentTorrent_].Handle_);
 				return QString::fromStdString (result);
 			}
 
@@ -2522,37 +2535,7 @@ namespace LeechCraft
 
 			void Core::setProxySettings ()
 			{
-				libtorrent::proxy_settings trackerProxySettings, peerProxySettings;
-				if (XmlSettingsManager::Instance ()->property ("TrackerProxyEnabled").toBool ())
-				{
-					trackerProxySettings.hostname = XmlSettingsManager::Instance ()->
-						property ("TrackerProxyAddress").toString ().toStdString ();
-					trackerProxySettings.port = XmlSettingsManager::Instance ()->
-						property ("TrackerProxyPort").toInt ();
-					QStringList auth = XmlSettingsManager::Instance ()->
-						property ("TrackerProxyAuth").toString ().split ('@');
-					if (auth.size ())
-						trackerProxySettings.username = auth.at (0).toStdString ();
-					if (auth.size () > 1)
-						trackerProxySettings.password = auth.at (1).toStdString ();
-					bool passworded = trackerProxySettings.username.size ();
-					QString pt = XmlSettingsManager::Instance ()->property ("TrackerProxyType").toString ();
-					if (pt == "http")
-						trackerProxySettings.type = passworded ?
-							libtorrent::proxy_settings::http_pw :
-							libtorrent::proxy_settings::http;
-					else if (pt == "socks4")
-						trackerProxySettings.type = libtorrent::proxy_settings::socks4;
-					else if (pt == "socks5")
-						trackerProxySettings.type = passworded ?
-							libtorrent::proxy_settings::socks5_pw :
-							libtorrent::proxy_settings::socks5;
-					else
-						trackerProxySettings.type = libtorrent::proxy_settings::none;
-				}
-				else
-					trackerProxySettings.type = libtorrent::proxy_settings::none;
-
+				libtorrent::proxy_settings peerProxySettings;
 				if (XmlSettingsManager::Instance ()->property ("PeerProxyEnabled").toBool ())
 				{
 					peerProxySettings.hostname = XmlSettingsManager::Instance ()->
@@ -2582,10 +2565,13 @@ namespace LeechCraft
 				}
 				else
 					peerProxySettings.type = libtorrent::proxy_settings::none;
-
+#if (LIBTORRENT_VERSION_MINOR == 15 && LIBTORRENT_VERSION_TINY > 4) || LIBTORRENT_VERSION_MINOR > 15
+				Session_->set_proxy (peerProxySettings);
+#else
 				Session_->set_peer_proxy (peerProxySettings);
+				Session_->set_tracker_proxy (peerProxySettings);
 				Session_->set_web_seed_proxy (peerProxySettings);
-				Session_->set_tracker_proxy (trackerProxySettings);
+#endif
 			}
 
 			void Core::setGeneralSettings ()
@@ -2780,7 +2766,7 @@ namespace LeechCraft
 
 			void Core::setLoggingSettings ()
 			{
-				int mask = 0;
+				boost::uint32_t mask = 0;
 				if (XmlSettingsManager::Instance ()->property ("PerformanceWarning").toBool ())
 					mask |= libtorrent::alert::performance_warning;
 				if (XmlSettingsManager::Instance ()->property ("NotificationError").toBool ())

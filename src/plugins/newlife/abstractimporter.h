@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,35 +16,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_NEWLIFE_ABSTRACTIMPORTER_H
-#define PLUGINS_NEWLIFE_ABSTRACTIMPORTER_H
+#pragma once
+
 #include <QObject>
+#include <QIcon>
 
 class QWizardPage;
 
 namespace LeechCraft
 {
-	struct Entity;
+struct Entity;
 
-	namespace Plugins
+namespace NewLife
+{
+	class AbstractImporter : public QObject
 	{
-		namespace NewLife
-		{
-			class AbstractImporter : public QObject
-			{
-				Q_OBJECT
-			public:
-				AbstractImporter (QObject *parent = 0) : QObject (parent) {}
-				virtual ~AbstractImporter () {}
+		Q_OBJECT
+	public:
+		AbstractImporter (QObject* = 0);
 
-				virtual QStringList GetNames () const = 0;
-				virtual QList<QWizardPage*> GetWizardPages () const = 0;
-			signals:
-				void gotEntity (const LeechCraft::Entity&);
-			};
-		};
+		virtual QList<QIcon> GetIcons () const;
+		virtual QStringList GetNames () const = 0;
+		virtual QList<QWizardPage*> GetWizardPages () const = 0;
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
 	};
-};
-
-#endif
-
+}
+}

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 
 #ifndef UTIL_NOTIFICATIONACTIONHANDLER_H
 #define UTIL_NOTIFICATIONACTIONHANDLER_H
-#include <boost/function.hpp>
+#include <functional>
 #include <QObject>
 #include <interfaces/structures.h>
 #include "utilconfig.h"
@@ -33,11 +33,11 @@ namespace Util
 
 		Entity& Entity_;
 	public:
-		typedef boost::function<void ()> Callback_t;
+		typedef std::function<void ()> Callback_t;
 	private:
-		QList<QPair<QString, Callback_t> > ActionName2Callback_;
-		
-		QList<QPointer<QObject> > DependentObjects_;
+		QList<QPair<QString, Callback_t>> ActionName2Callback_;
+
+		QList<QPointer<QObject>> DependentObjects_;
 	public:
 		UTIL_API NotificationActionHandler (Entity&, QObject* = 0);
 

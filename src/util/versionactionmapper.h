@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 
 #ifndef UTIL_VERSIONACTIONMAPPER_H
 #define UTIL_VERSIONACTIONMAPPER_H
-#include <boost/function.hpp>
+#include <functional>
 #include <QDataStream>
 #include <QMap>
 
@@ -30,7 +30,7 @@ namespace LeechCraft
 		class VersionActionMapper
 		{
 		public:
-			typedef boost::function<bool (QDataStream&)> Functor_t;
+			typedef std::function<bool (QDataStream&)> Functor_t;
 		private:
 			typedef QMap<ActionType, Functor_t> Action2Functor_t;
 			typedef QMap<VerType, Action2Functor_t> Version2Functors_t;

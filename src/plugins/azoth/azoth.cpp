@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,11 @@
 #include <QVBoxLayout>
 #include <QMenu>
 #include <QStringListModel>
+
+#ifdef ENABLE_MEDIACALLS
 #include <QAudioDeviceInfo>
+#endif
+
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/imwproxy.h>
 #include <interfaces/core/icoreproxy.h>
@@ -39,6 +43,7 @@
 #include "servicediscoverywidget.h"
 #include "accountslistwidget.h"
 #include "consolewidget.h"
+#include "searchwidget.h"
 
 namespace LeechCraft
 {
@@ -49,12 +54,19 @@ namespace Azoth
 		Translator_.reset (Util::InstallTranslator ("azoth"));
 
 		ChatTab::SetParentMultiTabs (this);
+		ServiceDiscoveryWidget::SetParentMultiTabs (this);
+		SearchWidget::SetParentMultiTabs (this);
 
 		Core::Instance ().SetProxy (proxy);
 
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"azothsettings.xml");
+
+		connect (XmlSettingsDialog_.get (),
+				SIGNAL (moreThisStuffRequested (const QString&)),
+				this,
+				SLOT (handleMoreThisStuff (const QString&)));
 
 		XmlSettingsDialog_->SetDataSource ("StatusIcons",
 				Core::Instance ().GetResourceLoader (Core::RLTStatusIconLoader)->
@@ -75,6 +87,18 @@ namespace Azoth
 				Core::Instance ().GetResourceLoader (Core::RLTSystemIconLoader)->
 					GetSubElemModel ());
 
+		QList<QByteArray> iconsPropList;
+		iconsPropList << "StatusIcons"
+				<< "ClientIcon"
+				<< "AffIcons"
+				<< "MoodIcons"
+				<< "ActivityIcons"
+				<< "SystemIcons";
+		XmlSettingsManager::Instance ().RegisterObject (iconsPropList,
+				&Core::Instance (),
+				"flushIconCaches");
+
+#ifdef ENABLE_MEDIACALLS
 		QStringList audioIns (tr ("Default input device"));
 		Q_FOREACH (const QAudioDeviceInfo& info,
 				QAudioDeviceInfo::availableDevices (QAudio::AudioInput))
@@ -86,6 +110,7 @@ namespace Azoth
 				QAudioDeviceInfo::availableDevices (QAudio::AudioOutput))
 			audioOuts << info.deviceName ();
 		XmlSettingsDialog_->SetDataSource ("OutputAudioDevice", new QStringListModel (audioOuts));
+#endif
 
 		XmlSettingsDialog_->SetCustomWidget ("AccountsWidget", new AccountsListWidget);
 
@@ -94,6 +119,7 @@ namespace Azoth
 		dw->setWidget (MW_);
 		dw->setWindowTitle ("Azoth");
 		proxy->GetMWProxy ()->AddDockWidget (Qt::RightDockWidgetArea, dw);
+		proxy->GetMWProxy ()->SetViewActionShortcut (dw, QString ("Ctrl+J,A"));
 
 		connect (&Core::Instance (),
 				SIGNAL (gotEntity (const LeechCraft::Entity&)),
@@ -103,6 +129,10 @@ namespace Azoth
 				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)),
 				this,
 				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)));
+		connect (&Core::Instance (),
+				SIGNAL (gotSDWidget (ServiceDiscoveryWidget*)),
+				this,
+				SLOT (handleSDWidget (ServiceDiscoveryWidget*)));
 
 		connect (Core::Instance ().GetChatTabsManager (),
 				SIGNAL (addNewTab (const QString&, QWidget*)),
@@ -134,7 +164,7 @@ namespace Azoth
 			"ChatTab",
 			tr ("Chat"),
 			tr ("A tab with a chat session"),
-			QIcon (),
+			QIcon (":/plugins/azoth/resources/images/chattabclass.svg"),
 			0,
 			TFEmpty
 		};
@@ -145,6 +175,15 @@ namespace Azoth
 			tr ("A multiuser conference"),
 			QIcon (),
 			50,
+			TFOpenableByRequest
+		};
+		TabClassInfo searchTab =
+		{
+			"Search",
+			tr ("Search"),
+			tr ("A search tab allows one to search within IM services"),
+			QIcon (),
+			55,
 			TFOpenableByRequest
 		};
 		TabClassInfo sdTab =
@@ -170,6 +209,7 @@ namespace Azoth
 
 		TabClasses_ << chatTab;
 		TabClasses_ << mucTab;
+		TabClasses_ << searchTab;
 		TabClasses_ << sdTab;
 		TabClasses_ << consoleTab;
 	}
@@ -179,6 +219,8 @@ namespace Azoth
 		XmlSettingsDialog_->SetDataSource ("SmileIcons",
 				Core::Instance ().GetSmilesOptionsModel ());
 		XmlSettingsDialog_->SetDataSource ("ChatWindowStyle",
+				Core::Instance ().GetChatStylesOptionsModel ());
+		XmlSettingsDialog_->SetDataSource ("MUCWindowStyle",
 				Core::Instance ().GetChatStylesOptionsModel ());
 	}
 
@@ -275,13 +317,16 @@ namespace Azoth
 		if (tabClass == "MUCTab")
 			Core::Instance ().handleMucJoinRequested ();
 		else if (tabClass == "SD")
+			handleSDWidget (new ServiceDiscoveryWidget);
+		else if (tabClass == "Search")
 		{
-			ServiceDiscoveryWidget *sd = new ServiceDiscoveryWidget;
-			connect (sd,
+			SearchWidget *search = new SearchWidget;
+			connect (search,
 					SIGNAL (removeTab (QWidget*)),
 					this,
 					SIGNAL (removeTab (QWidget*)));
-			emit addNewTab (tr ("Service discovery"), sd);
+			emit addNewTab (tr ("Search"), search);
+			emit raiseTab (search);
 		}
 	}
 
@@ -290,11 +335,46 @@ namespace Azoth
 		return Core::Instance ().GetANFields ();
 	}
 
+	void Plugin::handleSDWidget (ServiceDiscoveryWidget *sd)
+	{
+		connect (sd,
+				SIGNAL (removeTab (QWidget*)),
+				this,
+				SIGNAL (removeTab (QWidget*)));
+		emit addNewTab (tr ("Service discovery"), sd);
+		emit raiseTab (sd);
+	}
+
 	void Plugin::handleTasksTreeSelectionCurrentRowChanged (const QModelIndex& index, const QModelIndex&)
 	{
 		QModelIndex si = Core::Instance ().GetProxy ()->MapToSource (index);
 		TransferJobManager *mgr = Core::Instance ().GetTransferJobManager ();
 		mgr->SelectionChanged (si.model () == mgr->GetSummaryModel () ? si : QModelIndex ());
+	}
+
+	void Plugin::handleMoreThisStuff (const QString& id)
+	{
+		QMap<QString, QStringList> id2tags;
+		id2tags ["StatusIcons"] << "azoth" << "status icons";
+		id2tags ["MoodIcons"] << "azoth" << "mood icons";
+		id2tags ["Smiles"] << "azoth" << "emoticons";
+		id2tags ["ClientIcons"] << "azoth" << "client icons";
+		id2tags ["AffIcons"] << "azoth" << "affiliation icons";
+		id2tags ["ActivityIcons"] << "azoth" << "activity icons";
+		id2tags ["SystemIcons"] << "azoth" << "system icons";
+		id2tags ["ChatWindowStyles"] << "azoth" << "chat styles";
+
+		const QStringList& tags = id2tags [id];
+		if (tags.isEmpty ())
+			return;
+
+		Entity e = Util::MakeEntity ("ListPackages",
+				QString (),
+				FromUserInitiated,
+				"x-leechcraft/package-manager-action");
+		e.Additional_ ["Tags"] = tags;
+
+		emit gotEntity (e);
 	}
 
 	void Plugin::handleConsoleWidget (ConsoleWidget *cw)

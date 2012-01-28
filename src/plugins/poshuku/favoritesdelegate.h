@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ namespace Poshuku
 	{
 		Q_OBJECT
 
-		mutable std::auto_ptr<Util::TagsCompleter> TagsCompleter_;
+		mutable std::unique_ptr<Util::TagsCompleter> TagsCompleter_;
 	public:
 		FavoritesDelegate (QObject* = 0);
 

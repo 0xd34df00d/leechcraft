@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -94,6 +94,7 @@ namespace Qrosp
 		void changeTabIcon (QWidget*, const QIcon&);
 		void statusBarChanged (QWidget*, const QString&);
 		void raiseTab (QWidget*);
+		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 	private:
 		template<typename T>
 		struct Call

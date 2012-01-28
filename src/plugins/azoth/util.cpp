@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,8 +18,11 @@
 
 #include "util.h"
 #include <QString>
+#include <QWizard>
 #include <interfaces/structures.h>
 #include "interfaces/iclentry.h"
+#include "interfaces/iaccount.h"
+#include "addaccountwizardfirstpage.h"
 
 namespace LeechCraft
 {
@@ -41,10 +44,50 @@ namespace Azoth
 		e.Additional_ ["org.LC.Plugins.Azoth.SourceID"] = other->GetEntryID ();
 		e.Additional_ ["org.LC.Plugins.Azoth.SourceGroups"] = other->Groups ();
 	}
-	
+
 	QString GetActivityIconName (const QString& general, const QString& specific)
 	{
 		return (general + ' ' + specific).trimmed ().replace (' ', '_');
+	}
+
+	void InitiateAccountAddition(QWidget *parent)
+	{
+		QWizard *wizard = new QWizard (parent);
+		wizard->setAttribute (Qt::WA_DeleteOnClose);
+		wizard->setWindowTitle (QObject::tr ("Add account"));
+		wizard->addPage (new AddAccountWizardFirstPage (wizard));
+
+		wizard->show ();
+	}
+
+	void AuthorizeEntry (ICLEntry *entry)
+	{
+		IAccount *account =
+				qobject_cast<IAccount*> (entry->GetParentAccount ());
+		if (!account)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "parent account doesn't implement IAccount:"
+					<< entry->GetParentAccount ();
+			return;
+		}
+		const QString& id = entry->GetHumanReadableID ();
+		account->Authorize (entry->GetObject ());
+		account->RequestAuth (id);
+	}
+
+	void DenyAuthForEntry (ICLEntry *entry)
+	{
+		IAccount *account =
+				qobject_cast<IAccount*> (entry->GetParentAccount ());
+		if (!account)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "parent account doesn't implement IAccount:"
+					<< entry->GetParentAccount ();
+			return;
+		}
+		account->DenyAuth (entry->GetObject ());
 	}
 }
 }

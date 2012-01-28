@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,8 +68,14 @@ namespace LeechCraft
 		void AddPlugin (QObject*);
 
 		CorePlugin2Manager* GetCorePluginManager () const;
+
+		SettingsTab* GetSettingsTab () const;
 	private:
 		void BuildNewTabModel ();
+	private slots:
+#ifdef STRICT_LICENSING
+		void notifyLicensing ();
+#endif
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);
@@ -78,6 +84,8 @@ namespace LeechCraft
 		void changeTooltip (QWidget*, QWidget*);
 		void statusBarChanged (QWidget*, const QString&);
 		void raiseTab (QWidget*);
+
+		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 

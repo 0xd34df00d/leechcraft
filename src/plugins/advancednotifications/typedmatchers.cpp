@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,12 +46,12 @@ namespace AdvancedNotifications
 			return TypedMatcherBase_ptr ();
 		}
 	}
-	
+
 	StringLikeMatcher::StringLikeMatcher ()
 	: Contains_ (true)
 	{
 	}
-	
+
 	QVariantMap StringLikeMatcher::Save () const
 	{
 		QVariantMap result;
@@ -65,7 +65,7 @@ namespace AdvancedNotifications
 		Rx_ = map ["Rx"].toRegExp ();
 		Contains_ = map ["Cont"].toBool ();
 	}
-	
+
 	QWidget* StringLikeMatcher::GetConfigWidget ()
 	{
 		if (!CW_)
@@ -74,7 +74,7 @@ namespace AdvancedNotifications
 			Ui_.reset (new Ui::StringLikeMatcherConfigWidget ());
 			Ui_->setupUi (CW_);
 		}
-		
+
 		Ui_->ContainsBox_->setCurrentIndex (Contains_ ? 0 : 1);
 		Ui_->RegexpEditor_->setText (Rx_.pattern ());
 		int rxIdx = 0;
@@ -95,7 +95,7 @@ namespace AdvancedNotifications
 
 		return CW_;
 	}
-	
+
 	void StringLikeMatcher::SyncToWidget ()
 	{
 		if (!CW_)
@@ -104,7 +104,7 @@ namespace AdvancedNotifications
 					<< "called with null CW";
 			return;
 		}
-		
+
 		Contains_ = Ui_->ContainsBox_->currentIndex () == 0;
 
 		QRegExp::PatternSyntax pattern = QRegExp::FixedString;
@@ -128,18 +128,18 @@ namespace AdvancedNotifications
 		Rx_ = QRegExp (Ui_->RegexpEditor_->text (),
 				Qt::CaseInsensitive, pattern);
 	}
-	
+
 	bool StringMatcher::Match (const QVariant& var) const
 	{
 		if (!var.canConvert<QString> ())
 			return false;
-		
+
 		bool res = Rx_.indexIn (var.toString ()) != -1;
 		if (!Contains_)
 			res = !res;
 		return res;
 	}
-	
+
 	QString StringMatcher::GetHRDescription () const
 	{
 		const QString& p = Rx_.pattern ();
@@ -147,7 +147,7 @@ namespace AdvancedNotifications
 				QObject::tr ("contains pattern `%1`").arg (p) :
 				QObject::tr ("doesn't contain pattern `%1`").arg (p);
 	}
-	
+
 	bool StringListMatcher::Match (const QVariant& var) const
 	{
 		if (!var.canConvert<QStringList> ())
@@ -158,7 +158,7 @@ namespace AdvancedNotifications
 			res = !res;
 		return res;
 	}
-	
+
 	QString StringListMatcher::GetHRDescription () const
 	{
 		const QString& p = Rx_.pattern ();
@@ -166,7 +166,7 @@ namespace AdvancedNotifications
 				QObject::tr ("contains element matching %1").arg (p) :
 				QObject::tr ("doesn't contain element matching %1").arg (p);
 	}
-	
+
 	IntMatcher::IntMatcher ()
 	{
 		Ops2pos_ [OGreater] = 0;
@@ -175,7 +175,7 @@ namespace AdvancedNotifications
 		Ops2pos_ [static_cast<Operations> (OEqual | OLess)] = 3;
 		Ops2pos_ [OLess] = 4;
 	}
-	
+
 	QVariantMap IntMatcher::Save () const
 	{
 		QVariantMap result;
@@ -183,18 +183,18 @@ namespace AdvancedNotifications
 		result ["Ops"] = static_cast<quint16> (Ops_);
 		return result;
 	}
-	
+
 	void IntMatcher::Load (const QVariantMap& map)
 	{
 		Boundary_ = map ["Bd"].toInt ();
 		Ops_ = static_cast<Operations> (map ["Ops"].value<quint16> ());
 	}
-	
+
 	bool IntMatcher::Match (const QVariant& var) const
 	{
 		if (!var.canConvert<int> ())
 			return false;
-		
+
 		const int val = var.toInt ();
 
 		if ((Ops_ & OEqual) && val == Boundary_)
@@ -203,10 +203,10 @@ namespace AdvancedNotifications
 			return true;
 		if ((Ops_ & OLess) && val < Boundary_)
 			return true;
-		
+
 		return false;
 	}
-	
+
 	QString IntMatcher::GetHRDescription () const
 	{
 		QString op;
@@ -216,12 +216,12 @@ namespace AdvancedNotifications
 			op += "<";
 		if ((Ops_ & OEqual))
 			op += "=";
-		
+
 		return QObject::tr ("is %1 then %2")
 				.arg (op)
 				.arg (Boundary_);
 	}
-	
+
 	QWidget* IntMatcher::GetConfigWidget ()
 	{
 		if (!CW_)
@@ -230,13 +230,13 @@ namespace AdvancedNotifications
 			Ui_.reset (new Ui::IntMatcherConfigWidget ());
 			Ui_->setupUi (CW_);
 		}
-		
-		Ui_->Boundary_->setValue (Boundary_);		
+
+		Ui_->Boundary_->setValue (Boundary_);
 		Ui_->OpType_->setCurrentIndex (Ops2pos_ [Ops_]);
-		
+
 		return CW_;
 	}
-	
+
 	void IntMatcher::SyncToWidget ()
 	{
 		if (!CW_)

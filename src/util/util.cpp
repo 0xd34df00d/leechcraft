@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,8 @@
 
 Q_DECLARE_METATYPE (QList<QModelIndex>);
 Q_DECLARE_METATYPE (QVariantList*);
+
+UTIL_API LeechCraft::Util::IDPool<qint64> LeechCraft::Entity::IDPool_;
 
 QString LeechCraft::Util::GetAsBase64Src (const QImage& pix)
 {

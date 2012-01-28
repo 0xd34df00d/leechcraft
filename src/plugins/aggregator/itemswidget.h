@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -81,6 +81,7 @@ namespace Aggregator
 		bool IsItemRead (int) const;
 		bool IsItemReadNotCurrent (int) const;
 		QStringList GetItemCategories (int) const;
+		IDType_t GetItemIDFromRow (int) const;
 		void SubscribeToComments (const QModelIndex&) const;
 		void CurrentChannelChanged (const QModelIndex&);
 
@@ -106,6 +107,8 @@ namespace Aggregator
 		void on_ActionShowAsTape__triggered ();
 		void on_ActionMarkItemAsUnread__triggered ();
 		void on_ActionMarkItemAsRead__triggered ();
+		void on_ActionMarkItemAsImportant__triggered ();
+		void on_ActionDeleteItem__triggered ();
 		void on_CaseSensitiveSearch__stateChanged (int);
 		void on_ActionItemCommentsSubscribe__triggered ();
 		void on_ActionItemLinkOpen__triggered ();

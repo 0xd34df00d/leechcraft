@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +17,6 @@
  **********************************************************************/
 
 #include "eventsnotifier.h"
-#include <boost/bind.hpp>
 #include <util/util.h>
 #include <util/notificationactionhandler.h>
 #include "core.h"
@@ -32,17 +31,17 @@ namespace Azoth
 	: QObject (parent)
 	{
 	}
-	
+
 	void EventsNotifier::RegisterEntry (ICLEntry *entry)
 	{
 		QObject *entryObj = entry->GetObject ();
-		
+
 		connect (entryObj,
 				SIGNAL (chatPartStateChanged (const ChatPartState&, const QString&)),
 				this,
 				SLOT (handleChatPartStateChanged (const ChatPartState&, const QString&)));
 	}
-	
+
 	void EventsNotifier::handleChatPartStateChanged (const ChatPartState& state,
 			const QString&)
 	{
@@ -57,7 +56,7 @@ namespace Azoth
 					<< "doesn't implement ICLentry";
 			return;
 		}
-		
+
 		const QString& id = entry->GetEntryID ();
 		if (!ShouldNotifyNext_.value (id, true))
 			return;
@@ -79,14 +78,12 @@ namespace Azoth
 			Util::NotificationActionHandler *nh =
 					new Util::NotificationActionHandler (e, this);
 			nh->AddFunction (tr ("Open chat"),
-					boost::bind (static_cast<void (ChatTabsManager::*) (const ICLEntry*)> (&ChatTabsManager::OpenChat),
-							Core::Instance ().GetChatTabsManager (),
-							entry));
+					[entry] () { Core::Instance ().GetChatTabsManager ()->OpenChat (entry); });
 			nh->AddDependentObject (entry->GetObject ());
 			emit gotEntity (e);
 		}
 	}
-	
+
 	void EventsNotifier::handleEntryMadeCurrent (QObject *entryObj)
 	{
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
@@ -97,7 +94,7 @@ namespace Azoth
 					<< "doesn't implement ICLEntry";
 			return;
 		}
-		
+
 		ShouldNotifyNext_ [entry->GetEntryID ()] = true;
 	}
 }

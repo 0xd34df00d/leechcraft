@@ -51,7 +51,7 @@ namespace Acetamide
 	{
 		Util::StandardPurgeMessages (AllMessages_, before);
 	}
-	
+
 	void EntryBase::SetChatPartState (ChatPartState, const QString&)
 	{
 	}
@@ -85,8 +85,13 @@ namespace Acetamide
 		return QMap<QString, QVariant> ();
 	}
 
+	void EntryBase::MarkMsgsRead ()
+	{
+	}
+
 	void EntryBase::HandleMessage (IrcMessage *msg)
 	{
+		msg->SetOtherPart (this);
 		IrcProtocol *proto = qobject_cast<IrcProtocol*> (Account_->
 				GetParentProtocol ());
 		IProxyObject *proxy =

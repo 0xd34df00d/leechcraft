@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  * Copyright (C) 2011 Minh Ngo
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,6 +19,7 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_P100Q_P100Q_H
 #define PLUGINS_AZOTH_PLUGINS_P100Q_P100Q_H
+#include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <QRegExp>
 #include <QUrl>
@@ -29,6 +30,8 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/core/ihookproxy.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+
+class QTranslator;
 
 namespace LeechCraft
 {
@@ -44,6 +47,8 @@ namespace p100q
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
 
+		boost::shared_ptr<QTranslator> Translator_;
+
 		QRegExp UserRX_;
 		QRegExp PostAuthorRX_;
 		QRegExp PostRX_;
@@ -54,6 +59,9 @@ namespace p100q
 		QRegExp PstoCommentRX_;
 
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
+
+		QMap<QObject*, QObject*> Entry2Tab_;
+		QMap<QObject*, QString> LastPostInTab_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -70,18 +78,18 @@ namespace p100q
 		QSet<QByteArray> GetPluginClasses () const;
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-
 	private:
 		QString FormatBody (QString);
 	public slots:
+		void hookChatTabCreated (LeechCraft::IHookProxy_ptr proxy,
+				QObject *chatTab,
+				QObject *entry,
+				QWebView *webView);
 		void hookFormatBodyEnd (LeechCraft::IHookProxy_ptr proxy,
-				QObject *chatTab,
-				QString body,
 				QObject *message);
-		void hookThemeReloaded (LeechCraft::IHookProxy_ptr proxy,
-				QObject *chatTab,
-				QWebView *view,
-				QObject *entry);
+	private slots:
+		void handleShortcutActivated ();
+		void handleChatDestroyed ();
 	};
 }
 }

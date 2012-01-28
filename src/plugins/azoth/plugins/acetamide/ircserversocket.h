@@ -19,10 +19,11 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCSERVERSOCKET_H
 #define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCSERVERSOCKET_H
 
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QObject>
 
 class QTcpSocket;
+class QSslSocket;
 
 namespace LeechCraft
 {
@@ -40,7 +41,10 @@ namespace Acetamide
 
 		IrcAccount *Account_;
 		IrcServerHandler *ISH_;
-		boost::shared_ptr<QTcpSocket> TcpSocket_ptr;
+
+		bool SSL_;
+
+		std::shared_ptr<QTcpSocket> Socket_ptr;
 	public:
 		IrcServerSocket (IrcServerHandler*);
 		void ConnectToHost (const QString&, int);

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -110,7 +110,7 @@ namespace Autopaste
 	}
 
 	void Plugin::hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
-			QObject *chatTab, QObject *entry, int, QString, QString text)
+			QObject *chatTab, QObject *entry, int, QString)
 	{
 		ICLEntry *other = qobject_cast<ICLEntry*> (entry);
 		if (!other)
@@ -121,6 +121,8 @@ namespace Autopaste
 				<< "to ICLEntry";
 			return;
 		}
+
+		QString text = proxy->GetValue ("text").toString ();
 
 		const int maxLines = XmlSettingsManager::Instance ()
 				.property ("LineCount").toInt ();

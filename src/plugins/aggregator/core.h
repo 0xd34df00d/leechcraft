@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@
 #include <QString>
 #include <QMap>
 #include <QPair>
+#include <QList>
 #include <QDateTime>
 #include <interfaces/idownload.h>
 #include <interfaces/core/icoreproxy.h>
@@ -47,6 +48,7 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
+	class DBUpdateThread;
 	class ChannelsModel;
 	class JobHolderRepresentation;
 	class ChannelsFilterModel;
@@ -111,7 +113,11 @@ namespace Aggregator
 		AppWideActions AppWideActions_;
 		ItemsWidget *ReprWidget_;
 
+		QList<IDType_t> UpdatesQueue_;
+
 		PluginManager *PluginManager_;
+
+		DBUpdateThread *DBUpThread_;
 
 		Core ();
 	private:
@@ -148,6 +154,7 @@ namespace Aggregator
 		void AddFeed (const QString&, const QStringList&,
 				FeedSettings_ptr = FeedSettings_ptr ());
 		void RemoveFeed (const QModelIndex&);
+		void RemoveChannel (const QModelIndex&);
 		ItemsWidget* GetReprWidget () const;
 
 		/** Returns the channels model as it is.
@@ -197,7 +204,6 @@ namespace Aggregator
 				const std::vector<bool>&) const;
 		JobHolderRepresentation* GetJobHolderRepresentation () const;
 		StorageBackend* GetStorageBackend () const;
-		QWebView* CreateWindow ();
 		void GetChannels (channels_shorts_t&) const;
 		void AddFeeds (const feeds_container_t&, const QString&);
 		void SetContextMenu (QMenu*);
@@ -216,6 +222,11 @@ namespace Aggregator
 		void saveSettings ();
 		void handleChannelDataUpdated (Channel_ptr);
 		void handleCustomUpdates ();
+		void rotateUpdatesQueue ();
+
+		void handleDBUpThreadStarted ();
+		void handleDBUpChannelDataUpdated (IDType_t, IDType_t);
+		void handleDBUpGotNewChannel (const ChannelShort&);
 	private:
 		void UpdateUnreadItemsNumber () const;
 		void FetchPixmap (const Channel_ptr&);
@@ -235,6 +246,7 @@ namespace Aggregator
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 		void gotEntity (const LeechCraft::Entity&);
 		void channelRemoved (IDType_t);
+		void itemDataUpdated (Item_ptr, Channel_ptr);
 
 		// Plugin API
 		void hookGotNewItems (LeechCraft::IHookProxy_ptr proxy,

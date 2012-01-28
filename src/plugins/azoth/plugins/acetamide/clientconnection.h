@@ -53,7 +53,6 @@ namespace Acetamide
 		bool IsConsoleEnabled_;
 	public:
 		ClientConnection (IrcAccount*);
-		QObject* GetCLEntry (const QString&, const QString&) const;
 		void Sinchronize ();
 
 		IrcAccount* GetAccount () const;
@@ -61,19 +60,19 @@ namespace Acetamide
 
 		bool IsServerExists (const QString&);
 		void JoinServer (const ServerOptions&);
-		void JoinChannel (const ServerOptions&,
-				const ChannelOptions&);
+		void JoinChannel (const ServerOptions&, const ChannelOptions&);
 
 		void SetBookmarks (const QList<IrcBookmark>&);
 		QList<IrcBookmark> GetBookmarks () const;
 
-		IrcServerHandler* GetIrcServerHandler (const QString&);
-		void ClosePrivateChat (QString, const QString&);
-		void CloseServer (const QString&);
+		IrcServerHandler* GetIrcServerHandler (const QString&) const;
+
 		void DisconnectFromAll ();
 		void QuitServer (const QStringList&);
 
 		void SetConsoleEnabled (bool);
+
+		void ClosePrivateChat (const QString& serverID, QString nick);
 	public slots:
 		void serverConnected (const QString&);
 		void serverDisconnected (const QString&);

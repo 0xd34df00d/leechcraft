@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -102,7 +102,7 @@ bool BaseSettingsManager::event (QEvent *e)
 
 	QDynamicPropertyChangeEvent *event = dynamic_cast<QDynamicPropertyChangeEvent*> (e);
 
-	QByteArray name = event->propertyName ();
+	const QByteArray& name = event->propertyName ();
 	Settings_->setValue (name, property (name));
 
 	if (Properties2Object_.contains (name))

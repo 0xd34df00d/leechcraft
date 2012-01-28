@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@
 #include <qross/core/manager.h>
 #include <qross/core/wrapperinterface.h>
 #include <interfaces/entitytesthandleresult.h>
+#include <interfaces/core/ihookproxy.h>
 #include <util/util.h>
 #include "utilproxy.h"
 #include "wrappers/coreproxywrapper.h"
@@ -383,6 +384,11 @@ namespace Qrosp
 		case AEPTrayMenu:
 			args << "AEPTrayMenu";
 			break;
+		case AEPLCTray:
+			args << "AEPLCTray";
+			break;
+		case AEPMax:
+			break;
 		}
 		return SCALL (QList<QAction*>) ("GetActions", args);
 	}
@@ -415,6 +421,12 @@ namespace Qrosp
 	}
 
 	void WrapperObject::raiseTab (QWidget*)
+	{
+		qWarning () << Q_FUNC_INFO
+				<< "is called, but this should never happen";
+	}
+
+	void WrapperObject::gotActions (QList<QAction*>, ActionsEmbedPlace)
 	{
 		qWarning () << Q_FUNC_INFO
 				<< "is called, but this should never happen";

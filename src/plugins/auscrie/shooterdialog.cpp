@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,78 +21,75 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Auscrie
+{
+	ShooterDialog::ShooterDialog (QWidget *parent)
+	: QDialog (parent)
 	{
-		namespace Auscrie
+		Ui_.setupUi (this);
+		on_Format__currentIndexChanged (Ui_.Format_->currentText ());
+	}
+
+	ShooterDialog::Action ShooterDialog::GetAction () const
+	{
+		switch (Ui_.ActionBox_->currentIndex ())
 		{
-			ShooterDialog::ShooterDialog (QWidget *parent)
-			: QDialog (parent)
-			{
-				Ui_.setupUi (this);
-				on_Format__currentIndexChanged (Ui_.Format_->currentText ());
-			}
-
-			ShooterDialog::Action ShooterDialog::GetAction () const
-			{
-				switch (Ui_.ActionBox_->currentIndex ())
-				{
-					case 0:
-					case 1:
-					case 2:
-						return AUpload;
-					case 3:
-						return ASave;
-					default:
-						qWarning () << Q_FUNC_INFO
-								<< Ui_.ActionBox_->currentIndex ()
-								<< "unhandled";
-						return ASave;
-				}
-			}
-
-			Poster::HostingService ShooterDialog::GetHostingService () const
-			{
-				switch (Ui_.ActionBox_->currentIndex ())
-				{
-					case 0:
-						return Poster::DumpBitcheeseNet;
-					case 1:
-						return Poster::SavepicRu;
-					case 2:
-						return Poster::ImagebinCa;
-					default:
-						qWarning () << Q_FUNC_INFO
-								<< Ui_.ActionBox_->currentIndex ()
-								<< "unhandled, defaulting to imagebin.ca";
-						return Poster::ImagebinCa;
-				}
-			}
-
-			int ShooterDialog::GetTimeout () const
-			{
-				return Ui_.Timeout_->value ();
-			}
-
-			QString ShooterDialog::GetFormat () const
-			{
-				return Ui_.Format_->currentText ();
-			}
-
-			int ShooterDialog::GetQuality () const
-			{
-				const int val = Ui_.QualityBox_->value ();
-				return Ui_.Format_->currentText () == "JPG" ?
-						val :
-						100 - val;
-			}
-			
-			void ShooterDialog::on_Format__currentIndexChanged (const QString& str)
-			{
-				if (str == "JPG")
-					Ui_.SettingLabel_->setText ("Quality:");
-				else
-					Ui_.SettingLabel_->setText ("Compression:");
-			}
+			case 0:
+			case 1:
+			case 2:
+				return AUpload;
+			case 3:
+				return ASave;
+			default:
+				qWarning () << Q_FUNC_INFO
+						<< Ui_.ActionBox_->currentIndex ()
+						<< "unhandled";
+				return ASave;
 		}
 	}
+
+	Poster::HostingService ShooterDialog::GetHostingService () const
+	{
+		switch (Ui_.ActionBox_->currentIndex ())
+		{
+			case 0:
+				return Poster::DumpBitcheeseNet;
+			case 1:
+				return Poster::SavepicRu;
+			case 2:
+				return Poster::ImagebinCa;
+			default:
+				qWarning () << Q_FUNC_INFO
+						<< Ui_.ActionBox_->currentIndex ()
+						<< "unhandled, defaulting to imagebin.ca";
+				return Poster::ImagebinCa;
+		}
+	}
+
+	int ShooterDialog::GetTimeout () const
+	{
+		return Ui_.Timeout_->value ();
+	}
+
+	QString ShooterDialog::GetFormat () const
+	{
+		return Ui_.Format_->currentText ();
+	}
+
+	int ShooterDialog::GetQuality () const
+	{
+		const int val = Ui_.QualityBox_->value ();
+		return Ui_.Format_->currentText () == "JPG" ?
+				val :
+				100 - val;
+	}
+
+	void ShooterDialog::on_Format__currentIndexChanged (const QString& str)
+	{
+		if (str == "JPG")
+			Ui_.SettingLabel_->setText ("Quality:");
+		else
+			Ui_.SettingLabel_->setText ("Compression:");
+	}
+}
 }

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,10 @@ namespace Azoth
 	{
 		XmlSettingsManager::Instance ().RegisterObject ("ChatWindowStyle",
 				this, "chatWindowStyleChanged");
+		XmlSettingsManager::Instance ().RegisterObject ("CustomMUCStyle",
+				this, "chatWindowStyleChanged");
+		XmlSettingsManager::Instance ().RegisterObject ("MUCWindowStyle",
+				this, "chatWindowStyleChanged");
 	}
 
 	void ChatTabsManager::OpenChat (const QModelIndex& ti)
@@ -58,15 +62,15 @@ namespace Azoth
 		OpenChat (entry);
 	}
 
-	void ChatTabsManager::OpenChat (const ICLEntry *entry)
+	QWidget* ChatTabsManager::OpenChat (const ICLEntry *entry)
 	{
 		const QString& id = entry->GetEntryID ();
 		if (Entry2Tab_.contains (id))
 		{
 			emit raiseTab (Entry2Tab_ [id]);
-			return;
+			return Entry2Tab_ [id];
 		}
-		
+
 		EverOpened_ << id;
 
 		QPointer<ChatTab> tab (new ChatTab (id));
@@ -101,14 +105,16 @@ namespace Azoth
 		if (XmlSettingsManager::Instance ()
 				.property ("JumpToNewTabOnOpen").toBool ())
 			emit raiseTab (tab);
+
+		return tab;
 	}
-	
+
 	void ChatTabsManager::CloseChat (const ICLEntry *entry)
 	{
 		const QString& id = entry->GetEntryID ();
 		if (!Entry2Tab_.contains (id))
 			return;
-		
+
 		handleNeedToClose (Entry2Tab_ [id]);
 	}
 
@@ -137,17 +143,17 @@ namespace Azoth
 				SLOT (handleEntryMessage (QObject*)),
 				Qt::UniqueConnection);
 	}
-	
+
 	void ChatTabsManager::HandleEntryAdded (ICLEntry *entry)
 	{
 		if (entry->GetEntryType () != ICLEntry::ETPrivateChat)
 			return;
-		
+
 		QObject *mucObj = entry->GetParentCLEntry ();
 		ICLEntry *muc = qobject_cast<ICLEntry*> (mucObj);
 		UpdateMUCTab (muc);
 	}
-	
+
 	void ChatTabsManager::HandleEntryRemoved (ICLEntry *entry)
 	{
 		if (entry->GetEntryType () == ICLEntry::ETPrivateChat)
@@ -159,7 +165,7 @@ namespace Azoth
 
 		if (!Entry2Tab_.contains (entry->GetEntryID ()))
 			return;
-		
+
 		SetChatEnabled (entry->GetEntryID (), false);
 		disconnect (entry->GetObject (),
 				0,
@@ -178,14 +184,32 @@ namespace Azoth
 
 		Entry2Tab_ [id]->setEnabled (enabled);
 	}
-	
+
 	void ChatTabsManager::ChatMadeCurrent (ChatTab *curTab)
 	{
 		Q_FOREACH (ChatTab_ptr tab, Entry2Tab_.values ())
 			if (tab != curTab)
 				tab->TabLostCurrent ();
+
+		ICLEntry *entry = qobject_cast<ICLEntry*> (curTab->GetCLEntry ());
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "chat's tab is not an ICLEntry";
+			return;
+		}
+		entry->MarkMsgsRead ();
 	}
 	
+	QString ChatTabsManager::GetActiveVariant (ICLEntry *entry) const
+	{
+		ChatTab_ptr tab = Entry2Tab_ [entry->GetEntryID ()];
+		if (!tab)
+			return QString ();
+		
+		return tab->GetSelectedVariant ();
+	}
+
 	bool ChatTabsManager::eventFilter (QObject* obj, QEvent *event)
 	{
 		if (event->type () != QEvent::FocusIn &&
@@ -197,10 +221,10 @@ namespace Azoth
 			return false;
 
 		tab->TabMadeCurrent ();
-			
+
 		return false;
 	}
-	
+
 	void ChatTabsManager::UpdateMUCTab (ICLEntry *muc)
 	{
 		if (!muc)
@@ -209,7 +233,7 @@ namespace Azoth
 					<< "passed obj doesn't implement ICLEntry";
 			return;
 		}
-		
+
 		if (Entry2Tab_.contains (muc->GetEntryID ()))
 			Entry2Tab_ [muc->GetEntryID ()]->HandleMUCParticipantsChanged ();
 	}
@@ -223,7 +247,7 @@ namespace Azoth
 
 		tab->deleteLater ();
 	}
-	
+
 	void ChatTabsManager::chatWindowStyleChanged ()
 	{
 		Q_FOREACH (ChatTab_ptr tab, Entry2Tab_.values ())

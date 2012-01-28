@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,6 +46,10 @@ namespace Azoth
 				QObject *entry,
 				QWebView *webView);
 
+		void hookDnDEntry2Entry (LeechCraft::IHookProxy_ptr proxy,
+				QObject *source,
+				QObject *target);
+
 		/** @brief Hook for adjusting where CL entry actions appear.
 		 *
 		 * This hook is called to determine where the given action for
@@ -86,6 +90,9 @@ namespace Azoth
 		 */
 		void hookEntryActionAreasRequested (LeechCraft::IHookProxy_ptr proxy,
 				QObject *action,
+				QObject *entry);
+
+		void hookEntryActionsRemoved (LeechCraft::IHookProxy_ptr proxy,
 				QObject *entry);
 
 		/** @brief Hook for adding actions for contact list entries.
@@ -153,6 +160,8 @@ namespace Azoth
 		 */
 		void hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message);
+		void hookGotMessage2 (LeechCraft::IHookProxy_ptr proxy,
+				QObject *message);
 		void hookFormatDateTime (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QDateTime dateTime,
@@ -162,12 +171,8 @@ namespace Azoth
 				QString nick,
 				QObject *message);
 		void hookFormatBodyBegin (LeechCraft::IHookProxy_ptr proxy,
-				QObject *chatTab,
-				QString body,
 				QObject *message);
 		void hookFormatBodyEnd (LeechCraft::IHookProxy_ptr proxy,
-				QObject *chatTab,
-				QString body,
 				QObject *message);
 		void hookIsHighlightMessage (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message);
@@ -177,8 +182,7 @@ namespace Azoth
 				QObject *chatTab,
 				QObject *entry,
 				int type,
-				QString variant,
-				QString text);
+				QString variant);
 		void hookMessageCreated (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QObject *message);

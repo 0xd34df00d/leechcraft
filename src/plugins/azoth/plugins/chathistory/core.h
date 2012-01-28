@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 #include <boost/weak_ptr.hpp>
 #include <QObject>
 #include <QSet>
+#include <QVariantMap>
 #include <interfaces/ihavetabs.h>
 
 namespace LeechCraft
@@ -42,32 +43,36 @@ namespace ChatHistory
 		: C_ (T::Instance ())
 		{}
 	};
-	
+
 	class StorageThread;
 
 	class Core : public QObject
 	{
 		Q_OBJECT
 		static boost::weak_ptr<Core> InstPtr_;
-		
+
 		StorageThread *StorageThread_;
 		IProxyObject *PluginProxy_;
 		QSet<QString> DisabledIDs_;
-		
+
 		TabClassInfo TabClass_;
-		
+
 		Core ();
 	public:
 		static boost::shared_ptr<Core> Instance ();
+
+		~Core ();
+
 		TabClassInfo GetTabClass () const;
-		
+
 		void SetPluginProxy (QObject*);
 		IProxyObject* GetPluginProxy () const;
-		
+
 		bool IsLoggingEnabled (QObject*) const;
 		void SetLoggingEnabled (QObject*, bool);
-		
+
 		void Process (QObject*);
+		void Process (QVariantMap);
 		void GetOurAccounts ();
 		void GetUsersForAccount (const QString&);
 		void GetChatLogs (const QString& accountId, const QString& entryId,

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,8 @@
 #include "interfaces/isupportactivity.h"
 #include "interfaces/isupportmood.h"
 #include "interfaces/isupportgeolocation.h"
+#include "interfaces/isupportbookmarks.h"
+#include "interfaces/imucjoinwidget.h"
 #include "core.h"
 #include "sortfilterproxymodel.h"
 #include "setstatusdialog.h"
@@ -43,6 +45,9 @@
 #include "activitydialog.h"
 #include "mooddialog.h"
 #include "locationdialog.h"
+#include "util.h"
+#include "groupsenddialog.h"
+#include "actionsmanager.h"
 
 namespace LeechCraft
 {
@@ -50,10 +55,12 @@ namespace Azoth
 {
 	MainWidget::MainWidget (QWidget *parent)
 	: QWidget (parent)
-	, MainMenu_ (new QMenu (tr ("Azoth menu")))
+	, MainMenu_ (new QMenu (tr ("Azoth menu"), this))
 	, MenuButton_ (new QToolButton (this))
 	, ProxyModel_ (new SortFilterProxyModel ())
 	{
+		qRegisterMetaType<QPersistentModelIndex> ("QPersistentModelIndex");
+
 		MainMenu_->setIcon (QIcon (":/plugins/azoth/resources/images/azoth.svg"));
 
 		Ui_.setupUi (this);
@@ -67,23 +74,17 @@ namespace Azoth
 		ProxyModel_->setSourceModel (Core::Instance ().GetCLModel ());
 		Ui_.CLTree_->setModel (ProxyModel_);
 
+		Ui_.CLTree_->viewport ()->setAcceptDrops (true);
+
 		connect (Core::Instance ().GetChatTabsManager (),
 				SIGNAL (entryMadeCurrent (QObject*)),
 				this,
 				SLOT (handleEntryMadeCurrent (QObject*)),
 				Qt::QueuedConnection);
 
-#ifdef Q_WS_WIN32
-		connect (Ui_.CLTree_,
-				SIGNAL (clicked (const QModelIndex&)),
-				this,
-				SLOT (on_CLTree__activated (const QModelIndex&)));
-#endif
-
-		connect (Ui_.CLTree_,
-				SIGNAL (activated (const QModelIndex&)),
-				this,
-				SLOT (clearFilter ()));
+		XmlSettingsManager::Instance ().RegisterObject ("EntryActivationType",
+				this, "handleEntryActivationType");
+		handleEntryActivationType ();
 
 		connect (Ui_.FilterLine_,
 				SIGNAL (textChanged (const QString&)),
@@ -130,7 +131,7 @@ namespace Azoth
 
 		Ui_.FastStatusButton_->setMenu (CreateStatusChangeMenu (SLOT (fastStateChangeRequested ())));
 		Ui_.FastStatusButton_->setDefaultAction (new QAction (tr ("Set status"), this));
-		UpdateFastStatusButton (SOnline);
+		updateFastStatusButton (SOffline);
 		connect (Ui_.FastStatusButton_->defaultAction (),
 				SIGNAL (triggered ()),
 				this,
@@ -145,6 +146,12 @@ namespace Azoth
 				SIGNAL (triggered ()),
 				this,
 				SLOT (joinAccountConference ()));
+
+		AccountManageBookmarks_ = new QAction (tr ("Manage bookmarks..."), this);
+		connect (AccountManageBookmarks_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (manageAccountBookmarks ()));
 
 		AccountAddContact_ = new QAction (tr ("Add contact..."), this);
 		connect (AccountAddContact_,
@@ -176,9 +183,20 @@ namespace Azoth
 				this,
 				SLOT (handleAccountConsole ()));
 
+		AccountModify_ = new QAction (tr ("Modify..."), this);
+		connect (AccountModify_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleAccountModify ()));
+
 		XmlSettingsManager::Instance ().RegisterObject ("ShowMenuBar",
 				this, "menuBarVisibilityToggled");
 		menuBarVisibilityToggled ();
+
+		connect (&Core::Instance (),
+				SIGNAL (topStatusChanged (LeechCraft::Azoth::State)),
+				this,
+				SLOT (updateFastStatusButton (LeechCraft::Azoth::State)));
 	}
 
 	QList<QAction*> MainWidget::GetMenuActions()
@@ -194,21 +212,30 @@ namespace Azoth
 	void MainWidget::CreateMenu ()
 	{
 		MainMenu_->addSeparator ();
+
 		MainMenu_->addAction (tr ("Add contact..."),
 				this,
 				SLOT (handleAddContactRequested ()));
 		MainMenu_->addAction (tr ("Join conference..."),
 				&Core::Instance (),
 				SLOT (handleMucJoinRequested ()));
+
 		MainMenu_->addSeparator ();
+
 		MainMenu_->addAction (tr ("Manage bookmarks..."),
 				this,
 				SLOT (handleManageBookmarks ()));
 
 		MainMenu_->addSeparator ();
 
+		MainMenu_->addAction (tr ("Add account..."),
+				this,
+				SLOT (handleAddAccountRequested ()));
+
+		MainMenu_->addSeparator ();
+
 		QAction *showOffline = MainMenu_->addAction (tr ("Show offline contacts"));
-		showOffline->setProperty ("ActionIcon", "azoth_showoffline");
+		showOffline->setProperty ("ActionIcon", "view-user-offline-kopete");
 		showOffline->setCheckable (true);
 		bool show = XmlSettingsManager::Instance ()
 				.Property ("ShowOfflineContacts", true).toBool ();
@@ -222,7 +249,7 @@ namespace Azoth
 
 	QMenu* MainWidget::CreateStatusChangeMenu (const char *slot, bool withCustom)
 	{
-		QMenu *result = new QMenu (tr ("Change status"));
+		QMenu *result = new QMenu (tr ("Change status"), this);
 		result->addAction (Core::Instance ().GetIconForState (SOnline),
 				tr ("Online"), this, slot)->
 					setProperty ("Azoth/TargetState",
@@ -240,7 +267,7 @@ namespace Azoth
 					setProperty ("Azoth/TargetState",
 							QVariant::fromValue<State> (SDND));
 		result ->addAction (Core::Instance ().GetIconForState (SXA),
-				tr ("Extended away"), this, slot)->
+				tr ("Not available"), this, slot)->
 					setProperty ("Azoth/TargetState",
 							QVariant::fromValue<State> (SXA));
 		result ->addAction (Core::Instance ().GetIconForState (SOffline),
@@ -256,13 +283,6 @@ namespace Azoth
 					SLOT (handleChangeStatusRequested ()));
 		}
 		return result;
-	}
-
-	void MainWidget::UpdateFastStatusButton (State state)
-	{
-		Ui_.FastStatusButton_->defaultAction ()->setIcon (Core::Instance ().GetIconForState (state));
-		Ui_.FastStatusButton_->setProperty ("Azoth/TargetState",
-				QVariant::fromValue<State> (state));
 	}
 
 	IAccount* MainWidget::GetAccountFromSender (const char *func)
@@ -295,7 +315,14 @@ namespace Azoth
 		return account;
 	}
 
-	void MainWidget::on_CLTree__activated (const QModelIndex& index)
+	void MainWidget::updateFastStatusButton (State state)
+	{
+		Ui_.FastStatusButton_->defaultAction ()->setIcon (Core::Instance ().GetIconForState (state));
+		Ui_.FastStatusButton_->setProperty ("Azoth/TargetState",
+				QVariant::fromValue<State> (state));
+	}
+
+	void MainWidget::treeActivated (const QModelIndex& index)
 	{
 		if (index.data (Core::CLREntryType).value<Core::CLEntryType> () != Core::CLETContact)
 			return;
@@ -305,9 +332,11 @@ namespace Azoth
 
 	void MainWidget::on_CLTree__customContextMenuRequested (const QPoint& pos)
 	{
-		const QModelIndex& index = Ui_.CLTree_->indexAt (pos);
+		const QModelIndex& index = ProxyModel_->mapToSource (Ui_.CLTree_->indexAt (pos));
 		if (!index.isValid ())
 			return;
+
+		ActionsManager *manager = Core::Instance ().GetActionsManager ();
 
 		QMenu *menu = new QMenu (tr ("Entry context menu"));
 		QList<QAction*> actions;
@@ -317,10 +346,10 @@ namespace Azoth
 		{
 			QObject *obj = index.data (Core::CLREntryObject).value<QObject*> ();
 			ICLEntry *entry = qobject_cast<ICLEntry*> (obj);
-			const QList<QAction*>& allActions = Core::Instance ().GetEntryActions (entry);
+			const QList<QAction*>& allActions = manager->GetEntryActions (entry);
 			Q_FOREACH (QAction *action, allActions)
-				if (Core::Instance ().GetAreasForAction (action)
-						.contains (Core::CLEAAContactListCtxtMenu) ||
+				if (manager->GetAreasForAction (action)
+						.contains (ActionsManager::CLEAAContactListCtxtMenu) ||
 					action->isSeparator ())
 					actions << action;
 			break;
@@ -336,6 +365,18 @@ namespace Azoth
 					this,
 					SLOT (handleCatRenameTriggered ()));
 			actions << rename;
+
+			QAction *sendMsg = new QAction (tr ("Send message..."), menu);
+			QList<QVariant> entries;
+			for (int i = 0, cnt = index.model ()->rowCount (index);
+					i < cnt; ++i)
+				entries << index.child (i, 0).data (Core::CLREntryObject);
+			sendMsg->setProperty ("Azoth/Entries", entries);
+			connect (sendMsg,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (handleSendGroupMsgTriggered ()));
+			actions << sendMsg;
 			break;
 		}
 		case Core::CLETAccount:
@@ -350,8 +391,48 @@ namespace Azoth
 
 			AccountAddContact_->setProperty ("Azoth/AccountObject", objVar);
 			actions << AccountJoinConference_;
-			actions << AccountAddContact_;
 
+			if (qobject_cast<ISupportBookmarks*> (objVar.value<QObject*> ()))
+			{
+				ISupportBookmarks *supBms =
+						qobject_cast<ISupportBookmarks*> (objVar.value<QObject*> ());
+				QVariantList bms = supBms->GetBookmarkedMUCs ();
+				if (!bms.isEmpty ())
+				{
+					QMenu *bmsMenu = new QMenu (tr ("Join bookmarked conference"), menu);
+					actions << bmsMenu->menuAction ();
+
+					Q_FOREACH (const QObject *mucObj,
+							qobject_cast<IAccount*> (objVar.value<QObject*> ())->GetCLEntries ())
+					{
+						IMUCEntry *muc = qobject_cast<IMUCEntry*> (mucObj);
+						if (!muc)
+							continue;
+
+						bms.removeAll (muc->GetIdentifyingData ());
+					}
+
+					Q_FOREACH (const QVariant& bm, bms)
+					{
+						const QVariantMap& map = bm.toMap ();
+
+						QAction *act = bmsMenu->addAction (map ["HumanReadableName"].toString ());
+						act->setProperty ("Azoth/AccountObject", objVar);
+						act->setProperty ("Azoth/BMData", bm);
+						connect (act,
+								SIGNAL (triggered ()),
+								this,
+								SLOT (joinAccountConfFromBM ()));
+					}
+				}
+
+				actions << AccountManageBookmarks_;
+				AccountManageBookmarks_->setProperty ("Azoth/AccountObject", objVar);
+
+				actions << Util::CreateSeparator (menu);
+			}
+
+			actions << AccountAddContact_;
 			actions << Util::CreateSeparator (menu);
 
 			Q_FOREACH (QAction *act, MenuChangeStatus_->actions ())
@@ -400,6 +481,12 @@ namespace Azoth
 				AccountConsole_->setProperty ("Azoth/AccountObject", objVar);
 				actions << AccountConsole_;
 			}
+
+			actions << Util::CreateSeparator (menu);
+
+			AccountModify_->setProperty ("Azoth/AccountObject", objVar);
+			actions << AccountModify_;
+
 			break;
 		}
 		default:
@@ -413,6 +500,7 @@ namespace Azoth
 
 		menu->addActions (actions);
 		menu->exec (Ui_.CLTree_->mapToGlobal (pos));
+		menu->deleteLater ();
 	}
 
 	void MainWidget::handleChangeStatusRequested ()
@@ -449,11 +537,11 @@ namespace Azoth
 		}
 		else
 		{
-			SetStatusDialog *ssd = new SetStatusDialog (this);
-			if (ssd->exec () != QDialog::Accepted)
+			SetStatusDialog ssd (this);
+			if (ssd.exec () != QDialog::Accepted)
 				return;
 
-			status = EntryStatus (ssd->GetState (), ssd->GetStatusText ());
+			status = EntryStatus (ssd.GetState (), ssd.GetStatusText ());
 		}
 
 		if (acc)
@@ -465,7 +553,7 @@ namespace Azoth
 
 	void MainWidget::fastStateChangeRequested ()
 	{
-		UpdateFastStatusButton (sender ()->
+		updateFastStatusButton (sender ()->
 					property ("Azoth/TargetState").value<State> ());
 		applyFastStatus ();
 	}
@@ -480,6 +568,38 @@ namespace Azoth
 		EntryStatus status (state, text);
 		Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
 			acc->ChangeState (status);
+	}
+
+	void MainWidget::handleEntryActivationType ()
+	{
+		disconnect (Ui_.CLTree_,
+				0,
+				this,
+				SLOT (treeActivated (const QModelIndex&)));
+		disconnect (Ui_.CLTree_,
+				0,
+				this,
+				SLOT (clearFilter ()));
+
+		const char *signal = 0;
+		const QString& actType = XmlSettingsManager::Instance ()
+				.property ("EntryActivationType").toString ();
+
+		if (actType == "click")
+			signal = SIGNAL (clicked (const QModelIndex&));
+		else if (actType == "dclick")
+			signal = SIGNAL (doubleClicked (const QModelIndex&));
+		else
+			signal = SIGNAL (activated (const QModelIndex&));
+
+		connect (Ui_.CLTree_,
+				signal,
+				this,
+				SLOT (treeActivated (const QModelIndex&)));
+		connect (Ui_.CLTree_,
+				signal,
+				this,
+				SLOT (clearFilter ()));
 	}
 
 	void MainWidget::handleCatRenameTriggered ()
@@ -535,6 +655,19 @@ namespace Azoth
 		}
 	}
 
+	void MainWidget::handleSendGroupMsgTriggered ()
+	{
+		QList<QObject*> entries;
+
+		Q_FOREACH (const QVariant& entryVar,
+				sender ()->property ("Azoth/Entries").toList ())
+			entries << entryVar.value<QObject*> ();
+
+		GroupSendDialog *dlg = new GroupSendDialog (entries, this);
+		dlg->setAttribute (Qt::WA_DeleteOnClose, true);
+		dlg->show ();
+	}
+
 	void MainWidget::joinAccountConference ()
 	{
 		IAccount *account = GetAccountFromSender (Q_FUNC_INFO);
@@ -546,6 +679,37 @@ namespace Azoth
 		JoinConferenceDialog *dia = new JoinConferenceDialog (accounts,
 				Core::Instance ().GetProxy ()->GetMainWindow ());
 		dia->show ();
+		dia->setAttribute (Qt::WA_DeleteOnClose, true);
+	}
+
+	void MainWidget::joinAccountConfFromBM ()
+	{
+		IAccount *account = GetAccountFromSender (Q_FUNC_INFO);
+		if (!account)
+			return;
+
+		const QVariant& bmData = sender ()->property ("Azoth/BMData");
+		if (bmData.isNull ())
+			return;
+
+		IProtocol *proto = qobject_cast<IProtocol*> (account->GetParentProtocol ());
+		IMUCJoinWidget *imjw = qobject_cast<IMUCJoinWidget*> (proto->GetMUCJoinWidget ());
+		imjw->SetIdentifyingData (bmData.toMap ());
+		imjw->Join (account->GetObject ());
+	}
+
+	void MainWidget::manageAccountBookmarks ()
+	{
+		IAccount *account = GetAccountFromSender (Q_FUNC_INFO);
+		if (!account)
+			return;
+
+		BookmarksManagerDialog *dia =
+				new BookmarksManagerDialog (Core::Instance ()
+						.GetProxy ()->GetMainWindow ());
+		dia->FocusOn (account);
+		dia->show ();
+		dia->setAttribute (Qt::WA_DeleteOnClose, true);
 	}
 
 	void MainWidget::addAccountContact ()
@@ -652,6 +816,15 @@ namespace Azoth
 		emit gotConsoleWidget (Account2CW_ [account]);
 	}
 
+	void MainWidget::handleAccountModify ()
+	{
+		IAccount *account = GetAccountFromSender (Q_FUNC_INFO);
+		if (!account)
+			return;
+
+		account->OpenConfigurationDialog ();
+	}
+
 	void MainWidget::handleManageBookmarks ()
 	{
 		BookmarksManagerDialog *dia = new BookmarksManagerDialog (this);
@@ -659,9 +832,14 @@ namespace Azoth
 		dia->show ();
 	}
 
+	void MainWidget::handleAddAccountRequested ()
+	{
+		InitiateAccountAddition (this);
+	}
+
 	void MainWidget::handleAddContactRequested ()
 	{
-		std::auto_ptr<AddContactDialog> dia (new AddContactDialog (0, this));
+		std::unique_ptr<AddContactDialog> dia (new AddContactDialog (0, this));
 		if (dia->exec () != QDialog::Accepted)
 			return;
 
@@ -759,11 +937,16 @@ namespace Azoth
 	{
 		QString BuildPath (const QModelIndex& index)
 		{
+			if (!index.isValid ())
+				return QString ();
+
 			QString path = "CLTreeState/Expanded/" + index.data ().toString ();
 			QModelIndex parent = index;
 			while ((parent = parent.parent ()).isValid ())
 				path.prepend (parent.data ().toString () + "/");
+
 			path = path.toUtf8 ().toBase64 ().replace ('/', '_');
+
 			return path;
 		}
 	}
@@ -782,19 +965,19 @@ namespace Azoth
 
 				const bool expanded = XmlSettingsManager::Instance ().Property (path, true).toBool ();
 				if (expanded)
-					QMetaObject::invokeMethod (Ui_.CLTree_,
-							"expand",
+					QMetaObject::invokeMethod (this,
+							"expandIndex",
 							Qt::QueuedConnection,
-							Q_ARG (QModelIndex, index));
+							Q_ARG (QPersistentModelIndex, QPersistentModelIndex (index)));
 
 				if (clModel->rowCount (index))
 					handleRowsInserted (index, 0, ProxyModel_->rowCount (index) - 1);
 			}
 			else if (type == Core::CLETAccount)
-				QMetaObject::invokeMethod (Ui_.CLTree_,
-						"expand",
+				QMetaObject::invokeMethod (this,
+						"expandIndex",
 						Qt::QueuedConnection,
-						Q_ARG (QModelIndex, index));
+						Q_ARG (QPersistentModelIndex, QPersistentModelIndex (index)));
 		}
 	}
 
@@ -805,11 +988,23 @@ namespace Azoth
 					0, Core::Instance ().GetCLModel ()->rowCount () - 1);
 	}
 
+	void MainWidget::expandIndex (const QPersistentModelIndex& pIdx)
+	{
+		if (!pIdx.isValid ())
+			return;
+
+		Ui_.CLTree_->expand (pIdx);
+	}
+
 	namespace
 	{
 		void SetExpanded (const QModelIndex& idx, bool expanded)
 		{
-			XmlSettingsManager::Instance ().setProperty (BuildPath (idx).toUtf8 (), expanded);
+			const QString& path = BuildPath (idx);
+			if (path.isEmpty ())
+				return;
+
+			XmlSettingsManager::Instance ().setProperty (path.toUtf8 (), expanded);
 		}
 	}
 

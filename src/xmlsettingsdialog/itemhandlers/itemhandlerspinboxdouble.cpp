@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,13 +17,11 @@
  **********************************************************************/
 
 #include "itemhandlerspinboxdouble.h"
-#include <boost/bind.hpp>
 
 namespace LeechCraft
 {
 	ItemHandlerSpinboxDouble::ItemHandlerSpinboxDouble ()
-	: ItemHandlerSpinboxBase<QDoubleSpinBox, double> (Converter_t (boost::bind (&QString::toDouble,
-					_1, static_cast<bool*> (0))),
+	: ItemHandlerSpinboxBase<QDoubleSpinBox, double> ([] (QString str) { return str.toDouble (); },
 			"doublespinbox",
 			SIGNAL (valueChanged (double)))
 	{

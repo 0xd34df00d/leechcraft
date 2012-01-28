@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,11 +32,13 @@
 #include <QHeaderView>
 #include <QInputDialog>
 #include <libtorrent/session.hpp>
+#include <libtorrent/version.hpp>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include <util/tagscompletionmodel.h>
 #include <util/util.h>
+#include <util/shortcuts/shortcutmanager.h>
 #include "core.h"
 #include "addtorrent.h"
 #include "addmultipletorrents.h"
@@ -326,35 +328,13 @@ namespace LeechCraft
 			void TorrentPlugin::SetShortcut (const QString& name,
 					const QKeySequences_t& shortcuts)
 			{
-				ActionID2Action_ [name]->setShortcuts (shortcuts);
+				ShortcutMgr_->SetShortcut (name, shortcuts);
 			}
 
-#define _L(a) result ["Torrent"#a] = ActionInfo (a->text (), \
-					a->shortcut (), a->icon ())
 			QMap<QString, ActionInfo> TorrentPlugin::GetActionInfo () const
 			{
-				QMap<QString, ActionInfo> result;
-				_L (OpenTorrent_);
-				_L (ChangeTrackers_);
-				_L (CreateTorrent_);
-				_L (OpenMultipleTorrents_);
-				_L (IPFilter_);
-				_L (RemoveTorrent_);
-				_L (Resume_);
-				_L (Stop_);
-				_L (MoveUp_);
-				_L (MoveDown_);
-				_L (MoveToTop_);
-				_L (MoveToBottom_);
-				_L (ForceReannounce_);
-				_L (ForceRecheck_);
-				_L (MoveFiles_);
-				_L (Import_);
-				_L (Export_);
-				_L (MakeMagnetLink_);
-				return result;
+				return ShortcutMgr_->GetActionInfo ();
 			}
-#undef _L
 
 			QList<QWizardPage*> TorrentPlugin::GetWizardPages () const
 			{
@@ -380,6 +360,13 @@ namespace LeechCraft
 				}
 
 				return result;
+			}
+
+			QString TorrentPlugin::GetDiagInfoString () const
+			{
+				return QString ("Built with rb_libtorrent %1 (%2).")
+						.arg (LIBTORRENT_VERSION)
+						.arg (LIBTORRENT_REVISION);
 			}
 
 			void TorrentPlugin::on_OpenTorrent__triggered ()
@@ -408,7 +395,7 @@ namespace LeechCraft
 			void TorrentPlugin::on_OpenMultipleTorrents__triggered ()
 			{
 				AddMultipleTorrents dialog (Core::Instance ()->GetProxy ()->GetMainWindow ());
-				std::auto_ptr<TagsCompleter> completer (new TagsCompleter (dialog.GetEdit (), this));
+				std::unique_ptr<TagsCompleter> completer (new TagsCompleter (dialog.GetEdit (), this));
 				dialog.GetEdit ()->AddSelector ();
 
 				if (dialog.exec () == QDialog::Rejected)
@@ -754,9 +741,8 @@ namespace LeechCraft
 				std::vector<libtorrent::announce_entry> allTrackers;
 				Q_FOREACH (QModelIndex si, sis)
 				{
-					std::vector<libtorrent::announce_entry> those =
-							Core::Instance ()->GetTrackers (Core::Instance ()->
-									GetProxy ()->MapToSource (si).row ());
+					auto those = Core::Instance ()->GetTrackers (Core::Instance ()->
+							GetProxy ()->MapToSource (si).row ());
 					std::copy (those.begin (), those.end (),
 							std::back_inserter (allTrackers));
 				}
@@ -766,17 +752,13 @@ namespace LeechCraft
 							GetTrackers (Core::Instance ()->
 									GetCurrentTorrent ());
 
-				std::string libtorrent::announce_entry::*purl =
-						&libtorrent::announce_entry::url;
-
 				std::stable_sort (allTrackers.begin (), allTrackers.end (),
-						boost::bind (purl, _1) <
-						boost::bind (purl, _2));
+						[] (const libtorrent::announce_entry& l, const libtorrent::announce_entry& r)
+							{ return l.url < r.url; });
 
-				std::vector<libtorrent::announce_entry>::iterator newLast =
-						std::unique (allTrackers.begin (), allTrackers.end (),
-									boost::bind (purl, _1) ==
-									boost::bind (purl, _2));
+				auto newLast = std::unique (allTrackers.begin (), allTrackers.end (),
+						[] (const libtorrent::announce_entry& l, const libtorrent::announce_entry& r)
+							{ return l.url == r.url; });
 
 				allTrackers.erase (newLast, allTrackers.end ());
 
@@ -873,6 +855,8 @@ namespace LeechCraft
 
 			void TorrentPlugin::SetupCore ()
 			{
+				ShortcutMgr_ = new Util::ShortcutManager (Core::Instance ()->GetProxy (), this);
+
 				XmlSettingsDialog_.reset (new XmlSettingsDialog ());
 				XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 						"torrentsettings.xml");
@@ -941,7 +925,7 @@ namespace LeechCraft
 #define _LC_MERGE(a) "Torrent"#a
 
 #define _LC_SINGLE(a) \
-				ActionID2Action_ [_LC_MERGE(a)] = a.get ();
+				ShortcutMgr_->RegisterAction (_LC_MERGE(a), a.get ());
 
 #define _LC_TRAVERSER(z,i,array) \
 				_LC_SINGLE (BOOST_PP_SEQ_ELEM(i, array))
@@ -977,7 +961,7 @@ namespace LeechCraft
 				OpenTorrent_.reset (new QAction (tr ("Open torrent..."),
 							Toolbar_.get ()));
 				OpenTorrent_->setShortcut (Qt::Key_Insert);
-				OpenTorrent_->setProperty ("ActionIcon", "torrent_addjob");
+				OpenTorrent_->setProperty ("ActionIcon", "document-open");
 				connect (OpenTorrent_.get (),
 						SIGNAL (triggered ()),
 						this,
@@ -985,7 +969,7 @@ namespace LeechCraft
 
 				CreateTorrent_.reset (new QAction (tr ("Create torrent..."),
 							Toolbar_.get ()));
-				CreateTorrent_->setProperty ("ActionIcon", "torrent_create");
+				CreateTorrent_->setProperty ("ActionIcon", "document-new");
 				connect (CreateTorrent_.get (),
 						SIGNAL (triggered ()),
 						this,
@@ -993,7 +977,7 @@ namespace LeechCraft
 
 				OpenMultipleTorrents_.reset (new QAction (tr ("Open multiple torrents..."),
 						Toolbar_.get ()));
-				OpenMultipleTorrents_->setProperty ("ActionIcon", "torrent_addmulti");
+				OpenMultipleTorrents_->setProperty ("ActionIcon", "document-open-folder");
 				connect (OpenMultipleTorrents_.get (),
 						SIGNAL (triggered ()),
 						this,
@@ -1001,7 +985,7 @@ namespace LeechCraft
 
 				IPFilter_.reset (new QAction (tr ("IP filter..."),
 							Toolbar_.get ()));
-				IPFilter_->setProperty ("ActionIcon", "torrent_ipfilter");
+				IPFilter_->setProperty ("ActionIcon", "view-filter");
 				connect (IPFilter_.get (),
 						SIGNAL (triggered ()),
 						this,
@@ -1010,7 +994,7 @@ namespace LeechCraft
 				RemoveTorrent_.reset (new QAction (tr ("Remove"),
 							Toolbar_.get ()));
 				RemoveTorrent_->setShortcut (tr ("Del"));
-				RemoveTorrent_->setProperty ("ActionIcon", "torrent_deletejob");
+				RemoveTorrent_->setProperty ("ActionIcon", "list-remove");
 				connect (RemoveTorrent_.get (),
 						SIGNAL (triggered ()),
 						this,
@@ -1019,7 +1003,7 @@ namespace LeechCraft
 				Resume_.reset (new QAction (tr ("Resume"),
 							Toolbar_.get ()));
 				Resume_->setShortcut (tr ("R"));
-				Resume_->setProperty ("ActionIcon", "torrent_startjob");
+				Resume_->setProperty ("ActionIcon", "media-playback-start");
 				connect (Resume_.get (),
 						SIGNAL (triggered ()),
 						this,
@@ -1028,7 +1012,7 @@ namespace LeechCraft
 				Stop_.reset (new QAction (tr ("Pause"),
 							Toolbar_.get ()));
 				Stop_->setShortcut (tr ("S"));
-				Stop_->setProperty ("ActionIcon", "torrent_stopjob");
+				Stop_->setProperty ("ActionIcon", "media-playback-pause");
 				connect (Stop_.get (),
 						SIGNAL (triggered ()),
 						this,
@@ -1037,7 +1021,7 @@ namespace LeechCraft
 				MoveUp_.reset (new QAction (tr ("Move up"),
 							Toolbar_.get ()));
 				MoveUp_->setShortcut (Qt::CTRL + Qt::Key_Up);
-				MoveUp_->setProperty ("ActionIcon", "torrent_moveup");
+				MoveUp_->setProperty ("ActionIcon", "go-up");
 				connect (MoveUp_.get (),
 						SIGNAL (triggered ()),
 						this,
@@ -1046,7 +1030,7 @@ namespace LeechCraft
 				MoveDown_.reset (new QAction (tr ("Move down"),
 							Toolbar_.get ()));
 				MoveDown_->setShortcut (Qt::CTRL + Qt::Key_Down);
-				MoveDown_->setProperty ("ActionIcon", "torrent_movedown");
+				MoveDown_->setProperty ("ActionIcon", "go-down");
 				connect (MoveDown_.get (),
 						SIGNAL (triggered ()),
 						this,
@@ -1055,7 +1039,7 @@ namespace LeechCraft
 				MoveToTop_.reset (new QAction (tr ("Move to top"),
 							Toolbar_.get ()));
 				MoveToTop_->setShortcut (Qt::CTRL + Qt::SHIFT + Qt::Key_Up);
-				MoveToTop_->setProperty ("ActionIcon", "torrent_movetop");
+				MoveToTop_->setProperty ("ActionIcon", "go-top");
 				connect (MoveToTop_.get (),
 						SIGNAL (triggered ()),
 						this,
@@ -1064,7 +1048,7 @@ namespace LeechCraft
 				MoveToBottom_.reset (new QAction (tr ("Move to bottom"),
 							Toolbar_.get ()));
 				MoveToBottom_->setShortcut (Qt::CTRL + Qt::SHIFT + Qt::Key_Down);
-				MoveToBottom_->setProperty ("ActionIcon", "torrent_movebottom");
+				MoveToBottom_->setProperty ("ActionIcon", "go-bottom");
 				connect (MoveToBottom_.get (),
 						SIGNAL (triggered ()),
 						this,
@@ -1073,7 +1057,7 @@ namespace LeechCraft
 				ForceReannounce_.reset (new QAction (tr ("Reannounce"),
 							Toolbar_.get ()));
 				ForceReannounce_->setShortcut (tr ("F"));
-				ForceReannounce_->setProperty ("ActionIcon", "torrent_forcereannounce");
+				ForceReannounce_->setProperty ("ActionIcon", "network-wireless");
 				connect (ForceReannounce_.get (),
 						SIGNAL (triggered ()),
 						this,
@@ -1081,7 +1065,7 @@ namespace LeechCraft
 
 				ForceRecheck_.reset (new QAction (tr ("Recheck"),
 						Toolbar_.get ()));
-				ForceRecheck_->setProperty ("ActionIcon", "torrent_forcerecheck");
+				ForceRecheck_->setProperty ("ActionIcon", "tools-check-spelling");
 				connect (ForceRecheck_.get (),
 						SIGNAL (triggered ()),
 						this,
@@ -1090,7 +1074,7 @@ namespace LeechCraft
 				MoveFiles_.reset (new QAction (tr ("Move files..."),
 							Toolbar_.get ()));
 				MoveFiles_->setShortcut (tr ("M"));
-				MoveFiles_->setProperty ("ActionIcon", "torrent_movefiles");
+				MoveFiles_->setProperty ("ActionIcon", "transform-move");
 				connect (MoveFiles_.get (),
 						SIGNAL (triggered ()),
 						this,
@@ -1099,7 +1083,7 @@ namespace LeechCraft
 				ChangeTrackers_.reset (new QAction (tr ("Change trackers..."),
 							Toolbar_.get ()));
 				ChangeTrackers_->setShortcut (tr ("C"));
-				ChangeTrackers_->setProperty ("ActionIcon", "torrent_changetrackers");
+				ChangeTrackers_->setProperty ("ActionIcon", "view-media-playlist");
 				connect (ChangeTrackers_.get (),
 						SIGNAL (triggered ()),
 						this,
@@ -1107,7 +1091,7 @@ namespace LeechCraft
 
 				MakeMagnetLink_.reset (new QAction (tr ("Make magnet link..."),
 							Toolbar_.get ()));
-				MakeMagnetLink_->setProperty ("ActionIcon", "torrent_insertmagnetlink");
+				MakeMagnetLink_->setProperty ("ActionIcon", "insert-link");
 				connect (MakeMagnetLink_.get (),
 						SIGNAL (triggered ()),
 						this,
@@ -1119,7 +1103,7 @@ namespace LeechCraft
 						SIGNAL (triggered ()),
 						this,
 						SLOT (on_Import__triggered ()));
-				Import_->setProperty ("ActionIcon", "torrent_import");
+				Import_->setProperty ("ActionIcon", "document-import");
 
 				Export_.reset (new QAction (tr ("Export..."),
 							Toolbar_.get ()));
@@ -1127,7 +1111,7 @@ namespace LeechCraft
 						SIGNAL (triggered ()),
 						this,
 						SLOT (on_Export__triggered ()));
-				Export_->setProperty ("ActionIcon", "torrent_export");
+				Export_->setProperty ("ActionIcon", "document-export");
 
 				Toolbar_->addAction (OpenTorrent_.get ());
 				Toolbar_->addAction (RemoveTorrent_.get ());

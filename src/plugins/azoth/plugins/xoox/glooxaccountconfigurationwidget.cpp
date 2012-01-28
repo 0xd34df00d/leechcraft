@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "glooxaccountconfigurationwidget.h"
+#include <QInputDialog>
 
 namespace LeechCraft
 {
@@ -94,6 +95,25 @@ namespace Xoox
 	{
 		Ui_.CustomAddress_->setChecked (port > 0);
 		Ui_.ConnectionPort_->setValue (port);
+	}
+
+	QString GlooxAccountConfigurationWidget::GetPassword () const
+	{
+		return Password_;
+	}
+
+	void GlooxAccountConfigurationWidget::on_UpdatePassword__released ()
+	{
+		bool ok = false;
+		Password_ = QInputDialog::getText (this,
+				tr ("Password update"),
+				tr ("Enter new password:"),
+				QLineEdit::Password,
+				QString (),
+				&ok);
+
+		if (Password_.isEmpty ())
+			Password_ = ok ? "" : QString ();
 	}
 }
 }

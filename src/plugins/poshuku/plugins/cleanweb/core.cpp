@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,6 @@
 
 #include "core.h"
 #include <algorithm>
-#include <boost/bind.hpp>
 #include <QNetworkRequest>
 #include <QRegExp>
 #include <QFile>
@@ -30,10 +29,10 @@
 #include <qwebframe.h>
 #include <qwebpage.h>
 #include <qwebelement.h>
-#include <qwebview.h>
 #include <QCoreApplication>
 #include <QMenu>
 #include <QMainWindow>
+#include <qgraphicswebview.h>
 #include <util/util.h>
 #include <util/customnetworkreply.h>
 #include "xmlsettingsmanager.h"
@@ -473,7 +472,7 @@ namespace CleanWeb
 	}
 
 	void Core::HandleContextMenu (const QWebHitTestResult& r,
-		QWebView *view, QMenu *menu,
+		QGraphicsWebView *view, QMenu *menu,
 		LeechCraft::Poshuku::WebViewCtxMenuStage stage)
 	{
 		QUrl iurl = r.imageUrl ();
@@ -703,8 +702,7 @@ namespace CleanWeb
 		QStringList lines;
 		std::transform (rawLines.begin (), rawLines.end (),
 				std::back_inserter (lines),
-				boost::bind (&QString::trimmed,
-					_1));
+				[] (const QString& t) { return t.trimmed (); });
 
 		Filter f;
 		std::for_each (lines.begin (), lines.end (),

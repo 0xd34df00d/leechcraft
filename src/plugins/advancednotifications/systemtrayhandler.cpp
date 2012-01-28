@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,7 +62,7 @@ namespace AdvancedNotifications
 						break;
 				}
 
-				pixmap = proxy->GetIcon (mi).pixmap (QSize (64, 64));
+				pixmap = proxy->GetIcon ("dialog-" + mi).pixmap (QSize (64, 64));
 			}
 			return pixmap;
 		}
@@ -211,6 +211,24 @@ namespace AdvancedNotifications
 			icon->hide ();
 	}
 
+	namespace
+	{
+		void FitSize (QFont& font, const QSize& iconSize, const QString& countText,
+				std::function<int (QFont)> g, std::function<void (QFont&, int)> s)
+		{
+			s (font, ((iconSize.height () + 2 * g (font)) / 3));
+			while (true)
+			{
+				const int width = QFontMetrics (font).width (countText);
+				if (width > iconSize.width () ||
+						g (font) >= iconSize.height ())
+					s (font, g (font) - 1);
+				else
+					break;
+			}
+		}
+	}
+
 	void SystemTrayHandler::UpdateSysTrayIcon (QSystemTrayIcon *trayIcon)
 	{
 		const QString& category = Category2Icon_.key (trayIcon);
@@ -235,22 +253,19 @@ namespace AdvancedNotifications
 		const QString& countText = QString::number (eventCount);
 
 		QFont font = qApp->font ();
-		font.setPointSize ((iconSize.height () + 2 * font.pointSize ()) / 3);
 		font.setBold (true);
 		font.setItalic (true);
-		while (true)
-		{
-			const int width = QFontMetrics (font).width (countText);
-			if (width > iconSize.width () ||
-					font.pointSize () >= iconSize.height ())
-				font.setPointSize (font.pointSize () - 1);
-			else
-				break;
-		}
+		auto gFunc = font.pointSize () > 0 ?
+				[] (QFont f) { return f.pointSize (); } :
+				[] (QFont f) { return f.pixelSize (); };
+		auto sFunc = font.pointSize () > 0 ?
+				[] (QFont& f, int size) { f.setPointSize (size); } :
+				[] (QFont& f, int size) { f.setPixelSize (size); };
+		FitSize (font, iconSize, countText, gFunc, sFunc);
 
-		const bool tooSmall = font.pointSize () < 5;
+		const bool tooSmall = gFunc (font) < 5;
 		if (tooSmall)
-			font.setPointSize (qApp->font ().pointSize ());
+			sFunc (font, gFunc (qApp->font ()));
 
 		QPainter p (&px);
 		p.setFont (font);

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ namespace LeechCraft
 		for (int i = 0; i < options.size (); ++i)
 			options.at (i).toElement ().removeAttribute ("default");
 
-		QString optName = value.toString ();
+		const QString& optName = value.toString ();
 		for (int i = 0; i < options.size (); ++i)
 		{
 			QDomElement option = options.at (i).toElement ();

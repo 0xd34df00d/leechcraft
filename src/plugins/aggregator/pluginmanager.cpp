@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,11 +24,18 @@ namespace Aggregator
 {
 	PluginManager::PluginManager (QObject *parent)
 	: Util::BaseHookInterconnector (parent)
+	, ProxyObject_ (new ProxyObject ())
 	{
 	}
 
 	void PluginManager::AddPlugin (QObject *plugin)
 	{
+		QByteArray sig = QMetaObject::normalizedSignature ("initPlugin (QObject*)");
+		if (plugin->metaObject ()->indexOfMethod (sig) != -1)
+			QMetaObject::invokeMethod (plugin,
+					"initPlugin",
+					Q_ARG (QObject*, ProxyObject_.get ()));
+
 		Util::BaseHookInterconnector::AddPlugin (plugin);
 	}
 }

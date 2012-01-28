@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@
 class QString;
 class QWidget;
 class QIcon;
-class QWebView;
+class QGraphicsWebView;
 class QAbstractItemModel;
 class QNetworkReply;
 class QNetworkAccessManager;
@@ -59,9 +59,6 @@ namespace Poshuku
 
 		typedef std::vector<BrowserWidget*> widgets_t;
 		widgets_t Widgets_;
-		// title/url pairs;
-		QList<QPair<QString, QString> > SavedSessionState_;
-		QList<BrowserWidgetSettings> SavedSessionSettings_;
 
 		std::auto_ptr<FavoritesModel> FavoritesModel_;
 		std::auto_ptr<HistoryModel> HistoryModel_;
@@ -145,8 +142,10 @@ namespace Poshuku
 
 		QIcon GetIcon (const QUrl&) const;
 		QString GetUserAgent (const QUrl&, const QWebPage* = 0) const;
+
+		bool IsUrlInFavourites (const QString&);
+		void RemoveFromFavorites (const QString&);
 	private:
-		void RestoreSession (bool);
 		void HandleHistory (CustomWebView*);
 		/** Sets up the connections between widget's signals
 			* and our signals/slots that are always useful, both in own
@@ -167,10 +166,6 @@ namespace Poshuku
 		void handleStatusBarChanged (const QString&);
 		void handleTooltipChanged (QWidget*);
 		void favoriteTagsUpdated (const QStringList&);
-		void saveSession ();
-		void saveSingleSession ();
-		void restorePages ();
-		void postConstruct ();
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);
@@ -184,17 +179,17 @@ namespace Poshuku
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 		void couldHandle (const LeechCraft::Entity&, bool*);
 		void newUnclose (QAction*);
+		void bookmarkAdded (const QString&);
+		void bookmarkRemoved (const QString&);
 
 		// Hook support signals
 		void hookAddToFavoritesRequested (LeechCraft::IHookProxy_ptr,
 				QString title, QString url);
 		void hookIconRequested (LeechCraft::IHookProxy_ptr,
 				const QUrl& url) const;
-		void hookSessionRestoreScheduled (LeechCraft::IHookProxy_ptr,
-				const QList<QUrl>& urls);
 		void hookTabAdded (LeechCraft::IHookProxy_ptr,
 				QObject *browserWidget,
-				QWebView *view,
+				QGraphicsWebView *view,
 				const QUrl& url);
 		void hookUserAgentForUrlRequested (LeechCraft::IHookProxy_ptr,
 				const QUrl&, const QWebPage*) const;

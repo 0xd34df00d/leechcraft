@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,10 +33,10 @@ namespace FatApe
 	{
 		Ui_.setupUi (this);
 		Ui_.Items_->setModel (model);
-		connect (Ui_.Items_->selectionModel (), 
-				SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)), 
-				this, 
-				SLOT (on_Items__currentChanged (const QModelIndex&, const QModelIndex&)));
+		connect (Ui_.Items_->selectionModel (),
+				SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)),
+				this,
+				SLOT (currentItemChanged (const QModelIndex&, const QModelIndex&)));
 	}
 
 	void UserScriptsManagerWidget::on_Edit__released ()
@@ -56,7 +56,7 @@ namespace FatApe
 
 		QStandardItemModel *model = qobject_cast<QStandardItemModel*> (Ui_.Items_->model ());
 
-		
+
 		if (!model)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -65,7 +65,7 @@ namespace FatApe
 				<< "to QStandardItemModel";
 			return;
 		}
-		
+
 		bool enabled = selected.data (EnabledRole).toBool ();
 
 		Plugin_->SetScriptEnabled (selected.row (), !enabled);
@@ -87,7 +87,7 @@ namespace FatApe
 		}
 	}
 
-	void UserScriptsManagerWidget::on_Items__currentChanged (const QModelIndex& current, 
+	void UserScriptsManagerWidget::currentItemChanged (const QModelIndex& current,
 			const QModelIndex& previous)
 	{
 		bool currentEnabled = current.data (EnabledRole).toBool ();

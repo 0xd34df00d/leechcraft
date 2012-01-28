@@ -37,7 +37,7 @@
 <context>
     <name>LeechCraft::AdvancedNotifications::MatchConfigDialog</name>
     <message>
-        <location filename="matchconfigdialog.cpp" line="129"/>
+        <location filename="matchconfigdialog.cpp" line="131"/>
         <source>Invalid matcher type %1.</source>
         <translation>Неверный тип матчера %1.</translation>
     </message>
@@ -45,124 +45,159 @@
 <context>
     <name>LeechCraft::AdvancedNotifications::NotificationRulesWidget</name>
     <message>
-        <location filename="notificationruleswidget.cpp" line="66"/>
+        <location filename="notificationruleswidget.cpp" line="59"/>
         <source>Instant messaging</source>
         <translation>Мгновенные сообщения</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="68"/>
+        <location filename="notificationruleswidget.cpp" line="61"/>
         <source>Attention request</source>
         <translation>Запрос внимания</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="69"/>
+        <location filename="notificationruleswidget.cpp" line="62"/>
         <source>Incoming file transfer request</source>
         <translation>Входящая передача файлов</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="70"/>
+        <location filename="notificationruleswidget.cpp" line="63"/>
         <source>Incoming chat message</source>
         <translation>Входящее сообщение в чате</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="71"/>
+        <location filename="notificationruleswidget.cpp" line="64"/>
         <source>MUC highlight</source>
         <translation>Подсветка в конференции</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="72"/>
+        <location filename="notificationruleswidget.cpp" line="65"/>
+        <source>MUC invitation</source>
+        <translation>Приглашение в конференцию</translation>
+    </message>
+    <message>
+        <location filename="notificationruleswidget.cpp" line="66"/>
         <source>General MUC message</source>
         <translation>Обычное сообщение в конференции</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="73"/>
+        <location filename="notificationruleswidget.cpp" line="67"/>
         <source>Contact status change</source>
         <translation>Изменение статуса контакта</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="74"/>
+        <location filename="notificationruleswidget.cpp" line="68"/>
         <source>Authorization granted</source>
         <translation>Получение авторизации</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="75"/>
+        <location filename="notificationruleswidget.cpp" line="69"/>
         <source>Authorization revoked</source>
         <translation>Отзыв авторизации</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="76"/>
+        <location filename="notificationruleswidget.cpp" line="70"/>
         <source>Authorization requested</source>
         <translation>Запрос авторизации</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="118"/>
+        <location filename="notificationruleswidget.cpp" line="71"/>
+        <source>Contact subscribed</source>
+        <translation>Контакт подписался</translation>
+    </message>
+    <message>
+        <location filename="notificationruleswidget.cpp" line="72"/>
+        <source>Contact unsubscribed</source>
+        <translation>Контакт отписался</translation>
+    </message>
+    <message>
+        <location filename="notificationruleswidget.cpp" line="131"/>
         <source>Incoming chat messages</source>
         <translation>Входящие сообщения в чате</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="124"/>
+        <location filename="notificationruleswidget.cpp" line="137"/>
         <source>MUC highlights</source>
         <translation>Подсветки в конференциях</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="130"/>
+        <location filename="notificationruleswidget.cpp" line="143"/>
+        <source>MUC invitations</source>
+        <translation>Приглашения в конференции</translation>
+    </message>
+    <message>
+        <location filename="notificationruleswidget.cpp" line="149"/>
         <source>Incoming file transfers</source>
         <translation>Входящие передачи файлов</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="135"/>
+        <location filename="notificationruleswidget.cpp" line="154"/>
         <source>Subscription requests</source>
         <translation>Запросы авторизации</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="141"/>
+        <location filename="notificationruleswidget.cpp" line="160"/>
         <source>Subscription changes</source>
         <translation>Изменения авторизации</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="149"/>
+        <location filename="notificationruleswidget.cpp" line="168"/>
         <source>Attention requests</source>
         <translation>Запросы внимания</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="173"/>
+        <location filename="notificationruleswidget.cpp" line="192"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="174"/>
+        <location filename="notificationruleswidget.cpp" line="193"/>
         <source>Category</source>
         <translation>Категория</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="175"/>
+        <location filename="notificationruleswidget.cpp" line="194"/>
         <source>Type</source>
         <translation>Тип</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="184"/>
+        <location filename="notificationruleswidget.cpp" line="203"/>
         <source>Field name</source>
         <translation>Имя поля</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="185"/>
+        <location filename="notificationruleswidget.cpp" line="204"/>
         <source>Rule description</source>
         <translation>Описание правила</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="296"/>
+        <location filename="notificationruleswidget.cpp" line="331"/>
         <source>&lt;empty matcher&gt;</source>
         <translation>&lt;пустой матчер&gt;</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="500"/>
+        <location filename="notificationruleswidget.cpp" line="493"/>
+        <source>Are you sure you want to replace all rules with the default set?</source>
+        <translation>Вы уверены, что хотите заменить все правила набором по умолчанию?</translation>
+    </message>
+    <message>
+        <location filename="notificationruleswidget.cpp" line="582"/>
         <source>Select audio file</source>
         <translation>Выбор аудиофайла</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.cpp" line="502"/>
+        <location filename="notificationruleswidget.cpp" line="584"/>
         <source>Audio files (*.ogg *.wav *.flac *.mp3);;All files (*.*)</source>
         <translation>Аудиофайлы (*.ogg *.wav *.flac *.mp3);;Все файлы (*.*)</translation>
+    </message>
+    <message>
+        <location filename="notificationruleswidget.cpp" line="619"/>
+        <source>Please enter the argument:</source>
+        <translation>Введите аргумент:</translation>
+    </message>
+    <message>
+        <location filename="notificationruleswidget.cpp" line="635"/>
+        <source>Please enter new argument text:</source>
+        <translation>Введите новый текст аргумента:</translation>
     </message>
 </context>
 <context>
@@ -176,7 +211,7 @@
 <context>
     <name>LeechCraft::AdvancedNotifications::SystemTrayHandler</name>
     <message>
-        <location filename="systemtrayhandler.cpp" line="181"/>
+        <location filename="systemtrayhandler.cpp" line="182"/>
         <source>Dismiss</source>
         <translation>Пропустить</translation>
     </message>
@@ -217,8 +252,9 @@
         <translation>Добавить</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="58"/>
-        <location filename="notificationruleswidget.ui" line="218"/>
+        <location filename="notificationruleswidget.ui" line="72"/>
+        <location filename="notificationruleswidget.ui" line="265"/>
+        <location filename="notificationruleswidget.ui" line="379"/>
         <source>Remove</source>
         <translation>Удалить</translation>
     </message>
@@ -228,88 +264,121 @@
         <translation>Обновить</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="44"/>
+        <location filename="notificationruleswidget.ui" line="51"/>
         <source>Move up</source>
         <translation>Вверх</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="51"/>
+        <location filename="notificationruleswidget.ui" line="58"/>
         <source>Move down</source>
         <translation>Вниз</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="86"/>
+        <location filename="notificationruleswidget.ui" line="79"/>
+        <source>Default</source>
+        <translation>По умолчанию</translation>
+    </message>
+    <message>
+        <location filename="notificationruleswidget.ui" line="110"/>
         <source>Rule</source>
         <translation>Правило</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="102"/>
+        <location filename="notificationruleswidget.ui" line="126"/>
         <source>Name:</source>
         <translation>Имя:</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="112"/>
+        <location filename="notificationruleswidget.ui" line="136"/>
         <source>Event category:</source>
         <translation>Категория события:</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="122"/>
+        <location filename="notificationruleswidget.ui" line="146"/>
         <source>Event type:</source>
         <translation>Тип события:</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="129"/>
+        <location filename="notificationruleswidget.ui" line="174"/>
         <source>Notify via:</source>
         <translation>Уведомлять при помощи:</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="157"/>
+        <location filename="notificationruleswidget.ui" line="194"/>
         <source>Visual</source>
         <translation>Всплывающие уведомления</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="164"/>
+        <location filename="notificationruleswidget.ui" line="187"/>
         <source>System tray</source>
         <translation>Системный трей</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="171"/>
-        <location filename="notificationruleswidget.ui" line="228"/>
+        <location filename="notificationruleswidget.ui" line="201"/>
+        <location filename="notificationruleswidget.ui" line="275"/>
         <source>Audio</source>
         <translation>Звуковые уведомления</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="183"/>
+        <location filename="notificationruleswidget.ui" line="208"/>
+        <location filename="notificationruleswidget.ui" line="326"/>
+        <source>Command</source>
+        <translation>Команда</translation>
+    </message>
+    <message>
+        <location filename="notificationruleswidget.ui" line="218"/>
+        <source>Single shot</source>
+        <translation>Единичное срабатывание</translation>
+    </message>
+    <message>
+        <location filename="notificationruleswidget.ui" line="230"/>
         <source>Fields</source>
         <translation>Поля</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="192"/>
+        <location filename="notificationruleswidget.ui" line="239"/>
         <source>Matches:</source>
         <translation>Совпадения:</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="204"/>
+        <location filename="notificationruleswidget.ui" line="251"/>
+        <location filename="notificationruleswidget.ui" line="365"/>
         <source>Add...</source>
         <translation>Добавить...</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="211"/>
+        <location filename="notificationruleswidget.ui" line="258"/>
+        <location filename="notificationruleswidget.ui" line="372"/>
         <source>Modify...</source>
         <translation>Изменить...</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="259"/>
+        <location filename="notificationruleswidget.ui" line="306"/>
         <source>Browse...</source>
         <translation>Обзор...</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="266"/>
+        <location filename="notificationruleswidget.ui" line="313"/>
         <source>Test</source>
         <translation>Тест</translation>
     </message>
     <message>
-        <location filename="notificationruleswidget.ui" line="240"/>
+        <location filename="notificationruleswidget.ui" line="335"/>
+        <source>Command:</source>
+        <translation>Команда:</translation>
+    </message>
+    <message>
+        <location filename="notificationruleswidget.ui" line="345"/>
+        <source>Arguments:</source>
+        <translation>Аргументы:</translation>
+    </message>
+    <message>
+        <location filename="notificationruleswidget.ui" line="355"/>
+        <source>Argument</source>
+        <translation>Аргумент</translation>
+    </message>
+    <message>
+        <location filename="notificationruleswidget.ui" line="287"/>
         <source>File:</source>
         <translation>Файл:</translation>
     </message>

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ namespace LeechCraft
 				SIGNAL (timeout ()),
 				this,
 				SLOT (handleClipboardTimer ()));
-		ClipboardWatchdog_->start (2000);
+		ClipboardWatchdog_->start (5000);
 	}
 
 	ClipboardWatcher::~ClipboardWatcher ()

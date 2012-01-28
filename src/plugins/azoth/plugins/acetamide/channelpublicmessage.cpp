@@ -45,7 +45,7 @@ namespace Acetamide
 			ChannelCLEntry *entry,
 			IMessage::MessageType type,
 			IMessage::MessageSubType subType,
-			ServerParticipantEntry_ptr part)
+			ChannelParticipantEntry_ptr part)
 	: QObject (0)
 	, ParentEntry_ (entry)
 	, ParticipantEntry_ (part)
@@ -68,6 +68,14 @@ namespace Acetamide
 			return;
 
 		ParentEntry_->GetChannelHandler ()->SendPublicMessage (Message_);
+	}
+
+	void ChannelPublicMessage::Store ()
+	{
+		if (!ParentEntry_)
+			return;
+
+		ParentEntry_->HandleMessage (this);
 	}
 
 	IMessage::Direction ChannelPublicMessage::GetDirection () const

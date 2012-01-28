@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -509,9 +509,32 @@ namespace Aggregator
 							/** Binds:
 							 * - item_id
 							 */
-							RemoveMediaRSSScenes_;
+							RemoveMediaRSSScenes_,
+							/** Returns:
+							 * - tag
+							 *
+							 * Binds:
+							 * - item_id
+							 */
+							GetItemTags_,
+							/** Binds:
+							 * - item_id
+							 * - tag
+							 */
+							AddItemTag_,
+							/** Binds:
+							 * - item_id
+							 */
+							ClearItemTags_,
+							/** Returns:
+							 * - item_id
+							 *
+							 * Binds:
+							 * - tag
+							 */
+							GetItemsForTag_;
 	public:
-		SQLStorageBackend (Type);
+		SQLStorageBackend (Type, const QString&);
 		virtual ~SQLStorageBackend ();
 
 		virtual void Prepare ();
@@ -543,19 +566,25 @@ namespace Aggregator
 		virtual void AddChannel (Channel_ptr);
 		virtual void AddItem (Item_ptr);
 		virtual void RemoveItem (const IDType_t&);
+		virtual void RemoveChannel (const IDType_t&);
 		virtual void RemoveFeed (const IDType_t&);
 		virtual bool UpdateFeedsStorage (int, int);
 		virtual bool UpdateChannelsStorage (int, int);
 		virtual bool UpdateItemsStorage (int, int);
 		virtual void ToggleChannelUnread (const IDType_t&, bool);
+
+		virtual QList<ITagsManager::tag_id> GetItemTags (const IDType_t&);
+		virtual void SetItemTags (const IDType_t&, const QList<ITagsManager::tag_id>&);
+		virtual QList<IDType_t> GetItemsForTag (const ITagsManager::tag_id&);
+
 		virtual IDType_t GetHighestID (const PoolType&) const;
 
 	private:
 		QString GetBoolType () const;
 		QString GetBlobType () const;
 		bool InitializeTables ();
-		QByteArray SerializePixmap (const QPixmap&) const;
-		QPixmap UnserializePixmap (const QByteArray&) const;
+		QByteArray SerializePixmap (const QImage&) const;
+		QImage UnserializePixmap (const QByteArray&) const;
 		bool RollItemsStorage (int);
 
 		void RemoveTables ();

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,9 @@
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
 #include <QFileSystemWatcher>
+#include <QTimer>
 #include <QtDebug>
+#include <QBuffer>
 
 namespace LeechCraft
 {
@@ -36,6 +38,8 @@ namespace LeechCraft
 		, AttrFilters_ (QDir::Dirs | QDir::NoDotAndDotDot | QDir::Readable)
 		, SortModel_ (new QSortFilterProxyModel (this))
 		, Watcher_ (new QFileSystemWatcher (this))
+		, CacheFlushTimer_ (new QTimer (this))
+		, CachePathContents_ (0)
 		{
 			if (RelativePath_.startsWith ('/'))
 				RelativePath_ = RelativePath_.mid (1);
@@ -50,6 +54,11 @@ namespace LeechCraft
 					SIGNAL (directoryChanged (const QString&)),
 					this,
 					SLOT (handleDirectoryChanged (const QString&)));
+
+			connect (CacheFlushTimer_,
+					SIGNAL (timeout ()),
+					this,
+					SLOT (handleFlushCaches ()));
 		}
 
 		void ResourceLoader::AddLocalPrefix (QString prefix)
@@ -112,7 +121,28 @@ namespace LeechCraft
 						<< "; rel path:"
 						<< RelativePath_;
 		}
-		
+
+		void ResourceLoader::SetCacheParams (int size, int timeout)
+		{
+			if (size <= 0)
+			{
+				CacheFlushTimer_->stop ();
+				CachePathContents_.clear ();
+			}
+			else
+			{
+				if (timeout > 0)
+					CacheFlushTimer_->start (timeout);
+
+				CachePathContents_.setMaxCost (size * 1024);
+			}
+		}
+
+		void ResourceLoader::FlushCache ()
+		{
+			CachePathContents_.clear ();
+		}
+
 		QFileInfoList ResourceLoader::List (const QString& option,
 				const QStringList& nameFilters, QDir::Filters filters) const
 		{
@@ -130,12 +160,12 @@ namespace LeechCraft
 					const QString& fname = info.fileName ();
 					if (alreadyListed.contains (fname))
 						continue;
-					
+
 					alreadyListed << fname;
 					result << info;
 				}
 			}
-			
+
 			return result;
 		}
 
@@ -144,35 +174,86 @@ namespace LeechCraft
 			Q_FOREACH (const QString& prefix,
 					LocalPrefixesChain_ + GlobalPrefixesChain_)
 				Q_FOREACH (const QString& path, pathVariants)
-					if (QFile::exists (prefix + RelativePath_ + path))
-						return prefix + RelativePath_ + path;
+				{
+					const QString& can = QFileInfo (prefix + RelativePath_ + path).canonicalFilePath ();
+					if (QFile::exists (can))
+						return can;
+				}
 
 			return QString ();
 		}
-		
-		QString ResourceLoader::GetIconPath (const QString& basename) const
+
+		namespace
 		{
-			QStringList variants;
-			variants << basename + ".svg"
-					<< basename + ".png"
-					<< basename + ".jpg"
-					<< basename + ".gif";
-			return GetPath (variants);
+			QStringList IconizeBasename (const QString& basename)
+			{
+				QStringList variants;
+				variants << basename + ".svg"
+						<< basename + ".png"
+						<< basename + ".jpg"
+						<< basename + ".gif";
+				return variants;
+			}
 		}
 
-		QIODevice_ptr ResourceLoader::Load (const QStringList& pathVariants) const
+		QString ResourceLoader::GetIconPath (const QString& basename) const
+		{
+			return GetPath (IconizeBasename (basename));
+		}
+
+		QIODevice_ptr ResourceLoader::Load (const QStringList& pathVariants, bool open) const
 		{
 			QString path = GetPath (pathVariants);
 			if (path.isNull ())
 				return QIODevice_ptr ();
 
+			if (CachePathContents_.contains (path))
+			{
+				boost::shared_ptr<QBuffer> result (new QBuffer ());
+				result->setData (*CachePathContents_ [path]);
+				if (open)
+					result->open (QIODevice::ReadOnly);
+				return result;
+			}
+
 			boost::shared_ptr<QFile> result (new QFile (path));
+
+			if (!result->isSequential () &&
+					result->size () < CachePathContents_.maxCost () / 2)
+			{
+				if (result->open (QIODevice::ReadOnly))
+				{
+					const QByteArray& data = result->readAll ();
+					CachePathContents_.insert (path, new QByteArray (data), data.size ());
+					result->close ();
+				}
+			}
+
+			if (open)
+				result->open (QIODevice::ReadOnly);
+
 			return result;
 		}
-		
-		QIODevice_ptr ResourceLoader::Load (const QString& pathVariant) const
+
+		QIODevice_ptr ResourceLoader::Load (const QString& pathVariant, bool open) const
 		{
-			return Load (QStringList (pathVariant));
+			return Load (QStringList (pathVariant), open);
+		}
+
+		QIODevice_ptr ResourceLoader::LoadIcon (const QString& basename, bool open) const
+		{
+			return Load (IconizeBasename (basename), open);
+		}
+
+		QPixmap ResourceLoader::LoadPixmap (const QString& basename) const
+		{
+			auto dev = LoadIcon (basename, true);
+			if (!dev)
+				return QPixmap ();
+
+			QPixmap px;
+			px.loadFromData (dev->readAll ());
+			return px;
 		}
 
 		QAbstractItemModel* ResourceLoader::GetSubElemModel () const
@@ -204,11 +285,18 @@ namespace LeechCraft
 
 		void ResourceLoader::handleDirectoryChanged (const QString& path)
 		{
+			emit watchedDirectoriesChanged ();
+
 			QFileInfo fi (path);
 			if (fi.exists () &&
 					fi.isDir () &&
 					fi.isReadable ())
 				ScanPath (path);
+		}
+
+		void ResourceLoader::handleFlushCaches ()
+		{
+			CachePathContents_.clear ();
 		}
 	}
 }

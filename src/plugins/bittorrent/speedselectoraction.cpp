@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,6 @@
 
 #include "speedselectoraction.h"
 #include <functional>
-#include <boost/bind.hpp>
 #include <QComboBox>
 #include <QSettings>
 #include <QTimer>
@@ -72,7 +71,7 @@ namespace LeechCraft
 
 			void SpeedSelectorAction::handleSpeedsChanged ()
 			{
-				Call (boost::bind (&QComboBox::clear, _1));
+				Call ([] (QComboBox *box) { box->clear (); });
 
 				if (!XmlSettingsManager::Instance ()->
 						property ("EnableFastSpeedControl").toBool ())
@@ -89,25 +88,21 @@ namespace LeechCraft
 				{
 					settings.setArrayIndex (i);
 					int dv = settings.value (Setting_ + "Value").toInt ();
-					Call (boost::bind (&QComboBox::addItem, _1,
-								tr ("%1 KiB/s").arg (dv), dv));
+					const auto& str = tr ("%1 KiB/s").arg (dv);
+					Call ([dv, str] (QComboBox *box) { box->addItem (str, dv); });
 				}
 				settings.endArray ();
 				settings.endGroup ();
 
-				Call (boost::bind (&QComboBox::addItem, _1,
-							QString::fromUtf8 ("\u221E"), 0));
-				Call (boost::bind (&QComboBox::setCurrentIndex, _1,
-							boost::bind (std::minus<int> (),
-								boost::bind (&QComboBox::count, _1),
-								1)));
+				Call ([] (QComboBox *box) { box->addItem (QString::fromUtf8 ("\u221E"), 0); });
+				Call ([] (QComboBox *box) { box->setCurrentIndex (box->count () - 1); });
 
 				setVisible (true);
 			}
 
 			void SpeedSelectorAction::syncSpeeds (int s)
 			{
-				Call (boost::bind (&QComboBox::setCurrentIndex, _1, s));
+				Call ([s] (QComboBox *box) { box->setCurrentIndex (s); });
 				emit currentIndexChanged (s);
 			}
 		};

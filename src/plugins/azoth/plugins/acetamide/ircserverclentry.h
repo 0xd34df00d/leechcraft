@@ -22,6 +22,7 @@
 #include <QObject>
 #include <interfaces/iclentry.h>
 #include <interfaces/imucentry.h>
+#include <interfaces/iconfigurablemuc.h>
 #include "entrybase.h"
 
 namespace LeechCraft
@@ -36,9 +37,11 @@ namespace Acetamide
 
 	class IrcServerCLEntry : public EntryBase
 						   , public IMUCEntry
+						   , public IConfigurableMUC
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMUCEntry)
+		Q_INTERFACES (LeechCraft::Azoth::IMUCEntry
+				LeechCraft::Azoth::IConfigurableMUC)
 
 		IrcServerHandler *ISH_;
 		IrcAccount *Account_;
@@ -71,6 +74,12 @@ namespace Acetamide
 		QString GetGroupName () const;
 		QString GetRealID (QObject*) const;
 		QVariantMap GetIdentifyingData () const;
+		void InviteToMUC (const QString&, const QString&);
+
+		// IConfigurableMUC
+		QWidget* GetConfigurationWidget ();
+		void AcceptConfiguration (QWidget*);
+		QMap<QString, QString> GetISupport () const;
 	signals:
 		void gotNewParticipants (const QList<QObject*>&);
 		void mucSubjectChanged (const QString&);

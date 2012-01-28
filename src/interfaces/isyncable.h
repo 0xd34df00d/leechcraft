@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,6 +71,8 @@ public:
 
 	virtual void ApplyDeltas (const LeechCraft::Sync::Payloads_t& deltas,
 			const LeechCraft::Sync::ChainID_t& chain) = 0;
+			
+	virtual void newDeltasAvailable (const LeechCraft::Sync::ChainID_t& chain) = 0;
 };
 
 Q_DECLARE_INTERFACE (ISyncable, "org.Deviant.LeechCraft.Sync.ISyncable/1.0");

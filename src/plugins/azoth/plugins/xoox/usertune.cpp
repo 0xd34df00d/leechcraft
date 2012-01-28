@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,56 +27,53 @@ namespace Azoth
 namespace Xoox
 {
 	const QString NsTuneNode = "http://jabber.org/protocol/tune";
-	
+
 	QString UserTune::GetNodeString ()
 	{
 		return NsTuneNode;
 	}
-	
-	namespace
-	{
-		void AppendTxt (QXmppElement& tune, const QString& tag, const QString& str)
-		{
-			if (str.isEmpty ())
-				return;
-			
-			QXmppElement elem;
-			elem.setTagName (tag);
-			elem.setValue (str);
-			tune.appendChild (elem);
-		}
-	}
-	
+
 	QXmppElement UserTune::ToXML () const
 	{
 		QXmppElement result;
 		result.setTagName ("item");
-		
+
 		QXmppElement tune;
 		tune.setTagName ("tune");
 		tune.setAttribute ("xmlns", NsTuneNode);
-		
-		AppendTxt (tune, "artist", Artist_);
-		AppendTxt (tune, "source", Source_);
-		AppendTxt (tune, "title", Title_);
-		AppendTxt (tune, "track", Track_);
-		AppendTxt (tune, "uri", URI_.toEncoded ());
+
+		auto appendTxt = [&tune] (const QString& tag, const QString& str)
+		{
+			if (str.isEmpty ())
+				return;
+
+			QXmppElement elem;
+			elem.setTagName (tag);
+			elem.setValue (str);
+			tune.appendChild (elem);
+		};
+
+		appendTxt ("artist", Artist_);
+		appendTxt ("source", Source_);
+		appendTxt ("title", Title_);
+		appendTxt ("track", Track_);
+		appendTxt ("uri", URI_.toEncoded ());
 		if (Length_)
-			AppendTxt (tune, "length", QString::number (Length_));
+			appendTxt ("length", QString::number (Length_));
 		if (Rating_)
-			AppendTxt (tune, "rating", QString::number (Rating_));
-		
+			appendTxt ("rating", QString::number (Rating_));
+
 		result.appendChild (tune);
-		
+
 		return result;
 	}
-	
+
 	void UserTune::Parse (const QDomElement& elem)
 	{
 		QDomElement tune = elem.firstChildElement ("tune");
 		if (tune.namespaceURI () != NsTuneNode)
 			return;
-		
+
 		Artist_ = tune.firstChildElement ("artist").text ();
 		Source_ = tune.firstChildElement ("source").text ();
 		Title_ = tune.firstChildElement ("title").text ();
@@ -85,27 +82,27 @@ namespace Xoox
 		Length_ = tune.firstChildElement ("length").text ().toInt ();
 		Rating_ = tune.firstChildElement ("rating").text ().toInt ();
 	}
-	
+
 	QString UserTune::Node () const
 	{
 		return GetNodeString ();
 	}
-	
+
 	PEPEventBase* UserTune::Clone () const
 	{
 		return new UserTune (*this);
 	}
-	
+
 	QString UserTune::GetArtist () const
 	{
 		return Artist_;
 	}
-	
+
 	void UserTune::SetArtist (const QString& artist)
 	{
 		Artist_ = artist;
 	}
-	
+
 	QString UserTune::GetSource () const
 	{
 		return Source_;
@@ -145,27 +142,27 @@ namespace Xoox
 	{
 		URI_ = uri;
 	}
-	
+
 	int UserTune::GetLength () const
 	{
 		return Length_;
 	}
-	
+
 	void UserTune::SetLength (int length)
 	{
 		Length_ = length;
 	}
-	
+
 	int UserTune::GetRating () const
 	{
 		return Rating_;
 	}
-	
+
 	void UserTune::SetRating (int rating)
 	{
 		Rating_ = rating;
 	}
-	
+
 	bool UserTune::IsNull () const
 	{
 		return Artist_.isEmpty () &&

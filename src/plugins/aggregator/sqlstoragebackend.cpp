@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,12 +18,12 @@
 
 #include "sqlstoragebackend.h"
 #include <stdexcept>
-#include <boost/bind.hpp>
 #include <boost/optional.hpp>
 #include <QDir>
 #include <QDebug>
 #include <QBuffer>
 #include <QSqlError>
+#include <QThread>
 #include <QVariant>
 #include <QSqlRecord>
 #include <util/dblock.h>
@@ -37,7 +37,7 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
-	SQLStorageBackend::SQLStorageBackend (StorageBackend::Type t)
+	SQLStorageBackend::SQLStorageBackend (StorageBackend::Type t, const QString& id)
 	: Type_ (t)
 	{
 		QString strType;
@@ -53,7 +53,7 @@ namespace Aggregator
 				break;
 		}
 
-		DB_ = QSqlDatabase::addDatabase (strType, "AggregatorConnection");
+		DB_ = QSqlDatabase::addDatabase (strType, "AggregatorConnection" + id);
 
 		switch (Type_)
 		{
@@ -722,6 +722,22 @@ namespace Aggregator
 		RemoveMediaRSSScenes_ = QSqlQuery (DB_);
 		RemoveMediaRSSScenes_.prepare ("DELETE FROM mrss_scenes "
 				"WHERE mrss_scene_id = :mrss_scene_id");
+
+		GetItemTags_ = QSqlQuery (DB_);
+		GetItemTags_.prepare ("SELECT tag FROM items2tags "
+				"WHERE item_id = :item_id");
+
+		AddItemTag_ = QSqlQuery (DB_);
+		AddItemTag_.prepare ("INSERT INTO items2tags "
+				"(item_id, tag) VALUES (:item_id, :tag)");
+
+		ClearItemTags_ = QSqlQuery (DB_);
+		ClearItemTags_.prepare ("DELETE FROM items2tags "
+				"WHERE item_id = :item_id");
+
+		GetItemsForTag_ = QSqlQuery (DB_);
+		GetItemsForTag_.prepare ("SELECT item_id FROM items2tags "
+				"WHERE tag = :tag");
 	}
 
 	void SQLStorageBackend::GetFeedsIDs (ids_t& result) const
@@ -737,6 +753,80 @@ namespace Aggregator
 
 		while (feedSelector.next ())
 			result.push_back (feedSelector.value (0).toInt ());
+	}
+
+	QList<ITagsManager::tag_id> SQLStorageBackend::GetItemTags (const IDType_t& id)
+	{
+		QList<ITagsManager::tag_id> result;
+
+		GetItemTags_.bindValue (":item_id", id);
+		if (!GetItemTags_.exec ())
+		{
+			Util::DBLock::DumpError (GetItemTags_);
+			return result;
+		}
+
+		while (GetItemTags_.next ())
+			result << GetItemTags_.value (0).toString ();
+
+		GetItemTags_.finish ();
+
+		return result;
+	}
+
+	void SQLStorageBackend::SetItemTags (const IDType_t& id, const QList<ITagsManager::tag_id>& tags)
+	{
+		Util::DBLock lock (DB_);
+		try
+		{
+			lock.Init ();
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to begin transaction:"
+					<< e.what ();
+			return;
+		}
+
+		ClearItemTags_.bindValue (":item_id", id);
+		if (!ClearItemTags_.exec ())
+		{
+			Util::DBLock::DumpError (ClearItemTags_);
+			return;
+		}
+
+		ClearItemTags_.finish ();
+
+		Q_FOREACH (const ITagsManager::tag_id& tag, tags)
+		{
+			AddItemTag_.bindValue (":tag", tag);
+			AddItemTag_.bindValue (":item_id", id);
+			if (!AddItemTag_.exec ())
+			{
+				Util::DBLock::DumpError (AddItemTag_);
+				return;
+			}
+		}
+
+		lock.Good ();
+	}
+
+	QList<IDType_t> SQLStorageBackend::GetItemsForTag (const ITagsManager::tag_id& tag)
+	{
+		QList<IDType_t> result;
+
+		GetItemsForTag_.bindValue (":tag", tag);
+		if (!GetItemsForTag_.exec ())
+		{
+			Util::DBLock::DumpError (GetItemsForTag_);
+			return result;
+		}
+
+		while (GetItemsForTag_.next ())
+			result << GetItemsForTag_.value (0).toInt ();
+
+		return result;
 	}
 
 	IDType_t SQLStorageBackend::GetHighestID (const PoolType& type) const
@@ -1173,9 +1263,7 @@ namespace Aggregator
 		try
 		{
 			std::for_each (feed->Channels_.begin (), feed->Channels_.end (),
-					boost::bind (&SQLStorageBackend::AddChannel,
-						this,
-						_1));
+					[this] (Channel_ptr chan) { AddChannel (chan); });
 		}
 		catch (const std::runtime_error& e)
 		{
@@ -1417,9 +1505,7 @@ namespace Aggregator
 		InsertChannel_.finish ();
 
 		std::for_each (channel->Items_.begin (), channel->Items_.end (),
-				boost::bind (&SQLStorageBackend::AddItem,
-					this,
-					_1));
+				[this] (Item_ptr item) { AddItem (item); });
 	}
 
 	void SQLStorageBackend::AddItem (Item_ptr item)
@@ -1497,7 +1583,7 @@ namespace Aggregator
 		try
 		{
 			Item_ptr item = GetItem (itemId);
-			*cid = item->ChannelID_;
+			cid = item->ChannelID_;
 		}
 		catch (const ItemNotFoundError&)
 		{
@@ -1566,6 +1652,32 @@ namespace Aggregator
 					<< *cid;
 			}
 		}
+	}
+
+	void SQLStorageBackend::RemoveChannel (const IDType_t& channelId)
+	{
+		Util::DBLock lock (DB_);
+		try
+		{
+			lock.Init ();
+		}
+		catch (const std::runtime_error& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< e.what ();
+			return;
+		}
+
+		RemoveChannel_.bindValue (":channel_id", channelId);
+		if (!RemoveChannel_.exec ())
+		{
+			Util::DBLock::DumpError (RemoveChannel_);
+			return;
+		}
+
+		RemoveChannel_.finish ();
+
+		lock.Good ();
 	}
 
 	void SQLStorageBackend::RemoveFeed (const IDType_t& feedId)
@@ -2082,10 +2194,22 @@ namespace Aggregator
 			}
 		}
 
+		if (!DB_.tables ().contains ("items2tags"))
+		{
+			if (!query.exec ("CREATE TABLE items2tags ("
+						"item_id BIGINT NOT NULL, "
+						"tag TEXT NOT NULL"
+						");"))
+			{
+				Util::DBLock::DumpError (query.lastError ());
+				return false;
+			}
+		}
+
 		return true;
 	}
 
-	QByteArray SQLStorageBackend::SerializePixmap (const QPixmap& pixmap) const
+	QByteArray SQLStorageBackend::SerializePixmap (const QImage& pixmap) const
 	{
 		QByteArray bytes;
 		if (!pixmap.isNull ())
@@ -2097,9 +2221,9 @@ namespace Aggregator
 		return bytes;
 	}
 
-	QPixmap SQLStorageBackend::UnserializePixmap (const QByteArray& bytes) const
+	QImage SQLStorageBackend::UnserializePixmap (const QByteArray& bytes) const
 	{
-		QPixmap result;
+		QImage result;
 		if (bytes.size ())
 			result.loadFromData (bytes, "PNG");
 		return result;
@@ -2107,7 +2231,7 @@ namespace Aggregator
 
 	bool SQLStorageBackend::RollItemsStorage (int version)
 	{
-		LeechCraft::Util::DBLock lock (DB_);
+		Util::DBLock lock (DB_);
 		try
 		{
 			lock.Init ();

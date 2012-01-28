@@ -1,7 +1,7 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
  * Copyright (C) 2011  Alexander Konovalov
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -97,6 +97,8 @@ namespace SecureStorage
 		bool IsPasswordCorrect (const CryptoSystem& cs);
 		bool IsPasswordEmpty ();
 		bool IsPasswordSet ();
+	signals:
+		void gotActions (QList<QAction*>, ActionsEmbedPlace);
 	};
 }
 }

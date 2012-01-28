@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <QHeaderView>
 #include <QFileDialog>
+#include <boost/filesystem/path.hpp>
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
@@ -49,6 +50,10 @@ namespace LeechCraft
 						SIGNAL (on_Destination__textChanged ()),
 						this,
 						SLOT (setOkEnabled ()));
+				connect (this,
+						SIGNAL (on_Destination__textChanged ()),
+						this,
+						SLOT (updateAvailableSpace ()));
 
 				QString dir = XmlSettingsManager::Instance ()->property ("LastSaveDirectory").toString ();
 				Destination_->setText (dir);
@@ -68,6 +73,8 @@ namespace LeechCraft
 				Creator_->setText (tr ("<unknown>"));
 				Comment_->setText (tr ("<unknown>"));
 				Date_->setText (tr ("<unknown>"));
+
+				updateAvailableSpace ();
 			}
 
 			void AddTorrent::SetFilename (const QString& filename)
@@ -152,6 +159,25 @@ namespace LeechCraft
 			{
 				OK_->setEnabled (QFileInfo (TorrentFile_->text ()).isReadable () &&
 						QFileInfo (Destination_->text ()).exists ());
+			}
+
+			void AddTorrent::updateAvailableSpace ()
+			{
+				const QPair<quint64, quint64>& pair = GetAvailableSpaceInDestination ();
+				const quint64 availableSpace = pair.first;
+				const quint64 totalSpace = pair.second;
+
+				if (availableSpace != static_cast<quint64> (-1))
+				{
+					AvailSpaceLabel_->setText (tr ("%1 free").arg (Util::MakePrettySize (availableSpace)));
+					AvailSpaceBar_->show ();
+					AvailSpaceBar_->setValue (100 - 100 * availableSpace / totalSpace);
+				}
+				else
+				{
+					AvailSpaceLabel_->setText (tr ("unknown"));
+					AvailSpaceBar_->hide ();
+				}
 			}
 
 			void AddTorrent::on_TorrentBrowse__released ()
@@ -242,6 +268,24 @@ namespace LeechCraft
 				FilesView_->expandAll ();
 			}
 
+			QPair<quint64, quint64> AddTorrent::GetAvailableSpaceInDestination ()
+			{
+				try
+				{
+#ifdef Q_WS_WIN32
+					boost::filesystem::space_info space =
+							boost::filesystem::space (std::string (GetSavePath ().toUtf8 ().constData ()));
+#else
+					boost::filesystem::space_info space =
+							boost::filesystem::space (GetSavePath ().toStdWString ());
+#endif
+					return qMakePair<quint64, quint64> (space.available, space.capacity);
+				}
+				catch (...)
+				{
+					return qMakePair<quint64, quint64> (-1, -1);
+				}
+			}
 		};
 	};
 };

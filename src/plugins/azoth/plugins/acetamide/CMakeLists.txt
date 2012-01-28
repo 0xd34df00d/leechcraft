@@ -1,17 +1,23 @@
-SET (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
+PROJECT (leechcraft_azoth_acetamide)
+INCLUDE (InitLCPlugin OPTIONAL)
 
 INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
+	${LEECHCRAFT_INCLUDE_DIR}
+	${LEECHCRAFT_INCLUDE_DIR}/azoth
 	)
 
-SET (ACETAMIDE_SRCS
+SET (ACETAMIDE_SRCS 
 	acetamide.cpp
 	bookmarkeditwidget.cpp
 	channelclentry.cpp
 	channelconfigwidget.cpp
 	channelhandler.cpp
+	channelparticipantentry.cpp
 	channelpublicmessage.cpp
+	channelsmanager.cpp
 	clientconnection.cpp
 	core.cpp
 	entrybase.cpp
@@ -22,13 +28,18 @@ SET (ACETAMIDE_SRCS
 	ircjoingroupchat.cpp
 	ircmessage.cpp
 	ircparser.cpp
+	ircparticipantentry.cpp
 	ircprotocol.cpp
 	ircserversocket.cpp
 	ircserverclentry.cpp
 	ircserverhandler.cpp
 	invitechannelsdialog.cpp
 	localtypes.cpp
+	newnickservidentifydialog.cpp
+	nickservidentifywidget.cpp
+	rplisupportparser.cpp
 	servercommandmessage.cpp
+	serverinfowidget.cpp
 	serverparticipantentry.cpp
 	serverresponcemanager.cpp
 	sortfilterproxymodel.cpp
@@ -42,7 +53,9 @@ SET (ACETAMIDE_HEADERS
 	channelclentry.h
 	channelconfigwidget.h
 	channelhandler.h
+	channelparticipantentry.h
 	channelpublicmessage.h
+	channelsmanager.h
 	clientconnection.h
 	core.h
 	entrybase.h
@@ -53,13 +66,18 @@ SET (ACETAMIDE_HEADERS
 	ircjoingroupchat.h
 	ircmessage.h
 	ircparser.h
+	ircparticipantentry.h
 	ircprotocol.h
 	ircserversocket.h
 	ircserverclentry.h
 	ircserverhandler.h
 	invitechannelsdialog.h
 	localtypes.h
+	newnickservidentifydialog.h
+	nickservidentifywidget.h
+	rplisupportparser.h
 	servercommandmessage.h
+	serverinfowidget.h
 	serverparticipantentry.h
 	serverresponcemanager.h
 	sortfilterproxymodel.h
@@ -74,12 +92,17 @@ SET (ACETAMIDE_FORMS
 	ircaccountconfigurationwidget.ui
 	ircjoingroupchat.ui
 	invitechannelsdialog.ui
+	newnickservidentifydialog.ui
+	nickservidentifywidget.ui
+	serverinfowidget.ui
 	)
 SET (ACETAMIDE_RESOURCES azothacetamideresources.qrc)
 
 CreateTrVars ("azoth_acetamide" "de;en;fr;it;ru_RU;uk_UA" ACETAMIDE_TRANSLATIONS ACETAMIDE_COMPILED_TRANSLATIONS)
 
-QT4_WRAP_CPP (ACETAMIDE_MOC_SRCS ${ACETAMIDE_HEADERS})
+IF (NOT LC_NO_MOC)
+	QT4_WRAP_CPP (ACETAMIDE_MOC_SRCS ${ACETAMIDE_HEADERS})
+ENDIF (NOT LC_NO_MOC)
 QT4_WRAP_UI (ACETAMIDE_UIS_H ${ACETAMIDE_FORMS})
 QT4_ADD_RESOURCES (ACETAMIDE_RCCS ${ACETAMIDE_RESOURCES})
 

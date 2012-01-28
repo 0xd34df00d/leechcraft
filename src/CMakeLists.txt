@@ -9,13 +9,15 @@ PROJECT (leechcraft)
 #	SET (CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
 #ENDIF (NOT DISABLE_RPATH_TRICKS)
 IF (MSVC)
-	SET (CMAKE_CXX_FLAGS "/GX /W3")
-	SET (CMAKE_CXX_FLAGS_RELEASE "/Ob2 /O2 /Ot /Oi /Oy /GT /GL /MD")
-	SET (CMAKE_EXE_LINKER_FLAGS "/entry:mainCRTStartup")
-	ADD_DEFINITIONS (-DBOOST_PROGRAM_OPTIONS_DYN_LINK)
+	SET (CMAKE_CXX_FLAGS "/EHa /W3")
+	SET (CMAKE_CXX_FLAGS_RELEASE "/Ob2 /O2 /Ot /Oi /Oy /GT /GL /MD /D NDEBUG")
+	SET (CMAKE_CXX_FLAGS_DEBUG "/Zi /Od /GT /MDd")
+	
+	SET (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
+	INCLUDE (LibHelperWin32Macros)
 ENDIF (MSVC)
 IF (UNIX)
-	SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fno-strict-aliasing")
+	SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fno-strict-aliasing -std=c++0x")
 	SET (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--as-needed")
 	SET (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--as-needed")
 	IF (EXTRA_WARNINGS)
@@ -50,13 +52,9 @@ IF (GPTOOLS_CPU_AND_MEM)
 	SET (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -ltcmalloc_and_profiler")
 ENDIF (GPTOOLS_CPU_AND_MEM)
 
-STRING (COMPARE EQUAL ${CMAKE_SIZEOF_VOID_P} "8" IS64BITS)
-
-IF (IS64BITS AND RESPECTLIB64)
-	SET (LIBDIR "lib64")
-ELSE (IS64BITS AND RESPECTLIB64)
-	SET (LIBDIR "lib")
-ENDIF (IS64BITS AND RESPECTLIB64)
+IF (NOT LIBDIR)
+	SET (LIBDIR "lib${LIB_SUFFIX}")
+ENDIF (NOT LIBDIR)
 
 SET (LC_PLUGINS_DEST "${LIBDIR}/leechcraft/plugins")
 SET (LC_TRANSLATIONS_DEST "share/leechcraft/translations")
@@ -66,7 +64,7 @@ SET (LC_INSTALLEDMANIFEST_DEST "share/leechcraft/installed")
 SET (LC_GLOBAL_SETTINGS_DEST "share/leechcraft/rc")
 SET (LC_GLOBAL_SETTINGS_DEST_IN "${CMAKE_INSTALL_PREFIX}/${LC_GLOBAL_SETTINGS_DEST}")
 
-SET (Boost_ADDITIONAL_VERSIONS "1.46" "1.46.1" "1.44" "1.44.0")
+SET (Boost_ADDITIONAL_VERSIONS "1.47" "1.46" "1.46.1" "1.44" "1.44.0")
 FIND_PACKAGE (Boost REQUIRED COMPONENTS date_time filesystem program_options system thread)
 FIND_PACKAGE (Qt4 REQUIRED)
 
@@ -79,12 +77,24 @@ IF (CMAKE_INSTALL_PREFIX AND NOT STANDARD_PREFIX)
 	ADD_DEFINITIONS (-DINSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}")
 ENDIF (CMAKE_INSTALL_PREFIX AND NOT STANDARD_PREFIX)
 
+IF (NOT CMAKE_VERSION VERSION_LESS 2.8.6)
+	MESSAGE (STATUS "CMake 2.8.6 or greater found, enabling automoc...")
+	SET (CMAKE_AUTOMOC TRUE)
+	SET (LC_NO_MOC TRUE)
+ENDIF (NOT CMAKE_VERSION VERSION_LESS 2.8.6)
+
 ADD_SUBDIRECTORY (util)
 ADD_SUBDIRECTORY (xmlsettingsdialog)
-ADD_SUBDIRECTORY (iconsets)
 
 SET (LEECHCRAFT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 SET (LEECHCRAFT_LIBRARIES lcutil xmlsettingsdialog)
+
+# Various options
+OPTION (STRICT_LICENSING "Makes LeechCraft more prepared, for example, to lacking artwork due to licensing restrictions" OFF)
+
+IF (STRICT_LICENSING)
+	ADD_DEFINITIONS (-DSTRICT_LICENSING)
+ENDIF (STRICT_LICENSING)
 
 # Basic & traditional set of options
 OPTION (ENABLE_AGGREGATOR "Build Aggregator, the RSS/Atom feed reader" ON)
@@ -109,23 +119,31 @@ OPTION (ENABLE_VGRABBER "Build vGrabber, the vkontakte.ru music/video getter" ON
 OPTION (ENABLE_ADVANCEDNOTIFICATIONS "Build Advanced Notifications module for more customizable notifications" OFF)
 OPTION (ENABLE_AZOTH "Build Azoth, the IM client" OFF)
 OPTION (ENABLE_BLACKDASH "Build BlackDash, the dashboard plugin for LeechCraft" OFF)
+OPTION (ENABLE_CHOROID "Build Choroid, image viewer" OFF)
 OPTION (ENABLE_EISKALTDCPP "Build EiskaltDC++ client" OFF)
 OPTION (ENABLE_GLANCE "Quick overview of tabs" OFF)
 OPTION (ENABLE_GMAILNOTIFIER "Build GMail Notifier which notifies about new mail in your GMail inbox" OFF)
+OPTION (ENABLE_KNOWHOW "Build KnowHow for displaying tips of the day" OFF)
 OPTION (ENABLE_LACKMAN "Build LackMan, the package manager for LeechCraft" OFF)
+OPTION (ENABLE_LIZNOO "Build Liznoo, our nice power manager" OFF)
+OPTION (ENABLE_NETSTOREMANAGER "Build NetStoreManager for managing network data storages like Yandex.Disk" OFF)
 OPTION (ENABLE_POPISHU "Build Popishu, a simple QScintilla-based text editor" OFF)
 OPTION (ENABLE_QROSP "Build Qrosp, the scripting support plugin" OFF)
 OPTION (ENABLE_SECMAN "Build SecMan, security & personal data manager" OFF)
 OPTION (ENABLE_SHELLOPEN "Build ShellOpen, the plugin supporting handling entities via external applications" ON)
+OPTION (ENABLE_SIDEBAR "Build Sidebar, a nice side bar with quick launch, tabs and tray areas" OFF)
+OPTION (ENABLE_SNAILS "Build Snails, LeechCraft mail client" OFF)
 OPTION (ENABLE_SYNCER "Build Syncer, the synchronization plugin for LeechCraft" OFF)
+OPTION (ENABLE_TABSESSMANAGER "Build Tab Session Manager" OFF)
 OPTION (ENABLE_TABSLIST "Quick overview of tabs" OFF)
 OPTION (ENABLE_VFSCORE "Build VFS core" OFF)
+OPTION (ENABLE_LASTFMSCROBBLE "Build Last.fm scrobbler" OFF)
 
 # Defunct
 OPTION (ENABLE_FTP "Build LCFTP, the FTP client" ON)
 OPTION (ENABLE_JUFFED "Build JuffEd, the advanced text editor" OFF)
 OPTION (ENABLE_OTZERKALU "Build Otzerkalu, which allows one to download web sites recursively" OFF)
-OPTION (ENABLE_POTORCHU "Build Potorchu, the new generation audio/video player" OFF)
+OPTION (ENABLE_LAURE "Build Laure, the new generation audio/video player" OFF)
 OPTION (ENABLE_TRANSPARENTARCH "Build TransparentArch, the plugin for transparent access to archives in various formats" OFF)
 
 ENABLE_TESTING ()
@@ -145,8 +163,10 @@ IF (ENABLE_RECOMMENDED)
 	SET (ENABLE_SECMAN TRUE)
 	SET (ENABLE_SHELLOPEN TRUE)
 	SET (ENABLE_SYNCER TRUE)
+	SET (ENABLE_TABSESSMANAGER TRUE)
 	SET (ENABLE_TABSLIST TRUE)
 	SET (ENABLE_VFSCORE TRUE)
+	SET (ENABLE_KNOWHOW TRUE)
 ENDIF (ENABLE_RECOMMENDED)
 
 FUNCTION (CreateTrVars PlugName Langs TranVar CompiledTranVar)
@@ -174,6 +194,10 @@ ENDIF (ENABLE_TORRENT)
 IF (ENABLE_AGGREGATOR)
 	ADD_SUBDIRECTORY (plugins/aggregator)
 ENDIF (ENABLE_AGGREGATOR)
+
+IF (ENABLE_CHOROID)
+	ADD_SUBDIRECTORY (plugins/choroid)
+ENDIF (ENABLE_CHOROID)
 
 IF (ENABLE_POSHUKU)
 	ADD_SUBDIRECTORY (plugins/poshuku)
@@ -266,9 +290,9 @@ IF (ENABLE_SHELLOPEN)
 	ADD_SUBDIRECTORY (plugins/shellopen)
 ENDIF (ENABLE_SHELLOPEN)
 
-IF (ENABLE_POTORCHU)
-	ADD_SUBDIRECTORY (plugins/potorchu)
-ENDIF (ENABLE_POTORCHU)
+IF (ENABLE_LAURE)
+	ADD_SUBDIRECTORY (plugins/laure)
+ENDIF (ENABLE_LAURE)
 
 IF (ENABLE_TRANSPARENTARCH)
 	ADD_SUBDIRECTORY (plugins/transparentarch)
@@ -305,6 +329,34 @@ ENDIF (ENABLE_BLACKDASH)
 IF (ENABLE_VFSCORE)
 	ADD_SUBDIRECTORY (plugins/vfscore)
 ENDIF (ENABLE_VFSCORE)
+
+IF (ENABLE_KNOWHOW)
+	ADD_SUBDIRECTORY (plugins/knowhow)
+ENDIF (ENABLE_KNOWHOW)
+
+IF (ENABLE_SNAILS)
+	ADD_SUBDIRECTORY (plugins/snails)
+ENDIF (ENABLE_SNAILS)
+
+IF (ENABLE_SIDEBAR)
+	ADD_SUBDIRECTORY (plugins/sidebar)
+ENDIF (ENABLE_SIDEBAR)
+
+IF (ENABLE_LIZNOO)
+	ADD_SUBDIRECTORY (plugins/liznoo)
+ENDIF (ENABLE_LIZNOO)
+
+IF (ENABLE_NETSTOREMANAGER)
+	ADD_SUBDIRECTORY (plugins/netstoremanager)
+ENDIF (ENABLE_NETSTOREMANAGER)
+
+IF (ENABLE_TABSESSMANAGER)
+	ADD_SUBDIRECTORY (plugins/tabsessmanager)
+ENDIF (ENABLE_TABSESSMANAGER)
+
+IF (ENABLE_LASTFMSCROBBLE)
+	ADD_SUBDIRECTORY (plugins/lastfmscrobble)
+ENDIF (ENABLE_LASTFMSCROBBLE)
 
 SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTXML TRUE)
@@ -426,13 +478,23 @@ SET (FORMS
 	)
 SET (RESOURCES mainresources.qrc)
 
+SOURCE_GROUP ("core\\headers" FILES ${HEADERS})
+SOURCE_GROUP ("core\\sources" FILES ${SRCS})
+SOURCE_GROUP ("core\\forms" FILES ${FORMS})
+SOURCE_GROUP ("core\\resources" FILES ${RESOURCES})
+
 CreateTrVars ("" "ru_RU;de;uk_UA;it;ar;eo;es;tr;en;be;fr;pl" TRANSLATIONS COMPILED_TRANSLATIONS)
 
 ADD_DEFINITIONS (-DBOOST_PROGRAM_OPTIONS_DYN_LINK)
+ADD_DEFINITIONS (${QT_DEFINITIONS})
 
-QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
+IF (NOT LC_NO_MOC)
+	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
+ENDIF (NOT LC_NO_MOC)
 QT4_WRAP_UI (UIS_H ${FORMS})
 QT4_ADD_RESOURCES (RCC ${RESOURCES})
+
+SOURCE_GROUP ("core\\generated_qt" FILES ${MOC_SRCS} ${UIS_H} ${RCC})
 
 ADD_CUSTOM_COMMAND (OUTPUT
 	${COMPILED_TRANSLATIONS}
@@ -440,6 +502,8 @@ ADD_CUSTOM_COMMAND (OUTPUT
 	DEPENDS ${TRANSLATIONS}
 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 	)
+
+SOURCE_GROUP("core\\translations" FILES ${COMPILED_TRANSLATIONS})
 
 IF (NOT DEFINED LEECHCRAFT_VERSION)
 	FIND_PROGRAM (GIT_CMD git)
@@ -497,6 +561,7 @@ ELSE (UNIX)
 ENDIF (UNIX)
 
 TARGET_LINK_LIBRARIES (leechcraft
+		${QT_QTMAIN_LIBRARY}
 		${QT_LIBRARIES}
 		${Boost_PROGRAM_OPTIONS_LIBRARY}
 		${LEECHCRAFT_LIBRARIES}
@@ -516,6 +581,7 @@ INSTALL (FILES xmlsettingsdialog/datasourceroles.h DESTINATION include/leechcraf
 INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/config.h DESTINATION include/leechcraft/)
 
 INSTALL (FILES ${CMAKE_CURRENT_BINARY_DIR}/FindLeechCraft.cmake DESTINATION share/leechcraft/cmake/)
+INSTALL (FILES InitLCPlugin.cmake DESTINATION /usr/share/cmake/Modules)
 
 INSTALL (DIRECTORY freedesktop/icons/ DESTINATION share/icons/hicolor
 	PATTERN ".svn" EXCLUDE)

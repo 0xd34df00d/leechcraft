@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +17,6 @@
  **********************************************************************/
 
 #include "adhoccommandserver.h"
-#include <boost/bind.hpp>
 #include <QXmppDiscoveryManager.h>
 #include "clientconnection.h"
 #include "util.h"
@@ -48,50 +47,50 @@ namespace Xoox
 				SIGNAL (infoReceived (const QXmppDiscoveryIq&)),
 				this,
 				SLOT (handleDiscoInfo (const QXmppDiscoveryIq&)));
-		
+
 		const QString& jid = Conn_->GetOurJID ();
-		
+
 		QXmppDiscoveryIq::Item changeStatus;
 		changeStatus.setNode (NodeChangeStatus);
 		changeStatus.setJid (jid);
 		changeStatus.setName (tr ("Change status"));
 		XEP0146Items_ [changeStatus.node ()] = changeStatus;
-		NodeInfos_ [changeStatus.node ()] =
-				boost::bind (&AdHocCommandServer::ChangeStatusInfo, this, _1);
+		NodeInfos_ [changeStatus.node ()] = [this] (QDomElement e) { ChangeStatusInfo (e); };
 		NodeSubmitHandlers_ [changeStatus.node ()] =
-				boost::bind (&AdHocCommandServer::ChangeStatusSubmitted, this, _1, _2, _3);
-		
+				[this] (QDomElement e, QString s, QXmppDataForm f)
+					{ ChangeStatusSubmitted (e, s, f); };
+
 		QXmppDiscoveryIq::Item leaveGroupchats;
 		leaveGroupchats.setNode (NodeLeaveGroupchats);
 		leaveGroupchats.setJid (jid);
 		leaveGroupchats.setName (tr ("Leave groupchats"));
 		XEP0146Items_ [leaveGroupchats.node ()] = leaveGroupchats;
-		NodeInfos_ [leaveGroupchats.node ()] =
-				boost::bind (&AdHocCommandServer::LeaveGroupchatsInfo, this, _1);
+		NodeInfos_ [leaveGroupchats.node ()] = [this] (QDomElement e) { LeaveGroupchatsInfo (e); };
 		NodeSubmitHandlers_ [leaveGroupchats.node ()] =
-				boost::bind (&AdHocCommandServer::LeaveGroupchatsSubmitted, this, _1, _2, _3);
+				[this] (QDomElement e, QString s, QXmppDataForm f)
+					{ LeaveGroupchatsSubmitted (e, s, f); };
 	}
-	
+
 	bool AdHocCommandServer::handleStanza (const QDomElement& elem)
 	{
 		if (elem.tagName () != "iq" ||
 				elem.attribute ("type") != "set")
 			return false;
-		
+
 		QXmppElement cmdElem = elem.firstChildElement ("command");
 		if (cmdElem.attribute ("xmlns") != NsCommands)
 			return false;
-		
+
 		if (!cmdElem.attribute ("action").isEmpty () &&
 				cmdElem.attribute ("action") != "execute")
 			return false;
-		
+
 		QString from, resource;
 		ClientConnection::Split (elem.attribute ("from"), &from, &resource);
 		const bool isUs = Conn_->GetOurJID ().startsWith (from);
-		
+
 		const QString& node = cmdElem.attribute ("node");
-		
+
 		if (XEP0146Items_.contains (node) && !isUs)
 		{
 			QXmppIq iq;
@@ -101,7 +100,7 @@ namespace Xoox
 			iq.setError (QXmppStanza::Error (QXmppStanza::Error::Auth, QXmppStanza::Error::Forbidden));
 			return true;
 		}
-		
+
 		if (!XEP0146Items_.contains (node))
 		{
 			QXmppIq iq;
@@ -111,7 +110,7 @@ namespace Xoox
 			iq.setError (QXmppStanza::Error (QXmppStanza::Error::Cancel, QXmppStanza::Error::FeatureNotImplemented));
 			return true;
 		}
-		
+
 		const QString& sessionId = cmdElem.attribute ("sessionid");
 		if (PendingSessions_ [node].removeAll (sessionId))
 		{
@@ -123,21 +122,18 @@ namespace Xoox
 			NodeInfos_ [node] (elem);
 		return true;
 	}
-	
-	namespace
-	{
-		QString GenSessID (const QString& base)
-		{
-			return base + ":" + QDateTime::currentDateTime ().toString (Qt::ISODate);
-		}
-	}
-	
+
 	void AdHocCommandServer::Send (const QXmppDataForm& form,
 			const QDomElement& sourceElem, const QString& node)
 	{
-		const QString& sessionId = GenSessID (sourceElem.attribute ("id"));
+		auto genSessID = [] (const QString& base)
+		{
+			return base + ":" + QDateTime::currentDateTime ().toString (Qt::ISODate);
+		};
+
+		const QString& sessionId = genSessID (sourceElem.attribute ("id"));
 		PendingSessions_ [node] << sessionId;
-		
+
 		QXmppElement elem;
 		elem.setTagName ("command");
 		elem.setAttribute ("xmlns", NsCommands);
@@ -145,16 +141,16 @@ namespace Xoox
 		elem.setAttribute ("status", "executing");
 		elem.setAttribute ("sessionid", sessionId);
 		elem.appendChild (XooxUtil::Form2XmppElem (form));
-		
+
 		QXmppIq iq;
 		iq.setTo (sourceElem.attribute ("from"));
 		iq.setId (sourceElem.attribute ("id"));
 		iq.setType (QXmppIq::Result);
 		iq.setExtensions (elem);
-		
+
 		Conn_->GetClient ()->sendPacket (iq);
 	}
-	
+
 	void AdHocCommandServer::SendCompleted (const QDomElement& sourceElem,
 			const QString& node, const QString& sessionId)
 	{
@@ -164,25 +160,25 @@ namespace Xoox
 		elem.setAttribute ("node", node);
 		elem.setAttribute ("status", "completed");
 		elem.setAttribute ("sessionid", sessionId);
-		
+
 		QXmppIq iq;
 		iq.setTo (sourceElem.attribute ("from"));
 		iq.setId (sourceElem.attribute ("id"));
 		iq.setType (QXmppIq::Result);
 		iq.setExtensions (elem);
-		
+
 		Conn_->GetClient ()->sendPacket (iq);
 	}
-	
+
 	void AdHocCommandServer::ChangeStatusInfo (const QDomElement& sourceElem)
 	{
 		QList<QXmppDataForm::Field> fields;
-		
+
 		QXmppDataForm::Field field (QXmppDataForm::Field::HiddenField);
 		field.setValue (RcStr);
 		field.setKey ("FORM_TYPE");
 		fields << field;
-		
+
 		const GlooxAccountState& state = Conn_->GetLastState ();
 
 		QList<QPair<State, QString> > rawOpts;
@@ -193,7 +189,7 @@ namespace Xoox
 		rawOpts << qMakePair<State, QString> (SDND, "dnd");
 		rawOpts << qMakePair<State, QString> (SInvisible, "invisible");
 		rawOpts << qMakePair<State, QString> (SOffline, "offline");
-		
+
 		QString option;
 		QList<QPair<QString, QString> > options;
 		QPair<State, QString> pair;
@@ -204,7 +200,7 @@ namespace Xoox
 			if (pair.first == state.State_)
 				option = pair.second;
 		}
-		
+
 		QXmppDataForm::Field stateField (QXmppDataForm::Field::ListSingleField);
 		stateField.setLabel (tr ("Status"));
 		stateField.setRequired (true);
@@ -212,27 +208,27 @@ namespace Xoox
 		stateField.setOptions (options);
 		stateField.setValue (option);
 		fields << stateField;
-		
+
 		QXmppDataForm::Field prioField (QXmppDataForm::Field::TextSingleField);
 		prioField.setLabel (tr ("Priority"));
 		prioField.setKey ("status-priority");
 		prioField.setValue (QString::number (state.Priority_));
 		fields << prioField;
-		
+
 		QXmppDataForm::Field msgField (QXmppDataForm::Field::TextMultiField);
 		msgField.setLabel (tr ("Status message"));
 		msgField.setKey ("status-message");
 		msgField.setValue (state.Status_);
 		fields << msgField;
-		
+
 		QXmppDataForm form (QXmppDataForm::Form);
 		form.setTitle (tr ("Change status"));
 		form.setInstructions (tr ("Choose the new status, priority and status message"));
 		form.setFields (fields);
-		
+
 		Send (form, sourceElem, NodeChangeStatus);
 	}
-	
+
 	void AdHocCommandServer::ChangeStatusSubmitted (const QDomElement& sourceElem,
 			const QString& sessionId, const QXmppDataForm& form)
 	{
@@ -242,7 +238,7 @@ namespace Xoox
 		{
 			if (field.key () == "status")
 			{
-				QMap<QString, State> str2state;				
+				QMap<QString, State> str2state;
 				str2state ["chat"] = SChat;
 				str2state ["online"] = SOnline;
 				str2state ["away"] = SAway;
@@ -250,7 +246,7 @@ namespace Xoox
 				str2state ["dnd"] = SDND;
 				str2state ["invisible"] = SInvisible;
 				str2state ["offline"] = SOffline;
-				
+
 				newState.State_ = str2state.value (field.value ().toString (), newState.State_);
 			}
 			else if (field.key () == "status-priority")
@@ -258,15 +254,15 @@ namespace Xoox
 			else if (field.key () == "status-message")
 				newState.Status_ = field.value ().toString ();
 		}
-		
+
 		if (newState == Conn_->GetLastState ())
 			return;
-		
+
 		Conn_->SetState (newState);
-		
+
 		SendCompleted (sourceElem, NodeChangeStatus, sessionId);
 	}
-	
+
 	void AdHocCommandServer::LeaveGroupchatsInfo (const QDomElement& sourceElem)
 	{
 		QList<QXmppDataForm::Field> fields;
@@ -282,28 +278,28 @@ namespace Xoox
 			RoomCLEntry *entry = qobject_cast<RoomCLEntry*> (entryObj);
 			if (!entry)
 				continue;
-			
+
 			QPair<QString, QString> option;
 			option.first = entry->GetHumanReadableID () + "/" + entry->GetNick ();
 			option.second = entry->GetEntryID ();
 			options << option;
 		}
-		
+
 		QXmppDataForm::Field gcs (QXmppDataForm::Field::ListMultiField);
 		gcs.setLabel (tr ("Groupchats"));
 		gcs.setKey ("groupchats");
 		gcs.setRequired (true);
 		gcs.setOptions (options);
 		fields.append (gcs);
-		
+
 		QXmppDataForm form (QXmppDataForm::Form);
 		form.setTitle (tr ("Leave groupchats"));
 		form.setInstructions (tr ("Select the groupchats to leave"));
 		form.setFields (fields);
-		
+
 		Send (form, sourceElem, NodeLeaveGroupchats);
 	}
-	
+
 	void AdHocCommandServer::LeaveGroupchatsSubmitted (const QDomElement& sourceElem,
 			const QString& sessionId, const QXmppDataForm& form)
 	{
@@ -311,17 +307,17 @@ namespace Xoox
 		{
 			if (field.key () != "groupchats")
 				continue;
-			
-			const QStringList& ids = field.value ().toStringList ();			
+
+			const QStringList& ids = field.value ().toStringList ();
 			Q_FOREACH (QObject *entryObj, Conn_->GetCLEntries ())
 			{
 				RoomCLEntry *entry = qobject_cast<RoomCLEntry*> (entryObj);
 				if (!entry)
 					continue;
-				
+
 				if (!ids.contains (entry->GetEntryID ()))
 					continue;
-				
+
 				entry->Leave (tr ("leaving as the result of the remote command"));
 			}
 
@@ -336,15 +332,15 @@ namespace Xoox
 		if (iq.type () != QXmppIq::Get ||
 				iq.queryNode () != NsCommands)
 			return;
-		
+
 		QString from;
 		QString resource;
 		ClientConnection::Split (iq.from (), &from, &resource);
-		
+
 		QList<QXmppDiscoveryIq::Item> items;
 		if (Conn_->GetOurJID ().startsWith (from))
 			items << XEP0146Items_.values ();
-		
+
 		QXmppDiscoveryIq result;
 		result.setId (iq.id ());
 		result.setTo (iq.from ());
@@ -352,7 +348,7 @@ namespace Xoox
 		result.setQueryNode (NsCommands);
 		result.setQueryType (QXmppDiscoveryIq::ItemsQuery);
 		result.setItems (items);
-		
+
 		Conn_->GetClient ()->sendPacket (result);
 	}
 
@@ -360,7 +356,7 @@ namespace Xoox
 	{
 		if (iq.type () != QXmppIq::Get)
 			return;
-		
+
 		QString from;
 		QString resource;
 		ClientConnection::Split (iq.from (), &from, &resource);

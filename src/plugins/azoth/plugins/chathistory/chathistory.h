@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2011  Georg Rudoy
+ * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,13 +51,13 @@ namespace ChatHistory
 				IHaveTabs
 				LeechCraft::Azoth::IHistoryPlugin)
 
-		boost::shared_ptr<STGuard<Core> > Guard_;
+		boost::shared_ptr<STGuard<Core>> Guard_;
 		boost::shared_ptr<QTranslator> Translator_;
 		QAction *ActionHistory_;
 		QHash<QObject*, QAction*> Entry2ActionHistory_;
 		QHash<QObject*, QAction*> Entry2ActionEnableHistory_;
 
-		QHash<QString, QHash<QString, QObject*> > RequestedLogs_;
+		QHash<QString, QHash<QString, QObject*>> RequestedLogs_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -81,15 +81,18 @@ namespace ChatHistory
 		// IHistoryPlugin
 		bool IsHistoryEnabledFor (QObject*) const;
 		void RequestLastMessages (QObject*, int);
+		void AddRawMessage (const QVariantMap&);
 	public slots:
 		void initPlugin (QObject*);
 
 		void hookEntryActionAreasRequested (LeechCraft::IHookProxy_ptr proxy,
 				QObject *action,
 				QObject *entry);
+		void hookEntryActionsRemoved (LeechCraft::IHookProxy_ptr proxy,
+				QObject *entry);
 		void hookEntryActionsRequested (LeechCraft::IHookProxy_ptr proxy,
 				QObject *entry);
-		void hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
+		void hookGotMessage2 (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message);
 	private slots:
 		void handleGotChatLogs (const QString&,
@@ -109,6 +112,8 @@ namespace ChatHistory
 		void raiseTab (QWidget*);
 
 		void gotLastMessages (QObject*, const QList<QObject*>&);
+
+		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 	};
 }
 }
