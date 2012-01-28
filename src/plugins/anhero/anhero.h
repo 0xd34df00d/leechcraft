@@ -18,39 +18,31 @@
 
 #ifndef PLUGINS_ANHERO_ANHERO_H
 #define PLUGINS_ANHERO_ANHERO_H
-#include <memory>
 #include <QObject>
 #include <QStringList>
-#include <QTranslator>
 #include <interfaces/iinfo.h>
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace AnHero
+{
+	class Plugin : public QObject
+					, public IInfo
 	{
-		namespace AnHero
-		{
-			class Plugin : public QObject
-						 , public IInfo
-			{
-				Q_OBJECT
-				Q_INTERFACES (IInfo)
-
-				std::unique_ptr<QTranslator> Translator_;
-			public:
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
-				void Release ();
-				QByteArray GetUniqueID () const;
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-			signals:
-				void gotEntity (const LeechCraft::Entity&);
-			};
-		};
+		Q_OBJECT
+		Q_INTERFACES (IInfo)
+	public:
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		void Release ();
+		QByteArray GetUniqueID () const;
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
 	};
-};
+}
+}
 
 #endif
-
