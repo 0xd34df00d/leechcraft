@@ -61,6 +61,7 @@ namespace Xoox
 	GlooxMessage::GlooxMessage (const QXmppMessage& message,
 			ClientConnection *conn)
 	: Type_ (MTChatMessage)
+	, SubType_ (MSTOther)
 	, Direction_ (DIn)
 	, Message_ (message)
 	, Connection_ (conn)
