@@ -24,45 +24,41 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Auscrie
+{
+	class ShooterDialog;
+
+	class Plugin : public QObject
+					, public IInfo
+					, public IActionsExporter
 	{
-		namespace Auscrie
-		{
-			class ShooterDialog;
+		Q_OBJECT
+		Q_INTERFACES (IInfo IActionsExporter)
 
-			class Plugin : public QObject
-						 , public IInfo
-						 , public IActionsExporter
-			{
-				Q_OBJECT
-				Q_INTERFACES (IInfo IActionsExporter)
+		ICoreProxy_ptr Proxy_;
+		QAction *ShotAction_;
+		ShooterDialog *Dialog_;
+	public:
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		void Release ();
+		QByteArray GetUniqueID () const;
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
 
-				ICoreProxy_ptr Proxy_;
-				QAction *ShotAction_;
-				ShooterDialog *Dialog_;
-			public:
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
-				void Release ();
-				QByteArray GetUniqueID () const;
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
+		QList<QAction*> GetActions (ActionsEmbedPlace) const;
+	private slots:
+		void makeScreenshot ();
+		void shoot ();
+	private:
+		void Post (const QByteArray&);
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
 
-				QList<QAction*> GetActions (ActionsEmbedPlace) const;
-			private slots:
-				void makeScreenshot ();
-				void shoot ();
-			private:
-				void Post (const QByteArray&);
-			signals:
-				void gotEntity (const LeechCraft::Entity&);
-
-				void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
-			};
-		};
+		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 	};
-};
+}
+}
 
 #endif
-
