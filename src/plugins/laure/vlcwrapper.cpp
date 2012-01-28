@@ -47,10 +47,10 @@ namespace Laure
 		}
 	}
 	
-	QMap<QString, QVariant> MediaMeta::toQVariantMap () const
+	QVariantMap MediaMeta::ToVariantMap () const
 	{
-		QMap<QString, QVariant> map;
-		map ["Artist"] = Artist_;
+		QVariantMap map;
+		map ["Artist"] = Artist_;	
 		map ["Album"] = Album_;
 		map ["Title"] = Title_;
 		map ["Genre"] = Genre_;
@@ -240,7 +240,7 @@ namespace Laure
 				/ 1000;
 				
 		Entity scrobbleEntity;
-		scrobbleEntity.Additional_ = meta.toQVariantMap ();
+		scrobbleEntity.Additional_ = meta.ToVariantMap ();
 		scrobbleEntity.Mime_ = "x-leechcraft/now-playing-track-info";
 		emit gotEntity (scrobbleEntity);
 	}
