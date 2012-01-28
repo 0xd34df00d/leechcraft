@@ -38,7 +38,7 @@ namespace LeechCraft
 			{
 				Proxy_ = proxy;
 
-				Translator_.reset (Util::InstallTranslator ("auscrie"));
+				Util::InstallTranslator ("auscrie");
 
 				Dialog_ = new ShooterDialog (Proxy_->GetMainWindow ());
 
