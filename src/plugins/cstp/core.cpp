@@ -30,6 +30,7 @@
 #include <QRegExp>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/ijobholder.h>
 #include <util/util.h>
 #include "task.h"
 #include "xmlsettingsmanager.h"
@@ -449,6 +450,12 @@ namespace CSTP
 		}
 		else if (role == LeechCraft::RoleControls)
 			return QVariant::fromValue<QToolBar*> (Toolbar_);
+		else if (role == CustomDataRoles::RoleJobHolderRow)
+			return QVariant::fromValue<JobHolderRow> (JobHolderRow::DownloadProgress);
+		else if (role == ProcessState::Done)
+			return TaskAt (index.row ()).Task_->GetDone ();
+		else if (role == ProcessState::Total)
+			return TaskAt (index.row ()).Task_->GetTotal ();
 		else
 			return QVariant ();
 	}
