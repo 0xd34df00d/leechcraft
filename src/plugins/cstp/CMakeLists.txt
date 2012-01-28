@@ -16,7 +16,6 @@ SET (SRCS
 	hook.cpp
 	addtask.cpp
 	xmlsettingsmanager.cpp
-	mainviewdelegate.cpp
 	morphfile.cpp
 	)
 SET (HEADERS
@@ -26,7 +25,6 @@ SET (HEADERS
 	hook.h
 	addtask.h
 	xmlsettingsmanager.h
-	mainviewdelegate.h
 	morphfile.h
 	)
 SET (FORMS

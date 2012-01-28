@@ -37,7 +37,6 @@
 #include <util/util.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
-#include "mainviewdelegate.h"
 
 namespace LeechCraft
 {
