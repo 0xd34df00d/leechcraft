@@ -60,6 +60,7 @@
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
+#include <interfaces/ijobholder.h>
 #include <util/tagscompletionmodel.h>
 #include <util/util.h>
 #include "xmlsettingsmanager.h"
@@ -576,6 +577,12 @@ namespace LeechCraft
 						}
 					case RoleTags:
 						return Handles_.at (row).Tags_;
+					case CustomDataRoles::RoleJobHolderRow:
+						return QVariant::fromValue<JobHolderRow> (JobHolderRow::DownloadProgress);
+					case ProcessState::Done:
+						return static_cast<qlonglong> (status.total_wanted_done);
+					case ProcessState::Total:
+						return static_cast<qlonglong> (status.total_wanted);
 					default:
 						return QVariant ();
 				}
