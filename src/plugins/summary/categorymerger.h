@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SUMMARY_CATEGORYMERGER_H
-#define PLUGINS_SUMMARY_CATEGORYMERGER_H
+#pragma once
+
 #include <vector>
 #include <boost/shared_ptr.hpp>
 #include <util/mergemodel.h>
@@ -26,38 +26,32 @@
 
 namespace LeechCraft
 {
-	struct Request;
+struct Request;
 
-	namespace Plugins
+namespace Summary
+{
+	/** Extracts categories from the request, finds the corresponding
+	 * plugins that can handle it and merges models received from them
+	 * into one.
+	 *
+	 * If the category is "embedded", like "downloaders", it also filters
+	 * the results according to the request paremeters.
+	 */
+	class CategoryMerger : public Util::MergeModel
 	{
-		namespace Summary
-		{
-			/** Extracts categories from the request, finds the corresponding
-			 * plugins that can handle it and merges models received from them
-			 * into one.
-			 *
-			 * If the category is "embedded", like "downloaders", it also filters
-			 * the results according to the request paremeters.
-			 */
-			class CategoryMerger : public Util::MergeModel
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				typedef std::vector<boost::shared_ptr<IFindProxy> > proxies_t;
-				proxies_t Proxies_;
-				boost::shared_ptr<Util::MergeModel> MergeModel_;
-				std::auto_ptr<FilterModel> FilterModel_;
-			public:
-				/** Constructs the merger according to request. Uses the merge
-				 * as a MergeModel if categories is the one of the built-ins.
-				 */
-				CategoryMerger (const Request& req,
-						const boost::shared_ptr<Util::MergeModel>& merge,
-						QObject* = 0);
-			};
-		};
+		typedef std::vector<boost::shared_ptr<IFindProxy> > proxies_t;
+		proxies_t Proxies_;
+		boost::shared_ptr<Util::MergeModel> MergeModel_;
+		std::auto_ptr<FilterModel> FilterModel_;
+	public:
+		/** Constructs the merger according to request. Uses the merge
+		 * as a MergeModel if categories is the one of the built-ins.
+		 */
+		CategoryMerger (const Request& req,
+				const boost::shared_ptr<Util::MergeModel>& merge,
+				QObject* = 0);
 	};
-};
-
-#endif
-
+}
+}

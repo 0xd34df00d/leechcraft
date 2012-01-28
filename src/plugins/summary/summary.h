@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SUMMARY_SUMMARY_H
-#define PLUGINS_SUMMARY_SUMMARY_H
+#pragma once
+
 #include <memory>
 #include <QObject>
 #include <QStringList>
@@ -29,54 +29,48 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Summary
+{
+	class Summary : public QObject
+					, public IInfo
+					, public IHaveTabs
+					, public IEntityHandler
+					, public ISummaryRepresentation
 	{
-		namespace Summary
-		{
-			class Summary : public QObject
-						  , public IInfo
-						  , public IHaveTabs
-						  , public IEntityHandler
-						  , public ISummaryRepresentation
-			{
-				Q_OBJECT
-				Q_INTERFACES (IInfo IHaveTabs IEntityHandler ISummaryRepresentation)
+		Q_OBJECT
+		Q_INTERFACES (IInfo IHaveTabs IEntityHandler ISummaryRepresentation)
 
-				std::auto_ptr<QTranslator> Translator_;
-				TabClasses_t TabClasses_;
-			public:
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
-				void Release ();
-				QByteArray GetUniqueID () const;
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-				QStringList Provides () const;
-				QStringList Needs () const;
-				QStringList Uses () const;
-				void SetProvider (QObject*, const QString&);
+		std::auto_ptr<QTranslator> Translator_;
+		TabClasses_t TabClasses_;
+	public:
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		void Release ();
+		QByteArray GetUniqueID () const;
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
+		QStringList Provides () const;
+		QStringList Needs () const;
+		QStringList Uses () const;
+		void SetProvider (QObject*, const QString&);
 
-				TabClasses_t GetTabClasses () const;
-				void TabOpenRequested (const QByteArray&);
+		TabClasses_t GetTabClasses () const;
+		void TabOpenRequested (const QByteArray&);
 
-				EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
-				void Handle (LeechCraft::Entity);
+		EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
+		void Handle (LeechCraft::Entity);
 
-				QModelIndex MapToSource (const QModelIndex&) const;
-				QTreeView* GetCurrentView () const;
-			signals:
-				void addNewTab (const QString&, QWidget*);
-				void removeTab (QWidget*);
-				void changeTabName (QWidget*, const QString&);
-				void changeTabIcon (QWidget*, const QIcon&);
-				void changeTooltip (QWidget*, QWidget*);
-				void statusBarChanged (QWidget*, const QString&);
-				void raiseTab (QWidget*);
-			};
-		};
+		QModelIndex MapToSource (const QModelIndex&) const;
+		QTreeView* GetCurrentView () const;
+	signals:
+		void addNewTab (const QString&, QWidget*);
+		void removeTab (QWidget*);
+		void changeTabName (QWidget*, const QString&);
+		void changeTabIcon (QWidget*, const QIcon&);
+		void changeTooltip (QWidget*, QWidget*);
+		void statusBarChanged (QWidget*, const QString&);
+		void raiseTab (QWidget*);
 	};
-};
-
-#endif
-
+}
+}

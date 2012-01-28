@@ -22,25 +22,22 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Summary
+{
+	SummaryTagsFilter::SummaryTagsFilter (QObject *parent)
+	: Util::TagsFilterModel (parent)
 	{
-		namespace Summary
-		{
-			SummaryTagsFilter::SummaryTagsFilter (QObject *parent)
-			: Util::TagsFilterModel (parent)
-			{
-				setProperty ("__LeechCraft_own_core_model", true);
-			}
-
-			QStringList SummaryTagsFilter::GetTagsForIndex (int index) const
-			{
-				QAbstractItemModel *model = sourceModel ();
-				if (!model)
-					return QStringList ();
-
-				return model->data (model->index (index, 0),
-						RoleTags).toStringList ();
-			}
-		}
+		setProperty ("__LeechCraft_own_core_model", true);
 	}
+
+	QStringList SummaryTagsFilter::GetTagsForIndex (int index) const
+	{
+		QAbstractItemModel *model = sourceModel ();
+		if (!model)
+			return QStringList ();
+
+		return model->data (model->index (index, 0),
+				RoleTags).toStringList ();
+	}
+}
 }

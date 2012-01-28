@@ -16,32 +16,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SUMMARY_REQUESTPARSER_H
-#define PLUGINS_SUMMARY_REQUESTPARSER_H
+#pragma once
+
 #include <QObject>
 #include <QStringList>
 #include <interfaces/ifinder.h>
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Summary
+{
+	class RequestParser : public QObject
 	{
-		namespace Summary
-		{
-			class RequestParser : public QObject
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				Request Request_;
-			public:
-				RequestParser (const QString& = QString (), QObject* = 0);
+		Request Request_;
+	public:
+		RequestParser (const QString& = QString (), QObject* = 0);
 
-				void Parse (QString);
-				const Request& GetRequest () const;
-			};
-		};
+		void Parse (QString);
+		const Request& GetRequest () const;
 	};
-};
-
-#endif
-
+}
+}

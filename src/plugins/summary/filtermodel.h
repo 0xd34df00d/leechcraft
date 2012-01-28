@@ -16,56 +16,50 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SUMMARY_FILTERMODEL_H
-#define PLUGINS_SUMMARY_FILTERMODEL_H
+#pragma once
+
 #include <QSortFilterProxyModel>
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Summary
+{
+	/** Extends QSortFilterProxyModel by allowing to filter items by
+	 * their tags. Tags are obtained via the Core::GetTagsForIndex()
+	 * function.
+	 */
+	class FilterModel : public QSortFilterProxyModel
 	{
-		namespace Summary
-		{
-			/** Extends QSortFilterProxyModel by allowing to filter items by
-			 * their tags. Tags are obtained via the Core::GetTagsForIndex()
-			 * function.
-			 */
-			class FilterModel : public QSortFilterProxyModel
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				bool NormalMode_;
-			public:
-				/** Constructs the filter model and sets tagless mode.
-				 *
-				 * @param[in] parent The parent of this model.
-				 */
-				FilterModel (QObject *parent = 0);
+		bool NormalMode_;
+	public:
+		/** Constructs the filter model and sets tagless mode.
+		 *
+		 * @param[in] parent The parent of this model.
+		 */
+		FilterModel (QObject *parent = 0);
 
-				/** Sets the tags mode. In this mode the string whatever it is
-				 * is interpreted as a list of tags to test for.
-				 *
-				 * @param[in] tags Whether to use tags mode.
-				 */
-				void SetTagsMode (bool tags);
-			protected:
-				/** In normal mode this function calls
-				 * QSortFilterProxyModel::filterAcceptsRow(). In tags mode, this
-				 * function interprets filterRegExp().pattern() as a
-				 * human-readable separated list of tags, requests tags for the
-				 * source_row of the source_parent. If either of the lists is
-				 * empty it returns true. If item's tag contain filter tags it
-				 * returns true. Otherwise it returns false.
-				 *
-				 * @param[in] source_row The row to check.
-				 * @param[in] source_parent The parent of this row.
-				 * @return Whether the row is accepted or not.
-				 */
-				virtual bool filterAcceptsRow (int source_row, const QModelIndex& source_parent) const;
-			};
-		};
+		/** Sets the tags mode. In this mode the string whatever it is
+		 * is interpreted as a list of tags to test for.
+		 *
+		 * @param[in] tags Whether to use tags mode.
+		 */
+		void SetTagsMode (bool tags);
+	protected:
+		/** In normal mode this function calls
+		 * QSortFilterProxyModel::filterAcceptsRow(). In tags mode, this
+		 * function interprets filterRegExp().pattern() as a
+		 * human-readable separated list of tags, requests tags for the
+		 * source_row of the source_parent. If either of the lists is
+		 * empty it returns true. If item's tag contain filter tags it
+		 * returns true. Otherwise it returns false.
+		 *
+		 * @param[in] source_row The row to check.
+		 * @param[in] source_parent The parent of this row.
+		 * @return Whether the row is accepted or not.
+		 */
+		virtual bool filterAcceptsRow (int source_row, const QModelIndex& source_parent) const;
 	};
-};
-
-#endif
-
+}
+}

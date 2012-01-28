@@ -16,26 +16,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef SUMMARYTAGSFILTER_H
-#define SUMMARYTAGSFILTER_H
+#pragma once
+
 #include <util/tagsfiltermodel.h>
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Summary
+{
+	class SummaryTagsFilter : public Util::TagsFilterModel
 	{
-		namespace Summary
-		{
-			class SummaryTagsFilter : public Util::TagsFilterModel
-			{
-				Q_OBJECT
-			public:
-				SummaryTagsFilter (QObject* = 0);
-			protected:
-				QStringList GetTagsForIndex (int) const;
-			};
-		}
-	}
+		Q_OBJECT
+	public:
+		SummaryTagsFilter (QObject* = 0);
+	protected:
+		QStringList GetTagsForIndex (int) const;
+	};
 }
-
-#endif
+}

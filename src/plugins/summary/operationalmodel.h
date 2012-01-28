@@ -16,37 +16,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SUMMARY_OPERATIONALMODEL_H
-#define PLUGINS_SUMMARY_OPERATIONALMODEL_H
+#pragma once
+
 #include <util/mergemodel.h>
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Summary
+{
+	class OperationalModel : public Util::MergeModel
 	{
-		namespace Summary
+		Q_OBJECT
+	public:
+		enum Operation
 		{
-			class OperationalModel : public Util::MergeModel
-			{
-				Q_OBJECT
-			public:
-				enum Operation
-				{
-					OpNull,
-					OpAnd,
-					OpOr
-				};
-			private:
-				Operation Op_;
-			public:
-				OperationalModel (QObject* = 0);
-				void SetOperation (Operation);
-			protected:
-				bool AcceptsRow (QAbstractItemModel*, int) const;
-			};
+			OpNull,
+			OpAnd,
+			OpOr
 		};
+	private:
+		Operation Op_;
+	public:
+		OperationalModel (QObject* = 0);
+		void SetOperation (Operation);
+	protected:
+		bool AcceptsRow (QAbstractItemModel*, int) const;
 	};
-};
-
-#endif
-
+}
+}
