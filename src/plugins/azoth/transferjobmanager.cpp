@@ -24,7 +24,7 @@
 #include <QFileDialog>
 #include <QToolBar>
 #include <QAction>
-#include <interfaces/structures.h>
+#include <interfaces/ijobholder.h>
 #include <util/util.h>
 #include <util/notificationactionhandler.h>
 #include "interfaces/iclentry.h"
@@ -127,6 +127,8 @@ namespace Azoth
 		}
 		Object2Status_ [jobObj] = items.at (1);
 		Object2Progress_ [jobObj] = items.at (2);
+		items.at (2)->setData (QVariant::fromValue<JobHolderRow> (JobHolderRow::ProcessProgress),
+				CustomDataRoles::RoleJobHolderRow);
 
 		SummaryModel_->appendRow (items);
 
@@ -426,10 +428,13 @@ namespace Azoth
 		if (!Object2Progress_.contains (sender ()))
 			return;
 
-		Object2Progress_ [sender ()]->setText (tr ("%1 of %2 (%3%).")
+		auto progress = Object2Progress_ [sender ()];
+		progress->setText (tr ("%1 of %2 (%3%).")
 					.arg (Util::MakePrettySize (done))
 					.arg (Util::MakePrettySize (total))
 					.arg (done * 100 / total));
+		progress->setData (done, ProcessState::Done);
+		progress->setData (total, ProcessState::Total);
 	}
 
 	void TransferJobManager::handleAbortAction ()
