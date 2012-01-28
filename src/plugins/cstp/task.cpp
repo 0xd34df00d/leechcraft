@@ -45,10 +45,15 @@ namespace CSTP
 	, Speed_ (0)
 	, Counter_ (0)
 	, UpdateCounter_ (0)
-	, Timer_ (0)
+	, Timer_ (new QTimer (this))
 	, CanChangeName_ (true)
 	{
 		StartTime_.start ();
+
+		connect (Timer_,
+				SIGNAL (timeout ()),
+				this,
+				SIGNAL (updateInterface ()));
 	}
 
 	Task::Task (QNetworkReply *reply)
@@ -59,10 +64,15 @@ namespace CSTP
 	, Speed_ (0)
 	, Counter_ (0)
 	, UpdateCounter_ (0)
-	, Timer_ (0)
+	, Timer_ (new QTimer (this))
 	, CanChangeName_ (true)
 	{
 		StartTime_.start ();
+
+		connect (Timer_,
+				SIGNAL (timeout ()),
+				this,
+				SIGNAL (updateInterface ()));
 	}
 
 	void Task::Start (const boost::intrusive_ptr<MorphFile>& tof)
@@ -122,6 +132,9 @@ namespace CSTP
 					return;
 			}
 		}
+
+		if (!Timer_->isActive ())
+			Timer_->start (3000);
 
 		Reply_->setParent (0);
 		connect (Reply_.get (),
@@ -259,14 +272,6 @@ namespace CSTP
 		Speed_ = 0;
 		FileSizeAtStart_ = -1;
 		Reply_.reset ();
-
-		delete Timer_;
-		Timer_ = new QTimer (this);
-		connect (Timer_,
-				SIGNAL (timeout ()),
-				this,
-				SIGNAL (updateInterface ()));
-		Timer_->start (3000);
 	}
 
 	void Task::RecalculateSpeed ()
