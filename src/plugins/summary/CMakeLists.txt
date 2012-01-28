@@ -32,6 +32,7 @@ SET (SRCS
 	operationalmodel.cpp
 	searchwidget.cpp
 	summarytagsfilter.cpp
+	modeldelegate.cpp
 	)
 SET (HEADERS
 	summary.h
@@ -44,6 +45,7 @@ SET (HEADERS
 	operationalmodel.h
 	searchwidget.h
 	summarytagsfilter.h
+	modeldelegate.h
 	)
 SET (FORMS
 	summarywidget.ui

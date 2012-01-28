@@ -32,6 +32,7 @@
 #include "core.h"
 #include "searchwidget.h"
 #include "summary.h"
+#include "modeldelegate.h"
 
 namespace LeechCraft
 {
@@ -54,7 +55,9 @@ namespace Summary
 				this,
 				SLOT (handleActionTriggered (QAction*)));
 		ReinitToolbar ();
+
 		Ui_.setupUi (this);
+		Ui_.PluginsTasksTree_->setItemDelegate (new ModelDelegate (this));
 
 		Core::Instance ().GetProxy ()->GetMainWindow ()->
 			addDockWidget (Qt::LeftDockWidgetArea, SearchWidget_);
