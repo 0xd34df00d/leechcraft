@@ -30,7 +30,6 @@
 #include <QtDebug>
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
-#include "hook.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
 
