@@ -46,6 +46,7 @@ namespace Summary
 			pbo.minimum = 0;
 			pbo.maximum = total;
 			pbo.progress = done;
+			pbo.state = option.state;
 			pbo.text = index.data ().toString ();
 			pbo.textVisible = true;
 			QApplication::style ()->drawControl (QStyle::CE_ProgressBar, &pbo, painter);
