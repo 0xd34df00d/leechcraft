@@ -1,26 +1,10 @@
-IF (NOT QT_USE_FILE)
-	CMAKE_MINIMUM_REQUIRED (VERSION 2.6)
-	IF (COMMAND cmake_policy)
-		cmake_policy (SET CMP0003 NEW)
-	ENDIF (COMMAND cmake_policy)
-
-	PROJECT (leechcraft_laure)
-
-	IF (NOT CMAKE_MODULE_PATH)
-		SET (CMAKE_MODULE_PATH "/usr/local/share/leechcraft/cmake;/usr/share/leechcraft/cmake")
-	ENDIF (NOT CMAKE_MODULE_PATH)
-
-	FIND_PACKAGE (Boost REQUIRED)
-	FIND_PACKAGE (Qt4 REQUIRED)
-	FIND_PACKAGE (LeechCraft REQUIRED)
-ENDIF (NOT QT_USE_FILE)
-
-SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
+PROJECT (leechcraft_laure)
+INCLUDE (InitLCPlugin OPTIONAL)
 
 SET (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 OPTION (TESTS_LAURE "Enable Laure tests" OFF)
-OPTION (ENABLE_LASTFM "Enable Last.fm submitter" ON)
 
 SET (QT_USE_QTGUI TRUE)
 SET (QT_USE_QTNETWORK TRUE)
@@ -31,12 +15,7 @@ IF (TESTS_LAURE)
 ENDIF (TESTS_LAURE)
 
 FIND_PACKAGE (VLC REQUIRED)
-FIND_PACKAGE (LastFM REQUIRED)
 FIND_PACKAGE (MAGIC REQUIRED)
-
-IF (LastFM_FOUND)
-	ADD_DEFINITIONS (-DHAVE_LASTFM)
-ENDIF (LastFM_FOUND)
 
 IF (MAGIC_FOUND)
 	ADD_DEFINITIONS (-DHAVE_MAGIC)
@@ -49,7 +28,6 @@ INCLUDE_DIRECTORIES (
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	${VLC_INCLUDE_DIR}
-	${LastFM_INCLUDE_DIR}
 	${MAGIC_INCLUDE_DIR}
 	)
 
@@ -60,7 +38,6 @@ SET (SRCS
 	volumeslider.cpp
 	vlcwrapper.cpp
 	playlistaddmenu.cpp
-	lastfmsubmitter.cpp
 	playlistview.cpp
 	xmlsettingsmanager.cpp
 	playlistwidget.cpp
@@ -77,7 +54,6 @@ SET (HEADERS
 	volumeslider.h
 	vlcwrapper.h
 	playlistaddmenu.h
-	lastfmsubmitter.h
 	playlistview.h
 	xmlsettingsmanager.h
 	playlistwidget.h
@@ -117,7 +93,6 @@ TARGET_LINK_LIBRARIES (leechcraft_laure
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	${VLC_LIBRARIES}
-	${LastFM_LIBRARIES}
 	${MAGIC_LIBRARIES}
 	)
 

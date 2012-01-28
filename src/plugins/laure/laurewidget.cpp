@@ -101,14 +101,6 @@ namespace Laure
 				SLOT (setVolume (int)));
 		
 		connect (VLCWrapper_,
-				SIGNAL (currentTrackMeta (MediaMeta)),
-				this,
-				SIGNAL (currentTrackMeta (MediaMeta)));
-		connect (VLCWrapper_,
-				SIGNAL (trackFinished ()),
-				this,
-				SIGNAL (trackFinished ()));
-		connect (VLCWrapper_,
 				SIGNAL (itemAdded (MediaMeta, QString)),
 				Ui_.PlayListWidget_,
 				SLOT (handleItemAdded (MediaMeta, QString)));

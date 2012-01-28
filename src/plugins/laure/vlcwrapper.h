@@ -41,6 +41,8 @@ namespace Laure
 	 */
 	struct MediaMeta
 	{
+		QMap<QString, QVariant> toQVariantMap () const;
+		
 		QString Artist_, Album_, Title_, Genre_, Date_;
 		int TrackNumber_;
 		int Length_;
@@ -219,17 +221,6 @@ namespace Laure
 	private slots:
 		void nowPlaying ();
 	signals:
-		/** @brief Is emitted to notify about the current track
-		 * media meta info.
-		 * 
-		 * @param[out] meta Media meta info.
-		 */
-		void currentTrackMeta (const MediaMeta& meta);
-		
-		/** @brief Is emitted when the track is finished.
-		 */
-		void trackFinished ();
-		
 		/** @brief Is emitted when the item index is played.
 		 *
 		 * @param[out] index Item index.

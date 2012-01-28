@@ -83,17 +83,6 @@ namespace Laure
 		 */
 		void playPause ();
 		
-		/** @brief Is emitted for sending media meta info to the desired
-		 * destination.
-		 * 
-		 * @param[out] mediameta Media meta info.
-		 */
-		void currentTrackMeta (const MediaMeta& mediameta);
-		
-		/** @brief Is emitted when the current track is finished.
-		 */
-		void trackFinished ();
-		
 		/** @brief Is emitted when the media item needs to be added to
 		 * the playlist.
 		 *
