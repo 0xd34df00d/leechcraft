@@ -13,15 +13,18 @@ SET (SRCS
 	lhtr.cpp
 	richeditorwidget.cpp
 	hyperlinkdialog.cpp
+	imagedialog.cpp
 	)
 SET (HEADERS
 	lhtr.h
 	richeditorwidget.h
 	hyperlinkdialog.h
+	imagedialog.h
 	)
 SET (FORMS
 	richeditorwidget.ui
 	hyperlinkdialog.ui
+	imagedialog.ui
 	)
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
