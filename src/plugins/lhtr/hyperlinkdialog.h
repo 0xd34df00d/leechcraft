@@ -27,6 +27,8 @@ namespace LHTR
 {
 	class HyperlinkDialog : public QDialog
 	{
+		Q_OBJECT
+
 		Ui::HyperlinkDialog Ui_;
 	public:
 		HyperlinkDialog (QWidget* = 0);
@@ -35,6 +37,8 @@ namespace LHTR
 		QString GetText () const;
 		QString GetTitle () const;
 		QString GetTarget () const;
+	private slots:
+		void checkCanAccept ();
 	};
 }
 }

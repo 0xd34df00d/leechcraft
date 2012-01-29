@@ -17,6 +17,8 @@
  **********************************************************************/
 
 #include "hyperlinkdialog.h"
+#include <QPushButton>
+#include <QtDebug>
 
 namespace LeechCraft
 {
@@ -26,6 +28,16 @@ namespace LHTR
 	: QDialog (parent)
 	{
 		Ui_.setupUi (this);
+
+		connect (Ui_.Link_,
+				SIGNAL (textChanged (QString)),
+				this,
+				SLOT (checkCanAccept ()));
+		connect (Ui_.Text_,
+				SIGNAL (textChanged (QString)),
+				this,
+				SLOT (checkCanAccept ()));
+		checkCanAccept ();
 	}
 
 	QString HyperlinkDialog::GetLink () const
@@ -46,6 +58,13 @@ namespace LHTR
 	QString HyperlinkDialog::GetTarget () const
 	{
 		return Ui_.Target_->currentText ();
+	}
+
+	void HyperlinkDialog::checkCanAccept ()
+	{
+		const bool can = !GetLink ().isEmpty () && !GetText ().isEmpty ();
+		qDebug () << Q_FUNC_INFO << can << GetLink () << GetText ();
+		Ui_.ButtonBox_->button (QDialogButtonBox::Ok)->setEnabled (can);
 	}
 }
 }
