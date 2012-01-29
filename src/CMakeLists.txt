@@ -136,15 +136,16 @@ OPTION (ENABLE_SNAILS "Build Snails, LeechCraft mail client" OFF)
 OPTION (ENABLE_SYNCER "Build Syncer, the synchronization plugin for LeechCraft" OFF)
 OPTION (ENABLE_TABSESSMANAGER "Build Tab Session Manager" OFF)
 OPTION (ENABLE_TABSLIST "Quick overview of tabs" OFF)
-OPTION (ENABLE_VFSCORE "Build VFS core" OFF)
 OPTION (ENABLE_LASTFMSCROBBLE "Build Last.fm scrobbler" OFF)
+OPTION (ENABLE_LHTR "Build LeechCraft HTML Text editoR" OFF)
 
 # Defunct
-OPTION (ENABLE_FTP "Build LCFTP, the FTP client" ON)
+OPTION (ENABLE_FTP "Build LCFTP, the FTP client" OFF)
 OPTION (ENABLE_JUFFED "Build JuffEd, the advanced text editor" OFF)
 OPTION (ENABLE_OTZERKALU "Build Otzerkalu, which allows one to download web sites recursively" OFF)
 OPTION (ENABLE_LAURE "Build Laure, the new generation audio/video player" OFF)
 OPTION (ENABLE_TRANSPARENTARCH "Build TransparentArch, the plugin for transparent access to archives in various formats" OFF)
+OPTION (ENABLE_VFSCORE "Build VFS core" OFF)
 
 ENABLE_TESTING ()
 
@@ -357,6 +358,10 @@ ENDIF (ENABLE_TABSESSMANAGER)
 IF (ENABLE_LASTFMSCROBBLE)
 	ADD_SUBDIRECTORY (plugins/lastfmscrobble)
 ENDIF (ENABLE_LASTFMSCROBBLE)
+
+IF (ENABLE_LHTR)
+	ADD_SUBDIRECTORY (plugins/lhtr)
+ENDIF (ENABLE_LHTR)
 
 SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTXML TRUE)
