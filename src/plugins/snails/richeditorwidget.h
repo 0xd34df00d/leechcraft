@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QWidget>
+#include <QHash>
 #include "ui_richeditorwidget.h"
 
 namespace LeechCraft
@@ -30,11 +31,20 @@ namespace Snails
 		Q_OBJECT
 
 		Ui::RichEditorWidget Ui_;
+
+		QHash<QWebPage::WebAction, QAction*> WebAction2Action_;
+		QHash<QString, QHash<QString, QAction*>> Cmd2Action_;
 	public:
 		RichEditorWidget (QWidget* = 0);
 
 		QString GetHTML () const;
 		QString GetPlainText () const;
+	private:
+		void ExecCommand (const QString&, const QString& = QString ());
+		bool QueryCommandState (const QString& cmd);
+	private slots:
+		void updateActions ();
+		void handleCmd ();
 	};
 }
 }
