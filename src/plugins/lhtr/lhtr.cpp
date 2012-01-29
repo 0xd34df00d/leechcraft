@@ -18,6 +18,7 @@
 
 #include "lhtr.h"
 #include <QIcon>
+#include <util/util.h>
 #include "richeditorwidget.h"
 
 namespace LeechCraft
@@ -27,6 +28,8 @@ namespace LHTR
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
+
+		Util::InstallTranslator ("lhtr");
 	}
 
 	void Plugin::SecondInit ()
