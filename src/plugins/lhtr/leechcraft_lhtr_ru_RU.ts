@@ -6,7 +6,7 @@
     <message>
         <location filename="lhtr.cpp" line="52"/>
         <source>LeechCraft HTML Text editoR.</source>
-        <translation type="unfinished"></translation>
+        <translation>HTML-редактор LeechCraft.</translation>
     </message>
 </context>
 <context>
@@ -14,97 +14,97 @@
     <message>
         <location filename="richeditorwidget.cpp" line="83"/>
         <source>Editor bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Панель редактора</translation>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="117"/>
         <source>Bold</source>
-        <translation type="unfinished"></translation>
+        <translation>Жирный</translation>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="119"/>
         <source>Italic</source>
-        <translation type="unfinished"></translation>
+        <translation>Курсив</translation>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="121"/>
         <source>Underline</source>
-        <translation type="unfinished"></translation>
+        <translation>Подчеркнутый</translation>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="123"/>
         <source>Strikethrough</source>
-        <translation type="unfinished"></translation>
+        <translation>Перечеркнутый</translation>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="129"/>
         <source>Align left</source>
-        <translation type="unfinished"></translation>
+        <translation>По левому краю</translation>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="131"/>
         <source>Align center</source>
-        <translation type="unfinished"></translation>
+        <translation>По центру</translation>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="133"/>
         <source>Align right</source>
-        <translation type="unfinished"></translation>
+        <translation>По правому краю</translation>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="135"/>
         <source>Align justify</source>
-        <translation type="unfinished"></translation>
+        <translation>По ширине</translation>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="146"/>
         <source>Headings</source>
-        <translation type="unfinished"></translation>
+        <translation>Заголовки</translation>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="152"/>
         <source>Heading %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Заголовок %1</translation>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="156"/>
         <source>Paragraph</source>
-        <translation type="unfinished"></translation>
+        <translation>Параграф</translation>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="161"/>
         <source>Background color...</source>
-        <translation type="unfinished"></translation>
+        <translation>Цвет фона...</translation>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="165"/>
         <source>Text color...</source>
-        <translation type="unfinished"></translation>
+        <translation>Цвет текста...</translation>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="169"/>
         <source>Font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Шрифт...</translation>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="174"/>
         <source>Indent more</source>
-        <translation type="unfinished"></translation>
+        <translation>Увеличить отступ</translation>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="175"/>
         <source>Indent less</source>
-        <translation type="unfinished"></translation>
+        <translation>Уменьшить отступ</translation>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="179"/>
         <source>Ordered list</source>
-        <translation type="unfinished"></translation>
+        <translation>Нумерованный список</translation>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="180"/>
         <source>Unordered list</source>
-        <translation type="unfinished"></translation>
+        <translation>Маркированный список</translation>
     </message>
 </context>
 <context>
@@ -112,7 +112,7 @@
     <message>
         <location filename="richeditorwidget.ui" line="24"/>
         <source>about:blank</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 </TS>

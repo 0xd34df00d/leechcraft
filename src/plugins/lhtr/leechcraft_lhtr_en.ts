@@ -6,7 +6,7 @@
     <message>
         <location filename="lhtr.cpp" line="52"/>
         <source>LeechCraft HTML Text editoR.</source>
-        <translation type="unfinished"></translation>
+        <translation>LeechCraft HTML Text editoR.</translation>
     </message>
 </context>
 <context>
@@ -14,97 +14,97 @@
     <message>
         <location filename="richeditorwidget.cpp" line="83"/>
         <source>Editor bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Editor bar</translation>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="117"/>
         <source>Bold</source>
-        <translation type="unfinished"></translation>
+        <translation>Bold</translation>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="119"/>
         <source>Italic</source>
-        <translation type="unfinished"></translation>
+        <translation>Italic</translation>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="121"/>
         <source>Underline</source>
-        <translation type="unfinished"></translation>
+        <translation>Underline</translation>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="123"/>
         <source>Strikethrough</source>
-        <translation type="unfinished"></translation>
+        <translation>Strikethrough</translation>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="129"/>
         <source>Align left</source>
-        <translation type="unfinished"></translation>
+        <translation>Align left</translation>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="131"/>
         <source>Align center</source>
-        <translation type="unfinished"></translation>
+        <translation>Align center</translation>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="133"/>
         <source>Align right</source>
-        <translation type="unfinished"></translation>
+        <translation>Align right</translation>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="135"/>
         <source>Align justify</source>
-        <translation type="unfinished"></translation>
+        <translation>Align justify</translation>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="146"/>
         <source>Headings</source>
-        <translation type="unfinished"></translation>
+        <translation>Headings</translation>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="152"/>
         <source>Heading %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Heading %1</translation>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="156"/>
         <source>Paragraph</source>
-        <translation type="unfinished"></translation>
+        <translation>Paragraph</translation>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="161"/>
         <source>Background color...</source>
-        <translation type="unfinished"></translation>
+        <translation>Background color...</translation>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="165"/>
         <source>Text color...</source>
-        <translation type="unfinished"></translation>
+        <translation>Text color...</translation>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="169"/>
         <source>Font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Font...</translation>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="174"/>
         <source>Indent more</source>
-        <translation type="unfinished"></translation>
+        <translation>Indent more</translation>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="175"/>
         <source>Indent less</source>
-        <translation type="unfinished"></translation>
+        <translation>Indent less</translation>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="179"/>
         <source>Ordered list</source>
-        <translation type="unfinished"></translation>
+        <translation>Ordered list</translation>
     </message>
     <message>
         <location filename="richeditorwidget.cpp" line="180"/>
         <source>Unordered list</source>
-        <translation type="unfinished"></translation>
+        <translation>Unordered list</translation>
     </message>
 </context>
 <context>
@@ -112,7 +112,7 @@
     <message>
         <location filename="richeditorwidget.ui" line="24"/>
         <source>about:blank</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 </TS>
