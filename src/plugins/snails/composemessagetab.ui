@@ -65,7 +65,7 @@
     </layout>
    </item>
    <item>
-    <widget class="LeechCraft::Snails::RichEditorWidget" name="MsgEdit_" native="true">
+    <widget class="QFrame" name="MsgEditFrame_">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
        <horstretch>0</horstretch>
@@ -76,14 +76,6 @@
    </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>LeechCraft::Snails::RichEditorWidget</class>
-   <extends>QWidget</extends>
-   <header>richeditorwidget.h</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

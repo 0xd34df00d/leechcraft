@@ -22,6 +22,8 @@
 #include <interfaces/ihavetabs.h>
 #include "ui_composemessagetab.h"
 
+class IEditorWidget;
+
 namespace LeechCraft
 {
 namespace Snails
@@ -39,6 +41,9 @@ namespace Snails
 
 		QToolBar *Toolbar_;
 		QMenu *AccountsMenu_;
+
+		QWidget *MsgEditWidget_;
+		IEditorWidget *MsgEdit_;
 	public:
 		static void SetParentPlugin (QObject*);
 		static void SetTabClassInfo (const TabClassInfo&);
