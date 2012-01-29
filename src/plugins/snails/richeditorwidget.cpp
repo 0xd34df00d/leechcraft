@@ -135,6 +135,9 @@ namespace Snails
 			addCmd (tr ("Heading %1").arg (i), QString (), "formatBlock",
 					Addable (headMenu), "h" + num);
 		}
+		headMenu->addSeparator ();
+		addCmd (tr ("Paragraph"), QString (), "formatBlock",
+				Addable (headMenu), "p");
 
 		bar->addSeparator ();
 
