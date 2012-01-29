@@ -24,7 +24,11 @@
 #include <QMenu>
 #include <QColorDialog>
 #include <QFontDialog>
+#include <QInputDialog>
+#include <QTextDocument>
+#include <QXmlStreamWriter>
 #include <QtDebug>
+#include "hyperlinkdialog.h"
 
 namespace LeechCraft
 {
@@ -159,15 +163,18 @@ namespace LHTR
 		bar->addSeparator ();
 
 		QAction *bgColor = bar->addAction (tr ("Background color..."),
-					this, SLOT (handleBgColor ()));
+					this,
+					SLOT (handleBgColor ()));
 		bgColor->setProperty ("ActionIcon", "format-fill-color");
 
 		QAction *fgColor = bar->addAction (tr ("Text color..."),
-					this, SLOT (handleFgColor ()));
+					this,
+					SLOT (handleFgColor ()));
 		fgColor->setProperty ("ActionIcon", "format-text-color");
 
 		QAction *font = bar->addAction (tr ("Font..."),
-					this, SLOT (handleFont ()));
+					this,
+					SLOT (handleFont ()));
 		font->setProperty ("ActionIcon", "list-add-font");
 		bar->addSeparator ();
 
@@ -178,6 +185,12 @@ namespace LHTR
 
 		addCmd (tr ("Ordered list"), "format-list-ordered", "insertOrderedList", barAdd);
 		addCmd (tr ("Unordered list"), "format-list-unordered", "insertUnorderedList", barAdd);
+
+		bar->addSeparator ();
+		QAction *link = bar->addAction (tr ("Insert link..."),
+					this,
+					SLOT (handleInsertLink ()));
+		link->setProperty ("ActionIcon", "insert-link");
 	}
 
 	QString RichEditorWidget::GetContents (ContentType type) const
@@ -218,8 +231,8 @@ namespace LHTR
 	{
 		auto frame = Ui_.View_->page ()->mainFrame ();
 		const QString& js = arg.isEmpty () ?
-				QString ("document.execCommand(\"%1\", false, null)").arg (cmd) :
-				QString ("document.execCommand(\"%1\", false, \"%2\")").arg (cmd, arg);
+				QString ("document.execCommand('%1', false, null)").arg (cmd) :
+				QString ("document.execCommand('%1', false, '%2')").arg (cmd, arg);
 		frame->evaluateJavaScript (js);
 	}
 
@@ -300,6 +313,42 @@ namespace LHTR
 		checkWebAct (&QFont::bold, QWebPage::ToggleBold);
 		checkWebAct (&QFont::italic, QWebPage::ToggleItalic);
 		checkWebAct (&QFont::underline, QWebPage::ToggleUnderline);
+	}
+
+	void RichEditorWidget::handleInsertLink ()
+	{
+		if (!Ui_.View_->selectedText ().isEmpty ())
+		{
+			const QString& url = QInputDialog::getText (this,
+					tr ("Insert link"), tr ("Enter URL:"));
+			const QUrl& guess = QUrl::fromUserInput (url);
+			if (guess.isValid ())
+				ExecCommand ("createLink", guess.toString ());
+
+			return;
+		}
+
+		HyperlinkDialog dia;
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		const QString& link = dia.GetLink ();
+		const QString& text = dia.GetText ();
+		if (link.isEmpty () || text.isEmpty ())
+			return;
+
+		QString html;
+		QXmlStreamWriter w (&html);
+		w.writeStartElement ("a");
+		w.writeAttribute ("href", link);
+		if (!dia.GetTitle ().isEmpty ())
+			w.writeAttribute ("title", dia.GetTitle ());
+		if (!dia.GetTarget ().isEmpty ())
+			w.writeAttribute ("target", dia.GetTarget ());
+		w.writeCharacters (text);
+		w.writeEndElement ();
+
+		ExecCommand ("insertHTML", html);
 	}
 }
 }

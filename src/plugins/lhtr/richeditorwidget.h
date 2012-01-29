@@ -56,6 +56,7 @@ namespace LHTR
 		void handleBgColor ();
 		void handleFgColor ();
 		void handleFont ();
+		void handleInsertLink ();
 	};
 }
 }
