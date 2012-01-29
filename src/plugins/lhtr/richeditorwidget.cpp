@@ -80,6 +80,7 @@ namespace LHTR
 
 		Ui_.View_->page ()->setContentEditable (true);
 		Ui_.View_->settings ()->setAttribute (QWebSettings::DeveloperExtrasEnabled, true);
+		Ui_.View_->page ()->setLinkDelegationPolicy (QWebPage::DelegateAllLinks);
 		connect (Ui_.View_->page (),
 				SIGNAL (selectionChanged ()),
 				this,
