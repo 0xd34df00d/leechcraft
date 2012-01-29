@@ -126,6 +126,10 @@ namespace LHTR
 				QWebPage::ToggleUnderline, barAdd)->setCheckable (true);
 		addCmd (tr ("Strikethrough"), "format-text-strikethrough",
 				"strikeThrough", barAdd)->setCheckable (true);
+		fwdCmd (tr ("Subscript"), "format-text-subscript",
+				QWebPage::ToggleSubscript, barAdd)->setCheckable (true);
+		fwdCmd (tr ("Superscript"), "format-text-superscript",
+				QWebPage::ToggleSuperscript, barAdd)->setCheckable (true);
 
 		bar->addSeparator ();
 
@@ -263,6 +267,8 @@ namespace LHTR
 		upWebAct (QWebPage::ToggleBold);
 		upWebAct (QWebPage::ToggleItalic);
 		upWebAct (QWebPage::ToggleUnderline);
+		upWebAct (QWebPage::ToggleSubscript);
+		upWebAct (QWebPage::ToggleSuperscript);
 
 		upWebAct (QWebPage::AlignLeft);
 		upWebAct (QWebPage::AlignCenter);
