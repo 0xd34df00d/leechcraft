@@ -112,6 +112,8 @@ namespace SecureStorage
 				"securestoragesettings.xml");
 		XmlSettingsDialog_->SetCustomWidget ("SettingsWidget", SettingsWidget_);
 		UpdateActionsStates ();
+		
+		InputPasswordDialog_.reset (new QInputDialog ());
 	}
 
 	void Plugin::SecondInit ()
@@ -303,16 +305,39 @@ namespace SecureStorage
 				SetCryptoSystem (new CryptoSystem (""));
 			else
 			{
-				QInputDialog dialog;
-				dialog.setTextEchoMode (QLineEdit::Password);
-				dialog.setWindowTitle (WindowTitle_);
-				dialog.setLabelText (tr ("Enter master password:"));
 				while (true)
 				{
-					if (dialog.exec () != QDialog::Accepted)
+					// This method can be called recursively from loop.exec() below,
+					// but we should display only one password dialog.
+					if(!InputPasswordDialog_->isVisible ())
+					{
+						InputPasswordDialog_->setTextEchoMode (QLineEdit::Password);
+						InputPasswordDialog_->setWindowTitle (WindowTitle_);
+						InputPasswordDialog_->setLabelText (tr ("Enter master password:"));
+						InputPasswordDialog_->setTextValue ("");
+						InputPasswordDialog_->setVisible (true);
+					}
+
+					QEventLoop loop;
+					connect (InputPasswordDialog_.get (),
+						SIGNAL (accepted ()),
+						&loop,
+						SLOT (quit()),
+						Qt::QueuedConnection);
+					connect (InputPasswordDialog_.get (),
+						SIGNAL (rejected ()),
+						&loop,
+						SLOT (quit()),
+						Qt::QueuedConnection);
+					loop.exec ();
+
+					if (CryptoSystem_)
+						break;
+
+					if (InputPasswordDialog_->result () != QDialog::Accepted)
 						throw PasswordNotEnteredException ();
 
-					QString password = dialog.textValue ();
+					QString password = InputPasswordDialog_->textValue ();
 					CryptoSystem *cs = new CryptoSystem (password);
 					if (IsPasswordCorrect (*cs))
 					{
@@ -320,8 +345,11 @@ namespace SecureStorage
 						break;
 					}
 					else // continue
-						dialog.setLabelText (tr ("Wrong password.\n"
+					{
+						delete cs;
+						InputPasswordDialog_->setLabelText (tr ("Wrong password.\n"
 								"Try enter master password again:"));
+					}
 				}
 			}
 		}

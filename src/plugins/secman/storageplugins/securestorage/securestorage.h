@@ -21,6 +21,7 @@
 #define PLUGINS_SECMAN_PLUGINS_SECURESTORAGE_SECURESTORAGE_H
 #include <boost/shared_ptr.hpp>
 #include <QObject>
+#include <QInputDialog>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/secman/istorageplugin.h>
@@ -61,6 +62,8 @@ namespace SecureStorage
 		CryptoSystem *CryptoSystem_;
 		
 		QAction *ForgetKeyAction_;
+		
+		boost::shared_ptr<QInputDialog> InputPasswordDialog_;
 	public:
 		Plugin ();
 		void Init (ICoreProxy_ptr);
