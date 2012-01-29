@@ -45,6 +45,9 @@ namespace Snails
 	private slots:
 		void updateActions ();
 		void handleCmd ();
+		void handleBgColor ();
+		void handleFgColor ();
+		void handleFont ();
 	};
 }
 }

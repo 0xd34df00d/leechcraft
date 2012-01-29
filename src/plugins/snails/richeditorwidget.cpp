@@ -22,6 +22,8 @@
 #include <QWebElement>
 #include <QToolBar>
 #include <QMenu>
+#include <QColorDialog>
+#include <QFontDialog>
 #include <QtDebug>
 #include "core.h"
 
@@ -93,8 +95,8 @@ namespace Snails
 					SIGNAL (changed ()),
 					this,
 					SLOT (updateActions ()));
-
 			WebAction2Action_ [action] = act;
+			return act;
 		};
 		auto addCmd = [bar, this] (const QString& name,
 				const QString& icon,
@@ -106,23 +108,38 @@ namespace Snails
 			act->setProperty ("ActionIcon", icon);
 			act->setProperty ("Editor/Command", cmd);
 			act->setProperty ("Editor/Args", arg);
-
 			Cmd2Action_ [cmd] [arg] = act;
+			return act;
 		};
 
 		Addable barAdd (bar);
 
-		fwdCmd (tr ("Bold"), "format-text-bold", QWebPage::ToggleBold, barAdd);
-		fwdCmd (tr ("Italic"), "format-text-italic", QWebPage::ToggleItalic, barAdd);
-		fwdCmd (tr ("Underline"), "format-text-underline", QWebPage::ToggleUnderline, barAdd);
-		addCmd (tr ("Strikethrough"), "format-text-strikethrough", "strikeThrough", barAdd);
+		fwdCmd (tr ("Bold"), "format-text-bold",
+				QWebPage::ToggleBold, barAdd)->setCheckable (true);
+		fwdCmd (tr ("Italic"), "format-text-italic",
+				QWebPage::ToggleItalic, barAdd)->setCheckable (true);
+		fwdCmd (tr ("Underline"), "format-text-underline",
+				QWebPage::ToggleUnderline, barAdd)->setCheckable (true);
+		addCmd (tr ("Strikethrough"), "format-text-strikethrough",
+				"strikeThrough", barAdd)->setCheckable (true);
 
 		bar->addSeparator ();
 
-		fwdCmd (tr ("Align left"), "format-justify-left", QWebPage::AlignLeft, barAdd);
-		fwdCmd (tr ("Align center"), "format-justify-center", QWebPage::AlignCenter, barAdd);
-		fwdCmd (tr ("Align right"), "format-justify-right", QWebPage::AlignRight, barAdd);
-		fwdCmd (tr ("Align justify"), "format-justify-fill", QWebPage::AlignJustified, barAdd);
+		QList<QAction*> alignActs;
+		alignActs << fwdCmd (tr ("Align left"), "format-justify-left",
+				QWebPage::AlignLeft, barAdd);
+		alignActs << fwdCmd (tr ("Align center"), "format-justify-center",
+				QWebPage::AlignCenter, barAdd);
+		alignActs << fwdCmd (tr ("Align right"), "format-justify-right",
+				QWebPage::AlignRight, barAdd);
+		alignActs << fwdCmd (tr ("Align justify"), "format-justify-fill",
+				QWebPage::AlignJustified, barAdd);
+		QActionGroup *alignGroup = new QActionGroup (this);
+		Q_FOREACH (QAction *act, alignActs)
+		{
+			act->setCheckable (true);
+			alignGroup->addAction (act);
+		}
 
 		bar->addSeparator ();
 
@@ -139,6 +156,19 @@ namespace Snails
 		addCmd (tr ("Paragraph"), QString (), "formatBlock",
 				Addable (headMenu), "p");
 
+		bar->addSeparator ();
+
+		QAction *bgColor = bar->addAction (tr ("Background color..."),
+					this, SLOT (handleBgColor ()));
+		bgColor->setProperty ("ActionIcon", "format-fill-color");
+
+		QAction *fgColor = bar->addAction (tr ("Text color..."),
+					this, SLOT (handleFgColor ()));
+		fgColor->setProperty ("ActionIcon", "format-text-color");
+
+		QAction *font = bar->addAction (tr ("Font..."),
+					this, SLOT (handleFont ()));
+		font->setProperty ("ActionIcon", "list-add-font");
 		bar->addSeparator ();
 
 		addCmd (tr ("Indent more"), "format-indent-more", "indent", barAdd);
@@ -167,8 +197,6 @@ namespace Snails
 				QString ("document.execCommand(\"%1\", false, null)").arg (cmd) :
 				QString ("document.execCommand(\"%1\", false, \"%2\")").arg (cmd, arg);
 		frame->evaluateJavaScript (js);
-
-		qDebug () << GetHTML ();
 	}
 
 	bool RichEditorWidget::QueryCommandState (const QString& cmd)
@@ -187,8 +215,8 @@ namespace Snails
 		};
 
 		upAct ("strikeThrough");
-		//upAct ("insertOrderedList");
-		//upAct ("insertUnorderedList");
+		upAct ("insertOrderedList");
+		upAct ("insertUnorderedList");
 
 		auto upWebAct = [this] (QWebPage::WebAction action)
 		{
@@ -209,6 +237,45 @@ namespace Snails
 	{
 		ExecCommand (sender ()->property ("Editor/Command").toString (),
 				sender ()->property ("Editor/Args").toString ());
+	}
+
+	void RichEditorWidget::handleBgColor ()
+	{
+		const auto& color = QColorDialog::getColor (Qt::white, this);
+		if (color.isValid ())
+			ExecCommand ("hiliteColor", color.name ());
+	}
+
+	void RichEditorWidget::handleFgColor ()
+	{
+		const auto& color = QColorDialog::getColor (Qt::black, this);
+		if (color.isValid ())
+			ExecCommand ("foreColor", color.name ());
+	}
+
+	void RichEditorWidget::handleFont ()
+	{
+		bool ok = false;
+		const QFont& font = QFontDialog::getFont (&ok, this);
+		if (!ok)
+			return;
+
+		ExecCommand ("fontName", font.family ());
+
+		auto checkWebAct = [this, &font] (std::function<bool (const QFont*)> f,
+				QWebPage::WebAction act)
+		{
+			const bool state = f (&font);
+			if (state != WebAction2Action_ [act]->isChecked ())
+			{
+				WebAction2Action_ [act]->setChecked (state);
+				WebAction2Action_ [act]->trigger ();
+			}
+		};
+
+		checkWebAct (&QFont::bold, QWebPage::ToggleBold);
+		checkWebAct (&QFont::italic, QWebPage::ToggleItalic);
+		checkWebAct (&QFont::underline, QWebPage::ToggleUnderline);
 	}
 }
 }
