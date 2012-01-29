@@ -18,6 +18,7 @@
 
 #include "lhtr.h"
 #include <QIcon>
+#include "richeditorwidget.h"
 
 namespace LeechCraft
 {
@@ -25,6 +26,7 @@ namespace LHTR
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Proxy_ = proxy;
 	}
 
 	void Plugin::SecondInit ()
@@ -53,6 +55,21 @@ namespace LHTR
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon ();
+	}
+
+	bool Plugin::SupportsEditor (ContentType type) const
+	{
+		switch (type)
+		{
+		case ContentType::HTML:
+		case ContentType::PlainText:
+			return true;
+		}
+	}
+
+	QWidget* Plugin::GetTextEditor (ContentType)
+	{
+		return new RichEditorWidget (Proxy_);
 	}
 }
 }

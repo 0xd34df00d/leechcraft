@@ -25,11 +25,10 @@
 #include <QColorDialog>
 #include <QFontDialog>
 #include <QtDebug>
-#include "core.h"
 
 namespace LeechCraft
 {
-namespace Snails
+namespace LHTR
 {
 	namespace
 	{
@@ -69,8 +68,9 @@ namespace Snails
 		};
 	}
 
-	RichEditorWidget::RichEditorWidget (QWidget *parent)
+	RichEditorWidget::RichEditorWidget (ICoreProxy_ptr proxy, QWidget *parent)
 	: QWidget (parent)
+	, Proxy_ (proxy)
 	{
 		Ui_.setupUi (this);
 
@@ -144,7 +144,7 @@ namespace Snails
 		bar->addSeparator ();
 
 		QMenu *headMenu = new QMenu (tr ("Headings"));
-		headMenu->setIcon (Core::Instance ().GetProxy ()->GetIcon ("view-list-details"));
+		headMenu->setIcon (Proxy_->GetIcon ("view-list-details"));
 		bar->addAction (headMenu->menuAction ());
 		for (int i = 1; i <= 6; ++i)
 		{
@@ -178,6 +178,30 @@ namespace Snails
 
 		addCmd (tr ("Ordered list"), "format-list-ordered", "insertOrderedList", barAdd);
 		addCmd (tr ("Unordered list"), "format-list-unordered", "insertUnorderedList", barAdd);
+	}
+
+	QString RichEditorWidget::GetContents (ContentType type) const
+	{
+		switch (type)
+		{
+		case ContentType::HTML:
+			return GetHTML ();
+		case ContentType::PlainText:
+			return GetPlainText ();
+		}
+	}
+
+	void RichEditorWidget::SetContents (const QString& contents, ContentType type)
+	{
+		switch (type)
+		{
+		case ContentType::HTML:
+			Ui_.View_->setHtml (contents);
+			break;
+		case ContentType::PlainText:
+			Ui_.View_->setContent (contents.toUtf8 (), "text/plain");
+			break;
+		}
 	}
 
 	QString RichEditorWidget::GetHTML () const

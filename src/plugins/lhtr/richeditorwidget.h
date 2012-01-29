@@ -20,22 +20,30 @@
 
 #include <QWidget>
 #include <QHash>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/itexteditor.h>
 #include "ui_richeditorwidget.h"
 
 namespace LeechCraft
 {
-namespace Snails
+namespace LHTR
 {
 	class RichEditorWidget : public QWidget
+						   , public IEditorWidget
 	{
 		Q_OBJECT
+		Q_INTERFACES (IEditorWidget)
 
+		ICoreProxy_ptr Proxy_;
 		Ui::RichEditorWidget Ui_;
 
 		QHash<QWebPage::WebAction, QAction*> WebAction2Action_;
 		QHash<QString, QHash<QString, QAction*>> Cmd2Action_;
 	public:
-		RichEditorWidget (QWidget* = 0);
+		RichEditorWidget (ICoreProxy_ptr, QWidget* = 0);
+
+		QString GetContents (ContentType) const;
+		void SetContents (const QString&, ContentType);
 
 		QString GetHTML () const;
 		QString GetPlainText () const;

@@ -2,6 +2,7 @@ CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
 PROJECT (leechcraft_lhtr)
 INCLUDE (InitLCPlugin OPTIONAL)
 
+SET (QT_USE_QTWEBKIT TRUE)
 INCLUDE (${QT_USE_FILE})
 INCLUDE_DIRECTORIES (
 	${CMAKE_CURRENT_BINARY_DIR}
@@ -10,18 +11,25 @@ INCLUDE_DIRECTORIES (
 	)
 SET (SRCS
 	lhtr.cpp
+	richeditorwidget.cpp
 	)
 SET (HEADERS
 	lhtr.h
+	richeditorwidget.h
+	)
+SET (FORMS
+	richeditorwidget.ui
 	)
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
 ENDIF (NOT LC_NO_MOC)
+QT4_WRAP_UI (UIS_H ${FORMS})
 
 ADD_LIBRARY (leechcraft_lhtr SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${MOC_SRCS}
+	${UIS_H}
 	)
 TARGET_LINK_LIBRARIES (leechcraft_lhtr
 	${QT_LIBRARIES}
