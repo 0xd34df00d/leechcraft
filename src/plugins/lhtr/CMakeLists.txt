@@ -12,13 +12,16 @@ INCLUDE_DIRECTORIES (
 SET (SRCS
 	lhtr.cpp
 	richeditorwidget.cpp
+	hyperlinkdialog.cpp
 	)
 SET (HEADERS
 	lhtr.h
 	richeditorwidget.h
+	hyperlinkdialog.h
 	)
 SET (FORMS
 	richeditorwidget.ui
+	hyperlinkdialog.ui
 	)
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (MOC_SRCS ${HEADERS})
