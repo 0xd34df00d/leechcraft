@@ -68,8 +68,6 @@ namespace Snails
 			AccountsMenu_->addAction (act);
 		}
 		Toolbar_->addAction (AccountsMenu_->menuAction ());
-
-		Ui_.MsgEdit_->page ()->setContentEditable (true);
 	}
 
 	TabClassInfo ComposeMessageTab::GetTabClassInfo () const
@@ -144,7 +142,7 @@ namespace Snails
 		Message_ptr message (new Message);
 		message->SetTo (FromUserInput (Ui_.To_->text ()));
 		message->SetSubject (Ui_.Subject_->text ());
-		message->SetBody (Ui_.MsgEdit_->page ()->mainFrame ()->toPlainText ());
+		message->SetBody (Ui_.MsgEdit_->GetPlainText ());
 
 		account->SendMessage (message);
 	}

@@ -20,6 +20,7 @@ SET (QT_USE_QTWEBKIT TRUE)
 INCLUDE (${QT_USE_FILE})
 INCLUDE_DIRECTORIES (
 	${CMAKE_CURRENT_BINARY_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
@@ -43,6 +44,7 @@ SET (SRCS
 	attdescr.cpp
 	vmimeconversions.cpp
 	outputiodevadapter.cpp
+	richeditorwidget.cpp
 	)
 SET (HEADERS
 	snails.h
@@ -64,12 +66,14 @@ SET (HEADERS
 	attdescr.h
 	vmimeconversions.h
 	outputiodevadapter.h
+	richeditorwidget.h
 	)
 SET (FORMS
 	mailtab.ui
 	accountslistwidget.ui
 	accountconfigdialog.ui
 	composemessagetab.ui
+	richeditorwidget.ui
 	)
 SET (RESOURCES snailsresources.qrc)
 IF (NOT LC_NO_MOC)
