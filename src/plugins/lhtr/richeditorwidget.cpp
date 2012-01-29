@@ -79,6 +79,7 @@ namespace LHTR
 		Ui_.setupUi (this);
 
 		Ui_.View_->page ()->setContentEditable (true);
+		Ui_.View_->settings ()->setAttribute (QWebSettings::DeveloperExtrasEnabled, true);
 		connect (Ui_.View_->page (),
 				SIGNAL (selectionChanged ()),
 				this,
