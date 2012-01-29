@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SNAILS_VMIMECONVERSIONS_H
-#define PLUGINS_SNAILS_VMIMECONVERSIONS_H
+#pragma once
+
 #include <QString>
 #include <QPair>
 #include <vmime/mailbox.hpp>
@@ -67,5 +67,3 @@ namespace Snails
 	}
 }
 }
-
-#endif

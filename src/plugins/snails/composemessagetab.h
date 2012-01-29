@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SNAILS_COMPOSEMESSAGETAB_H
-#define PLUGINS_SNAILS_COMPOSEMESSAGETAB_H
+#pragma once
+
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
 #include "ui_composemessagetab.h"
@@ -56,5 +56,3 @@ namespace Snails
 	};
 }
 }
-
-#endif

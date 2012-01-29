@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SNAILS_ACCOUNTTHREADWORKER_H
-#define PLUGINS_SNAILS_ACCOUNTTHREADWORKER_H
+#pragma once
+
 #include <QObject>
 #include <vmime/net/session.hpp>
 #include <vmime/net/message.hpp>
@@ -71,5 +71,3 @@ namespace Snails
 	};
 }
 }
-
-#endif

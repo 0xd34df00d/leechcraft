@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SNAILS_ATTDESCR_H
-#define PLUGINS_SNAILS_ATTDESCR_H
+#pragma once
+
 #include <QString>
 #include <QMetaType>
 #include <vmime/attachment.hpp>
@@ -60,5 +60,3 @@ namespace Snails
 }
 
 Q_DECLARE_METATYPE (LeechCraft::Snails::AttDescr);
-
-#endif

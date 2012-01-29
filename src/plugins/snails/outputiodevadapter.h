@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SNAILS_OUTPUTIODEVADAPTER_H
-#define PLUGINS_SNAILS_OUTPUTIODEVADAPTER_H
+#pragma once
+
 #include <vmime/utility/stream.hpp>
 
 class QIODevice;
@@ -37,5 +37,3 @@ namespace Snails
 	};
 }
 }
-
-#endif
