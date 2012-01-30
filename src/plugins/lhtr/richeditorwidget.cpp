@@ -77,6 +77,7 @@ namespace LHTR
 	RichEditorWidget::RichEditorWidget (ICoreProxy_ptr proxy, QWidget *parent)
 	: QWidget (parent)
 	, Proxy_ (proxy)
+	, HTMLDirty_ (false)
 	{
 		Ui_.setupUi (this);
 
@@ -255,6 +256,28 @@ namespace LHTR
 		const QString& js = QString ("document.queryCommandState(\"%1\", false, null)").arg (cmd);
 		auto res = frame->evaluateJavaScript (js);
 		return res.toString ().simplified ().toLower () == "true";
+	}
+
+	void RichEditorWidget::on_TabWidget__currentChanged (int idx)
+	{
+		switch (idx)
+		{
+		case 1:
+			Ui_.HTML_->setPlainText (GetHTML ());
+			break;
+		case 0:
+			if (HTMLDirty_)
+			{
+				Ui_.View_->setHtml (Ui_.HTML_->toPlainText ());
+				HTMLDirty_ = false;
+			}
+			break;
+		}
+	}
+
+	void RichEditorWidget::on_HTML__textChanged ()
+	{
+		HTMLDirty_ = true;
 	}
 
 	void RichEditorWidget::updateActions ()

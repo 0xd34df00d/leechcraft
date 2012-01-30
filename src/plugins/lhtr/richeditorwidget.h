@@ -39,6 +39,8 @@ namespace LHTR
 
 		QHash<QWebPage::WebAction, QAction*> WebAction2Action_;
 		QHash<QString, QHash<QString, QAction*>> Cmd2Action_;
+
+		bool HTMLDirty_;
 	public:
 		RichEditorWidget (ICoreProxy_ptr, QWidget* = 0);
 
@@ -51,6 +53,8 @@ namespace LHTR
 		void ExecCommand (const QString&, const QString& = QString ());
 		bool QueryCommandState (const QString& cmd);
 	private slots:
+		void on_TabWidget__currentChanged (int);
+		void on_HTML__textChanged ();
 		void updateActions ();
 		void handleCmd ();
 		void handleBgColor ();
