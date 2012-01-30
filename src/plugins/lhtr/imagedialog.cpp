@@ -28,6 +28,7 @@ namespace LHTR
 	: QDialog (parent)
 	{
 		Ui_.setupUi (this);
+		on_TypeEmbed__toggled (Ui_.TypeEmbed_->isChecked ());
 	}
 
 	QString ImageDialog::GetPath () const
@@ -48,6 +49,19 @@ namespace LHTR
 	int ImageDialog::GetHeight () const
 	{
 		return Ui_.Height_->value ();
+	}
+
+	QString ImageDialog::GetFloat () const
+	{
+		switch (Ui_.Float_->currentIndex ())
+		{
+		case 1:
+			return "left";
+		case 2:
+			return "right";
+		default:
+			return "none";
+		}
 	}
 
 	void ImageDialog::on_TypeEmbed__toggled (bool on)

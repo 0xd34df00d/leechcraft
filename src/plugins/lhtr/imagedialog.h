@@ -37,6 +37,8 @@ namespace LHTR
 		QString GetAlt () const;
 		int GetWidth () const;
 		int GetHeight () const;
+
+		QString GetFloat () const;
 	private slots:
 		void on_TypeEmbed__toggled (bool);
 		void on_Browse__released ();

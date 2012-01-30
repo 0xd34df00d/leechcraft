@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>200</height>
+    <height>229</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -32,6 +32,9 @@
          </item>
          <item>
           <widget class="QPushButton" name="Browse_">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="text">
             <string>Browse...</string>
            </property>
@@ -109,6 +112,32 @@
        <property name="maximum">
         <number>10000</number>
        </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_5">
+       <property name="text">
+        <string>Float:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QComboBox" name="Float_">
+       <item>
+        <property name="text">
+         <string>none</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>left</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>right</string>
+        </property>
+       </item>
       </widget>
      </item>
     </layout>

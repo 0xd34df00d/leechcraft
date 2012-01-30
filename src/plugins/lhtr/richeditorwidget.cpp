@@ -378,6 +378,9 @@ namespace LHTR
 				Util::GetAsBase64Src (QImage (url.toLocalFile ())) :
 				path;
 
+		QStringList styles;
+		styles << "float:" + dia.GetFloat ();
+
 		QString html;
 		QXmlStreamWriter w (&html);
 		w.writeStartElement ("img");
@@ -387,9 +390,8 @@ namespace LHTR
 			w.writeAttribute ("width", QString::number (dia.GetWidth ()));
 		if (dia.GetHeight () > 0)
 			w.writeAttribute ("height", QString::number (dia.GetHeight ()));
+		w.writeAttribute ("style", styles.join (";"));
 		w.writeEndElement ();
-
-		qDebug () << html;
 
 		ExecCommand ("insertHTML", html);
 	}
