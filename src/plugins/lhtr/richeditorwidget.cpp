@@ -28,7 +28,9 @@
 #include <QTextDocument>
 #include <QXmlStreamWriter>
 #include <QtDebug>
+#include <util/util.h>
 #include "hyperlinkdialog.h"
+#include "imagedialog.h"
 
 namespace LeechCraft
 {
@@ -197,6 +199,11 @@ namespace LHTR
 					this,
 					SLOT (handleInsertLink ()));
 		link->setProperty ("ActionIcon", "insert-link");
+
+		QAction *img = bar->addAction (tr ("Insert image..."),
+					this,
+					SLOT (handleInsertImage ()));
+		img->setProperty ("ActionIcon", "insert-image");
 	}
 
 	QString RichEditorWidget::GetContents (ContentType type) const
@@ -336,7 +343,7 @@ namespace LHTR
 			return;
 		}
 
-		HyperlinkDialog dia;
+		HyperlinkDialog dia (this);
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
@@ -355,6 +362,34 @@ namespace LHTR
 			w.writeAttribute ("target", dia.GetTarget ());
 		w.writeCharacters (text);
 		w.writeEndElement ();
+
+		ExecCommand ("insertHTML", html);
+	}
+
+	void RichEditorWidget::handleInsertImage ()
+	{
+		ImageDialog dia (this);
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		const QString& path = dia.GetPath ();
+		const QUrl& url = QUrl::fromEncoded (path.toUtf8 ());
+		const QString& src = url.isLocalFile () ?
+				Util::GetAsBase64Src (QImage (url.toLocalFile ())) :
+				path;
+
+		QString html;
+		QXmlStreamWriter w (&html);
+		w.writeStartElement ("img");
+		w.writeAttribute ("src", src);
+		w.writeAttribute ("alt", dia.GetAlt ());
+		if (dia.GetWidth () > 0)
+			w.writeAttribute ("width", QString::number (dia.GetWidth ()));
+		if (dia.GetHeight () > 0)
+			w.writeAttribute ("height", QString::number (dia.GetHeight ()));
+		w.writeEndElement ();
+
+		qDebug () << html;
 
 		ExecCommand ("insertHTML", html);
 	}

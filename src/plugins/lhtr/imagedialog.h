@@ -27,6 +27,8 @@ namespace LHTR
 {
 	class ImageDialog : public QDialog
 	{
+		Q_OBJECT
+
 		Ui::ImageDialog Ui_;
 	public:
 		ImageDialog (QWidget* = 0);
