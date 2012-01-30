@@ -57,11 +57,25 @@ namespace LHTR
 
 	void ImageDialog::on_Browse__released ()
 	{
-		const QString& path = QFileDialog::getOpenFileName (this, tr ("Select image"), QDir::homePath ());
+		const QString& path = QFileDialog::getOpenFileName (this,
+				tr ("Select image"),
+				QDir::homePath ());
 		if (path.isEmpty ())
 			return;
 
 		Ui_.Path_->setText (QUrl::fromLocalFile (path).toString ());
+
+		QImage image (path);
+		if (image.isNull ())
+		{
+			Ui_.Width_->setValue (0);
+			Ui_.Height_->setValue (0);
+		}
+		else
+		{
+			Ui_.Width_->setValue (image.width ());
+			Ui_.Height_->setValue (image.height ());
+		}
 	}
 }
 }
