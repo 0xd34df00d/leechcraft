@@ -56,9 +56,6 @@ namespace Laure
 		QList<LaureWidget*> Others_;
 		ICoreProxy_ptr Proxy_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
-#ifdef HAVE_LASTFM
-		LastFMSubmitter *LFSubmitter_;
-#endif
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
