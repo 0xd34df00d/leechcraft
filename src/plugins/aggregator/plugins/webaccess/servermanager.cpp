@@ -66,8 +66,10 @@ namespace WebAccess
 		};
 	}
 
-	ServerManager::ServerManager ()
-	: Server_ (new Wt::WServer ())
+	ServerManager::ServerManager (IProxyObject *proxy, ICoreProxy_ptr coreProxy)
+	: AggProxy_ (proxy)
+	, CoreProxy_ (coreProxy)
+	, Server_ (new Wt::WServer ())
 	{
 		ArgcGenerator gen;
 		gen.AddParm ("--docroot", ".");
@@ -75,7 +77,8 @@ namespace WebAccess
 		gen.AddParm ("--http-port", "9001");
 		Server_->setServerConfiguration (gen.GetArgc (), gen.GetArgv ());
 		Server_->addEntryPoint (Wt::Application,
-				[] (const Wt::WEnvironment& we) { return new AggregatorApp (we); });
+				[proxy, coreProxy] (const Wt::WEnvironment& we)
+					{ return new AggregatorApp (proxy, coreProxy, we); });
 		Server_->start ();
 	}
 }

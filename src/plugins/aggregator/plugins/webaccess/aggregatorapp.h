@@ -19,24 +19,45 @@
 #pragma once
 
 #include <Wt/WApplication>
+#include <Wt/WModelIndex>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
 namespace Aggregator
 {
+class IProxyObject;
+
 namespace WebAccess
 {
 	class ReadChannelsFilter;
 
 	class AggregatorApp : public Wt::WApplication
 	{
+		IProxyObject *AP_;
+		ICoreProxy_ptr CP_;
+
 		Wt::WStandardItemModel *ChannelsModel_;
 		ReadChannelsFilter *ChannelsFilter_;
 		Wt::WStandardItemModel *ItemsModel_;
 
 		Wt::WText *ItemView_;
 	public:
-		AggregatorApp (const Wt::WEnvironment& environment);
+		enum ChannelRole
+		{
+			CID = Wt::UserRole + 1,
+			FID,
+			UnreadCount
+		};
+
+		enum ItemRole
+		{
+			IID = Wt::UserRole + 1,
+			ParentCh,
+			IsUnread
+		};
+
+		AggregatorApp (IProxyObject*, ICoreProxy_ptr, const Wt::WEnvironment& environment);
 
 		void HandleChannelClicked (const Wt::WModelIndex&);
 	private:

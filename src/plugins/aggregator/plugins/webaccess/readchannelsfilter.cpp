@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "readchannelsfilter.h"
+#include "aggregatorapp.h"
 
 namespace LeechCraft
 {
@@ -39,7 +40,9 @@ namespace WebAccess
 
 	bool ReadChannelsFilter::filterAcceptRow (int row, const Wt::WModelIndex& parent) const
 	{
-		return true;
+		return !HideRead_ ||
+				boost::any_cast<int> (parent.child (row, 0)
+						.data (AggregatorApp::ChannelRole::UnreadCount));
 	}
 }
 }

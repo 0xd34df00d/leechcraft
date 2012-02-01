@@ -18,6 +18,7 @@
 
 #include "webaccess.h"
 #include <QIcon>
+#include <interfaces/aggregator/iproxyobject.h>
 #include "servermanager.h"
 
 namespace LeechCraft
@@ -29,16 +30,6 @@ namespace WebAccess
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
-
-		try
-		{
-			SM_.reset (new ServerManager ());
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< e.what ();
-		}
 	}
 
 	void Plugin::SecondInit ()
@@ -75,6 +66,19 @@ namespace WebAccess
 		QSet<QByteArray> result;
 		result << "org.LeechCraft.Aggregator.GeneralPlugin/1.0";
 		return result;
+	}
+
+	void Plugin::initPlugin (QObject *proxy)
+	{
+		try
+		{
+			SM_.reset (new ServerManager (qobject_cast<IProxyObject*> (proxy), Proxy_));
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< e.what ();
+		}
 	}
 }
 }

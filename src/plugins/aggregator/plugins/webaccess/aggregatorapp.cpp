@@ -18,13 +18,18 @@
 
 #include "aggregatorapp.h"
 #include <QObject>
+#include <QtDebug>
 #include <Wt/WText>
 #include <Wt/WContainerWidget>
 #include <Wt/WBoxLayout>
 #include <Wt/WCheckBox>
 #include <Wt/WTreeView>
 #include <Wt/WStandardItemModel>
+#include <Wt/WStandardItem>
 #include <Wt/WOverlayLoadingIndicator>
+#include <util/util.h>
+#include <interfaces/aggregator/iproxyobject.h>
+#include <interfaces/aggregator/channel.h>
 #include "readchannelsfilter.h"
 
 namespace LeechCraft
@@ -41,8 +46,11 @@ namespace WebAccess
 		}
 	}
 
-	AggregatorApp::AggregatorApp (const Wt::WEnvironment& environment)
+	AggregatorApp::AggregatorApp (IProxyObject *ap, ICoreProxy_ptr cp,
+			const Wt::WEnvironment& environment)
 	: WApplication (environment)
+	, AP_ (ap)
+	, CP_ (cp)
 	, ChannelsModel_ (new Wt::WStandardItemModel (this))
 	, ChannelsFilter_ (new ReadChannelsFilter (this))
 	, ItemsModel_ (new Wt::WStandardItemModel (this))
@@ -53,14 +61,43 @@ namespace WebAccess
 		setLoadingIndicator (new Wt::WOverlayLoadingIndicator ());
 
 		SetupUI ();
+
+		Q_FOREACH (Channel_ptr channel, AP_->GetAllChannels ())
+		{
+			const auto unreadCount = AP_->CountUnreadItems (channel->ChannelID_);
+
+			auto title = new Wt::WStandardItem (ToW (channel->Title_));
+			title->setIcon (Util::GetAsBase64Src (channel->Pixmap_).toStdString ());
+			title->setData (channel->ChannelID_, ChannelRole::CID);
+			title->setData (channel->FeedID_, ChannelRole::FID);
+			title->setData (unreadCount, ChannelRole::UnreadCount);
+
+			auto unread = new Wt::WStandardItem (ToW (QString::number (unreadCount)));
+
+			ChannelsModel_->appendRow ({ title, unread });
+		}
 	}
 
 	void AggregatorApp::HandleChannelClicked (const Wt::WModelIndex& idx)
 	{
-		auto realIdx = ChannelsFilter_->mapToSource (idx);
-
 		ItemsModel_->clear ();
 		ItemView_->setText (Wt::WString ());
+
+		const IDType_t& cid = boost::any_cast<IDType_t> (idx.data (ChannelRole::CID));
+		Q_FOREACH (Item_ptr item, AP_->GetChannelItems (cid))
+		{
+			if (!item->Unread_)
+				continue;
+
+			auto title = new Wt::WStandardItem (ToW (item->Title_));
+			title->setData (item->ItemID_, ItemRole::IID);
+			title->setData (item->ChannelID_, ItemRole::ParentCh);
+			title->setData (item->Unread_, ItemRole::IsUnread);
+
+			auto date = new Wt::WStandardItem (ToW (item->PubDate_.toString ()));
+
+			ItemsModel_->appendRow ({ title, date });
+		}
 	}
 
 	void AggregatorApp::SetupUI ()
@@ -78,7 +115,7 @@ namespace WebAccess
 		leftPaneLay->addWidget (showReadChannels);
 
 		auto channelsTree = new Wt::WTreeView ();
-		channelsTree->setModel (ChannelsModel_);
+		channelsTree->setModel (ChannelsFilter_);
 		leftPaneLay->addWidget (channelsTree);
 
 		channelsTree->clicked ().connect (this, &AggregatorApp::HandleChannelClicked);
@@ -89,10 +126,11 @@ namespace WebAccess
 
 		auto itemsTree = new Wt::WTreeView ();
 		itemsTree->setModel (ItemsModel_);
-		rightPaneLay->addWidget (channelsTree);
+		rightPaneLay->addWidget (itemsTree);
 
 		ItemView_ = new Wt::WText ();
 		rightPaneLay->addWidget (ItemView_);
+		rootLay->addLayout (rightPaneLay);
 	}
 }
 }

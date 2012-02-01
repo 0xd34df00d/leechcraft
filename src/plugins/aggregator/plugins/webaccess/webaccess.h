@@ -53,6 +53,8 @@ namespace WebAccess
 		QIcon GetIcon () const;
 
 		QSet<QByteArray> GetPluginClasses () const;
+	public Q_SLOTS:
+		void initPlugin (QObject*);
 	Q_SIGNALS:
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 	};

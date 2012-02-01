@@ -19,6 +19,7 @@
 #pragma once
 
 #include <memory>
+#include <interfaces/core/icoreproxy.h>
 
 namespace Wt
 {
@@ -29,13 +30,18 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
+class IProxyObject;
+
 namespace WebAccess
 {
 	class ServerManager
 	{
+		IProxyObject *AggProxy_;
+		ICoreProxy_ptr CoreProxy_;
+
 		std::shared_ptr<Wt::WServer> Server_;
 	public:
-		ServerManager ();
+		ServerManager (IProxyObject*, ICoreProxy_ptr);
 	};
 }
 }
