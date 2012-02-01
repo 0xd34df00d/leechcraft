@@ -17,8 +17,15 @@
  **********************************************************************/
 
 #include "aggregatorapp.h"
+#include <QObject>
 #include <Wt/WText>
 #include <Wt/WContainerWidget>
+#include <Wt/WBoxLayout>
+#include <Wt/WCheckBox>
+#include <Wt/WTreeView>
+#include <Wt/WStandardItemModel>
+#include <Wt/WOverlayLoadingIndicator>
+#include "readchannelsfilter.h"
 
 namespace LeechCraft
 {
@@ -26,12 +33,66 @@ namespace Aggregator
 {
 namespace WebAccess
 {
+	namespace
+	{
+		Wt::WString ToW (const QString& str)
+		{
+			return Wt::WString (str.toUtf8 ().constData (), Wt::CharEncoding::UTF8);
+		}
+	}
+
 	AggregatorApp::AggregatorApp (const Wt::WEnvironment& environment)
 	: WApplication (environment)
+	, ChannelsModel_ (new Wt::WStandardItemModel (this))
+	, ChannelsFilter_ (new ReadChannelsFilter (this))
+	, ItemsModel_ (new Wt::WStandardItemModel (this))
 	{
-		setTitle ("Aggregator WebAccess");
+		ChannelsFilter_->setSourceModel (ChannelsModel_);
 
-		root ()->addWidget (new Wt::WText ("Hello world!"));
+		setTitle ("Aggregator WebAccess");
+		setLoadingIndicator (new Wt::WOverlayLoadingIndicator ());
+
+		SetupUI ();
+	}
+
+	void AggregatorApp::HandleChannelClicked (const Wt::WModelIndex& idx)
+	{
+		auto realIdx = ChannelsFilter_->mapToSource (idx);
+
+		ItemsModel_->clear ();
+		ItemView_->setText (Wt::WString ());
+	}
+
+	void AggregatorApp::SetupUI ()
+	{
+		auto rootLay = new Wt::WBoxLayout (Wt::WBoxLayout::LeftToRight);
+		root ()->setLayout (rootLay);
+
+		auto leftPaneLay = new Wt::WBoxLayout (Wt::WBoxLayout::TopToBottom);
+
+		auto showReadChannels = new Wt::WCheckBox (ToW (QObject::tr ("Include read channels")));
+		showReadChannels->setToolTip (ToW (QObject::tr ("Also display channels that have no unread items.")));
+		showReadChannels->setChecked (false);
+		showReadChannels->checked ().connect ([ChannelsFilter_] (Wt::NoClass) { ChannelsFilter_->SetHideRead (false); });
+		showReadChannels->unChecked ().connect ([ChannelsFilter_] (Wt::NoClass) { ChannelsFilter_->SetHideRead (true); });
+		leftPaneLay->addWidget (showReadChannels);
+
+		auto channelsTree = new Wt::WTreeView ();
+		channelsTree->setModel (ChannelsModel_);
+		leftPaneLay->addWidget (channelsTree);
+
+		channelsTree->clicked ().connect (this, &AggregatorApp::HandleChannelClicked);
+
+		rootLay->addLayout (leftPaneLay);
+
+		auto rightPaneLay = new Wt::WBoxLayout (Wt::WBoxLayout::TopToBottom);
+
+		auto itemsTree = new Wt::WTreeView ();
+		itemsTree->setModel (ItemsModel_);
+		rightPaneLay->addWidget (channelsTree);
+
+		ItemView_ = new Wt::WText ();
+		rightPaneLay->addWidget (ItemView_);
 	}
 }
 }

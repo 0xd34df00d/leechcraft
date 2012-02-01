@@ -26,10 +26,21 @@ namespace Aggregator
 {
 namespace WebAccess
 {
+	class ReadChannelsFilter;
+
 	class AggregatorApp : public Wt::WApplication
 	{
+		Wt::WStandardItemModel *ChannelsModel_;
+		ReadChannelsFilter *ChannelsFilter_;
+		Wt::WStandardItemModel *ItemsModel_;
+
+		Wt::WText *ItemView_;
 	public:
 		AggregatorApp (const Wt::WEnvironment& environment);
+
+		void HandleChannelClicked (const Wt::WModelIndex&);
+	private:
+		void SetupUI ();
 	};
 }
 }
