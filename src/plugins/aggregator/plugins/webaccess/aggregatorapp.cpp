@@ -100,8 +100,11 @@ namespace WebAccess
 
 			auto date = new Wt::WStandardItem (ToW (item->PubDate_.toString ()));
 
-			ItemsModel_->appendRow ({ title, date });
+			ItemsModel_->insertRow (0, { title, date });
 		}
+
+		ItemsTable_->setColumnWidth (0, Wt::WLength (500, Wt::WLength::Pixel));
+		ItemsTable_->setColumnWidth (1, Wt::WLength (180, Wt::WLength::Pixel));
 	}
 
 	void AggregatorApp::HandleItemClicked (const Wt::WModelIndex& idx)
@@ -122,7 +125,7 @@ namespace WebAccess
 		root ()->setLayout (rootLay);
 
 		auto leftPaneLay = new Wt::WBoxLayout (Wt::WBoxLayout::TopToBottom);
-		rootLay->addLayout (leftPaneLay, 1);
+		rootLay->addLayout (leftPaneLay, 2);
 
 		auto showReadChannels = new Wt::WCheckBox (ToW (QObject::tr ("Include read channels")));
 		showReadChannels->setToolTip (ToW (QObject::tr ("Also display channels that have no unread items.")));
@@ -138,16 +141,14 @@ namespace WebAccess
 		leftPaneLay->addWidget (channelsTree, 1, Wt::AlignTop);
 
 		auto rightPaneLay = new Wt::WBoxLayout (Wt::WBoxLayout::TopToBottom);
-		rootLay->addLayout (rightPaneLay, 3);
+		rootLay->addLayout (rightPaneLay, 7);
 
-		auto itemsTree = new Wt::WTableView ();
-		itemsTree->setModel (ItemsModel_);
-		itemsTree->clicked ().connect (this, &AggregatorApp::HandleItemClicked);
-		itemsTree->setAlternatingRowColors (true);
-		itemsTree->setWidth (Wt::WLength (100, Wt::WLength::Percentage));
-		itemsTree->setColumnWidth (0, Wt::WLength (80, Wt::WLength::Percentage));
-		itemsTree->setColumnWidth (1, Wt::WLength (20, Wt::WLength::Percentage));
-		rightPaneLay->addWidget (itemsTree, 2, Wt::AlignJustify);
+		ItemsTable_ = new Wt::WTableView ();
+		ItemsTable_->setModel (ItemsModel_);
+		ItemsTable_->clicked ().connect (this, &AggregatorApp::HandleItemClicked);
+		ItemsTable_->setAlternatingRowColors (true);
+		ItemsTable_->setWidth (Wt::WLength (100, Wt::WLength::Percentage));
+		rightPaneLay->addWidget (ItemsTable_, 2, Wt::AlignJustify);
 
 		ItemView_ = new Wt::WText ();
 		rightPaneLay->addWidget (ItemView_, 5);

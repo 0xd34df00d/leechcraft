@@ -41,6 +41,8 @@ namespace WebAccess
 		ReadChannelsFilter *ChannelsFilter_;
 		Wt::WStandardItemModel *ItemsModel_;
 
+		Wt::WTableView *ItemsTable_;
+
 		Wt::WText *ItemView_;
 	public:
 		enum ChannelRole
