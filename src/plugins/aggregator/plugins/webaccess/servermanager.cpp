@@ -35,7 +35,7 @@ namespace WebAccess
 			QStringList Parms_;
 		public:
 			inline ArgcGenerator ()
-			: Parms_ ("leechcraft")
+			: Parms_ ("/usr/local/lib/leechcraft")
 			{
 			}
 
@@ -72,7 +72,7 @@ namespace WebAccess
 	, Server_ (new Wt::WServer ())
 	{
 		ArgcGenerator gen;
-		gen.AddParm ("--docroot", ".");
+		gen.AddParm ("--docroot", "/usr/share/Wt;/favicon.ico,/resources,/style");
 		gen.AddParm ("--http-address", "0.0.0.0");
 		gen.AddParm ("--http-port", "9001");
 		Server_->setServerConfiguration (gen.GetArgc (), gen.GetArgv ());
