@@ -11,11 +11,13 @@ SET (WEBACCESS_SRCS
 	webaccess.cpp
 	servermanager.cpp
 	aggregatorapp.cpp
+	readchannelsfilter.cpp
 	)
 SET (WEBACCESS_HEADERS
 	webaccess.h
 	servermanager.h
 	aggregatorapp.h
+	readchannelsfilter.h
 	)
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (WEBACCESS_MOC_SRCS ${WEBACCESS_HEADERS})
