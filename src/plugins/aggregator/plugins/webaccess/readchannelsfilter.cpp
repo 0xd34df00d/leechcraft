@@ -40,9 +40,16 @@ namespace WebAccess
 
 	bool ReadChannelsFilter::filterAcceptRow (int row, const Wt::WModelIndex& parent) const
 	{
-		return !HideRead_ ||
-				boost::any_cast<int> (parent.child (row, 0)
-						.data (AggregatorApp::ChannelRole::UnreadCount));
+		if (HideRead_)
+		{
+			auto idx = sourceModel ()->index (row, 0, parent);
+			if (idx.isValid ())
+			{
+				const auto data = idx.data (AggregatorApp::ChannelRole::UnreadCount);
+				return boost::any_cast<int> (data) > 0;
+			}
+		}
+		return Wt::WSortFilterProxyModel::filterAcceptRow (row, parent);
 	}
 }
 }
