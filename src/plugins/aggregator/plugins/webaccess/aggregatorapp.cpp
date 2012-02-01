@@ -24,6 +24,7 @@
 #include <Wt/WBoxLayout>
 #include <Wt/WCheckBox>
 #include <Wt/WTreeView>
+#include <Wt/WTableView>
 #include <Wt/WStandardItemModel>
 #include <Wt/WStandardItem>
 #include <Wt/WOverlayLoadingIndicator>
@@ -51,9 +52,9 @@ namespace WebAccess
 	: WApplication (environment)
 	, AP_ (ap)
 	, CP_ (cp)
-	, ChannelsModel_ (new Wt::WStandardItemModel (this))
+	, ChannelsModel_ (new Wt::WStandardItemModel (0, 2, this))
 	, ChannelsFilter_ (new ReadChannelsFilter (this))
-	, ItemsModel_ (new Wt::WStandardItemModel (this))
+	, ItemsModel_ (new Wt::WStandardItemModel (0, 2, this))
 	{
 		ChannelsFilter_->setSourceModel (ChannelsModel_);
 
@@ -73,6 +74,7 @@ namespace WebAccess
 			title->setData (unreadCount, ChannelRole::UnreadCount);
 
 			auto unread = new Wt::WStandardItem (ToW (QString::number (unreadCount)));
+			unread->setData (channel->ChannelID_, ChannelRole::CID);
 
 			ChannelsModel_->appendRow ({ title, unread });
 		}
@@ -120,6 +122,7 @@ namespace WebAccess
 		root ()->setLayout (rootLay);
 
 		auto leftPaneLay = new Wt::WBoxLayout (Wt::WBoxLayout::TopToBottom);
+		rootLay->addLayout (leftPaneLay, 1);
 
 		auto showReadChannels = new Wt::WCheckBox (ToW (QObject::tr ("Include read channels")));
 		showReadChannels->setToolTip (ToW (QObject::tr ("Also display channels that have no unread items.")));
@@ -131,20 +134,23 @@ namespace WebAccess
 		auto channelsTree = new Wt::WTreeView ();
 		channelsTree->setModel (ChannelsFilter_);
 		channelsTree->clicked ().connect (this, &AggregatorApp::HandleChannelClicked);
-		leftPaneLay->addWidget (channelsTree);
-
-		rootLay->addLayout (leftPaneLay);
+		channelsTree->setAlternatingRowColors (true);
+		leftPaneLay->addWidget (channelsTree, 1, Wt::AlignTop);
 
 		auto rightPaneLay = new Wt::WBoxLayout (Wt::WBoxLayout::TopToBottom);
+		rootLay->addLayout (rightPaneLay, 3);
 
-		auto itemsTree = new Wt::WTreeView ();
+		auto itemsTree = new Wt::WTableView ();
 		itemsTree->setModel (ItemsModel_);
 		itemsTree->clicked ().connect (this, &AggregatorApp::HandleItemClicked);
-		rightPaneLay->addWidget (itemsTree);
+		itemsTree->setAlternatingRowColors (true);
+		itemsTree->setWidth (Wt::WLength (100, Wt::WLength::Percentage));
+		itemsTree->setColumnWidth (0, Wt::WLength (80, Wt::WLength::Percentage));
+		itemsTree->setColumnWidth (1, Wt::WLength (20, Wt::WLength::Percentage));
+		rightPaneLay->addWidget (itemsTree, 2, Wt::AlignJustify);
 
 		ItemView_ = new Wt::WText ();
-		rightPaneLay->addWidget (ItemView_);
-		rootLay->addLayout (rightPaneLay);
+		rightPaneLay->addWidget (ItemView_, 5);
 	}
 }
 }
