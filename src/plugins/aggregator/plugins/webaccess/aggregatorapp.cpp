@@ -93,11 +93,25 @@ namespace WebAccess
 			title->setData (item->ItemID_, ItemRole::IID);
 			title->setData (item->ChannelID_, ItemRole::ParentCh);
 			title->setData (item->Unread_, ItemRole::IsUnread);
+			title->setData (ToW (item->Link_), ItemRole::Link);
+			title->setData (ToW (item->Description_), ItemRole::Text);
 
 			auto date = new Wt::WStandardItem (ToW (item->PubDate_.toString ()));
 
 			ItemsModel_->appendRow ({ title, date });
 		}
+	}
+
+	void AggregatorApp::HandleItemClicked (const Wt::WModelIndex& idx)
+	{
+		auto titleIdx = idx.model ()->index (idx.row (), 0);
+		auto pubDate = idx.model ()->index (idx.row (), 1);
+		auto text = Wt::WString ("<div><a href='{1}' target='_blank'>{2}</a><br />{3}<br /><hr/>{4}</div>")
+				.arg (boost::any_cast<Wt::WString> (titleIdx.data (ItemRole::Link)))
+				.arg (boost::any_cast<Wt::WString> (titleIdx.data ()))
+				.arg (boost::any_cast<Wt::WString> (pubDate.data ()))
+				.arg (boost::any_cast<Wt::WString> (titleIdx.data (ItemRole::Text)));
+		ItemView_->setText (text);
 	}
 
 	void AggregatorApp::SetupUI ()
@@ -116,9 +130,8 @@ namespace WebAccess
 
 		auto channelsTree = new Wt::WTreeView ();
 		channelsTree->setModel (ChannelsFilter_);
-		leftPaneLay->addWidget (channelsTree);
-
 		channelsTree->clicked ().connect (this, &AggregatorApp::HandleChannelClicked);
+		leftPaneLay->addWidget (channelsTree);
 
 		rootLay->addLayout (leftPaneLay);
 
@@ -126,6 +139,7 @@ namespace WebAccess
 
 		auto itemsTree = new Wt::WTreeView ();
 		itemsTree->setModel (ItemsModel_);
+		itemsTree->clicked ().connect (this, &AggregatorApp::HandleItemClicked);
 		rightPaneLay->addWidget (itemsTree);
 
 		ItemView_ = new Wt::WText ();

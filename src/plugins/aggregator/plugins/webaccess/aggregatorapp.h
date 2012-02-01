@@ -54,13 +54,15 @@ namespace WebAccess
 		{
 			IID = Wt::UserRole + 1,
 			ParentCh,
-			IsUnread
+			IsUnread,
+			Text,
+			Link
 		};
 
 		AggregatorApp (IProxyObject*, ICoreProxy_ptr, const Wt::WEnvironment& environment);
-
-		void HandleChannelClicked (const Wt::WModelIndex&);
 	private:
+		void HandleChannelClicked (const Wt::WModelIndex&);
+		void HandleItemClicked (const Wt::WModelIndex&);
 		void SetupUI ();
 	};
 }
