@@ -45,6 +45,7 @@ namespace LeechCraft
 	class LocalSocketHandler;
 	class DirectoryWatcher;
 	class CoreInstanceObject;
+	class DockManager;
 
 	/** Contains all the plugins' models, maps from end-user's tree view
 	 * to plugins' models and much more.
@@ -55,6 +56,7 @@ namespace LeechCraft
 
 		PluginManager *PluginManager_;
 		MainWindow *ReallyMainWindow_;
+		DockManager *DM_;
 		boost::shared_ptr<TabManager> TabManager_;
 		boost::shared_ptr<QNetworkAccessManager> NetworkAccessManager_;
 		boost::shared_ptr<StorageBackend> StorageBackend_;
@@ -90,6 +92,10 @@ namespace LeechCraft
 		 * only if a valid window was set with SetReallyMainWindow().
 		 */
 		MainWindow* GetReallyMainWindow ();
+
+		/** Returns the dock manager over the main window.
+		 */
+		DockManager* GetDockManager () const;
 
 		/** Returns the pointer to the app-wide shortcut proxy.
 		 */

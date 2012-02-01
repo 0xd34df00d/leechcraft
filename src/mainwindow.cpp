@@ -215,6 +215,19 @@ LeechCraft::FancyPopupManager* LeechCraft::MainWindow::GetFancyPopupManager () c
 	return FancyPopupManager_;
 }
 
+QWidget* LeechCraft::MainWindow::GetDockListWidget (Qt::DockWidgetArea area) const
+{
+	switch (area)
+	{
+	case Qt::LeftDockWidgetArea:
+		return Ui_.LeftDockButtons_;
+	case Qt::RightDockWidgetArea:
+		return Ui_.RightDockButtons_;
+	default:
+		return 0;
+	}
+}
+
 void LeechCraft::MainWindow::ToggleViewActionVisiblity (QDockWidget *widget, bool visible)
 {
 	QAction *act = widget->toggleViewAction ();

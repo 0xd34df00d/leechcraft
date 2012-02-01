@@ -12,7 +12,7 @@ IF (MSVC)
 	SET (CMAKE_CXX_FLAGS "/EHa /W3")
 	SET (CMAKE_CXX_FLAGS_RELEASE "/Ob2 /O2 /Ot /Oi /Oy /GT /GL /MD /D NDEBUG")
 	SET (CMAKE_CXX_FLAGS_DEBUG "/Zi /Od /GT /MDd")
-	
+
 	SET (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
 	INCLUDE (LibHelperWin32Macros)
 ENDIF (MSVC)
@@ -418,6 +418,7 @@ SET (SRCS
 	mwproxy.cpp
 	winwarndialog.cpp
 	coreplugin2manager.cpp
+	dockmanager.cpp
 	)
 SET (HEADERS
 	mainwindow.h
@@ -462,6 +463,7 @@ SET (HEADERS
 	mwproxy.h
 	winwarndialog.h
 	coreplugin2manager.h
+	dockmanager.h
 	3dparty/qxttooltip.h
 	3dparty/qxttooltip_p.h
 	interfaces/structures.h

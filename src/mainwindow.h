@@ -94,6 +94,8 @@ namespace LeechCraft
 		ToolbarGuard* GetGuard () const;
 		FancyPopupManager* GetFancyPopupManager () const;
 
+		QWidget* GetDockListWidget (Qt::DockWidgetArea) const;
+
 		void ToggleViewActionVisiblity (QDockWidget*, bool);
 
 		void AddMenus (const QMap<QString, QList<QAction*> >&);
