@@ -22,6 +22,7 @@
 #include <QObject>
 #include "message.h"
 #include "progresslistener.h"
+#include "proto/Imap/Model/Logging.h"
 
 class QAuthenticator;
 class QMutex;
@@ -146,6 +147,7 @@ namespace Snails
 		void ReinitModel ();
 	private slots:
 		void handleAuthRequested (QAuthenticator*);
+		void handleLogged (uint, Imap::Mailbox::LogMessage);
 		void buildInURL (QString*);
 		void buildOutURL (QString*);
 		void getPassword (QString*, Direction = Direction::In);

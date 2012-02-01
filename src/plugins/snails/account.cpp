@@ -96,7 +96,7 @@ namespace Snails
 
 	QAbstractItemModel* Account::GetFoldersModel () const
 	{
-		return Model_;
+		return PrettyMboxModel_;
 	}
 
 	void Account::Synchronize (Account::FetchFlags flags)
@@ -416,13 +416,21 @@ namespace Snails
 				SIGNAL (authRequested (QAuthenticator*)),
 				this,
 				SLOT (handleAuthRequested (QAuthenticator*)));
+		connect (Model_,
+				SIGNAL (logged (uint, Imap::Mailbox::LogMessage)),
+				this,
+				SLOT (handleLogged (uint, Imap::Mailbox::LogMessage)));
 	}
 
 	void Account::handleAuthRequested (QAuthenticator *auth)
 	{
-		qDebug () << Q_FUNC_INFO << Login_;
 		auth->setUser (Login_);
 		auth->setPassword (GetPassImpl (Direction::In));
+	}
+
+	void Account::handleLogged (uint code, Imap::Mailbox::LogMessage msg)
+	{
+		qDebug () << "[IMAP]" << GetName () << code << msg.kind << msg.message << msg.source;
 	}
 
 	void Account::buildInURL (QString *res)
