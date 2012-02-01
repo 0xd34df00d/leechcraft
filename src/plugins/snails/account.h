@@ -23,7 +23,18 @@
 #include "message.h"
 #include "progresslistener.h"
 
+class QAuthenticator;
 class QMutex;
+class QAbstractItemModel;
+
+namespace Imap
+{
+namespace Mailbox
+{
+	class Model;
+	class PrettyMailboxModel;
+}
+}
 
 namespace LeechCraft
 {
@@ -38,7 +49,6 @@ namespace Snails
 		Q_OBJECT
 
 		friend class AccountThreadWorker;
-		AccountThread *Thread_;
 		QMutex *AccMutex_;
 
 		QByteArray ID_;
@@ -96,6 +106,9 @@ namespace Snails
 		OutType OutType_;
 
 		AccountFolderManager *FolderManager_;
+
+		Imap::Mailbox::Model *Model_;
+		Imap::Mailbox::PrettyMailboxModel *PrettyMboxModel_;
 	public:
 		Account (QObject* = 0);
 
@@ -105,6 +118,7 @@ namespace Snails
 		QString GetType () const;
 
 		AccountFolderManager* GetFolderManager () const;
+		QAbstractItemModel* GetFoldersModel () const;
 
 		void Synchronize (FetchFlags);
 		void FetchWholeMessage (Message_ptr);
@@ -129,7 +143,9 @@ namespace Snails
 		QString BuildOutURL ();
 		QString GetPassImpl (Direction);
 		QByteArray GetStoreID (Direction) const;
+		void ReinitModel ();
 	private slots:
+		void handleAuthRequested (QAuthenticator*);
 		void buildInURL (QString*);
 		void buildOutURL (QString*);
 		void getPassword (QString*, Direction = Direction::In);

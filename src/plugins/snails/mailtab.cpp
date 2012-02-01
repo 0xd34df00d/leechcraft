@@ -141,6 +141,10 @@ namespace Snails
 
 		handleGotNewMessages (Core::Instance ().GetStorage ()->
 					LoadMessages (CurrAcc_.get ()));
+
+		if (Ui_.FoldersTree_->selectionModel ())
+			Ui_.FoldersTree_->selectionModel ()->deleteLater ();
+		Ui_.FoldersTree_->setModel (CurrAcc_->GetFoldersModel ());
 	}
 
 	namespace
@@ -276,7 +280,7 @@ namespace Snails
 		Storage *st = Core::Instance ().GetStorage ();
 		Q_FOREACH (auto acc, Core::Instance ().GetAccounts ())
 			acc->Synchronize (st->HasMessagesIn (acc.get ()) ?
-						Account::FetchNew:
+						Account::FetchNew :
 						Account::FetchAll);
 	}
 

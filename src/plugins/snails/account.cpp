@@ -22,7 +22,14 @@
 #include <QDataStream>
 #include <QInputDialog>
 #include <QMutex>
+#include <QUrl>
+#include <QAuthenticator>
 #include <util/util.h>
+#include "proto/Imap/Model/Model.h"
+#include "proto/Imap/Model/MemoryCache.h"
+#include "proto/Imap/Model/MailboxModel.h"
+#include "proto/Imap/Model/PrettyMailboxModel.h"
+#include "proto/Streams/SocketFactory.h"
 #include "core.h"
 #include "accountconfigdialog.h"
 #include "accountthread.h"
@@ -36,8 +43,6 @@ namespace Snails
 {
 	Account::Account (QObject *parent)
 	: QObject (parent)
-	, Thread_ (new AccountThread (this))
-	, AccMutex_ (new QMutex (QMutex::Recursive))
 	, ID_ (QUuid::createUuid ().toByteArray ())
 	, UseSASL_ (false)
 	, SASLRequired_ (false)
@@ -47,8 +52,9 @@ namespace Snails
 	, APOP_ (false)
 	, APOPFail_ (false)
 	, FolderManager_ (new AccountFolderManager (this))
+	, Model_ (0)
+	, PrettyMboxModel_ (0)
 	{
-		Thread_->start (QThread::LowPriority);
 	}
 
 	QByteArray Account::GetID () const
@@ -70,7 +76,6 @@ namespace Snails
 
 	QString Account::GetType () const
 	{
-		QMutexLocker l (GetMutex ());
 		switch (InType_)
 		{
 		case InType::IMAP:
@@ -89,51 +94,32 @@ namespace Snails
 		return FolderManager_;
 	}
 
+	QAbstractItemModel* Account::GetFoldersModel () const
+	{
+		return Model_;
+	}
+
 	void Account::Synchronize (Account::FetchFlags flags)
 	{
-		QMetaObject::invokeMethod (Thread_->GetWorker (),
-				"synchronize",
-				Qt::QueuedConnection,
-				Q_ARG (Account::FetchFlags, flags),
-				Q_ARG (QList<QStringList>, FolderManager_->GetSyncFolders ()));
+		qDebug () << Q_FUNC_INFO;
+		Model_->reloadMailboxList ();
 	}
 
 	void Account::FetchWholeMessage (Message_ptr msg)
 	{
-		QMetaObject::invokeMethod (Thread_->GetWorker (),
-				"fetchWholeMessage",
-				Qt::QueuedConnection,
-				Q_ARG (Message_ptr, msg));
 	}
 
 	void Account::SendMessage (Message_ptr msg)
 	{
-		if (msg->GetFrom ().isEmpty ())
-			msg->SetFrom (UserName_);
-		if (msg->GetFromEmail ().isEmpty ())
-			msg->SetFromEmail (UserEmail_);
-
-		QMetaObject::invokeMethod (Thread_->GetWorker (),
-				"sendMessage",
-				Qt::QueuedConnection,
-				Q_ARG (Message_ptr, msg));
 	}
 
 	void Account::FetchAttachment (Message_ptr msg,
 			const QString& attName, const QString& path)
 	{
-		QMetaObject::invokeMethod (Thread_->GetWorker (),
-				"fetchAttachment",
-				Qt::QueuedConnection,
-				Q_ARG (Message_ptr, msg),
-				Q_ARG (QString, attName),
-				Q_ARG (QString, path));
 	}
 
 	QByteArray Account::Serialize () const
 	{
-		QMutexLocker l (GetMutex ());
-
 		QByteArray result;
 
 		QDataStream out (&result, QIODevice::WriteOnly);
@@ -173,111 +159,106 @@ namespace Snails
 
 		quint8 inType = 0, outType = 0;
 
+		in >> ID_
+			>> AccName_
+			>> Login_
+			>> UseSASL_
+			>> SASLRequired_
+			>> UseTLS_
+			>> TLSRequired_
+			>> SMTPNeedsAuth_
+			>> APOP_
+			>> APOPFail_
+			>> InHost_
+			>> InPort_
+			>> OutHost_
+			>> OutPort_
+			>> OutLogin_
+			>> inType
+			>> outType;
+
+		InType_ = static_cast<InType> (inType);
+		OutType_ = static_cast<OutType> (outType);
+
+		if (version >= 2)
+			in >> UserName_
+				>> UserEmail_;
+
+		if (version >= 3)
 		{
-			QMutexLocker l (GetMutex ());
-			in >> ID_
-				>> AccName_
-				>> Login_
-				>> UseSASL_
-				>> SASLRequired_
-				>> UseTLS_
-				>> TLSRequired_
-				>> SMTPNeedsAuth_
-				>> APOP_
-				>> APOPFail_
-				>> InHost_
-				>> InPort_
-				>> OutHost_
-				>> OutPort_
-				>> OutLogin_
-				>> inType
-				>> outType;
-
-			InType_ = static_cast<InType> (inType);
-			OutType_ = static_cast<OutType> (outType);
-
-			if (version >= 2)
-				in >> UserName_
-					>> UserEmail_;
-
-			if (version >= 3)
-			{
-				QByteArray fstate;
-				in >> fstate;
-				FolderManager_->Deserialize (fstate);
-			}
+			QByteArray fstate;
+			in >> fstate;
+			FolderManager_->Deserialize (fstate);
 		}
+
+		ReinitModel ();
 	}
 
 	void Account::OpenConfigDialog ()
 	{
 		std::unique_ptr<AccountConfigDialog> dia (new AccountConfigDialog);
 
-		{
-			QMutexLocker l (GetMutex ());
-			dia->SetName (AccName_);
-			dia->SetUserName (UserName_);
-			dia->SetUserEmail (UserEmail_);
-			dia->SetLogin (Login_);
-			dia->SetUseSASL (UseSASL_);
-			dia->SetSASLRequired (SASLRequired_);
-			dia->SetUseTLS (UseTLS_);
-			dia->SetTLSRequired (TLSRequired_);
-			dia->SetSMTPAuth (SMTPNeedsAuth_);
-			dia->SetAPOP (APOP_);
-			dia->SetAPOPRequired (APOPFail_);
-			dia->SetInHost (InHost_);
-			dia->SetInPort (InPort_);
-			dia->SetOutHost (OutHost_);
-			dia->SetOutPort (OutPort_);
-			dia->SetOutLogin (OutLogin_);
-			dia->SetInType (InType_);
-			dia->SetOutType (OutType_);
+		dia->SetName (AccName_);
+		dia->SetUserName (UserName_);
+		dia->SetUserEmail (UserEmail_);
+		dia->SetLogin (Login_);
+		dia->SetUseSASL (UseSASL_);
+		dia->SetSASLRequired (SASLRequired_);
+		dia->SetUseTLS (UseTLS_);
+		dia->SetTLSRequired (TLSRequired_);
+		dia->SetSMTPAuth (SMTPNeedsAuth_);
+		dia->SetAPOP (APOP_);
+		dia->SetAPOPRequired (APOPFail_);
+		dia->SetInHost (InHost_);
+		dia->SetInPort (InPort_);
+		dia->SetOutHost (OutHost_);
+		dia->SetOutPort (OutPort_);
+		dia->SetOutLogin (OutLogin_);
+		dia->SetInType (InType_);
+		dia->SetOutType (OutType_);
 
-			const auto& folders = FolderManager_->GetFolders ();
-			dia->SetAllFolders (folders);
-			const auto& toSync = FolderManager_->GetSyncFolders ();
-			Q_FOREACH (const auto& folder, folders)
-			{
-				const auto flags = FolderManager_->GetFolderFlags (folder);
-				if (flags & AccountFolderManager::FolderOutgoing)
-					dia->SetOutFolder (folder);
-			}
-			dia->SetFoldersToSync (toSync);
+		const auto& folders = FolderManager_->GetFolders ();
+		dia->SetAllFolders (folders);
+		const auto& toSync = FolderManager_->GetSyncFolders ();
+		Q_FOREACH (const auto& folder, folders)
+		{
+			const auto flags = FolderManager_->GetFolderFlags (folder);
+			if (flags & AccountFolderManager::FolderOutgoing)
+				dia->SetOutFolder (folder);
 		}
+		dia->SetFoldersToSync (toSync);
 
 		if (dia->exec () != QDialog::Accepted)
 			return;
 
-		{
-			QMutexLocker l (GetMutex ());
-			AccName_ = dia->GetName ();
-			UserName_ = dia->GetUserName ();
-			UserEmail_ = dia->GetUserEmail ();
-			Login_ = dia->GetLogin ();
-			UseSASL_ = dia->GetUseSASL ();
-			SASLRequired_ = dia->GetSASLRequired ();
-			UseTLS_ = dia->GetUseTLS ();
-			TLSRequired_ = dia->GetTLSRequired ();
-			SMTPNeedsAuth_ = dia->GetSMTPAuth ();
-			APOP_ = dia->GetAPOP ();
-			APOPFail_ = dia->GetAPOPRequired ();
-			InHost_ = dia->GetInHost ();
-			InPort_ = dia->GetInPort ();
-			OutHost_ = dia->GetOutHost ();
-			OutPort_ = dia->GetOutPort ();
-			OutLogin_ = dia->GetOutLogin ();
-			InType_ = dia->GetInType ();
-			OutType_ = dia->GetOutType ();
+		AccName_ = dia->GetName ();
+		UserName_ = dia->GetUserName ();
+		UserEmail_ = dia->GetUserEmail ();
+		Login_ = dia->GetLogin ();
+		UseSASL_ = dia->GetUseSASL ();
+		SASLRequired_ = dia->GetSASLRequired ();
+		UseTLS_ = dia->GetUseTLS ();
+		TLSRequired_ = dia->GetTLSRequired ();
+		SMTPNeedsAuth_ = dia->GetSMTPAuth ();
+		APOP_ = dia->GetAPOP ();
+		APOPFail_ = dia->GetAPOPRequired ();
+		InHost_ = dia->GetInHost ();
+		InPort_ = dia->GetInPort ();
+		OutHost_ = dia->GetOutHost ();
+		OutPort_ = dia->GetOutPort ();
+		OutLogin_ = dia->GetOutLogin ();
+		InType_ = dia->GetInType ();
+		OutType_ = dia->GetOutType ();
 
-			FolderManager_->ClearFolderFlags ();
-			const auto& out = dia->GetOutFolder ();
-			if (!out.isEmpty ())
-				FolderManager_->AppendFolderFlags (out, AccountFolderManager::FolderOutgoing);
+		FolderManager_->ClearFolderFlags ();
+		const auto& out = dia->GetOutFolder ();
+		if (!out.isEmpty ())
+			FolderManager_->AppendFolderFlags (out, AccountFolderManager::FolderOutgoing);
 
-			Q_FOREACH (const auto& sync, dia->GetFoldersToSync ())
-				FolderManager_->AppendFolderFlags (sync, AccountFolderManager::FolderSyncable);
-		}
+		Q_FOREACH (const auto& sync, dia->GetFoldersToSync ())
+			FolderManager_->AppendFolderFlags (sync, AccountFolderManager::FolderSyncable);
+
+		ReinitModel ();
 
 		emit accountChanged ();
 	}
@@ -309,39 +290,36 @@ namespace Snails
 
 		QString result;
 
+		QUrl url;
+
 		switch (InType_)
 		{
 		case InType::IMAP:
-			result = "imap://";
+			url.setScheme ("imap");
 			break;
 		case InType::POP3:
-			result = "pop3://";
+			url.setScheme ("pop3");
 			break;
 		case InType::Maildir:
-			result = "maildir://localhost";
+			url.setScheme ("maildir");
+			url.setHost ("localhost");
 			break;
 		}
 
 		if (InType_ != InType::Maildir)
 		{
-			result += Login_;
-			result += ":";
-
+			url.setUserName (Login_);
 			QString pass;
 			getPassword (&pass);
 
-			result += pass + '@';
+			url.setPassword (pass);
+
+			url.setHost (InHost_);
 		}
 
-		result += InHost_;
+		qDebug () << Q_FUNC_INFO << url.toEncoded ();
 
-		// TODO
-		//if (InType_ != ITMaildir)
-			//result += ":" + QString::number (InPort_);
-
-		qDebug () << Q_FUNC_INFO << result;
-
-		return result;
+		return url.toEncoded ();
 	}
 
 	QString Account::BuildOutURL ()
@@ -412,6 +390,39 @@ namespace Snails
 		if (dir == Direction::Out)
 			result += "/out";
 		return result;
+	}
+
+	void Account::ReinitModel ()
+	{
+		if (Model_)
+			Model_->deleteLater ();
+
+		Imap::Mailbox::SocketFactoryPtr factory;
+		if (UseTLS_)
+			factory.reset (new Imap::Mailbox::TlsAbleSocketFactory (InHost_, InPort_));
+		else
+			factory.reset (new Imap::Mailbox::SslSocketFactory (InHost_, InPort_));
+
+		Model_ = new Imap::Mailbox::Model (this,
+				new Imap::Mailbox::MemoryCache (this, QString ()),
+				factory,
+				Imap::Mailbox::TaskFactoryPtr (new Imap::Mailbox::TaskFactory ()),
+				false);
+		Model_->setObjectName ("model");
+		auto mboxModel = new Imap::Mailbox::MailboxModel (Model_, Model_);
+		PrettyMboxModel_ = new Imap::Mailbox::PrettyMailboxModel (Model_, mboxModel);
+
+		connect (Model_,
+				SIGNAL (authRequested (QAuthenticator*)),
+				this,
+				SLOT (handleAuthRequested (QAuthenticator*)));
+	}
+
+	void Account::handleAuthRequested (QAuthenticator *auth)
+	{
+		qDebug () << Q_FUNC_INFO << Login_;
+		auth->setUser (Login_);
+		auth->setPassword (GetPassImpl (Direction::In));
 	}
 
 	void Account::buildInURL (QString *res)

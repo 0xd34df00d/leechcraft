@@ -172,9 +172,12 @@ namespace Snails
 		st->setProperty ("options.sasl", A_->UseSASL_);
 		st->setProperty ("options.sasl.fallback", A_->SASLRequired_);
 
+		qDebug () << A_->GetName () << A_->UseTLS_ << A_->UseSASL_ << A_->TLSRequired_ << A_->SASLRequired_;
+
 		CachedStore_ = st;
 
 		st->connect ();
+		qDebug () << A_->GetName () << "connected";
 
 		return st;
 	}
@@ -289,6 +292,15 @@ namespace Snails
 		catch (const vmime::exceptions::no_such_field&)
 		{
 		}
+		catch (const vmime::exceptions::charset_conv_error& e)
+		{
+			qWarning () << Q_FUNC_INFO << e.name ();
+			qWarning () << e.what ();
+
+			auto text = header->Subject ()->getValue ()
+					.dynamicCast<const vmime::text> ();
+			qWarning () << text->getWholeBuffer ().c_str ();
+		}
 
 		return msg;
 	}
@@ -373,6 +385,7 @@ namespace Snails
 	void AccountThreadWorker::FetchMessagesIMAP (Account::FetchFlags fetchFlags,
 			const QList<QStringList>& origFolders, vmime::ref<vmime::net::store> store)
 	{
+		qDebug () << Q_FUNC_INFO << A_->GetName ();
 		FetchMessagesInFolder (QStringList ("INBOX"), store->getDefaultFolder ());
 
 		Q_FOREACH (const auto& folder, origFolders)
@@ -388,6 +401,7 @@ namespace Snails
 	void AccountThreadWorker::FetchMessagesInFolder (const QStringList& folderName,
 			vmime::utility::ref<vmime::net::folder> folder)
 	{
+		qDebug () << Q_FUNC_INFO;
 		folder->open (vmime::net::folder::MODE_READ_WRITE);
 		auto messages = folder->getMessages ();
 		if (!messages.size ())
@@ -414,6 +428,8 @@ namespace Snails
 			return;
 		}
 
+		qDebug () << "got headers" << messages.size ();
+
 		const QSet<QByteArray>& existing = Core::Instance ().GetStorage ()->LoadIDs (A_);
 
 		QList<Message_ptr> newMessages;
@@ -424,6 +440,8 @@ namespace Snails
 					res->AddFolder (folderName);
 					return res;
 				});
+
+		qDebug () << "calculated new msgs";
 
 		QList<Message_ptr> updatedMessages;
 		Q_FOREACH (Message_ptr msg, newMessages)
