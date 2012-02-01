@@ -16,9 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "webaccess.h"
-#include <QIcon>
-#include "servermanager.h"
+#pragma once
+
+#include <memory>
+
+namespace Wt
+{
+	class WServer;
+}
 
 namespace LeechCraft
 {
@@ -26,58 +31,12 @@ namespace Aggregator
 {
 namespace WebAccess
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	class ServerManager
 	{
-		Proxy_ = proxy;
-
-		try
-		{
-			SM_.reset (new ServerManager ());
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< e.what ();
-		}
-	}
-
-	void Plugin::SecondInit ()
-	{
-	}
-
-	QByteArray Plugin::GetUniqueID () const
-	{
-		return "org.LeechCraft.Aggregator.WebAccess";
-	}
-
-	void Plugin::Release ()
-	{
-		SM_.reset ();
-	}
-
-	QString Plugin::GetName () const
-	{
-		return "Aggregator WebAccess";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("Provides remote HTTP/Web access to Aggregator.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
-	}
-
-	QSet<QByteArray> Plugin::GetPluginClasses () const
-	{
-		QSet<QByteArray> result;
-		result << "org.LeechCraft.Aggregator.GeneralPlugin/1.0";
-		return result;
-	}
+		std::shared_ptr<Wt::WServer> Server_;
+	public:
+		ServerManager ();
+	};
 }
 }
 }
-
-Q_EXPORT_PLUGIN2 (leechcraft_aggregator_webaccess, LeechCraft::Aggregator::WebAccess::Plugin);

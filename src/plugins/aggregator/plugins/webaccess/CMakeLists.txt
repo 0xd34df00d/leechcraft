@@ -1,16 +1,21 @@
 SET (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 FIND_PACKAGE (Wt REQUIRED)
+ADD_DEFINITIONS (-DQT_NO_KEYWORDS)
 
 INCLUDE_DIRECTORIES (${AGGREGATOR_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
-	${WT_INCLUDE_DIR}
+	${Wt_INCLUDE_DIR}
 	)
 SET (WEBACCESS_SRCS
 	webaccess.cpp
+	servermanager.cpp
+	aggregatorapp.cpp
 	)
 SET (WEBACCESS_HEADERS
 	webaccess.h
+	servermanager.h
+	aggregatorapp.h
 	)
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (WEBACCESS_MOC_SRCS ${WEBACCESS_HEADERS})
@@ -24,6 +29,6 @@ ADD_LIBRARY (leechcraft_aggregator_webaccess SHARED
 TARGET_LINK_LIBRARIES (leechcraft_aggregator_webaccess
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
-	${WT_LIBRARIES}
+	${Wt_LIBRARIES}
 	)
 INSTALL (TARGETS leechcraft_aggregator_webaccess DESTINATION ${LC_PLUGINS_DEST})

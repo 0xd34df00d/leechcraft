@@ -32,6 +32,8 @@ namespace Aggregator
 {
 namespace WebAccess
 {
+	class ServerManager;
+
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
@@ -40,6 +42,7 @@ namespace WebAccess
 		Q_INTERFACES (IInfo IPlugin2)
 
 		ICoreProxy_ptr Proxy_;
+		std::shared_ptr<ServerManager> SM_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -50,7 +53,7 @@ namespace WebAccess
 		QIcon GetIcon () const;
 
 		QSet<QByteArray> GetPluginClasses () const;
-	signals:
+	Q_SIGNALS:
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 	};
 }
