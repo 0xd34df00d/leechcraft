@@ -21,7 +21,6 @@
 #include <QUuid>
 #include <QDataStream>
 #include <QInputDialog>
-#include <QMutex>
 #include <QUrl>
 #include <QAuthenticator>
 #include <util/util.h>
@@ -290,11 +289,6 @@ namespace Snails
 	void Account::handleFolderActivated (const QModelIndex& index)
 	{
 		MsgListModel_->setMailbox (index);
-	}
-
-	QMutex* Account::GetMutex () const
-	{
-		return AccMutex_;
 	}
 
 	QString Account::GetPassImpl (Direction dir)

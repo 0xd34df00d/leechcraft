@@ -26,7 +26,6 @@
 #include "proto/Imap/Model/Logging.h"
 
 class QAuthenticator;
-class QMutex;
 class QAbstractItemModel;
 
 namespace Imap
@@ -44,16 +43,11 @@ namespace LeechCraft
 {
 namespace Snails
 {
-	class AccountThread;
-	class AccountThreadWorker;
 	class AccountFolderManager;
 
 	class Account : public QObject
 	{
 		Q_OBJECT
-
-		friend class AccountThreadWorker;
-		QMutex *AccMutex_;
 
 		QByteArray ID_;
 
@@ -147,8 +141,6 @@ namespace Snails
 	public slots:
 		void handleFolderActivated (const QModelIndex&);
 	private:
-		QMutex* GetMutex () const;
-
 		QString GetPassImpl (Direction);
 		QByteArray GetStoreID (Direction) const;
 		void ReinitModel ();
