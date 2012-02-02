@@ -29,8 +29,9 @@ namespace LeechCraft
 
 	class DockManager : public QObject
 	{
-		MainWindow *MW_;
+		Q_OBJECT
 
+		MainWindow *MW_;
 		QMap<Qt::DockWidgetArea, QList<QDockWidget*>> Area2Widgets_;
 	public:
 		DockManager (MainWindow*, QObject* = 0);
