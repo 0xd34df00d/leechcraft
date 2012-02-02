@@ -105,19 +105,15 @@ namespace Azoth
 	{
 		QList<QAction*> actions;
 
-		QVariant objVar = QVariant::fromValue<QObject*> (accObj);
-
 		IAccount *account = qobject_cast<IAccount*> (accObj);
 		IProtocol *proto = qobject_cast<IProtocol*> (account->GetParentProtocol ());
 
 		AccountJoinConference_->setEnabled (proto->GetFeatures () & IProtocol::PFMUCsJoinable);
-		AccountJoinConference_->setProperty ("Azoth/AccountObject", objVar);
 		actions << AccountJoinConference_;
 
-		if (qobject_cast<ISupportBookmarks*> (objVar.value<QObject*> ()))
+		if (qobject_cast<ISupportBookmarks*> (accObj))
 		{
-			ISupportBookmarks *supBms =
-					qobject_cast<ISupportBookmarks*> (objVar.value<QObject*> ());
+			auto supBms = qobject_cast<ISupportBookmarks*> (accObj);
 			QVariantList bms = supBms->GetBookmarkedMUCs ();
 			if (!bms.isEmpty ())
 			{
@@ -125,7 +121,7 @@ namespace Azoth
 				actions << bmsMenu->menuAction ();
 
 				Q_FOREACH (const QObject *mucObj,
-						qobject_cast<IAccount*> (objVar.value<QObject*> ())->GetCLEntries ())
+						qobject_cast<IAccount*> (accObj)->GetCLEntries ())
 				{
 					IMUCEntry *muc = qobject_cast<IMUCEntry*> (mucObj);
 					if (!muc)
@@ -139,7 +135,6 @@ namespace Azoth
 					const QVariantMap& map = bm.toMap ();
 
 					QAction *act = bmsMenu->addAction (map ["HumanReadableName"].toString ());
-					act->setProperty ("Azoth/AccountObject", objVar);
 					act->setProperty ("Azoth/BMData", bm);
 					connect (act,
 							SIGNAL (triggered ()),
@@ -149,29 +144,18 @@ namespace Azoth
 			}
 
 			actions << AccountManageBookmarks_;
-			AccountManageBookmarks_->setProperty ("Azoth/AccountObject", objVar);
 		}
 		actions << Util::CreateSeparator (menu);
 
-		AccountAddContact_->setProperty ("Azoth/AccountObject", objVar);
 		actions << AccountAddContact_;
 		actions << Util::CreateSeparator (menu);
 
-		if (qobject_cast<ISupportActivity*> (objVar.value<QObject*> ()))
-		{
-			AccountSetActivity_->setProperty ("Azoth/AccountObject", objVar);
+		if (qobject_cast<ISupportActivity*> (accObj))
 			actions << AccountSetActivity_;
-		}
-		if (qobject_cast<ISupportMood*> (objVar.value<QObject*> ()))
-		{
-			AccountSetMood_->setProperty ("Azoth/AccountObject", objVar);
+		if (qobject_cast<ISupportMood*> (accObj))
 			actions << AccountSetMood_;
-		}
-		if (qobject_cast<ISupportGeolocation*> (objVar.value<QObject*> ()))
-		{
-			AccountSetLocation_->setProperty ("Azoth/AccountObject", objVar);
+		if (qobject_cast<ISupportGeolocation*> (accObj))
 			actions << AccountSetLocation_;
-		}
 		actions << Util::CreateSeparator (menu);
 
 		const auto& accActions = account->GetActions ();
@@ -182,20 +166,17 @@ namespace Azoth
 		}
 
 		if (qobject_cast<IHaveServiceDiscovery*> (accObj))
-		{
-			AccountSD_->setProperty ("Azoth/AccountObject", objVar);
 			actions << AccountSD_;
-		}
-
-		if (qobject_cast<IHaveConsole*> (objVar.value<QObject*> ()))
-		{
-			AccountConsole_->setProperty ("Azoth/AccountObject", objVar);
+		if (qobject_cast<IHaveConsole*> (accObj))
 			actions << AccountConsole_;
-		}
+
 		actions << Util::CreateSeparator (menu);
 
-		AccountModify_->setProperty ("Azoth/AccountObject", objVar);
 		actions << AccountModify_;
+
+		Q_FOREACH (QAction *act, actions)
+			act->setProperty ("Azoth/AccountObject",
+					QVariant::fromValue<QObject*> (accObj));
 
 		return actions;
 	}
