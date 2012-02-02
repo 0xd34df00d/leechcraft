@@ -31,12 +31,12 @@ namespace Sidebar
 	SBWidget::SBWidget (QWidget *parent)
 	: QWidget (parent)
 	, TrayLay_ (new Util::FlowLayout (1, 0, 1))
-	, IconSize_ (QSize (48, 48))
+	, IconSize_ (QSize (30, 30))
 	{
 		Ui_.setupUi (this);
 		static_cast<QVBoxLayout*> (layout ())->addLayout (TrayLay_);
 
-		setMaximumWidth (50);
+		setMaximumWidth (IconSize_.width () + 2);
 	}
 
 	void SBWidget::AddTabOpenAction (QAction *act)
@@ -44,9 +44,19 @@ namespace Sidebar
 		AddTabButton (act, Ui_.PluginButtonsLay_);
 	}
 
+	void SBWidget::RemoveTabOpenAction (QAction *act)
+	{
+		RemoveTabButton (act, Ui_.PluginButtonsLay_);
+	}
+
 	void SBWidget::AddQLAction (QAction *act)
 	{
 		AddTabButton (act, Ui_.QLLay_);
+	}
+
+	void SBWidget::RemoveQLAction (QAction *act)
+	{
+		RemoveTabButton (act, Ui_.QLLay_);
 	}
 
 	void SBWidget::AddCurTabAction (QAction *act, QWidget *w)
@@ -81,7 +91,7 @@ namespace Sidebar
 				SLOT (handleTrayActDestroyed ()));
 
 		auto tb = new QToolButton;
-		const int w = maximumWidth () - TrayLay_->margin () * 2;
+		const int w = maximumWidth () - TrayLay_->margin () * 4;
 		tb->setMaximumSize (w, w);
 		tb->setIconSize (IconSize_);
 		tb->setAutoRaise (true);
@@ -89,6 +99,11 @@ namespace Sidebar
 		TrayAct2Button_ [act] = tb;
 
 		TrayLay_->addWidget (tb);
+	}
+
+	void SBWidget::RemoveTrayAction (QAction *act)
+	{
+		RemoveTabButton (act, TrayLay_);
 	}
 
 	QToolButton* SBWidget::AddTabButton (QAction *act, QLayout *lay)
@@ -100,6 +115,20 @@ namespace Sidebar
 		lay->addWidget (tb);
 
 		return tb;
+	}
+
+	void SBWidget::RemoveTabButton (QAction *act, QLayout *lay)
+	{
+		for (int i = 0; i < lay->count (); ++i)
+		{
+			auto tb = qobject_cast<QToolButton*> (lay->itemAt (i)->widget ());
+			if (tb && tb->defaultAction () == act)
+			{
+				tb->deleteLater ();
+				lay->removeWidget (tb);
+				break;
+			}
+		}
 	}
 
 	void SBWidget::FoldTabClass (const TabClassInfo& tc, QAction *newAct)

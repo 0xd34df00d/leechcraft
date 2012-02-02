@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SNAILS_STORAGE_H
-#define PLUGINS_SNAILS_STORAGE_H
+#pragma once
+
 #include <QObject>
 #include <QDir>
 #include <QSettings>
@@ -56,5 +56,3 @@ namespace Snails
 	};
 }
 }
-
-#endif

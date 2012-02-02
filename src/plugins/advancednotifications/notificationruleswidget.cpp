@@ -21,6 +21,7 @@
 #include <QStandardItemModel>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QInputDialog>
 #include <interfaces/ianemitter.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -30,7 +31,6 @@
 #include "matchconfigdialog.h"
 #include "typedmatchers.h"
 #include "core.h"
-#include <QInputDialog>
 
 namespace LeechCraft
 {
@@ -275,24 +275,6 @@ namespace AdvancedNotifications
 		items.first ()->setCheckState (rule.IsEnabled () ? Qt::Checked : Qt::Unchecked);
 
 		return items;
-	}
-
-	namespace
-	{
-		struct FieldMatchFinder
-		{
-			const QString& F_;
-
-			FieldMatchFinder (const QString& f)
-			: F_ (f)
-			{
-			}
-
-			bool operator() (const ANFieldData& fd)
-			{
-				return fd.ID_ == F_;
-			}
-		};
 	}
 
 	QList<QStandardItem*> NotificationRulesWidget::MatchToRow (const FieldMatch& match) const

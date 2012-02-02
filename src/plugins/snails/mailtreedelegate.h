@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SNAILS_MAILTREEDELEGATE_H
-#define PLUGINS_SNAILS_MAILTREEDELEGATE_H
+#pragma once
+
 #include <QStyledItemDelegate>
 
 namespace LeechCraft
@@ -33,5 +33,3 @@ namespace Snails
 	};
 }
 }
-
-#endif

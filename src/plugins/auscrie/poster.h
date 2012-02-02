@@ -27,51 +27,47 @@ class QNetworkAccessManager;
 
 namespace LeechCraft
 {
-	struct Entity;
+struct Entity;
 
-	namespace Plugins
+namespace Auscrie
+{
+	struct Worker
 	{
-		namespace Auscrie
-		{
-			struct Worker
-			{
-				virtual ~Worker () {}
+		virtual ~Worker () {}
 
-				virtual QNetworkReply* Post (const QByteArray& imageData,
-						const QString& format, QNetworkAccessManager *am) const = 0;
-				virtual QString GetLink (const QString& contents, QNetworkReply *reply) const = 0;
-			};
-
-			typedef boost::shared_ptr<Worker> Worker_ptr;
-
-			class Poster : public QObject
-			{
-				Q_OBJECT
-
-				QNetworkReply *Reply_;
-			public:
-				enum HostingService
-				{
-					DumpBitcheeseNet,
-					SavepicRu,
-					ImagebinCa
-				};
-			private:
-				const HostingService Service_;
-				QMap<HostingService, Worker_ptr> Workers_;
-			public:
-				Poster (HostingService,
-						const QByteArray&, const QString&,
-						QNetworkAccessManager*, QObject* = 0);
-			private slots:
-				void handleFinished ();
-				void handleError ();
-			signals:
-				void gotEntity (const LeechCraft::Entity&);
-			};
-		};
+		virtual QNetworkReply* Post (const QByteArray& imageData,
+				const QString& format, QNetworkAccessManager *am) const = 0;
+		virtual QString GetLink (const QString& contents, QNetworkReply *reply) const = 0;
 	};
-};
+
+	typedef boost::shared_ptr<Worker> Worker_ptr;
+
+	class Poster : public QObject
+	{
+		Q_OBJECT
+
+		QNetworkReply *Reply_;
+	public:
+		enum HostingService
+		{
+			DumpBitcheeseNet,
+			SavepicRu,
+			ImagebinCa
+		};
+	private:
+		const HostingService Service_;
+		QMap<HostingService, Worker_ptr> Workers_;
+	public:
+		Poster (HostingService,
+				const QByteArray&, const QString&,
+				QNetworkAccessManager*, QObject* = 0);
+	private slots:
+		void handleFinished ();
+		void handleError ();
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
+	};
+}
+}
 
 #endif
-

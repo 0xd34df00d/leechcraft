@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SNAILS_PROGRESSLISTENER_H
-#define PLUGINS_SNAILS_PROGRESSLISTENER_H
+#pragma once
+
 #include <QMetaType>
 #include <QPointer>
 #include <QObject>
@@ -50,5 +50,3 @@ namespace Snails
 }
 
 Q_DECLARE_METATYPE (LeechCraft::Snails::ProgressListener_g_ptr);
-
-#endif

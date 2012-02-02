@@ -18,6 +18,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
 #include <interfaces/ihavetabs.h>
 
@@ -26,18 +27,23 @@ namespace LeechCraft
 namespace Sidebar
 {
 	class SBWidget;
+	class ShowConfigDialog;
 
 	class NewTabActionManager : public QObject
 	{
 		Q_OBJECT
 
 		SBWidget *Bar_;
+		std::shared_ptr<ShowConfigDialog> CfgDialog_;
 	public:
 		NewTabActionManager (SBWidget*, QObject* = 0);
 
 		void AddTabClassOpener (const TabClassInfo&, QObject*);
 	private slots:
 		void openNewTab ();
+
+		void handleShowActions (const QList<QAction*>&);
+		void handleHideActions (const QList<QAction*>&);
 	};
 }
 }

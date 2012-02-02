@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SNAILS_SNAILS_H
-#define PLUGINS_SNAILS_SNAILS_H
+#pragma once
+
 #include <QObject>
 #include <QModelIndex>
 #include <interfaces/iinfo.h>
@@ -69,6 +69,3 @@ namespace Snails
 	};
 }
 }
-
-#endif
-

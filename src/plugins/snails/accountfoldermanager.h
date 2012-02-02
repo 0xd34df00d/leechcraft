@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SNAILS_ACCOUNTFOLDERMANAGER_H
-#define PLUGINS_SNAILS_ACCOUNTFOLDERMANAGER_H
+#pragma once
+
 #include <QObject>
 #include <QStringList>
 #include <QHash>
@@ -64,5 +64,3 @@ namespace Snails
 	};
 }
 }
-
-#endif

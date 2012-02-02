@@ -24,34 +24,31 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Auscrie
+{
+	class ShooterDialog : public QDialog
 	{
-		namespace Auscrie
+		Q_OBJECT
+
+		Ui::ShooterDialog Ui_;
+	public:
+		enum Action
 		{
-			class ShooterDialog : public QDialog
-			{
-				Q_OBJECT
+			AUpload,
+			ASave
+		};
 
-				Ui::ShooterDialog Ui_;
-			public:
-				enum Action
-				{
-					AUpload,
-					ASave
-				};
+		ShooterDialog (QWidget* = 0);
 
-				ShooterDialog (QWidget* = 0);
-
-				Action GetAction () const;
-				Poster::HostingService GetHostingService () const;
-				int GetTimeout () const;
-				QString GetFormat () const;
-				int GetQuality () const;
-			private slots:
-				void on_Format__currentIndexChanged (const QString&);
-			};
-		}
-	}
+		Action GetAction () const;
+		Poster::HostingService GetHostingService () const;
+		int GetTimeout () const;
+		QString GetFormat () const;
+		int GetQuality () const;
+	private slots:
+		void on_Format__currentIndexChanged (const QString&);
+	};
+}
 }
 
 #endif

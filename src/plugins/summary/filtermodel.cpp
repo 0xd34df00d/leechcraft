@@ -25,50 +25,46 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Summary
+{
+	FilterModel::FilterModel (QObject *parent)
+	: QSortFilterProxyModel (parent)
+	, NormalMode_ (true)
 	{
-		namespace Summary
+	}
+
+	void FilterModel::SetTagsMode (bool tagsMode)
+	{
+		NormalMode_ = !tagsMode;
+		invalidateFilter ();
+	}
+
+	bool FilterModel::filterAcceptsRow (int source_row, const QModelIndex& source_parent) const
+	{
+		if (NormalMode_)
+			return QSortFilterProxyModel::filterAcceptsRow (source_row, source_parent);
+		else
 		{
-			FilterModel::FilterModel (QObject *parent)
-			: QSortFilterProxyModel (parent)
-			, NormalMode_ (true)
-			{
-			}
+			const QStringList& itemTags = Core::Instance ().GetTagsForIndex (source_row, sourceModel ()),
+						filterTags = Core::Instance ().GetProxy ()->
+										GetTagsManager ()->Split (filterRegExp ().pattern ());
+			if (!filterTags.size () || !itemTags.size ())
+				return true;
 
-			void FilterModel::SetTagsMode (bool tagsMode)
+			for (int i = 0; i < filterTags.size (); ++i)
 			{
-				NormalMode_ = !tagsMode;
-				invalidateFilter ();
-			}
-
-			bool FilterModel::filterAcceptsRow (int source_row, const QModelIndex& source_parent) const
-			{
-				if (NormalMode_)
-					return QSortFilterProxyModel::filterAcceptsRow (source_row, source_parent);
-				else
-				{
-					const QStringList& itemTags = Core::Instance ().GetTagsForIndex (source_row, sourceModel ()),
-								filterTags = Core::Instance ().GetProxy ()->
-                                             GetTagsManager ()->Split (filterRegExp ().pattern ());
-					if (!filterTags.size () || !itemTags.size ())
-						return true;
-
-					for (int i = 0; i < filterTags.size (); ++i)
+				bool found = false;
+				for (int j = 0; j < itemTags.size (); ++j)
+					if (itemTags.at (j).contains (filterTags.at (i)))
 					{
-						bool found = false;
-						for (int j = 0; j < itemTags.size (); ++j)
-							if (itemTags.at (j).contains (filterTags.at (i)))
-							{
-								found = true;
-								break;
-							}
-						if (!found)
-							return false;
+						found = true;
+						break;
 					}
-					return true;
-				}
+				if (!found)
+					return false;
 			}
-		};
-	};
-};
-
+			return true;
+		}
+	}
+}
+}

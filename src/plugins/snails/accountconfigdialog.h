@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SNAILS_ACCOUNTCONFIGDIALOG_H
-#define PLUGINS_SNAILS_ACCOUNTCONFIGDIALOG_H
+#pragma once
+
 #include <QDialog>
 #include "ui_accountconfigdialog.h"
 #include "account.h"
@@ -101,5 +101,3 @@ namespace Snails
 	};
 }
 }
-
-#endif

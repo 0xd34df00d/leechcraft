@@ -22,32 +22,23 @@
 #include <QVBoxLayout>
 #include <QToolButton>
 #include <QInputDialog>
+#include <QToolBar>
 #include <QTimer>
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include "interfaces/iclentry.h"
-#include "interfaces/ihaveconsole.h"
-#include "interfaces/isupportactivity.h"
-#include "interfaces/isupportmood.h"
-#include "interfaces/isupportgeolocation.h"
-#include "interfaces/isupportbookmarks.h"
-#include "interfaces/imucjoinwidget.h"
 #include "core.h"
 #include "sortfilterproxymodel.h"
 #include "setstatusdialog.h"
 #include "contactlistdelegate.h"
 #include "xmlsettingsmanager.h"
 #include "addcontactdialog.h"
-#include "joinconferencedialog.h"
-#include "bookmarksmanagerdialog.h"
 #include "chattabsmanager.h"
-#include "consolewidget.h"
-#include "activitydialog.h"
-#include "mooddialog.h"
-#include "locationdialog.h"
 #include "util.h"
 #include "groupsenddialog.h"
 #include "actionsmanager.h"
+#include "accountactionsmanager.h"
+#include "bookmarksmanagerdialog.h"
 
 namespace LeechCraft
 {
@@ -57,14 +48,28 @@ namespace Azoth
 	: QWidget (parent)
 	, MainMenu_ (new QMenu (tr ("Azoth menu"), this))
 	, MenuButton_ (new QToolButton (this))
-	, ProxyModel_ (new SortFilterProxyModel ())
+	, ProxyModel_ (new SortFilterProxyModel (this))
+	, BottomBar_ (new QToolBar (tr ("Azoth bar"), this))
+	, AccountActsMgr_ (new AccountActionsManager (this, this))
 	{
+		connect (AccountActsMgr_,
+				SIGNAL (gotConsoleWidget (ConsoleWidget*)),
+				this,
+				SIGNAL (gotConsoleWidget (ConsoleWidget*)));
+		connect (AccountActsMgr_,
+				SIGNAL (gotSDWidget (ServiceDiscoveryWidget*)),
+				this,
+				SIGNAL (gotSDWidget (ServiceDiscoveryWidget*)));
+
 		qRegisterMetaType<QPersistentModelIndex> ("QPersistentModelIndex");
 
 		MainMenu_->setIcon (QIcon (":/plugins/azoth/resources/images/azoth.svg"));
 
+		BottomBar_->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Preferred);
+		BottomBar_->addWidget (MenuButton_);
+
 		Ui_.setupUi (this);
-		Ui_.BottomLayout_->insertWidget (0, MenuButton_);
+		layout ()->addWidget (BottomBar_);
 #if QT_VERSION >= 0x040700
 		Ui_.FilterLine_->setPlaceholderText (tr ("Search..."));
 #endif
@@ -129,65 +134,15 @@ namespace Azoth
 		MenuChangeStatus_ = CreateStatusChangeMenu (SLOT (handleChangeStatusRequested ()), true);
 		TrayChangeStatus_ = CreateStatusChangeMenu (SLOT (handleChangeStatusRequested ()), true);
 
-		Ui_.FastStatusButton_->setMenu (CreateStatusChangeMenu (SLOT (fastStateChangeRequested ())));
+		MenuChangeStatus_->menuAction ()->setProperty ("ActionIcon", "im-status-message-edit");
+
+		Ui_.FastStatusButton_->setMenu (CreateStatusChangeMenu (SLOT (fastStateChangeRequested ()), true));
 		Ui_.FastStatusButton_->setDefaultAction (new QAction (tr ("Set status"), this));
 		updateFastStatusButton (SOffline);
 		connect (Ui_.FastStatusButton_->defaultAction (),
 				SIGNAL (triggered ()),
 				this,
 				SLOT (applyFastStatus ()));
-		connect (Ui_.FastStatusText_,
-				SIGNAL (returnPressed ()),
-				this,
-				SLOT (applyFastStatus ()));
-
-		AccountJoinConference_ = new QAction (tr ("Join conference..."), this);
-		connect (AccountJoinConference_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (joinAccountConference ()));
-
-		AccountManageBookmarks_ = new QAction (tr ("Manage bookmarks..."), this);
-		connect (AccountManageBookmarks_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (manageAccountBookmarks ()));
-
-		AccountAddContact_ = new QAction (tr ("Add contact..."), this);
-		connect (AccountAddContact_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (addAccountContact ()));
-
-		AccountSetActivity_ = new QAction (tr ("Set activity..."), this);
-		connect (AccountSetActivity_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleAccountSetActivity ()));
-
-		AccountSetMood_ = new QAction (tr ("Set mood..."), this);
-		connect (AccountSetMood_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleAccountSetMood ()));
-
-		AccountSetLocation_ = new QAction (tr ("Set location..."), this);
-		connect (AccountSetLocation_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleAccountSetLocation ()));
-
-		AccountConsole_ = new QAction (tr ("Console..."), this);
-		connect (AccountConsole_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleAccountConsole ()));
-
-		AccountModify_ = new QAction (tr ("Modify..."), this);
-		connect (AccountModify_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleAccountModify ()));
 
 		XmlSettingsManager::Instance ().RegisterObject ("ShowMenuBar",
 				this, "menuBarVisibilityToggled");
@@ -197,6 +152,11 @@ namespace Azoth
 				SIGNAL (topStatusChanged (LeechCraft::Azoth::State)),
 				this,
 				SLOT (updateFastStatusButton (LeechCraft::Azoth::State)));
+
+		adjustSize ();
+		layout ()->update ();
+		qDebug () << "BottomBar" << BottomBar_->width () << BottomBar_->sizeHint ()
+				<< BottomBar_->sizePolicy ().horizontalPolicy () << BottomBar_->sizePolicy ().horizontalStretch ();
 	}
 
 	QList<QAction*> MainWidget::GetMenuActions()
@@ -213,12 +173,15 @@ namespace Azoth
 	{
 		MainMenu_->addSeparator ();
 
-		MainMenu_->addAction (tr ("Add contact..."),
+		QAction *addContact = MainMenu_->addAction (tr ("Add contact..."),
 				this,
 				SLOT (handleAddContactRequested ()));
-		MainMenu_->addAction (tr ("Join conference..."),
+		addContact->setProperty ("ActionIcon", "list-add-user");
+
+		QAction *joinConf = MainMenu_->addAction (tr ("Join conference..."),
 				&Core::Instance (),
 				SLOT (handleMucJoinRequested ()));
+		joinConf->setProperty ("ActionIcon", "irc-join-channel");
 
 		MainMenu_->addSeparator ();
 
@@ -245,6 +208,15 @@ namespace Azoth
 				SIGNAL (toggled (bool)),
 				this,
 				SLOT (handleShowOffline (bool)));
+
+		auto addBottomAct = [this] (QAction *act)
+		{
+			BottomBar_->addAction (act);
+			const int count = BottomBar_->actions ().count ();
+			BottomBar_->setMaximumWidth ((32 + 2) * count + 10);
+		};
+		addBottomAct (addContact);
+		addBottomAct (showOffline);
 	}
 
 	QMenu* MainWidget::CreateStatusChangeMenu (const char *slot, bool withCustom)
@@ -283,36 +255,6 @@ namespace Azoth
 					SLOT (handleChangeStatusRequested ()));
 		}
 		return result;
-	}
-
-	IAccount* MainWidget::GetAccountFromSender (const char *func)
-	{
-		if (!sender ())
-		{
-			qWarning () << func
-					<< "no sender";
-			return 0;
-		}
-
-		const QVariant& objVar = sender ()->property ("Azoth/AccountObject");
-		QObject *object = objVar.value<QObject*> ();
-		if (!object)
-		{
-			qWarning () << func
-					<< "no object in Azoth/AccountObject property of the sender"
-					<< sender ()
-					<< objVar;
-			return 0;
-		}
-
-		IAccount *account = qobject_cast<IAccount*> (object);
-		if (!account)
-			qWarning () << func
-					<< "object"
-					<< object
-					<< "could not be cast to IAccount";
-
-		return account;
 	}
 
 	void MainWidget::updateFastStatusButton (State state)
@@ -382,59 +324,7 @@ namespace Azoth
 		case Core::CLETAccount:
 		{
 			QVariant objVar = index.data (Core::CLRAccountObject);
-
-			IAccount *account = qobject_cast<IAccount*> (objVar.value<QObject*> ());
-			IProtocol *proto = qobject_cast<IProtocol*> (account->GetParentProtocol ());
-
-			AccountJoinConference_->setEnabled (proto->GetFeatures () & IProtocol::PFMUCsJoinable);
-			AccountJoinConference_->setProperty ("Azoth/AccountObject", objVar);
-
-			AccountAddContact_->setProperty ("Azoth/AccountObject", objVar);
-			actions << AccountJoinConference_;
-
-			if (qobject_cast<ISupportBookmarks*> (objVar.value<QObject*> ()))
-			{
-				ISupportBookmarks *supBms =
-						qobject_cast<ISupportBookmarks*> (objVar.value<QObject*> ());
-				QVariantList bms = supBms->GetBookmarkedMUCs ();
-				if (!bms.isEmpty ())
-				{
-					QMenu *bmsMenu = new QMenu (tr ("Join bookmarked conference"), menu);
-					actions << bmsMenu->menuAction ();
-
-					Q_FOREACH (const QObject *mucObj,
-							qobject_cast<IAccount*> (objVar.value<QObject*> ())->GetCLEntries ())
-					{
-						IMUCEntry *muc = qobject_cast<IMUCEntry*> (mucObj);
-						if (!muc)
-							continue;
-
-						bms.removeAll (muc->GetIdentifyingData ());
-					}
-
-					Q_FOREACH (const QVariant& bm, bms)
-					{
-						const QVariantMap& map = bm.toMap ();
-
-						QAction *act = bmsMenu->addAction (map ["HumanReadableName"].toString ());
-						act->setProperty ("Azoth/AccountObject", objVar);
-						act->setProperty ("Azoth/BMData", bm);
-						connect (act,
-								SIGNAL (triggered ()),
-								this,
-								SLOT (joinAccountConfFromBM ()));
-					}
-				}
-
-				actions << AccountManageBookmarks_;
-				AccountManageBookmarks_->setProperty ("Azoth/AccountObject", objVar);
-
-				actions << Util::CreateSeparator (menu);
-			}
-
-			actions << AccountAddContact_;
-			actions << Util::CreateSeparator (menu);
-
+			actions << AccountActsMgr_->GetMenuActions (menu, objVar.value<QObject*> ());
 			Q_FOREACH (QAction *act, MenuChangeStatus_->actions ())
 			{
 				if (act->isSeparator ())
@@ -449,43 +339,8 @@ namespace Azoth
 					act->setIcon (Core::Instance ().GetIconForState (state));
 				}
 			}
-			actions << MenuChangeStatus_->menuAction ();
-
-			if (qobject_cast<ISupportActivity*> (objVar.value<QObject*> ()))
-			{
-				AccountSetActivity_->setProperty ("Azoth/AccountObject", objVar);
-				actions << AccountSetActivity_;
-			}
-			if (qobject_cast<ISupportMood*> (objVar.value<QObject*> ()))
-			{
-				AccountSetMood_->setProperty ("Azoth/AccountObject", objVar);
-				actions << AccountSetMood_;
-			}
-			if (qobject_cast<ISupportGeolocation*> (objVar.value<QObject*> ()))
-			{
-				AccountSetLocation_->setProperty ("Azoth/AccountObject", objVar);
-				actions << AccountSetLocation_;
-			}
-
-			actions << Util::CreateSeparator (menu);
-
-			QList<QAction*> accActions = account->GetActions ();
-			if (!accActions.isEmpty ())
-			{
-				actions += accActions;
-				actions << Util::CreateSeparator (menu);
-			}
-
-			if (qobject_cast<IHaveConsole*> (objVar.value<QObject*> ()))
-			{
-				AccountConsole_->setProperty ("Azoth/AccountObject", objVar);
-				actions << AccountConsole_;
-			}
-
-			actions << Util::CreateSeparator (menu);
-
-			AccountModify_->setProperty ("Azoth/AccountObject", objVar);
-			actions << AccountModify_;
+			actions.prepend (Util::CreateSeparator (menu));
+			actions.prepend (MenuChangeStatus_->menuAction ());
 
 			break;
 		}
@@ -547,8 +402,11 @@ namespace Azoth
 		if (acc)
 			acc->ChangeState (status);
 		else
+		{
 			Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
 				acc->ChangeState (status);
+			updateFastStatusButton (status.State_);
+		}
 	}
 
 	void MainWidget::fastStateChangeRequested ()
@@ -560,12 +418,10 @@ namespace Azoth
 
 	void MainWidget::applyFastStatus ()
 	{
-		const QString& text = Ui_.FastStatusText_->text ();
-		Ui_.FastStatusText_->setText (QString ());
 		State state = Ui_.FastStatusButton_->
 				property ("Azoth/TargetState").value<State> ();
 
-		EntryStatus status (state, text);
+		EntryStatus status (state, QString ());
 		Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
 			acc->ChangeState (status);
 	}
@@ -666,163 +522,6 @@ namespace Azoth
 		GroupSendDialog *dlg = new GroupSendDialog (entries, this);
 		dlg->setAttribute (Qt::WA_DeleteOnClose, true);
 		dlg->show ();
-	}
-
-	void MainWidget::joinAccountConference ()
-	{
-		IAccount *account = GetAccountFromSender (Q_FUNC_INFO);
-		if (!account)
-			return;
-
-		QList<IAccount*> accounts;
-		accounts << account;
-		JoinConferenceDialog *dia = new JoinConferenceDialog (accounts,
-				Core::Instance ().GetProxy ()->GetMainWindow ());
-		dia->show ();
-		dia->setAttribute (Qt::WA_DeleteOnClose, true);
-	}
-
-	void MainWidget::joinAccountConfFromBM ()
-	{
-		IAccount *account = GetAccountFromSender (Q_FUNC_INFO);
-		if (!account)
-			return;
-
-		const QVariant& bmData = sender ()->property ("Azoth/BMData");
-		if (bmData.isNull ())
-			return;
-
-		IProtocol *proto = qobject_cast<IProtocol*> (account->GetParentProtocol ());
-		IMUCJoinWidget *imjw = qobject_cast<IMUCJoinWidget*> (proto->GetMUCJoinWidget ());
-		imjw->SetIdentifyingData (bmData.toMap ());
-		imjw->Join (account->GetObject ());
-	}
-
-	void MainWidget::manageAccountBookmarks ()
-	{
-		IAccount *account = GetAccountFromSender (Q_FUNC_INFO);
-		if (!account)
-			return;
-
-		BookmarksManagerDialog *dia =
-				new BookmarksManagerDialog (Core::Instance ()
-						.GetProxy ()->GetMainWindow ());
-		dia->FocusOn (account);
-		dia->show ();
-		dia->setAttribute (Qt::WA_DeleteOnClose, true);
-	}
-
-	void MainWidget::addAccountContact ()
-	{
-		IAccount *account = GetAccountFromSender (Q_FUNC_INFO);
-		if (!account)
-			return;
-
-		std::auto_ptr<AddContactDialog> dia (new AddContactDialog (account, this));
-		if (dia->exec () != QDialog::Accepted)
-			return;
-
-		dia->GetSelectedAccount ()->RequestAuth (dia->GetContactID (),
-					dia->GetReason (),
-					dia->GetNick (),
-					dia->GetGroups ());
-	}
-
-	void MainWidget::handleAccountSetActivity ()
-	{
-		IAccount *account = GetAccountFromSender (Q_FUNC_INFO);
-		if (!account)
-			return;
-
-		QObject *obj = sender ()->property ("Azoth/AccountObject").value<QObject*> ();
-		ISupportActivity *activity = qobject_cast<ISupportActivity*> (obj);
-		if (!activity)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< obj
-					<< "doesn't support activity";
-			return;
-		}
-
-		std::auto_ptr<ActivityDialog> dia (new ActivityDialog (this));
-		if (dia->exec () != QDialog::Accepted)
-			return;
-
-		activity->SetActivity (dia->GetGeneral (), dia->GetSpecific (), dia->GetText ());
-	}
-
-	void MainWidget::handleAccountSetMood ()
-	{
-		IAccount *account = GetAccountFromSender (Q_FUNC_INFO);
-		if (!account)
-			return;
-
-		QObject *obj = sender ()->property ("Azoth/AccountObject").value<QObject*> ();
-		ISupportMood *mood = qobject_cast<ISupportMood*> (obj);
-		if (!mood)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< obj
-					<< "doesn't support mood";
-			return;
-		}
-
-		std::auto_ptr<MoodDialog> dia (new MoodDialog (this));
-		if (dia->exec () != QDialog::Accepted)
-			return;
-
-		mood->SetMood (dia->GetMood (), dia->GetText ());
-	}
-
-	void MainWidget::handleAccountSetLocation ()
-	{
-		IAccount *account = GetAccountFromSender (Q_FUNC_INFO);
-		if (!account)
-			return;
-
-		QObject *obj = account->GetObject ();
-		ISupportGeolocation *loc = qobject_cast<ISupportGeolocation*> (obj);
-		if (!loc)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< obj
-					<< "doesn't support geolocation";
-			return;
-		}
-
-		std::auto_ptr<LocationDialog> dia (new LocationDialog (this));
-		if (dia->exec () != QDialog::Accepted)
-			return;
-
-		loc->SetGeolocationInfo (dia->GetInfo ());
-	}
-
-	void MainWidget::handleAccountConsole ()
-	{
-		IAccount *account = GetAccountFromSender (Q_FUNC_INFO);
-		if (!account)
-			return;
-
-		if (!Account2CW_.contains (account))
-		{
-			ConsoleWidget *cw = new ConsoleWidget (account->GetObject ());
-			Account2CW_ [account] = cw;
-			connect (cw,
-					SIGNAL (removeTab (QWidget*)),
-					this,
-					SLOT (consoleRemoved (QWidget*)));
-		}
-
-		emit gotConsoleWidget (Account2CW_ [account]);
-	}
-
-	void MainWidget::handleAccountModify ()
-	{
-		IAccount *account = GetAccountFromSender (Q_FUNC_INFO);
-		if (!account)
-			return;
-
-		account->OpenConfigurationDialog ();
 	}
 
 	void MainWidget::handleManageBookmarks ()
@@ -930,7 +629,7 @@ namespace Azoth
 
 	void MainWidget::menuBarVisibilityToggled ()
 	{
-		MenuButton_->setVisible (XmlSettingsManager::Instance ().property ("ShowMenuBar").toBool ());
+		BottomBar_->setVisible (XmlSettingsManager::Instance ().property ("ShowMenuBar").toBool ());
 	}
 
 	namespace
@@ -1016,12 +715,6 @@ namespace Azoth
 	void MainWidget::on_CLTree__expanded (const QModelIndex& idx)
 	{
 		SetExpanded (idx, true);
-	}
-
-	void MainWidget::consoleRemoved (QWidget *cwWidget)
-	{
-		ConsoleWidget *cw = qobject_cast<ConsoleWidget*> (cwWidget);
-		Account2CW_.remove (Account2CW_.key (cw));
 	}
 }
 }

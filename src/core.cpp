@@ -70,13 +70,17 @@
 #include "storagebackend.h"
 #include "coreinstanceobject.h"
 #include "coreplugin2manager.h"
+#include "dockmanager.h"
 
 using namespace LeechCraft::Util;
 
 namespace LeechCraft
 {
 	Core::Core ()
-	: NetworkAccessManager_ (new NetworkAccessManager)
+	: PluginManager_ (0)
+	, ReallyMainWindow_ (0)
+	, DM_ (0)
+	, NetworkAccessManager_ (new NetworkAccessManager)
 	, StorageBackend_ (new SQLStorageBackend)
 	, DirectoryWatcher_ (new DirectoryWatcher)
 	, ClipboardWatcher_ (new ClipboardWatcher)
@@ -175,11 +179,18 @@ namespace LeechCraft
 		ReallyMainWindow_->installEventFilter (this);
 
 		LocalSocketHandler_->SetMainWindow (win);
+
+		DM_ = new DockManager (win, this);
 	}
 
 	MainWindow* Core::GetReallyMainWindow ()
 	{
 		return ReallyMainWindow_;
+	}
+
+	DockManager* Core::GetDockManager () const
+	{
+		return DM_;
 	}
 
 	IShortcutProxy* Core::GetShortcutProxy () const

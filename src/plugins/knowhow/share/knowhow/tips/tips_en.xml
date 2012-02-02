@@ -34,4 +34,7 @@
 	<tip id="7">
 		LeechCraft is a highly configurable internet-client. Explore the settings to configure everything to your taste!
 	</tip>
+	<tip id="8">
+		You can enable automatic scrolling in Poshuku by pressing &lt;em>Shift+PgDown&lt;/em>/&lt;em>Shift+PgUp&lt;/em>. Pressing it several times will increase the autoscrolling speed.
+	</tip>
 </tips>

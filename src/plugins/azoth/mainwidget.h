@@ -23,6 +23,7 @@
 #include "ui_mainwidget.h"
 
 class QToolButton;
+class QToolBar;
 class QMenu;
 
 namespace LeechCraft
@@ -31,6 +32,8 @@ namespace Azoth
 {
 	class SortFilterProxyModel;
 	class ConsoleWidget;
+	class ServiceDiscoveryWidget;
+	class AccountActionsManager;
 
 	class MainWidget : public QWidget
 	{
@@ -42,22 +45,15 @@ namespace Azoth
 		QToolButton *MenuButton_;
 		SortFilterProxyModel *ProxyModel_;
 
-		QHash<IAccount*, ConsoleWidget*> Account2CW_;
+		QToolBar *BottomBar_;
 
 		QMenu *MenuChangeStatus_;
 		QMenu *TrayChangeStatus_;
 
-		QAction *AccountJoinConference_;
-		QAction *AccountManageBookmarks_;
-		QAction *AccountAddContact_;
-		QAction *AccountSetActivity_;
-		QAction *AccountSetMood_;
-		QAction *AccountSetLocation_;
-		QAction *AccountConsole_;
-		QAction *AccountModify_;
+		AccountActionsManager *AccountActsMgr_;
 
 		QMap<QString, bool> FstLevelExpands_;
-		QMap<QString, QMap<QString, bool> > SndLevelExpands_;
+		QMap<QString, QMap<QString, bool>> SndLevelExpands_;
 	public:
 		MainWidget (QWidget* = 0);
 
@@ -66,7 +62,6 @@ namespace Azoth
 	private:
 		void CreateMenu ();
 		QMenu* CreateStatusChangeMenu (const char*, bool withCustom = false);
-		IAccount* GetAccountFromSender (const char*);
 	private slots:
 		void updateFastStatusButton (LeechCraft::Azoth::State);
 		void treeActivated (const QModelIndex&);
@@ -78,15 +73,6 @@ namespace Azoth
 		void handleEntryActivationType ();
 		void handleCatRenameTriggered ();
 		void handleSendGroupMsgTriggered ();
-		void joinAccountConference ();
-		void joinAccountConfFromBM ();
-		void manageAccountBookmarks ();
-		void addAccountContact ();
-		void handleAccountSetActivity ();
-		void handleAccountSetMood ();
-		void handleAccountSetLocation ();
-		void handleAccountConsole ();
-		void handleAccountModify ();
 
 		void handleManageBookmarks ();
 		void handleAddAccountRequested ();
@@ -104,10 +90,9 @@ namespace Azoth
 		void expandIndex (const QPersistentModelIndex&);
 		void on_CLTree__expanded (const QModelIndex&);
 		void on_CLTree__collapsed (const QModelIndex&);
-
-		void consoleRemoved (QWidget*);
 	signals:
 		void gotConsoleWidget (ConsoleWidget*);
+		void gotSDWidget (ServiceDiscoveryWidget*);
 	};
 }
 }

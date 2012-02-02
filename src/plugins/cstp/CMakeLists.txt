@@ -13,20 +13,16 @@ SET (SRCS
 	cstp.cpp
 	core.cpp
 	task.cpp
-	hook.cpp
 	addtask.cpp
 	xmlsettingsmanager.cpp
-	mainviewdelegate.cpp
 	morphfile.cpp
 	)
 SET (HEADERS
 	cstp.h
 	core.h
 	task.h
-	hook.h
 	addtask.h
 	xmlsettingsmanager.h
-	mainviewdelegate.h
 	morphfile.h
 	)
 SET (FORMS

@@ -22,51 +22,47 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Summary
+{
+	OperationalModel::OperationalModel (QObject *parent)
+	: MergeModel (QStringList (tr ("Entity"))
+				<< tr ("Category")
+				<< tr ("Information"), parent)
 	{
-		namespace Summary
+		setProperty ("__LeechCraft_own_core_model", true);
+	}
+
+	void OperationalModel::SetOperation (Operation op)
+	{
+		Op_ = op;
+	}
+
+	bool OperationalModel::AcceptsRow (QAbstractItemModel *model,
+			int row) const
+	{
+		if (Op_ == OpAnd)
 		{
-			OperationalModel::OperationalModel (QObject *parent)
-			: MergeModel (QStringList (tr ("Entity"))
-						<< tr ("Category")
-						<< tr ("Information"), parent)
-			{
-				setProperty ("__LeechCraft_own_core_model", true);
-			}
+			const QByteArray& hash = model->index (row, 0).data (LeechCraft::RoleHash).toByteArray ();
+			size_t sameModels = 0;
 
-			void OperationalModel::SetOperation (Operation op)
+			Q_FOREACH (const QPointer<QAbstractItemModel>& i, Models_)
 			{
-				Op_ = op;
-			}
-
-			bool OperationalModel::AcceptsRow (QAbstractItemModel *model,
-					int row) const
-			{
-				if (Op_ == OpAnd)
-				{
-					const QByteArray& hash = model->index (row, 0).data (LeechCraft::RoleHash).toByteArray ();
-					size_t sameModels = 0;
-					
-					Q_FOREACH (const QPointer<QAbstractItemModel>& i, Models_)
+				if (i == model)
+					continue;
+				bool found = false;
+				for (int j = 0; j < i->rowCount (); ++j)
+					if (i->index (j, 0).data (LeechCraft::RoleHash).toByteArray () == hash)
 					{
-						if (i == model)
-							continue;
-						bool found = false;
-						for (int j = 0; j < i->rowCount (); ++j)
-							if (i->index (j, 0).data (LeechCraft::RoleHash).toByteArray () == hash)
-							{
-								++sameModels;
-								found = true;
-								break;
-							}
-						if (!found)
-							break;
+						++sameModels;
+						found = true;
+						break;
 					}
-					return sameModels == Models_.size () - 1;
-				}
-				return true;
+				if (!found)
+					break;
 			}
-		};
-	};
-};
-
+			return sameModels == Models_.size () - 1;
+		}
+		return true;
+	}
+}
+}

@@ -158,6 +158,10 @@ namespace Azoth
 				SIGNAL (gotConsoleWidget (ConsoleWidget*)),
 				this,
 				SLOT (handleConsoleWidget (ConsoleWidget*)));
+		connect (MW_,
+				SIGNAL (gotSDWidget (ServiceDiscoveryWidget*)),
+				this,
+				SLOT (handleSDWidget (ServiceDiscoveryWidget*)));
 
 		TabClassInfo chatTab =
 		{

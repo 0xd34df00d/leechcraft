@@ -88,10 +88,13 @@ namespace LeechCraft
 		virtual ~MainWindow ();
 
 		SeparateTabWidget* GetTabWidget () const;
+		QSplitter* GetMainSplitter () const;
 		IShortcutProxy* GetShortcutProxy () const;
 		void SetAdditionalTitle (const QString&);
 		ToolbarGuard* GetGuard () const;
 		FancyPopupManager* GetFancyPopupManager () const;
+
+		QWidget* GetDockListWidget (Qt::DockWidgetArea) const;
 
 		void ToggleViewActionVisiblity (QDockWidget*, bool);
 

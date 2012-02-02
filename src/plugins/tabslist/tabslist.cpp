@@ -43,6 +43,7 @@ namespace TabsList
 				Proxy_->GetMainWindow ());
 		ShowList_->setProperty ("ActionIcon", "view-list-details");
 		ShowList_->setShortcut (QString ("Ctrl+Shift+L"));
+		ShowList_->setProperty ("Action/ID", GetUniqueID () + "_showlist");
 		connect (ShowList_,
 				SIGNAL (triggered ()),
 				this,

@@ -23,6 +23,7 @@
 #include <util/util.h>
 #include <util/tagscompleter.h>
 #include <util/categoryselector.h>
+#include <util/shortcuts/shortcutmanager.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/itagsmanager.h>
@@ -53,6 +54,8 @@ namespace LackMan
 		TabClass_.Features_ = TabFeatures (TFSingle | TFOpenableByRequest);
 
 		Ui_.setupUi (this);
+
+		ShortcutMgr_ = new Util::ShortcutManager (proxy, this);
 
 		TagsModel_ = new QStringListModel (this);
 		Util::TagsCompleter *tc = new Util::TagsCompleter (Ui_.SearchLine_);
@@ -258,6 +261,16 @@ namespace LackMan
 		}
 	}
 
+	void Plugin::SetShortcut (const QString& id, const QKeySequences_t& seqs)
+	{
+		ShortcutMgr_->SetShortcut (id, seqs);
+	}
+
+	QMap<QString, ActionInfo> Plugin::GetActionInfo () const
+	{
+		return ShortcutMgr_->GetActionInfo ();
+	}
+
 	void Plugin::handleTagsUpdated (const QStringList& tags)
 	{
 		TagsModel_->setStringList (tags);
@@ -335,24 +348,30 @@ namespace LackMan
 	{
 		UpdateAll_ = new QAction (tr ("Update all repos"), this);
 		UpdateAll_->setProperty ("ActionIcon", "view-refresh");
+		UpdateAll_->setShortcut (QString ("U"));
 		connect (UpdateAll_,
 				SIGNAL (triggered ()),
 				&Core::Instance (),
 				SLOT (updateAllRequested ()));
+		ShortcutMgr_->RegisterAction ("updaterepos", UpdateAll_);
 
 		UpgradeAll_ = new QAction (tr ("Upgrade all packages"), this);
 		UpgradeAll_->setProperty ("ActionIcon", "system-software-update");
+		UpgradeAll_->setShortcut (QString ("Ctrl+U"));
 		connect (UpgradeAll_,
 				SIGNAL (triggered ()),
 				&Core::Instance (),
 				SLOT (upgradeAllRequested ()));
+		ShortcutMgr_->RegisterAction ("upgradeall", UpgradeAll_);
 
 		Apply_ = new QAction (tr ("Apply"), this);
 		Apply_->setProperty ("ActionIcon", "dialog-ok");
+		Apply_->setShortcut (QString ("Ctrl+G"));
 		connect (Apply_,
 				SIGNAL (triggered ()),
 				&Core::Instance (),
 				SLOT (acceptPending ()));
+		ShortcutMgr_->RegisterAction ("apply", Apply_);
 
 		Cancel_ = new QAction (tr ("Cancel"), this);
 		Cancel_->setProperty ("ActionIcon", "dialog-cancel");
@@ -360,6 +379,7 @@ namespace LackMan
 				SIGNAL (triggered ()),
 				&Core::Instance (),
 				SLOT (cancelPending ()));
+		ShortcutMgr_->RegisterAction ("cancel", Cancel_);
 
 		Toolbar_ = new QToolBar (GetName ());
 		Toolbar_->addAction (UpdateAll_);

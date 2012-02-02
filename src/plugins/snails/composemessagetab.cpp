@@ -20,6 +20,8 @@
 #include <QToolBar>
 #include <QWebFrame>
 #include <QMenu>
+#include <interfaces/itexteditor.h>
+#include <interfaces/core/ipluginsmanager.h>
 #include "message.h"
 #include "core.h"
 
@@ -43,6 +45,8 @@ namespace Snails
 	ComposeMessageTab::ComposeMessageTab (QWidget *parent)
 	: QWidget (parent)
 	, Toolbar_ (new QToolBar (tr ("Compose tab bar")))
+	, MsgEditWidget_ (0)
+	, MsgEdit_ (0)
 	{
 		Ui_.setupUi (this);
 
@@ -69,7 +73,28 @@ namespace Snails
 		}
 		Toolbar_->addAction (AccountsMenu_->menuAction ());
 
-		Ui_.MsgEdit_->page ()->setContentEditable (true);
+		QVBoxLayout *editFrameLay = new QVBoxLayout ();
+		editFrameLay->setContentsMargins (0, 0, 0, 0);
+		Ui_.MsgEditFrame_->setLayout (editFrameLay);
+
+		auto plugs = Core::Instance ().GetProxy ()->
+				GetPluginsManager ()->GetAllCastableTo<ITextEditor*> ();
+		Q_FOREACH (ITextEditor *plug, plugs)
+		{
+			if (!plug->SupportsEditor (ContentType::PlainText))
+				continue;
+
+			QWidget *w = plug->GetTextEditor (ContentType::PlainText);
+			MsgEdit_ = qobject_cast<IEditorWidget*> (w);
+			if (!MsgEdit_)
+			{
+				delete w;
+				continue;
+			}
+
+			MsgEditWidget_ = w;
+			editFrameLay->addWidget (w);
+		}
 	}
 
 	TabClassInfo ComposeMessageTab::GetTabClassInfo () const
@@ -85,6 +110,7 @@ namespace Snails
 	void ComposeMessageTab::Remove ()
 	{
 		emit removeTab (this);
+		delete MsgEditWidget_;
 		deleteLater ();
 	}
 
@@ -144,7 +170,7 @@ namespace Snails
 		Message_ptr message (new Message);
 		message->SetTo (FromUserInput (Ui_.To_->text ()));
 		message->SetSubject (Ui_.Subject_->text ());
-		message->SetBody (Ui_.MsgEdit_->page ()->mainFrame ()->toPlainText ());
+		message->SetBody (MsgEdit_->GetContents (ContentType::PlainText));
 
 		account->SendMessage (message);
 	}

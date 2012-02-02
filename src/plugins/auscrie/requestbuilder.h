@@ -22,25 +22,22 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace Auscrie
+{
+	class RequestBuilder
 	{
-		namespace Auscrie
-		{
-			class RequestBuilder
-			{
-				QByteArray Result_;
-				QString Boundary_;
-			public:
-				RequestBuilder ();
+		QByteArray Result_;
+		QString Boundary_;
+	public:
+		RequestBuilder ();
 
-				void AddPair (const QString&, const QString&);
-				void AddFile (const QString&, const QString&, const QByteArray&);
+		void AddPair (const QString&, const QString&);
+		void AddFile (const QString&, const QString&, const QByteArray&);
 
-				QByteArray Build ();
-				QString GetBoundary () const;
-			};
-		};
+		QByteArray Build ();
+		QString GetBoundary () const;
 	};
-};
+}
+}
 
 #endif

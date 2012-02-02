@@ -18,6 +18,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
 #include <interfaces/iactionsexporter.h>
 #include <interfaces/core/icoreproxy.h>
@@ -27,6 +28,7 @@ namespace LeechCraft
 namespace Sidebar
 {
 	class SBWidget;
+	class ShowConfigDialog;
 
 	class QLActionManager : public QObject
 	{
@@ -34,13 +36,19 @@ namespace Sidebar
 
 		ICoreProxy_ptr Proxy_;
 		SBWidget *Bar_;
+		std::shared_ptr<ShowConfigDialog> CfgDialog_;
 	public:
 		QLActionManager (SBWidget*, ICoreProxy_ptr, QObject* = 0);
 
 		void AddToQuickLaunch (const QList<QAction*>&);
 		void AddToLCTray (const QList<QAction*>&);
+	private:
+		void AddLabeled (const QList<QAction*>&, const QString&);
 	public slots:
 		void handleGotActions (const QList<QAction*>&, LeechCraft::ActionsEmbedPlace);
+
+		void handleShowActions (const QList<QAction*>&);
+		void handleHideActions (const QList<QAction*>&);
 	};
 }
 }

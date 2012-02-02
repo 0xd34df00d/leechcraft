@@ -187,6 +187,11 @@ SeparateTabWidget* LeechCraft::MainWindow::GetTabWidget () const
 	return Ui_.MainTabWidget_;
 }
 
+QSplitter* LeechCraft::MainWindow::GetMainSplitter () const
+{
+	return Ui_.MainSplitter_;
+}
+
 IShortcutProxy* LeechCraft::MainWindow::GetShortcutProxy () const
 {
 	return ShortcutManager_;
@@ -208,6 +213,19 @@ LeechCraft::ToolbarGuard* LeechCraft::MainWindow::GetGuard () const
 LeechCraft::FancyPopupManager* LeechCraft::MainWindow::GetFancyPopupManager () const
 {
 	return FancyPopupManager_;
+}
+
+QWidget* LeechCraft::MainWindow::GetDockListWidget (Qt::DockWidgetArea area) const
+{
+	switch (area)
+	{
+	case Qt::LeftDockWidgetArea:
+		return Ui_.LeftDockButtons_;
+	case Qt::RightDockWidgetArea:
+		return Ui_.RightDockButtons_;
+	default:
+		return 0;
+	}
 }
 
 void LeechCraft::MainWindow::ToggleViewActionVisiblity (QDockWidget *widget, bool visible)

@@ -24,9 +24,6 @@
 #include <util/util.h>
 #include "laurewidget.h"
 #include "xmlsettingsmanager.h"
-#ifdef HAVE_LASTFM
-#include "lastfmsubmitter.h"
-#endif
 
 namespace LeechCraft
 {
@@ -41,18 +38,7 @@ namespace Laure
 				"lauresettings.xml");
 
 		Proxy_ = proxy;
-#ifdef HAVE_LASTFM
-		LFSubmitter_ = new LastFMSubmitter (this);
 
-		handleSubmitterInit ();
-
-		QList<QByteArray> propNames;
-		propNames << "lastfm.login";
-		propNames << "lastfm.password";
-
-		XmlSettingsManager::Instance ().RegisterObject (propNames,
-				this, "handleSubmitterInit");
-#endif
 		LaureWidget::SetParentMultiTabs (this);
 
 		TabClassInfo tabClass =
@@ -66,18 +52,6 @@ namespace Laure
 		};
 		TabClasses_ << tabClass;
 	}
-
-#ifdef HAVE_LASTFM
-	void Plugin::handleSubmitterInit ()
-	{
-		LFSubmitter_->SetUsername (XmlSettingsManager::Instance ()
-				.property ("lastfm.login").toString ());
-		LFSubmitter_->SetPassword (XmlSettingsManager::Instance ()
-				.property ("lastfm.password").toString ());
-
-		LFSubmitter_->Init (Proxy_->GetNetworkAccessManager ());
-	}
-#endif
 
 	void Plugin::SecondInit ()
 	{
@@ -147,16 +121,6 @@ namespace Laure
 				SIGNAL (needToClose ()),
 				this,
 				SLOT (handleNeedToClose ()));
-#ifdef HAVE_LASTFM
-		connect (w,
-				SIGNAL (currentTrackMeta (MediaMeta)),
-				LFSubmitter_,
-				SLOT (sendTrack (MediaMeta)));
-		connect (w,
-				SIGNAL (trackFinished ()),
-				LFSubmitter_,
-				SLOT (submit ()));
-#endif
 		connect (w,
 				SIGNAL (gotEntity (Entity)),
 				this,

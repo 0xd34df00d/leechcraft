@@ -114,10 +114,16 @@ namespace Snails
 		MailModel_->clear ();
 		MailID2Item_.clear ();
 		if (CurrAcc_)
+		{
 			disconnect (CurrAcc_.get (),
 					0,
 					this,
 					0);
+			disconnect (Ui_.FoldersTree_,
+					0,
+					CurrAcc_.get (),
+					0);
+		}
 
 		CurrAcc_ = Core::Instance ().GetAccount (idx);
 		if (!CurrAcc_)
@@ -141,6 +147,19 @@ namespace Snails
 
 		handleGotNewMessages (Core::Instance ().GetStorage ()->
 					LoadMessages (CurrAcc_.get ()));
+
+		if (Ui_.FoldersTree_->selectionModel ())
+			Ui_.FoldersTree_->selectionModel ()->deleteLater ();
+		Ui_.FoldersTree_->setModel (CurrAcc_->GetFoldersModel ());
+
+		if (Ui_.MailTree_->selectionModel ())
+			Ui_.MailTree_->selectionModel ()->deleteLater ();
+		Ui_.MailTree_->setModel (CurrAcc_->GetItemsModel ());
+
+		connect (Ui_.FoldersTree_,
+				SIGNAL (clicked (QModelIndex)),
+				CurrAcc_.get (),
+				SLOT (handleFolderActivated (QModelIndex)));
 	}
 
 	namespace
@@ -276,7 +295,7 @@ namespace Snails
 		Storage *st = Core::Instance ().GetStorage ();
 		Q_FOREACH (auto acc, Core::Instance ().GetAccounts ())
 			acc->Synchronize (st->HasMessagesIn (acc.get ()) ?
-						Account::FetchNew:
+						Account::FetchNew :
 						Account::FetchAll);
 	}
 

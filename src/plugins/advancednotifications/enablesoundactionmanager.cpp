@@ -30,6 +30,7 @@ namespace AdvancedNotifications
 	{
 		EnableAction_->setCheckable (true);
 		EnableAction_->setProperty ("ActionIcon", "preferences-desktop-sound");
+		EnableAction_->setProperty ("Action/ID", "org.LeechCraft.AdvancedNotifications.EnableSound");
 
 		connect (EnableAction_,
 				SIGNAL (toggled (bool)),

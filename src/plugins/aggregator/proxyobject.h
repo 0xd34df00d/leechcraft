@@ -92,6 +92,10 @@ namespace Aggregator
 		 * @exception std::exception
 		 */
 		void AddItem (Item_ptr item);
+
+		QList<Channel_ptr> GetAllChannels () const;
+		int CountUnreadItems (IDType_t) const;
+		QList<Item_ptr> GetChannelItems (IDType_t) const;
 	};
 }
 }
