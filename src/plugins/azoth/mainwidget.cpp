@@ -31,7 +31,6 @@
 #include "interfaces/isupportactivity.h"
 #include "interfaces/isupportmood.h"
 #include "interfaces/isupportgeolocation.h"
-#include "interfaces/isupportbookmarks.h"
 #include "interfaces/imucjoinwidget.h"
 #include "core.h"
 #include "sortfilterproxymodel.h"
@@ -40,7 +39,6 @@
 #include "xmlsettingsmanager.h"
 #include "addcontactdialog.h"
 #include "joinconferencedialog.h"
-#include "bookmarksmanagerdialog.h"
 #include "chattabsmanager.h"
 #include "consolewidget.h"
 #include "activitydialog.h"
@@ -49,6 +47,8 @@
 #include "util.h"
 #include "groupsenddialog.h"
 #include "actionsmanager.h"
+#include "accountactionsmanager.h"
+#include "bookmarksmanagerdialog.h"
 
 namespace LeechCraft
 {
@@ -60,6 +60,7 @@ namespace Azoth
 	, MenuButton_ (new QToolButton (this))
 	, ProxyModel_ (new SortFilterProxyModel (this))
 	, BottomBar_ (new QToolBar (tr ("Azoth bar"), this))
+	, AccountActsMgr_ (new AccountActionsManager (this, this))
 	{
 		qRegisterMetaType<QPersistentModelIndex> ("QPersistentModelIndex");
 
@@ -141,18 +142,6 @@ namespace Azoth
 				SIGNAL (triggered ()),
 				this,
 				SLOT (applyFastStatus ()));
-
-		AccountJoinConference_ = new QAction (tr ("Join conference..."), this);
-		connect (AccountJoinConference_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (joinAccountConference ()));
-
-		AccountManageBookmarks_ = new QAction (tr ("Manage bookmarks..."), this);
-		connect (AccountManageBookmarks_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (manageAccountBookmarks ()));
 
 		AccountAddContact_ = new QAction (tr ("Add contact..."), this);
 		connect (AccountAddContact_,
@@ -401,55 +390,11 @@ namespace Azoth
 		{
 			QVariant objVar = index.data (Core::CLRAccountObject);
 
-			IAccount *account = qobject_cast<IAccount*> (objVar.value<QObject*> ());
-			IProtocol *proto = qobject_cast<IProtocol*> (account->GetParentProtocol ());
+			actions << AccountActsMgr_->GetMenuActions (menu, objVar.value<QObject*> ());
 
-			AccountJoinConference_->setEnabled (proto->GetFeatures () & IProtocol::PFMUCsJoinable);
-			AccountJoinConference_->setProperty ("Azoth/AccountObject", objVar);
+			IAccount *account = qobject_cast<IAccount*> (objVar.value<QObject*> ());
 
 			AccountAddContact_->setProperty ("Azoth/AccountObject", objVar);
-			actions << AccountJoinConference_;
-
-			if (qobject_cast<ISupportBookmarks*> (objVar.value<QObject*> ()))
-			{
-				ISupportBookmarks *supBms =
-						qobject_cast<ISupportBookmarks*> (objVar.value<QObject*> ());
-				QVariantList bms = supBms->GetBookmarkedMUCs ();
-				if (!bms.isEmpty ())
-				{
-					QMenu *bmsMenu = new QMenu (tr ("Join bookmarked conference"), menu);
-					actions << bmsMenu->menuAction ();
-
-					Q_FOREACH (const QObject *mucObj,
-							qobject_cast<IAccount*> (objVar.value<QObject*> ())->GetCLEntries ())
-					{
-						IMUCEntry *muc = qobject_cast<IMUCEntry*> (mucObj);
-						if (!muc)
-							continue;
-
-						bms.removeAll (muc->GetIdentifyingData ());
-					}
-
-					Q_FOREACH (const QVariant& bm, bms)
-					{
-						const QVariantMap& map = bm.toMap ();
-
-						QAction *act = bmsMenu->addAction (map ["HumanReadableName"].toString ());
-						act->setProperty ("Azoth/AccountObject", objVar);
-						act->setProperty ("Azoth/BMData", bm);
-						connect (act,
-								SIGNAL (triggered ()),
-								this,
-								SLOT (joinAccountConfFromBM ()));
-					}
-				}
-
-				actions << AccountManageBookmarks_;
-				AccountManageBookmarks_->setProperty ("Azoth/AccountObject", objVar);
-
-				actions << Util::CreateSeparator (menu);
-			}
-
 			actions << AccountAddContact_;
 			actions << Util::CreateSeparator (menu);
 
@@ -687,20 +632,6 @@ namespace Azoth
 		dlg->show ();
 	}
 
-	void MainWidget::joinAccountConference ()
-	{
-		IAccount *account = GetAccountFromSender (Q_FUNC_INFO);
-		if (!account)
-			return;
-
-		QList<IAccount*> accounts;
-		accounts << account;
-		JoinConferenceDialog *dia = new JoinConferenceDialog (accounts,
-				Core::Instance ().GetProxy ()->GetMainWindow ());
-		dia->show ();
-		dia->setAttribute (Qt::WA_DeleteOnClose, true);
-	}
-
 	void MainWidget::joinAccountConfFromBM ()
 	{
 		IAccount *account = GetAccountFromSender (Q_FUNC_INFO);
@@ -715,20 +646,6 @@ namespace Azoth
 		IMUCJoinWidget *imjw = qobject_cast<IMUCJoinWidget*> (proto->GetMUCJoinWidget ());
 		imjw->SetIdentifyingData (bmData.toMap ());
 		imjw->Join (account->GetObject ());
-	}
-
-	void MainWidget::manageAccountBookmarks ()
-	{
-		IAccount *account = GetAccountFromSender (Q_FUNC_INFO);
-		if (!account)
-			return;
-
-		BookmarksManagerDialog *dia =
-				new BookmarksManagerDialog (Core::Instance ()
-						.GetProxy ()->GetMainWindow ());
-		dia->FocusOn (account);
-		dia->show ();
-		dia->setAttribute (Qt::WA_DeleteOnClose, true);
 	}
 
 	void MainWidget::addAccountContact ()

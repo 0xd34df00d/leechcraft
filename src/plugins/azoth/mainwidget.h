@@ -32,6 +32,7 @@ namespace Azoth
 {
 	class SortFilterProxyModel;
 	class ConsoleWidget;
+	class AccountActionsManager;
 
 	class MainWidget : public QWidget
 	{
@@ -50,8 +51,8 @@ namespace Azoth
 		QMenu *MenuChangeStatus_;
 		QMenu *TrayChangeStatus_;
 
-		QAction *AccountJoinConference_;
-		QAction *AccountManageBookmarks_;
+		AccountActionsManager *AccountActsMgr_;
+
 		QAction *AccountAddContact_;
 		QAction *AccountSetActivity_;
 		QAction *AccountSetMood_;
@@ -83,7 +84,6 @@ namespace Azoth
 		void handleSendGroupMsgTriggered ();
 		void joinAccountConference ();
 		void joinAccountConfFromBM ();
-		void manageAccountBookmarks ();
 		void addAccountContact ();
 		void handleAccountSetActivity ();
 		void handleAccountSetMood ();
