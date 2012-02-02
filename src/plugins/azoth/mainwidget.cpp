@@ -129,7 +129,7 @@ namespace Azoth
 		MenuChangeStatus_ = CreateStatusChangeMenu (SLOT (handleChangeStatusRequested ()), true);
 		TrayChangeStatus_ = CreateStatusChangeMenu (SLOT (handleChangeStatusRequested ()), true);
 
-		Ui_.FastStatusButton_->setMenu (CreateStatusChangeMenu (SLOT (fastStateChangeRequested ())));
+		Ui_.FastStatusButton_->setMenu (CreateStatusChangeMenu (SLOT (fastStateChangeRequested ()), true));
 		Ui_.FastStatusButton_->setDefaultAction (new QAction (tr ("Set status"), this));
 		updateFastStatusButton (SOffline);
 		connect (Ui_.FastStatusButton_->defaultAction (),
@@ -547,8 +547,11 @@ namespace Azoth
 		if (acc)
 			acc->ChangeState (status);
 		else
+		{
 			Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
 				acc->ChangeState (status);
+			updateFastStatusButton (status.State_);
+		}
 	}
 
 	void MainWidget::fastStateChangeRequested ()
