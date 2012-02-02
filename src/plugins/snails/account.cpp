@@ -277,82 +277,14 @@ namespace Snails
 		return OutLogin_;
 	}
 
+	void Account::handleFolderActivated (const QModelIndex& index)
+	{
+		MsgListModel_->setMailbox (index);
+	}
+
 	QMutex* Account::GetMutex () const
 	{
 		return AccMutex_;
-	}
-
-	QString Account::BuildInURL ()
-	{
-		QMutexLocker l (GetMutex ());
-
-		QString result;
-
-		QUrl url;
-
-		switch (InType_)
-		{
-		case InType::IMAP:
-			url.setScheme ("imap");
-			break;
-		case InType::POP3:
-			url.setScheme ("pop3");
-			break;
-		case InType::Maildir:
-			url.setScheme ("maildir");
-			url.setHost ("localhost");
-			break;
-		}
-
-		if (InType_ != InType::Maildir)
-		{
-			url.setUserName (Login_);
-			QString pass;
-			getPassword (&pass);
-
-			url.setPassword (pass);
-
-			url.setHost (InHost_);
-		}
-
-		qDebug () << Q_FUNC_INFO << url.toEncoded ();
-
-		return url.toEncoded ();
-	}
-
-	QString Account::BuildOutURL ()
-	{
-		QMutexLocker l (GetMutex ());
-
-		if (OutType_ == OutType::Sendmail)
-			return "sendmail://localhost";
-
-		QString result = UseTLS_ ? "smtps://" : "smtp://";
-
-		if (SMTPNeedsAuth_)
-		{
-			QString pass;
-			if (OutLogin_.isEmpty ())
-			{
-				result += Login_;
-				getPassword (&pass);
-			}
-			else
-			{
-				result += OutLogin_;
-				getPassword (&pass, Direction::Out);
-			}
-			result += ":" + pass;
-
-			result.replace ('@', "%40");
-			result += '@';
-		}
-
-		result += OutHost_ + ":" + QString::number (OutPort_);
-
-		qDebug () << Q_FUNC_INFO << result;
-
-		return result;
 	}
 
 	QString Account::GetPassImpl (Direction dir)
@@ -431,16 +363,7 @@ namespace Snails
 		qDebug () << "[IMAP]" << GetName () << code << msg.kind << msg.message << msg.source;
 	}
 
-	void Account::buildInURL (QString *res)
-	{
-		*res = BuildInURL ();
-	}
-
-	void Account::buildOutURL (QString *res)
-	{
-		*res = BuildOutURL ();
-	}
-
+	// TODO migrate to stuff from Util.
 	void Account::getPassword (QString *outPass, Direction dir)
 	{
 		QString pass = GetPassImpl (dir);

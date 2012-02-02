@@ -20,6 +20,7 @@
 
 #include <memory>
 #include <QObject>
+#include <QModelIndex>
 #include "message.h"
 #include "progresslistener.h"
 #include "proto/Imap/Model/Logging.h"
@@ -137,19 +138,17 @@ namespace Snails
 
 		QString GetInUsername ();
 		QString GetOutUsername ();
+	public slots:
+		void handleFolderActivated (const QModelIndex&);
 	private:
 		QMutex* GetMutex () const;
 
-		QString BuildInURL ();
-		QString BuildOutURL ();
 		QString GetPassImpl (Direction);
 		QByteArray GetStoreID (Direction) const;
 		void ReinitModel ();
 	private slots:
 		void handleAuthRequested (QAuthenticator*);
 		void handleLogged (uint, Imap::Mailbox::LogMessage);
-		void buildInURL (QString*);
-		void buildOutURL (QString*);
 		void getPassword (QString*, Direction = Direction::In);
 		void handleMsgHeaders (QList<Message_ptr>);
 		void handleGotUpdatedMessages (QList<Message_ptr>);
