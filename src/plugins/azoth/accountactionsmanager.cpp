@@ -54,6 +54,9 @@ namespace Azoth
 	, AccountConsole_ (new QAction (tr ("Console..."), this))
 	, AccountModify_ (new QAction (tr ("Modify..."), this))
 	{
+		AccountJoinConference_->setProperty ("ActionIcon", "irc-join-channel");
+		AccountManageBookmarks_->setProperty ("ActionIcon", "bookmarks-organize");
+		AccountAddContact_->setProperty ("ActionIcon", "list-add-user");
 		connect (AccountJoinConference_,
 				SIGNAL (triggered ()),
 				this,

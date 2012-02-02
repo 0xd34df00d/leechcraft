@@ -130,6 +130,8 @@ namespace Azoth
 		MenuChangeStatus_ = CreateStatusChangeMenu (SLOT (handleChangeStatusRequested ()), true);
 		TrayChangeStatus_ = CreateStatusChangeMenu (SLOT (handleChangeStatusRequested ()), true);
 
+		MenuChangeStatus_->menuAction ()->setProperty ("ActionIcon", "im-status-message-edit");
+
 		Ui_.FastStatusButton_->setMenu (CreateStatusChangeMenu (SLOT (fastStateChangeRequested ()), true));
 		Ui_.FastStatusButton_->setDefaultAction (new QAction (tr ("Set status"), this));
 		updateFastStatusButton (SOffline);
