@@ -35,6 +35,8 @@ namespace Mailbox
 {
 	class Model;
 	class PrettyMailboxModel;
+	class MsgListModel;
+	class PrettyMsgListModel;
 }
 }
 
@@ -111,6 +113,8 @@ namespace Snails
 
 		Imap::Mailbox::Model *Model_;
 		Imap::Mailbox::PrettyMailboxModel *PrettyMboxModel_;
+		Imap::Mailbox::MsgListModel* MsgListModel_;
+		Imap::Mailbox::PrettyMsgListModel* PrettyMsgListModel_;
 	public:
 		Account (QObject* = 0);
 
@@ -120,7 +124,9 @@ namespace Snails
 		QString GetType () const;
 
 		AccountFolderManager* GetFolderManager () const;
+
 		QAbstractItemModel* GetFoldersModel () const;
+		QAbstractItemModel* GetItemsModel () const;
 
 		void Synchronize (FetchFlags);
 		void FetchWholeMessage (Message_ptr);

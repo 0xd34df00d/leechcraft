@@ -29,6 +29,9 @@
 #include "proto/Imap/Model/MemoryCache.h"
 #include "proto/Imap/Model/MailboxModel.h"
 #include "proto/Imap/Model/PrettyMailboxModel.h"
+#include "proto/Imap/Model/MsgListModel.h"
+#include "proto/Imap/Model/ThreadingMsgListModel.h"
+#include "proto/Imap/Model/PrettyMsgListModel.h"
 #include "proto/Streams/SocketFactory.h"
 #include "core.h"
 #include "accountconfigdialog.h"
@@ -52,6 +55,8 @@ namespace Snails
 	, FolderManager_ (new AccountFolderManager (this))
 	, Model_ (0)
 	, PrettyMboxModel_ (0)
+	, MsgListModel_ (0)
+	, PrettyMsgListModel_ (0)
 	{
 	}
 
@@ -95,6 +100,11 @@ namespace Snails
 	QAbstractItemModel* Account::GetFoldersModel () const
 	{
 		return PrettyMboxModel_;
+	}
+
+	QAbstractItemModel* Account::GetItemsModel () const
+	{
+		return PrettyMsgListModel_;
 	}
 
 	void Account::Synchronize (Account::FetchFlags flags)
@@ -350,6 +360,10 @@ namespace Snails
 				SIGNAL (logged (uint, Imap::Mailbox::LogMessage)),
 				this,
 				SLOT (handleLogged (uint, Imap::Mailbox::LogMessage)));
+
+		MsgListModel_ = new Imap::Mailbox::MsgListModel (Model_, Model_);
+		PrettyMsgListModel_ = new Imap::Mailbox::PrettyMsgListModel (Model_);
+		PrettyMsgListModel_->setSourceModel (MsgListModel_);
 	}
 
 	void Account::handleAuthRequested (QAuthenticator *auth)
