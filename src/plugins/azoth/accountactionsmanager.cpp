@@ -22,6 +22,7 @@
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include "interfaces/iaccount.h"
+#include "interfaces/imucjoinwidget.h"
 #include "interfaces/iprotocol.h"
 #include "interfaces/isupportbookmarks.h"
 #include "interfaces/isupportactivity.h"
@@ -224,6 +225,22 @@ namespace Azoth
 		auto dia = new JoinConferenceDialog (accounts, MW_);
 		dia->show ();
 		dia->setAttribute (Qt::WA_DeleteOnClose, true);
+	}
+
+	void AccountActionsManager::joinAccountConfFromBM ()
+	{
+		IAccount *account = GetAccountFromSender (sender (), Q_FUNC_INFO);
+		if (!account)
+			return;
+
+		const QVariant& bmData = sender ()->property ("Azoth/BMData");
+		if (bmData.isNull ())
+			return;
+
+		IProtocol *proto = qobject_cast<IProtocol*> (account->GetParentProtocol ());
+		IMUCJoinWidget *imjw = qobject_cast<IMUCJoinWidget*> (proto->GetMUCJoinWidget ());
+		imjw->SetIdentifyingData (bmData.toMap ());
+		imjw->Join (account->GetObject ());
 	}
 
 	void AccountActionsManager::manageAccountBookmarks ()

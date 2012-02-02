@@ -61,7 +61,6 @@ namespace Azoth
 	private:
 		void CreateMenu ();
 		QMenu* CreateStatusChangeMenu (const char*, bool withCustom = false);
-		IAccount* GetAccountFromSender (const char*);
 	private slots:
 		void updateFastStatusButton (LeechCraft::Azoth::State);
 		void treeActivated (const QModelIndex&);
@@ -73,8 +72,6 @@ namespace Azoth
 		void handleEntryActivationType ();
 		void handleCatRenameTriggered ();
 		void handleSendGroupMsgTriggered ();
-		void joinAccountConference ();
-		void joinAccountConfFromBM ();
 
 		void handleManageBookmarks ();
 		void handleAddAccountRequested ();

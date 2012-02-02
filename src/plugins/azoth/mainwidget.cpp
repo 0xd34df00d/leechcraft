@@ -27,14 +27,12 @@
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include "interfaces/iclentry.h"
-#include "interfaces/imucjoinwidget.h"
 #include "core.h"
 #include "sortfilterproxymodel.h"
 #include "setstatusdialog.h"
 #include "contactlistdelegate.h"
 #include "xmlsettingsmanager.h"
 #include "addcontactdialog.h"
-#include "joinconferencedialog.h"
 #include "chattabsmanager.h"
 #include "util.h"
 #include "groupsenddialog.h"
@@ -251,36 +249,6 @@ namespace Azoth
 					SLOT (handleChangeStatusRequested ()));
 		}
 		return result;
-	}
-
-	IAccount* MainWidget::GetAccountFromSender (const char *func)
-	{
-		if (!sender ())
-		{
-			qWarning () << func
-					<< "no sender";
-			return 0;
-		}
-
-		const QVariant& objVar = sender ()->property ("Azoth/AccountObject");
-		QObject *object = objVar.value<QObject*> ();
-		if (!object)
-		{
-			qWarning () << func
-					<< "no object in Azoth/AccountObject property of the sender"
-					<< sender ()
-					<< objVar;
-			return 0;
-		}
-
-		IAccount *account = qobject_cast<IAccount*> (object);
-		if (!account)
-			qWarning () << func
-					<< "object"
-					<< object
-					<< "could not be cast to IAccount";
-
-		return account;
 	}
 
 	void MainWidget::updateFastStatusButton (State state)
@@ -548,22 +516,6 @@ namespace Azoth
 		GroupSendDialog *dlg = new GroupSendDialog (entries, this);
 		dlg->setAttribute (Qt::WA_DeleteOnClose, true);
 		dlg->show ();
-	}
-
-	void MainWidget::joinAccountConfFromBM ()
-	{
-		IAccount *account = GetAccountFromSender (Q_FUNC_INFO);
-		if (!account)
-			return;
-
-		const QVariant& bmData = sender ()->property ("Azoth/BMData");
-		if (bmData.isNull ())
-			return;
-
-		IProtocol *proto = qobject_cast<IProtocol*> (account->GetParentProtocol ());
-		IMUCJoinWidget *imjw = qobject_cast<IMUCJoinWidget*> (proto->GetMUCJoinWidget ());
-		imjw->SetIdentifyingData (bmData.toMap ());
-		imjw->Join (account->GetObject ());
 	}
 
 	void MainWidget::handleManageBookmarks ()

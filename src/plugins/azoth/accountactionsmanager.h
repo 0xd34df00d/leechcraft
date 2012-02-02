@@ -53,6 +53,7 @@ namespace Azoth
 		QList<QAction*> GetMenuActions (QMenu*, QObject*);
 	private slots:
 		void joinAccountConference ();
+		void joinAccountConfFromBM ();
 		void manageAccountBookmarks ();
 		void addAccountContact ();
 		void handleAccountSetActivity ();
