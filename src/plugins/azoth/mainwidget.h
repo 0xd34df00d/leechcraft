@@ -32,6 +32,7 @@ namespace Azoth
 {
 	class SortFilterProxyModel;
 	class ConsoleWidget;
+	class ServiceDiscoveryWidget;
 	class AccountActionsManager;
 
 	class MainWidget : public QWidget
@@ -91,6 +92,7 @@ namespace Azoth
 		void on_CLTree__collapsed (const QModelIndex&);
 	signals:
 		void gotConsoleWidget (ConsoleWidget*);
+		void gotSDWidget (ServiceDiscoveryWidget*);
 	};
 }
 }

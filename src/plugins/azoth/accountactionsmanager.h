@@ -30,6 +30,7 @@ namespace Azoth
 {
 	class IAccount;
 	class ConsoleWidget;
+	class ServiceDiscoveryWidget;
 
 	class AccountActionsManager : public QObject
 	{
@@ -45,6 +46,7 @@ namespace Azoth
 		QAction *AccountSetActivity_;
 		QAction *AccountSetMood_;
 		QAction *AccountSetLocation_;
+		QAction *AccountSD_;
 		QAction *AccountConsole_;
 		QAction *AccountModify_;
 	public:
@@ -59,12 +61,14 @@ namespace Azoth
 		void handleAccountSetActivity ();
 		void handleAccountSetMood ();
 		void handleAccountSetLocation ();
+		void handleAccountSD ();
 		void handleAccountConsole ();
 		void handleAccountModify ();
 
 		void consoleRemoved (QWidget*);
 	signals:
 		void gotConsoleWidget (ConsoleWidget*);
+		void gotSDWidget (ServiceDiscoveryWidget*);
 	};
 }
 }

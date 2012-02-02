@@ -28,6 +28,7 @@
 #include "interfaces/isupportactivity.h"
 #include "interfaces/isupportmood.h"
 #include "interfaces/isupportgeolocation.h"
+#include "interfaces/ihaveservicediscovery.h"
 #include "interfaces/ihaveconsole.h"
 #include "core.h"
 #include "joinconferencedialog.h"
@@ -37,6 +38,7 @@
 #include "mooddialog.h"
 #include "locationdialog.h"
 #include "consolewidget.h"
+#include "servicediscoverywidget.h"
 
 namespace LeechCraft
 {
@@ -51,12 +53,16 @@ namespace Azoth
 	, AccountSetActivity_ (new QAction (tr ("Set activity..."), this))
 	, AccountSetMood_ (new QAction (tr ("Set mood..."), this))
 	, AccountSetLocation_ (new QAction (tr ("Set location..."), this))
+	, AccountSD_ (new QAction (tr ("Service discovery..."), this))
 	, AccountConsole_ (new QAction (tr ("Console..."), this))
 	, AccountModify_ (new QAction (tr ("Modify..."), this))
 	{
 		AccountJoinConference_->setProperty ("ActionIcon", "irc-join-channel");
 		AccountManageBookmarks_->setProperty ("ActionIcon", "bookmarks-organize");
 		AccountAddContact_->setProperty ("ActionIcon", "list-add-user");
+		AccountSetMood_->setProperty ("ActionIcon", "face-smile");
+		AccountSD_->setProperty ("ActionIcon", "services");
+		AccountConsole_->setProperty ("ActionIcon", "utilities-terminal");
 		connect (AccountJoinConference_,
 				SIGNAL (triggered ()),
 				this,
@@ -81,6 +87,10 @@ namespace Azoth
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleAccountSetLocation ()));
+		connect (AccountSD_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleAccountSD()));
 		connect (AccountConsole_,
 				SIGNAL (triggered ()),
 				this,
@@ -169,6 +179,12 @@ namespace Azoth
 		{
 			actions += accActions;
 			actions << Util::CreateSeparator (menu);
+		}
+
+		if (qobject_cast<IHaveServiceDiscovery*> (accObj))
+		{
+			AccountSD_->setProperty ("Azoth/AccountObject", objVar);
+			actions << AccountSD_;
 		}
 
 		if (qobject_cast<IHaveConsole*> (objVar.value<QObject*> ()))
@@ -339,6 +355,17 @@ namespace Azoth
 			return;
 
 		loc->SetGeolocationInfo (dia.GetInfo ());
+	}
+
+	void AccountActionsManager::handleAccountSD ()
+	{
+		IAccount *account = GetAccountFromSender (sender (), Q_FUNC_INFO);
+		if (!account)
+			return;
+
+		auto w = new ServiceDiscoveryWidget ();
+		w->SetAccount (account->GetObject ());
+		emit gotSDWidget (w);
 	}
 
 	void AccountActionsManager::handleAccountConsole ()

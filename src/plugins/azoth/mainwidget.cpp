@@ -56,6 +56,10 @@ namespace Azoth
 				SIGNAL (gotConsoleWidget (ConsoleWidget*)),
 				this,
 				SIGNAL (gotConsoleWidget (ConsoleWidget*)));
+		connect (AccountActsMgr_,
+				SIGNAL (gotSDWidget (ServiceDiscoveryWidget*)),
+				this,
+				SIGNAL (gotSDWidget (ServiceDiscoveryWidget*)));
 
 		qRegisterMetaType<QPersistentModelIndex> ("QPersistentModelIndex");
 
