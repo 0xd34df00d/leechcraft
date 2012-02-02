@@ -397,7 +397,7 @@ namespace LHTR
 
 		const QString& path = dia.GetPath ();
 		const QUrl& url = QUrl::fromEncoded (path.toUtf8 ());
-		const QString& src = url.isLocalFile () ?
+		const QString& src = url.scheme () == "file" ?
 				Util::GetAsBase64Src (QImage (url.toLocalFile ())) :
 				path;
 
