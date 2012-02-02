@@ -66,33 +66,20 @@
     </widget>
    </item>
    <item>
-    <widget class="QComboBox" name="RosterMode_">
-     <item>
-      <property name="text">
-       <string>Whole CL</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Current MUC</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item>
     <layout class="QHBoxLayout" name="BottomLayout_">
      <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
+      <widget class="QComboBox" name="RosterMode_">
+       <item>
+        <property name="text">
+         <string>Whole CL</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Current MUC</string>
+        </property>
+       </item>
+      </widget>
      </item>
      <item>
       <widget class="QToolButton" name="FastStatusButton_">

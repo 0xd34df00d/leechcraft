@@ -22,6 +22,7 @@
 #include <QVBoxLayout>
 #include <QToolButton>
 #include <QInputDialog>
+#include <QToolBar>
 #include <QTimer>
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
@@ -57,14 +58,18 @@ namespace Azoth
 	: QWidget (parent)
 	, MainMenu_ (new QMenu (tr ("Azoth menu"), this))
 	, MenuButton_ (new QToolButton (this))
-	, ProxyModel_ (new SortFilterProxyModel ())
+	, ProxyModel_ (new SortFilterProxyModel (this))
+	, BottomBar_ (new QToolBar (tr ("Azoth bar"), this))
 	{
 		qRegisterMetaType<QPersistentModelIndex> ("QPersistentModelIndex");
 
 		MainMenu_->setIcon (QIcon (":/plugins/azoth/resources/images/azoth.svg"));
 
+		BottomBar_->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Preferred);
+		BottomBar_->addWidget (MenuButton_);
+
 		Ui_.setupUi (this);
-		Ui_.BottomLayout_->insertWidget (0, MenuButton_);
+		layout ()->addWidget (BottomBar_);
 #if QT_VERSION >= 0x040700
 		Ui_.FilterLine_->setPlaceholderText (tr ("Search..."));
 #endif
@@ -193,6 +198,11 @@ namespace Azoth
 				SIGNAL (topStatusChanged (LeechCraft::Azoth::State)),
 				this,
 				SLOT (updateFastStatusButton (LeechCraft::Azoth::State)));
+
+		adjustSize ();
+		layout ()->update ();
+		qDebug () << "BottomBar" << BottomBar_->width () << BottomBar_->sizeHint ()
+				<< BottomBar_->sizePolicy ().horizontalPolicy () << BottomBar_->sizePolicy ().horizontalStretch ();
 	}
 
 	QList<QAction*> MainWidget::GetMenuActions()
@@ -209,12 +219,15 @@ namespace Azoth
 	{
 		MainMenu_->addSeparator ();
 
-		MainMenu_->addAction (tr ("Add contact..."),
+		QAction *addContact = MainMenu_->addAction (tr ("Add contact..."),
 				this,
 				SLOT (handleAddContactRequested ()));
-		MainMenu_->addAction (tr ("Join conference..."),
+		addContact->setProperty ("ActionIcon", "list-add-user");
+
+		QAction *joinConf = MainMenu_->addAction (tr ("Join conference..."),
 				&Core::Instance (),
 				SLOT (handleMucJoinRequested ()));
+		joinConf->setProperty ("ActionIcon", "irc-join-channel");
 
 		MainMenu_->addSeparator ();
 
@@ -241,6 +254,15 @@ namespace Azoth
 				SIGNAL (toggled (bool)),
 				this,
 				SLOT (handleShowOffline (bool)));
+
+		auto addBottomAct = [this] (QAction *act)
+		{
+			BottomBar_->addAction (act);
+			const int count = BottomBar_->actions ().count ();
+			BottomBar_->setMaximumWidth ((32 + 2) * count + 10);
+		};
+		addBottomAct (addContact);
+		addBottomAct (showOffline);
 	}
 
 	QMenu* MainWidget::CreateStatusChangeMenu (const char *slot, bool withCustom)
@@ -927,7 +949,7 @@ namespace Azoth
 
 	void MainWidget::menuBarVisibilityToggled ()
 	{
-		MenuButton_->setVisible (XmlSettingsManager::Instance ().property ("ShowMenuBar").toBool ());
+		BottomBar_->setVisible (XmlSettingsManager::Instance ().property ("ShowMenuBar").toBool ());
 	}
 
 	namespace
