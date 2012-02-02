@@ -136,10 +136,6 @@ namespace Azoth
 				SIGNAL (triggered ()),
 				this,
 				SLOT (applyFastStatus ()));
-		connect (Ui_.FastStatusText_,
-				SIGNAL (returnPressed ()),
-				this,
-				SLOT (applyFastStatus ()));
 
 		AccountJoinConference_ = new QAction (tr ("Join conference..."), this);
 		connect (AccountJoinConference_,
@@ -563,12 +559,10 @@ namespace Azoth
 
 	void MainWidget::applyFastStatus ()
 	{
-		const QString& text = Ui_.FastStatusText_->text ();
-		Ui_.FastStatusText_->setText (QString ());
 		State state = Ui_.FastStatusButton_->
 				property ("Azoth/TargetState").value<State> ();
 
-		EntryStatus status (state, text);
+		EntryStatus status (state, QString ());
 		Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
 			acc->ChangeState (status);
 	}
