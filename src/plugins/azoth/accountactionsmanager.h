@@ -19,6 +19,7 @@
 #pragma once
 
 #include <QObject>
+#include <QHash>
 
 class QAction;
 class QMenu;
@@ -27,14 +28,25 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+	class IAccount;
+	class ConsoleWidget;
+
 	class AccountActionsManager : public QObject
 	{
 		Q_OBJECT
 
 		QWidget *MW_;
 
+		QHash<IAccount*, ConsoleWidget*> Account2CW_;
+
 		QAction *AccountJoinConference_;
 		QAction *AccountManageBookmarks_;
+		QAction *AccountAddContact_;
+		QAction *AccountSetActivity_;
+		QAction *AccountSetMood_;
+		QAction *AccountSetLocation_;
+		QAction *AccountConsole_;
+		QAction *AccountModify_;
 	public:
 		AccountActionsManager (QWidget*, QObject* = 0);
 
@@ -42,6 +54,16 @@ namespace Azoth
 	private slots:
 		void joinAccountConference ();
 		void manageAccountBookmarks ();
+		void addAccountContact ();
+		void handleAccountSetActivity ();
+		void handleAccountSetMood ();
+		void handleAccountSetLocation ();
+		void handleAccountConsole ();
+		void handleAccountModify ();
+
+		void consoleRemoved (QWidget*);
+	signals:
+		void gotConsoleWidget (ConsoleWidget*);
 	};
 }
 }

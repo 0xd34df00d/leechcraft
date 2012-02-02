@@ -46,22 +46,13 @@ namespace Azoth
 
 		QToolBar *BottomBar_;
 
-		QHash<IAccount*, ConsoleWidget*> Account2CW_;
-
 		QMenu *MenuChangeStatus_;
 		QMenu *TrayChangeStatus_;
 
 		AccountActionsManager *AccountActsMgr_;
 
-		QAction *AccountAddContact_;
-		QAction *AccountSetActivity_;
-		QAction *AccountSetMood_;
-		QAction *AccountSetLocation_;
-		QAction *AccountConsole_;
-		QAction *AccountModify_;
-
 		QMap<QString, bool> FstLevelExpands_;
-		QMap<QString, QMap<QString, bool> > SndLevelExpands_;
+		QMap<QString, QMap<QString, bool>> SndLevelExpands_;
 	public:
 		MainWidget (QWidget* = 0);
 
@@ -84,12 +75,6 @@ namespace Azoth
 		void handleSendGroupMsgTriggered ();
 		void joinAccountConference ();
 		void joinAccountConfFromBM ();
-		void addAccountContact ();
-		void handleAccountSetActivity ();
-		void handleAccountSetMood ();
-		void handleAccountSetLocation ();
-		void handleAccountConsole ();
-		void handleAccountModify ();
 
 		void handleManageBookmarks ();
 		void handleAddAccountRequested ();
@@ -107,8 +92,6 @@ namespace Azoth
 		void expandIndex (const QPersistentModelIndex&);
 		void on_CLTree__expanded (const QModelIndex&);
 		void on_CLTree__collapsed (const QModelIndex&);
-
-		void consoleRemoved (QWidget*);
 	signals:
 		void gotConsoleWidget (ConsoleWidget*);
 	};

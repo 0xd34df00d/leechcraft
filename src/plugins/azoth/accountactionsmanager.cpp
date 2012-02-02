@@ -24,9 +24,18 @@
 #include "interfaces/iaccount.h"
 #include "interfaces/iprotocol.h"
 #include "interfaces/isupportbookmarks.h"
+#include "interfaces/isupportactivity.h"
+#include "interfaces/isupportmood.h"
+#include "interfaces/isupportgeolocation.h"
+#include "interfaces/ihaveconsole.h"
 #include "core.h"
 #include "joinconferencedialog.h"
 #include "bookmarksmanagerdialog.h"
+#include "addcontactdialog.h"
+#include "activitydialog.h"
+#include "mooddialog.h"
+#include "locationdialog.h"
+#include "consolewidget.h"
 
 namespace LeechCraft
 {
@@ -37,6 +46,12 @@ namespace Azoth
 	, MW_ (mw)
 	, AccountJoinConference_ (new QAction (tr ("Join conference..."), this))
 	, AccountManageBookmarks_ (new QAction (tr ("Manage bookmarks..."), this))
+	, AccountAddContact_ (new QAction (tr ("Add contact..."), this))
+	, AccountSetActivity_ (new QAction (tr ("Set activity..."), this))
+	, AccountSetMood_ (new QAction (tr ("Set mood..."), this))
+	, AccountSetLocation_ (new QAction (tr ("Set location..."), this))
+	, AccountConsole_ (new QAction (tr ("Console..."), this))
+	, AccountModify_ (new QAction (tr ("Modify..."), this))
 	{
 		connect (AccountJoinConference_,
 				SIGNAL (triggered ()),
@@ -46,6 +61,30 @@ namespace Azoth
 				SIGNAL (triggered ()),
 				this,
 				SLOT (manageAccountBookmarks ()));
+		connect (AccountAddContact_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (addAccountContact ()));
+		connect (AccountSetActivity_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleAccountSetActivity ()));
+		connect (AccountSetMood_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleAccountSetMood ()));
+		connect (AccountSetLocation_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleAccountSetLocation ()));
+		connect (AccountConsole_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleAccountConsole ()));
+		connect (AccountModify_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleAccountModify ()));
 	}
 
 	QList<QAction*> AccountActionsManager::GetMenuActions (QMenu *menu, QObject *accObj)
@@ -97,9 +136,46 @@ namespace Azoth
 
 			actions << AccountManageBookmarks_;
 			AccountManageBookmarks_->setProperty ("Azoth/AccountObject", objVar);
+		}
+		actions << Util::CreateSeparator (menu);
 
+		AccountAddContact_->setProperty ("Azoth/AccountObject", objVar);
+		actions << AccountAddContact_;
+		actions << Util::CreateSeparator (menu);
+
+		if (qobject_cast<ISupportActivity*> (objVar.value<QObject*> ()))
+		{
+			AccountSetActivity_->setProperty ("Azoth/AccountObject", objVar);
+			actions << AccountSetActivity_;
+		}
+		if (qobject_cast<ISupportMood*> (objVar.value<QObject*> ()))
+		{
+			AccountSetMood_->setProperty ("Azoth/AccountObject", objVar);
+			actions << AccountSetMood_;
+		}
+		if (qobject_cast<ISupportGeolocation*> (objVar.value<QObject*> ()))
+		{
+			AccountSetLocation_->setProperty ("Azoth/AccountObject", objVar);
+			actions << AccountSetLocation_;
+		}
+		actions << Util::CreateSeparator (menu);
+
+		const auto& accActions = account->GetActions ();
+		if (!accActions.isEmpty ())
+		{
+			actions += accActions;
 			actions << Util::CreateSeparator (menu);
 		}
+
+		if (qobject_cast<IHaveConsole*> (objVar.value<QObject*> ()))
+		{
+			AccountConsole_->setProperty ("Azoth/AccountObject", objVar);
+			actions << AccountConsole_;
+		}
+		actions << Util::CreateSeparator (menu);
+
+		AccountModify_->setProperty ("Azoth/AccountObject", objVar);
+		actions << AccountModify_;
 
 		return actions;
 	}
@@ -160,6 +236,123 @@ namespace Azoth
 		dia->FocusOn (account);
 		dia->show ();
 		dia->setAttribute (Qt::WA_DeleteOnClose, true);
+	}
+
+	void AccountActionsManager::addAccountContact ()
+	{
+		IAccount *account = GetAccountFromSender (sender (), Q_FUNC_INFO);
+		if (!account)
+			return;
+
+		AddContactDialog dia (account, MW_);
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		dia.GetSelectedAccount ()->RequestAuth (dia.GetContactID (),
+				dia.GetReason (), dia.GetNick (), dia.GetGroups ());
+	}
+
+	void AccountActionsManager::handleAccountSetActivity ()
+	{
+		IAccount *account = GetAccountFromSender (sender (), Q_FUNC_INFO);
+		if (!account)
+			return;
+
+		QObject *obj = sender ()->property ("Azoth/AccountObject").value<QObject*> ();
+		ISupportActivity *activity = qobject_cast<ISupportActivity*> (obj);
+		if (!activity)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< obj
+					<< "doesn't support activity";
+			return;
+		}
+
+		ActivityDialog dia (MW_);
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		activity->SetActivity (dia.GetGeneral (), dia.GetSpecific (), dia.GetText ());
+	}
+
+	void AccountActionsManager::handleAccountSetMood ()
+	{
+		IAccount *account = GetAccountFromSender (sender (), Q_FUNC_INFO);
+		if (!account)
+			return;
+
+		QObject *obj = sender ()->property ("Azoth/AccountObject").value<QObject*> ();
+		ISupportMood *mood = qobject_cast<ISupportMood*> (obj);
+		if (!mood)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< obj
+					<< "doesn't support mood";
+			return;
+		}
+
+		MoodDialog dia (MW_);
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		mood->SetMood (dia.GetMood (), dia.GetText ());
+	}
+
+	void AccountActionsManager::handleAccountSetLocation ()
+	{
+		IAccount *account = GetAccountFromSender (sender (), Q_FUNC_INFO);
+		if (!account)
+			return;
+
+		QObject *obj = account->GetObject ();
+		ISupportGeolocation *loc = qobject_cast<ISupportGeolocation*> (obj);
+		if (!loc)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< obj
+					<< "doesn't support geolocation";
+			return;
+		}
+
+		LocationDialog dia (MW_);
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		loc->SetGeolocationInfo (dia.GetInfo ());
+	}
+
+	void AccountActionsManager::handleAccountConsole ()
+	{
+		IAccount *account = GetAccountFromSender (sender (), Q_FUNC_INFO);
+		if (!account)
+			return;
+
+		if (!Account2CW_.contains (account))
+		{
+			ConsoleWidget *cw = new ConsoleWidget (account->GetObject ());
+			Account2CW_ [account] = cw;
+			connect (cw,
+					SIGNAL (removeTab (QWidget*)),
+					this,
+					SLOT (consoleRemoved (QWidget*)));
+		}
+
+		emit gotConsoleWidget (Account2CW_ [account]);
+	}
+
+	void AccountActionsManager::handleAccountModify ()
+	{
+		IAccount *account = GetAccountFromSender (sender (), Q_FUNC_INFO);
+		if (!account)
+			return;
+
+		account->OpenConfigurationDialog ();
+	}
+
+	void AccountActionsManager::consoleRemoved (QWidget *w)
+	{
+		ConsoleWidget *cw = qobject_cast<ConsoleWidget*> (w);
+		Account2CW_.remove (Account2CW_.key (cw));
 	}
 }
 }
