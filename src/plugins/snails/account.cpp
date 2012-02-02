@@ -32,8 +32,6 @@
 #include "proto/Streams/SocketFactory.h"
 #include "core.h"
 #include "accountconfigdialog.h"
-#include "accountthread.h"
-#include "accountthreadworker.h"
 #include "storage.h"
 #include "accountfoldermanager.h"
 

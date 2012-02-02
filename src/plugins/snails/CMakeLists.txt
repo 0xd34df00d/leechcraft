@@ -42,8 +42,6 @@ SET (SRCS
 	account.cpp
 	accountconfigdialog.cpp
 	message.cpp
-	accountthread.cpp
-	accountthreadworker.cpp
 	progresslistener.cpp
 	storage.cpp
 	progressmanager.cpp
@@ -51,7 +49,6 @@ SET (SRCS
 	composemessagetab.cpp
 	accountfoldermanager.cpp
 	attdescr.cpp
-	vmimeconversions.cpp
 	outputiodevadapter.cpp
 	)
 SET (HEADERS
@@ -63,8 +60,6 @@ SET (HEADERS
 	account.h
 	accountconfigdialog.h
 	message.h
-	accountthread.h
-	accountthreadworker.h
 	progresslistener.h
 	storage.h
 	progressmanager.h
@@ -72,7 +67,6 @@ SET (HEADERS
 	composemessagetab.h
 	accountfoldermanager.h
 	attdescr.h
-	vmimeconversions.h
 	outputiodevadapter.h
 	)
 SET (FORMS
