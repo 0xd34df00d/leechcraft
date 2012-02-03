@@ -219,25 +219,6 @@ namespace Snails
 	{
 	}
 
-	void MailTab::handleAttachment ()
-	{
-		if (!CurrAcc_)
-			return;
-
-		const auto& name = sender ()->property ("Snails/AttName").toString ();
-
-		const auto& path = QFileDialog::getSaveFileName (0,
-				tr ("Save attachment"),
-				QDir::homePath () + '/' + name);
-		if (path.isEmpty ())
-			return;
-
-		const auto& id = sender ()->property ("Snails/MsgId").toByteArray ();
-
-		auto msg = Core::Instance ().GetStorage ()->LoadMessage (CurrAcc_.get (), id);
-		CurrAcc_->FetchAttachment (msg, name, path);
-	}
-
 	void MailTab::handleFetchNewMail ()
 	{
 		Storage *st = Core::Instance ().GetStorage ();

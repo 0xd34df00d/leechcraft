@@ -22,7 +22,6 @@
 #include <QObject>
 #include <QModelIndex>
 #include "message.h"
-#include "progresslistener.h"
 #include "proto/Imap/Model/Logging.h"
 
 class QAuthenticator;
@@ -157,7 +156,6 @@ namespace Snails
 	signals:
 		void mailChanged ();
 		void gotNewMessages (QList<Message_ptr>);
-		void gotProgressListener (ProgressListener_g_ptr);
 		void accountChanged ();
 		void messageBodyFetched (Message_ptr);
 	};

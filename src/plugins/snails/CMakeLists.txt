@@ -42,14 +42,12 @@ SET (SRCS
 	account.cpp
 	accountconfigdialog.cpp
 	message.cpp
-	progresslistener.cpp
 	storage.cpp
 	progressmanager.cpp
 	mailtreedelegate.cpp
 	composemessagetab.cpp
 	accountfoldermanager.cpp
 	attdescr.cpp
-	outputiodevadapter.cpp
 	msgviewfactory.cpp
 	msgviewwidgets.cpp
 	attachmentview.cpp
@@ -64,14 +62,12 @@ SET (HEADERS
 	account.h
 	accountconfigdialog.h
 	message.h
-	progresslistener.h
 	storage.h
 	progressmanager.h
 	mailtreedelegate.h
 	composemessagetab.h
 	accountfoldermanager.h
 	attdescr.h
-	outputiodevadapter.h
 	msgviewfactory.h
 	msgviewwidgets.h
 	attachmentview.h
@@ -103,7 +99,6 @@ TARGET_LINK_LIBRARIES (leechcraft_snails
 	Imap
 	Streams
 	Common
-	vmime
 	)
 INSTALL (TARGETS leechcraft_snails DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES snailssettings.xml DESTINATION ${LC_SETTINGS_DEST})

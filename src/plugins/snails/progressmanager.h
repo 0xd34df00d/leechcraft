@@ -20,7 +20,6 @@
 
 #include <QObject>
 #include <QMap>
-#include "progresslistener.h"
 
 class QAbstractItemModel;
 class QStandardItemModel;
@@ -44,7 +43,6 @@ namespace Snails
 		QAbstractItemModel* GetRepresentation () const;
 		void AddAccount (Account*);
 	private slots:
-		void handlePL (ProgressListener_g_ptr);
 		void handlePLDestroyed (QObject*);
 		void handleProgress (const int, const int);
 	};
