@@ -50,6 +50,10 @@ SET (SRCS
 	accountfoldermanager.cpp
 	attdescr.cpp
 	outputiodevadapter.cpp
+	msgviewfactory.cpp
+	msgviewwidgets.cpp
+	attachmentview.cpp
+	inlinepartwidget.cpp
 	)
 SET (HEADERS
 	snails.h
@@ -68,6 +72,10 @@ SET (HEADERS
 	accountfoldermanager.h
 	attdescr.h
 	outputiodevadapter.h
+	msgviewfactory.h
+	msgviewwidgets.h
+	attachmentview.h
+	inlinepartwidget.h
 	)
 SET (FORMS
 	mailtab.ui

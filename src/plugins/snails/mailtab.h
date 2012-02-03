@@ -83,7 +83,6 @@ namespace Snails
 		void handleReply ();
 		void handleAttachment ();
 		void handleFetchNewMail ();
-		void handleMessageBodyFetched (Message_ptr);
 		void handleGotNewMessages (QList<Message_ptr>);
 		void updateReadStatus (const QByteArray&, bool);
 	signals:

@@ -122,6 +122,8 @@ namespace Snails
 		QAbstractItemModel* GetFoldersModel () const;
 		QAbstractItemModel* GetItemsModel () const;
 
+		QWidget* CreateMessageView (const QModelIndex&) const;
+
 		void Synchronize (FetchFlags);
 		void FetchWholeMessage (Message_ptr);
 		void SendMessage (Message_ptr);

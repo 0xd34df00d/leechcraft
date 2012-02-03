@@ -36,6 +36,7 @@
 #include "accountconfigdialog.h"
 #include "storage.h"
 #include "accountfoldermanager.h"
+#include "msgviewfactory.h"
 
 namespace LeechCraft
 {
@@ -104,6 +105,28 @@ namespace Snails
 	QAbstractItemModel* Account::GetItemsModel () const
 	{
 		return PrettyMsgListModel_;
+	}
+
+	QWidget* Account::CreateMessageView (const QModelIndex& index) const
+	{
+		QModelIndex msgIndex;
+		Imap::Mailbox::Model::realTreeItem (index, 0, &msgIndex);
+
+		if (!msgIndex.isValid ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "invalid index for"
+					<< index;
+			return 0;
+		}
+
+		if (!msgIndex.data (Imap::Mailbox::RoleIsFetched).toBool ())
+			return new QLabel (tr ("This message isn't fetched yet."));
+
+		qDebug () << Q_FUNC_INFO << msgIndex;
+
+		auto rootPartIdx = msgIndex.child (0, 0);
+		return MsgViewFactory ().Create (rootPartIdx);
 	}
 
 	void Account::Synchronize (Account::FetchFlags flags)
