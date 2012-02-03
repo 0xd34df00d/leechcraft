@@ -71,6 +71,7 @@ namespace Azoth
 		void handleActionSendFile ();
 		void handleActionRenameTriggered ();
 		void handleActionChangeGroupsTriggered ();
+		void handleActionSendDirectedStatusTriggered ();
 		void handleActionRemoveTriggered ();
 		void handleActionGrantAuthTriggered ();
 		void handleActionRevokeAuthTriggered ();
