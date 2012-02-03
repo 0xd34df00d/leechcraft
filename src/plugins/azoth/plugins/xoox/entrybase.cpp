@@ -216,6 +216,41 @@ namespace Xoox
 		Account_->GetClientConnection ()->GetClient ()->sendPacket (msg);
 	}
 
+	bool EntryBase::CanSendDirectedStatusNow (const QString& variant)
+	{
+		if (variant.isEmpty ())
+			return true;
+
+		if (GetStatus (variant).State_ != SOffline)
+			return true;
+
+		return false;
+	}
+
+	void EntryBase::SendDirectedStatus (const EntryStatus& state, const QString& variant)
+	{
+		if (!CanSendDirectedStatusNow (variant))
+			return;
+
+		auto conn = Account_->GetClientConnection ();
+
+		QXmppPresence::Type presType = state.State_ == SOffline ?
+				QXmppPresence::Unavailable :
+				QXmppPresence::Available;
+		QXmppPresence pres (presType,
+				QXmppPresence::Status (static_cast<QXmppPresence::Status::Type> (state.State_),
+						state.StatusString_,
+						conn->GetLastState ().Priority_));
+
+		QString to = GetJID ();
+		if (!variant.isEmpty ())
+			to += '/' + variant;
+		pres.setTo (to);
+
+		conn->GetClient ()->addProperCapability (pres);
+		conn->GetClient ()->sendPacket (pres);
+	}
+
 	void EntryBase::HandleMessage (GlooxMessage *msg)
 	{
 		if (msg->GetMessageType () == IMessage::MTChatMessage)

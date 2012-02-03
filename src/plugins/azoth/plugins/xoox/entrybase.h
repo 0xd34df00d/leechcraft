@@ -27,6 +27,7 @@
 #include <QXmppVersionIq.h>
 #include <interfaces/iclentry.h>
 #include <interfaces/iadvancedclentry.h>
+#include <interfaces/ihavedirectedstatus.h>
 #include <interfaces/isupportgeolocation.h>
 
 class QXmppPresence;
@@ -53,9 +54,12 @@ namespace Xoox
 	class EntryBase : public QObject
 					, public ICLEntry
 					, public IAdvancedCLEntry
+					, public IHaveDirectedStatus
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ICLEntry LeechCraft::Azoth::IAdvancedCLEntry)
+		Q_INTERFACES (LeechCraft::Azoth::ICLEntry
+				LeechCraft::Azoth::IAdvancedCLEntry
+				LeechCraft::Azoth::IHaveDirectedStatus)
 	protected:
 		QList<QObject*> AllMessages_;
 		QMap<QString, EntryStatus> CurrentStatus_;
@@ -95,6 +99,10 @@ namespace Xoox
 		// IAdvancedCLEntry
 		AdvancedFeatures GetAdvancedFeatures () const;
 		void DrawAttention (const QString&, const QString&);
+
+		// IHaveDirectedStatus
+		bool CanSendDirectedStatusNow (const QString&);
+		void SendDirectedStatus (const EntryStatus&, const QString&);
 
 		virtual QString GetJID () const = 0;
 
