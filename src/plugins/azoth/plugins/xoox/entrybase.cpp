@@ -104,8 +104,6 @@ namespace Xoox
 		if (!CheckPartFeature (this, variant))
 			return;
 
-		// TODO check if participant supports this XEP.
-		// Need to wait until disco info storage is implemented.
 		QXmppMessage msg;
 		msg.setTo (GetJID () + (variant.isEmpty () ?
 						QString () :
