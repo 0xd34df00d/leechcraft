@@ -184,8 +184,7 @@ namespace LeechCraft
 					ver = ver.split ('-', QString::SkipEmptyParts).at (0);
 					QStringList vers = ver.split ('.', QString::SkipEmptyParts);
 					if (vers.size () != 3)
-						throw std::runtime_error ("Malformed version string "
-								"(could not split it to three parts)");
+						throw std::runtime_error ("Malformed version string " + ver.toStdString ());
 					ver = QString ("%1%2")
 						.arg (vers.at (1).toInt (),
 								2, 10, QChar ('0'))
