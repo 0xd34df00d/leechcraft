@@ -35,10 +35,10 @@
 #include "interfaces/iaccount.h"
 #include "interfaces/itransfermanager.h"
 #include "interfaces/iconfigurablemuc.h"
+#include "interfaces/ihavedirectedstatus.h"
 
 #ifdef ENABLE_CRYPT
 #include "interfaces/isupportpgp.h"
-#include "interfaces/ihavedirectedstatus.h"
 #include "pgpkeyselectiondialog.h"
 #endif
 
