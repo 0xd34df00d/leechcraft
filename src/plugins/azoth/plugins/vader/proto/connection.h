@@ -98,15 +98,20 @@ namespace Proto
 		void CorrectAuth (HalfPacket);
 		void IncorrectAuth (HalfPacket);
 		void ConnParams (HalfPacket);
+
 		void UserInfo (HalfPacket);
 		void UserStatus (HalfPacket);
 		void ContactList (HalfPacket);
+
 		void IncomingMsg (HalfPacket);
 		void MsgStatus (HalfPacket);
+		void SMSAck (HalfPacket);
 		void OfflineMsg (HalfPacket);
 		void MicroblogRecv (HalfPacket);
+
 		void AuthAck (HalfPacket);
 		void ContactAdded (HalfPacket);
+
 		void NewMail (HalfPacket);
 		void MPOPKey (HalfPacket);
 
@@ -136,6 +141,9 @@ namespace Proto
 
 		void gotAttentionRequest (const QString& from, const QString& msg);
 		void messageDelivered (quint32);
+		void smsDelivered (quint32);
+		void smsServiceUnavailable (quint32);
+		void smsBadParms (quint32);
 
 		void statusChanged (EntryStatus);
 		void contactAdded (quint32 seq, quint32 cid);

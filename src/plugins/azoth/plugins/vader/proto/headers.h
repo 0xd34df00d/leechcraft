@@ -39,7 +39,7 @@ namespace Proto
 		quint32 FromPort_;				//< Sender's port
 		unsigned char Reserved_ [16];	//< Reserved
 
-		Header (QByteArray&);
+		explicit Header (QByteArray&);
 		Header (quint32 msgType = 0, quint32 seq = 0);
 		QByteArray Serialize () const;
 	};
@@ -111,6 +111,13 @@ namespace Proto
 		const quint16 RejLimitExceeded = 0x8004;
 		const quint16 RejTooLarge = 0x8005;
 		const quint16 RejDenyOffline = 0x8006;
+	}
+
+	namespace SMSStatus
+	{
+		const int OK = 0x01;
+		const int ServUnavail = 0x02;
+		const int InvalidParams = 0x10000;
 	}
 
 	namespace UserState
