@@ -19,13 +19,15 @@
 #include "mrimbuddy.h"
 #include <functional>
 #include <QImage>
+#include <QAction>
 #include <interfaces/azothutil.h>
 #include "proto/headers.h"
+#include "proto/connection.h"
 #include "mrimaccount.h"
 #include "mrimmessage.h"
 #include "vaderutil.h"
 #include "groupmanager.h"
-#include "proto/connection.h"
+#include "smsdialog.h"
 
 namespace LeechCraft
 {
@@ -38,8 +40,15 @@ namespace Vader
 	, A_ (acc)
 	, Info_ (info)
 	, IsAuthorized_ (true)
+	, SendSMS_ (new QAction (tr ("Send SMS..."), this))
 	{
 		Status_.State_ = VaderUtil::StatusID2State (info.StatusID_);
+
+		SendSMS_->setProperty ("ActionIcon", "phone");
+		connect (SendSMS_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleSendSMS ()));
 	}
 
 	void MRIMBuddy::HandleMessage (MRIMMessage *msg)
@@ -267,7 +276,7 @@ namespace Vader
 
 	QList<QAction*> MRIMBuddy::GetActions () const
 	{
-		return QList<QAction*> ();
+		return QList<QAction*> () << SendSMS_;
 	}
 
 	QMap<QString, QVariant> MRIMBuddy::GetClientInfo (const QString&) const
@@ -287,6 +296,15 @@ namespace Vader
 	void MRIMBuddy::DrawAttention (const QString& text, const QString&)
 	{
 		A_->GetConnection ()->SendAttention (GetHumanReadableID (), text);
+	}
+
+	void MRIMBuddy::handleSendSMS ()
+	{
+		SMSDialog dia;
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		A_->GetConnection ()->SendSMS2Number (dia.GetPhone (), dia.GetText ());
 	}
 }
 }

@@ -45,12 +45,12 @@ namespace Vader
 		QString Group_;
 
 		EntryStatus Status_;
-
 		QList<MRIMMessage*> AllMessages_;
-
 		bool IsAuthorized_;
 
 		QVariantMap ClientInfo_;
+
+		QAction *SendSMS_;
 	public:
 		MRIMBuddy (const Proto::ContactInfo&, MRIMAccount*);
 
@@ -95,6 +95,8 @@ namespace Vader
 		// IAdvancedCLEntry
 		AdvancedFeatures GetAdvancedFeatures () const;
 		void DrawAttention (const QString&, const QString&);
+	private slots:
+		void handleSendSMS ();
 	signals:
 		void gotMessage (QObject*);
 		void statusChanged (const EntryStatus&, const QString&);
