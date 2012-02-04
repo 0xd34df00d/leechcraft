@@ -32,7 +32,7 @@ namespace Laure
 		QAction *actionLoop = new QAction (tr ("Loop"), this);
 		QAction *actionRepeat = new QAction (tr ("Repeat"), this);
 		
-		actionDefault->setProperty ("ActionIcon", "services");
+		actionDefault->setProperty ("ActionIcon", "view-list-details");
 		actionLoop->setProperty ("ActionIcon", "media-playlist-shuffle");
 		actionRepeat->setProperty ("ActionIcon", "media-playlist-repeat");
 
