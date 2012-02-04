@@ -61,6 +61,8 @@ namespace Xoox
 				LeechCraft::Azoth::IAdvancedCLEntry
 				LeechCraft::Azoth::IHaveDirectedStatus)
 	protected:
+		GlooxAccount *Account_;
+
 		QList<QObject*> AllMessages_;
 		QMap<QString, EntryStatus> CurrentStatus_;
 		QList<QAction*> Actions_;
@@ -70,7 +72,6 @@ namespace Xoox
 
 		QImage Avatar_;
 		QString RawInfo_;
-		GlooxAccount *Account_;
 		QXmppVCardIq VCardIq_;
 		QPointer<VCardDialog> VCardDialog_;
 

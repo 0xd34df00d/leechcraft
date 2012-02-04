@@ -57,14 +57,19 @@ namespace Xoox
 {
 	EntryBase::EntryBase (GlooxAccount *parent)
 	: QObject (parent)
-	, Commands_ (0)
 	, Account_ (parent)
+	, Commands_ (new QAction (tr ("Commands..."), Account_))
 	, HasUnreadMsgs_ (false)
 	{
 		connect (this,
 				SIGNAL (locationChanged (const QString&, QObject*)),
 				parent,
 				SIGNAL (geolocationInfoChanged (const QString&, QObject*)));
+
+		connect (Commands_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleCommands ()));
 	}
 
 	EntryBase::~EntryBase ()
@@ -128,17 +133,7 @@ namespace Xoox
 	QList<QAction*> EntryBase::GetActions () const
 	{
 		QList<QAction*> additional;
-
-		if (!Commands_)
-		{
-			Commands_ = new QAction (tr ("Commands..."), Account_);
-			connect (Commands_,
-					SIGNAL (triggered ()),
-					this,
-					SLOT (handleCommands ()));
-		}
 		additional << Commands_;
-
 		return additional + Actions_;
 	}
 
