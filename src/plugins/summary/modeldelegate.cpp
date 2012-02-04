@@ -36,8 +36,8 @@ namespace Summary
 		bool DrawProgress (QPainter *painter,
 				const QStyleOptionViewItem& option, const QModelIndex& index)
 		{
-			const qlonglong done = index.data (ProcessState::Done).toLongLong ();
-			const qlonglong total = index.data (ProcessState::Total).toLongLong ();
+			qlonglong done = index.data (ProcessState::Done).toLongLong ();
+			qlonglong total = index.data (ProcessState::Total).toLongLong ();
 			if (done < 0 || total <= 0)
 				return false;
 
