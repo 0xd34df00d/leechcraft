@@ -103,7 +103,6 @@ namespace Proto
 
 	Packet PacketFactory::SMS (const QString& to, const QString& text)
 	{
-		qDebug () << Q_FUNC_INFO << text;
 		const QByteArray& data = ToMRIM (0, to, ToMRIM16 (text));
 		return HalfPacket { { Packets::SMS, Seq_++ }, data };
 	}
