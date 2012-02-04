@@ -100,6 +100,12 @@ namespace Proto
 		return HalfPacket { Header (Packets::MicroblogPost, Seq_++), data };
 	}
 
+	Packet PacketFactory::SMS (const QString& to, const QString& text)
+	{
+		const QByteArray& data = ToMRIM (0, to, ToMRIM16 (text));
+		return HalfPacket { Header (Packets::SMS, Seq_++), data };
+	}
+
 	Packet PacketFactory::AddGroup (const QString& name, int numGroups)
 	{
 		const QByteArray& data = ToMRIM (static_cast<quint32> (ContactOpFlag::Group | (numGroups << 24)),

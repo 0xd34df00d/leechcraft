@@ -79,6 +79,8 @@ namespace Proto
 
 		void SetState (const EntryStatus&);
 		quint32 SendMessage (const QString& to, const QString& message);
+		quint32 SendSMS (const QString& to, const QString& message);
+		quint32 SendSMS2Number (const QString& phone, const QString& message);
 		void SendAttention (const QString& to, const QString& message);
 		void SetTypingState (const QString& to, bool isTyping);
 		void PublishTune (const QString& tune);

@@ -75,6 +75,8 @@ namespace Proto
 		const int MailboxStatus = 0x1033;
 		const int ContactList2 = 0x1037;
 		const int Login2 = 0x1038;
+		const int SMS = 0x1039;
+		const int SMSAck = 0x1040;
 		const int NewMail = 0x1048;
 		const int MicroblogRecv = 0x1063;
 		const int MicroblogPost = 0x1064;
@@ -89,6 +91,7 @@ namespace Proto
 		RTF = 0x00000080,
 		Contact = 0x00000200,
 		Notify = 0x00000400,
+		SMS = 0x00000800,
 		Multicast = 0x00001000,
 		Alarm = 0x00004000,
 		CP1251 = 0x00200000,
