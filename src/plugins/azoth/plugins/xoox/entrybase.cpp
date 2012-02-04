@@ -59,6 +59,7 @@ namespace Xoox
 	: QObject (parent)
 	, Account_ (parent)
 	, Commands_ (new QAction (tr ("Commands..."), Account_))
+	, DetectNick_ (new QAction (tr ("Detect nick"), Account_))
 	, HasUnreadMsgs_ (false)
 	{
 		connect (this,
@@ -70,6 +71,10 @@ namespace Xoox
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleCommands ()));
+		connect (DetectNick_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleDetectNick ()));
 	}
 
 	EntryBase::~EntryBase ()
@@ -134,6 +139,10 @@ namespace Xoox
 	{
 		QList<QAction*> additional;
 		additional << Commands_;
+
+		if (GetEntryFeatures () & FSupportsRenames)
+			additional << DetectNick_;
+
 		return additional + Actions_;
 	}
 
@@ -162,7 +171,9 @@ namespace Xoox
 		if (!VCardDialog_)
 			VCardDialog_ = new VCardDialog (this);
 
-		Account_->GetClientConnection ()->FetchVCard (GetJID (), VCardDialog_);
+		QPointer<VCardDialog> ptr (VCardDialog_);
+		Account_->GetClientConnection ()->FetchVCard (GetJID (),
+				[ptr] (const QXmppVCardIq& iq) { if (ptr) ptr->UpdateInfo (iq); });
 		VCardDialog_->show ();
 	}
 
@@ -604,6 +615,35 @@ namespace Xoox
 		return text;
 	}
 
+	void EntryBase::SetNickFromVCard (const QXmppVCardIq& vcard)
+	{
+		if (!vcard.nickName ().isEmpty ())
+		{
+			SetEntryName (vcard.nickName ());
+			return;
+		}
+
+		if (!vcard.fullName ().isEmpty ())
+		{
+			SetEntryName (vcard.fullName ());
+			return;
+		}
+
+		const QString& fn = vcard.firstName ();
+		const QString& mn = vcard.middleName ();
+		const QString& ln = vcard.lastName ();
+		QString name = fn;
+		if (!fn.isEmpty ())
+			name += " ";
+		name += mn;
+		if (!mn.isEmpty ())
+			name += " ";
+		name += ln;
+		name = name.trimmed ();
+		if (!name.isEmpty ())
+			SetEntryName (name);
+	}
+
 	void EntryBase::handleCommands ()
 	{
 		QString jid = GetJID ();
@@ -643,6 +683,13 @@ namespace Xoox
 		ExecuteCommandDialog *dia = new ExecuteCommandDialog (jid, Account_);
 		dia->setAttribute (Qt::WA_DeleteOnClose);
 		dia->show ();
+	}
+
+	void EntryBase::handleDetectNick ()
+	{
+		QPointer<EntryBase> ptr (this);
+		Account_->GetClientConnection ()->FetchVCard (GetJID (),
+				[ptr] (const QXmppVCardIq& iq) { if (ptr) ptr->SetNickFromVCard (iq); });
 	}
 }
 }

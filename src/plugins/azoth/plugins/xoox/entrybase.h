@@ -66,7 +66,8 @@ namespace Xoox
 		QList<QObject*> AllMessages_;
 		QMap<QString, EntryStatus> CurrentStatus_;
 		QList<QAction*> Actions_;
-		mutable QAction *Commands_;
+		QAction *Commands_;
+		QAction *DetectNick_;
 
 		QMap<QString, GeolocationInfo_t> Location_;
 
@@ -130,8 +131,10 @@ namespace Xoox
 		QXmppVersionIq GetClientVersion (const QString&) const;
 	private:
 		QString FormatRawInfo (const QXmppVCardIq&);
+		void SetNickFromVCard (const QXmppVCardIq&);
 	private slots:
 		void handleCommands ();
+		void handleDetectNick ();
 	signals:
 		void gotMessage (QObject*);
 		void statusChanged (const EntryStatus&, const QString&);
