@@ -19,6 +19,7 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_VADER_MRIMBUDDY_H
 #define PLUGINS_AZOTH_PLUGINS_VADER_MRIMBUDDY_H
 #include <QObject>
+#include <QSet>
 #include <interfaces/iclentry.h>
 #include <interfaces/iadvancedclentry.h>
 #include "proto/contactinfo.h"
@@ -49,6 +50,8 @@ namespace Vader
 		bool IsAuthorized_;
 
 		QVariantMap ClientInfo_;
+
+		QHash<quint32, QString> SentSMS_;
 
 		QAction *SendSMS_;
 	public:
@@ -97,6 +100,10 @@ namespace Vader
 		void DrawAttention (const QString&, const QString&);
 	private slots:
 		void handleSendSMS ();
+
+		void handleSMSDelivered (quint32);
+		void handleSMSServUnavail (quint32);
+		void handleSMSBadParms (quint32);
 	signals:
 		void gotMessage (QObject*);
 		void statusChanged (const EntryStatus&, const QString&);

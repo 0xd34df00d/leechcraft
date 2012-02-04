@@ -20,6 +20,7 @@
 #include <functional>
 #include <QImage>
 #include <QAction>
+#include <util/util.h>
 #include <interfaces/azothutil.h>
 #include "proto/headers.h"
 #include "proto/connection.h"
@@ -28,6 +29,7 @@
 #include "vaderutil.h"
 #include "groupmanager.h"
 #include "smsdialog.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -304,7 +306,58 @@ namespace Vader
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
-		A_->GetConnection ()->SendSMS2Number (dia.GetPhone (), dia.GetText ());
+		auto conn = A_->GetConnection ();
+		const QString& phone = dia.GetPhone ();
+		SentSMS_ [conn->SendSMS2Number (phone, dia.GetText ())] = phone;
+
+		connect (conn,
+				SIGNAL (smsDelivered (quint32)),
+				this,
+				SLOT (handleSMSDelivered (quint32)),
+				Qt::UniqueConnection);
+		connect (conn,
+				SIGNAL (smsBadParms (quint32)),
+				this,
+				SLOT (handleSMSBadParms (quint32)),
+				Qt::UniqueConnection);
+		connect (conn,
+				SIGNAL (smsServiceUnavailable (quint32)),
+				this,
+				SLOT (handleSMSServUnavail (quint32)),
+				Qt::UniqueConnection);
+	}
+
+	void MRIMBuddy::handleSMSDelivered (quint32 seq)
+	{
+		if (!SentSMS_.contains (seq))
+			return;
+
+		Core::Instance ().SendEntity (LeechCraft::Util::MakeNotification ("Azoth",
+					tr ("SMS has been sent to %1.")
+						.arg (SentSMS_.take (seq)),
+				PInfo_));
+	}
+
+	void MRIMBuddy::handleSMSBadParms (quint32 seq)
+	{
+		if (!SentSMS_.contains (seq))
+			return;
+
+		Core::Instance ().SendEntity (LeechCraft::Util::MakeNotification ("Azoth",
+					tr ("Failed to send SMS to %1: bad parameters.")
+						.arg (SentSMS_.take (seq)),
+				PCritical_));
+	}
+
+	void MRIMBuddy::handleSMSServUnavail (quint32 seq)
+	{
+		if (!SentSMS_.contains (seq))
+			return;
+
+		Core::Instance ().SendEntity (LeechCraft::Util::MakeNotification ("Azoth",
+					tr ("Failed to send SMS to %1: service unavailable.")
+						.arg (SentSMS_.take (seq)),
+				PCritical_));
 	}
 }
 }
