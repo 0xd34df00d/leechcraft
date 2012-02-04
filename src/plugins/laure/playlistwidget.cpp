@@ -74,9 +74,9 @@ namespace Laure
 		auto menuAdd = new PlayListAddMenu (this);
 		auto menuMode = new PlaybackModeMenu (this);
 		
-		actionAdd->setProperty ("ActionIcon", "add");
-		actionRemove->setProperty ("ActionIcon", "remove");
-		actionExport->setProperty ("ActionIcon", "documentsaveas");
+		actionAdd->setProperty ("ActionIcon", "list-add");
+		actionRemove->setProperty ("ActionIcon", "list-remove");
+		actionExport->setProperty ("ActionIcon", "document-save-as");
 		
 		actionAdd->setMenu (menuAdd);
 		actionAdd->setMenuRole (QAction::ApplicationSpecificRole);
