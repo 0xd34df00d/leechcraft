@@ -41,6 +41,12 @@ namespace Summary
 			if (done < 0 || total <= 0)
 				return false;
 
+			while (done > 1000 && total > 1000)
+			{
+				done /= 10;
+				total /= 10;
+			}
+
 			QStyleOptionProgressBarV2 pbo;
 			pbo.rect = option.rect;
 			pbo.minimum = 0;
