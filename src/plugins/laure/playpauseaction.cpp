@@ -59,7 +59,7 @@ namespace Laure
 	
 	void PlayPauseAction::SetIcon ()
 	{
-		setProperty ("ActionIcon", Play_ ? "pause" : "start");
+		setProperty ("ActionIcon", Play_ ? "media-playback-pause" : "media-playback-start");
 	}
 }
 }
