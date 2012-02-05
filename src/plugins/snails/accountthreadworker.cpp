@@ -171,6 +171,7 @@ namespace Snails
 		st->setProperty ("connection.tls.required", A_->TLSRequired_);
 		st->setProperty ("options.sasl", A_->UseSASL_);
 		st->setProperty ("options.sasl.fallback", A_->SASLRequired_);
+		st->setProperty ("server.port", A_->InPort_);
 
 		CachedStore_ = st;
 
@@ -213,6 +214,7 @@ namespace Snails
 			trp->setProperty ("auth.username", username.toUtf8 ().constData ());
 			trp->setProperty ("auth.password", password.toUtf8 ().constData ());
 		}
+		trp->setProperty ("server.port", A_->OutPort_);
 		trp->setCertificateVerifier (vmime::create<CertVerifier> ());
 		trp->setProperty ("connection.tls", A_->UseTLS_);
 		trp->setProperty ("connection.tls.required", A_->TLSRequired_);
