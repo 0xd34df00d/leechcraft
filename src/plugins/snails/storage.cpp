@@ -45,6 +45,8 @@ namespace Snails
 			if (msg->GetID ().isEmpty ())
 				continue;
 
+			AddMsgToFolders (msg, acc);
+
 			const QString dirName = msg->GetID ().toHex ().right (3);
 
 			QDir msgDir = dir;
@@ -232,6 +234,11 @@ namespace Snails
 		}
 
 		return dir;
+	}
+
+	void Storage::AddMsgToFolders (Message_ptr msg, Account *acc)
+	{
+		const QString& indexFile = DirForAccount (acc).filePath ("folders.idx");
 	}
 
 	void Storage::UpdateCaches (Message_ptr msg)

@@ -67,6 +67,7 @@ namespace Snails
 		void gotMsgHeaders (QList<Message_ptr>);
 		void messageBodyFetched (Message_ptr);
 		void gotUpdatedMessages (QList<Message_ptr>);
+		void gotOtherMessages (QList<QByteArray>, QStringList);
 		void gotFolders (QList<QStringList>);
 	};
 }

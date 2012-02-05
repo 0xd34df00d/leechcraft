@@ -16,33 +16,56 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "mailtreedelegate.h"
-#include <QPainter>
-#include "mailtab.h"
-#include "mailmodelmanager.h"
+#pragma once
+
+#include <QObject>
+#include <QHash>
+#include "message.h"
+
+class QAbstractItemModel;
+class QStandardItemModel;
+class QStandardItem;
 
 namespace LeechCraft
 {
 namespace Snails
 {
-	MailTreeDelegate::MailTreeDelegate (QObject *parent)
-	: QStyledItemDelegate (parent)
+	class MailModelManager : public QObject
 	{
-	}
+		Q_OBJECT
 
-	void MailTreeDelegate::paint (QPainter *painter,
-			const QStyleOptionViewItem& item, const QModelIndex& index) const
-	{
-		const bool isRead = index.data (MailModelManager::MailRole::ReadStatus).toBool ();
+		QStandardItemModel *Model_;
+		QHash<QByteArray, QStandardItem*> MailID2Item_;
 
-		if (isRead)
-			QStyledItemDelegate::paint (painter, item, index);
-		else
+		QStringList CurrentFolder_;
+	public:
+		enum MailColumns
 		{
-			QStyleOptionViewItemV4 newItem = item;
-			newItem.font.setBold (true);
-			QStyledItemDelegate::paint (painter, newItem, index);
-		}
-	}
+			From,
+			Subj,
+			Date,
+			Size,
+			Max
+		};
+
+		enum MailRole
+		{
+			ID = Qt::UserRole + 1,
+			Sort,
+			ReadStatus
+		};
+
+		MailModelManager (QObject* = 0);
+
+		QAbstractItemModel* GetModel () const;
+		void UpdateReadStatus (const QByteArray&, bool);
+
+		void SetCurrentFolder (const QStringList&);
+	public slots:
+		void clear ();
+
+		void appendMessages (const QList<Message_ptr>&);
+		void replaceMessages (const QList<Message_ptr>&);
+	};
 }
 }

@@ -65,6 +65,10 @@ namespace Snails
 				A_,
 				SLOT (handleGotUpdatedMessages (QList<Message_ptr>)));
 		connect (W_,
+				SIGNAL (gotOtherMessages (QList<QByteArray>, QStringList)),
+				A_,
+				SLOT (handleGotOtherMessages (QList<QByteArray>, QStringList)));
+		connect (W_,
 				SIGNAL (gotFolders (QList<QStringList>)),
 				A_,
 				SLOT (handleGotFolders (QList<QStringList>)));

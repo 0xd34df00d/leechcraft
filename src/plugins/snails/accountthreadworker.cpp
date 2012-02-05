@@ -435,6 +435,8 @@ namespace Snails
 					return res;
 				});
 
+		QList<QByteArray> ids;
+
 		QList<Message_ptr> updatedMessages;
 		Q_FOREACH (Message_ptr msg, newMessages)
 		{
@@ -464,7 +466,12 @@ namespace Snails
 
 			if (isUpdated)
 				updatedMessages << updated;
+			else
+				ids << msg->GetID ();
 		}
+
+		if (ids.size ())
+			emit gotOtherMessages (ids, folderName);
 
 		emit gotMsgHeaders (newMessages);
 		emit gotUpdatedMessages (updatedMessages);

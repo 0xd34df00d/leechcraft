@@ -23,8 +23,22 @@
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
-      <widget class="QTreeView" name="AccountsTree_"/>
-      <widget class="QTreeView" name="TagsTree_"/>
+      <widget class="QTreeView" name="AccountsTree_">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>1</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+      <widget class="QTreeView" name="TagsTree_">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>3</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
      </widget>
      <widget class="QSplitter" name="splitter">
       <property name="orientation">

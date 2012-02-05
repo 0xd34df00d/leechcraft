@@ -37,6 +37,7 @@ namespace Snails
 	class AccountThread;
 	class AccountThreadWorker;
 	class AccountFolderManager;
+	class MailModelManager;
 
 	class Account : public QObject
 	{
@@ -82,8 +83,6 @@ namespace Snails
 		int OutPort_;
 
 		QString OutLogin_;
-
-		QHash<QByteArray, QStandardItem*> MailID2Item_;
 	public:
 		enum class Direction
 		{
@@ -116,29 +115,13 @@ namespace Snails
 		OutType OutType_;
 
 		AccountFolderManager *FolderManager_;
-
-		QStandardItemModel *MailModel_;
 		QStandardItemModel *FoldersModel_;
+
+		MailModelManager *MailModelMgr_;
 
 		enum FoldersRole
 		{
 			Path = Qt::UserRole + 1
-		};
-
-		enum MailColumns
-		{
-			From,
-			Subj,
-			Date,
-			Size,
-			Max
-		};
-	public:
-		enum MailRole
-		{
-			ID = Qt::UserRole + 1,
-			Sort,
-			ReadStatus
 		};
 	public:
 		Account (QObject* = 0);
@@ -178,16 +161,13 @@ namespace Snails
 		QString BuildOutURL ();
 		QString GetPassImpl (Direction);
 		QByteArray GetStoreID (Direction) const;
-
-		void HandleNewMessages (QList<Message_ptr>);
-
-		void ReinitMailModel ();
 	private slots:
 		void buildInURL (QString*);
 		void buildOutURL (QString*);
 		void getPassword (QString*, Direction = Direction::In);
 		void handleMsgHeaders (QList<Message_ptr>);
 		void handleGotUpdatedMessages (QList<Message_ptr>);
+		void handleGotOtherMessages (QList<QByteArray>, QStringList);
 		void handleGotFolders (QList<QStringList>);
 		void handleMessageBodyFetched (Message_ptr);
 	signals:
