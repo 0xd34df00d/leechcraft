@@ -51,6 +51,7 @@ namespace Snails
 	, APOP_ (false)
 	, APOPFail_ (false)
 	, FolderManager_ (new AccountFolderManager (this))
+	, MailModel_ (new QStandardItemModel (this))
 	, FoldersModel_ (new QStandardItemModel (this))
 	{
 		Thread_->start (QThread::LowPriority);
@@ -94,6 +95,11 @@ namespace Snails
 		return FolderManager_;
 	}
 
+	QAbstractItemModel* Account::GetMailModel () const
+	{
+		return MailModel_;
+	}
+
 	QAbstractItemModel* Account::GetFoldersModel () const
 	{
 		return FoldersModel_;
@@ -101,11 +107,26 @@ namespace Snails
 
 	void Account::Synchronize (Account::FetchFlags flags)
 	{
+		ReinitMailModel ();
 		QMetaObject::invokeMethod (Thread_->GetWorker (),
 				"synchronize",
 				Qt::QueuedConnection,
 				Q_ARG (Account::FetchFlags, flags),
 				Q_ARG (QList<QStringList>, FolderManager_->GetSyncFolders ()));
+	}
+
+	void Account::Synchronize (const QModelIndex& idx)
+	{
+		ReinitMailModel ();
+		const QStringList& path = idx.data (FoldersRole::Path).toStringList ();
+		if (path.isEmpty ())
+			return;
+
+		QMetaObject::invokeMethod (Thread_->GetWorker (),
+				"synchronize",
+				Qt::QueuedConnection,
+				Q_ARG (Account::FetchFlags, FetchFlag::FetchAll),
+				Q_ARG (QList<QStringList>, { path }));
 	}
 
 	void Account::FetchWholeMessage (Message_ptr msg)
@@ -138,6 +159,25 @@ namespace Snails
 				Q_ARG (Message_ptr, msg),
 				Q_ARG (QString, attName),
 				Q_ARG (QString, path));
+	}
+
+	void Account::UpdateReadStatus (const QByteArray& id, bool isRead)
+	{
+		if (!MailID2Item_.contains (id))
+			return;
+
+		QStandardItem *item = MailID2Item_ [id];
+		const QModelIndex& sIdx = item->index ();
+		for (int i = 0; i < MailColumns::Max; ++i)
+		{
+			QStandardItem *other = MailModel_->
+					itemFromIndex (sIdx.sibling (sIdx.row (), i));
+			other->setData (isRead, MailRole::ReadStatus);
+		}
+		QMetaObject::invokeMethod (MailModel_,
+				"dataChanged",
+				Q_ARG (QModelIndex, sIdx.sibling (sIdx.row (), 0)),
+				Q_ARG (QModelIndex, sIdx.sibling (sIdx.row (), MailColumns::Max - 1)));
 	}
 
 	QByteArray Account::Serialize () const
@@ -464,6 +504,56 @@ namespace Snails
 		return result;
 	}
 
+	namespace
+	{
+		QString GetFrom (Message_ptr message)
+		{
+			const QString& fromName = message->GetFrom ();
+			return fromName.isEmpty () ?
+					message->GetFromEmail () :
+					fromName + " <" + message->GetFromEmail () + ">";
+		}
+	}
+
+	void Account::HandleNewMessages (QList<Message_ptr> messages)
+	{
+		Q_FOREACH (Message_ptr message, messages)
+		{
+			if (MailID2Item_.contains (message->GetID ()))
+				MailModel_->removeRow (MailID2Item_ [message->GetID ()]->row ());
+
+			QList<QStandardItem*> row;
+			row << new QStandardItem (GetFrom (message));
+			row << new QStandardItem (message->GetSubject ());
+			row << new QStandardItem (message->GetDate ().toString ());
+			row << new QStandardItem (Util::MakePrettySize (message->GetSize ()));
+			MailModel_->appendRow (row);
+
+			row [MailColumns::From]->setData (row [MailColumns::From]->text (), MailRole::Sort);
+			row [MailColumns::Subj]->setData (row [MailColumns::Subj]->text (), MailRole::Sort);
+			row [MailColumns::Date]->setData (message->GetDate (), MailRole::Sort);
+			row [MailColumns::Size]->setData (message->GetSize (), MailRole::Sort);
+
+			Q_FOREACH (auto item, row)
+				item->setData (message->GetID (), MailRole::ID);
+			MailID2Item_ [message->GetID ()] = row.first ();
+
+			UpdateReadStatus (message->GetID (), message->IsRead ());
+		}
+	}
+
+	void Account::ReinitMailModel ()
+	{
+		MailModel_->clear ();
+
+		QStringList headers;
+		headers << tr ("From")
+				<< tr ("Subject")
+				<< tr ("Date")
+				<< tr ("Size");
+		MailModel_->setHorizontalHeaderLabels (headers);
+	}
+
 	void Account::buildInURL (QString *res)
 	{
 		*res = BuildInURL ();
@@ -514,14 +604,16 @@ namespace Snails
 	{
 		Core::Instance ().GetStorage ()->SaveMessages (this, messages);
 		emit mailChanged ();
-		emit gotNewMessages (messages);
+
+		HandleNewMessages (messages);
 	}
 
 	void Account::handleGotUpdatedMessages (QList<Message_ptr> messages)
 	{
 		Core::Instance ().GetStorage ()->SaveMessages (this, messages);
 		emit mailChanged ();
-		emit gotNewMessages (messages);
+
+		HandleNewMessages (messages);
 	}
 
 	namespace
@@ -548,7 +640,10 @@ namespace Snails
 
 		FoldersModel_->clear ();
 		Q_FOREACH (const QStringList& folder, folders)
-			BuildFolderItem (folder, FoldersModel_->invisibleRootItem ());
+		{
+			auto item = BuildFolderItem (folder, FoldersModel_->invisibleRootItem ());
+			item->setData (folder, FoldersRole::Path);
+		}
 	}
 
 	void Account::handleMessageBodyFetched (Message_ptr msg)

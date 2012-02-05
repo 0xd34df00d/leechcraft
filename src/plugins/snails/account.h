@@ -20,12 +20,15 @@
 
 #include <memory>
 #include <QObject>
+#include <QHash>
 #include "message.h"
 #include "progresslistener.h"
 
 class QMutex;
 class QAbstractItemModel;
 class QStandardItemModel;
+class QStandardItem;
+class QModelIndex;
 
 namespace LeechCraft
 {
@@ -79,6 +82,8 @@ namespace Snails
 		int OutPort_;
 
 		QString OutLogin_;
+
+		QHash<QByteArray, QStandardItem*> MailID2Item_;
 	public:
 		enum class Direction
 		{
@@ -112,7 +117,29 @@ namespace Snails
 
 		AccountFolderManager *FolderManager_;
 
+		QStandardItemModel *MailModel_;
 		QStandardItemModel *FoldersModel_;
+
+		enum FoldersRole
+		{
+			Path = Qt::UserRole + 1
+		};
+
+		enum MailColumns
+		{
+			From,
+			Subj,
+			Date,
+			Size,
+			Max
+		};
+	public:
+		enum MailRole
+		{
+			ID = Qt::UserRole + 1,
+			Sort,
+			ReadStatus
+		};
 	public:
 		Account (QObject* = 0);
 
@@ -122,14 +149,18 @@ namespace Snails
 		QString GetType () const;
 
 		AccountFolderManager* GetFolderManager () const;
+		QAbstractItemModel* GetMailModel () const;
 		QAbstractItemModel* GetFoldersModel () const;
 
 		void Synchronize (FetchFlags);
+		void Synchronize (const QModelIndex&);
+
 		void FetchWholeMessage (Message_ptr);
 		void SendMessage (Message_ptr);
-
 		void FetchAttachment (Message_ptr,
 				const QString&, const QString&);
+
+		void UpdateReadStatus (const QByteArray&, bool);
 
 		QByteArray Serialize () const;
 		void Deserialize (const QByteArray&);
@@ -147,6 +178,10 @@ namespace Snails
 		QString BuildOutURL ();
 		QString GetPassImpl (Direction);
 		QByteArray GetStoreID (Direction) const;
+
+		void HandleNewMessages (QList<Message_ptr>);
+
+		void ReinitMailModel ();
 	private slots:
 		void buildInURL (QString*);
 		void buildOutURL (QString*);
@@ -157,7 +192,6 @@ namespace Snails
 		void handleMessageBodyFetched (Message_ptr);
 	signals:
 		void mailChanged ();
-		void gotNewMessages (QList<Message_ptr>);
 		void gotProgressListener (ProgressListener_g_ptr);
 		void accountChanged ();
 		void messageBodyFetched (Message_ptr);
