@@ -193,6 +193,26 @@ namespace Snails
 		Ui_.InSecurityRequired_->setCheckState (req ? Qt::Checked : Qt::Unchecked);
 	}
 
+	Account::SecurityType AccountConfigDialog::GetOutSecurity () const
+	{
+		return static_cast<Account::SecurityType> (Ui_.OutSecurityType_->currentIndex ());
+	}
+
+	void AccountConfigDialog::SetOutSecurity (Account::SecurityType type)
+	{
+		Ui_.OutSecurityType_->setCurrentIndex (static_cast<int> (type));
+	}
+
+	bool AccountConfigDialog::GetOutSecurityRequired () const
+	{
+		return Ui_.OutSecurityRequired_->checkState () == Qt::Checked;
+	}
+
+	void AccountConfigDialog::SetOutSecurityRequired (bool req)
+	{
+		Ui_.OutSecurityRequired_->setCheckState (req ? Qt::Checked : Qt::Unchecked);
+	}
+
 	bool AccountConfigDialog::GetSMTPAuth () const
 	{
 		return Ui_.SMTPAuthRequired_->checkState () == Qt::Checked;

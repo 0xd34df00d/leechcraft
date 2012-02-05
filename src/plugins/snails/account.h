@@ -51,9 +51,20 @@ namespace Snails
 		bool UseSASL_;
 		bool SASLRequired_;
 
+	public:
+		enum class SecurityType
+		{
+			TLS,
+			SSL,
+			No
+		};
+	private:
 		bool UseTLS_;
 		bool UseSSL_;
 		bool InSecurityRequired_;
+
+		SecurityType OutSecurity_;
+		bool OutSecurityRequired_;
 
 		bool SMTPNeedsAuth_;
 		bool APOP_;
@@ -84,13 +95,6 @@ namespace Snails
 		{
 			SMTP,
 			Sendmail
-		};
-
-		enum class SecurityType
-		{
-			TLS,
-			SSL,
-			No
 		};
 
 		enum FetchFlag

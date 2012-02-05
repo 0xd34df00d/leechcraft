@@ -44,6 +44,8 @@ namespace Snails
 	, UseTLS_ (true)
 	, UseSSL_ (false)
 	, InSecurityRequired_ (false)
+	, OutSecurity_ (SecurityType::SSL)
+	, OutSecurityRequired_ (false)
 	, SMTPNeedsAuth_ (true)
 	, APOP_ (false)
 	, APOPFail_ (false)
@@ -138,7 +140,7 @@ namespace Snails
 		QByteArray result;
 
 		QDataStream out (&result, QIODevice::WriteOnly);
-		out << static_cast<quint8> (4);
+		out << static_cast<quint8> (5);
 		out << ID_
 			<< AccName_
 			<< Login_
@@ -147,6 +149,8 @@ namespace Snails
 			<< UseTLS_
 			<< UseSSL_
 			<< InSecurityRequired_
+			<< static_cast<qint8> (OutSecurity_)
+			<< OutSecurityRequired_
 			<< SMTPNeedsAuth_
 			<< APOP_
 			<< APOPFail_
@@ -170,7 +174,7 @@ namespace Snails
 		quint8 version = 0;
 		in >> version;
 
-		if (version < 1 || version > 4)
+		if (version < 1 || version > 5)
 			throw std::runtime_error (qPrintable ("Unknown version " + QString::number (version)));
 
 		quint8 inType = 0, outType = 0;
@@ -184,13 +188,22 @@ namespace Snails
 				>> SASLRequired_
 				>> UseTLS_;
 
-			if (version == 4)
+			if (version >= 4)
 				in >> UseSSL_;
 			else
 				UseSSL_ = !UseTLS_;
 
-			in >> InSecurityRequired_
-				>> SMTPNeedsAuth_
+			in >> InSecurityRequired_;
+
+			if (version >= 5)
+			{
+				qint8 type = 0;
+				in >> type
+					>> OutSecurityRequired_;
+				OutSecurity_ = static_cast<SecurityType> (type);
+			}
+
+			in >> SMTPNeedsAuth_
 				>> APOP_
 				>> APOPFail_
 				>> InHost_
@@ -238,6 +251,10 @@ namespace Snails
 				dia->SetInSecurity (SecurityType::No);
 
 			dia->SetInSecurityRequired (InSecurityRequired_);
+
+			dia->SetOutSecurity (OutSecurity_);
+			dia->SetOutSecurityRequired (OutSecurityRequired_);
+
 			dia->SetSMTPAuth (SMTPNeedsAuth_);
 			dia->SetAPOP (APOP_);
 			dia->SetAPOPRequired (APOPFail_);
@@ -377,7 +394,7 @@ namespace Snails
 		if (OutType_ == OutType::Sendmail)
 			return "sendmail://localhost";
 
-		QString result = UseTLS_ ? "smtps://" : "smtp://";
+		QString result = OutSecurity_ == SecurityType::SSL ? "smtps://" : "smtp://";
 
 		if (SMTPNeedsAuth_)
 		{

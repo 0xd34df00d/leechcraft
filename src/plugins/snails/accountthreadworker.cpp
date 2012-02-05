@@ -220,10 +220,12 @@ namespace Snails
 		}
 		trp->setProperty ("server.port", A_->OutPort_);
 		trp->setCertificateVerifier (vmime::create<CertVerifier> ());
-		/*
-		trp->setProperty ("connection.tls", A_->UseTLS_);
-		trp->setProperty ("connection.tls.required", A_->TLSRequired_);
-		*/
+
+		if (A_->OutSecurity_ == Account::SecurityType::TLS)
+		{
+			trp->setProperty ("connection.tls", A_->UseTLS_);
+			trp->setProperty ("connection.tls.required", A_->OutSecurityRequired_);
+		}
 		trp->setProperty ("options.sasl", true);
 		trp->setProperty ("options.sasl.fallback", A_->SASLRequired_);
 
