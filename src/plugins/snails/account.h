@@ -24,6 +24,8 @@
 #include "progresslistener.h"
 
 class QMutex;
+class QAbstractItemModel;
+class QStandardItemModel;
 
 namespace LeechCraft
 {
@@ -109,6 +111,8 @@ namespace Snails
 		OutType OutType_;
 
 		AccountFolderManager *FolderManager_;
+
+		QStandardItemModel *FoldersModel_;
 	public:
 		Account (QObject* = 0);
 
@@ -118,6 +122,7 @@ namespace Snails
 		QString GetType () const;
 
 		AccountFolderManager* GetFolderManager () const;
+		QAbstractItemModel* GetFoldersModel () const;
 
 		void Synchronize (FetchFlags);
 		void FetchWholeMessage (Message_ptr);

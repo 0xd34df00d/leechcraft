@@ -22,6 +22,7 @@
 #include <QDataStream>
 #include <QInputDialog>
 #include <QMutex>
+#include <QStandardItemModel>
 #include <util/util.h>
 #include "core.h"
 #include "accountconfigdialog.h"
@@ -50,6 +51,7 @@ namespace Snails
 	, APOP_ (false)
 	, APOPFail_ (false)
 	, FolderManager_ (new AccountFolderManager (this))
+	, FoldersModel_ (new QStandardItemModel (this))
 	{
 		Thread_->start (QThread::LowPriority);
 	}
@@ -90,6 +92,11 @@ namespace Snails
 	AccountFolderManager* Account::GetFolderManager () const
 	{
 		return FolderManager_;
+	}
+
+	QAbstractItemModel* Account::GetFoldersModel () const
+	{
+		return FoldersModel_;
 	}
 
 	void Account::Synchronize (Account::FetchFlags flags)
@@ -517,9 +524,31 @@ namespace Snails
 		emit gotNewMessages (messages);
 	}
 
+	namespace
+	{
+		QStandardItem* BuildFolderItem (QStringList folder, QStandardItem *root)
+		{
+			if (folder.isEmpty ())
+				return root;
+
+			const QString name = folder.takeFirst ();
+			for (int i = 0; i < root->rowCount (); ++i)
+				if (root->child (i)->text () == name)
+					return BuildFolderItem (folder, root->child (i));
+
+			QStandardItem *item = new QStandardItem (name);
+			root->appendRow (item);
+			return BuildFolderItem (folder, item);
+		}
+	}
+
 	void Account::handleGotFolders (QList<QStringList> folders)
 	{
 		FolderManager_->SetFolders (folders);
+
+		FoldersModel_->clear ();
+		Q_FOREACH (const QStringList& folder, folders)
+			BuildFolderItem (folder, FoldersModel_->invisibleRootItem ());
 	}
 
 	void Account::handleMessageBodyFetched (Message_ptr msg)

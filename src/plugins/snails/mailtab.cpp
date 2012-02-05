@@ -141,6 +141,10 @@ namespace Snails
 
 		handleGotNewMessages (Core::Instance ().GetStorage ()->
 					LoadMessages (CurrAcc_.get ()));
+
+		if (Ui_.TagsTree_->selectionModel ())
+			Ui_.TagsTree_->selectionModel ()->deleteLater ();
+		Ui_.TagsTree_->setModel (CurrAcc_->GetFoldersModel ());
 	}
 
 	namespace
