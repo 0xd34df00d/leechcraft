@@ -167,8 +167,11 @@ namespace Snails
 		auto st = Session_->getStore (vmime::utility::url (url.toUtf8 ().constData ()));
 		st->setCertificateVerifier (vmime::create<CertVerifier> ());
 
-		st->setProperty ("connection.tls", A_->UseTLS_);
-		st->setProperty ("connection.tls.required", A_->TLSRequired_);
+		if (A_->UseTLS_)
+		{
+			st->setProperty ("connection.tls", A_->UseTLS_);
+			st->setProperty ("connection.tls.required", A_->InSecurityRequired_);
+		}
 		st->setProperty ("options.sasl", A_->UseSASL_);
 		st->setProperty ("options.sasl.fallback", A_->SASLRequired_);
 		st->setProperty ("server.port", A_->InPort_);
@@ -204,6 +207,7 @@ namespace Snails
 			parsed.setUserName (QString ());
 			parsed.setPassword (QString ());
 			url = QString::fromUtf8 (parsed.toEncoded ());
+			qDebug () << Q_FUNC_INFO << url << username << password;
 		}
 
 		auto trp = Session_->getTransport (vmime::utility::url (url.toUtf8 ().constData ()));
@@ -216,8 +220,10 @@ namespace Snails
 		}
 		trp->setProperty ("server.port", A_->OutPort_);
 		trp->setCertificateVerifier (vmime::create<CertVerifier> ());
+		/*
 		trp->setProperty ("connection.tls", A_->UseTLS_);
 		trp->setProperty ("connection.tls.required", A_->TLSRequired_);
+		*/
 		trp->setProperty ("options.sasl", true);
 		trp->setProperty ("options.sasl.fallback", A_->SASLRequired_);
 
@@ -739,8 +745,21 @@ namespace Snails
 				[&recips] (decltype (tos.front ()) pair) { recips.appendAddress (vmime::create<vmime::mailbox> (FromPair (pair))); });
 		mb.setRecipients (recips);
 
-		mb.getTextPart ()->setCharset (vmime::charsets::UTF_8);
-		mb.getTextPart ()->setText (vmime::create<vmime::stringContentHandler> (msg->GetBody ().toUtf8 ().constData ()));
+		const QString& html = msg->GetHTMLBody ();
+
+		if (html.isEmpty ())
+		{
+			mb.getTextPart ()->setCharset (vmime::charsets::UTF_8);
+			mb.getTextPart ()->setText (vmime::create<vmime::stringContentHandler> (msg->GetBody ().toUtf8 ().constData ()));
+		}
+		else
+		{
+			mb.constructTextPart ({ vmime::mediaTypes::TEXT, vmime::mediaTypes::TEXT_HTML });
+			auto textPart = mb.getTextPart ().dynamicCast<vmime::htmlTextPart> ();
+			textPart->setCharset (vmime::charsets::UTF_8);
+			textPart->setText (vmime::create<vmime::stringContentHandler> (html.toUtf8 ().constData ()));
+			textPart->setPlainText (vmime::create<vmime::stringContentHandler> (msg->GetBody ().toUtf8 ().constData ()));
+		}
 
 		auto vMsg = mb.construct ();
 		const auto& userAgent = QString ("LeechCraft Snails %1")

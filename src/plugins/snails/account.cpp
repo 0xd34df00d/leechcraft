@@ -42,7 +42,8 @@ namespace Snails
 	, UseSASL_ (false)
 	, SASLRequired_ (false)
 	, UseTLS_ (true)
-	, TLSRequired_ (false)
+	, UseSSL_ (false)
+	, InSecurityRequired_ (false)
 	, SMTPNeedsAuth_ (true)
 	, APOP_ (false)
 	, APOPFail_ (false)
@@ -137,14 +138,15 @@ namespace Snails
 		QByteArray result;
 
 		QDataStream out (&result, QIODevice::WriteOnly);
-		out << static_cast<quint8> (3);
+		out << static_cast<quint8> (4);
 		out << ID_
 			<< AccName_
 			<< Login_
 			<< UseSASL_
 			<< SASLRequired_
 			<< UseTLS_
-			<< TLSRequired_
+			<< UseSSL_
+			<< InSecurityRequired_
 			<< SMTPNeedsAuth_
 			<< APOP_
 			<< APOPFail_
@@ -168,7 +170,7 @@ namespace Snails
 		quint8 version = 0;
 		in >> version;
 
-		if (version < 1 || version > 3)
+		if (version < 1 || version > 4)
 			throw std::runtime_error (qPrintable ("Unknown version " + QString::number (version)));
 
 		quint8 inType = 0, outType = 0;
@@ -180,8 +182,14 @@ namespace Snails
 				>> Login_
 				>> UseSASL_
 				>> SASLRequired_
-				>> UseTLS_
-				>> TLSRequired_
+				>> UseTLS_;
+
+			if (version == 4)
+				in >> UseSSL_;
+			else
+				UseSSL_ = !UseTLS_;
+
+			in >> InSecurityRequired_
 				>> SMTPNeedsAuth_
 				>> APOP_
 				>> APOPFail_
@@ -221,8 +229,15 @@ namespace Snails
 			dia->SetLogin (Login_);
 			dia->SetUseSASL (UseSASL_);
 			dia->SetSASLRequired (SASLRequired_);
-			dia->SetUseTLS (UseTLS_);
-			dia->SetTLSRequired (TLSRequired_);
+
+			if (UseSSL_)
+				dia->SetInSecurity (SecurityType::SSL);
+			else if (UseTLS_)
+				dia->SetInSecurity (SecurityType::TLS);
+			else
+				dia->SetInSecurity (SecurityType::No);
+
+			dia->SetInSecurityRequired (InSecurityRequired_);
 			dia->SetSMTPAuth (SMTPNeedsAuth_);
 			dia->SetAPOP (APOP_);
 			dia->SetAPOPRequired (APOPFail_);
@@ -257,8 +272,22 @@ namespace Snails
 			Login_ = dia->GetLogin ();
 			UseSASL_ = dia->GetUseSASL ();
 			SASLRequired_ = dia->GetSASLRequired ();
-			UseTLS_ = dia->GetUseTLS ();
-			TLSRequired_ = dia->GetTLSRequired ();
+
+			UseSSL_ = false;
+			UseTLS_ = false;
+			switch (dia->GetInSecurity ())
+			{
+			case SecurityType::SSL:
+				UseSSL_ = true;
+				break;
+			case SecurityType::TLS:
+				UseTLS_ = true;
+				break;
+			case SecurityType::No:
+				break;
+			}
+
+			InSecurityRequired_ = dia->GetInSecurityRequired ();
 			SMTPNeedsAuth_ = dia->GetSMTPAuth ();
 			APOP_ = dia->GetAPOP ();
 			APOPFail_ = dia->GetAPOPRequired ();
@@ -312,7 +341,7 @@ namespace Snails
 		switch (InType_)
 		{
 		case InType::IMAP:
-			result = UseTLS_ ? "imap://" : "imaps://";
+			result = UseSSL_ ? "imaps://" : "imap://";
 			break;
 		case InType::POP3:
 			result = "pop3://";
@@ -335,10 +364,6 @@ namespace Snails
 		}
 
 		result += InHost_;
-
-		// TODO
-		//if (InType_ != ITMaildir)
-			//result += ":" + QString::number (InPort_);
 
 		qDebug () << Q_FUNC_INFO << result;
 

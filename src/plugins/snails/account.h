@@ -50,8 +50,10 @@ namespace Snails
 		QString Login_;
 		bool UseSASL_;
 		bool SASLRequired_;
+
 		bool UseTLS_;
-		bool TLSRequired_;
+		bool UseSSL_;
+		bool InSecurityRequired_;
 
 		bool SMTPNeedsAuth_;
 		bool APOP_;
@@ -82,6 +84,13 @@ namespace Snails
 		{
 			SMTP,
 			Sendmail
+		};
+
+		enum class SecurityType
+		{
+			TLS,
+			SSL,
+			No
 		};
 
 		enum FetchFlag
