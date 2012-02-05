@@ -18,45 +18,22 @@
 
 #pragma once
 
-#include <QString>
-#include <QMetaType>
-#include <vmime/attachment.hpp>
+#include <vmime/utility/stream.hpp>
+
+class QIODevice;
 
 namespace LeechCraft
 {
 namespace Snails
 {
-	class AttDescr
+	class OutputIODevAdapter : public vmime::utility::outputStream
 	{
-		QString Name_;
-		QString Descr_;
-		qlonglong Size_;
-
-		QByteArray Type_;
-		QByteArray SubType_;
+		QIODevice *Dev_;
 	public:
-		AttDescr ();
-		AttDescr (vmime::ref<const vmime::attachment>);
-		AttDescr (const QString& name, const QString& descr,
-				const QByteArray& type, const QByteArray& subtype,
-				qlonglong size);
+		OutputIODevAdapter (QIODevice*);
 
-		QString GetName () const;
-		QString GetDescr () const;
-		qlonglong GetSize () const;
-
-		QByteArray GetType () const;
-		QByteArray GetSubType () const;
-
-		QByteArray Serialize () const;
-		void Deserialize (const QByteArray&);
-
-		void Dump () const;
+		void write (const value_type* const, const size_type);
+		void flush ();
 	};
-
-	QDataStream& operator<< (QDataStream&, const AttDescr&);
-	QDataStream& operator>> (QDataStream&, AttDescr&);
 }
 }
-
-Q_DECLARE_METATYPE (LeechCraft::Snails::AttDescr);

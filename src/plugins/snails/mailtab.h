@@ -81,7 +81,9 @@ namespace Snails
 		void handleCurrentAccountChanged (const QModelIndex&);
 		void handleMailSelected (const QModelIndex&);
 		void handleReply ();
+		void handleAttachment ();
 		void handleFetchNewMail ();
+		void handleMessageBodyFetched (Message_ptr);
 		void handleGotNewMessages (QList<Message_ptr>);
 		void updateReadStatus (const QByteArray&, bool);
 	signals:

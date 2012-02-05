@@ -21,6 +21,13 @@
 #include <QSettings>
 #include <QCoreApplication>
 #include <QtDebug>
+
+#if Q_WS_WIN
+#include <vmime/platforms/windows/windowsHandler.hpp>
+#else
+#include <vmime/platforms/posix/posixHandler.hpp>
+#endif
+
 #include <util/resourceloader.h>
 #include "message.h"
 #include "storage.h"
@@ -37,6 +44,12 @@ namespace Snails
 	, ProgressManager_ (new ProgressManager (this))
 	, MsgView_ (new Util::ResourceLoader ("snails/msgview"))
 	{
+#if Q_WS_WIN
+		vmime::platform::setHandler<vmime::platforms::windows::windowsHandler> ();
+#else
+		vmime::platform::setHandler<vmime::platforms::posix::posixHandler> ();
+#endif
+
 		MsgView_->AddGlobalPrefix ();
 		MsgView_->AddLocalPrefix ();
 
@@ -46,6 +59,7 @@ namespace Snails
 		qRegisterMetaType<QList<Message_ptr>> ("QList<Message_ptr>");
 		qRegisterMetaType<AttDescr> ("LeechCraft::Snails::AttDescr");
 		qRegisterMetaType<AttDescr> ("AttDescr");
+		qRegisterMetaType<ProgressListener_g_ptr> ("ProgressListener_g_ptr");
 		qRegisterMetaType<Account::FetchFlags> ("Account::FetchFlags");
 		qRegisterMetaType<QList<QStringList>> ("QList<QStringList>");
 

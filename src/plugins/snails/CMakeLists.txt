@@ -16,23 +16,14 @@ IF (NOT QT_USE_FILE)
 ENDIF (NOT QT_USE_FILE)
 
 SET (QT_USE_QTWEBKIT TRUE)
-SET (QT_USE_QTSQL TRUE)
-SET (QT_USE_QTNETWORK TRUE)
 
 INCLUDE (${QT_USE_FILE})
-
 INCLUDE_DIRECTORIES (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
-	${CMAKE_CURRENT_SOURCE_DIR}/proto/
 	)
-
-ADD_SUBDIRECTORY (proto/Imap)
-ADD_SUBDIRECTORY (proto/Streams)
-ADD_SUBDIRECTORY (proto/Common)
-
 SET (SRCS
 	snails.cpp
 	core.cpp
@@ -42,16 +33,17 @@ SET (SRCS
 	account.cpp
 	accountconfigdialog.cpp
 	message.cpp
+	accountthread.cpp
+	accountthreadworker.cpp
+	progresslistener.cpp
 	storage.cpp
 	progressmanager.cpp
 	mailtreedelegate.cpp
 	composemessagetab.cpp
 	accountfoldermanager.cpp
 	attdescr.cpp
-	msgviewfactory.cpp
-	msgviewwidgets.cpp
-	attachmentview.cpp
-	inlinepartwidget.cpp
+	vmimeconversions.cpp
+	outputiodevadapter.cpp
 	)
 SET (HEADERS
 	snails.h
@@ -62,16 +54,17 @@ SET (HEADERS
 	account.h
 	accountconfigdialog.h
 	message.h
+	accountthread.h
+	accountthreadworker.h
+	progresslistener.h
 	storage.h
 	progressmanager.h
 	mailtreedelegate.h
 	composemessagetab.h
 	accountfoldermanager.h
 	attdescr.h
-	msgviewfactory.h
-	msgviewwidgets.h
-	attachmentview.h
-	inlinepartwidget.h
+	vmimeconversions.h
+	outputiodevadapter.h
 	)
 SET (FORMS
 	mailtab.ui
@@ -96,9 +89,7 @@ ADD_LIBRARY (leechcraft_snails SHARED
 TARGET_LINK_LIBRARIES (leechcraft_snails
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
-	Imap
-	Streams
-	Common
+	vmime
 	)
 INSTALL (TARGETS leechcraft_snails DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES snailssettings.xml DESTINATION ${LC_SETTINGS_DEST})

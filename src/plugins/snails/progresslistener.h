@@ -18,45 +18,35 @@
 
 #pragma once
 
-#include <QString>
 #include <QMetaType>
-#include <vmime/attachment.hpp>
+#include <QPointer>
+#include <QObject>
+#include <vmime/utility/progressListener.hpp>
 
 namespace LeechCraft
 {
 namespace Snails
 {
-	class AttDescr
+	class ProgressListener : public QObject
+						   , public vmime::utility::progressListener
 	{
-		QString Name_;
-		QString Descr_;
-		qlonglong Size_;
+		Q_OBJECT
 
-		QByteArray Type_;
-		QByteArray SubType_;
+		QString Context_;
 	public:
-		AttDescr ();
-		AttDescr (vmime::ref<const vmime::attachment>);
-		AttDescr (const QString& name, const QString& descr,
-				const QByteArray& type, const QByteArray& subtype,
-				qlonglong size);
+		ProgressListener (const QString&, QObject* = 0);
 
-		QString GetName () const;
-		QString GetDescr () const;
-		qlonglong GetSize () const;
+		QString GetContext () const;
 
-		QByteArray GetType () const;
-		QByteArray GetSubType () const;
-
-		QByteArray Serialize () const;
-		void Deserialize (const QByteArray&);
-
-		void Dump () const;
+		bool cancel () const;
+	signals:
+		void start (const int);
+		void progress (const int, const int);
+		void stop (const int);
 	};
 
-	QDataStream& operator<< (QDataStream&, const AttDescr&);
-	QDataStream& operator>> (QDataStream&, AttDescr&);
+	typedef QPointer<ProgressListener> ProgressListener_g_ptr;
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Snails::AttDescr);
+Q_DECLARE_METATYPE (LeechCraft::Snails::ProgressListener_g_ptr);

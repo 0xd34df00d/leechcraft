@@ -16,47 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QString>
-#include <QMetaType>
-#include <vmime/attachment.hpp>
+#include "vmimeconversions.h"
 
 namespace LeechCraft
 {
 namespace Snails
 {
-	class AttDescr
-	{
-		QString Name_;
-		QString Descr_;
-		qlonglong Size_;
-
-		QByteArray Type_;
-		QByteArray SubType_;
-	public:
-		AttDescr ();
-		AttDescr (vmime::ref<const vmime::attachment>);
-		AttDescr (const QString& name, const QString& descr,
-				const QByteArray& type, const QByteArray& subtype,
-				qlonglong size);
-
-		QString GetName () const;
-		QString GetDescr () const;
-		qlonglong GetSize () const;
-
-		QByteArray GetType () const;
-		QByteArray GetSubType () const;
-
-		QByteArray Serialize () const;
-		void Deserialize (const QByteArray&);
-
-		void Dump () const;
-	};
-
-	QDataStream& operator<< (QDataStream&, const AttDescr&);
-	QDataStream& operator>> (QDataStream&, AttDescr&);
 }
 }
-
-Q_DECLARE_METATYPE (LeechCraft::Snails::AttDescr);
