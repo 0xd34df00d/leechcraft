@@ -171,6 +171,7 @@ namespace Snails
 		message->SetTo (FromUserInput (Ui_.To_->text ()));
 		message->SetSubject (Ui_.Subject_->text ());
 		message->SetBody (MsgEdit_->GetContents (ContentType::PlainText));
+		message->SetHTMLBody (MsgEdit_->GetContents (ContentType::HTML));
 
 		account->SendMessage (message);
 	}
