@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011  Alexander Konovalov
+ * Copyright (C) 2011-2012  Alexander Konovalov
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,8 +21,6 @@
 #include <QDialog>
 #include "ui_newpassworddialog.h"
 
-
-
 namespace LeechCraft
 {
 namespace Plugins
@@ -36,7 +34,7 @@ namespace SecureStorage
 	class NewPasswordDialog: public QDialog
 	{
 		Q_OBJECT
-		
+
 		Ui::NewPasswordDialog Ui_;
 	public:
 		NewPasswordDialog ();

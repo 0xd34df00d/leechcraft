@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011  Alexander Konovalov
+ * Copyright (C) 2011-2012  Alexander Konovalov
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ namespace SecureStorage
 {
 	NewPasswordDialog::NewPasswordDialog ()
 	{
-		Ui_.setupUi(this);
+		Ui_.setupUi (this);
 
 		connect (Ui_.PasswordEdit1_,
 			SIGNAL (textChanged (const QString&)),
@@ -75,7 +75,7 @@ namespace SecureStorage
 	{
 		bool passwordsEqual = Ui_.PasswordEdit1_->text () == Ui_.PasswordEdit2_->text ();
 		Ui_.DifferenceLabel_->setText (passwordsEqual ? "" : tr ("Passwords must be the same"));
-		Ui_.ButtonBox_->button(QDialogButtonBox::Ok)->setEnabled (passwordsEqual);
+		Ui_.ButtonBox_->button (QDialogButtonBox::Ok)->setEnabled (passwordsEqual);
 	}
 
 }

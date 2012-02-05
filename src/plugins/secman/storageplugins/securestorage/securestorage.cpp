@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2011  Alexander Konovalov
+ * Copyright (C) 2011-2012  Alexander Konovalov
  * Copyright (C) 2006-2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
@@ -101,9 +101,9 @@ namespace SecureStorage
 				"securestoragesettings.xml");
 		XmlSettingsDialog_->SetCustomWidget ("SettingsWidget", SettingsWidget_);
 		UpdateActionsStates ();
-		
-		InputPasswordDialog_.reset (new QInputDialog ());
-		NewPasswordDialog_.reset (new NewPasswordDialog ());
+
+		InputPasswordDialog_.reset (new QInputDialog);
+		NewPasswordDialog_.reset (new NewPasswordDialog);
 	}
 
 	void Plugin::SecondInit ()
@@ -258,7 +258,7 @@ namespace SecureStorage
 		// get old password from a settings
 		QString oldPassword = SettingsWidget_->GetOldPassword ();
 		CryptoSystem oldCs (oldPassword);
-		if(!IsPasswordCorrect (oldCs))
+		if (!IsPasswordCorrect (oldCs))
 		{
 			QMessageBox::critical (0, WindowTitle_,
 						tr ("Wrong old master password"),
@@ -312,12 +312,12 @@ namespace SecureStorage
 					connect (InputPasswordDialog_.get (),
 						SIGNAL (accepted ()),
 						&loop,
-						SLOT (quit()),
+						SLOT (quit ()),
 						Qt::QueuedConnection);
 					connect (InputPasswordDialog_.get (),
 						SIGNAL (rejected ()),
 						&loop,
-						SLOT (quit()),
+						SLOT (quit ()),
 						Qt::QueuedConnection);
 					// qDebug () << Q_FUNC_INFO << "Loop start";
 					loop.exec ();
