@@ -36,17 +36,6 @@
 
 namespace
 {
-	class PasswordNotEnteredException : std::exception
-	{
-	public:
-		PasswordNotEnteredException () { }
-
-		const char* what () const throw ()
-		{
-			return "PasswordNotEnteredException";
-		}
-	};
-
 	QByteArray Serialize (const QVariant& variant)
 	{
 		QByteArray result;
@@ -114,6 +103,7 @@ namespace SecureStorage
 		UpdateActionsStates ();
 		
 		InputPasswordDialog_.reset (new QInputDialog ());
+		NewPasswordDialog_.reset (new NewPasswordDialog ());
 	}
 
 	void Plugin::SecondInit ()
@@ -329,7 +319,9 @@ namespace SecureStorage
 						&loop,
 						SLOT (quit()),
 						Qt::QueuedConnection);
+					// qDebug () << Q_FUNC_INFO << "Loop start";
 					loop.exec ();
+					// qDebug () << Q_FUNC_INFO << "Loop exit";
 
 					if (CryptoSystem_)
 						break;
@@ -353,6 +345,7 @@ namespace SecureStorage
 				}
 			}
 		}
+		// qDebug () << Q_FUNC_INFO << "ok";
 		return *CryptoSystem_;
 	}
 
@@ -365,50 +358,35 @@ namespace SecureStorage
 
 	void Plugin::CreateNewPassword ()
 	{
-		QInputDialog dialog;
-		dialog.setWindowTitle (WindowTitle_);
-		dialog.setTextEchoMode (QLineEdit::Password);
-
-		QString password;
-		while (true)
+		if (!NewPasswordDialog_->isVisible ())
 		{
-			// query password
-			dialog.setTextValue ("");
-			dialog.setLabelText (tr ("Creating master password for SecureStorage.\n"
-					"Enter new master password:"));
-			if (dialog.exec () != QInputDialog::Accepted)
-				break; // use empty password
-
-			password = dialog.textValue ();
-
-			// query password again
-			dialog.setTextValue ("");
-			dialog.setLabelText (tr ("Enter the same master password again:"));
-			if (dialog.exec () != QInputDialog::Accepted)
-				break; // use empty password
-
-			QString password2 = dialog.textValue ();
-			if (password == password2)
-				break; // the "right" way
-
-			else if (QMessageBox::question (0,
-						WindowTitle_,
-						tr ("Two passwords that you entered are not equal.\n"
-							"Do you want to try again?"),
-						QMessageBox::Yes | QMessageBox::No,
-						QMessageBox::Yes) != QMessageBox::Yes)
-				throw PasswordNotEnteredException ();
-			// else continue;
+			NewPasswordDialog_->clear ();
+			NewPasswordDialog_->show ();
 		}
+		QEventLoop loop;
+		connect (NewPasswordDialog_.get (),
+			SIGNAL (dialogFinished ()),
+			&loop,
+			SLOT (quit ()),
+			Qt::QueuedConnection);
+		// qDebug () << Q_FUNC_INFO << "Loop start";
+		loop.exec ();
+		// qDebug () << Q_FUNC_INFO << "Loop exit";
 
-		// clear old settings and data
-		Settings_->clear ();
-		Storage_->clear ();
+		QString password = NewPasswordDialog_->GetPassword ();
 
-		// set up new settings
-		UpdatePasswordSettings (password);
-		UpdateActionsStates ();
-	}
+		// check result of recursive calls of this method through loop.exec().
+		if (!IsPasswordSet ())
+		{
+			// clear old settings and data
+			Settings_->clear ();
+			Storage_->clear ();
+
+			// set up new settings
+			UpdatePasswordSettings (password);
+			UpdateActionsStates ();
+		}	
+}
 
 	bool Plugin::IsPasswordSet ()
 	{

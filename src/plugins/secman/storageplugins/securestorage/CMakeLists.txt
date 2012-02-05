@@ -8,6 +8,7 @@ SET (SRCS
 	ciphertextformat.cpp
 	settingswidget.cpp
 	xmlsettingsmanager.cpp
+	newpassworddialog.cpp
 	)
 SET (HEADERS
 	securestorage.h
@@ -15,9 +16,11 @@ SET (HEADERS
 	ciphertextformat.h
 	settingswidget.h
 	xmlsettingsmanager.h
+	newpassworddialog.h
 	)
 SET (FORMS
 	settingswidget.ui
+	newpassworddialog.ui
 	)
 QT4_WRAP_UI (UIS_H ${FORMS})
 IF (NOT LC_NO_MOC)

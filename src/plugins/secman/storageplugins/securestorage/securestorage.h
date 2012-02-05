@@ -29,6 +29,7 @@
 #include <interfaces/ihavesettings.h>
 #include "cryptosystem.h"
 #include "settingswidget.h"
+#include "newpassworddialog.h"
 
 class QSettings;
 
@@ -64,6 +65,7 @@ namespace SecureStorage
 		QAction *ForgetKeyAction_;
 		
 		boost::shared_ptr<QInputDialog> InputPasswordDialog_;
+		boost::shared_ptr<NewPasswordDialog> NewPasswordDialog_;
 	public:
 		Plugin ();
 		void Init (ICoreProxy_ptr);
@@ -103,6 +105,18 @@ namespace SecureStorage
 	signals:
 		void gotActions (QList<QAction*>, ActionsEmbedPlace);
 	};
+	
+	class PasswordNotEnteredException : std::exception
+	{
+	public:
+		PasswordNotEnteredException () { }
+
+		const char* what () const throw ()
+		{
+			return "PasswordNotEnteredException";
+		}
+	};
+
 }
 }
 }
