@@ -373,7 +373,7 @@ namespace Snails
 			result += '@';
 		}
 
-		result += OutHost_ + ":" + QString::number (OutPort_);
+		result += OutHost_;
 
 		qDebug () << Q_FUNC_INFO << result;
 
