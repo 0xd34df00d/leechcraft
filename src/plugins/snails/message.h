@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SNAILS_MESSAGE_H
-#define PLUGINS_SNAILS_MESSAGE_H
+#pragma once
+
 #include <memory>
 #include <QObject>
 #include <QDateTime>
@@ -110,5 +110,3 @@ namespace Snails
 
 Q_DECLARE_METATYPE (LeechCraft::Snails::Message_ptr);
 Q_DECLARE_METATYPE (QList<LeechCraft::Snails::Message_ptr>);
-
-#endif

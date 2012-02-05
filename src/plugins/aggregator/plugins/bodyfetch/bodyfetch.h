@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_PLUGINS_BODYFETCH_BODYFETCH_H
-#define PLUGINS_AGGREGATOR_PLUGINS_BODYFETCH_BODYFETCH_H
+#pragma once
+
 #include <QObject>
 #include <QUrl>
 #include <QDir>
@@ -25,8 +25,6 @@
 #include <interfaces/iplugin2.h>
 #include <interfaces/aggregator/item.h>
 #include <interfaces/core/ihookproxy.h>
-
-class QTranslator;
 
 namespace LeechCraft
 {
@@ -78,5 +76,3 @@ namespace BodyFetch
 }
 }
 }
-
-#endif

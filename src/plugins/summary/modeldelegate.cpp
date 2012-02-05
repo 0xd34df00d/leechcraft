@@ -36,16 +36,23 @@ namespace Summary
 		bool DrawProgress (QPainter *painter,
 				const QStyleOptionViewItem& option, const QModelIndex& index)
 		{
-			const int done = index.data (ProcessState::Done).toLongLong ();
-			const int total = index.data (ProcessState::Total).toLongLong ();
+			qlonglong done = index.data (ProcessState::Done).toLongLong ();
+			qlonglong total = index.data (ProcessState::Total).toLongLong ();
 			if (done < 0 || total <= 0)
 				return false;
+
+			while (done > 1000 && total > 1000)
+			{
+				done /= 10;
+				total /= 10;
+			}
 
 			QStyleOptionProgressBarV2 pbo;
 			pbo.rect = option.rect;
 			pbo.minimum = 0;
 			pbo.maximum = total;
 			pbo.progress = done;
+			pbo.state = option.state;
 			pbo.text = index.data ().toString ();
 			pbo.textVisible = true;
 			QApplication::style ()->drawControl (QStyle::CE_ProgressBar, &pbo, painter);

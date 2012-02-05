@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SNAILS_MAILTAB_H
-#define PLUGINS_SNAILS_MAILTAB_H
+#pragma once
+
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
 #include "ui_mailtab.h"
@@ -81,9 +81,7 @@ namespace Snails
 		void handleCurrentAccountChanged (const QModelIndex&);
 		void handleMailSelected (const QModelIndex&);
 		void handleReply ();
-		void handleAttachment ();
 		void handleFetchNewMail ();
-		void handleMessageBodyFetched (Message_ptr);
 		void handleGotNewMessages (QList<Message_ptr>);
 		void updateReadStatus (const QByteArray&, bool);
 	signals:
@@ -91,5 +89,3 @@ namespace Snails
 	};
 }
 }
-
-#endif

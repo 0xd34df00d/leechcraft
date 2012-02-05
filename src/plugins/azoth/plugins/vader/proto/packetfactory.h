@@ -45,10 +45,13 @@ namespace Proto
 		Packet Login (const QString& login, const QString& pass,
 				quint32 state, const QString& status, const QString& ua);
 		Packet SetStatus (quint32 state, const QString& status);
+
 		Packet Message (MsgFlags flags, const QString& to, const QString& msg);
 		Packet MessageAck (const QString& from, quint32 msgId);
 		Packet OfflineMessageAck (const UIDL& id);
 		Packet Microblog (BlogStatus st, const QString& text);
+		Packet SMS (const QString& to, const QString& text);
+
 		Packet AddGroup (const QString& name, int numGroups);
 		Packet AddContact (ContactOpFlags flags, quint32 group,
 				const QString& email, const QString& name);
@@ -56,6 +59,7 @@ namespace Proto
 				quint32 group, const QString& email, const QString& name);
 		Packet RemoveContact (quint32 id,
 				const QString& email, const QString& name);
+
 		Packet Authorize (const QString&);
 		Packet RequestKey ();
 	};

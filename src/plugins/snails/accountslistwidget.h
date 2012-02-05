@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SNAILS_ACCOUNTSLISTWIDGET_H
-#define PLUGINS_SNAILS_ACCOUNTSLISTWIDGET_H
+#pragma once
+
 #include <QWidget>
 #include "ui_accountslistwidget.h"
 
@@ -39,5 +39,3 @@ namespace Snails
 	};
 }
 }
-
-#endif

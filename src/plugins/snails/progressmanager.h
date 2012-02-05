@@ -16,11 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SNAILS_PROGRESSMANAGER_H
-#define PLUGINS_SNAILS_PROGRESSMANAGER_H
+#pragma once
+
 #include <QObject>
 #include <QMap>
-#include "progresslistener.h"
 
 class QAbstractItemModel;
 class QStandardItemModel;
@@ -44,11 +43,8 @@ namespace Snails
 		QAbstractItemModel* GetRepresentation () const;
 		void AddAccount (Account*);
 	private slots:
-		void handlePL (ProgressListener_g_ptr);
 		void handlePLDestroyed (QObject*);
 		void handleProgress (const int, const int);
 	};
 }
 }
-
-#endif

@@ -12,7 +12,7 @@ IF (MSVC)
 	SET (CMAKE_CXX_FLAGS "/EHa /W3")
 	SET (CMAKE_CXX_FLAGS_RELEASE "/Ob2 /O2 /Ot /Oi /Oy /GT /GL /MD /D NDEBUG")
 	SET (CMAKE_CXX_FLAGS_DEBUG "/Zi /Od /GT /MDd")
-	
+
 	SET (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
 	INCLUDE (LibHelperWin32Macros)
 ENDIF (MSVC)
@@ -136,15 +136,16 @@ OPTION (ENABLE_SNAILS "Build Snails, LeechCraft mail client" OFF)
 OPTION (ENABLE_SYNCER "Build Syncer, the synchronization plugin for LeechCraft" OFF)
 OPTION (ENABLE_TABSESSMANAGER "Build Tab Session Manager" OFF)
 OPTION (ENABLE_TABSLIST "Quick overview of tabs" OFF)
-OPTION (ENABLE_VFSCORE "Build VFS core" OFF)
 OPTION (ENABLE_LASTFMSCROBBLE "Build Last.fm scrobbler" OFF)
+OPTION (ENABLE_LHTR "Build LeechCraft HTML Text editoR" OFF)
 
 # Defunct
-OPTION (ENABLE_FTP "Build LCFTP, the FTP client" ON)
+OPTION (ENABLE_FTP "Build LCFTP, the FTP client" OFF)
 OPTION (ENABLE_JUFFED "Build JuffEd, the advanced text editor" OFF)
 OPTION (ENABLE_OTZERKALU "Build Otzerkalu, which allows one to download web sites recursively" OFF)
 OPTION (ENABLE_LAURE "Build Laure, the new generation audio/video player" OFF)
 OPTION (ENABLE_TRANSPARENTARCH "Build TransparentArch, the plugin for transparent access to archives in various formats" OFF)
+OPTION (ENABLE_VFSCORE "Build VFS core" OFF)
 
 ENABLE_TESTING ()
 
@@ -358,6 +359,10 @@ IF (ENABLE_LASTFMSCROBBLE)
 	ADD_SUBDIRECTORY (plugins/lastfmscrobble)
 ENDIF (ENABLE_LASTFMSCROBBLE)
 
+IF (ENABLE_LHTR)
+	ADD_SUBDIRECTORY (plugins/lhtr)
+ENDIF (ENABLE_LHTR)
+
 SET (QT_USE_QTNETWORK TRUE)
 SET (QT_USE_QTXML TRUE)
 SET (QT_USE_QTSQL TRUE)
@@ -413,6 +418,7 @@ SET (SRCS
 	mwproxy.cpp
 	winwarndialog.cpp
 	coreplugin2manager.cpp
+	dockmanager.cpp
 	)
 SET (HEADERS
 	mainwindow.h
@@ -457,6 +463,7 @@ SET (HEADERS
 	mwproxy.h
 	winwarndialog.h
 	coreplugin2manager.h
+	dockmanager.h
 	3dparty/qxttooltip.h
 	3dparty/qxttooltip_p.h
 	interfaces/structures.h

@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SNAILS_XMLSETTINGSMANAGER_H
-#define PLUGINS_SNAILS_XMLSETTINGSMANAGER_H
+#pragma once
+
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
@@ -36,6 +36,3 @@ namespace Snails
 	};
 }
 }
-
-#endif
-

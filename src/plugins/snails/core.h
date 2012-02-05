@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_SNAILS_CORE_H
-#define PLUGINS_SNAILS_CORE_H
+#pragma once
+
 #include <QObject>
 #include <interfaces/structures.h>
 #include <interfaces/core/icoreproxy.h>
@@ -84,5 +84,3 @@ namespace Snails
 	};
 }
 }
-
-#endif

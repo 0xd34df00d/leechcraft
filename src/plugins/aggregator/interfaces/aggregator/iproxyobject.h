@@ -19,6 +19,7 @@
 #ifndef PLUGINS_AGGREGATOR_INTERFACES_AGGREGATOR_IPROXYOBJECT_H
 #define PLUGINS_AGGREGATOR_INTERFACES_AGGREGATOR_IPROXYOBJECT_H
 #include <boost/shared_ptr.hpp>
+#include "common.h"
 
 namespace LeechCraft
 {
@@ -40,6 +41,10 @@ namespace Aggregator
 		virtual void AddFeed (Feed_ptr) = 0;
 		virtual void AddChannel (Channel_ptr) = 0;
 		virtual void AddItem (Item_ptr) = 0;
+
+		virtual QList<Channel_ptr> GetAllChannels () const = 0;
+		virtual int CountUnreadItems (IDType_t) const = 0;
+		virtual QList<Item_ptr> GetChannelItems (IDType_t) const = 0;
 	};
 
 	typedef boost::shared_ptr<IProxyObject> IProxyObject_ptr;

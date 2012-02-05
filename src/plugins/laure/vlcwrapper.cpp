@@ -52,6 +52,19 @@ namespace Laure
 		}
 	}
 	
+	QVariantMap MediaMeta::ToVariantMap () const
+	{
+		QVariantMap map;
+		map ["Artist"] = Artist_;	
+		map ["Album"] = Album_;
+		map ["Title"] = Title_;
+		map ["Genre"] = Genre_;
+		map ["Date"] = Date_;
+		map ["TrackNumber"] = TrackNumber_;
+		map ["Length"] = Length_;
+		return map;
+	}
+	
 	VLCWrapper::VLCWrapper (QObject* parent)
 	: QObject (parent)
 	, CurrentItem_ (-1)
@@ -91,7 +104,6 @@ namespace Laure
 	
 	void VLCWrapper::handledHasPlayed ()
 	{
-		emit trackFinished ();
 	}
 	
 	MediaMeta VLCWrapper::GetItemMeta (int row, const QString& location) const
@@ -236,7 +248,11 @@ namespace Laure
 		MediaMeta meta = GetItemMeta (CurrentItem_);
 		meta.Length_ = libvlc_media_player_get_length (Player_.get ())
 				/ 1000;
-		emit currentTrackMeta (meta);
+				
+		Entity scrobbleEntity;
+		scrobbleEntity.Additional_ = meta.ToVariantMap ();
+		scrobbleEntity.Mime_ = "x-leechcraft/now-playing-track-info";
+		emit gotEntity (scrobbleEntity);
 	}
 	
 	void VLCWrapper::stop ()

@@ -450,7 +450,9 @@ namespace Vader
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "incoming message from unknown buddy"
-					<< msg.From_;
+					<< msg.From_
+					<< msg.Text_
+					<< msg.DT_;
 			return;
 		}
 

@@ -75,7 +75,7 @@ namespace Liznoo
 		connect (FakeWidget_.get (), 
 				SIGNAL (batteryStateChanged (int)), 
 				this, 
-				SLOT (handleSchemeChanged (QString)));
+				SLOT (handleBatteryStateChanged (int)));
 
 		QTimer::singleShot (0, 
 				this, 

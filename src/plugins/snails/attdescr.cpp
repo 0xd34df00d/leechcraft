@@ -17,8 +17,8 @@
  **********************************************************************/
 
 #include "attdescr.h"
+#include <stdexcept>
 #include <QtDebug>
-#include "vmimeconversions.h"
 
 namespace LeechCraft
 {
@@ -26,15 +26,6 @@ namespace Snails
 {
 	AttDescr::AttDescr ()
 	: Size_ (0)
-	{
-	}
-
-	AttDescr::AttDescr (vmime::utility::ref<const vmime::attachment> att)
-	: Name_ (StringizeCT (att->getName ()))
-	, Descr_ (StringizeCT (att->getDescription ()))
-	, Size_ (att->getData ()->getLength ())
-	, Type_ (att->getType ().getType ().c_str ())
-	, SubType_ (att->getType ().getSubType ().c_str ())
 	{
 	}
 

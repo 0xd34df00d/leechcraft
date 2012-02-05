@@ -17,8 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_LAURE_CORE_H
-#define PLUGINS_LAURE_CORE_H
+#ifndef PLUGINS_LAURE_VLCWRAPPER_H
+#define PLUGINS_LAURE_VLCWRAPPER_H
 
 #include <boost/shared_ptr.hpp>
 #include <QObject>
@@ -36,11 +36,14 @@ namespace Laure
 	typedef boost::shared_ptr<libvlc_media_list_player_t> libvlc_media_list_player_ptr;
 	typedef boost::shared_ptr<libvlc_media_player_t> libvlc_media_player_ptr;
 	typedef boost::shared_ptr<libvlc_media_t> libvlc_media_ptr;
+	typedef QMap<QString, QVariant> QVariantMap;
 	
 	/** @brief Provides a structure for storing media meta info
 	 */
 	struct MediaMeta
 	{
+		QVariantMap ToVariantMap () const;
+		
 		QString Artist_, Album_, Title_, Genre_, Date_;
 		int TrackNumber_;
 		int Length_;
@@ -219,17 +222,6 @@ namespace Laure
 	private slots:
 		void nowPlaying ();
 	signals:
-		/** @brief Is emitted to notify about the current track
-		 * media meta info.
-		 * 
-		 * @param[out] meta Media meta info.
-		 */
-		void currentTrackMeta (const MediaMeta& meta);
-		
-		/** @brief Is emitted when the track is finished.
-		 */
-		void trackFinished ();
-		
 		/** @brief Is emitted when the item index is played.
 		 *
 		 * @param[out] index Item index.
@@ -253,4 +245,4 @@ namespace Laure
 	};
 }
 }
-#endif // PLUGINS_LAURE_CORE_H
+#endif // PLUGINS_LAURE_VLCWRAPPER_H

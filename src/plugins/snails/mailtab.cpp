@@ -23,6 +23,7 @@
 #include <QSortFilterProxyModel>
 #include <QMenu>
 #include <QFileDialog>
+#include <QLayout>
 #include <util/util.h>
 #include "core.h"
 #include "storage.h"
@@ -58,10 +59,6 @@ namespace Snails
 				SIGNAL (currentChanged (QModelIndex, QModelIndex)),
 				this,
 				SLOT (handleCurrentAccountChanged (QModelIndex)));
-		connect (Ui_.MailTree_->selectionModel (),
-				SIGNAL (currentChanged (QModelIndex, QModelIndex)),
-				this,
-				SLOT (handleMailSelected (QModelIndex)));
 
 		QAction *fetch = new QAction (tr ("Fetch new mail"), this);
 		fetch->setProperty ("ActionIcon", "mail-receive");
@@ -114,10 +111,16 @@ namespace Snails
 		MailModel_->clear ();
 		MailID2Item_.clear ();
 		if (CurrAcc_)
+		{
 			disconnect (CurrAcc_.get (),
 					0,
 					this,
 					0);
+			disconnect (Ui_.FoldersTree_,
+					0,
+					CurrAcc_.get (),
+					0);
+		}
 
 		CurrAcc_ = Core::Instance ().GetAccount (idx);
 		if (!CurrAcc_)
@@ -127,10 +130,6 @@ namespace Snails
 				SIGNAL (gotNewMessages (QList<Message_ptr>)),
 				this,
 				SLOT (handleGotNewMessages (QList<Message_ptr>)));
-		connect (CurrAcc_.get (),
-				SIGNAL (messageBodyFetched (Message_ptr)),
-				this,
-				SLOT (handleMessageBodyFetched (Message_ptr)));
 
 		QStringList headers;
 		headers << tr ("From")
@@ -141,6 +140,24 @@ namespace Snails
 
 		handleGotNewMessages (Core::Instance ().GetStorage ()->
 					LoadMessages (CurrAcc_.get ()));
+
+		if (Ui_.FoldersTree_->selectionModel ())
+			Ui_.FoldersTree_->selectionModel ()->deleteLater ();
+		Ui_.FoldersTree_->setModel (CurrAcc_->GetFoldersModel ());
+
+		if (Ui_.MailTree_->selectionModel ())
+			Ui_.MailTree_->selectionModel ()->deleteLater ();
+		Ui_.MailTree_->setModel (CurrAcc_->GetItemsModel ());
+
+		connect (Ui_.FoldersTree_,
+				SIGNAL (clicked (QModelIndex)),
+				CurrAcc_.get (),
+				SLOT (handleFolderActivated (QModelIndex)));
+
+		connect (Ui_.MailTree_->selectionModel (),
+				SIGNAL (currentChanged (QModelIndex, QModelIndex)),
+				this,
+				SLOT (handleMailSelected (QModelIndex)));
 	}
 
 	namespace
@@ -181,94 +198,25 @@ namespace Snails
 
 	void MailTab::handleMailSelected (const QModelIndex& sidx)
 	{
+		auto lay = Ui_.ViewFrame_->layout ();
+		for (int i = lay->count () - 1; i >= 0; --i)
+		{
+			auto item = lay->takeAt (i);
+			if (item->widget ())
+				item->widget ()->deleteLater ();
+			delete item;
+		}
+
 		if (!CurrAcc_)
-		{
-			Ui_.MailView_->setHtml (QString ());
 			return;
-		}
 
-		const QModelIndex& idx = MailSortFilterModel_->mapToSource (sidx);
-		const QByteArray& id = idx.sibling (idx.row (), 0)
-				.data (Roles::ID).toByteArray ();
-
-		Message_ptr msg;
-		try
-		{
-			msg = Core::Instance ().GetStorage ()->
-					LoadMessage (CurrAcc_.get (), id);
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to load message"
-					<< CurrAcc_->GetID ().toHex ()
-					<< id.toHex ()
-					<< e.what ();
-
-			const QString& html = tr ("<h2>Unable to load mail</h2><em>%1</em>").arg (e.what ());
-			Ui_.MailView_->setHtml (html);
-			return;
-		}
-
-		msg->SetRead (true);
-		Core::Instance ().GetStorage ()->SaveMessages (CurrAcc_.get (), { msg });
-		updateReadStatus (msg->GetID (), true);
-
-		if (!msg->IsFullyFetched ())
-			CurrAcc_->FetchWholeMessage (msg);
-
-		QString html = Core::Instance ().GetMsgViewTemplate ();
-		html.replace ("{subject}", msg->GetSubject ());
-		html.replace ("{from}", msg->GetFrom ());
-		html.replace ("{fromEmail}", msg->GetFromEmail ());
-		html.replace ("{to}", HTMLize (msg->GetTo ()));
-		html.replace ("{date}", msg->GetDate ().toString ());
-
-		const QString& htmlBody = msg->IsFullyFetched () ?
-				msg->GetHTMLBody () :
-				"<em>" + tr ("Fetching the message...") + "</em>";
-
-		html.replace ("{body}", htmlBody.isEmpty () ?
-					"<pre>" + Qt::escape (msg->GetBody ()) + "</pre>" :
-					htmlBody);
-
-		Ui_.MailView_->setHtml (html);
-
-		MsgAttachments_->clear ();
-		MsgAttachments_->setEnabled (!msg->GetAttachments ().isEmpty ());
-		Q_FOREACH (const auto& att, msg->GetAttachments ())
-		{
-			const QString& actName = att.GetName () +
-					" (" + Util::MakePrettySize (att.GetSize ()) + ")";
-			QAction *act = MsgAttachments_->addAction (actName,
-					this,
-					SLOT (handleAttachment ()));
-			act->setProperty ("Snails/MsgId", id);
-			act->setProperty ("Snails/AttName", att.GetName ());
-		}
+		auto w = CurrAcc_->CreateMessageView (sidx);
+		if (w)
+			Ui_.ViewFrame_->layout ()->addWidget (w);
 	}
 
 	void MailTab::handleReply ()
 	{
-	}
-
-	void MailTab::handleAttachment ()
-	{
-		if (!CurrAcc_)
-			return;
-
-		const auto& name = sender ()->property ("Snails/AttName").toString ();
-
-		const auto& path = QFileDialog::getSaveFileName (0,
-				tr ("Save attachment"),
-				QDir::homePath () + '/' + name);
-		if (path.isEmpty ())
-			return;
-
-		const auto& id = sender ()->property ("Snails/MsgId").toByteArray ();
-
-		auto msg = Core::Instance ().GetStorage ()->LoadMessage (CurrAcc_.get (), id);
-		CurrAcc_->FetchAttachment (msg, name, path);
 	}
 
 	void MailTab::handleFetchNewMail ()
@@ -276,17 +224,8 @@ namespace Snails
 		Storage *st = Core::Instance ().GetStorage ();
 		Q_FOREACH (auto acc, Core::Instance ().GetAccounts ())
 			acc->Synchronize (st->HasMessagesIn (acc.get ()) ?
-						Account::FetchNew:
+						Account::FetchNew :
 						Account::FetchAll);
-	}
-
-	void MailTab::handleMessageBodyFetched (Message_ptr msg)
-	{
-		const QModelIndex& cur = Ui_.MailTree_->currentIndex ();
-		if (cur.data (Roles::ID).toByteArray () != msg->GetID ())
-			return;
-
-		handleMailSelected (cur);
 	}
 
 	void MailTab::handleGotNewMessages (QList<Message_ptr> messages)
