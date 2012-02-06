@@ -18,29 +18,28 @@
 
 #pragma once
 
-#include <QObject>
-#include <QMap>
-
-class QDockWidget;
+#include <QDialog>
+#include "ui_smsdialog.h"
 
 namespace LeechCraft
 {
-	class MainWindow;
-
-	class DockManager : public QObject
+namespace Azoth
+{
+namespace Vader
+{
+	class SMSDialog : public QDialog
 	{
 		Q_OBJECT
 
-		MainWindow *MW_;
-		QMap<Qt::DockWidgetArea, QList<QDockWidget*>> Area2Widgets_;
+		Ui::SMSDialog Ui_;
 	public:
-		DockManager (MainWindow*, QObject* = 0);
+		SMSDialog (QWidget* = 0);
 
-		void AddDockWidget (QDockWidget*, Qt::DockWidgetArea);
-	private:
-		void UnmanageFrom (QDockWidget*, QWidget*);
-		void ManageInto (QDockWidget*, QWidget*);
+		QString GetPhone () const;
+		QString GetText () const;
 	private slots:
-		void handleDockLocationChanged (Qt::DockWidgetArea);
+		void on_Text__textChanged ();
 	};
+}
+}
 }

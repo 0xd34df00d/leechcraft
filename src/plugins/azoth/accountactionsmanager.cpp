@@ -136,6 +136,8 @@ namespace Azoth
 
 					QAction *act = bmsMenu->addAction (map ["HumanReadableName"].toString ());
 					act->setProperty ("Azoth/BMData", bm);
+					act->setProperty ("Azoth/AccountObject",
+							QVariant::fromValue<QObject*> (accObj));
 					connect (act,
 							SIGNAL (triggered ()),
 							this,

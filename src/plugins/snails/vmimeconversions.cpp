@@ -16,31 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <QMap>
-
-class QDockWidget;
+#include "vmimeconversions.h"
 
 namespace LeechCraft
 {
-	class MainWindow;
-
-	class DockManager : public QObject
-	{
-		Q_OBJECT
-
-		MainWindow *MW_;
-		QMap<Qt::DockWidgetArea, QList<QDockWidget*>> Area2Widgets_;
-	public:
-		DockManager (MainWindow*, QObject* = 0);
-
-		void AddDockWidget (QDockWidget*, Qt::DockWidgetArea);
-	private:
-		void UnmanageFrom (QDockWidget*, QWidget*);
-		void ManageInto (QDockWidget*, QWidget*);
-	private slots:
-		void handleDockLocationChanged (Qt::DockWidgetArea);
-	};
+namespace Snails
+{
+}
 }

@@ -295,10 +295,11 @@ namespace Xoox
 		if (jid.isEmpty ())
 			return;
 
-		VCardDialog *dia = new VCardDialog;
+		QPointer<VCardDialog> dia (new VCardDialog);
 		dia->show ();
 		dia->setAttribute (Qt::WA_DeleteOnClose, true);
-		Account_->GetClientConnection ()->FetchVCard (jid, dia);
+		Account_->GetClientConnection ()->FetchVCard (jid,
+				[dia] (const QXmppVCardIq& iq) { if (dia) dia->UpdateInfo (iq); });
 	}
 
 	void SDSession::AddToRoster (const SDSession::ItemInfo& info)

@@ -34,8 +34,8 @@ namespace Snails
 				SIGNAL (currentIndexChanged (int)),
 				this,
 				SLOT (resetInPort ()));
-		connect (Ui_.UseTLS_,
-				SIGNAL (stateChanged (int)),
+		connect (Ui_.InSecurityType_,
+				SIGNAL (currentIndexChanged (int)),
 				this,
 				SLOT (resetInPort ()));
 	}
@@ -173,24 +173,44 @@ namespace Snails
 		Ui_.SASLRequired_->setCheckState (req ? Qt::Checked : Qt::Unchecked);
 	}
 
-	bool AccountConfigDialog::GetUseTLS () const
+	Account::SecurityType AccountConfigDialog::GetInSecurity () const
 	{
-		return Ui_.UseTLS_->checkState () == Qt::Checked;
+		return static_cast<Account::SecurityType> (Ui_.InSecurityType_->currentIndex ());
 	}
 
-	void AccountConfigDialog::SetUseTLS (bool use)
+	void AccountConfigDialog::SetInSecurity (Account::SecurityType type)
 	{
-		Ui_.UseTLS_->setCheckState (use ? Qt::Checked : Qt::Unchecked);
+		Ui_.InSecurityType_->setCurrentIndex (static_cast<int> (type));
 	}
 
-	bool AccountConfigDialog::GetTLSRequired () const
+	bool AccountConfigDialog::GetInSecurityRequired () const
 	{
-		return Ui_.TLSRequired_->checkState () == Qt::Checked;
+		return Ui_.InSecurityRequired_->checkState () == Qt::Checked;
 	}
 
-	void AccountConfigDialog::SetTLSRequired (bool req)
+	void AccountConfigDialog::SetInSecurityRequired (bool req)
 	{
-		Ui_.TLSRequired_->setCheckState (req ? Qt::Checked : Qt::Unchecked);
+		Ui_.InSecurityRequired_->setCheckState (req ? Qt::Checked : Qt::Unchecked);
+	}
+
+	Account::SecurityType AccountConfigDialog::GetOutSecurity () const
+	{
+		return static_cast<Account::SecurityType> (Ui_.OutSecurityType_->currentIndex ());
+	}
+
+	void AccountConfigDialog::SetOutSecurity (Account::SecurityType type)
+	{
+		Ui_.OutSecurityType_->setCurrentIndex (static_cast<int> (type));
+	}
+
+	bool AccountConfigDialog::GetOutSecurityRequired () const
+	{
+		return Ui_.OutSecurityRequired_->checkState () == Qt::Checked;
+	}
+
+	void AccountConfigDialog::SetOutSecurityRequired (bool req)
+	{
+		Ui_.OutSecurityRequired_->setCheckState (req ? Qt::Checked : Qt::Unchecked);
 	}
 
 	bool AccountConfigDialog::GetSMTPAuth () const
@@ -278,15 +298,17 @@ namespace Snails
 
 	void AccountConfigDialog::resetInPort ()
 	{
-		QMap<Account::InType, QMap<bool, int>> values;
-		values [Account::InType::IMAP] [true] = 993;
-		values [Account::InType::IMAP] [false] = 143;
-		values [Account::InType::POP3] [true] = 995;
-		values [Account::InType::POP3] [false] = 110;
+		QMap<Account::InType, QMap<int, int>> values;
+		values [Account::InType::IMAP] [0] = 465;
+		values [Account::InType::IMAP] [1] = 993;
+		values [Account::InType::IMAP] [2] = 143;
+		values [Account::InType::POP3] [0] = 995;
+		values [Account::InType::POP3] [1] = 110;
+		values [Account::InType::POP3] [2] = 110;
 
 		const Account::InType selected = static_cast<Account::InType> (Ui_.InType_->currentIndex ());
-		const bool tls = Ui_.UseTLS_->checkState () == Qt::Checked;
-		Ui_.InPort_->setValue (values [selected] [tls]);
+		const int pos = Ui_.InSecurityType_->currentIndex ();
+		Ui_.InPort_->setValue (values [selected] [pos]);
 	}
 
 	void AccountConfigDialog::rebuildFoldersToSyncLine ()

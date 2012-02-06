@@ -39,45 +39,47 @@ namespace Proto
 		quint32 FromPort_;				//< Sender's port
 		unsigned char Reserved_ [16];	//< Reserved
 
-		Header (QByteArray&);
+		explicit Header (QByteArray&);
 		Header (quint32 msgType = 0, quint32 seq = 0);
 		QByteArray Serialize () const;
 	};
 
 	namespace Packets
 	{
-		const quint16 Hello = 0x1001;
-		const quint16 HelloAck = 0x1002;
-		const quint16 LoginAck = 0x1004;
-		const quint16 LoginRej = 0x1005;
-		const quint16 Ping = 0x1006;
-		const quint16 Msg = 0x1008;
-		const quint16 MsgAck = 0x1009;
-		const quint16 MsgRecv = 0x1011;
-		const quint16 MsgStatus = 0x1012;
-		const quint16 UserStatus = 0x100F;
-		const quint16 Logout = 0x1013;
-		const quint16 ConnParams = 0x1014;
-		const quint16 UserInfo = 0x1015;
-		const quint16 Contact = 0x1019;
-		const quint16 ContactAck = 0x101A;
-		const quint16 ModifyContact = 0x101B;
-		const quint16 ModifyContactAck = 0x101C;
-		const quint16 OfflineMsgAck = 0x101D;
-		const quint16 DeleteOfflineMsg = 0x101E;
-		const quint16 Authorize = 0x1020;
-		const quint16 AuthorizeAck = 0x1021;
-		const quint16 ChangeStatus = 0x1022;
-		const quint16 GetMPOPSession = 0x1024;
-		const quint16 MPOPSession = 0x1025;
-		const quint16 WPRequest = 0x1029;
-		const quint16 AnketaInfo = 0x1028;
-		const quint16 MailboxStatus = 0x1033;
-		const quint16 ContactList2 = 0x1037;
-		const quint16 Login2 = 0x1038;
-		const quint16 NewMail = 0x1048;
-		const quint16 MicroblogRecv = 0x1063;
-		const quint16 MicroblogPost = 0x1064;
+		const int Hello = 0x1001;
+		const int HelloAck = 0x1002;
+		const int LoginAck = 0x1004;
+		const int LoginRej = 0x1005;
+		const int Ping = 0x1006;
+		const int Msg = 0x1008;
+		const int MsgAck = 0x1009;
+		const int MsgRecv = 0x1011;
+		const int MsgStatus = 0x1012;
+		const int UserStatus = 0x100F;
+		const int Logout = 0x1013;
+		const int ConnParams = 0x1014;
+		const int UserInfo = 0x1015;
+		const int Contact = 0x1019;
+		const int ContactAck = 0x101A;
+		const int ModifyContact = 0x101B;
+		const int ModifyContactAck = 0x101C;
+		const int OfflineMsgAck = 0x101D;
+		const int DeleteOfflineMsg = 0x101E;
+		const int Authorize = 0x1020;
+		const int AuthorizeAck = 0x1021;
+		const int ChangeStatus = 0x1022;
+		const int GetMPOPSession = 0x1024;
+		const int MPOPSession = 0x1025;
+		const int WPRequest = 0x1029;
+		const int AnketaInfo = 0x1028;
+		const int MailboxStatus = 0x1033;
+		const int ContactList2 = 0x1037;
+		const int Login2 = 0x1038;
+		const int SMS = 0x1039;
+		const int SMSAck = 0x1040;
+		const int NewMail = 0x1048;
+		const int MicroblogRecv = 0x1063;
+		const int MicroblogPost = 0x1064;
 	}
 
 	enum MsgFlag
@@ -89,6 +91,7 @@ namespace Proto
 		RTF = 0x00000080,
 		Contact = 0x00000200,
 		Notify = 0x00000400,
+		SMS = 0x00000800,
 		Multicast = 0x00001000,
 		Alarm = 0x00004000,
 		CP1251 = 0x00200000,
@@ -108,6 +111,13 @@ namespace Proto
 		const quint16 RejLimitExceeded = 0x8004;
 		const quint16 RejTooLarge = 0x8005;
 		const quint16 RejDenyOffline = 0x8006;
+	}
+
+	namespace SMSStatus
+	{
+		const int OK = 0x01;
+		const int ServUnavail = 0x02;
+		const int InvalidParams = 0x10000;
 	}
 
 	namespace UserState

@@ -19,28 +19,53 @@
 #pragma once
 
 #include <QObject>
-#include <QMap>
+#include <QHash>
+#include "message.h"
 
-class QDockWidget;
+class QAbstractItemModel;
+class QStandardItemModel;
+class QStandardItem;
 
 namespace LeechCraft
 {
-	class MainWindow;
-
-	class DockManager : public QObject
+namespace Snails
+{
+	class MailModelManager : public QObject
 	{
 		Q_OBJECT
 
-		MainWindow *MW_;
-		QMap<Qt::DockWidgetArea, QList<QDockWidget*>> Area2Widgets_;
-	public:
-		DockManager (MainWindow*, QObject* = 0);
+		QStandardItemModel *Model_;
+		QHash<QByteArray, QStandardItem*> MailID2Item_;
 
-		void AddDockWidget (QDockWidget*, Qt::DockWidgetArea);
-	private:
-		void UnmanageFrom (QDockWidget*, QWidget*);
-		void ManageInto (QDockWidget*, QWidget*);
-	private slots:
-		void handleDockLocationChanged (Qt::DockWidgetArea);
+		QStringList CurrentFolder_;
+	public:
+		enum MailColumns
+		{
+			From,
+			Subj,
+			Date,
+			Size,
+			Max
+		};
+
+		enum MailRole
+		{
+			ID = Qt::UserRole + 1,
+			Sort,
+			ReadStatus
+		};
+
+		MailModelManager (QObject* = 0);
+
+		QAbstractItemModel* GetModel () const;
+		void UpdateReadStatus (const QByteArray&, bool);
+
+		void SetCurrentFolder (const QStringList&);
+	public slots:
+		void clear ();
+
+		void appendMessages (const QList<Message_ptr>&);
+		void replaceMessages (const QList<Message_ptr>&);
 	};
+}
 }

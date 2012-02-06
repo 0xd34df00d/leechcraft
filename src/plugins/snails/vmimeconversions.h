@@ -19,44 +19,51 @@
 #pragma once
 
 #include <QString>
-#include <QMetaType>
-#include <vmime/attachment.hpp>
+#include <QPair>
+#include <vmime/mailbox.hpp>
+#include <vmime/charsetConverter.hpp>
 
 namespace LeechCraft
 {
 namespace Snails
 {
-	class AttDescr
+	template<typename T>
+	QString Stringize (const T& t, const vmime::charset& source)
 	{
-		QString Name_;
-		QString Descr_;
-		qlonglong Size_;
+		vmime::string str;
+		vmime::utility::outputStreamStringAdapter out (str);
+		vmime::utility::charsetFilteredOutputStream fout (source,
+				vmime::charset ("utf-8"), out);
 
-		QByteArray Type_;
-		QByteArray SubType_;
-	public:
-		AttDescr ();
-		AttDescr (vmime::ref<const vmime::attachment>);
-		AttDescr (const QString& name, const QString& descr,
-				const QByteArray& type, const QByteArray& subtype,
-				qlonglong size);
+		t->extract (fout);
+		fout.flush ();
 
-		QString GetName () const;
-		QString GetDescr () const;
-		qlonglong GetSize () const;
+		return QString::fromUtf8 (str.c_str ());
+	}
 
-		QByteArray GetType () const;
-		QByteArray GetSubType () const;
+	template<typename T>
+	QString Stringize (const T& t)
+	{
+		vmime::string str;
+		vmime::utility::outputStreamStringAdapter out (str);
 
-		QByteArray Serialize () const;
-		void Deserialize (const QByteArray&);
+		t->extract (out);
 
-		void Dump () const;
-	};
+		return QString::fromUtf8 (str.c_str ());
+	}
 
-	QDataStream& operator<< (QDataStream&, const AttDescr&);
-	QDataStream& operator>> (QDataStream&, AttDescr&);
+	template<typename T>
+	QString StringizeCT (const T& w)
+	{
+		return QString::fromUtf8 (w.getConvertedText (vmime::charsets::UTF_8).c_str ());
+	}
+
+	inline QPair<QString, QString> Mailbox2Strings (const vmime::ref<const vmime::mailbox>& mbox)
+	{
+		return {
+					StringizeCT (mbox->getName ()),
+					QString::fromUtf8 (mbox->getEmail ().c_str ())
+				};
+	}
 }
 }
-
-Q_DECLARE_METATYPE (LeechCraft::Snails::AttDescr);

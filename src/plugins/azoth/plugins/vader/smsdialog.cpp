@@ -16,33 +16,62 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#include "mailtreedelegate.h"
-#include <QPainter>
-#include "mailtab.h"
-#include "mailmodelmanager.h"
+#include "smsdialog.h"
 
 namespace LeechCraft
 {
-namespace Snails
+namespace Azoth
 {
-	MailTreeDelegate::MailTreeDelegate (QObject *parent)
-	: QStyledItemDelegate (parent)
+namespace Vader
+{
+	SMSDialog::SMSDialog (QWidget *parent)
+	: QDialog (parent)
 	{
+		Ui_.setupUi (this);
 	}
 
-	void MailTreeDelegate::paint (QPainter *painter,
-			const QStyleOptionViewItem& item, const QModelIndex& index) const
+	QString SMSDialog::GetPhone () const
 	{
-		const bool isRead = index.data (MailModelManager::MailRole::ReadStatus).toBool ();
+		return Ui_.Phone_->text ();
+	}
 
-		if (isRead)
-			QStyledItemDelegate::paint (painter, item, index);
-		else
+	QString SMSDialog::GetText() const
+	{
+		return Ui_.Text_->toPlainText ();
+	}
+
+	void SMSDialog::on_Text__textChanged ()
+	{
+		const auto& text = GetText ();
+		const int size = text.size ();
+
+		bool isAllLatin = true;
+		for (int i = 0; i < size; ++i)
 		{
-			QStyleOptionViewItemV4 newItem = item;
-			newItem.font.setBold (true);
-			QStyledItemDelegate::paint (painter, newItem, index);
+			const QChar& ch = text.at (i);
+			if (!ch.isLetter ())
+				continue;
+
+			char latin = ch.toLatin1 ();
+			if (('a' <= latin && latin <= 'z') ||
+					('A' <= latin && latin <= 'Z'))
+				continue;
+
+			isAllLatin = false;
+			break;
+		}
+
+		const int maxSize = isAllLatin ? 135 : 35;
+		Ui_.Counter_->setText (QString ("%1/%2")
+				.arg (size)
+				.arg (maxSize));
+
+		if (text.size () > maxSize)
+		{
+			Ui_.Text_->setPlainText (text.left (maxSize));
+			Ui_.Text_->moveCursor (QTextCursor::End);
 		}
 	}
+}
 }
 }

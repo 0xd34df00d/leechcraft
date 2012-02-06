@@ -18,29 +18,29 @@
 
 #pragma once
 
-#include <QObject>
-#include <QMap>
-
-class QDockWidget;
+#include <QThread>
 
 namespace LeechCraft
 {
-	class MainWindow;
+namespace Snails
+{
+	class Account;
+	class AccountThreadWorker;
 
-	class DockManager : public QObject
+	class AccountThread : public QThread
 	{
 		Q_OBJECT
 
-		MainWindow *MW_;
-		QMap<Qt::DockWidgetArea, QList<QDockWidget*>> Area2Widgets_;
+		Account *A_;
+		AccountThreadWorker *W_;
 	public:
-		DockManager (MainWindow*, QObject* = 0);
+		AccountThread (Account*);
 
-		void AddDockWidget (QDockWidget*, Qt::DockWidgetArea);
+		AccountThreadWorker* GetWorker () const;
+	protected:
+		void run ();
 	private:
-		void UnmanageFrom (QDockWidget*, QWidget*);
-		void ManageInto (QDockWidget*, QWidget*);
-	private slots:
-		void handleDockLocationChanged (Qt::DockWidgetArea);
+		void ConnectSignals ();
 	};
+}
 }

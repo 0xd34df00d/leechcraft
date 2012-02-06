@@ -48,27 +48,9 @@ namespace Snails
 		TabClassInfo TabClass_;
 		QObject *PMT_;
 
-		QStandardItemModel *MailModel_;
-		QHash<QByteArray, QStandardItem*> MailID2Item_;
 		QSortFilterProxyModel *MailSortFilterModel_;
 		Account_ptr CurrAcc_;
-
-		enum Columns
-		{
-			From,
-			Subj,
-			Date,
-			Size,
-			Max
-		};
 	public:
-		enum Roles
-		{
-			ID = Qt::UserRole + 1,
-			Sort,
-			ReadStatus
-		};
-
 		MailTab (const TabClassInfo&, QObject*, QWidget* = 0);
 
 		TabClassInfo GetTabClassInfo () const;
@@ -79,12 +61,12 @@ namespace Snails
 		void FillMsgToolbar ();
 	private slots:
 		void handleCurrentAccountChanged (const QModelIndex&);
+		void handleCurrentTagChanged (const QModelIndex&);
 		void handleMailSelected (const QModelIndex&);
 		void handleReply ();
 		void handleAttachment ();
 		void handleFetchNewMail ();
 		void handleMessageBodyFetched (Message_ptr);
-		void handleGotNewMessages (QList<Message_ptr>);
 		void updateReadStatus (const QByteArray&, bool);
 	signals:
 		void removeTab (QWidget*);

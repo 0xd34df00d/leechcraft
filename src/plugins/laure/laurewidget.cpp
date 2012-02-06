@@ -136,10 +136,10 @@ namespace Laure
 		DetachedVideo_ = new QAction (tr ("Detached video"), this);
 		
 		actionOpenFile->setProperty ("ActionIcon", "folder");
-		actionOpenURL->setProperty ("ActionIcon", "networkmonitor_plugin");
-		playList->setProperty ("ActionIcon", "itemlist");
-		videoMode->setProperty ("ActionIcon", "video");
-		DetachedVideo_->setProperty ("ActionIcon", "fullscreen");
+		actionOpenURL->setProperty ("ActionIcon", "document-open-remote");
+		playList->setProperty ("ActionIcon", "format-list-unordered");
+		videoMode->setProperty ("ActionIcon", "tool-animator");
+		DetachedVideo_->setProperty ("ActionIcon", "view-fullscreen");
 		
 		playList->setCheckable (true);
 		videoMode->setCheckable (true);
@@ -188,9 +188,9 @@ namespace Laure
 		QAction *actionNext = new QAction (tr ("Next"), Ui_.CommandFrame_);
 		QAction *actionPrev = new QAction (tr ("Previous"), Ui_.CommandFrame_);
 		
-		actionStop->setProperty ("ActionIcon", "media_stop");
-		actionNext->setProperty ("ActionIcon", "media_skip_forward");
-		actionPrev->setProperty ("ActionIcon", "media_skip_backward");
+		actionStop->setProperty ("ActionIcon", "media-playback-stop");
+		actionNext->setProperty ("ActionIcon", "media-skip-forward");
+		actionPrev->setProperty ("ActionIcon", "media-skip-backward");
 		
 		bar->addAction (actionPrev);
 		bar->addAction (actionPlay);

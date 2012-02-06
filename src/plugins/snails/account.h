@@ -20,34 +20,32 @@
 
 #include <memory>
 #include <QObject>
-#include <QModelIndex>
+#include <QHash>
 #include "message.h"
 #include "progresslistener.h"
-#include "proto/Imap/Model/Logging.h"
 
-class QAuthenticator;
+class QMutex;
 class QAbstractItemModel;
-
-namespace Imap
-{
-namespace Mailbox
-{
-	class Model;
-	class PrettyMailboxModel;
-	class MsgListModel;
-	class PrettyMsgListModel;
-}
-}
+class QStandardItemModel;
+class QStandardItem;
+class QModelIndex;
 
 namespace LeechCraft
 {
 namespace Snails
 {
+	class AccountThread;
+	class AccountThreadWorker;
 	class AccountFolderManager;
+	class MailModelManager;
 
 	class Account : public QObject
 	{
 		Q_OBJECT
+
+		friend class AccountThreadWorker;
+		AccountThread *Thread_;
+		QMutex *AccMutex_;
 
 		QByteArray ID_;
 
@@ -58,8 +56,21 @@ namespace Snails
 		QString Login_;
 		bool UseSASL_;
 		bool SASLRequired_;
+
+	public:
+		enum class SecurityType
+		{
+			TLS,
+			SSL,
+			No
+		};
+	private:
 		bool UseTLS_;
-		bool TLSRequired_;
+		bool UseSSL_;
+		bool InSecurityRequired_;
+
+		SecurityType OutSecurity_;
+		bool OutSecurityRequired_;
 
 		bool SMTPNeedsAuth_;
 		bool APOP_;
@@ -104,11 +115,14 @@ namespace Snails
 		OutType OutType_;
 
 		AccountFolderManager *FolderManager_;
+		QStandardItemModel *FoldersModel_;
 
-		Imap::Mailbox::Model *Model_;
-		Imap::Mailbox::PrettyMailboxModel *PrettyMboxModel_;
-		Imap::Mailbox::MsgListModel* MsgListModel_;
-		Imap::Mailbox::PrettyMsgListModel* PrettyMsgListModel_;
+		MailModelManager *MailModelMgr_;
+
+		enum FoldersRole
+		{
+			Path = Qt::UserRole + 1
+		};
 	public:
 		Account (QObject* = 0);
 
@@ -118,16 +132,18 @@ namespace Snails
 		QString GetType () const;
 
 		AccountFolderManager* GetFolderManager () const;
-
+		QAbstractItemModel* GetMailModel () const;
 		QAbstractItemModel* GetFoldersModel () const;
-		QAbstractItemModel* GetItemsModel () const;
 
 		void Synchronize (FetchFlags);
+		void Synchronize (const QModelIndex&);
+
 		void FetchWholeMessage (Message_ptr);
 		void SendMessage (Message_ptr);
-
 		void FetchAttachment (Message_ptr,
 				const QString&, const QString&);
+
+		void UpdateReadStatus (const QByteArray&, bool);
 
 		QByteArray Serialize () const;
 		void Deserialize (const QByteArray&);
@@ -138,23 +154,24 @@ namespace Snails
 
 		QString GetInUsername ();
 		QString GetOutUsername ();
-	public slots:
-		void handleFolderActivated (const QModelIndex&);
 	private:
+		QMutex* GetMutex () const;
+
+		QString BuildInURL ();
+		QString BuildOutURL ();
 		QString GetPassImpl (Direction);
 		QByteArray GetStoreID (Direction) const;
-		void ReinitModel ();
 	private slots:
-		void handleAuthRequested (QAuthenticator*);
-		void handleLogged (uint, Imap::Mailbox::LogMessage);
+		void buildInURL (QString*);
+		void buildOutURL (QString*);
 		void getPassword (QString*, Direction = Direction::In);
 		void handleMsgHeaders (QList<Message_ptr>);
 		void handleGotUpdatedMessages (QList<Message_ptr>);
+		void handleGotOtherMessages (QList<QByteArray>, QStringList);
 		void handleGotFolders (QList<QStringList>);
 		void handleMessageBodyFetched (Message_ptr);
 	signals:
 		void mailChanged ();
-		void gotNewMessages (QList<Message_ptr>);
 		void gotProgressListener (ProgressListener_g_ptr);
 		void accountChanged ();
 		void messageBodyFetched (Message_ptr);

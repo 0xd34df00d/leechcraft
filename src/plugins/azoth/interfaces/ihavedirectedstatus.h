@@ -16,31 +16,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <QMap>
-
-class QDockWidget;
+#ifndef PLUGINS_AZOTH_INTERFACES_IHAVEDIRECTEDSTATUS_H
+#define PLUGINS_AZOTH_INTERFACES_IHAVEDIRECTEDSTATUS_H
+#include <QtPlugin>
+#include "iclentry.h"
 
 namespace LeechCraft
 {
-	class MainWindow;
-
-	class DockManager : public QObject
+namespace Azoth
+{
+	class IHaveDirectedStatus
 	{
-		Q_OBJECT
-
-		MainWindow *MW_;
-		QMap<Qt::DockWidgetArea, QList<QDockWidget*>> Area2Widgets_;
 	public:
-		DockManager (MainWindow*, QObject* = 0);
+		virtual ~IHaveDirectedStatus () {}
 
-		void AddDockWidget (QDockWidget*, Qt::DockWidgetArea);
-	private:
-		void UnmanageFrom (QDockWidget*, QWidget*);
-		void ManageInto (QDockWidget*, QWidget*);
-	private slots:
-		void handleDockLocationChanged (Qt::DockWidgetArea);
+		virtual bool CanSendDirectedStatusNow (const QString&) = 0;
+
+		virtual void SendDirectedStatus (const EntryStatus& status, const QString&) = 0;
 	};
 }
+}
+
+Q_DECLARE_INTERFACE (LeechCraft::Azoth::IHaveDirectedStatus,
+		"org.Deviant.LeechCraft.Azoth.IHaveDirectedStatus/1.0");
+
+#endif

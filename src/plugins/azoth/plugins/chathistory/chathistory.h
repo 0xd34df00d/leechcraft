@@ -101,7 +101,6 @@ namespace ChatHistory
 		void handleHistoryRequested ();
 		void handleEntryHistoryRequested ();
 		void handleEntryEnableHistoryRequested (bool);
-		void handleEntryDestroyed ();
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);

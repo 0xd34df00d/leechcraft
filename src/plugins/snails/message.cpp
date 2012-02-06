@@ -244,5 +244,13 @@ namespace Snails
 			>> HTMLBody_
 			>> Attachments_;
 	}
+
+	QString GetNiceFrom (Message_ptr message)
+	{
+		const QString& fromName = message->GetFrom ();
+		return fromName.isEmpty () ?
+				message->GetFromEmail () :
+				fromName + " <" + message->GetFromEmail () + ">";
+	}
 }
 }

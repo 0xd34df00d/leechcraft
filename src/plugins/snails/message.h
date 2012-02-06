@@ -105,6 +105,8 @@ namespace Snails
 	};
 
 	typedef std::shared_ptr<Message> Message_ptr;
+
+	QString GetNiceFrom (Message_ptr);
 }
 }
 

@@ -27,6 +27,7 @@
 #include "core.h"
 #include "storage.h"
 #include "mailtreedelegate.h"
+#include "mailmodelmanager.h"
 
 namespace LeechCraft
 {
@@ -38,7 +39,6 @@ namespace Snails
 	, MsgToolbar_ (new QToolBar (tr ("Message actions")))
 	, TabClass_ (tc)
 	, PMT_ (pmt)
-	, MailModel_ (new QStandardItemModel (this))
 	, MailSortFilterModel_ (new QSortFilterProxyModel (this))
 	{
 		Ui_.setupUi (this);
@@ -48,8 +48,7 @@ namespace Snails
 		Ui_.AccountsTree_->setModel (Core::Instance ().GetAccountsModel ());
 
 		MailSortFilterModel_->setDynamicSortFilter (true);
-		MailSortFilterModel_->setSortRole (Roles::Sort);
-		MailSortFilterModel_->setSourceModel (MailModel_);
+		MailSortFilterModel_->setSortRole (MailModelManager::MailRole::Sort);
 		MailSortFilterModel_->sort (2, Qt::DescendingOrder);
 		Ui_.MailTree_->setItemDelegate (new MailTreeDelegate (this));
 		Ui_.MailTree_->setModel (MailSortFilterModel_);
@@ -111,67 +110,36 @@ namespace Snails
 
 	void MailTab::handleCurrentAccountChanged (const QModelIndex& idx)
 	{
-		MailModel_->clear ();
-		MailID2Item_.clear ();
 		if (CurrAcc_)
-		{
 			disconnect (CurrAcc_.get (),
 					0,
 					this,
 					0);
-			disconnect (Ui_.FoldersTree_,
-					0,
-					CurrAcc_.get (),
-					0);
-		}
 
 		CurrAcc_ = Core::Instance ().GetAccount (idx);
 		if (!CurrAcc_)
 			return;
 
 		connect (CurrAcc_.get (),
-				SIGNAL (gotNewMessages (QList<Message_ptr>)),
-				this,
-				SLOT (handleGotNewMessages (QList<Message_ptr>)));
-		connect (CurrAcc_.get (),
 				SIGNAL (messageBodyFetched (Message_ptr)),
 				this,
 				SLOT (handleMessageBodyFetched (Message_ptr)));
 
-		QStringList headers;
-		headers << tr ("From")
-				<< tr ("Subject")
-				<< tr ("Date")
-				<< tr ("Size");
-		MailModel_->setHorizontalHeaderLabels (headers);
+		MailSortFilterModel_->setSourceModel (CurrAcc_->GetMailModel ());
+		MailSortFilterModel_->setDynamicSortFilter (true);
 
-		handleGotNewMessages (Core::Instance ().GetStorage ()->
-					LoadMessages (CurrAcc_.get ()));
+		if (Ui_.TagsTree_->selectionModel ())
+			Ui_.TagsTree_->selectionModel ()->deleteLater ();
+		Ui_.TagsTree_->setModel (CurrAcc_->GetFoldersModel ());
 
-		if (Ui_.FoldersTree_->selectionModel ())
-			Ui_.FoldersTree_->selectionModel ()->deleteLater ();
-		Ui_.FoldersTree_->setModel (CurrAcc_->GetFoldersModel ());
-
-		if (Ui_.MailTree_->selectionModel ())
-			Ui_.MailTree_->selectionModel ()->deleteLater ();
-		Ui_.MailTree_->setModel (CurrAcc_->GetItemsModel ());
-
-		connect (Ui_.FoldersTree_,
-				SIGNAL (clicked (QModelIndex)),
-				CurrAcc_.get (),
-				SLOT (handleFolderActivated (QModelIndex)));
+		connect (Ui_.TagsTree_->selectionModel (),
+				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
+				this,
+				SLOT (handleCurrentTagChanged (QModelIndex)));
 	}
 
 	namespace
 	{
-		QString GetFrom (Message_ptr message)
-		{
-			const QString& fromName = message->GetFrom ();
-			return fromName.isEmpty () ?
-					message->GetFromEmail () :
-					fromName + " <" + message->GetFromEmail () + ">";
-		}
-
 		QString HTMLize (const QList<QPair<QString, QString>>& adds)
 		{
 			QStringList result;
@@ -198,6 +166,11 @@ namespace Snails
 		}
 	}
 
+	void MailTab::handleCurrentTagChanged (const QModelIndex& sidx)
+	{
+		CurrAcc_->Synchronize (sidx);
+	}
+
 	void MailTab::handleMailSelected (const QModelIndex& sidx)
 	{
 		if (!CurrAcc_)
@@ -208,7 +181,7 @@ namespace Snails
 
 		const QModelIndex& idx = MailSortFilterModel_->mapToSource (sidx);
 		const QByteArray& id = idx.sibling (idx.row (), 0)
-				.data (Roles::ID).toByteArray ();
+				.data (MailModelManager::MailRole::ID).toByteArray ();
 
 		Message_ptr msg;
 		try
@@ -295,63 +268,22 @@ namespace Snails
 		Storage *st = Core::Instance ().GetStorage ();
 		Q_FOREACH (auto acc, Core::Instance ().GetAccounts ())
 			acc->Synchronize (st->HasMessagesIn (acc.get ()) ?
-						Account::FetchNew :
+						Account::FetchNew:
 						Account::FetchAll);
 	}
 
 	void MailTab::handleMessageBodyFetched (Message_ptr msg)
 	{
 		const QModelIndex& cur = Ui_.MailTree_->currentIndex ();
-		if (cur.data (Roles::ID).toByteArray () != msg->GetID ())
+		if (cur.data (MailModelManager::MailRole::ID).toByteArray () != msg->GetID ())
 			return;
 
 		handleMailSelected (cur);
 	}
 
-	void MailTab::handleGotNewMessages (QList<Message_ptr> messages)
-	{
-		Q_FOREACH (Message_ptr message, messages)
-		{
-			if (MailID2Item_.contains (message->GetID ()))
-				MailModel_->removeRow (MailID2Item_ [message->GetID ()]->row ());
-
-			QList<QStandardItem*> row;
-			row << new QStandardItem (GetFrom (message));
-			row << new QStandardItem (message->GetSubject ());
-			row << new QStandardItem (message->GetDate ().toString ());
-			row << new QStandardItem (Util::MakePrettySize (message->GetSize ()));
-			MailModel_->appendRow (row);
-
-			row [Columns::From]->setData (row [Columns::From]->text (), Roles::Sort);
-			row [Columns::Subj]->setData (row [Columns::Subj]->text (), Roles::Sort);
-			row [Columns::Date]->setData (message->GetDate (), Roles::Sort);
-			row [Columns::Size]->setData (message->GetSize (), Roles::Sort);
-
-			Q_FOREACH (auto item, row)
-				item->setData (message->GetID (), Roles::ID);
-			MailID2Item_ [message->GetID ()] = row.first ();
-
-			updateReadStatus (message->GetID (), message->IsRead ());
-		}
-	}
-
 	void MailTab::updateReadStatus (const QByteArray& id, bool isRead)
 	{
-		if (!MailID2Item_.contains (id))
-			return;
-
-		QStandardItem *item = MailID2Item_ [id];
-		const QModelIndex& sIdx = item->index ();
-		for (int i = 0; i < Columns::Max; ++i)
-		{
-			QStandardItem *other = MailModel_->
-					itemFromIndex (sIdx.sibling (sIdx.row (), i));
-			other->setData (isRead, Roles::ReadStatus);
-		}
-		QMetaObject::invokeMethod (MailModel_,
-				"dataChanged",
-				Q_ARG (QModelIndex, sIdx.sibling (sIdx.row (), 0)),
-				Q_ARG (QModelIndex, sIdx.sibling (sIdx.row (), Columns::Max - 1)));
+		CurrAcc_->UpdateReadStatus (id, isRead);
 	}
 }
 }

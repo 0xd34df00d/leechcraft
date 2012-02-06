@@ -52,6 +52,7 @@ namespace Snails
 	private:
 		QDir DirForAccount (Account*) const;
 
+		void AddMsgToFolders (Message_ptr, Account*);
 		void UpdateCaches (Message_ptr);
 	};
 }

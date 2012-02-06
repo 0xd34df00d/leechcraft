@@ -19,6 +19,7 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_VADER_MRIMBUDDY_H
 #define PLUGINS_AZOTH_PLUGINS_VADER_MRIMBUDDY_H
 #include <QObject>
+#include <QSet>
 #include <interfaces/iclentry.h>
 #include <interfaces/iadvancedclentry.h>
 #include "proto/contactinfo.h"
@@ -45,12 +46,14 @@ namespace Vader
 		QString Group_;
 
 		EntryStatus Status_;
-
 		QList<MRIMMessage*> AllMessages_;
-
 		bool IsAuthorized_;
 
 		QVariantMap ClientInfo_;
+
+		QHash<quint32, QString> SentSMS_;
+
+		QAction *SendSMS_;
 	public:
 		MRIMBuddy (const Proto::ContactInfo&, MRIMAccount*);
 
@@ -95,6 +98,12 @@ namespace Vader
 		// IAdvancedCLEntry
 		AdvancedFeatures GetAdvancedFeatures () const;
 		void DrawAttention (const QString&, const QString&);
+	private slots:
+		void handleSendSMS ();
+
+		void handleSMSDelivered (quint32);
+		void handleSMSServUnavail (quint32);
+		void handleSMSBadParms (quint32);
 	signals:
 		void gotMessage (QObject*);
 		void statusChanged (const EntryStatus&, const QString&);
