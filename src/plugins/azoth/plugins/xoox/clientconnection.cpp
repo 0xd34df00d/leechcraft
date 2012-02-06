@@ -699,8 +699,16 @@ namespace Xoox
 			return RoomHandlers_ [bareJid]->GetParticipantEntry (variant).get ();
 		else if (bareJid == OurBareJID_)
 			return SelfContact_;
-		else
+		else if (JID2CLEntry_.contains (bareJid))
 			return JID2CLEntry_ [bareJid];
+		else
+		{
+			QString trueBare, trueVar;
+			Split (bareJid, &trueBare, &trueVar);
+			if (trueBare != bareJid)
+				return GetCLEntry (trueBare, trueVar);
+			return 0;
+		}
 	}
 
 	GlooxCLEntry* ClientConnection::AddODSCLEntry (OfflineDataSource_ptr ods)
