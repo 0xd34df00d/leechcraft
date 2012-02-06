@@ -212,9 +212,24 @@ namespace LHTR
 		switch (type)
 		{
 		case ContentType::HTML:
-			return GetHTML ();
+		{
+			auto body = Ui_.View_->page ()->mainFrame ()->findFirstElement ("body");
+			QString xml = body.toOuterXml ();
+
+			const int lb = 10;
+			QString init = xml.left (lb);
+			init.replace ("body", "div");
+			xml.replace (0, lb, init);
+
+			QString tail = xml.right (lb);
+			tail.replace ("body", "div");
+			xml.chop (lb);
+			xml.append (tail);
+
+			return xml;
+		}
 		case ContentType::PlainText:
-			return GetPlainText ();
+			return Ui_.View_->page ()->mainFrame ()->toPlainText ();
 		}
 	}
 
@@ -229,16 +244,6 @@ namespace LHTR
 			Ui_.View_->setContent (contents.toUtf8 (), "text/plain");
 			break;
 		}
-	}
-
-	QString RichEditorWidget::GetHTML () const
-	{
-		return Ui_.View_->page ()->mainFrame ()->toHtml ();
-	}
-
-	QString RichEditorWidget::GetPlainText () const
-	{
-		return Ui_.View_->page ()->mainFrame ()->toPlainText ();
 	}
 
 	void RichEditorWidget::ExecCommand (const QString& cmd, const QString& arg)
@@ -263,7 +268,7 @@ namespace LHTR
 		switch (idx)
 		{
 		case 1:
-			Ui_.HTML_->setPlainText (GetHTML ());
+			Ui_.HTML_->setPlainText (Ui_.View_->page ()->mainFrame ()->toHtml ());
 			break;
 		case 0:
 			if (HTMLDirty_)
