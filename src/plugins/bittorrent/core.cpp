@@ -1541,9 +1541,11 @@ namespace LeechCraft
 				std::fill (torrent->FilePriorities_.begin (),
 						torrent->FilePriorities_.end (), 1);
 
-				boost::shared_array<char> metadata = info.metadata ();
-				std::copy (metadata.get (), metadata.get () + info.metadata_size (),
-						std::back_inserter (torrent->TorrentFileContents_));
+				libtorrent::entry infoE = libtorrent::bdecode (info.metadata ().get (),
+						info.metadata ().get () + info.metadata_size ());
+				libtorrent::entry e;
+				e ["info"] = infoE;
+				libtorrent::bencode (std::back_inserter (torrent->TorrentFileContents_), e);
 
 				qDebug () << "HandleMetadata"
 					<< std::distance (Handles_.begin (), torrent)
