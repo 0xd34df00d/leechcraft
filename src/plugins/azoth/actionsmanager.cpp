@@ -684,6 +684,14 @@ namespace Azoth
 		QObject *job = xferMgr->SendFile (entry->GetEntryID (),
 				Core::Instance ().GetChatTabsManager ()->GetActiveVariant (entry),
 				filename);
+		if (!job)
+		{
+			Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
+						tr ("Unable to send file to %1.")
+							.arg (entry->GetEntryName ()),
+						PCritical_));
+			return;
+		}
 		Core::Instance ().GetTransferJobManager ()->HandleJob (job);
 	}
 
