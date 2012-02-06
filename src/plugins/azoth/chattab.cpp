@@ -451,7 +451,8 @@ namespace Azoth
 
 		QObject *job = XferManager_->SendFile (EntryID_,
 				Ui_.VariantBox_->currentText (), filename);
-		Core::Instance ().GetTransferJobManager ()->HandleJob (job);
+		if (job)
+			Core::Instance ().GetTransferJobManager ()->HandleJob (job);
 	}
 
 #ifdef ENABLE_MEDIACALLS

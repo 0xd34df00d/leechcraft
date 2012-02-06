@@ -50,6 +50,8 @@ namespace Xoox
 			QObject *entryObj = Account_->GetClientConnection ()->
 					GetCLEntry (target, QString ());
 			GlooxCLEntry *entry = qobject_cast<GlooxCLEntry*> (entryObj);
+			if (!entry)
+				return 0;
 			var = entry->Variants ().value (0);
 		}
 		target += '/' + var;
