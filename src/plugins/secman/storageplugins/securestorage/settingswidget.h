@@ -42,8 +42,7 @@ namespace SecureStorage
 		SettingsWidget ();
 		
 		QString GetOldPassword ();
-		QString GetNewPassword1 ();
-		QString GetNewPassword2 ();
+		QString GetNewPassword ();
 		void ClearPasswordFields ();
 	signals:
 		void clearSettingsRequested ();

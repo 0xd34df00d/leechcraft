@@ -117,6 +117,8 @@ namespace SecureStorage
 		}
 	};
 
+	/// return s1 if s1==s2, else throw PasswordNotEnteredException.
+	QString ReturnIfEqual (const QString& s1, const QString& s2);
 }
 }
 }

@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "settingswidget.h"
+#include "securestorage.h"
 
 namespace LeechCraft
 {
@@ -46,14 +47,9 @@ namespace SecureStorage
 		return Ui_.OldPassword_->text ();
 	}
 
-	QString SettingsWidget::GetNewPassword1 ()
+	QString SettingsWidget::GetNewPassword()
 	{
-		return Ui_.NewPassword1_->text ();
-	}
-
-	QString SettingsWidget::GetNewPassword2 ()
-	{
-		return Ui_.NewPassword2_->text ();
+		return ReturnIfEqual (Ui_.NewPassword1_->text (), Ui_.NewPassword2_->text ());
 	}
 
 	void SettingsWidget::ClearPasswordFields ()

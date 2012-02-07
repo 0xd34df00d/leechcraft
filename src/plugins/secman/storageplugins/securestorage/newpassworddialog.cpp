@@ -57,12 +57,7 @@ namespace SecureStorage
 
 	QString NewPasswordDialog::GetPassword ()
 	{
-		QString p1 = Ui_.PasswordEdit1_->text ();
-		QString p2 = Ui_.PasswordEdit2_->text ();
-		if (result () == QDialog::Accepted && p1 == p2)
-			return p1;
-		else
-			throw PasswordNotEnteredException ();
+		return ReturnIfEqual (Ui_.PasswordEdit1_->text (),  Ui_.PasswordEdit2_->text ());
 	}
 
 	void NewPasswordDialog::clear ()

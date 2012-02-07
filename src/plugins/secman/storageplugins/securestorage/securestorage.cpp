@@ -63,6 +63,15 @@ namespace StoragePlugins
 {
 namespace SecureStorage
 {
+	
+	QString ReturnIfEqual(const QString& s1, const QString& s2)
+	{
+		if (s1 == s2)
+			return s1;
+		else
+			throw PasswordNotEnteredException ();
+	}
+
 	Plugin::Plugin ()
 	: WindowTitle_ ("SecMan SecureStorage")
 	, CryptoSystem_ (0)
@@ -267,21 +276,20 @@ namespace SecureStorage
 		}
 
 		// get new password from a settings
-		QString password = SettingsWidget_->GetNewPassword1 ();
-		QString password2 = SettingsWidget_->GetNewPassword2 ();
-		if (password != password2)
+		try
+		{
+			QString password = SettingsWidget_->GetNewPassword ();
+			ChangePassword (oldPassword, password);
+			// clear the password fields of the settings widget
+			SettingsWidget_->ClearPasswordFields ();
+		}
+		catch (const PasswordNotEnteredException&)
 		{
 			QMessageBox::critical (0,
 						WindowTitle_,
 						tr ("The passwords are different."),
 						QMessageBox::Ok);
-				return;
 		}
-
-		ChangePassword (oldPassword, password);
-		
-		// clear the password fields of the settings widget
-		SettingsWidget_->ClearPasswordFields ();
 	}
 
 	const CryptoSystem& Plugin::GetCryptoSystem ()
