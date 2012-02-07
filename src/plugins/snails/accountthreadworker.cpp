@@ -34,6 +34,7 @@
 #include <vmime/messageBuilder.hpp>
 #include <vmime/htmlTextPart.hpp>
 #include <vmime/stringContentHandler.hpp>
+#include <vmime/fileAttachment.hpp>
 #include <util/util.h>
 #include "message.h"
 #include "account.h"
@@ -768,6 +769,28 @@ namespace Snails
 			textPart->setCharset (vmime::charsets::UTF_8);
 			textPart->setText (vmime::create<vmime::stringContentHandler> (html.toUtf8 ().constData ()));
 			textPart->setPlainText (vmime::create<vmime::stringContentHandler> (msg->GetBody ().toUtf8 ().constData ()));
+		}
+
+		Q_FOREACH (const AttDescr& descr, msg->GetAttachments ())
+		{
+			try
+			{
+				const QFileInfo fi (descr.GetName ());
+				auto att = vmime::create<vmime::fileAttachment> (descr.GetName ().toUtf8 ().constData (),
+						vmime::mediaType (descr.GetType ().constData (), descr.GetSubType ().constData ()),
+						vmime::text (descr.GetDescr ().toUtf8 ().constData ()));
+				att->getFileInfo ().setFilename (fi.fileName ().toUtf8 ().constData ());
+				att->getFileInfo ().setSize (descr.GetSize ());
+
+				mb.appendAttachment (att);
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "failed to append"
+						<< descr.GetName ()
+						<< e.what ();
+			}
 		}
 
 		auto vMsg = mb.construct ();

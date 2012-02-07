@@ -41,6 +41,7 @@ namespace Snails
 
 		QToolBar *Toolbar_;
 		QMenu *AccountsMenu_;
+		QMenu *AttachmentsMenu_;
 
 		QWidget *MsgEditWidget_;
 		IEditorWidget *MsgEdit_;
@@ -56,6 +57,8 @@ namespace Snails
 		QToolBar* GetToolBar() const;
 	private slots:
 		void handleSend ();
+		void handleAddAttachment ();
+		void handleRemoveAttachment ();
 	signals:
 		void removeTab (QWidget*);
 	};

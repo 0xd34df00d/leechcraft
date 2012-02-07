@@ -20,6 +20,16 @@
 #include <QToolBar>
 #include <QWebFrame>
 #include <QMenu>
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QFileIconProvider>
+#include <QInputDialog>
+
+#ifdef HAVE_MAGIC
+#include <magic.h>
+#endif
+
+#include <util/util.h>
 #include <interfaces/itexteditor.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include "message.h"
@@ -72,6 +82,18 @@ namespace Snails
 			AccountsMenu_->addAction (act);
 		}
 		Toolbar_->addAction (AccountsMenu_->menuAction ());
+
+		AttachmentsMenu_ = new QMenu (tr ("Attachments"));
+		AttachmentsMenu_->menuAction ()->setProperty ("ActionIcon", "mail-attachment");
+		AttachmentsMenu_->addSeparator ();
+		QAction *add = AttachmentsMenu_->
+				addAction (tr ("Add..."), this, SLOT (handleAddAttachment ()));
+		add->setProperty ("ActionIcon", "list-add");
+		Toolbar_->addAction (AttachmentsMenu_->menuAction ());
+
+		Core::Instance ().GetProxy ()->UpdateIconset (QList<QAction*> ()
+					<< AccountsMenu_->menuAction ()
+					<< AttachmentsMenu_->menuAction ());
 
 		QVBoxLayout *editFrameLay = new QVBoxLayout ();
 		editFrameLay->setContentsMargins (0, 0, 0, 0);
@@ -173,7 +195,78 @@ namespace Snails
 		message->SetBody (MsgEdit_->GetContents (ContentType::PlainText));
 		message->SetHTMLBody (MsgEdit_->GetContents (ContentType::HTML));
 
+#ifdef HAVE_MAGIC
+		auto Magic_ = std::shared_ptr<magic_set> (magic_open (MAGIC_MIME_TYPE),
+				magic_close);
+		magic_load (Magic_.get (), NULL);
+#endif
+
+		Q_FOREACH (QAction *act, AttachmentsMenu_->actions ())
+		{
+			const QString& path = act->property ("Snails/AttachmentPath").toString ();
+			if (path.isEmpty ())
+				continue;
+
+			const QString& descr = act->property ("Snails/Description").toString ();
+
+#ifdef HAVE_MAGIC
+			const QByteArray mime (magic_file (Magic_.get (), path.toUtf8 ().constData ()));
+			const auto& split = mime.split ('/');
+			const QByteArray type = split.value (0);
+			const QByteArray subtype = split.value (1);
+#else
+			const QByteArray type = "application", subtype = "octet-stream";
+#endif
+
+			message->AddAttachment ({ path, descr, type, subtype, QFileInfo (path).size () });
+		}
+
 		account->SendMessage (message);
+	}
+
+	void ComposeMessageTab::handleAddAttachment ()
+	{
+		const QString& path = QFileDialog::getOpenFileName (this,
+				tr ("Select file to attach"),
+				QDir::homePath ());
+		if (path.isEmpty ())
+			return;
+
+		QFile file (path);
+		if (!file.open (QIODevice::ReadOnly))
+		{
+			QMessageBox::critical (this,
+					tr ("Error attaching file"),
+					tr ("Error attaching file: %1 cannot be read")
+						.arg (path));
+			return;
+		}
+
+		const QString& descr = QInputDialog::getText (this,
+				tr ("Attachment description"),
+				tr ("Enter optional attachment description (you may leave it blank):"));
+
+		const QFileInfo fi (path);
+
+		const QString& size = Util::MakePrettySize (file.size ());
+		QAction *attAct = new QAction (QString ("%1 (%2)").arg (fi.fileName (), size), this);
+		attAct->setProperty ("Snails/AttachmentPath", path);
+		attAct->setProperty ("Snails/Description", descr);
+		attAct->setIcon (QFileIconProvider ().icon (fi));
+		connect (attAct,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleRemoveAttachment ()));
+
+		const auto& acts = AttachmentsMenu_->actions ();
+		AttachmentsMenu_->insertAction (acts.at (acts.size () - 2), attAct);
+	}
+
+	void ComposeMessageTab::handleRemoveAttachment ()
+	{
+		QAction *act = qobject_cast<QAction*> (sender ());
+		act->deleteLater ();
+		AttachmentsMenu_->removeAction (act);
 	}
 }
 }
