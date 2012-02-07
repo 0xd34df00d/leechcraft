@@ -61,9 +61,10 @@ namespace SecureStorage
 
 		QString WindowTitle_;
 		CryptoSystem *CryptoSystem_;
-		
+
 		QAction *ForgetKeyAction_;
-		
+		QAction *InputKeyAction_;
+
 		boost::shared_ptr<QInputDialog> InputPasswordDialog_;
 		boost::shared_ptr<NewPasswordDialog> NewPasswordDialog_;
 	public:
@@ -89,6 +90,7 @@ namespace SecureStorage
 		LeechCraft::Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	public slots:
 		void forgetKey ();
+		void inputKey ();
 		void changePassword ();
 		void clearSettings ();
 	private:

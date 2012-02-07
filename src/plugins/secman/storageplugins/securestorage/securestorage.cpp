@@ -95,6 +95,12 @@ namespace SecureStorage
 				this, 
 				SLOT (forgetKey ()));
 
+		InputKeyAction_ = new QAction (tr ("Enter master password..."), this);
+		connect (InputKeyAction_, 
+				SIGNAL (triggered ()),
+				this, 
+				SLOT (inputKey ()));
+
 		SettingsWidget_ = new SettingsWidget;
 		connect (SettingsWidget_,
 				SIGNAL (changePasswordRequested ()),
@@ -153,7 +159,7 @@ namespace SecureStorage
 	{
 		QList<QAction*> result;
 		if (place == AEPCommonContextMenu || place == AEPTrayMenu)
-			result << ForgetKeyAction_;
+			result << ForgetKeyAction_ << InputKeyAction_;
 		return result;
 	}
 
@@ -164,7 +170,8 @@ namespace SecureStorage
 
 	void Plugin::UpdateActionsStates ()
 	{
-		ForgetKeyAction_->setEnabled (bool (CryptoSystem_));
+		ForgetKeyAction_->setEnabled (bool (CryptoSystem_) && !IsPasswordEmpty());
+		InputKeyAction_->setEnabled (!bool (CryptoSystem_) && !IsPasswordEmpty());
 	}
 
 	QList<QByteArray> Plugin::ListKeys (IStoragePlugin::StorageType)
@@ -236,6 +243,11 @@ namespace SecureStorage
 	void Plugin::forgetKey ()
 	{
 		SetCryptoSystem (0);
+	}
+
+	void Plugin::inputKey ()
+	{
+		GetCryptoSystem ();
 	}
 
 	void Plugin::clearSettings ()
