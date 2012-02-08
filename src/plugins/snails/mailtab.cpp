@@ -179,6 +179,8 @@ namespace Snails
 			return;
 		}
 
+		CurrMsg_.reset ();
+
 		const QModelIndex& idx = MailSortFilterModel_->mapToSource (sidx);
 		const QByteArray& id = idx.sibling (idx.row (), 0)
 				.data (MailModelManager::MailRole::ID).toByteArray ();
@@ -211,9 +213,10 @@ namespace Snails
 
 		QString html = Core::Instance ().GetMsgViewTemplate ();
 		html.replace ("{subject}", msg->GetSubject ());
-		html.replace ("{from}", msg->GetFrom ());
-		html.replace ("{fromEmail}", msg->GetFromEmail ());
-		html.replace ("{to}", HTMLize (msg->GetTo ()));
+		const auto& from = msg->GetAddress (Message::Address::From);
+		html.replace ("{from}", from.first);
+		html.replace ("{fromEmail}", from.second);
+		html.replace ("{to}", HTMLize (msg->GetAddresses (Message::Address::To)));
 		html.replace ("{date}", msg->GetDate ().toString ());
 
 		const QString& htmlBody = msg->IsFullyFetched () ?
@@ -238,10 +241,16 @@ namespace Snails
 			act->setProperty ("Snails/MsgId", id);
 			act->setProperty ("Snails/AttName", att.GetName ());
 		}
+
+		CurrMsg_ = msg;
 	}
 
 	void MailTab::handleReply ()
 	{
+		if (!CurrAcc_)
+			return;
+
+		Core::Instance ().PrepareReplyTab (CurrMsg_, CurrAcc_);
 	}
 
 	void MailTab::handleAttachment ()

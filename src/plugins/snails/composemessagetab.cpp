@@ -141,11 +141,44 @@ namespace Snails
 		return Toolbar_;
 	}
 
+	void ComposeMessageTab::SelectAccount (Account_ptr account)
+	{
+		const auto& var = QVariant::fromValue<Account_ptr> (account);
+		Q_FOREACH (QAction *action, AccountsMenu_->actions ())
+			if (action->property ("Account") == var)
+			{
+				action->setChecked (true);
+				break;
+			}
+	}
+
+	void ComposeMessageTab::PrepareReply (Message_ptr msg)
+	{
+		auto address = msg->GetAddress (Message::Address::ReplyTo);
+		if (address.second.isEmpty ())
+			address = msg->GetAddress (Message::Address::From);
+		Ui_.To_->setText (GetNiceMail (address));
+
+		auto split = msg->GetBody ().split ('\n');
+		for (int i = 0; i < split.size (); ++i)
+		{
+			QString str = split.at (i).trimmed ();
+			if (str.at (0) != '>')
+				str.prepend (' ');
+			str.prepend ('>');
+			split [i] = str;
+		}
+
+		QString plainContent = split.join ("\n");
+		plainContent += "\n\n";
+		MsgEdit_->SetContents (plainContent, ContentType::PlainText);
+	}
+
 	namespace
 	{
-		QList<QPair<QString, QString>> FromUserInput (const QString& text)
+		Message::Addresses_t FromUserInput (const QString& text)
 		{
-			QList<QPair<QString, QString>> result;
+			Message::Addresses_t result;
 			const QStringList& split = text.split (',', QString::SkipEmptyParts);
 
 			Q_FOREACH (QString address, split)
@@ -190,7 +223,7 @@ namespace Snails
 			return;
 
 		Message_ptr message (new Message);
-		message->SetTo (FromUserInput (Ui_.To_->text ()));
+		message->SetAddresses (Message::Address::To, FromUserInput (Ui_.To_->text ()));
 		message->SetSubject (Ui_.Subject_->text ());
 		message->SetBody (MsgEdit_->GetContents (ContentType::PlainText));
 		message->SetHTMLBody (MsgEdit_->GetContents (ContentType::HTML));

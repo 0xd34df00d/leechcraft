@@ -56,6 +56,8 @@ namespace Snails
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
 		QAbstractItemModel* GetRepresentation () const;
+	private slots:
+		void handleNewTab (const QString& name, QWidget*);
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);

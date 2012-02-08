@@ -52,6 +52,10 @@ namespace Snails
 				SIGNAL (delegateEntity (LeechCraft::Entity,int*,QObject**)),
 				this,
 				SIGNAL (delegateEntity (LeechCraft::Entity,int*,QObject**)));
+		connect (&Core::Instance (),
+				SIGNAL (gotTab (QString, QWidget*)),
+				this,
+				SLOT (handleNewTab (QString, QWidget*)));
 
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "snailssettings.xml");
@@ -99,28 +103,11 @@ namespace Snails
 	void Plugin::TabOpenRequested (const QByteArray& tabClass)
 	{
 		if (tabClass == "mail")
-		{
-			auto mt = new MailTab (MailTabClass_, this);
-
-			connect (mt,
-					SIGNAL (removeTab (QWidget*)),
-					this,
-					SIGNAL (removeTab (QWidget*)));
-
-			emit addNewTab (MailTabClass_.VisibleName_, mt);
-			emit raiseTab (mt);
-		}
+			handleNewTab (MailTabClass_.VisibleName_, new MailTab (MailTabClass_, this));
 		else if (tabClass == "compose")
 		{
 			auto ct = new ComposeMessageTab ();
-
-			connect (ct,
-					SIGNAL (removeTab (QWidget*)),
-					this,
-					SIGNAL (removeTab (QWidget*)));
-
-			emit addNewTab (ct->GetTabClassInfo ().VisibleName_, ct);
-			emit raiseTab (ct);
+			handleNewTab (ct->GetTabClassInfo ().VisibleName_, ct);
 		}
 		else
 			qWarning () << Q_FUNC_INFO
@@ -136,6 +123,17 @@ namespace Snails
 	QAbstractItemModel* Plugin::GetRepresentation () const
 	{
 		return Core::Instance ().GetProgressManager ()->GetRepresentation ();
+	}
+
+	void Plugin::handleNewTab (const QString& name, QWidget *mt)
+	{
+		connect (mt,
+				SIGNAL (removeTab (QWidget*)),
+				this,
+				SIGNAL (removeTab (QWidget*)));
+
+		emit addNewTab (MailTabClass_.VisibleName_, mt);
+		emit raiseTab (mt);
 	}
 }
 }

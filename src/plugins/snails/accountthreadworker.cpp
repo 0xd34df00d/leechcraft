@@ -249,9 +249,7 @@ namespace Snails
 		try
 		{
 			auto mbox = header->From ()->getValue ().dynamicCast<const vmime::mailbox> ();
-			auto pair = Mailbox2Strings (mbox);
-			msg->SetFromEmail (pair.second);
-			msg->SetFrom (pair.first);
+			msg->AddAddress (Message::Address::From, Mailbox2Strings (mbox));
 		}
 		catch (const vmime::exceptions::no_such_field& nsf)
 		{
@@ -266,10 +264,10 @@ namespace Snails
 			{
 				const auto& vec = alist->getMailboxList ();
 
-				QList<QPair<QString, QString>> to;
+				Message::Addresses_t to;
 				std::transform (vec.begin (), vec.end (), std::back_inserter (to),
 						[] (decltype (vec.front ()) add) { return Mailbox2Strings (add); });
-				msg->SetTo (to);
+				msg->SetAddresses (Message::Address::To, to);
 			}
 			else
 				qWarning () << "no 'to' data: cannot cast to mailbox list";
@@ -747,10 +745,10 @@ namespace Snails
 
 		vmime::messageBuilder mb;
 		mb.setSubject (vmime::text (msg->GetSubject ().toUtf8 ().constData ()));
-		mb.setExpeditor (FromPair (msg->GetFrom (), msg->GetFromEmail ()));
+		mb.setExpeditor (FromPair (msg->GetAddress (Message::Address::From)));
 
 		vmime::addressList recips;
-		const auto& tos = msg->GetTo ();
+		const auto& tos = msg->GetAddresses (Message::Address::To);
 		std::for_each (tos.begin (), tos.end (),
 				[&recips] (decltype (tos.front ()) pair) { recips.appendAddress (vmime::create<vmime::mailbox> (FromPair (pair))); });
 		mb.setRecipients (recips);
