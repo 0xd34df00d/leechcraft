@@ -60,17 +60,17 @@ namespace Snails
 
 		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;
-
 		void SendEntity (const Entity&);
 
 		QAbstractItemModel* GetAccountsModel () const;
-
 		QList<Account_ptr> GetAccounts () const;
 		Account_ptr GetAccount (const QModelIndex&) const;
 
 		Storage* GetStorage () const;
 		ProgressManager* GetProgressManager () const;
 		QString GetMsgViewTemplate () const;
+
+		void PrepareReplyTab (Message_ptr, Account_ptr);
 
 		void AddAccount (Account_ptr);
 	private:
@@ -81,6 +81,8 @@ namespace Snails
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
+
+		void gotTab (const QString&, QWidget*);
 	};
 }
 }

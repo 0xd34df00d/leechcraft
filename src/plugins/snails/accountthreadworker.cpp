@@ -34,6 +34,7 @@
 #include <vmime/messageBuilder.hpp>
 #include <vmime/htmlTextPart.hpp>
 #include <vmime/stringContentHandler.hpp>
+#include <vmime/fileAttachment.hpp>
 #include <util/util.h>
 #include "message.h"
 #include "account.h"
@@ -248,9 +249,7 @@ namespace Snails
 		try
 		{
 			auto mbox = header->From ()->getValue ().dynamicCast<const vmime::mailbox> ();
-			auto pair = Mailbox2Strings (mbox);
-			msg->SetFromEmail (pair.second);
-			msg->SetFrom (pair.first);
+			msg->AddAddress (Message::Address::From, Mailbox2Strings (mbox));
 		}
 		catch (const vmime::exceptions::no_such_field& nsf)
 		{
@@ -265,10 +264,10 @@ namespace Snails
 			{
 				const auto& vec = alist->getMailboxList ();
 
-				QList<QPair<QString, QString>> to;
+				Message::Addresses_t to;
 				std::transform (vec.begin (), vec.end (), std::back_inserter (to),
 						[] (decltype (vec.front ()) add) { return Mailbox2Strings (add); });
-				msg->SetTo (to);
+				msg->SetAddresses (Message::Address::To, to);
 			}
 			else
 				qWarning () << "no 'to' data: cannot cast to mailbox list";
@@ -746,10 +745,10 @@ namespace Snails
 
 		vmime::messageBuilder mb;
 		mb.setSubject (vmime::text (msg->GetSubject ().toUtf8 ().constData ()));
-		mb.setExpeditor (FromPair (msg->GetFrom (), msg->GetFromEmail ()));
+		mb.setExpeditor (FromPair (msg->GetAddress (Message::Address::From)));
 
 		vmime::addressList recips;
-		const auto& tos = msg->GetTo ();
+		const auto& tos = msg->GetAddresses (Message::Address::To);
 		std::for_each (tos.begin (), tos.end (),
 				[&recips] (decltype (tos.front ()) pair) { recips.appendAddress (vmime::create<vmime::mailbox> (FromPair (pair))); });
 		mb.setRecipients (recips);
@@ -768,6 +767,28 @@ namespace Snails
 			textPart->setCharset (vmime::charsets::UTF_8);
 			textPart->setText (vmime::create<vmime::stringContentHandler> (html.toUtf8 ().constData ()));
 			textPart->setPlainText (vmime::create<vmime::stringContentHandler> (msg->GetBody ().toUtf8 ().constData ()));
+		}
+
+		Q_FOREACH (const AttDescr& descr, msg->GetAttachments ())
+		{
+			try
+			{
+				const QFileInfo fi (descr.GetName ());
+				auto att = vmime::create<vmime::fileAttachment> (descr.GetName ().toUtf8 ().constData (),
+						vmime::mediaType (descr.GetType ().constData (), descr.GetSubType ().constData ()),
+						vmime::text (descr.GetDescr ().toUtf8 ().constData ()));
+				att->getFileInfo ().setFilename (fi.fileName ().toUtf8 ().constData ());
+				att->getFileInfo ().setSize (descr.GetSize ());
+
+				mb.appendAttachment (att);
+			}
+			catch (const std::exception& e)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "failed to append"
+						<< descr.GetName ()
+						<< e.what ();
+			}
 		}
 
 		auto vMsg = mb.construct ();

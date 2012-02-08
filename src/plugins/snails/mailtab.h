@@ -50,6 +50,7 @@ namespace Snails
 
 		QSortFilterProxyModel *MailSortFilterModel_;
 		Account_ptr CurrAcc_;
+		Message_ptr CurrMsg_;
 	public:
 		MailTab (const TabClassInfo&, QObject*, QWidget* = 0);
 

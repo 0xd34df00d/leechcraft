@@ -33,6 +33,7 @@
 #include "storage.h"
 #include "progressmanager.h"
 #include "accountfoldermanager.h"
+#include "composemessagetab.h"
 
 namespace LeechCraft
 {
@@ -135,6 +136,14 @@ namespace Snails
 			return tr ("<h1 style='color:#f00'>Unable to load message view template.</h1>");
 
 		return QString::fromUtf8 (dev->readAll ());
+	}
+
+	void Core::PrepareReplyTab (Message_ptr message, Account_ptr account)
+	{
+		auto cmt = new ComposeMessageTab ();
+		cmt->SelectAccount (account);
+		cmt->PrepareReply (message);
+		emit gotTab (cmt->GetTabClassInfo ().VisibleName_, cmt);
 	}
 
 	void Core::AddAccount (Account_ptr account)

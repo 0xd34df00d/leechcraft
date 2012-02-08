@@ -1547,9 +1547,11 @@ namespace LeechCraft
 				std::fill (torrent->FilePriorities_.begin (),
 						torrent->FilePriorities_.end (), 1);
 
-				boost::shared_array<char> metadata = info.metadata ();
-				std::copy (metadata.get (), metadata.get () + info.metadata_size (),
-						std::back_inserter (torrent->TorrentFileContents_));
+				libtorrent::entry infoE = libtorrent::bdecode (info.metadata ().get (),
+						info.metadata ().get () + info.metadata_size ());
+				libtorrent::entry e;
+				e ["info"] = infoE;
+				libtorrent::bencode (std::back_inserter (torrent->TorrentFileContents_), e);
 
 				qDebug () << "HandleMetadata"
 					<< std::distance (Handles_.begin (), torrent)
@@ -1840,6 +1842,7 @@ namespace LeechCraft
 						QCoreApplication::applicationName () + "_Torrent");
 				settings.beginGroup ("Core");
 				int torrents = settings.beginReadArray ("AddedTorrents");
+				qDebug () << Q_FUNC_INFO << "gonna restore" << torrents << "torrents";
 				for (int i = 0; i < torrents; ++i)
 				{
 					settings.setArrayIndex (i);
@@ -1854,7 +1857,12 @@ namespace LeechCraft
 					QByteArray data = torrent.readAll ();
 					torrent.close ();
 					if (data.isEmpty ())
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "empty torrent data for"
+								<< filename;
 						continue;
+					}
 
 					QFile resumeDataFile (QDir::homePath () + "/.leechcraft/bittorrent/" +
 							filename + ".resume");
@@ -1876,7 +1884,12 @@ namespace LeechCraft
 								automanaged,
 								taskParameters & NoAutostart);
 					if (!handle.is_valid ())
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "got invalid handle for"
+								<< filename;
 						continue;
+					}
 
 					std::vector<int> priorities;
 					QByteArray prioritiesLine = settings.value ("Priorities").toByteArray ();
@@ -1907,6 +1920,7 @@ namespace LeechCraft
 					beginInsertRows (QModelIndex (), Handles_.size (), Handles_.size ());
 					Handles_.append (tmp);
 					endInsertRows ();
+					qDebug () << "restored a torrent";
 				}
 				settings.endArray ();
 
@@ -1957,6 +1971,7 @@ namespace LeechCraft
 				}
 				catch (const libtorrent::libtorrent_exception& e)
 				{
+					qWarning () << Q_FUNC_INFO << e.what ();
 					HandleLibtorrentException (e);
 				}
 
@@ -2249,6 +2264,7 @@ namespace LeechCraft
 					{
 						qWarning () << Q_FUNC_INFO << "unknown exception";
 					}
+					qDebug () << Q_FUNC_INFO << "saved torrent" << Handles_.at (i).TorrentFileName_ << Handles_.at (i).Handle_.has_metadata ();
 					CurrentTorrent_ = oldCurrent;
 				}
 				settings.endArray ();

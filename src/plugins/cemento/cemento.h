@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2012  Georg Rudoy
+ * Copyright (C) 2012  Georg Rudoy
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,28 +19,17 @@
 #pragma once
 
 #include <QObject>
-#include <QModelIndex>
 #include <interfaces/iinfo.h>
-#include <interfaces/ihavetabs.h>
-#include <interfaces/ihavesettings.h>
-#include <interfaces/ijobholder.h>
 
 namespace LeechCraft
 {
-namespace Snails
+namespace Cemento
 {
 	class Plugin : public QObject
-				 , public IInfo
-				 , public IHaveTabs
-				 , public IHaveSettings
-				 , public IJobHolder
+					, public IInfo
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs IHaveSettings IJobHolder)
-
-		TabClassInfo MailTabClass_;
-		TabClassInfo ComposeTabClass_;
-		Util::XmlSettingsDialog_ptr XSD_;
+		Q_INTERFACES (IInfo)
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -49,25 +38,6 @@ namespace Snails
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
-
-		TabClasses_t GetTabClasses () const;
-		void TabOpenRequested (const QByteArray&);
-
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-
-		QAbstractItemModel* GetRepresentation () const;
-	private slots:
-		void handleNewTab (const QString& name, QWidget*);
-	signals:
-		void addNewTab (const QString&, QWidget*);
-		void removeTab (QWidget*);
-		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void statusBarChanged (QWidget*, const QString&);
-		void raiseTab (QWidget*);
-
-		void gotEntity (const LeechCraft::Entity&);
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 	};
 }
 }

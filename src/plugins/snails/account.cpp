@@ -144,10 +144,12 @@ namespace Snails
 
 	void Account::SendMessage (Message_ptr msg)
 	{
-		if (msg->GetFrom ().isEmpty ())
-			msg->SetFrom (UserName_);
-		if (msg->GetFromEmail ().isEmpty ())
-			msg->SetFromEmail (UserEmail_);
+		auto pair = msg->GetAddress (Message::Address::From);
+		if (pair.first.isEmpty ())
+			pair.first = UserName_;
+		if (pair.second.isEmpty ())
+			pair.second = UserEmail_;
+		msg->SetAddress (Message::Address::From, pair);
 
 		QMetaObject::invokeMethod (Thread_->GetWorker (),
 				"sendMessage",

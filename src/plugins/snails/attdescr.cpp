@@ -29,7 +29,7 @@ namespace Snails
 	{
 	}
 
-	AttDescr::AttDescr (vmime::utility::ref<const vmime::attachment> att)
+	AttDescr::AttDescr (vmime::ref<const vmime::attachment> att)
 	: Name_ (StringizeCT (att->getName ()))
 	, Descr_ (StringizeCT (att->getDescription ()))
 	, Size_ (att->getData ()->getLength ())

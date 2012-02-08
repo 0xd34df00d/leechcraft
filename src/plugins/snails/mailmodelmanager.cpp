@@ -85,7 +85,7 @@ namespace Snails
 				Model_->removeRow (MailID2Item_ [message->GetID ()]->row ());
 
 			QList<QStandardItem*> row;
-			row << new QStandardItem (GetNiceFrom (message));
+			row << new QStandardItem (GetNiceMail (message->GetAddress (Message::Address::From)));
 			row << new QStandardItem (message->GetSubject ());
 			row << new QStandardItem (message->GetDate ().toString ());
 			row << new QStandardItem (Util::MakePrettySize (message->GetSize ()));
