@@ -167,7 +167,7 @@ namespace Azoth
 			"Search",
 			tr ("Search"),
 			tr ("A search tab allows one to search within IM services"),
-			QIcon (),
+			QIcon (":/plugins/azoth/resources/images/searchtab.svg"),
 			55,
 			TFOpenableByRequest
 		};
@@ -177,7 +177,7 @@ namespace Azoth
 			tr ("Service discovery"),
 			tr ("A service discovery tab that allows one to discover "
 				"capabilities of remote entries"),
-			QIcon (),
+			QIcon (":/plugins/azoth/resources/images/sdtab.svg"),
 			55,
 			TFOpenableByRequest
 		};
