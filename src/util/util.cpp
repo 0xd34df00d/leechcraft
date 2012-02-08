@@ -141,11 +141,11 @@ QTranslator* LeechCraft::Util::InstallTranslator (const QString& baseName,
 	filename.append (localeName);
 
 	QTranslator *transl = new QTranslator;
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
 	if (transl->load (filename, ":/") ||
 			transl->load (filename,
 					QCoreApplication::applicationDirPath () + "/translations"))
-#elif defined (Q_WS_MAC)
+#elif defined (Q_OS_MAC)
 	if (transl->load (filename, ":/") ||
 			transl->load (filename,
 					QCoreApplication::applicationDirPath () + "/../Resources/translations"))

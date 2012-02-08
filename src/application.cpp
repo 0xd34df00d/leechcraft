@@ -66,7 +66,7 @@ LeechCraft::Application::Application (int& argc, char **argv)
 	if (VarMap_.count ("version"))
 	{
 		std::cout << "LeechCraft " << LEECHCRAFT_VERSION << " (http://leechcraft.org)" << std::endl;
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
 		std::cout << " <this version does not have UNLIMITED CAT POWA :(>" << std::endl;
 #else
 		std::cout << " this version can haz teh UNLIMITED CAT POWA :3 ε:" << std::endl;
@@ -186,7 +186,7 @@ const bpo::variables_map& Application::GetVarMap () const
 	return VarMap_;
 }
 
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
 #include <windows.h>
 #else
 #include <unistd.h>
@@ -196,7 +196,7 @@ const bpo::variables_map& Application::GetVarMap () const
 QString Application::GetSocketName ()
 {
 	QString templ = QString ("LeechCraft_local_socket_%1");
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
 	boost::scoped_array<TCHAR> buffer (new TCHAR [0]);
 	DWORD size = 0;
 	GetUserName (buffer.get (), &size);
