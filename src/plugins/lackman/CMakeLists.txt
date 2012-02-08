@@ -68,15 +68,7 @@ SET (HEADERS
 	delegatebuttongroup.h
 	stringfiltermodel.h
 	)
-SET (TRANSLATIONS
-	leechcraft_lackman_ru_RU.ts
-	leechcraft_lackman_en.ts
-	)
-SET (COMPILED_TRANSLATIONS
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_lackman_ru_RU.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_lackman_en.qm
-	)
-CreateTrVars ("lackman" "de;en;fr;it;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
+CreateTrVars ("lackman" "de;en;es;fr;it;ru_RU;uk_UA" TRANSLATIONS COMPILED_TRANSLATIONS)
 SET (RESOURCES
 	lackmanresources.qrc
 	)
