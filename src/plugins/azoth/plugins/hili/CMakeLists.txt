@@ -10,7 +10,7 @@ SET (HILI_HEADERS
 	xmlsettingsmanager.h
 	)
 SET (HILI_RESOURCES azothhiliresources.qrc)
-CreateTrVars ("azoth_hili" "en;ru_RU;uk_UA" HILI_TRANSLATIONS HILI_COMPILED_TRANSLATIONS)
+CreateTrVars ("azoth_hili" "en;es;ru_RU;uk_UA" HILI_TRANSLATIONS HILI_COMPILED_TRANSLATIONS)
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (HILI_MOC_SRCS ${HILI_HEADERS})
 ENDIF (NOT LC_NO_MOC)

@@ -4,7 +4,7 @@
     <message>
         <location filename="lastseen.cpp" line="62"/>
         <source>Azoth LastSeen displays when a contact has been online and available for the list time.</source>
-        <translation type="unfinished"/>
+        <translation>Azoth LastSeen muestra cuando un contacto estaba online y disponible.</translation>
     </message>
     <message>
         <location filename="lastseen.cpp" line="178"/>

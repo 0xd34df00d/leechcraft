@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="uk_UA">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="uk_UA" version="2.0">
 <context>
     <name>AddMultipleTorrents</name>
     <message>
@@ -83,15 +81,6 @@
 <context>
     <name>AddTorrent</name>
     <message>
-        <location filename="addtorrent.ui" line="246"/>
-        <location filename="addtorrent.ui" line="260"/>
-        <location filename="addtorrent.ui" line="274"/>
-        <location filename="addtorrent.ui" line="288"/>
-        <location filename="addtorrent.ui" line="302"/>
-        <source>&lt;unknown&gt;</source>
-        <translation>&lt;невідомо&gt;</translation>
-    </message>
-    <message>
         <location filename="addtorrent.ui" line="14"/>
         <source>Add torrent</source>
         <translation>Додати торрент</translation>
@@ -111,31 +100,6 @@
         <location filename="addtorrent.ui" line="148"/>
         <source>Browse...</source>
         <translation>Огляд...</translation>
-    </message>
-    <message>
-        <location filename="addtorrent.ui" line="239"/>
-        <source>Tracker URL:</source>
-        <translation>Адреса трекера:</translation>
-    </message>
-    <message>
-        <location filename="addtorrent.ui" line="253"/>
-        <source>Size:</source>
-        <translation>Розмір:</translation>
-    </message>
-    <message>
-        <location filename="addtorrent.ui" line="267"/>
-        <source>Creator:</source>
-        <translation>Створив:</translation>
-    </message>
-    <message>
-        <location filename="addtorrent.ui" line="281"/>
-        <source>Comment:</source>
-        <translation>Коментар:</translation>
-    </message>
-    <message>
-        <location filename="addtorrent.ui" line="295"/>
-        <source>Date:</source>
-        <translation>Дата:</translation>
     </message>
     <message>
         <location filename="addtorrent.ui" line="72"/>
@@ -170,12 +134,12 @@
     <message>
         <location filename="addtorrent.ui" line="159"/>
         <source>unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>невідомо</translation>
     </message>
     <message>
         <location filename="addtorrent.ui" line="169"/>
         <source>%p% used</source>
-        <translation type="unfinished"></translation>
+        <translation>%p% використано</translation>
     </message>
     <message>
         <location filename="addtorrent.ui" line="180"/>
@@ -211,6 +175,40 @@
         <location filename="addtorrent.ui" line="227"/>
         <source>Info</source>
         <translation>Інформація</translation>
+    </message>
+    <message>
+        <location filename="addtorrent.ui" line="239"/>
+        <source>Tracker URL:</source>
+        <translation>Адреса трекера:</translation>
+    </message>
+    <message>
+        <location filename="addtorrent.ui" line="246"/>
+        <location filename="addtorrent.ui" line="260"/>
+        <location filename="addtorrent.ui" line="274"/>
+        <location filename="addtorrent.ui" line="288"/>
+        <location filename="addtorrent.ui" line="302"/>
+        <source>&lt;unknown&gt;</source>
+        <translation>&lt;невідомо&gt;</translation>
+    </message>
+    <message>
+        <location filename="addtorrent.ui" line="253"/>
+        <source>Size:</source>
+        <translation>Розмір:</translation>
+    </message>
+    <message>
+        <location filename="addtorrent.ui" line="267"/>
+        <source>Creator:</source>
+        <translation>Створив:</translation>
+    </message>
+    <message>
+        <location filename="addtorrent.ui" line="281"/>
+        <source>Comment:</source>
+        <translation>Коментар:</translation>
+    </message>
+    <message>
+        <location filename="addtorrent.ui" line="295"/>
+        <source>Date:</source>
+        <translation>Дата:</translation>
     </message>
     <message>
         <location filename="addtorrent.ui" line="327"/>
@@ -381,12 +379,12 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="addtorrent.cpp" line="172"/>
         <source>%1 free</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 вільно</translation>
     </message>
     <message>
         <location filename="addtorrent.cpp" line="178"/>
         <source>unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>невідомо</translation>
     </message>
     <message>
         <location filename="addtorrent.cpp" line="186"/>
@@ -419,7 +417,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="core.cpp" line="139"/>
         <source>URL</source>
-        <translation></translation>
+        <translation>Адреса</translation>
     </message>
     <message>
         <location filename="core.cpp" line="140"/>
@@ -526,11 +524,6 @@ IPv6 input mask</extracomment>
         <translation>Торрент %1 не може бути повторно анонсований в даний момент. Спробуйте повторити пізніше.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2799"/>
-        <source>Storage notifications are disabled. Live streaming definitely won&apos;t work without them, so if you are experiencing troubles, re-enable storage notifications in &quot;Notifications&quot; section of BitTorrent settings. Do you want to enable them now?</source>
-        <translation>Сповіщеня підсистеми збереження відключені. Відтворення в реальному часі буде недоступне. Якщо у Вас виникли проблеми, увімкніть сповіщення у розділі &quot;Сповіщення&quot; параметрів BitTorrent. Хочете увімкнути їх зараз?</translation>
-    </message>
-    <message>
         <location filename="core.cpp" line="1293"/>
         <source>Could not open file %1 for reading</source>
         <translation>Не можу відкрити файл %1 для читання</translation>
@@ -629,6 +622,11 @@ IPv6 input mask</extracomment>
         <location filename="core.cpp" line="2658"/>
         <source>Wrong announce address %1</source>
         <translation>Неправильна адреса для анонсування %1</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="2799"/>
+        <source>Storage notifications are disabled. Live streaming definitely won&apos;t work without them, so if you are experiencing troubles, re-enable storage notifications in &quot;Notifications&quot; section of BitTorrent settings. Do you want to enable them now?</source>
+        <translation>Сповіщеня підсистеми збереження відключені. Відтворення в реальному часі буде недоступне. Якщо у Вас виникли проблеми, увімкніть сповіщення у розділі &quot;Сповіщення&quot; параметрів BitTorrent. Хочете увімкнути їх зараз?</translation>
     </message>
 </context>
 <context>
@@ -758,15 +756,15 @@ IPv6 input mask</extracomment>
         <translation>Доступні частини</translation>
     </message>
     <message>
-        <location filename="peersmodel.cpp" line="97"/>
-        <source>%1/%2</source>
-        <translation></translation>
-    </message>
-    <message>
         <location filename="peersmodel.cpp" line="68"/>
         <location filename="peersmodel.cpp" line="75"/>
         <source>/s</source>
         <translation>/с</translation>
+    </message>
+    <message>
+        <location filename="peersmodel.cpp" line="97"/>
+        <source>%1/%2</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -822,12 +820,7 @@ IPv6 input mask</extracomment>
     <message numerus="yes">
         <location filename="peerstablinker.cpp" line="160"/>
         <source>%1 (%n second(s) remaining)</source>
-        <oldsource>%1 (%2 seconds remaining)</oldsource>
-        <translation>
-            <numerusform>%1 (залишилась %n секунда)</numerusform>
-            <numerusform>%1 (залишилось %n секунди)</numerusform>
-            <numerusform>%1 (залишилось %n секунд)</numerusform>
-        </translation>
+        <translation><numerusform>%1 (залишилась %n секунда)</numerusform><numerusform>%1 (залишилось %n секунди)</numerusform><numerusform>%1 (залишилось %n секунд)</numerusform></translation>
     </message>
     <message>
         <location filename="peerstablinker.cpp" line="170"/>
@@ -897,7 +890,6 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="speedselectoraction.cpp" line="93"/>
         <source>%1 KiB/s</source>
-        <translatorcomment>кібібайт за секунду</translatorcomment>
         <translation>%1 КіБ/с</translation>
     </message>
 </context>
@@ -1040,25 +1032,31 @@ IPv6 input mask</extracomment>
         <source>Full-featured BitTorrent client.</source>
         <translation>Повнофункціональний клієнт для BitTorrent.</translation>
     </message>
+    <message numerus="yes">
+        <location filename="torrentplugin.cpp" line="483"/>
+        <source>Do you really want to delete %n torrent(s)?</source>
+        <translation><numerusform>Ви справді хочете видалити %n торент?</numerusform><numerusform>Ви справді хочете видалити %n торенти?</numerusform><numerusform>Ви справді хочете видалити %n торентів?</numerusform></translation>
+    </message>
+    <message>
+        <location filename="torrentplugin.cpp" line="487"/>
+        <source>&amp;Delete</source>
+        <translation>&amp;Delete</translation>
+    </message>
+    <message>
+        <location filename="torrentplugin.cpp" line="490"/>
+        <source>Delete with &amp;files</source>
+        <oldsource>Delete torrent(s) and their &amp;files</oldsource>
+        <translation>Знищити з %files</translation>
+    </message>
     <message>
         <location filename="torrentplugin.cpp" line="808"/>
         <source>Failed to move torrent&apos;s files from %1 to %2</source>
         <translation>Не можливо перемістити торрент-файли з %1 до %2</translation>
     </message>
-    <message numerus="yes">
-        <location filename="torrentplugin.cpp" line="483"/>
-        <source>Do you really want to delete %n torrent(s)?</source>
-        <oldsource>Do you really want to delete %n torrents?</oldsource>
-        <translation>
-            <numerusform>Ви справді хочете видалити %n торент?</numerusform>
-            <numerusform>Ви справді хочете видалити %n торенти?</numerusform>
-            <numerusform>Ви справді хочете видалити %n торентів?</numerusform>
-        </translation>
-    </message>
     <message>
-        <location filename="torrentplugin.cpp" line="487"/>
-        <source>&amp;Delete</source>
-        <translation type="unfinished"></translation>
+        <location filename="torrentplugin.cpp" line="823"/>
+        <source>Magnet link:</source>
+        <translation>Магнітне посилання:</translation>
     </message>
     <message>
         <location filename="torrentplugin.cpp" line="977"/>
@@ -1066,30 +1064,9 @@ IPv6 input mask</extracomment>
         <translation>Відкрити торрент...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1099"/>
-        <source>Change trackers...</source>
-        <translation>Змінити трекери...</translation>
-    </message>
-    <message>
-        <location filename="torrentplugin.cpp" line="1101"/>
-        <source>C</source>
-        <translation>С</translation>
-    </message>
-    <message>
         <location filename="torrentplugin.cpp" line="986"/>
         <source>Create torrent...</source>
         <translation>Створити торрент...</translation>
-    </message>
-    <message>
-        <location filename="torrentplugin.cpp" line="490"/>
-        <source>Delete with &amp;files</source>
-        <oldsource>Delete torrent(s) and their &amp;files</oldsource>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="torrentplugin.cpp" line="823"/>
-        <source>Magnet link:</source>
-        <translation>Магнітне посилання:</translation>
     </message>
     <message>
         <location filename="torrentplugin.cpp" line="994"/>
@@ -1177,6 +1154,16 @@ IPv6 input mask</extracomment>
         <translation>M</translation>
     </message>
     <message>
+        <location filename="torrentplugin.cpp" line="1099"/>
+        <source>Change trackers...</source>
+        <translation>Змінити трекери...</translation>
+    </message>
+    <message>
+        <location filename="torrentplugin.cpp" line="1101"/>
+        <source>C</source>
+        <translation>С</translation>
+    </message>
+    <message>
         <location filename="torrentplugin.cpp" line="1108"/>
         <source>Make magnet link...</source>
         <translation>Створити магнітне посилання...</translation>
@@ -1259,7 +1246,6 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="movetorrentfiles.ui" line="47"/>
         <source>Browse...</source>
-        <oldsource>Browse</oldsource>
         <translation>Огляд...</translation>
     </message>
 </context>
@@ -1271,14 +1257,14 @@ IPv6 input mask</extracomment>
         <translation>Основні параметри</translation>
     </message>
     <message>
-        <location filename="newtorrentfirststep.ui" line="36"/>
-        <source>Browse...</source>
-        <translation>Огляд...</translation>
-    </message>
-    <message>
         <location filename="newtorrentfirststep.ui" line="24"/>
         <source>Output:</source>
         <translation>Зберегти у:</translation>
+    </message>
+    <message>
+        <location filename="newtorrentfirststep.ui" line="36"/>
+        <source>Browse...</source>
+        <translation>Огляд...</translation>
     </message>
     <message>
         <location filename="newtorrentfirststep.ui" line="45"/>
@@ -1534,9 +1520,26 @@ IPv6 input mask</extracomment>
 <context>
     <name>TabWidget</name>
     <message>
+        <location filename="tabwidget.ui" line="21"/>
+        <source>LeechCraft::BitTorrent dashboard</source>
+        <translation>Панель керування LeechCraft::BitTorrent</translation>
+    </message>
+    <message>
         <location filename="tabwidget.ui" line="37"/>
         <source>Dashboard</source>
         <translation>Панель керування</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="67"/>
+        <location filename="tabwidget.ui" line="815"/>
+        <source>Settings</source>
+        <translation>Налаштування</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="76"/>
+        <location filename="tabwidget.ui" line="826"/>
+        <source>Download/upload rate:</source>
+        <translation>Швидкість завантаження/поширення:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="85"/>
@@ -1557,6 +1560,13 @@ IPv6 input mask</extracomment>
         <translation> кб/с</translation>
     </message>
     <message>
+        <location filename="tabwidget.ui" line="116"/>
+        <location filename="tabwidget.ui" line="198"/>
+        <location filename="tabwidget.ui" line="863"/>
+        <source>/</source>
+        <translation>/</translation>
+    </message>
+    <message>
         <location filename="tabwidget.ui" line="150"/>
         <location filename="tabwidget.ui" line="891"/>
         <source>Desired rating:</source>
@@ -1569,24 +1579,157 @@ IPv6 input mask</extracomment>
         <translation>Нескінченність</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="674"/>
-        <source>Blocks written:</source>
-        <translation>Блоків записано:</translation>
+        <location filename="tabwidget.ui" line="167"/>
+        <source>Leeching/seeding torrents:</source>
+        <translation>Торентів, що завантаж./поширюються:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="688"/>
-        <source>Write operations:</source>
-        <translation>Операцій запису:</translation>
+        <location filename="tabwidget.ui" line="226"/>
+        <source>Session stats</source>
+        <translation>Статус сеансу</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="702"/>
-        <source>Write hit ratio:</source>
-        <translation>Ефективність кешу запису:</translation>
+        <location filename="tabwidget.ui" line="235"/>
+        <location filename="tabwidget.ui" line="992"/>
+        <source>Total download rate:</source>
+        <translation>Загальна швидкість завантаження:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="716"/>
-        <source>Cache size:</source>
-        <translation>Розмір кешу:</translation>
+        <location filename="tabwidget.ui" line="249"/>
+        <location filename="tabwidget.ui" line="1006"/>
+        <source>Total upload rate:</source>
+        <translation>Загальна швидкість поширення:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="263"/>
+        <source>Total downloaded:</source>
+        <translation>Загалом завантажено:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="277"/>
+        <source>Total uploaded:</source>
+        <translation>Загалом роздано:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="291"/>
+        <location filename="tabwidget.ui" line="1207"/>
+        <source>Session rating:</source>
+        <translation>Рейтинг за сесію:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="305"/>
+        <source>Peers:</source>
+        <translation>Піри:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="319"/>
+        <source>(Global) DHT nodes:</source>
+        <translation>Глобальних вузлів DHT:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="333"/>
+        <source>DHT torrents:</source>
+        <translation>Торрентів з DHT:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="347"/>
+        <source>TCP listen port:</source>
+        <translation>TCP порт для прослуховування:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="361"/>
+        <source>External address:</source>
+        <translation>Зовнішня адреса:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="378"/>
+        <source>Advanced session stats</source>
+        <translation>Детальна статистика сеансу</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="387"/>
+        <source>Overhead downloaded:</source>
+        <translation>Завантажено надлишку:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="401"/>
+        <source>Overhead uploaded:</source>
+        <translation>Поширено надлишку:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="415"/>
+        <source>Tracker downloaded:</source>
+        <translation>Завантажено з трекеру:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="429"/>
+        <source>Tracker uploaded:</source>
+        <translation>Вивантажено на трекер:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="443"/>
+        <source>DHT downloaded:</source>
+        <translation>Завантажено DHT:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="457"/>
+        <source>DHT uploaded:</source>
+        <translation>Вивантажено DHT:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="471"/>
+        <source>Overhead download rate:</source>
+        <translation>Швидкість звантаження надлишку:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="478"/>
+        <source>Overhead upload rate:</source>
+        <translation>Швидкість поширення надлишку:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="499"/>
+        <source>DHT download rate:</source>
+        <translation>Швидкість завантаження DHT:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="506"/>
+        <source>DHT upload rate:</source>
+        <translation>Швидкість поширення DHT:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="513"/>
+        <source>Tracker download rate:</source>
+        <translation>Швидкість звавантаження з трекера:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="520"/>
+        <source>Tracker upload rate:</source>
+        <translation>Швидкість відвантаження на трекер:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="558"/>
+        <source>Per-tracker stats</source>
+        <translation>Статус по трекерам</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="574"/>
+        <source>Tracker</source>
+        <translation>Трекер</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="579"/>
+        <source>Download rate</source>
+        <translation>Швидкість завантаження</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="584"/>
+        <source>Upload rate</source>
+        <translation>Швидкість поширення</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="595"/>
+        <source>Cache stats</source>
+        <translation>Статус кешу</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="604"/>
@@ -1609,20 +1752,29 @@ IPv6 input mask</extracomment>
         <translation>Розмір кешу читання:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="263"/>
-        <source>Total downloaded:</source>
-        <translation>Загалом завантажено:</translation>
+        <location filename="tabwidget.ui" line="660"/>
+        <source>Total redundant data:</source>
+        <translation>Загалом надлишкових даних:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="277"/>
-        <source>Total uploaded:</source>
-        <translation>Загалом роздано:</translation>
+        <location filename="tabwidget.ui" line="674"/>
+        <source>Blocks written:</source>
+        <translation>Блоків записано:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="291"/>
-        <location filename="tabwidget.ui" line="1207"/>
-        <source>Session rating:</source>
-        <translation>Рейтинг за сесію:</translation>
+        <location filename="tabwidget.ui" line="688"/>
+        <source>Write operations:</source>
+        <translation>Операцій запису:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="702"/>
+        <source>Write hit ratio:</source>
+        <translation>Ефективність кешу запису:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="716"/>
+        <source>Cache size:</source>
+        <translation>Розмір кешу:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="730"/>
@@ -1630,30 +1782,9 @@ IPv6 input mask</extracomment>
         <translation>Загалом неправильних даних:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="660"/>
-        <source>Total redundant data:</source>
-        <translation>Загалом надлишкових даних:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="305"/>
-        <source>Peers:</source>
-        <translation>Піри:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="333"/>
-        <source>DHT torrents:</source>
-        <translation>Торрентів з DHT:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="347"/>
-        <source>TCP listen port:</source>
-        <translation>TCP порт для прослуховування:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="67"/>
-        <location filename="tabwidget.ui" line="815"/>
-        <source>Settings</source>
-        <translation>Налаштування</translation>
+        <location filename="tabwidget.ui" line="765"/>
+        <source>Torrent</source>
+        <translation>Торрент</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="908"/>
@@ -1661,45 +1792,19 @@ IPv6 input mask</extracomment>
         <translation>Позначки:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="765"/>
-        <source>Torrent</source>
-        <translation>Торрент</translation>
+        <location filename="tabwidget.ui" line="922"/>
+        <source>Auto managed</source>
+        <translation>Автоматичне керування</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1231"/>
-        <source>Info</source>
-        <translation>Інформація</translation>
+        <location filename="tabwidget.ui" line="932"/>
+        <source>Sequential download</source>
+        <translation>Послідовне завантаження</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1240"/>
-        <source>Tracker:</source>
-        <translation>Трекер:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="1330"/>
-        <source>Downloaded pieces:</source>
-        <translation>Завантажено частин:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="1344"/>
-        <source>Total pieces:</source>
-        <translation>Загалом частин:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="1386"/>
-        <source>Announce interval:</source>
-        <translation>Інтервал між оголошеннями:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="1459"/>
-        <location filename="tabwidget.ui" line="1685"/>
-        <source>Peers</source>
-        <translation>Піри</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="1510"/>
-        <source>Connect candidates:</source>
-        <translation>Кандидати на підключення:</translation>
+        <location filename="tabwidget.ui" line="939"/>
+        <source>Super seeding</source>
+        <translation>Супер поширення</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="951"/>
@@ -1719,37 +1824,39 @@ IPv6 input mask</extracomment>
         <translation>Прогрес:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1144"/>
-        <source>Next announce:</source>
-        <translation>Наступне оголошення:</translation>
+        <location filename="tabwidget.ui" line="1020"/>
+        <source>Downloaded, all time:</source>
+        <translation>Загалом завантажено:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="1158"/>
-        <source>Last scrape:</source>
-        <translation>Останній scrape:</translation>
+        <location filename="tabwidget.ui" line="1034"/>
+        <source>Uploaded, all time:</source>
+        <translation>Загалом поширено:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1048"/>
+        <source>Total size:</source>
+        <translation>Загальний розмір:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1062"/>
+        <source>Wanted size:</source>
+        <translation>Бажаний розмір:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1076"/>
+        <source>Wanted done:</source>
+        <translation>Завантажено бажаного:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1093"/>
+        <source>Advanced status</source>
+        <translation>Детальна статистика</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="1102"/>
         <source>Active time:</source>
         <translation>Активний час:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="76"/>
-        <location filename="tabwidget.ui" line="826"/>
-        <source>Download/upload rate:</source>
-        <translation>Швидкість завантаження/поширення:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="116"/>
-        <location filename="tabwidget.ui" line="198"/>
-        <location filename="tabwidget.ui" line="863"/>
-        <source>/</source>
-        <translation>/</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="167"/>
-        <source>Leeching/seeding torrents:</source>
-        <translation>Торентів, що завантаж./поширюються:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="1116"/>
@@ -1762,14 +1869,99 @@ IPv6 input mask</extracomment>
         <translation>Рейтинг при поширенні:</translation>
     </message>
     <message>
+        <location filename="tabwidget.ui" line="1144"/>
+        <source>Next announce:</source>
+        <translation>Наступне оголошення:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1158"/>
+        <source>Last scrape:</source>
+        <translation>Останній scrape:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1172"/>
+        <source>Downloaded (session):</source>
+        <translation>Завантажено (за сеанс):</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1179"/>
+        <source>Uploaded (session):</source>
+        <translation>Поширено (за сеанс):</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1200"/>
+        <source>Overall rating:</source>
+        <translation>Загальний рейтинг:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1231"/>
+        <source>Info</source>
+        <translation>Інформація</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1240"/>
+        <source>Tracker:</source>
+        <translation>Трекер:</translation>
+    </message>
+    <message>
         <location filename="tabwidget.ui" line="1259"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
+        <location filename="tabwidget.ui" line="1268"/>
+        <source>Destination:</source>
+        <translation>Місце призначення:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1285"/>
+        <source>Creator:</source>
+        <translation>Створив:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1299"/>
+        <source>Comment:</source>
+        <translation>Коментар:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1316"/>
+        <source>Private:</source>
+        <translation>Приватний:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1330"/>
+        <source>Downloaded pieces:</source>
+        <translation>Завантажено частин:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1344"/>
+        <source>Total pieces:</source>
+        <translation>Загалом частин:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1358"/>
+        <source>Piece size:</source>
+        <translation>Розмір частини:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1372"/>
+        <source>Block size:</source>
+        <translation>Розмір блоку:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1386"/>
+        <source>Announce interval:</source>
+        <translation>Інтервал між оголошеннями:</translation>
+    </message>
+    <message>
         <location filename="tabwidget.ui" line="1400"/>
         <source>Failed:</source>
         <translation>Пошкоджено:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1414"/>
+        <source>Redundant:</source>
+        <translation>Надлишкові дані:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="1428"/>
@@ -1780,6 +1972,57 @@ IPv6 input mask</extracomment>
         <location filename="tabwidget.ui" line="1442"/>
         <source>Distributed copies:</source>
         <translation>Розподілені копії:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1459"/>
+        <location filename="tabwidget.ui" line="1685"/>
+        <source>Peers</source>
+        <translation>Піри</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1468"/>
+        <source>Connected peers:</source>
+        <translation>З&apos;єнано пірів:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1482"/>
+        <source>Peers in list:</source>
+        <translation>Пірів у списку:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1496"/>
+        <source>Peers in swarm:</source>
+        <translation>Пірів у роздачі:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1510"/>
+        <source>Connect candidates:</source>
+        <translation>Кандидати на підключення:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1524"/>
+        <source>Upload queue:</source>
+        <translation>Черга поширення:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1538"/>
+        <source>Connected seeds:</source>
+        <translation>З&apos;єднано поширювачів:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1552"/>
+        <source>Seeds in list:</source>
+        <translation>Поширювачів у списку:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1566"/>
+        <source>Seeds in swarm:</source>
+        <translation>Поширювачів у роздачі:</translation>
+    </message>
+    <message>
+        <location filename="tabwidget.ui" line="1580"/>
+        <source>Download queue:</source>
+        <translation>Черга завантаження:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="1615"/>
@@ -1900,263 +2143,6 @@ IPv6 input mask</extracomment>
         <location filename="tabwidget.ui" line="2032"/>
         <source>Pieces</source>
         <translation>Частини</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="21"/>
-        <source>LeechCraft::BitTorrent dashboard</source>
-        <translation>Панель керування LeechCraft::BitTorrent</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="361"/>
-        <source>External address:</source>
-        <translation>Зовнішня адреса:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="922"/>
-        <source>Auto managed</source>
-        <translation>Автоматичне керування</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="932"/>
-        <source>Sequential download</source>
-        <translation>Послідовне завантаження</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="1020"/>
-        <source>Downloaded, all time:</source>
-        <translation>Загалом завантажено:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="1200"/>
-        <source>Overall rating:</source>
-        <translation>Загальний рейтинг:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="1268"/>
-        <source>Destination:</source>
-        <translation>Місце призначення:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="319"/>
-        <source>(Global) DHT nodes:</source>
-        <translation>Глобальних вузлів DHT:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="939"/>
-        <source>Super seeding</source>
-        <translation>Супер поширення</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="226"/>
-        <source>Session stats</source>
-        <translation>Статус сеансу</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="235"/>
-        <location filename="tabwidget.ui" line="992"/>
-        <source>Total download rate:</source>
-        <translation>Загальна швидкість завантаження:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="249"/>
-        <location filename="tabwidget.ui" line="1006"/>
-        <source>Total upload rate:</source>
-        <translation>Загальна швидкість поширення:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="471"/>
-        <source>Overhead download rate:</source>
-        <translation>Швидкість звантаження надлишку:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="478"/>
-        <source>Overhead upload rate:</source>
-        <translation>Швидкість поширення надлишку:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="499"/>
-        <source>DHT download rate:</source>
-        <translation>Швидкість завантаження DHT:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="506"/>
-        <source>DHT upload rate:</source>
-        <translation>Швидкість поширення DHT:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="513"/>
-        <source>Tracker download rate:</source>
-        <translation>Швидкість звавантаження з трекера:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="520"/>
-        <source>Tracker upload rate:</source>
-        <translation>Швидкість відвантаження на трекер:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="387"/>
-        <source>Overhead downloaded:</source>
-        <translation>Завантажено надлишку:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="401"/>
-        <source>Overhead uploaded:</source>
-        <translation>Поширено надлишку:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="443"/>
-        <source>DHT downloaded:</source>
-        <translation>Завантажено DHT:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="457"/>
-        <source>DHT uploaded:</source>
-        <translation>Вивантажено DHT:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="415"/>
-        <source>Tracker downloaded:</source>
-        <translation>Завантажено з трекеру:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="429"/>
-        <source>Tracker uploaded:</source>
-        <translation>Вивантажено на трекер:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="595"/>
-        <source>Cache stats</source>
-        <translation>Статус кешу</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="1034"/>
-        <source>Uploaded, all time:</source>
-        <translation>Загалом поширено:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="1048"/>
-        <source>Total size:</source>
-        <translation>Загальний розмір:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="1062"/>
-        <source>Wanted size:</source>
-        <translation>Бажаний розмір:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="1285"/>
-        <source>Creator:</source>
-        <translation>Створив:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="1299"/>
-        <source>Comment:</source>
-        <translation>Коментар:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="1316"/>
-        <source>Private:</source>
-        <translation>Приватний:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="1358"/>
-        <source>Piece size:</source>
-        <translation>Розмір частини:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="1372"/>
-        <source>Block size:</source>
-        <translation>Розмір блоку:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="1414"/>
-        <source>Redundant:</source>
-        <translation>Надлишкові дані:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="1468"/>
-        <source>Connected peers:</source>
-        <translation>З&apos;єнано пірів:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="1482"/>
-        <source>Peers in list:</source>
-        <translation>Пірів у списку:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="1496"/>
-        <source>Peers in swarm:</source>
-        <translation>Пірів у роздачі:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="1538"/>
-        <source>Connected seeds:</source>
-        <translation>З&apos;єднано поширювачів:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="1552"/>
-        <source>Seeds in list:</source>
-        <translation>Поширювачів у списку:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="1566"/>
-        <source>Seeds in swarm:</source>
-        <translation>Поширювачів у роздачі:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="558"/>
-        <source>Per-tracker stats</source>
-        <translation>Статус по трекерам</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="574"/>
-        <source>Tracker</source>
-        <translation>Трекер</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="579"/>
-        <source>Download rate</source>
-        <translation>Швидкість завантаження</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="584"/>
-        <source>Upload rate</source>
-        <translation>Швидкість поширення</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="1172"/>
-        <source>Downloaded (session):</source>
-        <translation>Завантажено (за сеанс):</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="1076"/>
-        <source>Wanted done:</source>
-        <translation>Завантажено бажаного:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="1179"/>
-        <source>Uploaded (session):</source>
-        <translation>Поширено (за сеанс):</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="1524"/>
-        <source>Upload queue:</source>
-        <translation>Черга поширення:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="1580"/>
-        <source>Download queue:</source>
-        <translation>Черга завантаження:</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="378"/>
-        <source>Advanced session stats</source>
-        <translation>Детальна статистика сеансу</translation>
-    </message>
-    <message>
-        <location filename="tabwidget.ui" line="1093"/>
-        <source>Advanced status</source>
-        <translation>Детальна статистика</translation>
     </message>
 </context>
 <context>
