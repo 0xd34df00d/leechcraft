@@ -119,11 +119,11 @@ namespace Choroid
 		DeclView_->rootContext ()->setContextProperty ("filesListModel", QMLFilesModel_);
 
 		QStringList candidates;
-#ifdef Q_WS_X11
+#ifdef Q_OS_WIN32
+		candidates << QApplication::applicationDirPath () + "/share/qml/choroid/";
+#else
 		candidates << "/usr/local/share/leechcraft/qml/choroid/"
 				<< "/usr/share/leechcraft/qml/choroid/";
-#elif defined (Q_WS_WIN32)
-		candidates << QApplication::applicationDirPath () + "/share/qml/choroid/";
 #endif
 
 		QString fileLocation;

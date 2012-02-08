@@ -533,18 +533,17 @@ namespace LackMan
 		InstalledDependencyInfoList result;
 
 		QFileInfoList infoEntries;
-#if defined(Q_WS_X11)
+#if defined(Q_OS_WIN32)
+		infoEntries += QDir (QApplication::applicationDirPath () + "/share/installed")
+				.entryInfoList (QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
+#elif defined(Q_OS_MAC)
+		infoEntries += QDir (QCoreApplication::applicationDirPath () + "/../installed")
+				.entryInfoList (QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
+#else
 		infoEntries += QDir ("/usr/share/leechcraft/installed")
 				.entryInfoList (QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
 		infoEntries += QDir ("/usr/local/share/leechcraft/installed")
 				.entryInfoList (QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
-#elif defined(Q_WS_WIN)
-		infoEntries += QDir (QApplication::applicationDirPath () + "/share/installed")
-				.entryInfoList (QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
-#elif defined(Q_WS_MAC)
-		infoEntries += QDir (QCoreApplication::applicationDirPath () + "/../installed")
-				.entryInfoList (QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
-
 #endif
 
 		QStringList entries;

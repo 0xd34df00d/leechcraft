@@ -22,7 +22,7 @@
 #include <QCoreApplication>
 #include <QtDebug>
 
-#if Q_WS_WIN
+#if Q_OS_WIN32
 #include <vmime/platforms/windows/windowsHandler.hpp>
 #else
 #include <vmime/platforms/posix/posixHandler.hpp>
@@ -45,7 +45,7 @@ namespace Snails
 	, ProgressManager_ (new ProgressManager (this))
 	, MsgView_ (new Util::ResourceLoader ("snails/msgview"))
 	{
-#if Q_WS_WIN
+#if Q_OS_WIN32
 		vmime::platform::setHandler<vmime::platforms::windows::windowsHandler> ();
 #else
 		vmime::platform::setHandler<vmime::platforms::posix::posixHandler> ();
