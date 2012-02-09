@@ -48,7 +48,7 @@ namespace Laure
 			GetInfo (),
 			GetIcon (),
 			50,
-			TabFeatures (TFOpenableByRequest | TFByDefault)
+			TabFeatures (TFByDefault)
 		};
 		TabClasses_ << tabClass;
 	}
