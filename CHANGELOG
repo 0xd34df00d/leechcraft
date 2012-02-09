@@ -5,6 +5,15 @@ Links to the corresponding development digests are also given for the
 relevant blocks of changes, so one could easily lookup 
 
 !!! HEAD
+!!! 0.5.0
+! Announce ( http://leechcraft.org/leechcraft-0.5.0-is-released ):
+* Azoth SS: fixed link colors in Black theme.
+* Azoth Xoox: always initialize message subtype.
+* BitTorrent: enable status notifications by default.
+* BitTorrent: properly handle Magnet links.
+* Other: updated installation icons.
+* Poshuku: don't notify about items already existing in Favourites.
+
 !!! 0.4.99
 ! Announce ( http://leechcraft.org/leechcraft-0.4.99-is-released ):
 * Azoth: entry info is copyable now.
