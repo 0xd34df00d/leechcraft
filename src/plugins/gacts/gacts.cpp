@@ -102,6 +102,7 @@ namespace GActs
 				SIGNAL (activated ()),
 				receiver,
 				method);
+		RegisteredShortcuts_ [id] = sh;
 	}
 
 	void Plugin::handleReceiverDeleted ()
