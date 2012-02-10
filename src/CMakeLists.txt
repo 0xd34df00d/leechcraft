@@ -139,7 +139,7 @@ OPTION (ENABLE_TABSESSMANAGER "Build Tab Session Manager" ${WITH_PLUGINS})
 OPTION (ENABLE_TABSLIST "Quick overview of tabs" ${WITH_PLUGINS})
 OPTION (ENABLE_LASTFMSCROBBLE "Build Last.fm scrobbler" OFF)
 OPTION (ENABLE_LHTR "Build LeechCraft HTML Text editoR" ${WITH_PLUGINS})
-OPTION (ENABLE_GACTS "Build Global Actions provider plugin" ${WITH_PLUGINS})
+OPTION (ENABLE_GACTS "Build Global Actions provider plugin" OFF)
 OPTION (ENABLE_CEMENTO "Build Cemento, LeechCraft common persistent storage" OFF)
 
 # Defunct
