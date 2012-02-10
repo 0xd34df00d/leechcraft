@@ -226,6 +226,16 @@ namespace Azoth
 				Core::Instance ().GetChatStylesOptionsModel ());
 		XmlSettingsDialog_->SetDataSource ("MUCWindowStyle",
 				Core::Instance ().GetChatStylesOptionsModel ());
+
+		Entity e = Util::MakeEntity (QVariant (),
+				QString (),
+				OnlyHandle,
+				"x-leechcraft/global-action-register");
+		e.Additional_ ["ActionID"] = GetUniqueID () + "_ShowNextUnread";
+		e.Additional_ ["Receiver"] = QVariant::fromValue<QObject*> (&Core::Instance ());
+		e.Additional_ ["Method"] = SLOT (handleShowNextUnread ());
+		e.Additional_ ["Shortcut"] = QKeySequence (QString ("Ctrl+Alt+Shift+M"));
+		emit gotEntity (e);
 	}
 
 	void Plugin::Release ()

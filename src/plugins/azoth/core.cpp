@@ -71,6 +71,7 @@
 #include "actionsmanager.h"
 #include "servicediscoverywidget.h"
 #include "importmanager.h"
+#include "unreadqueuemanager.h"
 
 namespace LeechCraft
 {
@@ -161,6 +162,7 @@ namespace Azoth
 	, CallManager_ (new CallManager)
 	, EventsNotifier_ (new EventsNotifier)
 	, ImportManager_ (new ImportManager)
+	, UnreadQueueManager_ (new UnreadQueueManager)
 	{
 		FillANFields ();
 
@@ -216,6 +218,10 @@ namespace Azoth
 				SIGNAL (entryMadeCurrent (QObject*)),
 				EventsNotifier_.get (),
 				SLOT (handleEntryMadeCurrent (QObject*)));
+		connect (ChatTabsManager_,
+				SIGNAL (entryMadeCurrent (QObject*)),
+				UnreadQueueManager_.get (),
+				SLOT (clearMessagesForEntry (QObject*)));
 
 		PluginManager_->RegisterHookable (this);
 		PluginManager_->RegisterHookable (CLModel_);
@@ -1711,6 +1717,11 @@ namespace Azoth
 		dia->show ();
 	}
 
+	void Core::handleShowNextUnread ()
+	{
+		UnreadQueueManager_->ShowNext ();
+	}
+
 	void Core::handleNewProtocols (const QList<QObject*>& protocols)
 	{
 		Q_FOREACH (QObject *protoObj, protocols)
@@ -2201,7 +2212,10 @@ namespace Azoth
 		ICLEntry *parentCL = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
 
 		if (ShouldCountUnread (parentCL, msg))
+		{
 			IncreaseUnreadCount (parentCL);
+			UnreadQueueManager_->AddMessage (msgObj);
+		}
 
 		if (msg->GetDirection () != IMessage::DIn ||
 				ChatTabsManager_->IsActiveChat (parentCL))

@@ -106,6 +106,7 @@ SET (SRCS
 	actionsmanager.cpp
 	importmanager.cpp
 	accountactionsmanager.cpp
+	unreadqueuemanager.cpp
 	)
 SET (HEADERS
 	azoth.h
@@ -151,6 +152,7 @@ SET (HEADERS
 	actionsmanager.h
 	importmanager.h
 	accountactionsmanager.h
+	unreadqueuemanager.h
 	animatediconmanager.h
 	sourcetrackingmodel.h
 	interfaces/iprotocolplugin.h
