@@ -18,6 +18,8 @@
 
 #include "gacts.h"
 #include <QIcon>
+#include <QxtGui/QxtGlobalShortcut>
+#include <interfaces/entitytesthandleresult.h>
 
 namespace LeechCraft
 {
@@ -33,29 +35,82 @@ namespace GActs
 
 	QByteArray Plugin::GetUniqueID () const
 	{
-		return "org.LeechCraft.$plug";
+		return "org.LeechCraft.GActs";
 	}
 
 	void Plugin::Release ()
 	{
+		qDeleteAll (RegisteredShortcuts_.values ());
+		RegisteredShortcuts_.clear ();
 	}
 
 	QString Plugin::GetName () const
 	{
-		return "$plug";
+		return "GActs";
 	}
 
 	QString Plugin::GetInfo () const
 	{
-		return tr ("");
+		return tr ("Provides support for Global Actions registration for other LeechCraft plugins.");
 	}
 
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon ();
 	}
+
+	EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const
+	{
+		const bool good = (e.Mime_ == "x-leechcraft/global-action-register" ||
+					e.Mime_ == "x-leechcraft/global-action-unregister") &&
+				e.Additional_.contains ("ActionID");
+		return EntityTestHandleResult (good ?
+					EntityTestHandleResult::PIdeal :
+					EntityTestHandleResult::PNone);
+	}
+
+	void Plugin::Handle (Entity e)
+	{
+		const QByteArray& id = e.Additional_ ["ActionID"].toByteArray ();
+
+		if (e.Mime_ == "x-leechcraft/global-action-unregister")
+		{
+			auto sh = RegisteredShortcuts_.take (id);
+			if (sh)
+				delete sh;
+			return;
+		}
+
+		QObject *receiver = e.Additional_ ["Receiver"].value<QObject*> ();
+		if (!receiver)
+			return;
+
+		const QByteArray& method = e.Additional_ ["Method"].toByteArray ();
+		if (method.isEmpty ())
+			return;
+
+		const QKeySequence& seq = e.Additional_ ["Shortcut"].value<QKeySequence> ();
+
+		connect (receiver,
+				SIGNAL (destroyed (QObject*)),
+				this,
+				SLOT (handleReceiverDeleted ()),
+				Qt::UniqueConnection);
+
+		QxtGlobalShortcut *sh = new QxtGlobalShortcut (seq, receiver);
+		connect (sh,
+				SIGNAL (activated ()),
+				receiver,
+				method);
+	}
+
+	void Plugin::handleReceiverDeleted ()
+	{
+		Q_FOREACH (auto sh, RegisteredShortcuts_.values ())
+			if (sh->parent () == sender ())
+				RegisteredShortcuts_.remove (RegisteredShortcuts_.key (sh));
+	}
 }
 }
 
 Q_EXPORT_PLUGIN2 (leechcraft_gacts, LeechCraft::GActs::Plugin);
-

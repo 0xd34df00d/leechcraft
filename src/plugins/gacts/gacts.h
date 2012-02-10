@@ -20,16 +20,22 @@
 
 #include <QObject>
 #include <interfaces/iinfo.h>
+#include <interfaces/ientityhandler.h>
+
+class QxtGlobalShortcut;
 
 namespace LeechCraft
 {
 namespace GActs
 {
 	class Plugin : public QObject
-					, public IInfo
+				 , public IInfo
+				 , public IEntityHandler
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo)
+		Q_INTERFACES (IInfo IEntityHandler)
+
+		QHash<QByteArray, QxtGlobalShortcut*> RegisteredShortcuts_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -38,6 +44,11 @@ namespace GActs
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+
+		EntityTestHandleResult CouldHandle (const Entity&) const;
+		void Handle (Entity);
+	private slots:
+		void handleReceiverDeleted ();
 	};
 }
 }
