@@ -123,7 +123,6 @@ namespace Acetamide
 		if (Roles_.isEmpty ())
 			return ChannelRole::Participant;
 
-		qSort (Roles_.begin (), Roles_.end ());
 		return Roles_.last ();
 	}
 
@@ -132,6 +131,7 @@ namespace Acetamide
 		if (!Roles_.contains (role))
 		{
 			Roles_ << role;
+			qSort (Roles_.begin (), Roles_.end ());
 			emit permsChanged ();
 		}
 	}
@@ -139,13 +139,17 @@ namespace Acetamide
 	void ChannelParticipantEntry::SetRoles (const QList<ChannelRole>& roles)
 	{
 		Roles_ = roles;
+		qSort (Roles_.begin (), Roles_.end ());
 		emit permsChanged ();
 	}
 
 	void ChannelParticipantEntry::RemoveRole (const ChannelRole& role)
 	{
 		if (Roles_.removeAll (role))
+		{
+			qSort (Roles_.begin (), Roles_.end ());
 			emit permsChanged ();
+		}
 	}
 
 	void ChannelParticipantEntry::handleWhoIs ()
