@@ -25,6 +25,13 @@ namespace NewLife
 {
 namespace Common
 {
+	QObject *IMImportPage::S_Plugin_ = 0;
+
+	void IMImportPage::SetPluginInstance (QObject *obj)
+	{
+		S_Plugin_ = obj;
+	}
+
 	IMImportPage::IMImportPage (QWidget *parent)
 	: QWizardPage (parent)
 	, AccountsModel_ (new QStandardItemModel (this))
