@@ -20,6 +20,7 @@
 #include <QtDebug>
 #include "importers/akregator/akregatorimporter.h"
 #include "importers/firefox/firefoximporter.h"
+#include "importers/kopete/kopeteimporter.h"
 #include "importers/ktorrent/ktorrentimporter.h"
 #include "importers/liferea/lifereaimporter.h"
 #include "importers/psiplus/psiplusimporter.h"
@@ -37,6 +38,7 @@ namespace NewLife
 
 		Importers_ << new Importers::AkregatorImporter (this);
 		Importers_ << new Importers::FirefoxImporter (this);
+		Importers_ << new Importers::KopeteImporter (this);
 		Importers_ << new Importers::KTorrentImporter (this);
 		Importers_ << new Importers::LifereaImporter (this);
 		Importers_ << new Importers::PsiPlusImporter (this);
