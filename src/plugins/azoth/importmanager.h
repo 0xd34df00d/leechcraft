@@ -32,6 +32,7 @@ namespace Azoth
 		Q_OBJECT
 
 		QMap<QString, IAccount*> AccID2OurID_;
+		QMap<QString, QList<Entity>> EntityQueues_;
 	public:
 		ImportManager (QObject* = 0);
 

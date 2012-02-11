@@ -77,7 +77,9 @@ namespace Azoth
 
 		QHash<QString, QString> entryIDcache;
 
-		const QVariantList& history = e.Additional_ ["History"].toList ();
+		QVariantList history;
+		Q_FOREACH (Entity qe, EntityQueues_.take (e.Additional_ ["AccountID"].toString ()))
+			history.append (qe.Additional_ ["History"].toList ());
 		qDebug () << history.size ();
 		Q_FOREACH (const QVariant& lineVar, history)
 		{
@@ -122,6 +124,11 @@ namespace Azoth
 				return acc;
 
 		const QString& impId = e.Additional_ ["AccountID"].toString ();
+
+		EntityQueues_ [impId] << e;
+		if (EntityQueues_ [impId].size () > 1)
+			return 0;
+
 		if (AccID2OurID_.contains (impId))
 			return AccID2OurID_ [impId];
 
