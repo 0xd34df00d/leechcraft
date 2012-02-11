@@ -18,9 +18,9 @@
 
 #pragma once
 
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-#include <interfaces/iprotocolplugin.h>
+#include <QObject>
+#include <TelepathyQt/Types>
+#include <TelepathyQt/ConnectionManager>
 
 namespace Tp
 {
@@ -33,37 +33,15 @@ namespace Azoth
 {
 namespace Astrality
 {
-	class CMWrapper;
-
-	class Plugin : public QObject
-					, public IInfo
-					, public IPlugin2
-					, public IProtocolPlugin
+	class CMWrapper : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IProtocolPlugin);
 
-		QList<CMWrapper*> Wrappers_;
+		Tp::ConnectionManagerPtr CM_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-
-		QSet<QByteArray> GetPluginClasses () const;
-
-		QObject* GetObject ();
-		QList<QObject*> GetProtocols () const;
-	public slots:
-		void initPlugin (QObject*);
+		CMWrapper (const QString&, QObject* = 0);
 	private slots:
-		void handleListNames (Tp::PendingOperation*);
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
-		void gotNewProtocols (const QList<QObject*>&);
+		void handleCMReady (Tp::PendingOperation*);
 	};
 }
 }

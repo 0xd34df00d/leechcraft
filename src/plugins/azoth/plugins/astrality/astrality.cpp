@@ -18,7 +18,13 @@
 
 #include "astrality.h"
 #include <QIcon>
+#include <QtDebug>
+#include <TelepathyQt/Types>
+#include <TelepathyQt/Debug>
+#include <TelepathyQt/ConnectionManager>
+#include <TelepathyQt/PendingStringList>
 #include <util/util.h>
+#include "cmwrapper.h"
 
 namespace LeechCraft
 {
@@ -28,14 +34,22 @@ namespace Astrality
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Tp::registerTypes ();
+		Tp::enableDebug (false);
+		Tp::enableWarnings (false);
 	}
 
 	void Plugin::SecondInit ()
 	{
+		connect (Tp::ConnectionManager::listNames (),
+				SIGNAL (finished (Tp::PendingOperation*)),
+				this,
+				SLOT (handleListNames (Tp::PendingOperation*)));
 	}
 
 	void Plugin::Release ()
 	{
+		qDeleteAll (Wrappers_);
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -77,6 +91,15 @@ namespace Astrality
 
 	void Plugin::initPlugin (QObject *proxy)
 	{
+	}
+
+	void Plugin::handleListNames (Tp::PendingOperation *op)
+	{
+		auto psl = qobject_cast<Tp::PendingStringList*> (op);
+		qDebug () << Q_FUNC_INFO << psl->result ();
+
+		Q_FOREACH (const QString& cmName, psl->result ())
+			Wrappers_ << new CMWrapper (cmName, this);
 	}
 }
 }

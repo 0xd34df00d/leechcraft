@@ -16,16 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#pragma once
-
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-#include <interfaces/iprotocolplugin.h>
-
-namespace Tp
-{
-	class PendingOperation;
-}
+#include "cmwrapper.h"
+#include <QtDebug>
+#include <TelepathyQt/ConnectionManager>
+#include <TelepathyQt/PendingReady>
 
 namespace LeechCraft
 {
@@ -33,38 +27,31 @@ namespace Azoth
 {
 namespace Astrality
 {
-	class CMWrapper;
-
-	class Plugin : public QObject
-					, public IInfo
-					, public IPlugin2
-					, public IProtocolPlugin
+	CMWrapper::CMWrapper (const QString& cmName, QObject *parent)
+	: QObject (parent)
+	, CM_ (Tp::ConnectionManager::create (cmName))
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IProtocolPlugin);
+		connect (CM_->becomeReady (),
+				SIGNAL (finished (Tp::PendingOperation*)),
+				this,
+				SLOT (handleCMReady (Tp::PendingOperation*)));
+	}
 
-		QList<CMWrapper*> Wrappers_;
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+	void CMWrapper::handleCMReady (Tp::PendingOperation *op)
+	{
+		if (op->isError ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< CM_->name ()
+					<< op->errorName ()
+					<< op->errorMessage ();
+			return;
+		}
 
-		QSet<QByteArray> GetPluginClasses () const;
-
-		QObject* GetObject ();
-		QList<QObject*> GetProtocols () const;
-	public slots:
-		void initPlugin (QObject*);
-	private slots:
-		void handleListNames (Tp::PendingOperation*);
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
-		void gotNewProtocols (const QList<QObject*>&);
-	};
+		qDebug () << Q_FUNC_INFO << CM_->name ();
+		Q_FOREACH (const QString& proto, CM_->supportedProtocols ())
+			qDebug () << "has protocol" << proto;
+	}
 }
 }
 }
