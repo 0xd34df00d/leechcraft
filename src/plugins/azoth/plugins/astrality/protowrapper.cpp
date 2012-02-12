@@ -195,6 +195,10 @@ namespace Astrality
 				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,
 				SIGNAL (gotEntity (LeechCraft::Entity)));
+		connect (w,
+				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)),
+				this,
+				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)));
 		Accounts_ << w;
 		emit accountAdded (w);
 	}

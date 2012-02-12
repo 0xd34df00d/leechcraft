@@ -148,7 +148,7 @@ namespace Astrality
 
 	void AccountWrapper::HandleAuth (bool failure)
 	{
-		const QString& key = GetAccountID () + "." +
+		const QString key = GetAccountID ().replace ('/', '_') + "." +
 				A_->parameters () ["account"].toString ();
 		const QString& msg = tr ("Enter password for account %1 with login %2:")
 				.arg (A_->displayName ())
