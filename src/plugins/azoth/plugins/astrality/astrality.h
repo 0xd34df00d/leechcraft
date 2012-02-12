@@ -61,6 +61,7 @@ namespace Astrality
 		void initPlugin (QObject*);
 	private slots:
 		void handleListNames (Tp::PendingOperation*);
+		void handleProtoWrappers (const QList<QObject*>&);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 

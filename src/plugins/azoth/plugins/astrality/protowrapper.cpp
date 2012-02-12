@@ -20,6 +20,9 @@
 #include <QIcon>
 #include <TelepathyQt/AccountManager>
 #include <TelepathyQt/PendingReady>
+#include <TelepathyQt/PendingAccount>
+#include <util/util.h>
+#include "accountregfirstpage.h"
 
 namespace LeechCraft
 {
@@ -32,6 +35,7 @@ namespace Astrality
 	: QObject (parent)
 	, CM_ (cm)
 	, ProtoName_ (protoName)
+	, ProtoInfo_ (CM_->protocol (ProtoName_))
 	{
 		auto accf = Tp::AccountFactory::create (QDBusConnection::sessionBus (),
 				Tp::Account::FeatureCore);
@@ -54,7 +58,10 @@ namespace Astrality
 
 	IProtocol::ProtocolFeatures ProtoWrapper::GetFeatures () const
 	{
-		return PFNone;
+		ProtocolFeatures features = PFNone;
+		if (ProtoInfo_.canRegister ())
+			features |= PFSupportsInBandRegistration;
+		return features;
 	}
 
 	QList<QObject*> ProtoWrapper::GetRegisteredAccounts ()
@@ -74,7 +81,7 @@ namespace Astrality
 
 	QIcon ProtoWrapper::GetProtocolIcon () const
 	{
-		return QIcon ();
+		return QIcon::fromTheme (ProtoInfo_.iconName ());
 	}
 
 	QByteArray ProtoWrapper::GetProtocolID () const
@@ -85,9 +92,13 @@ namespace Astrality
 		return res;
 	}
 
-	QList<QWidget*> ProtoWrapper::GetAccountRegistrationWidgets (IProtocol::AccountAddOptions)
+	QList<QWidget*> ProtoWrapper::GetAccountRegistrationWidgets (IProtocol::AccountAddOptions opts)
 	{
-		return QList<QWidget*> ();
+		const bool reg = opts & AAORegisterNewAccount;
+		auto fpage = new AccountRegFirstPage (ProtoInfo_, reg);
+		if (reg)
+			fpage->setProperty ("Astrality/RegisterNew", true);
+		return QList<QWidget*> () << fpage;
 	}
 
 	QWidget* ProtoWrapper::GetMUCJoinWidget ()
@@ -95,8 +106,39 @@ namespace Astrality
 		return 0;
 	}
 
-	void ProtoWrapper::RegisterAccount (const QString&, const QList<QWidget*>&)
+	void ProtoWrapper::RegisterAccount (const QString& name, const QList<QWidget*>& widgets)
 	{
+		auto fpg = qobject_cast<AccountRegFirstPage*> (widgets.value (0));
+		if (!fpg)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "incorrect first page"
+					<< widgets;
+			return;
+		}
+
+		QVariantMap params;
+		auto chSet = [&params, &ProtoInfo_] (QString param, QVariant value)
+		{
+			if (ProtoInfo_.hasParameter (param))
+				params [param] = value;
+		};
+		chSet ("account", fpg->GetAccountID ());
+		if (!fpg->GetServer ().isEmpty ())
+			chSet ("server", fpg->GetServer ());
+		if (fpg->GetPort ())
+			chSet ("port", fpg->GetPort ());
+		chSet ("require-encryption", fpg->ShouldRequireEncryption ());
+		if (fpg->property ("Astrality/RegisterNew").toBool ())
+		{
+			chSet ("password", fpg->GetPassword ());
+			chSet ("register", true);
+		}
+
+		connect (AM_->createAccount (CM_->name (), ProtoName_, name, params, QVariantMap ()),
+				SIGNAL (finished (Tp::PendingOperation*)),
+				this,
+				SLOT (handleAccountCreated (Tp::PendingOperation*)));
 	}
 
 	void ProtoWrapper::RemoveAccount (QObject*)
@@ -118,8 +160,32 @@ namespace Astrality
 			handleNewAccount (acc);
 	}
 
-	void ProtoWrapper::handleNewAccount (Tp::AccountPtr)
+	void ProtoWrapper::handleAccountCreated (Tp::PendingOperation *po)
 	{
+		if (po->isError ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< po->errorName ()
+					<< po->errorMessage ();
+
+			emit gotEntity (Util::MakeNotification ("Azoth",
+						tr ("Failed to create account: %1 (%2).")
+							.arg (po->errorName ())
+							.arg (po->errorMessage ()),
+						PCritical_));
+			return;
+		}
+
+		auto pacc = qobject_cast<Tp::PendingAccount*> (po);
+		handleNewAccount (pacc->account ());
+	}
+
+	void ProtoWrapper::handleNewAccount (Tp::AccountPtr acc)
+	{
+		if (ProtoName_ != acc->protocolName ())
+			return;
+
+		qDebug () << Q_FUNC_INFO << ProtoName_ << acc->nickname () << acc->iconName ();
 	}
 }
 }

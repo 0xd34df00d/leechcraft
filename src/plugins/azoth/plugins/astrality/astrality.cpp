@@ -110,7 +110,20 @@ namespace Astrality
 					SIGNAL (gotProtoWrappers (QList<QObject*>)),
 					this,
 					SIGNAL (gotNewProtocols (QList<QObject*>)));
+			connect (cmw,
+					SIGNAL (gotProtoWrappers (QList<QObject*>)),
+					this,
+					SLOT (handleProtoWrappers (QList<QObject*>)));
 		}
+	}
+
+	void Plugin::handleProtoWrappers (const QList<QObject*>& wrappers)
+	{
+		Q_FOREACH (QObject *obj, wrappers)
+			connect (obj,
+					SIGNAL (gotEntity (LeechCraft::Entity)),
+					this,
+					SIGNAL (gotEntity (LeechCraft::Entity)));
 	}
 }
 }

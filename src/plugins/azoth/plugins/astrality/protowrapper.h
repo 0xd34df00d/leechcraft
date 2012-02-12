@@ -23,6 +23,7 @@
 #include <TelepathyQt/ConnectionManager>
 #include <TelepathyQt/AccountManager>
 #include <interfaces/iprotocol.h>
+#include <interfaces/structures.h>
 
 namespace LeechCraft
 {
@@ -38,6 +39,7 @@ namespace Astrality
 
 		Tp::ConnectionManagerPtr CM_;
 		QString ProtoName_;
+		const Tp::ProtocolInfo ProtoInfo_;
 
 		Tp::AccountManagerPtr AM_;
 	public:
@@ -57,10 +59,13 @@ namespace Astrality
 		void RemoveAccount (QObject*);
 	private slots:
 		void handleAMReady (Tp::PendingOperation*);
+		void handleAccountCreated (Tp::PendingOperation*);
 		void handleNewAccount (Tp::AccountPtr);
 	signals:
 		void accountAdded (QObject*);
 		void accountRemoved (QObject*);
+
+		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }
