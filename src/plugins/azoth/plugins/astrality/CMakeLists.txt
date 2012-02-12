@@ -17,13 +17,16 @@ SET (ASTRALITY_SRCS
 	astrality.cpp
 	cmwrapper.cpp
 	protowrapper.cpp
+	accountregfirstpage.cpp
 	)
 SET (ASTRALITY_HEADERS
 	astrality.h
 	cmwrapper.h
 	protowrapper.h
+	accountregfirstpage.h
 	)
 SET (ASTRALITY_FORMS
+	accountregfirstpage.ui
 	)
 #SET (ASTRALITY_RESOURCES azothastralityresources.qrc)
 #CreateTrVars ("azoth_astrality" "de;en;fr;it;ru_RU;uk_UA" ASTRALITY_TRANSLATIONS ASTRALITY_COMPILED_TRANSLATIONS)
@@ -31,7 +34,7 @@ SET (ASTRALITY_FORMS
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (ASTRALITY_MOC_SRCS ${ASTRALITY_HEADERS})
 ENDIF (NOT LC_NO_MOC)
-#QT4_WRAP_UI (ASTRALITY_UIS_H ${ASTRALITY_FORMS})
+QT4_WRAP_UI (ASTRALITY_UIS_H ${ASTRALITY_FORMS})
 #QT4_ADD_RESOURCES (ASTRALITY_RCCS ${ASTRALITY_RESOURCES})
 
 #ADD_CUSTOM_COMMAND (OUTPUT
