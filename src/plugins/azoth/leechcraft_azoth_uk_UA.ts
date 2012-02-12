@@ -13,7 +13,7 @@
         <location filename="accounthandlerchooserdialog.ui" line="14"/>
         <source>Choose account</source>
         <oldsource>Chose account</oldsource>
-        <translation>Вибрати аккаунт</translation>
+        <translation>Вибрати акаунт</translation>
     </message>
     <message>
         <location filename="accounthandlerchooserdialog.ui" line="29"/>
@@ -376,7 +376,7 @@
     <message>
         <location filename="accountslistwidget.cpp" line="108"/>
         <source>The account %1 doesn&apos;t support encryption.</source>
-        <translation>Акаунт %1 не пыдтримуе шифрування.</translation>
+        <translation>Акаунт %1 не підтримує шифрування.</translation>
     </message>
     <message>
         <location filename="accountslistwidget.cpp" line="113"/>
@@ -386,7 +386,7 @@
     <message>
         <location filename="accountslistwidget.cpp" line="136"/>
         <source>Are you sure you want to remove the account %1?</source>
-        <translation>Ви дійсно бажаєте відалити акаунт%1?</translation>
+        <translation>Ви дійсно бажаєте видалити акаунт%1?</translation>
     </message>
 </context>
 <context>
@@ -484,7 +484,7 @@
     <message>
         <location filename="actionsmanager.cpp" line="350"/>
         <source>Invite...</source>
-        <translation>Інветувати ...</translation>
+        <translation>Запросити...</translation>
     </message>
     <message>
         <location filename="actionsmanager.cpp" line="360"/>
@@ -607,7 +607,7 @@
     <message>
         <location filename="activitydialog.cpp" line="55"/>
         <source>buying_groceries</source>
-        <translation>покупає_бакалію</translation>
+        <translation>купляє_бакалію</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="56"/>
@@ -642,7 +642,7 @@
     <message>
         <location filename="activitydialog.cpp" line="62"/>
         <source>running_an_errand</source>
-        <translation>біжить_на_доручення</translation>
+        <translation>біжить_за_дорученням</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="63"/>
@@ -748,17 +748,17 @@
     <message>
         <location filename="activitydialog.cpp" line="83"/>
         <source>shaving</source>
-        <translation>миеться_у_душі</translation>
+        <translation>миється_у_душі</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="84"/>
         <source>taking_a_bath</source>
-        <translation>миеться_в_ванній</translation>
+        <translation>миється_в_ванній</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="85"/>
         <source>taking_a_shower</source>
-        <translation>миеться_в_душі</translation>
+        <translation>миється_в_душі</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="86"/>
@@ -843,7 +843,7 @@
     <message>
         <location filename="activitydialog.cpp" line="102"/>
         <source>socializing</source>
-        <translation>спілкуеться</translation>
+        <translation>спілкується</translation>
     </message>
     <message>
         <location filename="activitydialog.cpp" line="103"/>
@@ -959,17 +959,17 @@
     <message>
         <location filename="bookmarksmanagerdialog.cpp" line="259"/>
         <source>Save the bookmark?</source>
-        <translation>Засейвувати букмарку?</translation>
+        <translation>Зберегти закладку?</translation>
     </message>
     <message>
         <location filename="bookmarksmanagerdialog.cpp" line="260"/>
         <source>You&apos;ve changed the bookmark. Do you want to save the changes?</source>
-        <translation>Ви змінили букмарки. Ви бажаєте засейвувати зміни?</translation>
+        <translation>Ви змінили закладки. Ви бажаєте зберегти зміни?</translation>
     </message>
     <message>
         <location filename="bookmarksmanagerdialog.cpp" line="294"/>
         <source>Are you sure you want to delete the bookmark %1?</source>
-        <translation>Ви дійсно бажаєте відалити закладку %1?</translation>
+        <translation>Ви дійсно бажаєте видалити закладку %1?</translation>
     </message>
 </context>
 <context>
@@ -978,7 +978,7 @@
         <location filename="clmodel.cpp" line="192"/>
         <source>Are you sure you want to send %n files to %1?</source>
         <oldsource>Are you sure you want to send %1 files to %2?</oldsource>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
+        <translation><numerusform>Ви дійсно хочете надіслати файл %n до %1?</numerusform><numerusform>Ви дійсно хочете надіслати файли %n до %1?</numerusform><numerusform>Ви дійсно хочете надіслати файли %n до %1?</numerusform></translation>
     </message>
     <message>
         <location filename="clmodel.cpp" line="199"/>
@@ -1057,22 +1057,22 @@
     <message>
         <location filename="chattab.cpp" line="999"/>
         <source>Enable rich text</source>
-        <translation>Включити форматуванний текст</translation>
+        <translation>Включити форматований текст</translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="192"/>
         <source>Unable to load style, please check you&apos;ve enabled at least one styles plugin.</source>
-        <translation>Неможливо загрузити стиль , будь ласка перевірте наявність включеного плагіна стилів.</translation>
+        <translation>Неможливо завантажити стиль, будь ласка перевірте наявність включеного плагіна стилів.</translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="241"/>
         <source>A tab with a chat session</source>
-        <translation>Вкладка з сессіею чату</translation>
+        <translation>Вкладка з сессією чату</translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="446"/>
         <source>Select file to send</source>
-        <translation>Обрати файл для відправлення</translation>
+        <translation>Обрати файл для надсилання</translation>
     </message>
     <message>
         <location filename="chattab.cpp" line="558"/>
@@ -1399,7 +1399,7 @@
     <message numerus="yes">
         <location filename="core.cpp" line="2209"/>
         <source>%n message(s) in</source>
-        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
+        <translation><numerusform>%n вхідне повідомлення</numerusform><numerusform>%n вхідних повідомлень</numerusform><numerusform>%n вхідних повідомлень</numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="core.cpp" line="2223"/>
@@ -3050,7 +3050,7 @@
     <message>
         <location filename="dummy.cpp" line="56"/>
         <source>Ctrl+Enter</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+Enter</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="57"/>
@@ -3162,12 +3162,12 @@
     <message>
         <location filename="dummy.cpp" line="78"/>
         <source>Show when participant ends conversation</source>
-        <translation type="unfinished"/>
+        <translation>Показувати, коли співрозмовник закінчує розмову.</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="79"/>
         <source>Show joins and leaves in MUCs</source>
-        <translation type="unfinished"/>
+        <translation>Показувати входи і виходи з MUCів</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="80"/>

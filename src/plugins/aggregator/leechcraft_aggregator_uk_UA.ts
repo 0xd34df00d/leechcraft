@@ -171,7 +171,7 @@
     <message>
         <location filename="export2fb2dialog.ui" line="73"/>
         <source>ID</source>
-        <translation type="unfinished"/>
+        <translation>ID</translation>
     </message>
     <message>
         <location filename="export2fb2dialog.ui" line="78"/>
@@ -1370,7 +1370,7 @@
     <message>
         <location filename="importopml.cpp" line="118"/>
         <source>Could not open file %1 for reading.</source>
-        <translation type="unfinished"/>
+        <translation>Неможливо відкрити файл %1 для читання.</translation>
     </message>
     <message>
         <location filename="importopml.cpp" line="137"/>

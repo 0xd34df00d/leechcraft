@@ -680,13 +680,13 @@ IPv6 input mask</extracomment>
         <location filename="ipfilterdialog.cpp" line="79"/>
         <location filename="ipfilterdialog.cpp" line="98"/>
         <source>block</source>
-        <translation type="unfinished"/>
+        <translation>Bloquear</translation>
     </message>
     <message>
         <location filename="ipfilterdialog.cpp" line="46"/>
         <location filename="ipfilterdialog.cpp" line="80"/>
         <source>allow</source>
-        <translation type="unfinished"/>
+        <translation>Permitir</translation>
     </message>
 </context>
 <context>
@@ -1259,7 +1259,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="newtorrentfirststep.ui" line="24"/>
         <source>Output:</source>
-        <translation type="unfinished"/>
+        <translation>Salida:</translation>
     </message>
     <message>
         <location filename="newtorrentfirststep.ui" line="36"/>
@@ -1504,7 +1504,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="startupfirstpage.ui" line="110"/>
         <source>Default</source>
-        <translation type="unfinished"/>
+        <translation>Predeterminado</translation>
     </message>
     <message>
         <location filename="startupfirstpage.ui" line="115"/>
@@ -2037,7 +2037,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="tabwidget.ui" line="1643"/>
         <source>Path:</source>
-        <translation type="unfinished"/>
+        <translation>Ruta:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="1671"/>
@@ -2238,7 +2238,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="dummy.cpp" line="2"/>
         <source>Network</source>
-        <translation type="unfinished"/>
+        <translation>La red</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="3"/>
@@ -2286,7 +2286,7 @@ IPv6 input mask</extracomment>
         <location filename="dummy.cpp" line="12"/>
         <location filename="dummy.cpp" line="20"/>
         <source>Host:</source>
-        <translation type="unfinished"/>
+        <translation>Host:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="13"/>
@@ -2304,13 +2304,13 @@ IPv6 input mask</extracomment>
         <location filename="dummy.cpp" line="15"/>
         <location filename="dummy.cpp" line="23"/>
         <source>Proxy type:</source>
-        <translation type="unfinished"/>
+        <translation>Tipo de proxy:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="16"/>
         <location filename="dummy.cpp" line="24"/>
         <source>SOCKS5</source>
-        <translation type="unfinished"/>
+        <translation>SOCKS5</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="17"/>
@@ -2322,7 +2322,7 @@ IPv6 input mask</extracomment>
         <location filename="dummy.cpp" line="18"/>
         <location filename="dummy.cpp" line="26"/>
         <source>HTTP</source>
-        <translation type="unfinished"/>
+        <translation>HTTP</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="19"/>
@@ -2724,7 +2724,7 @@ IPv6 input mask</extracomment>
         <location filename="dummy.cpp" line="118"/>
         <location filename="dummy.cpp" line="120"/>
         <source> min</source>
-        <translation type="unfinished"/>
+        <translation>min</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="119"/>
@@ -2750,7 +2750,7 @@ IPv6 input mask</extracomment>
         <location filename="dummy.cpp" line="125"/>
         <location filename="dummy.cpp" line="127"/>
         <source>Local settings</source>
-        <translation type="unfinished"/>
+        <translation>Ajustes locales</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="128"/>

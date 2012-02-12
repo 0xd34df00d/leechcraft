@@ -368,7 +368,7 @@
     <message>
         <location filename="lackman.cpp" line="261"/>
         <source>Package information</source>
-        <translation type="unfinished"/>
+        <translation>Informacion de paquete</translation>
     </message>
     <message>
         <location filename="lackman.cpp" line="266"/>

@@ -24,7 +24,7 @@
     <message>
         <location filename="affiliationselectordialog.ui" line="48"/>
         <source>None</source>
-        <translation type="unfinished"/>
+        <translation>Жодного</translation>
     </message>
     <message>
         <location filename="affiliationselectordialog.ui" line="55"/>
@@ -229,7 +229,7 @@
     <message>
         <location filename="adhoccommandserver.cpp" line="209"/>
         <source>Status</source>
-        <translation type="unfinished"/>
+        <translation>Статус</translation>
     </message>
     <message>
         <location filename="adhoccommandserver.cpp" line="217"/>
@@ -650,7 +650,7 @@
     <message>
         <location filename="jabbersearchsession.cpp" line="87"/>
         <source>(unknown)</source>
-        <translation type="unfinished"/>
+        <translation>(Невідоме)</translation>
     </message>
     <message>
         <location filename="jabbersearchsession.cpp" line="145"/>
@@ -775,7 +775,7 @@
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="86"/>
         <source>Action</source>
-        <translation type="unfinished"/>
+        <translation>Екшн</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="86"/>
@@ -785,7 +785,7 @@
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="97"/>
         <source>None</source>
-        <translation type="unfinished"/>
+        <translation>Жодного</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="100"/>
@@ -815,7 +815,7 @@
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="119"/>
         <source>All</source>
-        <translation type="unfinished"/>
+        <translation>Все</translation>
     </message>
     <message>
         <location filename="privacylistsconfigdialog.cpp" line="123"/>
@@ -873,7 +873,7 @@
     <message>
         <location filename="privacylistsitemdialog.cpp" line="129"/>
         <source>None</source>
-        <translation type="unfinished"/>
+        <translation>Жодного</translation>
     </message>
 </context>
 <context>
@@ -916,7 +916,7 @@
     <message>
         <location filename="roomclentry.cpp" line="77"/>
         <source>None</source>
-        <translation type="unfinished"/>
+        <translation>Жодного</translation>
     </message>
     <message>
         <location filename="roomclentry.cpp" line="78"/>
@@ -1162,7 +1162,7 @@
     <message>
         <location filename="sdsession.cpp" line="210"/>
         <source>Language:</source>
-        <translation type="unfinished"/>
+        <translation>Мова:</translation>
     </message>
     <message>
         <location filename="sdsession.cpp" line="220"/>
@@ -1327,12 +1327,12 @@
     <message>
         <location filename="privacylistsitemdialog.ui" line="51"/>
         <source>Value:</source>
-        <translation type="unfinished"/>
+        <translation>Значення:</translation>
     </message>
     <message>
         <location filename="privacylistsitemdialog.ui" line="65"/>
         <source>Action:</source>
-        <translation type="unfinished"/>
+        <translation>Дія:</translation>
     </message>
     <message>
         <location filename="privacylistsitemdialog.ui" line="75"/>
@@ -1352,7 +1352,7 @@
     <message>
         <location filename="privacylistsitemdialog.ui" line="94"/>
         <source>Message</source>
-        <translation type="unfinished"/>
+        <translation>Повідомлення</translation>
     </message>
     <message>
         <location filename="privacylistsitemdialog.ui" line="101"/>
