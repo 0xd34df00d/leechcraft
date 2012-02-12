@@ -31,6 +31,8 @@ namespace Azoth
 {
 namespace Astrality
 {
+	class AccountWrapper;
+
 	class ProtoWrapper : public QObject
 					   , public IProtocol
 	{
@@ -42,6 +44,8 @@ namespace Astrality
 		const Tp::ProtocolInfo ProtoInfo_;
 
 		Tp::AccountManagerPtr AM_;
+
+		QList<AccountWrapper*> Accounts_;
 	public:
 		ProtoWrapper (Tp::ConnectionManagerPtr,
 				const QString&, QObject*);

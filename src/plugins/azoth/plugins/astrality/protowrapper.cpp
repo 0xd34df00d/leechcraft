@@ -23,6 +23,7 @@
 #include <TelepathyQt/PendingAccount>
 #include <util/util.h>
 #include "accountregfirstpage.h"
+#include "accountwrapper.h"
 
 namespace LeechCraft
 {
@@ -66,7 +67,10 @@ namespace Astrality
 
 	QList<QObject*> ProtoWrapper::GetRegisteredAccounts ()
 	{
-		return QList<QObject*> ();
+		QList<QObject*> result;
+		Q_FOREACH (auto acc, Accounts_)
+			result << acc;
+		return result;
 	}
 
 	QObject* ProtoWrapper::GetParentProtocolPlugin () const
@@ -186,6 +190,13 @@ namespace Astrality
 			return;
 
 		qDebug () << Q_FUNC_INFO << ProtoName_ << acc->nickname () << acc->iconName ();
+		auto w = new AccountWrapper (acc, this);
+		connect (w,
+				SIGNAL (gotEntity (LeechCraft::Entity)),
+				this,
+				SIGNAL (gotEntity (LeechCraft::Entity)));
+		Accounts_ << w;
+		emit accountAdded (w);
 	}
 }
 }
