@@ -17,6 +17,8 @@
  **********************************************************************/
 
 #include "astralityutil.h"
+#include <TelepathyQt/Presence>
+#include <interfaces/iclentry.h>
 
 namespace LeechCraft
 {
@@ -56,6 +58,7 @@ namespace Astrality
 		case SOffline:
 			return Tp::ConnectionPresenceTypeOffline;
 		case SOnline:
+		case SChat:
 			return Tp::ConnectionPresenceTypeAvailable;
 		case SAway:
 			return Tp::ConnectionPresenceTypeAway;
@@ -66,9 +69,35 @@ namespace Astrality
 		case SInvisible:
 			return Tp::ConnectionPresenceTypeHidden;
 		case SInvalid:
+		case SProbe:
+		case SConnecting:
 			return Tp::ConnectionPresenceTypeUnknown;
+		case SError:
+			return Tp::ConnectionPresenceTypeError;
 		default:
 			return Tp::ConnectionPresenceTypeUnknown;
+		}
+	}
+
+	Tp::Presence Status2Telepathy (const EntryStatus& status)
+	{
+		switch (status.State_)
+		{
+			case SOffline:
+				return Tp::Presence::offline (status.StatusString_);
+			case SOnline:
+			case SChat:
+				return Tp::Presence::available (status.StatusString_);
+			case SAway:
+				return Tp::Presence::away (status.StatusString_);
+			case SDND:
+				return Tp::Presence::busy (status.StatusString_);
+			case SXA:
+				return Tp::Presence::xa (status.StatusString_);
+			case SInvisible:
+				return Tp::Presence::hidden (status.StatusString_);
+			default:
+				return Tp::Presence ();
 		}
 	}
 }

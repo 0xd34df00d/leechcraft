@@ -21,14 +21,22 @@
 #include <TelepathyQt/Constants>
 #include <interfaces/azothcommon.h>
 
+namespace Tp
+{
+	class Presence;
+}
+
 namespace LeechCraft
 {
 namespace Azoth
 {
+struct EntryStatus;
+
 namespace Astrality
 {
 	State StateTelepathy2Azoth (Tp::ConnectionPresenceType);
 	Tp::ConnectionPresenceType StateAzoth2Telepathy (State);
+	Tp::Presence Status2Telepathy (const EntryStatus&);
 }
 }
 }
