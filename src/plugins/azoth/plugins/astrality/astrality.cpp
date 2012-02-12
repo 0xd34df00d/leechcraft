@@ -86,7 +86,10 @@ namespace Astrality
 
 	QList<QObject*> Plugin::GetProtocols () const
 	{
-		return QList<QObject*> ();
+		QList<QObject*> result;
+		Q_FOREACH (auto cmw, Wrappers_)
+			result << cmw->GetProtocols ();
+		return result;
 	}
 
 	void Plugin::initPlugin (QObject *proxy)
@@ -99,7 +102,15 @@ namespace Astrality
 		qDebug () << Q_FUNC_INFO << psl->result ();
 
 		Q_FOREACH (const QString& cmName, psl->result ())
-			Wrappers_ << new CMWrapper (cmName, this);
+		{
+			auto cmw = new CMWrapper (cmName, this);
+			Wrappers_ << cmw;
+
+			connect (cmw,
+					SIGNAL (gotProtoWrappers (QList<QObject*>)),
+					this,
+					SIGNAL (gotNewProtocols (QList<QObject*>)));
+		}
 	}
 }
 }

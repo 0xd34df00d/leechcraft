@@ -20,6 +20,7 @@
 #include <QtDebug>
 #include <TelepathyQt/ConnectionManager>
 #include <TelepathyQt/PendingReady>
+#include "protowrapper.h"
 
 namespace LeechCraft
 {
@@ -37,6 +38,14 @@ namespace Astrality
 				SLOT (handleCMReady (Tp::PendingOperation*)));
 	}
 
+	QList<QObject*> CMWrapper::GetProtocols () const
+	{
+		QList<QObject*> result;
+		Q_FOREACH (auto pw, ProtoWrappers_)
+			result << pw;
+		return result;
+	}
+
 	void CMWrapper::handleCMReady (Tp::PendingOperation *op)
 	{
 		if (op->isError ())
@@ -49,8 +58,19 @@ namespace Astrality
 		}
 
 		qDebug () << Q_FUNC_INFO << CM_->name ();
+		QList<QObject*> newProtoWrappers;
 		Q_FOREACH (const QString& proto, CM_->supportedProtocols ())
+		{
 			qDebug () << "has protocol" << proto;
+			if (proto == "jabber" || proto == "irc")
+				continue;
+
+			auto pw = new ProtoWrapper (CM_, proto, this);
+			ProtoWrappers_ << pw;
+			newProtoWrappers << pw;
+		}
+
+		emit gotProtoWrappers (newProtoWrappers);
 	}
 }
 }

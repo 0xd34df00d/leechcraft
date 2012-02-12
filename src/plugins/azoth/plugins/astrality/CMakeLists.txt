@@ -16,10 +16,12 @@ INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
 SET (ASTRALITY_SRCS
 	astrality.cpp
 	cmwrapper.cpp
+	protowrapper.cpp
 	)
 SET (ASTRALITY_HEADERS
 	astrality.h
 	cmwrapper.h
+	protowrapper.h
 	)
 SET (ASTRALITY_FORMS
 	)

@@ -22,26 +22,28 @@
 #include <TelepathyQt/Types>
 #include <TelepathyQt/ConnectionManager>
 
-namespace Tp
-{
-	class PendingOperation;
-}
-
 namespace LeechCraft
 {
 namespace Azoth
 {
 namespace Astrality
 {
+	class ProtoWrapper;
+
 	class CMWrapper : public QObject
 	{
 		Q_OBJECT
 
 		Tp::ConnectionManagerPtr CM_;
+		QList<ProtoWrapper*> ProtoWrappers_;
 	public:
 		CMWrapper (const QString&, QObject* = 0);
+
+		QList<QObject*> GetProtocols () const;
 	private slots:
 		void handleCMReady (Tp::PendingOperation*);
+	signals:
+		void gotProtoWrappers (QList<QObject*>);
 	};
 }
 }

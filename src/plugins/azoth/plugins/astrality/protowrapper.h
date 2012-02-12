@@ -18,14 +18,11 @@
 
 #pragma once
 
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-#include <interfaces/iprotocolplugin.h>
-
-namespace Tp
-{
-	class PendingOperation;
-}
+#include <QObject>
+#include <TelepathyQt/Types>
+#include <TelepathyQt/ConnectionManager>
+#include <TelepathyQt/AccountManager>
+#include <interfaces/iprotocol.h>
 
 namespace LeechCraft
 {
@@ -33,38 +30,37 @@ namespace Azoth
 {
 namespace Astrality
 {
-	class CMWrapper;
-
-	class Plugin : public QObject
-					, public IInfo
-					, public IPlugin2
-					, public IProtocolPlugin
+	class ProtoWrapper : public QObject
+					   , public IProtocol
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IProtocolPlugin);
+		Q_INTERFACES (LeechCraft::Azoth::IProtocol);
 
-		QList<CMWrapper*> Wrappers_;
+		Tp::ConnectionManagerPtr CM_;
+		QString ProtoName_;
+
+		Tp::AccountManagerPtr AM_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-
-		QSet<QByteArray> GetPluginClasses () const;
+		ProtoWrapper (Tp::ConnectionManagerPtr,
+				const QString&, QObject*);
 
 		QObject* GetObject ();
-		QList<QObject*> GetProtocols () const;
-	public slots:
-		void initPlugin (QObject*);
+		ProtocolFeatures GetFeatures () const;
+		QList<QObject*> GetRegisteredAccounts ();
+		QObject* GetParentProtocolPlugin () const;
+		QString GetProtocolName () const;
+		QIcon GetProtocolIcon () const;
+		QByteArray GetProtocolID () const;
+		QList<QWidget*> GetAccountRegistrationWidgets (AccountAddOptions);
+		void RegisterAccount (const QString&, const QList<QWidget*>&);
+		QWidget* GetMUCJoinWidget ();
+		void RemoveAccount (QObject*);
 	private slots:
-		void handleListNames (Tp::PendingOperation*);
+		void handleAMReady (Tp::PendingOperation*);
+		void handleNewAccount (Tp::AccountPtr);
 	signals:
-		void gotEntity (const LeechCraft::Entity&);
-
-		void gotNewProtocols (const QList<QObject*>&);
+		void accountAdded (QObject*);
+		void accountRemoved (QObject*);
 	};
 }
 }
