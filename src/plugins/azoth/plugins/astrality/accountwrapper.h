@@ -58,8 +58,12 @@ namespace Astrality
 				const QString&, const QStringList&);
 		void RemoveEntry (QObject*);
 		QObject* GetTransferManager() const;
+	private:
+		void HandleAuth (bool failure);
 	private slots:
 		void handleEnabled (Tp::PendingOperation*);
+		void handleConnStatusChanged (Tp::ConnectionStatus);
+		void handlePasswordFixed (Tp::PendingOperation*);
 		void handleRequestedPresenceFinish (Tp::PendingOperation*);
 		void handleCurrentPresence (Tp::Presence);
 	signals:
@@ -75,6 +79,7 @@ namespace Astrality
 		void mucInvitationReceived (const QVariantMap&, const QString&, const QString&);
 
 		void gotEntity (LeechCraft::Entity);
+		void delegateEntity (LeechCraft::Entity, int*, QObject**);
 	};
 }
 }

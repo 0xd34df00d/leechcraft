@@ -120,10 +120,16 @@ namespace Astrality
 	void Plugin::handleProtoWrappers (const QList<QObject*>& wrappers)
 	{
 		Q_FOREACH (QObject *obj, wrappers)
+		{
 			connect (obj,
 					SIGNAL (gotEntity (LeechCraft::Entity)),
 					this,
 					SIGNAL (gotEntity (LeechCraft::Entity)));
+			connect (obj,
+					SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)),
+					this,
+					SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)));
+		}
 	}
 }
 }

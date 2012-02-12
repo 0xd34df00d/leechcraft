@@ -18,7 +18,10 @@
 
 #include "accountwrapper.h"
 #include <TelepathyQt/PendingOperation>
+#include <TelepathyQt/PendingStringList>
+#include <TelepathyQt/Connection>
 #include <util/util.h>
+#include <util/passutils.h>
 #include "astralityutil.h"
 
 namespace LeechCraft
@@ -39,6 +42,10 @@ namespace Astrality
 				SIGNAL (currentPresenceChanged (Tp::Presence)),
 				this,
 				SLOT (handleCurrentPresence (Tp::Presence)));
+		connect (A_.data (),
+				SIGNAL (connectionStatusChanged (Tp::ConnectionStatus)),
+				this,
+				SLOT (handleConnStatusChanged (Tp::ConnectionStatus)));
 	}
 
 	QObject* AccountWrapper::GetObject ()
@@ -139,6 +146,26 @@ namespace Astrality
 		return 0;
 	}
 
+	void AccountWrapper::HandleAuth (bool failure)
+	{
+		const QString& key = GetAccountID () + "." +
+				A_->parameters () ["account"].toString ();
+		const QString& msg = tr ("Enter password for account %1 with login %2:")
+				.arg (A_->displayName ())
+				.arg (A_->parameters () ["account"].toString ());
+
+		const QString& pass = Util::GetPassword (key, msg, this, !failure);
+		if (pass.isEmpty ())
+			return;
+
+		QVariantMap map;
+		map ["password"] = pass;
+		connect (A_->updateParameters (map, QStringList ()),
+				SIGNAL (finished (Tp::PendingOperation*)),
+				this,
+				SLOT (handlePasswordFixed (Tp::PendingOperation*)));
+	}
+
 	void AccountWrapper::handleEnabled (Tp::PendingOperation *po)
 	{
 		qDebug () << Q_FUNC_INFO << po->isError ();
@@ -154,11 +181,76 @@ namespace Astrality
 						.arg (po->errorMessage ()),
 					PCritical_));
 		}
+
+		HandleAuth (false);
+	}
+
+	void AccountWrapper::handleConnStatusChanged (Tp::ConnectionStatus status)
+	{
+		qDebug () << Q_FUNC_INFO << status;
+		qDebug () << A_->connectionStatusReason ();
+		qDebug () << A_->connectionError () << A_->connectionErrorDetails ().allDetails ();
+
+		const auto reason = A_->connectionStatusReason ();
+		if (reason == Tp::ConnectionStatusReasonRequested)
+			return;
+
+		QString message;
+		switch (reason)
+		{
+		case Tp::ConnectionStatusReasonAuthenticationFailed:
+			message = tr ("authentication failed");
+			break;
+		case Tp::ConnectionStatusReasonNetworkError:
+			message = tr ("network error");
+			break;
+		case Tp::ConnectionStatusReasonCertExpired:
+			message = tr ("certificate expirted");
+			break;
+		// TODO recognize more
+		default:
+			message = tr ("other error");
+			break;
+		}
+
+		const QString& dbgMsg = A_->connectionErrorDetails ().debugMessage ();
+		QString body = tr ("Connection error for account %1: %2.")
+				.arg (A_->displayName ())
+				.arg (message);
+		if (!dbgMsg.isEmpty ())
+			body += " " + tr ("Backend message: %1.").arg (dbgMsg);
+
+		emit gotEntity (Util::MakeNotification ("Azoth", body, PCritical_));
+
+		if (reason == Tp::ConnectionStatusReasonAuthenticationFailed)
+			HandleAuth (true);
+	}
+
+	void AccountWrapper::handlePasswordFixed (Tp::PendingOperation *po)
+	{
+		qWarning () << Q_FUNC_INFO;
+		if (po->isError ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< po->errorName ()
+					<< po->errorMessage ();
+			emit gotEntity (Util::MakeNotification ("Azoth",
+					tr ("Failed to update password for account %1: %2 (%3).")
+						.arg (A_->displayName ())
+						.arg (po->errorName ())
+						.arg (po->errorMessage ()),
+					PCritical_));
+			return;
+		}
+
+		A_->setRequestedPresence (A_->requestedPresence ());
 	}
 
 	void AccountWrapper::handleRequestedPresenceFinish (Tp::PendingOperation *po)
 	{
 		qDebug () << Q_FUNC_INFO << A_->currentPresence ().type () << A_->currentPresence ().status () << A_->currentPresence ().statusMessage ();
+		qDebug () << A_->connectionStatus () << A_->connectionStatusReason ();
+		qDebug () << A_->connectionError () << A_->connectionErrorDetails ().allDetails ();
 		if (po->isError ())
 		{
 			qWarning () << Q_FUNC_INFO
