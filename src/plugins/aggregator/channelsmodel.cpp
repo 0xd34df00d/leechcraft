@@ -243,6 +243,13 @@ namespace Aggregator
 		endRemoveRows ();
 	}
 
+	void ChannelsModel::Clear ()
+	{
+		beginResetModel ();
+		Channels_.clear ();
+		endResetModel ();
+	}
+
 	QModelIndex ChannelsModel::GetUnreadChannelIndex () const
 	{
 		for (int i = 0; i < Channels_.size (); ++i)
