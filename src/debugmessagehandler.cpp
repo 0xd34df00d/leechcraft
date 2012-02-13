@@ -33,7 +33,7 @@ namespace
 {
 	void Write (QtMsgType type, const char *message, bool bt)
 	{
-#ifdef Q_WS_X11
+#if not defined (Q_OS_WIN32) && not defined (Q_OS_MAC)
 		if (!strcmp (message, "QPixmap::handle(): Pixmap is not an X11 class pixmap"))
 			return;
 #endif

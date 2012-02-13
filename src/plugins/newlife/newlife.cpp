@@ -22,6 +22,7 @@
 #include <QAction>
 #include <QTranslator>
 #include <util/util.h>
+#include "common/imimportpage.h"
 #include "importwizard.h"
 
 namespace LeechCraft
@@ -31,6 +32,8 @@ namespace NewLife
 	void Plugin::Init (ICoreProxy_ptr)
 	{
 		Util::InstallTranslator ("newlife");
+
+		Common::IMImportPage::SetPluginInstance (this);
 
 		ImporterAction_.reset (new QAction (tr ("Import settings..."), 0));
 		ImporterAction_->setProperty ("ActionIcon", "document-import");

@@ -169,6 +169,11 @@ namespace Snails
 			split [i] = str;
 		}
 
+		QString subj = msg->GetSubject ();
+		if (subj.left (3).toLower () != "re:")
+			subj.prepend ("Re: ");
+		Ui_.Subject_->setText (subj);
+
 		QString plainContent = split.join ("\n");
 		plainContent += "\n\n";
 		MsgEdit_->SetContents (plainContent, ContentType::PlainText);

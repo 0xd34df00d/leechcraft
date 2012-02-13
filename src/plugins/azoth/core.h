@@ -66,10 +66,9 @@ namespace Azoth
 	class EventsNotifier;
 	class ActionsManager;
 	class ImportManager;
-
 	class CLModel;
-
 	class ServiceDiscoveryWidget;
+	class UnreadQueueManager;
 
 	class Core : public QObject
 	{
@@ -137,12 +136,11 @@ namespace Azoth
 
 		boost::shared_ptr<PluginManager> PluginManager_;
 		boost::shared_ptr<ProxyObject> PluginProxyObject_;
-
 		boost::shared_ptr<TransferJobManager> XferJobManager_;
 		boost::shared_ptr<CallManager> CallManager_;
 		boost::shared_ptr<EventsNotifier> EventsNotifier_;
-
 		boost::shared_ptr<ImportManager> ImportManager_;
+		boost::shared_ptr<UnreadQueueManager> UnreadQueueManager_;
 
 		Core ();
 	public:
@@ -170,7 +168,7 @@ namespace Azoth
 				*/
 			CLETContact
 		};
-	public:
+
 		static Core& Instance ();
 		void Release ();
 
@@ -403,6 +401,8 @@ namespace Azoth
 		 * plugin's IProtocol::InitiateMUCJoin() function.
 		 */
 		void handleMucJoinRequested ();
+
+		void handleShowNextUnread ();
 	private slots:
 		void handleNewProtocols (const QList<QObject*>&);
 

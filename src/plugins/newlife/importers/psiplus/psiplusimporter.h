@@ -26,13 +26,11 @@ namespace NewLife
 {
 namespace Importers
 {
-	class PsiPlusImportPage;
-
 	class PsiPlusImporter : public Common::IMImporter
 	{
 		Q_OBJECT
 	public:
-		PsiPlusImporter (QWidget* = 0);
+		PsiPlusImporter (QObject* = 0);
 	};
 }
 }

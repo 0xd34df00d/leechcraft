@@ -181,7 +181,7 @@ void QxtToolTipPrivate::hideLater()
 
 QPoint QxtToolTipPrivate::calculatePos(int scr, const QPoint& eventPos) const
 {
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
     QRect screen = QApplication::desktop()->availableGeometry(scr);
 #else
     QRect screen = QApplication::desktop()->screenGeometry(scr);
@@ -189,7 +189,7 @@ QPoint QxtToolTipPrivate::calculatePos(int scr, const QPoint& eventPos) const
 
     QPoint p = eventPos;
     p += QPoint(2,
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
                 24
 #else
                 16

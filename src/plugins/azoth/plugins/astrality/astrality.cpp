@@ -18,7 +18,13 @@
 
 #include "astrality.h"
 #include <QIcon>
+#include <QtDebug>
+#include <TelepathyQt/Types>
+#include <TelepathyQt/Debug>
+#include <TelepathyQt/ConnectionManager>
+#include <TelepathyQt/PendingStringList>
 #include <util/util.h>
+#include "cmwrapper.h"
 
 namespace LeechCraft
 {
@@ -28,14 +34,22 @@ namespace Astrality
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Tp::registerTypes ();
+		Tp::enableDebug (false);
+		Tp::enableWarnings (false);
 	}
 
 	void Plugin::SecondInit ()
 	{
+		connect (Tp::ConnectionManager::listNames (),
+				SIGNAL (finished (Tp::PendingOperation*)),
+				this,
+				SLOT (handleListNames (Tp::PendingOperation*)));
 	}
 
 	void Plugin::Release ()
 	{
+		qDeleteAll (Wrappers_);
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -72,11 +86,50 @@ namespace Astrality
 
 	QList<QObject*> Plugin::GetProtocols () const
 	{
-		return QList<QObject*> ();
+		QList<QObject*> result;
+		Q_FOREACH (auto cmw, Wrappers_)
+			result << cmw->GetProtocols ();
+		return result;
 	}
 
 	void Plugin::initPlugin (QObject *proxy)
 	{
+	}
+
+	void Plugin::handleListNames (Tp::PendingOperation *op)
+	{
+		auto psl = qobject_cast<Tp::PendingStringList*> (op);
+		qDebug () << Q_FUNC_INFO << psl->result ();
+
+		Q_FOREACH (const QString& cmName, psl->result ())
+		{
+			auto cmw = new CMWrapper (cmName, this);
+			Wrappers_ << cmw;
+
+			connect (cmw,
+					SIGNAL (gotProtoWrappers (QList<QObject*>)),
+					this,
+					SIGNAL (gotNewProtocols (QList<QObject*>)));
+			connect (cmw,
+					SIGNAL (gotProtoWrappers (QList<QObject*>)),
+					this,
+					SLOT (handleProtoWrappers (QList<QObject*>)));
+		}
+	}
+
+	void Plugin::handleProtoWrappers (const QList<QObject*>& wrappers)
+	{
+		Q_FOREACH (QObject *obj, wrappers)
+		{
+			connect (obj,
+					SIGNAL (gotEntity (LeechCraft::Entity)),
+					this,
+					SIGNAL (gotEntity (LeechCraft::Entity)));
+			connect (obj,
+					SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)),
+					this,
+					SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)));
+		}
 	}
 }
 }

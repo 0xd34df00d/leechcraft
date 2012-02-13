@@ -40,10 +40,10 @@ namespace LeechCraft
 		{
 			QStringList filenames;
 
-	#ifdef Q_WS_WIN
+	#ifdef Q_OS_WIN32
 			filenames << QDir (QCoreApplication::applicationDirPath () + "/translations")
 					.entryList (QStringList ("leechcraft_*.qm"));
-	#elif defined (Q_WS_MAC)
+	#elif defined (Q_OS_MAC)
 			filenames << QDir (QCoreApplication::applicationDirPath () + "/../Resources/translations")
 					.entryList (QStringList ("leechcraft_*.qm"));
 	#elif defined (INSTALL_PREFIX)

@@ -570,9 +570,9 @@ namespace LeechCraft
 
 	void PluginManager::FindPlugins ()
 	{
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
 		ScanDir (QApplication::applicationDirPath () + "/plugins/bin");
-#elif defined (Q_WS_MAC)
+#elif defined (Q_OS_MAC)
 		ScanDir (QApplication::applicationDirPath () + "/../plugins");
 #else
 		QString libdir (PLUGINS_LIBDIR);

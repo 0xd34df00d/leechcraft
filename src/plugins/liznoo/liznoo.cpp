@@ -25,9 +25,9 @@
 #include <util/util.h>
 #include "batteryhistorydialog.h"
 
-#if defined(Q_WS_X11)
+#if defined(Q_OS_LINUX)
 	#include "platformupower.h"
-#elif defined(Q_WS_WIN)
+#elif defined(Q_OS_WIN32)
 	#include "platformwinapi.h"
 #else
 	#pragma message ("Unsupported system")
@@ -46,9 +46,9 @@ namespace Liznoo
 
 		Util::InstallTranslator ("liznoo");
 
-#if defined(Q_WS_X11)
+#if defined(Q_OS_LINUX)
 		PL_ = new PlatformUPower (this);
-#elif defined(Q_WS_WIN)
+#elif defined(Q_OS_WIN32)
 		PL_ = new PlatformWinAPI (this);
 #else
 		PL_ = 0;

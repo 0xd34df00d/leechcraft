@@ -58,7 +58,7 @@
 #include "coreinstanceobject.h"
 #include "coreplugin2manager.h"
 
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
 #include "winwarndialog.h"
 #endif
 
@@ -86,7 +86,7 @@ LeechCraft::MainWindow::MainWindow (QWidget *parent, Qt::WFlags flags)
 	Splash_->showMessage (tr ("Initializing LeechCraft..."), Qt::AlignLeft | Qt::AlignBottom);
 	QApplication::processEvents ();
 
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
 	new WinWarnDialog;
 #endif
 
@@ -571,7 +571,7 @@ void LeechCraft::MainWindow::handleAppStyle ()
 
 	if (style.isEmpty ())
 	{
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN32
 		style = "Plastique";
 		XmlSettingsManager::Instance ()->
 		setProperty ("AppQStyle", style);

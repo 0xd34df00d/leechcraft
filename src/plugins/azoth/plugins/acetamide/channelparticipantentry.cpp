@@ -120,28 +120,36 @@ namespace Acetamide
 
 	ChannelRole ChannelParticipantEntry::HighestRole ()
 	{
-		if (Roles ().isEmpty ())
+		if (Roles_.isEmpty ())
 			return ChannelRole::Participant;
 
-		qSort (Roles_.begin (), Roles_.end ());
 		return Roles_.last ();
 	}
 
 	void ChannelParticipantEntry::SetRole (const ChannelRole& role)
 	{
 		if (!Roles_.contains (role))
+		{
 			Roles_ << role;
+			qSort (Roles_.begin (), Roles_.end ());
+			emit permsChanged ();
+		}
 	}
 
 	void ChannelParticipantEntry::SetRoles (const QList<ChannelRole>& roles)
 	{
 		Roles_ = roles;
+		qSort (Roles_.begin (), Roles_.end ());
+		emit permsChanged ();
 	}
 
 	void ChannelParticipantEntry::RemoveRole (const ChannelRole& role)
 	{
-		if (Roles_.contains (role))
-			Roles_.removeAll (role);
+		if (Roles_.removeAll (role))
+		{
+			qSort (Roles_.begin (), Roles_.end ());
+			emit permsChanged ();
+		}
 	}
 
 	void ChannelParticipantEntry::handleWhoIs ()

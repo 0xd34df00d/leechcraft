@@ -567,7 +567,7 @@ namespace CleanWeb
 		return false;
 	}
 
-	#if defined (Q_WS_WIN) || defined (Q_WS_MAC)
+	#if defined (Q_OS_WIN32) || defined (Q_OS_MAC)
 	// Thanks for this goes to http://www.codeproject.com/KB/string/patmatch.aspx
 	bool WildcardMatches (const char *pattern, const char *str)
 	{
