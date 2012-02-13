@@ -261,66 +261,18 @@ namespace Aggregator
 			return false;
 		}
 
-		const QString& strType = XmlSettingsManager::Instance ()->
-				property ("StorageType").toString ();
-		try
-		{
-			StorageBackend_ = StorageBackend::Create (strType);
-		}
-		catch (const std::runtime_error& s)
-		{
-			ErrorNotification (tr ("Storage error"),
-					QTextCodec::codecForName ("UTF-8")->
-					toUnicode (s.what ()));
+		ChannelsModel_ = new ChannelsModel ();
+
+		if (!ReinitStorage ())
 			return false;
-		}
-		catch (...)
-		{
-			ErrorNotification (tr ("Storage error"),
-					tr ("Aggregator: general storage initialization error."));
-			return false;
-		}
 
 		PluginManager_->RegisterHookable (StorageBackend_.get ());
 
-		ChannelsModel_ = new ChannelsModel ();
 		ChannelsFilterModel_ = new ChannelsFilterModel ();
 		ChannelsFilterModel_->setSourceModel (ChannelsModel_);
 		ChannelsFilterModel_->setFilterKeyColumn (0);
 
 		JobHolderRepresentation_ = new JobHolderRepresentation ();
-
-		const int feedsTable = 1;
-		const int channelsTable = 1;
-		const int itemsTable = 6;
-
-		bool tablesOK = true;
-
-		if (StorageBackend_->UpdateFeedsStorage (XmlSettingsManager::Instance ()->
-				Property (strType + "FeedsTableVersion", feedsTable).toInt (),
-				feedsTable))
-			XmlSettingsManager::Instance ()->setProperty (qPrintable (strType + "FeedsTableVersion"),
-					feedsTable);
-		else
-			tablesOK = false;
-
-		if (StorageBackend_->UpdateChannelsStorage (XmlSettingsManager::Instance ()->
-				Property (strType + "ChannelsTableVersion", channelsTable).toInt (),
-				channelsTable))
-			XmlSettingsManager::Instance ()->setProperty (qPrintable (strType + "ChannelsTableVersion"),
-					channelsTable);
-		else
-			tablesOK = false;
-
-		if (StorageBackend_->UpdateItemsStorage (XmlSettingsManager::Instance ()->
-				Property (strType + "ItemsTableVersion", itemsTable).toInt (),
-				itemsTable))
-			XmlSettingsManager::Instance ()->setProperty (qPrintable (strType + "ItemsTableVersion"),
-					itemsTable);
-		else
-			tablesOK = false;
-
-		StorageBackend_->Prepare ();
 
 		connect (DBUpThread_,
 				SIGNAL (started ()),
@@ -349,27 +301,6 @@ namespace Aggregator
 				SIGNAL (channelDataUpdated ()),
 				this,
 				SIGNAL (channelDataUpdated ()));
-
-		if (tablesOK)
-		{
-			ids_t feeds;
-			StorageBackend_->GetFeedsIDs (feeds);
-			Q_FOREACH (IDType_t feedId, feeds)
-			{
-				channels_shorts_t channels;
-				StorageBackend_->GetChannels (channels, feedId);
-				std::for_each (channels.begin (), channels.end (),
-						[ChannelsModel_] (ChannelShort chan)
-							{ ChannelsModel_->AddChannel (chan); });
-			}
-
-			for (int type = 0; type < PTMAX; ++type)
-			{
-				Util::IDPool<IDType_t> pool;
-				pool.SetID (StorageBackend_->GetHighestID (static_cast<PoolType> (type)) + 1);
-				Pools_ [static_cast<PoolType> (type)] = pool;
-			}
-		}
 
 		ReprWidget_ = new ItemsWidget ();
 		ReprWidget_->SetChannelsFilter (JobHolderRepresentation_);
@@ -422,6 +353,84 @@ namespace Aggregator
 			RegisterObject ("ShowIconInTray", this, "showIconInTrayChanged");
 		UpdateUnreadItemsNumber ();
 		Initialized_ = true;
+		return true;
+	}
+
+	bool Core::ReinitStorage ()
+	{
+		Pools_.clear ();
+		ChannelsModel_->Clear ();
+
+		const QString& strType = XmlSettingsManager::Instance ()->
+				property ("StorageType").toString ();
+		try
+		{
+			StorageBackend_ = StorageBackend::Create (strType);
+		}
+		catch (const std::runtime_error& s)
+		{
+			ErrorNotification (tr ("Storage error"),
+					QTextCodec::codecForName ("UTF-8")->
+					toUnicode (s.what ()));
+			return false;
+		}
+		catch (...)
+		{
+			ErrorNotification (tr ("Storage error"),
+					tr ("Aggregator: general storage initialization error."));
+			return false;
+		}
+
+		emit storageChanged ();
+
+		const int feedsTable = 1;
+		const int channelsTable = 1;
+		const int itemsTable = 6;
+
+		if (StorageBackend_->UpdateFeedsStorage (XmlSettingsManager::Instance ()->
+				Property (strType + "FeedsTableVersion", feedsTable).toInt (),
+				feedsTable))
+			XmlSettingsManager::Instance ()->setProperty (qPrintable (strType + "FeedsTableVersion"),
+					feedsTable);
+		else
+			return false;
+
+		if (StorageBackend_->UpdateChannelsStorage (XmlSettingsManager::Instance ()->
+				Property (strType + "ChannelsTableVersion", channelsTable).toInt (),
+				channelsTable))
+			XmlSettingsManager::Instance ()->setProperty (qPrintable (strType + "ChannelsTableVersion"),
+					channelsTable);
+		else
+			return false;
+
+		if (StorageBackend_->UpdateItemsStorage (XmlSettingsManager::Instance ()->
+				Property (strType + "ItemsTableVersion", itemsTable).toInt (),
+				itemsTable))
+			XmlSettingsManager::Instance ()->setProperty (qPrintable (strType + "ItemsTableVersion"),
+					itemsTable);
+		else
+			return false;
+
+		StorageBackend_->Prepare ();
+
+		ids_t feeds;
+		StorageBackend_->GetFeedsIDs (feeds);
+		Q_FOREACH (IDType_t feedId, feeds)
+		{
+			channels_shorts_t channels;
+			StorageBackend_->GetChannels (channels, feedId);
+			std::for_each (channels.begin (), channels.end (),
+					[ChannelsModel_] (ChannelShort chan)
+						{ ChannelsModel_->AddChannel (chan); });
+		}
+
+		for (int type = 0; type < PTMAX; ++type)
+		{
+			Util::IDPool<IDType_t> pool;
+			pool.SetID (StorageBackend_->GetHighestID (static_cast<PoolType> (type)) + 1);
+			Pools_ [static_cast<PoolType> (type)] = pool;
+		}
+
 		return true;
 	}
 
