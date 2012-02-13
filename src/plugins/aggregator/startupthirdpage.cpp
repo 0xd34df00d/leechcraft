@@ -132,7 +132,8 @@ namespace Aggregator
 		connect (wizard (),
 				SIGNAL (accepted ()),
 				this,
-				SLOT (handleAccepted ()));
+				SLOT (handleAccepted ()),
+				Qt::UniqueConnection);
 		wizard ()->setMinimumWidth (std::max (wizard ()->minimumWidth (), 800));
 		wizard ()->setMinimumHeight (std::max (wizard ()->minimumHeight (), 500));
 
@@ -162,6 +163,9 @@ namespace Aggregator
 
 	void StartupThirdPage::handleAccepted ()
 	{
+		if (wizard ()->field ("Aggregator/StorageDirty").toBool ())
+			Core::Instance ().ReinitStorage ();
+
 		for (int i = 0; i < Ui_.Tree_->topLevelItemCount (); ++i)
 		{
 			QTreeWidgetItem *item = Ui_.Tree_->topLevelItem (i);
