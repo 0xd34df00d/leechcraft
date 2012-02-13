@@ -198,16 +198,51 @@ namespace Astrality
 		QString message;
 		switch (reason)
 		{
-		case Tp::ConnectionStatusReasonAuthenticationFailed:
-			message = tr ("authentication failed");
-			break;
 		case Tp::ConnectionStatusReasonNetworkError:
 			message = tr ("network error");
 			break;
-		case Tp::ConnectionStatusReasonCertExpired:
-			message = tr ("certificate expirted");
+		case Tp::ConnectionStatusReasonAuthenticationFailed:
+			message = tr ("authentication failed");
 			break;
-		// TODO recognize more
+		case Tp::ConnectionStatusReasonEncryptionError:
+			message = tr ("encryption error");
+			break;
+		case Tp::ConnectionStatusReasonNameInUse:
+			message = tr ("resource or name is already in use");
+			break;
+		case Tp::ConnectionStatusReasonCertNotProvided:
+			message = tr ("certificate hasn't been provided");
+			break;
+		case Tp::ConnectionStatusReasonCertUntrusted:
+			message = tr ("certificate is untrusted");
+			break;
+		case Tp::ConnectionStatusReasonCertExpired:
+			message = tr ("certificate expired");
+			break;
+		case Tp::ConnectionStatusReasonCertNotActivated:
+			message = tr ("certificate isn't activated");
+			break;
+		case Tp::ConnectionStatusReasonCertHostnameMismatch:
+			message = tr ("hostname mismatch in certificate");
+			break;
+		case Tp::ConnectionStatusReasonCertFingerprintMismatch:
+			message = tr ("certificate fingerprint mismatch");
+			break;
+		case Tp::ConnectionStatusReasonCertSelfSigned:
+			message = tr ("certificate is self-signed");
+			break;
+		case Tp::ConnectionStatusReasonCertOtherError:
+			message = tr ("other certificate error");
+			break;
+		case Tp::ConnectionStatusReasonCertRevoked:
+			message = tr ("certificate is revoked");
+			break;
+		case Tp::ConnectionStatusReasonCertInsecure:
+			message = tr ("certificate is insecure");
+			break;
+		case Tp::ConnectionStatusReasonCertLimitExceeded:
+			message = tr ("certificate length limit is exceeded");
+			break;
 		default:
 			message = tr ("other error");
 			break;
