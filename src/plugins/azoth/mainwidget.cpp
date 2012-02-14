@@ -69,7 +69,7 @@ namespace Azoth
 		BottomBar_->addWidget (MenuButton_);
 
 		Ui_.setupUi (this);
-		layout ()->addWidget (BottomBar_);
+		qobject_cast<QVBoxLayout*> (layout ())->insertWidget (0, BottomBar_);
 #if QT_VERSION >= 0x040700
 		Ui_.FilterLine_->setPlaceholderText (tr ("Search..."));
 #endif
