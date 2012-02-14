@@ -19,6 +19,7 @@
 #include "accountwrapper.h"
 #include <TelepathyQt/PendingOperation>
 #include <TelepathyQt/PendingStringList>
+#include <TelepathyQt/PendingContacts>
 #include <TelepathyQt/Connection>
 #include <TelepathyQt/ContactManager>
 #include <util/util.h>
@@ -141,9 +142,23 @@ namespace Astrality
 	{
 	}
 
-	void AccountWrapper::RequestAuth (const QString&,
-			const QString&, const QString&, const QStringList&)
+	void AccountWrapper::RequestAuth (const QString& id,
+			const QString& msg, const QString& name, const QStringList& groups)
 	{
+		if (!A_->connection ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "connection isn't ready";
+			return;
+		}
+
+		auto cm = A_->connection ()->contactManager ();
+		auto req = cm->contactsForIdentifiers (QStringList (id));
+		req->setProperty ("Astrality/Msg", msg);
+		connect (req,
+				SIGNAL (finished (Tp::PendingOperation*)),
+				this,
+				SLOT (handleAuthRequestFinished (Tp::PendingOperation*)));
 	}
 
 	void AccountWrapper::RemoveEntry (QObject*)
@@ -382,6 +397,63 @@ namespace Astrality
 			Tp::Contacts removed, Tp::Channel::GroupMemberChangeDetails)
 	{
 		qDebug () << Q_FUNC_INFO << added.size () << removed.size ();
+		Q_FOREACH (Tp::ContactPtr c, added)
+			if (std::find_if (Entries_.begin (), Entries_.end (),
+					[c] (decltype (Entries_.front ()) e)
+						{ return c->id () == e->GetHumanReadableID (); }) == Entries_.end ())
+				CreateEntry (c);
+
+		Q_FOREACH (Tp::ContactPtr c, removed)
+		{
+			auto pos = std::find_if (Entries_.begin (), Entries_.end (),
+					[c] (decltype (Entries_.front ()) e)
+						{ return c->id () == e->GetHumanReadableID (); });
+			if (pos == Entries_.end ())
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "no contact for removed contact"
+						<< c->id ();
+				continue;
+			}
+
+			auto our = *pos;
+			emit removedCLItems (QList<QObject*> () << our);
+			our->deleteLater ();
+			Entries_.erase (pos);
+		}
+	}
+
+	void AccountWrapper::handleAuthRequestFinished (Tp::PendingOperation *po)
+	{
+		auto pc = qobject_cast<Tp::PendingContacts*> (po);
+		qDebug () << Q_FUNC_INFO << pc->contacts ().size ();
+
+		const QString& msg = po->property ("Astrality/Msg").toString ();
+		Q_FOREACH (Tp::ContactPtr c, pc->contacts ())
+		{
+			qDebug () << c->alias () << c->id ();
+			CreateEntry (c);
+
+			connect (c->requestPresenceSubscription (msg),
+					SIGNAL (finished (Tp::PendingOperation*)),
+					this,
+					SLOT (handleAuthRequestSent (Tp::PendingOperation*)));
+		}
+	}
+
+	void AccountWrapper::handleAuthRequestSent (Tp::PendingOperation *po)
+	{
+		if (!po->isError ())
+			return;
+
+		qWarning () << Q_FUNC_INFO
+				<< po->errorName ()
+				<< po->errorMessage ();
+		emit gotEntity (Util::MakeNotification ("Azoth",
+				tr ("Failed to request authorization: %1 (%2).")
+					.arg (po->errorName ())
+					.arg (po->errorMessage ()),
+				PCritical_));
 	}
 }
 }

@@ -78,6 +78,9 @@ namespace Astrality
 		void handleCMStateChanged (Tp::ContactListState);
 		void handleKnownContactsChanged (Tp::Contacts,
 				Tp::Contacts, Tp::Channel::GroupMemberChangeDetails);
+
+		void handleAuthRequestFinished (Tp::PendingOperation*);
+		void handleAuthRequestSent (Tp::PendingOperation*);
 	signals:
 		void gotCLItems (const QList<QObject*>&);
 		void removedCLItems (const QList<QObject*>&);
