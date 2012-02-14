@@ -31,6 +31,10 @@ namespace Astrality
 	, AW_ (aw)
 	, C_ (c)
 	{
+		connect (C_.data (),
+				SIGNAL (presenceChanged (Tp::Presence)),
+				this,
+				SLOT (handlePresenceChanged ()));
 	}
 
 	QObject* EntryWrapper::GetObject ()
@@ -143,6 +147,11 @@ namespace Astrality
 
 	void EntryWrapper::MarkMsgsRead ()
 	{
+	}
+
+	void EntryWrapper::handlePresenceChanged ()
+	{
+		emit statusChanged (GetStatus (QString ()), QString ());
 	}
 }
 }
