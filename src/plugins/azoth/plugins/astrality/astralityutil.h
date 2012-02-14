@@ -37,6 +37,7 @@ namespace Astrality
 	State StateTelepathy2Azoth (Tp::ConnectionPresenceType);
 	Tp::ConnectionPresenceType StateAzoth2Telepathy (State);
 	Tp::Presence Status2Telepathy (const EntryStatus&);
+	EntryStatus Status2Azoth (const Tp::Presence&);
 }
 }
 }

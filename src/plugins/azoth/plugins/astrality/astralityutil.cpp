@@ -100,6 +100,11 @@ namespace Astrality
 				return Tp::Presence ();
 		}
 	}
+
+	EntryStatus Status2Azoth (const Tp::Presence& p)
+	{
+		return EntryStatus (StateTelepathy2Azoth (p.type ()), p.statusMessage ());
+	}
 }
 }
 }
