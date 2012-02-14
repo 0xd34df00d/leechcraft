@@ -35,6 +35,10 @@ namespace Astrality
 				SIGNAL (presenceChanged (Tp::Presence)),
 				this,
 				SLOT (handlePresenceChanged ()));
+		connect (C_.data (),
+				SIGNAL (aliasChanged (QString)),
+				this,
+				SIGNAL (nameChanged (QString)));
 	}
 
 	QObject* EntryWrapper::GetObject ()
