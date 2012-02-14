@@ -69,7 +69,7 @@
 		<tab>
 			<label value="Contact list" />
 			<item type="checkbox" property="ShowMenuBar" default="true">
-				<label value="Show Azoth menu under the contact list" />
+				<label value="Show toolbar on top of the contact list" />
 			</item>
 			<item type="checkbox" property="ShowStatuses" default="true">
 				<label value="Show statuses" />
