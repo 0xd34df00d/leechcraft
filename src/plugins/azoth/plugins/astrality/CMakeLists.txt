@@ -19,6 +19,7 @@ SET (ASTRALITY_SRCS
 	protowrapper.cpp
 	accountregfirstpage.cpp
 	accountwrapper.cpp
+	entrywrapper.cpp
 	astralityutil.cpp
 	)
 SET (ASTRALITY_HEADERS
@@ -27,6 +28,7 @@ SET (ASTRALITY_HEADERS
 	protowrapper.h
 	accountregfirstpage.h
 	accountwrapper.h
+	entrywrapper.h
 	astralityutil.h
 	)
 SET (ASTRALITY_FORMS
