@@ -32,19 +32,31 @@
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
+     <property name="spacing">
+      <number>4</number>
+     </property>
      <property name="sizeConstraint">
       <enum>QLayout::SetMaximumSize</enum>
      </property>
+     <property name="margin">
+      <number>2</number>
+     </property>
      <item>
       <widget class="QListWidget" name="TwitList_">
+       <property name="horizontalScrollBarPolicy">
+        <enum>Qt::ScrollBarAlwaysOff</enum>
+       </property>
        <property name="autoScroll">
         <bool>false</bool>
        </property>
        <property name="iconSize">
         <size>
-         <width>0</width>
+         <width>36</width>
          <height>36</height>
         </size>
+       </property>
+       <property name="spacing">
+        <number>4</number>
        </property>
        <property name="gridSize">
         <size>
@@ -52,10 +64,22 @@
          <height>40</height>
         </size>
        </property>
+       <property name="viewMode">
+        <enum>QListView::ListMode</enum>
+       </property>
+       <property name="selectionRectVisible">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
+       <property name="spacing">
+        <number>2</number>
+       </property>
+       <property name="sizeConstraint">
+        <enum>QLayout::SetMaximumSize</enum>
+       </property>
        <property name="topMargin">
         <number>10</number>
        </property>

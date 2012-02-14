@@ -11,30 +11,28 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Woodpecker
 {
 
-twitterInterface::twitterInterface(QObject *parent) :
-	QObject(parent)
+twitterInterface::twitterInterface (QObject *parent) :
+	QObject (parent)
 {
 	HttpClient = new QNetworkAccessManager (this);
 	oauthRequest = new KQOAuthRequest;
-	oauthManager = new KQOAuthManager(this);
+	oauthManager = new KQOAuthManager (this);
 
-	oauthRequest->setEnableDebugOutput(true); // TODO: Remove debug
-	consumerKey = QString("nbwLYUDIlgsMgDFCu6jfuA");
-	consumerKeySecret = QString("7TWYPzLUqZlihIRA2VWfZhCRfss2JNKvkSWMQx4");
+	oauthRequest->setEnableDebugOutput (true); // TODO: Remove debug
+	consumerKey = QString ("nbwLYUDIlgsMgDFCu6jfuA");
+	consumerKeySecret = QString ("7TWYPzLUqZlihIRA2VWfZhCRfss2JNKvkSWMQx4");
 
-	connect(oauthManager, SIGNAL(requestReady(QByteArray)),
-			this, SLOT(onRequestReady(QByteArray)));
+	connect (oauthManager, SIGNAL (requestReady (QByteArray)),
+			 this, SLOT (onRequestReady (QByteArray)));
 
-	connect(oauthManager, SIGNAL(authorizedRequestDone()),
-			this, SLOT(onAuthorizedRequestDone()));
+	connect (oauthManager, SIGNAL (authorizedRequestDone()),
+			 this, SLOT (onAuthorizedRequestDone()));
 
-	connect(HttpClient, SIGNAL(finished(QNetworkReply*)),
-			this, SLOT(replyFinished(QNetworkReply*)));
+	connect (HttpClient, SIGNAL (finished (QNetworkReply*)),
+			 this, SLOT (replyFinished (QNetworkReply*)));
 
 }
 
@@ -44,98 +42,100 @@ twitterInterface::~twitterInterface()
 	delete oauthManager;
 }
 
-void twitterInterface::getCommonFeed(unsigned int number)
+void twitterInterface::getCommonFeed (unsigned int number)
 {
-	QString link("http://api.twitter.com/1/statuses/public_timeline.json?count=2&include_entities=true");
+	QString link ("http://api.twitter.com/1/statuses/public_timeline.json?count=2&include_entities=true");
 
-	requestTwitter(link);
+	requestTwitter (link);
 }
 
 void twitterInterface::getHomeFeed()
 {
 	qDebug() << "Getting home feed";
-	signedRequest(TRHomeTimeline,KQOAuthRequest::GET);
+	signedRequest (TRHomeTimeline, KQOAuthRequest::GET);
 }
 
 
-void twitterInterface::requestTwitter(QUrl requestAddress)
+void twitterInterface::requestTwitter (QUrl requestAddress)
 {
-	HttpClient->get(QNetworkRequest(requestAddress));
+	HttpClient->get (QNetworkRequest (requestAddress));
 	//           getAccess();
 	//           xauth();
 }
 
-void twitterInterface::replyFinished(QNetworkReply *reply)
+void twitterInterface::replyFinished (QNetworkReply *reply)
 {
 	QList< boost::shared_ptr<Tweet> >    tweets;
 	QByteArray       jsonText;
-	jsonText = QByteArray(reply->readAll());
+	jsonText = QByteArray (reply->readAll());
 	reply->deleteLater();
 
 	tweets.clear();
-	tweets = parseReply(jsonText);
-	emit tweetsReady(tweets);
+	tweets = parseReply (jsonText);
+	emit tweetsReady (tweets);
 }
 
-QList< boost::shared_ptr<Tweet> > twitterInterface::parseReply(QByteArray json)
+QList< boost::shared_ptr<Tweet> > twitterInterface::parseReply (QByteArray json)
 {
 	QJson::Parser parser;
 	QList< boost::shared_ptr<Tweet> > result;
 	bool ok;
 
 	QVariantList answers = parser.parse (json, &ok).toList();
+
 	if (!ok) {
 		qDebug() << "Parsing error";
 	}
+
 	QVariantMap tweetMap;
 	QVariantMap userMap;
 
 	for (int i = answers.count() - 1; i >= 0 ; i--)
-		{
-			tweetMap = answers[i].toMap();
-			userMap = tweetMap["user"].toMap();
-			QLocale::setDefault(QLocale::English);
-			boost::shared_ptr<Tweet> tempTweet( new Tweet(this));
+	{
+		tweetMap = answers[i].toMap();
+		userMap = tweetMap["user"].toMap();
+		QLocale::setDefault (QLocale::English);
+		boost::shared_ptr<Tweet> tempTweet (new Tweet (this));
 
-			tempTweet->setText(tweetMap["text"].toString());
-			tempTweet->author()->setUsername(userMap["screen_name"].toString());
-			tempTweet->author()->downloadAvatar(userMap["profile_image_url"].toString());
-			tempTweet->setDateTime(QLocale().toDateTime(tweetMap["created_at"].toString(),QLatin1String("ddd MMM dd HH:mm:ss +0000 yyyy")));
-			tempTweet->setId(tweetMap["id"].toULongLong());
+		tempTweet->setText (tweetMap["text"].toString());
+		tempTweet->author()->setUsername (userMap["screen_name"].toString());
+		tempTweet->author()->downloadAvatar (userMap["profile_image_url"].toString());
+		tempTweet->setDateTime (QLocale().toDateTime (tweetMap["created_at"].toString(), QLatin1String ("ddd MMM dd HH:mm:ss +0000 yyyy")));
+		tempTweet->setId (tweetMap["id"].toULongLong());
 
-			qDebug() << tempTweet->dateTime().toString() << " : " << tempTweet->id();
+		qDebug() << tempTweet->dateTime().toString() << " : " << tempTweet->id();
 
-			result.push_back(tempTweet);
-		}
+		result.push_back (tempTweet);
+	}
 
 	return result;
 }
 
 void twitterInterface::getAccess()  {
-	connect(oauthManager, SIGNAL(temporaryTokenReceived(QString,QString)),
-			this, SLOT(onTemporaryTokenReceived(QString, QString)));
+	connect (oauthManager, SIGNAL (temporaryTokenReceived (QString, QString)),
+			 this, SLOT (onTemporaryTokenReceived (QString, QString)));
 
-	connect(oauthManager, SIGNAL(authorizationReceived(QString,QString)),
-			this, SLOT( onAuthorizationReceived(QString, QString)));
+	connect (oauthManager, SIGNAL (authorizationReceived (QString, QString)),
+			 this, SLOT (onAuthorizationReceived (QString, QString)));
 
-	connect(oauthManager, SIGNAL(accessTokenReceived(QString,QString)),
-			this, SLOT(onAccessTokenReceived(QString,QString)));
+	connect (oauthManager, SIGNAL (accessTokenReceived (QString, QString)),
+			 this, SLOT (onAccessTokenReceived (QString, QString)));
 
-	oauthRequest->initRequest(KQOAuthRequest::TemporaryCredentials, QUrl("https://api.twitter.com/oauth/request_token"));
-	oauthRequest->setConsumerKey(consumerKey);
-	oauthRequest->setConsumerSecretKey(consumerKeySecret);
-	oauthManager->setHandleUserAuthorization(true);
+	oauthRequest->initRequest (KQOAuthRequest::TemporaryCredentials, QUrl ("https://api.twitter.com/oauth/request_token"));
+	oauthRequest->setConsumerKey (consumerKey);
+	oauthRequest->setConsumerSecretKey (consumerKeySecret);
+	oauthManager->setHandleUserAuthorization (true);
 
-	oauthManager->executeRequest(oauthRequest);
+	oauthManager->executeRequest (oauthRequest);
 
 }
 
-void twitterInterface::signedRequest(twitterRequest req,KQOAuthRequest::RequestHttpMethod method,KQOAuthParameters params)
+void twitterInterface::signedRequest (twitterRequest req, KQOAuthRequest::RequestHttpMethod method, KQOAuthParameters params)
 {
 
 	QUrl reqUrl;
 
-	if( this->token.isEmpty() ||
+	if (this->token.isEmpty() ||
 			this->tokenSecret.isEmpty()) {
 		qDebug() << "No access tokens. Aborting.";
 
@@ -143,66 +143,67 @@ void twitterInterface::signedRequest(twitterRequest req,KQOAuthRequest::RequestH
 	}
 
 	switch (req)
-		{
-		case TRHomeTimeline:
-			reqUrl = "https://api.twitter.com/1/statuses/home_timeline.json";
-			params.insert("count","10");
-			params.insert("include_entities","true");
-			break;
+	{
+	case TRHomeTimeline:
+		reqUrl = "https://api.twitter.com/1/statuses/home_timeline.json";
+		params.insert ("count", "10");
+		params.insert ("include_entities", "true");
+		break;
 
-		case TRUserTimeline:
-			reqUrl = "http://api.twitter.com/1/statuses/user_timeline.json";
-			params.insert("include_entities","true");
-			break;
+	case TRUserTimeline:
+		reqUrl = "http://api.twitter.com/1/statuses/user_timeline.json";
+		params.insert ("include_entities", "true");
+		break;
 
-		case TRUpdate:
-			reqUrl = "http://api.twitter.com/1/statuses/update.xml";
-			break;
+	case TRUpdate:
+		reqUrl = "http://api.twitter.com/1/statuses/update.xml";
+		break;
 
-		default:
-			return;
+	default:
+		return;
 
-		}
+	}
 
-	oauthRequest->initRequest(KQOAuthRequest::AuthorizedRequest, reqUrl);
-	oauthRequest->setHttpMethod(method);
-	oauthRequest->setConsumerKey(consumerKey);
-	oauthRequest->setConsumerSecretKey(consumerKeySecret);
-	oauthRequest->setToken(this->token);
-	oauthRequest->setTokenSecret(this->tokenSecret);
+	oauthRequest->initRequest (KQOAuthRequest::AuthorizedRequest, reqUrl);
+	oauthRequest->setHttpMethod (method);
+	oauthRequest->setConsumerKey (consumerKey);
+	oauthRequest->setConsumerSecretKey (consumerKeySecret);
+	oauthRequest->setToken (this->token);
+	oauthRequest->setTokenSecret (this->tokenSecret);
 
-	oauthRequest->setAdditionalParameters(params);
+	oauthRequest->setAdditionalParameters (params);
 
-	oauthManager->executeRequest(oauthRequest);
+	oauthManager->executeRequest (oauthRequest);
 
 }
 
-void twitterInterface::sendTweet(QString tweet)
+void twitterInterface::sendTweet (QString tweet)
 {
 	KQOAuthParameters param;
-	param.insert("status",tweet);
-	signedRequest(TRUpdate,KQOAuthRequest::POST,param);
+	param.insert ("status", tweet);
+	signedRequest (TRUpdate, KQOAuthRequest::POST, param);
 }
 
 void twitterInterface::onAuthorizedRequestDone() {
 	qDebug() << "Request sent to Twitter!";
 }
 
-void twitterInterface::onRequestReady(QByteArray response) {
+void twitterInterface::onRequestReady (QByteArray response) {
 	qDebug() << "Response from the service: recvd";// << response;
-	emit tweetsReady(parseReply(response));
+	emit tweetsReady (parseReply (response));
 }
 
-void twitterInterface::onAuthorizationReceived(QString token, QString verifier) {
+void twitterInterface::onAuthorizationReceived (QString token, QString verifier) {
 	qDebug() << "User authorization received: " << token << verifier;
 
-	oauthManager->getUserAccessTokens(QUrl("https://api.twitter.com/oauth/access_token"));
-	if( oauthManager->lastError() != KQOAuthManager::NoError) {
+	oauthManager->getUserAccessTokens (QUrl ("https://api.twitter.com/oauth/access_token"));
+
+	if (oauthManager->lastError() != KQOAuthManager::NoError) {
 	}
 
 }
 
-void twitterInterface::onAccessTokenReceived(QString token, QString tokenSecret) {
+void twitterInterface::onAccessTokenReceived (QString token, QString tokenSecret) {
 	qDebug() << "Access token received: " << token << tokenSecret;
 
 	this->token = token;
@@ -210,53 +211,53 @@ void twitterInterface::onAccessTokenReceived(QString token, QString tokenSecret)
 
 	qDebug() << "Access tokens now stored. You are ready to send Tweets from user's account!";
 
-	emit authorized(token,tokenSecret);
+	emit authorized (token, tokenSecret);
 
 }
 
-void twitterInterface::onTemporaryTokenReceived(QString token, QString tokenSecret)
+void twitterInterface::onTemporaryTokenReceived (QString token, QString tokenSecret)
 {
 	qDebug() << "Temporary token received: " << token << tokenSecret;
 
-	QUrl userAuthURL("https://api.twitter.com/oauth/authorize");
+	QUrl userAuthURL ("https://api.twitter.com/oauth/authorize");
 
-	if( oauthManager->lastError() == KQOAuthManager::NoError) {
+	if (oauthManager->lastError() == KQOAuthManager::NoError) {
 		qDebug() << "Asking for user's permission to access protected resources. Opening URL: " << userAuthURL;
-		oauthManager->getUserAuthorization(userAuthURL);
+		oauthManager->getUserAuthorization (userAuthURL);
 	}
 
 }
 
 
 void twitterInterface::xauth() {
-	connect(oauthManager, SIGNAL(accessTokenReceived(QString,QString)),
-			this, SLOT(onAccessTokenReceived(QString,QString)));
+	connect (oauthManager, SIGNAL (accessTokenReceived (QString, QString)),
+			 this, SLOT (onAccessTokenReceived (QString, QString)));
 
-	KQOAuthRequest_XAuth *oauthRequest = new KQOAuthRequest_XAuth(this);
-	oauthRequest->initRequest(KQOAuthRequest::AccessToken, QUrl("https://api.twitter.com/oauth/access_token"));
-	oauthRequest->setConsumerKey("nbwLYUDIlgsMgDFCu6jfuA");
-	oauthRequest->setConsumerSecretKey("7TWYPzLUqZlihIRA2VWfZhCRfss2JNKvkSWMQx4");
+	KQOAuthRequest_XAuth *oauthRequest = new KQOAuthRequest_XAuth (this);
+	oauthRequest->initRequest (KQOAuthRequest::AccessToken, QUrl ("https://api.twitter.com/oauth/access_token"));
+	oauthRequest->setConsumerKey ("nbwLYUDIlgsMgDFCu6jfuA");
+	oauthRequest->setConsumerSecretKey ("7TWYPzLUqZlihIRA2VWfZhCRfss2JNKvkSWMQx4");
 	// oauthRequest->setXAuthLogin("login","password");
 
-	oauthManager->executeRequest(oauthRequest);
+	oauthManager->executeRequest (oauthRequest);
 }
 
-void twitterInterface::searchTwitter(QString text)
+void twitterInterface::searchTwitter (QString text)
 {
-	QString link("http://search.twitter.com/search.json?q="+text);
+	QString link ("http://search.twitter.com/search.json?q=" + text);
 
-	requestTwitter(link);
+	requestTwitter (link);
 }
 
 
-void twitterInterface::getUserTimeline(QString username)
+void twitterInterface::getUserTimeline (QString username)
 {
 	KQOAuthParameters param;
-	param.insert("screen_name",username);
-	signedRequest(TRUserTimeline,KQOAuthRequest::GET, param);
+	param.insert ("screen_name", username);
+	signedRequest (TRUserTimeline, KQOAuthRequest::GET, param);
 }
 
-void twitterInterface::login(QString savedToken, QString savedTokenSecret)
+void twitterInterface::login (QString savedToken, QString savedTokenSecret)
 {
 	token = savedToken;
 	tokenSecret = savedTokenSecret;
@@ -265,4 +266,4 @@ void twitterInterface::login(QString savedToken, QString savedTokenSecret)
 
 }
 }
-}
+// kate: indent-mode cstyle; indent-width 4; replace-tabs off; tab-width 4;

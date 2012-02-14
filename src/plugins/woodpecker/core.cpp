@@ -22,90 +22,88 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
-	{
-		namespace Woodpecker
-		{
-			Core::Core ()
-			{
-				TabClass_.TabClass_ = "Woodpecker";
-				TabClass_.VisibleName_ = tr ("Twitter client");
-				TabClass_.Description_ = tr ("The Woodpecker twitter client");
-				TabClass_.Icon_ = QIcon (":/resources/images/woodpecker.svg");
-				TabClass_.Priority_ = 70;
-				TabClass_.Features_ = TFOpenableByRequest;
-			}
+namespace Woodpecker
+{
+Core::Core ()
+{
+    TabClass_.TabClass_ = "Woodpecker";
+    TabClass_.VisibleName_ = tr ("Twitter client");
+    TabClass_.Description_ = tr ("The Woodpecker twitter client");
+    TabClass_.Icon_ = QIcon (":/resources/images/woodpecker.svg");
+    TabClass_.Priority_ = 70;
+    TabClass_.Features_ = TFOpenableByRequest;
+}
 
-			Core& Core::Instance ()
-			{
-				static Core c;
-				return c;
-			}
+Core& Core::Instance ()
+{
+    static Core c;
+    return c;
+}
 
-			TabClassInfo Core::GetTabClass () const
-			{
-				return TabClass_;
-			}
+TabClassInfo Core::GetTabClass () const
+{
+    return TabClass_;
+}
 
-			void Core::SetProxy (ICoreProxy_ptr proxy)
-			{
-				Proxy_ = proxy;
-			}
+void Core::SetProxy (ICoreProxy_ptr proxy)
+{
+    Proxy_ = proxy;
+}
 
-			ICoreProxy_ptr Core::GetProxy () const
-			{
-				return Proxy_;
-			}
+ICoreProxy_ptr Core::GetProxy () const
+{
+    return Proxy_;
+}
 
-			TwitterPage* Core::NewTabRequested ()
-			{
-				TwitterPage *page = new TwitterPage ();//MakeTwitterPage ();
-				emit addNewTab ("Woodpecker", page);
-				emit raiseTab (page);
-				emit changeTabIcon (page, QIcon (":/resources/images/woodpecker.svg"));
+TwitterPage* Core::NewTabRequested ()
+{
+    TwitterPage *page = new TwitterPage ();//MakeTwitterPage ();
+    emit addNewTab ("Woodpecker", page);
+    emit raiseTab (page);
+    emit changeTabIcon (page, QIcon (":/resources/images/woodpecker.svg"));
 
-				return page;
-			}
+    return page;
+}
 
-			void Core::Handle (const Entity& e)
-			{
-				TwitterPage *page = NewTabRequested ();
-//				page->SetText (e.Entity_.toString ());
+void Core::Handle (const Entity& e)
+{
+    TwitterPage *page = NewTabRequested ();
+//              page->SetText (e.Entity_.toString ());
 
-				QString language = e.Additional_ ["Language"].toString ();
-//				bool isTempDocumnet = e.Additional_ ["IsTemporaryDocument"].toBool ();
-//				if (!language.isEmpty ())
-//					page->SetLanguage (language);
-//				page->SetTemporaryDocument (isTempDocumnet);
-			}
+    QString language = e.Additional_ ["Language"].toString ();
+//              bool isTempDocumnet = e.Additional_ ["IsTemporaryDocument"].toBool ();
+//              if (!language.isEmpty ())
+//                  page->SetLanguage (language);
+//              page->SetTemporaryDocument (isTempDocumnet);
+}
 
-			TwitterPage* Core::MakeTwitterPage ()
-			{
-				TwitterPage *result = new TwitterPage ();
-				connect (result,
-						SIGNAL (removeTab (QWidget*)),
-						this,
-						SIGNAL (removeTab (QWidget*)));
-				connect (result,
-						SIGNAL (changeTabName (QWidget*, const QString&)),
-						this,
-						SIGNAL (changeTabName (QWidget*, const QString&)));
-				connect (result,
-						SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)),
-						this,
-						SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)));
-				connect (result,
-						SIGNAL (delegateEntity (const LeechCraft::Entity&,
-								int*, QObject**)),
-						this,
-						SIGNAL (delegateEntity (const LeechCraft::Entity&,
-								int*, QObject**)));
-				connect (result,
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
-						this,
-						SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
-				return result;
-			}
-		};
-	};
+TwitterPage* Core::MakeTwitterPage ()
+{
+    TwitterPage *result = new TwitterPage ();
+    connect (result,
+             SIGNAL (removeTab (QWidget*)),
+             this,
+             SIGNAL (removeTab (QWidget*)));
+    connect (result,
+             SIGNAL (changeTabName (QWidget*, const QString&)),
+             this,
+             SIGNAL (changeTabName (QWidget*, const QString&)));
+    connect (result,
+             SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)),
+             this,
+             SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)));
+    connect (result,
+             SIGNAL (delegateEntity (const LeechCraft::Entity&,
+                                     int*, QObject**)),
+             this,
+             SIGNAL (delegateEntity (const LeechCraft::Entity&,
+                                     int*, QObject**)));
+    connect (result,
+             SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)),
+             this,
+             SIGNAL (gotEntity (const LeechCraft::DownloadEntity&)));
+    return result;
+}
 };
+};
+// kate: indent-mode cstyle; indent-width 4; replace-tabs off; tab-width 4;

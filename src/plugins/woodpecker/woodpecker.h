@@ -30,50 +30,48 @@ class QTranslator;
 
 namespace LeechCraft
 {
-	namespace Plugins
-	{
-		namespace Woodpecker
-		{
-			class Plugin : public QObject
-						 , public IInfo
-						 , public IHaveTabs
-						 , public IHaveSettings
-			{
-				Q_OBJECT
-				Q_INTERFACES (IInfo IHaveTabs IHaveSettings)
+namespace Woodpecker
+{
+class Plugin : public QObject
+	, public IInfo
+	, public IHaveTabs
+	, public IHaveSettings
+{
+	Q_OBJECT
+	Q_INTERFACES (IInfo IHaveTabs IHaveSettings)
 
-				boost::shared_ptr<QTranslator> Translator_;
-				boost::shared_ptr<Util::XmlSettingsDialog> XmlSettingsDialog_;
-			public:
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
-				void Release ();
-				QByteArray GetUniqueID () const;
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
+	boost::shared_ptr<QTranslator> Translator_;
+	boost::shared_ptr<Util::XmlSettingsDialog> XmlSettingsDialog_;
+public:
+	void Init (ICoreProxy_ptr);
+	void SecondInit ();
+	void Release ();
+	QByteArray GetUniqueID () const;
+	QString GetName () const;
+	QString GetInfo () const;
+	QIcon GetIcon () const;
 
-				TabClasses_t GetTabClasses () const;
-				void TabOpenRequested (const QByteArray&);
+	TabClasses_t GetTabClasses () const;
+	void TabOpenRequested (const QByteArray&);
 
-				boost::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
-			signals:
-				void addNewTab (const QString&, QWidget*);
-				void removeTab (QWidget*);
-				void changeTabName (QWidget*, const QString&);
-				void changeTabIcon (QWidget*, const QIcon&);
-				void changeTooltip (QWidget*, QWidget*);
-				void statusBarChanged (QWidget*, const QString&);
-				void raiseTab (QWidget*);
-				void delegateEntity (const LeechCraft::Entity&,
-						int*, QObject**);
-				void gotEntity (const LeechCraft::Entity&);
+	boost::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
+signals:
+	void addNewTab (const QString&, QWidget*);
+	void removeTab (QWidget*);
+	void changeTabName (QWidget*, const QString&);
+	void changeTabIcon (QWidget*, const QIcon&);
+	void changeTooltip (QWidget*, QWidget*);
+	void statusBarChanged (QWidget*, const QString&);
+	void raiseTab (QWidget*);
+	void delegateEntity (const LeechCraft::Entity&,
+						 int*, QObject**);
+	void gotEntity (const LeechCraft::Entity&);
 
-				void couldHandle (const LeechCraft::Entity&, bool*);
-			};
-		};
-	};
+	void couldHandle (const LeechCraft::Entity&, bool*);
+};
+};
 };
 
 #endif
 
+// kate: indent-mode cstyle; indent-width 4; replace-tabs off; tab-width 4;

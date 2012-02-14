@@ -21,32 +21,30 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
-	{
-		namespace Woodpecker
-		{
-			XmlSettingsManager::XmlSettingsManager ()
-			{
-				Util::BaseSettingsManager::Init ();
-			}
+namespace Woodpecker
+{
+XmlSettingsManager::XmlSettingsManager ()
+{
+	Util::BaseSettingsManager::Init ();
+}
 
-			XmlSettingsManager* XmlSettingsManager::Instance ()
-			{
-				static XmlSettingsManager manager;
-				return &manager;
-			}
+XmlSettingsManager* XmlSettingsManager::Instance ()
+{
+	static XmlSettingsManager manager;
+	return &manager;
+}
 
-			QSettings* XmlSettingsManager::BeginSettings () const
-			{
-				QSettings *settings = new QSettings (QCoreApplication::organizationName (),
-						QCoreApplication::applicationName () + "_Woodpecker");
-				return settings;
-			}
+QSettings* XmlSettingsManager::BeginSettings () const
+{
+	QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+										 QCoreApplication::applicationName () + "_Woodpecker");
+	return settings;
+}
 
-			void XmlSettingsManager::EndSettings (QSettings*) const
-			{
-			}
-		};
-	};
+void XmlSettingsManager::EndSettings (QSettings*) const
+{
+}
+};
 };
 
+// kate: indent-mode cstyle; indent-width 4; replace-tabs off; tab-width 4;

@@ -22,24 +22,22 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
-	{
-		namespace Woodpecker
-		{
-			class XmlSettingsManager : public Util::BaseSettingsManager
-			{
-				Q_OBJECT
+namespace Woodpecker
+{
+class XmlSettingsManager : public Util::BaseSettingsManager
+{
+	Q_OBJECT
 
-				XmlSettingsManager ();
-			public:
-				static XmlSettingsManager* Instance ();
-			protected:
-				virtual QSettings* BeginSettings () const;
-				virtual void EndSettings (QSettings*) const;
-			};
-		};
-	};
+	XmlSettingsManager ();
+public:
+	static XmlSettingsManager* Instance ();
+protected:
+	virtual QSettings* BeginSettings () const;
+	virtual void EndSettings (QSettings*) const;
+};
+};
 };
 
 #endif
 
+// kate: indent-mode cstyle; indent-width 4; replace-tabs off; tab-width 4;

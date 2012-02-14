@@ -15,8 +15,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Woodpecker
 {
 
@@ -48,7 +46,7 @@ private:
 	QString consumerKeySecret;
 	QSettings *settings;
 
-	void signedRequest (twitterRequest req,KQOAuthRequest::RequestHttpMethod method = KQOAuthRequest::GET,KQOAuthParameters params = KQOAuthParameters());
+	void signedRequest (twitterRequest req, KQOAuthRequest::RequestHttpMethod method = KQOAuthRequest::GET, KQOAuthParameters params = KQOAuthParameters());
 
 	void requestTwitter (QUrl requestAddress);
 	QList < boost::shared_ptr<Tweet> > parseReply (QByteArray json);
@@ -76,7 +74,7 @@ public slots:
 };
 }
 }
-}
 
 #endif // TWITTERINTERFACE_H
 
+// kate: indent-mode cstyle; indent-width 4; replace-tabs off; tab-width 4;

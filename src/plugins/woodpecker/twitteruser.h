@@ -8,8 +8,6 @@
 #include <QDebug>
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace Woodpecker
 {
 
@@ -24,8 +22,12 @@ public:
 	~TwitterUser ();
 
 
-	void setUsername (QString username) {m_username = username;}
-	QString username () {return m_username;}
+	void setUsername (QString username) {
+		m_username = username;
+	}
+	QString username () {
+		return m_username;
+	}
 
 	void downloadAvatar (QString path);
 
@@ -42,6 +44,6 @@ public slots:
 };
 }
 }
-}
 
 #endif // TWITTERUSER_H
+// kate: indent-mode cstyle; indent-width 4; replace-tabs off; tab-width 4;
