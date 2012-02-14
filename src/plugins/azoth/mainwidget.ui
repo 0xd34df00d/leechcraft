@@ -69,14 +69,17 @@
     <layout class="QHBoxLayout" name="BottomLayout_">
      <item>
       <widget class="QComboBox" name="RosterMode_">
+       <property name="sizeAdjustPolicy">
+        <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
+       </property>
        <item>
         <property name="text">
-         <string>Whole CL</string>
+         <string>CL</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>Current MUC</string>
+         <string>MUC</string>
         </property>
        </item>
       </widget>
