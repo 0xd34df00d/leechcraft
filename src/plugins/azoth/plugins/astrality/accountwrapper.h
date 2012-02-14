@@ -29,6 +29,8 @@ namespace Azoth
 {
 namespace Astrality
 {
+	class EntryWrapper;
+
 	class AccountWrapper : public QObject
 						 , public IAccount
 	{
@@ -36,6 +38,7 @@ namespace Astrality
 		Q_INTERFACES (LeechCraft::Azoth::IAccount);
 
 		Tp::AccountPtr A_;
+		QList<EntryWrapper*> Entries_;
 	public:
 		AccountWrapper (Tp::AccountPtr, QObject*);
 
@@ -60,12 +63,21 @@ namespace Astrality
 		QObject* GetTransferManager() const;
 	private:
 		void HandleAuth (bool failure);
+		void CreateEntry (Tp::ContactPtr);
 	private slots:
 		void handleEnabled (Tp::PendingOperation*);
+
 		void handleConnStatusChanged (Tp::ConnectionStatus);
+		void handleConnectionChanged (Tp::ConnectionPtr);
+
 		void handlePasswordFixed (Tp::PendingOperation*);
 		void handleRequestedPresenceFinish (Tp::PendingOperation*);
 		void handleCurrentPresence (Tp::Presence);
+
+		void handlePresencePubRequested (Tp::Contacts);
+		void handleCMStateChanged (Tp::ContactListState);
+		void handleKnownContactsChanged (Tp::Contacts,
+				Tp::Contacts, Tp::Channel::GroupMemberChangeDetails);
 	signals:
 		void gotCLItems (const QList<QObject*>&);
 		void removedCLItems (const QList<QObject*>&);

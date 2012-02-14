@@ -20,9 +20,11 @@
 #include <TelepathyQt/PendingOperation>
 #include <TelepathyQt/PendingStringList>
 #include <TelepathyQt/Connection>
+#include <TelepathyQt/ContactManager>
 #include <util/util.h>
 #include <util/passutils.h>
 #include "astralityutil.h"
+#include "entrywrapper.h"
 
 namespace LeechCraft
 {
@@ -46,6 +48,10 @@ namespace Astrality
 				SIGNAL (connectionStatusChanged (Tp::ConnectionStatus)),
 				this,
 				SLOT (handleConnStatusChanged (Tp::ConnectionStatus)));
+		connect (A_.data (),
+				SIGNAL (connectionChanged (Tp::ConnectionPtr)),
+				this,
+				SLOT (handleConnectionChanged (Tp::ConnectionPtr)));
 	}
 
 	QObject* AccountWrapper::GetObject ()
@@ -65,7 +71,10 @@ namespace Astrality
 
 	QList<QObject*> AccountWrapper::GetCLEntries ()
 	{
-		return QList<QObject*> ();
+		QList<QObject*> result;
+		Q_FOREACH (auto e, Entries_)
+			result << e;
+		return result;
 	}
 
 	QString AccountWrapper::GetAccountName () const
@@ -166,6 +175,13 @@ namespace Astrality
 				SLOT (handlePasswordFixed (Tp::PendingOperation*)));
 	}
 
+	void AccountWrapper::CreateEntry (Tp::ContactPtr c)
+	{
+		EntryWrapper *w = new EntryWrapper (c, this);
+		Entries_ << w;
+		emit gotCLItems (QList<QObject*> () << w);
+	}
+
 	void AccountWrapper::handleEnabled (Tp::PendingOperation *po)
 	{
 		qDebug () << Q_FUNC_INFO << po->isError ();
@@ -183,6 +199,7 @@ namespace Astrality
 		}
 
 		HandleAuth (false);
+		handleConnectionChanged (A_->connection ());
 	}
 
 	void AccountWrapper::handleConnStatusChanged (Tp::ConnectionStatus status)
@@ -261,6 +278,36 @@ namespace Astrality
 			HandleAuth (true);
 	}
 
+	void AccountWrapper::handleConnectionChanged (Tp::ConnectionPtr conn)
+	{
+		qDebug () << Q_FUNC_INFO << conn;
+		if (!Entries_.isEmpty ())
+		{
+			emit removedCLItems (GetCLEntries ());
+			qDeleteAll (Entries_);
+			Entries_.clear ();
+		}
+
+		if (!conn)
+			return;
+
+		auto cm = conn->contactManager ().data ();
+		connect (cm,
+				SIGNAL (presencePublicationRequested (Tp::Contacts)),
+				this,
+				SLOT (handlePresencePubRequested (Tp::Contacts)));
+		connect (cm,
+				SIGNAL (stateChanged (Tp::ContactListState)),
+				this,
+				SLOT (handleCMStateChanged (Tp::ContactListState)));
+		connect (cm,
+				SIGNAL (allKnownContactsChanged (Tp::Contacts, Tp::Contacts, Tp::Channel::GroupMemberChangeDetails)),
+				this,
+				SLOT (handleKnownContactsChanged (Tp::Contacts, Tp::Contacts, Tp::Channel::GroupMemberChangeDetails)));
+
+		handleCMStateChanged (cm->state ());
+	}
+
 	void AccountWrapper::handlePasswordFixed (Tp::PendingOperation *po)
 	{
 		qWarning () << Q_FUNC_INFO;
@@ -304,6 +351,37 @@ namespace Astrality
 	{
 		qDebug () << Q_FUNC_INFO << pres.type ();
 		emit statusChanged (GetState ());
+	}
+
+	void AccountWrapper::handlePresencePubRequested (Tp::Contacts contacts)
+	{
+		qDebug () << Q_FUNC_INFO << contacts.size ();
+		Q_FOREACH (Tp::ContactPtr c, contacts)
+			qDebug () << c->alias () << c->groups () << c->id ();
+	}
+
+	void AccountWrapper::handleCMStateChanged (Tp::ContactListState state)
+	{
+		qDebug () << Q_FUNC_INFO << state;
+
+		auto cm = A_->connection ()->contactManager ();
+		auto contacts = cm->allKnownContacts ();
+		qDebug () << Q_FUNC_INFO << contacts.size () << "contacts";
+
+		if (state != Tp::ContactListStateSuccess)
+			return;
+
+		Q_FOREACH (Tp::ContactPtr c, contacts)
+		{
+			qDebug () << c->alias () << c->groups () << c->id ();
+			CreateEntry (c);
+		}
+	}
+
+	void AccountWrapper::handleKnownContactsChanged (Tp::Contacts added,
+			Tp::Contacts removed, Tp::Channel::GroupMemberChangeDetails)
+	{
+		qDebug () << Q_FUNC_INFO << added.size () << removed.size ();
 	}
 }
 }
