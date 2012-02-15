@@ -20,6 +20,7 @@
 
 #include <QObject>
 #include <TelepathyQt/Contact>
+#include <interfaces/structures.h>
 #include <interfaces/iclentry.h>
 
 namespace LeechCraft
@@ -29,6 +30,7 @@ namespace Azoth
 namespace Astrality
 {
 	class AccountWrapper;
+	class MsgWrapper;
 
 	class EntryWrapper : public QObject
 					   , public ICLEntry
@@ -38,8 +40,12 @@ namespace Astrality
 
 		AccountWrapper *AW_;
 		Tp::ContactPtr C_;
+
+		QList<MsgWrapper*> AllMessages_;
 	public:
 		EntryWrapper (Tp::ContactPtr, AccountWrapper*);
+
+		void HandleMessage (MsgWrapper*);
 
 		QObject* GetObject ();
 		QObject* GetParentAccount () const;
@@ -76,6 +82,8 @@ namespace Astrality
 		void chatPartStateChanged (const ChatPartState&, const QString&);
 		void permsChanged ();
 		void entryGenerallyChanged ();
+
+		void gotEntity (LeechCraft::Entity);
 	};
 }
 }

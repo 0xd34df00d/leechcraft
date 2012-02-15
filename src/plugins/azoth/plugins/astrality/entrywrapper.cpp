@@ -17,8 +17,10 @@
  **********************************************************************/
 
 #include "entrywrapper.h"
+#include <interfaces/azothutil.h>
 #include "accountwrapper.h"
 #include "astralityutil.h"
+#include "msgwrapper.h"
 
 namespace LeechCraft
 {
@@ -39,6 +41,17 @@ namespace Astrality
 				SIGNAL (aliasChanged (QString)),
 				this,
 				SIGNAL (nameChanged (QString)));
+
+		connect (this,
+				SIGNAL (gotEntity (LeechCraft::Entity)),
+				AW_,
+				SIGNAL (gotEntity (LeechCraft::Entity)));
+	}
+
+	void EntryWrapper::HandleMessage (MsgWrapper *msg)
+	{
+		AllMessages_ << msg;
+		emit gotMessage (msg);
 	}
 
 	QObject* EntryWrapper::GetObject ()
@@ -102,18 +115,23 @@ namespace Astrality
 		return QStringList (QString ());
 	}
 
-	QObject* EntryWrapper::CreateMessage (IMessage::MessageType, const QString&, const QString&)
+	QObject* EntryWrapper::CreateMessage (IMessage::MessageType mt, const QString&, const QString& body)
 	{
-		return 0;
+		auto messenger = AW_->GetMessenger (GetHumanReadableID ());
+		return new MsgWrapper (body, IMessage::DOut, messenger, this, mt);
 	}
 
 	QList<QObject*> EntryWrapper::GetAllMessages () const
 	{
-		return QList<QObject*> ();
+		QList<QObject*> result;
+		Q_FOREACH (auto msg, AllMessages_)
+			result << msg;
+		return result;
 	}
 
-	void EntryWrapper::PurgeMessages (const QDateTime&)
+	void EntryWrapper::PurgeMessages (const QDateTime& before)
 	{
+		Util::StandardPurgeMessages (AllMessages_, before);
 	}
 
 	void EntryWrapper::SetChatPartState (ChatPartState, const QString&)

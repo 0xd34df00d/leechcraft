@@ -20,6 +20,7 @@ SET (ASTRALITY_SRCS
 	accountregfirstpage.cpp
 	accountwrapper.cpp
 	entrywrapper.cpp
+	msgwrapper.cpp
 	astralityutil.cpp
 	)
 SET (ASTRALITY_HEADERS
@@ -29,6 +30,7 @@ SET (ASTRALITY_HEADERS
 	accountregfirstpage.h
 	accountwrapper.h
 	entrywrapper.h
+	msgwrapper.h
 	astralityutil.h
 	)
 SET (ASTRALITY_FORMS
