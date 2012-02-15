@@ -24,6 +24,9 @@
        <property name="text">
         <string>History:</string>
        </property>
+       <property name="buddy">
+        <cstring>HistoryBox_</cstring>
+       </property>
       </widget>
      </item>
      <item row="0" column="1">
@@ -38,6 +41,9 @@
        <property name="text">
         <string>Bookmarks:</string>
        </property>
+       <property name="buddy">
+        <cstring>BookmarksBox_</cstring>
+       </property>
       </widget>
      </item>
      <item row="1" column="1">
@@ -51,6 +57,9 @@
       <widget class="QLabel" name="label">
        <property name="text">
         <string>Account:</string>
+       </property>
+       <property name="buddy">
+        <cstring>AccountBox_</cstring>
        </property>
       </widget>
      </item>
