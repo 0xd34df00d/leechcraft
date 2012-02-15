@@ -139,4 +139,4 @@ namespace LMP
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_lmp, LeechCraft::LMP::LMP);
+LC_EXPORT_PLUGIN (leechcraft_lmp, LeechCraft::LMP::LMP);

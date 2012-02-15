@@ -116,4 +116,4 @@ namespace Lastfmscrobble
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_lastfmscrobble, LeechCraft::Lastfmscrobble::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_lastfmscrobble, LeechCraft::Lastfmscrobble::Plugin);

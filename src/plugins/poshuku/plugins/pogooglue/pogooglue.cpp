@@ -129,4 +129,4 @@ namespace Pogooglue
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_poshuku_pogooglue, LeechCraft::Poshuku::Pogooglue::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_poshuku_pogooglue, LeechCraft::Poshuku::Pogooglue::Plugin);

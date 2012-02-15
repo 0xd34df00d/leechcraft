@@ -138,5 +138,5 @@ namespace Snails
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_snails, LeechCraft::Snails::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_snails, LeechCraft::Snails::Plugin);
 

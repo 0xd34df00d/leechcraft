@@ -117,4 +117,4 @@ namespace WYFV
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_poshuku_wyfv, LeechCraft::Poshuku::WYFV::WYFV);
+LC_EXPORT_PLUGIN (leechcraft_poshuku_wyfv, LeechCraft::Poshuku::WYFV::WYFV);

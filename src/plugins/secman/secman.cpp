@@ -84,5 +84,5 @@ namespace LeechCraft
 	};
 };
 
-Q_EXPORT_PLUGIN2 (leechcraft_secman, LeechCraft::Plugins::SecMan::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_secman, LeechCraft::Plugins::SecMan::Plugin);
 

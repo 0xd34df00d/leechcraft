@@ -223,4 +223,4 @@ namespace BodyFetch
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_aggregator_bodyfetch, LeechCraft::Aggregator::BodyFetch::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_aggregator_bodyfetch, LeechCraft::Aggregator::BodyFetch::Plugin);

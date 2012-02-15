@@ -144,4 +144,4 @@ namespace YandexDisk
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_netstoremanager_yandexdisk, LeechCraft::NetStoreManager::YandexDisk::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_netstoremanager_yandexdisk, LeechCraft::NetStoreManager::YandexDisk::Plugin);

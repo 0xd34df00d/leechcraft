@@ -109,5 +109,5 @@ namespace LeechCraft
 	};
 };
 
-Q_EXPORT_PLUGIN2 (leechcraft_dbusmanager, LeechCraft::Plugins::DBusManager::DBusManager);
+LC_EXPORT_PLUGIN (leechcraft_dbusmanager, LeechCraft::Plugins::DBusManager::DBusManager);
 

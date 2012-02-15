@@ -213,4 +213,4 @@ namespace TabsList
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_tabslist, LeechCraft::TabsList::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_tabslist, LeechCraft::TabsList::Plugin);

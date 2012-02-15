@@ -209,4 +209,4 @@ namespace LastSeen
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_lastseen, LeechCraft::Azoth::LastSeen::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_lastseen, LeechCraft::Azoth::LastSeen::Plugin);

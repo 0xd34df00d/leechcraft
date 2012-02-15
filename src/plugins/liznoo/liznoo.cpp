@@ -289,4 +289,4 @@ namespace Liznoo
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_liznoo, LeechCraft::Liznoo::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_liznoo, LeechCraft::Liznoo::Plugin);

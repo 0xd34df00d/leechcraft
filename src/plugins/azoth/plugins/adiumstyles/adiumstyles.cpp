@@ -82,4 +82,4 @@ namespace AdiumStyles
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_adiumstyles, LeechCraft::Azoth::AdiumStyles::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_adiumstyles, LeechCraft::Azoth::AdiumStyles::Plugin);

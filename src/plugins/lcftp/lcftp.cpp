@@ -216,5 +216,5 @@ namespace LeechCraft
 	};
 };
 
-Q_EXPORT_PLUGIN2 (leechcraft_lcftp, LeechCraft::Plugins::LCFTP::LCFTP);
+LC_EXPORT_PLUGIN (leechcraft_lcftp, LeechCraft::Plugins::LCFTP::LCFTP);
 

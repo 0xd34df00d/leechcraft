@@ -184,4 +184,4 @@ namespace Herbicide
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_herbicide, LeechCraft::Azoth::Herbicide::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_herbicide, LeechCraft::Azoth::Herbicide::Plugin);

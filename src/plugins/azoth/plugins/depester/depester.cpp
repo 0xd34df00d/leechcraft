@@ -219,4 +219,4 @@ namespace Depester
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_depester, LeechCraft::Azoth::Depester::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_depester, LeechCraft::Azoth::Depester::Plugin);

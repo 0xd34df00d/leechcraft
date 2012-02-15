@@ -348,4 +348,4 @@ namespace Juick
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_juick, LeechCraft::Azoth::Juick::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_juick, LeechCraft::Azoth::Juick::Plugin);

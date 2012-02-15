@@ -199,4 +199,4 @@ namespace LeechCraft
 	};
 };
 
-Q_EXPORT_PLUGIN2 (leechcraft_seekthru, LeechCraft::Plugins::SeekThru::SeekThru);
+LC_EXPORT_PLUGIN (leechcraft_seekthru, LeechCraft::Plugins::SeekThru::SeekThru);

@@ -148,5 +148,5 @@ namespace LeechCraft
 	}
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_popishu, LeechCraft::Plugins::Popishu::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_popishu, LeechCraft::Plugins::Popishu::Plugin);
 

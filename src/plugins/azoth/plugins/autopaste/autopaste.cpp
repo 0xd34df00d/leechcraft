@@ -219,4 +219,4 @@ namespace Autopaste
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_autopaste, LeechCraft::Azoth::Autopaste::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_autopaste, LeechCraft::Azoth::Autopaste::Plugin);

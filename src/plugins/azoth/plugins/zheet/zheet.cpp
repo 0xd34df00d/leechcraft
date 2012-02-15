@@ -92,5 +92,5 @@ namespace Zheet
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_zheet, LeechCraft::Azoth::Zheet::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_zheet, LeechCraft::Azoth::Zheet::Plugin);
 

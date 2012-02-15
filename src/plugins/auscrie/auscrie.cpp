@@ -165,4 +165,4 @@ namespace Auscrie
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_auscrie, LeechCraft::Auscrie::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_auscrie, LeechCraft::Auscrie::Plugin);

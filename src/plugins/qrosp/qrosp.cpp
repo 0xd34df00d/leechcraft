@@ -108,4 +108,4 @@ namespace Qrosp
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_qrosp, LeechCraft::Qrosp::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_qrosp, LeechCraft::Qrosp::Plugin);

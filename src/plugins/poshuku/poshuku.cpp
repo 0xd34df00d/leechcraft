@@ -599,4 +599,4 @@ namespace Poshuku
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_poshuku, LeechCraft::Poshuku::Poshuku);
+LC_EXPORT_PLUGIN (leechcraft_poshuku, LeechCraft::Poshuku::Poshuku);

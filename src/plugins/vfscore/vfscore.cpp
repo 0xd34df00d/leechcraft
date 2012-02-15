@@ -61,4 +61,4 @@ namespace VFScore
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_vfscore, LeechCraft::VFScore::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_vfscore, LeechCraft::VFScore::Plugin);

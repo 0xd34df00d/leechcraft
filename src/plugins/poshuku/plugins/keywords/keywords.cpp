@@ -154,4 +154,4 @@ namespace Keywords
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_poshuku_keywords, LeechCraft::Poshuku::Keywords::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_poshuku_keywords, LeechCraft::Poshuku::Keywords::Plugin);

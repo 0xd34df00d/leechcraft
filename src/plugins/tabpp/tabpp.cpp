@@ -107,5 +107,5 @@ namespace LeechCraft
 	};
 };
 
-Q_EXPORT_PLUGIN2 (leechcraft_tabpp, LeechCraft::Plugins::TabPP::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_tabpp, LeechCraft::Plugins::TabPP::Plugin);
 

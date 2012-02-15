@@ -160,4 +160,4 @@ namespace Autoidler
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_autoidler, LeechCraft::Azoth::Autoidler::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_autoidler, LeechCraft::Azoth::Autoidler::Plugin);

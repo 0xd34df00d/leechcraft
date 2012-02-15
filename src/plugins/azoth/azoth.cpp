@@ -405,4 +405,4 @@ namespace Azoth
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_azoth, LeechCraft::Azoth::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth, LeechCraft::Azoth::Plugin);

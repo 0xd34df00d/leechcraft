@@ -93,5 +93,5 @@ namespace Delicious
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_poshuku_onlinebookmarks_delicious,
+LC_EXPORT_PLUGIN (leechcraft_poshuku_onlinebookmarks_delicious,
 		LeechCraft::Poshuku::OnlineBookmarks::Delicious::Plugin);
