@@ -20,6 +20,8 @@
 
 #include <QObject>
 #include <TelepathyQt/Contact>
+#include <TelepathyQt/Message>
+#include <TelepathyQt/TextChannel>
 #include <interfaces/structures.h>
 #include <interfaces/iclentry.h>
 
@@ -71,6 +73,7 @@ namespace Astrality
 		void MarkMsgsRead ();
 	private slots:
 		void handlePresenceChanged ();
+		void handleMessageReceived (const Tp::ReceivedMessage&, Tp::TextChannelPtr);
 	signals:
 		void gotMessage (QObject*);
 		void statusChanged (const EntryStatus&, const QString&);

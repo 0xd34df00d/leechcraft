@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "entrywrapper.h"
+#include <TelepathyQt/ContactMessenger>
 #include <interfaces/azothutil.h>
 #include "accountwrapper.h"
 #include "astralityutil.h"
@@ -46,6 +47,11 @@ namespace Astrality
 				SIGNAL (gotEntity (LeechCraft::Entity)),
 				AW_,
 				SIGNAL (gotEntity (LeechCraft::Entity)));
+
+		connect (AW_->GetMessenger (GetHumanReadableID ()).data (),
+				SIGNAL (messageReceived (Tp::ReceivedMessage, Tp::TextChannelPtr)),
+				this,
+				SLOT (handleMessageReceived (Tp::ReceivedMessage, Tp::TextChannelPtr)));
 	}
 
 	void EntryWrapper::HandleMessage (MsgWrapper *msg)
@@ -174,6 +180,18 @@ namespace Astrality
 	void EntryWrapper::handlePresenceChanged ()
 	{
 		emit statusChanged (GetStatus (QString ()), QString ());
+	}
+
+	void EntryWrapper::handleMessageReceived (const Tp::ReceivedMessage& tpMsg, Tp::TextChannelPtr)
+	{
+		if (tpMsg.isScrollback ())
+			return;
+
+		if (tpMsg.isDeliveryReport ())
+			return;
+
+		auto msg = new MsgWrapper (tpMsg, AW_->GetMessenger (GetHumanReadableID ()), this);
+		HandleMessage (msg);
 	}
 }
 }
