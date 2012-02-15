@@ -70,9 +70,7 @@ namespace Azoth
 
 		Ui_.setupUi (this);
 		qobject_cast<QVBoxLayout*> (layout ())->insertWidget (0, BottomBar_);
-#if QT_VERSION >= 0x040700
 		Ui_.FilterLine_->setPlaceholderText (tr ("Search..."));
-#endif
 		Ui_.CLTree_->setFocusProxy (Ui_.FilterLine_);
 
 		Ui_.CLTree_->setItemDelegate (new ContactListDelegate (Ui_.CLTree_));
