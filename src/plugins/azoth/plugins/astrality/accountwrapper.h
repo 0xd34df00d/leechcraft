@@ -20,6 +20,7 @@
 
 #include <TelepathyQt/Types>
 #include <TelepathyQt/Account>
+#include <TelepathyQt/ContactMessenger>
 #include <interfaces/structures.h>
 #include <interfaces/iaccount.h>
 
@@ -39,6 +40,8 @@ namespace Astrality
 
 		Tp::AccountPtr A_;
 		QList<EntryWrapper*> Entries_;
+
+		QMap<QString, Tp::ContactMessengerPtr> Messengers_;
 	public:
 		AccountWrapper (Tp::AccountPtr, QObject*);
 
@@ -61,6 +64,8 @@ namespace Astrality
 				const QString&, const QStringList&);
 		void RemoveEntry (QObject*);
 		QObject* GetTransferManager() const;
+
+		Tp::ContactMessengerPtr GetMessenger (const QString&);
 	private:
 		void HandleAuth (bool failure);
 		void CreateEntry (Tp::ContactPtr);
