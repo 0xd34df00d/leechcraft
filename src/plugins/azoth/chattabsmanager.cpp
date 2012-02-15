@@ -177,6 +177,15 @@ namespace Azoth
 				0);
 	}
 
+	void ChatTabsManager::HandleInMessage (IMessage *msg)
+	{
+		if (!XmlSettingsManager::Instance ().property ("OpenTabOnNewMsg").toBool ())
+			return;
+
+		if (msg->GetMessageType () == IMessage::MTChatMessage)
+			OpenChat (qobject_cast<ICLEntry*> (msg->OtherPart ()));
+	}
+
 	void ChatTabsManager::SetChatEnabled (const QString& id, bool enabled)
 	{
 		if (!Entry2Tab_.contains (id))

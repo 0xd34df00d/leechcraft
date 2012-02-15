@@ -51,10 +51,11 @@ namespace Azoth
 
 		void HandleEntryAdded (ICLEntry*);
 		void HandleEntryRemoved (ICLEntry*);
+		void HandleInMessage (IMessage*);
 
 		void SetChatEnabled (const QString&, bool);
 		void ChatMadeCurrent (ChatTab*);
-		
+
 		QString GetActiveVariant (ICLEntry*) const;
 	protected:
 		bool eventFilter (QObject*, QEvent*);

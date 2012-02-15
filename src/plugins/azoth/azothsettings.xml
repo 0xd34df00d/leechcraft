@@ -123,6 +123,9 @@
 			<item type="checkbox" property="JumpToNewTabOnOpen" default="true">
 				<label value="Jump to new tab on open" />
 			</item>
+			<item type="checkbox" property="OpenTabOnNewMsg" default="false">
+				<label value="Open chat tab on new message" />
+			</item>
 			<item type="checkbox" property="CloseConfOnLeave" default="false">
 				<label value="Close conferences tabs when leaving" />
 			</item>
