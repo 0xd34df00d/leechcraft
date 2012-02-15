@@ -47,6 +47,8 @@ namespace Astrality
 		MessageType MT_;
 		MessageSubType MST_;
 	public:
+		MsgWrapper (const Tp::ReceivedMessage&,
+				Tp::ContactMessengerPtr, EntryWrapper*);
 		MsgWrapper (const QString&, Direction,
 				Tp::ContactMessengerPtr, EntryWrapper*,
 				MessageType, MessageSubType = MSTOther);

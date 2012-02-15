@@ -27,6 +27,19 @@ namespace Azoth
 {
 namespace Astrality
 {
+	MsgWrapper::MsgWrapper (const Tp::ReceivedMessage& msg,
+			Tp::ContactMessengerPtr messenger, EntryWrapper *entry)
+	: QObject (entry)
+	, Messenger_ (messenger)
+	, Entry_ (entry)
+	, Body_ (msg.text ())
+	, DT_ (msg.received ())
+	, Dir_ (DIn)
+	, MT_ (MTChatMessage)
+	, MST_ (MSTOther)
+	{
+	}
+
 	MsgWrapper::MsgWrapper (const QString& body, Direction dir,
 			Tp::ContactMessengerPtr messenger, EntryWrapper *entry,
 			MessageType mt, MessageSubType mst)
