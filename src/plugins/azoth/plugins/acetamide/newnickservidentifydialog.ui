@@ -21,6 +21,9 @@
        <property name="text">
         <string>Nickname:</string>
        </property>
+       <property name="buddy">
+        <cstring>NickName_</cstring>
+       </property>
       </widget>
      </item>
      <item row="1" column="1">
@@ -30,6 +33,9 @@
       <widget class="QLabel" name="nickServNicknameLabel">
        <property name="text">
         <string>NickServ nickname:</string>
+       </property>
+       <property name="buddy">
+        <cstring>NickServNickname_</cstring>
        </property>
       </widget>
      </item>
@@ -41,6 +47,9 @@
        <property name="text">
         <string>NickServ auth string:</string>
        </property>
+       <property name="buddy">
+        <cstring>NickServAuthString_</cstring>
+       </property>
       </widget>
      </item>
      <item row="3" column="1">
@@ -51,6 +60,9 @@
        <property name="text">
         <string>Auth message:</string>
        </property>
+       <property name="buddy">
+        <cstring>AuthMessage_</cstring>
+       </property>
       </widget>
      </item>
      <item row="4" column="1">
@@ -60,6 +72,9 @@
       <widget class="QLabel" name="serverNameLabel">
        <property name="text">
         <string>Server name:</string>
+       </property>
+       <property name="buddy">
+        <cstring>Server_</cstring>
        </property>
       </widget>
      </item>
@@ -80,6 +95,14 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>Server_</tabstop>
+  <tabstop>NickName_</tabstop>
+  <tabstop>NickServNickname_</tabstop>
+  <tabstop>NickServAuthString_</tabstop>
+  <tabstop>AuthMessage_</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
@@ -89,8 +112,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
+     <x>254</x>
+     <y>164</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -105,8 +128,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
+     <x>322</x>
+     <y>164</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>
