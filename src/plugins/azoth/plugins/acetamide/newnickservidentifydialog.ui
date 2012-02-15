@@ -27,7 +27,11 @@
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QLineEdit" name="NickName_"/>
+      <widget class="QLineEdit" name="NickName_">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
      </item>
      <item row="2" column="0">
       <widget class="QLabel" name="nickServNicknameLabel">
@@ -40,7 +44,11 @@
       </widget>
      </item>
      <item row="2" column="1">
-      <widget class="QLineEdit" name="NickServNickname_"/>
+      <widget class="QLineEdit" name="NickServNickname_">
+       <property name="text">
+        <string notr="true">*NickServ*</string>
+       </property>
+      </widget>
      </item>
      <item row="3" column="0">
       <widget class="QLabel" name="nickServAuthStringLabel">
@@ -66,7 +74,11 @@
       </widget>
      </item>
      <item row="4" column="1">
-      <widget class="QLineEdit" name="AuthMessage_"/>
+      <widget class="QLineEdit" name="AuthMessage_">
+       <property name="text">
+        <string notr="true">/msg nickserv identify </string>
+       </property>
+      </widget>
      </item>
      <item row="0" column="0">
       <widget class="QLabel" name="serverNameLabel">
