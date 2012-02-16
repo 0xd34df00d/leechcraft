@@ -18,9 +18,9 @@
 
 #include "protowrapper.h"
 #include <QIcon>
-#include <TelepathyQt/AccountManager>
-#include <TelepathyQt/PendingReady>
-#include <TelepathyQt/PendingAccount>
+#include <AccountManager>
+#include <PendingReady>
+#include <PendingAccount>
 #include <util/util.h>
 #include "accountregfirstpage.h"
 #include "accountwrapper.h"

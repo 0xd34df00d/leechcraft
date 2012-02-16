@@ -19,9 +19,9 @@
 #pragma once
 
 #include <QObject>
-#include <TelepathyQt/Types>
-#include <TelepathyQt/ConnectionManager>
-#include <TelepathyQt/AccountManager>
+#include <Types>
+#include <ConnectionManager>
+#include <AccountManager>
 #include <interfaces/iprotocol.h>
 #include <interfaces/structures.h>
 

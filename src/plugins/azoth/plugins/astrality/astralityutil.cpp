@@ -17,7 +17,7 @@
  **********************************************************************/
 
 #include "astralityutil.h"
-#include <TelepathyQt/Presence>
+#include <Presence>
 #include <interfaces/iclentry.h>
 
 namespace LeechCraft

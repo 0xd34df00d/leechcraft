@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include <TelepathyQt/Constants>
+#include <Constants>
 #include <interfaces/azothcommon.h>
 
 namespace Tp

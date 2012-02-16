@@ -17,7 +17,7 @@
  **********************************************************************/
 
 #include "entrywrapper.h"
-#include <TelepathyQt/ContactMessenger>
+#include <ContactMessenger>
 #include <interfaces/azothutil.h>
 #include "accountwrapper.h"
 #include "astralityutil.h"

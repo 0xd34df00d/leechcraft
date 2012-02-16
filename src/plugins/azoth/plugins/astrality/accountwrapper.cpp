@@ -17,11 +17,11 @@
  **********************************************************************/
 
 #include "accountwrapper.h"
-#include <TelepathyQt/PendingOperation>
-#include <TelepathyQt/PendingStringList>
-#include <TelepathyQt/PendingContacts>
-#include <TelepathyQt/Connection>
-#include <TelepathyQt/ContactManager>
+#include <PendingOperation>
+#include <PendingStringList>
+#include <PendingContacts>
+#include <Connection>
+#include <ContactManager>
 #include <util/util.h>
 #include <util/passutils.h>
 #include "astralityutil.h"

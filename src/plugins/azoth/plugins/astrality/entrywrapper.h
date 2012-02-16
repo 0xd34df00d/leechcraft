@@ -19,9 +19,9 @@
 #pragma once
 
 #include <QObject>
-#include <TelepathyQt/Contact>
-#include <TelepathyQt/Message>
-#include <TelepathyQt/TextChannel>
+#include <Contact>
+#include <Message>
+#include <TextChannel>
 #include <interfaces/structures.h>
 #include <interfaces/iclentry.h>
 

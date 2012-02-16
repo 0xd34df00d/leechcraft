@@ -19,8 +19,8 @@
 #pragma once
 
 #include <QObject>
-#include <TelepathyQt/ContactMessenger>
-#include <TelepathyQt/Types>
+#include <ContactMessenger>
+#include <Types>
 #include <interfaces/structures.h>
 #include <interfaces/imessage.h>
 

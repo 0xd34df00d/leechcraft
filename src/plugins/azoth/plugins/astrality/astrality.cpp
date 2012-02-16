@@ -19,10 +19,10 @@
 #include "astrality.h"
 #include <QIcon>
 #include <QtDebug>
-#include <TelepathyQt/Types>
-#include <TelepathyQt/Debug>
-#include <TelepathyQt/ConnectionManager>
-#include <TelepathyQt/PendingStringList>
+#include <Types>
+#include <Debug>
+#include <ConnectionManager>
+#include <PendingStringList>
 #include <util/util.h>
 #include "cmwrapper.h"
 

@@ -19,8 +19,8 @@
 #pragma once
 
 #include <QObject>
-#include <TelepathyQt/Types>
-#include <TelepathyQt/ConnectionManager>
+#include <Types>
+#include <ConnectionManager>
 
 namespace LeechCraft
 {

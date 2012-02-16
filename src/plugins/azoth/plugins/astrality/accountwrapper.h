@@ -18,9 +18,9 @@
 
 #pragma once
 
-#include <TelepathyQt/Types>
-#include <TelepathyQt/Account>
-#include <TelepathyQt/ContactMessenger>
+#include <Types>
+#include <Account>
+#include <ContactMessenger>
 #include <interfaces/structures.h>
 #include <interfaces/iaccount.h>
 

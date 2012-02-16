@@ -17,7 +17,7 @@
  **********************************************************************/
 
 #include "accountregfirstpage.h"
-#include <TelepathyQt/ProtocolInfo>
+#include <ProtocolInfo>
 
 namespace LeechCraft
 {

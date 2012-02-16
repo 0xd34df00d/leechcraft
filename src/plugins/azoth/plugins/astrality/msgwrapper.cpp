@@ -17,7 +17,7 @@
  **********************************************************************/
 
 #include "msgwrapper.h"
-#include <TelepathyQt/PendingSendMessage>
+#include <PendingSendMessage>
 #include <util/util.h>
 #include "entrywrapper.h"
 
