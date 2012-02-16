@@ -152,8 +152,18 @@ namespace Astrality
 				SLOT (handleAccountCreated (Tp::PendingOperation*)));
 	}
 
-	void ProtoWrapper::RemoveAccount (QObject*)
+	void ProtoWrapper::RemoveAccount (QObject *accObj)
 	{
+		auto acc = qobject_cast<AccountWrapper*> (accObj);
+		if (!acc)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "not an AccountWrapper"
+					<< accObj;
+			return;
+		}
+
+		acc->RemoveThis ();
 	}
 
 	void ProtoWrapper::handleAMReady (Tp::PendingOperation *po)
@@ -206,8 +216,19 @@ namespace Astrality
 				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)),
 				this,
 				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)));
+		connect (w,
+				SIGNAL (removeFinished (AccountWrapper*)),
+				this,
+				SLOT (handleAccountRemoved (AccountWrapper*)));
 		Accounts_ << w;
 		emit accountAdded (w);
+	}
+
+	void ProtoWrapper::handleAccountRemoved (AccountWrapper *aw)
+	{
+		Accounts_.removeAll (aw);
+		emit accountRemoved (aw);
+		aw->deleteLater ();
 	}
 }
 }

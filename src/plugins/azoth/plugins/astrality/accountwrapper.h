@@ -66,11 +66,13 @@ namespace Astrality
 		QObject* GetTransferManager() const;
 
 		Tp::ContactMessengerPtr GetMessenger (const QString&);
+		void RemoveThis ();
 	private:
 		void HandleAuth (bool failure);
 		void CreateEntry (Tp::ContactPtr);
 	private slots:
 		void handleEnabled (Tp::PendingOperation*);
+		void handleRemoved (Tp::PendingOperation*);
 
 		void handleConnStatusChanged (Tp::ConnectionStatus);
 		void handleConnectionChanged (Tp::ConnectionPtr);
@@ -97,6 +99,8 @@ namespace Astrality
 		void itemGrantedSubscription (QObject*, const QString&);
 		void statusChanged (const EntryStatus&);
 		void mucInvitationReceived (const QVariantMap&, const QString&, const QString&);
+
+		void removeFinished (AccountWrapper*);
 
 		void gotEntity (LeechCraft::Entity);
 		void delegateEntity (LeechCraft::Entity, int*, QObject**);

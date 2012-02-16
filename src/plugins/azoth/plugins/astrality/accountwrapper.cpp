@@ -178,6 +178,14 @@ namespace Astrality
 		return Messengers_ [id];
 	}
 
+	void AccountWrapper::RemoveThis ()
+	{
+		connect (A_->remove (),
+				SIGNAL (finished (Tp::PendingOperation*)),
+				this,
+				SLOT (handleRemoved (Tp::PendingOperation*)));
+	}
+
 	void AccountWrapper::HandleAuth (bool failure)
 	{
 		const QString key = GetAccountID ().replace ('/', '_') + "." +
@@ -223,6 +231,25 @@ namespace Astrality
 
 		HandleAuth (false);
 		handleConnectionChanged (A_->connection ());
+	}
+
+	void AccountWrapper::handleRemoved (Tp::PendingOperation *po)
+	{
+		if (po->isError ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< po->errorName ()
+					<< po->errorMessage ();
+			emit gotEntity (Util::MakeNotification ("Azoth",
+					tr ("Error removing account %1: %2 (%3).")
+						.arg (A_->displayName ())
+						.arg (po->errorName ())
+						.arg (po->errorMessage ()),
+					PCritical_));
+			return;
+		}
+
+		emit removeFinished (this);
 	}
 
 	void AccountWrapper::handleConnStatusChanged (Tp::ConnectionStatus status)

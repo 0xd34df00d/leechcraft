@@ -65,6 +65,7 @@ namespace Astrality
 		void handleAMReady (Tp::PendingOperation*);
 		void handleAccountCreated (Tp::PendingOperation*);
 		void handleNewAccount (Tp::AccountPtr);
+		void handleAccountRemoved (AccountWrapper*);
 	signals:
 		void accountAdded (QObject*);
 		void accountRemoved (QObject*);
