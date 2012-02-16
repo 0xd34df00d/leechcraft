@@ -165,4 +165,4 @@ namespace Laure
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_laure, LeechCraft::Laure::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_laure, LeechCraft::Laure::Plugin);

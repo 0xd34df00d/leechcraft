@@ -133,4 +133,4 @@ namespace Sidebar
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_sidebar, LeechCraft::Sidebar::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_sidebar, LeechCraft::Sidebar::Plugin);

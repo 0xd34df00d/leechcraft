@@ -17,7 +17,7 @@
  **********************************************************************/
 
 #include "astralityutil.h"
-#include <TelepathyQt/Presence>
+#include <Presence>
 #include <interfaces/iclentry.h>
 
 namespace LeechCraft
@@ -99,6 +99,11 @@ namespace Astrality
 			default:
 				return Tp::Presence ();
 		}
+	}
+
+	EntryStatus Status2Azoth (const Tp::Presence& p)
+	{
+		return EntryStatus (StateTelepathy2Azoth (p.type ()), p.statusMessage ());
 	}
 }
 }

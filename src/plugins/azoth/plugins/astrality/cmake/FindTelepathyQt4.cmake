@@ -22,10 +22,11 @@ if(PKG_CONFIG_FOUND)
 endif(PKG_CONFIG_FOUND)
 
 find_path(TELEPATHY_QT4_INCLUDE_DIR
-          NAMES TelepathyQt4/Types TelepathyQt/Types
+          NAMES Types
           HINTS
           ${PC_TELEPATHY_QT4_INCLUDEDIR}
           ${PC_TELEPATHY_QT4_INCLUDE_DIRS}
+          PATH_SUFFIXES TelepathyQt TelepathyQt4
 )
 
 find_library(TELEPATHY_QT4_LIBRARIES

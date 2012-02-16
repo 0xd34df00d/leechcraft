@@ -43,21 +43,21 @@ namespace Aggregator
 		connect (wizard (),
 				SIGNAL (accepted ()),
 				this,
-				SLOT (handleAccepted ()));
+				SLOT (handleAccepted ()),
+				Qt::UniqueConnection);
 		connect (wizard (),
 				SIGNAL (accepted ()),
 				Selector_,
-				SLOT (accept ()));
+				SLOT (accept ()),
+				Qt::UniqueConnection);
 		XmlSettingsManager::Instance ()->
 				setProperty ("StartupVersion", 2);
 
-		int thisId = property ("PageID").toInt ();
-		wizard ()->removePage (thisId + 1);
+		wizard ()->setField ("Aggregator/StorageDirty", true);
 	}
 
 	void StartupSecondPage::handleAccepted ()
 	{
-		wizard ()->setProperty ("NeedsRestart", true);
 	}
 }
 }

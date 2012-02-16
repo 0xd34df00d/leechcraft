@@ -105,4 +105,4 @@ namespace Glance
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_glance, LeechCraft::Plugins::Glance::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_glance, LeechCraft::Plugins::Glance::Plugin);

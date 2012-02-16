@@ -142,4 +142,4 @@ namespace NetStoreManager
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_netstoremanager, LeechCraft::NetStoreManager::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_netstoremanager, LeechCraft::NetStoreManager::Plugin);

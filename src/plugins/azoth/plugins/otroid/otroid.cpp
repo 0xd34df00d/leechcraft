@@ -360,4 +360,4 @@ namespace OTRoid
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_otroid, LeechCraft::Azoth::OTRoid::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_otroid, LeechCraft::Azoth::OTRoid::Plugin);

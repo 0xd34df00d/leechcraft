@@ -278,4 +278,4 @@ namespace p100q
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_p100q, LeechCraft::Azoth::p100q::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_p100q, LeechCraft::Azoth::p100q::Plugin);

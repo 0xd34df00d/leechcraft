@@ -157,5 +157,5 @@ namespace OnlineBookmarks
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_poshuku_onlinebookmarks,
+LC_EXPORT_PLUGIN (leechcraft_poshuku_onlinebookmarks,
 		LeechCraft::Poshuku::OnlineBookmarks::Plugin);

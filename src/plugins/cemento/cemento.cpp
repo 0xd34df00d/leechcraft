@@ -57,4 +57,4 @@ namespace Cemento
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_cemento, LeechCraft::Cemento::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_cemento, LeechCraft::Cemento::Plugin);

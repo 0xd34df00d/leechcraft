@@ -269,4 +269,4 @@ namespace CSTP
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_cstp, LeechCraft::CSTP::CSTP);
+LC_EXPORT_PLUGIN (leechcraft_cstp, LeechCraft::CSTP::CSTP);

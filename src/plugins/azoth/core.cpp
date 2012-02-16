@@ -2221,6 +2221,8 @@ namespace Azoth
 				ChatTabsManager_->IsActiveChat (parentCL))
 			return;
 
+		ChatTabsManager_->HandleInMessage (msg);
+
 		bool showMsg = XmlSettingsManager::Instance ()
 				.property ("ShowMsgInNotifications").toBool ();
 

@@ -165,4 +165,4 @@ namespace Summary
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_summary, LeechCraft::Summary::Summary);
+LC_EXPORT_PLUGIN (leechcraft_summary, LeechCraft::Summary::Summary);

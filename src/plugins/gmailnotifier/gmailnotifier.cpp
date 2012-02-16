@@ -133,4 +133,4 @@ namespace GmailNotifier
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_gmailnotifier, LeechCraft::GmailNotifier::GmailNotifier);
+LC_EXPORT_PLUGIN (leechcraft_gmailnotifier, LeechCraft::GmailNotifier::GmailNotifier);

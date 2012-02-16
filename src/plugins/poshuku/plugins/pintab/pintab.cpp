@@ -259,4 +259,4 @@ namespace PinTab
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_poshuku_pintab, LeechCraft::Poshuku::PinTab::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_poshuku_pintab, LeechCraft::Poshuku::PinTab::Plugin);

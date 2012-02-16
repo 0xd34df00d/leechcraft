@@ -113,4 +113,4 @@ namespace NewLife
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_newlife, LeechCraft::NewLife::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_newlife, LeechCraft::NewLife::Plugin);

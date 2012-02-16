@@ -105,8 +105,9 @@ namespace LeechCraft
 				return SettingsDialog_;
 			}
 
-			Q_EXPORT_PLUGIN2 (leechcraft_deadlyrics, DeadLyRicS);
 		};
 	};
 };
+
+LC_EXPORT_PLUGIN (leechcraft_deadlyrics, LeechCraft::Plugins::DeadLyrics::DeadLyRicS);
 

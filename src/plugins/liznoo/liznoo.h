@@ -59,6 +59,9 @@ namespace Liznoo
 
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
 		QMap<QString, QList<QAction*>> GetMenuActions () const;
+	private:
+		void UpdateAction (const BatteryInfo&);
+		void CheckNotifications (const BatteryInfo&);
 	private slots:
 		void handleBatteryInfo (Liznoo::BatteryInfo);
 		void handleUpdateHistory ();

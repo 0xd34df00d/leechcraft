@@ -23,6 +23,7 @@
 #include <QTimer>
 #include <interfaces/core/icoreproxy.h>
 #include <util/util.h>
+#include "xmlsettingsmanager.h"
 #include "batteryhistorydialog.h"
 
 #if defined(Q_OS_LINUX)
@@ -147,28 +148,8 @@ namespace Liznoo
 		}
 	}
 
-	void Plugin::handleBatteryInfo (BatteryInfo info)
+	void Plugin::UpdateAction (const BatteryInfo& info)
 	{
-		if (!Battery2Action_.contains (info.ID_))
-		{
-			QAction *act = new QAction (tr ("Battery status"), this);
-			act->setProperty ("WatchActionIconChange", true);
-			act->setProperty ("Liznoo/BatteryID", info.ID_);
-
-			act->setProperty ("Action/Class", GetUniqueID () + "/BatteryAction");
-			act->setProperty ("Action/ID", GetUniqueID () + "/" + info.ID_);
-
-			emit gotActions (QList<QAction*> () << act, AEPLCTray);
-			Battery2Action_ [info.ID_] = act;
-
-			connect (act,
-					SIGNAL (triggered ()),
-					this,
-					SLOT (handleHistoryTriggered ()));
-		}
-
-		Battery2LastInfo_ [info.ID_] = info;
-
 		QAction *act = Battery2Action_ [info.ID_];
 
 		const bool isDischarging = info.TimeToEmpty_ && !info.TimeToFull_;
@@ -217,6 +198,74 @@ namespace Liznoo
 
 		act->setToolTip (tooltip);
 		act->setProperty ("ActionIcon", GetBattIconName (info));
+	}
+
+	void Plugin::CheckNotifications (const BatteryInfo& info)
+	{
+		auto check = [&info, &Battery2LastInfo_] (std::function<bool (const BatteryInfo&)> f)
+		{
+			if (!Battery2LastInfo_.contains (info.ID_))
+				return f (info);
+
+			return f (info) && !f (Battery2LastInfo_ [info.ID_]);
+		};
+
+		auto checkPerc = [] (const BatteryInfo& b, const QByteArray& prop)
+			{ return b.Percentage_ <= XmlSettingsManager::Instance ()->property (prop).toInt (); };
+
+		const bool isExtremeLow = check ([checkPerc] (const BatteryInfo& b)
+				{ return checkPerc (b, "NotifyOnExtremeLowPower"); });
+		const bool isLow = check ([checkPerc] (const BatteryInfo& b)
+				{ return checkPerc (b, "NotifyOnLowPower"); });
+
+		if (isExtremeLow || isLow)
+			emit gotEntity (Util::MakeNotification ("Liznoo",
+						tr ("Battery charge level is below %1.")
+							.arg (info.Percentage_),
+						isLow ? PWarning_ : PCritical_));
+
+		if (XmlSettingsManager::Instance ()->property ("NotifyOnPowerTransitions").toBool ())
+		{
+			const bool startedCharging = check ([] (const BatteryInfo& b)
+					{ return b.TimeToFull_ && !b.TimeToEmpty_; });
+			const bool startedDischarging = check ([] (const BatteryInfo& b)
+					{ return !b.TimeToFull_ && b.TimeToEmpty_; });
+
+			if (startedCharging)
+				emit gotEntity (Util::MakeNotification ("Liznoo",
+							tr ("The device started charging."),
+							PInfo_));
+			else if (startedDischarging)
+				emit gotEntity (Util::MakeNotification ("Liznoo",
+							tr ("The device started discharging."),
+							PWarning_));
+		}
+	}
+
+	void Plugin::handleBatteryInfo (BatteryInfo info)
+	{
+		if (!Battery2Action_.contains (info.ID_))
+		{
+			QAction *act = new QAction (tr ("Battery status"), this);
+			act->setProperty ("WatchActionIconChange", true);
+			act->setProperty ("Liznoo/BatteryID", info.ID_);
+
+			act->setProperty ("Action/Class", GetUniqueID () + "/BatteryAction");
+			act->setProperty ("Action/ID", GetUniqueID () + "/" + info.ID_);
+
+			emit gotActions (QList<QAction*> () << act, AEPLCTray);
+			Battery2Action_ [info.ID_] = act;
+
+			connect (act,
+					SIGNAL (triggered ()),
+					this,
+					SLOT (handleHistoryTriggered ()));
+		}
+
+		UpdateAction (info);
+		CheckNotifications (info);
+
+		Battery2LastInfo_ [info.ID_] = info;
 	}
 
 	void Plugin::handleUpdateHistory ()
@@ -289,4 +338,4 @@ namespace Liznoo
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_liznoo, LeechCraft::Liznoo::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_liznoo, LeechCraft::Liznoo::Plugin);

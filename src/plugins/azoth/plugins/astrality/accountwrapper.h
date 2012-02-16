@@ -18,8 +18,9 @@
 
 #pragma once
 
-#include <TelepathyQt/Types>
-#include <TelepathyQt/Account>
+#include <Types>
+#include <Account>
+#include <ContactMessenger>
 #include <interfaces/structures.h>
 #include <interfaces/iaccount.h>
 
@@ -29,6 +30,8 @@ namespace Azoth
 {
 namespace Astrality
 {
+	class EntryWrapper;
+
 	class AccountWrapper : public QObject
 						 , public IAccount
 	{
@@ -36,6 +39,9 @@ namespace Astrality
 		Q_INTERFACES (LeechCraft::Azoth::IAccount);
 
 		Tp::AccountPtr A_;
+		QList<EntryWrapper*> Entries_;
+
+		QMap<QString, Tp::ContactMessengerPtr> Messengers_;
 	public:
 		AccountWrapper (Tp::AccountPtr, QObject*);
 
@@ -58,14 +64,30 @@ namespace Astrality
 				const QString&, const QStringList&);
 		void RemoveEntry (QObject*);
 		QObject* GetTransferManager() const;
+
+		Tp::ContactMessengerPtr GetMessenger (const QString&);
+		void RemoveThis ();
 	private:
 		void HandleAuth (bool failure);
+		void CreateEntry (Tp::ContactPtr);
 	private slots:
 		void handleEnabled (Tp::PendingOperation*);
+		void handleRemoved (Tp::PendingOperation*);
+
 		void handleConnStatusChanged (Tp::ConnectionStatus);
+		void handleConnectionChanged (Tp::ConnectionPtr);
+
 		void handlePasswordFixed (Tp::PendingOperation*);
 		void handleRequestedPresenceFinish (Tp::PendingOperation*);
 		void handleCurrentPresence (Tp::Presence);
+
+		void handlePresencePubRequested (Tp::Contacts);
+		void handleCMStateChanged (Tp::ContactListState);
+		void handleKnownContactsChanged (Tp::Contacts,
+				Tp::Contacts, Tp::Channel::GroupMemberChangeDetails);
+
+		void handleAuthRequestFinished (Tp::PendingOperation*);
+		void handleAuthRequestSent (Tp::PendingOperation*);
 	signals:
 		void gotCLItems (const QList<QObject*>&);
 		void removedCLItems (const QList<QObject*>&);
@@ -77,6 +99,8 @@ namespace Astrality
 		void itemGrantedSubscription (QObject*, const QString&);
 		void statusChanged (const EntryStatus&);
 		void mucInvitationReceived (const QVariantMap&, const QString&, const QString&);
+
+		void removeFinished (AccountWrapper*);
 
 		void gotEntity (LeechCraft::Entity);
 		void delegateEntity (LeechCraft::Entity, int*, QObject**);

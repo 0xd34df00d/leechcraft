@@ -8,6 +8,7 @@ FIND_PACKAGE (TelepathyQt4 REQUIRED)
 
 INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
 	${TELEPATHY_QT4_INCLUDE_DIR}
+	${TELEPATHY_QT4_INCLUDE_DIR}/../
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
@@ -19,6 +20,8 @@ SET (ASTRALITY_SRCS
 	protowrapper.cpp
 	accountregfirstpage.cpp
 	accountwrapper.cpp
+	entrywrapper.cpp
+	msgwrapper.cpp
 	astralityutil.cpp
 	)
 SET (ASTRALITY_HEADERS
@@ -27,6 +30,8 @@ SET (ASTRALITY_HEADERS
 	protowrapper.h
 	accountregfirstpage.h
 	accountwrapper.h
+	entrywrapper.h
+	msgwrapper.h
 	astralityutil.h
 	)
 SET (ASTRALITY_FORMS

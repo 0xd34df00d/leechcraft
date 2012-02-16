@@ -179,4 +179,4 @@ namespace CleanWeb
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_poshuku_cleanweb, LeechCraft::Poshuku::CleanWeb::CleanWeb);
+LC_EXPORT_PLUGIN (leechcraft_poshuku_cleanweb, LeechCraft::Poshuku::CleanWeb::CleanWeb);

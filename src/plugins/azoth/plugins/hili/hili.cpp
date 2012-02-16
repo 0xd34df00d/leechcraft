@@ -139,4 +139,4 @@ namespace HiLi
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_hili, LeechCraft::Azoth::HiLi::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_hili, LeechCraft::Azoth::HiLi::Plugin);

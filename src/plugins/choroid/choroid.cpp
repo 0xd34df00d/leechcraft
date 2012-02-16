@@ -92,4 +92,4 @@ namespace Choroid
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_choroid, LeechCraft::Choroid::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_choroid, LeechCraft::Choroid::Plugin);

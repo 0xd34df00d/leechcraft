@@ -173,5 +173,5 @@ namespace LeechCraft
 	};
 };
 
-Q_EXPORT_PLUGIN2 (leechcraft_vgrabber, LeechCraft::Plugins::vGrabber::vGrabber);
+LC_EXPORT_PLUGIN (leechcraft_vgrabber, LeechCraft::Plugins::vGrabber::vGrabber);
 

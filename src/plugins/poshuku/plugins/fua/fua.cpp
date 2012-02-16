@@ -188,4 +188,4 @@ namespace Fua
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_poshuku_fua, LeechCraft::Poshuku::Fua::FUA);
+LC_EXPORT_PLUGIN (leechcraft_poshuku_fua, LeechCraft::Poshuku::Fua::FUA);

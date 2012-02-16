@@ -36,7 +36,8 @@ namespace Aggregator
 		connect (wizard (),
 				SIGNAL (accepted ()),
 				this,
-				SLOT (handleAccepted ()));
+				SLOT (handleAccepted ()),
+				Qt::UniqueConnection);
 		XmlSettingsManager::Instance ()->
 				setProperty ("StartupVersion", 1);
 	}

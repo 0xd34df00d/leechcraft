@@ -344,4 +344,4 @@ namespace ChatHistory
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_chathistory, LeechCraft::Azoth::ChatHistory::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_chathistory, LeechCraft::Azoth::ChatHistory::Plugin);

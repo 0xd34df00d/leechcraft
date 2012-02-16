@@ -28,9 +28,11 @@ namespace LeechCraft
 	StartupWizard::StartupWizard (QWidget *parent)
 	: QWizard (parent)
 	, TypeChoseID_ (-10)
+	, Type_ (TBasic)
 	{
 		setWindowTitle (tr ("Startup wizard"));
 		setWizardStyle (QWizard::ModernStyle);
+		handleTypeChanged (Type_);
 
 		QList<IStartupWizard*> wizards = Core::Instance ()
 			.GetPluginManager ()->GetAllCastableTo<IStartupWizard*> ();
@@ -80,6 +82,10 @@ namespace LeechCraft
 		else
 		{
 			WizardTypeChoicePage *wtpage = new WizardTypeChoicePage (this);
+			connect (wtpage,
+					SIGNAL (chosenTypeChanged (StartupWizard::Type)),
+					this,
+					SLOT (handleTypeChanged (StartupWizard::Type)));
 			TypeChoseID_ = addPage (wtpage);
 			AddPages ();
 		}
@@ -104,10 +110,6 @@ namespace LeechCraft
 				return -1;
 			}
 
-			Type type = wtpage->GetChosenType ();
-
-			const_cast<StartupWizard*> (this)->setProperty ("WizardType", type);
-
 			int nextId = QWizard::nextId ();
 			QWizardPage *nextPage = page (nextId);
 			QList<QWizardPage*>::const_iterator i =
@@ -121,7 +123,7 @@ namespace LeechCraft
 				return -1;
 			}
 			for (; i != Pages_.end (); ++i)
-				if ((*i)->property ("WizardType").toInt () <= type)
+				if ((*i)->property ("WizardType").toInt () <= Type_)
 					return Page2ID_ [*i];
 				else
 					disconnect (this,
@@ -145,6 +147,12 @@ namespace LeechCraft
 		}
 	}
 
+	void StartupWizard::handleTypeChanged (StartupWizard::Type type)
+	{
+		setProperty ("WizardType", type);
+		Type_ = type;
+	}
+
 	void StartupWizard::handleAccepted ()
 	{
 		if (property ("NeedsRestart").toBool () == true)
@@ -157,5 +165,4 @@ namespace LeechCraft
 	{
 		deleteLater ();
 	}
-};
-
+}

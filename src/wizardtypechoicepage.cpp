@@ -24,6 +24,14 @@ namespace LeechCraft
 	: QWizardPage (parent)
 	{
 		Ui_.setupUi (this);
+		connect (Ui_.BasicSetup_,
+				SIGNAL (toggled (bool)),
+				this,
+				SLOT (handleButtonToggled ()));
+		connect (Ui_.AdvancedSetup_,
+				SIGNAL (toggled (bool)),
+				this,
+				SLOT (handleButtonToggled ()));
 	}
 
 	WizardTypeChoicePage::~WizardTypeChoicePage ()
@@ -36,5 +44,10 @@ namespace LeechCraft
 			return StartupWizard::TBasic;
 		else
 			return StartupWizard::TAdvanced;
+	}
+
+	void WizardTypeChoicePage::handleButtonToggled ()
+	{
+		emit chosenTypeChanged (GetChosenType ());
 	}
 };

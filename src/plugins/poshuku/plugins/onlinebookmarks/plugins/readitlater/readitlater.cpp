@@ -93,5 +93,5 @@ namespace ReadItLater
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_poshuku_onlinebookmarks_readitlater,
+LC_EXPORT_PLUGIN (leechcraft_poshuku_onlinebookmarks_readitlater,
 		LeechCraft::Poshuku::OnlineBookmarks::ReadItLater::Plugin);

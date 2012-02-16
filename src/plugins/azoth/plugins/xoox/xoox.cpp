@@ -114,5 +114,5 @@ namespace Xoox
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_xoox,
+LC_EXPORT_PLUGIN (leechcraft_azoth_xoox,
 		LeechCraft::Azoth::Xoox::Plugin);

@@ -18,8 +18,8 @@
 
 #include "cmwrapper.h"
 #include <QtDebug>
-#include <TelepathyQt/ConnectionManager>
-#include <TelepathyQt/PendingReady>
+#include <ConnectionManager>
+#include <PendingReady>
 #include "protowrapper.h"
 
 namespace LeechCraft

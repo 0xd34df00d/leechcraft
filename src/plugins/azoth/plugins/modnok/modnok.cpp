@@ -302,4 +302,4 @@ namespace Modnok
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_modnok, LeechCraft::Azoth::Modnok::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_modnok, LeechCraft::Azoth::Modnok::Plugin);

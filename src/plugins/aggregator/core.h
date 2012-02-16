@@ -149,7 +149,10 @@ namespace Aggregator
 		void StartAddingOPML (const QString&);
 		void SetAppWideActions (const AppWideActions&);
 		const AppWideActions& GetAppWideActions () const;
+
 		bool DoDelayedInit ();
+		bool ReinitStorage ();
+
 		void AddFeed (const QString&, const QString&);
 		void AddFeed (const QString&, const QStringList&,
 				FeedSettings_ptr = FeedSettings_ptr ());
@@ -247,6 +250,8 @@ namespace Aggregator
 		void gotEntity (const LeechCraft::Entity&);
 		void channelRemoved (IDType_t);
 		void itemDataUpdated (Item_ptr, Channel_ptr);
+
+		void storageChanged ();
 
 		// Plugin API
 		void hookGotNewItems (LeechCraft::IHookProxy_ptr proxy,

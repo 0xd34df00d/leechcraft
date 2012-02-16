@@ -64,9 +64,13 @@ namespace Aggregator
 		void UpdateChannelData (const ChannelShort&);
 		ChannelShort& GetChannelForIndex (const QModelIndex&);
 		void RemoveChannel (const ChannelShort&);
+
+		void Clear ();
+
 		QModelIndex GetUnreadChannelIndex () const;
 		int GetUnreadChannelsNumber () const;
 		int GetUnreadItemsNumber () const;
+
 		void SetMenu (QMenu*);
 	signals:
 		void channelDataUpdated ();

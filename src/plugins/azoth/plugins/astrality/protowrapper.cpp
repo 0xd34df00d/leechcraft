@@ -18,9 +18,9 @@
 
 #include "protowrapper.h"
 #include <QIcon>
-#include <TelepathyQt/AccountManager>
-#include <TelepathyQt/PendingReady>
-#include <TelepathyQt/PendingAccount>
+#include <AccountManager>
+#include <PendingReady>
+#include <PendingAccount>
 #include <util/util.h>
 #include "accountregfirstpage.h"
 #include "accountwrapper.h"
@@ -38,9 +38,16 @@ namespace Astrality
 	, ProtoName_ (protoName)
 	, ProtoInfo_ (CM_->protocol (ProtoName_))
 	{
-		auto accf = Tp::AccountFactory::create (QDBusConnection::sessionBus (),
-				Tp::Account::FeatureCore);
-		AM_ = Tp::AccountManager::create (accf);
+		const auto& sb = QDBusConnection::sessionBus ();
+		auto accf = Tp::AccountFactory::create (sb, Tp::Account::FeatureCore);
+		auto channelf = Tp::ChannelFactory::create (sb);
+		auto connf = Tp::ConnectionFactory::create (sb,
+				Tp::Connection::FeatureConnected |
+				Tp::Connection::FeatureRoster |
+				Tp::Connection::FeatureRosterGroups);
+		auto contactf = Tp::ContactFactory::create (Tp::Contact::FeatureAlias |
+				Tp::Contact::FeatureSimplePresence);
+		AM_ = Tp::AccountManager::create (accf, connf, channelf, contactf);
 
 		connect (AM_->becomeReady (),
 				SIGNAL (finished (Tp::PendingOperation*)),
@@ -145,8 +152,18 @@ namespace Astrality
 				SLOT (handleAccountCreated (Tp::PendingOperation*)));
 	}
 
-	void ProtoWrapper::RemoveAccount (QObject*)
+	void ProtoWrapper::RemoveAccount (QObject *accObj)
 	{
+		auto acc = qobject_cast<AccountWrapper*> (accObj);
+		if (!acc)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "not an AccountWrapper"
+					<< accObj;
+			return;
+		}
+
+		acc->RemoveThis ();
 	}
 
 	void ProtoWrapper::handleAMReady (Tp::PendingOperation *po)
@@ -199,8 +216,19 @@ namespace Astrality
 				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)),
 				this,
 				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)));
+		connect (w,
+				SIGNAL (removeFinished (AccountWrapper*)),
+				this,
+				SLOT (handleAccountRemoved (AccountWrapper*)));
 		Accounts_ << w;
 		emit accountAdded (w);
+	}
+
+	void ProtoWrapper::handleAccountRemoved (AccountWrapper *aw)
+	{
+		Accounts_.removeAll (aw);
+		emit accountRemoved (aw);
+		aw->deleteLater ();
 	}
 }
 }

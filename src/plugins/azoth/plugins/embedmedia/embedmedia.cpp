@@ -95,4 +95,4 @@ namespace EmbedMedia
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_embedmedia, LeechCraft::Azoth::EmbedMedia::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_embedmedia, LeechCraft::Azoth::EmbedMedia::Plugin);

@@ -252,4 +252,4 @@ namespace Rosenthal
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_rosenthal, LeechCraft::Azoth::Rosenthal::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_rosenthal, LeechCraft::Azoth::Rosenthal::Plugin);

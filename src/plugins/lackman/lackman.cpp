@@ -391,4 +391,4 @@ namespace LackMan
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_lackman, LeechCraft::LackMan::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_lackman, LeechCraft::LackMan::Plugin);

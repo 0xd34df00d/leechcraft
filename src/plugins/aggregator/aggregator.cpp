@@ -897,4 +897,4 @@ namespace Aggregator
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_aggregator, LeechCraft::Aggregator::Aggregator);
+LC_EXPORT_PLUGIN (leechcraft_aggregator, LeechCraft::Aggregator::Aggregator);

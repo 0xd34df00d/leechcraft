@@ -33,13 +33,14 @@ namespace LeechCraft
 	class MainWindow;
 	class PluginTreeBuilder;
 
+	typedef boost::shared_ptr<QPluginLoader> QPluginLoader_ptr;
+
 	class PluginManager : public QAbstractItemModel
 						, public IPluginsManager
 	{
 		Q_OBJECT
 		Q_INTERFACES (IPluginsManager);
 
-		typedef boost::shared_ptr<QPluginLoader> QPluginLoader_ptr;
 		typedef QList<QPluginLoader_ptr> PluginsContainer_t;
 
 		// Only currently loaded plugins

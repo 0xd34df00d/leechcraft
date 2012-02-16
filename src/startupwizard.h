@@ -36,12 +36,17 @@ namespace LeechCraft
 			TBasic,
 			TAdvanced
 		};
+	private:
+		Type Type_;
+	public:
 		StartupWizard (QWidget* = 0);
 
 		int nextId () const;
 	private:
 		void AddPages ();
 	private slots:
+		void handleTypeChanged (StartupWizard::Type);
+
 		void handleAccepted ();
 		void handleRejected ();
 	};
