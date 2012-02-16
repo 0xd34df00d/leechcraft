@@ -21,6 +21,7 @@ SET (SRCS
 	batteryhistory.cpp
 	batteryhistorydialog.cpp
 	platformlayer.cpp
+	xmlsettingsmanager.cpp
 	)
 SET (HEADERS
 	liznoo.h
@@ -28,6 +29,7 @@ SET (HEADERS
 	batteryhistory.h
 	batteryhistorydialog.h
 	platformlayer.h
+	xmlsettingsmanager.h
 	)
 # Default implementation using UPower
 IF (NOT WIN32)
@@ -86,3 +88,4 @@ TARGET_LINK_LIBRARIES (leechcraft_liznoo
 	)
 INSTALL (TARGETS leechcraft_liznoo DESTINATION ${LC_PLUGINS_DEST})
 INSTALL (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+INSTALL (FILES liznoosettings.xml DESTINATION ${LC_SETTINGS_DEST})
