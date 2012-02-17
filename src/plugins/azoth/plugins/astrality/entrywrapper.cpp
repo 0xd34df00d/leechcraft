@@ -60,6 +60,11 @@ namespace Astrality
 		emit gotMessage (msg);
 	}
 
+	Tp::ContactPtr EntryWrapper::GetContact () const
+	{
+		return C_;
+	}
+
 	QObject* EntryWrapper::GetObject ()
 	{
 		return this;

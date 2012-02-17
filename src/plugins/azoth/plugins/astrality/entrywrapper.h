@@ -50,6 +50,7 @@ namespace Astrality
 		EntryWrapper (Tp::ContactPtr, AccountWrapper*);
 
 		void HandleMessage (MsgWrapper*);
+		Tp::ContactPtr GetContact () const;
 
 		QObject* GetObject ();
 		QObject* GetParentAccount () const;
