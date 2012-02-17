@@ -24,6 +24,7 @@
 #include <TextChannel>
 #include <interfaces/structures.h>
 #include <interfaces/iclentry.h>
+#include <interfaces/iauthable.h>
 
 namespace LeechCraft
 {
@@ -36,9 +37,10 @@ namespace Astrality
 
 	class EntryWrapper : public QObject
 					   , public ICLEntry
+					   , public IAuthable
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ICLEntry);
+		Q_INTERFACES (LeechCraft::Azoth::ICLEntry LeechCraft::Azoth::IAuthable);
 
 		AccountWrapper *AW_;
 		Tp::ContactPtr C_;
@@ -71,6 +73,12 @@ namespace Astrality
 		QList<QAction*> GetActions () const;
 		QMap<QString, QVariant> GetClientInfo (const QString&) const;
 		void MarkMsgsRead ();
+
+		AuthStatus GetAuthStatus () const;
+		void ResendAuth (const QString&);
+		void RevokeAuth (const QString&);
+		void Unsubscribe (const QString&);
+		void RerequestAuth (const QString&);
 	private slots:
 		void handlePresenceChanged ();
 		void handleMessageReceived (const Tp::ReceivedMessage&, Tp::TextChannelPtr);

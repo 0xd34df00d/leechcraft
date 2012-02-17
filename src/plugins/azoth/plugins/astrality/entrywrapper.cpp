@@ -72,7 +72,7 @@ namespace Astrality
 
 	ICLEntry::Features EntryWrapper::GetEntryFeatures () const
 	{
-		return FPermanentEntry;
+		return FPermanentEntry | FSupportsAuth | FSupportsGrouping;
 	}
 
 	ICLEntry::EntryType EntryWrapper::GetEntryType () const
@@ -175,6 +175,39 @@ namespace Astrality
 
 	void EntryWrapper::MarkMsgsRead ()
 	{
+	}
+
+	AuthStatus EntryWrapper::GetAuthStatus () const
+	{
+		if (C_->publishState () == Tp::Contact::PresenceStateAsk)
+			return ASContactRequested;
+
+		int result = ASNone;
+		if (C_->subscriptionState () == Tp::Contact::PresenceStateYes)
+			result |= ASFrom;
+		if (C_->publishState () == Tp::Contact::PresenceStateYes)
+			result |= ASTo;
+		return static_cast<AuthStatus> (result);
+	}
+
+	void EntryWrapper::ResendAuth (const QString& msg)
+	{
+		C_->authorizePresencePublication (msg);
+	}
+
+	void EntryWrapper::RevokeAuth (const QString& msg)
+	{
+		C_->removePresencePublication (msg);
+	}
+
+	void EntryWrapper::Unsubscribe (const QString& msg)
+	{
+		C_->removePresenceSubscription (msg);
+	}
+
+	void EntryWrapper::RerequestAuth (const QString& msg)
+	{
+		C_->requestPresenceSubscription (msg);
 	}
 
 	void EntryWrapper::handlePresenceChanged ()
