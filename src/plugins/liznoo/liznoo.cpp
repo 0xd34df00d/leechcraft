@@ -106,7 +106,7 @@ namespace Liznoo
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		return QIcon (":/liznoo/resources/images/liznoo.svg");
 	}
 
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
