@@ -18,7 +18,7 @@
 
 #ifndef INTERFACES_CORE_IHOOKPROXY_H
 #define INTERFACES_CORE_IHOOKPROXY_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QMetaType>
 
 class QVariant;
@@ -114,8 +114,8 @@ namespace LeechCraft
 		virtual void SetValue (const QByteArray& name, const QVariant& value) = 0;
 	};
 
-	typedef boost::shared_ptr<IHookProxy> IHookProxy_ptr;
-};
+	typedef std::shared_ptr<IHookProxy> IHookProxy_ptr;
+}
 
 Q_DECLARE_METATYPE (LeechCraft::IHookProxy_ptr);
 

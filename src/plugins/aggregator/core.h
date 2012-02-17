@@ -19,7 +19,6 @@
 #ifndef PLUGINS_AGGREGATOR_CORE_H
 #define PLUGINS_AGGREGATOR_CORE_H
 #include <memory>
-#include <boost/shared_ptr.hpp>
 #include <QAbstractItemModel>
 #include <QString>
 #include <QMap>
@@ -84,7 +83,7 @@ namespace Aggregator
 			QString URL_;
 			QString Filename_;
 			QStringList Tags_;
-			boost::shared_ptr<Feed::FeedSettings> FeedSettings_;
+			std::shared_ptr<Feed::FeedSettings> FeedSettings_;
 		};
 		struct ExternalData
 		{
@@ -104,7 +103,7 @@ namespace Aggregator
 		bool SaveScheduled_;
 		ChannelsModel *ChannelsModel_;
 		QTimer *UpdateTimer_, *CustomUpdateTimer_;
-		boost::shared_ptr<StorageBackend> StorageBackend_;
+		std::shared_ptr<StorageBackend> StorageBackend_;
 		JobHolderRepresentation *JobHolderRepresentation_;
 		QMap<IDType_t, QDateTime> Updates_;
 		ChannelsFilterModel *ChannelsFilterModel_;

@@ -668,7 +668,7 @@ namespace Xoox
 		JoinRoom (jidStr, nick);
 	}
 
-	boost::shared_ptr<ClientConnection> GlooxAccount::GetClientConnection () const
+	std::shared_ptr<ClientConnection> GlooxAccount::GetClientConnection () const
 	{
 		return ClientConnection_;
 	}

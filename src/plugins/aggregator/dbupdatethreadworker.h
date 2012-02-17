@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_AGGREGATOR_DBUPDATETHREADWORKER_H
 #define PLUGINS_AGGREGATOR_DBUPDATETHREADWORKER_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QObject>
 #include <QVariantList>
 #include <interfaces/core/ihookproxy.h>
@@ -37,7 +37,7 @@ namespace Aggregator
 	{
 		Q_OBJECT
 
-		boost::shared_ptr<StorageBackend> SB_;
+		std::shared_ptr<StorageBackend> SB_;
 	public:
 		DBUpdateThreadWorker (QObject* = 0);
 	public slots:

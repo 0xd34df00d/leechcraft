@@ -18,7 +18,6 @@
 
 #ifndef XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERBASE_H
 #define XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERBASE_H
-#include <boost/shared_ptr.hpp>
 #include <QMap>
 #include <QVariant>
 #include <QDomElement>
@@ -130,7 +129,7 @@ namespace LeechCraft
 		virtual void updatePreferences ();
 	};
 
-	typedef boost::shared_ptr<ItemHandlerBase> ItemHandlerBase_ptr;
+	typedef std::shared_ptr<ItemHandlerBase> ItemHandlerBase_ptr;
 };
 
 #endif

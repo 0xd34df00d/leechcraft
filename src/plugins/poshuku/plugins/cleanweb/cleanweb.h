@@ -53,7 +53,7 @@ namespace CleanWeb
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveSettings IEntityHandler IStartupWizard IPlugin2)
 
-		boost::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
+		std::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
 		std::auto_ptr<QTranslator> Translator_;
 	public:
 		void Init (ICoreProxy_ptr);

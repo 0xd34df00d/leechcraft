@@ -18,7 +18,6 @@
 
 #ifndef PLUGINS_GMAILNOTIFIER_GMAILNOTIFIER_H
 #define PLUGINS_GMAILNOTIFIER_GMAILNOTIFIER_H
-#include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavesettings.h>
@@ -39,7 +38,6 @@ namespace GmailNotifier
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveSettings)
 
-		boost::shared_ptr<QTranslator> Translator_;
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
 
 		GmailChecker *GmailChecker_;

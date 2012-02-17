@@ -208,7 +208,7 @@ namespace LeechCraft
 				Core::Instance ().Handle (e);
 			}
 
-			boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> LCFTP::GetSettingsDialog () const
+			std::shared_ptr<LeechCraft::Util::XmlSettingsDialog> LCFTP::GetSettingsDialog () const
 			{
 				return XmlSettingsDialog_;
 			}

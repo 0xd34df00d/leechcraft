@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_CHATHISTORY_STORAGE_H
 #define PLUGINS_AZOTH_PLUGINS_CHATHISTORY_STORAGE_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QSqlQuery>
 #include <QHash>
 #include <QVariant>
@@ -37,7 +37,7 @@ namespace ChatHistory
 	{
 		Q_OBJECT
 
-		boost::shared_ptr<QSqlDatabase> DB_;
+		std::shared_ptr<QSqlDatabase> DB_;
 		QSqlQuery UserSelector_;
 		QSqlQuery AccountSelector_;
 		QSqlQuery UserIDSelector_;

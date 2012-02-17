@@ -18,7 +18,6 @@
 
 #ifndef PLUGINS_VFSCORE_CONTAINERS_GENERALARCH_GENERALARCH_H
 #define PLUGINS_VFSCORE_CONTAINERS_GENERALARCH_GENERALARCH_H
-#include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/vfs/iengineprovider.h>
@@ -43,7 +42,7 @@ namespace GeneralArch
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
-		
+
 		QList<VFS::IContainerEngine*> GetContainerEngines () const;
 		QList<VFS::IProtocolEngine*> GetProtocolEngines () const;
 	};

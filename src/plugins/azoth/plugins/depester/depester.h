@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_DEPESTER_DEPESTER_H
 #define PLUGINS_AZOTH_PLUGINS_DEPESTER_DEPESTER_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
@@ -39,7 +39,6 @@ namespace Depester
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2)
 
-		boost::shared_ptr<QTranslator> Translator_;
 		QHash<QObject*, QAction*> Entry2ActionIgnore_;
 		QHash<QObject*, QString> Entry2Nick_;
 		QSet<QString> IgnoredNicks_;

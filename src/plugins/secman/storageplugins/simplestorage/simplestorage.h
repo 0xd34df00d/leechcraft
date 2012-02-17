@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_SECMAN_PLUGINS_SIMPLESTORAGE_SIMPLESTORAGE_H
 #define PLUGINS_SECMAN_PLUGINS_SIMPLESTORAGE_SIMPLESTORAGE_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
@@ -44,7 +44,7 @@ namespace LeechCraft
 						Q_OBJECT
 						Q_INTERFACES (IInfo IPlugin2 LeechCraft::Plugins::SecMan::IStoragePlugin)
 
-						boost::shared_ptr<QSettings> Storage_;
+						std::shared_ptr<QSettings> Storage_;
 					public:
 						void Init (ICoreProxy_ptr);
 						void SecondInit ();

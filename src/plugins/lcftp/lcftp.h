@@ -50,7 +50,7 @@ namespace LeechCraft
 				Q_INTERFACES (IInfo IHaveTabs IJobHolder IDownload IEntityHandler IHaveSettings)
 
 				std::auto_ptr<QTranslator> Translator_;
-				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
+				std::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
 				TabManager *TabManager_;
 			public:
 				void Init (ICoreProxy_ptr);
@@ -81,7 +81,7 @@ namespace LeechCraft
 				EntityTestHandleResult CouldHandle (const Entity&) const;
 				void Handle (Entity);
 
-				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
+				std::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
 			signals:
 				void jobFinished (int);
 				void jobRemoved (int);

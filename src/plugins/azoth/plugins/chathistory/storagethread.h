@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_CHATHISTORY_STORAGETHREAD_H
 #define PLUGINS_AZOTH_PLUGINS_CHATHISTORY_STORAGETHREAD_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QThread>
 
 namespace LeechCraft
@@ -33,7 +33,7 @@ namespace ChatHistory
 	{
 		Q_OBJECT
 
-		boost::shared_ptr<Storage> Storage_;
+		std::shared_ptr<Storage> Storage_;
 	public:
 		StorageThread (QObject* = 0);
 

@@ -209,14 +209,14 @@ namespace LeechCraft
 
 			if (CachePathContents_.contains (path))
 			{
-				boost::shared_ptr<QBuffer> result (new QBuffer ());
+				std::shared_ptr<QBuffer> result (new QBuffer ());
 				result->setData (*CachePathContents_ [path]);
 				if (open)
 					result->open (QIODevice::ReadOnly);
 				return result;
 			}
 
-			boost::shared_ptr<QFile> result (new QFile (path));
+			std::shared_ptr<QFile> result (new QFile (path));
 
 			if (!result->isSequential () &&
 					result->size () < CachePathContents_.maxCost () / 2)

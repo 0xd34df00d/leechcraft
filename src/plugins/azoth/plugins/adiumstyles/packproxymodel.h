@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_ADIUMSTYLES_PACKPROXYMODEL_H
 #define PLUGINS_AZOTH_PLUGINS_ADIUMSTYLES_PACKPROXYMODEL_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QStandardItemModel>
 #include <QHash>
 
@@ -37,7 +37,7 @@ namespace AdiumStyles
 	{
 		Q_OBJECT
 
-		boost::shared_ptr<Util::ResourceLoader> Loader_;
+		std::shared_ptr<Util::ResourceLoader> Loader_;
 
 		struct OrigData
 		{
@@ -47,7 +47,7 @@ namespace AdiumStyles
 
 		QHash<QString, OrigData> OrigDatas_;
 	public:
-		PackProxyModel (boost::shared_ptr<Util::ResourceLoader>, QObject* = 0);
+		PackProxyModel (std::shared_ptr<Util::ResourceLoader>, QObject* = 0);
 
 		QString GetOrigName (const QString&) const;
 		QString GetVariant (const QString&) const;

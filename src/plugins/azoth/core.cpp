@@ -194,7 +194,7 @@ namespace Azoth
 		ResourceLoaders_ [RLTActivityIconLoader].reset (new Util::ResourceLoader ("azoth/iconsets/activities/", this));
 		ResourceLoaders_ [RLTMoodIconLoader].reset (new Util::ResourceLoader ("azoth/iconsets/moods/", this));
 
-		Q_FOREACH (boost::shared_ptr<Util::ResourceLoader> rl, ResourceLoaders_.values ())
+		Q_FOREACH (std::shared_ptr<Util::ResourceLoader> rl, ResourceLoaders_.values ())
 		{
 			rl->AddLocalPrefix ();
 			rl->AddGlobalPrefix ();
@@ -1097,7 +1097,7 @@ namespace Azoth
 
 	namespace
 	{
-		QString Status2Str (const EntryStatus& status, boost::shared_ptr<IProxyObject> obj)
+		QString Status2Str (const EntryStatus& status, std::shared_ptr<IProxyObject> obj)
 		{
 			QString result = obj->StateToString (status.State_);
 			const QString& statusString = Qt::escape (status.StatusString_);
@@ -2997,7 +2997,7 @@ namespace Azoth
 
 	void Core::flushIconCaches ()
 	{
-		Q_FOREACH (boost::shared_ptr<Util::ResourceLoader> rl, ResourceLoaders_.values ())
+		Q_FOREACH (std::shared_ptr<Util::ResourceLoader> rl, ResourceLoaders_.values ())
 			rl->FlushCache ();
 	}
 

@@ -260,7 +260,7 @@ namespace Poshuku
 		Core::Instance ().AddPlugin (plugin);
 	}
 
-	boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> Poshuku::GetSettingsDialog () const
+	std::shared_ptr<LeechCraft::Util::XmlSettingsDialog> Poshuku::GetSettingsDialog () const
 	{
 		return XmlSettingsDialog_;
 	}

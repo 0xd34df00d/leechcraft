@@ -86,7 +86,7 @@ namespace OTRoid
 
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Translator_.reset (Util::InstallTranslator ("azoth_otroid"));
+		Util::InstallTranslator ("azoth_otroid");
 
 		OTRL_INIT;
 

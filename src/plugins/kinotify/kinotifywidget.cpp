@@ -121,7 +121,7 @@ namespace LeechCraft
 						SLOT (closeNotificationWidget ()));
 			}
 
-			void KinotifyWidget::SetThemeLoader (boost::shared_ptr<Util::ResourceLoader> loader)
+			void KinotifyWidget::SetThemeLoader (std::shared_ptr<Util::ResourceLoader> loader)
 			{
 				ThemeLoader_ = loader;
 			}

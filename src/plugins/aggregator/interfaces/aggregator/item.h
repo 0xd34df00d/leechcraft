@@ -19,11 +19,11 @@
 #ifndef PLUGINS_AGGREGATOR_INTERFACES_AGGREGATOR_ITEM_H
 #define PLUGINS_AGGREGATOR_INTERFACES_AGGREGATOR_ITEM_H
 #include <vector>
+#include <memory>
 #include <QString>
 #include <QStringList>
 #include <QDateTime>
 #include <QMetaType>
-#include <boost/shared_ptr.hpp>
 #include "common.h"
 
 // Workaround stupid MSVS behaviour.
@@ -362,7 +362,7 @@ namespace Aggregator
 		void FixDate ();
 	};
 
-	typedef boost::shared_ptr<Item> Item_ptr;
+	typedef std::shared_ptr<Item> Item_ptr;
 	typedef std::vector<Item_ptr> items_container_t;
 	typedef std::vector<ItemShort> items_shorts_t;
 

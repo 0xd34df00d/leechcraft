@@ -28,7 +28,7 @@ namespace LeechCraft
 namespace Summary
 {
 	CategoryMerger::CategoryMerger (const Request& r,
-			const boost::shared_ptr<MergeModel>& merge,
+			const std::shared_ptr<MergeModel>& merge,
 			QObject *parent)
 	: MergeModel (QStringList (QString ())
 			<< QString ()

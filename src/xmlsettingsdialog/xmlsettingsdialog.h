@@ -18,11 +18,11 @@
 
 #ifndef XMLSETTINGSDIALOG_XMLSETTINGSDIALOG_H
 #define XMLSETTINGSDIALOG_XMLSETTINGSDIALOG_H
+#include <memory>
 #include <QWidget>
 #include <QString>
 #include <QMap>
 #include <QVariant>
-#include <boost/shared_ptr.hpp>
 #include "xsdconfig.h"
 
 class QStackedWidget;
@@ -47,7 +47,7 @@ namespace LeechCraft
 			QStringList Titles_;
 			QObject *WorkingObject_;
 			QString DefaultLang_;
-			boost::shared_ptr<QDomDocument> Document_;
+			std::shared_ptr<QDomDocument> Document_;
 			QList<QWidget*> Customs_;
 			ItemHandlerFactory *HandlersManager_;
 			QString Basename_;

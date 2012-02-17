@@ -137,7 +137,7 @@ namespace LeechCraft
 				return result;
 			}
 
-			boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> SeekThru::GetSettingsDialog () const
+			std::shared_ptr<LeechCraft::Util::XmlSettingsDialog> SeekThru::GetSettingsDialog () const
 			{
 				return XmlSettingsDialog_;
 			}

@@ -63,7 +63,7 @@ namespace Summary
 		/** Default merge model for the Downloads category with
 			* all the downloaders and such stuff.
 			*/
-		boost::shared_ptr<Util::MergeModel> MergeModel_;
+		std::shared_ptr<Util::MergeModel> MergeModel_;
 		SummaryWidget *Default_;
 		SummaryWidget *Current_;
 		QList<SummaryWidget*> Others_;

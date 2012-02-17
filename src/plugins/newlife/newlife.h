@@ -18,7 +18,6 @@
 
 #pragma once
 
-#include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <QStringList>
 #include <interfaces/iinfo.h>
@@ -37,7 +36,7 @@ namespace NewLife
 		Q_OBJECT
 		Q_INTERFACES (IInfo IActionsExporter)
 
-		boost::shared_ptr<QAction> ImporterAction_;
+		QAction *ImporterAction_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

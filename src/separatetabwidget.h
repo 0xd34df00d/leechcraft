@@ -18,7 +18,7 @@
 
 #ifndef SEPARATETABWIDGET_H
 #define SEPARATETABWIDGET_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QWidget>
 #include <QIcon>
 #include <QTabBar>
@@ -63,7 +63,7 @@ namespace LeechCraft
 		QAction *PinTab_;
 		QAction *UnPinTab_;
 		QAction *DefaultTabAction_;
-		QMap<int, boost::shared_ptr<QWidget> > Widgets_;
+		QMap<int, std::shared_ptr<QWidget> > Widgets_;
 		QList<QPointer<QAction> > TabBarActions_;
 		bool InMoveProcess_;
 	public:

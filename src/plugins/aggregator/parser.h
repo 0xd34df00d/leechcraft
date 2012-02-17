@@ -19,7 +19,6 @@
 #ifndef PLUGINS_AGGREGATOR_PARSER_H
 #define PLUGINS_AGGREGATOR_PARSER_H
 #include <vector>
-#include <boost/shared_ptr.hpp>
 #include <QPair>
 #include <QDomDocument>
 #include "channel.h"
@@ -35,12 +34,12 @@ namespace Aggregator
 		virtual ~Parser ();
 		/** @brief Indicates whether parser could parse the document.
 			*
-			* @param[in] doc 
+			* @param[in] doc
 			*/
 		virtual bool CouldParse (const QDomDocument& doc) const = 0;
 
 		/** @brief Parses the document
-			* 
+			*
 			* Parses the passed XML document. Created channels are
 			* already sane and validated, with proper feed IDs and
 			* such (that's why feedId parameter is required).
@@ -80,7 +79,7 @@ namespace Aggregator
 		QStringList GetPlainCategories (const QDomElement&) const;
 		QList<Enclosure> GetEncEnclosures (const QDomElement&,
 				const IDType_t&) const;
-		QPair<double, double> GetGeoPoint (const QDomElement&) const; 
+		QPair<double, double> GetGeoPoint (const QDomElement&) const;
 		QList<MRSSEntry> GetMediaRSS (const QDomElement&,
 				const IDType_t&) const;
 

@@ -44,7 +44,7 @@ namespace Delicious
 		Q_INTERFACES (IInfo IPlugin2
 				LeechCraft::Poshuku::OnlineBookmarks::IServicePlugin)
 
-		boost::shared_ptr<DeliciousService> DeliciousService_;
+		std::shared_ptr<DeliciousService> DeliciousService_;
 	public:
 		void Init (ICoreProxy_ptr proxy);
 		void SecondInit ();

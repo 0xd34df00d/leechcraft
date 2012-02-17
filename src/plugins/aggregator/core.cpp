@@ -440,7 +440,7 @@ namespace Aggregator
 	}
 
 	void Core::AddFeed (const QString& url, const QStringList& tags,
-			boost::shared_ptr<Feed::FeedSettings> fs)
+			std::shared_ptr<Feed::FeedSettings> fs)
 	{
 		if (StorageBackend_->FindFeed (url) != static_cast<IDType_t> (-1))
 		{
@@ -1211,7 +1211,7 @@ namespace Aggregator
 			url,
 			where,
 			QStringList (),
-			boost::shared_ptr<Feed::FeedSettings> ()
+			std::shared_ptr<Feed::FeedSettings> ()
 		};
 
 		int id = -1;
@@ -1358,7 +1358,7 @@ namespace Aggregator
 			url,
 			filename,
 			QStringList (),
-			boost::shared_ptr<Feed::FeedSettings> ()
+			std::shared_ptr<Feed::FeedSettings> ()
 		};
 
 		int jobId = -1;

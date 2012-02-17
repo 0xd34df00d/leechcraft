@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_HIGHLIGHTER_H
 #define PLUGINS_AZOTH_PLUGINS_HIGHLIGHTER_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QSyntaxHighlighter>
 #include <QTextFormat>
 
@@ -35,13 +35,13 @@ namespace Rosenthal
 	{
 		Q_OBJECT
 
-		boost::shared_ptr<Hunspell> Hunspell_;
+		std::shared_ptr<Hunspell> Hunspell_;
 		QTextCharFormat SpellCheckFormat_;
 		QTextCodec *Codec_;
 	public:
-		Highlighter (boost::shared_ptr<Hunspell>, QTextDocument*);
+		Highlighter (std::shared_ptr<Hunspell>, QTextDocument*);
 
-		void UpdateHunspell (boost::shared_ptr<Hunspell>);
+		void UpdateHunspell (std::shared_ptr<Hunspell>);
 	protected:
 		void highlightBlock (const QString&);
 	private:
