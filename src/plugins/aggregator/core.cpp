@@ -18,6 +18,7 @@
 
 #include <stdexcept>
 #include <numeric>
+#include <algorithm>
 #include <QtDebug>
 #include <QImage>
 #include <QDir>
