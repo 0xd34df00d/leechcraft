@@ -69,7 +69,7 @@ namespace Astrality
 		void RemoveThis ();
 	private:
 		void HandleAuth (bool failure);
-		void CreateEntry (Tp::ContactPtr);
+		EntryWrapper* CreateEntry (Tp::ContactPtr);
 	private slots:
 		void handleEnabled (Tp::PendingOperation*);
 		void handleRemoved (Tp::PendingOperation*);

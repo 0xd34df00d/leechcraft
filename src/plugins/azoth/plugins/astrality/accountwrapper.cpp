@@ -134,12 +134,17 @@ namespace Astrality
 				SLOT (handleRequestedPresenceFinish (Tp::PendingOperation*)));
 	}
 
-	void AccountWrapper::Authorize (QObject*)
+	void AccountWrapper::Authorize (QObject *obj)
 	{
+		auto w = qobject_cast<EntryWrapper*> (obj);
+		w->ResendAuth (QString ());
+		w->RerequestAuth (QString ());
 	}
 
-	void AccountWrapper::DenyAuth (QObject*)
+	void AccountWrapper::DenyAuth (QObject *obj)
 	{
+		auto w = qobject_cast<EntryWrapper*> (obj);
+		w->RevokeAuth (QString ());
 	}
 
 	void AccountWrapper::RequestAuth (const QString& id,
@@ -206,11 +211,18 @@ namespace Astrality
 				SLOT (handlePasswordFixed (Tp::PendingOperation*)));
 	}
 
-	void AccountWrapper::CreateEntry (Tp::ContactPtr c)
+	EntryWrapper* AccountWrapper::CreateEntry (Tp::ContactPtr c)
 	{
+		auto pos = std::find_if (Entries_.begin (), Entries_.end (),
+			[c] (decltype (Entries_.front ()) e)
+				{ return e->GetContact () == c; });
+		if (pos != Entries_.end ())
+			return *pos;
+
 		EntryWrapper *w = new EntryWrapper (c, this);
 		Entries_ << w;
 		emit gotCLItems (QList<QObject*> () << w);
+		return w;
 	}
 
 	void AccountWrapper::handleEnabled (Tp::PendingOperation *po)
@@ -407,7 +419,11 @@ namespace Astrality
 	{
 		qDebug () << Q_FUNC_INFO << contacts.size ();
 		Q_FOREACH (Tp::ContactPtr c, contacts)
+		{
 			qDebug () << c->alias () << c->groups () << c->id ();
+			auto w = CreateEntry (c);
+			emit authorizationRequested (w, QString ());
+		}
 	}
 
 	void AccountWrapper::handleCMStateChanged (Tp::ContactListState state)
