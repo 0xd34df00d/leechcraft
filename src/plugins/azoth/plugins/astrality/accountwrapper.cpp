@@ -219,9 +219,27 @@ namespace Astrality
 		if (pos != Entries_.end ())
 			return *pos;
 
-		EntryWrapper *w = new EntryWrapper (c, this);
+		auto w = new EntryWrapper (c, this);
 		Entries_ << w;
 		emit gotCLItems (QList<QObject*> () << w);
+
+		connect (w,
+				SIGNAL (itemSubscribed (QObject*, QString)),
+				this,
+				SIGNAL (itemSubscribed (QObject*, QString)));
+		connect (w,
+				SIGNAL (itemUnsubscribed (QObject*, QString)),
+				this,
+				SIGNAL (itemUnsubscribed (QObject*, QString)));
+		connect (w,
+				SIGNAL (itemCancelledSubscription (QObject*, QString)),
+				this,
+				SIGNAL (itemCancelledSubscription (QObject*, QString)));
+		connect (w,
+				SIGNAL (itemGrantedSubscription (QObject*, QString)),
+				this,
+				SIGNAL (itemGrantedSubscription (QObject*, QString)));
+
 		return w;
 	}
 

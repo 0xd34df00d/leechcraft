@@ -82,6 +82,8 @@ namespace Astrality
 		void RerequestAuth (const QString&);
 	private slots:
 		void handlePresenceChanged ();
+		void handlePublishStateChanged (Tp::Contact::PresenceState, const QString&);
+		void handleSubStateChanged (Tp::Contact::PresenceState);
 		void handleMessageReceived (const Tp::ReceivedMessage&, Tp::TextChannelPtr);
 	signals:
 		void gotMessage (QObject*);
@@ -94,6 +96,11 @@ namespace Astrality
 		void chatPartStateChanged (const ChatPartState&, const QString&);
 		void permsChanged ();
 		void entryGenerallyChanged ();
+
+		void itemSubscribed (QObject*, const QString&);
+		void itemUnsubscribed (QObject*, const QString&);
+		void itemCancelledSubscription (QObject*, const QString&);
+		void itemGrantedSubscription (QObject*, const QString&);
 
 		void gotEntity (LeechCraft::Entity);
 	};

@@ -42,6 +42,14 @@ namespace Astrality
 				SIGNAL (aliasChanged (QString)),
 				this,
 				SIGNAL (nameChanged (QString)));
+		connect (C_.data (),
+				SIGNAL (publishStateChanged (Tp::Contact::PresenceState, QString)),
+				this,
+				SLOT (handlePublishStateChanged (Tp::Contact::PresenceState, QString)));
+		connect (C_.data (),
+				SIGNAL (subscriptionStateChanged (Tp::Contact::PresenceState)),
+				this,
+				SLOT (handleSubStateChanged (Tp::Contact::PresenceState)));
 
 		connect (this,
 				SIGNAL (gotEntity (LeechCraft::Entity)),
@@ -218,6 +226,36 @@ namespace Astrality
 	void EntryWrapper::handlePresenceChanged ()
 	{
 		emit statusChanged (GetStatus (QString ()), QString ());
+	}
+
+	void EntryWrapper::handlePublishStateChanged (Tp::Contact::PresenceState state, const QString& msg)
+	{
+		switch (state)
+		{
+		case Tp::Contact::PresenceStateNo:
+			emit itemUnsubscribed (this, msg);
+			break;
+		case Tp::Contact::PresenceStateYes:
+			emit itemSubscribed (this, msg);
+			break;
+		default:
+			;
+		}
+	}
+
+	void EntryWrapper::handleSubStateChanged (Tp::Contact::PresenceState state)
+	{
+		switch (state)
+		{
+		case Tp::Contact::PresenceStateNo:
+			emit itemCancelledSubscription (this, QString ());
+			break;
+		case Tp::Contact::PresenceStateYes:
+			emit itemGrantedSubscription (this, QString ());
+			break;
+		default:
+			;
+		}
 	}
 
 	void EntryWrapper::handleMessageReceived (const Tp::ReceivedMessage& tpMsg, Tp::TextChannelPtr)
