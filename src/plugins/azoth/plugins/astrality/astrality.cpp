@@ -81,7 +81,7 @@ namespace Astrality
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		return QIcon (":/azoth/astrality/resources/images/astrality.svg");
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
