@@ -71,7 +71,7 @@ namespace Astrality
 
 	QString Plugin::GetName () const
 	{
-		return "Astrality";
+		return "Azoth Astrality";
 	}
 
 	QString Plugin::GetInfo () const
