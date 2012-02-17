@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "callbacks.h"
+#include <algorithm>
 #include <QSslSocket>
 #include <QTcpServer>
 #include <util/util.h>

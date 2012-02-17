@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "glooxclentry.h"
+#include <algorithm>
 #include <QStringList>
 #include <QAction>
 #include <QtDebug>

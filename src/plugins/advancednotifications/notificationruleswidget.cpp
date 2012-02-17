@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "notificationruleswidget.h"
+#include <algorithm>
 #include <QSettings>
 #include <QStandardItemModel>
 #include <QFileDialog>

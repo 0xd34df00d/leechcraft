@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "accountwrapper.h"
+#include <algorithm>
 #include <PendingOperation>
 #include <PendingStringList>
 #include <PendingContacts>

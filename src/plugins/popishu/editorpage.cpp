@@ -18,6 +18,7 @@
 
 #include "editorpage.h"
 #include <iostream>
+#include <algorithm>
 #include <QToolBar>
 #include <QFileDialog>
 #include <QFile>

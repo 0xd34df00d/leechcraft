@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "kinotifywidget.h"
+#include <algorithm>
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QWebFrame>

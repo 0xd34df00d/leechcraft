@@ -18,6 +18,7 @@
 
 #include "itemswidget.h"
 #include <memory>
+#include <algorithm>
 #include <QFileInfo>
 #include <QHeaderView>
 #include <QSortFilterProxyModel>
