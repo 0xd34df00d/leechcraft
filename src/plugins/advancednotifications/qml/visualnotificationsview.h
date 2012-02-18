@@ -28,17 +28,21 @@
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class ObjectListModel;
+}
 namespace AdvancedNotifications
 {
 	class VisualNotificationsView : public QDeclarativeView
 	{
 		Q_OBJECT
-		
-		QObjectList LastEvents_;
+
+		Util::ObjectListModel *Model_;
 		QUrl Location_;
 	public:
 		VisualNotificationsView (QWidget* = 0);
-		
+
 		void SetEvents (const QList<EventData>&);
 	private slots:
 		void handleStatusChanged (QDeclarativeView::Status);

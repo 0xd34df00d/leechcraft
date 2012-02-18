@@ -52,18 +52,18 @@ Rectangle {
                 anchors.fill: parent
                 anchors.leftMargin: 2
                 anchors.topMargin: 2
-                
+
                 Image {
                     id: eventPic
-                    source: image
-                    
+                    source: object.image
+
                     height: 32
                 }
 
                 Text {
                     id: eventText
 
-                    text: extendedText
+                    text: object.extendedText
                     color: "lightgrey"
                 }
 
@@ -88,13 +88,13 @@ Rectangle {
 
                     orientation: ListView.Horizontal
 
-                    model: eventActionsModel
+                    model: object.eventActionsModel
                     delegate: actionsDelegate
                 }
             }
         }
     }
-    
+
     ListView {
         id: listView
 
@@ -102,7 +102,7 @@ Rectangle {
         anchors.topMargin: 5
         width: notifArea.width - 10
         height: notifArea.height
-        
+
         model: eventsModel
         delegate: eventsDelegate
     }
