@@ -84,4 +84,4 @@ namespace JuffEd
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_juffed, LeechCraft::JuffEd::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_juffed, LeechCraft::JuffEd::Plugin);

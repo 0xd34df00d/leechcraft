@@ -35,9 +35,9 @@ namespace NewLife
 
 		Common::IMImportPage::SetPluginInstance (this);
 
-		ImporterAction_.reset (new QAction (tr ("Import settings..."), 0));
+		ImporterAction_ = new QAction (tr ("Import settings..."), this);
 		ImporterAction_->setProperty ("ActionIcon", "document-import");
-		connect (ImporterAction_.get (),
+		connect (ImporterAction_,
 				SIGNAL (triggered ()),
 				this,
 				SLOT (runWizard ()));
@@ -49,7 +49,6 @@ namespace NewLife
 
 	void Plugin::Release ()
 	{
-		ImporterAction_.reset ();
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -96,7 +95,7 @@ namespace NewLife
 		QList<QAction*> result;
 
 		if (place == AEPToolsMenu)
-			result << ImporterAction_.get ();
+			result << ImporterAction_;
 
 		return result;
 	}
@@ -113,4 +112,4 @@ namespace NewLife
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_newlife, LeechCraft::NewLife::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_newlife, LeechCraft::NewLife::Plugin);

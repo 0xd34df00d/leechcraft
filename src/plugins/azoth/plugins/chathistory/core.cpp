@@ -35,7 +35,7 @@ namespace Azoth
 {
 namespace ChatHistory
 {
-	boost::weak_ptr<Core> Core::InstPtr_;
+	std::weak_ptr<Core> Core::InstPtr_;
 
 	Core::Core ()
 	: StorageThread_ (new StorageThread ())
@@ -53,11 +53,11 @@ namespace ChatHistory
 		LoadDisabled ();
 	}
 
-	boost::shared_ptr<Core> Core::Instance ()
+	std::shared_ptr<Core> Core::Instance ()
 	{
 		if (InstPtr_.expired ())
 		{
-			boost::shared_ptr<Core> ptr (new Core);
+			std::shared_ptr<Core> ptr (new Core);
 			InstPtr_ = ptr;
 			return ptr;
 		}

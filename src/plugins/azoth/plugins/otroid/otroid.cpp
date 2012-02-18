@@ -86,7 +86,7 @@ namespace OTRoid
 
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Translator_.reset (Util::InstallTranslator ("azoth_otroid"));
+		Util::InstallTranslator ("azoth_otroid");
 
 		OTRL_INIT;
 
@@ -360,4 +360,4 @@ namespace OTRoid
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_otroid, LeechCraft::Azoth::OTRoid::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_otroid, LeechCraft::Azoth::OTRoid::Plugin);

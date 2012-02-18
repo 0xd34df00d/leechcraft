@@ -18,7 +18,7 @@
 
 #ifndef INTERFACES_IHAVESETTINGS_H
 #define INTERFACES_IHAVESETTINGS_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QtPlugin>
 
 namespace LeechCraft
@@ -26,9 +26,9 @@ namespace LeechCraft
 	namespace Util
 	{
 		class XmlSettingsDialog;
-		typedef boost::shared_ptr<XmlSettingsDialog> XmlSettingsDialog_ptr;
-	};
-};
+		typedef std::shared_ptr<XmlSettingsDialog> XmlSettingsDialog_ptr;
+	}
+}
 
 /** @brief Interface for plugins that have user-configurable settings.
  *

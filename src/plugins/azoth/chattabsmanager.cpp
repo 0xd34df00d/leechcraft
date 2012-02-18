@@ -177,6 +177,15 @@ namespace Azoth
 				0);
 	}
 
+	void ChatTabsManager::HandleInMessage (IMessage *msg)
+	{
+		if (!XmlSettingsManager::Instance ().property ("OpenTabOnNewMsg").toBool ())
+			return;
+
+		if (msg->GetMessageType () == IMessage::MTChatMessage)
+			OpenChat (qobject_cast<ICLEntry*> (msg->OtherPart ()));
+	}
+
 	void ChatTabsManager::SetChatEnabled (const QString& id, bool enabled)
 	{
 		if (!Entry2Tab_.contains (id))
@@ -200,13 +209,13 @@ namespace Azoth
 		}
 		entry->MarkMsgsRead ();
 	}
-	
+
 	QString ChatTabsManager::GetActiveVariant (ICLEntry *entry) const
 	{
 		ChatTab_ptr tab = Entry2Tab_ [entry->GetEntryID ()];
 		if (!tab)
 			return QString ();
-		
+
 		return tab->GetSelectedVariant ();
 	}
 
@@ -246,6 +255,14 @@ namespace Azoth
 		Entry2Tab_.remove (entry);
 
 		tab->deleteLater ();
+
+		if (XmlSettingsManager::Instance ().property ("LeaveConfOnClose").toBool ())
+		{
+			QObject *entryObj = tab->GetCLEntry ();
+			IMUCEntry *muc = qobject_cast<IMUCEntry*> (entryObj);
+			if (muc)
+				muc->Leave ();
+		}
 	}
 
 	void ChatTabsManager::chatWindowStyleChanged ()

@@ -147,7 +147,7 @@ namespace LeechCraft
 				return Proxy_;
 			}
 
-			boost::shared_ptr<Util::XmlSettingsDialog> vGrabber::GetSettingsDialog () const
+			std::shared_ptr<Util::XmlSettingsDialog> vGrabber::GetSettingsDialog () const
 			{
 				return SettingsDialog_;
 			}
@@ -173,5 +173,5 @@ namespace LeechCraft
 	};
 };
 
-Q_EXPORT_PLUGIN2 (leechcraft_vgrabber, LeechCraft::Plugins::vGrabber::vGrabber);
+LC_EXPORT_PLUGIN (leechcraft_vgrabber, LeechCraft::Plugins::vGrabber::vGrabber);
 

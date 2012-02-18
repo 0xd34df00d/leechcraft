@@ -18,6 +18,7 @@
 
 #include "itemswidget.h"
 #include <memory>
+#include <algorithm>
 #include <QFileInfo>
 #include <QHeaderView>
 #include <QSortFilterProxyModel>
@@ -64,7 +65,7 @@ namespace Aggregator
 		QSortFilterProxyModel *ChannelsFilter_;
 
 		std::auto_ptr<ItemsListModel> CurrentItemsModel_;
-		QList<boost::shared_ptr<ItemsListModel> > SupplementaryModels_;
+		QList<std::shared_ptr<ItemsListModel> > SupplementaryModels_;
 		std::auto_ptr<Util::MergeModel> ItemLists_;
 		std::auto_ptr<ItemsFilterModel> ItemsFilterModel_;
 		std::auto_ptr<CategorySelector> ItemCategorySelector_;
@@ -508,7 +509,7 @@ namespace Aggregator
 		if (cs.ChannelID_ == Impl_->CurrentItemsModel_->GetCurrentChannel ())
 			return;
 
-		boost::shared_ptr<ItemsListModel> ilm (new ItemsListModel);
+		std::shared_ptr<ItemsListModel> ilm (new ItemsListModel);
 		ilm->Reset (cs.ChannelID_);
 		Impl_->SupplementaryModels_ << ilm;
 		Impl_->ItemLists_->AddModel (ilm.get ());
@@ -1032,7 +1033,7 @@ namespace Aggregator
 		if (Impl_->CurrentItemsModel_->GetCurrentChannel () == channel->ChannelID_)
 			Impl_->CurrentItemsModel_->ItemDataUpdated (item);
 		else
-			Q_FOREACH (boost::shared_ptr<ItemsListModel> m, Impl_->SupplementaryModels_)
+			Q_FOREACH (std::shared_ptr<ItemsListModel> m, Impl_->SupplementaryModels_)
 				if (m->GetCurrentChannel () == channel->ChannelID_)
 				{
 					m->ItemDataUpdated (item);

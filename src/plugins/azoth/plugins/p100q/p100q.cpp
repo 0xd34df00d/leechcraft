@@ -38,7 +38,7 @@ namespace p100q
 
 	void Plugin::Init (ICoreProxy_ptr)
 	{
-		Translator_.reset (Util::InstallTranslator ("azoth_p100q"));
+		Util::InstallTranslator ("azoth_p100q");
 
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
@@ -278,4 +278,4 @@ namespace p100q
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_p100q, LeechCraft::Azoth::p100q::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_p100q, LeechCraft::Azoth::p100q::Plugin);

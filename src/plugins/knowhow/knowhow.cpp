@@ -85,4 +85,4 @@ namespace KnowHow
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_knowhow, LeechCraft::KnowHow::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_knowhow, LeechCraft::KnowHow::Plugin);

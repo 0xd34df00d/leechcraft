@@ -179,5 +179,5 @@ namespace LeechCraft
 	};
 };
 
-Q_EXPORT_PLUGIN2 (leechcraft_kinotify, LeechCraft::Plugins::Kinotify::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_kinotify, LeechCraft::Plugins::Kinotify::Plugin);
 

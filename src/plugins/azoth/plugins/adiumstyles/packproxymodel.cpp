@@ -26,7 +26,7 @@ namespace Azoth
 {
 namespace AdiumStyles
 {
-	PackProxyModel::PackProxyModel (boost::shared_ptr<Util::ResourceLoader> loader, QObject *parent)
+	PackProxyModel::PackProxyModel (std::shared_ptr<Util::ResourceLoader> loader, QObject *parent)
 	: QStandardItemModel (parent)
 	, Loader_ (loader)
 	{

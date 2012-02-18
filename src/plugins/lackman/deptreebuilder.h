@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_LACKMAN_DEPTREEBUILDER_H
 #define PLUGINS_LACKMAN_DEPTREEBUILDER_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/properties.hpp>
 #include <QHash>
@@ -109,7 +109,7 @@ namespace LackMan
 			VertexInfo (const QString& depName);
 		};
 
-		typedef boost::shared_ptr<VertexInfo> VertexInfo_ptr;
+		typedef std::shared_ptr<VertexInfo> VertexInfo_ptr;
 
 		typedef boost::property<boost::vertex_color_t, boost::default_color_type,
 				VertexInfo> VertexProperty;

@@ -137,4 +137,4 @@ namespace Vader
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_vader, LeechCraft::Azoth::Vader::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_vader, LeechCraft::Azoth::Vader::Plugin);

@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include <stdexcept>
+#include <algorithm>
 #include <QtDebug>
 #include <QApplication>
 #include <QFont>

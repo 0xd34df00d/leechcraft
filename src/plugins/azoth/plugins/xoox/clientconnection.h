@@ -19,7 +19,7 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_XOOX_CLIENTCONNECTION_H
 #define PLUGINS_AZOTH_PLUGINS_XOOX_CLIENTCONNECTION_H
 #include <functional>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QObject>
 #include <QMap>
 #include <QHash>

@@ -77,4 +77,4 @@ namespace LHTR
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_lhtr, LeechCraft::LHTR::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_lhtr, LeechCraft::LHTR::Plugin);

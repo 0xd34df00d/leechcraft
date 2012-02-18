@@ -37,6 +37,9 @@
        <property name="text">
         <string>Name:</string>
        </property>
+       <property name="buddy">
+        <cstring>Name_</cstring>
+       </property>
       </widget>
      </item>
      <item row="0" column="1">
@@ -46,6 +49,9 @@
       <widget class="QLabel" name="label_2">
        <property name="text">
         <string>Room:</string>
+       </property>
+       <property name="buddy">
+        <cstring>Room_</cstring>
        </property>
       </widget>
      </item>
@@ -57,6 +63,9 @@
        <property name="text">
         <string>Server:</string>
        </property>
+       <property name="buddy">
+        <cstring>Server_</cstring>
+       </property>
       </widget>
      </item>
      <item row="2" column="1">
@@ -66,6 +75,9 @@
       <widget class="QLabel" name="label_3">
        <property name="text">
         <string>Nickname:</string>
+       </property>
+       <property name="buddy">
+        <cstring>Nickname_</cstring>
        </property>
       </widget>
      </item>

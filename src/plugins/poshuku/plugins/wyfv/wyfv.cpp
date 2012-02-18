@@ -91,7 +91,7 @@ namespace WYFV
 	{
 	}
 
-	boost::shared_ptr<Util::XmlSettingsDialog> WYFV::GetSettingsDialog () const
+	std::shared_ptr<Util::XmlSettingsDialog> WYFV::GetSettingsDialog () const
 	{
 		return SettingsDialog_;
 	}
@@ -117,4 +117,4 @@ namespace WYFV
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_poshuku_wyfv, LeechCraft::Poshuku::WYFV::WYFV);
+LC_EXPORT_PLUGIN (leechcraft_poshuku_wyfv, LeechCraft::Poshuku::WYFV::WYFV);

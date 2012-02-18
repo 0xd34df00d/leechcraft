@@ -736,7 +736,7 @@ namespace LeechCraft
 						QString::fromStdString (pi.ip.address ().to_string ()),
 						QString::fromUtf8 (pi.client.c_str ()),
 						interesting,
-						boost::shared_ptr<libtorrent::peer_info> (new libtorrent::peer_info (pi))
+						std::shared_ptr<libtorrent::peer_info> (new libtorrent::peer_info (pi))
 					};
 					result << ppi;
 				}

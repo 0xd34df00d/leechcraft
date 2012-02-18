@@ -19,10 +19,8 @@
 #ifndef PLUGINS_POSHUKU_PLUGINS_FUA_FUA_H
 #define PLUGINS_POSHUKU_PLUGINS_FUA_FUA_H
 #include <memory>
-#include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <QMap>
-#include <QTranslator>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/iplugin2.h>
@@ -51,9 +49,8 @@ namespace Fua
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
 
-		boost::shared_ptr<QStandardItemModel> Model_;
+		std::shared_ptr<QStandardItemModel> Model_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
-		std::auto_ptr<QTranslator> Translator_;
 		QMap<QString, QString> Browser2ID_;
 	public:
 		void Init (ICoreProxy_ptr);

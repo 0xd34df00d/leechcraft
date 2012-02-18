@@ -46,7 +46,7 @@ namespace LeechCraft
 				Q_INTERFACES (IInfo IActionsExporter IHaveSettings IHaveShortcuts)
 
 				TabPPWidget *Dock_;
-				boost::shared_ptr<Util::XmlSettingsDialog> XmlSettingsDialog_;
+				std::shared_ptr<Util::XmlSettingsDialog> XmlSettingsDialog_;
 
 				std::auto_ptr<QTranslator> Translator_;
 				enum ActionsEnum
@@ -64,7 +64,7 @@ namespace LeechCraft
 
 				QList<QAction*> GetActions (ActionsEmbedPlace) const;
 
-				boost::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
+				std::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
 
 				void SetShortcut (const QString&, const QKeySequences_t&);
 				QMap<QString, ActionInfo> GetActionInfo () const;

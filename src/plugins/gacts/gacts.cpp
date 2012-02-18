@@ -114,4 +114,4 @@ namespace GActs
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_gacts, LeechCraft::GActs::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_gacts, LeechCraft::GActs::Plugin);

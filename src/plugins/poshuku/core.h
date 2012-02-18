@@ -64,7 +64,7 @@ namespace Poshuku
 		std::auto_ptr<HistoryModel> HistoryModel_;
 		std::auto_ptr<URLCompletionModel> URLCompletionModel_;
 		std::auto_ptr<PluginManager> PluginManager_;
-		boost::shared_ptr<StorageBackend> StorageBackend_;
+		std::shared_ptr<StorageBackend> StorageBackend_;
 		QNetworkAccessManager *NetworkAccessManager_;
 		WebPluginFactory *WebPluginFactory_;
 

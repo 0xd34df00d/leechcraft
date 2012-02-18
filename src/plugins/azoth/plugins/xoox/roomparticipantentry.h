@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_XOOX_ROOMPARTICIPANTENTRY_H
 #define PLUGINS_AZOTH_PLUGINS_XOOX_ROOMPARTICIPANTENTRY_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QObject>
 #include <QStringList>
 #include <QXmppMucIq.h>
@@ -72,7 +72,7 @@ namespace Xoox
 		void SetRole (QXmppMucItem::Role);
 	};
 
-	typedef boost::shared_ptr<RoomParticipantEntry> RoomParticipantEntry_ptr;
+	typedef std::shared_ptr<RoomParticipantEntry> RoomParticipantEntry_ptr;
 }
 }
 }

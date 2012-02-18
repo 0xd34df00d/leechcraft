@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_ADIUMSTYLES_ADIUMSTYLESOURCE_H
 #define PLUGINS_AZOTH_PLUGINS_ADIUMSTYLES_ADIUMSTYLESOURCE_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QObject>
 #include <QDateTime>
 #include <QHash>
@@ -48,7 +48,7 @@ namespace AdiumStyles
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IChatStyleResourceSource)
 
-		boost::shared_ptr<Util::ResourceLoader> StylesLoader_;
+		std::shared_ptr<Util::ResourceLoader> StylesLoader_;
 		IProxyObject *Proxy_;
 
 		PackProxyModel *PackProxyModel_;

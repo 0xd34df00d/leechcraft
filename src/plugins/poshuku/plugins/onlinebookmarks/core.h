@@ -46,7 +46,7 @@ namespace OnlineBookmarks
 
 		ICoreProxy_ptr CoreProxy_;
 		QObject *PluginProxy_;
-		boost::shared_ptr<PluginManager> PluginManager_;
+		std::shared_ptr<PluginManager> PluginManager_;
 		AccountsSettings *AccountsSettings_;
 
 		QObjectList ServicesPlugins_;

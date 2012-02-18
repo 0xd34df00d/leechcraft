@@ -34,7 +34,7 @@ namespace Laure
 	: QMenu (parent)
 	{
 #ifdef HAVE_MAGIC
-		Magic_ = boost::shared_ptr<magic_set> (magic_open (MAGIC_MIME_TYPE),
+		Magic_ = std::shared_ptr<magic_set> (magic_open (MAGIC_MIME_TYPE),
 				magic_close);
 		magic_load (Magic_.get (), NULL);
 #else

@@ -3017,4 +3017,4 @@ void MainLayout::on(dcpp::TimerManagerListener::Second, uint64_t ticks) throw(){
 }
 
 
-Q_EXPORT_PLUGIN2 (leechcraft_eiskaltdcpp, MainLayout);
+LC_EXPORT_PLUGIN (leechcraft_eiskaltdcpp, MainLayout);

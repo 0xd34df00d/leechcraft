@@ -18,13 +18,13 @@
 
 #ifndef PLUGINS_AGGREGATOR_INTERFACES_AGGREGATOR_CHANNEL_H
 #define PLUGINS_AGGREGATOR_INTERFACES_AGGREGATOR_CHANNEL_H
+#include <memory>
+#include <vector>
 #include <QString>
 #include <QList>
 #include <QDateTime>
 #include <QStringList>
 #include <QImage>
-#include <boost/shared_ptr.hpp>
-#include <vector>
 #include "item.h"
 #include "common.h"
 
@@ -71,7 +71,7 @@ namespace Aggregator
 		ChannelShort ToShort () const;
 	};
 
-	typedef boost::shared_ptr<Channel> Channel_ptr;
+	typedef std::shared_ptr<Channel> Channel_ptr;
 	typedef std::vector<Channel_ptr> channels_container_t;
 	typedef std::vector<ChannelShort> channels_shorts_t;
 

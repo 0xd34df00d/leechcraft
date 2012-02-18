@@ -19,11 +19,13 @@
 #include "astrality.h"
 #include <QIcon>
 #include <QtDebug>
-#include <TelepathyQt/Types>
-#include <TelepathyQt/Debug>
-#include <TelepathyQt/ConnectionManager>
-#include <TelepathyQt/PendingStringList>
+#include <Types>
+#include <Debug>
+#include <ConnectionManager>
+#include <PendingStringList>
 #include <util/util.h>
+#include <interfaces/iprotocol.h>
+#include <interfaces/iaccount.h>
 #include "cmwrapper.h"
 
 namespace LeechCraft
@@ -49,6 +51,16 @@ namespace Astrality
 
 	void Plugin::Release ()
 	{
+		Q_FOREACH (CMWrapper *cmWrapper, Wrappers_)
+			Q_FOREACH (QObject *protocol, cmWrapper->GetProtocols ())
+				Q_FOREACH (QObject *accObj,
+						qobject_cast<IProtocol*> (protocol)->GetRegisteredAccounts ())
+				{
+					auto acc = qobject_cast<IAccount*> (accObj);
+					if (acc->GetState ().State_ != SOffline)
+						acc->ChangeState (EntryStatus (SOffline, QString ()));
+				}
+
 		qDeleteAll (Wrappers_);
 	}
 
@@ -59,7 +71,7 @@ namespace Astrality
 
 	QString Plugin::GetName () const
 	{
-		return "Astrality";
+		return "Azoth Astrality";
 	}
 
 	QString Plugin::GetInfo () const
@@ -69,7 +81,7 @@ namespace Astrality
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		return QIcon (":/azoth/astrality/resources/images/astrality.svg");
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
@@ -135,4 +147,4 @@ namespace Astrality
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_azoth_astrality, LeechCraft::Azoth::Astrality::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_azoth_astrality, LeechCraft::Azoth::Astrality::Plugin);

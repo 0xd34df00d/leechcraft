@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_QROSP_WRAPPERS_WRAPPEROBJECT_H
 #define PLUGINS_QROSP_WRAPPERS_WRAPPEROBJECT_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QObject>
 #include <qross/core/action.h>
 #include <interfaces/iinfo.h>
@@ -50,7 +50,7 @@ namespace Qrosp
 		QMap<int, QMetaMethod> Index2MetaMethod_;
 		QMap<int, QByteArray> Index2ExportedSignatures_;
 
-		boost::shared_ptr<QTranslator> Translator_;
+		std::shared_ptr<QTranslator> Translator_;
 	public:
 		WrapperObject (const QString&, const QString&);
 		virtual ~WrapperObject ();

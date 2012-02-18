@@ -19,9 +19,9 @@
 
 #ifndef PLUGINS_LAURE_PLAYLISTADDMENU_H
 #define PLUGINS_LAURE_PLAYLISTADDMENU_H
+#include <memory>
 #include <QMenu>
 #include <QFileInfoList>
-#include <boost/shared_ptr.hpp>
 
 #ifdef HAVE_MAGIC
 	#include <magic.h>
@@ -32,16 +32,16 @@ namespace LeechCraft
 namespace Laure
 {
 	class PlayListView;
-	
+
 	/** @brief Provides menu for choosing add item options.
-	 * 
+	 *
 	 * @author Minh Ngo <nlminhtl@gmail.com>
 	 */
 	class PlayListAddMenu : public QMenu
 	{
 		Q_OBJECT
 #ifdef HAVE_MAGIC
-		boost::shared_ptr<magic_set> Magic_;
+		std::shared_ptr<magic_set> Magic_;
 #else
 		QStringList Formats_;
 #endif
@@ -61,7 +61,7 @@ namespace Laure
 		void LoadM3U (const QString&);
 	signals:
 		/** @brief Is emitted when the media file is chosen.
-		 * 
+		 *
 		 * @param[out] location Media file location.
 		 */
 		void addItem (const QString& location);

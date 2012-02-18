@@ -19,8 +19,7 @@
 
 #ifndef PLUGINS_LAURE_VLCWRAPPER_H
 #define PLUGINS_LAURE_VLCWRAPPER_H
-
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QObject>
 #include <vlc/vlc.h>
 #include <interfaces/ientityhandler.h>
@@ -31,24 +30,24 @@ namespace LeechCraft
 {
 namespace Laure
 {
-	typedef boost::shared_ptr<libvlc_instance_t> libvlc_instance_ptr;
-	typedef boost::shared_ptr<libvlc_media_list_t> libvlc_media_list_ptr;
-	typedef boost::shared_ptr<libvlc_media_list_player_t> libvlc_media_list_player_ptr;
-	typedef boost::shared_ptr<libvlc_media_player_t> libvlc_media_player_ptr;
-	typedef boost::shared_ptr<libvlc_media_t> libvlc_media_ptr;
+	typedef std::shared_ptr<libvlc_instance_t> libvlc_instance_ptr;
+	typedef std::shared_ptr<libvlc_media_list_t> libvlc_media_list_ptr;
+	typedef std::shared_ptr<libvlc_media_list_player_t> libvlc_media_list_player_ptr;
+	typedef std::shared_ptr<libvlc_media_player_t> libvlc_media_player_ptr;
+	typedef std::shared_ptr<libvlc_media_t> libvlc_media_ptr;
 	typedef QMap<QString, QVariant> QVariantMap;
-	
+
 	/** @brief Provides a structure for storing media meta info
 	 */
 	struct MediaMeta
 	{
 		QVariantMap ToVariantMap () const;
-		
+
 		QString Artist_, Album_, Title_, Genre_, Date_;
 		int TrackNumber_;
 		int Length_;
 	};
-	
+
 	/** @brief Defines playback modes for playlist.
 	 */
 	enum  PlaybackMode
@@ -57,15 +56,15 @@ namespace Laure
 		PlaybackModeRepeat,
 		PlaybackModeLoop
 	};
-	
+
 	/** @brief Provides a wrapper around libvlc functions.
-	 * 
+	 *
 	 * @author Minh Ngo <nlminhtl@gmail.com>
 	 */
 	class VLCWrapper : public QObject
 	{
 		Q_OBJECT
-		
+
 		int CurrentItem_;
 		libvlc_instance_ptr Instance_;
 		libvlc_media_list_ptr List_;
@@ -76,170 +75,170 @@ namespace Laure
 		 * with the given parent.
 		 */
 		VLCWrapper (QObject* = 0);
-		
+
 		/** @brief Returns libvlc playlist item count.
 		 */
 		int RowCount () const;
-		
+
 		/** @brief Returns currently playing item index.
 		 */
 		int GetCurrentIndex () const;
-		
+
 		/** @brief Returns playback state.
-		 * 
+		 *
 		 * @return True if it is playing, false otherwise.
 		 */
 		bool IsPlaying () const;
-		
+
 		/** @brief Returns current volume.
 		 */
 		int GetVolume () const;
-		
+
 		/** @brief Get the current track time (in ms).
 		 *
 		 * @return The track time (in ms), or  a negative value if there
 		 * is no media.
 		 */
 		int GetTime () const;
-		
+
 		/** @brief Get the current track length (in ms).
 		 *
 		 * @return The track length (in ms), or  a negative value if there
 		 * is no media.
 		 */
 		int GetLength () const;
-		
+
 		/** @brief Returns current media position in the [0; 1] interval.
-		 * 
+		 *
 		 * @return Track position, or a negative value. in case of error.
 		 */
 		float GetMediaPosition () const;
-		
+
 		/** @brief Returns media meta info for the item in the given row.
-		 * 
+		 *
 		 * @param[in] row Item index.
-		 * 
+		 *
 		 * @return Media meta info.
 		 */
 		MediaMeta GetItemMeta (int row, const QString& location = QString ()) const;
 	public slots:
 		/** @brief Adds media file to the libvlc media list.
-		 * 
+		 *
 		 * @param[in] location Media file location.
 		 */
 		void addRow (const QString& location);
-		
+
 		/** @brief Sets the video frame window.
 		 *
 		 * Set an X Window System drawable where the media player should render its
 		 * video output. If libvlc was built without X11 output support, then this has
 		 * no effects.
-		 * 
+		 *
 		 * @param[in] winId Window identifier.
 		 */
 		void setWindow (WId winId);
-		
+
 		/** @brief Removes the media item in the pos row.
-		 * 
+		 *
 		 * @param[in] pos Item index.
 		 */
 		bool removeRow (int pos);
-		
+
 		/** @brief Plays the media item.
-		 * 
+		 *
 		 * @param[in] val Item index.
 		 */
 		void playItem (int val);
-		
+
 		/** @brief Stop playing.
-		 * 
+		 *
 		 * No effect if there is no media.
-		 * 
+		 *
 		 * @sa play()
 		 * @sa pause()
 		 */
 		void stop ();
-		
+
 		/** @brief Pause.
-		 * 
+		 *
 		 * No effect if there is no media.
-		 * 
+		 *
 		 * @sa stop()
 		 * @sa play()
 		 */
 		void pause ();
-		
+
 		/** @brief Play.
-		 * 
+		 *
 		 * @sa stop()
 		 * @sa pause()
 		 */
 		void play ();
-		
+
 		/** @brief Play the next list media item.
-		 * 
+		 *
 		 * @sa prev()
 		 */
 		void next ();
-		
+
 		/** @brief Play the previous list media item.
-		 * 
+		 *
 		 * @sa next()
 		 */
 		void prev ();
-		
+
 		/** @brief Sets a volume.
 		 */
 		void setVolume (int vol);
-		
+
 		/** @brief Sets media position in the [0; 1] interval.
 		 */
 		void setPosition (float);
-		
+
 		/** @brief Sets the playback mode for the playlist.
-		 * 
+		 *
 		 * @param mode Playback mode.
-		 * 
+		 *
 		 * @sa PlaybackMode
 		 */
 		void setPlaybackMode (PlaybackMode mode);
-		
+
 		/** @brief Is called when the track is finished.
 		 */
 		void handledHasPlayed ();
-		
+
 		/** @brief Is called when the next item is chosen.
 		 */
 		void handleNextItemSet ();
-		
+
 		/** @brief Sets and save the meta of the media.
-		 * 
+		 *
 		 * @param[in] type Media type.
 		 * @param[in] value New media meta info.
 		 * @param[in] index Playlist item index.
 		 */
-		void setMeta (libvlc_meta_t type, const QString& value, int index); 
+		void setMeta (libvlc_meta_t type, const QString& value, int index);
 	private slots:
 		void nowPlaying ();
 	signals:
 		/** @brief Is emitted when the item index is played.
 		 *
 		 * @param[out] index Item index.
-		 */ 
+		 */
 		void itemPlayed (int index);
-		
+
 		/** @brief Is emitted when the media file is added to
 		 * libvlc media list.
-		 * 
+		 *
 		 * @param[out] meta Media meta info.
 		 * @param[out] location Media file location.
 		 */
 		void itemAdded (const MediaMeta& meta, const QString& location);
-		
+
 		/** @brief Is emitted when playback is paused.
 		 */
 		void paused ();
-		
+
 		void gotEntity (const Entity&);
 		void delegateEntity (const Entity&, int*, QObject**);
 	};

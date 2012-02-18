@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>444</width>
-    <height>228</height>
+    <height>230</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -34,6 +34,9 @@
            <property name="text">
             <string>Server:</string>
            </property>
+           <property name="buddy">
+            <cstring>Server_</cstring>
+           </property>
           </widget>
          </item>
          <item row="0" column="1">
@@ -47,6 +50,9 @@
           <widget class="QLabel" name="label_5">
            <property name="text">
             <string>Port:</string>
+           </property>
+           <property name="buddy">
+            <cstring>Port_</cstring>
            </property>
           </widget>
          </item>
@@ -65,6 +71,9 @@
            <property name="text">
             <string>Channel:</string>
            </property>
+           <property name="buddy">
+            <cstring>Channel_</cstring>
+           </property>
           </widget>
          </item>
          <item row="2" column="1">
@@ -79,6 +88,9 @@
            <property name="text">
             <string>Nickname:</string>
            </property>
+           <property name="buddy">
+            <cstring>Nickname_</cstring>
+           </property>
           </widget>
          </item>
          <item row="3" column="1">
@@ -88,6 +100,9 @@
           <widget class="QLabel" name="label_4">
            <property name="text">
             <string>Password:</string>
+           </property>
+           <property name="buddy">
+            <cstring>Password_</cstring>
            </property>
           </widget>
          </item>
@@ -102,6 +117,9 @@
           <widget class="QLabel" name="label_6">
            <property name="text">
             <string>Encoding:</string>
+           </property>
+           <property name="buddy">
+            <cstring>Encoding_</cstring>
            </property>
           </widget>
          </item>

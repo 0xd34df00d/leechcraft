@@ -8,6 +8,7 @@ FIND_PACKAGE (TelepathyQt4 REQUIRED)
 
 INCLUDE_DIRECTORIES (${AZOTH_INCLUDE_DIR}
 	${TELEPATHY_QT4_INCLUDE_DIR}
+	${TELEPATHY_QT4_INCLUDE_DIR}/../
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
@@ -19,6 +20,8 @@ SET (ASTRALITY_SRCS
 	protowrapper.cpp
 	accountregfirstpage.cpp
 	accountwrapper.cpp
+	entrywrapper.cpp
+	msgwrapper.cpp
 	astralityutil.cpp
 	)
 SET (ASTRALITY_HEADERS
@@ -27,19 +30,21 @@ SET (ASTRALITY_HEADERS
 	protowrapper.h
 	accountregfirstpage.h
 	accountwrapper.h
+	entrywrapper.h
+	msgwrapper.h
 	astralityutil.h
 	)
 SET (ASTRALITY_FORMS
 	accountregfirstpage.ui
 	)
-#SET (ASTRALITY_RESOURCES azothastralityresources.qrc)
+SET (ASTRALITY_RESOURCES azothastralityresources.qrc)
 #CreateTrVars ("azoth_astrality" "de;en;fr;it;ru_RU;uk_UA" ASTRALITY_TRANSLATIONS ASTRALITY_COMPILED_TRANSLATIONS)
 
 IF (NOT LC_NO_MOC)
 	QT4_WRAP_CPP (ASTRALITY_MOC_SRCS ${ASTRALITY_HEADERS})
 ENDIF (NOT LC_NO_MOC)
 QT4_WRAP_UI (ASTRALITY_UIS_H ${ASTRALITY_FORMS})
-#QT4_ADD_RESOURCES (ASTRALITY_RCCS ${ASTRALITY_RESOURCES})
+QT4_ADD_RESOURCES (ASTRALITY_RCCS ${ASTRALITY_RESOURCES})
 
 #ADD_CUSTOM_COMMAND (OUTPUT
 	#${ASTRALITY_COMPILED_TRANSLATIONS}

@@ -18,8 +18,7 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_CHATHISTORY_CORE_H
 #define PLUGINS_AZOTH_PLUGINS_CHATHISTORY_CORE_H
-#include <boost/shared_ptr.hpp>
-#include <boost/weak_ptr.hpp>
+#include <memory>
 #include <QObject>
 #include <QSet>
 #include <QVariantMap>
@@ -37,7 +36,7 @@ namespace ChatHistory
 	template<typename T>
 	class STGuard
 	{
-		boost::shared_ptr<T> C_;
+		std::shared_ptr<T> C_;
 	public:
 		STGuard ()
 		: C_ (T::Instance ())
@@ -49,7 +48,7 @@ namespace ChatHistory
 	class Core : public QObject
 	{
 		Q_OBJECT
-		static boost::weak_ptr<Core> InstPtr_;
+		static std::weak_ptr<Core> InstPtr_;
 
 		StorageThread *StorageThread_;
 		IProxyObject *PluginProxy_;
@@ -59,7 +58,7 @@ namespace ChatHistory
 
 		Core ();
 	public:
-		static boost::shared_ptr<Core> Instance ();
+		static std::shared_ptr<Core> Instance ();
 
 		~Core ();
 

@@ -107,4 +107,4 @@ namespace LeechCraft
 	};
 };
 
-Q_EXPORT_PLUGIN2 (leechcraft_shellopen, LeechCraft::Plugins::ShellOpen::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_shellopen, LeechCraft::Plugins::ShellOpen::Plugin);

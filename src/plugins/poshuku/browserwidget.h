@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_POSHUKU_BROWSERWIDGET_H
 #define PLUGINS_POSHUKU_BROWSERWIDGET_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QWidget>
 #include <QTime>
 #include <qwebpage.h>
@@ -96,7 +96,7 @@ namespace Poshuku
 		QMap<QString, QList<QAction*> > WindowMenus_;
 
 		CustomWebView *WebView_;
-		boost::shared_ptr<QGraphicsTextItem> LinkTextItem_;
+		std::shared_ptr<QGraphicsTextItem> LinkTextItem_;
 
 		static QObject* S_MultiTabsParent_;
 

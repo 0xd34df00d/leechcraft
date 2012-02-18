@@ -18,7 +18,7 @@
 
 #ifndef INTERFACES_STRUCTURES_H
 #define INTERFACES_STRUCTURES_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QPointer>
 #include <QMetaType>
 #include <QVariant>
@@ -279,7 +279,7 @@ namespace LeechCraft
 	};
 };
 
-typedef boost::shared_ptr<QObject> QObject_ptr;
+typedef std::shared_ptr<QObject> QObject_ptr;
 
 Q_DECLARE_METATYPE (LeechCraft::Entity);
 Q_DECLARE_METATYPE (QNetworkReply*);

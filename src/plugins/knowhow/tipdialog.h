@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_KNOWHOW_TIPDIALOG_H
 #define PLUGINS_KNOWHOW_TIPDIALOG_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QDialog>
 #include <interfaces/core/icoreproxy.h>
 #include "ui_tipdialog.h"
@@ -34,7 +34,7 @@ namespace KnowHow
 		Q_OBJECT
 
 		Ui::TipDialog Ui_;
-		boost::shared_ptr<QDomDocument> Doc_;
+		std::shared_ptr<QDomDocument> Doc_;
 		ICoreProxy_ptr Proxy_;
 	public:
 		TipDialog (ICoreProxy_ptr, QWidget* = 0);

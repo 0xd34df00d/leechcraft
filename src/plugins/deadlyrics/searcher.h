@@ -56,7 +56,7 @@ namespace LeechCraft
 				void error (const QString&);
 			};
 
-			typedef boost::shared_ptr<Searcher> searcher_ptr;
+			typedef std::shared_ptr<Searcher> searcher_ptr;
 			typedef std::vector<searcher_ptr> searchers_t;
 		};
 	};

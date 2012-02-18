@@ -46,7 +46,7 @@ namespace OnlineBookmarks
 		Q_INTERFACES (IInfo IPlugin2 IHaveSettings IPluginReady)
 
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
-		boost::shared_ptr<QTranslator> Translator_;
+		std::shared_ptr<QTranslator> Translator_;
 	public:
 		// IInfo methods
 		void Init (ICoreProxy_ptr);

@@ -84,4 +84,4 @@ namespace Syncer
 }
 }
 
-Q_EXPORT_PLUGIN2 (leechcraft_syncer, LeechCraft::Syncer::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_syncer, LeechCraft::Syncer::Plugin);

@@ -19,7 +19,7 @@
 
 #ifndef PLUGINS_SECMAN_PLUGINS_SECURESTORAGE_SECURESTORAGE_H
 #define PLUGINS_SECMAN_PLUGINS_SECURESTORAGE_SECURESTORAGE_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
@@ -48,12 +48,12 @@ namespace SecureStorage
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Plugins::SecMan::IStoragePlugin IActionsExporter)
 
-		boost::shared_ptr<QSettings> Storage_;
-		boost::shared_ptr<QSettings> Settings_;
+		std::shared_ptr<QSettings> Storage_;
+		std::shared_ptr<QSettings> Settings_;
 
 		QString WindowTitle_;
 		CryptoSystem *CryptoSystem_;
-		
+
 		QAction *ForgetKeyAction_;
 		QAction *ChangePasswordAction_;
 		QAction *ClearSettingsAction_;

@@ -54,7 +54,7 @@ namespace Aggregator
 	{
 	}
 
-	boost::shared_ptr<StorageBackend> StorageBackend::Create (const QString& strType, const QString& id)
+	std::shared_ptr<StorageBackend> StorageBackend::Create (const QString& strType, const QString& id)
 	{
 		StorageBackend::Type type;
 		if (strType == "SQLite")
@@ -70,9 +70,9 @@ namespace Aggregator
 		return Create (type, id);
 	}
 
-	boost::shared_ptr<StorageBackend> StorageBackend::Create (Type type, const QString& id)
+	std::shared_ptr<StorageBackend> StorageBackend::Create (Type type, const QString& id)
 	{
-		boost::shared_ptr<StorageBackend> result;
+		std::shared_ptr<StorageBackend> result;
 		switch (type)
 		{
 			case SBSQLite:
