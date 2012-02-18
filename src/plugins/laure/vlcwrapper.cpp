@@ -18,6 +18,7 @@
  **********************************************************************/
 
 #include "vlcwrapper.h"
+#include <memory>
 #include <QString>
 #include <QTime>
 #include <QDebug>
@@ -31,10 +32,10 @@ namespace LeechCraft
 namespace Laure
 {
 	const char * const vlc_args[] = {
-		 "-I", "dummy"         // Don't use any interface
-         ,"--ignore-config"      // Don't use VLC's config
-         ,"--verbose=-1"
-         ,"--quiet"
+			"-I", "dummy"         // Don't use any interface
+			, "--ignore-config"      // Don't use VLC's config
+			, "--verbose=-1"
+			, "--quiet"
 	};
 	
 	namespace
@@ -248,10 +249,11 @@ namespace Laure
 		MediaMeta meta = GetItemMeta (CurrentItem_);
 		meta.Length_ = libvlc_media_player_get_length (Player_.get ())
 				/ 1000;
-				
+		
 		Entity scrobbleEntity;
 		scrobbleEntity.Additional_ = meta.ToVariantMap ();
 		scrobbleEntity.Mime_ = "x-leechcraft/now-playing-track-info";
+		
 		emit gotEntity (scrobbleEntity);
 	}
 	

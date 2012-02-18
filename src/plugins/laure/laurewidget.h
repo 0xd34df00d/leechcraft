@@ -56,6 +56,7 @@ namespace Laure
 		VLCWrapper *VLCWrapper_;
 		boost::shared_ptr<SeparatePlayer> SeparatePlayer_;
 		QAction *DetachedVideo_;
+		QAction *PlayListAction_;
 	public:
 		/** @brief Constructs a new LaureWidget tab
 		 * with the given parent and flags.

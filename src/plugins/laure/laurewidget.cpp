@@ -47,6 +47,7 @@ namespace Laure
 	: QWidget (parent, f)
 	, ToolBar_ (new QToolBar (this))
 	, VLCWrapper_ (new VLCWrapper (this))
+	, PlayListAction_ (NULL)
 	{	
 		Ui_.setupUi (this);
 		Ui_.Player_->SetVLCWrapper (VLCWrapper_);
@@ -134,17 +135,17 @@ namespace Laure
 	{
 		QAction *actionOpenFile = new QAction (tr ("Open File"), this);
 		QAction *actionOpenURL = new QAction (tr ("Open URL"), this);
-		QAction *playList = new QAction (tr ("Playlist"), this);
+		PlayListAction_ = new QAction (tr ("Playlist"), this);
 		QAction *videoMode = new QAction (tr ("Video mode"), this);
 		DetachedVideo_ = new QAction (tr ("Detached video"), this);
 		
 		actionOpenFile->setProperty ("ActionIcon", "folder");
 		actionOpenURL->setProperty ("ActionIcon", "document-open-remote");
-		playList->setProperty ("ActionIcon", "format-list-unordered");
+		PlayListAction_->setProperty ("ActionIcon", "format-list-unordered");
 		videoMode->setProperty ("ActionIcon", "tool-animator");
 		DetachedVideo_->setProperty ("ActionIcon", "view-fullscreen");
 		
-		playList->setCheckable (true);
+		PlayListAction_->setCheckable (true);
 		videoMode->setCheckable (true);
 		DetachedVideo_->setCheckable (true);
 		
@@ -153,7 +154,7 @@ namespace Laure
 		
 		ToolBar_->addAction (actionOpenFile);
 		ToolBar_->addAction (actionOpenURL);
-		ToolBar_->addAction (playList);
+		ToolBar_->addAction (PlayListAction_);
 		ToolBar_->addAction (videoMode);
 		ToolBar_->addAction (DetachedVideo_);
 		
@@ -165,7 +166,7 @@ namespace Laure
 				SIGNAL (triggered (bool)),
 				this,
 				SLOT (handleOpenURL ()));
-		connect (playList,
+		connect (PlayListAction_,
 				SIGNAL (triggered (bool)),
 				Ui_.PlayListWidget_,
 				SLOT (setVisible (bool)));
@@ -316,7 +317,8 @@ namespace Laure
 					Ui_.PlayListWidget_->size ().width ());
 			Ui_.GlobalGridLayout_->addWidget (Ui_.PlayListWidget_, 0, 1, 1, 4);
 		}
-
+		
+		PlayListAction_->setEnabled (checked);
 		Ui_.Player_->setVisible (checked);
 		Ui_.PlayListWidget_->setVisible (!checked);
 	}
