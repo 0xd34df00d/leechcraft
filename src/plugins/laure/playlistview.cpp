@@ -60,10 +60,42 @@ namespace Laure
 		
 		header ()->setResizeMode (QHeaderView::ResizeToContents);
 		
+		header ()->setContextMenuPolicy (Qt::CustomContextMenu);
+		connect (header (),
+				SIGNAL (customContextMenuRequested (QPoint)),
+				this,
+				SLOT (handleHeaderMenu (QPoint)));
+		
 		connect (this,
 				SIGNAL (doubleClicked (QModelIndex)),
 				this,
 				SLOT (handleDoubleClicked (QModelIndex)));
+	}
+	
+	void PlayListView::handleHeaderMenu (const QPoint& point)
+	{
+		const QPoint& globalPos = mapToGlobal (point);
+		QMenu menu;
+		
+		for (int i = 1; i < PlayListModel_->columnCount (); ++i)
+		{
+			QAction *menuAction = new QAction (header ()->model ()
+					->headerData (i, Qt::Horizontal).toString (), &menu);
+			menuAction->setCheckable (true);
+			menuAction->setData (i);
+			
+			if (!isColumnHidden (i))
+				menuAction->setChecked (true);
+			menu.addAction (menuAction);
+		}
+		
+		QAction *selectedItem = menu.exec (globalPos);
+		if (selectedItem)
+		{
+			int columnIndex = selectedItem->data ().toInt ();
+			XmlSettingsManager::Instance ().setProperty ("Header"
+				+ QString::number (columnIndex).toAscii (), selectedItem->isChecked ());
+		}
 	}
 	
 	void PlayListView::handleHideHeaders ()

@@ -83,6 +83,7 @@ namespace Laure
 	private slots:
 		void handleDoubleClicked (const QModelIndex&);
 		void handleHideHeaders ();
+		void handleHeaderMenu (const QPoint& point);
 	signals:
 		/** @brief Is emitted when the item index is removed.
 		 * 
