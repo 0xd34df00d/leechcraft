@@ -50,7 +50,6 @@ namespace Laure
 	{	
 		Ui_.setupUi (this);
 		Ui_.Player_->SetVLCWrapper (VLCWrapper_);
-		
 		SeparatePlayer_.reset (new SeparatePlayer);
 		
 		connect (SeparatePlayer_.get (),
@@ -122,6 +121,10 @@ namespace Laure
 				SIGNAL (addItem (QString)),
 				VLCWrapper_,
 				SLOT (addRow (QString)));
+		
+		const int playlistWidth = XmlSettingsManager::Instance ()
+				.GetRawValue ("PlayListWidgetWidth").toInt ();
+		Ui_.Splitter_->setSizes ({size ().width (), playlistWidth});
 		
 		InitToolBar ();
 		InitCommandFrame ();
@@ -251,7 +254,7 @@ namespace Laure
 
 	TabClassInfo LaureWidget::GetTabClassInfo () const
 	{
-		return qobject_cast<Plugin *> (S_ParentMultiTabs_)->GetTabClasses ().first ();
+		return qobject_cast<Plugin*> (S_ParentMultiTabs_)->GetTabClasses ().first ();
 	}
 	
 	QObject* LaureWidget::ParentMultiTabs ()
@@ -301,9 +304,18 @@ namespace Laure
 	void LaureWidget::handleVideoMode (bool checked)
 	{
 		if (checked)
+		{
+			const int playlistWidth = XmlSettingsManager::Instance ()
+					.GetRawValue ("PlayListWidgetWidth").toInt ();
 			Ui_.Splitter_->addWidget (Ui_.PlayListWidget_);
+			Ui_.Splitter_->setSizes ({size ().width (), playlistWidth});
+		}
 		else
+		{
+			XmlSettingsManager::Instance ().SetRawValue ("PlayListWidgetWidth",
+					Ui_.PlayListWidget_->size ().width ());
 			Ui_.GlobalGridLayout_->addWidget (Ui_.PlayListWidget_, 0, 1, 1, 4);
+		}
 
 		Ui_.Player_->setVisible (checked);
 		Ui_.PlayListWidget_->setVisible (!checked);
