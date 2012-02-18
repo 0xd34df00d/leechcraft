@@ -184,6 +184,17 @@ namespace Astrality
 		return Messengers_ [id];
 	}
 
+	void AccountWrapper::Shutdown ()
+	{
+		disconnect (A_.data (),
+				SIGNAL (currentPresenceChanged (Tp::Presence)),
+				this,
+				SLOT (handleCurrentPresence (Tp::Presence)));
+
+		if (GetState ().State_ != SOffline)
+			A_->setRequestedPresence (Status2Telepathy (EntryStatus (SOffline, QString ())));
+	}
+
 	void AccountWrapper::RemoveThis ()
 	{
 		connect (A_->remove (),

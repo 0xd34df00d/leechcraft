@@ -66,6 +66,7 @@ namespace Astrality
 		QObject* GetTransferManager() const;
 
 		Tp::ContactMessengerPtr GetMessenger (const QString&);
+		void Shutdown ();
 		void RemoveThis ();
 	private:
 		void HandleAuth (bool failure);
