@@ -14,39 +14,46 @@ Rectangle {
         GradientStop { position: 1.0; color: "#CF1A1A1A" }
     }
 
-    Component {
-        id: eventsDelegate
-  
-        Rectangle {
+    ListView {
+        id: eventListView
+
+        anchors.fill: parent
+        anchors { topMargin: 5; leftMargin: 5; rightMargin: 5 }
+        
+        model: eventsModel
+        delegate: Rectangle {
             id: eventRect
             property string eventID: object.eventID
- 
+
+            height: eventInfoRow.height + actionsArea.height + 5
             width: eventListView.width
-            height: contentsRow.height + 5
+
             smooth: true
             radius: 9
+
             gradient: Gradient {
                 GradientStop { position: 0.0; color: "#DF3A3A3A" }
                 GradientStop { position: 1.0; color: "#DF101010" }
             }
 
-            Row {
-                id: contentsRow
-
-                height: Math.max(eventText.height, 32) + actionsListView.height
-                anchors.fill: parent
-                anchors.leftMargin: 2
-                anchors.topMargin: 2
-
+            Item {
+                id: eventInfoRow
+                anchors { left: parent.left; right: parent.right; top: parent.top }
+                height: Math.max (eventPic.height, eventText.height, dismissButton.height)
+    
                 Image {
                     id: eventPic
+                    anchors { left: parent.left; top: parent.top }
+                
                     source: object.image
-
                     height: 32
                 }
 
                 Text {
                     id: eventText
+                    anchors.top: parent.top
+                    anchors { left: eventPic.right; right: dismissButton.left }
+                    anchors { leftMargin: 2; rightMargin: 2 }
 
                     text: object.extendedText
                     color: "lightgrey"
@@ -54,55 +61,28 @@ Rectangle {
 
                 TextButton {
                     id: dismissButton
-
+                    anchors { right: parent.right; top: parent.top }
+ 
                     text: "x"
                     onClicked: { notifArea.eventDismissed (object.eventID) }
                 }
 
-                ListView {
-                    id: actionsListView
+            }
 
-                    height: 20
-                    width: parent.width - 5
-                    anchors.right: contentsRow.right
-                    //anchors.leftMargin: 5
-                    anchors.bottom: eventRect.bottom
-                    anchors.bottomMargin: 5
-                    anchors.top: eventPic.bottom
-                    anchors.topMargin: 5
+            Flow {
+                id: actionsArea
+                anchors { left: parent.left; right: parent.right }
+                anchors.top: eventInfoRow.bottom
+                anchors.topMargin: 2
 
-                    orientation: ListView.Horizontal
-
+                Repeater {
                     model: object.eventActionsModel
-                    delegate: Rectangle {
-                        height: actionsListView.height
-                        width: actionText.width + 5
-                        smooth: true
-                        radius: 3
-                        color: "transparent"
-
-                        TextButton {
-                            id: actionText
-
-                            text: modelData
-                            onClicked: { notifArea.eventActionTriggered (eventRect.eventID, index) }
-                        }
+                    delegate: TextButton {
+                        text: modelData
+                        onClicked: { notifArea.eventActionTriggered (eventRect.eventID, index) }
                     }
- 
                 }
             }
         }
-    }
-
-    ListView {
-        id: eventListView
-
-        anchors.centerIn: parent
-        anchors.topMargin: 5
-        width: notifArea.width - 10
-        height: notifArea.height
-
-        model: eventsModel
-        delegate: eventsDelegate
     }
 }
