@@ -309,6 +309,7 @@ namespace Laure
 			const int playlistWidth = XmlSettingsManager::Instance ()
 					.GetRawValue ("PlayListWidgetWidth").toInt ();
 			Ui_.Splitter_->addWidget (Ui_.PlayListWidget_);
+			PlayListAction_->setChecked (false);
 			Ui_.Splitter_->setSizes ({size ().width (), playlistWidth});
 		}
 		else
