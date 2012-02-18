@@ -125,7 +125,10 @@ namespace Laure
 		
 		const int playlistWidth = XmlSettingsManager::Instance ()
 				.GetRawValue ("PlayListWidgetWidth").toInt ();
-		Ui_.Splitter_->setSizes ({size ().width (), playlistWidth});
+		
+		QList<int> splitterSizes;
+		splitterSizes << size ().width () << playlistWidth;
+		Ui_.Splitter_->setSizes (splitterSizes);
 		
 		InitToolBar ();
 		InitCommandFrame ();

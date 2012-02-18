@@ -100,11 +100,15 @@ namespace Laure
 	
 	void PlayListView::handleHideHeaders ()
 	{
+		NotHiddenColumnCount_ = 0;
 		for (int i = 1; i < PlayListModel_->columnCount (); ++i)
 		{
 			const QString& itemName = "Header" + QString::number (i);
-			setColumnHidden (i, !XmlSettingsManager::Instance ()
-					.property (itemName.toAscii ()).toBool ());
+			if (XmlSettingsManager::Instance ()
+					.property (itemName.toAscii ()).toBool ())
+				++NotHiddenColumnCount_;
+			else
+				setColumnHidden (i, true);
 		}
 	}
 	
@@ -153,9 +157,9 @@ namespace Laure
 			return;
 		
 		const int first = indexList.first ().row ();
-		PlayListModel_->removeRows (first, indexList.count ()
-				/ (PlayListModel_->columnCount () - 1));
-		for (int i = c - 1; i > -1; --i)
+		const int rows = indexList.count () / NotHiddenColumnCount_;
+		PlayListModel_->removeRows (first, rows);
+		for (int i = 0; i < rows; ++i)
 			emit itemRemoved (first);
 	}
 	

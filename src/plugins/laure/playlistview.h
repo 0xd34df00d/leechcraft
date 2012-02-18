@@ -46,6 +46,7 @@ namespace Laure
 		
 		QStandardItemModel *PlayListModel_;
 		int CurrentItem_;
+		int NotHiddenColumnCount_;
 	public:
 		/** @brief Constructs a new PlayListView class
 		 * with the given model and parent.
