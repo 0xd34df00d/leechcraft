@@ -56,12 +56,10 @@ IF (QT_QTDECLARATIVE_FOUND)
 	SET (SRCS ${SRCS}
 		qml/visualnotificationsview.cpp
 		qml/eventproxyobject.cpp
-		qml/actionsproxyobject.cpp
 		)
 	SET (HEADERS ${HEADERS}
 		qml/visualnotificationsview.h
 		qml/eventproxyobject.h
-		qml/actionsproxyobject.h
 		)
 ENDIF (QT_QTDECLARATIVE_FOUND)
 

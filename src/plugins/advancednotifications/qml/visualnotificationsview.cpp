@@ -76,14 +76,6 @@ namespace AdvancedNotifications
 		Q_FOREACH (const EventData& ed, events)
 		{
 			EventProxyObject *obj = new EventProxyObject (ed, this);
-			connect (obj,
-					SIGNAL (actionTriggered (const QString&, int)),
-					this,
-					SIGNAL (actionTriggered (const QString&, int)));
-			connect (obj,
-					SIGNAL (dismissEventRequested (const QString&)),
-					this,
-					SIGNAL (dismissEvent (const QString&)));
 			newEvents << obj;
 		}
 

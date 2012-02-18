@@ -3,6 +3,9 @@ import "."
 
 Rectangle {
     id: notifArea
+    signal eventDismissed (string eventID)
+    signal eventActionTriggered (string eventID, int index)
+
     width: 450; height: 200
     smooth: true
     radius: 16
@@ -12,31 +15,13 @@ Rectangle {
     }
 
     Component {
-        id: actionsDelegate
-
-        Rectangle {
-            height: actionsListView.height
-            width: actionText.width + 5
-            smooth: true
-            radius: 3
-            color: "transparent"
-
-            TextButton {
-                id: actionText
-
-                text: model.modelData.actionText
-                onClicked: { model.modelData.actionSelected() }
-            }
-        }
-    }
-
-    Component {
         id: eventsDelegate
-
+  
         Rectangle {
             id: eventRect
-
-            width: listView.width
+            property string eventID: object.eventID
+ 
+            width: eventListView.width
             height: contentsRow.height + 5
             smooth: true
             radius: 9
@@ -71,7 +56,7 @@ Rectangle {
                     id: dismissButton
 
                     text: "x"
-                    onClicked: { model.modelData.dismissEvent() }
+                    onClicked: { notifArea.eventDismissed (object.eventID) }
                 }
 
                 ListView {
@@ -84,19 +69,33 @@ Rectangle {
                     anchors.bottom: eventRect.bottom
                     anchors.bottomMargin: 5
                     anchors.top: eventPic.bottom
-					anchors.topMargin: 5
+                    anchors.topMargin: 5
 
                     orientation: ListView.Horizontal
 
                     model: object.eventActionsModel
-                    delegate: actionsDelegate
+                    delegate: Rectangle {
+                        height: actionsListView.height
+                        width: actionText.width + 5
+                        smooth: true
+                        radius: 3
+                        color: "transparent"
+
+                        TextButton {
+                            id: actionText
+
+                            text: modelData
+                            onClicked: { notifArea.eventActionTriggered (eventRect.eventID, index) }
+                        }
+                    }
+ 
                 }
             }
         }
     }
 
     ListView {
-        id: listView
+        id: eventListView
 
         anchors.centerIn: parent
         anchors.topMargin: 5
