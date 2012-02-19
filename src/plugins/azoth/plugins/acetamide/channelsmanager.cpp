@@ -116,8 +116,6 @@ namespace Acetamide
 		if (!ichEntry)
 			return false;
 
-		ISH_->GetAccount ()->handleGotRosterItems (QObjectList () << ichEntry);
-
 		return true;
 	}
 
@@ -219,7 +217,10 @@ namespace Acetamide
 	{
 		if (ChannelHandlers_.contains (channel) &&
 				!ChannelHandlers_ [channel]->IsRosterReceived ())
+		{
 			ChannelHandlers_ [channel]->SetRosterReceived (true);
+			ISH_->GetAccount ()->handleGotRosterItems (QObjectList () << ChannelHandlers_ [channel]->GetCLEntry ());
+		}
 		else
 			ReceiveCmdAnswerMessage ("names", "End of /NAMES", true);
 	}
@@ -231,10 +232,15 @@ namespace Acetamide
 		{
 			if (ChannelHandlers_.contains (chnnl))
 			{
-				AddCommand2Queue (chnnl, ISH_->ParseMessageForCommand (msg, chnnl));
-				ChannelHandlers_ [chnnl]->HandleServiceMessage (msg,
-						IMessage::MTEventMessage,
-						IMessage::MSTOther);
+				const QString& cmd = ISH_->ParseMessageForCommand (msg, chnnl);
+				AddCommand2Queue (chnnl, cmd);
+				if (cmd == "say")
+					ChannelHandlers_ [chnnl]->HandleIncomingMessage (ISH_->GetNickName (),
+							msg.mid (4));
+				else
+					ChannelHandlers_ [chnnl]->HandleServiceMessage (msg,
+							IMessage::MTEventMessage,
+							IMessage::MSTOther);
 			}
 		}
 		else

@@ -269,7 +269,7 @@ namespace Acetamide
 
 	QString ChannelCLEntry::GetGroupName () const
 	{
-		return ICH_->GetSelf ()->Groups ().value (0);
+		return ICH_->GetChannelID ();
 	}
 
 	QVariantMap ChannelCLEntry::GetIdentifyingData () const

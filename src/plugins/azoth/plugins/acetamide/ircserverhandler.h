@@ -42,7 +42,7 @@ namespace Acetamide
 	class IrcServerCLEntry;
 	class IrcServerSocket;
 	class UserCommandManager;
-	class ServerResponceManager;
+	class ServerResponseManager;
 	class RplISupportParser;
 	class ChannelsManager;
 
@@ -56,7 +56,7 @@ namespace Acetamide
 		IrcServerCLEntry *ServerCLEntry_;
 		IrcServerSocket *Socket_;
 		UserCommandManager *CmdManager_;
-		ServerResponceManager *ServerResponceManager_;
+		ServerResponseManager *ServerResponseManager_;
 		RplISupportParser *RplISupportParser_;
 		ChannelsManager *ChannelsManager_;
 
