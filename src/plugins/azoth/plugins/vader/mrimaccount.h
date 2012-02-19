@@ -19,8 +19,10 @@
 #pragma once
 
 #include <QObject>
+#include <QImage>
 #include <interfaces/iaccount.h>
 #include <interfaces/isupporttune.h>
+#include <interfaces/iextselfinfoaccount.h>
 #include "proto/contactinfo.h"
 
 namespace LeechCraft
@@ -44,10 +46,12 @@ namespace Vader
 	class MRIMAccount : public QObject
 					  , public IAccount
 					  , public ISupportTune
+					  , public IExtSelfInfoAccount
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IAccount
-				LeechCraft::Azoth::ISupportTune);
+				LeechCraft::Azoth::ISupportTune
+				LeechCraft::Azoth::IExtSelfInfoAccount);
 
 		MRIMProtocol *Proto_;
 		QString Name_;
@@ -62,6 +66,8 @@ namespace Vader
 		QHash<quint32, Proto::ContactInfo> PendingAdditions_;
 
 		QList<QAction*> Actions_;
+
+		QImage SelfAvatar_;
 	public:
 		MRIMAccount (const QString&, MRIMProtocol*);
 
@@ -94,11 +100,18 @@ namespace Vader
 		// ISupportTune
 		void PublishTune (const QMap<QString, QVariant>&);
 
+		// IExtSelfInfoAccount
+		QObject* GetSelfContact () const;
+		QImage GetSelfAvatar () const;
+		QIcon GetAccountIcon () const;
+
 		QByteArray Serialize () const;
 		static MRIMAccount* Deserialize (const QByteArray&, MRIMProtocol*);
 	private:
 		MRIMBuddy* GetBuddy (const Proto::ContactInfo&);
 	private slots:
+		void updateSelfAvatar (const QImage&);
+
 		void handleGotContacts (const QList<Proto::ContactInfo>&);
 		void handleUserStatusChanged (const Proto::ContactInfo&);
 		void handleContactAdded (quint32, quint32);

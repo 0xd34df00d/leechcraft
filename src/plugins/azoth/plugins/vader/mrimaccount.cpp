@@ -114,6 +114,11 @@ namespace Vader
 		const QString& ua = "LeechCraft Azoth " + Core::Instance ()
 				.GetCoreProxy ()->GetVersion ();
 		Conn_->SetUA (ua);
+
+		connect (AvatarFetcher_,
+				SIGNAL (gotImage (QImage)),
+				this,
+				SLOT (updateSelfAvatar (QImage)));
 	}
 
 	void MRIMAccount::FillConfig (MRIMAccountConfigWidget *w)
@@ -325,6 +330,21 @@ namespace Vader
 		Conn_->PublishTune (string);
 	}
 
+	QObject* MRIMAccount::GetSelfContact () const
+	{
+		return 0;
+	}
+
+	QImage MRIMAccount::GetSelfAvatar () const
+	{
+		return SelfAvatar_;
+	}
+
+	QIcon MRIMAccount::GetAccountIcon () const
+	{
+		return QIcon ();
+	}
+
 	QByteArray MRIMAccount::Serialize () const
 	{
 		QByteArray result;
@@ -368,6 +388,11 @@ namespace Vader
 		Buddies_ [info.Email_] = buddy;
 		emit gotCLItems (QList<QObject*> () << buddy);
 		return buddy;
+	}
+
+	void MRIMAccount::updateSelfAvatar (const QImage& avatar)
+	{
+		SelfAvatar_ = avatar;
 	}
 
 	void MRIMAccount::handleGotContacts (const QList<Proto::ContactInfo>& contacts)
