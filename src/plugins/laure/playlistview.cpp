@@ -127,7 +127,7 @@ namespace Laure
 	
 	void PlayListView::handleMenu (const QPoint& point)
 	{
-		if (!selectedIndexes ().size ())
+		if (!selectedIndexes ().empty ())
 			return;
 		
 		const int row = selectedIndexes ().first ().row ();
@@ -135,7 +135,7 @@ namespace Laure
 		bool found = VLCWrapper_->GetQueueListIndexes ().contains (row);
 		
 		QMenu menu;
-		QAction *menuAction = new QAction (tr (found ? "Unqueue" : "Queue"), &menu);
+		QAction *menuAction = new QAction (found ? tr ("Unqueue") : tr ("Queue"), &menu);
 		menuAction->setData (found);
 		
 		menu.addAction (menuAction);
