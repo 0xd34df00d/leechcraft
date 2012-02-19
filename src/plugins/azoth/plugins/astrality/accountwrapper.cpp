@@ -21,6 +21,7 @@
 #include <QDialog>
 #include <QTabWidget>
 #include <QVBoxLayout>
+#include <QDialogButtonBox>
 #include <PendingOperation>
 #include <PendingStringList>
 #include <PendingContacts>
@@ -133,6 +134,17 @@ namespace Astrality
 		auto pages = proto->GetAccountRegistrationWidgets (IProtocol::AAONoOptions);
 		Q_FOREACH (QWidget *page, pages)
 			widget->addTab (page, page->windowTitle ());
+
+		auto box = new QDialogButtonBox (QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal);
+		dia.layout ()->addWidget (box);
+		connect (box,
+				SIGNAL (accepted ()),
+				&dia,
+				SLOT (accept ()));
+		connect (box,
+				SIGNAL (rejected ()),
+				&dia,
+				SLOT (reject ()));
 
 		if (dia.exec () != QDialog::Accepted)
 			return;
