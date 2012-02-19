@@ -29,6 +29,7 @@
 #include "mrimmessage.h"
 #include "core.h"
 #include "groupmanager.h"
+#include "selfavatarfetcher.h"
 #include "vaderutil.h"
 
 namespace LeechCraft
@@ -43,6 +44,7 @@ namespace Vader
 	, Name_ (name)
 	, Conn_ (new Proto::Connection (this))
 	, GM_ (new GroupManager (this))
+	, AvatarFetcher_ (new SelfAvatarFetcher (this))
 	{
 		connect (Conn_,
 				SIGNAL (gotContacts (QList<Proto::ContactInfo>)),
@@ -117,6 +119,8 @@ namespace Vader
 	void MRIMAccount::FillConfig (MRIMAccountConfigWidget *w)
 	{
 		Login_ = w->GetLogin ();
+
+		AvatarFetcher_->Restart (Login_);
 
 		const QString& pass = w->GetPassword ();
 		if (!pass.isEmpty ())
@@ -349,6 +353,9 @@ namespace Vader
 		str >> name;
 		MRIMAccount *result = new MRIMAccount (name, proto);
 		str >> result->Login_;
+
+		result->AvatarFetcher_->Restart (result->Login_);
+
 		return result;
 	}
 
