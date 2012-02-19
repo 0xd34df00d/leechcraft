@@ -37,6 +37,7 @@ namespace Astrality
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("azoth_astrality");
 		Tp::registerTypes ();
 		Tp::enableDebug (false);
 		Tp::enableWarnings (false);
