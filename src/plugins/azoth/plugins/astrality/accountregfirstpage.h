@@ -41,13 +41,16 @@ namespace Astrality
 	public:
 		AccountRegFirstPage (const Tp::ProtocolInfo&, bool, QWidget* = 0);
 
+		void SetParams (const QVariantMap&);
+
 		QString GetAccountID () const;
 		QString GetPassword () const;
 		QString GetServer () const;
 		int GetPort () const;
 		bool ShouldRequireEncryption () const;
 
-		void Augment (AccountWrapper::Settings&);
+		void SetSettings (const AccountWrapper::Settings&);
+		void Augment (AccountWrapper::Settings&) const;
 	};
 }
 }

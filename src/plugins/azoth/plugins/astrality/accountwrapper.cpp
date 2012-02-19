@@ -32,6 +32,7 @@
 #include "astralityutil.h"
 #include "entrywrapper.h"
 #include "protowrapper.h"
+#include "accountregfirstpage.h"
 
 namespace LeechCraft
 {
@@ -134,6 +135,9 @@ namespace Astrality
 		auto pages = proto->GetAccountRegistrationWidgets (IProtocol::AAONoOptions);
 		Q_FOREACH (QWidget *page, pages)
 			widget->addTab (page, page->windowTitle ());
+
+		qobject_cast<AccountRegFirstPage*> (pages.at (0))->SetSettings (S_);
+		qobject_cast<AccountRegFirstPage*> (pages.at (0))->SetParams (A_->parameters ());
 
 		auto box = new QDialogButtonBox (QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal);
 		dia.layout ()->addWidget (box);

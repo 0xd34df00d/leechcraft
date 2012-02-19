@@ -51,6 +51,20 @@ namespace Astrality
 		}
 	}
 
+	void AccountRegFirstPage::SetParams (const QVariantMap& params)
+	{
+		auto setStr = [&params] (QLineEdit *edit, const QString& name)
+		{
+			edit->setText (params [name].toString ());
+		};
+		setStr (Ui_.AccID_, "account");
+		setStr (Ui_.Server_, "server");
+
+		Ui_.Port_->setValue (params ["port"].toInt ());
+
+		Ui_.RequireEncryption_->setCheckState (params ["require-encryption"].toBool () ? Qt::Checked : Qt::Unchecked);
+	}
+
 	QString AccountRegFirstPage::GetAccountID () const
 	{
 		return Ui_.AccID_->text ();
@@ -76,9 +90,14 @@ namespace Astrality
 		return Ui_.RequireEncryption_->isChecked ();
 	}
 
-	void AccountRegFirstPage::Augment (AccountWrapper::Settings& settings)
+	void AccountRegFirstPage::SetSettings (const AccountWrapper::Settings& s)
 	{
-		settings.Autodisconnect_ = Ui_.Autodisconnect_->checkState () == Qt::Checked;
+		Ui_.Autodisconnect_->setCheckState (s.Autodisconnect_ ? Qt::Checked : Qt::Unchecked);
+	}
+
+	void AccountRegFirstPage::Augment (AccountWrapper::Settings& s) const
+	{
+		s.Autodisconnect_ = Ui_.Autodisconnect_->checkState () == Qt::Checked;
 	}
 }
 }
