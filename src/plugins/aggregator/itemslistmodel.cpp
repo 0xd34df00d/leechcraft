@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "itemslistmodel.h"
+#include <algorithm>
 #include <QApplication>
 #include <QPalette>
 #include <QTextDocument>

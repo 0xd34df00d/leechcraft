@@ -19,7 +19,7 @@
 
 #ifndef PLUGINS_LAURE_LAUREWIDGET_H
 #define PLUGINS_LAURE_LAUREWIDGET_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/iinfo.h>
@@ -36,11 +36,11 @@ namespace Laure
 	class PlayListWidget;
 	class PlayPauseAction;
 	class SeparatePlayer;
-	
+
 	/** @brief Represents a tab in LeechCraft tabs system.
-	 * 
+	 *
 	 * @author Minh Ngo <nlminhtl@gmail.com>
-	 * 
+	 *
 	 * @sa ITabWidget
 	 */
 	class LaureWidget : public QWidget
@@ -48,26 +48,26 @@ namespace Laure
 	{
 		Q_OBJECT
 		Q_INTERFACES (ITabWidget)
-		
+
 		static QObject *S_ParentMultiTabs_;
-		
+
 		QToolBar *ToolBar_;
 		Ui::LaureWidget Ui_;
 		VLCWrapper *VLCWrapper_;
-		boost::shared_ptr<SeparatePlayer> SeparatePlayer_;
+		std::shared_ptr<SeparatePlayer> SeparatePlayer_;
 		QAction *DetachedVideo_;
 	public:
 		/** @brief Constructs a new LaureWidget tab
 		 * with the given parent and flags.
 		 */
 		LaureWidget (QWidget *parent = 0, Qt::WindowFlags f = 0);
-		
+
 		static void SetParentMultiTabs (QObject*);
 		TabClassInfo GetTabClassInfo () const;
 		QObject* ParentMultiTabs ();
 		void Remove ();
 		QToolBar* GetToolBar () const;
-	
+
 	protected:
 		void keyPressEvent (QKeyEvent*);
 	private:
@@ -78,23 +78,23 @@ namespace Laure
 		 * be closed.
 		 */
 		void needToClose ();
-		
+
 		/** @brief Is emitted when the PlayPauseAction is clicked.
 		 */
 		void playPause ();
-		
+
 		/** @brief Is emitted when the media item needs to be added to
 		 * the playlist.
 		 *
 		 * @param[out] location Media file location.
 		 */
 		void addItem (const QString& location);
-		
+
 		void gotEntity (const Entity&);
 		void delegateEntity (const Entity&, int*, QObject**);
 	public slots:
 		/** @brief Is called for adding media files to the playlist.
-		 * 
+		 *
 		 * @param[in] location Media file location.
 		 */
 		void handleOpenMediaContent (const QString& location);

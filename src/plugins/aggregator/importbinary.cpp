@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "importbinary.h"
+#include <algorithm>
 #include <QFile>
 #include <QDataStream>
 #include <QFileDialog>

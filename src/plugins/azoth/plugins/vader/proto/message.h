@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_VADER_PROTO_MESSAGE_H
-#define PLUGINS_AZOTH_PLUGINS_VADER_PROTO_MESSAGE_H
+#pragma once
+
 #include <QString>
 #include <QDateTime>
 
@@ -41,5 +41,3 @@ namespace Proto
 }
 }
 }
-
-#endif

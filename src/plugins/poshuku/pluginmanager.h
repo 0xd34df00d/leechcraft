@@ -19,7 +19,7 @@
 #ifndef PLUGINS_POSHUKU_PLUGINMANAGER_H
 #define PLUGINS_POSHUKU_PLUGINMANAGER_H
 #include <vector>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QWebPage>
 #include <QDateTime>
 #include <QNetworkRequest>
@@ -43,7 +43,7 @@ namespace Poshuku
 	{
 		Q_OBJECT
 
-		boost::shared_ptr<ProxyObject> ProxyObject_;
+		std::shared_ptr<ProxyObject> ProxyObject_;
 	public:
 		PluginManager (QObject* = 0);
 

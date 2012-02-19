@@ -42,6 +42,14 @@ namespace Astrality
 				SIGNAL (aliasChanged (QString)),
 				this,
 				SIGNAL (nameChanged (QString)));
+		connect (C_.data (),
+				SIGNAL (publishStateChanged (Tp::Contact::PresenceState, QString)),
+				this,
+				SLOT (handlePublishStateChanged (Tp::Contact::PresenceState, QString)));
+		connect (C_.data (),
+				SIGNAL (subscriptionStateChanged (Tp::Contact::PresenceState)),
+				this,
+				SLOT (handleSubStateChanged (Tp::Contact::PresenceState)));
 
 		connect (this,
 				SIGNAL (gotEntity (LeechCraft::Entity)),
@@ -60,6 +68,11 @@ namespace Astrality
 		emit gotMessage (msg);
 	}
 
+	Tp::ContactPtr EntryWrapper::GetContact () const
+	{
+		return C_;
+	}
+
 	QObject* EntryWrapper::GetObject ()
 	{
 		return this;
@@ -72,7 +85,7 @@ namespace Astrality
 
 	ICLEntry::Features EntryWrapper::GetEntryFeatures () const
 	{
-		return FPermanentEntry;
+		return FPermanentEntry | FSupportsAuth | FSupportsGrouping;
 	}
 
 	ICLEntry::EntryType EntryWrapper::GetEntryType () const
@@ -177,9 +190,72 @@ namespace Astrality
 	{
 	}
 
+	AuthStatus EntryWrapper::GetAuthStatus () const
+	{
+		if (C_->publishState () == Tp::Contact::PresenceStateAsk)
+			return ASContactRequested;
+
+		int result = ASNone;
+		if (C_->subscriptionState () == Tp::Contact::PresenceStateYes)
+			result |= ASFrom;
+		if (C_->publishState () == Tp::Contact::PresenceStateYes)
+			result |= ASTo;
+		return static_cast<AuthStatus> (result);
+	}
+
+	void EntryWrapper::ResendAuth (const QString& msg)
+	{
+		C_->authorizePresencePublication (msg);
+	}
+
+	void EntryWrapper::RevokeAuth (const QString& msg)
+	{
+		C_->removePresencePublication (msg);
+	}
+
+	void EntryWrapper::Unsubscribe (const QString& msg)
+	{
+		C_->removePresenceSubscription (msg);
+	}
+
+	void EntryWrapper::RerequestAuth (const QString& msg)
+	{
+		C_->requestPresenceSubscription (msg);
+	}
+
 	void EntryWrapper::handlePresenceChanged ()
 	{
 		emit statusChanged (GetStatus (QString ()), QString ());
+	}
+
+	void EntryWrapper::handlePublishStateChanged (Tp::Contact::PresenceState state, const QString& msg)
+	{
+		switch (state)
+		{
+		case Tp::Contact::PresenceStateNo:
+			emit itemUnsubscribed (this, msg);
+			break;
+		case Tp::Contact::PresenceStateYes:
+			emit itemSubscribed (this, msg);
+			break;
+		default:
+			;
+		}
+	}
+
+	void EntryWrapper::handleSubStateChanged (Tp::Contact::PresenceState state)
+	{
+		switch (state)
+		{
+		case Tp::Contact::PresenceStateNo:
+			emit itemCancelledSubscription (this, QString ());
+			break;
+		case Tp::Contact::PresenceStateYes:
+			emit itemGrantedSubscription (this, QString ());
+			break;
+		default:
+			;
+		}
 	}
 
 	void EntryWrapper::handleMessageReceived (const Tp::ReceivedMessage& tpMsg, Tp::TextChannelPtr)

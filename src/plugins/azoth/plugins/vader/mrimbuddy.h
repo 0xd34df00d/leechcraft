@@ -16,10 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_VADER_MRIMBUDDY_H
-#define PLUGINS_AZOTH_PLUGINS_VADER_MRIMBUDDY_H
+#pragma once
+
 #include <QObject>
 #include <QSet>
+#include <QImage>
 #include <interfaces/iclentry.h>
 #include <interfaces/iadvancedclentry.h>
 #include "proto/contactinfo.h"
@@ -32,6 +33,7 @@ namespace Vader
 {
 	class MRIMAccount;
 	class MRIMMessage;
+	class SelfAvatarFetcher;
 
 	class MRIMBuddy : public QObject
 					, public ICLEntry
@@ -54,6 +56,9 @@ namespace Vader
 		QHash<quint32, QString> SentSMS_;
 
 		QAction *SendSMS_;
+
+		SelfAvatarFetcher *AvatarFetcher_;
+		QImage Avatar_;
 	public:
 		MRIMBuddy (const Proto::ContactInfo&, MRIMAccount*);
 
@@ -99,6 +104,8 @@ namespace Vader
 		AdvancedFeatures GetAdvancedFeatures () const;
 		void DrawAttention (const QString&, const QString&);
 	private slots:
+		void updateAvatar (const QImage&);
+
 		void handleSendSMS ();
 
 		void handleSMSDelivered (quint32);
@@ -125,5 +132,3 @@ namespace Vader
 }
 }
 }
-
-#endif

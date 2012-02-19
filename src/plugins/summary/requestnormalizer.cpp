@@ -39,7 +39,7 @@ namespace Summary
 		}
 	}
 
-	RequestNormalizer::RequestNormalizer (const boost::shared_ptr<Util::MergeModel>& merge,
+	RequestNormalizer::RequestNormalizer (const std::shared_ptr<Util::MergeModel>& merge,
 			QObject *parent)
 	: QObject (parent)
 	, MergeModel_ (merge)

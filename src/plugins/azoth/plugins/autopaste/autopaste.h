@@ -18,7 +18,6 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_AUTOPASTE_AUTOPASTE_H
 #define PLUGINS_AZOTH_PLUGINS_AUTOPASTE_AUTOPASTE_H
-#include <boost/shared_ptr.hpp>
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
@@ -42,9 +41,8 @@ namespace Autopaste
 		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
 
 		ICoreProxy_ptr Proxy_;
-		boost::shared_ptr<QTranslator> Translator_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
-		QMap<QNetworkReply*, QPointer<QObject> > Reply2Entry_;
+		QMap<QNetworkReply*, QPointer<QObject>> Reply2Entry_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

@@ -49,7 +49,7 @@ namespace LeechCraft
 				ICoreProxy_ptr Proxy_;
 				QList<KinotifyWidget*> ActiveNotifications_;
 				Util::XmlSettingsDialog_ptr SettingsDialog_;
-				boost::shared_ptr<Util::ResourceLoader> ThemeLoader_;
+				std::shared_ptr<Util::ResourceLoader> ThemeLoader_;
 			public:
 				void Init (ICoreProxy_ptr);
 				void SecondInit ();

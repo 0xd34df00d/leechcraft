@@ -320,7 +320,7 @@ namespace LeechCraft
 				Core::Instance ()->UpdateTags (tags, torrent);
 			}
 
-			boost::shared_ptr<XmlSettingsDialog> TorrentPlugin::GetSettingsDialog () const
+			std::shared_ptr<XmlSettingsDialog> TorrentPlugin::GetSettingsDialog () const
 			{
 				return XmlSettingsDialog_;
 			}

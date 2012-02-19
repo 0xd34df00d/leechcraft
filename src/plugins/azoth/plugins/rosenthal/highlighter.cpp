@@ -26,7 +26,7 @@ namespace Azoth
 {
 namespace Rosenthal
 {
-	Highlighter::Highlighter (boost::shared_ptr<Hunspell> hunspell, QTextDocument *parent)
+	Highlighter::Highlighter (std::shared_ptr<Hunspell> hunspell, QTextDocument *parent)
 	: QSyntaxHighlighter (parent)
 	, Hunspell_ (hunspell)
 	{
@@ -36,7 +36,7 @@ namespace Rosenthal
 		Codec_ = QTextCodec::codecForName (Hunspell_->get_dic_encoding ());
 	}
 
-	void Highlighter::UpdateHunspell (boost::shared_ptr<Hunspell> hunspell)
+	void Highlighter::UpdateHunspell (std::shared_ptr<Hunspell> hunspell)
 	{
 		Hunspell_ = hunspell;
 	}

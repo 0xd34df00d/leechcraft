@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_VADER_PROTO_HEADERS_H
-#define PLUGINS_AZOTH_PLUGINS_VADER_PROTO_HEADERS_H
+#pragma once
+
 #include <QByteArray>
 
 namespace LeechCraft
@@ -224,5 +224,3 @@ namespace Proto
 }
 }
 }
-
-#endif

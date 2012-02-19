@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "accountwrapper.h"
+#include <algorithm>
 #include <PendingOperation>
 #include <PendingStringList>
 #include <PendingContacts>
@@ -134,12 +135,17 @@ namespace Astrality
 				SLOT (handleRequestedPresenceFinish (Tp::PendingOperation*)));
 	}
 
-	void AccountWrapper::Authorize (QObject*)
+	void AccountWrapper::Authorize (QObject *obj)
 	{
+		auto w = qobject_cast<EntryWrapper*> (obj);
+		w->ResendAuth (QString ());
+		w->RerequestAuth (QString ());
 	}
 
-	void AccountWrapper::DenyAuth (QObject*)
+	void AccountWrapper::DenyAuth (QObject *obj)
 	{
+		auto w = qobject_cast<EntryWrapper*> (obj);
+		w->RevokeAuth (QString ());
 	}
 
 	void AccountWrapper::RequestAuth (const QString& id,
@@ -178,6 +184,17 @@ namespace Astrality
 		return Messengers_ [id];
 	}
 
+	void AccountWrapper::Shutdown ()
+	{
+		disconnect (A_.data (),
+				SIGNAL (currentPresenceChanged (Tp::Presence)),
+				this,
+				SLOT (handleCurrentPresence (Tp::Presence)));
+
+		if (GetState ().State_ != SOffline)
+			A_->setRequestedPresence (Status2Telepathy (EntryStatus (SOffline, QString ())));
+	}
+
 	void AccountWrapper::RemoveThis ()
 	{
 		connect (A_->remove (),
@@ -206,11 +223,36 @@ namespace Astrality
 				SLOT (handlePasswordFixed (Tp::PendingOperation*)));
 	}
 
-	void AccountWrapper::CreateEntry (Tp::ContactPtr c)
+	EntryWrapper* AccountWrapper::CreateEntry (Tp::ContactPtr c)
 	{
-		EntryWrapper *w = new EntryWrapper (c, this);
+		auto pos = std::find_if (Entries_.begin (), Entries_.end (),
+			[c] (decltype (Entries_.front ()) e)
+				{ return e->GetContact () == c; });
+		if (pos != Entries_.end ())
+			return *pos;
+
+		auto w = new EntryWrapper (c, this);
 		Entries_ << w;
 		emit gotCLItems (QList<QObject*> () << w);
+
+		connect (w,
+				SIGNAL (itemSubscribed (QObject*, QString)),
+				this,
+				SIGNAL (itemSubscribed (QObject*, QString)));
+		connect (w,
+				SIGNAL (itemUnsubscribed (QObject*, QString)),
+				this,
+				SIGNAL (itemUnsubscribed (QObject*, QString)));
+		connect (w,
+				SIGNAL (itemCancelledSubscription (QObject*, QString)),
+				this,
+				SIGNAL (itemCancelledSubscription (QObject*, QString)));
+		connect (w,
+				SIGNAL (itemGrantedSubscription (QObject*, QString)),
+				this,
+				SIGNAL (itemGrantedSubscription (QObject*, QString)));
+
+		return w;
 	}
 
 	void AccountWrapper::handleEnabled (Tp::PendingOperation *po)
@@ -407,7 +449,11 @@ namespace Astrality
 	{
 		qDebug () << Q_FUNC_INFO << contacts.size ();
 		Q_FOREACH (Tp::ContactPtr c, contacts)
+		{
 			qDebug () << c->alias () << c->groups () << c->id ();
+			auto w = CreateEntry (c);
+			emit authorizationRequested (w, QString ());
+		}
 	}
 
 	void AccountWrapper::handleCMStateChanged (Tp::ContactListState state)

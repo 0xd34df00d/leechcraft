@@ -39,7 +39,7 @@ namespace LeechCraft
 				Q_INTERFACES (IInfo IHaveSettings IEntityHandler);
 
 				std::auto_ptr<QTranslator> Translator_;
-				boost::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
+				std::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
 			public:
 				void Init (ICoreProxy_ptr);
 				void SecondInit ();
@@ -53,7 +53,7 @@ namespace LeechCraft
 				void SetProvider (QObject*, const QString&);
 				QIcon GetIcon () const;
 
-				boost::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
+				std::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
 
 				EntityTestHandleResult CouldHandle (const Entity&) const;
 				void Handle (Entity);

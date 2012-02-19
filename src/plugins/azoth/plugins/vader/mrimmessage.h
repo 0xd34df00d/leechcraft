@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_VADER_MRIMMESSAGE_H
-#define PLUGINS_AZOTH_PLUGINS_VADER_MRIMMESSAGE_H
+#pragma once
+
 #include <QObject>
 #include <interfaces/imessage.h>
 #include <interfaces/iadvancedmessage.h>
@@ -79,5 +79,3 @@ namespace Vader
 }
 }
 }
-
-#endif

@@ -18,7 +18,7 @@
 
 #ifndef UTIL_RESOURCELOADER_H
 #define UTIL_RESOURCELOADER_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QObject>
 #include <QStringList>
 #include <QDir>
@@ -36,7 +36,7 @@ namespace LeechCraft
 {
 	namespace Util
 	{
-		typedef boost::shared_ptr<QIODevice> QIODevice_ptr;
+		typedef std::shared_ptr<QIODevice> QIODevice_ptr;
 
 		/** @brief Utility class for loading a file from a set of locations.
 		 *

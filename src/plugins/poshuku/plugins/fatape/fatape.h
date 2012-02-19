@@ -46,12 +46,12 @@ namespace FatApe
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
 
-		boost::shared_ptr<QTranslator> Translator_;
+		std::shared_ptr<QTranslator> Translator_;
 		QList<UserScript> UserScripts_;
 		IProxyObject *Proxy_;
 		ICoreProxy_ptr CoreProxy_;
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
-		boost::shared_ptr<QStandardItemModel> Model_;
+		std::shared_ptr<QStandardItemModel> Model_;
 	public:
 		void Init (ICoreProxy_ptr);
 

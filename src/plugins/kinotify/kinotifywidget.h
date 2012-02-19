@@ -54,7 +54,7 @@ namespace LeechCraft
 				QStateMachine Machine_;
 				QStringList ActionsNames_;
 				NotificationAction *Action_;
-				boost::shared_ptr<Util::ResourceLoader> ThemeLoader_;
+				std::shared_ptr<Util::ResourceLoader> ThemeLoader_;
 				QPixmap OverridePixmap_;
 				QObject_ptr HandlerGuard_;
 
@@ -63,7 +63,7 @@ namespace LeechCraft
 				Entity E_;
 			public:
 				KinotifyWidget (int timeout = 0, QWidget *widget = 0, int animationTimeout = 300);
-				void SetThemeLoader (boost::shared_ptr<Util::ResourceLoader>);
+				void SetThemeLoader (std::shared_ptr<Util::ResourceLoader>);
 
 				static void ClearThemeCache ();
 

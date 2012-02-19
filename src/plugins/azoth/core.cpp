@@ -194,7 +194,7 @@ namespace Azoth
 		ResourceLoaders_ [RLTActivityIconLoader].reset (new Util::ResourceLoader ("azoth/iconsets/activities/", this));
 		ResourceLoaders_ [RLTMoodIconLoader].reset (new Util::ResourceLoader ("azoth/iconsets/moods/", this));
 
-		Q_FOREACH (boost::shared_ptr<Util::ResourceLoader> rl, ResourceLoaders_.values ())
+		Q_FOREACH (std::shared_ptr<Util::ResourceLoader> rl, ResourceLoaders_.values ())
 		{
 			rl->AddLocalPrefix ();
 			rl->AddGlobalPrefix ();
@@ -1097,7 +1097,7 @@ namespace Azoth
 
 	namespace
 	{
-		QString Status2Str (const EntryStatus& status, boost::shared_ptr<IProxyObject> obj)
+		QString Status2Str (const EntryStatus& status, std::shared_ptr<IProxyObject> obj)
 		{
 			QString result = obj->StateToString (status.State_);
 			const QString& statusString = Qt::escape (status.StatusString_);
@@ -1448,16 +1448,22 @@ namespace Azoth
 
 		QImage avatar = entry ? entry->GetAvatar () : QImage ();
 		if (avatar.isNull () || !avatar.width ())
-		{
-			const QString& name = XmlSettingsManager::Instance ()
-					.property ("SystemIcons").toString () + "/default_avatar";
-			avatar = ResourceLoaders_ [RLTSystemIconLoader]->LoadPixmap (name).toImage ();
-		}
+			avatar = GetDefaultAvatar (size);
 
 		const QImage& scaled = avatar.scaled (size, size,
 				Qt::KeepAspectRatio, Qt::SmoothTransformation);
 		Entry2SmoothAvatarCache_ [entry] = scaled;
 		return scaled;
+	}
+
+	QImage Core::GetDefaultAvatar (int size)
+	{
+		const QString& name = XmlSettingsManager::Instance ()
+				.property ("SystemIcons").toString () + "/default_avatar";
+		const QImage& image = ResourceLoaders_ [RLTSystemIconLoader]->
+				LoadPixmap (name).toImage ();
+		return image.scaled (size, size,
+				Qt::KeepAspectRatio, Qt::SmoothTransformation);
 	}
 
 	ActionsManager* Core::GetActionsManager () const
@@ -2997,7 +3003,7 @@ namespace Azoth
 
 	void Core::flushIconCaches ()
 	{
-		Q_FOREACH (boost::shared_ptr<Util::ResourceLoader> rl, ResourceLoaders_.values ())
+		Q_FOREACH (std::shared_ptr<Util::ResourceLoader> rl, ResourceLoaders_.values ())
 			rl->FlushCache ();
 	}
 

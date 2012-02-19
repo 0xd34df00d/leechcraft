@@ -363,6 +363,14 @@ namespace Xoox
 				0;
 	}
 
+	QImage GlooxAccount::GetSelfAvatar () const
+	{
+		auto self = GetSelfContact ();
+		return self ?
+				qobject_cast<ICLEntry*> (self)->GetAvatar () :
+				QImage ();
+	}
+
 	QObject* GlooxAccount::CreateSDSession ()
 	{
 		return new SDSession (this);
@@ -668,7 +676,7 @@ namespace Xoox
 		JoinRoom (jidStr, nick);
 	}
 
-	boost::shared_ptr<ClientConnection> GlooxAccount::GetClientConnection () const
+	std::shared_ptr<ClientConnection> GlooxAccount::GetClientConnection () const
 	{
 		return ClientConnection_;
 	}

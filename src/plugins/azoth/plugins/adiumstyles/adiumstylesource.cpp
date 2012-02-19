@@ -124,22 +124,14 @@ namespace AdiumStyles
 		Util::QIODevice_ptr tmpl = StylesLoader_->
 				Load (QStringList (prefix + "Template.html"));
 
-		if (!header)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "could not load HTML template for pack"
-					<< pack;
-			return QString ();
-		}
-
-		if (!header->open (QIODevice::ReadOnly) ||
+		if ((header && !header->open (QIODevice::ReadOnly)) ||
 				(footer && !footer->open (QIODevice::ReadOnly)) ||
 				(css && !css->open (QIODevice::ReadOnly)))
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unable to open source files for"
 					<< pack
-					<< header->errorString ()
+					<< (header ? header->errorString () : "empty header")
 					<< (footer ? footer->errorString () : "empty footer")
 					<< (css ? css->errorString () : "empty css");
 			return QString ();
@@ -167,7 +159,7 @@ namespace AdiumStyles
 		map ["CSS"] = "@import url( \"main.css\" );";
 		if (!varCssStr.isEmpty ())
 			map ["VariantCSS"] = baseUrl.resolved (QUrl (varCssStr)).toString ();
-		map ["Header"] = header->readAll ();
+		map ["Header"] = header ? header->readAll () : QString ();
 		map ["Footer"] = footer ? footer->readAll () : QString ();
 		PercentTemplate (result, map);
 
@@ -495,8 +487,8 @@ namespace AdiumStyles
 		else if (acc)
 		{
 			IExtSelfInfoAccount *self = qobject_cast<IExtSelfInfoAccount*> (acc->GetObject ());
-			if (self && self->GetSelfContact ())
-				image = qobject_cast<ICLEntry*> (self->GetSelfContact ())->GetAvatar ();
+			if (self)
+				image = self->GetSelfAvatar ();
 		}
 
 		if (image.isNull ())

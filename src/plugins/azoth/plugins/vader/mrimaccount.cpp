@@ -29,6 +29,7 @@
 #include "mrimmessage.h"
 #include "core.h"
 #include "groupmanager.h"
+#include "selfavatarfetcher.h"
 #include "vaderutil.h"
 
 namespace LeechCraft
@@ -43,6 +44,7 @@ namespace Vader
 	, Name_ (name)
 	, Conn_ (new Proto::Connection (this))
 	, GM_ (new GroupManager (this))
+	, AvatarFetcher_ (new SelfAvatarFetcher (this))
 	{
 		connect (Conn_,
 				SIGNAL (gotContacts (QList<Proto::ContactInfo>)),
@@ -112,11 +114,18 @@ namespace Vader
 		const QString& ua = "LeechCraft Azoth " + Core::Instance ()
 				.GetCoreProxy ()->GetVersion ();
 		Conn_->SetUA (ua);
+
+		connect (AvatarFetcher_,
+				SIGNAL (gotImage (QImage)),
+				this,
+				SLOT (updateSelfAvatar (QImage)));
 	}
 
 	void MRIMAccount::FillConfig (MRIMAccountConfigWidget *w)
 	{
 		Login_ = w->GetLogin ();
+
+		AvatarFetcher_->Restart (Login_);
 
 		const QString& pass = w->GetPassword ();
 		if (!pass.isEmpty ())
@@ -321,6 +330,21 @@ namespace Vader
 		Conn_->PublishTune (string);
 	}
 
+	QObject* MRIMAccount::GetSelfContact () const
+	{
+		return 0;
+	}
+
+	QImage MRIMAccount::GetSelfAvatar () const
+	{
+		return SelfAvatar_;
+	}
+
+	QIcon MRIMAccount::GetAccountIcon () const
+	{
+		return QIcon ();
+	}
+
 	QByteArray MRIMAccount::Serialize () const
 	{
 		QByteArray result;
@@ -349,6 +373,9 @@ namespace Vader
 		str >> name;
 		MRIMAccount *result = new MRIMAccount (name, proto);
 		str >> result->Login_;
+
+		result->AvatarFetcher_->Restart (result->Login_);
+
 		return result;
 	}
 
@@ -361,6 +388,11 @@ namespace Vader
 		Buddies_ [info.Email_] = buddy;
 		emit gotCLItems (QList<QObject*> () << buddy);
 		return buddy;
+	}
+
+	void MRIMAccount::updateSelfAvatar (const QImage& avatar)
+	{
+		SelfAvatar_ = avatar;
 	}
 
 	void MRIMAccount::handleGotContacts (const QList<Proto::ContactInfo>& contacts)

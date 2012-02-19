@@ -18,7 +18,7 @@
 
 #ifndef UTIL_FLATTOFOLDERSPROXYMODEL_H
 #define UTIL_FLATTOFOLDERSPROXYMODEL_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QAbstractItemModel>
 #include <QStringList>
 #include <QMultiHash>
@@ -29,7 +29,7 @@ class ITagsManager;
 namespace LeechCraft
 {
 	struct FlatTreeItem;
-	typedef boost::shared_ptr<FlatTreeItem> FlatTreeItem_ptr;
+	typedef std::shared_ptr<FlatTreeItem> FlatTreeItem_ptr;
 
 	namespace Util
 	{

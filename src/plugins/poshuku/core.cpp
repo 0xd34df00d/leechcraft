@@ -127,7 +127,7 @@ namespace Poshuku
 			throw std::runtime_error (qPrintable (QString ("Unknown storage type %1")
 						.arg (strType)));
 
-		boost::shared_ptr<StorageBackend> sb;
+		std::shared_ptr<StorageBackend> sb;
 		try
 		{
 			sb = StorageBackend::Create (type);

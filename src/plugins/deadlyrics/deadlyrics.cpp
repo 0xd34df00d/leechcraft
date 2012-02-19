@@ -100,7 +100,7 @@ namespace LeechCraft
 				return result;
 			}
 
-			boost::shared_ptr<Util::XmlSettingsDialog> DeadLyRicS::GetSettingsDialog () const
+			std::shared_ptr<Util::XmlSettingsDialog> DeadLyRicS::GetSettingsDialog () const
 			{
 				return SettingsDialog_;
 			}

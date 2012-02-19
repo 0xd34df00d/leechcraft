@@ -27,6 +27,7 @@
 #include <interfaces/iprotocol.h>
 #include <interfaces/iaccount.h>
 #include "cmwrapper.h"
+#include "accountwrapper.h"
 
 namespace LeechCraft
 {
@@ -56,9 +57,8 @@ namespace Astrality
 				Q_FOREACH (QObject *accObj,
 						qobject_cast<IProtocol*> (protocol)->GetRegisteredAccounts ())
 				{
-					auto acc = qobject_cast<IAccount*> (accObj);
-					if (acc->GetState ().State_ != SOffline)
-						acc->ChangeState (EntryStatus (SOffline, QString ()));
+					auto acc = qobject_cast<AccountWrapper*> (accObj);
+					acc->Shutdown ();
 				}
 
 		qDeleteAll (Wrappers_);
@@ -71,7 +71,7 @@ namespace Astrality
 
 	QString Plugin::GetName () const
 	{
-		return "Astrality";
+		return "Azoth Astrality";
 	}
 
 	QString Plugin::GetInfo () const
@@ -81,7 +81,7 @@ namespace Astrality
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		return QIcon (":/azoth/astrality/resources/images/astrality.svg");
 	}
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const

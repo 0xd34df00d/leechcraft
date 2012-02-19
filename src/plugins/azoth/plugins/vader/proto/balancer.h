@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_VADER_PROTO_BALANCER_H
-#define PLUGINS_AZOTH_PLUGINS_VADER_PROTO_BALANCER_H
+#pragma once
+
 #include <QObject>
 #include <QAbstractSocket>
 
@@ -47,5 +47,3 @@ namespace Proto
 }
 }
 }
-
-#endif

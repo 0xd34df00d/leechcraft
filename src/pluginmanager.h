@@ -18,7 +18,7 @@
 
 #ifndef PLUGINMANAGER_H
 #define PLUGINMANAGER_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QAbstractItemModel>
 #include <QMap>
 #include <QMultiMap>
@@ -33,7 +33,7 @@ namespace LeechCraft
 	class MainWindow;
 	class PluginTreeBuilder;
 
-	typedef boost::shared_ptr<QPluginLoader> QPluginLoader_ptr;
+	typedef std::shared_ptr<QPluginLoader> QPluginLoader_ptr;
 
 	class PluginManager : public QAbstractItemModel
 						, public IPluginsManager
@@ -59,7 +59,7 @@ namespace LeechCraft
 		QStringList PluginLoadErrors_;
 		mutable QMap<QByteArray, QObject*> PluginID2PluginCache_;
 
-		boost::shared_ptr<PluginTreeBuilder> PluginTreeBuilder_;
+		std::shared_ptr<PluginTreeBuilder> PluginTreeBuilder_;
 	public:
 		enum Roles
 		{

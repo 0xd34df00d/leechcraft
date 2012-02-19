@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXACCOUNT_H
 #define PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXACCOUNT_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QObject>
 #include <QMap>
 #include <QIcon>
@@ -117,8 +117,8 @@ namespace Xoox
 
 		QIcon AccountIcon_;
 
-		boost::shared_ptr<ClientConnection> ClientConnection_;
-		boost::shared_ptr<TransferManager> TransferManager_;
+		std::shared_ptr<ClientConnection> ClientConnection_;
+		std::shared_ptr<TransferManager> TransferManager_;
 
 		GlooxAccountState AccState_;
 
@@ -156,6 +156,7 @@ namespace Xoox
 
 		// IExtSelfInfoAccount
 		QObject* GetSelfContact () const;
+		QImage GetSelfAvatar () const;
 		QIcon GetAccountIcon () const;
 
 		// IHaveServiceDiscovery
@@ -204,7 +205,7 @@ namespace Xoox
 		void JoinRoom (const QString&, const QString&);
 		void JoinRoom (const QString&, const QString&, const QString&);
 
-		boost::shared_ptr<ClientConnection> GetClientConnection () const;
+		std::shared_ptr<ClientConnection> GetClientConnection () const;
 		GlooxCLEntry* CreateFromODS (OfflineDataSource_ptr);
 		QXmppBookmarkSet GetBookmarks () const;
 		void SetBookmarks (const QXmppBookmarkSet&);
@@ -269,7 +270,7 @@ namespace Xoox
 		void scheduleClientDestruction ();
 	};
 
-	typedef boost::shared_ptr<GlooxAccount> GlooxAccount_ptr;
+	typedef std::shared_ptr<GlooxAccount> GlooxAccount_ptr;
 }
 }
 }

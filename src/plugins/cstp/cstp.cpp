@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "cstp.h"
+#include <algorithm>
 #include <boost/bind.hpp>
 #include <boost/logic/tribool.hpp>
 #include <QMenu>

@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_VADER_GROUPMANAGER_H
-#define PLUGINS_AZOTH_PLUGINS_VADER_GROUPMANAGER_H
+#pragma once
+
 #include <QObject>
 #include <QMap>
 
@@ -60,5 +60,3 @@ namespace Vader
 }
 }
 }
-
-#endif

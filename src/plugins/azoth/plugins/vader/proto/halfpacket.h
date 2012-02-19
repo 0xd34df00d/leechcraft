@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_VADER_PROTO_HALFPACKET_H
-#define PLUGINS_AZOTH_PLUGINS_VADER_PROTO_HALFPACKET_H
+#pragma once
+
 #include "packet.h"
 #include "headers.h"
 
@@ -40,5 +40,3 @@ namespace Proto
 }
 }
 }
-
-#endif

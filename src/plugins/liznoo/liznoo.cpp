@@ -23,6 +23,7 @@
 #include <QTimer>
 #include <interfaces/core/icoreproxy.h>
 #include <util/util.h>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "batteryhistorydialog.h"
 
@@ -46,6 +47,9 @@ namespace Liznoo
 		qRegisterMetaType<BatteryInfo> ("Liznoo::BatteryInfo");
 
 		Util::InstallTranslator ("liznoo");
+
+		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_->RegisterObject (XmlSettingsManager::Instance (), "liznoosettings.xml");
 
 #if defined(Q_OS_LINUX)
 		PL_ = new PlatformUPower (this);
@@ -102,7 +106,12 @@ namespace Liznoo
 
 	QIcon Plugin::GetIcon () const
 	{
-		return QIcon ();
+		return QIcon (":/liznoo/resources/images/liznoo.svg");
+	}
+
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XSD_;
 	}
 
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace place) const

@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_VADER_PROTO_CONTACTINFO_H
-#define PLUGINS_AZOTH_PLUGINS_VADER_PROTO_CONTACTINFO_H
+#pragma once
+
 #include <QString>
 
 namespace LeechCraft
@@ -48,5 +48,3 @@ namespace Proto
 }
 }
 }
-
-#endif

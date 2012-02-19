@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_AUSCRIE_POSTER_H
 #define PLUGINS_AUSCRIE_POSTER_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QObject>
 #include <QMap>
 
@@ -40,7 +40,7 @@ namespace Auscrie
 		virtual QString GetLink (const QString& contents, QNetworkReply *reply) const = 0;
 	};
 
-	typedef boost::shared_ptr<Worker> Worker_ptr;
+	typedef std::shared_ptr<Worker> Worker_ptr;
 
 	class Poster : public QObject
 	{

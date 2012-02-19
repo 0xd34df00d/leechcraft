@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_HISTORYHOLDER_CORE_H
 #define PLUGINS_HISTORYHOLDER_CORE_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QAbstractItemModel>
 #include <QDateTime>
 #include <interfaces/iinfo.h>
@@ -49,7 +49,7 @@ namespace LeechCraft
 				typedef QList<HistoryEntry> History_t;
 				History_t History_;
 				QStringList Headers_;
-				boost::shared_ptr<QToolBar> ToolBar_;
+				std::shared_ptr<QToolBar> ToolBar_;
 				ICoreProxy_ptr CoreProxy_;
 				QAction *Remove_;
 

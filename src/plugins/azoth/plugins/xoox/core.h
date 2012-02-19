@@ -39,7 +39,7 @@ namespace Xoox
 		Q_OBJECT
 
 		ICoreProxy_ptr Proxy_;
-		boost::shared_ptr<GlooxProtocol> GlooxProtocol_;
+		std::shared_ptr<GlooxProtocol> GlooxProtocol_;
 		QObject *PluginProxy_;
 		bool SaveRosterScheduled_;
 

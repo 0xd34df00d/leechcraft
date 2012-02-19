@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_VFSCORE_VFSCORE_H
 #define PLUGINS_VFSCORE_VFSCORE_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QObject>
 #include <interfaces/iinfo.h>
 
@@ -33,8 +33,8 @@ namespace VFScore
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo)
-		
-		boost::shared_ptr<VFSEngineHandler> Handler_;
+
+		std::shared_ptr<VFSEngineHandler> Handler_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

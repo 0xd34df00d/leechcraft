@@ -18,6 +18,7 @@
 
 #include "cookieseditmodel.h"
 #include <stdexcept>
+#include <algorithm>
 #include <QtDebug>
 #include <QNetworkAccessManager>
 #include <QString>

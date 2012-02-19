@@ -18,8 +18,8 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
-#include <boost/shared_ptr.hpp>
 #include "requestparser.h"
 #include "categorymerger.h"
 #include "operationalmodel.h"
@@ -34,7 +34,7 @@ namespace Summary
 	{
 		Q_OBJECT
 
-		boost::shared_ptr<Util::MergeModel> MergeModel_;
+		std::shared_ptr<Util::MergeModel> MergeModel_;
 		/** Forms a binary tree, where each node is an operation holding
 			* a corresponding operational model and each leaf is a category
 			* merger which parses the requests and provides the
@@ -49,18 +49,18 @@ namespace Summary
 			~RequestHolder ();
 
 			OperationalModel::Operation Op_;
-			boost::shared_ptr<RequestHolder> Left_;
-			boost::shared_ptr<RequestHolder> Right_;
+			std::shared_ptr<RequestHolder> Left_;
+			std::shared_ptr<RequestHolder> Right_;
 
-			boost::shared_ptr<Request> Req_;
-			boost::shared_ptr<Util::MergeModel> Merger_;
+			std::shared_ptr<Request> Req_;
+			std::shared_ptr<Util::MergeModel> Merger_;
 		};
-		typedef boost::shared_ptr<RequestHolder> RequestHolder_ptr;
+		typedef std::shared_ptr<RequestHolder> RequestHolder_ptr;
 		RequestHolder_ptr Current_;
-		boost::shared_ptr<Util::MergeModel> Root_;
-		boost::shared_ptr<RequestParser> Parser_;
+		std::shared_ptr<Util::MergeModel> Root_;
+		std::shared_ptr<RequestParser> Parser_;
 	public:
-		RequestNormalizer (const boost::shared_ptr<Util::MergeModel>&,
+		RequestNormalizer (const std::shared_ptr<Util::MergeModel>&,
 				QObject* = 0);
 
 		void SetRequest (const QString&);

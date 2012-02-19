@@ -140,7 +140,7 @@ namespace LeechCraft
 				Core::Instance ().Handle (entity);
 			}
 
-			boost::shared_ptr<Util::XmlSettingsDialog> Plugin::GetSettingsDialog () const
+			std::shared_ptr<Util::XmlSettingsDialog> Plugin::GetSettingsDialog () const
 			{
 				return XmlSettingsDialog_;
 			}

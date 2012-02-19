@@ -17,6 +17,7 @@
  **********************************************************************/
 
 #include "tabsessmanager.h"
+#include <algorithm>
 #include <QIcon>
 #include <QTimer>
 #include <QSettings>

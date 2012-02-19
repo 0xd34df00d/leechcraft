@@ -40,7 +40,7 @@ namespace LeechCraft
 				Q_INTERFACES (IFindProxy);
 
 				LeechCraft::Request R_;
-				boost::shared_ptr<LeechCraft::Util::MergeModel> MergeModel_;
+				std::shared_ptr<LeechCraft::Util::MergeModel> MergeModel_;
 				QList<SearchHandler_ptr> Handlers_;
 			public:
 				FindProxy (const LeechCraft::Request&);

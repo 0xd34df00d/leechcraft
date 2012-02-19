@@ -91,7 +91,7 @@ namespace WYFV
 	{
 	}
 
-	boost::shared_ptr<Util::XmlSettingsDialog> WYFV::GetSettingsDialog () const
+	std::shared_ptr<Util::XmlSettingsDialog> WYFV::GetSettingsDialog () const
 	{
 		return SettingsDialog_;
 	}

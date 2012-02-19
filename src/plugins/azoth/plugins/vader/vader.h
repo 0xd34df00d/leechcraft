@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_VADER_VADER_H
-#define PLUGINS_AZOTH_PLUGINS_VADER_VADER_H
+#pragma once
+
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/iprotocolplugin.h>
@@ -36,7 +36,7 @@ namespace Vader
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Azoth::IProtocolPlugin);
-		
+
 		QMap<QObject*, QList<QAction*>> EntryServices_;
 	public:
 		void Init (ICoreProxy_ptr);
@@ -53,7 +53,7 @@ namespace Vader
 		QList<QObject*> GetProtocols () const;
 	public slots:
 		void initPlugin (QObject*);
-		
+
 		void hookEntryActionAreasRequested (LeechCraft::IHookProxy_ptr proxy,
 				QObject *action,
 				QObject *entry);
@@ -67,5 +67,3 @@ namespace Vader
 }
 }
 }
-
-#endif

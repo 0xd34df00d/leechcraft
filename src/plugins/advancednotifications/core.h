@@ -40,7 +40,7 @@ namespace AdvancedNotifications
 		ICoreProxy_ptr Proxy_;
 		
 		NotificationRulesWidget *NRW_;
-		boost::shared_ptr<Util::ResourceLoader> AudioThemeLoader_;
+		std::shared_ptr<Util::ResourceLoader> AudioThemeLoader_;
 		
 		Core ();
 	public:
@@ -51,7 +51,7 @@ namespace AdvancedNotifications
 		void SetProxy (ICoreProxy_ptr);
 		
 		NotificationRulesWidget* GetNRW ();
-		boost::shared_ptr<Util::ResourceLoader> GetAudioThemeLoader () const;
+		std::shared_ptr<Util::ResourceLoader> GetAudioThemeLoader () const;
 
 		QList<NotificationRule> GetRules (const Entity&) const;
 		

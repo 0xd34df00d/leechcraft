@@ -86,7 +86,7 @@ namespace LeechCraft
 						IActionsExporter
 						IHaveDiagInfo);
 
-				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
+				std::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
 				std::auto_ptr<AddTorrent> AddTorrentDialog_;
 				std::auto_ptr<QTimer> OverallStatsUpdateTimer_;
 				std::auto_ptr<QTime> LastPeersUpdate_;
@@ -181,7 +181,7 @@ namespace LeechCraft
 				void SetTags (int, const QStringList&);
 
 				// IHaveSettings
-				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
+				std::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
 
 				// IHaveShortcuts
 				void SetShortcut (const QString&, const QKeySequences_t&);

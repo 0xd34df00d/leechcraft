@@ -130,17 +130,17 @@ namespace Azoth
 			RLTMoodIconLoader
 		};
 	private:
-		QMap<ResourceLoaderType, boost::shared_ptr<Util::ResourceLoader>> ResourceLoaders_;
-		boost::shared_ptr<SourceTrackingModel<IEmoticonResourceSource>> SmilesOptionsModel_;
-		boost::shared_ptr<SourceTrackingModel<IChatStyleResourceSource>> ChatStylesOptionsModel_;
+		QMap<ResourceLoaderType, std::shared_ptr<Util::ResourceLoader>> ResourceLoaders_;
+		std::shared_ptr<SourceTrackingModel<IEmoticonResourceSource>> SmilesOptionsModel_;
+		std::shared_ptr<SourceTrackingModel<IChatStyleResourceSource>> ChatStylesOptionsModel_;
 
-		boost::shared_ptr<PluginManager> PluginManager_;
-		boost::shared_ptr<ProxyObject> PluginProxyObject_;
-		boost::shared_ptr<TransferJobManager> XferJobManager_;
-		boost::shared_ptr<CallManager> CallManager_;
-		boost::shared_ptr<EventsNotifier> EventsNotifier_;
-		boost::shared_ptr<ImportManager> ImportManager_;
-		boost::shared_ptr<UnreadQueueManager> UnreadQueueManager_;
+		std::shared_ptr<PluginManager> PluginManager_;
+		std::shared_ptr<ProxyObject> PluginProxyObject_;
+		std::shared_ptr<TransferJobManager> XferJobManager_;
+		std::shared_ptr<CallManager> CallManager_;
+		std::shared_ptr<EventsNotifier> EventsNotifier_;
+		std::shared_ptr<ImportManager> ImportManager_;
+		std::shared_ptr<UnreadQueueManager> UnreadQueueManager_;
 
 		Core ();
 	public:
@@ -280,6 +280,7 @@ namespace Azoth
 		 * @return Entry's avatar scaled to the given size.
 		 */
 		QImage GetAvatar (ICLEntry *entry, int size);
+		QImage GetDefaultAvatar (int size);
 
 		ActionsManager* GetActionsManager () const;
 

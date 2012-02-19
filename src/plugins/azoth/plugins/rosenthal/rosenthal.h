@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_AZOTH_PLUGINS_ROSENTHAL_H
 #define PLUGINS_AZOTH_PLUGINS_ROSENTHAL_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
@@ -45,9 +45,9 @@ namespace Rosenthal
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
 
-		boost::shared_ptr<QTranslator> Translator_;
+		std::shared_ptr<QTranslator> Translator_;
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
-		boost::shared_ptr<Hunspell> Hunspell_;
+		std::shared_ptr<Hunspell> Hunspell_;
 		QList<Highlighter*> Highlighters_;
 	public:
 		void Init (ICoreProxy_ptr);

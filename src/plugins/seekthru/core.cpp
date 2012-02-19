@@ -385,7 +385,7 @@ namespace LeechCraft
 					}
 				}
 
-				boost::shared_ptr<FindProxy> fp (new FindProxy (r));
+				std::shared_ptr<FindProxy> fp (new FindProxy (r));
 				fp->SetHandlers (handlers);
 				return IFindProxy_ptr (fp);
 			}

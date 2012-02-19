@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_AZOTH_SEARCHWIDGET_H
 #define PLUGINS_AZOTH_SEARCHWIDGET_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
 #include "ui_searchwidget.h"
@@ -39,7 +39,7 @@ namespace Azoth
 		static QObject *S_ParentMultiTabs_;
 
 		Ui::SearchWidget Ui_;
-		boost::shared_ptr<ISearchSession> CurrentSess_;
+		std::shared_ptr<ISearchSession> CurrentSess_;
 	public:
 		static void SetParentMultiTabs (QObject*);
 

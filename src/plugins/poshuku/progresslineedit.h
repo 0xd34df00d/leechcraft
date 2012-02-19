@@ -18,7 +18,6 @@
 
 #ifndef PLUGINS_POSHUKU_PROGRESSLINEEDIT_H
 #define PLUGINS_POSHUKU_PROGRESSLINEEDIT_H
-#include <boost/shared_ptr.hpp>
 #include <QKeyEvent>
 #include <QLineEdit>
 #include "interfaces/iaddressbar.h"

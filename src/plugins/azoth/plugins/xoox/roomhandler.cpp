@@ -328,6 +328,9 @@ namespace Xoox
 		case QXmppStanza::Error::RemoteServerTimeout:
 			hrText = tr ("timeout connecting to remote server (try contacting your server's administrator)");
 			break;
+		case QXmppStanza::Error::ServiceUnavailable:
+			hrText = tr ("service unavailable");
+			break;
 		default:
 			hrText = tr ("unknown condition %1 (please report to developers)")
 				.arg (pres.error ().condition ());

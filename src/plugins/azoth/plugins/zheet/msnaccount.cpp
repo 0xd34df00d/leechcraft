@@ -358,6 +358,11 @@ namespace Zheet
 		return 0;
 	}
 
+	QImage MSNAccount::GetSelfAvatar () const
+	{
+		return QImage ();
+	}
+
 	QIcon MSNAccount::GetAccountIcon () const
 	{
 		return Proto_->GetProtocolIcon ();

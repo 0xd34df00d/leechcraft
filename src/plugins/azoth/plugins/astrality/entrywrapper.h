@@ -24,6 +24,7 @@
 #include <TextChannel>
 #include <interfaces/structures.h>
 #include <interfaces/iclentry.h>
+#include <interfaces/iauthable.h>
 
 namespace LeechCraft
 {
@@ -36,9 +37,10 @@ namespace Astrality
 
 	class EntryWrapper : public QObject
 					   , public ICLEntry
+					   , public IAuthable
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::ICLEntry);
+		Q_INTERFACES (LeechCraft::Azoth::ICLEntry LeechCraft::Azoth::IAuthable);
 
 		AccountWrapper *AW_;
 		Tp::ContactPtr C_;
@@ -48,6 +50,7 @@ namespace Astrality
 		EntryWrapper (Tp::ContactPtr, AccountWrapper*);
 
 		void HandleMessage (MsgWrapper*);
+		Tp::ContactPtr GetContact () const;
 
 		QObject* GetObject ();
 		QObject* GetParentAccount () const;
@@ -71,8 +74,16 @@ namespace Astrality
 		QList<QAction*> GetActions () const;
 		QMap<QString, QVariant> GetClientInfo (const QString&) const;
 		void MarkMsgsRead ();
+
+		AuthStatus GetAuthStatus () const;
+		void ResendAuth (const QString&);
+		void RevokeAuth (const QString&);
+		void Unsubscribe (const QString&);
+		void RerequestAuth (const QString&);
 	private slots:
 		void handlePresenceChanged ();
+		void handlePublishStateChanged (Tp::Contact::PresenceState, const QString&);
+		void handleSubStateChanged (Tp::Contact::PresenceState);
 		void handleMessageReceived (const Tp::ReceivedMessage&, Tp::TextChannelPtr);
 	signals:
 		void gotMessage (QObject*);
@@ -85,6 +96,11 @@ namespace Astrality
 		void chatPartStateChanged (const ChatPartState&, const QString&);
 		void permsChanged ();
 		void entryGenerallyChanged ();
+
+		void itemSubscribed (QObject*, const QString&);
+		void itemUnsubscribed (QObject*, const QString&);
+		void itemCancelledSubscription (QObject*, const QString&);
+		void itemGrantedSubscription (QObject*, const QString&);
 
 		void gotEntity (LeechCraft::Entity);
 	};

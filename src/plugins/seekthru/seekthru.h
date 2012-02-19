@@ -47,7 +47,7 @@ namespace LeechCraft
 				Q_INTERFACES (IInfo IFinder IHaveSettings IEntityHandler IStartupWizard ISyncable)
 
 				std::auto_ptr<QTranslator> Translator_;
-				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
+				std::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
 
 				Sync::ChainIDs_t Chains_;
 			public:
@@ -66,7 +66,7 @@ namespace LeechCraft
 				QStringList GetCategories () const;
 				QList<IFindProxy_ptr> GetProxy (const LeechCraft::Request&);
 
-				boost::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
+				std::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
 
 				EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
 				void Handle (LeechCraft::Entity);

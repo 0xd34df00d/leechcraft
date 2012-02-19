@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_AZOTH_SERVICEDISCOVERYWIDGET_H
 #define PLUGINS_AZOTH_SERVICEDISCOVERYWIDGET_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
 #include "ui_servicediscoverywidget.h"
@@ -44,7 +44,7 @@ namespace Azoth
 		QComboBox *AccountBox_;
 		QLineEdit *AddressLine_;
 		QTimer *DiscoveryTimer_;
-		boost::shared_ptr<ISDSession> SDSession_;
+		std::shared_ptr<ISDSession> SDSession_;
 	public:
 		static void SetParentMultiTabs (QObject*);
 

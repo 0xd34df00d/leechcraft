@@ -18,7 +18,7 @@
 
 #ifndef PLUGINS_POSHUKU_STORAGEBACKEND_H
 #define PLUGINS_POSHUKU_STORAGEBACKEND_H
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <QObject>
 #include "historymodel.h"
 #include "favoritesmodel.h"
@@ -46,7 +46,7 @@ namespace Poshuku
 
 		StorageBackend (QObject* = 0);
 		virtual ~StorageBackend ();
-		static boost::shared_ptr<StorageBackend> Create (Type);
+		static std::shared_ptr<StorageBackend> Create (Type);
 
 		/** @brief Do post-initialization.
 			*

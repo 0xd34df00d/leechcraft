@@ -92,7 +92,10 @@ namespace Astrality
 
 	QIcon ProtoWrapper::GetProtocolIcon () const
 	{
-		return QIcon::fromTheme (ProtoInfo_.iconName ());
+		QIcon result = QIcon::fromTheme (ProtoInfo_.iconName ());
+		if (result.isNull ())
+			result = QIcon (":/azoth/astrality/resources/images/astrality.svg");
+		return result;
 	}
 
 	QByteArray ProtoWrapper::GetProtocolID () const

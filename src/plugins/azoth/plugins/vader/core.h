@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_VADER_CORE_H
-#define PLUGINS_AZOTH_PLUGINS_VADER_CORE_H
+#pragma once
+
 #include <QObject>
 #include <interfaces/core/icoreproxy.h>
 
@@ -47,12 +47,12 @@ namespace Vader
 
 		void SetProxy (QObject*);
 		IProxyObject* GetProxy () const;
-		
+
 		void SetCoreProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetCoreProxy () const;
 
 		MRIMProtocol* GetProtocol () const;
-		
+
 		void SendEntity (const LeechCraft::Entity&);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
@@ -60,5 +60,3 @@ namespace Vader
 }
 }
 }
-
-#endif

@@ -20,7 +20,6 @@
 #define PLUGINS_DEADLYRICS_LYRICWIKISEARCHER_H
 #include "searcher.h"
 #include <vector>
-#include <boost/shared_ptr.hpp>
 
 class QHttp;
 
