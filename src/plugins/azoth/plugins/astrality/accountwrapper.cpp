@@ -103,6 +103,10 @@ namespace Astrality
 
 	void AccountWrapper::RenameAccount (const QString& newName)
 	{
+		connect (A_->setDisplayName (newName),
+				SIGNAL (finished (Tp::PendingOperation*)),
+				this,
+				SLOT (handleRenamed (Tp::PendingOperation*)));
 	}
 
 	QByteArray AccountWrapper::GetAccountID () const
@@ -357,6 +361,23 @@ namespace Astrality
 		}
 
 		emit removeFinished (this);
+	}
+
+	void AccountWrapper::handleRenamed (Tp::PendingOperation *po)
+	{
+		if (po->isError ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< po->errorName ()
+					<< po->errorMessage ();
+			emit gotEntity (Util::MakeNotification ("Azoth",
+					tr ("Error renaming account %1: %2 (%3).")
+						.arg (A_->displayName ())
+						.arg (po->errorName ())
+						.arg (po->errorMessage ()),
+					PCritical_));
+			return;
+		}
 	}
 
 	void AccountWrapper::handleConnStatusChanged (Tp::ConnectionStatus status)

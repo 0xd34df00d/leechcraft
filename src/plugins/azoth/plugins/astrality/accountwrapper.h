@@ -85,6 +85,7 @@ namespace Astrality
 	private slots:
 		void handleEnabled (Tp::PendingOperation*);
 		void handleRemoved (Tp::PendingOperation*);
+		void handleRenamed (Tp::PendingOperation*);
 
 		void handleConnStatusChanged (Tp::ConnectionStatus);
 		void handleConnectionChanged (Tp::ConnectionPtr);
