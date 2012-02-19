@@ -20,6 +20,7 @@
 
 #include <QWidget>
 #include "ui_accountregfirstpage.h"
+#include "accountwrapper.h"
 
 namespace Tp
 {
@@ -45,6 +46,8 @@ namespace Astrality
 		QString GetServer () const;
 		int GetPort () const;
 		bool ShouldRequireEncryption () const;
+
+		void Augment (AccountWrapper::Settings&);
 	};
 }
 }

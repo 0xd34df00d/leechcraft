@@ -75,6 +75,11 @@ namespace Astrality
 	{
 		return Ui_.RequireEncryption_->isChecked ();
 	}
+
+	void AccountRegFirstPage::Augment (AccountWrapper::Settings& settings)
+	{
+		settings.Autodisconnect_ = Ui_.Autodisconnect_->checkState () == Qt::Checked;
+	}
 }
 }
 }

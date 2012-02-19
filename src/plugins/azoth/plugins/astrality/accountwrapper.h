@@ -43,6 +43,13 @@ namespace Astrality
 
 		QMap<QString, Tp::ContactMessengerPtr> Messengers_;
 	public:
+		struct Settings
+		{
+			bool Autodisconnect_;
+		};
+	private:
+		Settings S_;
+	public:
 		AccountWrapper (Tp::AccountPtr, QObject*);
 
 		QObject* GetObject ();
@@ -68,9 +75,13 @@ namespace Astrality
 		Tp::ContactMessengerPtr GetMessenger (const QString&);
 		void Shutdown ();
 		void RemoveThis ();
+		void SetSettings (const Settings&);
 	private:
 		void HandleAuth (bool failure);
 		EntryWrapper* CreateEntry (Tp::ContactPtr);
+
+		void LoadSettings ();
+		void SaveSettings ();
 	private slots:
 		void handleEnabled (Tp::PendingOperation*);
 		void handleRemoved (Tp::PendingOperation*);

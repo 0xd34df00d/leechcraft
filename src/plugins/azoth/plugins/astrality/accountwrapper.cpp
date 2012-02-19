@@ -18,6 +18,9 @@
 
 #include "accountwrapper.h"
 #include <algorithm>
+#include <QDialog>
+#include <QTabWidget>
+#include <QVBoxLayout>
 #include <PendingOperation>
 #include <PendingStringList>
 #include <PendingContacts>
@@ -27,6 +30,7 @@
 #include <util/passutils.h>
 #include "astralityutil.h"
 #include "entrywrapper.h"
+#include "protowrapper.h"
 
 namespace LeechCraft
 {
@@ -37,6 +41,7 @@ namespace Astrality
 	AccountWrapper::AccountWrapper (Tp::AccountPtr acc, QObject *parent)
 	: QObject (parent)
 	, A_ (acc)
+	, S_ ({ true })
 	{
 		connect (A_->setEnabled (true),
 				SIGNAL (finished (Tp::PendingOperation*)),
@@ -54,6 +59,8 @@ namespace Astrality
 				SIGNAL (connectionChanged (Tp::ConnectionPtr)),
 				this,
 				SLOT (handleConnectionChanged (Tp::ConnectionPtr)));
+
+		LoadSettings ();
 	}
 
 	QObject* AccountWrapper::GetObject ()
@@ -116,6 +123,24 @@ namespace Astrality
 
 	void AccountWrapper::OpenConfigurationDialog ()
 	{
+		auto proto = qobject_cast<ProtoWrapper*> (GetParentProtocol ());
+
+		QDialog dia;
+		QTabWidget *widget = new QTabWidget;
+		dia.setLayout (new QVBoxLayout ());
+		dia.layout ()->addWidget (widget);
+
+		auto pages = proto->GetAccountRegistrationWidgets (IProtocol::AAONoOptions);
+		Q_FOREACH (QWidget *page, pages)
+			widget->addTab (page, page->windowTitle ());
+
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		const auto& params = proto->GetParamsFromWidgets (pages);
+		A_->updateParameters (params, QStringList ());
+
+		SetSettings (proto->GetSettingsFromWidgets (pages));
 	}
 
 	EntryStatus AccountWrapper::GetState () const
@@ -203,6 +228,12 @@ namespace Astrality
 				SLOT (handleRemoved (Tp::PendingOperation*)));
 	}
 
+	void AccountWrapper::SetSettings (const Settings& settings)
+	{
+		S_ = settings;
+		SaveSettings ();
+	}
+
 	void AccountWrapper::HandleAuth (bool failure)
 	{
 		const QString key = GetAccountID ().replace ('/', '_') + "." +
@@ -253,6 +284,24 @@ namespace Astrality
 				SIGNAL (itemGrantedSubscription (QObject*, QString)));
 
 		return w;
+	}
+
+	void AccountWrapper::LoadSettings ()
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth_Astrality");
+		settings.beginGroup (GetAccountID ());
+		S_.Autodisconnect_ = settings.value ("Autodisconnect", true).toBool ();
+		settings.endGroup ();
+	}
+
+	void AccountWrapper::SaveSettings ()
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth_Astrality");
+		settings.beginGroup (GetAccountID ());
+		settings.setValue ("Autodisconnect", S_.Autodisconnect_);
+		settings.endGroup ();
 	}
 
 	void AccountWrapper::handleEnabled (Tp::PendingOperation *po)

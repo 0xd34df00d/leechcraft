@@ -24,6 +24,7 @@
 #include <AccountManager>
 #include <interfaces/iprotocol.h>
 #include <interfaces/structures.h>
+#include "accountwrapper.h"
 
 namespace LeechCraft
 {
@@ -46,9 +47,13 @@ namespace Astrality
 		Tp::AccountManagerPtr AM_;
 
 		QList<AccountWrapper*> Accounts_;
+		QMap<Tp::PendingAccount*, AccountWrapper::Settings> PendingSettings_;
 	public:
 		ProtoWrapper (Tp::ConnectionManagerPtr,
 				const QString&, QObject*);
+
+		QVariantMap GetParamsFromWidgets (const QList<QWidget*>&) const;
+		AccountWrapper::Settings GetSettingsFromWidgets (const QList<QWidget*>&) const;
 
 		QObject* GetObject ();
 		ProtocolFeatures GetFeatures () const;
@@ -64,7 +69,7 @@ namespace Astrality
 	private slots:
 		void handleAMReady (Tp::PendingOperation*);
 		void handleAccountCreated (Tp::PendingOperation*);
-		void handleNewAccount (Tp::AccountPtr);
+		AccountWrapper* handleNewAccount (Tp::AccountPtr);
 		void handleAccountRemoved (AccountWrapper*);
 	signals:
 		void accountAdded (QObject*);

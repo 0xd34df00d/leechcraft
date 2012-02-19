@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>309</width>
-    <height>124</height>
+    <height>148</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string/>
+   <string>General account settings</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="margin">
@@ -76,6 +76,19 @@
     <widget class="QCheckBox" name="RequireEncryption_">
      <property name="text">
       <string>Require encryption</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="Autodisconnect_">
+     <property name="toolTip">
+      <string>Automatically disconnect on LeechCraft shutdown.</string>
+     </property>
+     <property name="text">
+      <string>Autodisconnect</string>
      </property>
      <property name="checked">
       <bool>true</bool>

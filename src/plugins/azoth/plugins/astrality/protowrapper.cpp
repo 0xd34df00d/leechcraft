@@ -59,6 +59,39 @@ namespace Astrality
 				SLOT (handleNewAccount (Tp::AccountPtr)));
 	}
 
+	QVariantMap ProtoWrapper::GetParamsFromWidgets (const QList<QWidget*>& widgets) const
+	{
+		QVariantMap params;
+		auto fpg = qobject_cast<AccountRegFirstPage*> (widgets.value (0));
+		auto chSet = [&params, &ProtoInfo_] (QString param, QVariant value)
+		{
+			if (ProtoInfo_.hasParameter (param))
+				params [param] = value;
+		};
+		if (!fpg->GetAccountID ().isEmpty ())
+			chSet ("account", fpg->GetAccountID ());
+		if (!fpg->GetServer ().isEmpty ())
+			chSet ("server", fpg->GetServer ());
+		if (fpg->GetPort ())
+			chSet ("port", fpg->GetPort ());
+		chSet ("require-encryption", fpg->ShouldRequireEncryption ());
+		if (fpg->property ("Astrality/RegisterNew").toBool ())
+		{
+			chSet ("password", fpg->GetPassword ());
+			chSet ("register", true);
+		}
+
+		return params;
+	}
+
+	AccountWrapper::Settings ProtoWrapper::GetSettingsFromWidgets (const QList<QWidget*>& widgets) const
+	{
+		auto fpg = qobject_cast<AccountRegFirstPage*> (widgets.value (0));
+		AccountWrapper::Settings s;
+		fpg->Augment (s);
+		return s;
+	}
+
 	QObject* ProtoWrapper::GetObject ()
 	{
 		return this;
@@ -131,28 +164,14 @@ namespace Astrality
 			return;
 		}
 
-		QVariantMap params;
-		auto chSet = [&params, &ProtoInfo_] (QString param, QVariant value)
-		{
-			if (ProtoInfo_.hasParameter (param))
-				params [param] = value;
-		};
-		chSet ("account", fpg->GetAccountID ());
-		if (!fpg->GetServer ().isEmpty ())
-			chSet ("server", fpg->GetServer ());
-		if (fpg->GetPort ())
-			chSet ("port", fpg->GetPort ());
-		chSet ("require-encryption", fpg->ShouldRequireEncryption ());
-		if (fpg->property ("Astrality/RegisterNew").toBool ())
-		{
-			chSet ("password", fpg->GetPassword ());
-			chSet ("register", true);
-		}
+		const QVariantMap& params = GetParamsFromWidgets (widgets);
 
-		connect (AM_->createAccount (CM_->name (), ProtoName_, name, params, QVariantMap ()),
+		auto pending = AM_->createAccount (CM_->name (), ProtoName_, name, params, QVariantMap ());
+		connect (pending,
 				SIGNAL (finished (Tp::PendingOperation*)),
 				this,
 				SLOT (handleAccountCreated (Tp::PendingOperation*)));
+		PendingSettings_ [pending] = GetSettingsFromWidgets (widgets);
 	}
 
 	void ProtoWrapper::RemoveAccount (QObject *accObj)
@@ -201,13 +220,16 @@ namespace Astrality
 		}
 
 		auto pacc = qobject_cast<Tp::PendingAccount*> (po);
-		handleNewAccount (pacc->account ());
+		auto acc = handleNewAccount (pacc->account ());
+
+		if (acc && PendingSettings_.contains (pacc))
+			acc->SetSettings (PendingSettings_.take (pacc));
 	}
 
-	void ProtoWrapper::handleNewAccount (Tp::AccountPtr acc)
+	AccountWrapper* ProtoWrapper::handleNewAccount (Tp::AccountPtr acc)
 	{
 		if (ProtoName_ != acc->protocolName ())
-			return;
+			return 0;
 
 		qDebug () << Q_FUNC_INFO << ProtoName_ << acc->nickname () << acc->iconName ();
 		auto w = new AccountWrapper (acc, this);
@@ -225,6 +247,8 @@ namespace Astrality
 				SLOT (handleAccountRemoved (AccountWrapper*)));
 		Accounts_ << w;
 		emit accountAdded (w);
+
+		return w;
 	}
 
 	void ProtoWrapper::handleAccountRemoved (AccountWrapper *aw)
