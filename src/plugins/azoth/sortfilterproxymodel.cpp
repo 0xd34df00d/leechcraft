@@ -132,7 +132,11 @@ namespace Azoth
 				return acc == idx.data (Core::CLRAccountObject).value<QObject*> ();
 			}
 			case Core::CLETCategory:
-				return idx.data ().toString () == qobject_cast<IMUCEntry*> (MUCEntry_)->GetGroupName ();
+			{
+				const QString& gName = idx.data ().toString ();
+				return gName == qobject_cast<IMUCEntry*> (MUCEntry_)->GetGroupName () ||
+						qobject_cast<ICLEntry*> (MUCEntry_)->Groups ().contains (gName);
+			}
 			default:
 				break;
 			}
