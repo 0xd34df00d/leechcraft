@@ -81,6 +81,7 @@ namespace Astrality
 		QIcon GetAccountIcon () const;
 
 		Tp::ContactMessengerPtr GetMessenger (const QString&);
+		QString GetOurID () const;
 		void Shutdown ();
 		void RemoveThis ();
 		void SetSettings (const Settings&);

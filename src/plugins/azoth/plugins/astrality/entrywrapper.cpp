@@ -99,7 +99,9 @@ namespace Astrality
 
 	QString EntryWrapper::GetEntryName () const
 	{
-		return C_->alias ();
+		return C_->id () == AW_->GetOurID () ?
+				AW_->GetOurNick () :
+				C_->alias ();
 	}
 
 	void EntryWrapper::SetEntryName (const QString&)

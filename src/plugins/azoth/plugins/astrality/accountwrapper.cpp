@@ -244,6 +244,11 @@ namespace Astrality
 		return Messengers_ [id];
 	}
 
+	QString AccountWrapper::GetOurID () const
+	{
+		return A_->uniqueIdentifier ();
+	}
+
 	void AccountWrapper::Shutdown ()
 	{
 		disconnect (A_.data (),

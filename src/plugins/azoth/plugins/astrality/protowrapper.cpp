@@ -43,6 +43,7 @@ namespace Astrality
 				Tp::Account::FeatureCore |
 				Tp::Account::FeatureAvatar |
 				Tp::Account::FeatureProtocolInfo |
+				Tp::Account::FeatureCapabilities |
 				Tp::Account::FeatureProfile);
 		auto channelf = Tp::ChannelFactory::create (sb);
 		auto connf = Tp::ConnectionFactory::create (sb,
