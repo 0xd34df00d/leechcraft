@@ -41,7 +41,7 @@ SET (ACETAMIDE_SRCS
 	servercommandmessage.cpp
 	serverinfowidget.cpp
 	serverparticipantentry.cpp
-	serverresponcemanager.cpp
+	serverresponsemanager.cpp
 	sortfilterproxymodel.cpp
 	usercommandmanager.cpp
 	xmlsettingsmanager.cpp
@@ -79,7 +79,7 @@ SET (ACETAMIDE_HEADERS
 	servercommandmessage.h
 	serverinfowidget.h
 	serverparticipantentry.h
-	serverresponcemanager.h
+	serverresponsemanager.h
 	sortfilterproxymodel.h
 	usercommandmanager.h
 	xmlsettingsmanager.h

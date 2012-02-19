@@ -36,7 +36,7 @@
 #include "ircerrorhandler.h"
 #include "ircserversocket.h"
 #include "usercommandmanager.h"
-#include "serverresponcemanager.h"
+#include "serverresponsemanager.h"
 #include "rplisupportparser.h"
 #include "channelsmanager.h"
 
@@ -62,7 +62,7 @@ namespace Acetamide
 	{
 		IrcParser_ = new IrcParser (this);
 		CmdManager_ = new UserCommandManager (this);
-		ServerResponceManager_ = new ServerResponceManager (this);
+		ServerResponseManager_ = new ServerResponseManager (this);
 		RplISupportParser_ = new RplISupportParser (this);
 		ChannelsManager_ = new ChannelsManager (this);
 
@@ -756,7 +756,7 @@ namespace Acetamide
 			}
 		}
 		else
-			ServerResponceManager_->DoAction (opts);
+			ServerResponseManager_->DoAction (opts);
 	}
 
 	ServerParticipantEntry_ptr IrcServerHandler::CreateParticipantEntry (const QString& nick)
